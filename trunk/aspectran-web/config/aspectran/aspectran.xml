@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE translets PUBLIC "-//JHLabs.org//DTD Translets 1.0//EN"
+                           "./dtd/aspectran-1.0.dtd">
+
+<aspectran>
+
+	<settings>
+		<setting name="useNamespaces" value="true"/>
+		<setting name="nullableContentId" value="true"/>
+		<setting name="nullableActionId" value="true"/>
+		<setting name="multiActivityEnable" value="true"/>
+		<setting name="transletNamePattern" value="/test/../*.do"/>
+	</settings>
+	
+	<aspect id="requestRule">
+		<joinpoint target="request"/>
+		<properties>
+			<item name="characterEncoding">utf-8</item>
+			<item name="maxRequestSize">10M</item>
+			<item name="temporaryFilePath">/d:/</item>
+		</properties>
+		<before>
+			<action id="xml" bean="common.action.a1" method="testXmlAction" hidden="true">
+				<properties>
+					<item name="variable1">error</item>
+					<item name="variable2">0001</item>
+				</properties>
+			</action>
+		</before>
+		<after>
+			<action id="xml" bean="common.action.a1" method="testXmlAction" hidden="true">
+				<properties>
+					<item name="variable1">error</item>
+					<item name="variable2">0001</item>
+				</properties>
+			</action>
+			<dispatch id="jsp" contentType="text/html">
+				<template>/WEB-INF/jsp/hello.jsp</template>
+			</dispatch>
+		</after>
+	</aspect>
+
+	<aspect id="responseRule">
+		<joinpoint target="response"/>
+		<properties>
+			<item name="characterEncoding">utf-8</item>
+			<item name="defaultContentType">text/html</item>
+			<item name="viewDispatcher">org.jhlabs.translets.web.JspViewDispatcher</item>
+		</properties>
+	</aspect>
+
+	<aspect id="bean1">
+		<joinpoint target="bean">
+			<pointcut>front/*</pointcut>
+		</joinpoint>
+		<properties>
+			<item name="characterEncoding">utf-8</item>
+			<item name="defaultContentType">text/html</item>
+			<item name="viewDispatcher">org.jhlabs.translets.web.JspViewDispatcher</item>
+		</properties>
+	</aspect>
+
+	<!--
+		before: access logging
+		after: error logging 
+	-->
+	<aspect id="logging">
+		<joinpoint target="action">
+			<pointcut>front.action1</pointcut>
+		</joinpoint>
+		<before>
+			<action id="xml" bean="common.action.a1" method="testXmlAction" hidden="true">
+				<properties>
+					<item name="variable1">error</item>
+					<item name="variable2">0001</item>
+				</properties>
+			</action>
+		</before>
+		<after>
+			<action id="xml" bean="common.action.a1" method="testXmlAction" hidden="true">
+				<properties>
+					<item name="variable1">error</item>
+					<item name="variable2">0001</item>
+				</properties>
+			</action>
+			<dispatch id="jsp" contentType="text/html">
+				<template>/WEB-INF/jsp/hello.jsp</template>
+			</dispatch>
+		</after>
+	</aspect>
+
+	<!--
+		scheduler
+	-->
+	<aspect id="scheduler1">
+		<joinpoint target="scheduler">
+			<pointcut>* * 10 0</pointcut>
+		</joinpoint>
+		<action id="xml" bean="common.action.a1" method="testXmlAction" hidden="true">
+			<properties>
+				<item name="variable1">error</item>
+				<item name="variable2">0001</item>
+			</properties>
+		</action>
+		<action id="xml" bean="common.action.a1" method="testXmlAction" hidden="true">
+			<properties>
+				<item name="variable1">error</item>
+				<item name="variable2">0001</item>
+			</properties>
+		</action>
+	</aspect>
+
+	<!--
+		Matching targets:
+			request: reserved
+			response: reserved
+			bean: each time it is called
+			translet: each time it is called
+			action: each time it is called
+		getAspectObject:
+			a return data of <before> action.
+	-->
+	<aspect id="sqlmap">
+		<joinpoint target="translet">
+			<pointcut>
+				front/a/*
+				exclude(front/a/A*)
+			</pointcut>
+		</joinpoint>
+		<before>
+			<action bean="common.ticket.t1" method="begin">
+				<arguments>
+					<item name="stmtId">aaaaaaa</item>
+				</arguments>
+			</action>
+		</before>
+		<after>
+			<action bean="common.ticket.t1" method="end">
+				<arguments>
+					<item name="stmtId">aaaaaaa</item>
+				</arguments>
+			</action>
+		</after>
+	</aspect>
+	
+	<bean id="aaa" class="org.jhlabs.translets.test*..*" scope="singleton"/>
+
+	<import resource="ticket-rule.xml"/>
+	<import resource="exception-rule.xml"/>
+	<import resource="front-translets.xml"/>
+	<import resource="ajax-translets.xml"/>
+	
+</aspectran>
