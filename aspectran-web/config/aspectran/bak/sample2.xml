@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE translets PUBLIC "-//JHLabs.org//DTD Translets 1.0//EN"
+                             "../dtd/translets-activity-1.0.dtd">
+
+<translets namespace="simple/">
+
+	<typeAliases>
+		<typeAlias alias="TestBean" type="org.jhlabs.translets.test.TestBean"/>
+	</typeAliases>
+
+	<use bean="root.action.aaa"/>
+	
+	<translet path="test_jsp">
+		<ticket checkcase="loginCheck">
+			<arguments>
+				<item name="stmtId">aaaaaaa</item>
+			</arguments>
+		</ticket>
+		<dispatch contentType="text/html">
+			<action method="testAction"/>
+			<target path="/WEB-INF/jsp/hello.jsp"/>
+		</dispatch>
+	</translet>
+
+	<translet path="test_jsp2">
+		<dispatch contentType="text/html">
+			<action method="testAction"/>
+			<target path="/WEB-INF/jsp/hello.jsp"/>
+		</dispatch>
+	</translet>
+	
+	<translet path="home3">
+		<redirect path="home"/>
+	</translet>
+
+	<translet path="error">
+		<redirect url="http://www.naver.com"/>
+	</translet>
+
+	<translet path="multipath">
+		<dispatch id=".xml" contentType="text/html">
+			<action method="testAction"/>
+			<target path="/WEB-INF/jsp/hello.jsp"/>
+		</dispatch>
+		<dispatch id=".xsl" contentType="text/html">
+			<action method="testAction"/>
+			<target path="/WEB-INF/jsp/hello.jsp"/>
+		</dispatch>
+		<dispatch id=".xsl" contentType="text/html">
+			<action method="testAction"/>
+			<target path="/WEB-INF/jsp/hello.jsp"/>
+		</dispatch>
+	</translet>
+
+</translets>

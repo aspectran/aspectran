@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+                        "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="sample">
+
+	<select id="getNumber" parameterClass="map" resultClass="string">
+		select count(1) cnt
+		from TEST
+	</select>
+
+	<update id="updateTest" parameterClass="map">
+		update TEST set item0 = #item0#
+	</update>
+	
+	<insert id="insertTest" parameterClass="map">
+		insert into TEST (
+			item0
+		) values (
+			#item0#
+		)
+	</insert>
+
+	<delete id="deleteTest" parameterClass="map">
+		delete from TEST
+	</delete>
+
+</sqlMap>

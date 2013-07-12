@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//JHLabs.org//DTD Translets Beans 1.0//EN"
+                       "./dtd/translets-beans-1.0.dtd">
+<beans>
+
+	<settings>
+		<setting name="useNamespaces" value="true"/>
+		<setting name="nullableBeanId" value="true"/>
+	</settings>
+
+	<import resource="translets/beans/sample/sample-beans.xml"/>
+
+</beans>
