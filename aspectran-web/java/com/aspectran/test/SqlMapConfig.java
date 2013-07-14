@@ -2,7 +2,7 @@ package com.aspectran.test;
 
 import java.io.InputStream;
 
-import com.aspectran.base.util.Resources;
+import com.aspectran.util.Resources;
 import com.ibatis.sqlmap.client.SqlMapClient;
 import com.ibatis.sqlmap.client.SqlMapClientBuilder;
 
