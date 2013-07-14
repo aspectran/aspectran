@@ -36,6 +36,10 @@
 					<value name="item41">${item0}</value>
 					<value name="item42">${item1}</value>
 				</item>
+				<item name="files" type="list" valueType="file">
+					<value>${item0}</value>
+					<value>${item1}</value>
+				</item>
 			</attributes>
 			<multiparts>
 				<fileItem name="file1"/>

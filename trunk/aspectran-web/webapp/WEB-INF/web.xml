@@ -23,7 +23,7 @@
 		</listener-class>
   </listener>
   <servlet>
-    <servlet-name>translets-activity-web</servlet-name>
+    <servlet-name>aspectran-web</servlet-name>
     <servlet-class>com.aspectran.web.servlet.WebAspectranActivityServlet</servlet-class>
     <init-param>
       <param-name>aspectranConfigLocation</param-name>
@@ -38,7 +38,7 @@
     <load-on-startup>1</load-on-startup>
   </servlet>
   <servlet-mapping>
-    <servlet-name>translets-activity-web</servlet-name>
+    <servlet-name>aspectran-web</servlet-name>
     <url-pattern>/test/*</url-pattern>
   </servlet-mapping>
 </web-app>
