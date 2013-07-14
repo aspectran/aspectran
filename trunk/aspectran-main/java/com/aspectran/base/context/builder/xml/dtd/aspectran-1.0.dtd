@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<!ELEMENT translets (settings?, serviceRule?, ticketRule?, requestRule?, responseRule?, exceptionRule?, typeAliases*, import*, use?, translet*)>
-<!ATTLIST translets
+<!ELEMENT aspectran (settings? | typeAliases* | import* | bean* | translet* | aspect*)*>
+<!ATTLIST aspectran
 namespace CDATA #IMPLIED
 >
 
@@ -9,45 +9,8 @@ namespace CDATA #IMPLIED
 <!ELEMENT setting EMPTY>
 <!ATTLIST setting
 name CDATA #REQUIRED
-value (true | false) #REQUIRED
+value CDATA #REQUIRED
 >
-
-<!ELEMENT serviceRule (requestUriPattern, description?)>
-<!ELEMENT description (#PCDATA)>
-
-<!ELEMENT requestUriPattern (#PCDATA | prefix | suffix)*>
-<!ELEMENT prefix (#PCDATA)>
-<!ELEMENT suffix (#PCDATA)>
-
-<!ELEMENT ticketRule (checkcase*)>
-<!ELEMENT checkcase (action, responseByContentType?, defaultResponse?)>
-<!ATTLIST checkcase
-id CDATA #REQUIRED
-rejectInvalidTicket (true | false) "true"
-checkpoint (request | response) "request"
->
-
-<!ELEMENT ticket (arguments?, properties?)>
-<!ATTLIST ticket
-checkcase CDATA #REQUIRED
-rejectInvalidTicket (true | false) "false"
-checkpoint (request | response) "request"
->
-
-<!ELEMENT requestRule (characterEncoding | multipart? | ticket*)*>
-
-<!ELEMENT characterEncoding (#PCDATA)>
-
-<!ELEMENT multipart (maxRequestSize, temporaryFilePath)>
-<!ELEMENT maxRequestSize (#PCDATA)>
-<!ELEMENT temporaryFilePath (#PCDATA)>
-
-<!ELEMENT responseRule (characterEncoding | enforceResponseById? | ticket*)*>
-<!ELEMENT enforceResponseById (#PCDATA)>
-
-<!ELEMENT exceptionRule (responseByContentType?, defaultResponse?)>
-<!ELEMENT responseByContentType (transform? | dispatch? | redirect? | forward?)*>
-<!ELEMENT defaultResponse (transform? | dispatch? | redirect? | forward?)>
 
 <!ELEMENT typeAliases (typeAlias*)>
 
@@ -63,31 +26,6 @@ resource CDATA #IMPLIED
 file CDATA #IMPLIED
 url CDATA #IMPLIED
 >
-
-<!ELEMENT use EMPTY>
-<!ATTLIST use
-bean CDATA #IMPLIED
-ticket CDATA #IMPLIED
->
-
-<!ELEMENT translet (ticket*, request?, contents?, response?, transform?, dispatch?, redirect?, forward?, exception?)>
-<!ATTLIST translet
-path ID #REQUIRED
->
-
-<!ELEMENT request (ticket*, attributes?, multiparts?)>
-<!ATTLIST request
-method CDATA #IMPLIED
-characterEncoding CDATA #IMPLIED
->
-
-<!ELEMENT attributes (item*)>
-
-<!ELEMENT properties (item*)>
-
-<!ELEMENT arguments (item*)>
-
-<!ELEMENT parameters (item*)>
 
 <!ELEMENT item (#PCDATA | value | reference | null)*>
 <!ATTLIST item
@@ -112,7 +50,72 @@ attribute CDATA #IMPLIED
 property CDATA #IMPLIED
 >
 
+<!ELEMENT attributes (item*)>
+
+<!ELEMENT properties (item*)>
+
+<!ELEMENT arguments (item*)>
+
+<!ELEMENT parameters (item*)>
+
 <!ELEMENT null EMPTY>
+
+<!ELEMENT aspect (joinpoint?, properties?, action*, before?, after?, finally?, around?)>
+<!ATTLIST aspect
+id ID #IMPLIED
+>
+
+<!ELEMENT joinpoint (pointcut*)>
+<!ATTLIST joinpoint
+target (request | response | scheduler | bean | translet | action) #REQUIRED
+>
+
+<!ELEMENT pointcut (#PCDATA)>
+<!ATTLIST pointcut
+pattern CDATA #IMPLIED
+>
+
+<!ELEMENT once (properties? | action?)*>
+<!ELEMENT before (properties? | echo? | action? | transform? | dispatch? | redirect? | forward?)*>
+<!ELEMENT after (properties? | echo? | action? | transform? | dispatch? | redirect? | forward?)*>
+<!ELEMENT finally (properties? | echo? | action? | transform? | dispatch? | redirect? | forward?)*>
+<!ELEMENT around (properties? | echo? | action? | transform? | dispatch? | redirect? | forward?)*>
+
+<!ELEMENT bean (features?, constructor?, properties*)>
+<!ATTLIST bean
+id ID #REQUIRED
+class CDATA #IMPLIED
+scope (singleton | prototype | request | session | application) #IMPLIED
+factoryMethod CDATA #IMPLIED
+initMethod CDATA #IMPLIED
+destoryMethod CDATA #IMPLIED
+lazyInit (true | false) #IMPLIED
+parent CDATA #IMPLIED
+>
+
+<!ELEMENT features (class?, scope?, factoryMethod?, initMethod?, destroyMethod?, lazyInit?)>
+
+<!ELEMENT class (#PCDATA)>
+<!ELEMENT scope (#PCDATA)>
+<!ELEMENT factoryMethod (#PCDATA)>
+<!ELEMENT initMethod (#PCDATA)>
+<!ELEMENT destroyMethod (#PCDATA)>
+<!ELEMENT lazyInit (#PCDATA)>
+
+<!ELEMENT constructor (arguments?)>
+
+<!ELEMENT translet (request?, contents?, response?, transform?, dispatch?, redirect?, forward?, exception?)>
+<!ATTLIST translet
+name CDATA #REQUIRED
+hidden (true | false) #IMPLIED
+parent CDATA #IMPLIED
+>
+
+<!ELEMENT request (attributes?, multiparts?)>
+<!ATTLIST request
+method CDATA #IMPLIED
+characterEncoding CDATA #IMPLIED
+>
 
 <!ELEMENT multiparts (fileItem*)>
 
@@ -149,17 +152,20 @@ hidden (true | false) #IMPLIED
 <!ELEMENT include (attributes?)>
 <!ATTLIST include
 id CDATA #IMPLIED
-path CDATA #REQUIRED
+translet CDATA #REQUIRED
 ignoreTicket (true | false) #IMPLIED
 hidden (true | false) #IMPLIED
 >
 
-<!ELEMENT response (ticket? | transform? | dispatch? | redirect? | forward?)*>
+<!ELEMENT response (transform? | dispatch? | redirect? | forward?)*>
 <!ATTLIST response
 characterEncoding CDATA #IMPLIED
 default CDATA #IMPLIED
 >
 <!ELEMENT exception (responseByContentType?, defaultResponse?)>
+
+<!ELEMENT responseByContentType (transform? | dispatch? | redirect? | forward?)*>
+<!ELEMENT defaultResponse (transform? | dispatch? | redirect? | forward?)>
 
 <!ELEMENT transform (echo | action | include | template)*>
 <!ATTLIST transform
@@ -177,14 +183,10 @@ encoding CDATA #IMPLIED
 noCache (true | false) #IMPLIED
 >
 
-<!ELEMENT dispatch (echo? | action? | include? | target)*>
+<!ELEMENT dispatch (echo? | action? | include? | template)*>
 <!ATTLIST dispatch
 id CDATA #IMPLIED
 contentType CDATA #IMPLIED
->
-<!ELEMENT target EMPTY>
-<!ATTLIST target
-path CDATA #REQUIRED
 >
 
 <!ELEMENT redirect (echo* | action* | include* | url? | parameters*)>
@@ -192,7 +194,7 @@ path CDATA #REQUIRED
 id CDATA #IMPLIED
 contentType CDATA #IMPLIED
 url CDATA #IMPLIED
-path CDATA #IMPLIED
+translet CDATA #IMPLIED
 excludeNullParameters CDATA #IMPLIED
 >
 <!ELEMENT url (#PCDATA)>
@@ -201,6 +203,5 @@ excludeNullParameters CDATA #IMPLIED
 <!ATTLIST forward
 id CDATA #IMPLIED
 contentType CDATA #IMPLIED
-path CDATA #IMPLIED
+translet CDATA #IMPLIED
 >
-

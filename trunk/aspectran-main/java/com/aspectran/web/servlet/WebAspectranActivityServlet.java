@@ -29,13 +29,13 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.aspectran.base.adapter.ApplicationAdapter;
-import com.aspectran.base.context.ActivityContext;
+import com.aspectran.base.context.AspectranContext;
 import com.aspectran.base.type.ContextMergeMode;
 import com.aspectran.base.util.StringUtils;
-import com.aspectran.core.activity.Activity;
+import com.aspectran.core.activity.AspectranActivity;
 import com.aspectran.core.translet.registry.TransletNotFoundException;
 import com.aspectran.web.AccessPermitter;
-import com.aspectran.web.activity.WebActivity;
+import com.aspectran.web.activity.WebAspectranActivity;
 import com.aspectran.web.adapter.WebApplicationAdapter;
 import com.aspectran.web.context.ContextLoader;
 import com.aspectran.web.context.ContextLoaderFactory;
@@ -43,16 +43,16 @@ import com.aspectran.web.context.ContextLoaderFactory;
 /**
  * Servlet implementation class for Servlet: Translets.
  */
-public class WebActivityServlet extends HttpServlet implements Servlet {
+public class WebAspectranActivityServlet extends HttpServlet implements Servlet {
 
 	/** @serial */
 	static final long serialVersionUID = 6659683668233267847L;
 
-	private static final Log log = LogFactory.getLog(WebActivityServlet.class);
+	private static final Log log = LogFactory.getLog(WebAspectranActivityServlet.class);
 	
 	private static boolean debugEnabled = log.isDebugEnabled();
 
-	private ActivityContext context;
+	private AspectranContext context;
 	
 	private AccessPermitter accessPermitter;
 
@@ -64,7 +64,7 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 	/**
 	 * Instantiates a new action servlet.
 	 */
-	public WebActivityServlet() {
+	public WebAspectranActivityServlet() {
 		super();
 	}
 
@@ -85,7 +85,7 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 			
 			ContextLoader contextLoader = ContextLoaderFactory.getContextLoader(getServletConfig());
 			
-			List<ActivityContext> contextList = contextLoader.getContextList();
+			List<AspectranContext> contextList = contextLoader.getContextList();
 			ContextMergeMode mergeMode = contextLoader.getMergeMode();
 			
 			log.debug("contextList:" + contextList);
@@ -133,7 +133,7 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 			
 			String requestUri = req.getRequestURI();
 
-			Activity activity = new WebActivity(context, req, res);
+			AspectranActivity activity = new WebAspectranActivity(context, req, res);
 			activity.request(requestUri);
 			activity.process();
 			activity.response();

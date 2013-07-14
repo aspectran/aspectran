@@ -19,11 +19,11 @@ import com.aspectran.base.adapter.ApplicationAdapter;
 import com.aspectran.base.adapter.RequestAdapter;
 import com.aspectran.base.adapter.ResponseAdapter;
 import com.aspectran.base.adapter.SessionAdapter;
-import com.aspectran.base.context.ActivityContext;
+import com.aspectran.base.context.AspectranContext;
 import com.aspectran.base.rule.ForwardResponseRule;
 import com.aspectran.base.rule.RedirectResponseRule;
 import com.aspectran.base.rule.TransformRule;
-import com.aspectran.core.activity.Activity;
+import com.aspectran.core.activity.AspectranActivity;
 import com.aspectran.core.activity.process.result.ContentResult;
 import com.aspectran.core.activity.process.result.ProcessResult;
 import com.aspectran.core.activity.response.ResponseException;
@@ -35,9 +35,9 @@ import com.aspectran.core.bean.registry.BeanRegistry;
 /**
  * The Class ActiveTranslet.
  */
-public abstract class AbstractTranslet implements Translet {
+public abstract class AbstractSuperTranslet implements SuperTranslet {
 	
-	protected final Activity activity;
+	protected final AspectranActivity activity;
 	
 	protected ProcessResult processResult;
 	
@@ -47,7 +47,7 @@ public abstract class AbstractTranslet implements Translet {
 	 * @param transletRule the translet rule
 	 * @param output the output
 	 */
-	protected AbstractTranslet(Activity activity) {
+	protected AbstractSuperTranslet(AspectranActivity activity) {
 		this.activity = activity;
 	}
 	
@@ -218,14 +218,14 @@ public abstract class AbstractTranslet implements Translet {
 		return activity.getBean(id);
 	}
 
-	public ActivityContext getContext() {
+	public AspectranContext getContext() {
 		return activity.getContext();
 	}
 	
 	/* (non-Javadoc)
-	 * @see org.jhlabs.translets.activity.Translet#getTransletPath()
+	 * @see com.aspectran.core.translet.Translet#getTransletName()
 	 */
-	public String getTransletPath() {
+	public String getTransletName() {
 		return activity.getTransletName();
 	}
 	

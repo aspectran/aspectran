@@ -8,7 +8,7 @@ import javax.servlet.ServletConfig;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.aspectran.base.context.ActivityContext;
+import com.aspectran.base.context.AspectranContext;
 import com.aspectran.base.type.ContextMergeMode;
 import com.aspectran.base.util.StringUtils;
 
@@ -22,7 +22,7 @@ public class ReferContextLoader implements ContextLoader {
 
 	private ContextMergeMode mergeMode;
 	
-	private List<ActivityContext> contextList;
+	private List<AspectranContext> contextList;
 	
 	public ReferContextLoader(ServletConfig servletConfig, ContextManager contextManager) {
 		mergeMode = ContextMergeMode.REPLACE;
@@ -37,11 +37,11 @@ public class ReferContextLoader implements ContextLoader {
 		String[] contextNames = StringUtils.tokenize(contextParamVal, "\n\t,;:| ");
 
 		if(contextNames.length > 0) {
-			contextList = new ArrayList<ActivityContext>();
+			contextList = new ArrayList<AspectranContext>();
 			
 			for(String contextName : contextNames) {
 				log.debug("contextName: " + contextName);
-				ActivityContext context = contextManager.getContext(contextName);
+				AspectranContext context = contextManager.getContext(contextName);
 				log.debug("context: " + context);
 				
 				contextList.add(context);
@@ -53,7 +53,7 @@ public class ReferContextLoader implements ContextLoader {
 		return mergeMode;
 	}
 	
-	public List<ActivityContext> getContextList() {
+	public List<AspectranContext> getContextList() {
 		return contextList;
 	}
 }

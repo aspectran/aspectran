@@ -17,7 +17,7 @@ package com.aspectran.base.rule;
 
 import java.io.File;
 
-import com.aspectran.base.context.ActivityContextConstant;
+import com.aspectran.base.context.builder.AspectranContextConstant;
 
 /**
  * <p>Created: 2008. 03. 22 오후 5:48:09</p>
@@ -83,13 +83,13 @@ public class ActivityRule {
 		this.transletPathPattern = transletPathPattern;
 		
 		if(transletPathPattern != null) {
-			int index = transletPathPattern.indexOf(ActivityContextConstant.WILDCARD_CHAR);
+			int index = transletPathPattern.indexOf(AspectranContextConstant.WILDCARD_CHAR);
 			
 			if(index != -1) {
 				if(index == 0) {
-					transletPathPatternSuffix = transletPathPattern.substring(ActivityContextConstant.WILDCARD_CHAR.length());
+					transletPathPatternSuffix = transletPathPattern.substring(AspectranContextConstant.WILDCARD_CHAR.length());
 				} else if(index == (transletPathPattern.length() - 1)) {
-					transletPathPatternPrefix = transletPathPattern.substring(0, transletPathPattern.length() - ActivityContextConstant.WILDCARD_CHAR.length());
+					transletPathPatternPrefix = transletPathPattern.substring(0, transletPathPattern.length() - AspectranContextConstant.WILDCARD_CHAR.length());
 				} else {
 					transletPathPatternPrefix = transletPathPattern.substring(0, index);
 					transletPathPatternSuffix = transletPathPattern.substring(index + 1);
@@ -105,7 +105,7 @@ public class ActivityRule {
 	 * @param transletPathPatternSuffix the uri pattern suffix
 	 */
 	public void setTransletPathPattern(String transletPathPatternPrefix, String transletPathPatternSuffix) {
-		transletPathPattern = transletPathPatternPrefix + ActivityContextConstant.WILDCARD_CHAR + transletPathPatternSuffix;
+		transletPathPattern = transletPathPatternPrefix + AspectranContextConstant.WILDCARD_CHAR + transletPathPatternSuffix;
 	}
 	
 	/**

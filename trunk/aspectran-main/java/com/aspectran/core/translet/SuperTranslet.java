@@ -19,7 +19,7 @@ import com.aspectran.base.adapter.ApplicationAdapter;
 import com.aspectran.base.adapter.RequestAdapter;
 import com.aspectran.base.adapter.ResponseAdapter;
 import com.aspectran.base.adapter.SessionAdapter;
-import com.aspectran.base.context.ActivityContext;
+import com.aspectran.base.context.AspectranContext;
 import com.aspectran.base.rule.ForwardResponseRule;
 import com.aspectran.base.rule.RedirectResponseRule;
 import com.aspectran.base.rule.TransformRule;
@@ -31,14 +31,14 @@ import com.aspectran.core.activity.response.Responsible;
 /**
  * <p>Created: 2008. 7. 5. 오전 12:35:44</p>
  */
-public interface Translet {
+public abstract interface SuperTranslet {
 
 	/**
 	 * Returns the path of translet.
 	 * 
 	 * @return the translet path
 	 */
-	public String getTransletPath();
+	public String getTransletName();
 
 	/**
 	 * Gets the process result.
@@ -106,7 +106,7 @@ public interface Translet {
 	
 	public Object getSessionAdaptee();
 	
-	public ActivityContext getContext();
+	public AspectranContext getContext();
 	
 	/**
 	 * Checks if is max length exceeded.

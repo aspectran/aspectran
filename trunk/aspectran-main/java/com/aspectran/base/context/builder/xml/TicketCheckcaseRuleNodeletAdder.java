@@ -19,7 +19,7 @@ import java.util.Properties;
 
 import org.w3c.dom.Node;
 
-import com.aspectran.base.context.builder.ActivityContextBuilderAssistant;
+import com.aspectran.base.context.builder.AspectranContextBuilderAssistant;
 import com.aspectran.base.rule.ItemRuleMap;
 import com.aspectran.base.rule.TicketCheckcaseRule;
 import com.aspectran.base.type.TicketCheckpointType;
@@ -34,7 +34,7 @@ import com.aspectran.base.util.xml.NodeletParser;
  */
 public class TicketCheckcaseRuleNodeletAdder implements NodeletAdder {
 	
-	protected ActivityContextBuilderAssistant assistant;
+	protected AspectranContextBuilderAssistant assistant;
 	
 	/**
 	 * Instantiates a new response rule nodelet adder.
@@ -42,7 +42,7 @@ public class TicketCheckcaseRuleNodeletAdder implements NodeletAdder {
 	 * @param parser the parser
 	 * @param assistant the assistant for Context Builder
 	 */
-	public TicketCheckcaseRuleNodeletAdder(ActivityContextBuilderAssistant assistant) {
+	public TicketCheckcaseRuleNodeletAdder(AspectranContextBuilderAssistant assistant) {
 		this.assistant = assistant;
 	}
 

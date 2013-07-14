@@ -26,7 +26,7 @@ import org.apache.commons.logging.LogFactory;
 import com.aspectran.base.adapter.RequestAdapter;
 import com.aspectran.base.adapter.ResponseAdapter;
 import com.aspectran.base.adapter.SessionAdapter;
-import com.aspectran.base.context.ActivityContext;
+import com.aspectran.base.context.AspectranContext;
 import com.aspectran.base.rule.FileItemRule;
 import com.aspectran.base.rule.FileItemRuleMap;
 import com.aspectran.base.rule.RequestRule;
@@ -35,8 +35,8 @@ import com.aspectran.base.token.expression.ValueExpressor;
 import com.aspectran.base.type.FileItemUnityType;
 import com.aspectran.base.type.RequestMethodType;
 import com.aspectran.base.variable.ValueMap;
-import com.aspectran.core.activity.AbstractActivity;
-import com.aspectran.core.activity.Activity;
+import com.aspectran.core.activity.AbstractAspectranActivity;
+import com.aspectran.core.activity.AspectranActivity;
 import com.aspectran.core.activity.request.RequestException;
 import com.aspectran.core.activity.request.file.FileItem;
 import com.aspectran.core.activity.request.file.FileItemMap;
@@ -51,9 +51,9 @@ import com.aspectran.web.adapter.HttpSessionAdapter;
 /**
  * <p>Created: 2008. 04. 28 오전 12:48:48</p>
  */
-public class WebActivity extends AbstractActivity implements Activity {
+public class WebAspectranActivity extends AbstractAspectranActivity implements AspectranActivity {
 
-	private final Log log = LogFactory.getLog(WebActivity.class);
+	private final Log log = LogFactory.getLog(WebAspectranActivity.class);
 
 	private final boolean debugEnabled = log.isDebugEnabled();
 	
@@ -61,7 +61,7 @@ public class WebActivity extends AbstractActivity implements Activity {
 	
 	private HttpServletResponse response;
 	
-	public WebActivity(ActivityContext context, HttpServletRequest request, HttpServletResponse response) {
+	public WebAspectranActivity(AspectranContext context, HttpServletRequest request, HttpServletResponse response) {
 		super(context);
 		this.request = request;
 		this.response = response;
@@ -75,6 +75,9 @@ public class WebActivity extends AbstractActivity implements Activity {
 		setRequestAdapter(requestAdapter);
 		setResponseAdapter(responseAdapter);
 		setSessionAdapter(sessionAdapter);
+		
+		setTransletInterface(WebTranslet.class);
+		setTransletInstance(new AspectranWebTranslet(this));
 	}
 	
 	public void request(String transletName) throws RequestException {
@@ -190,11 +193,13 @@ public class WebActivity extends AbstractActivity implements Activity {
 	 * @see org.jhlabs.translets.activity.AbstractActivity#newActivity()
 	 */
 	@Override
-	public Activity newActivity() {
-		Activity activity = new WebActivity(getContext(), request, response);
+	public AspectranActivity newAspectranActivity() {
+		WebAspectranActivity activity = new WebAspectranActivity(getContext(), request, response);
 		activity.setRequestAdapter(getRequestAdapter());
 		activity.setResponseAdapter(getResponseAdapter());
 		activity.setSessionAdapter(getSessionAdapter());
+		activity.setTransletInterface(WebTranslet.class);
+		activity.setTransletInstance(new AspectranWebTranslet(this));
 		
 		return activity;
 	}

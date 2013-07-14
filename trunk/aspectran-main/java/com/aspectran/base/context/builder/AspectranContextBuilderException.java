@@ -15,14 +15,14 @@
  */
 package com.aspectran.base.context.builder;
 
-import com.aspectran.base.context.ActivityContextException;
+import com.aspectran.base.context.AspectranContextException;
 
 /**
  * This exception will be thrown when a translets configuration is not valid.
  * 
  * <p>Created: 2008. 01. 07 오전 3:35:55</p>
  */
-public class ActivityContextBuilderException extends ActivityContextException {
+public class AspectranContextBuilderException extends AspectranContextException {
 	
 	/** @serial */
 	static final long serialVersionUID = 5702282474852901391L;
@@ -30,7 +30,7 @@ public class ActivityContextBuilderException extends ActivityContextException {
 	/**
 	 * Simple constructor
 	 */
-	public ActivityContextBuilderException() {
+	public AspectranContextBuilderException() {
 	}
 
 	/**
@@ -39,7 +39,7 @@ public class ActivityContextBuilderException extends ActivityContextException {
 	 * @param msg
 	 *            A message to associate with the exception
 	 */
-	public ActivityContextBuilderException(String msg) {
+	public AspectranContextBuilderException(String msg) {
 		super(msg);
 	}
 
@@ -49,7 +49,7 @@ public class ActivityContextBuilderException extends ActivityContextException {
 	 * @param cause
 	 *            The real cause of the exception
 	 */
-	public ActivityContextBuilderException(Throwable cause) {
+	public AspectranContextBuilderException(Throwable cause) {
 		super(cause);
 	}
 
@@ -62,7 +62,7 @@ public class ActivityContextBuilderException extends ActivityContextException {
 	 * @param cause
 	 *            The real cause of the exception
 	 */
-	public ActivityContextBuilderException(String msg, Throwable cause) {
+	public AspectranContextBuilderException(String msg, Throwable cause) {
 		super(msg, cause);
 	}
 }

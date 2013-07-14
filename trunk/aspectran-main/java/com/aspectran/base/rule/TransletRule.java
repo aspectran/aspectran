@@ -15,7 +15,7 @@
  */
 package com.aspectran.base.rule;
 
-import com.aspectran.base.context.ActivityContextConstant;
+import com.aspectran.base.context.builder.AspectranContextConstant;
 import com.aspectran.base.type.ResponseType;
 import com.aspectran.base.type.TransformType;
 import com.aspectran.core.activity.process.ActionList;
@@ -217,7 +217,7 @@ public class TransletRule {
 	 * @return the string
 	 */
 	public String describe() {
-		final String CRLF = ActivityContextConstant.LINE_SEPARATOR;
+		final String CRLF = AspectranContextConstant.LINE_SEPARATOR;
 		
 		StringBuilder sb = new StringBuilder();
 		

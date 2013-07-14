@@ -27,13 +27,13 @@ import org.apache.commons.logging.LogFactory;
 import com.aspectran.base.adapter.RequestAdapter;
 import com.aspectran.base.adapter.ResponseAdapter;
 import com.aspectran.base.rule.DispatchResponseRule;
-import com.aspectran.core.activity.Activity;
+import com.aspectran.core.activity.AspectranActivity;
 import com.aspectran.core.activity.process.result.ActionResult;
 import com.aspectran.core.activity.process.result.ContentResult;
 import com.aspectran.core.activity.process.result.ProcessResult;
 import com.aspectran.core.activity.response.dispatch.DispatchResponseException;
 import com.aspectran.core.activity.response.dispatch.ViewDispatcher;
-import com.aspectran.core.translet.Translet;
+import com.aspectran.core.translet.SuperTranslet;
 
 /**
  * JSP or other web resource integration.
@@ -49,11 +49,11 @@ public class JspViewDispatcher implements ViewDispatcher {
 	private final boolean debugEnabled = log.isDebugEnabled();
 
 	/* (non-Javadoc)
-	 * @see org.jhlabs.translets.engine.response.Responsible#response(org.jhlabs.translets.action.Translet)
+	 * @see com.aspectran.core.activity.response.dispatch.ViewDispatcher#dispatch(com.aspectran.core.activity.AspectranActivity, com.aspectran.base.rule.DispatchResponseRule)
 	 */
-	public void dispatch(Activity activity, DispatchResponseRule dispatchResponseRule) throws DispatchResponseException {
+	public void dispatch(AspectranActivity activity, DispatchResponseRule dispatchResponseRule) throws DispatchResponseException {
 		try {
-			Translet translet = activity.getActivityTranslet();
+			SuperTranslet translet = (SuperTranslet)activity.getTransletInstance();
 			RequestAdapter requestAdapter = translet.getRequestAdapter();
 			ResponseAdapter responseAdapter = translet.getResponseAdapter();
 

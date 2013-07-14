@@ -16,7 +16,7 @@ import com.aspectran.base.token.expression.ValueExpressor;
 import com.aspectran.base.type.ScopeType;
 import com.aspectran.base.util.MethodUtils;
 import com.aspectran.base.variable.ValueMap;
-import com.aspectran.core.activity.Activity;
+import com.aspectran.core.activity.AspectranActivity;
 import com.aspectran.core.bean.BeansException;
 import com.aspectran.core.bean.ScopeBean;
 import com.aspectran.core.bean.ScopeBeanMap;
@@ -26,7 +26,7 @@ import com.aspectran.core.bean.scope.ContextScope;
 import com.aspectran.core.bean.scope.RequestScope;
 import com.aspectran.core.bean.scope.Scope;
 import com.aspectran.core.bean.scope.SessionScope;
-import com.aspectran.core.translet.Translet;
+import com.aspectran.core.translet.SuperTranslet;
 
 /**
  * SINGLETON: 모든 singleton 빈은context 생성시 초기화 된다.
@@ -63,7 +63,7 @@ public class ScopedBeanRegistry extends AbstractBeanRegistry implements BeanRegi
 		}
 	}
 
-	public Object getBean(String id, Activity activity) {
+	public Object getBean(String id, AspectranActivity activity) {
 		BeanRule beanRule = beanRuleMap.get(id);
 		
 		if(beanRule == null)
@@ -90,7 +90,7 @@ public class ScopedBeanRegistry extends AbstractBeanRegistry implements BeanRegi
 		throw new BeansException();
 	}
 	
-	private Object getRequestScopeBean(BeanRule beanRule, Activity activity) {
+	private Object getRequestScopeBean(BeanRule beanRule, AspectranActivity activity) {
 		synchronized(this) {
 			RequestScope scope = activity.getRequestScope();
 			
@@ -103,8 +103,8 @@ public class ScopedBeanRegistry extends AbstractBeanRegistry implements BeanRegi
 		}
 	}
 
-	private Object getSessionScopeBean(BeanRule beanRule, Activity activity) {
-		Translet translet = activity.getActivityTranslet();
+	private Object getSessionScopeBean(BeanRule beanRule, AspectranActivity activity) {
+		SuperTranslet translet = (SuperTranslet)activity.getTransletInstance();
 		SessionAdapter session = translet.getSessionAdapter();
 		
 		if(session == null) {
@@ -127,13 +127,13 @@ public class ScopedBeanRegistry extends AbstractBeanRegistry implements BeanRegi
 		}
 	}
 
-	private Object getContextScopeBean(BeanRule beanRule, Activity activity) {
+	private Object getContextScopeBean(BeanRule beanRule, AspectranActivity activity) {
 		synchronized (contextScope) {
 			return getScopeBean(contextScope, beanRule, activity);
 		}
 	}
 	
-	private Object getApplicationScopeBean(BeanRule beanRule, Activity activity) {
+	private Object getApplicationScopeBean(BeanRule beanRule, AspectranActivity activity) {
 		ApplicationAdapter application = activity.getApplicationAdapter();
 
 		if(application == null) {
@@ -156,7 +156,7 @@ public class ScopedBeanRegistry extends AbstractBeanRegistry implements BeanRegi
 		}
 	}
 	
-	private Object getScopeBean(Scope scope, BeanRule beanRule, Activity activity) {
+	private Object getScopeBean(Scope scope, BeanRule beanRule, AspectranActivity activity) {
 		ScopeBeanMap sbm = scope.getScopeBeanMap();
 		ScopeBean scopeBean = sbm.get(beanRule.getId());
 			
@@ -180,7 +180,7 @@ public class ScopedBeanRegistry extends AbstractBeanRegistry implements BeanRegi
 		return createBean(beanRule, expressor);
 	}
 	
-	private Object createBean(BeanRule beanRule, Activity activity) {
+	private Object createBean(BeanRule beanRule, AspectranActivity activity) {
 		ValueExpressor expressor = new ValueExpression(activity);
 
 		return createBean(beanRule, expressor);
@@ -239,7 +239,7 @@ public class ScopedBeanRegistry extends AbstractBeanRegistry implements BeanRegi
 		}
 	}
 	
-	public void destoryBean(BeanRule beanRule, Translet translet) throws InvocationTargetException {
+	public void destoryBean(BeanRule beanRule, SuperTranslet translet) throws InvocationTargetException {
 		if(beanRule.getScopeType() == ScopeType.SINGLETON) {
 			String destroyMethodName = beanRule.getDestroyMethod();
 			

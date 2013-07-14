@@ -21,9 +21,9 @@ import org.apache.commons.logging.LogFactory;
 import com.aspectran.base.adapter.ResponseAdapter;
 import com.aspectran.base.rule.RedirectResponseRule;
 import com.aspectran.base.type.ResponseType;
-import com.aspectran.core.activity.Activity;
+import com.aspectran.core.activity.AspectranActivity;
 import com.aspectran.core.activity.process.ActionList;
-import com.aspectran.core.translet.Translet;
+import com.aspectran.core.translet.SuperTranslet;
 
 /**
  * <p>Created: 2008. 03. 22 오후 5:51:58</p>
@@ -48,9 +48,9 @@ public class RedirectResponse implements Responsible {
 	/* (non-Javadoc)
 	 * @see org.jhlabs.translets.engine.response.Responsible#response(org.jhlabs.translets.action.Translet)
 	 */
-	public void response(Activity activity) throws ResponseException {
+	public void response(AspectranActivity activity) throws ResponseException {
 		try {
-			Translet translet = activity.getActivityTranslet();
+			SuperTranslet translet = (SuperTranslet)activity.getTransletInstance();
 			ResponseAdapter responseAdapter = translet.getResponseAdapter();
 
 			String outputEncoding = redirectResponseRule.getCharacterEncoding();

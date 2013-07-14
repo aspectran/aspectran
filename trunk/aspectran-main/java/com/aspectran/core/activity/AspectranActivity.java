@@ -19,14 +19,15 @@ import com.aspectran.base.adapter.ApplicationAdapter;
 import com.aspectran.base.adapter.RequestAdapter;
 import com.aspectran.base.adapter.ResponseAdapter;
 import com.aspectran.base.adapter.SessionAdapter;
-import com.aspectran.base.context.ActivityContext;
+import com.aspectran.base.context.AspectranContext;
 import com.aspectran.core.activity.process.ProcessException;
 import com.aspectran.core.activity.request.RequestException;
 import com.aspectran.core.activity.response.ResponseException;
 import com.aspectran.core.activity.response.Responsible;
 import com.aspectran.core.bean.registry.BeanRegistry;
 import com.aspectran.core.bean.scope.RequestScope;
-import com.aspectran.core.translet.ActivityTranslet;
+import com.aspectran.core.translet.SuperTranslet;
+import com.aspectran.web.activity.AspectranWebTranslet;
 
 /**
  * Action Translator.
@@ -34,19 +35,17 @@ import com.aspectran.core.translet.ActivityTranslet;
  * 
  * <p>Created: 2008. 03. 22 오후 5:48:09</p>
  */
-public interface Activity {
+public interface AspectranActivity {
 
 	public RequestAdapter getRequestAdapter();
 	
-	public void setRequestAdapter(RequestAdapter requestAdapter);
-	
 	public ResponseAdapter getResponseAdapter();
 	
-	public void setResponseAdapter(ResponseAdapter responseAdapter);
-
 	public SessionAdapter getSessionAdapter();
 	
-	public void setSessionAdapter(SessionAdapter sessionAdapter);
+	public Class<? extends SuperTranslet> getTransletInterface();
+	
+	public Object getTransletInstance();
 	
 	public void request(String transletName) throws RequestException;
 	
@@ -55,8 +54,6 @@ public interface Activity {
 	public void process(boolean ignoreTicket) throws ProcessException;
 	
 	public void response() throws ResponseException;
-	
-	//public void translate(String path) throws RequestException, ProcessException, ResponseException;
 	
 	public String getEnforceableResponseId();
 	
@@ -68,15 +65,13 @@ public interface Activity {
 	
 	public void response(Responsible res) throws ResponseException;
 	
-	public ActivityContext getContext();
+	public AspectranContext getContext();
 	
 	public Responsible getResponse(String responseId);
 	
 	public Responsible getResponse();
 	
 	public Object getBean(String id);
-	
-	public ActivityTranslet getActivityTranslet();
 	
 	public ApplicationAdapter getApplicationAdapter();
 	
@@ -86,7 +81,7 @@ public interface Activity {
 	
 	public void setRequestScope(RequestScope requestScope);
 	
-	public Activity newActivity();
+	public AspectranActivity newAspectranActivity();
 	
 	public BeanRegistry getBeanRegistry();
 	

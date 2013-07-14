@@ -19,7 +19,7 @@ import com.aspectran.base.rule.EchoActionRule;
 import com.aspectran.base.token.expression.ValueExpression;
 import com.aspectran.base.token.expression.ValueExpressor;
 import com.aspectran.base.variable.ValueMap;
-import com.aspectran.core.activity.Activity;
+import com.aspectran.core.activity.AspectranActivity;
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.activity.process.ActionPathMaker;
 
@@ -46,7 +46,7 @@ public class EchoAction implements Executable {
 	/* (non-Javadoc)
 	 * @see org.jhlabs.translets.engine.process.action.Executable#execute(org.jhlabs.translets.action.Translet)
 	 */
-	public Object execute(Activity activity) {
+	public Object execute(AspectranActivity activity) {
 		if(echoActionRule.getItemRuleMap() == null)
 			return null;
 		

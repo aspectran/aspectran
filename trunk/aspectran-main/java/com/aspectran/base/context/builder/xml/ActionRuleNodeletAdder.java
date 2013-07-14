@@ -19,7 +19,7 @@ import java.util.Properties;
 
 import org.w3c.dom.Node;
 
-import com.aspectran.base.context.builder.ActivityContextBuilderAssistant;
+import com.aspectran.base.context.builder.AspectranContextBuilderAssistant;
 import com.aspectran.base.rule.BeanActionRule;
 import com.aspectran.base.rule.EchoActionRule;
 import com.aspectran.base.rule.IncludeActionRule;
@@ -38,7 +38,7 @@ import com.aspectran.core.activity.process.ActionList;
  */
 public class ActionRuleNodeletAdder implements NodeletAdder {
 	
-	protected ActivityContextBuilderAssistant assistant;
+	protected AspectranContextBuilderAssistant assistant;
 	
 	/**
 	 * Instantiates a new content nodelet adder.
@@ -46,7 +46,7 @@ public class ActionRuleNodeletAdder implements NodeletAdder {
 	 * @param parser the parser
 	 * @param assistant the assistant for Context Builder
 	 */
-	public ActionRuleNodeletAdder(ActivityContextBuilderAssistant assistant) {
+	public ActionRuleNodeletAdder(AspectranContextBuilderAssistant assistant) {
 		this.assistant = assistant;
 	}
 

@@ -28,7 +28,7 @@ import com.aspectran.base.token.Token;
 import com.aspectran.base.type.TokenType;
 import com.aspectran.base.util.BeanUtils;
 import com.aspectran.base.util.StringUtils;
-import com.aspectran.core.activity.Activity;
+import com.aspectran.core.activity.AspectranActivity;
 import com.aspectran.core.bean.registry.BeanRegistry;
 
 /**
@@ -36,7 +36,7 @@ import com.aspectran.core.bean.registry.BeanRegistry;
  */
 public class TokenExpression implements TokenExpressor {
 	
-	protected Activity activity;
+	protected AspectranActivity activity;
 	
 	protected RequestAdapter requestAdapter;
 	
@@ -48,9 +48,9 @@ public class TokenExpression implements TokenExpressor {
 		this.beanRegistry = beanRegistry;
 	}
 	
-	public TokenExpression(Activity activity) {
+	public TokenExpression(AspectranActivity activity) {
 		this.activity = activity;
-		this.requestAdapter = activity.getActivityTranslet().getRequestAdapter();
+		this.requestAdapter = activity.getTransletInstance().getRequestAdapter();
 		this.beanRegistry = activity.getBeanRegistry();
 	}
 
