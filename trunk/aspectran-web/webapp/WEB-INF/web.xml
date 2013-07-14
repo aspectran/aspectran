@@ -23,19 +23,13 @@
 		</listener-class>
   </listener>
   <servlet>
-    <servlet-name>translets-activity-test</servlet-name>
-    <servlet-class>org.jhlabs.translets.web.servlet.WebActivityServlet</servlet-class>
+    <servlet-name>translets-activity-web</servlet-name>
+    <servlet-class>com.aspectran.web.servlet.WebAspectranActivityServlet</servlet-class>
     <init-param>
-      <param-name>beansConfigLocation</param-name>
+      <param-name>aspectranConfigLocation</param-name>
       <param-value>
-				/WEB-INF/classes/translets/root-translets.xml
-			</param-value>
-    </init-param>
-    <init-param>
-      <param-name>transletsConfigLocation</param-name>
-      <param-value>
-				/WEB-INF/classes/translets/root-translets.xml
-			</param-value>
+		/WEB-INF/classes/aspectran/aspectran.xml
+	  </param-value>
     </init-param>
     <init-param>
       <param-name>autoReload</param-name>
@@ -44,7 +38,7 @@
     <load-on-startup>1</load-on-startup>
   </servlet>
   <servlet-mapping>
-    <servlet-name>translets-activity-test</servlet-name>
+    <servlet-name>translets-activity-web</servlet-name>
     <url-pattern>/test/*</url-pattern>
   </servlet-mapping>
 </web-app>

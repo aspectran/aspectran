@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE translets PUBLIC "-//JHLabs.org//DTD Translets 1.0//EN"
+<!DOCTYPE aspectran PUBLIC "-//aspectran.com//DTD Aspectran 1.0//EN"
                            "./dtd/aspectran-1.0.dtd">
 
 <aspectran>
 
 	<settings>
+		<setting name="transletNamePattern" value="/test/../*.do"/>
 		<setting name="useNamespaces" value="true"/>
 		<setting name="nullableContentId" value="true"/>
 		<setting name="nullableActionId" value="true"/>
 		<setting name="multiActivityEnable" value="true"/>
-		<setting name="transletNamePattern" value="/test/../*.do"/>
 	</settings>
 	
 	<aspect id="requestRule">

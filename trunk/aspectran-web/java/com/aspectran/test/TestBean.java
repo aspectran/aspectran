@@ -67,7 +67,7 @@ public class TestBean {
 		this.variable2 = variable2;
 	}
 
-	public Object testAction(Translet translet) {
+	public Object testAction(SuperTranslet translet) {
 		List<Object> list = new ArrayList<Object>();
 		
 		list.add("aaaaaa");
@@ -95,11 +95,11 @@ public class TestBean {
 		return list;
 	}
 	
-	public Object testAction2(Translet translet) {
+	public Object testAction2(SuperTranslet translet) {
 		return this;
 	}
 	
-	public Object testXmlAction(Translet translet) {
+	public Object testXmlAction(SuperTranslet translet) {
 		return this;
 	}
 	

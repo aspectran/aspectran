@@ -4,7 +4,7 @@ import java.sql.SQLException;
 import java.util.Map;
 
 import com.aspectran.base.variable.AttributeMap;
-import com.aspectran.core.translet.Translet;
+import com.aspectran.core.translet.SuperTranslet;
 import com.aspectran.test.SqlMapConfig;
 import com.ibatis.sqlmap.client.SqlMapClient;
 
@@ -23,14 +23,14 @@ public class SqlMapExecutor {
 
 	private String statementId;
 	
-	public Object execute(Translet translet, Map<String, Object> arguments) throws Exception {
+	public Object execute(SuperTranslet translet, Map<String, Object> arguments) throws Exception {
 		method = (String)arguments.get(METHOD_PARAM);
 		statementId = (String)arguments.get(STATEMENT_ID_PARAM);
 
 		return sqlmapExecute(translet);
 	}
 	
-	private Object sqlmapExecute(Translet translet) throws SQLException {
+	private Object sqlmapExecute(SuperTranslet translet) throws SQLException {
 		SqlMapClient sqlMap = null;
 		
 		try {

@@ -6,7 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.aspectran.base.variable.ArgumentMap;
-import com.aspectran.core.translet.Translet;
+import com.aspectran.core.translet.SuperTranslet;
 
 /**
  *
@@ -15,7 +15,7 @@ import com.aspectran.core.translet.Translet;
  */
 public class ResponseHeaderSpecifier {
 	
-	public void execute(Translet translet, ArgumentMap arguments) throws Exception {
+	public void execute(SuperTranslet translet, ArgumentMap arguments) throws Exception {
 		HttpServletRequest request = (HttpServletRequest)translet.getRequestAdapter().getAdaptee();
 		HttpServletResponse response = (HttpServletResponse)translet.getResponseAdapter().getAdaptee();
 
