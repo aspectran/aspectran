@@ -22,9 +22,9 @@ import com.aspectran.base.rule.ForwardResponseRule;
 import com.aspectran.base.token.expression.ValueExpression;
 import com.aspectran.base.token.expression.ValueExpressor;
 import com.aspectran.base.type.ResponseType;
-import com.aspectran.core.activity.Activity;
+import com.aspectran.core.activity.AspectranActivity;
 import com.aspectran.core.activity.process.ActionList;
-import com.aspectran.core.translet.Translet;
+import com.aspectran.core.translet.SuperTranslet;
 
 /**
  * <p>Created: 2008. 03. 22 오후 5:51:58</p>
@@ -45,8 +45,8 @@ public class ForwardResponse implements Responsible {
 	/* (non-Javadoc)
 	 * @see org.jhlabs.translets.engine.response.Responsible#response(org.jhlabs.translets.action.Translet)
 	 */
-	public void response(Activity activity) {
-		Translet translet = activity.getActivityTranslet();
+	public void response(AspectranActivity activity) {
+		SuperTranslet translet = (SuperTranslet)activity.getTransletInstance();
 		RequestAdapter requestAdapter = translet.getRequestAdapter();
 
 		Map<String, Object> valueMap = null;

@@ -15,7 +15,7 @@
  */
 package com.aspectran.core.activity.process;
 
-import com.aspectran.base.context.ActivityContextConstant;
+import com.aspectran.base.context.builder.AspectranContextConstant;
 
 /**
  * <p>Created: 2008. 7. 2. 오전 12:16:12</p>
@@ -38,7 +38,7 @@ public class ActionPathMaker {
 		sb.append(contentId);
 
 		if(actionId != null) {
-			sb.append(ActivityContextConstant.CONTENT_ID_SEPARATOR);
+			sb.append(AspectranContextConstant.CONTENT_ID_SEPARATOR);
 			sb.append(actionId);
 		}
 
@@ -62,12 +62,12 @@ public class ActionPathMaker {
 		sb.append(parentActionPath);
 
 		if(contentId != null) {
-			sb.append(ActivityContextConstant.CONTENT_ID_SEPARATOR);
+			sb.append(AspectranContextConstant.CONTENT_ID_SEPARATOR);
 			sb.append(contentId);
 		}
 
 		if(actionId != null) {
-			sb.append(ActivityContextConstant.CONTENT_ID_SEPARATOR);
+			sb.append(AspectranContextConstant.CONTENT_ID_SEPARATOR);
 			sb.append(actionId);
 		}
 

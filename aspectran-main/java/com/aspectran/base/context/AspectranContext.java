@@ -27,7 +27,7 @@ import com.aspectran.core.translet.registry.TransletRegistry;
  * 
  * <p>Created: 2008. 06. 09 오후 2:12:40</p>
  */
-public class ActivityContext {
+public class AspectranContext {
 
 	private ActivityRule activityRule;
 	
@@ -39,7 +39,7 @@ public class ActivityContext {
 	
 	//private TransletRuleMap transletRuleMap;
 	
-	public ActivityContext(ActivityRule activityRule) {
+	public AspectranContext(ActivityRule activityRule) {
 		this.activityRule = activityRule;
 	}
 	

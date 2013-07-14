@@ -25,7 +25,7 @@ import java.util.Set;
 
 import org.w3c.dom.Node;
 
-import com.aspectran.base.context.builder.ActivityContextBuilderAssistant;
+import com.aspectran.base.context.builder.AspectranContextBuilderAssistant;
 import com.aspectran.base.rule.ItemRule;
 import com.aspectran.base.rule.ItemRuleMap;
 import com.aspectran.base.token.Token;
@@ -45,14 +45,14 @@ import com.aspectran.base.util.xml.NodeletParser;
  */
 public class ItemRuleNodeletAdder implements NodeletAdder {
 	
-	protected ActivityContextBuilderAssistant assistant;
+	protected AspectranContextBuilderAssistant assistant;
 	
 	/**
 	 * Instantiates a new response rule nodelet adder.
 	 *
 	 * @param assistant the assistant for Context Builder
 	 */
-	public ItemRuleNodeletAdder(ActivityContextBuilderAssistant assistant) {
+	public ItemRuleNodeletAdder(AspectranContextBuilderAssistant assistant) {
 		this.assistant = assistant;
 	}
 	

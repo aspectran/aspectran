@@ -18,7 +18,7 @@ import com.aspectran.base.token.expression.TokenValueHandler;
 import com.aspectran.base.token.expression.ValueExpression;
 import com.aspectran.base.type.TokenType;
 import com.aspectran.base.variable.ValueMap;
-import com.aspectran.core.activity.Activity;
+import com.aspectran.core.activity.AspectranActivity;
 
 /**
  * The Class HttpServletResponseAdapter.
@@ -98,7 +98,7 @@ public class HttpServletResponseAdapter extends AbstractResponseAdapter implemen
 	/* (non-Javadoc)
 	 * @see org.jhlabs.translets.adapter.AbstractResponseAdapter#redirect(org.jhlabs.translets.activity.Activity, org.jhlabs.translets.context.rule.RedirectResponseRule)
 	 */
-	public String redirect(Activity activity, RedirectResponseRule redirectResponseRule) throws IOException {
+	public String redirect(AspectranActivity activity, RedirectResponseRule redirectResponseRule) throws IOException {
 		String characterEncoding = ((HttpServletResponse)adaptee).getCharacterEncoding();
 		
 		Token[] urlTokens = redirectResponseRule.getUrlTokens();

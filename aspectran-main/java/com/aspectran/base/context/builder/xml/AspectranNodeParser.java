@@ -22,7 +22,7 @@ import java.util.Properties;
 
 import org.w3c.dom.Node;
 
-import com.aspectran.base.context.builder.ActivityContextBuilderAssistant;
+import com.aspectran.base.context.builder.AspectranContextBuilderAssistant;
 import com.aspectran.base.io.Resource;
 import com.aspectran.base.rule.ActivityRule;
 import com.aspectran.base.rule.BeanRule;
@@ -54,18 +54,18 @@ import com.aspectran.core.activity.ticket.TicketCheckActionList;
  * 
  * <p>Created: 2008. 06. 14 오전 4:39:24</p>
  */
-public class TransletsNodeParser {
+public class AspectranNodeParser {
 	
 	private final NodeletParser parser = new NodeletParser();
 
-	private final ActivityContextBuilderAssistant assistant;
+	private final AspectranContextBuilderAssistant assistant;
 	
 	/**
 	 * Instantiates a new translet map parser.
 	 * 
 	 * @param assistant the assistant for Context Builder
 	 */
-	public TransletsNodeParser(ActivityContextBuilderAssistant assistant) {
+	public AspectranNodeParser(AspectranContextBuilderAssistant assistant) {
 		//super(log);
 		
 		this.assistant = assistant;
@@ -74,35 +74,31 @@ public class TransletsNodeParser {
 		this.assistant.setNamespace(null);
 
 		parser.setValidation(true);
-		parser.setEntityResolver(new TransletsDtdResolver());
+		parser.setEntityResolver(new AspectranDtdResolver());
 
 		addRootNodelets();
 		addSettingsNodelets();
 		addTypeAliasNodelets();
 		addActivityRuleNodelets();
-		addTicketCheckcaseRuleNodelets();
 		addDefaultRequestRuleNodelets();
 		addDefaultResponseRuleNodelets();
 		addDefaultExceptionRuleNodelets();
-		addTransletNodelets();
+		addAspectranNodelets();
 		addBeanNodelets();
 		addImportNodelets();
 	}
 
 	/**
-	 * Parses the translet map.
-	 * 
+	 * Parses the aspectran configuration.
+	 *
 	 * @param inputStream the input stream
-	 * 
-	 * @return the translet rule map
-	 * 
 	 * @throws Exception the exception
 	 */
 	public void parse(InputStream inputStream) throws Exception {
 		try {
 			parser.parse(inputStream);
 		} catch(Exception e) {
-			throw new Exception("Error parsing translet-map. Cause: " + e, e);
+			throw new Exception("Error parsing aspectran configuration. Cause: " + e, e);
 		}
 	}
 
@@ -123,10 +119,10 @@ public class TransletsNodeParser {
 	}
 
 	/**
-	 * Adds the translet map nodelets.
+	 * Adds the aspectran nodelets.
 	 */
 	private void addRootNodelets() {
-		parser.addNodelet("/translets", new Nodelet() {
+		parser.addNodelet("/aspectran", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
 				String namespace = attributes.getProperty("namespace");
 
@@ -146,7 +142,7 @@ public class TransletsNodeParser {
 	 * Adds the settings nodelets.
 	 */
 	private void addSettingsNodelets() {
-		parser.addNodelet("/translets/setting", new Nodelet() {
+		parser.addNodelet("/aspectran/setting", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
 				String name = attributes.getProperty("name");
 				String value = attributes.getProperty("value");
@@ -154,7 +150,7 @@ public class TransletsNodeParser {
 				assistant.putSetting(name, value);
 			}
 		});
-		parser.addNodelet("/translets/setting/end()", new Nodelet() {
+		parser.addNodelet("/aspectran/setting/end()", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
 				assistant.applySettings();
 			}
@@ -165,7 +161,7 @@ public class TransletsNodeParser {
 	 * Adds the type alias nodelets.
 	 */
 	private void addTypeAliasNodelets() {
-		parser.addNodelet("/translets/typeAlias", new Nodelet() {
+		parser.addNodelet("/aspectran/typeAlias", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
 				String alias = attributes.getProperty("alias");
 				String type = attributes.getProperty("type");
@@ -179,37 +175,37 @@ public class TransletsNodeParser {
 	 * Adds the activity rule nodelets.
 	 */
 	private void addActivityRuleNodelets() {
-		parser.addNodelet("/translets/activityRule", new Nodelet() {
+		parser.addNodelet("/aspectran/activityRule", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
 				ActivityRule ar = new ActivityRule();
 				assistant.pushObject(ar);
 			}
 		});
-		parser.addNodelet("/translets/activityRule/transletNamePattern/text()", new Nodelet() {
+		parser.addNodelet("/aspectran/activityRule/transletNamePattern/text()", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
 				ActivityRule ar = (ActivityRule)assistant.peekObject();
 				ar.setTransletPathPattern(text);
 			}
 		});
-		parser.addNodelet("/translets/activityRule/transletNamePattern/prefix/text()", new Nodelet() {
+		parser.addNodelet("/aspectran/activityRule/transletNamePattern/prefix/text()", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
 				ActivityRule ar = (ActivityRule)assistant.peekObject();
 				ar.setTransletNamePatternPrefix(text);
 			}
 		});
-		parser.addNodelet("/translets/activityRule/transletNamePattern/suffix/text()", new Nodelet() {
+		parser.addNodelet("/aspectran/activityRule/transletNamePattern/suffix/text()", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
 				ActivityRule sr = (ActivityRule)assistant.peekObject();
 				sr.setTransletPathPatternSuffix(text);
 			}
 		});
-		parser.addNodelet("/translets/activityRule/description/text()", new Nodelet() {
+		parser.addNodelet("/aspectran/activityRule/description/text()", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
 				ActivityRule sr = (ActivityRule)assistant.peekObject();
 				sr.setDescription(text);
 			}
 		});
-		parser.addNodelet("/translets/activityRule/end()", new Nodelet() {
+		parser.addNodelet("/aspectran/activityRule/end()", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
 				ActivityRule ar = (ActivityRule)assistant.popObject();
 				assistant.setActivityRule(ar);
@@ -218,43 +214,43 @@ public class TransletsNodeParser {
 	}
 	
 	private void addTicketCheckcaseRuleNodelets() {
-		parser.addNodelet("/translets/ticketRule", new TicketCheckcaseRuleNodeletAdder(assistant));
+		parser.addNodelet("/aspectran/ticketRule", new TicketCheckcaseRuleNodeletAdder(assistant));
 	}
 
 	/**
 	 * Adds the generic request rule nodelets.
 	 */
 	private void addDefaultRequestRuleNodelets() {
-		parser.addNodelet("/translets/requestRule", new Nodelet() {
+		parser.addNodelet("/aspectran/requestRule", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
 				assistant.pushObject(new DefaultRequestRule());
 			}
 		});
-		parser.addNodelet("/translets/requestRule/characterEncoding/text()", new Nodelet() {
+		parser.addNodelet("/aspectran/requestRule/characterEncoding/text()", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
 				DefaultRequestRule grr = (DefaultRequestRule)assistant.peekObject();
 				grr.setCharacterEncoding(text);
 			}
 		});
-		parser.addNodelet("/translets/requestRule/multipart", new Nodelet() {
+		parser.addNodelet("/aspectran/requestRule/multipart", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
 				MultipartRequestRule mrr = new MultipartRequestRule();
 				assistant.pushObject(mrr);
 			}
 		});
-		parser.addNodelet("/translets/requestRule/multipart/maxRequestSize/text()", new Nodelet() {
+		parser.addNodelet("/aspectran/requestRule/multipart/maxRequestSize/text()", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
 				MultipartRequestRule mrr = (MultipartRequestRule)assistant.peekObject();
 				mrr.setMaxRequestSize(text);
 			}
 		});
-		parser.addNodelet("/translets/requestRule/multipart/temporaryFilePath/text()", new Nodelet() {
+		parser.addNodelet("/aspectran/requestRule/multipart/temporaryFilePath/text()", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
 				MultipartRequestRule mrr = (MultipartRequestRule)assistant.peekObject();
 				mrr.setTemporaryFilePath(text);
 			}
 		});
-		parser.addNodelet("/translets/requestRule/multipart/end()", new Nodelet() {
+		parser.addNodelet("/aspectran/requestRule/multipart/end()", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
 				MultipartRequestRule mrr = (MultipartRequestRule)assistant.popObject();
 				DefaultRequestRule drr = (DefaultRequestRule)assistant.peekObject();
@@ -262,9 +258,9 @@ public class TransletsNodeParser {
 			}
 		});
 
-		parser.addNodelet("/translets/requestRule", new TicketCheckRuleNodeletAdder(assistant));
+		parser.addNodelet("/aspectran/requestRule", new TicketCheckRuleNodeletAdder(assistant));
 		
-		parser.addNodelet("/translets/requestRule/end()", new Nodelet() {
+		parser.addNodelet("/aspectran/requestRule/end()", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
 				DefaultRequestRule drr = (DefaultRequestRule)assistant.popObject();
 				
@@ -280,26 +276,26 @@ public class TransletsNodeParser {
 	 * Adds the generic response rule nodelets.
 	 */
 	private void addDefaultResponseRuleNodelets() {
-		parser.addNodelet("/translets/responseRule", new Nodelet() {
+		parser.addNodelet("/aspectran/responseRule", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
 				assistant.pushObject(new DefaultResponseRule());
 			}
 		});
-		parser.addNodelet("/translets/responseRule/characterEncoding/text()", new Nodelet() {
+		parser.addNodelet("/aspectran/responseRule/characterEncoding/text()", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
 				DefaultResponseRule grr = (DefaultResponseRule)assistant.peekObject();
 				grr.setCharacterEncoding(text);
 			}
 		});
 
-		parser.addNodelet("/translets/responseRule/defaultContentType/text()", new Nodelet() {
+		parser.addNodelet("/aspectran/responseRule/defaultContentType/text()", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
 				DefaultResponseRule grr = (DefaultResponseRule)assistant.peekObject();
 				grr.setDefaultContentType(text);
 			}
 		});
 		
-		parser.addNodelet("/translets/responseRule/dispatcherViews", new Nodelet() {
+		parser.addNodelet("/aspectran/responseRule/dispatcherViews", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
 				String defaultDispatchViewId = attributes.getProperty("default");
 				
@@ -309,7 +305,7 @@ public class TransletsNodeParser {
 				assistant.pushObject(dispatcherViewsRule);
 			}
 		});
-		parser.addNodelet("/translets/responseRule/dispatcherViews/viewType", new Nodelet() {
+		parser.addNodelet("/aspectran/responseRule/dispatcherViews/viewType", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
 				String id = attributes.getProperty("id");
 				String classType = resolveAliasType(attributes.getProperty("class"));
@@ -321,16 +317,16 @@ public class TransletsNodeParser {
 				dispatchViewTypeRule.setBeanId(beanId);
 			}
 		});
-		parser.addNodelet("/translets/responseRule/dispatcherViews/viewType/properties", new Nodelet() {
+		parser.addNodelet("/aspectran/responseRule/dispatcherViews/viewType/properties", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
 				ItemRuleMap irm = new ItemRuleMap();
 				assistant.pushObject(irm);
 			}
 		});
 
-		parser.addNodelet("/translets/responseRule/dispatcherViews/viewType/properties", new ItemRuleNodeletAdder(assistant));
+		parser.addNodelet("/aspectran/responseRule/dispatcherViews/viewType/properties", new ItemRuleNodeletAdder(assistant));
 	
-		parser.addNodelet("/translets/responseRule/dispatcherViews/viewType/properties/end()", new Nodelet() {
+		parser.addNodelet("/aspectran/responseRule/dispatcherViews/viewType/properties/end()", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
 				ItemRuleMap irm = (ItemRuleMap)assistant.popObject();
 				
@@ -340,14 +336,14 @@ public class TransletsNodeParser {
 				}
 			}
 		});
-		parser.addNodelet("/translets/responseRule/dispatcherViews/end()", new Nodelet() {
+		parser.addNodelet("/aspectran/responseRule/dispatcherViews/end()", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
 				DispatcherViewsRule dispatcherViewsRule = (DispatcherViewsRule)assistant.popObject();
 				DefaultResponseRule drr = (DefaultResponseRule)assistant.peekObject();
 				drr.setDispatcherViewsRule(dispatcherViewsRule);
 			}
 		});
-		parser.addNodelet("/translets/responseRule/end()", new Nodelet() {
+		parser.addNodelet("/aspectran/responseRule/end()", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
 				DefaultResponseRule drr = (DefaultResponseRule)assistant.popObject();
 				
@@ -363,25 +359,25 @@ public class TransletsNodeParser {
 	 * Adds the generic exception rule nodelets.
 	 */
 	private void addDefaultExceptionRuleNodelets() {
-		parser.addNodelet("/translets/exceptionRule", new Nodelet() {
+		parser.addNodelet("/aspectran/exceptionRule", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
 				ExceptionHandleRule exceptionRule = new ExceptionHandleRule();
 				assistant.pushObject(exceptionRule);
 			}
 		});
 
-		parser.addNodelet("/translets/exceptionRule/responseByContentType", new ResponseRuleNodeletAdder(assistant));
+		parser.addNodelet("/aspectran/exceptionRule/responseByContentType", new ResponseRuleNodeletAdder(assistant));
 
-		parser.addNodelet("/translets/exceptionRule/defaultResponse", new Nodelet() {
+		parser.addNodelet("/aspectran/exceptionRule/defaultResponse", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
 				ResponseByContentTypeRule responseByContentType = new ResponseByContentTypeRule();
 				assistant.pushObject(responseByContentType);
 			}
 		});
 
-		parser.addNodelet("/translets/exceptionRule/defaultResponse", new ResponseRuleNodeletAdder(assistant));
+		parser.addNodelet("/aspectran/exceptionRule/defaultResponse", new ResponseRuleNodeletAdder(assistant));
 
-		parser.addNodelet("/translets/exceptionRule/defaultResponse/end()", new Nodelet() {
+		parser.addNodelet("/aspectran/exceptionRule/defaultResponse/end()", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
 				ResponseByContentTypeRule responseByContentType = (ResponseByContentTypeRule)assistant.popObject();
 				ResponseMap responseMap = responseByContentType.getResponseMap();
@@ -392,7 +388,7 @@ public class TransletsNodeParser {
 				}
 			}
 		});
-		parser.addNodelet("/translets/exceptionRule/end()", new Nodelet() {
+		parser.addNodelet("/aspectran/exceptionRule/end()", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
 				ExceptionHandleRule exceptionRule = (ExceptionHandleRule)assistant.popObject();
 				assistant.setDefaultExceptionRule(exceptionRule);
@@ -403,8 +399,8 @@ public class TransletsNodeParser {
 	/**
 	 * Adds the translet nodelets.
 	 */
-	private void addTransletNodelets() {
-		parser.addNodelet("/translets/translet", new Nodelet() {
+	private void addAspectranNodelets() {
+		parser.addNodelet("/aspectran/translet", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
 				String name = attributes.getProperty("name");
 
@@ -420,11 +416,11 @@ public class TransletsNodeParser {
 			}
 		});
 		
-		parser.addNodelet("/translets/translet", new TicketCheckRuleNodeletAdder(assistant));
+		parser.addNodelet("/aspectran/translet", new TicketCheckRuleNodeletAdder(assistant));
 
-		parser.addNodelet("/translets/translet", new ResponseRuleNodeletAdder(assistant));
+		parser.addNodelet("/aspectran/translet", new ResponseRuleNodeletAdder(assistant));
 
-		parser.addNodelet("/translets/translet/request", new Nodelet() {
+		parser.addNodelet("/aspectran/translet/request", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
 				String method = attributes.getProperty("method");
 				String characterEncoding = attributes.getProperty("characterEncoding");
@@ -452,25 +448,25 @@ public class TransletsNodeParser {
 			}
 		});
 
-		parser.addNodelet("/translets/translet/request", new TicketCheckRuleNodeletAdder(assistant));
+		parser.addNodelet("/aspectran/translet/request", new TicketCheckRuleNodeletAdder(assistant));
 		
-		parser.addNodelet("/translets/translet/request/attributes", new Nodelet() {
+		parser.addNodelet("/aspectran/translet/request/attributes", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
 				ItemRuleMap irm = new ItemRuleMap();
 				assistant.pushObject(irm);
 			}
 		});		
 		
-		parser.addNodelet("/translets/translet/request/attributes", new ItemRuleNodeletAdder(assistant));
+		parser.addNodelet("/aspectran/translet/request/attributes", new ItemRuleNodeletAdder(assistant));
 
-		parser.addNodelet("/translets/translet/request/attributes/end()", new Nodelet() {
+		parser.addNodelet("/aspectran/translet/request/attributes/end()", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
 				ItemRuleMap irm = (ItemRuleMap)assistant.popObject();
 				RequestRule requestRule = (RequestRule)assistant.peekObject();
 				requestRule.setAttributeItemRuleMap(irm);
 			}
 		});		
-		parser.addNodelet("/translets/translet/request/multiparts/fileItem", new Nodelet() {
+		parser.addNodelet("/aspectran/translet/request/multiparts/fileItem", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
 				String name = attributes.getProperty("name");
 				
@@ -480,7 +476,7 @@ public class TransletsNodeParser {
 				assistant.pushObject(fir);
 			}
 		});
-		parser.addNodelet("/translets/translet/request/multiparts/fileItem/allowFileExtentions/text()", new Nodelet() {
+		parser.addNodelet("/aspectran/translet/request/multiparts/fileItem/allowFileExtentions/text()", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
 				if(text != null) {
 					FileItemRule fir = (FileItemRule)assistant.peekObject();
@@ -488,7 +484,7 @@ public class TransletsNodeParser {
 				}
 			}
 		});
-		parser.addNodelet("/translets/translet/request/multiparts/fileItem/denyFileExtentions/text()", new Nodelet() {
+		parser.addNodelet("/aspectran/translet/request/multiparts/fileItem/denyFileExtentions/text()", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
 				if(text != null) {
 					FileItemRule fir = (FileItemRule)assistant.peekObject();
@@ -496,14 +492,14 @@ public class TransletsNodeParser {
 				}
 			}
 		});
-		parser.addNodelet("/translets/translet/request/multiparts/fileItem/end()", new Nodelet() {
+		parser.addNodelet("/aspectran/translet/request/multiparts/fileItem/end()", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
 				FileItemRule fir = (FileItemRule)assistant.popObject();
 				RequestRule requestRule = (RequestRule)assistant.peekObject();
 				requestRule.addFileItemRule(fir);
 			}
 		});
-		parser.addNodelet("/translets/translet/request/end()", new Nodelet() {
+		parser.addNodelet("/aspectran/translet/request/end()", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
 				RequestRule requestRule = (RequestRule)assistant.popObject();
 				
@@ -520,13 +516,13 @@ public class TransletsNodeParser {
 				transletRule.setRequestRule(requestRule);
 			}
 		});
-		parser.addNodelet("/translets/translet/contents", new Nodelet() {
+		parser.addNodelet("/aspectran/translet/contents", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
 				ContentList contentList = new ContentList();
 				assistant.pushObject(contentList);
 			}
 		});
-		parser.addNodelet("/translets/translet/contents/content", new Nodelet() {
+		parser.addNodelet("/aspectran/translet/contents/content", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
 				String id = attributes.getProperty("id");
 				Boolean hidden = Boolean.valueOf(attributes.getProperty("hidden"));
@@ -543,23 +539,23 @@ public class TransletsNodeParser {
 			}
 		});
 
-		parser.addNodelet("/translets/translet/contents/content", new ActionRuleNodeletAdder(assistant));
+		parser.addNodelet("/aspectran/translet/contents/content", new ActionRuleNodeletAdder(assistant));
 
-		parser.addNodelet("/translets/translet/contents/content/end()", new Nodelet() {
+		parser.addNodelet("/aspectran/translet/contents/content/end()", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
 				ActionList actionList = (ActionList)assistant.popObject();
 				ContentList contentList = (ContentList)assistant.peekObject();
 				contentList.addActionList(actionList);
 			}
 		});
-		parser.addNodelet("/translets/translet/contents/end()", new Nodelet() {
+		parser.addNodelet("/aspectran/translet/contents/end()", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
 				ContentList contentList = (ContentList)assistant.popObject();
 				TransletRule transletRule = (TransletRule)assistant.peekObject();
 				transletRule.setContentList(contentList);
 			}
 		});
-		parser.addNodelet("/translets/translet/response", new Nodelet() {
+		parser.addNodelet("/aspectran/translet/response", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
 				String defaultResponseId = attributes.getProperty("default");
 				String characterEncoding = attributes.getProperty("characterEncoding");
@@ -572,11 +568,11 @@ public class TransletsNodeParser {
 			}
 		});
 
-		parser.addNodelet("/translets/translet/response", new TicketCheckRuleNodeletAdder(assistant));
+		parser.addNodelet("/aspectran/translet/response", new TicketCheckRuleNodeletAdder(assistant));
 
-		parser.addNodelet("/translets/translet/response", new ResponseRuleNodeletAdder(assistant));
+		parser.addNodelet("/aspectran/translet/response", new ResponseRuleNodeletAdder(assistant));
 
-		parser.addNodelet("/translets/translet/response/end()", new Nodelet() {
+		parser.addNodelet("/aspectran/translet/response/end()", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
 				ResponseRule responseRule = (ResponseRule)assistant.popObject();
 
@@ -594,25 +590,25 @@ public class TransletsNodeParser {
 				transletRule.setResponseRule(responseRule);
 			}
 		});
-		parser.addNodelet("/translets/translet/exception", new Nodelet() {
+		parser.addNodelet("/aspectran/translet/exception", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
 				ExceptionHandleRule exceptionRule = new ExceptionHandleRule();
 				assistant.pushObject(exceptionRule);
 			}
 		});
 
-		parser.addNodelet("/translets/translet/exception/responseByContentType", new ResponseRuleNodeletAdder(assistant));
+		parser.addNodelet("/aspectran/translet/exception/responseByContentType", new ResponseRuleNodeletAdder(assistant));
 
-		parser.addNodelet("/translets/translet/exception/defaultResponse", new Nodelet() {
+		parser.addNodelet("/aspectran/translet/exception/defaultResponse", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
 				ResponseByContentTypeRule responseByContentType = new ResponseByContentTypeRule();
 				assistant.pushObject(responseByContentType);
 			}
 		});
 
-		parser.addNodelet("/translets/translet/exception/defaultResponse", new ResponseRuleNodeletAdder(assistant));
+		parser.addNodelet("/aspectran/translet/exception/defaultResponse", new ResponseRuleNodeletAdder(assistant));
 
-		parser.addNodelet("/translets/translet/exception/defaultResponse/end()", new Nodelet() {
+		parser.addNodelet("/aspectran/translet/exception/defaultResponse/end()", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
 				ResponseByContentTypeRule responseByContentType = (ResponseByContentTypeRule)assistant.popObject();
 				ResponseMap responseMap = responseByContentType.getResponseMap();
@@ -623,7 +619,7 @@ public class TransletsNodeParser {
 				}
 			}
 		});
-		parser.addNodelet("/translets/translet/exception/end()", new Nodelet() {
+		parser.addNodelet("/aspectran/translet/exception/end()", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
 				ExceptionHandleRule exceptionRule = (ExceptionHandleRule)assistant.popObject();
 				TransletRule transletRule = (TransletRule)assistant.peekObject();
@@ -631,7 +627,7 @@ public class TransletsNodeParser {
 				transletRule.setExceptionHandleRule(exceptionRule);
 			}
 		});
-		parser.addNodelet("/translets/translet/end()", new Nodelet() {
+		parser.addNodelet("/aspectran/translet/end()", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
 				TransletRule transletRule = (TransletRule)assistant.popObject();
 				
@@ -690,7 +686,7 @@ public class TransletsNodeParser {
 	 * Adds the bean nodelets.
 	 */
 	private void addBeanNodelets() {
-		parser.addNodelet("/translets/bean", new Nodelet() {
+		parser.addNodelet("/aspectran/bean", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
 				String id = attributes.getProperty("id");
 				String classType = resolveAliasType(attributes.getProperty("class"));
@@ -736,39 +732,39 @@ public class TransletsNodeParser {
 				assistant.pushObject(beanRule);
 			}
 		});
-		parser.addNodelet("/translets/bean/constructor/arguments", new Nodelet() {
+		parser.addNodelet("/aspectran/bean/constructor/arguments", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
 				ItemRuleMap irm = new ItemRuleMap();
 				assistant.pushObject(irm);
 			}
 		});		
 		
-		parser.addNodelet("/translets/bean/constructor/arguments", new ItemRuleNodeletAdder(assistant));
+		parser.addNodelet("/aspectran/bean/constructor/arguments", new ItemRuleNodeletAdder(assistant));
 		
-		parser.addNodelet("/translets/bean/constructor/arguments/end()", new Nodelet() {
+		parser.addNodelet("/aspectran/bean/constructor/arguments/end()", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
 				ItemRuleMap irm = (ItemRuleMap)assistant.popObject();
 				BeanRule beanRule = (BeanRule)assistant.peekObject();
 				beanRule.setConstructorArgumentItemRuleMap(irm);
 			}
 		});		
-		parser.addNodelet("/translets/bean/properties", new Nodelet() {
+		parser.addNodelet("/aspectran/bean/properties", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
 				ItemRuleMap irm = new ItemRuleMap();
 				assistant.pushObject(irm);
 			}
 		});		
 
-		parser.addNodelet("/translets/bean/properties", new ItemRuleNodeletAdder(assistant));
+		parser.addNodelet("/aspectran/bean/properties", new ItemRuleNodeletAdder(assistant));
 
-		parser.addNodelet("/translets/bean/properties/end()", new Nodelet() {
+		parser.addNodelet("/aspectran/bean/properties/end()", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
 				ItemRuleMap irm = (ItemRuleMap)assistant.popObject();
 				BeanRule beanRule = (BeanRule)assistant.peekObject();
 				beanRule.setPropertyItemRuleMap(irm);
 			}
 		});
-		parser.addNodelet("/translets/bean/end()", new Nodelet() {
+		parser.addNodelet("/aspectran/bean/end()", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
 				BeanRule beanRule = (BeanRule)assistant.popObject();
 				assistant.addBeanRule(beanRule);
@@ -780,7 +776,7 @@ public class TransletsNodeParser {
 	 * Adds the translet map nodelets.
 	 */
 	private void addImportNodelets() {
-		parser.addNodelet("/translets/import", new Nodelet() {
+		parser.addNodelet("/aspectran/import", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
 				String resource = attributes.getProperty("resource");
 				String file = attributes.getProperty("file");

@@ -27,19 +27,19 @@ import org.xml.sax.SAXException;
 import com.aspectran.base.util.Resources;
 
 /**
- * Offline entity resolver for the Translets DTDs
+ * Offline entity resolver for the Aspectran DTDs
  * 
  * <p>Created: 2008. 06. 14 오전 4:48:34</p>
  */
-public class TransletsDtdResolver implements EntityResolver {
+public class AspectranDtdResolver implements EntityResolver {
 
-	private static final String TRANSLETS_DTD = "org/jhlabs/translets/context/builder/xml/dtd/translets-1.dtd";
+	private static final String ASPECTRAN_DTD = "com/aspectran/base/context/builder/xml/dtd/aspectran-1.0.dtd";
 
 	private static final Map<String, String> doctypeMap = new HashMap<String, String>();
 
 	static {
-		doctypeMap.put("translets-1.dtd".toUpperCase(), TRANSLETS_DTD);
-		doctypeMap.put("-//JHLabs.org//DTD Translets 1.0//EN".toUpperCase(), TRANSLETS_DTD);
+		doctypeMap.put("aspectran-1.0.dtd".toUpperCase(), ASPECTRAN_DTD);
+		doctypeMap.put("-//aspectran.com//DTD Aspectran 1.0//EN".toUpperCase(), ASPECTRAN_DTD);
 	}
 
 	/**

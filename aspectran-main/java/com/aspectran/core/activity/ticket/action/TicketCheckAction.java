@@ -21,7 +21,7 @@ import org.apache.commons.logging.LogFactory;
 import com.aspectran.base.rule.ItemRuleMap;
 import com.aspectran.base.rule.TicketCheckRule;
 import com.aspectran.base.rule.TicketCheckcaseRule;
-import com.aspectran.core.activity.Activity;
+import com.aspectran.core.activity.AspectranActivity;
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.activity.process.action.ActionExecutionException;
 import com.aspectran.core.activity.process.action.BeanAction;
@@ -50,7 +50,7 @@ public class TicketCheckAction implements Executable {
 	/* (non-Javadoc)
 	 * @see org.jhlabs.translets.activity.process.action.Executable#execute(org.jhlabs.translets.activity.Activity)
 	 */
-	public Object execute(Activity activity) throws ActionExecutionException {
+	public Object execute(AspectranActivity activity) throws ActionExecutionException {
 		try {
 			return invokeMethod(activity, ticketCheckRule);
 		} catch(Exception e) {
@@ -76,7 +76,7 @@ public class TicketCheckAction implements Executable {
 	 * @return the object
 	 * @throws Exception the exception
 	 */
-	public Object invokeMethod(Activity activity, TicketCheckRule ticketCheckRule) throws Exception {
+	public Object invokeMethod(AspectranActivity activity, TicketCheckRule ticketCheckRule) throws Exception {
 		TicketCheckcaseRule ticketCheckcaseRule = ticketCheckRule.getTicketCheckcaseRule();
 
 		String beanId = ticketCheckcaseRule.getBeanId();

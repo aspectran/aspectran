@@ -23,9 +23,8 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.aspectran.base.context.ActivityContext;
-import com.aspectran.base.context.ActivityContextConstant;
-import com.aspectran.base.context.builder.xml.TransletsNodeParser;
+import com.aspectran.base.context.AspectranContext;
+import com.aspectran.base.context.builder.xml.AspectranNodeParser;
 import com.aspectran.base.io.Resource;
 import com.aspectran.base.rule.BeanRuleMap;
 import com.aspectran.base.rule.RequestRule;
@@ -46,9 +45,9 @@ import com.aspectran.core.translet.registry.TransletRegistry;
  * 
  * <p>Created: 2008. 06. 14 오후 8:53:29</p>
  */
-public class ActivityContextBuilder {
+public class AspectranContextBuilder {
 	
-	private final Log log = LogFactory.getLog(ActivityContextBuilder.class);
+	private final Log log = LogFactory.getLog(AspectranContextBuilder.class);
 
 	private String serviceRootPath;
 	
@@ -59,7 +58,7 @@ public class ActivityContextBuilder {
 	 * 
 	 * @param servicePath the service path
 	 */
-	public ActivityContextBuilder(String serviceRootPath) {
+	public AspectranContextBuilder(String serviceRootPath) {
 		this.serviceRootPath = serviceRootPath;
 	}
 	
@@ -71,7 +70,7 @@ public class ActivityContextBuilder {
 		this.beanRuleMap = beanRuleMap;
 	}
 
-	public ActivityContext build(String contextConfigLocation) throws ActivityContextBuilderException {
+	public AspectranContext build(String contextConfigLocation) throws AspectranContextBuilderException {
 		List<Resource> resources = null;
 
 		try {
@@ -95,10 +94,10 @@ public class ActivityContextBuilder {
 			}
 		} catch(Exception e) {
 			log.error(e);
-			throw new ActivityContextBuilderException(e);
+			throw new AspectranContextBuilderException(e);
 		}
 		
-		ActivityContextBuilderAssistant assistant = null;
+		AspectranContextBuilderAssistant assistant = null;
 		
 		for(Resource r : resources) {
 			assistant = build(r, assistant);
@@ -111,7 +110,7 @@ public class ActivityContextBuilder {
 		TransletRegistry transletRegistry = buildTransletRegistry(assistant);
 		
 		// create ActivityContext
-		ActivityContext context = new ActivityContext(assistant.getActivityRule());
+		AspectranContext context = new AspectranContext(assistant.getActivityRule());
 		context.setBeanRegistry(beanRegistry);
 		context.setTransletRegistry(transletRegistry);
 		//context.setBeanFactory(beanRegistry);
@@ -132,21 +131,21 @@ public class ActivityContextBuilder {
 	 * 
 	 * @return the translets client
 	 * 
-	 * @throws ActivityContextBuilderException the configuration exception
+	 * @throws AspectranContextBuilderException the configuration exception
 	 */
-	private ActivityContextBuilderAssistant build(Resource resource, ActivityContextBuilderAssistant parentAssistant) throws ActivityContextBuilderException {
+	private AspectranContextBuilderAssistant build(Resource resource, AspectranContextBuilderAssistant parentAssistant) throws AspectranContextBuilderException {
 		try {
-			ActivityContextBuilderAssistant assistant;
+			AspectranContextBuilderAssistant assistant;
 			
 			if(parentAssistant == null)
-				assistant = new ActivityContextBuilderAssistant(serviceRootPath);
+				assistant = new AspectranContextBuilderAssistant(serviceRootPath);
 			else
-				assistant = new ActivityContextBuilderAssistant(parentAssistant);
+				assistant = new AspectranContextBuilderAssistant(parentAssistant);
 
 			assistant.setBeanRuleMap(beanRuleMap);
 
 			// Translet loading...
-			TransletsNodeParser transletsNodeParser = new TransletsNodeParser(assistant);
+			AspectranNodeParser transletsNodeParser = new AspectranNodeParser(assistant);
 			transletsNodeParser.parse(resource.getInputStream());
 			
 			List<Resource> resources = assistant.getResources();
@@ -163,7 +162,7 @@ public class ActivityContextBuilder {
 
 			if(log.isDebugEnabled()) {
 				for(TransletRule t : assistant.getTransletRuleMap()) {
-					log.debug("Describing translet:" + ActivityContextConstant.LINE_SEPARATOR + t.describe());
+					log.debug("Describing translet:" + AspectranContextConstant.LINE_SEPARATOR + t.describe());
 				}
 			}
 			
@@ -171,15 +170,15 @@ public class ActivityContextBuilder {
 			
 		} catch(Exception e) {
 			log.error("Translets configuration error." + resource);
-			throw new ActivityContextBuilderException("Translets configuration error" + resource, e);
+			throw new AspectranContextBuilderException("Translets configuration error" + resource, e);
 		}
 	}
 	
-	private TransletRegistry buildTransletRegistry(ActivityContextBuilderAssistant sssistant) {
+	private TransletRegistry buildTransletRegistry(AspectranContextBuilderAssistant sssistant) {
 		return null;
 	}
 
-	private BeanRegistry buildBeanRegistry(ActivityContextBuilderAssistant sssistant) {
+	private BeanRegistry buildBeanRegistry(AspectranContextBuilderAssistant sssistant) {
 		return null;
 	}
 	

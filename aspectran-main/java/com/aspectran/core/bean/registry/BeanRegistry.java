@@ -3,7 +3,7 @@
  */
 package com.aspectran.core.bean.registry;
 
-import com.aspectran.core.activity.Activity;
+import com.aspectran.core.activity.AspectranActivity;
 
 /**
  *
@@ -14,7 +14,7 @@ import com.aspectran.core.activity.Activity;
  */
 public interface BeanRegistry {
 
-	public Object getBean(String id, Activity activity);
+	public Object getBean(String id, AspectranActivity activity);
 	
 	
 }

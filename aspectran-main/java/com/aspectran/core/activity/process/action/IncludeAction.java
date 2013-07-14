@@ -24,10 +24,10 @@ import com.aspectran.base.adapter.RequestAdapter;
 import com.aspectran.base.rule.IncludeActionRule;
 import com.aspectran.base.token.expression.ValueExpression;
 import com.aspectran.base.token.expression.ValueExpressor;
-import com.aspectran.core.activity.Activity;
+import com.aspectran.core.activity.AspectranActivity;
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.activity.process.ActionPathMaker;
-import com.aspectran.core.translet.Translet;
+import com.aspectran.core.translet.SuperTranslet;
 
 /**
  * <p>Created: 2008. 06. 05 오후 9:22:05</p>
@@ -57,10 +57,10 @@ public class IncludeAction implements Executable {
 	/* (non-Javadoc)
 	 * @see org.jhlabs.translets.engine.process.action.Executable#execute(org.jhlabs.translets.action.Translet)
 	 */
-	public Object execute(Activity activity) throws ActionExecutionException {
+	public Object execute(AspectranActivity activity) throws ActionExecutionException {
 		try {
-			Activity newActivity = activity.newActivity();
-			Translet translet = newActivity.getActivityTranslet();
+			AspectranActivity newActivity = activity.newAspectranActivity();
+			SuperTranslet translet = (SuperTranslet)newActivity.getTransletInstance();
 			RequestAdapter request = translet.getRequestAdapter();
 
 			Map<String, Object> valueMap = null;

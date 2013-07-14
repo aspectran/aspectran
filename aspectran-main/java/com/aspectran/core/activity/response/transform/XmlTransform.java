@@ -28,15 +28,15 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.aspectran.base.adapter.ResponseAdapter;
-import com.aspectran.base.context.ActivityContextConstant;
+import com.aspectran.base.context.builder.AspectranContextConstant;
 import com.aspectran.base.rule.TransformRule;
-import com.aspectran.core.activity.Activity;
+import com.aspectran.core.activity.AspectranActivity;
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.activity.process.result.ProcessResult;
 import com.aspectran.core.activity.response.Responsible;
 import com.aspectran.core.activity.response.transform.xml.ContentsInputSource;
 import com.aspectran.core.activity.response.transform.xml.ContentsXMLReader;
-import com.aspectran.core.translet.Translet;
+import com.aspectran.core.translet.SuperTranslet;
 
 /**
  * <p>
@@ -67,9 +67,9 @@ public class XmlTransform extends AbstractTransform implements Responsible {
 	/* (non-Javadoc)
 	 * @see org.jhlabs.translets.engine.response.Responsible#response(org.jhlabs.translets.action.Translet)
 	 */
-	public void response(Activity activity) throws TransformResponseException {
+	public void response(AspectranActivity activity) throws TransformResponseException {
 		try {
-			Translet translet = activity.getActivityTranslet();
+			SuperTranslet translet = (SuperTranslet)activity.getTransletInstance();
 			ResponseAdapter responseAdapter = translet.getResponseAdapter();
 			
 			String contentType = transformRule.getContentType();
@@ -101,7 +101,7 @@ public class XmlTransform extends AbstractTransform implements Responsible {
 			if(traceEnabled) {
 				StringWriter writer = new StringWriter();
 				transformer.transform(new SAXSource(xreader, isource), new StreamResult(writer));
-				log.trace("XML Source: " + ActivityContextConstant.LINE_SEPARATOR + writer.toString());
+				log.trace("XML Source: " + AspectranContextConstant.LINE_SEPARATOR + writer.toString());
 			}
 			
 			if(debugEnabled) {

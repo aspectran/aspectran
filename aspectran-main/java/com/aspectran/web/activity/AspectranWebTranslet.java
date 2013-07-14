@@ -13,23 +13,18 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.aspectran.core.activity.response.dispatch;
+package com.aspectran.web.activity;
 
-import com.aspectran.base.rule.DispatchResponseRule;
 import com.aspectran.core.activity.AspectranActivity;
-import com.aspectran.core.activity.response.ResponseException;
+import com.aspectran.core.translet.AbstractSuperTranslet;
+import com.aspectran.core.translet.SuperTranslet;
 
 /**
- * <p>Created: 2008. 03. 23 오후 12:52:04</p>
+ * The Class ActiveTranslet.
  */
-public interface ViewDispatcher {
+public class AspectranWebTranslet extends AbstractSuperTranslet implements SuperTranslet {
 	
-	/**
-	 * Response.
-	 *
-	 * @param activity the translet
-	 * @param viewName the view name
-	 * @throws ResponseException the response exception
-	 */
-	public void dispatch(AspectranActivity activity, DispatchResponseRule dispatchResponseRule) throws ResponseException;
+	public AspectranWebTranslet(AspectranActivity activity) {
+		super(activity);
+	}
 }

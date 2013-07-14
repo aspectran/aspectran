@@ -24,14 +24,13 @@ import com.aspectran.base.adapter.ApplicationAdapter;
 import com.aspectran.base.adapter.RequestAdapter;
 import com.aspectran.base.adapter.ResponseAdapter;
 import com.aspectran.base.adapter.SessionAdapter;
-import com.aspectran.base.context.ActivityContext;
+import com.aspectran.base.context.AspectranContext;
 import com.aspectran.base.rule.MultiActivityTransletRule;
 import com.aspectran.base.rule.RequestRule;
 import com.aspectran.base.rule.ResponseByContentTypeRule;
 import com.aspectran.base.rule.ResponseRule;
 import com.aspectran.base.rule.TicketCheckRule;
 import com.aspectran.base.rule.TransletRule;
-import com.aspectran.base.rule.TransletRuleMap;
 import com.aspectran.base.type.ResponseType;
 import com.aspectran.base.type.TicketCheckpointType;
 import com.aspectran.core.activity.process.ActionList;
@@ -52,8 +51,10 @@ import com.aspectran.core.activity.ticket.TicketCheckRejectedException;
 import com.aspectran.core.activity.ticket.action.TicketCheckAction;
 import com.aspectran.core.bean.registry.BeanRegistry;
 import com.aspectran.core.bean.scope.RequestScope;
-import com.aspectran.core.translet.ActivityTranslet;
+import com.aspectran.core.translet.AbstractSuperTranslet;
+import com.aspectran.core.translet.SuperTranslet;
 import com.aspectran.core.translet.registry.TransletNotFoundException;
+import com.aspectran.web.activity.AspectranWebTranslet;
 
 /**
  * Action Translator.
@@ -61,13 +62,17 @@ import com.aspectran.core.translet.registry.TransletNotFoundException;
  * 
  * <p>Created: 2008. 03. 22 오후 5:48:09</p>
  */
-public abstract class AbstractActivity implements Activity {
+public abstract class AbstractAspectranActivity implements AspectranActivity {
 
-	private final Log log = LogFactory.getLog(AbstractActivity.class);
+	private final Log log = LogFactory.getLog(AbstractAspectranActivity.class);
 	
 	private final boolean debugEnabled = log.isDebugEnabled();
 
-	protected final ActivityContext context;
+	protected final AspectranContext context;
+	
+	protected Class<? extends SuperTranslet> transletInterface;
+	
+	protected Object transletInstance;
 	
 	private RequestAdapter requestAdapter;
 
@@ -81,7 +86,7 @@ public abstract class AbstractActivity implements Activity {
 	
 	private ResponseRule responseRule;
 	
-	private ActivityTranslet translet;
+	private AspectranWebTranslet translet;
 	
 	private RequestScope requestScope;
 	
@@ -102,7 +107,7 @@ public abstract class AbstractActivity implements Activity {
 	 * @param output the output
 	 * @param ignoreTicket the ignore ticket
 	 */
-	public AbstractActivity(ActivityContext context) {
+	public AbstractAspectranActivity(AspectranContext context) {
 		this.context = context;
 	}
 
@@ -110,7 +115,7 @@ public abstract class AbstractActivity implements Activity {
 		return requestAdapter;
 	}
 	
-	public void setRequestAdapter(RequestAdapter requestAdapter) {
+	protected void setRequestAdapter(RequestAdapter requestAdapter) {
 		this.requestAdapter = requestAdapter;
 	}
 	
@@ -118,7 +123,7 @@ public abstract class AbstractActivity implements Activity {
 		return responseAdapter;
 	}
 
-	public void setResponseAdapter(ResponseAdapter responseAdapter) {
+	protected void setResponseAdapter(ResponseAdapter responseAdapter) {
 		this.responseAdapter = responseAdapter;
 	}
 
@@ -126,8 +131,24 @@ public abstract class AbstractActivity implements Activity {
 		return sessionAdapter;
 	}
 	
-	public void setSessionAdapter(SessionAdapter sessionAdapter) {
+	protected void setSessionAdapter(SessionAdapter sessionAdapter) {
 		this.sessionAdapter = sessionAdapter;
+	}
+	
+	public Class<? extends SuperTranslet> getTransletInterface() {
+		return transletInterface;
+	}
+
+	protected void setTransletInterface(Class<? extends SuperTranslet> transletInterface) {
+		this.transletInterface = transletInterface;
+	}
+	
+	public Object getTransletInstance() {
+		return transletInstance;
+	}
+
+	protected void setTransletInstance(Object transletInstance) {
+		this.transletInstance = transletInstance;
 	}
 	
 	public void request(String transletName) throws RequestException {
@@ -155,8 +176,6 @@ public abstract class AbstractActivity implements Activity {
 		} catch(UnsupportedEncodingException e) {
 			throw new RequestException(e);
 		}
-		
-		translet = new ActivityTranslet(this);
 	}
 	
 	public void process() throws ProcessException {
@@ -509,7 +528,7 @@ public abstract class AbstractActivity implements Activity {
 		this.exceptionRaised = exceptionRaised;
 	}
 	
-	public ActivityContext getContext() {
+	public AspectranContext getContext() {
 		return context;
 	}
 	
@@ -559,12 +578,8 @@ public abstract class AbstractActivity implements Activity {
 	public Object getBean(String id) {
 		return context.getBeanRegistry().getBean(id, this);
 	}
-
-	public ActivityTranslet getActivityTranslet() {
-		return translet;
-	}
 	
-	public abstract Activity newActivity();
+	public abstract AspectranActivity newAspectranActivity();
 	
 	/**
 	 * Gets the application adapter.

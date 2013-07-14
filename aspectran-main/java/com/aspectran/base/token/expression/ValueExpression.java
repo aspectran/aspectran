@@ -23,7 +23,7 @@ import com.aspectran.base.token.Token;
 import com.aspectran.base.type.ItemType;
 import com.aspectran.base.type.ItemValueType;
 import com.aspectran.base.variable.ValueMap;
-import com.aspectran.core.activity.Activity;
+import com.aspectran.core.activity.AspectranActivity;
 import com.aspectran.core.bean.registry.BeanRegistry;
 
 /**
@@ -45,7 +45,7 @@ public class ValueExpression extends TokenExpression implements ValueExpressor {
 	 *
 	 * @param activity the activity
 	 */
-	public ValueExpression(Activity activity) {
+	public ValueExpression(AspectranActivity activity) {
 		super(activity);
 	}
 	

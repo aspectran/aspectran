@@ -19,7 +19,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.aspectran.base.context.ActivityContextConstant;
 import com.aspectran.base.io.Resource;
 import com.aspectran.base.rule.ActivityRule;
 import com.aspectran.base.rule.BeanRule;
@@ -38,7 +37,7 @@ import com.aspectran.core.activity.ticket.TicketCheckActionList;
 /**
  * <p>Created: 2008. 04. 01 오후 10:25:35</p>
  */
-public class ActivityContextBuilderAssistant extends AbstractContextBuilderAssistant {
+public class AspectranContextBuilderAssistant extends AbstractContextBuilderAssistant {
 
 	/** The use namespaces. */
 	//private boolean useNamespaces;
@@ -86,7 +85,7 @@ public class ActivityContextBuilderAssistant extends AbstractContextBuilderAssis
 	/**
 	 * Instantiates a new translets config.
 	 */
-	public ActivityContextBuilderAssistant(String serviceRootPath) {
+	public AspectranContextBuilderAssistant(String serviceRootPath) {
 		this.activityRootPath = serviceRootPath;
 	}
 	
@@ -96,7 +95,7 @@ public class ActivityContextBuilderAssistant extends AbstractContextBuilderAssis
 	 *
 	 * @param assistant the assistant
 	 */
-	public ActivityContextBuilderAssistant(ActivityContextBuilderAssistant assistant) {
+	public AspectranContextBuilderAssistant(AspectranContextBuilderAssistant assistant) {
 		setSettings(assistant.getSettings());
 		activityRootPath = assistant.getActivityRootPath();
 		activityRule = assistant.getActivityRule();
@@ -113,10 +112,10 @@ public class ActivityContextBuilderAssistant extends AbstractContextBuilderAssis
 	}
 	
 	public void applySettings() {
-		useNamespaces = isSettedTrue(ActivityContextConstant.USE_NAMESPACES_SETTING);
-		nullableContentId = isSettedTrue(ActivityContextConstant.NULLABLE_CONTENT_ID_SETTING);
-		nullableActionId = isSettedTrue(ActivityContextConstant.NULLABLE_ACTION_ID_SETTING);
-		multiActivityEnable = isSettedTrue(ActivityContextConstant.MULTI_ACTIVITY_ENABLE);
+		useNamespaces = isSettedTrue(AspectranContextConstant.USE_NAMESPACES_SETTING);
+		nullableContentId = isSettedTrue(AspectranContextConstant.NULLABLE_CONTENT_ID_SETTING);
+		nullableActionId = isSettedTrue(AspectranContextConstant.NULLABLE_ACTION_ID_SETTING);
+		multiActivityEnable = isSettedTrue(AspectranContextConstant.MULTI_ACTIVITY_ENABLE);
 	}
 	
 	/**
@@ -134,7 +133,7 @@ public class ActivityContextBuilderAssistant extends AbstractContextBuilderAssis
 		
 		if(useNamespaces && namespace != null) {
 			sb.append(namespace);
-			sb.append(ActivityContextConstant.TRANSLET_NAME_SEPARATOR);
+			sb.append(AspectranContextConstant.TRANSLET_NAME_SEPARATOR);
 		}
 			
 		sb.append(transletName);
@@ -151,7 +150,7 @@ public class ActivityContextBuilderAssistant extends AbstractContextBuilderAssis
 		
 		StringBuilder sb = new StringBuilder();
 		sb.append(namespace);
-		sb.append(ActivityContextConstant.BEAN_ID_SEPARATOR);
+		sb.append(AspectranContextConstant.BEAN_ID_SEPARATOR);
 		sb.append(beanId);
 		return sb.toString();
 	}
@@ -164,7 +163,7 @@ public class ActivityContextBuilderAssistant extends AbstractContextBuilderAssis
 		
 		StringBuilder sb = new StringBuilder();
 		sb.append(name.substring(0, index));
-		sb.append(ActivityContextConstant.TRANSLET_NAME_SUFFIX_SEPARATOR);
+		sb.append(AspectranContextConstant.TRANSLET_NAME_SUFFIX_SEPARATOR);
 		sb.append(transletNameSuffix);
 		
 		return sb.toString();

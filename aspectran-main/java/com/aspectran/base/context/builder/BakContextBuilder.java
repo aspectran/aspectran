@@ -25,10 +25,10 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.aspectran.base.context.ActivityContext;
+import com.aspectran.base.context.AspectranContext;
 import com.aspectran.base.context.builder.xml.BeansNodeParser;
 import com.aspectran.base.context.builder.xml.ContextNodeParser;
-import com.aspectran.base.context.builder.xml.TransletsNodeParser;
+import com.aspectran.base.context.builder.xml.AspectranNodeParser;
 import com.aspectran.base.io.Resource;
 import com.aspectran.base.rule.BeanRule;
 import com.aspectran.base.rule.BeanRuleMap;
@@ -78,9 +78,9 @@ public final class BakContextBuilder {
 	 * 
 	 * @return the translets client
 	 * 
-	 * @throws ActivityContextBuilderException the configuration exception
+	 * @throws AspectranContextBuilderException the configuration exception
 	 */
-	public ActivityContext build(String configFilePath) throws ActivityContextBuilderException {
+	public AspectranContext build(String configFilePath) throws AspectranContextBuilderException {
 		try {
 			log.info("Loading the Translets context '" + configFilePath + "'...");
 
@@ -116,7 +116,7 @@ public final class BakContextBuilder {
 			for(Resource mr : transletMaps) {
 				log.info("Loading the translet-map from '" + mr.getResource() + "'...");
 
-				TransletsNodeParser parser = new TransletsNodeParser(assistant);
+				AspectranNodeParser parser = new AspectranNodeParser(assistant);
 				MultiActivityTransletRuleMap tm = parser.parse(mr.getInputStream());
 				transletRuleMap.putAll(tm);
 				
@@ -138,7 +138,7 @@ public final class BakContextBuilder {
 			initialize(assistant, transletRuleMap);
 			
 			// create TransletsContext
-			ActivityContext context = new ActivityContext();
+			AspectranContext context = new AspectranContext();
 			context.setServiceName(assistant.getServiceName());
 			context.setTransletPathPattern(assistant.getRequestUriPattern());
 			context.setTransletNamePatternPrefix(assistant.getRequestUriPatternPrefix());
@@ -157,7 +157,7 @@ public final class BakContextBuilder {
 			return context;
 		} catch(Exception e) {
 			log.error("Translets configuration error.");
-			throw new ActivityContextBuilderException("Translets configuration error", e);
+			throw new AspectranContextBuilderException("Translets configuration error", e);
 		}
 	}
 

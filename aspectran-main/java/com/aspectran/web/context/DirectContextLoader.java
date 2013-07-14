@@ -9,7 +9,7 @@ import javax.servlet.ServletContext;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.aspectran.base.context.ActivityContext;
+import com.aspectran.base.context.AspectranContext;
 import com.aspectran.base.context.builder.BakContextBuilder;
 import com.aspectran.base.context.builder.BakContextBuilderAssistant;
 import com.aspectran.base.type.ContextMergeMode;
@@ -29,7 +29,7 @@ public class DirectContextLoader implements ContextLoader {
 	
 	private ContextMergeMode mergeMode;
 	
-	private List<ActivityContext> contextList;
+	private List<AspectranContext> contextList;
 	
 	private ServletContext servletContext;
 	
@@ -78,14 +78,14 @@ public class DirectContextLoader implements ContextLoader {
 			String serviceRootPath = servletContext.getRealPath("/");
 			BakContextBuilder builder = new BakContextBuilder(serviceRootPath);
 			
-			contextList = new ArrayList<ActivityContext>();
+			contextList = new ArrayList<AspectranContext>();
 			
 			for(String filePath : filePathes) {
 				String configFilePath = servletContext.getRealPath(filePath);
 				
 				log.debug(filePath + " => " + configFilePath);
 				
-				ActivityContext context = builder.build(configFilePath);
+				AspectranContext context = builder.build(configFilePath);
 				
 				contextList.add(context);
 			}
@@ -96,7 +96,7 @@ public class DirectContextLoader implements ContextLoader {
 		return mergeMode;
 	}
 	
-	public List<ActivityContext> getContextList() {
+	public List<AspectranContext> getContextList() {
 		return contextList;
 	}
 }

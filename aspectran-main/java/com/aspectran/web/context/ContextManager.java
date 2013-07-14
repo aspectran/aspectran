@@ -10,7 +10,7 @@ import javax.servlet.ServletContext;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.aspectran.base.context.ActivityContext;
+import com.aspectran.base.context.AspectranContext;
 import com.aspectran.base.context.builder.ContextMerger;
 import com.aspectran.base.type.ContextMergeMode;
 
@@ -20,7 +20,7 @@ public class ContextManager {
 	
 	public static final String CONTEXT_MANAGER_ATTRIBUTE = ContextManager.class.getName() + ".MANAGER";
 	
-	private Map<String, ActivityContext> contextMap;
+	private Map<String, AspectranContext> contextMap;
 	
 	private ContextMergeMode defaultMergeMode;
 	
@@ -44,12 +44,12 @@ public class ContextManager {
 			
 			defaultMergeMode = contextLoader.getMergeMode();
 			
-			List<ActivityContext> contextList = contextLoader.getContextList();
+			List<AspectranContext> contextList = contextLoader.getContextList();
 			
 			if(contextList != null) {
-				contextMap = new HashMap<String, ActivityContext>();
+				contextMap = new HashMap<String, AspectranContext>();
 				
-				for(ActivityContext context : contextList) {
+				for(AspectranContext context : contextList) {
 					log.debug("context: " + context);
 					contextMap.put(context.getId(), context);
 				}
@@ -77,21 +77,21 @@ public class ContextManager {
 		}
 	}
 	
-	public ActivityContext getContext(String contextName) {
+	public AspectranContext getContext(String contextName) {
 		if(contextMap == null || contextMap.size() == 0)
 			return null;
 		
 		return contextMap.get(contextName);
 	}
 	
-	public ActivityContext getContext(List<String> contextNames, ContextMergeMode mergeMethod) {
+	public AspectranContext getContext(List<String> contextNames, ContextMergeMode mergeMethod) {
 		if(contextNames.size() == 1)
 			return getContext(contextNames.get(0));
 		
 		if(contextMap == null || contextMap.size() == 0)
 			return null;
 
-		List<ActivityContext> contextList = new ArrayList<ActivityContext>();;
+		List<AspectranContext> contextList = new ArrayList<AspectranContext>();;
 		
 		for(String contextName : contextNames) {
 			contextList.add(contextMap.get(contextName));
@@ -106,7 +106,7 @@ public class ContextManager {
 		servletContext.log("Closing Trasnlets root context");
 
 		try {
-			for(Map.Entry<String, ActivityContext> entry : contextMap.entrySet()) {
+			for(Map.Entry<String, AspectranContext> entry : contextMap.entrySet()) {
 				entry.getValue().destroy();
 			}
 		} finally {

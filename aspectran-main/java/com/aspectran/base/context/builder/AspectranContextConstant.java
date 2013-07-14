@@ -13,12 +13,12 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.aspectran.base.context;
+package com.aspectran.base.context.builder;
 
 /**
  * <p>Created: 2008. 04. 01 오후 10:25:35</p>
  */
-public class ActivityContextConstant {
+public class AspectranContextConstant {
 
 	/** The Constant LINE_SEPARATOR. */
 	public static final String LINE_SEPARATOR = System.getProperty("line.separator");

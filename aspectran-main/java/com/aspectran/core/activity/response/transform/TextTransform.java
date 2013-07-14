@@ -26,16 +26,16 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.aspectran.base.adapter.ResponseAdapter;
-import com.aspectran.base.context.ActivityContextConstant;
+import com.aspectran.base.context.builder.AspectranContextConstant;
 import com.aspectran.base.rule.TransformRule;
 import com.aspectran.base.token.Token;
 import com.aspectran.base.token.Tokenizer;
 import com.aspectran.base.token.expression.TokenExpression;
 import com.aspectran.base.type.TokenType;
-import com.aspectran.core.activity.Activity;
+import com.aspectran.core.activity.AspectranActivity;
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.activity.response.Responsible;
-import com.aspectran.core.translet.Translet;
+import com.aspectran.core.translet.SuperTranslet;
 
 /**
  * <p>Created: 2008. 03. 22 오후 5:51:58</p>
@@ -80,9 +80,9 @@ public class TextTransform extends AbstractTransform implements Responsible {
 	/* (non-Javadoc)
 	 * @see org.jhlabs.translets.engine.response.Responsible#response(org.jhlabs.translets.action.Translet)
 	 */
-	public void response(Activity activity) throws TransformResponseException {
+	public void response(AspectranActivity activity) throws TransformResponseException {
 		try {
-			Translet translet = activity.getActivityTranslet();
+			SuperTranslet translet = (SuperTranslet)activity.getTransletInstance();
 			ResponseAdapter responseAdapter = translet.getResponseAdapter();
 			
 			String contentType = transformRule.getContentType();
@@ -251,7 +251,7 @@ public class TextTransform extends AbstractTransform implements Responsible {
 		}
 		
 		if(traceEnabled) {
-			log.trace("Sets the content of the text-transform..." + ActivityContextConstant.LINE_SEPARATOR + getContent());
+			log.trace("Sets the content of the text-transform..." + AspectranContextConstant.LINE_SEPARATOR + getContent());
 		}
 	}
 }
