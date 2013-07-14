@@ -84,7 +84,7 @@
 						</item>
 					</arguments>
 				</action>
-				<include id="include1" translet="t1/home2" ignoreTicket="true">
+				<include id="include1" translet="t1/home2">
 					<attributes>
 						<item name="item0">한--- --글</item>
 						<item name="item1">@{item1}</item>

@@ -36,7 +36,7 @@ public class TestTicket {
 		return "hi-ticket, I'm glad to meet you.";
 	}
 	
-	public boolean check(Translet translet) {
+	public boolean check(SuperTranslet translet) {
 		return true;
 	}
 	

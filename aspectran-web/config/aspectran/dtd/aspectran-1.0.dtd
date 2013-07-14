@@ -153,7 +153,6 @@ hidden (true | false) #IMPLIED
 <!ATTLIST include
 id CDATA #IMPLIED
 translet CDATA #REQUIRED
-ignoreTicket (true | false) #IMPLIED
 hidden (true | false) #IMPLIED
 >
 
