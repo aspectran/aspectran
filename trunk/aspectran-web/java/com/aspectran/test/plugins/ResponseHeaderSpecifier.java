@@ -5,8 +5,8 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.aspectran.base.variable.ArgumentMap;
 import com.aspectran.core.activity.SuperTranslet;
+import com.aspectran.core.variable.ArgumentMap;
 
 /**
  *

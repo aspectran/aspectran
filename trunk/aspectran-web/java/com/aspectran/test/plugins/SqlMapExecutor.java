@@ -3,8 +3,8 @@ package com.aspectran.test.plugins;
 import java.sql.SQLException;
 import java.util.Map;
 
-import com.aspectran.base.variable.AttributeMap;
 import com.aspectran.core.activity.SuperTranslet;
+import com.aspectran.core.variable.AttributeMap;
 import com.aspectran.test.SqlMapConfig;
 import com.ibatis.sqlmap.client.SqlMapClient;
 
