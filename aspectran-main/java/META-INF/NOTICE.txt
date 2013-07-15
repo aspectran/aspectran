@@ -1,0 +1,5 @@
+JHLabs Translets
+Copyright (c) 2008 Jeong Ju Ho
+
+This product includes software developed by
+Jeong Ju Ho (http://www.jhlabs.org/).
