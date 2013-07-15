@@ -5,8 +5,8 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.aspectran.core.activity.SuperTranslet;
-import com.aspectran.core.variable.ArgumentMap;
+import com.aspectran.core.var.ArgumentMap;
+import com.aspectran.web.activity.WebTranslet;
 
 /**
  *
@@ -15,9 +15,9 @@ import com.aspectran.core.variable.ArgumentMap;
  */
 public class ResponseHeaderSpecifier {
 	
-	public void execute(SuperTranslet translet, ArgumentMap arguments) throws Exception {
-		HttpServletRequest request = (HttpServletRequest)translet.getRequestAdapter().getAdaptee();
-		HttpServletResponse response = (HttpServletResponse)translet.getResponseAdapter().getAdaptee();
+	public void execute(WebTranslet translet, ArgumentMap arguments) throws Exception {
+		HttpServletRequest request = translet.getHttpServletRequest();
+		HttpServletResponse response = translet.getHttpServletResponse();
 
 		for(Map.Entry<String, Object> entry : arguments.entrySet()) {
 			String name = entry.getKey();
