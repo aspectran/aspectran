@@ -15,16 +15,38 @@
  */
 package com.aspectran.web.activity;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import com.aspectran.core.activity.AbstractSuperTranslet;
 import com.aspectran.core.activity.AspectranActivity;
-import com.aspectran.core.activity.SuperTranslet;
 
+// TODO: Auto-generated Javadoc
 /**
- * The Class ActiveTranslet.
+ * The Class AspectranWebTranslet.
  */
-public class AspectranWebTranslet extends AbstractSuperTranslet implements SuperTranslet {
+public class AspectranWebTranslet extends AbstractSuperTranslet implements WebTranslet {
 	
+	/**
+	 * Instantiates a new aspectran web translet.
+	 *
+	 * @param activity the activity
+	 */
 	public AspectranWebTranslet(AspectranActivity activity) {
 		super(activity);
+	}
+
+	/* (non-Javadoc)
+	 * @see com.aspectran.web.activity.WebTranslet#getHttpServletRequest()
+	 */
+	public HttpServletRequest getHttpServletRequest() {
+		return (HttpServletRequest)getRequestAdapter().getAdaptee();
+	}
+
+	/* (non-Javadoc)
+	 * @see com.aspectran.web.activity.WebTranslet#getHttpServletResponse()
+	 */
+	public HttpServletResponse getHttpServletResponse() {
+		return (HttpServletResponse)getResponseAdapter().getAdaptee();
 	}
 }
