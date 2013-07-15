@@ -3,7 +3,7 @@
  */
 package com.aspectran.core.activity.request;
 
-import com.aspectran.core.variable.FileItemMap;
+import com.aspectran.core.var.FileItemMap;
 
 /**
  * The Class AbstractRequest.

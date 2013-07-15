@@ -23,7 +23,7 @@ import java.io.InputStream;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItem;
 
-import com.aspectran.core.variable.FileItem;
+import com.aspectran.core.var.FileItem;
 import com.aspectran.util.FileUtils;
 
 /**

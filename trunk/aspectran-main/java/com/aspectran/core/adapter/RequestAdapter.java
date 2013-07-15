@@ -3,7 +3,7 @@ package com.aspectran.core.adapter;
 import java.io.UnsupportedEncodingException;
 import java.util.Enumeration;
 
-import com.aspectran.core.variable.FileItemMap;
+import com.aspectran.core.var.FileItemMap;
 
 /**
  * The Interface RequestAdapter.

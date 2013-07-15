@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2009 Jeong Ju Ho, All rights reserved.
+ *  Copyright (c) 2008 Jeong Ju Ho, All rights reserved.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -13,40 +13,25 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.aspectran.core.variable;
+package com.aspectran.core.var;
 
-import java.util.LinkedHashMap;
 import java.util.Map;
 
+
 /**
- * <p>Created: 2008. 06. 11 오후 8:55:13</p>
+ * <p>Created: 2009. 01. 04 오후 3:3:13</p>
  */
-public class ValueMap extends LinkedHashMap<String, Object> {
+public class ArgumentMap extends ValueMap {
 
 	/** @serial */
-	static final long serialVersionUID = -8779174783802247545L;
+	static final long serialVersionUID = -503271909609702666L;
 
-	public ValueMap() {
+	public ArgumentMap() {
 		super();
 	}
-
-	/**
-	 * Instantiates a new value map.
-	 * 
-	 * @param map the map
-	 */
-	public ValueMap(Map<String, Object> map) {
+	
+	public ArgumentMap(Map<String, Object> map) {
 		super(map);
 	}
 	
-	/**
-	 * Gets the string.
-	 * 
-	 * @param key the key
-	 * 
-	 * @return the string
-	 */
-	public String getString(String key) {
-		return get(key).toString();
-	}
 }

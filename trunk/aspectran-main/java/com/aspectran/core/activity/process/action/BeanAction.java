@@ -29,7 +29,7 @@ import com.aspectran.core.rule.ItemRule;
 import com.aspectran.core.rule.ItemRuleMap;
 import com.aspectran.core.token.expression.ItemTokenExpression;
 import com.aspectran.core.token.expression.ItemTokenExpressor;
-import com.aspectran.core.variable.ValueMap;
+import com.aspectran.core.var.ValueMap;
 import com.aspectran.util.BeanUtils;
 import com.aspectran.util.MethodUtils;
 
