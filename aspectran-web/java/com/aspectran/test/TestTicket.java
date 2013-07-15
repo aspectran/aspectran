@@ -4,7 +4,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import com.aspectran.translet.activity.Translet;
+import com.aspectran.web.activity.WebTranslet;
 
 /**
  *
@@ -36,7 +36,7 @@ public class TestTicket {
 		return "hi-ticket, I'm glad to meet you.";
 	}
 	
-	public boolean check(SuperTranslet translet) {
+	public boolean check(WebTranslet translet) {
 		return true;
 	}
 	
