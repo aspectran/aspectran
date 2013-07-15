@@ -21,7 +21,7 @@ import com.aspectran.core.activity.process.ActionPathMaker;
 import com.aspectran.core.rule.EchoActionRule;
 import com.aspectran.core.token.expression.ItemTokenExpression;
 import com.aspectran.core.token.expression.ItemTokenExpressor;
-import com.aspectran.core.variable.ValueMap;
+import com.aspectran.core.var.ValueMap;
 
 /**
  * <p>Created: 2008. 03. 22 오후 5:50:44</p>

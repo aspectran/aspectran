@@ -18,7 +18,7 @@ package com.aspectran.core.token.expression;
 import java.util.Map;
 
 import com.aspectran.core.rule.ItemRuleMap;
-import com.aspectran.core.variable.ValueMap;
+import com.aspectran.core.var.ValueMap;
 
 /**
  *

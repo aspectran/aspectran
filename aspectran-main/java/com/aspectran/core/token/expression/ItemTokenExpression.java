@@ -25,7 +25,7 @@ import com.aspectran.core.rule.ItemRuleMap;
 import com.aspectran.core.token.Token;
 import com.aspectran.core.type.ItemType;
 import com.aspectran.core.type.ItemValueType;
-import com.aspectran.core.variable.ValueMap;
+import com.aspectran.core.var.ValueMap;
 
 /**
  * <p>Created: 2008. 06. 19 오후 9:43:28</p>

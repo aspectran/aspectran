@@ -18,7 +18,7 @@ import com.aspectran.core.token.expression.ItemTokenExpression;
 import com.aspectran.core.token.expression.TokenExpression;
 import com.aspectran.core.token.expression.TokenValueHandler;
 import com.aspectran.core.type.TokenType;
-import com.aspectran.core.variable.ValueMap;
+import com.aspectran.core.var.ValueMap;
 
 /**
  * The Class HttpServletResponseAdapter.
