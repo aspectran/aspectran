@@ -22,7 +22,7 @@ import com.aspectran.core.context.builder.AspectranContextConstant;
 /**
  * <p>Created: 2008. 03. 22 오후 5:48:09</p>
  */
-public class ActivityRule {
+public class ActivitySettingsRule {
 
 	private String activityRootPath;
 

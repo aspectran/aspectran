@@ -60,7 +60,7 @@ property CDATA #IMPLIED
 
 <!ELEMENT null EMPTY>
 
-<!ELEMENT aspect (joinpoint?, properties?, action*, before?, after?, finally?, around?)>
+<!ELEMENT aspect (joinpoint?, properties?, action*, before?, after?, around?, finally?, exceptionRaized?)>
 <!ATTLIST aspect
 id ID #IMPLIED
 >
@@ -78,8 +78,9 @@ pattern CDATA #IMPLIED
 <!ELEMENT once (properties? | action?)*>
 <!ELEMENT before (properties? | echo? | action? | transform? | dispatch? | redirect? | forward?)*>
 <!ELEMENT after (properties? | echo? | action? | transform? | dispatch? | redirect? | forward?)*>
-<!ELEMENT finally (properties? | echo? | action? | transform? | dispatch? | redirect? | forward?)*>
 <!ELEMENT around (properties? | echo? | action? | transform? | dispatch? | redirect? | forward?)*>
+<!ELEMENT finally (properties? | echo? | action? | transform? | dispatch? | redirect? | forward?)*>
+<!ELEMENT exceptionRaized (properties? | echo? | action? | transform? | dispatch? | redirect? | forward?)*>
 
 <!ELEMENT bean (features?, constructor?, properties*)>
 <!ATTLIST bean
@@ -153,7 +154,6 @@ hidden (true | false) #IMPLIED
 <!ATTLIST include
 id CDATA #IMPLIED
 translet CDATA #REQUIRED
-ignoreTicket (true | false) #IMPLIED
 hidden (true | false) #IMPLIED
 >
 

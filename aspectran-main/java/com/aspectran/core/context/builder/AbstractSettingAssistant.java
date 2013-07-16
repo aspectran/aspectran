@@ -52,10 +52,10 @@ public abstract class AbstractSettingAssistant {
 	/**
 	 * Push object.
 	 * 
-	 * @param item the item
+	 * @param object the item
 	 */
-	public void pushObject(Object item) {
-		objectStack.push(item);
+	public void pushObject(Object object) {
+		objectStack.push(object);
 	}
 	
 	/**
