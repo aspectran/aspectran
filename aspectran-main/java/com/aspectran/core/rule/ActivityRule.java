@@ -24,130 +24,93 @@ import com.aspectran.core.context.builder.AspectranContextConstant;
  */
 public class ActivityRule {
 
-	/** The service root path. */
 	private String activityRootPath;
-	
-	/** The service name. */
-	private String description;
-	
-	/** The request uri pattern. */
-	private String transletPathPattern;
-	
-	/** The reqeust uri pattern prefix. */
-	private String transletPathPatternPrefix;
 
-	/** The reqeust uri pattern suffix. */
-	private String transletPathPatternSuffix;
+	private String transletNameSeparator;
 	
-	/**
-	 * Gets the service root path.
-	 * 
-	 * @return the service root path
-	 */
+	private String transletNamePattern;
+	
+	private String transletNamePatternPrefix;
+
+	private String transletNamePatternSuffix;
+	
+	private String transletInterface;
+
+	private String transletClass;
+	
+	private boolean useNamespaces;
+
+	private boolean nullableContentId;
+	
+	private boolean nullableActionId;
+	
+	private boolean multiActivityEnable;
+	
 	public String getActivityRootPath() {
 		return activityRootPath;
 	}
 
-	/**
-	 * Sets the service root path.
-	 * 
-	 * @param activityRootPath the new service root path
-	 */
+	public String getTransletNameSeparator() {
+		return transletNameSeparator;
+	}
+
+	public void setTransletNameSeparator(String transletNameSeparator) {
+		this.transletNameSeparator = transletNameSeparator;
+	}
+
 	public void setActivityRootPath(String activityRootPath) {
 		this.activityRootPath = activityRootPath;
 	}
 
-	public String getDescription() {
-		return description;
+	public String getTransletNamePattern() {
+		return transletNamePattern;
 	}
 
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
-	/**
-	 * Gets the uri pattern.
-	 * 
-	 * @return the uri pattern
-	 */
-	public String getTransletPathPattern() {
-		return transletPathPattern;
-	}
-
-	/**
-	 * Sets the uri pattern.
-	 * 
-	 * @param transletPathPattern the new uri pattern
-	 */
-	public void setTransletPathPattern(String transletPathPattern) {
-		this.transletPathPattern = transletPathPattern;
+	public void setTransletNamePattern(String transletNamePattern) {
+		this.transletNamePattern = transletNamePattern;
 		
-		if(transletPathPattern != null) {
-			int index = transletPathPattern.indexOf(AspectranContextConstant.WILDCARD_CHAR);
+		if(transletNamePattern != null) {
+			int index = transletNamePattern.indexOf(AspectranContextConstant.WILDCARD_CHAR);
 			
 			if(index != -1) {
 				if(index == 0) {
-					transletPathPatternSuffix = transletPathPattern.substring(AspectranContextConstant.WILDCARD_CHAR.length());
-				} else if(index == (transletPathPattern.length() - 1)) {
-					transletPathPatternPrefix = transletPathPattern.substring(0, transletPathPattern.length() - AspectranContextConstant.WILDCARD_CHAR.length());
+					transletNamePatternPrefix = null;
+					transletNamePatternSuffix = transletNamePattern.substring(AspectranContextConstant.WILDCARD_CHAR.length());
+				} else if(index == (transletNamePattern.length() - 1)) {
+					transletNamePatternPrefix = transletNamePattern.substring(0, transletNamePattern.length() - AspectranContextConstant.WILDCARD_CHAR.length());
+					transletNamePatternSuffix = null;
 				} else {
-					transletPathPatternPrefix = transletPathPattern.substring(0, index);
-					transletPathPatternSuffix = transletPathPattern.substring(index + 1);
+					transletNamePatternPrefix = transletNamePattern.substring(0, index);
+					transletNamePatternSuffix = transletNamePattern.substring(index + 1);
 				}
 			}
 		}
 	}
 	
-	/**
-	 * Sets the uri pattern.
-	 * 
-	 * @param transletPathPatternPrefix the uri pattern prefix
-	 * @param transletPathPatternSuffix the uri pattern suffix
-	 */
-	public void setTransletPathPattern(String transletPathPatternPrefix, String transletPathPatternSuffix) {
-		transletPathPattern = transletPathPatternPrefix + AspectranContextConstant.WILDCARD_CHAR + transletPathPatternSuffix;
+	public void setTransletNamePattern(String transletNamePatternPrefix, String transletNamePatternSuffix) {
+		transletNamePattern = transletNamePatternPrefix + AspectranContextConstant.WILDCARD_CHAR + transletNamePatternSuffix;
 	}
 	
-	/**
-	 * Sets the uri prefix pattern.
-	 * 
-	 * @param transletPathPatternPrefix the new uri pattern prefix
-	 */
-	public void setTransletNamePatternPrefix(String transletPathPatternPrefix) {
-		this.transletPathPatternPrefix = transletPathPatternPrefix;
+	public void setTransletNamePatternPrefix(String transletNamePatternPrefix) {
+		this.transletNamePatternPrefix = transletNamePatternPrefix;
 		
-		if(transletPathPatternSuffix != null)
-			setTransletPathPattern(transletPathPatternPrefix, transletPathPatternSuffix);
+		if(transletNamePatternSuffix != null)
+			setTransletNamePattern(transletNamePatternPrefix, transletNamePatternSuffix);
 	}
 	
-	/**
-	 * Sets the uri suffix pattern.
-	 * 
-	 * @param transletPathPatternSuffix the new uri pattern suffix
-	 */
-	public void setTransletPathPatternSuffix(String transletPathPatternSuffix) {
-		this.transletPathPatternSuffix = transletPathPatternSuffix;
+	public void setTransletNamePatternSuffix(String transletNamePatternSuffix) {
+		this.transletNamePatternSuffix = transletNamePatternSuffix;
 		
-		if(transletPathPatternPrefix != null)
-			setTransletPathPattern(transletPathPatternPrefix, transletPathPatternSuffix);
+		if(transletNamePatternPrefix != null)
+			setTransletNamePattern(transletNamePatternPrefix, transletNamePatternSuffix);
 	}
 	
-	/**
-	 * Gets the uri pattern prefix.
-	 * 
-	 * @return the uri pattern prefix
-	 */
 	public String getTransletNamePatternPrefix() {
-		return transletPathPatternPrefix;
+		return transletNamePatternPrefix;
 	}
 
-	/**
-	 * Gets the uri pattern suffix.
-	 * 
-	 * @return the uri pattern suffix
-	 */
 	public String getTransletNamePatternSuffix() {
-		return transletPathPatternSuffix;
+		return transletNamePatternSuffix;
 	}
 	
 	/**
@@ -167,6 +130,56 @@ public class ActivityRule {
 		
 		return file;
 	}
+	
+	public String getTransletInterface() {
+		return transletInterface;
+	}
+
+	public void setTransletInterface(String transletInterface) {
+		this.transletInterface = transletInterface;
+	}
+
+	public String getTransletClass() {
+		return transletClass;
+	}
+
+	public void setTransletClass(String transletClass) {
+		this.transletClass = transletClass;
+	}
+
+	public boolean isUseNamespaces() {
+		return useNamespaces;
+	}
+
+	public void setUseNamespaces(boolean useNamespaces) {
+		this.useNamespaces = useNamespaces;
+	}
+
+	public boolean isNullableContentId() {
+		return nullableContentId;
+	}
+
+	public void setNullableContentId(boolean nullableContentId) {
+		this.nullableContentId = nullableContentId;
+	}
+
+	public boolean isNullableActionId() {
+		return nullableActionId;
+	}
+
+	public void setNullableActionId(boolean nullableActionId) {
+		this.nullableActionId = nullableActionId;
+	}
+
+	public boolean isMultiActivityEnable() {
+		return multiActivityEnable;
+	}
+
+	public void setMultiActivityEnable(boolean multiActivityEnable) {
+		this.multiActivityEnable = multiActivityEnable;
+	}
+
+	
 //	
 //	public String toRequestUri(String transletPath) {
 //		return toRequestUri(transletPathPatternPrefix, transletPathPatternSuffix, transletPath);

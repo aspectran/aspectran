@@ -18,28 +18,13 @@ package com.aspectran.core.context.builder;
 /**
  * <p>Created: 2008. 04. 01 오후 10:25:35</p>
  */
-public class AspectranContextConstant {
+public interface AspectranContextConstant {
 
 	/** The Constant LINE_SEPARATOR. */
 	public static final String LINE_SEPARATOR = System.getProperty("line.separator");
 
-	public static final String USE_NAMESPACES_SETTING = "useNamespaces";
-
-	/** The Constant URI_SEPARATOR. */
-	public static final String URI_SEPARATOR = "/";
-
-	/** The Constant NAMESPACE_SEPARATOR. */
-
 	/** The Constant WILDCARD_CHAR. */
 	public static final String WILDCARD_CHAR = "*";
-
-	public static final String NULLABLE_CONTENT_ID_SETTING = "nullableContentId";
-
-	public static final String NULLABLE_ACTION_ID_SETTING = "nullableActionId";
-
-	public static final String NULLABLE_BEAN_ID_SETTING = "nullableBeanId";
-
-	public static final String MULTI_ACTIVITY_ENABLE = "multiActivityEnable";
 
 	/** The Constant NAMESPACE_SEPARATOR. */
 	public static final String TRANSLET_NAME_SEPARATOR = "/";

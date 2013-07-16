@@ -32,11 +32,12 @@ import com.aspectran.core.rule.TicketCheckcaseRuleMap;
 import com.aspectran.core.rule.TransletRule;
 import com.aspectran.core.rule.TransletRuleMap;
 import com.aspectran.core.ticket.TicketCheckActionList;
+import com.aspectran.core.type.ActivitySettingType;
 
 /**
  * <p>Created: 2008. 04. 01 오후 10:25:35</p>
  */
-public class AspectranContextBuilderAssistant extends AbstractContextBuilderAssistant {
+public class AspectranSettingAssistant extends AbstractSettingAssistant {
 
 	/** The use namespaces. */
 	//private boolean useNamespaces;
@@ -84,7 +85,7 @@ public class AspectranContextBuilderAssistant extends AbstractContextBuilderAssi
 	/**
 	 * Instantiates a new translets config.
 	 */
-	public AspectranContextBuilderAssistant(String serviceRootPath) {
+	public AspectranSettingAssistant(String serviceRootPath) {
 		this.activityRootPath = serviceRootPath;
 	}
 	
@@ -94,7 +95,7 @@ public class AspectranContextBuilderAssistant extends AbstractContextBuilderAssi
 	 *
 	 * @param assistant the assistant
 	 */
-	public AspectranContextBuilderAssistant(AspectranContextBuilderAssistant assistant) {
+	public AspectranSettingAssistant(AspectranSettingAssistant assistant) {
 		setSettings(assistant.getSettings());
 		activityRootPath = assistant.getActivityRootPath();
 		activityRule = assistant.getActivityRule();
@@ -110,11 +111,11 @@ public class AspectranContextBuilderAssistant extends AbstractContextBuilderAssi
 		transletRuleMap = assistant.getTransletRuleMap();
 	}
 	
-	public void applySettings() {
-		useNamespaces = isSettedTrue(AspectranContextConstant.USE_NAMESPACES_SETTING);
-		nullableContentId = isSettedTrue(AspectranContextConstant.NULLABLE_CONTENT_ID_SETTING);
-		nullableActionId = isSettedTrue(AspectranContextConstant.NULLABLE_ACTION_ID_SETTING);
-		multiActivityEnable = isSettedTrue(AspectranContextConstant.MULTI_ACTIVITY_ENABLE);
+	public void applyActivitySettings() {
+		useNamespaces = isSettedTrue(ActivitySettingType.USE_NAMESPACES);
+		nullableContentId = isSettedTrue(ActivitySettingType.NULLABLE_CONTENT_ID);
+		nullableActionId = isSettedTrue(ActivitySettingType.NULLABLE_ACTION_ID);
+		multiActivityEnable = isSettedTrue(ActivitySettingType.MULTI_ACTIVITY_ENABLE);
 	}
 	
 	/**

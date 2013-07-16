@@ -18,17 +18,18 @@ package com.aspectran.core.context.builder;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.aspectran.core.type.ActivitySettingType;
 import com.aspectran.util.ArrayStack;
 
 /**
  * <p>Created: 2008. 04. 01 오후 10:25:35</p>
  */
-public abstract class AbstractContextBuilderAssistant {
+public abstract class AbstractSettingAssistant {
 
 	/** The object stack. */
 	private ArrayStack objectStack;
 	
-	private Map<String, Object> settings;
+	private Map<ActivitySettingType, Object> settings;
 	
 	/** The use namespaces. */
 	protected boolean useNamespaces;
@@ -42,10 +43,10 @@ public abstract class AbstractContextBuilderAssistant {
 	/**
 	 * Instantiates a new translets config.
 	 */
-	public AbstractContextBuilderAssistant() {
+	public AbstractSettingAssistant() {
 		this.objectStack = new ArrayStack(); 
 		this.typeAliases = new HashMap<String, String>();
-		this.settings = new HashMap<String, Object>();
+		this.settings = new HashMap<ActivitySettingType, Object>();
 	}
 
 	/**
@@ -89,34 +90,34 @@ public abstract class AbstractContextBuilderAssistant {
 		typeAliases.clear();
 	}
 
-	public Map<String, Object> getSettings() {
+	public Map<ActivitySettingType, Object> getSettings() {
 		return settings;
 	}
 
-	public void setSettings(Map<String, Object> settings) {
+	public void setSettings(Map<ActivitySettingType, Object> settings) {
 		this.settings = settings;
-		applySettings();
+		applyActivitySettings();
 	}
 
-	public void putSetting(String name, Object value) {
-		settings.put(name, value);
+	public void putSetting(ActivitySettingType settingType, Object value) {
+		settings.put(settingType, value);
 	}
 	
-	public Object getSetting(String name) {
-		return settings.get(name);
+	public Object getSetting(ActivitySettingType settingType) {
+		return settings.get(settingType);
 	}
 	
-	public boolean isSettedTrue(String name) {
-		Boolean b = (Boolean)settings.get(name);
+	public boolean isSettedTrue(ActivitySettingType settingType) {
+		Boolean b = Boolean.valueOf((String)settings.get(settingType));
 		return b.booleanValue();
 	}
 	
-	public boolean isSettedNull(String name) {
-		Object o = settings.get(name);
+	public boolean isSettedNull(ActivitySettingType settingType) {
+		Object o = settings.get(settingType);
 		return (o == null);
 	}
 	
-	public abstract void applySettings();
+	public abstract void applyActivitySettings();
 	
 	/**
 	 * Adds the type alias.

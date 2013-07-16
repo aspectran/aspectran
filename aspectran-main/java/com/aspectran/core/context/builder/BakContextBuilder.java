@@ -139,9 +139,9 @@ public final class BakContextBuilder {
 			// create TransletsContext
 			AspectranContext context = new AspectranContext();
 			context.setServiceName(assistant.getServiceName());
-			context.setTransletPathPattern(assistant.getRequestUriPattern());
+			context.setTransletNamePattern(assistant.getRequestUriPattern());
 			context.setTransletNamePatternPrefix(assistant.getRequestUriPatternPrefix());
-			context.setTransletPathPatternSuffix(assistant.getRequestUriPatternSuffix());
+			context.setTransletNamePatternSuffix(assistant.getRequestUriPatternSuffix());
 			context.setTicketCheckActionList(assistant.getTicketCheckActionList());
 			context.setGenericRequestRule(assistant.getGenericRequestRule());
 			context.setGenericResponseRule(assistant.getGenericResponseRule());

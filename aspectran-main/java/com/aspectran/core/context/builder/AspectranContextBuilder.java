@@ -83,7 +83,7 @@ public class AspectranContextBuilder {
 					File file = new File(filePath);
 				
 					if(!file.isFile())
-						throw new FileNotFoundException("Translets context configuration file is not found. " + filePath);
+						throw new FileNotFoundException("aspectran context configuration file is not found. " + filePath);
 					
 					ImportableResource r = new ImportableResource();
 					r.setFile(file);
@@ -96,7 +96,7 @@ public class AspectranContextBuilder {
 			throw new AspectranContextBuilderException(e);
 		}
 		
-		AspectranContextBuilderAssistant assistant = null;
+		AspectranSettingAssistant assistant = null;
 		
 		for(ImportableResource r : importableResourceList) {
 			assistant = build(r, assistant);
@@ -132,20 +132,20 @@ public class AspectranContextBuilder {
 	 * 
 	 * @throws AspectranContextBuilderException the configuration exception
 	 */
-	private AspectranContextBuilderAssistant build(ImportableResource resource, AspectranContextBuilderAssistant parentAssistant) throws AspectranContextBuilderException {
+	private AspectranSettingAssistant build(ImportableResource resource, AspectranSettingAssistant parentAssistant) throws AspectranContextBuilderException {
 		try {
-			AspectranContextBuilderAssistant assistant;
+			AspectranSettingAssistant assistant;
 			
 			if(parentAssistant == null)
-				assistant = new AspectranContextBuilderAssistant(serviceRootPath);
+				assistant = new AspectranSettingAssistant(serviceRootPath);
 			else
-				assistant = new AspectranContextBuilderAssistant(parentAssistant);
+				assistant = new AspectranSettingAssistant(parentAssistant);
 
 			assistant.setBeanRuleMap(beanRuleMap);
 
 			// Translet loading...
-			AspectranNodeParser transletsNodeParser = new AspectranNodeParser(assistant);
-			transletsNodeParser.parse(resource.getInputStream());
+			AspectranNodeParser aspectranNodeParser = new AspectranNodeParser(assistant);
+			aspectranNodeParser.parse(resource.getInputStream());
 			
 			List<ImportableResource> resources = assistant.getResources();
 			
@@ -173,11 +173,11 @@ public class AspectranContextBuilder {
 		}
 	}
 	
-	private TransletRegistry buildTransletRegistry(AspectranContextBuilderAssistant sssistant) {
+	private TransletRegistry buildTransletRegistry(AspectranSettingAssistant sssistant) {
 		return null;
 	}
 
-	private BeanRegistry buildBeanRegistry(AspectranContextBuilderAssistant sssistant) {
+	private BeanRegistry buildBeanRegistry(AspectranSettingAssistant sssistant) {
 		return null;
 	}
 	
