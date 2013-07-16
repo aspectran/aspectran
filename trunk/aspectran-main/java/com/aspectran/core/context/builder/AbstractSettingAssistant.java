@@ -29,13 +29,7 @@ public abstract class AbstractSettingAssistant {
 	/** The object stack. */
 	private ArrayStack objectStack;
 	
-	private Map<ActivitySettingType, Object> settings;
-	
-	/** The use namespaces. */
-	protected boolean useNamespaces;
-
-	/** The namespace. */
-	protected String namespace;
+	private Map<ActivitySettingType, String> settings;
 	
 	/** The type aliases. */
 	private Map<String, String> typeAliases;
@@ -46,7 +40,7 @@ public abstract class AbstractSettingAssistant {
 	public AbstractSettingAssistant() {
 		this.objectStack = new ArrayStack(); 
 		this.typeAliases = new HashMap<String, String>();
-		this.settings = new HashMap<ActivitySettingType, Object>();
+		this.settings = new HashMap<ActivitySettingType, String>();
 	}
 
 	/**
@@ -90,31 +84,21 @@ public abstract class AbstractSettingAssistant {
 		typeAliases.clear();
 	}
 
-	public Map<ActivitySettingType, Object> getSettings() {
+	public Map<ActivitySettingType, String> getSettings() {
 		return settings;
 	}
 
-	public void setSettings(Map<ActivitySettingType, Object> settings) {
+	public void setSettings(Map<ActivitySettingType, String> settings) {
 		this.settings = settings;
 		applyActivitySettings();
 	}
 
-	public void putSetting(ActivitySettingType settingType, Object value) {
+	public void putSetting(ActivitySettingType settingType, String value) {
 		settings.put(settingType, value);
 	}
 	
 	public Object getSetting(ActivitySettingType settingType) {
 		return settings.get(settingType);
-	}
-	
-	public boolean isSettedTrue(ActivitySettingType settingType) {
-		Boolean b = Boolean.valueOf((String)settings.get(settingType));
-		return b.booleanValue();
-	}
-	
-	public boolean isSettedNull(ActivitySettingType settingType) {
-		Object o = settings.get(settingType);
-		return (o == null);
 	}
 	
 	public abstract void applyActivitySettings();
@@ -138,33 +122,6 @@ public abstract class AbstractSettingAssistant {
 	 */
 	public String getAliasType(String alias) {
 		return typeAliases.get(alias);
-	}
-	
-	/**
-	 * Sets the namespace.
-	 * 
-	 * @param namespace the new namespace
-	 */
-	public void setNamespace(String namespace) {
-		this.namespace = namespace;
-	}
-
-	/**
-	 * Checks if is use namespaces.
-	 * 
-	 * @return true, if is usenamespaces
-	 */
-	public boolean isUseNamespaces() {
-		return useNamespaces;
-	}
-
-	/**
-	 * Sets the use namespaces.
-	 * 
-	 * @param useNamespaces the new use namespaces
-	 */
-	public void setUseNamespaces(boolean useNamespaces) {
-		this.useNamespaces = useNamespaces;
 	}
 	
 }

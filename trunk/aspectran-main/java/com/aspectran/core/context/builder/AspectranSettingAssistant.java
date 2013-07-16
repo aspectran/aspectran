@@ -19,7 +19,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.aspectran.core.rule.ActivitySettingsRule;
+import com.aspectran.core.rule.AspectranSettingsRule;
 import com.aspectran.core.rule.BeanRule;
 import com.aspectran.core.rule.BeanRuleMap;
 import com.aspectran.core.rule.DefaultRequestRule;
@@ -39,23 +39,10 @@ import com.aspectran.core.type.ActivitySettingType;
  */
 public class AspectranSettingAssistant extends AbstractSettingAssistant {
 
-	/** The use namespaces. */
-	//private boolean useNamespaces;
-
-	/** The nullable content id. */
-	private boolean nullableContentId = true;
-	
-	/** The nullable action id. */
-	private boolean nullableActionId = true;
-	
-	private boolean nullableBeanId = true;
-
-	private boolean multiActivityEnable = false;
-	
 	/** The service root path. */
 	private String activityRootPath;
 
-	private ActivitySettingsRule activitySettingsRule;
+	private AspectranSettingsRule activitySettingsRule;
 	
 	/** The ticket checkcase rule map. */
 	private TicketCheckcaseRuleMap ticketCheckcaseRuleMap;
@@ -82,11 +69,14 @@ public class AspectranSettingAssistant extends AbstractSettingAssistant {
 
 	private MultiActivityTransletRuleMap multiActivityTransletRuleMap;
 	
+	private String namespace;
+	
 	/**
 	 * Instantiates a new translets config.
 	 */
 	public AspectranSettingAssistant(String serviceRootPath) {
 		this.activityRootPath = serviceRootPath;
+		activitySettingsRule = new AspectranSettingsRule();
 	}
 	
 	/**
@@ -104,6 +94,9 @@ public class AspectranSettingAssistant extends AbstractSettingAssistant {
 		defaultResponseRule = assistant.getDefaultResponseRule();
 		defaultExceptionRule = assistant.getDefaultExceptionRule();
 		
+		if(activitySettingsRule == null)
+			activitySettingsRule = new AspectranSettingsRule();
+		
 		if(assistant.getTicketCheckActionList() != null) {
 			ticketCheckActionList = new TicketCheckActionList(assistant.getTicketCheckActionList());
 		}
@@ -111,11 +104,17 @@ public class AspectranSettingAssistant extends AbstractSettingAssistant {
 		transletRuleMap = assistant.getTransletRuleMap();
 	}
 	
+	/**
+	 * Sets the namespace.
+	 * 
+	 * @param namespace the new namespace
+	 */
+	public void setNamespace(String namespace) {
+		this.namespace = namespace;
+	}
+	
 	public void applyActivitySettings() {
-		useNamespaces = isSettedTrue(ActivitySettingType.USE_NAMESPACES);
-		nullableContentId = isSettedTrue(ActivitySettingType.NULLABLE_CONTENT_ID);
-		nullableActionId = isSettedTrue(ActivitySettingType.NULLABLE_ACTION_ID);
-		multiActivityEnable = isSettedTrue(ActivitySettingType.MULTI_ACTIVITY_ENABLE);
+		activitySettingsRule.set(getSettings());
 	}
 	
 	/**
@@ -131,7 +130,7 @@ public class AspectranSettingAssistant extends AbstractSettingAssistant {
 		if(activitySettingsRule.getTransletNamePatternPrefix() != null)
 			sb.append(activitySettingsRule.getTransletNamePatternPrefix());
 		
-		if(useNamespaces && namespace != null) {
+		if(activitySettingsRule.isUseNamespaces() && namespace != null) {
 			sb.append(namespace);
 			sb.append(AspectranContextConstant.TRANSLET_NAME_SEPARATOR);
 		}
@@ -145,7 +144,7 @@ public class AspectranSettingAssistant extends AbstractSettingAssistant {
 	}
 	
 	public String applyNamespaceForBean(String beanId) {
-		if(!useNamespaces || namespace == null)
+		if(!activitySettingsRule.isUseNamespaces() || namespace == null)
 			return beanId;
 		
 		StringBuilder sb = new StringBuilder();
@@ -175,16 +174,7 @@ public class AspectranSettingAssistant extends AbstractSettingAssistant {
 	 * @return true, if is allow null content id
 	 */
 	public boolean isNullableContentId() {
-		return nullableContentId;
-	}
-
-	/**
-	 * Sets the allow null content id.
-	 * 
-	 * @param nullableContentId the new allow null content id
-	 */
-	public void setNullableContentId(boolean nullableContentId) {
-		this.nullableContentId = nullableContentId;
+		return activitySettingsRule.isNullableContentId();
 	}
 
 	/**
@@ -193,43 +183,22 @@ public class AspectranSettingAssistant extends AbstractSettingAssistant {
 	 * @return true, if is allow null action id
 	 */
 	public boolean isNullableActionId() {
-		return nullableActionId;
+		return activitySettingsRule.isNullableActionId();
 	}
 	
-	public void setNullableActionId(boolean nullableActionId) {
-		this.nullableActionId = nullableActionId;
-	}
-
-	/**
-	 * Checks if is nullable bean id.
-	 *
-	 * @return true, if is nullable bean id
-	 */
-	public boolean isNullableBeanId() {
-		return nullableBeanId;
-	}
-
 	public boolean isMultiActivityEnable() {
-		return multiActivityEnable;
-	}
-
-	public void setMultiActivityEnable(boolean multiActivityEnable) {
-		this.multiActivityEnable = multiActivityEnable;
-	}
-
-	public void setNullableBeanId(boolean nullableBeanId) {
-		this.nullableBeanId = nullableBeanId;
+		return activitySettingsRule.isMultiActivityEnable();
 	}
 
 	public String getActivityRootPath() {
 		return activityRootPath;
 	}
 	
-	public ActivitySettingsRule getActivitySettingsRule() {
+	public AspectranSettingsRule getActivitySettingsRule() {
 		return activitySettingsRule;
 	}
 
-	public void setActivityRule(ActivitySettingsRule activityRule) {
+	public void setActivitySettingsRule(AspectranSettingsRule activityRule) {
 		activityRule.setActivityRootPath(activityRootPath);
 		this.activitySettingsRule = activityRule;
 	}

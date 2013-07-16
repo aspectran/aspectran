@@ -28,7 +28,7 @@ import com.aspectran.core.activity.response.ResponseMap;
 import com.aspectran.core.activity.response.Responsible;
 import com.aspectran.core.context.builder.AspectranSettingAssistant;
 import com.aspectran.core.context.builder.ImportableResource;
-import com.aspectran.core.rule.ActivitySettingsRule;
+import com.aspectran.core.rule.AspectranSettingsRule;
 import com.aspectran.core.rule.BeanRule;
 import com.aspectran.core.rule.DefaultRequestRule;
 import com.aspectran.core.rule.DefaultResponseRule;
@@ -187,32 +187,32 @@ public class AspectranNodeParser {
 	private void addActivityRuleNodelets() {
 		parser.addNodelet("/aspectran/activityRule", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
-				ActivitySettingsRule ar = new ActivitySettingsRule();
+				AspectranSettingsRule ar = new AspectranSettingsRule();
 				assistant.pushObject(ar);
 			}
 		});
 		parser.addNodelet("/aspectran/activityRule/transletNamePattern/text()", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
-				ActivitySettingsRule ar = (ActivitySettingsRule)assistant.peekObject();
+				AspectranSettingsRule ar = (AspectranSettingsRule)assistant.peekObject();
 				ar.setTransletNamePattern(text);
 			}
 		});
 		parser.addNodelet("/aspectran/activityRule/transletNamePattern/prefix/text()", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
-				ActivitySettingsRule ar = (ActivitySettingsRule)assistant.peekObject();
+				AspectranSettingsRule ar = (AspectranSettingsRule)assistant.peekObject();
 				ar.setTransletNamePatternPrefix(text);
 			}
 		});
 		parser.addNodelet("/aspectran/activityRule/transletNamePattern/suffix/text()", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
-				ActivitySettingsRule sr = (ActivitySettingsRule)assistant.peekObject();
+				AspectranSettingsRule sr = (AspectranSettingsRule)assistant.peekObject();
 				sr.setTransletNamePatternSuffix(text);
 			}
 		});
 		parser.addNodelet("/aspectran/activityRule/end()", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
-				ActivitySettingsRule ar = (ActivitySettingsRule)assistant.popObject();
-				assistant.setActivityRule(ar);
+				AspectranSettingsRule ar = (AspectranSettingsRule)assistant.popObject();
+				assistant.setActivitySettingsRule(ar);
 			}
 		});
 	}
@@ -702,12 +702,12 @@ public class AspectranNodeParser {
 				Boolean lazyInit = Boolean.valueOf(attributes.getProperty("lazyInit"));
 
 				if(id == null) {
-					if(assistant.isNullableBeanId()) {
-						// When the bean id is null, the namespace does not apply.
-						id = classType;
-					} else {
+//					if(assistant.isNullableBeanId()) {
+//						// When the bean id is null, the namespace does not apply.
+//						id = classType;
+//					} else {
 						throw new IllegalArgumentException("The <bean> element requires a id attribute.");
-					}
+//					}
 				} else {
 					id = assistant.applyNamespaceForBean(id);
 				}
