@@ -28,7 +28,7 @@ import com.aspectran.core.activity.response.ResponseMap;
 import com.aspectran.core.activity.response.Responsible;
 import com.aspectran.core.context.builder.AspectranSettingAssistant;
 import com.aspectran.core.context.builder.ImportableResource;
-import com.aspectran.core.rule.ActivityRule;
+import com.aspectran.core.rule.ActivitySettingsRule;
 import com.aspectran.core.rule.BeanRule;
 import com.aspectran.core.rule.DefaultRequestRule;
 import com.aspectran.core.rule.DefaultResponseRule;
@@ -187,31 +187,31 @@ public class AspectranNodeParser {
 	private void addActivityRuleNodelets() {
 		parser.addNodelet("/aspectran/activityRule", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
-				ActivityRule ar = new ActivityRule();
+				ActivitySettingsRule ar = new ActivitySettingsRule();
 				assistant.pushObject(ar);
 			}
 		});
 		parser.addNodelet("/aspectran/activityRule/transletNamePattern/text()", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
-				ActivityRule ar = (ActivityRule)assistant.peekObject();
+				ActivitySettingsRule ar = (ActivitySettingsRule)assistant.peekObject();
 				ar.setTransletNamePattern(text);
 			}
 		});
 		parser.addNodelet("/aspectran/activityRule/transletNamePattern/prefix/text()", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
-				ActivityRule ar = (ActivityRule)assistant.peekObject();
+				ActivitySettingsRule ar = (ActivitySettingsRule)assistant.peekObject();
 				ar.setTransletNamePatternPrefix(text);
 			}
 		});
 		parser.addNodelet("/aspectran/activityRule/transletNamePattern/suffix/text()", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
-				ActivityRule sr = (ActivityRule)assistant.peekObject();
+				ActivitySettingsRule sr = (ActivitySettingsRule)assistant.peekObject();
 				sr.setTransletNamePatternSuffix(text);
 			}
 		});
 		parser.addNodelet("/aspectran/activityRule/end()", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
-				ActivityRule ar = (ActivityRule)assistant.popObject();
+				ActivitySettingsRule ar = (ActivitySettingsRule)assistant.popObject();
 				assistant.setActivityRule(ar);
 			}
 		});

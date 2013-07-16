@@ -109,7 +109,7 @@ public class AspectranContextBuilder {
 		TransletRegistry transletRegistry = buildTransletRegistry(assistant);
 		
 		// create ActivityContext
-		AspectranContext context = new AspectranContext(assistant.getActivityRule());
+		AspectranContext context = new AspectranContext(assistant.getActivitySettingsRule());
 		context.setBeanRegistry(beanRegistry);
 		context.setTransletRegistry(transletRegistry);
 		//context.setBeanFactory(beanRegistry);

@@ -19,7 +19,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.aspectran.core.rule.ActivityRule;
+import com.aspectran.core.rule.ActivitySettingsRule;
 import com.aspectran.core.rule.BeanRule;
 import com.aspectran.core.rule.BeanRuleMap;
 import com.aspectran.core.rule.DefaultRequestRule;
@@ -55,7 +55,7 @@ public class AspectranSettingAssistant extends AbstractSettingAssistant {
 	/** The service root path. */
 	private String activityRootPath;
 
-	private ActivityRule activityRule;
+	private ActivitySettingsRule activitySettingsRule;
 	
 	/** The ticket checkcase rule map. */
 	private TicketCheckcaseRuleMap ticketCheckcaseRuleMap;
@@ -98,7 +98,7 @@ public class AspectranSettingAssistant extends AbstractSettingAssistant {
 	public AspectranSettingAssistant(AspectranSettingAssistant assistant) {
 		setSettings(assistant.getSettings());
 		activityRootPath = assistant.getActivityRootPath();
-		activityRule = assistant.getActivityRule();
+		activitySettingsRule = assistant.getActivitySettingsRule();
 		ticketCheckcaseRuleMap = assistant.getTicketCheckcaseRuleMap();
 		defaultRequestRule = assistant.getDefaultRequestRule();
 		defaultResponseRule = assistant.getDefaultResponseRule();
@@ -128,8 +128,8 @@ public class AspectranSettingAssistant extends AbstractSettingAssistant {
 	public String applyNamespaceForTranslet(String transletName) {
 		StringBuilder sb = new StringBuilder();
 		
-		if(activityRule.getTransletNamePatternPrefix() != null)
-			sb.append(activityRule.getTransletNamePatternPrefix());
+		if(activitySettingsRule.getTransletNamePatternPrefix() != null)
+			sb.append(activitySettingsRule.getTransletNamePatternPrefix());
 		
 		if(useNamespaces && namespace != null) {
 			sb.append(namespace);
@@ -138,8 +138,8 @@ public class AspectranSettingAssistant extends AbstractSettingAssistant {
 			
 		sb.append(transletName);
 		
-		if(activityRule.getTransletNamePatternSuffix() != null)
-			sb.append(activityRule.getTransletNamePatternSuffix());
+		if(activitySettingsRule.getTransletNamePatternSuffix() != null)
+			sb.append(activitySettingsRule.getTransletNamePatternSuffix());
 		
 		return sb.toString();
 	}
@@ -156,10 +156,10 @@ public class AspectranSettingAssistant extends AbstractSettingAssistant {
 	}
 	
 	public String replaceTransletNameSuffix(String name, String transletNameSuffix) {
-		if(activityRule.getTransletNamePatternSuffix() == null)
+		if(activitySettingsRule.getTransletNamePatternSuffix() == null)
 			return name + transletNameSuffix;
 		
-		int index = name.indexOf(activityRule.getTransletNamePatternSuffix());
+		int index = name.indexOf(activitySettingsRule.getTransletNamePatternSuffix());
 		
 		StringBuilder sb = new StringBuilder();
 		sb.append(name.substring(0, index));
@@ -225,13 +225,13 @@ public class AspectranSettingAssistant extends AbstractSettingAssistant {
 		return activityRootPath;
 	}
 	
-	public ActivityRule getActivityRule() {
-		return activityRule;
+	public ActivitySettingsRule getActivitySettingsRule() {
+		return activitySettingsRule;
 	}
 
-	public void setActivityRule(ActivityRule activityRule) {
+	public void setActivityRule(ActivitySettingsRule activityRule) {
 		activityRule.setActivityRootPath(activityRootPath);
-		this.activityRule = activityRule;
+		this.activitySettingsRule = activityRule;
 	}
 
 	/**
@@ -426,10 +426,10 @@ public class AspectranSettingAssistant extends AbstractSettingAssistant {
 	 * @return the file
 	 */
 	public File toRealPathAsFile(String filePath) {
-		if(activityRule == null)
+		if(activitySettingsRule == null)
 			return null;
 
-		return activityRule.toRealPathAsFile(filePath);
+		return activitySettingsRule.toRealPathAsFile(filePath);
 	}
 	
 	public TransletRuleMap getTransletRuleMap() {
