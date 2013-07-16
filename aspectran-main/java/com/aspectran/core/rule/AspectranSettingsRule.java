@@ -16,13 +16,15 @@
 package com.aspectran.core.rule;
 
 import java.io.File;
+import java.util.Map;
 
 import com.aspectran.core.context.builder.AspectranContextConstant;
+import com.aspectran.core.type.ActivitySettingType;
 
 /**
  * <p>Created: 2008. 03. 22 오후 5:48:09</p>
  */
-public class ActivitySettingsRule {
+public class AspectranSettingsRule {
 
 	private String activityRootPath;
 
@@ -38,13 +40,13 @@ public class ActivitySettingsRule {
 
 	private String transletClass;
 	
-	private boolean useNamespaces;
+	private boolean useNamespaces = true;
 
-	private boolean nullableContentId;
+	private boolean nullableContentId = true;
 	
-	private boolean nullableActionId;
+	private boolean nullableActionId = true;
 	
-	private boolean multiActivityEnable;
+	private boolean multiActivityEnable = true;
 	
 	public String getActivityRootPath() {
 		return activityRootPath;
@@ -179,6 +181,17 @@ public class ActivitySettingsRule {
 		this.multiActivityEnable = multiActivityEnable;
 	}
 
+	public void set(Map<ActivitySettingType, String> settings) {
+		if(settings.get(ActivitySettingType.USE_NAMESPACES) != null)
+			useNamespaces = Boolean.valueOf(settings.get(ActivitySettingType.USE_NAMESPACES));
+
+//TODO
+		//		nullableContentId = isSettedTrue(ActivitySettingType.NULLABLE_CONTENT_ID);
+//		nullableActionId = isSettedTrue(ActivitySettingType.NULLABLE_ACTION_ID);
+//		multiActivityEnable = isSettedTrue(ActivitySettingType.MULTI_ACTIVITY_ENABLE);
+
+		
+	}
 	
 //	
 //	public String toRequestUri(String transletPath) {

@@ -17,7 +17,6 @@ package com.aspectran.core.context.builder;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -32,12 +31,12 @@ import com.aspectran.core.context.AspectranContext;
 import com.aspectran.core.context.bean.registry.BeanRegistry;
 import com.aspectran.core.context.builder.xml.AspectranNodeParser;
 import com.aspectran.core.context.translet.registry.TransletRegistry;
+import com.aspectran.core.rule.AspectranSettingsRule;
 import com.aspectran.core.rule.BeanRuleMap;
 import com.aspectran.core.rule.RequestRule;
 import com.aspectran.core.rule.ResponseRule;
 import com.aspectran.core.rule.TransletRule;
 import com.aspectran.core.rule.TransletRuleMap;
-import com.aspectran.core.util.StringUtils;
 
 /**
  * TransletsContext builder.
@@ -70,37 +69,23 @@ public class AspectranContextBuilder {
 	}
 
 	public AspectranContext build(String contextConfigLocation) throws AspectranContextBuilderException {
-		List<ImportableResource> importableResourceList = null;
-
-		try {
-			importableResourceList = new ArrayList<ImportableResource>();
+		ImportableResource resource = null;
 		
-			String[] filePathes = StringUtils.tokenize(contextConfigLocation, "\n\t,;:| ");
+		try {
+			File file = new File(contextConfigLocation);
 			
-			if(filePathes.length > 0) {
-				
-				for(String filePath : filePathes) {
-					File file = new File(filePath);
-				
-					if(!file.isFile())
-						throw new FileNotFoundException("aspectran context configuration file is not found. " + filePath);
-					
-					ImportableResource r = new ImportableResource();
-					r.setFile(file);
-					
-					importableResourceList.add(r);
-				}
-			}
+			if(!file.isFile())
+				throw new FileNotFoundException("aspectran context configuration file is not found. " + contextConfigLocation);
+			
+			resource = new ImportableResource();
+			resource.setFile(file);
 		} catch(Exception e) {
 			log.error(e);
 			throw new AspectranContextBuilderException(e);
 		}
 		
 		AspectranSettingAssistant assistant = null;
-		
-		for(ImportableResource r : importableResourceList) {
-			assistant = build(r, assistant);
-		}
+		assistant = build(resource, assistant);
 
 		BeanRuleMap beanRuleMap = assistant.getBeanRuleMap();
 		TransletRuleMap transletRuleMap = assistant.getTransletRuleMap();
@@ -143,17 +128,22 @@ public class AspectranContextBuilder {
 
 			assistant.setBeanRuleMap(beanRuleMap);
 
+			AspectranSettingsRule oldActivitySettingsRule = assistant.getActivitySettingsRule();
+
 			// Translet loading...
 			AspectranNodeParser aspectranNodeParser = new AspectranNodeParser(assistant);
 			aspectranNodeParser.parse(resource.getInputStream());
+
+			assistant.clearTypeAliases();
 			
 			List<ImportableResource> resources = assistant.getResources();
 			
 			for(ImportableResource r : resources) {
 				log.info("Loading the translets from '" + r.getResource() + "'...");
-
 				build(r, assistant);
 			}
+			
+			assistant.setActivitySettingsRule(oldActivitySettingsRule);
 			
 			// initializing translets 
 			log.info("Initializing translets...");
@@ -260,4 +250,60 @@ public class AspectranContextBuilder {
 		
 		return transletRuleMap;
 	}
+	
+//	public AspectranContext build(String contextConfigLocation) throws AspectranContextBuilderException {
+//		List<ImportableResource> importableResourceList = null;
+//
+//		try {
+//			importableResourceList = new ArrayList<ImportableResource>();
+//		
+//			String[] filePathes = StringUtils.tokenize(contextConfigLocation, "\n\t,;:| ");
+//			
+//			if(filePathes.length > 0) {
+//				
+//				for(String filePath : filePathes) {
+//					File file = new File(filePath);
+//				
+//					if(!file.isFile())
+//						throw new FileNotFoundException("aspectran context configuration file is not found. " + filePath);
+//					
+//					ImportableResource r = new ImportableResource();
+//					r.setFile(file);
+//					
+//					importableResourceList.add(r);
+//				}
+//			}
+//		} catch(Exception e) {
+//			log.error(e);
+//			throw new AspectranContextBuilderException(e);
+//		}
+//		
+//		AspectranSettingAssistant assistant = null;
+//		
+//		for(ImportableResource r : importableResourceList) {
+//			assistant = build(r, assistant);
+//		}
+//
+//		BeanRuleMap beanRuleMap = assistant.getBeanRuleMap();
+//		TransletRuleMap transletRuleMap = assistant.getTransletRuleMap();
+//		
+//		BeanRegistry beanRegistry = buildBeanRegistry(assistant);
+//		TransletRegistry transletRegistry = buildTransletRegistry(assistant);
+//		
+//		// create ActivityContext
+//		AspectranContext context = new AspectranContext(assistant.getActivitySettingsRule());
+//		context.setBeanRegistry(beanRegistry);
+//		context.setTransletRegistry(transletRegistry);
+//		//context.setBeanFactory(beanRegistry);
+//		//context.setTransletRuleMap(assistant.getTransletRuleMap());
+//		
+//		
+//		
+//		assistant.clearObjectStack();
+//		assistant.clearTypeAliases();
+//
+//		return context;
+//	}
+	
+	
 }

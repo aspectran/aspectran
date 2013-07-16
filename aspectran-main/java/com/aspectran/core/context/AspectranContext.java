@@ -18,7 +18,7 @@ package com.aspectran.core.context;
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.bean.registry.BeanRegistry;
 import com.aspectran.core.context.translet.registry.TransletRegistry;
-import com.aspectran.core.rule.ActivitySettingsRule;
+import com.aspectran.core.rule.AspectranSettingsRule;
 import com.aspectran.core.rule.MultiActivityTransletRule;
 import com.aspectran.core.rule.TransletRule;
 
@@ -29,7 +29,7 @@ import com.aspectran.core.rule.TransletRule;
  */
 public class AspectranContext {
 
-	private ActivitySettingsRule activityRule;
+	private AspectranSettingsRule activityRule;
 	
 	private ApplicationAdapter applicationAdapter;
 	
@@ -39,7 +39,7 @@ public class AspectranContext {
 	
 	//private TransletRuleMap transletRuleMap;
 	
-	public AspectranContext(ActivitySettingsRule activityRule) {
+	public AspectranContext(AspectranSettingsRule activityRule) {
 		this.activityRule = activityRule;
 	}
 	
