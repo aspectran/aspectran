@@ -1,4 +1,4 @@
-package com.aspectran.util.xml;
+package com.aspectran.core.util.xml;
 
 /**
  * A nodelet is a sort of callback or event handler that can be registered 

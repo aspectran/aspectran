@@ -24,7 +24,7 @@ import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-import com.aspectran.util.Resources;
+import com.aspectran.core.util.Resources;
 
 /**
  * Offline entity resolver for the Aspectran DTDs

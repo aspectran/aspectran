@@ -10,7 +10,7 @@ import org.apache.commons.logging.LogFactory;
 
 import com.aspectran.core.context.AspectranContext;
 import com.aspectran.core.type.ContextMergeMode;
-import com.aspectran.util.StringUtils;
+import com.aspectran.core.util.StringUtils;
 
 public class ReferContextLoader implements ContextLoader {
 

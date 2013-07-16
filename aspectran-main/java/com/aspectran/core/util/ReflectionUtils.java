@@ -1,4 +1,4 @@
-package com.aspectran.util;
+package com.aspectran.core.util;
 
 
 /**

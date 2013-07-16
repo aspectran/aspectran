@@ -45,7 +45,7 @@ import com.aspectran.core.rule.MultiActivityTransletRuleMap;
 import com.aspectran.core.rule.RequestRule;
 import com.aspectran.core.rule.ResponseRule;
 import com.aspectran.core.rule.TransletRule;
-import com.aspectran.util.ClassUtils;
+import com.aspectran.core.util.ClassUtils;
 
 /**
  * TransletsContext builder.

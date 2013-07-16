@@ -5,7 +5,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 
 import com.aspectran.core.rule.BeanRule;
-import com.aspectran.util.ReflectionUtils;
+import com.aspectran.core.util.ReflectionUtils;
 
 /**
  * <p>

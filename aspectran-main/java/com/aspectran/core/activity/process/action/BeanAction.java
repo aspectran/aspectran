@@ -29,9 +29,9 @@ import com.aspectran.core.rule.ItemRule;
 import com.aspectran.core.rule.ItemRuleMap;
 import com.aspectran.core.token.expression.ItemTokenExpression;
 import com.aspectran.core.token.expression.ItemTokenExpressor;
+import com.aspectran.core.util.BeanUtils;
+import com.aspectran.core.util.MethodUtils;
 import com.aspectran.core.var.ValueMap;
-import com.aspectran.util.BeanUtils;
-import com.aspectran.util.MethodUtils;
 
 /**
  * <p>Created: 2008. 03. 22 오후 5:50:35</p>

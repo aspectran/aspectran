@@ -37,7 +37,7 @@ import com.aspectran.core.rule.RequestRule;
 import com.aspectran.core.rule.ResponseRule;
 import com.aspectran.core.rule.TransletRule;
 import com.aspectran.core.rule.TransletRuleMap;
-import com.aspectran.util.StringUtils;
+import com.aspectran.core.util.StringUtils;
 
 /**
  * TransletsContext builder.

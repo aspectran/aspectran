@@ -33,10 +33,10 @@ import com.aspectran.core.token.TokenParser;
 import com.aspectran.core.type.ItemType;
 import com.aspectran.core.type.ItemValueType;
 import com.aspectran.core.type.TokenType;
-import com.aspectran.util.StringUtils;
-import com.aspectran.util.xml.Nodelet;
-import com.aspectran.util.xml.NodeletAdder;
-import com.aspectran.util.xml.NodeletParser;
+import com.aspectran.core.util.StringUtils;
+import com.aspectran.core.util.xml.Nodelet;
+import com.aspectran.core.util.xml.NodeletAdder;
+import com.aspectran.core.util.xml.NodeletParser;
 
 /**
  * The Class ItemRuleNodeletAdder.

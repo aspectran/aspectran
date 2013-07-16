@@ -31,11 +31,11 @@ import com.aspectran.core.rule.ResponseRule;
 import com.aspectran.core.rule.TransformRule;
 import com.aspectran.core.rule.TransletRule;
 import com.aspectran.core.type.TransformType;
-import com.aspectran.util.Resources;
-import com.aspectran.util.StringUtils;
-import com.aspectran.util.xml.Nodelet;
-import com.aspectran.util.xml.NodeletAdder;
-import com.aspectran.util.xml.NodeletParser;
+import com.aspectran.core.util.Resources;
+import com.aspectran.core.util.StringUtils;
+import com.aspectran.core.util.xml.Nodelet;
+import com.aspectran.core.util.xml.NodeletAdder;
+import com.aspectran.core.util.xml.NodeletParser;
 
 /**
  * The Class ResponseRuleNodeletAdder.

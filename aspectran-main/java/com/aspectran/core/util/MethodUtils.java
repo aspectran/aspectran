@@ -1,4 +1,4 @@
-package com.aspectran.util;
+package com.aspectran.core.util;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;

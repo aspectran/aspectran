@@ -28,8 +28,8 @@ import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.context.bean.registry.BeanRegistry;
 import com.aspectran.core.token.Token;
 import com.aspectran.core.type.TokenType;
-import com.aspectran.util.BeanUtils;
-import com.aspectran.util.StringUtils;
+import com.aspectran.core.util.BeanUtils;
+import com.aspectran.core.util.StringUtils;
 
 /**
  * <p>Created: 2008. 03. 29 오전 12:59:16</p>

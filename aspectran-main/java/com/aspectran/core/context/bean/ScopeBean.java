@@ -7,7 +7,7 @@ import java.lang.reflect.InvocationTargetException;
 
 import com.aspectran.core.context.bean.ablility.Disposable;
 import com.aspectran.core.rule.BeanRule;
-import com.aspectran.util.MethodUtils;
+import com.aspectran.core.util.MethodUtils;
 
 
 /**

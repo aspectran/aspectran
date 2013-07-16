@@ -19,7 +19,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.aspectran.core.type.ActivitySettingType;
-import com.aspectran.util.ArrayStack;
+import com.aspectran.core.util.ArrayStack;
 
 /**
  * <p>Created: 2008. 04. 01 오후 10:25:35</p>

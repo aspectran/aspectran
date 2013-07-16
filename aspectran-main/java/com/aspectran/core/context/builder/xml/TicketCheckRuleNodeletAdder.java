@@ -25,9 +25,9 @@ import com.aspectran.core.rule.TicketCheckRule;
 import com.aspectran.core.rule.TicketCheckcaseRule;
 import com.aspectran.core.rule.TransletRule;
 import com.aspectran.core.type.TicketCheckpointType;
-import com.aspectran.util.xml.Nodelet;
-import com.aspectran.util.xml.NodeletAdder;
-import com.aspectran.util.xml.NodeletParser;
+import com.aspectran.core.util.xml.Nodelet;
+import com.aspectran.core.util.xml.NodeletAdder;
+import com.aspectran.core.util.xml.NodeletParser;
 
 /**
  * The Class ItemRuleNodeletAdder.
