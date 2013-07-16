@@ -19,11 +19,13 @@
 	
 	<aspect id="requestRule">
 		<joinpoint target="request"/>
-		<properties>
-			<item name="characterEncoding">utf-8</item>
-			<item name="maxRequestSize">10M</item>
-			<item name="temporaryFilePath">/d:/</item>
-		</properties>
+		<default>
+			<properties>
+				<item name="characterEncoding">utf-8</item>
+				<item name="maxRequestSize">10M</item>
+				<item name="temporaryFilePath">/d:/</item>
+			</properties>
+		</default>
 		<before>
 			<action id="xml" bean="common.action.a1" method="testXmlAction" hidden="true">
 				<properties>
@@ -47,22 +49,27 @@
 
 	<aspect id="responseRule">
 		<joinpoint target="response"/>
-		<properties>
-			<item name="characterEncoding">utf-8</item>
-			<item name="defaultContentType">text/html</item>
-			<item name="viewDispatcher">org.jhlabs.translets.web.JspViewDispatcher</item>
-		</properties>
+		<default>
+			<properties>
+				<item name="characterEncoding">utf-8</item>
+				<item name="defaultContentType">text/html</item>
+				<item name="viewDispatcher">org.jhlabs.translets.web.JspViewDispatcher</item>
+			</properties>
+		</default>
 	</aspect>
 
 	<aspect id="bean1">
 		<joinpoint target="bean">
 			<pointcut>front/*</pointcut>
 		</joinpoint>
-		<properties>
-			<item name="characterEncoding">utf-8</item>
-			<item name="defaultContentType">text/html</item>
-			<item name="viewDispatcher">org.jhlabs.translets.web.JspViewDispatcher</item>
-		</properties>
+		<around>
+			<action id="xml" bean="common.action.a1" method="testXmlAction" hidden="true">
+				<properties>
+					<item name="variable1">error</item>
+					<item name="variable2">0001</item>
+				</properties>
+			</action>
+		</around>
 	</aspect>
 
 	<!--
@@ -123,7 +130,7 @@
 			translet: each time it is called
 			action: each time it is called
 		getAspectObject:
-			a return data of <before> action.
+			a return object of <before> action.
 	-->
 	<aspect id="sqlmap">
 		<joinpoint target="translet">

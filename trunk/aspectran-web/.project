@@ -3,7 +3,6 @@
 	<name>aspectran-web</name>
 	<comment></comment>
 	<projects>
-		<project>aspectran-main</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
