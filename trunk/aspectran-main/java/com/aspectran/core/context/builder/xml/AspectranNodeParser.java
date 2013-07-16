@@ -26,7 +26,7 @@ import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.activity.process.ContentList;
 import com.aspectran.core.activity.response.ResponseMap;
 import com.aspectran.core.activity.response.Responsible;
-import com.aspectran.core.context.builder.AspectranContextBuilderAssistant;
+import com.aspectran.core.context.builder.AspectranSettingAssistant;
 import com.aspectran.core.context.builder.ImportableResource;
 import com.aspectran.core.rule.ActivityRule;
 import com.aspectran.core.rule.BeanRule;
@@ -43,6 +43,7 @@ import com.aspectran.core.rule.ResponseByContentTypeRule;
 import com.aspectran.core.rule.ResponseRule;
 import com.aspectran.core.rule.TransletRule;
 import com.aspectran.core.ticket.TicketCheckActionList;
+import com.aspectran.core.type.ActivitySettingType;
 import com.aspectran.core.type.RequestMethodType;
 import com.aspectran.core.type.ScopeType;
 import com.aspectran.util.StringUtils;
@@ -58,14 +59,14 @@ public class AspectranNodeParser {
 	
 	private final NodeletParser parser = new NodeletParser();
 
-	private final AspectranContextBuilderAssistant assistant;
+	private final AspectranSettingAssistant assistant;
 	
 	/**
 	 * Instantiates a new translet map parser.
 	 * 
 	 * @param assistant the assistant for Context Builder
 	 */
-	public AspectranNodeParser(AspectranContextBuilderAssistant assistant) {
+	public AspectranNodeParser(AspectranSettingAssistant assistant) {
 		//super(log);
 		
 		this.assistant = assistant;
@@ -146,13 +147,22 @@ public class AspectranNodeParser {
 			public void process(Node node, Properties attributes, String text) throws Exception {
 				String name = attributes.getProperty("name");
 				String value = attributes.getProperty("value");
+
+				ActivitySettingType settingType = null;
 				
-				assistant.putSetting(name, value);
+				if(name != null) {
+					settingType = ActivitySettingType.valueOf(name);
+					
+					if(settingType == null)
+						throw new IllegalArgumentException("Unkown setting name '" + name + "'");
+				}
+				
+				assistant.putSetting(settingType, value);
 			}
 		});
 		parser.addNodelet("/aspectran/setting/end()", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
-				assistant.applySettings();
+				assistant.applyActivitySettings();
 			}
 		});
 	}
@@ -184,7 +194,7 @@ public class AspectranNodeParser {
 		parser.addNodelet("/aspectran/activityRule/transletNamePattern/text()", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
 				ActivityRule ar = (ActivityRule)assistant.peekObject();
-				ar.setTransletPathPattern(text);
+				ar.setTransletNamePattern(text);
 			}
 		});
 		parser.addNodelet("/aspectran/activityRule/transletNamePattern/prefix/text()", new Nodelet() {
@@ -196,13 +206,7 @@ public class AspectranNodeParser {
 		parser.addNodelet("/aspectran/activityRule/transletNamePattern/suffix/text()", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
 				ActivityRule sr = (ActivityRule)assistant.peekObject();
-				sr.setTransletPathPatternSuffix(text);
-			}
-		});
-		parser.addNodelet("/aspectran/activityRule/description/text()", new Nodelet() {
-			public void process(Node node, Properties attributes, String text) throws Exception {
-				ActivityRule sr = (ActivityRule)assistant.peekObject();
-				sr.setDescription(text);
+				sr.setTransletNamePatternSuffix(text);
 			}
 		});
 		parser.addNodelet("/aspectran/activityRule/end()", new Nodelet() {

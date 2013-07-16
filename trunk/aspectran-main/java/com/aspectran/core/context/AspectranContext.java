@@ -44,15 +44,6 @@ public class AspectranContext {
 	}
 	
 	/**
-	 * Gets the activity description.
-	 *
-	 * @return the activity description
-	 */
-	public String getActivityDescription() {
-		return activityRule.getDescription();
-	}
-	
-	/**
 	 * Gets the application adapter.
 	 *
 	 * @return the application adapter
