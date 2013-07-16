@@ -35,8 +35,8 @@ import org.xml.sax.helpers.AttributesImpl;
 import com.aspectran.core.activity.process.result.ActionResult;
 import com.aspectran.core.activity.process.result.ContentResult;
 import com.aspectran.core.activity.process.result.ProcessResult;
-import com.aspectran.util.BeanUtils;
-import com.aspectran.util.StringUtils;
+import com.aspectran.core.util.BeanUtils;
+import com.aspectran.core.util.StringUtils;
 
 /**
  * <p>Created: 2008. 05. 26 오후 2:03:15</p>

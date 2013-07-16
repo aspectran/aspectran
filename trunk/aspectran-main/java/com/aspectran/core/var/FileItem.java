@@ -15,7 +15,7 @@
  */
 package com.aspectran.core.var;
 
-import com.aspectran.util.FileUtils;
+import com.aspectran.core.util.FileUtils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;

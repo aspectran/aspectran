@@ -1,4 +1,4 @@
-package com.aspectran.util.xml;
+package com.aspectran.core.util.xml;
 
 import java.io.IOException;
 import java.io.InputStream;

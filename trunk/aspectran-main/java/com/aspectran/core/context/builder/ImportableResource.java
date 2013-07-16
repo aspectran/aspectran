@@ -23,7 +23,7 @@ import java.io.InputStream;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.aspectran.util.Resources;
+import com.aspectran.core.util.Resources;
 
 /**
  * <p>Created: 2008. 04. 24 오전 11:23:36</p>

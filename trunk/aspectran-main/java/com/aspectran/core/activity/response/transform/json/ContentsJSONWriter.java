@@ -27,7 +27,7 @@ import java.util.Map;
 import com.aspectran.core.activity.process.result.ActionResult;
 import com.aspectran.core.activity.process.result.ContentResult;
 import com.aspectran.core.activity.process.result.ProcessResult;
-import com.aspectran.util.BeanUtils;
+import com.aspectran.core.util.BeanUtils;
 
 /**
  * <p>Created: 2008. 06. 12 오후 8:20:54</p>

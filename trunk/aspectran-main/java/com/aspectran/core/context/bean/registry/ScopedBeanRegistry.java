@@ -25,8 +25,8 @@ import com.aspectran.core.rule.ItemRuleMap;
 import com.aspectran.core.token.expression.ItemTokenExpression;
 import com.aspectran.core.token.expression.ItemTokenExpressor;
 import com.aspectran.core.type.ScopeType;
+import com.aspectran.core.util.MethodUtils;
 import com.aspectran.core.var.ValueMap;
-import com.aspectran.util.MethodUtils;
 
 /**
  * SINGLETON: 모든 singleton 빈은context 생성시 초기화 된다.

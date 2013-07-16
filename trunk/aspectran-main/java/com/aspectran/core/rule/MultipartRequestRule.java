@@ -15,7 +15,7 @@
  */
 package com.aspectran.core.rule;
 
-import com.aspectran.util.FileUtils;
+import com.aspectran.core.util.FileUtils;
 
 /**
  * <p>Created: 2008. 05. 24 오후 11:05:09</p>

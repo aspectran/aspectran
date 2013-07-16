@@ -46,9 +46,9 @@ import com.aspectran.core.ticket.TicketCheckActionList;
 import com.aspectran.core.type.ActivitySettingType;
 import com.aspectran.core.type.RequestMethodType;
 import com.aspectran.core.type.ScopeType;
-import com.aspectran.util.StringUtils;
-import com.aspectran.util.xml.Nodelet;
-import com.aspectran.util.xml.NodeletParser;
+import com.aspectran.core.util.StringUtils;
+import com.aspectran.core.util.xml.Nodelet;
+import com.aspectran.core.util.xml.NodeletParser;
 
 /**
  * Translet Map Parser.

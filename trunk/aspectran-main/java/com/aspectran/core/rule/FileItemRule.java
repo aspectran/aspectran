@@ -16,7 +16,7 @@
 package com.aspectran.core.rule;
 
 import com.aspectran.core.type.FileItemUnityType;
-import com.aspectran.util.FileUtils;
+import com.aspectran.core.util.FileUtils;
 
 import java.util.HashSet;
 import java.util.Set;

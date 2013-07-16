@@ -29,7 +29,7 @@ import com.aspectran.core.rule.TicketCheckRule;
 import com.aspectran.core.rule.TicketCheckcaseRule;
 import com.aspectran.core.rule.TicketCheckcaseRuleMap;
 import com.aspectran.core.ticket.TicketCheckActionList;
-import com.aspectran.util.ArrayStack;
+import com.aspectran.core.util.ArrayStack;
 
 /**
  * <p>Created: 2008. 04. 01 오후 10:25:35</p>
