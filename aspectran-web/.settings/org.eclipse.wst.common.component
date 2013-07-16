@@ -4,9 +4,6 @@
         <wb-resource deploy-path="/" source-path="/webapp"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/java"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/config"/>
-        <dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/aspectran-main/aspectran-main">
-            <dependency-type>uses</dependency-type>
-        </dependent-module>
         <property name="context-root" value="/"/>
         <property name="java-output-path" value="/aspectran-web/WEB-INF/classes"/>
     </wb-module>
