@@ -185,11 +185,15 @@ public class AspectranSettingsRule {
 		if(settings.get(ActivitySettingType.USE_NAMESPACES) != null)
 			useNamespaces = Boolean.valueOf(settings.get(ActivitySettingType.USE_NAMESPACES));
 
-//TODO
-		//		nullableContentId = isSettedTrue(ActivitySettingType.NULLABLE_CONTENT_ID);
-//		nullableActionId = isSettedTrue(ActivitySettingType.NULLABLE_ACTION_ID);
-//		multiActivityEnable = isSettedTrue(ActivitySettingType.MULTI_ACTIVITY_ENABLE);
-
+		if(settings.get(ActivitySettingType.NULLABLE_CONTENT_ID) != null)
+			nullableContentId = Boolean.valueOf(settings.get(ActivitySettingType.NULLABLE_CONTENT_ID));
+		
+		if(settings.get(ActivitySettingType.NULLABLE_ACTION_ID) != null)
+			nullableActionId = Boolean.valueOf(settings.get(ActivitySettingType.NULLABLE_ACTION_ID));
+		
+		if(settings.get(ActivitySettingType.MULTI_ACTIVITY_ENABLE) != null)
+			multiActivityEnable = Boolean.valueOf(settings.get(ActivitySettingType.MULTI_ACTIVITY_ENABLE));
+		
 		
 	}
 	
