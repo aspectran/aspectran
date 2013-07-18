@@ -32,7 +32,6 @@ import com.aspectran.core.rule.TicketCheckcaseRuleMap;
 import com.aspectran.core.rule.TransletRule;
 import com.aspectran.core.rule.TransletRuleMap;
 import com.aspectran.core.ticket.TicketCheckActionList;
-import com.aspectran.core.type.ActivitySettingType;
 
 /**
  * <p>Created: 2008. 04. 01 오후 10:25:35</p>
@@ -186,7 +185,7 @@ public class AspectranSettingAssistant extends AbstractSettingAssistant {
 		return activitySettingsRule.isNullableActionId();
 	}
 	
-	public boolean isMultiActivityEnable() {
+	public boolean isMultipleTransletEnable() {
 		return activitySettingsRule.isMultipleTransletEnable();
 	}
 
@@ -404,23 +403,12 @@ public class AspectranSettingAssistant extends AbstractSettingAssistant {
 	public TransletRuleMap getTransletRuleMap() {
 		return transletRuleMap;
 	}
-	
-	public MultipleTransletRuleMap getMultipleTransletRuleMap() {
-		return multipleTransletRuleMap;
-	}
 
 	public void addTransletRule(TransletRule transletRule) {
 		if(transletRuleMap == null)
 			transletRuleMap = new TransletRuleMap();
 		
 		transletRuleMap.put(transletRule.getName(), transletRule);
-	}
-	
-	public void addMultipleTransletRule(String transletName, String responseId, TransletRule transletRule) {
-		if(multipleTransletRuleMap == null)
-			multipleTransletRuleMap = new MultipleTransletRuleMap();
-
-		multipleTransletRuleMap.putMultipleTransletRule(transletName, responseId, transletRule);
 	}
 	
 }

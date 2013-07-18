@@ -29,21 +29,17 @@ import com.aspectran.core.activity.response.RedirectResponse;
 import com.aspectran.core.activity.response.Responsible;
 import com.aspectran.core.activity.response.transform.AbstractTransform;
 import com.aspectran.core.context.builder.AspectranContextConstant;
-import com.aspectran.core.ticket.TicketCheckActionList;
-import com.aspectran.core.ticket.action.TicketCheckAction;
 import com.aspectran.core.type.ResponseType;
 import com.aspectran.core.type.TransformType;
 
 /**
  * <p>Created: 2008. 03. 22 오후 5:48:09</p>
  */
-public class TransletRule {
+public class TransletRule implements Cloneable {
 
 	private String name;
 
 	private String parentTransletName;
-	
-	private TicketCheckActionList ticketCheckActionList;
 	
 	private RequestRule requestRule;
 	
@@ -53,7 +49,7 @@ public class TransletRule {
 	
 	private ExceptionHandleRule exceptionHandleRule;
 	
-	private MultipleTransletRuleMap multiActivityTransletRuleMap;
+	private String multipleTransletResponseId;
 	
 	private Class<? extends SuperTranslet> transletInterfaceClass;
 	
@@ -91,44 +87,6 @@ public class TransletRule {
 		this.parentTransletName = parentTransletName;
 	}
 
-	public MultipleTransletRuleMap getMultiActivityTransletRuleMap() {
-		return multiActivityTransletRuleMap;
-	}
-
-	public void setMultiActivityTransletRuleMap(MultipleTransletRuleMap multiActivityTransletRuleMap) {
-		this.multiActivityTransletRuleMap = multiActivityTransletRuleMap;
-	}
-
-	/**
-	 * Gets the ticket bean action list.
-	 *
-	 * @return the ticket bean action list
-	 */
-	public TicketCheckActionList getTicketCheckActionList() {
-		return ticketCheckActionList;
-	}
-
-	/**
-	 * Sets the ticket check action list.
-	 *
-	 * @param ticketCheckActionList the new ticket bean action list
-	 */
-	public void setTicketCheckActionList(TicketCheckActionList ticketCheckActionList) {
-		this.ticketCheckActionList = ticketCheckActionList;
-	}
-
-	/**
-	 * Adds the ticket bean action.
-	 *
-	 * @param ticketCheckRule the ticket bean action rule
-	 */
-	public void addTicketCheckAction(TicketCheckRule ticketCheckRule) {
-		if(ticketCheckActionList == null)
-			ticketCheckActionList = new TicketCheckActionList();
-		
-		ticketCheckActionList.addTicketCheckAction(ticketCheckRule);
-	}
-	
 	/**
 	 * Gets the request rule.
 	 * 
@@ -200,26 +158,13 @@ public class TransletRule {
 	public void setExceptionHandleRule(ExceptionHandleRule exceptionHandleRule) {
 		this.exceptionHandleRule = exceptionHandleRule;
 	}
-	
-	/**
-	 * Adds the multi activity translet rule.
-	 *
-	 * @param multiActivityTransletRule the multi activity translet rule
-	 */
-	public void addMultiActivityTransletRule(MultipleTransletRule multiActivityTransletRule) {
-		if(multiActivityTransletRuleMap == null)
-			multiActivityTransletRuleMap = new MultipleTransletRuleMap();
-		
-		multiActivityTransletRuleMap.putMultipleTransletRule(multiActivityTransletRule);
+
+	public String getMultipleTransletResponseId() {
+		return multipleTransletResponseId;
 	}
-	
-	/**
-	 * Checks for multi activity translet rule.
-	 *
-	 * @return true, if successful
-	 */
-	public boolean hasMultiActivityTransletRule() {
-		return (multiActivityTransletRuleMap != null);
+
+	public void setMultipleTransletResponseId(String multipleTransletResponseId) {
+		this.multipleTransletResponseId = multipleTransletResponseId;
 	}
 
 	public Class<? extends SuperTranslet> getTransletInterfaceClass() {
@@ -238,6 +183,10 @@ public class TransletRule {
 		this.transletInstanceClass = transletInstanceClass;
 	}
 
+	public Object clone() throws CloneNotSupportedException {                      
+		return super.clone();              
+	}
+	
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
@@ -262,12 +211,6 @@ public class TransletRule {
 		StringBuilder sb = new StringBuilder();
 		
 		sb.append("Translet ").append(toString()).append(CRLF);
-
-		if(ticketCheckActionList != null) {
-			for(TicketCheckAction ticketCheckAction : ticketCheckActionList) {
-				sb.append("   Ticket ").append(ticketCheckAction.getTicketCheckRule()).append(CRLF);
-			}
-		}
 		
 		if(requestRule != null) {
 			sb.append("   Request ").append(requestRule).append(CRLF);

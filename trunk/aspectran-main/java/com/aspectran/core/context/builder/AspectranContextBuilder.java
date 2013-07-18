@@ -30,7 +30,7 @@ import com.aspectran.core.activity.response.Responsible;
 import com.aspectran.core.context.AspectranContext;
 import com.aspectran.core.context.bean.registry.BeanRegistry;
 import com.aspectran.core.context.builder.xml.AspectranNodeParser;
-import com.aspectran.core.context.translet.registry.TransletRegistry;
+import com.aspectran.core.context.translet.registry.TransletRuleRegistry;
 import com.aspectran.core.rule.AspectranSettingsRule;
 import com.aspectran.core.rule.BeanRuleMap;
 import com.aspectran.core.rule.RequestRule;
@@ -91,7 +91,7 @@ public class AspectranContextBuilder {
 		TransletRuleMap transletRuleMap = assistant.getTransletRuleMap();
 		
 		BeanRegistry beanRegistry = buildBeanRegistry(assistant);
-		TransletRegistry transletRegistry = buildTransletRegistry(assistant);
+		TransletRuleRegistry transletRegistry = buildTransletRegistry(assistant);
 		
 		// create ActivityContext
 		AspectranContext context = new AspectranContext(assistant.getActivitySettingsRule());
@@ -163,7 +163,7 @@ public class AspectranContextBuilder {
 		}
 	}
 	
-	private TransletRegistry buildTransletRegistry(AspectranSettingAssistant sssistant) {
+	private TransletRuleRegistry buildTransletRegistry(AspectranSettingAssistant sssistant) {
 		return null;
 	}
 

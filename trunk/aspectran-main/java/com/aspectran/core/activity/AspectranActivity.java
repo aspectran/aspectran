@@ -27,7 +27,7 @@ import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.context.AspectranContext;
 import com.aspectran.core.context.bean.registry.BeanRegistry;
 import com.aspectran.core.context.bean.scope.RequestScope;
-import com.aspectran.core.context.translet.registry.TransletRegistry;
+import com.aspectran.core.context.translet.registry.TransletRuleRegistry;
 
 /**
  * Action Translator.
@@ -59,8 +59,6 @@ public interface AspectranActivity {
 	
 	public void response() throws ResponseException;
 	
-	public String getEnforceableResponseId();
-	
 	public String getForwardTransletName();
 	
 	public void setForwardTransletName(String forwardingPath);
@@ -89,6 +87,6 @@ public interface AspectranActivity {
 	
 	public BeanRegistry getBeanRegistry();
 	
-	public TransletRegistry getTransletRegistry();
+	public TransletRuleRegistry getTransletRegistry();
 	
 }

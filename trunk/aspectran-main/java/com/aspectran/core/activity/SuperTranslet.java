@@ -109,13 +109,6 @@ public abstract interface SuperTranslet {
 	public AspectranContext getAspectranContext();
 	
 	/**
-	 * Checks if is max length exceeded.
-	 * 
-	 * @return true, if checks if is max length exceeded
-	 */
-	public boolean isMaxLengthExceeded();
-	
-	/**
 	 * To respond immediately terminate.
 	 */
 	public void responseEnd();

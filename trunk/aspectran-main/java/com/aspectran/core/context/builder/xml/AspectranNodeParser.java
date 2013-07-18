@@ -42,7 +42,6 @@ import com.aspectran.core.rule.RequestRule;
 import com.aspectran.core.rule.ResponseByContentTypeRule;
 import com.aspectran.core.rule.ResponseRule;
 import com.aspectran.core.rule.TransletRule;
-import com.aspectran.core.ticket.TicketCheckActionList;
 import com.aspectran.core.type.ActivitySettingType;
 import com.aspectran.core.type.RequestMethodType;
 import com.aspectran.core.type.ScopeType;
@@ -637,13 +636,6 @@ public class AspectranNodeParser {
 			public void process(Node node, Properties attributes, String text) throws Exception {
 				TransletRule transletRule = (TransletRule)assistant.popObject();
 				
-				if(transletRule.getTicketCheckActionList() == null) {
-					transletRule.setTicketCheckActionList(assistant.getTicketCheckActionList());
-				} else if(assistant.getTicketCheckActionList() != null) {
-					TicketCheckActionList tcal = transletRule.getTicketCheckActionList();
-					tcal.addAll(0, assistant.getTicketCheckActionList());
-				}
-				
 				if(transletRule.getRequestRule() == null) {
 					RequestRule requestRule;
 
@@ -672,7 +664,7 @@ public class AspectranNodeParser {
 
 				assistant.addTransletRule(transletRule);
 
-				if(assistant.isMultiActivityEnable()) {
+				if(assistant.isMultipleTransletEnable()) {
 					ResponseMap responseMap = transletRule.getResponseRule().getResponseMap();
 					
 					for(Responsible response : responseMap) {
@@ -680,7 +672,12 @@ public class AspectranNodeParser {
 						
 						if(!ResponseRule.DEFAULT_ID.equals(responseId)) {
 							String transletName = assistant.replaceTransletNameSuffix(transletRule.getName(), responseId);
-							assistant.addMultipleTransletRule(transletName, responseId, transletRule);
+							
+							TransletRule transletRule2 = (TransletRule)transletRule.clone();
+							transletRule2.setName(transletName);
+							transletRule2.setMultipleTransletResponseId(responseId);
+							
+							assistant.addTransletRule(transletRule2);
 						}
 					}
 				}

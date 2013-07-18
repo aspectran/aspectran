@@ -48,4 +48,5 @@ public class AspectranWebTranslet extends AbstractSuperTranslet implements WebTr
 	public HttpServletResponse getHttpServletResponse() {
 		return (HttpServletResponse)getResponseAdapter().getAdaptee();
 	}
+	
 }
