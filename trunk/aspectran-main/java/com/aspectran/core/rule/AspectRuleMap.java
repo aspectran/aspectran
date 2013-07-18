@@ -15,37 +15,36 @@
  */
 package com.aspectran.core.rule;
 
-import com.aspectran.core.type.JoinpointTargetType;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+
 
 /**
  * <p>
  * Created: 2009. 03. 09 오후 23:48:09
  * </p>
  */
-public class AspectRule {
+public class AspectRuleMap extends LinkedHashMap<String, AspectRule> implements Iterable<AspectRule> {
 
-	private String id;
+	/** @serial */
+	static final long serialVersionUID = 6582559285464575704L;
 
-	private JoinpointTargetType joinpointTarget;
-
-	private AspectAdviceRule beforeAdviceRule;
-	
-	private AspectAdviceRule afterAdviceRule;
-	
-	private AspectAdviceRule aroundAdviceRule;
-	
-	private AspectAdviceRule finallyAdviceRule;
-	
-	private AspectAdviceRule exceptionRaizedAdviceRule;
-
-	public String getId() {
-		return id;
-	}
-
-	public void setId(String id) {
-		this.id = id;
+	/**
+	 * Adds a value rule.
+	 * 
+	 * @param itemRule the value rule
+	 * 
+	 * @return the value rule
+	 */
+	public AspectRule putAspectRule(AspectRule aspectRule) {
+		return put(aspectRule.getId(), aspectRule);
 	}
 	
-	
-	
+	/* (non-Javadoc)
+	 * @see java.lang.Iterable#iterator()
+	 */
+	public Iterator<AspectRule> iterator() {
+		return this.values().iterator();
+	}
+
 }
