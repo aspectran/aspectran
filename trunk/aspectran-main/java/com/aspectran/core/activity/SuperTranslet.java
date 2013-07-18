@@ -106,7 +106,7 @@ public abstract interface SuperTranslet {
 	
 	public Object getSessionAdaptee();
 	
-	public AspectranContext getContext();
+	public AspectranContext getAspectranContext();
 	
 	/**
 	 * Checks if is max length exceeded.
@@ -119,4 +119,9 @@ public abstract interface SuperTranslet {
 	 * To respond immediately terminate.
 	 */
 	public void responseEnd();
+	
+	public Class<? extends SuperTranslet> getTransletInterfaceClass();
+
+	public Class<? extends AbstractSuperTranslet> getTransletInstanceClass();
+
 }

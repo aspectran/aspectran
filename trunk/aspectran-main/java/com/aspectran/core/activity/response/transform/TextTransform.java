@@ -83,8 +83,7 @@ public class TextTransform extends AbstractTransform implements Responsible {
 	 */
 	public void response(AspectranActivity activity) throws TransformResponseException {
 		try {
-			SuperTranslet translet = (SuperTranslet)activity.getTransletInstance();
-			ResponseAdapter responseAdapter = translet.getResponseAdapter();
+			ResponseAdapter responseAdapter = activity.getResponseAdapter();
 			
 			String contentType = transformRule.getContentType();
 			String outputEncoding = transformRule.getCharacterEncoding();

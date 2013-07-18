@@ -19,7 +19,7 @@ import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.bean.registry.BeanRegistry;
 import com.aspectran.core.context.translet.registry.TransletRegistry;
 import com.aspectran.core.rule.AspectranSettingsRule;
-import com.aspectran.core.rule.MultiActivityTransletRule;
+import com.aspectran.core.rule.MultipleTransletRule;
 import com.aspectran.core.rule.TransletRule;
 
 /**
@@ -91,8 +91,8 @@ public class AspectranContext {
 		return transletRegistry.getTransletRule(transletName);
 	}
 
-	public MultiActivityTransletRule getMultiActivityTransletRule(String transletName) {
-		return transletRegistry.getMultiActivityTransletRule(transletName);
+	public MultipleTransletRule getMultipleTransletRule(String transletName) {
+		return transletRegistry.getMultipleTransletRule(transletName);
 	}
 	
 	public boolean isMultiActivityEnable() {

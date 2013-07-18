@@ -1,7 +1,7 @@
 package com.aspectran.core.context.translet.registry;
 
-import com.aspectran.core.rule.MultiActivityTransletRule;
-import com.aspectran.core.rule.MultiActivityTransletRuleMap;
+import com.aspectran.core.rule.MultipleTransletRule;
+import com.aspectran.core.rule.MultipleTransletRuleMap;
 import com.aspectran.core.rule.TransletRule;
 import com.aspectran.core.rule.TransletRuleMap;
 
@@ -10,9 +10,9 @@ public class TransletRegistry {
 	private TransletRuleMap transletRuleMap;
 	
 	/** The multi activity translet rule map. */
-	private MultiActivityTransletRuleMap multiActivityTransletRuleMap;
+	private MultipleTransletRuleMap multiActivityTransletRuleMap;
 
-	public TransletRegistry(TransletRuleMap transletRuleMap, MultiActivityTransletRuleMap multiActivityTransletRuleMap) {
+	public TransletRegistry(TransletRuleMap transletRuleMap, MultipleTransletRuleMap multiActivityTransletRuleMap) {
 		this.transletRuleMap = transletRuleMap;
 		this.multiActivityTransletRuleMap = multiActivityTransletRuleMap;
 	}
@@ -46,7 +46,7 @@ public class TransletRegistry {
 	 * @return the translet rule
 	 */
 	public TransletRule putMultiActivityTransletRule(String name, String responseId, TransletRule transletRule) {
-		MultiActivityTransletRule matr = new MultiActivityTransletRule();
+		MultipleTransletRule matr = new MultipleTransletRule();
 		matr.setName(name);
 		matr.setResponseId(responseId);
 		matr.setTransletRule(transletRule);
@@ -61,7 +61,7 @@ public class TransletRegistry {
 		return transletRuleMap.get(transletName);
 	}
 	
-	public MultiActivityTransletRule getMultiActivityTransletRule(String transletName) {
+	public MultipleTransletRule getMultipleTransletRule(String transletName) {
 		return multiActivityTransletRuleMap.get(transletName);
 	}
 	

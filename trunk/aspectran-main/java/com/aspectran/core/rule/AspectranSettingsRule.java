@@ -36,9 +36,9 @@ public class AspectranSettingsRule {
 
 	private String transletNamePatternSuffix;
 	
-	private String transletInterface;
+	private String transletInterfaceClass;
 
-	private String transletClass;
+	private String transletInstanceClass;
 	
 	private boolean useNamespaces = true;
 
@@ -46,7 +46,7 @@ public class AspectranSettingsRule {
 	
 	private boolean nullableActionId = true;
 	
-	private boolean multiActivityEnable = true;
+	private boolean multipleTransletEnable = true;
 	
 	public String getActivityRootPath() {
 		return activityRootPath;
@@ -133,20 +133,20 @@ public class AspectranSettingsRule {
 		return file;
 	}
 	
-	public String getTransletInterface() {
-		return transletInterface;
+	public String getTransletInterfaceClass() {
+		return transletInterfaceClass;
 	}
 
-	public void setTransletInterface(String transletInterface) {
-		this.transletInterface = transletInterface;
+	public void setTransletInterfaceClass(String transletInterfaceClass) {
+		this.transletInterfaceClass = transletInterfaceClass;
 	}
 
-	public String getTransletClass() {
-		return transletClass;
+	public String getTransletInstanceClass() {
+		return transletInstanceClass;
 	}
 
-	public void setTransletClass(String transletClass) {
-		this.transletClass = transletClass;
+	public void setTransletInstanceClass(String transletInstanceClass) {
+		this.transletInstanceClass = transletInstanceClass;
 	}
 
 	public boolean isUseNamespaces() {
@@ -173,12 +173,12 @@ public class AspectranSettingsRule {
 		this.nullableActionId = nullableActionId;
 	}
 
-	public boolean isMultiActivityEnable() {
-		return multiActivityEnable;
+	public boolean isMultipleTransletEnable() {
+		return multipleTransletEnable;
 	}
 
-	public void setMultiActivityEnable(boolean multiActivityEnable) {
-		this.multiActivityEnable = multiActivityEnable;
+	public void setMultipleTransletEnable(boolean multipleTransletEnable) {
+		this.multipleTransletEnable = multipleTransletEnable;
 	}
 
 	public void set(Map<ActivitySettingType, String> settings) {
@@ -191,8 +191,14 @@ public class AspectranSettingsRule {
 		if(settings.get(ActivitySettingType.NULLABLE_ACTION_ID) != null)
 			nullableActionId = Boolean.valueOf(settings.get(ActivitySettingType.NULLABLE_ACTION_ID));
 		
-		if(settings.get(ActivitySettingType.MULTI_ACTIVITY_ENABLE) != null)
-			multiActivityEnable = Boolean.valueOf(settings.get(ActivitySettingType.MULTI_ACTIVITY_ENABLE));
+		if(settings.get(ActivitySettingType.MULTIPLE_TRANSLET_ENABLE) != null)
+			multipleTransletEnable = Boolean.valueOf(settings.get(ActivitySettingType.MULTIPLE_TRANSLET_ENABLE));
+		
+		if(settings.get(ActivitySettingType.TRANSLET_INTERFACE_CLASS) != null)
+			transletInterfaceClass = settings.get(ActivitySettingType.TRANSLET_INTERFACE_CLASS);
+		
+		if(settings.get(ActivitySettingType.TRANSLET_INSTANCE_CLASS) != null)
+			transletInstanceClass = settings.get(ActivitySettingType.TRANSLET_INSTANCE_CLASS);
 		
 		
 	}

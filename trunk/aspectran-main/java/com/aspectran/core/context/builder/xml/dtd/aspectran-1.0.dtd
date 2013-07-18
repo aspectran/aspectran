@@ -60,7 +60,7 @@ property CDATA #IMPLIED
 
 <!ELEMENT null EMPTY>
 
-<!ELEMENT aspect (joinpoint?, properties?, action*, before?, after?, around?, finally?, exceptionRaized?)>
+<!ELEMENT aspect (joinpoint?, default?, action*, before?, after?, around?, finally?, exceptionRaized?)>
 <!ATTLIST aspect
 id ID #IMPLIED
 >
@@ -75,7 +75,7 @@ target (request | response | scheduler | bean | translet | action) #REQUIRED
 pattern CDATA #IMPLIED
 >
 
-<!ELEMENT once (properties? | action?)*>
+<!ELEMENT default (properties? | action?)*>
 <!ELEMENT before (properties? | echo? | action? | transform? | dispatch? | redirect? | forward?)*>
 <!ELEMENT after (properties? | echo? | action? | transform? | dispatch? | redirect? | forward?)*>
 <!ELEMENT around (properties? | echo? | action? | transform? | dispatch? | redirect? | forward?)*>
@@ -109,7 +109,7 @@ parent CDATA #IMPLIED
 <!ATTLIST translet
 name CDATA #REQUIRED
 hidden (true | false) #IMPLIED
-parent CDATA #IMPLIED
+extends CDATA #IMPLIED
 >
 
 <!ELEMENT request (attributes?, multiparts?)>

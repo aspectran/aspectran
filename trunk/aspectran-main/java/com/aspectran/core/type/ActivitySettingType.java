@@ -36,7 +36,7 @@ public final class ActivitySettingType extends Type {
 	public static final ActivitySettingType NULLABLE_BEAN_ID;
 	
 	/** The Constant MULTI_ACTIVITY_ENABLE. */
-	public static final ActivitySettingType MULTI_ACTIVITY_ENABLE;
+	public static final ActivitySettingType MULTIPLE_TRANSLET_ENABLE;
 	
 	/** The Constant TRANSLET_NAME_SEPARATOR. */
 	public static final ActivitySettingType TRANSLET_NAME_SEPARATOR;
@@ -51,10 +51,10 @@ public final class ActivitySettingType extends Type {
 	public static final ActivitySettingType TRANSLET_NAME_PATTERN;
 	
 	/** The Constant TRANSLET_INTERFACE. */
-	public static final ActivitySettingType TRANSLET_INTERFACE;
+	public static final ActivitySettingType TRANSLET_INTERFACE_CLASS;
 	
 	/** The Constant TRANSLET_CLASS. */
-	public static final ActivitySettingType TRANSLET_CLASS;
+	public static final ActivitySettingType TRANSLET_INSTANCE_CLASS;
 	
 	/** The Constant types. */
 	private static final Map<String, ActivitySettingType> types;
@@ -64,25 +64,25 @@ public final class ActivitySettingType extends Type {
 		NULLABLE_CONTENT_ID = new ActivitySettingType("nullableContentId");
 		NULLABLE_ACTION_ID = new ActivitySettingType("nullableActionId");
 		NULLABLE_BEAN_ID = new ActivitySettingType("nullableBeanId");
-		MULTI_ACTIVITY_ENABLE = new ActivitySettingType("multiActivityEnable");
+		MULTIPLE_TRANSLET_ENABLE = new ActivitySettingType("multiActivityEnable");
 		TRANSLET_NAME_SEPARATOR = new ActivitySettingType("transletNameSeparator");
 		TRANSLET_NAME_PATTERN_PREFIX = new ActivitySettingType("transletNamePatternPrefix");
 		TRANSLET_NAME_PATTERN_SUFFIX = new ActivitySettingType("transletNamePatternSuffix");
 		TRANSLET_NAME_PATTERN = new ActivitySettingType("transletNamePattern");
-		TRANSLET_INTERFACE = new ActivitySettingType("transletInterface");
-		TRANSLET_CLASS = new ActivitySettingType("transletClass");
+		TRANSLET_INTERFACE_CLASS = new ActivitySettingType("transletInterface");
+		TRANSLET_INSTANCE_CLASS = new ActivitySettingType("transletClass");
 
 		types = new HashMap<String, ActivitySettingType>();
 		types.put(USE_NAMESPACES.toString(), NULLABLE_CONTENT_ID);
 		types.put(NULLABLE_ACTION_ID.toString(), NULLABLE_ACTION_ID);
 		types.put(NULLABLE_BEAN_ID.toString(), NULLABLE_BEAN_ID);
-		types.put(MULTI_ACTIVITY_ENABLE.toString(), MULTI_ACTIVITY_ENABLE);
+		types.put(MULTIPLE_TRANSLET_ENABLE.toString(), MULTIPLE_TRANSLET_ENABLE);
 		types.put(TRANSLET_NAME_SEPARATOR.toString(), TRANSLET_NAME_SEPARATOR);
 		types.put(TRANSLET_NAME_PATTERN_PREFIX.toString(), TRANSLET_NAME_PATTERN_PREFIX);
 		types.put(TRANSLET_NAME_PATTERN_SUFFIX.toString(), TRANSLET_NAME_PATTERN_SUFFIX);
 		types.put(TRANSLET_NAME_PATTERN.toString(), TRANSLET_NAME_PATTERN);
-		types.put(TRANSLET_INTERFACE.toString(), TRANSLET_INTERFACE);
-		types.put(TRANSLET_CLASS.toString(), TRANSLET_CLASS);
+		types.put(TRANSLET_INTERFACE_CLASS.toString(), TRANSLET_INTERFACE_CLASS);
+		types.put(TRANSLET_INSTANCE_CLASS.toString(), TRANSLET_INSTANCE_CLASS);
 	}
 
 	/**

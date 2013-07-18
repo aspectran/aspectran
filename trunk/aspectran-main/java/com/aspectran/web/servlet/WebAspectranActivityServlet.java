@@ -32,7 +32,6 @@ import com.aspectran.core.activity.AspectranActivity;
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.AspectranContext;
 import com.aspectran.core.context.translet.registry.TransletNotFoundException;
-import com.aspectran.core.type.ContextMergeMode;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.web.AccessPermitter;
 import com.aspectran.web.activity.WebAspectranActivity;

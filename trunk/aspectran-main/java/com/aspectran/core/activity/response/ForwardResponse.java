@@ -46,8 +46,7 @@ public class ForwardResponse implements Responsible {
 	 * @see org.jhlabs.translets.engine.response.Responsible#response(org.jhlabs.translets.action.Translet)
 	 */
 	public void response(AspectranActivity activity) {
-		SuperTranslet translet = (SuperTranslet)activity.getTransletInstance();
-		RequestAdapter requestAdapter = translet.getRequestAdapter();
+		RequestAdapter requestAdapter = activity.getRequestAdapter();
 
 		Map<String, Object> valueMap = null;
 		

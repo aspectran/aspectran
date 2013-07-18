@@ -69,8 +69,7 @@ public class XmlTransform extends AbstractTransform implements Responsible {
 	 */
 	public void response(AspectranActivity activity) throws TransformResponseException {
 		try {
-			SuperTranslet translet = (SuperTranslet)activity.getTransletInstance();
-			ResponseAdapter responseAdapter = translet.getResponseAdapter();
+			ResponseAdapter responseAdapter = activity.getResponseAdapter();
 			
 			String contentType = transformRule.getContentType();
 			String outputEncoding = transformRule.getCharacterEncoding();
@@ -82,7 +81,7 @@ public class XmlTransform extends AbstractTransform implements Responsible {
 				responseAdapter.setCharacterEncoding(outputEncoding);
 			
 			Writer output = responseAdapter.getWriter();
-			ProcessResult processResult = translet.getProcessResult();
+			ProcessResult processResult = activity.getProcessResult();
 
 			String encoding = transformRule.getCharacterEncoding();
 			

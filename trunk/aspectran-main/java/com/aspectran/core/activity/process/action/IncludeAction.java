@@ -21,7 +21,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.aspectran.core.activity.AspectranActivity;
-import com.aspectran.core.activity.SuperTranslet;
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.activity.process.ActionPathMaker;
 import com.aspectran.core.adapter.RequestAdapter;
@@ -59,10 +58,7 @@ public class IncludeAction implements Executable {
 	 */
 	public Object execute(AspectranActivity activity) throws ActionExecutionException {
 		try {
-			AspectranActivity newActivity = activity.newAspectranActivity();
-			SuperTranslet translet = (SuperTranslet)newActivity.getTransletInstance();
-			RequestAdapter request = translet.getRequestAdapter();
-
+			RequestAdapter request = activity.getRequestAdapter();
 			Map<String, Object> valueMap = null;
 			
 			if(includeActionRule.getAttributeItemRuleMap() != null) {
@@ -75,10 +71,9 @@ public class IncludeAction implements Executable {
 					request.setAttribute(entry.getKey(), entry.getValue());
 			}
 			
+			AspectranActivity newActivity = activity.newAspectranActivity();
 			newActivity.request(includeActionRule.getTransletName());
-			newActivity.process(ignoreTicket);
-
-			return translet.getProcessResult();
+			return newActivity.process(ignoreTicket);
 		} catch(Exception e) {
 			log.error("Execute error: IncludeActionRule " + includeActionRule.toString());
 			throw new ActionExecutionException(this, e);
