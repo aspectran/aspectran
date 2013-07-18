@@ -9,12 +9,12 @@
 		<setting name="transletNamePatternPrefix" value="test"/>
 		<setting name="transletNamePatternSuffix" value=".do"/>
 		<setting name="transletNamePattern" value="/test/*.do"/>
-		<setting name="transletInterface" value="com.aspectran.web.activity.WebTranslet"/>
-		<setting name="transletClass" value="com.aspectran.web.activity.AspectranWebTranslet"/>
+		<setting name="transletInterfaceClass" value="com.aspectran.web.activity.WebTranslet"/>
+		<setting name="transletIntanceClass" value="com.aspectran.web.activity.AspectranWebTranslet"/>
 		<setting name="useNamespaces" value="true"/>
 		<setting name="nullableContentId" value="true"/>
 		<setting name="nullableActionId" value="true"/>
-		<setting name="multiActivityEnable" value="true"/>
+		<setting name="multipleTransletEnable" value="true"/>
 	</settings>
 	
 	<aspect id="requestRule">

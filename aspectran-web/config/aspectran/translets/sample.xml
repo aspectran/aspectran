@@ -14,7 +14,7 @@
 		<transform type="transform/xml" contentType="text/xml"/>
 	</translet>
 
-	<translet name="front/welcome" parent="t1/front">
+	<translet name="front/welcome" extends="./front">
 		<request method="get" characterEncoding="utf-8">
 			<attributes>
 				<item name="param0" value="Value"/>
@@ -88,7 +88,7 @@
 						</item>
 					</arguments>
 				</action>
-				<include id="include1" translet="t1/home2">
+				<include id="include1" translet="./home2">
 					<attributes>
 						<item name="item0">한--- --글</item>
 						<item name="item1">@{item1}</item>
