@@ -144,8 +144,8 @@ public class BeanAction implements Executable {
 			parameterTypes = new Class<?>[argumentItemRuleMap.size() + 1];
 			args = new Object[parameterTypes.length];
 			
-			parameterTypes[0] = activity.getTransletInterface();
-			args[0] = activity.getTransletInstance();
+			parameterTypes[0] = activity.getTransletInterfaceClass();
+			args[0] = activity.getSuperTranslet();
 			
 			Iterator<ItemRule> iter = argumentItemRuleMap.iterator();
 			int i = 1;
@@ -160,8 +160,8 @@ public class BeanAction implements Executable {
 				i++;
 			}
 		} else {
-			parameterTypes = new Class<?>[] { activity.getTransletInterface() };
-			args = new Object[] { activity.getTransletInstance() };
+			parameterTypes = new Class<?>[] { activity.getTransletInterfaceClass() };
+			args = new Object[] { activity.getSuperTranslet() };
 		}
 		
 		Object result = MethodUtils.invokeMethod(bean, methodName, args, parameterTypes);

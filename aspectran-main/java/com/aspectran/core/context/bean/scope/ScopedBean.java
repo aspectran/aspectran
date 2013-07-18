@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.aspectran.core.context.bean;
+package com.aspectran.core.context.bean.scope;
 
 import java.lang.reflect.InvocationTargetException;
 
@@ -16,13 +16,13 @@ import com.aspectran.core.util.MethodUtils;
  * @since 2011. 1. 7.
  *
  */
-public class ScopeBean implements Disposable {
+public class ScopedBean implements Disposable {
 
 	private BeanRule beanRule;
 	
 	private Object bean;
 	
-	public ScopeBean(BeanRule beanRule) {
+	public ScopedBean(BeanRule beanRule) {
 		this.beanRule = beanRule;
 	}
 	

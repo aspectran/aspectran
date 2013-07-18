@@ -41,7 +41,7 @@ import com.aspectran.core.context.builder.xml.ContextNodeParser;
 import com.aspectran.core.rule.BeanRule;
 import com.aspectran.core.rule.BeanRuleMap;
 import com.aspectran.core.rule.IncludeActionRule;
-import com.aspectran.core.rule.MultiActivityTransletRuleMap;
+import com.aspectran.core.rule.MultipleTransletRuleMap;
 import com.aspectran.core.rule.RequestRule;
 import com.aspectran.core.rule.ResponseRule;
 import com.aspectran.core.rule.TransletRule;
@@ -109,14 +109,14 @@ public final class BakContextBuilder {
 			assistant.setBeanRuleMap(beanRuleMap);
 			
 			// Translet loading...
-			MultiActivityTransletRuleMap transletRuleMap = new MultiActivityTransletRuleMap();
+			MultipleTransletRuleMap transletRuleMap = new MultipleTransletRuleMap();
 			List<ImportableResource> transletMaps = assistant.getTransletMapResources();
 			
 			for(ImportableResource mr : transletMaps) {
 				log.info("Loading the translet-map from '" + mr.getResource() + "'...");
 
 				AspectranNodeParser parser = new AspectranNodeParser(assistant);
-				MultiActivityTransletRuleMap tm = parser.parse(mr.getInputStream());
+				MultipleTransletRuleMap tm = parser.parse(mr.getInputStream());
 				transletRuleMap.putAll(tm);
 				
 				if(log.isDebugEnabled()) {
@@ -209,7 +209,7 @@ public final class BakContextBuilder {
 	 * 
 	 * @return the translet rule map
 	 */
-	private MultiActivityTransletRuleMap initialize(BakContextBuilderAssistant assistant, MultiActivityTransletRuleMap transletRuleMap) throws Exception {
+	private MultipleTransletRuleMap initialize(BakContextBuilderAssistant assistant, MultipleTransletRuleMap transletRuleMap) throws Exception {
 		for(TransletRule transletRule : transletRuleMap) {
 			RequestRule requestRule = transletRule.getRequestRule();
 			ResponseRule responseRule = transletRule.getResponseRule();

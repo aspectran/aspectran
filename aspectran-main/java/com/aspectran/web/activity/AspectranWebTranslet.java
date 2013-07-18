@@ -21,7 +21,6 @@ import javax.servlet.http.HttpServletResponse;
 import com.aspectran.core.activity.AbstractSuperTranslet;
 import com.aspectran.core.activity.AspectranActivity;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class AspectranWebTranslet.
  */

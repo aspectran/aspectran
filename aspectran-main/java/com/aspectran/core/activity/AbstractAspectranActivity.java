@@ -16,6 +16,8 @@
 package com.aspectran.core.activity;
 
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -27,6 +29,7 @@ import com.aspectran.core.activity.process.action.ActionExecutionException;
 import com.aspectran.core.activity.process.action.Executable;
 import com.aspectran.core.activity.process.result.ActionResult;
 import com.aspectran.core.activity.process.result.ContentResult;
+import com.aspectran.core.activity.process.result.ProcessResult;
 import com.aspectran.core.activity.request.RequestException;
 import com.aspectran.core.activity.response.ForwardResponse;
 import com.aspectran.core.activity.response.ForwardingFailedException;
@@ -40,7 +43,8 @@ import com.aspectran.core.context.AspectranContext;
 import com.aspectran.core.context.bean.registry.BeanRegistry;
 import com.aspectran.core.context.bean.scope.RequestScope;
 import com.aspectran.core.context.translet.registry.TransletNotFoundException;
-import com.aspectran.core.rule.MultiActivityTransletRule;
+import com.aspectran.core.context.translet.registry.TransletRegistry;
+import com.aspectran.core.rule.MultipleTransletRule;
 import com.aspectran.core.rule.RequestRule;
 import com.aspectran.core.rule.ResponseByContentTypeRule;
 import com.aspectran.core.rule.ResponseRule;
@@ -52,7 +56,6 @@ import com.aspectran.core.ticket.TicketCheckRejectedException;
 import com.aspectran.core.ticket.action.TicketCheckAction;
 import com.aspectran.core.type.ResponseType;
 import com.aspectran.core.type.TicketCheckpointType;
-import com.aspectran.web.activity.AspectranWebTranslet;
 
 /**
  * Action Translator.
@@ -62,93 +65,166 @@ import com.aspectran.web.activity.AspectranWebTranslet;
  */
 public abstract class AbstractAspectranActivity implements AspectranActivity {
 
+	/** The log. */
 	private final Log log = LogFactory.getLog(AbstractAspectranActivity.class);
 	
+	/** The debug enabled. */
 	private final boolean debugEnabled = log.isDebugEnabled();
 
+	/** The context. */
 	protected final AspectranContext context;
 	
-	protected Class<? extends SuperTranslet> transletInterface;
-	
-	protected Object transletInstance;
-	
+	/** The request adapter. */
 	private RequestAdapter requestAdapter;
 
+	/** The response adapter. */
 	private ResponseAdapter responseAdapter;
 
+	/** The session adapter. */
 	private SessionAdapter sessionAdapter;
+
+	/** The translet interface class. */
+	private Class<? extends SuperTranslet> transletInterfaceClass;
 	
+	/** The translet instance class. */
+	private Class<? extends AbstractSuperTranslet> transletInstanceClass;
+
+	/** The translet rule. */
 	private TransletRule transletRule;
 	
+	/** The request rule. */
 	private RequestRule requestRule;
 	
+	/** The response rule. */
 	private ResponseRule responseRule;
 	
-	private AspectranWebTranslet translet;
+	/** The translet. */
+	private SuperTranslet translet;
 	
+	/** The request scope. */
 	private RequestScope requestScope;
 	
+	/** The is response end. */
 	private boolean isResponseEnd;
 	
+	/** The forward translet name. */
 	private String forwardTransletName;
 	
+	/** The enforceable response id. */
 	private String enforceableResponseId;
 	
+	/** The exception raised. */
 	private boolean exceptionRaised;
 	
+	/** The translet name. */
 	private String transletName;
-
+	
 	/**
 	 * Instantiates a new action translator.
-	 * 
+	 *
 	 * @param context the translets context
-	 * @param output the output
-	 * @param ignoreTicket the ignore ticket
 	 */
 	public AbstractAspectranActivity(AspectranContext context) {
 		this.context = context;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.activity.AspectranActivity#getRequestAdapter()
+	 */
 	public RequestAdapter getRequestAdapter() {
 		return requestAdapter;
 	}
 	
+	/**
+	 * Sets the request adapter.
+	 *
+	 * @param requestAdapter the new request adapter
+	 */
 	protected void setRequestAdapter(RequestAdapter requestAdapter) {
 		this.requestAdapter = requestAdapter;
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.activity.AspectranActivity#getResponseAdapter()
+	 */
 	public ResponseAdapter getResponseAdapter() {
 		return responseAdapter;
 	}
 
+	/**
+	 * Sets the response adapter.
+	 *
+	 * @param responseAdapter the new response adapter
+	 */
 	protected void setResponseAdapter(ResponseAdapter responseAdapter) {
 		this.responseAdapter = responseAdapter;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.activity.AspectranActivity#getSessionAdapter()
+	 */
 	public SessionAdapter getSessionAdapter() {
 		return sessionAdapter;
 	}
 	
+	/**
+	 * Sets the session adapter.
+	 *
+	 * @param sessionAdapter the new session adapter
+	 */
 	protected void setSessionAdapter(SessionAdapter sessionAdapter) {
 		this.sessionAdapter = sessionAdapter;
 	}
 	
-	public Class<? extends SuperTranslet> getTransletInterface() {
-		return transletInterface;
+	/**
+	 * Gets the translet interface class.
+	 *
+	 * @return the translet interface class
+	 */
+	public Class<? extends SuperTranslet> getTransletInterfaceClass() {
+		if(transletRule != null && transletRule.getTransletInterfaceClass() != null)
+			return transletRule.getTransletInterfaceClass();
+		
+		return transletInterfaceClass;
 	}
 
-	protected void setTransletInterface(Class<? extends SuperTranslet> transletInterface) {
-		this.transletInterface = transletInterface;
-	}
-	
-	public Object getTransletInstance() {
-		return transletInstance;
+	/**
+	 * Sets the translet interface class.
+	 *
+	 * @param transletInterfaceClass the new translet interface class
+	 */
+	public void setTransletInterfaceClass(Class<? extends SuperTranslet> transletInterfaceClass) {
+		this.transletInterfaceClass = transletInterfaceClass;
 	}
 
-	protected void setTransletInstance(Object transletInstance) {
-		this.transletInstance = transletInstance;
+	/**
+	 * Gets the translet instance class.
+	 *
+	 * @return the translet instance class
+	 */
+	public Class<? extends AbstractSuperTranslet> getTransletInstanceClass() {
+		if(transletRule != null && transletRule.getTransletInstanceClass() != null)
+			return transletRule.getTransletInstanceClass();
+
+		return transletInstanceClass;
+	}
+
+	/**
+	 * Sets the translet instance class.
+	 *
+	 * @param transletInstanceClass the new translet instance class
+	 */
+	public void setTransletInstanceClass(Class<? extends AbstractSuperTranslet> transletInstanceClass) {
+		this.transletInstanceClass = transletInstanceClass;
+	}
+
+	public SuperTranslet getSuperTranslet() {
+		return translet;
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.activity.AspectranActivity#request(java.lang.String)
+	 */
 	public void request(String transletName) throws RequestException {
 		if(debugEnabled) {
 			log.debug(">> Requesting for translet name '" + transletName + "'");
@@ -159,8 +235,17 @@ public abstract class AbstractAspectranActivity implements AspectranActivity {
 		if(transletRule == null)
 			throw new TransletNotFoundException();
 
-		this.transletName = transletName;
+		//create translet instance
+		try {
+			Class<? extends SuperTranslet> transletInterfaceClass = getTransletInterfaceClass();
+			Constructor<?> transletInterfaceConstructor = transletInterfaceClass.getConstructor(AspectranActivity.class);
+			Object[] args = new Object[] { this };
+			transletInterfaceConstructor.newInstance(args);
+		} catch(Exception e) {
+			throw new RequestException(e);
+		}
 		
+		this.transletName = transletName;
 		this.transletRule = transletRule;
 		this.requestRule = transletRule.getRequestRule();
 		this.responseRule = transletRule.getResponseRule();
@@ -176,11 +261,17 @@ public abstract class AbstractAspectranActivity implements AspectranActivity {
 		}
 	}
 	
-	public void process() throws ProcessException {
-		process(false);
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.activity.AspectranActivity#process()
+	 */
+	public ProcessResult process() throws ProcessException {
+		return process(false);
 	}
 	
-	public void process(boolean ignoreTicket) throws ProcessException {
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.activity.AspectranActivity#process(boolean)
+	 */
+	public ProcessResult process(boolean ignoreTicket) throws ProcessException {
 		if(debugEnabled) {
 			log.debug(">> Processing for path '" + transletName + "'");
 		}
@@ -250,7 +341,7 @@ public abstract class AbstractAspectranActivity implements AspectranActivity {
 						execute(actionList);
 				}
 				
-				return;
+				return translet.getProcessResult();
 			} else {
 				throw new ProcessException("An error occurred while processing response by content-type. Cause: " + e, e);
 			}
@@ -260,8 +351,20 @@ public abstract class AbstractAspectranActivity implements AspectranActivity {
 				requestScope.destroy();
 			}
 		}
+		
+		return translet.getProcessResult();
 	}
 	
+	public ProcessResult getProcessResult() {
+		if(translet == null)
+			return null;
+		
+		return translet.getProcessResult();
+	}
+	
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.activity.AspectranActivity#response()
+	 */
 	public void response() throws ResponseException {
 		if(debugEnabled) {
 			log.debug(">> Responsing for path '" + transletName + "'");
@@ -279,9 +382,8 @@ public abstract class AbstractAspectranActivity implements AspectranActivity {
 	/**
 	 * Execute.
 	 *
-	 * @param translet the translet
 	 * @param actionList the action list
-	 * @throws Exception the exception
+	 * @throws ActionExecutionException the action execution exception
 	 */
 	private void execute(ActionList actionList) throws ActionExecutionException {
 		if(debugEnabled) {
@@ -335,7 +437,6 @@ public abstract class AbstractAspectranActivity implements AspectranActivity {
 	/**
 	 * Check ticket.
 	 *
-	 * @param translet the translet
 	 * @param ticketCheckActionList the ticket bean action list
 	 * @param checkpoint the check point
 	 * @throws TicketCheckException the ticket check exception
@@ -402,11 +503,7 @@ public abstract class AbstractAspectranActivity implements AspectranActivity {
 	
 	/**
 	 * Forwarding.
-	 * 
-	 * @param path the path
-	 * @param translet the translet
-	 * 
-	 * @throws ProcessException the process exception
+	 *
 	 * @throws ResponseException the active response exception
 	 */
 	private void forward() throws ResponseException {
@@ -423,12 +520,18 @@ public abstract class AbstractAspectranActivity implements AspectranActivity {
 		}
 	}
 	
+	/**
+	 * Gets the translet rule.
+	 *
+	 * @param transletName the translet name
+	 * @return the translet rule
+	 */
 	protected TransletRule getTransletRule(String transletName) {
 		TransletRule transletRule = context.getTransletRule(transletName);
 
 		// TODO check multiActivityEnable
 		if(transletRule == null && context.isMultiActivityEnable()) {
-			MultiActivityTransletRule matr = context.getMultiActivityTransletRule(transletName);
+			MultipleTransletRule matr = context.getMultipleTransletRule(transletName);
 			
 			if(matr != null) {
 				transletRule = matr.getTransletRule();
@@ -518,14 +621,27 @@ public abstract class AbstractAspectranActivity implements AspectranActivity {
 		return isResponseEnd;
 	}
 
+	/**
+	 * Checks if is exception raised.
+	 *
+	 * @return true, if is exception raised
+	 */
 	public boolean isExceptionRaised() {
 		return exceptionRaised;
 	}
 
+	/**
+	 * Sets the exception raised.
+	 *
+	 * @param exceptionRaised the new exception raised
+	 */
 	public void setExceptionRaised(boolean exceptionRaised) {
 		this.exceptionRaised = exceptionRaised;
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.activity.AspectranActivity#getContext()
+	 */
 	public AspectranContext getContext() {
 		return context;
 	}
@@ -573,6 +689,9 @@ public abstract class AbstractAspectranActivity implements AspectranActivity {
 		return responseRule.getResponseMap().get(responseId);
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.activity.AspectranActivity#getBean(java.lang.String)
+	 */
 	public Object getBean(String id) {
 		return context.getBeanRegistry().getBean(id, this);
 	}
@@ -588,52 +707,101 @@ public abstract class AbstractAspectranActivity implements AspectranActivity {
 		return context.getApplicationAdapter();
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.activity.AspectranActivity#getTransletName()
+	 */
 	public String getTransletName() {
 		return transletName;
 	}
 	
+	/**
+	 * Sets the translet name.
+	 *
+	 * @param transletName the new translet name
+	 */
 	protected void setTransletName(String transletName) {
 		this.transletName = transletName;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.activity.AspectranActivity#getRequestScope()
+	 */
 	public RequestScope getRequestScope() {
 		return requestScope;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.activity.AspectranActivity#setRequestScope(com.aspectran.core.context.bean.scope.RequestScope)
+	 */
 	public void setRequestScope(RequestScope requestScope) {
 		this.requestScope = requestScope;
 	}
 
+	/**
+	 * Gets the translet rule.
+	 *
+	 * @return the translet rule
+	 */
 	public TransletRule getTransletRule() {
 		return transletRule;
 	}
 
+	/**
+	 * Sets the translet rule.
+	 *
+	 * @param transletRule the new translet rule
+	 */
 	public void setTransletRule(TransletRule transletRule) {
 		this.transletRule = transletRule;
 	}
 
+	/**
+	 * Gets the request rule.
+	 *
+	 * @return the request rule
+	 */
 	public RequestRule getRequestRule() {
 		return requestRule;
 	}
 
+	/**
+	 * Sets the request rule.
+	 *
+	 * @param requestRule the new request rule
+	 */
 	public void setRequestRule(RequestRule requestRule) {
 		this.requestRule = requestRule;
 	}
 
+	/**
+	 * Gets the response rule.
+	 *
+	 * @return the response rule
+	 */
 	public ResponseRule getResponseRule() {
 		return responseRule;
 	}
 
+	/**
+	 * Sets the response rule.
+	 *
+	 * @param responseRule the new response rule
+	 */
 	public void setResponseRule(ResponseRule responseRule) {
 		this.responseRule = responseRule;
 	}
 	
-	/**
-	 * Gets the bean registry.
-	 *
-	 * @return the bean registry
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.activity.AspectranActivity#getBeanRegistry()
 	 */
 	public BeanRegistry getBeanRegistry() {
 		return context.getBeanRegistry();
+	}
+
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.activity.AspectranActivity#getTransletRegistry()
+	 */
+	public TransletRegistry getTransletRegistry() {
+		return context.getTransletRegistry();
 	}
 }

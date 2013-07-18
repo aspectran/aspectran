@@ -217,7 +217,7 @@ public abstract class AbstractSuperTranslet implements SuperTranslet {
 		return activity.getBean(id);
 	}
 
-	public AspectranContext getContext() {
+	public AspectranContext getAspectranContext() {
 		return activity.getContext();
 	}
 	
@@ -237,6 +237,14 @@ public abstract class AbstractSuperTranslet implements SuperTranslet {
 
 	public Responsible getResponse(String responseId) {
 		return activity.getResponse(responseId);
+	}
+
+	public Class<? extends SuperTranslet> getTransletInterfaceClass() {
+		return activity.getTransletInstanceClass();
+	}
+
+	public Class<? extends AbstractSuperTranslet> getTransletInstanceClass() {
+		return activity.getTransletInstanceClass();
 	}
 
 	

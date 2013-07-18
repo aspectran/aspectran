@@ -3,7 +3,6 @@
  */
 package com.aspectran.core.context.bean.scope;
 
-import com.aspectran.core.context.bean.ScopeBeanMap;
 
 /**
  *
@@ -13,9 +12,9 @@ import com.aspectran.core.context.bean.ScopeBeanMap;
  */
 public interface Scope {
 	
-	public ScopeBeanMap getScopeBeanMap();
+	public ScopedBeanMap getScopeBeanMap();
 
-	public void setInstantiatedBeanMap(ScopeBeanMap instantiatedBeanMap);
+	public void setScopedBeanMap(ScopedBeanMap scopedBeanMap);
 	
 	public void destroy();
 	

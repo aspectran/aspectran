@@ -15,6 +15,8 @@
  */
 package com.aspectran.core.rule;
 
+import com.aspectran.core.activity.AbstractSuperTranslet;
+import com.aspectran.core.activity.SuperTranslet;
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.activity.process.ContentList;
 import com.aspectran.core.activity.process.action.BeanAction;
@@ -39,6 +41,8 @@ public class TransletRule {
 
 	private String name;
 
+	private String parentTransletName;
+	
 	private TicketCheckActionList ticketCheckActionList;
 	
 	private RequestRule requestRule;
@@ -49,7 +53,11 @@ public class TransletRule {
 	
 	private ExceptionHandleRule exceptionHandleRule;
 	
-	private MultiActivityTransletRuleMap multiActivityTransletRuleMap;;
+	private MultipleTransletRuleMap multiActivityTransletRuleMap;
+	
+	private Class<? extends SuperTranslet> transletInterfaceClass;
+	
+	private Class<? extends AbstractSuperTranslet> transletInstanceClass;
 	
 	/**
 	 * Instantiates a new translet rule.
@@ -73,6 +81,22 @@ public class TransletRule {
 	 */
 	public void setName(String name) {
 		this.name = name;
+	}
+	
+	public String getParentTransletName() {
+		return parentTransletName;
+	}
+
+	public void setParentTransletName(String parentTransletName) {
+		this.parentTransletName = parentTransletName;
+	}
+
+	public MultipleTransletRuleMap getMultiActivityTransletRuleMap() {
+		return multiActivityTransletRuleMap;
+	}
+
+	public void setMultiActivityTransletRuleMap(MultipleTransletRuleMap multiActivityTransletRuleMap) {
+		this.multiActivityTransletRuleMap = multiActivityTransletRuleMap;
 	}
 
 	/**
@@ -182,11 +206,11 @@ public class TransletRule {
 	 *
 	 * @param multiActivityTransletRule the multi activity translet rule
 	 */
-	public void addMultiActivityTransletRule(MultiActivityTransletRule multiActivityTransletRule) {
+	public void addMultiActivityTransletRule(MultipleTransletRule multiActivityTransletRule) {
 		if(multiActivityTransletRuleMap == null)
-			multiActivityTransletRuleMap = new MultiActivityTransletRuleMap();
+			multiActivityTransletRuleMap = new MultipleTransletRuleMap();
 		
-		multiActivityTransletRuleMap.putMultiActivityTransletRule(multiActivityTransletRule);
+		multiActivityTransletRuleMap.putMultipleTransletRule(multiActivityTransletRule);
 	}
 	
 	/**
@@ -196,6 +220,22 @@ public class TransletRule {
 	 */
 	public boolean hasMultiActivityTransletRule() {
 		return (multiActivityTransletRuleMap != null);
+	}
+
+	public Class<? extends SuperTranslet> getTransletInterfaceClass() {
+		return transletInterfaceClass;
+	}
+
+	public void setTransletInterfaceClass(Class<? extends SuperTranslet> transletInterfaceClass) {
+		this.transletInterfaceClass = transletInterfaceClass;
+	}
+
+	public Class<? extends AbstractSuperTranslet> getTransletInstanceClass() {
+		return transletInstanceClass;
+	}
+
+	public void setTransletInstanceClass(Class<? extends AbstractSuperTranslet> transletInstanceClass) {
+		this.transletInstanceClass = transletInstanceClass;
 	}
 
 	/* (non-Javadoc)

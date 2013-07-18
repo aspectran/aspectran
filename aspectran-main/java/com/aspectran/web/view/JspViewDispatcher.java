@@ -25,7 +25,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.aspectran.core.activity.AspectranActivity;
-import com.aspectran.core.activity.SuperTranslet;
 import com.aspectran.core.activity.process.result.ActionResult;
 import com.aspectran.core.activity.process.result.ContentResult;
 import com.aspectran.core.activity.process.result.ProcessResult;
@@ -53,9 +52,8 @@ public class JspViewDispatcher implements ViewDispatcher {
 	 */
 	public void dispatch(AspectranActivity activity, DispatchResponseRule dispatchResponseRule) throws DispatchResponseException {
 		try {
-			SuperTranslet translet = (SuperTranslet)activity.getTransletInstance();
-			RequestAdapter requestAdapter = translet.getRequestAdapter();
-			ResponseAdapter responseAdapter = translet.getResponseAdapter();
+			RequestAdapter requestAdapter = activity.getRequestAdapter();
+			ResponseAdapter responseAdapter = activity.getResponseAdapter();
 
 			String contentType = dispatchResponseRule.getContentType();
 			String outputEncoding = dispatchResponseRule.getCharacterEncoding();
@@ -67,7 +65,7 @@ public class JspViewDispatcher implements ViewDispatcher {
 				responseAdapter.setCharacterEncoding(outputEncoding);
 			
 			String viewName = dispatchResponseRule.getViewName();
-			ProcessResult processResult = translet.getProcessResult();
+			ProcessResult processResult = activity.getProcessResult();
 
 			if(processResult != null)
 				parse(requestAdapter, processResult, null);

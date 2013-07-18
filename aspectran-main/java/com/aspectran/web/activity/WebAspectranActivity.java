@@ -76,8 +76,8 @@ public class WebAspectranActivity extends AbstractAspectranActivity implements A
 		setResponseAdapter(responseAdapter);
 		setSessionAdapter(sessionAdapter);
 		
-		setTransletInterface(WebTranslet.class);
-		setTransletInstance(new AspectranWebTranslet(this));
+		setTransletInterfaceClass(WebTranslet.class);
+		setTransletInstanceClass(AspectranWebTranslet.class);
 	}
 	
 	public void request(String transletName) throws RequestException {
@@ -189,17 +189,11 @@ public class WebAspectranActivity extends AbstractAspectranActivity implements A
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.jhlabs.translets.activity.AbstractActivity#newActivity()
-	 */
-	@Override
 	public AspectranActivity newAspectranActivity() {
 		WebAspectranActivity activity = new WebAspectranActivity(getContext(), request, response);
 		activity.setRequestAdapter(getRequestAdapter());
 		activity.setResponseAdapter(getResponseAdapter());
 		activity.setSessionAdapter(getSessionAdapter());
-		activity.setTransletInterface(WebTranslet.class);
-		activity.setTransletInstance(new AspectranWebTranslet(this));
 		
 		return activity;
 	}

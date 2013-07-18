@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.aspectran.core.context.bean;
+package com.aspectran.core.context.bean.scope;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -12,7 +12,7 @@ import java.util.Iterator;
  * @since 2011. 1. 7.
  *
  */
-public class ScopeBeanMap extends HashMap<String, ScopeBean> implements Iterable<ScopeBean> {
+public class ScopedBeanMap extends HashMap<String, ScopedBean> implements Iterable<ScopedBean> {
 	
 	/** @serial */
 	static final long serialVersionUID = -3559362779320716165L;
@@ -20,17 +20,17 @@ public class ScopeBeanMap extends HashMap<String, ScopeBean> implements Iterable
 	/**
 	 * Adds a instantiated bean.
 	 *
-	 * @param scopeBean the instantiated bean
+	 * @param scopedBean the instantiated bean
 	 * @return the instantiated bean
 	 */
-	public ScopeBean putScopeBean(ScopeBean scopeBean) {
-		return put(scopeBean.getBeanRule().getId(), scopeBean);
+	public ScopedBean putScopeBean(ScopedBean scopedBean) {
+		return put(scopedBean.getBeanRule().getId(), scopedBean);
 	}
 	
 	/* (non-Javadoc)
 	 * @see java.lang.Iterable#iterator()
 	 */
-	public Iterator<ScopeBean> iterator() {
+	public Iterator<ScopedBean> iterator() {
 		return this.values().iterator();
 	}
 

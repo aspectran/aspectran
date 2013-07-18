@@ -407,6 +407,7 @@ public class AspectranNodeParser {
 		parser.addNodelet("/aspectran/translet", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
 				String name = attributes.getProperty("name");
+				String parentTransletName = attributes.getProperty("extends");
 
 				if(name == null)
 					throw new IllegalArgumentException("The <translet> element requires a name attribute.");
@@ -415,6 +416,7 @@ public class AspectranNodeParser {
 
 				TransletRule transletRule = new TransletRule();
 				transletRule.setName(name);
+				transletRule.setParentTransletName(parentTransletName);
 
 				assistant.pushObject(transletRule);
 			}
@@ -435,7 +437,7 @@ public class AspectranNodeParser {
 					methodType = RequestMethodType.valueOf(method);
 					
 					if(methodType == null)
-						throw new IllegalArgumentException("Unkown request method type '" + method + "'");
+						throw new IllegalArgumentException("Unknown request method type '" + method + "'");
 				}
 				
 				RequestRule requestRule;
@@ -678,7 +680,7 @@ public class AspectranNodeParser {
 						
 						if(!ResponseRule.DEFAULT_ID.equals(responseId)) {
 							String transletName = assistant.replaceTransletNameSuffix(transletRule.getName(), responseId);
-							assistant.addMultiActivityTransletRule(transletName, responseId, transletRule);
+							assistant.addMultipleTransletRule(transletName, responseId, transletRule);
 						}
 					}
 				}

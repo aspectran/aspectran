@@ -50,8 +50,7 @@ public class RedirectResponse implements Responsible {
 	 */
 	public void response(AspectranActivity activity) throws ResponseException {
 		try {
-			SuperTranslet translet = (SuperTranslet)activity.getTransletInstance();
-			ResponseAdapter responseAdapter = translet.getResponseAdapter();
+			ResponseAdapter responseAdapter = activity.getResponseAdapter();
 
 			String outputEncoding = redirectResponseRule.getCharacterEncoding();
 

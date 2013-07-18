@@ -6,8 +6,8 @@ import javax.servlet.http.HttpSessionBindingListener;
 
 import com.aspectran.core.adapter.AbstractSessionAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
-import com.aspectran.core.context.bean.ScopeBean;
-import com.aspectran.core.context.bean.ScopeBeanMap;
+import com.aspectran.core.context.bean.scope.ScopedBean;
+import com.aspectran.core.context.bean.scope.ScopedBeanMap;
 import com.aspectran.core.context.bean.scope.SessionScope;
 
 /**
@@ -60,11 +60,11 @@ public class HttpSessionAdapter extends AbstractSessionAdapter implements Sessio
 		public void valueUnbound(HttpSessionBindingEvent se) {
 			HttpSession session = se.getSession();
 			
-			ScopeBeanMap ibm = (ScopeBeanMap)session.getAttribute(SessionScope.SESSION_SCOPE_ATTRIBUTE);
+			ScopedBeanMap ibm = (ScopedBeanMap)session.getAttribute(SessionScope.SESSION_SCOPE_ATTRIBUTE);
 			
 			if(ibm != null) {
 				try {
-					for(ScopeBean scopeBean : ibm) {
+					for(ScopedBean scopeBean : ibm) {
 						scopeBean.destroy();
 					}
 				} catch(Exception e) {

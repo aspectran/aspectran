@@ -21,7 +21,7 @@ import java.util.LinkedHashMap;
 /**
  * <p>Created: 2011. 03. 12 오후 5:48:09</p>
  */
-public class MultiActivityTransletRuleMap extends LinkedHashMap<String, MultiActivityTransletRule> implements Iterable<MultiActivityTransletRule> {
+public class MultipleTransletRuleMap extends LinkedHashMap<String, MultipleTransletRule> implements Iterable<MultipleTransletRule> {
 
 	/** @serial */
 	static final long serialVersionUID = -680839556666107647L;
@@ -29,16 +29,16 @@ public class MultiActivityTransletRuleMap extends LinkedHashMap<String, MultiAct
 	/**
 	 * Adds the translet rule.
 	 * 
-	 * @param multiActivityTransletRule the translet rule
+	 * @param multipleTransletRule the translet rule
 	 * 
 	 * @return the translet rule
 	 */
-	public MultiActivityTransletRule putMultiActivityTransletRule(MultiActivityTransletRule multiActivityTransletRule) {
-		return put(multiActivityTransletRule.getName(), multiActivityTransletRule);
+	public MultipleTransletRule putMultipleTransletRule(MultipleTransletRule multipleTransletRule) {
+		return put(multipleTransletRule.getName(), multipleTransletRule);
 	}
 	
-	public MultiActivityTransletRule putMultiActivityTransletRule(String name, String responseId, TransletRule transletRule) {
-		MultiActivityTransletRule matr = new MultiActivityTransletRule();
+	public MultipleTransletRule putMultipleTransletRule(String name, String responseId, TransletRule transletRule) {
+		MultipleTransletRule matr = new MultipleTransletRule();
 		matr.setName(name);
 		matr.setResponseId(responseId);
 		matr.setTransletRule(transletRule);
@@ -48,7 +48,7 @@ public class MultiActivityTransletRuleMap extends LinkedHashMap<String, MultiAct
 	/* (non-Javadoc)
 	 * @see java.lang.Iterable#iterator()
 	 */
-	public Iterator<MultiActivityTransletRule> iterator() {
+	public Iterator<MultipleTransletRule> iterator() {
 		return this.values().iterator();
 	}
 

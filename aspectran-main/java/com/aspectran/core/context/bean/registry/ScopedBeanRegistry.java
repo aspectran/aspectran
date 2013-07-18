@@ -10,13 +10,13 @@ import com.aspectran.core.activity.SuperTranslet;
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.context.bean.BeansException;
-import com.aspectran.core.context.bean.ScopeBean;
-import com.aspectran.core.context.bean.ScopeBeanMap;
 import com.aspectran.core.context.bean.ablility.Disposable;
 import com.aspectran.core.context.bean.scope.ApplicationScope;
 import com.aspectran.core.context.bean.scope.ContextScope;
 import com.aspectran.core.context.bean.scope.RequestScope;
 import com.aspectran.core.context.bean.scope.Scope;
+import com.aspectran.core.context.bean.scope.ScopedBean;
+import com.aspectran.core.context.bean.scope.ScopedBeanMap;
 import com.aspectran.core.context.bean.scope.SessionScope;
 import com.aspectran.core.rule.BeanRule;
 import com.aspectran.core.rule.BeanRuleMap;
@@ -99,13 +99,12 @@ public class ScopedBeanRegistry extends AbstractBeanRegistry implements BeanRegi
 				activity.setRequestScope(scope);
 			}
 			
-			return getScopeBean(scope, beanRule, activity);
+			return getScopedBean(scope, beanRule, activity);
 		}
 	}
 
 	private Object getSessionScopeBean(BeanRule beanRule, AspectranActivity activity) {
-		SuperTranslet translet = (SuperTranslet)activity.getTransletInstance();
-		SessionAdapter session = translet.getSessionAdapter();
+		SessionAdapter session = activity.getSessionAdapter();
 		
 		if(session == null) {
 			throw new BeansException("This package does not supported for session scope. The specified session adapter is not exists.");
@@ -121,7 +120,7 @@ public class ScopedBeanRegistry extends AbstractBeanRegistry implements BeanRegi
 				session.setAttribute(SessionScope.SESSION_SCOPE_ATTRIBUTE, scope);
 			}
 			
-			return getScopeBean(scope, beanRule, activity);
+			return getScopedBean(scope, beanRule, activity);
 		} finally {
 			sessionScopeLock.unlock();
 		}
@@ -129,7 +128,7 @@ public class ScopedBeanRegistry extends AbstractBeanRegistry implements BeanRegi
 
 	private Object getContextScopeBean(BeanRule beanRule, AspectranActivity activity) {
 		synchronized (contextScope) {
-			return getScopeBean(contextScope, beanRule, activity);
+			return getScopedBean(contextScope, beanRule, activity);
 		}
 	}
 	
@@ -150,22 +149,22 @@ public class ScopedBeanRegistry extends AbstractBeanRegistry implements BeanRegi
 				application.setAttribute(ApplicationScope.APPLICATION_SCOPE_ATTRIBUTE, scope);
 			}
 			
-			return getScopeBean(scope, beanRule, activity);
+			return getScopedBean(scope, beanRule, activity);
 		} finally {
 			applicationScopeLock.unlock();
 		}
 	}
 	
-	private Object getScopeBean(Scope scope, BeanRule beanRule, AspectranActivity activity) {
-		ScopeBeanMap sbm = scope.getScopeBeanMap();
-		ScopeBean scopeBean = sbm.get(beanRule.getId());
+	private Object getScopedBean(Scope scope, BeanRule beanRule, AspectranActivity activity) {
+		ScopedBeanMap sbm = scope.getScopeBeanMap();
+		ScopedBean scopeBean = sbm.get(beanRule.getId());
 			
 		if(scopeBean != null)
 			return scopeBean.getBean();
 
 		Object bean = createBean(beanRule, activity);
 		
-		scopeBean = new ScopeBean(beanRule);
+		scopeBean = new ScopedBean(beanRule);
 		scopeBean.setBean(bean);
 		
 		sbm.putScopeBean(scopeBean);
@@ -211,7 +210,7 @@ public class ScopedBeanRegistry extends AbstractBeanRegistry implements BeanRegi
 		}
 	}
 	
-	public void destoryScopeBean(ScopeBeanMap scopeBeanMap) throws Exception {
+	public void destoryScopeBean(ScopedBeanMap scopeBeanMap) throws Exception {
 		for(Disposable scopeBean : scopeBeanMap) {
 			scopeBean.destroy();
 		}

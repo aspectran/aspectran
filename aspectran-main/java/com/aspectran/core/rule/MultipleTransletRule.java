@@ -18,7 +18,7 @@ package com.aspectran.core.rule;
 /**
  * <p>Created: 2011. 03. 11 오후 5:48:09</p>
  */
-public class MultiActivityTransletRule {
+public class MultipleTransletRule {
 
 	private String name;
 
@@ -29,7 +29,7 @@ public class MultiActivityTransletRule {
 	/**
 	 * Instantiates a new multi activity translet rule.
 	 */
-	public MultiActivityTransletRule() {
+	public MultipleTransletRule() {
 	}
 
 	/**

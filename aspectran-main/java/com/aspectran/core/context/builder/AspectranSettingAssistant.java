@@ -25,7 +25,7 @@ import com.aspectran.core.rule.BeanRuleMap;
 import com.aspectran.core.rule.DefaultRequestRule;
 import com.aspectran.core.rule.DefaultResponseRule;
 import com.aspectran.core.rule.ExceptionHandleRule;
-import com.aspectran.core.rule.MultiActivityTransletRuleMap;
+import com.aspectran.core.rule.MultipleTransletRuleMap;
 import com.aspectran.core.rule.TicketCheckRule;
 import com.aspectran.core.rule.TicketCheckcaseRule;
 import com.aspectran.core.rule.TicketCheckcaseRuleMap;
@@ -67,7 +67,7 @@ public class AspectranSettingAssistant extends AbstractSettingAssistant {
 	
 	private TransletRuleMap transletRuleMap;
 
-	private MultiActivityTransletRuleMap multiActivityTransletRuleMap;
+	private MultipleTransletRuleMap multipleTransletRuleMap;
 	
 	private String namespace;
 	
@@ -187,7 +187,7 @@ public class AspectranSettingAssistant extends AbstractSettingAssistant {
 	}
 	
 	public boolean isMultiActivityEnable() {
-		return activitySettingsRule.isMultiActivityEnable();
+		return activitySettingsRule.isMultipleTransletEnable();
 	}
 
 	public String getActivityRootPath() {
@@ -405,8 +405,8 @@ public class AspectranSettingAssistant extends AbstractSettingAssistant {
 		return transletRuleMap;
 	}
 	
-	public MultiActivityTransletRuleMap getMultiActivityTransletRuleMap() {
-		return multiActivityTransletRuleMap;
+	public MultipleTransletRuleMap getMultipleTransletRuleMap() {
+		return multipleTransletRuleMap;
 	}
 
 	public void addTransletRule(TransletRule transletRule) {
@@ -416,11 +416,11 @@ public class AspectranSettingAssistant extends AbstractSettingAssistant {
 		transletRuleMap.put(transletRule.getName(), transletRule);
 	}
 	
-	public void addMultiActivityTransletRule(String transletName, String responseId, TransletRule transletRule) {
-		if(multiActivityTransletRuleMap == null)
-			multiActivityTransletRuleMap = new MultiActivityTransletRuleMap();
+	public void addMultipleTransletRule(String transletName, String responseId, TransletRule transletRule) {
+		if(multipleTransletRuleMap == null)
+			multipleTransletRuleMap = new MultipleTransletRuleMap();
 
-		multiActivityTransletRuleMap.putMultiActivityTransletRule(transletName, responseId, transletRule);
+		multipleTransletRuleMap.putMultipleTransletRule(transletName, responseId, transletRule);
 	}
 	
 }
