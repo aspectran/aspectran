@@ -18,7 +18,6 @@ package com.aspectran.core.activity.response;
 import java.util.Map;
 
 import com.aspectran.core.activity.AspectranActivity;
-import com.aspectran.core.activity.SuperTranslet;
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.rule.ForwardResponseRule;
@@ -31,6 +30,7 @@ import com.aspectran.core.type.ResponseType;
  */
 public class ForwardResponse implements Responsible {
 
+	/** The forward response rule. */
 	private final ForwardResponseRule forwardResponseRule;
 	
 	/**
@@ -43,7 +43,7 @@ public class ForwardResponse implements Responsible {
 	}
 	
 	/* (non-Javadoc)
-	 * @see org.jhlabs.translets.engine.response.Responsible#response(org.jhlabs.translets.action.Translet)
+	 * @see com.aspectran.core.activity.response.Responsible#response(com.aspectran.core.activity.AspectranActivity)
 	 */
 	public void response(AspectranActivity activity) {
 		RequestAdapter requestAdapter = activity.getRequestAdapter();
@@ -62,14 +62,14 @@ public class ForwardResponse implements Responsible {
 	}
 	
 	/* (non-Javadoc)
-	 * @see org.jhlabs.translets.engine.response.Responsible#getResponseType()
+	 * @see com.aspectran.core.activity.response.Responsible#getResponseType()
 	 */
 	public ResponseType getResponseType() {
 		return ForwardResponseRule.RESPONSE_TYPE;
 	}
 	
 	/* (non-Javadoc)
-	 * @see org.jhlabs.translets.engine.response.Responsible#getId()
+	 * @see com.aspectran.core.activity.response.Responsible#getId()
 	 */
 	public String getId() {
 		if(forwardResponseRule == null)
@@ -79,7 +79,7 @@ public class ForwardResponse implements Responsible {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.jhlabs.translets.engine.response.Responsible#getContentType()
+	 * @see com.aspectran.core.activity.response.Responsible#getContentType()
 	 */
 	public String getContentType() {
 		if(forwardResponseRule == null)
@@ -89,7 +89,7 @@ public class ForwardResponse implements Responsible {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.jhlabs.translets.engine.response.Responsible#getActionList()
+	 * @see com.aspectran.core.activity.response.Responsible#getActionList()
 	 */
 	public ActionList getActionList() {
 		return forwardResponseRule.getActionList();

@@ -391,7 +391,7 @@ public class ResponseRuleNodeletAdder implements NodeletAdder {
 			}
 		});
 
-		parser.addNodelet(xpath, "/redirect", new ActionRuleNodeletAdder(assistant));
+		parser.addNodelet(xpath, "/forward", new ActionRuleNodeletAdder(assistant));
 		
 		parser.addNodelet(xpath, "/forward/parameters", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
