@@ -17,9 +17,8 @@ package com.aspectran.core.context;
 
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.bean.registry.BeanRegistry;
-import com.aspectran.core.context.translet.registry.TransletRegistry;
+import com.aspectran.core.context.translet.registry.TransletRuleRegistry;
 import com.aspectran.core.rule.AspectranSettingsRule;
-import com.aspectran.core.rule.MultipleTransletRule;
 import com.aspectran.core.rule.TransletRule;
 
 /**
@@ -35,7 +34,7 @@ public class AspectranContext {
 	
 	private BeanRegistry beanRegistry;
 
-	private TransletRegistry transletRegistry;
+	private TransletRuleRegistry transletRuleRegistry;
 	
 	//private TransletRuleMap transletRuleMap;
 	
@@ -79,24 +78,16 @@ public class AspectranContext {
 		this.beanRegistry = beanRegistry;
 	}
 
-	public TransletRegistry getTransletRegistry() {
-		return transletRegistry;
+	public TransletRuleRegistry getTransletRuleRegistry() {
+		return transletRuleRegistry;
 	}
 
-	public void setTransletRegistry(TransletRegistry transletRegistry) {
-		this.transletRegistry = transletRegistry;
+	public void setTransletRegistry(TransletRuleRegistry transletRuleRegistry) {
+		this.transletRuleRegistry = transletRuleRegistry;
 	}
 	
 	public TransletRule getTransletRule(String transletName) {
-		return transletRegistry.getTransletRule(transletName);
-	}
-
-	public MultipleTransletRule getMultipleTransletRule(String transletName) {
-		return transletRegistry.getMultipleTransletRule(transletName);
-	}
-	
-	public boolean isMultiActivityEnable() {
-		return transletRegistry.isMultiActivityEnable();
+		return transletRuleRegistry.getTransletRule(transletName);
 	}
 	
 //	/**
@@ -152,9 +143,9 @@ public class AspectranContext {
 			//TODO
 			//beanRegistry.destroy();
 		}
-		if(transletRegistry != null) {
+		if(transletRuleRegistry != null) {
 			//TODO
-			transletRegistry.destroy();
+			transletRuleRegistry.destroy();
 		}
 	}
 	

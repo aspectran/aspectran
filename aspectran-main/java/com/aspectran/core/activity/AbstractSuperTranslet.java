@@ -199,15 +199,6 @@ public abstract class AbstractSuperTranslet implements SuperTranslet {
 	}
 	
 	/**
-	 * Checks if is max length exceeded.
-	 * 
-	 * @return true, if checks if is max length exceeded
-	 */
-	public boolean isMaxLengthExceeded() {
-		throw new UnsupportedOperationException();
-	}
-	
-	/**
 	 * Gets the bean.
 	 *
 	 * @param id the id

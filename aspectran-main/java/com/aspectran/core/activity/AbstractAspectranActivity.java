@@ -17,7 +17,6 @@ package com.aspectran.core.activity;
 
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -42,9 +41,7 @@ import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.context.AspectranContext;
 import com.aspectran.core.context.bean.registry.BeanRegistry;
 import com.aspectran.core.context.bean.scope.RequestScope;
-import com.aspectran.core.context.translet.registry.TransletNotFoundException;
-import com.aspectran.core.context.translet.registry.TransletRegistry;
-import com.aspectran.core.rule.MultipleTransletRule;
+import com.aspectran.core.context.translet.registry.TransletRuleRegistry;
 import com.aspectran.core.rule.RequestRule;
 import com.aspectran.core.rule.ResponseByContentTypeRule;
 import com.aspectran.core.rule.ResponseRule;
@@ -111,7 +108,7 @@ public abstract class AbstractAspectranActivity implements AspectranActivity {
 	private String forwardTransletName;
 	
 	/** The enforceable response id. */
-	private String enforceableResponseId;
+	private String multipleTransletResponseId;
 	
 	/** The exception raised. */
 	private boolean exceptionRaised;
@@ -230,11 +227,12 @@ public abstract class AbstractAspectranActivity implements AspectranActivity {
 			log.debug(">> Requesting for translet name '" + transletName + "'");
 		}
 		
-		TransletRule transletRule = getTransletRule(transletName);
-		
-		if(transletRule == null)
-			throw new TransletNotFoundException();
+		TransletRule transletRule = context.getTransletRuleRegistry().getTransletRule(transletName);
 
+		if(transletRule.getMultipleTransletResponseId() != null) {
+			multipleTransletResponseId = transletRule.getMultipleTransletResponseId();
+		}
+		
 		//create translet instance
 		try {
 			Class<? extends SuperTranslet> transletInterfaceClass = getTransletInterfaceClass();
@@ -277,21 +275,21 @@ public abstract class AbstractAspectranActivity implements AspectranActivity {
 		}
 
 		try {
-			TicketCheckActionList ticketCheckActionList = transletRule.getTicketCheckActionList();
-			int requestCheckpointCount = 0;
-			int responseCheckpointCount = 0;
+//			TicketCheckActionList ticketCheckActionList = transletRule.getTicketCheckActionList();
+//			int requestCheckpointCount = 0;
+//			int responseCheckpointCount = 0;
+//			
+//			if(ticketCheckActionList != null) {
+//				requestCheckpointCount = ticketCheckActionList.getRequestCheckpointCount();
+//				responseCheckpointCount = ticketCheckActionList.size() - requestCheckpointCount;
+//			}
+//			
+//			// ticket check: request-checkpoint
+//			if(!ignoreTicket && requestCheckpointCount > 0) {
+//				checkTicket(ticketCheckActionList, TicketCheckpointType.REQUEST);
+//			}
 			
-			if(ticketCheckActionList != null) {
-				requestCheckpointCount = ticketCheckActionList.getRequestCheckpointCount();
-				responseCheckpointCount = ticketCheckActionList.size() - requestCheckpointCount;
-			}
-			
-			// ticket check: request-checkpoint
-			if(!ignoreTicket && requestCheckpointCount > 0) {
-				checkTicket(ticketCheckActionList, TicketCheckpointType.REQUEST);
-			}
-			
-			if(!isResponseEnd) {
+//			if(!isResponseEnd) {
 				// execute action on contents area
 				ContentList contentList = transletRule.getContentList();
 				
@@ -303,7 +301,7 @@ public abstract class AbstractAspectranActivity implements AspectranActivity {
 							break;
 					}
 				}
-			}
+//			}
 			
 			if(!isResponseEnd) {
 				// execute action on response area
@@ -317,10 +315,10 @@ public abstract class AbstractAspectranActivity implements AspectranActivity {
 				}
 			}
 
-			// ticket check: response-checkpoint
-			if(!ignoreTicket && responseCheckpointCount > 0) {
-				checkTicket(ticketCheckActionList, TicketCheckpointType.RESPONSE);
-			}
+//			// ticket check: response-checkpoint
+//			if(!ignoreTicket && responseCheckpointCount > 0) {
+//				checkTicket(ticketCheckActionList, TicketCheckpointType.RESPONSE);
+//			}
 		} catch(Exception e) {
 			if(debugEnabled) {
 				log.error("An error occurred while executing actions. Cause: " + e, e);
@@ -521,28 +519,6 @@ public abstract class AbstractAspectranActivity implements AspectranActivity {
 	}
 	
 	/**
-	 * Gets the translet rule.
-	 *
-	 * @param transletName the translet name
-	 * @return the translet rule
-	 */
-	protected TransletRule getTransletRule(String transletName) {
-		TransletRule transletRule = context.getTransletRule(transletName);
-
-		// TODO check multiActivityEnable
-		if(transletRule == null && context.isMultiActivityEnable()) {
-			MultipleTransletRule matr = context.getMultipleTransletRule(transletName);
-			
-			if(matr != null) {
-				transletRule = matr.getTransletRule();
-				enforceableResponseId = matr.getResponseId();
-			}
-		}
-		
-		return transletRule;
-	}
-	
-	/**
 	 * Response by content type.
 	 *
 	 * @param responseByContentTypeRule the response by content type rule
@@ -559,24 +535,8 @@ public abstract class AbstractAspectranActivity implements AspectranActivity {
 			log.debug("Response by content type: " + responseRule);
 		}
 
-		enforceableResponseId = null;
+		multipleTransletResponseId = null;
 		translet.setProcessResult(null);
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.jhlabs.translets.activity.Activity#getEnforceableResponseId()
-	 */
-	public String getEnforceableResponseId() {
-		return enforceableResponseId;
-	}
-
-	/**
-	 * Sets the enforceable response id.
-	 *
-	 * @param enforceableResponseId the new enforceable response id
-	 */
-	public void setEnforceableResponseId(String enforceableResponseId) {
-		this.enforceableResponseId = enforceableResponseId;
 	}
 	
 	/* (non-Javadoc)
@@ -670,9 +630,9 @@ public abstract class AbstractAspectranActivity implements AspectranActivity {
 
 		String responseId = null;
 		
-		if(enforceableResponseId != null && enforceableResponseId.length() > 0) {
-			if(responseRule.getResponseMap().containsKey(enforceableResponseId))
-				responseId = enforceableResponseId;
+		if(multipleTransletResponseId != null && multipleTransletResponseId.length() > 0) {
+			if(responseRule.getResponseMap().containsKey(multipleTransletResponseId))
+				responseId = multipleTransletResponseId;
 		} else {
 			responseId = responseRule.getDefaultResponseId();
 		}
@@ -801,7 +761,7 @@ public abstract class AbstractAspectranActivity implements AspectranActivity {
 	/* (non-Javadoc)
 	 * @see com.aspectran.core.activity.AspectranActivity#getTransletRegistry()
 	 */
-	public TransletRegistry getTransletRegistry() {
-		return context.getTransletRegistry();
+	public TransletRuleRegistry getTransletRegistry() {
+		return context.getTransletRuleRegistry();
 	}
 }
