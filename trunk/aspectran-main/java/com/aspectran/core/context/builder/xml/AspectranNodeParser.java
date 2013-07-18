@@ -79,12 +79,13 @@ public class AspectranNodeParser {
 		addRootNodelets();
 		addSettingsNodelets();
 		addTypeAliasNodelets();
-		addActivityRuleNodelets();
-		addDefaultRequestRuleNodelets();
-		addDefaultResponseRuleNodelets();
-		addDefaultExceptionRuleNodelets();
-		addAspectranNodelets();
+		addAspectRuleNodelets();
+		//addActivityRuleNodelets();
+		//addDefaultRequestRuleNodelets();
+		//addDefaultResponseRuleNodelets();
+		//addDefaultExceptionRuleNodelets();
 		addBeanNodelets();
+		addTransletNodelets();
 		addImportNodelets();
 	}
 
@@ -178,6 +179,17 @@ public class AspectranNodeParser {
 				assistant.addTypeAlias(alias, type);
 			}
 		});
+	}
+	
+	private void addAspectRuleNodelets() {
+		parser.addNodelet("/aspectran/aspect", new Nodelet() {
+			public void process(Node node, Properties attributes, String text) throws Exception {
+				String id = attributes.getProperty("id");
+				AspectranSettingsRule ar = new AspectranSettingsRule();
+				assistant.pushObject(ar);
+			}
+		});
+		
 	}
 	
 	/**
@@ -402,7 +414,7 @@ public class AspectranNodeParser {
 	/**
 	 * Adds the translet nodelets.
 	 */
-	private void addAspectranNodelets() {
+	private void addTransletNodelets() {
 		parser.addNodelet("/aspectran/translet", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
 				String name = attributes.getProperty("name");
@@ -412,6 +424,9 @@ public class AspectranNodeParser {
 					throw new IllegalArgumentException("The <translet> element requires a name attribute.");
 
 				name = assistant.applyNamespaceForTranslet(name);
+				
+				if(parentTransletName != null && parentTransletName.startsWith("."))
+					parentTransletName = assistant.applyNamespaceForTranslet(parentTransletName.substring(1));
 
 				TransletRule transletRule = new TransletRule();
 				transletRule.setName(name);
@@ -421,7 +436,7 @@ public class AspectranNodeParser {
 			}
 		});
 		
-		parser.addNodelet("/aspectran/translet", new TicketCheckRuleNodeletAdder(assistant));
+		//parser.addNodelet("/aspectran/translet", new TicketCheckRuleNodeletAdder(assistant));
 
 		parser.addNodelet("/aspectran/translet", new ResponseRuleNodeletAdder(assistant));
 
