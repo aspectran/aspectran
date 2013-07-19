@@ -1,4 +1,4 @@
-package com.aspectran.core.context.bean.registry;
+package com.aspectran.core.context.bean;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Iterator;
@@ -9,7 +9,6 @@ import com.aspectran.core.activity.AspectranActivity;
 import com.aspectran.core.activity.SuperTranslet;
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
-import com.aspectran.core.context.bean.BeansException;
 import com.aspectran.core.context.bean.ablility.Disposable;
 import com.aspectran.core.context.bean.scope.ApplicationScope;
 import com.aspectran.core.context.bean.scope.ContextScope;

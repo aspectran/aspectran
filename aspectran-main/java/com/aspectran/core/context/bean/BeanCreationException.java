@@ -1,6 +1,5 @@
-package com.aspectran.core.context.bean.registry;
+package com.aspectran.core.context.bean;
 
-import com.aspectran.core.context.bean.BeansException;
 import com.aspectran.core.rule.BeanRule;
 
 

@@ -16,6 +16,7 @@
 package com.aspectran.core.rule;
 
 import com.aspectran.core.activity.process.action.Executable;
+import com.aspectran.core.rule.ability.ActionPossessable;
 import com.aspectran.core.token.Token;
 import com.aspectran.core.token.Tokenizer;
 import com.aspectran.core.type.ResponseType;
@@ -27,7 +28,7 @@ import java.util.List;
 /**
  * <p>Created: 2008. 03. 22 오후 5:51:58</p>
  */
-public class RedirectResponseRule extends ActionyResponseSupport {
+public class RedirectResponseRule extends ActionPossessSupport implements ActionPossessable {
 	
 	/** The Constant RESPONSE_TYPE. */
 	public static final ResponseType RESPONSE_TYPE = ResponseType.REDIRECT;

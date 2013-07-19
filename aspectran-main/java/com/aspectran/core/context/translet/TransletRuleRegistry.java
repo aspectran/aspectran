@@ -1,4 +1,4 @@
-package com.aspectran.core.context.translet.registry;
+package com.aspectran.core.context.translet;
 
 import com.aspectran.core.rule.TransletRule;
 import com.aspectran.core.rule.TransletRuleMap;

@@ -13,51 +13,54 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.aspectran.core.context.translet.registry;
-
+package com.aspectran.core.activity;
 
 /**
- * This exception will be thrown when a translet not found..
+ * This exception will be thrown when a translets configuration is not valid.
  * 
  * <p>Created: 2008. 01. 07 오전 3:35:55</p>
  */
-public class TransletNotFoundException extends RuntimeException {
+public class AspectranActivityException extends RuntimeException {
 	
 	/** @serial */
-	static final long serialVersionUID = 4415928593371198551L;
+	static final long serialVersionUID = -1205477794213156219L;
 
 	/**
-	 * Simple constructor.
+	 * Simple constructor
 	 */
-	public TransletNotFoundException() {
+	public AspectranActivityException() {
 	}
 
 	/**
-	 * Constructor to create exception with a message.
+	 * Constructor to create exception with a message
 	 * 
-	 * @param msg A message to associate with the exception
+	 * @param msg
+	 *            A message to associate with the exception
 	 */
-	public TransletNotFoundException(String msg) {
+	public AspectranActivityException(String msg) {
 		super(msg);
 	}
 
 	/**
-	 * Constructor to create exception to wrap another exception.
+	 * Constructor to create exception to wrap another exception
 	 * 
-	 * @param cause The real cause of the exception
+	 * @param cause
+	 *            The real cause of the exception
 	 */
-	public TransletNotFoundException(Throwable cause) {
+	public AspectranActivityException(Throwable cause) {
 		super(cause);
 	}
 
 	/**
 	 * Constructor to create exception to wrap another exception and pass a
-	 * message.
+	 * message
 	 * 
-	 * @param msg The message
-	 * @param cause The real cause of the exception
+	 * @param msg
+	 *            The message
+	 * @param cause
+	 *            The real cause of the exception
 	 */
-	public TransletNotFoundException(String msg, Throwable cause) {
+	public AspectranActivityException(String msg, Throwable cause) {
 		super(msg, cause);
 	}
 }

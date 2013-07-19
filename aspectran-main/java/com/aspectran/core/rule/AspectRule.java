@@ -15,28 +15,18 @@
  */
 package com.aspectran.core.rule;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.aspectran.core.type.JoinpointTargetType;
 
-/**
- * <p>
- * Created: 2009. 03. 09 오후 23:48:09
- * </p>
- */
 public class AspectRule {
 
 	private String id;
 
 	private JoinpointTargetType joinpointTarget;
-
-	private AspectAdviceRule beforeAdviceRule;
 	
-	private AspectAdviceRule afterAdviceRule;
-	
-	private AspectAdviceRule aroundAdviceRule;
-	
-	private AspectAdviceRule finallyAdviceRule;
-	
-	private AspectAdviceRule exceptionRaizedAdviceRule;
+	private List<AspectAdviceRule> aspectAdviceRuleList;
 
 	public String getId() {
 		return id;
@@ -45,7 +35,28 @@ public class AspectRule {
 	public void setId(String id) {
 		this.id = id;
 	}
+
+	public JoinpointTargetType getJoinpointTarget() {
+		return joinpointTarget;
+	}
+
+	public void setJoinpointTarget(JoinpointTargetType joinpointTarget) {
+		this.joinpointTarget = joinpointTarget;
+	}
+
+	public List<AspectAdviceRule> getAspectAdviceRuleList() {
+		return aspectAdviceRuleList;
+	}
+
+	public void setAspectAdviceRuleList(List<AspectAdviceRule> aspectAdviceRuleList) {
+		this.aspectAdviceRuleList = aspectAdviceRuleList;
+	}
 	
-	
+	public void addAspectAdviceRule(AspectAdviceRule aar) {
+		if(aspectAdviceRuleList == null)
+			aspectAdviceRuleList = new ArrayList<AspectAdviceRule>();
+		
+		aspectAdviceRuleList.add(aar);
+	}
 	
 }

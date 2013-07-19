@@ -15,18 +15,21 @@
  */
 package com.aspectran.core.rule;
 
+import java.util.List;
+
 import com.aspectran.core.activity.response.DispatchResponse;
 import com.aspectran.core.activity.response.ForwardResponse;
 import com.aspectran.core.activity.response.RedirectResponse;
 import com.aspectran.core.activity.response.ResponseMap;
 import com.aspectran.core.activity.response.transform.AbstractTransform;
+import com.aspectran.core.context.aspect.AspectAdviceRegistry;
 
 /**
  * <p>
  * Created: 2008. 03. 22 오후 5:48:09
  * </p>
  */
-public class ResponseRule extends AbstractResponseRule {
+public class ResponseRule extends AbstractResponseRule implements AspectAdviceSupport {
 
 	/** The Constant DEFAULT_ID. */
 	public static final String DEFAULT_ID = "[default]";
@@ -39,6 +42,8 @@ public class ResponseRule extends AbstractResponseRule {
 	
 	/** The default content type. */
 	private String defaultContentType;
+	
+	private AspectAdviceRegistry aspectAdviceRegistry;
 	
 	/**
 	 * Instantiates a new response rule.
@@ -185,6 +190,48 @@ public class ResponseRule extends AbstractResponseRule {
 			frr.setId(DEFAULT_ID);
 		
 		return super.addResponse(frr);
+	}
+	
+	public AspectAdviceRegistry getAspectAdviceRegistry() {
+		return aspectAdviceRegistry;
+	}
+
+	public void setAspectAdviceRegistry(AspectAdviceRegistry aspectAdviceRegistry) {
+		this.aspectAdviceRegistry = aspectAdviceRegistry;
+	}
+	
+	public List<AspectAdviceRule> getBeforeAdviceRuleList() {
+		if(aspectAdviceRegistry == null)
+			return null;
+		
+		return aspectAdviceRegistry.getBeforeAdviceRuleList();
+	}
+	
+	public List<AspectAdviceRule> getAfterAdviceRuleList() {
+		if(aspectAdviceRegistry == null)
+			return null;
+		
+		return aspectAdviceRegistry.getAfterAdviceRuleList();
+	}
+	
+	public List<AspectAdviceRule> getFinallyAdviceRuleList() {
+		if(aspectAdviceRegistry == null)
+			return null;
+		
+		return aspectAdviceRegistry.getFinallyAdviceRuleList();
+	}
+	
+	public List<AspectAdviceRule> getExceptionRaizedAdviceRuleList() {
+		if(aspectAdviceRegistry == null)
+			return null;
+		
+		return aspectAdviceRegistry.getExceptionRaizedAdviceRuleList();
+	}
+
+	public ResponseRule newResponseRule(ResponseMap responseMap) {
+		ResponseRule responseRule = new ResponseRule();
+		responseRule.setCharacterEncoding(characterEncoding);
+		return responseRule;
 	}
 
 	/* (non-Javadoc)

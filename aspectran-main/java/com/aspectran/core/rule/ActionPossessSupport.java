@@ -20,7 +20,7 @@ import com.aspectran.core.activity.process.ActionList;
 /**
  * The Class ActionyResponseSupport.
  */
-public abstract class ActionyResponseSupport {
+public abstract class ActionPossessSupport {
 	
 	protected ActionList actionList;
 	

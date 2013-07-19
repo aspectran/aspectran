@@ -25,9 +25,9 @@ import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.context.AspectranContext;
-import com.aspectran.core.context.bean.registry.BeanRegistry;
+import com.aspectran.core.context.bean.BeanRegistry;
 import com.aspectran.core.context.bean.scope.RequestScope;
-import com.aspectran.core.context.translet.registry.TransletRuleRegistry;
+import com.aspectran.core.context.translet.TransletRuleRegistry;
 
 /**
  * Action Translator.
@@ -49,15 +49,15 @@ public interface AspectranActivity {
 	
 	public SuperTranslet getSuperTranslet();
 	
-	public void request(String transletName) throws RequestException;
+	public void run(String transletName) throws RequestException, ProcessException, ResponseException;
+	
+	public void init(String transletName);
+	
+	public void request() throws RequestException;
 	
 	public ProcessResult process() throws ProcessException;
 	
-	public ProcessResult process(boolean ignoreTicket) throws ProcessException;
-
 	public ProcessResult getProcessResult();
-	
-	public void response() throws ResponseException;
 	
 	public String getForwardTransletName();
 	
@@ -88,5 +88,11 @@ public interface AspectranActivity {
 	public BeanRegistry getBeanRegistry();
 	
 	public TransletRuleRegistry getTransletRegistry();
+	
+	public boolean isExceptionRaised();
+
+	public Exception getRaisedException();
+
+	public void setRaisedException(Exception raisedException);
 	
 }

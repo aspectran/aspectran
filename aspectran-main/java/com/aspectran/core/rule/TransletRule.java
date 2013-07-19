@@ -15,6 +15,8 @@
  */
 package com.aspectran.core.rule;
 
+import java.util.List;
+
 import com.aspectran.core.activity.AbstractSuperTranslet;
 import com.aspectran.core.activity.SuperTranslet;
 import com.aspectran.core.activity.process.ActionList;
@@ -28,6 +30,7 @@ import com.aspectran.core.activity.response.ForwardResponse;
 import com.aspectran.core.activity.response.RedirectResponse;
 import com.aspectran.core.activity.response.Responsible;
 import com.aspectran.core.activity.response.transform.AbstractTransform;
+import com.aspectran.core.context.aspect.AspectAdviceRegistry;
 import com.aspectran.core.context.builder.AspectranContextConstant;
 import com.aspectran.core.type.ResponseType;
 import com.aspectran.core.type.TransformType;
@@ -35,7 +38,7 @@ import com.aspectran.core.type.TransformType;
 /**
  * <p>Created: 2008. 03. 22 오후 5:48:09</p>
  */
-public class TransletRule implements Cloneable {
+public class TransletRule implements AspectAdviceSupport, Cloneable {
 
 	private String name;
 
@@ -54,7 +57,9 @@ public class TransletRule implements Cloneable {
 	private Class<? extends SuperTranslet> transletInterfaceClass;
 	
 	private Class<? extends AbstractSuperTranslet> transletInstanceClass;
-	
+
+	private AspectAdviceRegistry aspectAdviceRegistry;
+
 	/**
 	 * Instantiates a new translet rule.
 	 */
@@ -183,6 +188,42 @@ public class TransletRule implements Cloneable {
 		this.transletInstanceClass = transletInstanceClass;
 	}
 
+	public AspectAdviceRegistry getAspectAdviceRegistry() {
+		return aspectAdviceRegistry;
+	}
+
+	public void setAspectAdviceRegistry(AspectAdviceRegistry aspectAdviceRegistry) {
+		this.aspectAdviceRegistry = aspectAdviceRegistry;
+	}
+	
+	public List<AspectAdviceRule> getBeforeAdviceRuleList() {
+		if(aspectAdviceRegistry == null)
+			return null;
+		
+		return aspectAdviceRegistry.getBeforeAdviceRuleList();
+	}
+	
+	public List<AspectAdviceRule> getAfterAdviceRuleList() {
+		if(aspectAdviceRegistry == null)
+			return null;
+		
+		return aspectAdviceRegistry.getAfterAdviceRuleList();
+	}
+	
+	public List<AspectAdviceRule> getFinallyAdviceRuleList() {
+		if(aspectAdviceRegistry == null)
+			return null;
+		
+		return aspectAdviceRegistry.getFinallyAdviceRuleList();
+	}
+	
+	public List<AspectAdviceRule> getExceptionRaizedAdviceRuleList() {
+		if(aspectAdviceRegistry == null)
+			return null;
+		
+		return aspectAdviceRegistry.getExceptionRaizedAdviceRuleList();
+	}
+	
 	public Object clone() throws CloneNotSupportedException {                      
 		return super.clone();              
 	}

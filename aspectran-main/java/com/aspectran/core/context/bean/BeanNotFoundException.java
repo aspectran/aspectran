@@ -1,6 +1,5 @@
-package com.aspectran.core.context.bean.registry;
+package com.aspectran.core.context.bean;
 
-import com.aspectran.core.context.bean.BeansException;
 
 public class BeanNotFoundException extends BeansException {
 

@@ -16,8 +16,8 @@
 package com.aspectran.core.context;
 
 import com.aspectran.core.adapter.ApplicationAdapter;
-import com.aspectran.core.context.bean.registry.BeanRegistry;
-import com.aspectran.core.context.translet.registry.TransletRuleRegistry;
+import com.aspectran.core.context.bean.BeanRegistry;
+import com.aspectran.core.context.translet.TransletRuleRegistry;
 import com.aspectran.core.rule.AspectranSettingsRule;
 import com.aspectran.core.rule.TransletRule;
 

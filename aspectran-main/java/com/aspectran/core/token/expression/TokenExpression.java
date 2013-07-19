@@ -25,7 +25,7 @@ import java.util.Set;
 
 import com.aspectran.core.activity.AspectranActivity;
 import com.aspectran.core.adapter.RequestAdapter;
-import com.aspectran.core.context.bean.registry.BeanRegistry;
+import com.aspectran.core.context.bean.BeanRegistry;
 import com.aspectran.core.token.Token;
 import com.aspectran.core.type.TokenType;
 import com.aspectran.core.util.BeanUtils;

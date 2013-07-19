@@ -159,7 +159,6 @@ public class ActionRuleNodeletAdder implements NodeletAdder {
 			public void process(Node node, Properties attributes, String text) throws Exception {
 				String id = attributes.getProperty("id");
 				String transletName = attributes.getProperty("translet");
-				Boolean ignoreTicket = Boolean.valueOf(attributes.getProperty("ignoreTicket"));
 				Boolean hidden = Boolean.valueOf(attributes.getProperty("hidden"));
 
 				if(!assistant.isNullableActionId() && StringUtils.isEmpty(id))
@@ -168,7 +167,6 @@ public class ActionRuleNodeletAdder implements NodeletAdder {
 				IncludeActionRule includeActionRule = new IncludeActionRule();
 				includeActionRule.setId(id);
 				includeActionRule.setTransletName(transletName);
-				includeActionRule.setIgnoreTicket(ignoreTicket);
 				includeActionRule.setHidden(hidden);
 
 				assistant.pushObject(includeActionRule);
