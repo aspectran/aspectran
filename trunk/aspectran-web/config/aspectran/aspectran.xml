@@ -46,6 +46,31 @@
 			</dispatch>
 		</after>
 	</aspect>
+	
+	<aspect id="frontRequestRule">
+		<joinpoint target="request">
+			<pointcut>front/*</pointcut>
+		</joinpoint>
+		<before>
+			<action id="xml" bean="common.action.a1" method="testXmlAction" hidden="true">
+				<properties>
+					<item name="variable1">error</item>
+					<item name="variable2">0001</item>
+				</properties>
+			</action>
+		</before>
+		<after>
+			<action id="xml" bean="common.action.a1" method="testXmlAction" hidden="true">
+				<properties>
+					<item name="variable1">error</item>
+					<item name="variable2">0001</item>
+				</properties>
+			</action>
+			<dispatch id="jsp" contentType="text/html">
+				<template>/WEB-INF/jsp/hello.jsp</template>
+			</dispatch>
+		</after>
+	</aspect>
 
 	<aspect id="responseRule">
 		<joinpoint target="response"/>

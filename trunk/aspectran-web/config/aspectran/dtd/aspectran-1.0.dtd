@@ -67,7 +67,7 @@ id ID #IMPLIED
 
 <!ELEMENT joinpoint (pointcut*)>
 <!ATTLIST joinpoint
-target (request | response | scheduler | bean | translet | action) #REQUIRED
+target (request | response | translet | action | scheduler | bean) #REQUIRED
 >
 
 <!ELEMENT pointcut (#PCDATA)>
@@ -76,11 +76,11 @@ pattern CDATA #IMPLIED
 >
 
 <!ELEMENT default (properties? | action?)*>
-<!ELEMENT before (properties? | echo? | action? | transform? | dispatch? | redirect? | forward?)*>
-<!ELEMENT after (properties? | echo? | action? | transform? | dispatch? | redirect? | forward?)*>
-<!ELEMENT around (properties? | echo? | action? | transform? | dispatch? | redirect? | forward?)*>
-<!ELEMENT finally (properties? | echo? | action? | transform? | dispatch? | redirect? | forward?)*>
-<!ELEMENT exceptionRaized (properties? | echo? | action? | transform? | dispatch? | redirect? | forward?)*>
+<!ELEMENT before (echo? | action? | transform? | dispatch? | redirect? | forward?)*>
+<!ELEMENT after (echo? | action? | transform? | dispatch? | redirect? | forward?)*>
+<!ELEMENT around (echo? | action? | transform? | dispatch? | redirect? | forward?)*>
+<!ELEMENT finally (echo? | action? | transform? | dispatch? | redirect? | forward?)*>
+<!ELEMENT exceptionRaized (echo? | action? | transform? | dispatch? | redirect? | forward?)*>
 
 <!ELEMENT bean (features?, constructor?, properties*)>
 <!ATTLIST bean
