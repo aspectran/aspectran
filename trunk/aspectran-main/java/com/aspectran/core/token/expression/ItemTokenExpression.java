@@ -19,7 +19,7 @@ import java.io.File;
 import java.util.Map;
 
 import com.aspectran.core.activity.AspectranActivity;
-import com.aspectran.core.context.bean.registry.BeanRegistry;
+import com.aspectran.core.context.bean.BeanRegistry;
 import com.aspectran.core.rule.ItemRule;
 import com.aspectran.core.rule.ItemRuleMap;
 import com.aspectran.core.token.Token;

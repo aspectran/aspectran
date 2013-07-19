@@ -1,4 +1,4 @@
-package com.aspectran.core.context.bean.registry;
+package com.aspectran.core.context.bean;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;

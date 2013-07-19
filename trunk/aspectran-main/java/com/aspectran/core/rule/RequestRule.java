@@ -15,13 +15,16 @@
  */
 package com.aspectran.core.rule;
 
+import java.util.List;
+
+import com.aspectran.core.context.aspect.AspectAdviceRegistry;
 import com.aspectran.core.type.RequestMethodType;
 
 
 /**
  * <p>Created: 2008. 03. 22 오후 5:48:09</p>
  */
-public class RequestRule {
+public class RequestRule implements AspectAdviceSupport {
 
 	private String characterEncoding;
 	
@@ -32,6 +35,8 @@ public class RequestRule {
 	private ItemRuleMap attributeItemRuleMap;
 
 	private FileItemRuleMap fileItemRuleMap;
+	
+	private AspectAdviceRegistry aspectAdviceRegistry;
 	
 	public RequestRule() {
 	}
@@ -219,6 +224,42 @@ public class RequestRule {
 			return 0;
 		
 		return multipartRequestRule.getMaxRequestSize();
+	}
+	
+	public AspectAdviceRegistry getAspectAdviceRegistry() {
+		return aspectAdviceRegistry;
+	}
+
+	public void setAspectAdviceRegistry(AspectAdviceRegistry aspectAdviceRegistry) {
+		this.aspectAdviceRegistry = aspectAdviceRegistry;
+	}
+	
+	public List<AspectAdviceRule> getBeforeAdviceRuleList() {
+		if(aspectAdviceRegistry == null)
+			return null;
+		
+		return aspectAdviceRegistry.getBeforeAdviceRuleList();
+	}
+	
+	public List<AspectAdviceRule> getAfterAdviceRuleList() {
+		if(aspectAdviceRegistry == null)
+			return null;
+		
+		return aspectAdviceRegistry.getAfterAdviceRuleList();
+	}
+	
+	public List<AspectAdviceRule> getFinallyAdviceRuleList() {
+		if(aspectAdviceRegistry == null)
+			return null;
+		
+		return aspectAdviceRegistry.getFinallyAdviceRuleList();
+	}
+	
+	public List<AspectAdviceRule> getExceptionRaizedAdviceRuleList() {
+		if(aspectAdviceRegistry == null)
+			return null;
+		
+		return aspectAdviceRegistry.getExceptionRaizedAdviceRuleList();
 	}
 
 	/* (non-Javadoc)

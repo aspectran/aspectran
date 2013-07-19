@@ -39,8 +39,6 @@ public class IncludeAction implements Executable {
 
 	private final ActionList parent;
 	
-	private boolean ignoreTicket;
-	
 	/**
 	 * Instantiates a new process call action.
 	 * 
@@ -50,7 +48,6 @@ public class IncludeAction implements Executable {
 	public IncludeAction(IncludeActionRule includeActionRule, ActionList parent) {
 		this.includeActionRule = includeActionRule;
 		this.parent = parent;
-		this.ignoreTicket = (includeActionRule.getIgnoreTicket() == Boolean.TRUE);
 	}
 
 	/* (non-Javadoc)
@@ -72,8 +69,9 @@ public class IncludeAction implements Executable {
 			}
 			
 			AspectranActivity newActivity = activity.newAspectranActivity();
-			newActivity.request(includeActionRule.getTransletName());
-			return newActivity.process(ignoreTicket);
+			newActivity.init(includeActionRule.getTransletName());
+			newActivity.request();
+			return newActivity.process();
 		} catch(Exception e) {
 			log.error("Execute error: IncludeActionRule " + includeActionRule.toString());
 			throw new ActionExecutionException(this, e);

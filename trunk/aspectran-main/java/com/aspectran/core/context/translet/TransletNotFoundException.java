@@ -13,22 +13,23 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.aspectran.core.activity.request;
+package com.aspectran.core.context.translet;
+
 
 /**
- * This exception will be thrown when a translet request is failed.
+ * This exception will be thrown when a translet not found..
  * 
  * <p>Created: 2008. 01. 07 오전 3:35:55</p>
  */
-public class RequestException extends Exception {
+public class TransletNotFoundException extends RuntimeException {
 	
 	/** @serial */
-	static final long serialVersionUID = 8423700922358095810L;
+	static final long serialVersionUID = 4415928593371198551L;
 
 	/**
 	 * Simple constructor.
 	 */
-	public RequestException() {
+	public TransletNotFoundException() {
 	}
 
 	/**
@@ -36,7 +37,7 @@ public class RequestException extends Exception {
 	 * 
 	 * @param msg A message to associate with the exception
 	 */
-	public RequestException(String msg) {
+	public TransletNotFoundException(String msg) {
 		super(msg);
 	}
 
@@ -45,7 +46,7 @@ public class RequestException extends Exception {
 	 * 
 	 * @param cause The real cause of the exception
 	 */
-	public RequestException(Throwable cause) {
+	public TransletNotFoundException(Throwable cause) {
 		super(cause);
 	}
 
@@ -56,7 +57,7 @@ public class RequestException extends Exception {
 	 * @param msg The message
 	 * @param cause The real cause of the exception
 	 */
-	public RequestException(String msg, Throwable cause) {
+	public TransletNotFoundException(String msg, Throwable cause) {
 		super(msg, cause);
 	}
 }

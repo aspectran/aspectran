@@ -27,9 +27,6 @@ public class IncludeActionRule {
 	/** The translet name. */
 	private String transletName;
 	
-	/** The ignore ticket. */
-	private Boolean ignoreTicket; 
-	
 	/** The attribute item rule map. */
 	private ItemRuleMap attributeItemRuleMap;
 	
@@ -70,24 +67,6 @@ public class IncludeActionRule {
 	 */
 	public void setTransletName(String transletName) {
 		this.transletName = transletName;
-	}
-
-	/**
-	 * Gets the ignore ticket.
-	 * 
-	 * @return the ignore ticket
-	 */
-	public Boolean getIgnoreTicket() {
-		return ignoreTicket;
-	}
-
-	/**
-	 * Sets the ignore ticket.
-	 * 
-	 * @param ignoreTicket the new ignore ticket
-	 */
-	public void setIgnoreTicket(Boolean ignoreTicket) {
-		this.ignoreTicket = ignoreTicket;
 	}
 
 	/**

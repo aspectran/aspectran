@@ -39,9 +39,10 @@ import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.context.AspectranContext;
-import com.aspectran.core.context.bean.registry.BeanRegistry;
+import com.aspectran.core.context.bean.BeanRegistry;
 import com.aspectran.core.context.bean.scope.RequestScope;
-import com.aspectran.core.context.translet.registry.TransletRuleRegistry;
+import com.aspectran.core.context.translet.TransletInstantiationException;
+import com.aspectran.core.context.translet.TransletRuleRegistry;
 import com.aspectran.core.rule.RequestRule;
 import com.aspectran.core.rule.ResponseByContentTypeRule;
 import com.aspectran.core.rule.ResponseRule;
@@ -110,9 +111,8 @@ public abstract class AbstractAspectranActivity implements AspectranActivity {
 	/** The enforceable response id. */
 	private String multipleTransletResponseId;
 	
-	/** The exception raised. */
-	private boolean exceptionRaised;
-	
+	private Exception raisedException;
+
 	/** The translet name. */
 	private String transletName;
 	
@@ -219,57 +219,41 @@ public abstract class AbstractAspectranActivity implements AspectranActivity {
 		return translet;
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.AspectranActivity#request(java.lang.String)
-	 */
-	public void request(String transletName) throws RequestException {
-		if(debugEnabled) {
-			log.debug(">> Requesting for translet name '" + transletName + "'");
-		}
-		
+	public void run(String transletName) throws RequestException, ProcessException, ResponseException {
+		init(transletName);
+		request();
+		process();
+		response();
+	}
+
+	public void init(String transletName) {
 		TransletRule transletRule = context.getTransletRuleRegistry().getTransletRule(transletName);
 
 		if(transletRule.getMultipleTransletResponseId() != null) {
 			multipleTransletResponseId = transletRule.getMultipleTransletResponseId();
 		}
 		
+		Class<? extends SuperTranslet> transletInterfaceClass = getTransletInterfaceClass();
+		Class<? extends AbstractSuperTranslet> transletInstanceClass = getTransletInstanceClass();
+
 		//create translet instance
 		try {
-			Class<? extends SuperTranslet> transletInterfaceClass = getTransletInterfaceClass();
-			Constructor<?> transletInterfaceConstructor = transletInterfaceClass.getConstructor(AspectranActivity.class);
+			Constructor<?> transletInstanceConstructor = transletInstanceClass.getConstructor(AspectranActivity.class);
 			Object[] args = new Object[] { this };
-			transletInterfaceConstructor.newInstance(args);
+			translet = (SuperTranslet)transletInstanceConstructor.newInstance(args);
 		} catch(Exception e) {
-			throw new RequestException(e);
+			throw new TransletInstantiationException(transletInterfaceClass, transletInstanceClass, e);
 		}
 		
 		this.transletName = transletName;
 		this.transletRule = transletRule;
 		this.requestRule = transletRule.getRequestRule();
 		this.responseRule = transletRule.getResponseRule();
-		
-		try {
-			if(requestAdapter != null && requestRule.getCharacterEncoding() != null)
-				requestAdapter.setCharacterEncoding(requestRule.getCharacterEncoding());
-			
-			if(responseAdapter != null && responseRule.getCharacterEncoding() != null)
-				responseAdapter.setCharacterEncoding(responseRule.getCharacterEncoding());
-		} catch(UnsupportedEncodingException e) {
-			throw new RequestException(e);
-		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.AspectranActivity#process()
-	 */
+	abstract public void request() throws RequestException;
+	
 	public ProcessResult process() throws ProcessException {
-		return process(false);
-	}
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.AspectranActivity#process(boolean)
-	 */
-	public ProcessResult process(boolean ignoreTicket) throws ProcessException {
 		if(debugEnabled) {
 			log.debug(">> Processing for path '" + transletName + "'");
 		}
@@ -324,7 +308,7 @@ public abstract class AbstractAspectranActivity implements AspectranActivity {
 				log.error("An error occurred while executing actions. Cause: " + e, e);
 			}
 
-			setExceptionRaised(true);
+			setRaisedException(e);
 			
 			if(transletRule.getExceptionHandleRule() != null) {
 				responseByContentType(transletRule.getExceptionHandleRule());
@@ -360,10 +344,7 @@ public abstract class AbstractAspectranActivity implements AspectranActivity {
 		return translet.getProcessResult();
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.AspectranActivity#response()
-	 */
-	public void response() throws ResponseException {
+	protected void response() throws ResponseException {
 		if(debugEnabled) {
 			log.debug(">> Responsing for path '" + transletName + "'");
 		}
@@ -506,11 +487,14 @@ public abstract class AbstractAspectranActivity implements AspectranActivity {
 	 */
 	private void forward() throws ResponseException {
 		if(debugEnabled) {
-			log.debug("Forwarding for path '" + forwardTransletName + "'");
+			log.debug("Forwarding for translet '" + forwardTransletName + "'");
 		}
 		
 		try {
-			request(forwardTransletName);
+			ProcessResult processResult = translet.getProcessResult();
+			init(forwardTransletName);
+			translet.setProcessResult(processResult);
+			request();
 			process();
 			response();
 		} catch(Exception e) {
@@ -527,8 +511,9 @@ public abstract class AbstractAspectranActivity implements AspectranActivity {
 		Responsible response = getResponse();
 		
 		if(response != null && response.getContentType() != null) {
-			responseRule.setResponseMap(responseByContentTypeRule.getResponseMap());
-			responseRule.setDefaultResponseId(response.getContentType().toString());
+			ResponseRule newResponseRule = responseRule.newResponseRule(responseByContentTypeRule.getResponseMap());
+			newResponseRule.setDefaultResponseId(response.getContentType().toString());
+			responseRule = newResponseRule;
 		}
 		
 		if(debugEnabled) {
@@ -587,16 +572,15 @@ public abstract class AbstractAspectranActivity implements AspectranActivity {
 	 * @return true, if is exception raised
 	 */
 	public boolean isExceptionRaised() {
-		return exceptionRaised;
+		return (raisedException == null);
+	}
+	
+	public Exception getRaisedException() {
+		return raisedException;
 	}
 
-	/**
-	 * Sets the exception raised.
-	 *
-	 * @param exceptionRaised the new exception raised
-	 */
-	public void setExceptionRaised(boolean exceptionRaised) {
-		this.exceptionRaised = exceptionRaised;
+	public void setRaisedException(Exception raisedException) {
+		this.raisedException = raisedException;
 	}
 	
 	/* (non-Javadoc)
@@ -764,4 +748,5 @@ public abstract class AbstractAspectranActivity implements AspectranActivity {
 	public TransletRuleRegistry getTransletRegistry() {
 		return context.getTransletRuleRegistry();
 	}
+	
 }

@@ -19,6 +19,7 @@ import java.io.File;
 
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.activity.process.action.Executable;
+import com.aspectran.core.rule.ability.ActionPossessable;
 import com.aspectran.core.type.ResponseType;
 import com.aspectran.core.type.TransformType;
 
@@ -27,7 +28,7 @@ import com.aspectran.core.type.TransformType;
  * Created: 2008. 03. 22 오후 5:51:58
  * </p>
  */
-public class TransformRule extends ActionyResponseSupport {
+public class TransformRule extends ActionPossessSupport implements ActionPossessable {
 	
 	public static final ResponseType RESPONSE_TYPE = ResponseType.TRANSFORM;
 

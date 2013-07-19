@@ -17,6 +17,7 @@ package com.aspectran.core.rule;
 
 import com.aspectran.core.activity.process.action.Executable;
 import com.aspectran.core.activity.response.dispatch.ViewDispatcher;
+import com.aspectran.core.rule.ability.ActionPossessable;
 import com.aspectran.core.type.ResponseType;
 
 /**
@@ -24,7 +25,7 @@ import com.aspectran.core.type.ResponseType;
  * Created: 2008. 03. 22 오후 5:51:58
  * </p>
  */
-public class DispatchResponseRule extends ActionyResponseSupport {
+public class DispatchResponseRule extends ActionPossessSupport implements ActionPossessable {
 	
 	public static final ResponseType RESPONSE_TYPE = ResponseType.DISPATCH;
 	

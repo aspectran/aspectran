@@ -15,13 +15,16 @@
  */
 package com.aspectran.core.rule;
 
+import java.util.List;
+
+import com.aspectran.core.context.aspect.AspectAdviceRegistry;
 import com.aspectran.core.rule.ability.ArgumentPossessable;
 import com.aspectran.core.rule.ability.PropertyPossessable;
 
 /**
  * <p>Created: 2008. 03. 22 오후 5:50:35</p>
  */
-public class BeanActionRule implements ArgumentPossessable, PropertyPossessable {
+public class BeanActionRule implements ArgumentPossessable, PropertyPossessable, AspectAdviceSupport {
 	
 	protected String id;
 	
@@ -34,6 +37,8 @@ public class BeanActionRule implements ArgumentPossessable, PropertyPossessable 
 	protected ItemRuleMap argumentItemRuleMap;
 	
 	protected Boolean hidden;
+	
+	private AspectAdviceRegistry aspectAdviceRegistry;
 
 	/**
 	 * Gets the action id.
@@ -157,6 +162,42 @@ public class BeanActionRule implements ArgumentPossessable, PropertyPossessable 
 		argumentItemRuleMap.putItemRule(argumentItemRule);
 	}
 
+	public AspectAdviceRegistry getAspectAdviceRegistry() {
+		return aspectAdviceRegistry;
+	}
+
+	public void setAspectAdviceRegistry(AspectAdviceRegistry aspectAdviceRegistry) {
+		this.aspectAdviceRegistry = aspectAdviceRegistry;
+	}
+	
+	public List<AspectAdviceRule> getBeforeAdviceRuleList() {
+		if(aspectAdviceRegistry == null)
+			return null;
+		
+		return aspectAdviceRegistry.getBeforeAdviceRuleList();
+	}
+	
+	public List<AspectAdviceRule> getAfterAdviceRuleList() {
+		if(aspectAdviceRegistry == null)
+			return null;
+		
+		return aspectAdviceRegistry.getAfterAdviceRuleList();
+	}
+	
+	public List<AspectAdviceRule> getFinallyAdviceRuleList() {
+		if(aspectAdviceRegistry == null)
+			return null;
+		
+		return aspectAdviceRegistry.getFinallyAdviceRuleList();
+	}
+	
+	public List<AspectAdviceRule> getExceptionRaizedAdviceRuleList() {
+		if(aspectAdviceRegistry == null)
+			return null;
+		
+		return aspectAdviceRegistry.getExceptionRaizedAdviceRuleList();
+	}
+	
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */

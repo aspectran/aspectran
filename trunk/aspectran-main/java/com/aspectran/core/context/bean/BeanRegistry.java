@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.aspectran.core.context.bean.registry;
+package com.aspectran.core.context.bean;
 
 import com.aspectran.core.activity.AspectranActivity;
 

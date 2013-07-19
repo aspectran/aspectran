@@ -19,11 +19,32 @@ import com.aspectran.core.activity.response.DispatchResponse;
 import com.aspectran.core.activity.response.ForwardResponse;
 import com.aspectran.core.activity.response.RedirectResponse;
 import com.aspectran.core.activity.response.transform.AbstractTransform;
+import com.aspectran.core.type.AspectAdviceType;
 
 /**
  * <p>Created: 2008. 04. 01 오후 11:19:28</p>
  */
 public class AspectAdviceRule extends AbstractResponseRule {
+
+	private String aspectId;
+	
+	private AspectAdviceType aspectAdviceType;
+	
+	public String getAspectId() {
+		return aspectId;
+	}
+
+	public void setAspectId(String aspectId) {
+		this.aspectId = aspectId;
+	}
+
+	public AspectAdviceType getAspectAdviceType() {
+		return aspectAdviceType;
+	}
+
+	public void setAspectAdviceType(AspectAdviceType aspectAdviceType) {
+		this.aspectAdviceType = aspectAdviceType;
+	}
 
 	/**
 	 * Sets the default response rule.

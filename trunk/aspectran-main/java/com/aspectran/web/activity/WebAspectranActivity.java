@@ -33,6 +33,7 @@ import com.aspectran.core.context.AspectranContext;
 import com.aspectran.core.rule.FileItemRule;
 import com.aspectran.core.rule.FileItemRuleMap;
 import com.aspectran.core.rule.RequestRule;
+import com.aspectran.core.rule.ResponseRule;
 import com.aspectran.core.token.expression.ItemTokenExpression;
 import com.aspectran.core.token.expression.ItemTokenExpressor;
 import com.aspectran.core.type.FileItemUnityType;
@@ -80,25 +81,39 @@ public class WebAspectranActivity extends AbstractAspectranActivity implements A
 		setTransletInstanceClass(AspectranWebTranslet.class);
 	}
 	
-	public void request(String transletName) throws RequestException {
-		super.request(transletName);
-
-		String method = request.getMethod();
-		RequestMethodType methodType = getRequestRule().getMethod();
+	public void request() throws RequestException {
+		RequestRule requestRule = getRequestRule();
+		ResponseRule responseRule = getResponseRule();
+		RequestAdapter requestAdapter = getRequestAdapter();
+		ResponseAdapter responseAdapter = getResponseAdapter();
 		
-        if(methodType != null
-        		&& !method.equalsIgnoreCase(methodType.toString()))
-        	return;
-        	
-        String contentType = request.getContentType();
-
-        if(method.equalsIgnoreCase(RequestMethodType.POST.toString())
-        		&& contentType != null
-        		&& contentType.startsWith("multipart/form-data")) {
-        	parseMultipart();
-        }
-
-        parseParameter();
+		try {
+			if(requestAdapter != null && requestRule.getCharacterEncoding() != null)
+				requestAdapter.setCharacterEncoding(requestRule.getCharacterEncoding());
+			
+			if(responseAdapter != null && responseRule.getCharacterEncoding() != null)
+				responseAdapter.setCharacterEncoding(responseRule.getCharacterEncoding());
+		
+			String method = request.getMethod();
+			RequestMethodType methodType = getRequestRule().getMethod();
+			
+	        if(methodType != null
+	        		&& !method.equalsIgnoreCase(methodType.toString()))
+	        	return;
+	        	
+	        String contentType = request.getContentType();
+	
+	        if(method.equalsIgnoreCase(RequestMethodType.POST.toString())
+	        		&& contentType != null
+	        		&& contentType.startsWith("multipart/form-data")) {
+	        	parseMultipart();
+	        }
+	
+	        parseParameter();
+        
+		} catch(Exception e) {
+			throw new RequestException(e);
+		}
 	}
 
 	/**
