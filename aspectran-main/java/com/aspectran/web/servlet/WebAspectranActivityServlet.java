@@ -133,9 +133,7 @@ public class WebAspectranActivityServlet extends HttpServlet implements Servlet 
 			String requestUri = req.getRequestURI();
 
 			AspectranActivity activity = new WebAspectranActivity(context, req, res);
-			activity.request(requestUri);
-			activity.process();
-			activity.response();
+			activity.run(requestUri);
 		} catch(TransletNotFoundException e) {
 			res.sendError(HttpServletResponse.SC_NOT_FOUND);
 			log.error(e.getMessage(), e);
@@ -156,7 +154,9 @@ public class WebAspectranActivityServlet extends HttpServlet implements Servlet 
 		
 		super.destroy();
 		
-		if(context != null)
+		if(context != null) {
 			context.destroy();
+			context = null;
+		}
 	}
 }

@@ -18,28 +18,19 @@ package com.aspectran.core.context;
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.bean.BeanRegistry;
 import com.aspectran.core.context.translet.TransletRuleRegistry;
-import com.aspectran.core.rule.AspectranSettingsRule;
-import com.aspectran.core.rule.TransletRule;
 
 /**
- * Translets client.
- * 
  * <p>Created: 2008. 06. 09 오후 2:12:40</p>
  */
 public class AspectranContext {
 
-	private AspectranSettingsRule activityRule;
-	
 	private ApplicationAdapter applicationAdapter;
 	
 	private BeanRegistry beanRegistry;
 
 	private TransletRuleRegistry transletRuleRegistry;
 	
-	//private TransletRuleMap transletRuleMap;
-	
-	public AspectranContext(AspectranSettingsRule activityRule) {
-		this.activityRule = activityRule;
+	public AspectranContext() {
 	}
 	
 	/**
@@ -82,12 +73,8 @@ public class AspectranContext {
 		return transletRuleRegistry;
 	}
 
-	public void setTransletRegistry(TransletRuleRegistry transletRuleRegistry) {
+	public void setTransletRuleRegistry(TransletRuleRegistry transletRuleRegistry) {
 		this.transletRuleRegistry = transletRuleRegistry;
-	}
-	
-	public TransletRule getTransletRule(String transletName) {
-		return transletRuleRegistry.getTransletRule(transletName);
 	}
 	
 //	/**
@@ -142,10 +129,12 @@ public class AspectranContext {
 		if(beanRegistry != null) {
 			//TODO
 			//beanRegistry.destroy();
+			beanRegistry = null;
 		}
 		if(transletRuleRegistry != null) {
 			//TODO
 			transletRuleRegistry.destroy();
+			transletRuleRegistry = null;
 		}
 	}
 	
@@ -155,8 +144,8 @@ public class AspectranContext {
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		
-		sb.append("{activityRule=").append(activityRule);
-		sb.append("}");
+//		sb.append("{activityRule=").append(activityRule);
+//		sb.append("}");
 		
 		return sb.toString();
 	}

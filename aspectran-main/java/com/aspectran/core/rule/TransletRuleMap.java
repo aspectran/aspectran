@@ -25,6 +25,15 @@ public class TransletRuleMap extends LinkedHashMap<String, TransletRule> impleme
 
 	/** @serial */
 	static final long serialVersionUID = -6355555002181276839L;
+
+	private boolean freezed;
+	
+	public TransletRule put(String key, TransletRule value) {
+		if(freezed)
+			throw new java.lang.UnsupportedOperationException("freezed TransletRuleMap: " + toString());
+
+		return super.put(key, value);
+	}
 	
 //	/** The multi activity translet rule map. */
 //	private MultiActivityTransletRuleMap multiActivityTransletRuleMap;;
@@ -61,6 +70,10 @@ public class TransletRuleMap extends LinkedHashMap<String, TransletRule> impleme
 	 */
 	public TransletRule putTransletRule(TransletRule transletRule) {
 		return put(transletRule.getName(), transletRule);
+	}
+	
+	public void freeze() {
+		freezed = true;
 	}
 	
 	/* (non-Javadoc)

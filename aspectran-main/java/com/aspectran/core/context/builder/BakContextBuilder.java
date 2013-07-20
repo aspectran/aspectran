@@ -96,9 +96,9 @@ public final class BakContextBuilder {
 
 			// Bean loading...
 			BeanRuleMap beanRuleMap = new BeanRuleMap();
-			List<ImportableResource> beanMaps = assistant.getBeanMapResources();
+			List<ContextResourceFactory> beanMaps = assistant.getBeanMapResources();
 			
-			for(ImportableResource mr : beanMaps) {
+			for(ContextResourceFactory mr : beanMaps) {
 				log.info("Loading the bean-map from '" + mr.getResource() + "'...");
 				
 				BeansNodeParser parser = new BeansNodeParser(assistant);
@@ -110,9 +110,9 @@ public final class BakContextBuilder {
 			
 			// Translet loading...
 			MultipleTransletRuleMap transletRuleMap = new MultipleTransletRuleMap();
-			List<ImportableResource> transletMaps = assistant.getTransletMapResources();
+			List<ContextResourceFactory> transletMaps = assistant.getTransletMapResources();
 			
-			for(ImportableResource mr : transletMaps) {
+			for(ContextResourceFactory mr : transletMaps) {
 				log.info("Loading the translet-map from '" + mr.getResource() + "'...");
 
 				AspectranNodeParser parser = new AspectranNodeParser(assistant);
