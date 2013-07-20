@@ -28,6 +28,15 @@ public class BeanRuleMap extends LinkedHashMap<String, BeanRule> implements Iter
 
 	/** @serial */
 	static final long serialVersionUID = 6582559285464575704L;
+	
+	private boolean freezed;
+	
+	public BeanRule put(String key, BeanRule value) {
+		if(freezed)
+			throw new java.lang.UnsupportedOperationException("freezed BeanRuleMap: " + toString());
+
+		return super.put(key, value);
+	}
 
 	/**
 	 * Adds a value rule.
@@ -38,6 +47,10 @@ public class BeanRuleMap extends LinkedHashMap<String, BeanRule> implements Iter
 	 */
 	public BeanRule putBeanRule(BeanRule beanRule) {
 		return put(beanRule.getId(), beanRule);
+	}
+	
+	public void freeze() {
+		freezed = true;
 	}
 	
 	/* (non-Javadoc)

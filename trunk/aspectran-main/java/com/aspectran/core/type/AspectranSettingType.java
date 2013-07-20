@@ -21,58 +21,58 @@ import java.util.Map;
 /**
  * The Class ActivitySettingType.
  */
-public final class ActivitySettingType extends Type {
+public final class AspectranSettingType extends Type {
 	
 	/** The Constant USE_NAMESPACES. */
-	public static final ActivitySettingType USE_NAMESPACES;
+	public static final AspectranSettingType USE_NAMESPACES;
 
 	/** The Constant NULLABLE_CONTENT_ID. */
-	public static final ActivitySettingType NULLABLE_CONTENT_ID;
+	public static final AspectranSettingType NULLABLE_CONTENT_ID;
 	
 	/** The Constant NULLABLE_ACTION_ID. */
-	public static final ActivitySettingType NULLABLE_ACTION_ID;
+	public static final AspectranSettingType NULLABLE_ACTION_ID;
 	
 	/** The Constant NULLABLE_BEAN_ID. */
-	public static final ActivitySettingType NULLABLE_BEAN_ID;
+	public static final AspectranSettingType NULLABLE_BEAN_ID;
 	
 	/** The Constant MULTI_ACTIVITY_ENABLE. */
-	public static final ActivitySettingType MULTIPLE_TRANSLET_ENABLE;
+	public static final AspectranSettingType MULTIPLE_TRANSLET_ENABLE;
 	
 	/** The Constant TRANSLET_NAME_SEPARATOR. */
-	public static final ActivitySettingType TRANSLET_NAME_SEPARATOR;
+	public static final AspectranSettingType TRANSLET_NAME_SEPARATOR;
 	
 	/** The Constant TRANSLET_NAME_PATTERN_PREFIX. */
-	public static final ActivitySettingType TRANSLET_NAME_PATTERN_PREFIX;
+	public static final AspectranSettingType TRANSLET_NAME_PATTERN_PREFIX;
 	
 	/** The Constant TRANSLET_NAME_PATTERN_SUFFIX. */
-	public static final ActivitySettingType TRANSLET_NAME_PATTERN_SUFFIX;
+	public static final AspectranSettingType TRANSLET_NAME_PATTERN_SUFFIX;
 	
 	/** The Constant TRANSLET_NAME_PATTERN. */
-	public static final ActivitySettingType TRANSLET_NAME_PATTERN;
+	public static final AspectranSettingType TRANSLET_NAME_PATTERN;
 	
 	/** The Constant TRANSLET_INTERFACE. */
-	public static final ActivitySettingType TRANSLET_INTERFACE_CLASS;
+	public static final AspectranSettingType TRANSLET_INTERFACE_CLASS;
 	
 	/** The Constant TRANSLET_CLASS. */
-	public static final ActivitySettingType TRANSLET_INSTANCE_CLASS;
+	public static final AspectranSettingType TRANSLET_INSTANCE_CLASS;
 	
 	/** The Constant types. */
-	private static final Map<String, ActivitySettingType> types;
+	private static final Map<String, AspectranSettingType> types;
 	
 	static {
-		USE_NAMESPACES = new ActivitySettingType("useNamespaces");
-		NULLABLE_CONTENT_ID = new ActivitySettingType("nullableContentId");
-		NULLABLE_ACTION_ID = new ActivitySettingType("nullableActionId");
-		NULLABLE_BEAN_ID = new ActivitySettingType("nullableBeanId");
-		MULTIPLE_TRANSLET_ENABLE = new ActivitySettingType("multiActivityEnable");
-		TRANSLET_NAME_SEPARATOR = new ActivitySettingType("transletNameSeparator");
-		TRANSLET_NAME_PATTERN_PREFIX = new ActivitySettingType("transletNamePatternPrefix");
-		TRANSLET_NAME_PATTERN_SUFFIX = new ActivitySettingType("transletNamePatternSuffix");
-		TRANSLET_NAME_PATTERN = new ActivitySettingType("transletNamePattern");
-		TRANSLET_INTERFACE_CLASS = new ActivitySettingType("transletInterface");
-		TRANSLET_INSTANCE_CLASS = new ActivitySettingType("transletClass");
+		USE_NAMESPACES = new AspectranSettingType("useNamespaces");
+		NULLABLE_CONTENT_ID = new AspectranSettingType("nullableContentId");
+		NULLABLE_ACTION_ID = new AspectranSettingType("nullableActionId");
+		NULLABLE_BEAN_ID = new AspectranSettingType("nullableBeanId");
+		MULTIPLE_TRANSLET_ENABLE = new AspectranSettingType("multiActivityEnable");
+		TRANSLET_NAME_SEPARATOR = new AspectranSettingType("transletNameSeparator");
+		TRANSLET_NAME_PATTERN_PREFIX = new AspectranSettingType("transletNamePatternPrefix");
+		TRANSLET_NAME_PATTERN_SUFFIX = new AspectranSettingType("transletNamePatternSuffix");
+		TRANSLET_NAME_PATTERN = new AspectranSettingType("transletNamePattern");
+		TRANSLET_INTERFACE_CLASS = new AspectranSettingType("transletInterface");
+		TRANSLET_INSTANCE_CLASS = new AspectranSettingType("transletClass");
 
-		types = new HashMap<String, ActivitySettingType>();
+		types = new HashMap<String, AspectranSettingType>();
 		types.put(USE_NAMESPACES.toString(), NULLABLE_CONTENT_ID);
 		types.put(NULLABLE_ACTION_ID.toString(), NULLABLE_ACTION_ID);
 		types.put(NULLABLE_BEAN_ID.toString(), NULLABLE_BEAN_ID);
@@ -90,7 +90,7 @@ public final class ActivitySettingType extends Type {
 	 *
 	 * @param type the type
 	 */
-	private ActivitySettingType(String type) {
+	private AspectranSettingType(String type) {
 		super(type);
 	}
 
@@ -100,7 +100,7 @@ public final class ActivitySettingType extends Type {
 	 * @param type the type
 	 * @return the activity setting type
 	 */
-	public static ActivitySettingType valueOf(String type) {
+	public static AspectranSettingType valueOf(String type) {
 		return types.get(type);
 	}
 }

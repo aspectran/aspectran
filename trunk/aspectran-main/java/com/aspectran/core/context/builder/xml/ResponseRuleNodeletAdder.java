@@ -21,7 +21,7 @@ import java.util.Properties;
 import org.w3c.dom.Node;
 
 import com.aspectran.core.activity.process.ActionList;
-import com.aspectran.core.context.builder.AspectranSettingAssistant;
+import com.aspectran.core.context.builder.AspectranContextBuildingAssistant;
 import com.aspectran.core.rule.DispatchResponseRule;
 import com.aspectran.core.rule.ForwardResponseRule;
 import com.aspectran.core.rule.ItemRuleMap;
@@ -44,7 +44,7 @@ import com.aspectran.core.util.xml.NodeletParser;
  */
 public class ResponseRuleNodeletAdder implements NodeletAdder {
 	
-	protected AspectranSettingAssistant assistant;
+	protected AspectranContextBuildingAssistant assistant;
 	
 	/**
 	 * Instantiates a new response rule nodelet adder.
@@ -52,7 +52,7 @@ public class ResponseRuleNodeletAdder implements NodeletAdder {
 	 * @param parser the parser
 	 * @param assistant the assistant for Context Builder
 	 */
-	public ResponseRuleNodeletAdder(AspectranSettingAssistant assistant) {
+	public ResponseRuleNodeletAdder(AspectranContextBuildingAssistant assistant) {
 		this.assistant = assistant;
 	}
 
@@ -147,7 +147,7 @@ public class ResponseRuleNodeletAdder implements NodeletAdder {
 					if(!StringUtils.isEmpty(resource))
 						templateFile = Resources.getResourceAsFile(resource);
 					else if(!StringUtils.isEmpty(filePath))
-						templateFile = assistant.toRealPathAsFile(filePath);
+						templateFile = assistant.toRealPathFile(filePath);
 
 					if(templateFile == null)
 						throw new IllegalArgumentException("The <template> element requires either a resource or a file attribute.");
@@ -163,7 +163,7 @@ public class ResponseRuleNodeletAdder implements NodeletAdder {
 					if(!StringUtils.isEmpty(resource))
 						templateFile = Resources.getResourceAsFile(resource);
 					else if(!StringUtils.isEmpty(filePath))
-						templateFile = assistant.toRealPathAsFile(filePath);
+						templateFile = assistant.toRealPathFile(filePath);
 					
 					if(templateFile != null) {
 						if(!templateFile.isFile())

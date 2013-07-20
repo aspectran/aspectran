@@ -37,7 +37,7 @@ import com.aspectran.core.var.ValueMap;
  */
 public class ScopedBeanRegistry extends AbstractBeanRegistry implements BeanRegistry {
 
-	private BeanRuleMap beanRuleMap;
+	private final BeanRuleMap beanRuleMap;
 	
 	private ContextScope contextScope = new ContextScope();
 	

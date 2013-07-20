@@ -30,9 +30,9 @@ import com.aspectran.core.util.Resources;
  * 
  * @author Gulendol
  */
-public class ImportableResource {
+public class ContextResourceFactory {
 	
-	private static final Log log = LogFactory.getLog(ImportableResource.class);
+	private static final Log log = LogFactory.getLog(ContextResourceFactory.class);
 
 	private String resource;
 	

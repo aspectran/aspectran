@@ -13,20 +13,20 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.aspectran.core.rule;
+package com.aspectran.core.context.builder;
 
 import java.io.File;
 import java.util.Map;
 
-import com.aspectran.core.context.builder.AspectranContextConstant;
-import com.aspectran.core.type.ActivitySettingType;
+import com.aspectran.core.rule.DefaultRequestRule;
+import com.aspectran.core.rule.DefaultResponseRule;
+import com.aspectran.core.rule.ExceptionHandleRule;
+import com.aspectran.core.type.AspectranSettingType;
 
 /**
  * <p>Created: 2008. 03. 22 오후 5:48:09</p>
  */
-public class AspectranSettingsRule {
-
-	private String activityRootPath;
+public class InheritedSettings {
 
 	private String transletNameSeparator;
 	
@@ -48,20 +48,21 @@ public class AspectranSettingsRule {
 	
 	private boolean multipleTransletEnable = true;
 	
-	public String getActivityRootPath() {
-		return activityRootPath;
-	}
+	private DefaultRequestRule defaultRequestRule;
 
+	private DefaultResponseRule defaultResponseRule;
+	
+	private ExceptionHandleRule defaultExceptionRule;
+	
+	protected InheritedSettings() {
+	}
+	
 	public String getTransletNameSeparator() {
 		return transletNameSeparator;
 	}
 
 	public void setTransletNameSeparator(String transletNameSeparator) {
 		this.transletNameSeparator = transletNameSeparator;
-	}
-
-	public void setActivityRootPath(String activityRootPath) {
-		this.activityRootPath = activityRootPath;
 	}
 
 	public String getTransletNamePattern() {
@@ -115,24 +116,6 @@ public class AspectranSettingsRule {
 		return transletNamePatternSuffix;
 	}
 	
-	/**
-	 * To real path as file.
-	 * 
-	 * @param filePath the file path
-	 * 
-	 * @return the file
-	 */
-	public File toRealPathAsFile(String filePath) {
-		File file;
-
-		if(activityRootPath != null && !filePath.startsWith("/"))
-			file = new File(activityRootPath, filePath);
-		else
-			file = new File(filePath);
-		
-		return file;
-	}
-	
 	public String getTransletInterfaceClass() {
 		return transletInterfaceClass;
 	}
@@ -181,24 +164,90 @@ public class AspectranSettingsRule {
 		this.multipleTransletEnable = multipleTransletEnable;
 	}
 
-	public void set(Map<ActivitySettingType, String> settings) {
-		if(settings.get(ActivitySettingType.USE_NAMESPACES) != null)
-			useNamespaces = Boolean.valueOf(settings.get(ActivitySettingType.USE_NAMESPACES));
+	/**
+	 * Gets the generic request rule.
+	 * 
+	 * @return the generic request rule
+	 */
+	public DefaultRequestRule getDefaultRequestRule() {
+		return defaultRequestRule;
+	}
 
-		if(settings.get(ActivitySettingType.NULLABLE_CONTENT_ID) != null)
-			nullableContentId = Boolean.valueOf(settings.get(ActivitySettingType.NULLABLE_CONTENT_ID));
+	/**
+	 * Sets the generic request rule.
+	 * 
+	 * @param defaultRequestRule the new generic request rule
+	 */
+	public void setDefaultRequestRule(DefaultRequestRule defaultRequestRule) {
+		if(this.defaultRequestRule.getCharacterEncoding() != null && defaultRequestRule.getCharacterEncoding() == null)
+			defaultRequestRule.setCharacterEncoding(this.defaultRequestRule.getCharacterEncoding());
 		
-		if(settings.get(ActivitySettingType.NULLABLE_ACTION_ID) != null)
-			nullableActionId = Boolean.valueOf(settings.get(ActivitySettingType.NULLABLE_ACTION_ID));
+		if(this.defaultRequestRule.getMultipartRequestRule() != null && defaultRequestRule.getMultipartRequestRule() == null)
+			defaultRequestRule.setMultipartRequestRule(this.defaultRequestRule.getMultipartRequestRule());
 		
-		if(settings.get(ActivitySettingType.MULTIPLE_TRANSLET_ENABLE) != null)
-			multipleTransletEnable = Boolean.valueOf(settings.get(ActivitySettingType.MULTIPLE_TRANSLET_ENABLE));
+		this.defaultRequestRule = defaultRequestRule;
+	}
+
+	/**
+	 * Gets the generic response rule.
+	 * 
+	 * @return the generic response rule
+	 */
+	public DefaultResponseRule getDefaultResponseRule() {
+		return defaultResponseRule;
+	}
+
+	/**
+	 * Sets the generic response rule.
+	 * 
+	 * @param defaultResponseRule the new generic response rule
+	 */
+	public void setDefaultResponseRule(DefaultResponseRule defaultResponseRule) {
+		if(this.defaultResponseRule.getCharacterEncoding() != null && defaultResponseRule.getCharacterEncoding() == null)
+			defaultResponseRule.setCharacterEncoding(this.defaultResponseRule.getCharacterEncoding());
 		
-		if(settings.get(ActivitySettingType.TRANSLET_INTERFACE_CLASS) != null)
-			transletInterfaceClass = settings.get(ActivitySettingType.TRANSLET_INTERFACE_CLASS);
+		if(this.defaultResponseRule.getDefaultContentType() != null && defaultResponseRule.getDefaultContentType() == null)
+			defaultResponseRule.setDefaultContentType(this.defaultResponseRule.getDefaultContentType());
+
+		this.defaultResponseRule = defaultResponseRule;
+	}
+
+	/**
+	 * Gets the generic exception rule.
+	 * 
+	 * @return the generic exception rule
+	 */
+	public ExceptionHandleRule getDefaultExceptionRule() {
+		return defaultExceptionRule;
+	}
+
+	/**
+	 * Sets the generic exception rule.
+	 * 
+	 * @param defaultExceptionRule the new generic exception rule
+	 */
+	public void setDefaultExceptionRule(ExceptionHandleRule defaultExceptionRule) {
+		this.defaultExceptionRule = defaultExceptionRule;
+	}
+	
+	public void set(Map<AspectranSettingType, String> settings) {
+		if(settings.get(AspectranSettingType.USE_NAMESPACES) != null)
+			useNamespaces = Boolean.valueOf(settings.get(AspectranSettingType.USE_NAMESPACES));
+
+		if(settings.get(AspectranSettingType.NULLABLE_CONTENT_ID) != null)
+			nullableContentId = Boolean.valueOf(settings.get(AspectranSettingType.NULLABLE_CONTENT_ID));
 		
-		if(settings.get(ActivitySettingType.TRANSLET_INSTANCE_CLASS) != null)
-			transletInstanceClass = settings.get(ActivitySettingType.TRANSLET_INSTANCE_CLASS);
+		if(settings.get(AspectranSettingType.NULLABLE_ACTION_ID) != null)
+			nullableActionId = Boolean.valueOf(settings.get(AspectranSettingType.NULLABLE_ACTION_ID));
+		
+		if(settings.get(AspectranSettingType.MULTIPLE_TRANSLET_ENABLE) != null)
+			multipleTransletEnable = Boolean.valueOf(settings.get(AspectranSettingType.MULTIPLE_TRANSLET_ENABLE));
+		
+		if(settings.get(AspectranSettingType.TRANSLET_INTERFACE_CLASS) != null)
+			transletInterfaceClass = settings.get(AspectranSettingType.TRANSLET_INTERFACE_CLASS);
+		
+		if(settings.get(AspectranSettingType.TRANSLET_INSTANCE_CLASS) != null)
+			transletInstanceClass = settings.get(AspectranSettingType.TRANSLET_INSTANCE_CLASS);
 		
 		
 	}

@@ -79,10 +79,10 @@ public class BakContextBuilderAssistant {
 	private ExceptionHandleRule genericExceptionRule;
 
 	/** The bean map resources. */
-	private List<ImportableResource> beanMapResources;
+	private List<ContextResourceFactory> beanMapResources;
 
 	/** The translet map resources. */
-	private List<ImportableResource> transletMapResources;
+	private List<ContextResourceFactory> transletMapResources;
 	
 	/** The bean rule map. */
 	private BeanRuleMap beanRuleMap;
@@ -100,7 +100,7 @@ public class BakContextBuilderAssistant {
 	 * Instantiates a new translets config.
 	 */
 	public BakContextBuilderAssistant() {
-		this.transletMapResources = new ArrayList<ImportableResource>();
+		this.transletMapResources = new ArrayList<ContextResourceFactory>();
 		this.objectStack = new ArrayStack(); 
 		this.typeAliases = new HashMap<String, String>();
 	}
@@ -466,7 +466,7 @@ public class BakContextBuilderAssistant {
 	 * 
 	 * @return the bean map resources
 	 */
-	public List<ImportableResource> getBeanMapResources() {
+	public List<ContextResourceFactory> getBeanMapResources() {
 		return beanMapResources;
 	}
 
@@ -475,9 +475,9 @@ public class BakContextBuilderAssistant {
 	 * 
 	 * @param mapResource the map resource
 	 */
-	public void addBeanMapResource(ImportableResource mapResource) {
+	public void addBeanMapResource(ContextResourceFactory mapResource) {
 		if(beanMapResources == null)
-			beanMapResources = new ArrayList<ImportableResource>();
+			beanMapResources = new ArrayList<ContextResourceFactory>();
 		
 		beanMapResources.add(mapResource);
 	}
@@ -487,7 +487,7 @@ public class BakContextBuilderAssistant {
 	 * 
 	 * @return the translet map resources
 	 */
-	public List<ImportableResource> getTransletMapResources() {
+	public List<ContextResourceFactory> getTransletMapResources() {
 		return transletMapResources;
 	}
 	
@@ -496,9 +496,9 @@ public class BakContextBuilderAssistant {
 	 * 
 	 * @param mapResource the map resource
 	 */
-	public void addTransletMapResource(ImportableResource mapResource) {
+	public void addTransletMapResource(ContextResourceFactory mapResource) {
 		if(transletMapResources == null)
-			transletMapResources = new ArrayList<ImportableResource>();
+			transletMapResources = new ArrayList<ContextResourceFactory>();
 		
 		transletMapResources.add(mapResource);
 	}
