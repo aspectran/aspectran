@@ -75,7 +75,7 @@ target (request | response | translet | action | scheduler | bean) #REQUIRED
 pattern CDATA #IMPLIED
 >
 
-<!ELEMENT default (properties? | action?)*>
+<!ELEMENT default (settings)>
 <!ELEMENT before (echo? | action? | transform? | dispatch? | redirect? | forward?)*>
 <!ELEMENT after (echo? | action? | transform? | dispatch? | redirect? | forward?)*>
 <!ELEMENT around (echo? | action? | transform? | dispatch? | redirect? | forward?)*>
