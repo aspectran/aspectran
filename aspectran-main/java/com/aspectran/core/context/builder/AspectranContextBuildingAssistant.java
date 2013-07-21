@@ -129,7 +129,7 @@ public class AspectranContextBuildingAssistant {
 
 	public void setSettings(Map<AspectranSettingType, String> settings) {
 		this.settings = settings;
-		applyActivitySettings();
+		applyInheritedSettings();
 	}
 
 	public void putSetting(AspectranSettingType settingType, String value) {
@@ -170,7 +170,7 @@ public class AspectranContextBuildingAssistant {
 		this.namespace = namespace;
 	}
 	
-	public void applyActivitySettings() {
+	public void applyInheritedSettings() {
 		inheritedSettings.set(getSettings());
 	}
 	
