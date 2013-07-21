@@ -29,6 +29,8 @@ import com.aspectran.core.activity.response.Responsible;
 import com.aspectran.core.context.builder.AspectranContextBuildingAssistant;
 import com.aspectran.core.context.builder.ContextResourceFactory;
 import com.aspectran.core.context.builder.InheritedSettings;
+import com.aspectran.core.rule.AspectRule;
+import com.aspectran.core.rule.BeanActionRule;
 import com.aspectran.core.rule.BeanRule;
 import com.aspectran.core.rule.DefaultRequestRule;
 import com.aspectran.core.rule.DefaultResponseRule;
@@ -43,6 +45,7 @@ import com.aspectran.core.rule.ResponseByContentTypeRule;
 import com.aspectran.core.rule.ResponseRule;
 import com.aspectran.core.rule.TransletRule;
 import com.aspectran.core.type.AspectranSettingType;
+import com.aspectran.core.type.JoinpointTargetType;
 import com.aspectran.core.type.RequestMethodType;
 import com.aspectran.core.type.ScopeType;
 import com.aspectran.core.util.StringUtils;
@@ -162,7 +165,7 @@ public class AspectranNodeParser {
 		});
 		parser.addNodelet("/aspectran/setting/end()", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
-				assistant.applyActivitySettings();
+				assistant.applyInheritedSettings();
 			}
 		});
 	}
@@ -185,11 +188,127 @@ public class AspectranNodeParser {
 		parser.addNodelet("/aspectran/aspect", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
 				String id = attributes.getProperty("id");
-//				InheritedSettings ar = new InheritedSettings();
-//				assistant.pushObject(ar);
+				
+				AspectRule ar = new AspectRule();
+				ar.setId(id);
+				
+				assistant.pushObject(ar);
+			}
+		});
+		parser.addNodelet("/aspectran/aspect/joinpoint", new Nodelet() {
+			public void process(Node node, Properties attributes, String text) throws Exception {
+				String target = attributes.getProperty("target");
+
+				JoinpointTargetType joinpointTarget = null;
+				
+				if(target != null) {
+					joinpointTarget = JoinpointTargetType.valueOf(target);
+					
+					if(joinpointTarget == null)
+						throw new IllegalArgumentException("Unkown joinpoint target '" + target + "'");
+				}
+
+				AspectRule ar = (AspectRule)assistant.peekObject();
+				ar.setJoinpointTarget(joinpointTarget);
+			}
+		});
+		parser.addNodelet("/aspectran/aspect/default", new Nodelet() {
+			public void process(Node node, Properties attributes, String text) throws Exception {
+				String id = attributes.getProperty("id");
+				
+				AspectRule ar = new AspectRule();
+				ar.setId(id);
+				
+				assistant.pushObject(ar);
+			}
+		});
+		parser.addNodelet("/aspectran/aspect/default/properties", new Nodelet() {
+			public void process(Node node, Properties attributes, String text) throws Exception {
+				ItemRuleMap irm = new ItemRuleMap();
+				assistant.pushObject(irm);
+			}
+		});
+
+		parser.addNodelet("/aspectran/aspect/default/properties", new ItemRuleNodeletAdder(assistant));
+
+		parser.addNodelet("/aspectran/aspect/default/properties/end()", new Nodelet() {
+			public void process(Node node, Properties attributes, String text) throws Exception {
+				ItemRuleMap irm = (ItemRuleMap)assistant.popObject();
+				
+				if(irm.size() > 0) {
+					BeanActionRule beanActionRule = (BeanActionRule)assistant.peekObject();
+					beanActionRule.setPropertyItemRuleMap(irm);
+				}
+			}
+		});
+		parser.addNodelet("/aspectran/aspect/default/action", new Nodelet() {
+			public void process(Node node, Properties attributes, String text) throws Exception {
+				String id = attributes.getProperty("id");
+				String bean = attributes.getProperty("bean");
+				String methodName = attributes.getProperty("method");
+				Boolean hidden = Boolean.valueOf(attributes.getProperty("hidden"));
+
+				if(!assistant.isNullableActionId() && StringUtils.isEmpty(id))
+					throw new IllegalArgumentException("The <action> element requires a id attribute.");
+				
+				BeanActionRule beanActionRule = new BeanActionRule();
+				beanActionRule.setId(id);
+				beanActionRule.setBeanId(bean);
+				beanActionRule.setMethodName(methodName);
+				beanActionRule.setHidden(hidden);
+
+				assistant.pushObject(beanActionRule);
 			}
 		});
 		
+		parser.addNodelet("/aspectran/aspect/default/action/arguments", new Nodelet() {
+			public void process(Node node, Properties attributes, String text) throws Exception {
+				ItemRuleMap irm = new ItemRuleMap();
+				assistant.pushObject(irm);
+			}
+		});
+
+		parser.addNodelet("/aspectran/aspect/default/action/arguments", new ItemRuleNodeletAdder(assistant));
+
+		parser.addNodelet("/aspectran/aspect/default/action/arguments/end()", new Nodelet() {
+			public void process(Node node, Properties attributes, String text) throws Exception {
+				ItemRuleMap irm = (ItemRuleMap)assistant.popObject();
+				
+				if(irm.size() > 0) {
+					BeanActionRule beanActionRule = (BeanActionRule)assistant.peekObject();
+					beanActionRule.setArgumentItemRuleMap(irm);
+				}
+			}
+		});
+
+		parser.addNodelet("/aspectran/aspect/default/action/properties", new Nodelet() {
+			public void process(Node node, Properties attributes, String text) throws Exception {
+				ItemRuleMap irm = new ItemRuleMap();
+				assistant.pushObject(irm);
+			}
+		});
+
+		parser.addNodelet("/aspectran/aspect/default/action/properties", new ItemRuleNodeletAdder(assistant));
+
+		parser.addNodelet("/aspectran/aspect/default/action/properties/end()", new Nodelet() {
+			public void process(Node node, Properties attributes, String text) throws Exception {
+				ItemRuleMap irm = (ItemRuleMap)assistant.popObject();
+				
+				if(irm.size() > 0) {
+					BeanActionRule beanActionRule = (BeanActionRule)assistant.peekObject();
+					beanActionRule.setPropertyItemRuleMap(irm);
+				}
+			}
+		});
+		
+		parser.addNodelet("/aspectran/aspect/default/action/end()", new Nodelet() {
+			public void process(Node node, Properties attributes, String text) throws Exception {
+				BeanActionRule beanActionRule = (BeanActionRule)assistant.popObject();
+				
+				ActionList actionList = (ActionList)assistant.peekObject();
+				actionList.addBeanAction(beanActionRule);
+			}
+		});
 	}
 	
 	/**
