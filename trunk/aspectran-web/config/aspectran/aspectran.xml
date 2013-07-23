@@ -19,13 +19,11 @@
 	
 	<aspect id="requestRule">
 		<joinpoint target="request"/>
-		<default>
-			<settings>
-				<setting name="characterEncoding" value="utf-8"/>
-				<setting name="multipart.maxRequestSize" value="10M"/>
-				<setting name="multipart.temporaryFilePath" value="/d:/"/>
-			</settings>
-		</default>
+		<settings>
+			<setting name="characterEncoding" value="utf-8"/>
+			<setting name="multipart.maxRequestSize" value="10M"/>
+			<setting name="multipart.temporaryFilePath" value="/d:/"/>
+		</settings>
 		<before>
 			<action id="xml" bean="common.action.a1" method="testXmlAction" hidden="true">
 				<properties>
@@ -74,13 +72,11 @@
 
 	<aspect id="responseRule">
 		<joinpoint target="response"/>
-		<default>
-			<settings>
-				<setting name="characterEncoding" value="utf-8"/>
-				<setting name="defaultContentType" value="text/html"/>
-				<setting name="viewDispatcher" value="org.jhlabs.translets.web.JspViewDispatcher"/>
-			</settings>
-		</default>
+		<settings>
+			<setting name="characterEncoding" value="utf-8"/>
+			<setting name="defaultContentType" value="text/html"/>
+			<setting name="viewDispatcher" value="org.jhlabs.translets.web.JspViewDispatcher"/>
+		</settings>
 	</aspect>
 
 	<aspect id="bean1">
