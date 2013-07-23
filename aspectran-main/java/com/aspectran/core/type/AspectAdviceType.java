@@ -21,7 +21,7 @@ import java.util.Map;
 
 public final class AspectAdviceType extends Type {
 
-	public static final AspectAdviceType DEFAULT;
+	public static final AspectAdviceType SETTINGS;
 
 	public static final AspectAdviceType BEFORE;
 	
@@ -36,7 +36,7 @@ public final class AspectAdviceType extends Type {
 	private static final Map<String, AspectAdviceType> types;
 	
 	static {
-		DEFAULT = new AspectAdviceType("default");
+		SETTINGS = new AspectAdviceType("settings");
 		BEFORE = new AspectAdviceType("before");
 		AFTER = new AspectAdviceType("after");
 		AROUND = new AspectAdviceType("around");
@@ -44,7 +44,7 @@ public final class AspectAdviceType extends Type {
 		EXCPETION_RAIZED = new AspectAdviceType("exceptionRaized");
 
 		types = new HashMap<String, AspectAdviceType>();
-		types.put(DEFAULT.toString(), DEFAULT);
+		types.put(SETTINGS.toString(), SETTINGS);
 		types.put(BEFORE.toString(), BEFORE);
 		types.put(AFTER.toString(), AFTER);
 		types.put(AROUND.toString(), AROUND);

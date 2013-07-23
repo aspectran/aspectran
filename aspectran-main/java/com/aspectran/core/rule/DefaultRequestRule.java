@@ -18,6 +18,7 @@ package com.aspectran.core.rule;
 
 /**
  * <p>Created: 2008. 04. 12 오전 11:48:14</p>
+ * @deprecated
  */
 public class DefaultRequestRule {
 	
