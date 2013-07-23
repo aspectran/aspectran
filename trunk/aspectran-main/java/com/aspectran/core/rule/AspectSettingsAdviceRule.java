@@ -17,24 +17,43 @@ package com.aspectran.core.rule;
 
 import java.util.Map;
 
-import com.aspectran.core.activity.process.ActionList;
-import com.aspectran.core.activity.response.DispatchResponse;
-import com.aspectran.core.activity.response.ForwardResponse;
-import com.aspectran.core.activity.response.RedirectResponse;
-import com.aspectran.core.activity.response.transform.AbstractTransform;
 import com.aspectran.core.type.AspectAdviceType;
-import com.aspectran.core.type.AspectranSettingType;
 
-/**
- * <p>Created: 2008. 04. 01 오후 11:19:28</p>
- */
-public class AspectDefaultAdviceRule {
+public class AspectSettingsAdviceRule {
 
 	private String aspectId;
 	
 	private AspectAdviceType aspectAdviceType;
 
-	private Map<AspectranSettingType, String> settings;
+	private Map<String, Object> settings;
 
+	public String getAspectId() {
+		return aspectId;
+	}
+
+	public void setAspectId(String aspectId) {
+		this.aspectId = aspectId;
+	}
+
+	public AspectAdviceType getAspectAdviceType() {
+		return aspectAdviceType;
+	}
+
+	public void setAspectAdviceType(AspectAdviceType aspectAdviceType) {
+		this.aspectAdviceType = aspectAdviceType;
+	}
+
+	public Map<String, Object> getSettings() {
+		return settings;
+	}
+
+	public void setSettings(Map<String, Object> settings) {
+		this.settings = settings;
+	}
+	
+	public Object getSetting(String name) {
+		return settings.get(name);
+	}
+	
 
 }

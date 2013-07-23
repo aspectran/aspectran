@@ -4,10 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.aspectran.core.rule.AspectAdviceRule;
+import com.aspectran.core.rule.AspectSettingsAdviceRule;
 import com.aspectran.core.type.AspectAdviceType;
 
 public class AspectAdviceRegistry {
 
+	private List<AspectSettingsAdviceRule> settingsAdviceRuleList;
+	
 	private List<AspectAdviceRule> beforeAdviceRuleList;
 	
 	private List<AspectAdviceRule> afterAdviceRuleList;
