@@ -15,7 +15,9 @@ import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.rule.RedirectResponseRule;
 import com.aspectran.core.token.Token;
 import com.aspectran.core.token.expression.ItemTokenExpression;
+import com.aspectran.core.token.expression.ItemTokenExpressor;
 import com.aspectran.core.token.expression.TokenExpression;
+import com.aspectran.core.token.expression.TokenExpressor;
 import com.aspectran.core.token.expression.TokenValueHandler;
 import com.aspectran.core.type.TokenType;
 import com.aspectran.core.var.ValueMap;
@@ -105,7 +107,7 @@ public class HttpServletResponseAdapter extends AbstractResponseAdapter implemen
 		TokenValueHandler handler = new ParameterValueEncoder(characterEncoding);
 
 		if(urlTokens != null && urlTokens.length > 0) {
-			TokenExpression expressor = new TokenExpression(activity);
+			TokenExpressor expressor = new TokenExpression(activity);
 			expressor.setTokenValueHandler(handler);
 			String url = expressor.express(urlTokens);
 			redirect(url);
@@ -121,7 +123,7 @@ public class HttpServletResponseAdapter extends AbstractResponseAdapter implemen
 		}
 
 		if(redirectResponseRule.getParameterItemRuleMap() != null) {
-			ItemTokenExpression expressor = new ItemTokenExpression(activity);
+			ItemTokenExpressor expressor = new ItemTokenExpression(activity);
 			expressor.setTokenValueHandler(handler);
 			ValueMap valueMap = expressor.express(redirectResponseRule.getParameterItemRuleMap());
 

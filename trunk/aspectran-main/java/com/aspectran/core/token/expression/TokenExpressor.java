@@ -96,4 +96,11 @@ public interface TokenExpressor {
 	 */
 	public Set<Object> expressAsSet(String parameterName, Set<Token[]> tokensSet);
 	
+	/**
+	 * Sets the token value handler.
+	 *
+	 * @param tokenValueHandler the new token value handler
+	 */
+	public void setTokenValueHandler(TokenValueHandler tokenValueHandler);
+
 }
