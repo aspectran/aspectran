@@ -26,7 +26,7 @@ import com.aspectran.core.var.ValueMap;
  *
  */
 public interface ItemTokenExpressor {
-
+	
 	/**
 	 * Express.
 	 * 
@@ -46,4 +46,11 @@ public interface ItemTokenExpressor {
 	 */
 	public void express(ItemRuleMap itemRuleMap, Map<String, Object> valueMap);
 	
+	/**
+	 * Sets the token value handler.
+	 *
+	 * @param tokenValueHandler the new token value handler
+	 */
+	public void setTokenValueHandler(TokenValueHandler tokenValueHandler);
+
 }
