@@ -26,6 +26,8 @@ import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.activity.process.ContentList;
 import com.aspectran.core.activity.response.ResponseMap;
 import com.aspectran.core.activity.response.Responsible;
+import com.aspectran.core.context.bean.ablility.Disposable;
+import com.aspectran.core.context.bean.ablility.Initializable;
 import com.aspectran.core.context.builder.AspectranContextBuildingAssistant;
 import com.aspectran.core.context.builder.ContextResourceFactory;
 import com.aspectran.core.context.builder.InheritedSettings;
@@ -33,12 +35,9 @@ import com.aspectran.core.rule.AspectRule;
 import com.aspectran.core.rule.BeanRule;
 import com.aspectran.core.rule.DefaultRequestRule;
 import com.aspectran.core.rule.DefaultResponseRule;
-import com.aspectran.core.rule.DispatcherViewTypeRule;
-import com.aspectran.core.rule.DispatcherViewsRule;
 import com.aspectran.core.rule.ExceptionHandlingRule;
 import com.aspectran.core.rule.FileItemRule;
 import com.aspectran.core.rule.ItemRuleMap;
-import com.aspectran.core.rule.MultipartRequestRule;
 import com.aspectran.core.rule.RequestRule;
 import com.aspectran.core.rule.ResponseByContentTypeRule;
 import com.aspectran.core.rule.ResponseRule;
@@ -48,6 +47,7 @@ import com.aspectran.core.type.AspectranSettingType;
 import com.aspectran.core.type.JoinpointTargetType;
 import com.aspectran.core.type.RequestMethodType;
 import com.aspectran.core.type.ScopeType;
+import com.aspectran.core.util.ClassUtils;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.xml.Nodelet;
 import com.aspectran.core.util.xml.NodeletParser;
@@ -63,13 +63,15 @@ public class AspectranNodeParser {
 
 	private final AspectranContextBuildingAssistant assistant;
 	
+	private final ClassLoader classLoader;
+	
 	/**
 	 * Instantiates a new translet map parser.
 	 * 
 	 * @param assistant the assistant for Context Builder
 	 */
 	public AspectranNodeParser(AspectranContextBuildingAssistant assistant) {
-		//super(log);
+		this.classLoader = getClassLoader();
 		
 		this.assistant = assistant;
 		//this.assistant.clearObjectStack();
@@ -92,6 +94,20 @@ public class AspectranNodeParser {
 		addImportNodelets();
 	}
 
+	private ClassLoader getClassLoader() {
+		ClassLoader cl = null;
+		try {
+			cl = Thread.currentThread().getContextClassLoader();
+		} catch(Throwable ex) {
+			// Cannot access thread context ClassLoader - falling back to system class loader...
+		}
+		if(cl == null) {
+			// No thread context class loader -> use class loader of this class.
+			cl = AspectranNodeParser.class.getClassLoader();
+		}
+		return cl;
+	}
+	
 	/**
 	 * Parses the aspectran configuration.
 	 *
@@ -537,6 +553,16 @@ public class AspectranNodeParser {
 
 				if(classType == null)
 					throw new IllegalArgumentException("The <bean> element requires a class attribute.");
+
+				Class<?> beanClass = classLoader.loadClass(classType);
+				
+				if(initMethod == null && beanClass.isAssignableFrom(Initializable.class)) {
+					initMethod = Initializable.INITIALIZE_METHOD_NAME;
+				}
+
+				if(destroyMethod == null && beanClass.isAssignableFrom(Disposable.class)) {
+					destroyMethod = Disposable.DESTROY_METHOD_NAME;
+				}
 				
 				boolean isSingleton = !(singleton != null && Boolean.valueOf(singleton) == Boolean.FALSE);
 				ScopeType scopeType = ScopeType.valueOf(scope);
@@ -550,6 +576,7 @@ public class AspectranNodeParser {
 				BeanRule beanRule = new BeanRule();
 				beanRule.setId(id);
 				beanRule.setClassType(classType);
+				beanRule.setBeanClass(beanClass);
 				beanRule.setScopeType(scopeType);
 				beanRule.setFactoryMethod(factoryMethod);
 				beanRule.setInitMethod(initMethod);
