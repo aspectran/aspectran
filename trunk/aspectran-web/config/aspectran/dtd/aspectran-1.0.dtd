@@ -75,11 +75,11 @@ target (request | response | translet | action | scheduler | bean) #REQUIRED
 pattern CDATA #IMPLIED
 >
 
-<!ELEMENT before (echo? | action? | transform? | dispatch? | redirect? | forward?)*>
-<!ELEMENT after (echo? | action? | transform? | dispatch? | redirect? | forward?)*>
-<!ELEMENT around (echo? | action? | transform? | dispatch? | redirect? | forward?)*>
-<!ELEMENT finally (echo? | action? | transform? | dispatch? | redirect? | forward?)*>
-<!ELEMENT exceptionRaized (echo? | action? | transform? | dispatch? | redirect? | forward?)*>
+<!ELEMENT before (echo | action)>
+<!ELEMENT after (echo | action)>
+<!ELEMENT around (echo | action)>
+<!ELEMENT finally (echo | action)>
+<!ELEMENT exceptionRaized (action?, responseByContentType?, defaultResponse?)>
 
 <!ELEMENT bean (features?, constructor?, properties*)>
 <!ATTLIST bean
