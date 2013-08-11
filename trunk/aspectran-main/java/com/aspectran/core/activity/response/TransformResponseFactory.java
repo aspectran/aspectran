@@ -3,6 +3,7 @@
  */
 package com.aspectran.core.activity.response;
 
+import com.aspectran.core.activity.response.dispatch.DispatchResponse;
 import com.aspectran.core.activity.response.transform.JsonTransform;
 import com.aspectran.core.activity.response.transform.TextTransform;
 import com.aspectran.core.activity.response.transform.XmlTransform;
@@ -18,7 +19,7 @@ import com.aspectran.core.type.TransformType;
  * @since 2011. 3. 12.
  *
  */
-public class ResponseFactory {
+public class TransformResponseFactory {
 
 	public static Responsible getResponse(TransformRule transformRule) {
 		TransformType type = transformRule.getTransformType();

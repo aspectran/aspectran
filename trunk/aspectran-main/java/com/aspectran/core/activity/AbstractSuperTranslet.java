@@ -18,9 +18,9 @@ package com.aspectran.core.activity;
 import com.aspectran.core.activity.process.result.ContentResult;
 import com.aspectran.core.activity.process.result.ProcessResult;
 import com.aspectran.core.activity.response.ResponseException;
-import com.aspectran.core.activity.response.ResponseFactory;
 import com.aspectran.core.activity.response.ResponseNotFoundException;
 import com.aspectran.core.activity.response.Responsible;
+import com.aspectran.core.activity.response.TransformResponseFactory;
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
@@ -120,7 +120,7 @@ public abstract class AbstractSuperTranslet implements SuperTranslet {
 	 * @throws ResponseException the response exception
 	 */
 	public void transform(TransformRule transformRule) throws ResponseException {
-		Responsible res = ResponseFactory.getResponse(transformRule);
+		Responsible res = TransformResponseFactory.getResponse(transformRule);
 		
 		if(res == null)
 			throw new ResponseNotFoundException("transform response is not found. TransformRule" + transformRule);
@@ -136,7 +136,7 @@ public abstract class AbstractSuperTranslet implements SuperTranslet {
 	 * @throws ResponseException the response exception
 	 */
 	public void redirect(RedirectResponseRule redirectResponseRule) throws ResponseException {
-		Responsible res = ResponseFactory.getResponse(redirectResponseRule);
+		Responsible res = TransformResponseFactory.getResponse(redirectResponseRule);
 		response(res);
 	}
 	
@@ -148,7 +148,7 @@ public abstract class AbstractSuperTranslet implements SuperTranslet {
 	 * @throws ResponseException the response exception
 	 */
 	public void forward(ForwardResponseRule forwardResponseRule) throws ResponseException {
-		Responsible res = ResponseFactory.getResponse(forwardResponseRule);
+		Responsible res = TransformResponseFactory.getResponse(forwardResponseRule);
 		response(res);
 	}
 	
