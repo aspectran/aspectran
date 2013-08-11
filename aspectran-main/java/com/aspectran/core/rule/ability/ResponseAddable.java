@@ -10,7 +10,6 @@ import com.aspectran.core.activity.response.transform.AbstractTransform;
 import com.aspectran.core.rule.DispatchResponseRule;
 import com.aspectran.core.rule.ForwardResponseRule;
 import com.aspectran.core.rule.RedirectResponseRule;
-import com.aspectran.core.rule.TicketCheckRule;
 import com.aspectran.core.rule.TransformRule;
 
 /**

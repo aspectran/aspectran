@@ -35,6 +35,8 @@ public class DispatchResponseRule extends ActionPossessSupport implements Action
 
 	protected String characterEncoding;
 
+	private String template;
+	
 	private String viewType;
 	
 	private String viewName;
