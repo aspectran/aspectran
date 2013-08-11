@@ -25,6 +25,7 @@ import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.context.AspectranContext;
+import com.aspectran.core.context.aspect.AspectAdviceRegistry;
 import com.aspectran.core.context.bean.BeanRegistry;
 import com.aspectran.core.context.bean.scope.RequestScope;
 import com.aspectran.core.context.translet.TransletRuleRegistry;
@@ -94,5 +95,11 @@ public interface AspectranActivity {
 	public Exception getRaisedException();
 
 	public void setRaisedException(Exception raisedException);
+	
+	public Object getRequestSetting(String settingName);
+	
+	public Object getResponseSetting(String settingName);
+	
+	public Object getTransletSetting(String settingName);
 	
 }

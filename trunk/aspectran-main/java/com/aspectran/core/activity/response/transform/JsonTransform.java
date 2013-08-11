@@ -28,6 +28,7 @@ import com.aspectran.core.activity.response.Responsible;
 import com.aspectran.core.activity.response.transform.json.ContentsJSONWriter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.context.builder.AspectranContextConstant;
+import com.aspectran.core.rule.ResponseRule;
 import com.aspectran.core.rule.TransformRule;
 
 /**
@@ -65,8 +66,14 @@ public class JsonTransform extends AbstractTransform implements Responsible {
 			if(contentType != null)
 				responseAdapter.setContentType(contentType);
 
-			if(outputEncoding == null)
+			if(outputEncoding != null)
 				responseAdapter.setCharacterEncoding(outputEncoding);
+			else {
+				String characterEncoding = (String)activity.getResponseSetting(ResponseRule.CHARACTER_ENCODING_SETTING);
+				
+				if(characterEncoding != null)
+					responseAdapter.setCharacterEncoding(characterEncoding);
+			}
 			
 			Writer output = responseAdapter.getWriter();
 			ProcessResult processResult = activity.getProcessResult();

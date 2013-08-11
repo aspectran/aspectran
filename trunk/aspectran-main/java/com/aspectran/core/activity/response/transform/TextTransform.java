@@ -30,6 +30,7 @@ import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.activity.response.Responsible;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.context.builder.AspectranContextConstant;
+import com.aspectran.core.rule.ResponseRule;
 import com.aspectran.core.rule.TransformRule;
 import com.aspectran.core.token.Token;
 import com.aspectran.core.token.Tokenizer;
@@ -90,8 +91,14 @@ public class TextTransform extends AbstractTransform implements Responsible {
 			if(contentType != null)
 				responseAdapter.setContentType(contentType);
 
-			if(outputEncoding == null)
+			if(outputEncoding != null)
 				responseAdapter.setCharacterEncoding(outputEncoding);
+			else {
+				String characterEncoding = (String)activity.getResponseSetting(ResponseRule.CHARACTER_ENCODING_SETTING);
+				
+				if(characterEncoding != null)
+					responseAdapter.setCharacterEncoding(characterEncoding);
+			}
 			
 			TokenExpressor expressor = new TokenExpression(activity);
 			String content = expressor.express(getContentTokens());

@@ -1,7 +1,9 @@
 package com.aspectran.core.context.aspect;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.aspectran.core.rule.AspectAdviceRule;
 import com.aspectran.core.rule.AspectSettingsAdviceRule;
@@ -9,7 +11,9 @@ import com.aspectran.core.type.AspectAdviceType;
 
 public class AspectAdviceRegistry {
 
-	private List<AspectSettingsAdviceRule> settingsAdviceRuleList;
+	//private List<AspectSettingsAdviceRule> settingsAdviceRuleList;
+	
+	private Map<String, Object> settings;
 	
 	private List<AspectAdviceRule> beforeAdviceRuleList;
 	
@@ -51,6 +55,14 @@ public class AspectAdviceRegistry {
 		this.exceptionRaizedAdviceRuleList = exceptionRaizedAdviceRuleList;
 	}
 
+	public void addAspectAdviceRule(AspectSettingsAdviceRule aspectSettingsAdviceRule) {
+		if(settings == null)
+			settings = new HashMap<String, Object>();
+
+		if(aspectSettingsAdviceRule.getSettings() != null)
+			settings.putAll(aspectSettingsAdviceRule.getSettings());
+	}
+		
 	public void addAspectAdviceRule(AspectAdviceRule aspectAdviceRule) {
 		if(aspectAdviceRule.getAspectAdviceType() == AspectAdviceType.BEFORE) {
 			if(beforeAdviceRuleList == null)
@@ -76,6 +88,13 @@ public class AspectAdviceRegistry {
 				exceptionRaizedAdviceRuleList = new ArrayList<AspectAdviceRule>();
 			exceptionRaizedAdviceRuleList.add(aspectAdviceRule);
 		}
+	}
+	
+	public Object getSetting(String settingName) {
+		if(settings == null)
+			return null;
+		
+		return settings.get(settingName);
 	}
 	
 }
