@@ -20,7 +20,7 @@ import java.util.Map;
 
 import com.aspectran.core.rule.DefaultRequestRule;
 import com.aspectran.core.rule.DefaultResponseRule;
-import com.aspectran.core.rule.ExceptionHandleRule;
+import com.aspectran.core.rule.ExceptionHandlingRule;
 import com.aspectran.core.type.AspectranSettingType;
 
 /**
@@ -52,7 +52,7 @@ public class InheritedSettings {
 
 	private DefaultResponseRule defaultResponseRule;
 	
-	private ExceptionHandleRule defaultExceptionRule;
+	private ExceptionHandlingRule defaultExceptionRule;
 	
 	protected InheritedSettings() {
 	}
@@ -217,7 +217,7 @@ public class InheritedSettings {
 	 * 
 	 * @return the generic exception rule
 	 */
-	public ExceptionHandleRule getDefaultExceptionRule() {
+	public ExceptionHandlingRule getDefaultExceptionRule() {
 		return defaultExceptionRule;
 	}
 
@@ -226,7 +226,7 @@ public class InheritedSettings {
 	 * 
 	 * @param defaultExceptionRule the new generic exception rule
 	 */
-	public void setDefaultExceptionRule(ExceptionHandleRule defaultExceptionRule) {
+	public void setDefaultExceptionRule(ExceptionHandlingRule defaultExceptionRule) {
 		this.defaultExceptionRule = defaultExceptionRule;
 	}
 	

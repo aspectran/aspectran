@@ -19,11 +19,12 @@ import com.aspectran.core.activity.response.DispatchResponse;
 import com.aspectran.core.activity.response.ForwardResponse;
 import com.aspectran.core.activity.response.RedirectResponse;
 import com.aspectran.core.activity.response.transform.AbstractTransform;
+import com.aspectran.core.rule.ability.ResponseAddable;
 
 /**
  * <p>Created: 2008. 04. 01 오후 11:19:28</p>
  */
-public class ResponseByContentTypeRule extends AbstractResponseRule {
+public class ResponseByContentTypeRule extends AbstractResponseRule implements ResponseAddable {
 
 	/**
 	 * Sets the default response rule.

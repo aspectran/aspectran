@@ -23,7 +23,7 @@ import com.aspectran.core.rule.BeanRule;
 import com.aspectran.core.rule.BeanRuleMap;
 import com.aspectran.core.rule.DefaultRequestRule;
 import com.aspectran.core.rule.DefaultResponseRule;
-import com.aspectran.core.rule.ExceptionHandleRule;
+import com.aspectran.core.rule.ExceptionHandlingRule;
 import com.aspectran.core.rule.TransletRule;
 import com.aspectran.core.rule.TransletRuleMap;
 import com.aspectran.core.type.AspectranSettingType;
@@ -300,7 +300,7 @@ public class AspectranContextBuildingAssistant {
 	 * 
 	 * @return the generic exception rule
 	 */
-	public ExceptionHandleRule getDefaultExceptionRule() {
+	public ExceptionHandlingRule getDefaultExceptionRule() {
 		return inheritedSettings.getDefaultExceptionRule();
 	}
 
@@ -309,7 +309,7 @@ public class AspectranContextBuildingAssistant {
 	 * 
 	 * @param defaultExceptionRule the new generic exception rule
 	 */
-	public void setDefaultExceptionRule(ExceptionHandleRule defaultExceptionRule) {
+	public void setDefaultExceptionRule(ExceptionHandlingRule defaultExceptionRule) {
 		inheritedSettings.setDefaultExceptionRule(defaultExceptionRule);
 	}
 
