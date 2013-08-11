@@ -17,10 +17,10 @@ package com.aspectran.core.rule;
 
 import java.util.List;
 
-import com.aspectran.core.activity.response.DispatchResponse;
 import com.aspectran.core.activity.response.ForwardResponse;
 import com.aspectran.core.activity.response.RedirectResponse;
 import com.aspectran.core.activity.response.ResponseMap;
+import com.aspectran.core.activity.response.dispatch.DispatchResponse;
 import com.aspectran.core.activity.response.transform.AbstractTransform;
 import com.aspectran.core.context.aspect.AspectAdviceRegistry;
 import com.aspectran.core.rule.ability.ResponseAddable;

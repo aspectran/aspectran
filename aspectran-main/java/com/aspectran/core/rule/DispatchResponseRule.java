@@ -37,12 +37,6 @@ public class DispatchResponseRule extends ActionPossessSupport implements Action
 
 	private String template;
 	
-	private String viewType;
-	
-	private String viewName;
-
-	private DispatcherViewTypeRule dispatcherViewTypeRule;
-	
 	private ViewDispatcher viewDispatcher;
 	
 	/**
@@ -98,32 +92,15 @@ public class DispatchResponseRule extends ActionPossessSupport implements Action
 	public void setCharacterEncoding(String characterEncoding) {
 		this.characterEncoding = characterEncoding;
 	}
-
-	public String getViewType() {
-		return viewType;
-	}
-
-	public void setViewType(String viewType) {
-		this.viewType = viewType;
-	}
-
-	public String getViewName() {
-		return viewName;
-	}
-
-	public void setViewName(String viewName) {
-		this.viewName = viewName;
-	}
-
-	public DispatcherViewTypeRule getDispatcherViewTypeRule() {
-		return dispatcherViewTypeRule;
-	}
-
-	public void setDispatcherViewTypeRule(DispatcherViewTypeRule dispatcherViewTypeRule) {
-		this.dispatcherViewTypeRule = dispatcherViewTypeRule;
-		this.viewDispatcher = (ViewDispatcher)dispatcherViewTypeRule.getBean();
-	}
 	
+	public String getTemplate() {
+		return template;
+	}
+
+	public void setTemplate(String template) {
+		this.template = template;
+	}
+
 	public ViewDispatcher getViewDispatcher() {
 		return viewDispatcher;
 	}
