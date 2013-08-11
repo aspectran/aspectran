@@ -122,10 +122,14 @@ public class WebAspectranActivity extends AbstractAspectranActivity implements A
 	private void parseMultipart() throws MultipartRequestException {
 		try {
 			RequestRule requestRule = getRequestRule();
+
+			String multipartRequestSize = (String)getRequestSetting("multipart.maxRequestSize");
+			String multipartTemporaryFilePath = (String)getRequestSetting("multipart.temporaryFilePath");
+			
 			
 			MultipartRequestHandler handler = new MultipartRequestHandler(request);
-			handler.setMaxRequestSize(requestRule.getMaxMultipartRequestSize());
-			handler.setTemporaryFilePath(requestRule.getMultipartTemporaryFilePath());
+			handler.setMaxRequestSize(new Long(multipartRequestSize));
+			handler.setTemporaryFilePath(multipartTemporaryFilePath);
 			handler.parse();
 			
 			// sets the servlet request wrapper

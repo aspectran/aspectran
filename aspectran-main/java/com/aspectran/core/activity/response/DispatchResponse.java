@@ -23,6 +23,7 @@ import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.activity.response.dispatch.DispatchResponseException;
 import com.aspectran.core.activity.response.dispatch.ViewDispatcher;
 import com.aspectran.core.rule.DispatchResponseRule;
+import com.aspectran.core.rule.ResponseRule;
 import com.aspectran.core.type.ResponseType;
 
 /**
@@ -57,6 +58,8 @@ public class DispatchResponse implements Responsible {
 	 */
 	public void response(AspectranActivity activity) throws ResponseException {
 		try {
+			String viewDispatcherClassType  = (String)activity.getResponseSetting(ResponseRule.VIEW_DISPATCHER_SETTING);
+			
 			if(viewDispatcher != null) {
 				viewDispatcher.dispatch(activity, dispatchResponseRule);
 			}

@@ -32,7 +32,9 @@ import com.aspectran.core.activity.response.dispatch.DispatchResponseException;
 import com.aspectran.core.activity.response.dispatch.ViewDispatcher;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
+import com.aspectran.core.context.aspect.AspectAdviceRegistry;
 import com.aspectran.core.rule.DispatchResponseRule;
+import com.aspectran.core.rule.ResponseRule;
 
 /**
  * JSP or other web resource integration.
@@ -61,8 +63,14 @@ public class JspViewDispatcher implements ViewDispatcher {
 			if(contentType != null)
 				responseAdapter.setContentType(contentType);
 
-			if(outputEncoding == null)
+			if(outputEncoding != null)
 				responseAdapter.setCharacterEncoding(outputEncoding);
+			else {
+				String characterEncoding = (String)activity.getResponseSetting("characterEncoding");
+				
+				if(characterEncoding != null)
+					responseAdapter.setCharacterEncoding(characterEncoding);
+			}
 			
 			String viewName = dispatchResponseRule.getViewName();
 			ProcessResult processResult = activity.getProcessResult();

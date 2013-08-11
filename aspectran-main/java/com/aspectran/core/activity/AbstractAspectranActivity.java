@@ -15,7 +15,6 @@
  */
 package com.aspectran.core.activity;
 
-import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Constructor;
 
 import org.apache.commons.logging.Log;
@@ -39,6 +38,7 @@ import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.context.AspectranContext;
+import com.aspectran.core.context.aspect.AspectAdviceRegistry;
 import com.aspectran.core.context.bean.BeanRegistry;
 import com.aspectran.core.context.bean.scope.RequestScope;
 import com.aspectran.core.context.translet.TransletInstantiationException;
@@ -743,6 +743,33 @@ public abstract class AbstractAspectranActivity implements AspectranActivity {
 	 */
 	public TransletRuleRegistry getTransletRegistry() {
 		return context.getTransletRuleRegistry();
+	}
+	
+	public Object getRequestSetting(String settingName) {
+		AspectAdviceRegistry aspectAdviceRegistry = requestRule.getAspectAdviceRegistry();
+		
+		if(aspectAdviceRegistry != null)
+			return aspectAdviceRegistry.getSetting(settingName);
+		
+		return null;
+	}
+	
+	public Object getResponseSetting(String settingName) {
+		AspectAdviceRegistry aspectAdviceRegistry = responseRule.getAspectAdviceRegistry();
+		
+		if(aspectAdviceRegistry != null)
+			return aspectAdviceRegistry.getSetting(settingName);
+		
+		return null;
+	}
+	
+	public Object getTransletSetting(String settingName) {
+		AspectAdviceRegistry aspectAdviceRegistry = transletRule.getAspectAdviceRegistry();
+		
+		if(aspectAdviceRegistry != null)
+			return aspectAdviceRegistry.getSetting(settingName);
+		
+		return null;
 	}
 	
 }
