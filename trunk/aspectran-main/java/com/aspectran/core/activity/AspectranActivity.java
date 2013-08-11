@@ -25,7 +25,6 @@ import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.context.AspectranContext;
-import com.aspectran.core.context.aspect.AspectAdviceRegistry;
 import com.aspectran.core.context.bean.BeanRegistry;
 import com.aspectran.core.context.bean.scope.RequestScope;
 import com.aspectran.core.context.translet.TransletRuleRegistry;
