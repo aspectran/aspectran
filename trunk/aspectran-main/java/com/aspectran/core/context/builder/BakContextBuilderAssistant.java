@@ -24,7 +24,7 @@ import java.util.Map;
 import com.aspectran.core.rule.BeanRuleMap;
 import com.aspectran.core.rule.DefaultRequestRule;
 import com.aspectran.core.rule.DefaultResponseRule;
-import com.aspectran.core.rule.ExceptionHandleRule;
+import com.aspectran.core.rule.ExceptionHandlingRule;
 import com.aspectran.core.rule.TicketCheckRule;
 import com.aspectran.core.rule.TicketCheckcaseRule;
 import com.aspectran.core.rule.TicketCheckcaseRuleMap;
@@ -76,7 +76,7 @@ public class BakContextBuilderAssistant {
 	private DefaultResponseRule genericResponseRule;
 	
 	/** The generic exception rule. */
-	private ExceptionHandleRule genericExceptionRule;
+	private ExceptionHandlingRule genericExceptionRule;
 
 	/** The bean map resources. */
 	private List<ContextResourceFactory> beanMapResources;
@@ -448,7 +448,7 @@ public class BakContextBuilderAssistant {
 	 * 
 	 * @return the generic exception rule
 	 */
-	public ExceptionHandleRule getGenericExceptionRule() {
+	public ExceptionHandlingRule getGenericExceptionRule() {
 		return genericExceptionRule;
 	}
 
@@ -457,7 +457,7 @@ public class BakContextBuilderAssistant {
 	 * 
 	 * @param genericExceptionRule the new generic exception rule
 	 */
-	public void setGenericExceptionRule(ExceptionHandleRule genericExceptionRule) {
+	public void setGenericExceptionRule(ExceptionHandlingRule genericExceptionRule) {
 		this.genericExceptionRule = genericExceptionRule;
 	}
 

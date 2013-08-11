@@ -30,13 +30,12 @@ import com.aspectran.core.context.builder.AspectranContextBuildingAssistant;
 import com.aspectran.core.context.builder.ContextResourceFactory;
 import com.aspectran.core.context.builder.InheritedSettings;
 import com.aspectran.core.rule.AspectRule;
-import com.aspectran.core.rule.BeanActionRule;
 import com.aspectran.core.rule.BeanRule;
 import com.aspectran.core.rule.DefaultRequestRule;
 import com.aspectran.core.rule.DefaultResponseRule;
 import com.aspectran.core.rule.DispatcherViewTypeRule;
 import com.aspectran.core.rule.DispatcherViewsRule;
-import com.aspectran.core.rule.ExceptionHandleRule;
+import com.aspectran.core.rule.ExceptionHandlingRule;
 import com.aspectran.core.rule.FileItemRule;
 import com.aspectran.core.rule.ItemRuleMap;
 import com.aspectran.core.rule.MultipartRequestRule;
@@ -44,6 +43,7 @@ import com.aspectran.core.rule.RequestRule;
 import com.aspectran.core.rule.ResponseByContentTypeRule;
 import com.aspectran.core.rule.ResponseRule;
 import com.aspectran.core.rule.TransletRule;
+import com.aspectran.core.type.AspectAdviceType;
 import com.aspectran.core.type.AspectranSettingType;
 import com.aspectran.core.type.JoinpointTargetType;
 import com.aspectran.core.type.RequestMethodType;
@@ -212,322 +212,12 @@ public class AspectranNodeParser {
 				ar.setJoinpointTarget(joinpointTarget);
 			}
 		});
-		parser.addNodelet("/aspectran/aspect/default", new Nodelet() {
-			public void process(Node node, Properties attributes, String text) throws Exception {
-				String id = attributes.getProperty("id");
-				
-				AspectRule ar = new AspectRule();
-				ar.setId(id);
-				
-				assistant.pushObject(ar);
-			}
-		});
-		parser.addNodelet("/aspectran/aspect/default/properties", new Nodelet() {
-			public void process(Node node, Properties attributes, String text) throws Exception {
-				ItemRuleMap irm = new ItemRuleMap();
-				assistant.pushObject(irm);
-			}
-		});
 
-		parser.addNodelet("/aspectran/aspect/default/properties", new ItemRuleNodeletAdder(assistant));
-
-		parser.addNodelet("/aspectran/aspect/default/properties/end()", new Nodelet() {
-			public void process(Node node, Properties attributes, String text) throws Exception {
-				ItemRuleMap irm = (ItemRuleMap)assistant.popObject();
-				
-				if(irm.size() > 0) {
-					BeanActionRule beanActionRule = (BeanActionRule)assistant.peekObject();
-					beanActionRule.setPropertyItemRuleMap(irm);
-				}
-			}
-		});
-		parser.addNodelet("/aspectran/aspect/default/action", new Nodelet() {
-			public void process(Node node, Properties attributes, String text) throws Exception {
-				String id = attributes.getProperty("id");
-				String bean = attributes.getProperty("bean");
-				String methodName = attributes.getProperty("method");
-				Boolean hidden = Boolean.valueOf(attributes.getProperty("hidden"));
-
-				if(!assistant.isNullableActionId() && StringUtils.isEmpty(id))
-					throw new IllegalArgumentException("The <action> element requires a id attribute.");
-				
-				BeanActionRule beanActionRule = new BeanActionRule();
-				beanActionRule.setId(id);
-				beanActionRule.setBeanId(bean);
-				beanActionRule.setMethodName(methodName);
-				beanActionRule.setHidden(hidden);
-
-				assistant.pushObject(beanActionRule);
-			}
-		});
-		
-		parser.addNodelet("/aspectran/aspect/default/action/arguments", new Nodelet() {
-			public void process(Node node, Properties attributes, String text) throws Exception {
-				ItemRuleMap irm = new ItemRuleMap();
-				assistant.pushObject(irm);
-			}
-		});
-
-		parser.addNodelet("/aspectran/aspect/default/action/arguments", new ItemRuleNodeletAdder(assistant));
-
-		parser.addNodelet("/aspectran/aspect/default/action/arguments/end()", new Nodelet() {
-			public void process(Node node, Properties attributes, String text) throws Exception {
-				ItemRuleMap irm = (ItemRuleMap)assistant.popObject();
-				
-				if(irm.size() > 0) {
-					BeanActionRule beanActionRule = (BeanActionRule)assistant.peekObject();
-					beanActionRule.setArgumentItemRuleMap(irm);
-				}
-			}
-		});
-
-		parser.addNodelet("/aspectran/aspect/default/action/properties", new Nodelet() {
-			public void process(Node node, Properties attributes, String text) throws Exception {
-				ItemRuleMap irm = new ItemRuleMap();
-				assistant.pushObject(irm);
-			}
-		});
-
-		parser.addNodelet("/aspectran/aspect/default/action/properties", new ItemRuleNodeletAdder(assistant));
-
-		parser.addNodelet("/aspectran/aspect/default/action/properties/end()", new Nodelet() {
-			public void process(Node node, Properties attributes, String text) throws Exception {
-				ItemRuleMap irm = (ItemRuleMap)assistant.popObject();
-				
-				if(irm.size() > 0) {
-					BeanActionRule beanActionRule = (BeanActionRule)assistant.peekObject();
-					beanActionRule.setPropertyItemRuleMap(irm);
-				}
-			}
-		});
-		
-		parser.addNodelet("/aspectran/aspect/default/action/end()", new Nodelet() {
-			public void process(Node node, Properties attributes, String text) throws Exception {
-				BeanActionRule beanActionRule = (BeanActionRule)assistant.popObject();
-				
-				ActionList actionList = (ActionList)assistant.peekObject();
-				actionList.addBeanAction(beanActionRule);
-			}
-		});
-	}
-	
-	/**
-	 * Adds the activity rule nodelets.
-	 */
-	private void addActivityRuleNodelets() {
-		parser.addNodelet("/aspectran/activityRule", new Nodelet() {
-			public void process(Node node, Properties attributes, String text) throws Exception {
-//				InheritedSettings ar = new InheritedSettings();
-//				assistant.pushObject(ar);
-			}
-		});
-		parser.addNodelet("/aspectran/activityRule/transletNamePattern/text()", new Nodelet() {
-			public void process(Node node, Properties attributes, String text) throws Exception {
-				InheritedSettings ar = (InheritedSettings)assistant.peekObject();
-				ar.setTransletNamePattern(text);
-			}
-		});
-		parser.addNodelet("/aspectran/activityRule/transletNamePattern/prefix/text()", new Nodelet() {
-			public void process(Node node, Properties attributes, String text) throws Exception {
-				InheritedSettings ar = (InheritedSettings)assistant.peekObject();
-				ar.setTransletNamePatternPrefix(text);
-			}
-		});
-		parser.addNodelet("/aspectran/activityRule/transletNamePattern/suffix/text()", new Nodelet() {
-			public void process(Node node, Properties attributes, String text) throws Exception {
-				InheritedSettings sr = (InheritedSettings)assistant.peekObject();
-				sr.setTransletNamePatternSuffix(text);
-			}
-		});
-		parser.addNodelet("/aspectran/activityRule/end()", new Nodelet() {
-			public void process(Node node, Properties attributes, String text) throws Exception {
-				InheritedSettings ar = (InheritedSettings)assistant.popObject();
-				assistant.setActivitySettingsRule(ar);
-			}
-		});
-	}
-	
-	private void addTicketCheckcaseRuleNodelets() {
-		parser.addNodelet("/aspectran/ticketRule", new TicketCheckcaseRuleNodeletAdder(assistant));
-	}
-
-	/**
-	 * Adds the generic request rule nodelets.
-	 */
-	private void addDefaultRequestRuleNodelets() {
-		parser.addNodelet("/aspectran/requestRule", new Nodelet() {
-			public void process(Node node, Properties attributes, String text) throws Exception {
-				assistant.pushObject(new DefaultRequestRule());
-			}
-		});
-		parser.addNodelet("/aspectran/requestRule/characterEncoding/text()", new Nodelet() {
-			public void process(Node node, Properties attributes, String text) throws Exception {
-				DefaultRequestRule grr = (DefaultRequestRule)assistant.peekObject();
-				grr.setCharacterEncoding(text);
-			}
-		});
-		parser.addNodelet("/aspectran/requestRule/multipart", new Nodelet() {
-			public void process(Node node, Properties attributes, String text) throws Exception {
-				MultipartRequestRule mrr = new MultipartRequestRule();
-				assistant.pushObject(mrr);
-			}
-		});
-		parser.addNodelet("/aspectran/requestRule/multipart/maxRequestSize/text()", new Nodelet() {
-			public void process(Node node, Properties attributes, String text) throws Exception {
-				MultipartRequestRule mrr = (MultipartRequestRule)assistant.peekObject();
-				mrr.setMaxRequestSize(text);
-			}
-		});
-		parser.addNodelet("/aspectran/requestRule/multipart/temporaryFilePath/text()", new Nodelet() {
-			public void process(Node node, Properties attributes, String text) throws Exception {
-				MultipartRequestRule mrr = (MultipartRequestRule)assistant.peekObject();
-				mrr.setTemporaryFilePath(text);
-			}
-		});
-		parser.addNodelet("/aspectran/requestRule/multipart/end()", new Nodelet() {
-			public void process(Node node, Properties attributes, String text) throws Exception {
-				MultipartRequestRule mrr = (MultipartRequestRule)assistant.popObject();
-				DefaultRequestRule drr = (DefaultRequestRule)assistant.peekObject();
-				drr.setMultipartRequestRule(mrr);
-			}
-		});
-
-		parser.addNodelet("/aspectran/requestRule", new TicketCheckRuleNodeletAdder(assistant));
-		
-		parser.addNodelet("/aspectran/requestRule/end()", new Nodelet() {
-			public void process(Node node, Properties attributes, String text) throws Exception {
-				DefaultRequestRule drr = (DefaultRequestRule)assistant.popObject();
-				
-				if(drr.getCharacterEncoding() != null && !Charset.isSupported(drr.getCharacterEncoding()))
-					throw new IllegalCharsetNameException("Given charset name is illegal. '" + drr.getCharacterEncoding() + "'");
-
-				assistant.setDefaultRequestRule(drr);
-			}
-		});
-	}
-
-	/**
-	 * Adds the generic response rule nodelets.
-	 */
-	private void addDefaultResponseRuleNodelets() {
-		parser.addNodelet("/aspectran/responseRule", new Nodelet() {
-			public void process(Node node, Properties attributes, String text) throws Exception {
-				assistant.pushObject(new DefaultResponseRule());
-			}
-		});
-		parser.addNodelet("/aspectran/responseRule/characterEncoding/text()", new Nodelet() {
-			public void process(Node node, Properties attributes, String text) throws Exception {
-				DefaultResponseRule grr = (DefaultResponseRule)assistant.peekObject();
-				grr.setCharacterEncoding(text);
-			}
-		});
-
-		parser.addNodelet("/aspectran/responseRule/defaultContentType/text()", new Nodelet() {
-			public void process(Node node, Properties attributes, String text) throws Exception {
-				DefaultResponseRule grr = (DefaultResponseRule)assistant.peekObject();
-				grr.setDefaultContentType(text);
-			}
-		});
-		
-		parser.addNodelet("/aspectran/responseRule/dispatcherViews", new Nodelet() {
-			public void process(Node node, Properties attributes, String text) throws Exception {
-				String defaultDispatchViewId = attributes.getProperty("default");
-				
-				DispatcherViewsRule dispatcherViewsRule = new DispatcherViewsRule();
-				dispatcherViewsRule.setDefaultDispatcherViewTypeId(defaultDispatchViewId);
-				
-				assistant.pushObject(dispatcherViewsRule);
-			}
-		});
-		parser.addNodelet("/aspectran/responseRule/dispatcherViews/viewType", new Nodelet() {
-			public void process(Node node, Properties attributes, String text) throws Exception {
-				String id = attributes.getProperty("id");
-				String classType = resolveAliasType(attributes.getProperty("class"));
-				String beanId = attributes.getProperty("bean");
-				
-				DispatcherViewTypeRule dispatchViewTypeRule = (DispatcherViewTypeRule)assistant.peekObject();
-				dispatchViewTypeRule.setId(id);
-				dispatchViewTypeRule.setClassType(classType);
-				dispatchViewTypeRule.setBeanId(beanId);
-			}
-		});
-		parser.addNodelet("/aspectran/responseRule/dispatcherViews/viewType/properties", new Nodelet() {
-			public void process(Node node, Properties attributes, String text) throws Exception {
-				ItemRuleMap irm = new ItemRuleMap();
-				assistant.pushObject(irm);
-			}
-		});
-
-		parser.addNodelet("/aspectran/responseRule/dispatcherViews/viewType/properties", new ItemRuleNodeletAdder(assistant));
-	
-		parser.addNodelet("/aspectran/responseRule/dispatcherViews/viewType/properties/end()", new Nodelet() {
-			public void process(Node node, Properties attributes, String text) throws Exception {
-				ItemRuleMap irm = (ItemRuleMap)assistant.popObject();
-				
-				if(irm.size() > 0) {
-					DispatcherViewTypeRule dispatcherViewTypeRule = (DispatcherViewTypeRule)assistant.peekObject();
-					dispatcherViewTypeRule.setPropertyItemRuleMap(irm);
-				}
-			}
-		});
-		parser.addNodelet("/aspectran/responseRule/dispatcherViews/end()", new Nodelet() {
-			public void process(Node node, Properties attributes, String text) throws Exception {
-				DispatcherViewsRule dispatcherViewsRule = (DispatcherViewsRule)assistant.popObject();
-				DefaultResponseRule drr = (DefaultResponseRule)assistant.peekObject();
-				drr.setDispatcherViewsRule(dispatcherViewsRule);
-			}
-		});
-		parser.addNodelet("/aspectran/responseRule/end()", new Nodelet() {
-			public void process(Node node, Properties attributes, String text) throws Exception {
-				DefaultResponseRule drr = (DefaultResponseRule)assistant.popObject();
-				
-				if(drr.getCharacterEncoding() != null && !Charset.isSupported(drr.getCharacterEncoding()))
-					throw new IllegalCharsetNameException("Given charset name is illegal. '" + drr.getCharacterEncoding() + "'");
-				
-				assistant.setDefaultResponseRule(drr);
-			}
-		});
-	}
-
-	/**
-	 * Adds the generic exception rule nodelets.
-	 */
-	private void addDefaultExceptionRuleNodelets() {
-		parser.addNodelet("/aspectran/exceptionRule", new Nodelet() {
-			public void process(Node node, Properties attributes, String text) throws Exception {
-				ExceptionHandleRule exceptionRule = new ExceptionHandleRule();
-				assistant.pushObject(exceptionRule);
-			}
-		});
-
-		parser.addNodelet("/aspectran/exceptionRule/responseByContentType", new ResponseRuleNodeletAdder(assistant));
-
-		parser.addNodelet("/aspectran/exceptionRule/defaultResponse", new Nodelet() {
-			public void process(Node node, Properties attributes, String text) throws Exception {
-				ResponseByContentTypeRule responseByContentType = new ResponseByContentTypeRule();
-				assistant.pushObject(responseByContentType);
-			}
-		});
-
-		parser.addNodelet("/aspectran/exceptionRule/defaultResponse", new ResponseRuleNodeletAdder(assistant));
-
-		parser.addNodelet("/aspectran/exceptionRule/defaultResponse/end()", new Nodelet() {
-			public void process(Node node, Properties attributes, String text) throws Exception {
-				ResponseByContentTypeRule responseByContentType = (ResponseByContentTypeRule)assistant.popObject();
-				ResponseMap responseMap = responseByContentType.getResponseMap();
-				
-				if(responseMap.size() > 0) {
-					ExceptionHandleRule exceptionRule = (ExceptionHandleRule)assistant.peekObject();
-					exceptionRule.setDefaultResponse(responseMap.get(0));
-				}
-			}
-		});
-		parser.addNodelet("/aspectran/exceptionRule/end()", new Nodelet() {
-			public void process(Node node, Properties attributes, String text) throws Exception {
-				ExceptionHandleRule exceptionRule = (ExceptionHandleRule)assistant.popObject();
-				assistant.setDefaultExceptionRule(exceptionRule);
-			}
-		});
+		parser.addNodelet("/aspectran/aspect/before", new AspectAdviceRuleNodeletAdder(assistant, AspectAdviceType.BEFORE));
+		parser.addNodelet("/aspectran/aspect/after", new AspectAdviceRuleNodeletAdder(assistant, AspectAdviceType.AFTER));
+		parser.addNodelet("/aspectran/aspect/around", new AspectAdviceRuleNodeletAdder(assistant, AspectAdviceType.AROUND));
+		parser.addNodelet("/aspectran/aspect/finally", new AspectAdviceRuleNodeletAdder(assistant, AspectAdviceType.FINALLY));
+		parser.addNodelet("/aspectran/aspect/exceptionRaized", new AspectAdviceRuleNodeletAdder(assistant, AspectAdviceType.EXCPETION_RAIZED));
 	}
 
 	/**
@@ -555,8 +245,6 @@ public class AspectranNodeParser {
 			}
 		});
 		
-		//parser.addNodelet("/aspectran/translet", new TicketCheckRuleNodeletAdder(assistant));
-
 		parser.addNodelet("/aspectran/translet", new ResponseRuleNodeletAdder(assistant));
 
 		parser.addNodelet("/aspectran/translet/request", new Nodelet() {
@@ -573,6 +261,9 @@ public class AspectranNodeParser {
 						throw new IllegalArgumentException("Unknown request method type '" + method + "'");
 				}
 				
+				if(characterEncoding != null && !Charset.isSupported(characterEncoding))
+					throw new IllegalCharsetNameException("Given charset name is illegal. '" + characterEncoding + "'");
+				
 				RequestRule requestRule;
 
 				if(assistant.getDefaultRequestRule() != null)
@@ -587,8 +278,6 @@ public class AspectranNodeParser {
 			}
 		});
 
-		parser.addNodelet("/aspectran/translet/request", new TicketCheckRuleNodeletAdder(assistant));
-		
 		parser.addNodelet("/aspectran/translet/request/attributes", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
 				ItemRuleMap irm = new ItemRuleMap();
@@ -699,6 +388,9 @@ public class AspectranNodeParser {
 				String defaultResponseId = attributes.getProperty("default");
 				String characterEncoding = attributes.getProperty("characterEncoding");
 
+				if(characterEncoding != null && !Charset.isSupported(characterEncoding))
+					throw new IllegalCharsetNameException("Given charset name is illegal. '" + characterEncoding + "'");
+				
 				ResponseRule responseRule = new ResponseRule(assistant.getDefaultResponseRule());
 				responseRule.setDefaultResponseId(defaultResponseId);
 				responseRule.setCharacterEncoding(characterEncoding);
@@ -706,8 +398,6 @@ public class AspectranNodeParser {
 				assistant.pushObject(responseRule);
 			}
 		});
-
-		parser.addNodelet("/aspectran/translet/response", new TicketCheckRuleNodeletAdder(assistant));
 
 		parser.addNodelet("/aspectran/translet/response", new ResponseRuleNodeletAdder(assistant));
 
@@ -731,7 +421,7 @@ public class AspectranNodeParser {
 		});
 		parser.addNodelet("/aspectran/translet/exception", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
-				ExceptionHandleRule exceptionRule = new ExceptionHandleRule();
+				ExceptionHandlingRule exceptionRule = new ExceptionHandlingRule();
 				assistant.pushObject(exceptionRule);
 			}
 		});
@@ -753,17 +443,17 @@ public class AspectranNodeParser {
 				ResponseMap responseMap = responseByContentType.getResponseMap();
 				
 				if(responseMap.size() > 0) {
-					ExceptionHandleRule exceptionRule = (ExceptionHandleRule)assistant.peekObject();
+					ExceptionHandlingRule exceptionRule = (ExceptionHandlingRule)assistant.peekObject();
 					exceptionRule.setDefaultResponse(responseMap.get(0));
 				}
 			}
 		});
 		parser.addNodelet("/aspectran/translet/exception/end()", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
-				ExceptionHandleRule exceptionRule = (ExceptionHandleRule)assistant.popObject();
+				ExceptionHandlingRule exceptionRule = (ExceptionHandlingRule)assistant.popObject();
 				TransletRule transletRule = (TransletRule)assistant.peekObject();
 
-				transletRule.setExceptionHandleRule(exceptionRule);
+				transletRule.setExceptionHandlingRule(exceptionRule);
 			}
 		});
 		parser.addNodelet("/aspectran/translet/end()", new Nodelet() {
@@ -793,8 +483,8 @@ public class AspectranNodeParser {
 				}
 				
 				// default exception rule mapping...
-				if(transletRule.getExceptionHandleRule() == null)
-					transletRule.setExceptionHandleRule(assistant.getDefaultExceptionRule());
+				if(transletRule.getExceptionHandlingRule() == null)
+					transletRule.setExceptionHandlingRule(assistant.getDefaultExceptionRule());
 
 				assistant.addTransletRule(transletRule);
 

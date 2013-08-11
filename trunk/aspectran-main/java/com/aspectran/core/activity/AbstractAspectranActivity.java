@@ -310,8 +310,8 @@ public abstract class AbstractAspectranActivity implements AspectranActivity {
 
 			setRaisedException(e);
 			
-			if(transletRule.getExceptionHandleRule() != null) {
-				responseByContentType(transletRule.getExceptionHandleRule());
+			if(transletRule.getExceptionHandlingRule() != null) {
+				responseByContentType(transletRule.getExceptionHandlingRule());
 
 				// execute action on response area
 				Responsible response = getResponse();
@@ -398,11 +398,7 @@ public abstract class AbstractAspectranActivity implements AspectranActivity {
 			}
 
 			if(contentResult != null && !action.isHidden() && resultValue != ActionResult.NO_RESULT) {
-				ActionResult actionResult = new ActionResult();
-				actionResult.setActionId(action.getId());
-				actionResult.setResultValue(resultValue);
-				
-				contentResult.addActionResult(actionResult);
+				contentResult.addActionResult(action.getId(), resultValue);
 			}
 			
 			if(isResponseEnd)

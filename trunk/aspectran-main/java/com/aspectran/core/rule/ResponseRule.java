@@ -23,13 +23,14 @@ import com.aspectran.core.activity.response.RedirectResponse;
 import com.aspectran.core.activity.response.ResponseMap;
 import com.aspectran.core.activity.response.transform.AbstractTransform;
 import com.aspectran.core.context.aspect.AspectAdviceRegistry;
+import com.aspectran.core.rule.ability.ResponseAddable;
 
 /**
  * <p>
  * Created: 2008. 03. 22 오후 5:48:09
  * </p>
  */
-public class ResponseRule extends AbstractResponseRule implements AspectAdviceSupport {
+public class ResponseRule extends AbstractResponseRule implements ResponseAddable, AspectAdviceSupport {
 
 	/** The Constant DEFAULT_ID. */
 	public static final String DEFAULT_ID = "[default]";

@@ -9,7 +9,7 @@ package com.aspectran.core.context.bean.ablility;
  * @since 2011. 2. 20.
  *
  */
-public interface Excutable {
+public interface Executable {
 
 	public static final String EXECUTE_METHOD_NAME = "execute";
 

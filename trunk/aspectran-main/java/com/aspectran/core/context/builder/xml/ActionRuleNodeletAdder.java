@@ -21,6 +21,7 @@ import org.w3c.dom.Node;
 
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.context.builder.AspectranContextBuildingAssistant;
+import com.aspectran.core.rule.AspectAdviceRule;
 import com.aspectran.core.rule.BeanActionRule;
 import com.aspectran.core.rule.EchoActionRule;
 import com.aspectran.core.rule.IncludeActionRule;
@@ -82,9 +83,16 @@ public class ActionRuleNodeletAdder implements NodeletAdder {
 				
 				if(irm.size() > 0)
 					echoActionRule.setItemRuleMap(irm);
+
+				Object o = assistant.peekObject();
 				
-				ActionList actionList = (ActionList)assistant.peekObject();
-				actionList.addEchoAction(echoActionRule);
+				if(o instanceof AspectAdviceRule) {
+					AspectAdviceRule aspectAdviceRule = (AspectAdviceRule)o;
+					aspectAdviceRule.setEchoAction(echoActionRule);
+				} else {
+					ActionList actionList = (ActionList)o;
+					actionList.addEchoAction(echoActionRule);
+				}
 			}
 		});
 		parser.addNodelet(xpath, "/action", new Nodelet() {
@@ -150,9 +158,16 @@ public class ActionRuleNodeletAdder implements NodeletAdder {
 		parser.addNodelet(xpath, "/action/end()", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
 				BeanActionRule beanActionRule = (BeanActionRule)assistant.popObject();
+
+				Object o = assistant.peekObject();
 				
-				ActionList actionList = (ActionList)assistant.peekObject();
-				actionList.addBeanAction(beanActionRule);
+				if(o instanceof AspectAdviceRule) {
+					AspectAdviceRule aspectAdviceRule = (AspectAdviceRule)o;
+					aspectAdviceRule.setBeanAction(beanActionRule);
+				} else {
+					ActionList actionList = (ActionList)o;
+					actionList.addBeanAction(beanActionRule);
+				}
 			}
 		});
 		parser.addNodelet(xpath, "/include", new Nodelet() {
@@ -197,8 +212,13 @@ public class ActionRuleNodeletAdder implements NodeletAdder {
 			public void process(Node node, Properties attributes, String text) throws Exception {
 				IncludeActionRule includeActionRule = (IncludeActionRule)assistant.popObject();
 				
-				ActionList actionList = (ActionList)assistant.peekObject();
-				actionList.addIncludeAction(includeActionRule);
+				Object o = assistant.peekObject();
+				
+				if(o instanceof AspectAdviceRule) {
+				} else {
+					ActionList actionList = (ActionList)o;
+					actionList.addIncludeAction(includeActionRule);
+				}
 			}
 		});
 	}

@@ -22,14 +22,15 @@ import org.w3c.dom.Node;
 
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.context.builder.AspectranContextBuildingAssistant;
+import com.aspectran.core.rule.AspectAdviceRule;
 import com.aspectran.core.rule.DispatchResponseRule;
 import com.aspectran.core.rule.ForwardResponseRule;
 import com.aspectran.core.rule.ItemRuleMap;
 import com.aspectran.core.rule.RedirectResponseRule;
-import com.aspectran.core.rule.ResponseByContentTypeRule;
 import com.aspectran.core.rule.ResponseRule;
 import com.aspectran.core.rule.TransformRule;
 import com.aspectran.core.rule.TransletRule;
+import com.aspectran.core.rule.ability.ResponseAddable;
 import com.aspectran.core.type.TransformType;
 import com.aspectran.core.util.Resources;
 import com.aspectran.core.util.StringUtils;
@@ -197,12 +198,9 @@ public class ResponseRuleNodeletAdder implements NodeletAdder {
 					TransletRule transletRule = (TransletRule)o;
 					ResponseRule responseRule = retrieveResponseRule(transletRule);
 					responseRule.addResponse(tr);
-				} if(o instanceof ResponseRule) {
-					ResponseRule responseRule = (ResponseRule)o;
-					responseRule.addResponse(tr);
 				} else {
-					ResponseByContentTypeRule rbct = (ResponseByContentTypeRule)o;
-					rbct.addResponse(tr);
+					ResponseAddable responseAddable = (ResponseAddable)o;
+					responseAddable.addResponse(tr);
 				}
 			}
 		});
@@ -261,12 +259,9 @@ public class ResponseRuleNodeletAdder implements NodeletAdder {
 					TransletRule transletRule = (TransletRule)o;
 					ResponseRule responseRule = retrieveResponseRule(transletRule);
 					responseRule.addResponse(drr);
-				} if(o instanceof ResponseRule) {
-					ResponseRule responseRule = (ResponseRule)o;
-					responseRule.addResponse(drr);				
 				} else {
-					ResponseByContentTypeRule rbct = (ResponseByContentTypeRule)o;
-					rbct.addResponse(drr);
+					ResponseAddable responseAddable = (ResponseAddable)o;
+					responseAddable.addResponse(drr);
 				}
 			}
 		});
@@ -364,12 +359,9 @@ public class ResponseRuleNodeletAdder implements NodeletAdder {
 					TransletRule transletRule = (TransletRule)o;
 					ResponseRule responseRule = retrieveResponseRule(transletRule);
 					responseRule.addResponse(rrr);
-				} if(o instanceof ResponseRule) {
-					ResponseRule responseRule = (ResponseRule)o;
-					responseRule.addResponse(rrr);
 				} else {
-					ResponseByContentTypeRule rbct = (ResponseByContentTypeRule)o;
-					rbct.addResponse(rrr);
+					ResponseAddable responseAddable = (ResponseAddable)o;
+					responseAddable.addResponse(rrr);
 				}
 			}
 		});
@@ -436,12 +428,9 @@ public class ResponseRuleNodeletAdder implements NodeletAdder {
 					TransletRule transletRule = (TransletRule)o;
 					ResponseRule responseRule = retrieveResponseRule(transletRule);
 					responseRule.addResponse(frr);
-				} if(o instanceof ResponseRule) {
-					ResponseRule responseRule = (ResponseRule)o;
-					responseRule.addResponse(frr);
 				} else {
-					ResponseByContentTypeRule rbct = (ResponseByContentTypeRule)o;
-					rbct.addResponse(frr);
+					ResponseAddable responseAddable = (ResponseAddable)o;
+					responseAddable.addResponse(frr);
 				}
 			}
 		});

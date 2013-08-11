@@ -18,12 +18,12 @@ package com.aspectran.core.rule;
 /**
  * <p>Created: 2008. 04. 01 오후 11:19:28</p>
  */
-public class ExceptionHandleRule extends ResponseByContentTypeRule {
+public class ExceptionHandlingRule extends ResponseByContentTypeRule {
 
 	/**
 	 * Instantiates a new exception rule.
 	 */
-	public ExceptionHandleRule() {
+	public ExceptionHandlingRule() {
 		super();
 	}
 }

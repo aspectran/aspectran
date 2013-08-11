@@ -54,6 +54,14 @@ public class ContentResult extends ArrayList<ActionResult> {
 		add(actionResult);
 	}
 	
+	public void addActionResult(String actionId, Object resultValue) {
+		ActionResult actionResult = new ActionResult();
+		actionResult.setActionId(actionId);
+		actionResult.setResultValue(resultValue);
+
+		add(actionResult);
+	}
+	
 	/* (non-Javadoc)
 	 * @see java.util.ArrayList#add(java.lang.Object)
 	 */

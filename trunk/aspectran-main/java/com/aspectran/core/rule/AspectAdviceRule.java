@@ -15,21 +15,24 @@
  */
 package com.aspectran.core.rule;
 
-import com.aspectran.core.activity.response.DispatchResponse;
-import com.aspectran.core.activity.response.ForwardResponse;
-import com.aspectran.core.activity.response.RedirectResponse;
-import com.aspectran.core.activity.response.transform.AbstractTransform;
+import com.aspectran.core.activity.process.action.BeanAction;
+import com.aspectran.core.activity.process.action.EchoAction;
+import com.aspectran.core.activity.process.action.Executable;
 import com.aspectran.core.type.AspectAdviceType;
 
 /**
  * <p>Created: 2008. 04. 01 오후 11:19:28</p>
  */
-public class AspectAdviceRule extends AbstractResponseRule {
+public class AspectAdviceRule {
 
 	private String aspectId;
 	
 	private AspectAdviceType aspectAdviceType;
 	
+	private Executable action;
+	
+	private ResponseByContentTypeRule responseByContentTypeRule;
+
 	public String getAspectId() {
 		return aspectId;
 	}
@@ -46,116 +49,25 @@ public class AspectAdviceRule extends AbstractResponseRule {
 		this.aspectAdviceType = aspectAdviceType;
 	}
 
-	/**
-	 * Sets the default response rule.
-	 * 
-	 * @param tr the new default response rule
-	 * 
-	 * @return the transform response
-	 */
-	public AbstractTransform setDefaultResponse(TransformRule tr) {
-		tr.setId(ResponseRule.DEFAULT_ID);
-		return super.addResponse(tr);
+	public void setEchoAction(EchoActionRule echoActionRule) {
+		action = new EchoAction(echoActionRule, null);
 	}
 
-	/**
-	 * Sets the default response rule.
-	 * 
-	 * @param drr the new default response rule
-	 * 
-	 * @return the dispatch response
-	 */
-	public DispatchResponse setDefaultResponse(DispatchResponseRule drr) {
-		drr.setId(ResponseRule.DEFAULT_ID);
-		return super.addResponse(drr);
+	public void setBeanAction(BeanActionRule beanActionRule) {
+		action = new BeanAction(beanActionRule, null);
 	}
 	
-	/**
-	 * Sets the default response rule.
-	 * 
-	 * @param rrr the new default response rule
-	 * 
-	 * @return the redirect response
-	 */
-	public RedirectResponse setDefaultResponse(RedirectResponseRule rrr) {
-		rrr.setId(ResponseRule.DEFAULT_ID);
-		return super.addResponse(rrr);
+	public Executable getAction() {
+		return action;
 	}
-	
-	/**
-	 * Sets the default response rule.
-	 * 
-	 * @param frr the new default response rule
-	 * 
-	 * @return the forward response
-	 */
-	public ForwardResponse setDefaultResponse(ForwardResponseRule frr) {
-		frr.setId(ResponseRule.DEFAULT_ID);
-		return super.addResponse(frr);
-	}
-	
-	/**
-	 * Adds the response rule.
-	 * 
-	 * @param tr the tr
-	 * 
-	 * @return the transform response
-	 */
-	public AbstractTransform addResponse(TransformRule tr) {
-		if(tr.getContentType() == null)
-			return setDefaultResponse(tr);
 
-		tr.setId(tr.getContentType().toString());
-		
-		return super.addResponse(tr);
+	public ResponseByContentTypeRule getResponseByContentTypeRule() {
+		return responseByContentTypeRule;
 	}
-	
-	/**
-	 * Adds the response rule.
-	 * 
-	 * @param drr the drr
-	 * 
-	 * @return the dispatch response
-	 */
-	public DispatchResponse addResponse(DispatchResponseRule drr) {
-		if(drr.getContentType() == null)
-			return setDefaultResponse(drr);
-		
-		drr.setId(drr.getContentType().toString());
 
-		
-		return super.addResponse(drr);
+	public void setResponseByContentTypeRule(ResponseByContentTypeRule responseByContentTypeRule) {
+		this.responseByContentTypeRule = responseByContentTypeRule;
 	}
-	
-	/**
-	 * Adds the response rule.
-	 * 
-	 * @param rrr the rrr
-	 * 
-	 * @return the redirect response
-	 */
-	public RedirectResponse addResponse(RedirectResponseRule rrr) {
-		if(rrr.getContentType() == null)
-			return setDefaultResponse(rrr);
-			
-		rrr.setId(rrr.getContentType().toString());
-		
-		return super.addResponse(rrr);
-	}
-	
-	/**
-	 * Adds the response rule.
-	 * 
-	 * @param frr the frr
-	 * 
-	 * @return the forward response
-	 */
-	public ForwardResponse addResponse(ForwardResponseRule frr) {
-		if(frr.getContentType() == null)
-			return setDefaultResponse(frr);
-		
-		frr.setId(frr.getContentType().toString());
 
-		return super.addResponse(frr);
-	}
+	
 }

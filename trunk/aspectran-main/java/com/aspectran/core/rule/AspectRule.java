@@ -26,6 +26,8 @@ public class AspectRule {
 
 	private JoinpointTargetType joinpointTarget;
 	
+	private AspectSettingsAdviceRule aspectSettingsAdviceRule;
+	
 	private List<AspectAdviceRule> aspectAdviceRuleList;
 
 	public String getId() {
@@ -42,6 +44,14 @@ public class AspectRule {
 
 	public void setJoinpointTarget(JoinpointTargetType joinpointTarget) {
 		this.joinpointTarget = joinpointTarget;
+	}
+
+	public AspectSettingsAdviceRule getAspectSettingsAdviceRule() {
+		return aspectSettingsAdviceRule;
+	}
+
+	public void setAspectSettingsAdviceRule(AspectSettingsAdviceRule aspectSettingsAdviceRule) {
+		this.aspectSettingsAdviceRule = aspectSettingsAdviceRule;
 	}
 
 	public List<AspectAdviceRule> getAspectAdviceRuleList() {
