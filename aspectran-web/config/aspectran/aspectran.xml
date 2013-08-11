@@ -25,7 +25,7 @@
 			<setting name="multipart.temporaryFilePath" value="/d:/"/>
 		</settings>
 		<before>
-			<action id="xml" bean="common.action.a1" method="testXmlAction" hidden="true">
+			<action id="xml" bean="common.action.a1" method="testXmlAction">
 				<properties>
 					<item name="variable1">error</item>
 					<item name="variable2">0001</item>
@@ -33,15 +33,12 @@
 			</action>
 		</before>
 		<after>
-			<action id="xml" bean="common.action.a1" method="testXmlAction" hidden="true">
+			<action id="xml" bean="common.action.a1" method="testXmlAction">
 				<properties>
 					<item name="variable1">error</item>
 					<item name="variable2">0001</item>
 				</properties>
 			</action>
-			<dispatch id="jsp" contentType="text/html">
-				<template>/WEB-INF/jsp/hello.jsp</template>
-			</dispatch>
 		</after>
 	</aspect>
 	
@@ -64,9 +61,6 @@
 					<item name="variable2">0001</item>
 				</properties>
 			</action>
-			<dispatch id="jsp" contentType="text/html">
-				<template>/WEB-INF/jsp/hello.jsp</template>
-			</dispatch>
 		</after>
 	</aspect>
 
@@ -77,6 +71,55 @@
 			<setting name="defaultContentType" value="text/html"/>
 			<setting name="viewDispatcher" value="org.jhlabs.translets.web.JspViewDispatcher"/>
 		</settings>
+	</aspect>
+
+	<aspect id="error">
+		<joinpoint target="translet"/>
+		<exceptionRaized>
+			<responseByContentType>
+				<dispatch contentType="text/html">
+					<template file="/WEB-INF/jsp/error.jsp"/>
+				</dispatch>
+				<!-- forward contentType="text/html" translet="error"/ -->
+				<transform contentType="text/plain" type="transform/text">
+					<template>
+						오류 발생!
+						오류 발생!
+					</template>
+				</transform>
+				<transform contentType="text/xml" type="transform/xml">
+					<action id="xml" bean="common.action.a1" method="testXmlAction" hidden="true">
+						<properties>
+							<item name="variable1">error</item>
+							<item name="variable2">0001</item>
+						</properties>
+					</action>
+					<echo id="error3">
+						<item name="code">0002</item>
+						<item name="message">오류 발생!</item>
+					</echo>
+					<echo id="error1">
+						<item type="map">
+							<value name="code">0001</value>
+							<value name="message">오류 발생!</value>
+						</item>
+					</echo>
+					<echo id="error2">
+						<item type="map">
+							<value name="code">0002</value>
+							<value name="message">오류 발생!</value>
+						</item>
+						<item type="map">
+							<value name="code">0004</value>
+							<value name="message">오류 발생!</value>
+						</item>
+					</echo>
+				</transform>
+			</responseByContentType>
+			<defaultResponse>
+				<redirect translet="error"/>
+			</defaultResponse>
+		</exceptionRaized>
 	</aspect>
 
 	<aspect id="bean1">
@@ -116,9 +159,6 @@
 					<item name="variable2">0001</item>
 				</properties>
 			</action>
-			<dispatch id="jsp" contentType="text/html">
-				<template>/WEB-INF/jsp/hello.jsp</template>
-			</dispatch>
 		</after>
 	</aspect>
 
