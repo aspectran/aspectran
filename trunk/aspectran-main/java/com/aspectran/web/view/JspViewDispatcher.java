@@ -32,9 +32,7 @@ import com.aspectran.core.activity.response.dispatch.DispatchResponseException;
 import com.aspectran.core.activity.response.dispatch.ViewDispatcher;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
-import com.aspectran.core.context.aspect.AspectAdviceRegistry;
 import com.aspectran.core.rule.DispatchResponseRule;
-import com.aspectran.core.rule.ResponseRule;
 
 /**
  * JSP or other web resource integration.
@@ -72,7 +70,7 @@ public class JspViewDispatcher implements ViewDispatcher {
 					responseAdapter.setCharacterEncoding(characterEncoding);
 			}
 			
-			String viewName = dispatchResponseRule.getViewName();
+			String template = dispatchResponseRule.getTemplate();
 			ProcessResult processResult = activity.getProcessResult();
 
 			if(processResult != null)
@@ -81,7 +79,7 @@ public class JspViewDispatcher implements ViewDispatcher {
 			HttpServletRequest request = (HttpServletRequest)requestAdapter.getAdaptee();
 			HttpServletResponse response = (HttpServletResponse)responseAdapter.getAdaptee();
 			
-			RequestDispatcher requestDispatcher = request.getRequestDispatcher(viewName);
+			RequestDispatcher requestDispatcher = request.getRequestDispatcher(template);
 			requestDispatcher.forward(request, response);
 
 			if(debugEnabled) {
@@ -104,7 +102,7 @@ public class JspViewDispatcher implements ViewDispatcher {
 					log.debug(sb2.toString());
 				}
 
-				log.debug("JSP Dispatch path '" + viewName + "'");
+				log.debug("JSP Dispatch path '" + template + "'");
 				log.debug("Dispatch response ok.");
 			}
 		} catch(Exception e) {
