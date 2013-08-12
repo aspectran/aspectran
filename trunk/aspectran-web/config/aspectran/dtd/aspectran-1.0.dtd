@@ -93,7 +93,7 @@ lazyInit (true | false) #IMPLIED
 parent CDATA #IMPLIED
 >
 
-<!ELEMENT features (class?, scope?, factoryMethod?, initMethod?, destroyMethod?, lazyInit?)>
+<!ELEMENT features (class?, scope?, factoryMethod?, initMethod?, destroyMethod?, lazyInit?, poolSize?)>
 
 <!ELEMENT class (#PCDATA)>
 <!ELEMENT scope (#PCDATA)>
@@ -101,6 +101,7 @@ parent CDATA #IMPLIED
 <!ELEMENT initMethod (#PCDATA)>
 <!ELEMENT destroyMethod (#PCDATA)>
 <!ELEMENT lazyInit (#PCDATA)>
+<!ELEMENT poolSize (#PCDATA)>
 
 <!ELEMENT constructor (arguments?)>
 
