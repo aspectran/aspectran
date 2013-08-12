@@ -11,6 +11,7 @@
 			<initMethod></initMethod>
 			<destroyMethod></destroyMethod>
 			<lazyInit>false</lazyInit>
+			<poolSize>0</poolSize>
 		</features>
 		<constructor>
 			<arguments>
