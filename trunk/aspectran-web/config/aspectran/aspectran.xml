@@ -17,7 +17,7 @@
 		<setting name="multipleTransletEnable" value="true"/>
 	</settings>
 	
-	<aspect id="requestRule">
+	<aspect id="defaultRequestRule">
 		<joinpoint target="request"/>
 		<settings>
 			<setting name="characterEncoding" value="utf-8"/>
@@ -64,7 +64,7 @@
 		</after>
 	</aspect>
 
-	<aspect id="responseRule">
+	<aspect id="defaultResponseRule">
 		<joinpoint target="response"/>
 		<settings>
 			<setting name="characterEncoding" value="utf-8"/>
