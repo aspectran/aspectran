@@ -26,8 +26,8 @@ import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.activity.process.ContentList;
 import com.aspectran.core.activity.response.ResponseMap;
 import com.aspectran.core.activity.response.Responsible;
-import com.aspectran.core.context.bean.ablility.Disposable;
-import com.aspectran.core.context.bean.ablility.Initializable;
+import com.aspectran.core.context.bean.ablility.DisposableBean;
+import com.aspectran.core.context.bean.ablility.InitializableBean;
 import com.aspectran.core.context.builder.AspectranContextBuildingAssistant;
 import com.aspectran.core.context.builder.ContextResourceFactory;
 import com.aspectran.core.context.builder.InheritedSettings;
@@ -556,12 +556,12 @@ public class AspectranNodeParser {
 
 				Class<?> beanClass = classLoader.loadClass(classType);
 				
-				if(initMethod == null && beanClass.isAssignableFrom(Initializable.class)) {
-					initMethod = Initializable.INITIALIZE_METHOD_NAME;
+				if(initMethod == null && beanClass.isAssignableFrom(InitializableBean.class)) {
+					initMethod = InitializableBean.INITIALIZE_METHOD_NAME;
 				}
 
-				if(destroyMethod == null && beanClass.isAssignableFrom(Disposable.class)) {
-					destroyMethod = Disposable.DESTROY_METHOD_NAME;
+				if(destroyMethod == null && beanClass.isAssignableFrom(DisposableBean.class)) {
+					destroyMethod = DisposableBean.DESTROY_METHOD_NAME;
 				}
 				
 				boolean isSingleton = !(singleton != null && Boolean.valueOf(singleton) == Boolean.FALSE);

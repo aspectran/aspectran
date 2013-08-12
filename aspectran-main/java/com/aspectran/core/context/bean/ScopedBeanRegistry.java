@@ -9,7 +9,7 @@ import com.aspectran.core.activity.AspectranActivity;
 import com.aspectran.core.activity.SuperTranslet;
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
-import com.aspectran.core.context.bean.ablility.Disposable;
+import com.aspectran.core.context.bean.ablility.DisposableBean;
 import com.aspectran.core.context.bean.scope.ApplicationScope;
 import com.aspectran.core.context.bean.scope.ContextScope;
 import com.aspectran.core.context.bean.scope.RequestScope;
@@ -210,12 +210,12 @@ public class ScopedBeanRegistry extends AbstractBeanRegistry implements BeanRegi
 	}
 	
 	public void destoryScopeBean(ScopedBeanMap scopeBeanMap) throws Exception {
-		for(Disposable scopeBean : scopeBeanMap) {
+		for(DisposableBean scopeBean : scopeBeanMap) {
 			scopeBean.destroy();
 		}
 	}
 	
-	public void destoryScopeBean(Disposable scopeBean) throws Exception {
+	public void destoryScopeBean(DisposableBean scopeBean) throws Exception {
 		scopeBean.destroy();
 	}
 	

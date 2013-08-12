@@ -33,8 +33,8 @@ import com.aspectran.core.activity.response.ResponseMap;
 import com.aspectran.core.activity.response.Responsible;
 import com.aspectran.core.context.AspectranContext;
 import com.aspectran.core.context.bean.ScopedBeanRegistry;
-import com.aspectran.core.context.bean.ablility.Disposable;
-import com.aspectran.core.context.bean.ablility.Initializable;
+import com.aspectran.core.context.bean.ablility.DisposableBean;
+import com.aspectran.core.context.bean.ablility.InitializableBean;
 import com.aspectran.core.context.builder.xml.AspectranNodeParser;
 import com.aspectran.core.context.builder.xml.BeansNodeParser;
 import com.aspectran.core.context.builder.xml.ContextNodeParser;
@@ -168,12 +168,12 @@ public final class BakContextBuilder {
 			
 			beanRule.setBeanClass(beanClass);
 			
-			if(beanRule.getInitMethod() == null && beanClass.isAssignableFrom(Initializable.class)) {
-				beanRule.setInitMethod(Initializable.INITIALIZE_METHOD_NAME);
+			if(beanRule.getInitMethod() == null && beanClass.isAssignableFrom(InitializableBean.class)) {
+				beanRule.setInitMethod(InitializableBean.INITIALIZE_METHOD_NAME);
 			}
 
-			if(beanRule.getDestroyMethod() == null && beanClass.isAssignableFrom(Disposable.class)) {
-				beanRule.setDestroyMethod(Disposable.DESTROY_METHOD_NAME);
+			if(beanRule.getDestroyMethod() == null && beanClass.isAssignableFrom(DisposableBean.class)) {
+				beanRule.setDestroyMethod(DisposableBean.DESTROY_METHOD_NAME);
 			}
 //			
 //			

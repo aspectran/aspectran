@@ -9,7 +9,7 @@ package com.aspectran.core.context.bean.ablility;
  * @since 2011. 2. 20.
  *
  */
-public interface Initializable {
+public interface InitializableBean {
 
 	public static final String INITIALIZE_METHOD_NAME = "initialize";
 	

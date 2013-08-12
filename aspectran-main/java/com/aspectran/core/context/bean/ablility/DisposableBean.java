@@ -9,15 +9,15 @@ package com.aspectran.core.context.bean.ablility;
  * @since 2011. 2. 20.
  *
  */
-public interface Executable {
+public interface DisposableBean {
 
-	public static final String EXECUTE_METHOD_NAME = "execute";
+	public static final String DESTROY_METHOD_NAME = "destroy";
 
 	/**
 	 * Invoke on destruction of a singleton.
 	 *
 	 * @throws Exception the exception
 	 */
-	public void execute() throws Exception;
+	public void destroy() throws Exception;
 
 }
