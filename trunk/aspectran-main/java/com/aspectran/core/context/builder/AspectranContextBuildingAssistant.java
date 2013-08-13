@@ -21,7 +21,6 @@ import java.util.Map;
 
 import com.aspectran.core.rule.BeanRule;
 import com.aspectran.core.rule.BeanRuleMap;
-import com.aspectran.core.rule.ExceptionHandlingRule;
 import com.aspectran.core.rule.TransletRule;
 import com.aspectran.core.rule.TransletRuleMap;
 import com.aspectran.core.type.AspectranSettingType;
@@ -255,24 +254,6 @@ public class AspectranContextBuildingAssistant {
 
 	public void setActivitySettingsRule(InheritedAspectranSettings activityRule) {
 		this.inheritedSettings = activityRule;
-	}
-
-	/**
-	 * Gets the generic exception rule.
-	 * 
-	 * @return the generic exception rule
-	 */
-	public ExceptionHandlingRule getDefaultExceptionRule() {
-		return inheritedSettings.getDefaultExceptionRule();
-	}
-
-	/**
-	 * Sets the generic exception rule.
-	 * 
-	 * @param defaultExceptionRule the new generic exception rule
-	 */
-	public void setDefaultExceptionRule(ExceptionHandlingRule defaultExceptionRule) {
-		inheritedSettings.setDefaultExceptionRule(defaultExceptionRule);
 	}
 
 	/**

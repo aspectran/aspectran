@@ -70,19 +70,23 @@ public class AspectAdviceRuleNodeletAdder implements NodeletAdder {
 
 		parser.addNodelet(xpath, new ActionRuleNodeletAdder(assistant));
 
-		parser.addNodelet(xpath, "/responseByContentType", new Nodelet() {
+		parser.addNodelet(xpath, "/rbctr", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
-				ResponseByContentTypeRule responseByContentType = new ResponseByContentTypeRule();
-				assistant.pushObject(responseByContentType);
+				String exceptionType = attributes.getProperty("exceptionType");
+
+				ResponseByContentTypeRule rbctr = new ResponseByContentTypeRule();
+				rbctr.setExceptionType(exceptionType);
+				
+				assistant.pushObject(rbctr);
 			}
 		});
 		
-		parser.addNodelet(xpath, "/responseByContentType", new ResponseRuleNodeletAdder(assistant));
+		parser.addNodelet(xpath, "/rbctr", new ResponseRuleNodeletAdder(assistant));
 
 		parser.addNodelet(xpath, "/defaultResponse", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
-				ResponseByContentTypeRule responseByContentType = new ResponseByContentTypeRule();
-				assistant.pushObject(responseByContentType);
+				ResponseByContentTypeRule rbctr = new ResponseByContentTypeRule();
+				assistant.pushObject(rbctr);
 			}
 		});
 
@@ -90,12 +94,12 @@ public class AspectAdviceRuleNodeletAdder implements NodeletAdder {
 
 		parser.addNodelet(xpath, "/defaultResponse/end()", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
-				ResponseByContentTypeRule responseByContentType = (ResponseByContentTypeRule)assistant.popObject();
-				ResponseMap responseMap = responseByContentType.getResponseMap();
+				ResponseByContentTypeRule rbctr = (ResponseByContentTypeRule)assistant.popObject();
+				ResponseMap responseMap = rbctr.getResponseMap();
 				
 				if(responseMap.size() > 0) {
-					ResponseByContentTypeRule responseByContentTypeRule = (ResponseByContentTypeRule)assistant.peekObject();
-					responseByContentTypeRule.setDefaultResponse(responseMap.get(0));
+					ResponseByContentTypeRule rbctr2 = (ResponseByContentTypeRule)assistant.peekObject();
+					rbctr2.setDefaultResponse(responseMap.get(0));
 				}
 			}
 		});

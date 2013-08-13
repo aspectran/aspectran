@@ -26,6 +26,16 @@ import com.aspectran.core.rule.ability.ResponseAddable;
  */
 public class ResponseByContentTypeRule extends AbstractResponseRule implements ResponseAddable {
 
+	private String exceptionType;
+	
+	public String getExceptionType() {
+		return exceptionType;
+	}
+
+	public void setExceptionType(String exceptionType) {
+		this.exceptionType = exceptionType;
+	}
+
 	/**
 	 * Sets the default response rule.
 	 * 
