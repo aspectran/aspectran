@@ -15,18 +15,15 @@
  */
 package com.aspectran.core.context.builder;
 
-import java.io.File;
 import java.util.Map;
 
-import com.aspectran.core.rule.DefaultRequestRule;
-import com.aspectran.core.rule.DefaultResponseRule;
 import com.aspectran.core.rule.ExceptionHandlingRule;
 import com.aspectran.core.type.AspectranSettingType;
 
 /**
  * <p>Created: 2008. 03. 22 오후 5:48:09</p>
  */
-public class InheritedSettings {
+public class InheritedAspectranSettings {
 
 	private String transletNameSeparator;
 	
@@ -48,13 +45,9 @@ public class InheritedSettings {
 	
 	private boolean multipleTransletEnable = true;
 	
-	private DefaultRequestRule defaultRequestRule;
-
-	private DefaultResponseRule defaultResponseRule;
-	
 	private ExceptionHandlingRule defaultExceptionRule;
 	
-	protected InheritedSettings() {
+	protected InheritedAspectranSettings() {
 	}
 	
 	public String getTransletNameSeparator() {
@@ -162,54 +155,6 @@ public class InheritedSettings {
 
 	public void setMultipleTransletEnable(boolean multipleTransletEnable) {
 		this.multipleTransletEnable = multipleTransletEnable;
-	}
-
-	/**
-	 * Gets the generic request rule.
-	 * 
-	 * @return the generic request rule
-	 */
-	public DefaultRequestRule getDefaultRequestRule() {
-		return defaultRequestRule;
-	}
-
-	/**
-	 * Sets the generic request rule.
-	 * 
-	 * @param defaultRequestRule the new generic request rule
-	 */
-	public void setDefaultRequestRule(DefaultRequestRule defaultRequestRule) {
-		if(this.defaultRequestRule.getCharacterEncoding() != null && defaultRequestRule.getCharacterEncoding() == null)
-			defaultRequestRule.setCharacterEncoding(this.defaultRequestRule.getCharacterEncoding());
-		
-		if(this.defaultRequestRule.getMultipartRequestRule() != null && defaultRequestRule.getMultipartRequestRule() == null)
-			defaultRequestRule.setMultipartRequestRule(this.defaultRequestRule.getMultipartRequestRule());
-		
-		this.defaultRequestRule = defaultRequestRule;
-	}
-
-	/**
-	 * Gets the generic response rule.
-	 * 
-	 * @return the generic response rule
-	 */
-	public DefaultResponseRule getDefaultResponseRule() {
-		return defaultResponseRule;
-	}
-
-	/**
-	 * Sets the generic response rule.
-	 * 
-	 * @param defaultResponseRule the new generic response rule
-	 */
-	public void setDefaultResponseRule(DefaultResponseRule defaultResponseRule) {
-		if(this.defaultResponseRule.getCharacterEncoding() != null && defaultResponseRule.getCharacterEncoding() == null)
-			defaultResponseRule.setCharacterEncoding(this.defaultResponseRule.getCharacterEncoding());
-		
-		if(this.defaultResponseRule.getDefaultContentType() != null && defaultResponseRule.getDefaultContentType() == null)
-			defaultResponseRule.setDefaultContentType(this.defaultResponseRule.getDefaultContentType());
-
-		this.defaultResponseRule = defaultResponseRule;
 	}
 
 	/**

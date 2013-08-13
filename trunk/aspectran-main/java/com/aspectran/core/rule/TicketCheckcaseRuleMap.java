@@ -20,6 +20,7 @@ import java.util.LinkedHashMap;
 
 /**
  * <p>Created: 2011. 02. 20 오후 12:56:20</p>
+ * @deprecated
  */
 public class TicketCheckcaseRuleMap extends LinkedHashMap<String, TicketCheckcaseRule> implements Iterable<TicketCheckcaseRule> {
 

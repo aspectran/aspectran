@@ -21,8 +21,6 @@ import java.util.Map;
 
 import com.aspectran.core.rule.BeanRule;
 import com.aspectran.core.rule.BeanRuleMap;
-import com.aspectran.core.rule.DefaultRequestRule;
-import com.aspectran.core.rule.DefaultResponseRule;
 import com.aspectran.core.rule.ExceptionHandlingRule;
 import com.aspectran.core.rule.TransletRule;
 import com.aspectran.core.rule.TransletRuleMap;
@@ -45,7 +43,7 @@ public class AspectranContextBuildingAssistant {
 	/** The service root path. */
 	private String activityRootPath;
 
-	private InheritedSettings inheritedSettings;
+	private InheritedAspectranSettings inheritedSettings;
 
 	private BeanRuleMap beanRuleMap;
 	
@@ -62,7 +60,7 @@ public class AspectranContextBuildingAssistant {
 		this.settings = new HashMap<AspectranSettingType, String>();
 		
 		this.activityRootPath = serviceRootPath;
-		inheritedSettings = new InheritedSettings();
+		inheritedSettings = new InheritedAspectranSettings();
 	}
 	
 	/**
@@ -76,7 +74,7 @@ public class AspectranContextBuildingAssistant {
 		inheritedSettings = assistant.getActivitySettingsRule();
 		
 		if(inheritedSettings == null)
-			inheritedSettings = new InheritedSettings();
+			inheritedSettings = new InheritedAspectranSettings();
 		
 		beanRuleMap = assistant.getBeanRuleMap();
 		transletRuleMap = assistant.getTransletRuleMap();
@@ -251,48 +249,12 @@ public class AspectranContextBuildingAssistant {
 		return activityRootPath;
 	}
 	
-	public InheritedSettings getActivitySettingsRule() {
+	public InheritedAspectranSettings getActivitySettingsRule() {
 		return inheritedSettings;
 	}
 
-	public void setActivitySettingsRule(InheritedSettings activityRule) {
+	public void setActivitySettingsRule(InheritedAspectranSettings activityRule) {
 		this.inheritedSettings = activityRule;
-	}
-
-	/**
-	 * Gets the generic request rule.
-	 * 
-	 * @return the generic request rule
-	 */
-	public DefaultRequestRule getDefaultRequestRule() {
-		return inheritedSettings.getDefaultRequestRule();
-	}
-
-	/**
-	 * Sets the generic request rule.
-	 * 
-	 * @param defaultRequestRule the new generic request rule
-	 */
-	public void setDefaultRequestRule(DefaultRequestRule defaultRequestRule) {
-		inheritedSettings.setDefaultRequestRule(defaultRequestRule);
-	}
-
-	/**
-	 * Gets the generic response rule.
-	 * 
-	 * @return the generic response rule
-	 */
-	public DefaultResponseRule getDefaultResponseRule() {
-		return inheritedSettings.getDefaultResponseRule();
-	}
-
-	/**
-	 * Sets the generic response rule.
-	 * 
-	 * @param defaultResponseRule the new generic response rule
-	 */
-	public void setDefaultResponseRule(DefaultResponseRule defaultResponseRule) {
-		inheritedSettings.setDefaultResponseRule(defaultResponseRule);
 	}
 
 	/**

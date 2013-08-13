@@ -43,11 +43,6 @@ public class RequestRule implements AspectAdviceSupport {
 	public RequestRule() {
 	}
 	
-	public RequestRule(DefaultRequestRule drr) {
-		characterEncoding = drr.getCharacterEncoding();
-		multipartRequestRule = drr.getMultipartRequestRule();
-	}
-	
 	/**
 	 * Gets the character encoding.
 	 * 
