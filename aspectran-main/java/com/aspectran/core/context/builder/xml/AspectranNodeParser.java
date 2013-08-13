@@ -391,7 +391,7 @@ public class AspectranNodeParser {
 				assistant.pushObject(rbctr);
 			}
 		});
-		parser.addNodelet("/aspectran/translet/responseByContentType", new Nodelet() {
+		parser.addNodelet("/aspectran/translet/exception/responseByContentType", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
 				String exceptionType = attributes.getProperty("exceptionType");
 
@@ -427,7 +427,7 @@ public class AspectranNodeParser {
 				ResponseByContentTypeRule rbctr = (ResponseByContentTypeRule)assistant.popObject();
 				TransletRule transletRule = (TransletRule)assistant.peekObject();
 
-				transletRule.setExceptionHandlingRule(rbctr);
+				transletRule.addExceptionHandlingRule(rbctr);
 			}
 		});
 		parser.addNodelet("/aspectran/translet/end()", new Nodelet() {

@@ -50,7 +50,7 @@ public class TransletRule implements AspectAdviceSupport, Cloneable {
 	
 	private ResponseRule responseRule;
 	
-	private ResponseByContentTypeRule exceptionHandlingRule;
+	private ResponseByContentTypeRuleMap exceptionHandlingRuleMap;
 	
 	private String multipleTransletResponseId;
 	
@@ -146,24 +146,21 @@ public class TransletRule implements AspectAdviceSupport, Cloneable {
 		this.responseRule = responseRule;
 	}
 
-	/**
-	 * Gets the exception handle rule.
-	 * 
-	 * @return the exception handle rule
-	 */
-	public ResponseByContentTypeRule getExceptionHandlingRule() {
-		return exceptionHandlingRule;
+	public ResponseByContentTypeRuleMap getExceptionHandlingRuleMap() {
+		return exceptionHandlingRuleMap;
 	}
 
-	/**
-	 * Sets the exception handle rule.
-	 * 
-	 * @param exceptionHandlingRule the new exception handle rule
-	 */
-	public void setExceptionHandlingRule(ResponseByContentTypeRule responseByContentTypeRule) {
-		this.exceptionHandlingRule = responseByContentTypeRule;
+	public void setExceptionHandlingRuleMap(ResponseByContentTypeRuleMap responseByContentTypeRuleMap) {
+		this.exceptionHandlingRuleMap = responseByContentTypeRuleMap;
 	}
 
+	public void addExceptionHandlingRule(ResponseByContentTypeRule responseByContentTypeRule) {
+		if(exceptionHandlingRuleMap == null)
+			exceptionHandlingRuleMap = new ResponseByContentTypeRuleMap();
+		
+		exceptionHandlingRuleMap.putResponseByContentTypeRule(responseByContentTypeRule);
+	}
+	
 	public String getMultipleTransletResponseId() {
 		return multipleTransletResponseId;
 	}
