@@ -64,12 +64,14 @@
 		</after>
 	</aspect>
 
+	<bean id="jspViewDispatcher" class="org.jhlabs.translets.web.JspViewDispatcher" scope="singleton"/>
+
 	<aspect id="defaultResponseRule">
 		<joinpoint target="response"/>
 		<settings>
 			<setting name="characterEncoding" value="utf-8"/>
 			<setting name="defaultContentType" value="text/html"/>
-			<setting name="viewDispatcher" value="org.jhlabs.translets.web.JspViewDispatcher"/>
+			<setting name="viewDispatcher" value="jspViewDispatcher"/>
 		</settings>
 	</aspect>
 
