@@ -17,7 +17,6 @@ package com.aspectran.core.context.builder;
 
 import java.util.Map;
 
-import com.aspectran.core.rule.ExceptionHandlingRule;
 import com.aspectran.core.type.AspectranSettingType;
 
 /**
@@ -44,8 +43,6 @@ public class InheritedAspectranSettings {
 	private boolean nullableActionId = true;
 	
 	private boolean multipleTransletEnable = true;
-	
-	private ExceptionHandlingRule defaultExceptionRule;
 	
 	protected InheritedAspectranSettings() {
 	}
@@ -155,24 +152,6 @@ public class InheritedAspectranSettings {
 
 	public void setMultipleTransletEnable(boolean multipleTransletEnable) {
 		this.multipleTransletEnable = multipleTransletEnable;
-	}
-
-	/**
-	 * Gets the generic exception rule.
-	 * 
-	 * @return the generic exception rule
-	 */
-	public ExceptionHandlingRule getDefaultExceptionRule() {
-		return defaultExceptionRule;
-	}
-
-	/**
-	 * Sets the generic exception rule.
-	 * 
-	 * @param defaultExceptionRule the new generic exception rule
-	 */
-	public void setDefaultExceptionRule(ExceptionHandlingRule defaultExceptionRule) {
-		this.defaultExceptionRule = defaultExceptionRule;
 	}
 	
 	public void set(Map<AspectranSettingType, String> settings) {

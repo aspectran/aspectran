@@ -46,14 +46,8 @@ import com.aspectran.core.context.translet.TransletRuleRegistry;
 import com.aspectran.core.rule.RequestRule;
 import com.aspectran.core.rule.ResponseByContentTypeRule;
 import com.aspectran.core.rule.ResponseRule;
-import com.aspectran.core.rule.TicketCheckRule;
 import com.aspectran.core.rule.TransletRule;
-import com.aspectran.core.ticket.TicketCheckActionList;
-import com.aspectran.core.ticket.TicketCheckException;
-import com.aspectran.core.ticket.TicketCheckRejectedException;
-import com.aspectran.core.ticket.action.TicketCheckAction;
 import com.aspectran.core.type.ResponseType;
-import com.aspectran.core.type.TicketCheckpointType;
 
 /**
  * Action Translator.
@@ -415,7 +409,6 @@ public abstract class AbstractAspectranActivity implements AspectranActivity {
 	 * @param ticketCheckActionList the ticket bean action list
 	 * @param checkpoint the check point
 	 * @throws TicketCheckException the ticket check exception
-	 */
 	private void checkTicket(TicketCheckActionList ticketCheckActionList, TicketCheckpointType checkpoint) throws TicketCheckException {
 		try {
 			for(TicketCheckAction ticketCheckAction : ticketCheckActionList) {
@@ -453,6 +446,7 @@ public abstract class AbstractAspectranActivity implements AspectranActivity {
 			throw new TicketCheckException(e);
 		}
 	}
+	*/
 	
 	/**
 	 * Response.
