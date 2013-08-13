@@ -290,11 +290,10 @@ public class Resources extends Object {
 	}
 
 	private static ClassLoader getClassLoader() {
-		if(defaultClassLoader != null) {
+		if(defaultClassLoader != null)
 			return defaultClassLoader;
-		} else {
-			return Thread.currentThread().getContextClassLoader();
-		}
+		
+		return ClassUtils.getDefaultClassLoader();
 	}
 
 	public static void main(String argv[]) {

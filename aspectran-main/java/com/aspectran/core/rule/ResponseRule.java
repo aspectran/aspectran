@@ -58,18 +58,6 @@ public class ResponseRule extends AbstractResponseRule implements ResponseAddabl
 	}
 	
 	/**
-	 * Instantiates a new response rule.
-	 *
-	 * @param drr the drr
-	 */
-	public ResponseRule(DefaultResponseRule drr) {
-		super();
-		
-		characterEncoding = drr.getCharacterEncoding();
-		defaultContentType = drr.getDefaultContentType();
-	}
-	
-	/**
 	 * Gets the character encoding.
 	 * 
 	 * @return the character encoding

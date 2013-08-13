@@ -22,6 +22,7 @@ import com.aspectran.core.type.TicketCheckpointType;
 
 /**
  * <p>Created: 2008. 03. 27 오후 5:24:20</p>
+ * @deprecated
  */
 public class TicketCheckRule implements ArgumentPossessable, PropertyPossessable {
 

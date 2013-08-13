@@ -16,7 +16,6 @@
 package com.aspectran.core.rule;
 
 import com.aspectran.core.activity.process.action.Executable;
-import com.aspectran.core.activity.response.dispatch.ViewDispatcher;
 import com.aspectran.core.rule.ability.ActionPossessable;
 import com.aspectran.core.type.ResponseType;
 
@@ -35,9 +34,13 @@ public class DispatchResponseRule extends ActionPossessSupport implements Action
 
 	protected String characterEncoding;
 
-	private String template;
+	private String templateFile;
 	
-	private ViewDispatcher viewDispatcher;
+	private String templateEncoding;
+
+	private String templateContent;
+	
+	private Boolean templateNoCache;
 	
 	/**
 	 * Gets the id.
@@ -92,17 +95,37 @@ public class DispatchResponseRule extends ActionPossessSupport implements Action
 	public void setCharacterEncoding(String characterEncoding) {
 		this.characterEncoding = characterEncoding;
 	}
-	
-	public String getTemplate() {
-		return template;
+
+	public String getTemplateFile() {
+		return templateFile;
 	}
 
-	public void setTemplate(String template) {
-		this.template = template;
+	public void setTemplateFile(String templateFile) {
+		this.templateFile = templateFile;
 	}
 
-	public ViewDispatcher getViewDispatcher() {
-		return viewDispatcher;
+	public String getTemplateEncoding() {
+		return templateEncoding;
+	}
+
+	public void setTemplateEncoding(String templateEncoding) {
+		this.templateEncoding = templateEncoding;
+	}
+
+	public String getTemplateContent() {
+		return templateContent;
+	}
+
+	public void setTemplateContent(String templateContent) {
+		this.templateContent = templateContent;
+	}
+
+	public Boolean getTemplateNoCache() {
+		return templateNoCache;
+	}
+
+	public void setTemplateNoCache(Boolean templateNoCache) {
+		this.templateNoCache = templateNoCache;
 	}
 
 	/* (non-Javadoc)
@@ -114,7 +137,7 @@ public class DispatchResponseRule extends ActionPossessSupport implements Action
 
 		sb.append("{id=").append(id);
 		sb.append(", contentType=").append(contentType);
-		sb.append(", viewDispatcher=").append(viewDispatcher);
+		sb.append(", characterEncoding=").append(characterEncoding);
 		
 		if(actionList != null) {
 			sb.append(", actionList=");
@@ -132,6 +155,12 @@ public class DispatchResponseRule extends ActionPossessSupport implements Action
 			sb.append(']');
 		}
 
+		if(templateFile != null) {
+			sb.append(", templateFile=").append(templateFile);
+			sb.append(", templateEncoding=").append(templateEncoding);
+			sb.append(", templateNoCache=").append(templateNoCache);
+		}
+		
 		sb.append("}");
 		
 		return sb.toString();

@@ -22,7 +22,6 @@ import org.w3c.dom.Node;
 
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.context.builder.AspectranContextBuildingAssistant;
-import com.aspectran.core.rule.AspectAdviceRule;
 import com.aspectran.core.rule.DispatchResponseRule;
 import com.aspectran.core.rule.ForwardResponseRule;
 import com.aspectran.core.rule.ItemRuleMap;
@@ -75,11 +74,7 @@ public class ResponseRuleNodeletAdder implements NodeletAdder {
 		ResponseRule responseRule = transletRule.getResponseRule();
 		
 		if(responseRule == null) {
-			if(assistant.getDefaultResponseRule() != null)
-				responseRule = new ResponseRule(assistant.getDefaultResponseRule());
-			else
-				responseRule = new ResponseRule();
-
+			responseRule = new ResponseRule();
 			transletRule.setResponseRule(responseRule);
 		}
 		
@@ -208,10 +203,12 @@ public class ResponseRuleNodeletAdder implements NodeletAdder {
 			public void process(Node node, Properties attributes, String text) throws Exception {
 				String id = attributes.getProperty("id");
 				String contentType = attributes.getProperty("contentType");
+				String encoding = attributes.getProperty("encoding");
 				
 				DispatchResponseRule drr = new DispatchResponseRule();
 				drr.setId(id);
 				drr.setContentType(contentType);
+				drr.setCharacterEncoding(encoding);
 				
 				assistant.pushObject(drr);
 
@@ -222,14 +219,13 @@ public class ResponseRuleNodeletAdder implements NodeletAdder {
 
 		parser.addNodelet(xpath, "/dispatch", new ActionRuleNodeletAdder(assistant));
 
-		parser.addNodelet(xpath, "/dispatch/view", new Nodelet() {
+		parser.addNodelet(xpath, "/dispatch/template", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
-				String viewType = attributes.getProperty("type");
-				String viewName = attributes.getProperty("name");
+				String templateFile = attributes.getProperty("file");
+				String templateEncoding = attributes.getProperty("encoding");
+				Boolean noCache = Boolean.valueOf(attributes.getProperty("noCache"));
+				String templateContent = text;
 				
-				if(viewName == null)
-					viewName = text;
-
 				// backup
 				ActionList actionList = (ActionList)assistant.popObject();
 				
@@ -237,9 +233,11 @@ public class ResponseRuleNodeletAdder implements NodeletAdder {
 				
 				// restore
 				assistant.pushObject(actionList);
-				
-				drr.setViewType(viewType);
-				drr.setViewName(viewName);
+
+				drr.setTemplateFile(templateFile);
+				drr.setTemplateEncoding(templateEncoding);
+				drr.setTemplateContent(templateContent);
+				drr.setTemplateNoCache(noCache);
 			}
 		});
 		parser.addNodelet(xpath, "/dispatch/end()", new Nodelet() {
@@ -247,9 +245,6 @@ public class ResponseRuleNodeletAdder implements NodeletAdder {
 				ActionList actionList = (ActionList)assistant.popObject();
 				DispatchResponseRule drr = (DispatchResponseRule)assistant.popObject();
 				
-//				if(drr.getViewType() == null)
-//					throw new IllegalArgumentException("The target path for DispatchResponse is not set.");
-
 				if(!actionList.isEmpty())
 					drr.setActionList(actionList);
 				

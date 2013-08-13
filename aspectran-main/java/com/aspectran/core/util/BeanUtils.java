@@ -311,6 +311,7 @@ public class BeanUtils {
 		return hasProperty;
 	}
 
+	@SuppressWarnings("unused")
 	private static Object getProperty(Object object, String name) throws InvocationTargetException {
 		ClassDescriptor classCache = getClassDescriptor(object.getClass());
 		
@@ -350,6 +351,7 @@ public class BeanUtils {
 		}
 	}
 
+	@SuppressWarnings("unused")
 	private static void setProperty(Object object, String name, Object value) throws InvocationTargetException {
 		ClassDescriptor classCache = getClassDescriptor(object.getClass());
 		

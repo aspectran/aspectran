@@ -23,6 +23,7 @@ import java.util.Map;
  * Ticket Checkpoint.
  * 
  * <p>Created: 2010. 01. 30 오전 2:40:00</p>
+ * @deprecated
  */
 public final class TicketCheckpointType extends Type {
 	

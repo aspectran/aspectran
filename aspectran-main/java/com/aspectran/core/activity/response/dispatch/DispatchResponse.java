@@ -50,7 +50,6 @@ public class DispatchResponse implements Responsible {
 	 */
 	public DispatchResponse(DispatchResponseRule dispatchResponseRule) {
 		this.dispatchResponseRule = dispatchResponseRule;
-		this.viewDispatcher = dispatchResponseRule.getViewDispatcher();
 	}
 
 	/* (non-Javadoc)
@@ -58,9 +57,11 @@ public class DispatchResponse implements Responsible {
 	 */
 	public void response(AspectranActivity activity) throws ResponseException {
 		try {
+			String viewDispatcherName = null;
+			
 			if(viewDispatcher == null) {
-				String viewDispatcherClassType  = (String)activity.getResponseSetting(ResponseRule.VIEW_DISPATCHER_SETTING);
-				
+				viewDispatcherName = (String)activity.getResponseSetting(ResponseRule.VIEW_DISPATCHER_SETTING);
+				viewDispatcher = (ViewDispatcher)activity.getBean(viewDispatcherName);
 			}
 			
 			if(viewDispatcher != null) {
@@ -68,11 +69,11 @@ public class DispatchResponse implements Responsible {
 			}
 
 			if(debugEnabled) {
-				log.debug("Dispatch view template '" + dispatchResponseRule.getTemplate() + "'");
-				log.debug("Dispatch response ok.");
+				log.debug("Dispatch {viewDispatcher: " + viewDispatcherName + ", template: " + dispatchResponseRule.getTemplateFile() + "}");
+				log.debug("Dispatch Response OK.");
 			}
 		} catch(Exception e) {
-			throw new DispatchResponseException("Dispatch response error: " + dispatchResponseRule, e);
+			throw new DispatchResponseException("Dispatch Response error: " + dispatchResponseRule, e);
 		}
 	}
 

@@ -30,11 +30,9 @@ import com.aspectran.core.context.bean.ablility.DisposableBean;
 import com.aspectran.core.context.bean.ablility.InitializableBean;
 import com.aspectran.core.context.builder.AspectranContextBuildingAssistant;
 import com.aspectran.core.context.builder.ContextResourceFactory;
-import com.aspectran.core.context.builder.InheritedSettings;
+import com.aspectran.core.context.builder.InheritedAspectranSettings;
 import com.aspectran.core.rule.AspectRule;
 import com.aspectran.core.rule.BeanRule;
-import com.aspectran.core.rule.DefaultRequestRule;
-import com.aspectran.core.rule.DefaultResponseRule;
 import com.aspectran.core.rule.ExceptionHandlingRule;
 import com.aspectran.core.rule.FileItemRule;
 import com.aspectran.core.rule.ItemRuleMap;
@@ -63,7 +61,7 @@ public class AspectranNodeParser {
 
 	private final AspectranContextBuildingAssistant assistant;
 	
-	private final ClassLoader classLoader;
+	private final ClassLoader classLoader = ClassUtils.getDefaultClassLoader();
 	
 	/**
 	 * Instantiates a new translet map parser.
@@ -71,8 +69,6 @@ public class AspectranNodeParser {
 	 * @param assistant the assistant for Context Builder
 	 */
 	public AspectranNodeParser(AspectranContextBuildingAssistant assistant) {
-		this.classLoader = getClassLoader();
-		
 		this.assistant = assistant;
 		//this.assistant.clearObjectStack();
 		//this.assistant.clearTypeAliases();
@@ -92,20 +88,6 @@ public class AspectranNodeParser {
 		addBeanNodelets();
 		addTransletNodelets();
 		addImportNodelets();
-	}
-
-	private ClassLoader getClassLoader() {
-		ClassLoader cl = null;
-		try {
-			cl = Thread.currentThread().getContextClassLoader();
-		} catch(Throwable ex) {
-			// Cannot access thread context ClassLoader - falling back to system class loader...
-		}
-		if(cl == null) {
-			// No thread context class loader -> use class loader of this class.
-			cl = AspectranNodeParser.class.getClassLoader();
-		}
-		return cl;
 	}
 	
 	/**
@@ -280,13 +262,7 @@ public class AspectranNodeParser {
 				if(characterEncoding != null && !Charset.isSupported(characterEncoding))
 					throw new IllegalCharsetNameException("Given charset name is illegal. '" + characterEncoding + "'");
 				
-				RequestRule requestRule;
-
-				if(assistant.getDefaultRequestRule() != null)
-					requestRule = new RequestRule(assistant.getDefaultRequestRule());
-				else
-					requestRule = new RequestRule();
-				
+				RequestRule requestRule = new RequestRule();
 				requestRule.setMethod(methodType);
 				requestRule.setCharacterEncoding(characterEncoding);
 				
@@ -346,16 +322,6 @@ public class AspectranNodeParser {
 		parser.addNodelet("/aspectran/translet/request/end()", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
 				RequestRule requestRule = (RequestRule)assistant.popObject();
-				
-				// default request rule mapping...
-				DefaultRequestRule drr = assistant.getDefaultRequestRule();
-				
-				requestRule.setMultipartRequestRule(drr.getMultipartRequestRule());
-				
-				if(requestRule.getCharacterEncoding() == null)
-					requestRule.setCharacterEncoding(drr.getCharacterEncoding());
-				// ...............................
-
 				TransletRule transletRule = (TransletRule)assistant.peekObject();
 				transletRule.setRequestRule(requestRule);
 			}
@@ -407,7 +373,7 @@ public class AspectranNodeParser {
 				if(characterEncoding != null && !Charset.isSupported(characterEncoding))
 					throw new IllegalCharsetNameException("Given charset name is illegal. '" + characterEncoding + "'");
 				
-				ResponseRule responseRule = new ResponseRule(assistant.getDefaultResponseRule());
+				ResponseRule responseRule = new ResponseRule();
 				responseRule.setDefaultResponseId(defaultResponseId);
 				responseRule.setCharacterEncoding(characterEncoding);
 
@@ -420,17 +386,6 @@ public class AspectranNodeParser {
 		parser.addNodelet("/aspectran/translet/response/end()", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
 				ResponseRule responseRule = (ResponseRule)assistant.popObject();
-
-				// default response rule mapping...
-				DefaultResponseRule drr = assistant.getDefaultResponseRule();
-				
-				if(responseRule.getCharacterEncoding() == null)
-					responseRule.setCharacterEncoding(drr.getCharacterEncoding());
-				
-				if(responseRule.getDefaultContentType() == null)
-					responseRule.setDefaultContentType(drr.getDefaultContentType());
-				// ...............................
-				
 				TransletRule transletRule = (TransletRule)assistant.peekObject();
 				transletRule.setResponseRule(responseRule);
 			}
@@ -477,24 +432,12 @@ public class AspectranNodeParser {
 				TransletRule transletRule = (TransletRule)assistant.popObject();
 				
 				if(transletRule.getRequestRule() == null) {
-					RequestRule requestRule;
-
-					if(assistant.getDefaultRequestRule() != null)
-						requestRule = new RequestRule(assistant.getDefaultRequestRule());
-					else
-						requestRule = new RequestRule();
-					
+					RequestRule requestRule = new RequestRule();
 					transletRule.setRequestRule(requestRule);
 				}
 				
 				if(transletRule.getResponseRule() == null) {
-					ResponseRule responseRule;
-
-					if(assistant.getDefaultRequestRule() != null)
-						responseRule = new ResponseRule(assistant.getDefaultResponseRule());
-					else
-						responseRule = new ResponseRule();
-
+					ResponseRule responseRule = new ResponseRule();
 					transletRule.setResponseRule(responseRule);
 				}
 				
@@ -647,7 +590,7 @@ public class AspectranNodeParser {
 				else
 					throw new IllegalArgumentException("The <import> element requires either a resource or a file or a url attribute.");
 				
-				InheritedSettings inheritedSettings = assistant.getActivitySettingsRule();
+				InheritedAspectranSettings inheritedSettings = assistant.getActivitySettingsRule();
 				
 				AspectranNodeParser aspectranNodeParser = new AspectranNodeParser(assistant);
 				aspectranNodeParser.parse(r.getInputStream());
