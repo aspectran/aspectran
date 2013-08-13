@@ -24,6 +24,7 @@ import com.aspectran.core.context.builder.AspectranContextBuildingAssistant;
 import com.aspectran.core.rule.AspectAdviceRule;
 import com.aspectran.core.rule.AspectRule;
 import com.aspectran.core.rule.ResponseByContentTypeRule;
+import com.aspectran.core.rule.ResponseByContentTypeRuleMap;
 import com.aspectran.core.type.AspectAdviceType;
 import com.aspectran.core.util.xml.Nodelet;
 import com.aspectran.core.util.xml.NodeletAdder;
@@ -70,7 +71,7 @@ public class AspectAdviceRuleNodeletAdder implements NodeletAdder {
 
 		parser.addNodelet(xpath, new ActionRuleNodeletAdder(assistant));
 
-		parser.addNodelet(xpath, "/rbctr", new Nodelet() {
+		parser.addNodelet(xpath, "/responseByContentType", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
 				String exceptionType = attributes.getProperty("exceptionType");
 
@@ -81,7 +82,15 @@ public class AspectAdviceRuleNodeletAdder implements NodeletAdder {
 			}
 		});
 		
-		parser.addNodelet(xpath, "/rbctr", new ResponseRuleNodeletAdder(assistant));
+		parser.addNodelet(xpath, "/responseByContentType", new ResponseRuleNodeletAdder(assistant));
+
+		parser.addNodelet(xpath, "/responseByContentType/end()", new Nodelet() {
+			public void process(Node node, Properties attributes, String text) throws Exception {
+				ResponseByContentTypeRule rbctr = (ResponseByContentTypeRule)assistant.popObject();
+				AspectAdviceRule aar = (AspectAdviceRule)assistant.peekObject();
+				aar.addResponseByContentTypeRule(rbctr);
+			}
+		});
 
 		parser.addNodelet(xpath, "/defaultResponse", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
@@ -89,7 +98,7 @@ public class AspectAdviceRuleNodeletAdder implements NodeletAdder {
 				assistant.pushObject(rbctr);
 			}
 		});
-
+		
 		parser.addNodelet(xpath, "/defaultResponse", new ResponseRuleNodeletAdder(assistant));
 
 		parser.addNodelet(xpath, "/defaultResponse/end()", new Nodelet() {
@@ -98,8 +107,17 @@ public class AspectAdviceRuleNodeletAdder implements NodeletAdder {
 				ResponseMap responseMap = rbctr.getResponseMap();
 				
 				if(responseMap.size() > 0) {
-					ResponseByContentTypeRule rbctr2 = (ResponseByContentTypeRule)assistant.peekObject();
-					rbctr2.setDefaultResponse(responseMap.get(0));
+					AspectAdviceRule aar = (AspectAdviceRule)assistant.peekObject();
+					ResponseByContentTypeRuleMap rbctrm = aar.getResponseByContentTypeRuleMap();
+					
+					if(rbctrm == null)
+						rbctrm = new ResponseByContentTypeRuleMap();
+					
+					ResponseByContentTypeRule responseByContentTypeRule = new ResponseByContentTypeRule();
+					responseByContentTypeRule.setDefaultResponse(responseMap.get(0));
+					
+					rbctrm.putResponseByContentTypeRule(responseByContentTypeRule);
+					aar.setResponseByContentTypeRuleMap(rbctrm);
 				}
 			}
 		});

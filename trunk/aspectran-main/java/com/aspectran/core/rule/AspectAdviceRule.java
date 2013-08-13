@@ -31,7 +31,7 @@ public class AspectAdviceRule {
 	
 	private Executable action;
 	
-	private ResponseByContentTypeRule responseByContentTypeRule;
+	private ResponseByContentTypeRuleMap responseByContentTypeRuleMap;
 
 	public String getAspectId() {
 		return aspectId;
@@ -61,13 +61,19 @@ public class AspectAdviceRule {
 		return action;
 	}
 
-	public ResponseByContentTypeRule getResponseByContentTypeRule() {
-		return responseByContentTypeRule;
+	public ResponseByContentTypeRuleMap getResponseByContentTypeRuleMap() {
+		return responseByContentTypeRuleMap;
 	}
 
-	public void setResponseByContentTypeRule(ResponseByContentTypeRule responseByContentTypeRule) {
-		this.responseByContentTypeRule = responseByContentTypeRule;
+	public void setResponseByContentTypeRuleMap(ResponseByContentTypeRuleMap responseByContentTypeRuleMap) {
+		this.responseByContentTypeRuleMap = responseByContentTypeRuleMap;
 	}
-
+	
+	public void addResponseByContentTypeRule(ResponseByContentTypeRule responseByContentTypeRule) {
+		if(responseByContentTypeRuleMap == null)
+			responseByContentTypeRuleMap = new ResponseByContentTypeRuleMap();
+		
+		responseByContentTypeRuleMap.putResponseByContentTypeRule(responseByContentTypeRule);
+	}
 	
 }

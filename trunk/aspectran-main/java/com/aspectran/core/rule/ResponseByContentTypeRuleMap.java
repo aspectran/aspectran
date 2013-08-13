@@ -24,39 +24,30 @@ import java.util.LinkedHashMap;
  * Created: 2009. 03. 09 오후 23:48:09
  * </p>
  */
-public class BeanRuleMap extends LinkedHashMap<String, BeanRule> implements Iterable<BeanRule> {
+public class ResponseByContentTypeRuleMap extends LinkedHashMap<String, ResponseByContentTypeRule> implements Iterable<ResponseByContentTypeRule> {
 
 	/** @serial */
-	static final long serialVersionUID = 6582559285464575704L;
+	static final long serialVersionUID = -8447972570153335744L;
 	
-	private boolean freezed;
+	private ResponseByContentTypeRule responseByContentTypeRule;
 	
-	public BeanRule put(String key, BeanRule value) {
-		if(freezed)
-			throw new UnsupportedOperationException("freezed BeanRuleMap: " + toString());
-
-		return super.put(key, value);
+	public ResponseByContentTypeRule getResponseByContentTypeRule() {
+		return responseByContentTypeRule;
 	}
 
-	/**
-	 * Adds a value rule.
-	 * 
-	 * @param itemRule the value rule
-	 * 
-	 * @return the value rule
-	 */
-	public BeanRule putBeanRule(BeanRule beanRule) {
-		return put(beanRule.getId(), beanRule);
-	}
-	
-	public void freeze() {
-		freezed = true;
+	public ResponseByContentTypeRule putResponseByContentTypeRule(ResponseByContentTypeRule responseByContentTypeRule) {
+		String exceptionType = responseByContentTypeRule.getExceptionType();
+		
+		if(exceptionType == null)
+			this.responseByContentTypeRule = responseByContentTypeRule;
+		
+		return put(exceptionType, responseByContentTypeRule);
 	}
 	
 	/* (non-Javadoc)
 	 * @see java.lang.Iterable#iterator()
 	 */
-	public Iterator<BeanRule> iterator() {
+	public Iterator<ResponseByContentTypeRule> iterator() {
 		return this.values().iterator();
 	}
 
