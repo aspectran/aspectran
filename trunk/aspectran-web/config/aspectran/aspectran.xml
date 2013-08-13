@@ -78,6 +78,20 @@
 	<aspect id="error">
 		<joinpoint target="translet"/>
 		<exceptionRaized>
+			<action id="xml" bean="common.action.a1" method="testXmlAction" hidden="true">
+				<properties>
+					<item name="variable1">error</item>
+					<item name="variable2">0001</item>
+				</properties>
+			</action>
+			<responseByContentType exceptionType="com.aspectran.test.web.LoginFailedException">
+				<dispatch contentType="text/html">
+					<template file="/WEB-INF/jsp/login.jsp"/>
+				</dispatch>
+				<transform contentType="text/plain" type="transform/json">
+					<template>{}</template>
+				</transform>
+			</responseByContentType>
 			<responseByContentType>
 				<dispatch contentType="text/html">
 					<template file="/WEB-INF/jsp/error.jsp"/>

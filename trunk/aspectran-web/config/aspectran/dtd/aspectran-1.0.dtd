@@ -79,7 +79,7 @@ pattern CDATA #IMPLIED
 <!ELEMENT after (echo | action)>
 <!ELEMENT around (echo | action)>
 <!ELEMENT finally (echo | action)>
-<!ELEMENT exceptionRaized (action?, responseByContentType?, defaultResponse?)>
+<!ELEMENT exceptionRaized (action?, responseByContentType*, defaultResponse?)>
 
 <!ELEMENT bean (features?, constructor?, properties*)>
 <!ATTLIST bean
@@ -162,9 +162,12 @@ hidden (true | false) #IMPLIED
 characterEncoding CDATA #IMPLIED
 default CDATA #IMPLIED
 >
-<!ELEMENT exception (responseByContentType?, defaultResponse?)>
+<!ELEMENT exception (responseByContentType*, defaultResponse?)>
 
 <!ELEMENT responseByContentType (transform? | dispatch? | redirect? | forward?)*>
+<!ATTLIST responseByContentType
+exceptionType CDATA #IMPLIED
+>
 <!ELEMENT defaultResponse (transform? | dispatch? | redirect? | forward?)>
 
 <!ELEMENT transform (echo | action | include | template)*>
