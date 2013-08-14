@@ -18,9 +18,11 @@ package com.aspectran.core.activity.process.action;
 import com.aspectran.core.activity.AspectranActivity;
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.activity.process.ActionPathMaker;
+import com.aspectran.core.context.aspect.AspectAdviceRegistry;
 import com.aspectran.core.rule.EchoActionRule;
 import com.aspectran.core.token.expression.ItemTokenExpression;
 import com.aspectran.core.token.expression.ItemTokenExpressor;
+import com.aspectran.core.type.ActionType;
 import com.aspectran.core.var.ValueMap;
 
 /**
@@ -81,7 +83,7 @@ public class EchoAction implements Executable {
 		
 		return echoActionRule.getActionId();
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.jhlabs.translets.engine.process.action.Executable#isHidden()
 	 */
@@ -90,6 +92,14 @@ public class EchoAction implements Executable {
 			return true;
 		else
 			return false;
+	}
+	
+	public ActionType getActionType() {
+		return ActionType.ECHO;
+	}
+	
+	public AspectAdviceRegistry getAspectAdviceRegistry() {
+		return null;
 	}
 	
 	/* (non-Javadoc)

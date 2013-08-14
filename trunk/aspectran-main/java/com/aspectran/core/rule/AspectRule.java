@@ -18,6 +18,7 @@ package com.aspectran.core.rule;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.type.JoinpointTargetType;
 
 public class AspectRule {
@@ -29,6 +30,8 @@ public class AspectRule {
 	private AspectSettingsAdviceRule aspectSettingsAdviceRule;
 	
 	private List<AspectAdviceRule> aspectAdviceRuleList;
+	
+	private ActionList actionList; // for scheduling aspects
 
 	public String getId() {
 		return id;
@@ -67,6 +70,14 @@ public class AspectRule {
 			aspectAdviceRuleList = new ArrayList<AspectAdviceRule>();
 		
 		aspectAdviceRuleList.add(aar);
+	}
+
+	public ActionList getActionList() {
+		return actionList;
+	}
+
+	public void setActionList(ActionList actionList) {
+		this.actionList = actionList;
 	}
 	
 }

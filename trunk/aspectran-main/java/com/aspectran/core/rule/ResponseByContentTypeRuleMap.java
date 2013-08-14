@@ -38,10 +38,46 @@ public class ResponseByContentTypeRuleMap extends LinkedHashMap<String, Response
 	public ResponseByContentTypeRule putResponseByContentTypeRule(ResponseByContentTypeRule responseByContentTypeRule) {
 		String exceptionType = responseByContentTypeRule.getExceptionType();
 		
-		if(exceptionType == null)
+		if(exceptionType == null) {
 			this.responseByContentTypeRule = responseByContentTypeRule;
+			return responseByContentTypeRule;
+		}
 		
 		return put(exceptionType, responseByContentTypeRule);
+	}
+	
+	public ResponseByContentTypeRule getResponseByContentTypeRule(Exception ex) {
+		ResponseByContentTypeRule responseByContentTypeRule = null;
+		int deepest = Integer.MAX_VALUE;
+		
+		for(Iterator<ResponseByContentTypeRule> iter = iterator(); iter.hasNext();) {
+			ResponseByContentTypeRule rbctr = iter.next();
+			int depth = getMatchedDepth(rbctr.getExceptionType(), ex);
+
+			if(depth >= 0 && depth < deepest) {
+				deepest = depth;
+				responseByContentTypeRule = rbctr;
+			}
+		}
+		
+		if(responseByContentTypeRule == null)
+			return this.responseByContentTypeRule;
+		
+		return responseByContentTypeRule;
+	}
+	
+	private int getMatchedDepth(String exceptionType, Exception ex) {
+		return getMatchedDepth(exceptionType, ex.getClass(), 0);
+	}
+
+	private int getMatchedDepth(String exceptionType, Class<?> exceptionClass, int depth) {
+		if(exceptionClass.getName().indexOf(exceptionType) != -1)
+			return depth;
+
+		if(exceptionClass.equals(Throwable.class))
+			return -1;
+		
+		return getMatchedDepth(exceptionType, exceptionClass.getSuperclass(), depth + 1);
 	}
 	
 	/* (non-Javadoc)

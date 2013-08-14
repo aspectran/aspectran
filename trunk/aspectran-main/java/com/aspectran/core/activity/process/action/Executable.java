@@ -17,6 +17,8 @@ package com.aspectran.core.activity.process.action;
 
 import com.aspectran.core.activity.AspectranActivity;
 import com.aspectran.core.activity.process.ActionList;
+import com.aspectran.core.context.aspect.AspectAdviceRegistry;
+import com.aspectran.core.type.ActionType;
 
 /**
  * <p>Created: 2008. 03. 23 오전 10:38:29</p>
@@ -52,4 +54,19 @@ public interface Executable {
 	 * @return the action list
 	 */
 	public ActionList getParent();
+	
+	/**
+	 * Gets the Action Type.
+	 *
+	 * @return the Action Type
+	 */
+	public ActionType getActionType();
+	
+	/**
+	 * Gets the aspect advice registry.
+	 *
+	 * @return the aspect advice registry
+	 */
+	public AspectAdviceRegistry getAspectAdviceRegistry();
+	
 }

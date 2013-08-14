@@ -37,23 +37,23 @@ public final class ContentType extends Type {
 	/** The "text/plain" content type. */
 	public static final ContentType TEXT_PLAIN;
 
-	/** The "text/html" content type. */
-	public static final ContentType TEXT_HTML;
-	
 	/** The "text/xml" content type. */
 	public static final ContentType TEXT_XML;
+	
+	/** The "text/html" content type. */
+	public static final ContentType TEXT_HTML;
 	
 	private static final Map<String, ContentType> types;
 	
 	static {
+		TEXT_PLAIN = new ContentType("text/plain");
 		TEXT_XML = new ContentType("text/xml");
 		TEXT_HTML = new ContentType("text/html");
-		TEXT_PLAIN = new ContentType("text/plain");
 
 		types = new HashMap<String, ContentType>();
+		types.put(TEXT_PLAIN.toString(), TEXT_PLAIN);
 		types.put(TEXT_XML.toString(), TEXT_XML);
 		types.put(TEXT_HTML.toString(), TEXT_HTML);
-		types.put(TEXT_PLAIN.toString(), TEXT_PLAIN);
 	}
 
 	/**

@@ -24,11 +24,13 @@ import org.apache.commons.logging.LogFactory;
 import com.aspectran.core.activity.AspectranActivity;
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.activity.process.ActionPathMaker;
+import com.aspectran.core.context.aspect.AspectAdviceRegistry;
 import com.aspectran.core.rule.BeanActionRule;
 import com.aspectran.core.rule.ItemRule;
 import com.aspectran.core.rule.ItemRuleMap;
 import com.aspectran.core.token.expression.ItemTokenExpression;
 import com.aspectran.core.token.expression.ItemTokenExpressor;
+import com.aspectran.core.type.ActionType;
 import com.aspectran.core.util.BeanUtils;
 import com.aspectran.core.util.MethodUtils;
 import com.aspectran.core.var.ValueMap;
@@ -39,7 +41,7 @@ import com.aspectran.core.var.ValueMap;
 public class BeanAction implements Executable {
 
 	private final Log log = LogFactory.getLog(BeanAction.class);
-	
+
 	private final BeanActionRule beanActionRule;
 
 	private final ActionList parent;
@@ -108,6 +110,14 @@ public class BeanAction implements Executable {
 			return false;
 	}
 
+	public ActionType getActionType() {
+		return ActionType.BEAN;
+	}
+	
+	public AspectAdviceRegistry getAspectAdviceRegistry() {
+		return beanActionRule.getAspectAdviceRegistry();
+	}
+	
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */

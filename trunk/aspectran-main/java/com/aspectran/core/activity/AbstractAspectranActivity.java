@@ -16,6 +16,7 @@
 package com.aspectran.core.activity;
 
 import java.lang.reflect.Constructor;
+import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -43,8 +44,10 @@ import com.aspectran.core.context.bean.BeanRegistry;
 import com.aspectran.core.context.bean.scope.RequestScope;
 import com.aspectran.core.context.translet.TransletInstantiationException;
 import com.aspectran.core.context.translet.TransletRuleRegistry;
+import com.aspectran.core.rule.AspectAdviceRule;
 import com.aspectran.core.rule.RequestRule;
 import com.aspectran.core.rule.ResponseByContentTypeRule;
+import com.aspectran.core.rule.ResponseByContentTypeRuleMap;
 import com.aspectran.core.rule.ResponseRule;
 import com.aspectran.core.rule.TransletRule;
 import com.aspectran.core.type.ResponseType;
@@ -96,8 +99,11 @@ public abstract class AbstractAspectranActivity implements AspectranActivity {
 	/** The request scope. */
 	private RequestScope requestScope;
 	
-	/** The is response end. */
+	/** Whether the response is ended. */
 	private boolean isResponseEnd;
+
+	/** Whether the response rule has been replaced. */
+	private boolean hasResponseRuleReplaced;
 	
 	/** The forward translet name. */
 	private String forwardTransletName;
@@ -253,33 +259,17 @@ public abstract class AbstractAspectranActivity implements AspectranActivity {
 		}
 
 		try {
-//			TicketCheckActionList ticketCheckActionList = transletRule.getTicketCheckActionList();
-//			int requestCheckpointCount = 0;
-//			int responseCheckpointCount = 0;
-//			
-//			if(ticketCheckActionList != null) {
-//				requestCheckpointCount = ticketCheckActionList.getRequestCheckpointCount();
-//				responseCheckpointCount = ticketCheckActionList.size() - requestCheckpointCount;
-//			}
-//			
-//			// ticket check: request-checkpoint
-//			if(!ignoreTicket && requestCheckpointCount > 0) {
-//				checkTicket(ticketCheckActionList, TicketCheckpointType.REQUEST);
-//			}
+			// execute action on contents area
+			ContentList contentList = transletRule.getContentList();
 			
-//			if(!isResponseEnd) {
-				// execute action on contents area
-				ContentList contentList = transletRule.getContentList();
-				
-				if(contentList != null) {
-					for(ActionList actionList : contentList) {
-						execute(actionList);
-						
-						if(isResponseEnd)
-							break;
-					}
+			if(contentList != null) {
+				for(ActionList actionList : contentList) {
+					execute(actionList);
+					
+					if(isResponseEnd)
+						break;
 				}
-//			}
+			}
 			
 			if(!isResponseEnd) {
 				// execute action on response area
@@ -292,11 +282,6 @@ public abstract class AbstractAspectranActivity implements AspectranActivity {
 						execute(actionList);
 				}
 			}
-
-//			// ticket check: response-checkpoint
-//			if(!ignoreTicket && responseCheckpointCount > 0) {
-//				checkTicket(ticketCheckActionList, TicketCheckpointType.RESPONSE);
-//			}
 		} catch(Exception e) {
 			if(debugEnabled) {
 				log.error("An error occurred while executing actions. Cause: " + e, e);
@@ -304,23 +289,32 @@ public abstract class AbstractAspectranActivity implements AspectranActivity {
 
 			setRaisedException(e);
 			
-			if(transletRule.getExceptionHandlingRule() != null) {
-				responseByContentType(transletRule.getExceptionHandlingRule());
-
-				// execute action on response area
-				Responsible response = getResponse();
-
-				if(response != null) {
-					ActionList actionList = response.getActionList();
-					
-					if(actionList != null)
-						execute(actionList);
-				}
+			ResponseByContentTypeRuleMap responseByContentTypeRuleMap = transletRule.getExceptionHandlingRuleMap();
+			
+			if(responseByContentTypeRuleMap != null) {
+				responseByContentType(responseByContentTypeRuleMap, e);
 				
-				return translet.getProcessResult();
-			} else {
-				throw new ProcessException("An error occurred while processing response by content-type. Cause: " + e, e);
+				if(hasResponseRuleReplaced)
+					return translet.getProcessResult();
 			}
+
+			AspectAdviceRegistry aspectAdviceRegistry = transletRule.getAspectAdviceRegistry();
+			List<AspectAdviceRule> exceptionRaizedAdviceRuleList = aspectAdviceRegistry.getExceptionRaizedAdviceRuleList();
+			
+			if(exceptionRaizedAdviceRuleList != null) {
+				for(AspectAdviceRule aspectAdviceRule : exceptionRaizedAdviceRuleList) {
+					responseByContentTypeRuleMap = aspectAdviceRule.getResponseByContentTypeRuleMap();
+					
+					if(aspectAdviceRule.getResponseByContentTypeRuleMap() != null) {
+						responseByContentType(responseByContentTypeRuleMap, e);
+						
+						if(hasResponseRuleReplaced)
+							return translet.getProcessResult();
+					}
+				}
+			}
+			
+			throw new ProcessException("An error occurred while processing response by content-type. Cause: " + e, e);
 		} finally {
 			if(requestScope != null) {
 				//TODO
@@ -381,6 +375,22 @@ public abstract class AbstractAspectranActivity implements AspectranActivity {
 		}
 		
 		for(Executable action : actionList) {
+			AspectAdviceRegistry aspectAdviceRegistry = action.getAspectAdviceRegistry();
+			
+			// before advice
+			if(aspectAdviceRegistry != null) {
+				List<AspectAdviceRule> beforeAdviceRuleList = aspectAdviceRegistry.getBeforeAdviceRuleList();
+				
+				if(beforeAdviceRuleList != null) {
+					for(AspectAdviceRule aspectAdviceRule : beforeAdviceRuleList) {
+						Executable executableAction = aspectAdviceRule.getExecutableAction();
+						
+						
+					}
+				}
+			}
+			
+			
 			if(debugEnabled) {
 				log.debug("Execute " + action.toString());
 			}
@@ -504,6 +514,7 @@ public abstract class AbstractAspectranActivity implements AspectranActivity {
 			ResponseRule newResponseRule = responseRule.newResponseRule(responseByContentTypeRule.getResponseMap());
 			newResponseRule.setDefaultResponseId(response.getContentType().toString());
 			responseRule = newResponseRule;
+			hasResponseRuleReplaced = true;
 		}
 		
 		if(debugEnabled) {
@@ -512,6 +523,22 @@ public abstract class AbstractAspectranActivity implements AspectranActivity {
 
 		multipleTransletResponseId = null;
 		translet.setProcessResult(null);
+	}
+	
+	private void responseByContentType(ResponseByContentTypeRuleMap responseByContentTypeRuleMap, Exception ex) throws ActionExecutionException {
+		ResponseByContentTypeRule rbctr = responseByContentTypeRuleMap.getResponseByContentTypeRule(ex);
+		
+		responseByContentType(rbctr);
+
+		// execute action on response area
+		Responsible response = getResponse();
+
+		if(response != null) {
+			ActionList actionList = response.getActionList();
+			
+			if(actionList != null)
+				execute(actionList);
+		}
 	}
 	
 	/* (non-Javadoc)
@@ -537,7 +564,7 @@ public abstract class AbstractAspectranActivity implements AspectranActivity {
 //	}
 	
 	/**
-	 * 응답 강제 종료.
+	 * 응답 종료.
 	 */
 	public void responseEnd() {
 		if(debugEnabled) {
