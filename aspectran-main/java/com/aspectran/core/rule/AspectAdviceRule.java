@@ -57,7 +57,7 @@ public class AspectAdviceRule {
 		action = new BeanAction(beanActionRule, null);
 	}
 	
-	public Executable getAction() {
+	public Executable getExecutableAction() {
 		return action;
 	}
 
