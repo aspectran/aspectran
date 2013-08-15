@@ -33,4 +33,5 @@ public class ProcessResult extends ArrayList<ContentResult> {
 	public void addContentResult(ContentResult contentResult) {
 		add(contentResult);
 	}
+	
 }

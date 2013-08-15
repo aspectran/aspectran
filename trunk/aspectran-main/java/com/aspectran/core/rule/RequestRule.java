@@ -223,11 +223,11 @@ public class RequestRule implements AspectAdviceSupport {
 		return multipartRequestRule.getMaxRequestSize();
 	}
 	
-	public AspectAdviceRuleRegistry getAspectAdviceRegistry() {
+	public AspectAdviceRuleRegistry getAspectAdviceRuleRegistry() {
 		return aspectAdviceRuleRegistry;
 	}
 
-	public void setAspectAdviceRegistry(AspectAdviceRuleRegistry aspectAdviceRuleRegistry) {
+	public void setAspectAdviceRuleRegistry(AspectAdviceRuleRegistry aspectAdviceRuleRegistry) {
 		this.aspectAdviceRuleRegistry = aspectAdviceRuleRegistry;
 		
 		String characterEncoding = (String)aspectAdviceRuleRegistry.getSetting(CHARACTER_ENCODING_SETTING);

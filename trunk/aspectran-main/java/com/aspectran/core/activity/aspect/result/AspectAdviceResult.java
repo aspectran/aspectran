@@ -3,6 +3,9 @@ package com.aspectran.core.activity.aspect.result;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.aspectran.core.rule.AspectAdviceRule;
+import com.aspectran.core.type.AspectAdviceType;
+
 public class AspectAdviceResult {
 
 	private Map<String, Object> beforeAdviceActionResult;
@@ -51,6 +54,17 @@ public class AspectAdviceResult {
 			finallyAdviceActionResult = new HashMap<String, Object>();
 			
 		finallyAdviceActionResult.put(aspectId, actionResult);
+	}
+	
+	public void putAdviceActionResult(AspectAdviceRule aspectAdviceRule, Object adviceActionResult) {
+		if(aspectAdviceRule.getAspectAdviceType() == AspectAdviceType.BEFORE)
+			putBeforeAdviceActionResult(aspectAdviceRule.getAspectId(), adviceActionResult);
+		else if(aspectAdviceRule.getAspectAdviceType() == AspectAdviceType.AFTER)
+			putAfterAdviceActionResult(aspectAdviceRule.getAspectId(), adviceActionResult);
+		else if(aspectAdviceRule.getAspectAdviceType() == AspectAdviceType.FINALLY)
+			putFinallyAdviceActionResult(aspectAdviceRule.getAspectId(), adviceActionResult);
+		else
+			throw new UnsupportedOperationException("");
 	}
 	
 }
