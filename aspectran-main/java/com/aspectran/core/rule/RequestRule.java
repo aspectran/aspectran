@@ -17,7 +17,7 @@ package com.aspectran.core.rule;
 
 import java.util.List;
 
-import com.aspectran.core.context.aspect.AspectAdviceRegistry;
+import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
 import com.aspectran.core.type.RequestMethodType;
 
 
@@ -38,7 +38,7 @@ public class RequestRule implements AspectAdviceSupport {
 
 	private FileItemRuleMap fileItemRuleMap;
 	
-	private AspectAdviceRegistry aspectAdviceRegistry;
+	private AspectAdviceRuleRegistry aspectAdviceRuleRegistry;
 	
 	public RequestRule() {
 	}
@@ -223,45 +223,45 @@ public class RequestRule implements AspectAdviceSupport {
 		return multipartRequestRule.getMaxRequestSize();
 	}
 	
-	public AspectAdviceRegistry getAspectAdviceRegistry() {
-		return aspectAdviceRegistry;
+	public AspectAdviceRuleRegistry getAspectAdviceRegistry() {
+		return aspectAdviceRuleRegistry;
 	}
 
-	public void setAspectAdviceRegistry(AspectAdviceRegistry aspectAdviceRegistry) {
-		this.aspectAdviceRegistry = aspectAdviceRegistry;
+	public void setAspectAdviceRegistry(AspectAdviceRuleRegistry aspectAdviceRuleRegistry) {
+		this.aspectAdviceRuleRegistry = aspectAdviceRuleRegistry;
 		
-		String characterEncoding = (String)aspectAdviceRegistry.getSetting(CHARACTER_ENCODING_SETTING);
+		String characterEncoding = (String)aspectAdviceRuleRegistry.getSetting(CHARACTER_ENCODING_SETTING);
 		
 		if(this.characterEncoding != null)
 			this.characterEncoding = characterEncoding;
 	}
 	
 	public List<AspectAdviceRule> getBeforeAdviceRuleList() {
-		if(aspectAdviceRegistry == null)
+		if(aspectAdviceRuleRegistry == null)
 			return null;
 		
-		return aspectAdviceRegistry.getBeforeAdviceRuleList();
+		return aspectAdviceRuleRegistry.getBeforeAdviceRuleList();
 	}
 	
 	public List<AspectAdviceRule> getAfterAdviceRuleList() {
-		if(aspectAdviceRegistry == null)
+		if(aspectAdviceRuleRegistry == null)
 			return null;
 		
-		return aspectAdviceRegistry.getAfterAdviceRuleList();
+		return aspectAdviceRuleRegistry.getAfterAdviceRuleList();
 	}
 	
 	public List<AspectAdviceRule> getFinallyAdviceRuleList() {
-		if(aspectAdviceRegistry == null)
+		if(aspectAdviceRuleRegistry == null)
 			return null;
 		
-		return aspectAdviceRegistry.getFinallyAdviceRuleList();
+		return aspectAdviceRuleRegistry.getFinallyAdviceRuleList();
 	}
 	
 	public List<AspectAdviceRule> getExceptionRaizedAdviceRuleList() {
-		if(aspectAdviceRegistry == null)
+		if(aspectAdviceRuleRegistry == null)
 			return null;
 		
-		return aspectAdviceRegistry.getExceptionRaizedAdviceRuleList();
+		return aspectAdviceRuleRegistry.getExceptionRaizedAdviceRuleList();
 	}
 
 	/* (non-Javadoc)

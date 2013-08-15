@@ -17,7 +17,7 @@ package com.aspectran.core.rule;
 
 import java.util.List;
 
-import com.aspectran.core.context.aspect.AspectAdviceRegistry;
+import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
 import com.aspectran.core.rule.ability.ArgumentPossessable;
 import com.aspectran.core.rule.ability.PropertyPossessable;
 
@@ -38,7 +38,7 @@ public class BeanActionRule implements ArgumentPossessable, PropertyPossessable,
 	
 	protected Boolean hidden;
 	
-	private AspectAdviceRegistry aspectAdviceRegistry;
+	private AspectAdviceRuleRegistry aspectAdviceRuleRegistry;
 
 	/**
 	 * Gets the action id.
@@ -162,40 +162,40 @@ public class BeanActionRule implements ArgumentPossessable, PropertyPossessable,
 		argumentItemRuleMap.putItemRule(argumentItemRule);
 	}
 
-	public AspectAdviceRegistry getAspectAdviceRegistry() {
-		return aspectAdviceRegistry;
+	public AspectAdviceRuleRegistry getAspectAdviceRuleRegistry() {
+		return aspectAdviceRuleRegistry;
 	}
 
-	public void setAspectAdviceRegistry(AspectAdviceRegistry aspectAdviceRegistry) {
-		this.aspectAdviceRegistry = aspectAdviceRegistry;
+	public void setAspectAdviceRuleRegistry(AspectAdviceRuleRegistry aspectAdviceRuleRegistry) {
+		this.aspectAdviceRuleRegistry = aspectAdviceRuleRegistry;
 	}
 	
 	public List<AspectAdviceRule> getBeforeAdviceRuleList() {
-		if(aspectAdviceRegistry == null)
+		if(aspectAdviceRuleRegistry == null)
 			return null;
 		
-		return aspectAdviceRegistry.getBeforeAdviceRuleList();
+		return aspectAdviceRuleRegistry.getBeforeAdviceRuleList();
 	}
 	
 	public List<AspectAdviceRule> getAfterAdviceRuleList() {
-		if(aspectAdviceRegistry == null)
+		if(aspectAdviceRuleRegistry == null)
 			return null;
 		
-		return aspectAdviceRegistry.getAfterAdviceRuleList();
+		return aspectAdviceRuleRegistry.getAfterAdviceRuleList();
 	}
 	
 	public List<AspectAdviceRule> getFinallyAdviceRuleList() {
-		if(aspectAdviceRegistry == null)
+		if(aspectAdviceRuleRegistry == null)
 			return null;
 		
-		return aspectAdviceRegistry.getFinallyAdviceRuleList();
+		return aspectAdviceRuleRegistry.getFinallyAdviceRuleList();
 	}
 	
 	public List<AspectAdviceRule> getExceptionRaizedAdviceRuleList() {
-		if(aspectAdviceRegistry == null)
+		if(aspectAdviceRuleRegistry == null)
 			return null;
 		
-		return aspectAdviceRegistry.getExceptionRaizedAdviceRuleList();
+		return aspectAdviceRuleRegistry.getExceptionRaizedAdviceRuleList();
 	}
 	
 	/* (non-Javadoc)

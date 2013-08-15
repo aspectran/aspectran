@@ -24,7 +24,7 @@ import com.aspectran.core.activity.AspectranActivity;
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.activity.process.ActionPathMaker;
 import com.aspectran.core.adapter.RequestAdapter;
-import com.aspectran.core.context.aspect.AspectAdviceRegistry;
+import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
 import com.aspectran.core.rule.IncludeActionRule;
 import com.aspectran.core.token.expression.ItemTokenExpression;
 import com.aspectran.core.token.expression.ItemTokenExpressor;
@@ -120,7 +120,7 @@ public class IncludeAction implements Executable {
 		return ActionType.INCLUDE;
 	}
 
-	public AspectAdviceRegistry getAspectAdviceRegistry() {
+	public AspectAdviceRuleRegistry getAspectAdviceRuleRegistry() {
 		return null;
 	}
 	

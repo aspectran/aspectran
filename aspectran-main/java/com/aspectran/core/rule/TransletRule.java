@@ -30,7 +30,7 @@ import com.aspectran.core.activity.response.RedirectResponse;
 import com.aspectran.core.activity.response.Responsible;
 import com.aspectran.core.activity.response.dispatch.DispatchResponse;
 import com.aspectran.core.activity.response.transform.AbstractTransform;
-import com.aspectran.core.context.aspect.AspectAdviceRegistry;
+import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
 import com.aspectran.core.context.builder.AspectranContextConstant;
 import com.aspectran.core.type.ResponseType;
 import com.aspectran.core.type.TransformType;
@@ -58,7 +58,9 @@ public class TransletRule implements AspectAdviceSupport, Cloneable {
 	
 	private Class<? extends AbstractSuperTranslet> transletInstanceClass;
 
-	private AspectAdviceRegistry aspectAdviceRegistry;
+	private AspectAdviceRuleRegistry aspectAdviceRuleRegistry;
+	
+	private boolean aspectAdviceRuleExists;
 
 	/**
 	 * Instantiates a new translet rule.
@@ -185,40 +187,54 @@ public class TransletRule implements AspectAdviceSupport, Cloneable {
 		this.transletInstanceClass = transletInstanceClass;
 	}
 
-	public AspectAdviceRegistry getAspectAdviceRegistry() {
-		return aspectAdviceRegistry;
+	public AspectAdviceRuleRegistry getAspectAdviceRuleRegistry() {
+		return aspectAdviceRuleRegistry;
 	}
 
-	public void setAspectAdviceRegistry(AspectAdviceRegistry aspectAdviceRegistry) {
-		this.aspectAdviceRegistry = aspectAdviceRegistry;
+	public void setAspectAdviceRuleRegistry(AspectAdviceRuleRegistry aspectAdviceRuleRegistry) {
+		this.aspectAdviceRuleRegistry = aspectAdviceRuleRegistry;
 	}
 	
+	/**
+	 * @return the aspectAdviceRuleExists
+	 */
+	public boolean isAspectAdviceRuleExists() {
+		return aspectAdviceRuleExists;
+	}
+
+	/**
+	 * @param aspectAdviceRuleExists the aspectAdviceRuleExists to set
+	 */
+	public void setAspectAdviceRuleExists(boolean aspectAdviceRuleExists) {
+		this.aspectAdviceRuleExists = aspectAdviceRuleExists;
+	}
+
 	public List<AspectAdviceRule> getBeforeAdviceRuleList() {
-		if(aspectAdviceRegistry == null)
+		if(aspectAdviceRuleRegistry == null)
 			return null;
 		
-		return aspectAdviceRegistry.getBeforeAdviceRuleList();
+		return aspectAdviceRuleRegistry.getBeforeAdviceRuleList();
 	}
 	
 	public List<AspectAdviceRule> getAfterAdviceRuleList() {
-		if(aspectAdviceRegistry == null)
+		if(aspectAdviceRuleRegistry == null)
 			return null;
 		
-		return aspectAdviceRegistry.getAfterAdviceRuleList();
+		return aspectAdviceRuleRegistry.getAfterAdviceRuleList();
 	}
 	
 	public List<AspectAdviceRule> getFinallyAdviceRuleList() {
-		if(aspectAdviceRegistry == null)
+		if(aspectAdviceRuleRegistry == null)
 			return null;
 		
-		return aspectAdviceRegistry.getFinallyAdviceRuleList();
+		return aspectAdviceRuleRegistry.getFinallyAdviceRuleList();
 	}
 	
 	public List<AspectAdviceRule> getExceptionRaizedAdviceRuleList() {
-		if(aspectAdviceRegistry == null)
+		if(aspectAdviceRuleRegistry == null)
 			return null;
 		
-		return aspectAdviceRegistry.getExceptionRaizedAdviceRuleList();
+		return aspectAdviceRuleRegistry.getExceptionRaizedAdviceRuleList();
 	}
 	
 	public Object clone() throws CloneNotSupportedException {                      

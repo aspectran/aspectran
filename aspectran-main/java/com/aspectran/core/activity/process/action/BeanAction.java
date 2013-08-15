@@ -24,7 +24,7 @@ import org.apache.commons.logging.LogFactory;
 import com.aspectran.core.activity.AspectranActivity;
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.activity.process.ActionPathMaker;
-import com.aspectran.core.context.aspect.AspectAdviceRegistry;
+import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
 import com.aspectran.core.rule.BeanActionRule;
 import com.aspectran.core.rule.ItemRule;
 import com.aspectran.core.rule.ItemRuleMap;
@@ -114,8 +114,8 @@ public class BeanAction implements Executable {
 		return ActionType.BEAN;
 	}
 	
-	public AspectAdviceRegistry getAspectAdviceRegistry() {
-		return beanActionRule.getAspectAdviceRegistry();
+	public AspectAdviceRuleRegistry getAspectAdviceRuleRegistry() {
+		return beanActionRule.getAspectAdviceRuleRegistry();
 	}
 	
 	/* (non-Javadoc)
