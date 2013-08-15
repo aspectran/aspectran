@@ -21,6 +21,7 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.aspectran.core.activity.aspect.result.AspectAdviceResult;
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.activity.process.ContentList;
 import com.aspectran.core.activity.process.ProcessException;
@@ -39,7 +40,7 @@ import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.context.AspectranContext;
-import com.aspectran.core.context.aspect.AspectAdviceRegistry;
+import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
 import com.aspectran.core.context.bean.BeanRegistry;
 import com.aspectran.core.context.bean.scope.RequestScope;
 import com.aspectran.core.context.translet.TransletInstantiationException;
@@ -103,7 +104,7 @@ public abstract class AbstractAspectranActivity implements AspectranActivity {
 	private boolean isResponseEnd;
 
 	/** Whether the response rule has been replaced. */
-	private boolean hasResponseRuleReplaced;
+	private boolean isResponseRuleReplaced;
 	
 	/** The forward translet name. */
 	private String forwardTransletName;
@@ -115,6 +116,8 @@ public abstract class AbstractAspectranActivity implements AspectranActivity {
 
 	/** The translet name. */
 	private String transletName;
+	
+	private AspectAdviceResult aspectAdviceResult;
 	
 	/**
 	 * Instantiates a new action translator.
@@ -249,6 +252,9 @@ public abstract class AbstractAspectranActivity implements AspectranActivity {
 		this.transletRule = transletRule;
 		this.requestRule = transletRule.getRequestRule();
 		this.responseRule = transletRule.getResponseRule();
+		
+		if(transletRule.isAspectAdviceRuleExists())
+			aspectAdviceResult = new AspectAdviceResult();
 	}
 	
 	abstract public void request() throws RequestException;
@@ -294,12 +300,12 @@ public abstract class AbstractAspectranActivity implements AspectranActivity {
 			if(responseByContentTypeRuleMap != null) {
 				responseByContentType(responseByContentTypeRuleMap, e);
 				
-				if(hasResponseRuleReplaced)
+				if(isResponseRuleReplaced)
 					return translet.getProcessResult();
 			}
 
-			AspectAdviceRegistry aspectAdviceRegistry = transletRule.getAspectAdviceRegistry();
-			List<AspectAdviceRule> exceptionRaizedAdviceRuleList = aspectAdviceRegistry.getExceptionRaizedAdviceRuleList();
+			AspectAdviceRuleRegistry aspectAdviceRuleRegistry = transletRule.getAspectAdviceRuleRegistry();
+			List<AspectAdviceRule> exceptionRaizedAdviceRuleList = aspectAdviceRuleRegistry.getExceptionRaizedAdviceRuleList();
 			
 			if(exceptionRaizedAdviceRuleList != null) {
 				for(AspectAdviceRule aspectAdviceRule : exceptionRaizedAdviceRuleList) {
@@ -308,7 +314,7 @@ public abstract class AbstractAspectranActivity implements AspectranActivity {
 					if(aspectAdviceRule.getResponseByContentTypeRuleMap() != null) {
 						responseByContentType(responseByContentTypeRuleMap, e);
 						
-						if(hasResponseRuleReplaced)
+						if(isResponseRuleReplaced)
 							return translet.getProcessResult();
 					}
 				}
@@ -375,21 +381,29 @@ public abstract class AbstractAspectranActivity implements AspectranActivity {
 		}
 		
 		for(Executable action : actionList) {
-			AspectAdviceRegistry aspectAdviceRegistry = action.getAspectAdviceRegistry();
+			AspectAdviceRuleRegistry aspectAdviceRuleRegistry = action.getAspectAdviceRuleRegistry();
+			List<AspectAdviceRule> beforeAdviceRuleList = null;
+			List<AspectAdviceRule> afterAdviceRuleList = null;
+			List<AspectAdviceRule> finallyAdviceRuleList = null;
+			
+			if(aspectAdviceRuleRegistry != null) {
+				beforeAdviceRuleList = aspectAdviceRuleRegistry.getBeforeAdviceRuleList();
+				afterAdviceRuleList = aspectAdviceRuleRegistry.getAfterAdviceRuleList();
+				finallyAdviceRuleList = aspectAdviceRuleRegistry.getFinallyAdviceRuleList();
+			}
 			
 			// before advice
-			if(aspectAdviceRegistry != null) {
-				List<AspectAdviceRule> beforeAdviceRuleList = aspectAdviceRegistry.getBeforeAdviceRuleList();
-				
-				if(beforeAdviceRuleList != null) {
-					for(AspectAdviceRule aspectAdviceRule : beforeAdviceRuleList) {
-						Executable executableAction = aspectAdviceRule.getExecutableAction();
-						
-						
+			if(beforeAdviceRuleList != null) {
+				for(AspectAdviceRule aspectAdviceRule : beforeAdviceRuleList) {
+					Executable executableAction = aspectAdviceRule.getExecutableAction();
+					
+					Object beforeAdviceActionResult = executableAction.execute(this);
+					
+					if(beforeAdviceActionResult != null) {
+						aspectAdviceResult.putBeforeAdviceActionResult(aspectAdviceRule.getAspectId(), beforeAdviceActionResult);
 					}
 				}
 			}
-			
 			
 			if(debugEnabled) {
 				log.debug("Execute " + action.toString());
@@ -404,6 +418,20 @@ public abstract class AbstractAspectranActivity implements AspectranActivity {
 			if(contentResult != null && !action.isHidden() && resultValue != ActionResult.NO_RESULT) {
 				contentResult.addActionResult(action.getId(), resultValue);
 			}
+			
+			// after advice
+			if(afterAdviceRuleList != null) {
+				for(AspectAdviceRule aspectAdviceRule : afterAdviceRuleList) {
+					Executable executableAction = aspectAdviceRule.getExecutableAction();
+					
+					Object afterAdviceActionResult = executableAction.execute(this);
+					
+					if(afterAdviceActionResult != null) {
+						aspectAdviceResult.putAfterAdviceActionResult(aspectAdviceRule.getAspectId(), afterAdviceActionResult);
+					}
+				}
+			}
+
 			
 			if(isResponseEnd)
 				break;
@@ -514,7 +542,7 @@ public abstract class AbstractAspectranActivity implements AspectranActivity {
 			ResponseRule newResponseRule = responseRule.newResponseRule(responseByContentTypeRule.getResponseMap());
 			newResponseRule.setDefaultResponseId(response.getContentType().toString());
 			responseRule = newResponseRule;
-			hasResponseRuleReplaced = true;
+			isResponseRuleReplaced = true;
 		}
 		
 		if(debugEnabled) {
@@ -767,28 +795,28 @@ public abstract class AbstractAspectranActivity implements AspectranActivity {
 	}
 	
 	public Object getRequestSetting(String settingName) {
-		AspectAdviceRegistry aspectAdviceRegistry = requestRule.getAspectAdviceRegistry();
+		AspectAdviceRuleRegistry aspectAdviceRuleRegistry = requestRule.getAspectAdviceRegistry();
 		
-		if(aspectAdviceRegistry != null)
-			return aspectAdviceRegistry.getSetting(settingName);
+		if(aspectAdviceRuleRegistry != null)
+			return aspectAdviceRuleRegistry.getSetting(settingName);
 		
 		return null;
 	}
 	
 	public Object getResponseSetting(String settingName) {
-		AspectAdviceRegistry aspectAdviceRegistry = responseRule.getAspectAdviceRegistry();
+		AspectAdviceRuleRegistry aspectAdviceRuleRegistry = responseRule.getAspectAdviceRegistry();
 		
-		if(aspectAdviceRegistry != null)
-			return aspectAdviceRegistry.getSetting(settingName);
+		if(aspectAdviceRuleRegistry != null)
+			return aspectAdviceRuleRegistry.getSetting(settingName);
 		
 		return null;
 	}
 	
 	public Object getTransletSetting(String settingName) {
-		AspectAdviceRegistry aspectAdviceRegistry = transletRule.getAspectAdviceRegistry();
+		AspectAdviceRuleRegistry aspectAdviceRuleRegistry = transletRule.getAspectAdviceRuleRegistry();
 		
-		if(aspectAdviceRegistry != null)
-			return aspectAdviceRegistry.getSetting(settingName);
+		if(aspectAdviceRuleRegistry != null)
+			return aspectAdviceRuleRegistry.getSetting(settingName);
 		
 		return null;
 	}

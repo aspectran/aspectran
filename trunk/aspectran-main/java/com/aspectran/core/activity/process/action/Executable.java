@@ -17,7 +17,7 @@ package com.aspectran.core.activity.process.action;
 
 import com.aspectran.core.activity.AspectranActivity;
 import com.aspectran.core.activity.process.ActionList;
-import com.aspectran.core.context.aspect.AspectAdviceRegistry;
+import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
 import com.aspectran.core.type.ActionType;
 
 /**
@@ -67,6 +67,6 @@ public interface Executable {
 	 *
 	 * @return the aspect advice registry
 	 */
-	public AspectAdviceRegistry getAspectAdviceRegistry();
+	public AspectAdviceRuleRegistry getAspectAdviceRuleRegistry();
 	
 }

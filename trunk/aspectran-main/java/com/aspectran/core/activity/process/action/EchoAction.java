@@ -18,7 +18,7 @@ package com.aspectran.core.activity.process.action;
 import com.aspectran.core.activity.AspectranActivity;
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.activity.process.ActionPathMaker;
-import com.aspectran.core.context.aspect.AspectAdviceRegistry;
+import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
 import com.aspectran.core.rule.EchoActionRule;
 import com.aspectran.core.token.expression.ItemTokenExpression;
 import com.aspectran.core.token.expression.ItemTokenExpressor;
@@ -98,7 +98,7 @@ public class EchoAction implements Executable {
 		return ActionType.ECHO;
 	}
 	
-	public AspectAdviceRegistry getAspectAdviceRegistry() {
+	public AspectAdviceRuleRegistry getAspectAdviceRuleRegistry() {
 		return null;
 	}
 	

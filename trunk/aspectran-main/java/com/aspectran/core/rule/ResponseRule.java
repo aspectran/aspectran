@@ -22,7 +22,7 @@ import com.aspectran.core.activity.response.RedirectResponse;
 import com.aspectran.core.activity.response.ResponseMap;
 import com.aspectran.core.activity.response.dispatch.DispatchResponse;
 import com.aspectran.core.activity.response.transform.AbstractTransform;
-import com.aspectran.core.context.aspect.AspectAdviceRegistry;
+import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
 import com.aspectran.core.rule.ability.ResponseAddable;
 
 /**
@@ -48,7 +48,7 @@ public class ResponseRule extends AbstractResponseRule implements ResponseAddabl
 	/** The default content type. */
 	private String defaultContentType;
 	
-	private AspectAdviceRegistry aspectAdviceRegistry;
+	private AspectAdviceRuleRegistry aspectAdviceRuleRegistry;
 	
 	/**
 	 * Instantiates a new response rule.
@@ -185,45 +185,45 @@ public class ResponseRule extends AbstractResponseRule implements ResponseAddabl
 		return super.addResponse(frr);
 	}
 	
-	public AspectAdviceRegistry getAspectAdviceRegistry() {
-		return aspectAdviceRegistry;
+	public AspectAdviceRuleRegistry getAspectAdviceRegistry() {
+		return aspectAdviceRuleRegistry;
 	}
 
-	public void setAspectAdviceRegistry(AspectAdviceRegistry aspectAdviceRegistry) {
-		this.aspectAdviceRegistry = aspectAdviceRegistry;
+	public void setAspectAdviceRegistry(AspectAdviceRuleRegistry aspectAdviceRuleRegistry) {
+		this.aspectAdviceRuleRegistry = aspectAdviceRuleRegistry;
 		
-		String characterEncoding = (String)aspectAdviceRegistry.getSetting(CHARACTER_ENCODING_SETTING);
+		String characterEncoding = (String)aspectAdviceRuleRegistry.getSetting(CHARACTER_ENCODING_SETTING);
 		
 		if(this.characterEncoding != null)
 			this.characterEncoding = characterEncoding;
 	}
 	
 	public List<AspectAdviceRule> getBeforeAdviceRuleList() {
-		if(aspectAdviceRegistry == null)
+		if(aspectAdviceRuleRegistry == null)
 			return null;
 		
-		return aspectAdviceRegistry.getBeforeAdviceRuleList();
+		return aspectAdviceRuleRegistry.getBeforeAdviceRuleList();
 	}
 	
 	public List<AspectAdviceRule> getAfterAdviceRuleList() {
-		if(aspectAdviceRegistry == null)
+		if(aspectAdviceRuleRegistry == null)
 			return null;
 		
-		return aspectAdviceRegistry.getAfterAdviceRuleList();
+		return aspectAdviceRuleRegistry.getAfterAdviceRuleList();
 	}
 	
 	public List<AspectAdviceRule> getFinallyAdviceRuleList() {
-		if(aspectAdviceRegistry == null)
+		if(aspectAdviceRuleRegistry == null)
 			return null;
 		
-		return aspectAdviceRegistry.getFinallyAdviceRuleList();
+		return aspectAdviceRuleRegistry.getFinallyAdviceRuleList();
 	}
 	
 	public List<AspectAdviceRule> getExceptionRaizedAdviceRuleList() {
-		if(aspectAdviceRegistry == null)
+		if(aspectAdviceRuleRegistry == null)
 			return null;
 		
-		return aspectAdviceRegistry.getExceptionRaizedAdviceRuleList();
+		return aspectAdviceRuleRegistry.getExceptionRaizedAdviceRuleList();
 	}
 
 	public ResponseRule newResponseRule(ResponseMap responseMap) {

@@ -9,7 +9,7 @@ import com.aspectran.core.rule.AspectAdviceRule;
 import com.aspectran.core.rule.AspectSettingsAdviceRule;
 import com.aspectran.core.type.AspectAdviceType;
 
-public class AspectAdviceRegistry {
+public class AspectAdviceRuleRegistry {
 
 	//private List<AspectSettingsAdviceRule> settingsAdviceRuleList;
 	
