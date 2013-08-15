@@ -15,6 +15,7 @@
  */
 package com.aspectran.core.activity;
 
+import com.aspectran.core.activity.process.result.ActionResult;
 import com.aspectran.core.activity.process.result.ContentResult;
 import com.aspectran.core.activity.process.result.ProcessResult;
 import com.aspectran.core.activity.response.ResponseException;
@@ -60,6 +61,21 @@ public abstract interface SuperTranslet {
 	 * @param contentResult the content result
 	 */
 	public void addContentResult(ContentResult contentResult);
+
+	/**
+	 * Adds the action result.
+	 *
+	 * @param actionResult the action result
+	 */
+	public void addActionResult(ActionResult actionResult);
+	
+	/**
+	 * Adds the action result.
+	 *
+	 * @param actionId the action id
+	 * @param resultValue the result value
+	 */
+	public void addActionResult(String actionId, Object resultValue);
 
 	/**
 	 * Response.

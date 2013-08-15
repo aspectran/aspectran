@@ -15,6 +15,7 @@
  */
 package com.aspectran.core.activity;
 
+import com.aspectran.core.activity.process.result.ActionResult;
 import com.aspectran.core.activity.process.result.ContentResult;
 import com.aspectran.core.activity.process.result.ProcessResult;
 import com.aspectran.core.activity.response.ResponseException;
@@ -39,6 +40,8 @@ public abstract class AbstractSuperTranslet implements SuperTranslet {
 	protected final AspectranActivity activity;
 	
 	protected ProcessResult processResult;
+	
+	private ContentResult contentResult;
 	
 	/**
 	 * Instantiates a new active translet.
@@ -87,6 +90,20 @@ public abstract class AbstractSuperTranslet implements SuperTranslet {
 			processResult = new ProcessResult();
 		
 		processResult.add(contentResult);
+		
+		this.contentResult = contentResult;
+	}
+	
+	public void addActionResult(ActionResult actionResult) {
+		if(contentResult != null) {
+			contentResult.add(actionResult);
+		}
+	}
+	
+	public void addActionResult(String actionId, Object resultValue) {
+		if(contentResult != null) {
+			contentResult.addActionResult(actionId, resultValue);
+		}
 	}
 
 	public void response() {
