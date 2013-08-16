@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.aspectran.core.activity.process.ActionList;
+import com.aspectran.core.context.aspect.pointcut.Pointcut;
 import com.aspectran.core.type.JoinpointTargetType;
 
 public class AspectRule {
@@ -26,6 +27,8 @@ public class AspectRule {
 	private String id;
 
 	private JoinpointTargetType joinpointTarget;
+	
+	private PointcutRule pointcutRule;
 	
 	private AspectSettingsAdviceRule aspectSettingsAdviceRule;
 	
@@ -47,6 +50,14 @@ public class AspectRule {
 
 	public void setJoinpointTarget(JoinpointTargetType joinpointTarget) {
 		this.joinpointTarget = joinpointTarget;
+	}
+
+	public PointcutRule getPointcutRule() {
+		return pointcutRule;
+	}
+
+	public void setPointcutRule(PointcutRule pointcutRule) {
+		this.pointcutRule = pointcutRule;
 	}
 
 	public AspectSettingsAdviceRule getAspectSettingsAdviceRule() {

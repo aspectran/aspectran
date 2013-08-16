@@ -35,6 +35,7 @@ import com.aspectran.core.rule.AspectRule;
 import com.aspectran.core.rule.BeanRule;
 import com.aspectran.core.rule.FileItemRule;
 import com.aspectran.core.rule.ItemRuleMap;
+import com.aspectran.core.rule.PointcutRule;
 import com.aspectran.core.rule.RequestRule;
 import com.aspectran.core.rule.ResponseByContentTypeRule;
 import com.aspectran.core.rule.ResponseRule;
@@ -42,6 +43,7 @@ import com.aspectran.core.rule.TransletRule;
 import com.aspectran.core.type.AspectAdviceType;
 import com.aspectran.core.type.AspectranSettingType;
 import com.aspectran.core.type.JoinpointTargetType;
+import com.aspectran.core.type.PointcutType;
 import com.aspectran.core.type.RequestMethodType;
 import com.aspectran.core.type.ScopeType;
 import com.aspectran.core.util.ClassUtils;
@@ -150,7 +152,7 @@ public class AspectranNodeParser {
 					settingType = AspectranSettingType.valueOf(name);
 					
 					if(settingType == null)
-						throw new IllegalArgumentException("Unkown setting name '" + name + "'");
+						throw new IllegalArgumentException("Unknown setting name '" + name + "'");
 				}
 				
 				assistant.putSetting(settingType, value);
@@ -198,7 +200,7 @@ public class AspectranNodeParser {
 					joinpointTarget = JoinpointTargetType.valueOf(target);
 					
 					if(joinpointTarget == null)
-						throw new IllegalArgumentException("Unkown joinpoint target '" + target + "'");
+						throw new IllegalArgumentException("Unknown joinpoint target '" + target + "'");
 				}
 
 				AspectRule aspectRule = (AspectRule)assistant.peekObject();
@@ -206,6 +208,36 @@ public class AspectranNodeParser {
 			}
 		});
 
+		parser.addNodelet("/aspectran/aspect/joinpoint/pointcut", new Nodelet() {
+			public void process(Node node, Properties attributes, String text) throws Exception {
+				if(text == null)
+					throw new IllegalArgumentException("Pointcut pattern can not be null");
+
+				String type = attributes.getProperty("type");
+				
+				AspectRule aspectRule = (AspectRule)assistant.peekObject();
+				PointcutType pointcutType = null;
+				
+				if(type != null) {
+					pointcutType = PointcutType.valueOf(type);
+					
+					if(pointcutType == null)
+						throw new IllegalArgumentException("Unknown pointcut type '" + type + "'");
+				} else {
+					if(aspectRule.getJoinpointTarget() == JoinpointTargetType.SCHEDULER)
+						pointcutType = PointcutType.INTERVAL;
+					else
+						pointcutType = PointcutType.WILDCARD;
+				}
+				
+				PointcutRule pointcutRule = new PointcutRule();
+				pointcutRule.setPointcutType(pointcutType);
+				pointcutRule.setPattern(text);
+				
+				aspectRule.setPointcutRule(pointcutRule);
+			}
+		});
+		
 		parser.addNodelet("/aspectran/aspect/before", new AspectAdviceRuleNodeletAdder(assistant, AspectAdviceType.BEFORE));
 		parser.addNodelet("/aspectran/aspect/after", new AspectAdviceRuleNodeletAdder(assistant, AspectAdviceType.AFTER));
 		parser.addNodelet("/aspectran/aspect/around", new AspectAdviceRuleNodeletAdder(assistant, AspectAdviceType.AROUND));
