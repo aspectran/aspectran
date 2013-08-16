@@ -72,7 +72,7 @@ target (request | response | translet | action | scheduler | bean) #REQUIRED
 
 <!ELEMENT pointcut (#PCDATA)>
 <!ATTLIST pointcut
-pattern CDATA #IMPLIED
+type (wildcard | regexpt | interval) #IMPLIED
 >
 
 <!ELEMENT before (echo | action)>

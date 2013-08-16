@@ -183,7 +183,7 @@
 	-->
 	<aspect id="scheduler1">
 		<joinpoint target="scheduler">
-			<pointcut>* * 10 0</pointcut>
+			<pointcut type="interval">* * 10 0</pointcut>
 		</joinpoint>
 		<action id="xml" bean="common.action.a1" method="testXmlAction" hidden="true">
 			<properties>
