@@ -182,10 +182,10 @@ public class AspectranNodeParser {
 			public void process(Node node, Properties attributes, String text) throws Exception {
 				String id = attributes.getProperty("id");
 				
-				AspectRule ar = new AspectRule();
-				ar.setId(id);
+				AspectRule aspectRule = new AspectRule();
+				aspectRule.setId(id);
 				
-				assistant.pushObject(ar);
+				assistant.pushObject(aspectRule);
 			}
 		});
 		parser.addNodelet("/aspectran/aspect/joinpoint", new Nodelet() {
@@ -201,8 +201,8 @@ public class AspectranNodeParser {
 						throw new IllegalArgumentException("Unkown joinpoint target '" + target + "'");
 				}
 
-				AspectRule ar = (AspectRule)assistant.peekObject();
-				ar.setJoinpointTarget(joinpointTarget);
+				AspectRule aspectRule = (AspectRule)assistant.peekObject();
+				aspectRule.setJoinpointTarget(joinpointTarget);
 			}
 		});
 
@@ -211,6 +211,13 @@ public class AspectranNodeParser {
 		parser.addNodelet("/aspectran/aspect/around", new AspectAdviceRuleNodeletAdder(assistant, AspectAdviceType.AROUND));
 		parser.addNodelet("/aspectran/aspect/finally", new AspectAdviceRuleNodeletAdder(assistant, AspectAdviceType.FINALLY));
 		parser.addNodelet("/aspectran/aspect/exceptionRaized", new AspectAdviceRuleNodeletAdder(assistant, AspectAdviceType.EXCPETION_RAIZED));
+		
+		parser.addNodelet("/aspectran/aspect/end()", new Nodelet() {
+			public void process(Node node, Properties attributes, String text) throws Exception {
+				AspectRule aspectRule = (AspectRule)assistant.popObject();
+				assistant.addAspectRule(aspectRule);
+			}
+		});
 	}
 
 	/**
@@ -589,7 +596,7 @@ public class AspectranNodeParser {
 				else
 					throw new IllegalArgumentException("The <import> element requires either a resource or a file or a url attribute.");
 				
-				InheritedAspectranSettings inheritedSettings = assistant.getActivitySettingsRule();
+				InheritedAspectranSettings inheritedSettings = assistant.getInheritedAspectranSettings();
 				
 				AspectranNodeParser aspectranNodeParser = new AspectranNodeParser(assistant);
 				aspectranNodeParser.parse(r.getInputStream());

@@ -20,6 +20,10 @@ public class TransletRuleRegistry {
 		return transletRuleMap;
 	}
 
+	public boolean contains(String transletName) {
+		return transletRuleMap.containsKey(transletName);
+	}
+	
 	public TransletRule getTransletRule(String transletName) {
 		TransletRule transletRule = transletRuleMap.get(transletName);
 		

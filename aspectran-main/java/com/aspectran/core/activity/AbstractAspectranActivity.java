@@ -919,7 +919,7 @@ public abstract class AbstractAspectranActivity implements AspectranActivity {
 	/* (non-Javadoc)
 	 * @see com.aspectran.core.activity.AspectranActivity#getTransletRegistry()
 	 */
-	public TransletRuleRegistry getTransletRegistry() {
+	public TransletRuleRegistry getTransletRuleRegistry() {
 		return context.getTransletRuleRegistry();
 	}
 	
