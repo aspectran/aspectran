@@ -17,7 +17,6 @@ package com.aspectran.core.context.builder;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.Collections;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -28,10 +27,12 @@ import com.aspectran.core.activity.process.action.Executable;
 import com.aspectran.core.activity.response.ResponseMap;
 import com.aspectran.core.activity.response.Responsible;
 import com.aspectran.core.context.AspectranContext;
+import com.aspectran.core.context.aspect.AspectAdviceRuleRegister;
 import com.aspectran.core.context.bean.BeanRegistry;
 import com.aspectran.core.context.bean.ScopedBeanRegistry;
 import com.aspectran.core.context.builder.xml.AspectranNodeParser;
 import com.aspectran.core.context.translet.TransletRuleRegistry;
+import com.aspectran.core.rule.AspectRuleMap;
 import com.aspectran.core.rule.BeanRuleMap;
 import com.aspectran.core.rule.RequestRule;
 import com.aspectran.core.rule.ResponseRule;
@@ -47,15 +48,15 @@ public class AspectranContextBuilder {
 	
 	private final Log log = LogFactory.getLog(AspectranContextBuilder.class);
 
-	private String serviceRootPath;
+	private String applicationRootPath;
 	
 	/**
 	 * Instantiates a new translets client loader.
 	 * 
 	 * @param servicePath the service path
 	 */
-	public AspectranContextBuilder(String serviceRootPath) {
-		this.serviceRootPath = serviceRootPath;
+	public AspectranContextBuilder(String applicationRootPath) {
+		this.applicationRootPath = applicationRootPath;
 	}
 
 	public AspectranContext build(String contextConfigLocation) throws AspectranContextBuilderException {
@@ -75,17 +76,12 @@ public class AspectranContextBuilder {
 		}
 		
 		try {
-			AspectranContextBuildingAssistant assistant = new AspectranContextBuildingAssistant(serviceRootPath);
+			AspectranContextBuildingAssistant assistant = new AspectranContextBuildingAssistant(applicationRootPath);
 	
 			AspectranNodeParser aspectranNodeParser = new AspectranNodeParser(assistant);
 			aspectranNodeParser.parse(resourceFactory.getInputStream());
 			
-			BeanRegistry beanRegistry = makeBeanRegistry(assistant);
-			TransletRuleRegistry transletRuleRegistry = makeTransletRuleRegistry(assistant);
-			
-			AspectranContext context = new AspectranContext();
-			context.setBeanRegistry(beanRegistry);
-			context.setTransletRuleRegistry(transletRuleRegistry);
+			AspectranContext context = makeAspectranContext(assistant);
 			
 			assistant.clearObjectStack();
 			assistant.clearTypeAliases();
@@ -97,15 +93,31 @@ public class AspectranContextBuilder {
 		}
 	}
 	
+	private AspectranContext makeAspectranContext(AspectranContextBuildingAssistant assistant) {
+		BeanRegistry beanRegistry = makeBeanRegistry(assistant);
+		TransletRuleRegistry transletRuleRegistry = makeTransletRuleRegistry(assistant);
+		
+		AspectranContext context = new AspectranContext();
+		context.setBeanRegistry(beanRegistry);
+		context.setTransletRuleRegistry(transletRuleRegistry);
+		
+		return context;
+	}
+	
 	private TransletRuleRegistry makeTransletRuleRegistry(AspectranContextBuildingAssistant assistant) {
-		TransletRuleMap transletRuleMap = (TransletRuleMap)Collections.unmodifiableMap(assistant.getTransletRuleMap());
-		transletRuleMap.freeze();
+		AspectRuleMap aspectRuleMap = assistant.getAspectRuleMap();
+		TransletRuleMap transletRuleMap = assistant.getTransletRuleMap();
+		//transletRuleMap.freeze();
+		
+		AspectAdviceRuleRegister aspectAdviceRuleRegister = new AspectAdviceRuleRegister(aspectRuleMap);
+		aspectAdviceRuleRegister.register(transletRuleMap);
+		
 		return new TransletRuleRegistry(transletRuleMap);
 	}
 
 	private BeanRegistry makeBeanRegistry(AspectranContextBuildingAssistant assistant) {
-		BeanRuleMap beanRuleMap = (BeanRuleMap)Collections.unmodifiableMap(assistant.getBeanRuleMap());
-		beanRuleMap.freeze();
+		BeanRuleMap beanRuleMap = assistant.getBeanRuleMap();
+		//beanRuleMap.freeze();
 		return new ScopedBeanRegistry(beanRuleMap);
 	}
 	

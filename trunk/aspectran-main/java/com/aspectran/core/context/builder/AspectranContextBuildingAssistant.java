@@ -19,6 +19,8 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.aspectran.core.rule.AspectRule;
+import com.aspectran.core.rule.AspectRuleMap;
 import com.aspectran.core.rule.BeanRule;
 import com.aspectran.core.rule.BeanRuleMap;
 import com.aspectran.core.rule.TransletRule;
@@ -40,10 +42,12 @@ public class AspectranContextBuildingAssistant {
 	private Map<String, String> typeAliases;
 	
 	/** The service root path. */
-	private String activityRootPath;
+	private String applicationRootPath;
 
-	private InheritedAspectranSettings inheritedSettings;
+	private InheritedAspectranSettings inheritedAspectranSettings;
 
+	private AspectRuleMap aspectRuleMap;
+	
 	private BeanRuleMap beanRuleMap;
 	
 	private TransletRuleMap transletRuleMap;
@@ -53,13 +57,13 @@ public class AspectranContextBuildingAssistant {
 	/**
 	 * Instantiates a new translets config.
 	 */
-	public AspectranContextBuildingAssistant(String serviceRootPath) {
+	public AspectranContextBuildingAssistant(String applicationRootPath) {
 		this.objectStack = new ArrayStack(); 
 		this.typeAliases = new HashMap<String, String>();
 		this.settings = new HashMap<AspectranSettingType, String>();
 		
-		this.activityRootPath = serviceRootPath;
-		inheritedSettings = new InheritedAspectranSettings();
+		this.applicationRootPath = applicationRootPath;
+		inheritedAspectranSettings = new InheritedAspectranSettings();
 	}
 	
 	/**
@@ -69,11 +73,11 @@ public class AspectranContextBuildingAssistant {
 	 * @param assistant the assistant
 	 */
 	public AspectranContextBuildingAssistant(AspectranContextBuildingAssistant assistant) {
-		activityRootPath = assistant.getActivityRootPath();
-		inheritedSettings = assistant.getActivitySettingsRule();
+		applicationRootPath = assistant.getApplicationRootPath();
+		inheritedAspectranSettings = assistant.getInheritedAspectranSettings();
 		
-		if(inheritedSettings == null)
-			inheritedSettings = new InheritedAspectranSettings();
+		if(inheritedAspectranSettings == null)
+			inheritedAspectranSettings = new InheritedAspectranSettings();
 		
 		beanRuleMap = assistant.getBeanRuleMap();
 		transletRuleMap = assistant.getTransletRuleMap();
@@ -168,7 +172,7 @@ public class AspectranContextBuildingAssistant {
 	}
 	
 	public void applyInheritedSettings() {
-		inheritedSettings.set(getSettings());
+		inheritedAspectranSettings.set(getSettings());
 	}
 	
 	/**
@@ -181,24 +185,24 @@ public class AspectranContextBuildingAssistant {
 	public String applyNamespaceForTranslet(String transletName) {
 		StringBuilder sb = new StringBuilder();
 		
-		if(inheritedSettings.getTransletNamePatternPrefix() != null)
-			sb.append(inheritedSettings.getTransletNamePatternPrefix());
+		if(inheritedAspectranSettings.getTransletNamePatternPrefix() != null)
+			sb.append(inheritedAspectranSettings.getTransletNamePatternPrefix());
 		
-		if(inheritedSettings.isUseNamespaces() && namespace != null) {
+		if(inheritedAspectranSettings.isUseNamespaces() && namespace != null) {
 			sb.append(namespace);
 			sb.append(AspectranContextConstant.TRANSLET_NAME_SEPARATOR);
 		}
 			
 		sb.append(transletName);
 		
-		if(inheritedSettings.getTransletNamePatternSuffix() != null)
-			sb.append(inheritedSettings.getTransletNamePatternSuffix());
+		if(inheritedAspectranSettings.getTransletNamePatternSuffix() != null)
+			sb.append(inheritedAspectranSettings.getTransletNamePatternSuffix());
 		
 		return sb.toString();
 	}
 	
 	public String applyNamespaceForBean(String beanId) {
-		if(!inheritedSettings.isUseNamespaces() || namespace == null)
+		if(!inheritedAspectranSettings.isUseNamespaces() || namespace == null)
 			return beanId;
 		
 		StringBuilder sb = new StringBuilder();
@@ -209,10 +213,10 @@ public class AspectranContextBuildingAssistant {
 	}
 	
 	public String replaceTransletNameSuffix(String name, String transletNameSuffix) {
-		if(inheritedSettings.getTransletNamePatternSuffix() == null)
+		if(inheritedAspectranSettings.getTransletNamePatternSuffix() == null)
 			return name + transletNameSuffix;
 		
-		int index = name.indexOf(inheritedSettings.getTransletNamePatternSuffix());
+		int index = name.indexOf(inheritedAspectranSettings.getTransletNamePatternSuffix());
 		
 		StringBuilder sb = new StringBuilder();
 		sb.append(name.substring(0, index));
@@ -228,7 +232,7 @@ public class AspectranContextBuildingAssistant {
 	 * @return true, if is allow null content id
 	 */
 	public boolean isNullableContentId() {
-		return inheritedSettings.isNullableContentId();
+		return inheritedAspectranSettings.isNullableContentId();
 	}
 
 	/**
@@ -237,23 +241,23 @@ public class AspectranContextBuildingAssistant {
 	 * @return true, if is allow null action id
 	 */
 	public boolean isNullableActionId() {
-		return inheritedSettings.isNullableActionId();
+		return inheritedAspectranSettings.isNullableActionId();
 	}
 	
 	public boolean isMultipleTransletEnable() {
-		return inheritedSettings.isMultipleTransletEnable();
+		return inheritedAspectranSettings.isMultipleTransletEnable();
 	}
 
-	public String getActivityRootPath() {
-		return activityRootPath;
+	public String getApplicationRootPath() {
+		return applicationRootPath;
 	}
 	
-	public InheritedAspectranSettings getActivitySettingsRule() {
-		return inheritedSettings;
+	public InheritedAspectranSettings getInheritedAspectranSettings() {
+		return inheritedAspectranSettings;
 	}
 
 	public void setActivitySettingsRule(InheritedAspectranSettings activityRule) {
-		this.inheritedSettings = activityRule;
+		this.inheritedAspectranSettings = activityRule;
 	}
 
 	/**
@@ -286,6 +290,21 @@ public class AspectranContextBuildingAssistant {
 		beanRuleMap.putBeanRule(beanRule);
 	}
 	
+	public AspectRuleMap getAspectRuleMap() {
+		return aspectRuleMap;
+	}
+
+	public void setAspectRuleMap(AspectRuleMap aspectRuleMap) {
+		this.aspectRuleMap = aspectRuleMap;
+	}
+	
+	public void addAspectRule(AspectRule aspectRule) {
+		if(aspectRuleMap == null)
+			aspectRuleMap = new AspectRuleMap();
+		
+		aspectRuleMap.putAspectRule(aspectRule);
+	}
+
 	/**
 	 * To real path as file.
 	 * 
@@ -296,8 +315,8 @@ public class AspectranContextBuildingAssistant {
 	public File toRealPathFile(String filePath) {
 		File file;
 
-		if(activityRootPath != null && !filePath.startsWith("/"))
-			file = new File(activityRootPath, filePath);
+		if(applicationRootPath != null && !filePath.startsWith("/"))
+			file = new File(applicationRootPath, filePath);
 		else
 			file = new File(filePath);
 		

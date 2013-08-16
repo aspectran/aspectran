@@ -87,7 +87,7 @@ public interface AspectranActivity {
 	
 	public BeanRegistry getBeanRegistry();
 	
-	public TransletRuleRegistry getTransletRegistry();
+	public TransletRuleRegistry getTransletRuleRegistry();
 	
 	public boolean isExceptionRaised();
 
