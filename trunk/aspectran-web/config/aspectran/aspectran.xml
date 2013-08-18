@@ -18,7 +18,7 @@
 	</settings>
 	
 	<aspect id="defaultRequestRule">
-		<joinpoint target="request"/>
+		<joinpoint target="translet" scope="request"/>
 		<settings>
 			<setting name="characterEncoding" value="utf-8"/>
 			<setting name="multipart.maxRequestSize" value="10M"/>
@@ -43,7 +43,7 @@
 	</aspect>
 	
 	<aspect id="frontRequestRule">
-		<joinpoint target="request">
+		<joinpoint target="translet" scope="request">
 			<pointcut>front/*</pointcut>
 		</joinpoint>
 		<before>
@@ -67,7 +67,7 @@
 	<bean id="jspViewDispatcher" class="org.jhlabs.translets.web.JspViewDispatcher" scope="singleton"/>
 
 	<aspect id="defaultResponseRule">
-		<joinpoint target="response"/>
+		<joinpoint target="translet" scope="response"/>
 		<settings>
 			<setting name="characterEncoding" value="utf-8"/>
 			<setting name="defaultContentType" value="text/html"/>
@@ -139,7 +139,7 @@
 	</aspect>
 
 	<aspect id="bean1">
-		<joinpoint target="bean">
+		<joinpoint>
 			<pointcut>front/*</pointcut>
 		</joinpoint>
 		<around>
@@ -157,7 +157,7 @@
 		after: error logging 
 	-->
 	<aspect id="logging">
-		<joinpoint target="action">
+		<joinpoint target="translet">
 			<pointcut>front.action1</pointcut>
 		</joinpoint>
 		<before>
@@ -209,7 +209,7 @@
 		getAspectObject:
 			a return object of <before> action.
 	-->
-	<aspect id="sqlmap">
+	<aspect id="sqlmap">																																			
 		<joinpoint target="translet">
 			<pointcut>
 				front/a/*
