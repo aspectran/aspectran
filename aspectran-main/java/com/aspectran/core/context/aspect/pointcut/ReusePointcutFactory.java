@@ -1,34 +1,38 @@
 package com.aspectran.core.context.aspect.pointcut;
 
-import com.aspectran.core.rule.PointcutRule;
-import com.aspectran.core.type.PointcutType;
+import java.util.List;
 
-public class ReusePointcutFactory implements PointcutFactory {
+import com.aspectran.core.rule.PointcutRule;
+
+public class ReusePointcutFactory extends AbstractPointcutFactory implements PointcutFactory {
 
 	private WildcardPointcut wildcardPointcut;
 	
 	private RegexpPointcut regexpPointcut;
 	
-	public Pointcut createPointcut(PointcutRule pointcutRule) {
-		if(pointcutRule.getPointcutType() == PointcutType.WILDCARD) {
-			if(wildcardPointcut == null)
-				wildcardPointcut = new WildcardPointcut();
-			
-			wildcardPointcut.setIncludePatternList(pointcutRule.getIncludePatternList());
-			wildcardPointcut.setExcludePatternList(pointcutRule.getExcludePatternList());
-			
-			return wildcardPointcut;
-		} else if(pointcutRule.getPointcutType() == PointcutType.REGEXP) {
-			if(regexpPointcut == null)
-				regexpPointcut = new RegexpPointcut();
-			
-			regexpPointcut.setIncludePatternList(pointcutRule.getIncludePatternList());
-			regexpPointcut.setExcludePatternList(pointcutRule.getExcludePatternList());
-			
-			return regexpPointcut;
+	protected Pointcut createWildcardPointcut(PointcutRule pointcutRule) {
+		if(wildcardPointcut == null)
+			wildcardPointcut = new WildcardPointcut();
+		
+		List<PointcutPattern> pointcutPatternList = parsePattern(pointcutRule.getPatternString());
+		
+		for(PointcutPattern pointcutPattern : pointcutPatternList) {
+			wildcardPointcut.addPointcutPattern(pointcutPattern);
 		}
-
-		return null;
+		
+		return wildcardPointcut;
 	}
 	
+	protected Pointcut createRegexpPointcut(PointcutRule pointcutRule) {
+		if(regexpPointcut == null)
+			regexpPointcut = new RegexpPointcut();
+		
+		List<PointcutPattern> pointcutPatternList = parsePattern(pointcutRule.getPatternString());
+		
+		for(PointcutPattern pointcutPattern : pointcutPatternList) {
+			regexpPointcut.addPointcutPattern(pointcutPattern);
+		}
+		
+		return regexpPointcut;
+	}
 }

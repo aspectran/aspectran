@@ -108,9 +108,9 @@ public class ContentsJSONWriter {
 					if(resultValue == null) {
 						writeNull();
 					} else if(resultValue instanceof ProcessResult) {
-						write((ProcessResult)resultValue, actionResult.getActionPath());
+						write((ProcessResult)resultValue, actionResult.getFullActionId());
 					} else {
-						writeName(actionResult.getActionPath(parentContentId));
+						writeName(actionResult.getFullActionId(parentContentId));
 						write(resultValue);
 					}
 

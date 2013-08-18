@@ -88,11 +88,25 @@ public class WebAspectranActivity extends AbstractAspectranActivity implements A
 		ResponseAdapter responseAdapter = getResponseAdapter();
 		
 		try {
-			if(requestAdapter != null && requestRule.getCharacterEncoding() != null)
-				requestAdapter.setCharacterEncoding(requestRule.getCharacterEncoding());
+			if(requestAdapter != null) {
+				String characterEncoding = requestRule.getCharacterEncoding();
+				
+				if(characterEncoding == null)
+					characterEncoding = (String)getRequestSetting(RequestRule.CHARACTER_ENCODING_SETTING_NAME);
+				
+				if(characterEncoding != null)
+					requestAdapter.setCharacterEncoding(characterEncoding);
+			}
 			
-			if(responseAdapter != null && responseRule.getCharacterEncoding() != null)
-				responseAdapter.setCharacterEncoding(responseRule.getCharacterEncoding());
+			if(responseAdapter != null) {
+				String characterEncoding = responseRule.getCharacterEncoding();
+
+				if(characterEncoding == null)
+					characterEncoding = (String)getResponseSetting(ResponseRule.CHARACTER_ENCODING_SETTING_NAME);
+
+				if(characterEncoding != null)
+					responseAdapter.setCharacterEncoding(characterEncoding);
+			}
 		
 			String method = request.getMethod();
 			RequestMethodType methodType = getRequestRule().getMethod();

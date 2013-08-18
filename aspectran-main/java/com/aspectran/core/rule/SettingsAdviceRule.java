@@ -19,7 +19,7 @@ import java.util.Map;
 
 import com.aspectran.core.type.AspectAdviceType;
 
-public class AspectSettingsAdviceRule {
+public class SettingsAdviceRule {
 
 	private String aspectId;
 	

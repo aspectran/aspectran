@@ -60,7 +60,7 @@ public class DispatchResponse implements Responsible {
 			String viewDispatcherName = null;
 			
 			if(viewDispatcher == null) {
-				viewDispatcherName = (String)activity.getResponseSetting(ResponseRule.VIEW_DISPATCHER_SETTING);
+				viewDispatcherName = (String)activity.getResponseSetting(ResponseRule.VIEW_DISPATCHER_SETTING_NAME);
 				viewDispatcher = (ViewDispatcher)activity.getBean(viewDispatcherName);
 			}
 			

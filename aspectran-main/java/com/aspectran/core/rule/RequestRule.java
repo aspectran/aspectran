@@ -26,7 +26,7 @@ import com.aspectran.core.type.RequestMethodType;
  */
 public class RequestRule implements AspectAdviceSupport {
 
-	public static final String CHARACTER_ENCODING_SETTING = "characterEncoding";
+	public static final String CHARACTER_ENCODING_SETTING_NAME = "characterEncoding";
 	
 	private String characterEncoding;
 	
@@ -229,11 +229,6 @@ public class RequestRule implements AspectAdviceSupport {
 
 	public void setAspectAdviceRuleRegistry(AspectAdviceRuleRegistry aspectAdviceRuleRegistry) {
 		this.aspectAdviceRuleRegistry = aspectAdviceRuleRegistry;
-		
-		String characterEncoding = (String)aspectAdviceRuleRegistry.getSetting(CHARACTER_ENCODING_SETTING);
-		
-		if(this.characterEncoding != null)
-			this.characterEncoding = characterEncoding;
 	}
 	
 	public List<AspectAdviceRule> getBeforeAdviceRuleList() {

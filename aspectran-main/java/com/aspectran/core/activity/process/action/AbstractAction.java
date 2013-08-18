@@ -13,30 +13,33 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.aspectran.core.rule;
+package com.aspectran.core.activity.process.action;
 
-import com.aspectran.core.type.PointcutType;
+import com.aspectran.core.activity.process.ActionList;
+import com.aspectran.core.activity.process.ActionPathMaker;
 
-public class PointcutRule {
+/**
+ * <p>Created: 2008. 03. 22 오후 5:50:35</p>
+ */
+public abstract class AbstractAction {
+
+	protected final ActionList parent;
 	
-	private PointcutType pointcutType;
+	protected final String fullActionId;
+
+	public AbstractAction(ActionList parent) {
+		this.parent = parent;
+		this.fullActionId = ActionPathMaker.concatActionPath(parent.getContentId(), getId());
+	}
 	
-	private String patternString;
-
-	public PointcutType getPointcutType() {
-		return pointcutType;
+	public ActionList getParent() {
+		return parent;
 	}
+	
+	public abstract String getId();
 
-	public void setPointcutType(PointcutType pointcutType) {
-		this.pointcutType = pointcutType;
-	}
-
-	public String getPatternString() {
-		return patternString;
-	}
-
-	public void setPatternString(String patternString) {
-		this.patternString = patternString;
+	public String getFullActionId() {
+		return fullActionId;
 	}
 	
 }

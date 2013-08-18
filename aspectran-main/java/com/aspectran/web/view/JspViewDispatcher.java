@@ -65,7 +65,7 @@ public class JspViewDispatcher implements ViewDispatcher {
 			if(outputEncoding != null)
 				responseAdapter.setCharacterEncoding(outputEncoding);
 			else {
-				String characterEncoding = (String)activity.getResponseSetting(ResponseRule.CHARACTER_ENCODING_SETTING);
+				String characterEncoding = (String)activity.getResponseSetting(ResponseRule.CHARACTER_ENCODING_SETTING_NAME);
 				
 				if(characterEncoding != null)
 					responseAdapter.setCharacterEncoding(characterEncoding);
@@ -115,17 +115,17 @@ public class JspViewDispatcher implements ViewDispatcher {
 	 * 
 	 * @param servletRequest the servlet request
 	 * @param processResult the process result
-	 * @param parentActionPath the parent action path
+	 * @param parentFullActionId the parent action path
 	 */
-	private void parse(RequestAdapter requestAdapter, ProcessResult processResult, String parentActionPath) {
+	private void parse(RequestAdapter requestAdapter, ProcessResult processResult, String parentFullActionId) {
 		for(ContentResult contentResult : processResult) {
 			for(ActionResult actionResult : contentResult) {
 				Object actionResultValue = actionResult.getResultValue();
 
 				if(actionResultValue instanceof ProcessResult)
-					parse(requestAdapter, (ProcessResult)actionResultValue, actionResult.getActionPath());
+					parse(requestAdapter, (ProcessResult)actionResultValue, actionResult.getFullActionId());
 				else
-					requestAdapter.setAttribute(actionResult.getActionPath(parentActionPath), actionResultValue);
+					requestAdapter.setAttribute(actionResult.getFullActionId(parentFullActionId), actionResultValue);
 			}
 		}
 	}

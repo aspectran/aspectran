@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.aspectran.core.activity.process.ActionList;
-import com.aspectran.core.context.aspect.pointcut.Pointcut;
+import com.aspectran.core.type.JoinpointScopeType;
 import com.aspectran.core.type.JoinpointTargetType;
 
 public class AspectRule {
@@ -28,9 +28,11 @@ public class AspectRule {
 
 	private JoinpointTargetType joinpointTarget;
 	
+	private JoinpointScopeType joinpointScope;
+	
 	private PointcutRule pointcutRule;
 	
-	private AspectSettingsAdviceRule aspectSettingsAdviceRule;
+	private SettingsAdviceRule settingsAdviceRule;
 	
 	private List<AspectAdviceRule> aspectAdviceRuleList;
 	
@@ -52,6 +54,14 @@ public class AspectRule {
 		this.joinpointTarget = joinpointTarget;
 	}
 
+	public JoinpointScopeType getJoinpointScope() {
+		return joinpointScope;
+	}
+
+	public void setJoinpointScope(JoinpointScopeType joinpointScope) {
+		this.joinpointScope = joinpointScope;
+	}
+
 	public PointcutRule getPointcutRule() {
 		return pointcutRule;
 	}
@@ -60,12 +70,12 @@ public class AspectRule {
 		this.pointcutRule = pointcutRule;
 	}
 
-	public AspectSettingsAdviceRule getAspectSettingsAdviceRule() {
-		return aspectSettingsAdviceRule;
+	public SettingsAdviceRule getSettingsAdviceRule() {
+		return settingsAdviceRule;
 	}
 
-	public void setAspectSettingsAdviceRule(AspectSettingsAdviceRule aspectSettingsAdviceRule) {
-		this.aspectSettingsAdviceRule = aspectSettingsAdviceRule;
+	public void setSettingsAdviceRule(SettingsAdviceRule settingsAdviceRule) {
+		this.settingsAdviceRule = settingsAdviceRule;
 	}
 
 	public List<AspectAdviceRule> getAspectAdviceRuleList() {

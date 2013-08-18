@@ -22,7 +22,6 @@ import com.aspectran.core.activity.AspectranActivity;
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.rule.RedirectResponseRule;
-import com.aspectran.core.rule.ResponseRule;
 import com.aspectran.core.type.ResponseType;
 
 /**
@@ -59,12 +58,6 @@ public class RedirectResponse implements Responsible {
 
 			if(outputEncoding != null)
 				responseAdapter.setCharacterEncoding(outputEncoding);
-			else {
-				String characterEncoding = (String)activity.getResponseSetting(ResponseRule.CHARACTER_ENCODING_SETTING);
-				
-				if(characterEncoding != null)
-					responseAdapter.setCharacterEncoding(characterEncoding);
-			}
 			
 			String url = responseAdapter.redirect(activity, redirectResponseRule);
 			

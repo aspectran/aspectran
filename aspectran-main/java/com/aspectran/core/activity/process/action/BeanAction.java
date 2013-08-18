@@ -23,7 +23,6 @@ import org.apache.commons.logging.LogFactory;
 
 import com.aspectran.core.activity.AspectranActivity;
 import com.aspectran.core.activity.process.ActionList;
-import com.aspectran.core.activity.process.ActionPathMaker;
 import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
 import com.aspectran.core.rule.BeanActionRule;
 import com.aspectran.core.rule.ItemRule;
@@ -38,13 +37,11 @@ import com.aspectran.core.var.ValueMap;
 /**
  * <p>Created: 2008. 03. 22 오후 5:50:35</p>
  */
-public class BeanAction implements Executable {
+public class BeanAction extends AbstractAction implements Executable {
 
 	private final Log log = LogFactory.getLog(BeanAction.class);
 
 	private final BeanActionRule beanActionRule;
-
-	private final ActionList parent;
 
 	/**
 	 * Instantiates a new bean action.
@@ -53,8 +50,8 @@ public class BeanAction implements Executable {
 	 * @param parent the parent
 	 */
 	public BeanAction(BeanActionRule beanActionRule, ActionList parent) {
+		super(parent);
 		this.beanActionRule = beanActionRule;
-		this.parent = parent;
 	}
 	
 	/* (non-Javadoc)
@@ -94,9 +91,6 @@ public class BeanAction implements Executable {
 	 * @see org.jhlabs.translets.engine.process.action.Executable#getId()
 	 */
 	public String getId() {
-		if(beanActionRule == null)
-			return null;
-
 		return beanActionRule.getId();
 	}
 	
@@ -124,7 +118,7 @@ public class BeanAction implements Executable {
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("{actionPath=").append(ActionPathMaker.concatActionPath(parent.getContentId(), beanActionRule.getId()));
+		sb.append("{fullActionId=").append(fullActionId);
 		sb.append(", beanActionRule=").append(beanActionRule.toString());
 		sb.append("}");
 
@@ -177,6 +171,6 @@ public class BeanAction implements Executable {
 		Object result = MethodUtils.invokeMethod(bean, methodName, args, parameterTypes);
 		
 		return result;
-		
 	}
+	
 }
