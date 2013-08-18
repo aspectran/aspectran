@@ -42,6 +42,7 @@ import com.aspectran.core.rule.ResponseRule;
 import com.aspectran.core.rule.TransletRule;
 import com.aspectran.core.type.AspectAdviceType;
 import com.aspectran.core.type.AspectranSettingType;
+import com.aspectran.core.type.JoinpointScopeType;
 import com.aspectran.core.type.JoinpointTargetType;
 import com.aspectran.core.type.PointcutType;
 import com.aspectran.core.type.RequestMethodType;
@@ -193,18 +194,32 @@ public class AspectranNodeParser {
 		parser.addNodelet("/aspectran/aspect/joinpoint", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
 				String target = attributes.getProperty("target");
+				String scope = attributes.getProperty("scope");
 
 				JoinpointTargetType joinpointTarget = null;
+				JoinpointScopeType joinpointScope = null;
 				
 				if(target != null) {
 					joinpointTarget = JoinpointTargetType.valueOf(target);
 					
 					if(joinpointTarget == null)
 						throw new IllegalArgumentException("Unknown joinpoint target '" + target + "'");
+				} else {
+					joinpointTarget = JoinpointTargetType.TRANSLET;
 				}
 
+				if(scope != null) {
+					joinpointScope = JoinpointScopeType.valueOf(scope);
+					
+					if(joinpointScope == null)
+						throw new IllegalArgumentException("Unknown joinpoint scope '" + scope + "'");
+				} else {
+					joinpointScope = JoinpointScopeType.TRANSLET;
+				}
+				
 				AspectRule aspectRule = (AspectRule)assistant.peekObject();
 				aspectRule.setJoinpointTarget(joinpointTarget);
+				aspectRule.setJoinpointScope(joinpointScope);
 			}
 		});
 
@@ -232,7 +247,7 @@ public class AspectranNodeParser {
 				
 				PointcutRule pointcutRule = new PointcutRule();
 				pointcutRule.setPointcutType(pointcutType);
-				pointcutRule.setPattern(text);
+				pointcutRule.setPatternString(text);
 				
 				aspectRule.setPointcutRule(pointcutRule);
 			}

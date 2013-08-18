@@ -17,7 +17,6 @@ package com.aspectran.core.activity.process.action;
 
 import com.aspectran.core.activity.AspectranActivity;
 import com.aspectran.core.activity.process.ActionList;
-import com.aspectran.core.activity.process.ActionPathMaker;
 import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
 import com.aspectran.core.rule.EchoActionRule;
 import com.aspectran.core.token.expression.ItemTokenExpression;
@@ -28,11 +27,9 @@ import com.aspectran.core.var.ValueMap;
 /**
  * <p>Created: 2008. 03. 22 오후 5:50:44</p>
  */
-public class EchoAction implements Executable {
+public class EchoAction extends AbstractAction implements Executable {
 
 	private final EchoActionRule echoActionRule;
-	
-	private final ActionList parent;
 	
 	/**
 	 * Instantiates a new echo action.
@@ -41,8 +38,8 @@ public class EchoAction implements Executable {
 	 * @param parent the parent
 	 */
 	public EchoAction(EchoActionRule echoActionRule, ActionList parent) {
+		super(parent);
 		this.echoActionRule = echoActionRule;
-		this.parent = parent;
 	}
 	
 	/* (non-Javadoc)
@@ -65,13 +62,6 @@ public class EchoAction implements Executable {
 	 */
 	public EchoActionRule getEchoActionRule() {
 		return echoActionRule;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.jhlabs.translets.engine.process.action.Executable#getContent()
-	 */
-	public ActionList getParent() {
-		return parent;
 	}
 
 	/* (non-Javadoc)
@@ -108,7 +98,7 @@ public class EchoAction implements Executable {
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("{actionPath=").append(ActionPathMaker.concatActionPath(parent.getContentId(), echoActionRule.getActionId()));
+		sb.append("{fullActionId=").append(fullActionId);
 		sb.append(", echoActionRule=").append(echoActionRule.toString());
 		sb.append("}");
 		

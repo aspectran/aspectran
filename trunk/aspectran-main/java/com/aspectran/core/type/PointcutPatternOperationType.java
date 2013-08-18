@@ -18,39 +18,39 @@ package com.aspectran.core.type;
 import java.util.HashMap;
 import java.util.Map;
 
+public final class PointcutPatternOperationType extends Type {
 
-public final class JoinpointTargetType extends Type {
+	public static final PointcutPatternOperationType INCLUDE;
 
-	public static final JoinpointTargetType TRANSLET;
+	public static final PointcutPatternOperationType EXCLUDE;
 	
-	public static final JoinpointTargetType SCHEDULER;
-	
-	private static final Map<String, JoinpointTargetType> types;
+	private static final Map<String, PointcutPatternOperationType> types;
 	
 	static {
-		TRANSLET = new JoinpointTargetType("translet");
-		SCHEDULER = new JoinpointTargetType("scheduler");
+		INCLUDE = new PointcutPatternOperationType("include");
+		EXCLUDE = new PointcutPatternOperationType("exclude");
 
-		types = new HashMap<String, JoinpointTargetType>();
-		types.put(TRANSLET.toString(), TRANSLET);
-		types.put(SCHEDULER.toString(), SCHEDULER);
+		types = new HashMap<String, PointcutPatternOperationType>();
+		types.put(INCLUDE.toString(), INCLUDE);
+		types.put(EXCLUDE.toString(), EXCLUDE);
 	}
 
-	private JoinpointTargetType(String type) {
+	private PointcutPatternOperationType(String type) {
 		super(type);
 	}
 
 	/**
-	 * Returns a <code>JoinpointTargetType</code> with a value represented by the specified String.
+	 * Returns a <code>PointcutType</code> with a value represented by the specified String.
 	 * 
 	 * @param type the type
 	 * 
 	 * @return the content type
 	 */
-	public static JoinpointTargetType valueOf(String type) {
+	public static PointcutPatternOperationType valueOf(String type) {
 		if(type == null)
 			return null;
 		
 		return types.get(type);
 	}
+	
 }

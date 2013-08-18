@@ -35,11 +35,10 @@ public class ResponseRule extends AbstractResponseRule implements ResponseAddabl
 	/** The Constant DEFAULT_ID. */
 	public static final String DEFAULT_ID = "[default]";
 	
-	public static final String CHARACTER_ENCODING_SETTING = "characterEncoding";
+	public static final String CHARACTER_ENCODING_SETTING_NAME = "characterEncoding";
 
-	public static final String VIEW_DISPATCHER_SETTING = "characterEncoding";
+	public static final String VIEW_DISPATCHER_SETTING_NAME = "viewDispatcher";
 	
-	/** The character encoding. */
 	private String characterEncoding;
 	
 	/** The default response id. */
@@ -185,17 +184,12 @@ public class ResponseRule extends AbstractResponseRule implements ResponseAddabl
 		return super.addResponse(frr);
 	}
 	
-	public AspectAdviceRuleRegistry getAspectAdviceRegistry() {
+	public AspectAdviceRuleRegistry getAspectAdviceRuleRegistry() {
 		return aspectAdviceRuleRegistry;
 	}
 
-	public void setAspectAdviceRegistry(AspectAdviceRuleRegistry aspectAdviceRuleRegistry) {
+	public void setAspectAdviceRuleRegistry(AspectAdviceRuleRegistry aspectAdviceRuleRegistry) {
 		this.aspectAdviceRuleRegistry = aspectAdviceRuleRegistry;
-		
-		String characterEncoding = (String)aspectAdviceRuleRegistry.getSetting(CHARACTER_ENCODING_SETTING);
-		
-		if(this.characterEncoding != null)
-			this.characterEncoding = characterEncoding;
 	}
 	
 	public List<AspectAdviceRule> getBeforeAdviceRuleList() {

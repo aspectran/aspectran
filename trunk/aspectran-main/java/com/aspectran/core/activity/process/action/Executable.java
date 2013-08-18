@@ -32,6 +32,8 @@ public interface Executable {
 	 */
 	public String getId();
 
+	public String getFullActionId();
+
 	/**
 	 * Execute this action.
 	 *

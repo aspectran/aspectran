@@ -19,24 +19,40 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-public final class JoinpointTargetType extends Type {
+public final class JoinpointScopeType extends Type {
 
-	public static final JoinpointTargetType TRANSLET;
+	public static final JoinpointScopeType TRANSLET;
 	
-	public static final JoinpointTargetType SCHEDULER;
+	public static final JoinpointScopeType REQUEST;
+
+	public static final JoinpointScopeType CONTENT;
 	
-	private static final Map<String, JoinpointTargetType> types;
+	public static final JoinpointScopeType RESPONSE;
+	
+	public static final JoinpointScopeType ACTION;
+	
+	public static final JoinpointScopeType BEAN;
+	
+	private static final Map<String, JoinpointScopeType> types;
 	
 	static {
-		TRANSLET = new JoinpointTargetType("translet");
-		SCHEDULER = new JoinpointTargetType("scheduler");
+		TRANSLET = new JoinpointScopeType("translet");
+		REQUEST = new JoinpointScopeType("request");
+		CONTENT = new JoinpointScopeType("content");
+		RESPONSE = new JoinpointScopeType("response");
+		ACTION = new JoinpointScopeType("action");
+		BEAN = new JoinpointScopeType("bean");
 
-		types = new HashMap<String, JoinpointTargetType>();
+		types = new HashMap<String, JoinpointScopeType>();
 		types.put(TRANSLET.toString(), TRANSLET);
-		types.put(SCHEDULER.toString(), SCHEDULER);
+		types.put(REQUEST.toString(), REQUEST);
+		types.put(CONTENT.toString(), CONTENT);
+		types.put(RESPONSE.toString(), RESPONSE);
+		types.put(ACTION.toString(), ACTION);
+		types.put(BEAN.toString(), BEAN);
 	}
 
-	private JoinpointTargetType(String type) {
+	private JoinpointScopeType(String type) {
 		super(type);
 	}
 
@@ -47,7 +63,7 @@ public final class JoinpointTargetType extends Type {
 	 * 
 	 * @return the content type
 	 */
-	public static JoinpointTargetType valueOf(String type) {
+	public static JoinpointScopeType valueOf(String type) {
 		if(type == null)
 			return null;
 		

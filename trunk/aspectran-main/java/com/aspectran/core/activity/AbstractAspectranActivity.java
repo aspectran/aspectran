@@ -261,6 +261,7 @@ public abstract class AbstractAspectranActivity implements AspectranActivity {
 	}
 
 	private void run() throws RequestException, ProcessException, ResponseException {
+		//request
 		AspectAdviceRuleRegistry aspectAdviceRuleRegistry = requestRule.getAspectAdviceRuleRegistry();
 		List<AspectAdviceRule> finallyAdviceRuleList = null;
 
@@ -280,8 +281,30 @@ public abstract class AbstractAspectranActivity implements AspectranActivity {
 			request();
 		}
 		
-		process();
+		//content
+		ContentList contentList = transletRule.getContentList();
 		
+		if(contentList != null) {
+			aspectAdviceRuleRegistry = contentList.getAspectAdviceRuleRegistry();
+	
+			if(aspectAdviceRuleRegistry != null) {
+				finallyAdviceRuleList = aspectAdviceRuleRegistry.getFinallyAdviceRuleList();
+	
+				if(finallyAdviceRuleList != null) {
+					try {
+						process(aspectAdviceRuleRegistry);
+					} finally {
+						execute(finallyAdviceRuleList);
+					}
+				} else {
+					process(aspectAdviceRuleRegistry);
+				}
+			} else {
+				process();
+			}
+		}
+		
+		//response
 		aspectAdviceRuleRegistry = requestRule.getAspectAdviceRuleRegistry();
 
 		if(aspectAdviceRuleRegistry != null) {
@@ -351,6 +374,29 @@ public abstract class AbstractAspectranActivity implements AspectranActivity {
 	}
 	
 	abstract public void request() throws RequestException;
+	
+	public ProcessResult process(AspectAdviceRuleRegistry aspectAdviceRuleRegistry) throws ProcessException {
+		List<AspectAdviceRule> beforeAdviceRuleList = aspectAdviceRuleRegistry.getBeforeAdviceRuleList();
+		List<AspectAdviceRule> afterAdviceRuleList = aspectAdviceRuleRegistry.getAfterAdviceRuleList();
+
+		// execute Before Advice Action
+		if(beforeAdviceRuleList != null)
+			execute(beforeAdviceRuleList);
+		
+		if(isResponseEnd)
+			return translet.getProcessResult();
+		
+		process();
+		
+		if(isResponseEnd)
+			return translet.getProcessResult();
+		
+		// execute After Advice Action
+		if(afterAdviceRuleList != null)
+			execute(afterAdviceRuleList);
+		
+		return translet.getProcessResult();
+	}
 	
 	public ProcessResult process() throws ProcessException {
 		if(debugEnabled) {
@@ -933,7 +979,7 @@ public abstract class AbstractAspectranActivity implements AspectranActivity {
 	}
 	
 	public Object getResponseSetting(String settingName) {
-		AspectAdviceRuleRegistry aspectAdviceRuleRegistry = responseRule.getAspectAdviceRegistry();
+		AspectAdviceRuleRegistry aspectAdviceRuleRegistry = responseRule.getAspectAdviceRuleRegistry();
 		
 		if(aspectAdviceRuleRegistry != null)
 			return aspectAdviceRuleRegistry.getSetting(settingName);

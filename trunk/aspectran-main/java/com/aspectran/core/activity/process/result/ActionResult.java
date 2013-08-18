@@ -98,19 +98,19 @@ public class ActionResult {
 	 * 
 	 * @return the action path
 	 */
-	public String getActionPath() {
+	public String getFullActionId() {
 		return ActionPathMaker.concatActionPath(getContentId(), actionId);
 	}
 
 	/**
 	 * Gets the action path.
 	 * 
-	 * @param parentActionPath the parent action path
+	 * @param parentFullActionId the parent action path
 	 * 
 	 * @return the action path
 	 */
-	public String getActionPath(String parentActionPath) {
-		return ActionPathMaker.concatActionPath(parentActionPath, getContentId(), actionId);
+	public String getFullActionId(String parentFullActionId) {
+		return ActionPathMaker.concatActionPath(parentFullActionId, getContentId(), actionId);
 	}
 
 	/* (non-Javadoc)
@@ -122,7 +122,7 @@ public class ActionResult {
 
 		sb.append("{contentId=").append(getContentId());
 		sb.append(", actionId=").append(actionId);
-		sb.append(", actionPath=").append(getActionPath());
+		sb.append(", fullActionId=").append(getFullActionId());
 		sb.append(", resultValue=").append(resultValue);
 		sb.append("}");
 

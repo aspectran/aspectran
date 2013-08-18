@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.aspectran.core.rule.AspectAdviceRule;
-import com.aspectran.core.rule.AspectSettingsAdviceRule;
+import com.aspectran.core.rule.SettingsAdviceRule;
 import com.aspectran.core.type.AspectAdviceType;
 
 public class AspectAdviceRuleRegistry {
@@ -55,38 +55,46 @@ public class AspectAdviceRuleRegistry {
 		this.exceptionRaizedAdviceRuleList = exceptionRaizedAdviceRuleList;
 	}
 
-	public void addAspectAdviceRule(AspectSettingsAdviceRule aspectSettingsAdviceRule) {
-		if(settings == null)
-			settings = new HashMap<String, Object>();
+	public void addAspectAdviceRule(SettingsAdviceRule settingsAdviceRule) {
+		if(settingsAdviceRule.getSettings() != null) {
+			if(settings == null)
+				settings = new HashMap<String, Object>();
 
-		if(aspectSettingsAdviceRule.getSettings() != null)
-			settings.putAll(aspectSettingsAdviceRule.getSettings());
+			settings.putAll(settingsAdviceRule.getSettings());
+		}
 	}
 		
 	public void addAspectAdviceRule(AspectAdviceRule aspectAdviceRule) {
 		if(aspectAdviceRule.getAspectAdviceType() == AspectAdviceType.BEFORE) {
 			if(beforeAdviceRuleList == null)
 				beforeAdviceRuleList = new ArrayList<AspectAdviceRule>();
+			
 			beforeAdviceRuleList.add(aspectAdviceRule);
 		} else if(aspectAdviceRule.getAspectAdviceType() == AspectAdviceType.AFTER) {
 			if(afterAdviceRuleList == null)
 				afterAdviceRuleList = new ArrayList<AspectAdviceRule>();
-			afterAdviceRuleList.add(aspectAdviceRule);
+			
+			afterAdviceRuleList.add(0, aspectAdviceRule);
 		} else if(aspectAdviceRule.getAspectAdviceType() == AspectAdviceType.FINALLY) {
 			if(finallyAdviceRuleList == null)
 				finallyAdviceRuleList = new ArrayList<AspectAdviceRule>();
-			finallyAdviceRuleList.add(aspectAdviceRule);
+			
+			finallyAdviceRuleList.add(0, aspectAdviceRule);
 		} else if(aspectAdviceRule.getAspectAdviceType() == AspectAdviceType.AROUND) {
 			if(beforeAdviceRuleList == null)
 				beforeAdviceRuleList = new ArrayList<AspectAdviceRule>();
+			
 			beforeAdviceRuleList.add(aspectAdviceRule);
+			
 			if(afterAdviceRuleList == null)
 				afterAdviceRuleList = new ArrayList<AspectAdviceRule>();
-			afterAdviceRuleList.add(aspectAdviceRule);
+			
+			afterAdviceRuleList.add(0, aspectAdviceRule);
 		} else if(aspectAdviceRule.getAspectAdviceType() == AspectAdviceType.EXCPETION_RAIZED) {
 			if(exceptionRaizedAdviceRuleList == null)
 				exceptionRaizedAdviceRuleList = new ArrayList<AspectAdviceRule>();
-			exceptionRaizedAdviceRuleList.add(aspectAdviceRule);
+			
+			exceptionRaizedAdviceRuleList.add(0, aspectAdviceRule);
 		}
 	}
 	

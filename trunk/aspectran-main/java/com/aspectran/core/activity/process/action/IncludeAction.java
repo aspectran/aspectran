@@ -22,7 +22,6 @@ import org.apache.commons.logging.LogFactory;
 
 import com.aspectran.core.activity.AspectranActivity;
 import com.aspectran.core.activity.process.ActionList;
-import com.aspectran.core.activity.process.ActionPathMaker;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
 import com.aspectran.core.rule.IncludeActionRule;
@@ -33,14 +32,12 @@ import com.aspectran.core.type.ActionType;
 /**
  * <p>Created: 2008. 06. 05 오후 9:22:05</p>
  */
-public class IncludeAction implements Executable {
+public class IncludeAction extends AbstractAction implements Executable {
 	
 	private final Log log = LogFactory.getLog(IncludeAction.class);
 
 	private final IncludeActionRule includeActionRule;
 
-	private final ActionList parent;
-	
 	/**
 	 * Instantiates a new process call action.
 	 * 
@@ -48,8 +45,8 @@ public class IncludeAction implements Executable {
 	 * @param parent the parent
 	 */
 	public IncludeAction(IncludeActionRule includeActionRule, ActionList parent) {
+		super(parent);
 		this.includeActionRule = includeActionRule;
-		this.parent = parent;
 	}
 
 	/* (non-Javadoc)
@@ -90,13 +87,6 @@ public class IncludeAction implements Executable {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.jhlabs.translets.engine.process.action.Executable#getParent()
-	 */
-	public ActionList getParent() {
-		return parent;
-	}
-
-	/* (non-Javadoc)
 	 * @see org.jhlabs.translets.engine.process.action.Executable#getId()
 	 */
 	public String getId() {
@@ -105,7 +95,7 @@ public class IncludeAction implements Executable {
 
 		return includeActionRule.getId();
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see org.jhlabs.translets.engine.process.action.Executable#isHidden()
 	 */
@@ -130,7 +120,7 @@ public class IncludeAction implements Executable {
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("{actionPath=").append(ActionPathMaker.concatActionPath(parent.getContentId(), includeActionRule.getId()));
+		sb.append("{fullActionId=").append(fullActionId);
 		sb.append(", includeActionRule=").append(includeActionRule.toString());
 		sb.append("}");
 
