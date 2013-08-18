@@ -67,7 +67,8 @@ id ID #IMPLIED
 
 <!ELEMENT joinpoint (pointcut*)>
 <!ATTLIST joinpoint
-target (request | response | translet | action | scheduler | bean) #REQUIRED
+target (translet | scheduler) #IMPLIED
+scope (translet | request | content | response | action | bean) #IMPLIED
 >
 
 <!ELEMENT pointcut (#PCDATA)>
