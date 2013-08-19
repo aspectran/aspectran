@@ -16,7 +16,7 @@
 package com.aspectran.core.activity.process.action;
 
 import com.aspectran.core.activity.process.ActionList;
-import com.aspectran.core.activity.process.ActionPathMaker;
+import com.aspectran.core.activity.process.FullActionIdConcator;
 
 /**
  * <p>Created: 2008. 03. 22 오후 5:50:35</p>
@@ -29,7 +29,7 @@ public abstract class AbstractAction {
 
 	public AbstractAction(ActionList parent) {
 		this.parent = parent;
-		this.fullActionId = ActionPathMaker.concatActionPath(parent.getContentId(), getActionId());
+		this.fullActionId = FullActionIdConcator.concat(parent.getContentId(), getActionId());
 	}
 	
 	public ActionList getParent() {
