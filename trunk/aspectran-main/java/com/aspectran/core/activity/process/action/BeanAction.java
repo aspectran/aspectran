@@ -90,8 +90,8 @@ public class BeanAction extends AbstractAction implements Executable {
 	/* (non-Javadoc)
 	 * @see org.jhlabs.translets.engine.process.action.Executable#getId()
 	 */
-	public String getId() {
-		return beanActionRule.getId();
+	public String getActionId() {
+		return beanActionRule.getActionId();
 	}
 	
 	/* (non-Javadoc)

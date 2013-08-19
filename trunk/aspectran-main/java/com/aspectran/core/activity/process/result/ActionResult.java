@@ -36,7 +36,10 @@ public class ActionResult {
 	 * @return the content id
 	 */
 	public String getContentId() {
-		return parent.getContentId();
+		if(parent != null)
+			return parent.getContentId();
+		
+		return null;
 	}
 
 	/**

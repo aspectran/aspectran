@@ -29,14 +29,14 @@ public abstract class AbstractAction {
 
 	public AbstractAction(ActionList parent) {
 		this.parent = parent;
-		this.fullActionId = ActionPathMaker.concatActionPath(parent.getContentId(), getId());
+		this.fullActionId = ActionPathMaker.concatActionPath(parent.getContentId(), getActionId());
 	}
 	
 	public ActionList getParent() {
 		return parent;
 	}
 	
-	public abstract String getId();
+	public abstract String getActionId();
 
 	public String getFullActionId() {
 		return fullActionId;

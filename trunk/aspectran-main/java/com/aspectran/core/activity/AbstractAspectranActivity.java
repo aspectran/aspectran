@@ -585,7 +585,7 @@ public abstract class AbstractAspectranActivity implements AspectranActivity {
 			log.debug("  Result " + resultValue);
 		
 		if(!action.isHidden() && resultValue != ActionResult.NO_RESULT) {
-			translet.addActionResult(action.getId(), resultValue);
+			translet.addActionResult(action.getActionId(), resultValue);
 		}
 	}
 	

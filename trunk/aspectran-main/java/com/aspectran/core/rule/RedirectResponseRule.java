@@ -243,7 +243,7 @@ public class RedirectResponseRule extends ActionPossessSupport implements Action
 				if(i > 0)
 					sb.append(", ");
 
-				sb.append(action.getId());
+				sb.append(action.getActionId());
 			}
 
 			sb.append(']');

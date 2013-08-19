@@ -106,7 +106,7 @@ public class ActionRuleNodeletAdder implements NodeletAdder {
 					throw new IllegalArgumentException("The <action> element requires a id attribute.");
 				
 				BeanActionRule beanActionRule = new BeanActionRule();
-				beanActionRule.setId(id);
+				beanActionRule.setActionId(id);
 				beanActionRule.setBeanId(bean);
 				beanActionRule.setMethodName(methodName);
 				beanActionRule.setHidden(hidden);
@@ -180,7 +180,7 @@ public class ActionRuleNodeletAdder implements NodeletAdder {
 					throw new IllegalArgumentException("The <include> element requires a id attribute.");
 				
 				IncludeActionRule includeActionRule = new IncludeActionRule();
-				includeActionRule.setId(id);
+				includeActionRule.setActionId(id);
 				includeActionRule.setTransletName(transletName);
 				includeActionRule.setHidden(hidden);
 
