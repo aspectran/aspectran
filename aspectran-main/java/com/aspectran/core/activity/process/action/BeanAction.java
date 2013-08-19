@@ -112,6 +112,10 @@ public class BeanAction extends AbstractAction implements Executable {
 		return beanActionRule.getAspectAdviceRuleRegistry();
 	}
 	
+	public void setAspectAdviceRuleRegistry(AspectAdviceRuleRegistry aspectAdviceRuleRegistry) {
+		beanActionRule.setAspectAdviceRuleRegistry(aspectAdviceRuleRegistry);
+	}
+	
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */

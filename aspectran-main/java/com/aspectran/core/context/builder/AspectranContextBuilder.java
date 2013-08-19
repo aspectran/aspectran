@@ -21,11 +21,6 @@ import java.io.FileNotFoundException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.aspectran.core.activity.process.ActionList;
-import com.aspectran.core.activity.process.ContentList;
-import com.aspectran.core.activity.process.action.Executable;
-import com.aspectran.core.activity.response.ResponseMap;
-import com.aspectran.core.activity.response.Responsible;
 import com.aspectran.core.context.AspectranContext;
 import com.aspectran.core.context.aspect.AspectAdviceRuleRegister;
 import com.aspectran.core.context.bean.BeanRegistry;
@@ -34,9 +29,6 @@ import com.aspectran.core.context.builder.xml.AspectranNodeParser;
 import com.aspectran.core.context.translet.TransletRuleRegistry;
 import com.aspectran.core.rule.AspectRuleMap;
 import com.aspectran.core.rule.BeanRuleMap;
-import com.aspectran.core.rule.RequestRule;
-import com.aspectran.core.rule.ResponseRule;
-import com.aspectran.core.rule.TransletRule;
 import com.aspectran.core.rule.TransletRuleMap;
 
 /**
@@ -60,7 +52,7 @@ public class AspectranContextBuilder {
 	}
 
 	public AspectranContext build(String contextConfigLocation) throws AspectranContextBuilderException {
-		ContextResourceFactory resourceFactory = null;
+		AspectranContextResource resource = null;
 		
 		try {
 			File file = new File(contextConfigLocation);
@@ -68,8 +60,8 @@ public class AspectranContextBuilder {
 			if(!file.isFile())
 				throw new FileNotFoundException("aspectran context configuration file is not found. " + contextConfigLocation);
 			
-			resourceFactory = new ContextResourceFactory();
-			resourceFactory.setFile(file);
+			resource = new AspectranContextResource();
+			resource.setFile(file);
 		} catch(Exception e) {
 			log.error(e);
 			throw new AspectranContextBuilderException(e);
@@ -79,7 +71,7 @@ public class AspectranContextBuilder {
 			AspectranContextBuildingAssistant assistant = new AspectranContextBuildingAssistant(applicationRootPath);
 	
 			AspectranNodeParser aspectranNodeParser = new AspectranNodeParser(assistant);
-			aspectranNodeParser.parse(resourceFactory.getInputStream());
+			aspectranNodeParser.parse(resource.getInputStream());
 			
 			AspectranContext context = makeAspectranContext(assistant);
 			
@@ -88,8 +80,8 @@ public class AspectranContextBuilder {
 	
 			return context;
 		} catch(Exception e) {
-			log.error("aspectran configuration error: " + resourceFactory);
-			throw new AspectranContextBuilderException("aspectran configuration error: " + resourceFactory, e);
+			log.error("aspectran configuration error: " + resource);
+			throw new AspectranContextBuilderException("aspectran configuration error: " + resource, e);
 		}
 	}
 	
@@ -120,194 +112,5 @@ public class AspectranContextBuilder {
 		//beanRuleMap.freeze();
 		return new ScopedBeanRegistry(beanRuleMap);
 	}
-	
-	/**
-	 * Initialize all the translets.
-	 * 
-	 * @param assistant the config
-	 * @param allTicketRuleMap the ticket rule map
-	 * @param transletRuleMap the translet rule map
-	 * @param allPluginRuleMap the plugin rule map
-	 * 
-	 * @return the translet rule map
-	 */
-	private TransletRuleMap initialize(TransletRuleMap transletRuleMap) throws Exception {
-		for(TransletRule transletRule : transletRuleMap) {
-			RequestRule requestRule = transletRule.getRequestRule();
-			ResponseRule responseRule = transletRule.getResponseRule();
-			
-			// log
-			StringBuilder sb = new StringBuilder();
-			sb.append("init Translet ").append(transletRule.toString());
-			if(requestRule != null)
-				sb.append(", RequestRule=").append(requestRule.toString());
-			if(responseRule != null)
-				sb.append(", ResponseRule=").append(responseRule.toString());
-			log.debug(sb.toString());
-			
-			ContentList contentList = transletRule.getContentList();
-			
-			if(contentList != null) {
-				for(ActionList actionList : contentList) {
-					for(Executable action : actionList) {
-						// TransletRule mapping for ProcessCallAction
-						// 맵핑 불필요 정책
-//						if(action instanceof ProcessCallAction) {
-//							ProcessCallAction processCallAction = (ProcessCallAction)action;
-//							ProcessCallActionRule processCallActionRule = processCallAction.getProcessCallActionRule();
-//							String path = processCallActionRule.getPath();
-//							TransletRule tr;
-//							
-//							if(path == null || (tr = transletRuleMap.get(path)) == null) {
-//								log.error("Unknown translet path '" + path + "'. ProcessCallActionRule " + processCallActionRule);
-//								throw new IllegalArgumentException("Unknown translet path '" + path + "'. ProcessCallActionRule " + processCallActionRule);
-//							}
-//							
-//							processCallAction.setTransletRule(tr);
-//						}
-					}
-				}
-			}
-			
-			// Response plugin class mapping...
-			if(responseRule != null) {
-				ResponseMap responsibleMap = responseRule.getResponseMap();
-				
-				for(Responsible responsible : responsibleMap) {
-					ActionList actionList = responsible.getActionList();
-					
-					if(actionList != null) {
-						for(Executable action : actionList) {
-							// TransletRule mapping for ProcessCallAction
-//							if(action instanceof ProcessCallAction) {
-//								ProcessCallAction processCallAction = (ProcessCallAction)action;
-//								ProcessCallActionRule processCallActionRule = processCallAction.getProcessCallActionRule();
-//								String path = processCallActionRule.getPath();
-//								TransletRule tr;
-//								
-//								if(path == null || (tr = transletRuleMap.get(path)) == null) {
-//									log.error("Unknown translet path '" + path + "'. ProcessCallActionRule " + processCallActionRule);
-//									throw new IllegalArgumentException("Unknown translet path '" + path + "'. ProcessCallActionRule " + processCallActionRule);
-//								}
-//								
-//								processCallAction.setTransletRule(tr);
-//							}
-						}
-					}
-				}
-			}
-		}
-		
-		return transletRuleMap;
-	}
-	
-//	public AspectranContext build(String contextConfigLocation) throws AspectranContextBuilderException {
-//		List<ImportableResource> importableResourceList = null;
-//
-//		try {
-//			importableResourceList = new ArrayList<ImportableResource>();
-//		
-//			String[] filePathes = StringUtils.tokenize(contextConfigLocation, "\n\t,;:| ");
-//			
-//			if(filePathes.length > 0) {
-//				
-//				for(String filePath : filePathes) {
-//					File file = new File(filePath);
-//				
-//					if(!file.isFile())
-//						throw new FileNotFoundException("aspectran context configuration file is not found. " + filePath);
-//					
-//					ImportableResource r = new ImportableResource();
-//					r.setFile(file);
-//					
-//					importableResourceList.add(r);
-//				}
-//			}
-//		} catch(Exception e) {
-//			log.error(e);
-//			throw new AspectranContextBuilderException(e);
-//		}
-//		
-//		AspectranSettingAssistant assistant = null;
-//		
-//		for(ImportableResource r : importableResourceList) {
-//			assistant = build(r, assistant);
-//		}
-//
-//		BeanRuleMap beanRuleMap = assistant.getBeanRuleMap();
-//		TransletRuleMap transletRuleMap = assistant.getTransletRuleMap();
-//		
-//		BeanRegistry beanRegistry = buildBeanRegistry(assistant);
-//		TransletRegistry transletRegistry = buildTransletRegistry(assistant);
-//		
-//		// create ActivityContext
-//		AspectranContext context = new AspectranContext(assistant.getActivitySettingsRule());
-//		context.setBeanRegistry(beanRegistry);
-//		context.setTransletRegistry(transletRegistry);
-//		//context.setBeanFactory(beanRegistry);
-//		//context.setTransletRuleMap(assistant.getTransletRuleMap());
-//		
-//		
-//		
-//		assistant.clearObjectStack();
-//		assistant.clearTypeAliases();
-//
-//		return context;
-//	}
-
-	
-	
-//	/**
-//	 * Builds an TransletsClient using the specified file path.
-//	 * 
-//	 * @param configFilePath the config file path
-//	 * 
-//	 * @return the translets client
-//	 * 
-//	 * @throws AspectranContextBuilderException the configuration exception
-//	 */
-//	private AspectranSettingAssistant build(ContextResourceFactory resource, AspectranSettingAssistant parentAssistant) throws AspectranContextBuilderException {
-//		try {
-//			AspectranSettingAssistant assistant;
-//			
-//			if(parentAssistant == null)
-//				assistant = new AspectranSettingAssistant(serviceRootPath);
-//			else
-//				assistant = new AspectranSettingAssistant(parentAssistant);
-//
-//			InheritedSettings oldActivitySettingsRule = assistant.getActivitySettingsRule();
-//
-//			// Translet loading...
-//			AspectranNodeParser aspectranNodeParser = new AspectranNodeParser(assistant);
-//			aspectranNodeParser.parse(resource.getInputStream());
-//
-//			assistant.clearTypeAliases();
-//			
-//			List<ContextResourceFactory> resources = assistant.getResources();
-//			
-//			for(ContextResourceFactory r : resources) {
-//				log.info("Loading the aspectran context configuration from '" + r.getResource() + "'...");
-//				build(r, assistant);
-//			}
-//			
-//			assistant.setActivitySettingsRule(oldActivitySettingsRule);
-//			
-//			// initializing translets 
-//			log.info("Initializing translets...");
-//			initialize(assistant.getTransletRuleMap());
-//
-//			if(log.isDebugEnabled()) {
-//				for(TransletRule t : assistant.getTransletRuleMap()) {
-//					log.debug("Describing translet:" + AspectranContextConstant.LINE_SEPARATOR + t.describe());
-//				}
-//			}
-//			
-//			return assistant;
-//			
-//		} catch(Exception e) {
-//			log.error("Translets configuration error." + resource);
-//			throw new AspectranContextBuilderException("Translets configuration error" + resource, e);
-//		}
-//	}
 	
 }

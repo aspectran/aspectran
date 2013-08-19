@@ -71,4 +71,6 @@ public interface Executable {
 	 */
 	public AspectAdviceRuleRegistry getAspectAdviceRuleRegistry();
 	
+	public void setAspectAdviceRuleRegistry(AspectAdviceRuleRegistry aspectAdviceRuleRegistry);
+	
 }
