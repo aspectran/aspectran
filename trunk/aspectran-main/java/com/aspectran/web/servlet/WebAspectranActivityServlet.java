@@ -16,7 +16,6 @@
 package com.aspectran.web.servlet;
 
 import java.io.IOException;
-import java.util.List;
 
 import javax.servlet.Servlet;
 import javax.servlet.ServletException;
@@ -36,8 +35,7 @@ import com.aspectran.core.util.StringUtils;
 import com.aspectran.web.AccessPermitter;
 import com.aspectran.web.activity.WebAspectranActivity;
 import com.aspectran.web.adapter.WebApplicationAdapter;
-import com.aspectran.web.context.ContextLoader;
-import com.aspectran.web.context.ContextLoaderFactory;
+import com.aspectran.web.context.AspectranContextLoader;
 
 /**
  * Servlet implementation class for Servlet: Translets.
@@ -51,7 +49,7 @@ public class WebAspectranActivityServlet extends HttpServlet implements Servlet 
 	
 	private static boolean debugEnabled = log.isDebugEnabled();
 
-	private AspectranContext context;
+	private AspectranContext aspectranContext;
 	
 	private AccessPermitter accessPermitter;
 
@@ -82,31 +80,17 @@ public class WebAspectranActivityServlet extends HttpServlet implements Servlet 
 				accessPermitter.setDeniedAddresses(remoteAccessDenied);
 			}
 			
-			ContextLoader contextLoader = ContextLoaderFactory.getContextLoader(getServletConfig());
+			AspectranContextLoader aspectranContextLoader = (AspectranContextLoader)getServletConfig().getServletContext().getAttribute(AspectranContextLoader.ASPECTRAN_CONTEXT_LOADER_ATTRIBUTE);
 			
-			List<AspectranContext> contextList = contextLoader.getContextList();
-			ContextMergeMode mergeMode = contextLoader.getMergeMode();
-			
-			log.debug("contextList:" + contextList);
-
-			if(contextList != null) {
-				if(contextList.size() == 1) {
-					context = contextList.get(0);
-					log.debug(context);
-				} else {
-					ContextMerger contextMerger = new ContextMerger(mergeMode);
-					context = contextMerger.merge(contextList);
-				}
-			}
-
-			if(context == null) {
-				throw new Exception("지정된 컨텍스트가 없습니다.");
+			if(aspectranContextLoader == null) {
+				aspectranContextLoader = new AspectranContextLoader(getServletConfig());
+				aspectranContext = aspectranContextLoader.getAspectranContext();
 			}
 			
 			ApplicationAdapter applicationAdapter = new WebApplicationAdapter(getServletContext());
-			context.setApplicationAdapter(applicationAdapter);
+			aspectranContext.setApplicationAdapter(applicationAdapter);
 		} catch(Exception e) {
-			log.error("Unable to initialize TransletsActivityServlet.", e);
+			log.error("Unable to initialize WebAspectranActivityServlet.", e);
 			throw new UnavailableException(e.getMessage());
 		}
 	}
@@ -132,7 +116,7 @@ public class WebAspectranActivityServlet extends HttpServlet implements Servlet 
 			
 			String requestUri = req.getRequestURI();
 
-			AspectranActivity activity = new WebAspectranActivity(context, req, res);
+			AspectranActivity activity = new WebAspectranActivity(aspectranContext, req, res);
 			activity.run(requestUri);
 		} catch(TransletNotFoundException e) {
 			res.sendError(HttpServletResponse.SC_NOT_FOUND);
@@ -150,13 +134,13 @@ public class WebAspectranActivityServlet extends HttpServlet implements Servlet 
 	 */
 	@Override
 	public void destroy() {
-		log.info("Closing Trasnlets activity servlet. context " + context);
+		log.info("Closing WebAspectranActivityServlet. AspectranContext " + aspectranContext);
 		
 		super.destroy();
 		
-		if(context != null) {
-			context.destroy();
-			context = null;
+		if(aspectranContext != null) {
+			aspectranContext.destroy();
+			aspectranContext = null;
 		}
 	}
 }
