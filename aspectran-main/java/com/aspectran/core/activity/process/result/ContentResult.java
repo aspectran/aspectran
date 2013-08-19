@@ -58,6 +58,7 @@ public class ContentResult extends ArrayList<ActionResult> {
 		ActionResult actionResult = new ActionResult();
 		actionResult.setActionId(actionId);
 		actionResult.setResultValue(resultValue);
+		actionResult.setParent(this);
 
 		add(actionResult);
 	}
@@ -66,7 +67,9 @@ public class ContentResult extends ArrayList<ActionResult> {
 	 * @see java.util.ArrayList#add(java.lang.Object)
 	 */
 	public boolean add(ActionResult actionResult) {
-		actionResult.setParent(this);
+		if(actionResult.getParent() == null)
+			actionResult.setParent(this);
+		
 		return super.add(actionResult);
 	}
 

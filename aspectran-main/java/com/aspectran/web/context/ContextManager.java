@@ -51,7 +51,7 @@ public class ContextManager {
 				
 				for(AspectranContext context : contextList) {
 					log.debug("context: " + context);
-					contextMap.put(context.getId(), context);
+					contextMap.put(context.getActionId(), context);
 				}
 			}
 

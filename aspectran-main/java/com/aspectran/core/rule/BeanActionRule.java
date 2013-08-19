@@ -26,7 +26,7 @@ import com.aspectran.core.rule.ability.PropertyPossessable;
  */
 public class BeanActionRule implements ArgumentPossessable, PropertyPossessable, AspectAdviceSupport {
 	
-	protected String id;
+	protected String actionId;
 	
 	protected String beanId;
 	
@@ -45,17 +45,17 @@ public class BeanActionRule implements ArgumentPossessable, PropertyPossessable,
 	 * 
 	 * @return the action id
 	 */
-	public String getId() {
-		return id;
+	public String getActionId() {
+		return actionId;
 	}
 
 	/**
 	 * Sets the action id.
 	 * 
-	 * @param id the new action id
+	 * @param actionId the new action id
 	 */
-	public void setId(String id) {
-		this.id = id;
+	public void setActionId(String actionId) {
+		this.actionId = actionId;
 	}
 	
 	public String getBeanId() {
@@ -205,7 +205,7 @@ public class BeanActionRule implements ArgumentPossessable, PropertyPossessable,
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		
-		sb.append("{id=").append(id);
+		sb.append("{id=").append(actionId);
 		sb.append(", bean=").append(beanId);
 		sb.append(", method=").append(methodName);
 		sb.append(", hidden=").append(hidden);

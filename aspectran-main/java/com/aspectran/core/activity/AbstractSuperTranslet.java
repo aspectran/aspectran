@@ -132,7 +132,7 @@ public abstract class AbstractSuperTranslet implements SuperTranslet {
 	/**
 	 * Transform.
 	 * 
-	 * @param id the id
+	 * @param actionId the id
 	 * 
 	 * @throws ResponseException the response exception
 	 */
@@ -148,7 +148,7 @@ public abstract class AbstractSuperTranslet implements SuperTranslet {
 	/**
 	 * Redirect.
 	 * 
-	 * @param id the id
+	 * @param actionId the id
 	 * 
 	 * @throws ResponseException the response exception
 	 */
@@ -160,7 +160,7 @@ public abstract class AbstractSuperTranslet implements SuperTranslet {
 	/**
 	 * Forward.
 	 * 
-	 * @param id the id
+	 * @param actionId the id
 	 * 
 	 * @throws ResponseException the response exception
 	 */

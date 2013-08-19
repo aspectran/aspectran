@@ -30,7 +30,7 @@ public interface Executable {
 	 * 
 	 * @return the id
 	 */
-	public String getId();
+	public String getActionId();
 
 	public String getFullActionId();
 

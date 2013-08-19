@@ -89,11 +89,8 @@ public class IncludeAction extends AbstractAction implements Executable {
 	/* (non-Javadoc)
 	 * @see org.jhlabs.translets.engine.process.action.Executable#getId()
 	 */
-	public String getId() {
-		if(includeActionRule == null)
-			return null;
-
-		return includeActionRule.getId();
+	public String getActionId() {
+		return includeActionRule.getActionId();
 	}
 	
 	/* (non-Javadoc)

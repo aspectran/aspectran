@@ -67,10 +67,7 @@ public class EchoAction extends AbstractAction implements Executable {
 	/* (non-Javadoc)
 	 * @see org.jhlabs.translets.engine.process.action.Executable#getId()
 	 */
-	public String getId() {
-		if(echoActionRule == null)
-			return null;
-		
+	public String getActionId() {
 		return echoActionRule.getActionId();
 	}
 

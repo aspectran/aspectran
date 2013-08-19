@@ -22,7 +22,7 @@ package com.aspectran.core.rule;
 public class IncludeActionRule {
 	
 	/** The id. */
-	private String id;
+	private String actionId;
 	
 	/** The translet name. */
 	private String transletName;
@@ -38,17 +38,17 @@ public class IncludeActionRule {
 	 *
 	 * @return the id
 	 */
-	public String getId() {
-		return id;
+	public String getActionId() {
+		return actionId;
 	}
 
 	/**
 	 * Sets the id.
 	 *
-	 * @param id the new id
+	 * @param actionId the new id
 	 */
-	public void setId(String id) {
-		this.id = id;
+	public void setActionId(String actionId) {
+		this.actionId = actionId;
 	}
 	
 	/**
@@ -124,7 +124,7 @@ public class IncludeActionRule {
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		
-		sb.append("{id=").append(id);
+		sb.append("{id=").append(actionId);
 		sb.append(", transletName=").append(transletName);
 		
 		if(attributeItemRuleMap != null) {
