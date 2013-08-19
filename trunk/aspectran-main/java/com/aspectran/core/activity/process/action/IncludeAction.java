@@ -108,7 +108,11 @@ public class IncludeAction extends AbstractAction implements Executable {
 	}
 
 	public AspectAdviceRuleRegistry getAspectAdviceRuleRegistry() {
-		return null;
+		return includeActionRule.getAspectAdviceRuleRegistry();
+	}
+	
+	public void setAspectAdviceRuleRegistry(AspectAdviceRuleRegistry aspectAdviceRuleRegistry) {
+		includeActionRule.setAspectAdviceRuleRegistry(aspectAdviceRuleRegistry);
 	}
 	
 	/* (non-Javadoc)

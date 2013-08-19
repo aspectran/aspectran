@@ -29,7 +29,7 @@ import com.aspectran.core.activity.response.Responsible;
 import com.aspectran.core.context.bean.ablility.DisposableBean;
 import com.aspectran.core.context.bean.ablility.InitializableBean;
 import com.aspectran.core.context.builder.AspectranContextBuildingAssistant;
-import com.aspectran.core.context.builder.ContextResourceFactory;
+import com.aspectran.core.context.builder.AspectranContextResource;
 import com.aspectran.core.context.builder.InheritedAspectranSettings;
 import com.aspectran.core.rule.AspectRule;
 import com.aspectran.core.rule.BeanRule;
@@ -632,21 +632,21 @@ public class AspectranNodeParser {
 				String file = attributes.getProperty("file");
 				String url = attributes.getProperty("url");
 				
-				ContextResourceFactory r = new ContextResourceFactory();
+				AspectranContextResource aspectranContextResource = new AspectranContextResource();
 				
 				if(!StringUtils.isEmpty(resource))
-					r.setResource(resource);
+					aspectranContextResource.setResource(resource);
 				else if(!StringUtils.isEmpty(file))
-					r.setResource(file);
+					aspectranContextResource.setResource(file);
 				else if(!StringUtils.isEmpty(url))
-					r.setResource(url);
+					aspectranContextResource.setResource(url);
 				else
 					throw new IllegalArgumentException("The <import> element requires either a resource or a file or a url attribute.");
 				
 				InheritedAspectranSettings inheritedSettings = assistant.getInheritedAspectranSettings();
 				
 				AspectranNodeParser aspectranNodeParser = new AspectranNodeParser(assistant);
-				aspectranNodeParser.parse(r.getInputStream());
+				aspectranNodeParser.parse(aspectranContextResource.getInputStream());
 				
 				assistant.setActivitySettingsRule(inheritedSettings);
 			}

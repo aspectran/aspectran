@@ -15,6 +15,10 @@
  */
 package com.aspectran.core.rule;
 
+import java.util.List;
+
+import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
+
 
 
 /**
@@ -27,6 +31,8 @@ public class EchoActionRule {
 	private ItemRuleMap itemRuleMap;
 
 	private Boolean hidden;
+	
+	private AspectAdviceRuleRegistry aspectAdviceRuleRegistry;
 	
 	/**
 	 * Gets the action id.
@@ -94,6 +100,42 @@ public class EchoActionRule {
 		this.hidden = hidden;
 	}
 
+	public AspectAdviceRuleRegistry getAspectAdviceRuleRegistry() {
+		return aspectAdviceRuleRegistry;
+	}
+
+	public void setAspectAdviceRuleRegistry(AspectAdviceRuleRegistry aspectAdviceRuleRegistry) {
+		this.aspectAdviceRuleRegistry = aspectAdviceRuleRegistry;
+	}
+	
+	public List<AspectAdviceRule> getBeforeAdviceRuleList() {
+		if(aspectAdviceRuleRegistry == null)
+			return null;
+		
+		return aspectAdviceRuleRegistry.getBeforeAdviceRuleList();
+	}
+	
+	public List<AspectAdviceRule> getAfterAdviceRuleList() {
+		if(aspectAdviceRuleRegistry == null)
+			return null;
+		
+		return aspectAdviceRuleRegistry.getAfterAdviceRuleList();
+	}
+	
+	public List<AspectAdviceRule> getFinallyAdviceRuleList() {
+		if(aspectAdviceRuleRegistry == null)
+			return null;
+		
+		return aspectAdviceRuleRegistry.getFinallyAdviceRuleList();
+	}
+	
+	public List<AspectAdviceRule> getExceptionRaizedAdviceRuleList() {
+		if(aspectAdviceRuleRegistry == null)
+			return null;
+		
+		return aspectAdviceRuleRegistry.getExceptionRaizedAdviceRuleList();
+	}
+	
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */

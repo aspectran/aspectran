@@ -86,7 +86,11 @@ public class EchoAction extends AbstractAction implements Executable {
 	}
 	
 	public AspectAdviceRuleRegistry getAspectAdviceRuleRegistry() {
-		return null;
+		return echoActionRule.getAspectAdviceRuleRegistry();
+	}
+	
+	public void setAspectAdviceRuleRegistry(AspectAdviceRuleRegistry aspectAdviceRuleRegistry) {
+		echoActionRule.setAspectAdviceRuleRegistry(aspectAdviceRuleRegistry);
 	}
 	
 	/* (non-Javadoc)
