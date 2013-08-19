@@ -20,7 +20,7 @@ import com.aspectran.core.context.builder.AspectranContextConstant;
 /**
  * <p>Created: 2008. 7. 2. 오전 12:16:12</p>
  */
-public class ActionPathMaker {
+public class FullActionIdConcator {
 
 	/**
 	 * Make a action path.
@@ -30,7 +30,7 @@ public class ActionPathMaker {
 	 * 
 	 * @return the string
 	 */
-	public static String concatActionPath(String contentId, String actionId) {
+	public static String concat(String contentId, String actionId) {
 		if(contentId == null)
 			return actionId;
 		
@@ -48,18 +48,18 @@ public class ActionPathMaker {
 	/**
 	 * Make a action path.
 	 * 
-	 * @param parentActionPath the parent action path
+	 * @param parentFullActionId the parent action path
 	 * @param contentId the content id
 	 * @param actionId the action id
 	 * 
 	 * @return the string
 	 */
-	public static String concatActionPath(String parentActionPath, String contentId, String actionId) {
-		if(parentActionPath == null)
-			return concatActionPath(contentId, actionId);
+	public static String concat(String parentFullActionId, String contentId, String actionId) {
+		if(parentFullActionId == null)
+			return concat(contentId, actionId);
 		
 		StringBuilder sb = new StringBuilder();
-		sb.append(parentActionPath);
+		sb.append(parentFullActionId);
 
 		if(contentId != null) {
 			sb.append(AspectranContextConstant.CONTENT_ID_SEPARATOR);
