@@ -15,25 +15,16 @@
  */
 package com.aspectran.web.context;
 
-import java.awt.event.ActionEvent;
-
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
-/**
- * The listener interface for receiving action events.
- * The class that is interested in processing a action
- * event implements this interface, and the object created
- * with that class is registered with a component using the
- * component's <code>addActionListener<code> method. When
- * the action event occurs, that object's appropriate
- * method is invoked.
- * 
- * @see ActionEvent
- */
-public class ContextManagerListener implements ServletContextListener {
+import com.aspectran.core.context.AspectranContext;
 
-	private ContextManager contextManager;
+public class AspectranContextLoaderListener implements ServletContextListener {
+
+	public static final String CONTEXT_LOADER_ATTRIBUTE = AspectranContextLoader.class.getName();
+	
+	private AspectranContextLoader aspectranContextLoader;
 	
 	/**
 	 * Initialize the translets root context.
@@ -41,7 +32,8 @@ public class ContextManagerListener implements ServletContextListener {
 	 * @param event the event
 	 */
 	public void contextInitialized(ServletContextEvent event) {
-		contextManager = new ContextManager(event.getServletContext());
+		aspectranContextLoader = new AspectranContextLoader(event.getServletContext());
+		event.getServletContext().setAttribute(CONTEXT_LOADER_ATTRIBUTE, aspectranContextLoader);
 	}
 
 	/**
@@ -50,8 +42,15 @@ public class ContextManagerListener implements ServletContextListener {
 	 * @param event the event
 	 */
 	public void contextDestroyed(ServletContextEvent event) {
-		if(this.contextManager != null) {
-			this.contextManager.destroy(event.getServletContext());
+		if(aspectranContextLoader != null) {
+			event.getServletContext().removeAttribute(CONTEXT_LOADER_ATTRIBUTE);
+			
+			AspectranContext aspectranContext = aspectranContextLoader.getAspectranContext();
+			
+			if(aspectranContext != null) {
+				aspectranContext.destroy();
+				aspectranContext = null;
+			}
 		}
 	}
 

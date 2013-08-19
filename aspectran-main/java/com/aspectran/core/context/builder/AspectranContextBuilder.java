@@ -73,12 +73,12 @@ public class AspectranContextBuilder {
 			AspectranNodeParser aspectranNodeParser = new AspectranNodeParser(assistant);
 			aspectranNodeParser.parse(resource.getInputStream());
 			
-			AspectranContext context = makeAspectranContext(assistant);
+			AspectranContext aspectranContext = makeAspectranContext(assistant);
 			
 			assistant.clearObjectStack();
 			assistant.clearTypeAliases();
 	
-			return context;
+			return aspectranContext;
 		} catch(Exception e) {
 			log.error("aspectran configuration error: " + resource);
 			throw new AspectranContextBuilderException("aspectran configuration error: " + resource, e);
@@ -89,11 +89,11 @@ public class AspectranContextBuilder {
 		BeanRegistry beanRegistry = makeBeanRegistry(assistant);
 		TransletRuleRegistry transletRuleRegistry = makeTransletRuleRegistry(assistant);
 		
-		AspectranContext context = new AspectranContext();
-		context.setBeanRegistry(beanRegistry);
-		context.setTransletRuleRegistry(transletRuleRegistry);
+		AspectranContext aspectranContext = new AspectranContext();
+		aspectranContext.setBeanRegistry(beanRegistry);
+		aspectranContext.setTransletRuleRegistry(transletRuleRegistry);
 		
-		return context;
+		return aspectranContext;
 	}
 	
 	private TransletRuleRegistry makeTransletRuleRegistry(AspectranContextBuildingAssistant assistant) {
