@@ -38,7 +38,7 @@ public class FullActionIdConcator {
 		sb.append(contentId);
 
 		if(actionId != null) {
-			sb.append(AspectranContextConstant.CONTENT_ID_SEPARATOR);
+			sb.append(AspectranContextConstant.ACTION_ID_SEPARATOR);
 			sb.append(actionId);
 		}
 
@@ -62,12 +62,12 @@ public class FullActionIdConcator {
 		sb.append(parentFullActionId);
 
 		if(contentId != null) {
-			sb.append(AspectranContextConstant.CONTENT_ID_SEPARATOR);
+			sb.append(AspectranContextConstant.ACTION_ID_SEPARATOR);
 			sb.append(contentId);
 		}
 
 		if(actionId != null) {
-			sb.append(AspectranContextConstant.CONTENT_ID_SEPARATOR);
+			sb.append(AspectranContextConstant.ACTION_ID_SEPARATOR);
 			sb.append(actionId);
 		}
 
