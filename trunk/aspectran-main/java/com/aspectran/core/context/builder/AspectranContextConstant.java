@@ -35,6 +35,6 @@ public interface AspectranContextConstant {
 	public static final String BEAN_ID_SEPARATOR = ".";
 
 	/** The Constant CONTENT_ID_SEPARATOR. */
-	public static final String CONTENT_ID_SEPARATOR = ".";
+	public static final String ACTION_ID_SEPARATOR = ".";
 
 }
