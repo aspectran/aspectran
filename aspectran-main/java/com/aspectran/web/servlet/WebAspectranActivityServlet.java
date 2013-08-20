@@ -32,7 +32,6 @@ import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.AspectranContext;
 import com.aspectran.core.context.translet.TransletNotFoundException;
 import com.aspectran.core.util.StringUtils;
-import com.aspectran.support.security.blocking.IPAddressBlocker;
 import com.aspectran.web.activity.WebAspectranActivity;
 import com.aspectran.web.adapter.WebApplicationAdapter;
 import com.aspectran.web.context.AspectranContextLoader;
@@ -51,7 +50,7 @@ public class WebAspectranActivityServlet extends HttpServlet implements Servlet 
 
 	private AspectranContext aspectranContext;
 	
-	private IPAddressBlocker ipAddressBlocker;
+	private IPAddressAccessBlocker ipAddressBlocker;
 
 	/*
 	 * (non-Java-doc)
@@ -75,7 +74,7 @@ public class WebAspectranActivityServlet extends HttpServlet implements Servlet 
 			String remoteAccessDenied = getServletConfig().getInitParameter("access:denyRemoteAddress");
 			
 			if(!StringUtils.isEmpty(remoteAccessAllowed) || !StringUtils.isEmpty(remoteAccessDenied)) {
-				ipAddressBlocker = new IPAddressBlocker();
+				ipAddressBlocker = new IPAddressAccessBlocker();
 				ipAddressBlocker.setAllowedAddresses(remoteAccessAllowed);
 				ipAddressBlocker.setDeniedAddresses(remoteAccessDenied);
 			}
