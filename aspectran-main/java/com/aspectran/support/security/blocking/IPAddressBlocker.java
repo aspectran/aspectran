@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.aspectran.web;
+package com.aspectran.support.security.blocking;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -24,7 +24,7 @@ import java.util.StringTokenizer;
  * 
  * <p>Created: 2008. 03. 24 오후 11:40:58</p>
  */
-public class AccessPermitter {
+public class IPAddressBlocker {
 	
 	private static final String DELIMITERS = " ,;\t\n\r\f";
 	
@@ -37,7 +37,7 @@ public class AccessPermitter {
 	 * 
 	 * @param accessPermitRule the access permit rule
 	 */
-	public AccessPermitter() {
+	public IPAddressBlocker() {
 	}
 	
 	/**
