@@ -25,13 +25,11 @@
 		</listener-class>
 	</listener>
 	<servlet>
-		<servlet-name>aspectran-web</servlet-name>
-		<servlet-class>com.aspectran.web.servlet.AspectranActivityServlet</servlet-class>
+		<servlet-name>aspectran:web</servlet-name>
+		<servlet-class>com.aspectran.web.servlet.WebAspectranActivityServlet</servlet-class>
 		<init-param>
 			<param-name>aspectran:contextConfigLocation</param-name>
-			<param-value>
-				/WEB-INF/aspectran/aspectran.xml
-	  		</param-value>
+			<param-value>/WEB-INF/aspectran/aspectran.xml</param-value>
 		</init-param>
 		<init-param>
 			<param-name>aspectran:autoReload</param-name>
@@ -40,7 +38,7 @@
 		<load-on-startup>1</load-on-startup>
 	</servlet>
 	<servlet-mapping>
-		<servlet-name>aspectran-web</servlet-name>
+		<servlet-name>aspectran:web</servlet-name>
 		<url-pattern>/test/*</url-pattern>
 	</servlet-mapping>
 </web-app>
