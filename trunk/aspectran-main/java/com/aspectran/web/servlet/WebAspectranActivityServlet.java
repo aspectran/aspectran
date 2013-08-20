@@ -32,7 +32,7 @@ import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.AspectranContext;
 import com.aspectran.core.context.translet.TransletNotFoundException;
 import com.aspectran.core.util.StringUtils;
-import com.aspectran.web.AccessPermitter;
+import com.aspectran.support.security.blocking.IPAddressBlocker;
 import com.aspectran.web.activity.WebAspectranActivity;
 import com.aspectran.web.adapter.WebApplicationAdapter;
 import com.aspectran.web.context.AspectranContextLoader;
@@ -51,7 +51,7 @@ public class WebAspectranActivityServlet extends HttpServlet implements Servlet 
 
 	private AspectranContext aspectranContext;
 	
-	private AccessPermitter accessPermitter;
+	private IPAddressBlocker ipAddressBlocker;
 
 	/*
 	 * (non-Java-doc)
@@ -75,9 +75,9 @@ public class WebAspectranActivityServlet extends HttpServlet implements Servlet 
 			String remoteAccessDenied = getServletConfig().getInitParameter("access:denyRemoteAddress");
 			
 			if(!StringUtils.isEmpty(remoteAccessAllowed) || !StringUtils.isEmpty(remoteAccessDenied)) {
-				accessPermitter = new AccessPermitter();
-				accessPermitter.setAllowedAddresses(remoteAccessAllowed);
-				accessPermitter.setDeniedAddresses(remoteAccessDenied);
+				ipAddressBlocker = new IPAddressBlocker();
+				ipAddressBlocker.setAllowedAddresses(remoteAccessAllowed);
+				ipAddressBlocker.setDeniedAddresses(remoteAccessDenied);
 			}
 			
 			AspectranContextLoader aspectranContextLoader = (AspectranContextLoader)getServletConfig().getServletContext().getAttribute(AspectranContextLoader.ASPECTRAN_CONTEXT_LOADER_ATTRIBUTE);
@@ -101,10 +101,10 @@ public class WebAspectranActivityServlet extends HttpServlet implements Servlet 
 	@Override
 	public void service(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
 		try {
-			if(accessPermitter != null) {
+			if(ipAddressBlocker != null) {
 				String remoteAddr = req.getRemoteAddr();
 			
-				if(!accessPermitter.isValidAccess(remoteAddr)) {
+				if(!ipAddressBlocker.isValidAccess(remoteAddr)) {
 					if(debugEnabled) {
 						log.debug("Access denied '" + remoteAddr + "'.");
 					}
