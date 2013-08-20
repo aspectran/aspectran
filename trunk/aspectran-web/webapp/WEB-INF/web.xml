@@ -26,7 +26,7 @@
 	</listener>
 	<servlet>
 		<servlet-name>aspectran-web</servlet-name>
-		<servlet-class>com.aspectran.web.servlet.WebAspectranActivityServlet</servlet-class>
+		<servlet-class>com.aspectran.web.servlet.AspectranActivityServlet</servlet-class>
 		<init-param>
 			<param-name>aspectran:contextConfigLocation</param-name>
 			<param-value>
