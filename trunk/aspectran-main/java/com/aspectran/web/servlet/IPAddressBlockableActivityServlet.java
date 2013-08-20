@@ -16,11 +16,12 @@
 package com.aspectran.web.servlet;
 
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.StringTokenizer;
 
 import javax.servlet.Servlet;
 import javax.servlet.ServletException;
-import javax.servlet.UnavailableException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -28,24 +29,24 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.aspectran.core.activity.AspectranActivity;
-import com.aspectran.core.adapter.ApplicationAdapter;
-import com.aspectran.core.context.AspectranContext;
 import com.aspectran.core.context.translet.TransletNotFoundException;
 import com.aspectran.web.activity.WebAspectranActivity;
-import com.aspectran.web.adapter.WebApplicationAdapter;
-import com.aspectran.web.context.AspectranContextLoader;
 
 /**
  * Servlet implementation class for Servlet: Translets.
  */
-public class WebAspectranActivityServlet extends HttpServlet implements Servlet {
+public class IPAddressBlockableActivityServlet extends WebAspectranActivityServlet implements Servlet {
 
 	/** @serial */
-	static final long serialVersionUID = 6659683668233267847L;
+	static final long serialVersionUID = -2369788867122156319L;
 
-	private static final Log log = LogFactory.getLog(WebAspectranActivityServlet.class);
+	private static final Log log = LogFactory.getLog(IPAddressBlockableActivityServlet.class);
 	
-	protected AspectranContext aspectranContext;
+	private static boolean debugEnabled = log.isDebugEnabled();
+	
+	private static final String DELIMITERS = " ,;\t\n\r\f";
+	
+	private Set<String> allowedAddresses;
 	
 	/*
 	 * (non-Java-doc)
@@ -55,7 +56,7 @@ public class WebAspectranActivityServlet extends HttpServlet implements Servlet 
 	/**
 	 * Instantiates a new action servlet.
 	 */
-	public WebAspectranActivityServlet() {
+	public IPAddressBlockableActivityServlet() {
 		super();
 	}
 
@@ -64,20 +65,20 @@ public class WebAspectranActivityServlet extends HttpServlet implements Servlet 
 	 */
 	@Override
 	public void init() throws ServletException {
-		try {
-			AspectranContextLoader aspectranContextLoader = (AspectranContextLoader)getServletConfig().getServletContext().getAttribute(AspectranContextLoader.ASPECTRAN_CONTEXT_LOADER_ATTRIBUTE);
+		String addresses = getServletConfig().getInitParameter("aspectran:allowedAddresses");
+
+		if(addresses != null) {
+			allowedAddresses = new HashSet<String>();
+
+			StringTokenizer st = new StringTokenizer(addresses, DELIMITERS);
 			
-			if(aspectranContextLoader == null) {
-				aspectranContextLoader = new AspectranContextLoader(getServletConfig());
-				aspectranContext = aspectranContextLoader.getAspectranContext();
+			while(st.hasMoreTokens()) {
+				String token = st.nextToken();
+				allowedAddresses.add(token);			
 			}
-			
-			ApplicationAdapter applicationAdapter = new WebApplicationAdapter(getServletContext());
-			aspectranContext.setApplicationAdapter(applicationAdapter);
-		} catch(Exception e) {
-			log.error("Unable to initialize WebAspectranActivityServlet.", e);
-			throw new UnavailableException(e.getMessage());
 		}
+		
+		super.init();
 	}
 
 	/* (non-Javadoc)
@@ -86,6 +87,17 @@ public class WebAspectranActivityServlet extends HttpServlet implements Servlet 
 	@Override
 	public void service(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
 		try {
+			String remoteAddr = req.getRemoteAddr();
+		
+			if(!isValidAdress(remoteAddr)) {
+				if(debugEnabled) {
+					log.debug("Access denied '" + remoteAddr + "'.");
+				}
+					
+				res.sendError(HttpServletResponse.SC_NOT_FOUND);
+				return;
+			}
+			
 			String requestUri = req.getRequestURI();
 
 			AspectranActivity activity = new WebAspectranActivity(aspectranContext, req, res);
@@ -101,19 +113,35 @@ public class WebAspectranActivityServlet extends HttpServlet implements Servlet 
 			//e.printStackTrace();
 		}
 	}
-
-	/* (non-Javadoc)
-	 * @see javax.servlet.GenericServlet#destroy()
+	
+	/**
+	 * Checks if is valid access.
+	 * 
+	 * @param ipAddress the ip address
+	 * 
+	 * @return true, if is valid access
 	 */
-	@Override
-	public void destroy() {
-		log.info("Closing WebAspectranActivityServlet. AspectranContext " + aspectranContext);
+	public boolean isValidAdress(String ipAddress) {
+		if(allowedAddresses == null)
+			return false;
 		
-		super.destroy();
+		// IPv4
+		int offset = ipAddress.lastIndexOf('.');
 		
-		if(aspectranContext != null) {
-			aspectranContext.destroy();
-			aspectranContext = null;
+		if(offset == -1) {
+			// IPv6
+			offset = ipAddress.lastIndexOf(':');
+			
+			if(offset == -1)
+				return false;
 		}
+		
+		String ipAddressClass = ipAddress.substring(0, offset + 1) + '*';
+		
+		if(allowedAddresses.contains(ipAddressClass) || allowedAddresses.contains(ipAddress))
+			return true;
+		
+		return false;
 	}
+	
 }
