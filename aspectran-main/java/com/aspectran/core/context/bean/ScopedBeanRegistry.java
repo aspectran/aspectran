@@ -41,22 +41,26 @@ public class ScopedBeanRegistry extends AbstractBeanRegistry implements BeanRegi
 	
 	private ContextScope contextScope = new ContextScope();
 	
-	private Lock sessionScopeLock = new ReentrantLock(true);
+	private Lock requestScopeLock = new ReentrantLock(true);
 
+	private Lock contextScopeLock = new ReentrantLock(true);
+	
+	private Lock sessionScopeLock = new ReentrantLock(true);
+	
 	private Lock applicationScopeLock = new ReentrantLock(true);
 
 	public ScopedBeanRegistry(BeanRuleMap beanRuleMap) {
 		this.beanRuleMap = beanRuleMap;
 
-		for(BeanRule br : beanRuleMap) {
-			ScopeType scope = br.getScopeType();
+		for(BeanRule beanRule : beanRuleMap) {
+			ScopeType scope = beanRule.getScopeType();
 
 			if(scope == ScopeType.SINGLETON) {
-				if(!br.isRegistered()) {
-					Object bean = createBean(br);
+				if(!beanRule.isRegistered() && !beanRule.isLazyInit()) {
+					Object bean = createBean(beanRule);
 
-					br.setBean(bean);
-					br.setRegistered(true);
+					beanRule.setBean(bean);
+					beanRule.setRegistered(true);
 				}
 			}
 		}
@@ -68,8 +72,16 @@ public class ScopedBeanRegistry extends AbstractBeanRegistry implements BeanRegi
 		if(beanRule == null)
 			throw new BeanNotFoundException(id);
 		
-		if(beanRule.getScopeType() == ScopeType.SINGLETON)
-			return beanRule.getBean();
+		if(beanRule.getScopeType() == ScopeType.SINGLETON) {
+			if(beanRule.isRegistered()) {
+				return beanRule.getBean();
+			} else {
+				Object bean = createBean(beanRule);
+
+				beanRule.setBean(bean);
+				beanRule.setRegistered(true);
+			}
+		}
 
 		if(activity == null)
 			return createBean(beanRule);
@@ -90,7 +102,9 @@ public class ScopedBeanRegistry extends AbstractBeanRegistry implements BeanRegi
 	}
 	
 	private Object getRequestScopeBean(BeanRule beanRule, AspectranActivity activity) {
-		synchronized(this) {
+		requestScopeLock.lock();
+		
+		try {
 			RequestScope scope = activity.getRequestScope();
 			
 			if(scope == null) {
@@ -99,6 +113,8 @@ public class ScopedBeanRegistry extends AbstractBeanRegistry implements BeanRegi
 			}
 			
 			return getScopedBean(scope, beanRule, activity);
+		} finally {
+			requestScopeLock.unlock();
 		}
 	}
 
@@ -126,8 +142,12 @@ public class ScopedBeanRegistry extends AbstractBeanRegistry implements BeanRegi
 	}
 
 	private Object getContextScopeBean(BeanRule beanRule, AspectranActivity activity) {
-		synchronized (contextScope) {
+		contextScopeLock.lock();
+		
+		try {
 			return getScopedBean(contextScope, beanRule, activity);
+		} finally {
+			contextScopeLock.unlock();
 		}
 	}
 	
