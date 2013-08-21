@@ -88,7 +88,7 @@ public class ScopedBeanRegistry extends AbstractBeanRegistry implements BeanRegi
 			return getApplicationScopeBean(beanRule, activity);
 		}
 		
-		throw new BeansException();
+		throw new BeanException();
 	}
 	
 	private Object getSingletonScopeBean(BeanRule beanRule, AspectranActivity activity) {
@@ -130,7 +130,7 @@ public class ScopedBeanRegistry extends AbstractBeanRegistry implements BeanRegi
 		SessionAdapter session = activity.getSessionAdapter();
 		
 		if(session == null) {
-			throw new BeansException("This package does not supported for session scope. The specified session adapter is not exists.");
+			throw new BeanException("This package does not supported for session scope. The specified session adapter is not exists.");
 		}
 		
 		sessionScopeLock.lock();
@@ -163,7 +163,7 @@ public class ScopedBeanRegistry extends AbstractBeanRegistry implements BeanRegi
 		ApplicationAdapter application = activity.getApplicationAdapter();
 
 		if(application == null) {
-			throw new BeansException("This package does not supported for application scope. The specified application adapter is not exists.");
+			throw new BeanException("This package does not supported for application scope. The specified application adapter is not exists.");
 		}
 
 		applicationScopeLock.lock();
@@ -248,18 +248,18 @@ public class ScopedBeanRegistry extends AbstractBeanRegistry implements BeanRegi
 	}
 	
 	public void destroy() throws Exception {
-		for(BeanRule br : beanRuleMap) {
-			ScopeType scopeType = br.getScopeType();
+		for(BeanRule beanRule : beanRuleMap) {
+			ScopeType scopeType = beanRule.getScopeType();
 
 			if(scopeType == ScopeType.SINGLETON) {
-				if(br.isRegistered()) {
-					String destroyMethodName = br.getDestroyMethod();
+				if(beanRule.isRegistered()) {
+					String destroyMethodName = beanRule.getDestroyMethod();
 					
 					if(destroyMethodName != null)
-						MethodUtils.invokeMethod(br.getBean(), destroyMethodName, null);
+						MethodUtils.invokeMethod(beanRule.getBean(), destroyMethodName, null);
 					
-					br.setBean(null);
-					br.setRegistered(false);
+					beanRule.setBean(null);
+					beanRule.setRegistered(false);
 				}
 			}
 		}
@@ -267,7 +267,7 @@ public class ScopedBeanRegistry extends AbstractBeanRegistry implements BeanRegi
 	
 	public void destoryBean(BeanRule beanRule, SuperTranslet translet) throws InvocationTargetException {
 		if(beanRule.getScopeType() == ScopeType.SINGLETON) {
-			String destroyMethodName = beanRule.getDestroyMethod();
+			//String destroyMethodName = beanRule.getDestroyMethod();
 			
 			//if(destroyMethodName != null)
 			//	MethodUtils.invokeMethod(beanRule.getBean(), destroyMethodName, translet);

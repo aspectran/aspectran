@@ -3,7 +3,6 @@
  */
 package com.aspectran.core.context.bean.scope;
 
-
 /**
  *
  * @author Gulendol
@@ -23,7 +22,9 @@ public class AbstractScope implements Scope {
 	}
 	
 	public void destroy() {
-		
+		for(ScopedBean scopedBean : scopedBeanMap) {
+			scopedBean.destroy();
+		}
 	}
 	
 }

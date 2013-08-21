@@ -3,7 +3,7 @@ package com.aspectran.core.context.bean;
 import com.aspectran.core.rule.BeanRule;
 
 
-public class BeanCreationException extends BeansException {
+public class BeanCreationException extends BeanException {
 
 	/** @serial */
 	static final long serialVersionUID = -4615273809502623416L;

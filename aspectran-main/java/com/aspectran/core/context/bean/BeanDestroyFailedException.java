@@ -1,18 +1,20 @@
 package com.aspectran.core.context.bean;
 
+import com.aspectran.core.rule.BeanRule;
 
-public class BeanNotFoundException extends BeanException {
+
+public class BeanDestroyFailedException extends BeanException {
 
 	/** @serial */
-	static final long serialVersionUID = -7128311266333981625L;
+	static final long serialVersionUID = -4615273809502623416L;
 
 	/**
 	 * Create a new BeanInstantiationException.
 	 * @param beanClass the offending bean class
 	 * @param msg the detail message
 	 */
-	public BeanNotFoundException(String beanId) {
-		this(beanId, null);
+	public BeanDestroyFailedException(BeanRule beanRule) {
+		this(beanRule, null);
 	}
 
 	/**
@@ -21,7 +23,7 @@ public class BeanNotFoundException extends BeanException {
 	 * @param msg the detail message
 	 * @param cause the root cause
 	 */
-	public BeanNotFoundException(String beanId, Throwable cause) {
-		super("No bean named '" + beanId + "' is defined");
+	public BeanDestroyFailedException(BeanRule beanRule, Throwable cause) {
+		super("Cannot destroy a bean " + beanRule, cause);
 	}
 }
