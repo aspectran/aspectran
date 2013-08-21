@@ -25,7 +25,7 @@ package com.aspectran.core.context.bean;
  * @author Juergen Hoeller
  * @since 1.2.8
  */
-public class BeanInstantiationException extends BeansException {
+public class BeanInstantiationException extends BeanException {
 
 	/** @serial */
 	static final long serialVersionUID = -2906926519983962457L;

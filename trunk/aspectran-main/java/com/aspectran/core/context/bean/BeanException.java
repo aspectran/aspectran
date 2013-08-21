@@ -21,7 +21,7 @@ package com.aspectran.core.context.bean;
  * 
  * <p>Created: 2008. 01. 07 오전 3:35:55</p>
  */
-public class BeansException extends RuntimeException {
+public class BeanException extends RuntimeException {
 	
 	/** @serial */
 	static final long serialVersionUID = 2598750999734896601L;
@@ -29,7 +29,7 @@ public class BeansException extends RuntimeException {
 	/**
 	 * Simple constructor.
 	 */
-	public BeansException() {
+	public BeanException() {
 	}
 
 	/**
@@ -37,7 +37,7 @@ public class BeansException extends RuntimeException {
 	 * 
 	 * @param msg A message to associate with the exception
 	 */
-	public BeansException(String msg) {
+	public BeanException(String msg) {
 		super(msg);
 	}
 
@@ -46,7 +46,7 @@ public class BeansException extends RuntimeException {
 	 * 
 	 * @param cause The real cause of the exception
 	 */
-	public BeansException(Throwable cause) {
+	public BeanException(Throwable cause) {
 		super(cause);
 	}
 
@@ -57,7 +57,7 @@ public class BeansException extends RuntimeException {
 	 * @param msg The message
 	 * @param cause The real cause of the exception
 	 */
-	public BeansException(String msg, Throwable cause) {
+	public BeanException(String msg, Throwable cause) {
 		super(msg, cause);
 	}
 }
