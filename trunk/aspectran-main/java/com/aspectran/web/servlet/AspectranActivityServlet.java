@@ -68,7 +68,7 @@ public class AspectranActivityServlet extends HttpServlet implements Servlet {
 			AspectranContextLoader aspectranContextLoader = (AspectranContextLoader)getServletContext().getAttribute(AspectranContextLoader.ASPECTRAN_CONTEXT_LOADER_ATTRIBUTE);
 
 			if(aspectranContextLoader == null) {
-				aspectranContextLoader = new AspectranContextLoader(getServletConfig());
+				aspectranContextLoader = new AspectranContextLoader(getServletContext());
 				aspectranContext = aspectranContextLoader.getAspectranContext();
 			}
 			

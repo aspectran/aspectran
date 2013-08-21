@@ -34,7 +34,7 @@ public class AspectranContextLoader {
 
 		loadAspectranContext(contextConfigLocation);
 	}
-	
+/*	
 	public AspectranContextLoader(ServletConfig servletConfig) {
 		this.servletContext = servletConfig.getServletContext();
 		
@@ -46,7 +46,7 @@ public class AspectranContextLoader {
 		
 		loadAspectranContext(contextConfigLocation);
 	}
-
+*/
 	private void loadAspectranContext(String contextConfigLocation) {
 		servletContext.log("Loading AspectranContext: " + contextConfigLocation);
 		
