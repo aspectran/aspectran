@@ -38,12 +38,12 @@ import com.aspectran.web.context.AspectranContextLoader;
 /**
  * Servlet implementation class for Servlet: Translets.
  */
-public class WebAspectranActivityServlet extends HttpServlet implements Servlet {
+public class AspectranActivityServlet extends HttpServlet implements Servlet {
 
 	/** @serial */
 	static final long serialVersionUID = 6659683668233267847L;
 
-	private static final Log log = LogFactory.getLog(WebAspectranActivityServlet.class);
+	private static final Log log = LogFactory.getLog(AspectranActivityServlet.class);
 	
 	protected AspectranContext aspectranContext;
 	
@@ -55,7 +55,7 @@ public class WebAspectranActivityServlet extends HttpServlet implements Servlet 
 	/**
 	 * Instantiates a new action servlet.
 	 */
-	public WebAspectranActivityServlet() {
+	public AspectranActivityServlet() {
 		super();
 	}
 
@@ -65,8 +65,8 @@ public class WebAspectranActivityServlet extends HttpServlet implements Servlet 
 	@Override
 	public void init() throws ServletException {
 		try {
-			AspectranContextLoader aspectranContextLoader = (AspectranContextLoader)getServletConfig().getServletContext().getAttribute(AspectranContextLoader.ASPECTRAN_CONTEXT_LOADER_ATTRIBUTE);
-			
+			AspectranContextLoader aspectranContextLoader = (AspectranContextLoader)getServletContext().getAttribute(AspectranContextLoader.ASPECTRAN_CONTEXT_LOADER_ATTRIBUTE);
+
 			if(aspectranContextLoader == null) {
 				aspectranContextLoader = new AspectranContextLoader(getServletConfig());
 				aspectranContext = aspectranContextLoader.getAspectranContext();
@@ -94,11 +94,9 @@ public class WebAspectranActivityServlet extends HttpServlet implements Servlet 
 		} catch(TransletNotFoundException e) {
 			res.sendError(HttpServletResponse.SC_NOT_FOUND);
 			log.error(e.getMessage(), e);
-			//e.printStackTrace();
 		} catch(Exception e) {
 			res.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			log.error(e.getMessage(), e);
-			//e.printStackTrace();
 		}
 	}
 

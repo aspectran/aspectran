@@ -3,8 +3,6 @@
  */
 package com.aspectran.core.context.bean.scope;
 
-import java.lang.reflect.InvocationTargetException;
-
 import com.aspectran.core.context.bean.BeanDestroyFailedException;
 import com.aspectran.core.context.bean.ablility.DisposableBean;
 import com.aspectran.core.rule.BeanRule;
@@ -40,16 +38,19 @@ public class ScopedBean implements DisposableBean {
 	}
 	
 	public void destroy() {
-		if(bean == null)
-			return;
-		
-		try {
+		if(bean != null && beanRule.getDestroyMethod() != null) {
 			String destroyMethodName = beanRule.getDestroyMethod();
-			
-			if(destroyMethodName != null)
-				MethodUtils.invokeMethod(bean, destroyMethodName, null);
-		} catch(Exception e) {
-			throw new BeanDestroyFailedException(beanRule, e); 
+	
+			if(destroyMethodName != null) {
+				try {
+					MethodUtils.invokeMethod(bean, destroyMethodName, null);
+				} catch(Exception e) {
+					throw new BeanDestroyFailedException(beanRule, e); 
+				}
+				
+				bean = null;
+				beanRule.setDestroyMethod(null);
+			}
 		}
 	}
 	

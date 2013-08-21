@@ -2,14 +2,11 @@ package com.aspectran.core.context.bean;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Iterator;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 import com.aspectran.core.activity.AspectranActivity;
 import com.aspectran.core.activity.SuperTranslet;
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
-import com.aspectran.core.context.bean.ablility.DisposableBean;
 import com.aspectran.core.context.bean.scope.ApplicationScope;
 import com.aspectran.core.context.bean.scope.ContextScope;
 import com.aspectran.core.context.bean.scope.RequestScope;
@@ -39,17 +36,17 @@ public class ScopedBeanRegistry extends AbstractBeanRegistry implements BeanRegi
 
 	private final BeanRuleMap beanRuleMap;
 	
-	private ContextScope contextScope = new ContextScope();
+	private final ContextScope contextScope = new ContextScope();
 	
-	private Lock singletonScopeLock = new ReentrantLock(true);
+	private final Object singletonScopeLock = new Object();
 
-	private Lock requestScopeLock = new ReentrantLock(true);
+	private final Object requestScopeLock = new Object();
 	
-	private Lock contextScopeLock = new ReentrantLock(true);
+	private final Object contextScopeLock = new Object();
 	
-	private Lock sessionScopeLock = new ReentrantLock(true);
+	private final Object sessionScopeLock = new Object();
 	
-	private Lock applicationScopeLock = new ReentrantLock(true);
+	private final Object applicationScopeLock = new Object();
 
 	public ScopedBeanRegistry(BeanRuleMap beanRuleMap) {
 		this.beanRuleMap = beanRuleMap;
@@ -92,9 +89,7 @@ public class ScopedBeanRegistry extends AbstractBeanRegistry implements BeanRegi
 	}
 	
 	private Object getSingletonScopeBean(BeanRule beanRule, AspectranActivity activity) {
-		singletonScopeLock.lock();
-		
-		try {
+		synchronized(singletonScopeLock) {
 			if(beanRule.isRegistered())
 				return beanRule.getBean();
 
@@ -104,15 +99,11 @@ public class ScopedBeanRegistry extends AbstractBeanRegistry implements BeanRegi
 			beanRule.setRegistered(true);
 
 			return bean;
-		} finally {
-			singletonScopeLock.unlock();
 		}
 	}
 
 	private Object getRequestScopeBean(BeanRule beanRule, AspectranActivity activity) {
-		requestScopeLock.lock();
-		
-		try {
+		synchronized(requestScopeLock) {
 			RequestScope scope = activity.getRequestScope();
 			
 			if(scope == null) {
@@ -121,8 +112,6 @@ public class ScopedBeanRegistry extends AbstractBeanRegistry implements BeanRegi
 			}
 			
 			return getScopedBean(scope, beanRule, activity);
-		} finally {
-			requestScopeLock.unlock();
 		}
 	}
 	
@@ -133,9 +122,7 @@ public class ScopedBeanRegistry extends AbstractBeanRegistry implements BeanRegi
 			throw new BeanException("This package does not supported for session scope. The specified session adapter is not exists.");
 		}
 		
-		sessionScopeLock.lock();
-		
-		try {
+		synchronized(sessionScopeLock) {
 			SessionScope scope = (SessionScope)session.getAttribute(SessionScope.SESSION_SCOPE_ATTRIBUTE);
 
 			if(scope == null) {
@@ -144,18 +131,12 @@ public class ScopedBeanRegistry extends AbstractBeanRegistry implements BeanRegi
 			}
 			
 			return getScopedBean(scope, beanRule, activity);
-		} finally {
-			sessionScopeLock.unlock();
 		}
 	}
 
 	private Object getContextScopeBean(BeanRule beanRule, AspectranActivity activity) {
-		contextScopeLock.lock();
-		
-		try {
+		synchronized(contextScopeLock) {
 			return getScopedBean(contextScope, beanRule, activity);
-		} finally {
-			contextScopeLock.unlock();
 		}
 	}
 	
@@ -166,9 +147,7 @@ public class ScopedBeanRegistry extends AbstractBeanRegistry implements BeanRegi
 			throw new BeanException("This package does not supported for application scope. The specified application adapter is not exists.");
 		}
 
-		applicationScopeLock.lock();
-
-		try {
+		synchronized(applicationScopeLock) {
 			ApplicationScope scope = (ApplicationScope)application.getAttribute(ApplicationScope.APPLICATION_SCOPE_ATTRIBUTE);
 
 			if(scope == null) {
@@ -177,8 +156,6 @@ public class ScopedBeanRegistry extends AbstractBeanRegistry implements BeanRegi
 			}
 			
 			return getScopedBean(scope, beanRule, activity);
-		} finally {
-			applicationScopeLock.unlock();
 		}
 	}
 	
@@ -197,7 +174,6 @@ public class ScopedBeanRegistry extends AbstractBeanRegistry implements BeanRegi
 		scopedBeanMap.putScopeBean(scopeBean);
 		
 		return bean;
-
 	}
 	
 	private Object createBean(BeanRule beanRule) {
@@ -235,17 +211,16 @@ public class ScopedBeanRegistry extends AbstractBeanRegistry implements BeanRegi
 			throw new BeanCreationException(beanRule, e);
 		}
 	}
-
 	
-	public void destoryScopeBean(ScopedBeanMap scopeBeanMap) throws Exception {
-		for(DisposableBean scopeBean : scopeBeanMap) {
-			scopeBean.destroy();
-		}
-	}
-	
-	public void destoryScopeBean(DisposableBean scopeBean) throws Exception {
-		scopeBean.destroy();
-	}
+//	public void destoryScopeBean(ScopedBeanMap scopeBeanMap) throws Exception {
+//		for(DisposableBean scopeBean : scopeBeanMap) {
+//			scopeBean.destroy();
+//		}
+//	}
+//	
+//	public void destoryScopeBean(DisposableBean scopeBean) throws Exception {
+//		scopeBean.destroy();
+//	}
 	
 	public void destroy() throws Exception {
 		for(BeanRule beanRule : beanRuleMap) {
