@@ -35,7 +35,7 @@ import com.aspectran.web.activity.WebAspectranActivity;
 /**
  * Servlet implementation class for Servlet: Translets.
  */
-public class IPAddressBlockableActivityServlet extends WebAspectranActivityServlet implements Servlet {
+public class IPAddressBlockableActivityServlet extends AspectranActivityServlet implements Servlet {
 
 	/** @serial */
 	static final long serialVersionUID = -2369788867122156319L;
