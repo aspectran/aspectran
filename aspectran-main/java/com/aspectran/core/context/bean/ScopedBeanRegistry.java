@@ -41,8 +41,10 @@ public class ScopedBeanRegistry extends AbstractBeanRegistry implements BeanRegi
 	
 	private ContextScope contextScope = new ContextScope();
 	
-	private Lock requestScopeLock = new ReentrantLock(true);
+	private Lock singletonScopeLock = new ReentrantLock(true);
 
+	private Lock requestScopeLock = new ReentrantLock(true);
+	
 	private Lock contextScopeLock = new ReentrantLock(true);
 	
 	private Lock sessionScopeLock = new ReentrantLock(true);
@@ -73,20 +75,8 @@ public class ScopedBeanRegistry extends AbstractBeanRegistry implements BeanRegi
 			throw new BeanNotFoundException(id);
 		
 		if(beanRule.getScopeType() == ScopeType.SINGLETON) {
-			if(beanRule.isRegistered()) {
-				return beanRule.getBean();
-			} else {
-				Object bean = createBean(beanRule);
-
-				beanRule.setBean(bean);
-				beanRule.setRegistered(true);
-			}
-		}
-
-		if(activity == null)
-			return createBean(beanRule);
-			
-		if(beanRule.getScopeType() == ScopeType.PROTOTYPE) {
+			return getSingletonScopeBean(beanRule, activity);
+		} else if(beanRule.getScopeType() == ScopeType.PROTOTYPE) {
 			return createBean(beanRule, activity);
 		} else if(beanRule.getScopeType() == ScopeType.REQUEST) {
 			return getRequestScopeBean(beanRule, activity);
@@ -101,6 +91,24 @@ public class ScopedBeanRegistry extends AbstractBeanRegistry implements BeanRegi
 		throw new BeansException();
 	}
 	
+	private Object getSingletonScopeBean(BeanRule beanRule, AspectranActivity activity) {
+		singletonScopeLock.lock();
+		
+		try {
+			if(beanRule.isRegistered())
+				return beanRule.getBean();
+
+			Object bean = createBean(beanRule);
+
+			beanRule.setBean(bean);
+			beanRule.setRegistered(true);
+
+			return bean;
+		} finally {
+			singletonScopeLock.unlock();
+		}
+	}
+
 	private Object getRequestScopeBean(BeanRule beanRule, AspectranActivity activity) {
 		requestScopeLock.lock();
 		
@@ -117,7 +125,7 @@ public class ScopedBeanRegistry extends AbstractBeanRegistry implements BeanRegi
 			requestScopeLock.unlock();
 		}
 	}
-
+	
 	private Object getSessionScopeBean(BeanRule beanRule, AspectranActivity activity) {
 		SessionAdapter session = activity.getSessionAdapter();
 		
@@ -175,8 +183,8 @@ public class ScopedBeanRegistry extends AbstractBeanRegistry implements BeanRegi
 	}
 	
 	private Object getScopedBean(Scope scope, BeanRule beanRule, AspectranActivity activity) {
-		ScopedBeanMap sbm = scope.getScopeBeanMap();
-		ScopedBean scopeBean = sbm.get(beanRule.getId());
+		ScopedBeanMap scopedBeanMap = scope.getScopeBeanMap();
+		ScopedBean scopeBean = scopedBeanMap.get(beanRule.getId());
 			
 		if(scopeBean != null)
 			return scopeBean.getBean();
@@ -186,26 +194,25 @@ public class ScopedBeanRegistry extends AbstractBeanRegistry implements BeanRegi
 		scopeBean = new ScopedBean(beanRule);
 		scopeBean.setBean(bean);
 		
-		sbm.putScopeBean(scopeBean);
+		scopedBeanMap.putScopeBean(scopeBean);
 		
 		return bean;
 
 	}
 	
 	private Object createBean(BeanRule beanRule) {
-		ItemTokenExpressor expressor = new ItemTokenExpression(this);
-
-		return createBean(beanRule, expressor);
+		return createBean(beanRule, null);
 	}
 	
 	private Object createBean(BeanRule beanRule, AspectranActivity activity) {
-		ItemTokenExpressor expressor = new ItemTokenExpression(activity);
-
-		return createBean(beanRule, expressor);
-	}
-
-	private Object createBean(BeanRule beanRule, ItemTokenExpressor expressor) {
 		try {
+			ItemTokenExpressor expressor = null;
+			
+			if(activity != null)
+				expressor = new ItemTokenExpression(activity);
+			else
+				expressor = new ItemTokenExpression(this);
+			
 			ItemRuleMap constructorArgumentItemRuleMap = beanRule.getConstructorArgumentItemRuleMap();
 			ValueMap valueMap = expressor.express(constructorArgumentItemRuleMap);
 
@@ -228,6 +235,7 @@ public class ScopedBeanRegistry extends AbstractBeanRegistry implements BeanRegi
 			throw new BeanCreationException(beanRule, e);
 		}
 	}
+
 	
 	public void destoryScopeBean(ScopedBeanMap scopeBeanMap) throws Exception {
 		for(DisposableBean scopeBean : scopeBeanMap) {
