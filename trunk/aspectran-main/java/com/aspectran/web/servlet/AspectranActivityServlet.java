@@ -33,7 +33,7 @@ import com.aspectran.core.context.AspectranContext;
 import com.aspectran.core.context.translet.TransletNotFoundException;
 import com.aspectran.web.activity.WebAspectranActivity;
 import com.aspectran.web.adapter.WebApplicationAdapter;
-import com.aspectran.web.context.AspectranContextLoader;
+import com.aspectran.web.servlet.listener.AspectranContextLoader;
 
 /**
  * Servlet implementation class for Servlet: Translets.
