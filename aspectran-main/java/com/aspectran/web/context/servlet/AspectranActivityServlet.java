@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.aspectran.web.servlet;
+package com.aspectran.web.context.servlet;
 
 import java.io.IOException;
 
@@ -33,7 +33,7 @@ import com.aspectran.core.context.AspectranContext;
 import com.aspectran.core.context.translet.TransletNotFoundException;
 import com.aspectran.web.activity.WebAspectranActivity;
 import com.aspectran.web.adapter.WebApplicationAdapter;
-import com.aspectran.web.servlet.listener.AspectranContextLoader;
+import com.aspectran.web.context.AspectranContextLoader;
 
 /**
  * Servlet implementation class for Servlet: Translets.
@@ -72,7 +72,7 @@ public class AspectranActivityServlet extends HttpServlet implements Servlet {
 				aspectranContext = aspectranContextLoader.getAspectranContext();
 			}
 			
-			ApplicationAdapter applicationAdapter = new WebApplicationAdapter(getServletContext());
+			ApplicationAdapter applicationAdapter = WebApplicationAdapter.determineWebApplicationAdapter(getServletContext());
 			aspectranContext.setApplicationAdapter(applicationAdapter);
 		} catch(Exception e) {
 			log.error("Unable to initialize WebAspectranActivityServlet.", e);

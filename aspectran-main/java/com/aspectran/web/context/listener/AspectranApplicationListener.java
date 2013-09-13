@@ -13,18 +13,21 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.aspectran.web.servlet.listener;
+package com.aspectran.web.context.listener;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
-import com.aspectran.core.context.AspectranContext;
+import com.aspectran.core.adapter.ApplicationAdapter;
+import com.aspectran.core.context.bean.scope.ApplicationScope;
+import com.aspectran.web.adapter.WebApplicationAdapter;
+import com.aspectran.web.context.AspectranContextLoader;
 
-public class AspectranContextLoaderListener implements ServletContextListener {
+public class AspectranApplicationListener implements ServletContextListener {
 
 	public static final String CONTEXT_LOADER_ATTRIBUTE = AspectranContextLoader.class.getName();
 	
-	private AspectranContextLoader aspectranContextLoader;
+	private ApplicationAdapter applicationAdapter;
 	
 	/**
 	 * Initialize the translets root context.
@@ -32,8 +35,8 @@ public class AspectranContextLoaderListener implements ServletContextListener {
 	 * @param event the event
 	 */
 	public void contextInitialized(ServletContextEvent event) {
-		aspectranContextLoader = new AspectranContextLoader(event.getServletContext());
-		event.getServletContext().setAttribute(CONTEXT_LOADER_ATTRIBUTE, aspectranContextLoader);
+		applicationAdapter = WebApplicationAdapter.determineWebApplicationAdapter(event.getServletContext());
+		event.getServletContext().setAttribute(WebApplicationAdapter.WEB_APPLICATION_ADAPTER_ATTRIBUTE, applicationAdapter);
 	}
 
 	/**
@@ -42,15 +45,13 @@ public class AspectranContextLoaderListener implements ServletContextListener {
 	 * @param event the event
 	 */
 	public void contextDestroyed(ServletContextEvent event) {
-		if(aspectranContextLoader != null) {
-			event.getServletContext().removeAttribute(CONTEXT_LOADER_ATTRIBUTE);
+		if(applicationAdapter != null) {
+			event.getServletContext().removeAttribute(WebApplicationAdapter.WEB_APPLICATION_ADAPTER_ATTRIBUTE);
 			
-			AspectranContext aspectranContext = aspectranContextLoader.getAspectranContext();
+			ApplicationScope scope = (ApplicationScope)applicationAdapter.getAttribute(ApplicationScope.APPLICATION_SCOPE_ATTRIBUTE);
 			
-			if(aspectranContext != null) {
-				aspectranContext.destroy();
-				aspectranContext = null;
-			}
+			if(scope != null)
+				scope.destroy();
 		}
 	}
 

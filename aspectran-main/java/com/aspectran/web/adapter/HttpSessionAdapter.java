@@ -18,7 +18,7 @@ import com.aspectran.core.context.bean.scope.SessionScope;
  */
 public class HttpSessionAdapter extends AbstractSessionAdapter implements SessionAdapter {
 	
-	public static final String SCOPE_BEAN_DESTROY_LISTENER = 
+	public static final String SCOPE_BEAN_DESTROY_LISTENER_ATTRIBUTE = 
 		HttpSessionAdapter.class.getName() + ".SCOPE_BEAN_DESTROY_LISTENER";
 	
 	/**
@@ -29,9 +29,9 @@ public class HttpSessionAdapter extends AbstractSessionAdapter implements Sessio
 	public HttpSessionAdapter(HttpSession session) {
 		super(session);
 		
-		if(session.getAttribute(SCOPE_BEAN_DESTROY_LISTENER) != null) {
+		if(session.getAttribute(SCOPE_BEAN_DESTROY_LISTENER_ATTRIBUTE) != null) {
 			ScopeBeanDestroyListener listener = new ScopeBeanDestroyListener();
-			session.setAttribute(SCOPE_BEAN_DESTROY_LISTENER, listener);
+			session.setAttribute(SCOPE_BEAN_DESTROY_LISTENER_ATTRIBUTE, listener);
 		}
 	}
 	
