@@ -47,6 +47,8 @@ public class AspectranActivityServlet extends HttpServlet implements Servlet {
 	
 	protected AspectranContext aspectranContext;
 	
+	private boolean standaloneContext;
+	
 	/*
 	 * (non-Java-doc)
 	 * 
@@ -65,11 +67,20 @@ public class AspectranActivityServlet extends HttpServlet implements Servlet {
 	@Override
 	public void init() throws ServletException {
 		try {
-			AspectranContextLoader aspectranContextLoader = (AspectranContextLoader)getServletContext().getAttribute(AspectranContextLoader.ASPECTRAN_CONTEXT_LOADER_ATTRIBUTE);
+			String contextConfigLocation = getServletContext().getInitParameter(AspectranContextLoader.CONTEXT_CONFIG_LOCATION_PARAM);
+			
+			if(contextConfigLocation == null) {
+				AspectranContextLoader aspectranContextLoader = (AspectranContextLoader)getServletContext().getAttribute(AspectranContextLoader.ASPECTRAN_CONTEXT_LOADER_ATTRIBUTE);
+				
+				if(aspectranContextLoader != null) {
+					aspectranContext = aspectranContextLoader.getAspectranContext();
+				}
+			}
 
-			if(aspectranContextLoader == null) {
-				aspectranContextLoader = new AspectranContextLoader(getServletContext());
+			if(aspectranContext == null) {
+				AspectranContextLoader aspectranContextLoader = new AspectranContextLoader(getServletContext(), contextConfigLocation);
 				aspectranContext = aspectranContextLoader.getAspectranContext();
+				standaloneContext = true;
 			}
 			
 			ApplicationAdapter applicationAdapter = WebApplicationAdapter.determineWebApplicationAdapter(getServletContext());
@@ -110,7 +121,9 @@ public class AspectranActivityServlet extends HttpServlet implements Servlet {
 		super.destroy();
 		
 		if(aspectranContext != null) {
-			aspectranContext.destroy();
+			if(standaloneContext)
+				aspectranContext.destroy();
+			
 			aspectranContext = null;
 		}
 	}

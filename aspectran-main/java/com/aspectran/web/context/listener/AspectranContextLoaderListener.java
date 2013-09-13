@@ -23,8 +23,6 @@ import com.aspectran.web.context.AspectranContextLoader;
 
 public class AspectranContextLoaderListener implements ServletContextListener {
 
-	public static final String CONTEXT_LOADER_ATTRIBUTE = AspectranContextLoader.class.getName();
-	
 	private AspectranContextLoader aspectranContextLoader;
 	
 	/**
@@ -34,7 +32,7 @@ public class AspectranContextLoaderListener implements ServletContextListener {
 	 */
 	public void contextInitialized(ServletContextEvent event) {
 		aspectranContextLoader = new AspectranContextLoader(event.getServletContext());
-		event.getServletContext().setAttribute(CONTEXT_LOADER_ATTRIBUTE, aspectranContextLoader);
+		event.getServletContext().setAttribute(AspectranContextLoader.ASPECTRAN_CONTEXT_LOADER_ATTRIBUTE, aspectranContextLoader);
 	}
 
 	/**
@@ -44,7 +42,7 @@ public class AspectranContextLoaderListener implements ServletContextListener {
 	 */
 	public void contextDestroyed(ServletContextEvent event) {
 		if(aspectranContextLoader != null) {
-			event.getServletContext().removeAttribute(CONTEXT_LOADER_ATTRIBUTE);
+			event.getServletContext().removeAttribute(AspectranContextLoader.ASPECTRAN_CONTEXT_LOADER_ATTRIBUTE);
 			
 			AspectranContext aspectranContext = aspectranContextLoader.getAspectranContext();
 			
