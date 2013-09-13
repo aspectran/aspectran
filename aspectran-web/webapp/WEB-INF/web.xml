@@ -26,7 +26,12 @@
 	</listener>
 	<listener>
 		<listener-class>
-			com.aspectran.web.servlet.AspectranHttpSessionListener
+			com.aspectran.web.context.listener.AspectranContextListener
+		</listener-class>
+	</listener>
+	<listener>
+		<listener-class>
+			com.aspectran.web.context.listener.AspectranHttpSessionListener
 		</listener-class>
 	</listener>
 	<servlet>
