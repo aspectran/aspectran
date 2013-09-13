@@ -1,6 +1,5 @@
 package com.aspectran.web.context;
 
-import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 
 import org.apache.commons.logging.Log;
@@ -15,12 +14,12 @@ public class AspectranContextLoader {
 
 	public static final String ASPECTRAN_CONTEXT_LOADER_ATTRIBUTE = AspectranContextLoader.class.getName();
 	
-	private static final String CONTEXT_CONFIG_LOCATION_PARAM = "aspectran:contextConfigLocation";
+	public static final String CONTEXT_CONFIG_LOCATION_PARAM = "aspectran:contextConfigLocation";
 	
 	private static final String DEFAULT_CONTEXT_CONFIG_LOCATION = "WEB-INF/aspectran/aspectran.xml";
 	
 	private ServletContext servletContext;
-
+	
 	private AspectranContext aspectranContext;
 	
 	public AspectranContextLoader(ServletContext servletContext) {
@@ -28,25 +27,22 @@ public class AspectranContextLoader {
 		
 		// context-relative path to our configuration resource for the aspectran
 		String contextConfigLocation = servletContext.getInitParameter(CONTEXT_CONFIG_LOCATION_PARAM);
+
+		if(contextConfigLocation == null)
+			contextConfigLocation = DEFAULT_CONTEXT_CONFIG_LOCATION;
+
+		loadAspectranContext(contextConfigLocation);
+	}
+	
+	public AspectranContextLoader(ServletContext servletContext, String contextConfigLocation) {
+		this.servletContext = servletContext;
 		
 		if(contextConfigLocation == null)
 			contextConfigLocation = DEFAULT_CONTEXT_CONFIG_LOCATION;
 
 		loadAspectranContext(contextConfigLocation);
 	}
-/*	
-	public AspectranContextLoader(ServletConfig servletConfig) {
-		this.servletContext = servletConfig.getServletContext();
-		
-		// context-relative path to our configuration resource for the translets
-		String contextConfigLocation = servletConfig.getInitParameter(CONTEXT_CONFIG_LOCATION_PARAM);
-		
-		if(contextConfigLocation == null)
-			contextConfigLocation = DEFAULT_CONTEXT_CONFIG_LOCATION;
-		
-		loadAspectranContext(contextConfigLocation);
-	}
-*/
+
 	private void loadAspectranContext(String contextConfigLocation) {
 		servletContext.log("Loading AspectranContext: " + contextConfigLocation);
 		
