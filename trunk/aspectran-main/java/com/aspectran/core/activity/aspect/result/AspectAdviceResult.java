@@ -8,63 +8,76 @@ import com.aspectran.core.type.AspectAdviceType;
 
 public class AspectAdviceResult {
 
-	private Map<String, Object> beforeAdviceActionResult;
+	private Map<String, Object> beforeAdviceResult;
 	
-	private Map<String, Object> afterAdviceActionResult;
+	private Map<String, Object> afterAdviceResult;
 	
-	private Map<String, Object> finallyAdviceActionResult;
+	private Map<String, Object> finallyAdviceResult;
 
-	public Object getBeforeAdviceActionResult(String aspectId) {
-		if(beforeAdviceActionResult == null)
+	public Object getBeforeAdviceResult(String aspectId) {
+		if(beforeAdviceResult == null)
 			return null;
 		
-		return beforeAdviceActionResult.get(aspectId);
+		return beforeAdviceResult.get(aspectId);
 	}
 
-	public void putBeforeAdviceActionResult(String aspectId, Object actionResult) {
-		if(beforeAdviceActionResult == null)
-			beforeAdviceActionResult = new HashMap<String, Object>();
+	public void putBeforeAdviceResult(String aspectId, Object actionResult) {
+		if(beforeAdviceResult == null)
+			beforeAdviceResult = new HashMap<String, Object>();
 			
-		beforeAdviceActionResult.put(aspectId, actionResult);
+		beforeAdviceResult.put(aspectId, actionResult);
 	}
 
-	public Object getAfterAdviceActionResult(String aspectId) {
-		if(afterAdviceActionResult == null)
+	public Object getAfterAdviceResult(String aspectId) {
+		if(afterAdviceResult == null)
 			return null;
 		
-		return afterAdviceActionResult.get(aspectId);
+		return afterAdviceResult.get(aspectId);
 	}
 
-	public void putAfterAdviceActionResult(String aspectId, Object actionResult) {
-		if(afterAdviceActionResult == null)
-			afterAdviceActionResult = new HashMap<String, Object>();
+	public void putAfterAdviceResult(String aspectId, Object actionResult) {
+		if(afterAdviceResult == null)
+			afterAdviceResult = new HashMap<String, Object>();
 			
-		afterAdviceActionResult.put(aspectId, actionResult);
+		afterAdviceResult.put(aspectId, actionResult);
 	}
 
-	public Object getFinallyAdviceActionResult(String aspectId) {
-		if(finallyAdviceActionResult == null)
+	public Object getFinallyAdviceResult(String aspectId) {
+		if(finallyAdviceResult == null)
 			return null;
 		
-		return finallyAdviceActionResult.get(aspectId);
+		return finallyAdviceResult.get(aspectId);
 	}
 
-	public void putFinallyAdviceActionResult(String aspectId, Object actionResult) {
-		if(finallyAdviceActionResult == null)
-			finallyAdviceActionResult = new HashMap<String, Object>();
+	public void putFinallyAdviceResult(String aspectId, Object actionResult) {
+		if(finallyAdviceResult == null)
+			finallyAdviceResult = new HashMap<String, Object>();
 			
-		finallyAdviceActionResult.put(aspectId, actionResult);
+		finallyAdviceResult.put(aspectId, actionResult);
 	}
 	
-	public void putAdviceActionResult(AspectAdviceRule aspectAdviceRule, Object adviceActionResult) {
-		if(aspectAdviceRule.getAspectAdviceType() == AspectAdviceType.BEFORE)
-			putBeforeAdviceActionResult(aspectAdviceRule.getAspectId(), adviceActionResult);
-		else if(aspectAdviceRule.getAspectAdviceType() == AspectAdviceType.AFTER)
-			putAfterAdviceActionResult(aspectAdviceRule.getAspectId(), adviceActionResult);
-		else if(aspectAdviceRule.getAspectAdviceType() == AspectAdviceType.FINALLY)
-			putFinallyAdviceActionResult(aspectAdviceRule.getAspectId(), adviceActionResult);
+	public Object getAdviceResult(AspectAdviceType aspectAdviceType, String aspectId) {
+		if(aspectAdviceType == AspectAdviceType.BEFORE)
+			getBeforeAdviceResult(aspectId);
+		else if(aspectAdviceType == AspectAdviceType.AFTER)
+			getAfterAdviceResult(aspectId);
+		else if(aspectAdviceType == AspectAdviceType.FINALLY)
+			getFinallyAdviceResult(aspectId);
 		else
-			throw new UnsupportedOperationException("");
+			throw new UnsupportedOperationException("Unknown aspect advice type.");
+		
+		return null;
+	}
+	
+	public void putAdviceResult(AspectAdviceRule aspectAdviceRule, Object adviceActionResult) {
+		if(aspectAdviceRule.getAspectAdviceType() == AspectAdviceType.BEFORE)
+			putBeforeAdviceResult(aspectAdviceRule.getAspectId(), adviceActionResult);
+		else if(aspectAdviceRule.getAspectAdviceType() == AspectAdviceType.AFTER)
+			putAfterAdviceResult(aspectAdviceRule.getAspectId(), adviceActionResult);
+		else if(aspectAdviceRule.getAspectAdviceType() == AspectAdviceType.FINALLY)
+			putFinallyAdviceResult(aspectAdviceRule.getAspectId(), adviceActionResult);
+		else
+			throw new UnsupportedOperationException("Unknown aspect advice type.");
 	}
 	
 }

@@ -117,7 +117,7 @@ public abstract class AbstractAspectranActivity implements AspectranActivity {
 	/** The translet name. */
 	private String transletName;
 	
-	private AspectAdviceResult aspectAdviceResult;
+	//private AspectAdviceResult aspectAdviceResult;
 	
 	/**
 	 * Instantiates a new action translator.
@@ -305,7 +305,7 @@ public abstract class AbstractAspectranActivity implements AspectranActivity {
 		}
 		
 		//response
-		aspectAdviceRuleRegistry = requestRule.getAspectAdviceRuleRegistry();
+		aspectAdviceRuleRegistry = responseRule.getAspectAdviceRuleRegistry();
 
 		if(aspectAdviceRuleRegistry != null) {
 			finallyAdviceRuleList = aspectAdviceRuleRegistry.getFinallyAdviceRuleList();
@@ -337,19 +337,21 @@ public abstract class AbstractAspectranActivity implements AspectranActivity {
 		//create translet instance
 		try {
 			Constructor<?> transletInstanceConstructor = transletInstanceClass.getConstructor(AspectranActivity.class);
-			Object[] args = new Object[] { this };
+			Object[] args = new Object[] { this, false };
+			
+			if(transletRule.isAspectAdviceRuleExists())
+				args[1] = true;
+			
 			translet = (SuperTranslet)transletInstanceConstructor.newInstance(args);
 		} catch(Exception e) {
 			throw new TransletInstantiationException(transletInterfaceClass, transletInstanceClass, e);
 		}
+
 		
 		this.transletName = transletName;
 		this.transletRule = transletRule;
 		this.requestRule = transletRule.getRequestRule();
 		this.responseRule = transletRule.getResponseRule();
-		
-		if(transletRule.isAspectAdviceRuleExists())
-			aspectAdviceResult = new AspectAdviceResult();
 	}
 	
 	private void request(AspectAdviceRuleRegistry aspectAdviceRuleRegistry) throws RequestException, ActionExecutionException {
@@ -596,7 +598,7 @@ public abstract class AbstractAspectranActivity implements AspectranActivity {
 			Object adviceActionResult = executableAction.execute(this);
 			
 			if(adviceActionResult != null && adviceActionResult != ActionResult.NO_RESULT) {
-				aspectAdviceResult.putAdviceActionResult(aspectAdviceRule, adviceActionResult);
+				translet.putAdviceResult(aspectAdviceRule, adviceActionResult);
 			}
 		}
 	}

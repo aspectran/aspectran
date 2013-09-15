@@ -25,6 +25,7 @@ import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.context.AspectranContext;
+import com.aspectran.core.rule.AspectAdviceRule;
 import com.aspectran.core.rule.ForwardResponseRule;
 import com.aspectran.core.rule.RedirectResponseRule;
 import com.aspectran.core.rule.TransformRule;
@@ -136,5 +137,12 @@ public abstract interface SuperTranslet {
 	public boolean isExceptionRaised();
 
 	public Exception getRaisedException();
+	
+	public Object getBeforeAdviceResult(String aspectId);
+	
+	public Object getAfterAdviceResult(String aspectId);
+	
+	public Object getFinallyAdviceResult(String aspectId);
 
+	public void putAdviceResult(AspectAdviceRule aspectAdviceRule, Object adviceActionResult);
 }
