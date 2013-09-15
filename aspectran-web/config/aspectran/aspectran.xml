@@ -210,7 +210,7 @@
 			a return object of <before> action.
 	-->
 	<aspect id="sqlmap">																																			
-		<joinpoint target="translet">
+		<joinpoint target="translet" scope="content">
 			<pointcut>
 				front/a/*
 				exclude(front/a/A*)

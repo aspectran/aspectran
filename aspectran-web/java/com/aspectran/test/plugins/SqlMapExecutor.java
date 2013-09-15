@@ -39,7 +39,7 @@ public class SqlMapExecutor {
 			
 			Object result = null;
 
-			AttributeMap params = translet.getAttributeMap();
+			AttributeMap params = null;//translet.getAttributeMap();
 
 			if("queryForObject".equals(method))
 				result = sqlMap.queryForObject(statementId, params);
