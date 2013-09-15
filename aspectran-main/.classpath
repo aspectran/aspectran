@@ -8,5 +8,6 @@
 	<classpathentry kind="lib" path="lib/commons-logging.jar"/>
 	<classpathentry kind="lib" path="lib/junit-4.4.jar"/>
 	<classpathentry kind="lib" path="lib/log4j-1.2.15.jar"/>
+	<classpathentry kind="lib" path="lib/ibatis-2.3.0.677.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -31,8 +31,8 @@ public class AspectranWebTranslet extends AbstractSuperTranslet implements WebTr
 	 *
 	 * @param activity the activity
 	 */
-	public AspectranWebTranslet(AspectranActivity activity) {
-		super(activity);
+	public AspectranWebTranslet(AspectranActivity activity, boolean aspectAdvicable) {
+		super(activity, aspectAdvicable);
 	}
 
 	/* (non-Javadoc)

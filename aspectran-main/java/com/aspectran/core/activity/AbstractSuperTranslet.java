@@ -15,6 +15,7 @@
  */
 package com.aspectran.core.activity;
 
+import com.aspectran.core.activity.aspect.result.AspectAdviceResult;
 import com.aspectran.core.activity.process.result.ActionResult;
 import com.aspectran.core.activity.process.result.ContentResult;
 import com.aspectran.core.activity.process.result.ProcessResult;
@@ -28,6 +29,7 @@ import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.context.AspectranContext;
 import com.aspectran.core.context.bean.BeanRegistry;
+import com.aspectran.core.rule.AspectAdviceRule;
 import com.aspectran.core.rule.ForwardResponseRule;
 import com.aspectran.core.rule.RedirectResponseRule;
 import com.aspectran.core.rule.TransformRule;
@@ -43,14 +45,21 @@ public abstract class AbstractSuperTranslet implements SuperTranslet {
 	
 	private ContentResult contentResult;
 	
+	private final AspectAdviceResult aspectAdviceResult;
+	
 	/**
 	 * Instantiates a new active translet.
 	 * 
 	 * @param transletRule the translet rule
 	 * @param output the output
 	 */
-	protected AbstractSuperTranslet(AspectranActivity activity) {
+	protected AbstractSuperTranslet(AspectranActivity activity, boolean aspectAdvicable) {
 		this.activity = activity;
+		
+		if(aspectAdvicable)
+			aspectAdviceResult = new AspectAdviceResult();
+		else
+			aspectAdviceResult = null;
 	}
 	
 	/**
@@ -261,6 +270,34 @@ public abstract class AbstractSuperTranslet implements SuperTranslet {
 
 	public Exception getRaisedException() {
 		return activity.getRaisedException();
+	}
+	
+	public Object getBeforeAdviceResult(String aspectId) {
+		if(aspectAdviceResult == null)
+			return null;
+		
+		return aspectAdviceResult.getBeforeAdviceResult(aspectId);
+	}
+	
+	public Object getAfterAdviceResult(String aspectId) {
+		if(aspectAdviceResult == null)
+			return null;
+
+		return aspectAdviceResult.getAfterAdviceResult(aspectId);
+	}
+	
+	public Object getFinallyAdviceResult(String aspectId) {
+		if(aspectAdviceResult == null)
+			return null;
+
+		return aspectAdviceResult.getFinallyAdviceResult(aspectId);
+	}
+	
+	public void putAdviceResult(AspectAdviceRule aspectAdviceRule, Object adviceActionResult) {
+		if(aspectAdviceResult == null)
+			return;
+		
+		aspectAdviceResult.putAdviceResult(aspectAdviceRule, adviceActionResult);
 	}
 	
 }

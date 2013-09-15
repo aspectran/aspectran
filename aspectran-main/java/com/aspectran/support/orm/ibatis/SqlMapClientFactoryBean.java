@@ -1,4 +1,4 @@
-package com.aspectran.support.orm.sqlmap;
+package com.aspectran.support.orm.ibatis;
 
 public class SqlMapClientFactoryBean {
 
