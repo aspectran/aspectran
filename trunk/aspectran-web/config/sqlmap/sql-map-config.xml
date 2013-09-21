@@ -48,4 +48,4 @@
 
     <sqlMap resource="sqlmap/example/sample.xml"/>
 
-</sqlMapConfig>
+</sqlMapConfig>	

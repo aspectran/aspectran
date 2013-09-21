@@ -217,19 +217,11 @@
 			</pointcut>
 		</joinpoint>
 		<before>
-			<action bean="common.ticket.t1" method="begin">
-				<arguments>
-					<item name="stmtId">aaaaaaa</item>
-				</arguments>
-			</action>
+			<action bean="com.aspectran.support.orm.ibatis.AspectSqlMapClient" method="begin"/>
 		</before>
-		<after>
-			<action bean="common.ticket.t1" method="end">
-				<arguments>
-					<item name="stmtId">aaaaaaa</item>
-				</arguments>
-			</action>
-		</after>
+		<finally>
+			<action bean="com.aspectran.support.orm.ibatis.AspectSqlMapClient" method="end"/>
+		</finally>
 	</aspect>
 	
 	<bean id="aaa" class="org.jhlabs.translets.test*..*" scope="singleton"/>
