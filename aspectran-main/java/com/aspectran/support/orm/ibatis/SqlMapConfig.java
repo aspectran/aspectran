@@ -15,24 +15,22 @@ import com.ibatis.sqlmap.client.SqlMapClientBuilder;
  */
 public class SqlMapConfig {
 	
-	private static final SqlMapClient sqlMap;
+	private SqlMapClient sqlMapClient;
 
-	static {
+	public SqlMapConfig(String resource) {
+		buildSqlMapClient(resource);
+	}
+	
+	protected void buildSqlMapClient(String resource) {
 		try{
-			final String resource = "sqlmap/sql-map-config.xml";
 			InputStream is = Resources.getResourceAsStream(resource);
-			sqlMap = SqlMapClientBuilder.buildSqlMapClient(is);
+			sqlMapClient = SqlMapClientBuilder.buildSqlMapClient(is);
 		} catch(Exception e) {
-			e.printStackTrace();
 			throw new RuntimeException("Error initializing SqlMapConfig class", e);
 		}
 	}
-
-	/**
-	 * SqlMapClient Instance를 반환한다.
-	 * @return SqlMapClient
-	 */
-	public static SqlMapClient getInstance(){
-		return sqlMap;
+	
+	public SqlMapClient getSqlMapClient(){
+		return sqlMapClient;
 	}
 }
