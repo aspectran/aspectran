@@ -21,7 +21,6 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.aspectran.core.activity.aspect.result.AspectAdviceResult;
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.activity.process.ContentList;
 import com.aspectran.core.activity.process.ProcessException;
@@ -225,23 +224,30 @@ public abstract class AbstractAspectranActivity implements AspectranActivity {
 	public void run(String transletName) throws RequestException, ProcessException, ResponseException {
 		init(transletName);
 		
-		AspectAdviceRuleRegistry aspectAdviceRuleRegistry = transletRule.getAspectAdviceRuleRegistry();
-		List<AspectAdviceRule> finallyAdviceRuleList = null;
-		
-		if(aspectAdviceRuleRegistry != null) {
-			finallyAdviceRuleList = aspectAdviceRuleRegistry.getFinallyAdviceRuleList();
-
-			if(finallyAdviceRuleList != null) {
-				try {
+		try {
+			AspectAdviceRuleRegistry aspectAdviceRuleRegistry = transletRule.getAspectAdviceRuleRegistry();
+			List<AspectAdviceRule> finallyAdviceRuleList = null;
+			
+			if(aspectAdviceRuleRegistry != null) {
+				finallyAdviceRuleList = aspectAdviceRuleRegistry.getFinallyAdviceRuleList();
+	
+				if(finallyAdviceRuleList != null) {
+					try {
+						run(aspectAdviceRuleRegistry);
+					} finally {
+						execute(finallyAdviceRuleList);
+					}
+				} else {
 					run(aspectAdviceRuleRegistry);
-				} finally {
-					execute(finallyAdviceRuleList);
 				}
 			} else {
-				run(aspectAdviceRuleRegistry);
+				run();
 			}
-		} else {
-			run();
+		} finally {
+			if(requestScope != null) {
+				//TODO
+				requestScope.destroy();
+			}
 		}
 	}
 
@@ -453,11 +459,6 @@ public abstract class AbstractAspectranActivity implements AspectranActivity {
 			}
 			
 			throw new ProcessException("An error occurred while processing response by content-type. Cause: " + e, e);
-		} finally {
-			if(requestScope != null) {
-				//TODO
-				requestScope.destroy();
-			}
 		}
 		
 		return translet.getProcessResult();
