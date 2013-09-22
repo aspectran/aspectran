@@ -64,7 +64,7 @@
 		</after>
 	</aspect>
 
-	<bean id="jspViewDispatcher" class="org.jhlabs.translets.web.JspViewDispatcher" scope="singleton"/>
+	<bean id="jspViewDispatcher" class="com.aspectran.web.view.JspViewDispatcher" scope="singleton"/>
 
 	<aspect id="defaultResponseRule">
 		<joinpoint target="translet" scope="response"/>
@@ -224,10 +224,8 @@
 		</finally>
 	</aspect>
 	
-	<bean id="aaa" class="org.jhlabs.translets.test*..*" scope="singleton"/>
+	<bean id="aaa" class="com.aspectran.test.**.Sample*Test*Bean" scope="singleton"/>
 
-	<import resource="ticket-rule.xml"/>
-	<import resource="exception-rule.xml"/>
 	<import resource="front-translets.xml"/>
 	<import resource="ajax-translets.xml"/>
 	

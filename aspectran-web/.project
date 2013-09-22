@@ -33,4 +33,11 @@
 		<nature>org.eclipse.jdt.core.javanature</nature>
 		<nature>org.eclipse.wst.jsdt.core.jsNature</nature>
 	</natures>
+	<linkedResources>
+		<link>
+			<name>main</name>
+			<type>2</type>
+			<location>C:/ADE_JHLabs/workspace/aspectran-main/java</location>
+		</link>
+	</linkedResources>
 </projectDescription>
