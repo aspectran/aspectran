@@ -27,9 +27,13 @@ public abstract class AbstractAction {
 	
 	protected final String fullActionId;
 
-	public AbstractAction(ActionList parent) {
+	public AbstractAction(String actionId, ActionList parent) {
 		this.parent = parent;
-		this.fullActionId = FullActionIdConcator.concat(parent.getContentId(), getActionId());
+		
+		if(parent != null)
+			this.fullActionId = FullActionIdConcator.concat(parent.getContentId(), actionId);
+		else
+			this.fullActionId = actionId;
 	}
 	
 	public ActionList getParent() {
