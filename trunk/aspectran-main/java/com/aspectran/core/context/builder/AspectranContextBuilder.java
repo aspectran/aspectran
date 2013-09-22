@@ -55,10 +55,13 @@ public class AspectranContextBuilder {
 		AspectranContextResource resource = null;
 		
 		try {
-			File file = new File(contextConfigLocation);
+			File file = new File(applicationRootPath, contextConfigLocation);
 			
-			if(!file.isFile())
+			log.debug("absolute pathname: " + file.getAbsolutePath());
+
+			if(!file.isFile()) {
 				throw new FileNotFoundException("aspectran context configuration file is not found. " + contextConfigLocation);
+			}
 			
 			resource = new AspectranContextResource();
 			resource.setFile(file);

@@ -24,7 +24,6 @@ import com.aspectran.core.type.TokenType;
 
 import java.util.List;
 
-// TODO: Auto-generated Javadoc
 /**
  * <p>Created: 2008. 03. 22 오후 5:51:58</p>
  */
@@ -229,7 +228,7 @@ public class RedirectResponseRule extends ActionPossessSupport implements Action
 
 		sb.append("{id=").append(id);
 		sb.append(", contentType=").append(contentType);
-		sb.append(", requestUri=").append(transletName);
+		sb.append(", translet=").append(transletName);
 		sb.append(", url=").append(url);
 		sb.append(", excludeNullParameters=").append(excludeNullParameters);
 

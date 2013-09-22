@@ -38,7 +38,7 @@ public class EchoAction extends AbstractAction implements Executable {
 	 * @param parent the parent
 	 */
 	public EchoAction(EchoActionRule echoActionRule, ActionList parent) {
-		super(parent);
+		super(echoActionRule.getActionId(), parent);
 		this.echoActionRule = echoActionRule;
 	}
 	

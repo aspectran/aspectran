@@ -1,11 +1,5 @@
 package com.aspectran.support.orm.ibatis;
 
-import java.io.InputStream;
-
-import com.aspectran.core.util.Resources;
-import com.ibatis.sqlmap.client.SqlMapClient;
-import com.ibatis.sqlmap.client.SqlMapClientBuilder;
-
 /**
  *
  * @author Gulendol

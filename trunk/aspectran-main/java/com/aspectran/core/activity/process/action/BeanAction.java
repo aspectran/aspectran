@@ -50,7 +50,7 @@ public class BeanAction extends AbstractAction implements Executable {
 	 * @param parent the parent
 	 */
 	public BeanAction(BeanActionRule beanActionRule, ActionList parent) {
-		super(parent);
+		super(beanActionRule.getActionId(), parent);
 		this.beanActionRule = beanActionRule;
 	}
 	

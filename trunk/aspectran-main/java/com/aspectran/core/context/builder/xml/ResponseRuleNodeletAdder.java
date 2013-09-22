@@ -264,16 +264,16 @@ public class ResponseRuleNodeletAdder implements NodeletAdder {
 			public void process(Node node, Properties attributes, String text) throws Exception {
 				String id = attributes.getProperty("id");
 				String contentType = attributes.getProperty("contentType"); // ResponseByContentType에서 content type에 따라 분기
-				String path = attributes.getProperty("path");
+				String translet = attributes.getProperty("translet");
 				String url = attributes.getProperty("url");
 				Boolean excludeNullParameters = Boolean.valueOf(attributes.getProperty("excludeNullParameters"));
 				
 				RedirectResponseRule rrr = new RedirectResponseRule();
 				rrr.setId(id);
 				rrr.setContentType(contentType);
-				rrr.setTransletName(path);
+				rrr.setTransletName(translet);
 				
-				if(url != null)
+				if(url != null && url.length() > 0)
 					rrr.setUrl(url);
 				
 				rrr.setExcludeNullParameters(excludeNullParameters);
@@ -343,7 +343,7 @@ public class ResponseRuleNodeletAdder implements NodeletAdder {
 				RedirectResponseRule rrr = (RedirectResponseRule)assistant.popObject();
 				
 				if(rrr.getTransletName() == null && rrr.getUrl() == null)
-					throw new IllegalArgumentException("The <redirect> element requires either a path or a url attribute.");
+					throw new IllegalArgumentException("The <redirect> element requires either a translet or a url attribute.");
 
 				if(!actionList.isEmpty())
 					rrr.setActionList(actionList);

@@ -60,27 +60,27 @@ property CDATA #IMPLIED
 
 <!ELEMENT null EMPTY>
 
-<!ELEMENT aspect (joinpoint?, default?, action*, before?, after?, around?, finally?, exceptionRaized?)>
+<!ELEMENT aspect (joinpoint?, settings?, action*, before?, after?, around?, finally?, exceptionRaized?)>
 <!ATTLIST aspect
 id ID #IMPLIED
 >
 
 <!ELEMENT joinpoint (pointcut*)>
 <!ATTLIST joinpoint
-target (request | response | scheduler | bean | translet | action) #REQUIRED
+target (translet | scheduler) #IMPLIED
+scope (translet | request | content | response | action | bean) #IMPLIED
 >
 
 <!ELEMENT pointcut (#PCDATA)>
 <!ATTLIST pointcut
-pattern CDATA #IMPLIED
+type (wildcard | regexpt | interval) #IMPLIED
 >
 
-<!ELEMENT default (properties? | action?)*>
-<!ELEMENT before (properties? | echo? | action? | transform? | dispatch? | redirect? | forward?)*>
-<!ELEMENT after (properties? | echo? | action? | transform? | dispatch? | redirect? | forward?)*>
-<!ELEMENT around (properties? | echo? | action? | transform? | dispatch? | redirect? | forward?)*>
-<!ELEMENT finally (properties? | echo? | action? | transform? | dispatch? | redirect? | forward?)*>
-<!ELEMENT exceptionRaized (properties? | echo? | action? | transform? | dispatch? | redirect? | forward?)*>
+<!ELEMENT before (echo | action)>
+<!ELEMENT after (echo | action)>
+<!ELEMENT around (echo | action)>
+<!ELEMENT finally (echo | action)>
+<!ELEMENT exceptionRaized (action?, responseByContentType*, defaultResponse?)>
 
 <!ELEMENT bean (features?, constructor?, properties*)>
 <!ATTLIST bean
@@ -94,7 +94,7 @@ lazyInit (true | false) #IMPLIED
 parent CDATA #IMPLIED
 >
 
-<!ELEMENT features (class?, scope?, factoryMethod?, initMethod?, destroyMethod?, lazyInit?)>
+<!ELEMENT features (class?, scope?, factoryMethod?, initMethod?, destroyMethod?, lazyInit?, poolSize?)>
 
 <!ELEMENT class (#PCDATA)>
 <!ELEMENT scope (#PCDATA)>
@@ -102,6 +102,7 @@ parent CDATA #IMPLIED
 <!ELEMENT initMethod (#PCDATA)>
 <!ELEMENT destroyMethod (#PCDATA)>
 <!ELEMENT lazyInit (#PCDATA)>
+<!ELEMENT poolSize (#PCDATA)>
 
 <!ELEMENT constructor (arguments?)>
 
@@ -162,9 +163,12 @@ hidden (true | false) #IMPLIED
 characterEncoding CDATA #IMPLIED
 default CDATA #IMPLIED
 >
-<!ELEMENT exception (responseByContentType?, defaultResponse?)>
+<!ELEMENT exception (responseByContentType*, defaultResponse?)>
 
 <!ELEMENT responseByContentType (transform? | dispatch? | redirect? | forward?)*>
+<!ATTLIST responseByContentType
+exceptionType CDATA #IMPLIED
+>
 <!ELEMENT defaultResponse (transform? | dispatch? | redirect? | forward?)>
 
 <!ELEMENT transform (echo | action | include | template)*>

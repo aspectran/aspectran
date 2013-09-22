@@ -45,7 +45,7 @@ public class IncludeAction extends AbstractAction implements Executable {
 	 * @param parent the parent
 	 */
 	public IncludeAction(IncludeActionRule includeActionRule, ActionList parent) {
-		super(parent);
+		super(includeActionRule.getActionId(), parent);
 		this.includeActionRule = includeActionRule;
 	}
 
