@@ -12,7 +12,7 @@
 	<context-param>
 		<param-name>aspectran:contextConfigLocation</param-name>
 		<param-value>
-			/WEB-INF/aspectran/aspectran.xml
+			/WEB-INF/classes/aspectran/aspectran.xml
 		</param-value>
 	</context-param>
 	<context-param>
@@ -21,7 +21,7 @@
 	</context-param>
 	<listener>
 		<listener-class>
-			com.aspectran.web.context.AspectranContextLoaderListener
+			com.aspectran.web.context.listener.AspectranContextLoaderListener
 		</listener-class>
 	</listener>
 	<listener>
