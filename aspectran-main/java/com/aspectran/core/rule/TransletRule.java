@@ -30,8 +30,8 @@ import com.aspectran.core.activity.response.RedirectResponse;
 import com.aspectran.core.activity.response.Responsible;
 import com.aspectran.core.activity.response.dispatch.DispatchResponse;
 import com.aspectran.core.activity.response.transform.AbstractTransform;
+import com.aspectran.core.context.AspectranContextConstant;
 import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
-import com.aspectran.core.context.builder.AspectranContextConstant;
 import com.aspectran.core.type.ResponseType;
 import com.aspectran.core.type.TransformType;
 

@@ -19,6 +19,8 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.aspectran.core.context.AspectranContextConstant;
+import com.aspectran.core.context.AspectranContextConstant;
 import com.aspectran.core.rule.AspectRule;
 import com.aspectran.core.rule.AspectRuleMap;
 import com.aspectran.core.rule.BeanRule;

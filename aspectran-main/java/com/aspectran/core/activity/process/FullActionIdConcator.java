@@ -15,9 +15,9 @@
  */
 package com.aspectran.core.activity.process;
 
-import com.aspectran.core.context.builder.AspectranContextConstant;
+import com.aspectran.core.context.AspectranContextConstant;
 
-/**
+/*
  * <p>Created: 2008. 7. 2. 오전 12:16:12</p>
  */
 public class FullActionIdConcator {

@@ -29,7 +29,7 @@ import com.aspectran.core.activity.AspectranActivity;
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.activity.response.Responsible;
 import com.aspectran.core.adapter.ResponseAdapter;
-import com.aspectran.core.context.builder.AspectranContextConstant;
+import com.aspectran.core.context.AspectranContextConstant;
 import com.aspectran.core.rule.TransformRule;
 import com.aspectran.core.token.Token;
 import com.aspectran.core.token.Tokenizer;
