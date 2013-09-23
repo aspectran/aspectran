@@ -5,7 +5,6 @@
 <aspectran>
 
 	<settings>
-		<setting name="transletNameSeparator" value="/"/>
 		<setting name="transletNamePatternPrefix" value="test"/>
 		<setting name="transletNamePatternSuffix" value=".do"/>
 		<setting name="transletNamePattern" value="/test/*.do"/>
