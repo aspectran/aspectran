@@ -29,7 +29,7 @@ public interface AspectranContextConstant {
 	/** The Constant NAMESPACE_SEPARATOR. */
 	public static final String TRANSLET_NAME_SEPARATOR = "/";
 
-	public static final String TRANSLET_NAME_SUFFIX_SEPARATOR = ".";
+	public static final String TRANSLET_NAME_EXTENTION_SEPARATOR = ".";
 
 	/** The Constant BEAN_ID_SEPARATOR. */
 	public static final String BEAN_ID_SEPARATOR = ".";
