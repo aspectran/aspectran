@@ -38,6 +38,10 @@
 		<servlet-name>aspectran:web</servlet-name>
 		<servlet-class>com.aspectran.web.context.servlet.AspectranActivityServlet</servlet-class>
 		<init-param>
+			<param-name>aspectran:defaultActivityServletHandler</param-name>
+			<param-value>com.aspectran.web.context.servlet.DefaultActivityServletHandler</param-value>
+		</init-param>
+		<init-param>
 			<param-name>aspectran:contextConfigLocation</param-name>
 			<param-value>/WEB-INF/aspectran/aspectran.xml</param-value>
 		</init-param>
