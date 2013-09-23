@@ -34,7 +34,7 @@ import com.aspectran.core.activity.response.Responsible;
 import com.aspectran.core.activity.response.transform.xml.ContentsInputSource;
 import com.aspectran.core.activity.response.transform.xml.ContentsXMLReader;
 import com.aspectran.core.adapter.ResponseAdapter;
-import com.aspectran.core.context.builder.AspectranContextConstant;
+import com.aspectran.core.context.AspectranContextConstant;
 import com.aspectran.core.rule.TransformRule;
 
 /**

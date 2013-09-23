@@ -3,7 +3,7 @@ package com.aspectran.core.context.aspect.pointcut;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.aspectran.core.context.builder.AspectranContextConstant;
+import com.aspectran.core.context.AspectranContextConstant;
 import com.aspectran.core.util.wildcard.WildcardMatcher;
 
 /**
