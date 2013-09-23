@@ -20,7 +20,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.aspectran.core.context.AspectranContextConstant;
-import com.aspectran.core.context.AspectranContextConstant;
 import com.aspectran.core.rule.AspectRule;
 import com.aspectran.core.rule.AspectRuleMap;
 import com.aspectran.core.rule.BeanRule;
@@ -29,6 +28,7 @@ import com.aspectran.core.rule.TransletRule;
 import com.aspectran.core.rule.TransletRuleMap;
 import com.aspectran.core.type.AspectranSettingType;
 import com.aspectran.core.util.ArrayStack;
+
 
 /**
  * <p>Created: 2008. 04. 01 오후 10:25:35</p>
@@ -222,7 +222,7 @@ public class AspectranContextBuildingAssistant {
 		
 		StringBuilder sb = new StringBuilder();
 		sb.append(name.substring(0, index));
-		sb.append(AspectranContextConstant.TRANSLET_NAME_SUFFIX_SEPARATOR);
+		sb.append(AspectranContextConstant.TRANSLET_NAME_EXTENTION_SEPARATOR);
 		sb.append(transletNameSuffix);
 		
 		return sb.toString();

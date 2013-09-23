@@ -18,7 +18,6 @@ package com.aspectran.core.context.builder;
 import java.util.Map;
 
 import com.aspectran.core.context.AspectranContextConstant;
-import com.aspectran.core.context.AspectranContextConstant;
 import com.aspectran.core.type.AspectranSettingType;
 
 /**
@@ -26,8 +25,6 @@ import com.aspectran.core.type.AspectranSettingType;
  */
 public class InheritedAspectranSettings {
 
-	private String transletNameSeparator;
-	
 	private String transletNamePattern;
 	
 	private String transletNamePatternPrefix;
@@ -49,14 +46,6 @@ public class InheritedAspectranSettings {
 	protected InheritedAspectranSettings() {
 	}
 	
-	public String getTransletNameSeparator() {
-		return transletNameSeparator;
-	}
-
-	public void setTransletNameSeparator(String transletNameSeparator) {
-		this.transletNameSeparator = transletNameSeparator;
-	}
-
 	public String getTransletNamePattern() {
 		return transletNamePattern;
 	}
