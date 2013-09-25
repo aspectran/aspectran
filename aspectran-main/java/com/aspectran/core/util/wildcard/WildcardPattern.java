@@ -2,13 +2,29 @@ package com.aspectran.core.util.wildcard;
 
 public class WildcardPattern {
 
-	private static final char ESCAPE = '\\';
+	protected static final char ESCAPE_CHAR = '\\';
 	
-	private static final char STAR = '*';
+	protected static final char SPACE_CHAR = ' ';
 	
-	private static final char QUESTION = '?';
+	protected static final char STAR_CHAR = '*';
 	
-	private static final char PLUS = '+';
+	protected static final char QUESTION_CHAR = '?';
+	
+	protected static final char PLUS_CHAR = '+';
+	
+	protected static int SKIP_TYPE = -1;
+	
+	protected static int LITERAL_TYPE = 0;
+	
+	protected static int STAR_TYPE = 1;
+	
+	protected static int DOUBLE_STAR_TYPE = 2;
+	
+	protected static int QUESTION_TYPE = 3;
+	
+	protected static int PLUS_TYPE = 4;
+	
+	protected static int SEPARATOR_TYPE = 9;
 	
 	private char[] separators;
 	
@@ -32,81 +48,110 @@ public class WildcardPattern {
 	private void parse(String patternString) {
 		tokens = patternString.toCharArray();
 		types = new int[tokens.length];
-		
+
 		boolean star = false;
-		int sepa = 0;
-		int sepaEsc = 0;
 		boolean esc = false;
-		
+		int ptype = SKIP_TYPE;
+		int pindex = 0;
+
 		for(int i = 0; i < tokens.length; i++) {
-			if(tokens[i] == STAR) {
+			if(tokens[i] == STAR_CHAR) {
 				if(esc) {
-					types[i - 1] = -1;
 					esc = false;
 				} else {
 					if(star) {
-						types[i - 1] = 2; // type 2: double star
-						types[i] = 2; // type 2: double star
+						types[i - 1] = SKIP_TYPE;
+						types[i] = DOUBLE_STAR_TYPE; // type 2: double star
 						star = false;
 					} else {
-						types[i] = 1; // type 1: star
+						types[i] = STAR_TYPE; // type 1: star
 						star = true;
 					}
 				}
-			} else if(tokens[i] == QUESTION) {
+				if(ptype == QUESTION_TYPE && types[i] == STAR_TYPE) {
+					types[pindex] = SKIP_TYPE;
+				}
+			} else if(tokens[i] == QUESTION_CHAR) {
 				if(esc) {
-					types[i - 1] = -1;
+					types[i - 1] = SKIP_TYPE;
 					esc = false;
 				} else {
-					types[i] = 3; // type 3: question
+					types[i] = QUESTION_TYPE; // type 3: question
 				}
-			} else if(tokens[i] == PLUS) {
+				if(ptype == STAR_TYPE && types[i] == QUESTION_TYPE) {
+					types[i] = SKIP_TYPE;
+				}
+			} else if(tokens[i] == PLUS_CHAR) {
 				if(esc) {
-					types[i - 1] = -1;
+					types[i - 1] = SKIP_TYPE;
 					esc = false;
 				} else {
-					types[i] = 4; // type 4: question
+					types[i] = PLUS_TYPE; // type 4: plus
 				}
-			} else if(separators != null) {
-				if(tokens[i] == separators[sepa]) {
-					if(tokens[i] == ESCAPE) {
-						if(esc) {
-							sepa++;
-							sepaEsc++;
-							types[i - 1] = -1;
-						} else {
-							esc = true;
-						}
-					} else
-						sepa++;
+				if(ptype == STAR_TYPE && types[i] == PLUS_CHAR) {
+					types[i] = SKIP_TYPE;
 				}
-				if(sepa == separators.length) {
-					if(sepa == 1) {
-						types[i] = 9; // type 9: separator
-					} else {          
-						for(int j = i - sepa + sepaEsc + 1; j <= i; j++) {
-							if(types[j] != -1)
-								types[j] = 9; // type 9: separator
-						}
-					}
-					sepa = 0;
-					sepaEsc = 0;
-				}
-			} else if(tokens[i] == ESCAPE) {
+			} else if(tokens[i] == ESCAPE_CHAR) {
+				types[i] = SKIP_TYPE;
 				esc = true;
-				System.out.println("[" + i + " " + esc + "]");
 			}
-			
-			if(tokens[i] != STAR && star)
+
+			if(tokens[i] != STAR_CHAR && star)
 				star = false;
 			
-			if(sepa > 0 && tokens[i] != separators[sepa - 1]) {
-				sepa = 0;
-				sepaEsc = 0;
+			if(types[i] != SKIP_TYPE) {
+				ptype = types[i];
+				pindex = i;
+			}
+		}
+
+		if(separators != null && separators.length > 0) {
+			int sepa = 0;
+			int skip = 0;
+
+			for(int i = 0; i < tokens.length; i++) {
+				if(types[i] > SKIP_TYPE) {
+					if(tokens[i] == separators[sepa]) {
+						sepa++;
+					}
+					if(sepa == separators.length) {
+						if(sepa == 1) {
+							types[i] = SEPARATOR_TYPE; // type 9: separator
+						} else {          
+							for(int j = i - sepa + skip + 1; j <= i; j++) {
+								if(types[j] != SKIP_TYPE)
+									types[j] = SEPARATOR_TYPE; // type 9: separator
+							}
+						}
+						sepa = 0;
+					}
+				}
+
+				if(sepa > 0) {
+					if(types[i] == SKIP_TYPE)
+						skip++;
+					else if(tokens[i] != separators[sepa - 1])
+						sepa = 0;
+				}
+			}
+		}
+		
+		for(int i = 0, j = 0; i < tokens.length; i++) {
+			if(types[i] == SKIP_TYPE) {
+				j++; 
+			} else if(j > 0) {
+				tokens[i - j] = tokens[i];
+				types[i - j] = types[i];
+				tokens[i] = SPACE_CHAR;
+				types[i] = SKIP_TYPE;
 			}
 		}
 	}
-	
+
+	protected char[] getSeparators() {
+		return separators;
+	}
+
 	protected char[] getTokens() {
 		return tokens;
 	}
@@ -114,24 +159,29 @@ public class WildcardPattern {
 	protected int[] getTypes() {
 		return types;
 	}
-	
+
 	public static WildcardPattern compile(String patternString, String separator) {
 		return new WildcardPattern(patternString, separator);
 	}
 	
 	public static void main(String argv[]) {
 		String str = "/aaa\\*/**/bb*.txt";
-		WildcardPattern w = WildcardPattern.compile(str, "\\");
+		WildcardPattern pattern = WildcardPattern.compile(str, "/");
 		
 		int i = 0;
-		for(char c : w.getTokens()) {
+		for(char c : pattern.getTokens()) {
 			System.out.print(i);
 			System.out.print(": ");
 			System.out.print(c);
 			System.out.print(", ");
-			System.out.println(w.getTypes()[i]);
+			System.out.println(pattern.getTypes()[i]);
 			i++;
 		}
+		
+		WildcardMatcher matcher = new WildcardMatcher(pattern);
+		boolean result = matcher.matches("/aaa\\*/mm/nn/bbZZ.txt");
+		
+		System.out.println("Result: " + result);
 	}
 
 }
