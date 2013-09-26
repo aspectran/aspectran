@@ -12,6 +12,8 @@ public class WildcardPattern {
 	
 	protected static final char PLUS_CHAR = '+';
 	
+	protected static int EOT_TYPE = -2;
+	
 	protected static int SKIP_TYPE = -1;
 	
 	protected static int LITERAL_TYPE = 0;
@@ -94,6 +96,9 @@ public class WildcardPattern {
 			} else if(tokens[i] == ESCAPE_CHAR) {
 				types[i] = SKIP_TYPE;
 				esc = true;
+			} else {
+				if(esc)
+					types[i - 1] = LITERAL_TYPE;
 			}
 
 			if(tokens[i] != STAR_CHAR && star)
@@ -139,11 +144,13 @@ public class WildcardPattern {
 		for(int i = 0, j = 0; i < tokens.length; i++) {
 			if(types[i] == SKIP_TYPE) {
 				j++; 
+				tokens[i] = SPACE_CHAR;
+				types[i] = EOT_TYPE;
 			} else if(j > 0) {
 				tokens[i - j] = tokens[i];
 				types[i - j] = types[i];
 				tokens[i] = SPACE_CHAR;
-				types[i] = SKIP_TYPE;
+				types[i] = EOT_TYPE;
 			}
 		}
 	}
@@ -165,8 +172,8 @@ public class WildcardPattern {
 	}
 	
 	public static void main(String argv[]) {
-		String str = "/aaa\\*/**/bb*.txt";
-		WildcardPattern pattern = WildcardPattern.compile(str, "/");
+		String str = "\\aaa\\*\\**\\bb*.txt**";
+		WildcardPattern pattern = WildcardPattern.compile(str, "\\");
 		
 		int i = 0;
 		for(char c : pattern.getTokens()) {
@@ -179,7 +186,7 @@ public class WildcardPattern {
 		}
 		
 		WildcardMatcher matcher = new WildcardMatcher(pattern);
-		boolean result = matcher.matches("/aaa\\*/mm/nn/bbZZ.txt");
+		boolean result = matcher.matches("\\aaa\\*\\mm\\nn/bbZZ.txt");
 		
 		System.out.println("Result: " + result);
 	}
