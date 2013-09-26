@@ -34,6 +34,10 @@ public class WildcardPattern {
 
 	private int[] types;
 	
+	private int separatorCount;
+	
+	private int[] separatorPositions;
+	
 	public WildcardPattern(String patternString) {
 		this(patternString, null);
 	}
@@ -129,6 +133,7 @@ public class WildcardPattern {
 							}
 						}
 						sepa = 0;
+						separatorCount++;
 					}
 				}
 
@@ -139,6 +144,9 @@ public class WildcardPattern {
 						sepa = 0;
 				}
 			}
+			
+			if(separatorCount > 0)
+				separatorPositions = new int[separatorCount];
 		}
 		
 		for(int i = 0, j = 0; i < tokens.length; i++) {
@@ -166,7 +174,19 @@ public class WildcardPattern {
 	protected int[] getTypes() {
 		return types;
 	}
+	
+	public int getSeparatorCount() {
+		return separatorCount;
+	}
 
+	protected void setSeparatorPosition(int separatorIndex, int caPosition) {
+		separatorPositions[separatorIndex] = caPosition;
+	}
+	
+	public boolean matches(String str) {
+		return WildcardMatcher.matches(this, str);
+	}
+	
 	public static WildcardPattern compile(String patternString, String separator) {
 		return new WildcardPattern(patternString, separator);
 	}
@@ -185,8 +205,8 @@ public class WildcardPattern {
 			i++;
 		}
 		
-		WildcardMatcher matcher = new WildcardMatcher(pattern);
-		boolean result = matcher.matches("\\aaa\\*\\mm\\nn/bbZZ.txt");
+		//WildcardMatcher matcher = new WildcardMatcher(pattern);
+		boolean result = pattern.matches("\\aaa\\*\\mm\\nn/bbZZ.txt");
 		
 		System.out.println("Result: " + result);
 	}

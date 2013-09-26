@@ -4,11 +4,30 @@ public class WildcardMatcher {
 
 	private WildcardPattern pattern;
 	
+	private String str;
+	
 	public WildcardMatcher(WildcardPattern pattern) {
 		this.pattern = pattern;
 	}
 	
 	public boolean matches(String str) {
+		this.str = str;
+		return matches(pattern, str);
+	}
+	
+	public String first() {
+		if(pattern.getSeparators() == null)
+			return str;
+		
+		
+	}
+	
+	public String last() {
+		if(pattern.getSeparators() == null)
+			return str;
+	}
+	
+	public static boolean matches(WildcardPattern pattern, String str) {
 		char[] tokens = pattern.getTokens();
 		int[] types = pattern.getTypes();
 		char[] separators = pattern.getSeparators();
@@ -183,8 +202,8 @@ public class WildcardMatcher {
 			i++;
 		}
 		
-		WildcardMatcher matcher = new WildcardMatcher(pattern);
-		boolean result = matcher.matches("/aaa*/mm/nn/bbZZ.txt");
+		//WildcardMatcher matcher = new WildcardMatcher(pattern);
+		boolean result = pattern.matches("/aaa*/mm/nn/bbZZ.txt");
 		
 		System.out.println("Result: " + result);
 	}
