@@ -11,6 +11,7 @@ public class WildcardMatcher {
 	public boolean matches(String str) {
 		char[] tokens = pattern.getTokens();
 		int[] types = pattern.getTypes();
+		char[] separators = pattern.getSeparators();
 		char[] ca = str.toCharArray();
 		
 		int tokensLength = tokens.length;
@@ -29,74 +30,132 @@ public class WildcardMatcher {
 			} else if(types[tokenIndex] == WildcardPattern.STAR_TYPE) {
 				int start = ++tokenIndex;
 				int end = start;
+				boolean eof = false;
 				for(; tokenIndex < tokensLength; tokenIndex++) {
-					if(types[tokenIndex] == WildcardPattern.SKIP_TYPE || types[tokenIndex] == WildcardPattern.LITERAL_TYPE)
-						end = tokenIndex;
-					else
+					if(types[tokenIndex] == WildcardPattern.LITERAL_TYPE)
+						end = tokenIndex + 1;
+					else if(types[tokenIndex] == WildcardPattern.SKIP_TYPE) {
+						eof = true;
+						break;
+					} else
 						break;
 				}
 				if(end > start) {
-					if(end == tokensLength - 1) {
-						int m = caLength - 1;
-						int n = end;
-						for(; n >= start && m >= caIndex; n--) {
-							if(types[n] != WildcardPattern.SKIP_TYPE) {
-								if(tokens[n] != ca[m--])
-									return false;
-							}
+					if(eof || end == tokensLength - 1) {
+						int c = caLength - 1;
+						for(; end > start && c >= caIndex; end--) {
+							if(tokens[end] != ca[c--])
+								return false;
 						}
-						if(n != start)
+						if(end != start)
 							return false;
 					} else {
-						int n = start;
-						for(; n <= end && caIndex < caLength; caIndex++) {
-							if(types[n] != WildcardPattern.SKIP_TYPE) {
-								if(tokens[n] != ca[caIndex]) {
-									n = start;
-									continue;
-								}
-							}
-							n++;
+						int t = start;
+						for(; t < end && caIndex < caLength; caIndex++) {
+							if(tokens[t] != ca[caIndex])
+								t = start;
+							else
+								t++;
 						}
-						if(n <= end)
+						if(t < end)
 							return false;
 					}
 				}
 			} else if(types[tokenIndex] == WildcardPattern.DOUBLE_STAR_TYPE) {
-				int n = tokensLength - 1;
-				while(n > tokenIndex) {
-					if(types[n] == WildcardPattern.DOUBLE_STAR_TYPE) {
-						break;
+				if(separators != null) {
+					int c = caLength - 1;
+					if(separators.length == 1) {
+						while(c > caIndex) {
+							if(ca[c] == separators[0]) {
+								caIndex = c + 1;
+								break;
+							}
+							c--;
+						}
+					} else {
+						while(c > caIndex) {
+							int s = separators.length - 1;
+							while(s >= 0) {
+								if(ca[c--] == separators[s])
+									s--;
+								else
+									s = separators.length - 1;
+							}
+							if(s == -1) {
+								caIndex = c + separators.length + 1;
+							}
+						}
 					}
-					n--;
-				}
-				if(n == tokenIndex) {
-					tokenIndex = tokensLength;
 				} else {
-					tokenIndex = n + 1;
+					caIndex = caLength; //complete
 				}
+				tokenIndex++;
 			} else if(types[tokenIndex] == WildcardPattern.QUESTION_TYPE) {
-				
-				
-				//if(types[tokenIndex] != ca[caIndex++])
+				if(separators != null) {
+					if(separators.length == 1) {
+						if(ca[caIndex] != separators[0])
+							caIndex++;
+					} else {
+						int s = separators.length - 1;
+						for(; s >= 0; s--) {
+							if(caIndex + s >= caLength)
+								break;
+							if(ca[caIndex + s] != separators[s])
+								break;
+						}
+						if(s != -1)
+							caIndex++;
+					}
+				} else {
+					caIndex++;
+				}
+				tokenIndex++;
 			} else if(types[tokenIndex] == WildcardPattern.PLUS_TYPE) {
-				//if(tokens[tokenIndex] != ca[caIndex++])
-				//	return false;
+				if(separators != null) {
+					if(separators.length == 1) {
+						if(ca[caIndex] == separators[0])
+							return false;
+					} else {
+						int s = separators.length - 1;
+						for(; s >= 0; s--) {
+							if(caIndex + s >= caLength)
+								break;
+							if(ca[caIndex + s] != separators[s])
+								break;
+						}
+						if(s == -1)
+							return false;
+					}
+				}
+				caIndex++;
+				tokenIndex++;
 			} else if(types[tokenIndex] == WildcardPattern.SEPARATOR_TYPE) {
-				char[] separators = pattern.getSeparators();
 				if(separators.length == 1) {
 					if(tokens[tokenIndex++] != ca[caIndex++])
 						return false;
 				} else {
+					if(caIndex + separators.length > caLength)
+						return false;
 					for(int i = 0; i < separators.length; i++) {
-						if(tokens[tokenIndex++] != ca[caIndex++])
+						if(tokens[tokenIndex++] != ca[caIndex])
 							return false;
+						caIndex++;
 					}
 				}
 			} else if(types[tokenIndex] == WildcardPattern.SKIP_TYPE) {
 				break;
 			} else {
 				tokenIndex++;
+			}
+		}
+		
+		if(tokenIndex < tokensLength) {
+			for(int i = tokenIndex; i < tokensLength; i++) {
+				if(types[i] == WildcardPattern.LITERAL_TYPE ||
+						types[i] == WildcardPattern.PLUS_TYPE ||
+						types[i] == WildcardPattern.SEPARATOR_TYPE) {
+					return false;
+				}
 			}
 		}
 		
