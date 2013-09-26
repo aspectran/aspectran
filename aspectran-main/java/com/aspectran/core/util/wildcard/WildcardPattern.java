@@ -105,7 +105,7 @@ public class WildcardPattern {
 			}
 		}
 
-		if(separators != null && separators.length > 0) {
+		if(separators != null) {
 			int sepa = 0;
 			int skip = 0;
 
