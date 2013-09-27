@@ -4,18 +4,57 @@ public class WildcardMatcher {
 
 	private WildcardPattern pattern;
 	
-	private String str;
+	char[] ca;
+	
+	private boolean parsed;
 	
 	public WildcardMatcher(WildcardPattern pattern) {
 		this.pattern = pattern;
 	}
 	
 	public boolean matches(String str) {
-		this.str = str;
-		return matches(pattern, str);
+		if(str == null)
+			return false;
+		
+		this.ca = str.toCharArray();
+		this.parsed = false;
+		
+		return matches(pattern, ca);
+	}
+	
+	public boolean parse() {
+		if(ca == null || parsed)
+			return parsed;
+		
+		char[] tokens = pattern.getTokens();
+		int[] types = pattern.getTypes();
+		char[] separators = pattern.getSeparators();
+		
+		int tokensLength = tokens.length;
+		int caLength = ca.length;
+
+		int tokenIndex = 0;
+		int caIndex = 0;
+		
+		for(; tokenIndex < tokensLength && caIndex < caLength;) {
+
+			
+		}
+		
+		
+		
+		
+		
+		
+		parsed = true;
+		
+		return parsed;
 	}
 	
 	public String first() {
+		Matcher 
+		
+		
 		if(pattern.getSeparators() == null)
 			return str;
 		
@@ -28,10 +67,13 @@ public class WildcardMatcher {
 	}
 	
 	public static boolean matches(WildcardPattern pattern, String str) {
+		return matches(pattern, str.toCharArray(), null);
+	}
+	
+	public static boolean matches(WildcardPattern pattern, char[] ca, char[] separatorFlags) {
 		char[] tokens = pattern.getTokens();
 		int[] types = pattern.getTypes();
 		char[] separators = pattern.getSeparators();
-		char[] ca = str.toCharArray();
 		
 		int tokensLength = tokens.length;
 		int caLength = ca.length;
