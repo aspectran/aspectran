@@ -34,10 +34,6 @@ public class WildcardPattern {
 
 	private int[] types;
 	
-	private int separatorCount;
-	
-	private int[] separatorPositions;
-	
 	public WildcardPattern(String patternString) {
 		this(patternString, null);
 	}
@@ -133,7 +129,6 @@ public class WildcardPattern {
 							}
 						}
 						sepa = 0;
-						separatorCount++;
 					}
 				}
 
@@ -144,9 +139,6 @@ public class WildcardPattern {
 						sepa = 0;
 				}
 			}
-			
-			if(separatorCount > 0)
-				separatorPositions = new int[separatorCount];
 		}
 		
 		for(int i = 0, j = 0; i < tokens.length; i++) {
@@ -173,14 +165,6 @@ public class WildcardPattern {
 	
 	protected int[] getTypes() {
 		return types;
-	}
-	
-	public int getSeparatorCount() {
-		return separatorCount;
-	}
-
-	protected void setSeparatorPosition(int separatorIndex, int caPosition) {
-		separatorPositions[separatorIndex] = caPosition;
 	}
 	
 	public boolean matches(String str) {
