@@ -1,32 +1,126 @@
 package com.aspectran.core.util.wildcard;
 
+
 public class WildcardMatcher {
 
 	private WildcardPattern pattern;
 	
-	char[] ca;
+	private char[] ca;
 	
-	int[] separatorFlags;
+	private int[] separatorFlags;
+	
+	private int separatorCount;
+	
+	private int separatorIndex;
 	
 	public WildcardMatcher(WildcardPattern pattern) {
 		this.pattern = pattern;
 	}
 	
 	public boolean matches(String str) {
-		if(str == null)
+		separatorCount = 0;
+		separatorIndex = 0;
+
+		if(str == null) {
+			ca = null;
+			separatorFlags = null;
 			return false;
+		}
 		
-		this.ca = str.toCharArray();
+		ca = str.toCharArray();
 		separatorFlags = new int[ca.length];
 		
-		return matches(pattern, ca, separatorFlags);
+		boolean result = matches(pattern, ca, separatorFlags);
+		
+		if(result) {
+			for(int i = separatorFlags.length - 1; i >= 0; i--) {
+				if(separatorFlags[i] > 0) {
+					separatorCount = separatorFlags[i];
+					break;
+				}
+			}
+		}
+		
+		
+		for(int i : separatorFlags) {
+			System.out.println("separatorFlag: " + i);
+			
+		}
+		
+		
+		return result;
+	}
+	
+	public WildcardMatcher first() {
+		separatorIndex = 0;
+		return this;
+	}
+
+	public WildcardMatcher last() {
+		separatorIndex = separatorCount + 1;
+		return this;
+	}
+	
+	public boolean hasNext() {
+		return separatorIndex < separatorCount + 1;
+	}
+
+	public boolean hasPrev() {
+		return separatorIndex >= 0;
+	}
+	
+	public String next() {
+		if(separatorIndex >= separatorCount + 1)
+			return null;
+
+		return find(separatorIndex++);
+	}
+	
+	public String prev() {
+		if(separatorIndex < 0)
+			return null;
+		
+		return find(separatorIndex--);
+	}
+
+	public String find() {
+		return find(separatorIndex);
+	}
+	
+	public String find(int group) {
+		if(group < 0 || group > separatorCount + 1)
+			throw new IndexOutOfBoundsException();
+		
+		int offset = group == 0 ? 0 : -1;
+		int count = 0;
+		
+		for(int i = 0; i < separatorFlags.length; i++) {
+			if(group > 0 && separatorFlags[i] == group) {
+				offset = i;
+			} else if(offset >= 0) {
+				if(separatorFlags[i] == 0)
+					count++;
+				else if(separatorFlags[i] > group)
+					break;
+			}
+		}
+		
+		return String.copyValueOf(ca, offset + 1, count);
+	}
+	
+	public int getSeparatorCount() {
+		return separatorCount;
 	}
 	
 	public static boolean matches(WildcardPattern pattern, String str) {
 		return matches(pattern, str.toCharArray(), null);
 	}
 	
-	public static boolean matches(WildcardPattern pattern, char[] ca, int[] separatorFlags) {
+	public static boolean matches(WildcardPattern pattern, char[] ca) {
+		return matches(pattern, ca, null);
+	}
+	
+	private static boolean matches(WildcardPattern pattern, char[] ca, int[] separatorFlags) {
 		char[] tokens = pattern.getTokens();
 		int[] types = pattern.getTypes();
 		char[] separators = pattern.getSeparators();
@@ -34,9 +128,11 @@ public class WildcardMatcher {
 		int tokensLength = tokens.length;
 		int caLength = ca.length;
 
+		int sepaLength = separators == null ? -1 : separators.length;
+		int sepaCount = 0;
+
 		int tokenIndex = 0;
 		int caIndex = 0;
-		int sepaCount = 0;
 		
 		System.out.println("tokens length: " + tokensLength);
 		System.out.println("ca length: " + caLength);
@@ -86,9 +182,9 @@ public class WildcardMatcher {
 					}
 				}
 			} else if(types[tokenIndex] == WildcardPattern.DOUBLE_STAR_TYPE) {
-				if(separators != null) {
+				if(sepaLength > 0) {
 					int c = caLength - 1;
-					if(separators.length == 1) {
+					if(sepaLength == 1) {
 						while(c > caIndex) {
 							if(ca[c] == separators[0])
 								break;
@@ -96,21 +192,21 @@ public class WildcardMatcher {
 						}
 						if(c > caIndex) {
 							if(separatorFlags != null) {
-								for(int k = c; k > caIndex; k--) {
+								for(int k = c - 1; k > caIndex; k--) {
 									if(ca[k] == separators[0])
-										separatorFlags[k] = sepaCount++;
+										separatorFlags[k] = ++sepaCount;
 								}
 							}
 							caIndex = c;
 						}
 					} else {
 						while(c > caIndex) {
-							int s = separators.length - 1;
+							int s = sepaLength - 1;
 							while(s >= 0) {
 								if(ca[c] == separators[s])
 									s--;
 								else
-									s = separators.length - 1;
+									s = sepaLength - 1;
 								c--;
 							}
 							if(s == -1) {
@@ -120,19 +216,22 @@ public class WildcardMatcher {
 						}
 						if(c > caIndex) {
 							if(separatorFlags != null) {
-								separatorFlags[c] = sepaCount++;
+								separatorFlags[c] = ++sepaCount;
 								int k = c - 1;
 								while(k > caIndex) {
-									int s = separators.length - 1;
+									int s = sepaLength - 1;
 									while(s >= 0) {
 										if(ca[k] == separators[s])
 											s--;
 										else
-											s = separators.length - 1;
+											s = sepaLength - 1;
 										k--;
 									}
 									if(s == -1) {
-										separatorFlags[k + 1] = sepaCount++;
+										++sepaCount;
+										for(s = 1; s <= sepaLength; s++) {
+											separatorFlags[s] = sepaCount;
+										}
 									}
 								}
 							}
@@ -144,12 +243,12 @@ public class WildcardMatcher {
 				}
 				tokenIndex++;
 			} else if(types[tokenIndex] == WildcardPattern.QUESTION_TYPE) {
-				if(separators != null) {
-					if(separators.length == 1) {
+				if(sepaLength > 0) {
+					if(sepaLength == 1) {
 						if(ca[caIndex] != separators[0])
 							caIndex++;
 					} else {
-						int s = separators.length - 1;
+						int s = sepaLength - 1;
 						for(; s >= 0; s--) {
 							if(caIndex + s >= caLength)
 								break;
@@ -164,12 +263,12 @@ public class WildcardMatcher {
 				}
 				tokenIndex++;
 			} else if(types[tokenIndex] == WildcardPattern.PLUS_TYPE) {
-				if(separators != null) {
-					if(separators.length == 1) {
+				if(sepaLength > 0) {
+					if(sepaLength == 1) {
 						if(ca[caIndex] == separators[0])
 							return false;
 					} else {
-						int s = separators.length - 1;
+						int s = sepaLength - 1;
 						for(; s >= 0; s--) {
 							if(caIndex + s >= caLength)
 								break;
@@ -183,21 +282,21 @@ public class WildcardMatcher {
 				caIndex++;
 				tokenIndex++;
 			} else if(types[tokenIndex] == WildcardPattern.SEPARATOR_TYPE) {
-				if(separators.length == 1) {
+				if(sepaLength == 1) {
 					if(tokens[tokenIndex++] != ca[caIndex++])
 						return false;
 					if(separatorFlags != null)
-						separatorFlags[caIndex - 1] = sepaCount++;
+						separatorFlags[caIndex - 1] = ++sepaCount;
 				} else {
-					if(caIndex + separators.length > caLength)
+					if(caIndex + sepaLength > caLength)
 						return false;
-					for(int i = 0; i < separators.length; i++) {
+					for(int i = 0; i < sepaLength; i++) {
 						if(tokens[tokenIndex++] != ca[caIndex])
 							return false;
 						caIndex++;
 					}
 					if(separatorFlags != null)
-						separatorFlags[caIndex - separators.length] = sepaCount++;
+						separatorFlags[caIndex - sepaLength] = ++sepaCount;
 				}
 			} else if(types[tokenIndex] == WildcardPattern.EOT_TYPE) {
 				break;
@@ -236,7 +335,12 @@ public class WildcardMatcher {
 		WildcardMatcher matcher = new WildcardMatcher(pattern);
 		boolean result = matcher.matches("/aaa*/mm/nn/bbZZ.txt");
 		
-		System.out.println("Result: " + result);
+		System.out.println("result: " + result);
+		System.out.println("separatorCount: " + matcher.getSeparatorCount());
+		
+		while(matcher.hasNext()) {
+			System.out.println(" -" + matcher.next());
+		}
 	}
 
 }
