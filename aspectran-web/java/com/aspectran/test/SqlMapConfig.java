@@ -2,7 +2,7 @@ package com.aspectran.test;
 
 import java.io.InputStream;
 
-import com.aspectran.core.util.Resources;
+import com.aspectran.core.util.ResourceUtils;
 import com.ibatis.sqlmap.client.SqlMapClient;
 import com.ibatis.sqlmap.client.SqlMapClientBuilder;
 
@@ -20,7 +20,7 @@ public class SqlMapConfig {
 	static {
 		try{
 			final String resource = "sqlmap/sql-map-config.xml";
-			InputStream is = Resources.getResourceAsStream(resource);
+			InputStream is = ResourceUtils.getResourceAsStream(resource);
 			sqlMap = SqlMapClientBuilder.buildSqlMapClient(is);
 		} catch(Exception e) {
 			e.printStackTrace();
