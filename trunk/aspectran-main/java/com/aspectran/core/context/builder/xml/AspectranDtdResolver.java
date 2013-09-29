@@ -24,7 +24,7 @@ import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-import com.aspectran.core.util.Resources;
+import com.aspectran.core.util.ResourceUtils;
 
 /**
  * Offline entity resolver for the Aspectran DTDs
@@ -89,7 +89,7 @@ public class AspectranDtdResolver implements EntityResolver {
 			InputStream in = null;
 			
 			try {
-				in = Resources.getResourceAsStream(path);
+				in = ResourceUtils.getResourceAsStream(path);
 				source = new InputSource(in);
 			} catch(IOException e) {
 				// ignore, null is ok

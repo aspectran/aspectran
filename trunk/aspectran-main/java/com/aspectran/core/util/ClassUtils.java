@@ -51,13 +51,13 @@ public abstract class ClassUtils {
 	public static final String ARRAY_SUFFIX = "[]";
 
 	/** Prefix for internal array class names: "[L" */
-	private static final String INTERNAL_ARRAY_PREFIX = "[L";
+	public static final String INTERNAL_ARRAY_PREFIX = "[L";
 
 	/** The package separator character '.' */
-	private static final char PACKAGE_SEPARATOR = '.';
+	public static final char PACKAGE_SEPARATOR = '.';
 
 	/** The inner class separator character '$' */
-	private static final char INNER_CLASS_SEPARATOR = '$';
+	public static final char INNER_CLASS_SEPARATOR = '$';
 
 	/** The CGLIB class separator character "$$" */
 	public static final String CGLIB_CLASS_SEPARATOR = "$$";

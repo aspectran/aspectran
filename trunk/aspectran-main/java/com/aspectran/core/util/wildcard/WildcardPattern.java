@@ -35,7 +35,7 @@ public class WildcardPattern {
 	private int[] types;
 	
 	public WildcardPattern(String patternString) {
-		this(patternString, null);
+		parse(patternString);
 	}
 
 	public WildcardPattern(String patternString, String separator) {
@@ -47,6 +47,18 @@ public class WildcardPattern {
 		parse(patternString);
 	}
 	
+	public WildcardPattern(String patternString, char separator) {
+		this.separators = new char[] { separator };
+		
+		parse(patternString);
+	}
+	
+	public WildcardPattern(String patternString, char[] separators) {
+		this.separators = separators;
+		
+		parse(patternString);
+	}
+		
 	private void parse(String patternString) {
 		tokens = patternString.toCharArray();
 		types = new int[tokens.length];
@@ -155,7 +167,7 @@ public class WildcardPattern {
 		}
 	}
 
-	protected char[] getSeparators() {
+	public char[] getSeparators() {
 		return separators;
 	}
 

@@ -31,7 +31,7 @@ import com.aspectran.core.rule.TransformRule;
 import com.aspectran.core.rule.TransletRule;
 import com.aspectran.core.rule.ability.ResponseAddable;
 import com.aspectran.core.type.TransformType;
-import com.aspectran.core.util.Resources;
+import com.aspectran.core.util.ResourceUtils;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.xml.Nodelet;
 import com.aspectran.core.util.xml.NodeletAdder;
@@ -141,7 +141,7 @@ public class ResponseRuleNodeletAdder implements NodeletAdder {
 					File templateFile = null;
 
 					if(!StringUtils.isEmpty(resource))
-						templateFile = Resources.getResourceAsFile(resource);
+						templateFile = ResourceUtils.getResourceAsFile(resource);
 					else if(!StringUtils.isEmpty(filePath))
 						templateFile = assistant.toRealPathFile(filePath);
 
@@ -157,7 +157,7 @@ public class ResponseRuleNodeletAdder implements NodeletAdder {
 					File templateFile = null;
 
 					if(!StringUtils.isEmpty(resource))
-						templateFile = Resources.getResourceAsFile(resource);
+						templateFile = ResourceUtils.getResourceAsFile(resource);
 					else if(!StringUtils.isEmpty(filePath))
 						templateFile = assistant.toRealPathFile(filePath);
 					

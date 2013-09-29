@@ -5,7 +5,7 @@ public class WildcardMatcher {
 
 	private WildcardPattern pattern;
 	
-	private char[] ca;
+	private char[] charArray;
 	
 	private int[] separatorFlags;
 	
@@ -22,15 +22,15 @@ public class WildcardMatcher {
 		separatorIndex = 0;
 
 		if(str == null) {
-			ca = null;
+			charArray = null;
 			separatorFlags = null;
 			return false;
 		}
 		
-		ca = str.toCharArray();
-		separatorFlags = new int[ca.length];
+		charArray = str.toCharArray();
+		separatorFlags = new int[charArray.length];
 		
-		boolean result = matches(pattern, ca, separatorFlags);
+		boolean result = matches(pattern, charArray, separatorFlags);
 		
 		if(result) {
 			for(int i = separatorFlags.length - 1; i >= 0; i--) {
@@ -88,10 +88,13 @@ public class WildcardMatcher {
 	}
 	
 	public String find(int group) {
+		if(separatorCount == 0)
+			return String.copyValueOf(charArray);
+		
 		if(group < 0 || group > separatorCount + 1)
 			throw new IndexOutOfBoundsException();
 		
-		int offset = group == 0 ? 0 : -1;
+		int offset = -1;
 		int count = 0;
 		
 		for(int i = 0; i < separatorFlags.length; i++) {
@@ -105,11 +108,28 @@ public class WildcardMatcher {
 			}
 		}
 		
-		return String.copyValueOf(ca, offset + 1, count);
+		return String.copyValueOf(charArray, offset + 1, count);
 	}
 	
 	public int getSeparatorCount() {
 		return separatorCount;
+	}
+	
+	public boolean hasWildcards(String str) {
+		char[] ca = str.toCharArray();
+		
+		for(int i = 0; i < ca.length; i++) {
+			if(ca[i] == WildcardPattern.STAR_CHAR ||
+					ca[i] == WildcardPattern.QUESTION_CHAR ||
+					ca[i] == WildcardPattern.PLUS_CHAR)
+				return true;
+		}
+		
+		return false;
+	}
+	
+	public WildcardPattern getWildcardPattern() {
+		return pattern;
 	}
 	
 	public static boolean matches(WildcardPattern pattern, String str) {
@@ -319,8 +339,9 @@ public class WildcardMatcher {
 	}
 	
 	public static void main(String argv[]) {
-		String str = "/aaa\\*/**/bb*.txt**";
-		WildcardPattern pattern = WildcardPattern.compile(str, "/");
+		//String str = "/aaa\\*/**/bb*.txt**";
+		String str = "com.aspectran.test.**.Sample*Test*Bean";
+		WildcardPattern pattern = WildcardPattern.compile(str, ".");
 		
 		int i = 0;
 		for(char c : pattern.getTokens()) {
@@ -333,7 +354,8 @@ public class WildcardMatcher {
 		}
 		
 		WildcardMatcher matcher = new WildcardMatcher(pattern);
-		boolean result = matcher.matches("/aaa*/mm/nn/bbZZ.txt");
+		//boolean result = matcher.matches("/aaa*/mm/nn/bbZZ.txt");
+		boolean result = matcher.matches("com.aspectran.test.**.Sample*Test*Bean");
 		
 		System.out.println("result: " + result);
 		System.out.println("separatorCount: " + matcher.getSeparatorCount());
