@@ -2,7 +2,7 @@ package com.aspectran.support.orm.ibatis;
 
 import java.io.InputStream;
 
-import com.aspectran.core.util.Resources;
+import com.aspectran.core.util.ResourceUtils;
 import com.ibatis.sqlmap.client.SqlMapClient;
 import com.ibatis.sqlmap.client.SqlMapClientBuilder;
 
@@ -23,7 +23,7 @@ public class SqlMapConfig {
 	
 	protected void buildSqlMapClient(String resource) {
 		try{
-			InputStream is = Resources.getResourceAsStream(resource);
+			InputStream is = ResourceUtils.getResourceAsStream(resource);
 			sqlMapClient = SqlMapClientBuilder.buildSqlMapClient(is);
 		} catch(Exception e) {
 			throw new RuntimeException("Error initializing SqlMapConfig class", e);

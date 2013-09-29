@@ -17,20 +17,169 @@ package com.aspectran.core.util;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Properties;
 
 /**
- * A class to simplify access to resources through the classloader.
+ * A class to simplify access to ResourceUtils through the classloader.
  */
-public class Resources extends Object {
+public class ResourceUtils extends Object {
+
+	public static final String CLASSPATH_URL_PREFIX = "classpath:";
+
+	public static final String FILE_URL_PREFIX = "file:";
+
+	public static final String URL_PROTOCOL_FILE = "file";
+
+	public static final String URL_PROTOCOL_JAR = "jar";
+
+	public static final String URL_PROTOCOL_ZIP = "zip";
+
+	public static final String URL_PROTOCOL_VFSZIP = "vfszip";
+
+	public static final String URL_PROTOCOL_WSJAR = "wsjar";
+
+	public static final String URL_PROTOCOL_CODE_SOURCE = "code-source";
+
+	public static final String JAR_URL_SEPARATOR = "!/";
 
 	private static ClassLoader defaultClassLoader;
+
+	public static boolean isUrl(String resourceLocation) {
+		if(resourceLocation == null) {
+			return false;
+		}
+		if(resourceLocation.startsWith(CLASSPATH_URL_PREFIX)) {
+			return true;
+		}
+		try {
+			new URL(resourceLocation);
+			return true;
+		} catch(MalformedURLException ex) {
+			return false;
+		}
+	}
+
+	public static URL getURL(String resourceLocation) throws FileNotFoundException {
+		Assert.notNull(resourceLocation, "Resource location must not be null");
+		if(resourceLocation.startsWith(CLASSPATH_URL_PREFIX)) {
+			String path = resourceLocation.substring(CLASSPATH_URL_PREFIX.length());
+			URL url = ClassUtils.getDefaultClassLoader().getResource(path);
+			if(url == null) {
+				String description = "class path resource [" + path + "]";
+				throw new FileNotFoundException(description + " cannot be resolved to URL because it does not exist");
+			}
+			return url;
+		}
+		try {
+			// try URL
+			return new URL(resourceLocation);
+		} catch(MalformedURLException ex) {
+			// no URL -> treat as file path
+			try {
+				return new File(resourceLocation).toURI().toURL();
+			} catch(MalformedURLException ex2) {
+				throw new FileNotFoundException("Resource location [" + resourceLocation
+						+ "] is neither a URL not a well-formed file path");
+			}
+		}
+	}
+
+	public static File getFile(String resourceLocation) throws FileNotFoundException {
+		Assert.notNull(resourceLocation, "Resource location must not be null");
+		if(resourceLocation.startsWith(CLASSPATH_URL_PREFIX)) {
+			String path = resourceLocation.substring(CLASSPATH_URL_PREFIX.length());
+			String description = "class path resource [" + path + "]";
+			URL url = ClassUtils.getDefaultClassLoader().getResource(path);
+			if(url == null) {
+				throw new FileNotFoundException(description + " cannot be resolved to absolute file path "
+						+ "because it does not reside in the file system");
+			}
+			return getFile(url, description);
+		}
+		try {
+			// try URL
+			return getFile(new URL(resourceLocation));
+		} catch(MalformedURLException ex) {
+			// no URL -> treat as file path
+			return new File(resourceLocation);
+		}
+	}
+
+	public static File getFile(URL resourceUrl) throws FileNotFoundException {
+		return getFile(resourceUrl, "URL");
+	}
+
+	public static File getFile(URL resourceUrl, String description) throws FileNotFoundException {
+		Assert.notNull(resourceUrl, "Resource URL must not be null");
+		if(!URL_PROTOCOL_FILE.equals(resourceUrl.getProtocol())) {
+			throw new FileNotFoundException(description + " cannot be resolved to absolute file path "
+					+ "because it does not reside in the file system: " + resourceUrl);
+		}
+		try {
+			return new File(toURI(resourceUrl).getSchemeSpecificPart());
+		} catch(URISyntaxException ex) {
+			// Fallback for URLs that are not valid URIs (should hardly ever happen).
+			return new File(resourceUrl.getFile());
+		}
+	}
+
+	public static File getFile(URI resourceUri) throws FileNotFoundException {
+		return getFile(resourceUri, "URI");
+	}
+
+	public static File getFile(URI resourceUri, String description) throws FileNotFoundException {
+		Assert.notNull(resourceUri, "Resource URI must not be null");
+		if(!URL_PROTOCOL_FILE.equals(resourceUri.getScheme())) {
+			throw new FileNotFoundException(description + " cannot be resolved to absolute file path "
+					+ "because it does not reside in the file system: " + resourceUri);
+		}
+		return new File(resourceUri.getSchemeSpecificPart());
+	}
+
+	public static boolean isJarURL(URL url) {
+		String protocol = url.getProtocol();
+		return (URL_PROTOCOL_JAR.equals(protocol) || URL_PROTOCOL_ZIP.equals(protocol)
+				|| URL_PROTOCOL_VFSZIP.equals(protocol) || URL_PROTOCOL_WSJAR.equals(protocol) || (URL_PROTOCOL_CODE_SOURCE
+				.equals(protocol) && url.getPath().indexOf(JAR_URL_SEPARATOR) != -1));
+	}
+
+	public static URL extractJarFileURL(URL jarUrl) throws MalformedURLException {
+		String urlFile = jarUrl.getFile();
+		int separatorIndex = urlFile.indexOf(JAR_URL_SEPARATOR);
+		if(separatorIndex != -1) {
+			String jarFile = urlFile.substring(0, separatorIndex);
+			try {
+				return new URL(jarFile);
+			} catch(MalformedURLException ex) {
+				// Probably no protocol in original jar URL, like "jar:C:/mypath/myjar.jar".
+				// This usually indicates that the jar file resides in the file system.
+				if(!jarFile.startsWith("/")) {
+					jarFile = "/" + jarFile;
+				}
+				return new URL(FILE_URL_PREFIX + jarFile);
+			}
+		} else {
+			return jarUrl;
+		}
+	}
+
+	public static URI toURI(URL url) throws URISyntaxException {
+		return toURI(url.toString());
+	}
+
+	public static URI toURI(String location) throws URISyntaxException {
+		return new URI(StringUtils.replace(location, " ", "%20"));
+	}
 
 	/**
 	 * Returns the default classloader (may be null).
@@ -48,7 +197,7 @@ public class Resources extends Object {
 	 *            the new default ClassLoader
 	 */
 	public static void setDefaultClassLoader(ClassLoader defaultClassLoader) {
-		Resources.defaultClassLoader = defaultClassLoader;
+		ResourceUtils.defaultClassLoader = defaultClassLoader;
 	}
 
 	/**
@@ -292,15 +441,15 @@ public class Resources extends Object {
 	private static ClassLoader getClassLoader() {
 		if(defaultClassLoader != null)
 			return defaultClassLoader;
-		
+
 		return ClassUtils.getDefaultClassLoader();
 	}
 
 	public static void main(String argv[]) {
 		try {
-			System.out.println(new BufferedReader(Resources.getUrlAsReader("http://labs.tistory.com/guestbook"))
+			System.out.println(new BufferedReader(ResourceUtils.getUrlAsReader("http://labs.tistory.com/guestbook"))
 					.readLine());
-			// System.out.println(Resources.getResourceURL("d:\\@WORK\\Gulendol\\Scany\\conf\\client.xml").toString());
+			// System.out.println(ResourceUtils.getResourceURL("d:\\@WORK\\Gulendol\\Scany\\conf\\client.xml").toString());
 		} catch(Exception e) {
 			System.out.println(e.getMessage());
 		}

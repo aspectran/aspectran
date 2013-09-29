@@ -23,7 +23,7 @@ import java.io.InputStream;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.aspectran.core.util.Resources;
+import com.aspectran.core.util.ResourceUtils;
 
 /**
  * <p>Created: 2008. 04. 24 오전 11:23:36</p>
@@ -61,7 +61,7 @@ public class AspectranContextResource {
 			if(resource == null)
 				return;
 			
-			inputStream = Resources.getResourceAsStream(resource);
+			inputStream = ResourceUtils.getResourceAsStream(resource);
 		} catch(IOException e) {
 			log.error("Cannot read resource '" + resource + "'");
 			throw e;
@@ -82,7 +82,7 @@ public class AspectranContextResource {
 			if(url == null)
 				return;
 			
-			inputStream = Resources.getUrlAsStream(url);
+			inputStream = ResourceUtils.getUrlAsStream(url);
 		} catch(IOException e) {
 			log.error("Cannot read url '" + resource + "'");
 			throw e;
