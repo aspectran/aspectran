@@ -62,7 +62,7 @@ public class WildcardMatcher {
 	}
 	
 	public boolean hasNext() {
-		return separatorIndex < separatorCount;
+		return separatorIndex <= separatorCount;
 	}
 
 	public boolean hasPrev() {
@@ -70,7 +70,7 @@ public class WildcardMatcher {
 	}
 	
 	public String next() {
-		if(separatorIndex >= separatorCount)
+		if(separatorIndex > separatorCount)
 			return null;
 
 		return find(separatorIndex++);
@@ -88,31 +88,47 @@ public class WildcardMatcher {
 	}
 	
 	public String find(int group) {
+		System.out.println("group: " + group);
+		
 		if(separatorCount == 0)
 			return String.copyValueOf(charArray);
 		
-		if(group < 0 || group > separatorCount + 1)
+		if(group < 0 || group > separatorCount)
 			throw new IndexOutOfBoundsException();
 		
 		int offset = 0;
-		int count = 0;
+		int count = -1;
 		
-		for(int i = 0; i < separatorFlags.length; i++) {
-			if(group > 0 && separatorFlags[i] == group) {
-				if(separatorFlags[i] == 0)
-					count++;
-				count = i;
-			} else if(separatorFlags[i] == group + 1) {
+		if(group == 0) {
+			for(int i = 0; i < separatorFlags.length; i++) {
+				if(separatorFlags[i] == 1) {
 					count = i;
-			} else if(offset >= 0) {
-				if(separatorFlags[i] == 0)
-					count++;
-				else if(separatorFlags[i] > group)
 					break;
+				}
 			}
+
+			if(count == -1)
+				count = separatorFlags.length;
+		} else {
+			for(int i = 0; i < separatorFlags.length; i++) {
+				if(separatorFlags[i] == group) {
+					offset = i + 1;
+				} else if(offset > 0 && separatorFlags[i] == group + 1) {
+					count = i - offset;
+					break;
+				}
+			}
+			
+			if(offset > 0 && count == -1)
+				count = separatorFlags.length - offset;
 		}
 		
-		return String.copyValueOf(charArray, offset + 1, count);
+		if(count == -1)
+			return null;
+		else if(count == 0)
+			return "";
+		else
+			return String.copyValueOf(charArray, offset, count);
 	}
 	
 	public int getSeparatorCount() {
