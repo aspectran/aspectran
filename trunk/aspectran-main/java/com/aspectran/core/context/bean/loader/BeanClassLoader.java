@@ -39,6 +39,9 @@ public class BeanClassLoader {
 		String basePackageName = determineBasePackageName(classNamePattern);
 		String subPattern = classNamePattern.substring(basePackageName.length());
 
+		System.out.println("basePackageName: " + basePackageName);
+		System.out.println("subPattern: " + subPattern);
+		
 		WildcardPattern pattern = new WildcardPattern(subPattern, ClassUtils.PACKAGE_SEPARATOR);
 		WildcardMatcher matcher = new WildcardMatcher(pattern);
 		
@@ -104,8 +107,10 @@ public class BeanClassLoader {
 			for(Enumeration<JarEntry> entries = jarFile.entries(); entries.hasMoreElements();) {
 				JarEntry entry = entries.nextElement();
 				String entryPath = entry.getName();
+				System.out.println(entryPath);
 				if(entryPath.startsWith(rootEntryPath)) {
 					String relativePath = entryPath.substring(rootEntryPath.length());
+					System.out.println(rootEntryPath);
 					if(matcher.matches(relativePath)) {
 						Class<?> clazz = classLoader.loadClass(relativePath);
 						result.add(clazz);
@@ -146,9 +151,11 @@ public class BeanClassLoader {
 		
 		StringBuilder sb = new StringBuilder();
 
+		matcher.first();
+		
 		while(matcher.hasNext()) {
 			String str = matcher.next();
-
+System.out.println("~" + str);
 			if(matcher.hasWildcards(str))
 				break;
 
@@ -215,6 +222,15 @@ public class BeanClassLoader {
 	}
 
 	public static void main(String[] args) {
+		try {
+			BeanClassLoader loader = new BeanClassLoader("");
+			loader.loadClasses(".com.**.*");
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		
+		
+		/*
 		Class<BeanClassLoader> clazz = BeanClassLoader.class;
 		URL resource = clazz.getResource(".");
 		System.out.println("resource: " + resource);
@@ -231,5 +247,6 @@ public class BeanClassLoader {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+*/
 	}
 }

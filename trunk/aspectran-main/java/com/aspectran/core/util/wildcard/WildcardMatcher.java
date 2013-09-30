@@ -42,10 +42,10 @@ public class WildcardMatcher {
 		}
 		
 		
-		for(int i : separatorFlags) {
-			System.out.println("separatorFlag: " + i);
-			
-		}
+//		for(int i : separatorFlags) {
+//			System.out.println("separatorFlag: " + i);
+//			
+//		}
 		
 		
 		return result;
@@ -57,12 +57,12 @@ public class WildcardMatcher {
 	}
 
 	public WildcardMatcher last() {
-		separatorIndex = separatorCount + 1;
+		separatorIndex = separatorCount;
 		return this;
 	}
 	
 	public boolean hasNext() {
-		return separatorIndex < separatorCount + 1;
+		return separatorIndex < separatorCount;
 	}
 
 	public boolean hasPrev() {
@@ -70,7 +70,7 @@ public class WildcardMatcher {
 	}
 	
 	public String next() {
-		if(separatorIndex >= separatorCount + 1)
+		if(separatorIndex >= separatorCount)
 			return null;
 
 		return find(separatorIndex++);
@@ -94,12 +94,16 @@ public class WildcardMatcher {
 		if(group < 0 || group > separatorCount + 1)
 			throw new IndexOutOfBoundsException();
 		
-		int offset = -1;
+		int offset = 0;
 		int count = 0;
 		
 		for(int i = 0; i < separatorFlags.length; i++) {
 			if(group > 0 && separatorFlags[i] == group) {
-				offset = i;
+				if(separatorFlags[i] == 0)
+					count++;
+				count = i;
+			} else if(separatorFlags[i] == group + 1) {
+					count = i;
 			} else if(offset >= 0) {
 				if(separatorFlags[i] == 0)
 					count++;
