@@ -37,12 +37,13 @@ public class BeanClassLoader {
 		classNamePattern = classNamePattern.replace(ClassUtils.PACKAGE_SEPARATOR, RESOURCE_NAME_SPEPARATOR);
 
 		String basePackageName = determineBasePackageName(classNamePattern);
-		String subPattern = classNamePattern.substring(basePackageName.length());
-
 		System.out.println("basePackageName: " + basePackageName);
+
+		String subPattern = classNamePattern.substring(basePackageName.length());
 		System.out.println("subPattern: " + subPattern);
+
 		
-		WildcardPattern pattern = new WildcardPattern(subPattern, ClassUtils.PACKAGE_SEPARATOR);
+		WildcardPattern pattern = new WildcardPattern(subPattern, RESOURCE_NAME_SPEPARATOR);
 		WildcardMatcher matcher = new WildcardMatcher(pattern);
 		
 		Enumeration<URL> resources = classLoader.getResources(basePackageName);
@@ -114,9 +115,12 @@ public class BeanClassLoader {
 					System.out.println("relativePath: " + relativePath);
 					
 					if(matcher.matches(relativePath)) {
-						Class<?> clazz = classLoader.loadClass(rootEntryPath + relativePath);
+						String className = (rootEntryPath + relativePath);
+						className = className.replace(RESOURCE_NAME_SPEPARATOR, ClassUtils.PACKAGE_SEPARATOR);
+						
+						System.out.println("[clazz] " + className);
+						Class<?> clazz = classLoader.loadClass(className);
 						result.add(clazz);
-						System.out.println("clazz: " + clazz);
 					}
 				}
 			}
@@ -154,18 +158,13 @@ public class BeanClassLoader {
 		
 		StringBuilder sb = new StringBuilder();
 
-		matcher.first();
-		
 		while(matcher.hasNext()) {
 			String str = matcher.next();
-System.out.println("~" + str);
+
 			if(matcher.hasWildcards(str))
 				break;
 
-			if(sb.length() > 0)
-				sb.append(RESOURCE_NAME_SPEPARATOR);
-
-			sb.append(str);
+			sb.append(str).append(RESOURCE_NAME_SPEPARATOR);
 		}
 
 		return sb.toString();
@@ -227,7 +226,7 @@ System.out.println("~" + str);
 	public static void main(String[] args) {
 		try {
 			BeanClassLoader loader = new BeanClassLoader("");
-			loader.loadClasses("com.**.Xml*");
+			loader.loadClasses("com.**.scope.**.*Xml*");
 		} catch(Exception e) {
 			e.printStackTrace();
 		}

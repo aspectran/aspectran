@@ -360,7 +360,8 @@ public class WildcardMatcher {
 	
 	public static void main(String argv[]) {
 		//String str = "/aaa\\*/**/bb*.txt**";
-		String str = "com.aspectran.test.**.Sample*Test*Bean";
+		//String str = "**.Sample*Test*Bean";
+		String str = "com.**.scope.**.*Xml*";
 		WildcardPattern pattern = WildcardPattern.compile(str, ".");
 		
 		int i = 0;
@@ -375,7 +376,8 @@ public class WildcardMatcher {
 		
 		WildcardMatcher matcher = new WildcardMatcher(pattern);
 		//boolean result = matcher.matches("/aaa*/mm/nn/bbZZ.txt");
-		boolean result = matcher.matches("com.aspectran.test.**.Sample*Test*Bean");
+		//boolean result = matcher.matches("com.aspectran.test.SampleTestBean");
+		boolean result = matcher.matches(str);
 		
 		System.out.println("result: " + result);
 		System.out.println("separatorCount: " + matcher.getSeparatorCount());
