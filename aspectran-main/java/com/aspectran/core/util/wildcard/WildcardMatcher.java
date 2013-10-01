@@ -88,7 +88,7 @@ public class WildcardMatcher {
 	}
 	
 	public String find(int group) {
-		System.out.println("group: " + group);
+		//System.out.println("group: " + group);
 		
 		if(separatorCount == 0)
 			return String.copyValueOf(charArray);
@@ -174,12 +174,12 @@ public class WildcardMatcher {
 		int tokenIndex = 0;
 		int caIndex = 0;
 		
-		System.out.println("tokens length: " + tokensLength);
-		System.out.println("ca length: " + caLength);
+		//System.out.println("tokens length: " + tokensLength);
+		//System.out.println("ca length: " + caLength);
 		
 		for(; tokenIndex < tokensLength && caIndex < caLength;) {
-			System.out.println("token index=" + tokenIndex + ", token=" + tokens[tokenIndex] + ", type=" + types[tokenIndex]);
-			System.out.println("token index=" + tokenIndex + ", ca index=" + caIndex + ", char=" + ca[caIndex]);
+			//System.out.println("token index=" + tokenIndex + ", token=" + tokens[tokenIndex] + ", type=" + types[tokenIndex]);
+			//System.out.println("token index=" + tokenIndex + ", ca index=" + caIndex + ", char=" + ca[caIndex]);
 			
 			if(types[tokenIndex] == WildcardPattern.LITERAL_TYPE) {
 				if(tokens[tokenIndex++] != ca[caIndex++])
@@ -195,12 +195,12 @@ public class WildcardMatcher {
 					} else if(types[end] != WildcardPattern.LITERAL_TYPE)
 						break;
 				}
-				System.out.println("start=" + start + ", end=" + end + ", eot=" + eot);
+				//System.out.println("start=" + start + ", end=" + end + ", eot=" + eot);
 				if(end > start) {
 					if(eot || end == tokensLength - 1) {
 						int c = caLength - 1;
 						while(end > start && c >= caIndex) {
-							System.out.println(tokens[end - 1] + " : " + ca[c]);
+							//System.out.println(tokens[end - 1] + " : " + ca[c]);
 							if(tokens[--end] != ca[c--])
 								return false;
 						}
