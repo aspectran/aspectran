@@ -188,8 +188,10 @@ public class WildcardPattern {
 	}
 	
 	public static void main(String argv[]) {
-		String str = "\\aaa\\*\\**\\bb*.txt**";
-		WildcardPattern pattern = WildcardPattern.compile(str, "\\");
+		//String str = "\\aaa\\*\\**\\bb*.txt**";
+		//String str = "**/bb*";
+		String str = "com.**.scope.**.*Xml*";
+		WildcardPattern pattern = WildcardPattern.compile(str, "/");
 		
 		int i = 0;
 		for(char c : pattern.getTokens()) {
@@ -202,7 +204,7 @@ public class WildcardPattern {
 		}
 		
 		//WildcardMatcher matcher = new WildcardMatcher(pattern);
-		boolean result = pattern.matches("\\aaa\\*\\mm\\nn/bbZZ.txt");
+		boolean result = pattern.matches(str);
 		
 		System.out.println("Result: " + result);
 	}
