@@ -54,7 +54,7 @@ public class BeanClassLoader {
 			if(isJarResource(resource)) {
 				getClassesFromJarResources(resource, matcher);
 			} else {
-				getClasses(resource.toString(), matcher);
+				//getClasses(resource.toString(), matcher);
 			}
 		}
 		
@@ -107,13 +107,16 @@ public class BeanClassLoader {
 			for(Enumeration<JarEntry> entries = jarFile.entries(); entries.hasMoreElements();) {
 				JarEntry entry = entries.nextElement();
 				String entryPath = entry.getName();
-				System.out.println(entryPath);
-				if(entryPath.startsWith(rootEntryPath)) {
-					String relativePath = entryPath.substring(rootEntryPath.length());
-					System.out.println(rootEntryPath);
+				System.out.println("entryPath: " + entryPath);
+				System.out.println("rootEntryPath: " + rootEntryPath);
+				if(entryPath.startsWith(rootEntryPath) && entryPath.endsWith(ClassUtils.CLASS_FILE_SUFFIX)) {
+					String relativePath = entryPath.substring(rootEntryPath.length(), entryPath.length() - ClassUtils.CLASS_FILE_SUFFIX.length());
+					System.out.println("relativePath: " + relativePath);
+					
 					if(matcher.matches(relativePath)) {
-						Class<?> clazz = classLoader.loadClass(relativePath);
+						Class<?> clazz = classLoader.loadClass(rootEntryPath + relativePath);
 						result.add(clazz);
+						System.out.println("clazz: " + clazz);
 					}
 				}
 			}
@@ -213,9 +216,9 @@ System.out.println("~" + str);
 		for(File file : files) {
 			if(file.isDirectory()) {
 				assert !file.getName().contains(".");
-				classes.addAll(findClasses(file, packageName + "." + file.getName()));
-			} else if(file.getName().endsWith(".class")) {
-				classes.add(Class.forName(packageName + '.' + file.getName().substring(0, file.getName().length() - 6)));
+				classes.addAll(findClasses(file, packageName + ClassUtils.PACKAGE_SEPARATOR + file.getName()));
+			} else if(file.getName().endsWith(ClassUtils.CLASS_FILE_SUFFIX)) {
+				classes.add(Class.forName(packageName + ClassUtils.PACKAGE_SEPARATOR + file.getName().substring(0, file.getName().length() - 6)));
 			}
 		}
 		return classes;
@@ -224,7 +227,7 @@ System.out.println("~" + str);
 	public static void main(String[] args) {
 		try {
 			BeanClassLoader loader = new BeanClassLoader("");
-			loader.loadClasses(".com.**.*");
+			loader.loadClasses("com.**.Xml*");
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
