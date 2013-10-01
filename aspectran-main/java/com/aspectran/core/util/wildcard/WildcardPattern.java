@@ -20,7 +20,7 @@ public class WildcardPattern {
 	
 	protected static int STAR_TYPE = 1;
 	
-	protected static int DOUBLE_STAR_TYPE = 2;
+	protected static int STAR_STAR_TYPE = 2;
 	
 	protected static int QUESTION_TYPE = 3;
 	
@@ -75,7 +75,7 @@ public class WildcardPattern {
 				} else {
 					if(star) {
 						types[i - 1] = SKIP_TYPE;
-						types[i] = DOUBLE_STAR_TYPE; // type 2: double star
+						types[i] = STAR_STAR_TYPE; // type 2: double star
 						star = false;
 					} else {
 						types[i] = STAR_TYPE; // type 1: star
