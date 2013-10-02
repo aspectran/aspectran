@@ -513,7 +513,7 @@ public class WildcardMatcher {
 		WildcardMatcher matcher = new WildcardMatcher(pattern);
 		//boolean result = matcher.matches("/aaa*/mm/nn/bbZZ.txt");
 		//boolean result = matcher.matches("com.aspectran.test.SampleTestBean");
-		boolean result = matcher.matches(str);
+		boolean result = matcher.matches("com.a1.a2.scope*.b1.b2.*XmlBean000");
 		
 		System.out.println("result: " + result);
 		System.out.println("separatorCount: " + matcher.getSeparatorCount());
