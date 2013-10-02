@@ -177,51 +177,179 @@ public class WildcardMatcher {
 		//System.out.println("tokens length: " + tokensLength);
 		//System.out.println("ca length: " + caLength);
 		
-		for(; tokenIndex < tokensLength && caIndex < caLength;) {
-			//System.out.println("token index=" + tokenIndex + ", token=" + tokens[tokenIndex] + ", type=" + types[tokenIndex]);
-			//System.out.println("token index=" + tokenIndex + ", ca index=" + caIndex + ", char=" + ca[caIndex]);
+		while(tokenIndex < tokensLength && caIndex < caLength) {
+			System.out.println("token index=" + tokenIndex + ", token=" + tokens[tokenIndex] + ", type=" + types[tokenIndex]);
+			System.out.println(" token index=" + tokenIndex + ", ca index=" + caIndex + ", char=" + ca[caIndex]);
 			
 			if(types[tokenIndex] == WildcardPattern.LITERAL_TYPE) {
 				if(tokens[tokenIndex++] != ca[caIndex++])
 					return false;
 			} else if(types[tokenIndex] == WildcardPattern.STAR_TYPE) {
-				int start = ++tokenIndex;
-				int end = start;
+				int t1 = tokenIndex;
+				int t2 = t1;
 				boolean eot = false;
-				for(; end < tokensLength; end++) {
-					if(types[end] == WildcardPattern.EOT_TYPE) {
+				for(; t2 < tokensLength; t2++) {
+					if(types[t2] == WildcardPattern.EOT_TYPE) {
 						eot = true;
 						break;
-					} else if(types[end] != WildcardPattern.LITERAL_TYPE)
+					} else if(types[t2] != WildcardPattern.LITERAL_TYPE)
 						break;
 				}
-				//System.out.println("start=" + start + ", end=" + end + ", eot=" + eot);
-				if(end > start) {
-					if(eot || end == tokensLength - 1) {
+				System.out.println("@@start=" + t1 + ", end=" + t2 + ", eot=" + eot);
+				
+				
+				
+				if(t1 == t2) {
+					caIndex++;
+				} else {
+					int t = t1;
+					for(; t < t2 && caIndex < caLength; caIndex++) {
+						if(tokens[t] != ca[caIndex])
+							t = t1;
+						else
+							t++;
+					}
+					if(t < t2)
+						return false;
+
+					/*
+					if(eot || t2 == tokensLength - 1) {
 						int c = caLength - 1;
-						while(end > start && c >= caIndex) {
+						while(t2 > t1 && c >= caIndex) {
 							//System.out.println(tokens[end - 1] + " : " + ca[c]);
-							if(tokens[--end] != ca[c--])
+							if(tokens[--t2] != ca[c--])
 								return false;
 						}
-						if(end != start)
+						if(t2 != t1)
 							return false;
 						else
 							return true;
 					} else {
-						int t = start;
-						for(; t < end && caIndex < caLength; caIndex++) {
+						int t = t1;
+						for(; t < t2 && caIndex < caLength; caIndex++) {
 							if(tokens[t] != ca[caIndex])
-								t = start;
+								t = t1;
 							else
 								t++;
 						}
-						if(t < end)
+						if(t < t2)
 							return false;
-						tokenIndex = end;
+						//tokenIndex = end;
 					}
+					*/
 				}
-			} else if(types[tokenIndex] == WildcardPattern.DOUBLE_STAR_TYPE) {
+				tokenIndex++;
+			} else if(types[tokenIndex] == WildcardPattern.STAR_STAR_TYPE) {
+				if(sepaLength > 0) {
+					//"com.**.*scope.**.*Xml*"
+					//"com.**.+.**.*scope.**.*Xml*"
+					//"com//j/j/*scope.**.*Xml*"
+					int t1 = -1;
+					int t2 = -1;
+					for(int n = tokenIndex + 1; n < tokensLength; n++) {
+						if(t1 == -1) {
+							if(types[n] == WildcardPattern.LITERAL_TYPE) {
+								t1 = n;
+							}
+						} else {
+							if(types[n] == WildcardPattern.SEPARATOR_TYPE) {
+								t2 = n + sepaLength - 1;
+								break;
+							} else if(types[n] != WildcardPattern.LITERAL_TYPE) {
+								t2 = n - 1;
+								break;
+							}
+						}
+					}
+					if(t1 > 0 && types[t1 - 1] == WildcardPattern.SEPARATOR_TYPE) {
+						t1 -= sepaLength;
+					}
+					if(t1 > -1 && t2 > -1) {
+						int c1 = caIndex;
+						int t = t1;
+						while(t <= t2 && c1 < caLength) {
+							if(ca[c1] != tokens[t]) {
+								t = t1;
+							} else {
+								t++;
+							}
+							c1++;
+						}
+						if(t <= t2)
+							return false;
+						c1--;
+						System.out.println("#c1: " + c1 + ", ca: " + ca[c1]);
+						System.out.println("#t2: " + t2 + ", type: " + types[t2] + ", token: " + tokens[t2]);
+						int caIndex2 = caIndex;
+						if(types[t1] == WildcardPattern.SEPARATOR_TYPE) {
+							tokenIndex = t2 + 1;
+							caIndex = c1 + 1;
+							System.out.println("##c1: " + c1 + ", ca: " + ca[c1]);
+							System.out.println("##tokenIndex: " + tokenIndex + ", type: " + types[tokenIndex] + ", token: " + tokens[tokenIndex]);
+						} else {
+							if(sepaLength == 1) {
+								if(types[t2] == WildcardPattern.SEPARATOR_TYPE)
+									c1--;
+								for(; c1 >= caIndex; c1--) {
+									if(ca[c1] == separators[0]) {
+										caIndex = c1;
+									}
+								}
+							} else {
+								do {
+									if(types[t2] != WildcardPattern.SEPARATOR_TYPE)
+										break;
+									t2--;
+									c1--;
+								} while(t2 > t1);
+								int s = sepaLength - 1;
+								while(s >= 0 && c1 < caLength) {
+									if(ca[c1] == separators[s])
+										s--;
+									else
+										s = sepaLength - 1;
+									c1--;
+								}
+								if(s == -1) {
+									caIndex = c1 + 1;
+								}
+							}
+							tokenIndex++;
+						}
+						if(separatorFlags != null && caIndex2 < caIndex) {
+							if(sepaLength == 1) {
+								for(int k = caIndex - 1; k >= caIndex2; k--) {
+									if(ca[k] == separators[0])
+										separatorFlags[k] = ++sepaCount;
+								}
+							} else {
+								int k = caIndex - 1;
+								while(k >= caIndex2) {
+									int s = sepaLength - 1;
+									while(s >= 0) {
+										if(ca[k] == separators[s])
+											s--;
+										else
+											s = sepaLength - 1;
+										k--;
+									}
+									if(s == -1) {
+										++sepaCount;
+										for(s = 0; s < sepaLength; s++) {
+											separatorFlags[k + s] = sepaCount;
+										}
+									}
+								}
+							}
+						}
+					} else {
+						tokenIndex++;
+					}
+				} else {
+					caIndex = caLength; //complete
+					tokenIndex++;
+				}
+				/*
 				if(sepaLength > 0) {
 					int c = caLength - 1;
 					if(sepaLength == 1) {
@@ -282,6 +410,7 @@ public class WildcardMatcher {
 					caIndex = caLength; //complete
 				}
 				tokenIndex++;
+				*/
 			} else if(types[tokenIndex] == WildcardPattern.QUESTION_TYPE) {
 				if(sepaLength > 0) {
 					if(sepaLength == 1) {
@@ -289,11 +418,13 @@ public class WildcardMatcher {
 							caIndex++;
 					} else {
 						int s = sepaLength - 1;
-						for(; s >= 0; s--) {
-							if(caIndex + s >= caLength)
-								break;
-							if(ca[caIndex + s] != separators[s])
-								break;
+						if(caIndex + s < caLength) {
+							for(; s >= 0; s--) {
+								//if(caIndex + s >= caLength)
+								//	break;
+								if(ca[caIndex + s] != separators[s])
+									break;
+							}
 						}
 						if(s != -1)
 							caIndex++;
@@ -308,15 +439,17 @@ public class WildcardMatcher {
 						if(ca[caIndex] == separators[0])
 							return false;
 					} else {
-						int s = sepaLength - 1;
-						for(; s >= 0; s--) {
-							if(caIndex + s >= caLength)
-								break;
-							if(ca[caIndex + s] != separators[s])
-								break;
+						if(caIndex + sepaLength - 1 < caLength) {
+							int s = sepaLength - 1;
+							for(; s >= 0; s--) {
+								//if(caIndex + s >= caLength)
+								//	break;
+								if(ca[caIndex + s] != separators[s])
+									break;
+							}
+							if(s == -1)
+								return false;
 						}
-						if(s == -1)
-							return false;
 					}
 				}
 				caIndex++;
@@ -330,13 +463,16 @@ public class WildcardMatcher {
 				} else {
 					if(caIndex + sepaLength > caLength)
 						return false;
-					for(int i = 0; i < sepaLength; i++) {
-						if(tokens[tokenIndex++] != ca[caIndex])
+					for(int s = 0; s < sepaLength; s++) {
+						if(tokens[tokenIndex++] != ca[caIndex++])
 							return false;
-						caIndex++;
 					}
-					if(separatorFlags != null)
-						separatorFlags[caIndex - sepaLength] = ++sepaCount;
+					if(separatorFlags != null) {
+						++sepaCount;
+						for(int s = sepaLength - 1; s >= 0; s--) {
+							separatorFlags[caIndex - s - 1] = sepaCount;
+						}
+					}
 				}
 			} else if(types[tokenIndex] == WildcardPattern.EOT_TYPE) {
 				break;
@@ -361,7 +497,7 @@ public class WildcardMatcher {
 	public static void main(String argv[]) {
 		//String str = "/aaa\\*/**/bb*.txt**";
 		//String str = "**.Sample*Test*Bean";
-		String str = "com.**.scope.**.*Xml*";
+		String str = "com.**.scope*.**.*XmlBean*";
 		WildcardPattern pattern = WildcardPattern.compile(str, ".");
 		
 		int i = 0;
