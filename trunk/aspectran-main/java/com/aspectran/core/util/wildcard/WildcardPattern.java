@@ -41,8 +41,6 @@ public class WildcardPattern {
 	public WildcardPattern(String patternString, String separator) {
 		if(separator != null && separator.length() > 0)
 			this.separators = separator.toCharArray();
-		else
-			this.separators = null;
 		
 		parse(patternString);
 	}
@@ -187,11 +185,19 @@ public class WildcardPattern {
 		return new WildcardPattern(patternString, separator);
 	}
 	
+	public static WildcardPattern compile(String patternString, char separator) {
+		return new WildcardPattern(patternString, separator);
+	}
+	
+	public static WildcardPattern compile(String patternString, char[] separators) {
+		return new WildcardPattern(patternString, separators);
+	}
+	
 	public static void main(String argv[]) {
 		//String str = "\\aaa\\*\\**\\bb*.txt**";
 		//String str = "**/bb*";
 		String str = "com.**.scope.**.*Xml*";
-		WildcardPattern pattern = WildcardPattern.compile(str, "/");
+		WildcardPattern pattern = WildcardPattern.compile(str, ".");
 		
 		int i = 0;
 		for(char c : pattern.getTokens()) {

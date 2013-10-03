@@ -535,6 +535,7 @@ public class AspectranNodeParser {
 				String initMethod = attributes.getProperty("initMethod");
 				String destroyMethod = attributes.getProperty("destroyMethod");
 				Boolean lazyInit = Boolean.valueOf(attributes.getProperty("lazyInit"));
+				Boolean override = Boolean.valueOf(attributes.getProperty("override"));
 
 				if(id == null) {
 //					if(assistant.isNullableBeanId()) {
@@ -578,6 +579,7 @@ public class AspectranNodeParser {
 				beanRule.setInitMethod(initMethod);
 				beanRule.setDestroyMethod(destroyMethod);
 				beanRule.setLazyInit(lazyInit);
+				beanRule.setOverride(override);
 
 				assistant.pushObject(beanRule);
 			}

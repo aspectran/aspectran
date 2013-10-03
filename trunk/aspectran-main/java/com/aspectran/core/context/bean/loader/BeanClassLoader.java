@@ -9,10 +9,8 @@ import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
@@ -25,12 +23,17 @@ public class BeanClassLoader {
 
 	private final char RESOURCE_NAME_SPEPARATOR = '/';
 
+	private final char BEAN_ID_DELIMITER = '*';
+	
 	private final ClassLoader classLoader = ClassUtils.getDefaultClassLoader();
 
-	private String beanIdPattern;
+	private final String beanIdPattern;
 
 	public BeanClassLoader(String beanIdPattern) {
-		this.beanIdPattern = beanIdPattern;
+		if(beanIdPattern.indexOf(BEAN_ID_DELIMITER) == -1)
+			this.beanIdPattern = beanIdPattern + BEAN_ID_DELIMITER;
+		else
+			this.beanIdPattern = beanIdPattern;
 	}
 
 	public Map<String, Class<?>> loadClasses(String classNamePattern) throws IOException, ClassNotFoundException {
@@ -43,7 +46,7 @@ public class BeanClassLoader {
 		System.out.println("subPattern: " + subPattern);
 
 		
-		WildcardPattern pattern = new WildcardPattern(subPattern, RESOURCE_NAME_SPEPARATOR);
+		WildcardPattern pattern = WildcardPattern.compile(subPattern, RESOURCE_NAME_SPEPARATOR);
 		WildcardMatcher matcher = new WildcardMatcher(pattern);
 		
 		Enumeration<URL> resources = classLoader.getResources(basePackageName);
@@ -53,7 +56,9 @@ public class BeanClassLoader {
 			URL resource = resources.nextElement();
 			
 			if(isJarResource(resource)) {
-				getClassesFromJarResources(resource, matcher);
+				Map<String, Class<?>> map = getClassesFromJarResources(resource, matcher);
+				classMap.putAll(map);
+				
 			} else {
 				//getClasses(resource.toString(), matcher);
 			}
@@ -63,7 +68,7 @@ public class BeanClassLoader {
 
 	}
 
-	protected Set<Class<?>> getClassesFromJarResources(URL resource, WildcardMatcher matcher) throws IOException, ClassNotFoundException {
+	protected Map<String, Class<?>> getClassesFromJarResources(URL resource, WildcardMatcher matcher) throws IOException, ClassNotFoundException {
 		URLConnection con = resource.openConnection();
 		JarFile jarFile = null;
 		String jarFileUrl = null;
@@ -104,27 +109,30 @@ public class BeanClassLoader {
 				// The Sun JRE does not return a slash here, but BEA JRockit does.
 				rootEntryPath = rootEntryPath + "/";
 			}
-			Set<Class<?>> result = new LinkedHashSet<Class<?>>();
+			Map<String, Class<?>> classMap = new LinkedHashMap<String, Class<?>>();
 			for(Enumeration<JarEntry> entries = jarFile.entries(); entries.hasMoreElements();) {
 				JarEntry entry = entries.nextElement();
 				String entryPath = entry.getName();
-				System.out.println("entryPath: " + entryPath);
-				System.out.println("rootEntryPath: " + rootEntryPath);
+				//System.out.println("entryPath: " + entryPath);
+				//System.out.println("  rootEntryPath: " + rootEntryPath);
 				if(entryPath.startsWith(rootEntryPath) && entryPath.endsWith(ClassUtils.CLASS_FILE_SUFFIX)) {
 					String relativePath = entryPath.substring(rootEntryPath.length(), entryPath.length() - ClassUtils.CLASS_FILE_SUFFIX.length());
-					System.out.println("relativePath: " + relativePath);
+					//System.out.println("  relativePath: " + relativePath);
 					
 					if(matcher.matches(relativePath)) {
+						System.out.println("entryPath: " + entryPath);
+						System.out.println("  rootEntryPath: " + rootEntryPath);
+						System.out.println("  relativePath: " + relativePath);
 						String className = (rootEntryPath + relativePath);
 						className = className.replace(RESOURCE_NAME_SPEPARATOR, ClassUtils.PACKAGE_SEPARATOR);
 						
-						System.out.println("[clazz] " + className);
+						System.out.println("  [clazz] " + className);
 						Class<?> clazz = classLoader.loadClass(className);
-						result.add(clazz);
+						classMap.put("beanId", clazz);
 					}
 				}
 			}
-			return result;
+			return classMap;
 		} finally {
 			// Close jar file, but only if freshly obtained -
 			// not from JarURLConnection, which might cache the file reference.
@@ -225,8 +233,8 @@ public class BeanClassLoader {
 
 	public static void main(String[] args) {
 		try {
-			BeanClassLoader loader = new BeanClassLoader("");
-			loader.loadClasses("com.**.scope.**.*Xml*");
+			BeanClassLoader loader = new BeanClassLoader(".");
+			loader.loadClasses("com.**.*Xml*");
 		} catch(Exception e) {
 			e.printStackTrace();
 		}

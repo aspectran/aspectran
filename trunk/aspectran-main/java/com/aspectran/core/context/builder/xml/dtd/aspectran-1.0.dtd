@@ -84,7 +84,7 @@ type (wildcard | regexpt | interval) #IMPLIED
 
 <!ELEMENT bean (features?, constructor?, properties*)>
 <!ATTLIST bean
-id ID #REQUIRED
+id CDATA #IMPLIED
 class CDATA #IMPLIED
 scope (singleton | prototype | request | session | application) #IMPLIED
 factoryMethod CDATA #IMPLIED
@@ -92,6 +92,7 @@ initMethod CDATA #IMPLIED
 destoryMethod CDATA #IMPLIED
 lazyInit (true | false) #IMPLIED
 parent CDATA #IMPLIED
+override (true | false) #IMPLIED
 >
 
 <!ELEMENT features (class?, scope?, factoryMethod?, initMethod?, destroyMethod?, lazyInit?, poolSize?)>
