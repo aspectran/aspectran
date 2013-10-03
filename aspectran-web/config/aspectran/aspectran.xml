@@ -223,7 +223,8 @@
 		</finally>
 	</aspect>
 	
-	<bean id="aaa" class="com.aspectran.test.**.Sample*Test*Bean" scope="singleton"/>
+	<bean id="a.*" class="com.aspectran.test.**.Sample*Test*Bean" scope="singleton"/>
+	<bean id="b.*" class="com.aspectran.test.**.Sample*Test*Bean" scope="singleton"/>
 
 	<import resource="front-translets.xml"/>
 	<import resource="ajax-translets.xml"/>
