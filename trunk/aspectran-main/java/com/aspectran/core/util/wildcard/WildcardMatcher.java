@@ -307,6 +307,7 @@ public class WildcardMatcher {
 									System.out.println("###tokenIndex: " + tokenIndex + ", type: " + types[tokenIndex] + ", token: " + tokens[tokenIndex]);
 								}
 							} else {
+								System.out.println("####t1: " + t1 + ", t2: " + t2 + ", c1: " + c1);
 								while(types[t2] != WildcardPattern.SEPARATOR_TYPE && t2 > t1) {
 									t2--;
 									c1--;
@@ -321,13 +322,13 @@ public class WildcardMatcher {
 								}
 								if(s == -1) {
 									caIndex = c1 + 1;
-									break;
 								}
+								System.out.println("####t1: " + t1 + ", t2: " + t2 + ", c1: " + c1);
 							}
 							tokenIndex++;
 							if(caIndex == caIndex2 && types[tokenIndex] == WildcardPattern.SEPARATOR_TYPE)
 								tokenIndex++;
-							
+							System.out.println("######caIndex: " + caIndex + ", caIndex2: " + caIndex2 + ", tokenIndex: " + tokenIndex);
 						}
 						System.out.println("pass#caIndex: " + caIndex + ", caIndex: " + ca[caIndex]);
 						System.out.println("pass#tokenIndex: " + tokenIndex + ", type: " + types[tokenIndex] + ", token: " + tokens[tokenIndex]);
@@ -513,8 +514,9 @@ public class WildcardMatcher {
 	public static void main(String argv[]) {
 		//String str = "/aaa\\*/**/bb*.txt**";
 		//String str = "**.Sample*Test*Bean";
-		String str = "?c?om.**.x?.*scope.**.*XmlBean*";
-		WildcardPattern pattern = WildcardPattern.compile(str, ".");
+		//String str = "?c?om.**.x?.*scope.**.*XmlBean*";
+		String str = "?c?om][**][x?][*scope][**][*XmlBean*";
+		WildcardPattern pattern = WildcardPattern.compile(str, "][");
 		
 		int i = 0;
 		for(char c : pattern.getTokens()) {
@@ -529,11 +531,12 @@ public class WildcardMatcher {
 		WildcardMatcher matcher = new WildcardMatcher(pattern);
 		//boolean result = matcher.matches("/aaa*/mm/nn/bbZZ.txt");
 		//boolean result = matcher.matches("com.aspectran.test.SampleTestBean");
-		boolean result = matcher.matches("com.x.scope.b1.b2.*XmlBean000");
+		boolean result = matcher.matches("com][x][scope][b1][b2][*XmlBean000");
 		
 		System.out.println("result: " + result);
 		System.out.println("separatorCount: " + matcher.getSeparatorCount());
 		
+		System.out.println("pattern: " + str);
 		while(matcher.hasNext()) {
 			System.out.println(" -" + matcher.next());
 		}
