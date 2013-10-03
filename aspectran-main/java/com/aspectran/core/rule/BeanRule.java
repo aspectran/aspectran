@@ -51,7 +51,11 @@ public class BeanRule {
 	private boolean registered;
 	
 	private Constructor<?> constructor;
+	
+	private boolean override;
 
+	private boolean overrided;
+	
 	/**
 	 * Gets the id.
 	 *
@@ -274,6 +278,22 @@ public class BeanRule {
 
 	public void setConstructor(Constructor<?> constructor) {
 		this.constructor = constructor;
+	}
+	
+	public boolean isOverride() {
+		return overrided;
+	}
+
+	public void setOverride(boolean override) {
+		this.override = override;
+	}
+	
+	public boolean isOverrided() {
+		return overrided;
+	}
+	
+	public void setOverrided(boolean overrided) {
+		this.overrided = overrided;
 	}
 
 	/* (non-Javadoc)

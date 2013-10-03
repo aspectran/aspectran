@@ -279,7 +279,8 @@ public class WildcardMatcher {
 							c1++;
 						}
 						if(t <= t2) {
-							System.out.println("!return#c1: " + c1 + ", ca: " + ca[c1]);
+							System.out.println("!return#c1: " + c1 + ", caLength: " + caLength);
+							System.out.println("!return#c1: " + c1 + ", ca: " + (c1 >= caLength ? "" : ca[c1]));
 							System.out.println("!return#t2: " + t2 + ", type: " + types[t2] + ", token: " + tokens[t2]);
 							return false;
 						}

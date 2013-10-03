@@ -35,6 +35,14 @@ public class BeanRuleMap extends LinkedHashMap<String, BeanRule> implements Iter
 		if(freezed)
 			throw new UnsupportedOperationException("freezed BeanRuleMap: " + toString());
 
+		if(value.isOverride()) {
+			if(containsKey(value))
+				value.setOverrided(true);
+		} else {
+			if(containsKey(value))
+				return null;
+		}
+		
 		return super.put(key, value);
 	}
 
