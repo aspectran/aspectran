@@ -428,23 +428,27 @@ public class WildcardMatcher {
 				tokenIndex++;
 				*/
 			} else if(types[tokenIndex] == WildcardPattern.QUESTION_TYPE) {
-				if(sepaLength > 0) {
-					if(sepaLength == 1) {
-						if(ca[caIndex] != separators[0])
-							caIndex++;
-					} else {
-						int s = sepaLength - 1;
-						if(caIndex + s < caLength) {
-							for(; s >= 0; s--) {
-								if(ca[caIndex + s] != separators[s])
-									break;
+				if(tokenIndex > tokensLength - 1 ||
+						types[tokenIndex + 1] != WildcardPattern.LITERAL_TYPE ||
+						tokens[tokenIndex + 1] != ca[caIndex]) {
+					if(sepaLength > 0) {
+						if(sepaLength == 1) {
+							if(ca[caIndex] != separators[0])
+								caIndex++;
+						} else {
+							int s = sepaLength - 1;
+							if(caIndex + s < caLength) {
+								for(; s >= 0; s--) {
+									if(ca[caIndex + s] != separators[s])
+										break;
+								}
 							}
+							if(s != -1)
+								caIndex++;
 						}
-						if(s != -1)
-							caIndex++;
+					} else {
+						caIndex++;
 					}
-				} else {
-					caIndex++;
 				}
 				tokenIndex++;
 			} else if(types[tokenIndex] == WildcardPattern.PLUS_TYPE) {
@@ -509,7 +513,7 @@ public class WildcardMatcher {
 	public static void main(String argv[]) {
 		//String str = "/aaa\\*/**/bb*.txt**";
 		//String str = "**.Sample*Test*Bean";
-		String str = "?com.**.x?.*scope.**.*XmlBean*";
+		String str = "?c?om.**.x?.*scope.**.*XmlBean*";
 		WildcardPattern pattern = WildcardPattern.compile(str, ".");
 		
 		int i = 0;
