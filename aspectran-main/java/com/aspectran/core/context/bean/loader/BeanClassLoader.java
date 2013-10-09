@@ -56,11 +56,10 @@ public class BeanClassLoader {
 			URL resource = resources.nextElement();
 			
 			if(isJarResource(resource)) {
-				Map<String, Class<?>> map = getClassesFromJarResources(resource, matcher);
+				Map<String, Class<?>> map = findClassesFromJarResources(resource, matcher);
 				classMap.putAll(map);
-				
 			} else {
-				//getClasses(resource.toString(), matcher);
+				findClasses(basePackageName, resource.getFile(), matcher);
 			}
 		}
 		
@@ -68,7 +67,7 @@ public class BeanClassLoader {
 
 	}
 
-	protected Map<String, Class<?>> getClassesFromJarResources(URL resource, WildcardMatcher matcher) throws IOException, ClassNotFoundException {
+	protected Map<String, Class<?>> findClassesFromJarResources(URL resource, WildcardMatcher matcher) throws IOException, ClassNotFoundException {
 		URLConnection con = resource.openConnection();
 		JarFile jarFile = null;
 		String jarFileUrl = null;
@@ -155,6 +154,58 @@ public class BeanClassLoader {
 		}
 	}
 	
+	protected boolean isJarResource(URL url) throws IOException {
+		String protocol = url.getProtocol();
+		return (ResourceUtils.URL_PROTOCOL_JAR.equals(protocol) || ResourceUtils.URL_PROTOCOL_ZIP.equals(protocol));
+	}
+
+	/**
+	 * Recursive method used to find all classes in a given directory and subdirs.
+	 *
+	 * @param directory   The base directory
+	 * @param packageName The package name for classes found inside the base directory
+	 * @return The classes
+	 * @throws ClassNotFoundException
+	 */
+	private Map<String, Class<?>> findClasses(String basePackageName, String basePath, WildcardMatcher matcher) throws ClassNotFoundException {
+		System.out.println("basePath: " + basePath);
+		File path = new File(basePath);
+		if(!path.exists())
+			return null;
+
+		if(basePackageName != null && !basePackageName.endsWith("/"))
+			basePackageName += RESOURCE_NAME_SPEPARATOR;
+		
+		
+		Map<String, Class<?>> classMap = new LinkedHashMap<String, Class<?>>();
+		File[] files = path.listFiles();
+		
+		for(File file : files) {
+			if(file.isDirectory()) {
+				assert !file.getName().contains(".");
+				Map<String, Class<?>> map = findClasses(basePackageName + file.getName(), basePath + file.getName() + RESOURCE_NAME_SPEPARATOR, matcher);
+				if(map != null)
+					classMap.putAll(map);
+			} else if(file.getName().endsWith(ClassUtils.CLASS_FILE_SUFFIX)) {
+				String className = basePackageName + file.getName().substring(0, file.getName().length() - ClassUtils.CLASS_FILE_SUFFIX.length());
+				
+				String relativePath = className.substring(basePackageName.length(), className.length());
+				System.out.println("  relativePath: " + relativePath);
+				
+				if(matcher.matches(relativePath)) {
+					className = className.replace(RESOURCE_NAME_SPEPARATOR, ClassUtils.PACKAGE_SEPARATOR);
+					System.out.println("  className: " + className);
+					
+					System.out.println("  [clazz] " + className);
+					Class<?> clazz = classLoader.loadClass(className);
+					classMap.put("beanId", clazz);
+				}
+			}
+		}
+		
+		return classMap;
+	}
+
 	private String determineBasePackageName(String classNamePattern) {
 		WildcardPattern pattern = new WildcardPattern(classNamePattern, RESOURCE_NAME_SPEPARATOR);
 		WildcardMatcher matcher = new WildcardMatcher(pattern);
@@ -177,64 +228,11 @@ public class BeanClassLoader {
 
 		return sb.toString();
 	}
-
-	protected boolean isJarResource(URL url) throws IOException {
-		String protocol = url.getProtocol();
-		return (ResourceUtils.URL_PROTOCOL_JAR.equals(protocol) || ResourceUtils.URL_PROTOCOL_ZIP.equals(protocol));
-	}
-
-	/**
-	 * Scans all classes accessible from the context class loader which belong to the given package and subpackages.
-	 *
-	 * @param packageName The base package
-	 * @return The classes
-	 * @throws ClassNotFoundException
-	 * @throws IOException
-	 */
-	private Class[] getClasses(String packageName, WildcardMatcher matcher) throws ClassNotFoundException, IOException {
-		String path = packageName.replace('.', '/');
-		Enumeration<URL> resources = classLoader.getResources(path);
-		List<File> dirs = new ArrayList<File>();
-		while(resources.hasMoreElements()) {
-			URL resource = resources.nextElement();
-			dirs.add(new File(resource.getFile()));
-		}
-		ArrayList<Class> classes = new ArrayList<Class>();
-		for(File directory : dirs) {
-			classes.addAll(findClasses(directory, packageName));
-		}
-		return classes.toArray(new Class[classes.size()]);
-	}
-
-	/**
-	 * Recursive method used to find all classes in a given directory and subdirs.
-	 *
-	 * @param directory   The base directory
-	 * @param packageName The package name for classes found inside the base directory
-	 * @return The classes
-	 * @throws ClassNotFoundException
-	 */
-	private List<Class> findClasses(File directory, String packageName) throws ClassNotFoundException {
-		List<Class> classes = new ArrayList<Class>();
-		if(!directory.exists()) {
-			return classes;
-		}
-		File[] files = directory.listFiles();
-		for(File file : files) {
-			if(file.isDirectory()) {
-				assert !file.getName().contains(".");
-				classes.addAll(findClasses(file, packageName + ClassUtils.PACKAGE_SEPARATOR + file.getName()));
-			} else if(file.getName().endsWith(ClassUtils.CLASS_FILE_SUFFIX)) {
-				classes.add(Class.forName(packageName + ClassUtils.PACKAGE_SEPARATOR + file.getName().substring(0, file.getName().length() - 6)));
-			}
-		}
-		return classes;
-	}
-
+	
 	public static void main(String[] args) {
 		try {
 			BeanClassLoader loader = new BeanClassLoader(".");
-			loader.loadClasses("com.**.*Xml*");
+			loader.loadClasses("com.**.*Aspectran*");
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
