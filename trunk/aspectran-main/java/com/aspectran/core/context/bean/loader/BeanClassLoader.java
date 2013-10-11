@@ -21,23 +21,30 @@ import com.aspectran.core.util.wildcard.WildcardPattern;
 
 public class BeanClassLoader {
 
-	private final char RESOURCE_NAME_SPEPARATOR = '/';
+	private final char RESOURCE_PATH_SPEPARATOR = '/';
 
-	private final char BEAN_ID_DELIMITER = '*';
+	private final char BEAN_ID_WILDCARD_DELIMITER = '*';
 	
 	private final ClassLoader classLoader = ClassUtils.getDefaultClassLoader();
 
-	private final String beanIdPattern;
+	private final String beanIdPrefix;
 
+	private final String beanIdSuffix;
+	
 	public BeanClassLoader(String beanIdPattern) {
-		if(beanIdPattern.indexOf(BEAN_ID_DELIMITER) == -1)
-			this.beanIdPattern = beanIdPattern + BEAN_ID_DELIMITER;
-		else
-			this.beanIdPattern = beanIdPattern;
+		int wildcardStartIndex = beanIdPattern.indexOf(BEAN_ID_WILDCARD_DELIMITER);
+		
+		if(wildcardStartIndex == -1) {
+			this.beanIdPrefix = beanIdPattern;
+			this.beanIdSuffix = null;
+		} else {
+			this.beanIdPrefix = beanIdPattern.substring(0, wildcardStartIndex);
+			this.beanIdSuffix = beanIdPattern.substring(wildcardStartIndex + 1);
+		}
 	}
 
 	public Map<String, Class<?>> loadClasses(String classNamePattern) throws IOException, ClassNotFoundException {
-		classNamePattern = classNamePattern.replace(ClassUtils.PACKAGE_SEPARATOR, RESOURCE_NAME_SPEPARATOR);
+		classNamePattern = classNamePattern.replace(ClassUtils.PACKAGE_SEPARATOR, RESOURCE_PATH_SPEPARATOR);
 
 		String basePackageName = determineBasePackageName(classNamePattern);
 		System.out.println("basePackageName: " + basePackageName);
@@ -46,7 +53,7 @@ public class BeanClassLoader {
 		System.out.println("subPattern: " + subPattern);
 
 		
-		WildcardPattern pattern = WildcardPattern.compile(subPattern, RESOURCE_NAME_SPEPARATOR);
+		WildcardPattern pattern = WildcardPattern.compile(subPattern, RESOURCE_PATH_SPEPARATOR);
 		WildcardMatcher matcher = new WildcardMatcher(pattern);
 		
 		Enumeration<URL> resources = classLoader.getResources(basePackageName);
@@ -122,8 +129,8 @@ public class BeanClassLoader {
 						System.out.println("entryPath: " + entryPath);
 						System.out.println("  rootEntryPath: " + rootEntryPath);
 						System.out.println("  relativePath: " + relativePath);
-						String className = (rootEntryPath + relativePath);
-						className = className.replace(RESOURCE_NAME_SPEPARATOR, ClassUtils.PACKAGE_SEPARATOR);
+						String className = rootEntryPath + relativePath;
+						className = className.replace(RESOURCE_PATH_SPEPARATOR, ClassUtils.PACKAGE_SEPARATOR);
 						
 						System.out.println("  [clazz] " + className);
 						Class<?> clazz = classLoader.loadClass(className);
@@ -174,7 +181,7 @@ public class BeanClassLoader {
 			return null;
 
 		if(basePackageName != null && !basePackageName.endsWith("/"))
-			basePackageName += RESOURCE_NAME_SPEPARATOR;
+			basePackageName += RESOURCE_PATH_SPEPARATOR;
 		
 		
 		Map<String, Class<?>> classMap = new LinkedHashMap<String, Class<?>>();
@@ -183,7 +190,7 @@ public class BeanClassLoader {
 		for(File file : files) {
 			if(file.isDirectory()) {
 				assert !file.getName().contains(".");
-				Map<String, Class<?>> map = findClasses(basePackageName + file.getName(), basePath + file.getName() + RESOURCE_NAME_SPEPARATOR, matcher);
+				Map<String, Class<?>> map = findClasses(basePackageName + file.getName(), basePath + file.getName() + RESOURCE_PATH_SPEPARATOR, matcher);
 				if(map != null)
 					classMap.putAll(map);
 			} else if(file.getName().endsWith(ClassUtils.CLASS_FILE_SUFFIX)) {
@@ -193,7 +200,7 @@ public class BeanClassLoader {
 				System.out.println("  relativePath: " + relativePath);
 				
 				if(matcher.matches(relativePath)) {
-					className = className.replace(RESOURCE_NAME_SPEPARATOR, ClassUtils.PACKAGE_SEPARATOR);
+					className = className.replace(RESOURCE_PATH_SPEPARATOR, ClassUtils.PACKAGE_SEPARATOR);
 					System.out.println("  className: " + className);
 					
 					System.out.println("  [clazz] " + className);
@@ -207,7 +214,7 @@ public class BeanClassLoader {
 	}
 
 	private String determineBasePackageName(String classNamePattern) {
-		WildcardPattern pattern = new WildcardPattern(classNamePattern, RESOURCE_NAME_SPEPARATOR);
+		WildcardPattern pattern = new WildcardPattern(classNamePattern, RESOURCE_PATH_SPEPARATOR);
 		WildcardMatcher matcher = new WildcardMatcher(pattern);
 
 		boolean matched = matcher.matches(classNamePattern);
@@ -223,10 +230,24 @@ public class BeanClassLoader {
 			if(matcher.hasWildcards(str))
 				break;
 
-			sb.append(str).append(RESOURCE_NAME_SPEPARATOR);
+			sb.append(str).append(RESOURCE_PATH_SPEPARATOR);
 		}
 
 		return sb.toString();
+	}
+
+	private String combineBeanId(String relativePath) {
+		String beanId;
+		
+		if(beanIdPrefix == null && beanIdSuffix == null) {
+			beanId = relativePath;
+		} else if(beanIdPrefix != null) {
+			beanId = beanIdPrefix + relativePath;
+		} else {
+			beanId = relativePath + beanIdSuffix;
+		}
+		
+		return beanId.replace(RESOURCE_PATH_SPEPARATOR, ClassUtils.PACKAGE_SEPARATOR);
 	}
 	
 	public static void main(String[] args) {
