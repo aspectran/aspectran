@@ -18,6 +18,7 @@ package com.aspectran.core.context.builder.xml;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.nio.charset.IllegalCharsetNameException;
+import java.util.Map;
 import java.util.Properties;
 
 import org.w3c.dom.Node;
@@ -28,6 +29,7 @@ import com.aspectran.core.activity.response.ResponseMap;
 import com.aspectran.core.activity.response.Responsible;
 import com.aspectran.core.context.bean.ablility.DisposableBean;
 import com.aspectran.core.context.bean.ablility.InitializableBean;
+import com.aspectran.core.context.bean.loader.BeanClassLoader;
 import com.aspectran.core.context.builder.AspectranContextBuildingAssistant;
 import com.aspectran.core.context.builder.AspectranContextResource;
 import com.aspectran.core.context.builder.InheritedAspectranSettings;
@@ -49,6 +51,7 @@ import com.aspectran.core.type.RequestMethodType;
 import com.aspectran.core.type.ScopeType;
 import com.aspectran.core.util.ClassUtils;
 import com.aspectran.core.util.StringUtils;
+import com.aspectran.core.util.wildcard.WildcardPattern;
 import com.aspectran.core.util.xml.Nodelet;
 import com.aspectran.core.util.xml.NodeletParser;
 
@@ -528,7 +531,7 @@ public class AspectranNodeParser {
 		parser.addNodelet("/aspectran/bean", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
 				String id = attributes.getProperty("id");
-				String classType = resolveAliasType(attributes.getProperty("class"));
+				String className = resolveAliasType(attributes.getProperty("class"));
 				String singleton = attributes.getProperty("singleton");
 				String scope = attributes.getProperty("scope");
 				String factoryMethod = attributes.getProperty("factoryMethod");
@@ -548,17 +551,17 @@ public class AspectranNodeParser {
 					id = assistant.applyNamespaceForBean(id);
 				}
 
-				if(classType == null)
+				if(className == null)
 					throw new IllegalArgumentException("The <bean> element requires a class attribute.");
 
-				Class<?> beanClass = classLoader.loadClass(classType);
+				Class<?> beanClass = null;
+				Map<String, Class<?>> beanClassMap = null;
 				
-				if(initMethod == null && beanClass.isAssignableFrom(InitializableBean.class)) {
-					initMethod = InitializableBean.INITIALIZE_METHOD_NAME;
-				}
-
-				if(destroyMethod == null && beanClass.isAssignableFrom(DisposableBean.class)) {
-					destroyMethod = DisposableBean.DESTROY_METHOD_NAME;
+				if(!WildcardPattern.hasWildcards(className)) {
+					beanClass = classLoader.loadClass(className);
+				} else {
+					BeanClassLoader beanClassLoader = new BeanClassLoader(id);
+					beanClassMap = beanClassLoader.loadBeanClassMap(className);
 				}
 				
 				boolean isSingleton = !(singleton != null && Boolean.valueOf(singleton) == Boolean.FALSE);
@@ -570,18 +573,61 @@ public class AspectranNodeParser {
 				if(scopeType == null)
 					scopeType = isSingleton ? ScopeType.SINGLETON : ScopeType.PROTOTYPE;
 				
-				BeanRule beanRule = new BeanRule();
-				beanRule.setId(id);
-				beanRule.setClassType(classType);
-				beanRule.setBeanClass(beanClass);
-				beanRule.setScopeType(scopeType);
-				beanRule.setFactoryMethod(factoryMethod);
-				beanRule.setInitMethod(initMethod);
-				beanRule.setDestroyMethod(destroyMethod);
-				beanRule.setLazyInit(lazyInit);
-				beanRule.setOverride(override);
+				if(beanClass != null) {
+					if(initMethod == null && beanClass.isAssignableFrom(InitializableBean.class)) {
+						initMethod = InitializableBean.INITIALIZE_METHOD_NAME;
+					}
 
-				assistant.pushObject(beanRule);
+					if(destroyMethod == null && beanClass.isAssignableFrom(DisposableBean.class)) {
+						destroyMethod = DisposableBean.DESTROY_METHOD_NAME;
+					}
+					
+					BeanRule beanRule = new BeanRule();
+					beanRule.setId(id);
+					beanRule.setClassName(className);
+					beanRule.setBeanClass(beanClass);
+					beanRule.setScopeType(scopeType);
+					beanRule.setFactoryMethod(factoryMethod);
+					beanRule.setInitMethod(initMethod);
+					beanRule.setDestroyMethod(destroyMethod);
+					beanRule.setLazyInit(lazyInit);
+					beanRule.setOverride(override);
+	
+					assistant.pushObject(beanRule);
+				} else {
+					BeanRule[] beanRules = new BeanRule[beanClassMap.size()];
+					
+					int i = 0;
+					for(Map.Entry<String, Class<?>> entry : beanClassMap.entrySet()) {
+						String beanId = entry.getKey();
+						Class<?> beanClass2 = entry.getValue();
+						String initMethod2 = initMethod;
+						String destroyMethod2 = destroyMethod;
+						
+						if(initMethod2 == null && beanClass2.isAssignableFrom(InitializableBean.class)) {
+							initMethod2 = InitializableBean.INITIALIZE_METHOD_NAME;
+						}
+
+						if(destroyMethod2 == null && beanClass2.isAssignableFrom(DisposableBean.class)) {
+							destroyMethod2 = DisposableBean.DESTROY_METHOD_NAME;
+						}
+						
+						BeanRule beanRule = new BeanRule();
+						beanRule.setId(beanId);
+						beanRule.setClassName(beanClass2.getName());
+						beanRule.setBeanClass(beanClass2);
+						beanRule.setScopeType(scopeType);
+						beanRule.setFactoryMethod(factoryMethod);
+						beanRule.setInitMethod(initMethod2);
+						beanRule.setDestroyMethod(destroyMethod2);
+						beanRule.setLazyInit(lazyInit);
+						beanRule.setOverride(override);
+						
+						beanRules[i++] = beanRule;
+					}
+	
+					assistant.pushObject(beanRules);					
+				}
 			}
 		});
 		parser.addNodelet("/aspectran/bean/constructor/arguments", new Nodelet() {
@@ -596,8 +642,16 @@ public class AspectranNodeParser {
 		parser.addNodelet("/aspectran/bean/constructor/arguments/end()", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
 				ItemRuleMap irm = (ItemRuleMap)assistant.popObject();
-				BeanRule beanRule = (BeanRule)assistant.peekObject();
-				beanRule.setConstructorArgumentItemRuleMap(irm);
+				Object o = assistant.peekObject();
+				
+				if(o instanceof BeanRule) {
+					BeanRule beanRule = (BeanRule)o;
+					beanRule.setConstructorArgumentItemRuleMap(irm);
+				} else {
+					for(BeanRule beanRule : (BeanRule[])o) {
+						beanRule.setConstructorArgumentItemRuleMap(irm);
+					}
+				}
 			}
 		});		
 		parser.addNodelet("/aspectran/bean/properties", new Nodelet() {
@@ -612,14 +666,30 @@ public class AspectranNodeParser {
 		parser.addNodelet("/aspectran/bean/properties/end()", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
 				ItemRuleMap irm = (ItemRuleMap)assistant.popObject();
-				BeanRule beanRule = (BeanRule)assistant.peekObject();
-				beanRule.setPropertyItemRuleMap(irm);
+				Object o = assistant.peekObject();
+				
+				if(o instanceof BeanRule) {
+					BeanRule beanRule = (BeanRule)o;
+					beanRule.setPropertyItemRuleMap(irm);
+				} else {
+					for(BeanRule beanRule : (BeanRule[])o) {
+						beanRule.setPropertyItemRuleMap(irm);
+					}
+				}
 			}
 		});
 		parser.addNodelet("/aspectran/bean/end()", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
-				BeanRule beanRule = (BeanRule)assistant.popObject();
-				assistant.addBeanRule(beanRule);
+				Object o = assistant.popObject();
+				
+				if(o instanceof BeanRule) {
+					BeanRule beanRule = (BeanRule)o;
+					assistant.addBeanRule(beanRule);
+				} else {
+					for(BeanRule beanRule : (BeanRule[])o) {
+						assistant.addBeanRule(beanRule);
+					}
+				}
 			}
 		});		
 	}

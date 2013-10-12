@@ -190,23 +190,28 @@ public class ScopedBeanRegistry extends AbstractBeanRegistry implements BeanRegi
 				expressor = new ItemTokenExpression(this);
 			
 			ItemRuleMap constructorArgumentItemRuleMap = beanRule.getConstructorArgumentItemRuleMap();
-			ValueMap valueMap = expressor.express(constructorArgumentItemRuleMap);
-
-			int parameterSize = constructorArgumentItemRuleMap.size();
-			Object[] args = new Object[parameterSize];
 			
-			Iterator<ItemRule> iter = constructorArgumentItemRuleMap.iterator();
-			int i = 0;
-			
-			while(iter.hasNext()) {
-				ItemRule ir = iter.next();
-				Object o = valueMap.get(ir.getName());
-				args[i] = o;
+			if(constructorArgumentItemRuleMap != null) {
+				ValueMap valueMap = expressor.express(constructorArgumentItemRuleMap);
+	
+				int parameterSize = constructorArgumentItemRuleMap.size();
+				Object[] args = new Object[parameterSize];
 				
-				i++;
+				Iterator<ItemRule> iter = constructorArgumentItemRuleMap.iterator();
+				int i = 0;
+				
+				while(iter.hasNext()) {
+					ItemRule ir = iter.next();
+					Object o = valueMap.get(ir.getName());
+					args[i] = o;
+					
+					i++;
+				}
+				
+				return newInstance(beanRule, args);
+			} else {
+				return newInstance(beanRule, new Object[0]);
 			}
-			
-			return newInstance(beanRule, args);
 		} catch(Exception e) {
 			throw new BeanCreationException(beanRule, e);
 		}

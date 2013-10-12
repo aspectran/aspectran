@@ -6,10 +6,8 @@ import java.net.JarURLConnection;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
@@ -38,12 +36,22 @@ public class BeanClassLoader {
 			this.beanIdPrefix = beanIdPattern;
 			this.beanIdSuffix = null;
 		} else {
-			this.beanIdPrefix = beanIdPattern.substring(0, wildcardStartIndex);
-			this.beanIdSuffix = beanIdPattern.substring(wildcardStartIndex + 1);
+			if(wildcardStartIndex == 0)
+				this.beanIdPrefix = null;
+			else
+				this.beanIdPrefix = beanIdPattern.substring(0, wildcardStartIndex);
+			
+			if(wildcardStartIndex + 1 == beanIdPattern.length())
+				this.beanIdSuffix = null;
+			else
+				this.beanIdSuffix = beanIdPattern.substring(wildcardStartIndex + 1);
 		}
+		
+		System.out.println("beanIdPrefix: " + beanIdPrefix);
+		System.out.println("beanIdSuffix: " + beanIdSuffix);
 	}
 
-	public Map<String, Class<?>> loadClasses(String classNamePattern) throws IOException, ClassNotFoundException {
+	public Map<String, Class<?>> loadBeanClassMap(String classNamePattern) throws IOException, ClassNotFoundException {
 		classNamePattern = classNamePattern.replace(ClassUtils.PACKAGE_SEPARATOR, RESOURCE_PATH_SPEPARATOR);
 
 		String basePackageName = determineBasePackageName(classNamePattern);
@@ -66,7 +74,8 @@ public class BeanClassLoader {
 				Map<String, Class<?>> map = findClassesFromJarResources(resource, matcher);
 				classMap.putAll(map);
 			} else {
-				findClasses(basePackageName, resource.getFile(), matcher);
+				//System.out.println("========" + resource.getFile());
+				findClasses(basePackageName, null, resource.getFile(), matcher);
 			}
 		}
 		
@@ -110,10 +119,10 @@ public class BeanClassLoader {
 
 		try {
 			//Looking for matching resources in jar file [" + jarFileUrl + "]"
-			if(!"".equals(rootEntryPath) && !rootEntryPath.endsWith("/")) {
+			if(rootEntryPath.length() > 0 && rootEntryPath.charAt(rootEntryPath.length() - 1) != RESOURCE_PATH_SPEPARATOR) {
 				// Root entry path must end with slash to allow for proper matching.
 				// The Sun JRE does not return a slash here, but BEA JRockit does.
-				rootEntryPath = rootEntryPath + "/";
+				rootEntryPath = rootEntryPath + RESOURCE_PATH_SPEPARATOR;
 			}
 			Map<String, Class<?>> classMap = new LinkedHashMap<String, Class<?>>();
 			for(Enumeration<JarEntry> entries = jarFile.entries(); entries.hasMoreElements();) {
@@ -133,8 +142,9 @@ public class BeanClassLoader {
 						className = className.replace(RESOURCE_PATH_SPEPARATOR, ClassUtils.PACKAGE_SEPARATOR);
 						
 						System.out.println("  [clazz] " + className);
+						System.out.println("  [beanId] " + combineBeanId(relativePath));
 						Class<?> clazz = classLoader.loadClass(className);
-						classMap.put("beanId", clazz);
+						classMap.put(combineBeanId(relativePath), clazz);
 					}
 				}
 			}
@@ -174,14 +184,19 @@ public class BeanClassLoader {
 	 * @return The classes
 	 * @throws ClassNotFoundException
 	 */
-	private Map<String, Class<?>> findClasses(String basePackageName, String basePath, WildcardMatcher matcher) throws ClassNotFoundException {
-		System.out.println("basePath: " + basePath);
+	private Map<String, Class<?>> findClasses(String basePackageName, String relativePackageName, String basePath, WildcardMatcher matcher) throws ClassNotFoundException {
+		System.out.println("@basePackageName: " + basePackageName);
+		System.out.println("@relativePackageName: " + relativePackageName);
+		System.out.println("@basePath: " + basePath);
 		File path = new File(basePath);
 		if(!path.exists())
 			return null;
 
-		if(basePackageName != null && !basePackageName.endsWith("/"))
+		if(basePackageName != null && basePackageName.length() > 0 && basePackageName.charAt(basePackageName.length() - 1) != RESOURCE_PATH_SPEPARATOR)
 			basePackageName += RESOURCE_PATH_SPEPARATOR;
+		
+		if(relativePackageName != null && relativePackageName.length() > 0 && relativePackageName.charAt(relativePackageName.length() - 1) != RESOURCE_PATH_SPEPARATOR)
+			relativePackageName += RESOURCE_PATH_SPEPARATOR;
 		
 		
 		Map<String, Class<?>> classMap = new LinkedHashMap<String, Class<?>>();
@@ -190,22 +205,26 @@ public class BeanClassLoader {
 		for(File file : files) {
 			if(file.isDirectory()) {
 				assert !file.getName().contains(".");
-				Map<String, Class<?>> map = findClasses(basePackageName + file.getName(), basePath + file.getName() + RESOURCE_PATH_SPEPARATOR, matcher);
+				String relativePackageName2 = relativePackageName == null ? file.getName() : relativePackageName + file.getName();
+				String basePath2 = basePath + file.getName() + RESOURCE_PATH_SPEPARATOR;
+				System.out.println("-relativePackageName2: " + relativePackageName2);
+				Map<String, Class<?>> map = findClasses(basePackageName, relativePackageName2, basePath2, matcher);
 				if(map != null)
 					classMap.putAll(map);
 			} else if(file.getName().endsWith(ClassUtils.CLASS_FILE_SUFFIX)) {
-				String className = basePackageName + file.getName().substring(0, file.getName().length() - ClassUtils.CLASS_FILE_SUFFIX.length());
-				
+				String className = basePackageName + relativePackageName + file.getName().substring(0, file.getName().length() - ClassUtils.CLASS_FILE_SUFFIX.length());
 				String relativePath = className.substring(basePackageName.length(), className.length());
-				System.out.println("  relativePath: " + relativePath);
+				System.out.println("  -file.getName(): " + file.getName());
+				System.out.println("  -relativePath: " + relativePath);
 				
 				if(matcher.matches(relativePath)) {
 					className = className.replace(RESOURCE_PATH_SPEPARATOR, ClassUtils.PACKAGE_SEPARATOR);
 					System.out.println("  className: " + className);
 					
 					System.out.println("  [clazz] " + className);
+					System.out.println("  [beanId] " + combineBeanId(relativePath));
 					Class<?> clazz = classLoader.loadClass(className);
-					classMap.put("beanId", clazz);
+					classMap.put(combineBeanId(relativePath), clazz);
 				}
 			}
 		}
@@ -227,7 +246,7 @@ public class BeanClassLoader {
 		while(matcher.hasNext()) {
 			String str = matcher.next();
 
-			if(matcher.hasWildcards(str))
+			if(WildcardPattern.hasWildcards(str))
 				break;
 
 			sb.append(str).append(RESOURCE_PATH_SPEPARATOR);
@@ -239,12 +258,14 @@ public class BeanClassLoader {
 	private String combineBeanId(String relativePath) {
 		String beanId;
 		
-		if(beanIdPrefix == null && beanIdSuffix == null) {
-			beanId = relativePath;
+		if(beanIdPrefix != null && beanIdSuffix != null) {
+			beanId = beanIdPrefix + relativePath + beanIdSuffix;
 		} else if(beanIdPrefix != null) {
 			beanId = beanIdPrefix + relativePath;
-		} else {
+		} else if(beanIdSuffix != null) {
 			beanId = relativePath + beanIdSuffix;
+		} else {
+			beanId = relativePath;
 		}
 		
 		return beanId.replace(RESOURCE_PATH_SPEPARATOR, ClassUtils.PACKAGE_SEPARATOR);
@@ -252,8 +273,9 @@ public class BeanClassLoader {
 	
 	public static void main(String[] args) {
 		try {
-			BeanClassLoader loader = new BeanClassLoader(".");
-			loader.loadClasses("com.**.*Aspectran*");
+			BeanClassLoader loader = new BeanClassLoader("component.*ZZZ");
+			loader.loadBeanClassMap("com.**.*Sql*");
+			System.out.println(loader.getClass().getName());
 		} catch(Exception e) {
 			e.printStackTrace();
 		}

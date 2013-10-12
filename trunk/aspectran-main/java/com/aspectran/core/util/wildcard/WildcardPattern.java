@@ -193,6 +193,19 @@ public class WildcardPattern {
 		return new WildcardPattern(patternString, separators);
 	}
 	
+	public static boolean hasWildcards(String str) {
+		char[] ca = str.toCharArray();
+		
+		for(int i = 0; i < ca.length; i++) {
+			if(ca[i] == STAR_CHAR ||
+					ca[i] == QUESTION_CHAR ||
+					ca[i] == PLUS_CHAR)
+				return true;
+		}
+		
+		return false;
+	}
+	
 	public static void main(String argv[]) {
 		//String str = "\\aaa\\*\\**\\bb*.txt**";
 		//String str = "**/bb*";
