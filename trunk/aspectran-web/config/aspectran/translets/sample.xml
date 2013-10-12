@@ -1,14 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE aspectran PUBLIC "-//JHLabs.org//DTD aspectran 1.0//EN"
-                           "../dtd/aspectran-1.0.dtd">
+<!DOCTYPE aspectran PUBLIC "-//aspectran.com//DTD Aspectran 1.0//EN"
+                           "./dtd/aspectran-1.0.dtd">
 
 <aspectran namespace="t1">
 
 	<typeAliases>
 		<typeAlias alias="TestBean" type="org.jhlabs.aspectran.test.TestBean"/>
 	</typeAliases>
-
-	<import resource="front-beans.xml"/>
 
 	<translet name="front" hidden="true">
 		<transform type="transform/xml" contentType="text/xml"/>
@@ -192,7 +190,7 @@
 				</template>
 			</transform>
 			<transform id="txt" type="transform/text" contentType="text/plain">
-				<template file="/d:\ADE_JHLabs\workspace\aspectran-web\webapp\WEB-INF\web.xml" encoding="utf-8"/>
+				<template file="/c:\ADE_JHLabs\workspace\aspectran-web\webapp\WEB-INF\web.xml" encoding="utf-8"/>
 			</transform>
 		</response>
 		<exception>
@@ -278,7 +276,7 @@
 	
 	<translet name="home2">
 		<transform id="txt" type="transform/text" contentType="text/plain">
-			<template file="/d:\ADE_JHLabs\workspace\aspectran-web\webapp\WEB-INF\web.xml" encoding="utf-8"/>
+			<template file="/c:\ADE_JHLabs\workspace\aspectran-web\webapp\WEB-INF\web.xml" encoding="utf-8"/>
 		</transform>
 	</translet>
 
