@@ -218,15 +218,15 @@
 		<before>
 			<action bean="com.aspectran.support.orm.ibatis.AspectSqlMapClient" method="begin"/>
 		</before>
+		
 		<finally>
 			<action bean="com.aspectran.support.orm.ibatis.AspectSqlMapClient" method="end"/>
 		</finally>
 	</aspect>
 	
-	<bean id="a.*" class="com.aspectran.test.**.Sample*Test*Bean" scope="singleton"/>
+	<bean id="a.*" class="com.**.*Aspectran*" scope="singleton"/>
 	<bean id="b.*" class="com.aspectran.test.**.Sample*Test*Bean" scope="singleton"/>
 
-	<import resource="front-translets.xml"/>
-	<import resource="ajax-translets.xml"/>
+	<import resource="aspectran/translets/sample.xml"/>
 	
 </aspectran>
