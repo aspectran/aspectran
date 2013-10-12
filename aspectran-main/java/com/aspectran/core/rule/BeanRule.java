@@ -28,7 +28,7 @@ public class BeanRule {
 
 	protected String id;
 
-	protected String classType;
+	protected String className;
 
 	protected Class<?> beanClass;
 
@@ -79,17 +79,17 @@ public class BeanRule {
 	 *
 	 * @return the class type
 	 */
-	public String getClassType() {
-		return classType;
+	public String getClassName() {
+		return className;
 	}
 
 	/**
 	 * Sets the class type.
 	 *
-	 * @param classType the new class type
+	 * @param className the new class name
 	 */
-	public void setClassType(String classType) {
-		this.classType = classType;
+	public void setClassName(String className) {
+		this.className = className;
 	}
 
 	/**
@@ -281,7 +281,7 @@ public class BeanRule {
 	}
 	
 	public boolean isOverride() {
-		return overrided;
+		return override;
 	}
 
 	public void setOverride(boolean override) {
@@ -304,7 +304,7 @@ public class BeanRule {
 		StringBuilder sb = new StringBuilder();
 
 		sb.append("{id=").append(id);
-		sb.append(", class=").append(classType);
+		sb.append(", class=").append(className);
 		sb.append(", scope=").append(scopeType);
 		sb.append(", factoryMethod=").append(factoryMethod);
 		sb.append(", initMethod=").append(initMethod);
