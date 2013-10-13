@@ -38,9 +38,6 @@ public final class AspectranSettingType extends Type {
 	/** The Constant MULTI_ACTIVITY_ENABLE. */
 	public static final AspectranSettingType MULTIPLE_TRANSLET_ENABLE;
 	
-	/** The Constant TRANSLET_NAME_SEPARATOR. */
-	public static final AspectranSettingType TRANSLET_NAME_SEPARATOR;
-	
 	/** The Constant TRANSLET_NAME_PATTERN_PREFIX. */
 	public static final AspectranSettingType TRANSLET_NAME_PATTERN_PREFIX;
 	
@@ -54,7 +51,7 @@ public final class AspectranSettingType extends Type {
 	public static final AspectranSettingType TRANSLET_INTERFACE_CLASS;
 	
 	/** The Constant TRANSLET_CLASS. */
-	public static final AspectranSettingType TRANSLET_INSTANCE_CLASS;
+	public static final AspectranSettingType TRANSLET_IMPLEMENT_CLASS;
 	
 	/** The Constant types. */
 	private static final Map<String, AspectranSettingType> types;
@@ -64,25 +61,24 @@ public final class AspectranSettingType extends Type {
 		NULLABLE_CONTENT_ID = new AspectranSettingType("nullableContentId");
 		NULLABLE_ACTION_ID = new AspectranSettingType("nullableActionId");
 		NULLABLE_BEAN_ID = new AspectranSettingType("nullableBeanId");
-		MULTIPLE_TRANSLET_ENABLE = new AspectranSettingType("multiActivityEnable");
-		TRANSLET_NAME_SEPARATOR = new AspectranSettingType("transletNameSeparator");
+		MULTIPLE_TRANSLET_ENABLE = new AspectranSettingType("multipleTransletEnable");
 		TRANSLET_NAME_PATTERN_PREFIX = new AspectranSettingType("transletNamePatternPrefix");
 		TRANSLET_NAME_PATTERN_SUFFIX = new AspectranSettingType("transletNamePatternSuffix");
 		TRANSLET_NAME_PATTERN = new AspectranSettingType("transletNamePattern");
-		TRANSLET_INTERFACE_CLASS = new AspectranSettingType("transletInterface");
-		TRANSLET_INSTANCE_CLASS = new AspectranSettingType("transletClass");
+		TRANSLET_INTERFACE_CLASS = new AspectranSettingType("transletInterfaceClass");
+		TRANSLET_IMPLEMENT_CLASS = new AspectranSettingType("transletImplementClass");
 
 		types = new HashMap<String, AspectranSettingType>();
-		types.put(USE_NAMESPACES.toString(), NULLABLE_CONTENT_ID);
+		types.put(USE_NAMESPACES.toString(), USE_NAMESPACES);
+		types.put(NULLABLE_CONTENT_ID.toString(), NULLABLE_CONTENT_ID);
 		types.put(NULLABLE_ACTION_ID.toString(), NULLABLE_ACTION_ID);
 		types.put(NULLABLE_BEAN_ID.toString(), NULLABLE_BEAN_ID);
 		types.put(MULTIPLE_TRANSLET_ENABLE.toString(), MULTIPLE_TRANSLET_ENABLE);
-		types.put(TRANSLET_NAME_SEPARATOR.toString(), TRANSLET_NAME_SEPARATOR);
 		types.put(TRANSLET_NAME_PATTERN_PREFIX.toString(), TRANSLET_NAME_PATTERN_PREFIX);
 		types.put(TRANSLET_NAME_PATTERN_SUFFIX.toString(), TRANSLET_NAME_PATTERN_SUFFIX);
 		types.put(TRANSLET_NAME_PATTERN.toString(), TRANSLET_NAME_PATTERN);
 		types.put(TRANSLET_INTERFACE_CLASS.toString(), TRANSLET_INTERFACE_CLASS);
-		types.put(TRANSLET_INSTANCE_CLASS.toString(), TRANSLET_INSTANCE_CLASS);
+		types.put(TRANSLET_IMPLEMENT_CLASS.toString(), TRANSLET_IMPLEMENT_CLASS);
 	}
 
 	/**

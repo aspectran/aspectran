@@ -20,21 +20,20 @@ package com.aspectran.core.context;
  */
 public interface AspectranContextConstant {
 
-	/** The Constant LINE_SEPARATOR. */
 	public static final String LINE_SEPARATOR = System.getProperty("line.separator");
 
 	/** The Constant WILDCARD_CHAR. */
-	public static final String WILDCARD_CHAR = "*";
+	public static final char TRANSLET_NAME_PATTERN_SEPARATOR = '*';
 
 	/** The Constant NAMESPACE_SEPARATOR. */
-	public static final String TRANSLET_NAME_SEPARATOR = "/";
+	public static final char TRANSLET_NAME_SEPARATOR = '/';
 
-	public static final String TRANSLET_NAME_EXTENTION_SEPARATOR = ".";
+	public static final char TRANSLET_NAME_EXTENTION_SEPARATOR = '.';
 
 	/** The Constant BEAN_ID_SEPARATOR. */
-	public static final String BEAN_ID_SEPARATOR = ".";
+	public static final char BEAN_ID_SEPARATOR = '.';
 
 	/** The Constant CONTENT_ID_SEPARATOR. */
-	public static final String ACTION_ID_SEPARATOR = ".";
+	public static final char ACTION_ID_SEPARATOR = '.';
 
 }

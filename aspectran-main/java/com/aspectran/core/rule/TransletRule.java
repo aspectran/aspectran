@@ -179,7 +179,7 @@ public class TransletRule implements AspectAdviceSupport, Cloneable {
 		this.transletInterfaceClass = transletInterfaceClass;
 	}
 
-	public Class<? extends AbstractSuperTranslet> getTransletInstanceClass() {
+	public Class<? extends AbstractSuperTranslet> getTransletImplementClass() {
 		return transletInstanceClass;
 	}
 

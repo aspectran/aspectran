@@ -145,7 +145,7 @@ public class AspectranNodeParser {
 	 * Adds the settings nodelets.
 	 */
 	private void addSettingsNodelets() {
-		parser.addNodelet("/aspectran/setting", new Nodelet() {
+		parser.addNodelet("/aspectran/settings/setting", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
 				String name = attributes.getProperty("name");
 				String value = attributes.getProperty("value");
@@ -162,7 +162,7 @@ public class AspectranNodeParser {
 				assistant.putSetting(settingType, value);
 			}
 		});
-		parser.addNodelet("/aspectran/setting/end()", new Nodelet() {
+		parser.addNodelet("/aspectran/settings/end()", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
 				assistant.applyInheritedSettings();
 			}

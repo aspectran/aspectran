@@ -29,6 +29,8 @@ public class TransletRuleMap extends LinkedHashMap<String, TransletRule> impleme
 	private boolean freezed;
 	
 	public TransletRule put(String key, TransletRule value) {
+		System.out.println("transletName: " + value.getName());
+		
 		if(freezed)
 			throw new java.lang.UnsupportedOperationException("freezed TransletRuleMap: " + toString());
 

@@ -47,18 +47,18 @@ public class BeanClassLoader {
 				this.beanIdSuffix = beanIdPattern.substring(wildcardStartIndex + 1);
 		}
 		
-		System.out.println("beanIdPrefix: " + beanIdPrefix);
-		System.out.println("beanIdSuffix: " + beanIdSuffix);
+		//System.out.println("beanIdPrefix: " + beanIdPrefix);
+		//System.out.println("beanIdSuffix: " + beanIdSuffix);
 	}
 
 	public Map<String, Class<?>> loadBeanClassMap(String classNamePattern) throws IOException, ClassNotFoundException {
 		classNamePattern = classNamePattern.replace(ClassUtils.PACKAGE_SEPARATOR, RESOURCE_PATH_SPEPARATOR);
 
 		String basePackageName = determineBasePackageName(classNamePattern);
-		System.out.println("basePackageName: " + basePackageName);
+		//System.out.println("basePackageName: " + basePackageName);
 
 		String subPattern = classNamePattern.substring(basePackageName.length());
-		System.out.println("subPattern: " + subPattern);
+		//System.out.println("subPattern: " + subPattern);
 
 		
 		WildcardPattern pattern = WildcardPattern.compile(subPattern, RESOURCE_PATH_SPEPARATOR);
@@ -135,14 +135,14 @@ public class BeanClassLoader {
 					//System.out.println("  relativePath: " + relativePath);
 					
 					if(matcher.matches(relativePath)) {
-						System.out.println("entryPath: " + entryPath);
-						System.out.println("  rootEntryPath: " + rootEntryPath);
-						System.out.println("  relativePath: " + relativePath);
+						//System.out.println("entryPath: " + entryPath);
+						//System.out.println("  rootEntryPath: " + rootEntryPath);
+						//System.out.println("  relativePath: " + relativePath);
 						String className = rootEntryPath + relativePath;
 						className = className.replace(RESOURCE_PATH_SPEPARATOR, ClassUtils.PACKAGE_SEPARATOR);
 						
-						System.out.println("  [clazz] " + className);
-						System.out.println("  [beanId] " + combineBeanId(relativePath));
+						//System.out.println("  [clazz] " + className);
+						//System.out.println("  [beanId] " + combineBeanId(relativePath));
 						Class<?> clazz = classLoader.loadClass(className);
 						classMap.put(combineBeanId(relativePath), clazz);
 					}
@@ -185,9 +185,9 @@ public class BeanClassLoader {
 	 * @throws ClassNotFoundException
 	 */
 	private Map<String, Class<?>> findClasses(String basePackageName, String relativePackageName, String basePath, WildcardMatcher matcher) throws ClassNotFoundException {
-		System.out.println("@basePackageName: " + basePackageName);
-		System.out.println("@relativePackageName: " + relativePackageName);
-		System.out.println("@basePath: " + basePath);
+		//System.out.println("@basePackageName: " + basePackageName);
+		//System.out.println("@relativePackageName: " + relativePackageName);
+		//System.out.println("@basePath: " + basePath);
 		File path = new File(basePath);
 		if(!path.exists())
 			return null;
@@ -207,22 +207,22 @@ public class BeanClassLoader {
 				assert !file.getName().contains(".");
 				String relativePackageName2 = relativePackageName == null ? file.getName() : relativePackageName + file.getName();
 				String basePath2 = basePath + file.getName() + RESOURCE_PATH_SPEPARATOR;
-				System.out.println("-relativePackageName2: " + relativePackageName2);
+				//System.out.println("-relativePackageName2: " + relativePackageName2);
 				Map<String, Class<?>> map = findClasses(basePackageName, relativePackageName2, basePath2, matcher);
 				if(map != null)
 					classMap.putAll(map);
 			} else if(file.getName().endsWith(ClassUtils.CLASS_FILE_SUFFIX)) {
 				String className = basePackageName + relativePackageName + file.getName().substring(0, file.getName().length() - ClassUtils.CLASS_FILE_SUFFIX.length());
 				String relativePath = className.substring(basePackageName.length(), className.length());
-				System.out.println("  -file.getName(): " + file.getName());
-				System.out.println("  -relativePath: " + relativePath);
+				//System.out.println("  -file.getName(): " + file.getName());
+				//System.out.println("  -relativePath: " + relativePath);
 				
 				if(matcher.matches(relativePath)) {
 					className = className.replace(RESOURCE_PATH_SPEPARATOR, ClassUtils.PACKAGE_SEPARATOR);
-					System.out.println("  className: " + className);
+					//System.out.println("  className: " + className);
 					
-					System.out.println("  [clazz] " + className);
-					System.out.println("  [beanId] " + combineBeanId(relativePath));
+					//System.out.println("  [clazz] " + className);
+					//System.out.println("  [beanId] " + combineBeanId(relativePath));
 					Class<?> clazz = classLoader.loadClass(className);
 					classMap.put(combineBeanId(relativePath), clazz);
 				}

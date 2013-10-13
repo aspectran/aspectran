@@ -35,7 +35,7 @@
 		</listener-class>
 	</listener>
 	<servlet>
-		<servlet-name>aspectran:web</servlet-name>
+		<servlet-name>aspectran-web</servlet-name>
 		<servlet-class>com.aspectran.web.context.servlet.AspectranActivityServlet</servlet-class>
 		<init-param>
 			<param-name>aspectran:defaultActivityServletHandler</param-name>
@@ -52,7 +52,7 @@
 		<load-on-startup>1</load-on-startup>
 	</servlet>
 	<servlet-mapping>
-		<servlet-name>aspectran:web</servlet-name>
+		<servlet-name>aspectran-web</servlet-name>
 		<url-pattern>/test/*</url-pattern>
 	</servlet-mapping>
 </web-app>

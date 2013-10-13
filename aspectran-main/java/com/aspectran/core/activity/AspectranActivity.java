@@ -45,7 +45,7 @@ public interface AspectranActivity {
 	
 	public Class<? extends SuperTranslet> getTransletInterfaceClass();
 	
-	public Class<? extends AbstractSuperTranslet> getTransletInstanceClass();
+	public Class<? extends AbstractSuperTranslet> getTransletImplementClass();
 	
 	public SuperTranslet getSuperTranslet();
 	

@@ -18,28 +18,36 @@ public class WildcardPointcut extends AbstractPointcut implements Pointcut {
 	private Map<String, WildcardPattern> reusableWildcardMatcherMap = new HashMap<String, WildcardPattern>();
 	
 	public boolean matches(String transletName) {
-		for(PointcutPattern pointcutPattern : getExcludePatternList()) {
-			if(matchTransletName(pointcutPattern, transletName))
-				return false;
+		if(getExcludePatternList() != null) {
+			for(PointcutPattern pointcutPattern : getExcludePatternList()) {
+				if(matchTransletName(pointcutPattern, transletName))
+					return false;
+			}
 		}
-		
-		for(PointcutPattern pointcutPattern : getIncludePatternList()) {
-			if(matchTransletName(pointcutPattern, transletName))
-				return true;
+			
+		if(getIncludePatternList() != null) {
+			for(PointcutPattern pointcutPattern : getIncludePatternList()) {
+				if(matchTransletName(pointcutPattern, transletName))
+					return true;
+			}
 		}
 		
 		return false;
 	}
 
 	public boolean matches(String transletName, String actionId) {
-		for(PointcutPattern pointcutPattern : getExcludePatternList()) {
-			if(matchBoth(pointcutPattern, transletName, actionId))
-				return false;
+		if(getExcludePatternList() != null) {
+			for(PointcutPattern pointcutPattern : getExcludePatternList()) {
+				if(matchBoth(pointcutPattern, transletName, actionId))
+					return false;
+			}
 		}
 		
-		for(PointcutPattern pointcutPattern : getIncludePatternList()) {
-			if(matchBoth(pointcutPattern, transletName, actionId))
-				return true;
+		if(getIncludePatternList() != null) {
+			for(PointcutPattern pointcutPattern : getIncludePatternList()) {
+				if(matchBoth(pointcutPattern, transletName, actionId))
+					return true;
+			}
 		}
 		
 		return false;
@@ -55,6 +63,17 @@ public class WildcardPointcut extends AbstractPointcut implements Pointcut {
 	}	
 	
 	protected boolean matches(String pattern, String str, String separator) {
+		WildcardPattern wildcardPattern = reusableWildcardMatcherMap.get(pattern);
+		
+		if(wildcardPattern == null) {
+			wildcardPattern = new WildcardPattern(pattern, separator);
+			reusableWildcardMatcherMap.put(pattern, wildcardPattern);
+		}
+		
+		return wildcardPattern.matches(str);
+	}
+	
+	protected boolean matches(String pattern, String str, char separator) {
 		WildcardPattern wildcardPattern = reusableWildcardMatcherMap.get(pattern);
 		
 		if(wildcardPattern == null) {

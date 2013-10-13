@@ -82,7 +82,7 @@ public abstract class AbstractAspectranActivity implements AspectranActivity {
 	private Class<? extends SuperTranslet> transletInterfaceClass;
 	
 	/** The translet instance class. */
-	private Class<? extends AbstractSuperTranslet> transletInstanceClass;
+	private Class<? extends AbstractSuperTranslet> transletImplementClass;
 
 	/** The translet rule. */
 	private TransletRule transletRule;
@@ -201,11 +201,11 @@ public abstract class AbstractAspectranActivity implements AspectranActivity {
 	 *
 	 * @return the translet instance class
 	 */
-	public Class<? extends AbstractSuperTranslet> getTransletInstanceClass() {
-		if(transletRule != null && transletRule.getTransletInstanceClass() != null)
-			return transletRule.getTransletInstanceClass();
+	public Class<? extends AbstractSuperTranslet> getTransletImplementClass() {
+		if(transletRule != null && transletRule.getTransletImplementClass() != null)
+			return transletRule.getTransletImplementClass();
 
-		return transletInstanceClass;
+		return transletImplementClass;
 	}
 
 	/**
@@ -213,8 +213,8 @@ public abstract class AbstractAspectranActivity implements AspectranActivity {
 	 *
 	 * @param transletInstanceClass the new translet instance class
 	 */
-	public void setTransletInstanceClass(Class<? extends AbstractSuperTranslet> transletInstanceClass) {
-		this.transletInstanceClass = transletInstanceClass;
+	public void setTransletImplementClass(Class<? extends AbstractSuperTranslet> transletImplementClass) {
+		this.transletImplementClass = transletImplementClass;
 	}
 
 	public SuperTranslet getSuperTranslet() {
@@ -338,26 +338,27 @@ public abstract class AbstractAspectranActivity implements AspectranActivity {
 		}
 		
 		Class<? extends SuperTranslet> transletInterfaceClass = getTransletInterfaceClass();
-		Class<? extends AbstractSuperTranslet> transletInstanceClass = getTransletInstanceClass();
+		Class<? extends AbstractSuperTranslet> transletImplementClass = getTransletImplementClass();
 
 		//create translet instance
 		try {
-			Constructor<?> transletInstanceConstructor = transletInstanceClass.getConstructor(AspectranActivity.class);
+			Constructor<?> transletImplementConstructor = transletImplementClass.getConstructor(AspectranActivity.class, boolean.class);
 			Object[] args = new Object[] { this, false };
 			
 			if(transletRule.isAspectAdviceRuleExists())
 				args[1] = true;
 			
-			translet = (SuperTranslet)transletInstanceConstructor.newInstance(args);
+			translet = (SuperTranslet)transletImplementConstructor.newInstance(args);
 		} catch(Exception e) {
-			throw new TransletInstantiationException(transletInterfaceClass, transletInstanceClass, e);
+			throw new TransletInstantiationException(transletInterfaceClass, transletImplementClass, e);
 		}
 
-		
 		this.transletName = transletName;
 		this.transletRule = transletRule;
 		this.requestRule = transletRule.getRequestRule();
 		this.responseRule = transletRule.getResponseRule();
+		
+		System.out.println(">> transletRule '" + transletRule + "'");
 	}
 	
 	private void request(AspectAdviceRuleRegistry aspectAdviceRuleRegistry) throws RequestException, ActionExecutionException {

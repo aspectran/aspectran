@@ -132,7 +132,7 @@ public abstract interface SuperTranslet {
 	
 	public Class<? extends SuperTranslet> getTransletInterfaceClass();
 
-	public Class<? extends AbstractSuperTranslet> getTransletInstanceClass();
+	public Class<? extends AbstractSuperTranslet> getTransletImplementClass();
 	
 	public boolean isExceptionRaised();
 

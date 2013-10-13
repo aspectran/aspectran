@@ -185,6 +185,8 @@ public class AspectranContextBuildingAssistant {
 	 * @return the string
 	 */
 	public String applyNamespaceForTranslet(String transletName) {
+		System.out.println(inheritedAspectranSettings.getTransletNamePattern());
+		
 		StringBuilder sb = new StringBuilder();
 		
 		if(inheritedAspectranSettings.getTransletNamePatternPrefix() != null)
@@ -216,7 +218,7 @@ public class AspectranContextBuildingAssistant {
 	
 	public String replaceTransletNameSuffix(String name, String transletNameSuffix) {
 		if(inheritedAspectranSettings.getTransletNamePatternSuffix() == null)
-			return name + transletNameSuffix;
+			return name + AspectranContextConstant.TRANSLET_NAME_EXTENTION_SEPARATOR + transletNameSuffix;
 		
 		int index = name.indexOf(inheritedAspectranSettings.getTransletNamePatternSuffix());
 		

@@ -26,6 +26,8 @@ public class TransletNotFoundException extends RuntimeException {
 	/** @serial */
 	static final long serialVersionUID = 4415928593371198551L;
 
+	private String transletName;
+	
 	/**
 	 * Simple constructor.
 	 */
@@ -35,10 +37,10 @@ public class TransletNotFoundException extends RuntimeException {
 	/**
 	 * Constructor to create exception with a message.
 	 * 
-	 * @param msg A message to associate with the exception
+	 * @param transletName A message to associate with the exception
 	 */
-	public TransletNotFoundException(String msg) {
-		super(msg);
+	public TransletNotFoundException(String transletName) {
+		super("Translet is not found: " + transletName);
 	}
 
 	/**
@@ -54,10 +56,10 @@ public class TransletNotFoundException extends RuntimeException {
 	 * Constructor to create exception to wrap another exception and pass a
 	 * message.
 	 * 
-	 * @param msg The message
+	 * @param transletName The message
 	 * @param cause The real cause of the exception
 	 */
-	public TransletNotFoundException(String msg, Throwable cause) {
-		super(msg, cause);
+	public TransletNotFoundException(String transletName, Throwable cause) {
+		super("Translet is not found: " + transletName, cause);
 	}
 }
