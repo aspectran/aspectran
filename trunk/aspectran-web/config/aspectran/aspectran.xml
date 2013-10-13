@@ -9,7 +9,7 @@
 		<setting name="transletNamePatternSuffix" value=".do"/>
 		<setting name="transletNamePattern" value="/test/*.do"/>
 		<setting name="transletInterfaceClass" value="com.aspectran.web.activity.WebTranslet"/>
-		<setting name="transletIntanceClass" value="com.aspectran.web.activity.AspectranWebTranslet"/>
+		<setting name="transletImplementClass" value="com.aspectran.web.activity.AspectranWebTranslet"/>
 		<setting name="useNamespaces" value="true"/>
 		<setting name="nullableContentId" value="true"/>
 		<setting name="nullableActionId" value="true"/>
@@ -23,6 +23,7 @@
 			<setting name="multipart.maxRequestSize" value="10M"/>
 			<setting name="multipart.temporaryFilePath" value="/d:/"/>
 		</settings>
+		<!-- 
 		<before>
 			<action id="xml" bean="common.action.a1" method="testXmlAction">
 				<properties>
@@ -39,6 +40,7 @@
 				</properties>
 			</action>
 		</after>
+		-->
 	</aspect>
 	
 	<aspect id="frontRequestRule">

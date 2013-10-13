@@ -28,7 +28,7 @@ public class TransletRuleRegistry {
 		TransletRule transletRule = transletRuleMap.get(transletName);
 		
 		if(transletRule == null)
-			throw new TransletNotFoundException();
+			throw new TransletNotFoundException(transletName);
 		
 		return transletRule;
 	}

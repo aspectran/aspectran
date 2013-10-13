@@ -54,14 +54,14 @@ public class InheritedAspectranSettings {
 		this.transletNamePattern = transletNamePattern;
 		
 		if(transletNamePattern != null) {
-			int index = transletNamePattern.indexOf(AspectranContextConstant.WILDCARD_CHAR);
+			int index = transletNamePattern.indexOf(AspectranContextConstant.TRANSLET_NAME_PATTERN_SEPARATOR);
 			
 			if(index != -1) {
 				if(index == 0) {
 					transletNamePatternPrefix = null;
-					transletNamePatternSuffix = transletNamePattern.substring(AspectranContextConstant.WILDCARD_CHAR.length());
+					transletNamePatternSuffix = transletNamePattern.substring(1);
 				} else if(index == (transletNamePattern.length() - 1)) {
-					transletNamePatternPrefix = transletNamePattern.substring(0, transletNamePattern.length() - AspectranContextConstant.WILDCARD_CHAR.length());
+					transletNamePatternPrefix = transletNamePattern.substring(0, transletNamePattern.length() - 1);
 					transletNamePatternSuffix = null;
 				} else {
 					transletNamePatternPrefix = transletNamePattern.substring(0, index);
@@ -72,7 +72,7 @@ public class InheritedAspectranSettings {
 	}
 	
 	public void setTransletNamePattern(String transletNamePatternPrefix, String transletNamePatternSuffix) {
-		transletNamePattern = transletNamePatternPrefix + AspectranContextConstant.WILDCARD_CHAR + transletNamePatternSuffix;
+		transletNamePattern = transletNamePatternPrefix + AspectranContextConstant.TRANSLET_NAME_PATTERN_SEPARATOR + transletNamePatternSuffix;
 	}
 	
 	public void setTransletNamePatternPrefix(String transletNamePatternPrefix) {
@@ -146,6 +146,8 @@ public class InheritedAspectranSettings {
 	}
 	
 	public void set(Map<AspectranSettingType, String> settings) {
+		System.out.println("TRANSLET_NAME_PATTERN: " + settings.get(AspectranSettingType.TRANSLET_NAME_PATTERN));
+		
 		if(settings.get(AspectranSettingType.USE_NAMESPACES) != null)
 			useNamespaces = Boolean.valueOf(settings.get(AspectranSettingType.USE_NAMESPACES));
 
@@ -158,11 +160,20 @@ public class InheritedAspectranSettings {
 		if(settings.get(AspectranSettingType.MULTIPLE_TRANSLET_ENABLE) != null)
 			multipleTransletEnable = Boolean.valueOf(settings.get(AspectranSettingType.MULTIPLE_TRANSLET_ENABLE));
 		
+		if(settings.get(AspectranSettingType.TRANSLET_NAME_PATTERN_PREFIX) != null)
+			setTransletNamePatternPrefix(settings.get(AspectranSettingType.TRANSLET_NAME_PATTERN_PREFIX));
+		
+		if(settings.get(AspectranSettingType.TRANSLET_NAME_PATTERN_SUFFIX) != null)
+			setTransletNamePatternSuffix(settings.get(AspectranSettingType.TRANSLET_NAME_PATTERN_SUFFIX));
+		
+		if(settings.get(AspectranSettingType.TRANSLET_NAME_PATTERN) != null)
+			setTransletNamePattern(settings.get(AspectranSettingType.TRANSLET_NAME_PATTERN));
+		
 		if(settings.get(AspectranSettingType.TRANSLET_INTERFACE_CLASS) != null)
 			transletInterfaceClass = settings.get(AspectranSettingType.TRANSLET_INTERFACE_CLASS);
 		
-		if(settings.get(AspectranSettingType.TRANSLET_INSTANCE_CLASS) != null)
-			transletInstanceClass = settings.get(AspectranSettingType.TRANSLET_INSTANCE_CLASS);
+		if(settings.get(AspectranSettingType.TRANSLET_IMPLEMENT_CLASS) != null)
+			transletInstanceClass = settings.get(AspectranSettingType.TRANSLET_IMPLEMENT_CLASS);
 		
 		
 	}

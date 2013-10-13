@@ -78,7 +78,7 @@ public class WebAspectranActivity extends AbstractAspectranActivity implements A
 		setSessionAdapter(sessionAdapter);
 		
 		setTransletInterfaceClass(WebTranslet.class);
-		setTransletInstanceClass(AspectranWebTranslet.class);
+		setTransletImplementClass(AspectranWebTranslet.class);
 	}
 	
 	public void request() throws RequestException {

@@ -257,11 +257,11 @@ public abstract class AbstractSuperTranslet implements SuperTranslet {
 	}
 
 	public Class<? extends SuperTranslet> getTransletInterfaceClass() {
-		return activity.getTransletInstanceClass();
+		return activity.getTransletInterfaceClass();
 	}
 
-	public Class<? extends AbstractSuperTranslet> getTransletInstanceClass() {
-		return activity.getTransletInstanceClass();
+	public Class<? extends AbstractSuperTranslet> getTransletImplementClass() {
+		return activity.getTransletImplementClass();
 	}
 
 	public boolean isExceptionRaised() {

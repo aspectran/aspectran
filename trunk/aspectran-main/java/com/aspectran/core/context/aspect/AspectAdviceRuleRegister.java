@@ -42,15 +42,17 @@ public class AspectAdviceRuleRegister {
 			JoinpointScopeType joinpointScope = aspectRule.getJoinpointScope();
 			PointcutRule pointcutRule = aspectRule.getPointcutRule();
 
-			Pointcut pointcut = pointcutFactory.createPointcut(pointcutRule);
+			Pointcut pointcut = null;
+			if(pointcutRule != null)
+				pointcut = pointcutFactory.createPointcut(pointcutRule);
 			
 			if(joinpointTarget == JoinpointTargetType.TRANSLET) {
 				if(joinpointScope == JoinpointScopeType.REQUEST) {
-					if(pointcut.matches(transletRule.getName())) {
+					if(pointcut == null || pointcut.matches(transletRule.getName())) {
 						register(transletRule.getRequestRule(), aspectRule);
 					}
 				} else if(joinpointScope == JoinpointScopeType.CONTENT) {
-					if(pointcut.matches(transletRule.getName())) {
+					if(pointcut == null || pointcut.matches(transletRule.getName())) {
 						ContentList contentList = transletRule.getContentList();
 						
 						if(contentList == null) {
@@ -61,7 +63,7 @@ public class AspectAdviceRuleRegister {
 						register(contentList, aspectRule);
 					}
 				} else if(joinpointScope == JoinpointScopeType.RESPONSE) {
-					if(pointcut.matches(transletRule.getName())) {
+					if(pointcut == null || pointcut.matches(transletRule.getName())) {
 						register(transletRule.getResponseRule(), aspectRule);
 					}
 				} else if(joinpointScope == JoinpointScopeType.ACTION) {
@@ -70,14 +72,14 @@ public class AspectAdviceRuleRegister {
 					if(contentList != null) {
 						for(ActionList actionList : contentList) {
 							for(Executable action : actionList) {
-								if(pointcut.matches(transletRule.getName(), action.getFullActionId())) {
+								if(pointcut == null || pointcut.matches(transletRule.getName(), action.getFullActionId())) {
 									register(action, aspectRule);
 								}
 							}
 						}
 					}
 				} else { //translet scope
-					if(pointcut.matches(transletRule.getName())) {
+					if(pointcut == null || pointcut.matches(transletRule.getName())) {
 						register(transletRule, aspectRule);
 					}
 				}
