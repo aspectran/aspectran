@@ -36,6 +36,20 @@
 	
 	<bean id="example.*" class="com.aspectran.example.**.*Action" scope="singleton"/>
 
+	<translet name="hello">
+		<transform contentType="text/plain" type="transform/text">
+			<template>
+				hello~ ${name}
+			</template>
+		</transform>
+	</translet>
+
+	<translet name="hello/countTo100">
+		<transform contentType="text/plain" type="transform/text">
+			<action bean="example.hello.HelloAction" method="countTo100"/>
+		</transform>
+	</translet>
+
 	<translet name="goNaver">
 		<redirect url="http://www.naver.com"/>
 	</translet>
