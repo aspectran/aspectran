@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE aspectran PUBLIC "-//aspectran.com//DTD Aspectran 1.0//EN"
+                           "./dtd/aspectran-1.0.dtd">
+
+<aspectran>
+
+	<settings>
+		<setting name="transletNamePattern" value="/example/*.do"/>
+		<setting name="transletInterfaceClass" value="com.aspectran.web.activity.WebTranslet"/>
+		<setting name="transletImplementClass" value="com.aspectran.web.activity.AspectranWebTranslet"/>
+		<setting name="useNamespaces" value="true"/>
+		<setting name="nullableContentId" value="true"/>
+		<setting name="nullableActionId" value="true"/>
+		<setting name="multipleTransletEnable" value="true"/>
+	</settings>
+	
+	<aspect id="defaultRequestRule">
+		<joinpoint target="translet" scope="request"/>
+		<settings>
+			<setting name="characterEncoding" value="utf-8"/>
+			<setting name="multipart.maxRequestSize" value="10M"/>
+			<setting name="multipart.temporaryFilePath" value="/d:/"/>
+		</settings>
+	</aspect>
+	
+	<bean id="jspViewDispatcher" class="com.aspectran.web.view.JspViewDispatcher" scope="singleton"/>
+
+	<aspect id="defaultResponseRule">
+		<joinpoint target="translet" scope="response"/>
+		<settings>
+			<setting name="characterEncoding" value="utf-8"/>
+			<setting name="defaultContentType" value="text/html"/>
+			<setting name="viewDispatcher" value="jspViewDispatcher"/>
+		</settings>
+	</aspect>
+	
+	<bean id="example.*" class="com.aspectran.example.**.*Action" scope="singleton"/>
+
+	<translet name="goNaver">
+		<redirect url="http://www.naver.com"/>
+	</translet>
+
+	
+</aspectran>

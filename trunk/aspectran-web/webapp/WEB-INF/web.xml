@@ -9,21 +9,6 @@
 		<welcome-file>index.htm</welcome-file>
 		<welcome-file>index.jsp</welcome-file>
 	</welcome-file-list>
-	<context-param>
-		<param-name>aspectran:contextConfigLocation</param-name>
-		<param-value>
-			/WEB-INF/classes/aspectran/aspectran.xml
-		</param-value>
-	</context-param>
-	<context-param>
-		<param-name>aspectran:autoReload</param-name>
-		<param-value>true</param-value>
-	</context-param>
-	<listener>
-		<listener-class>
-			com.aspectran.web.context.listener.AspectranContextLoaderListener
-		</listener-class>
-	</listener>
 	<listener>
 		<listener-class>
 			com.aspectran.web.context.listener.AspectranApplicationListener
@@ -39,20 +24,16 @@
 		<servlet-class>com.aspectran.web.context.servlet.AspectranActivityServlet</servlet-class>
 		<init-param>
 			<param-name>aspectran:defaultActivityServletHandler</param-name>
-			<param-value>com.aspectran.web.context.servlet.DefaultActivityServletHandler</param-value>
+			<param-value>com.aspectran.web.context.servlet.DefaultActivityServletRequestHandler</param-value>
 		</init-param>
 		<init-param>
 			<param-name>aspectran:contextConfigLocation</param-name>
-			<param-value>/WEB-INF/aspectran/aspectran.xml</param-value>
-		</init-param>
-		<init-param>
-			<param-name>aspectran:autoReload</param-name>
-			<param-value>true</param-value>
+			<param-value>/WEB-INF/classes/aspectran/aspectran-example.xml</param-value>
 		</init-param>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>aspectran-web</servlet-name>
-		<url-pattern>/test/*</url-pattern>
+		<url-pattern>/example/*</url-pattern>
 	</servlet-mapping>
 </web-app>

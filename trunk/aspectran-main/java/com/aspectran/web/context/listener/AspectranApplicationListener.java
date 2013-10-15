@@ -25,8 +25,6 @@ import com.aspectran.web.context.AspectranContextLoader;
 
 public class AspectranApplicationListener implements ServletContextListener {
 
-	public static final String CONTEXT_LOADER_ATTRIBUTE = AspectranContextLoader.class.getName();
-	
 	private ApplicationAdapter applicationAdapter;
 	
 	/**
