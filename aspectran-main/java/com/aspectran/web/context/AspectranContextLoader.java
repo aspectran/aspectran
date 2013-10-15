@@ -22,18 +22,6 @@ public class AspectranContextLoader {
 	
 	private AspectranContext aspectranContext;
 	
-	public AspectranContextLoader(ServletContext servletContext) {
-		this.servletContext = servletContext;
-		
-		// context-relative path to our configuration resource for the aspectran
-		String contextConfigLocation = servletContext.getInitParameter(CONTEXT_CONFIG_LOCATION_PARAM);
-
-		if(contextConfigLocation == null)
-			contextConfigLocation = DEFAULT_CONTEXT_CONFIG_LOCATION;
-
-		loadAspectranContext(contextConfigLocation);
-	}
-	
 	public AspectranContextLoader(ServletContext servletContext, String contextConfigLocation) {
 		this.servletContext = servletContext;
 		

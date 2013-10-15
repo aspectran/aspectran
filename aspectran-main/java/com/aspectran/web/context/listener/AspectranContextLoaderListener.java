@@ -23,6 +23,8 @@ import com.aspectran.web.context.AspectranContextLoader;
 
 public class AspectranContextLoaderListener implements ServletContextListener {
 
+	public static final String ASPECTRAN_CONTEXT_CONFIG_LOCATION_PARAM = "aspectran:contextConfigLocation";
+	
 	private AspectranContextLoader aspectranContextLoader;
 	
 	/**
@@ -31,7 +33,10 @@ public class AspectranContextLoaderListener implements ServletContextListener {
 	 * @param event the event
 	 */
 	public void contextInitialized(ServletContextEvent event) {
-		aspectranContextLoader = new AspectranContextLoader(event.getServletContext());
+		// context-relative path to our configuration resource for the aspectran
+		String contextConfigLocation = event.getServletContext().getInitParameter(ASPECTRAN_CONTEXT_CONFIG_LOCATION_PARAM);
+		
+		aspectranContextLoader = new AspectranContextLoader(event.getServletContext(), contextConfigLocation);
 		event.getServletContext().setAttribute(AspectranContextLoader.ASPECTRAN_CONTEXT_LOADER_ATTRIBUTE, aspectranContextLoader);
 	}
 
