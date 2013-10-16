@@ -454,15 +454,14 @@ public abstract class AbstractAspectranActivity implements AspectranActivity {
 			}
 			*/
 		} catch(Exception e) {
-			if(debugEnabled) {
-				log.error("An error occurred while executing actions. Cause: " + e, e);
-			}
+			log.error("An error occurred while executing actions. Cause: " + e);
 
 			setRaisedException(e);
 			
 			ResponseByContentTypeRuleMap responseByContentTypeRuleMap = transletRule.getExceptionHandlingRuleMap();
 			
 			if(responseByContentTypeRuleMap != null) {
+				log.debug("responseByContentTypeRule " + responseByContentTypeRuleMap.getResponseByContentTypeRule());
 				responseByContentType(responseByContentTypeRuleMap, e);
 				
 				if(isResponseRuleReplaced)
@@ -470,13 +469,20 @@ public abstract class AbstractAspectranActivity implements AspectranActivity {
 			}
 
 			AspectAdviceRuleRegistry aspectAdviceRuleRegistry = transletRule.getAspectAdviceRuleRegistry();
-			List<AspectAdviceRule> exceptionRaizedAdviceRuleList = aspectAdviceRuleRegistry.getExceptionRaizedAdviceRuleList();
 			
-			if(exceptionRaizedAdviceRuleList != null) {
-				responseByContentType(exceptionRaizedAdviceRuleList, e);
+			if(aspectAdviceRuleRegistry != null) {
+				List<AspectAdviceRule> exceptionRaizedAdviceRuleList = aspectAdviceRuleRegistry.getExceptionRaizedAdviceRuleList();
+				
+				if(exceptionRaizedAdviceRuleList != null) {
+					log.debug("responseByContentTypeRule: exceptionRaizedAdviceRuleList " + exceptionRaizedAdviceRuleList);
+					responseByContentType(exceptionRaizedAdviceRuleList, e);
+					
+					if(isResponseRuleReplaced)
+						return translet.getProcessResult();
+				}
 			}
 			
-			throw new ProcessException("An error occurred while processing response by content-type. Cause: " + e, e);
+			throw new ProcessException("An error occurred during the processing. Cause: " + e, e);
 		}
 		
 		return translet.getProcessResult();
@@ -754,7 +760,7 @@ public abstract class AbstractAspectranActivity implements AspectranActivity {
 		}
 		
 		if(debugEnabled) {
-			log.debug("Response by content type: " + responseRule);
+			log.debug("response by content-type: " + responseRule);
 		}
 
 		multipleTransletResponseId = null;

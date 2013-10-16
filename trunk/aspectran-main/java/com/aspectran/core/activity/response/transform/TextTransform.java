@@ -238,19 +238,21 @@ public class TextTransform extends AbstractTransform implements Responsible {
 		if(debugEnabled) {
 			if(contentTokens != null) {
 				StringBuilder sb = new StringBuilder();
-				sb.append("Content tokens are \"");
 
 				for(Token t : contentTokens) {
-					if(t.getType() != TokenType.TEXT)
+					if(t.getType() != TokenType.TEXT) {
+						if(sb.length() > 0)
+							sb.append(", ");
 						sb.append(t.toString());
+					}
 				}
-
-				sb.append("\"");
+				
+				log.debug("text-transform template tokens: " + sb.toString());
 			}
 		}
-		
-		if(traceEnabled) {
-			log.trace("Sets the content of the text-transform..." + AspectranContextConstant.LINE_SEPARATOR + getContent());
-		}
+//		
+//		if(traceEnabled) {
+//			log.trace("Sets the content of the text-transform..." + AspectranContextConstant.LINE_SEPARATOR + getContent());
+//		}
 	}
 }
