@@ -249,17 +249,6 @@ public abstract class AbstractAspectranActivity implements AspectranActivity {
 				requestScope.destroy();
 			}
 		}
-		
-		if(log.isDebugEnabled()) {
-			if(getProcessResult() != null) {
-				log.debug("contentResult:");
-				for(ContentResult contentResult : getProcessResult()) {
-					for(ActionResult actionResult : contentResult) {
-						log.debug("\t{actionId: " + actionResult.getActionId() + ", resultValue: " + actionResult.getResultValue() + "}\n");
-					}
-				}
-			}
-		}
 	}
 
 	private void run(AspectAdviceRuleRegistry aspectAdviceRuleRegistry) throws RequestException, ProcessException, ResponseException {
@@ -321,6 +310,19 @@ public abstract class AbstractAspectranActivity implements AspectranActivity {
 			}
 		}
 		
+		/*
+		if(log.isDebugEnabled()) {
+			if(getProcessResult() != null) {
+				log.debug("contentResult:");
+				for(ContentResult contentResult : getProcessResult()) {
+					for(ActionResult actionResult : contentResult) {
+						log.debug("\t{actionId: " + actionResult.getActionId() + ", resultValue: " + actionResult.getResultValue() + "}\n");
+					}
+				}
+			}
+		}
+		*/
+		
 		//response
 		aspectAdviceRuleRegistry = responseRule.getAspectAdviceRuleRegistry();
 
@@ -342,7 +344,15 @@ public abstract class AbstractAspectranActivity implements AspectranActivity {
 	}
 	
 	public void init(String transletName) {
+		if(debugEnabled) {
+			log.debug(">> request: " + transletName);
+		}
+		
 		TransletRule transletRule = context.getTransletRuleRegistry().getTransletRule(transletName);
+
+		if(debugEnabled) {
+			log.debug("translet " + transletRule);
+		}
 
 		if(transletRule.getMultipleTransletResponseId() != null) {
 			multipleTransletResponseId = transletRule.getMultipleTransletResponseId();
@@ -417,10 +427,6 @@ public abstract class AbstractAspectranActivity implements AspectranActivity {
 	}
 	
 	public ProcessResult process() throws ProcessException {
-		if(debugEnabled) {
-			log.debug(">> Processing for path '" + transletName + "'");
-		}
-
 		try {
 			// execute action on contents area
 			ContentList contentList = transletRule.getContentList();
@@ -505,10 +511,6 @@ public abstract class AbstractAspectranActivity implements AspectranActivity {
 	}
 	
 	protected void response() throws ResponseException {
-		if(debugEnabled) {
-			log.debug(">> Responsing for path '" + transletName + "'");
-		}
-
 		Responsible res = getResponse();
 		
 		if(res != null)
@@ -526,7 +528,7 @@ public abstract class AbstractAspectranActivity implements AspectranActivity {
 	 */
 	private void execute(ActionList actionList) throws ActionExecutionException {
 		if(debugEnabled) {
-			log.debug("Content " + actionList.toString());
+			log.debug("executable actions " + actionList.toString());
 		}
 //
 //		if(isResponseEnd) {
@@ -592,12 +594,12 @@ public abstract class AbstractAspectranActivity implements AspectranActivity {
 	
 	private void execute(Executable action) throws ActionExecutionException {
 		if(debugEnabled)
-			log.debug("Execute " + action.toString());
+			log.debug("execute action " + action.toString());
 		
 		Object resultValue = action.execute(this);
 		
 		if(debugEnabled)
-			log.debug("  Result " + resultValue);
+			log.debug("> result " + resultValue);
 		
 		if(!action.isHidden() && resultValue != ActionResult.NO_RESULT) {
 			translet.addActionResult(action.getActionId(), resultValue);
@@ -785,9 +787,9 @@ public abstract class AbstractAspectranActivity implements AspectranActivity {
 	 * 응답 종료.
 	 */
 	public void responseEnd() {
-		if(debugEnabled) {
-			log.debug("Response terminated");
-		}
+		//if(debugEnabled) {
+		//	log.debug("response terminated");
+		//}
 		
 		isResponseEnd = true;
 	}

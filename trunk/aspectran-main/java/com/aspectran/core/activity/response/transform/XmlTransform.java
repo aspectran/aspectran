@@ -103,7 +103,7 @@ public class XmlTransform extends AbstractTransform implements Responsible {
 			}
 			
 			if(debugEnabled) {
-				log.debug("XML Transform response ok.");
+				log.debug("response " + transformRule);
 			}
 		} catch(Exception e) {
 			throw new TransformResponseException("XML Transformation error: " + transformRule, e);

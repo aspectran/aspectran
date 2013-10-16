@@ -83,7 +83,7 @@ public class JsonTransform extends AbstractTransform implements Responsible {
 			}
 			
 			if(debugEnabled) {
-				log.debug("JSON Transform response ok.");
+				log.debug("response " + transformRule);
 			}
 		} catch(Exception e) {
 			throw new TransformResponseException("JSON Transformation error: " + transformRule, e);

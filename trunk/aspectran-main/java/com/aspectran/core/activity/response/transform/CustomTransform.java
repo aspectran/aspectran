@@ -56,7 +56,7 @@ public class CustomTransform extends AbstractTransform implements Responsible {
 	public void response(AspectranActivity activity) throws TransformResponseException {
 		try {
 			if(debugEnabled) {
-				log.debug("Custom Transform response ok.");
+				log.debug("response " + transformRule);
 			}
 		} catch(Exception e) {
 			throw new TransformResponseException("Custom Transformation error: " + transformRule, e);

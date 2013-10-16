@@ -59,11 +59,10 @@ public class RedirectResponse implements Responsible {
 			if(outputEncoding != null)
 				responseAdapter.setCharacterEncoding(outputEncoding);
 			
-			String url = responseAdapter.redirect(activity, redirectResponseRule);
+			responseAdapter.redirect(activity, redirectResponseRule);
 			
 			if(debugEnabled) {
-				log.debug("Redirect url: " + url);
-				log.debug("Redirect response ok.");
+				log.debug("response " + redirectResponseRule);
 			}
 		} catch(Exception e) {
 			throw new ResponseException("Redirect response error: " + redirectResponseRule, e);
