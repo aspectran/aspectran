@@ -4,10 +4,10 @@ import com.aspectran.web.activity.WebTranslet;
 
 public class HelloAction {
 
-	public String countTo100(WebTranslet translet) {
+	public String countTo10(WebTranslet translet) {
 		StringBuilder sb = new StringBuilder();
 		
-		for(int i = 1; i <= 100; i++) {
+		for(int i = 1; i <= 10; i++) {
 			sb.append(i).append("\n");
 		}
 		
