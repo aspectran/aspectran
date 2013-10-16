@@ -139,7 +139,7 @@ public class XslTransform extends AbstractTransform implements Responsible {
 			}
 			
 			if(debugEnabled) {
-				log.debug("XSL Transform response ok.");
+				log.debug("response " + transformRule);
 			}
 		} catch(Exception e) {
 			throw new TransformResponseException("XSL Transformation error: " + transformRule, e);

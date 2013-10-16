@@ -104,7 +104,7 @@ public class TextTransform extends AbstractTransform implements Responsible {
 			}
 
 			if(debugEnabled) {
-				log.debug("Text Tranform response ok.");
+				log.debug("response " + transformRule);
 			}
 		} catch(Exception e) {
 			throw new TransformResponseException("Text Tranformation error: " + transformRule, e);
