@@ -12,6 +12,9 @@ import java.util.Map;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import com.aspectran.core.util.ClassUtils;
 import com.aspectran.core.util.ResourceUtils;
 import com.aspectran.core.util.wildcard.WildcardMatcher;
@@ -19,6 +22,9 @@ import com.aspectran.core.util.wildcard.WildcardPattern;
 
 public class BeanClassLoader {
 
+	/** The log. */
+	private final Log log = LogFactory.getLog(BeanClassLoader.class);
+	
 	private final char RESOURCE_PATH_SPEPARATOR = '/';
 
 	private final char BEAN_ID_WILDCARD_DELIMITER = '*';
@@ -75,7 +81,8 @@ public class BeanClassLoader {
 				classMap.putAll(map);
 			} else {
 				//System.out.println("========" + resource.getFile());
-				findClasses(basePackageName, null, resource.getFile(), matcher);
+				Map<String, Class<?>> map = findClasses(basePackageName, null, resource.getFile(), matcher);
+				classMap.putAll(map);
 			}
 		}
 		
@@ -140,11 +147,12 @@ public class BeanClassLoader {
 						//System.out.println("  relativePath: " + relativePath);
 						String className = rootEntryPath + relativePath;
 						className = className.replace(RESOURCE_PATH_SPEPARATOR, ClassUtils.PACKAGE_SEPARATOR);
-						
+						Class<?> classType = classLoader.loadClass(className);
+						String beanId = combineBeanId(relativePath);
+						log.debug("beanClass {beanId: " + beanId + ", className: " + className + "} from jar: " + jarFile.getName());
 						//System.out.println("  [clazz] " + className);
 						//System.out.println("  [beanId] " + combineBeanId(relativePath));
-						Class<?> clazz = classLoader.loadClass(className);
-						classMap.put(combineBeanId(relativePath), clazz);
+						classMap.put(beanId, classType);
 					}
 				}
 			}
@@ -219,12 +227,12 @@ public class BeanClassLoader {
 				
 				if(matcher.matches(relativePath)) {
 					className = className.replace(RESOURCE_PATH_SPEPARATOR, ClassUtils.PACKAGE_SEPARATOR);
-					//System.out.println("  className: " + className);
-					
+					Class<?> classType = classLoader.loadClass(className);
+					String beanId = combineBeanId(relativePath);
 					//System.out.println("  [clazz] " + className);
 					//System.out.println("  [beanId] " + combineBeanId(relativePath));
-					Class<?> clazz = classLoader.loadClass(className);
-					classMap.put(combineBeanId(relativePath), clazz);
+					log.debug("beanClass {beanId: " + beanId + ", className: " + className + "}");
+					classMap.put(beanId, classType);
 				}
 			}
 		}

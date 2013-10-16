@@ -68,7 +68,7 @@ public class AspectranActivityServlet extends HttpServlet implements Servlet {
 	public void init() throws ServletException {
 		try {
 			String contextConfigLocation = getServletConfig().getInitParameter(AspectranContextLoader.CONTEXT_CONFIG_LOCATION_PARAM);
-			System.out.println("contextConfigLocation: " + contextConfigLocation);
+
 			if(contextConfigLocation == null) {
 				AspectranContextLoader aspectranContextLoader = (AspectranContextLoader)getServletContext().getAttribute(AspectranContextLoader.ASPECTRAN_CONTEXT_LOADER_ATTRIBUTE);
 				

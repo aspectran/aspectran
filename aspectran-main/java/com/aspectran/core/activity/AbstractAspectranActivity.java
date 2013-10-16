@@ -249,6 +249,17 @@ public abstract class AbstractAspectranActivity implements AspectranActivity {
 				requestScope.destroy();
 			}
 		}
+		
+		if(log.isDebugEnabled()) {
+			log.debug("contentResult:");
+			if(getProcessResult() != null) {
+				for(ContentResult contentResult : getProcessResult()) {
+					for(ActionResult actionResult : contentResult) {
+						log.debug("\t{actionId: " + actionResult.getActionId() + ", resultValue: " + actionResult.getResultValue() + "}\n");
+					}
+				}
+			}
+		}
 	}
 
 	private void run(AspectAdviceRuleRegistry aspectAdviceRuleRegistry) throws RequestException, ProcessException, ResponseException {
@@ -357,8 +368,6 @@ public abstract class AbstractAspectranActivity implements AspectranActivity {
 		this.transletRule = transletRule;
 		this.requestRule = transletRule.getRequestRule();
 		this.responseRule = transletRule.getResponseRule();
-		
-		System.out.println(">> transletRule '" + transletRule + "'");
 	}
 	
 	private void request(AspectAdviceRuleRegistry aspectAdviceRuleRegistry) throws RequestException, ActionExecutionException {
@@ -425,17 +434,19 @@ public abstract class AbstractAspectranActivity implements AspectranActivity {
 				}
 			}
 			
+			/*
 			if(!isResponseEnd) {
 				// execute action on response area
 				Responsible response = getResponse();
 				
 				if(response != null) {
 					ActionList actionList = response.getActionList();
-					
+
 					if(actionList != null)
 						execute(actionList);
 				}
 			}
+			*/
 		} catch(Exception e) {
 			if(debugEnabled) {
 				log.error("An error occurred while executing actions. Cause: " + e, e);

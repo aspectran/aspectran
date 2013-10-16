@@ -73,7 +73,7 @@ public class TokenExpression implements TokenExpressor {
 	public Object express(Token token) {
 		TokenType tokenType = token.getType();
 		Object value = null;
-		
+
 		if(tokenType == TokenType.TEXT) {
 			value = token.getDefaultText();
 		} else	if(tokenType == TokenType.PARAMETER) {

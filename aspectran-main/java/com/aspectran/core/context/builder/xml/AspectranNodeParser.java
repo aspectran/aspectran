@@ -417,6 +417,9 @@ public class AspectranNodeParser {
 				transletRule.setContentList(contentList);
 			}
 		});
+		
+		parser.addNodelet("/aspectran/translet", new ResponseRuleNodeletAdder(assistant));
+		
 		parser.addNodelet("/aspectran/translet/response", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
 				String defaultResponseId = attributes.getProperty("default");

@@ -27,18 +27,20 @@ import com.aspectran.core.activity.process.action.Executable;
 import com.aspectran.core.activity.process.action.IncludeAction;
 import com.aspectran.core.activity.response.ForwardResponse;
 import com.aspectran.core.activity.response.RedirectResponse;
+import com.aspectran.core.activity.response.ResponseMap;
 import com.aspectran.core.activity.response.Responsible;
 import com.aspectran.core.activity.response.dispatch.DispatchResponse;
 import com.aspectran.core.activity.response.transform.AbstractTransform;
 import com.aspectran.core.context.AspectranContextConstant;
 import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
+import com.aspectran.core.rule.ability.ResponseAddable;
 import com.aspectran.core.type.ResponseType;
 import com.aspectran.core.type.TransformType;
 
 /**
  * <p>Created: 2008. 03. 22 오후 5:48:09</p>
  */
-public class TransletRule implements AspectAdviceSupport, Cloneable {
+public class TransletRule implements ResponseAddable, AspectAdviceSupport, Cloneable {
 
 	private String name;
 
@@ -139,13 +141,88 @@ public class TransletRule implements AspectAdviceSupport, Cloneable {
 		return responseRule;
 	}
 
+	private void addActionList(ActionList actionList) {
+		if(actionList == null)
+			return;
+		
+		if(contentList == null)
+			contentList = new ContentList();
+		
+		contentList.add(actionList);
+	}
+	
 	/**
 	 * Sets the response rule.
 	 * 
 	 * @param responseRule the new response rule
 	 */
 	public void setResponseRule(ResponseRule responseRule) {
+		ResponseMap responseMap = responseRule.getResponseMap();
+		
+		if(responseMap != null) {
+			for(Responsible response : responseMap) {
+				addActionList(response.getActionList());
+			}
+		}
+		
 		this.responseRule = responseRule;
+	}
+	
+	public AbstractTransform addResponse(TransformRule tr) {
+		addActionList(tr.getActionList());
+		
+		if(responseRule == null)
+			responseRule = new ResponseRule();
+		
+		return responseRule.addResponse(tr);
+	}
+	
+	/**
+	 * Adds the response rule.
+	 * 
+	 * @param drr the drr
+	 * 
+	 * @return the dispatch response
+	 */
+	public DispatchResponse addResponse(DispatchResponseRule drr) {
+		addActionList(drr.getActionList());
+
+		if(responseRule == null)
+			responseRule = new ResponseRule();
+		
+		return responseRule.addResponse(drr);
+	}
+	
+	/**
+	 * Adds the response rule.
+	 * 
+	 * @param rrr the rrr
+	 * 
+	 * @return the redirect response
+	 */
+	public RedirectResponse addResponse(RedirectResponseRule rrr) {
+		addActionList(rrr.getActionList());
+
+		if(responseRule == null)
+			responseRule = new ResponseRule();
+		
+		return responseRule.addResponse(rrr);
+	}
+	
+	/**
+	 * Adds the response rule.
+	 * 
+	 * @param frr the frr
+	 * 
+	 * @return the forward response
+	 */
+	public ForwardResponse addResponse(ForwardResponseRule frr) {
+		addActionList(frr.getActionList());
+
+		if(responseRule == null)
+			responseRule = new ResponseRule();
+		
+		return responseRule.addResponse(frr);
 	}
 
 	public ResponseByContentTypeRuleMap getExceptionHandlingRuleMap() {
