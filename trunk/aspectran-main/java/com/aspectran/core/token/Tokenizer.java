@@ -27,7 +27,7 @@ import com.aspectran.core.type.TokenType;
  */
 public class Tokenizer {
 
-	private static final int MAX_TOKEN_NAME_LENGTH = 32;
+	private static final int MAX_TOKEN_NAME_LENGTH = 256;
 
 	private static final int AT_STRING = 1;
 
@@ -83,7 +83,6 @@ public class Tokenizer {
 					status = AT_SYMBOL;
 					// abc$ --> tokenStartOffset: 3
 					tokenStartOffset = stringBuffer.length() - 1;
-					break;
 				}
 				
 				break;
@@ -169,7 +168,7 @@ public class Tokenizer {
 		String name = null;
 		String defaultText = null;
 		String getterName = null;
-		
+
 		if(tokenNameBuffer.length() > 0) {
 			type = Token.tokenTypeOfSymbol(symbol);
 			name = tokenNameBuffer.toString();

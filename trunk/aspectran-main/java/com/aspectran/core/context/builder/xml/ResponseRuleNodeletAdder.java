@@ -26,7 +26,6 @@ import com.aspectran.core.rule.DispatchResponseRule;
 import com.aspectran.core.rule.ForwardResponseRule;
 import com.aspectran.core.rule.ItemRuleMap;
 import com.aspectran.core.rule.RedirectResponseRule;
-import com.aspectran.core.rule.ResponseRule;
 import com.aspectran.core.rule.TransformRule;
 import com.aspectran.core.rule.TransletRule;
 import com.aspectran.core.rule.ability.ResponseAddable;
@@ -69,17 +68,6 @@ public class ResponseRuleNodeletAdder implements NodeletAdder {
 //			responseRule.addResponseRule(drr);
 //		}
 //	}
-	
-	private ResponseRule retrieveResponseRule(TransletRule transletRule) {
-		ResponseRule responseRule = transletRule.getResponseRule();
-		
-		if(responseRule == null) {
-			responseRule = new ResponseRule();
-			transletRule.setResponseRule(responseRule);
-		}
-		
-		return responseRule;
-	}
 	
 	/**
 	 * Process.
@@ -134,15 +122,15 @@ public class ResponseRuleNodeletAdder implements NodeletAdder {
 					tr.getTransformType() == TransformType.CUSTOM_TRANSFORM)
 					return;
 				
-				if(!StringUtils.isEmpty(encoding))
+				if(StringUtils.hasText(encoding))
 					tr.setTemplateEncoding(encoding);
 				
 				if(tr.getTransformType() == TransformType.XSL_TRANSFORM) {
 					File templateFile = null;
 
-					if(!StringUtils.isEmpty(resource))
+					if(StringUtils.hasText(resource))
 						templateFile = ResourceUtils.getResourceAsFile(resource);
-					else if(!StringUtils.isEmpty(filePath))
+					else if(StringUtils.hasText(filePath))
 						templateFile = assistant.toRealPathFile(filePath);
 
 					if(templateFile == null)
@@ -156,9 +144,9 @@ public class ResponseRuleNodeletAdder implements NodeletAdder {
 				} else if(tr.getTransformType() == TransformType.TEXT_TRANSFORM) {
 					File templateFile = null;
 
-					if(!StringUtils.isEmpty(resource))
+					if(StringUtils.hasText(resource))
 						templateFile = ResourceUtils.getResourceAsFile(resource);
-					else if(!StringUtils.isEmpty(filePath))
+					else if(StringUtils.hasText(filePath))
 						templateFile = assistant.toRealPathFile(filePath);
 					
 					if(templateFile != null) {
@@ -168,7 +156,7 @@ public class ResponseRuleNodeletAdder implements NodeletAdder {
 						tr.setTemplateFile(templateFile);
 					} else if(templateUrl != null) {
 						tr.setTemplateUrl(templateUrl);
-					} else if(!StringUtils.isEmpty(templateContent)) {
+					} else if(StringUtils.hasLength(templateContent)) {
 						tr.setTemplateContent(templateContent);
 					}
 					
@@ -191,8 +179,7 @@ public class ResponseRuleNodeletAdder implements NodeletAdder {
 				
 				if(o instanceof TransletRule) {
 					TransletRule transletRule = (TransletRule)o;
-					ResponseRule responseRule = retrieveResponseRule(transletRule);
-					responseRule.addResponse(tr);
+					transletRule.addResponse(tr);
 				} else {
 					ResponseAddable responseAddable = (ResponseAddable)o;
 					responseAddable.addResponse(tr);
@@ -252,8 +239,7 @@ public class ResponseRuleNodeletAdder implements NodeletAdder {
 				
 				if(o instanceof TransletRule) {
 					TransletRule transletRule = (TransletRule)o;
-					ResponseRule responseRule = retrieveResponseRule(transletRule);
-					responseRule.addResponse(drr);
+					transletRule.addResponse(drr);
 				} else {
 					ResponseAddable responseAddable = (ResponseAddable)o;
 					responseAddable.addResponse(drr);
@@ -352,8 +338,7 @@ public class ResponseRuleNodeletAdder implements NodeletAdder {
 				
 				if(o instanceof TransletRule) {
 					TransletRule transletRule = (TransletRule)o;
-					ResponseRule responseRule = retrieveResponseRule(transletRule);
-					responseRule.addResponse(rrr);
+					transletRule.addResponse(rrr);
 				} else {
 					ResponseAddable responseAddable = (ResponseAddable)o;
 					responseAddable.addResponse(rrr);
@@ -421,8 +406,7 @@ public class ResponseRuleNodeletAdder implements NodeletAdder {
 				
 				if(o instanceof TransletRule) {
 					TransletRule transletRule = (TransletRule)o;
-					ResponseRule responseRule = retrieveResponseRule(transletRule);
-					responseRule.addResponse(frr);
+					transletRule.addResponse(frr);
 				} else {
 					ResponseAddable responseAddable = (ResponseAddable)o;
 					responseAddable.addResponse(frr);

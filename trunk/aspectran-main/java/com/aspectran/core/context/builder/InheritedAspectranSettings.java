@@ -146,8 +146,6 @@ public class InheritedAspectranSettings {
 	}
 	
 	public void set(Map<AspectranSettingType, String> settings) {
-		System.out.println("TRANSLET_NAME_PATTERN: " + settings.get(AspectranSettingType.TRANSLET_NAME_PATTERN));
-		
 		if(settings.get(AspectranSettingType.USE_NAMESPACES) != null)
 			useNamespaces = Boolean.valueOf(settings.get(AspectranSettingType.USE_NAMESPACES));
 

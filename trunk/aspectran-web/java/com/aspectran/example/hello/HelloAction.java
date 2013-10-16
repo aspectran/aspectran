@@ -8,4 +8,8 @@ public class HelloAction {
 		return 100;
 	}
 	
+	public int getCountTo100() {
+		return 100;
+	}
+	
 }
