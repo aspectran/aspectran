@@ -44,7 +44,7 @@
 		</transform>
 	</translet>
 
-	<translet name="hello/countTo100">
+	<translet name="hello/countTo10">
 		<transform contentType="text/plain" type="transform/text">
 			<action id="result" bean="example.hello.HelloAction" method="countTo100"/>
 			<template>
