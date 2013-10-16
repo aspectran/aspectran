@@ -48,9 +48,7 @@
 		<transform contentType="text/plain" type="transform/text">
 			<action id="result" bean="example.hello.HelloAction" method="countTo100"/>
 			<template>
-				result1: ${countTo100}
-				result2: #{example.hello.HelloAction}
-				result3: #{example.hello.HelloAction^countTo100}
+				@{result}
 			</template>
 		</transform>
 	</translet>
