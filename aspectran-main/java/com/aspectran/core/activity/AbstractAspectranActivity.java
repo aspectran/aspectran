@@ -251,8 +251,8 @@ public abstract class AbstractAspectranActivity implements AspectranActivity {
 		}
 		
 		if(log.isDebugEnabled()) {
-			log.debug("contentResult:");
 			if(getProcessResult() != null) {
+				log.debug("contentResult:");
 				for(ContentResult contentResult : getProcessResult()) {
 					for(ActionResult actionResult : contentResult) {
 						log.debug("\t{actionId: " + actionResult.getActionId() + ", resultValue: " + actionResult.getResultValue() + "}\n");

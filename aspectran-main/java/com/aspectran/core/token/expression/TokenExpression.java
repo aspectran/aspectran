@@ -24,6 +24,8 @@ import java.util.Map;
 import java.util.Set;
 
 import com.aspectran.core.activity.AspectranActivity;
+import com.aspectran.core.activity.process.result.ActionResult;
+import com.aspectran.core.activity.process.result.ContentResult;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.context.bean.BeanRegistry;
 import com.aspectran.core.token.Token;
@@ -284,10 +286,15 @@ public class TokenExpression implements TokenExpressor {
 	 * @return the attribute
 	 */
 	protected Object getAttribute(String name) {
-		if(requestAdapter == null)
-			return null;
-
-		return requestAdapter.getAttribute(name);
+		Object value = null;
+		
+		if(requestAdapter != null)
+			value = requestAdapter.getAttribute(name);
+		
+		if(value == null && activity.getProcessResult() != null)
+			value = activity.getProcessResult().getResultValue(name);
+		
+		return value;
 	}
 	
 	/**

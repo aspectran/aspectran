@@ -45,6 +45,15 @@ public class ContentResult extends ArrayList<ActionResult> {
 		this.contentId = contentId;
 	}
 	
+	public ActionResult getActionResult(String actionId) {
+		for(ActionResult actionResult : this) {
+			if(actionId.equals(actionResult.getActionId()))
+				return actionResult;
+		}
+		
+		return null;
+	}
+	
 	/**
 	 * Adds the action result.
 	 * 

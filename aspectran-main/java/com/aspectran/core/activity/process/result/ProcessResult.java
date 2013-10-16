@@ -34,4 +34,24 @@ public class ProcessResult extends ArrayList<ContentResult> {
 		add(contentResult);
 	}
 	
+	public ActionResult getActionResult(String actionId) {
+		for(ContentResult contentResult : this) {
+			ActionResult actionResult = contentResult.getActionResult(actionId);
+			
+			if(actionResult != null)
+				return actionResult;
+		}
+		
+		return null;
+	}
+	
+	public Object getResultValue(String actionId) {
+		ActionResult actionResult = getActionResult(actionId);
+		
+		if(actionResult != null)
+			return actionResult.getResultValue();
+		
+		return null;
+	}
+	
 }
