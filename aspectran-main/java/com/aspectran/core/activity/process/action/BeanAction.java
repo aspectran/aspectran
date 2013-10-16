@@ -39,7 +39,7 @@ import com.aspectran.core.var.ValueMap;
  */
 public class BeanAction extends AbstractAction implements Executable {
 
-	private final Log log = LogFactory.getLog(BeanAction.class);
+	//private final Log log = LogFactory.getLog(BeanAction.class);
 
 	private final BeanActionRule beanActionRule;
 
@@ -66,7 +66,7 @@ public class BeanAction extends AbstractAction implements Executable {
 
 			return invokeMethod(activity, beanId, methodName, propertyItemRuleMap, argumentItemRuleMap);
 		} catch(Exception e) {
-			log.error("Execute error: BeanAction " + beanActionRule.toString());
+			//log.error("Execute error: BeanAction " + beanActionRule.toString() + " Cause: " + e.toString());
 			throw new ActionExecutionException(this, e);
 		}
 	}

@@ -104,7 +104,7 @@ public class AspectranActivityServlet extends HttpServlet implements Servlet {
 			
 		} catch(TransletNotFoundException e) {
 			res.sendError(HttpServletResponse.SC_NOT_FOUND);
-			log.error(e.getMessage(), e);
+			log.error(e.getMessage());
 		} catch(Exception e) {
 			res.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			log.error(e.getMessage(), e);
