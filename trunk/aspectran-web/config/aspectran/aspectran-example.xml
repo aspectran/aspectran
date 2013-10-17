@@ -59,6 +59,21 @@
 		</transform>
 	</translet>
 
+	<translet name="hello/countTo10ext">
+		<response>
+			<transform contentType="text/plain" type="transform/text">
+				<action id="result" bean="example.hello.HelloAction" method="countTo10"/>
+				<template>
+					@{result}
+				</template>
+			</transform>
+			<transform id="xml" contentType="text/xml" type="transform/xml">
+				<action id="result" bean="example.hello.HelloAction" method="countTo10AsArray"/>
+			</transform>
+		</response>
+	</translet>
+
+
 	<translet name="goNaver">
 		<redirect url="http://www.naver.com"/>
 	</translet>
