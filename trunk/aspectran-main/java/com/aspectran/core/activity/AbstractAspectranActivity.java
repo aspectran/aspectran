@@ -857,7 +857,7 @@ public abstract class AbstractAspectranActivity implements AspectranActivity {
 
 		String responseId = null;
 		
-		if(multipleTransletResponseId != null && multipleTransletResponseId.length() > 0) {
+		if(multipleTransletResponseId != null) {
 			if(responseRule.getResponseMap().containsKey(multipleTransletResponseId))
 				responseId = multipleTransletResponseId;
 		} else {
