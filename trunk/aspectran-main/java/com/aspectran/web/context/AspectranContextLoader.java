@@ -32,10 +32,9 @@ public class AspectranContextLoader {
 	}
 
 	private void loadAspectranContext(String contextConfigLocation) {
-		servletContext.log("Loading AspectranContext: " + contextConfigLocation);
+		//servletContext.log("Loading AspectranContext: " + contextConfigLocation);
 		
-		if(log.isInfoEnabled())
-			log.info("AspectranContext: initialization started");
+		log.info("loading AspectranContext: " + contextConfigLocation);
 		
 		long startTime = System.currentTimeMillis();
 
@@ -45,10 +44,8 @@ public class AspectranContextLoader {
 			AspectranContextBuilder builder = new AspectranContextBuilder(applicationRootPath);
 			aspectranContext = builder.build(contextConfigLocation);
 			
-			if(log.isInfoEnabled()) {
-				long elapsedTime = System.currentTimeMillis() - startTime;
-				log.info("AspectranContext: initialization completed in " + elapsedTime + " ms");
-			}
+			long elapsedTime = System.currentTimeMillis() - startTime;
+			log.info("AspectranContext: initialization completed in " + elapsedTime + " ms");
 		} catch(RuntimeException ex) {
 			log.error("AspectranContext initialization failed", ex);
 			throw ex;

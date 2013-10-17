@@ -66,6 +66,8 @@ public class AspectranActivityServlet extends HttpServlet implements Servlet {
 	 */
 	@Override
 	public void init() throws ServletException {
+		log.info("initialize AspectranActivityServlet.");
+		
 		try {
 			String contextConfigLocation = getServletConfig().getInitParameter(AspectranContextLoader.CONTEXT_CONFIG_LOCATION_PARAM);
 
@@ -116,7 +118,7 @@ public class AspectranActivityServlet extends HttpServlet implements Servlet {
 	 */
 	@Override
 	public void destroy() {
-		log.info("Closing AspectranActivityServlet. AspectranContext " + aspectranContext);
+		log.info("destroy AspectranActivityServlet. aspectranContext " + aspectranContext);
 		
 		super.destroy();
 		

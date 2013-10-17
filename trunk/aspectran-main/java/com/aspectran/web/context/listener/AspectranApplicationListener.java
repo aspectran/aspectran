@@ -18,13 +18,17 @@ package com.aspectran.web.context.listener;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.bean.scope.ApplicationScope;
 import com.aspectran.web.adapter.WebApplicationAdapter;
-import com.aspectran.web.context.AspectranContextLoader;
 
 public class AspectranApplicationListener implements ServletContextListener {
 
+	private final Log log = LogFactory.getLog(AspectranApplicationListener.class);
+	
 	private ApplicationAdapter applicationAdapter;
 	
 	/**
@@ -33,6 +37,7 @@ public class AspectranApplicationListener implements ServletContextListener {
 	 * @param event the event
 	 */
 	public void contextInitialized(ServletContextEvent event) {
+		log.info("initialize AspectranApplicationListener " + this);
 		applicationAdapter = WebApplicationAdapter.determineWebApplicationAdapter(event.getServletContext());
 		event.getServletContext().setAttribute(WebApplicationAdapter.WEB_APPLICATION_ADAPTER_ATTRIBUTE, applicationAdapter);
 	}
@@ -43,6 +48,8 @@ public class AspectranApplicationListener implements ServletContextListener {
 	 * @param event the event
 	 */
 	public void contextDestroyed(ServletContextEvent event) {
+		log.info("destory AspectranApplicationListener " + this);
+
 		if(applicationAdapter != null) {
 			event.getServletContext().removeAttribute(WebApplicationAdapter.WEB_APPLICATION_ADAPTER_ATTRIBUTE);
 			
