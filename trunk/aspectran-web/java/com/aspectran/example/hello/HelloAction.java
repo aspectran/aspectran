@@ -14,4 +14,14 @@ public class HelloAction {
 		return sb.toString();
 	}
 	
+	public int[] countTo10AsArray(WebTranslet translet) {
+		int arr[] = new int[10];
+		
+		for(int i = 0; i < arr.length; i++) {
+			arr[i] = i + 1;
+		}
+		
+		return arr;
+	}
+	
 }
