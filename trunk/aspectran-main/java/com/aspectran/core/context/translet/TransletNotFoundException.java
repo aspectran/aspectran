@@ -40,7 +40,8 @@ public class TransletNotFoundException extends RuntimeException {
 	 * @param transletName A message to associate with the exception
 	 */
 	public TransletNotFoundException(String transletName) {
-		super("Translet is not found: " + transletName);
+		super("translet is not found: " + transletName);
+		this.transletName = transletName;
 	}
 
 	/**
@@ -60,6 +61,11 @@ public class TransletNotFoundException extends RuntimeException {
 	 * @param cause The real cause of the exception
 	 */
 	public TransletNotFoundException(String transletName, Throwable cause) {
-		super("Translet is not found: " + transletName, cause);
+		super("translet is not found: " + transletName, cause);
+		this.transletName = transletName;
+	}
+	
+	public String getTransletName() {
+		return transletName;
 	}
 }

@@ -27,8 +27,8 @@ import com.aspectran.core.rule.ForwardResponseRule;
 import com.aspectran.core.rule.ItemRuleMap;
 import com.aspectran.core.rule.RedirectResponseRule;
 import com.aspectran.core.rule.TransformRule;
-import com.aspectran.core.rule.TransletRule;
 import com.aspectran.core.rule.ability.ResponseAddable;
+import com.aspectran.core.rule.ability.ResponseSettable;
 import com.aspectran.core.type.TransformType;
 import com.aspectran.core.util.ResourceUtils;
 import com.aspectran.core.util.StringUtils;
@@ -54,20 +54,6 @@ public class ResponseRuleNodeletAdder implements NodeletAdder {
 	public ResponseRuleNodeletAdder(AspectranContextBuildingAssistant assistant) {
 		this.assistant = assistant;
 	}
-
-//	private void addResponseRule(Object object, DispatchResponseRule drr) {
-//		if(object instanceof ResponseByContentType) {
-//			ResponseByContentType responseByContentType = (ResponseByContentType)object;
-//			
-//			if(defaultResponseAddingMode) { 
-//				responseByContentType.setDefaultResponseRule(drr);
-//			} else
-//				responseByContentType.addResponseRule(drr);
-//		} else if(object instanceof ResponseRule) {
-//			ResponseRule responseRule = (ResponseRule)object;
-//			responseRule.addResponseRule(drr);
-//		}
-//	}
 	
 	/**
 	 * Process.
@@ -75,7 +61,6 @@ public class ResponseRuleNodeletAdder implements NodeletAdder {
 	public void process(String xpath, NodeletParser parser) {
 		parser.addNodelet(xpath, "/transform", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
-				String id = attributes.getProperty("id");
 				String typeString = attributes.getProperty("type");
 				String contentType = attributes.getProperty("contentType");
 				String characterEncoding = attributes.getProperty("characterEncoding");
@@ -86,14 +71,13 @@ public class ResponseRuleNodeletAdder implements NodeletAdder {
 					throw new IllegalArgumentException("Unkown transform-type '" + typeString + "'.");
 
 				TransformRule tr = new TransformRule();
-				tr.setId(id);
 				tr.setTransformType(transformType);
 				tr.setContentType(contentType);
 				tr.setCharacterEncoding(characterEncoding);
 
 				assistant.pushObject(tr);
 				
-				ActionList actionList = new ActionList(id, null);
+				ActionList actionList = new ActionList();
 				assistant.pushObject(actionList);
 			}
 		});
@@ -177,29 +161,27 @@ public class ResponseRuleNodeletAdder implements NodeletAdder {
 				
 				Object o = assistant.peekObject();
 				
-				if(o instanceof TransletRule) {
-					TransletRule transletRule = (TransletRule)o;
-					transletRule.addResponse(tr);
-				} else {
-					ResponseAddable responseAddable = (ResponseAddable)o;
-					responseAddable.addResponse(tr);
+				if(o instanceof ResponseSettable) {
+					ResponseSettable settable = (ResponseSettable)o; //TransletRule, ResponseRule
+					settable.setResponse(tr);
+				} else if(o instanceof ResponseAddable) {
+					ResponseAddable addable = (ResponseAddable)o; //ResponseByContentTypeRule
+					addable.addResponse(tr);
 				}
 			}
 		});
 		parser.addNodelet(xpath, "/dispatch", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
-				String id = attributes.getProperty("id");
 				String contentType = attributes.getProperty("contentType");
 				String encoding = attributes.getProperty("encoding");
 				
 				DispatchResponseRule drr = new DispatchResponseRule();
-				drr.setId(id);
 				drr.setContentType(contentType);
 				drr.setCharacterEncoding(encoding);
 				
 				assistant.pushObject(drr);
 
-				ActionList actionList = new ActionList(id, null);
+				ActionList actionList = new ActionList();
 				assistant.pushObject(actionList);
 			}
 		});
@@ -237,25 +219,23 @@ public class ResponseRuleNodeletAdder implements NodeletAdder {
 				
 				Object o = assistant.peekObject();
 				
-				if(o instanceof TransletRule) {
-					TransletRule transletRule = (TransletRule)o;
-					transletRule.addResponse(drr);
-				} else {
-					ResponseAddable responseAddable = (ResponseAddable)o;
-					responseAddable.addResponse(drr);
+				if(o instanceof ResponseSettable) {
+					ResponseSettable settable = (ResponseSettable)o; //TransletRule, ResponseRule
+					settable.setResponse(drr);
+				} else if(o instanceof ResponseAddable) {
+					ResponseAddable addable = (ResponseAddable)o; //ResponseByContentTypeRule
+					addable.addResponse(drr);
 				}
 			}
 		});
 		parser.addNodelet(xpath, "/redirect", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
-				String id = attributes.getProperty("id");
 				String contentType = attributes.getProperty("contentType"); // ResponseByContentType에서 content type에 따라 분기
 				String translet = attributes.getProperty("translet");
 				String url = attributes.getProperty("url");
 				Boolean excludeNullParameters = Boolean.valueOf(attributes.getProperty("excludeNullParameters"));
 				
 				RedirectResponseRule rrr = new RedirectResponseRule();
-				rrr.setId(id);
 				rrr.setContentType(contentType);
 				rrr.setTransletName(translet);
 				
@@ -266,7 +246,7 @@ public class ResponseRuleNodeletAdder implements NodeletAdder {
 				
 				assistant.pushObject(rrr);
 				
-				ActionList actionList = new ActionList(id, null);
+				ActionList actionList = new ActionList();
 				assistant.pushObject(actionList);
 			}
 		});
@@ -336,29 +316,27 @@ public class ResponseRuleNodeletAdder implements NodeletAdder {
 				
 				Object o = assistant.peekObject();
 				
-				if(o instanceof TransletRule) {
-					TransletRule transletRule = (TransletRule)o;
-					transletRule.addResponse(rrr);
-				} else {
-					ResponseAddable responseAddable = (ResponseAddable)o;
-					responseAddable.addResponse(rrr);
+				if(o instanceof ResponseSettable) {
+					ResponseSettable settable = (ResponseSettable)o; //TransletRule, ResponseRule
+					settable.setResponse(rrr);
+				} else if(o instanceof ResponseAddable) {
+					ResponseAddable addable = (ResponseAddable)o; //ResponseByContentTypeRule
+					addable.addResponse(rrr);
 				}
 			}
 		});
 		parser.addNodelet(xpath, "/forward", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
-				String id = attributes.getProperty("id");
 				String contentType = attributes.getProperty("contentType");
 				String path = attributes.getProperty("path");
 				
 				ForwardResponseRule frr = new ForwardResponseRule();
-				frr.setId(id);
 				frr.setContentType(contentType);
 				frr.setTransletName(path);
 				
 				assistant.pushObject(frr);
 
-				ActionList actionList = new ActionList(id, null);
+				ActionList actionList = new ActionList();
 				assistant.pushObject(actionList);
 			}
 		});
@@ -404,12 +382,12 @@ public class ResponseRuleNodeletAdder implements NodeletAdder {
 				
 				Object o = assistant.peekObject();
 				
-				if(o instanceof TransletRule) {
-					TransletRule transletRule = (TransletRule)o;
-					transletRule.addResponse(frr);
-				} else {
-					ResponseAddable responseAddable = (ResponseAddable)o;
-					responseAddable.addResponse(frr);
+				if(o instanceof ResponseSettable) {
+					ResponseSettable settable = (ResponseSettable)o; //TransletRule, ResponseRule
+					settable.setResponse(frr);
+				} else if(o instanceof ResponseAddable) { //ResponseByContentTypeRule
+					ResponseAddable addable = (ResponseAddable)o;
+					addable.addResponse(frr);
 				}
 			}
 		});

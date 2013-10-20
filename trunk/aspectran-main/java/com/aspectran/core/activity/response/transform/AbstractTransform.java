@@ -48,13 +48,6 @@ public abstract class AbstractTransform implements Responsible {
 	public AbstractTransform(TransformRule transformRule) {
 		this.transformRule = transformRule;
 	}
-	
-	/* (non-Javadoc)
-	 * @see org.jhlabs.translets.engine.response.Responsible#getId()
-	 */
-	public String getId() {
-		return transformRule.getId();
-	}
 
 	/* (non-Javadoc)
 	 * @see org.jhlabs.translets.engine.response.Responsible#getContentType()

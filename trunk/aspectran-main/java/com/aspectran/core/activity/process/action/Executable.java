@@ -64,6 +64,8 @@ public interface Executable {
 	 */
 	public ActionType getActionType();
 	
+	public String getBeanMethodName();
+	
 	/**
 	 * Gets the aspect advice registry.
 	 *

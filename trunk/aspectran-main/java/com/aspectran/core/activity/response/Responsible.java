@@ -32,13 +32,6 @@ public interface Responsible {
 	public ResponseType getResponseType();
 
 	/**
-	 * Gets the response id.
-	 * 
-	 * @return the response id
-	 */
-	public String getId();
-	
-	/**
 	 * Gets the content type.
 	 * 
 	 * @return the content type

@@ -194,7 +194,7 @@ public class AspectranContextBuildingAssistant {
 			sb.append(namespace);
 			sb.append(AspectranContextConstant.TRANSLET_NAME_SEPARATOR);
 		}
-			
+		
 		sb.append(transletName);
 		
 		if(inheritedAspectranSettings.getTransletNamePatternSuffix() != null)
@@ -244,10 +244,6 @@ public class AspectranContextBuildingAssistant {
 	 */
 	public boolean isNullableActionId() {
 		return inheritedAspectranSettings.isNullableActionId();
-	}
-	
-	public boolean isMultipleTransletEnable() {
-		return inheritedAspectranSettings.isMultipleTransletEnable();
 	}
 
 	public String getApplicationRootPath() {

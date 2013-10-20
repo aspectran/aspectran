@@ -4,19 +4,26 @@ import java.util.List;
 
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.activity.process.ContentList;
+import com.aspectran.core.activity.process.action.BeanAction;
 import com.aspectran.core.activity.process.action.Executable;
+import com.aspectran.core.activity.response.ResponseMap;
+import com.aspectran.core.activity.response.Responsible;
 import com.aspectran.core.context.aspect.pointcut.Pointcut;
 import com.aspectran.core.context.aspect.pointcut.PointcutFactory;
 import com.aspectran.core.context.aspect.pointcut.ReusePointcutFactory;
 import com.aspectran.core.rule.AspectAdviceRule;
 import com.aspectran.core.rule.AspectRule;
 import com.aspectran.core.rule.AspectRuleMap;
+import com.aspectran.core.rule.BeanActionRule;
 import com.aspectran.core.rule.PointcutRule;
 import com.aspectran.core.rule.RequestRule;
+import com.aspectran.core.rule.ResponseByContentTypeRule;
+import com.aspectran.core.rule.ResponseByContentTypeRuleMap;
 import com.aspectran.core.rule.ResponseRule;
 import com.aspectran.core.rule.SettingsAdviceRule;
 import com.aspectran.core.rule.TransletRule;
 import com.aspectran.core.rule.TransletRuleMap;
+import com.aspectran.core.type.ActionType;
 import com.aspectran.core.type.JoinpointScopeType;
 import com.aspectran.core.type.JoinpointTargetType;
 
@@ -74,6 +81,96 @@ public class AspectAdviceRuleRegister {
 							for(Executable action : actionList) {
 								if(pointcut == null || pointcut.matches(transletRule.getName(), action.getFullActionId())) {
 									register(action, aspectRule);
+								}
+							}
+						}
+					}
+					
+					ResponseByContentTypeRuleMap exceptionHandlingRuleMap = transletRule.getExceptionHandlingRuleMap();
+					
+					if(exceptionHandlingRuleMap != null) {
+						for(ResponseByContentTypeRule responseByContentTypeRule : exceptionHandlingRuleMap) {
+							ResponseMap responseMap = responseByContentTypeRule.getResponseMap();
+							Responsible defaultResponse = responseByContentTypeRule.getDefaultResponse();
+							
+							if(responseMap != null) {
+								for(Responsible res : responseMap) {
+									ActionList actionList = res.getActionList();
+									
+									if(actionList != null) {
+										for(Executable action : actionList) {
+											if(pointcut == null || pointcut.matches(transletRule.getName(), action.getFullActionId())) {
+												register(action, aspectRule);
+											}
+										}
+									}
+								}
+							}
+
+							if(defaultResponse != null) {
+								ActionList actionList = defaultResponse.getActionList();
+								
+								if(actionList != null) {
+									for(Executable action : actionList) {
+										if(pointcut == null || pointcut.matches(transletRule.getName(), action.getFullActionId())) {
+											register(action, aspectRule);
+										}
+									}
+								}
+							}
+						}
+					}
+				} else if(joinpointScope == JoinpointScopeType.BEAN) {
+					ContentList contentList = transletRule.getContentList();
+					
+					if(contentList != null) {
+						for(ActionList actionList : contentList) {
+							for(Executable action : actionList) {
+								if(action.getActionType() == ActionType.BEAN) {
+									BeanActionRule beanActionRule = ((BeanAction)action).getBeanActionRule();
+									
+									if(pointcut == null || pointcut.matches(transletRule.getName(), beanActionRule.getBeanId())) {
+										register(action, aspectRule);
+									}
+								}
+							}
+						}
+					}
+					
+					ResponseByContentTypeRuleMap exceptionHandlingRuleMap = transletRule.getExceptionHandlingRuleMap();
+					
+					if(exceptionHandlingRuleMap != null) {
+						for(ResponseByContentTypeRule responseByContentTypeRule : exceptionHandlingRuleMap) {
+							ResponseMap responseMap = responseByContentTypeRule.getResponseMap();
+							Responsible defaultResponse = responseByContentTypeRule.getDefaultResponse();
+							
+							if(responseMap != null) {
+								for(Responsible res : responseMap) {
+									ActionList actionList = res.getActionList();
+									
+									if(actionList != null) {
+										for(Executable action : actionList) {
+											if(action.getActionType() == ActionType.BEAN) {
+												if(pointcut == null || pointcut.matches(transletRule.getName(), action.getBeanMethodName())) {
+													register(action, aspectRule);
+												}
+											}
+										}
+									}
+								}
+							}
+
+							if(defaultResponse != null) {
+								ActionList actionList = defaultResponse.getActionList();
+								
+								if(actionList != null) {
+									for(Executable action : actionList) {
+										if(action.getActionType() == ActionType.BEAN) {
+											if(pointcut == null || pointcut.matches(transletRule.getName(), action.getBeanMethodName())) {
+												register(action, aspectRule);
+											}
+										}
+									}
 								}
 							}
 						}

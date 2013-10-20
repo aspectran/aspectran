@@ -78,16 +78,6 @@ public class ForwardResponse implements Responsible {
 	public ResponseType getResponseType() {
 		return ForwardResponseRule.RESPONSE_TYPE;
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.response.Responsible#getId()
-	 */
-	public String getId() {
-		if(forwardResponseRule == null)
-			return null;
-		
-		return forwardResponseRule.getId();
-	}
 
 	/* (non-Javadoc)
 	 * @see com.aspectran.core.activity.response.Responsible#getContentType()

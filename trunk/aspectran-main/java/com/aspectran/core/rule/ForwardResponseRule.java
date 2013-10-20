@@ -28,9 +28,6 @@ public class ForwardResponseRule extends ActionPossessSupport implements ActionP
 	/** The Constant RESPONSE_TYPE. */
 	public static final ResponseType RESPONSE_TYPE = ResponseType.FORWARD;
 
-	/** The id. */
-	private String id;
-	
 	/** The content type. */
 	private String contentType;
 	
@@ -39,24 +36,6 @@ public class ForwardResponseRule extends ActionPossessSupport implements ActionP
 	
 	/** The parameter item rule map. */
 	private ItemRuleMap parameterItemRuleMap;
-
-	/**
-	 * Gets the id.
-	 * 
-	 * @return the id
-	 */
-	public String getId() {
-		return id;
-	}
-
-	/**
-	 * Sets the id.
-	 * 
-	 * @param id the new id
-	 */
-	public void setId(String id) {
-		this.id = id;
-	}
 
 	/**
 	 * Gets the content type.
@@ -131,8 +110,7 @@ public class ForwardResponseRule extends ActionPossessSupport implements ActionP
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 
-		sb.append("{id=").append(id);
-		sb.append(", contentType=").append(contentType);
+		sb.append("{contentType=").append(contentType);
 		sb.append(", path=").append(transletName);
 
 		if(actionList != null) {

@@ -29,7 +29,6 @@ import com.aspectran.core.activity.AspectranActivity;
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.activity.response.Responsible;
 import com.aspectran.core.adapter.ResponseAdapter;
-import com.aspectran.core.context.AspectranContextConstant;
 import com.aspectran.core.rule.TransformRule;
 import com.aspectran.core.token.Token;
 import com.aspectran.core.token.Tokenizer;
@@ -43,8 +42,6 @@ import com.aspectran.core.type.TokenType;
 public class TextTransform extends AbstractTransform implements Responsible {
 
 	private final Log log = LogFactory.getLog(TextTransform.class);
-
-	private boolean traceEnabled = log.isTraceEnabled();
 
 	private boolean debugEnabled = log.isDebugEnabled();
 

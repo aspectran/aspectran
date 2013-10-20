@@ -87,13 +87,6 @@ public class DispatchResponse implements Responsible {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.jhlabs.translets.engine.response.Responsible#getId()
-	 */
-	public String getId() {
-		return dispatchResponseRule.getId();
-	}
-
-	/* (non-Javadoc)
 	 * @see org.jhlabs.translets.engine.response.Responsible#getContentType()
 	 */
 	public String getContentType() {

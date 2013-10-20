@@ -19,43 +19,45 @@ import java.util.List;
 
 import com.aspectran.core.activity.response.ForwardResponse;
 import com.aspectran.core.activity.response.RedirectResponse;
-import com.aspectran.core.activity.response.ResponseMap;
+import com.aspectran.core.activity.response.Responsible;
 import com.aspectran.core.activity.response.dispatch.DispatchResponse;
 import com.aspectran.core.activity.response.transform.AbstractTransform;
 import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
-import com.aspectran.core.rule.ability.ResponseAddable;
+import com.aspectran.core.rule.ability.ResponseSettable;
 
 /**
  * <p>
  * Created: 2008. 03. 22 오후 5:48:09
  * </p>
  */
-public class ResponseRule extends AbstractResponseRule implements ResponseAddable, AspectAdviceSupport {
+public class ResponseRule implements ResponseSettable, AspectAdviceSupport {
 
-	/** The Constant DEFAULT_ID. */
-	public static final String DEFAULT_ID = "[default]";
-	
 	public static final String CHARACTER_ENCODING_SETTING_NAME = "characterEncoding";
 
 	public static final String VIEW_DISPATCHER_SETTING_NAME = "viewDispatcher";
 	
+	private String name;
+	
 	private String characterEncoding;
 	
-	/** The default response id. */
-	private String defaultResponseId;
-	
-	/** The default content type. */
-	private String defaultContentType;
-	
 	private AspectAdviceRuleRegistry aspectAdviceRuleRegistry;
+	
+	private Responsible response;
 	
 	/**
 	 * Instantiates a new response rule.
 	 */
 	public ResponseRule() {
-		super();
 	}
 	
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
 	/**
 	 * Gets the character encoding.
 	 * 
@@ -74,114 +76,72 @@ public class ResponseRule extends AbstractResponseRule implements ResponseAddabl
 		this.characterEncoding = characterEncoding;
 	}
 
-	/**
-	 * Gets the default content type.
-	 *
-	 * @return the default content type
-	 */
-	public String getDefaultContentType() {
-		return defaultContentType;
+	public Responsible getResponse() {
+		return response;
+	}
+
+	public void setResponse(Responsible response) {
+		this.response = response;
 	}
 
 	/**
-	 * Sets the default content type.
-	 *
-	 * @param defaultContentType the new default content type
-	 */
-	public void setDefaultContentType(String defaultContentType) {
-		this.defaultContentType = defaultContentType;
-	}
-	
-	/**
-	 * Instantiates a new response rule.
+	 * Sets the default response rule.
 	 * 
-	 * @param responseMap the response map
-	 */
-	public ResponseRule(ResponseMap responseMap) {
-		super(responseMap);
-	}
-	
-	/**
-	 * Gets the default response id.
-	 * 
-	 * @return the defaultResponseId
-	 */
-	public String getDefaultResponseId() {
-		return defaultResponseId;
-	}
-
-	/**
-	 * Sets the default response id.
-	 * 
-	 * @param defaultResponseId the defaultResponseId to set
-	 */
-	public void setDefaultResponseId(String defaultResponseId) {
-		this.defaultResponseId = defaultResponseId;
-	}
-
-	/**
-	 * Adds the response rule.
-	 * 
-	 * @param tr the tr
+	 * @param tr the new default response rule
 	 * 
 	 * @return the transform response
 	 */
-	public AbstractTransform addResponse(TransformRule tr) {
-		if(tr.getId() == null)
-			tr.setId(DEFAULT_ID);
+	public AbstractTransform setResponse(TransformRule tr) {
+		AbstractTransform transformResponse = AbstractTransform.createTransformer(tr);
 		
-		if(tr.getCharacterEncoding() == null)
-			tr.setCharacterEncoding(characterEncoding);
-
-		return super.addResponse(tr);
+		this.response = transformResponse;
+		
+		return transformResponse;
 	}
 
 	/**
-	 * Adds the response rule.
+	 * Sets the default response rule.
 	 * 
-	 * @param drr the drr
+	 * @param drr the new default response rule
 	 * 
 	 * @return the dispatch response
 	 */
-	public DispatchResponse addResponse(DispatchResponseRule drr) {
-		if(drr.getId() == null)
-			drr.setId(DEFAULT_ID);
-
-		if(drr.getCharacterEncoding() == null)
-			drr.setCharacterEncoding(characterEncoding);
+	public DispatchResponse setResponse(DispatchResponseRule drr) {
+		DispatchResponse dispatchResponse = new DispatchResponse(drr);
 		
-		return super.addResponse(drr);
+		this.response = dispatchResponse;
+		
+		return dispatchResponse;
 	}
 	
 	/**
-	 * Adds the response rule.
+	 * Sets the default response rule.
 	 * 
-	 * @param rrr the rrr
+	 * @param rrr the new default response rule
 	 * 
 	 * @return the redirect response
 	 */
-	public RedirectResponse addResponse(RedirectResponseRule rrr) {
-		if(rrr.getId() == null)
-			rrr.setId(DEFAULT_ID);
+	public RedirectResponse setResponse(RedirectResponseRule rrr) {
+		RedirectResponse redirectResponse = new RedirectResponse(rrr);
 
-		if(rrr.getCharacterEncoding() == null)
-			rrr.setCharacterEncoding(characterEncoding);
+		this.response = redirectResponse;
 		
-		return super.addResponse(rrr);
+		return redirectResponse;
 	}
 	
 	/**
-	 * Adds the response rule.
+	 * Sets the default response rule.
 	 * 
-	 * @param frr the frr
+	 * @param frr the new default response rule
 	 * 
 	 * @return the forward response
 	 */
-	public ForwardResponse addResponse(ForwardResponseRule frr) {
-		if(frr.getId() == null)
-			frr.setId(DEFAULT_ID);
+	public ForwardResponse setResponse(ForwardResponseRule frr) {
+		ForwardResponse forwardResponse = new ForwardResponse(frr);
+
+		this.response = forwardResponse;
 		
-		return super.addResponse(frr);
+		return forwardResponse;
 	}
 	
 	public AspectAdviceRuleRegistry getAspectAdviceRuleRegistry() {
@@ -220,9 +180,10 @@ public class ResponseRule extends AbstractResponseRule implements ResponseAddabl
 		return aspectAdviceRuleRegistry.getExceptionRaizedAdviceRuleList();
 	}
 
-	public ResponseRule newResponseRule(ResponseMap responseMap) {
+	public ResponseRule newResponseRule(Responsible response) {
 		ResponseRule responseRule = new ResponseRule();
 		responseRule.setCharacterEncoding(characterEncoding);
+		responseRule.setResponse(response);
 		return responseRule;
 	}
 
@@ -233,12 +194,12 @@ public class ResponseRule extends AbstractResponseRule implements ResponseAddabl
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 
-		sb.append("{characterEncoding=").append(characterEncoding);
-		sb.append(", defaultContentType=").append(defaultContentType);
-		sb.append(", defaultResponseId=").append(defaultResponseId);
+		sb.append("{name=").append(name);
+		sb.append(", characterEncoding=").append(characterEncoding);
+		sb.append(", response=").append(response);
 		sb.append("} ");
-		sb.append(getResponseMap().toString());
 		
 		return sb.toString();
 	}
+
 }

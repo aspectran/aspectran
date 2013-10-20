@@ -119,21 +119,6 @@ public abstract class AbstractSuperTranslet implements SuperTranslet {
 		activity.responseEnd();
 	}
 
-	/**
-	 * Response.
-	 *
-	 * @param responseId the response id
-	 * @throws ResponseException the response exception
-	 */
-	public void response(String responseId) throws ResponseException {
-		Responsible res = getResponse(responseId);
-		
-		if(res == null)
-			throw new ResponseNotFoundException("'" + responseId + "' response is not found.");
-		
-		response(res);
-	}
-	
 	public void response(Responsible res) throws ResponseException {
 		activity.response(res);
 	}
@@ -149,7 +134,7 @@ public abstract class AbstractSuperTranslet implements SuperTranslet {
 		Responsible res = TransformResponseFactory.getResponse(transformRule);
 		
 		if(res == null)
-			throw new ResponseNotFoundException("transform response is not found. TransformRule" + transformRule);
+			throw new ResponseNotFoundException("transform response is not found. transformRule" + transformRule);
 
 		response(res);
 	}
@@ -250,10 +235,6 @@ public abstract class AbstractSuperTranslet implements SuperTranslet {
 	 */
 	public void responseEnd() {
 		activity.responseEnd();
-	}
-
-	public Responsible getResponse(String responseId) {
-		return activity.getResponse(responseId);
 	}
 
 	public Class<? extends SuperTranslet> getTransletInterfaceClass() {

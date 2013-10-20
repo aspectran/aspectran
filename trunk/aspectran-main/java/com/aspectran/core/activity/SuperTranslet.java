@@ -88,15 +88,6 @@ public abstract interface SuperTranslet {
 	/**
 	 * Response.
 	 * 
-	 * @param id the id
-	 * 
-	 * @throws ResponseException the response exception
-	 */
-	public void response(String id) throws ResponseException;
-
-	/**
-	 * Response.
-	 * 
 	 * @param res the responsible
 	 * 
 	 * @throws ResponseException the response exception

@@ -31,7 +31,6 @@ import com.aspectran.core.activity.process.result.ContentResult;
 import com.aspectran.core.activity.process.result.ProcessResult;
 import com.aspectran.core.activity.request.RequestException;
 import com.aspectran.core.activity.response.ForwardResponse;
-import com.aspectran.core.activity.response.ForwardingFailedException;
 import com.aspectran.core.activity.response.ResponseException;
 import com.aspectran.core.activity.response.Responsible;
 import com.aspectran.core.adapter.ApplicationAdapter;
@@ -107,9 +106,6 @@ public abstract class AbstractAspectranActivity implements AspectranActivity {
 	
 	/** The forward translet name. */
 	private String forwardTransletName;
-	
-	/** The enforceable response id. */
-	private String multipleTransletResponseId;
 	
 	private Exception raisedException;
 
@@ -220,9 +216,17 @@ public abstract class AbstractAspectranActivity implements AspectranActivity {
 	public SuperTranslet getSuperTranslet() {
 		return translet;
 	}
-	
+
 	public void run(String transletName) throws RequestException, ProcessException, ResponseException {
+		run(transletName, null);
+	}
+	
+	protected void run(String transletName, ProcessResult processResult) throws RequestException, ProcessException, ResponseException {
 		init(transletName);
+		
+		if(processResult != null) {
+			translet.setProcessResult(processResult);
+		}
 		
 		try {
 			AspectAdviceRuleRegistry aspectAdviceRuleRegistry = transletRule.getAspectAdviceRuleRegistry();
@@ -354,10 +358,6 @@ public abstract class AbstractAspectranActivity implements AspectranActivity {
 			log.debug("translet " + transletRule);
 		}
 
-		if(transletRule.getMultipleTransletResponseId() != null) {
-			multipleTransletResponseId = transletRule.getMultipleTransletResponseId();
-		}
-		
 		Class<? extends SuperTranslet> transletInterfaceClass = getTransletInterfaceClass();
 		Class<? extends AbstractSuperTranslet> transletImplementClass = getTransletImplementClass();
 
@@ -495,7 +495,7 @@ public abstract class AbstractAspectranActivity implements AspectranActivity {
 		return translet.getProcessResult();
 	}
 	
-	private void response(AspectAdviceRuleRegistry aspectAdviceRuleRegistry) throws ResponseException, ActionExecutionException {
+	private void response(AspectAdviceRuleRegistry aspectAdviceRuleRegistry) throws RequestException, ProcessException, ResponseException {
 		List<AspectAdviceRule> beforeAdviceRuleList = aspectAdviceRuleRegistry.getBeforeAdviceRuleList();
 		List<AspectAdviceRule> afterAdviceRuleList = aspectAdviceRuleRegistry.getAfterAdviceRuleList();
 
@@ -516,7 +516,7 @@ public abstract class AbstractAspectranActivity implements AspectranActivity {
 			execute(afterAdviceRuleList);
 	}
 	
-	protected void response() throws ResponseException {
+	protected void response() throws RequestException, ProcessException, ResponseException {
 		Responsible res = getResponse();
 		
 		if(res != null)
@@ -536,14 +536,6 @@ public abstract class AbstractAspectranActivity implements AspectranActivity {
 		if(debugEnabled) {
 			log.debug("executable actions " + actionList.toString());
 		}
-//
-//		if(isResponseEnd) {
-//			if(debugEnabled) {
-//				log.debug("Response has already ended.");
-//			}
-//
-//			return;
-//		}
 		
 		if(!actionList.isHidden()) {
 			ContentResult contentResult = new ContentResult();
@@ -625,51 +617,6 @@ public abstract class AbstractAspectranActivity implements AspectranActivity {
 	}
 	
 	/**
-	 * Check ticket.
-	 *
-	 * @param ticketCheckActionList the ticket bean action list
-	 * @param checkpoint the check point
-	 * @throws TicketCheckException the ticket check exception
-	private void checkTicket(TicketCheckActionList ticketCheckActionList, TicketCheckpointType checkpoint) throws TicketCheckException {
-		try {
-			for(TicketCheckAction ticketCheckAction : ticketCheckActionList) {
-				TicketCheckRule ticketCheckRule = ticketCheckAction.getTicketCheckRule();
-				
-				if(ticketCheckRule.getTicketCheckpoint() == checkpoint) {
-					if(debugEnabled) {
-						log.debug("Check ticket " + ticketCheckAction.toString());
-					}
-					
-					Object result = ticketCheckAction.execute(this);
-					
-					if(result == Boolean.FALSE) {
-						if(ticketCheckRule.getRejectInvalidTicket() == Boolean.TRUE) {
-							if(debugEnabled) {
-								log.debug("Rejected by ticket: " + ticketCheckRule);
-							}
-							
-							ResponseByContentTypeRule responseByContentTypeRule = ticketCheckRule.getTicketCheckcaseRule().getResponseByContentTypeRule();;
-							
-							if(responseByContentTypeRule != null) {
-								responseByContentType(responseByContentTypeRule);
-								return;
-							}
-							
-							throw new TicketCheckRejectedException(ticketCheckRule);
-						}
-					}
-					
-					if(isResponseEnd)
-						break;
-				}
-			}
-		} catch(ActionExecutionException e) {
-			throw new TicketCheckException(e);
-		}
-	}
-	*/
-	
-	/**
 	 * Response.
 	 * 
 	 * @param res the responsible
@@ -677,9 +624,6 @@ public abstract class AbstractAspectranActivity implements AspectranActivity {
 	 * @throws ResponseException the response exception
 	 */
 	public void response(Responsible res) throws ResponseException {
-//		if(responsible == null)
-//			throw new IllegalArgumentException("responsible is null.");
-
 		res.response(this);
 		
 		if(res.getResponseType() == ResponseType.FORWARD) {
@@ -696,21 +640,13 @@ public abstract class AbstractAspectranActivity implements AspectranActivity {
 	 *
 	 * @throws ResponseException the active response exception
 	 */
-	private void forward() throws ResponseException {
+	private void forward() throws RequestException, ProcessException, ResponseException {
 		if(debugEnabled) {
-			log.debug("Forwarding for translet '" + forwardTransletName + "'");
+			log.debug("> forwarding for translet '" + forwardTransletName + "'");
 		}
 		
-		try {
-			ProcessResult processResult = translet.getProcessResult();
-			init(forwardTransletName);
-			translet.setProcessResult(processResult);
-			request();
-			process();
-			response();
-		} catch(Exception e) {
-			throw new ForwardingFailedException("Forwarding failed for path '" + forwardTransletName + "'", e);
-		}
+		ProcessResult processResult = translet.getProcessResult();
+		run(forwardTransletName, processResult);
 	}
 	
 	private ProcessResult responseByContentType(List<AspectAdviceRule> aspectAdviceRuleList, Exception ex) throws ActionExecutionException {
@@ -753,8 +689,8 @@ public abstract class AbstractAspectranActivity implements AspectranActivity {
 		Responsible response = getResponse();
 		
 		if(response != null && response.getContentType() != null) {
-			ResponseRule newResponseRule = responseRule.newResponseRule(responseByContentTypeRule.getResponseMap());
-			newResponseRule.setDefaultResponseId(response.getContentType().toString());
+			Responsible response2 = responseByContentTypeRule.getResponse(response.getContentType());
+			ResponseRule newResponseRule = responseRule.newResponseRule(response2);
 			responseRule = newResponseRule;
 			isResponseRuleReplaced = true;
 		}
@@ -763,7 +699,6 @@ public abstract class AbstractAspectranActivity implements AspectranActivity {
 			log.debug("response by content-type: " + responseRule);
 		}
 
-		multipleTransletResponseId = null;
 		translet.setProcessResult(null);
 	}
 	
@@ -836,44 +771,13 @@ public abstract class AbstractAspectranActivity implements AspectranActivity {
 	/**
 	 * The <code>response</code> will return to find.
 	 *
-	 * @param responseId the response id
-	 * @return the response
-	 */
-	public Responsible getResponse(String responseId) {
-		if(responseRule == null)
-			return null;
-		
-		return responseRule.getResponseMap().get(responseId);
-	}
-	
-	/**
-	 * The <code>response</code> will return to find.
-	 *
 	 * @return the response
 	 */
 	public Responsible getResponse() {
 		if(responseRule == null)
 			return null;
 
-		String responseId = null;
-		
-		if(multipleTransletResponseId != null) {
-			if(responseRule.getResponseMap().containsKey(multipleTransletResponseId))
-				responseId = multipleTransletResponseId;
-		} else {
-			responseId = responseRule.getDefaultResponseId();
-		}
-
-		if(responseId == null || responseId.length() == 0) {
-			if(responseRule.getResponseMap().size() == 1)
-				return responseRule.getResponseMap().get(0);
-		}
-		
-		if(responseId == null || responseId.length() == 0) {
-			responseId = ResponseRule.DEFAULT_ID;
-		}
-		
-		return responseRule.getResponseMap().get(responseId);
+		return responseRule.getResponse();
 	}
 	
 	/* (non-Javadoc)

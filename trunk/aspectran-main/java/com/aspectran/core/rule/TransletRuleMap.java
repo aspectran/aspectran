@@ -30,7 +30,7 @@ public class TransletRuleMap extends LinkedHashMap<String, TransletRule> impleme
 	
 	public TransletRule put(String key, TransletRule value) {
 		if(freezed)
-			throw new java.lang.UnsupportedOperationException("freezed TransletRuleMap: " + toString());
+			throw new java.lang.UnsupportedOperationException("freezed transletRuleMap: " + toString());
 
 		return super.put(key, value);
 	}
