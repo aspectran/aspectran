@@ -107,7 +107,7 @@ override (true | false) #IMPLIED
 
 <!ELEMENT constructor (arguments?)>
 
-<!ELEMENT translet (request?, contents?, response?, transform?, dispatch?, redirect?, forward?, exception?)>
+<!ELEMENT translet (request?, contents?, response*, transform?, dispatch?, redirect?, forward?, exception?)>
 <!ATTLIST translet
 name CDATA #REQUIRED
 hidden (true | false) #IMPLIED
@@ -161,8 +161,8 @@ hidden (true | false) #IMPLIED
 
 <!ELEMENT response (transform? | dispatch? | redirect? | forward?)*>
 <!ATTLIST response
+name CDATA #IMPLIED
 characterEncoding CDATA #IMPLIED
-default CDATA #IMPLIED
 >
 <!ELEMENT exception (responseByContentType*, defaultResponse?)>
 
@@ -174,7 +174,6 @@ exceptionType CDATA #IMPLIED
 
 <!ELEMENT transform (echo | action | include | template)*>
 <!ATTLIST transform
-id CDATA #IMPLIED
 type CDATA #REQUIRED
 contentType CDATA #IMPLIED
 characterEncoding CDATA #IMPLIED
@@ -190,13 +189,11 @@ noCache (true | false) #IMPLIED
 
 <!ELEMENT dispatch (echo? | action? | include? | template)*>
 <!ATTLIST dispatch
-id CDATA #IMPLIED
 contentType CDATA #IMPLIED
 >
 
 <!ELEMENT redirect (echo* | action* | include* | url? | parameters*)>
 <!ATTLIST redirect
-id CDATA #IMPLIED
 contentType CDATA #IMPLIED
 url CDATA #IMPLIED
 translet CDATA #IMPLIED
@@ -206,7 +203,6 @@ excludeNullParameters CDATA #IMPLIED
 
 <!ELEMENT forward (echo* | action* | include* | parameters*)>
 <!ATTLIST forward
-id CDATA #IMPLIED
 contentType CDATA #IMPLIED
 translet CDATA #IMPLIED
 >

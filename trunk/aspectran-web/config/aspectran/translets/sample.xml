@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE aspectran PUBLIC "-//aspectran.com//DTD Aspectran 1.0//EN"
-                           "./dtd/aspectran-1.0.dtd">
+                           "../dtd/aspectran-1.0.dtd">
 
 <aspectran namespace="t1">
 
@@ -117,8 +117,8 @@
 				-->
 			</content>
 		</contents>
-		<response default="echo">
-			<transform id="custom" type="transform/custom" contentType="text/html">
+		<response name="custom">
+			<transform type="transform/custom" contentType="text/html">
 				<echo id="echo2">
 					<item type="map">
 						<value name="item41">${item0}</value>
@@ -138,7 +138,9 @@
 					</arguments>
 				</action>
 			</transform>
-			<transform id="download" type="transform/xsl" contentType="text/html">
+		</response>
+		<response name="download">
+			<transform type="transform/xsl" contentType="text/html">
 				<echo id="echo2">
 					<item type="map">
 						<value name="item41">${item0}</value>
@@ -153,10 +155,14 @@
 				</action>
 				<template file="WEB-INF/xsl/service/test.xsl" noCache="true"/>
 			</transform>
-			<transform id="xsl" type="transform/xsl" contentType="text/html">
+		</response>
+		<response name="xsl">
+			<transform type="transform/xsl" contentType="text/html">
 				<template file="WEB-INF/xsl/service/test.xsl"/>
 			</transform>
-			<dispatch id="jsp" contentType="text/html">
+		</response>
+		<response name="jsp">
+			<dispatch contentType="text/html">
 				<echo id="echo2">
 					<item type="map">
 						<value name="item41">${item0}</value>
@@ -177,9 +183,15 @@
 				</action>
 				<template file="/WEB-INF/jsp/hello.jsp" encoding="utf-8"/>
 			</dispatch>
-			<transform id="xml" type="transform/xml" contentType="text/xml"/>
-			<transform id="json" type="transform/json"/>
-			<transform id="echo" type="transform/text" contentType="text/plain">
+		</response>
+		<response name="xml">
+			<transform type="transform/xml" contentType="text/xml"/>
+		</response>
+		<response name="json">
+			<transform type="transform/json"/>
+		</response>
+		<response name="echo">
+			<transform type="transform/text" contentType="text/plain">
 				<template>
 				<![CDATA[
 					aaab
@@ -189,7 +201,9 @@
 				]]>
 				</template>
 			</transform>
-			<transform id="txt" type="transform/text" contentType="text/plain">
+		</response>
+		<response name="txt">
+			<transform type="transform/text" contentType="text/plain">
 				<template file="/c:\ADE_JHLabs\workspace\aspectran-web\webapp\WEB-INF\web.xml" encoding="utf-8"/>
 			</transform>
 		</response>
@@ -275,19 +289,19 @@
 	</translet>
 	
 	<translet name="home2">
-		<transform id="txt" type="transform/text" contentType="text/plain">
+		<transform type="transform/text" contentType="text/plain">
 			<template file="/c:\ADE_JHLabs\workspace\aspectran-web\webapp\WEB-INF\web.xml" encoding="utf-8"/>
 		</transform>
 	</translet>
 
 	<translet name="test_xsl">
-		<transform id="xsl" type="transform/xsl" contentType="text/html">
+		<transform type="transform/xsl" contentType="text/html">
 			<template file="WEB-INF/xsl/service/test.xsl"/>
 		</transform>
 	</translet>
 	
 	<translet name="test_jsp">
-		<dispatch id="jsp" contentType="text/html">
+		<dispatch contentType="text/html">
 			<action bean="common.action.a1" method="testAction"/>
 			<template>/WEB-INF/jsp/hello.jsp</template>
 		</dispatch>
