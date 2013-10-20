@@ -520,7 +520,6 @@ public class AspectranNodeParser {
 						} else {
 							TransletRule subTransletRule = transletRule.newSubTransletRule(responseRule);
 							subTransletRule.setName(assistant.applyNamespaceForTranslet(subTransletRule.getName()));
-							System.out.println("subTransletRuleName: " + subTransletRule.getName());
 							
 							assistant.addTransletRule(subTransletRule);
 						}
