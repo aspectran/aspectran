@@ -13,7 +13,6 @@
 		<setting name="useNamespaces" value="true"/>
 		<setting name="nullableContentId" value="true"/>
 		<setting name="nullableActionId" value="true"/>
-		<setting name="multipleTransletEnable" value="true"/>
 	</settings>
 	
 	<aspect id="defaultRequestRule">
@@ -45,7 +44,7 @@
 	
 	<aspect id="frontRequestRule">
 		<joinpoint target="translet" scope="request">
-			<pointcut>front/*</pointcut>
+			<pointcut>/front/*</pointcut>
 		</joinpoint>
 		<before>
 			<action id="xml" bean="common.action.a1" method="testXmlAction" hidden="true">
@@ -141,7 +140,7 @@
 
 	<aspect id="bean1">
 		<joinpoint>
-			<pointcut>front/*</pointcut>
+			<pointcut>/front/*</pointcut>
 		</joinpoint>
 		<around>
 			<action id="xml" bean="common.action.a1" method="testXmlAction" hidden="true">
@@ -159,7 +158,7 @@
 	-->
 	<aspect id="logging">
 		<joinpoint target="translet">
-			<pointcut>front.action1</pointcut>
+			<pointcut>@front.action1</pointcut>
 		</joinpoint>
 		<before>
 			<action id="xml" bean="common.action.a1" method="testXmlAction" hidden="true">
@@ -213,14 +212,13 @@
 	<aspect id="sqlmap">																																			
 		<joinpoint target="translet" scope="content">
 			<pointcut>
-				front/a/*
-				exclude(front/a/A*)
+				/front/a/*
+				exclude(/front/a/A*)
 			</pointcut>
 		</joinpoint>
 		<before>
 			<action bean="com.aspectran.support.orm.ibatis.AspectSqlMapClient" method="begin"/>
 		</before>
-		
 		<finally>
 			<action bean="com.aspectran.support.orm.ibatis.AspectSqlMapClient" method="end"/>
 		</finally>

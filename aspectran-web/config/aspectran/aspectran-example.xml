@@ -11,7 +11,6 @@
 		<setting name="useNamespaces" value="true"/>
 		<setting name="nullableContentId" value="true"/>
 		<setting name="nullableActionId" value="true"/>
-		<setting name="multipleTransletEnable" value="true"/>
 	</settings>
 	
 	<aspect id="defaultRequestRule">
@@ -67,7 +66,9 @@
 					@{result}
 				</template>
 			</transform>
-			<transform id="xml" contentType="text/xml" type="transform/xml">
+		</response>
+		<response name=".xml">
+			<transform contentType="text/xml" type="transform/xml">
 				<action id="result" bean="example.hello.HelloAction" method="countTo10AsArray"/>
 			</transform>
 		</response>
