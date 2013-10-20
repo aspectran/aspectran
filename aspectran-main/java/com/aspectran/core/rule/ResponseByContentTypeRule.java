@@ -17,6 +17,8 @@ package com.aspectran.core.rule;
 
 import com.aspectran.core.activity.response.ForwardResponse;
 import com.aspectran.core.activity.response.RedirectResponse;
+import com.aspectran.core.activity.response.ResponseMap;
+import com.aspectran.core.activity.response.Responsible;
 import com.aspectran.core.activity.response.dispatch.DispatchResponse;
 import com.aspectran.core.activity.response.transform.AbstractTransform;
 import com.aspectran.core.rule.ability.ResponseAddable;
@@ -24,7 +26,11 @@ import com.aspectran.core.rule.ability.ResponseAddable;
 /**
  * <p>Created: 2008. 04. 01 오후 11:19:28</p>
  */
-public class ResponseByContentTypeRule extends AbstractResponseRule implements ResponseAddable {
+public class ResponseByContentTypeRule implements ResponseAddable {
+
+	private ResponseMap responseMap = new ResponseMap();
+	
+	private Responsible defaultResponse;
 
 	private String exceptionType;
 	
@@ -36,54 +42,41 @@ public class ResponseByContentTypeRule extends AbstractResponseRule implements R
 		this.exceptionType = exceptionType;
 	}
 
+	public Responsible getResponse(String contentType) {
+		Responsible response = responseMap.get(contentType);
+		
+		if(response != null)
+			return response;
+		
+		return defaultResponse;
+	}
+	
 	/**
-	 * Sets the default response rule.
+	 * Gets the response map.
 	 * 
-	 * @param tr the new default response rule
-	 * 
-	 * @return the transform response
+	 * @return the response map
 	 */
-	public AbstractTransform setDefaultResponse(TransformRule tr) {
-		tr.setId(ResponseRule.DEFAULT_ID);
-		return super.addResponse(tr);
+	public ResponseMap getResponseMap() {
+		return responseMap;
+	}
+	
+	/**
+	 * Sets the response map.
+	 * 
+	 * @param responseMap the new response map
+	 */
+	public void setResponseMap(ResponseMap responseMap) {
+		this.responseMap = responseMap;
+	}
+	
+	public Responsible getDefaultResponse() {
+		return defaultResponse;
 	}
 
-	/**
-	 * Sets the default response rule.
-	 * 
-	 * @param drr the new default response rule
-	 * 
-	 * @return the dispatch response
-	 */
-	public DispatchResponse setDefaultResponse(DispatchResponseRule drr) {
-		drr.setId(ResponseRule.DEFAULT_ID);
-		return super.addResponse(drr);
+	public void setDefaultResponse(Responsible defaultResponse) {
+		this.defaultResponse = defaultResponse;
 	}
-	
-	/**
-	 * Sets the default response rule.
-	 * 
-	 * @param rrr the new default response rule
-	 * 
-	 * @return the redirect response
-	 */
-	public RedirectResponse setDefaultResponse(RedirectResponseRule rrr) {
-		rrr.setId(ResponseRule.DEFAULT_ID);
-		return super.addResponse(rrr);
-	}
-	
-	/**
-	 * Sets the default response rule.
-	 * 
-	 * @param frr the new default response rule
-	 * 
-	 * @return the forward response
-	 */
-	public ForwardResponse setDefaultResponse(ForwardResponseRule frr) {
-		frr.setId(ResponseRule.DEFAULT_ID);
-		return super.addResponse(frr);
-	}
-	
+
 	/**
 	 * Adds the response rule.
 	 * 
@@ -92,14 +85,13 @@ public class ResponseByContentTypeRule extends AbstractResponseRule implements R
 	 * @return the transform response
 	 */
 	public AbstractTransform addResponse(TransformRule tr) {
-		if(tr.getContentType() == null)
-			return setDefaultResponse(tr);
-
-		tr.setId(tr.getContentType().toString());
+		AbstractTransform transformResponse = AbstractTransform.createTransformer(tr);
 		
-		return super.addResponse(tr);
+		responseMap.put(tr.getContentType(), transformResponse);
+		
+		return transformResponse;
 	}
-	
+
 	/**
 	 * Adds the response rule.
 	 * 
@@ -108,13 +100,11 @@ public class ResponseByContentTypeRule extends AbstractResponseRule implements R
 	 * @return the dispatch response
 	 */
 	public DispatchResponse addResponse(DispatchResponseRule drr) {
-		if(drr.getContentType() == null)
-			return setDefaultResponse(drr);
+		DispatchResponse dispatchResponse = new DispatchResponse(drr);
 		
-		drr.setId(drr.getContentType().toString());
-
+		responseMap.put(drr.getContentType(), dispatchResponse);
 		
-		return super.addResponse(drr);
+		return dispatchResponse;
 	}
 	
 	/**
@@ -125,12 +115,11 @@ public class ResponseByContentTypeRule extends AbstractResponseRule implements R
 	 * @return the redirect response
 	 */
 	public RedirectResponse addResponse(RedirectResponseRule rrr) {
-		if(rrr.getContentType() == null)
-			return setDefaultResponse(rrr);
-			
-		rrr.setId(rrr.getContentType().toString());
+		RedirectResponse redirectResponse = new RedirectResponse(rrr);
+
+		responseMap.put(rrr.getContentType(), redirectResponse);
 		
-		return super.addResponse(rrr);
+		return redirectResponse;
 	}
 	
 	/**
@@ -141,11 +130,80 @@ public class ResponseByContentTypeRule extends AbstractResponseRule implements R
 	 * @return the forward response
 	 */
 	public ForwardResponse addResponse(ForwardResponseRule frr) {
-		if(frr.getContentType() == null)
-			return setDefaultResponse(frr);
-		
-		frr.setId(frr.getContentType().toString());
+		ForwardResponse forwardResponse = new ForwardResponse(frr);
 
-		return super.addResponse(frr);
+		responseMap.put(frr.getContentType(), forwardResponse);
+		
+		return forwardResponse;
 	}
+
+	/**
+	 * Adds the response.
+	 * 
+	 * @param resonse the resonse
+	 */
+	public void addResponse(Responsible response) {
+		responseMap.put(response.getContentType(), response);
+	}
+	
+	/**
+	 * Sets the default response rule.
+	 * 
+	 * @param tr the new default response rule
+	 * 
+	 * @return the transform response
+	 */
+	public AbstractTransform setDefaultResponse(TransformRule tr) {
+		AbstractTransform transformResponse = AbstractTransform.createTransformer(tr);
+		
+		this.defaultResponse = transformResponse;
+		
+		return transformResponse;
+	}
+
+	/**
+	 * Sets the default response rule.
+	 * 
+	 * @param drr the new default response rule
+	 * 
+	 * @return the dispatch response
+	 */
+	public DispatchResponse setDefaultResponse(DispatchResponseRule drr) {
+		DispatchResponse dispatchResponse = new DispatchResponse(drr);
+		
+		this.defaultResponse = dispatchResponse;
+		
+		return dispatchResponse;
+	}
+	
+	/**
+	 * Sets the default response rule.
+	 * 
+	 * @param rrr the new default response rule
+	 * 
+	 * @return the redirect response
+	 */
+	public RedirectResponse setDefaultResponse(RedirectResponseRule rrr) {
+		RedirectResponse redirectResponse = new RedirectResponse(rrr);
+
+		this.defaultResponse = redirectResponse;
+		
+		return redirectResponse;
+	}
+	
+	/**
+	 * Sets the default response rule.
+	 * 
+	 * @param frr the new default response rule
+	 * 
+	 * @return the forward response
+	 */
+	public ForwardResponse setDefaultResponse(ForwardResponseRule frr) {
+		ForwardResponse forwardResponse = new ForwardResponse(frr);
+
+		this.defaultResponse = forwardResponse;
+		
+		return forwardResponse;
+	}
+
 }

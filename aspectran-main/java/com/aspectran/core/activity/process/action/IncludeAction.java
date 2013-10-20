@@ -107,6 +107,10 @@ public class IncludeAction extends AbstractAction implements Executable {
 		return ActionType.INCLUDE;
 	}
 
+	public String getBeanMethodName() {
+		return null;
+	}
+	
 	public AspectAdviceRuleRegistry getAspectAdviceRuleRegistry() {
 		return includeActionRule.getAspectAdviceRuleRegistry();
 	}

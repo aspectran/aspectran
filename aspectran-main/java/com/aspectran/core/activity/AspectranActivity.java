@@ -69,8 +69,6 @@ public interface AspectranActivity {
 	
 	public AspectranContext getContext();
 	
-	public Responsible getResponse(String responseId);
-	
 	public Responsible getResponse();
 	
 	public Object getBean(String id);

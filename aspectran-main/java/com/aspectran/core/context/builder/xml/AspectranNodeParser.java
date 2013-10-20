@@ -18,6 +18,7 @@ package com.aspectran.core.context.builder.xml;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.nio.charset.IllegalCharsetNameException;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
@@ -26,7 +27,6 @@ import org.w3c.dom.Node;
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.activity.process.ContentList;
 import com.aspectran.core.activity.response.ResponseMap;
-import com.aspectran.core.activity.response.Responsible;
 import com.aspectran.core.context.bean.ablility.DisposableBean;
 import com.aspectran.core.context.bean.ablility.InitializableBean;
 import com.aspectran.core.context.bean.loader.BeanClassLoader;
@@ -277,19 +277,12 @@ public class AspectranNodeParser {
 		parser.addNodelet("/aspectran/translet", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
 				String name = attributes.getProperty("name");
-				String parentTransletName = attributes.getProperty("extends");
 
 				if(name == null)
 					throw new IllegalArgumentException("The <translet> element requires a name attribute.");
 
-				name = assistant.applyNamespaceForTranslet(name);
-				
-				if(parentTransletName != null && parentTransletName.startsWith("."))
-					parentTransletName = assistant.applyNamespaceForTranslet(parentTransletName.substring(1));
-
 				TransletRule transletRule = new TransletRule();
 				transletRule.setName(name);
-				transletRule.setParentTransletName(parentTransletName);
 
 				assistant.pushObject(transletRule);
 			}
@@ -422,14 +415,14 @@ public class AspectranNodeParser {
 		
 		parser.addNodelet("/aspectran/translet/response", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
-				String defaultResponseId = attributes.getProperty("default");
+				String name = attributes.getProperty("name");
 				String characterEncoding = attributes.getProperty("characterEncoding");
 
 				if(characterEncoding != null && !Charset.isSupported(characterEncoding))
 					throw new IllegalCharsetNameException("Given charset name is illegal. '" + characterEncoding + "'");
 				
 				ResponseRule responseRule = new ResponseRule();
-				responseRule.setDefaultResponseId(defaultResponseId);
+				responseRule.setName(name);
 				responseRule.setCharacterEncoding(characterEncoding);
 
 				assistant.pushObject(responseRule);
@@ -442,7 +435,7 @@ public class AspectranNodeParser {
 			public void process(Node node, Properties attributes, String text) throws Exception {
 				ResponseRule responseRule = (ResponseRule)assistant.popObject();
 				TransletRule transletRule = (TransletRule)assistant.peekObject();
-				transletRule.setResponseRule(responseRule);
+				transletRule.addResponseRule(responseRule);
 			}
 		});
 		parser.addNodelet("/aspectran/translet/exception", new Nodelet() {
@@ -504,23 +497,41 @@ public class AspectranNodeParser {
 					transletRule.setResponseRule(responseRule);
 				}
 				
-				assistant.addTransletRule(transletRule);
-
-				if(assistant.isMultipleTransletEnable()) {
-					ResponseMap responseMap = transletRule.getResponseRule().getResponseMap();
+				List<ResponseRule> responseRuleList = transletRule.getResponseRuleList();
+				
+				if(responseRuleList == null || responseRuleList.size() == 0) {
+					transletRule.setName(assistant.applyNamespaceForTranslet(transletRule.getName()));
 					
-					for(Responsible response : responseMap) {
-						String responseId = response.getId();
+					assistant.addTransletRule(transletRule);
+				} else if(responseRuleList.size() == 1) {
+					transletRule.setResponseRule(responseRuleList.get(0));
+					transletRule.setResponseRuleList(null);
+					transletRule.setName(assistant.applyNamespaceForTranslet(transletRule.getName()));
+					
+					assistant.addTransletRule(transletRule);
+				} else if(responseRuleList.size() > 1) {
+					ResponseRule defaultResponseRule = null;
+					
+					for(ResponseRule responseRule : responseRuleList) {
+						String responseName = responseRule.getName();
 						
-						if(!ResponseRule.DEFAULT_ID.equals(responseId)) {
-							String transletName = assistant.replaceTransletNameSuffix(transletRule.getName(), responseId);
+						if(responseName == null || responseName.length() == 0) {
+							defaultResponseRule = responseRule;
+						} else {
+							TransletRule subTransletRule = transletRule.newSubTransletRule(responseRule);
+							subTransletRule.setName(assistant.applyNamespaceForTranslet(subTransletRule.getName()));
+							System.out.println("subTransletRuleName: " + subTransletRule.getName());
 							
-							TransletRule transletRule2 = (TransletRule)transletRule.clone();
-							transletRule2.setName(transletName);
-							transletRule2.setMultipleTransletResponseId(responseId);
-							
-							assistant.addTransletRule(transletRule2);
+							assistant.addTransletRule(subTransletRule);
 						}
+					}
+					
+					if(defaultResponseRule != null) {
+						transletRule.setResponseRule(defaultResponseRule);
+						transletRule.setName(assistant.applyNamespaceForTranslet(transletRule.getName()));
+						responseRuleList.remove(defaultResponseRule);
+						
+						assistant.addTransletRule(transletRule);
 					}
 				}
 			}

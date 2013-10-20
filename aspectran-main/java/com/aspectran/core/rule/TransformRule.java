@@ -32,8 +32,6 @@ public class TransformRule extends ActionPossessSupport implements ActionPossess
 	
 	public static final ResponseType RESPONSE_TYPE = ResponseType.TRANSFORM;
 
-	protected String id;
-
 	protected TransformType transformType;
 
 	protected String contentType;
@@ -52,24 +50,6 @@ public class TransformRule extends ActionPossessSupport implements ActionPossess
 	
 	private ActionList actionList;
 	
-	/**
-	 * Gets the id.
-	 * 
-	 * @return the id
-	 */
-	public String getId() {
-		return id;
-	}
-
-	/**
-	 * Sets the id.
-	 * 
-	 * @param id the new id
-	 */
-	public void setId(String id) {
-		this.id = id;
-	}
-
 	/**
 	 * Gets the transform type.
 	 * 
@@ -245,8 +225,7 @@ public class TransformRule extends ActionPossessSupport implements ActionPossess
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 
-		sb.append("{id=").append(id);
-		sb.append(", transformType=").append(transformType);
+		sb.append("{transformType=").append(transformType);
 		sb.append(", contentType=").append(contentType);
 		sb.append(", characterEncoding=").append(characterEncoding);
 

@@ -18,11 +18,9 @@ package com.aspectran.core.activity.process.action;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import com.aspectran.core.activity.AspectranActivity;
 import com.aspectran.core.activity.process.ActionList;
+import com.aspectran.core.context.AspectranContextConstant;
 import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
 import com.aspectran.core.rule.BeanActionRule;
 import com.aspectran.core.rule.ItemRule;
@@ -42,6 +40,8 @@ public class BeanAction extends AbstractAction implements Executable {
 	//private final Log log = LogFactory.getLog(BeanAction.class);
 
 	private final BeanActionRule beanActionRule;
+	
+	private final String beanMethodName;
 
 	/**
 	 * Instantiates a new bean action.
@@ -52,6 +52,7 @@ public class BeanAction extends AbstractAction implements Executable {
 	public BeanAction(BeanActionRule beanActionRule, ActionList parent) {
 		super(beanActionRule.getActionId(), parent);
 		this.beanActionRule = beanActionRule;
+		this.beanMethodName = beanActionRule.getBeanId() + AspectranContextConstant.BEAN_ID_SEPARATOR + beanActionRule.getMethodName();
 	}
 	
 	/* (non-Javadoc)
@@ -106,6 +107,10 @@ public class BeanAction extends AbstractAction implements Executable {
 
 	public ActionType getActionType() {
 		return ActionType.BEAN;
+	}
+	
+	public String getBeanMethodName() {
+		return beanMethodName;
 	}
 	
 	public AspectAdviceRuleRegistry getAspectAdviceRuleRegistry() {

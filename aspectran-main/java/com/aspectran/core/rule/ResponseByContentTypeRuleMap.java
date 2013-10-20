@@ -29,17 +29,17 @@ public class ResponseByContentTypeRuleMap extends LinkedHashMap<String, Response
 	/** @serial */
 	static final long serialVersionUID = -8447972570153335744L;
 	
-	private ResponseByContentTypeRule responseByContentTypeRule;
+	private ResponseByContentTypeRule defaultResponseByContentTypeRule;
 	
 	public ResponseByContentTypeRule getResponseByContentTypeRule() {
-		return responseByContentTypeRule;
+		return defaultResponseByContentTypeRule;
 	}
 
 	public ResponseByContentTypeRule putResponseByContentTypeRule(ResponseByContentTypeRule responseByContentTypeRule) {
 		String exceptionType = responseByContentTypeRule.getExceptionType();
 		
 		if(exceptionType == null) {
-			this.responseByContentTypeRule = responseByContentTypeRule;
+			this.defaultResponseByContentTypeRule = responseByContentTypeRule;
 			return responseByContentTypeRule;
 		}
 		
@@ -61,7 +61,7 @@ public class ResponseByContentTypeRuleMap extends LinkedHashMap<String, Response
 		}
 		
 		if(responseByContentTypeRule == null)
-			return this.responseByContentTypeRule;
+			return this.defaultResponseByContentTypeRule;
 		
 		return responseByContentTypeRule;
 	}

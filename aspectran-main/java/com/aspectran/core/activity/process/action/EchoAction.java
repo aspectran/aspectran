@@ -85,6 +85,10 @@ public class EchoAction extends AbstractAction implements Executable {
 		return ActionType.ECHO;
 	}
 	
+	public String getBeanMethodName() {
+		return null;
+	}
+	
 	public AspectAdviceRuleRegistry getAspectAdviceRuleRegistry() {
 		return echoActionRule.getAspectAdviceRuleRegistry();
 	}

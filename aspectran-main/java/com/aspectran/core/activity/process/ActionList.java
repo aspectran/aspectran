@@ -40,6 +40,10 @@ public class ActionList extends ArrayList<Executable> {
 	private Boolean hidden;
 	
 	private ContentList parent;
+
+	public ActionList() {
+		super();
+	}
 	
 	/**
 	 * Instantiates a new action list.

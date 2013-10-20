@@ -28,8 +28,6 @@ public class DispatchResponseRule extends ActionPossessSupport implements Action
 	
 	public static final ResponseType RESPONSE_TYPE = ResponseType.DISPATCH;
 	
-	private String id;
-	
 	private String contentType;
 
 	protected String characterEncoding;
@@ -42,24 +40,6 @@ public class DispatchResponseRule extends ActionPossessSupport implements Action
 	
 	private Boolean templateNoCache;
 	
-	/**
-	 * Gets the id.
-	 * 
-	 * @return the id
-	 */
-	public String getId() {
-		return id;
-	}
-
-	/**
-	 * Sets the id.
-	 * 
-	 * @param id the new id
-	 */
-	public void setId(String id) {
-		this.id = id;
-	}
-
 	/**
 	 * Gets the content type.
 	 * 
@@ -135,8 +115,7 @@ public class DispatchResponseRule extends ActionPossessSupport implements Action
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 
-		sb.append("{id=").append(id);
-		sb.append(", contentType=").append(contentType);
+		sb.append("{contentType=").append(contentType);
 		sb.append(", characterEncoding=").append(characterEncoding);
 		
 		if(actionList != null) {

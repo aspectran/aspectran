@@ -155,9 +155,6 @@ public class InheritedAspectranSettings {
 		if(settings.get(AspectranSettingType.NULLABLE_ACTION_ID) != null)
 			nullableActionId = Boolean.valueOf(settings.get(AspectranSettingType.NULLABLE_ACTION_ID));
 		
-		if(settings.get(AspectranSettingType.MULTIPLE_TRANSLET_ENABLE) != null)
-			multipleTransletEnable = Boolean.valueOf(settings.get(AspectranSettingType.MULTIPLE_TRANSLET_ENABLE));
-		
 		if(settings.get(AspectranSettingType.TRANSLET_NAME_PATTERN_PREFIX) != null)
 			setTransletNamePatternPrefix(settings.get(AspectranSettingType.TRANSLET_NAME_PATTERN_PREFIX));
 		

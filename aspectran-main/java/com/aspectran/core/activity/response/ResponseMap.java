@@ -27,17 +27,6 @@ public class ResponseMap extends LinkedHashMap<String, Responsible> implements I
 	static final long serialVersionUID = 2093093144584776388L;
 
 	/**
-	 * Puts a responsible.
-	 * 
-	 * @param responsible the responsible
-	 * 
-	 * @return the responsible
-	 */
-	public Responsible putResponse(Responsible responsible) {
-		return put(responsible.getId(), responsible);
-	}
-	
-	/**
 	 * Gets the response.
 	 * 
 	 * @param index the index
