@@ -74,10 +74,8 @@
 		</response>
 	</translet>
 
-
 	<translet name="goNaver">
 		<redirect url="http://www.naver.com"/>
 	</translet>
-
 	
 </aspectran>
