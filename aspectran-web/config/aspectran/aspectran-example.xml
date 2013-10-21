@@ -5,7 +5,7 @@
 <aspectran>
 
 	<settings>
-		<setting name="transletNamePattern" value="/example/*.do"/>
+		<setting name="transletNamePattern" value="/example/*"/>
 		<setting name="transletInterfaceClass" value="com.aspectran.web.activity.WebTranslet"/>
 		<setting name="transletImplementClass" value="com.aspectran.web.activity.AspectranWebTranslet"/>
 		<setting name="useNamespaces" value="true"/>
@@ -32,11 +32,24 @@
 			<setting name="viewDispatcher" value="jspViewDispatcher"/>
 		</settings>
 	</aspect>
+
+	<aspect id="helloAdvice">
+		<joinpoint target="translet" scope="action">
+			<pointcut>/example/hello/*@applyTheAdvice</pointcut>
+		</joinpoint>
+		<before>
+			<action bean="advice.HelloAdvice" method="beforeCountTo10"/>
+		</before>
+		<after>
+			<action bean="advice.HelloAdvice" method="afterCountTo10"/>
+		</after>
+	</aspect>
 	
 	<bean id="example.*" class="com.aspectran.example.**.*Action" scope="singleton"/>
+	<bean id="advice.*" class="com.aspectran.example.aspect.**.*Advice" scope="singleton"/>
 
 	<translet name="hello">
-		<transform contentType="text/plain" type="transform/text">
+		<transform type="transform/text">
 			<template>
 				hello~ ${name}
 			</template>
@@ -44,7 +57,7 @@
 	</translet>
 
 	<translet name="hello/countTo10">
-		<transform contentType="text/plain" type="transform/text">
+		<transform type="transform/text">
 			<action id="result" bean="example.hello.HelloAction" method="countTo10"/>
 			<template>
 				@{result}
@@ -53,14 +66,14 @@
 	</translet>
 
 	<translet name="hello/countTo10.xml">
-		<transform contentType="text/xml" type="transform/xml">
+		<transform type="transform/xml">
 			<action id="result" bean="example.hello.HelloAction" method="countTo10AsArray"/>
 		</transform>
 	</translet>
 
 	<translet name="hello/countTo10ext">
 		<response>
-			<transform contentType="text/plain" type="transform/text">
+			<transform type="transform/text">
 				<action id="result" bean="example.hello.HelloAction" method="countTo10"/>
 				<template>
 					@{result}
@@ -68,10 +81,16 @@
 			</transform>
 		</response>
 		<response name=".xml">
-			<transform contentType="text/xml" type="transform/xml">
+			<transform type="transform/xml">
 				<action id="result" bean="example.hello.HelloAction" method="countTo10AsArray"/>
 			</transform>
 		</response>
+	</translet>
+
+	<translet name="hello/applyTheAdvice.xml">
+		<transform type="transform/xml">
+			<action id="applyTheAdvice" bean="example.hello.HelloAction" method="applyTheAdvice"/>
+		</transform>
 	</translet>
 
 	<translet name="goNaver">

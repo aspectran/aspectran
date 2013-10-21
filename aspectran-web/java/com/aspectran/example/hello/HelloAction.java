@@ -1,5 +1,8 @@
 package com.aspectran.example.hello;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 import com.aspectran.web.activity.WebTranslet;
 
 public class HelloAction {
@@ -22,6 +25,18 @@ public class HelloAction {
 		}
 		
 		return arr;
+	}
+	
+	public Object applyTheAdvice(WebTranslet translet) {
+		Object beforeAdviceResult = translet.getBeforeAdviceResult("helloAdvice");
+		Object afterAdviceResult = translet.getAfterAdviceResult("helloAdvice");
+		
+		Map<String, Object> result = new LinkedHashMap<String, Object>();
+		result.put("beforeAdviceResult", beforeAdviceResult);
+		result.put("countTo10", countTo10AsArray(translet));
+		result.put("afterAdviceResult", afterAdviceResult);
+		
+		return result;
 	}
 	
 }
