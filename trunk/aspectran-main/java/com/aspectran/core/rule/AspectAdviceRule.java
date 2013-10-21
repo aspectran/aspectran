@@ -76,4 +76,20 @@ public class AspectAdviceRule {
 		responseByContentTypeRuleMap.putResponseByContentTypeRule(responseByContentTypeRule);
 	}
 	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+
+		sb.append("{aspectId=").append(aspectId);
+		sb.append(", aspectAdviceType=").append(aspectAdviceType);
+		sb.append(", action=").append(action);
+		sb.append(", responseByContentTypeRuleMap=").append(responseByContentTypeRuleMap);
+		sb.append("}");
+		
+		return sb.toString();
+	}
+	
 }

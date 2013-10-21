@@ -71,8 +71,8 @@ public class ResponseRuleNodeletAdder implements NodeletAdder {
 					throw new IllegalArgumentException("Unkown transform-type '" + typeString + "'.");
 
 				TransformRule tr = new TransformRule();
-				tr.setTransformType(transformType);
 				tr.setContentType(contentType);
+				tr.setTransformType(transformType);
 				tr.setCharacterEncoding(characterEncoding);
 
 				assistant.pushObject(tr);

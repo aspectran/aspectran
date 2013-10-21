@@ -100,5 +100,24 @@ public class AspectRule {
 	public void setActionList(ActionList actionList) {
 		this.actionList = actionList;
 	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		
+		sb.append("{id=").append(id);
+		sb.append(", joinpointTarget=").append(joinpointTarget);
+		sb.append(", joinpointScope=").append(joinpointScope);
+		sb.append(", pointcutRule=").append(pointcutRule);
+		sb.append(", settingsAdviceRule=").append(settingsAdviceRule);
+		sb.append(", aspectAdviceRuleList=").append(aspectAdviceRuleList);
+		sb.append(", actionListForScheduling=").append(actionList);
+		sb.append("}");
+		
+		return sb.toString();
+	}
 	
 }

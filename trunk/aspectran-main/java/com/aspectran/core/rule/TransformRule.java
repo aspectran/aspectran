@@ -20,6 +20,7 @@ import java.io.File;
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.activity.process.action.Executable;
 import com.aspectran.core.rule.ability.ActionPossessable;
+import com.aspectran.core.type.ContentType;
 import com.aspectran.core.type.ResponseType;
 import com.aspectran.core.type.TransformType;
 
@@ -66,6 +67,13 @@ public class TransformRule extends ActionPossessSupport implements ActionPossess
 	 */
 	public void setTransformType(TransformType transformType) {
 		this.transformType = transformType;
+		
+		if(contentType == null) {
+			if(transformType == TransformType.TEXT_TRANSFORM || transformType == TransformType.JSON_TRANSFORM)
+				contentType = ContentType.TEXT_PLAIN.toString();
+			else if(transformType == TransformType.XML_TRANSFORM)
+				contentType = ContentType.TEXT_XML.toString();
+		}
 	}
 
 	/**

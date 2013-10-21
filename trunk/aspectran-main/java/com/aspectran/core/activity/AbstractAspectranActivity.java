@@ -609,8 +609,9 @@ public abstract class AbstractAspectranActivity implements AspectranActivity {
 			Executable executableAction = aspectAdviceRule.getExecutableAction();
 			
 			Object adviceActionResult = executableAction.execute(this);
-			
+
 			if(adviceActionResult != null && adviceActionResult != ActionResult.NO_RESULT) {
+				log.debug("aspectAdviceRule " + aspectAdviceRule + " adviceActionResult: " + adviceActionResult);
 				translet.putAdviceResult(aspectAdviceRule, adviceActionResult);
 			}
 		}

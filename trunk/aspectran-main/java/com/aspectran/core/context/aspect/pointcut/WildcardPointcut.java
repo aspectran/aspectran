@@ -58,7 +58,7 @@ public class WildcardPointcut extends AbstractPointcut implements Pointcut {
 	}	
 
 	protected boolean matchBoth(PointcutPattern pointcutPattern, String transletName, String actionId) {
-		return matches(pointcutPattern.getActionIdPattern(), transletName, AspectranContextConstant.TRANSLET_NAME_SEPARATOR)
+		return matches(pointcutPattern.getTransletNamePattern(), transletName, AspectranContextConstant.TRANSLET_NAME_SEPARATOR)
 				&& matches(pointcutPattern.getActionIdPattern(), actionId, AspectranContextConstant.BEAN_ID_SEPARATOR);
 	}	
 	
@@ -80,7 +80,9 @@ public class WildcardPointcut extends AbstractPointcut implements Pointcut {
 			wildcardPattern = new WildcardPattern(pattern, separator);
 			reusableWildcardMatcherMap.put(pattern, wildcardPattern);
 		}
-		
+
+		System.out.println("pattern:" + pattern + " str:" + str + " result:" + wildcardPattern.matches(str));
+
 		return wildcardPattern.matches(str);
 	}
 	
