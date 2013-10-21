@@ -39,4 +39,18 @@ public class PointcutRule {
 		this.patternString = patternString;
 	}
 	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		
+		sb.append("{pointcutType=").append(pointcutType);
+		sb.append(", patternString=").append(patternString);
+		sb.append("}");
+		
+		return sb.toString();
+	}
+	
 }

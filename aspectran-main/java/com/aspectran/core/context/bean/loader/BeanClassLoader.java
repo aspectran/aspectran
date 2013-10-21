@@ -220,7 +220,13 @@ public class BeanClassLoader {
 				if(map != null)
 					classMap.putAll(map);
 			} else if(file.getName().endsWith(ClassUtils.CLASS_FILE_SUFFIX)) {
-				String className = basePackageName + relativePackageName + file.getName().substring(0, file.getName().length() - ClassUtils.CLASS_FILE_SUFFIX.length());
+				String className = null;
+				
+				if(relativePackageName != null)
+					className = basePackageName + relativePackageName + file.getName().substring(0, file.getName().length() - ClassUtils.CLASS_FILE_SUFFIX.length());
+				else
+					className = basePackageName + file.getName().substring(0, file.getName().length() - ClassUtils.CLASS_FILE_SUFFIX.length());
+				
 				String relativePath = className.substring(basePackageName.length(), className.length());
 				//System.out.println("  -file.getName(): " + file.getName());
 				//System.out.println("  -relativePath: " + relativePath);

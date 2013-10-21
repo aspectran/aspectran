@@ -362,6 +362,7 @@ public class TransletRule implements ResponseSettable, AspectAdviceSupport, Clon
 		StringBuilder sb = new StringBuilder();
 		
 		sb.append("{name=").append(name);
+		sb.append(", aspectAdviceRuleExists=").append(aspectAdviceRuleExists);
 		sb.append("}");
 		
 		return sb.toString();
