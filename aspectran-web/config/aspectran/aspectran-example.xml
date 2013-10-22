@@ -23,7 +23,9 @@
 	</aspect>
 	
 	<bean id="jspViewDispatcher" class="com.aspectran.web.view.JspViewDispatcher" scope="singleton"/>
-
+	<bean id="example.*" class="com.aspectran.example.**.*Action" scope="singleton"/>
+	<bean id="advice.*" class="com.aspectran.example.aspect.**.*Advice" scope="singleton"/>
+	
 	<aspect id="defaultResponseRule">
 		<joinpoint target="translet" scope="response"/>
 		<settings>
@@ -34,7 +36,7 @@
 	</aspect>
 
 	<aspect id="helloAdvice">
-		<joinpoint target="translet" scope="bean">
+		<joinpoint target="translet" scope="bean-content">
 			<pointcut>/example/hello/*@example.hello.HelloAction^applyTheAdvice</pointcut>
 		</joinpoint>
 		<before>
@@ -45,9 +47,6 @@
 		</after>
 	</aspect>
 	
-	<bean id="example.*" class="com.aspectran.example.**.*Action" scope="singleton"/>
-	<bean id="advice.*" class="com.aspectran.example.aspect.**.*Advice" scope="singleton"/>
-
 	<translet name="hello">
 		<transform type="transform/text">
 			<template>
@@ -82,7 +81,7 @@
 		</response>
 		<response name=".xml">
 			<transform type="transform/xml">
-				<action id="result" bean="example.hello.HelloAction" method="countTo10AsArray"/>
+				<action bean="example.hello.HelloAction" method="countTo10AsArray"/>
 			</transform>
 		</response>
 	</translet>
@@ -90,6 +89,31 @@
 	<translet name="hello/applyTheAdvice.xml">
 		<transform type="transform/xml">
 			<action id="applyTheAdvice" bean="example.hello.HelloAction" method="applyTheAdvice"/>
+		</transform>
+	</translet>
+
+	<translet name="echo">
+		<transform type="transform/text" contentType="text/html">
+			<echo id="echo">
+				<item name="map0" type="map">
+					<value name="item1">${item1:default1}</value>
+					<value name="item2">${item2:default2}</value>
+				</item>
+			</echo>
+			<template>
+			<![CDATA[
+				<html>
+				<body>
+					<dl>
+						<dt>item1</dt>
+						<dd>@{echo^map0.item1}</dd>
+						<dt>item2</dt>
+						<dd>@{echo^map0.item2}</dd>
+					</ul>
+				</body>
+				</html>
+			]]>
+			</template>
 		</transform>
 	</translet>
 
