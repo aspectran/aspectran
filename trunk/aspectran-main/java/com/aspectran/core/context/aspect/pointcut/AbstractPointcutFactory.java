@@ -3,6 +3,7 @@ package com.aspectran.core.context.aspect.pointcut;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.aspectran.core.context.AspectranConstant;
 import com.aspectran.core.rule.PointcutRule;
 import com.aspectran.core.type.PointcutPatternOperationType;
 import com.aspectran.core.type.PointcutType;
@@ -70,19 +71,41 @@ public abstract class AbstractPointcutFactory implements PointcutFactory {
 		PointcutPattern pointcutPattern = new PointcutPattern();
 		pointcutPattern.setPointcutPatternOperationType(pointcutPatternOperationType);
 		
-		int actionSeparatorIndex = pattern.indexOf(PointcutPattern.ACTION_SEPARATOR);
+		String transletNamePattern = null;
+		String actionNamePattern = null;
+		String beanMethodNamePattern = null;
+
+		int actionDelimiterIndex = pattern.indexOf(AspectranConstant.POINTCUT_ACTION_DELIMITER);
 		
-		if(actionSeparatorIndex == -1)
-			pointcutPattern.setTransletNamePattern(pattern);
-		else if(actionSeparatorIndex == 0)
-			pointcutPattern.setActionIdPattern(pattern);
+		if(actionDelimiterIndex == -1)
+			transletNamePattern = pattern;
+		else if(actionDelimiterIndex == 0)
+			actionNamePattern = pattern.substring(1);
 		else {
-			String transletNamePattern = pattern.substring(0, actionSeparatorIndex);
-			String actionIdPattern = pattern.substring(actionSeparatorIndex + 1);
-			
-			pointcutPattern.setTransletNamePattern(transletNamePattern);
-			pointcutPattern.setActionIdPattern(actionIdPattern);
+			transletNamePattern = pattern.substring(0, actionDelimiterIndex);
+			actionNamePattern = pattern.substring(actionDelimiterIndex + 1);
 		}
+
+		if(actionNamePattern != null) {
+			int beanMethodDelimiterIndex = actionNamePattern.indexOf(AspectranConstant.POINTCUT_ACTION_BEAN_METHOD_DELIMITER);
+			
+			if(beanMethodDelimiterIndex == 0) {
+				beanMethodNamePattern = actionNamePattern.substring(1);
+				actionNamePattern = null;
+			} else if(beanMethodDelimiterIndex > 0) {
+				beanMethodNamePattern = actionNamePattern.substring(beanMethodDelimiterIndex + 1);
+				actionNamePattern = actionNamePattern.substring(0, beanMethodDelimiterIndex);
+			}
+		}
+		
+		if(transletNamePattern != null)
+			pointcutPattern.setTransletNamePattern(transletNamePattern);
+		
+		if(actionNamePattern != null)
+			pointcutPattern.setActionNamePattern(actionNamePattern);
+
+		if(beanMethodNamePattern != null)
+			pointcutPattern.setBeanMethodNamePattern(beanMethodNamePattern);
 		
 		return pointcutPattern;
 	}

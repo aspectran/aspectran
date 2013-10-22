@@ -19,7 +19,7 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.aspectran.core.context.AspectranContextConstant;
+import com.aspectran.core.context.AspectranConstant;
 import com.aspectran.core.rule.AspectRule;
 import com.aspectran.core.rule.AspectRuleMap;
 import com.aspectran.core.rule.BeanRule;
@@ -192,7 +192,7 @@ public class AspectranContextBuildingAssistant {
 		
 		if(inheritedAspectranSettings.isUseNamespaces() && namespace != null) {
 			sb.append(namespace);
-			sb.append(AspectranContextConstant.TRANSLET_NAME_SEPARATOR);
+			sb.append(AspectranConstant.TRANSLET_NAME_SEPARATOR);
 		}
 		
 		sb.append(transletName);
@@ -209,20 +209,20 @@ public class AspectranContextBuildingAssistant {
 		
 		StringBuilder sb = new StringBuilder();
 		sb.append(namespace);
-		sb.append(AspectranContextConstant.BEAN_ID_SEPARATOR);
+		sb.append(AspectranConstant.BEAN_ID_SEPARATOR);
 		sb.append(beanId);
 		return sb.toString();
 	}
 	
 	public String replaceTransletNameSuffix(String name, String transletNameSuffix) {
 		if(inheritedAspectranSettings.getTransletNamePatternSuffix() == null)
-			return name + AspectranContextConstant.TRANSLET_NAME_EXTENTION_SEPARATOR + transletNameSuffix;
+			return name + AspectranConstant.TRANSLET_NAME_EXTENTION_DELIMITER + transletNameSuffix;
 		
 		int index = name.indexOf(inheritedAspectranSettings.getTransletNamePatternSuffix());
 		
 		StringBuilder sb = new StringBuilder();
 		sb.append(name.substring(0, index));
-		sb.append(AspectranContextConstant.TRANSLET_NAME_EXTENTION_SEPARATOR);
+		sb.append(AspectranConstant.TRANSLET_NAME_EXTENTION_DELIMITER);
 		sb.append(transletNameSuffix);
 		
 		return sb.toString();

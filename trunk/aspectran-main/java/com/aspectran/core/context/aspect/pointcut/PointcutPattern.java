@@ -19,14 +19,14 @@ import com.aspectran.core.type.PointcutPatternOperationType;
 
 public class PointcutPattern {
 	
-	public static final String ACTION_SEPARATOR = "@";
-
 	private PointcutPatternOperationType pointcutPatternOperationType;
 	
 	private String transletNamePattern;
 	
-	private String actionIdPattern;
+	private String actionNamePattern;
 
+	private String beanMethodNamePattern;
+	
 	public PointcutPatternOperationType getPointcutPatternOperationType() {
 		return pointcutPatternOperationType;
 	}
@@ -43,12 +43,20 @@ public class PointcutPattern {
 		this.transletNamePattern = transletNamePattern;
 	}
 
-	public String getActionIdPattern() {
-		return actionIdPattern;
+	public String getActionNamePattern() {
+		return actionNamePattern;
 	}
 
-	public void setActionIdPattern(String actionIdPattern) {
-		this.actionIdPattern = actionIdPattern;
+	public void setActionNamePattern(String actionIdPattern) {
+		this.actionNamePattern = actionIdPattern;
+	}
+
+	public String getBeanMethodNamePattern() {
+		return beanMethodNamePattern;
+	}
+
+	public void setBeanMethodNamePattern(String beanMethodNamePattern) {
+		this.beanMethodNamePattern = beanMethodNamePattern;
 	}
 	
 }

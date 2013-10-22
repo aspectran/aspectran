@@ -15,7 +15,7 @@
  */
 package com.aspectran.core.activity.process;
 
-import com.aspectran.core.context.AspectranContextConstant;
+import com.aspectran.core.context.AspectranConstant;
 
 /*
  * <p>Created: 2008. 7. 2. 오전 12:16:12</p>
@@ -38,7 +38,7 @@ public class FullActionIdConcator {
 		sb.append(contentId);
 
 		if(actionId != null) {
-			sb.append(AspectranContextConstant.ACTION_ID_SEPARATOR);
+			sb.append(AspectranConstant.ACTION_ID_SEPARATOR);
 			sb.append(actionId);
 		}
 
@@ -62,12 +62,12 @@ public class FullActionIdConcator {
 		sb.append(parentFullActionId);
 
 		if(contentId != null) {
-			sb.append(AspectranContextConstant.ACTION_ID_SEPARATOR);
+			sb.append(AspectranConstant.ACTION_ID_SEPARATOR);
 			sb.append(contentId);
 		}
 
 		if(actionId != null) {
-			sb.append(AspectranContextConstant.ACTION_ID_SEPARATOR);
+			sb.append(AspectranConstant.ACTION_ID_SEPARATOR);
 			sb.append(actionId);
 		}
 

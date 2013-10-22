@@ -27,7 +27,7 @@ import com.aspectran.core.activity.process.result.ProcessResult;
 import com.aspectran.core.activity.response.Responsible;
 import com.aspectran.core.activity.response.transform.json.ContentsJSONWriter;
 import com.aspectran.core.adapter.ResponseAdapter;
-import com.aspectran.core.context.AspectranContextConstant;
+import com.aspectran.core.context.AspectranConstant;
 import com.aspectran.core.rule.TransformRule;
 
 /**
@@ -79,7 +79,7 @@ public class JsonTransform extends AbstractTransform implements Responsible {
 				StringWriter writer = new StringWriter();
 				ContentsJSONWriter contentsJSONWriter2 = new ContentsJSONWriter(writer, true);
 				contentsJSONWriter2.write(processResult);
-				log.trace("JSON Source: " + AspectranContextConstant.LINE_SEPARATOR + writer.toString());
+				log.trace("JSON Source: " + AspectranConstant.LINE_SEPARATOR + writer.toString());
 			}
 			
 			if(debugEnabled) {

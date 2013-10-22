@@ -17,7 +17,7 @@ package com.aspectran.core.context.builder;
 
 import java.util.Map;
 
-import com.aspectran.core.context.AspectranContextConstant;
+import com.aspectran.core.context.AspectranConstant;
 import com.aspectran.core.type.AspectranSettingType;
 
 /**
@@ -54,7 +54,7 @@ public class InheritedAspectranSettings {
 		this.transletNamePattern = transletNamePattern;
 		
 		if(transletNamePattern != null) {
-			int index = transletNamePattern.indexOf(AspectranContextConstant.TRANSLET_NAME_PATTERN_SEPARATOR);
+			int index = transletNamePattern.indexOf(AspectranConstant.TRANSLET_NAME_PATTERN_SEPARATOR);
 			
 			if(index != -1) {
 				if(index == 0) {
@@ -72,7 +72,7 @@ public class InheritedAspectranSettings {
 	}
 	
 	public void setTransletNamePattern(String transletNamePatternPrefix, String transletNamePatternSuffix) {
-		transletNamePattern = transletNamePatternPrefix + AspectranContextConstant.TRANSLET_NAME_PATTERN_SEPARATOR + transletNamePatternSuffix;
+		transletNamePattern = transletNamePatternPrefix + AspectranConstant.TRANSLET_NAME_PATTERN_SEPARATOR + transletNamePatternSuffix;
 	}
 	
 	public void setTransletNamePatternPrefix(String transletNamePatternPrefix) {
