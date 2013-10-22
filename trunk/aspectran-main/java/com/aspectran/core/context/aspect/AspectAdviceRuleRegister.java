@@ -67,7 +67,28 @@ public class AspectAdviceRuleRegister {
 						transletRule.setAspectAdviceRuleExists(true);
 					}
 				} else if(joinpointScope == JoinpointScopeType.CONTENT) {
-					if(pointcut == null || pointcut.matches(transletRule.getName())) {
+					if(pointcut != null && pointcut.isActionInfluenced()) {
+						ContentList contentList = transletRule.getContentList();
+						
+						if(contentList != null) {
+							boolean actionExists = false;
+	
+							for(ActionList actionList : contentList) {
+								for(Executable action : actionList) {
+									if(pointcut.matches(transletRule.getName(), action.getFullActionId())) {
+										actionExists = true;
+										break;
+									}
+								}
+							}
+							
+							if(actionExists) {
+								log.debug("aspectRule " + aspectRule + " transletRule " + transletRule + " contentList " + contentList);
+								register(contentList, aspectRule);
+								transletRule.setAspectAdviceRuleExists(true);
+							}
+						}
+					} else if(pointcut == null || pointcut.matches(transletRule.getName())) {
 						ContentList contentList = transletRule.getContentList();
 						
 						if(contentList == null) {
@@ -92,7 +113,6 @@ public class AspectAdviceRuleRegister {
 					if(contentList != null) {
 						for(ActionList actionList : contentList) {
 							for(Executable action : actionList) {
-								log.debug("pointcut " + pointcut + " transletName " + transletRule.getName() + " fullActionId " + action.getFullActionId());
 								if(pointcut == null || pointcut.matches(transletRule.getName(), action.getFullActionId())) {
 									log.debug("aspectRule " + aspectRule + " transletRule " + transletRule + " action " + action);
 									register(action, aspectRule);
