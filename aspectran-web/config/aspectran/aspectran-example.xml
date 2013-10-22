@@ -34,8 +34,8 @@
 	</aspect>
 
 	<aspect id="helloAdvice">
-		<joinpoint target="translet" scope="action">
-			<pointcut>/example/hello/*@applyTheAdvice</pointcut>
+		<joinpoint target="translet" scope="bean">
+			<pointcut>/example/hello/*@example.hello.HelloAction^applyTheAdvice</pointcut>
 		</joinpoint>
 		<before>
 			<action bean="advice.HelloAdvice" method="beforeCountTo10"/>
