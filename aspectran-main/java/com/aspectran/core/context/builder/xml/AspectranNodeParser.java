@@ -41,6 +41,7 @@ import com.aspectran.core.rule.PointcutRule;
 import com.aspectran.core.rule.RequestRule;
 import com.aspectran.core.rule.ResponseByContentTypeRule;
 import com.aspectran.core.rule.ResponseRule;
+import com.aspectran.core.rule.SettingsAdviceRule;
 import com.aspectran.core.rule.TransletRule;
 import com.aspectran.core.type.AspectAdviceType;
 import com.aspectran.core.type.AspectranSettingType;
@@ -194,6 +195,35 @@ public class AspectranNodeParser {
 				assistant.pushObject(aspectRule);
 			}
 		});
+		parser.addNodelet("/aspectran/aspect/settings", new Nodelet() {
+			public void process(Node node, Properties attributes, String text) throws Exception {
+				AspectRule aspectRule = (AspectRule)assistant.peekObject();
+				
+				SettingsAdviceRule sar = new SettingsAdviceRule();
+				sar.setAspectId(aspectRule.getId());
+				sar.setAspectAdviceType(AspectAdviceType.SETTINGS);
+				
+				assistant.pushObject(sar);
+			}
+		});
+		parser.addNodelet("/aspectran/aspect/settings/setting", new Nodelet() {
+			public void process(Node node, Properties attributes, String text) throws Exception {
+				String name = attributes.getProperty("name");
+				String value = attributes.getProperty("value");
+				
+				if(name != null) {
+					SettingsAdviceRule sar = (SettingsAdviceRule)assistant.peekObject();
+					sar.putSetting(name, value);
+				}
+			}
+		});
+		parser.addNodelet("/aspectran/aspect/settings/end()", new Nodelet() {
+			public void process(Node node, Properties attributes, String text) throws Exception {
+				SettingsAdviceRule sar = (SettingsAdviceRule)assistant.popObject();
+				AspectRule aspectRule = (AspectRule)assistant.peekObject();
+				aspectRule.setSettingsAdviceRule(sar);
+			}
+		});	
 		parser.addNodelet("/aspectran/aspect/joinpoint", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
 				String target = attributes.getProperty("target");

@@ -15,6 +15,7 @@
  */
 package com.aspectran.core.rule;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import com.aspectran.core.type.AspectAdviceType;
@@ -55,5 +56,11 @@ public class SettingsAdviceRule {
 		return settings.get(name);
 	}
 	
-
+	public void putSetting(String name, String value) {
+		if(settings == null) {
+			settings = new HashMap<String, Object>();
+		}
+		
+		settings.put(name, value);
+	}
 }

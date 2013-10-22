@@ -27,6 +27,10 @@ public final class JoinpointScopeType extends Type {
 
 	public static final JoinpointScopeType CONTENT;
 	
+	public static final JoinpointScopeType ACTION_CONTENT;
+	
+	public static final JoinpointScopeType BEAN_CONTENT;
+	
 	public static final JoinpointScopeType RESPONSE;
 	
 	public static final JoinpointScopeType ACTION;
@@ -39,6 +43,8 @@ public final class JoinpointScopeType extends Type {
 		TRANSLET = new JoinpointScopeType("translet");
 		REQUEST = new JoinpointScopeType("request");
 		CONTENT = new JoinpointScopeType("content");
+		ACTION_CONTENT = new JoinpointScopeType("action-content");
+		BEAN_CONTENT = new JoinpointScopeType("bean-content");
 		RESPONSE = new JoinpointScopeType("response");
 		ACTION = new JoinpointScopeType("action");
 		BEAN = new JoinpointScopeType("bean");
@@ -47,6 +53,8 @@ public final class JoinpointScopeType extends Type {
 		types.put(TRANSLET.toString(), TRANSLET);
 		types.put(REQUEST.toString(), REQUEST);
 		types.put(CONTENT.toString(), CONTENT);
+		types.put(ACTION_CONTENT.toString(), ACTION_CONTENT);
+		types.put(BEAN_CONTENT.toString(), BEAN_CONTENT);
 		types.put(RESPONSE.toString(), RESPONSE);
 		types.put(ACTION.toString(), ACTION);
 		types.put(BEAN.toString(), BEAN);
