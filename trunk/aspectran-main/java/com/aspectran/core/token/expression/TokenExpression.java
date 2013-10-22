@@ -22,15 +22,15 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.StringTokenizer;
 
 import com.aspectran.core.activity.AspectranActivity;
-import com.aspectran.core.activity.process.result.ActionResult;
-import com.aspectran.core.activity.process.result.ContentResult;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.context.bean.BeanRegistry;
 import com.aspectran.core.token.Token;
 import com.aspectran.core.type.TokenType;
 import com.aspectran.core.util.BeanUtils;
+import com.aspectran.core.util.MethodUtils;
 import com.aspectran.core.util.StringUtils;
 
 /**
@@ -81,7 +81,7 @@ public class TokenExpression implements TokenExpressor {
 		} else	if(tokenType == TokenType.PARAMETER) {
 			value = getParameterValue(token.getName(), token.getDefaultText());
 		} else	if(tokenType == TokenType.ATTRIBUTE) {
-			value = getAttribute(token.getName());
+			value = getAttribute(token);
 		} else	if(tokenType == TokenType.REFERENCE_BEAN) {
 			//TODO
 			value = referenceBean(token);
@@ -285,33 +285,18 @@ public class TokenExpression implements TokenExpressor {
 	 * 
 	 * @return the attribute
 	 */
-	protected Object getAttribute(String name) {
+	protected Object getAttribute(Token token) {
 		Object value = null;
 		
 		if(requestAdapter != null)
-			value = requestAdapter.getAttribute(name);
+			value = requestAdapter.getAttribute(token.getName());
 		
 		if(value == null && activity.getProcessResult() != null)
-			value = activity.getProcessResult().getResultValue(name);
-		
-		return value;
-	}
-	
-	/**
-	 * Invoke bean property.
-	 * 
-	 * @param object the object
-	 * @param propertyName the property name
-	 * 
-	 * @return the object
-	 */
-	protected Object invokeBeanProperty(Object object, String propertyName) {
-		Object value = null;
-		
-		try {
-			value = BeanUtils.getObject(object, propertyName);
-		} catch(InvocationTargetException e) {
-			// ignore
+			value = activity.getProcessResult().getResultValue(token.getName());
+
+		if(value != null) {
+			if(token.getGetterName() != null)
+				value = invokeObjectProperty(value, token.getGetterName());
 		}
 		
 		return value;
@@ -357,6 +342,127 @@ public class TokenExpression implements TokenExpressor {
 		}
 		
 		return valueList;
+	}
+	
+	/**
+	 * Invoke bean property.
+	 * 
+	 * @param object the object
+	 * @param propertyName the property name
+	 * 
+	 * @return the object
+	 */
+	protected Object invokeBeanProperty(Object object, String propertyName) {
+		Object value = null;
+		
+		try {
+			value = BeanUtils.getObject(object, propertyName);
+		} catch(InvocationTargetException e) {
+			// ignore
+			//e.printStackTrace();
+		}
+		
+		return value;
+	}
+	
+	protected Object invokeObjectProperty(Object object, String propertyName) {
+		Object value = null;
+		
+		try {
+			if(propertyName.indexOf('.') > -1) {
+				StringTokenizer parser = new StringTokenizer(propertyName, ".");
+				value = object;
+				while(parser.hasMoreTokens()) {
+					value = getProperty(value, parser.nextToken());
+
+					if(value == null) {
+						break;
+					}
+				}
+				return value;
+			} else {
+				value = getProperty(object, propertyName);
+			}
+		} catch(InvocationTargetException e) {
+			// ignore
+			//e.printStackTrace();
+		}
+		
+		return value;
+	}
+	
+	private Object getProperty(Object object, String name) throws InvocationTargetException {
+		try {
+			Object value = null;
+			if(name.indexOf("[") > -1) {
+				value = getIndexedProperty(object, name);
+			} else {
+				if(object instanceof Map<?, ?>) {
+					value = ((Map<?, ?>)object).get(name);
+				} else {
+					value = MethodUtils.invokeMethod(object, name, null);
+				}
+			}
+			return value;
+		} catch(InvocationTargetException e) {
+			throw e;
+		} catch(Throwable t) {
+			if(object == null) {
+				throw new InvocationTargetException(t, "Could not get property '" + name
+						+ "' from null reference. Cause: " + t.toString());
+			} else {
+				throw new InvocationTargetException(t, "Could not get property '" + name + "' from "
+						+ object.getClass().getName() + ". Cause: " + t.toString());
+			}
+		}
+	}
+	
+	private Object getIndexedProperty(Object object, String indexedName) throws InvocationTargetException {
+
+		try {
+			String name = indexedName.substring(0, indexedName.indexOf("["));
+			int i = Integer.parseInt(indexedName.substring(indexedName.indexOf("[") + 1, indexedName.indexOf("]")));
+			Object list = null;
+
+			if(StringUtils.isEmpty(name)) {
+				list = object;
+			} else {
+				list = getProperty(object, name);
+			}
+
+			Object value = null;
+
+			if(list instanceof List<?>) {
+				value = ((List<?>)list).get(i);
+			} else if(list instanceof Object[]) {
+				value = ((Object[])list)[i];
+			} else if(list instanceof char[]) {
+				value = new Character(((char[])list)[i]);
+			} else if(list instanceof boolean[]) {
+				value = new Boolean(((boolean[])list)[i]);
+			} else if(list instanceof byte[]) {
+				value = new Byte(((byte[])list)[i]);
+			} else if(list instanceof double[]) {
+				value = new Double(((double[])list)[i]);
+			} else if(list instanceof float[]) {
+				value = new Float(((float[])list)[i]);
+			} else if(list instanceof int[]) {
+				value = new Integer(((int[])list)[i]);
+			} else if(list instanceof long[]) {
+				value = new Long(((long[])list)[i]);
+			} else if(list instanceof short[]) {
+				value = new Short(((short[])list)[i]);
+			} else {
+				throw new IllegalArgumentException("The '" + name + "' property of the " + object.getClass().getName()
+						+ " class is not a List or Array.");
+			}
+
+			return value;
+		} catch(InvocationTargetException e) {
+			throw e;
+		} catch(Exception e) {
+			throw new InvocationTargetException(e, "Error getting ordinal list from JavaBean. Cause: " + e);
+		}
 	}
 	
 }
