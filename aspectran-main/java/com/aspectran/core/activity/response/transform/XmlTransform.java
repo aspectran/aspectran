@@ -34,7 +34,7 @@ import com.aspectran.core.activity.response.Responsible;
 import com.aspectran.core.activity.response.transform.xml.ContentsInputSource;
 import com.aspectran.core.activity.response.transform.xml.ContentsXMLReader;
 import com.aspectran.core.adapter.ResponseAdapter;
-import com.aspectran.core.context.AspectranContextConstant;
+import com.aspectran.core.context.AspectranConstant;
 import com.aspectran.core.rule.TransformRule;
 
 /**
@@ -99,7 +99,7 @@ public class XmlTransform extends AbstractTransform implements Responsible {
 			if(traceEnabled) {
 				StringWriter writer = new StringWriter();
 				transformer.transform(new SAXSource(xreader, isource), new StreamResult(writer));
-				log.trace("XML Source: " + AspectranContextConstant.LINE_SEPARATOR + writer.toString());
+				log.trace("XML Source: " + AspectranConstant.LINE_SEPARATOR + writer.toString());
 			}
 			
 			if(debugEnabled) {

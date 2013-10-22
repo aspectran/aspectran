@@ -31,7 +31,7 @@ import com.aspectran.core.activity.response.RedirectResponse;
 import com.aspectran.core.activity.response.Responsible;
 import com.aspectran.core.activity.response.dispatch.DispatchResponse;
 import com.aspectran.core.activity.response.transform.AbstractTransform;
-import com.aspectran.core.context.AspectranContextConstant;
+import com.aspectran.core.context.AspectranConstant;
 import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
 import com.aspectran.core.rule.ability.ResponseSettable;
 import com.aspectran.core.type.ResponseType;
@@ -327,10 +327,10 @@ public class TransletRule implements ResponseSettable, AspectAdviceSupport, Clon
 		String responseName = responseRule.getName();
 		
 		if(responseName != null && responseName.length() > 0) {
-			if(responseName.charAt(0) == AspectranContextConstant.TRANSLET_NAME_EXTENTION_SEPARATOR) {
+			if(responseName.charAt(0) == AspectranConstant.TRANSLET_NAME_EXTENTION_DELIMITER) {
 				transletName += responseName;
 			} else {
-				transletName += AspectranContextConstant.TRANSLET_NAME_SEPARATOR + responseName;
+				transletName += AspectranConstant.TRANSLET_NAME_SEPARATOR + responseName;
 			}
 			
 			transletRule.setName(transletName);
@@ -374,7 +374,7 @@ public class TransletRule implements ResponseSettable, AspectAdviceSupport, Clon
 	 * @return the string
 	 */
 	public String describe() {
-		final String CRLF = AspectranContextConstant.LINE_SEPARATOR;
+		final String CRLF = AspectranConstant.LINE_SEPARATOR;
 		
 		StringBuilder sb = new StringBuilder();
 		

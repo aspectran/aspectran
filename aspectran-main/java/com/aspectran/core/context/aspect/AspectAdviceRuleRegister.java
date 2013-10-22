@@ -149,7 +149,8 @@ public class AspectAdviceRuleRegister {
 								if(action.getActionType() == ActionType.BEAN) {
 									BeanActionRule beanActionRule = ((BeanAction)action).getBeanActionRule();
 									
-									if(pointcut == null || pointcut.matches(transletRule.getName(), beanActionRule.getBeanId())) {
+									if(pointcut == null || pointcut.matches(transletRule.getName(), beanActionRule.getBeanId(), beanActionRule.getMethodName())) {
+										log.debug("aspectRule " + aspectRule + " transletRule " + transletRule + " beanActionRule " + beanActionRule);
 										register(action, aspectRule);
 										transletRule.setAspectAdviceRuleExists(true);
 									}
@@ -172,7 +173,10 @@ public class AspectAdviceRuleRegister {
 									if(actionList != null) {
 										for(Executable action : actionList) {
 											if(action.getActionType() == ActionType.BEAN) {
-												if(pointcut == null || pointcut.matches(transletRule.getName(), action.getBeanMethodName())) {
+												BeanActionRule beanActionRule = ((BeanAction)action).getBeanActionRule();
+												
+												if(pointcut == null || pointcut.matches(transletRule.getName(), beanActionRule.getBeanId(), beanActionRule.getMethodName())) {
+													log.debug("aspectRule " + aspectRule + " transletRule " + transletRule + " beanActionRule " + beanActionRule);
 													register(action, aspectRule);
 													transletRule.setAspectAdviceRuleExists(true);
 												}
@@ -188,7 +192,9 @@ public class AspectAdviceRuleRegister {
 								if(actionList != null) {
 									for(Executable action : actionList) {
 										if(action.getActionType() == ActionType.BEAN) {
-											if(pointcut == null || pointcut.matches(transletRule.getName(), action.getBeanMethodName())) {
+											BeanActionRule beanActionRule = ((BeanAction)action).getBeanActionRule();
+
+											if(pointcut == null || pointcut.matches(transletRule.getName(), beanActionRule.getBeanId(), beanActionRule.getMethodName())) {
 												register(action, aspectRule);
 												transletRule.setAspectAdviceRuleExists(true);
 											}

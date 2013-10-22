@@ -8,7 +8,7 @@ import com.aspectran.core.rule.PointcutRule;
 
 public class ReusePointcutFactory extends AbstractPointcutFactory implements PointcutFactory {
 
-	private Map<Object, Pointcut> reusablePointcutMap = new HashMap<Object, Pointcut>();
+	private Map<PointcutRule, Pointcut> reusablePointcutMap = new HashMap<PointcutRule, Pointcut>();
 	
 	protected Pointcut createWildcardPointcut(PointcutRule pointcutRule) {
 		WildcardPointcut wildcardPointcut = (WildcardPointcut)reusablePointcutMap.get(pointcutRule);
