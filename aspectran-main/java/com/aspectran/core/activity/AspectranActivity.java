@@ -27,7 +27,7 @@ import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.context.AspectranContext;
 import com.aspectran.core.context.bean.BeanRegistry;
 import com.aspectran.core.context.bean.scope.RequestScope;
-import com.aspectran.core.context.translet.TransletRuleRegistry;
+import com.aspectran.core.context.translet.TransletRegistry;
 
 /**
  * Action Translator.
@@ -85,7 +85,7 @@ public interface AspectranActivity {
 	
 	public BeanRegistry getBeanRegistry();
 	
-	public TransletRuleRegistry getTransletRuleRegistry();
+	public TransletRegistry getTransletRuleRegistry();
 	
 	public boolean isExceptionRaised();
 

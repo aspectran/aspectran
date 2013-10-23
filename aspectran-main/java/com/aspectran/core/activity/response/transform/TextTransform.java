@@ -244,7 +244,7 @@ public class TextTransform extends AbstractTransform implements Responsible {
 					}
 				}
 				
-				log.debug("text-transform template tokens: " + sb.toString());
+				log.debug("text-transform template tokens [" + sb.toString() + "]");
 			}
 		}
 //		

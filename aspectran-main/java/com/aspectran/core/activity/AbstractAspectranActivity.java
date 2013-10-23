@@ -42,7 +42,7 @@ import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
 import com.aspectran.core.context.bean.BeanRegistry;
 import com.aspectran.core.context.bean.scope.RequestScope;
 import com.aspectran.core.context.translet.TransletInstantiationException;
-import com.aspectran.core.context.translet.TransletRuleRegistry;
+import com.aspectran.core.context.translet.TransletRegistry;
 import com.aspectran.core.rule.AspectAdviceRule;
 import com.aspectran.core.rule.RequestRule;
 import com.aspectran.core.rule.ResponseByContentTypeRule;
@@ -349,10 +349,10 @@ public abstract class AbstractAspectranActivity implements AspectranActivity {
 	
 	public void init(String transletName) {
 		if(debugEnabled) {
-			log.debug(">> request: " + transletName);
+			log.debug(">> " + transletName);
 		}
 		
-		TransletRule transletRule = context.getTransletRuleRegistry().getTransletRule(transletName);
+		TransletRule transletRule = context.getTransletegistry().getTransletRule(transletName);
 
 		if(debugEnabled) {
 			log.debug("translet " + transletRule);
@@ -597,7 +597,7 @@ public abstract class AbstractAspectranActivity implements AspectranActivity {
 		Object resultValue = action.execute(this);
 		
 		if(debugEnabled)
-			log.debug("> result " + resultValue);
+			log.debug("@" + action.getFullActionId() + ": " + resultValue);
 		
 		if(!action.isHidden() && resultValue != ActionResult.NO_RESULT) {
 			translet.addActionResult(action.getActionId(), resultValue);
@@ -788,6 +788,9 @@ public abstract class AbstractAspectranActivity implements AspectranActivity {
 		return context.getBeanRegistry().getBean(id, this);
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.activity.AspectranActivity#newAspectranActivity()
+	 */
 	public abstract AspectranActivity newAspectranActivity();
 	
 	/**
@@ -893,8 +896,8 @@ public abstract class AbstractAspectranActivity implements AspectranActivity {
 	/* (non-Javadoc)
 	 * @see com.aspectran.core.activity.AspectranActivity#getTransletRegistry()
 	 */
-	public TransletRuleRegistry getTransletRuleRegistry() {
-		return context.getTransletRuleRegistry();
+	public TransletRegistry getTransletRuleRegistry() {
+		return context.getTransletegistry();
 	}
 	
 	public Object getRequestSetting(String settingName) {
