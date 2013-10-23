@@ -253,37 +253,13 @@ public class TokenExpression implements TokenExpressor {
 		
 		return value;
 	}
-	
-//	/**
-//	 * Gets the ticket property.
-//	 * 
-//	 * @param token the token
-//	 * 
-//	 * @return the ticket property
-//	 */
-//	protected Object getTicketProperty(Token token) {
-//		Object value = null;
-//		
-//		if(ticketBeanMap != null)
-//			value = ticketBeanMap.get(token.getName());
-//		
-//		if(value != null) {
-//			if(token.getGetterName() != null)
-//				value = invokeBeanProperty(value, token.getGetterName());
-//		}
-//		
-//		if(value == null)
-//			return token.getDefaultText();
-//		
-//		return value;
-//	}
 
 	/**
-	 * Gets the attribute.
+	 * Gets the attribute object from request attributes or action results.
 	 * 
-	 * @param name the name
+	 * @param name the attribute name or action id.
 	 * 
-	 * @return the attribute
+	 * @return the object
 	 */
 	protected Object getAttribute(Token token) {
 		Object value = null;
