@@ -24,7 +24,7 @@
 	
 	<bean id="jspViewDispatcher" class="com.aspectran.web.view.JspViewDispatcher" scope="singleton"/>
 	<bean id="example.*" class="com.aspectran.example.**.*Action" scope="singleton"/>
-	<bean id="advice.*" class="com.aspectran.example.aspect.**.*Advice" scope="singleton"/>
+	<bean id="advice.*" class="com.aspectran.example.aspect.**.*Advice" scope="session"/>
 	
 	<aspect id="defaultResponseRule">
 		<joinpoint target="translet" scope="response"/>
@@ -101,18 +101,18 @@
 				</item>
 			</echo>
 			<template>
-			<![CDATA[
-				<html>
-				<body>
-					<dl>
-						<dt>item1</dt>
-						<dd>@{echo^map0.item1}</dd>
-						<dt>item2</dt>
-						<dd>@{echo^map0.item2}</dd>
-					</ul>
-				</body>
-				</html>
-			]]>
+<![CDATA[
+<html>
+<body>
+	<dl>
+		<dt>item1</dt>
+		<dd>@{echo^map0.item1}</dd>
+		<dt>item2</dt>
+		<dd>@{echo^map0.item2}</dd>
+	</ul>
+</body>
+</html>
+]]>
 			</template>
 		</transform>
 	</translet>
