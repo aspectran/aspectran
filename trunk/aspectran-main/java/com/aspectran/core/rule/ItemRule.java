@@ -139,15 +139,6 @@ public class ItemRule {
 	}
 
 	/**
-	 * Sets the tokens list.
-	 *
-	 * @param tokensList the new tokens list
-	 */
-	public void setTokensList(List<Token[]> tokensList) {
-		this.tokensList = tokensList;
-	}
-
-	/**
 	 * Gets the tokens.
 	 * 
 	 * @return the tokens
@@ -342,6 +333,7 @@ public class ItemRule {
 			tokensMap = TokenParser.parseAsMap(value);
 	}
 	
+
 //	/**
 //	 * Sets the value of a item.
 //	 * Before setting a value of item, must input a item-name first.

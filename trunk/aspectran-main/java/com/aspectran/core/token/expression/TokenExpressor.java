@@ -17,6 +17,7 @@ package com.aspectran.core.token.expression;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 
 import com.aspectran.core.token.Token;
@@ -75,16 +76,6 @@ public interface TokenExpressor {
 	 * @return the object[]
 	 */
 	public List<Object> expressAsList(String parameterName, List<Token[]> tokensList);
-	
-	/**
-	 * Express as Map.
-	 * 
-	 * @param parameterName the parameter name
-	 * @param tokensMap the tokens map
-	 * 
-	 * @return the map< string, object>
-	 */
-	public Map<String, Object> expressAsMap(String parameterName, Map<String, Token[]> tokensMap);
 
 	/**
 	 * Express as Set.
@@ -95,6 +86,26 @@ public interface TokenExpressor {
 	 * @return the object[]
 	 */
 	public Set<Object> expressAsSet(String parameterName, Set<Token[]> tokensSet);
+	
+	/**
+	 * Express as Map.
+	 * 
+	 * @param parameterName the parameter name
+	 * @param tokensMap the tokens map
+	 * 
+	 * @return the map< string, object>
+	 */
+	public Map<String, Object> expressAsMap(String parameterName, Map<String, Token[]> tokensMap);
+	
+	/**
+	 * Express as Properties.
+	 * 
+	 * @param parameterName the parameter name
+	 * @param tokensMap the tokens map
+	 * 
+	 * @return the Properties
+	 */
+	public Properties expressAsProperties(String parameterName, Properties tokensProp);
 	
 	/**
 	 * Sets the token value handler.

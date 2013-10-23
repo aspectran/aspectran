@@ -113,6 +113,15 @@ public class AspectranContextBuildingAssistant {
 	}
 	
 	/**
+	 * Peek object.
+	 * 
+	 * @return the object
+	 */
+	public Object peekObject(int n) {
+		return objectStack.peek(n);
+	}
+	
+	/**
 	 * Clear object stack.
 	 */
 	public void clearObjectStack() {

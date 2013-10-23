@@ -16,8 +16,8 @@
 package com.aspectran.core.context.builder.xml;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -144,13 +144,13 @@ public class ItemRuleNodeletAdder implements NodeletAdder {
 				if(itemType != null)
 					ir.setType(itemType);
 				else
-					ir.setType(ItemType.ITEM);
+					ir.setType(ItemType.ITEM); //default
 				
 				ItemValueType itemValueType = ItemValueType.valueOf(valueType);
 				
 				if(valueType != null) {
 					if(itemValueType == null || itemValueType == ItemValueType.CUSTOM)
-						itemValueType = new ItemValueType(valueType);
+						itemValueType = new ItemValueType(valueType); //full qualified
 					
 					if(itemValueType != null)
 						ir.setValueType(itemValueType);
@@ -164,30 +164,29 @@ public class ItemRuleNodeletAdder implements NodeletAdder {
 			
 				assistant.pushObject(ir);
 				
-				if(ir.getType() == ItemType.LIST) {
+				if(ir.getType() == ItemType.ITEM) {
+					//pass
+				} else if(ir.getType() == ItemType.LIST) {
 					List<Token[]> tokensList = new ArrayList<Token[]>();
-					assistant.pushObject(tokensList);
+					ir.setValue(tokensList);
 				} else if(ir.getType() == ItemType.MAP) {
 					Map<String, Token[]> tokensMap = new LinkedHashMap<String, Token[]>();
-					assistant.pushObject(tokensMap);
+					ir.setValue(tokensMap);
 				} else if(ir.getType() == ItemType.SET) {
-					Set<Token[]> tokensSet = new HashSet<Token[]>();
-					assistant.pushObject(tokensSet);
+					Set<Token[]> tokensSet = new LinkedHashSet<Token[]>();
+					ir.setValue(tokensSet);
 				} else if(ir.getType() == ItemType.PROPERTIES) {
-					Properties tokensProperties = new Properties();
-					assistant.pushObject(tokensProperties);
+					Properties tokensProp = new Properties();
+					ir.setValue(tokensProp);
 				}
 			}
 		});
 		parser.addNodelet(xpath, "/item/reference", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
-				Object object = assistant.peekObject();
+				ItemRule ir = (ItemRule)assistant.peekObject();
 				
-				if(object instanceof ItemRule) {
-					ItemRule ir = (ItemRule)object;
-					
+				if(ir.getType() == ItemType.ITEM) {
 					Token[] tokens = getReferenceTokens(attributes);
-					
 					if(tokens[0] != null)
 						ir.setValue(tokens);
 				}
@@ -195,15 +194,13 @@ public class ItemRuleNodeletAdder implements NodeletAdder {
 		});
 		parser.addNodelet(xpath, "/item/value", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
+				String name = attributes.getProperty("name");
 				String tokenize = attributes.getProperty("tokenize");
-				
 				boolean isTokenize = !(tokenize != null && Boolean.valueOf(tokenize) == Boolean.FALSE);
 				
-				Object object = assistant.peekObject();
+				ItemRule ir = (ItemRule)assistant.peekObject();
 				
-				if(object instanceof ItemRule) {
-					ItemRule ir = (ItemRule)object;
-					
+				if(ir.getType() == ItemType.ITEM) {
 					if(text != null) {
 						if(isTokenize)
 							ir.setValue(text);
@@ -213,36 +210,29 @@ public class ItemRuleNodeletAdder implements NodeletAdder {
 							ir.setValue(tokens);
 						}
 					}
-				} else if(object instanceof List<?>) {
-					@SuppressWarnings("unchecked")
-					List<Token[]> tokensList = (List<Token[]>)object;
-					Token[] tokens;
+				} else {
+					Token[] tokens = null;
 					
-					if(isTokenize)
-						tokens = TokenParser.parse(text);
-					else {
-						tokens = new Token[1];
-						tokens[0] = new Token(TokenType.TEXT, text);
-					}
-					
-					tokensList.add(tokens);
-				} else if(object instanceof Map<?, ?>) {
-					String name = attributes.getProperty("name");
-
-					if(!StringUtils.isEmpty(name)) {
-						@SuppressWarnings("unchecked")
-						Map<String, Token[]> tokensMap = (Map<String, Token[]>)object;
-						Token[] tokens;
-						
+					if(ir.getType() == ItemType.LIST || ir.getType() == ItemType.SET) {
 						if(isTokenize)
 							tokens = TokenParser.parse(text);
 						else {
 							tokens = new Token[1];
 							tokens[0] = new Token(TokenType.TEXT, text);
 						}
-						
-						tokensMap.put(name, tokens);
+					} else if(ir.getType() == ItemType.MAP || ir.getType() == ItemType.PROPERTIES) {
+						if(!StringUtils.isEmpty(name)) {
+							if(isTokenize)
+								tokens = TokenParser.parse(text);
+							else {
+								tokens = new Token[1];
+								tokens[0] = new Token(TokenType.TEXT, text);
+							}
+						}
 					}
+					
+					assistant.pushObject(name);
+					assistant.pushObject(tokens);
 				}
 			}
 		});
@@ -252,29 +242,13 @@ public class ItemRuleNodeletAdder implements NodeletAdder {
 				
 				if(object instanceof ItemRule) {
 					ItemRule ir = (ItemRule)object;
-					
 					Token[] tokens = getReferenceTokens(attributes);
-					
 					if(tokens[0] != null)
 						ir.setValue(tokens);
-				} else if(object instanceof List<?>) {
-					@SuppressWarnings("unchecked")
-					List<Token[]> tokensList = (List<Token[]>)object;
-					
-					if(tokensList.size() > 0) {
-						Token[] tokens = getReferenceTokens(attributes);
-						tokensList.add(tokensList.size() - 1, tokens);
-					}
-				} else if(object instanceof Map<?, ?>) {
-					@SuppressWarnings("unchecked")
-					Map<String, Token[]> tokensMap = (Map<String, Token[]>)object;
-
-					String[] keys = tokensMap.keySet().toArray(new String[tokensMap.size()]);
-					
-					if(keys.length > 0) {
-						Token[] tokens = TokenParser.parse(text);
-						tokensMap.put(keys[keys.length - 1], tokens);
-					}
+				} else {
+					assistant.popObject(); //discard
+					Token[] tokens = getReferenceTokens(attributes);
+					assistant.pushObject(tokens);
 				}
 			}
 		});
@@ -284,66 +258,55 @@ public class ItemRuleNodeletAdder implements NodeletAdder {
 				
 				if(object instanceof ItemRule) {
 					ItemRule ir = (ItemRule)object;
-					ir.setValue((Token[])null);
-				} else if(object instanceof List<?>) {
-					@SuppressWarnings("unchecked")
-					List<Token[]> tokensList = (List<Token[]>)object;
+					Token[] tokens = getReferenceTokens(attributes);
+					if(tokens[0] != null)
+						ir.setValue(tokens);
+				} else {
+					assistant.popObject(); //discard
+					assistant.pushObject(null);
+				}
+			}
+		});
+		parser.addNodelet(xpath, "/item/value/end()", new Nodelet() {
+			public void process(Node node, Properties attributes, String text) throws Exception {
+				Object object = assistant.peekObject();
+				
+				if(object instanceof ItemRule) {
+					//pass
+				} else {
+					Token[] tokens = (Token[])assistant.popObject();
+					String name = (String)assistant.popObject();
+					ItemRule ir = (ItemRule)assistant.peekObject();
 					
-					if(tokensList.size() > 0)
-						tokensList.add(tokensList.size() - 1, null);
-				} else if(object instanceof Map<?, ?>) {
-					@SuppressWarnings("unchecked")
-					Map<String, Token[]> tokensMap = (Map<String, Token[]>)object;
-					
-					String[] keys = tokensMap.keySet().toArray(new String[tokensMap.size()]);
-					
-					if(keys.length > 0)
-						tokensMap.put(keys[keys.length - 1], null);
+					if(ir.getType() == ItemType.LIST) {
+						List<Token[]> list = ir.getTokensList();
+						list.add(tokens);
+					} else if(ir.getType() == ItemType.SET) {
+						Set<Token[]> set = ir.getTokensSet();
+						set.add(tokens);
+					} else if(ir.getType() == ItemType.MAP) {
+						if(!StringUtils.isEmpty(name)) {
+							Map<String, Token[]> map = ir.getTokensMap();
+							map.put(name, tokens);
+						}
+					} else if(ir.getType() == ItemType.PROPERTIES) {
+						if(!StringUtils.isEmpty(name)) {
+							Properties prop = ir.getTokensProperties();
+							prop.put(name, tokens);
+						}
+					}
 				}
 			}
 		});
 		parser.addNodelet(xpath, "/item/end()", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
-				Object object = assistant.popObject();
-				
-				if(object instanceof ItemRule) {
-					ItemRuleMap irm = (ItemRuleMap)assistant.peekObject();
-					ItemRule ir = (ItemRule)object;
+				ItemRule ir = (ItemRule)assistant.popObject();
+				ItemRuleMap irm = (ItemRuleMap)assistant.peekObject();
 
-					if(ir.isUnknownName()) {
-						namingItemRule(ir, irm);
-					}
+				if(ir.isUnknownName())
+					namingItemRule(ir, irm);
 
-					irm.putItemRule(ir);
-				} else if(object instanceof List<?>) {
-					@SuppressWarnings("unchecked")
-					List<Token[]> tokensList = (List<Token[]>)object;
-					
-					ItemRule ir = (ItemRule)assistant.popObject();
-					ir.setValue(tokensList);
-					
-					ItemRuleMap irm = (ItemRuleMap)assistant.peekObject();
-
-					if(ir.isUnknownName()) {
-						namingItemRule(ir, irm);
-					}
-
-					irm.putItemRule(ir);
-				} else if(object instanceof Map<?, ?>) {
-					@SuppressWarnings("unchecked")
-					Map<String, Token[]> tokensMap = (Map<String, Token[]>)object;
-					
-					ItemRule ir = (ItemRule)assistant.popObject();
-					ir.setValue(tokensMap);
-					
-					ItemRuleMap irm = (ItemRuleMap)assistant.peekObject();
-
-					if(ir.isUnknownName()) {
-						namingItemRule(ir, irm);
-					}
-
-					irm.putItemRule(ir);
-				}
+				irm.putItemRule(ir);
 			}
 		});
 	}
