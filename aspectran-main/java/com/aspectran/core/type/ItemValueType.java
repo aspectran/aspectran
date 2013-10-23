@@ -32,13 +32,13 @@ public final class ItemValueType extends Type {
 	public static final ItemValueType INT;
 	
 	/** The "hashMap" item type. */
-	public static final ItemValueType HASH_MAP;
+	//public static final ItemValueType HASH_MAP;
 
 	/** The "linkedHashMap" item type. */
-	public static final ItemValueType LINKED_HASH_MAP;
+	//public static final ItemValueType LINKED_HASH_MAP;
 	
 	/** The "arrayList" item type. */
-	public static final ItemValueType ARRAY_LIST;
+	//public static final ItemValueType ARRAY_LIST;
 	
 	/** The "custom" item type. */
 	public static final ItemValueType CUSTOM;
@@ -53,18 +53,18 @@ public final class ItemValueType extends Type {
 	static {
 		STRING = new ItemValueType("string", "java.lang.String");
 		INT = new ItemValueType("int", "int");
-		HASH_MAP = new ItemValueType("hashMap", "java.util.HashMap");
-		LINKED_HASH_MAP = new ItemValueType("linkedHashMap", "java.util.LinkedHashMap");
-		ARRAY_LIST = new ItemValueType("arrayList", "java.util.ArrayList");
+		//HASH_MAP = new ItemValueType("hashMap", "java.util.HashMap");
+		//LINKED_HASH_MAP = new ItemValueType("linkedHashMap", "java.util.LinkedHashMap");
+		//ARRAY_LIST = new ItemValueType("arrayList", "java.util.ArrayList");
 		CUSTOM = new ItemValueType("custom", null);
 		FILE = new ItemValueType("file", null);
 
 		types = new HashMap<String, ItemValueType>();
 		types.put(STRING.toString(), STRING);
 		types.put(INT.toString(), INT);
-		types.put(HASH_MAP.toString(), HASH_MAP);
-		types.put(LINKED_HASH_MAP.toString(), LINKED_HASH_MAP);
-		types.put(ARRAY_LIST.toString(), ARRAY_LIST);
+		//types.put(HASH_MAP.toString(), HASH_MAP);
+		//types.put(LINKED_HASH_MAP.toString(), LINKED_HASH_MAP);
+		//types.put(ARRAY_LIST.toString(), ARRAY_LIST);
 		types.put(CUSTOM.toString(), CUSTOM);
 		types.put(FILE.toString(), FILE);
 	}
