@@ -115,8 +115,12 @@ public class ItemTokenExpression extends TokenExpression implements ItemTokenExp
 
 			} else if(itemType == ItemType.LIST) {
 				value = expressor.expressAsList(ir.getName(), ir.getTokensList());
+			} else if(itemType == ItemType.SET) {
+				value = expressor.expressAsSet(ir.getName(), ir.getTokensSet());
 			} else if(itemType == ItemType.MAP) {
 				value = expressor.expressAsMap(ir.getName(), ir.getTokensMap());
+			} else if(itemType == ItemType.PROPERTIES) {
+				value = expressor.expressAsProperties(ir.getName(), ir.getTokensProperties());
 			}
 			
 			valueMap.put(ir.getName(), value);
