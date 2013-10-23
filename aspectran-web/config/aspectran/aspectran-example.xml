@@ -95,7 +95,7 @@
 	<translet name="echo">
 		<transform type="transform/text" contentType="text/html">
 			<echo id="echo">
-				<item name="map0" type="map">
+				<item name="map0" type="map" valueType="string">
 					<value name="item1">${item1:default1}</value>
 					<value name="item2">${item2:default2}</value>
 				</item>
