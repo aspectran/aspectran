@@ -94,7 +94,7 @@ public class WildcardPointcut extends AbstractPointcut implements Pointcut {
 			reusableWildcardPatternMap.put(pattern, wildcardPattern);
 		}
 
-		System.out.println("pattern:" + pattern + " str:" + str + " result:" + wildcardPattern.matches(str));
+		//System.out.println("pattern:" + pattern + " str:" + str + " result:" + wildcardPattern.matches(str));
 
 		return wildcardPattern.matches(str);	}
 	
@@ -108,7 +108,7 @@ public class WildcardPointcut extends AbstractPointcut implements Pointcut {
 			reusableWildcardPatternMap.put(patternId, wildcardPattern);
 		}
 
-		System.out.println("pattern:" + pattern + " str:" + str + " result:" + wildcardPattern.matches(str));
+		//System.out.println("pattern:" + pattern + " str:" + str + " result:" + wildcardPattern.matches(str));
 
 		return wildcardPattern.matches(str);
 	}
@@ -123,7 +123,7 @@ public class WildcardPointcut extends AbstractPointcut implements Pointcut {
 			reusableWildcardPatternMap.put(patternId, wildcardPattern);
 		}
 
-		System.out.println("pattern:" + pattern + " str:" + str + " result:" + wildcardPattern.matches(str));
+		//System.out.println("pattern:" + pattern + " str:" + str + " result:" + wildcardPattern.matches(str));
 
 		return wildcardPattern.matches(str);
 	}

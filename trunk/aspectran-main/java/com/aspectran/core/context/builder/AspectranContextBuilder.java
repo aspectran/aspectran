@@ -26,7 +26,7 @@ import com.aspectran.core.context.aspect.AspectAdviceRuleRegister;
 import com.aspectran.core.context.bean.BeanRegistry;
 import com.aspectran.core.context.bean.ScopedBeanRegistry;
 import com.aspectran.core.context.builder.xml.AspectranNodeParser;
-import com.aspectran.core.context.translet.TransletRuleRegistry;
+import com.aspectran.core.context.translet.TransletRegistry;
 import com.aspectran.core.rule.AspectRuleMap;
 import com.aspectran.core.rule.BeanRuleMap;
 import com.aspectran.core.rule.TransletRuleMap;
@@ -90,7 +90,7 @@ public class AspectranContextBuilder {
 	
 	private AspectranContext makeAspectranContext(AspectranContextBuildingAssistant assistant) {
 		BeanRegistry beanRegistry = makeBeanRegistry(assistant);
-		TransletRuleRegistry transletRuleRegistry = makeTransletRuleRegistry(assistant);
+		TransletRegistry transletRuleRegistry = makeTransletRuleRegistry(assistant);
 		
 		AspectranContext aspectranContext = new AspectranContext();
 		aspectranContext.setBeanRegistry(beanRegistry);
@@ -99,7 +99,7 @@ public class AspectranContextBuilder {
 		return aspectranContext;
 	}
 	
-	private TransletRuleRegistry makeTransletRuleRegistry(AspectranContextBuildingAssistant assistant) {
+	private TransletRegistry makeTransletRuleRegistry(AspectranContextBuildingAssistant assistant) {
 		AspectRuleMap aspectRuleMap = assistant.getAspectRuleMap();
 		TransletRuleMap transletRuleMap = assistant.getTransletRuleMap();
 		//transletRuleMap.freeze();
@@ -107,7 +107,7 @@ public class AspectranContextBuilder {
 		AspectAdviceRuleRegister aspectAdviceRuleRegister = new AspectAdviceRuleRegister(aspectRuleMap);
 		aspectAdviceRuleRegister.register(transletRuleMap);
 		
-		return new TransletRuleRegistry(transletRuleMap);
+		return new TransletRegistry(transletRuleMap);
 	}
 
 	private BeanRegistry makeBeanRegistry(AspectranContextBuildingAssistant assistant) {

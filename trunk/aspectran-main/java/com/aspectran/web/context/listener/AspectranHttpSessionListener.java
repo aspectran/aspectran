@@ -17,11 +17,13 @@ public class AspectranHttpSessionListener implements HttpSessionListener {
 	private final Log log = LogFactory.getLog(AspectranHttpSessionListener.class);
 	
 	public void sessionCreated(HttpSessionEvent se) {
-		log.info("initialize AspectranHttpSessionListener " + se);
+		if(log.isDebugEnabled())
+			log.debug("session created: " + se);
 	}
 
 	public void sessionDestroyed(HttpSessionEvent se) {
-		log.info("destroy AspectranHttpSessionListener " + se);
+		if(log.isDebugEnabled())
+			log.debug("session destroyed: " + se);
 		
 		HttpSession session = se.getSession();
 		

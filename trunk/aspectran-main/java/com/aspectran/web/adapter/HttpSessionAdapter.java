@@ -1,14 +1,9 @@
 package com.aspectran.web.adapter;
 
 import javax.servlet.http.HttpSession;
-import javax.servlet.http.HttpSessionBindingEvent;
-import javax.servlet.http.HttpSessionBindingListener;
 
 import com.aspectran.core.adapter.AbstractSessionAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
-import com.aspectran.core.context.bean.scope.ScopedBean;
-import com.aspectran.core.context.bean.scope.ScopedBeanMap;
-import com.aspectran.core.context.bean.scope.SessionScope;
 
 /**
  * The Class HttpSessionAdapter.
@@ -18,8 +13,8 @@ import com.aspectran.core.context.bean.scope.SessionScope;
  */
 public class HttpSessionAdapter extends AbstractSessionAdapter implements SessionAdapter {
 	
-	public static final String SCOPE_BEAN_DESTROY_LISTENER_ATTRIBUTE = 
-		HttpSessionAdapter.class.getName() + ".SCOPE_BEAN_DESTROY_LISTENER";
+//	public static final String SCOPE_BEAN_DESTROY_LISTENER_ATTRIBUTE = 
+//		HttpSessionAdapter.class.getName() + ".SCOPE_BEAN_DESTROY_LISTENER";
 	
 	/**
 	 * Instantiates a new http session adapter.
@@ -29,10 +24,10 @@ public class HttpSessionAdapter extends AbstractSessionAdapter implements Sessio
 	public HttpSessionAdapter(HttpSession session) {
 		super(session);
 		
-		if(session.getAttribute(SCOPE_BEAN_DESTROY_LISTENER_ATTRIBUTE) != null) {
-			ScopeBeanDestroyListener listener = new ScopeBeanDestroyListener();
-			session.setAttribute(SCOPE_BEAN_DESTROY_LISTENER_ATTRIBUTE, listener);
-		}
+//		if(session.getAttribute(SCOPE_BEAN_DESTROY_LISTENER_ATTRIBUTE) != null) {
+//			ScopeBeanDestroyListener listener = new ScopeBeanDestroyListener();
+//			session.setAttribute(SCOPE_BEAN_DESTROY_LISTENER_ATTRIBUTE, listener);
+//		}
 	}
 	
 	/* (non-Javadoc)
@@ -46,32 +41,32 @@ public class HttpSessionAdapter extends AbstractSessionAdapter implements Sessio
 	 * @see org.jhlabs.translets.adapter.AbstractSessionAdapter#setAttribute(java.lang.String, java.lang.Object)
 	 */
 	public void setAttribute(String name, Object value) {
-		if(SessionScope.SESSION_SCOPE_ATTRIBUTE.equals(name))
-			throw new IllegalArgumentException("The specified attribute name is not allowed. Reserved attribute name '" + name + "'");
+		//if(SessionScope.SESSION_SCOPE_ATTRIBUTE.equals(name))
+		//	throw new IllegalArgumentException("The specified attribute name is not allowed. Reserved attribute name '" + name + "'");
 		
 		((HttpSession)adaptee).setAttribute(name, value);
 	}
 	
-	class ScopeBeanDestroyListener implements HttpSessionBindingListener {
-		public void valueBound(HttpSessionBindingEvent se) {
-			
-		}
-		
-		public void valueUnbound(HttpSessionBindingEvent se) {
-			HttpSession session = se.getSession();
-			
-			ScopedBeanMap ibm = (ScopedBeanMap)session.getAttribute(SessionScope.SESSION_SCOPE_ATTRIBUTE);
-			
-			if(ibm != null) {
-				try {
-					for(ScopedBean scopeBean : ibm) {
-						scopeBean.destroy();
-					}
-				} catch(Exception e) {
-					//로깅
-				}
-			}
-		}
-	}
+//	class ScopeBeanDestroyListener implements HttpSessionBindingListener {
+//		public void valueBound(HttpSessionBindingEvent se) {
+//			
+//		}
+//		
+//		public void valueUnbound(HttpSessionBindingEvent se) {
+//			HttpSession session = se.getSession();
+//			
+//			ScopedBeanMap ibm = (ScopedBeanMap)session.getAttribute(SessionScope.SESSION_SCOPE_ATTRIBUTE);
+//			
+//			if(ibm != null) {
+//				try {
+//					for(ScopedBean scopeBean : ibm) {
+//						scopeBean.destroy();
+//					}
+//				} catch(Exception e) {
+//					//로깅
+//				}
+//			}
+//		}
+//	}
 
 }

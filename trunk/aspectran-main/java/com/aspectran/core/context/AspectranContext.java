@@ -17,7 +17,7 @@ package com.aspectran.core.context;
 
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.bean.BeanRegistry;
-import com.aspectran.core.context.translet.TransletRuleRegistry;
+import com.aspectran.core.context.translet.TransletRegistry;
 
 /**
  * <p>Created: 2008. 06. 09 오후 2:12:40</p>
@@ -28,7 +28,7 @@ public class AspectranContext {
 	
 	private BeanRegistry beanRegistry;
 
-	private TransletRuleRegistry transletRuleRegistry;
+	private TransletRegistry transletRegistry;
 	
 	public AspectranContext() {
 	}
@@ -69,72 +69,25 @@ public class AspectranContext {
 		this.beanRegistry = beanRegistry;
 	}
 
-	public TransletRuleRegistry getTransletRuleRegistry() {
-		return transletRuleRegistry;
+	public TransletRegistry getTransletegistry() {
+		return transletRegistry;
 	}
 
-	public void setTransletRuleRegistry(TransletRuleRegistry transletRuleRegistry) {
-		this.transletRuleRegistry = transletRuleRegistry;
+	public void setTransletRuleRegistry(TransletRegistry transletRegistry) {
+		this.transletRegistry = transletRegistry;
 	}
-	
-//	/**
-//	 * Gets the translet rule map.
-//	 * 
-//	 * @return the translet rule map
-//	 */
-//	public TransletRuleMap getTransletRuleMap() {
-//		return transletRuleMap;
-//	}
-//
-//	/**
-//	 * Sets the translet rule map.
-//	 * 
-//	 * @param transletRuleMap the new translet rule map
-//	 */
-//	public final void setTransletRuleMap(TransletRuleMap transletRuleMap) {
-//		this.transletRuleMap = transletRuleMap;
-//	}
-//	
-//	/**
-//	 * Gets the translet rule.
-//	 * 
-//	 * @param path the path
-//	 * 
-//	 * @return the translet rule
-//	 */
-//	public TransletRule getTransletRule(String path) {
-//		if(transletRuleMap == null)
-//			return null;
-//		
-//		return transletRuleMap.get(path);
-//	}
-//	
-//	/**
-//	 * Gets the translet rule by request URI.
-//	 *
-//	 * @param requestUri the request uri
-//	 * @return the translet rule by request uri
-//	 */
-//	public MultiActivityTransletRule getMultiActivityTransletRule(String path) {
-//		if(transletRuleMap == null)
-//			return null;
-//		
-//		return transletRuleMap.getMultiActivityTransletRule(path);
-//	}
 	
 	/**
 	 * Destroy the translets context. 
 	 */
 	public void destroy() {
 		if(beanRegistry != null) {
-			//TODO
-			//beanRegistry.destroy();
+			beanRegistry.destroy();
 			beanRegistry = null;
 		}
-		if(transletRuleRegistry != null) {
-			//TODO
-			transletRuleRegistry.destroy();
-			transletRuleRegistry = null;
+		if(transletRegistry != null) {
+			transletRegistry.destroy();
+			transletRegistry = null;
 		}
 	}
 	
@@ -144,8 +97,10 @@ public class AspectranContext {
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		
-//		sb.append("{activityRule=").append(activityRule);
-//		sb.append("}");
+		sb.append("{applicationAdapter=").append(applicationAdapter);
+		sb.append(", beanRegistry=").append(beanRegistry);
+		sb.append(", transletRegistry=").append(transletRegistry);
+		sb.append("}");
 		
 		return sb.toString();
 	}

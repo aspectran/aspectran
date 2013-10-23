@@ -24,7 +24,6 @@ import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
-import com.aspectran.core.context.AspectranContext;
 import com.aspectran.core.rule.AspectAdviceRule;
 import com.aspectran.core.rule.ForwardResponseRule;
 import com.aspectran.core.rule.RedirectResponseRule;
@@ -114,7 +113,9 @@ public abstract interface SuperTranslet {
 	
 	public Object getSessionAdaptee();
 	
-	public AspectranContext getAspectranContext();
+	//public AspectranContext getAspectranContext();
+	
+	public Object getBean(String beanId);
 	
 	/**
 	 * To respond immediately terminate.

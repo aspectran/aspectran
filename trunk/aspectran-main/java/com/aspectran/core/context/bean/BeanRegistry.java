@@ -16,5 +16,6 @@ public interface BeanRegistry {
 
 	public Object getBean(String id, AspectranActivity activity);
 	
+	public void destroy();
 	
 }

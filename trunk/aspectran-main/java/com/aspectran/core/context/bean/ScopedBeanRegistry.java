@@ -227,20 +227,24 @@ public class ScopedBeanRegistry extends AbstractBeanRegistry implements BeanRegi
 //		scopeBean.destroy();
 //	}
 	
-	public void destroy() throws Exception {
+	public void destroy() {
 		for(BeanRule beanRule : beanRuleMap) {
-			ScopeType scopeType = beanRule.getScopeType();
-
-			if(scopeType == ScopeType.SINGLETON) {
-				if(beanRule.isRegistered()) {
-					String destroyMethodName = beanRule.getDestroyMethod();
-					
-					if(destroyMethodName != null)
-						MethodUtils.invokeMethod(beanRule.getBean(), destroyMethodName, null);
-					
-					beanRule.setBean(null);
-					beanRule.setRegistered(false);
+			try {
+				ScopeType scopeType = beanRule.getScopeType();
+	
+				if(scopeType == ScopeType.SINGLETON) {
+					if(beanRule.isRegistered()) {
+						String destroyMethodName = beanRule.getDestroyMethod();
+						
+						if(destroyMethodName != null)
+							MethodUtils.invokeMethod(beanRule.getBean(), destroyMethodName, null);
+						
+						beanRule.setBean(null);
+						beanRule.setRegistered(false);
+					}
 				}
+			} catch(Exception e) {
+				throw new BeanDestroyFailedException(beanRule);
 			}
 		}
 	}
