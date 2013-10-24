@@ -17,6 +17,8 @@ package com.aspectran.core.context.builder.xml;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -28,6 +30,7 @@ import com.aspectran.core.context.bean.ScopedBeanRegistry;
 import com.aspectran.core.context.builder.AspectranContextBuilder;
 import com.aspectran.core.context.builder.AspectranContextBuilderException;
 import com.aspectran.core.context.builder.AspectranContextResource;
+import com.aspectran.core.context.builder.BeanReferenceInspector;
 import com.aspectran.core.context.builder.xml.parser.AspectranNodeParser;
 import com.aspectran.core.context.translet.TransletRegistry;
 import com.aspectran.core.rule.AspectRuleMap;
@@ -99,6 +102,18 @@ public class XmlAspectranContextBuilder implements AspectranContextBuilder {
 	private AspectranContext makeAspectranContext(XmlAspectranContextAssistant assistant) {
 		BeanRegistry beanRegistry = makeBeanRegistry(assistant);
 		TransletRegistry transletRegistry = makeTransletRegistry(assistant);
+		
+		BeanReferenceInspector BeanReferenceInspector = assistant.getBeanReferenceInspector();
+		Map<String, Set<Object>> relationMap = BeanReferenceInspector.getRelationMap();
+		BeanRuleMap beanRuleMap = assistant.getBeanRuleMap();
+		
+		for(Map.Entry<String, Set<Object>> entry : relationMap.entrySet()) {
+			if(!beanRuleMap.containsKey(entry.getKey())) {
+				Set<Object> set = entry.getValue();
+				
+			}
+		}
+		
 		
 		AspectranContext aspectranContext = new AspectranContext();
 		aspectranContext.setBeanRegistry(beanRegistry);

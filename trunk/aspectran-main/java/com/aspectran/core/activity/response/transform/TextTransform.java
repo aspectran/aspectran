@@ -71,6 +71,7 @@ public class TextTransform extends AbstractTransform implements Responsible {
 		this.templateFile = transformRule.getTemplateFile();
 		this.templateUrl = transformRule.getTemplateUrl();
 		this.templateContent = transformRule.getTemplateContent();
+		this.contentTokens = transformRule.getContentTokens();
 		this.templateNoCache = (transformRule.getTemplateNoCache() == Boolean.TRUE);
 	}
 
@@ -157,19 +158,19 @@ public class TextTransform extends AbstractTransform implements Responsible {
 					}
 				}
 			}
-		} else if(templateContent != null) {
-			if(templateNoCache) {
-				setContent(templateContent);
-			} else {
-				if(!templateLoaded) {
-					synchronized(this) {
-						if(!templateLoaded) {
-							setContent(templateContent);
-							templateLoaded = true;
-						}
-					}
-				}
-			}
+//		} else if(templateContent != null) {
+//			if(templateNoCache) {
+//				setContent(templateContent);
+//			} else {
+//				if(!templateLoaded) {
+//					synchronized(this) {
+//						if(!templateLoaded) {
+//							setContent(templateContent);
+//							templateLoaded = true;
+//						}
+//					}
+//				}
+//			}
 		}
 		
 		return contentTokens;

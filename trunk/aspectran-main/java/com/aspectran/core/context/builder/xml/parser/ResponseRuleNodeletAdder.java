@@ -29,6 +29,8 @@ import com.aspectran.core.rule.RedirectResponseRule;
 import com.aspectran.core.rule.TransformRule;
 import com.aspectran.core.rule.ability.ResponseAddable;
 import com.aspectran.core.rule.ability.ResponseSettable;
+import com.aspectran.core.token.Token;
+import com.aspectran.core.type.TokenType;
 import com.aspectran.core.type.TransformType;
 import com.aspectran.core.util.ResourceUtils;
 import com.aspectran.core.util.StringUtils;
@@ -136,6 +138,13 @@ public class ResponseRuleNodeletAdder implements NodeletAdder {
 						tr.setTemplateUrl(templateUrl);
 					} else if(StringUtils.hasLength(templateContent)) {
 						tr.setTemplateContent(templateContent);
+						if(tr.getContentTokens() != null) {
+							for(Token token : tr.getContentTokens()) {
+								if(token.getType() == TokenType.REFERENCE_BEAN) {
+									assistant.putBeanReference(token.getName(), tr);
+								}
+							}
+						}
 					}
 					
 					if(tr.getTemplateFile() == null && tr.getTemplateUrl() == null && tr.getTemplateContent() == null)
@@ -298,6 +307,14 @@ public class ResponseRuleNodeletAdder implements NodeletAdder {
 				} else if(o instanceof ResponseAddable) {
 					ResponseAddable addable = (ResponseAddable)o; //ResponseByContentTypeRule
 					addable.addResponse(rrr);
+				}
+				
+				if(rrr.getUrlTokens() != null) {
+					for(Token token : rrr.getUrlTokens()) {
+						if(token.getType() == TokenType.REFERENCE_BEAN) {
+							assistant.putBeanReference(token.getName(), rrr);
+						}
+					}
 				}
 			}
 		});

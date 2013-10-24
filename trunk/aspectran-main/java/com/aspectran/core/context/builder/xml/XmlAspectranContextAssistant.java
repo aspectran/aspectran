@@ -67,6 +67,7 @@ public class XmlAspectranContextAssistant {
 		this.objectStack = new ArrayStack(); 
 		this.typeAliases = new HashMap<String, String>();
 		this.settings = new HashMap<AspectranSettingType, String>();
+		this.beanReferenceInspector = new BeanReferenceInspector();
 		
 		this.applicationRootPath = applicationRootPath;
 		inheritedAspectranSettings = new AspectranSettings();
@@ -346,9 +347,13 @@ public class XmlAspectranContextAssistant {
 	}
 	
 	public void putBeanReference(String beanId, Object rule) {
-		if(!beanRuleMap.containsKey(beanId)) {
+		if(beanRuleMap == null || !beanRuleMap.containsKey(beanId)) {
 			beanReferenceInspector.putRelation(beanId, rule);
 		}
+	}
+	
+	public BeanReferenceInspector getBeanReferenceInspector() {
+		return beanReferenceInspector;
 	}
 	
 }

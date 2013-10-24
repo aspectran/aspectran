@@ -16,10 +16,13 @@
 package com.aspectran.core.rule;
 
 import java.io.File;
+import java.util.List;
 
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.activity.process.action.Executable;
 import com.aspectran.core.rule.ability.ActionPossessable;
+import com.aspectran.core.token.Token;
+import com.aspectran.core.token.Tokenizer;
 import com.aspectran.core.type.ContentType;
 import com.aspectran.core.type.ResponseType;
 import com.aspectran.core.type.TransformType;
@@ -46,6 +49,8 @@ public class TransformRule extends ActionPossessSupport implements ActionPossess
 	private String templateEncoding;
 
 	private String templateContent;
+	
+	private Token[] contentTokens;
 	
 	private Boolean templateNoCache;
 	
@@ -188,7 +193,60 @@ public class TransformRule extends ActionPossessSupport implements ActionPossess
 	 */
 	public void setTemplateContent(String templateContent) {
 		this.templateContent = templateContent;
+		
+		if(templateContent == null || templateContent.length() == 0) {
+			contentTokens = null;
+		} else {
+			List<Token> tokenList = Tokenizer.tokenize(templateContent, false);
+	
+			if(tokenList.size() > 0) {
+				contentTokens = tokenList.toArray(new Token[tokenList.size()]);
+				contentTokens = Tokenizer.optimizeTokens(contentTokens);
+			} else {
+				contentTokens = null;
+			}
+		}
 	}
+
+	public Token[] getContentTokens() {
+		return contentTokens;
+	}
+	
+//	private void setContent(String content) {
+//		if(content == null || content.length() == 0) {
+//			contentTokens = null;
+//			return;
+//		}
+//
+//		List<Token> tokenList = Tokenizer.tokenize(content, false);
+//
+//		if(tokenList.size() > 0) {
+//			contentTokens = tokenList.toArray(new Token[tokenList.size()]);
+//			contentTokens = Tokenizer.optimizeTokens(contentTokens);
+//		} else
+//			contentTokens = null;
+//		
+//		if(debugEnabled) {
+//			if(contentTokens != null) {
+//				StringBuilder sb = new StringBuilder();
+//
+//				for(Token t : contentTokens) {
+//					if(t.getType() != TokenType.TEXT) {
+//						if(sb.length() > 0)
+//							sb.append(", ");
+//						sb.append(t.toString());
+//					}
+//				}
+//				
+//				log.debug("text-transform template tokens [" + sb.toString() + "]");
+//			}
+//		}
+//		
+//		if(traceEnabled) {
+//			log.trace("Sets the content of the text-transform..." + AspectranContextConstant.LINE_SEPARATOR + getContent());
+//		}
+//	}
+	
 	
 	/**
 	 * Gets the template no cache.
