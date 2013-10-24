@@ -34,11 +34,11 @@ public class BeanRule {
 
 	protected ScopeType scopeType;
 
-	protected String factoryMethod;
+	protected String factoryMethodName;
 	
-	protected String initMethod;
+	protected String initMethodName;
 	
-	protected String destroyMethod;
+	protected String destroyMethodName;
 	
 	protected Boolean lazyInit;
 
@@ -129,57 +129,57 @@ public class BeanRule {
 	}
 
 	/**
-	 * Gets the factory method.
+	 * Gets the factory method name.
 	 *
 	 * @return the factory method
 	 */
-	public String getFactoryMethod() {
-		return factoryMethod;
+	public String getFactoryMethodName() {
+		return factoryMethodName;
 	}
 
 	/**
-	 * Sets the factory method.
+	 * Sets the factory method name.
 	 *
-	 * @param factoryMethod the new factory method
+	 * @param factoryMethodName the new factory method name
 	 */
-	public void setFactoryMethod(String factoryMethod) {
-		this.factoryMethod = factoryMethod;
+	public void setFactoryMethodName(String factoryMethodName) {
+		this.factoryMethodName = factoryMethodName;
 	}
 
 	/**
-	 * Gets the inits the method.
+	 * Gets the inits the method name.
 	 *
-	 * @return the inits the method
+	 * @return the inits the method name
 	 */
-	public String getInitMethod() {
-		return initMethod;
+	public String getInitMethodName() {
+		return initMethodName;
 	}
 
 	/**
-	 * Sets the inits the method.
+	 * Sets the inits the method name.
 	 *
-	 * @param initMethod the new inits the method
+	 * @param initMethodName the new inits the method name
 	 */
-	public void setInitMethod(String initMethod) {
-		this.initMethod = initMethod;
+	public void setInitMethodName(String initMethodName) {
+		this.initMethodName = initMethodName;
 	}
 
 	/**
-	 * Gets the destroy method.
+	 * Gets the destroy method name.
 	 *
-	 * @return the destroy method
+	 * @return the destroy method name
 	 */
-	public String getDestroyMethod() {
-		return destroyMethod;
+	public String getDestroyMethodName() {
+		return destroyMethodName;
 	}
 
 	/**
-	 * Sets the destroy method.
+	 * Sets the destroy method name.
 	 *
-	 * @param destroyMethod the new destroy method
+	 * @param destroyMethodName the new destroy method name
 	 */
-	public void setDestroyMethod(String destroyMethod) {
-		this.destroyMethod = destroyMethod;
+	public void setDestroyMethodName(String destroyMethodName) {
+		this.destroyMethodName = destroyMethodName;
 	}
 
 	/**
@@ -306,9 +306,9 @@ public class BeanRule {
 		sb.append("{id=").append(id);
 		sb.append(", class=").append(className);
 		sb.append(", scope=").append(scopeType);
-		sb.append(", factoryMethod=").append(factoryMethod);
-		sb.append(", initMethod=").append(initMethod);
-		sb.append(", destroyMethod=").append(destroyMethod);
+		sb.append(", factoryMethod=").append(factoryMethodName);
+		sb.append(", initMethod=").append(initMethodName);
+		sb.append(", destroyMethod=").append(destroyMethodName);
 		sb.append(", lazyInit=").append(lazyInit);
 
 		if(constructorArgumentItemRuleMap != null) {

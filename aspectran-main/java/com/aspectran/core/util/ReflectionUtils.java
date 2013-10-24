@@ -4,7 +4,6 @@ package com.aspectran.core.util;
 /**
  * Simple utility class for working with the reflection API.
  *
- * @author Gulendol
  * @since 2011. 2. 5.
  *
  */

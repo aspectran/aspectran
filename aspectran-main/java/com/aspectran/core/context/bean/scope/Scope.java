@@ -12,7 +12,7 @@ package com.aspectran.core.context.bean.scope;
  */
 public interface Scope {
 	
-	public ScopedBeanMap getScopeBeanMap();
+	public ScopedBeanMap getScopedBeanMap();
 
 	public void setScopedBeanMap(ScopedBeanMap scopedBeanMap);
 	

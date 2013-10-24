@@ -51,6 +51,7 @@ import com.aspectran.core.type.PointcutType;
 import com.aspectran.core.type.RequestMethodType;
 import com.aspectran.core.type.ScopeType;
 import com.aspectran.core.util.ClassUtils;
+import com.aspectran.core.util.MethodUtils;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.wildcard.WildcardPattern;
 import com.aspectran.core.util.xml.Nodelet;
@@ -578,8 +579,8 @@ public class AspectranNodeParser {
 				String singleton = attributes.getProperty("singleton");
 				String scope = attributes.getProperty("scope");
 				String factoryMethod = attributes.getProperty("factoryMethod");
-				String initMethod = attributes.getProperty("initMethod");
-				String destroyMethod = attributes.getProperty("destroyMethod");
+				String initMethodName = attributes.getProperty("initMethod");
+				String destroyMethodName = attributes.getProperty("destroyMethod");
 				Boolean lazyInit = Boolean.valueOf(attributes.getProperty("lazyInit"));
 				Boolean override = Boolean.valueOf(attributes.getProperty("override"));
 
@@ -617,22 +618,34 @@ public class AspectranNodeParser {
 					scopeType = isSingleton ? ScopeType.SINGLETON : ScopeType.PROTOTYPE;
 				
 				if(beanClass != null) {
-					if(initMethod == null && beanClass.isAssignableFrom(InitializableBean.class)) {
-						initMethod = InitializableBean.INITIALIZE_METHOD_NAME;
+					if(initMethodName == null && beanClass.isAssignableFrom(InitializableBean.class)) {
+						initMethodName = InitializableBean.INITIALIZE_METHOD_NAME;
 					}
 
-					if(destroyMethod == null && beanClass.isAssignableFrom(DisposableBean.class)) {
-						destroyMethod = DisposableBean.DESTROY_METHOD_NAME;
+					if(initMethodName != null) {
+						if(MethodUtils.getAccessibleMethod(beanClass, initMethodName, null) == null) {
+							throw new IllegalArgumentException("No such initialization method '" + initMethodName + "() on bean class: " + className);
+						}
 					}
 					
+					if(destroyMethodName == null && beanClass.isAssignableFrom(DisposableBean.class)) {
+						destroyMethodName = DisposableBean.DESTROY_METHOD_NAME;
+					}
+
+					if(destroyMethodName != null) {
+						if(MethodUtils.getAccessibleMethod(beanClass, destroyMethodName, null) == null) {
+							throw new IllegalArgumentException("No such destroy method '" + destroyMethodName + "() on bean class: " + className);
+						}
+					}
+
 					BeanRule beanRule = new BeanRule();
 					beanRule.setId(id);
 					beanRule.setClassName(className);
 					beanRule.setBeanClass(beanClass);
 					beanRule.setScopeType(scopeType);
-					beanRule.setFactoryMethod(factoryMethod);
-					beanRule.setInitMethod(initMethod);
-					beanRule.setDestroyMethod(destroyMethod);
+					beanRule.setFactoryMethodName(factoryMethod);
+					beanRule.setInitMethodName(initMethodName);
+					beanRule.setDestroyMethodName(destroyMethodName);
 					beanRule.setLazyInit(lazyInit);
 					beanRule.setOverride(override);
 	
@@ -644,25 +657,37 @@ public class AspectranNodeParser {
 					for(Map.Entry<String, Class<?>> entry : beanClassMap.entrySet()) {
 						String beanId = entry.getKey();
 						Class<?> beanClass2 = entry.getValue();
-						String initMethod2 = initMethod;
-						String destroyMethod2 = destroyMethod;
+						String initMethodName2 = initMethodName;
+						String destroyMethodName2 = destroyMethodName;
 						
-						if(initMethod2 == null && beanClass2.isAssignableFrom(InitializableBean.class)) {
-							initMethod2 = InitializableBean.INITIALIZE_METHOD_NAME;
+						if(initMethodName2 == null && beanClass2.isAssignableFrom(InitializableBean.class)) {
+							initMethodName2 = InitializableBean.INITIALIZE_METHOD_NAME;
+						}
+						
+						if(initMethodName2 != null) {
+							if(MethodUtils.getAccessibleMethod(beanClass, initMethodName2, null) == null) {
+								throw new IllegalArgumentException("No such initialization method '" + initMethodName2 + "() on bean class: " + beanClass2.getName());
+							}
 						}
 
-						if(destroyMethod2 == null && beanClass2.isAssignableFrom(DisposableBean.class)) {
-							destroyMethod2 = DisposableBean.DESTROY_METHOD_NAME;
+						if(destroyMethodName2 == null && beanClass2.isAssignableFrom(DisposableBean.class)) {
+							destroyMethodName2 = DisposableBean.DESTROY_METHOD_NAME;
 						}
-						
+
+						if(destroyMethodName2 != null) {
+							if(MethodUtils.getAccessibleMethod(beanClass, destroyMethodName2, null) == null) {
+								throw new IllegalArgumentException("No such destroy method '" + destroyMethodName2 + "() on bean class: " + beanClass2.getName());
+							}
+						}
+
 						BeanRule beanRule = new BeanRule();
 						beanRule.setId(beanId);
 						beanRule.setClassName(beanClass2.getName());
 						beanRule.setBeanClass(beanClass2);
 						beanRule.setScopeType(scopeType);
-						beanRule.setFactoryMethod(factoryMethod);
-						beanRule.setInitMethod(initMethod2);
-						beanRule.setDestroyMethod(destroyMethod2);
+						beanRule.setFactoryMethodName(factoryMethod);
+						beanRule.setInitMethodName(initMethodName2);
+						beanRule.setDestroyMethodName(destroyMethodName2);
 						beanRule.setLazyInit(lazyInit);
 						beanRule.setOverride(override);
 						

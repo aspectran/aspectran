@@ -1,10 +1,8 @@
 package com.aspectran.core.context.bean;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.Iterator;
 
 import com.aspectran.core.activity.AspectranActivity;
-import com.aspectran.core.activity.SuperTranslet;
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.context.bean.scope.ApplicationScope;
@@ -119,7 +117,7 @@ public class ScopedBeanRegistry extends AbstractBeanRegistry implements BeanRegi
 		SessionAdapter session = activity.getSessionAdapter();
 		
 		if(session == null) {
-			throw new BeanException("This package does not supported for session scope. The specified session adapter is not exists.");
+			throw new UnsupportedBeanScopeException(ScopeType.SESSION, beanRule);
 		}
 		
 		synchronized(sessionScopeLock) {
@@ -144,7 +142,7 @@ public class ScopedBeanRegistry extends AbstractBeanRegistry implements BeanRegi
 		ApplicationAdapter application = activity.getApplicationAdapter();
 
 		if(application == null) {
-			throw new BeanException("This package does not supported for application scope. The specified application adapter is not exists.");
+			throw new UnsupportedBeanScopeException(ScopeType.APPLICATION, beanRule);
 		}
 
 		synchronized(applicationScopeLock) {
@@ -160,7 +158,7 @@ public class ScopedBeanRegistry extends AbstractBeanRegistry implements BeanRegi
 	}
 	
 	private Object getScopedBean(Scope scope, BeanRule beanRule, AspectranActivity activity) {
-		ScopedBeanMap scopedBeanMap = scope.getScopeBeanMap();
+		ScopedBeanMap scopedBeanMap = scope.getScopedBeanMap();
 		ScopedBean scopeBean = scopedBeanMap.get(beanRule.getId());
 			
 		if(scopeBean != null)
@@ -229,33 +227,34 @@ public class ScopedBeanRegistry extends AbstractBeanRegistry implements BeanRegi
 	
 	public void destroy() {
 		for(BeanRule beanRule : beanRuleMap) {
-			try {
-				ScopeType scopeType = beanRule.getScopeType();
-	
-				if(scopeType == ScopeType.SINGLETON) {
-					if(beanRule.isRegistered()) {
-						String destroyMethodName = beanRule.getDestroyMethod();
-						
-						if(destroyMethodName != null)
-							MethodUtils.invokeMethod(beanRule.getBean(), destroyMethodName, null);
-						
-						beanRule.setBean(null);
-						beanRule.setRegistered(false);
+			ScopeType scopeType = beanRule.getScopeType();
+
+			if(scopeType == ScopeType.SINGLETON) {
+				if(beanRule.isRegistered()) {
+					String destroyMethodName = beanRule.getDestroyMethodName();
+					
+					if(destroyMethodName != null) {
+						try {
+							MethodUtils.invokeExactMethod(beanRule.getBean(), destroyMethodName, null);
+						} catch(Exception e) {
+							throw new BeanDestroyFailedException(beanRule);
+						}
 					}
+					
+					beanRule.setBean(null);
+					beanRule.setRegistered(false);
 				}
-			} catch(Exception e) {
-				throw new BeanDestroyFailedException(beanRule);
 			}
 		}
 	}
 	
-	public void destoryBean(BeanRule beanRule, SuperTranslet translet) throws InvocationTargetException {
-		if(beanRule.getScopeType() == ScopeType.SINGLETON) {
-			//String destroyMethodName = beanRule.getDestroyMethod();
-			
-			//if(destroyMethodName != null)
-			//	MethodUtils.invokeMethod(beanRule.getBean(), destroyMethodName, translet);
-		}
-	}
+//	public void destoryBean(BeanRule beanRule, SuperTranslet translet) throws InvocationTargetException {
+//		if(beanRule.getScopeType() == ScopeType.SINGLETON) {
+//			//String destroyMethodName = beanRule.getDestroyMethod();
+//			
+//			//if(destroyMethodName != null)
+//			//	MethodUtils.invokeMethod(beanRule.getBean(), destroyMethodName, translet);
+//		}
+//	}
 	
 }

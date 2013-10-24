@@ -473,22 +473,22 @@ public class MethodUtils {
 		return invokeExactStaticMethod(objectClass, methodName, args, parameterTypes);
 	}
 
-	/**
-	 * <p>Return an accessible method (that is, one that can be invoked via
-	 * reflection) with given name and a single parameter.  If no such method
-	 * can be found, return <code>null</code>.
-	 * Basically, a convenience wrapper that constructs a <code>Class</code>
-	 * array for you.</p>
-	 *
-	 * @param clazz get method from this class
-	 * @param methodName get method with this name
-	 * @param parameterType taking this type of parameter
-	 * @return The accessible method
-	 */
-	public static Method getAccessibleMethod(Class<?> clazz, String methodName, Class<?> parameterType) {
-		Class<?>[] parameterTypes = { parameterType };
-		return getAccessibleMethod(clazz, methodName, parameterTypes);
-	}
+//	/**
+//	 * <p>Return an accessible method (that is, one that can be invoked via
+//	 * reflection) with given name and a single parameter.  If no such method
+//	 * can be found, return <code>null</code>.
+//	 * Basically, a convenience wrapper that constructs a <code>Class</code>
+//	 * array for you.</p>
+//	 *
+//	 * @param clazz get method from this class
+//	 * @param methodName get method with this name
+//	 * @param parameterType taking this type of parameter
+//	 * @return The accessible method
+//	 */
+//	public static Method getAccessibleMethod(Class<?> clazz, String methodName, Class<?> parameterType) {
+//		Class<?>[] parameterTypes = { parameterType };
+//		return getAccessibleMethod(clazz, methodName, parameterTypes);
+//	}
 
 	/**
 	 * <p>Return an accessible method (that is, one that can be invoked via

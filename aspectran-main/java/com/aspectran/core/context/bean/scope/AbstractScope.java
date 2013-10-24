@@ -13,7 +13,7 @@ public class AbstractScope implements Scope {
 	
 	protected ScopedBeanMap scopedBeanMap = new ScopedBeanMap();
 
-	public ScopedBeanMap getScopeBeanMap() {
+	public ScopedBeanMap getScopedBeanMap() {
 		return scopedBeanMap;
 	}
 
