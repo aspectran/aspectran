@@ -13,13 +13,15 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.aspectran.core.context.builder;
+package com.aspectran.core.context.builder.xml;
 
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
 import com.aspectran.core.context.AspectranConstant;
+import com.aspectran.core.context.builder.AspectranSettings;
+import com.aspectran.core.context.builder.BeanReferenceInspector;
 import com.aspectran.core.rule.AspectRule;
 import com.aspectran.core.rule.AspectRuleMap;
 import com.aspectran.core.rule.BeanRule;
@@ -33,7 +35,7 @@ import com.aspectran.core.util.ArrayStack;
 /**
  * <p>Created: 2008. 04. 01 오후 10:25:35</p>
  */
-public class AspectranContextBuilderAssistant {
+public class XmlAspectranContextAssistant {
 
 	/** The object stack. */
 	private ArrayStack objectStack;
@@ -46,7 +48,7 @@ public class AspectranContextBuilderAssistant {
 	/** The service root path. */
 	private String applicationRootPath;
 
-	private InheritedAspectranSettings inheritedAspectranSettings;
+	private AspectranSettings inheritedAspectranSettings;
 
 	private AspectRuleMap aspectRuleMap;
 	
@@ -56,16 +58,18 @@ public class AspectranContextBuilderAssistant {
 
 	private String namespace;
 	
+	private BeanReferenceInspector beanReferenceInspector;
+	
 	/**
 	 * Instantiates a new translets config.
 	 */
-	public AspectranContextBuilderAssistant(String applicationRootPath) {
+	public XmlAspectranContextAssistant(String applicationRootPath) {
 		this.objectStack = new ArrayStack(); 
 		this.typeAliases = new HashMap<String, String>();
 		this.settings = new HashMap<AspectranSettingType, String>();
 		
 		this.applicationRootPath = applicationRootPath;
-		inheritedAspectranSettings = new InheritedAspectranSettings();
+		inheritedAspectranSettings = new AspectranSettings();
 	}
 	
 	/**
@@ -74,12 +78,12 @@ public class AspectranContextBuilderAssistant {
 	 *
 	 * @param assistant the assistant
 	 */
-	public AspectranContextBuilderAssistant(AspectranContextBuilderAssistant assistant) {
+	public XmlAspectranContextAssistant(XmlAspectranContextAssistant assistant) {
 		applicationRootPath = assistant.getApplicationRootPath();
 		inheritedAspectranSettings = assistant.getInheritedAspectranSettings();
 		
 		if(inheritedAspectranSettings == null)
-			inheritedAspectranSettings = new InheritedAspectranSettings();
+			inheritedAspectranSettings = new AspectranSettings();
 		
 		beanRuleMap = assistant.getBeanRuleMap();
 		transletRuleMap = assistant.getTransletRuleMap();
@@ -259,11 +263,11 @@ public class AspectranContextBuilderAssistant {
 		return applicationRootPath;
 	}
 	
-	public InheritedAspectranSettings getInheritedAspectranSettings() {
+	public AspectranSettings getInheritedAspectranSettings() {
 		return inheritedAspectranSettings;
 	}
 
-	public void setActivitySettingsRule(InheritedAspectranSettings activityRule) {
+	public void setActivitySettingsRule(AspectranSettings activityRule) {
 		this.inheritedAspectranSettings = activityRule;
 	}
 
@@ -339,6 +343,12 @@ public class AspectranContextBuilderAssistant {
 			transletRuleMap = new TransletRuleMap();
 		
 		transletRuleMap.put(transletRule.getName(), transletRule);
+	}
+	
+	public void putBeanReference(String beanId, Object rule) {
+		if(!beanRuleMap.containsKey(beanId)) {
+			beanReferenceInspector.putRelation(beanId, rule);
+		}
 	}
 	
 }

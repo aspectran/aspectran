@@ -13,14 +13,14 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.aspectran.core.context.builder.xml;
+package com.aspectran.core.context.builder.xml.parser;
 
 import java.util.Properties;
 
 import org.w3c.dom.Node;
 
 import com.aspectran.core.activity.response.ResponseMap;
-import com.aspectran.core.context.builder.AspectranContextBuilderAssistant;
+import com.aspectran.core.context.builder.xml.XmlAspectranContextAssistant;
 import com.aspectran.core.rule.AspectAdviceRule;
 import com.aspectran.core.rule.AspectRule;
 import com.aspectran.core.rule.ResponseByContentTypeRule;
@@ -38,7 +38,7 @@ import com.aspectran.core.util.xml.NodeletParser;
  */
 public class AspectAdviceRuleNodeletAdder implements NodeletAdder {
 	
-	protected AspectranContextBuilderAssistant assistant;
+	protected XmlAspectranContextAssistant assistant;
 	
 	private AspectAdviceType aspectAdviceType;
 	
@@ -48,7 +48,7 @@ public class AspectAdviceRuleNodeletAdder implements NodeletAdder {
 	 * @param parser the parser
 	 * @param assistant the assistant for Context Builder
 	 */
-	public AspectAdviceRuleNodeletAdder(AspectranContextBuilderAssistant assistant, AspectAdviceType aspectAdviceType) {
+	public AspectAdviceRuleNodeletAdder(XmlAspectranContextAssistant assistant, AspectAdviceType aspectAdviceType) {
 		this.assistant = assistant;
 		this.aspectAdviceType = aspectAdviceType;
 	}

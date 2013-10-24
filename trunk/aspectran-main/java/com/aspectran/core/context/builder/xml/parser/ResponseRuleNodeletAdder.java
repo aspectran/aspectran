@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.aspectran.core.context.builder.xml;
+package com.aspectran.core.context.builder.xml.parser;
 
 import java.io.File;
 import java.util.Properties;
@@ -21,7 +21,7 @@ import java.util.Properties;
 import org.w3c.dom.Node;
 
 import com.aspectran.core.activity.process.ActionList;
-import com.aspectran.core.context.builder.AspectranContextBuilderAssistant;
+import com.aspectran.core.context.builder.xml.XmlAspectranContextAssistant;
 import com.aspectran.core.rule.DispatchResponseRule;
 import com.aspectran.core.rule.ForwardResponseRule;
 import com.aspectran.core.rule.ItemRuleMap;
@@ -43,7 +43,7 @@ import com.aspectran.core.util.xml.NodeletParser;
  */
 public class ResponseRuleNodeletAdder implements NodeletAdder {
 	
-	protected AspectranContextBuilderAssistant assistant;
+	protected XmlAspectranContextAssistant assistant;
 	
 	/**
 	 * Instantiates a new response rule nodelet adder.
@@ -51,7 +51,7 @@ public class ResponseRuleNodeletAdder implements NodeletAdder {
 	 * @param parser the parser
 	 * @param assistant the assistant for Context Builder
 	 */
-	public ResponseRuleNodeletAdder(AspectranContextBuilderAssistant assistant) {
+	public ResponseRuleNodeletAdder(XmlAspectranContextAssistant assistant) {
 		this.assistant = assistant;
 	}
 	
@@ -93,13 +93,7 @@ public class ResponseRuleNodeletAdder implements NodeletAdder {
 				Boolean noCache = Boolean.valueOf(attributes.getProperty("noCache"));
 				String templateContent = text;
 
-				// backup
-				ActionList actionList = (ActionList)assistant.popObject();
-				
-				TransformRule tr = (TransformRule)assistant.peekObject();
-				
-				// restore
-				assistant.pushObject(actionList);
+				TransformRule tr = (TransformRule)assistant.peekObject(1);
 				
 				if(tr.getTransformType() == TransformType.XML_TRANSFORM ||
 					tr.getTransformType() == TransformType.JSON_TRANSFORM ||
@@ -195,14 +189,8 @@ public class ResponseRuleNodeletAdder implements NodeletAdder {
 				Boolean noCache = Boolean.valueOf(attributes.getProperty("noCache"));
 				String templateContent = text;
 				
-				// backup
-				ActionList actionList = (ActionList)assistant.popObject();
+				DispatchResponseRule drr = (DispatchResponseRule)assistant.peekObject(1);
 				
-				DispatchResponseRule drr = (DispatchResponseRule)assistant.peekObject();
-				
-				// restore
-				assistant.pushObject(actionList);
-
 				drr.setTemplateFile(templateFile);
 				drr.setTemplateEncoding(templateEncoding);
 				drr.setTemplateContent(templateContent);
@@ -265,14 +253,8 @@ public class ResponseRuleNodeletAdder implements NodeletAdder {
 				}
 
 				if(url != null) {
-					// backup
-					ActionList actionList = (ActionList)assistant.popObject();
+					RedirectResponseRule rrr = (RedirectResponseRule)assistant.peekObject(1);
 					
-					RedirectResponseRule rrr = (RedirectResponseRule)assistant.peekObject();
-					
-					// restore
-					assistant.pushObject(actionList);
-
 					rrr.setUrl(url);
 				}
 			}
@@ -291,14 +273,8 @@ public class ResponseRuleNodeletAdder implements NodeletAdder {
 				ItemRuleMap irm = (ItemRuleMap)assistant.popObject();
 				
 				if(irm.size() > 0) {
-					// backup
-					ActionList actionList = (ActionList)assistant.popObject();
+					RedirectResponseRule rrr = (RedirectResponseRule)assistant.peekObject(1);
 					
-					RedirectResponseRule rrr = (RedirectResponseRule)assistant.peekObject();
-					
-					// restore
-					assistant.pushObject(actionList);
-
 					rrr.setParameterItemRuleMap(irm);
 				}
 			}
@@ -357,13 +333,7 @@ public class ResponseRuleNodeletAdder implements NodeletAdder {
 				ItemRuleMap irm = (ItemRuleMap)assistant.popObject();
 				
 				if(irm.size() > 0) {
-					// backup
-					ActionList actionList = (ActionList)assistant.popObject();
-					
-					ForwardResponseRule frr = (ForwardResponseRule)assistant.peekObject();
-					
-					// restore
-					assistant.pushObject(actionList);
+					ForwardResponseRule frr = (ForwardResponseRule)assistant.peekObject(1);
 					
 					frr.setParameterItemRuleMap(irm);
 				}

@@ -23,7 +23,7 @@ import com.aspectran.core.type.AspectranSettingType;
 /**
  * <p>Created: 2008. 03. 22 오후 5:48:09</p>
  */
-public class InheritedAspectranSettings {
+public class AspectranSettings {
 
 	private String transletNamePattern;
 	
@@ -41,9 +41,7 @@ public class InheritedAspectranSettings {
 	
 	private boolean nullableActionId = true;
 	
-	private boolean multipleTransletEnable = true;
-	
-	protected InheritedAspectranSettings() {
+	public AspectranSettings() {
 	}
 	
 	public String getTransletNamePattern() {
@@ -137,14 +135,6 @@ public class InheritedAspectranSettings {
 		this.nullableActionId = nullableActionId;
 	}
 
-	public boolean isMultipleTransletEnable() {
-		return multipleTransletEnable;
-	}
-
-	public void setMultipleTransletEnable(boolean multipleTransletEnable) {
-		this.multipleTransletEnable = multipleTransletEnable;
-	}
-	
 	public void set(Map<AspectranSettingType, String> settings) {
 		if(settings.get(AspectranSettingType.USE_NAMESPACES) != null)
 			useNamespaces = Boolean.valueOf(settings.get(AspectranSettingType.USE_NAMESPACES));
