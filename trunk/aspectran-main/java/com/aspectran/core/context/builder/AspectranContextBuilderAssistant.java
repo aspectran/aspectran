@@ -33,7 +33,7 @@ import com.aspectran.core.util.ArrayStack;
 /**
  * <p>Created: 2008. 04. 01 오후 10:25:35</p>
  */
-public class AspectranContextBuildingAssistant {
+public class AspectranContextBuilderAssistant {
 
 	/** The object stack. */
 	private ArrayStack objectStack;
@@ -59,7 +59,7 @@ public class AspectranContextBuildingAssistant {
 	/**
 	 * Instantiates a new translets config.
 	 */
-	public AspectranContextBuildingAssistant(String applicationRootPath) {
+	public AspectranContextBuilderAssistant(String applicationRootPath) {
 		this.objectStack = new ArrayStack(); 
 		this.typeAliases = new HashMap<String, String>();
 		this.settings = new HashMap<AspectranSettingType, String>();
@@ -74,7 +74,7 @@ public class AspectranContextBuildingAssistant {
 	 *
 	 * @param assistant the assistant
 	 */
-	public AspectranContextBuildingAssistant(AspectranContextBuildingAssistant assistant) {
+	public AspectranContextBuilderAssistant(AspectranContextBuilderAssistant assistant) {
 		applicationRootPath = assistant.getApplicationRootPath();
 		inheritedAspectranSettings = assistant.getInheritedAspectranSettings();
 		

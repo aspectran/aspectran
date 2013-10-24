@@ -71,7 +71,7 @@ public class AspectranContextBuilder {
 		}
 		
 		try {
-			AspectranContextBuildingAssistant assistant = new AspectranContextBuildingAssistant(applicationRootPath);
+			AspectranContextBuilderAssistant assistant = new AspectranContextBuilderAssistant(applicationRootPath);
 	
 			AspectranNodeParser aspectranNodeParser = new AspectranNodeParser(assistant);
 			aspectranNodeParser.parse(resource.getInputStream());
@@ -88,18 +88,18 @@ public class AspectranContextBuilder {
 		}
 	}
 	
-	private AspectranContext makeAspectranContext(AspectranContextBuildingAssistant assistant) {
+	private AspectranContext makeAspectranContext(AspectranContextBuilderAssistant assistant) {
 		BeanRegistry beanRegistry = makeBeanRegistry(assistant);
-		TransletRegistry transletRuleRegistry = makeTransletRuleRegistry(assistant);
+		TransletRegistry transletRegistry = makeTransletRegistry(assistant);
 		
 		AspectranContext aspectranContext = new AspectranContext();
 		aspectranContext.setBeanRegistry(beanRegistry);
-		aspectranContext.setTransletRuleRegistry(transletRuleRegistry);
+		aspectranContext.setTransletRuleRegistry(transletRegistry);
 		
 		return aspectranContext;
 	}
 	
-	private TransletRegistry makeTransletRuleRegistry(AspectranContextBuildingAssistant assistant) {
+	private TransletRegistry makeTransletRegistry(AspectranContextBuilderAssistant assistant) {
 		AspectRuleMap aspectRuleMap = assistant.getAspectRuleMap();
 		TransletRuleMap transletRuleMap = assistant.getTransletRuleMap();
 		//transletRuleMap.freeze();
@@ -110,7 +110,7 @@ public class AspectranContextBuilder {
 		return new TransletRegistry(transletRuleMap);
 	}
 
-	private BeanRegistry makeBeanRegistry(AspectranContextBuildingAssistant assistant) {
+	private BeanRegistry makeBeanRegistry(AspectranContextBuilderAssistant assistant) {
 		BeanRuleMap beanRuleMap = assistant.getBeanRuleMap();
 		//beanRuleMap.freeze();
 		return new ScopedBeanRegistry(beanRuleMap);

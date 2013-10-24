@@ -1,7 +1,5 @@
 package com.aspectran.core.context.bean;
 
-import java.util.Iterator;
-
 import com.aspectran.core.activity.AspectranActivity;
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
@@ -14,13 +12,9 @@ import com.aspectran.core.context.bean.scope.ScopedBeanMap;
 import com.aspectran.core.context.bean.scope.SessionScope;
 import com.aspectran.core.rule.BeanRule;
 import com.aspectran.core.rule.BeanRuleMap;
-import com.aspectran.core.rule.ItemRule;
-import com.aspectran.core.rule.ItemRuleMap;
 import com.aspectran.core.token.expression.ItemTokenExpression;
 import com.aspectran.core.token.expression.ItemTokenExpressor;
 import com.aspectran.core.type.ScopeType;
-import com.aspectran.core.util.MethodUtils;
-import com.aspectran.core.var.ValueMap;
 
 /**
  * SINGLETON: 모든 singleton 빈은context 생성시 초기화 된다.
@@ -32,8 +26,6 @@ import com.aspectran.core.var.ValueMap;
  */
 public class ScopedBeanRegistry extends AbstractBeanRegistry implements BeanRegistry {
 
-	private final BeanRuleMap beanRuleMap;
-	
 	private final ContextScope contextScope = new ContextScope();
 	
 	private final Object singletonScopeLock = new Object();
@@ -47,20 +39,7 @@ public class ScopedBeanRegistry extends AbstractBeanRegistry implements BeanRegi
 	private final Object applicationScopeLock = new Object();
 
 	public ScopedBeanRegistry(BeanRuleMap beanRuleMap) {
-		this.beanRuleMap = beanRuleMap;
-
-		for(BeanRule beanRule : beanRuleMap) {
-			ScopeType scope = beanRule.getScopeType();
-
-			if(scope == ScopeType.SINGLETON) {
-				if(!beanRule.isRegistered() && !beanRule.isLazyInit()) {
-					Object bean = createBean(beanRule);
-
-					beanRule.setBean(bean);
-					beanRule.setRegistered(true);
-				}
-			}
-		}
+		super(beanRuleMap);
 	}
 
 	public Object getBean(String id, AspectranActivity activity) {
@@ -91,7 +70,7 @@ public class ScopedBeanRegistry extends AbstractBeanRegistry implements BeanRegi
 			if(beanRule.isRegistered())
 				return beanRule.getBean();
 
-			Object bean = createBean(beanRule);
+			Object bean = createBean(beanRule, activity);
 
 			beanRule.setBean(bean);
 			beanRule.setRegistered(true);
@@ -174,45 +153,14 @@ public class ScopedBeanRegistry extends AbstractBeanRegistry implements BeanRegi
 		return bean;
 	}
 	
-	private Object createBean(BeanRule beanRule) {
-		return createBean(beanRule, null);
+	protected Object createBean(BeanRule beanRule) {
+		ItemTokenExpressor expressor = new ItemTokenExpression(this);
+		return createBean(beanRule, expressor);
 	}
 	
-	private Object createBean(BeanRule beanRule, AspectranActivity activity) {
-		try {
-			ItemTokenExpressor expressor = null;
-			
-			if(activity != null)
-				expressor = new ItemTokenExpression(activity);
-			else
-				expressor = new ItemTokenExpression(this);
-			
-			ItemRuleMap constructorArgumentItemRuleMap = beanRule.getConstructorArgumentItemRuleMap();
-			
-			if(constructorArgumentItemRuleMap != null) {
-				ValueMap valueMap = expressor.express(constructorArgumentItemRuleMap);
-	
-				int parameterSize = constructorArgumentItemRuleMap.size();
-				Object[] args = new Object[parameterSize];
-				
-				Iterator<ItemRule> iter = constructorArgumentItemRuleMap.iterator();
-				int i = 0;
-				
-				while(iter.hasNext()) {
-					ItemRule ir = iter.next();
-					Object o = valueMap.get(ir.getName());
-					args[i] = o;
-					
-					i++;
-				}
-				
-				return newInstance(beanRule, args);
-			} else {
-				return newInstance(beanRule, new Object[0]);
-			}
-		} catch(Exception e) {
-			throw new BeanCreationException(beanRule, e);
-		}
+	protected Object createBean(BeanRule beanRule, AspectranActivity activity) {
+		ItemTokenExpressor expressor = new ItemTokenExpression(activity);
+		return super.createBean(beanRule, expressor);
 	}
 	
 //	public void destoryScopeBean(ScopedBeanMap scopeBeanMap) throws Exception {
@@ -225,28 +173,7 @@ public class ScopedBeanRegistry extends AbstractBeanRegistry implements BeanRegi
 //		scopeBean.destroy();
 //	}
 	
-	public void destroy() {
-		for(BeanRule beanRule : beanRuleMap) {
-			ScopeType scopeType = beanRule.getScopeType();
 
-			if(scopeType == ScopeType.SINGLETON) {
-				if(beanRule.isRegistered()) {
-					String destroyMethodName = beanRule.getDestroyMethodName();
-					
-					if(destroyMethodName != null) {
-						try {
-							MethodUtils.invokeExactMethod(beanRule.getBean(), destroyMethodName, null);
-						} catch(Exception e) {
-							throw new BeanDestroyFailedException(beanRule);
-						}
-					}
-					
-					beanRule.setBean(null);
-					beanRule.setRegistered(false);
-				}
-			}
-		}
-	}
 	
 //	public void destoryBean(BeanRule beanRule, SuperTranslet translet) throws InvocationTargetException {
 //		if(beanRule.getScopeType() == ScopeType.SINGLETON) {
