@@ -16,6 +16,7 @@
 package com.aspectran.core.context.builder.xml.parser;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -90,15 +91,15 @@ public class ItemRuleNodeletAdder implements NodeletAdder {
 	 * @return the reference tokens
 	 */
 	private Token[] getReferenceTokens(Properties attributes) {
-		String bean = attributes.getProperty("bean");					
+		String beanId = attributes.getProperty("bean");					
 		String parameter = attributes.getProperty("parameter");					
 		String attribute = attributes.getProperty("attribute");					
 		String property = attributes.getProperty("property");					
 
 		Token[] tokens = new Token[1];
 		
-		if(!StringUtils.isEmpty(bean)) {
-			tokens[0] = new Token(TokenType.REFERENCE_BEAN, bean);
+		if(!StringUtils.isEmpty(beanId)) {
+			tokens[0] = new Token(TokenType.REFERENCE_BEAN, beanId);
 			
 			if(!StringUtils.isEmpty(property))
 				tokens[0].setGetterName(property);
@@ -307,7 +308,42 @@ public class ItemRuleNodeletAdder implements NodeletAdder {
 					namingItemRule(ir, irm);
 
 				irm.putItemRule(ir);
+				
+				inspectBeanReference(ir);
 			}
 		});
+	}
+	
+	private void inspectBeanReference(ItemRule ir) {
+		if(ir.getType() == ItemType.LIST) {
+			List<Token[]> list = ir.getTokensList();
+			for(Token[] tokens : list) {
+				inspectBeanReference(ir, tokens);
+			}
+		} else if(ir.getType() == ItemType.SET) {
+			Set<Token[]> set = ir.getTokensSet();
+			for(Token[] tokens : set) {
+				inspectBeanReference(ir, tokens);
+			}
+		} else if(ir.getType() == ItemType.MAP) {
+			Map<String, Token[]> map = ir.getTokensMap();
+			for(Token[] tokens : map.values()) {
+				inspectBeanReference(ir, tokens);
+			}
+		} else if(ir.getType() == ItemType.PROPERTIES) {
+			Properties prop = ir.getTokensProperties();
+			Iterator<?> iter =  prop.values().iterator();
+			while(iter.hasNext()) {
+				inspectBeanReference(ir, (Token[])iter.next());
+			}
+		}
+	}
+	
+	private void inspectBeanReference(ItemRule ir, Token[] tokens) {
+		for(Token token : tokens) {
+			if(token.getType() == TokenType.REFERENCE_BEAN) {
+				assistant.putBeanReference(token.getName(), ir);
+			}
+		}
 	}
 }

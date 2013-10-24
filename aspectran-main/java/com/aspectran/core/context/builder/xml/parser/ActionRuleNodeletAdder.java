@@ -98,7 +98,7 @@ public class ActionRuleNodeletAdder implements NodeletAdder {
 		parser.addNodelet(xpath, "/action", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
 				String id = attributes.getProperty("id");
-				String bean = attributes.getProperty("bean");
+				String beanId = attributes.getProperty("bean");
 				String methodName = attributes.getProperty("method");
 				Boolean hidden = Boolean.valueOf(attributes.getProperty("hidden"));
 
@@ -107,7 +107,7 @@ public class ActionRuleNodeletAdder implements NodeletAdder {
 				
 				BeanActionRule beanActionRule = new BeanActionRule();
 				beanActionRule.setActionId(id);
-				beanActionRule.setBeanId(bean);
+				beanActionRule.setBeanId(beanId);
 				beanActionRule.setMethodName(methodName);
 				beanActionRule.setHidden(hidden);
 
@@ -168,6 +168,8 @@ public class ActionRuleNodeletAdder implements NodeletAdder {
 					ActionList actionList = (ActionList)o;
 					actionList.addBeanAction(beanActionRule);
 				}
+
+				assistant.putBeanReference(beanActionRule.getBeanId(), beanActionRule);
 			}
 		});
 		parser.addNodelet(xpath, "/include", new Nodelet() {

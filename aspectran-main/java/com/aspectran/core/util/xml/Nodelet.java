@@ -26,5 +26,5 @@ public interface Nodelet {
      * </ul>
      *
      */
-    void process (Node node, Properties attributes, String text) throws Exception;
+    void process(Node node, Properties attributes, String text) throws Exception;
 }
