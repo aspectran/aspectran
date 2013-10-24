@@ -30,7 +30,7 @@ import com.aspectran.core.activity.response.ResponseMap;
 import com.aspectran.core.context.bean.ablility.DisposableBean;
 import com.aspectran.core.context.bean.ablility.InitializableBean;
 import com.aspectran.core.context.bean.loader.BeanClassLoader;
-import com.aspectran.core.context.builder.AspectranContextBuildingAssistant;
+import com.aspectran.core.context.builder.AspectranContextBuilderAssistant;
 import com.aspectran.core.context.builder.AspectranContextResource;
 import com.aspectran.core.context.builder.InheritedAspectranSettings;
 import com.aspectran.core.rule.AspectRule;
@@ -66,7 +66,7 @@ public class AspectranNodeParser {
 	
 	private final NodeletParser parser = new NodeletParser();
 
-	private final AspectranContextBuildingAssistant assistant;
+	private final AspectranContextBuilderAssistant assistant;
 	
 	private final ClassLoader classLoader = ClassUtils.getDefaultClassLoader();
 	
@@ -75,7 +75,7 @@ public class AspectranNodeParser {
 	 * 
 	 * @param assistant the assistant for Context Builder
 	 */
-	public AspectranNodeParser(AspectranContextBuildingAssistant assistant) {
+	public AspectranNodeParser(AspectranContextBuilderAssistant assistant) {
 		this.assistant = assistant;
 		//this.assistant.clearObjectStack();
 		//this.assistant.clearTypeAliases();
