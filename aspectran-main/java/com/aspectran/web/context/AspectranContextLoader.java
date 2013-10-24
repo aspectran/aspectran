@@ -7,6 +7,7 @@ import org.apache.commons.logging.LogFactory;
 
 import com.aspectran.core.context.AspectranContext;
 import com.aspectran.core.context.builder.AspectranContextBuilder;
+import com.aspectran.core.context.builder.xml.XmlAspectranContextBuilder;
 
 public class AspectranContextLoader {
 
@@ -41,7 +42,7 @@ public class AspectranContextLoader {
 		try {
 			String applicationRootPath = servletContext.getRealPath("/");
 			
-			AspectranContextBuilder builder = new AspectranContextBuilder(applicationRootPath);
+			AspectranContextBuilder builder = new XmlAspectranContextBuilder(applicationRootPath);
 			aspectranContext = builder.build(contextConfigLocation);
 			
 			long elapsedTime = System.currentTimeMillis() - startTime;

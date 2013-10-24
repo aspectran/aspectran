@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.aspectran.core.context.builder.xml;
+package com.aspectran.core.context.builder.xml.parser;
 
 import java.io.InputStream;
 import java.nio.charset.Charset;
@@ -30,9 +30,9 @@ import com.aspectran.core.activity.response.ResponseMap;
 import com.aspectran.core.context.bean.ablility.DisposableBean;
 import com.aspectran.core.context.bean.ablility.InitializableBean;
 import com.aspectran.core.context.bean.loader.BeanClassLoader;
-import com.aspectran.core.context.builder.AspectranContextBuilderAssistant;
 import com.aspectran.core.context.builder.AspectranContextResource;
-import com.aspectran.core.context.builder.InheritedAspectranSettings;
+import com.aspectran.core.context.builder.AspectranSettings;
+import com.aspectran.core.context.builder.xml.XmlAspectranContextAssistant;
 import com.aspectran.core.rule.AspectRule;
 import com.aspectran.core.rule.BeanRule;
 import com.aspectran.core.rule.FileItemRule;
@@ -66,7 +66,7 @@ public class AspectranNodeParser {
 	
 	private final NodeletParser parser = new NodeletParser();
 
-	private final AspectranContextBuilderAssistant assistant;
+	private final XmlAspectranContextAssistant assistant;
 	
 	private final ClassLoader classLoader = ClassUtils.getDefaultClassLoader();
 	
@@ -75,7 +75,7 @@ public class AspectranNodeParser {
 	 * 
 	 * @param assistant the assistant for Context Builder
 	 */
-	public AspectranNodeParser(AspectranContextBuilderAssistant assistant) {
+	public AspectranNodeParser(XmlAspectranContextAssistant assistant) {
 		this.assistant = assistant;
 		//this.assistant.clearObjectStack();
 		//this.assistant.clearTypeAliases();
@@ -783,7 +783,7 @@ public class AspectranNodeParser {
 				else
 					throw new IllegalArgumentException("The <import> element requires either a resource or a file or a url attribute.");
 				
-				InheritedAspectranSettings inheritedSettings = assistant.getInheritedAspectranSettings();
+				AspectranSettings inheritedSettings = assistant.getInheritedAspectranSettings();
 				
 				AspectranNodeParser aspectranNodeParser = new AspectranNodeParser(assistant);
 				aspectranNodeParser.parse(aspectranContextResource.getInputStream());

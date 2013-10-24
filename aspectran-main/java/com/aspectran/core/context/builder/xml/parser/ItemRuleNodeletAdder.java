@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.aspectran.core.context.builder.xml;
+package com.aspectran.core.context.builder.xml.parser;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -25,7 +25,7 @@ import java.util.Set;
 
 import org.w3c.dom.Node;
 
-import com.aspectran.core.context.builder.AspectranContextBuilderAssistant;
+import com.aspectran.core.context.builder.xml.XmlAspectranContextAssistant;
 import com.aspectran.core.rule.ItemRule;
 import com.aspectran.core.rule.ItemRuleMap;
 import com.aspectran.core.token.Token;
@@ -45,14 +45,14 @@ import com.aspectran.core.util.xml.NodeletParser;
  */
 public class ItemRuleNodeletAdder implements NodeletAdder {
 	
-	protected AspectranContextBuilderAssistant assistant;
+	protected XmlAspectranContextAssistant assistant;
 	
 	/**
 	 * Instantiates a new response rule nodelet adder.
 	 *
 	 * @param assistant the assistant for Context Builder
 	 */
-	public ItemRuleNodeletAdder(AspectranContextBuilderAssistant assistant) {
+	public ItemRuleNodeletAdder(XmlAspectranContextAssistant assistant) {
 		this.assistant = assistant;
 	}
 	

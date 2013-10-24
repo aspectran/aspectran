@@ -16,104 +16,20 @@
 package com.aspectran.core.context.builder;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 import com.aspectran.core.context.AspectranContext;
-import com.aspectran.core.context.aspect.AspectAdviceRuleRegister;
-import com.aspectran.core.context.bean.BeanRegistry;
-import com.aspectran.core.context.bean.ScopedBeanRegistry;
-import com.aspectran.core.context.builder.xml.AspectranNodeParser;
-import com.aspectran.core.context.translet.TransletRegistry;
-import com.aspectran.core.rule.AspectRuleMap;
-import com.aspectran.core.rule.BeanRuleMap;
-import com.aspectran.core.rule.TransletRuleMap;
 
 /**
  * TransletsContext builder.
  * 
  * <p>Created: 2008. 06. 14 오후 8:53:29</p>
  */
-public class AspectranContextBuilder {
+public interface AspectranContextBuilder {
 	
-	private final Log log = LogFactory.getLog(AspectranContextBuilder.class);
-
-	private String applicationRootPath;
+	public AspectranContext build(String contextConfigLocation) throws AspectranContextBuilderException;
 	
-	/**
-	 * Instantiates a new translets client loader.
-	 * 
-	 * @param servicePath the service path
-	 */
-	public AspectranContextBuilder(String applicationRootPath) {
-		this.applicationRootPath = applicationRootPath;
-	}
-
-	public AspectranContext build(String contextConfigLocation) throws AspectranContextBuilderException {
-		AspectranContextResource resource = null;
-		
-		try {
-			File file = new File(applicationRootPath, contextConfigLocation);
-			
-			log.debug("absolute pathname: " + file.getAbsolutePath());
-
-			if(!file.isFile()) {
-				throw new FileNotFoundException("aspectran context configuration file is not found. " + contextConfigLocation);
-			}
-			
-			resource = new AspectranContextResource();
-			resource.setFile(file);
-		} catch(Exception e) {
-			log.error(e);
-			throw new AspectranContextBuilderException(e);
-		}
-		
-		try {
-			AspectranContextBuilderAssistant assistant = new AspectranContextBuilderAssistant(applicationRootPath);
+	public AspectranContext build(File contextConfigFile) throws AspectranContextBuilderException;
 	
-			AspectranNodeParser aspectranNodeParser = new AspectranNodeParser(assistant);
-			aspectranNodeParser.parse(resource.getInputStream());
-			
-			AspectranContext aspectranContext = makeAspectranContext(assistant);
-			
-			assistant.clearObjectStack();
-			assistant.clearTypeAliases();
-	
-			return aspectranContext;
-		} catch(Exception e) {
-			log.error("aspectran configuration error: " + resource);
-			throw new AspectranContextBuilderException("aspectran configuration error: " + resource, e);
-		}
-	}
-	
-	private AspectranContext makeAspectranContext(AspectranContextBuilderAssistant assistant) {
-		BeanRegistry beanRegistry = makeBeanRegistry(assistant);
-		TransletRegistry transletRegistry = makeTransletRegistry(assistant);
-		
-		AspectranContext aspectranContext = new AspectranContext();
-		aspectranContext.setBeanRegistry(beanRegistry);
-		aspectranContext.setTransletRuleRegistry(transletRegistry);
-		
-		return aspectranContext;
-	}
-	
-	private TransletRegistry makeTransletRegistry(AspectranContextBuilderAssistant assistant) {
-		AspectRuleMap aspectRuleMap = assistant.getAspectRuleMap();
-		TransletRuleMap transletRuleMap = assistant.getTransletRuleMap();
-		//transletRuleMap.freeze();
-		
-		AspectAdviceRuleRegister aspectAdviceRuleRegister = new AspectAdviceRuleRegister(aspectRuleMap);
-		aspectAdviceRuleRegister.register(transletRuleMap);
-		
-		return new TransletRegistry(transletRuleMap);
-	}
-
-	private BeanRegistry makeBeanRegistry(AspectranContextBuilderAssistant assistant) {
-		BeanRuleMap beanRuleMap = assistant.getBeanRuleMap();
-		//beanRuleMap.freeze();
-		return new ScopedBeanRegistry(beanRuleMap);
-	}
+	public AspectranContext build(AspectranContextResource resource) throws AspectranContextBuilderException;
 	
 }
