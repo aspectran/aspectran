@@ -13,6 +13,11 @@
 		<setting name="nullableActionId" value="true"/>
 	</settings>
 	
+	<bean id="jspViewDispatcher" class="com.aspectran.web.view.JspViewDispatcher" scope="singleton"/>
+	<bean id="example.*" class="com.aspectran.example.**.*Action" scope="singleton"/>
+	<bean id="advice.*" class="com.aspectran.example.aspect.**.*Advice" scope="session"/>
+	<bean id="sampleBean" class="com.aspectran.example.bean.SampleBean" scope="singleton"/>
+	
 	<aspect id="defaultRequestRule">
 		<joinpoint target="translet" scope="request"/>
 		<settings>
@@ -21,10 +26,6 @@
 			<setting name="multipart.temporaryFilePath" value="/d:/"/>
 		</settings>
 	</aspect>
-	
-	<bean id="jspViewDispatcher" class="com.aspectran.web.view.JspViewDispatcher" scope="singleton"/>
-	<bean id="example.*" class="com.aspectran.example.**.*Action" scope="singleton"/>
-	<bean id="advice.*" class="com.aspectran.example.aspect.**.*Advice" scope="session"/>
 	
 	<aspect id="defaultResponseRule">
 		<joinpoint target="translet" scope="response"/>
@@ -114,6 +115,12 @@
 </html>
 ]]>
 			</template>
+		</transform>
+	</translet>
+
+	<translet name="hello/applyTheAdvice.xml">
+		<transform type="transform/xml">
+			<action id="applyTheAdvice" bean="bean.SampleBean" method="applyTheAdvice"/>
 		</transform>
 	</translet>
 

@@ -28,14 +28,14 @@ public class HelloAction {
 	}
 	
 	public Object applyTheAdvice(WebTranslet translet) {
-		System.out.println("##########" + translet.getBean("example.hello.HelloAction"));
+		System.out.println("##########" + translet.getBean("sampleBean"));
 		Object beforeAdviceResult = translet.getBeforeAdviceResult("helloAdvice");
 		Object afterAdviceResult = translet.getAfterAdviceResult("helloAdvice");
 		
 		Map<String, Object> result = new LinkedHashMap<String, Object>();
 		result.put("beforeAdviceResult", beforeAdviceResult);
 		result.put("countTo10", countTo10AsArray(translet));
-		result.put("example.hello.HelloAction", translet.getBean("example.hello.HelloAction"));
+		result.put("sampleBean", translet.getBean("sampleBean"));
 		result.put("afterAdviceResult", afterAdviceResult);
 		
 		return result;
