@@ -55,8 +55,6 @@ public class TextTransform extends AbstractTransform implements Responsible {
 
 	private String templateEncoding;
 
-	private String templateContent;
-	
 	private boolean templateLoaded;
 
 	private boolean templateNoCache;
@@ -70,7 +68,6 @@ public class TextTransform extends AbstractTransform implements Responsible {
 		super(transformRule);
 		this.templateFile = transformRule.getTemplateFile();
 		this.templateUrl = transformRule.getTemplateUrl();
-		this.templateContent = transformRule.getTemplateContent();
 		this.contentTokens = transformRule.getContentTokens();
 		this.templateNoCache = (transformRule.getTemplateNoCache() == Boolean.TRUE);
 	}
