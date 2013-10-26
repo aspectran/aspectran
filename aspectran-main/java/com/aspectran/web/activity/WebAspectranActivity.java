@@ -25,6 +25,7 @@ import org.apache.commons.logging.LogFactory;
 
 import com.aspectran.core.activity.AbstractAspectranActivity;
 import com.aspectran.core.activity.AspectranActivity;
+import com.aspectran.core.activity.SuperTranslet;
 import com.aspectran.core.activity.request.RequestException;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
@@ -69,8 +70,6 @@ public class WebAspectranActivity extends AbstractAspectranActivity implements A
 
 		RequestAdapter requestAdapter = new HttpServletRequestAdapter(request);
 		ResponseAdapter responseAdapter = new HttpServletResponseAdapter(response);
-		//RequestDispatcherAdapter requestDispatcherAdapter = new HttpRequestDispatcherAdapter(requestAdapter, responseAdapter);
-		//requestAdapter.setRequestDispatcherAdapter(requestDispatcherAdapter);
 		SessionAdapter sessionAdapter = new HttpSessionAdapter(request.getSession());
 
 		setRequestAdapter(requestAdapter);
@@ -81,7 +80,7 @@ public class WebAspectranActivity extends AbstractAspectranActivity implements A
 		setTransletImplementClass(AspectranWebTranslet.class);
 	}
 	
-	public void request() throws RequestException {
+	protected void request(SuperTranslet translet) throws RequestException {
 		RequestRule requestRule = getRequestRule();
 		ResponseRule responseRule = getResponseRule();
 		RequestAdapter requestAdapter = getRequestAdapter();
@@ -123,7 +122,10 @@ public class WebAspectranActivity extends AbstractAspectranActivity implements A
 	        	parseMultipart();
 	        }
 	
-	        parseParameter();
+	        ValueMap valueMap = parseParameter();
+	        
+	        if(valueMap != null)
+	        	translet.setDeclaredAttributeMap(valueMap);
         
 		} catch(Exception e) {
 			throw new RequestException(e);
@@ -134,83 +136,77 @@ public class WebAspectranActivity extends AbstractAspectranActivity implements A
 	 * Parses the multipart parameters.
 	 */
 	private void parseMultipart() throws MultipartRequestException {
-		try {
-			RequestRule requestRule = getRequestRule();
+		RequestRule requestRule = getRequestRule();
 
-			String multipartRequestSize = (String)getRequestSetting("multipart.maxRequestSize");
-			String multipartTemporaryFilePath = (String)getRequestSetting("multipart.temporaryFilePath");
-			
-			
-			MultipartRequestHandler handler = new MultipartRequestHandler(request);
-			handler.setMaxRequestSize(new Long(multipartRequestSize));
-			handler.setTemporaryFilePath(multipartTemporaryFilePath);
-			handler.parse();
-			
-			// sets the servlet request wrapper
-			MultipartRequestWrapper wrapper = new MultipartRequestWrapper(handler);
-			request = wrapper;
-			
-			RequestAdapter requestAdapter = new HttpServletRequestAdapter(request);
-			setRequestAdapter(requestAdapter);
-			
-			FileItemRuleMap fileItemRuleMap = requestRule.getFileItemRuleMap();
-			
-			FileItemMap fileItemMap = requestAdapter.getFileItemMap();
-			
-			if(fileItemMap == null) {
-				fileItemMap = new FileItemMap();
-				requestAdapter.setFileItemMap(fileItemMap);
+		String multipartRequestSize = (String)getRequestSetting("multipart.maxRequestSize");
+		String multipartTemporaryFilePath = (String)getRequestSetting("multipart.temporaryFilePath");
+		
+		
+		MultipartRequestHandler handler = new MultipartRequestHandler(request);
+		handler.setMaxRequestSize(new Long(multipartRequestSize));
+		handler.setTemporaryFilePath(multipartTemporaryFilePath);
+		handler.parse();
+		
+		// sets the servlet request wrapper
+		MultipartRequestWrapper wrapper = new MultipartRequestWrapper(handler);
+		request = wrapper;
+		
+		RequestAdapter requestAdapter = new HttpServletRequestAdapter(request);
+		setRequestAdapter(requestAdapter);
+		
+		FileItemRuleMap fileItemRuleMap = requestRule.getFileItemRuleMap();
+		
+		FileItemMap fileItemMap = requestAdapter.getFileItemMap();
+		
+		if(fileItemMap == null) {
+			fileItemMap = new FileItemMap();
+			requestAdapter.setFileItemMap(fileItemMap);
+		}
+		
+		for(FileItemRule fir : fileItemRuleMap) {
+			if(fir.getUnityType() == FileItemUnityType.ARRAY) {
+				MultipartFileItem[] multipartFileItems = handler.getMultipartFileItems(fir.getName());
+				
+				if(multipartFileItems != null) {
+					fileItemMap.putFileItem(fir.getName(), multipartFileItems);
+				}
+			} else {
+				MultipartFileItem multipartFileItem = handler.getMultipartFileItem(fir.getName());
+				fileItemMap.putFileItem(fir.getName(), multipartFileItem);
 			}
-			
+		}
+		
+		requestAdapter.setMaxLengthExceeded(handler.isMaxLengthExceeded());
+		
+		if(debugEnabled) {
+			if(requestAdapter.isMaxLengthExceeded()) {
+				log.debug("Max length exceeded. maxMultipartRequestSize: " + requestRule.getMaxMultipartRequestSize());
+			}
+
 			for(FileItemRule fir : fileItemRuleMap) {
 				if(fir.getUnityType() == FileItemUnityType.ARRAY) {
-					MultipartFileItem[] multipartFileItems = handler.getMultipartFileItems(fir.getName());
+					FileItem[] fileItems = fileItemMap.getFileItems(fir.getName());
 					
-					if(multipartFileItems != null) {
-						fileItemMap.putFileItem(fir.getName(), multipartFileItems);
+					for(int i = 0; i < fileItems.length; i++) {
+						log.debug("fileItem[" + i + "] name=" + fir.getName() + " " + fileItems[i]);
 					}
 				} else {
-					MultipartFileItem multipartFileItem = handler.getMultipartFileItem(fir.getName());
-					fileItemMap.putFileItem(fir.getName(), multipartFileItem);
+					FileItem f = fileItemMap.getFileItem(fir.getName());
+					log.debug("fileItem name=" + fir.getName() + " " + f);
 				}
 			}
-			
-			requestAdapter.setMaxLengthExceeded(handler.isMaxLengthExceeded());
-			
-			if(debugEnabled) {
-				if(requestAdapter.isMaxLengthExceeded()) {
-					log.debug("Max length exceeded. MaxMultipartRequestSize: " + requestRule.getMaxMultipartRequestSize());
-				}
 
-				for(FileItemRule fir : fileItemRuleMap) {
-					if(fir.getUnityType() == FileItemUnityType.ARRAY) {
-						FileItem[] fileItems = fileItemMap.getFileItems(fir.getName());
-						
-						for(int i = 0; i < fileItems.length; i++) {
-							log.debug("FileItem[" + i + "] name=" + fir.getName() + " " + fileItems[i]);
-						}
-					} else {
-						FileItem f = fileItemMap.getFileItem(fir.getName());
-						log.debug("FileItem name=" + fir.getName() + " " + f);
-					}
-				}
-
-				for(Map.Entry<String, Object> entry : fileItemMap.entrySet())
-					request.setAttribute(entry.getKey(), entry.getValue());
-				
-			}
-		} catch(MultipartRequestException e) {
-			log.error(e);
-			throw e;
+			for(Map.Entry<String, Object> entry : fileItemMap.entrySet())
+				request.setAttribute(entry.getKey(), entry.getValue());
+			
 		}
 	}
 	
 	/**
 	 * Parses the parameter.
 	 */
-	private void parseParameter() {
+	private ValueMap parseParameter() {
 		RequestRule requestRule = getRequestRule();
-		
 		if(requestRule.getAttributeItemRuleMap() != null) {
 			ItemTokenExpressor expressor = new ItemTokenExpression(this);
 			ValueMap valueMap = expressor.express(requestRule.getAttributeItemRuleMap());
@@ -218,8 +214,12 @@ public class WebAspectranActivity extends AbstractAspectranActivity implements A
 			if(valueMap != null && valueMap.size() > 0) {
 				for(Map.Entry<String, Object> entry : valueMap.entrySet())
 					request.setAttribute(entry.getKey(), entry.getValue());
+				
+				return valueMap;
 			}
 		}
+		
+		return null;
 	}
 	
 	public AspectranActivity newAspectranActivity() {
@@ -230,5 +230,5 @@ public class WebAspectranActivity extends AbstractAspectranActivity implements A
 		
 		return activity;
 	}
-	
+
 }

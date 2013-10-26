@@ -15,6 +15,8 @@
  */
 package com.aspectran.core.activity;
 
+import java.util.Map;
+
 import com.aspectran.core.activity.process.result.ActionResult;
 import com.aspectran.core.activity.process.result.ContentResult;
 import com.aspectran.core.activity.process.result.ProcessResult;
@@ -41,6 +43,20 @@ public abstract interface SuperTranslet {
 	 */
 	public String getTransletName();
 
+	/**
+	 * Gets the declared attribute map.
+	 *
+	 * @return the declared attribute map
+	 */
+	public Map<String, Object> getDeclaredAttributeMap();
+	
+	/**
+	 * Sets the declared attribute map.
+	 *
+	 * @param declaredAttributeMap the declared attribute map
+	 */
+	public void setDeclaredAttributeMap(Map<String, Object> declaredAttributeMap);
+	
 	/**
 	 * Gets the process result.
 	 * 
@@ -112,8 +128,6 @@ public abstract interface SuperTranslet {
 	public Object getResponseAdaptee();
 	
 	public Object getSessionAdaptee();
-	
-	//public AspectranContext getAspectranContext();
 	
 	public Object getBean(String beanId);
 	

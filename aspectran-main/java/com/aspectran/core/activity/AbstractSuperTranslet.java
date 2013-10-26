@@ -15,6 +15,8 @@
  */
 package com.aspectran.core.activity;
 
+import java.util.Map;
+
 import com.aspectran.core.activity.aspect.result.AspectAdviceResult;
 import com.aspectran.core.activity.process.result.ActionResult;
 import com.aspectran.core.activity.process.result.ContentResult;
@@ -28,7 +30,6 @@ import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.context.AspectranContext;
-import com.aspectran.core.context.bean.BeanRegistry;
 import com.aspectran.core.rule.AspectAdviceRule;
 import com.aspectran.core.rule.ForwardResponseRule;
 import com.aspectran.core.rule.RedirectResponseRule;
@@ -40,6 +41,8 @@ import com.aspectran.core.rule.TransformRule;
 public abstract class AbstractSuperTranslet implements SuperTranslet {
 	
 	protected final AspectranActivity activity;
+	
+	protected Map<String, Object> declaredAttributeMap;
 	
 	protected ProcessResult processResult;
 	
@@ -62,13 +65,12 @@ public abstract class AbstractSuperTranslet implements SuperTranslet {
 			aspectAdviceResult = null;
 	}
 	
-	/**
-	 * Gets the bean registry.
-	 *
-	 * @return the bean registry
-	 */
-	public BeanRegistry getBeanFactory() {
-		return activity.getContext().getBeanRegistry();
+	public Map<String, Object> getDeclaredAttributeMap() {
+		return declaredAttributeMap;
+	}
+
+	public void setDeclaredAttributeMap(Map<String, Object> declaredAttributeMap) {
+		this.declaredAttributeMap = declaredAttributeMap;
 	}
 
 	/**

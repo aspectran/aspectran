@@ -4,7 +4,6 @@ import javax.servlet.ServletContext;
 
 import com.aspectran.core.adapter.AbstractApplicationAdapter;
 import com.aspectran.core.adapter.ApplicationAdapter;
-import com.aspectran.core.context.bean.scope.ApplicationScope;
 
 /**
  * The Class WebApplicationAdapter.
@@ -37,8 +36,8 @@ public class WebApplicationAdapter extends AbstractApplicationAdapter implements
 	 * @see org.jhlabs.translets.adapter.AbstractApplicationAdapter#setAttribute(java.lang.String, java.lang.Object)
 	 */
 	public synchronized void setAttribute(String name, Object value) {
-		if(ApplicationScope.APPLICATION_SCOPE_ATTRIBUTE.equals(name))
-			throw new IllegalArgumentException("The specified attribute name is not allowed. Reserved attribute name '" + name + "'");
+		//if(ApplicationScope.APPLICATION_SCOPE_ATTRIBUTE.equals(name))
+		//	throw new IllegalArgumentException("The specified attribute name is not allowed. Reserved attribute name '" + name + "'");
 		
 		((ServletContext)adaptee).setAttribute(name, value);
 	}

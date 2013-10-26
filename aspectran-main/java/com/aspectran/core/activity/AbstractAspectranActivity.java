@@ -249,7 +249,6 @@ public abstract class AbstractAspectranActivity implements AspectranActivity {
 			}
 		} finally {
 			if(requestScope != null) {
-				//TODO
 				requestScope.destroy();
 			}
 		}
@@ -401,7 +400,11 @@ public abstract class AbstractAspectranActivity implements AspectranActivity {
 			execute(afterAdviceRuleList);
 	}
 	
-	abstract public void request() throws RequestException;
+	public void request() throws RequestException {
+		request(translet);
+	}
+	
+	protected abstract void request(SuperTranslet translet) throws RequestException;
 	
 	public ProcessResult process(AspectAdviceRuleRegistry aspectAdviceRuleRegistry) throws ProcessException {
 		List<AspectAdviceRule> beforeAdviceRuleList = aspectAdviceRuleRegistry.getBeforeAdviceRuleList();
@@ -896,7 +899,7 @@ public abstract class AbstractAspectranActivity implements AspectranActivity {
 	/* (non-Javadoc)
 	 * @see com.aspectran.core.activity.AspectranActivity#getTransletRegistry()
 	 */
-	public TransletRegistry getTransletRuleRegistry() {
+	public TransletRegistry getTransletRegistry() {
 		return context.getTransletegistry();
 	}
 	

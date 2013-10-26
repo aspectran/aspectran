@@ -47,6 +47,11 @@ public class ValueMap extends LinkedHashMap<String, Object> {
 	 * @return the string
 	 */
 	public String getString(String key) {
-		return get(key).toString();
+		Object o = get(key);
+		
+		if(o == null)
+			return null;
+		
+		return o.toString();
 	}
 }

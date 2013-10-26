@@ -21,12 +21,14 @@ import javax.servlet.http.HttpServletResponse;
 import com.aspectran.core.activity.SuperTranslet;
 
 /**
- * <p>Created: 2008. 7. 5. 오전 12:35:44</p>
+ * <p>
+ * Created: 2008. 7. 5. 오전 12:35:44
+ * </p>
  */
 public interface WebTranslet extends SuperTranslet {
 
 	public HttpServletRequest getHttpServletRequest();
 
 	public HttpServletResponse getHttpServletResponse();
-	
+
 }

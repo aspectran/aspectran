@@ -50,6 +50,8 @@ public interface RequestAdapter {
 	 */
 	public String[] getParameterValues(String name);
 	
+	public Enumeration<String> getParameterNames();
+	
 	/**
 	 * Returns the value of the named attribute as an <code>Object</code>, or <code>null</code> if no attribute of the given name exists.
 	 *
@@ -62,9 +64,9 @@ public interface RequestAdapter {
 	 * Stores an attribute in this request.
 	 *
 	 * @param name the name
-	 * @param o the o
+	 * @param o the value
 	 */
-	public void setAttribute(String name, Object o);
+	public void setAttribute(String name, Object value);
 	
 	/**
 	 * Returns an <code>Enumeration</code> containing the
@@ -75,6 +77,8 @@ public interface RequestAdapter {
 	 * @return the attribute names
 	 */
 	public Enumeration<String> getAttributeNames();
+	
+	public void removeAttribute(String name);
 	
 	public FileItemMap getFileItemMap();
 
