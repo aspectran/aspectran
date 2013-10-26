@@ -32,6 +32,8 @@ public class AspectRule {
 	
 	private PointcutRule pointcutRule;
 	
+	private String adviceBeanId;
+	
 	private SettingsAdviceRule settingsAdviceRule;
 	
 	private List<AspectAdviceRule> aspectAdviceRuleList;
@@ -68,6 +70,14 @@ public class AspectRule {
 
 	public void setPointcutRule(PointcutRule pointcutRule) {
 		this.pointcutRule = pointcutRule;
+	}
+
+	public String getAdviceBeanId() {
+		return adviceBeanId;
+	}
+
+	public void setAdviceBeanId(String adviceBeanId) {
+		this.adviceBeanId = adviceBeanId;
 	}
 
 	public SettingsAdviceRule getSettingsAdviceRule() {

@@ -42,13 +42,13 @@ import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
 import com.aspectran.core.context.bean.BeanRegistry;
 import com.aspectran.core.context.bean.scope.RequestScope;
 import com.aspectran.core.context.translet.TransletInstantiationException;
-import com.aspectran.core.context.translet.TransletRegistry;
 import com.aspectran.core.rule.AspectAdviceRule;
 import com.aspectran.core.rule.RequestRule;
 import com.aspectran.core.rule.ResponseByContentTypeRule;
 import com.aspectran.core.rule.ResponseByContentTypeRuleMap;
 import com.aspectran.core.rule.ResponseRule;
 import com.aspectran.core.rule.TransletRule;
+import com.aspectran.core.type.ActionType;
 import com.aspectran.core.type.ResponseType;
 
 /**
@@ -351,7 +351,7 @@ public abstract class AbstractAspectranActivity implements AspectranActivity {
 			log.debug(">> " + transletName);
 		}
 		
-		TransletRule transletRule = context.getTransletegistry().getTransletRule(transletName);
+		TransletRule transletRule = context.getTransletRuleRegistry().getTransletRule(transletName);
 
 		if(debugEnabled) {
 			log.debug("translet " + transletRule);
@@ -609,10 +609,20 @@ public abstract class AbstractAspectranActivity implements AspectranActivity {
 	
 	private void execute(List<AspectAdviceRule> aspectAdviceRuleList) throws ActionExecutionException {
 		for(AspectAdviceRule aspectAdviceRule : aspectAdviceRuleList) {
-			Executable executableAction = aspectAdviceRule.getExecutableAction();
+			Executable action = aspectAdviceRule.getExecutableAction();
 			
-			Object adviceActionResult = executableAction.execute(this);
+			if(action.getActionType() == ActionType.BEAN && aspectAdviceRule.getAdviceBeanId() != null) {
+				Object adviceBean = translet.getAspectAdviceBean(aspectAdviceRule.getAspectId());
+				
+				if(adviceBean == null)
+					adviceBean = getBean(aspectAdviceRule.getAdviceBeanId());
+				
+				log.debug("aspectAdviceRule " + aspectAdviceRule + " adviceBean: " + adviceBean);
+				translet.putAspectAdviceBean(aspectAdviceRule.getAspectId(), adviceBean);
+			}
 
+			Object adviceActionResult = action.execute(this);
+			
 			if(adviceActionResult != null && adviceActionResult != ActionResult.NO_RESULT) {
 				log.debug("aspectAdviceRule " + aspectAdviceRule + " adviceActionResult: " + adviceActionResult);
 				translet.putAdviceResult(aspectAdviceRule, adviceActionResult);
@@ -766,9 +776,9 @@ public abstract class AbstractAspectranActivity implements AspectranActivity {
 	}
 	
 	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.AspectranActivity#getContext()
+	 * @see com.aspectran.core.activity.AspectranActivity#getAspectranContext()
 	 */
-	public AspectranContext getContext() {
+	public AspectranContext getAspectranContext() {
 		return context;
 	}
 	
@@ -896,38 +906,27 @@ public abstract class AbstractAspectranActivity implements AspectranActivity {
 		return context.getBeanRegistry();
 	}
 
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.AspectranActivity#getTransletRegistry()
-	 */
-	public TransletRegistry getTransletRegistry() {
-		return context.getTransletegistry();
-	}
-	
 	public Object getRequestSetting(String settingName) {
-		AspectAdviceRuleRegistry aspectAdviceRuleRegistry = requestRule.getAspectAdviceRuleRegistry();
-		
-		if(aspectAdviceRuleRegistry != null)
-			return aspectAdviceRuleRegistry.getSetting(settingName);
-		
-		return null;
+		return getSetting(requestRule.getAspectAdviceRuleRegistry(), settingName);
 	}
 	
 	public Object getResponseSetting(String settingName) {
-		AspectAdviceRuleRegistry aspectAdviceRuleRegistry = responseRule.getAspectAdviceRuleRegistry();
-		
+		return getSetting(responseRule.getAspectAdviceRuleRegistry(), settingName);
+	}
+	
+	public Object getTransletSetting(String settingName) {
+		return getSetting(transletRule.getAspectAdviceRuleRegistry(), settingName);
+	}
+	
+	private Object getSetting(AspectAdviceRuleRegistry aspectAdviceRuleRegistry, String settingName) {
 		if(aspectAdviceRuleRegistry != null)
 			return aspectAdviceRuleRegistry.getSetting(settingName);
 		
 		return null;
 	}
 	
-	public Object getTransletSetting(String settingName) {
-		AspectAdviceRuleRegistry aspectAdviceRuleRegistry = transletRule.getAspectAdviceRuleRegistry();
-		
-		if(aspectAdviceRuleRegistry != null)
-			return aspectAdviceRuleRegistry.getSetting(settingName);
-		
-		return null;
+	public Object getAspectAdviceBean(String aspectId) {
+		return translet.getAspectAdviceBean(aspectId);
 	}
 	
 }

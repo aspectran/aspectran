@@ -29,6 +29,8 @@ public class AspectAdviceRule {
 	
 	private AspectAdviceType aspectAdviceType;
 	
+	private String adviceBeanId;
+	
 	private Executable action;
 	
 	private ResponseByContentTypeRuleMap responseByContentTypeRuleMap;
@@ -49,11 +51,20 @@ public class AspectAdviceRule {
 		this.aspectAdviceType = aspectAdviceType;
 	}
 
+	public String getAdviceBeanId() {
+		return adviceBeanId;
+	}
+
+	public void setAdviceBeanId(String adviceBeanId) {
+		this.adviceBeanId = adviceBeanId;
+	}
+
 	public void setEchoAction(EchoActionRule echoActionRule) {
 		action = new EchoAction(echoActionRule, null);
 	}
 
 	public void setBeanAction(BeanActionRule beanActionRule) {
+		beanActionRule.setAspectAdviceRule(this);
 		action = new BeanAction(beanActionRule, null);
 	}
 	

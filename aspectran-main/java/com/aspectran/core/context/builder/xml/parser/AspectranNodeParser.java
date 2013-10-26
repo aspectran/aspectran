@@ -256,7 +256,6 @@ public class AspectranNodeParser {
 				aspectRule.setJoinpointScope(joinpointScope);
 			}
 		});
-
 		parser.addNodelet("/aspectran/aspect/joinpoint/pointcut", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
 				if(text == null)
@@ -286,12 +285,24 @@ public class AspectranNodeParser {
 				aspectRule.setPointcutRule(pointcutRule);
 			}
 		});
+		parser.addNodelet("/aspectran/aspect/advice", new Nodelet() {
+			public void process(Node node, Properties attributes, String text) throws Exception {
+				String beanId = attributes.getProperty("bean");
+				
+				if(beanId != null && beanId.length() > 0) {
+					AspectRule aspectRule = (AspectRule)assistant.peekObject();
+					aspectRule.setAdviceBeanId(beanId);
+					
+					assistant.putBeanReference(beanId, aspectRule);
+				}
+			}
+		});
 		
-		parser.addNodelet("/aspectran/aspect/before", new AspectAdviceRuleNodeletAdder(assistant, AspectAdviceType.BEFORE));
-		parser.addNodelet("/aspectran/aspect/after", new AspectAdviceRuleNodeletAdder(assistant, AspectAdviceType.AFTER));
-		parser.addNodelet("/aspectran/aspect/around", new AspectAdviceRuleNodeletAdder(assistant, AspectAdviceType.AROUND));
-		parser.addNodelet("/aspectran/aspect/finally", new AspectAdviceRuleNodeletAdder(assistant, AspectAdviceType.FINALLY));
-		parser.addNodelet("/aspectran/aspect/exceptionRaized", new AspectAdviceRuleNodeletAdder(assistant, AspectAdviceType.EXCPETION_RAIZED));
+		parser.addNodelet("/aspectran/aspect/advice/before", new AspectAdviceRuleNodeletAdder(assistant, AspectAdviceType.BEFORE));
+		parser.addNodelet("/aspectran/aspect/advice/after", new AspectAdviceRuleNodeletAdder(assistant, AspectAdviceType.AFTER));
+		parser.addNodelet("/aspectran/aspect/advice/around", new AspectAdviceRuleNodeletAdder(assistant, AspectAdviceType.AROUND));
+		parser.addNodelet("/aspectran/aspect/advice/finally", new AspectAdviceRuleNodeletAdder(assistant, AspectAdviceType.FINALLY));
+		parser.addNodelet("/aspectran/aspect/advice/exceptionRaized", new AspectAdviceRuleNodeletAdder(assistant, AspectAdviceType.EXCPETION_RAIZED));
 		
 		parser.addNodelet("/aspectran/aspect/end()", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {

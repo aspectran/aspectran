@@ -60,7 +60,7 @@ property CDATA #IMPLIED
 
 <!ELEMENT null EMPTY>
 
-<!ELEMENT aspect (joinpoint?, settings?, action*, before?, after?, around?, finally?, exceptionRaized?)>
+<!ELEMENT aspect (joinpoint?, settings?, action*, advice?)>
 <!ATTLIST aspect
 id ID #IMPLIED
 >
@@ -74,6 +74,11 @@ scope (translet | request | content | action-content | bean-content | response |
 <!ELEMENT pointcut (#PCDATA)>
 <!ATTLIST pointcut
 type (wildcard | regexpt | interval) #IMPLIED
+>
+
+<!ELEMENT advice (before?, after?, around?, finally?, exceptionRaized?)>
+<!ATTLIST advice
+bean CDATA #IMPLIED
 >
 
 <!ELEMENT before (echo | action)>

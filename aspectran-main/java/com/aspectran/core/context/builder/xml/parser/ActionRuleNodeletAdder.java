@@ -164,12 +164,15 @@ public class ActionRuleNodeletAdder implements NodeletAdder {
 				if(o instanceof AspectAdviceRule) {
 					AspectAdviceRule aspectAdviceRule = (AspectAdviceRule)o;
 					aspectAdviceRule.setBeanAction(beanActionRule);
+					
+					if(beanActionRule.getBeanId() != null)
+						assistant.putBeanReference(beanActionRule.getBeanId(), beanActionRule);
 				} else {
 					ActionList actionList = (ActionList)o;
 					actionList.addBeanAction(beanActionRule);
-				}
 
-				assistant.putBeanReference(beanActionRule.getBeanId(), beanActionRule);
+					assistant.putBeanReference(beanActionRule.getBeanId(), beanActionRule);
+				}
 			}
 		});
 		parser.addNodelet(xpath, "/include", new Nodelet() {

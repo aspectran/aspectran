@@ -7,53 +7,69 @@ import com.aspectran.core.rule.AspectAdviceRule;
 import com.aspectran.core.type.AspectAdviceType;
 
 public class AspectAdviceResult {
-
-	private Map<String, Object> beforeAdviceResult;
 	
-	private Map<String, Object> afterAdviceResult;
-	
-	private Map<String, Object> finallyAdviceResult;
+	private Map<String, Object> aspectAdviceBeanMap;
 
-	public Object getBeforeAdviceResult(String aspectId) {
-		if(beforeAdviceResult == null)
+	private Map<String, Object> beforeAdviceResultMap;
+	
+	private Map<String, Object> afterAdviceResultMap;
+	
+	private Map<String, Object> finallyAdviceResultMap;
+
+	public Object getAspectAdviceBean(String aspectId) {
+		if(aspectAdviceBeanMap == null)
 			return null;
 		
-		return beforeAdviceResult.get(aspectId);
+		return aspectAdviceBeanMap.get(aspectId);
+	}
+	
+	public void putAspectAdviceBean(String aspectId, Object adviceBean) {
+		if(aspectAdviceBeanMap == null)
+			aspectAdviceBeanMap = new HashMap<String, Object>();
+			
+		aspectAdviceBeanMap.put(aspectId, adviceBean);
+	}
+
+	public Object getBeforeAdviceResult(String aspectId) {
+		if(beforeAdviceResultMap == null)
+			return null;
+		
+		return beforeAdviceResultMap.get(aspectId);
 	}
 
 	public void putBeforeAdviceResult(String aspectId, Object actionResult) {
-		if(beforeAdviceResult == null)
-			beforeAdviceResult = new HashMap<String, Object>();
+		if(beforeAdviceResultMap == null)
+			beforeAdviceResultMap = new HashMap<String, Object>();
 			
-		beforeAdviceResult.put(aspectId, actionResult);
+		beforeAdviceResultMap.put(aspectId, actionResult);
 	}
 
 	public Object getAfterAdviceResult(String aspectId) {
-		if(afterAdviceResult == null)
+		if(afterAdviceResultMap == null)
 			return null;
 		
-		return afterAdviceResult.get(aspectId);
+		return afterAdviceResultMap.get(aspectId);
 	}
 
 	public void putAfterAdviceResult(String aspectId, Object actionResult) {
-		if(afterAdviceResult == null)
-			afterAdviceResult = new HashMap<String, Object>();
+		if(afterAdviceResultMap == null)
+			afterAdviceResultMap = new HashMap<String, Object>();
 			
-		afterAdviceResult.put(aspectId, actionResult);
+		afterAdviceResultMap.put(aspectId, actionResult);
 	}
 
 	public Object getFinallyAdviceResult(String aspectId) {
-		if(finallyAdviceResult == null)
+		if(finallyAdviceResultMap == null)
 			return null;
 		
-		return finallyAdviceResult.get(aspectId);
+		return finallyAdviceResultMap.get(aspectId);
 	}
 
 	public void putFinallyAdviceResult(String aspectId, Object actionResult) {
-		if(finallyAdviceResult == null)
-			finallyAdviceResult = new HashMap<String, Object>();
+		if(finallyAdviceResultMap == null)
+			finallyAdviceResultMap = new HashMap<String, Object>();
 			
-		finallyAdviceResult.put(aspectId, actionResult);
+		finallyAdviceResultMap.put(aspectId, actionResult);
 	}
 	
 	public Object getAdviceResult(AspectAdviceType aspectAdviceType, String aspectId) {

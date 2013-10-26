@@ -27,7 +27,6 @@ import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.context.AspectranContext;
 import com.aspectran.core.context.bean.BeanRegistry;
 import com.aspectran.core.context.bean.scope.RequestScope;
-import com.aspectran.core.context.translet.TransletRegistry;
 
 /**
  * Action Translator.
@@ -67,7 +66,7 @@ public interface AspectranActivity {
 	
 	public void response(Responsible res) throws ResponseException;
 	
-	public AspectranContext getContext();
+	public AspectranContext getAspectranContext();
 	
 	public Responsible getResponse();
 	
@@ -85,8 +84,6 @@ public interface AspectranActivity {
 	
 	public BeanRegistry getBeanRegistry();
 	
-	public TransletRegistry getTransletRegistry();
-	
 	public boolean isExceptionRaised();
 
 	public Exception getRaisedException();
@@ -98,5 +95,7 @@ public interface AspectranActivity {
 	public Object getResponseSetting(String settingName);
 	
 	public Object getTransletSetting(String settingName);
+	
+	public Object getAspectAdviceBean(String aspectId);
 	
 }

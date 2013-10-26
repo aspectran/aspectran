@@ -38,6 +38,8 @@ public class BeanActionRule implements ArgumentPossessable, PropertyPossessable,
 	
 	protected Boolean hidden;
 	
+	private AspectAdviceRule aspectAdviceRule;
+	
 	private AspectAdviceRuleRegistry aspectAdviceRuleRegistry;
 
 	/**
@@ -160,6 +162,14 @@ public class BeanActionRule implements ArgumentPossessable, PropertyPossessable,
 			argumentItemRuleMap = new ItemRuleMap();
 		
 		argumentItemRuleMap.putItemRule(argumentItemRule);
+	}
+
+	public AspectAdviceRule getAspectAdviceRule() {
+		return aspectAdviceRule;
+	}
+
+	public void setAspectAdviceRule(AspectAdviceRule aspectAdviceRule) {
+		this.aspectAdviceRule = aspectAdviceRule;
 	}
 
 	public AspectAdviceRuleRegistry getAspectAdviceRuleRegistry() {

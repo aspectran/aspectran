@@ -3,11 +3,11 @@ package com.aspectran.core.context.translet;
 import com.aspectran.core.rule.TransletRule;
 import com.aspectran.core.rule.TransletRuleMap;
 
-public class TransletRegistry {
+public class TransletRuleRegistry {
 
 	private final TransletRuleMap transletRuleMap;
 	
-	public TransletRegistry(TransletRuleMap transletRuleMap) {
+	public TransletRuleRegistry(TransletRuleMap transletRuleMap) {
 		this.transletRuleMap = transletRuleMap;
 	}
 	

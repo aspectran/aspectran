@@ -30,7 +30,7 @@ import com.aspectran.core.context.builder.AspectranContextBuilderException;
 import com.aspectran.core.context.builder.AspectranContextResource;
 import com.aspectran.core.context.builder.BeanReferenceInspector;
 import com.aspectran.core.context.builder.xml.parser.AspectranNodeParser;
-import com.aspectran.core.context.translet.TransletRegistry;
+import com.aspectran.core.context.translet.TransletRuleRegistry;
 import com.aspectran.core.rule.AspectRuleMap;
 import com.aspectran.core.rule.BeanRuleMap;
 import com.aspectran.core.rule.TransletRuleMap;
@@ -99,19 +99,19 @@ public class XmlAspectranContextBuilder implements AspectranContextBuilder {
 	
 	private AspectranContext makeAspectranContext(XmlAspectranContextAssistant assistant) {
 		BeanRegistry beanRegistry = makeBeanRegistry(assistant);
-		TransletRegistry transletRegistry = makeTransletRegistry(assistant);
+		TransletRuleRegistry transletRuleRegistry = makeTransletRegistry(assistant);
 		
 		BeanReferenceInspector beanReferenceInspector = assistant.getBeanReferenceInspector();
 		beanReferenceInspector.inpect(assistant.getBeanRuleMap());
 		
 		AspectranContext aspectranContext = new AspectranContext();
 		aspectranContext.setBeanRegistry(beanRegistry);
-		aspectranContext.setTransletRuleRegistry(transletRegistry);
+		aspectranContext.setTransletRuleRegistry(transletRuleRegistry);
 		
 		return aspectranContext;
 	}
 	
-	private TransletRegistry makeTransletRegistry(XmlAspectranContextAssistant assistant) {
+	private TransletRuleRegistry makeTransletRegistry(XmlAspectranContextAssistant assistant) {
 		AspectRuleMap aspectRuleMap = assistant.getAspectRuleMap();
 		TransletRuleMap transletRuleMap = assistant.getTransletRuleMap();
 		//transletRuleMap.freeze();
@@ -119,7 +119,7 @@ public class XmlAspectranContextBuilder implements AspectranContextBuilder {
 		AspectAdviceRuleRegister aspectAdviceRuleRegister = new AspectAdviceRuleRegister(aspectRuleMap);
 		aspectAdviceRuleRegister.register(transletRuleMap);
 		
-		return new TransletRegistry(transletRuleMap);
+		return new TransletRuleRegistry(transletRuleMap);
 	}
 
 	private BeanRegistry makeBeanRegistry(XmlAspectranContextAssistant assistant) {

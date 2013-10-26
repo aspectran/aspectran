@@ -10,23 +10,23 @@ import com.ibatis.sqlmap.client.SqlMapClient;
  */
 public class AspectSqlMapClient {
 	
-	private SqlMapConfig sqlMapConfig;
+	private SqlMapClient sqlMapClient;
 	
 	public AspectSqlMapClient(SqlMapConfig sqlMapConfig) {
-		this.sqlMapConfig = sqlMapConfig;
+		this.sqlMapClient = sqlMapConfig.getSqlMapClient();
 	}
 
 	public SqlMapClient begin() throws SQLException {
-		sqlMapConfig.getSqlMapClient().startTransaction();
+		sqlMapClient.startTransaction();
 		
-		return sqlMapConfig.getSqlMapClient();
+		return sqlMapClient;
 	}
 	
 	public void end() throws SQLException {
 		try {
-			sqlMapConfig.getSqlMapClient().commitTransaction();
+			sqlMapClient.commitTransaction();
 		} finally {
-			sqlMapConfig.getSqlMapClient().endTransaction();
+			sqlMapClient.endTransaction();
 		}
 	}
 
