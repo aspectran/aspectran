@@ -46,22 +46,24 @@
 		<joinpoint target="translet" scope="request">
 			<pointcut>/front/*</pointcut>
 		</joinpoint>
-		<before>
-			<action id="xml" bean="common.action.a1" method="testXmlAction" hidden="true">
-				<properties>
-					<item name="variable1">error</item>
-					<item name="variable2">0001</item>
-				</properties>
-			</action>
-		</before>
-		<after>
-			<action id="xml" bean="common.action.a1" method="testXmlAction" hidden="true">
-				<properties>
-					<item name="variable1">error</item>
-					<item name="variable2">0001</item>
-				</properties>
-			</action>
-		</after>
+		<advice>
+			<before>
+				<action id="xml" bean="common.action.a1" method="testXmlAction" hidden="true">
+					<properties>
+						<item name="variable1">error</item>
+						<item name="variable2">0001</item>
+					</properties>
+				</action>
+			</before>
+			<after>
+				<action id="xml" bean="common.action.a1" method="testXmlAction" hidden="true">
+					<properties>
+						<item name="variable1">error</item>
+						<item name="variable2">0001</item>
+					</properties>
+				</action>
+			</after>
+		</advice>
 	</aspect>
 
 	<bean id="jspViewDispatcher" class="com.aspectran.web.view.JspViewDispatcher" scope="singleton"/>
@@ -77,79 +79,83 @@
 
 	<aspect id="error">
 		<joinpoint target="translet"/>
-		<exceptionRaized>
-			<action id="xml" bean="common.action.a1" method="testXmlAction" hidden="true">
-				<properties>
-					<item name="variable1">error</item>
-					<item name="variable2">0001</item>
-				</properties>
-			</action>
-			<responseByContentType exceptionType="com.aspectran.test.web.LoginFailedException">
-				<dispatch contentType="text/html">
-					<template file="/WEB-INF/jsp/login.jsp"/>
-				</dispatch>
-				<transform contentType="text/plain" type="transform/json">
-					<template>{}</template>
-				</transform>
-			</responseByContentType>
-			<responseByContentType>
-				<dispatch contentType="text/html">
-					<template file="/WEB-INF/jsp/error.jsp"/>
-				</dispatch>
-				<!-- forward contentType="text/html" translet="error"/ -->
-				<transform contentType="text/plain" type="transform/text">
-					<template>
-						오류 발생!
-						오류 발생!
-					</template>
-				</transform>
-				<transform contentType="text/xml" type="transform/xml">
-					<action id="xml" bean="common.action.a1" method="testXmlAction" hidden="true">
-						<properties>
-							<item name="variable1">error</item>
-							<item name="variable2">0001</item>
-						</properties>
-					</action>
-					<echo id="error3">
-						<item name="code">0002</item>
-						<item name="message">오류 발생!</item>
-					</echo>
-					<echo id="error1">
-						<item type="map">
-							<value name="code">0001</value>
-							<value name="message">오류 발생!</value>
-						</item>
-					</echo>
-					<echo id="error2">
-						<item type="map">
-							<value name="code">0002</value>
-							<value name="message">오류 발생!</value>
-						</item>
-						<item type="map">
-							<value name="code">0004</value>
-							<value name="message">오류 발생!</value>
-						</item>
-					</echo>
-				</transform>
-			</responseByContentType>
-			<defaultResponse>
-				<redirect translet="error"/>
-			</defaultResponse>
-		</exceptionRaized>
+		<advice>
+			<exceptionRaized>
+				<action id="xml" bean="common.action.a1" method="testXmlAction" hidden="true">
+					<properties>
+						<item name="variable1">error</item>
+						<item name="variable2">0001</item>
+					</properties>
+				</action>
+				<responseByContentType exceptionType="com.aspectran.test.web.LoginFailedException">
+					<dispatch contentType="text/html">
+						<template file="/WEB-INF/jsp/login.jsp"/>
+					</dispatch>
+					<transform contentType="text/plain" type="transform/json">
+						<template>{}</template>
+					</transform>
+				</responseByContentType>
+				<responseByContentType>
+					<dispatch contentType="text/html">
+						<template file="/WEB-INF/jsp/error.jsp"/>
+					</dispatch>
+					<!-- forward contentType="text/html" translet="error"/ -->
+					<transform contentType="text/plain" type="transform/text">
+						<template>
+							오류 발생!
+							오류 발생!
+						</template>
+					</transform>
+					<transform contentType="text/xml" type="transform/xml">
+						<action id="xml" bean="common.action.a1" method="testXmlAction" hidden="true">
+							<properties>
+								<item name="variable1">error</item>
+								<item name="variable2">0001</item>
+							</properties>
+						</action>
+						<echo id="error3">
+							<item name="code">0002</item>
+							<item name="message">오류 발생!</item>
+						</echo>
+						<echo id="error1">
+							<item type="map">
+								<value name="code">0001</value>
+								<value name="message">오류 발생!</value>
+							</item>
+						</echo>
+						<echo id="error2">
+							<item type="map">
+								<value name="code">0002</value>
+								<value name="message">오류 발생!</value>
+							</item>
+							<item type="map">
+								<value name="code">0004</value>
+								<value name="message">오류 발생!</value>
+							</item>
+						</echo>
+					</transform>
+				</responseByContentType>
+				<defaultResponse>
+					<redirect translet="error"/>
+				</defaultResponse>
+			</exceptionRaized>
+		</advice>
 	</aspect>
 
 	<aspect id="bean1">
 		<joinpoint>
 			<pointcut>/front/*</pointcut>
 		</joinpoint>
-		<around>
-			<action id="xml" bean="common.action.a1" method="testXmlAction" hidden="true">
-				<properties>
-					<item name="variable1">error</item>
-					<item name="variable2">0001</item>
-				</properties>
-			</action>
-		</around>
+		<advice>
+			<around>
+				<action id="xml" bean="common.action.a1" method="testXmlAction" hidden="true">
+					<properties>
+						<item name="variable1">error</item>
+						<item name="variable2">0001</item>
+					</properties>
+				</action>
+			</around>
+		</advice>
 	</aspect>
 
 	<!--
@@ -160,22 +166,24 @@
 		<joinpoint target="translet">
 			<pointcut>@front.action1</pointcut>
 		</joinpoint>
-		<before>
-			<action id="xml" bean="common.action.a1" method="testXmlAction" hidden="true">
-				<properties>
-					<item name="variable1">error</item>
-					<item name="variable2">0001</item>
-				</properties>
-			</action>
-		</before>
-		<after>
-			<action id="xml" bean="common.action.a1" method="testXmlAction" hidden="true">
-				<properties>
-					<item name="variable1">error</item>
-					<item name="variable2">0001</item>
-				</properties>
-			</action>
-		</after>
+		<advice>
+			<before>
+				<action id="xml" bean="common.action.a1" method="testXmlAction" hidden="true">
+					<properties>
+						<item name="variable1">error</item>
+						<item name="variable2">0001</item>
+					</properties>
+				</action>
+			</before>
+			<after>
+				<action id="xml" bean="common.action.a1" method="testXmlAction" hidden="true">
+					<properties>
+						<item name="variable1">error</item>
+						<item name="variable2">0001</item>
+					</properties>
+				</action>
+			</after>
+		</advice>
 	</aspect>
 
 	<!--
@@ -216,12 +224,14 @@
 				exclude(/front/a/A*)
 			</pointcut>
 		</joinpoint>
-		<before>
-			<action bean="com.aspectran.support.orm.ibatis.AspectSqlMapClient" method="begin"/>
-		</before>
-		<finally>
-			<action bean="com.aspectran.support.orm.ibatis.AspectSqlMapClient" method="end"/>
-		</finally>
+		<advice bean="com.aspectran.support.orm.ibatis.AspectSqlMapClient">
+			<before>
+				<action method="begin"/>
+			</before>
+			<finally>
+				<action method="end"/>
+			</finally>
+		</advice>
 	</aspect>
 	
 	<bean id="a.*" class="com.**.*Aspectran*" scope="singleton"/>

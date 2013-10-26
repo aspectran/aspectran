@@ -40,12 +40,14 @@
 		<joinpoint target="translet" scope="bean-content">
 			<pointcut>/example/hello/*@example.hello.HelloAction^applyTheAdvice</pointcut>
 		</joinpoint>
-		<before>
-			<action bean="advice.HelloAdvice" method="beforeCountTo10"/>
-		</before>
-		<after>
-			<action bean="advice.HelloAdvice" method="afterCountTo10"/>
-		</after>
+		<advice bean="advice.HelloAdvice">
+			<before>
+				<action method="beforeCountTo10"/>
+			</before>
+			<after>
+				<action method="afterCountTo10"/>
+			</after>
+		</advice>
 	</aspect>
 	
 	<translet name="hello">
@@ -118,9 +120,9 @@
 		</transform>
 	</translet>
 
-	<translet name="hello/applyTheAdvice.xml">
-		<transform type="transform/xml">
-			<action id="applyTheAdvice" bean="bean.SampleBean" method="applyTheAdvice"/>
+	<translet name="hello/sampleBean.xml">
+		<transform type="transform/text">
+			<action bean="sampleBean" method="hello"/>
 		</transform>
 	</translet>
 
