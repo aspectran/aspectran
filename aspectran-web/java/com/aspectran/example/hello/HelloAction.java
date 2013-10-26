@@ -28,7 +28,6 @@ public class HelloAction {
 	}
 	
 	public Object applyTheAdvice(WebTranslet translet) {
-		System.out.println("##########" + translet.getBean("sampleBean"));
 		Object beforeAdviceResult = translet.getBeforeAdviceResult("helloAdvice");
 		Object afterAdviceResult = translet.getAfterAdviceResult("helloAdvice");
 		
