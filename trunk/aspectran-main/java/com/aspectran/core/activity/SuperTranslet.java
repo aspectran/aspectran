@@ -144,6 +144,10 @@ public abstract interface SuperTranslet {
 
 	public Exception getRaisedException();
 	
+	public Object getAspectAdviceBean(String aspectId);
+	
+	public void putAspectAdviceBean(String aspectId, Object adviceBean);
+	
 	public Object getBeforeAdviceResult(String aspectId);
 	
 	public Object getAfterAdviceResult(String aspectId);

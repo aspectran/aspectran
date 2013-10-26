@@ -63,6 +63,7 @@ public class AspectAdviceRuleNodeletAdder implements NodeletAdder {
 				
 				AspectAdviceRule aar = new AspectAdviceRule();
 				aar.setAspectId(ar.getId());
+				aar.setAdviceBeanId(ar.getAdviceBeanId());
 				aar.setAspectAdviceType(aspectAdviceType);
 				
 				assistant.pushObject(aar);

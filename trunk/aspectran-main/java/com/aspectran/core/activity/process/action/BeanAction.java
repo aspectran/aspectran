@@ -40,7 +40,6 @@ public class BeanAction extends AbstractAction implements Executable {
 
 	private final BeanActionRule beanActionRule;
 	
-
 	/**
 	 * Instantiates a new bean action.
 	 *
@@ -58,11 +57,22 @@ public class BeanAction extends AbstractAction implements Executable {
 	public Object execute(AspectranActivity activity) throws ActionExecutionException {
 		try {
 			String beanId = beanActionRule.getBeanId();
+			Object bean = null;
+			
+			if(beanId != null)
+				bean = activity.getBean(beanId);
+			else if(beanActionRule.getAspectAdviceRule() != null) {
+				String aspectId = beanActionRule.getAspectAdviceRule().getAspectId();
+				
+				bean = activity.getAspectAdviceBean(aspectId);
+				System.out.println("##########aspectId: " + aspectId + ", bean: " + bean);
+			}
+				
 			String methodName = beanActionRule.getMethodName();
 			ItemRuleMap propertyItemRuleMap = beanActionRule.getPropertyItemRuleMap();
 			ItemRuleMap argumentItemRuleMap = beanActionRule.getArgumentItemRuleMap();
 
-			return invokeMethod(activity, beanId, methodName, propertyItemRuleMap, argumentItemRuleMap);
+			return invokeMethod(activity, bean, methodName, propertyItemRuleMap, argumentItemRuleMap);
 		} catch(Exception e) {
 			//log.error("Execute error: BeanAction " + beanActionRule.toString() + " Cause: " + e.toString());
 			throw new ActionExecutionException(this, e);
@@ -127,9 +137,7 @@ public class BeanAction extends AbstractAction implements Executable {
 		return sb.toString();
 	}
 	
-	public static Object invokeMethod(AspectranActivity activity, String beanId, String methodName, ItemRuleMap propertyItemRuleMap, ItemRuleMap argumentItemRuleMap) throws Exception {
-		Object bean = activity.getBean(beanId);
-		
+	public static Object invokeMethod(AspectranActivity activity, Object bean, String methodName, ItemRuleMap propertyItemRuleMap, ItemRuleMap argumentItemRuleMap) throws Exception {
 		ItemTokenExpressor expressor = new ItemTokenExpression(activity);
 
 		if(propertyItemRuleMap != null) {

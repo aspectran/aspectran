@@ -29,7 +29,6 @@ import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
-import com.aspectran.core.context.AspectranContext;
 import com.aspectran.core.rule.AspectAdviceRule;
 import com.aspectran.core.rule.ForwardResponseRule;
 import com.aspectran.core.rule.RedirectResponseRule;
@@ -178,7 +177,7 @@ public abstract class AbstractSuperTranslet implements SuperTranslet {
 	}
 	
 	public ApplicationAdapter getApplicationAdapter() {
-		return activity.getContext().getApplicationAdapter();
+		return activity.getAspectranContext().getApplicationAdapter();
 	}
 	
 	public Object getRequestAdaptee() {
@@ -203,7 +202,7 @@ public abstract class AbstractSuperTranslet implements SuperTranslet {
 	}
 	
 	public Object getApplicationAdaptee() {
-		ApplicationAdapter applicationAdapter = activity.getContext().getApplicationAdapter();
+		ApplicationAdapter applicationAdapter = activity.getAspectranContext().getApplicationAdapter();
 		
 		if(applicationAdapter != null)
 			return applicationAdapter.getAdaptee();
@@ -221,10 +220,6 @@ public abstract class AbstractSuperTranslet implements SuperTranslet {
 		return activity.getBean(id);
 	}
 
-	public AspectranContext getAspectranContext() {
-		return activity.getContext();
-	}
-	
 	/* (non-Javadoc)
 	 * @see com.aspectran.core.translet.Translet#getTransletName()
 	 */
@@ -253,6 +248,20 @@ public abstract class AbstractSuperTranslet implements SuperTranslet {
 
 	public Exception getRaisedException() {
 		return activity.getRaisedException();
+	}
+	
+	public Object getAspectAdviceBean(String aspectId) {
+		if(aspectAdviceResult == null)
+			return null;
+		
+		return aspectAdviceResult.getAspectAdviceBean(aspectId);
+	}
+	
+	public void putAspectAdviceBean(String aspectId, Object adviceBean) {
+		if(aspectAdviceResult == null)
+			return;
+		
+		aspectAdviceResult.putAspectAdviceBean(aspectId, adviceBean);
 	}
 	
 	public Object getBeforeAdviceResult(String aspectId) {

@@ -17,7 +17,7 @@ package com.aspectran.core.context;
 
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.bean.BeanRegistry;
-import com.aspectran.core.context.translet.TransletRegistry;
+import com.aspectran.core.context.translet.TransletRuleRegistry;
 
 /**
  * <p>Created: 2008. 06. 09 오후 2:12:40</p>
@@ -28,7 +28,7 @@ public class AspectranContext {
 	
 	private BeanRegistry beanRegistry;
 
-	private TransletRegistry transletRegistry;
+	private TransletRuleRegistry transletRuleRegistry;
 	
 	public AspectranContext() {
 	}
@@ -69,12 +69,12 @@ public class AspectranContext {
 		this.beanRegistry = beanRegistry;
 	}
 
-	public TransletRegistry getTransletegistry() {
-		return transletRegistry;
+	public TransletRuleRegistry getTransletRuleRegistry() {
+		return transletRuleRegistry;
 	}
 
-	public void setTransletRuleRegistry(TransletRegistry transletRegistry) {
-		this.transletRegistry = transletRegistry;
+	public void setTransletRuleRegistry(TransletRuleRegistry transletRuleRegistry) {
+		this.transletRuleRegistry = transletRuleRegistry;
 	}
 	
 	/**
@@ -85,9 +85,9 @@ public class AspectranContext {
 			beanRegistry.destroy();
 			beanRegistry = null;
 		}
-		if(transletRegistry != null) {
-			transletRegistry.destroy();
-			transletRegistry = null;
+		if(transletRuleRegistry != null) {
+			transletRuleRegistry.destroy();
+			transletRuleRegistry = null;
 		}
 	}
 	
@@ -99,7 +99,7 @@ public class AspectranContext {
 		
 		sb.append("{applicationAdapter=").append(applicationAdapter);
 		sb.append(", beanRegistry=").append(beanRegistry);
-		sb.append(", transletRegistry=").append(transletRegistry);
+		sb.append(", transletRuleRegistry=").append(transletRuleRegistry);
 		sb.append("}");
 		
 		return sb.toString();

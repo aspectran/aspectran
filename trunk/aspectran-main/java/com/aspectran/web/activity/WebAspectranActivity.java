@@ -223,7 +223,7 @@ public class WebAspectranActivity extends AbstractAspectranActivity implements A
 	}
 	
 	public AspectranActivity newAspectranActivity() {
-		WebAspectranActivity activity = new WebAspectranActivity(getContext(), request, response);
+		WebAspectranActivity activity = new WebAspectranActivity(getAspectranContext(), request, response);
 		activity.setRequestAdapter(getRequestAdapter());
 		activity.setResponseAdapter(getResponseAdapter());
 		activity.setSessionAdapter(getSessionAdapter());
