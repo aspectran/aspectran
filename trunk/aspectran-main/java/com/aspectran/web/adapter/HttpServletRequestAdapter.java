@@ -54,6 +54,14 @@ public class HttpServletRequestAdapter extends AbstractRequestAdapter implements
 	}
 	
 	/* (non-Javadoc)
+	 * @see com.aspectran.core.adapter.RequestAdapter#getParameterNames()
+	 */
+	@SuppressWarnings("unchecked")
+	public Enumeration<String> getParameterNames() {
+		return ((HttpServletRequest)adaptee).getParameterNames();
+	}
+	
+	/* (non-Javadoc)
 	 * @see org.jhlabs.translets.adapter.AbstractRequestAdapter#getAttribute(java.lang.String)
 	 */
 	public Object getAttribute(String name) {
@@ -73,6 +81,13 @@ public class HttpServletRequestAdapter extends AbstractRequestAdapter implements
 	@SuppressWarnings("unchecked")
 	public Enumeration<String> getAttributeNames() {
 		return ((HttpServletRequest)adaptee).getAttributeNames();
+
 	}
 
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.adapter.RequestAdapter#removeAttribute(java.lang.String)
+	 */
+	public void removeAttribute(String name) {
+		((HttpServletRequest)adaptee).removeAttribute(name);
+	}
 }
