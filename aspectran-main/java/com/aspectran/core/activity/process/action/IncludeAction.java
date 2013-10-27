@@ -52,7 +52,7 @@ public class IncludeAction extends AbstractAction implements Executable {
 	/* (non-Javadoc)
 	 * @see org.jhlabs.translets.engine.process.action.Executable#execute(org.jhlabs.translets.action.Translet)
 	 */
-	public Object execute(AspectranActivity activity) throws ActionExecutionException {
+	public Object execute(AspectranActivity activity) throws Exception {
 		try {
 			RequestAdapter request = activity.getRequestAdapter();
 			Map<String, Object> valueMap = null;
@@ -72,8 +72,8 @@ public class IncludeAction extends AbstractAction implements Executable {
 			newActivity.request();
 			return newActivity.process();
 		} catch(Exception e) {
-			log.error("Execute error: IncludeActionRule " + includeActionRule.toString());
-			throw new ActionExecutionException(this, e);
+			log.error("action execution error: includeActionRule " + includeActionRule + " Cause: " + e.toString());
+			throw e;
 		}
 	}
 

@@ -18,6 +18,9 @@ package com.aspectran.core.activity.process.action;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import com.aspectran.core.activity.AspectranActivity;
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
@@ -36,7 +39,7 @@ import com.aspectran.core.var.ValueMap;
  */
 public class BeanAction extends AbstractAction implements Executable {
 
-	//private final Log log = LogFactory.getLog(BeanAction.class);
+	private final Log log = LogFactory.getLog(BeanAction.class);
 
 	private final BeanActionRule beanActionRule;
 	
@@ -54,7 +57,7 @@ public class BeanAction extends AbstractAction implements Executable {
 	/* (non-Javadoc)
 	 * @see org.jhlabs.translets.engine.process.action.Executable#execute(org.jhlabs.translets.action.Translet)
 	 */
-	public Object execute(AspectranActivity activity) throws ActionExecutionException {
+	public Object execute(AspectranActivity activity) throws Exception {
 		try {
 			String beanId = beanActionRule.getBeanId();
 			Object bean = null;
@@ -63,9 +66,7 @@ public class BeanAction extends AbstractAction implements Executable {
 				bean = activity.getBean(beanId);
 			else if(beanActionRule.getAspectAdviceRule() != null) {
 				String aspectId = beanActionRule.getAspectAdviceRule().getAspectId();
-				
 				bean = activity.getAspectAdviceBean(aspectId);
-				System.out.println("##########aspectId: " + aspectId + ", bean: " + bean);
 			}
 				
 			String methodName = beanActionRule.getMethodName();
@@ -74,8 +75,8 @@ public class BeanAction extends AbstractAction implements Executable {
 
 			return invokeMethod(activity, bean, methodName, propertyItemRuleMap, argumentItemRuleMap);
 		} catch(Exception e) {
-			//log.error("Execute error: BeanAction " + beanActionRule.toString() + " Cause: " + e.toString());
-			throw new ActionExecutionException(this, e);
+			log.error("action execution error: beanActionRule " + beanActionRule + " Cause: " + e.toString());
+			throw e;
 		}
 	}
 	

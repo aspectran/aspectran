@@ -15,6 +15,9 @@
  */
 package com.aspectran.core.activity.process.action;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import com.aspectran.core.activity.AspectranActivity;
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
@@ -29,6 +32,8 @@ import com.aspectran.core.var.ValueMap;
  */
 public class EchoAction extends AbstractAction implements Executable {
 
+	private final Log log = LogFactory.getLog(EchoAction.class);
+	
 	private final EchoActionRule echoActionRule;
 	
 	/**
@@ -45,14 +50,19 @@ public class EchoAction extends AbstractAction implements Executable {
 	/* (non-Javadoc)
 	 * @see org.jhlabs.translets.engine.process.action.Executable#execute(org.jhlabs.translets.action.Translet)
 	 */
-	public Object execute(AspectranActivity activity) {
+	public Object execute(AspectranActivity activity) throws Exception {
 		if(echoActionRule.getItemRuleMap() == null)
 			return null;
 		
-		ItemTokenExpressor expressor = new ItemTokenExpression(activity);
-		ValueMap valueMap = expressor.express(echoActionRule.getItemRuleMap());
-		
-		return valueMap;
+		try {
+			ItemTokenExpressor expressor = new ItemTokenExpression(activity);
+			ValueMap valueMap = expressor.express(echoActionRule.getItemRuleMap());
+			
+			return valueMap;
+		} catch(Exception e) {
+			log.error("action execution error: echoActionRule " + echoActionRule + " Cause: " + e.toString());
+			throw e;
+		}
 	}
 	
 	/**

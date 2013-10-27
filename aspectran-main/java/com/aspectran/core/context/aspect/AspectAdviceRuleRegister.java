@@ -244,6 +244,7 @@ public class AspectAdviceRuleRegister {
 											BeanActionRule beanActionRule = ((BeanAction)action).getBeanActionRule();
 
 											if(pointcut == null || pointcut.matches(transletRule.getName(), beanActionRule.getBeanId(), beanActionRule.getMethodName())) {
+												log.debug("aspectRule " + aspectRule + " transletRule " + transletRule + " responseByContentTypeRule " + responseByContentTypeRule + " defaultResponse " + defaultResponse + " action " + action);
 												register(action, aspectRule);
 												transletRule.setAspectAdviceRuleExists(true);
 											}
@@ -255,6 +256,7 @@ public class AspectAdviceRuleRegister {
 					}
 				} else { //translet scope
 					if(pointcut == null || pointcut.matches(transletRule.getName())) {
+						log.debug("aspectRule " + aspectRule + " transletRule " + transletRule);
 						register(transletRule, aspectRule);
 						transletRule.setAspectAdviceRuleExists(true);
 					}

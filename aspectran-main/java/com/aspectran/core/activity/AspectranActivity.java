@@ -15,7 +15,6 @@
  */
 package com.aspectran.core.activity;
 
-import com.aspectran.core.activity.process.ProcessException;
 import com.aspectran.core.activity.process.result.ProcessResult;
 import com.aspectran.core.activity.request.RequestException;
 import com.aspectran.core.activity.response.ResponseException;
@@ -48,13 +47,13 @@ public interface AspectranActivity {
 	
 	public SuperTranslet getSuperTranslet();
 	
-	public void run(String transletName) throws RequestException, ProcessException, ResponseException;
+	public void run(String transletName) throws AspectranActivityException;
 	
 	public void init(String transletName);
 	
 	public void request() throws RequestException;
 	
-	public ProcessResult process() throws ProcessException;
+	public ProcessResult process() throws AspectranActivityException;
 	
 	public ProcessResult getProcessResult();
 	

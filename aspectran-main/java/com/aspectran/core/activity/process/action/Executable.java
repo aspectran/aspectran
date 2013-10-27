@@ -41,7 +41,7 @@ public interface Executable {
 	 * @return the result of action execution
 	 * @throws ActionExecutionException the action execution exception
 	 */
-	public Object execute(AspectranActivity activity) throws ActionExecutionException;
+	public Object execute(AspectranActivity activity) throws Exception;
 	
 	/**
 	 * Checks if is hidden.

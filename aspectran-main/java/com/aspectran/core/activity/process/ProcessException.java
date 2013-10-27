@@ -15,12 +15,14 @@
  */
 package com.aspectran.core.activity.process;
 
+import com.aspectran.core.activity.AspectranActivityException;
+
 /**
  * This exception will be thrown when a translet process is failed..
  * 
  * <p>Created: 2008. 01. 07 오전 3:35:55</p>
  */
-public class ProcessException extends Exception {
+public class ProcessException extends AspectranActivityException {
 	
 	/** @serial */
 	static final long serialVersionUID = 7290974002627109441L;

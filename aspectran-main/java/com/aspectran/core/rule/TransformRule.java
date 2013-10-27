@@ -74,8 +74,10 @@ public class TransformRule extends ActionPossessSupport implements ActionPossess
 		this.transformType = transformType;
 		
 		if(contentType == null) {
-			if(transformType == TransformType.TEXT_TRANSFORM || transformType == TransformType.JSON_TRANSFORM)
+			if(transformType == TransformType.TEXT_TRANSFORM)
 				contentType = ContentType.TEXT_PLAIN.toString();
+			else if(transformType == TransformType.JSON_TRANSFORM)
+				contentType = ContentType.TEXT_JSON.toString();
 			else if(transformType == TransformType.XML_TRANSFORM)
 				contentType = ContentType.TEXT_XML.toString();
 		}
