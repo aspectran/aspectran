@@ -20,7 +20,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.aspectran.core.activity.AbstractSuperTranslet;
 import com.aspectran.core.activity.AspectranActivity;
-import com.aspectran.core.rule.AspectAdviceRule;
 
 /**
  * The Class AspectranWebTranslet.
