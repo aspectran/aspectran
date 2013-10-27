@@ -11,8 +11,6 @@ import com.aspectran.core.type.AspectAdviceType;
 
 public class AspectAdviceRuleRegistry {
 
-	//private List<AspectSettingsAdviceRule> settingsAdviceRuleList;
-	
 	private Map<String, Object> settings;
 	
 	private List<AspectAdviceRule> beforeAdviceRuleList;
@@ -93,7 +91,7 @@ public class AspectAdviceRuleRegistry {
 		} else if(aspectAdviceRule.getAspectAdviceType() == AspectAdviceType.EXCPETION_RAIZED) {
 			if(exceptionRaizedAdviceRuleList == null)
 				exceptionRaizedAdviceRuleList = new ArrayList<AspectAdviceRule>();
-			
+
 			exceptionRaizedAdviceRuleList.add(0, aspectAdviceRule);
 		}
 	}

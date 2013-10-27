@@ -40,6 +40,9 @@ public final class ContentType extends Type {
 	/** The "text/xml" content type. */
 	public static final ContentType TEXT_XML;
 	
+	/** The "text/xml" content type. */
+	public static final ContentType TEXT_JSON;
+	
 	/** The "text/html" content type. */
 	public static final ContentType TEXT_HTML;
 	
@@ -48,11 +51,13 @@ public final class ContentType extends Type {
 	static {
 		TEXT_PLAIN = new ContentType("text/plain");
 		TEXT_XML = new ContentType("text/xml");
+		TEXT_JSON = new ContentType("text/json");
 		TEXT_HTML = new ContentType("text/html");
 
 		types = new HashMap<String, ContentType>();
 		types.put(TEXT_PLAIN.toString(), TEXT_PLAIN);
 		types.put(TEXT_XML.toString(), TEXT_XML);
+		types.put(TEXT_JSON.toString(), TEXT_JSON);
 		types.put(TEXT_HTML.toString(), TEXT_HTML);
 	}
 

@@ -52,8 +52,9 @@ public class ResponseByContentTypeRuleMap extends LinkedHashMap<String, Response
 		
 		for(Iterator<ResponseByContentTypeRule> iter = iterator(); iter.hasNext();) {
 			ResponseByContentTypeRule rbctr = iter.next();
+			
 			int depth = getMatchedDepth(rbctr.getExceptionType(), ex);
-
+			
 			if(depth >= 0 && depth < deepest) {
 				deepest = depth;
 				responseByContentTypeRule = rbctr;
