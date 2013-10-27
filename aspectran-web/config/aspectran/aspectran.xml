@@ -224,12 +224,15 @@
 				exclude(/front/a/A*)
 			</pointcut>
 		</joinpoint>
-		<advice bean="com.aspectran.support.orm.ibatis.AspectSqlMapClient">
+		<advice bean="com.aspectran.support.orm.ibatis.SqlMapClientTransactionAdvice">
 			<before>
-				<action method="begin"/>
+				<action method="startTransaction"/>
 			</before>
+			<after>
+				<action method="commitTransaction"/>
+			</after>
 			<finally>
-				<action method="end"/>
+				<action method="endTransaction"/>
 			</finally>
 		</advice>
 	</aspect>
