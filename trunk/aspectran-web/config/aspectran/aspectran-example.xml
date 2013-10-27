@@ -36,6 +36,26 @@
 		</settings>
 	</aspect>
 
+	<aspect id="exception1">
+		<joinpoint target="translet" scope="translet">
+			<pointcut>/example/hello/*</pointcut>
+		</joinpoint>
+		<advice>
+			<exceptionRaized>
+				<responseByContentType exceptionType="java.lang.reflect.InvocationTargetException">
+					<transform contentType="text/xml" type="transform/xml">
+						<echo>
+							<item type="map">
+								<value name="errorCode">E0001</value>
+								<value name="message">error occured.</value>
+							</item>
+						</echo>
+					</transform>
+				</responseByContentType>
+			</exceptionRaized>
+		</advice>
+	</aspect>
+
 	<aspect id="helloAdvice">
 		<joinpoint target="translet" scope="bean-content">
 			<pointcut>/example/hello/*@example.hello.HelloAction^applyTheAdvice</pointcut>
