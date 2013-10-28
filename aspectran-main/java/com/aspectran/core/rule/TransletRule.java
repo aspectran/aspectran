@@ -48,9 +48,10 @@ public class TransletRule implements ResponseSettable, AspectAdviceSupport, Clon
 	
 	private ContentList contentList;
 	
-	private List<ResponseRule> responseRuleList;
-	
 	private ResponseRule responseRule;
+	
+	/** The response rule list of child translet. */
+	private List<ResponseRule> responseRuleList;
 	
 	private ResponseByContentTypeRuleMap exceptionHandlingRuleMap;
 	
@@ -362,6 +363,13 @@ public class TransletRule implements ResponseSettable, AspectAdviceSupport, Clon
 		StringBuilder sb = new StringBuilder();
 		
 		sb.append("{name=").append(name);
+		sb.append(", requestRule=").append(requestRule);
+		sb.append(", responseRule=").append(responseRule);
+		sb.append(", responseRuleList=").append(responseRuleList);
+		sb.append(", exceptionHandlingRuleMap=").append(exceptionHandlingRuleMap);
+		sb.append(", transletInterfaceClass=").append(transletInterfaceClass);
+		sb.append(", transletInstanceClass=").append(transletInstanceClass);
+		sb.append(", aspectAdviceRuleRegistry=").append(aspectAdviceRuleRegistry);
 		sb.append(", aspectAdviceRuleExists=").append(aspectAdviceRuleExists);
 		sb.append("}");
 		

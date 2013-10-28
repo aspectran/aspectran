@@ -122,6 +122,7 @@ public class IncludeAction extends AbstractAction implements Executable {
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("{fullActionId=").append(fullActionId);
+		sb.append(", actionType=").append(getActionType());
 		sb.append(", includeActionRule=").append(includeActionRule.toString());
 		sb.append("}");
 
