@@ -571,6 +571,7 @@ public class AspectranNodeParser {
 						transletRule.setResponseRule(defaultResponseRule);
 						transletRule.setName(assistant.applyNamespaceForTranslet(transletRule.getName()));
 						responseRuleList.remove(defaultResponseRule);
+						transletRule.setResponseRuleList(responseRuleList);
 						
 						assistant.addTransletRule(transletRule);
 					}

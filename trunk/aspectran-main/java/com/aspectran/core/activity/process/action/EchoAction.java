@@ -110,6 +110,7 @@ public class EchoAction extends AbstractAction implements Executable {
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("{fullActionId=").append(fullActionId);
+		sb.append(", actionType=").append(getActionType());
 		sb.append(", echoActionRule=").append(echoActionRule.toString());
 		sb.append("}");
 		

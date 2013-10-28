@@ -114,7 +114,7 @@ public class XmlAspectranContextBuilder implements AspectranContextBuilder {
 	private TransletRuleRegistry makeTransletRegistry(XmlAspectranContextAssistant assistant) {
 		AspectRuleMap aspectRuleMap = assistant.getAspectRuleMap();
 		TransletRuleMap transletRuleMap = assistant.getTransletRuleMap();
-		//transletRuleMap.freeze();
+		transletRuleMap.freeze();
 		
 		AspectAdviceRuleRegister aspectAdviceRuleRegister = new AspectAdviceRuleRegister(aspectRuleMap);
 		aspectAdviceRuleRegister.register(transletRuleMap);
@@ -124,7 +124,8 @@ public class XmlAspectranContextBuilder implements AspectranContextBuilder {
 
 	private BeanRegistry makeBeanRegistry(XmlAspectranContextAssistant assistant) {
 		BeanRuleMap beanRuleMap = assistant.getBeanRuleMap();
-		//beanRuleMap.freeze();
+		beanRuleMap.freeze();
+		
 		return new ScopedBeanRegistry(beanRuleMap);
 	}
 	
