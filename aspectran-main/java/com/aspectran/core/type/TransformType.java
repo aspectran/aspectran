@@ -80,4 +80,16 @@ public final class TransformType extends Type {
 		
 		return types.get(type);
 	}
+	
+	public static TransformType valueOf(ContentType contentType) {
+		if(contentType == ContentType.TEXT_PLAIN)
+			return TEXT_TRANSFORM;
+		else if(contentType == ContentType.TEXT_XML)
+			return XML_TRANSFORM;
+		else if(contentType == ContentType.TEXT_JSON)
+			return JSON_TRANSFORM;
+		
+		return null;
+	}
+	
 }

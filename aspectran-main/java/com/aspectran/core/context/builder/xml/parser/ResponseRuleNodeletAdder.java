@@ -30,6 +30,7 @@ import com.aspectran.core.rule.TransformRule;
 import com.aspectran.core.rule.ability.ResponseAddable;
 import com.aspectran.core.rule.ability.ResponseSettable;
 import com.aspectran.core.token.Token;
+import com.aspectran.core.type.ContentType;
 import com.aspectran.core.type.TokenType;
 import com.aspectran.core.type.TransformType;
 import com.aspectran.core.util.ResourceUtils;
@@ -69,6 +70,10 @@ public class ResponseRuleNodeletAdder implements NodeletAdder {
 
 				TransformType transformType = TransformType.valueOf(typeString);
 
+				if(transformType == null && contentType != null) {
+					transformType = TransformType.valueOf(ContentType.valueOf(contentType));
+				}
+				
 				if(transformType == null)
 					throw new IllegalArgumentException("Unkown transform-type '" + typeString + "'.");
 
