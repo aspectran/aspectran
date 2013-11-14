@@ -91,7 +91,7 @@
 					<dispatch contentType="text/html">
 						<template file="/WEB-INF/jsp/login.jsp"/>
 					</dispatch>
-					<transform contentType="text/plain" type="transform/json">
+					<transform contentType="text/json">
 						<template>{}</template>
 					</transform>
 				</responseByContentType>
@@ -100,13 +100,13 @@
 						<template file="/WEB-INF/jsp/error.jsp"/>
 					</dispatch>
 					<!-- forward contentType="text/html" translet="error"/ -->
-					<transform contentType="text/plain" type="transform/text">
+					<transform contentType="text/plain">
 						<template>
 							오류 발생!
 							오류 발생!
 						</template>
 					</transform>
-					<transform contentType="text/xml" type="transform/xml">
+					<transform contentType="text/xml">
 						<action id="xml" bean="common.action.a1" method="testXmlAction" hidden="true">
 							<properties>
 								<item name="variable1">error</item>
