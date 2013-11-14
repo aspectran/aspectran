@@ -179,7 +179,7 @@ exceptionType CDATA #IMPLIED
 
 <!ELEMENT transform (echo | action | include | template)*>
 <!ATTLIST transform
-type CDATA #REQUIRED
+type CDATA #IMPLIED
 contentType CDATA #IMPLIED
 characterEncoding CDATA #IMPLIED
 >
