@@ -5,7 +5,7 @@
 <aspectran>
 
 	<settings>
-		<setting name="transletNamePatternPrefix" value="test"/>
+		<setting name="transletNamePatternPrefix" value="/test/"/>
 		<setting name="transletNamePatternSuffix" value=".do"/>
 		<setting name="transletNamePattern" value="/test/*.do"/>
 		<setting name="transletInterfaceClass" value="com.aspectran.web.activity.WebTranslet"/>
@@ -193,18 +193,10 @@
 		<joinpoint target="scheduler">
 			<pointcut type="interval">* * 10 0</pointcut>
 		</joinpoint>
-		<action id="xml" bean="common.action.a1" method="testXmlAction" hidden="true">
-			<properties>
-				<item name="variable1">error</item>
-				<item name="variable2">0001</item>
-			</properties>
-		</action>
-		<action id="xml" bean="common.action.a1" method="testXmlAction" hidden="true">
-			<properties>
-				<item name="variable1">error</item>
-				<item name="variable2">0001</item>
-			</properties>
-		</action>
+		<advice>
+			<trigger translet="/scheduler1/test1.job"/>
+			<trigger translet="/scheduler1/test2.job"/>
+		</advice>
 	</aspect>
 
 	<!--

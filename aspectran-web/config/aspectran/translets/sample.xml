@@ -263,6 +263,43 @@
 	</translet>
 	
 	<translet name="json">
+		<echo id="echo1">
+			<item type="map">
+				<value name="item11">${item11}</value>
+				<value name="item12">${item12}</value>
+			</item>
+		</echo>
+		<action id="json1" bean="sqlMapExecutor" method="select">
+			<arguments>
+				<item name="sqlmap">sqlmap</item>
+				<item name="param" type="map">
+					<value name="param1">param1</value>
+					<value name="param2">param2</value>
+					<value name="param3">param3</value>
+				</item>
+			</arguments>
+		</action>
+		<action id="json2" bean="sqlMapExecutor" method="select">
+			<arguments>
+				<item name="sqlmap">sqlmap</item>
+				<item name="param" type="map">
+					<value name="param1">param1</value>
+					<value name="param2">param2</value>
+					<value name="param3">param3</value>
+				</item>
+			</arguments>
+		</action>
+		<include id="include1" translet="./home2">
+			<attributes>
+				<item name="item0">한--- --글</item>
+				<item name="item1">@{item1}</item>
+				<item name="item2">@{item2:aaa}</item>
+			</attributes>
+		</include>
+		<transform type="transform/json" contentType="text/json"/>
+	</translet>
+	
+	<translet name="json">
 		<transform type="transform/json" contentType="text/json">
 			<action id="json" bean="sqlMapExecutor" method="select">
 				<arguments>
