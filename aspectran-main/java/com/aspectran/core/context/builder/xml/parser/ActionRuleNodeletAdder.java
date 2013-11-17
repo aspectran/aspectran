@@ -19,13 +19,14 @@ import java.util.Properties;
 
 import org.w3c.dom.Node;
 
-import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.context.builder.xml.XmlAspectranContextAssistant;
 import com.aspectran.core.rule.AspectAdviceRule;
 import com.aspectran.core.rule.BeanActionRule;
 import com.aspectran.core.rule.EchoActionRule;
 import com.aspectran.core.rule.IncludeActionRule;
 import com.aspectran.core.rule.ItemRuleMap;
+import com.aspectran.core.rule.ability.ActionAddable;
+import com.aspectran.core.rule.ability.ActionSettable;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.xml.Nodelet;
 import com.aspectran.core.util.xml.NodeletAdder;
@@ -86,12 +87,12 @@ public class ActionRuleNodeletAdder implements NodeletAdder {
 
 				Object o = assistant.peekObject();
 				
-				if(o instanceof AspectAdviceRule) {
-					AspectAdviceRule aspectAdviceRule = (AspectAdviceRule)o;
-					aspectAdviceRule.setEchoAction(echoActionRule);
-				} else {
-					ActionList actionList = (ActionList)o;
-					actionList.addEchoAction(echoActionRule);
+				if(o instanceof ActionSettable) {
+					ActionSettable settable = (AspectAdviceRule)o;
+					settable.setEchoAction(echoActionRule);
+				} else if(o instanceof ActionAddable) {
+					ActionAddable addable = (ActionAddable)o;
+					addable.addEchoAction(echoActionRule);
 				}
 			}
 		});
@@ -161,16 +162,17 @@ public class ActionRuleNodeletAdder implements NodeletAdder {
 
 				Object o = assistant.peekObject();
 				
-				if(o instanceof AspectAdviceRule) {
-					AspectAdviceRule aspectAdviceRule = (AspectAdviceRule)o;
-					aspectAdviceRule.setBeanAction(beanActionRule);
+				if(o instanceof ActionSettable) {
+					ActionSettable settable = (AspectAdviceRule)o;
+					settable.setBeanAction(beanActionRule);
 					
+					//AspectAdviceRule may not have the bean id.
 					if(beanActionRule.getBeanId() != null)
 						assistant.putBeanReference(beanActionRule.getBeanId(), beanActionRule);
-				} else {
-					ActionList actionList = (ActionList)o;
-					actionList.addBeanAction(beanActionRule);
-
+				} else if(o instanceof ActionAddable) {
+					ActionAddable addable = (ActionAddable)o;
+					addable.addBeanAction(beanActionRule);
+					
 					assistant.putBeanReference(beanActionRule.getBeanId(), beanActionRule);
 				}
 			}
@@ -181,6 +183,8 @@ public class ActionRuleNodeletAdder implements NodeletAdder {
 				String transletName = attributes.getProperty("translet");
 				Boolean hidden = Boolean.valueOf(attributes.getProperty("hidden"));
 
+				transletName = assistant.getFullTransletName(transletName);
+				
 				if(!assistant.isNullableActionId() && StringUtils.isEmpty(id))
 					throw new IllegalArgumentException("The <include> element requires a id attribute.");
 				
@@ -219,10 +223,11 @@ public class ActionRuleNodeletAdder implements NodeletAdder {
 				
 				Object o = assistant.peekObject();
 				
-				if(o instanceof AspectAdviceRule) {
-				} else {
-					ActionList actionList = (ActionList)o;
-					actionList.addIncludeAction(includeActionRule);
+				if(o instanceof ActionSettable) {
+					//There is nothing that can be set to IncludeAction.
+				} else if(o instanceof ActionAddable) {
+					ActionAddable addable = (ActionAddable)o;
+					addable.addIncludeAction(includeActionRule);
 				}
 			}
 		});
