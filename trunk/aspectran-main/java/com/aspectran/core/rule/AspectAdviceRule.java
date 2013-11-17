@@ -18,12 +18,13 @@ package com.aspectran.core.rule;
 import com.aspectran.core.activity.process.action.BeanAction;
 import com.aspectran.core.activity.process.action.EchoAction;
 import com.aspectran.core.activity.process.action.Executable;
+import com.aspectran.core.rule.ability.ActionSettable;
 import com.aspectran.core.type.AspectAdviceType;
 
 /**
  * <p>Created: 2008. 04. 01 오후 11:19:28</p>
  */
-public class AspectAdviceRule {
+public class AspectAdviceRule implements ActionSettable {
 
 	private String aspectId;
 	

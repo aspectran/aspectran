@@ -18,7 +18,6 @@ package com.aspectran.core.rule;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.type.JoinpointScopeType;
 import com.aspectran.core.type.JoinpointTargetType;
 
@@ -38,8 +37,8 @@ public class AspectRule {
 	
 	private List<AspectAdviceRule> aspectAdviceRuleList;
 	
-	private ActionList actionList; // for scheduling aspects
-
+	private List<AspectTriggerAdviceRule> aspectTriggerAdviceRuleList; // for scheduling aspects
+	
 	public String getId() {
 		return id;
 	}
@@ -103,12 +102,19 @@ public class AspectRule {
 		aspectAdviceRuleList.add(aar);
 	}
 
-	public ActionList getActionList() {
-		return actionList;
+	public List<AspectTriggerAdviceRule> getAspectTriggerAdviceRuleList() {
+		return aspectTriggerAdviceRuleList;
 	}
 
-	public void setActionList(ActionList actionList) {
-		this.actionList = actionList;
+	public void setAspectTriggerAdviceRuleList(List<AspectTriggerAdviceRule> aspectTriggerAdviceRuleList) {
+		this.aspectTriggerAdviceRuleList = aspectTriggerAdviceRuleList;
+	}
+	
+	public void addAspectTriggerAdviceRule(AspectTriggerAdviceRule atar) {
+		if(aspectTriggerAdviceRuleList == null)
+			aspectTriggerAdviceRuleList = new ArrayList<AspectTriggerAdviceRule>();
+		
+		aspectTriggerAdviceRuleList.add(atar);
 	}
 
 	/* (non-Javadoc)
@@ -122,9 +128,12 @@ public class AspectRule {
 		sb.append(", joinpointTarget=").append(joinpointTarget);
 		sb.append(", joinpointScope=").append(joinpointScope);
 		sb.append(", pointcutRule=").append(pointcutRule);
-		sb.append(", settingsAdviceRule=").append(settingsAdviceRule);
-		sb.append(", aspectAdviceRuleList=").append(aspectAdviceRuleList);
-		sb.append(", actionListForScheduling=").append(actionList);
+		if(joinpointTarget == JoinpointTargetType.TRANSLET) {
+			sb.append(", settingsAdviceRule=").append(settingsAdviceRule);
+			sb.append(", aspectAdviceRuleList=").append(aspectAdviceRuleList);
+		} else if(joinpointTarget == JoinpointTargetType.SCHEDULER) {
+			sb.append(", aspectTriggerAdviceRuleList=").append(aspectTriggerAdviceRuleList);
+		}
 		sb.append("}");
 		
 		return sb.toString();

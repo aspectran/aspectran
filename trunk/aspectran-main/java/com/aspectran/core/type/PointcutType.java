@@ -25,6 +25,8 @@ public final class PointcutType extends Type {
 	public static final PointcutType REGEXP;
 	
 	public static final PointcutType INTERVAL;
+
+	public static final PointcutType CRON;
 	
 	private static final Map<String, PointcutType> types;
 	
@@ -32,11 +34,13 @@ public final class PointcutType extends Type {
 		WILDCARD = new PointcutType("wildcard");
 		REGEXP = new PointcutType("regexp");
 		INTERVAL = new PointcutType("interval");
+		CRON = new PointcutType("cron");
 
 		types = new HashMap<String, PointcutType>();
 		types.put(WILDCARD.toString(), WILDCARD);
 		types.put(REGEXP.toString(), REGEXP);
 		types.put(INTERVAL.toString(), INTERVAL);
+		types.put(CRON.toString(), CRON);
 	}
 
 	private PointcutType(String type) {

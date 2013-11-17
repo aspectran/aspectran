@@ -24,13 +24,14 @@ import com.aspectran.core.activity.process.action.IncludeAction;
 import com.aspectran.core.rule.BeanActionRule;
 import com.aspectran.core.rule.EchoActionRule;
 import com.aspectran.core.rule.IncludeActionRule;
+import com.aspectran.core.rule.ability.ActionAddable;
 
 /**
  * The action list class.
  * 
  * <p>Created: 2008. 03. 23 오전 1:38:14</p>
  */
-public class ActionList extends ArrayList<Executable> {
+public class ActionList extends ArrayList<Executable> implements ActionAddable {
 	
 	/** @serial */
 	static final long serialVersionUID = 4636431127789162551L;

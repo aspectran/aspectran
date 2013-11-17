@@ -36,11 +36,9 @@ import com.aspectran.core.util.xml.NodeletParser;
  * @author Gulendol
  * @since 2013. 8. 11.
  */
-public class AspectAdviceRuleNodeletAdder implements NodeletAdder {
+public class AspectExceptionRaisedAdviceRuleNodeletAdder implements NodeletAdder {
 	
 	protected XmlAspectranContextAssistant assistant;
-	
-	private AspectAdviceType aspectAdviceType;
 	
 	/**
 	 * Instantiates a new content nodelet adder.
@@ -48,9 +46,8 @@ public class AspectAdviceRuleNodeletAdder implements NodeletAdder {
 	 * @param parser the parser
 	 * @param assistant the assistant for Context Builder
 	 */
-	public AspectAdviceRuleNodeletAdder(XmlAspectranContextAssistant assistant, AspectAdviceType aspectAdviceType) {
+	public AspectExceptionRaisedAdviceRuleNodeletAdder(XmlAspectranContextAssistant assistant) {
 		this.assistant = assistant;
-		this.aspectAdviceType = aspectAdviceType;
 	}
 
 	/**
@@ -64,13 +61,64 @@ public class AspectAdviceRuleNodeletAdder implements NodeletAdder {
 				AspectAdviceRule aar = new AspectAdviceRule();
 				aar.setAspectId(ar.getId());
 				aar.setAdviceBeanId(ar.getAdviceBeanId());
-				aar.setAspectAdviceType(aspectAdviceType);
+				aar.setAspectAdviceType(AspectAdviceType.EXCPETION_RAIZED);
 				
 				assistant.pushObject(aar);
 			}
 		});
 
 		parser.addNodelet(xpath, new ActionRuleNodeletAdder(assistant));
+
+		parser.addNodelet(xpath, "/responseByContentType", new Nodelet() {
+			public void process(Node node, Properties attributes, String text) throws Exception {
+				String exceptionType = attributes.getProperty("exceptionType");
+
+				ResponseByContentTypeRule rbctr = new ResponseByContentTypeRule();
+				rbctr.setExceptionType(exceptionType);
+				
+				assistant.pushObject(rbctr);
+			}
+		});
+		
+		parser.addNodelet(xpath, "/responseByContentType", new ResponseRuleNodeletAdder(assistant));
+
+		parser.addNodelet(xpath, "/responseByContentType/end()", new Nodelet() {
+			public void process(Node node, Properties attributes, String text) throws Exception {
+				ResponseByContentTypeRule rbctr = (ResponseByContentTypeRule)assistant.popObject();
+				AspectAdviceRule aar = (AspectAdviceRule)assistant.peekObject();
+				aar.addResponseByContentTypeRule(rbctr);
+			}
+		});
+
+		parser.addNodelet(xpath, "/defaultResponse", new Nodelet() {
+			public void process(Node node, Properties attributes, String text) throws Exception {
+				ResponseByContentTypeRule rbctr = new ResponseByContentTypeRule();
+				assistant.pushObject(rbctr);
+			}
+		});
+		
+		parser.addNodelet(xpath, "/defaultResponse", new ResponseRuleNodeletAdder(assistant));
+
+		parser.addNodelet(xpath, "/defaultResponse/end()", new Nodelet() {
+			public void process(Node node, Properties attributes, String text) throws Exception {
+				ResponseByContentTypeRule rbctr = (ResponseByContentTypeRule)assistant.popObject();
+				ResponseMap responseMap = rbctr.getResponseMap();
+				
+				if(responseMap.size() > 0) {
+					AspectAdviceRule aar = (AspectAdviceRule)assistant.peekObject();
+					ResponseByContentTypeRuleMap rbctrm = aar.getResponseByContentTypeRuleMap();
+					
+					if(rbctrm == null)
+						rbctrm = new ResponseByContentTypeRuleMap();
+					
+					ResponseByContentTypeRule responseByContentTypeRule = new ResponseByContentTypeRule();
+					responseByContentTypeRule.setDefaultResponse(responseMap.get(0));
+					
+					rbctrm.putResponseByContentTypeRule(responseByContentTypeRule);
+					aar.setResponseByContentTypeRuleMap(rbctrm);
+				}
+			}
+		});
 		
 		parser.addNodelet(xpath, "/end()", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {

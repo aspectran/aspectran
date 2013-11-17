@@ -326,11 +326,13 @@ public class ResponseRuleNodeletAdder implements NodeletAdder {
 		parser.addNodelet(xpath, "/forward", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
 				String contentType = attributes.getProperty("contentType");
-				String path = attributes.getProperty("path");
+				String transletName = attributes.getProperty("translet");
+				
+				transletName = assistant.getFullTransletName(transletName);
 				
 				ForwardResponseRule frr = new ForwardResponseRule();
 				frr.setContentType(contentType);
-				frr.setTransletName(path);
+				frr.setTransletName(transletName);
 				
 				assistant.pushObject(frr);
 

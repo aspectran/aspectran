@@ -192,6 +192,33 @@ public class XmlAspectranContextAssistant {
 	}
 	
 	/**
+	 * Returns the trnaslet name of the prefix and suffix are combined.
+	 * 
+	 * @param transletName
+	 * @return
+	 */
+	public String getFullTransletName(String transletName) {
+		if(transletName != null && transletName.length() > 0 && transletName.charAt(0) == AspectranConstant.TRANSLET_NAME_SEPARATOR)
+			return transletName;
+		
+		if(inheritedAspectranSettings.getTransletNamePatternPrefix() == null && 
+				inheritedAspectranSettings.getTransletNamePatternSuffix() == null)
+			return transletName;
+		
+		StringBuilder sb = new StringBuilder();
+		
+		if(inheritedAspectranSettings.getTransletNamePatternPrefix() != null)
+			sb.append(inheritedAspectranSettings.getTransletNamePatternPrefix());
+		
+		sb.append(transletName);
+		
+		if(inheritedAspectranSettings.getTransletNamePatternSuffix() != null)
+			sb.append(inheritedAspectranSettings.getTransletNamePatternSuffix());
+		
+		return sb.toString();
+	}
+	
+	/**
 	 * Apply namespace for a translet.
 	 * 
 	 * @param transletName the name
@@ -227,7 +254,7 @@ public class XmlAspectranContextAssistant {
 		sb.append(beanId);
 		return sb.toString();
 	}
-	
+/*	
 	public String replaceTransletNameSuffix(String name, String transletNameSuffix) {
 		if(inheritedAspectranSettings.getTransletNamePatternSuffix() == null)
 			return name + AspectranConstant.TRANSLET_NAME_EXTENTION_DELIMITER + transletNameSuffix;
@@ -241,7 +268,7 @@ public class XmlAspectranContextAssistant {
 		
 		return sb.toString();
 	}
-	
+*/	
 	/**
 	 * Checks if is allow null content id.
 	 * 

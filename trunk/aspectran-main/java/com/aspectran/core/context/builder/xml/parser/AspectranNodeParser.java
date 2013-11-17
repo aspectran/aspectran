@@ -34,6 +34,7 @@ import com.aspectran.core.context.builder.AspectranContextResource;
 import com.aspectran.core.context.builder.AspectranSettings;
 import com.aspectran.core.context.builder.xml.XmlAspectranContextAssistant;
 import com.aspectran.core.rule.AspectRule;
+import com.aspectran.core.rule.AspectTriggerAdviceRule;
 import com.aspectran.core.rule.BeanRule;
 import com.aspectran.core.rule.FileItemRule;
 import com.aspectran.core.rule.ItemRuleMap;
@@ -302,7 +303,24 @@ public class AspectranNodeParser {
 		parser.addNodelet("/aspectran/aspect/advice/after", new AspectAdviceRuleNodeletAdder(assistant, AspectAdviceType.AFTER));
 		parser.addNodelet("/aspectran/aspect/advice/around", new AspectAdviceRuleNodeletAdder(assistant, AspectAdviceType.AROUND));
 		parser.addNodelet("/aspectran/aspect/advice/finally", new AspectAdviceRuleNodeletAdder(assistant, AspectAdviceType.FINALLY));
-		parser.addNodelet("/aspectran/aspect/advice/exceptionRaized", new AspectAdviceRuleNodeletAdder(assistant, AspectAdviceType.EXCPETION_RAIZED));
+		parser.addNodelet("/aspectran/aspect/advice/exceptionRaized", new AspectExceptionRaisedAdviceRuleNodeletAdder(assistant));
+		
+		parser.addNodelet("/aspectran/aspect/advice/trigger", new Nodelet() {
+			public void process(Node node, Properties attributes, String text) throws Exception {
+				String transletName = attributes.getProperty("translet");
+
+				transletName = assistant.getFullTransletName(transletName);
+				
+				AspectRule ar = (AspectRule)assistant.peekObject();
+				
+				AspectTriggerAdviceRule atar = new AspectTriggerAdviceRule();
+				atar.setAspectId(ar.getId());
+				atar.setAspectAdviceType(AspectAdviceType.TRIGGER);
+				atar.setTriggerTransletName(transletName);
+				
+				ar.addAspectTriggerAdviceRule(atar);
+			}
+		});
 		
 		parser.addNodelet("/aspectran/aspect/end()", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
@@ -329,6 +347,8 @@ public class AspectranNodeParser {
 				assistant.pushObject(transletRule);
 			}
 		});
+		
+		parser.addNodelet("/aspectran/translet", new ActionRuleNodeletAdder(assistant));
 		
 		parser.addNodelet("/aspectran/translet", new ResponseRuleNodeletAdder(assistant));
 
@@ -453,8 +473,6 @@ public class AspectranNodeParser {
 			}
 		});
 		
-		parser.addNodelet("/aspectran/translet", new ResponseRuleNodeletAdder(assistant));
-		
 		parser.addNodelet("/aspectran/translet/response", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
 				String name = attributes.getProperty("name");
@@ -480,6 +498,7 @@ public class AspectranNodeParser {
 				transletRule.addResponseRule(responseRule);
 			}
 		});
+
 		parser.addNodelet("/aspectran/translet/exception", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
 				ResponseByContentTypeRule rbctr = new ResponseByContentTypeRule();
@@ -503,7 +522,7 @@ public class AspectranNodeParser {
 				assistant.pushObject(rbctr);
 			}
 		});
-
+		
 		parser.addNodelet("/aspectran/translet/exception/defaultResponse", new ResponseRuleNodeletAdder(assistant));
 
 		parser.addNodelet("/aspectran/translet/exception/defaultResponse/end()", new Nodelet() {

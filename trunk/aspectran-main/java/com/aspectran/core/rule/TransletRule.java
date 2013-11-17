@@ -33,6 +33,7 @@ import com.aspectran.core.activity.response.dispatch.DispatchResponse;
 import com.aspectran.core.activity.response.transform.AbstractTransform;
 import com.aspectran.core.context.AspectranConstant;
 import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
+import com.aspectran.core.rule.ability.ActionAddable;
 import com.aspectran.core.rule.ability.ResponseSettable;
 import com.aspectran.core.type.ResponseType;
 import com.aspectran.core.type.TransformType;
@@ -40,7 +41,7 @@ import com.aspectran.core.type.TransformType;
 /**
  * <p>Created: 2008. 03. 22 오후 5:48:09</p>
  */
-public class TransletRule implements ResponseSettable, AspectAdviceSupport, Cloneable {
+public class TransletRule implements ActionAddable, ResponseSettable, AspectAdviceSupport, Cloneable {
 
 	private String name;
 
@@ -514,4 +515,37 @@ public class TransletRule implements ResponseSettable, AspectAdviceSupport, Clon
 
 		return sb.toString();
 	}
+
+	public void addEchoAction(EchoActionRule echoActionRule) {
+		getActionList().addEchoAction(echoActionRule);
+	}
+
+	public void addBeanAction(BeanActionRule beanActionRule) throws ClassNotFoundException, InstantiationException,
+			IllegalAccessException, NoSuchMethodException {
+		getActionList().addBeanAction(beanActionRule);
+	}
+
+	public void addIncludeAction(IncludeActionRule includeActionRule) {
+		getActionList().addIncludeAction(includeActionRule);
+	}
+	
+	private ActionList getActionList() {
+		ActionList actionList;		
+		
+		if(contentList == null) {
+			actionList = new ActionList();
+			contentList = new ContentList();
+			contentList.add(actionList);
+		} else {
+			if(contentList.size() > 0)
+				actionList = contentList.get(0);
+			else {
+				actionList = new ActionList();
+				contentList.add(actionList);
+			}
+		}
+		
+		return actionList;
+	}
+	
 }
