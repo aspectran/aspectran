@@ -80,9 +80,22 @@
 
 	<translet name="hello/countTo10">
 		<transform type="transform/text">
-			<action id="result" bean="example.hello.HelloAction" method="countTo10"/>
+			<action id="result1" bean="example.hello.HelloAction" method="countTo10"/>
 			<template>
-				@{result}
+@{result1}
+			</template>
+		</transform>
+	</translet>
+
+	<translet name="hello/countTo10twice">
+		<action id="result1" bean="example.hello.HelloAction" method="countTo10"/>
+		<action id="result2" bean="example.hello.HelloAction" method="countTo10"/>
+		<transform type="transform/text">
+			<template>
+(first)
+@{result1}
+(second)
+@{result2}
 			</template>
 		</transform>
 	</translet>

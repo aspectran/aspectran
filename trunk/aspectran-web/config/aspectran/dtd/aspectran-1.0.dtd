@@ -60,7 +60,7 @@ property CDATA #IMPLIED
 
 <!ELEMENT null EMPTY>
 
-<!ELEMENT aspect (joinpoint?, settings?, action*, advice?)>
+<!ELEMENT aspect (joinpoint?, settings?, advice?)>
 <!ATTLIST aspect
 id ID #IMPLIED
 >
@@ -76,7 +76,7 @@ scope (translet | request | content | action-content | bean-content | response |
 type (wildcard | regexpt | interval) #IMPLIED
 >
 
-<!ELEMENT advice (before?, after?, around?, finally?, exceptionRaized?)>
+<!ELEMENT advice (before?, after?, around?, finally?, exceptionRaized?, trigger*)>
 <!ATTLIST advice
 bean CDATA #IMPLIED
 >
@@ -86,6 +86,11 @@ bean CDATA #IMPLIED
 <!ELEMENT around (echo | action)>
 <!ELEMENT finally (echo | action)>
 <!ELEMENT exceptionRaized (action?, responseByContentType*, defaultResponse?)>
+
+<!ELEMENT trigger EMPTY>
+<!ATTLIST trigger
+translet CDATA #REQUIRED
+>
 
 <!ELEMENT bean (features?, constructor?, properties*)>
 <!ATTLIST bean
@@ -112,7 +117,7 @@ override (true | false) #IMPLIED
 
 <!ELEMENT constructor (arguments?)>
 
-<!ELEMENT translet (request?, contents?, response*, transform?, dispatch?, redirect?, forward?, exception?)>
+<!ELEMENT translet ((echo? | action? | include?)*, (transform | dispatch | redirect | forward)?, request?, contents?, response*, exception?)>
 <!ATTLIST translet
 name CDATA #REQUIRED
 hidden (true | false) #IMPLIED
