@@ -11,7 +11,7 @@
 	</welcome-file-list>
 	<listener>
 		<listener-class>
-			com.aspectran.web.context.listener.AspectranApplicationListener
+			com.aspectran.web.context.listener.AspectranWebApplicationListener
 		</listener-class>
 	</listener>
 	<listener>
@@ -21,19 +21,15 @@
 	</listener>
 	<servlet>
 		<servlet-name>aspectran-web</servlet-name>
-		<servlet-class>com.aspectran.web.context.servlet.AspectranActivityServlet</servlet-class>
+		<servlet-class>com.aspectran.web.context.servlet.WebActivityServlet</servlet-class>
 		<init-param>
-			<param-name>aspectran:defaultActivityServletHandler</param-name>
-			<param-value>com.aspectran.web.context.servlet.DefaultActivityServletRequestHandler</param-value>
-		</init-param>
-		<init-param>
-			<param-name>aspectran:contextConfigLocation</param-name>
+			<param-name>contextConfigLocation</param-name>
 			<param-value>/WEB-INF/classes/aspectran/aspectran-example.xml</param-value>
 		</init-param>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>aspectran-web</servlet-name>
-		<url-pattern>/example/*</url-pattern>
+		<url-pattern>/</url-pattern>
 	</servlet-mapping>
 </web-app>

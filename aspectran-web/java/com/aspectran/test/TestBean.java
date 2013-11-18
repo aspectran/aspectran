@@ -9,7 +9,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.aspectran.core.activity.SuperTranslet;
 import com.aspectran.web.activity.WebTranslet;
 
 /**
@@ -96,11 +95,11 @@ public class TestBean {
 		return list;
 	}
 	
-	public Object testAction2(SuperTranslet translet) {
+	public Object testAction2(WebTranslet translet) {
 		return this;
 	}
 	
-	public Object testXmlAction(SuperTranslet translet) {
+	public Object testXmlAction(WebTranslet translet) {
 		return this;
 	}
 	

@@ -7,12 +7,14 @@
 	<settings>
 		<setting name="transletNamePattern" value="/example/*"/>
 		<setting name="transletInterfaceClass" value="com.aspectran.web.activity.WebTranslet"/>
-		<setting name="transletImplementClass" value="com.aspectran.web.activity.AspectranWebTranslet"/>
+		<setting name="transletImplementClass" value="com.aspectran.web.activity.WebTransletImpl"/>
+		<setting name="activityDefaultHandler" value="webActivityDefaultHandler"/>
 		<setting name="useNamespaces" value="true"/>
 		<setting name="nullableContentId" value="true"/>
 		<setting name="nullableActionId" value="true"/>
 	</settings>
 	
+	<bean id="webActivityDefaultHandler" class="com.aspectran.web.activity.WebActivityDefaultHandler" scope="singleton"/>
 	<bean id="jspViewDispatcher" class="com.aspectran.web.view.JspViewDispatcher" scope="singleton"/>
 	<bean id="example.*" class="com.aspectran.example.**.*Action" scope="singleton"/>
 	<bean id="advice.*" class="com.aspectran.example.aspect.**.*Advice" scope="session"/>
@@ -70,7 +72,7 @@
 		</advice>
 	</aspect>
 	
-	<translet name="hello">
+	<translet name="/hello">
 		<transform type="transform/text">
 			<template>
 				hello~ ${name}
