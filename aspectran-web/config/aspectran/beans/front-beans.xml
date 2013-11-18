@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE translets PUBLIC "-//JHLabs.org//DTD Translets 1.0//EN"
-                             "../dtd/aspectran-1.0.dtd">
+<!DOCTYPE aspectran PUBLIC "-//aspectran.com//DTD Aspectran 1.0//EN"
+                           "../dtd/aspectran-1.0.dtd">
 
 <translets namespace="front">
 

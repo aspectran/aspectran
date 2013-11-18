@@ -41,9 +41,7 @@
 			</attributes>
 			<multiparts>
 				<fileItem name="file1"/>
-				<fileItem name="files[]">
-					<allowFileExtentions>jpg;gif</allowFileExtentions>
-				</fileItem>
+				<fileItem name="files[]"/>
 			</multiparts>
 		</request>
 		<contents>

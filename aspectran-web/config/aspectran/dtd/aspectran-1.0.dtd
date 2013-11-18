@@ -73,10 +73,10 @@ scope (translet | request | content | action-content | bean-content | response |
 
 <!ELEMENT pointcut (#PCDATA)>
 <!ATTLIST pointcut
-type (wildcard | regexpt | interval) #IMPLIED
+type (wildcard | regexpt | interval | cronExpression) #IMPLIED
 >
 
-<!ELEMENT advice (before?, after?, around?, finally?, exceptionRaized?, trigger*)>
+<!ELEMENT advice ((before?, after?, around?, finally?, exceptionRaized?) | job*)>
 <!ATTLIST advice
 bean CDATA #IMPLIED
 >
@@ -87,8 +87,8 @@ bean CDATA #IMPLIED
 <!ELEMENT finally (echo | action)>
 <!ELEMENT exceptionRaized (action?, responseByContentType*, defaultResponse?)>
 
-<!ELEMENT trigger EMPTY>
-<!ATTLIST trigger
+<!ELEMENT job EMPTY>
+<!ATTLIST job
 translet CDATA #REQUIRED
 >
 
@@ -117,7 +117,7 @@ override (true | false) #IMPLIED
 
 <!ELEMENT constructor (arguments?)>
 
-<!ELEMENT translet ((echo? | action? | include?)*, (transform | dispatch | redirect | forward)?, request?, contents?, response*, exception?)>
+<!ELEMENT translet (((echo? | action? | include?)*, (transform | dispatch | redirect | forward)?) | (request?, contents?, response*, exception?))>
 <!ATTLIST translet
 name CDATA #REQUIRED
 hidden (true | false) #IMPLIED
@@ -132,13 +132,10 @@ characterEncoding CDATA #IMPLIED
 
 <!ELEMENT multiparts (fileItem*)>
 
-<!ELEMENT fileItem (allowFileExtentions? | denyFileExtentions?)>
+<!ELEMENT fileItem EMPTY>
 <!ATTLIST fileItem
 name CDATA #REQUIRED
 >
-
-<!ELEMENT allowFileExtentions (#PCDATA)>
-<!ELEMENT denyFileExtentions (#PCDATA)>
 
 <!ELEMENT contents (content*)>
 
@@ -169,7 +166,7 @@ translet CDATA #REQUIRED
 hidden (true | false) #IMPLIED
 >
 
-<!ELEMENT response (transform? | dispatch? | redirect? | forward?)*>
+<!ELEMENT response (transform? | dispatch? | redirect? | forward?)>
 <!ATTLIST response
 name CDATA #IMPLIED
 characterEncoding CDATA #IMPLIED
@@ -182,7 +179,7 @@ exceptionType CDATA #IMPLIED
 >
 <!ELEMENT defaultResponse (transform? | dispatch? | redirect? | forward?)>
 
-<!ELEMENT transform (echo | action | include | template)*>
+<!ELEMENT transform ((echo? | action? | include?)*, template?)>
 <!ATTLIST transform
 type CDATA #IMPLIED
 contentType CDATA #IMPLIED
@@ -197,12 +194,12 @@ encoding CDATA #IMPLIED
 noCache (true | false) #IMPLIED
 >
 
-<!ELEMENT dispatch (echo? | action? | include? | template)*>
+<!ELEMENT dispatch ((echo? | action? | include?)*, template)>
 <!ATTLIST dispatch
 contentType CDATA #IMPLIED
 >
 
-<!ELEMENT redirect (echo* | action* | include* | url? | parameters*)>
+<!ELEMENT redirect ((echo? | action? | include?)*, url?, parameters?)>
 <!ATTLIST redirect
 contentType CDATA #IMPLIED
 url CDATA #IMPLIED
@@ -211,7 +208,7 @@ excludeNullParameters CDATA #IMPLIED
 >
 <!ELEMENT url (#PCDATA)>
 
-<!ELEMENT forward (echo* | action* | include* | parameters*)>
+<!ELEMENT forward ((echo? | action? | include?)*, url?, parameters?)>
 <!ATTLIST forward
 contentType CDATA #IMPLIED
 translet CDATA #IMPLIED
