@@ -34,9 +34,6 @@ public abstract class AbstractRequest {
 	 * @param fileItemMap the new file item map
 	 */
 	public void setFileItemMap(FileItemMap fileItemMap) {
-//		if(this.fileItemMap != null && this.fileItemMap != fileItemMap)
-//			this.fileItemMap.clear();
-
 		this.fileItemMap = fileItemMap;
 	}
 

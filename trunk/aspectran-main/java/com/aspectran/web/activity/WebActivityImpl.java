@@ -142,13 +142,16 @@ public class WebActivityImpl extends AbstractCoreActivity implements WebActivity
 	private void parseMultipart() throws MultipartRequestException {
 		RequestRule requestRule = getRequestRule();
 
-		String multipartRequestSize = (String)getRequestSetting("multipart.maxRequestSize");
+		String multipartMaxRequestSize = (String)getRequestSetting("multipart.maxRequestSize");
 		String multipartTemporaryFilePath = (String)getRequestSetting("multipart.temporaryFilePath");
-		
+		String multipartAllowedFileExtensions = (String)getRequestSetting("multipart.allowedFileExtensions");
+		String multipartDeniedFileExtensions = (String)getRequestSetting("multipart.deniedFileExtensions");
 		
 		MultipartRequestHandler handler = new MultipartRequestHandler(request);
-		handler.setMaxRequestSize(new Long(multipartRequestSize));
+		handler.setMaxRequestSize(new Long(multipartMaxRequestSize));
 		handler.setTemporaryFilePath(multipartTemporaryFilePath);
+		handler.setAllowedFileExtensions(multipartAllowedFileExtensions);
+		handler.setDeniedFileExtensions(multipartDeniedFileExtensions);
 		handler.parse();
 		
 		// sets the servlet request wrapper
@@ -182,6 +185,9 @@ public class WebActivityImpl extends AbstractCoreActivity implements WebActivity
 		
 		requestAdapter.setMaxLengthExceeded(handler.isMaxLengthExceeded());
 		
+		for(Map.Entry<String, Object> entry : fileItemMap.entrySet())
+			request.setAttribute(entry.getKey(), entry.getValue());
+		
 		if(debugEnabled) {
 			if(requestAdapter.isMaxLengthExceeded()) {
 				log.debug("Max length exceeded. maxMultipartRequestSize: " + requestRule.getMaxMultipartRequestSize());
@@ -199,10 +205,6 @@ public class WebActivityImpl extends AbstractCoreActivity implements WebActivity
 					log.debug("fileItem name=" + fir.getName() + " " + f);
 				}
 			}
-
-			for(Map.Entry<String, Object> entry : fileItemMap.entrySet())
-				request.setAttribute(entry.getKey(), entry.getValue());
-			
 		}
 	}
 	

@@ -106,6 +106,7 @@ public class XmlAspectranContextBuilder implements AspectranContextBuilder {
 		beanReferenceInspector.inpect(assistant.getBeanRuleMap());
 		
 		AspectranContext aspectranContext = new AspectranContext();
+		aspectranContext.setAspectRuleMap(assistant.getAspectRuleMap());
 		aspectranContext.setBeanRegistry(beanRegistry);
 		aspectranContext.setTransletRuleRegistry(transletRuleRegistry);
 		aspectranContext.setActivityDefaultHandler((String)assistant.getSetting(AspectranSettingType.ACTIVITY_DEFAULT_HANDLER));

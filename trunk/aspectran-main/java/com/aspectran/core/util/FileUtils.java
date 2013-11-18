@@ -30,6 +30,7 @@ import java.io.Writer;
 import java.text.DecimalFormat;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.StringTokenizer;
 
 /**
  * Utility methods for managing file.
@@ -38,6 +39,8 @@ import java.util.Map;
  */
 public class FileUtils {
 
+	private static final String FILE_EXTENSIONS_SEPARATORS = " ,;\t\n\r\f";
+	
 	/**
 	 * 파일의 사이즈를 읽기 편한 포맷으로 변환한다.
 	 * 파일 사이즈 단위는 자동으로 결정된다.
@@ -393,7 +396,7 @@ public class FileUtils {
 	 * 
 	 * @return String
 	 */
-	public static String getFileExtention(String fileName) {
+	public static String getFileExtension(String fileName) {
 		fileName = getFileName(fileName);
 
 		int pointIndex = fileName.lastIndexOf(".");
@@ -411,7 +414,7 @@ public class FileUtils {
 	 * 
 	 * @return String
 	 */
-	public static String getFileNameWithoutExtention(String filePath) {
+	public static String getFileNameWithoutExtension(String filePath) {
 		String fileName = getFileName(filePath);
 
 		int pointIndex = fileName.lastIndexOf(".");
@@ -490,12 +493,58 @@ public class FileUtils {
 	 */
 	public static String makeUniqueSafetyFileName(String path, String fileName) {
 		String time = new Long(System.currentTimeMillis()).toString();
-		String ext = getFileExtention(fileName);
+		String ext = getFileExtension(fileName);
 		String separator = "_";
 
 		return makeUniqueFileName(path, time + separator + ext, separator);
 	}
 
+	/**
+	 * Checks if is valid file extention.
+	 *
+	 * @param fileName the file name
+	 * @param allowedFileExtensions the allowed file extensions
+	 * @param deniedFileExtensions the denied file extensions
+	 * @return true, if is valid file extention
+	 */
+	public static boolean isValidFileExtension(String fileName, String allowedFileExtensions, String deniedFileExtensions) {
+		String ext = FileUtils.getFileExtension(fileName);
+		
+		if(allowedFileExtensions != null && allowedFileExtensions.length() > 0) {
+			if(ext.length() == 0)
+				return false;
+			
+			StringTokenizer st = new StringTokenizer(allowedFileExtensions, FILE_EXTENSIONS_SEPARATORS);
+			
+			while(st.hasMoreTokens()) {
+				String ext2 = st.nextToken();
+				
+				if(ext.equals(ext2))
+					return true;
+			}
+			
+			return false;
+		}
+
+		if(deniedFileExtensions != null && deniedFileExtensions.length() > 0) {
+			if(ext.length() == 0)
+				return true;
+			
+			StringTokenizer st = new StringTokenizer(allowedFileExtensions, FILE_EXTENSIONS_SEPARATORS);
+			
+			while(st.hasMoreTokens()) {
+				String ext2 = st.nextToken();
+				
+				if(ext.equals(ext2))
+					return false;
+			}
+			
+			return true;
+		}
+		
+		return true;
+	}
+	
 	/**
 	 * Size unit of computer file.
 	 * 

@@ -28,7 +28,7 @@ public interface AspectranConstant {
 	/** The Constant NAMESPACE_SEPARATOR. */
 	public static final char TRANSLET_NAME_SEPARATOR = '/';
 
-	public static final char TRANSLET_NAME_EXTENTION_DELIMITER = '.';
+	public static final char TRANSLET_NAME_EXTENSION_DELIMITER = '.';
 
 	/** The Constant BEAN_ID_SEPARATOR. */
 	public static final char BEAN_ID_SEPARATOR = '.';
