@@ -25,9 +25,9 @@ import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.bean.scope.ApplicationScope;
 import com.aspectran.web.adapter.WebApplicationAdapter;
 
-public class AspectranApplicationListener implements ServletContextListener {
+public class AspectranWebApplicationListener implements ServletContextListener {
 
-	private final Log log = LogFactory.getLog(AspectranApplicationListener.class);
+	private final Log log = LogFactory.getLog(AspectranWebApplicationListener.class);
 	
 	private ApplicationAdapter applicationAdapter;
 	

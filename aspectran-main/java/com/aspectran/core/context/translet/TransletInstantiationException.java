@@ -16,8 +16,8 @@
 
 package com.aspectran.core.context.translet;
 
-import com.aspectran.core.activity.AbstractSuperTranslet;
-import com.aspectran.core.activity.SuperTranslet;
+import com.aspectran.core.activity.AbstractCoreTranslet;
+import com.aspectran.core.activity.CoreTranslet;
 
 
 /**
@@ -32,16 +32,16 @@ public class TransletInstantiationException extends RuntimeException {
 	/** @serial */
 	static final long serialVersionUID = -2906926519983962457L;
 	
-	private Class<? extends SuperTranslet> transletInterfaceClass;
+	private Class<? extends CoreTranslet> transletInterfaceClass;
 
-	private Class<? extends AbstractSuperTranslet> transletInstanceClass;
+	private Class<? extends AbstractCoreTranslet> transletInstanceClass;
 	
 	/**
 	 * Create a new BeanInstantiationException.
 	 * @param beanClass the offending bean class
 	 * @param msg the detail message
 	 */
-	public TransletInstantiationException(Class<? extends SuperTranslet> transletInterfaceClass, Class<? extends AbstractSuperTranslet> transletInstanceClass) {
+	public TransletInstantiationException(Class<? extends CoreTranslet> transletInterfaceClass, Class<? extends AbstractCoreTranslet> transletInstanceClass) {
 		this(transletInterfaceClass, transletInstanceClass, null);
 	}
 
@@ -51,12 +51,12 @@ public class TransletInstantiationException extends RuntimeException {
 	 * @param msg the detail message
 	 * @param cause the root cause
 	 */
-	public TransletInstantiationException(Class<? extends SuperTranslet> transletInterfaceClass, Class<? extends AbstractSuperTranslet> transletInstanceClass, Throwable cause) {
+	public TransletInstantiationException(Class<? extends CoreTranslet> transletInterfaceClass, Class<? extends AbstractCoreTranslet> transletInstanceClass, Throwable cause) {
 		super("Could not instantiate translet class [" + transletInstanceClass.getName() + "] interface [" + transletInterfaceClass.getName() + "]", cause);
 		this.transletInstanceClass = transletInstanceClass;
 	}
 
-	public Class<? extends SuperTranslet> getTransletInterfaceClass() {
+	public Class<? extends CoreTranslet> getTransletInterfaceClass() {
 		return transletInterfaceClass;
 	}
 

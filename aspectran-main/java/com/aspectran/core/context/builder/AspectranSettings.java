@@ -35,6 +35,8 @@ public class AspectranSettings {
 
 	private String transletInstanceClass;
 	
+	private String activityDefaultHandler;
+	
 	private boolean useNamespaces = true;
 
 	private boolean nullableContentId = true;
@@ -109,6 +111,14 @@ public class AspectranSettings {
 
 	public void setTransletInstanceClass(String transletInstanceClass) {
 		this.transletInstanceClass = transletInstanceClass;
+	}
+
+	public String getActivityDefaultHandler() {
+		return activityDefaultHandler;
+	}
+
+	public void setActivityDefaultHandler(String activityDefaultHandler) {
+		this.activityDefaultHandler = activityDefaultHandler;
 	}
 
 	public boolean isUseNamespaces() {

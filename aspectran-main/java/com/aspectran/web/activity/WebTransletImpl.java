@@ -18,20 +18,20 @@ package com.aspectran.web.activity;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.aspectran.core.activity.AbstractSuperTranslet;
-import com.aspectran.core.activity.AspectranActivity;
+import com.aspectran.core.activity.AbstractCoreTranslet;
+import com.aspectran.core.activity.CoreActivity;
 
 /**
  * The Class AspectranWebTranslet.
  */
-public class AspectranWebTranslet extends AbstractSuperTranslet implements WebTranslet {
+public class WebTransletImpl extends AbstractCoreTranslet implements WebTranslet {
 	
 	/**
 	 * Instantiates a new aspectran web translet.
 	 *
 	 * @param activity the activity
 	 */
-	public AspectranWebTranslet(AspectranActivity activity, boolean aspectAdvicable) {
+	public WebTransletImpl(CoreActivity activity, boolean aspectAdvicable) {
 		super(activity, aspectAdvicable);
 	}
 

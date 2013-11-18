@@ -34,6 +34,7 @@ import com.aspectran.core.context.translet.TransletRuleRegistry;
 import com.aspectran.core.rule.AspectRuleMap;
 import com.aspectran.core.rule.BeanRuleMap;
 import com.aspectran.core.rule.TransletRuleMap;
+import com.aspectran.core.type.AspectranSettingType;
 
 /**
  * TransletsContext builder.
@@ -107,6 +108,7 @@ public class XmlAspectranContextBuilder implements AspectranContextBuilder {
 		AspectranContext aspectranContext = new AspectranContext();
 		aspectranContext.setBeanRegistry(beanRegistry);
 		aspectranContext.setTransletRuleRegistry(transletRuleRegistry);
+		aspectranContext.setActivityDefaultHandler((String)assistant.getSetting(AspectranSettingType.ACTIVITY_DEFAULT_HANDLER));
 		
 		return aspectranContext;
 	}

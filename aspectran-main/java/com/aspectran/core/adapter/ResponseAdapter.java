@@ -5,7 +5,7 @@ import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 
-import com.aspectran.core.activity.AspectranActivity;
+import com.aspectran.core.activity.CoreActivity;
 import com.aspectran.core.rule.RedirectResponseRule;
 
 /**
@@ -84,6 +84,6 @@ public interface ResponseAdapter {
 	 * @return the string
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
-	public String redirect(AspectranActivity activity, RedirectResponseRule redirectResponseRule) throws IOException;
+	public String redirect(CoreActivity activity, RedirectResponseRule redirectResponseRule) throws IOException;
 	
 }

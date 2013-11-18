@@ -21,7 +21,7 @@ import java.io.Writer;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.aspectran.core.activity.AspectranActivity;
+import com.aspectran.core.activity.CoreActivity;
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.activity.process.result.ProcessResult;
 import com.aspectran.core.activity.response.Responsible;
@@ -55,7 +55,7 @@ public class JsonTransform extends AbstractTransform implements Responsible {
 	/* (non-Javadoc)
 	 * @see org.jhlabs.translets.engine.response.Responsible#response(org.jhlabs.translets.action.Translet)
 	 */
-	public void response(AspectranActivity activity) throws TransformResponseException {
+	public void response(CoreActivity activity) throws TransformResponseException {
 		try {
 			ResponseAdapter responseAdapter = activity.getResponseAdapter();
 			

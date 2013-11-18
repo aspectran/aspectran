@@ -33,7 +33,7 @@ import com.aspectran.core.context.bean.scope.RequestScope;
  * 
  * <p>Created: 2008. 03. 22 오후 5:48:09</p>
  */
-public interface AspectranActivity {
+public interface CoreActivity {
 
 	public RequestAdapter getRequestAdapter();
 	
@@ -41,19 +41,19 @@ public interface AspectranActivity {
 	
 	public SessionAdapter getSessionAdapter();
 	
-	public Class<? extends SuperTranslet> getTransletInterfaceClass();
+	public Class<? extends CoreTranslet> getTransletInterfaceClass();
 	
-	public Class<? extends AbstractSuperTranslet> getTransletImplementClass();
+	public Class<? extends AbstractCoreTranslet> getTransletImplementClass();
 	
-	public SuperTranslet getSuperTranslet();
-	
-	public void run(String transletName) throws AspectranActivityException;
+	public CoreTranslet getSuperTranslet();
 	
 	public void init(String transletName);
 	
+	public void run() throws CoreActivityException;
+	
 	public void request() throws RequestException;
 	
-	public ProcessResult process() throws AspectranActivityException;
+	public ProcessResult process() throws CoreActivityException;
 	
 	public ProcessResult getProcessResult();
 	
@@ -79,7 +79,7 @@ public interface AspectranActivity {
 	
 	public void setRequestScope(RequestScope requestScope);
 	
-	public AspectranActivity newAspectranActivity();
+	public CoreActivity newCoreActivity();
 	
 	public BeanRegistry getBeanRegistry();
 	

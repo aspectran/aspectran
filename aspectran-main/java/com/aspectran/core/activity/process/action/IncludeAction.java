@@ -20,7 +20,7 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.aspectran.core.activity.AspectranActivity;
+import com.aspectran.core.activity.CoreActivity;
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
@@ -52,7 +52,7 @@ public class IncludeAction extends AbstractAction implements Executable {
 	/* (non-Javadoc)
 	 * @see org.jhlabs.translets.engine.process.action.Executable#execute(org.jhlabs.translets.action.Translet)
 	 */
-	public Object execute(AspectranActivity activity) throws Exception {
+	public Object execute(CoreActivity activity) throws Exception {
 		try {
 			RequestAdapter request = activity.getRequestAdapter();
 			Map<String, Object> valueMap = null;
@@ -67,7 +67,7 @@ public class IncludeAction extends AbstractAction implements Executable {
 					request.setAttribute(entry.getKey(), entry.getValue());
 			}
 			
-			AspectranActivity newActivity = activity.newAspectranActivity();
+			CoreActivity newActivity = activity.newCoreActivity();
 			newActivity.init(includeActionRule.getTransletName());
 			newActivity.request();
 			return newActivity.process();

@@ -13,22 +13,13 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.aspectran.web.activity;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+package com.aspectran.scheduler.activity;
 
 import com.aspectran.core.activity.CoreTranslet;
 
 /**
- * <p>
- * Created: 2008. 7. 5. 오전 12:35:44
- * </p>
+ * <p>Created: 2013. 11. 18 오후 3:40:48</p>
  */
-public interface WebTranslet extends CoreTranslet {
-
-	public HttpServletRequest getHttpServletRequest();
-
-	public HttpServletResponse getHttpServletResponse();
+public interface SchedulingTranslet extends CoreTranslet {
 
 }

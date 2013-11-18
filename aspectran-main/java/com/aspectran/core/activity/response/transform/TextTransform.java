@@ -25,7 +25,7 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.aspectran.core.activity.AspectranActivity;
+import com.aspectran.core.activity.CoreActivity;
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.activity.response.Responsible;
 import com.aspectran.core.adapter.ResponseAdapter;
@@ -75,7 +75,7 @@ public class TextTransform extends AbstractTransform implements Responsible {
 	/* (non-Javadoc)
 	 * @see org.jhlabs.translets.engine.response.Responsible#response(org.jhlabs.translets.action.Translet)
 	 */
-	public void response(AspectranActivity activity) throws TransformResponseException {
+	public void response(CoreActivity activity) throws TransformResponseException {
 		try {
 			ResponseAdapter responseAdapter = activity.getResponseAdapter();
 			

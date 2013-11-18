@@ -34,7 +34,7 @@ import com.aspectran.core.rule.TransformRule;
 /**
  * <p>Created: 2008. 7. 5. 오전 12:35:44</p>
  */
-public abstract interface SuperTranslet {
+public abstract interface CoreTranslet {
 
 	/**
 	 * Returns the path of translet.
@@ -136,9 +136,9 @@ public abstract interface SuperTranslet {
 	 */
 	public void responseEnd();
 	
-	public Class<? extends SuperTranslet> getTransletInterfaceClass();
+	public Class<? extends CoreTranslet> getTransletInterfaceClass();
 
-	public Class<? extends AbstractSuperTranslet> getTransletImplementClass();
+	public Class<? extends AbstractCoreTranslet> getTransletImplementClass();
 	
 	public boolean isExceptionRaised();
 

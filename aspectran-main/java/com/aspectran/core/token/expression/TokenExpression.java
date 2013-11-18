@@ -26,7 +26,7 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.StringTokenizer;
 
-import com.aspectran.core.activity.AspectranActivity;
+import com.aspectran.core.activity.CoreActivity;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.context.bean.BeanRegistry;
 import com.aspectran.core.token.Token;
@@ -40,7 +40,7 @@ import com.aspectran.core.util.StringUtils;
  */
 public class TokenExpression implements TokenExpressor {
 	
-	protected AspectranActivity activity;
+	protected CoreActivity activity;
 	
 	protected RequestAdapter requestAdapter;
 	
@@ -52,10 +52,13 @@ public class TokenExpression implements TokenExpressor {
 		this.beanRegistry = beanRegistry;
 	}
 	
-	public TokenExpression(AspectranActivity activity) {
+	public TokenExpression(CoreActivity activity) {
 		this.activity = activity;
-		this.requestAdapter = activity.getRequestAdapter();
-		this.beanRegistry = activity.getBeanRegistry();
+		
+		if(activity != null) {
+			this.requestAdapter = activity.getRequestAdapter();
+			this.beanRegistry = activity.getBeanRegistry();
+		}
 	}
 
 	/**

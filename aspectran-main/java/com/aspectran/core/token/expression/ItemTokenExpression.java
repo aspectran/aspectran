@@ -18,7 +18,7 @@ package com.aspectran.core.token.expression;
 import java.io.File;
 import java.util.Map;
 
-import com.aspectran.core.activity.AspectranActivity;
+import com.aspectran.core.activity.CoreActivity;
 import com.aspectran.core.context.bean.BeanRegistry;
 import com.aspectran.core.rule.ItemRule;
 import com.aspectran.core.rule.ItemRuleMap;
@@ -46,7 +46,7 @@ public class ItemTokenExpression extends TokenExpression implements ItemTokenExp
 	 *
 	 * @param activity the activity
 	 */
-	public ItemTokenExpression(AspectranActivity activity) {
+	public ItemTokenExpression(CoreActivity activity) {
 		super(activity);
 	}
 	

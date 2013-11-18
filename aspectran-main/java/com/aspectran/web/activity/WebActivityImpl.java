@@ -23,9 +23,9 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.aspectran.core.activity.AbstractAspectranActivity;
-import com.aspectran.core.activity.AspectranActivity;
-import com.aspectran.core.activity.SuperTranslet;
+import com.aspectran.core.activity.AbstractCoreActivity;
+import com.aspectran.core.activity.CoreActivity;
+import com.aspectran.core.activity.CoreTranslet;
 import com.aspectran.core.activity.request.RequestException;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
@@ -53,9 +53,9 @@ import com.aspectran.web.adapter.HttpSessionAdapter;
 /**
  * <p>Created: 2008. 04. 28 오전 12:48:48</p>
  */
-public class WebAspectranActivity extends AbstractAspectranActivity implements AspectranActivity {
+public class WebActivityImpl extends AbstractCoreActivity implements WebActivity {
 
-	private final Log log = LogFactory.getLog(WebAspectranActivity.class);
+	private final Log log = LogFactory.getLog(WebActivityImpl.class);
 
 	private final boolean debugEnabled = log.isDebugEnabled();
 	
@@ -63,11 +63,18 @@ public class WebAspectranActivity extends AbstractAspectranActivity implements A
 	
 	private HttpServletResponse response;
 	
-	public WebAspectranActivity(AspectranContext context, HttpServletRequest request, HttpServletResponse response) {
+	public WebActivityImpl(AspectranContext context, HttpServletRequest request, HttpServletResponse response) {
 		super(context);
 		this.request = request;
 		this.response = response;
-
+		
+		setTransletInterfaceClass(WebTranslet.class);
+		setTransletImplementClass(WebTransletImpl.class);
+	}
+	
+	public void init(String transletName) {
+		super.init(transletName);
+		
 		RequestAdapter requestAdapter = new HttpServletRequestAdapter(request);
 		ResponseAdapter responseAdapter = new HttpServletResponseAdapter(response);
 		SessionAdapter sessionAdapter = new HttpSessionAdapter(request.getSession());
@@ -75,12 +82,9 @@ public class WebAspectranActivity extends AbstractAspectranActivity implements A
 		setRequestAdapter(requestAdapter);
 		setResponseAdapter(responseAdapter);
 		setSessionAdapter(sessionAdapter);
-		
-		setTransletInterfaceClass(WebTranslet.class);
-		setTransletImplementClass(AspectranWebTranslet.class);
 	}
 	
-	protected void request(SuperTranslet translet) throws RequestException {
+	protected void request(CoreTranslet translet) throws RequestException {
 		RequestRule requestRule = getRequestRule();
 		ResponseRule responseRule = getResponseRule();
 		RequestAdapter requestAdapter = getRequestAdapter();
@@ -207,6 +211,7 @@ public class WebAspectranActivity extends AbstractAspectranActivity implements A
 	 */
 	private ValueMap parseParameter() {
 		RequestRule requestRule = getRequestRule();
+		
 		if(requestRule.getAttributeItemRuleMap() != null) {
 			ItemTokenExpressor expressor = new ItemTokenExpression(this);
 			ValueMap valueMap = expressor.express(requestRule.getAttributeItemRuleMap());
@@ -222,13 +227,27 @@ public class WebAspectranActivity extends AbstractAspectranActivity implements A
 		return null;
 	}
 	
-	public AspectranActivity newAspectranActivity() {
-		WebAspectranActivity activity = new WebAspectranActivity(getAspectranContext(), request, response);
-		activity.setRequestAdapter(getRequestAdapter());
-		activity.setResponseAdapter(getResponseAdapter());
-		activity.setSessionAdapter(getSessionAdapter());
+	public CoreActivity newCoreActivity() {
+		WebActivityImpl webActivity = new WebActivityImpl(getAspectranContext(), request, response);
+		webActivity.setRequestAdapter(getRequestAdapter());
+		webActivity.setResponseAdapter(getResponseAdapter());
+		webActivity.setSessionAdapter(getSessionAdapter());
 		
-		return activity;
+		return webActivity;
+	}
+	
+	/* (non-Javadoc)
+	 * @see com.aspectran.web.activity.WebTranslet#getHttpServletRequest()
+	 */
+	public HttpServletRequest getHttpServletRequest() {
+		return request;
+	}
+
+	/* (non-Javadoc)
+	 * @see com.aspectran.web.activity.WebTranslet#getHttpServletResponse()
+	 */
+	public HttpServletResponse getHttpServletResponse() {
+		return response;
 	}
 
 }

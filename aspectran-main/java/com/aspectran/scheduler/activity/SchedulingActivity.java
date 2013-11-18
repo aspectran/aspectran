@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2008 Jeong Ju Ho, All rights reserved.
+ *  Copyright (c) 2010 Jeong Ju Ho, All rights reserved.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -13,22 +13,16 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.aspectran.web.activity;
+package com.aspectran.scheduler.activity;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import com.aspectran.core.activity.CoreTranslet;
+import com.aspectran.core.activity.CoreActivity;
 
 /**
- * <p>
- * Created: 2008. 7. 5. 오전 12:35:44
- * </p>
+ * Action Translator.
+ * processes the active request and response.
+ * 
+ * <p>Created: 2013. 11. 18 오후 3:40:48</p>
  */
-public interface WebTranslet extends CoreTranslet {
-
-	public HttpServletRequest getHttpServletRequest();
-
-	public HttpServletResponse getHttpServletResponse();
-
+public interface SchedulingActivity extends CoreActivity {
+	
 }

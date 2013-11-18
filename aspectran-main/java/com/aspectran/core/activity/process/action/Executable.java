@@ -15,7 +15,7 @@
  */
 package com.aspectran.core.activity.process.action;
 
-import com.aspectran.core.activity.AspectranActivity;
+import com.aspectran.core.activity.CoreActivity;
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
 import com.aspectran.core.type.ActionType;
@@ -41,7 +41,7 @@ public interface Executable {
 	 * @return the result of action execution
 	 * @throws ActionExecutionException the action execution exception
 	 */
-	public Object execute(AspectranActivity activity) throws Exception;
+	public Object execute(CoreActivity activity) throws Exception;
 	
 	/**
 	 * Checks if is hidden.

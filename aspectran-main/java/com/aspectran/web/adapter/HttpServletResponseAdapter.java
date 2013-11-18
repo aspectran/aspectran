@@ -9,7 +9,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
-import com.aspectran.core.activity.AspectranActivity;
+import com.aspectran.core.activity.CoreActivity;
 import com.aspectran.core.adapter.AbstractResponseAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.rule.RedirectResponseRule;
@@ -100,7 +100,7 @@ public class HttpServletResponseAdapter extends AbstractResponseAdapter implemen
 	/* (non-Javadoc)
 	 * @see org.jhlabs.translets.adapter.AbstractResponseAdapter#redirect(org.jhlabs.translets.activity.Activity, org.jhlabs.translets.context.rule.RedirectResponseRule)
 	 */
-	public String redirect(AspectranActivity activity, RedirectResponseRule redirectResponseRule) throws IOException {
+	public String redirect(CoreActivity activity, RedirectResponseRule redirectResponseRule) throws IOException {
 		String characterEncoding = ((HttpServletResponse)adaptee).getCharacterEncoding();
 		
 		Token[] urlTokens = redirectResponseRule.getUrlTokens();

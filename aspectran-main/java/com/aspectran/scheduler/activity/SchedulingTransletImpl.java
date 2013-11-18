@@ -13,23 +13,25 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.aspectran.core.activity.response.dispatch;
+package com.aspectran.scheduler.activity;
 
+import com.aspectran.core.activity.AbstractCoreTranslet;
 import com.aspectran.core.activity.CoreActivity;
-import com.aspectran.core.activity.response.ResponseException;
-import com.aspectran.core.rule.DispatchResponseRule;
 
 /**
- * <p>Created: 2008. 03. 23 오후 12:52:04</p>
+ * The Class AspectranWebTranslet.
+ * 
+ * <p>Created: 2013. 11. 18 오후 3:40:48</p>
  */
-public interface ViewDispatcher {
+public class SchedulingTransletImpl extends AbstractCoreTranslet implements SchedulingTranslet {
 	
 	/**
-	 * Response.
+	 * Instantiates a new aspectran web translet.
 	 *
-	 * @param activity the translet
-	 * @param viewName the view name
-	 * @throws ResponseException the response exception
+	 * @param activity the activity
 	 */
-	public void dispatch(CoreActivity activity, DispatchResponseRule dispatchResponseRule) throws ResponseException;
+	public SchedulingTransletImpl(CoreActivity activity, boolean aspectAdvicable) {
+		super(activity, aspectAdvicable);
+	}
+	
 }

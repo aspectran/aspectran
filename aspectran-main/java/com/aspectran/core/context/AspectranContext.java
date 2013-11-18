@@ -30,6 +30,8 @@ public class AspectranContext {
 
 	private TransletRuleRegistry transletRuleRegistry;
 	
+	private String activityDefaultHandler;
+	
 	public AspectranContext() {
 	}
 	
@@ -77,6 +79,14 @@ public class AspectranContext {
 		this.transletRuleRegistry = transletRuleRegistry;
 	}
 	
+	public String getActivityDefaultHandler() {
+		return activityDefaultHandler;
+	}
+
+	public void setActivityDefaultHandler(String activityDefaultHandler) {
+		this.activityDefaultHandler = activityDefaultHandler;
+	}
+
 	/**
 	 * Destroy the translets context. 
 	 */
@@ -100,6 +110,7 @@ public class AspectranContext {
 		sb.append("{applicationAdapter=").append(applicationAdapter);
 		sb.append(", beanRegistry=").append(beanRegistry);
 		sb.append(", transletRuleRegistry=").append(transletRuleRegistry);
+		sb.append(", activityDefaultHandler=").append(activityDefaultHandler);
 		sb.append("}");
 		
 		return sb.toString();

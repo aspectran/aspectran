@@ -15,14 +15,14 @@
  */
 package com.aspectran.core.activity.request;
 
-import com.aspectran.core.activity.AspectranActivityException;
+import com.aspectran.core.activity.CoreActivityException;
 
 /**
  * This exception will be thrown when a translet request is failed.
  * 
  * <p>Created: 2008. 01. 07 오전 3:35:55</p>
  */
-public class RequestException extends AspectranActivityException {
+public class RequestException extends CoreActivityException {
 	
 	/** @serial */
 	static final long serialVersionUID = 8423700922358095810L;

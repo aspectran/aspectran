@@ -28,19 +28,20 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.aspectran.core.activity.AspectranActivity;
 import com.aspectran.core.context.translet.TransletNotFoundException;
-import com.aspectran.web.activity.WebAspectranActivity;
+import com.aspectran.web.activity.WebActivity;
+import com.aspectran.web.activity.WebActivityDefaultHandler;
+import com.aspectran.web.activity.WebActivityImpl;
 
 /**
  * Servlet implementation class for Servlet: Translets.
  */
-public class IPAddressBlockableActivityServlet extends AspectranActivityServlet implements Servlet {
+public class IPAddressBlockableWebActivityServlet extends WebActivityServlet implements Servlet {
 
 	/** @serial */
 	static final long serialVersionUID = -2369788867122156319L;
 
-	private static final Log log = LogFactory.getLog(IPAddressBlockableActivityServlet.class);
+	private static final Log log = LogFactory.getLog(IPAddressBlockableWebActivityServlet.class);
 	
 	private static boolean debugEnabled = log.isDebugEnabled();
 	
@@ -56,7 +57,7 @@ public class IPAddressBlockableActivityServlet extends AspectranActivityServlet 
 	/**
 	 * Instantiates a new action servlet.
 	 */
-	public IPAddressBlockableActivityServlet() {
+	public IPAddressBlockableWebActivityServlet() {
 		super();
 	}
 
@@ -86,6 +87,8 @@ public class IPAddressBlockableActivityServlet extends AspectranActivityServlet 
 	 */
 	@Override
 	public void service(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+		WebActivity activity = null;
+		
 		try {
 			String remoteAddr = req.getRemoteAddr();
 		
@@ -100,17 +103,37 @@ public class IPAddressBlockableActivityServlet extends AspectranActivityServlet 
 			
 			String requestUri = req.getRequestURI();
 
-			AspectranActivity activity = new WebAspectranActivity(aspectranContext, req, res);
-			activity.run(requestUri);
+			activity = new WebActivityImpl(aspectranContext, req, res);
+			activity.init(requestUri);
+			activity.run();
 			
 		} catch(TransletNotFoundException e) {
+			if(debugEnabled) {
+				log.debug(e);
+			}
+			
+			if(activity != null) {
+				String activityDefaultHandler = aspectranContext.getActivityDefaultHandler();
+
+				if(activityDefaultHandler != null) {
+					try {
+						WebActivityDefaultHandler handler = (WebActivityDefaultHandler)activity.getBean(activityDefaultHandler);
+						handler.setServletContext(getServletContext());
+						handler.handle(req, res);
+					} catch(Exception e2) {
+						res.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+						log.error(e.getMessage(), e2);
+					}
+					
+					return;
+				}
+			}
+			
 			res.sendError(HttpServletResponse.SC_NOT_FOUND);
 			log.error(e.getMessage(), e);
-			//e.printStackTrace();
 		} catch(Exception e) {
 			res.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			log.error(e.getMessage(), e);
-			//e.printStackTrace();
 		}
 	}
 	
