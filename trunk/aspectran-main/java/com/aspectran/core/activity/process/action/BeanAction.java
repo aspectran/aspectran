@@ -21,7 +21,7 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.aspectran.core.activity.AspectranActivity;
+import com.aspectran.core.activity.CoreActivity;
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
 import com.aspectran.core.rule.BeanActionRule;
@@ -57,7 +57,7 @@ public class BeanAction extends AbstractAction implements Executable {
 	/* (non-Javadoc)
 	 * @see org.jhlabs.translets.engine.process.action.Executable#execute(org.jhlabs.translets.action.Translet)
 	 */
-	public Object execute(AspectranActivity activity) throws Exception {
+	public Object execute(CoreActivity activity) throws Exception {
 		try {
 			String beanId = beanActionRule.getBeanId();
 			Object bean = null;
@@ -139,7 +139,7 @@ public class BeanAction extends AbstractAction implements Executable {
 		return sb.toString();
 	}
 	
-	public static Object invokeMethod(AspectranActivity activity, Object bean, String methodName, ItemRuleMap propertyItemRuleMap, ItemRuleMap argumentItemRuleMap) throws Exception {
+	public static Object invokeMethod(CoreActivity activity, Object bean, String methodName, ItemRuleMap propertyItemRuleMap, ItemRuleMap argumentItemRuleMap) throws Exception {
 		ItemTokenExpressor expressor = new ItemTokenExpression(activity);
 
 		if(propertyItemRuleMap != null) {

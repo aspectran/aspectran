@@ -1,4 +1,4 @@
-package com.aspectran.web.context.servlet;
+package com.aspectran.web.activity;
 
 import java.io.IOException;
 
@@ -8,7 +8,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class DefaultActivityServletRequestHandler {
+public class WebActivityDefaultHandler {
 
 	/** Default Servlet name used by Tomcat, Jetty, JBoss, and Glassfish */
 	private static final String COMMON_DEFAULT_SERVLET_NAME = "default";
@@ -26,10 +26,17 @@ public class DefaultActivityServletRequestHandler {
 
 	private String defaultServletName;
 
-	public DefaultActivityServletRequestHandler(ServletContext servletContext) {
+	public WebActivityDefaultHandler() {
+	}
+
+	public ServletContext getServletContext() {
+		return servletContext;
+	}
+
+	public void setServletContext(ServletContext servletContext) {
 		this.servletContext = servletContext;
 		
-		if(defaultServletName != null && defaultServletName.length() > 0) {
+		if(defaultServletName == null) {
 			if(servletContext.getNamedDispatcher(COMMON_DEFAULT_SERVLET_NAME) != null) {
 				defaultServletName = COMMON_DEFAULT_SERVLET_NAME;
 			} else if(servletContext.getNamedDispatcher(RESIN_DEFAULT_SERVLET_NAME) != null) {
@@ -50,7 +57,7 @@ public class DefaultActivityServletRequestHandler {
 		this.defaultServletName = defaultServletName;
 	}
 
-	public void handleRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	public void handle(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		RequestDispatcher rd = servletContext.getNamedDispatcher(defaultServletName);
 		rd.forward(request, response);
 	}

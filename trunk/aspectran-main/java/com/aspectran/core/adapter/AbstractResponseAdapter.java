@@ -5,7 +5,7 @@ import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 
-import com.aspectran.core.activity.AspectranActivity;
+import com.aspectran.core.activity.CoreActivity;
 import com.aspectran.core.rule.RedirectResponseRule;
 
 /**
@@ -73,6 +73,6 @@ public abstract class AbstractResponseAdapter implements ResponseAdapter {
 	/* (non-Javadoc)
 	 * @see org.jhlabs.translets.adapter.ResponseAdapter#redirect(org.jhlabs.translets.activity.Activity, org.jhlabs.translets.context.rule.RedirectResponseRule)
 	 */
-	public abstract String redirect(AspectranActivity activity, RedirectResponseRule redirectResponseRule) throws IOException;
+	public abstract String redirect(CoreActivity activity, RedirectResponseRule redirectResponseRule) throws IOException;
 	
 }

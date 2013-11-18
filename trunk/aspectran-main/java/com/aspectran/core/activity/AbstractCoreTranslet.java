@@ -37,9 +37,9 @@ import com.aspectran.core.rule.TransformRule;
 /**
  * The Class ActiveTranslet.
  */
-public abstract class AbstractSuperTranslet implements SuperTranslet {
+public abstract class AbstractCoreTranslet implements CoreTranslet {
 	
-	protected final AspectranActivity activity;
+	protected final CoreActivity activity;
 	
 	protected Map<String, Object> declaredAttributeMap;
 	
@@ -55,7 +55,7 @@ public abstract class AbstractSuperTranslet implements SuperTranslet {
 	 * @param transletRule the translet rule
 	 * @param output the output
 	 */
-	protected AbstractSuperTranslet(AspectranActivity activity, boolean aspectAdvicable) {
+	protected AbstractCoreTranslet(CoreActivity activity, boolean aspectAdvicable) {
 		this.activity = activity;
 		
 		if(aspectAdvicable)
@@ -234,11 +234,11 @@ public abstract class AbstractSuperTranslet implements SuperTranslet {
 		activity.responseEnd();
 	}
 
-	public Class<? extends SuperTranslet> getTransletInterfaceClass() {
+	public Class<? extends CoreTranslet> getTransletInterfaceClass() {
 		return activity.getTransletInterfaceClass();
 	}
 
-	public Class<? extends AbstractSuperTranslet> getTransletImplementClass() {
+	public Class<? extends AbstractCoreTranslet> getTransletImplementClass() {
 		return activity.getTransletImplementClass();
 	}
 

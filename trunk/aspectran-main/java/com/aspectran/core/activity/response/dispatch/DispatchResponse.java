@@ -18,7 +18,7 @@ package com.aspectran.core.activity.response.dispatch;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.aspectran.core.activity.AspectranActivity;
+import com.aspectran.core.activity.CoreActivity;
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.activity.response.ResponseException;
 import com.aspectran.core.activity.response.Responsible;
@@ -55,7 +55,7 @@ public class DispatchResponse implements Responsible {
 	/* (non-Javadoc)
 	 * @see org.jhlabs.translets.engine.response.Responsible#response(org.jhlabs.translets.action.Translet)
 	 */
-	public void response(AspectranActivity activity) throws ResponseException {
+	public void response(CoreActivity activity) throws ResponseException {
 		try {
 			String viewDispatcherName = null;
 			

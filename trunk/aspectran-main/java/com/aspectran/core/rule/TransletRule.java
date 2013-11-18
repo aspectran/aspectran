@@ -18,8 +18,8 @@ package com.aspectran.core.rule;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.aspectran.core.activity.AbstractSuperTranslet;
-import com.aspectran.core.activity.SuperTranslet;
+import com.aspectran.core.activity.AbstractCoreTranslet;
+import com.aspectran.core.activity.CoreTranslet;
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.activity.process.ContentList;
 import com.aspectran.core.activity.process.action.BeanAction;
@@ -56,9 +56,9 @@ public class TransletRule implements ActionAddable, ResponseSettable, AspectAdvi
 	
 	private ResponseByContentTypeRuleMap exceptionHandlingRuleMap;
 	
-	private Class<? extends SuperTranslet> transletInterfaceClass;
+	private Class<? extends CoreTranslet> transletInterfaceClass;
 	
-	private Class<? extends AbstractSuperTranslet> transletInstanceClass;
+	private Class<? extends AbstractCoreTranslet> transletInstanceClass;
 
 	private AspectAdviceRuleRegistry aspectAdviceRuleRegistry;
 	
@@ -250,19 +250,19 @@ public class TransletRule implements ActionAddable, ResponseSettable, AspectAdvi
 		exceptionHandlingRuleMap.putResponseByContentTypeRule(responseByContentTypeRule);
 	}
 	
-	public Class<? extends SuperTranslet> getTransletInterfaceClass() {
+	public Class<? extends CoreTranslet> getTransletInterfaceClass() {
 		return transletInterfaceClass;
 	}
 
-	public void setTransletInterfaceClass(Class<? extends SuperTranslet> transletInterfaceClass) {
+	public void setTransletInterfaceClass(Class<? extends CoreTranslet> transletInterfaceClass) {
 		this.transletInterfaceClass = transletInterfaceClass;
 	}
 
-	public Class<? extends AbstractSuperTranslet> getTransletImplementClass() {
+	public Class<? extends AbstractCoreTranslet> getTransletImplementClass() {
 		return transletInstanceClass;
 	}
 
-	public void setTransletInstanceClass(Class<? extends AbstractSuperTranslet> transletInstanceClass) {
+	public void setTransletInstanceClass(Class<? extends AbstractCoreTranslet> transletInstanceClass) {
 		this.transletInstanceClass = transletInstanceClass;
 	}
 

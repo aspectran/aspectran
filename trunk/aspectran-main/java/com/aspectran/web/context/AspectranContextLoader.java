@@ -15,7 +15,7 @@ public class AspectranContextLoader {
 
 	public static final String ASPECTRAN_CONTEXT_LOADER_ATTRIBUTE = AspectranContextLoader.class.getName();
 	
-	public static final String CONTEXT_CONFIG_LOCATION_PARAM = "aspectran:contextConfigLocation";
+	public static final String CONTEXT_CONFIG_LOCATION_PARAM = "contextConfigLocation";
 	
 	private static final String DEFAULT_CONTEXT_CONFIG_LOCATION = "WEB-INF/aspectran/aspectran.xml";
 	

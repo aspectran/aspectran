@@ -49,6 +49,9 @@ public final class AspectranSettingType extends Type {
 	
 	/** The Constant TRANSLET_CLASS. */
 	public static final AspectranSettingType TRANSLET_IMPLEMENT_CLASS;
+
+	/** The Constant ACTIVITY_DEFAULT_HANDLER. */
+	public static final AspectranSettingType ACTIVITY_DEFAULT_HANDLER;
 	
 	/** The Constant types. */
 	private static final Map<String, AspectranSettingType> types;
@@ -63,6 +66,7 @@ public final class AspectranSettingType extends Type {
 		TRANSLET_NAME_PATTERN = new AspectranSettingType("transletNamePattern");
 		TRANSLET_INTERFACE_CLASS = new AspectranSettingType("transletInterfaceClass");
 		TRANSLET_IMPLEMENT_CLASS = new AspectranSettingType("transletImplementClass");
+		ACTIVITY_DEFAULT_HANDLER = new AspectranSettingType("activityDefaultHandler");
 
 		types = new HashMap<String, AspectranSettingType>();
 		types.put(USE_NAMESPACES.toString(), USE_NAMESPACES);
@@ -74,6 +78,7 @@ public final class AspectranSettingType extends Type {
 		types.put(TRANSLET_NAME_PATTERN.toString(), TRANSLET_NAME_PATTERN);
 		types.put(TRANSLET_INTERFACE_CLASS.toString(), TRANSLET_INTERFACE_CLASS);
 		types.put(TRANSLET_IMPLEMENT_CLASS.toString(), TRANSLET_IMPLEMENT_CLASS);
+		types.put(ACTIVITY_DEFAULT_HANDLER.toString(), ACTIVITY_DEFAULT_HANDLER);
 	}
 
 	/**

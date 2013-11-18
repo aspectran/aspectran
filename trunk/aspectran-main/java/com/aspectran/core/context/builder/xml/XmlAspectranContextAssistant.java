@@ -226,6 +226,9 @@ public class XmlAspectranContextAssistant {
 	 * @return the string
 	 */
 	public String applyNamespaceForTranslet(String transletName) {
+		if(transletName != null && transletName.length() > 0 && transletName.charAt(0) == AspectranConstant.TRANSLET_NAME_SEPARATOR)
+			return transletName;
+		
 		StringBuilder sb = new StringBuilder();
 		
 		if(inheritedAspectranSettings.getTransletNamePatternPrefix() != null)
@@ -252,6 +255,7 @@ public class XmlAspectranContextAssistant {
 		sb.append(namespace);
 		sb.append(AspectranConstant.BEAN_ID_SEPARATOR);
 		sb.append(beanId);
+		
 		return sb.toString();
 	}
 /*	

@@ -27,23 +27,26 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.aspectran.core.activity.AspectranActivity;
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.AspectranContext;
 import com.aspectran.core.context.translet.TransletNotFoundException;
-import com.aspectran.web.activity.WebAspectranActivity;
+import com.aspectran.web.activity.WebActivity;
+import com.aspectran.web.activity.WebActivityDefaultHandler;
+import com.aspectran.web.activity.WebActivityImpl;
 import com.aspectran.web.adapter.WebApplicationAdapter;
 import com.aspectran.web.context.AspectranContextLoader;
 
 /**
  * Servlet implementation class for Servlet: Translets.
  */
-public class AspectranActivityServlet extends HttpServlet implements Servlet {
+public class WebActivityServlet extends HttpServlet implements Servlet {
 
 	/** @serial */
 	static final long serialVersionUID = 6659683668233267847L;
 
-	private static final Log log = LogFactory.getLog(AspectranActivityServlet.class);
+	private static final Log log = LogFactory.getLog(WebActivityServlet.class);
+	
+	private static boolean debugEnabled = log.isDebugEnabled();
 	
 	protected AspectranContext aspectranContext;
 	
@@ -57,7 +60,7 @@ public class AspectranActivityServlet extends HttpServlet implements Servlet {
 	/**
 	 * Instantiates a new action servlet.
 	 */
-	public AspectranActivityServlet() {
+	public WebActivityServlet() {
 		super();
 	}
 
@@ -98,13 +101,37 @@ public class AspectranActivityServlet extends HttpServlet implements Servlet {
 	 */
 	@Override
 	public void service(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+		WebActivity activity = null;
+		
 		try {
 			String requestUri = req.getRequestURI();
 
-			AspectranActivity activity = new WebAspectranActivity(aspectranContext, req, res);
-			activity.run(requestUri);
+			activity = new WebActivityImpl(aspectranContext, req, res);
+			activity.init(requestUri);
+			activity.run();
 			
 		} catch(TransletNotFoundException e) {
+			if(debugEnabled) {
+				log.debug(e);
+			}
+			
+			if(activity != null) {
+				String activityDefaultHandler = aspectranContext.getActivityDefaultHandler();
+
+				if(activityDefaultHandler != null) {
+					try {
+						WebActivityDefaultHandler handler = (WebActivityDefaultHandler)activity.getBean(activityDefaultHandler);
+						handler.setServletContext(getServletContext());
+						handler.handle(req, res);
+					} catch(Exception e2) {
+						res.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+						log.error(e.getMessage(), e2);
+					}
+					
+					return;
+				}
+			}
+			
 			res.sendError(HttpServletResponse.SC_NOT_FOUND);
 			log.error(e.getMessage());
 		} catch(Exception e) {

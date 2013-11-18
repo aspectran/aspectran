@@ -1,6 +1,6 @@
 package com.aspectran.core.context.bean;
 
-import com.aspectran.core.activity.AspectranActivity;
+import com.aspectran.core.activity.CoreActivity;
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.context.bean.scope.ApplicationScope;
@@ -42,7 +42,7 @@ public class ScopedBeanRegistry extends AbstractBeanRegistry implements BeanRegi
 		super(beanRuleMap);
 	}
 
-	public Object getBean(String id, AspectranActivity activity) {
+	public Object getBean(String id, CoreActivity activity) {
 		BeanRule beanRule = beanRuleMap.get(id);
 		
 		if(beanRule == null)
@@ -65,7 +65,7 @@ public class ScopedBeanRegistry extends AbstractBeanRegistry implements BeanRegi
 		throw new BeanException();
 	}
 	
-	private Object getSingletonScopeBean(BeanRule beanRule, AspectranActivity activity) {
+	private Object getSingletonScopeBean(BeanRule beanRule, CoreActivity activity) {
 		synchronized(singletonScopeLock) {
 			if(beanRule.isRegistered())
 				return beanRule.getBean();
@@ -79,7 +79,7 @@ public class ScopedBeanRegistry extends AbstractBeanRegistry implements BeanRegi
 		}
 	}
 
-	private Object getRequestScopeBean(BeanRule beanRule, AspectranActivity activity) {
+	private Object getRequestScopeBean(BeanRule beanRule, CoreActivity activity) {
 		synchronized(requestScopeLock) {
 			RequestScope scope = activity.getRequestScope();
 			
@@ -92,7 +92,7 @@ public class ScopedBeanRegistry extends AbstractBeanRegistry implements BeanRegi
 		}
 	}
 	
-	private Object getSessionScopeBean(BeanRule beanRule, AspectranActivity activity) {
+	private Object getSessionScopeBean(BeanRule beanRule, CoreActivity activity) {
 		SessionAdapter session = activity.getSessionAdapter();
 		
 		if(session == null) {
@@ -111,13 +111,13 @@ public class ScopedBeanRegistry extends AbstractBeanRegistry implements BeanRegi
 		}
 	}
 
-	private Object getContextScopeBean(BeanRule beanRule, AspectranActivity activity) {
+	private Object getContextScopeBean(BeanRule beanRule, CoreActivity activity) {
 		synchronized(contextScopeLock) {
 			return getScopedBean(contextScope, beanRule, activity);
 		}
 	}
 	
-	private Object getApplicationScopeBean(BeanRule beanRule, AspectranActivity activity) {
+	private Object getApplicationScopeBean(BeanRule beanRule, CoreActivity activity) {
 		ApplicationAdapter application = activity.getApplicationAdapter();
 
 		if(application == null) {
@@ -136,7 +136,7 @@ public class ScopedBeanRegistry extends AbstractBeanRegistry implements BeanRegi
 		}
 	}
 	
-	private Object getScopedBean(Scope scope, BeanRule beanRule, AspectranActivity activity) {
+	private Object getScopedBean(Scope scope, BeanRule beanRule, CoreActivity activity) {
 		ScopedBeanMap scopedBeanMap = scope.getScopedBeanMap();
 		ScopedBean scopeBean = scopedBeanMap.get(beanRule.getId());
 			
@@ -158,7 +158,7 @@ public class ScopedBeanRegistry extends AbstractBeanRegistry implements BeanRegi
 		return createBean(beanRule, expressor);
 	}
 	
-	protected Object createBean(BeanRule beanRule, AspectranActivity activity) {
+	protected Object createBean(BeanRule beanRule, CoreActivity activity) {
 		ItemTokenExpressor expressor = new ItemTokenExpression(activity);
 		return super.createBean(beanRule, expressor);
 	}

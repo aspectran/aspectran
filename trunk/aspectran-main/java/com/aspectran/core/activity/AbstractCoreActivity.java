@@ -42,6 +42,7 @@ import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
 import com.aspectran.core.context.bean.BeanRegistry;
 import com.aspectran.core.context.bean.scope.RequestScope;
 import com.aspectran.core.context.translet.TransletInstantiationException;
+import com.aspectran.core.context.translet.TransletNotFoundException;
 import com.aspectran.core.rule.AspectAdviceRule;
 import com.aspectran.core.rule.RequestRule;
 import com.aspectran.core.rule.ResponseByContentTypeRule;
@@ -57,10 +58,10 @@ import com.aspectran.core.type.ResponseType;
  * 
  * <p>Created: 2008. 03. 22 오후 5:48:09</p>
  */
-public abstract class AbstractAspectranActivity implements AspectranActivity {
+public abstract class AbstractCoreActivity implements CoreActivity {
 
 	/** The log. */
-	private final Log log = LogFactory.getLog(AbstractAspectranActivity.class);
+	private final Log log = LogFactory.getLog(AbstractCoreActivity.class);
 	
 	/** The debug enabled. */
 	private final boolean debugEnabled = log.isDebugEnabled();
@@ -78,10 +79,10 @@ public abstract class AbstractAspectranActivity implements AspectranActivity {
 	private SessionAdapter sessionAdapter;
 
 	/** The translet interface class. */
-	private Class<? extends SuperTranslet> transletInterfaceClass;
+	private Class<? extends CoreTranslet> transletInterfaceClass;
 	
 	/** The translet instance class. */
-	private Class<? extends AbstractSuperTranslet> transletImplementClass;
+	private Class<? extends AbstractCoreTranslet> transletImplementClass;
 
 	/** The translet rule. */
 	private TransletRule transletRule;
@@ -93,7 +94,7 @@ public abstract class AbstractAspectranActivity implements AspectranActivity {
 	private ResponseRule responseRule;
 	
 	/** The translet. */
-	private SuperTranslet translet;
+	private CoreTranslet translet;
 	
 	/** The request scope. */
 	private RequestScope requestScope;
@@ -116,7 +117,7 @@ public abstract class AbstractAspectranActivity implements AspectranActivity {
 	 *
 	 * @param context the translets context
 	 */
-	public AbstractAspectranActivity(AspectranContext context) {
+	public AbstractCoreActivity(AspectranContext context) {
 		this.context = context;
 	}
 
@@ -173,7 +174,7 @@ public abstract class AbstractAspectranActivity implements AspectranActivity {
 	 *
 	 * @return the translet interface class
 	 */
-	public Class<? extends SuperTranslet> getTransletInterfaceClass() {
+	public Class<? extends CoreTranslet> getTransletInterfaceClass() {
 		if(transletRule != null && transletRule.getTransletInterfaceClass() != null)
 			return transletRule.getTransletInterfaceClass();
 		
@@ -185,7 +186,7 @@ public abstract class AbstractAspectranActivity implements AspectranActivity {
 	 *
 	 * @param transletInterfaceClass the new translet interface class
 	 */
-	public void setTransletInterfaceClass(Class<? extends SuperTranslet> transletInterfaceClass) {
+	public void setTransletInterfaceClass(Class<? extends CoreTranslet> transletInterfaceClass) {
 		this.transletInterfaceClass = transletInterfaceClass;
 	}
 
@@ -194,7 +195,7 @@ public abstract class AbstractAspectranActivity implements AspectranActivity {
 	 *
 	 * @return the translet instance class
 	 */
-	public Class<? extends AbstractSuperTranslet> getTransletImplementClass() {
+	public Class<? extends AbstractCoreTranslet> getTransletImplementClass() {
 		if(transletRule != null && transletRule.getTransletImplementClass() != null)
 			return transletRule.getTransletImplementClass();
 
@@ -206,19 +207,55 @@ public abstract class AbstractAspectranActivity implements AspectranActivity {
 	 *
 	 * @param transletInstanceClass the new translet instance class
 	 */
-	public void setTransletImplementClass(Class<? extends AbstractSuperTranslet> transletImplementClass) {
+	public void setTransletImplementClass(Class<? extends AbstractCoreTranslet> transletImplementClass) {
 		this.transletImplementClass = transletImplementClass;
 	}
 
-	public SuperTranslet getSuperTranslet() {
+	public CoreTranslet getSuperTranslet() {
 		return translet;
 	}
 
-	public void run(String transletName) throws AspectranActivityException {
+	public void init(String transletName) {
+		if(debugEnabled) {
+			log.debug(">> " + transletName);
+		}
+		
+		TransletRule transletRule = context.getTransletRuleRegistry().getTransletRule(transletName);
+
+		if(transletRule == null)
+			throw new TransletNotFoundException(transletName);
+		
+		if(debugEnabled) {
+			log.debug("translet " + transletRule);
+		}
+
+		Class<? extends CoreTranslet> transletInterfaceClass = getTransletInterfaceClass();
+		Class<? extends AbstractCoreTranslet> transletImplementClass = getTransletImplementClass();
+
+		//create translet instance
 		try {
-			run(transletName, null);
+			Constructor<?> transletImplementConstructor = transletImplementClass.getConstructor(CoreActivity.class, boolean.class);
+			Object[] args = new Object[] { this, false };
+			
+			if(transletRule.isAspectAdviceRuleExists())
+				args[1] = true;
+			
+			translet = (CoreTranslet)transletImplementConstructor.newInstance(args);
 		} catch(Exception e) {
-			throw new AspectranActivityException("aspecran activity error", e);
+			throw new TransletInstantiationException(transletInterfaceClass, transletImplementClass, e);
+		}
+
+		this.transletName = transletName;
+		this.transletRule = transletRule;
+		this.requestRule = transletRule.getRequestRule();
+		this.responseRule = transletRule.getResponseRule();
+	}
+	
+	public void run() throws CoreActivityException {
+		try {
+			run(null);
+		} catch(Exception e) {
+			throw new CoreActivityException("aspecran activity error", e);
 		} finally {
 			if(isExceptionRaised()) {
 				log.error("original raised exception", getRaisedException());
@@ -226,9 +263,7 @@ public abstract class AbstractAspectranActivity implements AspectranActivity {
 		}
 	}
 	
-	protected void run(String transletName, ProcessResult processResult) throws AspectranActivityException {
-		init(transletName);
-		
+	protected void run(ProcessResult processResult) throws CoreActivityException {
 		if(processResult != null) {
 			translet.setProcessResult(processResult);
 		}
@@ -241,17 +276,17 @@ public abstract class AbstractAspectranActivity implements AspectranActivity {
 	
 				if(finallyAdviceRuleList != null) {
 					try {
-						run(aspectAdviceRuleRegistry);
+						run2(aspectAdviceRuleRegistry);
 					} finally {
 						execute(finallyAdviceRuleList);
 					}
 				} else {
-					run(aspectAdviceRuleRegistry);
+					run2(aspectAdviceRuleRegistry);
 				}
 			} else {
-				run();
+				run2();
 			}
-		} catch(AspectranActivityException e) {
+		} catch(CoreActivityException e) {
 			setRaisedException(e);
 			
 			ResponseByContentTypeRuleMap responseByContentTypeRuleMap = transletRule.getExceptionHandlingRuleMap();
@@ -285,7 +320,7 @@ public abstract class AbstractAspectranActivity implements AspectranActivity {
 		}
 	}
 
-	private void run(AspectAdviceRuleRegistry aspectAdviceRuleRegistry) throws AspectranActivityException {
+	private void run2(AspectAdviceRuleRegistry aspectAdviceRuleRegistry) throws CoreActivityException {
 		List<AspectAdviceRule> beforeAdviceRuleList = aspectAdviceRuleRegistry.getBeforeAdviceRuleList();
 		List<AspectAdviceRule> afterAdviceRuleList = aspectAdviceRuleRegistry.getAfterAdviceRuleList();
 
@@ -296,7 +331,7 @@ public abstract class AbstractAspectranActivity implements AspectranActivity {
 		if(isResponseEnd)
 			return;
 		
-		run();
+		run2();
 		
 		if(isResponseEnd)
 			return;
@@ -306,7 +341,7 @@ public abstract class AbstractAspectranActivity implements AspectranActivity {
 			execute(afterAdviceRuleList);
 	}
 
-	private void run() throws AspectranActivityException {
+	private void run2() throws CoreActivityException {
 		//request
 		AspectAdviceRuleRegistry aspectAdviceRuleRegistry = requestRule.getAspectAdviceRuleRegistry();
 		List<AspectAdviceRule> finallyAdviceRuleList = null;
@@ -446,39 +481,6 @@ public abstract class AbstractAspectranActivity implements AspectranActivity {
 		}
 	}
 	
-	public void init(String transletName) {
-		if(debugEnabled) {
-			log.debug(">> " + transletName);
-		}
-		
-		TransletRule transletRule = context.getTransletRuleRegistry().getTransletRule(transletName);
-
-		if(debugEnabled) {
-			log.debug("translet " + transletRule);
-		}
-
-		Class<? extends SuperTranslet> transletInterfaceClass = getTransletInterfaceClass();
-		Class<? extends AbstractSuperTranslet> transletImplementClass = getTransletImplementClass();
-
-		//create translet instance
-		try {
-			Constructor<?> transletImplementConstructor = transletImplementClass.getConstructor(AspectranActivity.class, boolean.class);
-			Object[] args = new Object[] { this, false };
-			
-			if(transletRule.isAspectAdviceRuleExists())
-				args[1] = true;
-			
-			translet = (SuperTranslet)transletImplementConstructor.newInstance(args);
-		} catch(Exception e) {
-			throw new TransletInstantiationException(transletInterfaceClass, transletImplementClass, e);
-		}
-
-		this.transletName = transletName;
-		this.transletRule = transletRule;
-		this.requestRule = transletRule.getRequestRule();
-		this.responseRule = transletRule.getResponseRule();
-	}
-	
 	private void request(AspectAdviceRuleRegistry aspectAdviceRuleRegistry) throws RequestException, ActionExecutionException {
 		List<AspectAdviceRule> beforeAdviceRuleList = aspectAdviceRuleRegistry.getBeforeAdviceRuleList();
 		List<AspectAdviceRule> afterAdviceRuleList = aspectAdviceRuleRegistry.getAfterAdviceRuleList();
@@ -504,9 +506,9 @@ public abstract class AbstractAspectranActivity implements AspectranActivity {
 		request(translet);
 	}
 	
-	protected abstract void request(SuperTranslet translet) throws RequestException;
+	protected abstract void request(CoreTranslet translet) throws RequestException;
 	
-	public ProcessResult process(AspectAdviceRuleRegistry aspectAdviceRuleRegistry) throws AspectranActivityException {
+	public ProcessResult process(AspectAdviceRuleRegistry aspectAdviceRuleRegistry) throws CoreActivityException {
 		List<AspectAdviceRule> beforeAdviceRuleList = aspectAdviceRuleRegistry.getBeforeAdviceRuleList();
 		List<AspectAdviceRule> afterAdviceRuleList = aspectAdviceRuleRegistry.getAfterAdviceRuleList();
 
@@ -529,7 +531,7 @@ public abstract class AbstractAspectranActivity implements AspectranActivity {
 		return translet.getProcessResult();
 	}
 	
-	public ProcessResult process() throws AspectranActivityException {
+	public ProcessResult process() throws CoreActivityException {
 		// execute action on contents area
 		ContentList contentList = transletRule.getContentList();
 		
@@ -552,7 +554,7 @@ public abstract class AbstractAspectranActivity implements AspectranActivity {
 		return translet.getProcessResult();
 	}
 	
-	private void response(AspectAdviceRuleRegistry aspectAdviceRuleRegistry) throws AspectranActivityException {
+	private void response(AspectAdviceRuleRegistry aspectAdviceRuleRegistry) throws CoreActivityException {
 		List<AspectAdviceRule> beforeAdviceRuleList = aspectAdviceRuleRegistry.getBeforeAdviceRuleList();
 		List<AspectAdviceRule> afterAdviceRuleList = aspectAdviceRuleRegistry.getAfterAdviceRuleList();
 
@@ -573,7 +575,7 @@ public abstract class AbstractAspectranActivity implements AspectranActivity {
 			execute(afterAdviceRuleList);
 	}
 	
-	protected void response() throws AspectranActivityException {
+	protected void response() throws CoreActivityException {
 		Responsible res = getResponse();
 		
 		if(res != null)
@@ -587,9 +589,9 @@ public abstract class AbstractAspectranActivity implements AspectranActivity {
 	 * Execute.
 	 *
 	 * @param actionList the action list
-	 * @throws AspectranActivityException 
+	 * @throws CoreActivityException 
 	 */
-	private void execute(ActionList actionList) throws AspectranActivityException {
+	private void execute(ActionList actionList) throws CoreActivityException {
 		if(debugEnabled) {
 			log.debug("executable actions " + actionList.toString());
 		}
@@ -737,16 +739,17 @@ public abstract class AbstractAspectranActivity implements AspectranActivity {
 	 *
 	 * @throws ResponseException the active response exception
 	 */
-	private void forward() throws AspectranActivityException {
+	private void forward() throws CoreActivityException {
 		if(debugEnabled) {
 			log.debug("> forwarding for translet '" + forwardTransletName + "'");
 		}
 		
 		ProcessResult processResult = translet.getProcessResult();
-		run(forwardTransletName, processResult);
+		init(forwardTransletName);
+		run(processResult);
 	}
 	
-	private void responseByContentType(List<AspectAdviceRule> aspectAdviceRuleList) throws AspectranActivityException {
+	private void responseByContentType(List<AspectAdviceRule> aspectAdviceRuleList) throws CoreActivityException {
 		for(AspectAdviceRule aspectAdviceRule : aspectAdviceRuleList) {
 			ResponseByContentTypeRuleMap responseByContentTypeRuleMap = aspectAdviceRule.getResponseByContentTypeRuleMap();
 			
@@ -759,7 +762,7 @@ public abstract class AbstractAspectranActivity implements AspectranActivity {
 		}
 	}
 
-	private void responseByContentType(ResponseByContentTypeRuleMap responseByContentTypeRuleMap) throws AspectranActivityException {
+	private void responseByContentType(ResponseByContentTypeRuleMap responseByContentTypeRuleMap) throws CoreActivityException {
 		ResponseByContentTypeRule rbctr = responseByContentTypeRuleMap.getResponseByContentTypeRule(getRaisedException());
 		responseByContentType(rbctr);
 	}
@@ -772,7 +775,7 @@ public abstract class AbstractAspectranActivity implements AspectranActivity {
 	 * @throws ProcessException 
 	 * @throws RequestException 
 	 */
-	private void responseByContentType(ResponseByContentTypeRule responseByContentTypeRule) throws AspectranActivityException {
+	private void responseByContentType(ResponseByContentTypeRule responseByContentTypeRule) throws CoreActivityException {
 		Responsible response = getResponse();
 		
 		if(response != null && response.getContentType() != null) {
@@ -878,7 +881,7 @@ public abstract class AbstractAspectranActivity implements AspectranActivity {
 	/* (non-Javadoc)
 	 * @see com.aspectran.core.activity.AspectranActivity#newAspectranActivity()
 	 */
-	public abstract AspectranActivity newAspectranActivity();
+	public abstract CoreActivity newCoreActivity();
 	
 	/**
 	 * Gets the application adapter.

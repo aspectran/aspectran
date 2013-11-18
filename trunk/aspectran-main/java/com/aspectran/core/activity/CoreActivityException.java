@@ -20,7 +20,7 @@ package com.aspectran.core.activity;
  * 
  * <p>Created: 2008. 01. 07 오전 3:35:55</p>
  */
-public class AspectranActivityException extends Exception {
+public class CoreActivityException extends Exception {
 	
 	/** @serial */
 	static final long serialVersionUID = -4400747654771758521L;
@@ -28,7 +28,7 @@ public class AspectranActivityException extends Exception {
 	/**
 	 * Simple constructor.
 	 */
-	public AspectranActivityException() {
+	public CoreActivityException() {
 	}
 
 	/**
@@ -36,7 +36,7 @@ public class AspectranActivityException extends Exception {
 	 * 
 	 * @param msg A message to associate with the exception
 	 */
-	public AspectranActivityException(String msg) {
+	public CoreActivityException(String msg) {
 		super(msg);
 	}
 
@@ -45,7 +45,7 @@ public class AspectranActivityException extends Exception {
 	 * 
 	 * @param cause The real cause of the exception
 	 */
-	public AspectranActivityException(Throwable cause) {
+	public CoreActivityException(Throwable cause) {
 		super(cause);
 	}
 
@@ -56,7 +56,7 @@ public class AspectranActivityException extends Exception {
 	 * @param msg The message
 	 * @param cause The real cause of the exception
 	 */
-	public AspectranActivityException(String msg, Throwable cause) {
+	public CoreActivityException(String msg, Throwable cause) {
 		super(msg, cause);
 	}
 }
