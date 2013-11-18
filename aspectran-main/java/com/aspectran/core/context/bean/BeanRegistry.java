@@ -14,6 +14,8 @@ import com.aspectran.core.activity.CoreActivity;
  */
 public interface BeanRegistry {
 
+	public Object getBean(String id);
+	
 	public Object getBean(String id, CoreActivity activity);
 	
 	public void destroy();

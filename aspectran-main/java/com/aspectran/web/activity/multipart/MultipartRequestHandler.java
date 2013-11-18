@@ -34,6 +34,8 @@ import org.apache.commons.fileupload.FileUploadBase.SizeLimitExceededException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 
+import com.aspectran.core.util.FileUtils;
+
 /**
  * Multi-part form data request handler.
  */
@@ -56,7 +58,11 @@ public class MultipartRequestHandler {
 	private boolean maxLengthExceeded;
 	
 	private boolean parsed;
+	
+	private String allowedFileExtensions;
 
+	private String deniedFileExtensions;
+	
 	/**
 	 * Instantiates a new multipart request handler.
 	 * 
@@ -118,6 +124,22 @@ public class MultipartRequestHandler {
 		this.maxRequestSize = maxSize;
 	}
 
+	public String getAllowedFileExtensions() {
+		return allowedFileExtensions;
+	}
+
+	public void setAllowedFileExtensions(String allowedFileExtensions) {
+		this.allowedFileExtensions = allowedFileExtensions;
+	}
+
+	public String getDeniedFileExtensions() {
+		return deniedFileExtensions;
+	}
+
+	public void setDeniedFileExtensions(String deniedFileExtensions) {
+		this.deniedFileExtensions = deniedFileExtensions;
+	}
+
 	/**
 	 * Parse the given servlet request, resolving its multipart elements.
 	 * 
@@ -125,7 +147,6 @@ public class MultipartRequestHandler {
 	 * 
 	 * @throws MultipartRequestException if multipart resolution failed
 	 */
-	@SuppressWarnings("unchecked")
 	public void parse() throws MultipartRequestException {
 		if(parsed)
 			return;
@@ -149,17 +170,17 @@ public class MultipartRequestHandler {
 			upload.setSizeMax(maxRequestSize);
 			upload.setHeaderEncoding(request.getCharacterEncoding());
 
-			List<FileItem> items;
+			List<FileItem> fileItemList;
 
 			try {
 				RequestContext requestContent = createRequestContext(request);
-				items = upload.parseRequest(requestContent);
+				fileItemList = upload.parseRequest(requestContent);
 			} catch(SizeLimitExceededException e) {
 				maxLengthExceeded = true;
 				return;
 			}
 
-			parseMultipart(items);
+			parseMultipart(fileItemList);
 			
 			parsed = true;
 		} catch(Exception e) {
@@ -170,42 +191,47 @@ public class MultipartRequestHandler {
 	/**
 	 * 폼필드와 file item 분석.
 	 * 
-	 * @param items the items
+	 * @param fileItemList the items
 	 */
-	private void parseMultipart(List<FileItem> items) {
-		Iterator<FileItem> iterator = items.iterator();
+	private void parseMultipart(List<FileItem> fileItemList) {
+		Iterator<FileItem> iterator = fileItemList.iterator();
 
 		while(iterator.hasNext()) {
-			FileItem item = iterator.next();
-			String name = item.getFieldName();
+			FileItem fileItem = iterator.next();
+			String fieldName = fileItem.getFieldName();
 
-			if(item.isFormField()) {
-				List<String> values;
+			if(fileItem.isFormField()) {
+				List<String> stringValues;
 
-				if(multipartParameterMap.get(name) != null)
-					values = multipartParameterMap.get(name);
+				if(multipartParameterMap.get(fieldName) != null)
+					stringValues = multipartParameterMap.get(fieldName);
 				else
-					values = new ArrayList<String>();
+					stringValues = new ArrayList<String>();
 
-				values.add(getString(item));
-				multipartParameterMap.put(name, values);
+				stringValues.add(getString(fileItem));
+				multipartParameterMap.put(fieldName, stringValues);
 			} else {
 				// Skip file uploads that don't have a file name - meaning that
 				// no file was selected.
-				if(item.getName() == null || item.getName().trim().length() == 0)
+				if(fileItem.getName() == null || fileItem.getName().trim().length() == 0)
+					continue;
+				
+				boolean valid = FileUtils.isValidFileExtension(fileItem.getName(), allowedFileExtensions, deniedFileExtensions);
+				
+				if(!valid)
 					continue;
 
-				List<MultipartFileItem> multipartFileItems;
+				List<MultipartFileItem> multipartFileItemList;
 
-				if(multipartFileItemMap.get(name) != null)
-					multipartFileItems = multipartFileItemMap.get(name);
+				if(multipartFileItemMap.get(fieldName) != null)
+					multipartFileItemList = multipartFileItemMap.get(fieldName);
 				else
-					multipartFileItems = new ArrayList<MultipartFileItem>();
+					multipartFileItemList = new ArrayList<MultipartFileItem>();
 
-				MultipartFileItem multipartFileItem = new MultipartFileItem(item);
-				multipartFileItems.add(multipartFileItem);
+				MultipartFileItem multipartFileItem = new MultipartFileItem(fileItem);
+				multipartFileItemList.add(multipartFileItem);
 				
-				multipartFileItemMap.put(name, multipartFileItems);
+				multipartFileItemMap.put(fieldName, multipartFileItemList);
 			}
 		}
 	}
@@ -213,24 +239,24 @@ public class MultipartRequestHandler {
 	/**
 	 * Gets the string.
 	 * 
-	 * @param item the item
+	 * @param fileItem the file item
 	 * 
 	 * @return the string
 	 */
-	private String getString(FileItem item) {
+	private String getString(FileItem fileItem) {
 		String encoding = request.getCharacterEncoding();
 		String value = null;
 
 		if(encoding != null) {
 			try {
-				value = item.getString(encoding);
+				value = fileItem.getString(encoding);
 			} catch(Exception e) {
 				value = null;
 			}
 		}
 
 		if(value == null)
-			value = item.getString();
+			value = fileItem.getString();
 
 		return value;
 	}

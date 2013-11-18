@@ -329,7 +329,7 @@ public class TransletRule implements ActionAddable, ResponseSettable, AspectAdvi
 		String responseName = responseRule.getName();
 		
 		if(responseName != null && responseName.length() > 0) {
-			if(responseName.charAt(0) == AspectranConstant.TRANSLET_NAME_EXTENTION_DELIMITER) {
+			if(responseName.charAt(0) == AspectranConstant.TRANSLET_NAME_EXTENSION_DELIMITER) {
 				transletName += responseName;
 			} else {
 				transletName += AspectranConstant.TRANSLET_NAME_SEPARATOR + responseName;

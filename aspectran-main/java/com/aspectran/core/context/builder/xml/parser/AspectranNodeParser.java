@@ -403,22 +403,6 @@ public class AspectranNodeParser {
 				assistant.pushObject(fir);
 			}
 		});
-		parser.addNodelet("/aspectran/translet/request/multiparts/fileItem/allowFileExtentions/text()", new Nodelet() {
-			public void process(Node node, Properties attributes, String text) throws Exception {
-				if(text != null) {
-					FileItemRule fir = (FileItemRule)assistant.peekObject();
-					fir.setAllowFileExtentions(text);
-				}
-			}
-		});
-		parser.addNodelet("/aspectran/translet/request/multiparts/fileItem/denyFileExtentions/text()", new Nodelet() {
-			public void process(Node node, Properties attributes, String text) throws Exception {
-				if(text != null) {
-					FileItemRule fir = (FileItemRule)assistant.peekObject();
-					fir.setDenyFileExtentions(text);
-				}
-			}
-		});
 		parser.addNodelet("/aspectran/translet/request/multiparts/fileItem/end()", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
 				FileItemRule fir = (FileItemRule)assistant.popObject();

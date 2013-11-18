@@ -261,13 +261,13 @@ public class XmlAspectranContextAssistant {
 /*	
 	public String replaceTransletNameSuffix(String name, String transletNameSuffix) {
 		if(inheritedAspectranSettings.getTransletNamePatternSuffix() == null)
-			return name + AspectranConstant.TRANSLET_NAME_EXTENTION_DELIMITER + transletNameSuffix;
+			return name + AspectranConstant.TRANSLET_NAME_EXTENSION_DELIMITER + transletNameSuffix;
 		
 		int index = name.indexOf(inheritedAspectranSettings.getTransletNamePatternSuffix());
 		
 		StringBuilder sb = new StringBuilder();
 		sb.append(name.substring(0, index));
-		sb.append(AspectranConstant.TRANSLET_NAME_EXTENTION_DELIMITER);
+		sb.append(AspectranConstant.TRANSLET_NAME_EXTENSION_DELIMITER);
 		sb.append(transletNameSuffix);
 		
 		return sb.toString();

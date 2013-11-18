@@ -42,6 +42,10 @@ public class ScopedBeanRegistry extends AbstractBeanRegistry implements BeanRegi
 		super(beanRuleMap);
 	}
 
+	public Object getBean(String id) {
+		return getBean(id, null);
+	}
+	
 	public Object getBean(String id, CoreActivity activity) {
 		BeanRule beanRule = beanRuleMap.get(id);
 		
@@ -70,7 +74,12 @@ public class ScopedBeanRegistry extends AbstractBeanRegistry implements BeanRegi
 			if(beanRule.isRegistered())
 				return beanRule.getBean();
 
-			Object bean = createBean(beanRule, activity);
+			Object bean;
+			
+			if(activity == null)
+				bean = createBean(beanRule);
+			else
+				bean = createBean(beanRule, activity);
 
 			beanRule.setBean(bean);
 			beanRule.setRegistered(true);
@@ -81,6 +90,9 @@ public class ScopedBeanRegistry extends AbstractBeanRegistry implements BeanRegi
 
 	private Object getRequestScopeBean(BeanRule beanRule, CoreActivity activity) {
 		synchronized(requestScopeLock) {
+			if(activity == null)
+				throw new UnsupportedBeanScopeException(ScopeType.REQUEST, beanRule);
+			
 			RequestScope scope = activity.getRequestScope();
 			
 			if(scope == null) {
@@ -93,11 +105,13 @@ public class ScopedBeanRegistry extends AbstractBeanRegistry implements BeanRegi
 	}
 	
 	private Object getSessionScopeBean(BeanRule beanRule, CoreActivity activity) {
-		SessionAdapter session = activity.getSessionAdapter();
+		SessionAdapter session = null;
 		
-		if(session == null) {
+		if(activity != null)
+			session = activity.getSessionAdapter();
+
+		if(session == null)
 			throw new UnsupportedBeanScopeException(ScopeType.SESSION, beanRule);
-		}
 		
 		synchronized(sessionScopeLock) {
 			SessionScope scope = (SessionScope)session.getAttribute(SessionScope.SESSION_SCOPE_ATTRIBUTE);
@@ -118,11 +132,13 @@ public class ScopedBeanRegistry extends AbstractBeanRegistry implements BeanRegi
 	}
 	
 	private Object getApplicationScopeBean(BeanRule beanRule, CoreActivity activity) {
-		ApplicationAdapter application = activity.getApplicationAdapter();
+		ApplicationAdapter application = null;
+		
+		if(activity != null)
+			application = activity.getApplicationAdapter();
 
-		if(application == null) {
+		if(application == null)
 			throw new UnsupportedBeanScopeException(ScopeType.APPLICATION, beanRule);
-		}
 
 		synchronized(applicationScopeLock) {
 			ApplicationScope scope = (ApplicationScope)application.getAttribute(ApplicationScope.APPLICATION_SCOPE_ATTRIBUTE);
@@ -143,7 +159,12 @@ public class ScopedBeanRegistry extends AbstractBeanRegistry implements BeanRegi
 		if(scopeBean != null)
 			return scopeBean.getBean();
 
-		Object bean = createBean(beanRule, activity);
+		Object bean;
+		
+		if(activity == null)
+			bean = createBean(beanRule);
+		else
+			bean = createBean(beanRule, activity);
 		
 		scopeBean = new ScopedBean(beanRule);
 		scopeBean.setBean(bean);
@@ -162,26 +183,5 @@ public class ScopedBeanRegistry extends AbstractBeanRegistry implements BeanRegi
 		ItemTokenExpressor expressor = new ItemTokenExpression(activity);
 		return super.createBean(beanRule, expressor);
 	}
-	
-//	public void destoryScopeBean(ScopedBeanMap scopeBeanMap) throws Exception {
-//		for(DisposableBean scopeBean : scopeBeanMap) {
-//			scopeBean.destroy();
-//		}
-//	}
-//	
-//	public void destoryScopeBean(DisposableBean scopeBean) throws Exception {
-//		scopeBean.destroy();
-//	}
-	
-
-	
-//	public void destoryBean(BeanRule beanRule, SuperTranslet translet) throws InvocationTargetException {
-//		if(beanRule.getScopeType() == ScopeType.SINGLETON) {
-//			//String destroyMethodName = beanRule.getDestroyMethod();
-//			
-//			//if(destroyMethodName != null)
-//			//	MethodUtils.invokeMethod(beanRule.getBean(), destroyMethodName, translet);
-//		}
-//	}
 	
 }

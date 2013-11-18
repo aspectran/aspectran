@@ -18,6 +18,7 @@ package com.aspectran.core.context;
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.bean.BeanRegistry;
 import com.aspectran.core.context.translet.TransletRuleRegistry;
+import com.aspectran.core.rule.AspectRuleMap;
 
 /**
  * <p>Created: 2008. 06. 09 오후 2:12:40</p>
@@ -25,6 +26,8 @@ import com.aspectran.core.context.translet.TransletRuleRegistry;
 public class AspectranContext {
 
 	private ApplicationAdapter applicationAdapter;
+	
+	private AspectRuleMap aspectRuleMap;
 	
 	private BeanRegistry beanRegistry;
 
@@ -51,6 +54,14 @@ public class AspectranContext {
 	 */
 	public void setApplicationAdapter(ApplicationAdapter applicationAdapter) {
 		this.applicationAdapter = applicationAdapter;
+	}
+
+	public AspectRuleMap getAspectRuleMap() {
+		return aspectRuleMap;
+	}
+
+	public void setAspectRuleMap(AspectRuleMap aspectRuleMap) {
+		this.aspectRuleMap = aspectRuleMap;
 	}
 
 	/**
