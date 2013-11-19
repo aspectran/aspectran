@@ -46,12 +46,12 @@ public class AspectranContextLoader {
 			aspectranContext = builder.build(contextConfigLocation);
 			
 			long elapsedTime = System.currentTimeMillis() - startTime;
-			logger.info("AspectranContext: initialization completed in " + elapsedTime + " ms");
+			logger.info("AspectranContext initialization completed in " + elapsedTime + " ms");
 		} catch(RuntimeException ex) {
-			logger.error("AspectranContext initialization failed", ex);
+			logger.error("AspectranContext failed to initialize: " + ex);
 			throw ex;
 		} catch(Error err) {
-			logger.error("AspectranContext initialization failed", err);
+			logger.error("AspectranContext failed to initialize: " + err);
 			throw err;
 		}
 	}
