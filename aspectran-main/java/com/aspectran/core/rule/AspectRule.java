@@ -37,7 +37,7 @@ public class AspectRule {
 	
 	private List<AspectAdviceRule> aspectAdviceRuleList;
 	
-	private List<AspectTriggerAdviceRule> aspectTriggerAdviceRuleList; // for scheduling aspects
+	private List<AspectJobAdviceRule> aspectJobAdviceRuleList; // for scheduling aspects
 	
 	public String getId() {
 		return id;
@@ -102,19 +102,19 @@ public class AspectRule {
 		aspectAdviceRuleList.add(aar);
 	}
 
-	public List<AspectTriggerAdviceRule> getAspectTriggerAdviceRuleList() {
-		return aspectTriggerAdviceRuleList;
+	public List<AspectJobAdviceRule> getAspectJobAdviceRuleList() {
+		return aspectJobAdviceRuleList;
 	}
 
-	public void setAspectTriggerAdviceRuleList(List<AspectTriggerAdviceRule> aspectTriggerAdviceRuleList) {
-		this.aspectTriggerAdviceRuleList = aspectTriggerAdviceRuleList;
+	public void setAspectJobAdviceRuleList(List<AspectJobAdviceRule> aspectJobAdviceRuleList) {
+		this.aspectJobAdviceRuleList = aspectJobAdviceRuleList;
 	}
 	
-	public void addAspectTriggerAdviceRule(AspectTriggerAdviceRule atar) {
-		if(aspectTriggerAdviceRuleList == null)
-			aspectTriggerAdviceRuleList = new ArrayList<AspectTriggerAdviceRule>();
+	public void addAspectJobAdviceRule(AspectJobAdviceRule atar) {
+		if(aspectJobAdviceRuleList == null)
+			aspectJobAdviceRuleList = new ArrayList<AspectJobAdviceRule>();
 		
-		aspectTriggerAdviceRuleList.add(atar);
+		aspectJobAdviceRuleList.add(atar);
 	}
 
 	/* (non-Javadoc)
@@ -132,7 +132,7 @@ public class AspectRule {
 			sb.append(", settingsAdviceRule=").append(settingsAdviceRule);
 			sb.append(", aspectAdviceRuleList=").append(aspectAdviceRuleList);
 		} else if(joinpointTarget == JoinpointTargetType.SCHEDULER) {
-			sb.append(", aspectTriggerAdviceRuleList=").append(aspectTriggerAdviceRuleList);
+			sb.append(", aspectTriggerAdviceRuleList=").append(aspectJobAdviceRuleList);
 		}
 		sb.append("}");
 		

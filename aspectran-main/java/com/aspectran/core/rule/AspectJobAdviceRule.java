@@ -20,13 +20,15 @@ import com.aspectran.core.type.AspectAdviceType;
 /**
  * <p>Created: 2008. 04. 01 오후 11:19:28</p>
  */
-public class AspectTriggerAdviceRule {
+public class AspectJobAdviceRule {
 
 	private String aspectId;
 	
 	private AspectAdviceType aspectAdviceType;
 	
 	private String triggerTransletName;
+	
+	private boolean disabled;
 
 	public String getAspectId() {
 		return aspectId;
@@ -50,6 +52,14 @@ public class AspectTriggerAdviceRule {
 
 	public void setTriggerTransletName(String triggerTransletName) {
 		this.triggerTransletName = triggerTransletName;
+	}
+	
+	public boolean isDisabled() {
+		return disabled;
+	}
+
+	public void setDisabled(boolean disabled) {
+		this.disabled = disabled;
 	}
 
 	/* (non-Javadoc)

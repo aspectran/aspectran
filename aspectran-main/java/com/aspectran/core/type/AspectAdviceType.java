@@ -33,7 +33,7 @@ public final class AspectAdviceType extends Type {
 	
 	public static final AspectAdviceType EXCPETION_RAIZED;
 	
-	public static final AspectAdviceType TRIGGER;
+	public static final AspectAdviceType JOB;
 	
 	private static final Map<String, AspectAdviceType> types;
 	
@@ -44,7 +44,7 @@ public final class AspectAdviceType extends Type {
 		AROUND = new AspectAdviceType("around");
 		FINALLY = new AspectAdviceType("finally");
 		EXCPETION_RAIZED = new AspectAdviceType("exceptionRaized");
-		TRIGGER = new AspectAdviceType("trigger");
+		JOB = new AspectAdviceType("trigger");
 
 		types = new HashMap<String, AspectAdviceType>();
 		types.put(SETTINGS.toString(), SETTINGS);
@@ -53,7 +53,7 @@ public final class AspectAdviceType extends Type {
 		types.put(AROUND.toString(), AROUND);
 		types.put(FINALLY.toString(), FINALLY);
 		types.put(EXCPETION_RAIZED.toString(), EXCPETION_RAIZED);
-		types.put(TRIGGER.toString(), TRIGGER);
+		types.put(JOB.toString(), JOB);
 	}
 
 	private AspectAdviceType(String type) {
