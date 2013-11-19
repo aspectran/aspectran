@@ -15,8 +15,8 @@
  */
 package com.aspectran.core.activity.process.action;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.aspectran.core.activity.CoreActivity;
 import com.aspectran.core.activity.process.ActionList;
@@ -32,7 +32,7 @@ import com.aspectran.core.var.ValueMap;
  */
 public class EchoAction extends AbstractAction implements Executable {
 
-	private final Log log = LogFactory.getLog(EchoAction.class);
+	private final Logger logger = LoggerFactory.getLogger(EchoAction.class);
 	
 	private final EchoActionRule echoActionRule;
 	
@@ -60,7 +60,7 @@ public class EchoAction extends AbstractAction implements Executable {
 			
 			return valueMap;
 		} catch(Exception e) {
-			log.error("action execution error: echoActionRule " + echoActionRule + " Cause: " + e.toString());
+			logger.error("action execution error: echoActionRule " + echoActionRule + " Cause: " + e.toString());
 			throw e;
 		}
 	}

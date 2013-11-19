@@ -15,8 +15,8 @@
  */
 package com.aspectran.core.activity.response.transform;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.aspectran.core.activity.CoreActivity;
 import com.aspectran.core.activity.process.ActionList;
@@ -30,9 +30,9 @@ import com.aspectran.core.rule.TransformRule;
  */
 public class CustomTransform extends AbstractTransform implements Responsible {
 
-	private final Log log = LogFactory.getLog(CustomTransform.class);
+	private final Logger logger = LoggerFactory.getLogger(CustomTransform.class);
 
-	private boolean debugEnabled = log.isDebugEnabled();
+	private boolean debugEnabled = logger.isDebugEnabled();
 
 	/**
 	 * Instantiates a new custom transformer.
@@ -56,7 +56,7 @@ public class CustomTransform extends AbstractTransform implements Responsible {
 	public void response(CoreActivity activity) throws TransformResponseException {
 		try {
 			if(debugEnabled) {
-				log.debug("response " + transformRule);
+				logger.debug("response " + transformRule);
 			}
 		} catch(Exception e) {
 			throw new TransformResponseException("Custom Transformation error: " + transformRule, e);

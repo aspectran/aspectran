@@ -21,8 +21,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.aspectran.core.context.AspectranContext;
 import com.aspectran.core.context.bean.BeanRegistry;
@@ -42,7 +42,7 @@ import com.aspectran.core.util.ResourceUtils;
  */
 public class XmlAspectranContextBuilder extends AbstractAspectranContextBuilder implements AspectranContextBuilder {
 	
-	private final Log log = LogFactory.getLog(XmlAspectranContextBuilder.class);
+	private final Logger logger = LoggerFactory.getLogger(XmlAspectranContextBuilder.class);
 
 	private String applicationBasePath;
 	
@@ -52,7 +52,7 @@ public class XmlAspectranContextBuilder extends AbstractAspectranContextBuilder 
 
 	public XmlAspectranContextBuilder(String applicationBasePath) {
 		this.applicationBasePath = applicationBasePath;
-		log.info("application base directory path [" + applicationBasePath + "]");
+		logger.info("application base directory path [" + applicationBasePath + "]");
 	}
 
 	public AspectranContext build(String contextConfigLocation) throws AspectranContextBuilderException {

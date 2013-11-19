@@ -17,8 +17,8 @@ package com.aspectran.core.activity.process.action;
 
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.aspectran.core.activity.CoreActivity;
 import com.aspectran.core.activity.process.ActionList;
@@ -34,7 +34,7 @@ import com.aspectran.core.type.ActionType;
  */
 public class IncludeAction extends AbstractAction implements Executable {
 	
-	private final Log log = LogFactory.getLog(IncludeAction.class);
+	private final Logger logger = LoggerFactory.getLogger(IncludeAction.class);
 
 	private final IncludeActionRule includeActionRule;
 
@@ -72,7 +72,7 @@ public class IncludeAction extends AbstractAction implements Executable {
 			newActivity.request();
 			return newActivity.process();
 		} catch(Exception e) {
-			log.error("action execution error: includeActionRule " + includeActionRule + " Cause: " + e.toString());
+			logger.error("action execution error: includeActionRule " + includeActionRule + " Cause: " + e.toString());
 			throw e;
 		}
 	}

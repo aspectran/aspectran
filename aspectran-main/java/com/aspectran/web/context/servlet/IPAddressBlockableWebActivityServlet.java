@@ -25,8 +25,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.aspectran.core.context.translet.TransletNotFoundException;
 import com.aspectran.web.activity.WebActivity;
@@ -41,9 +41,9 @@ public class IPAddressBlockableWebActivityServlet extends WebActivityServlet imp
 	/** @serial */
 	static final long serialVersionUID = -2369788867122156319L;
 
-	private static final Log log = LogFactory.getLog(IPAddressBlockableWebActivityServlet.class);
+	private static final Logger logger = LoggerFactory.getLogger(IPAddressBlockableWebActivityServlet.class);
 	
-	private static boolean debugEnabled = log.isDebugEnabled();
+	private static boolean debugEnabled = logger.isDebugEnabled();
 	
 	private static final String DELIMITERS = " ,;\t\n\r\f";
 	
@@ -94,7 +94,7 @@ public class IPAddressBlockableWebActivityServlet extends WebActivityServlet imp
 		
 			if(!isValidAdress(remoteAddr)) {
 				if(debugEnabled) {
-					log.debug("Access denied '" + remoteAddr + "'.");
+					logger.debug("Access denied '" + remoteAddr + "'.");
 				}
 					
 				res.sendError(HttpServletResponse.SC_NOT_FOUND);
@@ -108,10 +108,6 @@ public class IPAddressBlockableWebActivityServlet extends WebActivityServlet imp
 			activity.run();
 			
 		} catch(TransletNotFoundException e) {
-			if(debugEnabled) {
-				log.debug(e);
-			}
-			
 			if(activity != null) {
 				String activityDefaultHandler = aspectranContext.getActivityDefaultHandler();
 
@@ -122,18 +118,18 @@ public class IPAddressBlockableWebActivityServlet extends WebActivityServlet imp
 						handler.handle(req, res);
 					} catch(Exception e2) {
 						res.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-						log.error(e.getMessage(), e2);
+						logger.error(e.getMessage(), e2);
 					}
 					
 					return;
 				}
 			}
 			
+			logger.error(e.getMessage(), e);
 			res.sendError(HttpServletResponse.SC_NOT_FOUND);
-			log.error(e.getMessage(), e);
 		} catch(Exception e) {
+			logger.error(e.getMessage(), e);
 			res.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-			log.error(e.getMessage(), e);
 		}
 	}
 	

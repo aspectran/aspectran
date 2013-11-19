@@ -321,7 +321,7 @@ public class AspectranNodeParser {
 				AspectJobAdviceRule ajar = new AspectJobAdviceRule();
 				ajar.setAspectId(ar.getId());
 				ajar.setAspectAdviceType(AspectAdviceType.JOB);
-				ajar.setTriggerTransletName(transletName);
+				ajar.setJobTransletName(transletName);
 				ajar.setDisabled(Boolean.parseBoolean(disabled));
 				
 				ar.addAspectJobAdviceRule(ajar);

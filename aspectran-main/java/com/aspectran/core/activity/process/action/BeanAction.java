@@ -18,8 +18,8 @@ package com.aspectran.core.activity.process.action;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.aspectran.core.activity.CoreActivity;
 import com.aspectran.core.activity.process.ActionList;
@@ -39,7 +39,7 @@ import com.aspectran.core.var.ValueMap;
  */
 public class BeanAction extends AbstractAction implements Executable {
 
-	private final Log log = LogFactory.getLog(BeanAction.class);
+	private final Logger logger = LoggerFactory.getLogger(BeanAction.class);
 
 	private final BeanActionRule beanActionRule;
 	
@@ -75,7 +75,7 @@ public class BeanAction extends AbstractAction implements Executable {
 
 			return invokeMethod(activity, bean, methodName, propertyItemRuleMap, argumentItemRuleMap);
 		} catch(Exception e) {
-			log.error("action execution error: beanActionRule " + beanActionRule + " Cause: " + e.toString());
+			logger.error("action execution error: beanActionRule " + beanActionRule + " Cause: " + e.toString());
 			throw e;
 		}
 	}

@@ -5,8 +5,8 @@ import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.aspectran.core.context.AspectranContext;
 import com.aspectran.core.context.bean.scope.SessionScope;
@@ -14,16 +14,16 @@ import com.aspectran.web.context.AspectranContextLoader;
 
 public class AspectranHttpSessionListener implements HttpSessionListener {
 
-	private final Log log = LogFactory.getLog(AspectranHttpSessionListener.class);
+	private final Logger logger = LoggerFactory.getLogger(AspectranHttpSessionListener.class);
 	
 	public void sessionCreated(HttpSessionEvent se) {
-		if(log.isDebugEnabled())
-			log.debug("session created: " + se);
+		if(logger.isDebugEnabled())
+			logger.debug("session created: " + se);
 	}
 
 	public void sessionDestroyed(HttpSessionEvent se) {
-		if(log.isDebugEnabled())
-			log.debug("session destroyed: " + se);
+		if(logger.isDebugEnabled())
+			logger.debug("session destroyed: " + se);
 		
 		HttpSession session = se.getSession();
 		

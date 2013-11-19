@@ -22,8 +22,8 @@ import java.io.Writer;
 import java.net.URL;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.aspectran.core.activity.CoreActivity;
 import com.aspectran.core.activity.process.ActionList;
@@ -41,9 +41,9 @@ import com.aspectran.core.type.TokenType;
  */
 public class TextTransform extends AbstractTransform implements Responsible {
 
-	private final Log log = LogFactory.getLog(TextTransform.class);
+	private final Logger logger = LoggerFactory.getLogger(TextTransform.class);
 
-	private boolean debugEnabled = log.isDebugEnabled();
+	private boolean debugEnabled = logger.isDebugEnabled();
 
 	private Token[] contentTokens;
 
@@ -99,7 +99,7 @@ public class TextTransform extends AbstractTransform implements Responsible {
 			}
 
 			if(debugEnabled) {
-				log.debug("response " + transformRule);
+				logger.debug("response " + transformRule);
 			}
 		} catch(Exception e) {
 			throw new TransformResponseException("Text Tranformation error: " + transformRule, e);
@@ -242,12 +242,12 @@ public class TextTransform extends AbstractTransform implements Responsible {
 					}
 				}
 				
-				log.debug("text-transform template tokens [" + sb.toString() + "]");
+				logger.debug("text-transform template tokens [" + sb.toString() + "]");
 			}
 		}
 //		
 //		if(traceEnabled) {
-//			log.trace("Sets the content of the text-transform..." + AspectranContextConstant.LINE_SEPARATOR + getContent());
+//			logger.trace("Sets the content of the text-transform..." + AspectranContextConstant.LINE_SEPARATOR + getContent());
 //		}
 	}
 }

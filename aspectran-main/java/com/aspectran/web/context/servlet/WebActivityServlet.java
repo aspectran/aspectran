@@ -24,8 +24,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.AspectranContext;
@@ -44,14 +44,12 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 	/** @serial */
 	static final long serialVersionUID = 6659683668233267847L;
 
-	private static final Log log = LogFactory.getLog(WebActivityServlet.class);
-	
-	private static boolean debugEnabled = log.isDebugEnabled();
-	
+	private static final Logger logger = LoggerFactory.getLogger(WebActivityServlet.class);
+
 	protected AspectranContext aspectranContext;
-	
+
 	private boolean standaloneContext;
-	
+
 	/*
 	 * (non-Java-doc)
 	 * 
@@ -69,29 +67,33 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 	 */
 	@Override
 	public void init() throws ServletException {
-		log.info("initialize WebActivityServlet");
-		
+		logger.info("initializing WebActivityServlet...");
+
 		try {
-			String contextConfigLocation = getServletConfig().getInitParameter(AspectranContextLoader.CONTEXT_CONFIG_LOCATION_PARAM);
+			String contextConfigLocation = getServletConfig().getInitParameter(
+					AspectranContextLoader.CONTEXT_CONFIG_LOCATION_PARAM);
 
 			if(contextConfigLocation == null) {
-				AspectranContextLoader aspectranContextLoader = (AspectranContextLoader)getServletContext().getAttribute(AspectranContextLoader.ASPECTRAN_CONTEXT_LOADER_ATTRIBUTE);
-				
+				AspectranContextLoader aspectranContextLoader = (AspectranContextLoader)getServletContext()
+						.getAttribute(AspectranContextLoader.ASPECTRAN_CONTEXT_LOADER_ATTRIBUTE);
+
 				if(aspectranContextLoader != null) {
 					aspectranContext = aspectranContextLoader.getAspectranContext();
 				}
 			}
 
 			if(aspectranContext == null) {
-				AspectranContextLoader aspectranContextLoader = new AspectranContextLoader(getServletContext(), contextConfigLocation);
+				AspectranContextLoader aspectranContextLoader = new AspectranContextLoader(getServletContext(),
+						contextConfigLocation);
 				aspectranContext = aspectranContextLoader.getAspectranContext();
 				standaloneContext = true;
 			}
-			
-			ApplicationAdapter applicationAdapter = WebApplicationAdapter.determineWebApplicationAdapter(getServletContext());
+
+			ApplicationAdapter applicationAdapter = WebApplicationAdapter
+					.determineWebApplicationAdapter(getServletContext());
 			aspectranContext.setApplicationAdapter(applicationAdapter);
 		} catch(Exception e) {
-			log.error("Unable to initialize WebActivityServlet.", e);
+			logger.error("WebActivityServlet failed to initialize: " + e.toString());
 			throw new UnavailableException(e.getMessage());
 		}
 	}
@@ -102,41 +104,38 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 	@Override
 	public void service(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
 		WebActivity activity = null;
-		
+
 		try {
 			String requestUri = req.getRequestURI();
 
 			activity = new WebActivityImpl(aspectranContext, req, res);
 			activity.init(requestUri);
 			activity.run();
-			
+
 		} catch(TransletNotFoundException e) {
-			if(debugEnabled) {
-				log.debug(e);
-			}
-			
 			if(activity != null) {
 				String activityDefaultHandler = aspectranContext.getActivityDefaultHandler();
 
 				if(activityDefaultHandler != null) {
 					try {
-						WebActivityDefaultHandler handler = (WebActivityDefaultHandler)activity.getBean(activityDefaultHandler);
+						WebActivityDefaultHandler handler = (WebActivityDefaultHandler)activity
+								.getBean(activityDefaultHandler);
 						handler.setServletContext(getServletContext());
 						handler.handle(req, res);
 					} catch(Exception e2) {
 						res.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-						log.error(e.getMessage(), e2);
+						logger.error(e.getMessage(), e2);
 					}
-					
+
 					return;
 				}
 			}
-			
+
+			logger.error(e.getMessage());
 			res.sendError(HttpServletResponse.SC_NOT_FOUND);
-			log.error(e.getMessage());
 		} catch(Exception e) {
+			logger.error(e.getMessage(), e);
 			res.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-			log.error(e.getMessage(), e);
 		}
 	}
 
@@ -145,15 +144,19 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 	 */
 	@Override
 	public void destroy() {
-		log.info("destroy aspectranActivityServlet.");
-		
-		super.destroy();
-		
-		if(aspectranContext != null) {
-			if(standaloneContext)
-				aspectranContext.destroy();
-			
-			aspectranContext = null;
+		try {
+			super.destroy();
+
+			if(aspectranContext != null) {
+				if(standaloneContext)
+					aspectranContext.destroy();
+
+				aspectranContext = null;
+			}
+		} catch(Exception e) {
+			logger.error("WebActivityServlet failed to destroy cleanly: " + e.toString());
 		}
+
+		logger.info("WebActivityServlet successful destroyed.");
 	}
 }

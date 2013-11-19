@@ -20,8 +20,8 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.aspectran.core.activity.AbstractCoreActivity;
 import com.aspectran.core.activity.CoreActivity;
@@ -55,9 +55,9 @@ import com.aspectran.web.adapter.HttpSessionAdapter;
  */
 public class WebActivityImpl extends AbstractCoreActivity implements WebActivity {
 
-	private final Log log = LogFactory.getLog(WebActivityImpl.class);
+	private final Logger logger = LoggerFactory.getLogger(WebActivityImpl.class);
 
-	private final boolean debugEnabled = log.isDebugEnabled();
+	private final boolean debugEnabled = logger.isDebugEnabled();
 	
 	private HttpServletRequest request;
 	
@@ -190,7 +190,7 @@ public class WebActivityImpl extends AbstractCoreActivity implements WebActivity
 		
 		if(debugEnabled) {
 			if(requestAdapter.isMaxLengthExceeded()) {
-				log.debug("Max length exceeded. maxMultipartRequestSize: " + requestRule.getMaxMultipartRequestSize());
+				logger.debug("Max length exceeded. maxMultipartRequestSize: " + requestRule.getMaxMultipartRequestSize());
 			}
 
 			for(FileItemRule fir : fileItemRuleMap) {
@@ -198,11 +198,11 @@ public class WebActivityImpl extends AbstractCoreActivity implements WebActivity
 					FileItem[] fileItems = fileItemMap.getFileItems(fir.getName());
 					
 					for(int i = 0; i < fileItems.length; i++) {
-						log.debug("fileItem[" + i + "] name=" + fir.getName() + " " + fileItems[i]);
+						logger.debug("fileItem[" + i + "] name=" + fir.getName() + " " + fileItems[i]);
 					}
 				} else {
 					FileItem f = fileItemMap.getFileItem(fir.getName());
-					log.debug("fileItem name=" + fir.getName() + " " + f);
+					logger.debug("fileItem name=" + fir.getName() + " " + f);
 				}
 			}
 		}

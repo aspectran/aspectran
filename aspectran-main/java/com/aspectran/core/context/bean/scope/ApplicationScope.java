@@ -3,8 +3,8 @@
  */
 package com.aspectran.core.context.bean.scope;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -16,11 +16,11 @@ public class ApplicationScope extends AbstractScope implements Scope {
 	
 	public static final String APPLICATION_SCOPE_ATTRIBUTE = ApplicationScope.class.getName();
 
-	private final Log log = LogFactory.getLog(ApplicationScope.class);
+	private final Logger logger = LoggerFactory.getLogger(ApplicationScope.class);
 
 	public void destroy() {
-		if(log.isDebugEnabled())
-			log.debug("destroy application-scoped beans " + scopedBeanMap);
+		if(logger.isDebugEnabled())
+			logger.debug("destroy application-scoped beans " + scopedBeanMap);
 		
 		super.destroy();
 	}
