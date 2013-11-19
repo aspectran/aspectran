@@ -24,23 +24,23 @@ public final class PointcutType extends Type {
 
 	public static final PointcutType REGEXP;
 	
-	public static final PointcutType INTERVAL;
+	public static final PointcutType SIMPLE_TRIGGER; // for scheduler
 
-	public static final PointcutType CRON_EXPRESSION;
+	public static final PointcutType CRON_TRIGGER; // for scheduler
 	
 	private static final Map<String, PointcutType> types;
 	
 	static {
 		WILDCARD = new PointcutType("wildcard");
 		REGEXP = new PointcutType("regexp");
-		INTERVAL = new PointcutType("interval");
-		CRON_EXPRESSION = new PointcutType("cronExpression");
+		SIMPLE_TRIGGER = new PointcutType("simpleTrigger");
+		CRON_TRIGGER = new PointcutType("cronTrigger");
 
 		types = new HashMap<String, PointcutType>();
 		types.put(WILDCARD.toString(), WILDCARD);
 		types.put(REGEXP.toString(), REGEXP);
-		types.put(INTERVAL.toString(), INTERVAL);
-		types.put(CRON_EXPRESSION.toString(), CRON_EXPRESSION);
+		types.put(SIMPLE_TRIGGER.toString(), SIMPLE_TRIGGER);
+		types.put(CRON_TRIGGER.toString(), CRON_TRIGGER);
 	}
 
 	private PointcutType(String type) {

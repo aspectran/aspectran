@@ -26,7 +26,7 @@ import java.util.Set;
 
 import org.w3c.dom.Node;
 
-import com.aspectran.core.context.builder.xml.XmlAspectranContextAssistant;
+import com.aspectran.core.context.builder.xml.XmlBuilderAssistant;
 import com.aspectran.core.rule.ItemRule;
 import com.aspectran.core.rule.ItemRuleMap;
 import com.aspectran.core.token.Token;
@@ -46,14 +46,14 @@ import com.aspectran.core.util.xml.NodeletParser;
  */
 public class ItemRuleNodeletAdder implements NodeletAdder {
 	
-	protected XmlAspectranContextAssistant assistant;
+	protected XmlBuilderAssistant assistant;
 	
 	/**
 	 * Instantiates a new response rule nodelet adder.
 	 *
 	 * @param assistant the assistant for Context Builder
 	 */
-	public ItemRuleNodeletAdder(XmlAspectranContextAssistant assistant) {
+	public ItemRuleNodeletAdder(XmlBuilderAssistant assistant) {
 		this.assistant = assistant;
 	}
 	

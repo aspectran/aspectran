@@ -69,7 +69,7 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 	 */
 	@Override
 	public void init() throws ServletException {
-		log.info("initialize aspectranActivityServlet");
+		log.info("initialize WebActivityServlet");
 		
 		try {
 			String contextConfigLocation = getServletConfig().getInitParameter(AspectranContextLoader.CONTEXT_CONFIG_LOCATION_PARAM);
@@ -91,7 +91,7 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 			ApplicationAdapter applicationAdapter = WebApplicationAdapter.determineWebApplicationAdapter(getServletContext());
 			aspectranContext.setApplicationAdapter(applicationAdapter);
 		} catch(Exception e) {
-			log.error("Unable to initialize WebAspectranActivityServlet.", e);
+			log.error("Unable to initialize WebActivityServlet.", e);
 			throw new UnavailableException(e.getMessage());
 		}
 	}
