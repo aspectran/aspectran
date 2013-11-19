@@ -90,6 +90,7 @@ bean CDATA #IMPLIED
 <!ELEMENT job EMPTY>
 <!ATTLIST job
 translet CDATA #REQUIRED
+disabled (true | false) #IMPLIED
 >
 
 <!ELEMENT bean (features?, constructor?, properties*)>
