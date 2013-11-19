@@ -10,22 +10,28 @@
 		<welcome-file>index.jsp</welcome-file>
 	</welcome-file-list>
 	<listener>
-		<listener-class>
-			com.aspectran.web.context.listener.AspectranWebApplicationListener
-		</listener-class>
+		<listener-class>com.aspectran.web.context.listener.AspectranWebApplicationListener</listener-class>
 	</listener>
 	<listener>
-		<listener-class>
-			com.aspectran.web.context.listener.AspectranHttpSessionListener
-		</listener-class>
+		<listener-class>com.aspectran.web.context.listener.AspectranHttpSessionListener</listener-class>
+	</listener>
+	<listener>
+		<listener-class>com.aspectran.web.context.listener.AspectranContextLoaderListener</listener-class>
+	</listener>
+	<context-param>
+		<param-name>aspectran:contextConfigLocation</param-name>
+		<param-value>classpath:aspectran/aspectran-example.xml</param-value>
+	</context-param>
+	<listener>
+		<listener-class>com.aspectran.web.context.listener.AspectranSchedulerListener</listener-class>
 	</listener>
 	<servlet>
 		<servlet-name>aspectran-web</servlet-name>
 		<servlet-class>com.aspectran.web.context.servlet.WebActivityServlet</servlet-class>
-		<init-param>
+		<!-- init-param>
 			<param-name>contextConfigLocation</param-name>
 			<param-value>classpath:aspectran/aspectran-example.xml</param-value>
-		</init-param>
+		</init-param -->
 		<load-on-startup>1</load-on-startup>
 	</servlet>
 	<servlet-mapping>
