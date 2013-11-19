@@ -15,8 +15,6 @@
  */
 package com.aspectran.core.context.builder;
 
-import java.io.File;
-
 import com.aspectran.core.context.AspectranContext;
 
 /**
@@ -27,9 +25,5 @@ import com.aspectran.core.context.AspectranContext;
 public interface AspectranContextBuilder {
 	
 	public AspectranContext build(String contextConfigLocation) throws AspectranContextBuilderException;
-	
-	public AspectranContext build(File contextConfigFile) throws AspectranContextBuilderException;
-	
-	public AspectranContext build(AspectranContextResource resource) throws AspectranContextBuilderException;
 	
 }

@@ -21,54 +21,54 @@ import java.util.Map;
 /**
  * The Class ActivitySettingType.
  */
-public final class AspectranSettingType extends Type {
+public final class DefaultSettingType extends Type {
 	
 	/** The Constant USE_NAMESPACES. */
-	public static final AspectranSettingType USE_NAMESPACES;
+	public static final DefaultSettingType USE_NAMESPACES;
 
 	/** The Constant NULLABLE_CONTENT_ID. */
-	public static final AspectranSettingType NULLABLE_CONTENT_ID;
+	public static final DefaultSettingType NULLABLE_CONTENT_ID;
 	
 	/** The Constant NULLABLE_ACTION_ID. */
-	public static final AspectranSettingType NULLABLE_ACTION_ID;
+	public static final DefaultSettingType NULLABLE_ACTION_ID;
 	
 	/** The Constant NULLABLE_BEAN_ID. */
-	public static final AspectranSettingType NULLABLE_BEAN_ID;
+	public static final DefaultSettingType NULLABLE_BEAN_ID;
 	
 	/** The Constant TRANSLET_NAME_PATTERN_PREFIX. */
-	public static final AspectranSettingType TRANSLET_NAME_PATTERN_PREFIX;
+	public static final DefaultSettingType TRANSLET_NAME_PATTERN_PREFIX;
 	
 	/** The Constant TRANSLET_NAME_PATTERN_SUFFIX. */
-	public static final AspectranSettingType TRANSLET_NAME_PATTERN_SUFFIX;
+	public static final DefaultSettingType TRANSLET_NAME_PATTERN_SUFFIX;
 	
 	/** The Constant TRANSLET_NAME_PATTERN. */
-	public static final AspectranSettingType TRANSLET_NAME_PATTERN;
+	public static final DefaultSettingType TRANSLET_NAME_PATTERN;
 	
 	/** The Constant TRANSLET_INTERFACE. */
-	public static final AspectranSettingType TRANSLET_INTERFACE_CLASS;
+	public static final DefaultSettingType TRANSLET_INTERFACE_CLASS;
 	
 	/** The Constant TRANSLET_CLASS. */
-	public static final AspectranSettingType TRANSLET_IMPLEMENT_CLASS;
+	public static final DefaultSettingType TRANSLET_IMPLEMENT_CLASS;
 
 	/** The Constant ACTIVITY_DEFAULT_HANDLER. */
-	public static final AspectranSettingType ACTIVITY_DEFAULT_HANDLER;
+	public static final DefaultSettingType ACTIVITY_DEFAULT_HANDLER;
 	
 	/** The Constant types. */
-	private static final Map<String, AspectranSettingType> types;
+	private static final Map<String, DefaultSettingType> types;
 	
 	static {
-		USE_NAMESPACES = new AspectranSettingType("useNamespaces");
-		NULLABLE_CONTENT_ID = new AspectranSettingType("nullableContentId");
-		NULLABLE_ACTION_ID = new AspectranSettingType("nullableActionId");
-		NULLABLE_BEAN_ID = new AspectranSettingType("nullableBeanId");
-		TRANSLET_NAME_PATTERN_PREFIX = new AspectranSettingType("transletNamePatternPrefix");
-		TRANSLET_NAME_PATTERN_SUFFIX = new AspectranSettingType("transletNamePatternSuffix");
-		TRANSLET_NAME_PATTERN = new AspectranSettingType("transletNamePattern");
-		TRANSLET_INTERFACE_CLASS = new AspectranSettingType("transletInterfaceClass");
-		TRANSLET_IMPLEMENT_CLASS = new AspectranSettingType("transletImplementClass");
-		ACTIVITY_DEFAULT_HANDLER = new AspectranSettingType("activityDefaultHandler");
+		USE_NAMESPACES = new DefaultSettingType("useNamespaces");
+		NULLABLE_CONTENT_ID = new DefaultSettingType("nullableContentId");
+		NULLABLE_ACTION_ID = new DefaultSettingType("nullableActionId");
+		NULLABLE_BEAN_ID = new DefaultSettingType("nullableBeanId");
+		TRANSLET_NAME_PATTERN_PREFIX = new DefaultSettingType("transletNamePatternPrefix");
+		TRANSLET_NAME_PATTERN_SUFFIX = new DefaultSettingType("transletNamePatternSuffix");
+		TRANSLET_NAME_PATTERN = new DefaultSettingType("transletNamePattern");
+		TRANSLET_INTERFACE_CLASS = new DefaultSettingType("transletInterfaceClass");
+		TRANSLET_IMPLEMENT_CLASS = new DefaultSettingType("transletImplementClass");
+		ACTIVITY_DEFAULT_HANDLER = new DefaultSettingType("activityDefaultHandler");
 
-		types = new HashMap<String, AspectranSettingType>();
+		types = new HashMap<String, DefaultSettingType>();
 		types.put(USE_NAMESPACES.toString(), USE_NAMESPACES);
 		types.put(NULLABLE_CONTENT_ID.toString(), NULLABLE_CONTENT_ID);
 		types.put(NULLABLE_ACTION_ID.toString(), NULLABLE_ACTION_ID);
@@ -86,7 +86,7 @@ public final class AspectranSettingType extends Type {
 	 *
 	 * @param type the type
 	 */
-	private AspectranSettingType(String type) {
+	private DefaultSettingType(String type) {
 		super(type);
 	}
 
@@ -96,7 +96,7 @@ public final class AspectranSettingType extends Type {
 	 * @param type the type
 	 * @return the activity setting type
 	 */
-	public static AspectranSettingType valueOf(String type) {
+	public static DefaultSettingType valueOf(String type) {
 		return types.get(type);
 	}
 }

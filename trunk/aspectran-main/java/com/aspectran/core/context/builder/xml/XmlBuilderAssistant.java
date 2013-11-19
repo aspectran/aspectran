@@ -20,35 +20,30 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.aspectran.core.context.AspectranConstant;
-import com.aspectran.core.context.builder.AspectranSettings;
-import com.aspectran.core.context.builder.BeanReferenceInspector;
 import com.aspectran.core.rule.AspectRule;
 import com.aspectran.core.rule.AspectRuleMap;
 import com.aspectran.core.rule.BeanRule;
 import com.aspectran.core.rule.BeanRuleMap;
 import com.aspectran.core.rule.TransletRule;
 import com.aspectran.core.rule.TransletRuleMap;
-import com.aspectran.core.type.AspectranSettingType;
+import com.aspectran.core.type.DefaultSettingType;
 import com.aspectran.core.util.ArrayStack;
 
 
 /**
  * <p>Created: 2008. 04. 01 오후 10:25:35</p>
  */
-public class XmlAspectranContextAssistant {
+public class XmlBuilderAssistant {
 
-	/** The object stack. */
 	private ArrayStack objectStack;
 	
-	private Map<AspectranSettingType, String> settings;
+	private Map<DefaultSettingType, String> settings;
 	
-	/** The type aliases. */
 	private Map<String, String> typeAliases;
 	
-	/** The service root path. */
-	private String applicationRootPath;
+	private String applicationBasePath;
 
-	private AspectranSettings inheritedAspectranSettings;
+	private DefaultSettings inheritedDefaultSettings;
 
 	private AspectRuleMap aspectRuleMap;
 	
@@ -63,14 +58,14 @@ public class XmlAspectranContextAssistant {
 	/**
 	 * Instantiates a new translets config.
 	 */
-	public XmlAspectranContextAssistant(String applicationRootPath) {
+	public XmlBuilderAssistant(String applicationBasePath) {
 		this.objectStack = new ArrayStack(); 
 		this.typeAliases = new HashMap<String, String>();
-		this.settings = new HashMap<AspectranSettingType, String>();
+		this.settings = new HashMap<DefaultSettingType, String>();
 		this.beanReferenceInspector = new BeanReferenceInspector();
 		
-		this.applicationRootPath = applicationRootPath;
-		inheritedAspectranSettings = new AspectranSettings();
+		this.applicationBasePath = applicationBasePath;
+		inheritedDefaultSettings = new DefaultSettings();
 	}
 	
 	/**
@@ -79,12 +74,12 @@ public class XmlAspectranContextAssistant {
 	 *
 	 * @param assistant the assistant
 	 */
-	public XmlAspectranContextAssistant(XmlAspectranContextAssistant assistant) {
-		applicationRootPath = assistant.getApplicationRootPath();
-		inheritedAspectranSettings = assistant.getInheritedAspectranSettings();
+	public XmlBuilderAssistant(XmlBuilderAssistant assistant) {
+		applicationBasePath = assistant.getApplicationBasePath();
+		inheritedDefaultSettings = assistant.getInheritedDefaultSettings();
 		
-		if(inheritedAspectranSettings == null)
-			inheritedAspectranSettings = new AspectranSettings();
+		if(inheritedDefaultSettings == null)
+			inheritedDefaultSettings = new DefaultSettings();
 		
 		beanRuleMap = assistant.getBeanRuleMap();
 		transletRuleMap = assistant.getTransletRuleMap();
@@ -140,20 +135,20 @@ public class XmlAspectranContextAssistant {
 		typeAliases.clear();
 	}
 
-	public Map<AspectranSettingType, String> getSettings() {
+	public Map<DefaultSettingType, String> getSettings() {
 		return settings;
 	}
 
-	public void setSettings(Map<AspectranSettingType, String> settings) {
+	public void setSettings(Map<DefaultSettingType, String> settings) {
 		this.settings = settings;
 		applyInheritedSettings();
 	}
 
-	public void putSetting(AspectranSettingType settingType, String value) {
+	public void putSetting(DefaultSettingType settingType, String value) {
 		settings.put(settingType, value);
 	}
 	
-	public Object getSetting(AspectranSettingType settingType) {
+	public Object getSetting(DefaultSettingType settingType) {
 		return settings.get(settingType);
 	}
 	
@@ -188,7 +183,7 @@ public class XmlAspectranContextAssistant {
 	}
 	
 	public void applyInheritedSettings() {
-		inheritedAspectranSettings.set(getSettings());
+		inheritedDefaultSettings.set(getSettings());
 	}
 	
 	/**
@@ -201,19 +196,19 @@ public class XmlAspectranContextAssistant {
 		if(transletName != null && transletName.length() > 0 && transletName.charAt(0) == AspectranConstant.TRANSLET_NAME_SEPARATOR)
 			return transletName;
 		
-		if(inheritedAspectranSettings.getTransletNamePatternPrefix() == null && 
-				inheritedAspectranSettings.getTransletNamePatternSuffix() == null)
+		if(inheritedDefaultSettings.getTransletNamePatternPrefix() == null && 
+				inheritedDefaultSettings.getTransletNamePatternSuffix() == null)
 			return transletName;
 		
 		StringBuilder sb = new StringBuilder();
 		
-		if(inheritedAspectranSettings.getTransletNamePatternPrefix() != null)
-			sb.append(inheritedAspectranSettings.getTransletNamePatternPrefix());
+		if(inheritedDefaultSettings.getTransletNamePatternPrefix() != null)
+			sb.append(inheritedDefaultSettings.getTransletNamePatternPrefix());
 		
 		sb.append(transletName);
 		
-		if(inheritedAspectranSettings.getTransletNamePatternSuffix() != null)
-			sb.append(inheritedAspectranSettings.getTransletNamePatternSuffix());
+		if(inheritedDefaultSettings.getTransletNamePatternSuffix() != null)
+			sb.append(inheritedDefaultSettings.getTransletNamePatternSuffix());
 		
 		return sb.toString();
 	}
@@ -231,24 +226,24 @@ public class XmlAspectranContextAssistant {
 		
 		StringBuilder sb = new StringBuilder();
 		
-		if(inheritedAspectranSettings.getTransletNamePatternPrefix() != null)
-			sb.append(inheritedAspectranSettings.getTransletNamePatternPrefix());
+		if(inheritedDefaultSettings.getTransletNamePatternPrefix() != null)
+			sb.append(inheritedDefaultSettings.getTransletNamePatternPrefix());
 		
-		if(inheritedAspectranSettings.isUseNamespaces() && namespace != null) {
+		if(inheritedDefaultSettings.isUseNamespaces() && namespace != null) {
 			sb.append(namespace);
 			sb.append(AspectranConstant.TRANSLET_NAME_SEPARATOR);
 		}
 		
 		sb.append(transletName);
 		
-		if(inheritedAspectranSettings.getTransletNamePatternSuffix() != null)
-			sb.append(inheritedAspectranSettings.getTransletNamePatternSuffix());
+		if(inheritedDefaultSettings.getTransletNamePatternSuffix() != null)
+			sb.append(inheritedDefaultSettings.getTransletNamePatternSuffix());
 		
 		return sb.toString();
 	}
 	
 	public String applyNamespaceForBean(String beanId) {
-		if(!inheritedAspectranSettings.isUseNamespaces() || namespace == null)
+		if(!inheritedDefaultSettings.isUseNamespaces() || namespace == null)
 			return beanId;
 		
 		StringBuilder sb = new StringBuilder();
@@ -279,7 +274,7 @@ public class XmlAspectranContextAssistant {
 	 * @return true, if is allow null content id
 	 */
 	public boolean isNullableContentId() {
-		return inheritedAspectranSettings.isNullableContentId();
+		return inheritedDefaultSettings.isNullableContentId();
 	}
 
 	/**
@@ -288,19 +283,19 @@ public class XmlAspectranContextAssistant {
 	 * @return true, if is allow null action id
 	 */
 	public boolean isNullableActionId() {
-		return inheritedAspectranSettings.isNullableActionId();
+		return inheritedDefaultSettings.isNullableActionId();
 	}
 
-	public String getApplicationRootPath() {
-		return applicationRootPath;
+	public String getApplicationBasePath() {
+		return applicationBasePath;
 	}
 	
-	public AspectranSettings getInheritedAspectranSettings() {
-		return inheritedAspectranSettings;
+	public DefaultSettings getInheritedDefaultSettings() {
+		return inheritedDefaultSettings;
 	}
 
-	public void setActivitySettingsRule(AspectranSettings activityRule) {
-		this.inheritedAspectranSettings = activityRule;
+	public void setInheritedDefaultSettings(DefaultSettings defaultSettings) {
+		this.inheritedDefaultSettings = defaultSettings;
 	}
 
 	/**
@@ -358,8 +353,8 @@ public class XmlAspectranContextAssistant {
 	public File toRealPathFile(String filePath) {
 		File file;
 
-		if(applicationRootPath != null && !filePath.startsWith("/"))
-			file = new File(applicationRootPath, filePath);
+		if(applicationBasePath != null && !filePath.startsWith("/"))
+			file = new File(applicationBasePath, filePath);
 		else
 			file = new File(filePath);
 		

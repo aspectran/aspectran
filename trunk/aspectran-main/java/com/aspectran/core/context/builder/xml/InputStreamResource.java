@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.aspectran.core.context.builder;
+package com.aspectran.core.context.builder.xml;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -30,9 +30,9 @@ import com.aspectran.core.util.ResourceUtils;
  * 
  * @author Gulendol
  */
-public class AspectranContextResource {
+public class InputStreamResource {
 	
-	private static final Log log = LogFactory.getLog(AspectranContextResource.class);
+	private static final Log log = LogFactory.getLog(InputStreamResource.class);
 
 	private String resource;
 	

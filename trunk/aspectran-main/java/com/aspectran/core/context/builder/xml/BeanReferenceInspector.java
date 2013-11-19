@@ -1,4 +1,4 @@
-package com.aspectran.core.context.builder;
+package com.aspectran.core.context.builder.xml;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;

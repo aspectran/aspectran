@@ -21,7 +21,7 @@ import java.util.Properties;
 import org.w3c.dom.Node;
 
 import com.aspectran.core.activity.process.ActionList;
-import com.aspectran.core.context.builder.xml.XmlAspectranContextAssistant;
+import com.aspectran.core.context.builder.xml.XmlBuilderAssistant;
 import com.aspectran.core.rule.DispatchResponseRule;
 import com.aspectran.core.rule.ForwardResponseRule;
 import com.aspectran.core.rule.ItemRuleMap;
@@ -46,7 +46,7 @@ import com.aspectran.core.util.xml.NodeletParser;
  */
 public class ResponseRuleNodeletAdder implements NodeletAdder {
 	
-	protected XmlAspectranContextAssistant assistant;
+	protected XmlBuilderAssistant assistant;
 	
 	/**
 	 * Instantiates a new response rule nodelet adder.
@@ -54,7 +54,7 @@ public class ResponseRuleNodeletAdder implements NodeletAdder {
 	 * @param parser the parser
 	 * @param assistant the assistant for Context Builder
 	 */
-	public ResponseRuleNodeletAdder(XmlAspectranContextAssistant assistant) {
+	public ResponseRuleNodeletAdder(XmlBuilderAssistant assistant) {
 		this.assistant = assistant;
 	}
 	

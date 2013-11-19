@@ -13,17 +13,17 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.aspectran.core.context.builder;
+package com.aspectran.core.context.builder.xml;
 
 import java.util.Map;
 
 import com.aspectran.core.context.AspectranConstant;
-import com.aspectran.core.type.AspectranSettingType;
+import com.aspectran.core.type.DefaultSettingType;
 
 /**
  * <p>Created: 2008. 03. 22 오후 5:48:09</p>
  */
-public class AspectranSettings {
+public class DefaultSettings implements Cloneable {
 
 	private String transletNamePattern;
 	
@@ -43,7 +43,7 @@ public class AspectranSettings {
 	
 	private boolean nullableActionId = true;
 	
-	public AspectranSettings() {
+	public DefaultSettings() {
 	}
 	
 	public String getTransletNamePattern() {
@@ -145,32 +145,37 @@ public class AspectranSettings {
 		this.nullableActionId = nullableActionId;
 	}
 
-	public void set(Map<AspectranSettingType, String> settings) {
-		if(settings.get(AspectranSettingType.USE_NAMESPACES) != null)
-			useNamespaces = Boolean.valueOf(settings.get(AspectranSettingType.USE_NAMESPACES));
+	public void set(Map<DefaultSettingType, String> settings) {
+		if(settings.get(DefaultSettingType.USE_NAMESPACES) != null)
+			useNamespaces = Boolean.valueOf(settings.get(DefaultSettingType.USE_NAMESPACES));
 
-		if(settings.get(AspectranSettingType.NULLABLE_CONTENT_ID) != null)
-			nullableContentId = Boolean.valueOf(settings.get(AspectranSettingType.NULLABLE_CONTENT_ID));
+		if(settings.get(DefaultSettingType.NULLABLE_CONTENT_ID) != null)
+			nullableContentId = Boolean.valueOf(settings.get(DefaultSettingType.NULLABLE_CONTENT_ID));
 		
-		if(settings.get(AspectranSettingType.NULLABLE_ACTION_ID) != null)
-			nullableActionId = Boolean.valueOf(settings.get(AspectranSettingType.NULLABLE_ACTION_ID));
+		if(settings.get(DefaultSettingType.NULLABLE_ACTION_ID) != null)
+			nullableActionId = Boolean.valueOf(settings.get(DefaultSettingType.NULLABLE_ACTION_ID));
 		
-		if(settings.get(AspectranSettingType.TRANSLET_NAME_PATTERN_PREFIX) != null)
-			setTransletNamePatternPrefix(settings.get(AspectranSettingType.TRANSLET_NAME_PATTERN_PREFIX));
+		if(settings.get(DefaultSettingType.TRANSLET_NAME_PATTERN_PREFIX) != null)
+			setTransletNamePatternPrefix(settings.get(DefaultSettingType.TRANSLET_NAME_PATTERN_PREFIX));
 		
-		if(settings.get(AspectranSettingType.TRANSLET_NAME_PATTERN_SUFFIX) != null)
-			setTransletNamePatternSuffix(settings.get(AspectranSettingType.TRANSLET_NAME_PATTERN_SUFFIX));
+		if(settings.get(DefaultSettingType.TRANSLET_NAME_PATTERN_SUFFIX) != null)
+			setTransletNamePatternSuffix(settings.get(DefaultSettingType.TRANSLET_NAME_PATTERN_SUFFIX));
 		
-		if(settings.get(AspectranSettingType.TRANSLET_NAME_PATTERN) != null)
-			setTransletNamePattern(settings.get(AspectranSettingType.TRANSLET_NAME_PATTERN));
+		if(settings.get(DefaultSettingType.TRANSLET_NAME_PATTERN) != null)
+			setTransletNamePattern(settings.get(DefaultSettingType.TRANSLET_NAME_PATTERN));
 		
-		if(settings.get(AspectranSettingType.TRANSLET_INTERFACE_CLASS) != null)
-			transletInterfaceClass = settings.get(AspectranSettingType.TRANSLET_INTERFACE_CLASS);
+		if(settings.get(DefaultSettingType.TRANSLET_INTERFACE_CLASS) != null)
+			transletInterfaceClass = settings.get(DefaultSettingType.TRANSLET_INTERFACE_CLASS);
 		
-		if(settings.get(AspectranSettingType.TRANSLET_IMPLEMENT_CLASS) != null)
-			transletInstanceClass = settings.get(AspectranSettingType.TRANSLET_IMPLEMENT_CLASS);
+		if(settings.get(DefaultSettingType.TRANSLET_IMPLEMENT_CLASS) != null)
+			transletInstanceClass = settings.get(DefaultSettingType.TRANSLET_IMPLEMENT_CLASS);
 		
-		
+		if(settings.get(DefaultSettingType.ACTIVITY_DEFAULT_HANDLER) != null)
+			activityDefaultHandler = settings.get(DefaultSettingType.ACTIVITY_DEFAULT_HANDLER);
+	}
+	
+	public Object clone() throws CloneNotSupportedException {                      
+		return super.clone();              
 	}
 	
 //	

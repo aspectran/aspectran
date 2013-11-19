@@ -30,9 +30,9 @@ import com.aspectran.core.activity.response.ResponseMap;
 import com.aspectran.core.context.bean.ablility.DisposableBean;
 import com.aspectran.core.context.bean.ablility.InitializableBean;
 import com.aspectran.core.context.bean.loader.BeanClassLoader;
-import com.aspectran.core.context.builder.AspectranContextResource;
-import com.aspectran.core.context.builder.AspectranSettings;
-import com.aspectran.core.context.builder.xml.XmlAspectranContextAssistant;
+import com.aspectran.core.context.builder.xml.DefaultSettings;
+import com.aspectran.core.context.builder.xml.InputStreamResource;
+import com.aspectran.core.context.builder.xml.XmlBuilderAssistant;
 import com.aspectran.core.rule.AspectRule;
 import com.aspectran.core.rule.AspectTriggerAdviceRule;
 import com.aspectran.core.rule.BeanRule;
@@ -45,7 +45,7 @@ import com.aspectran.core.rule.ResponseRule;
 import com.aspectran.core.rule.SettingsAdviceRule;
 import com.aspectran.core.rule.TransletRule;
 import com.aspectran.core.type.AspectAdviceType;
-import com.aspectran.core.type.AspectranSettingType;
+import com.aspectran.core.type.DefaultSettingType;
 import com.aspectran.core.type.JoinpointScopeType;
 import com.aspectran.core.type.JoinpointTargetType;
 import com.aspectran.core.type.PointcutType;
@@ -67,7 +67,7 @@ public class AspectranNodeParser {
 	
 	private final NodeletParser parser = new NodeletParser();
 
-	private final XmlAspectranContextAssistant assistant;
+	private final XmlBuilderAssistant assistant;
 	
 	private final ClassLoader classLoader = ClassUtils.getDefaultClassLoader();
 	
@@ -76,11 +76,11 @@ public class AspectranNodeParser {
 	 * 
 	 * @param assistant the assistant for Context Builder
 	 */
-	public AspectranNodeParser(XmlAspectranContextAssistant assistant) {
+	public AspectranNodeParser(XmlBuilderAssistant assistant) {
+		assistant.clearObjectStack();
+		assistant.setNamespace(null);
+		
 		this.assistant = assistant;
-		//this.assistant.clearObjectStack();
-		//this.assistant.clearTypeAliases();
-		this.assistant.setNamespace(null);
 
 		parser.setValidation(true);
 		parser.setEntityResolver(new AspectranDtdResolver());
@@ -153,10 +153,10 @@ public class AspectranNodeParser {
 				String name = attributes.getProperty("name");
 				String value = attributes.getProperty("value");
 
-				AspectranSettingType settingType = null;
+				DefaultSettingType settingType = null;
 				
 				if(name != null) {
-					settingType = AspectranSettingType.valueOf(name);
+					settingType = DefaultSettingType.valueOf(name);
 					
 					if(settingType == null)
 						throw new IllegalArgumentException("Unknown setting name '" + name + "'");
@@ -267,16 +267,20 @@ public class AspectranNodeParser {
 				AspectRule aspectRule = (AspectRule)assistant.peekObject();
 				PointcutType pointcutType = null;
 				
-				if(type != null) {
+				if(aspectRule.getJoinpointTarget() == JoinpointTargetType.SCHEDULER) {
 					pointcutType = PointcutType.valueOf(type);
 					
-					if(pointcutType == null)
-						throw new IllegalArgumentException("Unknown pointcut type '" + type + "'");
+					if(pointcutType != PointcutType.SIMPLE_TRIGGER && pointcutType != PointcutType.CRON_TRIGGER)
+						throw new IllegalArgumentException("scheduler-joinpoint must be 'simpleTrigger' or 'cronTrigger'.");
 				} else {
-					if(aspectRule.getJoinpointTarget() == JoinpointTargetType.SCHEDULER)
-						pointcutType = PointcutType.INTERVAL;
-					else
+					if(type != null) {
+						pointcutType = PointcutType.valueOf(type);
+						
+						if(pointcutType == null)
+							throw new IllegalArgumentException("Unknown pointcut type '" + type + "'");
+					} else {
 						pointcutType = PointcutType.WILDCARD;
+					}
 				}
 				
 				PointcutRule pointcutRule = new PointcutRule();
@@ -787,23 +791,23 @@ public class AspectranNodeParser {
 				String file = attributes.getProperty("file");
 				String url = attributes.getProperty("url");
 				
-				AspectranContextResource aspectranContextResource = new AspectranContextResource();
+				InputStreamResource inputStreamResource = new InputStreamResource();
 				
-				if(!StringUtils.isEmpty(resource))
-					aspectranContextResource.setResource(resource);
-				else if(!StringUtils.isEmpty(file))
-					aspectranContextResource.setResource(file);
-				else if(!StringUtils.isEmpty(url))
-					aspectranContextResource.setResource(url);
+				if(StringUtils.hasText(resource))
+					inputStreamResource.setResource(resource);
+				else if(StringUtils.hasText(file))
+					inputStreamResource.setResource(file);
+				else if(StringUtils.hasText(url))
+					inputStreamResource.setResource(url);
 				else
 					throw new IllegalArgumentException("The <import> element requires either a resource or a file or a url attribute.");
 				
-				AspectranSettings inheritedSettings = assistant.getInheritedAspectranSettings();
+				DefaultSettings defaultSettings = (DefaultSettings)assistant.getInheritedDefaultSettings().clone();
 				
 				AspectranNodeParser aspectranNodeParser = new AspectranNodeParser(assistant);
-				aspectranNodeParser.parse(aspectranContextResource.getInputStream());
+				aspectranNodeParser.parse(inputStreamResource.getInputStream());
 				
-				assistant.setActivitySettingsRule(inheritedSettings);
+				assistant.setInheritedDefaultSettings(defaultSettings);
 			}
 		});
 	}

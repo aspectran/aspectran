@@ -35,14 +35,14 @@ public class AspectranContextLoader {
 	private void loadAspectranContext(String contextConfigLocation) {
 		//servletContext.log("Loading AspectranContext: " + contextConfigLocation);
 		
-		log.info("loading AspectranContext: " + contextConfigLocation);
+		log.info("loading AspectranContext [" + contextConfigLocation + "]");
 		
 		long startTime = System.currentTimeMillis();
 
 		try {
-			String applicationRootPath = servletContext.getRealPath("/");
+			String applicationBasePath = servletContext.getRealPath("/");
 			
-			AspectranContextBuilder builder = new XmlAspectranContextBuilder(applicationRootPath);
+			AspectranContextBuilder builder = new XmlAspectranContextBuilder(applicationBasePath);
 			aspectranContext = builder.build(contextConfigLocation);
 			
 			long elapsedTime = System.currentTimeMillis() - startTime;
