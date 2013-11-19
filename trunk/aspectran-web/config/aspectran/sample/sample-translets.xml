@@ -1,0 +1,472 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE aspectran PUBLIC "-//aspectran.com//DTD Aspectran 1.0//EN"
+                           "../dtd/aspectran-1.0.dtd">
+
+<aspectran namespace="t1">
+
+	<typeAliases>
+		<typeAlias alias="TestBean" type="org.jhlabs.aspectran.test.TestBean"/>
+	</typeAliases>
+
+	<translet name="front" hidden="true">
+		<transform type="transform/xml" contentType="text/xml"/>
+	</translet>
+
+	<translet name="front/welcome" extends="./front">
+		<request method="get" characterEncoding="utf-8">
+			<attributes>
+				<item name="param0" value="Value"/>
+				<item name="param01">
+					<reference bean="common.action.a1"/>
+				</item>
+				<item name="param1">B BBB</item>
+				<item name="param" type="list">
+					<value>1111111</value>
+					<value>1111111</value>
+				</item>
+				<item name="param2" type="list">
+					<value tokenize="false">${item1:222222}</value>
+					<value>%{testTicket1:11111} fff %{item10:99}</value>
+					<value>#{common.ticket.t1^date}</value>
+					<value>#{common.ticket.t1^int}</value>
+				</item>
+				<item name="param3" type="list">
+					<value name="item41">${item0}</value>
+					<value name="item42">${item1}</value>
+				</item>
+				<item name="files" type="list" valueType="file">
+					<value>${item0}</value>
+					<value>${item1}</value>
+				</item>
+			</attributes>
+			<multiparts>
+				<fileItem name="file1"/>
+				<fileItem name="files[]"/>
+			</multiparts>
+		</request>
+		<contents>
+			<content id="echo">
+				<echo id="echo0">
+					echo0
+				</echo>
+				<echo id="echo1">
+					<item type="list">
+						<value>${item0:11111}</value>
+						<value>${item1:222222}</value>
+						<value>#{common.ticket.t1^date}</value>
+						<value>#{common.ticket.t1^int}</value>
+					</item>
+				</echo>
+				<echo id="echo2">
+					<item type="map">
+						<value name="item41">${item0}</value>
+						<value name="item42">${item1}</value>
+					</item>
+				</echo>
+			</content>
+			<content id="content0" hidden="false">
+				<action id="a" bean="common.action.a1" method="queryForObject">
+					<arguments>
+						<item type="map">
+							<value name="arg1">한---- -글</value>
+							<value name="arg11">@{item1}</value>
+							<value name="arg12">@{item2:aaa}</value>
+						</item>
+						<item name="arg1">한---- -글</item>
+						<item name="arg11">@{item1}</item>
+						<item name="arg12">@{item2:aaa}</item>
+						<item name="arg3" type="list">
+							<value>1</value>
+							<value>2</value>
+						</item>
+						<item>
+							<reference parameter="attr01"/>
+						</item>
+					</arguments>
+				</action>
+				<include id="include1" translet="./home2">
+					<attributes>
+						<item name="item0">한--- --글</item>
+						<item name="item1">@{item1}</item>
+						<item name="item2">@{item2:aaa}</item>
+					</attributes>
+				</include>
+				<action id="beanAction1" bean="action.testBean" method="testAction">
+					<properties>
+						<item name="item0">한-----글</item>
+						<item name="item1">@{item1}</item>
+						<item name="item2">@{item2:aaa}</item>
+					</properties>
+				</action>
+			</content>
+			<content hidden="false">
+				<!--
+				<include translet="home2" ignoreTicket="true">
+					<attributes>
+						<item name="item0">
+							한==*     
+							${item1}
+							   *==글  
+						</item>
+						<item name="item1">${item1}</item>
+						<item name="item2">${item2:aaa}</item>
+					</attributes>
+				</include>
+				-->
+			</content>
+		</contents>
+		<response name="custom">
+			<transform type="transform/custom" contentType="text/html">
+				<echo id="echo2">
+					<item type="map">
+						<value name="item41">${item0}</value>
+						<value name="item42">${item1}</value>
+					</item>
+				</echo>
+				<action bean="responseHeaderSpecifier" method="setHeader">
+					<arguments>
+						<item name="Content-Disposition">inline</item>
+						<item name="filename">파일명.txt</item>
+					</arguments>
+				</action>
+				<action bean="responseHeaderSpecifier" method="setHeader">
+					<arguments>
+						<item name="Content-Disposition">inline</item>
+						<item name="filename">파일명.txt</item>
+					</arguments>
+				</action>
+			</transform>
+		</response>
+		<response name="download">
+			<transform type="transform/xsl" contentType="text/html">
+				<echo id="echo2">
+					<item type="map">
+						<value name="item41">${item0}</value>
+						<value name="item42">${item1}</value>
+					</item>
+				</echo>
+				<action bean="responseHeaderSpecifier" method="setHeader">
+					<arguments>
+						<item name="Content-Type">application/vnd.ms-xls</item>
+						<item name="filename">X${item9:한-글} 파일명.txt</item>
+					</arguments>
+				</action>
+				<template file="WEB-INF/xsl/service/test.xsl" noCache="true"/>
+			</transform>
+		</response>
+		<response name="xsl">
+			<transform type="transform/xsl" contentType="text/html">
+				<template file="WEB-INF/xsl/service/test.xsl"/>
+			</transform>
+		</response>
+		<response name="jsp">
+			<dispatch contentType="text/html">
+				<echo id="echo2">
+					<item type="map">
+						<value name="item41">${item0}</value>
+						<value name="item42">${item1}</value>
+					</item>
+				</echo>
+				<echo id="echo2">
+					<item type="map">
+						<value name="item41">${item0}</value>
+						<value name="item42">${item1}</value>
+					</item>
+				</echo>
+				<action bean="responseHeaderSpecifier" method="setHeader">
+					<arguments>
+						<item name="Content-Type">application/vnd.ms-xls</item>
+						<item name="filename">X${item9:한-글} 파일명.xls</item>
+					</arguments>
+				</action>
+				<template file="/WEB-INF/jsp/hello.jsp" encoding="utf-8"/>
+			</dispatch>
+		</response>
+		<response name="xml">
+			<transform type="transform/xml" contentType="text/xml"/>
+		</response>
+		<response name="json">
+			<transform type="transform/json"/>
+		</response>
+		<response name="echo">
+			<transform type="transform/text" contentType="text/plain">
+				<template>
+				<![CDATA[
+					aaab
+					@{item0}
+					@{item1}
+					@{item2}
+				]]>
+				</template>
+			</transform>
+		</response>
+		<response name="txt">
+			<transform type="transform/text" contentType="text/plain">
+				<template file="/c:\ADE_JHLabs\workspace\aspectran-web\webapp\WEB-INF\web.xml" encoding="utf-8"/>
+			</transform>
+		</response>
+		<exception>
+			<responseByContentType exceptionType="com.aspectran.test.web.LoginFailedException">
+				<dispatch contentType="text/html">
+					<template file="/WEB-INF/jsp/login.jsp"/>
+				</dispatch>
+				<transform contentType="text/plain" type="transform/json">
+					<template>{}</template>
+				</transform>
+			</responseByContentType>
+			<responseByContentType>
+				<dispatch contentType="text/html">
+					<template file="/WEB-INF/jsp/error.jsp"/>
+				</dispatch>
+				<!-- forward contentType="text/html" translet="error"/ -->
+				<transform contentType="text/plain" type="transform/text">
+					<template>
+						오류 발생!
+						오류 발생!
+					</template>
+				</transform>
+				<transform contentType="text/xml" type="transform/xml">
+					<action id="xml" bean="common.action.a1" method="testXmlAction" hidden="true">
+						<properties>
+							<item name="variable1">error</item>
+							<item name="variable2">0001</item>
+						</properties>
+					</action>
+					<echo id="error3">
+						<item name="code">0002</item>
+						<item name="message">오류 발생!</item>
+					</echo>
+					<echo id="error1">
+						<item type="map">
+							<value name="code">0001</value>
+							<value name="message">오류 발생!</value>
+						</item>
+					</echo>
+					<echo id="error2">
+						<item type="map">
+							<value name="code">0002</value>
+							<value name="message">오류 발생!</value>
+						</item>
+						<item type="map">
+							<value name="code">0004</value>
+							<value name="message">오류 발생!</value>
+						</item>
+					</echo>
+				</transform>
+			</responseByContentType>
+			<defaultResponse>
+				<redirect translet="error"/>
+			</defaultResponse>
+		</exception>
+	</translet>
+	
+	<translet name="json">
+		<echo id="echo1">
+			<item type="map">
+				<value name="item11">${item11}</value>
+				<value name="item12">${item12}</value>
+			</item>
+		</echo>
+		<action id="json1" bean="sqlMapExecutor" method="select">
+			<arguments>
+				<item name="sqlmap">sqlmap</item>
+				<item name="param" type="map">
+					<value name="param1">param1</value>
+					<value name="param2">param2</value>
+					<value name="param3">param3</value>
+				</item>
+			</arguments>
+		</action>
+		<action id="json2" bean="sqlMapExecutor" method="select">
+			<arguments>
+				<item name="sqlmap">sqlmap</item>
+				<item name="param" type="map">
+					<value name="param1">param1</value>
+					<value name="param2">param2</value>
+					<value name="param3">param3</value>
+				</item>
+			</arguments>
+		</action>
+		<include id="include1" translet="./home2">
+			<attributes>
+				<item name="item0">한--- --글</item>
+				<item name="item1">@{item1}</item>
+				<item name="item2">@{item2:aaa}</item>
+			</attributes>
+		</include>
+		<transform type="transform/json" contentType="text/json"/>
+	</translet>
+	
+	<translet name="json">
+		<transform type="transform/json" contentType="text/json">
+			<action id="json" bean="sqlMapExecutor" method="select">
+				<arguments>
+					<item name="sqlmap">sqlmap</item>
+					<item name="param" type="map">
+						<value name="param1">param1</value>
+						<value name="param2">param2</value>
+						<value name="param3">param3</value>
+					</item>
+				</arguments>
+			</action>
+		</transform>
+	</translet>
+		
+	<translet name="xml">
+		<transform type="transform/xml" contentType="text/xml">
+			<action id="xml" bean="common.action.a1" method="testXmlAction222">
+				<properties>
+					<item name="variable1">application/vnd.ms-xls</item>
+					<item name="variable2">X${item9:한-글} 파일명.xls</item>
+				</properties>
+			</action>
+		</transform>
+	</translet>
+	
+	<translet name="home2">
+		<transform type="transform/text" contentType="text/plain">
+			<template file="/c:\ADE_JHLabs\workspace\aspectran-web\webapp\WEB-INF\web.xml" encoding="utf-8"/>
+		</transform>
+	</translet>
+
+	<translet name="test_xsl">
+		<transform type="transform/xsl" contentType="text/html">
+			<template file="WEB-INF/xsl/service/test.xsl"/>
+		</transform>
+	</translet>
+	
+	<translet name="test_jsp">
+		<dispatch contentType="text/html">
+			<action bean="common.action.a1" method="testAction"/>
+			<template>/WEB-INF/jsp/hello.jsp</template>
+		</dispatch>
+	</translet>
+	
+	<translet name="home3">
+		<redirect translet="home"/>
+	</translet>
+
+	<translet name="error">
+		<redirect url="http://www.naver.com"/>
+	</translet>
+<!--
+	<translet name="home2">
+		<require>
+			<ticket name="testTicket" rejectInvalidTicket="true"/>
+		</require>
+		<request method="get">
+			<attributes>
+				<item name="item0">${item0:한글2}</item>
+				<item name="item1">${item1}</item>
+				<item name="item2">${item2:aaa}</item>
+			</attributes>
+		</request>
+		<process>
+			<content id="content9">
+				<echo id="echo9">
+					<item name="item0"/>
+					<item name="item1"/>
+					<item name="item2"/>
+				</echo>
+				<include translet="home3" ignoreTicket="true">
+					<attributes>
+						<item name="item0">한!!!!!!!!!글</item>
+						<item name="item1">@{item1}</item>
+						<item name="item2">@{item2:aaa}</item>
+					</attributes>
+				</include>
+			</content>
+		</process>
+		<response>
+			<redirect translet="home"/>
+		</response>
+	</translet>
+
+	<translet name="home3">
+		<require>
+			<ticket name="testTicket" rejectInvalidTicket="true"/>
+		</require>
+		<request method="get">
+			<attributes>
+				<item name="item0">${item0:한글2}</item>
+				<item name="item1">${item1}</item>
+				<item name="item2">${item2:aaa}</item>
+			</attributes>
+		</request>
+		<process>
+			<content>
+				<echo id="echo8">
+					<item name="item0"/>
+					<item name="item1"/>
+					<item name="item2"/>
+				</echo>
+				<echo id="echo80">
+					<item name="item0"/>
+					<item name="item1"/>
+					<item name="item2"/>
+				</echo>
+			</content>
+			<content id="content88">
+				<echo id="echo88">
+					<item name="item0"/>
+					<item name="item1"/>
+					<item name="item2"/>
+				</echo>
+			</content>
+		</process>
+		<response>
+			<redirect translet="home"/>
+		</response>
+	</translet>
+
+	<translet name="redirect">
+		<request method="get">
+			<attributes>
+				<item name="q">한글1</item>
+			</attributes>
+		</request>
+		<response>
+			<redirect>
+				<url>
+					<![CDATA[
+					http://search.naver.com/search.naver?where=nexearch&sm=ies_hty&ie=utf8&query=@{q}
+					]]>
+				</url>
+			</redirect>
+		</response>
+	</translet>
+
+	<translet name="redirect2">
+		<require>
+			<ticket name="testTicket2" rejectInvalidTicket="false"/>
+		</require>
+		<request method="get">
+			<attributes>
+				<item name="q">한글2</item>
+			</attributes>
+		</request>
+		<response>
+			<redirect url="http://search.naver.com/search.naver">
+				<parameters>
+					<item name="query">#{testTicket2^testString}</item>
+				</parameters>
+			</redirect>
+		</response>
+	</translet>
+
+	<translet name="forward">
+		<request method="get">
+			<attributes>
+				<item name="q">한글3</item>
+			</attributes>
+		</request>
+		<response>
+			<forward translet="home">
+				<parameters>
+					<item name="item1">${q}</item>
+				</parameters>
+			</forward>
+		</response>
+	</translet>
+-->
+</aspectran>
