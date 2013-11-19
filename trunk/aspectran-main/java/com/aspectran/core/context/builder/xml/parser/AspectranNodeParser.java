@@ -34,7 +34,7 @@ import com.aspectran.core.context.builder.xml.DefaultSettings;
 import com.aspectran.core.context.builder.xml.InputStreamResource;
 import com.aspectran.core.context.builder.xml.XmlBuilderAssistant;
 import com.aspectran.core.rule.AspectRule;
-import com.aspectran.core.rule.AspectTriggerAdviceRule;
+import com.aspectran.core.rule.AspectJobAdviceRule;
 import com.aspectran.core.rule.BeanRule;
 import com.aspectran.core.rule.FileItemRule;
 import com.aspectran.core.rule.ItemRuleMap;
@@ -309,20 +309,22 @@ public class AspectranNodeParser {
 		parser.addNodelet("/aspectran/aspect/advice/finally", new AspectAdviceRuleNodeletAdder(assistant, AspectAdviceType.FINALLY));
 		parser.addNodelet("/aspectran/aspect/advice/exceptionRaized", new AspectExceptionRaisedAdviceRuleNodeletAdder(assistant));
 		
-		parser.addNodelet("/aspectran/aspect/advice/trigger", new Nodelet() {
+		parser.addNodelet("/aspectran/aspect/advice/job", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
 				String transletName = attributes.getProperty("translet");
+				String disabled = attributes.getProperty("disabled");
 
 				transletName = assistant.getFullTransletName(transletName);
 				
 				AspectRule ar = (AspectRule)assistant.peekObject();
 				
-				AspectTriggerAdviceRule atar = new AspectTriggerAdviceRule();
-				atar.setAspectId(ar.getId());
-				atar.setAspectAdviceType(AspectAdviceType.TRIGGER);
-				atar.setTriggerTransletName(transletName);
+				AspectJobAdviceRule ajar = new AspectJobAdviceRule();
+				ajar.setAspectId(ar.getId());
+				ajar.setAspectAdviceType(AspectAdviceType.JOB);
+				ajar.setTriggerTransletName(transletName);
+				ajar.setDisabled(Boolean.parseBoolean(disabled));
 				
-				ar.addAspectTriggerAdviceRule(atar);
+				ar.addAspectJobAdviceRule(ajar);
 			}
 		});
 		
