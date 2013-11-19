@@ -73,7 +73,7 @@ scope (translet | request | content | action-content | bean-content | response |
 
 <!ELEMENT pointcut (#PCDATA)>
 <!ATTLIST pointcut
-type (wildcard | regexpt | interval | cronExpression) #IMPLIED
+type (wildcard | regexpt | simpleTrigger | cronTrigger) #IMPLIED
 >
 
 <!ELEMENT advice ((before?, after?, around?, finally?, exceptionRaized?) | job*)>
