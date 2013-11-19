@@ -24,7 +24,7 @@
 		<servlet-class>com.aspectran.web.context.servlet.WebActivityServlet</servlet-class>
 		<init-param>
 			<param-name>contextConfigLocation</param-name>
-			<param-value>/WEB-INF/classes/aspectran/aspectran-example.xml</param-value>
+			<param-value>classpath:aspectran/aspectran-example.xml</param-value>
 		</init-param>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
