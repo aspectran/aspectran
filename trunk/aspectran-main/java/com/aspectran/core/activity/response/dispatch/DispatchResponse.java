@@ -15,8 +15,8 @@
  */
 package com.aspectran.core.activity.response.dispatch;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.aspectran.core.activity.CoreActivity;
 import com.aspectran.core.activity.process.ActionList;
@@ -35,9 +35,9 @@ import com.aspectran.core.type.ResponseType;
  */
 public class DispatchResponse implements Responsible {
 
-	private final Log log = LogFactory.getLog(DispatchResponse.class);
+	private final Logger logger = LoggerFactory.getLogger(DispatchResponse.class);
 
-	private final boolean debugEnabled = log.isDebugEnabled();
+	private final boolean debugEnabled = logger.isDebugEnabled();
 
 	private final DispatchResponseRule dispatchResponseRule;
 	
@@ -69,8 +69,8 @@ public class DispatchResponse implements Responsible {
 			}
 
 			if(debugEnabled) {
-				log.debug("Dispatch {viewDispatcher: " + viewDispatcherName + ", template: " + dispatchResponseRule.getTemplateFile() + "}");
-				log.debug("Dispatch Response OK.");
+				logger.debug("Dispatch {viewDispatcher: " + viewDispatcherName + ", template: " + dispatchResponseRule.getTemplateFile() + "}");
+				logger.debug("Dispatch Response OK.");
 			}
 		} catch(Exception e) {
 			throw new DispatchResponseException("Dispatch Response error: " + dispatchResponseRule, e);

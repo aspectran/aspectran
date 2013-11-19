@@ -24,8 +24,8 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.sax.SAXSource;
 import javax.xml.transform.stream.StreamResult;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.aspectran.core.activity.CoreActivity;
 import com.aspectran.core.activity.process.ActionList;
@@ -48,11 +48,11 @@ public class XmlTransform extends AbstractTransform implements Responsible {
 
 	public static final String OUTPUT_METHOD = "xml";
 	
-	private final Log log = LogFactory.getLog(XmlTransform.class);
+	private final Logger logger = LoggerFactory.getLogger(XmlTransform.class);
 
-	private final boolean traceEnabled = log.isTraceEnabled();
+	private final boolean traceEnabled = logger.isTraceEnabled();
 
-	private final boolean debugEnabled = log.isDebugEnabled();
+	private final boolean debugEnabled = logger.isDebugEnabled();
 
 	/**
 	 * Instantiates a new xML transformer.
@@ -99,11 +99,11 @@ public class XmlTransform extends AbstractTransform implements Responsible {
 			if(traceEnabled) {
 				StringWriter writer = new StringWriter();
 				transformer.transform(new SAXSource(xreader, isource), new StreamResult(writer));
-				log.trace("XML Source: " + AspectranConstant.LINE_SEPARATOR + writer.toString());
+				logger.trace("XML Source: " + AspectranConstant.LINE_SEPARATOR + writer.toString());
 			}
 			
 			if(debugEnabled) {
-				log.debug("response " + transformRule);
+				logger.debug("response " + transformRule);
 			}
 		} catch(Exception e) {
 			throw new TransformResponseException("XML Transformation error: " + transformRule, e);

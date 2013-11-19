@@ -18,8 +18,8 @@ package com.aspectran.web.context.listener;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.bean.scope.ApplicationScope;
@@ -27,17 +27,18 @@ import com.aspectran.web.adapter.WebApplicationAdapter;
 
 public class AspectranWebApplicationListener implements ServletContextListener {
 
-	private final Log log = LogFactory.getLog(AspectranWebApplicationListener.class);
-	
+	private final Logger logger = LoggerFactory.getLogger(AspectranWebApplicationListener.class);
+
 	private ApplicationAdapter applicationAdapter;
-	
+
 	/**
 	 * Initialize the translets root context.
 	 * 
 	 * @param event the event
 	 */
 	public void contextInitialized(ServletContextEvent event) {
-		log.info("initialize AspectranApplicationListener " + this);
+		logger.info("initializing AspectranApplicationListener...");
+
 		applicationAdapter = WebApplicationAdapter.determineWebApplicationAdapter(event.getServletContext());
 		event.getServletContext().setAttribute(WebApplicationAdapter.WEB_APPLICATION_ADAPTER_ATTRIBUTE, applicationAdapter);
 	}
@@ -48,16 +49,20 @@ public class AspectranWebApplicationListener implements ServletContextListener {
 	 * @param event the event
 	 */
 	public void contextDestroyed(ServletContextEvent event) {
-		log.info("destory AspectranApplicationListener " + this);
+		try {
+			if(applicationAdapter != null) {
+				event.getServletContext().removeAttribute(WebApplicationAdapter.WEB_APPLICATION_ADAPTER_ATTRIBUTE);
 
-		if(applicationAdapter != null) {
-			event.getServletContext().removeAttribute(WebApplicationAdapter.WEB_APPLICATION_ADAPTER_ATTRIBUTE);
-			
-			ApplicationScope scope = (ApplicationScope)applicationAdapter.getAttribute(ApplicationScope.APPLICATION_SCOPE_ATTRIBUTE);
-			
-			if(scope != null)
-				scope.destroy();
+				ApplicationScope scope = (ApplicationScope)applicationAdapter.getAttribute(ApplicationScope.APPLICATION_SCOPE_ATTRIBUTE);
+
+				if(scope != null)
+					scope.destroy();
+			}
+		} catch(Exception e) {
+			logger.error("AspectranApplicationListener failed to destroy cleanly: " + e.toString());
 		}
+
+		logger.info("AspectranApplicationListener successful destroyed.");
 	}
 
 }

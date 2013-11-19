@@ -15,8 +15,8 @@
  */
 package com.aspectran.core.activity.response;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.aspectran.core.activity.CoreActivity;
 import com.aspectran.core.activity.process.ActionList;
@@ -29,11 +29,11 @@ import com.aspectran.core.type.ResponseType;
  */
 public class RedirectResponse implements Responsible {
 	
-	/** The log. */
-	private final Log log = LogFactory.getLog(RedirectResponse.class);
+	/** The logger. */
+	private final Logger logger = LoggerFactory.getLogger(RedirectResponse.class);
 
 	/** The debug enabled. */
-	private final boolean debugEnabled = log.isDebugEnabled();
+	private final boolean debugEnabled = logger.isDebugEnabled();
 
 	/** The redirect response rule. */
 	private final RedirectResponseRule redirectResponseRule;
@@ -62,7 +62,7 @@ public class RedirectResponse implements Responsible {
 			responseAdapter.redirect(activity, redirectResponseRule);
 			
 			if(debugEnabled) {
-				log.debug("response " + redirectResponseRule);
+				logger.debug("response " + redirectResponseRule);
 			}
 		} catch(Exception e) {
 			throw new ResponseException("Redirect response error: " + redirectResponseRule, e);

@@ -18,8 +18,8 @@ package com.aspectran.core.activity.response.transform;
 import java.io.StringWriter;
 import java.io.Writer;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.aspectran.core.activity.CoreActivity;
 import com.aspectran.core.activity.process.ActionList;
@@ -37,11 +37,11 @@ import com.aspectran.core.rule.TransformRule;
  */
 public class JsonTransform extends AbstractTransform implements Responsible {
 	
-	private final Log log = LogFactory.getLog(JsonTransform.class);
+	private final Logger logger = LoggerFactory.getLogger(JsonTransform.class);
 	
-	private final boolean traceEnabled = log.isTraceEnabled();
+	private final boolean traceEnabled = logger.isTraceEnabled();
 	
-	private final boolean debugEnabled = log.isDebugEnabled();
+	private final boolean debugEnabled = logger.isDebugEnabled();
 	
 	/**
 	 * Instantiates a new jSON transformer.
@@ -79,11 +79,11 @@ public class JsonTransform extends AbstractTransform implements Responsible {
 				StringWriter writer = new StringWriter();
 				ContentsJSONWriter contentsJSONWriter2 = new ContentsJSONWriter(writer, true);
 				contentsJSONWriter2.write(processResult);
-				log.trace("JSON Source: " + AspectranConstant.LINE_SEPARATOR + writer.toString());
+				logger.trace("JSON Source: " + AspectranConstant.LINE_SEPARATOR + writer.toString());
 			}
 			
 			if(debugEnabled) {
-				log.debug("response " + transformRule);
+				logger.debug("response " + transformRule);
 			}
 		} catch(Exception e) {
 			throw new TransformResponseException("JSON Transformation error: " + transformRule, e);

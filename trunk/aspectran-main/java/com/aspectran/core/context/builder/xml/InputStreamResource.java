@@ -20,8 +20,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.aspectran.core.util.ResourceUtils;
 
@@ -32,7 +32,7 @@ import com.aspectran.core.util.ResourceUtils;
  */
 public class InputStreamResource {
 	
-	private static final Log log = LogFactory.getLog(InputStreamResource.class);
+	private static final Logger logger = LoggerFactory.getLogger(InputStreamResource.class);
 
 	private String resource;
 	
@@ -63,7 +63,7 @@ public class InputStreamResource {
 			
 			inputStream = ResourceUtils.getResourceAsStream(resource);
 		} catch(IOException e) {
-			log.error("Cannot read resource '" + resource + "'");
+			logger.error("Cannot read resource '" + resource + "'");
 			throw e;
 		}
 	}
@@ -84,7 +84,7 @@ public class InputStreamResource {
 			
 			inputStream = ResourceUtils.getUrlAsStream(url);
 		} catch(IOException e) {
-			log.error("Cannot read url '" + resource + "'");
+			logger.error("Cannot read url '" + resource + "'");
 			throw e;
 		}
 	}
@@ -102,7 +102,7 @@ public class InputStreamResource {
 			
 			inputStream = new FileInputStream(file);
 		} catch(IOException e) {
-			log.error("Cannot read file '" + resource + "'");
+			logger.error("Cannot read file '" + resource + "'");
 			throw e;
 		}
 	}

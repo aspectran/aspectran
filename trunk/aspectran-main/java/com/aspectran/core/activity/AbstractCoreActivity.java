@@ -18,8 +18,8 @@ package com.aspectran.core.activity;
 import java.lang.reflect.Constructor;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.activity.process.ContentList;
@@ -60,11 +60,11 @@ import com.aspectran.core.type.ResponseType;
  */
 public abstract class AbstractCoreActivity implements CoreActivity {
 
-	/** The log. */
-	private final Log log = LogFactory.getLog(AbstractCoreActivity.class);
+	/** The logger. */
+	private final Logger logger = LoggerFactory.getLogger(AbstractCoreActivity.class);
 	
 	/** The debug enabled. */
-	private final boolean debugEnabled = log.isDebugEnabled();
+	private final boolean debugEnabled = logger.isDebugEnabled();
 
 	/** The context. */
 	protected final AspectranContext context;
@@ -217,7 +217,7 @@ public abstract class AbstractCoreActivity implements CoreActivity {
 
 	public void init(String transletName) {
 		if(debugEnabled) {
-			log.debug(">> " + transletName);
+			logger.debug(">> " + transletName);
 		}
 		
 		TransletRule transletRule = context.getTransletRuleRegistry().getTransletRule(transletName);
@@ -226,7 +226,7 @@ public abstract class AbstractCoreActivity implements CoreActivity {
 			throw new TransletNotFoundException(transletName);
 		
 		if(debugEnabled) {
-			log.debug("translet " + transletRule);
+			logger.debug("translet " + transletRule);
 		}
 
 		Class<? extends CoreTranslet> transletInterfaceClass = getTransletInterfaceClass();
@@ -256,10 +256,6 @@ public abstract class AbstractCoreActivity implements CoreActivity {
 			run(null);
 		} catch(Exception e) {
 			throw new CoreActivityException("aspecran activity error", e);
-		} finally {
-			if(isExceptionRaised()) {
-				log.error("original raised exception", getRaisedException());
-			}
 		}
 	}
 	
@@ -292,11 +288,9 @@ public abstract class AbstractCoreActivity implements CoreActivity {
 			ResponseByContentTypeRuleMap responseByContentTypeRuleMap = transletRule.getExceptionHandlingRuleMap();
 			
 			if(responseByContentTypeRuleMap != null) {
-				log.debug("responseByContentTypeRule " + responseByContentTypeRuleMap.getResponseByContentTypeRule());
 				responseByContentType(responseByContentTypeRuleMap);
 				
 				if(isResponseEnd) {
-					log.error(e);
 					return;
 				}
 			}
@@ -307,7 +301,6 @@ public abstract class AbstractCoreActivity implements CoreActivity {
 				responseByContentType(exceptionRaizedAdviceRuleList);
 				
 				if(isResponseEnd) {
-					log.error(e);
 					return;
 				}
 			}
@@ -372,7 +365,6 @@ public abstract class AbstractCoreActivity implements CoreActivity {
 					responseByContentType(exceptionRaizedAdviceRuleList);
 					
 					if(isResponseEnd) {
-						log.error(e);
 						return;
 					}
 				}
@@ -416,7 +408,6 @@ public abstract class AbstractCoreActivity implements CoreActivity {
 						responseByContentType(exceptionRaizedAdviceRuleList);
 
 						if(isResponseEnd) {
-							log.error(e);
 							return;
 						}
 					}
@@ -427,12 +418,12 @@ public abstract class AbstractCoreActivity implements CoreActivity {
 		}
 		
 		/*
-		if(log.isDebugEnabled()) {
+		if(logger.isDebugEnabled()) {
 			if(getProcessResult() != null) {
-				log.debug("contentResult:");
+				logger.debug("contentResult:");
 				for(ContentResult contentResult : getProcessResult()) {
 					for(ActionResult actionResult : contentResult) {
-						log.debug("\t{actionId: " + actionResult.getActionId() + ", resultValue: " + actionResult.getResultValue() + "}\n");
+						logger.debug("\t{actionId: " + actionResult.getActionId() + ", resultValue: " + actionResult.getResultValue() + "}\n");
 					}
 				}
 			}
@@ -471,7 +462,6 @@ public abstract class AbstractCoreActivity implements CoreActivity {
 					responseByContentType(exceptionRaizedAdviceRuleList);
 					
 					if(isResponseEnd) {
-						log.error(e);
 						return;
 					}
 				}
@@ -593,7 +583,7 @@ public abstract class AbstractCoreActivity implements CoreActivity {
 	 */
 	private void execute(ActionList actionList) throws CoreActivityException {
 		if(debugEnabled) {
-			log.debug("executable actions " + actionList.toString());
+			logger.debug("executable actions " + actionList.toString());
 		}
 		
 		if(!actionList.isHidden()) {
@@ -633,7 +623,6 @@ public abstract class AbstractCoreActivity implements CoreActivity {
 						responseByContentType(exceptionRaizedAdviceRuleList);
 						
 						if(isResponseEnd) {
-							log.error(e);
 							return;
 						}
 					}
@@ -670,13 +659,13 @@ public abstract class AbstractCoreActivity implements CoreActivity {
 	
 	private void execute(Executable action) throws ActionExecutionException {
 		if(debugEnabled)
-			log.debug("execute action " + action.toString());
+			logger.debug("execute action " + action.toString());
 		
 		try {
 			Object resultValue = action.execute(this);
 		
 			if(debugEnabled)
-				log.debug("action " + action + " result: " + resultValue);
+				logger.debug("action " + action + " result: " + resultValue);
 			
 			if(!action.isHidden() && resultValue != ActionResult.NO_RESULT) {
 				translet.addActionResult(action.getActionId(), resultValue);
@@ -697,7 +686,7 @@ public abstract class AbstractCoreActivity implements CoreActivity {
 				if(adviceBean == null)
 					adviceBean = getBean(aspectAdviceRule.getAdviceBeanId());
 				
-				log.debug("adviceBean [" + adviceBean + "] aspectAdviceRule " + aspectAdviceRule);
+				logger.debug("adviceBean [" + adviceBean + "] aspectAdviceRule " + aspectAdviceRule);
 				translet.putAspectAdviceBean(aspectAdviceRule.getAspectId(), adviceBean);
 			}
 
@@ -705,7 +694,7 @@ public abstract class AbstractCoreActivity implements CoreActivity {
 				Object adviceActionResult = action.execute(this);
 				
 				if(adviceActionResult != null && adviceActionResult != ActionResult.NO_RESULT) {
-					log.debug("adviceActionResult [" + adviceActionResult + "] aspectAdviceRule " + aspectAdviceRule);
+					logger.debug("adviceActionResult [" + adviceActionResult + "] aspectAdviceRule " + aspectAdviceRule);
 					translet.putAdviceResult(aspectAdviceRule, adviceActionResult);
 				}
 			} catch(Exception e) {
@@ -741,7 +730,7 @@ public abstract class AbstractCoreActivity implements CoreActivity {
 	 */
 	private void forward() throws CoreActivityException {
 		if(debugEnabled) {
-			log.debug("> forwarding for translet '" + forwardTransletName + "'");
+			logger.debug("> forwarding for translet '" + forwardTransletName + "'");
 		}
 		
 		ProcessResult processResult = translet.getProcessResult();
@@ -784,7 +773,7 @@ public abstract class AbstractCoreActivity implements CoreActivity {
 			responseRule = newResponseRule;
 			
 			if(debugEnabled) {
-				log.debug("response by content-type: " + responseRule);
+				logger.debug("response by content-type: " + responseRule);
 			}
 
 			translet.setProcessResult(null);
@@ -819,7 +808,7 @@ public abstract class AbstractCoreActivity implements CoreActivity {
 	 */
 	public void responseEnd() {
 		//if(debugEnabled) {
-		//	log.debug("response terminated");
+		//	logger.debug("response terminated");
 		//}
 		
 		isResponseEnd = true;
@@ -848,8 +837,10 @@ public abstract class AbstractCoreActivity implements CoreActivity {
 	}
 
 	public void setRaisedException(Exception raisedException) {
-		if(this.raisedException == null)
+		if(this.raisedException == null) {
+			logger.error("original raised exception:", raisedException);
 			this.raisedException = raisedException;
+		}
 	}
 	
 	/* (non-Javadoc)

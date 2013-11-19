@@ -2,8 +2,8 @@ package com.aspectran.web.context;
 
 import javax.servlet.ServletContext;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.aspectran.core.context.AspectranContext;
 import com.aspectran.core.context.builder.AspectranContextBuilder;
@@ -11,7 +11,7 @@ import com.aspectran.core.context.builder.xml.XmlAspectranContextBuilder;
 
 public class AspectranContextLoader {
 
-	private final Log log = LogFactory.getLog(AspectranContextLoader.class);
+	private final Logger logger = LoggerFactory.getLogger(AspectranContextLoader.class);
 
 	public static final String ASPECTRAN_CONTEXT_LOADER_ATTRIBUTE = AspectranContextLoader.class.getName();
 	
@@ -35,7 +35,7 @@ public class AspectranContextLoader {
 	private void loadAspectranContext(String contextConfigLocation) {
 		//servletContext.log("Loading AspectranContext: " + contextConfigLocation);
 		
-		log.info("loading AspectranContext [" + contextConfigLocation + "]");
+		logger.info("loading AspectranContext [" + contextConfigLocation + "]");
 		
 		long startTime = System.currentTimeMillis();
 
@@ -46,12 +46,12 @@ public class AspectranContextLoader {
 			aspectranContext = builder.build(contextConfigLocation);
 			
 			long elapsedTime = System.currentTimeMillis() - startTime;
-			log.info("AspectranContext: initialization completed in " + elapsedTime + " ms");
+			logger.info("AspectranContext: initialization completed in " + elapsedTime + " ms");
 		} catch(RuntimeException ex) {
-			log.error("AspectranContext initialization failed", ex);
+			logger.error("AspectranContext initialization failed", ex);
 			throw ex;
 		} catch(Error err) {
-			log.error("AspectranContext initialization failed", err);
+			logger.error("AspectranContext initialization failed", err);
 			throw err;
 		}
 	}

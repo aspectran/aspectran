@@ -12,8 +12,8 @@ import java.util.Map;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.aspectran.core.util.ClassUtils;
 import com.aspectran.core.util.ResourceUtils;
@@ -22,8 +22,8 @@ import com.aspectran.core.util.wildcard.WildcardPattern;
 
 public class BeanClassLoader {
 
-	/** The log. */
-	private final Log log = LogFactory.getLog(BeanClassLoader.class);
+	/** The logger. */
+	private final Logger logger = LoggerFactory.getLogger(BeanClassLoader.class);
 	
 	private final char RESOURCE_PATH_SPEPARATOR = '/';
 
@@ -149,7 +149,7 @@ public class BeanClassLoader {
 						className = className.replace(RESOURCE_PATH_SPEPARATOR, ClassUtils.PACKAGE_SEPARATOR);
 						Class<?> classType = classLoader.loadClass(className);
 						String beanId = combineBeanId(relativePath);
-						log.debug("beanClass {beanId: " + beanId + ", className: " + className + "} from jar: " + jarFile.getName());
+						logger.debug("beanClass {beanId: " + beanId + ", className: " + className + "} from jar: " + jarFile.getName());
 						//System.out.println("  [clazz] " + className);
 						//System.out.println("  [beanId] " + combineBeanId(relativePath));
 						classMap.put(beanId, classType);
@@ -237,7 +237,7 @@ public class BeanClassLoader {
 					String beanId = combineBeanId(relativePath);
 					//System.out.println("  [clazz] " + className);
 					//System.out.println("  [beanId] " + combineBeanId(relativePath));
-					log.debug("beanClass {beanId: " + beanId + ", className: " + className + "}");
+					logger.debug("beanClass {beanId: " + beanId + ", className: " + className + "}");
 					classMap.put(beanId, classType);
 				}
 			}

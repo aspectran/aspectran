@@ -21,8 +21,8 @@ import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.aspectran.core.activity.CoreActivity;
 import com.aspectran.core.activity.process.result.ActionResult;
@@ -44,9 +44,9 @@ import com.aspectran.core.rule.ResponseRule;
  */
 public class JspViewDispatcher implements ViewDispatcher {
 
-	private final Log log = LogFactory.getLog(JspViewDispatcher.class);
+	private final Logger logger = LoggerFactory.getLogger(JspViewDispatcher.class);
 
-	private final boolean debugEnabled = log.isDebugEnabled();
+	private final boolean debugEnabled = logger.isDebugEnabled();
 
 	/* (non-Javadoc)
 	 * @see com.aspectran.core.activity.response.dispatch.ViewDispatcher#dispatch(com.aspectran.core.activity.AspectranActivity, com.aspectran.base.rule.DispatchResponseRule)
@@ -100,10 +100,10 @@ public class JspViewDispatcher implements ViewDispatcher {
 					}
 
 					sb2.append("]");
-					log.debug(sb2.toString());
+					logger.debug(sb2.toString());
 				}
 
-				log.debug("JSP Dispatch {templateFile: " + templateFile + "}");
+				logger.debug("JSP Dispatch {templateFile: " + templateFile + "}");
 			}
 		} catch(Exception e) {
 			throw new DispatchResponseException("Dispatch response error: " + dispatchResponseRule, e);

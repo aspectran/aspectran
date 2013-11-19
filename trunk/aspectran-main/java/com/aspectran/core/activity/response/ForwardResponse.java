@@ -17,8 +17,8 @@ package com.aspectran.core.activity.response;
 
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.aspectran.core.activity.CoreActivity;
 import com.aspectran.core.activity.process.ActionList;
@@ -33,9 +33,9 @@ import com.aspectran.core.type.ResponseType;
  */
 public class ForwardResponse implements Responsible {
 
-	private final Log log = LogFactory.getLog(ForwardResponse.class);
+	private final Logger logger = LoggerFactory.getLogger(ForwardResponse.class);
 	
-	private final boolean debugEnabled = log.isDebugEnabled();
+	private final boolean debugEnabled = logger.isDebugEnabled();
 	
 	/** The forward response rule. */
 	private final ForwardResponseRule forwardResponseRule;
@@ -68,7 +68,7 @@ public class ForwardResponse implements Responsible {
 		}
 		
 		if(debugEnabled) {
-			log.debug("response " + forwardResponseRule);
+			logger.debug("response " + forwardResponseRule);
 		}
 	}
 	

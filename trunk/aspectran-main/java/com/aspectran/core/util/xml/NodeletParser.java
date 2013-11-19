@@ -15,8 +15,8 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.FactoryConfigurationError;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
@@ -38,7 +38,7 @@ import org.xml.sax.SAXParseException;
  */
 public class NodeletParser {
 	
-	private final Log log = LogFactory.getLog(NodeletParser.class);
+	private final Logger logger = LoggerFactory.getLogger(NodeletParser.class);
 
 	protected final static Properties EMPTY_ATTRIBUTES = new Properties();
 	
@@ -193,7 +193,7 @@ public class NodeletParser {
 					attributes = NodeletUtils.parseAttributes(node);
 					text = NodeletUtils.getNodeValue(node);
 
-					if(log.isTraceEnabled()) {
+					if(logger.isTraceEnabled()) {
 						StringBuilder sb = new StringBuilder(pathString);
 						
 						if(attributes != null && attributes.size() > 0) {
@@ -204,7 +204,7 @@ public class NodeletParser {
 							sb.append(" ").append(text);
 						}
 						
-						log.trace(sb.toString());
+						logger.trace(sb.toString());
 					}
 				} else {
 					attributes = EMPTY_ATTRIBUTES;
