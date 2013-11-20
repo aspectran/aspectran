@@ -4,11 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.quartz.CronScheduleBuilder;
-import org.quartz.Job;
 import org.quartz.JobBuilder;
+import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
-import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.SchedulerFactory;
@@ -19,7 +17,6 @@ import org.quartz.impl.matchers.GroupMatcher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.aspectran.core.activity.CoreActivityException;
 import com.aspectran.core.context.AspectranContext;
 import com.aspectran.core.rule.AspectJobAdviceRule;
 import com.aspectran.core.rule.AspectRule;
@@ -28,8 +25,6 @@ import com.aspectran.core.rule.PointcutRule;
 import com.aspectran.core.type.JoinpointTargetType;
 import com.aspectran.core.type.PointcutType;
 import com.aspectran.scheduler.AspectranScheduler;
-import com.aspectran.scheduler.activity.SchedulingActivity;
-import com.aspectran.scheduler.activity.SchedulingActivityImpl;
 
 public class QuartzAspectranScheduler implements AspectranScheduler {
 
@@ -191,32 +186,19 @@ public class QuartzAspectranScheduler implements AspectranScheduler {
 		if(aspectJobAdviceRule.isDisabled())
 			return null;
 		
-		final String transletName = aspectJobAdviceRule.getJobTransletName();
-		
-		Job job = new Job() {
-			public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
-				try {
-					runActivity(transletName);
-				} catch(CoreActivityException e) {
-					throw new JobExecutionException(e);
-				}
-			}
-		};
-		
 		String jobName = aspectJobAdviceRule.getJobTransletName();
 		String jobGroup = aspectJobAdviceRule.getAspectId();
 		
-		JobDetail jobDetail = JobBuilder.newJob(job.getClass())
+		JobDataMap jobDataMap = new JobDataMap();
+		jobDataMap.put("aspectranContext", context);
+		jobDataMap.put("transletName", aspectJobAdviceRule.getJobTransletName());
+		
+		JobDetail jobDetail = JobBuilder.newJob(ScheduleActivityRunJob.class)
 				.withIdentity(jobName, jobGroup)
+				.setJobData(jobDataMap)
 				.build();
 		
 		return jobDetail;
-	}
-	
-	private void runActivity(String transletName) throws CoreActivityException {
-		SchedulingActivity activity = new SchedulingActivityImpl(context);
-		activity.init(transletName);
-		activity.run();
 	}
 	
 }

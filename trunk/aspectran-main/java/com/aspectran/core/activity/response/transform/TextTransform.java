@@ -76,9 +76,12 @@ public class TextTransform extends AbstractTransform implements Responsible {
 	 * @see org.jhlabs.translets.engine.response.Responsible#response(org.jhlabs.translets.action.Translet)
 	 */
 	public void response(CoreActivity activity) throws TransformResponseException {
+		ResponseAdapter responseAdapter = activity.getResponseAdapter();
+		
+		if(responseAdapter == null)
+			return;
+
 		try {
-			ResponseAdapter responseAdapter = activity.getResponseAdapter();
-			
 			String contentType = transformRule.getContentType();
 			String outputEncoding = transformRule.getCharacterEncoding();
 

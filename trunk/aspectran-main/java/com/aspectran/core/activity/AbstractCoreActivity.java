@@ -295,13 +295,15 @@ public abstract class AbstractCoreActivity implements CoreActivity {
 				}
 			}
 		
-			List<AspectAdviceRule> exceptionRaizedAdviceRuleList = aspectAdviceRuleRegistry.getExceptionRaizedAdviceRuleList();
-			
-			if(exceptionRaizedAdviceRuleList != null) {
-				responseByContentType(exceptionRaizedAdviceRuleList);
+			if(aspectAdviceRuleRegistry != null) {
+				List<AspectAdviceRule> exceptionRaizedAdviceRuleList = aspectAdviceRuleRegistry.getExceptionRaizedAdviceRuleList();
 				
-				if(isResponseEnd) {
-					return;
+				if(exceptionRaizedAdviceRuleList != null) {
+					responseByContentType(exceptionRaizedAdviceRuleList);
+					
+					if(isResponseEnd) {
+						return;
+					}
 				}
 			}
 			

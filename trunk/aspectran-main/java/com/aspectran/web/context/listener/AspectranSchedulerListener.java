@@ -15,21 +15,23 @@
  */
 package com.aspectran.web.context.listener;
 
+import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.aspectran.core.adapter.ApplicationAdapter;
-import com.aspectran.core.context.bean.scope.ApplicationScope;
-import com.aspectran.web.adapter.WebApplicationAdapter;
+import com.aspectran.core.context.AspectranContext;
+import com.aspectran.scheduler.AspectranScheduler;
+import com.aspectran.scheduler.quartz.QuartzAspectranScheduler;
+import com.aspectran.web.context.AspectranContextLoader;
 
 public class AspectranSchedulerListener implements ServletContextListener {
 
 	private final Logger logger = LoggerFactory.getLogger(AspectranSchedulerListener.class);
 
-	private ApplicationAdapter applicationAdapter;
+	private AspectranScheduler aspectranScheduler;
 
 	/**
 	 * Initialize the translets root context.
@@ -37,10 +39,23 @@ public class AspectranSchedulerListener implements ServletContextListener {
 	 * @param event the event
 	 */
 	public void contextInitialized(ServletContextEvent event) {
-		logger.info("initializing AspectranSchedulerListener...");
+		logger.info("initializing AspectranScheduler...");
 
-		applicationAdapter = WebApplicationAdapter.determineWebApplicationAdapter(event.getServletContext());
-		event.getServletContext().setAttribute(WebApplicationAdapter.WEB_APPLICATION_ADAPTER_ATTRIBUTE, applicationAdapter);
+		AspectranContext aspectranContext = getAspectranContext(event.getServletContext());
+		
+		if(aspectranContext == null) {
+			logger.error("AspectranScheduler has not been started. AspectranContext was not found.");
+			return;
+		}
+		
+		try {
+			aspectranScheduler = new QuartzAspectranScheduler(aspectranContext);
+			aspectranScheduler.startup();
+			
+			logger.info("AspectranScheduler has been started...");
+		} catch(Exception e) {
+			logger.error("AspectranScheduler failed to initialize: " + e.toString());
+		}
 	}
 
 	/**
@@ -50,19 +65,22 @@ public class AspectranSchedulerListener implements ServletContextListener {
 	 */
 	public void contextDestroyed(ServletContextEvent event) {
 		try {
-			if(applicationAdapter != null) {
-				event.getServletContext().removeAttribute(WebApplicationAdapter.WEB_APPLICATION_ADAPTER_ATTRIBUTE);
-
-				ApplicationScope scope = (ApplicationScope)applicationAdapter.getAttribute(ApplicationScope.APPLICATION_SCOPE_ATTRIBUTE);
-
-				if(scope != null)
-					scope.destroy();
-			}
+			if(aspectranScheduler != null)
+				aspectranScheduler.shutdown();
 		} catch(Exception e) {
-			logger.error("AspectranSchedulerListener failed to destroy cleanly: " + e.toString());
+			logger.error("AspectranScheduler failed to shutdown cleanly: " + e.toString());
 		}
 
-		logger.info("AspectranSchedulerListener successful destroyed.");
+		logger.info("AspectranScheduler successful shutdown.");
+	}
+	
+	private AspectranContext getAspectranContext(ServletContext servletContext) {
+		AspectranContextLoader aspectranContextLoader = (AspectranContextLoader)servletContext.getAttribute(AspectranContextLoader.ASPECTRAN_CONTEXT_LOADER_ATTRIBUTE);
+		
+		if(aspectranContextLoader != null)
+			return aspectranContextLoader.getAspectranContext();
+		
+		return null;
 	}
 
 }
