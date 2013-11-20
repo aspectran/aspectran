@@ -37,8 +37,11 @@ public class ScheduleActivityImpl extends AbstractCoreActivity implements Schedu
 
 	//private final boolean debugEnabled = log.isDebugEnabled();
 	
-	public ScheduleActivityImpl(AspectranContext context) {
+	public ScheduleActivityImpl(AspectranContext context, RequestAdapter requestAdapter, ResponseAdapter responseAdapter) {
 		super(context);
+		
+		setRequestAdapter(requestAdapter);
+		setResponseAdapter(responseAdapter);
 		
 		setTransletInterfaceClass(ScheduleTranslet.class);
 		setTransletImplementClass(ScheduleTransletImpl.class);
@@ -98,8 +101,7 @@ public class ScheduleActivityImpl extends AbstractCoreActivity implements Schedu
 	}
 	
 	public CoreActivity newCoreActivity() {
-		ScheduleActivityImpl activity = new ScheduleActivityImpl(getAspectranContext());
-		
+		ScheduleActivityImpl activity = new ScheduleActivityImpl(getAspectranContext(), getRequestAdapter(), getResponseAdapter());
 		return activity;
 	}
 

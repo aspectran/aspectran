@@ -51,6 +51,8 @@ public interface CoreActivity {
 	
 	public void run() throws CoreActivityException;
 	
+	public void runWithoutResponse() throws CoreActivityException;
+	
 	public void request() throws RequestException;
 	
 	public ProcessResult process() throws CoreActivityException;

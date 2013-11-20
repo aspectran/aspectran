@@ -73,13 +73,17 @@ public class TextTransform extends AbstractTransform implements Responsible {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.jhlabs.translets.engine.response.Responsible#response(org.jhlabs.translets.action.Translet)
+	 * @see com.aspectran.core.activity.response.Responsible#response(com.aspectran.core.activity.CoreActivity)
 	 */
 	public void response(CoreActivity activity) throws TransformResponseException {
 		ResponseAdapter responseAdapter = activity.getResponseAdapter();
 		
 		if(responseAdapter == null)
 			return;
+
+		if(debugEnabled) {
+			logger.debug("response " + transformRule);
+		}
 
 		try {
 			String contentType = transformRule.getContentType();
@@ -99,10 +103,6 @@ public class TextTransform extends AbstractTransform implements Responsible {
 				output.write(content);
 				output.flush();
 				output.close();
-			}
-
-			if(debugEnabled) {
-				logger.debug("response " + transformRule);
 			}
 		} catch(Exception e) {
 			throw new TransformResponseException("Text Tranformation error: " + transformRule, e);

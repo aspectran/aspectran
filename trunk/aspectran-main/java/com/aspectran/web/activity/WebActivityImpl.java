@@ -231,10 +231,6 @@ public class WebActivityImpl extends AbstractCoreActivity implements WebActivity
 	
 	public CoreActivity newCoreActivity() {
 		WebActivityImpl webActivity = new WebActivityImpl(getAspectranContext(), request, response);
-		webActivity.setRequestAdapter(getRequestAdapter());
-		webActivity.setResponseAdapter(getResponseAdapter());
-		webActivity.setSessionAdapter(getSessionAdapter());
-		
 		return webActivity;
 	}
 	

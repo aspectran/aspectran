@@ -110,6 +110,8 @@ public abstract class AbstractCoreActivity implements CoreActivity {
 	/** The translet name. */
 	private String transletName;
 	
+	private boolean withoutResponse;
+	
 	//private AspectAdviceResult aspectAdviceResult;
 	
 	/**
@@ -216,8 +218,12 @@ public abstract class AbstractCoreActivity implements CoreActivity {
 	}
 
 	public void init(String transletName) {
+		init(transletName, null);
+	}
+	
+	public void init(String transletName, ProcessResult processResult) {
 		if(debugEnabled) {
-			logger.debug(">> " + transletName);
+			logger.debug("run " + transletName);
 		}
 		
 		TransletRule transletRule = context.getTransletRuleRegistry().getTransletRule(transletName);
@@ -241,6 +247,9 @@ public abstract class AbstractCoreActivity implements CoreActivity {
 				args[1] = true;
 			
 			translet = (CoreTranslet)transletImplementConstructor.newInstance(args);
+			
+			if(processResult != null)
+				translet.setProcessResult(processResult);
 		} catch(Exception e) {
 			throw new TransletInstantiationException(transletInterfaceClass, transletImplementClass, e);
 		}
@@ -253,17 +262,25 @@ public abstract class AbstractCoreActivity implements CoreActivity {
 	
 	public void run() throws CoreActivityException {
 		try {
-			run(null);
+			withoutResponse = false;
+			
+			run1st();
 		} catch(Exception e) {
-			throw new CoreActivityException("aspecran activity error", e);
+			throw new CoreActivityException("aspecran activity run error", e);
 		}
 	}
 	
-	protected void run(ProcessResult processResult) throws CoreActivityException {
-		if(processResult != null) {
-			translet.setProcessResult(processResult);
+	public void runWithoutResponse() throws CoreActivityException {
+		try {
+			withoutResponse = true;
+			
+			run1st();
+		} catch(Exception e) {
+			throw new CoreActivityException("aspecran activity run error without response", e);
 		}
-
+	}
+	
+	protected void run1st() throws CoreActivityException {
 		AspectAdviceRuleRegistry aspectAdviceRuleRegistry = transletRule.getAspectAdviceRuleRegistry();
 		
 		try {
@@ -272,15 +289,15 @@ public abstract class AbstractCoreActivity implements CoreActivity {
 	
 				if(finallyAdviceRuleList != null) {
 					try {
-						run2(aspectAdviceRuleRegistry);
+						run2nd(aspectAdviceRuleRegistry);
 					} finally {
 						execute(finallyAdviceRuleList);
 					}
 				} else {
-					run2(aspectAdviceRuleRegistry);
+					run2nd(aspectAdviceRuleRegistry);
 				}
 			} else {
-				run2();
+				run2nd();
 			}
 		} catch(CoreActivityException e) {
 			setRaisedException(e);
@@ -315,28 +332,28 @@ public abstract class AbstractCoreActivity implements CoreActivity {
 		}
 	}
 
-	private void run2(AspectAdviceRuleRegistry aspectAdviceRuleRegistry) throws CoreActivityException {
+	private void run2nd(AspectAdviceRuleRegistry aspectAdviceRuleRegistry) throws CoreActivityException {
 		List<AspectAdviceRule> beforeAdviceRuleList = aspectAdviceRuleRegistry.getBeforeAdviceRuleList();
 		List<AspectAdviceRule> afterAdviceRuleList = aspectAdviceRuleRegistry.getAfterAdviceRuleList();
 
-		// execute Before Advice Action
+		// execute Before Advice Action for translet joinpoint
 		if(beforeAdviceRuleList != null)
 			execute(beforeAdviceRuleList);
 		
 		if(isResponseEnd)
 			return;
 		
-		run2();
+		run2nd();
 		
 		if(isResponseEnd)
 			return;
 		
-		// execute After Advice Action
+		// execute After Advice Action for translet joinpoint
 		if(afterAdviceRuleList != null)
 			execute(afterAdviceRuleList);
 	}
 
-	private void run2() throws CoreActivityException {
+	private void run2nd() throws CoreActivityException {
 		//request
 		AspectAdviceRuleRegistry aspectAdviceRuleRegistry = requestRule.getAspectAdviceRuleRegistry();
 		List<AspectAdviceRule> finallyAdviceRuleList = null;
@@ -432,7 +449,7 @@ public abstract class AbstractCoreActivity implements CoreActivity {
 		}
 		*/
 		
-		if(isResponseEnd)
+		if(isResponseEnd || withoutResponse)
 			return;
 		
 		//response
@@ -732,12 +749,12 @@ public abstract class AbstractCoreActivity implements CoreActivity {
 	 */
 	private void forward() throws CoreActivityException {
 		if(debugEnabled) {
-			logger.debug("> forwarding for translet '" + forwardTransletName + "'");
+			logger.debug("forwarding for translet '" + forwardTransletName + "'");
 		}
 		
 		ProcessResult processResult = translet.getProcessResult();
-		init(forwardTransletName);
-		run(processResult);
+		init(forwardTransletName, processResult);
+		run();
 	}
 	
 	private void responseByContentType(List<AspectAdviceRule> aspectAdviceRuleList) throws CoreActivityException {
