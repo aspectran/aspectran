@@ -12,7 +12,7 @@
 		<constructor>
 			<arguments>
 				<item type="properties">
-					<value name="org.quartz.scheduler.instanceName">DefaultQuartzScheduler</value>
+					<value name="org.quartz.scheduler.instanceName">AspectranQuartzScheduler</value>
 					<value name="org.quartz.scheduler.rmi.export">false</value>
 					<value name="org.quartz.scheduler.rmi.proxy">false</value>
 					<value name="org.quartz.scheduler.wrapJobExecutionInUserTransaction">false</value>
@@ -46,15 +46,21 @@
 			<pointcut type="cronTrigger">0/5 * * * * ?</pointcut>
 		</joinpoint>
 		<advice bean="schedulerFactory">
-			<job translet="countTo10" disabled="false"/>
+			<job translet="hello" disabled="false"/>
+			<job translet="countTo10" disabled="true"/>
 			<job translet="countTo10.xml" disabled="true"/>
 		</advice>
 	</aspect>
 	
-	<translet name="/hello">
+	<translet name="hello">
+		<request>
+			<attributes>
+				<item name="my_name_is">aspectran</item>
+			</attributes>
+		</request>
 		<transform type="transform/text">
 			<template>
-				hello~ ${name}
+				hello~ @{my_name_is}!!
 			</template>
 		</transform>
 	</translet>
