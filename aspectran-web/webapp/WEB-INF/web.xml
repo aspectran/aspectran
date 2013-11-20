@@ -15,12 +15,19 @@
 	<listener>
 		<listener-class>com.aspectran.web.context.listener.AspectranHttpSessionListener</listener-class>
 	</listener>
+	<context-param>
+		<param-name>aspectran:contextConfigLocation</param-name>
+		<param-value>classpath:aspectran/aspectran-example.xml</param-value>
+	</context-param>
 	<listener>
 		<listener-class>com.aspectran.web.context.listener.AspectranContextLoaderListener</listener-class>
 	</listener>
 	<context-param>
-		<param-name>aspectran:contextConfigLocation</param-name>
-		<param-value>classpath:aspectran/aspectran-example.xml</param-value>
+		<param-name>aspectran:scheduler:startDelaySeconds</param-name>
+		<param-value>20</param-value>
+	</context-param>	<context-param>
+		<param-name>aspectran:scheduler:waitOnShutdown</param-name>
+		<param-value>true</param-value>
 	</context-param>
 	<listener>
 		<listener-class>com.aspectran.web.context.listener.AspectranSchedulerListener</listener-class>
