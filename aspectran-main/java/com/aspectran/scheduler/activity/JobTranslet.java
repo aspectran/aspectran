@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2010 Jeong Ju Ho, All rights reserved.
+ *  Copyright (c) 2008 Jeong Ju Ho, All rights reserved.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -15,23 +15,11 @@
  */
 package com.aspectran.scheduler.activity;
 
-import com.aspectran.core.activity.AbstractCoreTranslet;
-import com.aspectran.core.activity.CoreActivity;
+import com.aspectran.core.activity.CoreTranslet;
 
 /**
- * The Class AspectranWebTranslet.
- * 
  * <p>Created: 2013. 11. 18 오후 3:40:48</p>
  */
-public class ScheduleTransletImpl extends AbstractCoreTranslet implements ScheduleTranslet {
-	
-	/**
-	 * Instantiates a new aspectran web translet.
-	 *
-	 * @param activity the activity
-	 */
-	public ScheduleTransletImpl(CoreActivity activity, boolean aspectAdvicable) {
-		super(activity, aspectAdvicable);
-	}
-	
+public interface JobTranslet extends CoreTranslet {
+
 }

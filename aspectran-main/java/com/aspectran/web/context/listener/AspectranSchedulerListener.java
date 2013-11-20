@@ -77,7 +77,15 @@ public class AspectranSchedulerListener implements ServletContextListener {
 			
 			logger.info("AspectranScheduler has been started...");
 		} catch(Exception e) {
-			logger.error("AspectranScheduler failed to initialize: " + e.toString());
+			logger.error("AspectranScheduler failed to initialize: " + e.toString(), e);
+			
+			if(aspectranScheduler != null) {
+				try {
+					aspectranScheduler.shutdown();
+				} catch(Exception e1) {
+					logger.error("AspectranScheduler failed to shutdown cleanly: " + e.toString(), e);
+				}
+			}
 		}
 	}
 
@@ -91,7 +99,7 @@ public class AspectranSchedulerListener implements ServletContextListener {
 			if(aspectranScheduler != null)
 				aspectranScheduler.shutdown(waitOnShutdown);
 		} catch(Exception e) {
-			logger.error("AspectranScheduler failed to shutdown cleanly: " + e.toString());
+			logger.error("AspectranScheduler failed to shutdown cleanly: " + e.toString(), e);
 		}
 
 		logger.info("AspectranScheduler successful shutdown.");

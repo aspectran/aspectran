@@ -683,8 +683,8 @@ public abstract class AbstractCoreActivity implements CoreActivity {
 		try {
 			Object resultValue = action.execute(this);
 		
-			if(debugEnabled)
-				logger.debug("action " + action + " result: " + resultValue);
+			//if(debugEnabled)
+			//	logger.debug("action " + action + " result: " + resultValue);
 			
 			if(!action.isHidden() && resultValue != ActionResult.NO_RESULT) {
 				translet.addActionResult(action.getActionId(), resultValue);

@@ -23,6 +23,6 @@ import com.aspectran.core.activity.CoreActivity;
  * 
  * <p>Created: 2013. 11. 18 오후 3:40:48</p>
  */
-public interface ScheduleActivity extends CoreActivity {
+public interface JobActivity extends CoreActivity {
 	
 }

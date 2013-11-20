@@ -37,20 +37,15 @@ public class QuartzJobRequestAdapter extends AbstractRequestAdapter implements R
 	}
 	
 	public String getParameter(String name) {
-		return ((JobDetail)adaptee).getJobDataMap().getString(name);
+		return null;
 	}
 	
 	public String[] getParameterValues(String name) {
-		String value = ((JobDetail)adaptee).getJobDataMap().getString(name);
-		
-		if(value == null)
-			return null;
-		
-		return new String[] { value };
+		return null;
 	}
 	
 	public Enumeration<String> getParameterNames() {
-		return Collections.enumeration(((JobDetail)adaptee).getJobDataMap().keySet());
+		return null;
 	}
 	
 	public Object getAttribute(String name) {
