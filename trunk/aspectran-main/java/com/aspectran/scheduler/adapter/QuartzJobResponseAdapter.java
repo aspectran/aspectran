@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Writer;
 
+import org.quartz.JobDetail;
+
 import com.aspectran.core.activity.CoreActivity;
 import com.aspectran.core.adapter.AbstractResponseAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
@@ -18,8 +20,12 @@ public class QuartzJobResponseAdapter extends AbstractResponseAdapter implements
 
 	private String characterEncoding;
 	
-	public QuartzJobResponseAdapter() {
+	private JobDetail jobDetail;
+	
+	public QuartzJobResponseAdapter(JobDetail jobDetail) {
 		super(null);
+		
+		this.jobDetail = jobDetail;
 	}
 	
 	public String getCharacterEncoding() {
@@ -43,7 +49,7 @@ public class QuartzJobResponseAdapter extends AbstractResponseAdapter implements
 	}
 	
 	public Writer getWriter() throws IOException {
-		return new QuartzJobResponseWriter();
+		return new QuartzJobResponseWriter(jobDetail);
 	}
 	
 	public void redirect(String requestUri) throws IOException {

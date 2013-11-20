@@ -10,14 +10,14 @@ import com.aspectran.core.activity.CoreActivityException;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.context.AspectranContext;
-import com.aspectran.scheduler.activity.ScheduleActivity;
-import com.aspectran.scheduler.activity.ScheduleActivityImpl;
+import com.aspectran.scheduler.activity.JobActivity;
+import com.aspectran.scheduler.activity.JobActivityImpl;
 import com.aspectran.scheduler.adapter.QuartzJobRequestAdapter;
 import com.aspectran.scheduler.adapter.QuartzJobResponseAdapter;
 
-public class ScheduleActivityRunJob implements Job {
+public class TaskActivityRunJob implements Job {
 	
-	public ScheduleActivityRunJob() {
+	public TaskActivityRunJob() {
 	}
 	
 	public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
@@ -35,9 +35,9 @@ public class ScheduleActivityRunJob implements Job {
 	
 	private void runActivity(AspectranContext context, String transletName, JobDetail jobDetail) throws CoreActivityException {
 		RequestAdapter requestAdapter = new QuartzJobRequestAdapter(jobDetail);
-		ResponseAdapter responseAdapter = new QuartzJobResponseAdapter();
+		ResponseAdapter responseAdapter = new QuartzJobResponseAdapter(jobDetail);
 		
-		ScheduleActivity activity = new ScheduleActivityImpl(context, requestAdapter, responseAdapter);
+		JobActivity activity = new JobActivityImpl(context, requestAdapter, responseAdapter);
 		activity.init(transletName);
 		activity.run();
 	}

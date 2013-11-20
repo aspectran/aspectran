@@ -33,20 +33,20 @@ import com.aspectran.core.var.ValueMap;
 /**
  * <p>Created: 2013. 11. 18 오후 3:40:48</p>
  */
-public class ScheduleActivityImpl extends AbstractCoreActivity implements ScheduleActivity {
+public class JobActivityImpl extends AbstractCoreActivity implements JobActivity {
 
 	//private final Log log = LogFactory.getLog(SchedulingActivityImpl.class);
 
 	//private final boolean debugEnabled = log.isDebugEnabled();
 	
-	public ScheduleActivityImpl(AspectranContext context, RequestAdapter requestAdapter, ResponseAdapter responseAdapter) {
+	public JobActivityImpl(AspectranContext context, RequestAdapter requestAdapter, ResponseAdapter responseAdapter) {
 		super(context);
 		
 		setRequestAdapter(requestAdapter);
 		setResponseAdapter(responseAdapter);
 		
-		setTransletInterfaceClass(ScheduleTranslet.class);
-		setTransletImplementClass(ScheduleTransletImpl.class);
+		setTransletInterfaceClass(JobTranslet.class);
+		setTransletImplementClass(JobTransletImpl.class);
 	}
 	
 	protected void request(CoreTranslet translet) throws RequestException {
@@ -108,7 +108,7 @@ public class ScheduleActivityImpl extends AbstractCoreActivity implements Schedu
 	}
 	
 	public CoreActivity newCoreActivity() {
-		ScheduleActivityImpl activity = new ScheduleActivityImpl(getAspectranContext(), getRequestAdapter(), getResponseAdapter());
+		JobActivityImpl activity = new JobActivityImpl(getAspectranContext(), getRequestAdapter(), getResponseAdapter());
 		return activity;
 	}
 
