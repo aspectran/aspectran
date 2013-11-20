@@ -51,9 +51,12 @@ public class RedirectResponse implements Responsible {
 	 * @see com.aspectran.core.activity.response.Responsible#response(com.aspectran.core.activity.AspectranActivity)
 	 */
 	public void response(CoreActivity activity) throws ResponseException {
+		ResponseAdapter responseAdapter = activity.getResponseAdapter();
+		
+		if(responseAdapter == null)
+			return;
+		
 		try {
-			ResponseAdapter responseAdapter = activity.getResponseAdapter();
-
 			String outputEncoding = redirectResponseRule.getCharacterEncoding();
 
 			if(outputEncoding != null)

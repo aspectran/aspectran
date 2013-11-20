@@ -23,14 +23,14 @@ import com.aspectran.core.activity.CoreActivity;
  * 
  * <p>Created: 2013. 11. 18 오후 3:40:48</p>
  */
-public class SchedulingTransletImpl extends AbstractCoreTranslet implements SchedulingTranslet {
+public class ScheduleTransletImpl extends AbstractCoreTranslet implements ScheduleTranslet {
 	
 	/**
 	 * Instantiates a new aspectran web translet.
 	 *
 	 * @param activity the activity
 	 */
-	public SchedulingTransletImpl(CoreActivity activity, boolean aspectAdvicable) {
+	public ScheduleTransletImpl(CoreActivity activity, boolean aspectAdvicable) {
 		super(activity, aspectAdvicable);
 	}
 	

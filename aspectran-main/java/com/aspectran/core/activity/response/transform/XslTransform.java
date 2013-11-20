@@ -90,9 +90,12 @@ public class XslTransform extends AbstractTransform implements Responsible {
 	 * @see org.jhlabs.translets.activity.response.Responsible#response(org.jhlabs.translets.activity.Activity)
 	 */
 	public void response(CoreActivity activity) throws TransformResponseException {
+		ResponseAdapter responseAdapter = activity.getResponseAdapter();
+		
+		if(responseAdapter == null)
+			return;
+		
 		try {
-			ResponseAdapter responseAdapter = activity.getResponseAdapter();
-			
 			Templates templates;
 			String contentType;
 			String outputEncoding;

@@ -31,17 +31,17 @@ import com.aspectran.core.var.ValueMap;
 /**
  * <p>Created: 2013. 11. 18 오후 3:40:48</p>
  */
-public class SchedulingActivityImpl extends AbstractCoreActivity implements SchedulingActivity {
+public class ScheduleActivityImpl extends AbstractCoreActivity implements ScheduleActivity {
 
 	//private final Log log = LogFactory.getLog(SchedulingActivityImpl.class);
 
 	//private final boolean debugEnabled = log.isDebugEnabled();
 	
-	public SchedulingActivityImpl(AspectranContext context) {
+	public ScheduleActivityImpl(AspectranContext context) {
 		super(context);
 		
-		setTransletInterfaceClass(SchedulingTranslet.class);
-		setTransletImplementClass(SchedulingTransletImpl.class);
+		setTransletInterfaceClass(ScheduleTranslet.class);
+		setTransletImplementClass(ScheduleTransletImpl.class);
 	}
 	
 	protected void request(CoreTranslet translet) throws RequestException {
@@ -98,7 +98,7 @@ public class SchedulingActivityImpl extends AbstractCoreActivity implements Sche
 	}
 	
 	public CoreActivity newCoreActivity() {
-		SchedulingActivityImpl activity = new SchedulingActivityImpl(getAspectranContext());
+		ScheduleActivityImpl activity = new ScheduleActivityImpl(getAspectranContext());
 		
 		return activity;
 	}

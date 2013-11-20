@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2010 Jeong Ju Ho, All rights reserved.
+ *  Copyright (c) 2008 Jeong Ju Ho, All rights reserved.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -15,14 +15,11 @@
  */
 package com.aspectran.scheduler.activity;
 
-import com.aspectran.core.activity.CoreActivity;
+import com.aspectran.core.activity.CoreTranslet;
 
 /**
- * Action Translator.
- * processes the active request and response.
- * 
  * <p>Created: 2013. 11. 18 오후 3:40:48</p>
  */
-public interface SchedulingActivity extends CoreActivity {
-	
+public interface ScheduleTranslet extends CoreTranslet {
+
 }
