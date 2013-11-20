@@ -65,10 +65,14 @@ public class QuartzAspectranScheduler implements AspectranScheduler {
 						scheduler.scheduleJob(jobDetail, trigger);
 					}
 					
-					if(delaySeconds > 0)
-						scheduler.startDelayed(delaySeconds);
-					else
-						scheduler.start();
+					if(!scheduler.isStarted()) {
+						logger.info("scheduler starts... " + scheduler);
+						
+						if(delaySeconds > 0)
+							scheduler.startDelayed(delaySeconds);
+						else
+							scheduler.start();
+					}
 				}
 			}
 		}
