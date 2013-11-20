@@ -24,8 +24,10 @@ public class QuartzJobResponseWriter extends StringWriter {
 	@Override
 	public void flush() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("results of job [").append(jobDetail.getJobDataMap().get("transletName")).append("]");
-		sb.append(AspectranConstant.LINE_SEPARATOR).append(toString());
+		sb.append("results of job [");
+		sb.append(jobDetail.getJobDataMap().get("transletName")).append("]");
+		sb.append(AspectranConstant.LINE_SEPARATOR);
+		sb.append(toString());
 		
 		logger.info(sb.toString());
 	}
