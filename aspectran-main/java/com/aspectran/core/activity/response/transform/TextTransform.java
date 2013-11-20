@@ -110,7 +110,7 @@ public class TextTransform extends AbstractTransform implements Responsible {
 	}
 	
 	/* (non-Javadoc)
-	 * @see org.jhlabs.translets.engine.response.Responsible#getActionList()
+	 * @see com.aspectran.core.activity.response.Responsible#getActionList()
 	 */
 	public ActionList getActionList() {
 		return transformRule.getActionList();
