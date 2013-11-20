@@ -71,6 +71,10 @@ public class XmlTransform extends AbstractTransform implements Responsible {
 		
 		if(responseAdapter == null)
 			return;
+
+		if(debugEnabled) {
+			logger.debug("response " + transformRule);
+		}
 		
 		try {
 			String contentType = transformRule.getContentType();
@@ -98,15 +102,11 @@ public class XmlTransform extends AbstractTransform implements Responsible {
 			ContentsXMLReader xreader = new ContentsXMLReader();
 			ContentsInputSource isource = new ContentsInputSource(processResult);
 			transformer.transform(new SAXSource(xreader, isource), new StreamResult(output));
-
-			if(traceEnabled) {
-				StringWriter writer = new StringWriter();
-				transformer.transform(new SAXSource(xreader, isource), new StreamResult(writer));
-				logger.trace("XML Source: " + AspectranConstant.LINE_SEPARATOR + writer.toString());
-			}
 			
-			if(debugEnabled) {
-				logger.debug("response " + transformRule);
+			if(traceEnabled) {
+				StringWriter stringWriter = new StringWriter();
+				transformer.transform(new SAXSource(xreader, isource), new StreamResult(stringWriter));
+				logger.trace("XML Source: " + AspectranConstant.LINE_SEPARATOR + stringWriter.toString());
 			}
 		} catch(Exception e) {
 			throw new TransformResponseException("XML Transformation error: " + transformRule, e);

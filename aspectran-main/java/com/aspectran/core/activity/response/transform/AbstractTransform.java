@@ -31,6 +31,7 @@ import com.aspectran.core.type.ContentType;
 import com.aspectran.core.type.ResponseType;
 import com.aspectran.core.type.TransformType;
 
+// TODO: Auto-generated Javadoc
 /**
  * <p>
  * Created: 2008. 03. 22 오후 5:51:58
@@ -38,6 +39,7 @@ import com.aspectran.core.type.TransformType;
  */
 public abstract class AbstractTransform implements Responsible {
 	
+	/** The transform rule. */
 	protected final TransformRule transformRule;
 	
 	/**
@@ -50,14 +52,14 @@ public abstract class AbstractTransform implements Responsible {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.jhlabs.translets.engine.response.Responsible#getContentType()
+	 * @see com.aspectran.core.activity.response.Responsible#getContentType()
 	 */
 	public String getContentType() {
 		return transformRule.getContentType();
 	}
 	
 	/* (non-Javadoc)
-	 * @see org.jhlabs.translets.engine.response.Responsible#getResponseType()
+	 * @see com.aspectran.core.activity.response.Responsible#getResponseType()
 	 */
 	public ResponseType getResponseType() {
 		return TransformRule.RESPONSE_TYPE;

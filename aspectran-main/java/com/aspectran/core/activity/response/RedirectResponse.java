@@ -48,13 +48,17 @@ public class RedirectResponse implements Responsible {
 	}
 
 	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.response.Responsible#response(com.aspectran.core.activity.AspectranActivity)
+	 * @see com.aspectran.core.activity.response.Responsible#response(com.aspectran.core.activity.CoreActivity)
 	 */
 	public void response(CoreActivity activity) throws ResponseException {
 		ResponseAdapter responseAdapter = activity.getResponseAdapter();
 		
 		if(responseAdapter == null)
 			return;
+		
+		if(debugEnabled) {
+			logger.debug("response " + redirectResponseRule);
+		}
 		
 		try {
 			String outputEncoding = redirectResponseRule.getCharacterEncoding();
@@ -63,10 +67,6 @@ public class RedirectResponse implements Responsible {
 				responseAdapter.setCharacterEncoding(outputEncoding);
 			
 			responseAdapter.redirect(activity, redirectResponseRule);
-			
-			if(debugEnabled) {
-				logger.debug("response " + redirectResponseRule);
-			}
 		} catch(Exception e) {
 			throw new ResponseException("Redirect response error: " + redirectResponseRule, e);
 		}

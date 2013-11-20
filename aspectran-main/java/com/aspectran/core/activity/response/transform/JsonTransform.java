@@ -25,7 +25,7 @@ import com.aspectran.core.activity.CoreActivity;
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.activity.process.result.ProcessResult;
 import com.aspectran.core.activity.response.Responsible;
-import com.aspectran.core.activity.response.transform.json.ContentsJSONWriter;
+import com.aspectran.core.activity.response.transform.json.ContentsJsonWriter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.context.AspectranConstant;
 import com.aspectran.core.rule.TransformRule;
@@ -53,9 +53,13 @@ public class JsonTransform extends AbstractTransform implements Responsible {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.jhlabs.translets.engine.response.Responsible#response(org.jhlabs.translets.action.Translet)
+	 * @see com.aspectran.core.activity.response.Responsible#response(com.aspectran.core.activity.CoreActivity)
 	 */
 	public void response(CoreActivity activity) throws TransformResponseException {
+		if(debugEnabled) {
+			logger.debug("response " + transformRule);
+		}
+		
 		try {
 			ResponseAdapter responseAdapter = activity.getResponseAdapter();
 			
@@ -72,18 +76,16 @@ public class JsonTransform extends AbstractTransform implements Responsible {
 			ProcessResult processResult = activity.getProcessResult();
 
 			boolean prettyWrite = (traceEnabled || debugEnabled);
-			ContentsJSONWriter contentsJSONWriter = new ContentsJSONWriter(output, prettyWrite);
-			contentsJSONWriter.write(processResult);
+			ContentsJsonWriter jsonWriter = new ContentsJsonWriter(output, prettyWrite);
+			jsonWriter.write(processResult);
+			jsonWriter.flush();
 			
 			if(traceEnabled) {
-				StringWriter writer = new StringWriter();
-				ContentsJSONWriter contentsJSONWriter2 = new ContentsJSONWriter(writer, true);
-				contentsJSONWriter2.write(processResult);
-				logger.trace("JSON Source: " + AspectranConstant.LINE_SEPARATOR + writer.toString());
-			}
-			
-			if(debugEnabled) {
-				logger.debug("response " + transformRule);
+				StringWriter stringWriter = new StringWriter();
+				ContentsJsonWriter jsonWriter2 = new ContentsJsonWriter(stringWriter, true);
+				jsonWriter2.write(processResult);
+				jsonWriter2.flush();
+				logger.trace("JSON Source: " + AspectranConstant.LINE_SEPARATOR + stringWriter.toString());
 			}
 		} catch(Exception e) {
 			throw new TransformResponseException("JSON Transformation error: " + transformRule, e);

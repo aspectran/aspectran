@@ -50,14 +50,18 @@ public class ForwardResponse implements Responsible {
 	}
 	
 	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.response.Responsible#response(com.aspectran.core.activity.AspectranActivity)
+	 * @see com.aspectran.core.activity.response.Responsible#response(com.aspectran.core.activity.CoreActivity)
 	 */
 	public void response(CoreActivity activity) {
 		RequestAdapter requestAdapter = activity.getRequestAdapter();
 		
 		if(requestAdapter == null)
 			return;
-		
+
+		if(debugEnabled) {
+			logger.debug("response " + forwardResponseRule);
+		}
+
 		Map<String, Object> valueMap = null;
 		
 		if(forwardResponseRule.getParameterItemRuleMap() != null) {
@@ -68,10 +72,6 @@ public class ForwardResponse implements Responsible {
 		if(valueMap != null) {
 			for(Map.Entry<String, Object> entry : valueMap.entrySet())
 				requestAdapter.setAttribute(entry.getKey(), entry.getValue());
-		}
-		
-		if(debugEnabled) {
-			logger.debug("response " + forwardResponseRule);
 		}
 	}
 	

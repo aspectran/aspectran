@@ -32,7 +32,7 @@ import com.aspectran.core.util.BeanUtils;
 /**
  * <p>Created: 2008. 06. 12 오후 8:20:54</p>
  */
-public class ContentsJSONWriter {
+public class ContentsJsonWriter {
 
 	private Writer writer;
 
@@ -47,7 +47,7 @@ public class ContentsJSONWriter {
 	 * 
 	 * @param writer the writer
 	 */
-	public ContentsJSONWriter(Writer writer) {
+	public ContentsJsonWriter(Writer writer) {
 		this(writer, false);
 	}
 
@@ -57,7 +57,7 @@ public class ContentsJSONWriter {
 	 * @param writer the writer
 	 * @param prettyWrite the pretty write
 	 */
-	public ContentsJSONWriter(Writer writer, boolean prettyWrite) {
+	public ContentsJsonWriter(Writer writer, boolean prettyWrite) {
 		this.writer = writer;
 		this.prettyWrite = prettyWrite;
 		this.indentDepth = 0;
@@ -76,6 +76,14 @@ public class ContentsJSONWriter {
 		write(processResult, null);
 		nextLine();
 		closeBrace();
+	}
+	
+	/**
+	 * Flush.
+	 * @throws IOException 
+	 */
+	public void flush() throws IOException {
+		writer.flush();
 	}
 
 	/**

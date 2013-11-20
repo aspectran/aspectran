@@ -69,8 +69,10 @@ public class IncludeAction extends AbstractAction implements Executable {
 			
 			CoreActivity newActivity = activity.newCoreActivity();
 			newActivity.init(includeActionRule.getTransletName());
-			newActivity.request();
-			return newActivity.process();
+			newActivity.runWithoutResponse();
+			
+			return newActivity.getProcessResult();
+			
 		} catch(Exception e) {
 			logger.error("action execution error: includeActionRule " + includeActionRule + " Cause: " + e.toString());
 			throw e;

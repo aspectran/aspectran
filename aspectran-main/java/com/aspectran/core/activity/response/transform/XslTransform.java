@@ -87,14 +87,18 @@ public class XslTransform extends AbstractTransform implements Responsible {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.jhlabs.translets.activity.response.Responsible#response(org.jhlabs.translets.activity.Activity)
+	 * @see com.aspectran.core.activity.response.Responsible#response(com.aspectran.core.activity.CoreActivity)
 	 */
 	public void response(CoreActivity activity) throws TransformResponseException {
 		ResponseAdapter responseAdapter = activity.getResponseAdapter();
 		
 		if(responseAdapter == null)
 			return;
-		
+
+		if(debugEnabled) {
+			logger.debug("response " + transformRule);
+		}
+
 		try {
 			Templates templates;
 			String contentType;
@@ -139,10 +143,6 @@ public class XslTransform extends AbstractTransform implements Responsible {
 				transformer.setOutputProperty(OutputKeys.METHOD, XmlTransform.OUTPUT_METHOD);
 				transformer.transform(new SAXSource(xreader, isource), new StreamResult(writer));
 				logger.trace("XML Source: " + AspectranConstant.LINE_SEPARATOR + writer.toString());
-			}
-			
-			if(debugEnabled) {
-				logger.debug("response " + transformRule);
 			}
 		} catch(Exception e) {
 			throw new TransformResponseException("XSL Transformation error: " + transformRule, e);
