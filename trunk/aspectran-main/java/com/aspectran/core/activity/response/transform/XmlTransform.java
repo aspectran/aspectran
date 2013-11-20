@@ -64,7 +64,7 @@ public class XmlTransform extends AbstractTransform implements Responsible {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.jhlabs.translets.engine.response.Responsible#response(org.jhlabs.translets.action.Translet)
+	 * @see com.aspectran.core.activity.response.Responsible#response(com.aspectran.core.activity.CoreActivity)
 	 */
 	public void response(CoreActivity activity) throws TransformResponseException {
 		ResponseAdapter responseAdapter = activity.getResponseAdapter();
@@ -114,7 +114,7 @@ public class XmlTransform extends AbstractTransform implements Responsible {
 	}
 	
 	/* (non-Javadoc)
-	 * @see org.jhlabs.translets.engine.response.Responsible#getActionList()
+	 * @see com.aspectran.core.activity.response.Responsible#getActionList()
 	 */
 	public ActionList getActionList() {
 		return transformRule.getActionList();
