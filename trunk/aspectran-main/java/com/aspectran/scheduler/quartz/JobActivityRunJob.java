@@ -15,17 +15,17 @@ import com.aspectran.scheduler.activity.JobActivityImpl;
 import com.aspectran.scheduler.adapter.QuartzJobRequestAdapter;
 import com.aspectran.scheduler.adapter.QuartzJobResponseAdapter;
 
-public class TaskActivityRunJob implements Job {
+public class JobActivityRunJob implements Job {
 	
-	public TaskActivityRunJob() {
+	public JobActivityRunJob() {
 	}
 	
 	public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
 		try {
 			JobDetail jobDetail = jobExecutionContext.getJobDetail();
 			JobDataMap jobDataMap = jobDetail.getJobDataMap();
-			AspectranContext context = (AspectranContext)jobDataMap.get("aspectranContext");
-			String transletName = jobDataMap.getString("transletName");
+			AspectranContext context = (AspectranContext)jobDataMap.get(QuartzAspectranScheduler.ASPECTRAN_CONTEXT_DATA_KEY);
+			String transletName = jobDataMap.getString(QuartzAspectranScheduler.TRANSLET_NAME_DATA_KEY);
 			
 			runActivity(context, transletName, jobDetail);
 		} catch(CoreActivityException e) {

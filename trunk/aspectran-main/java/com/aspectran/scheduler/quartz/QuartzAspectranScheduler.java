@@ -32,6 +32,10 @@ import com.aspectran.scheduler.AspectranScheduler;
 
 public class QuartzAspectranScheduler implements AspectranScheduler {
 
+	public final static String ASPECTRAN_CONTEXT_DATA_KEY = "aspectranContext";
+
+	public final static String TRANSLET_NAME_DATA_KEY = "transletName";
+	
 	private final Logger logger = LoggerFactory.getLogger(QuartzAspectranScheduler.class);
 
 	private AspectranContext context;
@@ -179,10 +183,10 @@ public class QuartzAspectranScheduler implements AspectranScheduler {
 		String jobGroup = aspectJobAdviceRule.getAspectId();
 		
 		JobDataMap jobDataMap = new JobDataMap();
-		jobDataMap.put("aspectranContext", context);
-		jobDataMap.put("transletName", aspectJobAdviceRule.getJobTransletName());
+		jobDataMap.put(ASPECTRAN_CONTEXT_DATA_KEY, context);
+		jobDataMap.put(TRANSLET_NAME_DATA_KEY, aspectJobAdviceRule.getJobTransletName());
 		
-		JobDetail jobDetail = JobBuilder.newJob(TaskActivityRunJob.class)
+		JobDetail jobDetail = JobBuilder.newJob(JobActivityRunJob.class)
 				.withIdentity(jobName, jobGroup)
 				.setJobData(jobDataMap)
 				.build();
