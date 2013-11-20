@@ -70,7 +70,7 @@
 		</joinpoint>
 		<advice bean="schedulerFactory">
 			<job translet="hello" disabled="false"/>
-			<job translet="countTo10" disabled="true"/>
+			<job translet="countTo10" disabled="false"/>
 			<job translet="countTo10.xml" disabled="true"/>
 		</advice>
 	</aspect>
