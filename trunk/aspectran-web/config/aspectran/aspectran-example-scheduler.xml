@@ -43,11 +43,11 @@
 -->
 	<aspect id="scheduler2">
 		<joinpoint target="scheduler">
-			<pointcut type="cronTrigger">0/3 * * * * ?</pointcut>
+			<pointcut type="cronTrigger">0/5 * * * * ?</pointcut>
 		</joinpoint>
 		<advice bean="schedulerFactory">
-			<job translet="countTo10"/>
-			<job translet="/scheduler1/test4.job" disabled="true"/>
+			<job translet="countTo10" disabled="false"/>
+			<job translet="countTo10.xml" disabled="true"/>
 		</advice>
 	</aspect>
 	
