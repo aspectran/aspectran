@@ -141,6 +141,15 @@ public class QuartzAspectranScheduler implements AspectranScheduler {
 		if(pointcutRule.getPointcutType() == PointcutType.SIMPLE_TRIGGER) {
 			SimpleScheduleBuilder simpleSchedule = SimpleScheduleBuilder.simpleSchedule();
 			simpleSchedule.withRepeatCount(1);
+			/*
+				withIntervalInMilliseconds int
+				withIntervalInMinutes int
+				withIntervalInSeconds int
+				withIntervalInHours int
+				withRepeatCount int
+				
+				repeatForever boolean
+			 */
 			
 			trigger = TriggerBuilder.newTrigger()
 					.withIdentity(name, group)
