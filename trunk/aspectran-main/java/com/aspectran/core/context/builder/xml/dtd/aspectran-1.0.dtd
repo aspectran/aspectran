@@ -118,7 +118,7 @@ override (true | false) #IMPLIED
 
 <!ELEMENT constructor (arguments?)>
 
-<!ELEMENT translet (((echo? | action? | include?)*, (transform | dispatch | redirect | forward)?) | (request?, contents?, response*, exception?))>
+<!ELEMENT translet ((request?, (echo? | action? | include?)*, (transform | dispatch | redirect | forward)?) | (request?, contents?, response*, exception?))>
 <!ATTLIST translet
 name CDATA #REQUIRED
 hidden (true | false) #IMPLIED
