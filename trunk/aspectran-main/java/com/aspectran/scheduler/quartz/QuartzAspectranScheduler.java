@@ -1,6 +1,7 @@
 package com.aspectran.scheduler.quartz;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.quartz.CronScheduleBuilder;
@@ -93,10 +94,14 @@ public class QuartzAspectranScheduler implements AspectranScheduler {
 				String schedulerFactoryBeanId = aspectRule.getAdviceBeanId();
 				
 				SchedulerFactory schedulerFactory = (SchedulerFactory)context.getBeanRegistry().getBean(schedulerFactoryBeanId);
-				Scheduler scheduler = schedulerFactory.getScheduler();
+				Collection<Scheduler> schedulers = schedulerFactory.getAllSchedulers();
 				
-				if(!scheduler.isShutdown())
-					scheduler.shutdown(waitForJobsToComplete);
+				if(schedulers != null && schedulers.size() > 0) {
+					for(Scheduler scheduler : schedulers) {
+						if(!scheduler.isShutdown())
+							scheduler.shutdown(waitForJobsToComplete);
+					}
+				}
 			}
 		}
 	}
