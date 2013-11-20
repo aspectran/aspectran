@@ -26,8 +26,31 @@
 			</arguments>
 		</constructor>
 	</bean>
+	
+	<bean id="exampleJobAction" class="com.aspectran.example.scheduler.ExampleJobAction" scope="singleton"/>
+	
+	<aspect id="exception2">
+		<joinpoint target="translet" scope="translet">
+			<pointcut>/scheduler/*</pointcut>
+		</joinpoint>
+		<advice>
+			<exceptionRaized>
+				<responseByContentType exceptionType="java.lang.reflect.InvocationTargetException">
+					<transform contentType="text/xml" type="transform/xml">
+						<echo>
+							<item type="map">
+								<value name="errorCode">E0001</value>
+								<value name="message">error occured.</value>
+							</item>
+						</echo>
+					</transform>
+				</responseByContentType>
+			</exceptionRaized>
+		</advice>
+	</aspect>
+	
 <!-- 	
-	<aspect id="scheduler1">
+	<aspect id="scheduler0">
 		<joinpoint target="scheduler">
 			<pointcut type="simpleTrigger">
 				startDelay: 500
@@ -41,7 +64,7 @@
 		</advice>
 	</aspect>
 -->
-	<aspect id="scheduler2">
+	<aspect id="scheduler1">
 		<joinpoint target="scheduler">
 			<pointcut type="cronTrigger">0/5 * * * * ?</pointcut>
 		</joinpoint>
@@ -49,6 +72,15 @@
 			<job translet="hello" disabled="false"/>
 			<job translet="countTo10" disabled="true"/>
 			<job translet="countTo10.xml" disabled="true"/>
+		</advice>
+	</aspect>
+	
+	<aspect id="scheduler2">
+		<joinpoint target="scheduler">
+			<pointcut type="cronTrigger">0/5 * * * * ?</pointcut>
+		</joinpoint>
+		<advice bean="schedulerFactory">
+			<job translet="errorCaused" disabled="true"/>
 		</advice>
 	</aspect>
 	
@@ -67,7 +99,7 @@
 
 	<translet name="countTo10">
 		<transform type="transform/text">
-			<action id="result1" bean="example.hello.HelloAction" method="countTo10"/>
+			<action id="result1" bean="exampleJobAction" method="countTo10"/>
 			<template>
 @{result1}
 			</template>
@@ -75,8 +107,8 @@
 	</translet>
 
 	<translet name="countTo10twice">
-		<action id="result1" bean="example.hello.HelloAction" method="countTo10"/>
-		<action id="result2" bean="example.hello.HelloAction" method="countTo10"/>
+		<action id="result1" bean="exampleJobAction" method="countTo10"/>
+		<action id="result2" bean="exampleJobAction" method="countTo10"/>
 		<transform type="transform/text">
 			<template>
 (first)
@@ -89,14 +121,14 @@
 
 	<translet name="countTo10.xml">
 		<transform type="transform/xml">
-			<action id="result" bean="example.hello.HelloAction" method="countTo10AsArray"/>
+			<action id="result" bean="exampleJobAction" method="countTo10AsArray"/>
 		</transform>
 	</translet>
 
 	<translet name="countTo10ext">
 		<response>
 			<transform type="transform/text">
-				<action id="result" bean="example.hello.HelloAction" method="countTo10"/>
+				<action id="result" bean="exampleJobAction" method="countTo10"/>
 				<template>
 					@{result}
 				</template>
@@ -104,9 +136,15 @@
 		</response>
 		<response name=".xml">
 			<transform type="transform/xml">
-				<action bean="example.hello.HelloAction" method="countTo10AsArray"/>
+				<action bean="exampleJobAction" method="countTo10AsArray"/>
 			</transform>
 		</response>
 	</translet>
-	
+
+	<translet name="errorCaused">
+		<transform type="transform/xml">
+			<action id="result" bean="exampleJobAction" method="errorCaused"/>
+		</transform>
+	</translet>
+
 </aspectran>
