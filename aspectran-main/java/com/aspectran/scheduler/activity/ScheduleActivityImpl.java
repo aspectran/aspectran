@@ -15,6 +15,8 @@
  */
 package com.aspectran.scheduler.activity;
 
+import java.util.Map;
+
 import com.aspectran.core.activity.AbstractCoreActivity;
 import com.aspectran.core.activity.CoreActivity;
 import com.aspectran.core.activity.CoreTranslet;
@@ -94,7 +96,12 @@ public class ScheduleActivityImpl extends AbstractCoreActivity implements Schedu
 			ItemTokenExpressor expressor = new ItemTokenExpression(this);
 			ValueMap valueMap = expressor.express(requestRule.getAttributeItemRuleMap());
 
-			return valueMap;
+			if(valueMap != null && valueMap.size() > 0) {
+				for(Map.Entry<String, Object> entry : valueMap.entrySet())
+					getRequestAdapter().setAttribute(entry.getKey(), entry.getValue());
+				
+				return valueMap;
+			}
 		}
 		
 		return null;
