@@ -30,8 +30,6 @@ public class QuartzAspectranScheduler implements AspectranScheduler {
 
 	private final Logger logger = LoggerFactory.getLogger(QuartzAspectranScheduler.class);
 
-	private final boolean debugEnabled = logger.isDebugEnabled();
-	
 	private AspectranContext context;
 	
 	public QuartzAspectranScheduler(AspectranContext context) {
