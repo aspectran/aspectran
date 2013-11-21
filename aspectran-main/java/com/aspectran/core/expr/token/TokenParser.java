@@ -1,11 +1,11 @@
-package com.aspectran.core.token;
+package com.aspectran.core.expr.token;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.aspectran.core.type.TokenType;
+import com.aspectran.core.context.type.TokenType;
 
 public class TokenParser {
 
