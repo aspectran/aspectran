@@ -26,10 +26,10 @@ import java.net.URL;
 import java.net.URLConnection;
 
 import com.aspectran.core.activity.response.Responsible;
-import com.aspectran.core.rule.TransformRule;
-import com.aspectran.core.type.ContentType;
-import com.aspectran.core.type.ResponseType;
-import com.aspectran.core.type.TransformType;
+import com.aspectran.core.context.rule.TransformRule;
+import com.aspectran.core.context.type.ContentType;
+import com.aspectran.core.context.type.ResponseType;
+import com.aspectran.core.context.type.TransformType;
 
 // TODO: Auto-generated Javadoc
 /**

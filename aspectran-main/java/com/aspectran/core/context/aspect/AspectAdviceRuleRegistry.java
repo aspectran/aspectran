@@ -5,9 +5,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.aspectran.core.rule.AspectAdviceRule;
-import com.aspectran.core.rule.SettingsAdviceRule;
-import com.aspectran.core.type.AspectAdviceType;
+import com.aspectran.core.context.rule.AspectAdviceRule;
+import com.aspectran.core.context.rule.SettingsAdviceRule;
+import com.aspectran.core.context.type.AspectAdviceType;
 
 public class AspectAdviceRuleRegistry {
 

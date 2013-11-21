@@ -21,10 +21,10 @@ import org.slf4j.LoggerFactory;
 import com.aspectran.core.activity.CoreActivity;
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
-import com.aspectran.core.rule.EchoActionRule;
-import com.aspectran.core.token.expression.ItemTokenExpression;
-import com.aspectran.core.token.expression.ItemTokenExpressor;
-import com.aspectran.core.type.ActionType;
+import com.aspectran.core.context.rule.EchoActionRule;
+import com.aspectran.core.context.type.ActionType;
+import com.aspectran.core.expr.ItemTokenExpression;
+import com.aspectran.core.expr.ItemTokenExpressor;
 import com.aspectran.core.var.ValueMap;
 
 /**

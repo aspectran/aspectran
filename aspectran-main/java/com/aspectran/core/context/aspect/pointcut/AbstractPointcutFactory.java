@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.aspectran.core.context.AspectranConstant;
-import com.aspectran.core.rule.PointcutRule;
-import com.aspectran.core.type.PointcutPatternOperationType;
-import com.aspectran.core.type.PointcutType;
+import com.aspectran.core.context.rule.PointcutRule;
+import com.aspectran.core.context.type.PointcutPatternOperationType;
+import com.aspectran.core.context.type.PointcutType;
 import com.aspectran.core.util.StringUtils;
 
 public abstract class AbstractPointcutFactory implements PointcutFactory {

@@ -21,10 +21,10 @@ import com.aspectran.core.activity.process.action.BeanAction;
 import com.aspectran.core.activity.process.action.EchoAction;
 import com.aspectran.core.activity.process.action.Executable;
 import com.aspectran.core.activity.process.action.IncludeAction;
-import com.aspectran.core.rule.BeanActionRule;
-import com.aspectran.core.rule.EchoActionRule;
-import com.aspectran.core.rule.IncludeActionRule;
-import com.aspectran.core.rule.ability.ActionAddable;
+import com.aspectran.core.context.rule.BeanActionRule;
+import com.aspectran.core.context.rule.EchoActionRule;
+import com.aspectran.core.context.rule.IncludeActionRule;
+import com.aspectran.core.context.rule.ability.ActionAddable;
 
 /**
  * The action list class.

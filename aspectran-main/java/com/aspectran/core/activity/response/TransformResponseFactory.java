@@ -7,11 +7,11 @@ import com.aspectran.core.activity.response.dispatch.DispatchResponse;
 import com.aspectran.core.activity.response.transform.JsonTransform;
 import com.aspectran.core.activity.response.transform.TextTransform;
 import com.aspectran.core.activity.response.transform.XmlTransform;
-import com.aspectran.core.rule.DispatchResponseRule;
-import com.aspectran.core.rule.ForwardResponseRule;
-import com.aspectran.core.rule.RedirectResponseRule;
-import com.aspectran.core.rule.TransformRule;
-import com.aspectran.core.type.TransformType;
+import com.aspectran.core.context.rule.DispatchResponseRule;
+import com.aspectran.core.context.rule.ForwardResponseRule;
+import com.aspectran.core.context.rule.RedirectResponseRule;
+import com.aspectran.core.context.rule.TransformRule;
+import com.aspectran.core.context.type.TransformType;
 
 /**
  *

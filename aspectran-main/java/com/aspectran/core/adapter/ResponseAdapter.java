@@ -6,7 +6,7 @@ import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 
 import com.aspectran.core.activity.CoreActivity;
-import com.aspectran.core.rule.RedirectResponseRule;
+import com.aspectran.core.context.rule.RedirectResponseRule;
 
 /**
  * The Interface ResponseAdapter.
