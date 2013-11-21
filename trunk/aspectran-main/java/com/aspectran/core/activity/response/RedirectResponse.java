@@ -21,8 +21,8 @@ import org.slf4j.LoggerFactory;
 import com.aspectran.core.activity.CoreActivity;
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.adapter.ResponseAdapter;
-import com.aspectran.core.rule.RedirectResponseRule;
-import com.aspectran.core.type.ResponseType;
+import com.aspectran.core.context.rule.RedirectResponseRule;
+import com.aspectran.core.context.type.ResponseType;
 
 /**
  * <p>Created: 2008. 03. 22 오후 5:51:58</p>

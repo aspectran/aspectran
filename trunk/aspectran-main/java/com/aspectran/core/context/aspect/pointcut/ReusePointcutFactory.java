@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.aspectran.core.rule.PointcutRule;
+import com.aspectran.core.context.rule.PointcutRule;
 
 public class ReusePointcutFactory extends AbstractPointcutFactory implements PointcutFactory {
 

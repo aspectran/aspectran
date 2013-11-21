@@ -10,11 +10,11 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.aspectran.core.rule.BeanActionRule;
-import com.aspectran.core.rule.BeanRuleMap;
-import com.aspectran.core.rule.ItemRule;
-import com.aspectran.core.rule.RedirectResponseRule;
-import com.aspectran.core.rule.TransformRule;
+import com.aspectran.core.context.rule.BeanActionRule;
+import com.aspectran.core.context.rule.BeanRuleMap;
+import com.aspectran.core.context.rule.ItemRule;
+import com.aspectran.core.context.rule.RedirectResponseRule;
+import com.aspectran.core.context.rule.TransformRule;
 
 public class BeanReferenceInspector {
 

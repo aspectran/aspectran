@@ -21,11 +21,11 @@ import org.w3c.dom.Node;
 
 import com.aspectran.core.activity.response.ResponseMap;
 import com.aspectran.core.context.builder.xml.XmlBuilderAssistant;
-import com.aspectran.core.rule.AspectAdviceRule;
-import com.aspectran.core.rule.AspectRule;
-import com.aspectran.core.rule.ResponseByContentTypeRule;
-import com.aspectran.core.rule.ResponseByContentTypeRuleMap;
-import com.aspectran.core.type.AspectAdviceType;
+import com.aspectran.core.context.rule.AspectAdviceRule;
+import com.aspectran.core.context.rule.AspectRule;
+import com.aspectran.core.context.rule.ResponseByContentTypeRule;
+import com.aspectran.core.context.rule.ResponseByContentTypeRuleMap;
+import com.aspectran.core.context.type.AspectAdviceType;
 import com.aspectran.core.util.xml.Nodelet;
 import com.aspectran.core.util.xml.NodeletAdder;
 import com.aspectran.core.util.xml.NodeletParser;

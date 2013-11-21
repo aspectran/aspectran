@@ -23,10 +23,10 @@ import org.slf4j.LoggerFactory;
 import com.aspectran.core.activity.CoreActivity;
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.adapter.RequestAdapter;
-import com.aspectran.core.rule.ForwardResponseRule;
-import com.aspectran.core.token.expression.ItemTokenExpression;
-import com.aspectran.core.token.expression.ItemTokenExpressor;
-import com.aspectran.core.type.ResponseType;
+import com.aspectran.core.context.rule.ForwardResponseRule;
+import com.aspectran.core.context.type.ResponseType;
+import com.aspectran.core.expr.ItemTokenExpression;
+import com.aspectran.core.expr.ItemTokenExpressor;
 
 /**
  * <p>Created: 2008. 03. 22 오후 5:51:58</p>

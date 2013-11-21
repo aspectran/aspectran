@@ -3,8 +3,8 @@ package com.aspectran.core.activity.aspect.result;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.aspectran.core.rule.AspectAdviceRule;
-import com.aspectran.core.type.AspectAdviceType;
+import com.aspectran.core.context.rule.AspectAdviceRule;
+import com.aspectran.core.context.type.AspectAdviceType;
 
 public class AspectAdviceResult {
 	

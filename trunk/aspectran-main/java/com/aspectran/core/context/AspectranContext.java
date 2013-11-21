@@ -17,8 +17,8 @@ package com.aspectran.core.context;
 
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.bean.BeanRegistry;
+import com.aspectran.core.context.rule.AspectRuleMap;
 import com.aspectran.core.context.translet.TransletRuleRegistry;
-import com.aspectran.core.rule.AspectRuleMap;
 
 /**
  * <p>Created: 2008. 06. 09 오후 2:12:40</p>

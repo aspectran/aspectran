@@ -1,6 +1,6 @@
 package com.aspectran.core.context.bean;
 
-import com.aspectran.core.rule.BeanRule;
+import com.aspectran.core.context.rule.BeanRule;
 
 
 public class BeanDestroyFailedException extends BeanException {

@@ -29,12 +29,12 @@ import com.aspectran.core.activity.CoreActivity;
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.activity.response.Responsible;
 import com.aspectran.core.adapter.ResponseAdapter;
-import com.aspectran.core.rule.TransformRule;
-import com.aspectran.core.token.Token;
-import com.aspectran.core.token.Tokenizer;
-import com.aspectran.core.token.expression.TokenExpression;
-import com.aspectran.core.token.expression.TokenExpressor;
-import com.aspectran.core.type.TokenType;
+import com.aspectran.core.context.rule.TransformRule;
+import com.aspectran.core.context.type.TokenType;
+import com.aspectran.core.expr.TokenExpression;
+import com.aspectran.core.expr.TokenExpressor;
+import com.aspectran.core.expr.token.Token;
+import com.aspectran.core.expr.token.Tokenizer;
 
 /**
  * <p>Created: 2008. 03. 22 오후 5:51:58</p>

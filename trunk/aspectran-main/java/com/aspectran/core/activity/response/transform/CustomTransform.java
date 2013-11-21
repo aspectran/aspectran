@@ -21,7 +21,7 @@ import org.slf4j.LoggerFactory;
 import com.aspectran.core.activity.CoreActivity;
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.activity.response.Responsible;
-import com.aspectran.core.rule.TransformRule;
+import com.aspectran.core.context.rule.TransformRule;
 
 /**
  * <p>
