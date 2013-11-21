@@ -24,10 +24,10 @@ import com.aspectran.core.activity.request.RequestException;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.context.AspectranContext;
-import com.aspectran.core.rule.RequestRule;
-import com.aspectran.core.rule.ResponseRule;
-import com.aspectran.core.token.expression.ItemTokenExpression;
-import com.aspectran.core.token.expression.ItemTokenExpressor;
+import com.aspectran.core.context.rule.RequestRule;
+import com.aspectran.core.context.rule.ResponseRule;
+import com.aspectran.core.expr.ItemTokenExpression;
+import com.aspectran.core.expr.ItemTokenExpressor;
 import com.aspectran.core.var.ValueMap;
 
 /**
