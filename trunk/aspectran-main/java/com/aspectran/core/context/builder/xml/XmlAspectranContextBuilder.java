@@ -82,7 +82,7 @@ public class XmlAspectranContextBuilder extends AbstractAspectranContextBuilder 
 			return build(inputStream);
 			
 		} catch(Exception e) {
-			throw new AspectranContextBuilderException("aspectran configuration error: " + e.getMessage(), e);
+			throw new AspectranContextBuilderException("aspectran context configuration error: " + e.getMessage(), e);
 		}
 	}
 	
