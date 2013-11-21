@@ -13,12 +13,12 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.aspectran.core.token;
+package com.aspectran.core.expr.token;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.aspectran.core.type.TokenType;
+import com.aspectran.core.context.type.TokenType;
 
 /**
  * <p>

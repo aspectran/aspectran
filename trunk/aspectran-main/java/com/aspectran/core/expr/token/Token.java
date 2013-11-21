@@ -13,9 +13,9 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.aspectran.core.token;
+package com.aspectran.core.expr.token;
 
-import com.aspectran.core.type.TokenType;
+import com.aspectran.core.context.type.TokenType;
 
 /**
  * <p>Created: 2008. 03. 27 오후 10:20:06</p>
