@@ -32,9 +32,9 @@ import com.aspectran.scheduler.AspectranScheduler;
 
 public class QuartzAspectranScheduler implements AspectranScheduler {
 
-	public final static String ASPECTRAN_CONTEXT_DATA_KEY = "aspectranContext";
+	public final static String ASPECTRAN_CONTEXT_DATA_KEY = "ASPECTRAN_CONTEXT";
 
-	public final static String TRANSLET_NAME_DATA_KEY = "transletName";
+	public final static String TRANSLET_NAME_DATA_KEY = "TRANSLET_NAME";
 	
 	private final Logger logger = LoggerFactory.getLogger(QuartzAspectranScheduler.class);
 
@@ -85,7 +85,7 @@ public class QuartzAspectranScheduler implements AspectranScheduler {
 					}
 				}
 
-				if(!scheduler.isStarted()) {
+				if(!startedSchedulerList.contains(scheduler) && !scheduler.isStarted()) {
 					logger.info("Now try to start scheduler '{}'.", scheduler.getSchedulerName());
 					
 					if(delaySeconds > 0)
@@ -93,8 +93,7 @@ public class QuartzAspectranScheduler implements AspectranScheduler {
 					else
 						scheduler.start();
 					
-					if(!startedSchedulerList.contains(scheduler))
-						startedSchedulerList.add(scheduler);
+					startedSchedulerList.add(scheduler);
 				}
 
 				eachAspectSchedulerMap.put(aspectRule.getId(), scheduler);
