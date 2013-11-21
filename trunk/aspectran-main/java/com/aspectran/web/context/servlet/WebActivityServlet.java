@@ -44,7 +44,7 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 	/** @serial */
 	static final long serialVersionUID = 6659683668233267847L;
 
-	private static final Logger logger = LoggerFactory.getLogger(WebActivityServlet.class);
+	private final Logger logger = LoggerFactory.getLogger(WebActivityServlet.class);
 
 	protected AspectranContext aspectranContext;
 

@@ -15,6 +15,7 @@
  */
 package com.aspectran.web.context.listener;
 
+import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
@@ -40,7 +41,6 @@ public class AspectranWebApplicationListener implements ServletContextListener {
 		logger.info("initializing AspectranApplicationListener...");
 
 		applicationAdapter = WebApplicationAdapter.determineWebApplicationAdapter(event.getServletContext());
-		event.getServletContext().setAttribute(WebApplicationAdapter.WEB_APPLICATION_ADAPTER_ATTRIBUTE, applicationAdapter);
 	}
 
 	/**
@@ -51,12 +51,15 @@ public class AspectranWebApplicationListener implements ServletContextListener {
 	public void contextDestroyed(ServletContextEvent event) {
 		try {
 			if(applicationAdapter != null) {
-				event.getServletContext().removeAttribute(WebApplicationAdapter.WEB_APPLICATION_ADAPTER_ATTRIBUTE);
-
 				ApplicationScope scope = (ApplicationScope)applicationAdapter.getAttribute(ApplicationScope.APPLICATION_SCOPE_ATTRIBUTE);
 
 				if(scope != null)
 					scope.destroy();
+				
+				ServletContext servletContext = event.getServletContext();
+				servletContext.removeAttribute(WebApplicationAdapter.WEB_APPLICATION_ADAPTER_ATTRIBUTE);
+				
+				logger.debug("WebApplicationAdapter attribute was removed.");
 			}
 		} catch(Exception e) {
 			logger.error("AspectranApplicationListener failed to destroy cleanly: " + e.toString());

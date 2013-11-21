@@ -36,6 +36,9 @@ public class AspectranSchedulerListener implements ServletContextListener {
 
 	public static final String WAIT_ON_SHUTDOWN_PARAM = "aspectran:scheduler:waitOnShutdown";
 	
+	public static final String ASPECTRAN_SCHEDULER_ATTRIBUTE = 
+			AspectranScheduler.class.getName() + ".ASPECTRAN_SCHEDULER";
+	
 	private AspectranScheduler aspectranScheduler;
 	
 	boolean waitOnShutdown;
@@ -61,6 +64,7 @@ public class AspectranSchedulerListener implements ServletContextListener {
 		String waitOnShutdownVal = servletContext.getInitParameter(WAIT_ON_SHUTDOWN_PARAM);
 		
         int startDelaySeconds = 0;
+        
         try {
             if(StringUtils.hasText(startDelaySecondsVal))
                 startDelaySeconds = Integer.parseInt(startDelaySecondsVal);
@@ -74,6 +78,9 @@ public class AspectranSchedulerListener implements ServletContextListener {
 		try {
 			aspectranScheduler = new QuartzAspectranScheduler(aspectranContext);
 			aspectranScheduler.startup(startDelaySeconds);
+			
+			servletContext.setAttribute(ASPECTRAN_SCHEDULER_ATTRIBUTE, aspectranScheduler);
+			logger.debug("AspectranScheduler attribute was saved.");
 			
 			logger.info("AspectranScheduler has been started...");
 		} catch(Exception e) {
@@ -98,6 +105,12 @@ public class AspectranSchedulerListener implements ServletContextListener {
 		try {
 			if(aspectranScheduler != null)
 				aspectranScheduler.shutdown(waitOnShutdown);
+			
+			ServletContext servletContext = event.getServletContext();
+			servletContext.removeAttribute(ASPECTRAN_SCHEDULER_ATTRIBUTE);
+			
+			logger.debug("AspectranScheduler attribute was removed.");
+			
 		} catch(Exception e) {
 			logger.error("AspectranScheduler failed to shutdown cleanly: " + e.toString(), e);
 		}

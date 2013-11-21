@@ -13,14 +13,28 @@ public class AspectranHttpSessionListener implements HttpSessionListener {
 
 	private final Logger logger = LoggerFactory.getLogger(AspectranHttpSessionListener.class);
 	
+	private final boolean debugEnabled = logger.isDebugEnabled();
+	
+	private int sessionCount = 0;
+	
 	public void sessionCreated(HttpSessionEvent se) {
-		if(logger.isDebugEnabled())
-			logger.debug("session created: " + se);
+		synchronized (this) {
+            sessionCount++;
+        }
+		
+		HttpSession session = se.getSession();
+		
+		if(debugEnabled)
+			logger.debug("session created: {}, total sessions: {}", session.getId(), sessionCount);
 	}
 
 	public void sessionDestroyed(HttpSessionEvent se) {
-		if(logger.isDebugEnabled())
-			logger.debug("session destroyed: " + se);
+		synchronized (this) {
+            sessionCount--;
+        }
+		
+		if(debugEnabled)
+			logger.debug("session destroyed: {}, total sessions: {}", se.getSession().getId(), sessionCount);
 		
 		HttpSession session = se.getSession();
 		
