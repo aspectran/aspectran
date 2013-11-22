@@ -26,11 +26,11 @@ import com.aspectran.core.context.AspectranContext;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.scheduler.AspectranScheduler;
 import com.aspectran.scheduler.quartz.QuartzAspectranScheduler;
-import com.aspectran.web.context.AspectranContextLoader;
+import com.aspectran.web.adapter.WebApplicationAdapter;
 
-public class AspectranSchedulerListener implements ServletContextListener {
+public class SchedulerListener implements ServletContextListener {
 
-	private final Logger logger = LoggerFactory.getLogger(AspectranSchedulerListener.class);
+	private final Logger logger = LoggerFactory.getLogger(SchedulerListener.class);
 
 	public static final String START_DELAY_SECONDS_PARAM = "aspectran:scheduler:startDelaySeconds";
 
@@ -41,7 +41,7 @@ public class AspectranSchedulerListener implements ServletContextListener {
 	
 	private AspectranScheduler aspectranScheduler;
 	
-	boolean waitOnShutdown;
+	private boolean waitOnShutdown;
 
 	/**
 	 * Initialize the translets root context.
@@ -119,10 +119,10 @@ public class AspectranSchedulerListener implements ServletContextListener {
 	}
 	
 	private AspectranContext getAspectranContext(ServletContext servletContext) {
-		AspectranContextLoader aspectranContextLoader = (AspectranContextLoader)servletContext.getAttribute(AspectranContextLoader.ASPECTRAN_CONTEXT_LOADER_ATTRIBUTE);
+		WebApplicationAdapter webApplicationAdapter = WebApplicationAdapter.determineWebApplicationAdapter(servletContext);
 		
-		if(aspectranContextLoader != null)
-			return aspectranContextLoader.getAspectranContext();
+		if(webApplicationAdapter != null)
+			return webApplicationAdapter.getAspectranContext();
 		
 		return null;
 	}

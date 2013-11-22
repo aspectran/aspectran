@@ -41,9 +41,9 @@ public class IPAddressBlockableWebActivityServlet extends WebActivityServlet imp
 	/** @serial */
 	static final long serialVersionUID = -2369788867122156319L;
 
-	private static final Logger logger = LoggerFactory.getLogger(IPAddressBlockableWebActivityServlet.class);
+	private final Logger logger = LoggerFactory.getLogger(IPAddressBlockableWebActivityServlet.class);
 	
-	private static boolean debugEnabled = logger.isDebugEnabled();
+	private boolean debugEnabled = logger.isDebugEnabled();
 	
 	private static final String DELIMITERS = " ,;\t\n\r\f";
 	
@@ -66,7 +66,7 @@ public class IPAddressBlockableWebActivityServlet extends WebActivityServlet imp
 	 */
 	@Override
 	public void init() throws ServletException {
-		String addresses = getServletConfig().getInitParameter("aspectran:allowedAddresses");
+		String addresses = getServletConfig().getInitParameter("allowedAddresses");
 
 		if(addresses != null) {
 			allowedAddresses = new HashSet<String>();

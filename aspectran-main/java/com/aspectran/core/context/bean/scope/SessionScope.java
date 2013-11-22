@@ -15,8 +15,6 @@ import org.slf4j.LoggerFactory;
  */
 public class SessionScope extends AbstractScope implements Scope {
 
-	public static final String SESSION_SCOPE_ATTRIBUTE = SessionScope.class.getName();
-	
 	private final Logger logger = LoggerFactory.getLogger(SessionScope.class);
 	
 	public void destroy() {

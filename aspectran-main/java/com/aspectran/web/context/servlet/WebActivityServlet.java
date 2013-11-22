@@ -27,9 +27,10 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.AspectranContext;
+import com.aspectran.core.context.AspectranContextException;
 import com.aspectran.core.context.translet.TransletNotFoundException;
+import com.aspectran.core.util.StringUtils;
 import com.aspectran.web.activity.WebActivity;
 import com.aspectran.web.activity.WebActivityDefaultHandler;
 import com.aspectran.web.activity.WebActivityImpl;
@@ -48,7 +49,7 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 
 	protected AspectranContext aspectranContext;
 
-	private boolean standaloneContext;
+	private boolean standalone;
 
 	/*
 	 * (non-Java-doc)
@@ -70,28 +71,27 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 		logger.info("initializing WebActivityServlet...");
 
 		try {
+			WebApplicationAdapter applicationAdapter = WebApplicationAdapter.determineWebApplicationAdapter(getServletContext());
+			
 			String contextConfigLocation = getServletConfig().getInitParameter(
 					AspectranContextLoader.CONTEXT_CONFIG_LOCATION_PARAM);
 
-			if(contextConfigLocation == null) {
-				AspectranContextLoader aspectranContextLoader = (AspectranContextLoader)getServletContext()
-						.getAttribute(AspectranContextLoader.ASPECTRAN_CONTEXT_LOADER_ATTRIBUTE);
-
-				if(aspectranContextLoader != null) {
-					aspectranContext = aspectranContextLoader.getAspectranContext();
-				}
-			}
-
-			if(aspectranContext == null) {
-				AspectranContextLoader aspectranContextLoader = new AspectranContextLoader(getServletContext(),
-						contextConfigLocation);
+			if(StringUtils.hasText(contextConfigLocation)) {
+				AspectranContextLoader aspectranContextLoader = new AspectranContextLoader(getServletContext(), contextConfigLocation);
 				aspectranContext = aspectranContextLoader.getAspectranContext();
-				standaloneContext = true;
-			}
+				
+				if(applicationAdapter != null)
+					aspectranContext.setApplicationAdapter(applicationAdapter);
 
-			ApplicationAdapter applicationAdapter = WebApplicationAdapter
-					.determineWebApplicationAdapter(getServletContext());
-			aspectranContext.setApplicationAdapter(applicationAdapter);
+				standalone = true;
+			} else {
+				if(applicationAdapter != null)
+					aspectranContext = applicationAdapter.getAspectranContext();
+			}
+			
+			if(aspectranContext == null)
+				new AspectranContextException("AspectranContext is not found.");
+
 		} catch(Exception e) {
 			logger.error("WebActivityServlet failed to initialize: " + e.toString());
 			throw new UnavailableException(e.getMessage());
@@ -118,8 +118,7 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 
 				if(activityDefaultHandler != null) {
 					try {
-						WebActivityDefaultHandler handler = (WebActivityDefaultHandler)activity
-								.getBean(activityDefaultHandler);
+						WebActivityDefaultHandler handler = (WebActivityDefaultHandler)activity.getBean(activityDefaultHandler);
 						handler.setServletContext(getServletContext());
 						handler.handle(req, res);
 					} catch(Exception e2) {
@@ -148,7 +147,7 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 			super.destroy();
 
 			if(aspectranContext != null) {
-				if(standaloneContext)
+				if(standalone)
 					aspectranContext.destroy();
 
 				aspectranContext = null;
@@ -158,5 +157,6 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 		}
 
 		logger.info("WebActivityServlet successful destroyed.");
+		logger.info("Do not terminate the server while the all scoped bean destroying.");
 	}
 }

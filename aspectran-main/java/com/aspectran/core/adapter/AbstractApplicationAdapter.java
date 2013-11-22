@@ -1,12 +1,15 @@
 package com.aspectran.core.adapter;
 
+import com.aspectran.core.context.bean.scope.ApplicationScope;
+
 /**
  * The Class AbstractApplicationAdapter.
   *
- * @author Gulendol
  * @since 2011. 3. 13.
 */
 public abstract class AbstractApplicationAdapter implements ApplicationAdapter {
+	
+	protected ApplicationScope scope = new ApplicationScope();
 	
 	/** The adaptee. */
 	protected Object adaptee;
@@ -20,30 +23,16 @@ public abstract class AbstractApplicationAdapter implements ApplicationAdapter {
 		this.adaptee = adaptee;
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.jhlabs.translets.adapter.SessionAdapter#getAdaptee()
-	 */
+	public ApplicationScope getScope() {
+		return scope;
+	}
+
 	public Object getAdaptee() {
 		return adaptee;
 	}
 	
-	/**
-	 * Sets the adaptee.
-	 *
-	 * @param adaptee the new adaptee
-	 */
-	public void setAdaptee(Object adaptee) {
-		this.adaptee = adaptee;
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.jhlabs.translets.adapter.SessionAdapter#getAttribute(java.lang.String)
-	 */
 	public abstract Object getAttribute(String name);
 
-	/* (non-Javadoc)
-	 * @see org.jhlabs.translets.adapter.SessionAdapter#setAttribute(java.lang.String, java.lang.Object)
-	 */
 	public abstract void setAttribute(String name, Object value);
 
 }

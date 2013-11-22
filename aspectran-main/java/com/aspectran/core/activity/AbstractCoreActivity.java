@@ -40,7 +40,7 @@ import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.context.AspectranContext;
 import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
 import com.aspectran.core.context.bean.BeanRegistry;
-import com.aspectran.core.context.bean.scope.RequestScope;
+import com.aspectran.core.context.bean.scope.Scope;
 import com.aspectran.core.context.rule.AspectAdviceRule;
 import com.aspectran.core.context.rule.RequestRule;
 import com.aspectran.core.context.rule.ResponseByContentTypeRule;
@@ -97,7 +97,7 @@ public abstract class AbstractCoreActivity implements CoreActivity {
 	private CoreTranslet translet;
 	
 	/** The request scope. */
-	private RequestScope requestScope;
+	private Scope requestScope;
 	
 	/** Whether the response is ended. */
 	private boolean isResponseEnd;
@@ -808,16 +808,10 @@ public abstract class AbstractCoreActivity implements CoreActivity {
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.jhlabs.translets.activity.Activity#getForwardTransletName()
-	 */
 	public String getForwardTransletName() {
 		return forwardTransletName;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.jhlabs.translets.activity.Activity#setForwardTransletName(java.lang.String)
-	 */
 	public void setForwardTransletName(String forwardTransletName) {
 		this.forwardTransletName = forwardTransletName;
 	}
@@ -921,14 +915,14 @@ public abstract class AbstractCoreActivity implements CoreActivity {
 	/* (non-Javadoc)
 	 * @see com.aspectran.core.activity.AspectranActivity#getRequestScope()
 	 */
-	public RequestScope getRequestScope() {
+	public Scope getRequestScope() {
 		return requestScope;
 	}
 
 	/* (non-Javadoc)
 	 * @see com.aspectran.core.activity.AspectranActivity#setRequestScope(com.aspectran.core.context.bean.scope.RequestScope)
 	 */
-	public void setRequestScope(RequestScope requestScope) {
+	public void setRequestScope(Scope requestScope) {
 		this.requestScope = requestScope;
 	}
 

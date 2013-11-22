@@ -18,26 +18,43 @@ package com.aspectran.web.context.listener;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.aspectran.core.context.AspectranContext;
+import com.aspectran.core.util.StringUtils;
+import com.aspectran.web.adapter.WebApplicationAdapter;
 import com.aspectran.web.context.AspectranContextLoader;
 
-public class AspectranContextLoaderListener implements ServletContextListener {
+public class WebApplicationListener implements ServletContextListener {
 
-	public static final String ASPECTRAN_CONTEXT_CONFIG_LOCATION_PARAM = "aspectran:contextConfigLocation";
+	private final Logger logger = LoggerFactory.getLogger(WebApplicationListener.class);
+
+	private static final String ASPECTRAN_CONTEXT_CONFIG_LOCATION_PARAM = "aspectran:contextConfigLocation";
 	
-	private AspectranContextLoader aspectranContextLoader;
-	
+	private AspectranContext aspectranContext;
+
+	public AspectranContext getAspectranContext() {
+		return aspectranContext;
+	}
+
 	/**
 	 * Initialize the translets root context.
 	 * 
 	 * @param event the event
 	 */
 	public void contextInitialized(ServletContextEvent event) {
+		logger.info("initializing WebApplicationListener...");
+
 		// context-relative path to our configuration resource for the aspectran
 		String contextConfigLocation = event.getServletContext().getInitParameter(ASPECTRAN_CONTEXT_CONFIG_LOCATION_PARAM);
+
+		if(StringUtils.hasText(contextConfigLocation)) {
+			AspectranContextLoader loader = new AspectranContextLoader(event.getServletContext(), contextConfigLocation);
+			aspectranContext = loader.getAspectranContext();
+		}
 		
-		aspectranContextLoader = new AspectranContextLoader(event.getServletContext(), contextConfigLocation);
-		event.getServletContext().setAttribute(AspectranContextLoader.ASPECTRAN_CONTEXT_LOADER_ATTRIBUTE, aspectranContextLoader);
+		WebApplicationAdapter.createWebApplicationAdapter(event.getServletContext(), aspectranContext);
 	}
 
 	/**
@@ -46,16 +63,13 @@ public class AspectranContextLoaderListener implements ServletContextListener {
 	 * @param event the event
 	 */
 	public void contextDestroyed(ServletContextEvent event) {
-		if(aspectranContextLoader != null) {
-			event.getServletContext().removeAttribute(AspectranContextLoader.ASPECTRAN_CONTEXT_LOADER_ATTRIBUTE);
-			
-			AspectranContext aspectranContext = aspectranContextLoader.getAspectranContext();
-			
-			if(aspectranContext != null) {
-				aspectranContext.destroy();
-				aspectranContext = null;
-			}
+		try {
+			WebApplicationAdapter.destoryWebApplicationAdapter(event.getServletContext());
+		} catch(Exception e) {
+			logger.error("WebApplicationListener failed to destroy cleanly: " + e.toString());
 		}
+
+		logger.info("WebApplicationListener successful destroyed.");
 	}
 
 }
