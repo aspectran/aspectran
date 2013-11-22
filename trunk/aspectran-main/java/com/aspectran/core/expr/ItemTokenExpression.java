@@ -20,12 +20,12 @@ import java.util.Map;
 
 import com.aspectran.core.activity.CoreActivity;
 import com.aspectran.core.context.bean.BeanRegistry;
-import com.aspectran.core.context.rule.ItemRule;
-import com.aspectran.core.context.rule.ItemRuleMap;
-import com.aspectran.core.context.type.ItemType;
-import com.aspectran.core.context.type.ItemValueType;
 import com.aspectran.core.expr.token.Token;
 import com.aspectran.core.var.ValueMap;
+import com.aspectran.core.var.rule.ItemRule;
+import com.aspectran.core.var.rule.ItemRuleMap;
+import com.aspectran.core.var.type.ItemType;
+import com.aspectran.core.var.type.ItemValueType;
 
 /**
  * <p>Created: 2008. 06. 19 오후 9:43:28</p>
