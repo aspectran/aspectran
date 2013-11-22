@@ -15,7 +15,7 @@
  */
 package com.aspectran.core.context.aspect.pointcut;
 
-import com.aspectran.core.context.type.PointcutPatternOperationType;
+import com.aspectran.core.var.type.PointcutPatternOperationType;
 
 public class PointcutPattern {
 	

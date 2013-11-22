@@ -19,8 +19,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
-import com.aspectran.core.context.rule.AspectAdviceRule;
-import com.aspectran.core.context.rule.AspectAdviceSupport;
+import com.aspectran.core.var.rule.AspectAdviceRule;
+import com.aspectran.core.var.rule.AspectAdviceSupport;
 
 /**
  * Then content list class.

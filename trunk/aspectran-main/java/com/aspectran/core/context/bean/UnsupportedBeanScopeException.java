@@ -1,7 +1,7 @@
 package com.aspectran.core.context.bean;
 
-import com.aspectran.core.context.rule.BeanRule;
-import com.aspectran.core.context.type.ScopeType;
+import com.aspectran.core.var.rule.BeanRule;
+import com.aspectran.core.var.type.ScopeType;
 
 
 public class UnsupportedBeanScopeException extends BeanException {

@@ -5,8 +5,8 @@ package com.aspectran.core.context.bean.scope;
 
 import com.aspectran.core.context.bean.BeanDestroyFailedException;
 import com.aspectran.core.context.bean.ablility.DisposableBean;
-import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.util.MethodUtils;
+import com.aspectran.core.var.rule.BeanRule;
 
 
 /**

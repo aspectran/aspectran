@@ -18,10 +18,10 @@ package com.aspectran.core.context.builder;
 import com.aspectran.core.context.aspect.AspectAdviceRuleRegister;
 import com.aspectran.core.context.bean.BeanRegistry;
 import com.aspectran.core.context.bean.ScopedBeanRegistry;
-import com.aspectran.core.context.rule.AspectRuleMap;
-import com.aspectran.core.context.rule.BeanRuleMap;
-import com.aspectran.core.context.rule.TransletRuleMap;
 import com.aspectran.core.context.translet.TransletRuleRegistry;
+import com.aspectran.core.var.rule.AspectRuleMap;
+import com.aspectran.core.var.rule.BeanRuleMap;
+import com.aspectran.core.var.rule.TransletRuleMap;
 
 /**
  * TransletsContext builder.

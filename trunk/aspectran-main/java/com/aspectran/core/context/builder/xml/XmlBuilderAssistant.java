@@ -20,14 +20,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.aspectran.core.context.AspectranConstant;
-import com.aspectran.core.context.rule.AspectRule;
-import com.aspectran.core.context.rule.AspectRuleMap;
-import com.aspectran.core.context.rule.BeanRule;
-import com.aspectran.core.context.rule.BeanRuleMap;
-import com.aspectran.core.context.rule.TransletRule;
-import com.aspectran.core.context.rule.TransletRuleMap;
-import com.aspectran.core.context.type.DefaultSettingType;
 import com.aspectran.core.util.ArrayStack;
+import com.aspectran.core.var.rule.AspectRule;
+import com.aspectran.core.var.rule.AspectRuleMap;
+import com.aspectran.core.var.rule.BeanRule;
+import com.aspectran.core.var.rule.BeanRuleMap;
+import com.aspectran.core.var.rule.TransletRule;
+import com.aspectran.core.var.rule.TransletRuleMap;
+import com.aspectran.core.var.type.DefaultSettingType;
 
 
 /**

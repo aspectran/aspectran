@@ -31,9 +31,9 @@ import com.aspectran.core.context.builder.AspectranContextBuilder;
 import com.aspectran.core.context.builder.AspectranContextBuilderException;
 import com.aspectran.core.context.builder.xml.parser.AspectranNodeParser;
 import com.aspectran.core.context.translet.TransletRuleRegistry;
-import com.aspectran.core.context.type.DefaultSettingType;
 import com.aspectran.core.util.Assert;
 import com.aspectran.core.util.ResourceUtils;
+import com.aspectran.core.var.type.DefaultSettingType;
 
 /**
  * XmlAspectranContextBuilder.

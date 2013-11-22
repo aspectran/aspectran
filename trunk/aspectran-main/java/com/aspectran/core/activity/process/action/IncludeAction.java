@@ -24,10 +24,10 @@ import com.aspectran.core.activity.CoreActivity;
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
-import com.aspectran.core.context.rule.IncludeActionRule;
-import com.aspectran.core.context.type.ActionType;
 import com.aspectran.core.expr.ItemTokenExpression;
 import com.aspectran.core.expr.ItemTokenExpressor;
+import com.aspectran.core.var.rule.IncludeActionRule;
+import com.aspectran.core.var.type.ActionType;
 
 /**
  * <p>Created: 2008. 06. 05 오후 9:22:05</p>
