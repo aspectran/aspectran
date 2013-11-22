@@ -32,8 +32,8 @@ import com.aspectran.core.activity.response.dispatch.DispatchResponseException;
 import com.aspectran.core.activity.response.dispatch.ViewDispatcher;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
-import com.aspectran.core.context.rule.DispatchResponseRule;
-import com.aspectran.core.context.rule.ResponseRule;
+import com.aspectran.core.var.rule.DispatchResponseRule;
+import com.aspectran.core.var.rule.ResponseRule;
 
 /**
  * JSP or other web resource integration.
