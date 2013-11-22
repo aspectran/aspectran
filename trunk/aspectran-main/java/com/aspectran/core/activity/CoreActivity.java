@@ -25,7 +25,7 @@ import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.context.AspectranContext;
 import com.aspectran.core.context.bean.BeanRegistry;
-import com.aspectran.core.context.bean.scope.RequestScope;
+import com.aspectran.core.context.bean.scope.Scope;
 
 /**
  * Action Translator.
@@ -77,9 +77,9 @@ public interface CoreActivity {
 	
 	public String getTransletName();
 	
-	public RequestScope getRequestScope();
+	public Scope getRequestScope();
 	
-	public void setRequestScope(RequestScope requestScope);
+	public void setRequestScope(Scope requestScope);
 	
 	public CoreActivity newCoreActivity();
 	

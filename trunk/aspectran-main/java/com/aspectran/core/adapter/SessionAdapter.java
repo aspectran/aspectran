@@ -1,5 +1,7 @@
 package com.aspectran.core.adapter;
 
+import com.aspectran.core.context.bean.scope.Scope;
+
 /**
  * The Interface SessionAdapter.
  *
@@ -8,6 +10,13 @@ package com.aspectran.core.adapter;
  */
 public interface SessionAdapter {
 
+	/**
+	 * Gets the scope.
+	 *
+	 * @return the scope
+	 */
+	public Scope getScope();
+	
 	/**
 	 * Gets the adaptee.
 	 *

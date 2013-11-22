@@ -14,8 +14,6 @@ import org.slf4j.LoggerFactory;
  */
 public class ApplicationScope extends AbstractScope implements Scope {
 	
-	public static final String APPLICATION_SCOPE_ATTRIBUTE = ApplicationScope.class.getName();
-
 	private final Logger logger = LoggerFactory.getLogger(ApplicationScope.class);
 
 	public void destroy() {

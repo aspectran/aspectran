@@ -65,6 +65,7 @@ public class WebActivityImpl extends AbstractCoreActivity implements WebActivity
 	
 	public WebActivityImpl(AspectranContext context, HttpServletRequest request, HttpServletResponse response) {
 		super(context);
+		
 		this.request = request;
 		this.response = response;
 		

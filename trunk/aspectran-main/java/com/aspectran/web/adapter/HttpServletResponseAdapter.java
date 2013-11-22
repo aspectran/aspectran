@@ -48,58 +48,34 @@ public class HttpServletResponseAdapter extends AbstractResponseAdapter implemen
 		super(response);
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.jhlabs.translets.adapter.AbstractResponseAdapter#getCharacterEncoding()
-	 */
 	public String getCharacterEncoding() {
 		return ((HttpServletResponse)adaptee).getCharacterEncoding();
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.jhlabs.translets.adapter.AbstractResponseAdapter#setCharacterEncoding(java.lang.String)
-	 */
 	public void setCharacterEncoding(String characterEncoding) throws UnsupportedEncodingException {
 		((HttpServletResponse)adaptee).setCharacterEncoding(characterEncoding);
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.jhlabs.translets.adapter.AbstractResponseAdapter#getContentType()
-	 */
 	public String getContentType() {
 		return ((HttpServletResponse)adaptee).getContentType();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.jhlabs.translets.adapter.AbstractResponseAdapter#setContentType(java.lang.String)
-	 */
 	public void setContentType(String contentType) {
 		((HttpServletResponse)adaptee).setContentType(contentType);
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.jhlabs.translets.adapter.ResponseAdapter#getOutputStream()
-	 */
 	public OutputStream getOutputStream() throws IOException {
 		return ((HttpServletResponse)adaptee).getOutputStream();
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.jhlabs.translets.adapter.ResponseAdapter#getWriter()
-	 */
 	public Writer getWriter() throws IOException {
 		return ((HttpServletResponse)adaptee).getWriter();
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.jhlabs.translets.adapter.ResponseAdapter#redirect(java.lang.String)
-	 */
 	public void redirect(String requestUri) throws IOException {
 		((HttpServletResponse)adaptee).sendRedirect(requestUri);
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.jhlabs.translets.adapter.AbstractResponseAdapter#redirect(org.jhlabs.translets.activity.Activity, org.jhlabs.translets.context.rule.RedirectResponseRule)
-	 */
 	public String redirect(CoreActivity activity, RedirectResponseRule redirectResponseRule) throws IOException {
 		String characterEncoding = ((HttpServletResponse)adaptee).getCharacterEncoding();
 		

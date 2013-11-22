@@ -18,7 +18,6 @@ package com.aspectran.core.adapter;
 /**
  * The Class AdapterException.
  *
- * @author Gulendol
  * @since 2011. 3. 13.
  */
 public class AdapterException extends Exception {

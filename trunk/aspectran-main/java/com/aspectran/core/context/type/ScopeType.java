@@ -38,9 +38,6 @@ public final class ScopeType extends Type {
 	/** The "session" scope type. */
 	public static final ScopeType SESSION;
 
-	/** The "context" scope type. */
-	public static final ScopeType CONTEXT;
-	
 	/** The "application" scope type. */
 	public static final ScopeType APPLICATION;
 	
@@ -51,7 +48,6 @@ public final class ScopeType extends Type {
 		PROTOTYPE = new ScopeType("prototype");
 		REQUEST = new ScopeType("request");
 		SESSION = new ScopeType("session");
-		CONTEXT = new ScopeType("context");
 		APPLICATION = new ScopeType("application");
 
 		types = new HashMap<String, ScopeType>();
@@ -59,7 +55,6 @@ public final class ScopeType extends Type {
 		types.put(PROTOTYPE.toString(), PROTOTYPE);
 		types.put(REQUEST.toString(), REQUEST);
 		types.put(SESSION.toString(), SESSION);
-		types.put(CONTEXT.toString(), CONTEXT);
 		types.put(APPLICATION.toString(), APPLICATION);
 	}
 

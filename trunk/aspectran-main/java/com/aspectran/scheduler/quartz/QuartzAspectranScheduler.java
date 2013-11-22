@@ -44,12 +44,32 @@ public class QuartzAspectranScheduler implements AspectranScheduler {
 	
 	private Map<String, Scheduler> eachAspectSchedulerMap = new LinkedHashMap<String, Scheduler>();
 	
+	private int startDelaySeconds = 0;
+	
+	private boolean waitOnShutdown = false;;
+	
 	public QuartzAspectranScheduler(AspectranContext context) {
 		this.context = context;
 	}
 	
+	public int getStartDelaySeconds() {
+		return startDelaySeconds;
+	}
+
+	public void setStartDelaySeconds(int startDelaySeconds) {
+		this.startDelaySeconds = startDelaySeconds;
+	}
+
+	public boolean isWaitOnShutdown() {
+		return waitOnShutdown;
+	}
+
+	public void setWaitOnShutdown(boolean waitOnShutdown) {
+		this.waitOnShutdown = waitOnShutdown;
+	}
+
 	public void startup() throws SchedulerException {
-		startup(0);
+		startup(startDelaySeconds);
 	}
 	
 	public void startup(int delaySeconds) throws SchedulerException {
@@ -102,7 +122,7 @@ public class QuartzAspectranScheduler implements AspectranScheduler {
 	}
 	
 	public void shutdown() throws SchedulerException {
-		shutdown(false);
+		shutdown(waitOnShutdown);
 	}
 	
 	public void shutdown(boolean waitForJobsToComplete) throws SchedulerException {
