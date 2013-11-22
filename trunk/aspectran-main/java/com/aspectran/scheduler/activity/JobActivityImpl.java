@@ -35,10 +35,6 @@ import com.aspectran.core.var.rule.ResponseRule;
  */
 public class JobActivityImpl extends AbstractCoreActivity implements JobActivity {
 
-	//private final Log log = LogFactory.getLog(SchedulingActivityImpl.class);
-
-	//private final boolean debugEnabled = log.isDebugEnabled();
-	
 	public JobActivityImpl(AspectranContext context, RequestAdapter requestAdapter, ResponseAdapter responseAdapter) {
 		super(context);
 		
