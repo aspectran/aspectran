@@ -22,12 +22,12 @@ import org.slf4j.LoggerFactory;
 
 import com.aspectran.core.context.AspectranConstant;
 import com.aspectran.core.context.AspectranContext;
-import com.aspectran.core.context.rule.AspectJobAdviceRule;
-import com.aspectran.core.context.rule.AspectRule;
-import com.aspectran.core.context.rule.AspectRuleMap;
-import com.aspectran.core.context.rule.PointcutRule;
-import com.aspectran.core.context.type.JoinpointTargetType;
-import com.aspectran.core.context.type.PointcutType;
+import com.aspectran.core.var.rule.AspectJobAdviceRule;
+import com.aspectran.core.var.rule.AspectRule;
+import com.aspectran.core.var.rule.AspectRuleMap;
+import com.aspectran.core.var.rule.PointcutRule;
+import com.aspectran.core.var.type.JoinpointTargetType;
+import com.aspectran.core.var.type.PointcutType;
 import com.aspectran.scheduler.AspectranScheduler;
 
 public class QuartzAspectranScheduler implements AspectranScheduler {
