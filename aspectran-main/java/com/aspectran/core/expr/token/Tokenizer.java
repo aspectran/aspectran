@@ -18,7 +18,7 @@ package com.aspectran.core.expr.token;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.aspectran.core.context.type.TokenType;
+import com.aspectran.core.var.type.TokenType;
 
 /**
  * <p>

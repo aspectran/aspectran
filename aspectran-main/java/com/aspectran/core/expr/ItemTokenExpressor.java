@@ -17,8 +17,8 @@ package com.aspectran.core.expr;
 
 import java.util.Map;
 
-import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.var.ValueMap;
+import com.aspectran.core.var.rule.ItemRuleMap;
 
 /**
  *

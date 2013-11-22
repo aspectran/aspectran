@@ -15,7 +15,7 @@
  */
 package com.aspectran.core.expr.token;
 
-import com.aspectran.core.context.type.TokenType;
+import com.aspectran.core.var.type.TokenType;
 
 /**
  * <p>Created: 2008. 03. 27 오후 10:20:06</p>

@@ -29,11 +29,11 @@ import java.util.StringTokenizer;
 import com.aspectran.core.activity.CoreActivity;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.context.bean.BeanRegistry;
-import com.aspectran.core.context.type.TokenType;
 import com.aspectran.core.expr.token.Token;
 import com.aspectran.core.util.BeanUtils;
 import com.aspectran.core.util.MethodUtils;
 import com.aspectran.core.util.StringUtils;
+import com.aspectran.core.var.type.TokenType;
 
 /**
  * <p>Created: 2008. 03. 29 오전 12:59:16</p>
