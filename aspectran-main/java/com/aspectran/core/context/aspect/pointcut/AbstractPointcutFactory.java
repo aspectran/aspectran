@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.aspectran.core.context.AspectranConstant;
-import com.aspectran.core.context.rule.PointcutRule;
-import com.aspectran.core.context.type.PointcutPatternOperationType;
-import com.aspectran.core.context.type.PointcutType;
 import com.aspectran.core.util.StringUtils;
+import com.aspectran.core.var.rule.PointcutRule;
+import com.aspectran.core.var.type.PointcutPatternOperationType;
+import com.aspectran.core.var.type.PointcutType;
 
 public abstract class AbstractPointcutFactory implements PointcutFactory {
 

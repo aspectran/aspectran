@@ -41,16 +41,16 @@ import com.aspectran.core.context.AspectranContext;
 import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
 import com.aspectran.core.context.bean.BeanRegistry;
 import com.aspectran.core.context.bean.scope.Scope;
-import com.aspectran.core.context.rule.AspectAdviceRule;
-import com.aspectran.core.context.rule.RequestRule;
-import com.aspectran.core.context.rule.ResponseByContentTypeRule;
-import com.aspectran.core.context.rule.ResponseByContentTypeRuleMap;
-import com.aspectran.core.context.rule.ResponseRule;
-import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.translet.TransletInstantiationException;
 import com.aspectran.core.context.translet.TransletNotFoundException;
-import com.aspectran.core.context.type.ActionType;
-import com.aspectran.core.context.type.ResponseType;
+import com.aspectran.core.var.rule.AspectAdviceRule;
+import com.aspectran.core.var.rule.RequestRule;
+import com.aspectran.core.var.rule.ResponseByContentTypeRule;
+import com.aspectran.core.var.rule.ResponseByContentTypeRuleMap;
+import com.aspectran.core.var.rule.ResponseRule;
+import com.aspectran.core.var.rule.TransletRule;
+import com.aspectran.core.var.type.ActionType;
+import com.aspectran.core.var.type.ResponseType;
 
 /**
  * Action Translator.

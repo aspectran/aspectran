@@ -14,21 +14,21 @@ import com.aspectran.core.activity.response.Responsible;
 import com.aspectran.core.context.aspect.pointcut.Pointcut;
 import com.aspectran.core.context.aspect.pointcut.PointcutFactory;
 import com.aspectran.core.context.aspect.pointcut.ReusePointcutFactory;
-import com.aspectran.core.context.rule.AspectAdviceRule;
-import com.aspectran.core.context.rule.AspectRule;
-import com.aspectran.core.context.rule.AspectRuleMap;
-import com.aspectran.core.context.rule.BeanActionRule;
-import com.aspectran.core.context.rule.PointcutRule;
-import com.aspectran.core.context.rule.RequestRule;
-import com.aspectran.core.context.rule.ResponseByContentTypeRule;
-import com.aspectran.core.context.rule.ResponseByContentTypeRuleMap;
-import com.aspectran.core.context.rule.ResponseRule;
-import com.aspectran.core.context.rule.SettingsAdviceRule;
-import com.aspectran.core.context.rule.TransletRule;
-import com.aspectran.core.context.rule.TransletRuleMap;
-import com.aspectran.core.context.type.ActionType;
-import com.aspectran.core.context.type.JoinpointScopeType;
-import com.aspectran.core.context.type.JoinpointTargetType;
+import com.aspectran.core.var.rule.AspectAdviceRule;
+import com.aspectran.core.var.rule.AspectRule;
+import com.aspectran.core.var.rule.AspectRuleMap;
+import com.aspectran.core.var.rule.BeanActionRule;
+import com.aspectran.core.var.rule.PointcutRule;
+import com.aspectran.core.var.rule.RequestRule;
+import com.aspectran.core.var.rule.ResponseByContentTypeRule;
+import com.aspectran.core.var.rule.ResponseByContentTypeRuleMap;
+import com.aspectran.core.var.rule.ResponseRule;
+import com.aspectran.core.var.rule.SettingsAdviceRule;
+import com.aspectran.core.var.rule.TransletRule;
+import com.aspectran.core.var.rule.TransletRuleMap;
+import com.aspectran.core.var.type.ActionType;
+import com.aspectran.core.var.type.JoinpointScopeType;
+import com.aspectran.core.var.type.JoinpointTargetType;
 
 public class AspectAdviceRuleRegister {
 	

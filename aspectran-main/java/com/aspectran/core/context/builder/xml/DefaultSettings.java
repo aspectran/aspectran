@@ -18,7 +18,7 @@ package com.aspectran.core.context.builder.xml;
 import java.util.Map;
 
 import com.aspectran.core.context.AspectranConstant;
-import com.aspectran.core.context.type.DefaultSettingType;
+import com.aspectran.core.var.type.DefaultSettingType;
 
 /**
  * <p>Created: 2008. 03. 22 오후 5:48:09</p>

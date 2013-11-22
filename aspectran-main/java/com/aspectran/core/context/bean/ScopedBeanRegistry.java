@@ -7,11 +7,11 @@ import com.aspectran.core.context.bean.scope.RequestScope;
 import com.aspectran.core.context.bean.scope.Scope;
 import com.aspectran.core.context.bean.scope.ScopedBean;
 import com.aspectran.core.context.bean.scope.ScopedBeanMap;
-import com.aspectran.core.context.rule.BeanRule;
-import com.aspectran.core.context.rule.BeanRuleMap;
-import com.aspectran.core.context.type.ScopeType;
 import com.aspectran.core.expr.ItemTokenExpression;
 import com.aspectran.core.expr.ItemTokenExpressor;
+import com.aspectran.core.var.rule.BeanRule;
+import com.aspectran.core.var.rule.BeanRuleMap;
+import com.aspectran.core.var.type.ScopeType;
 
 /**
  * SINGLETON: 모든 singleton 빈은context 생성시 초기화 된다.
