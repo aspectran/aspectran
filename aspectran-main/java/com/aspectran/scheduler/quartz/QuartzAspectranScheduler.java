@@ -46,7 +46,7 @@ public class QuartzAspectranScheduler implements AspectranScheduler {
 	
 	private int startDelaySeconds = 0;
 	
-	private boolean waitOnShutdown = false;;
+	private boolean waitOnShutdown = false;
 	
 	public QuartzAspectranScheduler(AspectranContext context) {
 		this.context = context;
