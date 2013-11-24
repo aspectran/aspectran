@@ -1,4 +1,4 @@
-package com.aspectran.core.context.bean.loader;
+package com.aspectran.core.context.bean.scanning;
 
 import java.io.File;
 import java.io.IOException;
@@ -20,10 +20,10 @@ import com.aspectran.core.util.ResourceUtils;
 import com.aspectran.core.util.wildcard.WildcardMatcher;
 import com.aspectran.core.util.wildcard.WildcardPattern;
 
-public class BeanClassLoader {
+public class BeanClassScanner {
 
 	/** The logger. */
-	private final Logger logger = LoggerFactory.getLogger(BeanClassLoader.class);
+	private final Logger logger = LoggerFactory.getLogger(BeanClassScanner.class);
 	
 	private final char RESOURCE_PATH_SPEPARATOR = '/';
 
@@ -35,7 +35,7 @@ public class BeanClassLoader {
 
 	private final String beanIdSuffix;
 	
-	public BeanClassLoader(String beanIdPattern) {
+	public BeanClassScanner(String beanIdPattern) {
 		int wildcardStartIndex = beanIdPattern.indexOf(BEAN_ID_WILDCARD_DELIMITER);
 		
 		if(wildcardStartIndex == -1) {
@@ -57,7 +57,7 @@ public class BeanClassLoader {
 		//System.out.println("beanIdSuffix: " + beanIdSuffix);
 	}
 
-	public Map<String, Class<?>> loadBeanClassMap(String classNamePattern) throws IOException, ClassNotFoundException {
+	public Map<String, Class<?>> scanClass(String classNamePattern) throws IOException, ClassNotFoundException {
 		classNamePattern = classNamePattern.replace(ClassUtils.PACKAGE_SEPARATOR, RESOURCE_PATH_SPEPARATOR);
 
 		String basePackageName = determineBasePackageName(classNamePattern);
@@ -149,7 +149,7 @@ public class BeanClassLoader {
 						className = className.replace(RESOURCE_PATH_SPEPARATOR, ClassUtils.PACKAGE_SEPARATOR);
 						Class<?> classType = classLoader.loadClass(className);
 						String beanId = combineBeanId(relativePath);
-						logger.debug("beanClass {beanId: " + beanId + ", className: " + className + "} from jar: " + jarFile.getName());
+						logger.trace("beanClass {beanId: " + beanId + ", className: " + className + "} from jar: " + jarFile.getName());
 						//System.out.println("  [clazz] " + className);
 						//System.out.println("  [beanId] " + combineBeanId(relativePath));
 						classMap.put(beanId, classType);
@@ -237,7 +237,7 @@ public class BeanClassLoader {
 					String beanId = combineBeanId(relativePath);
 					//System.out.println("  [clazz] " + className);
 					//System.out.println("  [beanId] " + combineBeanId(relativePath));
-					logger.debug("beanClass {beanId: " + beanId + ", className: " + className + "}");
+					logger.trace("beanClass {beanId: " + beanId + ", className: " + className + "}");
 					classMap.put(beanId, classType);
 				}
 			}
@@ -287,8 +287,8 @@ public class BeanClassLoader {
 	
 	public static void main(String[] args) {
 		try {
-			BeanClassLoader loader = new BeanClassLoader("component.*ZZZ");
-			loader.loadBeanClassMap("com.**.*Sql*");
+			BeanClassScanner loader = new BeanClassScanner("component.*ZZZ");
+			loader.scanClass("com.**.*Sql*");
 			System.out.println(loader.getClass().getName());
 		} catch(Exception e) {
 			e.printStackTrace();

@@ -42,8 +42,8 @@ public class AspectranContextLoader {
 		try {
 			String applicationBasePath = servletContext.getRealPath("/");
 			
-			AspectranContextBuilder builder = new XmlAspectranContextBuilder(applicationBasePath);
-			aspectranContext = builder.build(contextConfigLocation);
+			AspectranContextBuilder builder = new XmlAspectranContextBuilder(applicationBasePath, contextConfigLocation);
+			aspectranContext = builder.build();
 			
 			long elapsedTime = System.currentTimeMillis() - startTime;
 			logger.info("AspectranContext initialization completed in " + elapsedTime + " ms");

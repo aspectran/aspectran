@@ -21,19 +21,13 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.aspectran.core.context.AspectranContext;
-import com.aspectran.core.context.bean.BeanRegistry;
 import com.aspectran.core.context.builder.AbstractAspectranContextBuilder;
 import com.aspectran.core.context.builder.AspectranContextBuilder;
 import com.aspectran.core.context.builder.AspectranContextBuilderException;
 import com.aspectran.core.context.builder.xml.parser.AspectranNodeParser;
-import com.aspectran.core.context.translet.TransletRuleRegistry;
 import com.aspectran.core.util.Assert;
 import com.aspectran.core.util.ResourceUtils;
-import com.aspectran.core.var.type.DefaultSettingType;
 
 /**
  * XmlAspectranContextBuilder.
@@ -42,22 +36,25 @@ import com.aspectran.core.var.type.DefaultSettingType;
  */
 public class XmlAspectranContextBuilder extends AbstractAspectranContextBuilder implements AspectranContextBuilder {
 	
-	private final Logger logger = LoggerFactory.getLogger(XmlAspectranContextBuilder.class);
-
-	private String applicationBasePath;
+	private String contextConfigLocation;
 	
-	public XmlAspectranContextBuilder() {
-		this(new File(".").getAbsoluteFile().toString());
+	public XmlAspectranContextBuilder(String contextConfigLocation) {
+		this(null, contextConfigLocation);
 	}
 
-	public XmlAspectranContextBuilder(String applicationBasePath) {
-		this.applicationBasePath = applicationBasePath;
-		logger.info("application base directory path [" + applicationBasePath + "]");
-	}
-
-	public AspectranContext build(String contextConfigLocation) throws AspectranContextBuilderException {
+	public XmlAspectranContextBuilder(String applicationBasePath, String contextConfigLocation) {
+		super(applicationBasePath);
+		
 		Assert.notNull(contextConfigLocation, "contextConfigLocation must not be null");
 		
+		this.contextConfigLocation = contextConfigLocation;
+	}
+
+	public AspectranContext build() throws AspectranContextBuilderException {
+		return build(false);
+	}
+	
+	public AspectranContext build(boolean autoReload) throws AspectranContextBuilderException {
 		try {
 			InputStream inputStream;
 			
@@ -70,7 +67,7 @@ public class XmlAspectranContextBuilder extends AbstractAspectranContextBuilder 
 					throw new IOException("Cannot read aspectran context configuration resource: " + path);
 				}
 			} else {
-				File file = new File(applicationBasePath, contextConfigLocation);
+				File file = new File(getApplicationBasePath(), contextConfigLocation);
 				
 				if(!file.isFile()) {
 					throw new FileNotFoundException("aspectran context configuration file is not found: " + file.getAbsolutePath());
@@ -82,33 +79,15 @@ public class XmlAspectranContextBuilder extends AbstractAspectranContextBuilder 
 			return build(inputStream);
 			
 		} catch(Exception e) {
-			throw new AspectranContextBuilderException("aspectran context configuration error: " + e.getMessage(), e);
+			throw new AspectranContextBuilderException("aspectran context build failed: " + e.toString(), e);
 		}
 	}
 	
 	private AspectranContext build(InputStream inputStream) throws Exception {
-		XmlBuilderAssistant assistant = new XmlBuilderAssistant(applicationBasePath);
-		
-		AspectranNodeParser aspectranNodeParser = new AspectranNodeParser(assistant);
+		AspectranNodeParser aspectranNodeParser = new AspectranNodeParser(this);
 		aspectranNodeParser.parse(inputStream);
 		
-		AspectranContext aspectranContext = makeAspectranContext(assistant);
-		
-		return aspectranContext;
-	}
-	
-	private AspectranContext makeAspectranContext(XmlBuilderAssistant assistant) {
-		BeanRegistry beanRegistry = makeBeanRegistry(assistant.getBeanRuleMap());
-		TransletRuleRegistry transletRuleRegistry = makeTransletRegistry(assistant.getAspectRuleMap(), assistant.getTransletRuleMap());
-		
-		BeanReferenceInspector beanReferenceInspector = assistant.getBeanReferenceInspector();
-		beanReferenceInspector.inpect(assistant.getBeanRuleMap());
-		
-		AspectranContext aspectranContext = new AspectranContext();
-		aspectranContext.setAspectRuleMap(assistant.getAspectRuleMap());
-		aspectranContext.setBeanRegistry(beanRegistry);
-		aspectranContext.setTransletRuleRegistry(transletRuleRegistry);
-		aspectranContext.setActivityDefaultHandler((String)assistant.getSetting(DefaultSettingType.ACTIVITY_DEFAULT_HANDLER));
+		AspectranContext aspectranContext = makeAspectranContext(this);
 		
 		return aspectranContext;
 	}
