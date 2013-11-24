@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.aspectran.web.context.servlet;
+package com.aspectran.web.servlet;
 
 import java.io.IOException;
 
@@ -35,7 +35,6 @@ import com.aspectran.web.activity.WebActivity;
 import com.aspectran.web.activity.WebActivityDefaultHandler;
 import com.aspectran.web.activity.WebActivityImpl;
 import com.aspectran.web.adapter.WebApplicationAdapter;
-import com.aspectran.web.context.AspectranContextLoader;
 
 /**
  * Servlet implementation class for Servlet: Translets.
