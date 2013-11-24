@@ -19,7 +19,7 @@ import java.util.Properties;
 
 import org.w3c.dom.Node;
 
-import com.aspectran.core.context.builder.xml.XmlBuilderAssistant;
+import com.aspectran.core.context.builder.ContextBuilderAssistant;
 import com.aspectran.core.util.xml.Nodelet;
 import com.aspectran.core.util.xml.NodeletAdder;
 import com.aspectran.core.util.xml.NodeletParser;
@@ -35,7 +35,7 @@ import com.aspectran.core.var.type.AspectAdviceType;
  */
 public class AspectAdviceRuleNodeletAdder implements NodeletAdder {
 	
-	protected XmlBuilderAssistant assistant;
+	protected ContextBuilderAssistant assistant;
 	
 	private AspectAdviceType aspectAdviceType;
 	
@@ -45,7 +45,7 @@ public class AspectAdviceRuleNodeletAdder implements NodeletAdder {
 	 * @param parser the parser
 	 * @param assistant the assistant for Context Builder
 	 */
-	public AspectAdviceRuleNodeletAdder(XmlBuilderAssistant assistant, AspectAdviceType aspectAdviceType) {
+	public AspectAdviceRuleNodeletAdder(ContextBuilderAssistant assistant, AspectAdviceType aspectAdviceType) {
 		this.assistant = assistant;
 		this.aspectAdviceType = aspectAdviceType;
 	}

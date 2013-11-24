@@ -24,6 +24,8 @@ import com.aspectran.core.context.AspectranContext;
  */
 public interface AspectranContextBuilder {
 	
-	public AspectranContext build(String contextConfigLocation) throws AspectranContextBuilderException;
+	public AspectranContext build() throws AspectranContextBuilderException;
+	
+	public AspectranContext build(boolean autoReload) throws AspectranContextBuilderException;
 	
 }

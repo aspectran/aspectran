@@ -29,11 +29,10 @@ import com.aspectran.core.activity.process.ContentList;
 import com.aspectran.core.activity.response.ResponseMap;
 import com.aspectran.core.context.bean.ablility.DisposableBean;
 import com.aspectran.core.context.bean.ablility.InitializableBean;
-import com.aspectran.core.context.bean.loader.BeanClassLoader;
-import com.aspectran.core.context.builder.xml.DefaultSettings;
+import com.aspectran.core.context.bean.scanning.BeanClassScanner;
+import com.aspectran.core.context.builder.ContextBuilderAssistant;
+import com.aspectran.core.context.builder.DefaultSettings;
 import com.aspectran.core.context.builder.xml.InputStreamResource;
-import com.aspectran.core.context.builder.xml.XmlBuilderAssistant;
-import com.aspectran.core.util.ClassUtils;
 import com.aspectran.core.util.MethodUtils;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.wildcard.WildcardPattern;
@@ -67,16 +66,14 @@ public class AspectranNodeParser {
 	
 	private final NodeletParser parser = new NodeletParser();
 
-	private final XmlBuilderAssistant assistant;
-	
-	private final ClassLoader classLoader = ClassUtils.getDefaultClassLoader();
+	private final ContextBuilderAssistant assistant;
 	
 	/**
 	 * Instantiates a new translet map parser.
 	 * 
 	 * @param assistant the assistant for Context Builder
 	 */
-	public AspectranNodeParser(XmlBuilderAssistant assistant) {
+	public AspectranNodeParser(ContextBuilderAssistant assistant) {
 		assistant.clearObjectStack();
 		assistant.setNamespace(null);
 		
@@ -623,10 +620,10 @@ public class AspectranNodeParser {
 				Map<String, Class<?>> beanClassMap = null;
 				
 				if(!WildcardPattern.hasWildcards(className)) {
-					beanClass = classLoader.loadClass(className);
+					beanClass = assistant.getClassLoader().loadClass(className);
 				} else {
-					BeanClassLoader beanClassLoader = new BeanClassLoader(id);
-					beanClassMap = beanClassLoader.loadBeanClassMap(className);
+					BeanClassScanner scanner = new BeanClassScanner(id);
+					beanClassMap = scanner.scanClass(className);
 				}
 				
 				boolean isSingleton = !(singleton != null && Boolean.valueOf(singleton) == Boolean.FALSE);
@@ -804,12 +801,12 @@ public class AspectranNodeParser {
 				else
 					throw new IllegalArgumentException("The <import> element requires either a resource or a file or a url attribute.");
 				
-				DefaultSettings defaultSettings = (DefaultSettings)assistant.getInheritedDefaultSettings().clone();
+				DefaultSettings defaultSettings = (DefaultSettings)assistant.getInheritableDefaultSettings().clone();
 				
 				AspectranNodeParser aspectranNodeParser = new AspectranNodeParser(assistant);
 				aspectranNodeParser.parse(inputStreamResource.getInputStream());
 				
-				assistant.setInheritedDefaultSettings(defaultSettings);
+				assistant.setInheritableDefaultSettings(defaultSettings);
 			}
 		});
 	}

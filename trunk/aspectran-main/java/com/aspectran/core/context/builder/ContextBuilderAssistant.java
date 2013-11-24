@@ -13,14 +13,18 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.aspectran.core.context.builder.xml;
+package com.aspectran.core.context.builder;
 
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.aspectran.core.context.AspectranConstant;
 import com.aspectran.core.util.ArrayStack;
+import com.aspectran.core.util.ClassUtils;
 import com.aspectran.core.var.rule.AspectRule;
 import com.aspectran.core.var.rule.AspectRuleMap;
 import com.aspectran.core.var.rule.BeanRule;
@@ -33,58 +37,49 @@ import com.aspectran.core.var.type.DefaultSettingType;
 /**
  * <p>Created: 2008. 04. 01 오후 10:25:35</p>
  */
-public class XmlBuilderAssistant {
+public class ContextBuilderAssistant {
 
-	private ArrayStack objectStack;
+	private final Logger logger = LoggerFactory.getLogger(ContextBuilderAssistant.class);
 	
-	private Map<DefaultSettingType, String> settings;
+	private ClassLoader classLoader = ClassUtils.getDefaultClassLoader();
 	
-	private Map<String, String> typeAliases;
+	private ArrayStack objectStack = new ArrayStack();
 	
-	private String applicationBasePath;
-
-	private DefaultSettings inheritedDefaultSettings;
-
-	private AspectRuleMap aspectRuleMap;
+	private Map<String, String> typeAliases = new HashMap<String, String>();
 	
-	private BeanRuleMap beanRuleMap;
-	
-	private TransletRuleMap transletRuleMap;
-
 	private String namespace;
 	
-	private BeanReferenceInspector beanReferenceInspector;
+	private Map<DefaultSettingType, String> settings = new HashMap<DefaultSettingType, String>();
 	
-	/**
-	 * Instantiates a new translets config.
-	 */
-	public XmlBuilderAssistant(String applicationBasePath) {
-		this.objectStack = new ArrayStack(); 
-		this.typeAliases = new HashMap<String, String>();
-		this.settings = new HashMap<DefaultSettingType, String>();
-		this.beanReferenceInspector = new BeanReferenceInspector();
+	private DefaultSettings inheritableDefaultSettings = new DefaultSettings();
+
+	private BeanReferenceInspector beanReferenceInspector = new BeanReferenceInspector();
+	
+	private AspectRuleMap aspectRuleMap = new AspectRuleMap();
+	
+	private BeanRuleMap beanRuleMap = new BeanRuleMap();
+	
+	private TransletRuleMap transletRuleMap = new TransletRuleMap();
+
+	private String applicationBasePath;
+	
+	public ContextBuilderAssistant(String applicationBasePath) {
+		if(applicationBasePath == null)
+			this.applicationBasePath = new File(".").getAbsoluteFile().toString();
+		else
+			this.applicationBasePath = applicationBasePath;
 		
-		this.applicationBasePath = applicationBasePath;
-		inheritedDefaultSettings = new DefaultSettings();
+		logger.info("application base directory path [" + applicationBasePath + "]");
 	}
 	
-	/**
-	 * 상속.
-	 * Instantiates a new activity context builder assistant.
-	 *
-	 * @param assistant the assistant
-	 */
-	public XmlBuilderAssistant(XmlBuilderAssistant assistant) {
-		applicationBasePath = assistant.getApplicationBasePath();
-		inheritedDefaultSettings = assistant.getInheritedDefaultSettings();
-		
-		if(inheritedDefaultSettings == null)
-			inheritedDefaultSettings = new DefaultSettings();
-		
-		beanRuleMap = assistant.getBeanRuleMap();
-		transletRuleMap = assistant.getTransletRuleMap();
+	public ClassLoader getClassLoader() {
+		return classLoader;
 	}
-	
+
+	public void setClassLoader(ClassLoader classLoader) {
+		this.classLoader = classLoader;
+	}
+
 	/**
 	 * Push object.
 	 * 
@@ -183,7 +178,7 @@ public class XmlBuilderAssistant {
 	}
 	
 	public void applyInheritedSettings() {
-		inheritedDefaultSettings.set(getSettings());
+		inheritableDefaultSettings.set(getSettings());
 	}
 	
 	/**
@@ -196,19 +191,19 @@ public class XmlBuilderAssistant {
 		if(transletName != null && transletName.length() > 0 && transletName.charAt(0) == AspectranConstant.TRANSLET_NAME_SEPARATOR)
 			return transletName;
 		
-		if(inheritedDefaultSettings.getTransletNamePatternPrefix() == null && 
-				inheritedDefaultSettings.getTransletNamePatternSuffix() == null)
+		if(inheritableDefaultSettings.getTransletNamePatternPrefix() == null && 
+				inheritableDefaultSettings.getTransletNamePatternSuffix() == null)
 			return transletName;
 		
 		StringBuilder sb = new StringBuilder();
 		
-		if(inheritedDefaultSettings.getTransletNamePatternPrefix() != null)
-			sb.append(inheritedDefaultSettings.getTransletNamePatternPrefix());
+		if(inheritableDefaultSettings.getTransletNamePatternPrefix() != null)
+			sb.append(inheritableDefaultSettings.getTransletNamePatternPrefix());
 		
 		sb.append(transletName);
 		
-		if(inheritedDefaultSettings.getTransletNamePatternSuffix() != null)
-			sb.append(inheritedDefaultSettings.getTransletNamePatternSuffix());
+		if(inheritableDefaultSettings.getTransletNamePatternSuffix() != null)
+			sb.append(inheritableDefaultSettings.getTransletNamePatternSuffix());
 		
 		return sb.toString();
 	}
@@ -226,24 +221,24 @@ public class XmlBuilderAssistant {
 		
 		StringBuilder sb = new StringBuilder();
 		
-		if(inheritedDefaultSettings.getTransletNamePatternPrefix() != null)
-			sb.append(inheritedDefaultSettings.getTransletNamePatternPrefix());
+		if(inheritableDefaultSettings.getTransletNamePatternPrefix() != null)
+			sb.append(inheritableDefaultSettings.getTransletNamePatternPrefix());
 		
-		if(inheritedDefaultSettings.isUseNamespaces() && namespace != null) {
+		if(inheritableDefaultSettings.isUseNamespaces() && namespace != null) {
 			sb.append(namespace);
 			sb.append(AspectranConstant.TRANSLET_NAME_SEPARATOR);
 		}
 		
 		sb.append(transletName);
 		
-		if(inheritedDefaultSettings.getTransletNamePatternSuffix() != null)
-			sb.append(inheritedDefaultSettings.getTransletNamePatternSuffix());
+		if(inheritableDefaultSettings.getTransletNamePatternSuffix() != null)
+			sb.append(inheritableDefaultSettings.getTransletNamePatternSuffix());
 		
 		return sb.toString();
 	}
 	
 	public String applyNamespaceForBean(String beanId) {
-		if(!inheritedDefaultSettings.isUseNamespaces() || namespace == null)
+		if(!inheritableDefaultSettings.isUseNamespaces() || namespace == null)
 			return beanId;
 		
 		StringBuilder sb = new StringBuilder();
@@ -274,7 +269,7 @@ public class XmlBuilderAssistant {
 	 * @return true, if is allow null content id
 	 */
 	public boolean isNullableContentId() {
-		return inheritedDefaultSettings.isNullableContentId();
+		return inheritableDefaultSettings.isNullableContentId();
 	}
 
 	/**
@@ -283,19 +278,19 @@ public class XmlBuilderAssistant {
 	 * @return true, if is allow null action id
 	 */
 	public boolean isNullableActionId() {
-		return inheritedDefaultSettings.isNullableActionId();
+		return inheritableDefaultSettings.isNullableActionId();
 	}
 
 	public String getApplicationBasePath() {
 		return applicationBasePath;
 	}
 	
-	public DefaultSettings getInheritedDefaultSettings() {
-		return inheritedDefaultSettings;
+	public DefaultSettings getInheritableDefaultSettings() {
+		return inheritableDefaultSettings;
 	}
 
-	public void setInheritedDefaultSettings(DefaultSettings defaultSettings) {
-		this.inheritedDefaultSettings = defaultSettings;
+	public void setInheritableDefaultSettings(DefaultSettings defaultSettings) {
+		this.inheritableDefaultSettings = defaultSettings;
 	}
 
 	/**
@@ -322,9 +317,6 @@ public class XmlBuilderAssistant {
 	 * @param beanRule the bean rule
 	 */
 	public void addBeanRule(BeanRule beanRule) {
-		if(beanRuleMap == null)
-			beanRuleMap = new BeanRuleMap();
-		
 		beanRuleMap.putBeanRule(beanRule);
 	}
 	
@@ -337,9 +329,6 @@ public class XmlBuilderAssistant {
 	}
 	
 	public void addAspectRule(AspectRule aspectRule) {
-		if(aspectRuleMap == null)
-			aspectRuleMap = new AspectRuleMap();
-		
 		aspectRuleMap.putAspectRule(aspectRule);
 	}
 
@@ -366,16 +355,15 @@ public class XmlBuilderAssistant {
 	}
 
 	public void addTransletRule(TransletRule transletRule) {
-		if(transletRuleMap == null)
-			transletRuleMap = new TransletRuleMap();
-		
 		transletRuleMap.put(transletRule.getName(), transletRule);
 	}
 	
-	public void putBeanReference(String beanId, Object rule) {
-		if(beanRuleMap == null || !beanRuleMap.containsKey(beanId)) {
+	public String putBeanReference(String beanId, Object rule) {
+		if(!beanRuleMap.containsKey(beanId)) {
 			beanReferenceInspector.putRelation(beanId, rule);
 		}
+		
+		return beanId;
 	}
 	
 	public BeanReferenceInspector getBeanReferenceInspector() {

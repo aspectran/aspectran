@@ -102,20 +102,19 @@ public class SchedulerListener implements ServletContextListener {
 	 * @param event the event
 	 */
 	public void contextDestroyed(ServletContextEvent event) {
-		try {
-			if(aspectranScheduler != null)
+		if(aspectranScheduler != null) {
+			try {
 				aspectranScheduler.shutdown(waitOnShutdown);
 			
-			ServletContext servletContext = event.getServletContext();
-			servletContext.removeAttribute(ASPECTRAN_SCHEDULER_ATTRIBUTE);
-			
-			logger.debug("AspectranScheduler attribute was removed.");
-			
-		} catch(Exception e) {
-			logger.error("AspectranScheduler failed to shutdown cleanly: " + e.toString(), e);
+				ServletContext servletContext = event.getServletContext();
+				servletContext.removeAttribute(ASPECTRAN_SCHEDULER_ATTRIBUTE);
+				
+				logger.debug("AspectranScheduler attribute was removed.");
+				logger.info("AspectranScheduler successful shutdown.");
+			} catch(Exception e) {
+				logger.error("AspectranScheduler failed to shutdown cleanly: " + e.toString(), e);
+			}
 		}
-
-		logger.info("AspectranScheduler successful shutdown.");
 	}
 	
 	private AspectranContext getAspectranContext(ServletContext servletContext) {
