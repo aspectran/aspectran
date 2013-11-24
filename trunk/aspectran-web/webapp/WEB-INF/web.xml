@@ -23,7 +23,8 @@
 	<context-param>
 		<param-name>aspectran:scheduler:startDelaySeconds</param-name>
 		<param-value>5</param-value>
-	</context-param>	<context-param>
+	</context-param>
+	<context-param>
 		<param-name>aspectran:scheduler:waitOnShutdown</param-name>
 		<param-value>true</param-value>
 	</context-param>
