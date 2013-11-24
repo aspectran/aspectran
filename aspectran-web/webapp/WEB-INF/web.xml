@@ -18,7 +18,7 @@
 		<param-value>true</param-value>
 	</context-param>
 	<listener>
-		<listener-class>com.aspectran.web.servlet.WebApplicationListener</listener-class>
+		<listener-class>com.aspectran.web.context.listener.WebApplicationListener</listener-class>
 	</listener>
 	<context-param>
 		<param-name>aspectran:scheduler:startDelaySeconds</param-name>
@@ -29,11 +29,11 @@
 		<param-value>true</param-value>
 	</context-param>
 	<listener>
-		<listener-class>com.aspectran.web.servlet.SchedulerListener</listener-class>
+		<listener-class>com.aspectran.web.context.listener.SchedulerListener</listener-class>
 	</listener>
 	<servlet>
 		<servlet-name>aspectran-web</servlet-name>
-		<servlet-class>com.aspectran.web.servlet.WebActivityServlet</servlet-class>
+		<servlet-class>com.aspectran.web.context.servlet.WebActivityServlet</servlet-class>
 		<!-- init-param>
 			<param-name>contextConfigLocation</param-name>
 			<param-value>classpath:aspectran/aspectran-example.xml</param-value>
