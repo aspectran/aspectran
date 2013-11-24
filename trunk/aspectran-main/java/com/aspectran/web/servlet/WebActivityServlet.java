@@ -145,11 +145,8 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 		try {
 			super.destroy();
 
-			if(aspectranContext != null) {
-				if(standalone)
-					aspectranContext.destroy();
-
-				aspectranContext = null;
+			if(standalone && aspectranContext != null) {
+				aspectranContext.destroy();
 			}
 		} catch(Exception e) {
 			logger.error("WebActivityServlet failed to destroy cleanly: " + e.toString());
