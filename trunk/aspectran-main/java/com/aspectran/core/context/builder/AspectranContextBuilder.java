@@ -26,6 +26,4 @@ public interface AspectranContextBuilder {
 	
 	public AspectranContext build() throws AspectranContextBuilderException;
 	
-	public AspectranContext build(boolean autoReload) throws AspectranContextBuilderException;
-	
 }

@@ -13,30 +13,32 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.aspectran.core.context.builder.xml;
+package com.aspectran.core.context.builder;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.aspectran.core.util.ResourceUtils;
+import com.aspectran.core.var.type.ImportResourceType;
 
 /**
  * <p>Created: 2008. 04. 24 오전 11:23:36</p>
  * 
  * @author Gulendol
  */
-public class InputStreamResource {
+public class ImportResource {
 	
-	private static final Logger logger = LoggerFactory.getLogger(InputStreamResource.class);
+	private ClassLoader classLoader;
 
+	private ImportResourceType importResourceType;
+	
 	private String resource;
 	
-	private InputStream inputStream;
+	public ImportResource(ClassLoader classLoader) {
+		this.classLoader = classLoader;
+	}
 	
 	/**
 	 * Gets the resource.
@@ -55,68 +57,55 @@ public class InputStreamResource {
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public void setResource(String resource) throws IOException {
-		try {
-			this.resource = resource;
-			
-			if(resource == null)
-				return;
-			
-			inputStream = ResourceUtils.getResourceAsStream(resource);
-		} catch(IOException e) {
-			logger.error("Cannot read resource '" + resource + "'");
-			throw e;
-		}
+		this.importResourceType = ImportResourceType.RESOURCE;
+		this.resource = resource;
 	}
 	
 	/**
-	 * Sets the url.
+	 * Sets the resource.
 	 * 
-	 * @param url the new url
+	 * @param resource the new resource
+	 * 
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
+	public void setFile(String file) throws IOException {
+		this.importResourceType = ImportResourceType.FILE;
+		this.resource = file;
+	}
+	
+	/**
+	 * Sets the resource.
+	 * 
+	 * @param resource the new resource
 	 * 
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public void setUrl(String url) throws IOException {
-		try {
-			resource = url;
-			
-			if(url == null)
-				return;
-			
-			inputStream = ResourceUtils.getUrlAsStream(url);
-		} catch(IOException e) {
-			logger.error("Cannot read url '" + resource + "'");
-			throw e;
-		}
+		this.importResourceType = ImportResourceType.URL;
+		this.resource = url;
 	}
-
-	/**
-	 * Sets the file.
-	 * 
-	 * @param file the new file
-	 * 
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 */
-	public void setFile(File file) throws IOException {
-		try {
-			resource = file.getAbsolutePath();
-			
-			inputStream = new FileInputStream(file);
-		} catch(IOException e) {
-			logger.error("Cannot read file '" + resource + "'");
-			throw e;
-		}
-	}
-
+	
 	/**
 	 * Gets the input stream.
 	 * 
 	 * @return the input stream
 	 */
-	public InputStream getInputStream() {
+	public InputStream getInputStream() throws IOException {
+		InputStream inputStream = null;
+		
+		if(importResourceType == ImportResourceType.RESOURCE) {
+			inputStream = classLoader.getResourceAsStream(resource);
+			
+			if(inputStream == null) {
+				throw new IOException("Could not find resource " + resource);
+			}
+		} else if(importResourceType == ImportResourceType.FILE) {
+			File file = new File(resource);
+			inputStream = new FileInputStream(file);
+		} else if(importResourceType == ImportResourceType.URL) {
+			inputStream = ResourceUtils.getUrlAsStream(resource);
+		}
+		
 		return inputStream;
-	}
-	
-	public void setInputStream(InputStream inputStream) {
-		this.inputStream = inputStream;
 	}
 }

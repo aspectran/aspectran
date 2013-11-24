@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.aspectran.core.context.builder.xml;
+package com.aspectran.core.context.builder;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -22,9 +22,6 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import com.aspectran.core.context.AspectranContext;
-import com.aspectran.core.context.builder.AbstractAspectranContextBuilder;
-import com.aspectran.core.context.builder.AspectranContextBuilder;
-import com.aspectran.core.context.builder.AspectranContextBuilderException;
 import com.aspectran.core.context.builder.xml.parser.AspectranNodeParser;
 import com.aspectran.core.util.Assert;
 import com.aspectran.core.util.ResourceUtils;
@@ -51,21 +48,16 @@ public class XmlAspectranContextBuilder extends AbstractAspectranContextBuilder 
 	}
 
 	public AspectranContext build() throws AspectranContextBuilderException {
-		return build(false);
-	}
-	
-	public AspectranContext build(boolean autoReload) throws AspectranContextBuilderException {
+		InputStream inputStream = null;
+
 		try {
-			InputStream inputStream;
-			
 			if(contextConfigLocation.startsWith(ResourceUtils.CLASSPATH_URL_PREFIX)) {
-				String path = contextConfigLocation.substring(ResourceUtils.CLASSPATH_URL_PREFIX.length());
+				String resource = contextConfigLocation.substring(ResourceUtils.CLASSPATH_URL_PREFIX.length());
 				
-				try {
-					inputStream = ResourceUtils.getResourceAsStream(path);
-				} catch(IOException e2) {
-					throw new IOException("Cannot read aspectran context configuration resource: " + path);
-				}
+				inputStream = getClassLoader().getResourceAsStream(resource);
+				
+				if(inputStream == null)
+					throw new IOException("Cannot read aspectran context configuration resource: " + resource);
 			} else {
 				File file = new File(getApplicationBasePath(), contextConfigLocation);
 				
@@ -80,6 +72,11 @@ public class XmlAspectranContextBuilder extends AbstractAspectranContextBuilder 
 			
 		} catch(Exception e) {
 			throw new AspectranContextBuilderException("aspectran context build failed: " + e.toString(), e);
+		} finally {
+			try {
+				inputStream.close();
+			} catch(IOException e) {
+			}
 		}
 	}
 	
