@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.aspectran.web.context.listener;
+package com.aspectran.web.servlet;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;

@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.aspectran.web.context.listener;
+package com.aspectran.web.servlet;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
@@ -24,7 +24,6 @@ import org.slf4j.LoggerFactory;
 import com.aspectran.core.context.AspectranContext;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.web.adapter.WebApplicationAdapter;
-import com.aspectran.web.context.AspectranContextLoader;
 
 public class WebApplicationListener implements ServletContextListener {
 
