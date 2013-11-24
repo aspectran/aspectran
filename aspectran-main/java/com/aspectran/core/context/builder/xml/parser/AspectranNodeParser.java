@@ -32,7 +32,7 @@ import com.aspectran.core.context.bean.ablility.InitializableBean;
 import com.aspectran.core.context.bean.scanning.BeanClassScanner;
 import com.aspectran.core.context.builder.ContextBuilderAssistant;
 import com.aspectran.core.context.builder.DefaultSettings;
-import com.aspectran.core.context.builder.xml.InputStreamResource;
+import com.aspectran.core.context.builder.ImportResource;
 import com.aspectran.core.util.MethodUtils;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.wildcard.WildcardPattern;
@@ -790,23 +790,30 @@ public class AspectranNodeParser {
 				String file = attributes.getProperty("file");
 				String url = attributes.getProperty("url");
 				
-				InputStreamResource inputStreamResource = new InputStreamResource();
+				ImportResource isr = new ImportResource(assistant.getClassLoader());
 				
 				if(StringUtils.hasText(resource))
-					inputStreamResource.setResource(resource);
+					isr.setResource(resource);
 				else if(StringUtils.hasText(file))
-					inputStreamResource.setResource(file);
+					isr.setFile(file);
 				else if(StringUtils.hasText(url))
-					inputStreamResource.setResource(url);
+					isr.setUrl(url);
 				else
 					throw new IllegalArgumentException("The <import> element requires either a resource or a file or a url attribute.");
 				
-				DefaultSettings defaultSettings = (DefaultSettings)assistant.getInheritableDefaultSettings().clone();
+				InputStream inputStream = isr.getInputStream();
 				
-				AspectranNodeParser aspectranNodeParser = new AspectranNodeParser(assistant);
-				aspectranNodeParser.parse(inputStreamResource.getInputStream());
-				
-				assistant.setInheritableDefaultSettings(defaultSettings);
+				try {
+					DefaultSettings defaultSettings = (DefaultSettings)assistant.getInheritableDefaultSettings().clone();
+					
+					AspectranNodeParser aspectranNodeParser = new AspectranNodeParser(assistant);
+					aspectranNodeParser.parse(isr.getInputStream());
+					
+					assistant.setInheritableDefaultSettings(defaultSettings);
+				} finally {
+					if(inputStream != null)
+						inputStream.close();
+				}
 			}
 		});
 	}

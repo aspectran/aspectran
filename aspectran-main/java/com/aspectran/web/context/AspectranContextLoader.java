@@ -7,7 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import com.aspectran.core.context.AspectranContext;
 import com.aspectran.core.context.builder.AspectranContextBuilder;
-import com.aspectran.core.context.builder.xml.XmlAspectranContextBuilder;
+import com.aspectran.core.context.builder.XmlAspectranContextBuilder;
 
 public class AspectranContextLoader {
 

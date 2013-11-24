@@ -13,12 +13,9 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.aspectran.core.context.builder.runtime;
+package com.aspectran.core.context.builder;
 
 import com.aspectran.core.context.AspectranContext;
-import com.aspectran.core.context.builder.AbstractAspectranContextBuilder;
-import com.aspectran.core.context.builder.AspectranContextBuilder;
-import com.aspectran.core.context.builder.AspectranContextBuilderException;
 
 /**
  * XmlAspectranContextBuilder.
@@ -36,10 +33,6 @@ public class RuntimeAspectranContextBuilder extends AbstractAspectranContextBuil
 	}
 
 	public AspectranContext build() throws AspectranContextBuilderException {
-		return build(false);
-	}
-	
-	public AspectranContext build(boolean autoReload) throws AspectranContextBuilderException {
 		try {
 			return makeAspectranContext(this);
 		} catch(Exception e) {
