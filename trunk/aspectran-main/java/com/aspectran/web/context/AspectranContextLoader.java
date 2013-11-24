@@ -1,4 +1,4 @@
-package com.aspectran.web.servlet;
+package com.aspectran.web.context;
 
 import javax.servlet.ServletContext;
 

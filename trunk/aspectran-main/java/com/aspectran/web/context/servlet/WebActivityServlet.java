@@ -13,42 +13,44 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.aspectran.web.servlet;
+package com.aspectran.web.context.servlet;
 
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.StringTokenizer;
 
 import javax.servlet.Servlet;
 import javax.servlet.ServletException;
+import javax.servlet.UnavailableException;
+import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.aspectran.core.context.AspectranContext;
+import com.aspectran.core.context.AspectranContextException;
 import com.aspectran.core.context.translet.TransletNotFoundException;
+import com.aspectran.core.util.StringUtils;
 import com.aspectran.web.activity.WebActivity;
 import com.aspectran.web.activity.WebActivityDefaultHandler;
 import com.aspectran.web.activity.WebActivityImpl;
+import com.aspectran.web.adapter.WebApplicationAdapter;
+import com.aspectran.web.context.AspectranContextLoader;
 
 /**
  * Servlet implementation class for Servlet: Translets.
  */
-public class IPAddressBlockableWebActivityServlet extends WebActivityServlet implements Servlet {
+public class WebActivityServlet extends HttpServlet implements Servlet {
 
 	/** @serial */
-	static final long serialVersionUID = -2369788867122156319L;
+	static final long serialVersionUID = 6659683668233267847L;
 
-	private final Logger logger = LoggerFactory.getLogger(IPAddressBlockableWebActivityServlet.class);
-	
-	private boolean debugEnabled = logger.isDebugEnabled();
-	
-	private static final String DELIMITERS = " ,;\t\n\r\f";
-	
-	private Set<String> allowedAddresses;
-	
+	private final Logger logger = LoggerFactory.getLogger(WebActivityServlet.class);
+
+	protected AspectranContext aspectranContext;
+
+	private boolean standalone;
+
 	/*
 	 * (non-Java-doc)
 	 * 
@@ -57,7 +59,7 @@ public class IPAddressBlockableWebActivityServlet extends WebActivityServlet imp
 	/**
 	 * Instantiates a new action servlet.
 	 */
-	public IPAddressBlockableWebActivityServlet() {
+	public WebActivityServlet() {
 		super();
 	}
 
@@ -66,20 +68,34 @@ public class IPAddressBlockableWebActivityServlet extends WebActivityServlet imp
 	 */
 	@Override
 	public void init() throws ServletException {
-		String addresses = getServletConfig().getInitParameter("allowedAddresses");
+		logger.info("initializing WebActivityServlet...");
 
-		if(addresses != null) {
-			allowedAddresses = new HashSet<String>();
-
-			StringTokenizer st = new StringTokenizer(addresses, DELIMITERS);
+		try {
+			WebApplicationAdapter applicationAdapter = WebApplicationAdapter.determineWebApplicationAdapter(getServletContext());
 			
-			while(st.hasMoreTokens()) {
-				String token = st.nextToken();
-				allowedAddresses.add(token);			
+			String contextConfigLocation = getServletConfig().getInitParameter(
+					AspectranContextLoader.CONTEXT_CONFIG_LOCATION_PARAM);
+
+			if(StringUtils.hasText(contextConfigLocation)) {
+				AspectranContextLoader aspectranContextLoader = new AspectranContextLoader(getServletContext(), contextConfigLocation);
+				aspectranContext = aspectranContextLoader.getAspectranContext();
+				
+				if(applicationAdapter != null)
+					aspectranContext.setApplicationAdapter(applicationAdapter);
+
+				standalone = true;
+			} else {
+				if(applicationAdapter != null)
+					aspectranContext = applicationAdapter.getAspectranContext();
 			}
+			
+			if(aspectranContext == null)
+				new AspectranContextException("AspectranContext is not found.");
+
+		} catch(Exception e) {
+			logger.error("WebActivityServlet failed to initialize: " + e.toString());
+			throw new UnavailableException(e.getMessage());
 		}
-		
-		super.init();
 	}
 
 	/* (non-Javadoc)
@@ -88,25 +104,14 @@ public class IPAddressBlockableWebActivityServlet extends WebActivityServlet imp
 	@Override
 	public void service(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
 		WebActivity activity = null;
-		
+
 		try {
-			String remoteAddr = req.getRemoteAddr();
-		
-			if(!isValidAdress(remoteAddr)) {
-				if(debugEnabled) {
-					logger.debug("Access denied '" + remoteAddr + "'.");
-				}
-					
-				res.sendError(HttpServletResponse.SC_NOT_FOUND);
-				return;
-			}
-			
 			String requestUri = req.getRequestURI();
 
 			activity = new WebActivityImpl(aspectranContext, req, res);
 			activity.init(requestUri);
 			activity.run();
-			
+
 		} catch(TransletNotFoundException e) {
 			if(activity != null) {
 				String activityDefaultHandler = aspectranContext.getActivityDefaultHandler();
@@ -120,47 +125,35 @@ public class IPAddressBlockableWebActivityServlet extends WebActivityServlet imp
 						res.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 						logger.error(e.getMessage(), e2);
 					}
-					
+
 					return;
 				}
 			}
-			
-			logger.error(e.getMessage(), e);
+
+			logger.error(e.getMessage());
 			res.sendError(HttpServletResponse.SC_NOT_FOUND);
 		} catch(Exception e) {
 			logger.error(e.getMessage(), e);
 			res.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 		}
 	}
-	
-	/**
-	 * Checks if is valid access.
-	 * 
-	 * @param ipAddress the ip address
-	 * 
-	 * @return true, if is valid access
+
+	/* (non-Javadoc)
+	 * @see javax.servlet.GenericServlet#destroy()
 	 */
-	public boolean isValidAdress(String ipAddress) {
-		if(allowedAddresses == null)
-			return false;
-		
-		// IPv4
-		int offset = ipAddress.lastIndexOf('.');
-		
-		if(offset == -1) {
-			// IPv6
-			offset = ipAddress.lastIndexOf(':');
-			
-			if(offset == -1)
-				return false;
+	@Override
+	public void destroy() {
+		try {
+			super.destroy();
+
+			if(standalone && aspectranContext != null) {
+				aspectranContext.destroy();
+			}
+		} catch(Exception e) {
+			logger.error("WebActivityServlet failed to destroy cleanly: " + e.toString());
 		}
-		
-		String ipAddressClass = ipAddress.substring(0, offset + 1) + '*';
-		
-		if(allowedAddresses.contains(ipAddressClass) || allowedAddresses.contains(ipAddress))
-			return true;
-		
-		return false;
+
+		logger.info("WebActivityServlet successful destroyed.");
+		logger.info("Do not terminate the server while the all scoped bean destroying.");
 	}
-	
 }
