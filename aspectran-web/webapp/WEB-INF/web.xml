@@ -10,34 +10,36 @@
 		<welcome-file>index.jsp</welcome-file>
 	</welcome-file-list>
 	<context-param>
-		<param-name>aspectran:contextConfigLocation</param-name>
-		<param-value>classpath:aspectran/aspectran-example.xml</param-value>
-	</context-param>
-	<context-param>
-		<param-name>aspectran:autoReload</param-name>
-		<param-value>true</param-value>
-	</context-param>
-	<listener>
-		<listener-class>com.aspectran.web.context.listener.WebApplicationListener</listener-class>
-	</listener>
-	<context-param>
-		<param-name>aspectran:scheduler:startDelaySeconds</param-name>
-		<param-value>5</param-value>
-	</context-param>
-	<context-param>
-		<param-name>aspectran:scheduler:waitOnShutdown</param-name>
-		<param-value>true</param-value>
+		<param-name>aspectran:scheduler</param-name>
+		<param-value>
+			contextConfigLocation: classpath:aspectran/example-aspectran.xml
+			startDelaySeconds: 5
+			waitOnShutdown: true
+			startup: true
+		</param-value>
 	</context-param>
 	<listener>
-		<listener-class>com.aspectran.web.context.listener.SchedulerListener</listener-class>
+		<listener-class>com.aspectran.web.startup.listener.AspectranSchedulerListener</listener-class>
 	</listener>
 	<servlet>
 		<servlet-name>aspectran-web</servlet-name>
-		<servlet-class>com.aspectran.web.context.servlet.WebActivityServlet</servlet-class>
-		<!-- init-param>
+		<servlet-class>com.aspectran.web.startup.servlet.WebActivityServlet</servlet-class>
+		<init-param>
 			<param-name>contextConfigLocation</param-name>
-			<param-value>classpath:aspectran/aspectran-example.xml</param-value>
-		</init-param -->
+			<param-value>classpath:aspectran/example-aspectran.xml</param-value>
+		</init-param>
+		<init-param>
+			<param-name>scheduler</param-name>
+			<param-value>
+				startDelaySeconds: 5
+				waitOnShutdown: true
+				startup: true
+			</param-value>
+		</init-param>
+		<init-param>
+			<param-name>autoReload</param-name>
+			<param-value>true</param-value>
+		</init-param>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
 	<servlet-mapping>
