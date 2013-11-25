@@ -24,11 +24,11 @@ import com.aspectran.core.activity.request.RequestException;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.context.AspectranContext;
-import com.aspectran.core.expr.ItemTokenExpression;
-import com.aspectran.core.expr.ItemTokenExpressor;
 import com.aspectran.core.var.ValueMap;
 import com.aspectran.core.var.rule.RequestRule;
 import com.aspectran.core.var.rule.ResponseRule;
+import com.aspectran.core.var.token.ItemTokenExpression;
+import com.aspectran.core.var.token.ItemTokenExpressor;
 
 /**
  * <p>Created: 2013. 11. 18 오후 3:40:48</p>

@@ -24,9 +24,9 @@ import com.aspectran.core.activity.CoreActivity;
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
-import com.aspectran.core.expr.ItemTokenExpression;
-import com.aspectran.core.expr.ItemTokenExpressor;
 import com.aspectran.core.var.rule.IncludeActionRule;
+import com.aspectran.core.var.token.ItemTokenExpression;
+import com.aspectran.core.var.token.ItemTokenExpressor;
 import com.aspectran.core.var.type.ActionType;
 
 /**

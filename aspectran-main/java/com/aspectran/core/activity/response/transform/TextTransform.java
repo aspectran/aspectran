@@ -29,11 +29,11 @@ import com.aspectran.core.activity.CoreActivity;
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.activity.response.Responsible;
 import com.aspectran.core.adapter.ResponseAdapter;
-import com.aspectran.core.expr.TokenExpression;
-import com.aspectran.core.expr.TokenExpressor;
-import com.aspectran.core.expr.token.Token;
-import com.aspectran.core.expr.token.Tokenizer;
 import com.aspectran.core.var.rule.TransformRule;
+import com.aspectran.core.var.token.Token;
+import com.aspectran.core.var.token.TokenExpression;
+import com.aspectran.core.var.token.TokenExpressor;
+import com.aspectran.core.var.token.Tokenizer;
 import com.aspectran.core.var.type.TokenType;
 
 /**
