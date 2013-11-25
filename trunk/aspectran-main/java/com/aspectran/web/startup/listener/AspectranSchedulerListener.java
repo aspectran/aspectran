@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.aspectran.web.context.listener;
+package com.aspectran.web.startup.listener;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
@@ -28,9 +28,9 @@ import com.aspectran.scheduler.AspectranScheduler;
 import com.aspectran.scheduler.quartz.QuartzAspectranScheduler;
 import com.aspectran.web.adapter.WebApplicationAdapter;
 
-public class SchedulerListener implements ServletContextListener {
+public class AspectranSchedulerListener implements ServletContextListener {
 
-	private final Logger logger = LoggerFactory.getLogger(SchedulerListener.class);
+	private final Logger logger = LoggerFactory.getLogger(AspectranSchedulerListener.class);
 
 	public static final String START_DELAY_SECONDS_PARAM = "aspectran:scheduler:startDelaySeconds";
 
@@ -120,8 +120,8 @@ public class SchedulerListener implements ServletContextListener {
 	private AspectranContext getAspectranContext(ServletContext servletContext) {
 		WebApplicationAdapter webApplicationAdapter = WebApplicationAdapter.determineWebApplicationAdapter(servletContext);
 		
-		if(webApplicationAdapter != null)
-			return webApplicationAdapter.getAspectranContext();
+//		if(webApplicationAdapter != null)
+//			return webApplicationAdapter.getAspectranContext();
 		
 		return null;
 	}

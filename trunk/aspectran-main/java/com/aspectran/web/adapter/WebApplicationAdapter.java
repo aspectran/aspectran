@@ -7,7 +7,6 @@ import org.slf4j.LoggerFactory;
 
 import com.aspectran.core.adapter.AbstractApplicationAdapter;
 import com.aspectran.core.adapter.ApplicationAdapter;
-import com.aspectran.core.context.AspectranContext;
 import com.aspectran.core.context.bean.scope.Scope;
 
 /**
@@ -23,67 +22,84 @@ public class WebApplicationAdapter extends AbstractApplicationAdapter implements
 
 	private static final Logger logger = LoggerFactory.getLogger(WebApplicationAdapter.class);
 	
-	private AspectranContext aspectranContext;
+	private int activityContextCount = 0;
 	
 	/**
 	 * Instantiates a new web application adapter.
 	 *
 	 * @param servletContext the servlet context
 	 */
-	public WebApplicationAdapter(ServletContext servletContext, AspectranContext aspectranContext) {
+	public WebApplicationAdapter(ServletContext servletContext) {
 		super(servletContext);
-		
-		this.aspectranContext = aspectranContext;
-		
-		if(aspectranContext != null) {
-			aspectranContext.setApplicationAdapter(this);
-		}
 	}
 
-	public AspectranContext getAspectranContext() {
-		return aspectranContext;
-	}
-	
-	public synchronized Object getAttribute(String name) {
+	public Object getAttribute(String name) {
 		return ((ServletContext)adaptee).getAttribute(name);
 	}
 
-	public synchronized void setAttribute(String name, Object value) {
+	public void setAttribute(String name, Object value) {
 		((ServletContext)adaptee).setAttribute(name, value);
 	}
 	
+	public synchronized int getActivityContextCount() {
+		return activityContextCount;
+	}
+	
+	private synchronized int increaseActivityContextCount() {
+		return ++activityContextCount;
+	}
+	
+	private synchronized int decreaseActivityContextCount() {
+		return --activityContextCount;
+	}
+	
 	public static WebApplicationAdapter determineWebApplicationAdapter(ServletContext servletContext) {
+		WebApplicationAdapter webApplicationAdapter = (WebApplicationAdapter)servletContext.getAttribute(WEB_APPLICATION_ADAPTER_ATTRIBUTE);
+		
+		if(webApplicationAdapter == null)
+			webApplicationAdapter = createWebApplicationAdapter(servletContext);
+
+		webApplicationAdapter.increaseActivityContextCount();
+		
+		return webApplicationAdapter;
+	}
+	
+	public static WebApplicationAdapter getWebApplicationAdapter(ServletContext servletContext) {
 		return (WebApplicationAdapter)servletContext.getAttribute(WEB_APPLICATION_ADAPTER_ATTRIBUTE);
 	}
 	
-	public static WebApplicationAdapter createWebApplicationAdapter(ServletContext servletContext, AspectranContext aspectranContext) {
-		WebApplicationAdapter webApplicationAdapter = new WebApplicationAdapter(servletContext, aspectranContext);
+	protected static WebApplicationAdapter createWebApplicationAdapter(ServletContext servletContext) {
+		WebApplicationAdapter webApplicationAdapter = new WebApplicationAdapter(servletContext);
 		servletContext.setAttribute(WEB_APPLICATION_ADAPTER_ATTRIBUTE, webApplicationAdapter);
 		
-		logger.debug("WebApplicationAdapter attribute was saved.");
+		logger.debug("WebApplicationAdapter attribute was created.");
 		
 		return webApplicationAdapter;
 	}
 
 	public static void destoryWebApplicationAdapter(ServletContext servletContext) {
-		WebApplicationAdapter applicationAdapter = determineWebApplicationAdapter(servletContext);
+		WebApplicationAdapter webApplicationAdapter = getWebApplicationAdapter(servletContext);
 		
-		if(applicationAdapter != null) {
-			Scope scope = applicationAdapter.getScope();
-	
-			if(scope != null)
-				scope.destroy();
+		if(webApplicationAdapter != null) {
+			int activityContextCount = webApplicationAdapter.decreaseActivityContextCount();
 			
-			AspectranContext aspectranContext = applicationAdapter.getAspectranContext();
-			
-			if(aspectranContext != null) {
-				aspectranContext.destroy();
+			if(activityContextCount == 0) {
+				Scope scope = webApplicationAdapter.getScope();
+		
+				if(scope != null)
+					scope.destroy();
+
+				if(servletContext.getAttribute(WEB_APPLICATION_ADAPTER_ATTRIBUTE) != null) {
+					servletContext.removeAttribute(WebApplicationAdapter.WEB_APPLICATION_ADAPTER_ATTRIBUTE);
+					logger.debug("WebApplicationAdapter attribute was removed.");
+				} else {
+					logger.debug("WebApplicationAdapter attribute was already removed.");
+				}
 			}
-		}
-		
-		if(servletContext.getAttribute(WEB_APPLICATION_ADAPTER_ATTRIBUTE) != null) {
-			servletContext.removeAttribute(WebApplicationAdapter.WEB_APPLICATION_ADAPTER_ATTRIBUTE);
-			logger.debug("WebApplicationAdapter attribute was removed.");
+			
+			if(activityContextCount < 0) {
+				logger.debug("activityContextCount is less than 0.");
+			}
 		}
 	}
 	

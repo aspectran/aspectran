@@ -1,9 +1,15 @@
 package com.aspectran.scheduler;
 
-
-
 public interface AspectranScheduler {
 
+	public int getStartDelaySeconds();
+	
+	public void setStartDelaySeconds(int startDelaySeconds);
+	
+	public boolean isWaitOnShutdown();
+	
+	public void setWaitOnShutdown(boolean waitOnShutdown);
+	
 	public void startup() throws Exception;
 	
 	public void startup(int delaySeconds) throws Exception;
