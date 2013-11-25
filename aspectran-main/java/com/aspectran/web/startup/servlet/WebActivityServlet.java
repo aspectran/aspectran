@@ -13,11 +13,12 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.aspectran.web.context.servlet;
+package com.aspectran.web.startup.servlet;
 
 import java.io.IOException;
 
 import javax.servlet.Servlet;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.UnavailableException;
 import javax.servlet.http.HttpServlet;
@@ -31,11 +32,12 @@ import com.aspectran.core.context.AspectranContext;
 import com.aspectran.core.context.AspectranContextException;
 import com.aspectran.core.context.translet.TransletNotFoundException;
 import com.aspectran.core.util.StringUtils;
+import com.aspectran.scheduler.AspectranScheduler;
 import com.aspectran.web.activity.WebActivity;
 import com.aspectran.web.activity.WebActivityDefaultHandler;
 import com.aspectran.web.activity.WebActivityImpl;
 import com.aspectran.web.adapter.WebApplicationAdapter;
-import com.aspectran.web.context.AspectranContextLoader;
+import com.aspectran.web.startup.AspectranContextLoader;
 
 /**
  * Servlet implementation class for Servlet: Translets.
@@ -49,7 +51,9 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 
 	protected AspectranContext aspectranContext;
 
-	private boolean standalone;
+	private AspectranScheduler aspectranScheduler;
+	
+	//private boolean standalone;
 
 	/*
 	 * (non-Java-doc)
@@ -71,27 +75,29 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 		logger.info("initializing WebActivityServlet...");
 
 		try {
-			WebApplicationAdapter applicationAdapter = WebApplicationAdapter.determineWebApplicationAdapter(getServletContext());
+			ServletContext servletContext = getServletContext();
 			
-			String contextConfigLocation = getServletConfig().getInitParameter(
-					AspectranContextLoader.CONTEXT_CONFIG_LOCATION_PARAM);
+			WebApplicationAdapter applicationAdapter = WebApplicationAdapter.determineWebApplicationAdapter(servletContext);
+			
+			String contextConfigLocation = getServletConfig().getInitParameter(AspectranContextLoader.CONTEXT_CONFIG_LOCATION_PARAM);
 
 			if(StringUtils.hasText(contextConfigLocation)) {
-				AspectranContextLoader aspectranContextLoader = new AspectranContextLoader(getServletContext(), contextConfigLocation);
+				AspectranContextLoader aspectranContextLoader = new AspectranContextLoader(servletContext, contextConfigLocation);
 				aspectranContext = aspectranContextLoader.getAspectranContext();
-				
-				if(applicationAdapter != null)
-					aspectranContext.setApplicationAdapter(applicationAdapter);
+				aspectranContext.setApplicationAdapter(applicationAdapter);
 
-				standalone = true;
-			} else {
-				if(applicationAdapter != null)
-					aspectranContext = applicationAdapter.getAspectranContext();
+//				standalone = true;
+//			} else {
+//				if(applicationAdapter != null)
+//					aspectranContext = applicationAdapter.getAspectranContext();
 			}
 			
 			if(aspectranContext == null)
 				new AspectranContextException("AspectranContext is not found.");
 
+			//aspectranScheduler = new QuartzAspectranScheduler(aspectranContext);
+			//aspectranScheduler.startup(startDelaySeconds);
+			
 		} catch(Exception e) {
 			logger.error("WebActivityServlet failed to initialize: " + e.toString());
 			throw new UnavailableException(e.getMessage());
@@ -143,17 +149,42 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 	 */
 	@Override
 	public void destroy() {
-		try {
-			super.destroy();
+		super.destroy();
 
-			if(standalone && aspectranContext != null) {
-				aspectranContext.destroy();
+		boolean cleanlyDestoryed = true;
+
+		if(aspectranScheduler != null) {
+			try {
+				aspectranScheduler.shutdown();
+				logger.info("AspectranScheduler successful shutdown.");
+			} catch(Exception e) {
+				cleanlyDestoryed = false;
+				logger.error("AspectranScheduler failed to shutdown cleanly: " + e.toString(), e);
 			}
-		} catch(Exception e) {
-			logger.error("WebActivityServlet failed to destroy cleanly: " + e.toString());
 		}
 
-		logger.info("WebActivityServlet successful destroyed.");
+		if(aspectranContext != null) {
+			try {
+				aspectranContext.destroy();
+				logger.info("AspectranContext successful destroyed.");
+			} catch(Exception e) {
+				cleanlyDestoryed = false;
+				logger.error("AspectranContext failed to destroy: " + e.toString(), e);
+			}
+		}
+		
+		try {
+			WebApplicationAdapter.destoryWebApplicationAdapter(getServletContext());
+		} catch(Exception e) {
+			cleanlyDestoryed = false;
+			logger.error("WebApplicationAdapter failed to destroy: " + e.toString(), e);
+		}
+
+		if(cleanlyDestoryed)
+			logger.info("WebActivityServlet successful destroyed.");
+		else
+			logger.error("WebActivityServlet failed to destroy cleanly.");
+
 		logger.info("Do not terminate the server while the all scoped bean destroying.");
 	}
 }
