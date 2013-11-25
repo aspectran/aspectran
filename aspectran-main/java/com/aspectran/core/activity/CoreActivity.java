@@ -23,7 +23,7 @@ import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
-import com.aspectran.core.context.AspectranContext;
+import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.bean.BeanRegistry;
 import com.aspectran.core.context.bean.scope.Scope;
 
@@ -67,7 +67,7 @@ public interface CoreActivity {
 	
 	public void response(Responsible res) throws ResponseException;
 	
-	public AspectranContext getAspectranContext();
+	public ActivityContext getActivityContext();
 	
 	public Responsible getResponse();
 	

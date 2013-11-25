@@ -21,7 +21,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
-import com.aspectran.core.context.AspectranContext;
+import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.builder.xml.parser.AspectranNodeParser;
 import com.aspectran.core.util.Assert;
 import com.aspectran.core.util.ResourceUtils;
@@ -31,15 +31,15 @@ import com.aspectran.core.util.ResourceUtils;
  * 
  * <p>Created: 2008. 06. 14 오후 8:53:29</p>
  */
-public class XmlAspectranContextBuilder extends AbstractAspectranContextBuilder implements AspectranContextBuilder {
+public class XmlActivityContextBuilder extends AbstractActivityContextBuilder implements ActivityContextBuilder {
 	
 	private String contextConfigLocation;
 	
-	public XmlAspectranContextBuilder(String contextConfigLocation) {
+	public XmlActivityContextBuilder(String contextConfigLocation) {
 		this(null, contextConfigLocation);
 	}
 
-	public XmlAspectranContextBuilder(String applicationBasePath, String contextConfigLocation) {
+	public XmlActivityContextBuilder(String applicationBasePath, String contextConfigLocation) {
 		super(applicationBasePath);
 		
 		Assert.notNull(contextConfigLocation, "contextConfigLocation must not be null");
@@ -47,7 +47,7 @@ public class XmlAspectranContextBuilder extends AbstractAspectranContextBuilder 
 		this.contextConfigLocation = contextConfigLocation;
 	}
 
-	public AspectranContext build() throws AspectranContextBuilderException {
+	public ActivityContext build() throws ActivityContextBuilderException {
 		InputStream inputStream = null;
 
 		try {
@@ -57,12 +57,12 @@ public class XmlAspectranContextBuilder extends AbstractAspectranContextBuilder 
 				inputStream = getClassLoader().getResourceAsStream(resource);
 				
 				if(inputStream == null)
-					throw new IOException("Cannot read aspectran context configuration resource: " + resource);
+					throw new IOException("Cannot find ActivityContext configuration resource on classpath: " + resource);
 			} else {
 				File file = new File(getApplicationBasePath(), contextConfigLocation);
 				
 				if(!file.isFile()) {
-					throw new FileNotFoundException("aspectran context configuration file is not found: " + file.getAbsolutePath());
+					throw new FileNotFoundException("ActivityContext configuration file is not found: " + file.getAbsolutePath());
 				}
 				
 				inputStream = new FileInputStream(file);
@@ -71,7 +71,7 @@ public class XmlAspectranContextBuilder extends AbstractAspectranContextBuilder 
 			return build(inputStream);
 			
 		} catch(Exception e) {
-			throw new AspectranContextBuilderException("aspectran context build failed: " + e.toString(), e);
+			throw new ActivityContextBuilderException("ActivityContext build failed: " + e.toString(), e);
 		} finally {
 			try {
 				inputStream.close();
@@ -80,11 +80,11 @@ public class XmlAspectranContextBuilder extends AbstractAspectranContextBuilder 
 		}
 	}
 	
-	private AspectranContext build(InputStream inputStream) throws Exception {
-		AspectranNodeParser aspectranNodeParser = new AspectranNodeParser(this);
-		aspectranNodeParser.parse(inputStream);
+	private ActivityContext build(InputStream inputStream) throws Exception {
+		AspectranNodeParser parser = new AspectranNodeParser(this);
+		parser.parse(inputStream);
 		
-		AspectranContext aspectranContext = makeAspectranContext(this);
+		ActivityContext aspectranContext = makeActivityContext(this);
 		
 		return aspectranContext;
 	}

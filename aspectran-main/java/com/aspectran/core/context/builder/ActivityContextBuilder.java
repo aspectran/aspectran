@@ -15,29 +15,15 @@
  */
 package com.aspectran.core.context.builder;
 
-import com.aspectran.core.context.AspectranContext;
+import com.aspectran.core.context.ActivityContext;
 
 /**
- * XmlAspectranContextBuilder.
+ * TransletsContext builder.
  * 
  * <p>Created: 2008. 06. 14 오후 8:53:29</p>
  */
-public class RuntimeAspectranContextBuilder extends AbstractAspectranContextBuilder implements AspectranContextBuilder {
+public interface ActivityContextBuilder {
 	
-	public RuntimeAspectranContextBuilder() {
-		this(null);
-	}
-
-	public RuntimeAspectranContextBuilder(String applicationBasePath) {
-		super(applicationBasePath);
-	}
-
-	public AspectranContext build() throws AspectranContextBuilderException {
-		try {
-			return makeAspectranContext(this);
-		} catch(Exception e) {
-			throw new AspectranContextBuilderException("aspectran context build failed: " + e.toString(), e);
-		}
-	}
+	public ActivityContext build() throws ActivityContextBuilderException;
 	
 }

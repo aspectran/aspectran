@@ -23,7 +23,7 @@ import com.aspectran.core.activity.CoreTranslet;
 import com.aspectran.core.activity.request.RequestException;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
-import com.aspectran.core.context.AspectranContext;
+import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.var.ValueMap;
 import com.aspectran.core.var.rule.RequestRule;
 import com.aspectran.core.var.rule.ResponseRule;
@@ -35,7 +35,7 @@ import com.aspectran.core.var.token.ItemTokenExpressor;
  */
 public class JobActivityImpl extends AbstractCoreActivity implements JobActivity {
 
-	public JobActivityImpl(AspectranContext context, RequestAdapter requestAdapter, ResponseAdapter responseAdapter) {
+	public JobActivityImpl(ActivityContext context, RequestAdapter requestAdapter, ResponseAdapter responseAdapter) {
 		super(context);
 		
 		setRequestAdapter(requestAdapter);
@@ -104,7 +104,7 @@ public class JobActivityImpl extends AbstractCoreActivity implements JobActivity
 	}
 	
 	public CoreActivity newCoreActivity() {
-		JobActivityImpl activity = new JobActivityImpl(getAspectranContext(), getRequestAdapter(), getResponseAdapter());
+		JobActivityImpl activity = new JobActivityImpl(getActivityContext(), getRequestAdapter(), getResponseAdapter());
 		return activity;
 	}
 

@@ -37,7 +37,7 @@ import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
-import com.aspectran.core.context.AspectranContext;
+import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
 import com.aspectran.core.context.bean.BeanRegistry;
 import com.aspectran.core.context.bean.scope.Scope;
@@ -67,7 +67,7 @@ public abstract class AbstractCoreActivity implements CoreActivity {
 	private final boolean debugEnabled = logger.isDebugEnabled();
 
 	/** The context. */
-	protected final AspectranContext context;
+	protected final ActivityContext context;
 	
 	/** The request adapter. */
 	private RequestAdapter requestAdapter;
@@ -119,12 +119,12 @@ public abstract class AbstractCoreActivity implements CoreActivity {
 	 *
 	 * @param context the translets context
 	 */
-	public AbstractCoreActivity(AspectranContext context) {
+	public AbstractCoreActivity(ActivityContext context) {
 		this.context = context;
 	}
 
 	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.AspectranActivity#getRequestAdapter()
+	 * @see com.aspectran.core.activity.CoreActivity#getRequestAdapter()
 	 */
 	public RequestAdapter getRequestAdapter() {
 		return requestAdapter;
@@ -140,7 +140,7 @@ public abstract class AbstractCoreActivity implements CoreActivity {
 	}
 	
 	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.AspectranActivity#getResponseAdapter()
+	 * @see com.aspectran.core.activity.CoreActivity#getResponseAdapter()
 	 */
 	public ResponseAdapter getResponseAdapter() {
 		return responseAdapter;
@@ -156,7 +156,7 @@ public abstract class AbstractCoreActivity implements CoreActivity {
 	}
 
 	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.AspectranActivity#getSessionAdapter()
+	 * @see com.aspectran.core.activity.CoreActivity#getSessionAdapter()
 	 */
 	public SessionAdapter getSessionAdapter() {
 		return sessionAdapter;
@@ -857,9 +857,9 @@ public abstract class AbstractCoreActivity implements CoreActivity {
 	}
 	
 	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.AspectranActivity#getAspectranContext()
+	 * @see com.aspectran.core.activity.CoreActivity#getActivityContext()
 	 */
-	public AspectranContext getAspectranContext() {
+	public ActivityContext getActivityContext() {
 		return context;
 	}
 	
@@ -876,14 +876,14 @@ public abstract class AbstractCoreActivity implements CoreActivity {
 	}
 	
 	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.AspectranActivity#getBean(java.lang.String)
+	 * @see com.aspectran.core.activity.CoreActivity#getBean(java.lang.String)
 	 */
 	public Object getBean(String id) {
 		return context.getBeanRegistry().getBean(id, this);
 	}
 	
 	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.AspectranActivity#newAspectranActivity()
+	 * @see com.aspectran.core.activity.CoreActivity#newCoreActivity()
 	 */
 	public abstract CoreActivity newCoreActivity();
 	
@@ -897,7 +897,7 @@ public abstract class AbstractCoreActivity implements CoreActivity {
 	}
 	
 	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.AspectranActivity#getTransletName()
+	 * @see com.aspectran.core.activity.CoreActivity#getTransletName()
 	 */
 	public String getTransletName() {
 		return transletName;
@@ -913,14 +913,14 @@ public abstract class AbstractCoreActivity implements CoreActivity {
 	}
 
 	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.AspectranActivity#getRequestScope()
+	 * @see com.aspectran.core.activity.CoreActivity#getRequestScope()
 	 */
 	public Scope getRequestScope() {
 		return requestScope;
 	}
 
 	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.AspectranActivity#setRequestScope(com.aspectran.core.context.bean.scope.RequestScope)
+	 * @see com.aspectran.core.activity.CoreActivity#setRequestScope(com.aspectran.core.context.bean.scope.RequestScope)
 	 */
 	public void setRequestScope(Scope requestScope) {
 		this.requestScope = requestScope;
@@ -981,7 +981,7 @@ public abstract class AbstractCoreActivity implements CoreActivity {
 	}
 	
 	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.AspectranActivity#getBeanRegistry()
+	 * @see com.aspectran.core.activity.CoreActivity#getBeanRegistry()
 	 */
 	public BeanRegistry getBeanRegistry() {
 		return context.getBeanRegistry();

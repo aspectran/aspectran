@@ -103,13 +103,13 @@ public class IPAddressBlockableWebActivityServlet extends WebActivityServlet imp
 			
 			String requestUri = req.getRequestURI();
 
-			activity = new WebActivityImpl(aspectranContext, req, res);
+			activity = new WebActivityImpl(activityContext, req, res);
 			activity.init(requestUri);
 			activity.run();
 			
 		} catch(TransletNotFoundException e) {
 			if(activity != null) {
-				String activityDefaultHandler = aspectranContext.getActivityDefaultHandler();
+				String activityDefaultHandler = activityContext.getActivityDefaultHandler();
 
 				if(activityDefaultHandler != null) {
 					try {
