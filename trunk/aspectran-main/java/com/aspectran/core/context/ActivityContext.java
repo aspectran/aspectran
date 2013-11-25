@@ -23,7 +23,7 @@ import com.aspectran.core.var.rule.AspectRuleMap;
 /**
  * <p>Created: 2008. 06. 09 오후 2:12:40</p>
  */
-public class AspectranContext {
+public class ActivityContext {
 
 	private ApplicationAdapter applicationAdapter;
 	
@@ -35,7 +35,7 @@ public class AspectranContext {
 	
 	private String activityDefaultHandler;
 	
-	public AspectranContext() {
+	public ActivityContext() {
 	}
 	
 	/**

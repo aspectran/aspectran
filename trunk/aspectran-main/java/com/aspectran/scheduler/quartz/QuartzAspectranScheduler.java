@@ -21,7 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.aspectran.core.context.AspectranConstant;
-import com.aspectran.core.context.AspectranContext;
+import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.var.rule.AspectJobAdviceRule;
 import com.aspectran.core.var.rule.AspectRule;
 import com.aspectran.core.var.rule.AspectRuleMap;
@@ -38,7 +38,7 @@ public class QuartzAspectranScheduler implements AspectranScheduler {
 	
 	private final Logger logger = LoggerFactory.getLogger(QuartzAspectranScheduler.class);
 
-	private AspectranContext context;
+	private ActivityContext context;
 	
 	private List<Scheduler> startedSchedulerList = new ArrayList<Scheduler>();
 	
@@ -48,7 +48,7 @@ public class QuartzAspectranScheduler implements AspectranScheduler {
 	
 	private boolean waitOnShutdown = false;
 	
-	public QuartzAspectranScheduler(AspectranContext context) {
+	public QuartzAspectranScheduler(ActivityContext context) {
 		this.context = context;
 	}
 	

@@ -177,7 +177,7 @@ public abstract class AbstractCoreTranslet implements CoreTranslet {
 	}
 	
 	public ApplicationAdapter getApplicationAdapter() {
-		return activity.getAspectranContext().getApplicationAdapter();
+		return activity.getActivityContext().getApplicationAdapter();
 	}
 	
 	public Object getRequestAdaptee() {
@@ -202,7 +202,7 @@ public abstract class AbstractCoreTranslet implements CoreTranslet {
 	}
 	
 	public Object getApplicationAdaptee() {
-		ApplicationAdapter applicationAdapter = activity.getAspectranContext().getApplicationAdapter();
+		ApplicationAdapter applicationAdapter = activity.getActivityContext().getApplicationAdapter();
 		
 		if(applicationAdapter != null)
 			return applicationAdapter.getAdaptee();

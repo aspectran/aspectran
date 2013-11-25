@@ -30,7 +30,7 @@ import com.aspectran.core.activity.request.RequestException;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
-import com.aspectran.core.context.AspectranContext;
+import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.var.FileItem;
 import com.aspectran.core.var.FileItemMap;
 import com.aspectran.core.var.ValueMap;
@@ -63,7 +63,7 @@ public class WebActivityImpl extends AbstractCoreActivity implements WebActivity
 	
 	private HttpServletResponse response;
 	
-	public WebActivityImpl(AspectranContext context, HttpServletRequest request, HttpServletResponse response) {
+	public WebActivityImpl(ActivityContext context, HttpServletRequest request, HttpServletResponse response) {
 		super(context);
 		
 		this.request = request;
@@ -231,7 +231,7 @@ public class WebActivityImpl extends AbstractCoreActivity implements WebActivity
 	}
 	
 	public CoreActivity newCoreActivity() {
-		WebActivityImpl webActivity = new WebActivityImpl(getAspectranContext(), request, response);
+		WebActivityImpl webActivity = new WebActivityImpl(getActivityContext(), request, response);
 		return webActivity;
 	}
 	

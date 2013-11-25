@@ -21,10 +21,10 @@ import javax.servlet.ServletContextListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.aspectran.core.context.AspectranContext;
+import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.web.adapter.WebApplicationAdapter;
-import com.aspectran.web.startup.AspectranContextLoader;
+import com.aspectran.web.startup.ActivityContextLoader;
 
 public class WebApplicationListener implements ServletContextListener {
 
@@ -32,10 +32,10 @@ public class WebApplicationListener implements ServletContextListener {
 
 	private static final String ASPECTRAN_CONTEXT_CONFIG_LOCATION_PARAM = "aspectran:contextConfigLocation";
 	
-	private AspectranContext aspectranContext;
+	private ActivityContext activityContext;
 
-	public AspectranContext getAspectranContext() {
-		return aspectranContext;
+	public ActivityContext getActivityContext() {
+		return activityContext;
 	}
 
 	/**
@@ -50,8 +50,8 @@ public class WebApplicationListener implements ServletContextListener {
 		String contextConfigLocation = event.getServletContext().getInitParameter(ASPECTRAN_CONTEXT_CONFIG_LOCATION_PARAM);
 
 		if(StringUtils.hasText(contextConfigLocation)) {
-			AspectranContextLoader loader = new AspectranContextLoader(event.getServletContext(), contextConfigLocation);
-			aspectranContext = loader.getAspectranContext();
+			ActivityContextLoader loader = new ActivityContextLoader(event.getServletContext(), contextConfigLocation);
+			activityContext = loader.getActivityContext();
 		}
 		
 		//WebApplicationAdapter.createWebApplicationAdapter(event.getServletContext());

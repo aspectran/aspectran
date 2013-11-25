@@ -18,7 +18,7 @@ package com.aspectran.core.context;
  * @author Gulendol
  * 
  */
-public class AspectranContextException extends RuntimeException {
+public class ActivityContextException extends RuntimeException {
 
 	/** @serial */
 	static final long serialVersionUID = -2005403239545515914L;
@@ -26,7 +26,7 @@ public class AspectranContextException extends RuntimeException {
 	/**
 	 * Simple constructor
 	 */
-	public AspectranContextException() {
+	public ActivityContextException() {
 	}
 
 	/**
@@ -35,7 +35,7 @@ public class AspectranContextException extends RuntimeException {
 	 * @param msg
 	 *            A message to associate with the exception
 	 */
-	public AspectranContextException(String msg) {
+	public ActivityContextException(String msg) {
 		super(msg);
 	}
 
@@ -45,7 +45,7 @@ public class AspectranContextException extends RuntimeException {
 	 * @param cause
 	 *            The real cause of the exception
 	 */
-	public AspectranContextException(Throwable cause) {
+	public ActivityContextException(Throwable cause) {
 		super(cause);
 	}
 
@@ -58,7 +58,7 @@ public class AspectranContextException extends RuntimeException {
 	 * @param cause
 	 *            The real cause of the exception
 	 */
-	public AspectranContextException(String msg, Throwable cause) {
+	public ActivityContextException(String msg, Throwable cause) {
 		super(msg, cause);
 	}
 }

@@ -22,7 +22,7 @@ import javax.servlet.ServletContextListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.aspectran.core.context.AspectranContext;
+import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.scheduler.AspectranScheduler;
 import com.aspectran.scheduler.quartz.QuartzAspectranScheduler;
@@ -53,7 +53,7 @@ public class AspectranSchedulerListener implements ServletContextListener {
 
 		ServletContext servletContext = event.getServletContext();
 		
-		AspectranContext aspectranContext = getAspectranContext(servletContext);
+		ActivityContext aspectranContext = getAspectranContext(servletContext);
 		
 		if(aspectranContext == null) {
 			logger.error("AspectranScheduler has not been started. AspectranContext was not found.");
@@ -117,7 +117,7 @@ public class AspectranSchedulerListener implements ServletContextListener {
 		}
 	}
 	
-	private AspectranContext getAspectranContext(ServletContext servletContext) {
+	private ActivityContext getAspectranContext(ServletContext servletContext) {
 		WebApplicationAdapter webApplicationAdapter = WebApplicationAdapter.determineWebApplicationAdapter(servletContext);
 		
 //		if(webApplicationAdapter != null)

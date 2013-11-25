@@ -28,8 +28,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.aspectran.core.context.AspectranContext;
-import com.aspectran.core.context.AspectranContextException;
+import com.aspectran.core.context.ActivityContext;
+import com.aspectran.core.context.ActivityContextException;
 import com.aspectran.core.context.translet.TransletNotFoundException;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.scheduler.AspectranScheduler;
@@ -37,7 +37,7 @@ import com.aspectran.web.activity.WebActivity;
 import com.aspectran.web.activity.WebActivityDefaultHandler;
 import com.aspectran.web.activity.WebActivityImpl;
 import com.aspectran.web.adapter.WebApplicationAdapter;
-import com.aspectran.web.startup.AspectranContextLoader;
+import com.aspectran.web.startup.ActivityContextLoader;
 
 /**
  * Servlet implementation class for Servlet: Translets.
@@ -49,7 +49,7 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 
 	private final Logger logger = LoggerFactory.getLogger(WebActivityServlet.class);
 
-	protected AspectranContext aspectranContext;
+	protected ActivityContext activityContext;
 
 	private AspectranScheduler aspectranScheduler;
 	
@@ -79,12 +79,12 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 			
 			WebApplicationAdapter applicationAdapter = WebApplicationAdapter.determineWebApplicationAdapter(servletContext);
 			
-			String contextConfigLocation = getServletConfig().getInitParameter(AspectranContextLoader.CONTEXT_CONFIG_LOCATION_PARAM);
+			String contextConfigLocation = getServletConfig().getInitParameter(ActivityContextLoader.CONTEXT_CONFIG_LOCATION_PARAM);
 
 			if(StringUtils.hasText(contextConfigLocation)) {
-				AspectranContextLoader aspectranContextLoader = new AspectranContextLoader(servletContext, contextConfigLocation);
-				aspectranContext = aspectranContextLoader.getAspectranContext();
-				aspectranContext.setApplicationAdapter(applicationAdapter);
+				ActivityContextLoader aspectranContextLoader = new ActivityContextLoader(servletContext, contextConfigLocation);
+				activityContext = aspectranContextLoader.getActivityContext();
+				activityContext.setApplicationAdapter(applicationAdapter);
 
 //				standalone = true;
 //			} else {
@@ -92,8 +92,8 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 //					aspectranContext = applicationAdapter.getAspectranContext();
 			}
 			
-			if(aspectranContext == null)
-				new AspectranContextException("AspectranContext is not found.");
+			if(activityContext == null)
+				new ActivityContextException("AspectranContext is not found.");
 
 			//aspectranScheduler = new QuartzAspectranScheduler(aspectranContext);
 			//aspectranScheduler.startup(startDelaySeconds);
@@ -114,13 +114,13 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 		try {
 			String requestUri = req.getRequestURI();
 
-			activity = new WebActivityImpl(aspectranContext, req, res);
+			activity = new WebActivityImpl(activityContext, req, res);
 			activity.init(requestUri);
 			activity.run();
 
 		} catch(TransletNotFoundException e) {
 			if(activity != null) {
-				String activityDefaultHandler = aspectranContext.getActivityDefaultHandler();
+				String activityDefaultHandler = activityContext.getActivityDefaultHandler();
 
 				if(activityDefaultHandler != null) {
 					try {
@@ -163,9 +163,9 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 			}
 		}
 
-		if(aspectranContext != null) {
+		if(activityContext != null) {
 			try {
-				aspectranContext.destroy();
+				activityContext.destroy();
 				logger.info("AspectranContext successful destroyed.");
 			} catch(Exception e) {
 				cleanlyDestoryed = false;

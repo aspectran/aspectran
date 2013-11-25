@@ -15,7 +15,7 @@
  */
 package com.aspectran.core.context.builder;
 
-import com.aspectran.core.context.AspectranContext;
+import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.aspect.AspectAdviceRuleRegister;
 import com.aspectran.core.context.bean.BeanRegistry;
 import com.aspectran.core.context.bean.ScopedBeanRegistry;
@@ -30,26 +30,26 @@ import com.aspectran.core.var.type.DefaultSettingType;
  * 
  * <p>Created: 2008. 06. 14 오후 8:53:29</p>
  */
-public abstract class AbstractAspectranContextBuilder extends ContextBuilderAssistant {
+public abstract class AbstractActivityContextBuilder extends ContextBuilderAssistant {
 	
-	protected AbstractAspectranContextBuilder(String applicationBasePath) {
+	protected AbstractActivityContextBuilder(String applicationBasePath) {
 		super(applicationBasePath);
 	}
 	
-	protected AspectranContext makeAspectranContext(ContextBuilderAssistant assistant) {
+	protected ActivityContext makeActivityContext(ContextBuilderAssistant assistant) {
 		BeanRegistry beanRegistry = makeBeanRegistry(assistant.getBeanRuleMap());
 		TransletRuleRegistry transletRuleRegistry = makeTransletRegistry(assistant.getAspectRuleMap(), assistant.getTransletRuleMap());
 		
 		BeanReferenceInspector beanReferenceInspector = assistant.getBeanReferenceInspector();
 		beanReferenceInspector.inpect(assistant.getBeanRuleMap());
 		
-		AspectranContext aspectranContext = new AspectranContext();
-		aspectranContext.setAspectRuleMap(assistant.getAspectRuleMap());
-		aspectranContext.setBeanRegistry(beanRegistry);
-		aspectranContext.setTransletRuleRegistry(transletRuleRegistry);
-		aspectranContext.setActivityDefaultHandler((String)assistant.getSetting(DefaultSettingType.ACTIVITY_DEFAULT_HANDLER));
+		ActivityContext context = new ActivityContext();
+		context.setAspectRuleMap(assistant.getAspectRuleMap());
+		context.setBeanRegistry(beanRegistry);
+		context.setTransletRuleRegistry(transletRuleRegistry);
+		context.setActivityDefaultHandler((String)assistant.getSetting(DefaultSettingType.ACTIVITY_DEFAULT_HANDLER));
 		
-		return aspectranContext;
+		return context;
 	}
 
 	protected TransletRuleRegistry makeTransletRegistry(AspectRuleMap aspectRuleMap, TransletRuleMap transletRuleMap) {
