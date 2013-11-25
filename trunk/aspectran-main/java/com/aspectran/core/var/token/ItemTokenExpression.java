@@ -13,14 +13,13 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.aspectran.core.expr;
+package com.aspectran.core.var.token;
 
 import java.io.File;
 import java.util.Map;
 
 import com.aspectran.core.activity.CoreActivity;
 import com.aspectran.core.context.bean.BeanRegistry;
-import com.aspectran.core.expr.token.Token;
 import com.aspectran.core.var.ValueMap;
 import com.aspectran.core.var.rule.ItemRule;
 import com.aspectran.core.var.rule.ItemRuleMap;

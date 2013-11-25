@@ -5,7 +5,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.util.Iterator;
 
-import com.aspectran.core.expr.ItemTokenExpressor;
 import com.aspectran.core.util.MethodUtils;
 import com.aspectran.core.util.ReflectionUtils;
 import com.aspectran.core.var.ValueMap;
@@ -13,6 +12,7 @@ import com.aspectran.core.var.rule.BeanRule;
 import com.aspectran.core.var.rule.BeanRuleMap;
 import com.aspectran.core.var.rule.ItemRule;
 import com.aspectran.core.var.rule.ItemRuleMap;
+import com.aspectran.core.var.token.ItemTokenExpressor;
 import com.aspectran.core.var.type.ScopeType;
 
 /**

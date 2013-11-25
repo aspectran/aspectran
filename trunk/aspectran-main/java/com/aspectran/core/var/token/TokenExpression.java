@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.aspectran.core.expr;
+package com.aspectran.core.var.token;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -29,7 +29,6 @@ import java.util.StringTokenizer;
 import com.aspectran.core.activity.CoreActivity;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.context.bean.BeanRegistry;
-import com.aspectran.core.expr.token.Token;
 import com.aspectran.core.util.BeanUtils;
 import com.aspectran.core.util.MethodUtils;
 import com.aspectran.core.util.StringUtils;

@@ -21,8 +21,8 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
-import com.aspectran.core.expr.token.Token;
-import com.aspectran.core.expr.token.TokenParser;
+import com.aspectran.core.var.token.Token;
+import com.aspectran.core.var.token.TokenParser;
 import com.aspectran.core.var.type.ItemType;
 import com.aspectran.core.var.type.ItemValueType;
 

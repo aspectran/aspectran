@@ -12,14 +12,14 @@ import javax.servlet.http.HttpServletResponse;
 import com.aspectran.core.activity.CoreActivity;
 import com.aspectran.core.adapter.AbstractResponseAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
-import com.aspectran.core.expr.ItemTokenExpression;
-import com.aspectran.core.expr.ItemTokenExpressor;
-import com.aspectran.core.expr.TokenExpression;
-import com.aspectran.core.expr.TokenExpressor;
-import com.aspectran.core.expr.TokenValueHandler;
-import com.aspectran.core.expr.token.Token;
 import com.aspectran.core.var.ValueMap;
 import com.aspectran.core.var.rule.RedirectResponseRule;
+import com.aspectran.core.var.token.ItemTokenExpression;
+import com.aspectran.core.var.token.ItemTokenExpressor;
+import com.aspectran.core.var.token.Token;
+import com.aspectran.core.var.token.TokenExpression;
+import com.aspectran.core.var.token.TokenExpressor;
+import com.aspectran.core.var.token.TokenValueHandler;
 import com.aspectran.core.var.type.TokenType;
 
 /**
