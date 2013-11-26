@@ -56,7 +56,7 @@ public class AspectranSchedulerListener implements ServletContextListener {
 		ActivityContext aspectranContext = getAspectranContext(servletContext);
 		
 		if(aspectranContext == null) {
-			logger.error("AspectranScheduler has not been started. AspectranContext was not found.");
+			logger.error("AspectranScheduler has not been started. ActivityContext was not found.");
 			return;
 		}
 		

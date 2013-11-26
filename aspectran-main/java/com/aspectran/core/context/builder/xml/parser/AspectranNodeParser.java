@@ -38,6 +38,7 @@ import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.wildcard.WildcardPattern;
 import com.aspectran.core.util.xml.Nodelet;
 import com.aspectran.core.util.xml.NodeletParser;
+import com.aspectran.core.var.option.Options;
 import com.aspectran.core.var.rule.AspectJobAdviceRule;
 import com.aspectran.core.var.rule.AspectRule;
 import com.aspectran.core.var.rule.BeanRule;
@@ -56,6 +57,7 @@ import com.aspectran.core.var.type.JoinpointTargetType;
 import com.aspectran.core.var.type.PointcutType;
 import com.aspectran.core.var.type.RequestMethodType;
 import com.aspectran.core.var.type.ScopeType;
+import com.aspectran.scheduler.quartz.SimpleScheduleOptions;
 
 /**
  * Translet Map Parser.
@@ -283,6 +285,11 @@ public class AspectranNodeParser {
 				PointcutRule pointcutRule = new PointcutRule();
 				pointcutRule.setPointcutType(pointcutType);
 				pointcutRule.setPatternString(text);
+				
+				if(pointcutType == PointcutType.SIMPLE_TRIGGER) {
+					Options options = new SimpleScheduleOptions(pointcutRule.getPatternString());
+					pointcutRule.setSimpleScheduleOptions(options);
+				}
 				
 				aspectRule.setPointcutRule(pointcutRule);
 			}

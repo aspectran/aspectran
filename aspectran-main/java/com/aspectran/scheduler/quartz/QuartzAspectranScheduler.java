@@ -20,8 +20,9 @@ import org.quartz.impl.matchers.GroupMatcher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.aspectran.core.context.AspectranConstant;
 import com.aspectran.core.context.ActivityContext;
+import com.aspectran.core.context.AspectranConstant;
+import com.aspectran.core.var.option.Options;
 import com.aspectran.core.var.rule.AspectJobAdviceRule;
 import com.aspectran.core.var.rule.AspectRule;
 import com.aspectran.core.var.rule.AspectRuleMap;
@@ -78,46 +79,50 @@ public class QuartzAspectranScheduler implements AspectranScheduler {
 		if(aspectRuleMap == null)
 			return;
 		
-		Date startDate = new Date();
-		
-		if(delaySeconds > 0) {
-			startDate = new Date(startDate.getTime() + (delaySeconds * 1000L));
-		}
-		
-		for(AspectRule aspectRule : aspectRuleMap) {
-			JoinpointTargetType joinpointTarget = aspectRule.getJoinpointTarget();
+		try {
+			Date startDate = new Date();
 			
-			if(joinpointTarget == JoinpointTargetType.SCHEDULER) {
-				String schedulerFactoryBeanId = aspectRule.getAdviceBeanId();
-				PointcutRule pointcutRule = aspectRule.getPointcutRule();
-				
-				SchedulerFactory schedulerFactory = (SchedulerFactory)context.getBeanRegistry().getBean(schedulerFactoryBeanId);
-				Scheduler scheduler = schedulerFactory.getScheduler();
-				JobDetail[] jobDetails = buildJobDetails(aspectRule.getAspectJobAdviceRuleList());
-				
-				if(jobDetails.length > 0) {
-					for(JobDetail jobDetail : jobDetails) {
-						String triggerName = jobDetail.getKey().getName();
-						String triggerGroup = aspectRule.getId();
-						Trigger trigger = buildTrigger(triggerName, triggerGroup, pointcutRule, startDate);
-
-						scheduler.scheduleJob(jobDetail, trigger);
-					}
-				}
-
-				if(!startedSchedulerList.contains(scheduler) && !scheduler.isStarted()) {
-					logger.info("Now try to start scheduler '{}'.", scheduler.getSchedulerName());
-					
-					if(delaySeconds > 0)
-						scheduler.startDelayed(delaySeconds);
-					else
-						scheduler.start();
-					
-					startedSchedulerList.add(scheduler);
-				}
-
-				eachAspectSchedulerMap.put(aspectRule.getId(), scheduler);
+			if(delaySeconds > 0) {
+				startDate = new Date(startDate.getTime() + (delaySeconds * 1000L));
 			}
+			
+			for(AspectRule aspectRule : aspectRuleMap) {
+				JoinpointTargetType joinpointTarget = aspectRule.getJoinpointTarget();
+				
+				if(joinpointTarget == JoinpointTargetType.SCHEDULER) {
+					String schedulerFactoryBeanId = aspectRule.getAdviceBeanId();
+					PointcutRule pointcutRule = aspectRule.getPointcutRule();
+					
+					SchedulerFactory schedulerFactory = (SchedulerFactory)context.getBeanRegistry().getBean(schedulerFactoryBeanId);
+					Scheduler scheduler = schedulerFactory.getScheduler();
+					JobDetail[] jobDetails = buildJobDetails(aspectRule.getAspectJobAdviceRuleList());
+					
+					if(jobDetails.length > 0) {
+						for(JobDetail jobDetail : jobDetails) {
+							String triggerName = jobDetail.getKey().getName();
+							String triggerGroup = aspectRule.getId();
+							Trigger trigger = buildTrigger(triggerName, triggerGroup, pointcutRule, startDate);
+	
+							scheduler.scheduleJob(jobDetail, trigger);
+						}
+					}
+	
+					if(!startedSchedulerList.contains(scheduler) && !scheduler.isStarted()) {
+						logger.info("Now try to start scheduler '{}'.", scheduler.getSchedulerName());
+						
+						if(delaySeconds > 0)
+							scheduler.startDelayed(delaySeconds);
+						else
+							scheduler.start();
+						
+						startedSchedulerList.add(scheduler);
+					}
+	
+					eachAspectSchedulerMap.put(aspectRule.getId(), scheduler);
+				}
+			}
+		} catch(Exception e) {
+			throw new SchedulerException(e);
 		}
 	}
 	
@@ -158,18 +163,29 @@ public class QuartzAspectranScheduler implements AspectranScheduler {
 		Trigger trigger = null;
 
 		if(pointcutRule.getPointcutType() == PointcutType.SIMPLE_TRIGGER) {
+			Options options = pointcutRule.getSimpleScheduleOptions();
+			Integer withIntervalInMilliseconds = (Integer)options.getValue(SimpleScheduleOptions.withIntervalInMilliseconds);
+			Integer withIntervalInMinutes = (Integer)options.getValue(SimpleScheduleOptions.withIntervalInMinutes);
+			Integer withIntervalInSeconds = (Integer)options.getValue(SimpleScheduleOptions.withIntervalInSeconds);
+			Integer withIntervalInHours = (Integer)options.getValue(SimpleScheduleOptions.withIntervalInHours);
+			Integer withRepeatCount = (Integer)options.getValue(SimpleScheduleOptions.withRepeatCount);
+			Boolean repeatForever = (Boolean)options.getValue(SimpleScheduleOptions.repeatForever);
+
 			SimpleScheduleBuilder simpleSchedule = SimpleScheduleBuilder.simpleSchedule();
-			simpleSchedule.withRepeatCount(1);
-			/*
-				withIntervalInMilliseconds int
-				withIntervalInMinutes int
-				withIntervalInSeconds int
-				withIntervalInHours int
-				withRepeatCount int
+
+			if(withIntervalInMilliseconds != null)
+				simpleSchedule.withIntervalInMilliseconds(withIntervalInMilliseconds);
+			if(withIntervalInMinutes != null)
+				simpleSchedule.withIntervalInMinutes(withIntervalInMinutes);
+			if(withIntervalInSeconds != null)
+				simpleSchedule.withIntervalInSeconds(withIntervalInSeconds);
+			if(withIntervalInHours != null)
+				simpleSchedule.withIntervalInHours(withIntervalInHours);
+			if(withRepeatCount != null)
+				simpleSchedule.withRepeatCount(withRepeatCount);
+			if(repeatForever == Boolean.TRUE)
+				simpleSchedule.repeatForever();
 				
-				repeatForever boolean
-			 */
-			
 			trigger = TriggerBuilder.newTrigger()
 					.withIdentity(name, group)
 					.startAt(startDate)

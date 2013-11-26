@@ -32,12 +32,15 @@ import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.ActivityContextException;
 import com.aspectran.core.context.translet.TransletNotFoundException;
 import com.aspectran.core.util.StringUtils;
+import com.aspectran.core.var.option.Options;
 import com.aspectran.scheduler.AspectranScheduler;
+import com.aspectran.scheduler.quartz.QuartzAspectranScheduler;
 import com.aspectran.web.activity.WebActivity;
 import com.aspectran.web.activity.WebActivityDefaultHandler;
 import com.aspectran.web.activity.WebActivityImpl;
 import com.aspectran.web.adapter.WebApplicationAdapter;
 import com.aspectran.web.startup.ActivityContextLoader;
+import com.aspectran.web.startup.SchedulerOptions;
 
 /**
  * Servlet implementation class for Servlet: Translets.
@@ -85,21 +88,34 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 				ActivityContextLoader aspectranContextLoader = new ActivityContextLoader(servletContext, contextConfigLocation);
 				activityContext = aspectranContextLoader.getActivityContext();
 				activityContext.setApplicationAdapter(applicationAdapter);
-
-//				standalone = true;
-//			} else {
-//				if(applicationAdapter != null)
-//					aspectranContext = applicationAdapter.getAspectranContext();
 			}
 			
 			if(activityContext == null)
-				new ActivityContextException("AspectranContext is not found.");
+				new ActivityContextException("ActivityContext is not loaded.");
 
-			//aspectranScheduler = new QuartzAspectranScheduler(aspectranContext);
-			//aspectranScheduler.startup(startDelaySeconds);
+			String scheduler = getServletConfig().getInitParameter("scheduler");
+
+			Options schedulerOptions = new SchedulerOptions(scheduler);
+			Integer startDelaySeconds = (Integer)schedulerOptions.getValue(SchedulerOptions.startDelaySeconds);
+			Boolean waitOnShutdown = (Boolean)schedulerOptions.getValue(SchedulerOptions.waitOnShutdown);
+			Boolean startup = (Boolean)schedulerOptions.getValue(SchedulerOptions.startup);
+			
+			if(startup == Boolean.TRUE) {
+				aspectranScheduler = new QuartzAspectranScheduler(activityContext);
+				
+				if(waitOnShutdown != null)
+					aspectranScheduler.setWaitOnShutdown(waitOnShutdown);
+				
+				if(startDelaySeconds == null) {
+					logger.info("Scheduler option 'startDelaySeconds is' not specified, defaulting to 5 seconds.");
+					startDelaySeconds = 5;
+				}
+				
+				aspectranScheduler.startup(startDelaySeconds);
+			}
 			
 		} catch(Exception e) {
-			logger.error("WebActivityServlet failed to initialize: " + e.toString());
+			logger.error("WebActivityServlet failed to initialize: " + e.toString(), e);
 			throw new UnavailableException(e.getMessage());
 		}
 	}
