@@ -15,6 +15,7 @@
  */
 package com.aspectran.core.var.rule;
 
+import com.aspectran.core.var.option.Options;
 import com.aspectran.core.var.type.PointcutType;
 
 public class PointcutRule {
@@ -22,6 +23,8 @@ public class PointcutRule {
 	private PointcutType pointcutType;
 	
 	private String patternString;
+	
+	private Options simpleScheduleOptions;
 
 	public PointcutType getPointcutType() {
 		return pointcutType;
@@ -39,6 +42,14 @@ public class PointcutRule {
 		this.patternString = patternString;
 	}
 	
+	public Options getSimpleScheduleOptions() {
+		return simpleScheduleOptions;
+	}
+
+	public void setSimpleScheduleOptions(Options simpleScheduleOptions) {
+		this.simpleScheduleOptions = simpleScheduleOptions;
+	}
+
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */

@@ -48,7 +48,7 @@ public final class ItemValueType extends Type {
 	
 	private static final Map<String, ItemValueType> types;
 	
-	private String fullQualifiedName ;
+	private String fullQualifiedName;
 	
 	static {
 		STRING = new ItemValueType("string", "java.lang.String");
