@@ -99,10 +99,7 @@ public class IncludeAction extends AbstractAction implements Executable {
 	 * @see org.jhlabs.translets.engine.process.action.Executable#isHidden()
 	 */
 	public boolean isHidden() {
-		if(includeActionRule.getHidden() == Boolean.TRUE)
-			return true;
-		else
-			return false;
+		return includeActionRule.getHidden();
 	}
 	
 	public ActionType getActionType() {

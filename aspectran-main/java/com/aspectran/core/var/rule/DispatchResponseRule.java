@@ -38,7 +38,7 @@ public class DispatchResponseRule extends ActionPossessSupport implements Action
 
 	private String templateContent;
 	
-	private Boolean templateNoCache;
+	private boolean templateNoCache;
 	
 	/**
 	 * Gets the content type.
@@ -100,11 +100,11 @@ public class DispatchResponseRule extends ActionPossessSupport implements Action
 		this.templateContent = templateContent;
 	}
 
-	public Boolean getTemplateNoCache() {
+	public boolean getTemplateNoCache() {
 		return templateNoCache;
 	}
 
-	public void setTemplateNoCache(Boolean templateNoCache) {
+	public void setTemplateNoCache(boolean templateNoCache) {
 		this.templateNoCache = templateNoCache;
 	}
 

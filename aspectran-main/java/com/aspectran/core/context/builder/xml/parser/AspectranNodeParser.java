@@ -436,7 +436,7 @@ public class AspectranNodeParser {
 		parser.addNodelet("/aspectran/translet/contents/content", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
 				String id = attributes.getProperty("id");
-				Boolean hidden = Boolean.valueOf(attributes.getProperty("hidden"));
+				boolean hidden = Boolean.parseBoolean(attributes.getProperty("hidden"));
 
 				if(!assistant.isNullableContentId() && StringUtils.isEmpty(id))
 					throw new IllegalArgumentException("The <content> element requires a id attribute.");
@@ -606,8 +606,8 @@ public class AspectranNodeParser {
 				String factoryMethod = attributes.getProperty("factoryMethod");
 				String initMethodName = attributes.getProperty("initMethod");
 				String destroyMethodName = attributes.getProperty("destroyMethod");
-				Boolean lazyInit = Boolean.valueOf(attributes.getProperty("lazyInit"));
-				Boolean override = Boolean.valueOf(attributes.getProperty("override"));
+				boolean lazyInit = Boolean.parseBoolean(attributes.getProperty("lazyInit"));
+				boolean override = Boolean.parseBoolean(attributes.getProperty("override"));
 
 				if(id == null) {
 //					if(assistant.isNullableBeanId()) {
@@ -633,14 +633,13 @@ public class AspectranNodeParser {
 					beanClassMap = scanner.scanClass(className);
 				}
 				
-				boolean isSingleton = !(singleton != null && Boolean.valueOf(singleton) == Boolean.FALSE);
 				ScopeType scopeType = ScopeType.valueOf(scope);
 				
 				if(scope != null && scopeType == null)
 					throw new IllegalArgumentException("No scope-type registered for scope '" + scope + "'");
 				
 				if(scopeType == null)
-					scopeType = isSingleton ? ScopeType.SINGLETON : ScopeType.PROTOTYPE;
+					scopeType = (singleton == null || Boolean.parseBoolean(singleton)) ? ScopeType.SINGLETON : ScopeType.PROTOTYPE; //default: singleton
 				
 				if(beanClass != null) {
 					if(initMethodName == null && beanClass.isAssignableFrom(InitializableBean.class)) {

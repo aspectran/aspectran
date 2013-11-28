@@ -69,7 +69,7 @@ public class TextTransform extends AbstractTransform implements Responsible {
 		this.templateFile = transformRule.getTemplateFile();
 		this.templateUrl = transformRule.getTemplateUrl();
 		this.contentTokens = transformRule.getContentTokens();
-		this.templateNoCache = (transformRule.getTemplateNoCache() == Boolean.TRUE);
+		this.templateNoCache = transformRule.getTemplateNoCache();
 	}
 
 	/* (non-Javadoc)

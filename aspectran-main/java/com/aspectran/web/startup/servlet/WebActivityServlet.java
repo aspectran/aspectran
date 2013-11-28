@@ -40,7 +40,6 @@ import com.aspectran.web.activity.WebActivityDefaultHandler;
 import com.aspectran.web.activity.WebActivityImpl;
 import com.aspectran.web.adapter.WebApplicationAdapter;
 import com.aspectran.web.startup.ActivityContextLoader;
-import com.aspectran.web.startup.SchedulerOptions;
 
 /**
  * Servlet implementation class for Servlet: Translets.
@@ -56,8 +55,6 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 
 	private AspectranScheduler aspectranScheduler;
 	
-	//private boolean standalone;
-
 	/*
 	 * (non-Java-doc)
 	 * 
@@ -80,38 +77,37 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 		try {
 			ServletContext servletContext = getServletContext();
 			
-			WebApplicationAdapter applicationAdapter = WebApplicationAdapter.determineWebApplicationAdapter(servletContext);
-			
 			String contextConfigLocation = getServletConfig().getInitParameter(ActivityContextLoader.CONTEXT_CONFIG_LOCATION_PARAM);
 
 			if(StringUtils.hasText(contextConfigLocation)) {
-				ActivityContextLoader aspectranContextLoader = new ActivityContextLoader(servletContext, contextConfigLocation);
-				activityContext = aspectranContextLoader.getActivityContext();
-				activityContext.setApplicationAdapter(applicationAdapter);
+				activityContext = ActivityContextLoader.load(servletContext, contextConfigLocation);
 			}
 			
 			if(activityContext == null)
 				new ActivityContextException("ActivityContext is not loaded.");
 
-			String scheduler = getServletConfig().getInitParameter("scheduler");
-
-			Options schedulerOptions = new SchedulerOptions(scheduler);
-			Integer startDelaySeconds = (Integer)schedulerOptions.getValue(SchedulerOptions.startDelaySeconds);
-			Boolean waitOnShutdown = (Boolean)schedulerOptions.getValue(SchedulerOptions.waitOnShutdown);
-			Boolean startup = (Boolean)schedulerOptions.getValue(SchedulerOptions.startup);
+			String schedulerParam = getServletConfig().getInitParameter("scheduler");
 			
-			if(startup == Boolean.TRUE) {
-				aspectranScheduler = new QuartzAspectranScheduler(activityContext);
+			if(StringUtils.hasText(schedulerParam)) {
+				Options schedulerOptions = new SchedulerOptions(schedulerParam);
+				Integer startDelaySeconds = (Integer)schedulerOptions.getValue(SchedulerOptions.startDelaySeconds);
+				Boolean waitOnShutdown = (Boolean)schedulerOptions.getValue(SchedulerOptions.waitOnShutdown);
+				Boolean startup = (Boolean)schedulerOptions.getValue(SchedulerOptions.startup);
 				
-				if(waitOnShutdown != null)
-					aspectranScheduler.setWaitOnShutdown(waitOnShutdown);
-				
-				if(startDelaySeconds == null) {
-					logger.info("Scheduler option 'startDelaySeconds is' not specified, defaulting to 5 seconds.");
-					startDelaySeconds = 5;
+				if(!Boolean.FALSE.equals(startup)) {
+					logger.error(startup.getClass().toString());
+					aspectranScheduler = new QuartzAspectranScheduler(activityContext);
+					
+					if(Boolean.TRUE.equals(waitOnShutdown))
+						aspectranScheduler.setWaitOnShutdown(true);
+					
+					if(startDelaySeconds == null) {
+						logger.info("Scheduler option 'startDelaySeconds is' not specified, defaulting to 5 seconds.");
+						startDelaySeconds = 5;
+					}
+					
+					aspectranScheduler.startup(startDelaySeconds);
 				}
-				
-				aspectranScheduler.startup(startDelaySeconds);
 			}
 			
 		} catch(Exception e) {

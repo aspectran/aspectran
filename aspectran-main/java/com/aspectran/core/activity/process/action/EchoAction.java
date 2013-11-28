@@ -85,10 +85,7 @@ public class EchoAction extends AbstractAction implements Executable {
 	 * @see org.jhlabs.translets.engine.process.action.Executable#isHidden()
 	 */
 	public boolean isHidden() {
-		if(echoActionRule.getHidden() == Boolean.TRUE)
-			return true;
-		else
-			return false;
+		return echoActionRule.getHidden();
 	}
 	
 	public ActionType getActionType() {

@@ -83,7 +83,7 @@ public class XslTransform extends AbstractTransform implements Responsible {
 	protected XslTransform(TransformRule transformRule) {
 		super(transformRule);
 		this.templateFile = transformRule.getTemplateFile();
-		this.templateNoCache = (transformRule.getTemplateNoCache() == Boolean.TRUE);
+		this.templateNoCache = transformRule.getTemplateNoCache();
 	}
 
 	/* (non-Javadoc)

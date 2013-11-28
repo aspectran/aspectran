@@ -36,7 +36,7 @@ public class BeanActionRule implements ArgumentPossessable, PropertyPossessable,
 	
 	protected ItemRuleMap argumentItemRuleMap;
 	
-	protected Boolean hidden;
+	protected boolean hidden;
 	
 	private AspectAdviceRule aspectAdviceRule;
 	
@@ -91,7 +91,7 @@ public class BeanActionRule implements ArgumentPossessable, PropertyPossessable,
 	 * 
 	 * @return the hidden
 	 */
-	public Boolean getHidden() {
+	public boolean getHidden() {
 		return hidden;
 	}
 
@@ -100,7 +100,7 @@ public class BeanActionRule implements ArgumentPossessable, PropertyPossessable,
 	 * 
 	 * @param hidden the new hidden
 	 */
-	public void setHidden(Boolean hidden) {
+	public void setHidden(boolean hidden) {
 		this.hidden = hidden;
 	}
 

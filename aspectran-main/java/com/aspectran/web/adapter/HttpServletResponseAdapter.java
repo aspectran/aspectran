@@ -116,7 +116,7 @@ public class HttpServletResponseAdapter extends AbstractResponseAdapter implemen
 					name = entry.getKey();
 					value = entry.getValue();
 
-					if(redirectResponseRule.getExcludeNullParameters() != Boolean.TRUE || value != null) {
+					if(!redirectResponseRule.getExcludeNullParameters() || value != null) {
 						sb.append(name).append(EQUAL_CHAR);
 
 						if(value != null) {

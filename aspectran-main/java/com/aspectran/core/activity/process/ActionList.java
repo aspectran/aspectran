@@ -38,7 +38,7 @@ public class ActionList extends ArrayList<Executable> implements ActionAddable {
 
 	private String contentId;
 
-	private Boolean hidden;
+	private boolean hidden;
 	
 	private ContentList parent;
 
@@ -72,7 +72,7 @@ public class ActionList extends ArrayList<Executable> implements ActionAddable {
 	 * @return true, if is hidden
 	 */
 	public boolean isHidden() {
-		return (hidden == Boolean.TRUE);
+		return hidden;
 	}
 
 	/**
@@ -80,7 +80,7 @@ public class ActionList extends ArrayList<Executable> implements ActionAddable {
 	 * 
 	 * @param hidden the new hidden
 	 */
-	public void setHidden(Boolean hidden) {
+	public void setHidden(boolean hidden) {
 		this.hidden = hidden;
 	}
 

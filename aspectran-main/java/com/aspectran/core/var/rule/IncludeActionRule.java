@@ -35,7 +35,7 @@ public class IncludeActionRule {
 	private ItemRuleMap attributeItemRuleMap;
 	
 	/** The hidden. */
-	private Boolean hidden;
+	private boolean hidden;
 	
 	private AspectAdviceRuleRegistry aspectAdviceRuleRegistry;
 
@@ -110,7 +110,7 @@ public class IncludeActionRule {
 	 * 
 	 * @return the hidden
 	 */
-	public Boolean getHidden() {
+	public boolean getHidden() {
 		return hidden;
 	}
 
@@ -119,7 +119,7 @@ public class IncludeActionRule {
 	 * 
 	 * @param hidden the new hidden
 	 */
-	public void setHidden(Boolean hidden) {
+	public void setHidden(boolean hidden) {
 		this.hidden = hidden;
 	}
 

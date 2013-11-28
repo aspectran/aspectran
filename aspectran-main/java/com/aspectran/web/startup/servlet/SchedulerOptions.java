@@ -1,4 +1,4 @@
-package com.aspectran.web.startup;
+package com.aspectran.web.startup.servlet;
 
 import com.aspectran.core.var.option.AbstractOptions;
 import com.aspectran.core.var.option.InvalidOptionException;

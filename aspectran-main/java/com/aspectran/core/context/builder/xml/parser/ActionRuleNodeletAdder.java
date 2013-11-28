@@ -59,7 +59,7 @@ public class ActionRuleNodeletAdder implements NodeletAdder {
 		parser.addNodelet(xpath, "/echo", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
 				String id = attributes.getProperty("id");
-				Boolean hidden = Boolean.valueOf(attributes.getProperty("hidden"));
+				boolean hidden = Boolean.parseBoolean(attributes.getProperty("hidden"));
 
 				if(!assistant.isNullableActionId() && StringUtils.isEmpty(id))
 					throw new IllegalArgumentException("The <echo> element requires a id attribute.");
@@ -101,7 +101,7 @@ public class ActionRuleNodeletAdder implements NodeletAdder {
 				String id = attributes.getProperty("id");
 				String beanId = attributes.getProperty("bean");
 				String methodName = attributes.getProperty("method");
-				Boolean hidden = Boolean.valueOf(attributes.getProperty("hidden"));
+				boolean hidden = Boolean.parseBoolean(attributes.getProperty("hidden"));
 
 				if(!assistant.isNullableActionId() && StringUtils.isEmpty(id))
 					throw new IllegalArgumentException("The <action> element requires a id attribute.");
@@ -181,7 +181,7 @@ public class ActionRuleNodeletAdder implements NodeletAdder {
 			public void process(Node node, Properties attributes, String text) throws Exception {
 				String id = attributes.getProperty("id");
 				String transletName = attributes.getProperty("translet");
-				Boolean hidden = Boolean.valueOf(attributes.getProperty("hidden"));
+				boolean hidden = Boolean.parseBoolean(attributes.getProperty("hidden"));
 
 				transletName = assistant.getFullTransletName(transletName);
 				

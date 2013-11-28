@@ -52,7 +52,7 @@ public class TransformRule extends ActionPossessSupport implements ActionPossess
 	
 	private Token[] contentTokens;
 	
-	private Boolean templateNoCache;
+	private boolean templateNoCache;
 	
 	private ActionList actionList;
 	
@@ -255,7 +255,7 @@ public class TransformRule extends ActionPossessSupport implements ActionPossess
 	 * 
 	 * @return the template no cache
 	 */
-	public Boolean getTemplateNoCache() {
+	public boolean getTemplateNoCache() {
 		return templateNoCache;
 	}
 
@@ -264,7 +264,7 @@ public class TransformRule extends ActionPossessSupport implements ActionPossess
 	 * 
 	 * @param templateNoCache the new template no cache
 	 */
-	public void setTemplateNoCache(Boolean templateNoCache) {
+	public void setTemplateNoCache(boolean templateNoCache) {
 		this.templateNoCache = templateNoCache;
 	}
 

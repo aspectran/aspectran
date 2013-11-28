@@ -8,13 +8,12 @@ import org.slf4j.LoggerFactory;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.builder.ActivityContextBuilder;
 import com.aspectran.core.context.builder.XmlActivityContextBuilder;
+import com.aspectran.web.adapter.WebApplicationAdapter;
 
 public class ActivityContextLoader {
 
 	private final Logger logger = LoggerFactory.getLogger(ActivityContextLoader.class);
 
-	public static final String ASPECTRAN_CONTEXT_LOADER_ATTRIBUTE = ActivityContextLoader.class.getName();
-	
 	public static final String CONTEXT_CONFIG_LOCATION_PARAM = "contextConfigLocation";
 	
 	private static final String DEFAULT_CONTEXT_CONFIG_LOCATION = "WEB-INF/aspectran/aspectran.xml";
@@ -33,8 +32,6 @@ public class ActivityContextLoader {
 	}
 
 	private void loadActivityContext(String contextConfigLocation) {
-		//servletContext.log("Loading ActivityContext: " + contextConfigLocation);
-		
 		logger.info("loading ActivityContext [" + contextConfigLocation + "]");
 		
 		long startTime = System.currentTimeMillis();
@@ -57,6 +54,17 @@ public class ActivityContextLoader {
 	}
 	
 	public ActivityContext getActivityContext() {
+		WebApplicationAdapter applicationAdapter = WebApplicationAdapter.determineWebApplicationAdapter(servletContext);
+		
+		activityContext.setApplicationAdapter(applicationAdapter);
+		
+		return activityContext;
+	}
+	
+	public static ActivityContext load(ServletContext servletContext, String contextConfigLocation) {
+		ActivityContextLoader aspectranContextLoader = new ActivityContextLoader(servletContext, contextConfigLocation);
+		ActivityContext activityContext = aspectranContextLoader.getActivityContext();
+		
 		return activityContext;
 	}
 	
