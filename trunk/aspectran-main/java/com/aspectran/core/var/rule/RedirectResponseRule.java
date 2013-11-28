@@ -48,7 +48,7 @@ public class RedirectResponseRule extends ActionPossessSupport implements Action
 	private Token[] urlTokens;
 	
 	/** The exclude null parameters. */
-	private Boolean excludeNullParameters;
+	private boolean excludeNullParameters;
 
 	/** The character encoding. */
 	private String characterEncoding;
@@ -158,7 +158,7 @@ public class RedirectResponseRule extends ActionPossessSupport implements Action
 	 * 
 	 * @return the exclude null parameters
 	 */
-	public Boolean getExcludeNullParameters() {
+	public boolean getExcludeNullParameters() {
 		return excludeNullParameters;
 	}
 
@@ -167,7 +167,7 @@ public class RedirectResponseRule extends ActionPossessSupport implements Action
 	 * 
 	 * @param excludeNullParameters the new exclude null parameters
 	 */
-	public void setExcludeNullParameters(Boolean excludeNullParameters) {
+	public void setExcludeNullParameters(boolean excludeNullParameters) {
 		this.excludeNullParameters = excludeNullParameters;
 	}
 

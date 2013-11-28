@@ -30,7 +30,7 @@ public class EchoActionRule {
 	
 	private ItemRuleMap itemRuleMap;
 
-	private Boolean hidden;
+	private boolean hidden;
 	
 	private AspectAdviceRuleRegistry aspectAdviceRuleRegistry;
 	
@@ -87,7 +87,7 @@ public class EchoActionRule {
 	 * 
 	 * @return the hidden
 	 */
-	public Boolean getHidden() {
+	public boolean getHidden() {
 		return hidden;
 	}
 
@@ -96,7 +96,7 @@ public class EchoActionRule {
 	 * 
 	 * @param hidden the new hidden
 	 */
-	public void setHidden(Boolean hidden) {
+	public void setHidden(boolean hidden) {
 		this.hidden = hidden;
 	}
 

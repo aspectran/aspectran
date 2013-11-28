@@ -197,7 +197,7 @@ public class ItemRuleNodeletAdder implements NodeletAdder {
 			public void process(Node node, Properties attributes, String text) throws Exception {
 				String name = attributes.getProperty("name");
 				String tokenize = attributes.getProperty("tokenize");
-				boolean isTokenize = !(tokenize != null && Boolean.valueOf(tokenize) == Boolean.FALSE);
+				boolean isTokenize = (tokenize == null || Boolean.parseBoolean(tokenize)); //default: tokenize
 				
 				ItemRule ir = (ItemRule)assistant.peekObject();
 				

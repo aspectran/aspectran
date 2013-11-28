@@ -24,25 +24,22 @@ import org.slf4j.LoggerFactory;
 
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.util.StringUtils;
+import com.aspectran.core.var.option.Options;
 import com.aspectran.scheduler.AspectranScheduler;
 import com.aspectran.scheduler.quartz.QuartzAspectranScheduler;
 import com.aspectran.web.adapter.WebApplicationAdapter;
+import com.aspectran.web.startup.ActivityContextLoader;
 
 public class AspectranSchedulerListener implements ServletContextListener {
 
 	private final Logger logger = LoggerFactory.getLogger(AspectranSchedulerListener.class);
 
-	public static final String START_DELAY_SECONDS_PARAM = "aspectran:scheduler:startDelaySeconds";
+	public static final String ASPECTRAN_SCHEDULER_PARAM = "aspectran:scheduler";
 
-	public static final String WAIT_ON_SHUTDOWN_PARAM = "aspectran:scheduler:waitOnShutdown";
-	
-	public static final String ASPECTRAN_SCHEDULER_ATTRIBUTE = 
-			AspectranScheduler.class.getName() + ".ASPECTRAN_SCHEDULER";
+	private ActivityContext activityContext;
 	
 	private AspectranScheduler aspectranScheduler;
 	
-	private boolean waitOnShutdown;
-
 	/**
 	 * Initialize the translets root context.
 	 * 
@@ -53,47 +50,40 @@ public class AspectranSchedulerListener implements ServletContextListener {
 
 		ServletContext servletContext = event.getServletContext();
 		
-		ActivityContext aspectranContext = getAspectranContext(servletContext);
+		String aspectranSchedulerParam = servletContext.getInitParameter(ASPECTRAN_SCHEDULER_PARAM);
 		
-		if(aspectranContext == null) {
-			logger.error("AspectranScheduler has not been started. ActivityContext was not found.");
+		if(!StringUtils.hasText(aspectranSchedulerParam)) {
+			logger.error("AspectranScheduler has not been started. \"aspectran:scheduler\" context-param is required.");
 			return;
 		}
 		
-		String startDelaySecondsVal = servletContext.getInitParameter(START_DELAY_SECONDS_PARAM);
-		String waitOnShutdownVal = servletContext.getInitParameter(WAIT_ON_SHUTDOWN_PARAM);
-		
-        int startDelaySeconds = 0;
-        
-        try {
-            if(StringUtils.hasText(startDelaySecondsVal))
-                startDelaySeconds = Integer.parseInt(startDelaySecondsVal);
-        } catch(Exception e) {
-            logger.error("Cannot parse value of 'startDelaySeconds' to an integer: " + startDelaySecondsVal + ", defaulting to 5 seconds.");
-            startDelaySeconds = 5;
-        }
-        
-        waitOnShutdown = Boolean.parseBoolean(waitOnShutdownVal);
-		
 		try {
-			aspectranScheduler = new QuartzAspectranScheduler(aspectranContext);
+			Options options = new AspectranSchedulerOptions(aspectranSchedulerParam);
+			String contextConfigLocation = (String)options.getValue(AspectranSchedulerOptions.contextConfigLocation);
+			Integer startDelaySeconds = (Integer)options.getValue(AspectranSchedulerOptions.startDelaySeconds);
+			Boolean waitOnShutdown = (Boolean)options.getValue(AspectranSchedulerOptions.waitOnShutdown);
+			Boolean startup = (Boolean)options.getValue(AspectranSchedulerOptions.startup);
+			
+			if(Boolean.FALSE.equals(startup))
+				return;
+			
+			activityContext = ActivityContextLoader.load(servletContext, contextConfigLocation);
+			
+			aspectranScheduler = new QuartzAspectranScheduler(activityContext);
+			
+			if(Boolean.TRUE.equals(waitOnShutdown))
+				aspectranScheduler.setWaitOnShutdown(true);
+			
+			if(startDelaySeconds == null) {
+				logger.info("Scheduler option 'startDelaySeconds is' not specified, defaulting to 5 seconds.");
+				startDelaySeconds = 5;
+			}
+			
 			aspectranScheduler.startup(startDelaySeconds);
 			
-			servletContext.setAttribute(ASPECTRAN_SCHEDULER_ATTRIBUTE, aspectranScheduler);
-			logger.debug("AspectranScheduler attribute was saved.");
-			
-			logger.info("AspectranScheduler has been started...");
 		} catch(Exception e) {
 			logger.error("AspectranScheduler failed to initialize: " + e.toString(), e);
-			
-			if(aspectranScheduler != null) {
-				try {
-					aspectranScheduler.shutdown();
-				} catch(Exception e1) {
-					logger.error("AspectranScheduler failed to shutdown cleanly: " + e.toString(), e);
-				}
-			}
-		}
+		}			
 	}
 
 	/**
@@ -102,28 +92,41 @@ public class AspectranSchedulerListener implements ServletContextListener {
 	 * @param event the event
 	 */
 	public void contextDestroyed(ServletContextEvent event) {
+		boolean cleanlyDestoryed = true;
+
 		if(aspectranScheduler != null) {
 			try {
-				aspectranScheduler.shutdown(waitOnShutdown);
-			
-				ServletContext servletContext = event.getServletContext();
-				servletContext.removeAttribute(ASPECTRAN_SCHEDULER_ATTRIBUTE);
-				
-				logger.debug("AspectranScheduler attribute was removed.");
+				aspectranScheduler.shutdown();
 				logger.info("AspectranScheduler successful shutdown.");
 			} catch(Exception e) {
+				cleanlyDestoryed = false;
 				logger.error("AspectranScheduler failed to shutdown cleanly: " + e.toString(), e);
 			}
 		}
-	}
-	
-	private ActivityContext getAspectranContext(ServletContext servletContext) {
-		WebApplicationAdapter webApplicationAdapter = WebApplicationAdapter.determineWebApplicationAdapter(servletContext);
+
+		if(activityContext != null) {
+			try {
+				activityContext.destroy();
+				logger.info("AspectranContext successful destroyed.");
+			} catch(Exception e) {
+				cleanlyDestoryed = false;
+				logger.error("AspectranContext failed to destroy: " + e.toString(), e);
+			}
+		}
 		
-//		if(webApplicationAdapter != null)
-//			return webApplicationAdapter.getAspectranContext();
-		
-		return null;
+		try {
+			WebApplicationAdapter.destoryWebApplicationAdapter(event.getServletContext());
+		} catch(Exception e) {
+			cleanlyDestoryed = false;
+			logger.error("WebApplicationAdapter failed to destroy: " + e.toString(), e);
+		}
+
+		if(cleanlyDestoryed)
+			logger.info("AspectranScheduler successful destroyed.");
+		else
+			logger.error("AspectranScheduler failed to destroy cleanly.");
+
+		logger.info("Do not terminate the server while the all scoped bean destroying.");
 	}
 
 }

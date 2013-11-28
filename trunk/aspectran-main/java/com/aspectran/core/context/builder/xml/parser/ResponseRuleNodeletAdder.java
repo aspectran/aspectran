@@ -97,7 +97,7 @@ public class ResponseRuleNodeletAdder implements NodeletAdder {
 				String filePath = attributes.getProperty("file");
 				String templateUrl = attributes.getProperty("url");
 				String encoding = attributes.getProperty("encoding");
-				Boolean noCache = Boolean.valueOf(attributes.getProperty("noCache"));
+				boolean noCache = Boolean.parseBoolean(attributes.getProperty("noCache"));
 				String templateContent = text;
 
 				TransformRule tr = (TransformRule)assistant.peekObject(1);
@@ -200,7 +200,7 @@ public class ResponseRuleNodeletAdder implements NodeletAdder {
 			public void process(Node node, Properties attributes, String text) throws Exception {
 				String templateFile = attributes.getProperty("file");
 				String templateEncoding = attributes.getProperty("encoding");
-				Boolean noCache = Boolean.valueOf(attributes.getProperty("noCache"));
+				boolean noCache = Boolean.parseBoolean(attributes.getProperty("noCache"));
 				String templateContent = text;
 				
 				DispatchResponseRule drr = (DispatchResponseRule)assistant.peekObject(1);
@@ -235,7 +235,7 @@ public class ResponseRuleNodeletAdder implements NodeletAdder {
 				String contentType = attributes.getProperty("contentType"); // ResponseByContentType에서 content type에 따라 분기
 				String translet = attributes.getProperty("translet");
 				String url = attributes.getProperty("url");
-				Boolean excludeNullParameters = Boolean.valueOf(attributes.getProperty("excludeNullParameters"));
+				boolean excludeNullParameters = Boolean.parseBoolean(attributes.getProperty("excludeNullParameters"));
 				
 				RedirectResponseRule rrr = new RedirectResponseRule();
 				rrr.setContentType(contentType);

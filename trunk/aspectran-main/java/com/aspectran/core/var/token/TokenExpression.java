@@ -469,7 +469,7 @@ public class TokenExpression implements TokenExpressor {
 			} else if(list instanceof char[]) {
 				value = new Character(((char[])list)[i]);
 			} else if(list instanceof boolean[]) {
-				value = new Boolean(((boolean[])list)[i]);
+				value = Boolean.valueOf(((boolean[])list)[i]);
 			} else if(list instanceof byte[]) {
 				value = new Byte(((byte[])list)[i]);
 			} else if(list instanceof double[]) {

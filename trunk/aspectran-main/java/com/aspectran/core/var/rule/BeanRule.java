@@ -40,7 +40,7 @@ public class BeanRule {
 	
 	protected String destroyMethodName;
 	
-	protected Boolean lazyInit;
+	protected boolean lazyInit;
 
 	protected ItemRuleMap constructorArgumentItemRuleMap;
 	

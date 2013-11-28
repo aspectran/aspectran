@@ -183,7 +183,7 @@ public class QuartzAspectranScheduler implements AspectranScheduler {
 				simpleSchedule.withIntervalInHours(withIntervalInHours);
 			if(withRepeatCount != null)
 				simpleSchedule.withRepeatCount(withRepeatCount);
-			if(repeatForever == Boolean.TRUE)
+			if(Boolean.TRUE.equals(repeatForever))
 				simpleSchedule.repeatForever();
 				
 			trigger = TriggerBuilder.newTrigger()

@@ -62,7 +62,7 @@ public abstract class AbstractOptions implements Options {
 							throw new InvalidOptionException(description + ": Cannot parse value of '" + name + "' to an integer. \"" + token + "\"");
 						}
 					} else if(option.getValueType() == OptionValueType.BOOLEAN)
-						option.setValue(new Boolean(value));
+						option.setValue(Boolean.valueOf(value));
 				}
 			}
 		}

@@ -147,13 +147,13 @@ public class DefaultSettings implements Cloneable {
 
 	public void set(Map<DefaultSettingType, String> settings) {
 		if(settings.get(DefaultSettingType.USE_NAMESPACES) != null)
-			useNamespaces = Boolean.valueOf(settings.get(DefaultSettingType.USE_NAMESPACES));
+			useNamespaces = Boolean.parseBoolean(settings.get(DefaultSettingType.USE_NAMESPACES));
 
 		if(settings.get(DefaultSettingType.NULLABLE_CONTENT_ID) != null)
-			nullableContentId = Boolean.valueOf(settings.get(DefaultSettingType.NULLABLE_CONTENT_ID));
+			nullableContentId = (settings.get(DefaultSettingType.NULLABLE_CONTENT_ID) == null || Boolean.parseBoolean(settings.get(DefaultSettingType.NULLABLE_CONTENT_ID)));
 		
 		if(settings.get(DefaultSettingType.NULLABLE_ACTION_ID) != null)
-			nullableActionId = Boolean.valueOf(settings.get(DefaultSettingType.NULLABLE_ACTION_ID));
+			nullableActionId = (settings.get(DefaultSettingType.NULLABLE_ACTION_ID) == null || Boolean.parseBoolean(settings.get(DefaultSettingType.NULLABLE_ACTION_ID)));
 		
 		if(settings.get(DefaultSettingType.TRANSLET_NAME_PATTERN_PREFIX) != null)
 			setTransletNamePatternPrefix(settings.get(DefaultSettingType.TRANSLET_NAME_PATTERN_PREFIX));
