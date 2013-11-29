@@ -29,6 +29,7 @@ import com.aspectran.scheduler.AspectranScheduler;
 import com.aspectran.scheduler.quartz.QuartzAspectranScheduler;
 import com.aspectran.web.adapter.WebApplicationAdapter;
 import com.aspectran.web.startup.ActivityContextLoader;
+import com.aspectran.web.startup.RefreshableActivityContextLoader;
 
 public class AspectranSchedulerListener implements ServletContextListener {
 
@@ -63,12 +64,17 @@ public class AspectranSchedulerListener implements ServletContextListener {
 			Integer startDelaySeconds = (Integer)options.getValue(AspectranSchedulerOptions.startDelaySeconds);
 			Boolean waitOnShutdown = (Boolean)options.getValue(AspectranSchedulerOptions.waitOnShutdown);
 			Boolean startup = (Boolean)options.getValue(AspectranSchedulerOptions.startup);
+			Boolean autoReload = (Boolean)options.getValue(AspectranSchedulerOptions.autoReload);
 			
 			if(Boolean.FALSE.equals(startup))
 				return;
 			
-			activityContext = ActivityContextLoader.load(servletContext, contextConfigLocation);
-			
+			if(!autoReload) {
+				activityContext = ActivityContextLoader.load(servletContext, contextConfigLocation);
+			} else {
+				activityContext = RefreshableActivityContextLoader.load(servletContext, contextConfigLocation);
+			}
+
 			aspectranScheduler = new QuartzAspectranScheduler(activityContext);
 			
 			if(Boolean.TRUE.equals(waitOnShutdown))

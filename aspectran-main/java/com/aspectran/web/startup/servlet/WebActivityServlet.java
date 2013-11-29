@@ -30,6 +30,7 @@ import org.slf4j.LoggerFactory;
 
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.ActivityContextException;
+import com.aspectran.core.context.refresh.ActivityContextRefreshHandler;
 import com.aspectran.core.context.translet.TransletNotFoundException;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.var.option.Options;
@@ -40,6 +41,7 @@ import com.aspectran.web.activity.WebActivityDefaultHandler;
 import com.aspectran.web.activity.WebActivityImpl;
 import com.aspectran.web.adapter.WebApplicationAdapter;
 import com.aspectran.web.startup.ActivityContextLoader;
+import com.aspectran.web.startup.RefreshableActivityContextLoader;
 
 /**
  * Servlet implementation class for Servlet: Translets.
@@ -78,41 +80,56 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 			ServletContext servletContext = getServletContext();
 			
 			String contextConfigLocation = getServletConfig().getInitParameter(ActivityContextLoader.CONTEXT_CONFIG_LOCATION_PARAM);
+			boolean autoReload = Boolean.parseBoolean(getServletConfig().getInitParameter("autoReload"));
 
 			if(StringUtils.hasText(contextConfigLocation)) {
-				activityContext = ActivityContextLoader.load(servletContext, contextConfigLocation);
+				if(!autoReload) {
+					activityContext = ActivityContextLoader.load(servletContext, contextConfigLocation);
+				} else {
+					ActivityContextRefreshHandler contextRefreshHandler = new ActivityContextRefreshHandler() {
+						public void handle(ActivityContext newContext) {
+							reload(newContext);
+						}
+					};
+					
+					activityContext = RefreshableActivityContextLoader.load(servletContext, contextConfigLocation, contextRefreshHandler);
+				}
 			}
 			
 			if(activityContext == null)
 				new ActivityContextException("ActivityContext is not loaded.");
-
-			String schedulerParam = getServletConfig().getInitParameter("scheduler");
 			
-			if(StringUtils.hasText(schedulerParam)) {
-				Options schedulerOptions = new SchedulerOptions(schedulerParam);
-				Integer startDelaySeconds = (Integer)schedulerOptions.getValue(SchedulerOptions.startDelaySeconds);
-				Boolean waitOnShutdown = (Boolean)schedulerOptions.getValue(SchedulerOptions.waitOnShutdown);
-				Boolean startup = (Boolean)schedulerOptions.getValue(SchedulerOptions.startup);
-				
-				if(!Boolean.FALSE.equals(startup)) {
-					logger.error(startup.getClass().toString());
-					aspectranScheduler = new QuartzAspectranScheduler(activityContext);
-					
-					if(Boolean.TRUE.equals(waitOnShutdown))
-						aspectranScheduler.setWaitOnShutdown(true);
-					
-					if(startDelaySeconds == null) {
-						logger.info("Scheduler option 'startDelaySeconds is' not specified, defaulting to 5 seconds.");
-						startDelaySeconds = 5;
-					}
-					
-					aspectranScheduler.startup(startDelaySeconds);
-				}
-			}
+			initScheduler();
 			
 		} catch(Exception e) {
 			logger.error("WebActivityServlet failed to initialize: " + e.toString(), e);
 			throw new UnavailableException(e.getMessage());
+		}
+	}
+
+	protected void initScheduler() throws Exception {
+		String schedulerParam = getServletConfig().getInitParameter("scheduler");
+		
+		if(StringUtils.hasText(schedulerParam)) {
+			Options schedulerOptions = new SchedulerOptions(schedulerParam);
+			Integer startDelaySeconds = (Integer)schedulerOptions.getValue(SchedulerOptions.startDelaySeconds);
+			Boolean waitOnShutdown = (Boolean)schedulerOptions.getValue(SchedulerOptions.waitOnShutdown);
+			Boolean startup = (Boolean)schedulerOptions.getValue(SchedulerOptions.startup);
+			
+			if(!Boolean.FALSE.equals(startup)) {
+				logger.error(startup.getClass().toString());
+				aspectranScheduler = new QuartzAspectranScheduler(activityContext);
+				
+				if(Boolean.TRUE.equals(waitOnShutdown))
+					aspectranScheduler.setWaitOnShutdown(true);
+				
+				if(startDelaySeconds == null) {
+					logger.info("Scheduler option 'startDelaySeconds is' not specified, defaulting to 5 seconds.");
+					startDelaySeconds = 5;
+				}
+				
+				aspectranScheduler.startup(startDelaySeconds);
+			}
 		}
 	}
 
@@ -165,25 +182,11 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 
 		boolean cleanlyDestoryed = true;
 
-		if(aspectranScheduler != null) {
-			try {
-				aspectranScheduler.shutdown();
-				logger.info("AspectranScheduler successful shutdown.");
-			} catch(Exception e) {
-				cleanlyDestoryed = false;
-				logger.error("AspectranScheduler failed to shutdown cleanly: " + e.toString(), e);
-			}
-		}
+		if(!shutdownScheduler())
+			cleanlyDestoryed = false;
 
-		if(activityContext != null) {
-			try {
-				activityContext.destroy();
-				logger.info("AspectranContext successful destroyed.");
-			} catch(Exception e) {
-				cleanlyDestoryed = false;
-				logger.error("AspectranContext failed to destroy: " + e.toString(), e);
-			}
-		}
+		if(!destroyContext())
+			cleanlyDestoryed = false;
 		
 		try {
 			WebApplicationAdapter.destoryWebApplicationAdapter(getServletContext());
@@ -199,4 +202,47 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 
 		logger.info("Do not terminate the server while the all scoped bean destroying.");
 	}
+	
+	protected boolean shutdownScheduler() {
+		if(aspectranScheduler != null) {
+			try {
+				aspectranScheduler.shutdown();
+				logger.info("AspectranScheduler successful shutdown.");
+			} catch(Exception e) {
+				logger.error("AspectranScheduler failed to shutdown cleanly: " + e.toString(), e);
+				return false;
+			}
+		}
+		
+		return true;
+	}
+	
+	protected boolean destroyContext() {
+		if(activityContext != null) {
+			try {
+				activityContext.destroy();
+				logger.info("AspectranContext successful destroyed.");
+			} catch(Exception e) {
+				logger.error("AspectranContext failed to destroy: " + e.toString(), e);
+				return false;
+			}
+		}
+		
+		return true;
+	}
+	
+	protected void reload(ActivityContext newContext) {
+		shutdownScheduler();
+		destroyContext();
+		
+		activityContext = newContext;
+		
+		try {
+			initScheduler();
+		} catch(Exception e) {
+			logger.error("Scheduler failed to initialize: " + e.toString(), e);
+		}
+		
+	}
+	
 }
