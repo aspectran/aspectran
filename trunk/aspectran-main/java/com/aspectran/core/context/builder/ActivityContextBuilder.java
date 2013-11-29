@@ -24,6 +24,8 @@ import com.aspectran.core.context.ActivityContext;
  */
 public interface ActivityContextBuilder {
 	
+	public void setClassLoader(ClassLoader classLoader);
+	
 	public ActivityContext build() throws ActivityContextBuilderException;
 	
 }

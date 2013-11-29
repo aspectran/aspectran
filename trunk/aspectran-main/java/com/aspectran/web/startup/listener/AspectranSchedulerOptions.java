@@ -16,6 +16,8 @@ public class AspectranSchedulerOptions extends AbstractOptions implements Option
 	
 	public static final Option startup = new Option("startup", OptionValueType.BOOLEAN);
 	
+	public static final Option autoReload = new Option("autoReload", OptionValueType.BOOLEAN);
+	
 	private final static Option[] options;
 	
 	static {
@@ -23,7 +25,8 @@ public class AspectranSchedulerOptions extends AbstractOptions implements Option
 				contextConfigLocation,
 				startDelaySeconds,
 				waitOnShutdown,
-				startup
+				startup,
+				autoReload
 		};
 	}
 	

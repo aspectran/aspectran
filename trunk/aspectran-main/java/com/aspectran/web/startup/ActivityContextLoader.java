@@ -18,32 +18,52 @@ public class ActivityContextLoader {
 	
 	private static final String DEFAULT_CONTEXT_CONFIG_LOCATION = "WEB-INF/aspectran/aspectran.xml";
 	
-	private ServletContext servletContext;
+	private String applicationBasePath;
+	
+	private WebApplicationAdapter applicationAdapter;
+	
+	private String contextConfigLocation;
+	
+	private ClassLoader classLoader;
 	
 	private ActivityContext activityContext;
 	
 	public ActivityContextLoader(ServletContext servletContext, String contextConfigLocation) {
-		this.servletContext = servletContext;
+		this(servletContext, contextConfigLocation, null);
+	}
+	
+	public ActivityContextLoader(ServletContext servletContext, String contextConfigLocation, ClassLoader classLoader) {
+		this.applicationBasePath = servletContext.getRealPath("/");
 		
-		if(contextConfigLocation == null)
-			contextConfigLocation = DEFAULT_CONTEXT_CONFIG_LOCATION;
+		this.applicationAdapter = WebApplicationAdapter.determineWebApplicationAdapter(servletContext);
 
-		loadActivityContext(contextConfigLocation);
+		if(contextConfigLocation == null)
+			this.contextConfigLocation = DEFAULT_CONTEXT_CONFIG_LOCATION;
+		else
+			this.contextConfigLocation = contextConfigLocation;
+		
+		this.classLoader = classLoader;
+		
 	}
 
-	private void loadActivityContext(String contextConfigLocation) {
-		logger.info("loading ActivityContext [" + contextConfigLocation + "]");
-		
-		long startTime = System.currentTimeMillis();
-
+	protected ActivityContext build() {
 		try {
-			String applicationBasePath = servletContext.getRealPath("/");
-			
+			logger.info("building ActivityContext [" + contextConfigLocation + "]");
+			long startTime = System.currentTimeMillis();
+
 			ActivityContextBuilder builder = new XmlActivityContextBuilder(applicationBasePath, contextConfigLocation);
+			
+			if(classLoader != null)
+				builder.setClassLoader(classLoader);
+			
 			activityContext = builder.build();
+			
+			activityContext.setApplicationAdapter(applicationAdapter);
 			
 			long elapsedTime = System.currentTimeMillis() - startTime;
 			logger.info("ActivityContext initialization completed in " + elapsedTime + " ms");
+			
+			return activityContext;
 		} catch(RuntimeException ex) {
 			logger.error("ActivityContext failed to initialize: " + ex);
 			throw ex;
@@ -53,17 +73,17 @@ public class ActivityContextLoader {
 		}
 	}
 	
-	public ActivityContext getActivityContext() {
-		WebApplicationAdapter applicationAdapter = WebApplicationAdapter.determineWebApplicationAdapter(servletContext);
-		
-		activityContext.setApplicationAdapter(applicationAdapter);
-		
-		return activityContext;
+	public ActivityContext load() {
+		return build();
 	}
 	
+	public ActivityContext getActivityContext() {
+		return activityContext;
+	}
+
 	public static ActivityContext load(ServletContext servletContext, String contextConfigLocation) {
 		ActivityContextLoader aspectranContextLoader = new ActivityContextLoader(servletContext, contextConfigLocation);
-		ActivityContext activityContext = aspectranContextLoader.getActivityContext();
+		ActivityContext activityContext = aspectranContextLoader.load();
 		
 		return activityContext;
 	}

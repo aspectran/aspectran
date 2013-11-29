@@ -69,11 +69,12 @@ public class QuartzAspectranScheduler implements AspectranScheduler {
 		this.waitOnShutdown = waitOnShutdown;
 	}
 
-	public void startup() throws SchedulerException {
-		startup(startDelaySeconds);
+	public void startup(int delaySeconds) throws SchedulerException {
+		this.startDelaySeconds = delaySeconds;
+		startup();
 	}
 	
-	public void startup(int delaySeconds) throws SchedulerException {
+	public void startup() throws SchedulerException {
 		AspectRuleMap aspectRuleMap = context.getAspectRuleMap();
 		
 		if(aspectRuleMap == null)
@@ -82,8 +83,8 @@ public class QuartzAspectranScheduler implements AspectranScheduler {
 		try {
 			Date startDate = new Date();
 			
-			if(delaySeconds > 0) {
-				startDate = new Date(startDate.getTime() + (delaySeconds * 1000L));
+			if(startDelaySeconds > 0) {
+				startDate = new Date(startDate.getTime() + (startDelaySeconds * 1000L));
 			}
 			
 			for(AspectRule aspectRule : aspectRuleMap) {
@@ -110,8 +111,8 @@ public class QuartzAspectranScheduler implements AspectranScheduler {
 					if(!startedSchedulerList.contains(scheduler) && !scheduler.isStarted()) {
 						logger.info("Now try to start scheduler '{}'.", scheduler.getSchedulerName());
 						
-						if(delaySeconds > 0)
-							scheduler.startDelayed(delaySeconds);
+						if(startDelaySeconds > 0)
+							scheduler.startDelayed(startDelaySeconds);
 						else
 							scheduler.start();
 						
@@ -126,17 +127,24 @@ public class QuartzAspectranScheduler implements AspectranScheduler {
 		}
 	}
 	
-	public void shutdown() throws SchedulerException {
+	public void shutdown(boolean waitForJobsToComplete) throws SchedulerException {
+		this.waitOnShutdown = waitForJobsToComplete;
 		shutdown(waitOnShutdown);
 	}
 	
-	public void shutdown(boolean waitForJobsToComplete) throws SchedulerException {
+	public void shutdown() throws SchedulerException {
 		for(Scheduler scheduler : startedSchedulerList) {
 			if(!scheduler.isShutdown()) {
 				logger.info("Now try to stop scheduler '{}'.", scheduler.getSchedulerName());
-				scheduler.shutdown(waitForJobsToComplete);
+				scheduler.shutdown(waitOnShutdown);
 			}
 		}
+	}
+	
+	public void refresh(ActivityContext context) throws SchedulerException {
+		this.context = context;
+		shutdown();
+		startup();
 	}
 	
 	public void pause(String aspectId) throws SchedulerException {
