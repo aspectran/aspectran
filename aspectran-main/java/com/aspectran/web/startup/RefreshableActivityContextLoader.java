@@ -14,30 +14,22 @@ public class RefreshableActivityContextLoader extends ActivityContextLoader impl
 	
 	private ActivityContextRefreshHandler contextRefreshHandler;
 	
-	public RefreshableActivityContextLoader(ServletContext servletContext, String contextConfigLocation, ActivityContextRefreshHandler contextRefreshHandler) {
+	public RefreshableActivityContextLoader(ServletContext servletContext, String contextConfigLocation) {
 		super(servletContext, contextConfigLocation, classLoader);
-		this.contextRefreshHandler = contextRefreshHandler;
 	}
 
-	public ActivityContext load() {
-		ActivityContext newContext = build();
+	public ActivityContextRefreshTimer startTimer(ActivityContextRefreshHandler contextRefreshHandler, int refreshTime) {
+		this.contextRefreshHandler = contextRefreshHandler;
 		
 		ActivityContextRefreshTimer timer = new ActivityContextRefreshTimer(this);
-		timer.start(5);
+		timer.start(refreshTime);
 		
-		return newContext;
+		return timer;
 	}
 	
 	public ActivityContext refresh() {
 		ActivityContext newContext = load();
 		contextRefreshHandler.handle(newContext);
-		
-		return newContext;
-	}
-
-	public static ActivityContext load(ServletContext servletContext, String contextConfigLocation, ActivityContextRefreshHandler contextRefreshHandler) {
-		ActivityContextLoader aspectranContextLoader = new RefreshableActivityContextLoader(servletContext, contextConfigLocation, contextRefreshHandler);
-		ActivityContext newContext = aspectranContextLoader.load();
 		
 		return newContext;
 	}

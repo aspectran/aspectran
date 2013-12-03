@@ -81,11 +81,4 @@ public class ActivityContextLoader {
 		return activityContext;
 	}
 
-	public static ActivityContext load(ServletContext servletContext, String contextConfigLocation) {
-		ActivityContextLoader aspectranContextLoader = new ActivityContextLoader(servletContext, contextConfigLocation);
-		ActivityContext activityContext = aspectranContextLoader.load();
-		
-		return activityContext;
-	}
-	
 }

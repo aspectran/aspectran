@@ -31,6 +31,7 @@ import org.slf4j.LoggerFactory;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.ActivityContextException;
 import com.aspectran.core.context.refresh.ActivityContextRefreshHandler;
+import com.aspectran.core.context.refresh.ActivityContextRefreshTimer;
 import com.aspectran.core.context.translet.TransletNotFoundException;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.var.option.Options;
@@ -57,6 +58,8 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 
 	private AspectranScheduler aspectranScheduler;
 	
+	private ActivityContextRefreshTimer contextRefreshTimer;
+	
 	/*
 	 * (non-Java-doc)
 	 * 
@@ -80,11 +83,23 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 			ServletContext servletContext = getServletContext();
 			
 			String contextConfigLocation = getServletConfig().getInitParameter(ActivityContextLoader.CONTEXT_CONFIG_LOCATION_PARAM);
-			boolean autoReload = Boolean.parseBoolean(getServletConfig().getInitParameter("autoReload"));
+			String autoReload = getServletConfig().getInitParameter("autoReload");
+			int refreshTime = 0;
+			
+			if(StringUtils.hasText(autoReload)) {
+				try {
+					refreshTime = Integer.parseInt(autoReload);
+				} catch(NumberFormatException e) {
+					boolean isAutoReload = Boolean.parseBoolean(autoReload);
+					if(isAutoReload)
+						refreshTime = 5; //default refresh time
+				}
+			}
 
 			if(StringUtils.hasText(contextConfigLocation)) {
-				if(!autoReload) {
-					activityContext = ActivityContextLoader.load(servletContext, contextConfigLocation);
+				if(refreshTime == 0) {
+					ActivityContextLoader aspectranContextLoader = new ActivityContextLoader(servletContext, contextConfigLocation);
+					activityContext = aspectranContextLoader.load();
 				} else {
 					ActivityContextRefreshHandler contextRefreshHandler = new ActivityContextRefreshHandler() {
 						public void handle(ActivityContext newContext) {
@@ -92,7 +107,9 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 						}
 					};
 					
-					activityContext = RefreshableActivityContextLoader.load(servletContext, contextConfigLocation, contextRefreshHandler);
+					RefreshableActivityContextLoader loader = new RefreshableActivityContextLoader(servletContext, contextConfigLocation);
+					activityContext = loader.load();
+					contextRefreshTimer = loader.startTimer(contextRefreshHandler, refreshTime);
 				}
 			}
 			
@@ -180,6 +197,9 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 	public void destroy() {
 		super.destroy();
 
+		if(contextRefreshTimer != null)
+			contextRefreshTimer.cancel();
+		
 		boolean cleanlyDestoryed = true;
 
 		if(!shutdownScheduler())
