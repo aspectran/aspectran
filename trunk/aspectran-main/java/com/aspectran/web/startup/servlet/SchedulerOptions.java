@@ -12,6 +12,8 @@ public class SchedulerOptions extends AbstractOptions implements Options {
 
 	public static final Option waitOnShutdown = new Option("waitOnShutdown", OptionValueType.BOOLEAN);
 	
+	public static final Option autoReload = new Option("autoReload", OptionValueType.STRING);
+	
 	public static final Option startup = new Option("startup", OptionValueType.BOOLEAN);
 	
 	private final static Option[] options;

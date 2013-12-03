@@ -35,6 +35,59 @@ public abstract class AbstractOptions implements Options {
 		return getValue(option.getName());
 	}
 	
+	public String getString(String name) {
+		Object o = getValue(name);
+		
+		if(o == null)
+			return null;
+		
+		return o.toString();
+	}
+	
+	public String getString(String name, String defaultValue) {
+		String val = getString(name);
+		
+		if(val == null)
+			return defaultValue;
+		
+		return val;
+	}
+
+	public int getInt(String name, int defaultValue) {
+		Option o = optionMap.get(name);
+		
+		if(o == null || o.getValueType() != OptionValueType.INTEGER)
+			return defaultValue;
+		
+		return ((Integer)o.getValue()).intValue();
+	}
+	
+	public boolean getBoolean(String name, boolean defaultValue) {
+		Option o = optionMap.get(name);
+		
+		if(o == null || o.getValueType() != OptionValueType.BOOLEAN)
+			return defaultValue;
+		
+		return ((Boolean)o.getValue()).booleanValue();
+		
+	}
+	
+	public String getString(Option option) {
+		return getString(option.getName());
+	}
+	
+	public String getString(Option option, String defaultValue) {
+		return getString(option.getName(), defaultValue);
+	}
+	
+	public int getInt(Option option, int defaultValue) {
+		return getInt(option.getName(), defaultValue);
+	}
+	
+	public boolean getBoolean(Option option, boolean defaultValue) {
+		return getBoolean(option.getName(), defaultValue);
+	}
+	
 	protected void parse(String statement) throws InvalidOptionException {
 		StringTokenizer st = new StringTokenizer(statement, DELIMITERS);
 		
