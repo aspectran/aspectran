@@ -134,7 +134,6 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 			Boolean startup = (Boolean)schedulerOptions.getValue(SchedulerOptions.startup);
 			
 			if(!Boolean.FALSE.equals(startup)) {
-				logger.error(startup.getClass().toString());
 				aspectranScheduler = new QuartzAspectranScheduler(activityContext);
 				
 				if(Boolean.TRUE.equals(waitOnShutdown))
@@ -252,6 +251,9 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 	}
 	
 	protected void reload(ActivityContext newContext) {
+		if(contextRefreshTimer != null)
+			contextRefreshTimer.cancel();
+		
 		shutdownScheduler();
 		destroyContext();
 		
@@ -263,6 +265,8 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 			logger.error("Scheduler failed to initialize: " + e.toString(), e);
 		}
 		
+		if(contextRefreshTimer != null)
+			contextRefreshTimer.start();
 	}
 	
 }

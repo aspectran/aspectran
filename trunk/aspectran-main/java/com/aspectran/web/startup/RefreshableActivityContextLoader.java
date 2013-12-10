@@ -6,11 +6,11 @@ import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.refresh.ActivityContextRefreshHandler;
 import com.aspectran.core.context.refresh.ActivityContextRefreshTimer;
 import com.aspectran.core.context.refresh.ActivityContextRefreshable;
-import com.aspectran.core.context.refresh.RefreshableClassLoader;
 
 public class RefreshableActivityContextLoader extends ActivityContextLoader implements ActivityContextRefreshable {
 
-	private static final ClassLoader classLoader = new RefreshableClassLoader();
+	//private static final ClassLoader classLoader = new RefreshableClassLoader();
+	private static final ClassLoader classLoader = com.aspectran.core.util.ClassUtils.getDefaultClassLoader();
 	
 	private ActivityContextRefreshHandler contextRefreshHandler;
 	
