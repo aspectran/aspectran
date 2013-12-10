@@ -10,11 +10,24 @@ public class ActivityContextRefreshTimer {
 	
 	private Timer timer;
 	
+	private int refreshTime = 5;
+	
 	public ActivityContextRefreshTimer(ActivityContextRefreshable contextRefreshable) {
 		this.contextRefreshable = contextRefreshable;
 	}
 	
+	public ActivityContextRefreshTimer(ActivityContextRefreshable contextRefreshable, int refreshTime) {
+		this.contextRefreshable = contextRefreshable;
+		this.refreshTime = refreshTime;
+	}
+	
 	public void start(int refreshTime) {
+		this.refreshTime = refreshTime;
+		
+		start();
+	}
+	
+	public void start() {
 		TimerTask timerTask = new ActivityContextRefreshTimerTask(contextRefreshable);
 		
 		timer = new Timer();
