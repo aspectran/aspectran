@@ -15,7 +15,7 @@
 			contextConfigLocation: classpath:aspectran/example-aspectran.xml
 			startDelaySeconds: 5
 			waitOnShutdown: true
-			startup: true
+			startup: false
 		</param-value>
 	</context-param>
 	<listener>
