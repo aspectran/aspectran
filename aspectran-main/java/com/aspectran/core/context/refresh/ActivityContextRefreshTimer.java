@@ -1,6 +1,5 @@
 package com.aspectran.core.context.refresh;
 
-import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -10,15 +9,26 @@ public class ActivityContextRefreshTimer {
 	
 	private Timer timer;
 	
+	private TimerTask timerTask;
+	
 	private int refreshTime = 5;
 	
 	public ActivityContextRefreshTimer(ActivityContextRefreshable contextRefreshable) {
 		this.contextRefreshable = contextRefreshable;
+		
+		init();
 	}
 	
 	public ActivityContextRefreshTimer(ActivityContextRefreshable contextRefreshable, int refreshTime) {
 		this.contextRefreshable = contextRefreshable;
 		this.refreshTime = refreshTime;
+		
+		init();
+	}
+	
+	private void init() {
+		timerTask = new ActivityContextRefreshTimerTask(contextRefreshable);
+		timer = new Timer();
 	}
 	
 	public void start(int refreshTime) {
@@ -28,10 +38,7 @@ public class ActivityContextRefreshTimer {
 	}
 	
 	public void start() {
-		TimerTask timerTask = new ActivityContextRefreshTimerTask(contextRefreshable);
-		
-		timer = new Timer();
-		timer.schedule(timerTask, new Date(), refreshTime);
+		timer.schedule(timerTask, 0, refreshTime * 1000L);
 	}
 	
 	public void cancel() {

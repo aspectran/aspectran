@@ -89,6 +89,11 @@ public class AspectranSchedulerListener implements ServletContextListener {
 			if(startup)
 				return;
 			
+			if(startDelaySeconds == -1) {
+				logger.info("Scheduler option 'startDelaySeconds is' not specified, defaulting to 5 seconds.");
+				startDelaySeconds = 5;
+			}
+			
 			if(refreshTime == 0) {
 				ActivityContextLoader aspectranContextLoader = new ActivityContextLoader(servletContext, contextConfigLocation);
 				activityContext = aspectranContextLoader.load();
@@ -101,7 +106,7 @@ public class AspectranSchedulerListener implements ServletContextListener {
 				
 				RefreshableActivityContextLoader loader = new RefreshableActivityContextLoader(servletContext, contextConfigLocation);
 				activityContext = loader.load();
-				contextRefreshTimer = loader.startTimer(contextRefreshHandler, refreshTime);
+				contextRefreshTimer = loader.startTimer(contextRefreshHandler, 5);
 			}
 			
 			initScheduler();
@@ -116,11 +121,6 @@ public class AspectranSchedulerListener implements ServletContextListener {
 		
 		if(waitOnShutdown)
 			aspectranScheduler.setWaitOnShutdown(true);
-		
-		if(startDelaySeconds == -1) {
-			logger.info("Scheduler option 'startDelaySeconds is' not specified, defaulting to 5 seconds.");
-			startDelaySeconds = 5;
-		}
 		
 		aspectranScheduler.startup(startDelaySeconds);
 	}
