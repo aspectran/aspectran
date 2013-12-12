@@ -86,7 +86,7 @@ public class AspectranSchedulerListener implements ServletContextListener {
 					refreshTime = 5; //default refresh time
 			}
 			
-			if(startup)
+			if(!startup)
 				return;
 			
 			if(startDelaySeconds == -1) {
@@ -186,6 +186,7 @@ public class AspectranSchedulerListener implements ServletContextListener {
 	}
 	
 	protected void reload(ActivityContext newContext) {
+		logger.error("timer cancel");
 		if(contextRefreshTimer != null)
 			contextRefreshTimer.cancel();
 		
@@ -200,6 +201,7 @@ public class AspectranSchedulerListener implements ServletContextListener {
 			logger.error("Scheduler failed to initialize: " + e.toString(), e);
 		}
 		
+		logger.error("timer start");
 		if(contextRefreshTimer != null)
 			contextRefreshTimer.start();
 	}
