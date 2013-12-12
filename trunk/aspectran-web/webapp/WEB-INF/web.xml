@@ -13,8 +13,9 @@
 		<param-name>aspectran:scheduler</param-name>
 		<param-value>
 			contextConfigLocation: classpath:aspectran/example-aspectran.xml
-			startDelaySeconds: 5000
+			startDelaySeconds: 5
 			waitOnShutdown: true
+			autoReload: 5
 			startup: false
 		</param-value>
 	</context-param>
@@ -31,7 +32,7 @@
 		<init-param>
 			<param-name>scheduler</param-name>
 			<param-value>
-				startDelaySeconds: 5000
+				startDelaySeconds: 5
 				waitOnShutdown: true
 				startup: false
 			</param-value>
