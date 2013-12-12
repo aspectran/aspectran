@@ -9,12 +9,18 @@ public class ActivityContextRefreshTimerTask extends TimerTask {
 
 	private ActivityContextRefreshable contextRefreshable;
 	
+	private boolean modified = false;
+	
 	public ActivityContextRefreshTimerTask(ActivityContextRefreshable contextRefreshable) {
 		this.contextRefreshable = contextRefreshable;
 	}
 	
 	public void run() {
-		ActivityContext newContext = contextRefreshable.refresh();
+		if(modified) {
+			ActivityContext newContext = contextRefreshable.refresh();
+		}
+		
+		modified = true;
 	}
 
 }

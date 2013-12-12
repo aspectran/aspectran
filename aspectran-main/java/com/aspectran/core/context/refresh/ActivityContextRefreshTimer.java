@@ -3,7 +3,12 @@ package com.aspectran.core.context.refresh;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class ActivityContextRefreshTimer {
+	
+	private final Logger logger = LoggerFactory.getLogger(ActivityContextRefreshTimer.class);
 
 	private ActivityContextRefreshable contextRefreshable;
 	
@@ -27,8 +32,7 @@ public class ActivityContextRefreshTimer {
 	}
 	
 	private void init() {
-		timerTask = new ActivityContextRefreshTimerTask(contextRefreshable);
-		timer = new Timer();
+		logger.debug("ActivityContextRefreshTimer is initialized successfully.");
 	}
 	
 	public void start(int refreshTime) {
@@ -38,12 +42,27 @@ public class ActivityContextRefreshTimer {
 	}
 	
 	public void start() {
+		stop();
+		
+		logger.debug("starting ActivityContextRefreshTimer...");
+		
+		timerTask = new ActivityContextRefreshTimerTask(contextRefreshable);
+		timer = new Timer();
 		timer.schedule(timerTask, 0, refreshTime * 1000L);
 	}
 	
 	public void cancel() {
+		stop();
+	}
+	
+	protected void stop() {
 		if(timer != null) {
+			logger.debug("stopping ActivityContextRefreshTimer...");
+			
 			timer.cancel();
+			timer = null;
+			timerTask.cancel();
+			timerTask = null;
 		}
 	}
 
