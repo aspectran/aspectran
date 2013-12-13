@@ -186,7 +186,6 @@ public class AspectranSchedulerListener implements ServletContextListener {
 	}
 	
 	protected void reload(ActivityContext newContext) {
-		logger.error("timer cancel");
 		if(contextRefreshTimer != null)
 			contextRefreshTimer.cancel();
 		
