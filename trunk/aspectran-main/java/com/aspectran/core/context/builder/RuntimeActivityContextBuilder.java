@@ -33,7 +33,7 @@ public class RuntimeActivityContextBuilder extends AbstractActivityContextBuilde
 
 	public ActivityContext build() throws ActivityContextBuilderException {
 		try {
-			return makeActivityContext(this);
+			return makeActivityContext();
 		} catch(Exception e) {
 			throw new ActivityContextBuilderException("ActivityContext build failed: " + e.toString(), e);
 		}

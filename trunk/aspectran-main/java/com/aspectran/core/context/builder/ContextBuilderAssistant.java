@@ -51,7 +51,7 @@ public class ContextBuilderAssistant {
 	
 	private Map<DefaultSettingType, String> settings = new HashMap<DefaultSettingType, String>();
 	
-	private DefaultSettings inheritableDefaultSettings = new DefaultSettings();
+	private DefaultSettings defaultSettings = new DefaultSettings();
 
 	private BeanReferenceInspector beanReferenceInspector = new BeanReferenceInspector();
 	
@@ -136,7 +136,7 @@ public class ContextBuilderAssistant {
 
 	public void setSettings(Map<DefaultSettingType, String> settings) {
 		this.settings = settings;
-		applyInheritedSettings();
+		applySettings();
 	}
 
 	public void putSetting(DefaultSettingType settingType, String value) {
@@ -177,8 +177,8 @@ public class ContextBuilderAssistant {
 		this.namespace = namespace;
 	}
 	
-	public void applyInheritedSettings() {
-		inheritableDefaultSettings.set(getSettings());
+	public void applySettings() {
+		defaultSettings.set(getSettings());
 	}
 	
 	/**
@@ -191,19 +191,19 @@ public class ContextBuilderAssistant {
 		if(transletName != null && transletName.length() > 0 && transletName.charAt(0) == AspectranConstant.TRANSLET_NAME_SEPARATOR)
 			return transletName;
 		
-		if(inheritableDefaultSettings.getTransletNamePatternPrefix() == null && 
-				inheritableDefaultSettings.getTransletNamePatternSuffix() == null)
+		if(defaultSettings.getTransletNamePatternPrefix() == null && 
+				defaultSettings.getTransletNamePatternSuffix() == null)
 			return transletName;
 		
 		StringBuilder sb = new StringBuilder();
 		
-		if(inheritableDefaultSettings.getTransletNamePatternPrefix() != null)
-			sb.append(inheritableDefaultSettings.getTransletNamePatternPrefix());
+		if(defaultSettings.getTransletNamePatternPrefix() != null)
+			sb.append(defaultSettings.getTransletNamePatternPrefix());
 		
 		sb.append(transletName);
 		
-		if(inheritableDefaultSettings.getTransletNamePatternSuffix() != null)
-			sb.append(inheritableDefaultSettings.getTransletNamePatternSuffix());
+		if(defaultSettings.getTransletNamePatternSuffix() != null)
+			sb.append(defaultSettings.getTransletNamePatternSuffix());
 		
 		return sb.toString();
 	}
@@ -221,24 +221,24 @@ public class ContextBuilderAssistant {
 		
 		StringBuilder sb = new StringBuilder();
 		
-		if(inheritableDefaultSettings.getTransletNamePatternPrefix() != null)
-			sb.append(inheritableDefaultSettings.getTransletNamePatternPrefix());
+		if(defaultSettings.getTransletNamePatternPrefix() != null)
+			sb.append(defaultSettings.getTransletNamePatternPrefix());
 		
-		if(inheritableDefaultSettings.isUseNamespaces() && namespace != null) {
+		if(defaultSettings.isUseNamespaces() && namespace != null) {
 			sb.append(namespace);
 			sb.append(AspectranConstant.TRANSLET_NAME_SEPARATOR);
 		}
 		
 		sb.append(transletName);
 		
-		if(inheritableDefaultSettings.getTransletNamePatternSuffix() != null)
-			sb.append(inheritableDefaultSettings.getTransletNamePatternSuffix());
+		if(defaultSettings.getTransletNamePatternSuffix() != null)
+			sb.append(defaultSettings.getTransletNamePatternSuffix());
 		
 		return sb.toString();
 	}
 	
 	public String applyNamespaceForBean(String beanId) {
-		if(!inheritableDefaultSettings.isUseNamespaces() || namespace == null)
+		if(!defaultSettings.isUseNamespaces() || namespace == null)
 			return beanId;
 		
 		StringBuilder sb = new StringBuilder();
@@ -269,7 +269,7 @@ public class ContextBuilderAssistant {
 	 * @return true, if is allow null content id
 	 */
 	public boolean isNullableContentId() {
-		return inheritableDefaultSettings.isNullableContentId();
+		return defaultSettings.isNullableContentId();
 	}
 
 	/**
@@ -278,7 +278,7 @@ public class ContextBuilderAssistant {
 	 * @return true, if is allow null action id
 	 */
 	public boolean isNullableActionId() {
-		return inheritableDefaultSettings.isNullableActionId();
+		return defaultSettings.isNullableActionId();
 	}
 
 	public String getApplicationBasePath() {
@@ -286,11 +286,11 @@ public class ContextBuilderAssistant {
 	}
 	
 	public DefaultSettings getInheritableDefaultSettings() {
-		return inheritableDefaultSettings;
+		return defaultSettings;
 	}
 
 	public void setInheritableDefaultSettings(DefaultSettings defaultSettings) {
-		this.inheritableDefaultSettings = defaultSettings;
+		this.defaultSettings = defaultSettings;
 	}
 
 	/**

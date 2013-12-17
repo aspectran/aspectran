@@ -36,18 +36,19 @@ public abstract class AbstractActivityContextBuilder extends ContextBuilderAssis
 		super(applicationBasePath);
 	}
 	
-	protected ActivityContext makeActivityContext(ContextBuilderAssistant assistant) {
-		BeanRegistry beanRegistry = makeBeanRegistry(assistant.getBeanRuleMap());
-		TransletRuleRegistry transletRuleRegistry = makeTransletRegistry(assistant.getAspectRuleMap(), assistant.getTransletRuleMap());
+	protected ActivityContext makeActivityContext() {
+		BeanRegistry beanRegistry = makeBeanRegistry(getBeanRuleMap());
+		TransletRuleRegistry transletRuleRegistry = makeTransletRegistry(getAspectRuleMap(), getTransletRuleMap());
 		
-		BeanReferenceInspector beanReferenceInspector = assistant.getBeanReferenceInspector();
-		beanReferenceInspector.inpect(assistant.getBeanRuleMap());
+		BeanReferenceInspector beanReferenceInspector = getBeanReferenceInspector();
+		beanReferenceInspector.inpect(getBeanRuleMap());
 		
 		ActivityContext context = new ActivityContext();
-		context.setAspectRuleMap(assistant.getAspectRuleMap());
+		context.setAspectRuleMap(getAspectRuleMap());
 		context.setBeanRegistry(beanRegistry);
 		context.setTransletRuleRegistry(transletRuleRegistry);
-		context.setActivityDefaultHandler((String)assistant.getSetting(DefaultSettingType.ACTIVITY_DEFAULT_HANDLER));
+		context.setActivityDefaultHandler((String)getSetting(DefaultSettingType.ACTIVITY_DEFAULT_HANDLER));
+		context.setApplicationBasePath(getApplicationBasePath());
 		
 		return context;
 	}
