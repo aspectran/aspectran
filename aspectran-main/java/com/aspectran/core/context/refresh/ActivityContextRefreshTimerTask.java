@@ -9,6 +9,8 @@ public class ActivityContextRefreshTimerTask extends TimerTask {
 
 	private ActivityContextRefreshable contextRefreshable;
 	
+	private String applicationBasePath;
+	
 	private boolean modified = false;
 	
 	public ActivityContextRefreshTimerTask(ActivityContextRefreshable contextRefreshable) {
@@ -18,6 +20,7 @@ public class ActivityContextRefreshTimerTask extends TimerTask {
 	public void run() {
 		if(modified) {
 			ActivityContext newContext = contextRefreshable.refresh();
+			applicationBasePath = newContext.getApplicationBasePath();
 		}
 		
 		modified = true;

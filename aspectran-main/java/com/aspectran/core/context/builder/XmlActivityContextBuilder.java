@@ -90,7 +90,7 @@ public class XmlActivityContextBuilder extends AbstractActivityContextBuilder im
 		AspectranNodeParser parser = new AspectranNodeParser(this);
 		parser.parse(inputStream);
 		
-		ActivityContext aspectranContext = makeActivityContext(this);
+		ActivityContext aspectranContext = makeActivityContext();
 		
 		return aspectranContext;
 	}
