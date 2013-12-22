@@ -15,12 +15,6 @@
  */
 package com.aspectran.core.context.builder;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,42 +47,28 @@ public class XmlActivityContextBuilder extends AbstractActivityContextBuilder im
 	}
 
 	public ActivityContext build() throws ActivityContextBuilderException {
-		InputStream inputStream = null;
-
 		try {
+			ImportResource importResource = new ImportResource(getClassLoader());
+
 			if(contextConfigLocation.startsWith(ResourceUtils.CLASSPATH_URL_PREFIX)) {
 				String resource = contextConfigLocation.substring(ResourceUtils.CLASSPATH_URL_PREFIX.length());
 				
-				inputStream = getClassLoader().getResourceAsStream(resource);
-				
-				if(inputStream == null)
-					throw new IOException("Cannot find ActivityContext configuration resource on classpath: " + resource);
+				importResource.setResource(resource);
 			} else {
-				File file = new File(getApplicationBasePath(), contextConfigLocation);
-				
-				if(!file.isFile()) {
-					throw new FileNotFoundException("ActivityContext configuration file is not found: " + file.getAbsolutePath());
-				}
-				
-				inputStream = new FileInputStream(file);
+				importResource.setFile(getApplicationBasePath(), contextConfigLocation);
 			}
 			
-			return build(inputStream);
+			return build(importResource);
 			
 		} catch(Exception e) {
 			logger.error("ActivityContext build failed", e);
 			throw new ActivityContextBuilderException("ActivityContext build failed: " + e.toString(), e);
-		} finally {
-			try {
-				inputStream.close();
-			} catch(IOException e) {
-			}
 		}
 	}
 	
-	private ActivityContext build(InputStream inputStream) throws Exception {
+	private ActivityContext build(ImportResource importResource) throws Exception {
 		AspectranNodeParser parser = new AspectranNodeParser(this);
-		parser.parse(inputStream);
+		parser.parse(importResource);
 		
 		ActivityContext aspectranContext = makeActivityContext();
 		

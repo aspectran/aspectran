@@ -48,7 +48,6 @@ public abstract class AbstractActivityContextBuilder extends ContextBuilderAssis
 		context.setBeanRegistry(beanRegistry);
 		context.setTransletRuleRegistry(transletRuleRegistry);
 		context.setActivityDefaultHandler((String)getSetting(DefaultSettingType.ACTIVITY_DEFAULT_HANDLER));
-		context.setApplicationBasePath(getApplicationBasePath());
 		
 		return context;
 	}

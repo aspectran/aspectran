@@ -81,4 +81,8 @@ public class ActivityContextLoader {
 		return activityContext;
 	}
 
+	public String getApplicationBasePath() {
+		return applicationBasePath;
+	}
+	
 }

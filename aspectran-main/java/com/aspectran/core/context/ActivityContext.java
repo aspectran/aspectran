@@ -35,8 +35,6 @@ public class ActivityContext {
 	
 	private String activityDefaultHandler;
 	
-	private String applicationBasePath;
-	
 	public ActivityContext() {
 	}
 	
@@ -98,14 +96,6 @@ public class ActivityContext {
 
 	public void setActivityDefaultHandler(String activityDefaultHandler) {
 		this.activityDefaultHandler = activityDefaultHandler;
-	}
-
-	public String getApplicationBasePath() {
-		return applicationBasePath;
-	}
-
-	public void setApplicationBasePath(String applicationBasePath) {
-		this.applicationBasePath = applicationBasePath;
 	}
 
 	/**

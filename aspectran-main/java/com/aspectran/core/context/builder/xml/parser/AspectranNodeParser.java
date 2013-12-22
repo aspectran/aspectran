@@ -99,7 +99,26 @@ public class AspectranNodeParser {
 	 * @param inputStream the input stream
 	 * @throws Exception the exception
 	 */
-	public void parse(InputStream inputStream) throws Exception {
+	public void parse(ImportResource importResource) throws Exception {
+		InputStream inputStream = importResource.getInputStream();
+		
+		try {
+			parse(inputStream);
+		} finally {
+			if(inputStream != null)
+				inputStream.close();
+		}
+		
+		assistant.addImportResource(importResource);
+	}
+	
+	/**
+	 * Parses the aspectran configuration.
+	 *
+	 * @param inputStream the input stream
+	 * @throws Exception the exception
+	 */
+	private void parse(InputStream inputStream) throws Exception {
 		try {
 			parser.parse(inputStream);
 		} catch(Exception e) {
@@ -801,25 +820,18 @@ public class AspectranNodeParser {
 				if(StringUtils.hasText(resource))
 					ir.setResource(resource);
 				else if(StringUtils.hasText(file))
-					ir.setFile(file);
+					ir.setFile(assistant.getApplicationBasePath(), file);
 				else if(StringUtils.hasText(url))
 					ir.setUrl(url);
 				else
 					throw new IllegalArgumentException("The <import> element requires either a resource or a file or a url attribute.");
 				
-				InputStream inputStream = ir.getInputStream();
+				DefaultSettings defaultSettings = (DefaultSettings)assistant.getDefaultSettings().clone();
 				
-				try {
-					DefaultSettings defaultSettings = (DefaultSettings)assistant.getInheritableDefaultSettings().clone();
-					
-					AspectranNodeParser aspectranNodeParser = new AspectranNodeParser(assistant);
-					aspectranNodeParser.parse(ir.getInputStream());
-					
-					assistant.setInheritableDefaultSettings(defaultSettings);
-				} finally {
-					if(inputStream != null)
-						inputStream.close();
-				}
+				AspectranNodeParser aspectranNodeParser = new AspectranNodeParser(assistant);
+				aspectranNodeParser.parse(ir);
+				
+				assistant.setDefaultSettings(defaultSettings);
 			}
 		});
 	}
