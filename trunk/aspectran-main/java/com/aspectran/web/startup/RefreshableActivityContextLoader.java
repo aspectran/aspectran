@@ -34,7 +34,7 @@ public class RefreshableActivityContextLoader extends ActivityContextLoader impl
 		return newContext;
 	}
 	
-	public String[] getMonitoringClassFiles() {
+	public String[] getRefreshableFiles() {
 		String[] files = new String[0];
 		
 		return files;

@@ -20,8 +20,8 @@ public class ActivityContextRefreshTimerTask extends TimerTask {
 	public void run() {
 		if(modified) {
 			ActivityContext newContext = contextRefreshable.refresh();
-			contextRefreshable.getMonitoringClassFiles();
-			applicationBasePath = newContext.getApplicationBasePath();
+			String[] files = contextRefreshable.getRefreshableFiles();
+			applicationBasePath = contextRefreshable.getApplicationBasePath();
 		}
 		
 		modified = true;

@@ -9,6 +9,8 @@ public interface ActivityContextRefreshable {
 
 	public ActivityContext getActivityContext();
 	
-	public String[] getMonitoringClassFiles();
+	public String[] getRefreshableFiles();
+	
+	public String getApplicationBasePath();
 	
 }
