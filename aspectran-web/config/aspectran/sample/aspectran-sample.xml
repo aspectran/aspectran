@@ -269,7 +269,7 @@
 		</joinpoint>
 		<advice bean="com.aspectran.support.orm.ibatis.SqlMapClientTransactionAdvice">
 			<trigger>
-				<action method="trigger"/>
+				<action method="createTransaction"/>
 			</trigger>
 			<before>
 				<action method="startTransaction"/>
