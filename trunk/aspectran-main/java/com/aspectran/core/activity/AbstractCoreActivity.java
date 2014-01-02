@@ -697,29 +697,35 @@ public abstract class AbstractCoreActivity implements CoreActivity {
 	
 	private void execute(List<AspectAdviceRule> aspectAdviceRuleList) throws ActionExecutionException {
 		for(AspectAdviceRule aspectAdviceRule : aspectAdviceRuleList) {
-			Executable action = aspectAdviceRule.getExecutableAction();
+			execute(aspectAdviceRule);
+		}
+	}
+	
+	private Object execute(AspectAdviceRule aspectAdviceRule) throws ActionExecutionException {
+		Executable action = aspectAdviceRule.getExecutableAction();
+		
+		if(action.getActionType() == ActionType.BEAN && aspectAdviceRule.getAdviceBeanId() != null) {
+			Object adviceBean = translet.getAspectAdviceBean(aspectAdviceRule.getAspectId());
 			
-			if(action.getActionType() == ActionType.BEAN && aspectAdviceRule.getAdviceBeanId() != null) {
-				Object adviceBean = translet.getAspectAdviceBean(aspectAdviceRule.getAspectId());
-				
-				if(adviceBean == null)
-					adviceBean = getBean(aspectAdviceRule.getAdviceBeanId());
-				
-				logger.debug("adviceBean [" + adviceBean + "] aspectAdviceRule " + aspectAdviceRule);
-				translet.putAspectAdviceBean(aspectAdviceRule.getAspectId(), adviceBean);
+			if(adviceBean == null)
+				adviceBean = getBean(aspectAdviceRule.getAdviceBeanId());
+			
+			logger.debug("adviceBean [" + adviceBean + "] aspectAdviceRule " + aspectAdviceRule);
+			translet.putAspectAdviceBean(aspectAdviceRule.getAspectId(), adviceBean);
+		}
+		
+		try {
+			Object adviceActionResult = action.execute(this);
+			
+			if(adviceActionResult != null && adviceActionResult != ActionResult.NO_RESULT) {
+				logger.debug("adviceActionResult [" + adviceActionResult + "] aspectAdviceRule " + aspectAdviceRule);
+				translet.putAdviceResult(aspectAdviceRule, adviceActionResult);
 			}
-
-			try {
-				Object adviceActionResult = action.execute(this);
-				
-				if(adviceActionResult != null && adviceActionResult != ActionResult.NO_RESULT) {
-					logger.debug("adviceActionResult [" + adviceActionResult + "] aspectAdviceRule " + aspectAdviceRule);
-					translet.putAdviceResult(aspectAdviceRule, adviceActionResult);
-				}
-			} catch(Exception e) {
-				setRaisedException(e);
-				throw new ActionExecutionException("action execution error", e);
-			}
+			
+			return adviceActionResult;
+		} catch(Exception e) {
+			setRaisedException(e);
+			throw new ActionExecutionException("action execution error", e);
 		}
 	}
 	
