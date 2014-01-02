@@ -23,6 +23,8 @@ public final class AspectAdviceType extends Type {
 
 	public static final AspectAdviceType SETTINGS;
 
+	public static final AspectAdviceType TRIGGER;
+	
 	public static final AspectAdviceType BEFORE;
 	
 	public static final AspectAdviceType AFTER;
@@ -39,6 +41,7 @@ public final class AspectAdviceType extends Type {
 	
 	static {
 		SETTINGS = new AspectAdviceType("settings");
+		TRIGGER = new AspectAdviceType("trigger");
 		BEFORE = new AspectAdviceType("before");
 		AFTER = new AspectAdviceType("after");
 		AROUND = new AspectAdviceType("around");
@@ -48,6 +51,7 @@ public final class AspectAdviceType extends Type {
 
 		types = new HashMap<String, AspectAdviceType>();
 		types.put(SETTINGS.toString(), SETTINGS);
+		types.put(TRIGGER.toString(), TRIGGER);
 		types.put(BEFORE.toString(), BEFORE);
 		types.put(AFTER.toString(), AFTER);
 		types.put(AROUND.toString(), AROUND);
