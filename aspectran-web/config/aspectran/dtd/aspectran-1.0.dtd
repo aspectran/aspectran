@@ -76,11 +76,12 @@ scope (translet | request | content | action-content | bean-content | response |
 type (wildcard | regexpt | simpleTrigger | cronTrigger) #IMPLIED
 >
 
-<!ELEMENT advice ((before?, after?, around?, finally?, exceptionRaized?) | job*)>
+<!ELEMENT advice ((trigger?, before?, after?, around?, finally?, exceptionRaized?) | job*)>
 <!ATTLIST advice
 bean CDATA #IMPLIED
 >
 
+<!ELEMENT trigger (action)>
 <!ELEMENT before (echo | action)>
 <!ELEMENT after (echo | action)>
 <!ELEMENT around (echo | action)>
