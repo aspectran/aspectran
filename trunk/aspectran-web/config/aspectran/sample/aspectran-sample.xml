@@ -269,18 +269,26 @@
 		</joinpoint>
 		<advice bean="com.aspectran.support.orm.ibatis.SqlMapClientTransactionAdvice">
 			<trigger>
-				<action method="createTransaction"/>
+				<action method="create"/>
 			</trigger>
 			<before>
-				<action method="startTransaction"/>
+				<action method="begin"/>
 			</before>
-			<after>
-				<action method="commitTransaction"/>
-			</after>
 			<finally>
-				<action method="endTransaction"/>
+				<action method="commit"/>
 			</finally>
 		</advice>
+	</aspect>
+
+	<aspect id="sqlMapClientSetting">
+		<joinpoint target="bean">
+			<pointcut>
+				com.**.*Dao
+			</pointcut>
+		</joinpoint>
+		<settings>
+			<setting name="setSqlMapClient" aspect="sqlmap"/>
+		</settings>
 	</aspect>
 	
 	<bean id="a.*" class="com.**.*Aspectran*" scope="singleton"/>
