@@ -2,6 +2,7 @@ package com.aspectran.support.orm.ibatis;
 
 import java.sql.SQLException;
 
+import com.aspectran.core.activity.CoreTranslet;
 import com.ibatis.sqlmap.client.SqlMapClient;
 
 /**
@@ -20,18 +21,21 @@ public class SqlMapClientTransactionAdvice {
 		return sqlMapClient;
 	}
 
-	public SqlMapClient startTransaction() throws SQLException {
+	public void setSqlMapClient(SqlMapClient sqlMapClient) {
+		this.sqlMapClient = sqlMapClient;
+	}
+
+	public SqlMapClient begin(CoreTranslet translet) throws SQLException {
 		sqlMapClient.startTransaction();
 		
 		return sqlMapClient;
 	}
 	
-	public void commitTransaction() throws SQLException {
-		sqlMapClient.commitTransaction();
-	}
-	
-	public void endTransaction() throws SQLException {
+	public void commit(CoreTranslet translet) throws SQLException {
+		if(!translet.isExceptionRaised())
+			sqlMapClient.commitTransaction();
+		
 		sqlMapClient.endTransaction();
 	}
-
+	
 }

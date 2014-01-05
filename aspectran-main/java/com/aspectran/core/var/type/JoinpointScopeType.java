@@ -24,28 +24,38 @@ public final class JoinpointScopeType extends Type {
 	public static final JoinpointScopeType TRANSLET;
 	
 	public static final JoinpointScopeType REQUEST;
+	
+	public static final JoinpointScopeType RESPONSE;
 
 	public static final JoinpointScopeType CONTENT;
 	
+	/** Action이 있는 Content */
 	public static final JoinpointScopeType ACTION_CONTENT;
 	
+	/** Bean이 있는 Content */
 	public static final JoinpointScopeType BEAN_CONTENT;
-	
-	public static final JoinpointScopeType RESPONSE;
 	
 	public static final JoinpointScopeType ACTION;
 	
 	public static final JoinpointScopeType BEAN;
+	
+	///** Method가 있는 Content */
+	//public static final JoinpointScopeType METHOD_CONTENT;
+	
+	///** Method가 있는 Bean */
+	//public static final JoinpointScopeType METHOD_BEAN;
+
+	//public static final JoinpointScopeType METHOD;
 	
 	private static final Map<String, JoinpointScopeType> types;
 	
 	static {
 		TRANSLET = new JoinpointScopeType("translet");
 		REQUEST = new JoinpointScopeType("request");
+		RESPONSE = new JoinpointScopeType("response");
 		CONTENT = new JoinpointScopeType("content");
 		ACTION_CONTENT = new JoinpointScopeType("action-content");
 		BEAN_CONTENT = new JoinpointScopeType("bean-content");
-		RESPONSE = new JoinpointScopeType("response");
 		ACTION = new JoinpointScopeType("action");
 		BEAN = new JoinpointScopeType("bean");
 
