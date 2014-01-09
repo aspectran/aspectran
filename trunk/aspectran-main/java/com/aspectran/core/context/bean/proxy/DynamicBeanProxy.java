@@ -13,26 +13,25 @@ import java.lang.reflect.Method;
  */
 public class DynamicBeanProxy implements InvocationHandler {
 
-	public Object invoke(Object proxy, Method m, Object[] args)
-			throws Throwable {
-		Object result;
+	public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
 		try {
-			System.out.print("begin method " + m.getName() + "(");
-			for (int i = 0; i < args.length; i++) {
-				if (i > 0)
+			System.out.print("begin method " + method.getName() + "(");
+
+			for(int i = 0; i < args.length; i++) {
+				if(i > 0)
 					System.out.print(",");
 				System.out.print(" " + args[i].toString());
 			}
+			
 			System.out.println(" )");
-			result = m.invoke(proxy, args);
-		} catch (InvocationTargetException e) {
+			
+			return method.invoke(proxy, args);
+		} catch(InvocationTargetException e) {
 			throw e.getTargetException();
-		} catch (Exception e) {
-			throw new RuntimeException("unexpected invocation exception: "
-					+ e.getMessage());
+		} catch(Exception e) {
+			throw new RuntimeException("unexpected invocation exception: " + e.getMessage());
 		} finally {
-			System.out.println("end method " + m.getName());
+			System.out.println("end method " + method.getName());
 		}
-		return result;
 	}
 }

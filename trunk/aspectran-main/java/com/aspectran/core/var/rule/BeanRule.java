@@ -15,8 +15,6 @@
  */
 package com.aspectran.core.var.rule;
 
-import java.lang.reflect.Constructor;
-
 import com.aspectran.core.var.type.ScopeType;
 
 /**
@@ -50,12 +48,12 @@ public class BeanRule {
 	
 	private boolean registered;
 	
-	private Constructor<?> constructor;
-	
 	private boolean override;
 
 	private boolean overrided;
 	
+	private boolean proxyMode;
+
 	/**
 	 * Gets the id.
 	 *
@@ -272,14 +270,6 @@ public class BeanRule {
 		this.registered = registered;
 	}
 
-	public Constructor<?> getConstructor() {
-		return constructor;
-	}
-
-	public void setConstructor(Constructor<?> constructor) {
-		this.constructor = constructor;
-	}
-	
 	public boolean isOverride() {
 		return override;
 	}
@@ -296,6 +286,14 @@ public class BeanRule {
 		this.overrided = overrided;
 	}
 
+	public boolean isProxyMode() {
+		return proxyMode;
+	}
+
+	public void setProxyMode(boolean proxyMode) {
+		this.proxyMode = proxyMode;
+	}
+	
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
@@ -310,6 +308,7 @@ public class BeanRule {
 		sb.append(", initMethod=").append(initMethodName);
 		sb.append(", destroyMethod=").append(destroyMethodName);
 		sb.append(", lazyInit=").append(lazyInit);
+		sb.append(", override=").append(override);
 
 		if(constructorArgumentItemRuleMap != null) {
 			sb.append(", constructorArguments=[");
