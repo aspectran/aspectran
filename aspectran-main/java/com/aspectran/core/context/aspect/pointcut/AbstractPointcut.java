@@ -21,7 +21,7 @@ public abstract class AbstractPointcut {
 		this.includePatternList = includePatternList;
 		
 		for(PointcutPattern pointcutPattern : includePatternList) {
-			if(pointcutPattern.getActionNamePattern() != null) {
+			if(pointcutPattern.getBeanOrActionIdPattern() != null) {
 				actionInfluenced = true;
 				break;
 			}
@@ -36,8 +36,14 @@ public abstract class AbstractPointcut {
 		this.excludePatternList = excludePatternList;
 	}
 	
+	public void addPointcutPattern(List<PointcutPattern> pointcutPatternList) {
+		for(PointcutPattern pointcutPattern : pointcutPatternList) {
+			addPointcutPattern(pointcutPattern);
+		};
+	}
+	
 	public void addPointcutPattern(PointcutPattern pointcutPattern) {
-		if(pointcutPattern.getPointcutPatternOperationType() == PointcutPatternOperationType.EXCLUDE) {
+		if(pointcutPattern.getPointcutPatternOperationType() == PointcutPatternOperationType.WITHOUT) {
 			if(excludePatternList == null)
 				excludePatternList = new ArrayList<PointcutPattern>();
 			
@@ -48,7 +54,7 @@ public abstract class AbstractPointcut {
 			
 			includePatternList.add(pointcutPattern);
 			
-			if(pointcutPattern.getActionNamePattern() != null)
+			if(pointcutPattern.getBeanOrActionIdPattern() != null)
 				actionInfluenced = true;
 		}
 	}

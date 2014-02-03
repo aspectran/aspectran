@@ -30,7 +30,7 @@ public class ScopedBeanRegistry extends AbstractBeanRegistry implements BeanRegi
 	private final Object sessionScopeLock = new Object();
 	
 	private final Object applicationScopeLock = new Object();
-
+	
 	public ScopedBeanRegistry(BeanRuleMap beanRuleMap) {
 		super(beanRuleMap);
 	}
@@ -62,6 +62,10 @@ public class ScopedBeanRegistry extends AbstractBeanRegistry implements BeanRegi
 	
 	private Object getSingletonScopeBean(BeanRule beanRule, CoreActivity activity) {
 		synchronized(singletonScopeLock) {
+			if(beanRule.isProxyMode() && activity != null) {
+				beanRule.setLocalActivity(activity);
+			}
+			
 			if(beanRule.isRegistered())
 				return beanRule.getBean();
 
@@ -126,6 +130,10 @@ public class ScopedBeanRegistry extends AbstractBeanRegistry implements BeanRegi
 	}
 	
 	private Object getScopedBean(Scope scope, BeanRule beanRule, CoreActivity activity) {
+		if(beanRule.isProxyMode()) {
+			beanRule.setLocalActivity(activity);
+		}
+
 		ScopedBeanMap scopedBeanMap = scope.getScopedBeanMap();
 		ScopedBean scopeBean = scopedBeanMap.get(beanRule.getId());
 			
@@ -154,7 +162,7 @@ public class ScopedBeanRegistry extends AbstractBeanRegistry implements BeanRegi
 	
 	protected Object createBean(BeanRule beanRule, CoreActivity activity) {
 		ItemTokenExpressor expressor = new ItemTokenExpression(activity);
-		return super.createBean(beanRule, expressor);
+		return createBean(beanRule, expressor);
 	}
 	
 }

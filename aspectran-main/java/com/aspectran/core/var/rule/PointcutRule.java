@@ -15,12 +15,17 @@
  */
 package com.aspectran.core.var.rule;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.aspectran.core.var.option.Options;
 import com.aspectran.core.var.type.PointcutType;
 
 public class PointcutRule {
 	
 	private PointcutType pointcutType;
+	
+	private List<PointcutPatternRule> pointcutPatternRuleList;
 	
 	private String patternString;
 	
@@ -34,6 +39,22 @@ public class PointcutRule {
 		this.pointcutType = pointcutType;
 	}
 
+	public List<PointcutPatternRule> getPointcutPatternRuleList() {
+		return pointcutPatternRuleList;
+	}
+
+	public void setPointcutPatternRuleList(List<PointcutPatternRule> pointcutPatternRuleList) {
+		this.pointcutPatternRuleList = pointcutPatternRuleList;
+	}
+	
+	public void addPointcutPatternRule(PointcutPatternRule pointcutPatternRule) {
+		if(pointcutPatternRuleList == null) {
+			pointcutPatternRuleList = new ArrayList<PointcutPatternRule>();
+			pointcutPatternRuleList.add(pointcutPatternRule);
+		} else
+			pointcutPatternRuleList.add(pointcutPatternRule);
+	}
+	
 	public String getPatternString() {
 		return patternString;
 	}

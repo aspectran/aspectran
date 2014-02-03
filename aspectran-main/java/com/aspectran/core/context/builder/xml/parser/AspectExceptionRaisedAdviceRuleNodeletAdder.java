@@ -59,7 +59,7 @@ public class AspectExceptionRaisedAdviceRuleNodeletAdder implements NodeletAdder
 				AspectRule ar = (AspectRule)assistant.peekObject();
 				
 				AspectAdviceRule aar = new AspectAdviceRule();
-				aar.setAspectId(ar.getId());
+				aar.setAspectRule(ar);
 				aar.setAdviceBeanId(ar.getAdviceBeanId());
 				aar.setAspectAdviceType(AspectAdviceType.EXCPETION_RAIZED);
 				

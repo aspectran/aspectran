@@ -15,6 +15,9 @@
  */
 package com.aspectran.core.var.rule;
 
+import com.aspectran.core.activity.CoreActivity;
+import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
+import com.aspectran.core.context.aspect.DynamicAspectAdviceRuleRegistry;
 import com.aspectran.core.var.type.ScopeType;
 
 /**
@@ -23,6 +26,8 @@ import com.aspectran.core.var.type.ScopeType;
  * </p>
  */
 public class BeanRule {
+
+	private static ThreadLocal<CoreActivity> localActivity = new ThreadLocal<CoreActivity>();
 
 	protected String id;
 
@@ -53,6 +58,8 @@ public class BeanRule {
 	private boolean overrided;
 	
 	private boolean proxyMode;
+	
+	private DynamicAspectAdviceRuleRegistry dynamicAspectAdviceRuleRegistry;
 
 	/**
 	 * Gets the id.
@@ -294,6 +301,23 @@ public class BeanRule {
 		this.proxyMode = proxyMode;
 	}
 	
+	public CoreActivity getLocalActivity() {
+		return localActivity.get();
+	}
+	
+	public void setLocalActivity(CoreActivity activity) {
+		if(localActivity.get() != null)
+			localActivity.set(activity);
+	}
+	
+	public DynamicAspectAdviceRuleRegistry getDynamicAspectAdviceRuleRegistry() {
+		return dynamicAspectAdviceRuleRegistry;
+	}
+
+	public void setDynamicAspectAdviceRuleRegistry(DynamicAspectAdviceRuleRegistry dynamicAspectAdviceRuleRegistry) {
+		this.dynamicAspectAdviceRuleRegistry = dynamicAspectAdviceRuleRegistry;
+	}
+
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
@@ -309,6 +333,7 @@ public class BeanRule {
 		sb.append(", destroyMethod=").append(destroyMethodName);
 		sb.append(", lazyInit=").append(lazyInit);
 		sb.append(", override=").append(override);
+		sb.append(", proxyMode=").append(proxyMode);
 
 		if(constructorArgumentItemRuleMap != null) {
 			sb.append(", constructorArguments=[");

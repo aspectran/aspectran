@@ -247,7 +247,7 @@ public class ContextBuilderAssistant {
 		
 		StringBuilder sb = new StringBuilder();
 		sb.append(namespace);
-		sb.append(AspectranConstant.BEAN_ID_SEPARATOR);
+		sb.append(AspectranConstant.ID_SEPARATOR);
 		sb.append(beanId);
 		
 		return sb.toString();

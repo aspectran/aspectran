@@ -92,7 +92,13 @@ public abstract class AbstractBeanRegistry {
 			throw new BeanInstantiationException(beanRule.getBeanClass(), "No default constructor found.", e);
 		}
 		
-		return newInstance(constructorToUse, args);
+		Object obj = newInstance(constructorToUse, args);
+		
+		if(beanRule.isProxyMode()) {
+			//TODO
+		}
+		
+		return obj;
 	}
 	
 	private Object newInstance(Constructor<?> ctor, Object[] args) throws BeanInstantiationException {

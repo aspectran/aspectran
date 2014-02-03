@@ -27,7 +27,7 @@ import com.aspectran.core.var.rule.AspectJobAdviceRule;
 import com.aspectran.core.var.rule.AspectRule;
 import com.aspectran.core.var.rule.AspectRuleMap;
 import com.aspectran.core.var.rule.PointcutRule;
-import com.aspectran.core.var.type.JoinpointTargetType;
+import com.aspectran.core.var.type.AspectTargetType;
 import com.aspectran.core.var.type.PointcutType;
 import com.aspectran.scheduler.AspectranScheduler;
 
@@ -88,9 +88,9 @@ public class QuartzAspectranScheduler implements AspectranScheduler {
 			}
 			
 			for(AspectRule aspectRule : aspectRuleMap) {
-				JoinpointTargetType joinpointTarget = aspectRule.getJoinpointTarget();
+				AspectTargetType aspectTargetType = aspectRule.getAspectTargetType();
 				
-				if(joinpointTarget == JoinpointTargetType.SCHEDULER) {
+				if(aspectTargetType == AspectTargetType.SCHEDULER) {
 					String schedulerFactoryBeanId = aspectRule.getAdviceBeanId();
 					PointcutRule pointcutRule = aspectRule.getPointcutRule();
 					

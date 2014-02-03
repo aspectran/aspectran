@@ -19,35 +19,35 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-public final class JoinpointTargetType extends Type {
+public final class AspectTargetType extends Type {
 
-	public static final JoinpointTargetType TRANSLET;
+	public static final AspectTargetType TRANSLET;
 	
-	public static final JoinpointTargetType SCHEDULER;
+	public static final AspectTargetType SCHEDULER;
 	
-	private static final Map<String, JoinpointTargetType> types;
+	private static final Map<String, AspectTargetType> types;
 	
 	static {
-		TRANSLET = new JoinpointTargetType("translet");
-		SCHEDULER = new JoinpointTargetType("scheduler");
+		TRANSLET = new AspectTargetType("translet");
+		SCHEDULER = new AspectTargetType("scheduler");
 
-		types = new HashMap<String, JoinpointTargetType>();
+		types = new HashMap<String, AspectTargetType>();
 		types.put(TRANSLET.toString(), TRANSLET);
 		types.put(SCHEDULER.toString(), SCHEDULER);
 	}
 
-	private JoinpointTargetType(String type) {
+	private AspectTargetType(String type) {
 		super(type);
 	}
 
 	/**
-	 * Returns a <code>JoinpointTargetType</code> with a value represented by the specified String.
+	 * Returns a <code>AspectTargetType</code> with a value represented by the specified String.
 	 * 
 	 * @param type the type
 	 * 
 	 * @return the content type
 	 */
-	public static JoinpointTargetType valueOf(String type) {
+	public static AspectTargetType valueOf(String type) {
 		if(type == null)
 			return null;
 		
