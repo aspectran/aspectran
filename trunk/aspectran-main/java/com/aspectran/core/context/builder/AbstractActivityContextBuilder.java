@@ -37,34 +37,41 @@ public abstract class AbstractActivityContextBuilder extends ContextBuilderAssis
 	}
 	
 	protected ActivityContext makeActivityContext() {
-		BeanRegistry beanRegistry = makeBeanRegistry(getBeanRuleMap());
-		TransletRuleRegistry transletRuleRegistry = makeTransletRegistry(getAspectRuleMap(), getTransletRuleMap());
+		AspectRuleMap aspectRuleMap = getAspectRuleMap();
+		BeanRuleMap beanRuleMap = getBeanRuleMap();
+		TransletRuleMap transletRuleMap = getTransletRuleMap();
+		
+		registerAspectAdviceRule(aspectRuleMap, beanRuleMap, transletRuleMap);
+		BeanRegistry beanRegistry = makeBeanRegistry(beanRuleMap);
+		TransletRuleRegistry transletRuleRegistry = makeTransletRegistry(transletRuleMap);
 		
 		BeanReferenceInspector beanReferenceInspector = getBeanReferenceInspector();
-		beanReferenceInspector.inpect(getBeanRuleMap());
+		beanReferenceInspector.inpect(beanRuleMap);
 		
 		ActivityContext context = new ActivityContext();
-		context.setAspectRuleMap(getAspectRuleMap());
+		context.setAspectRuleMap(aspectRuleMap);
 		context.setBeanRegistry(beanRegistry);
 		context.setTransletRuleRegistry(transletRuleRegistry);
 		context.setActivityDefaultHandler((String)getSetting(DefaultSettingType.ACTIVITY_DEFAULT_HANDLER));
 		
 		return context;
 	}
-
-	protected TransletRuleRegistry makeTransletRegistry(AspectRuleMap aspectRuleMap, TransletRuleMap transletRuleMap) {
-		transletRuleMap.freeze();
-		
+	
+	protected void registerAspectAdviceRule(AspectRuleMap aspectRuleMap, BeanRuleMap beanRuleMap, TransletRuleMap transletRuleMap) {
 		AspectAdviceRuleRegister aspectAdviceRuleRegister = new AspectAdviceRuleRegister(aspectRuleMap);
-		aspectAdviceRuleRegister.register(transletRuleMap);
-		
-		return new TransletRuleRegistry(transletRuleMap);
+		aspectAdviceRuleRegister.register(beanRuleMap, transletRuleMap);
 	}
-
+	
 	protected BeanRegistry makeBeanRegistry(BeanRuleMap beanRuleMap) {
 		beanRuleMap.freeze();
 		
 		return new ScopedBeanRegistry(beanRuleMap);
+	}
+
+	protected TransletRuleRegistry makeTransletRegistry(TransletRuleMap transletRuleMap) {
+		transletRuleMap.freeze();
+		
+		return new TransletRuleRegistry(transletRuleMap);
 	}
 	
 }

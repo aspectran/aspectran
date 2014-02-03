@@ -30,14 +30,11 @@ public interface AspectranConstant {
 
 	public static final char TRANSLET_NAME_EXTENSION_DELIMITER = '.';
 
-	/** The Constant BEAN_ID_SEPARATOR. */
-	public static final char BEAN_ID_SEPARATOR = '.';
+	/** The Constant ID_SEPARATOR. */
+	public static final char ID_SEPARATOR = '.';
 
-	/** The Constant CONTENT_ID_SEPARATOR. */
-	public static final char ACTION_ID_SEPARATOR = '.';
+	public static final char POINTCUT_BEAN_DELIMITER = '@';
 	
-	public static final char POINTCUT_ACTION_DELIMITER = '@';
-	
-	public static final char POINTCUT_ACTION_BEAN_METHOD_DELIMITER = '^';
+	public static final char POINTCUT_METHOD_DELIMITER = '^';
 
 }

@@ -44,6 +44,7 @@ import com.aspectran.core.var.rule.AspectRule;
 import com.aspectran.core.var.rule.BeanRule;
 import com.aspectran.core.var.rule.FileItemRule;
 import com.aspectran.core.var.rule.ItemRuleMap;
+import com.aspectran.core.var.rule.PointcutPatternRule;
 import com.aspectran.core.var.rule.PointcutRule;
 import com.aspectran.core.var.rule.RequestRule;
 import com.aspectran.core.var.rule.ResponseByContentTypeRule;
@@ -53,7 +54,8 @@ import com.aspectran.core.var.rule.TransletRule;
 import com.aspectran.core.var.type.AspectAdviceType;
 import com.aspectran.core.var.type.DefaultSettingType;
 import com.aspectran.core.var.type.JoinpointScopeType;
-import com.aspectran.core.var.type.JoinpointTargetType;
+import com.aspectran.core.var.type.AspectTargetType;
+import com.aspectran.core.var.type.PointcutPatternOperationType;
 import com.aspectran.core.var.type.PointcutType;
 import com.aspectran.core.var.type.RequestMethodType;
 import com.aspectran.core.var.type.ScopeType;
@@ -208,9 +210,22 @@ public class AspectranNodeParser {
 		parser.addNodelet("/aspectran/aspect", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
 				String id = attributes.getProperty("id");
+				String target = attributes.getProperty("for");
+				
+				AspectTargetType aspectTargetType = null;
+				
+				if(target != null) {
+					aspectTargetType = AspectTargetType.valueOf(target);
+					
+					if(aspectTargetType == null)
+						throw new IllegalArgumentException("Unknown aspect target '" + target + "'");
+				} else {
+					aspectTargetType = AspectTargetType.TRANSLET;
+				}
 				
 				AspectRule aspectRule = new AspectRule();
 				aspectRule.setId(id);
+				aspectRule.setAspectTargetType(aspectTargetType);
 				
 				assistant.pushObject(aspectRule);
 			}
@@ -246,21 +261,10 @@ public class AspectranNodeParser {
 		});	
 		parser.addNodelet("/aspectran/aspect/joinpoint", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
-				String target = attributes.getProperty("target");
 				String scope = attributes.getProperty("scope");
 
-				JoinpointTargetType joinpointTarget = null;
 				JoinpointScopeType joinpointScope = null;
 				
-				if(target != null) {
-					joinpointTarget = JoinpointTargetType.valueOf(target);
-					
-					if(joinpointTarget == null)
-						throw new IllegalArgumentException("Unknown joinpoint target '" + target + "'");
-				} else {
-					joinpointTarget = JoinpointTargetType.TRANSLET;
-				}
-
 				if(scope != null) {
 					joinpointScope = JoinpointScopeType.valueOf(scope);
 					
@@ -271,31 +275,30 @@ public class AspectranNodeParser {
 				}
 				
 				AspectRule aspectRule = (AspectRule)assistant.peekObject();
-				aspectRule.setJoinpointTarget(joinpointTarget);
 				aspectRule.setJoinpointScope(joinpointScope);
 			}
 		});
 		parser.addNodelet("/aspectran/aspect/joinpoint/pointcut", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
-				if(text == null)
-					throw new IllegalArgumentException("Pointcut pattern can not be null");
-
 				String type = attributes.getProperty("type");
 				
 				AspectRule aspectRule = (AspectRule)assistant.peekObject();
 				PointcutType pointcutType = null;
 				
-				if(aspectRule.getJoinpointTarget() == JoinpointTargetType.SCHEDULER) {
+				if(aspectRule.getAspectTargetType() == AspectTargetType.SCHEDULER) {
 					pointcutType = PointcutType.valueOf(type);
 					
 					if(pointcutType != PointcutType.SIMPLE_TRIGGER && pointcutType != PointcutType.CRON_TRIGGER)
-						throw new IllegalArgumentException("scheduler-joinpoint must be 'simpleTrigger' or 'cronTrigger'.");
+						throw new IllegalArgumentException("scheduler's pointcut-type must be 'simpleTrigger' or 'cronTrigger'.");
+					
+					if(!StringUtils.hasText(text))
+						throw new IllegalArgumentException("Pointcut pattern can not be null");
 				} else {
 					if(type != null) {
 						pointcutType = PointcutType.valueOf(type);
-						
-						if(pointcutType == null)
-							throw new IllegalArgumentException("Unknown pointcut type '" + type + "'");
+
+						if(pointcutType != PointcutType.WILDCARD && pointcutType != PointcutType.REGEXP)
+							throw new IllegalArgumentException("translet's pointcut-type must be 'wildcard' or 'regexp'.");
 					} else {
 						pointcutType = PointcutType.WILDCARD;
 					}
@@ -311,6 +314,54 @@ public class AspectranNodeParser {
 				}
 				
 				aspectRule.setPointcutRule(pointcutRule);
+			}
+		});
+		parser.addNodelet("/aspectran/aspect/joinpoint/pointcut/within", new Nodelet() {
+			public void process(Node node, Properties attributes, String text) throws Exception {
+				String translet = attributes.getProperty("translet");
+				String bean = attributes.getProperty("bean");
+				String method = attributes.getProperty("method");
+				
+				AspectRule aspectRule = (AspectRule)assistant.peekObject();
+				
+				if(aspectRule.getAspectTargetType() == AspectTargetType.TRANSLET) {
+					PointcutPatternRule pointcutPatternRule = new PointcutPatternRule();
+					pointcutPatternRule.setPointcutPatternOperationType(PointcutPatternOperationType.WITHIN);
+				
+					if(StringUtils.hasLength(translet) || StringUtils.hasLength(bean) || StringUtils.hasLength(method)) {
+						pointcutPatternRule.setTransletNamePattern(translet);
+						pointcutPatternRule.setBeanOrActionIdPattern(bean);
+						pointcutPatternRule.setBeanMethodNamePattern(method);
+					} else if(StringUtils.hasText(text)) {
+						pointcutPatternRule.setPatternString(text);
+					}
+					
+					aspectRule.getPointcutRule().addPointcutPatternRule(pointcutPatternRule);
+				}
+			}
+		});
+		parser.addNodelet("/aspectran/aspect/joinpoint/pointcut/without", new Nodelet() {
+			public void process(Node node, Properties attributes, String text) throws Exception {
+				String translet = attributes.getProperty("translet");
+				String bean = attributes.getProperty("bean");
+				String method = attributes.getProperty("method");
+				
+				AspectRule aspectRule = (AspectRule)assistant.peekObject();
+				
+				if(aspectRule.getAspectTargetType() == AspectTargetType.TRANSLET) {
+					PointcutPatternRule pointcutPatternRule = new PointcutPatternRule();
+					pointcutPatternRule.setPointcutPatternOperationType(PointcutPatternOperationType.WITHOUT);
+					
+					if(StringUtils.hasLength(translet) || StringUtils.hasLength(bean) || StringUtils.hasLength(method)) {
+						pointcutPatternRule.setTransletNamePattern(translet);
+						pointcutPatternRule.setBeanOrActionIdPattern(bean);
+						pointcutPatternRule.setBeanMethodNamePattern(method);
+					} else if(StringUtils.hasText(text)) {
+						pointcutPatternRule.setPatternString(text);
+					}
+					
+					aspectRule.getPointcutRule().addPointcutPatternRule(pointcutPatternRule);
+				}
 			}
 		});
 		parser.addNodelet("/aspectran/aspect/advice", new Nodelet() {

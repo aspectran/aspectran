@@ -61,38 +61,47 @@ public class AspectAdviceRuleRegistry {
 			settings.putAll(settingsAdviceRule.getSettings());
 		}
 	}
+	
+	public void addBeforeAdviceRule(AspectAdviceRule aspectAdviceRule) {
+		if(beforeAdviceRuleList == null)
+			beforeAdviceRuleList = new ArrayList<AspectAdviceRule>();
 		
+		beforeAdviceRuleList.add(aspectAdviceRule);
+	}
+		
+	public void addAfterAdviceRule(AspectAdviceRule aspectAdviceRule) {
+		if(afterAdviceRuleList == null)
+			afterAdviceRuleList = new ArrayList<AspectAdviceRule>();
+		
+		afterAdviceRuleList.add(0, aspectAdviceRule);
+	}
+	
+	public void addFinallyAdviceRule(AspectAdviceRule aspectAdviceRule) {
+		if(finallyAdviceRuleList == null)
+			finallyAdviceRuleList = new ArrayList<AspectAdviceRule>();
+		
+		finallyAdviceRuleList.add(0, aspectAdviceRule);
+	}
+	
+	public void addExceptionRaizedAdviceRule(AspectAdviceRule aspectAdviceRule) {
+		if(exceptionRaizedAdviceRuleList == null)
+			exceptionRaizedAdviceRuleList = new ArrayList<AspectAdviceRule>();
+		
+		exceptionRaizedAdviceRuleList.add(0, aspectAdviceRule);
+	}
+	
 	public void addAspectAdviceRule(AspectAdviceRule aspectAdviceRule) {
 		if(aspectAdviceRule.getAspectAdviceType() == AspectAdviceType.BEFORE) {
-			if(beforeAdviceRuleList == null)
-				beforeAdviceRuleList = new ArrayList<AspectAdviceRule>();
-			
-			beforeAdviceRuleList.add(aspectAdviceRule);
+			addBeforeAdviceRule(aspectAdviceRule);
 		} else if(aspectAdviceRule.getAspectAdviceType() == AspectAdviceType.AFTER) {
-			if(afterAdviceRuleList == null)
-				afterAdviceRuleList = new ArrayList<AspectAdviceRule>();
-			
-			afterAdviceRuleList.add(0, aspectAdviceRule);
+			addAfterAdviceRule(aspectAdviceRule);
 		} else if(aspectAdviceRule.getAspectAdviceType() == AspectAdviceType.FINALLY) {
-			if(finallyAdviceRuleList == null)
-				finallyAdviceRuleList = new ArrayList<AspectAdviceRule>();
-			
-			finallyAdviceRuleList.add(0, aspectAdviceRule);
+			addFinallyAdviceRule(aspectAdviceRule);
 		} else if(aspectAdviceRule.getAspectAdviceType() == AspectAdviceType.AROUND) {
-			if(beforeAdviceRuleList == null)
-				beforeAdviceRuleList = new ArrayList<AspectAdviceRule>();
-			
-			beforeAdviceRuleList.add(aspectAdviceRule);
-			
-			if(afterAdviceRuleList == null)
-				afterAdviceRuleList = new ArrayList<AspectAdviceRule>();
-			
-			afterAdviceRuleList.add(0, aspectAdviceRule);
+			addBeforeAdviceRule(aspectAdviceRule);
+			addAfterAdviceRule(aspectAdviceRule);
 		} else if(aspectAdviceRule.getAspectAdviceType() == AspectAdviceType.EXCPETION_RAIZED) {
-			if(exceptionRaizedAdviceRuleList == null)
-				exceptionRaizedAdviceRuleList = new ArrayList<AspectAdviceRule>();
-
-			exceptionRaizedAdviceRuleList.add(0, aspectAdviceRule);
+			addExceptionRaizedAdviceRule(aspectAdviceRule);
 		}
 	}
 	

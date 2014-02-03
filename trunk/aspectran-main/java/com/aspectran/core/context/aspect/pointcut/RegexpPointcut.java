@@ -6,11 +6,11 @@ public class RegexpPointcut extends AbstractPointcut implements Pointcut {
 		return false;
 	}
 
-	public boolean matches(String transletName, String actionName) {
+	public boolean matches(String transletName, String beanOrActionId) {
 		return false;
 	}
 
-	public boolean matches(String transletName, String actionName, String beanMethodName) {
+	public boolean matches(String transletName, String beanOrActionId, String beanMethodName) {
 		return false;
 	}
 

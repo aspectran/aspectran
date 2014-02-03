@@ -121,6 +121,8 @@ public abstract class AbstractCoreActivity implements CoreActivity {
 	 */
 	public AbstractCoreActivity(ActivityContext context) {
 		this.context = context;
+		
+		//LocalActivityStack.pushActivity(this);
 	}
 
 	/* (non-Javadoc)
@@ -695,13 +697,13 @@ public abstract class AbstractCoreActivity implements CoreActivity {
 		}
 	}
 	
-	private void execute(List<AspectAdviceRule> aspectAdviceRuleList) throws ActionExecutionException {
+	public void execute(List<AspectAdviceRule> aspectAdviceRuleList) throws ActionExecutionException {
 		for(AspectAdviceRule aspectAdviceRule : aspectAdviceRuleList) {
 			execute(aspectAdviceRule);
 		}
 	}
 	
-	private Object execute(AspectAdviceRule aspectAdviceRule) throws ActionExecutionException {
+	public Object execute(AspectAdviceRule aspectAdviceRule) throws ActionExecutionException {
 		Executable action = aspectAdviceRule.getExecutableAction();
 		
 		if(action.getActionType() == ActionType.BEAN && aspectAdviceRule.getAdviceBeanId() != null) {
@@ -763,7 +765,7 @@ public abstract class AbstractCoreActivity implements CoreActivity {
 		run();
 	}
 	
-	private void responseByContentType(List<AspectAdviceRule> aspectAdviceRuleList) throws CoreActivityException {
+	public void responseByContentType(List<AspectAdviceRule> aspectAdviceRuleList) throws CoreActivityException {
 		for(AspectAdviceRule aspectAdviceRule : aspectAdviceRuleList) {
 			ResponseByContentTypeRuleMap responseByContentTypeRuleMap = aspectAdviceRule.getResponseByContentTypeRuleMap();
 			
@@ -1014,6 +1016,10 @@ public abstract class AbstractCoreActivity implements CoreActivity {
 	
 	public Object getAspectAdviceBean(String aspectId) {
 		return translet.getAspectAdviceBean(aspectId);
+	}
+	
+	public void close() {
+		//LocalActivityStack.popActivity();
 	}
 	
 }

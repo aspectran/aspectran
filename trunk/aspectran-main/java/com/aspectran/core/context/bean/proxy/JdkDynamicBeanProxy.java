@@ -6,12 +6,24 @@ package com.aspectran.core.context.bean.proxy;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+
+import com.aspectran.core.var.rule.BeanRule;
 
 /**
  * @author aspectran
  * 
  */
-public class DynamicBeanProxy implements InvocationHandler {
+public class JdkDynamicBeanProxy implements InvocationHandler {
+	
+	private BeanRule beanRule;
+	
+	private Object obj;
+	
+	protected JdkDynamicBeanProxy(BeanRule beanRule, Object obj) {
+		this.beanRule = beanRule;
+		this.obj = obj;
+	}
 
 	public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
 		try {
@@ -33,5 +45,9 @@ public class DynamicBeanProxy implements InvocationHandler {
 		} finally {
 			System.out.println("end method " + method.getName());
 		}
+	}
+	
+	public static Object newInstance(BeanRule beanRule, Object obj) {
+		return Proxy.newProxyInstance(obj.getClass().getClassLoader(), obj.getClass().getInterfaces(), new JdkDynamicBeanProxy(beanRule, obj));
 	}
 }

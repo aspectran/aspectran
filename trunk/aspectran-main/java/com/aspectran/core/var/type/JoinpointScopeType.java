@@ -18,7 +18,7 @@ package com.aspectran.core.var.type;
 import java.util.HashMap;
 import java.util.Map;
 
-
+          
 public final class JoinpointScopeType extends Type {
 
 	public static final JoinpointScopeType TRANSLET;
@@ -30,12 +30,12 @@ public final class JoinpointScopeType extends Type {
 	public static final JoinpointScopeType CONTENT;
 	
 	/** Action이 있는 Content */
-	public static final JoinpointScopeType ACTION_CONTENT;
+	//public static final JoinpointScopeType ACTION_CONTENT;
 	
 	/** Bean이 있는 Content */
 	public static final JoinpointScopeType BEAN_CONTENT;
 	
-	public static final JoinpointScopeType ACTION;
+	//public static final JoinpointScopeType ACTION;
 	
 	public static final JoinpointScopeType BEAN;
 	
@@ -54,19 +54,19 @@ public final class JoinpointScopeType extends Type {
 		REQUEST = new JoinpointScopeType("request");
 		RESPONSE = new JoinpointScopeType("response");
 		CONTENT = new JoinpointScopeType("content");
-		ACTION_CONTENT = new JoinpointScopeType("action-content");
+		//ACTION_CONTENT = new JoinpointScopeType("action-content");
 		BEAN_CONTENT = new JoinpointScopeType("bean-content");
-		ACTION = new JoinpointScopeType("action");
+		//ACTION = new JoinpointScopeType("action");
 		BEAN = new JoinpointScopeType("bean");
 
 		types = new HashMap<String, JoinpointScopeType>();
 		types.put(TRANSLET.toString(), TRANSLET);
 		types.put(REQUEST.toString(), REQUEST);
 		types.put(CONTENT.toString(), CONTENT);
-		types.put(ACTION_CONTENT.toString(), ACTION_CONTENT);
+		//types.put(ACTION_CONTENT.toString(), ACTION_CONTENT);
 		types.put(BEAN_CONTENT.toString(), BEAN_CONTENT);
 		types.put(RESPONSE.toString(), RESPONSE);
-		types.put(ACTION.toString(), ACTION);
+		//types.put(ACTION.toString(), ACTION);
 		types.put(BEAN.toString(), BEAN);
 	}
 

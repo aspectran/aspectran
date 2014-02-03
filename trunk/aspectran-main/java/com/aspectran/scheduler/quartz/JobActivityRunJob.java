@@ -40,6 +40,7 @@ public class JobActivityRunJob implements Job {
 		JobActivity activity = new JobActivityImpl(context, requestAdapter, responseAdapter);
 		activity.init(transletName);
 		activity.run();
+		activity.close();
 	}
 	
 }

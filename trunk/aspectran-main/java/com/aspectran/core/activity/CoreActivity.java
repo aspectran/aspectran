@@ -15,6 +15,9 @@
  */
 package com.aspectran.core.activity;
 
+import java.util.List;
+
+import com.aspectran.core.activity.process.action.ActionExecutionException;
 import com.aspectran.core.activity.process.result.ProcessResult;
 import com.aspectran.core.activity.request.RequestException;
 import com.aspectran.core.activity.response.ResponseException;
@@ -26,6 +29,7 @@ import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.bean.BeanRegistry;
 import com.aspectran.core.context.bean.scope.Scope;
+import com.aspectran.core.var.rule.AspectAdviceRule;
 
 /**
  * Action Translator.
@@ -34,7 +38,7 @@ import com.aspectran.core.context.bean.scope.Scope;
  * <p>Created: 2008. 03. 22 오후 5:48:09</p>
  */
 public interface CoreActivity {
-
+	
 	public RequestAdapter getRequestAdapter();
 	
 	public ResponseAdapter getResponseAdapter();
@@ -54,6 +58,10 @@ public interface CoreActivity {
 	public void runWithoutResponse() throws CoreActivityException;
 	
 	public void request() throws RequestException;
+
+	public void execute(List<AspectAdviceRule> aspectAdviceRuleList) throws ActionExecutionException;
+	
+	public Object execute(AspectAdviceRule aspectAdviceRule) throws ActionExecutionException;
 	
 	public ProcessResult process() throws CoreActivityException;
 	
@@ -65,7 +73,11 @@ public interface CoreActivity {
 	
 	public void responseEnd();
 	
+	public boolean isResponseEnd();
+	
 	public void response(Responsible res) throws ResponseException;
+	
+	public void responseByContentType(List<AspectAdviceRule> aspectAdviceRuleList) throws CoreActivityException;
 	
 	public ActivityContext getActivityContext();
 	
@@ -98,5 +110,7 @@ public interface CoreActivity {
 	public Object getTransletSetting(String settingName);
 	
 	public Object getAspectAdviceBean(String aspectId);
-	
+
+	public void close();
+
 }

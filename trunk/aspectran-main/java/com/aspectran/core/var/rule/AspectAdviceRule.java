@@ -26,7 +26,7 @@ import com.aspectran.core.var.type.AspectAdviceType;
  */
 public class AspectAdviceRule implements ActionSettable {
 
-	private String aspectId;
+	private AspectRule aspectRule;
 	
 	private AspectAdviceType aspectAdviceType;
 	
@@ -37,11 +37,15 @@ public class AspectAdviceRule implements ActionSettable {
 	private ResponseByContentTypeRuleMap responseByContentTypeRuleMap;
 
 	public String getAspectId() {
-		return aspectId;
+		return aspectRule.getId();
 	}
 
-	public void setAspectId(String aspectId) {
-		this.aspectId = aspectId;
+	public AspectRule getAspectRule() {
+		return aspectRule;
+	}
+
+	public void setAspectRule(AspectRule aspectRule) {
+		this.aspectRule = aspectRule;
 	}
 
 	public AspectAdviceType getAspectAdviceType() {
@@ -95,7 +99,7 @@ public class AspectAdviceRule implements ActionSettable {
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 
-		sb.append("{aspectId=").append(aspectId);
+		sb.append("{aspectId=").append(aspectRule != null ? aspectRule.getId() : null);
 		sb.append(", aspectAdviceType=").append(aspectAdviceType);
 		sb.append(", action=").append(action);
 		sb.append(", responseByContentTypeRuleMap=").append(responseByContentTypeRuleMap);

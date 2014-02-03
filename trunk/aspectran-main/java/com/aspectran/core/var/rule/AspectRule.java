@@ -18,18 +18,24 @@ package com.aspectran.core.var.rule;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.aspectran.core.context.aspect.pointcut.Pointcut;
 import com.aspectran.core.var.type.JoinpointScopeType;
-import com.aspectran.core.var.type.JoinpointTargetType;
+import com.aspectran.core.var.type.AspectTargetType;
+import com.aspectran.core.var.type.PointcutType;
 
 public class AspectRule {
 
 	private String id;
 
-	private JoinpointTargetType joinpointTarget;
+	private AspectTargetType aspectTargetType;
 	
 	private JoinpointScopeType joinpointScope;
 	
+	private PointcutType pointcutType;
+	
 	private PointcutRule pointcutRule;
+	
+	private Pointcut pointcut;
 	
 	private String adviceBeanId;
 	
@@ -47,12 +53,12 @@ public class AspectRule {
 		this.id = id;
 	}
 
-	public JoinpointTargetType getJoinpointTarget() {
-		return joinpointTarget;
+	public AspectTargetType getAspectTargetType() {
+		return aspectTargetType;
 	}
 
-	public void setJoinpointTarget(JoinpointTargetType joinpointTarget) {
-		this.joinpointTarget = joinpointTarget;
+	public void setAspectTargetType(AspectTargetType aspectTargetType) {
+		this.aspectTargetType = aspectTargetType;
 	}
 
 	public JoinpointScopeType getJoinpointScope() {
@@ -63,12 +69,28 @@ public class AspectRule {
 		this.joinpointScope = joinpointScope;
 	}
 
+	public PointcutType getPointcutType() {
+		return pointcutType;
+	}
+
+	public void setPointcutType(PointcutType pointcutType) {
+		this.pointcutType = pointcutType;
+	}
+	
 	public PointcutRule getPointcutRule() {
 		return pointcutRule;
 	}
 
 	public void setPointcutRule(PointcutRule pointcutRule) {
 		this.pointcutRule = pointcutRule;
+	}
+
+	public Pointcut getPointcut() {
+		return pointcut;
+	}
+
+	public void setPointcut(Pointcut pointcut) {
+		this.pointcut = pointcut;
 	}
 
 	public String getAdviceBeanId() {
@@ -125,13 +147,13 @@ public class AspectRule {
 		StringBuilder sb = new StringBuilder();
 		
 		sb.append("{id=").append(id);
-		sb.append(", joinpointTarget=").append(joinpointTarget);
+		sb.append(", for=").append(aspectTargetType);
 		sb.append(", joinpointScope=").append(joinpointScope);
 		sb.append(", pointcutRule=").append(pointcutRule);
-		if(joinpointTarget == JoinpointTargetType.TRANSLET) {
+		if(aspectTargetType == AspectTargetType.TRANSLET) {
 			sb.append(", settingsAdviceRule=").append(settingsAdviceRule);
 			sb.append(", aspectAdviceRuleList=").append(aspectAdviceRuleList);
-		} else if(joinpointTarget == JoinpointTargetType.SCHEDULER) {
+		} else if(aspectTargetType == AspectTargetType.SCHEDULER) {
 			sb.append(", aspectTriggerAdviceRuleList=").append(aspectJobAdviceRuleList);
 		}
 		sb.append("}");

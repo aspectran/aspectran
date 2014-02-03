@@ -15,7 +15,7 @@ import com.aspectran.core.util.wildcard.WildcardPattern;
  */
 public class WildcardPointcut extends AbstractPointcut implements Pointcut {
 
-	private Map<String, WildcardPattern> reusableWildcardPatternMap = new HashMap<String, WildcardPattern>();
+	private Map<String, WildcardPattern> wildcardPatternCache = new HashMap<String, WildcardPattern>();
 	
 	public boolean matches(String transletName) {
 		if(getExcludePatternList() != null) {
@@ -35,17 +35,17 @@ public class WildcardPointcut extends AbstractPointcut implements Pointcut {
 		return false;
 	}
 
-	public boolean matches(String transletName, String actionName) {
+	public boolean matches(String transletName, String beanOrActionId) {
 		if(getExcludePatternList() != null) {
 			for(PointcutPattern pointcutPattern : getExcludePatternList()) {
-				if(matches(pointcutPattern, transletName, actionName))
+				if(matches(pointcutPattern, transletName, beanOrActionId))
 					return false;
 			}
 		}
 		
 		if(getIncludePatternList() != null) {
 			for(PointcutPattern pointcutPattern : getIncludePatternList()) {
-				if(matches(pointcutPattern, transletName, actionName))
+				if(matches(pointcutPattern, transletName, beanOrActionId))
 					return true;
 			}
 		}
@@ -53,17 +53,17 @@ public class WildcardPointcut extends AbstractPointcut implements Pointcut {
 		return false;
 	}
 	
-	public boolean matches(String transletName, String actionName, String beanMethodName) {
+	public boolean matches(String transletName, String beanOrActionId, String beanMethodName) {
 		if(getExcludePatternList() != null) {
 			for(PointcutPattern pointcutPattern : getExcludePatternList()) {
-				if(matches(pointcutPattern, transletName, actionName, beanMethodName))
+				if(matches(pointcutPattern, transletName, beanOrActionId, beanMethodName))
 					return false;
 			}
 		}
 		
 		if(getIncludePatternList() != null) {
 			for(PointcutPattern pointcutPattern : getIncludePatternList()) {
-				if(matches(pointcutPattern, transletName, actionName, beanMethodName))
+				if(matches(pointcutPattern, transletName, beanOrActionId, beanMethodName))
 					return true;
 			}
 		}
@@ -75,37 +75,38 @@ public class WildcardPointcut extends AbstractPointcut implements Pointcut {
 		return patternMatches(pointcutPattern.getTransletNamePattern(), transletName, AspectranConstant.TRANSLET_NAME_SEPARATOR);
 	}	
 
-	protected boolean matches(PointcutPattern pointcutPattern, String transletName, String actionName) {
+	protected boolean matches(PointcutPattern pointcutPattern, String transletName, String beanOrActionId) {
 		return patternMatches(pointcutPattern.getTransletNamePattern(), transletName, AspectranConstant.TRANSLET_NAME_SEPARATOR)
-				&& patternMatches(pointcutPattern.getActionNamePattern(), actionName, AspectranConstant.ACTION_ID_SEPARATOR);
+				&& patternMatches(pointcutPattern.getBeanOrActionIdPattern(), beanOrActionId, AspectranConstant.ID_SEPARATOR);
 	}	
 	
-	protected boolean matches(PointcutPattern pointcutPattern, String transletName, String actionName, String beanMethodName) {
+	protected boolean matches(PointcutPattern pointcutPattern, String transletName, String beanOrActionId, String beanMethodName) {
 		return patternMatches(pointcutPattern.getTransletNamePattern(), transletName, AspectranConstant.TRANSLET_NAME_SEPARATOR)
-				&& patternMatches(pointcutPattern.getActionNamePattern(), actionName, AspectranConstant.BEAN_ID_SEPARATOR)
+				&& patternMatches(pointcutPattern.getBeanOrActionIdPattern(), beanOrActionId, AspectranConstant.ID_SEPARATOR)
 				&& patternMatches(pointcutPattern.getBeanMethodNamePattern(), beanMethodName);
 	}	
 	
 	protected boolean patternMatches(String pattern, String str) {
-		WildcardPattern wildcardPattern = reusableWildcardPatternMap.get(pattern);
+		WildcardPattern wildcardPattern = wildcardPatternCache.get(pattern);
 		
 		if(wildcardPattern == null) {
 			wildcardPattern = new WildcardPattern(pattern);
-			reusableWildcardPatternMap.put(pattern, wildcardPattern);
+			wildcardPatternCache.put(pattern, wildcardPattern);
 		}
 
 		//System.out.println("pattern:" + pattern + " str:" + str + " result:" + wildcardPattern.matches(str));
 
-		return wildcardPattern.matches(str);	}
+		return wildcardPattern.matches(str);
+	}
 	
 	protected boolean patternMatches(String pattern, String str, String separator) {
 		String patternId = pattern + separator;
 		
-		WildcardPattern wildcardPattern = reusableWildcardPatternMap.get(patternId);
+		WildcardPattern wildcardPattern = wildcardPatternCache.get(patternId);
 		
 		if(wildcardPattern == null) {
 			wildcardPattern = new WildcardPattern(pattern, separator);
-			reusableWildcardPatternMap.put(patternId, wildcardPattern);
+			wildcardPatternCache.put(patternId, wildcardPattern);
 		}
 
 		//System.out.println("pattern:" + pattern + " str:" + str + " result:" + wildcardPattern.matches(str));
@@ -116,11 +117,11 @@ public class WildcardPointcut extends AbstractPointcut implements Pointcut {
 	protected boolean patternMatches(String pattern, String str, char separator) {
 		String patternId = pattern + separator;
 		
-		WildcardPattern wildcardPattern = reusableWildcardPatternMap.get(patternId);
+		WildcardPattern wildcardPattern = wildcardPatternCache.get(patternId);
 		
 		if(wildcardPattern == null) {
 			wildcardPattern = new WildcardPattern(pattern, separator);
-			reusableWildcardPatternMap.put(patternId, wildcardPattern);
+			wildcardPatternCache.put(patternId, wildcardPattern);
 		}
 
 		//System.out.println("pattern:" + pattern + " str:" + str + " result:" + wildcardPattern.matches(str));

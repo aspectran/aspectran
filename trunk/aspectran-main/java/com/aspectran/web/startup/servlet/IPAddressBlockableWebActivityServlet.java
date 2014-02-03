@@ -106,6 +106,7 @@ public class IPAddressBlockableWebActivityServlet extends WebActivityServlet imp
 			activity = new WebActivityImpl(activityContext, req, res);
 			activity.init(requestUri);
 			activity.run();
+			activity.close();
 			
 		} catch(TransletNotFoundException e) {
 			if(activity != null) {
