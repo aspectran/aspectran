@@ -63,17 +63,31 @@ property CDATA #IMPLIED
 <!ELEMENT aspect (joinpoint?, settings?, advice?)>
 <!ATTLIST aspect
 id ID #IMPLIED
+for (translet | scheduler) #IMPLIED
 >
 
 <!ELEMENT joinpoint (pointcut*)>
 <!ATTLIST joinpoint
-target (translet | scheduler) #IMPLIED
 scope (translet | request | content | action-content | bean-content | response | action | bean) #IMPLIED
 >
 
-<!ELEMENT pointcut (#PCDATA)>
+<!ELEMENT pointcut (#PCDATA | within | without)*>
 <!ATTLIST pointcut
-type (wildcard | regexpt | simpleTrigger | cronTrigger) #IMPLIED
+type (wildcard | regexp | simpleTrigger | cronTrigger) #IMPLIED
+>
+
+<!ELEMENT within (#PCDATA)>
+<!ATTLIST within
+translet CDATA #IMPLIED
+bean CDATA #IMPLIED
+method CDATA #IMPLIED
+>
+
+<!ELEMENT without (#PCDATA)>
+<!ATTLIST without
+translet CDATA #IMPLIED
+bean CDATA #IMPLIED
+method CDATA #IMPLIED
 >
 
 <!ELEMENT advice ((before?, after?, around?, finally?, exceptionRaized?) | job*)>

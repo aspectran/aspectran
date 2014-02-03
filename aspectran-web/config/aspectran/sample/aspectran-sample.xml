@@ -16,7 +16,7 @@
 	</settings>
 	
 	<aspect id="defaultRequestRule">
-		<joinpoint target="translet" scope="request"/>
+		<joinpoint scope="request"/>
 		<settings>
 			<setting name="characterEncoding" value="utf-8"/>
 			<setting name="multipart.maxRequestSize" value="10M"/>
@@ -45,7 +45,7 @@
 	</aspect>
 	
 	<aspect id="frontRequestRule">
-		<joinpoint target="translet" scope="request">
+		<joinpoint scope="request">
 			<pointcut>/front/*</pointcut>
 		</joinpoint>
 		<advice>
@@ -71,7 +71,7 @@
 	<bean id="jspViewDispatcher" class="com.aspectran.web.view.JspViewDispatcher" scope="singleton"/>
 
 	<aspect id="defaultResponseRule">
-		<joinpoint target="translet" scope="response"/>
+		<joinpoint scope="response"/>
 		<settings>
 			<setting name="characterEncoding" value="utf-8"/>
 			<setting name="defaultContentType" value="text/html"/>
@@ -80,7 +80,7 @@
 	</aspect>
 
 	<aspect id="error">
-		<joinpoint target="translet"/>
+		<joinpoint/>
 		<advice>
 			<exceptionRaized>
 				<action id="xml" bean="common.action.a1" method="testXmlAction" hidden="true">
@@ -165,7 +165,7 @@
 		after: error logging 
 	-->
 	<aspect id="logging">
-		<joinpoint target="translet">
+		<joinpoint>
 			<pointcut>@front.action1</pointcut>
 		</joinpoint>
 		<advice>
@@ -227,8 +227,8 @@
 		</constructor>
 	</bean>
 	
-	<aspect id="scheduler1">
-		<joinpoint target="scheduler">
+	<aspect id="scheduler1" for="scheduler">
+		<joinpoint>
 			<pointcut type="simpleTrigger">
 				startDelay: 500
 				repleatInterval: 3000
@@ -240,8 +240,8 @@
 			<job translet="/scheduler1/test2.job"/>
 		</advice>
 	</aspect>
-	<aspect id="scheduler2">
-		<joinpoint target="scheduler">
+	<aspect id="scheduler2" for="scheduler">
+		<joinpoint>
 			<pointcut type="cronTrigger">* * 10 0</pointcut>
 		</joinpoint>
 		<advice bean="schedulerFactory1">
@@ -261,10 +261,10 @@
 			a return object of <before> action.
 	-->
 	<aspect id="sqlmap">
-		<joinpoint target="translet" scope="bean-content">
+		<joinpoint scope="bean-content">
 			<pointcut>
-				/front/a/*
-				exclude(/front/a/A*)
+				within(/front/a/*)
+				without(/front/a/A*)
 			</pointcut>
 		</joinpoint>
 		<advice bean="com.aspectran.support.orm.ibatis.SqlMapClientTransactionAdvice">

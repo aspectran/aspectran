@@ -29,8 +29,8 @@
 	
 	<bean id="exampleJobAction" class="com.aspectran.example.scheduler.ExampleJobAction" scope="singleton"/>
 	
-	<aspect id="exception2">
-		<joinpoint target="translet" scope="translet">
+	<aspect id="exception2" for="translet">
+		<joinpoint scope="translet">
 			<pointcut>/scheduler/*</pointcut>
 		</joinpoint>
 		<advice>
@@ -48,10 +48,10 @@
 			</exceptionRaized>
 		</advice>
 	</aspect>
-	
+
 <!-- 	
 	<aspect id="scheduler0">
-		<joinpoint target="scheduler">
+		<joinpoint>
 			<pointcut type="simpleTrigger">
 				startDelay: 500
 				repleatInterval: 3000
@@ -64,8 +64,8 @@
 		</advice>
 	</aspect>
 -->
-	<aspect id="scheduler1">
-		<joinpoint target="scheduler">
+	<aspect id="scheduler1" for="scheduler">
+		<joinpoint>
 			<pointcut type="cronTrigger">0/5 * * * * ?</pointcut>
 		</joinpoint>
 		<advice bean="schedulerFactory">
@@ -75,8 +75,8 @@
 		</advice>
 	</aspect>
 	
-	<aspect id="scheduler2">
-		<joinpoint target="scheduler">
+	<aspect id="scheduler2" for="scheduler">
+		<joinpoint>
 			<pointcut type="cronTrigger">0/5 * * * * ?</pointcut>
 		</joinpoint>
 		<advice bean="schedulerFactory">
