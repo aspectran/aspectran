@@ -23,7 +23,7 @@
 	<bean id="sampleBean" class="com.aspectran.example.bean.SampleBean" scope="singleton"/>
 	
 	<aspect id="defaultRequestRule">
-		<joinpoint target="translet" scope="request"/>
+		<joinpoint scope="request"/>
 		<settings>
 			<setting name="characterEncoding" value="utf-8"/>
 			<setting name="multipart.maxRequestSize" value="10M"/>
@@ -32,7 +32,7 @@
 	</aspect>
 	
 	<aspect id="defaultResponseRule">
-		<joinpoint target="translet" scope="response"/>
+		<joinpoint scope="response"/>
 		<settings>
 			<setting name="characterEncoding" value="utf-8"/>
 			<setting name="defaultContentType" value="text/html"/>
@@ -41,8 +41,10 @@
 	</aspect>
 
 	<aspect id="exception1">
-		<joinpoint target="translet" scope="translet">
-			<pointcut>/example/hello/*</pointcut>
+		<joinpoint scope="translet">
+			<pointcut>
+				<within translet="/example/hello/*"/>
+			</pointcut>
 		</joinpoint>
 		<advice>
 			<exceptionRaized>
@@ -61,8 +63,11 @@
 	</aspect>
 
 	<aspect id="helloAdvice">
-		<joinpoint target="translet" scope="bean-content">
-			<pointcut>/example/hello/*@example.hello.HelloAction^applyTheAdvice</pointcut>
+		<joinpoint scope="bean-content">
+			<pointcut>
+				<within>/example/hello/*@example.hello.HelloAction^applyTheAdvice</within>
+				<within translet="/example/hello/*" bean="example.hello.HelloAction" method="applyTheAdvice"/>
+			</pointcut>
 		</joinpoint>
 		<advice bean="advice.HelloAdvice">
 			<before>
