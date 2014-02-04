@@ -50,6 +50,7 @@ import com.aspectran.core.var.rule.ResponseByContentTypeRuleMap;
 import com.aspectran.core.var.rule.ResponseRule;
 import com.aspectran.core.var.rule.TransletRule;
 import com.aspectran.core.var.type.ActionType;
+import com.aspectran.core.var.type.AspectAdviceType;
 import com.aspectran.core.var.type.ResponseType;
 
 /**
@@ -699,7 +700,12 @@ public abstract class AbstractCoreActivity implements CoreActivity {
 	
 	public void execute(List<AspectAdviceRule> aspectAdviceRuleList) throws ActionExecutionException {
 		for(AspectAdviceRule aspectAdviceRule : aspectAdviceRuleList) {
-			execute(aspectAdviceRule);
+			if(isResponseEnd) {
+				if(aspectAdviceRule.getAspectAdviceType() == AspectAdviceType.FINALLY)
+					execute(aspectAdviceRule);
+			} else {
+				execute(aspectAdviceRule);
+			}
 		}
 	}
 	
