@@ -16,8 +16,7 @@
 package com.aspectran.core.var.rule;
 
 import com.aspectran.core.activity.CoreActivity;
-import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
-import com.aspectran.core.context.aspect.DynamicAspectAdviceRuleRegistry;
+import com.aspectran.core.context.aspect.RelatedAspectAdviceRuleRegistry;
 import com.aspectran.core.var.type.ScopeType;
 
 /**
@@ -59,7 +58,7 @@ public class BeanRule {
 	
 	private boolean proxyMode;
 	
-	private DynamicAspectAdviceRuleRegistry dynamicAspectAdviceRuleRegistry;
+	private RelatedAspectAdviceRuleRegistry relatedAspectAdviceRuleRegistry;
 
 	/**
 	 * Gets the id.
@@ -310,12 +309,12 @@ public class BeanRule {
 			localActivity.set(activity);
 	}
 	
-	public DynamicAspectAdviceRuleRegistry getDynamicAspectAdviceRuleRegistry() {
-		return dynamicAspectAdviceRuleRegistry;
+	public RelatedAspectAdviceRuleRegistry getRelatedAspectAdviceRuleRegistry() {
+		return relatedAspectAdviceRuleRegistry;
 	}
 
-	public void setDynamicAspectAdviceRuleRegistry(DynamicAspectAdviceRuleRegistry dynamicAspectAdviceRuleRegistry) {
-		this.dynamicAspectAdviceRuleRegistry = dynamicAspectAdviceRuleRegistry;
+	public void setRelatedAspectAdviceRuleRegistry(RelatedAspectAdviceRuleRegistry dynamicAspectAdviceRuleRegistry) {
+		this.relatedAspectAdviceRuleRegistry = dynamicAspectAdviceRuleRegistry;
 	}
 
 	/* (non-Javadoc)

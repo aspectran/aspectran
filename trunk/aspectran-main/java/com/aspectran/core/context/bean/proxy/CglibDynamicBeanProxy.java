@@ -12,7 +12,7 @@ import net.sf.cglib.proxy.MethodProxy;
 
 import com.aspectran.core.activity.CoreActivity;
 import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
-import com.aspectran.core.context.aspect.DynamicAspectAdviceRuleRegistry;
+import com.aspectran.core.context.aspect.RelatedAspectAdviceRuleRegistry;
 import com.aspectran.core.var.rule.AspectAdviceRule;
 import com.aspectran.core.var.rule.BeanRule;
 
@@ -42,7 +42,7 @@ public class CglibDynamicBeanProxy implements MethodInterceptor {
 		String beanId = beanRule.getId();
 		String methodName = method.getName();
 		
-		DynamicAspectAdviceRuleRegistry dynamicAspectAdviceRuleRegistry = beanRule.getDynamicAspectAdviceRuleRegistry();
+		RelatedAspectAdviceRuleRegistry dynamicAspectAdviceRuleRegistry = beanRule.getRelatedAspectAdviceRuleRegistry();
 		AspectAdviceRuleRegistry aspectAdviceRuleRegistry = dynamicAspectAdviceRuleRegistry.getMatchAspectAdviceRuleRegistry(transletName, beanId, methodName);
 		
 		try {
