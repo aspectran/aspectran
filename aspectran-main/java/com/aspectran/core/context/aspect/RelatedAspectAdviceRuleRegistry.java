@@ -9,7 +9,7 @@ import com.aspectran.core.var.rule.AspectAdviceRule;
 import com.aspectran.core.var.rule.AspectRule;
 
 
-public class DynamicAspectAdviceRuleRegistry extends AspectAdviceRuleRegistry {
+public class RelatedAspectAdviceRuleRegistry extends AspectAdviceRuleRegistry {
 	
 	private Map<String, AspectAdviceRuleRegistry> aspectAdviceRuleRegistryCache = new HashMap<String, AspectAdviceRuleRegistry>();
 

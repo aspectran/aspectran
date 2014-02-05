@@ -359,11 +359,10 @@ public abstract class AbstractCoreActivity implements CoreActivity {
 	private void run2nd() throws CoreActivityException {
 		//request
 		AspectAdviceRuleRegistry aspectAdviceRuleRegistry = requestRule.getAspectAdviceRuleRegistry();
-		List<AspectAdviceRule> finallyAdviceRuleList = null;
 
 		try {
 			if(aspectAdviceRuleRegistry != null) {
-				finallyAdviceRuleList = aspectAdviceRuleRegistry.getFinallyAdviceRuleList();
+				List<AspectAdviceRule> finallyAdviceRuleList = aspectAdviceRuleRegistry.getFinallyAdviceRuleList();
 	
 				if(finallyAdviceRuleList != null) {
 					try {
@@ -406,7 +405,7 @@ public abstract class AbstractCoreActivity implements CoreActivity {
 				aspectAdviceRuleRegistry = contentList.getAspectAdviceRuleRegistry();
 		
 				if(aspectAdviceRuleRegistry != null) {
-					finallyAdviceRuleList = aspectAdviceRuleRegistry.getFinallyAdviceRuleList();
+					List<AspectAdviceRule> finallyAdviceRuleList = aspectAdviceRuleRegistry.getFinallyAdviceRuleList();
 		
 					if(finallyAdviceRuleList != null) {
 						try {
@@ -460,7 +459,7 @@ public abstract class AbstractCoreActivity implements CoreActivity {
 
 		try {
 			if(aspectAdviceRuleRegistry != null) {
-				finallyAdviceRuleList = aspectAdviceRuleRegistry.getFinallyAdviceRuleList();
+				List<AspectAdviceRule> finallyAdviceRuleList = aspectAdviceRuleRegistry.getFinallyAdviceRuleList();
 	
 				if(finallyAdviceRuleList != null) {
 					try {
@@ -525,11 +524,12 @@ public abstract class AbstractCoreActivity implements CoreActivity {
 		List<AspectAdviceRule> afterAdviceRuleList = aspectAdviceRuleRegistry.getAfterAdviceRuleList();
 
 		// execute Before Advice Action
-		if(beforeAdviceRuleList != null)
+		if(beforeAdviceRuleList != null) {
 			execute(beforeAdviceRuleList);
 		
-		if(isResponseEnd)
-			return translet.getProcessResult();
+			if(isResponseEnd)
+				return translet.getProcessResult();
+		}
 		
 		process();
 		
@@ -571,11 +571,12 @@ public abstract class AbstractCoreActivity implements CoreActivity {
 		List<AspectAdviceRule> afterAdviceRuleList = aspectAdviceRuleRegistry.getAfterAdviceRuleList();
 
 		// execute Before Advice Action
-		if(beforeAdviceRuleList != null)
+		if(beforeAdviceRuleList != null) {
 			execute(beforeAdviceRuleList);
 		
-		if(isResponseEnd)
-			return;
+			if(isResponseEnd)
+				return;
+		}
 		
 		response();
 		
@@ -617,11 +618,10 @@ public abstract class AbstractCoreActivity implements CoreActivity {
 		
 		for(Executable action : actionList) {
 			AspectAdviceRuleRegistry aspectAdviceRuleRegistry = action.getAspectAdviceRuleRegistry();
-			List<AspectAdviceRule> finallyAdviceRuleList = null;
 			
 			try {
 				if(aspectAdviceRuleRegistry != null) {
-					finallyAdviceRuleList = aspectAdviceRuleRegistry.getFinallyAdviceRuleList();
+					List<AspectAdviceRule> finallyAdviceRuleList = aspectAdviceRuleRegistry.getFinallyAdviceRuleList();
 					
 					if(finallyAdviceRuleList != null) {
 						try {
@@ -663,11 +663,12 @@ public abstract class AbstractCoreActivity implements CoreActivity {
 		List<AspectAdviceRule> afterAdviceRuleList = aspectAdviceRuleRegistry.getAfterAdviceRuleList();
 
 		// execute Before Advice Action
-		if(beforeAdviceRuleList != null)
+		if(beforeAdviceRuleList != null) {
 			execute(beforeAdviceRuleList);
 		
-		if(isResponseEnd)
-			return;
+			if(isResponseEnd)
+				return;
+		}
 		
 		execute(action);
 		

@@ -342,11 +342,11 @@ public class AspectAdviceRuleRegister {
 	}
 	
 	private void register(BeanRule beanRule, AspectRule aspectRule) {
-		DynamicAspectAdviceRuleRegistry aspectAdviceRuleRegistry = beanRule.getDynamicAspectAdviceRuleRegistry();
+		RelatedAspectAdviceRuleRegistry aspectAdviceRuleRegistry = beanRule.getRelatedAspectAdviceRuleRegistry();
 		
 		if(aspectAdviceRuleRegistry == null) {
-			aspectAdviceRuleRegistry = new DynamicAspectAdviceRuleRegistry();
-			beanRule.setDynamicAspectAdviceRuleRegistry(aspectAdviceRuleRegistry);
+			aspectAdviceRuleRegistry = new RelatedAspectAdviceRuleRegistry();
+			beanRule.setRelatedAspectAdviceRuleRegistry(aspectAdviceRuleRegistry);
 		}
 		
 		register(aspectAdviceRuleRegistry, aspectRule);
