@@ -7,21 +7,21 @@ import com.aspectran.core.context.ActivityContext;
 
 public class ActivityContextRefreshTimerTask extends TimerTask {
 
-	private ActivityContextRefreshable contextRefreshable;
+	private ActivityContextRefreshable activityContextRefreshable;
 	
 	private String applicationBasePath;
 	
 	private boolean modified = false;
 	
-	public ActivityContextRefreshTimerTask(ActivityContextRefreshable contextRefreshable) {
-		this.contextRefreshable = contextRefreshable;
+	public ActivityContextRefreshTimerTask(ActivityContextRefreshable activityContextRefreshable) {
+		this.activityContextRefreshable = activityContextRefreshable;
 	}
 	
 	public void run() {
 		if(modified) {
-			ActivityContext newContext = contextRefreshable.refresh();
-			String[] files = contextRefreshable.getRefreshableFiles();
-			applicationBasePath = contextRefreshable.getApplicationBasePath();
+			ActivityContext newActivityContext = activityContextRefreshable.refresh();
+			String[] files = activityContextRefreshable.getRefreshableFiles();
+			applicationBasePath = activityContextRefreshable.getApplicationBasePath();
 		}
 		
 		modified = true;

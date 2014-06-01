@@ -12,14 +12,14 @@ public class RefreshableActivityContextLoader extends ActivityContextLoader impl
 
 	private static final ClassLoader classLoader = new RefreshableClassLoader();
 	
-	private ActivityContextRefreshHandler contextRefreshHandler;
+	private ActivityContextRefreshHandler activityContextRefreshHandler;
 	
 	public RefreshableActivityContextLoader(ServletContext servletContext, String contextConfigLocation) {
 		super(servletContext, contextConfigLocation, classLoader);
 	}
 
-	public ActivityContextRefreshTimer startTimer(ActivityContextRefreshHandler contextRefreshHandler, int refreshTime) {
-		this.contextRefreshHandler = contextRefreshHandler;
+	public ActivityContextRefreshTimer startTimer(ActivityContextRefreshHandler activityContextRefreshHandler, int refreshTime) {
+		this.activityContextRefreshHandler = activityContextRefreshHandler;
 		
 		ActivityContextRefreshTimer timer = new ActivityContextRefreshTimer(this);
 		timer.start(refreshTime);
@@ -28,10 +28,10 @@ public class RefreshableActivityContextLoader extends ActivityContextLoader impl
 	}
 	
 	public ActivityContext refresh() {
-		ActivityContext newContext = load();
-		contextRefreshHandler.handle(newContext);
+		ActivityContext newActivityContext = load();
+		activityContextRefreshHandler.handle(newActivityContext);
 		
-		return newContext;
+		return newActivityContext;
 	}
 	
 	public String[] getRefreshableFiles() {
