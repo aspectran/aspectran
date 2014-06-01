@@ -54,13 +54,13 @@ public class WildcardPointcut extends AbstractPointcut implements Pointcut {
 	protected boolean matches(PointcutPattern pointcutPattern, String transletName, String beanOrActionId, String beanMethodName) {
 		boolean matched = true;
 		
-		if(transletName != null)
+		if(transletName != null && pointcutPattern.getTransletNamePattern() != null)
 			matched = patternMatches(pointcutPattern.getTransletNamePattern(), transletName, AspectranConstant.TRANSLET_NAME_SEPARATOR);
 
-		if(beanOrActionId != null && matched)
+		if(matched && beanOrActionId != null && pointcutPattern.getBeanOrActionIdPattern() != null)
 			matched = patternMatches(pointcutPattern.getBeanOrActionIdPattern(), beanOrActionId, AspectranConstant.ID_SEPARATOR);
 		
-		if(beanMethodName != null && matched)
+		if(matched && beanMethodName != null && pointcutPattern.getBeanMethodNamePattern() != null)
 			matched = patternMatches(pointcutPattern.getBeanMethodNamePattern(), beanMethodName);
 		
 		return matched;
