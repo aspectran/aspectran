@@ -47,6 +47,7 @@ public class ActivityContextRefreshTimer {
 		logger.debug("starting ActivityContextRefreshTimer...");
 		
 		timerTask = new ActivityContextRefreshTimerTask(contextRefreshable);
+		
 		timer = new Timer();
 		timer.schedule(timerTask, 0, refreshTime * 1000L);
 	}
@@ -61,6 +62,7 @@ public class ActivityContextRefreshTimer {
 			
 			timer.cancel();
 			timer = null;
+			
 			timerTask.cancel();
 			timerTask = null;
 		}
