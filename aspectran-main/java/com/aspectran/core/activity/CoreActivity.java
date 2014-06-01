@@ -50,7 +50,7 @@ public interface CoreActivity {
 	
 	public Class<? extends CoreTranslet> getTransletInterfaceClass();
 	
-	public Class<? extends AbstractCoreTranslet> getTransletImplementClass();
+	public Class<? extends CoreTransletImpl> getTransletImplementClass();
 	
 	public CoreTranslet getSuperTranslet();
 	

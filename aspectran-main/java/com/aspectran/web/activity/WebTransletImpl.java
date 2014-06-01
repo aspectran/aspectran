@@ -18,13 +18,13 @@ package com.aspectran.web.activity;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.aspectran.core.activity.AbstractCoreTranslet;
 import com.aspectran.core.activity.CoreActivity;
+import com.aspectran.core.activity.CoreTransletImpl;
 
 /**
  * The Class AspectranWebTranslet.
  */
-public class WebTransletImpl extends AbstractCoreTranslet implements WebTranslet {
+public class WebTransletImpl extends CoreTransletImpl implements WebTranslet {
 	
 	/**
 	 * Instantiates a new aspectran web translet.
