@@ -98,8 +98,8 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 
 			if(StringUtils.hasText(contextConfigLocation)) {
 				if(refreshTime == 0) {
-					ActivityContextLoader aspectranContextLoader = new ActivityContextLoader(servletContext, contextConfigLocation);
-					activityContext = aspectranContextLoader.load();
+					ActivityContextLoader loader = new ActivityContextLoader(servletContext, contextConfigLocation);
+					activityContext = loader.load();
 				} else {
 					ActivityContextRefreshHandler contextRefreshHandler = new ActivityContextRefreshHandler() {
 						public void handle(ActivityContext newContext) {

@@ -10,7 +10,7 @@ public class ActivityContextRefreshTimer {
 	
 	private final Logger logger = LoggerFactory.getLogger(ActivityContextRefreshTimer.class);
 
-	private ActivityContextRefreshable contextRefreshable;
+	private ActivityContextRefreshable activityContextRefreshable;
 	
 	private Timer timer;
 	
@@ -18,14 +18,14 @@ public class ActivityContextRefreshTimer {
 	
 	private int refreshTime = 5;
 	
-	public ActivityContextRefreshTimer(ActivityContextRefreshable contextRefreshable) {
-		this.contextRefreshable = contextRefreshable;
+	public ActivityContextRefreshTimer(ActivityContextRefreshable activityContextRefreshable) {
+		this.activityContextRefreshable = activityContextRefreshable;
 		
 		init();
 	}
 	
-	public ActivityContextRefreshTimer(ActivityContextRefreshable contextRefreshable, int refreshTime) {
-		this.contextRefreshable = contextRefreshable;
+	public ActivityContextRefreshTimer(ActivityContextRefreshable activityContextRefreshable, int refreshTime) {
+		this.activityContextRefreshable = activityContextRefreshable;
 		this.refreshTime = refreshTime;
 		
 		init();
@@ -46,7 +46,7 @@ public class ActivityContextRefreshTimer {
 		
 		logger.debug("starting ActivityContextRefreshTimer...");
 		
-		timerTask = new ActivityContextRefreshTimerTask(contextRefreshable);
+		timerTask = new ActivityContextRefreshTimerTask(activityContextRefreshable);
 		
 		timer = new Timer();
 		timer.schedule(timerTask, 0, refreshTime * 1000L);
