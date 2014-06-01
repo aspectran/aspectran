@@ -25,6 +25,7 @@ import org.slf4j.LoggerFactory;
 
 import com.aspectran.core.activity.AbstractCoreActivity;
 import com.aspectran.core.activity.CoreActivity;
+import com.aspectran.core.activity.CoreActivityException;
 import com.aspectran.core.activity.CoreTranslet;
 import com.aspectran.core.activity.request.RequestException;
 import com.aspectran.core.adapter.RequestAdapter;
@@ -73,7 +74,7 @@ public class WebActivityImpl extends AbstractCoreActivity implements WebActivity
 		setTransletImplementClass(WebTransletImpl.class);
 	}
 	
-	public void init(String transletName) {
+	public void init(String transletName) throws CoreActivityException {
 		super.init(transletName);
 		
 		RequestAdapter requestAdapter = new HttpServletRequestAdapter(request);

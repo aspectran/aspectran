@@ -148,6 +148,13 @@ public class ResponseRule implements ResponseSettable, AspectAdviceSupport {
 		return aspectAdviceRuleRegistry;
 	}
 
+	public AspectAdviceRuleRegistry getAspectAdviceRuleRegistry(boolean clone) throws CloneNotSupportedException {
+		if(clone && aspectAdviceRuleRegistry != null)
+			return (AspectAdviceRuleRegistry)aspectAdviceRuleRegistry.clone();
+		
+		return aspectAdviceRuleRegistry;
+	}
+
 	public void setAspectAdviceRuleRegistry(AspectAdviceRuleRegistry aspectAdviceRuleRegistry) {
 		this.aspectAdviceRuleRegistry = aspectAdviceRuleRegistry;
 	}

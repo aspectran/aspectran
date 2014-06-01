@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.aspectran.core.context.AspectranConstant;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.var.rule.PointcutPatternRule;
 import com.aspectran.core.var.rule.PointcutRule;

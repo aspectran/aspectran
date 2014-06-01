@@ -75,7 +75,7 @@ public class QuartzAspectranScheduler implements AspectranScheduler {
 	}
 	
 	public void startup() throws SchedulerException {
-		AspectRuleMap aspectRuleMap = context.getAspectRuleMap();
+		AspectRuleMap aspectRuleMap = context.getAspectRuleRegistry().getAspectRuleMap();
 		
 		if(aspectRuleMap == null)
 			return;
@@ -94,7 +94,7 @@ public class QuartzAspectranScheduler implements AspectranScheduler {
 					String schedulerFactoryBeanId = aspectRule.getAdviceBeanId();
 					PointcutRule pointcutRule = aspectRule.getPointcutRule();
 					
-					SchedulerFactory schedulerFactory = (SchedulerFactory)context.getBeanRegistry().getBean(schedulerFactoryBeanId);
+					SchedulerFactory schedulerFactory = (SchedulerFactory)context.getLocalBeanRegistry().getBean(schedulerFactoryBeanId);
 					Scheduler scheduler = schedulerFactory.getScheduler();
 					JobDetail[] jobDetails = buildJobDetails(aspectRule.getAspectJobAdviceRuleList());
 					

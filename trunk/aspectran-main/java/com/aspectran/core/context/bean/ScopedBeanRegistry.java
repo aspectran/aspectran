@@ -3,6 +3,7 @@ package com.aspectran.core.context.bean;
 import com.aspectran.core.activity.CoreActivity;
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
+import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.bean.scope.RequestScope;
 import com.aspectran.core.context.bean.scope.Scope;
 import com.aspectran.core.context.bean.scope.ScopedBean;
@@ -21,7 +22,7 @@ import com.aspectran.core.var.type.ScopeType;
  * Created: 2009. 03. 09 오후 23:48:09
  * </p>
  */
-public class ScopedBeanRegistry extends AbstractBeanRegistry implements BeanRegistry {
+public class ScopedBeanRegistry extends AbstractBeanRegistry implements LocalBeanRegistry {
 
 	private final Object singletonScopeLock = new Object();
 
@@ -36,36 +37,42 @@ public class ScopedBeanRegistry extends AbstractBeanRegistry implements BeanRegi
 	}
 
 	public Object getBean(String id) {
-		return getBean(id, null);
-	}
-	
-	public Object getBean(String id, CoreActivity activity) {
 		BeanRule beanRule = beanRuleMap.get(id);
 		
 		if(beanRule == null)
 			throw new BeanNotFoundException(id);
 		
-		if(beanRule.getScopeType() == ScopeType.SINGLETON) {
-			return getSingletonScopeBean(beanRule, activity);
-		} else if(beanRule.getScopeType() == ScopeType.PROTOTYPE) {
-			return createBean(beanRule, activity);
+		if(beanRule.getScopeType() == ScopeType.PROTOTYPE) {
+			return getPrototypeBean(beanRule);
+		} else if(beanRule.getScopeType() == ScopeType.SINGLETON) {
+			return getSingletonScopeBean(beanRule);
 		} else if(beanRule.getScopeType() == ScopeType.REQUEST) {
-			return getRequestScopeBean(beanRule, activity);
+			return getRequestScopeBean(beanRule);
 		} else if(beanRule.getScopeType() == ScopeType.SESSION) {
-			return getSessionScopeBean(beanRule, activity);
+			return getSessionScopeBean(beanRule);
 		} else if(beanRule.getScopeType() == ScopeType.APPLICATION) {
-			return getApplicationScopeBean(beanRule, activity);
+			return getApplicationScopeBean(beanRule);
 		}
 		
 		throw new BeanException();
 	}
 	
-	private Object getSingletonScopeBean(BeanRule beanRule, CoreActivity activity) {
+	private Object getPrototypeBean(BeanRule beanRule) {
+		CoreActivity activity = ActivityContext.getCoreActivity();
+		Object bean;
+		
+		if(activity == null)
+			bean = createBean(beanRule);
+		else
+			bean = createBean(beanRule, activity);
+
+		return bean;
+	}
+	
+	private Object getSingletonScopeBean(BeanRule beanRule) {
+		CoreActivity activity = ActivityContext.getCoreActivity();
+
 		synchronized(singletonScopeLock) {
-			if(beanRule.isProxyMode() && activity != null) {
-				beanRule.setLocalActivity(activity);
-			}
-			
 			if(beanRule.isRegistered())
 				return beanRule.getBean();
 
@@ -83,7 +90,9 @@ public class ScopedBeanRegistry extends AbstractBeanRegistry implements BeanRegi
 		}
 	}
 
-	private Object getRequestScopeBean(BeanRule beanRule, CoreActivity activity) {
+	private Object getRequestScopeBean(BeanRule beanRule) {
+		CoreActivity activity = ActivityContext.getCoreActivity();
+		
 		synchronized(requestScopeLock) {
 			if(activity == null)
 				throw new UnsupportedBeanScopeException(ScopeType.REQUEST, beanRule);
@@ -99,7 +108,9 @@ public class ScopedBeanRegistry extends AbstractBeanRegistry implements BeanRegi
 		}
 	}
 	
-	private Object getSessionScopeBean(BeanRule beanRule, CoreActivity activity) {
+	private Object getSessionScopeBean(BeanRule beanRule) {
+		CoreActivity activity = ActivityContext.getCoreActivity();
+
 		SessionAdapter session = null;
 		
 		if(activity != null)
@@ -114,7 +125,9 @@ public class ScopedBeanRegistry extends AbstractBeanRegistry implements BeanRegi
 		}
 	}
 
-	private Object getApplicationScopeBean(BeanRule beanRule, CoreActivity activity) {
+	private Object getApplicationScopeBean(BeanRule beanRule) {
+		CoreActivity activity = ActivityContext.getCoreActivity();
+
 		ApplicationAdapter application = null;
 		
 		if(activity != null)
@@ -130,10 +143,6 @@ public class ScopedBeanRegistry extends AbstractBeanRegistry implements BeanRegi
 	}
 	
 	private Object getScopedBean(Scope scope, BeanRule beanRule, CoreActivity activity) {
-		if(beanRule.isProxyMode()) {
-			beanRule.setLocalActivity(activity);
-		}
-
 		ScopedBeanMap scopedBeanMap = scope.getScopedBeanMap();
 		ScopedBean scopeBean = scopedBeanMap.get(beanRule.getId());
 			

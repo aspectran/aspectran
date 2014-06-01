@@ -47,6 +47,13 @@ public class ContentList extends ArrayList<ActionList> implements AspectAdviceSu
 		return aspectAdviceRuleRegistry;
 	}
 
+	public AspectAdviceRuleRegistry getAspectAdviceRuleRegistry(boolean clone) throws CloneNotSupportedException {
+		if(clone && aspectAdviceRuleRegistry != null)
+			return (AspectAdviceRuleRegistry)aspectAdviceRuleRegistry.clone();
+		
+		return aspectAdviceRuleRegistry;
+	}
+
 	public void setAspectAdviceRuleRegistry(AspectAdviceRuleRegistry aspectAdviceRuleRegistry) {
 		this.aspectAdviceRuleRegistry = aspectAdviceRuleRegistry;
 	}

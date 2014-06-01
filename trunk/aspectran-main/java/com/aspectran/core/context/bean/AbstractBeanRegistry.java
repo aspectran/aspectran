@@ -3,16 +3,25 @@ package com.aspectran.core.context.bean;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
+import com.aspectran.core.activity.CoreActivity;
+import com.aspectran.core.context.ActivityContext;
+import com.aspectran.core.context.aspect.pointcut.PointcutPattern;
+import com.aspectran.core.context.bean.proxy.CglibDynamicBeanProxy;
 import com.aspectran.core.util.MethodUtils;
 import com.aspectran.core.util.ReflectionUtils;
 import com.aspectran.core.var.ValueMap;
+import com.aspectran.core.var.rule.AspectRule;
 import com.aspectran.core.var.rule.BeanRule;
 import com.aspectran.core.var.rule.BeanRuleMap;
 import com.aspectran.core.var.rule.ItemRule;
 import com.aspectran.core.var.rule.ItemRuleMap;
 import com.aspectran.core.var.token.ItemTokenExpressor;
+import com.aspectran.core.var.type.JoinpointScopeType;
 import com.aspectran.core.var.type.ScopeType;
 
 /**
@@ -22,6 +31,8 @@ import com.aspectran.core.var.type.ScopeType;
  */
 public abstract class AbstractBeanRegistry {
 
+	private Map<String, List<AspectRule>> aspectRuleCache = new HashMap<String, List<AspectRule>>();
+	
 	protected final BeanRuleMap beanRuleMap;
 	
 	protected AbstractBeanRegistry(BeanRuleMap beanRuleMap) {
@@ -52,6 +63,7 @@ public abstract class AbstractBeanRegistry {
 	
 				int parameterSize = constructorArgumentItemRuleMap.size();
 				Object[] args = new Object[parameterSize];
+				Class<?>[] argTypes = new Class<?>[args.length];
 				
 				Iterator<ItemRule> iter = constructorArgumentItemRuleMap.iterator();
 				int i = 0;
@@ -60,43 +72,97 @@ public abstract class AbstractBeanRegistry {
 					ItemRule ir = iter.next();
 					Object o = valueMap.get(ir.getName());
 					args[i] = o;
+					argTypes[i] = o.getClass();
 					
 					i++;
 				}
 				
-				return newInstance(beanRule, args);
+				return createBean(beanRule, argTypes, args);
 			} else {
-				return newInstance(beanRule, new Object[0]);
+				return createBean(beanRule, null, null);
 			}
 		} catch(Exception e) {
 			throw new BeanCreationException(beanRule, e);
 		}
 	}
 	
-	protected Object newInstance(BeanRule beanRule, Object[] args) throws BeanInstantiationException {
+	private Object createBean(BeanRule beanRule, Class<?>[] argTypes, Object[] args) {
+		CoreActivity activity = ActivityContext.getCoreActivity();
+		
+		/*
+		 * 0. DynamicProxy 빈을 만들 것인지를 먼저 결정하라. 
+		 * 1. 빈과 관련된 AspectRule을 추출하고, 캐슁하라.
+		 * 2. 추출된 AspectRule을 AspectAdviceRegistry로 변환하고, DynamicProxy에 넘겨라
+		 * 3. DynamicProxy에서 현재 실행 시점의 JoinScope에 따라 해당 JoinScope의 AspectAdviceRegistry에 Advice를 등록하라.
+		 * 4. DynamicProxy에서 일치하는 메쏘드를 가진 AspectRule의 Advice를 실행하라.
+		 */
+		String transletName = null;
+		JoinpointScopeType joinpointScope = null;
+		String beanId = beanRule.getId();
+
+		if(activity != null) {
+			/*
+			 * Translet, JoinpointScope의 적용여부를 결정 
+			 */
+			if(beanRule.getScopeType() == ScopeType.PROTOTYPE || beanRule.getScopeType() == ScopeType.REQUEST) {
+				transletName = activity.getTransletName();
+			}
+			if(beanRule.getScopeType() == ScopeType.PROTOTYPE) {
+				joinpointScope = activity.getJoinpointScope();
+			}
+		}
+		
+		/*
+		 * Bean과 관련된 AspectRule을 모두 추출.
+		 */
+		List<AspectRule> aspectRuleList = retrieveAspectRuleList(activity, joinpointScope, transletName, beanId);
+		
+		Object obj = null;
+		
+		if(aspectRuleList.size() > 0) {
+			obj = CglibDynamicBeanProxy.newInstance(aspectRuleList, beanRule, argTypes, args);
+		} else {
+			if(argTypes != null && args != null)
+				obj = newInstance(beanRule, argTypes, args);
+			else
+				obj = newInstance(beanRule, new Class[0], new Object[0]);
+		}
+		
+		return obj;
+	}
+	
+	private List<AspectRule> retrieveAspectRuleList(CoreActivity activity, JoinpointScopeType joinpointScope, String transletName, String beanId) {
+		String joinpointScopeString = joinpointScope == null ? null : joinpointScope.toString();
+		String patternString = PointcutPattern.combinePatternString(joinpointScopeString, transletName, beanId, null);
+
+		List<AspectRule> aspectRuleList;
+		
+		synchronized(aspectRuleCache) {
+			aspectRuleList = aspectRuleCache.get(patternString);
+			
+			if(aspectRuleList == null) {
+				aspectRuleList = activity.getAspectRuleRegistry().getAspectRuleList(joinpointScope, transletName, beanId);
+				aspectRuleCache.put(patternString, aspectRuleList);
+			}
+		}
+		
+		return aspectRuleList;
+	}
+	
+	protected Object newInstance(BeanRule beanRule, Class<?>[] argTypes, Object[] args) throws BeanInstantiationException {
 		Constructor<?> constructorToUse;
 		
 		try {
 			constructorToUse = getMatchConstructor(beanRule.getBeanClass(), args);
 
 			if(constructorToUse == null) {
-				Class<?>[] parameterTypes = new Class<?>[args.length];
-				
-				for(int i = 0; i < args.length; i++) {
-					parameterTypes[i] = args[i].getClass();
-				}
-				
-				constructorToUse = beanRule.getBeanClass().getDeclaredConstructor(parameterTypes);
+				constructorToUse = beanRule.getBeanClass().getDeclaredConstructor(argTypes);
 			}
 		} catch(NoSuchMethodException e) {
 			throw new BeanInstantiationException(beanRule.getBeanClass(), "No default constructor found.", e);
 		}
 		
 		Object obj = newInstance(constructorToUse, args);
-		
-		if(beanRule.isProxyMode()) {
-			//TODO
-		}
 		
 		return obj;
 	}

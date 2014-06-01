@@ -6,7 +6,7 @@ import java.util.Map;
 import com.aspectran.core.var.rule.AspectAdviceRule;
 import com.aspectran.core.var.type.AspectAdviceType;
 
-public class AspectAdviceResult {
+public class AspectAdviceResult implements Cloneable {
 	
 	private Map<String, Object> aspectAdviceBeanMap;
 

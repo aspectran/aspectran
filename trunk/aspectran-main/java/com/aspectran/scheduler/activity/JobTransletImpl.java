@@ -30,8 +30,8 @@ public class JobTransletImpl extends AbstractCoreTranslet implements JobTranslet
 	 *
 	 * @param activity the activity
 	 */
-	public JobTransletImpl(CoreActivity activity, boolean aspectAdvicable) {
-		super(activity, aspectAdvicable);
+	public JobTransletImpl(CoreActivity activity) {
+		super(activity);
 	}
 	
 }
