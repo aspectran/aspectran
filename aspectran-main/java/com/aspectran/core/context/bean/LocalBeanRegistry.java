@@ -3,6 +3,8 @@
  */
 package com.aspectran.core.context.bean;
 
+import com.aspectran.core.context.aspect.AspectRuleRegistry;
+
 
 /**
  *
@@ -12,6 +14,8 @@ package com.aspectran.core.context.bean;
  *
  */
 public interface LocalBeanRegistry extends BeanRegistry {
+	
+	public void createSingletonBean(AspectRuleRegistry aspectRuleRegistry);
 
 	public void destroy();
 

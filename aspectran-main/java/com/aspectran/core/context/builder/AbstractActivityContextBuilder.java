@@ -51,6 +51,8 @@ public abstract class AbstractActivityContextBuilder extends ContextBuilderAssis
 		
 		BeanProxyModeType beanProxyMode = BeanProxyModeType.valueOf((String)getSetting(DefaultSettingType.BEAN_PROXY_MODE));
 		LocalBeanRegistry beanRegistry = makeBeanRegistry(beanRuleMap, beanProxyMode);
+		beanRegistry.createSingletonBean(aspectRuleRegistry);
+		
 		TransletRuleRegistry transletRuleRegistry = makeTransletRegistry(transletRuleMap);
 		
 		BeanReferenceInspector beanReferenceInspector = getBeanReferenceInspector();

@@ -10,6 +10,7 @@ import java.util.Map;
 
 import com.aspectran.core.activity.CoreActivity;
 import com.aspectran.core.context.ActivityContext;
+import com.aspectran.core.context.aspect.AspectRuleRegistry;
 import com.aspectran.core.context.aspect.pointcut.PointcutPattern;
 import com.aspectran.core.context.bean.proxy.CglibDynamicBeanProxy;
 import com.aspectran.core.util.MethodUtils;
@@ -38,10 +39,16 @@ public abstract class AbstractBeanRegistry {
 	
 	private final BeanProxyModeType beanProxyMode;
 	
+	private AspectRuleRegistry aspectRuleRegistry;
+	
 	protected AbstractBeanRegistry(BeanRuleMap beanRuleMap, BeanProxyModeType beanProxyMode) {
 		this.beanRuleMap = beanRuleMap;
 		this.beanProxyMode = (beanProxyMode == null ? BeanProxyModeType.CGLIB : beanProxyMode);
-		
+	}
+	
+	public void createSingletonBean(AspectRuleRegistry aspectRuleRegistry) {
+		this.aspectRuleRegistry = aspectRuleRegistry;
+
 		for(BeanRule beanRule : beanRuleMap) {
 			ScopeType scope = beanRule.getScopeType();
 
@@ -55,7 +62,7 @@ public abstract class AbstractBeanRegistry {
 			}
 		}
 	}
-	
+
 	abstract protected Object createBean(BeanRule beanRule);
 	
 	protected Object createBean(BeanRule beanRule, ItemTokenExpressor expressor) {
@@ -149,7 +156,7 @@ public abstract class AbstractBeanRegistry {
 			aspectRuleList = aspectRuleCache.get(patternString);
 			
 			if(aspectRuleList == null) {
-				aspectRuleList = activity.getAspectRuleRegistry().getAspectRuleList(joinpointScope, transletName, beanId);
+				aspectRuleList = aspectRuleRegistry.getAspectRuleList(joinpointScope, transletName, beanId);
 				aspectRuleCache.put(patternString, aspectRuleList);
 			}
 		}

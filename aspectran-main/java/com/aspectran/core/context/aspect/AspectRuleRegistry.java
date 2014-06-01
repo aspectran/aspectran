@@ -41,7 +41,7 @@ public class AspectRuleRegistry {
 	}
 
 	public List<AspectRule> getAspectRuleList(JoinpointScopeType joinpointScope, String transletName, String beanId) {
-		return getAspectRuleList(joinpointScope, transletName, null);
+		return getAspectRuleList(joinpointScope, transletName, beanId, null);
 	}
 	
 	public List<AspectRule> getAspectRuleList(JoinpointScopeType joinpointScope, String transletName, String beanId, String methodName) {

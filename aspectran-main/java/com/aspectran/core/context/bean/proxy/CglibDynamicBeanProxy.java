@@ -45,6 +45,11 @@ public class CglibDynamicBeanProxy implements MethodInterceptor {
 		CoreActivity activity = ActivityContext.getCoreActivity();
 		
 		if(activity == null) {
+			//TODO 
+			//activity = 
+		}
+		
+		if(activity == null) {
 			throw new RuntimeException("반드시 활동상태에서 proxy 모드 빈을 사용할 수 있음.");
 		}
 
