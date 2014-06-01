@@ -27,9 +27,12 @@ import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.context.ActivityContext;
+import com.aspectran.core.context.aspect.AspectRuleRegistry;
 import com.aspectran.core.context.bean.BeanRegistry;
 import com.aspectran.core.context.bean.scope.Scope;
 import com.aspectran.core.var.rule.AspectAdviceRule;
+import com.aspectran.core.var.rule.AspectRule;
+import com.aspectran.core.var.type.JoinpointScopeType;
 
 /**
  * Action Translator.
@@ -51,7 +54,7 @@ public interface CoreActivity {
 	
 	public CoreTranslet getSuperTranslet();
 	
-	public void init(String transletName);
+	public void init(String transletName) throws CoreActivityException;
 	
 	public void run() throws CoreActivityException;
 	
@@ -95,6 +98,8 @@ public interface CoreActivity {
 	
 	public CoreActivity newCoreActivity();
 	
+	public AspectRuleRegistry getAspectRuleRegistry();
+	
 	public BeanRegistry getBeanRegistry();
 	
 	public boolean isExceptionRaised();
@@ -103,13 +108,17 @@ public interface CoreActivity {
 
 	public void setRaisedException(Exception raisedException);
 	
+	public Object getTransletSetting(String settingName);
+	
 	public Object getRequestSetting(String settingName);
 	
 	public Object getResponseSetting(String settingName);
 	
-	public Object getTransletSetting(String settingName);
+	public void registerAspectRule(AspectRule aspectRule) throws ActionExecutionException;
 	
 	public Object getAspectAdviceBean(String aspectId);
+	
+	public JoinpointScopeType getJoinpointScope();
 
 	public void close();
 

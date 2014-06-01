@@ -9,26 +9,26 @@ import com.aspectran.core.var.rule.AspectAdviceRule;
 import com.aspectran.core.var.rule.AspectRule;
 
 
-public class RelatedAspectAdviceRuleRegistry extends AspectAdviceRuleRegistry {
+public class RelevantAspectAdviceRuleRegistry extends AspectAdviceRuleRegistry {
 	
 	private Map<String, AspectAdviceRuleRegistry> aspectAdviceRuleRegistryCache = new HashMap<String, AspectAdviceRuleRegistry>();
-
-	public AspectAdviceRuleRegistry getMatchAspectAdviceRuleRegistry(String transletName, String beanId, String methodName) {
+	
+	public AspectAdviceRuleRegistry retrieve(String transletName, String beanId, String methodName) {
 		String patternString = PointcutPattern.combinePatternString(transletName, beanId, methodName);
-		AspectAdviceRuleRegistry aspectAdviceRuleRegistry = null;
+		AspectAdviceRuleRegistry aarr = null;
 
 		synchronized(aspectAdviceRuleRegistryCache) {
-			aspectAdviceRuleRegistry = aspectAdviceRuleRegistryCache.get(patternString);
+			aarr = aspectAdviceRuleRegistryCache.get(patternString);
 			
-			if(aspectAdviceRuleRegistry == null) {
-				aspectAdviceRuleRegistry = new AspectAdviceRuleRegistry();
+			if(aarr == null) {
+				aarr = new AspectAdviceRuleRegistry();
 				
 				for(AspectAdviceRule aspectAdviceRule : getBeforeAdviceRuleList()) {
 					AspectRule aspectRule = aspectAdviceRule.getAspectRule();
 					Pointcut pointcut = aspectRule.getPointcut();
 					
 					if(pointcut == null || pointcut.matches(transletName, beanId, methodName))
-						aspectAdviceRuleRegistry.addBeforeAdviceRule(aspectAdviceRule);
+						aarr.addBeforeAdviceRule(aspectAdviceRule);
 				}
 				
 				for(AspectAdviceRule aspectAdviceRule : getAfterAdviceRuleList()) {
@@ -36,7 +36,7 @@ public class RelatedAspectAdviceRuleRegistry extends AspectAdviceRuleRegistry {
 					Pointcut pointcut = aspectRule.getPointcut();
 					
 					if(pointcut == null || pointcut.matches(transletName, beanId, methodName))
-						aspectAdviceRuleRegistry.addAfterAdviceRule(aspectAdviceRule);
+						aarr.addAfterAdviceRule(aspectAdviceRule);
 				}
 				
 				for(AspectAdviceRule aspectAdviceRule : getFinallyAdviceRuleList()) {
@@ -44,7 +44,7 @@ public class RelatedAspectAdviceRuleRegistry extends AspectAdviceRuleRegistry {
 					Pointcut pointcut = aspectRule.getPointcut();
 					
 					if(pointcut == null || pointcut.matches(transletName, beanId, methodName))
-						aspectAdviceRuleRegistry.addFinallyAdviceRule(aspectAdviceRule);
+						aarr.addFinallyAdviceRule(aspectAdviceRule);
 				}
 				
 				for(AspectAdviceRule aspectAdviceRule : getExceptionRaizedAdviceRuleList()) {
@@ -52,13 +52,13 @@ public class RelatedAspectAdviceRuleRegistry extends AspectAdviceRuleRegistry {
 					Pointcut pointcut = aspectRule.getPointcut();
 					
 					if(pointcut == null || pointcut.matches(transletName, beanId, methodName))
-						aspectAdviceRuleRegistry.addExceptionRaizedAdviceRule(aspectAdviceRule);
+						aarr.addExceptionRaizedAdviceRule(aspectAdviceRule);
 				}
 				
-				aspectAdviceRuleRegistryCache.put(patternString, aspectAdviceRuleRegistry);
+				aspectAdviceRuleRegistryCache.put(patternString, aarr);
 			}
 		}
 		
-		return aspectAdviceRuleRegistry;
+		return aarr;
 	}
 }

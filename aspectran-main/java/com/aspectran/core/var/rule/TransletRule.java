@@ -62,7 +62,7 @@ public class TransletRule implements ActionAddable, ResponseSettable, AspectAdvi
 
 	private AspectAdviceRuleRegistry aspectAdviceRuleRegistry;
 	
-	private boolean aspectAdviceRuleExists;
+	//private boolean aspectAdviceRuleExists;
 
 	/**
 	 * Instantiates a new translet rule.
@@ -270,23 +270,30 @@ public class TransletRule implements ActionAddable, ResponseSettable, AspectAdvi
 		return aspectAdviceRuleRegistry;
 	}
 
+	public AspectAdviceRuleRegistry getAspectAdviceRuleRegistry(boolean clone) throws CloneNotSupportedException {
+		if(clone && aspectAdviceRuleRegistry != null)
+			return (AspectAdviceRuleRegistry)aspectAdviceRuleRegistry.clone();
+		
+		return aspectAdviceRuleRegistry;
+	}
+
 	public void setAspectAdviceRuleRegistry(AspectAdviceRuleRegistry aspectAdviceRuleRegistry) {
 		this.aspectAdviceRuleRegistry = aspectAdviceRuleRegistry;
 	}
 	
-	/**
-	 * @return the aspectAdviceRuleExists
-	 */
-	public boolean isAspectAdviceRuleExists() {
-		return aspectAdviceRuleExists;
-	}
-
-	/**
-	 * @param aspectAdviceRuleExists the aspectAdviceRuleExists to set
-	 */
-	public void setAspectAdviceRuleExists(boolean aspectAdviceRuleExists) {
-		this.aspectAdviceRuleExists = aspectAdviceRuleExists;
-	}
+//	/**
+//	 * @return the aspectAdviceRuleExists
+//	 */
+//	public boolean isAspectAdviceRuleExists() {
+//		return aspectAdviceRuleExists;
+//	}
+//
+//	/**
+//	 * @param aspectAdviceRuleExists the aspectAdviceRuleExists to set
+//	 */
+//	public void setAspectAdviceRuleExists(boolean aspectAdviceRuleExists) {
+//		this.aspectAdviceRuleExists = aspectAdviceRuleExists;
+//	}
 
 	public List<AspectAdviceRule> getBeforeAdviceRuleList() {
 		if(aspectAdviceRuleRegistry == null)
@@ -371,7 +378,7 @@ public class TransletRule implements ActionAddable, ResponseSettable, AspectAdvi
 		sb.append(", transletInterfaceClass=").append(transletInterfaceClass);
 		sb.append(", transletInstanceClass=").append(transletInstanceClass);
 		sb.append(", aspectAdviceRuleRegistry=").append(aspectAdviceRuleRegistry);
-		sb.append(", aspectAdviceRuleExists=").append(aspectAdviceRuleExists);
+		//sb.append(", aspectAdviceRuleExists=").append(aspectAdviceRuleExists);
 		sb.append("}");
 		
 		return sb.toString();

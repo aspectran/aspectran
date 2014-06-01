@@ -15,8 +15,11 @@
  */
 package com.aspectran.core.var.rule;
 
-import com.aspectran.core.activity.CoreActivity;
-import com.aspectran.core.context.aspect.RelatedAspectAdviceRuleRegistry;
+import java.util.HashMap;
+import java.util.Map;
+
+import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
+import com.aspectran.core.context.aspect.RelevantAspectAdviceRuleRegistry;
 import com.aspectran.core.var.type.ScopeType;
 
 /**
@@ -25,8 +28,6 @@ import com.aspectran.core.var.type.ScopeType;
  * </p>
  */
 public class BeanRule {
-
-	private static ThreadLocal<CoreActivity> localActivity = new ThreadLocal<CoreActivity>();
 
 	protected String id;
 
@@ -58,7 +59,9 @@ public class BeanRule {
 	
 	private boolean proxyMode;
 	
-	private RelatedAspectAdviceRuleRegistry relatedAspectAdviceRuleRegistry;
+	private RelevantAspectAdviceRuleRegistry relatedAspectAdviceRuleRegistry;
+	
+	private Map<String, AspectAdviceRuleRegistry> aspectAdviceRuleRegistryCache = new HashMap<String, AspectAdviceRuleRegistry>();
 
 	/**
 	 * Gets the id.
@@ -292,28 +295,19 @@ public class BeanRule {
 		this.overrided = overrided;
 	}
 
-	public boolean isProxyMode() {
-		return proxyMode;
-	}
+//	public boolean isProxyMode() {
+//		return proxyMode;
+//	}
 
 	public void setProxyMode(boolean proxyMode) {
 		this.proxyMode = proxyMode;
 	}
 	
-	public CoreActivity getLocalActivity() {
-		return localActivity.get();
-	}
-	
-	public void setLocalActivity(CoreActivity activity) {
-		if(localActivity.get() != null)
-			localActivity.set(activity);
-	}
-	
-	public RelatedAspectAdviceRuleRegistry getRelatedAspectAdviceRuleRegistry() {
+	public RelevantAspectAdviceRuleRegistry getRelevantAspectAdviceRuleRegistry() {
 		return relatedAspectAdviceRuleRegistry;
 	}
 
-	public void setRelatedAspectAdviceRuleRegistry(RelatedAspectAdviceRuleRegistry dynamicAspectAdviceRuleRegistry) {
+	public void setRelevantAspectAdviceRuleRegistry(RelevantAspectAdviceRuleRegistry dynamicAspectAdviceRuleRegistry) {
 		this.relatedAspectAdviceRuleRegistry = dynamicAspectAdviceRuleRegistry;
 	}
 

@@ -16,6 +16,7 @@
 package com.aspectran.core.activity;
 
 import java.lang.reflect.Constructor;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -38,12 +39,15 @@ import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.context.ActivityContext;
+import com.aspectran.core.context.aspect.AspectAdviceRuleRegister;
 import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
+import com.aspectran.core.context.aspect.AspectRuleRegistry;
 import com.aspectran.core.context.bean.BeanRegistry;
 import com.aspectran.core.context.bean.scope.Scope;
 import com.aspectran.core.context.translet.TransletInstantiationException;
 import com.aspectran.core.context.translet.TransletNotFoundException;
 import com.aspectran.core.var.rule.AspectAdviceRule;
+import com.aspectran.core.var.rule.AspectRule;
 import com.aspectran.core.var.rule.RequestRule;
 import com.aspectran.core.var.rule.ResponseByContentTypeRule;
 import com.aspectran.core.var.rule.ResponseByContentTypeRuleMap;
@@ -51,6 +55,7 @@ import com.aspectran.core.var.rule.ResponseRule;
 import com.aspectran.core.var.rule.TransletRule;
 import com.aspectran.core.var.type.ActionType;
 import com.aspectran.core.var.type.AspectAdviceType;
+import com.aspectran.core.var.type.JoinpointScopeType;
 import com.aspectran.core.var.type.ResponseType;
 
 /**
@@ -112,6 +117,16 @@ public abstract class AbstractCoreActivity implements CoreActivity {
 	private String transletName;
 	
 	private boolean withoutResponse;
+	
+	private AspectAdviceRuleRegistry transletAspectAdviceRuleRegistry;
+	
+	private AspectAdviceRuleRegistry requestAspectAdviceRuleRegistry;
+	
+	private AspectAdviceRuleRegistry responseAspectAdviceRuleRegistry;
+	
+	private AspectAdviceRuleRegistry contentAspectAdviceRuleRegistry;
+	
+	private JoinpointScopeType joinpointScopeType = JoinpointScopeType.TRANSLET;
 	
 	//private AspectAdviceResult aspectAdviceResult;
 	
@@ -220,11 +235,11 @@ public abstract class AbstractCoreActivity implements CoreActivity {
 		return translet;
 	}
 
-	public void init(String transletName) {
+	public void init(String transletName) throws CoreActivityException {
 		init(transletName, null);
 	}
 	
-	public void init(String transletName, ProcessResult processResult) {
+	public void init(String transletName, ProcessResult processResult) throws CoreActivityException {
 		if(debugEnabled) {
 			logger.debug("run " + transletName);
 		}
@@ -243,11 +258,8 @@ public abstract class AbstractCoreActivity implements CoreActivity {
 
 		//create translet instance
 		try {
-			Constructor<?> transletImplementConstructor = transletImplementClass.getConstructor(CoreActivity.class, boolean.class);
-			Object[] args = new Object[] { this, false };
-			
-			if(transletRule.isAspectAdviceRuleExists())
-				args[1] = true;
+			Constructor<?> transletImplementConstructor = transletImplementClass.getConstructor(CoreActivity.class);
+			Object[] args = new Object[] { this };
 			
 			translet = (CoreTranslet)transletImplementConstructor.newInstance(args);
 			
@@ -261,6 +273,19 @@ public abstract class AbstractCoreActivity implements CoreActivity {
 		this.transletRule = transletRule;
 		this.requestRule = transletRule.getRequestRule();
 		this.responseRule = transletRule.getResponseRule();
+		
+		try {
+			this.transletAspectAdviceRuleRegistry = transletRule.getAspectAdviceRuleRegistry(true);
+			this.requestAspectAdviceRuleRegistry = requestRule.getAspectAdviceRuleRegistry(true);
+			this.responseAspectAdviceRuleRegistry = responseRule.getAspectAdviceRuleRegistry(true);
+
+			if(transletRule.getContentList() != null)
+				this.contentAspectAdviceRuleRegistry = transletRule.getContentList().getAspectAdviceRuleRegistry(true);
+		} catch(CloneNotSupportedException e) {
+			throw new CoreActivityException("AspectAdviceRuleRegistry clone failed.", e);
+		}
+		
+		ActivityContext.setCoreActivity(this);
 	}
 	
 	public void run() throws CoreActivityException {
@@ -284,23 +309,38 @@ public abstract class AbstractCoreActivity implements CoreActivity {
 	}
 	
 	protected void run1st() throws CoreActivityException {
-		AspectAdviceRuleRegistry aspectAdviceRuleRegistry = transletRule.getAspectAdviceRuleRegistry();
-		
 		try {
-			if(aspectAdviceRuleRegistry != null) {
-				List<AspectAdviceRule> finallyAdviceRuleList = aspectAdviceRuleRegistry.getFinallyAdviceRuleList();
-	
-				if(finallyAdviceRuleList != null) {
-					try {
-						run2nd(aspectAdviceRuleRegistry);
-					} finally {
-						execute(finallyAdviceRuleList);
-					}
-				} else {
-					run2nd(aspectAdviceRuleRegistry);
+			try {
+				// execute Before Advice Action for Translet Joinpoint
+				if(transletAspectAdviceRuleRegistry != null) {
+					List<AspectAdviceRule> beforeAdviceRuleList = transletAspectAdviceRuleRegistry.getBeforeAdviceRuleList();
+
+					if(beforeAdviceRuleList != null)
+						execute(beforeAdviceRuleList);
 				}
-			} else {
+				
+				if(isResponseEnd)
+					return;
+				
 				run2nd();
+				
+				if(isResponseEnd)
+					return;
+				
+				// execute After Advice Action for Translet Joinpoint
+				if(transletAspectAdviceRuleRegistry != null) {
+					List<AspectAdviceRule> afterAdviceRuleList = transletAspectAdviceRuleRegistry.getAfterAdviceRuleList();
+					
+					if(afterAdviceRuleList != null)
+						execute(afterAdviceRuleList);
+				}
+			} finally {
+				if(transletAspectAdviceRuleRegistry != null) {
+					List<AspectAdviceRule> finallyAdviceRuleList = transletAspectAdviceRuleRegistry.getFinallyAdviceRuleList();
+					
+					if(finallyAdviceRuleList != null)
+						execute(finallyAdviceRuleList);
+				}
 			}
 		} catch(CoreActivityException e) {
 			setRaisedException(e);
@@ -315,8 +355,8 @@ public abstract class AbstractCoreActivity implements CoreActivity {
 				}
 			}
 		
-			if(aspectAdviceRuleRegistry != null) {
-				List<AspectAdviceRule> exceptionRaizedAdviceRuleList = aspectAdviceRuleRegistry.getExceptionRaizedAdviceRuleList();
+			if(transletAspectAdviceRuleRegistry != null) {
+				List<AspectAdviceRule> exceptionRaizedAdviceRuleList = transletAspectAdviceRuleRegistry.getExceptionRaizedAdviceRuleList();
 				
 				if(exceptionRaizedAdviceRuleList != null) {
 					responseByContentType(exceptionRaizedAdviceRuleList);
@@ -335,52 +375,48 @@ public abstract class AbstractCoreActivity implements CoreActivity {
 		}
 	}
 
-	private void run2nd(AspectAdviceRuleRegistry aspectAdviceRuleRegistry) throws CoreActivityException {
-		List<AspectAdviceRule> beforeAdviceRuleList = aspectAdviceRuleRegistry.getBeforeAdviceRuleList();
-		List<AspectAdviceRule> afterAdviceRuleList = aspectAdviceRuleRegistry.getAfterAdviceRuleList();
-
-		// execute Before Advice Action for translet joinpoint
-		if(beforeAdviceRuleList != null)
-			execute(beforeAdviceRuleList);
-		
-		if(isResponseEnd)
-			return;
-		
-		run2nd();
-		
-		if(isResponseEnd)
-			return;
-		
-		// execute After Advice Action for translet joinpoint
-		if(afterAdviceRuleList != null)
-			execute(afterAdviceRuleList);
-	}
-
 	private void run2nd() throws CoreActivityException {
 		//request
-		AspectAdviceRuleRegistry aspectAdviceRuleRegistry = requestRule.getAspectAdviceRuleRegistry();
-
+		joinpointScopeType = JoinpointScopeType.REQUEST;
+		
 		try {
-			if(aspectAdviceRuleRegistry != null) {
-				List<AspectAdviceRule> finallyAdviceRuleList = aspectAdviceRuleRegistry.getFinallyAdviceRuleList();
-	
-				if(finallyAdviceRuleList != null) {
-					try {
-						request(aspectAdviceRuleRegistry);
-					} finally {
-						execute(finallyAdviceRuleList);
-					}
-				} else {
-					request(aspectAdviceRuleRegistry);
+			try {
+				// execute Before Advice Action for Request Joinpoint
+				if(requestAspectAdviceRuleRegistry != null) {
+					List<AspectAdviceRule> beforeAdviceRuleList = requestAspectAdviceRuleRegistry.getBeforeAdviceRuleList();
+
+					if(beforeAdviceRuleList != null)
+						execute(beforeAdviceRuleList);
 				}
-			} else {
+				
+				if(isResponseEnd)
+					return;
+				
 				request();
+				
+				if(isResponseEnd)
+					return;
+				
+				// execute After Advice Action for Request Joinpoint
+				if(requestAspectAdviceRuleRegistry != null) {
+					List<AspectAdviceRule> afterAdviceRuleList = requestAspectAdviceRuleRegistry.getAfterAdviceRuleList();
+					
+					if(afterAdviceRuleList != null)
+						execute(afterAdviceRuleList);
+				}
+			} finally {
+				if(requestAspectAdviceRuleRegistry != null) {
+					List<AspectAdviceRule> finallyAdviceRuleList = requestAspectAdviceRuleRegistry.getFinallyAdviceRuleList();
+					
+					if(finallyAdviceRuleList != null)
+						execute(finallyAdviceRuleList);
+				}
 			}
 		} catch(Exception e) {
 			setRaisedException(e);
 			
-			if(aspectAdviceRuleRegistry != null) {
-				List<AspectAdviceRule> exceptionRaizedAdviceRuleList = aspectAdviceRuleRegistry.getExceptionRaizedAdviceRuleList();
+			if(requestAspectAdviceRuleRegistry != null) {
+				List<AspectAdviceRule> exceptionRaizedAdviceRuleList = requestAspectAdviceRuleRegistry.getExceptionRaizedAdviceRuleList();
 				
 				if(exceptionRaizedAdviceRuleList != null) {
 					responseByContentType(exceptionRaizedAdviceRuleList);
@@ -398,32 +434,49 @@ public abstract class AbstractCoreActivity implements CoreActivity {
 			return;
 		
 		//content
+		joinpointScopeType = JoinpointScopeType.CONTENT;
+		
 		ContentList contentList = transletRule.getContentList();
 		
 		if(contentList != null) {
 			try {
-				aspectAdviceRuleRegistry = contentList.getAspectAdviceRuleRegistry();
-		
-				if(aspectAdviceRuleRegistry != null) {
-					List<AspectAdviceRule> finallyAdviceRuleList = aspectAdviceRuleRegistry.getFinallyAdviceRuleList();
-		
-					if(finallyAdviceRuleList != null) {
-						try {
-							process(aspectAdviceRuleRegistry);
-						} finally {
-							execute(finallyAdviceRuleList);
-						}
-					} else {
-						process(aspectAdviceRuleRegistry);
+				try {
+					// execute Before Advice Action for Content Joinpoint
+					if(contentAspectAdviceRuleRegistry != null) {
+						List<AspectAdviceRule> beforeAdviceRuleList = contentAspectAdviceRuleRegistry.getBeforeAdviceRuleList();
+
+						if(beforeAdviceRuleList != null)
+							execute(beforeAdviceRuleList);
 					}
-				} else {
+					
+					if(isResponseEnd)
+						return;
+					
 					process();
+					
+					if(isResponseEnd)
+						return;
+					
+					// execute After Advice Action for Content Joinpoint
+					if(contentAspectAdviceRuleRegistry != null) {
+						List<AspectAdviceRule> afterAdviceRuleList = contentAspectAdviceRuleRegistry.getAfterAdviceRuleList();
+						
+						if(afterAdviceRuleList != null)
+							execute(afterAdviceRuleList);
+					}
+				} finally {
+					if(contentAspectAdviceRuleRegistry != null) {
+						List<AspectAdviceRule> finallyAdviceRuleList = contentAspectAdviceRuleRegistry.getFinallyAdviceRuleList();
+						
+						if(finallyAdviceRuleList != null)
+							execute(finallyAdviceRuleList);
+					}
 				}
 			} catch(Exception e) {
 				setRaisedException(e);
 				
-				if(aspectAdviceRuleRegistry != null) {
-					List<AspectAdviceRule> exceptionRaizedAdviceRuleList = aspectAdviceRuleRegistry.getExceptionRaizedAdviceRuleList();
+				if(contentAspectAdviceRuleRegistry != null) {
+					List<AspectAdviceRule> exceptionRaizedAdviceRuleList = contentAspectAdviceRuleRegistry.getExceptionRaizedAdviceRuleList();
 					
 					if(exceptionRaizedAdviceRuleList != null) {
 						responseByContentType(exceptionRaizedAdviceRuleList);
@@ -455,29 +508,46 @@ public abstract class AbstractCoreActivity implements CoreActivity {
 			return;
 		
 		//response
-		aspectAdviceRuleRegistry = responseRule.getAspectAdviceRuleRegistry();
-
+		joinpointScopeType = JoinpointScopeType.RESPONSE;
+		
 		try {
-			if(aspectAdviceRuleRegistry != null) {
-				List<AspectAdviceRule> finallyAdviceRuleList = aspectAdviceRuleRegistry.getFinallyAdviceRuleList();
-	
-				if(finallyAdviceRuleList != null) {
-					try {
-						response(aspectAdviceRuleRegistry);
-					} finally {
-						execute(finallyAdviceRuleList);
-					}
-				} else {
-					response(aspectAdviceRuleRegistry);
+			try {
+				// execute Before Advice Action for Request Joinpoint
+				if(responseAspectAdviceRuleRegistry != null) {
+					List<AspectAdviceRule> beforeAdviceRuleList = responseAspectAdviceRuleRegistry.getBeforeAdviceRuleList();
+
+					if(beforeAdviceRuleList != null)
+						execute(beforeAdviceRuleList);
 				}
-			} else {
+				
+				if(isResponseEnd)
+					return;
+				
 				response();
+				
+				if(isResponseEnd)
+					return;
+				
+				// execute After Advice Action for Request Joinpoint
+				if(responseAspectAdviceRuleRegistry != null) {
+					List<AspectAdviceRule> afterAdviceRuleList = responseAspectAdviceRuleRegistry.getAfterAdviceRuleList();
+					
+					if(afterAdviceRuleList != null)
+						execute(afterAdviceRuleList);
+				}
+			} finally {
+				if(responseAspectAdviceRuleRegistry != null) {
+					List<AspectAdviceRule> finallyAdviceRuleList = responseAspectAdviceRuleRegistry.getFinallyAdviceRuleList();
+					
+					if(finallyAdviceRuleList != null)
+						execute(finallyAdviceRuleList);
+				}
 			}
 		} catch(Exception e) {
 			setRaisedException(e);
 			
-			if(aspectAdviceRuleRegistry != null) {
-				List<AspectAdviceRule> exceptionRaizedAdviceRuleList = aspectAdviceRuleRegistry.getExceptionRaizedAdviceRuleList();
+			if(responseAspectAdviceRuleRegistry != null) {
+				List<AspectAdviceRule> exceptionRaizedAdviceRuleList = responseAspectAdviceRuleRegistry.getExceptionRaizedAdviceRuleList();
 				
 				if(exceptionRaizedAdviceRuleList != null) {
 					responseByContentType(exceptionRaizedAdviceRuleList);
@@ -492,56 +562,11 @@ public abstract class AbstractCoreActivity implements CoreActivity {
 		}
 	}
 	
-	private void request(AspectAdviceRuleRegistry aspectAdviceRuleRegistry) throws RequestException, ActionExecutionException {
-		List<AspectAdviceRule> beforeAdviceRuleList = aspectAdviceRuleRegistry.getBeforeAdviceRuleList();
-		List<AspectAdviceRule> afterAdviceRuleList = aspectAdviceRuleRegistry.getAfterAdviceRuleList();
-
-		// execute Before Advice Action
-		if(beforeAdviceRuleList != null)
-			execute(beforeAdviceRuleList);
-		
-		if(isResponseEnd)
-			return;
-		
-		request();
-		
-		if(isResponseEnd)
-			return;
-		
-		// execute After Advice Action
-		if(afterAdviceRuleList != null)
-			execute(afterAdviceRuleList);
-	}
-	
 	public void request() throws RequestException {
 		request(translet);
 	}
 	
 	protected abstract void request(CoreTranslet translet) throws RequestException;
-	
-	public ProcessResult process(AspectAdviceRuleRegistry aspectAdviceRuleRegistry) throws CoreActivityException {
-		List<AspectAdviceRule> beforeAdviceRuleList = aspectAdviceRuleRegistry.getBeforeAdviceRuleList();
-		List<AspectAdviceRule> afterAdviceRuleList = aspectAdviceRuleRegistry.getAfterAdviceRuleList();
-
-		// execute Before Advice Action
-		if(beforeAdviceRuleList != null) {
-			execute(beforeAdviceRuleList);
-		
-			if(isResponseEnd)
-				return translet.getProcessResult();
-		}
-		
-		process();
-		
-		if(isResponseEnd)
-			return translet.getProcessResult();
-		
-		// execute After Advice Action
-		if(afterAdviceRuleList != null)
-			execute(afterAdviceRuleList);
-		
-		return translet.getProcessResult();
-	}
 	
 	public ProcessResult process() throws CoreActivityException {
 		// execute action on contents area
@@ -564,28 +589,6 @@ public abstract class AbstractCoreActivity implements CoreActivity {
 			return null;
 		
 		return translet.getProcessResult();
-	}
-	
-	private void response(AspectAdviceRuleRegistry aspectAdviceRuleRegistry) throws CoreActivityException {
-		List<AspectAdviceRule> beforeAdviceRuleList = aspectAdviceRuleRegistry.getBeforeAdviceRuleList();
-		List<AspectAdviceRule> afterAdviceRuleList = aspectAdviceRuleRegistry.getAfterAdviceRuleList();
-
-		// execute Before Advice Action
-		if(beforeAdviceRuleList != null) {
-			execute(beforeAdviceRuleList);
-		
-			if(isResponseEnd)
-				return;
-		}
-		
-		response();
-		
-		if(isResponseEnd)
-			return;
-		
-		// execute After Advice Action
-		if(afterAdviceRuleList != null)
-			execute(afterAdviceRuleList);
 	}
 	
 	protected void response() throws CoreActivityException {
@@ -894,7 +897,7 @@ public abstract class AbstractCoreActivity implements CoreActivity {
 	 * @see com.aspectran.core.activity.CoreActivity#getBean(java.lang.String)
 	 */
 	public Object getBean(String id) {
-		return context.getBeanRegistry().getBean(id, this);
+		return context.getLocalBeanRegistry().getBean(id);
 	}
 	
 	/* (non-Javadoc)
@@ -994,24 +997,59 @@ public abstract class AbstractCoreActivity implements CoreActivity {
 	public void setResponseRule(ResponseRule responseRule) {
 		this.responseRule = responseRule;
 	}
+
+	public AspectRuleRegistry getAspectRuleRegistry() {
+		return context.getAspectRuleRegistry();
+	}
 	
 	/* (non-Javadoc)
 	 * @see com.aspectran.core.activity.CoreActivity#getBeanRegistry()
 	 */
 	public BeanRegistry getBeanRegistry() {
-		return context.getBeanRegistry();
-	}
-
-	public Object getRequestSetting(String settingName) {
-		return getSetting(requestRule.getAspectAdviceRuleRegistry(), settingName);
-	}
-	
-	public Object getResponseSetting(String settingName) {
-		return getSetting(responseRule.getAspectAdviceRuleRegistry(), settingName);
+		return context.getLocalBeanRegistry();
 	}
 	
 	public Object getTransletSetting(String settingName) {
-		return getSetting(transletRule.getAspectAdviceRuleRegistry(), settingName);
+		return getSetting(transletAspectAdviceRuleRegistry, settingName);
+	}
+	
+	public Object getRequestSetting(String settingName) {
+		return getSetting(requestAspectAdviceRuleRegistry, settingName);
+	}
+	
+	public Object getResponseSetting(String settingName) {
+		return getSetting(responseAspectAdviceRuleRegistry, settingName);
+	}
+	
+	public void registerAspectRule(AspectRule aspectRule) throws ActionExecutionException {
+		JoinpointScopeType joinpointScope2 = aspectRule.getJoinpointScope();
+		
+		if(this.joinpointScopeType == JoinpointScopeType.TRANSLET || this.joinpointScopeType == joinpointScope2) {
+			if(JoinpointScopeType.TRANSLET == joinpointScope2) {
+				AspectAdviceRuleRegister.register(transletAspectAdviceRuleRegistry, aspectRule);
+			} else if(JoinpointScopeType.REQUEST == joinpointScope2) {
+				AspectAdviceRuleRegister.register(requestAspectAdviceRuleRegistry, aspectRule);
+			} else if(JoinpointScopeType.RESPONSE == joinpointScope2) {
+				AspectAdviceRuleRegister.register(responseAspectAdviceRuleRegistry, aspectRule);
+			} else if(JoinpointScopeType.CONTENT == joinpointScope2) {
+				AspectAdviceRuleRegister.register(contentAspectAdviceRuleRegistry, aspectRule);
+			}
+			
+			List<AspectAdviceRule> aspectAdviceRuleList = aspectRule.getAspectAdviceRuleList();
+			List<AspectAdviceRule> beforeAdviceRuleList = null;
+			
+			for(AspectAdviceRule aspectAdviceRule : aspectAdviceRuleList) {
+				if(aspectAdviceRule.getAspectAdviceType() == AspectAdviceType.BEFORE) {
+					if(beforeAdviceRuleList == null)
+						beforeAdviceRuleList = new ArrayList<AspectAdviceRule>();
+					
+					beforeAdviceRuleList.add(aspectAdviceRule);
+				}
+			}
+			
+			if(beforeAdviceRuleList != null)
+				execute(beforeAdviceRuleList);
+		}
 	}
 	
 	private Object getSetting(AspectAdviceRuleRegistry aspectAdviceRuleRegistry, String settingName) {
@@ -1023,6 +1061,10 @@ public abstract class AbstractCoreActivity implements CoreActivity {
 	
 	public Object getAspectAdviceBean(String aspectId) {
 		return translet.getAspectAdviceBean(aspectId);
+	}
+	
+	public JoinpointScopeType getJoinpointScope() {
+		return joinpointScopeType;
 	}
 	
 	public void close() {

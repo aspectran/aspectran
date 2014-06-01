@@ -31,8 +31,8 @@ public class WebTransletImpl extends AbstractCoreTranslet implements WebTranslet
 	 *
 	 * @param activity the activity
 	 */
-	public WebTransletImpl(CoreActivity activity, boolean aspectAdvicable) {
-		super(activity, aspectAdvicable);
+	public WebTransletImpl(CoreActivity activity) {
+		super(activity);
 	}
 
 	/* (non-Javadoc)

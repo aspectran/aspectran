@@ -16,12 +16,17 @@
 package com.aspectran.core.context.builder;
 
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.context.aspect.AspectAdviceRuleRegister;
-import com.aspectran.core.context.bean.BeanRegistry;
+import com.aspectran.core.context.aspect.AspectAdviceRulePreRegister;
+import com.aspectran.core.context.aspect.AspectRuleRegistry;
+import com.aspectran.core.context.aspect.pointcut.Pointcut;
+import com.aspectran.core.context.aspect.pointcut.PointcutFactory;
+import com.aspectran.core.context.bean.LocalBeanRegistry;
 import com.aspectran.core.context.bean.ScopedBeanRegistry;
 import com.aspectran.core.context.translet.TransletRuleRegistry;
+import com.aspectran.core.var.rule.AspectRule;
 import com.aspectran.core.var.rule.AspectRuleMap;
 import com.aspectran.core.var.rule.BeanRuleMap;
+import com.aspectran.core.var.rule.PointcutRule;
 import com.aspectran.core.var.rule.TransletRuleMap;
 import com.aspectran.core.var.type.DefaultSettingType;
 
@@ -41,28 +46,41 @@ public abstract class AbstractActivityContextBuilder extends ContextBuilderAssis
 		BeanRuleMap beanRuleMap = getBeanRuleMap();
 		TransletRuleMap transletRuleMap = getTransletRuleMap();
 		
-		registerAspectAdviceRule(aspectRuleMap, beanRuleMap, transletRuleMap);
-		BeanRegistry beanRegistry = makeBeanRegistry(beanRuleMap);
+		AspectRuleRegistry aspectRuleRegistry = makeAspectRuleRegistry(aspectRuleMap, beanRuleMap, transletRuleMap);
+		LocalBeanRegistry beanRegistry = makeBeanRegistry(beanRuleMap);
 		TransletRuleRegistry transletRuleRegistry = makeTransletRegistry(transletRuleMap);
 		
 		BeanReferenceInspector beanReferenceInspector = getBeanReferenceInspector();
 		beanReferenceInspector.inpect(beanRuleMap);
 		
 		ActivityContext context = new ActivityContext();
-		context.setAspectRuleMap(aspectRuleMap);
-		context.setBeanRegistry(beanRegistry);
+		context.setAspectRuleRegistry(aspectRuleRegistry);
+		context.setLocalBeanRegistry(beanRegistry);
 		context.setTransletRuleRegistry(transletRuleRegistry);
 		context.setActivityDefaultHandler((String)getSetting(DefaultSettingType.ACTIVITY_DEFAULT_HANDLER));
 		
 		return context;
 	}
 	
-	protected void registerAspectAdviceRule(AspectRuleMap aspectRuleMap, BeanRuleMap beanRuleMap, TransletRuleMap transletRuleMap) {
-		AspectAdviceRuleRegister aspectAdviceRuleRegister = new AspectAdviceRuleRegister(aspectRuleMap);
+	protected AspectRuleRegistry makeAspectRuleRegistry(AspectRuleMap aspectRuleMap, BeanRuleMap beanRuleMap, TransletRuleMap transletRuleMap) {
+		PointcutFactory pointcutFactory = new PointcutFactory();
+		
+		for(AspectRule aspectRule : aspectRuleMap) {
+			PointcutRule pointcutRule = aspectRule.getPointcutRule();
+			
+			if(pointcutRule != null) {
+				Pointcut pointcut = pointcutFactory.createPointcut(pointcutRule);
+				aspectRule.setPointcut(pointcut);
+			}
+		}
+		
+		AspectAdviceRulePreRegister aspectAdviceRuleRegister = new AspectAdviceRulePreRegister(aspectRuleMap);
 		aspectAdviceRuleRegister.register(beanRuleMap, transletRuleMap);
+		
+		return new AspectRuleRegistry(aspectRuleMap);
 	}
 	
-	protected BeanRegistry makeBeanRegistry(BeanRuleMap beanRuleMap) {
+	protected LocalBeanRegistry makeBeanRegistry(BeanRuleMap beanRuleMap) {
 		beanRuleMap.freeze();
 		
 		return new ScopedBeanRegistry(beanRuleMap);

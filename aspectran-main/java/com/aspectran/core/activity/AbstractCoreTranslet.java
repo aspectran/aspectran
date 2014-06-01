@@ -47,7 +47,7 @@ public abstract class AbstractCoreTranslet implements CoreTranslet {
 	
 	private ContentResult contentResult;
 	
-	private final AspectAdviceResult aspectAdviceResult;
+	private AspectAdviceResult aspectAdviceResult;
 	
 	/**
 	 * Instantiates a new active translet.
@@ -55,13 +55,8 @@ public abstract class AbstractCoreTranslet implements CoreTranslet {
 	 * @param transletRule the translet rule
 	 * @param output the output
 	 */
-	protected AbstractCoreTranslet(CoreActivity activity, boolean aspectAdvicable) {
+	protected AbstractCoreTranslet(CoreActivity activity) {
 		this.activity = activity;
-		
-		if(aspectAdvicable)
-			aspectAdviceResult = new AspectAdviceResult();
-		else
-			aspectAdviceResult = null;
 	}
 	
 	public Map<String, Object> getDeclaredAttributeMap() {
@@ -259,7 +254,7 @@ public abstract class AbstractCoreTranslet implements CoreTranslet {
 	
 	public void putAspectAdviceBean(String aspectId, Object adviceBean) {
 		if(aspectAdviceResult == null)
-			return;
+			aspectAdviceResult = new AspectAdviceResult();
 		
 		aspectAdviceResult.putAspectAdviceBean(aspectId, adviceBean);
 	}
@@ -287,7 +282,7 @@ public abstract class AbstractCoreTranslet implements CoreTranslet {
 	
 	public void putAdviceResult(AspectAdviceRule aspectAdviceRule, Object adviceActionResult) {
 		if(aspectAdviceResult == null)
-			return;
+			aspectAdviceResult = new AspectAdviceResult();
 		
 		aspectAdviceResult.putAdviceResult(aspectAdviceRule, adviceActionResult);
 	}

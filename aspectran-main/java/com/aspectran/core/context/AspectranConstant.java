@@ -37,4 +37,6 @@ public interface AspectranConstant {
 	
 	public static final char POINTCUT_METHOD_DELIMITER = '^';
 
+	public static final char JOINPOINT_SCOPE_DELIMITER = '$';
+
 }

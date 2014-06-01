@@ -90,6 +90,30 @@ public class PointcutPattern {
 		return sb.toString();
 	}
 	
+	public static String combinePatternString(String joinpointScope, String transletName, String beanId, String methodName) {
+		StringBuilder sb = new StringBuilder();
+		
+		if(joinpointScope != null) {
+			sb.append(joinpointScope);
+			sb.append(AspectranConstant.JOINPOINT_SCOPE_DELIMITER);
+		}
+		
+		if(transletName != null)
+			sb.append(transletName);
+		
+		if(beanId != null) {
+			sb.append(AspectranConstant.POINTCUT_BEAN_DELIMITER);
+			sb.append(beanId);
+		}
+		
+		if(methodName != null) {
+			sb.append(AspectranConstant.POINTCUT_METHOD_DELIMITER);
+			sb.append(methodName);
+		}
+		
+		return sb.toString();
+	}
+	
 	public static PointcutPattern createPointcutPattern(PointcutPatternOperationType pointcutPatternOperationType, String pattern) {
 		PointcutPattern pointcutPattern = new PointcutPattern();
 		pointcutPattern.setPointcutPatternOperationType(pointcutPatternOperationType);

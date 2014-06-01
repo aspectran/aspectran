@@ -273,7 +273,7 @@ public class TokenExpression implements TokenExpressor {
 	}
 
 	protected Object referenceBean(Token token) {
-		Object value = beanRegistry.getBean(token.getName(), activity);
+		Object value = beanRegistry.getBean(token.getName());
 		
 		if(value != null) {
 			if(token.getGetterName() != null)

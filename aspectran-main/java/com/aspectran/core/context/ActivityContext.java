@@ -15,27 +15,39 @@
  */
 package com.aspectran.core.context;
 
+import com.aspectran.core.activity.CoreActivity;
 import com.aspectran.core.adapter.ApplicationAdapter;
-import com.aspectran.core.context.bean.BeanRegistry;
+import com.aspectran.core.context.aspect.AspectRuleRegistry;
+import com.aspectran.core.context.bean.LocalBeanRegistry;
 import com.aspectran.core.context.translet.TransletRuleRegistry;
-import com.aspectran.core.var.rule.AspectRuleMap;
 
 /**
  * <p>Created: 2008. 06. 09 오후 2:12:40</p>
  */
 public class ActivityContext {
+	
+	private static ThreadLocal<CoreActivity> activityThreadLocal = new ThreadLocal<CoreActivity>();
 
 	private ApplicationAdapter applicationAdapter;
 	
-	private AspectRuleMap aspectRuleMap;
+	private AspectRuleRegistry aspectRuleRegistry;
 	
-	private BeanRegistry beanRegistry;
+	private LocalBeanRegistry beanRegistry;
 
 	private TransletRuleRegistry transletRuleRegistry;
 	
 	private String activityDefaultHandler;
 	
 	public ActivityContext() {
+	}
+	
+	public static CoreActivity getCoreActivity() {
+		return activityThreadLocal.get();
+	}
+	
+	public static void setCoreActivity(CoreActivity activity) {
+		if(activityThreadLocal.get() == null)
+			activityThreadLocal.set(activity);
 	}
 	
 	/**
@@ -56,12 +68,12 @@ public class ActivityContext {
 		this.applicationAdapter = applicationAdapter;
 	}
 
-	public AspectRuleMap getAspectRuleMap() {
-		return aspectRuleMap;
+	public AspectRuleRegistry getAspectRuleRegistry() {
+		return aspectRuleRegistry;
 	}
 
-	public void setAspectRuleMap(AspectRuleMap aspectRuleMap) {
-		this.aspectRuleMap = aspectRuleMap;
+	public void setAspectRuleRegistry(AspectRuleRegistry aspectRuleRegistry) {
+		this.aspectRuleRegistry = aspectRuleRegistry;
 	}
 
 	/**
@@ -69,7 +81,7 @@ public class ActivityContext {
 	 *
 	 * @return the bean registry
 	 */
-	public BeanRegistry getBeanRegistry() {
+	public LocalBeanRegistry getLocalBeanRegistry() {
 		return beanRegistry;
 	}
 
@@ -78,7 +90,7 @@ public class ActivityContext {
 	 *
 	 * @param beanRegistry the new bean registry
 	 */
-	public void setBeanRegistry(BeanRegistry beanRegistry) {
+	public void setLocalBeanRegistry(LocalBeanRegistry beanRegistry) {
 		this.beanRegistry = beanRegistry;
 	}
 

@@ -20,6 +20,8 @@ public class AspectAdviceRuleRegistry {
 	private List<AspectAdviceRule> finallyAdviceRuleList;
 	
 	private List<AspectAdviceRule> exceptionRaizedAdviceRuleList;
+	
+	private int aspectRuleCount;
 
 	public List<AspectAdviceRule> getBeforeAdviceRuleList() {
 		return beforeAdviceRuleList;
@@ -110,6 +112,22 @@ public class AspectAdviceRuleRegistry {
 			return null;
 		
 		return settings.get(settingName);
+	}
+	
+	public Object clone() throws CloneNotSupportedException {                      
+		return super.clone();              
+	}
+
+	public int getAspectRuleCount() {
+		return aspectRuleCount;
+	}
+
+	public void setAspectRuleCount(int aspectRuleCount) {
+		this.aspectRuleCount = aspectRuleCount;
+	}
+	
+	public void increaseAspectRuleCount() {
+		this.aspectRuleCount++;
 	}
 	
 }
