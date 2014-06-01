@@ -21,6 +21,7 @@ import com.aspectran.core.var.rule.BeanRuleMap;
 import com.aspectran.core.var.rule.ItemRule;
 import com.aspectran.core.var.rule.ItemRuleMap;
 import com.aspectran.core.var.token.ItemTokenExpressor;
+import com.aspectran.core.var.type.BeanProxyModeType;
 import com.aspectran.core.var.type.JoinpointScopeType;
 import com.aspectran.core.var.type.ScopeType;
 
@@ -34,6 +35,8 @@ public abstract class AbstractBeanRegistry {
 	private Map<String, List<AspectRule>> aspectRuleCache = new HashMap<String, List<AspectRule>>();
 	
 	protected final BeanRuleMap beanRuleMap;
+	
+	private BeanProxyModeType beanProxyMode;
 	
 	protected AbstractBeanRegistry(BeanRuleMap beanRuleMap) {
 		this.beanRuleMap = beanRuleMap;
