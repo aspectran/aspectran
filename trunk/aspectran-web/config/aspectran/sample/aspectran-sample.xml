@@ -13,6 +13,7 @@
 		<setting name="useNamespaces" value="true"/>
 		<setting name="nullableContentId" value="true"/>
 		<setting name="nullableActionId" value="true"/>
+		<setting name="beanProxyMode" value="cglib"/>
 	</settings>
 	
 	<aspect id="defaultRequestRule">
