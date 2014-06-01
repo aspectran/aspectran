@@ -233,7 +233,7 @@ public abstract class AbstractCoreTranslet implements CoreTranslet {
 		return activity.getTransletInterfaceClass();
 	}
 
-	public Class<? extends AbstractCoreTranslet> getTransletImplementClass() {
+	public Class<? extends CoreTransletImpl> getTransletImplementClass() {
 		return activity.getTransletImplementClass();
 	}
 

@@ -88,7 +88,7 @@ public abstract class AbstractCoreActivity implements CoreActivity {
 	private Class<? extends CoreTranslet> transletInterfaceClass;
 	
 	/** The translet instance class. */
-	private Class<? extends AbstractCoreTranslet> transletImplementClass;
+	private Class<? extends CoreTransletImpl> transletImplementClass;
 
 	/** The translet rule. */
 	private TransletRule transletRule;
@@ -128,8 +128,6 @@ public abstract class AbstractCoreActivity implements CoreActivity {
 	
 	private JoinpointScopeType joinpointScopeType = JoinpointScopeType.TRANSLET;
 	
-	//private AspectAdviceResult aspectAdviceResult;
-	
 	/**
 	 * Instantiates a new action translator.
 	 *
@@ -137,8 +135,6 @@ public abstract class AbstractCoreActivity implements CoreActivity {
 	 */
 	public AbstractCoreActivity(ActivityContext context) {
 		this.context = context;
-		
-		//LocalActivityStack.pushActivity(this);
 	}
 
 	/* (non-Javadoc)
@@ -189,6 +185,10 @@ public abstract class AbstractCoreActivity implements CoreActivity {
 		this.sessionAdapter = sessionAdapter;
 	}
 	
+	public CoreTranslet getSuperTranslet() {
+		return translet;
+	}
+
 	/**
 	 * Gets the translet interface class.
 	 *
@@ -215,9 +215,7 @@ public abstract class AbstractCoreActivity implements CoreActivity {
 	 *
 	 * @return the translet instance class
 	 */
-	public Class<? extends AbstractCoreTranslet> getTransletImplementClass() {
-		if(transletRule != null && transletRule.getTransletImplementClass() != null)
-			return transletRule.getTransletImplementClass();
+	public Class<? extends CoreTransletImpl> getTransletImplementClass() {
 
 		return transletImplementClass;
 	}
@@ -227,12 +225,8 @@ public abstract class AbstractCoreActivity implements CoreActivity {
 	 *
 	 * @param transletInstanceClass the new translet instance class
 	 */
-	public void setTransletImplementClass(Class<? extends AbstractCoreTranslet> transletImplementClass) {
+	public void setTransletImplementClass(Class<? extends CoreTransletImpl> transletImplementClass) {
 		this.transletImplementClass = transletImplementClass;
-	}
-
-	public CoreTranslet getSuperTranslet() {
-		return translet;
 	}
 
 	public void init(String transletName) throws CoreActivityException {
@@ -253,8 +247,11 @@ public abstract class AbstractCoreActivity implements CoreActivity {
 			logger.debug("translet " + transletRule);
 		}
 
-		Class<? extends CoreTranslet> transletInterfaceClass = getTransletInterfaceClass();
-		Class<? extends AbstractCoreTranslet> transletImplementClass = getTransletImplementClass();
+		if(transletRule.getTransletInterfaceClass() != null)
+			transletInterfaceClass = transletRule.getTransletInterfaceClass();
+
+		if(transletRule.getTransletImplementClass() != null)
+			transletImplementClass = transletRule.getTransletImplementClass();
 
 		//create translet instance
 		try {
@@ -662,10 +659,9 @@ public abstract class AbstractCoreActivity implements CoreActivity {
 	}
 	
 	private void execute(Executable action, AspectAdviceRuleRegistry aspectAdviceRuleRegistry) throws ActionExecutionException {
-		List<AspectAdviceRule> beforeAdviceRuleList = aspectAdviceRuleRegistry.getBeforeAdviceRuleList();
-		List<AspectAdviceRule> afterAdviceRuleList = aspectAdviceRuleRegistry.getAfterAdviceRuleList();
-
 		// execute Before Advice Action
+		List<AspectAdviceRule> beforeAdviceRuleList = aspectAdviceRuleRegistry.getBeforeAdviceRuleList();
+		
 		if(beforeAdviceRuleList != null) {
 			execute(beforeAdviceRuleList);
 		
@@ -679,6 +675,8 @@ public abstract class AbstractCoreActivity implements CoreActivity {
 			return;
 		
 		// execute After Advice Action
+		List<AspectAdviceRule> afterAdviceRuleList = aspectAdviceRuleRegistry.getAfterAdviceRuleList();
+
 		if(afterAdviceRuleList != null)
 			execute(afterAdviceRuleList);
 	}
@@ -1068,7 +1066,6 @@ public abstract class AbstractCoreActivity implements CoreActivity {
 	}
 	
 	public void close() {
-		//LocalActivityStack.popActivity();
 	}
 	
 }

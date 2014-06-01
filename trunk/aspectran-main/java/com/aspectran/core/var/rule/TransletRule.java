@@ -18,8 +18,8 @@ package com.aspectran.core.var.rule;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.aspectran.core.activity.AbstractCoreTranslet;
 import com.aspectran.core.activity.CoreTranslet;
+import com.aspectran.core.activity.CoreTransletImpl;
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.activity.process.ContentList;
 import com.aspectran.core.activity.process.action.BeanAction;
@@ -58,7 +58,7 @@ public class TransletRule implements ActionAddable, ResponseSettable, AspectAdvi
 	
 	private Class<? extends CoreTranslet> transletInterfaceClass;
 	
-	private Class<? extends AbstractCoreTranslet> transletInstanceClass;
+	private Class<? extends CoreTransletImpl> transletInstanceClass;
 
 	private AspectAdviceRuleRegistry aspectAdviceRuleRegistry;
 	
@@ -258,11 +258,11 @@ public class TransletRule implements ActionAddable, ResponseSettable, AspectAdvi
 		this.transletInterfaceClass = transletInterfaceClass;
 	}
 
-	public Class<? extends AbstractCoreTranslet> getTransletImplementClass() {
+	public Class<? extends CoreTransletImpl> getTransletImplementClass() {
 		return transletInstanceClass;
 	}
 
-	public void setTransletInstanceClass(Class<? extends AbstractCoreTranslet> transletInstanceClass) {
+	public void setTransletInstanceClass(Class<? extends CoreTransletImpl> transletInstanceClass) {
 		this.transletInstanceClass = transletInstanceClass;
 	}
 

@@ -13,24 +13,20 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.aspectran.scheduler.activity;
+package com.aspectran.core.activity;
 
-import com.aspectran.core.activity.CoreActivity;
-import com.aspectran.core.activity.CoreTransletImpl;
 
 /**
  * The Class AspectranWebTranslet.
- * 
- * <p>Created: 2013. 11. 18 오후 3:40:48</p>
  */
-public class JobTransletImpl extends CoreTransletImpl implements JobTranslet {
+public class CoreTransletImpl extends AbstractCoreTranslet implements CoreTranslet {
 	
 	/**
 	 * Instantiates a new aspectran web translet.
 	 *
 	 * @param activity the activity
 	 */
-	public JobTransletImpl(CoreActivity activity) {
+	public CoreTransletImpl(CoreActivity activity) {
 		super(activity);
 	}
 	
