@@ -37,7 +37,7 @@ public class BeanReferenceInspector {
 		}
 	}
 	
-	public void inpect(BeanRuleMap beanRuleMap) {
+	public void inspect(BeanRuleMap beanRuleMap) {
 		List<String> unknownBeanIdList = new ArrayList<String>();
 		
 		for(Map.Entry<String, Set<Object>> entry : relationMap.entrySet()) {

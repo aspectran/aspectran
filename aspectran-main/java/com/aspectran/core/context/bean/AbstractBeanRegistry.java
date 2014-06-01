@@ -36,10 +36,11 @@ public abstract class AbstractBeanRegistry {
 	
 	protected final BeanRuleMap beanRuleMap;
 	
-	private BeanProxyModeType beanProxyMode;
+	private final BeanProxyModeType beanProxyMode;
 	
-	protected AbstractBeanRegistry(BeanRuleMap beanRuleMap) {
+	protected AbstractBeanRegistry(BeanRuleMap beanRuleMap, BeanProxyModeType beanProxyMode) {
 		this.beanRuleMap = beanRuleMap;
+		this.beanProxyMode = (beanProxyMode == null ? BeanProxyModeType.CGLIB : beanProxyMode);
 		
 		for(BeanRule beanRule : beanRuleMap) {
 			ScopeType scope = beanRule.getScopeType();
@@ -123,7 +124,11 @@ public abstract class AbstractBeanRegistry {
 		Object obj = null;
 		
 		if(aspectRuleList.size() > 0) {
-			obj = CglibDynamicBeanProxy.newInstance(aspectRuleList, beanRule, argTypes, args);
+			if(beanProxyMode == BeanProxyModeType.JDK)
+				obj = CglibDynamicBeanProxy.newInstance(aspectRuleList, beanRule, argTypes, args);
+			else
+				obj = CglibDynamicBeanProxy.newInstance(aspectRuleList, beanRule, argTypes, args);
+			
 		} else {
 			if(argTypes != null && args != null)
 				obj = newInstance(beanRule, argTypes, args);

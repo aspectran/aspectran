@@ -12,6 +12,7 @@ import com.aspectran.core.var.rule.BeanRule;
 import com.aspectran.core.var.rule.BeanRuleMap;
 import com.aspectran.core.var.token.ItemTokenExpression;
 import com.aspectran.core.var.token.ItemTokenExpressor;
+import com.aspectran.core.var.type.BeanProxyModeType;
 import com.aspectran.core.var.type.ScopeType;
 
 /**
@@ -32,8 +33,8 @@ public class ScopedBeanRegistry extends AbstractBeanRegistry implements LocalBea
 	
 	private final Object applicationScopeLock = new Object();
 	
-	public ScopedBeanRegistry(BeanRuleMap beanRuleMap) {
-		super(beanRuleMap);
+	public ScopedBeanRegistry(BeanRuleMap beanRuleMap, BeanProxyModeType beanProxyMode) {
+		super(beanRuleMap, beanProxyMode);
 	}
 
 	public Object getBean(String id) {
