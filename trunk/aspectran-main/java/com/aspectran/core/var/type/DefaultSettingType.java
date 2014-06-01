@@ -53,6 +53,9 @@ public final class DefaultSettingType extends Type {
 	/** The Constant ACTIVITY_DEFAULT_HANDLER. */
 	public static final DefaultSettingType ACTIVITY_DEFAULT_HANDLER;
 	
+	/** The Constant BEAN_PROXY_MODE. */
+	public static final DefaultSettingType BEAN_PROXY_MODE;
+	
 	/** The Constant types. */
 	private static final Map<String, DefaultSettingType> types;
 	
@@ -67,6 +70,7 @@ public final class DefaultSettingType extends Type {
 		TRANSLET_INTERFACE_CLASS = new DefaultSettingType("transletInterfaceClass");
 		TRANSLET_IMPLEMENT_CLASS = new DefaultSettingType("transletImplementClass");
 		ACTIVITY_DEFAULT_HANDLER = new DefaultSettingType("activityDefaultHandler");
+		BEAN_PROXY_MODE = new DefaultSettingType("beanProxyMode");
 
 		types = new HashMap<String, DefaultSettingType>();
 		types.put(USE_NAMESPACES.toString(), USE_NAMESPACES);
@@ -79,6 +83,7 @@ public final class DefaultSettingType extends Type {
 		types.put(TRANSLET_INTERFACE_CLASS.toString(), TRANSLET_INTERFACE_CLASS);
 		types.put(TRANSLET_IMPLEMENT_CLASS.toString(), TRANSLET_IMPLEMENT_CLASS);
 		types.put(ACTIVITY_DEFAULT_HANDLER.toString(), ACTIVITY_DEFAULT_HANDLER);
+		types.put(BEAN_PROXY_MODE.toString(), BEAN_PROXY_MODE);
 	}
 
 	/**

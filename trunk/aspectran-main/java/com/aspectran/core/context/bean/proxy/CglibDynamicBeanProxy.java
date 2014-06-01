@@ -10,6 +10,9 @@ import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.aspectran.core.activity.CoreActivity;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.aspect.AspectAdviceRulePostRegister;
@@ -25,7 +28,10 @@ import com.aspectran.core.var.type.JoinpointScopeType;
  * 
  */
 public class CglibDynamicBeanProxy implements MethodInterceptor {
-	
+
+	/** The logger. */
+	private final Logger logger = LoggerFactory.getLogger(CglibDynamicBeanProxy.class);
+
 	private List<AspectRule> aspectRuleList;
 
 	private BeanRule beanRule;
@@ -79,15 +85,17 @@ public class CglibDynamicBeanProxy implements MethodInterceptor {
 				if(activity.isResponseEnd())
 					return null;
 				
-				System.out.print("begin method " + method.getName() + "(");
-	
-				for(int i = 0; i < args.length; i++) {
-					if(i > 0)
-						System.out.print(",");
-					System.out.print(" " + args[i].toString());
+				if(logger.isDebugEnabled()) {
+					StringBuilder sb = new StringBuilder();
+					sb.append("begin method ").append(method.getName()).append("(");
+					for(int i = 0; i < args.length; i++) {
+						if(i > 0)
+							sb.append(",");
+						sb.append(" ").append(args[i].toString());
+					}
+					sb.append(")");
+					logger.debug(sb.toString());
 				}
-	
-				System.out.println(" )");
 	
 				Object result = methodProxy.invokeSuper(object, args);
 				
@@ -102,7 +110,9 @@ public class CglibDynamicBeanProxy implements MethodInterceptor {
 				if(aspectAdviceRuleRegistry.getFinallyAdviceRuleList() != null)
 					activity.execute(aspectAdviceRuleRegistry.getFinallyAdviceRuleList());
 				
-				System.out.println("end method " + method.getName());
+				if(logger.isDebugEnabled()) {
+					logger.debug("end method " + method.getName());
+				}
 			}
 		} catch(Exception e) {
 			activity.setRaisedException(e);
