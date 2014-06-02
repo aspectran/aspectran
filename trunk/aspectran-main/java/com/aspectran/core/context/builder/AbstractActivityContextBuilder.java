@@ -15,12 +15,13 @@
  */
 package com.aspectran.core.context.builder;
 
+import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.aspect.AspectAdviceRulePreRegister;
 import com.aspectran.core.context.aspect.AspectRuleRegistry;
 import com.aspectran.core.context.aspect.pointcut.Pointcut;
 import com.aspectran.core.context.aspect.pointcut.PointcutFactory;
-import com.aspectran.core.context.bean.LocalBeanRegistry;
+import com.aspectran.core.context.bean.ContextBeanRegistry;
 import com.aspectran.core.context.bean.ScopedBeanRegistry;
 import com.aspectran.core.context.translet.TransletRuleRegistry;
 import com.aspectran.core.var.rule.AspectRule;
@@ -42,27 +43,27 @@ public abstract class AbstractActivityContextBuilder extends ContextBuilderAssis
 		super(applicationBasePath);
 	}
 	
-	protected ActivityContext makeActivityContext() {
+	protected ActivityContext makeActivityContext(ApplicationAdapter applicationAdapter) {
 		AspectRuleMap aspectRuleMap = getAspectRuleMap();
 		BeanRuleMap beanRuleMap = getBeanRuleMap();
 		TransletRuleMap transletRuleMap = getTransletRuleMap();
 		
-		AspectRuleRegistry aspectRuleRegistry = makeAspectRuleRegistry(aspectRuleMap, beanRuleMap, transletRuleMap);
-		
-		BeanProxyModeType beanProxyMode = BeanProxyModeType.valueOf((String)getSetting(DefaultSettingType.BEAN_PROXY_MODE));
-		LocalBeanRegistry beanRegistry = makeBeanRegistry(beanRuleMap, beanProxyMode);
-		beanRegistry.createSingletonBean(aspectRuleRegistry);
-		
-		TransletRuleRegistry transletRuleRegistry = makeTransletRegistry(transletRuleMap);
-		
 		BeanReferenceInspector beanReferenceInspector = getBeanReferenceInspector();
 		beanReferenceInspector.inspect(beanRuleMap);
 		
+		AspectRuleRegistry aspectRuleRegistry = makeAspectRuleRegistry(aspectRuleMap, beanRuleMap, transletRuleMap);
+		
 		ActivityContext context = new ActivityContext();
+		context.setApplicationAdapter(applicationAdapter);
 		context.setAspectRuleRegistry(aspectRuleRegistry);
-		context.setLocalBeanRegistry(beanRegistry);
-		context.setTransletRuleRegistry(transletRuleRegistry);
 		context.setActivityDefaultHandler((String)getSetting(DefaultSettingType.ACTIVITY_DEFAULT_HANDLER));
+
+		BeanProxyModeType beanProxyMode = BeanProxyModeType.valueOf((String)getSetting(DefaultSettingType.BEAN_PROXY_MODE));
+		ContextBeanRegistry beanRegistry = makeBeanRegistry(context, beanRuleMap, beanProxyMode);
+		context.setLocalBeanRegistry(beanRegistry);
+		
+		TransletRuleRegistry transletRuleRegistry = makeTransletRegistry(transletRuleMap);
+		context.setTransletRuleRegistry(transletRuleRegistry);
 		
 		return context;
 	}
@@ -85,10 +86,10 @@ public abstract class AbstractActivityContextBuilder extends ContextBuilderAssis
 		return new AspectRuleRegistry(aspectRuleMap);
 	}
 	
-	protected LocalBeanRegistry makeBeanRegistry(BeanRuleMap beanRuleMap, BeanProxyModeType beanProxyMode) {
+	protected ContextBeanRegistry makeBeanRegistry(ActivityContext context, BeanRuleMap beanRuleMap, BeanProxyModeType beanProxyMode) {
 		beanRuleMap.freeze();
 		
-		return new ScopedBeanRegistry(beanRuleMap, beanProxyMode);
+		return new ScopedBeanRegistry(context, beanRuleMap, beanProxyMode);
 	}
 
 	protected TransletRuleRegistry makeTransletRegistry(TransletRuleMap transletRuleMap) {

@@ -14,7 +14,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.aspectran.core.activity.CoreActivity;
-import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.aspect.AspectAdviceRulePostRegister;
 import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
 import com.aspectran.core.context.aspect.pointcut.Pointcut;
@@ -32,27 +31,19 @@ public class CglibDynamicBeanProxy implements MethodInterceptor {
 	/** The logger. */
 	private final Logger logger = LoggerFactory.getLogger(CglibDynamicBeanProxy.class);
 
+	private CoreActivity activity;
+	
 	private List<AspectRule> aspectRuleList;
 
 	private BeanRule beanRule;
 	
-	protected CglibDynamicBeanProxy(List<AspectRule> aspectRuleList, BeanRule beanRule) {
+	protected CglibDynamicBeanProxy(CoreActivity activity, List<AspectRule> aspectRuleList, BeanRule beanRule) {
+		this.activity = activity;
 		this.aspectRuleList = aspectRuleList;
 		this.beanRule = beanRule;
 	}
 
 	public Object intercept(Object object, Method method, Object[] args, MethodProxy methodProxy) throws Throwable {
-		CoreActivity activity = ActivityContext.getCoreActivity();
-		
-		if(activity == null) {
-			//TODO 
-			//activity = 
-		}
-		
-		if(activity == null) {
-			throw new RuntimeException("반드시 활동상태에서 proxy 모드 빈을 사용할 수 있음.");
-		}
-
 		String transletName = activity.getTransletName();
 		String beanId = beanRule.getId();
 		String methodName = method.getName();
@@ -70,7 +61,7 @@ public class CglibDynamicBeanProxy implements MethodInterceptor {
 				} else {
 					activity.registerAspectRule(aspectRule);
 					
-					if(activity.isResponseEnd())
+					if(activity.isActivityEnd())
 						return null;
 				}
 			}
@@ -87,7 +78,7 @@ public class CglibDynamicBeanProxy implements MethodInterceptor {
 				if(aspectAdviceRuleRegistry.getBeforeAdviceRuleList() != null)
 					activity.execute(aspectAdviceRuleRegistry.getBeforeAdviceRuleList());
 				
-				if(activity.isResponseEnd())
+				if(activity.isActivityEnd())
 					return null;
 				
 				if(logger.isDebugEnabled()) {
@@ -107,7 +98,7 @@ public class CglibDynamicBeanProxy implements MethodInterceptor {
 				if(aspectAdviceRuleRegistry.getAfterAdviceRuleList() != null)
 					activity.execute(aspectAdviceRuleRegistry.getAfterAdviceRuleList());
 				
-				if(activity.isResponseEnd())
+				if(activity.isActivityEnd())
 					return null;
 				
 				return result;
@@ -127,7 +118,7 @@ public class CglibDynamicBeanProxy implements MethodInterceptor {
 			if(exceptionRaizedAdviceRuleList != null) {
 				activity.responseByContentType(exceptionRaizedAdviceRuleList);
 				
-				if(activity.isResponseEnd()) {
+				if(activity.isActivityEnd()) {
 					return null;
 				}
 			}
@@ -136,10 +127,10 @@ public class CglibDynamicBeanProxy implements MethodInterceptor {
 		}		
 	}
 	
-	public static Object newInstance(List<AspectRule> aspectRuleList, BeanRule beanRule, Class<?>[] constructorArgTypes, Object[] constructorArgs) {
+	public static Object newInstance(CoreActivity activity, List<AspectRule> aspectRuleList, BeanRule beanRule, Class<?>[] constructorArgTypes, Object[] constructorArgs) {
 		Enhancer enhancer = new Enhancer();
 		enhancer.setSuperclass(beanRule.getBeanClass());
-		enhancer.setCallback(new CglibDynamicBeanProxy(aspectRuleList, beanRule));
+		enhancer.setCallback(new CglibDynamicBeanProxy(activity, aspectRuleList, beanRule));
 		Object obj;
 		
 		if(constructorArgs == null)

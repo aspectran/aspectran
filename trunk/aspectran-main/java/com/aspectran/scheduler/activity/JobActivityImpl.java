@@ -17,8 +17,8 @@ package com.aspectran.scheduler.activity;
 
 import java.util.Map;
 
-import com.aspectran.core.activity.AbstractCoreActivity;
 import com.aspectran.core.activity.CoreActivity;
+import com.aspectran.core.activity.CoreActivityImpl;
 import com.aspectran.core.activity.CoreTranslet;
 import com.aspectran.core.activity.request.RequestException;
 import com.aspectran.core.adapter.RequestAdapter;
@@ -33,7 +33,7 @@ import com.aspectran.core.var.token.ItemTokenExpressor;
 /**
  * <p>Created: 2013. 11. 18 오후 3:40:48</p>
  */
-public class JobActivityImpl extends AbstractCoreActivity implements JobActivity {
+public class JobActivityImpl extends CoreActivityImpl implements JobActivity {
 
 	public JobActivityImpl(ActivityContext context, RequestAdapter requestAdapter, ResponseAdapter responseAdapter) {
 		super(context);

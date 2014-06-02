@@ -9,7 +9,7 @@ import com.aspectran.core.var.rule.AspectAdviceRule;
 import com.aspectran.core.var.rule.SettingsAdviceRule;
 import com.aspectran.core.var.type.AspectAdviceType;
 
-public class AspectAdviceRuleRegistry {
+public class AspectAdviceRuleRegistry implements Cloneable {
 
 	private Map<String, Object> settings;
 	

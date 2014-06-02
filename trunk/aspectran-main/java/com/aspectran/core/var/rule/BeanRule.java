@@ -15,11 +15,6 @@
  */
 package com.aspectran.core.var.rule;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
-import com.aspectran.core.context.aspect.RelevantAspectAdviceRuleRegistry;
 import com.aspectran.core.var.type.ScopeType;
 
 /**
@@ -57,12 +52,6 @@ public class BeanRule {
 
 	private boolean overrided;
 	
-	private boolean proxyMode;
-	
-	private RelevantAspectAdviceRuleRegistry relatedAspectAdviceRuleRegistry;
-	
-	private Map<String, AspectAdviceRuleRegistry> aspectAdviceRuleRegistryCache = new HashMap<String, AspectAdviceRuleRegistry>();
-
 	/**
 	 * Gets the id.
 	 *
@@ -295,22 +284,6 @@ public class BeanRule {
 		this.overrided = overrided;
 	}
 
-//	public boolean isProxyMode() {
-//		return proxyMode;
-//	}
-
-	public void setProxyMode(boolean proxyMode) {
-		this.proxyMode = proxyMode;
-	}
-	
-	public RelevantAspectAdviceRuleRegistry getRelevantAspectAdviceRuleRegistry() {
-		return relatedAspectAdviceRuleRegistry;
-	}
-
-	public void setRelevantAspectAdviceRuleRegistry(RelevantAspectAdviceRuleRegistry dynamicAspectAdviceRuleRegistry) {
-		this.relatedAspectAdviceRuleRegistry = dynamicAspectAdviceRuleRegistry;
-	}
-
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
@@ -326,7 +299,6 @@ public class BeanRule {
 		sb.append(", destroyMethod=").append(destroyMethodName);
 		sb.append(", lazyInit=").append(lazyInit);
 		sb.append(", override=").append(override);
-		sb.append(", proxyMode=").append(proxyMode);
 
 		if(constructorArgumentItemRuleMap != null) {
 			sb.append(", constructorArguments=[");

@@ -8,7 +8,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 
-import com.aspectran.core.context.bean.LocalBeanRegistry;
+import com.aspectran.core.context.bean.ContextBeanRegistry;
 import com.aspectran.core.var.rule.BeanRule;
 
 /**
@@ -17,11 +17,11 @@ import com.aspectran.core.var.rule.BeanRule;
  */
 public class JdkDynamicBeanProxy implements InvocationHandler {
 
-	private LocalBeanRegistry beanRegistry;
+	private ContextBeanRegistry beanRegistry;
 
 	private BeanRule beanRule;
 	
-	protected JdkDynamicBeanProxy(LocalBeanRegistry beanRegistry, BeanRule beanRule) {
+	protected JdkDynamicBeanProxy(ContextBeanRegistry beanRegistry, BeanRule beanRule) {
 		this.beanRegistry = beanRegistry;
 		this.beanRule = beanRule;
 	}
@@ -48,7 +48,7 @@ public class JdkDynamicBeanProxy implements InvocationHandler {
 		}
 	}
 	
-	public static Object newInstance(LocalBeanRegistry beanRegistry, BeanRule beanRule, Object obj) {
+	public static Object newInstance(ContextBeanRegistry beanRegistry, BeanRule beanRule, Object obj) {
 		return Proxy.newProxyInstance(obj.getClass().getClassLoader(), obj.getClass().getInterfaces(), new JdkDynamicBeanProxy(beanRegistry, beanRule));
 	}
 }

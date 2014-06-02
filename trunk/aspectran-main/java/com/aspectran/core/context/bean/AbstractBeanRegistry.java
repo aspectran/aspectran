@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.aspectran.core.activity.CoreActivity;
+import com.aspectran.core.activity.VoidActivityImpl;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.aspect.AspectRuleRegistry;
 import com.aspectran.core.context.aspect.pointcut.PointcutPattern;
@@ -35,29 +36,35 @@ public abstract class AbstractBeanRegistry {
 
 	private Map<String, List<AspectRule>> aspectRuleCache = new HashMap<String, List<AspectRule>>();
 	
+	private ActivityContext context;
+	
 	protected final BeanRuleMap beanRuleMap;
 	
 	private final BeanProxyModeType beanProxyMode;
 	
 	private AspectRuleRegistry aspectRuleRegistry;
 	
-	protected AbstractBeanRegistry(BeanRuleMap beanRuleMap, BeanProxyModeType beanProxyMode) {
+	protected AbstractBeanRegistry(ActivityContext context, BeanRuleMap beanRuleMap, BeanProxyModeType beanProxyMode) {
+		this.context = context;
 		this.beanRuleMap = beanRuleMap;
 		this.beanProxyMode = (beanProxyMode == null ? BeanProxyModeType.CGLIB : beanProxyMode);
+		this.aspectRuleRegistry = context.getAspectRuleRegistry();
+		
+		createSingletonBean();
 	}
 	
-	public void createSingletonBean(AspectRuleRegistry aspectRuleRegistry) {
-		this.aspectRuleRegistry = aspectRuleRegistry;
-
+	private void createSingletonBean() {
 		for(BeanRule beanRule : beanRuleMap) {
-			ScopeType scope = beanRule.getScopeType();
-
-			if(scope == ScopeType.SINGLETON) {
-				if(!beanRule.isRegistered() && !beanRule.isLazyInit()) {
-					Object bean = createBean(beanRule);
-
-					beanRule.setBean(bean);
-					beanRule.setRegistered(true);
+			if(!beanRule.isRegistered()) {
+				ScopeType scope = beanRule.getScopeType();
+	
+				if(scope == ScopeType.SINGLETON) {
+					if(!beanRule.isRegistered() && !beanRule.isLazyInit()) {
+						Object bean = createBean(beanRule);
+	
+						beanRule.setBean(bean);
+						beanRule.setRegistered(true);
+					}
 				}
 			}
 		}
@@ -126,15 +133,19 @@ public abstract class AbstractBeanRegistry {
 		/*
 		 * Bean과 관련된 AspectRule을 모두 추출.
 		 */
-		List<AspectRule> aspectRuleList = retrieveAspectRuleList(activity, joinpointScope, transletName, beanId);
+		List<AspectRule> aspectRuleList = retrieveAspectRuleList(joinpointScope, transletName, beanId);
 		
 		Object obj = null;
 		
 		if(aspectRuleList.size() > 0) {
+			if(activity == null) {
+				activity = new VoidActivityImpl(context);
+			}
+			
 			if(beanProxyMode == BeanProxyModeType.JDK)
-				obj = CglibDynamicBeanProxy.newInstance(aspectRuleList, beanRule, argTypes, args);
+				obj = CglibDynamicBeanProxy.newInstance(activity, aspectRuleList, beanRule, argTypes, args);
 			else
-				obj = CglibDynamicBeanProxy.newInstance(aspectRuleList, beanRule, argTypes, args);
+				obj = CglibDynamicBeanProxy.newInstance(activity, aspectRuleList, beanRule, argTypes, args);
 			
 		} else {
 			if(argTypes != null && args != null)
@@ -146,7 +157,7 @@ public abstract class AbstractBeanRegistry {
 		return obj;
 	}
 	
-	private List<AspectRule> retrieveAspectRuleList(CoreActivity activity, JoinpointScopeType joinpointScope, String transletName, String beanId) {
+	private List<AspectRule> retrieveAspectRuleList(JoinpointScopeType joinpointScope, String transletName, String beanId) {
 		String joinpointScopeString = joinpointScope == null ? null : joinpointScope.toString();
 		String patternString = PointcutPattern.combinePatternString(joinpointScopeString, transletName, beanId, null);
 

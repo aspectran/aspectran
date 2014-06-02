@@ -18,6 +18,7 @@ package com.aspectran.core.context.builder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.builder.xml.parser.AspectranNodeParser;
 import com.aspectran.core.util.Assert;
@@ -46,7 +47,7 @@ public class XmlActivityContextBuilder extends AbstractActivityContextBuilder im
 		this.contextConfigLocation = contextConfigLocation;
 	}
 
-	public ActivityContext build() throws ActivityContextBuilderException {
+	public ActivityContext build(ApplicationAdapter applicationAdapter) throws ActivityContextBuilderException {
 		try {
 			ImportResource importResource = new ImportResource(getClassLoader());
 
@@ -58,7 +59,7 @@ public class XmlActivityContextBuilder extends AbstractActivityContextBuilder im
 				importResource.setFile(getApplicationBasePath(), contextConfigLocation);
 			}
 			
-			return build(importResource);
+			return build(applicationAdapter, importResource);
 			
 		} catch(Exception e) {
 			logger.error("ActivityContext build failed", e);
@@ -66,11 +67,11 @@ public class XmlActivityContextBuilder extends AbstractActivityContextBuilder im
 		}
 	}
 	
-	private ActivityContext build(ImportResource importResource) throws Exception {
+	private ActivityContext build(ApplicationAdapter applicationAdapter, ImportResource importResource) throws Exception {
 		AspectranNodeParser parser = new AspectranNodeParser(this);
 		parser.parse(importResource);
 		
-		ActivityContext aspectranContext = makeActivityContext();
+		ActivityContext aspectranContext = makeActivityContext(applicationAdapter);
 		
 		return aspectranContext;
 	}

@@ -33,7 +33,7 @@ public final class JoinpointScopeType extends Type {
 	//public static final JoinpointScopeType ACTION_CONTENT;
 	
 	/** Bean이 있는 Content */
-	public static final JoinpointScopeType BEAN_CONTENT;
+	//public static final JoinpointScopeType BEAN_CONTENT;
 	
 	//public static final JoinpointScopeType ACTION;
 	
@@ -55,7 +55,7 @@ public final class JoinpointScopeType extends Type {
 		RESPONSE = new JoinpointScopeType("response");
 		CONTENT = new JoinpointScopeType("content");
 		//ACTION_CONTENT = new JoinpointScopeType("action-content");
-		BEAN_CONTENT = new JoinpointScopeType("bean-content");
+		//BEAN_CONTENT = new JoinpointScopeType("bean-content");
 		//ACTION = new JoinpointScopeType("action");
 		BEAN = new JoinpointScopeType("bean");
 
@@ -64,7 +64,7 @@ public final class JoinpointScopeType extends Type {
 		types.put(REQUEST.toString(), REQUEST);
 		types.put(CONTENT.toString(), CONTENT);
 		//types.put(ACTION_CONTENT.toString(), ACTION_CONTENT);
-		types.put(BEAN_CONTENT.toString(), BEAN_CONTENT);
+		//types.put(BEAN_CONTENT.toString(), BEAN_CONTENT);
 		types.put(RESPONSE.toString(), RESPONSE);
 		//types.put(ACTION.toString(), ACTION);
 		types.put(BEAN.toString(), BEAN);
