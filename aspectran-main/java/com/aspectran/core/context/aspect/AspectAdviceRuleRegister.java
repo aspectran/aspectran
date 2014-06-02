@@ -5,6 +5,7 @@ import java.util.List;
 import com.aspectran.core.var.rule.AspectAdviceRule;
 import com.aspectran.core.var.rule.AspectRule;
 import com.aspectran.core.var.rule.SettingsAdviceRule;
+import com.aspectran.core.var.type.AspectAdviceType;
 
 public class AspectAdviceRuleRegister {
 	
@@ -21,6 +22,10 @@ public class AspectAdviceRuleRegister {
 //	}
 	
 	public static void register(AspectAdviceRuleRegistry aspectAdviceRuleRegistry, AspectRule aspectRule) {
+		register(aspectAdviceRuleRegistry, aspectRule, null);
+	}
+	
+	public static void register(AspectAdviceRuleRegistry aspectAdviceRuleRegistry, AspectRule aspectRule, AspectAdviceType withoutAspectAdviceType) {
 		SettingsAdviceRule settingsAdviceRule = aspectRule.getSettingsAdviceRule();
 		List<AspectAdviceRule> aspectAdviceRuleList = aspectRule.getAspectAdviceRuleList();
 		
@@ -29,7 +34,8 @@ public class AspectAdviceRuleRegister {
 		
 		if(aspectAdviceRuleList != null) {
 			for(AspectAdviceRule aspectAdviceRule : aspectAdviceRuleList) {
-				aspectAdviceRuleRegistry.addAspectAdviceRule(aspectAdviceRule);
+				if(withoutAspectAdviceType == null || aspectAdviceRule.getAspectAdviceType() != withoutAspectAdviceType)
+					aspectAdviceRuleRegistry.addAspectAdviceRule(aspectAdviceRule);
 			}
 		}
 		

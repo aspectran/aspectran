@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.aspectran.core.activity.CoreActivity;
+import com.aspectran.core.activity.CoreActivityException;
 import com.aspectran.core.activity.VoidActivityImpl;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.aspect.AspectRuleRegistry;
@@ -139,7 +140,12 @@ public abstract class AbstractBeanRegistry {
 		
 		if(aspectRuleList.size() > 0) {
 			if(activity == null) {
-				activity = new VoidActivityImpl(context);
+				try {
+					activity = new VoidActivityImpl(context);
+					activity.init(null);
+				} catch (CoreActivityException e) {
+					throw new BeanCreationException(beanRule, e);
+				}
 			}
 			
 			if(beanProxyMode == BeanProxyModeType.JDK)

@@ -161,68 +161,11 @@ public abstract class AbstractCoreActivity implements CoreActivity {
 		}
 		
 		for(Executable action : actionList) {
-			AspectAdviceRuleRegistry aspectAdviceRuleRegistry = action.getAspectAdviceRuleRegistry();
-			
-			try {
-				if(aspectAdviceRuleRegistry != null) {
-					List<AspectAdviceRule> finallyAdviceRuleList = aspectAdviceRuleRegistry.getFinallyAdviceRuleList();
-					
-					if(finallyAdviceRuleList != null) {
-						try {
-							execute(action, aspectAdviceRuleRegistry);
-						} finally {
-							execute(finallyAdviceRuleList);
-						}
-					} else {
-						execute(action, aspectAdviceRuleRegistry);
-					}
-				} else {
-					execute(action);
-				}
-			} catch(Exception e) {
-				setRaisedException(e);
-				
-				if(aspectAdviceRuleRegistry != null) {
-					List<AspectAdviceRule> exceptionRaizedAdviceRuleList = aspectAdviceRuleRegistry.getExceptionRaizedAdviceRuleList();
-					
-					if(exceptionRaizedAdviceRuleList != null) {
-						responseByContentType(exceptionRaizedAdviceRuleList);
-						
-						if(isActivityEnd) {
-							return;
-						}
-					}
-				}
-				
-				throw new ActionExecutionException("action execution error", e);
-			}
+			execute(action);
 			
 			if(isActivityEnd)
 				break;
 		}
-	}
-	
-	private void execute(Executable action, AspectAdviceRuleRegistry aspectAdviceRuleRegistry) throws ActionExecutionException {
-		// execute Before Advice Action
-		List<AspectAdviceRule> beforeAdviceRuleList = aspectAdviceRuleRegistry.getBeforeAdviceRuleList();
-		
-		if(beforeAdviceRuleList != null) {
-			execute(beforeAdviceRuleList);
-		
-			if(isActivityEnd)
-				return;
-		}
-		
-		execute(action);
-		
-		if(isActivityEnd)
-			return;
-		
-		// execute After Advice Action
-		List<AspectAdviceRule> afterAdviceRuleList = aspectAdviceRuleRegistry.getAfterAdviceRuleList();
-
-		if(afterAdviceRuleList != null)
-			execute(afterAdviceRuleList);
 	}
 	
 	private void execute(Executable action) throws ActionExecutionException {
@@ -246,12 +189,16 @@ public abstract class AbstractCoreActivity implements CoreActivity {
 	
 	public void execute(List<AspectAdviceRule> aspectAdviceRuleList) throws ActionExecutionException {
 		for(AspectAdviceRule aspectAdviceRule : aspectAdviceRuleList) {
-			if(isActivityEnd) {
-				if(aspectAdviceRule.getAspectAdviceType() == AspectAdviceType.FINALLY)
-					execute(aspectAdviceRule);
-			} else {
-				execute(aspectAdviceRule);
-			}
+			execute(aspectAdviceRule);
+
+			if(isActivityEnd)
+				return;
+		}
+	}
+	
+	public void forceExecute(List<AspectAdviceRule> aspectAdviceRuleList) throws ActionExecutionException {
+		for(AspectAdviceRule aspectAdviceRule : aspectAdviceRuleList) {
+			execute(aspectAdviceRule);
 		}
 	}
 	
@@ -353,19 +300,19 @@ public abstract class AbstractCoreActivity implements CoreActivity {
 			if(JoinpointScopeType.TRANSLET == joinpointScope2) {
 				if(transletAspectAdviceRuleRegistry == null)
 					transletAspectAdviceRuleRegistry = new AspectAdviceRuleRegistry();
-				AspectAdviceRuleRegister.register(transletAspectAdviceRuleRegistry, aspectRule);
+				AspectAdviceRuleRegister.register(transletAspectAdviceRuleRegistry, aspectRule, AspectAdviceType.BEFORE);
 			} else if(JoinpointScopeType.REQUEST == joinpointScope2) {
 				if(requestAspectAdviceRuleRegistry == null)
 					requestAspectAdviceRuleRegistry = new AspectAdviceRuleRegistry();
-				AspectAdviceRuleRegister.register(requestAspectAdviceRuleRegistry, aspectRule);
+				AspectAdviceRuleRegister.register(requestAspectAdviceRuleRegistry, aspectRule, AspectAdviceType.BEFORE);
 			} else if(JoinpointScopeType.RESPONSE == joinpointScope2) {
 				if(responseAspectAdviceRuleRegistry == null)
 					responseAspectAdviceRuleRegistry = new AspectAdviceRuleRegistry();
-				AspectAdviceRuleRegister.register(responseAspectAdviceRuleRegistry, aspectRule);
+				AspectAdviceRuleRegister.register(responseAspectAdviceRuleRegistry, aspectRule, AspectAdviceType.BEFORE);
 			} else if(JoinpointScopeType.CONTENT == joinpointScope2) {
 				if(contentAspectAdviceRuleRegistry == null)
 					contentAspectAdviceRuleRegistry = new AspectAdviceRuleRegistry();
-				AspectAdviceRuleRegister.register(contentAspectAdviceRuleRegistry, aspectRule);
+				AspectAdviceRuleRegister.register(contentAspectAdviceRuleRegistry, aspectRule, AspectAdviceType.BEFORE);
 			}
 			
 			List<AspectAdviceRule> aspectAdviceRuleList = aspectRule.getAspectAdviceRuleList();

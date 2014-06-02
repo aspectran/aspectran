@@ -63,6 +63,8 @@ public interface CoreActivity {
 
 	public void execute(List<AspectAdviceRule> aspectAdviceRuleList) throws ActionExecutionException;
 	
+	public void forceExecute(List<AspectAdviceRule> aspectAdviceRuleList) throws ActionExecutionException;
+	
 	public Object execute(AspectAdviceRule aspectAdviceRule) throws ActionExecutionException;
 	
 	public ProcessResult process() throws CoreActivityException;
