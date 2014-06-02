@@ -104,7 +104,7 @@ public class CglibDynamicBeanProxy implements MethodInterceptor {
 				return result;
 			} finally {
 				if(aspectAdviceRuleRegistry.getFinallyAdviceRuleList() != null)
-					activity.execute(aspectAdviceRuleRegistry.getFinallyAdviceRuleList());
+					activity.forceExecute(aspectAdviceRuleRegistry.getFinallyAdviceRuleList());
 				
 				if(logger.isDebugEnabled()) {
 					logger.debug("end method " + method.getName());

@@ -252,7 +252,7 @@ public abstract class CoreActivityImpl extends AbstractCoreActivity implements C
 					List<AspectAdviceRule> finallyAdviceRuleList = transletAspectAdviceRuleRegistry.getFinallyAdviceRuleList();
 					
 					if(finallyAdviceRuleList != null)
-						execute(finallyAdviceRuleList);
+						forceExecute(finallyAdviceRuleList);
 				}
 			}
 		} catch(CoreActivityException e) {
@@ -322,7 +322,7 @@ public abstract class CoreActivityImpl extends AbstractCoreActivity implements C
 					List<AspectAdviceRule> finallyAdviceRuleList = requestAspectAdviceRuleRegistry.getFinallyAdviceRuleList();
 					
 					if(finallyAdviceRuleList != null)
-						execute(finallyAdviceRuleList);
+						forceExecute(finallyAdviceRuleList);
 				}
 			}
 		} catch(Exception e) {
@@ -382,7 +382,7 @@ public abstract class CoreActivityImpl extends AbstractCoreActivity implements C
 						List<AspectAdviceRule> finallyAdviceRuleList = contentAspectAdviceRuleRegistry.getFinallyAdviceRuleList();
 						
 						if(finallyAdviceRuleList != null)
-							execute(finallyAdviceRuleList);
+							forceExecute(finallyAdviceRuleList);
 					}
 				}
 			} catch(Exception e) {
@@ -453,7 +453,7 @@ public abstract class CoreActivityImpl extends AbstractCoreActivity implements C
 					List<AspectAdviceRule> finallyAdviceRuleList = responseAspectAdviceRuleRegistry.getFinallyAdviceRuleList();
 					
 					if(finallyAdviceRuleList != null)
-						execute(finallyAdviceRuleList);
+						forceExecute(finallyAdviceRuleList);
 				}
 			}
 		} catch(Exception e) {
