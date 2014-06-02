@@ -24,7 +24,7 @@ public class ActivityContextRefreshTimerTask extends TimerTask {
 			applicationBasePath = activityContextRefreshable.getApplicationBasePath();
 		}
 		
-		modified = true;
+		modified = false;
 	}
 
 }

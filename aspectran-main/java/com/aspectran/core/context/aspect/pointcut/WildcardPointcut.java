@@ -66,6 +66,70 @@ public class WildcardPointcut extends AbstractPointcut implements Pointcut {
 		return matched;
 	}	
 	
+	public boolean strictMatches(String transletName) {
+		return strictMatches(transletName, null, null);
+	}
+
+	public boolean strictMatches(String transletName, String beanOrActionId) {
+		return strictMatches(transletName, beanOrActionId, null);
+	}
+	
+	public boolean strictMatches(String transletName, String beanOrActionId, String beanMethodName) {
+		if(getExcludePatternList() != null) {
+			for(PointcutPattern pointcutPattern : getExcludePatternList()) {
+				if(strictMatches(pointcutPattern, transletName, beanOrActionId, beanMethodName))
+					return false;
+			}
+		}
+		
+		if(getIncludePatternList() != null) {
+			for(PointcutPattern pointcutPattern : getIncludePatternList()) {
+				if(strictMatches(pointcutPattern, transletName, beanOrActionId, beanMethodName))
+					return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	protected boolean strictMatches(PointcutPattern pointcutPattern, String transletName) {
+		return strictMatches(pointcutPattern, transletName, null, null);
+	}	
+
+	protected boolean strictMatches(PointcutPattern pointcutPattern, String transletName, String beanOrActionId) {
+		return strictMatches(pointcutPattern, transletName, beanOrActionId, null);
+	}	
+	
+	protected boolean strictMatches(PointcutPattern pointcutPattern, String transletName, String beanOrActionId, String beanMethodName) {
+		boolean matched = true;
+		
+		if(pointcutPattern.getTransletNamePattern() != null) {
+			if(transletName == null) {
+				matched = false;
+			} else {
+				matched = patternMatches(pointcutPattern.getTransletNamePattern(), transletName, AspectranConstant.TRANSLET_NAME_SEPARATOR);				
+			}
+		}
+
+		if(matched && pointcutPattern.getBeanOrActionIdPattern() != null) {
+			if(beanOrActionId == null) {
+				matched = false;
+			} else {
+				matched = patternMatches(pointcutPattern.getBeanOrActionIdPattern(), beanOrActionId, AspectranConstant.ID_SEPARATOR);				
+			}
+		}
+
+		if(matched && pointcutPattern.getBeanMethodNamePattern() != null) {
+			if(beanMethodName == null) {
+				matched = false;
+			} else {
+				matched = patternMatches(pointcutPattern.getBeanMethodNamePattern(), beanMethodName);				
+			}
+		}
+		
+		return matched;
+	}	
+	
 	protected boolean patternMatches(String pattern, String str) {
 		WildcardPattern wildcardPattern;
 		

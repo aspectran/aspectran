@@ -8,6 +8,10 @@ public interface Pointcut {
 	
 	public boolean matches(String transletName, String beanOrActionId, String beanMethodName);
 	
-	public boolean isActionInfluenced();
+	public boolean strictMatches(String transletName);
+	
+	public boolean strictMatches(String transletName, String beanOrActionId);
+	
+	public boolean strictMatches(String transletName, String beanOrActionId, String beanMethodName);
 	
 }

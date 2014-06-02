@@ -23,9 +23,9 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.aspectran.core.activity.AbstractCoreActivity;
 import com.aspectran.core.activity.CoreActivity;
 import com.aspectran.core.activity.CoreActivityException;
+import com.aspectran.core.activity.CoreActivityImpl;
 import com.aspectran.core.activity.CoreTranslet;
 import com.aspectran.core.activity.request.RequestException;
 import com.aspectran.core.adapter.RequestAdapter;
@@ -54,7 +54,7 @@ import com.aspectran.web.adapter.HttpSessionAdapter;
 /**
  * <p>Created: 2008. 04. 28 오전 12:48:48</p>
  */
-public class WebActivityImpl extends AbstractCoreActivity implements WebActivity {
+public class WebActivityImpl extends CoreActivityImpl implements WebActivity {
 
 	private final Logger logger = LoggerFactory.getLogger(WebActivityImpl.class);
 

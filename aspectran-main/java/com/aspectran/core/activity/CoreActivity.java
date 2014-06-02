@@ -27,7 +27,6 @@ import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.context.aspect.AspectRuleRegistry;
 import com.aspectran.core.context.bean.BeanRegistry;
 import com.aspectran.core.context.bean.scope.Scope;
 import com.aspectran.core.var.rule.AspectAdviceRule;
@@ -72,11 +71,9 @@ public interface CoreActivity {
 	
 	public String getForwardTransletName();
 	
-	public void setForwardTransletName(String forwardingPath);
+	public void activityEnd();
 	
-	public void responseEnd();
-	
-	public boolean isResponseEnd();
+	public boolean isActivityEnd();
 	
 	public void response(Responsible res) throws ResponseException;
 	
@@ -97,8 +94,6 @@ public interface CoreActivity {
 	public void setRequestScope(Scope requestScope);
 	
 	public CoreActivity newCoreActivity();
-	
-	public AspectRuleRegistry getAspectRuleRegistry();
 	
 	public BeanRegistry getBeanRegistry();
 	

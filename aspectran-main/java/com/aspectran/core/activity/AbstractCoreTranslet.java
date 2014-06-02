@@ -112,7 +112,7 @@ public abstract class AbstractCoreTranslet implements CoreTranslet {
 	}
 
 	public void response() {
-		activity.responseEnd();
+		activity.activityEnd();
 	}
 
 	public void response(Responsible res) throws ResponseException {
@@ -226,7 +226,7 @@ public abstract class AbstractCoreTranslet implements CoreTranslet {
 	 * To respond immediately terminate.
 	 */
 	public void responseEnd() {
-		activity.responseEnd();
+		activity.activityEnd();
 	}
 
 	public Class<? extends CoreTranslet> getTransletInterfaceClass() {

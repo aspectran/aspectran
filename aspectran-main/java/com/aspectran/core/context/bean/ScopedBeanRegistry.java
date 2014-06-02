@@ -23,7 +23,7 @@ import com.aspectran.core.var.type.ScopeType;
  * Created: 2009. 03. 09 오후 23:48:09
  * </p>
  */
-public class ScopedBeanRegistry extends AbstractBeanRegistry implements LocalBeanRegistry {
+public class ScopedBeanRegistry extends AbstractBeanRegistry implements ContextBeanRegistry {
 
 	private final Object singletonScopeLock = new Object();
 
@@ -33,8 +33,8 @@ public class ScopedBeanRegistry extends AbstractBeanRegistry implements LocalBea
 	
 	private final Object applicationScopeLock = new Object();
 	
-	public ScopedBeanRegistry(BeanRuleMap beanRuleMap, BeanProxyModeType beanProxyMode) {
-		super(beanRuleMap, beanProxyMode);
+	public ScopedBeanRegistry(ActivityContext context, BeanRuleMap beanRuleMap, BeanProxyModeType beanProxyMode) {
+		super(context, beanRuleMap, beanProxyMode);
 	}
 
 	public Object getBean(String id) {

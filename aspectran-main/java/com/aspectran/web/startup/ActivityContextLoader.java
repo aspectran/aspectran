@@ -56,9 +56,7 @@ public class ActivityContextLoader {
 			if(classLoader != null)
 				builder.setClassLoader(classLoader);
 			
-			activityContext = builder.build();
-			
-			activityContext.setApplicationAdapter(applicationAdapter);
+			activityContext = builder.build(applicationAdapter);
 			
 			long elapsedTime = System.currentTimeMillis() - startTime;
 			logger.info("ActivityContext initialization completed in " + elapsedTime + " ms");

@@ -18,7 +18,7 @@ package com.aspectran.core.context;
 import com.aspectran.core.activity.CoreActivity;
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.aspect.AspectRuleRegistry;
-import com.aspectran.core.context.bean.LocalBeanRegistry;
+import com.aspectran.core.context.bean.ContextBeanRegistry;
 import com.aspectran.core.context.translet.TransletRuleRegistry;
 
 /**
@@ -32,7 +32,7 @@ public class ActivityContext {
 	
 	private AspectRuleRegistry aspectRuleRegistry;
 	
-	private LocalBeanRegistry beanRegistry;
+	private ContextBeanRegistry beanRegistry;
 
 	private TransletRuleRegistry transletRuleRegistry;
 	
@@ -81,7 +81,7 @@ public class ActivityContext {
 	 *
 	 * @return the bean registry
 	 */
-	public LocalBeanRegistry getLocalBeanRegistry() {
+	public ContextBeanRegistry getLocalBeanRegistry() {
 		return beanRegistry;
 	}
 
@@ -90,7 +90,7 @@ public class ActivityContext {
 	 *
 	 * @param beanRegistry the new bean registry
 	 */
-	public void setLocalBeanRegistry(LocalBeanRegistry beanRegistry) {
+	public void setLocalBeanRegistry(ContextBeanRegistry beanRegistry) {
 		this.beanRegistry = beanRegistry;
 	}
 
