@@ -63,7 +63,7 @@
 	</aspect>
 
 	<aspect id="helloAdvice">
-		<joinpoint scope="bean-content">
+		<joinpoint scope="content">
 			<pointcut>
 				<within>/example/hello/*@example.hello.HelloAction^applyTheAdvice</within>
 				<within translet="/example/hello/*" bean="example.hello.HelloAction" method="applyTheAdvice"/>
