@@ -262,7 +262,7 @@
 			a return object of <before> action.
 	-->
 	<aspect id="sqlmap">
-		<joinpoint scope="bean-content">
+		<joinpoint scope="content">
 			<pointcut>
 				within(/front/a/*)
 				without(/front/a/A*)
