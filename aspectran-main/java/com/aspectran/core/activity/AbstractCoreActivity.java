@@ -59,6 +59,9 @@ public abstract class AbstractCoreActivity implements CoreActivity {
 	/** The debug enabled. */
 	private final boolean debugEnabled = logger.isDebugEnabled();
 
+	/** The debug enabled. */
+	private final boolean traceEnabled = logger.isTraceEnabled();
+
 	/** The context. */
 	protected final ActivityContext context;
 	
@@ -180,6 +183,11 @@ public abstract class AbstractCoreActivity implements CoreActivity {
 			
 			if(!action.isHidden() && resultValue != ActionResult.NO_RESULT) {
 				translet.addActionResult(action.getActionId(), resultValue);
+				
+				if(debugEnabled)
+					logger.debug("actionResult [" + resultValue + "] action " + action.toString());
+			} else if(traceEnabled) {
+				logger.debug("actionResult [" + resultValue + "] action " + action.toString());
 			}
 		} catch(Exception e) {
 			setRaisedException(e);
@@ -216,11 +224,16 @@ public abstract class AbstractCoreActivity implements CoreActivity {
 		}
 		
 		try {
+			if(debugEnabled)
+				logger.debug("execute action " + action.toString());
+
 			Object adviceActionResult = action.execute(this);
 			
 			if(adviceActionResult != null && adviceActionResult != ActionResult.NO_RESULT) {
 				logger.debug("adviceActionResult [" + adviceActionResult + "] aspectAdviceRule " + aspectAdviceRule);
 				translet.putAdviceResult(aspectAdviceRule, adviceActionResult);
+			} else if(traceEnabled) {
+				logger.debug("adviceActionResult [" + adviceActionResult + "] aspectAdviceRule " + aspectAdviceRule);
 			}
 			
 			return adviceActionResult;
@@ -267,11 +280,11 @@ public abstract class AbstractCoreActivity implements CoreActivity {
 	}
 
 	public BeanRegistry getBeanRegistry() {
-		return context.getLocalBeanRegistry();
+		return context.getContextBeanRegistry();
 	}
 	
 	public Object getBean(String id) {
-		return context.getLocalBeanRegistry().getBean(id);
+		return context.getContextBeanRegistry().getBean(id);
 	}
 	
 	public Object getTransletSetting(String settingName) {
@@ -294,6 +307,9 @@ public abstract class AbstractCoreActivity implements CoreActivity {
 	}
 
 	public void registerAspectRule(AspectRule aspectRule) throws ActionExecutionException {
+		if(debugEnabled)
+			logger.debug("registerAspectRule " + aspectRule);
+		
 		JoinpointScopeType joinpointScope2 = aspectRule.getJoinpointScope();
 		
 		if(this.joinpointScope == JoinpointScopeType.TRANSLET || this.joinpointScope == joinpointScope2) {

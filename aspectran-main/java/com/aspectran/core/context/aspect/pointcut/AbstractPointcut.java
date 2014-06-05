@@ -3,48 +3,31 @@ package com.aspectran.core.context.aspect.pointcut;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.aspectran.core.var.type.PointcutPatternOperationType;
 
 public abstract class AbstractPointcut {
 	
-	private List<PointcutPattern> includePatternList;
-	
-	private List<PointcutPattern> excludePatternList;
-	
-	public List<PointcutPattern> getIncludePatternList() {
-		return includePatternList;
+	protected List<PointcutPattern> pointcutPatternList;
+
+	public List<PointcutPattern> getPointcutPatternList() {
+		return pointcutPatternList;
 	}
 
-	public void setIncludePatternList(List<PointcutPattern> includePatternList) {
-		this.includePatternList = includePatternList;
-	}
-
-	public List<PointcutPattern> getExcludePatternList() {
-		return excludePatternList;
-	}
-
-	public void setExcludePatternList(List<PointcutPattern> excludePatternList) {
-		this.excludePatternList = excludePatternList;
-	}
-	
-	public void addPointcutPattern(List<PointcutPattern> pointcutPatternList) {
-		for(PointcutPattern pointcutPattern : pointcutPatternList) {
-			addPointcutPattern(pointcutPattern);
-		};
+	public void setPointcutPatternList(List<PointcutPattern> pointcutPatternList) {
+		this.pointcutPatternList = pointcutPatternList;
 	}
 	
 	public void addPointcutPattern(PointcutPattern pointcutPattern) {
-		if(pointcutPattern.getPointcutPatternOperationType() == PointcutPatternOperationType.WITHOUT) {
-			if(excludePatternList == null)
-				excludePatternList = new ArrayList<PointcutPattern>();
-			
-			excludePatternList.add(pointcutPattern);
-		} else {
-			if(includePatternList == null)
-				includePatternList = new ArrayList<PointcutPattern>();
-			
-			includePatternList.add(pointcutPattern);
-		}
+		if(pointcutPatternList == null)
+			pointcutPatternList = new ArrayList<PointcutPattern>();
+		
+		pointcutPatternList.add(pointcutPattern);
 	}
+	
+	public void addPointcutPattern(List<PointcutPattern> pointcutPatternList) {
+		if(pointcutPatternList == null)
+			pointcutPatternList = new ArrayList<PointcutPattern>();
 
+		pointcutPatternList.addAll(pointcutPatternList);
+	}
+	
 }

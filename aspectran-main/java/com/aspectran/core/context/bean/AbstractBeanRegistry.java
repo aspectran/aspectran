@@ -8,6 +8,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.aspectran.core.activity.CoreActivity;
 import com.aspectran.core.activity.CoreActivityException;
 import com.aspectran.core.activity.VoidActivityImpl;
@@ -34,6 +37,9 @@ import com.aspectran.core.var.type.ScopeType;
  * </p>
  */
 public abstract class AbstractBeanRegistry {
+
+	/** The logger. */
+	private final Logger logger = LoggerFactory.getLogger(AbstractBeanRegistry.class);
 
 	private Map<String, List<AspectRule>> aspectRuleCache = new HashMap<String, List<AspectRule>>();
 	
@@ -148,11 +154,13 @@ public abstract class AbstractBeanRegistry {
 				}
 			}
 			
-			if(beanProxyMode == BeanProxyModeType.JDK)
+			if(beanProxyMode == BeanProxyModeType.JDK) {
+				logger.debug("JdkDynamicBeanProxy " + beanRule);
 				obj = CglibDynamicBeanProxy.newInstance(activity, aspectRuleList, beanRule, argTypes, args);
-			else
+			} else {
+				logger.debug("CglibDynamicBeanProxy " + beanRule);
 				obj = CglibDynamicBeanProxy.newInstance(activity, aspectRuleList, beanRule, argTypes, args);
-			
+			}
 		} else {
 			if(argTypes != null && args != null)
 				obj = newInstance(beanRule, argTypes, args);

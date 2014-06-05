@@ -316,7 +316,7 @@ public class AspectranNodeParser {
 				aspectRule.setPointcutRule(pointcutRule);
 			}
 		});
-		parser.addNodelet("/aspectran/aspect/joinpoint/pointcut/within", new Nodelet() {
+		parser.addNodelet("/aspectran/aspect/joinpoint/pointcut/target", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
 				String translet = attributes.getProperty("translet");
 				String bean = attributes.getProperty("bean");
@@ -324,8 +324,9 @@ public class AspectranNodeParser {
 				
 				AspectRule aspectRule = (AspectRule)assistant.peekObject();
 				
+				PointcutPatternRule pointcutPatternRule = new PointcutPatternRule();
+
 				if(aspectRule.getAspectTargetType() == AspectTargetType.TRANSLET) {
-					PointcutPatternRule pointcutPatternRule = new PointcutPatternRule();
 					pointcutPatternRule.setPointcutPatternOperationType(PointcutPatternOperationType.WITHIN);
 				
 					if(StringUtils.hasLength(translet) || StringUtils.hasLength(bean) || StringUtils.hasLength(method)) {
@@ -336,32 +337,41 @@ public class AspectranNodeParser {
 						pointcutPatternRule.setPatternString(text);
 					}
 					
-					aspectRule.getPointcutRule().addPointcutPatternRule(pointcutPatternRule);
 				}
+				
+				assistant.pushObject(pointcutPatternRule);
 			}
 		});
-		parser.addNodelet("/aspectran/aspect/joinpoint/pointcut/without", new Nodelet() {
+		parser.addNodelet("/aspectran/aspect/joinpoint/pointcut/target/without", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
 				String translet = attributes.getProperty("translet");
 				String bean = attributes.getProperty("bean");
 				String method = attributes.getProperty("method");
 				
-				AspectRule aspectRule = (AspectRule)assistant.peekObject();
+				PointcutPatternRule pointcutPatternRule = (PointcutPatternRule)assistant.peekObject();
+				AspectRule aspectRule = (AspectRule)assistant.peekObject(1);
 				
 				if(aspectRule.getAspectTargetType() == AspectTargetType.TRANSLET) {
-					PointcutPatternRule pointcutPatternRule = new PointcutPatternRule();
-					pointcutPatternRule.setPointcutPatternOperationType(PointcutPatternOperationType.WITHOUT);
+					PointcutPatternRule withoutPointcutPatternRule = new PointcutPatternRule();
+					withoutPointcutPatternRule.setPointcutPatternOperationType(PointcutPatternOperationType.WITHOUT);
 					
 					if(StringUtils.hasLength(translet) || StringUtils.hasLength(bean) || StringUtils.hasLength(method)) {
-						pointcutPatternRule.setTransletNamePattern(translet);
-						pointcutPatternRule.setBeanOrActionIdPattern(bean);
-						pointcutPatternRule.setBeanMethodNamePattern(method);
+						withoutPointcutPatternRule.setTransletNamePattern(translet);
+						withoutPointcutPatternRule.setBeanOrActionIdPattern(bean);
+						withoutPointcutPatternRule.setBeanMethodNamePattern(method);
 					} else if(StringUtils.hasText(text)) {
-						pointcutPatternRule.setPatternString(text);
+						withoutPointcutPatternRule.setPatternString(text);
 					}
 					
-					aspectRule.getPointcutRule().addPointcutPatternRule(pointcutPatternRule);
+					pointcutPatternRule.addWithoutPointcutPatternRule(withoutPointcutPatternRule);
 				}
+			}
+		});
+		parser.addNodelet("/aspectran/aspect/joinpoint/pointcut/target/end()", new Nodelet() {
+			public void process(Node node, Properties attributes, String text) throws Exception {
+				PointcutPatternRule pointcutPatternRule = (PointcutPatternRule)assistant.popObject();
+				AspectRule aspectRule = (AspectRule)assistant.peekObject();
+				aspectRule.getPointcutRule().addPointcutPatternRule(pointcutPatternRule);
 			}
 		});
 		parser.addNodelet("/aspectran/aspect/advice", new Nodelet() {

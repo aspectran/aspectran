@@ -81,7 +81,7 @@ public class ActivityContext {
 	 *
 	 * @return the bean registry
 	 */
-	public ContextBeanRegistry getLocalBeanRegistry() {
+	public ContextBeanRegistry getContextBeanRegistry() {
 		return beanRegistry;
 	}
 

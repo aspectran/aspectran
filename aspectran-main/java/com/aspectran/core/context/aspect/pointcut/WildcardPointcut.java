@@ -1,5 +1,6 @@
 package com.aspectran.core.context.aspect.pointcut;
 
+import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
 
@@ -26,21 +27,23 @@ public class WildcardPointcut extends AbstractPointcut implements Pointcut {
 	}
 	
 	public boolean matches(String transletName, String beanOrActionId, String beanMethodName) {
-		if(getExcludePatternList() != null) {
-			for(PointcutPattern pointcutPattern : getExcludePatternList()) {
-				if(matches(pointcutPattern, transletName, beanOrActionId, beanMethodName))
-					return false;
+		if(pointcutPatternList != null) {
+			for(PointcutPattern pp : pointcutPatternList) {
+				if(matches(pp, transletName, beanOrActionId, beanMethodName)) {
+					List<PointcutPattern> wppl = pp.getWithoutPointcutPatternList();
+					
+					if(wppl != null) {
+						for(PointcutPattern wpp : wppl) {
+							if(matches(wpp, transletName, beanOrActionId, beanMethodName)) {
+								return false;
+							}
+						}
+					}
+				}
 			}
 		}
 		
-		if(getIncludePatternList() != null) {
-			for(PointcutPattern pointcutPattern : getIncludePatternList()) {
-				if(matches(pointcutPattern, transletName, beanOrActionId, beanMethodName))
-					return true;
-			}
-		}
-		
-		return false;
+		return true;
 	}
 	
 	protected boolean matches(PointcutPattern pointcutPattern, String transletName) {
@@ -51,6 +54,16 @@ public class WildcardPointcut extends AbstractPointcut implements Pointcut {
 		return matches(pointcutPattern, transletName, beanOrActionId, null);
 	}	
 	
+	/**
+	 * Matches.
+	 * 비교 항목의 값이 null이면 참으로 간주함.
+	 *
+	 * @param pointcutPattern the pointcut pattern
+	 * @param transletName the translet name
+	 * @param beanOrActionId the bean or action id
+	 * @param beanMethodName the bean method name
+	 * @return true, if successful
+	 */
 	protected boolean matches(PointcutPattern pointcutPattern, String transletName, String beanOrActionId, String beanMethodName) {
 		boolean matched = true;
 		
@@ -75,21 +88,23 @@ public class WildcardPointcut extends AbstractPointcut implements Pointcut {
 	}
 	
 	public boolean strictMatches(String transletName, String beanOrActionId, String beanMethodName) {
-		if(getExcludePatternList() != null) {
-			for(PointcutPattern pointcutPattern : getExcludePatternList()) {
-				if(strictMatches(pointcutPattern, transletName, beanOrActionId, beanMethodName))
-					return false;
+		if(pointcutPatternList != null) {
+			for(PointcutPattern pp : pointcutPatternList) {
+				if(strictMatches(pp, transletName, beanOrActionId, beanMethodName)) {
+					List<PointcutPattern> wppl = pp.getWithoutPointcutPatternList();
+					
+					if(wppl != null) {
+						for(PointcutPattern wpp : wppl) {
+							if(strictMatches(wpp, transletName, beanOrActionId, beanMethodName)) {
+								return false;
+							}
+						}
+					}
+				}
 			}
 		}
 		
-		if(getIncludePatternList() != null) {
-			for(PointcutPattern pointcutPattern : getIncludePatternList()) {
-				if(strictMatches(pointcutPattern, transletName, beanOrActionId, beanMethodName))
-					return true;
-			}
-		}
-		
-		return false;
+		return true;
 	}
 	
 	protected boolean strictMatches(PointcutPattern pointcutPattern, String transletName) {
@@ -183,6 +198,10 @@ public class WildcardPointcut extends AbstractPointcut implements Pointcut {
 		//System.out.println("pattern:" + pattern + " str:" + str + " result:" + wildcardPattern.matches(str));
 
 		return wildcardPattern.matches(str);
+	}
+	
+	public void clearCache() {
+		wildcardPatternCache.clear();
 	}
 	
 }
