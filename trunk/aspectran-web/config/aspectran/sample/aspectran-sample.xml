@@ -264,8 +264,8 @@
 	<aspect id="sqlmap">
 		<joinpoint scope="content">
 			<pointcut>
-				within(/front/a/*)
-				without(/front/a/A*)
+				+(/front/a/*)
+				-(/front/a/A*)
 			</pointcut>
 		</joinpoint>
 		<advice bean="com.aspectran.support.orm.ibatis.SqlMapClientTransactionAdvice">

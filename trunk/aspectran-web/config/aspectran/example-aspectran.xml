@@ -43,7 +43,7 @@
 	<aspect id="exception1">
 		<joinpoint scope="translet">
 			<pointcut>
-				<within translet="/example/hello/*"/>
+				<target translet="/example/hello/*"/>
 			</pointcut>
 		</joinpoint>
 		<advice>
@@ -65,8 +65,10 @@
 	<aspect id="helloAdvice">
 		<joinpoint scope="content">
 			<pointcut>
-				<within>/example/hello/*@example.hello.HelloAction^applyTheAdvice</within>
-				<within translet="/example/hello/*" bean="example.hello.HelloAction" method="applyTheAdvice"/>
+				<target>/example/hello/*@example.hello.HelloAction^applyTheAdvice</target>
+				<target translet="/example/hello/*" bean="example.hello.HelloAction" method="applyTheAdvice">
+					<without translet="/example/hello/*" bean="example.hello.HelloAction" method="applyTheAdvice"/>
+				</target>
 			</pointcut>
 		</joinpoint>
 		<advice bean="advice.HelloAdvice">
