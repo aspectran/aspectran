@@ -30,10 +30,34 @@ public class AspectAdviceRulePreRegister extends AspectAdviceRuleRegister {
 //		for(BeanRule beanRule : beanRuleMap) {
 //			register(beanRule);
 //		}
+		
+		for(AspectRule aspectRule : aspectRuleMap) {
+			AspectTargetType aspectTargetType = aspectRule.getAspectTargetType();
+			JoinpointScopeType joinpointScope = aspectRule.getJoinpointScope();
+			Pointcut pointcut = aspectRule.getPointcut();
+
+			if(aspectTargetType == AspectTargetType.TRANSLET) {
+				if(joinpointScope == JoinpointScopeType.TRANSLET ||
+						joinpointScope == JoinpointScopeType.REQUEST ||
+						joinpointScope == JoinpointScopeType.CONTENT ||
+						joinpointScope == JoinpointScopeType.RESPONSE) {
+					if(pointcut == null) {
+						
+					} else {
+						if(!pointcut.matches(null, "") && !pointcut.matches(null, null, "")) {
+
+						}
+					}
+				}
+			}
+		}
 
 		for(TransletRule transletRule : transletRuleMap) {
 			register(transletRule);
 		}
+		
+		//TODO preregistered
+		
 	}
 	
 	private void register(TransletRule transletRule) {

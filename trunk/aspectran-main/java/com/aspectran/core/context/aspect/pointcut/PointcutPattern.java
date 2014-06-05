@@ -15,6 +15,9 @@
  */
 package com.aspectran.core.context.aspect.pointcut;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.aspectran.core.context.AspectranConstant;
 import com.aspectran.core.var.rule.PointcutPatternRule;
 import com.aspectran.core.var.type.PointcutPatternOperationType;
@@ -28,6 +31,8 @@ public class PointcutPattern {
 	private String beanOrActionIdPattern;
 
 	private String beanMethodNamePattern;
+	
+	private List<PointcutPattern> withoutPointcutPatternList;
 	
 	public PointcutPattern() {
 	}
@@ -71,6 +76,22 @@ public class PointcutPattern {
 		this.beanMethodNamePattern = beanMethodNamePattern;
 	}
 	
+	public List<PointcutPattern> getWithoutPointcutPatternList() {
+		return withoutPointcutPatternList;
+	}
+
+	public void setWithoutPointcutPatternList(
+			List<PointcutPattern> withoutPointcutPatternList) {
+		this.withoutPointcutPatternList = withoutPointcutPatternList;
+	}
+	
+	public void addWithoutPointcutPattern(PointcutPattern withoutPointcutPattern) {
+		if(withoutPointcutPatternList == null)
+			withoutPointcutPatternList = new ArrayList<PointcutPattern>();
+		
+		withoutPointcutPatternList.add(withoutPointcutPattern);
+	}
+
 	public static String combinePatternString(String transletName, String beanId, String methodName) {
 		StringBuilder sb = new StringBuilder();
 		
@@ -119,7 +140,7 @@ public class PointcutPattern {
 		pointcutPattern.setPointcutPatternOperationType(pointcutPatternOperationType);
 		
 		String transletNamePattern = null;
-		String actionNamePattern = null;
+		String beanOrActionIdPattern = null;
 		String beanMethodNamePattern = null;
 
 		int actionDelimiterIndex = pattern.indexOf(AspectranConstant.POINTCUT_BEAN_DELIMITER);
@@ -127,29 +148,29 @@ public class PointcutPattern {
 		if(actionDelimiterIndex == -1)
 			transletNamePattern = pattern;
 		else if(actionDelimiterIndex == 0)
-			actionNamePattern = pattern.substring(1);
+			beanOrActionIdPattern = pattern.substring(1);
 		else {
 			transletNamePattern = pattern.substring(0, actionDelimiterIndex);
-			actionNamePattern = pattern.substring(actionDelimiterIndex + 1);
+			beanOrActionIdPattern = pattern.substring(actionDelimiterIndex + 1);
 		}
 
-		if(actionNamePattern != null) {
-			int beanMethodDelimiterIndex = actionNamePattern.indexOf(AspectranConstant.POINTCUT_METHOD_DELIMITER);
+		if(beanOrActionIdPattern != null) {
+			int beanMethodDelimiterIndex = beanOrActionIdPattern.indexOf(AspectranConstant.POINTCUT_METHOD_DELIMITER);
 			
 			if(beanMethodDelimiterIndex == 0) {
-				beanMethodNamePattern = actionNamePattern.substring(1);
-				actionNamePattern = null;
+				beanMethodNamePattern = beanOrActionIdPattern.substring(1);
+				beanOrActionIdPattern = null;
 			} else if(beanMethodDelimiterIndex > 0) {
-				beanMethodNamePattern = actionNamePattern.substring(beanMethodDelimiterIndex + 1);
-				actionNamePattern = actionNamePattern.substring(0, beanMethodDelimiterIndex);
+				beanMethodNamePattern = beanOrActionIdPattern.substring(beanMethodDelimiterIndex + 1);
+				beanOrActionIdPattern = beanOrActionIdPattern.substring(0, beanMethodDelimiterIndex);
 			}
 		}
 		
 		if(transletNamePattern != null)
 			pointcutPattern.setTransletNamePattern(transletNamePattern);
 		
-		if(actionNamePattern != null)
-			pointcutPattern.setBeanOrActionIdPattern(actionNamePattern);
+		if(beanOrActionIdPattern != null)
+			pointcutPattern.setBeanOrActionIdPattern(beanOrActionIdPattern);
 
 		if(beanMethodNamePattern != null)
 			pointcutPattern.setBeanMethodNamePattern(beanMethodNamePattern);

@@ -15,6 +15,9 @@
  */
 package com.aspectran.core.var.rule;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.aspectran.core.var.type.PointcutPatternOperationType;
 
 public class PointcutPatternRule {
@@ -28,6 +31,8 @@ public class PointcutPatternRule {
 	private String beanMethodNamePattern;
 	
 	private String patternString;
+	
+	private List<PointcutPatternRule> withoutPointcutPatternRuleList;
 
 	public PointcutPatternOperationType getPointcutPatternOperationType() {
 		return pointcutPatternOperationType;
@@ -69,6 +74,21 @@ public class PointcutPatternRule {
 		this.patternString = patternString;
 	}
 	
+	public List<PointcutPatternRule> getWithoutPointcutPatternRuleList() {
+		return withoutPointcutPatternRuleList;
+	}
+
+	public void setWithoutPointcutPatternRuleList(List<PointcutPatternRule> withoutPointcutPatternRuleList) {
+		this.withoutPointcutPatternRuleList = withoutPointcutPatternRuleList;
+	}
+	
+	public void addWithoutPointcutPatternRule(PointcutPatternRule withoutPointcutPatternRule) {
+		if(withoutPointcutPatternRuleList == null)
+			withoutPointcutPatternRuleList = new ArrayList<PointcutPatternRule>();
+		
+		withoutPointcutPatternRuleList.add(withoutPointcutPatternRule);
+	}
+
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */

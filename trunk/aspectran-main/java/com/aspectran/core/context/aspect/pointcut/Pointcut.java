@@ -1,6 +1,12 @@
 package com.aspectran.core.context.aspect.pointcut;
 
+import java.util.List;
+
 public interface Pointcut {
+	
+	public void addPointcutPattern(PointcutPattern pointcutPattern);
+	
+	public void addPointcutPattern(List<PointcutPattern> pointcutPatternList);
 
 	public boolean matches(String transletName);
 	
@@ -13,5 +19,6 @@ public interface Pointcut {
 	public boolean strictMatches(String transletName, String beanOrActionId);
 	
 	public boolean strictMatches(String transletName, String beanOrActionId, String beanMethodName);
-	
+
+	public void clearCache();
 }

@@ -71,13 +71,13 @@ for (translet | scheduler) #IMPLIED
 scope (translet | request | content | action-content | bean-content | response | action | bean) #IMPLIED
 >
 
-<!ELEMENT pointcut (#PCDATA | within | without)*>
+<!ELEMENT pointcut (#PCDATA | target)*>
 <!ATTLIST pointcut
 type (wildcard | regexp | simpleTrigger | cronTrigger) #IMPLIED
 >
 
-<!ELEMENT within (#PCDATA)>
-<!ATTLIST within
+<!ELEMENT target (#PCDATA | without)*>
+<!ATTLIST target
 translet CDATA #IMPLIED
 bean CDATA #IMPLIED
 method CDATA #IMPLIED

@@ -25,5 +25,9 @@ public class RegexpPointcut extends AbstractPointcut implements Pointcut {
 	public boolean strictMatches(String transletName, String beanOrActionId, String beanMethodName) {
 		return false;
 	}
+	
+	public void clearCache() {
+		
+	}
 
 }

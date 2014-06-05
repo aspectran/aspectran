@@ -145,7 +145,7 @@ public class MethodUtils {
 		if(args == null) {
 			args = EMPTY_OBJECT_ARRAY;
 		}
-
+		BeanUtils.getReadablePropertyNames(object);
 		Method method = getMatchingAccessibleMethod(object.getClass(), methodName, parameterTypes);
 		
 		if(method == null) {

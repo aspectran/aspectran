@@ -82,6 +82,8 @@ public abstract class AbstractActivityContextBuilder extends ContextBuilderAssis
 		
 		AspectAdviceRulePreRegister aspectAdviceRuleRegister = new AspectAdviceRulePreRegister(aspectRuleMap);
 		aspectAdviceRuleRegister.register(beanRuleMap, transletRuleMap);
+
+		pointcutFactory.close();
 		
 		return new AspectRuleRegistry(aspectRuleMap);
 	}
