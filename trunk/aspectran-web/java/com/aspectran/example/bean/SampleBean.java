@@ -19,5 +19,9 @@ public class SampleBean implements InitializableBean, DisposableBean {
 	public String hello(WebTranslet translet) {
 		return "Hello~";
 	}
+	
+	public String toString() {
+		return "Hello! I'm a SampleBean.";
+	}
 
 }

@@ -34,7 +34,7 @@ public class HelloAction {
 		Map<String, Object> result = new LinkedHashMap<String, Object>();
 		result.put("beforeAdviceResult", beforeAdviceResult);
 		result.put("countTo10", countTo10AsArray(translet));
-		result.put("sampleBean", translet.getBean("sampleBean"));
+		result.put("sampleBean", translet.getBean("sampleBean").toString());
 		result.put("afterAdviceResult", afterAdviceResult);
 		
 		return result;
