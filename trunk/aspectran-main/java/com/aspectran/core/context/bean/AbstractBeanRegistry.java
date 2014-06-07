@@ -18,6 +18,7 @@ import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.aspect.AspectRuleRegistry;
 import com.aspectran.core.context.aspect.pointcut.PointcutPattern;
 import com.aspectran.core.context.bean.proxy.CglibDynamicBeanProxy;
+import com.aspectran.core.context.bean.proxy.JdkDynamicBeanProxy;
 import com.aspectran.core.util.MethodUtils;
 import com.aspectran.core.util.ReflectionUtils;
 import com.aspectran.core.var.ValueMap;
@@ -54,7 +55,7 @@ public abstract class AbstractBeanRegistry {
 	protected AbstractBeanRegistry(ActivityContext context, BeanRuleMap beanRuleMap, BeanProxyModeType beanProxyMode) {
 		this.context = context;
 		this.beanRuleMap = beanRuleMap;
-		this.beanProxyMode = (beanProxyMode == null ? BeanProxyModeType.CGLIB : beanProxyMode);
+		this.beanProxyMode = (beanProxyMode == null ? BeanProxyModeType.CGLIB_PROXY : beanProxyMode);
 		this.aspectRuleRegistry = context.getAspectRuleRegistry();
 		
 		createSingletonBean();
@@ -139,9 +140,9 @@ public abstract class AbstractBeanRegistry {
 				}
 			}
 			
-			if(beanProxyMode == BeanProxyModeType.JDK) {
+			if(beanProxyMode == BeanProxyModeType.JDK_PROXY) {
 				logger.debug("JdkDynamicBeanProxy " + beanRule);
-				obj = CglibDynamicBeanProxy.newInstance(activity, aspectRuleList, beanRule, argTypes, args);
+				obj = JdkDynamicBeanProxy.newInstance(activity, aspectRuleList, beanRule, obj);
 			} else {
 				logger.debug("CglibDynamicBeanProxy " + beanRule);
 				obj = CglibDynamicBeanProxy.newInstance(activity, aspectRuleList, beanRule, argTypes, args);

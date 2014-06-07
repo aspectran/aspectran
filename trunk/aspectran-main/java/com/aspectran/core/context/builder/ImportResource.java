@@ -55,7 +55,7 @@ public class ImportResource {
 	}
 
 	/**
-	 * Sets the resource.
+	 * Sets the resource path to import.
 	 * 
 	 * @param resource the new resource
 	 * 
@@ -67,7 +67,7 @@ public class ImportResource {
 	}
 	
 	/**
-	 * Sets the resource.
+	 * Sets the resource path to import.
 	 * 
 	 * @param resource the new resource
 	 * 
