@@ -1,11 +1,14 @@
 package com.aspectran.core.context.aspect;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.aspectran.core.activity.process.ContentList;
 import com.aspectran.core.activity.process.action.Executable;
 import com.aspectran.core.context.aspect.pointcut.Pointcut;
+import com.aspectran.core.context.aspect.pointcut.PointcutPattern;
 import com.aspectran.core.var.rule.AspectRule;
 import com.aspectran.core.var.rule.AspectRuleMap;
 import com.aspectran.core.var.rule.BeanRuleMap;
@@ -42,11 +45,19 @@ public class AspectAdviceRulePreRegister extends AspectAdviceRuleRegister {
 						joinpointScope == JoinpointScopeType.CONTENT ||
 						joinpointScope == JoinpointScopeType.RESPONSE) {
 					if(pointcut == null) {
-						
+						aspectRule.setOnlyTransletRelevanted(true);
 					} else {
-						if(!pointcut.matches(null, "") && !pointcut.matches(null, null, "")) {
-
+						List<PointcutPattern> pointcutPatternList = pointcut.getPointcutPatternList();
+						boolean onlyTransletRelevanted = true;
+						
+						for(PointcutPattern pp : pointcutPatternList) {
+							if(pp.getBeanOrActionIdPattern() != null || pp.getBeanMethodNamePattern() != null) {
+								onlyTransletRelevanted = false;
+								break;
+							}
 						}
+						
+						aspectRule.setOnlyTransletRelevanted(onlyTransletRelevanted);
 					}
 				}
 			}
@@ -55,18 +66,16 @@ public class AspectAdviceRulePreRegister extends AspectAdviceRuleRegister {
 		for(TransletRule transletRule : transletRuleMap) {
 			register(transletRule);
 		}
-		
-		//TODO preregistered
-		
 	}
 	
 	private void register(TransletRule transletRule) {
 		for(AspectRule aspectRule : aspectRuleMap) {
 			AspectTargetType aspectTargetType = aspectRule.getAspectTargetType();
-			JoinpointScopeType joinpointScope = aspectRule.getJoinpointScope();
-			Pointcut pointcut = aspectRule.getPointcut();
 			
-			if(aspectTargetType == AspectTargetType.TRANSLET) {
+			if(aspectTargetType == AspectTargetType.TRANSLET && aspectRule.isOnlyTransletRelevanted()) {
+				JoinpointScopeType joinpointScope = aspectRule.getJoinpointScope();
+				Pointcut pointcut = aspectRule.getPointcut();
+				
 				if(joinpointScope == JoinpointScopeType.REQUEST) {
 					if(pointcut == null || pointcut.strictMatches(transletRule.getName())) {
 						RequestRule requestRule = transletRule.getRequestRule();
@@ -77,7 +86,7 @@ public class AspectAdviceRulePreRegister extends AspectAdviceRuleRegister {
 						register(requestRule, aspectRule);
 					}
 				} else if(joinpointScope == JoinpointScopeType.CONTENT) {
-					if(pointcut == null || pointcut.matches(transletRule.getName())) {
+					if(pointcut == null || pointcut.strictMatches(transletRule.getName())) {
 						ContentList contentList = transletRule.getContentList();
 						
 						if(contentList == null) {
@@ -91,7 +100,7 @@ public class AspectAdviceRulePreRegister extends AspectAdviceRuleRegister {
 						register(contentList, aspectRule);
 					}
 				} else if(joinpointScope == JoinpointScopeType.RESPONSE) {
-					if(pointcut == null || pointcut.matches(transletRule.getName())) {
+					if(pointcut == null || pointcut.strictMatches(transletRule.getName())) {
 						ResponseRule responseRule = transletRule.getResponseRule();
 						
 						if(logger.isTraceEnabled())
@@ -100,7 +109,7 @@ public class AspectAdviceRulePreRegister extends AspectAdviceRuleRegister {
 						register(responseRule, aspectRule);
 					}
 				} else { //translet scope
-					if(pointcut == null || pointcut.matches(transletRule.getName())) {
+					if(pointcut == null || pointcut.strictMatches(transletRule.getName())) {
 						if(logger.isTraceEnabled())
 							logger.trace("aspectRule " + aspectRule + "\n\t> transletRule " + transletRule);
 						

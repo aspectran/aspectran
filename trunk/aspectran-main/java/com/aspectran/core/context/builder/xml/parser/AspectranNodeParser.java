@@ -330,9 +330,12 @@ public class AspectranNodeParser {
 					pointcutPatternRule.setPointcutPatternOperationType(PointcutPatternOperationType.WITHIN);
 				
 					if(StringUtils.hasLength(translet) || StringUtils.hasLength(bean) || StringUtils.hasLength(method)) {
-						pointcutPatternRule.setTransletNamePattern(translet);
-						pointcutPatternRule.setBeanOrActionIdPattern(bean);
-						pointcutPatternRule.setBeanMethodNamePattern(method);
+						if(translet != null && translet.length() == 0)						
+							pointcutPatternRule.setTransletNamePattern(translet);
+						if(bean != null && bean.length() == 0)
+							pointcutPatternRule.setBeanOrActionIdPattern(bean);
+						if(method != null && method.length() == 0)
+							pointcutPatternRule.setBeanMethodNamePattern(method);
 					} else if(StringUtils.hasText(text)) {
 						pointcutPatternRule.setPatternString(text);
 					}
@@ -356,9 +359,12 @@ public class AspectranNodeParser {
 					withoutPointcutPatternRule.setPointcutPatternOperationType(PointcutPatternOperationType.WITHOUT);
 					
 					if(StringUtils.hasLength(translet) || StringUtils.hasLength(bean) || StringUtils.hasLength(method)) {
-						withoutPointcutPatternRule.setTransletNamePattern(translet);
-						withoutPointcutPatternRule.setBeanOrActionIdPattern(bean);
-						withoutPointcutPatternRule.setBeanMethodNamePattern(method);
+						if(translet != null && translet.length() == 0)						
+							withoutPointcutPatternRule.setTransletNamePattern(translet);
+						if(bean != null && bean.length() == 0)
+							withoutPointcutPatternRule.setBeanOrActionIdPattern(bean);
+						if(method != null && method.length() == 0)
+							withoutPointcutPatternRule.setBeanMethodNamePattern(method);
 					} else if(StringUtils.hasText(text)) {
 						withoutPointcutPatternRule.setPatternString(text);
 					}

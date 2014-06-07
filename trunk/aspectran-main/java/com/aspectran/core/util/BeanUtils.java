@@ -610,7 +610,7 @@ public class BeanUtils {
 
 			for(int i = 0; i < methods.length; i++) {
 				String name = methods[i].getName();
-				System.out.println("************* " + name);
+
 				if(name.equals("getClass")) {
 					// ignore
 				} else if(name.startsWith("set") && name.length() > 3) {
