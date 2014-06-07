@@ -87,7 +87,7 @@ public class URLImportStream {
 		return lastModified;
 	}
 
-	public static ImportResourceType getImportresourcetype() {
+	public static ImportResourceType getImportResourcetype() {
 		return importResourceType;
 	}
 	

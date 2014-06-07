@@ -27,20 +27,20 @@ import java.util.Map;
 public final class BeanProxyModeType extends Type {
 
 	/** The "CGLIB" bean proxy mode type. */
-	public static final BeanProxyModeType CGLIB;
+	public static final BeanProxyModeType CGLIB_PROXY;
 
 	/** The "JDK" bean proxy mode type. */
-	public static final BeanProxyModeType JDK;
+	public static final BeanProxyModeType JDK_PROXY;
 	
 	private static final Map<String, BeanProxyModeType> types;
 	
 	static {
-		CGLIB = new BeanProxyModeType("cglib");
-		JDK = new BeanProxyModeType("jdk");
+		CGLIB_PROXY = new BeanProxyModeType("cglib");
+		JDK_PROXY = new BeanProxyModeType("jdk");
 
 		types = new HashMap<String, BeanProxyModeType>();
-		types.put(CGLIB.toString(), CGLIB);
-		types.put(JDK.toString(), JDK);
+		types.put(CGLIB_PROXY.toString(), CGLIB_PROXY);
+		types.put(JDK_PROXY.toString(), JDK_PROXY);
 	}
 
 	/**

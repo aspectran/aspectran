@@ -15,15 +15,12 @@
  */
 package com.aspectran.core.context.builder;
 
-import java.util.List;
-
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.aspect.AspectAdviceRulePreRegister;
 import com.aspectran.core.context.aspect.AspectRuleRegistry;
 import com.aspectran.core.context.aspect.pointcut.Pointcut;
 import com.aspectran.core.context.aspect.pointcut.PointcutFactory;
-import com.aspectran.core.context.aspect.pointcut.PointcutPattern;
 import com.aspectran.core.context.bean.ContextBeanRegistry;
 import com.aspectran.core.context.bean.ScopedBeanRegistry;
 import com.aspectran.core.context.translet.TransletRuleRegistry;
