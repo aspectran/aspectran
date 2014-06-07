@@ -48,15 +48,13 @@ public class CglibDynamicBeanProxy implements MethodInterceptor {
 		String beanId = beanRule.getId();
 		String methodName = method.getName();
 
-		JoinpointScopeType joinpointScope = activity.getJoinpointScope();
-		
 		AspectAdviceRulePostRegister aspectAdviceRulePostRegister = new AspectAdviceRulePostRegister();
 		
 		for(AspectRule aspectRule : aspectRuleList) {
 			Pointcut pointcut = aspectRule.getPointcut();
 			
 			if(pointcut == null || pointcut.matches(transletName, beanId, methodName)) {
-				if(joinpointScope == JoinpointScopeType.BEAN) {
+				if(aspectRule.getJoinpointScope() == JoinpointScopeType.BEAN) {
 					aspectAdviceRulePostRegister.register(aspectRule);
 				} else {
 					activity.registerAspectRule(aspectRule);

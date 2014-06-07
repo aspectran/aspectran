@@ -15,6 +15,7 @@
  */
 package com.aspectran.core.activity.process.action;
 
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -42,6 +43,8 @@ public class BeanAction extends AbstractAction implements Executable {
 	private final Logger logger = LoggerFactory.getLogger(BeanAction.class);
 
 	private final BeanActionRule beanActionRule;
+	
+	private final Map<ItemRuleMap, Boolean> transletArgumentApplyingCache = new HashMap<ItemRuleMap, Boolean>();
 	
 	/**
 	 * Instantiates a new bean action.
@@ -73,11 +76,83 @@ public class BeanAction extends AbstractAction implements Executable {
 			ItemRuleMap propertyItemRuleMap = beanActionRule.getPropertyItemRuleMap();
 			ItemRuleMap argumentItemRuleMap = beanActionRule.getArgumentItemRuleMap();
 
-			return invokeMethod(activity, bean, methodName, propertyItemRuleMap, argumentItemRuleMap);
+			ItemTokenExpressor expressor = new ItemTokenExpression(activity);
+
+			if(propertyItemRuleMap != null) {
+				ValueMap valueMap = expressor.express(propertyItemRuleMap);
+				
+				// set properties for ActionBean
+				for(Map.Entry<String, Object> entry : valueMap.entrySet()) {
+					BeanUtils.setObject(bean, entry.getKey(), entry.getValue());
+				}
+			}
+			
+			Object result;
+			
+			if(transletArgumentApplyingCache.get(argumentItemRuleMap) == Boolean.TRUE) {
+				result = invokeMethod(activity, expressor, bean, methodName, argumentItemRuleMap);
+			} else if(transletArgumentApplyingCache.get(argumentItemRuleMap) == Boolean.FALSE) {
+				result = invokeMethod(null, expressor, bean, methodName, argumentItemRuleMap);
+			} else {
+				try {
+					result = invokeMethod(activity, expressor, bean, methodName, argumentItemRuleMap);
+					
+					transletArgumentApplyingCache.put(argumentItemRuleMap, Boolean.TRUE);
+				} catch(NoSuchMethodException e) {
+					logger.info("No such method with a translet argument. " + e);
+					
+					result = invokeMethod(null, expressor, bean, methodName, argumentItemRuleMap);
+					
+					transletArgumentApplyingCache.put(argumentItemRuleMap, Boolean.FALSE);
+				}
+			}
+
+			return result;
 		} catch(Exception e) {
 			logger.error("action execution error: beanActionRule " + beanActionRule + " Cause: " + e.toString());
 			throw e;
 		}
+	}
+	
+	public Object invokeMethod(CoreActivity activity, ItemTokenExpressor expressor, Object bean, String methodName, ItemRuleMap argumentItemRuleMap) throws Exception {
+		Class<?>[] parameterTypes = null;
+		Object[] args = null;
+		
+		
+		if(argumentItemRuleMap != null && argumentItemRuleMap.size() > 0) {
+			int argIndex = (activity != null) ? 1 : 0;
+
+			ValueMap valueMap = expressor.express(argumentItemRuleMap);
+			
+			parameterTypes = new Class<?>[argumentItemRuleMap.size() + argIndex];
+			args = new Object[parameterTypes.length];
+			
+			if(argIndex > 0) {
+				parameterTypes[0] = activity.getTransletInterfaceClass();
+				args[0] = activity.getSuperTranslet();
+			}
+			
+			Iterator<ItemRule> iter = argumentItemRuleMap.iterator();
+			
+			while(iter.hasNext()) {
+				ItemRule ir = iter.next();
+				Object o = valueMap.get(ir.getName());
+				
+				parameterTypes[argIndex] = o.getClass();
+				args[argIndex] = o;
+				
+				argIndex++;
+			}
+		} else {
+			if(activity != null) {
+				parameterTypes = new Class<?>[] { activity.getTransletInterfaceClass() };
+				args = new Object[] { activity.getSuperTranslet() };
+			}
+		}
+		
+		Object result = MethodUtils.invokeMethod(bean, methodName, args, parameterTypes);
+		
+		return result;
 	}
 	
 	/**
@@ -134,52 +209,6 @@ public class BeanAction extends AbstractAction implements Executable {
 		sb.append("}");
 
 		return sb.toString();
-	}
-	
-	public static Object invokeMethod(CoreActivity activity, Object bean, String methodName, ItemRuleMap propertyItemRuleMap, ItemRuleMap argumentItemRuleMap) throws Exception {
-		ItemTokenExpressor expressor = new ItemTokenExpression(activity);
-
-		if(propertyItemRuleMap != null) {
-			ValueMap valueMap = expressor.express(propertyItemRuleMap);
-			
-			// set properties for ActionBean
-			for(Map.Entry<String, Object> entry : valueMap.entrySet()) {
-				BeanUtils.setObject(bean, entry.getKey(), entry.getValue());
-			}
-		}
-
-		Class<?>[] parameterTypes = null;
-		Object[] args = null;
-		
-		if(argumentItemRuleMap != null && argumentItemRuleMap.size() > 0) {
-			ValueMap valueMap = expressor.express(argumentItemRuleMap);
-			
-			parameterTypes = new Class<?>[argumentItemRuleMap.size() + 1];
-			args = new Object[parameterTypes.length];
-			
-			parameterTypes[0] = activity.getTransletInterfaceClass();
-			args[0] = activity.getSuperTranslet();
-			
-			Iterator<ItemRule> iter = argumentItemRuleMap.iterator();
-			int i = 1;
-			
-			while(iter.hasNext()) {
-				ItemRule ir = iter.next();
-				Object o = valueMap.get(ir.getName());
-				
-				parameterTypes[i] = o.getClass();
-				args[i] = o;
-				
-				i++;
-			}
-		} else {
-			parameterTypes = new Class<?>[] { activity.getTransletInterfaceClass() };
-			args = new Object[] { activity.getSuperTranslet() };
-		}
-		
-		Object result = MethodUtils.invokeMethod(bean, methodName, args, parameterTypes);
-		
-		return result;
 	}
 	
 }

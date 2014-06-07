@@ -45,7 +45,7 @@ public class AspectRule {
 	
 	private List<AspectJobAdviceRule> aspectJobAdviceRuleList; // for scheduling aspects
 	
-	private boolean preregistered;
+	private boolean onlyTransletRelevanted;
 	
 	public String getId() {
 		return id;
@@ -141,12 +141,12 @@ public class AspectRule {
 		aspectJobAdviceRuleList.add(atar);
 	}
 
-	public boolean isPreregistered() {
-		return preregistered;
+	public boolean isOnlyTransletRelevanted() {
+		return onlyTransletRelevanted;
 	}
 
-	public void setPreregistered(boolean preregistered) {
-		this.preregistered = preregistered;
+	public void setOnlyTransletRelevanted(boolean onlyTransletRelevanted) {
+		this.onlyTransletRelevanted = onlyTransletRelevanted;
 	}
 
 	/* (non-Javadoc)
@@ -166,7 +166,7 @@ public class AspectRule {
 		} else if(aspectTargetType == AspectTargetType.SCHEDULER) {
 			sb.append(", aspectTriggerAdviceRuleList=").append(aspectJobAdviceRuleList);
 		}
-		sb.append(", preregistered=").append(preregistered);
+		sb.append(", onlyTransletRelevanted=").append(onlyTransletRelevanted);
 		sb.append("}");
 		
 		return sb.toString();

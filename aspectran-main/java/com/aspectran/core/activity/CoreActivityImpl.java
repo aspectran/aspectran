@@ -568,7 +568,9 @@ public abstract class CoreActivityImpl extends AbstractCoreActivity implements C
 
 	private void responseByContentType(ResponseByContentTypeRuleMap responseByContentTypeRuleMap) throws CoreActivityException {
 		ResponseByContentTypeRule rbctr = responseByContentTypeRuleMap.getResponseByContentTypeRule(getRaisedException());
-		responseByContentType(rbctr);
+		
+		if(rbctr != null)
+			responseByContentType(rbctr);
 	}
 
 	/**
@@ -581,7 +583,7 @@ public abstract class CoreActivityImpl extends AbstractCoreActivity implements C
 	 */
 	private void responseByContentType(ResponseByContentTypeRule responseByContentTypeRule) throws CoreActivityException {
 		Responsible response = getResponse();
-		
+
 		if(response != null && response.getContentType() != null) {
 			Responsible response2 = responseByContentTypeRule.getResponse(response.getContentType());
 			ResponseRule newResponseRule = responseRule.newResponseRule(response2);

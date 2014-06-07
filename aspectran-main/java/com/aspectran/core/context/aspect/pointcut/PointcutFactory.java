@@ -151,15 +151,14 @@ public class PointcutFactory {
 			pointcutPatternCache = null;
 		}
 		
-		if(pointcutList == null)
-			return;
-
-		for(Pointcut pointcut : pointcutList) {
-			pointcut.clearCache();
+		if(pointcutList != null) {
+			for(Pointcut pointcut : pointcutList) {
+				pointcut.clearCache();
+			}
+	
+			pointcutList.clear();
+			pointcutList = null;
 		}
-
-		pointcutList.clear();
-		pointcutList = null;
 	}
 	
 }

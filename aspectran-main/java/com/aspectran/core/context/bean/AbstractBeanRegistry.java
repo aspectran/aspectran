@@ -41,7 +41,7 @@ public abstract class AbstractBeanRegistry {
 	/** The logger. */
 	private final Logger logger = LoggerFactory.getLogger(AbstractBeanRegistry.class);
 
-	private Map<String, List<AspectRule>> aspectRuleCache = new HashMap<String, List<AspectRule>>();
+	private Map<String, List<AspectRule>> aspectRuleListCache = new HashMap<String, List<AspectRule>>();
 	
 	private ActivityContext context;
 	
@@ -121,35 +121,20 @@ public abstract class AbstractBeanRegistry {
 		 * 3. DynamicProxy에서 현재 실행 시점의 JoinScope에 따라 해당 JoinScope의 AspectAdviceRegistry에 Advice를 등록하라.
 		 * 4. DynamicProxy에서 일치하는 메쏘드를 가진 AspectRule의 Advice를 실행하라.
 		 */
-		String transletName = null;
-		JoinpointScopeType joinpointScope = null;
-		String beanId = beanRule.getId();
 
-		if(activity != null) {
-			/*
-			 * Translet, JoinpointScope의 적용여부를 결정 
-			 */
-			if(beanRule.getScopeType() == ScopeType.PROTOTYPE || beanRule.getScopeType() == ScopeType.REQUEST) {
-				transletName = activity.getTransletName();
-			}
-			if(beanRule.getScopeType() == ScopeType.PROTOTYPE) {
-				joinpointScope = activity.getJoinpointScope();
-			}
-		}
-		
 		/*
 		 * Bean과 관련된 AspectRule을 모두 추출.
 		 */
-		List<AspectRule> aspectRuleList = retrieveAspectRuleList(joinpointScope, transletName, beanId);
+		List<AspectRule> aspectRuleList = retrieveAspectRuleList(activity, beanRule);
 		
 		Object obj = null;
 		
-		if(aspectRuleList.size() > 0) {
+		if(aspectRuleList != null) {
 			if(activity == null) {
 				try {
 					activity = new VoidActivityImpl(context);
 					activity.init(null);
-				} catch (CoreActivityException e) {
+				} catch(CoreActivityException e) {
 					throw new BeanCreationException(beanRule, e);
 				}
 			}
@@ -171,22 +156,49 @@ public abstract class AbstractBeanRegistry {
 		return obj;
 	}
 	
-	private List<AspectRule> retrieveAspectRuleList(JoinpointScopeType joinpointScope, String transletName, String beanId) {
+	/**
+	 * Retrieve all Aaspect Rules associated with a bean.
+	 * Bean과 관련된 모든 AspectRule을 모두 추출하라.
+	 *
+	 * @param activity the activity
+	 * @param beanRule the bean rule
+	 * @return the list
+	 */
+	private List<AspectRule> retrieveAspectRuleList(CoreActivity activity, BeanRule beanRule) {
+		String transletName = null;
+		JoinpointScopeType joinpointScope = null;
+		String beanId = beanRule.getId();
+
+		if(activity != null) {
+			/*
+			 * Translet, JoinpointScope의 적용여부를 결정 
+			 */
+			if(beanRule.getScopeType() == ScopeType.PROTOTYPE || beanRule.getScopeType() == ScopeType.REQUEST) {
+				transletName = activity.getTransletName();
+			}
+			if(beanRule.getScopeType() == ScopeType.PROTOTYPE) {
+				joinpointScope = activity.getJoinpointScope();
+			}
+		}
+		
 		String joinpointScopeString = joinpointScope == null ? null : joinpointScope.toString();
 		String patternString = PointcutPattern.combinePatternString(joinpointScopeString, transletName, beanId, null);
 
 		List<AspectRule> aspectRuleList;
 		
-		synchronized(aspectRuleCache) {
-			aspectRuleList = aspectRuleCache.get(patternString);
+		synchronized(aspectRuleListCache) {
+			aspectRuleList = aspectRuleListCache.get(patternString);
 			
 			if(aspectRuleList == null) {
-				aspectRuleList = aspectRuleRegistry.getAspectRuleList(joinpointScope, transletName, beanId);
-				aspectRuleCache.put(patternString, aspectRuleList);
+				aspectRuleList = aspectRuleRegistry.getBeanRelevantedAspectRuleList(joinpointScope, transletName, beanId);
+				aspectRuleListCache.put(patternString, aspectRuleList);
 			}
 		}
 		
-		return aspectRuleList;
+		if(aspectRuleList.size() == 0)
+			return null;
+		else
+			return aspectRuleList;
 	}
 	
 	protected Object newInstance(BeanRule beanRule, Class<?>[] argTypes, Object[] args) throws BeanInstantiationException {
