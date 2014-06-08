@@ -42,7 +42,8 @@ import com.aspectran.web.activity.WebActivityDefaultHandler;
 import com.aspectran.web.activity.WebActivityImpl;
 import com.aspectran.web.adapter.WebApplicationAdapter;
 import com.aspectran.web.startup.ActivityContextLoader;
-import com.aspectran.web.startup.RefreshableActivityContextLoader;
+import com.aspectran.web.startup.ActivityContextObservedLoader;
+import com.aspectran.web.startup.listener.AspectranSchedulerOptions;
 
 /**
  * Servlet implementation class for Servlet: Translets.
@@ -83,23 +84,26 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 			ServletContext servletContext = getServletContext();
 			
 			String contextConfigLocation = getServletConfig().getInitParameter(ActivityContextLoader.CONTEXT_CONFIG_LOCATION_PARAM);
-			String autoReload = getServletConfig().getInitParameter("autoReload");
-			int refreshTime = 0;
-			
-			if(StringUtils.hasText(autoReload)) {
-				try {
-					refreshTime = Integer.parseInt(autoReload);
-				} catch(NumberFormatException e) {
-					logger.warn("Auto-reload time is an invalid number format. So to be recognized as true or false. If true, the Auto-reload time is 5 seconds.");
-					
-					boolean isAutoReload = Boolean.parseBoolean(autoReload);
-					if(isAutoReload)
-						refreshTime = 5; //default refresh time
-				}
-			}
+			String autoReloadingParam = getServletConfig().getInitParameter("autoReloading");
 
+			/*
+			observingPath: [
+							classpath:**
+							WEB-INF/config/sqlmap/**
+						]
+						observationInterval: 5
+						startup: false
+			*/
+			Options autoReloadingOptions = new AutoReloadingOptions(autoReloadingParam);
+			String[] observingPaths = autoReloadingOptions.getStringArray(AutoReloadingOptions.observingPath);
+			int observationInterval = autoReloadingOptions.getInt(AutoReloadingOptions.observationInterval, 10);
+			boolean autoReloadingStartup = autoReloadingOptions.getBoolean(AspectranSchedulerOptions.startup, true);
+
+			if(observingPaths == null || observingPaths.length == 0)
+				autoReloadingStartup = false;
+			
 			if(StringUtils.hasText(contextConfigLocation)) {
-				if(refreshTime == 0) {
+				if(!autoReloadingStartup) {
 					ActivityContextLoader loader = new ActivityContextLoader(servletContext, contextConfigLocation);
 					activityContext = loader.load();
 				} else {
@@ -109,9 +113,9 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 						}
 					};
 					
-					RefreshableActivityContextLoader loader = new RefreshableActivityContextLoader(servletContext, contextConfigLocation);
-					activityContext = loader.load();
-					contextRefreshTimer = loader.startTimer(contextRefreshHandler, refreshTime);
+					ActivityContextObservedLoader observedLoader = new ActivityContextObservedLoader(servletContext, contextConfigLocation);
+					activityContext = observedLoader.load();
+					contextRefreshTimer = observedLoader.startTimer(contextRefreshHandler, observingPaths, observationInterval);
 				}
 			}
 			

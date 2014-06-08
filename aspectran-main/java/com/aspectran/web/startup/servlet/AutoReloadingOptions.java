@@ -35,12 +35,11 @@ public class AutoReloadingOptions extends AbstractOptions implements Options {
 	}
 	
 	public AutoReloadingOptions() {
-		super(options, AutoReloadingOptions.class.getName());
+		super(AutoReloadingOptions.class.getName(), options);
 	}
 	
-	public AutoReloadingOptions(String patternString) throws InvalidOptionException {
-		super(options, AutoReloadingOptions.class.getName());
-		parse(patternString);
+	public AutoReloadingOptions(String plaintext) throws InvalidOptionException {
+		super(AutoReloadingOptions.class.getName(), options, plaintext);
 	}
 	
 }

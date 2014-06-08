@@ -21,7 +21,7 @@ package com.aspectran.core.var.option;
  * 
  * <p>Created: 2008. 01. 07 오전 3:35:55</p>
  */
-public class InvalidOptionException extends Exception {
+public class InvalidOptionException extends IllegalArgumentException {
 	
 	/** @serial */
 	static final long serialVersionUID = 8751153209989630438L;

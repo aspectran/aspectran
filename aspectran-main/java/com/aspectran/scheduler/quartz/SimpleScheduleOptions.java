@@ -33,9 +33,12 @@ public class SimpleScheduleOptions extends AbstractOptions implements Options {
 		};
 	}
 	
-	public SimpleScheduleOptions(String patternString) throws InvalidOptionException {
-		super(options, SimpleScheduleOptions.class.getName());
-		parse(patternString);
+	public SimpleScheduleOptions() {
+		super(SimpleScheduleOptions.class.getName(), options);
+	}
+	
+	public SimpleScheduleOptions(String plaintext) throws InvalidOptionException {
+		super(SimpleScheduleOptions.class.getName(), options, plaintext);
 	}
 	
 }

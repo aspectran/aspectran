@@ -31,9 +31,12 @@ public class AspectranSchedulerOptions extends AbstractOptions implements Option
 		};
 	}
 	
-	public AspectranSchedulerOptions(String patternString) throws InvalidOptionException {
-		super(options, AspectranSchedulerOptions.class.getName());
-		parse(patternString);
+	public AspectranSchedulerOptions() {
+		super(AspectranSchedulerOptions.class.getName(), options);
+	}
+	
+	public AspectranSchedulerOptions(String plaintext) throws InvalidOptionException {
+		super(AspectranSchedulerOptions.class.getName(), options, plaintext);
 	}
 	
 }

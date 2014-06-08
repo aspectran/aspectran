@@ -31,7 +31,8 @@ import com.aspectran.scheduler.AspectranScheduler;
 import com.aspectran.scheduler.quartz.QuartzAspectranScheduler;
 import com.aspectran.web.adapter.WebApplicationAdapter;
 import com.aspectran.web.startup.ActivityContextLoader;
-import com.aspectran.web.startup.RefreshableActivityContextLoader;
+import com.aspectran.web.startup.ActivityContextObservedLoader;
+import com.aspectran.web.startup.servlet.AutoReloadingOptions;
 import com.aspectran.web.startup.servlet.SchedulerOptions;
 
 public class AspectranSchedulerListener implements ServletContextListener {
@@ -75,18 +76,14 @@ public class AspectranSchedulerListener implements ServletContextListener {
 			startDelaySeconds = schedulerOptions.getInt(SchedulerOptions.startDelaySeconds, -1);
 			waitOnShutdown = schedulerOptions.getBoolean(SchedulerOptions.waitOnShutdown, true);
 			boolean startup = schedulerOptions.getBoolean(AspectranSchedulerOptions.startup, false);
-			String autoReload = (String)schedulerOptions.getString("autoReload", "0");
-			int refreshTime = 0;
 			
-			try {
-				refreshTime = Integer.parseInt(autoReload);
-			} catch(NumberFormatException e) {
-				logger.warn("Auto-reload time is an invalid number format. So to be recognized as true or false. If true, the Auto-reload time is 5 seconds.");
-				
-				boolean isAutoReload = Boolean.parseBoolean(autoReload);
-				if(isAutoReload)
-					refreshTime = 5; //default refresh time
-			}
+			Options autoReloadingOptions = schedulerOptions.getOptions("autoReloading");
+			String[] observingPaths = autoReloadingOptions.getStringArray(AutoReloadingOptions.observingPath);
+			int observationInterval = autoReloadingOptions.getInt(AutoReloadingOptions.observationInterval, 10);
+			boolean autoReloadingStartup = autoReloadingOptions.getBoolean(AspectranSchedulerOptions.startup, true);
+
+			if(observingPaths == null || observingPaths.length == 0)
+				autoReloadingStartup = false;
 			
 			if(!startup)
 				return;
@@ -96,19 +93,19 @@ public class AspectranSchedulerListener implements ServletContextListener {
 				startDelaySeconds = 5;
 			}
 			
-			if(refreshTime == 0) {
+			if(!autoReloadingStartup) {
 				ActivityContextLoader aspectranContextLoader = new ActivityContextLoader(servletContext, contextConfigLocation);
 				activityContext = aspectranContextLoader.load();
 			} else {
 				ActivityContextRefreshHandler contextRefreshHandler = new ActivityContextRefreshHandler() {
-					public void handle(ActivityContext newContext) {
-						reload(newContext);
+					public void handle(ActivityContext newActivityContext) {
+						reload(newActivityContext);
 					}
 				};
 				
-				RefreshableActivityContextLoader loader = new RefreshableActivityContextLoader(servletContext, contextConfigLocation);
-				activityContext = loader.load();
-				contextRefreshTimer = loader.startTimer(contextRefreshHandler, refreshTime);
+				ActivityContextObservedLoader observedLoader = new ActivityContextObservedLoader(servletContext, contextConfigLocation);
+				activityContext = observedLoader.load();
+				contextRefreshTimer = observedLoader.startTimer(contextRefreshHandler, observingPaths, observationInterval);
 			}
 			
 			initScheduler();
