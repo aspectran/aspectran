@@ -90,6 +90,8 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 				try {
 					refreshTime = Integer.parseInt(autoReload);
 				} catch(NumberFormatException e) {
+					logger.warn("Auto-reload time is an invalid number format. So to be recognized as true or false. If true, the Auto-reload time is 5 seconds.");
+					
 					boolean isAutoReload = Boolean.parseBoolean(autoReload);
 					if(isAutoReload)
 						refreshTime = 5; //default refresh time
@@ -119,7 +121,7 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 			initScheduler();
 			
 		} catch(Exception e) {
-			logger.error("WebActivityServlet failed to initialize: " + e.toString(), e);
+			logger.error("WebActivityServlet was failed to initialize: " + e.toString(), e);
 			throw new UnavailableException(e.getMessage());
 		}
 	}
@@ -140,7 +142,7 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 					aspectranScheduler.setWaitOnShutdown(true);
 				
 				if(startDelaySeconds == null) {
-					logger.info("Scheduler option 'startDelaySeconds is' not specified, defaulting to 5 seconds.");
+					logger.info("Scheduler option 'startDelaySeconds' is not specified. So defaulting to 5 seconds.");
 					startDelaySeconds = 5;
 				}
 				
@@ -212,13 +214,13 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 			WebApplicationAdapter.destoryWebApplicationAdapter(getServletContext());
 		} catch(Exception e) {
 			cleanlyDestoryed = false;
-			logger.error("WebApplicationAdapter failed to destroy: " + e.toString(), e);
+			logger.error("WebApplicationAdapter was failed to destroy: " + e.toString(), e);
 		}
 
 		if(cleanlyDestoryed)
-			logger.info("WebActivityServlet successful destroyed.");
+			logger.info("WebActivityServlet was destroyed successfully.");
 		else
-			logger.error("WebActivityServlet failed to destroy cleanly.");
+			logger.error("WebActivityServlet was failed to destroy cleanly.");
 
 		logger.info("Do not terminate the server while the all scoped bean destroying.");
 	}
@@ -227,9 +229,9 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 		if(aspectranScheduler != null) {
 			try {
 				aspectranScheduler.shutdown();
-				logger.info("AspectranScheduler successful shutdown.");
+				logger.info("AspectranScheduler has been shutdown successfully.");
 			} catch(Exception e) {
-				logger.error("AspectranScheduler failed to shutdown cleanly: " + e.toString(), e);
+				logger.error("AspectranScheduler was failed to shutdown cleanly: " + e.toString(), e);
 				return false;
 			}
 		}
@@ -241,9 +243,9 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 		if(activityContext != null) {
 			try {
 				activityContext.destroy();
-				logger.info("AspectranContext successful destroyed.");
+				logger.info("AspectranContext was destroyed successfully.");
 			} catch(Exception e) {
-				logger.error("AspectranContext failed to destroy: " + e.toString(), e);
+				logger.error("AspectranContext was failed to destroy: " + e.toString(), e);
 				return false;
 			}
 		}
@@ -263,7 +265,7 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 		try {
 			initScheduler();
 		} catch(Exception e) {
-			logger.error("Scheduler failed to initialize: " + e.toString(), e);
+			logger.error("Scheduler was failed to initialize: " + e.toString(), e);
 		}
 		
 		if(contextRefreshTimer != null)
