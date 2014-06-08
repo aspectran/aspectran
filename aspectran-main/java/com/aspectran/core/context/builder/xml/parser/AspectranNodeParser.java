@@ -107,8 +107,10 @@ public class AspectranNodeParser {
 		try {
 			parse(inputStream);
 		} finally {
-			if(inputStream != null)
+			if(inputStream != null) {
 				inputStream.close();
+				inputStream = null;
+			}
 		}
 		
 		assistant.addImportResource(importResource);

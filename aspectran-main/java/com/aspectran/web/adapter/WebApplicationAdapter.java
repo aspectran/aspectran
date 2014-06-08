@@ -22,6 +22,8 @@ public class WebApplicationAdapter extends AbstractApplicationAdapter implements
 
 	private static final Logger logger = LoggerFactory.getLogger(WebApplicationAdapter.class);
 	
+	private final String applicationBasePath;
+	
 	private int activityContextCount = 0;
 	
 	/**
@@ -31,6 +33,8 @@ public class WebApplicationAdapter extends AbstractApplicationAdapter implements
 	 */
 	public WebApplicationAdapter(ServletContext servletContext) {
 		super(servletContext);
+		
+		this.applicationBasePath = servletContext.getRealPath("/");
 	}
 
 	public Object getAttribute(String name) {
@@ -39,6 +43,10 @@ public class WebApplicationAdapter extends AbstractApplicationAdapter implements
 
 	public void setAttribute(String name, Object value) {
 		((ServletContext)adaptee).setAttribute(name, value);
+	}
+	
+	public String getApplicationBasePath() {
+		return applicationBasePath;
 	}
 	
 	public synchronized int getActivityContextCount() {
@@ -51,6 +59,19 @@ public class WebApplicationAdapter extends AbstractApplicationAdapter implements
 	
 	private synchronized int decreaseActivityContextCount() {
 		return --activityContextCount;
+	}
+	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		
+		sb.append("{applicationBasePath=").append(applicationBasePath);
+		sb.append(", activityContextCount=").append(activityContextCount);
+		sb.append("}");
+		
+		return sb.toString();
 	}
 	
 	public static WebApplicationAdapter determineWebApplicationAdapter(ServletContext servletContext) {
@@ -72,7 +93,7 @@ public class WebApplicationAdapter extends AbstractApplicationAdapter implements
 		WebApplicationAdapter webApplicationAdapter = new WebApplicationAdapter(servletContext);
 		servletContext.setAttribute(WEB_APPLICATION_ADAPTER_ATTRIBUTE, webApplicationAdapter);
 		
-		logger.debug("WebApplicationAdapter attribute was created.");
+		logger.debug("WebApplicationAdapter attribute was created. " + webApplicationAdapter);
 		
 		return webApplicationAdapter;
 	}

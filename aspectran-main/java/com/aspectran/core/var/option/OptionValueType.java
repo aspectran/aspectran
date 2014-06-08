@@ -22,7 +22,8 @@ import com.aspectran.core.var.type.Type;
 
 
 /**
- * Unity of the item.
+ * Defines the type of the option value.
+ * 
  * <p>Created: 2008. 03. 29 오후 3:47:00</p>
  */
 public final class OptionValueType extends Type {
@@ -36,17 +37,27 @@ public final class OptionValueType extends Type {
 	/** The "boolean" item type. */
 	public static final OptionValueType BOOLEAN;
 	
+	/** The "string array" item type. */
+	public static final OptionValueType STRING_ARRAY;
+	
+	/** The "options" item type. */
+	public static final OptionValueType OPTIONS;
+	
 	private static final Map<String, OptionValueType> types;
 	
 	static {
 		STRING = new OptionValueType("string");
 		INTEGER = new OptionValueType("integer");
 		BOOLEAN = new OptionValueType("boolean");
+		STRING_ARRAY = new OptionValueType("stringArray");
+		OPTIONS = new OptionValueType("options");
 
 		types = new HashMap<String, OptionValueType>();
 		types.put(STRING.toString(), STRING);
 		types.put(INTEGER.toString(), INTEGER);
 		types.put(BOOLEAN.toString(), BOOLEAN);
+		types.put(STRING_ARRAY.toString(), STRING_ARRAY);
+		types.put(OPTIONS.toString(), OPTIONS);
 	}
 
 	/**
@@ -60,7 +71,7 @@ public final class OptionValueType extends Type {
 	}
 
 	/**
-	 * Returns a <code>ValueUnityType</code> with a value represented by the specified String.
+	 * Returns a <code>OptionValueType</code> with a value represented by the specified String.
 	 * 
 	 * @param type the type
 	 * 

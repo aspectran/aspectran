@@ -5,6 +5,7 @@ import com.aspectran.core.var.option.InvalidOptionException;
 import com.aspectran.core.var.option.Option;
 import com.aspectran.core.var.option.OptionValueType;
 import com.aspectran.core.var.option.Options;
+import com.aspectran.web.startup.servlet.AutoReloadingOptions;
 
 public class AspectranSchedulerOptions extends AbstractOptions implements Options {
 
@@ -16,7 +17,7 @@ public class AspectranSchedulerOptions extends AbstractOptions implements Option
 	
 	public static final Option startup = new Option("startup", OptionValueType.BOOLEAN);
 	
-	public static final Option autoReload = new Option("autoReload", OptionValueType.BOOLEAN);
+	public static final Option autoReloading = new Option("autoReloading", OptionValueType.OPTIONS, new AutoReloadingOptions());
 	
 	private final static Option[] options;
 	
@@ -26,7 +27,7 @@ public class AspectranSchedulerOptions extends AbstractOptions implements Option
 				startDelaySeconds,
 				waitOnShutdown,
 				startup,
-				autoReload
+				autoReloading
 		};
 	}
 	

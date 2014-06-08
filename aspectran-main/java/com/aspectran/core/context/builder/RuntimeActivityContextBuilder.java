@@ -24,15 +24,19 @@ import com.aspectran.core.context.ActivityContext;
  */
 public class RuntimeActivityContextBuilder extends AbstractActivityContextBuilder implements ActivityContextBuilder {
 	
+	private final ApplicationAdapter applicationAdapter;
+	
 	public RuntimeActivityContextBuilder() {
-		this(null);
+		super(null);
+		this.applicationAdapter = null;
 	}
 
-	public RuntimeActivityContextBuilder(String applicationBasePath) {
-		super(applicationBasePath);
+	public RuntimeActivityContextBuilder(ApplicationAdapter applicationAdapter) {
+		super(applicationAdapter.getApplicationBasePath());
+		this.applicationAdapter = applicationAdapter;
 	}
 
-	public ActivityContext build(ApplicationAdapter applicationAdapter) throws ActivityContextBuilderException {
+	public ActivityContext build(String contextConfigLocation) throws ActivityContextBuilderException {
 		try {
 			return makeActivityContext(applicationAdapter);
 		} catch(Exception e) {

@@ -104,8 +104,8 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 					activityContext = loader.load();
 				} else {
 					ActivityContextRefreshHandler contextRefreshHandler = new ActivityContextRefreshHandler() {
-						public void handle(ActivityContext newContext) {
-							reload(newContext);
+						public void handle(ActivityContext newActivityContext) {
+							reload(newActivityContext);
 						}
 					};
 					
@@ -253,14 +253,14 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 		return true;
 	}
 	
-	protected void reload(ActivityContext newContext) {
+	protected void reload(ActivityContext newActivityContext) {
 		if(contextRefreshTimer != null)
 			contextRefreshTimer.cancel();
 		
 		shutdownScheduler();
 		destroyContext();
 		
-		activityContext = newContext;
+		activityContext = newActivityContext;
 		
 		try {
 			initScheduler();
