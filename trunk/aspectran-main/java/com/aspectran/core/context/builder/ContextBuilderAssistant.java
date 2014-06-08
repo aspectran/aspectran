@@ -73,7 +73,7 @@ public class ContextBuilderAssistant {
 		else
 			this.applicationBasePath = applicationBasePath;
 		
-		logger.info("application base directory path [" + applicationBasePath + "]");
+		logger.info("Application base directory path is [" + applicationBasePath + "]");
 	}
 	
 	public ClassLoader getClassLoader() {

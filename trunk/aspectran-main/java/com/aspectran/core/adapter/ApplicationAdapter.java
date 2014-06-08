@@ -40,4 +40,11 @@ public interface ApplicationAdapter {
 	 */
 	public void setAttribute(String name, Object value);
 	
+	/**
+	 * Gets the application base directory path.
+	 *
+	 * @return the application basedirectory path
+	 */
+	public String getApplicationBasePath();
+	
 }

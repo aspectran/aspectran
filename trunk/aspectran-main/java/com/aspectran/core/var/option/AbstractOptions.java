@@ -1,6 +1,8 @@
 package com.aspectran.core.var.option;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
@@ -10,18 +12,24 @@ public abstract class AbstractOptions implements Options {
 
 	private static final String DELIMITERS = "\n\r\f";
 	
-	protected Map<String, Option> optionMap = new HashMap<String, Option>();
+	protected final Map<String, Option> optionMap;
 	
 	private final String description;
 	
 	protected AbstractOptions(Option[] options, String description) {
+		this.optionMap = new HashMap<String, Option>();
+		
 		for(Option option : options) {
 			optionMap.put(option.getName(), option);
 		}
-		
+
 		this.description = description;
 	}
 
+	public Map<String, Option> getOptionMap() {
+		return optionMap;
+	}
+	
 	public Object getValue(String name) {
 		Option o = optionMap.get(name);
 		
@@ -72,6 +80,15 @@ public abstract class AbstractOptions implements Options {
 		
 	}
 	
+	public String[] getStringArray(String name) {
+		Option o = optionMap.get(name);
+		
+		if(o == null)
+			return null;
+		
+		return (String[])o.getValue();
+	}
+	
 	public String getString(Option option) {
 		return getString(option.getName());
 	}
@@ -88,15 +105,30 @@ public abstract class AbstractOptions implements Options {
 		return getBoolean(option.getName(), defaultValue);
 	}
 	
+	public String[] getStringArray(Option option) {
+		return getStringArray(option.getName());
+	}
+
 	protected void parse(String statement) throws InvalidOptionException {
 		StringTokenizer st = new StringTokenizer(statement, DELIMITERS);
-		
+
+		parse(st, false);
+	}
+	
+	protected void parse(StringTokenizer st, boolean subOptions) throws InvalidOptionException {
 		while(st.hasMoreTokens()) {
 			String token = st.nextToken();
 			
 			if(StringUtils.hasText(token)) {
-				int index = token.indexOf(":");
+				token = token.trim();
 				
+				if(subOptions) {
+					if("}".equals(token))
+						return;
+				}
+				
+				int index = token.indexOf(":");
+
 				String name = token.substring(0, index).trim();
 				String value = token.substring(index + 1).trim();
 
@@ -106,16 +138,49 @@ public abstract class AbstractOptions implements Options {
 					throw new InvalidOptionException(description + ": invalid option \"" + token + "\"");
 				
 				if(StringUtils.hasText(value)) {
-					if(option.getValueType() == OptionValueType.STRING)
+					if(option.getValueType() == OptionValueType.STRING) {
 						option.setValue(value);
-					else if(option.getValueType() == OptionValueType.INTEGER) {
+					} else if(option.getValueType() == OptionValueType.INTEGER) {
 						try {
 							option.setValue(new Integer(value));
 						} catch(NumberFormatException ex) {
 							throw new InvalidOptionException(description + ": Cannot parse value of '" + name + "' to an integer. \"" + token + "\"");
 						}
-					} else if(option.getValueType() == OptionValueType.BOOLEAN)
+					} else if(option.getValueType() == OptionValueType.BOOLEAN) {
 						option.setValue(Boolean.valueOf(value));
+					} else if(option.getValueType() == OptionValueType.STRING_ARRAY) {
+						if("[".equals(value)) {
+							List<String> stringList = new ArrayList<String>();
+							boolean braceClosed = false;
+
+							while(st.hasMoreTokens()) {
+								token = st.nextToken();
+								value = token.trim();
+								
+								if("]".equals(value)) {
+									braceClosed = true;
+									break;
+								}
+								
+								if(StringUtils.hasText(value)) {
+									stringList.add(value);
+								}
+							}
+							
+							if(!braceClosed)
+								throw new InvalidOptionException(description + ": Cannot parse value of '" + name + "' to an array of strings. \"" + token + "\"");
+							
+							option.setValue(stringList.toArray(new String[stringList.size()]));
+						} else {
+							String[] stringArray = new String[] { value };
+							option.setValue(stringArray);
+						}
+					} else if(option.getValueType() == OptionValueType.OPTIONS) {
+						if("{".equals(value)) {
+							AbstractOptions options2 = (AbstractOptions)option.getOptions();
+							options2.parse(st, true);
+						}
+					}
 				}
 			}
 		}

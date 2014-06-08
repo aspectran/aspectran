@@ -18,8 +18,6 @@ public class ActivityContextLoader {
 	
 	private static final String DEFAULT_CONTEXT_CONFIG_LOCATION = "WEB-INF/aspectran/aspectran.xml";
 	
-	private String applicationBasePath;
-	
 	private WebApplicationAdapter applicationAdapter;
 	
 	private String contextConfigLocation;
@@ -33,8 +31,6 @@ public class ActivityContextLoader {
 	}
 	
 	public ActivityContextLoader(ServletContext servletContext, String contextConfigLocation, ClassLoader classLoader) {
-		this.applicationBasePath = servletContext.getRealPath("/");
-		
 		this.applicationAdapter = WebApplicationAdapter.determineWebApplicationAdapter(servletContext);
 
 		if(contextConfigLocation == null)
@@ -51,12 +47,12 @@ public class ActivityContextLoader {
 			logger.info("building ActivityContext [" + contextConfigLocation + "]");
 			long startTime = System.currentTimeMillis();
 
-			ActivityContextBuilder builder = new XmlActivityContextBuilder(applicationBasePath, contextConfigLocation);
+			ActivityContextBuilder builder = new XmlActivityContextBuilder(applicationAdapter);
 			
 			if(classLoader != null)
 				builder.setClassLoader(classLoader);
 			
-			activityContext = builder.build(applicationAdapter);
+			activityContext = builder.build(contextConfigLocation);
 			
 			long elapsedTime = System.currentTimeMillis() - startTime;
 			logger.info("ActivityContext initialization completed in " + elapsedTime + " ms");
@@ -80,7 +76,7 @@ public class ActivityContextLoader {
 	}
 
 	public String getApplicationBasePath() {
-		return applicationBasePath;
+		return applicationAdapter.getApplicationBasePath();
 	}
 	
 }

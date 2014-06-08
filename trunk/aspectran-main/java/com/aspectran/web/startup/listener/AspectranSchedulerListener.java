@@ -81,6 +81,8 @@ public class AspectranSchedulerListener implements ServletContextListener {
 			try {
 				refreshTime = Integer.parseInt(autoReload);
 			} catch(NumberFormatException e) {
+				logger.warn("Auto-reload time is an invalid number format. So to be recognized as true or false. If true, the Auto-reload time is 5 seconds.");
+				
 				boolean isAutoReload = Boolean.parseBoolean(autoReload);
 				if(isAutoReload)
 					refreshTime = 5; //default refresh time

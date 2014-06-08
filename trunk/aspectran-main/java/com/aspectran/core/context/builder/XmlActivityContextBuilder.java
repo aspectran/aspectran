@@ -21,7 +21,6 @@ import org.slf4j.LoggerFactory;
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.builder.xml.parser.AspectranNodeParser;
-import com.aspectran.core.util.Assert;
 import com.aspectran.core.util.ResourceUtils;
 
 /**
@@ -33,22 +32,22 @@ public class XmlActivityContextBuilder extends AbstractActivityContextBuilder im
 	
 	private final Logger logger = LoggerFactory.getLogger(XmlActivityContextBuilder.class);
 	
-	private String contextConfigLocation;
+	private final ApplicationAdapter applicationAdapter;
 	
-	public XmlActivityContextBuilder(String contextConfigLocation) {
-		this(null, contextConfigLocation);
+	public XmlActivityContextBuilder() {
+		this(null);
 	}
 
-	public XmlActivityContextBuilder(String applicationBasePath, String contextConfigLocation) {
-		super(applicationBasePath);
-		
-		Assert.notNull(contextConfigLocation, "contextConfigLocation must not be null");
-		
-		this.contextConfigLocation = contextConfigLocation;
+	public XmlActivityContextBuilder(ApplicationAdapter applicationAdapter) {
+		super(applicationAdapter.getApplicationBasePath());
+		this.applicationAdapter = applicationAdapter;
 	}
 
-	public ActivityContext build(ApplicationAdapter applicationAdapter) throws ActivityContextBuilderException {
+	public ActivityContext build(String contextConfigLocation) throws ActivityContextBuilderException {
 		try {
+			if(contextConfigLocation == null)
+				throw new RuntimeException("contextConfigLocation must not be null");
+			
 			ImportResource importResource = new ImportResource(getClassLoader());
 
 			if(contextConfigLocation.startsWith(ResourceUtils.CLASSPATH_URL_PREFIX)) {
