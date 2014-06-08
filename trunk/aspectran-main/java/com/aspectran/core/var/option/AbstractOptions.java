@@ -14,22 +14,25 @@ public abstract class AbstractOptions implements Options {
 	
 	protected final Map<String, Option> optionMap;
 	
-	private final String description;
+	private final String title;
 	
-	protected AbstractOptions(Option[] options, String description) {
+	protected AbstractOptions(String title, Option[] options) {
+		this(title, options, null);
+	}
+
+	protected AbstractOptions(String title, Option[] options, String plaintext) {
+		this.title = title;
+		
 		this.optionMap = new HashMap<String, Option>();
 		
 		for(Option option : options) {
 			optionMap.put(option.getName(), option);
 		}
 
-		this.description = description;
+		if(plaintext != null)
+			parse(plaintext);
 	}
 
-	public Map<String, Option> getOptionMap() {
-		return optionMap;
-	}
-	
 	public Object getValue(String name) {
 		Option o = optionMap.get(name);
 		
@@ -89,6 +92,15 @@ public abstract class AbstractOptions implements Options {
 		return (String[])o.getValue();
 	}
 	
+	public Options getOptions(String name) {
+		Option o = optionMap.get(name);
+		
+		if(o == null)
+			return null;
+		
+		return (Options)o.getValue();
+	}
+	
 	public String getString(Option option) {
 		return getString(option.getName());
 	}
@@ -109,13 +121,17 @@ public abstract class AbstractOptions implements Options {
 		return getStringArray(option.getName());
 	}
 
-	protected void parse(String statement) throws InvalidOptionException {
-		StringTokenizer st = new StringTokenizer(statement, DELIMITERS);
+	public Options getOptions(Option option) {
+		return getOptions(option.getName());
+	}
+
+	protected void parse(String plaintext) {
+		StringTokenizer st = new StringTokenizer(plaintext, DELIMITERS);
 
 		parse(st, false);
 	}
 	
-	protected void parse(StringTokenizer st, boolean subOptions) throws InvalidOptionException {
+	protected void parse(StringTokenizer st, boolean subOptions) {
 		while(st.hasMoreTokens()) {
 			String token = st.nextToken();
 			
@@ -129,13 +145,16 @@ public abstract class AbstractOptions implements Options {
 				
 				int index = token.indexOf(":");
 
+				if(index == -1)
+					throw new InvalidOptionException(title + ": Cannot parse into name-value pair. \"" + token + "\"");
+				
 				String name = token.substring(0, index).trim();
 				String value = token.substring(index + 1).trim();
 
 				Option option = optionMap.get(name);
 				
 				if(option == null)
-					throw new InvalidOptionException(description + ": invalid option \"" + token + "\"");
+					throw new InvalidOptionException(title + ": invalid option \"" + token + "\"");
 				
 				if(StringUtils.hasText(value)) {
 					if(option.getValueType() == OptionValueType.STRING) {
@@ -144,7 +163,7 @@ public abstract class AbstractOptions implements Options {
 						try {
 							option.setValue(new Integer(value));
 						} catch(NumberFormatException ex) {
-							throw new InvalidOptionException(description + ": Cannot parse value of '" + name + "' to an integer. \"" + token + "\"");
+							throw new InvalidOptionException(title + ": Cannot parse value of '" + name + "' to an integer. \"" + token + "\"");
 						}
 					} else if(option.getValueType() == OptionValueType.BOOLEAN) {
 						option.setValue(Boolean.valueOf(value));
@@ -168,7 +187,7 @@ public abstract class AbstractOptions implements Options {
 							}
 							
 							if(!braceClosed)
-								throw new InvalidOptionException(description + ": Cannot parse value of '" + name + "' to an array of strings. \"" + token + "\"");
+								throw new InvalidOptionException(title + ": Cannot parse value of '" + name + "' to an array of strings. \"" + token + "\"");
 							
 							option.setValue(stringList.toArray(new String[stringList.size()]));
 						} else {

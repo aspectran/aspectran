@@ -9,7 +9,7 @@ public interface ActivityContextRefreshable {
 
 	public ActivityContext getActivityContext();
 	
-	public String[] getRefreshableFiles();
+	public String[] getObservingPaths();
 	
 	public String getApplicationBasePath();
 	

@@ -2,13 +2,13 @@ package com.aspectran.core.context.refresh;
 
 import com.aspectran.core.util.ClassUtils;
 
-public class RefreshableClassLoader extends ClassLoader {
+public class DynamicClassLoader extends ClassLoader {
 
-	public RefreshableClassLoader() {
+	public DynamicClassLoader() {
 		this(ClassUtils.getDefaultClassLoader());
 	}
 	
-	public RefreshableClassLoader(ClassLoader parent) {
+	public DynamicClassLoader(ClassLoader parent) {
 		super(parent);
 	}
 	

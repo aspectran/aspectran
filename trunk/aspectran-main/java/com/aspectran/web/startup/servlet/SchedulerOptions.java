@@ -26,9 +26,12 @@ public class SchedulerOptions extends AbstractOptions implements Options {
 		};
 	}
 	
-	public SchedulerOptions(String patternString) throws InvalidOptionException {
-		super(options, SchedulerOptions.class.getName());
-		parse(patternString);
+	public SchedulerOptions() {
+		super(SchedulerOptions.class.getName(), options);
 	}
 	
+	public SchedulerOptions(String plaintext) throws InvalidOptionException {
+		super(SchedulerOptions.class.getName(), options, plaintext);
+	}
+
 }
