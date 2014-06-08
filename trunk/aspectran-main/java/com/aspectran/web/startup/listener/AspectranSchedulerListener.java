@@ -106,7 +106,7 @@ public class AspectranSchedulerListener implements ServletContextListener {
 				
 				RefreshableActivityContextLoader loader = new RefreshableActivityContextLoader(servletContext, contextConfigLocation);
 				activityContext = loader.load();
-				contextRefreshTimer = loader.startTimer(contextRefreshHandler, 5);
+				contextRefreshTimer = loader.startTimer(contextRefreshHandler, refreshTime);
 			}
 			
 			initScheduler();
@@ -146,13 +146,13 @@ public class AspectranSchedulerListener implements ServletContextListener {
 			WebApplicationAdapter.destoryWebApplicationAdapter(event.getServletContext());
 		} catch(Exception e) {
 			cleanlyDestoryed = false;
-			logger.error("WebApplicationAdapter failed to destroy: " + e.toString(), e);
+			logger.error("WebApplicationAdapter was failed to destroy: " + e.toString(), e);
 		}
 
 		if(cleanlyDestoryed)
-			logger.info("AspectranScheduler successful destroyed.");
+			logger.info("AspectranScheduler was successfully destroyed.");
 		else
-			logger.error("AspectranScheduler failed to destroy cleanly.");
+			logger.error("AspectranScheduler was failed to destroy cleanly.");
 
 		logger.info("Do not terminate the server while the all scoped bean destroying.");
 	}
@@ -161,9 +161,9 @@ public class AspectranSchedulerListener implements ServletContextListener {
 		if(aspectranScheduler != null) {
 			try {
 				aspectranScheduler.shutdown();
-				logger.info("AspectranScheduler successful shutdown.");
+				logger.info("AspectranScheduler has been shutdown successfully.");
 			} catch(Exception e) {
-				logger.error("AspectranScheduler failed to shutdown cleanly: " + e.toString(), e);
+				logger.error("AspectranScheduler was failed to shutdown cleanly: " + e.toString(), e);
 				return false;
 			}
 		}
@@ -175,9 +175,9 @@ public class AspectranSchedulerListener implements ServletContextListener {
 		if(activityContext != null) {
 			try {
 				activityContext.destroy();
-				logger.info("AspectranContext successful destroyed.");
+				logger.info("AspectranContext was destroyed successfully.");
 			} catch(Exception e) {
-				logger.error("AspectranContext failed to destroy: " + e.toString(), e);
+				logger.error("AspectranContext was failed to destroy: " + e.toString(), e);
 				return false;
 			}
 		}
@@ -185,22 +185,21 @@ public class AspectranSchedulerListener implements ServletContextListener {
 		return true;
 	}
 	
-	protected void reload(ActivityContext newContext) {
+	protected void reload(ActivityContext newActivityContext) {
 		if(contextRefreshTimer != null)
 			contextRefreshTimer.cancel();
 		
 		shutdownScheduler();
 		destroyContext();
 		
-		activityContext = newContext;
+		activityContext = newActivityContext;
 		
 		try {
 			initScheduler();
 		} catch(Exception e) {
-			logger.error("Scheduler failed to initialize: " + e.toString(), e);
+			logger.error("Scheduler was failed to initialize: " + e.toString(), e);
 		}
 		
-		logger.error("timer start");
 		if(contextRefreshTimer != null)
 			contextRefreshTimer.start();
 	}
