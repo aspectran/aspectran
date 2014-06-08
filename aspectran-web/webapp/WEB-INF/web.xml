@@ -15,8 +15,15 @@
 			contextConfigLocation: classpath:aspectran/example-aspectran.xml
 			startDelaySeconds: 5
 			waitOnShutdown: true
-			autoReload: 5
 			startup: false
+			autoReloading: {
+				observingPath: [
+					classpath:**
+					WEB-INF/config/sqlmap/**
+				]
+				observationInterval: 5
+				startup: false
+			}
 		</param-value>
 	</context-param>
 	<listener>
@@ -40,6 +47,17 @@
 		<init-param>
 			<param-name>autoReload</param-name>
 			<param-value>true</param-value>
+		</init-param>
+		<init-param>
+			<param-name>autoReloading</param-name>
+			<param-value>
+				observingPath: [
+					classpath:**
+					WEB-INF/config/sqlmap/**
+				]
+				observationInterval: 5
+				startup: false
+			</param-value>
 		</init-param>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
