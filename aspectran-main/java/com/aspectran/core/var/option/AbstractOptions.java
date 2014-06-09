@@ -137,7 +137,7 @@ public abstract class AbstractOptions implements Options {
 			
 			if(StringUtils.hasText(token)) {
 				token = token.trim();
-				
+
 				if(subOptions) {
 					if("}".equals(token))
 						return;
