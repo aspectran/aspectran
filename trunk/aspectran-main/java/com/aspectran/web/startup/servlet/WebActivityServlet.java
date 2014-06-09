@@ -30,8 +30,8 @@ import org.slf4j.LoggerFactory;
 
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.ActivityContextException;
-import com.aspectran.core.context.refresh.ActivityContextRefreshHandler;
-import com.aspectran.core.context.refresh.ActivityContextRefreshTimer;
+import com.aspectran.core.context.reload.ActivityContextReloadingHandler;
+import com.aspectran.core.context.reload.ActivityContextReloadingTimer;
 import com.aspectran.core.context.translet.TransletNotFoundException;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.var.option.Options;
@@ -59,7 +59,7 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 
 	private AspectranScheduler aspectranScheduler;
 	
-	private ActivityContextRefreshTimer contextRefreshTimer;
+	private ActivityContextReloadingTimer contextReloadingTimer;
 	
 	/*
 	 * (non-Java-doc)
@@ -96,7 +96,7 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 			*/
 			Options autoReloadingOptions = new AutoReloadingOptions(autoReloadingParam);
 			String[] observingPaths = autoReloadingOptions.getStringArray(AutoReloadingOptions.observingPath);
-			int observationInterval = autoReloadingOptions.getInt(AutoReloadingOptions.observationInterval, 10);
+			int observationInterval = autoReloadingOptions.getInt(AutoReloadingOptions.observationInterval, -1);
 			boolean autoReloadingStartup = autoReloadingOptions.getBoolean(AspectranSchedulerOptions.startup, true);
 
 			if(observingPaths == null || observingPaths.length == 0)
@@ -107,7 +107,12 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 					ActivityContextLoader loader = new ActivityContextLoader(servletContext, contextConfigLocation);
 					activityContext = loader.load();
 				} else {
-					ActivityContextRefreshHandler contextRefreshHandler = new ActivityContextRefreshHandler() {
+					if(observationInterval == -1) {
+						logger.info("Option 'observationInterval' is not specified, defaulting to 10 seconds.");
+						observationInterval = 10;
+					}
+
+					ActivityContextReloadingHandler contextReloadingHandler = new ActivityContextReloadingHandler() {
 						public void handle(ActivityContext newActivityContext) {
 							reload(newActivityContext);
 						}
@@ -115,7 +120,7 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 					
 					ActivityContextObservedLoader observedLoader = new ActivityContextObservedLoader(servletContext, contextConfigLocation);
 					activityContext = observedLoader.load();
-					contextRefreshTimer = observedLoader.startTimer(contextRefreshHandler, observingPaths, observationInterval);
+					contextReloadingTimer = observedLoader.startTimer(contextReloadingHandler, observingPaths, observationInterval);
 				}
 			}
 			
@@ -203,8 +208,8 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 	public void destroy() {
 		super.destroy();
 
-		if(contextRefreshTimer != null)
-			contextRefreshTimer.cancel();
+		if(contextReloadingTimer != null)
+			contextReloadingTimer.cancel();
 		
 		boolean cleanlyDestoryed = true;
 
@@ -258,8 +263,8 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 	}
 	
 	protected void reload(ActivityContext newActivityContext) {
-		if(contextRefreshTimer != null)
-			contextRefreshTimer.cancel();
+		if(contextReloadingTimer != null)
+			contextReloadingTimer.cancel();
 		
 		shutdownScheduler();
 		destroyContext();
@@ -272,8 +277,8 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 			logger.error("Scheduler was failed to initialize: " + e.toString(), e);
 		}
 		
-		if(contextRefreshTimer != null)
-			contextRefreshTimer.start();
+		if(contextReloadingTimer != null)
+			contextReloadingTimer.start();
 	}
 	
 }

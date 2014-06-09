@@ -3,16 +3,16 @@ package com.aspectran.web.startup;
 import javax.servlet.ServletContext;
 
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.context.refresh.ActivityContextRefreshHandler;
-import com.aspectran.core.context.refresh.ActivityContextRefreshTimer;
-import com.aspectran.core.context.refresh.ActivityContextRefreshable;
-import com.aspectran.core.context.refresh.DynamicClassLoader;
+import com.aspectran.core.context.reload.ActivityContextReloadingHandler;
+import com.aspectran.core.context.reload.ActivityContextReloadingTimer;
+import com.aspectran.core.context.reload.ActivityContextReloadable;
+import com.aspectran.core.context.reload.DynamicClassLoader;
 
-public class ActivityContextObservedLoader extends ActivityContextLoader implements ActivityContextRefreshable {
+public class ActivityContextObservedLoader extends ActivityContextLoader implements ActivityContextReloadable {
 
 	private static final ClassLoader classLoader = new DynamicClassLoader();
 	
-	private ActivityContextRefreshHandler activityContextRefreshHandler;
+	private ActivityContextReloadingHandler activityContextReloadingHandler;
 	
 	private String[] observingPaths;
 	
@@ -20,19 +20,19 @@ public class ActivityContextObservedLoader extends ActivityContextLoader impleme
 		super(servletContext, contextConfigLocation, classLoader);
 	}
 
-	public ActivityContextRefreshTimer startTimer(ActivityContextRefreshHandler activityContextRefreshHandler, String[] observingPaths, int refreshTime) {
-		this.activityContextRefreshHandler = activityContextRefreshHandler;
+	public ActivityContextReloadingTimer startTimer(ActivityContextReloadingHandler activityContextReloadingHandler, String[] observingPaths, int observationInterval) {
+		this.activityContextReloadingHandler = activityContextReloadingHandler;
 		this.observingPaths = observingPaths;
 		
-		ActivityContextRefreshTimer timer = new ActivityContextRefreshTimer(this);
-		timer.start(refreshTime);
+		ActivityContextReloadingTimer timer = new ActivityContextReloadingTimer(this);
+		timer.start(observationInterval);
 		
 		return timer;
 	}
 	
-	public ActivityContext refresh() {
+	public ActivityContext reload() {
 		ActivityContext newActivityContext = load();
-		activityContextRefreshHandler.handle(newActivityContext);
+		activityContextReloadingHandler.handle(newActivityContext);
 		
 		return newActivityContext;
 	}

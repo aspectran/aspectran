@@ -23,8 +23,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.context.refresh.ActivityContextRefreshHandler;
-import com.aspectran.core.context.refresh.ActivityContextRefreshTimer;
+import com.aspectran.core.context.reload.ActivityContextReloadingHandler;
+import com.aspectran.core.context.reload.ActivityContextReloadingTimer;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.var.option.Options;
 import com.aspectran.scheduler.AspectranScheduler;
@@ -45,7 +45,7 @@ public class AspectranSchedulerListener implements ServletContextListener {
 	
 	private AspectranScheduler aspectranScheduler;
 	
-	private ActivityContextRefreshTimer contextRefreshTimer;
+	private ActivityContextReloadingTimer contextRefreshTimer;
 	
 	private String contextConfigLocation;
 	
@@ -73,23 +73,32 @@ public class AspectranSchedulerListener implements ServletContextListener {
 		try {
 			Options schedulerOptions = new AspectranSchedulerOptions(schedulerParam);
 			contextConfigLocation = schedulerOptions.getString(AspectranSchedulerOptions.contextConfigLocation);
-			startDelaySeconds = schedulerOptions.getInt(SchedulerOptions.startDelaySeconds, -1);
-			waitOnShutdown = schedulerOptions.getBoolean(SchedulerOptions.waitOnShutdown, true);
+			startDelaySeconds = schedulerOptions.getInt(AspectranSchedulerOptions.startDelaySeconds, -1);
+			waitOnShutdown = schedulerOptions.getBoolean(AspectranSchedulerOptions.waitOnShutdown, true);
 			boolean startup = schedulerOptions.getBoolean(AspectranSchedulerOptions.startup, false);
+
+			if(!startup) {
+				logger.info("AspectranScheduler is not startup.");
+				return;
+			}
 			
-			Options autoReloadingOptions = schedulerOptions.getOptions("autoReloading");
-			String[] observingPaths = autoReloadingOptions.getStringArray(AutoReloadingOptions.observingPath);
-			int observationInterval = autoReloadingOptions.getInt(AutoReloadingOptions.observationInterval, 10);
-			boolean autoReloadingStartup = autoReloadingOptions.getBoolean(AspectranSchedulerOptions.startup, true);
+			String[] observingPaths = null;
+			int observationInterval = -1;
+			boolean autoReloadingStartup = true;
+
+			Options autoReloadingOptions = schedulerOptions.getOptions(AspectranSchedulerOptions.autoReloading);
+			
+			if(autoReloadingOptions != null) {
+				observingPaths = autoReloadingOptions.getStringArray(AutoReloadingOptions.observingPath);
+				observationInterval = autoReloadingOptions.getInt(AutoReloadingOptions.observationInterval, -1);
+				autoReloadingStartup = autoReloadingOptions.getBoolean(AspectranSchedulerOptions.startup, true);
+			}
 
 			if(observingPaths == null || observingPaths.length == 0)
 				autoReloadingStartup = false;
 			
-			if(!startup)
-				return;
-			
 			if(startDelaySeconds == -1) {
-				logger.info("Scheduler option 'startDelaySeconds is' not specified, defaulting to 5 seconds.");
+				logger.info("Scheduler context-param 'startDelaySeconds' is not specified. Therefore, defaulting to 5 seconds.");
 				startDelaySeconds = 5;
 			}
 			
@@ -97,7 +106,12 @@ public class AspectranSchedulerListener implements ServletContextListener {
 				ActivityContextLoader aspectranContextLoader = new ActivityContextLoader(servletContext, contextConfigLocation);
 				activityContext = aspectranContextLoader.load();
 			} else {
-				ActivityContextRefreshHandler contextRefreshHandler = new ActivityContextRefreshHandler() {
+				if(observationInterval == -1) {
+					logger.info("Scheduler context-param 'autoReloading' option 'observationInterval' is not specified. Therefore, defaulting to 10 seconds.");
+					observationInterval = 10;
+				}
+				
+				ActivityContextReloadingHandler contextRefreshHandler = new ActivityContextReloadingHandler() {
 					public void handle(ActivityContext newActivityContext) {
 						reload(newActivityContext);
 					}
