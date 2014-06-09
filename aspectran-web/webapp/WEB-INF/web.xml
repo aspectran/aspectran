@@ -45,10 +45,6 @@
 			</param-value>
 		</init-param>
 		<init-param>
-			<param-name>autoReload</param-name>
-			<param-value>true</param-value>
-		</init-param>
-		<init-param>
 			<param-name>autoReloading</param-name>
 			<param-value>
 				observingPath: [
