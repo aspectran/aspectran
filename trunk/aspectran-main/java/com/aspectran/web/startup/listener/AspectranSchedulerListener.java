@@ -30,8 +30,8 @@ import com.aspectran.core.var.option.Options;
 import com.aspectran.scheduler.AspectranScheduler;
 import com.aspectran.scheduler.quartz.QuartzAspectranScheduler;
 import com.aspectran.web.adapter.WebApplicationAdapter;
-import com.aspectran.web.startup.ActivityContextLoader;
-import com.aspectran.web.startup.ActivityContextObservedLoader;
+import com.aspectran.web.startup.loader.ActivityContextLoader;
+import com.aspectran.web.startup.loader.ActivityContextObservedLoader;
 import com.aspectran.web.startup.servlet.AutoReloadingOptions;
 
 public class AspectranSchedulerListener implements ServletContextListener {

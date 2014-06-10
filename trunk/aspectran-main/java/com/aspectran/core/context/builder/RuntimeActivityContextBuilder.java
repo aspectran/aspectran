@@ -26,13 +26,12 @@ public class RuntimeActivityContextBuilder extends AbstractActivityContextBuilde
 	
 	private final ApplicationAdapter applicationAdapter;
 	
-	public RuntimeActivityContextBuilder() {
-		super(null);
-		this.applicationAdapter = null;
-	}
-
 	public RuntimeActivityContextBuilder(ApplicationAdapter applicationAdapter) {
-		super(applicationAdapter.getApplicationBasePath());
+		this(applicationAdapter, null);
+	}
+	
+	public RuntimeActivityContextBuilder(ApplicationAdapter applicationAdapter, ClassLoader classLoader) {
+		super(applicationAdapter.getApplicationBasePath(), classLoader);
 		this.applicationAdapter = applicationAdapter;
 	}
 

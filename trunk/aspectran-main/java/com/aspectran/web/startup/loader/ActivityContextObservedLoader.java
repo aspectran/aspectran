@@ -1,22 +1,23 @@
-package com.aspectran.web.startup;
+package com.aspectran.web.startup.loader;
 
 import javax.servlet.ServletContext;
 
 import com.aspectran.core.context.ActivityContext;
+import com.aspectran.core.context.reload.ActivityContextReloadable;
 import com.aspectran.core.context.reload.ActivityContextReloadingHandler;
 import com.aspectran.core.context.reload.ActivityContextReloadingTimer;
-import com.aspectran.core.context.reload.ActivityContextReloadable;
-import com.aspectran.core.context.reload.DynamicClassLoader;
 
 public class ActivityContextObservedLoader extends ActivityContextLoader implements ActivityContextReloadable {
 
-	private static final ClassLoader classLoader = new DynamicClassLoader();
-	
 	private ActivityContextReloadingHandler activityContextReloadingHandler;
 	
 	private String[] observingPaths;
 	
 	public ActivityContextObservedLoader(ServletContext servletContext, String contextConfigLocation) {
+		super(servletContext, contextConfigLocation);
+	}
+	
+	public ActivityContextObservedLoader(ServletContext servletContext, String contextConfigLocation, ClassLoader classLoader) {
 		super(servletContext, contextConfigLocation, classLoader);
 	}
 

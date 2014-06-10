@@ -1,4 +1,4 @@
-package com.aspectran.web.startup;
+package com.aspectran.web.startup.loader;
 
 import javax.servlet.ServletContext;
 
@@ -16,7 +16,7 @@ public class ActivityContextLoader {
 
 	public static final String CONTEXT_CONFIG_LOCATION_PARAM = "contextConfigLocation";
 	
-	private static final String DEFAULT_CONTEXT_CONFIG_LOCATION = "WEB-INF/aspectran/aspectran.xml";
+	private static final String DEFAULT_CONTEXT_CONFIG_LOCATION = "WEB-INF/aspectran.xml";
 	
 	private WebApplicationAdapter applicationAdapter;
 	
@@ -47,11 +47,7 @@ public class ActivityContextLoader {
 			logger.info("building ActivityContext [" + contextConfigLocation + "]");
 			long startTime = System.currentTimeMillis();
 
-			ActivityContextBuilder builder = new XmlActivityContextBuilder(applicationAdapter);
-			
-			if(classLoader != null)
-				builder.setClassLoader(classLoader);
-			
+			ActivityContextBuilder builder = new XmlActivityContextBuilder(applicationAdapter, classLoader);
 			activityContext = builder.build(contextConfigLocation);
 			
 			long elapsedTime = System.currentTimeMillis() - startTime;
