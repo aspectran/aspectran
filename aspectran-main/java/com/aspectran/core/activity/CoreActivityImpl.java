@@ -16,6 +16,7 @@
 package com.aspectran.core.activity;
 
 import java.lang.reflect.Constructor;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -24,37 +25,57 @@ import org.slf4j.LoggerFactory;
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.activity.process.ContentList;
 import com.aspectran.core.activity.process.ProcessException;
+import com.aspectran.core.activity.process.action.ActionExecutionException;
+import com.aspectran.core.activity.process.action.Executable;
+import com.aspectran.core.activity.process.result.ActionResult;
+import com.aspectran.core.activity.process.result.ContentResult;
 import com.aspectran.core.activity.process.result.ProcessResult;
 import com.aspectran.core.activity.request.RequestException;
 import com.aspectran.core.activity.response.ForwardResponse;
 import com.aspectran.core.activity.response.ResponseException;
 import com.aspectran.core.activity.response.Responsible;
+import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.context.ActivityContext;
+import com.aspectran.core.context.aspect.AspectAdviceRuleRegister;
+import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
+import com.aspectran.core.context.bean.BeanRegistry;
 import com.aspectran.core.context.bean.scope.Scope;
 import com.aspectran.core.context.translet.TransletInstantiationException;
 import com.aspectran.core.context.translet.TransletNotFoundException;
 import com.aspectran.core.var.rule.AspectAdviceRule;
+import com.aspectran.core.var.rule.AspectRule;
 import com.aspectran.core.var.rule.RequestRule;
 import com.aspectran.core.var.rule.ResponseByContentTypeRule;
 import com.aspectran.core.var.rule.ResponseByContentTypeRuleMap;
 import com.aspectran.core.var.rule.ResponseRule;
 import com.aspectran.core.var.rule.TransletRule;
+import com.aspectran.core.var.type.ActionType;
+import com.aspectran.core.var.type.AspectAdviceType;
 import com.aspectran.core.var.type.JoinpointScopeType;
 import com.aspectran.core.var.type.ResponseType;
 
 /**
- * <p>Created: 2014. 06. 01 오후 11:00:00</p>
+ * Action Translator.
+ * processes the active request and response.
+ * 
+ * <p>Created: 2008. 03. 22 오후 5:48:09</p>
  */
-public abstract class CoreActivityImpl extends AbstractCoreActivity implements CoreActivity {
+public class CoreActivityImpl implements CoreActivity {
 
 	/** The logger. */
 	private final Logger logger = LoggerFactory.getLogger(CoreActivityImpl.class);
 	
 	/** The debug enabled. */
 	private final boolean debugEnabled = logger.isDebugEnabled();
+
+	/** The debug enabled. */
+	private final boolean traceEnabled = logger.isTraceEnabled();
+
+	/** The context. */
+	private final ActivityContext context;
 
 	/** The request adapter. */
 	private RequestAdapter requestAdapter;
@@ -64,6 +85,12 @@ public abstract class CoreActivityImpl extends AbstractCoreActivity implements C
 
 	/** The session adapter. */
 	private SessionAdapter sessionAdapter;
+	
+	/** The translet interface class. */
+	private Class<? extends CoreTranslet> transletInterfaceClass;
+	
+	/** The translet instance class. */
+	private Class<? extends CoreTransletImpl> transletImplementClass;
 
 	/** The request scope. */
 	private Scope requestScope;
@@ -84,9 +111,32 @@ public abstract class CoreActivityImpl extends AbstractCoreActivity implements C
 	private String forwardTransletName;
 
 	private boolean withoutResponse;
+	
+	/** The translet. */
+	private CoreTranslet translet;
+	
+	/** Whether the response is ended. */
+	private boolean isActivityEnd;
 
+	private Exception raisedException;
+
+	private AspectAdviceRuleRegistry transletAspectAdviceRuleRegistry;
+	
+	private AspectAdviceRuleRegistry requestAspectAdviceRuleRegistry;
+	
+	private AspectAdviceRuleRegistry responseAspectAdviceRuleRegistry;
+	
+	private AspectAdviceRuleRegistry contentAspectAdviceRuleRegistry;
+	
+	private JoinpointScopeType joinpointScope = JoinpointScopeType.TRANSLET;
+	
+	/**
+	 * Instantiates a new action translator.
+	 *
+	 * @param context the translets context
+	 */
 	public CoreActivityImpl(ActivityContext context) {
-		super(context);
+		this.context = context;
 	}
 
 	/* (non-Javadoc)
@@ -136,7 +186,43 @@ public abstract class CoreActivityImpl extends AbstractCoreActivity implements C
 	protected void setSessionAdapter(SessionAdapter sessionAdapter) {
 		this.sessionAdapter = sessionAdapter;
 	}
+	
+	/**
+	 * Gets the translet interface class.
+	 *
+	 * @return the translet interface class
+	 */
+	public Class<? extends CoreTranslet> getTransletInterfaceClass() {
+		return transletInterfaceClass;
+	}
 
+	/**
+	 * Sets the translet interface class.
+	 *
+	 * @param transletInterfaceClass the new translet interface class
+	 */
+	protected void setTransletInterfaceClass(Class<? extends CoreTranslet> transletInterfaceClass) {
+		this.transletInterfaceClass = transletInterfaceClass;
+	}
+
+	/**
+	 * Gets the translet instance class.
+	 *
+	 * @return the translet instance class
+	 */
+	public Class<? extends CoreTransletImpl> getTransletImplementClass() {
+		return transletImplementClass;
+	}
+
+	/**
+	 * Sets the translet instance class.
+	 *
+	 * @param transletInstanceClass the new translet instance class
+	 */
+	protected void setTransletImplementClass(Class<? extends CoreTransletImpl> transletImplementClass) {
+		this.transletImplementClass = transletImplementClass;
+	}
+	
 	public Scope getRequestScope() {
 		return requestScope;
 	}
@@ -144,12 +230,41 @@ public abstract class CoreActivityImpl extends AbstractCoreActivity implements C
 	public void setRequestScope(Scope requestScope) {
 		this.requestScope = requestScope;
 	}
+
+	public CoreTranslet getCoreTranslet() {
+		return translet;
+	}
+
+	public ProcessResult getProcessResult() {
+		if(translet == null)
+			return null;
+		
+		return translet.getProcessResult();
+	}
+	
+	protected void createCoreTranslet(Class<? extends CoreTranslet> transletInterfaceClass, Class<? extends CoreTransletImpl> transletImplementClass) {
+		if(transletInterfaceClass != null)
+			this.transletInterfaceClass = transletInterfaceClass;
+
+		if(transletImplementClass != null)
+			this.transletImplementClass = transletImplementClass;
+		
+		//create translet instance
+		try {
+			Constructor<?> transletImplementConstructor = this.transletImplementClass.getConstructor(CoreActivity.class);
+			Object[] args = new Object[] { this };
+			
+			translet = (CoreTranslet)transletImplementConstructor.newInstance(args);
+		} catch(Exception e) {
+			throw new TransletInstantiationException(this.transletInterfaceClass, this.transletImplementClass, e);
+		}
+	}
 	
 	public void init(String transletName) throws CoreActivityException {
 		init(transletName, null);
 	}
 	
-	public void init(String transletName, ProcessResult processResult) throws CoreActivityException {
+	protected void init(String transletName, ProcessResult processResult) throws CoreActivityException {
 		if(debugEnabled) {
 			logger.debug("run " + transletName);
 		}
@@ -163,24 +278,10 @@ public abstract class CoreActivityImpl extends AbstractCoreActivity implements C
 			logger.debug("translet " + transletRule);
 		}
 
-		if(transletRule.getTransletInterfaceClass() != null)
-			transletInterfaceClass = transletRule.getTransletInterfaceClass();
-
-		if(transletRule.getTransletImplementClass() != null)
-			transletImplementClass = transletRule.getTransletImplementClass();
-
-		//create translet instance
-		try {
-			Constructor<?> transletImplementConstructor = transletImplementClass.getConstructor(CoreActivity.class);
-			Object[] args = new Object[] { this };
-			
-			translet = (CoreTranslet)transletImplementConstructor.newInstance(args);
-			
-			if(processResult != null)
-				translet.setProcessResult(processResult);
-		} catch(Exception e) {
-			throw new TransletInstantiationException(transletInterfaceClass, transletImplementClass, e);
-		}
+		createCoreTranslet(transletRule.getTransletInterfaceClass(), transletRule.getTransletImplementClass());
+		
+		if(processResult != null)
+			translet.setProcessResult(processResult);
 
 		this.transletName = transletName;
 		this.transletRule = transletRule;
@@ -221,7 +322,7 @@ public abstract class CoreActivityImpl extends AbstractCoreActivity implements C
 		}
 	}
 	
-	protected void run1st() throws CoreActivityException {
+	private void run1st() throws CoreActivityException {
 		try {
 			try {
 				// execute Before Advice Action for Translet Joinpoint
@@ -475,13 +576,14 @@ public abstract class CoreActivityImpl extends AbstractCoreActivity implements C
 		}
 	}
 	
-	public void request() throws RequestException {
+	private void request() throws RequestException {
 		request(translet);
 	}
 	
-	protected abstract void request(CoreTranslet translet) throws RequestException;
+	protected void request(CoreTranslet translet) throws RequestException {
+	}
 	
-	public ProcessResult process() throws CoreActivityException {
+	private ProcessResult process() throws CoreActivityException {
 		// execute action on contents area
 		ContentList contentList = transletRule.getContentList();
 		
@@ -509,7 +611,7 @@ public abstract class CoreActivityImpl extends AbstractCoreActivity implements C
 		return responseRule.getResponse();
 	}
 	
-	protected void response() throws CoreActivityException {
+	private void response() throws CoreActivityException {
 		Responsible res = getResponse();
 		
 		if(res != null)
@@ -647,7 +749,239 @@ public abstract class CoreActivityImpl extends AbstractCoreActivity implements C
 	protected ResponseRule getResponseRule() {
 		return responseRule;
 	}
+	
+	/**
+	 * Execute.
+	 *
+	 * @param actionList the action list
+	 * @throws CoreActivityException 
+	 */
+	protected void execute(ActionList actionList) throws CoreActivityException {
+		if(debugEnabled) {
+			logger.debug("executable actions " + actionList.toString());
+		}
+		
+		if(!actionList.isHidden()) {
+			ContentResult contentResult = new ContentResult();
+			contentResult.setContentId(actionList.getContentId());
 
-	public abstract CoreActivity newCoreActivity();
+			translet.addContentResult(contentResult);
+		}
+		
+		for(Executable action : actionList) {
+			execute(action);
+			
+			if(isActivityEnd)
+				break;
+		}
+	}
+	
+	private void execute(Executable action) throws ActionExecutionException {
+		if(debugEnabled)
+			logger.debug("execute action " + action.toString());
+		
+		try {
+			Object resultValue = action.execute(this);
+		
+			//if(debugEnabled)
+			//	logger.debug("action " + action + " result: " + resultValue);
+			
+			if(!action.isHidden() && resultValue != ActionResult.NO_RESULT) {
+				translet.addActionResult(action.getActionId(), resultValue);
+				
+				if(debugEnabled)
+					logger.debug("actionResult [" + resultValue + "] action " + action.toString());
+			} else if(traceEnabled) {
+				logger.debug("actionResult [" + resultValue + "] action " + action.toString());
+			}
+		} catch(Exception e) {
+			setRaisedException(e);
+			throw new ActionExecutionException("action execution error", e);
+		}
+	}
+	
+	public void execute(List<AspectAdviceRule> aspectAdviceRuleList) throws ActionExecutionException {
+		for(AspectAdviceRule aspectAdviceRule : aspectAdviceRuleList) {
+			execute(aspectAdviceRule);
+
+			if(isActivityEnd)
+				return;
+		}
+	}
+	
+	public void forceExecute(List<AspectAdviceRule> aspectAdviceRuleList) throws ActionExecutionException {
+		for(AspectAdviceRule aspectAdviceRule : aspectAdviceRuleList) {
+			execute(aspectAdviceRule);
+		}
+	}
+	
+	private Object execute(AspectAdviceRule aspectAdviceRule) throws ActionExecutionException {
+		Executable action = aspectAdviceRule.getExecutableAction();
+		
+		if(action.getActionType() == ActionType.BEAN && aspectAdviceRule.getAdviceBeanId() != null) {
+			Object adviceBean = translet.getAspectAdviceBean(aspectAdviceRule.getAspectId());
+			
+			if(adviceBean == null)
+				adviceBean = getBean(aspectAdviceRule.getAdviceBeanId());
+			
+			logger.debug("adviceBean [" + adviceBean + "] aspectAdviceRule " + aspectAdviceRule);
+			translet.putAspectAdviceBean(aspectAdviceRule.getAspectId(), adviceBean);
+		}
+		
+		try {
+			if(debugEnabled)
+				logger.debug("execute action " + action.toString());
+
+			Object adviceActionResult = action.execute(this);
+			
+			if(adviceActionResult != null && adviceActionResult != ActionResult.NO_RESULT) {
+				logger.debug("adviceActionResult [" + adviceActionResult + "] aspectAdviceRule " + aspectAdviceRule);
+				translet.putAdviceResult(aspectAdviceRule, adviceActionResult);
+			} else if(traceEnabled) {
+				logger.debug("adviceActionResult [" + adviceActionResult + "] aspectAdviceRule " + aspectAdviceRule);
+			}
+			
+			return adviceActionResult;
+		} catch(Exception e) {
+			setRaisedException(e);
+			throw new ActionExecutionException("action execution error", e);
+		}
+	}
+
+	/**
+	 * Checks if is exception raised.
+	 *
+	 * @return true, if is exception raised
+	 */
+	public boolean isExceptionRaised() {
+		return (raisedException != null);
+	}
+	
+	public Exception getRaisedException() {
+		return raisedException;
+	}
+
+	public void setRaisedException(Exception raisedException) {
+		if(this.raisedException == null) {
+			logger.error("original raised exception:", raisedException);
+			this.raisedException = raisedException;
+		}
+	}
+	
+	public void activityEnd() {
+		isActivityEnd = true;
+	}
+	
+	/**
+	 * 
+	 * @return true, if checks if is response end
+	 */
+	public boolean isActivityEnd() {
+		return isActivityEnd;
+	}
+	
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.activity.CoreActivity#getActivityContext()
+	 */
+	public ActivityContext getActivityContext() {
+		return context;
+	}
+	
+	public CoreActivity newCoreActivity() {
+		CoreActivity coreActivity = new CoreActivityImpl(getActivityContext());
+		return coreActivity;
+	}
+
+	/**
+	 * Gets the application adapter.
+	 *
+	 * @return the application adapter
+	 */
+	public ApplicationAdapter getApplicationAdapter() {
+		return context.getApplicationAdapter();
+	}
+
+	public BeanRegistry getBeanRegistry() {
+		return context.getContextBeanRegistry();
+	}
+	
+	public Object getBean(String id) {
+		return context.getContextBeanRegistry().getBean(id);
+	}
+	
+	public Object getTransletSetting(String settingName) {
+		return getSetting(transletAspectAdviceRuleRegistry, settingName);
+	}
+	
+	public Object getRequestSetting(String settingName) {
+		return getSetting(requestAspectAdviceRuleRegistry, settingName);
+	}
+	
+	public Object getResponseSetting(String settingName) {
+		return getSetting(responseAspectAdviceRuleRegistry, settingName);
+	}
+
+	private Object getSetting(AspectAdviceRuleRegistry aspectAdviceRuleRegistry, String settingName) {
+		if(aspectAdviceRuleRegistry != null)
+			return aspectAdviceRuleRegistry.getSetting(settingName);
+		
+		return null;
+	}
+
+	public void registerAspectRule(AspectRule aspectRule) throws ActionExecutionException {
+		if(debugEnabled)
+			logger.debug("registerAspectRule " + aspectRule);
+		
+		JoinpointScopeType joinpointScope2 = aspectRule.getJoinpointScope();
+		
+		if(this.joinpointScope == JoinpointScopeType.TRANSLET || this.joinpointScope == joinpointScope2) {
+			if(JoinpointScopeType.TRANSLET == joinpointScope2) {
+				if(transletAspectAdviceRuleRegistry == null)
+					transletAspectAdviceRuleRegistry = new AspectAdviceRuleRegistry();
+				AspectAdviceRuleRegister.register(transletAspectAdviceRuleRegistry, aspectRule, AspectAdviceType.BEFORE);
+			} else if(JoinpointScopeType.REQUEST == joinpointScope2) {
+				if(requestAspectAdviceRuleRegistry == null)
+					requestAspectAdviceRuleRegistry = new AspectAdviceRuleRegistry();
+				AspectAdviceRuleRegister.register(requestAspectAdviceRuleRegistry, aspectRule, AspectAdviceType.BEFORE);
+			} else if(JoinpointScopeType.RESPONSE == joinpointScope2) {
+				if(responseAspectAdviceRuleRegistry == null)
+					responseAspectAdviceRuleRegistry = new AspectAdviceRuleRegistry();
+				AspectAdviceRuleRegister.register(responseAspectAdviceRuleRegistry, aspectRule, AspectAdviceType.BEFORE);
+			} else if(JoinpointScopeType.CONTENT == joinpointScope2) {
+				if(contentAspectAdviceRuleRegistry == null)
+					contentAspectAdviceRuleRegistry = new AspectAdviceRuleRegistry();
+				AspectAdviceRuleRegister.register(contentAspectAdviceRuleRegistry, aspectRule, AspectAdviceType.BEFORE);
+			}
+			
+			List<AspectAdviceRule> aspectAdviceRuleList = aspectRule.getAspectAdviceRuleList();
+			
+			if(aspectAdviceRuleList != null) {
+				List<AspectAdviceRule> beforeAdviceRuleList = null;
+				
+				for(AspectAdviceRule aspectAdviceRule : aspectAdviceRuleList) {
+					if(aspectAdviceRule.getAspectAdviceType() == AspectAdviceType.BEFORE) {
+						if(beforeAdviceRuleList == null)
+							beforeAdviceRuleList = new ArrayList<AspectAdviceRule>();
+						
+						beforeAdviceRuleList.add(aspectAdviceRule);
+					}
+				}
+				
+				if(beforeAdviceRuleList != null)
+					execute(beforeAdviceRuleList);
+			}
+		}
+	}
+	
+	public Object getAspectAdviceBean(String aspectId) {
+		return translet.getAspectAdviceBean(aspectId);
+	}
+	
+	public JoinpointScopeType getJoinpointScope() {
+		return joinpointScope;
+	}
+	
+	public void close() {
+	}
 	
 }

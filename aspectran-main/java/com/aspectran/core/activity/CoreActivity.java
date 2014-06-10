@@ -19,7 +19,6 @@ import java.util.List;
 
 import com.aspectran.core.activity.process.action.ActionExecutionException;
 import com.aspectran.core.activity.process.result.ProcessResult;
-import com.aspectran.core.activity.request.RequestException;
 import com.aspectran.core.activity.response.ResponseException;
 import com.aspectran.core.activity.response.Responsible;
 import com.aspectran.core.adapter.ApplicationAdapter;
@@ -51,7 +50,7 @@ public interface CoreActivity {
 	
 	public Class<? extends CoreTransletImpl> getTransletImplementClass();
 	
-	public CoreTranslet getSuperTranslet();
+	public CoreTranslet getCoreTranslet();
 	
 	public void init(String transletName) throws CoreActivityException;
 	
@@ -59,15 +58,9 @@ public interface CoreActivity {
 	
 	public void runWithoutResponse() throws CoreActivityException;
 	
-	public void request() throws RequestException;
-
 	public void execute(List<AspectAdviceRule> aspectAdviceRuleList) throws ActionExecutionException;
 	
 	public void forceExecute(List<AspectAdviceRule> aspectAdviceRuleList) throws ActionExecutionException;
-	
-	public Object execute(AspectAdviceRule aspectAdviceRule) throws ActionExecutionException;
-	
-	public ProcessResult process() throws CoreActivityException;
 	
 	public ProcessResult getProcessResult();
 	
