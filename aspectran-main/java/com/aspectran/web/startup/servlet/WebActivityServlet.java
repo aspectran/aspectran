@@ -41,9 +41,10 @@ import com.aspectran.web.activity.WebActivity;
 import com.aspectran.web.activity.WebActivityDefaultHandler;
 import com.aspectran.web.activity.WebActivityImpl;
 import com.aspectran.web.adapter.WebApplicationAdapter;
-import com.aspectran.web.startup.ActivityContextLoader;
-import com.aspectran.web.startup.ActivityContextObservedLoader;
 import com.aspectran.web.startup.listener.AspectranSchedulerOptions;
+import com.aspectran.web.startup.loader.ActivityContextLoader;
+import com.aspectran.web.startup.loader.ActivityContextObservedLoader;
+import com.aspectran.web.startup.loader.WebActivityContextClassLoader;
 
 /**
  * Servlet implementation class for Servlet: Translets.
@@ -103,8 +104,10 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 				autoReloadingStartup = false;
 			
 			if(StringUtils.hasText(contextConfigLocation)) {
+				ClassLoader classLoader = new WebActivityContextClassLoader();
+				
 				if(!autoReloadingStartup) {
-					ActivityContextLoader loader = new ActivityContextLoader(servletContext, contextConfigLocation);
+					ActivityContextLoader loader = new ActivityContextLoader(servletContext, contextConfigLocation, classLoader);
 					activityContext = loader.load();
 				} else {
 					if(observationInterval == -1) {
@@ -118,7 +121,7 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 						}
 					};
 					
-					ActivityContextObservedLoader observedLoader = new ActivityContextObservedLoader(servletContext, contextConfigLocation);
+					ActivityContextObservedLoader observedLoader = new ActivityContextObservedLoader(servletContext, contextConfigLocation, classLoader);
 					activityContext = observedLoader.load();
 					contextReloadingTimer = observedLoader.startTimer(contextReloadingHandler, observingPaths, observationInterval);
 				}

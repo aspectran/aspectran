@@ -11,15 +11,15 @@ import java.net.URLConnection;
 
 import com.aspectran.core.util.ClassUtils;
 
-public class AspectranContextClassLoader extends ClassLoader {
+public class ActivityContextClassLoader extends ClassLoader {
 
 	private String root;
 	
-	public AspectranContextClassLoader() {
+	public ActivityContextClassLoader() {
 		this(ClassUtils.getDefaultClassLoader());
 	}
 
-	public AspectranContextClassLoader(ClassLoader parent) {
+	public ActivityContextClassLoader(ClassLoader parent) {
 		super(parent);
 	}
 

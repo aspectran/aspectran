@@ -24,9 +24,9 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.aspectran.core.context.ActivityContextClassLoader;
 import com.aspectran.core.context.AspectranConstant;
 import com.aspectran.core.util.ArrayStack;
-import com.aspectran.core.util.ClassUtils;
 import com.aspectran.core.var.rule.AspectRule;
 import com.aspectran.core.var.rule.AspectRuleMap;
 import com.aspectran.core.var.rule.BeanRule;
@@ -43,7 +43,7 @@ public class ContextBuilderAssistant {
 
 	private final Logger logger = LoggerFactory.getLogger(ContextBuilderAssistant.class);
 	
-	private ClassLoader classLoader = ClassUtils.getDefaultClassLoader();
+	private ClassLoader classLoader;
 	
 	private ArrayStack objectStack = new ArrayStack();
 	
@@ -67,21 +67,20 @@ public class ContextBuilderAssistant {
 
 	private String applicationBasePath;
 	
-	public ContextBuilderAssistant(String applicationBasePath) {
+	public ContextBuilderAssistant(String applicationBasePath, ClassLoader classLoader) {
 		if(applicationBasePath == null)
 			this.applicationBasePath = new File(".").getAbsoluteFile().toString();
 		else
 			this.applicationBasePath = applicationBasePath;
+		
+		if(classLoader == null)
+			classLoader = new ActivityContextClassLoader();
 		
 		logger.info("Application base directory path is [" + applicationBasePath + "]");
 	}
 	
 	public ClassLoader getClassLoader() {
 		return classLoader;
-	}
-
-	public void setClassLoader(ClassLoader classLoader) {
-		this.classLoader = classLoader;
 	}
 
 	/**

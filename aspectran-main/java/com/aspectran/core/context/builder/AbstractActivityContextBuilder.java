@@ -40,8 +40,8 @@ import com.aspectran.core.var.type.DefaultSettingType;
  */
 public abstract class AbstractActivityContextBuilder extends ContextBuilderAssistant {
 	
-	protected AbstractActivityContextBuilder(String applicationBasePath) {
-		super(applicationBasePath);
+	protected AbstractActivityContextBuilder(String applicationBasePath, ClassLoader classLoader) {
+		super(applicationBasePath, classLoader);
 	}
 	
 	protected ActivityContext makeActivityContext(ApplicationAdapter applicationAdapter) {

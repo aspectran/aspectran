@@ -34,12 +34,12 @@ public class XmlActivityContextBuilder extends AbstractActivityContextBuilder im
 	
 	private final ApplicationAdapter applicationAdapter;
 	
-	public XmlActivityContextBuilder() {
-		this(null);
-	}
-
 	public XmlActivityContextBuilder(ApplicationAdapter applicationAdapter) {
-		super(applicationAdapter.getApplicationBasePath());
+		this(applicationAdapter, null);
+	}
+	
+	public XmlActivityContextBuilder(ApplicationAdapter applicationAdapter, ClassLoader classLoader) {
+		super(applicationAdapter.getApplicationBasePath(), classLoader);
 		this.applicationAdapter = applicationAdapter;
 	}
 
