@@ -724,7 +724,7 @@ public class AspectranNodeParser {
 				ScopeType scopeType = ScopeType.valueOf(scope);
 				
 				if(scope != null && scopeType == null)
-					throw new IllegalArgumentException("No scope-type registered for scope '" + scope + "'");
+					throw new IllegalArgumentException("No scope-type registered for scope '" + scope + "'.");
 				
 				if(scopeType == null)
 					scopeType = (singleton == null || Boolean.parseBoolean(singleton)) ? ScopeType.SINGLETON : ScopeType.PROTOTYPE; //default: singleton

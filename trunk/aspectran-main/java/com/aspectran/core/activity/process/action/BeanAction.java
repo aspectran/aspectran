@@ -129,7 +129,7 @@ public class BeanAction extends AbstractAction implements Executable {
 			
 			if(argIndex > 0) {
 				parameterTypes[0] = activity.getTransletInterfaceClass();
-				args[0] = activity.getSuperTranslet();
+				args[0] = activity.getCoreTranslet();
 			}
 			
 			Iterator<ItemRule> iter = argumentItemRuleMap.iterator();
@@ -146,7 +146,7 @@ public class BeanAction extends AbstractAction implements Executable {
 		} else {
 			if(activity != null) {
 				parameterTypes = new Class<?>[] { activity.getTransletInterfaceClass() };
-				args = new Object[] { activity.getSuperTranslet() };
+				args = new Object[] { activity.getCoreTranslet() };
 			}
 		}
 		

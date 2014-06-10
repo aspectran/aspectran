@@ -309,7 +309,6 @@ public class BeanClassScanner {
 				System.out.println(nextElement);
 			}
 		} catch(IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 */

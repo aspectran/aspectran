@@ -16,8 +16,8 @@
 
 package com.aspectran.core.context.translet;
 
-import com.aspectran.core.activity.AbstractCoreTranslet;
 import com.aspectran.core.activity.CoreTranslet;
+import com.aspectran.core.activity.CoreTransletImpl;
 
 
 /**
@@ -34,14 +34,14 @@ public class TransletInstantiationException extends RuntimeException {
 	
 	private Class<? extends CoreTranslet> transletInterfaceClass;
 
-	private Class<? extends AbstractCoreTranslet> transletInstanceClass;
+	private Class<? extends CoreTransletImpl> transletInstanceClass;
 	
 	/**
 	 * Create a new BeanInstantiationException.
 	 * @param beanClass the offending bean class
 	 * @param msg the detail message
 	 */
-	public TransletInstantiationException(Class<? extends CoreTranslet> transletInterfaceClass, Class<? extends AbstractCoreTranslet> transletInstanceClass) {
+	public TransletInstantiationException(Class<? extends CoreTranslet> transletInterfaceClass, Class<? extends CoreTransletImpl> transletInstanceClass) {
 		this(transletInterfaceClass, transletInstanceClass, null);
 	}
 
@@ -51,7 +51,7 @@ public class TransletInstantiationException extends RuntimeException {
 	 * @param msg the detail message
 	 * @param cause the root cause
 	 */
-	public TransletInstantiationException(Class<? extends CoreTranslet> transletInterfaceClass, Class<? extends AbstractCoreTranslet> transletInstanceClass, Throwable cause) {
+	public TransletInstantiationException(Class<? extends CoreTranslet> transletInterfaceClass, Class<? extends CoreTransletImpl> transletInstanceClass, Throwable cause) {
 		super("Could not instantiate translet class [" + transletInstanceClass.getName() + "] interface [" + transletInterfaceClass.getName() + "]", cause);
 		this.transletInstanceClass = transletInstanceClass;
 	}

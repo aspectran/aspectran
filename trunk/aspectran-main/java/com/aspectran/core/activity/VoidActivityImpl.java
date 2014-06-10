@@ -15,10 +15,8 @@
  */
 package com.aspectran.core.activity;
 
-import java.lang.reflect.Constructor;
 import java.util.List;
 
-import com.aspectran.core.activity.process.result.ProcessResult;
 import com.aspectran.core.activity.request.RequestException;
 import com.aspectran.core.activity.response.ResponseException;
 import com.aspectran.core.activity.response.Responsible;
@@ -27,36 +25,25 @@ import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.bean.scope.Scope;
-import com.aspectran.core.context.translet.TransletInstantiationException;
 import com.aspectran.core.var.rule.AspectAdviceRule;
 
 /**
  * <p>Created: 2008. 04. 28 오전 12:48:48</p>
  */
-public final class VoidActivityImpl extends AbstractCoreActivity implements CoreActivity {
+public final class VoidActivityImpl extends CoreActivityImpl implements CoreActivity {
 	
 	public VoidActivityImpl(ActivityContext context) {
 		super(context);
 	}
 	
 	public void init(String transletName) throws CoreActivityException {
-		setTransletInterfaceClass(CoreTranslet.class);
-		setTransletImplementClass(CoreTransletImpl.class);
-		
-		//create translet instance
-		try {
-			Constructor<?> transletImplementConstructor = transletImplementClass.getConstructor(CoreActivity.class);
-			Object[] args = new Object[] { this };
-			
-			translet = (CoreTranslet)transletImplementConstructor.newInstance(args);
-		} catch(Exception e) {
-			throw new TransletInstantiationException(transletInterfaceClass, transletImplementClass, e);
-		}
+		createCoreTranslet(CoreTranslet.class, CoreTransletImpl.class);
 	}
 	
 	protected void request(CoreTranslet translet) throws RequestException {
 	}
 	
+	@Override
 	public CoreActivity newCoreActivity() {
 		VoidActivityImpl voidActivity = new VoidActivityImpl(getActivityContext());
 		return voidActivity;
@@ -89,16 +76,6 @@ public final class VoidActivityImpl extends AbstractCoreActivity implements Core
 
 	@Override
 	public void runWithoutResponse() throws CoreActivityException {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public void request() throws RequestException {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public ProcessResult process() throws CoreActivityException {
 		throw new UnsupportedOperationException();
 	}
 

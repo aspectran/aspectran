@@ -33,7 +33,6 @@ import com.aspectran.web.adapter.WebApplicationAdapter;
 import com.aspectran.web.startup.ActivityContextLoader;
 import com.aspectran.web.startup.ActivityContextObservedLoader;
 import com.aspectran.web.startup.servlet.AutoReloadingOptions;
-import com.aspectran.web.startup.servlet.SchedulerOptions;
 
 public class AspectranSchedulerListener implements ServletContextListener {
 
