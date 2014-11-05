@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE translets PUBLIC "-//JHLabs.org//DTD Translets 1.0//EN"
+                           "./dtd/translets-1.0.dtd">
+
+<translets>
+
+	<settings>
+		<setting name="useNamespaces" value="true"/>
+		<setting name="nullableBeanId" value="false"/>
+	</settings>
+
+	<typeAliases>
+		<typeAlias alias="TestTicket" type="org.jhlabs.translets.test.TestTicket"/>
+	</typeAliases>
+
+	<bean id="t1" class="TestTicket" scope="singleton" factoryMethod="">
+		<constructor>
+			<arguments>
+				<item>string</item>
+				<item type="list">
+					<value>1v</value>
+					<value>2</value>
+					<value>3</value>
+				</item>
+				<item type="map">
+					<value name="aa"></value>
+				</item>
+			</arguments>
+		</constructor>
+		<properties>
+			<item name="item1">string</item>
+			<item name="list1" type="list">
+				<value>a</value>
+				<value>b</value>
+			</item>
+			<item name="map1" type="map">
+				<value name="key1">value</value>
+				<value name="key2">value</value>
+			</item>
+			<item name="ref1">
+				<reference bean="bean00"/>
+			</item>
+		</properties>
+	</bean>
+
+	<ticketRule>
+		<checkcase id="loginCheck" rejectInvalidTicket="true" checkpoint="request">
+			<action bean="common.ticket.t1" method="check">
+				<arguments>
+					<item name="stmtId">aaaaaaa</item>
+				</arguments>
+			</action>
+			<responseByContentType>
+				<dispatch contentType="text/html">
+					<view name="/WEB-INF/jsp/error.jsp"/>
+				</dispatch>
+			</responseByContentType>
+			<defaultResponse>
+				<redirect translet="login"/>
+			</defaultResponse>
+		</checkcase>
+		<checkcase id="loginFailed" rejectInvalidTicket="true">
+			<action bean="common.ticket.t1"/>
+			<responseByContentType>
+				<dispatch contentType="text/html">
+					<view name="/WEB-INF/jsp/error.jsp"/>
+				</dispatch>
+			</responseByContentType>
+		</checkcase>
+	</ticketRule>
+
+</translets>

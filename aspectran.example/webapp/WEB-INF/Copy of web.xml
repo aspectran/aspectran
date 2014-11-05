@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+	id="WebApp_ID" version="2.5">
+	<display-name>aspectran-web</display-name>
+	<welcome-file-list>
+		<welcome-file>index.html</welcome-file>
+		<welcome-file>index.htm</welcome-file>
+		<welcome-file>index.jsp</welcome-file>
+	</welcome-file-list>
+	<context-param>
+		<param-name>aspectran:contextConfigLocation</param-name>
+		<param-value>
+			/WEB-INF/classes/aspectran/aspectran.xml
+		</param-value>
+	</context-param>
+	<context-param>
+		<param-name>aspectran:autoReload</param-name>
+		<param-value>true</param-value>
+	</context-param>
+	<listener>
+		<listener-class>
+			com.aspectran.web.context.listener.AspectranContextLoaderListener
+		</listener-class>
+	</listener>
+	<listener>
+		<listener-class>
+			com.aspectran.web.context.listener.AspectranApplicationListener
+		</listener-class>
+	</listener>
+	<listener>
+		<listener-class>
+			com.aspectran.web.context.listener.AspectranHttpSessionListener
+		</listener-class>
+	</listener>
+	<servlet>
+		<servlet-name>aspectran-web</servlet-name>
+		<servlet-class>com.aspectran.web.context.servlet.AspectranActivityServlet</servlet-class>
+		<init-param>
+			<param-name>aspectran:defaultActivityServletHandler</param-name>
+			<param-value>com.aspectran.web.context.servlet.DefaultActivityServletRequestHandler</param-value>
+		</init-param>
+		<init-param>
+			<param-name>aspectran:contextConfigLocation</param-name>
+			<param-value>/WEB-INF/aspectran/aspectran.xml</param-value>
+		</init-param>
+		<init-param>
+			<param-name>aspectran:autoReload</param-name>
+			<param-value>true</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>aspectran-web</servlet-name>
+		<url-pattern>/test/*</url-pattern>
+	</servlet-mapping>
+</web-app>

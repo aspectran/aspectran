@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE translets PUBLIC "-//JHLabs.org//DTD Translets 1.0//EN"
+                           "./dtd/translets-1.0.dtd">
+
+<translets>
+
+	<settings>
+		<setting name="useNamespaces" value="true"/>
+		<setting name="nullableBeanId" value="false"/>
+	</settings>
+
+	<typeAliases>
+		<typeAlias alias="TestTicket" type="org.jhlabs.translets.test.TestTicket"/>
+	</typeAliases>
+
+	<bean id="a1" class="org.jhlabs.translets.test.TestBean" scope="singleton" factoryMethod="" initMethod="" destoryMethod="" lazyInit="false" >
+		<features>
+			<class>f</class>
+			<scope>singleton</scope>
+			<factoryMethod>aaa</factoryMethod>
+			<initMethod></initMethod>
+			<destroyMethod></destroyMethod>
+			<lazyInit>false</lazyInit>
+		</features>
+		<constructor>
+			<arguments>
+				<item>string</item>
+				<item type="list" valueType="int">
+					<value>1</value>
+					<value>2</value>
+					<value>3</value>
+				</item>
+				<item type="map" valueType="string">
+					<value name="aa"></value>
+				</item>
+			</arguments>
+		</constructor>
+		<properties>
+			<item name="item" value="0" valueType="int"/>
+			<item name="item0" valueType="int">0</item>
+			<item name="item1">string</item>
+			<item name="list1" type="list">
+				<value>a</value>
+				<value>b</value>
+			</item>
+			<item name="map1" type="map">
+				<value name="key1">value</value>
+				<value name="key2">value</value>
+			</item>
+			<item name="ref1">
+				<reference bean="bean00"/>
+			</item>
+		</properties>
+	</bean>
+
+	<exceptionRule>
+		<responseByContentType>
+			<dispatch contentType="text/html">
+				<view name="/WEB-INF/jsp/error.jsp"/>
+			</dispatch>
+			<!-- forward contentType="text/html" path="error"/ -->
+			<transform contentType="text/plain" type="transform/text">
+				<template>
+					오류 발생!
+					오류 발생!
+				</template>
+			</transform>
+			<transform contentType="text/xml" type="transform/xml">
+				<action id="xml" bean="common.action.a1" method="testXmlAction" hidden="true">
+					<properties>
+						<item name="variable1">error</item>
+						<item name="variable2">0001</item>
+					</properties>
+				</action>
+				<echo id="error3">
+					<item name="code">0002</item>
+					<item name="message">오류 발생!</item>
+				</echo>
+				<echo id="error1">
+					<item type="map">
+						<value name="code">0001</value>
+						<value name="message">오류 발생!</value>
+					</item>
+				</echo>
+				<echo id="error2">
+					<item type="map">
+						<value name="code">0002</value>
+						<value name="message">오류 발생!</value>
+					</item>
+					<item type="map">
+						<value name="code">0004</value>
+						<value name="message">오류 발생!</value>
+					</item>
+				</echo>
+			</transform>
+		</responseByContentType>
+		<defaultResponse>
+			<redirect translet="error"/>
+		</defaultResponse>
+	</exceptionRule>
+
+</translets>

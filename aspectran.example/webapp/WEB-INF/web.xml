@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+	id="WebApp_ID" version="2.5">
+
+	<display-name>aspectran-example</display-name>
+	<welcome-file-list>
+		<welcome-file>index.html</welcome-file>
+		<welcome-file>index.htm</welcome-file>
+		<welcome-file>index.jsp</welcome-file>
+	</welcome-file-list>
+	<context-param>
+		<param-name>aspectran:scheduler:config</param-name>
+		<param-value>
+			classPathes: [
+				WEB-INF/*.xml
+				WEB-INF/classes/**/*.class
+				WEB-INF/classes/**/*.xml
+				WEB-INF/lib/*.jar
+			]
+			autoReloading: {
+				observingPath: [
+					classpath:**
+					WEB-INF/config/sqlmap/**
+				]
+				observationInterval: 5
+				startup: false
+			}
+			contextConfigLocation: classpath:aspectran/example-aspectran.xml
+			startDelaySeconds: 5
+			waitOnShutdown: true
+			startup: false
+		</param-value>
+	</context-param>
+	<listener>
+		<listener-class>com.aspectran.web.startup.listener.AspectranSchedulerListener</listener-class>
+	</listener>
+	<servlet>
+		<servlet-name>aspectran-example</servlet-name>
+		<servlet-class>com.aspectran.web.startup.servlet.WebActivityServlet</servlet-class>
+		<init-param>
+			<param-name>config</param-name>
+			<param-value>
+				classPathes: [
+					WEB-INF/*.xml
+					WEB-INF/classes/**/*.class
+					WEB-INF/classes/**/*.xml
+					WEB-INF/lib/*.jar
+				]
+				autoReloading: {
+					observingPath: [
+						classpath:**
+						WEB-INF/config/sqlmap/**
+					]
+					observationInterval: 5
+					startup: false
+				}
+				scheduler: {
+					startDelaySeconds: 5
+					waitOnShutdown: true
+					startup: false
+				}
+				rootContext: classpath:aspectran/example-aspectran.xml
+			</param-value>
+		</init-param>
+
+
+		<init-param>
+			<param-name>contextConfigLocation</param-name>
+			<param-value>classpath:aspectran/example-aspectran.xml</param-value>
+		</init-param>
+		<init-param>
+			<param-name>classPathes</param-name>
+			<param-value>
+				WEB-INF/*.xml
+				WEB-INF/classes/**/*.class
+				WEB-INF/classes/**/*.xml
+				WEB-INF/lib/*.jar
+			</param-value>
+		</init-param>
+		<init-param>
+			<param-name>scheduler</param-name>
+			<param-value>
+				startDelaySeconds: 5
+				waitOnShutdown: true
+				startup: false
+			</param-value>
+		</init-param>
+		<init-param>
+			<param-name>autoReloading</param-name>
+			<param-value>
+				observingPath: [
+					classpath:**
+					WEB-INF/config/sqlmap/**
+				]
+				observationInterval: 5
+				startup: false
+			</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>aspectran-example</servlet-name>
+		<url-pattern>/</url-pattern>
+	</servlet-mapping>
+</web-app>
