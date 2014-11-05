@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE translets PUBLIC "-//JHLabs.org//DTD Translets 1.0//EN"
+                           "./dtd/translets-1.0.dtd">
+
+<translets>
+
+	<settings>
+		<setting name="useNamespaces" value="true"/>
+		<setting name="nullableContentId" value="true"/>
+		<setting name="nullableActionId" value="true"/>
+		<setting name="multiActivityEnable" value="true"/>
+	</settings>
+
+	<activityRule>
+		<transletNamePattern>
+			<prefix>/test/</prefix>
+			<suffix>.do</suffix>
+		</transletNamePattern>
+		<description>
+			근원이 되는 설정
+		</description>
+	</activityRule>
+
+	<ticketRule>
+		<checkcase id="loginCheck" rejectInvalidTicket="true" checkpoint="request">
+			<action bean="common.ticket.t1" method="check">
+				<arguments>
+					<item name="stmtId">aaaaaaa</item>
+				</arguments>
+			</action>
+			<responseByContentType>
+				<dispatch contentType="text/html">
+					<view name="/WEB-INF/jsp/error.jsp"/>
+				</dispatch>
+			</responseByContentType>
+			<defaultResponse>
+				<redirect translet="login"/>
+			</defaultResponse>
+		</checkcase>
+		<checkcase id="loginFailed" rejectInvalidTicket="true">
+			<action bean="common.ticket.t1"/>
+			<responseByContentType>
+				<dispatch contentType="text/html">
+					<view name="/WEB-INF/jsp/error.jsp"/>
+				</dispatch>
+			</responseByContentType>
+		</checkcase>
+	</ticketRule>
+	
+	<requestRule>
+		<characterEncoding>utf-8</characterEncoding>
+		<multipart>
+			<maxRequestSize>10M</maxRequestSize>
+			<temporaryFilePath>/d:/</temporaryFilePath>
+		</multipart>
+	</requestRule>
+
+	<responseRule>
+		<characterEncoding>utf-8</characterEncoding>
+		<defaultContentType>text/html</defaultContentType>
+		<dispatcherViews default="jsp">
+			<viewType id="jsp" class="org.jhlabs.translets.web.JspViewDispatcher"/> 
+			<viewType id="tiles2" bean=""/> 
+			<viewType id="other">com.abs.view</viewType> 
+		</dispatcherViews>
+	</responseRule>
+
+	<exceptionRule>
+		<responseByContentType>
+			<dispatch contentType="text/html">
+				<view name="/WEB-INF/jsp/error.jsp"/>
+			</dispatch>
+			<!-- forward contentType="text/html" translet="error"/ -->
+			<transform contentType="text/plain" type="transform/text">
+				<template>
+					오류 발생!
+					오류 발생!
+				</template>
+			</transform>
+			<transform contentType="text/xml" type="transform/xml">
+				<action id="xml" bean="common.action.a1" method="testXmlAction" hidden="true">
+					<properties>
+						<item name="variable1">error</item>
+						<item name="variable2">0001</item>
+					</properties>
+				</action>
+				<echo id="error3">
+					<item name="code">0002</item>
+					<item name="message">오류 발생!</item>
+				</echo>
+				<echo id="error1">
+					<item type="map">
+						<value name="code">0001</value>
+						<value name="message">오류 발생!</value>
+					</item>
+				</echo>
+				<echo id="error2">
+					<item type="map">
+						<value name="code">0002</value>
+						<value name="message">오류 발생!</value>
+					</item>
+					<item type="map">
+						<value name="code">0004</value>
+						<value name="message">오류 발생!</value>
+					</item>
+				</echo>
+			</transform>
+		</responseByContentType>
+		<defaultResponse>
+			<redirect translet="error"/>
+		</defaultResponse>
+	</exceptionRule>
+
+	<import resource="ticket-rule.xml"/>
+	<import resource="exception-rule.xml"/>
+	<import resource="front-translets.xml"/>
+	<import resource="ajax-translets.xml"/>
+</translets>

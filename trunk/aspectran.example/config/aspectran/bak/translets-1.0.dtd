@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!ELEMENT translets (settings? | activityRule? | ticketRule? | requestRule? | responseRule? | exceptionRule? | typeAliases* | import* | bean* | translet*)*>
+<!ATTLIST translets
+namespace CDATA #IMPLIED
+>
+
+<!ELEMENT settings (setting*)>
+<!ELEMENT setting EMPTY>
+<!ATTLIST setting
+name CDATA #REQUIRED
+value CDATA #REQUIRED
+>
+
+<!ELEMENT activityRule (transletNamePattern, description?)>
+<!ELEMENT description (#PCDATA)>
+
+<!ELEMENT transletNamePattern (#PCDATA | prefix | suffix)*>
+<!ELEMENT prefix (#PCDATA)>
+<!ELEMENT suffix (#PCDATA)>
+
+<!ELEMENT ticketRule (checkcase*)>
+<!ELEMENT checkcase (action, responseByContentType?, defaultResponse?)>
+<!ATTLIST checkcase
+id CDATA #REQUIRED
+rejectInvalidTicket (true | false) "true"
+checkpoint (request | response) "request"
+>
+
+<!ELEMENT ticket (arguments?, properties?)>
+<!ATTLIST ticket
+checkcase CDATA #REQUIRED
+rejectInvalidTicket (true | false) "false"
+checkpoint (request | response) "request"
+>
+
+<!ELEMENT requestRule (characterEncoding | multipart? | ticket*)*>
+
+<!ELEMENT characterEncoding (#PCDATA)>
+
+<!ELEMENT multipart (maxRequestSize, temporaryFilePath)>
+<!ELEMENT maxRequestSize (#PCDATA)>
+<!ELEMENT temporaryFilePath (#PCDATA)>
+
+<!ELEMENT responseRule (characterEncoding | enforceResponseById? | defaultContentType? | ticket* | dispatcherViews?)*>
+<!ELEMENT enforceResponseById (#PCDATA)>
+<!ELEMENT defaultContentType (#PCDATA)>
+
+<!ELEMENT dispatcherViews (viewType*)>
+<!ATTLIST dispatcherViews
+default CDATA #IMPLIED
+>
+
+<!ELEMENT viewType (#PCDATA)>
+<!ATTLIST viewType
+id CDATA #REQUIRED
+bean CDATA #IMPLIED
+class CDATA #IMPLIED
+>
+
+<!ELEMENT exceptionRule (responseByContentType?, defaultResponse?)>
+<!ELEMENT responseByContentType (transform? | dispatch? | redirect? | forward?)*>
+<!ELEMENT defaultResponse (transform? | dispatch? | redirect? | forward?)>
+
+<!ELEMENT typeAliases (typeAlias*)>
+
+<!ELEMENT typeAlias EMPTY>
+<!ATTLIST typeAlias
+alias CDATA #REQUIRED
+type CDATA #REQUIRED
+>
+
+<!ELEMENT import EMPTY>
+<!ATTLIST import
+resource CDATA #IMPLIED
+file CDATA #IMPLIED
+url CDATA #IMPLIED
+>
+
+<!ELEMENT item (#PCDATA | value | reference | null)*>
+<!ATTLIST item
+name CDATA #IMPLIED
+value CDATA #IMPLIED
+type CDATA #IMPLIED
+valueType CDATA #IMPLIED
+defaultValue CDATA #IMPLIED
+>
+
+<!ELEMENT value (#PCDATA | reference | null)*>
+<!ATTLIST value
+name CDATA #IMPLIED
+tokenize (true | false) #IMPLIED
+>
+
+<!ELEMENT reference EMPTY>
+<!ATTLIST reference
+bean CDATA #IMPLIED
+parameter CDATA #IMPLIED
+attribute CDATA #IMPLIED
+property CDATA #IMPLIED
+>
+
+<!ELEMENT attributes (item*)>
+
+<!ELEMENT properties (item*)>
+
+<!ELEMENT arguments (item*)>
+
+<!ELEMENT parameters (item*)>
+
+<!ELEMENT null EMPTY>
+
+
+<!ELEMENT bean (features?, constructor?, properties*)>
+<!ATTLIST bean
+id ID #REQUIRED
+class CDATA #IMPLIED
+scope (singleton | prototype | request | session | application) #IMPLIED
+factoryMethod CDATA #IMPLIED
+initMethod CDATA #IMPLIED
+destoryMethod CDATA #IMPLIED
+lazyInit (true | false) #IMPLIED
+parent CDATA #IMPLIED
+>
+
+<!ELEMENT features (class?, scope?, factoryMethod?, initMethod?, destroyMethod?, lazyInit?)>
+
+<!ELEMENT class (#PCDATA)>
+<!ELEMENT scope (#PCDATA)>
+<!ELEMENT factoryMethod (#PCDATA)>
+<!ELEMENT initMethod (#PCDATA)>
+<!ELEMENT destroyMethod (#PCDATA)>
+<!ELEMENT lazyInit (#PCDATA)>
+
+<!ELEMENT constructor (arguments?)>
+
+<!ELEMENT translet (ticket*, request?, contents?, response?, transform?, dispatch?, redirect?, forward?, exception?)>
+<!ATTLIST translet
+name CDATA #REQUIRED
+hidden (true | false) #IMPLIED
+parent CDATA #IMPLIED
+>
+
+<!ELEMENT request (ticket*, attributes?, multiparts?)>
+<!ATTLIST request
+method CDATA #IMPLIED
+characterEncoding CDATA #IMPLIED
+>
+
+<!ELEMENT multiparts (fileItem*)>
+
+<!ELEMENT fileItem (allowFileExtentions? | denyFileExtentions?)>
+<!ATTLIST fileItem
+name CDATA #REQUIRED
+>
+
+<!ELEMENT allowFileExtentions (#PCDATA)>
+<!ELEMENT denyFileExtentions (#PCDATA)>
+
+<!ELEMENT contents (content*)>
+
+<!ELEMENT content (echo? | action? | include?)*>
+<!ATTLIST content
+id CDATA #IMPLIED
+hidden (true | false) #IMPLIED
+>
+
+<!ELEMENT echo (#PCDATA | item | value | null)*>
+<!ATTLIST echo
+id CDATA #IMPLIED
+hidden (true | false) #IMPLIED
+>
+
+<!ELEMENT action (arguments?, properties?)>
+<!ATTLIST action
+id CDATA #IMPLIED
+bean CDATA #IMPLIED
+method CDATA #IMPLIED
+hidden (true | false) #IMPLIED
+>
+
+<!ELEMENT include (attributes?)>
+<!ATTLIST include
+id CDATA #IMPLIED
+translet CDATA #REQUIRED
+ignoreTicket (true | false) #IMPLIED
+hidden (true | false) #IMPLIED
+>
+
+<!ELEMENT response (ticket? | transform? | dispatch? | redirect? | forward?)*>
+<!ATTLIST response
+characterEncoding CDATA #IMPLIED
+default CDATA #IMPLIED
+>
+<!ELEMENT exception (responseByContentType?, defaultResponse?)>
+
+<!ELEMENT transform (echo | action | include | template)*>
+<!ATTLIST transform
+id CDATA #IMPLIED
+type CDATA #REQUIRED
+contentType CDATA #IMPLIED
+characterEncoding CDATA #IMPLIED
+>
+<!ELEMENT template (#PCDATA)>
+<!ATTLIST template
+resource CDATA #IMPLIED
+file CDATA #IMPLIED
+url CDATA #IMPLIED
+encoding CDATA #IMPLIED
+noCache (true | false) #IMPLIED
+>
+
+<!ELEMENT dispatch (echo? | action? | include? | view)*>
+<!ATTLIST dispatch
+id CDATA #IMPLIED
+contentType CDATA #IMPLIED
+>
+<!ELEMENT view (#PCDATA)>
+<!ATTLIST view
+type CDATA #IMPLIED
+name CDATA #IMPLIED
+>
+
+<!ELEMENT redirect (echo* | action* | include* | url? | parameters*)>
+<!ATTLIST redirect
+id CDATA #IMPLIED
+contentType CDATA #IMPLIED
+url CDATA #IMPLIED
+translet CDATA #IMPLIED
+excludeNullParameters CDATA #IMPLIED
+>
+<!ELEMENT url (#PCDATA)>
+
+<!ELEMENT forward (echo* | action* | include* | parameters*)>
+<!ATTLIST forward
+id CDATA #IMPLIED
+contentType CDATA #IMPLIED
+translet CDATA #IMPLIED
+>

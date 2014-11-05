@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE sqlMapConfig PUBLIC "-//ibatis.apache.org//DTD SQL Map Config 2.0//EN"
+                              "http://ibatis.apache.org/dtd/sql-map-config-2.dtd">
+<sqlMapConfig>
+
+    <settings
+        cacheModelsEnabled="true"
+        enhancementEnabled="true"
+        useStatementNamespaces="true"
+        lazyLoadingEnabled="true"
+        maxRequests="512"
+        maxSessions="128"
+        maxTransactions="32"/>
+
+    <transactionManager type="JDBC">
+        <!-- AT HOME SETTING -->
+        <dataSource type="SIMPLE">
+            <property name="JDBC.Driver" value="com.mysql.jdbc.Driver"/>
+            <property name="JDBC.ConnectionURL" value="jdbc:mysql://localhost:3306/translets"/>
+            <property name="JDBC.Username" value="glabs"/>
+            <property name="JDBC.Password" value="glabs"/>
+        </dataSource>
+
+        <!--
+        <dataSource type="SIMPLE">
+            <property name="JDBC.Driver" value="oracle.jdbc.driver.OracleDriver"/>
+            <property name="JDBC.ConnectionURL" value="jdbc:oracle:thin:@localhost:1521:XE"/>
+            <property name="JDBC.Username" value="msite"/>
+            <property name="JDBC.Password" value="msite"/>
+        </dataSource>
+        -->
+
+        <!-- jeus datasource configuration -->
+		<!-- 
+        <dataSource type="JNDI">
+            <property name="DataSource" value="tibero"/>
+        </dataSource>
+        -->
+
+        <!-- local tomcat datasource configuration -->
+		<!-- 
+        <dataSource type="JNDI">
+            <property name="DataSource" value="java:comp/env/jdbc/tibero"/>
+        </dataSource>
+        -->
+
+    </transactionManager>
+
+    <sqlMap resource="sqlmap/example/sample.xml"/>
+
+</sqlMapConfig>	
