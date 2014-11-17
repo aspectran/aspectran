@@ -27,7 +27,7 @@
 				observationInterval: 5
 				startup: false
 			}
-			contextConfigLocation: classpath:aspectran/example-aspectran.xml
+			rootContext: classpath:aspectran/example-aspectran.xml
 			startDelaySeconds: 5
 			waitOnShutdown: true
 			startup: false
