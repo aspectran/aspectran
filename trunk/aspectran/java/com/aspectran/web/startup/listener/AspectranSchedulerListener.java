@@ -46,7 +46,7 @@ public class AspectranSchedulerListener implements ServletContextListener {
 	
 	private ActivityContextReloadingTimer contextRefreshTimer;
 	
-	private String contextConfigLocation;
+	private String rootContext;
 	
 	private int startDelaySeconds;
 	
@@ -71,7 +71,7 @@ public class AspectranSchedulerListener implements ServletContextListener {
 		
 		try {
 			Options schedulerOptions = new AspectranSchedulerOptions(schedulerParam);
-			contextConfigLocation = schedulerOptions.getString(AspectranSchedulerOptions.contextConfigLocation);
+			rootContext = schedulerOptions.getString(AspectranSchedulerOptions.rootContext);
 			startDelaySeconds = schedulerOptions.getInt(AspectranSchedulerOptions.startDelaySeconds, -1);
 			waitOnShutdown = schedulerOptions.getBoolean(AspectranSchedulerOptions.waitOnShutdown, true);
 			boolean startup = schedulerOptions.getBoolean(AspectranSchedulerOptions.startup, false);
@@ -102,7 +102,7 @@ public class AspectranSchedulerListener implements ServletContextListener {
 			}
 			
 			if(!autoReloadingStartup) {
-				ActivityContextLoader aspectranContextLoader = new ActivityContextLoader(servletContext, contextConfigLocation);
+				ActivityContextLoader aspectranContextLoader = new ActivityContextLoader(servletContext, rootContext);
 				activityContext = aspectranContextLoader.load();
 			} else {
 				if(observationInterval == -1) {
@@ -116,7 +116,7 @@ public class AspectranSchedulerListener implements ServletContextListener {
 					}
 				};
 				
-				ActivityContextLoadingObserver observer = new ActivityContextLoadingObserver(servletContext, contextConfigLocation);
+				ActivityContextLoadingObserver observer = new ActivityContextLoadingObserver(servletContext, rootContext);
 				activityContext = observer.load();
 				contextRefreshTimer = observer.startTimer(contextRefreshHandler, observingPaths, observationInterval);
 			}

@@ -9,7 +9,7 @@ import com.aspectran.web.startup.servlet.AutoReloadingOptions;
 
 public class AspectranSchedulerOptions extends AbstractOptions implements Options {
 
-	public static final Option contextConfigLocation = new Option("contextConfigLocation", OptionValueType.STRING);
+	public static final Option rootContext = new Option("rootContext", OptionValueType.STRING);
 
 	public static final Option startDelaySeconds = new Option("startDelaySeconds", OptionValueType.INTEGER);
 	
@@ -23,7 +23,7 @@ public class AspectranSchedulerOptions extends AbstractOptions implements Option
 	
 	static {
 		options = new Option[] {
-				contextConfigLocation,
+				rootContext,
 				startDelaySeconds,
 				waitOnShutdown,
 				startup,
