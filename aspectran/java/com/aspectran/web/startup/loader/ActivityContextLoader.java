@@ -14,29 +14,29 @@ public class ActivityContextLoader {
 
 	private final Logger logger = LoggerFactory.getLogger(ActivityContextLoader.class);
 
-	public static final String CONTEXT_CONFIG_LOCATION_PARAM = "contextConfigLocation";
+	public static final String ROOT_CONTEXT_PARAM = "contextConfigLocation";
 	
-	private static final String DEFAULT_CONTEXT_CONFIG_LOCATION = "WEB-INF/aspectran.xml";
+	private static final String DEFAULT_ROOT_CONTEXT = "WEB-INF/aspectran.xml";
 	
 	private WebApplicationAdapter applicationAdapter;
 	
-	private String contextConfigLocation;
+	private String rootContext;
 	
 	private ClassLoader classLoader;
 	
 	private ActivityContext activityContext;
 	
-	public ActivityContextLoader(ServletContext servletContext, String contextConfigLocation) {
-		this(servletContext, contextConfigLocation, null);
+	public ActivityContextLoader(ServletContext servletContext, String rootContext) {
+		this(servletContext, rootContext, null);
 	}
 	
-	public ActivityContextLoader(ServletContext servletContext, String contextConfigLocation, ClassLoader classLoader) {
+	public ActivityContextLoader(ServletContext servletContext, String rootContext, ClassLoader classLoader) {
 		this.applicationAdapter = WebApplicationAdapter.determineWebApplicationAdapter(servletContext);
 
-		if(contextConfigLocation == null)
-			this.contextConfigLocation = DEFAULT_CONTEXT_CONFIG_LOCATION;
+		if(rootContext == null)
+			this.rootContext = DEFAULT_ROOT_CONTEXT;
 		else
-			this.contextConfigLocation = contextConfigLocation;
+			this.rootContext = rootContext;
 		
 		this.classLoader = classLoader;
 		
@@ -44,11 +44,11 @@ public class ActivityContextLoader {
 
 	protected ActivityContext build() {
 		try {
-			logger.info("build ActivityContext [" + contextConfigLocation + "]");
+			logger.info("build ActivityContext [" + rootContext + "]");
 			long startTime = System.currentTimeMillis();
 
 			ActivityContextBuilder builder = new XmlActivityContextBuilder(applicationAdapter, classLoader);
-			activityContext = builder.build(contextConfigLocation);
+			activityContext = builder.build(rootContext);
 			
 			long elapsedTime = System.currentTimeMillis() - startTime;
 			logger.info("ActivityContext initialization completed in " + elapsedTime + " ms");

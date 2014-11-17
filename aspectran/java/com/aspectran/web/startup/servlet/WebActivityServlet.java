@@ -84,7 +84,7 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 		try {
 			ServletContext servletContext = getServletContext();
 			
-			String contextConfigLocation = getServletConfig().getInitParameter(ActivityContextLoader.CONTEXT_CONFIG_LOCATION_PARAM);
+			String rootContext = getServletConfig().getInitParameter(ActivityContextLoader.ROOT_CONTEXT_PARAM);
 			String autoReloadingParam = getServletConfig().getInitParameter("autoReloading");
 
 			/*
@@ -103,11 +103,11 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 			if(autoReloadingStartup && observingPaths == null || observingPaths.length == 0)
 				autoReloadingStartup = false;
 			
-			if(StringUtils.hasText(contextConfigLocation)) {
+			if(StringUtils.hasText(rootContext)) {
 				ClassLoader classLoader = new WebActivityContextClassLoader();
 				
 				if(!autoReloadingStartup) {
-					ActivityContextLoader loader = new ActivityContextLoader(servletContext, contextConfigLocation, classLoader);
+					ActivityContextLoader loader = new ActivityContextLoader(servletContext, rootContext, classLoader);
 					activityContext = loader.load();
 				} else {
 					if(observationInterval == -1) {
@@ -121,7 +121,7 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 						}
 					};
 					
-					ActivityContextLoadingObserver observer = new ActivityContextLoadingObserver(servletContext, contextConfigLocation, classLoader);
+					ActivityContextLoadingObserver observer = new ActivityContextLoadingObserver(servletContext, rootContext, classLoader);
 					activityContext = observer.load();
 					contextReloadingTimer = observer.startTimer(contextReloadingHandler, observingPaths, observationInterval);
 				}
