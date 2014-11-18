@@ -12,6 +12,14 @@ public abstract class AbstractOptions implements Options {
 
 	private static final String DELIMITERS = "\n\r\f";
 	
+	private static final String CURLY_BRAKET_OPEN = "{";
+
+	private static final String CURLY_BRAKET_CLOSE = "}";
+	
+	private static final String SQUARE_BRAKET_OPEN = "[";
+	
+	private static final String SQUARE_BRAKET_CLOSE = "]";
+	
 	protected final Map<String, Option> optionMap;
 	
 	private final String title;
@@ -139,7 +147,7 @@ public abstract class AbstractOptions implements Options {
 				token = token.trim();
 
 				if(subOptions) {
-					if("}".equals(token))
+					if(CURLY_BRAKET_CLOSE.equals(token))
 						return;
 				}
 				
@@ -168,16 +176,16 @@ public abstract class AbstractOptions implements Options {
 					} else if(option.getValueType() == OptionValueType.BOOLEAN) {
 						option.setValue(Boolean.valueOf(value));
 					} else if(option.getValueType() == OptionValueType.STRING_ARRAY) {
-						if("[".equals(value)) {
+						if(SQUARE_BRAKET_OPEN.equals(value)) {
 							List<String> stringList = new ArrayList<String>();
-							boolean braceClosed = false;
+							boolean squareBraceClosed = false;
 
 							while(st.hasMoreTokens()) {
 								token = st.nextToken();
 								value = token.trim();
 								
-								if("]".equals(value)) {
-									braceClosed = true;
+								if(SQUARE_BRAKET_CLOSE.equals(value)) {
+									squareBraceClosed = true;
 									break;
 								}
 								
@@ -186,7 +194,7 @@ public abstract class AbstractOptions implements Options {
 								}
 							}
 							
-							if(!braceClosed)
+							if(!squareBraceClosed)
 								throw new InvalidOptionException(title + ": Cannot parse value of '" + name + "' to an array of strings. \"" + token + "\"");
 							
 							option.setValue(stringList.toArray(new String[stringList.size()]));
@@ -195,7 +203,7 @@ public abstract class AbstractOptions implements Options {
 							option.setValue(stringArray);
 						}
 					} else if(option.getValueType() == OptionValueType.OPTIONS) {
-						if("{".equals(value)) {
+						if(CURLY_BRAKET_OPEN.equals(value)) {
 							AbstractOptions options2 = (AbstractOptions)option.getOptions();
 							options2.parse(st, true);
 						}
