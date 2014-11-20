@@ -41,7 +41,7 @@ public final class OptionValueType extends Type {
 	public static final OptionValueType STRING_ARRAY;
 	
 	/** The "options" item type. */
-	public static final OptionValueType OPTIONS;
+	protected static final OptionValueType OPTIONS;
 	
 	private static final Map<String, OptionValueType> types;
 	

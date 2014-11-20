@@ -14,7 +14,11 @@ public class Option {
 		this(name, valueType, null);
 	}
 	
-	public Option(String name, OptionValueType valueType, Options options) {
+	public Option(String name, Options options) {
+		this(name, OptionValueType.OPTIONS, options);
+	}
+	
+	protected Option(String name, OptionValueType valueType, Options options) {
 		this.name = name;
 		this.valueType = valueType;
 		

@@ -17,7 +17,7 @@ public class AspectranSchedulerOptions extends AbstractOptions implements Option
 	
 	public static final Option startup = new Option("startup", OptionValueType.BOOLEAN);
 	
-	public static final Option autoReloading = new Option("autoReloading", OptionValueType.OPTIONS, new AutoReloadingOptions());
+	public static final Option autoReloading = new Option("autoReloading", new AutoReloadingOptions());
 	
 	private final static Option[] options;
 	
