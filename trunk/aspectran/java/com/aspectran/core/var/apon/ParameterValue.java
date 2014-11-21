@@ -1,5 +1,8 @@
 package com.aspectran.core.var.apon;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ParameterValue {
 
 	private final String name;
@@ -20,13 +23,13 @@ public class ParameterValue {
 		this(name, ParameterValueType.PARAMETERS, false, parameters);
 	}
 	
-	protected ParameterValue(String name, ParameterValueType parameterValueType, boolean array, Parameters options) {
+	protected ParameterValue(String name, ParameterValueType parameterValueType, boolean array, Parameters parameters) {
 		this.name = name;
 		this.parameterValueType = parameterValueType;
 		this.array = array;
 		
 		if(parameterValueType == ParameterValueType.PARAMETERS)
-			this.parameters = options;
+			this.parameters = parameters;
 		else
 			this.parameters = null;
 	}
@@ -34,9 +37,26 @@ public class ParameterValue {
 	public Object getValue() {
 		return value;
 	}
+	
+	@SuppressWarnings("unchecked")
+	public Object[] getValues() {
+		if(array) {
+			return ((List<Object>)this.value).toArray(new Object[((List<Object>)this.value).size()]);
+		} else {
+			return new Object[] { this.value };
+		}
+	}
 
+	@SuppressWarnings("unchecked")
 	public void setValue(Object value) {
-		this.value = value;
+		if(array) {
+			if(this.value == null) {
+				this.value = new ArrayList<Object>();
+			}
+			((List<Object>)this.value).add(value);
+		} else {
+			this.value = value;
+		}
 	}
 
 	public String getName() {

@@ -19,22 +19,29 @@ public abstract class AbstractParameters implements Parameters {
 	private static final String SQUARE_BRAKET_OPEN = "[";
 	
 	private static final String SQUARE_BRAKET_CLOSE = "]";
-	
-	protected final Map<String, ParameterValue> parameterMap;
+
+	protected final Map<String, ParameterValue> parameterValueMap;
 	
 	private final String title;
 	
-	protected AbstractParameters(String title, ParameterValue[] Parameters) {
-		this(title, Parameters, null);
+	private boolean preparsed;
+	
+	protected AbstractParameters(String title, ParameterValue[] parameterValues) {
+		this(title, parameterValues, null);
 	}
 
-	protected AbstractParameters(String title, ParameterValue[] Parameters, String plaintext) {
+	protected AbstractParameters(String title, ParameterValue[] parameterValues, String plaintext) {
 		this.title = title;
 		
-		this.parameterMap = new HashMap<String, ParameterValue>();
+		// pre parsing
+		if(parameterValues == null && plaintext != null) {
+			parameterValues = preparse(plaintext);
+		}
 		
-		for(ParameterValue parameter : Parameters) {
-			parameterMap.put(parameter.getName(), parameter);
+		this.parameterValueMap = new HashMap<String, ParameterValue>();
+		
+		for(ParameterValue parameterValue : parameterValues) {
+			parameterValueMap.put(parameterValue.getName(), parameterValue);
 		}
 
 		if(plaintext != null)
@@ -42,7 +49,7 @@ public abstract class AbstractParameters implements Parameters {
 	}
 
 	public Object getValue(String name) {
-		ParameterValue o = parameterMap.get(name);
+		ParameterValue o = parameterValueMap.get(name);
 		
 		if(o == null)
 			return null;
@@ -73,7 +80,7 @@ public abstract class AbstractParameters implements Parameters {
 	}
 
 	public int getInt(String name, int defaultValue) {
-		ParameterValue o = parameterMap.get(name);
+		ParameterValue o = parameterValueMap.get(name);
 		
 		if(o == null || o.getValue() == null || o.getParameterValueType() != ParameterValueType.INTEGER)
 			return defaultValue;
@@ -82,7 +89,7 @@ public abstract class AbstractParameters implements Parameters {
 	}
 	
 	public boolean getBoolean(String name, boolean defaultValue) {
-		ParameterValue o = parameterMap.get(name);
+		ParameterValue o = parameterValueMap.get(name);
 		
 		if(o == null || o.getValue() == null || o.getParameterValueType() != ParameterValueType.BOOLEAN)
 			return defaultValue;
@@ -92,7 +99,7 @@ public abstract class AbstractParameters implements Parameters {
 	}
 	
 	public String[] getStringArray(String name) {
-		ParameterValue o = parameterMap.get(name);
+		ParameterValue o = parameterValueMap.get(name);
 		
 		if(o == null)
 			return null;
@@ -101,7 +108,7 @@ public abstract class AbstractParameters implements Parameters {
 	}
 	
 	public Parameters getParameters(String name) {
-		ParameterValue o = parameterMap.get(name);
+		ParameterValue o = parameterValueMap.get(name);
 		
 		if(o == null)
 			return null;
@@ -133,84 +140,145 @@ public abstract class AbstractParameters implements Parameters {
 		return getParameters(parameter.getName());
 	}
 
-	protected void parse(String plaintext) {
-		StringTokenizer st = new StringTokenizer(plaintext, DELIMITERS);
-
-		parse(st, false);
+	public String toString() {
+		return "";
 	}
 	
-	protected void parse(StringTokenizer st, boolean subParameters) {
+	protected ParameterValue[] preparse(String plaintext) {
+		StringTokenizer st = new StringTokenizer(plaintext, DELIMITERS);
+		List<ParameterValue> parameterValueList = new ArrayList<ParameterValue>();
+		
+		preparse(st, parameterValueList, null);
+		
+		preparsed = true;
+		
+		return parameterValueList.toArray(new ParameterValue[parameterValueList.size()]);
+	}
+	
+	protected void preparse(StringTokenizer st, List<ParameterValue> parameterValueList, String openBraket) {
+		String name = null;
+		String value = null;
+		
 		while(st.hasMoreTokens()) {
 			String token = st.nextToken();
 			
 			if(StringUtils.hasText(token)) {
 				token = token.trim();
 
-				if(subParameters) {
-					if(CURLY_BRAKET_CLOSE.equals(token))
+				if(openBraket != null) {
+					if(openBraket == CURLY_BRAKET_OPEN && CURLY_BRAKET_CLOSE.equals(token) ||
+							openBraket == SQUARE_BRAKET_OPEN && SQUARE_BRAKET_CLOSE.equals(token))
 						return;
 				}
 				
-				int index = token.indexOf(":");
+				if(openBraket == SQUARE_BRAKET_OPEN) {
+					value = token;
+				} else {
+					int index = token.indexOf(":");
+	
+					if(index == -1)
+						throw new InvalidParameterException(title + ": Cannot parse into name-value pair. \"" + token + "\"");
+					
+					name = token.substring(0, index).trim();
+					value = token.substring(index + 1).trim();
+				}
 
-				if(index == -1)
-					throw new InvalidParameterException(title + ": Cannot parse into name-value pair. \"" + token + "\"");
-				
-				String name = token.substring(0, index).trim();
-				String value = token.substring(index + 1).trim();
-
-				ParameterValue parameter = parameterMap.get(name);
-				
-				if(parameter == null)
-					throw new InvalidParameterException(title + ": invalid parameter \"" + token + "\"");
-				
 				if(StringUtils.hasText(value)) {
-					if(parameter.getParameterValueType() == ParameterValueType.STRING) {
-						parameter.setValue(value);
-					} else if(parameter.getParameterValueType() == ParameterValueType.INTEGER) {
-						try {
-							parameter.setValue(new Integer(value));
-						} catch(NumberFormatException ex) {
-							throw new InvalidParameterException(title + ": Cannot parse value of '" + name + "' to an integer. \"" + token + "\"");
-						}
-					} else if(parameter.getParameterValueType() == ParameterValueType.BOOLEAN) {
-						parameter.setValue(Boolean.valueOf(value));
-					} else if(parameter.getParameterValueType() == ParameterValueType.STRING_ARRAY) {
-						if(SQUARE_BRAKET_OPEN.equals(value)) {
-							List<String> stringList = new ArrayList<String>();
-							boolean squareBraceClosed = false;
+					if(CURLY_BRAKET_OPEN.equals(value)) {
+						ParameterValue pv = new ParameterValue(name, ParameterValueType.PARAMETERS);
+						parameterValueList.add(pv);
+						
+						preparse(st, parameterValueList, CURLY_BRAKET_OPEN);
+					} else if(SQUARE_BRAKET_OPEN.equals(value)) {
+						ParameterValue pv = new ParameterArrayValue(name, ParameterValueType.STRING);
+						parameterValueList.add(pv);
 
-							while(st.hasMoreTokens()) {
-								token = st.nextToken();
-								value = token.trim();
-								
-								if(SQUARE_BRAKET_CLOSE.equals(value)) {
-									squareBraceClosed = true;
-									break;
-								}
-								
-								if(StringUtils.hasText(value)) {
-									stringList.add(value);
-								}
-							}
-							
-							if(!squareBraceClosed)
-								throw new InvalidParameterException(title + ": Cannot parse value of '" + name + "' to an array of strings. \"" + token + "\"");
-							
-							parameter.setValue(stringList.toArray(new String[stringList.size()]));
-						} else {
-							String[] stringArray = new String[] { value };
-							parameter.setValue(stringArray);
-						}
-					} else if(parameter.getParameterValueType() == ParameterValueType.PARAMETERS) {
-						if(CURLY_BRAKET_OPEN.equals(value)) {
-							AbstractParameters Parameters2 = (AbstractParameters)parameter.getParameters();
-							Parameters2.parse(st, true);
-						}
+						preparse(st, parameterValueList, SQUARE_BRAKET_OPEN);
+					} else {
+						ParameterValue pv = new ParameterValue(name, ParameterValueType.STRING);
+						parameterValueList.add(pv);
 					}
 				}
 			}
 		}
+		
+		if(openBraket != null) {
+			if(openBraket == CURLY_BRAKET_OPEN) {
+				throw new InvalidParameterException(title + ": Cannot parse value of '" + name + "' to an array of strings.");
+			} else if(openBraket == SQUARE_BRAKET_OPEN) {
+				throw new InvalidParameterException(title + ": Cannot parse value of '" + name + "' to an array of strings.");
+			}
+		}
+	}
+	
+	protected void parse(String plaintext) {
+		StringTokenizer st = new StringTokenizer(plaintext, DELIMITERS);
+
+		parse(st, null, null);
+	}
+	
+	protected void parse(StringTokenizer st, String openBraket, ParameterValue pv) {
+		String name = null;
+		String value = null;
+		
+		while(st.hasMoreTokens()) {
+			String token = st.nextToken();
+			
+			if(StringUtils.hasText(token)) {
+				token = token.trim();
+				
+				if(openBraket != null) {
+					if(openBraket == CURLY_BRAKET_OPEN && CURLY_BRAKET_CLOSE.equals(token) ||
+							openBraket == SQUARE_BRAKET_OPEN && SQUARE_BRAKET_CLOSE.equals(token))
+						return;
+				}
+				
+				if(openBraket == SQUARE_BRAKET_OPEN) {
+					value = token;
+				} else {
+					int index = token.indexOf(":");
+					
+					if(index == -1)
+						throw new InvalidParameterException(title + ": Cannot parse into name-value pair. \"" + token + "\"");
+					
+					name = token.substring(0, index).trim();
+					value = token.substring(index + 1).trim();
+					
+					pv = parameterValueMap.get(name);
+					
+					if(pv == null)
+						throw new InvalidParameterException(title + ": invalid parameter \"" + token + "\"");
+				}
+				
+				if(StringUtils.hasText(value)) {
+					if(pv.getParameterValueType() == ParameterValueType.PARAMETERS) {
+						AbstractParameters parameters2 = (AbstractParameters)pv.getParameters();
+						parameters2.parse(st, CURLY_BRAKET_OPEN, null);
+					} else if(pv.isArray() && SQUARE_BRAKET_OPEN.equals(value)) {
+						parse(st, SQUARE_BRAKET_OPEN, pv);
+					} else if(pv.getParameterValueType() == ParameterValueType.STRING) {
+						pv.setValue(value);
+					} else if(pv.getParameterValueType() == ParameterValueType.INTEGER) {
+						try {
+							pv.setValue(new Integer(value));
+						} catch(NumberFormatException ex) {
+							throw new InvalidParameterException(title + ": Cannot parse value of '" + name + "' to an integer. \"" + token + "\"");
+						}
+					} else if(pv.getParameterValueType() == ParameterValueType.BOOLEAN) {
+						pv.setValue(Boolean.valueOf(value));
+					}
+				}
+			}
+		}
+		
+		if(!preparsed && openBraket != null) {
+			if(openBraket == CURLY_BRAKET_OPEN) {
+				throw new InvalidParameterException(title + ": Cannot parse value of '" + name + "' to an array of strings.");
+			} else if(openBraket == SQUARE_BRAKET_OPEN) {
+				throw new InvalidParameterException(title + ": Cannot parse value of '" + name + "' to an array of strings.");
+			}
+		}
+		
 	}
 	
 }
