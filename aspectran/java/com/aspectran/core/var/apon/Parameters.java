@@ -17,18 +17,18 @@ public interface Parameters {
 	
 	public Parameters getParameters(String name);
 	
-	public Object getValue(ParameterValue Parameter);
+	public Object getValue(ParameterValue parameterValue);
 	
-	public String getString(ParameterValue Parameter);
+	public String getString(ParameterValue parameterValue);
 
-	public String getString(ParameterValue Parameter, String defaultValue);
+	public String getString(ParameterValue parameterValue, String defaultValue);
 	
-	public int getInt(ParameterValue Parameter, int defaultValue);
+	public int getInt(ParameterValue parameterValue, int defaultValue);
 	
-	public boolean getBoolean(ParameterValue Parameter, boolean defaultValue);
+	public boolean getBoolean(ParameterValue parameterValue, boolean defaultValue);
 
-	public String[] getStringArray(ParameterValue Parameter);
+	public String[] getStringArray(ParameterValue parameterValue);
 	
-	public Parameters getParameters(ParameterValue Parameter);
+	public Parameters getParameters(ParameterValue parameterValue);
 	
 }
