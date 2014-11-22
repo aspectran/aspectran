@@ -27,18 +27,25 @@ import com.aspectran.core.var.type.Type;
  * <p>Created: 2008. 03. 29 오후 3:47:00</p>
  */
 public final class ParameterValueType extends Type {
+
+	private static final String VALUE_TYPE_HINT_OPEN = "(";
 	
+	private static final String VALUE_TYPE_HINT_CLOSE = ")";
+
 	/** The "string" item type. */
 	public static final ParameterValueType STRING;
 
 	/** The "integer" item type. */
 	public static final ParameterValueType INTEGER;
 	
+	/** The "float" item type. */
+	public static final ParameterValueType FLOAT;
+	
+	/** The "double" item type. */
+	public static final ParameterValueType DOUBLE;
+	
 	/** The "boolean" item type. */
 	public static final ParameterValueType BOOLEAN;
-	
-	/** The "string array" item type. */
-	public static final ParameterValueType STRING_ARRAY;
 	
 	/** The "options" item type. */
 	protected static final ParameterValueType PARAMETERS;
@@ -48,15 +55,17 @@ public final class ParameterValueType extends Type {
 	static {
 		STRING = new ParameterValueType("string");
 		INTEGER = new ParameterValueType("integer");
+		FLOAT = new ParameterValueType("float");
+		DOUBLE = new ParameterValueType("double");
 		BOOLEAN = new ParameterValueType("boolean");
-		STRING_ARRAY = new ParameterValueType("stringArray");
-		PARAMETERS = new ParameterValueType("options");
+		PARAMETERS = new ParameterValueType("parameters");
 
 		types = new HashMap<String, ParameterValueType>();
 		types.put(STRING.toString(), STRING);
 		types.put(INTEGER.toString(), INTEGER);
+		types.put(FLOAT.toString(), FLOAT);
+		types.put(DOUBLE.toString(), DOUBLE);
 		types.put(BOOLEAN.toString(), BOOLEAN);
-		types.put(STRING_ARRAY.toString(), STRING_ARRAY);
 		types.put(PARAMETERS.toString(), PARAMETERS);
 	}
 
@@ -80,4 +89,22 @@ public final class ParameterValueType extends Type {
 	public static ParameterValueType valueOf(String type) {
 		return types.get(type);
 	}
+
+	public static ParameterValueType valueOfHint(String name) {
+		int hintStartIndex = name.indexOf(VALUE_TYPE_HINT_OPEN);
+		
+		if(hintStartIndex > 0) {
+			int hintEndIndex = name.indexOf(VALUE_TYPE_HINT_CLOSE);
+			
+			if(hintEndIndex > hintStartIndex) {
+				String typeHint = name.substring(hintStartIndex + 1, hintEndIndex);
+				
+				return valueOf(typeHint);
+				
+			}
+		}
+
+		return null;
+	}
+	
 }

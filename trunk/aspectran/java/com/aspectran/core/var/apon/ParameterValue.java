@@ -13,7 +13,9 @@ public class ParameterValue {
 	
 	private final boolean array;
 	
-	private final Parameters parameters;
+	private Parameters parameters;
+	
+	private List<Parameters> parametersList;
 	
 	public ParameterValue(String name, ParameterValueType parameterType) {
 		this(name, parameterType, false, null);
@@ -28,10 +30,9 @@ public class ParameterValue {
 		this.parameterValueType = parameterValueType;
 		this.array = array;
 		
-		if(parameterValueType == ParameterValueType.PARAMETERS)
+		if(parameterValueType == ParameterValueType.PARAMETERS) {
 			this.parameters = parameters;
-		else
-			this.parameters = null;
+		}
 	}
 
 	public Object getValue() {
@@ -47,6 +48,40 @@ public class ParameterValue {
 		}
 	}
 
+	public String getString() {
+		if(value == null)
+			return null;
+
+		if(array) {
+			StringBuilder sb = new StringBuilder();
+			
+			for(int i = 0; i < ((List<Object>)value).size(); i++) {
+				sb.append(((List<Object>)value).get(i).toString()).append("\n");
+			}
+			
+			return sb.toString();
+		} else {
+			return value.toString();
+		}
+	}
+	
+	public String[] getStringArray() {
+		if(value == null)
+			return null;
+		
+		if(array) {
+			String[] s = new String[((List<Object>)value).size()];
+			
+			for(int i = 0; i < s.length; i++) {
+				s[i] = ((List<Object>)value).get(i).toString();
+			}
+			
+			return s;
+		} else {
+			return new String[] { value.toString()};
+		}
+	}
+	
 	@SuppressWarnings("unchecked")
 	public void setValue(Object value) {
 		if(array) {
@@ -74,5 +109,35 @@ public class ParameterValue {
 	public Parameters getParameters() {
 		return parameters;
 	}
+
+	public void setParameters(Parameters parameters) {
+		if(array) {
+			addParameters(parameters);
+		} else {
+			this.parameters = parameters;
+		}
+	}
+
+	public List<Parameters> getParametersList() {
+		return parametersList;
+	}
+
+	public Parameters getParameters(int index) {
+		if(parametersList == null)
+			return null;
+		
+		return parametersList.get(index);
+	}
 	
+	public void setParametersList(List<Parameters> parametersList) {
+		this.parametersList = parametersList;
+	}
+
+	public void addParameters(Parameters parameters) {
+		if(parametersList == null)
+			parametersList = new ArrayList<Parameters>();
+		
+		parametersList.add(parameters);
+	}
+
 }
