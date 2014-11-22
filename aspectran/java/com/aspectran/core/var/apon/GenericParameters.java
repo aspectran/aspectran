@@ -1,10 +1,14 @@
 package com.aspectran.core.var.apon;
 
 
-public abstract class GenericParameters extends AbstractParameters {
+public class GenericParameters extends AbstractParameters {
 
-	protected GenericParameters(String title, String plaintext) {
+	public GenericParameters(String title, String plaintext) {
 		super(title, null, plaintext);
+	}
+
+	public GenericParameters(String title, ParameterValue[] parameterValues) {
+		super(title, parameterValues);
 	}
 
 }

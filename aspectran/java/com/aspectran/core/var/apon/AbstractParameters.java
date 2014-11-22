@@ -24,6 +24,8 @@ public abstract class AbstractParameters implements Parameters {
 	
 	private final String title;
 	
+	private final String plaintext;
+	
 	private boolean preparsed;
 	
 	protected AbstractParameters(String title, ParameterValue[] parameterValues) {
@@ -32,8 +34,8 @@ public abstract class AbstractParameters implements Parameters {
 
 	protected AbstractParameters(String title, ParameterValue[] parameterValues, String plaintext) {
 		this.title = title;
+		this.plaintext = plaintext;
 		
-		// pre parsing
 		if(parameterValues == null && plaintext != null) {
 			parameterValues = preparse(plaintext);
 		}
@@ -45,7 +47,7 @@ public abstract class AbstractParameters implements Parameters {
 		}
 
 		if(plaintext != null)
-			parse(plaintext);
+			valuelize(plaintext);
 	}
 
 	public Object getValue(String name) {
@@ -62,58 +64,77 @@ public abstract class AbstractParameters implements Parameters {
 	}
 	
 	public String getString(String name) {
-		Object o = getValue(name);
+		ParameterValue v = parameterValueMap.get(name);
 		
-		if(o == null)
+		if(v == null)
 			return null;
 		
-		return o.toString();
+		return v.getString();
 	}
 	
 	public String getString(String name, String defaultValue) {
-		String val = getString(name);
+		String s = getString(name);
 		
-		if(val == null)
+		if(s == null)
 			return defaultValue;
 		
-		return val;
+		return s;
 	}
 
-	public int getInt(String name, int defaultValue) {
-		ParameterValue o = parameterValueMap.get(name);
+	public String[] getStringArray(String name) {
+		ParameterValue v = parameterValueMap.get(name);
 		
-		if(o == null || o.getValue() == null || o.getParameterValueType() != ParameterValueType.INTEGER)
+		if(v == null)
+			return null;
+		
+		return (String[])v.getValues();
+	}
+	
+	public int getInt(String name) {
+		ParameterValue v = parameterValueMap.get(name);
+		
+		if(!isValidType(v, ParameterValueType.INTEGER))
+			throw new InvalidParameterException();
+		
+		return ((Integer)v.getValue()).intValue();
+	}
+	
+	public int getInt(String name, int defaultValue) {
+		ParameterValue v = parameterValueMap.get(name);
+		
+		if(!isValidType(v, ParameterValueType.INTEGER))
 			return defaultValue;
 		
-		return ((Integer)o.getValue()).intValue();
+		return ((Integer)v.getValue()).intValue();
+	}
+	
+	public boolean getBoolean(String name) {
+		ParameterValue v = parameterValueMap.get(name);
+		
+		if(!isValidType(v, ParameterValueType.BOOLEAN))
+			throw new InvalidParameterException();
+		
+		return ((Boolean)v.getValue()).booleanValue();
+		
 	}
 	
 	public boolean getBoolean(String name, boolean defaultValue) {
-		ParameterValue o = parameterValueMap.get(name);
+		ParameterValue v = parameterValueMap.get(name);
 		
-		if(o == null || o.getValue() == null || o.getParameterValueType() != ParameterValueType.BOOLEAN)
-			return defaultValue;
+		if(!isValidType(v, ParameterValueType.BOOLEAN))
+			throw new InvalidParameterException();
 		
-		return ((Boolean)o.getValue()).booleanValue();
+		return ((Boolean)v.getValue()).booleanValue();
 		
-	}
-	
-	public String[] getStringArray(String name) {
-		ParameterValue o = parameterValueMap.get(name);
-		
-		if(o == null)
-			return null;
-		
-		return (String[])o.getValue();
 	}
 	
 	public Parameters getParameters(String name) {
-		ParameterValue o = parameterValueMap.get(name);
+		ParameterValue v = parameterValueMap.get(name);
 		
-		if(o == null)
+		if(v == null)
 			return null;
 		
-		return (Parameters)o.getValue();
+		return (Parameters)v.getValue();
 	}
 	
 	public String getString(ParameterValue parameter) {
@@ -122,6 +143,10 @@ public abstract class AbstractParameters implements Parameters {
 	
 	public String getString(ParameterValue parameter, String defaultValue) {
 		return getString(parameter.getName(), defaultValue);
+	}
+
+	public String[] getStringArray(ParameterValue parameter) {
+		return getStringArray(parameter.getName());
 	}
 	
 	public int getInt(ParameterValue parameter, int defaultValue) {
@@ -132,30 +157,47 @@ public abstract class AbstractParameters implements Parameters {
 		return getBoolean(parameter.getName(), defaultValue);
 	}
 	
-	public String[] getStringArray(ParameterValue parameter) {
-		return getStringArray(parameter.getName());
-	}
-
 	public Parameters getParameters(ParameterValue parameter) {
 		return getParameters(parameter.getName());
 	}
 
 	public String toString() {
-		return "";
+		return plaintext;
+	}
+	
+	private boolean isValidType(ParameterValue v, ParameterValueType parameterValueType) {
+		if(v == null || v.getValue() == null || v.getParameterValueType() != parameterValueType)
+			return false;
+		
+		return true;
 	}
 	
 	protected ParameterValue[] preparse(String plaintext) {
 		StringTokenizer st = new StringTokenizer(plaintext, DELIMITERS);
-		List<ParameterValue> parameterValueList = new ArrayList<ParameterValue>();
 		
-		preparse(st, parameterValueList, null);
+		ParameterValue[] parameterValues = preparse(st, null);
 		
 		preparsed = true;
 		
-		return parameterValueList.toArray(new ParameterValue[parameterValueList.size()]);
+		return parameterValues;
 	}
 	
-	protected void preparse(StringTokenizer st, List<ParameterValue> parameterValueList, String openBraket) {
+	protected ParameterValue[] preparse(StringTokenizer st, ParameterValue parentParameterValue) {
+		List<ParameterValue> parameterValueList = new ArrayList<ParameterValue>();
+		
+		preparse(st, parameterValueList, parentParameterValue != null ? CURLY_BRAKET_OPEN : null, null);
+		
+		ParameterValue[] parameterValues = parameterValueList.toArray(new ParameterValue[parameterValueList.size()]);
+		
+		if(parentParameterValue != null) {
+			Parameters parameters = new GenericParameters(parentParameterValue.getName(), parameterValues);
+			parentParameterValue.setParameters(parameters);
+		}
+		
+		return parameterValues;
+	}
+	
+	protected void preparse(StringTokenizer st, List<ParameterValue> parameterValueList, String openBraket, ParameterValue parameterValue) {
 		String name = null;
 		String value = null;
 		
@@ -175,28 +217,38 @@ public abstract class AbstractParameters implements Parameters {
 					value = token;
 				} else {
 					int index = token.indexOf(":");
-	
+
 					if(index == -1)
 						throw new InvalidParameterException(title + ": Cannot parse into name-value pair. \"" + token + "\"");
-					
+
 					name = token.substring(0, index).trim();
 					value = token.substring(index + 1).trim();
 				}
 
 				if(StringUtils.hasText(value)) {
 					if(CURLY_BRAKET_OPEN.equals(value)) {
-						ParameterValue pv = new ParameterValue(name, ParameterValueType.PARAMETERS);
-						parameterValueList.add(pv);
+						if(openBraket == SQUARE_BRAKET_OPEN) {
+							preparse(st, parameterValue);
+						} else {
+							ParameterValue pv = new ParameterValue(name, ParameterValueType.PARAMETERS);
+							parameterValueList.add(pv);
+							preparse(st, pv);
+						}
+					} else if(openBraket != SQUARE_BRAKET_OPEN) {
+						ParameterValueType parameterValueType = ParameterValueType.valueOfHint(name);
 						
-						preparse(st, parameterValueList, CURLY_BRAKET_OPEN);
-					} else if(SQUARE_BRAKET_OPEN.equals(value)) {
-						ParameterValue pv = new ParameterArrayValue(name, ParameterValueType.STRING);
-						parameterValueList.add(pv);
+						if(parameterValueType == null)
+							parameterValueType = ParameterValueType.STRING;
 
-						preparse(st, parameterValueList, SQUARE_BRAKET_OPEN);
-					} else {
-						ParameterValue pv = new ParameterValue(name, ParameterValueType.STRING);
-						parameterValueList.add(pv);
+						if(SQUARE_BRAKET_OPEN.equals(value)) {
+							ParameterValue pv = new ParameterArrayValue(name, parameterValueType);
+							parameterValueList.add(pv);
+	
+							preparse(st, parameterValueList, SQUARE_BRAKET_OPEN, pv);
+						} else {
+							ParameterValue pv = new ParameterValue(name, parameterValueType);
+							parameterValueList.add(pv);
+						}
 					}
 				}
 			}
@@ -211,15 +263,17 @@ public abstract class AbstractParameters implements Parameters {
 		}
 	}
 	
-	protected void parse(String plaintext) {
+	protected void valuelize(String plaintext) {
 		StringTokenizer st = new StringTokenizer(plaintext, DELIMITERS);
 
-		parse(st, null, null);
+		valuelize(st, null, null);
 	}
 	
-	protected void parse(StringTokenizer st, String openBraket, ParameterValue pv) {
+	protected void valuelize(StringTokenizer st, String openBraket, ParameterValue parameterValue) {
 		String name = null;
 		String value = null;
+		
+		int curlyBraketCount = 0;
 		
 		while(st.hasMoreTokens()) {
 			String token = st.nextToken();
@@ -234,6 +288,7 @@ public abstract class AbstractParameters implements Parameters {
 				}
 				
 				if(openBraket == SQUARE_BRAKET_OPEN) {
+					name = parameterValue.getName();
 					value = token;
 				} else {
 					int index = token.indexOf(":");
@@ -244,28 +299,42 @@ public abstract class AbstractParameters implements Parameters {
 					name = token.substring(0, index).trim();
 					value = token.substring(index + 1).trim();
 					
-					pv = parameterValueMap.get(name);
+					parameterValue = parameterValueMap.get(name);
 					
-					if(pv == null)
+					if(parameterValue == null)
 						throw new InvalidParameterException(title + ": invalid parameter \"" + token + "\"");
 				}
 				
 				if(StringUtils.hasText(value)) {
-					if(pv.getParameterValueType() == ParameterValueType.PARAMETERS) {
-						AbstractParameters parameters2 = (AbstractParameters)pv.getParameters();
-						parameters2.parse(st, CURLY_BRAKET_OPEN, null);
-					} else if(pv.isArray() && SQUARE_BRAKET_OPEN.equals(value)) {
-						parse(st, SQUARE_BRAKET_OPEN, pv);
-					} else if(pv.getParameterValueType() == ParameterValueType.STRING) {
-						pv.setValue(value);
-					} else if(pv.getParameterValueType() == ParameterValueType.INTEGER) {
+					ParameterValueType parameterValueType = parameterValue.getParameterValueType();
+					
+					if(CURLY_BRAKET_OPEN.equals(value)) {
+						if(openBraket == SQUARE_BRAKET_OPEN) {
+							AbstractParameters parameters2 = (AbstractParameters)parameterValue.getParameters(curlyBraketCount++);
+							
+							if(parameters2 == null)
+								parameters2 = (AbstractParameters)parameterValue.getParameters();
+							
+							if(parameters2 == null)
+								throw new InvalidParameterException("Cannot parse parameter value of '" + name + "'. parameters is null.");
+							
+							parameters2.valuelize(st, CURLY_BRAKET_OPEN, null);
+						} else {
+							AbstractParameters parameters2 = (AbstractParameters)parameterValue.getParameters();
+							parameters2.valuelize(st, CURLY_BRAKET_OPEN, null);
+						}
+					} else if(SQUARE_BRAKET_OPEN.equals(value)) {
+						valuelize(st, SQUARE_BRAKET_OPEN, parameterValue);
+					} else if(parameterValueType == ParameterValueType.STRING) {
+						parameterValue.setValue(value);
+					} else if(parameterValueType == ParameterValueType.INTEGER) {
 						try {
-							pv.setValue(new Integer(value));
+							parameterValue.setValue(new Integer(value));
 						} catch(NumberFormatException ex) {
 							throw new InvalidParameterException(title + ": Cannot parse value of '" + name + "' to an integer. \"" + token + "\"");
 						}
-					} else if(pv.getParameterValueType() == ParameterValueType.BOOLEAN) {
-						pv.setValue(Boolean.valueOf(value));
+					} else if(parameterValueType == ParameterValueType.BOOLEAN) {
+						parameterValue.setValue(Boolean.valueOf(value));
 					}
 				}
 			}
