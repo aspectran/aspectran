@@ -21,7 +21,7 @@ package com.aspectran.core.var.apon;
  * 
  * <p>Created: 2008. 01. 07 오전 3:35:55</p>
  */
-public class InvalidParameterException extends RuntimeException {
+public class UnknownParameterException extends InvalidParameterException {
 	
 	/** @serial */
 	static final long serialVersionUID = 8751153209989630438L;
@@ -29,7 +29,7 @@ public class InvalidParameterException extends RuntimeException {
 	/**
 	 * Simple constructor.
 	 */
-	public InvalidParameterException() {
+	public UnknownParameterException() {
 	}
 
 	/**
@@ -37,8 +37,8 @@ public class InvalidParameterException extends RuntimeException {
 	 * 
 	 * @param msg A message to associate with the exception
 	 */
-	public InvalidParameterException(String msg) {
-		super(msg);
+	public UnknownParameterException(String parameterName) {
+		super("Unknown parameter \"" + parameterName + "\"");
 	}
 
 	/**
@@ -46,7 +46,7 @@ public class InvalidParameterException extends RuntimeException {
 	 * 
 	 * @param cause The real cause of the exception
 	 */
-	public InvalidParameterException(Throwable cause) {
+	public UnknownParameterException(Throwable cause) {
 		super(cause);
 	}
 
@@ -57,7 +57,7 @@ public class InvalidParameterException extends RuntimeException {
 	 * @param msg The message
 	 * @param cause The real cause of the exception
 	 */
-	public InvalidParameterException(String msg, Throwable cause) {
+	public UnknownParameterException(String msg, Throwable cause) {
 		super(msg, cause);
 	}
 }
