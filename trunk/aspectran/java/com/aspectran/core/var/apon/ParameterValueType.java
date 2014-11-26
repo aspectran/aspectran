@@ -35,8 +35,11 @@ public final class ParameterValueType extends Type {
 	/** The "string" item type. */
 	public static final ParameterValueType STRING;
 
-	/** The "integer" item type. */
+	/** The "int" item type. */
 	public static final ParameterValueType INTEGER;
+	
+	/** The "long" item type. */
+	public static final ParameterValueType LONG;
 	
 	/** The "float" item type. */
 	public static final ParameterValueType FLOAT;
@@ -55,6 +58,7 @@ public final class ParameterValueType extends Type {
 	static {
 		STRING = new ParameterValueType("string");
 		INTEGER = new ParameterValueType("integer");
+		LONG = new ParameterValueType("long");
 		FLOAT = new ParameterValueType("float");
 		DOUBLE = new ParameterValueType("double");
 		BOOLEAN = new ParameterValueType("boolean");
@@ -63,6 +67,7 @@ public final class ParameterValueType extends Type {
 		types = new HashMap<String, ParameterValueType>();
 		types.put(STRING.toString(), STRING);
 		types.put(INTEGER.toString(), INTEGER);
+		types.put(LONG.toString(), LONG);
 		types.put(FLOAT.toString(), FLOAT);
 		types.put(DOUBLE.toString(), DOUBLE);
 		types.put(BOOLEAN.toString(), BOOLEAN);

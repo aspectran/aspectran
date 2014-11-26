@@ -93,39 +93,37 @@ public abstract class AbstractParameters implements Parameters {
 	public int getInt(String name) {
 		ParameterValue v = parameterValueMap.get(name);
 		
-		if(!isValidType(v, ParameterValueType.INTEGER))
-			throw new InvalidParameterException();
-		
-		return ((Integer)v.getValue()).intValue();
+		if(v == null)
+			throw new UnknownParameterException(name);
+			
+		return v.getInt();
 	}
 	
 	public int getInt(String name, int defaultValue) {
 		ParameterValue v = parameterValueMap.get(name);
 		
-		if(!isValidType(v, ParameterValueType.INTEGER))
-			return defaultValue;
+		if(v == null)
+			throw new UnknownParameterException(name);
 		
-		return ((Integer)v.getValue()).intValue();
+		return v.getInt();
 	}
 	
 	public boolean getBoolean(String name) {
 		ParameterValue v = parameterValueMap.get(name);
 		
-		if(!isValidType(v, ParameterValueType.BOOLEAN))
-			throw new InvalidParameterException();
+		if(v == null)
+			throw new UnknownParameterException(name);
 		
-		return ((Boolean)v.getValue()).booleanValue();
-		
+		return v.getBoolean();
 	}
 	
 	public boolean getBoolean(String name, boolean defaultValue) {
 		ParameterValue v = parameterValueMap.get(name);
 		
-		if(!isValidType(v, ParameterValueType.BOOLEAN))
-			throw new InvalidParameterException();
+		if(v == null)
+			throw new UnknownParameterException(name);
 		
-		return ((Boolean)v.getValue()).booleanValue();
-		
+		return v.getBoolean();
 	}
 	
 	public Parameters getParameters(String name) {
