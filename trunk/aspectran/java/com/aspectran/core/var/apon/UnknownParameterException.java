@@ -24,7 +24,7 @@ package com.aspectran.core.var.apon;
 public class UnknownParameterException extends InvalidParameterException {
 	
 	/** @serial */
-	static final long serialVersionUID = 8751153209989630438L;
+	private static final long serialVersionUID = 6446576507072773588L;
 
 	/**
 	 * Simple constructor.
@@ -37,8 +37,8 @@ public class UnknownParameterException extends InvalidParameterException {
 	 * 
 	 * @param msg A message to associate with the exception
 	 */
-	public UnknownParameterException(String parameterName) {
-		super("Unknown parameter \"" + parameterName + "\"");
+	public UnknownParameterException(String parameterName, Parameters parameters) {
+		super("Unknown parameter \"" + parameterName + "\" from " + parameters);
 	}
 
 	/**

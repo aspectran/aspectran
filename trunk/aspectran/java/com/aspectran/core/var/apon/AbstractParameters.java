@@ -26,6 +26,8 @@ public abstract class AbstractParameters implements Parameters {
 	
 	private final String plaintext;
 	
+	private ParameterValue parent;
+	
 	private boolean preparsed;
 	
 	protected AbstractParameters(String title, ParameterValue[] parameterValues) {
@@ -42,12 +44,34 @@ public abstract class AbstractParameters implements Parameters {
 		
 		this.parameterValueMap = new HashMap<String, ParameterValue>();
 		
-		for(ParameterValue parameterValue : parameterValues) {
-			parameterValueMap.put(parameterValue.getName(), parameterValue);
+		if(parameterValues != null) {
+			for(ParameterValue parameterValue : parameterValues) {
+				parameterValue.setHolder(this);
+				parameterValueMap.put(parameterValue.getName(), parameterValue);
+			}
 		}
 
 		if(plaintext != null)
 			valuelize(plaintext);
+	}
+	
+	public ParameterValue getParent() {
+		return parent;
+	}
+
+	public void setParent(ParameterValue parent) {
+		this.parent = parent;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public String getQualifiedName() {
+		if(parent != null)
+			return parent.getQualifiedName();
+		
+		return title;
 	}
 
 	public Object getValue(String name) {
@@ -94,7 +118,7 @@ public abstract class AbstractParameters implements Parameters {
 		ParameterValue v = parameterValueMap.get(name);
 		
 		if(v == null)
-			throw new UnknownParameterException(name);
+			throw new UnknownParameterException(name, this);
 			
 		return v.getInt();
 	}
@@ -103,16 +127,106 @@ public abstract class AbstractParameters implements Parameters {
 		ParameterValue v = parameterValueMap.get(name);
 		
 		if(v == null)
-			throw new UnknownParameterException(name);
+			throw new UnknownParameterException(name, this);
 		
 		return v.getInt();
+	}
+	
+	public int[] getIntArray(String name) {
+		ParameterValue v = parameterValueMap.get(name);
+		
+		if(v == null)
+			throw new UnknownParameterException(name, this);
+		
+		return v.getIntArray();
+	}
+	
+	public long getLong(String name) {
+		ParameterValue v = parameterValueMap.get(name);
+		
+		if(v == null)
+			throw new UnknownParameterException(name, this);
+			
+		return v.getLong();
+	}
+	
+	public long getLong(String name, long defaultValue) {
+		ParameterValue v = parameterValueMap.get(name);
+		
+		if(v == null)
+			throw new UnknownParameterException(name, this);
+		
+		return v.getLong();
+	}
+	
+	public long[] getLongArray(String name) {
+		ParameterValue v = parameterValueMap.get(name);
+		
+		if(v == null)
+			throw new UnknownParameterException(name, this);
+		
+		return v.getLongArray();
+	}
+	
+	public float getFloat(String name) {
+		ParameterValue v = parameterValueMap.get(name);
+		
+		if(v == null)
+			throw new UnknownParameterException(name, this);
+			
+		return v.getFloat();
+	}
+	
+	public float getFloat(String name, float defaultValue) {
+		ParameterValue v = parameterValueMap.get(name);
+		
+		if(v == null)
+			throw new UnknownParameterException(name, this);
+		
+		return v.getFloat();
+	}
+
+	public float[] getFloatArray(String name) {
+		ParameterValue v = parameterValueMap.get(name);
+		
+		if(v == null)
+			throw new UnknownParameterException(name, this);
+		
+		return v.getFloatArray();
+	}
+	
+	public double getDouble(String name) {
+		ParameterValue v = parameterValueMap.get(name);
+		
+		if(v == null)
+			throw new UnknownParameterException(name, this);
+			
+		return v.getDouble();
+	}
+	
+	public double getDouble(String name, double defaultValue) {
+		ParameterValue v = parameterValueMap.get(name);
+		
+		if(v == null)
+			throw new UnknownParameterException(name, this);
+		
+		return v.getDouble();
+	}
+
+	public double[] getDoubleArray(String name) {
+		ParameterValue v = parameterValueMap.get(name);
+		
+		if(v == null)
+			throw new UnknownParameterException(name, this);
+		
+		return v.getDoubleArray();
 	}
 	
 	public boolean getBoolean(String name) {
 		ParameterValue v = parameterValueMap.get(name);
 		
 		if(v == null)
-			throw new UnknownParameterException(name);
+			throw new UnknownParameterException(name, this);
 		
 		return v.getBoolean();
 	}
@@ -121,53 +235,51 @@ public abstract class AbstractParameters implements Parameters {
 		ParameterValue v = parameterValueMap.get(name);
 		
 		if(v == null)
-			throw new UnknownParameterException(name);
+			throw new UnknownParameterException(name, this);
 		
 		return v.getBoolean();
+	}
+	
+	public boolean[] getBooleanArray(String name) {
+		ParameterValue v = parameterValueMap.get(name);
+		
+		if(v == null)
+			throw new UnknownParameterException(name, this);
+		
+		return v.getBooleanArray();
 	}
 	
 	public Parameters getParameters(String name) {
 		ParameterValue v = parameterValueMap.get(name);
 		
 		if(v == null)
-			return null;
+			throw new UnknownParameterException(name, this);
 		
 		return (Parameters)v.getValue();
 	}
 	
-	public String getString(ParameterValue parameter) {
-		return getString(parameter.getName());
+	public Parameters[] getParametersArray(String name) {
+		ParameterValue v = parameterValueMap.get(name);
+		
+		if(v == null)
+			throw new UnknownParameterException(name, this);
+		
+		return v.getParametersArray();
 	}
 	
-	public String getString(ParameterValue parameter, String defaultValue) {
-		return getString(parameter.getName(), defaultValue);
-	}
-
-	public String[] getStringArray(ParameterValue parameter) {
-		return getStringArray(parameter.getName());
-	}
-	
-	public int getInt(ParameterValue parameter, int defaultValue) {
-		return getInt(parameter.getName(), defaultValue);
-	}
-	
-	public boolean getBoolean(ParameterValue parameter, boolean defaultValue) {
-		return getBoolean(parameter.getName(), defaultValue);
-	}
-	
-	public Parameters getParameters(ParameterValue parameter) {
-		return getParameters(parameter.getName());
-	}
-
-	public String toString() {
+	public String toPlaintext() {
 		return plaintext;
 	}
 	
-	private boolean isValidType(ParameterValue v, ParameterValueType parameterValueType) {
-		if(v == null || v.getValue() == null || v.getParameterValueType() != parameterValueType)
-			return false;
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+
+		sb.append("{title=").append(title);
+		sb.append(", qualifiedName=").append(getQualifiedName());
+		sb.append("}");
 		
-		return true;
+		return sb.toString();
 	}
 	
 	protected ParameterValue[] preparse(String plaintext) {
@@ -189,7 +301,7 @@ public abstract class AbstractParameters implements Parameters {
 		
 		if(parentParameterValue != null) {
 			Parameters parameters = new GenericParameters(parentParameterValue.getName(), parameterValues);
-			parentParameterValue.setParameters(parameters);
+			parentParameterValue.setValue(parameters);
 		}
 		
 		return parameterValues;
