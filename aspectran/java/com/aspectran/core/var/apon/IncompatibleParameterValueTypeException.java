@@ -24,7 +24,7 @@ package com.aspectran.core.var.apon;
 public class IncompatibleParameterValueTypeException extends InvalidParameterException {
 	
 	/** @serial */
-	static final long serialVersionUID = 8751153209989630438L;
+	private static final long serialVersionUID = 1557599183505068164L;
 
 	/**
 	 * Simple constructor.
