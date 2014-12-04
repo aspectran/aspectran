@@ -38,6 +38,9 @@ public final class TransformType extends Type {
 	/** The "transform/json" transform type. */
 	public static final TransformType JSON_TRANSFORM;
 
+	/** The "transform/apon" transform type. */
+	public static final TransformType APON_TRANSFORM;
+	
 	/** The "transform/custom" transform type. */
 	public static final TransformType CUSTOM_TRANSFORM;
 	
@@ -48,6 +51,7 @@ public final class TransformType extends Type {
 		XSL_TRANSFORM = new TransformType("transform/xsl");
 		TEXT_TRANSFORM = new TransformType("transform/text");
 		JSON_TRANSFORM = new TransformType("transform/json");
+		APON_TRANSFORM = new TransformType("transform/apon");
 		CUSTOM_TRANSFORM = new TransformType("transform/custom");
 
 		types = new HashMap<String, TransformType>();
@@ -55,6 +59,7 @@ public final class TransformType extends Type {
 		types.put(XSL_TRANSFORM.toString(), XSL_TRANSFORM);
 		types.put(TEXT_TRANSFORM.toString(), TEXT_TRANSFORM);
 		types.put(JSON_TRANSFORM.toString(), JSON_TRANSFORM);
+		types.put(APON_TRANSFORM.toString(), APON_TRANSFORM);
 		types.put(CUSTOM_TRANSFORM.toString(), CUSTOM_TRANSFORM);
 	}
 
