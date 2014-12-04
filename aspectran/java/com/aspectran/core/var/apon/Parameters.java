@@ -8,6 +8,8 @@ public interface Parameters {
 	public ParameterValue getParent();
 	
 	public Object getTitle();
+
+	public String getQualifiedName();
 	
 	public String getString(String name);
 
