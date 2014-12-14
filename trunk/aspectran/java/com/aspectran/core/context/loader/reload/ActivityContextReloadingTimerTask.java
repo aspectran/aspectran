@@ -18,7 +18,7 @@ public class ActivityContextReloadingTimerTask extends TimerTask {
 	
 	public ActivityContextReloadingTimerTask(ActivityContextReloadable activityContextReloadable) {
 		this.activityContextReloadable = activityContextReloadable;
-		this.observingPaths = activityContextReloadable.getObservingPaths();
+		this.observingPaths = activityContextReloadable.getResources();
 		this.applicationBasePath = activityContextReloadable.getApplicationBasePath();
 	}
 	

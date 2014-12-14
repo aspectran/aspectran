@@ -15,11 +15,11 @@ public class WebActivityContextLoader extends ActivityContextLoader {
 		super(applicationAdapter, aspectranClassLoader);
 	}
 	
-	public ActivityContext load(String rootContext, String[] resourceLocations) {
+	public ActivityContext load(String rootContext) {
 		if(rootContext == null || rootContext.length() == 0)
 			rootContext = DEFAULT_ROOT_CONTEXT;
 		
-		return buildActivityContext(rootContext, resourceLocations);
+		return super.load(rootContext);
 	}
 	
 }
