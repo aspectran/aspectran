@@ -23,15 +23,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.context.reload.ActivityContextReloadingHandler;
-import com.aspectran.core.context.reload.ActivityContextReloadingTimer;
+import com.aspectran.core.context.loader.reload.ActivityContextReloadingHandler;
+import com.aspectran.core.context.loader.reload.ActivityContextReloadingTimer;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.var.option.Options;
 import com.aspectran.scheduler.AspectranScheduler;
 import com.aspectran.scheduler.quartz.QuartzAspectranScheduler;
 import com.aspectran.web.adapter.WebApplicationAdapter;
-import com.aspectran.web.startup.loader.ActivityContextLoader;
-import com.aspectran.web.startup.loader.ActivityContextLoadingObserver;
+import com.aspectran.web.startup.loader.WebActivityContextLoader;
+import com.aspectran.web.startup.loader.WebActivityContextLoadingObserver;
 import com.aspectran.web.startup.servlet.AutoReloadingOptions;
 
 public class AspectranSchedulerListener implements ServletContextListener {
@@ -102,7 +102,7 @@ public class AspectranSchedulerListener implements ServletContextListener {
 			}
 			
 			if(!autoReloadingStartup) {
-				ActivityContextLoader aspectranContextLoader = new ActivityContextLoader(servletContext, rootContext);
+				WebActivityContextLoader aspectranContextLoader = new WebActivityContextLoader(servletContext, rootContext);
 				activityContext = aspectranContextLoader.load();
 			} else {
 				if(observationInterval == -1) {
@@ -116,7 +116,7 @@ public class AspectranSchedulerListener implements ServletContextListener {
 					}
 				};
 				
-				ActivityContextLoadingObserver observer = new ActivityContextLoadingObserver(servletContext, rootContext);
+				WebActivityContextLoadingObserver observer = new WebActivityContextLoadingObserver(servletContext, rootContext);
 				activityContext = observer.load();
 				contextRefreshTimer = observer.startTimer(contextRefreshHandler, observingPaths, observationInterval);
 			}

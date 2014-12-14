@@ -1,7 +1,6 @@
-package com.aspectran.web.startup.loader;
+package com.aspectran.core.context;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -9,28 +8,34 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 
-import com.aspectran.core.context.ActivityContextClassLoader;
+public class AspectranClassLoader extends ClassLoader {
 
-public class WebActivityContextClassLoader extends ActivityContextClassLoader {
-
-	private static final String[] classPaths;
+	private String[] resourceLocations;
 	
-	static {
-		classPaths = new String[] {
-				"WEB-INF/",
-				"WEB-INF/classes/",
-				"WEB-INF/lib/"
-			};
+	public AspectranClassLoader() {
+		super(getDefaultClassLoader());
 	}
 	
-	private String root;
-	
-	public WebActivityContextClassLoader() {
-		super();
+	public AspectranClassLoader(String[] resourceLocations) {
+		this(getDefaultClassLoader(), resourceLocations);
 	}
 
-	public WebActivityContextClassLoader(ClassLoader parent) {
+	public AspectranClassLoader(ClassLoader parent, String[] resourceLocations) {
 		super(parent);
+		
+		this.resourceLocations = resourceLocations;
+	}
+
+	public String[] getResourceLocations() {
+		return resourceLocations;
+	}
+
+	public void setResourceLocations(String[] resourceLocations) {
+		this.resourceLocations = resourceLocations;
+	}
+	
+	public String[] getResources() {
+		return resourceLocations;
 	}
 
 	public Class<?> loadClass(String name) throws ClassNotFoundException {
@@ -69,8 +74,8 @@ public class WebActivityContextClassLoader extends ActivityContextClassLoader {
 	
 	public Class<?> findClass(String name) throws ClassNotFoundException {
 		try {
-			String path = root + File.separatorChar
-					+ name.replace('.', File.separatorChar) + ".class";
+			//String path = root + File.separatorChar + name.replace('.', File.separatorChar) + ".class";
+			String path = "";
 
 			FileInputStream file = new FileInputStream(path);
 			byte[] classByte = new byte[file.available()];
@@ -80,6 +85,20 @@ public class WebActivityContextClassLoader extends ActivityContextClassLoader {
 		} catch (IOException ex) {
 			throw new ClassNotFoundException();
 		}
+	}
+	
+	public static ClassLoader getDefaultClassLoader() {
+		ClassLoader cl = null;
+		
+		try {
+			cl = Thread.currentThread().getContextClassLoader();
+		} catch(Throwable ex) {
+		}
+
+		if(cl == null) {
+			cl = ActivityContext.class.getClassLoader();
+		}
+		return cl;
 	}
 
 }

@@ -43,19 +43,19 @@ public class XmlActivityContextBuilder extends AbstractActivityContextBuilder im
 		this.applicationAdapter = applicationAdapter;
 	}
 
-	public ActivityContext build(String contextConfigLocation) throws ActivityContextBuilderException {
+	public ActivityContext build(String rootContext) throws ActivityContextBuilderException {
 		try {
-			if(contextConfigLocation == null)
+			if(rootContext == null)
 				throw new RuntimeException("contextConfigLocation must not be null");
 			
 			ImportResource importResource = new ImportResource(getClassLoader());
 
-			if(contextConfigLocation.startsWith(ResourceUtils.CLASSPATH_URL_PREFIX)) {
-				String resource = contextConfigLocation.substring(ResourceUtils.CLASSPATH_URL_PREFIX.length());
+			if(rootContext.startsWith(ResourceUtils.CLASSPATH_URL_PREFIX)) {
+				String resource = rootContext.substring(ResourceUtils.CLASSPATH_URL_PREFIX.length());
 				
 				importResource.setResource(resource);
 			} else {
-				importResource.setFile(getApplicationBasePath(), contextConfigLocation);
+				importResource.setFile(getApplicationBasePath(), rootContext);
 			}
 			
 			return build(applicationAdapter, importResource);

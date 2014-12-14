@@ -16,6 +16,7 @@
 package com.aspectran.core.context.builder;
 
 import java.io.File;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -24,7 +25,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.aspectran.core.context.ActivityContextClassLoader;
+import com.aspectran.core.context.AspectranClassLoader;
 import com.aspectran.core.context.AspectranConstant;
 import com.aspectran.core.util.ArrayStack;
 import com.aspectran.core.var.rule.AspectRule;
@@ -74,7 +75,7 @@ public class ContextBuilderAssistant {
 			this.applicationBasePath = applicationBasePath;
 		
 		if(classLoader == null)
-			this.classLoader = new ActivityContextClassLoader();
+			this.classLoader = new AspectranClassLoader();
 		else
 			this.classLoader = classLoader;
 		
@@ -346,11 +347,16 @@ public class ContextBuilderAssistant {
 	 */
 	public File toRealPathFile(String filePath) {
 		File file;
-
-		if(applicationBasePath != null && !filePath.startsWith("/"))
-			file = new File(applicationBasePath, filePath);
-		else
-			file = new File(filePath);
+		
+		if(filePath.indexOf("://") != -1) {
+			URI uri = URI.create(filePath);
+			file = new File(uri);
+		} else {
+			if(applicationBasePath != null)
+				file = new File(applicationBasePath, filePath);
+			else
+				file = new File(filePath);
+		}
 		
 		return file;
 	}

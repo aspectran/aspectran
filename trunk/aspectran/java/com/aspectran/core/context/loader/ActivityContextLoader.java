@@ -1,53 +1,35 @@
-package com.aspectran.web.startup.loader;
-
-import javax.servlet.ServletContext;
+package com.aspectran.core.context.loader;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.ActivityContext;
+import com.aspectran.core.context.AspectranClassLoader;
 import com.aspectran.core.context.builder.ActivityContextBuilder;
 import com.aspectran.core.context.builder.XmlActivityContextBuilder;
-import com.aspectran.web.adapter.WebApplicationAdapter;
 
 public class ActivityContextLoader {
 
 	private final Logger logger = LoggerFactory.getLogger(ActivityContextLoader.class);
 
-	public static final String ROOT_CONTEXT_PARAM = "contextConfigLocation";
+	private final ApplicationAdapter applicationAdapter;
 	
-	private static final String DEFAULT_ROOT_CONTEXT = "WEB-INF/aspectran.xml";
-	
-	private WebApplicationAdapter applicationAdapter;
-	
-	private String rootContext;
-	
-	private ClassLoader classLoader;
+	private final AspectranClassLoader aspectranClassLoader;
 	
 	private ActivityContext activityContext;
-	
-	public ActivityContextLoader(ServletContext servletContext, String rootContext) {
-		this(servletContext, rootContext, null);
-	}
-	
-	public ActivityContextLoader(ServletContext servletContext, String rootContext, ClassLoader classLoader) {
-		this.applicationAdapter = WebApplicationAdapter.determineWebApplicationAdapter(servletContext);
 
-		if(rootContext == null)
-			this.rootContext = DEFAULT_ROOT_CONTEXT;
-		else
-			this.rootContext = rootContext;
-		
-		this.classLoader = classLoader;
-		
+	public ActivityContextLoader(ApplicationAdapter applicationAdapter, AspectranClassLoader aspectranClassLoader) {
+		this.applicationAdapter = applicationAdapter;
+		this.aspectranClassLoader = aspectranClassLoader;
 	}
 
-	protected ActivityContext build() {
+	protected ActivityContext buildActivityContext(String rootContext, String[] resourceLocations) {
 		try {
 			logger.info("build ActivityContext [" + rootContext + "]");
 			long startTime = System.currentTimeMillis();
 
-			ActivityContextBuilder builder = new XmlActivityContextBuilder(applicationAdapter, classLoader);
+			ActivityContextBuilder builder = new XmlActivityContextBuilder(applicationAdapter, aspectranClassLoader);
 			activityContext = builder.build(rootContext);
 			
 			long elapsedTime = System.currentTimeMillis() - startTime;
@@ -63,8 +45,8 @@ public class ActivityContextLoader {
 		}
 	}
 	
-	public ActivityContext load() {
-		return build();
+	public ActivityContext load(String rootContext, String[] resourceLocations) {
+		return buildActivityContext(rootContext, resourceLocations);
 	}
 	
 	public ActivityContext getActivityContext() {
@@ -73,6 +55,10 @@ public class ActivityContextLoader {
 
 	public String getApplicationBasePath() {
 		return applicationAdapter.getApplicationBasePath();
+	}
+	
+	public AspectranClassLoader getAspectranClassLoader() {
+		return aspectranClassLoader;
 	}
 	
 }
