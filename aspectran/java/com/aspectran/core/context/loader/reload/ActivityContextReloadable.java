@@ -1,4 +1,4 @@
-package com.aspectran.core.context.reload;
+package com.aspectran.core.context.loader.reload;
 
 import com.aspectran.core.context.ActivityContext;
 
@@ -9,7 +9,7 @@ public interface ActivityContextReloadable {
 
 	public ActivityContext getActivityContext();
 	
-	public String[] getObservingPaths();
+	public String[] getResources();
 	
 	public String getApplicationBasePath();
 	

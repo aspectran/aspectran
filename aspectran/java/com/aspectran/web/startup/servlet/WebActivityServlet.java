@@ -28,23 +28,27 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.ActivityContextException;
-import com.aspectran.core.context.reload.ActivityContextReloadingHandler;
-import com.aspectran.core.context.reload.ActivityContextReloadingTimer;
+import com.aspectran.core.context.AspectranClassLoader;
+import com.aspectran.core.context.config.AspectranConfig;
+import com.aspectran.core.context.config.AspectranContextAutoReloadingConfig;
+import com.aspectran.core.context.config.AspectranContextConfig;
+import com.aspectran.core.context.config.AspectranSchedulerConfig;
+import com.aspectran.core.context.loader.reload.ActivityContextReloadingHandler;
+import com.aspectran.core.context.loader.reload.ActivityContextReloadingTimer;
 import com.aspectran.core.context.translet.TransletNotFoundException;
-import com.aspectran.core.util.StringUtils;
-import com.aspectran.core.var.option.Options;
+import com.aspectran.core.var.apon.Parameters;
 import com.aspectran.scheduler.AspectranScheduler;
 import com.aspectran.scheduler.quartz.QuartzAspectranScheduler;
 import com.aspectran.web.activity.WebActivity;
 import com.aspectran.web.activity.WebActivityDefaultHandler;
 import com.aspectran.web.activity.WebActivityImpl;
 import com.aspectran.web.adapter.WebApplicationAdapter;
-import com.aspectran.web.startup.listener.AspectranSchedulerOptions;
-import com.aspectran.web.startup.loader.ActivityContextLoader;
-import com.aspectran.web.startup.loader.ActivityContextLoadingObserver;
-import com.aspectran.web.startup.loader.WebActivityContextClassLoader;
+import com.aspectran.web.startup.loader.WebActivityContextLoadingObserver;
+import com.aspectran.web.startup.loader.AspectranWebClassLoader;
+import com.aspectran.web.startup.loader.WebActivityContextLoader;
 
 /**
  * Servlet implementation class for Servlet: Translets.
@@ -61,6 +65,8 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 	private AspectranScheduler aspectranScheduler;
 	
 	private ActivityContextReloadingTimer contextReloadingTimer;
+	
+	private Parameters aspectranSchedulerConfig;
 	
 	/*
 	 * (non-Java-doc)
@@ -84,53 +90,50 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 		try {
 			ServletContext servletContext = getServletContext();
 			
-			String rootContext = getServletConfig().getInitParameter(ActivityContextLoader.ROOT_CONTEXT_PARAM);
-			String autoReloadingParam = getServletConfig().getInitParameter("autoReloading");
+			String aspectranConfigText = getServletConfig().getInitParameter(WebActivityContextLoader.ASPECTRAN_CONFIG_PARAM);
+			
+			Parameters aspectranConfig = new AspectranConfig(aspectranConfigText);
+			Parameters aspectranContextConfig = aspectranConfig.getParameters(AspectranConfig.context.getName());
+			Parameters aspectranContextAutoReloadingConfig = aspectranContextConfig.getParameters(AspectranContextConfig.autoReloading.getName());
+			Parameters aspectranSchedulerConfig = aspectranConfig.getParameters(AspectranConfig.scheduler.getName());
+			
+			String rootContext = aspectranContextConfig.getString(AspectranContextConfig.root.getName());
+			String[] resourceLocations = aspectranContextConfig.getStringArray(AspectranContextConfig.resources.getName());
+			int observationInterval = aspectranContextAutoReloadingConfig.getInt(AspectranContextAutoReloadingConfig.observationInterval.getName(), -1);
+			boolean autoReloadingStartup = aspectranContextAutoReloadingConfig.getBoolean(AspectranContextAutoReloadingConfig.startup.getName(), true);
 
-			/*
-			observingPath: [
-							classpath:**
-							WEB-INF/config/sqlmap/**
-						]
-						observationInterval: 5
-						startup: false
-			*/
-			Options autoReloadingOptions = new AutoReloadingOptions(autoReloadingParam);
-			String[] observingPaths = autoReloadingOptions.getStringArray(AutoReloadingOptions.observingPath);
-			int observationInterval = autoReloadingOptions.getInt(AutoReloadingOptions.observationInterval, -1);
-			boolean autoReloadingStartup = autoReloadingOptions.getBoolean(AspectranSchedulerOptions.startup, true);
-
-			if(autoReloadingStartup && observingPaths == null || observingPaths.length == 0)
+			if(autoReloadingStartup && resourceLocations == null || resourceLocations.length == 0)
 				autoReloadingStartup = false;
 			
-			if(StringUtils.hasText(rootContext)) {
-				ClassLoader classLoader = new WebActivityContextClassLoader();
-				
-				if(!autoReloadingStartup) {
-					ActivityContextLoader loader = new ActivityContextLoader(servletContext, rootContext, classLoader);
-					activityContext = loader.load();
-				} else {
-					if(observationInterval == -1) {
-						logger.info("Option 'observationInterval' is not specified, defaulting to 10 seconds.");
-						observationInterval = 10;
-					}
-
-					ActivityContextReloadingHandler contextReloadingHandler = new ActivityContextReloadingHandler() {
-						public void handle(ActivityContext newActivityContext) {
-							reload(newActivityContext);
-						}
-					};
-					
-					ActivityContextLoadingObserver observer = new ActivityContextLoadingObserver(servletContext, rootContext, classLoader);
-					activityContext = observer.load();
-					contextReloadingTimer = observer.startTimer(contextReloadingHandler, observingPaths, observationInterval);
+			AspectranClassLoader aspectranClassLoader = new AspectranWebClassLoader();
+			aspectranClassLoader.setResourceLocations(resourceLocations);
+			
+			ApplicationAdapter applicationAdapter = WebApplicationAdapter.determineWebApplicationAdapter(servletContext);
+			
+			if(!autoReloadingStartup) {
+				WebActivityContextLoader loader = new WebActivityContextLoader(applicationAdapter, aspectranClassLoader);
+				activityContext = loader.load(rootContext, resourceLocations);
+			} else {
+				if(observationInterval == -1) {
+					logger.info("[Aspectran Config] 'observationInterval' is not specified, defaulting to 10 seconds.");
+					observationInterval = 10;
 				}
+
+				ActivityContextReloadingHandler contextReloadingHandler = new ActivityContextReloadingHandler() {
+					public void handle(ActivityContext newActivityContext) {
+						reload(newActivityContext);
+					}
+				};
+				
+				WebActivityContextLoadingObserver observer = new WebActivityContextLoadingObserver(applicationAdapter, aspectranClassLoader);
+				activityContext = observer.load(rootContext, resourceLocations);
+				contextReloadingTimer = observer.startTimer(contextReloadingHandler, observationInterval);
 			}
 			
 			if(activityContext == null)
 				new ActivityContextException("ActivityContext is not loaded.");
 			
-			initScheduler();
+			initAspectranScheduler(aspectranSchedulerConfig);
 			
 		} catch(Exception e) {
 			logger.error("WebActivityServlet was failed to initialize: " + e.toString(), e);
@@ -138,28 +141,29 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 		}
 	}
 
-	protected void initScheduler() throws Exception {
-		String schedulerParam = getServletConfig().getInitParameter("scheduler");
+	protected void initAspectranScheduler(Parameters aspectranSchedulerConfig) throws Exception {
+		if(aspectranSchedulerConfig != null)
+			this.aspectranSchedulerConfig = aspectranSchedulerConfig;
 		
-		if(StringUtils.hasText(schedulerParam)) {
-			Options schedulerOptions = new SchedulerOptions(schedulerParam);
-			Integer startDelaySeconds = (Integer)schedulerOptions.getValue(SchedulerOptions.startDelaySeconds);
-			Boolean waitOnShutdown = (Boolean)schedulerOptions.getValue(SchedulerOptions.waitOnShutdown);
-			Boolean startup = (Boolean)schedulerOptions.getValue(SchedulerOptions.startup);
+		if(this.aspectranSchedulerConfig == null)
+			return;
+		
+		boolean startup = this.aspectranSchedulerConfig.getBoolean(AspectranSchedulerConfig.startup.getName());
+		int startDelaySeconds = this.aspectranSchedulerConfig.getInt(AspectranSchedulerConfig.startDelaySeconds.getName(), -1);
+		boolean waitOnShutdown = this.aspectranSchedulerConfig.getBoolean(AspectranSchedulerConfig.waitOnShutdown.getName());
+		
+		if(startup) {
+			aspectranScheduler = new QuartzAspectranScheduler(activityContext);
 			
-			if(!Boolean.FALSE.equals(startup)) {
-				aspectranScheduler = new QuartzAspectranScheduler(activityContext);
-				
-				if(Boolean.TRUE.equals(waitOnShutdown))
-					aspectranScheduler.setWaitOnShutdown(true);
-				
-				if(startDelaySeconds == null) {
-					logger.info("Scheduler option 'startDelaySeconds' is not specified. So defaulting to 5 seconds.");
-					startDelaySeconds = 5;
-				}
-				
-				aspectranScheduler.startup(startDelaySeconds);
+			if(waitOnShutdown)
+				aspectranScheduler.setWaitOnShutdown(true);
+			
+			if(startDelaySeconds == -1) {
+				logger.info("Scheduler option 'startDelaySeconds' is not specified. So defaulting to 5 seconds.");
+				startDelaySeconds = 5;
 			}
+			
+			aspectranScheduler.startup(startDelaySeconds);
 		}
 	}
 
@@ -275,7 +279,8 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 		activityContext = newActivityContext;
 		
 		try {
-			initScheduler();
+			if(this.aspectranSchedulerConfig != null)
+				initAspectranScheduler(null);
 		} catch(Exception e) {
 			logger.error("Scheduler was failed to initialize: " + e.toString(), e);
 		}

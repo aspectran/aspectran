@@ -45,7 +45,7 @@ public class JsonTransform extends AbstractTransform implements Responsible {
 	private final boolean debugEnabled = logger.isDebugEnabled();
 	
 	/**
-	 * Instantiates a new jSON transformer.
+	 * Instantiates a new JSON transformer.
 	 * 
 	 * @param transformRule the transform rule
 	 */
