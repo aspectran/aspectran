@@ -11,26 +11,26 @@
 		<welcome-file>index.jsp</welcome-file>
 	</welcome-file-list>
 	<context-param>
-		<param-name>aspectran:scheduler:config</param-name>
+		<param-name>aspectran:config</param-name>
 		<param-value>
-			classPathes: [
-				WEB-INF/*.xml
-				WEB-INF/classes/**/*.class
-				WEB-INF/classes/**/*.xml
-				WEB-INF/lib/*.jar
-			]
-			autoReloading: {
-				observingPath: [
-					classpath:**
-					WEB-INF/config/sqlmap/**
+			context: {
+				root: /WEB-INF/aspectran/example-aspectran.xml
+				resources: [
+					/WEB-INF/aspectran/*.xml
+					/WEB-INF/aspectran/classes/**/*.class
+					/WEB-INF/aspectran/classes/**/*.xml
+					/WEB-INF/aspectran/lib/*.jar
 				]
-				observationInterval: 5
+				autoReloading: {
+					observationInterval: 5
+					startup: false
+				}
+			}
+			scheduler: {
+				startDelaySeconds: 5
+				waitOnShutdown: true
 				startup: false
 			}
-			rootContext: classpath:aspectran/example-aspectran.xml
-			startDelaySeconds: 5
-			waitOnShutdown: true
-			startup: false
 		</param-value>
 	</context-param>
 	<listener>
@@ -40,7 +40,7 @@
 		<servlet-name>aspectran-example</servlet-name>
 		<servlet-class>com.aspectran.web.startup.servlet.WebActivityServlet</servlet-class>
 		<init-param>
-			<param-name>config</param-name>
+			<param-name>aspectran:config</param-name>
 			<param-value>
 				classPathes: [
 					WEB-INF/*.xml

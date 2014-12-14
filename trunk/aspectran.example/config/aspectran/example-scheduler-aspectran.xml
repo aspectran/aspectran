@@ -86,6 +86,9 @@
 	
 	<translet name="hello">
 		<request>
+			<apon for="attributes">
+				my_name_is: aspectran
+			</apon>
 			<attributes>
 				<item name="my_name_is">aspectran</item>
 			</attributes>
