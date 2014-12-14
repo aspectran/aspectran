@@ -8,14 +8,21 @@ import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.AspectranClassLoader;
 import com.aspectran.core.context.builder.ActivityContextBuilder;
 import com.aspectran.core.context.builder.XmlActivityContextBuilder;
+import com.aspectran.core.context.loader.reload.ActivityContextReloadable;
+import com.aspectran.core.context.loader.reload.ActivityContextReloadingHandler;
+import com.aspectran.core.context.loader.reload.ActivityContextReloadingTimer;
 
-public class ActivityContextLoader {
+public class ActivityContextLoader implements ActivityContextReloadable {
 
 	private final Logger logger = LoggerFactory.getLogger(ActivityContextLoader.class);
 
 	private final ApplicationAdapter applicationAdapter;
 	
 	private final AspectranClassLoader aspectranClassLoader;
+	
+	private ActivityContextReloadingHandler activityContextReloadingHandler;
+	
+	private String rootContext;
 	
 	private ActivityContext activityContext;
 
@@ -24,7 +31,7 @@ public class ActivityContextLoader {
 		this.aspectranClassLoader = aspectranClassLoader;
 	}
 
-	protected ActivityContext buildActivityContext(String rootContext, String[] resourceLocations) {
+	protected ActivityContext buildActivityContext() {
 		try {
 			logger.info("build ActivityContext [" + rootContext + "]");
 			long startTime = System.currentTimeMillis();
@@ -45,8 +52,19 @@ public class ActivityContextLoader {
 		}
 	}
 	
-	public ActivityContext load(String rootContext, String[] resourceLocations) {
-		return buildActivityContext(rootContext, resourceLocations);
+	public ActivityContext load(String rootContext) {
+		this.rootContext = rootContext;
+		
+		return buildActivityContext();
+	}
+	
+	public ActivityContext reload() {
+		ActivityContext newActivityContext = buildActivityContext();
+		
+		if(activityContextReloadingHandler != null)
+			activityContextReloadingHandler.handle(newActivityContext);
+		
+		return newActivityContext;
 	}
 	
 	public ActivityContext getActivityContext() {
@@ -59,6 +77,19 @@ public class ActivityContextLoader {
 	
 	public AspectranClassLoader getAspectranClassLoader() {
 		return aspectranClassLoader;
+	}
+	
+	public ActivityContextReloadingTimer startTimer(ActivityContextReloadingHandler activityContextReloadingHandler, int observationInterval) {
+		this.activityContextReloadingHandler = activityContextReloadingHandler;
+		
+		ActivityContextReloadingTimer timer = new ActivityContextReloadingTimer(this);
+		timer.start(observationInterval);
+		
+		return timer;
+	}
+	
+	public String[] getResources() {
+		return getAspectranClassLoader().getResources();
 	}
 	
 }
