@@ -11,6 +11,4 @@ public interface ActivityContextReloadable {
 	
 	public String[] getResources();
 	
-	public String getApplicationBasePath();
-	
 }

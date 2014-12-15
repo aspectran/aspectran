@@ -89,7 +89,10 @@ public class ActivityContextLoader implements ActivityContextReloadable {
 	}
 	
 	public String[] getResources() {
-		return getAspectranClassLoader().getResources();
+		if(aspectranClassLoader == null)
+			return null;
+		
+		return aspectranClassLoader.getResources();
 	}
 	
 }
