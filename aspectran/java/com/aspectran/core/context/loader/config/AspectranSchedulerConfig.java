@@ -1,4 +1,4 @@
-package com.aspectran.core.context.config;
+package com.aspectran.core.context.loader.config;
 
 import com.aspectran.core.var.apon.AbstractParameters;
 import com.aspectran.core.var.apon.InvalidParameterException;

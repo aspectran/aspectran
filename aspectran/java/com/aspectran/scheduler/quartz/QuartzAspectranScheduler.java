@@ -22,7 +22,7 @@ import org.slf4j.LoggerFactory;
 
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.AspectranConstant;
-import com.aspectran.core.var.option.Options;
+import com.aspectran.core.var.apon.Parameters;
 import com.aspectran.core.var.rule.AspectJobAdviceRule;
 import com.aspectran.core.var.rule.AspectRule;
 import com.aspectran.core.var.rule.AspectRuleMap;
@@ -171,13 +171,13 @@ public class QuartzAspectranScheduler implements AspectranScheduler {
 		Trigger trigger = null;
 
 		if(pointcutRule.getPointcutType() == PointcutType.SIMPLE_TRIGGER) {
-			Options options = pointcutRule.getSimpleScheduleOptions();
-			Integer withIntervalInMilliseconds = (Integer)options.getValue(SimpleScheduleOptions.withIntervalInMilliseconds);
-			Integer withIntervalInMinutes = (Integer)options.getValue(SimpleScheduleOptions.withIntervalInMinutes);
-			Integer withIntervalInSeconds = (Integer)options.getValue(SimpleScheduleOptions.withIntervalInSeconds);
-			Integer withIntervalInHours = (Integer)options.getValue(SimpleScheduleOptions.withIntervalInHours);
-			Integer withRepeatCount = (Integer)options.getValue(SimpleScheduleOptions.withRepeatCount);
-			Boolean repeatForever = (Boolean)options.getValue(SimpleScheduleOptions.repeatForever);
+			Parameters simpleScheduleParameters = pointcutRule.getSimpleScheduleParameters();
+			Integer withIntervalInMilliseconds = (Integer)simpleScheduleParameters.getValue(SimpleScheduleParameters.withIntervalInMilliseconds);
+			Integer withIntervalInMinutes = (Integer)simpleScheduleParameters.getValue(SimpleScheduleParameters.withIntervalInMinutes);
+			Integer withIntervalInSeconds = (Integer)simpleScheduleParameters.getValue(SimpleScheduleParameters.withIntervalInSeconds);
+			Integer withIntervalInHours = (Integer)simpleScheduleParameters.getValue(SimpleScheduleParameters.withIntervalInHours);
+			Integer withRepeatCount = (Integer)simpleScheduleParameters.getValue(SimpleScheduleParameters.withRepeatCount);
+			Boolean repeatForever = (Boolean)simpleScheduleParameters.getValue(SimpleScheduleParameters.repeatForever);
 
 			SimpleScheduleBuilder simpleSchedule = SimpleScheduleBuilder.simpleSchedule();
 

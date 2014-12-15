@@ -11,6 +11,10 @@ public interface Parameters {
 
 	public String getQualifiedName();
 	
+	public Object getValue(String name);
+
+	public Object getValue(ParameterValue parameter);
+	
 	public String getString(String name);
 
 	public String getString(String name, String defaultValue);

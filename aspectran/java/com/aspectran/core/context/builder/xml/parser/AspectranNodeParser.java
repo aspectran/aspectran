@@ -38,7 +38,7 @@ import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.wildcard.WildcardPattern;
 import com.aspectran.core.util.xml.Nodelet;
 import com.aspectran.core.util.xml.NodeletParser;
-import com.aspectran.core.var.option.Options;
+import com.aspectran.core.var.apon.Parameters;
 import com.aspectran.core.var.rule.AspectJobAdviceRule;
 import com.aspectran.core.var.rule.AspectRule;
 import com.aspectran.core.var.rule.BeanRule;
@@ -52,14 +52,14 @@ import com.aspectran.core.var.rule.ResponseRule;
 import com.aspectran.core.var.rule.SettingsAdviceRule;
 import com.aspectran.core.var.rule.TransletRule;
 import com.aspectran.core.var.type.AspectAdviceType;
+import com.aspectran.core.var.type.AspectTargetType;
 import com.aspectran.core.var.type.DefaultSettingType;
 import com.aspectran.core.var.type.JoinpointScopeType;
-import com.aspectran.core.var.type.AspectTargetType;
 import com.aspectran.core.var.type.PointcutPatternOperationType;
 import com.aspectran.core.var.type.PointcutType;
 import com.aspectran.core.var.type.RequestMethodType;
 import com.aspectran.core.var.type.ScopeType;
-import com.aspectran.scheduler.quartz.SimpleScheduleOptions;
+import com.aspectran.scheduler.quartz.SimpleScheduleParameters;
 
 /**
  * Translet Map Parser.
@@ -311,8 +311,8 @@ public class AspectranNodeParser {
 				pointcutRule.setPatternString(text);
 				
 				if(pointcutType == PointcutType.SIMPLE_TRIGGER) {
-					Options options = new SimpleScheduleOptions(pointcutRule.getPatternString());
-					pointcutRule.setSimpleScheduleOptions(options);
+					Parameters simpleScheduleParameters = new SimpleScheduleParameters(pointcutRule.getPatternString());
+					pointcutRule.setSimpleScheduleParameters(simpleScheduleParameters);
 				}
 				
 				aspectRule.setPointcutRule(pointcutRule);
