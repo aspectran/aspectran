@@ -4,30 +4,32 @@ import java.util.TimerTask;
 
 import com.aspectran.core.context.ActivityContext;
 
-
 public class ActivityContextReloadingTimerTask extends TimerTask {
 
 	private ActivityContextReloadable activityContextReloadable;
 	
-	private String[] observingPaths;
-	
-	private String applicationBasePath;
-	
+	private String[] resources;
 	
 	private boolean modified = false;
 	
 	public ActivityContextReloadingTimerTask(ActivityContextReloadable activityContextReloadable) {
 		this.activityContextReloadable = activityContextReloadable;
-		this.observingPaths = activityContextReloadable.getResources();
-		this.applicationBasePath = activityContextReloadable.getApplicationBasePath();
+		this.resources = activityContextReloadable.getResources();
 	}
 	
 	public void run() {
-		if(modified) {
-			ActivityContext newActivityContext = activityContextReloadable.reload();
+		if(resources == null)
+			return;
+		
+		for(String resource : resources) {
+			modified = true;
 		}
 		
-		modified = false;
+		if(modified) {
+			ActivityContext newActivityContext = activityContextReloadable.reload();
+			modified = false;
+		}
+		
 	}
 
 }
