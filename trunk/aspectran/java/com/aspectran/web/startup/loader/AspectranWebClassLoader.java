@@ -1,6 +1,6 @@
 package com.aspectran.web.startup.loader;
 
-import com.aspectran.core.context.AspectranClassLoader;
+import com.aspectran.core.context.loader.AspectranClassLoader;
 
 public class AspectranWebClassLoader extends AspectranClassLoader {
 

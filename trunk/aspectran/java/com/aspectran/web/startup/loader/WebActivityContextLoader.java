@@ -2,8 +2,8 @@ package com.aspectran.web.startup.loader;
 
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.context.AspectranClassLoader;
 import com.aspectran.core.context.loader.ActivityContextLoader;
+import com.aspectran.core.context.loader.AspectranClassLoader;
 
 public class WebActivityContextLoader extends ActivityContextLoader {
 

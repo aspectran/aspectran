@@ -1,16 +1,27 @@
-package com.aspectran.core.context;
+package com.aspectran.core.context.loader;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.List;
+import java.util.Map;
+
+import com.aspectran.core.context.ActivityContext;
 
 public class AspectranClassLoader extends ClassLoader {
 
 	private String[] resourceLocations;
+
+	private Map<String, List<String>> resourceLocationMap;
+	
+	private URI[] resources;
 	
 	public AspectranClassLoader() {
 		super(getDefaultClassLoader());
@@ -38,6 +49,20 @@ public class AspectranClassLoader extends ClassLoader {
 		return resourceLocations;
 	}
 
+	public Enumeration<URL> getResources(String name) {
+		List<String> list = new ArrayList<String>();
+		
+		for(URI resource : resources) {
+			if(resource.startsWith(name)) {
+				list.add(resource);
+			}
+		}
+		
+		
+		
+		return null;
+	}
+	
 	public Class<?> loadClass(String name) throws ClassNotFoundException {
         if(!"reflection.MyObject".equals(name))
                 return super.loadClass(name);
