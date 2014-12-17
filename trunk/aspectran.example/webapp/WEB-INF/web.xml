@@ -16,10 +16,9 @@
 			context: {
 				root: /WEB-INF/aspectran/example-aspectran.xml
 				resources: [
-					/WEB-INF/aspectran/*.xml
-					/WEB-INF/aspectran/classes/**/*.class
-					/WEB-INF/aspectran/classes/**/*.xml
-					/WEB-INF/aspectran/lib/*.jar
+					/WEB-INF/aspectran
+					/WEB-INF/aspectran/classes
+					/WEB-INF/aspectran/lib
 				]
 				autoReloading: {
 					observationInterval: 5
