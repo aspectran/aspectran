@@ -15,6 +15,7 @@ import java.util.jar.JarFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.aspectran.core.context.loader.AspectranClassLoader;
 import com.aspectran.core.util.ClassUtils;
 import com.aspectran.core.util.ResourceUtils;
 import com.aspectran.core.util.wildcard.WildcardMatcher;
@@ -29,13 +30,17 @@ public class BeanClassScanner {
 
 	private final char BEAN_ID_WILDCARD_DELIMITER = '*';
 	
-	private final ClassLoader classLoader = ClassUtils.getDefaultClassLoader();
+	private final ClassLoader classLoader;
 
 	private final String beanIdPrefix;
 
 	private final String beanIdSuffix;
 	
 	public BeanClassScanner(String beanIdPattern) {
+		this(beanIdPattern, new AspectranClassLoader());
+	}
+	
+	public BeanClassScanner(String beanIdPattern, ClassLoader classLoader) {
 		int wildcardStartIndex = beanIdPattern.indexOf(BEAN_ID_WILDCARD_DELIMITER);
 		
 		if(wildcardStartIndex == -1) {
@@ -52,6 +57,8 @@ public class BeanClassScanner {
 			else
 				this.beanIdSuffix = beanIdPattern.substring(wildcardStartIndex + 1);
 		}
+		
+		this.classLoader = classLoader;
 		
 		//System.out.println("beanIdPrefix: " + beanIdPrefix);
 		//System.out.println("beanIdSuffix: " + beanIdSuffix);

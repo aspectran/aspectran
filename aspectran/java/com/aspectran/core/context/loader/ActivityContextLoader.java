@@ -5,7 +5,6 @@ import org.slf4j.LoggerFactory;
 
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.context.AspectranClassLoader;
 import com.aspectran.core.context.builder.ActivityContextBuilder;
 import com.aspectran.core.context.builder.XmlActivityContextBuilder;
 import com.aspectran.core.context.loader.reload.ActivityContextReloadable;

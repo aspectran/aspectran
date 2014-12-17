@@ -24,9 +24,9 @@ import org.slf4j.LoggerFactory;
 
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.context.AspectranClassLoader;
 import com.aspectran.core.context.loader.ActivityContextLoader;
 import com.aspectran.core.context.loader.ActivityContextLoadingManager;
+import com.aspectran.core.context.loader.AspectranClassLoader;
 import com.aspectran.core.context.loader.config.AspectranConfig;
 import com.aspectran.web.adapter.WebApplicationAdapter;
 import com.aspectran.web.startup.loader.AspectranWebClassLoader;

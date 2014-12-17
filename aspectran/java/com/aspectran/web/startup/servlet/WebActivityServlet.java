@@ -30,9 +30,9 @@ import org.slf4j.LoggerFactory;
 
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.context.AspectranClassLoader;
 import com.aspectran.core.context.loader.ActivityContextLoader;
 import com.aspectran.core.context.loader.ActivityContextLoadingManager;
+import com.aspectran.core.context.loader.AspectranClassLoader;
 import com.aspectran.core.context.loader.config.AspectranConfig;
 import com.aspectran.core.context.translet.TransletNotFoundException;
 import com.aspectran.web.activity.WebActivity;

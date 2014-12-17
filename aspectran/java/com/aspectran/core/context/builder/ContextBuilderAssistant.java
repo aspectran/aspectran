@@ -25,8 +25,8 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.aspectran.core.context.AspectranClassLoader;
 import com.aspectran.core.context.AspectranConstant;
+import com.aspectran.core.context.loader.AspectranClassLoader;
 import com.aspectran.core.util.ArrayStack;
 import com.aspectran.core.var.rule.AspectRule;
 import com.aspectran.core.var.rule.AspectRuleMap;

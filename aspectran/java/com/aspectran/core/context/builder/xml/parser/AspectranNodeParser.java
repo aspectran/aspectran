@@ -717,7 +717,7 @@ public class AspectranNodeParser {
 				if(!WildcardPattern.hasWildcards(className)) {
 					beanClass = assistant.getClassLoader().loadClass(className);
 				} else {
-					BeanClassScanner scanner = new BeanClassScanner(id);
+					BeanClassScanner scanner = new BeanClassScanner(id, assistant.getClassLoader());
 					beanClassMap = scanner.scanClass(className);
 				}
 				
