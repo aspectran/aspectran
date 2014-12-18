@@ -58,6 +58,8 @@ public class ActivityContextLoader implements ActivityContextReloadable {
 	}
 	
 	public ActivityContext reload() {
+		aspectranClassLoader.reset();
+		
 		ActivityContext newActivityContext = buildActivityContext();
 		
 		if(activityContextReloadingHandler != null)

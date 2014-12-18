@@ -51,7 +51,7 @@ public class ActivityContextLoadingManager {
 			
 			AspectranClassLoader aspectranClassLoader = activityContextLoader.getAspectranClassLoader();
 			
-			if(activityContextLoader != null)
+			if(aspectranClassLoader != null && resourceLocations == null || resourceLocations.length == 0)
 				aspectranClassLoader.setResourceLocations(resourceLocations);
 			
 			if(!autoReloadingStartup) {

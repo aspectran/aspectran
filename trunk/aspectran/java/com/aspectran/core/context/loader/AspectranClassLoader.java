@@ -11,7 +11,6 @@ import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
-import java.util.Map;
 
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.loader.resource.ResourceManager;
@@ -20,7 +19,7 @@ public class AspectranClassLoader extends ClassLoader {
 
 	private String[] resourceLocations;
 	
-	private ResourceManager[] resourceManagers;
+	private ResourceManager resourceManager;
 
 	private URI[] resources;
 	
@@ -29,10 +28,10 @@ public class AspectranClassLoader extends ClassLoader {
 	}
 	
 	public AspectranClassLoader(String[] resourceLocations) {
-		this(getDefaultClassLoader(), resourceLocations);
+		this(resourceLocations, getDefaultClassLoader());
 	}
 
-	public AspectranClassLoader(ClassLoader parent, String[] resourceLocations) {
+	public AspectranClassLoader(String[] resourceLocations, ClassLoader parent) {
 		super(parent);
 		
 		setResourceLocations(resourceLocations);
@@ -43,25 +42,46 @@ public class AspectranClassLoader extends ClassLoader {
 	}
 
 	public void setResourceLocations(String[] resourceLocations) {
-		resourceManagers = new ResourceManager[resourceLocations.length];
-		
-		for(int i = 0; i < resourceLocations.length; i++) {
-			ResourceManager rm = new ResourceManager(resourceLocations[i]);
-			resourceManagers[i] = rm;
+		synchronized(this) {
+			unload();
+			
+			ResourceManager rm = null;
+			
+			for(int i = 0; i < resourceLocations.length; i++) {
+				rm = new ResourceManager(resourceLocations[i], rm);
+			}
+			
+			resourceManager = rm;
+		}
+	}
+	
+	public void reset() {
+		setResourceLocations(resourceLocations);
+	}
+	
+	public void unload() {
+		synchronized(this) {
+			if(resourceManager != null) {
+				resourceManager.release();
+				resourceManager = null;
+			}
 		}
 	}
 	
 	public String[] getResources() {
-		return resourceLocations;
+		if(resourceManager == null)
+			return null;
+		
+		return resourceManager.getResources();
 	}
 
 	public Enumeration<URL> getResources(String name) {
 		List<String> list = new ArrayList<String>();
 		
 		for(URI resource : resources) {
-			if(resource.startsWith(name)) {
-				list.add(resource);
-			}
+//			if(resource.startsWith(name)) {
+//				list.add(resource);
+//			}
 		}
 		
 		

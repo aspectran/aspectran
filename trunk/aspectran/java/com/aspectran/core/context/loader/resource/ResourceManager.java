@@ -15,7 +15,12 @@
  */
 package com.aspectran.core.context.loader.resource;
 
+import java.io.File;
+import java.net.URI;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.List;
 import java.util.Map;
 
 
@@ -24,6 +29,8 @@ import java.util.Map;
  */
 public class ResourceManager {
 
+	private ResourceManager parent;
+	
 	private String resourceLocation;
 	
 	private Map<String, URL> resourceCache;
@@ -31,12 +38,59 @@ public class ResourceManager {
 	private Map<String, Class<?>> classCache;
 	
 	public ResourceManager(String resourceLocation) {
+		this(resourceLocation, null);
+	}
+	
+	public ResourceManager(String resourceLocation, ResourceManager parent) {
+		File f = new File(resourceLocation);
 		
+		if(!f.isDirectory())
+			throw new InvalidResourceException("invalid resource directory name: " + resourceLocation);
 		
+		this.parent = parent;
 		this.resourceLocation = resourceLocation;
 	}
 	
-	public getResources
+	public Enumeration<URL> getResources() {
+		Enumeration localEnumeration = getBootstrapClassPath().getResources(paramString);
+		return new Enumeration() {
+
+			@Override
+			public boolean hasMoreElements() {
+				return false;
+			}
+
+			@Override
+			public Object nextElement() {
+				return null;
+			}
+			
+		};
+	}
 	
+	public Enumeration<URL> getResources(String name) {
+		List<String> list = new ArrayList<String>();
+		
+		for(URI resource : resources) {
+//			if(resource.startsWith(name)) {
+//				list.add(resource);
+//			}
+		}
+		
+		
+		
+		return null;
+	}
 	
+	public void release() {
+		if(resourceCache != null) {
+			resourceCache.clear();
+			resourceCache = null;
+		}
+
+		if(classCache != null) {
+			classCache.clear();
+			classCache = null;
+		}
+	}
 }
