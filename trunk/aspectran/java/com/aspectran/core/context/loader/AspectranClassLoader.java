@@ -14,13 +14,14 @@ import java.util.List;
 import java.util.Map;
 
 import com.aspectran.core.context.ActivityContext;
+import com.aspectran.core.context.loader.resource.ResourceManager;
 
 public class AspectranClassLoader extends ClassLoader {
 
 	private String[] resourceLocations;
-
-	private Map<String, List<String>> resourceLocationMap;
 	
+	private ResourceManager[] resourceManagers;
+
 	private URI[] resources;
 	
 	public AspectranClassLoader() {
@@ -34,7 +35,7 @@ public class AspectranClassLoader extends ClassLoader {
 	public AspectranClassLoader(ClassLoader parent, String[] resourceLocations) {
 		super(parent);
 		
-		this.resourceLocations = resourceLocations;
+		setResourceLocations(resourceLocations);
 	}
 
 	public String[] getResourceLocations() {
@@ -42,7 +43,12 @@ public class AspectranClassLoader extends ClassLoader {
 	}
 
 	public void setResourceLocations(String[] resourceLocations) {
-		this.resourceLocations = resourceLocations;
+		resourceManagers = new ResourceManager[resourceLocations.length];
+		
+		for(int i = 0; i < resourceLocations.length; i++) {
+			ResourceManager rm = new ResourceManager(resourceLocations[i]);
+			resourceManagers[i] = rm;
+		}
 	}
 	
 	public String[] getResources() {
