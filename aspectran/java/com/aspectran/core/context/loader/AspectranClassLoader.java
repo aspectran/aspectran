@@ -5,12 +5,9 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
-import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.List;
 
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.loader.resource.ResourceManager;
@@ -21,8 +18,6 @@ public class AspectranClassLoader extends ClassLoader {
 	
 	private ResourceManager resourceManager;
 
-	private URI[] resources;
-	
 	public AspectranClassLoader() {
 		super(getDefaultClassLoader());
 	}
@@ -43,7 +38,7 @@ public class AspectranClassLoader extends ClassLoader {
 
 	public void setResourceLocations(String[] resourceLocations) {
 		synchronized(this) {
-			unload();
+			destroy();
 			
 			ResourceManager rm = null;
 			
@@ -51,7 +46,8 @@ public class AspectranClassLoader extends ClassLoader {
 				rm = new ResourceManager(resourceLocations[i], rm);
 			}
 			
-			resourceManager = rm;
+			this.resourceManager = rm;
+			this.resourceLocations = resourceLocations;
 		}
 	}
 	
@@ -59,7 +55,7 @@ public class AspectranClassLoader extends ClassLoader {
 		setResourceLocations(resourceLocations);
 	}
 	
-	public void unload() {
+	public void destroy() {
 		synchronized(this) {
 			if(resourceManager != null) {
 				resourceManager.release();
@@ -68,7 +64,7 @@ public class AspectranClassLoader extends ClassLoader {
 		}
 	}
 	
-	public String[] getResources() {
+	public Enumeration<URL> getResources() {
 		if(resourceManager == null)
 			return null;
 		
@@ -76,17 +72,10 @@ public class AspectranClassLoader extends ClassLoader {
 	}
 
 	public Enumeration<URL> getResources(String name) {
-		List<String> list = new ArrayList<String>();
+		if(resourceManager == null)
+			return null;
 		
-		for(URI resource : resources) {
-//			if(resource.startsWith(name)) {
-//				list.add(resource);
-//			}
-		}
-		
-		
-		
-		return null;
+		return resourceManager.getResources(name);
 	}
 	
 	public Class<?> loadClass(String name) throws ClassNotFoundException {
