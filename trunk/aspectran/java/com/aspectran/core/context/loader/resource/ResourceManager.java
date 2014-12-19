@@ -16,12 +16,13 @@
 package com.aspectran.core.context.loader.resource;
 
 import java.io.File;
-import java.net.URI;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 
 /**
@@ -31,16 +32,20 @@ public class ResourceManager {
 
 	private ResourceManager parent;
 	
-	private String resourceLocation;
+	private final String resourceLocation;
 	
-	private Map<String, URL> resourceCache;
+	private final Map<String, URL> resourcePool = new LinkedHashMap<String, URL>();
 	
-	private Map<String, Class<?>> classCache;
+	private final Map<String, Class<?>> classPool = new HashMap<String, Class<?>>();
 	
 	public ResourceManager(String resourceLocation) {
 		this(resourceLocation, null);
 	}
 	
+	protected String getResourceLocation() {
+		return resourceLocation;
+	}
+
 	public ResourceManager(String resourceLocation, ResourceManager parent) {
 		File f = new File(resourceLocation);
 		
@@ -52,45 +57,77 @@ public class ResourceManager {
 	}
 	
 	public Enumeration<URL> getResources() {
-		Enumeration localEnumeration = getBootstrapClassPath().getResources(paramString);
-		return new Enumeration() {
-
-			@Override
+		final Enumeration<URL> parentResources = (parent != null) ? parent.getResources() : null;
+		final Iterator<URL> currentResources = resourcePool.values().iterator();
+		
+		return new Enumeration<URL>() {
 			public boolean hasMoreElements() {
-				return false;
+				if(parentResources != null && parentResources.hasMoreElements())
+					return true;
+				
+				return currentResources.hasNext();
 			}
 
-			@Override
-			public Object nextElement() {
-				return null;
+			public URL nextElement() {
+				if(parentResources != null && parentResources.hasMoreElements())
+					return parentResources.nextElement();
+				
+				return currentResources.next();
 			}
-			
 		};
 	}
 	
 	public Enumeration<URL> getResources(String name) {
-		List<String> list = new ArrayList<String>();
+		final String filterName = name;
+		final Enumeration<URL> parentResources = (parent != null) ? parent.getResources(name) : null;
+		final Iterator<Map.Entry<String, URL>> currentResources = resourcePool.entrySet().iterator();
 		
-		for(URI resource : resources) {
-//			if(resource.startsWith(name)) {
-//				list.add(resource);
-//			}
-		}
-		
-		
-		
-		return null;
+		return new Enumeration<URL>() {
+			private Map.Entry<String, URL> entry;
+			
+			public synchronized boolean hasMoreElements() {
+				if(entry != null)
+					return true;
+				
+				if(parentResources != null && parentResources.hasMoreElements())
+					return true;
+
+				while(currentResources.hasNext()) {
+					Map.Entry<String, URL> entry2 = currentResources.next();
+					
+					if(entry2.getKey().startsWith(filterName)) {
+						entry = entry2;
+						return true;
+					}					
+				}
+				
+				return false;
+			}
+
+			public synchronized URL nextElement() {
+				if(entry == null) {
+					if(parentResources != null && parentResources.hasMoreElements())
+						return parentResources.nextElement();
+					
+					if(!hasMoreElements())
+						throw new NoSuchElementException();
+				}
+
+				URL url = entry.getValue();
+				entry = null;
+
+				return url;
+			}
+		};
 	}
 	
 	public void release() {
-		if(resourceCache != null) {
-			resourceCache.clear();
-			resourceCache = null;
+		if(resourcePool != null) {
+			resourcePool.clear();
 		}
 
-		if(classCache != null) {
-			classCache.clear();
-			classCache = null;
+		if(classPool != null) {
+			classPool.clear();
 		}
 	}
 }
