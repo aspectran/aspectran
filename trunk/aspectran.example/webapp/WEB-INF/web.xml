@@ -20,6 +20,7 @@
 					/WEB-INF/aspectran/classes
 					/WEB-INF/aspectran/lib
 				]
+				resourceCache: false
 				autoReloading: {
 					observationInterval: 5
 					startup: false
