@@ -12,64 +12,57 @@ import java.util.Enumeration;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.loader.resource.ResourceManager;
 
-public class AspectranClassLoader extends ClassLoader {
-	
-	private final AspectranClassLoader top;
+public class AspectranSubClassLoader extends ClassLoader {
 
-	private final AspectranClassLoader child;
-	
-	private final String resourceLocation;
+	private String[] resourceLocations;
 	
 	private ResourceManager resourceManager;
-	
-	public AspectranClassLoader() {
-		this(getParentClassLoader());
+
+	public AspectranSubClassLoader() {
+		super(getParentClassLoader());
 	}
 	
-	public AspectranClassLoader(ClassLoader parent) {
+	public AspectranSubClassLoader(ClassLoader parent) {
 		super(parent);
-		this.top = this;
-		this.child = this;
-		this.resourceLocation = null;
 	}
 	
-	public AspectranClassLoader(String resourceLocation) {
-		this(resourceLocation, getParentClassLoader());
+	public AspectranSubClassLoader(String[] resourceLocations) {
+		this(resourceLocations, getParentClassLoader());
 	}
 
-	public AspectranClassLoader(String resourceLocation, ClassLoader parent) {
-		this(resourceLocation, parent, null, null);
-	}
-	
-	protected AspectranClassLoader(String resourceLocation, ClassLoader parent, AspectranClassLoader top, AspectranClassLoader child) {
+	public AspectranSubClassLoader(String[] resourceLocations, ClassLoader parent) {
 		super(parent);
 		
-		this.top = top == null ? this : top;
-		this.child = child == null ? this : child;
-		this.resourceLocation = resourceLocation;
-
-		this.resourceManager = new ResourceManager(resourceLocation);
-	}
-
-	public static AspectranClassLoader newInstance(String[] resourceLocations) {
-		return newInstance(resourceLocations, getParentClassLoader());
+		setResourceLocations(resourceLocations);
 	}
 	
-	public static AspectranClassLoader newInstance(String[] resourceLocations, ClassLoader parent) {
-		AspectranClassLoader acl = null;
-		AspectranClassLoader top = null;
+	public String[] getResourceLocations() {
+		return resourceLocations;
+	}
+
+	protected void setResourceLocation(String resourceLocation) {
+		if(resourceManager != null) {
+			resourceManager.release();
+			resourceManager = null;
+		}
+
+		resourceManager = new ResourceManager(resourceLocation);
+	}
+	
+	public synchronized void setResourceLocations(String[] resourceLocations) {
+		ClassLoader parent = this;
 		
-		for(int i = resourceLocations.length - 1; i >= 0; i--) {
-			acl = new AspectranClassLoader(resourceLocations[i], parent, top);
-			
-			if(i == 0)
-				top = acl;
+		for(int i = resourceLocations.length - 1; i >= 0 ; i--) {
+			if(i == 0) {
+				setResourceLocation(resourceLocations[i]);
+			} else {
+				AspectranSubClassLoader acl = new AspectranSubClassLoader(parent);
+				acl.setResourceLocation(resourceLocations[i]);
+				parent = acl;
+			}
 		}
 		
-		if(acl == null)
-			acl = new AspectranClassLoader(parent);
-		
-		return acl;
+		this.resourceLocations = resourceLocations;
 	}
 	
 	public void reload() {
