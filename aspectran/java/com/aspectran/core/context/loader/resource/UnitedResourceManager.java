@@ -28,42 +28,56 @@ import java.util.NoSuchElementException;
 /**
  * <p>Created: 2014. 12. 18 오후 5:51:13</p>	
  */
-public class ResourceManager {
+public class UnitedResourceManager {
 
+	private ResourceManager parent;
+	
 	private final String resourceLocation;
 	
 	private final Map<String, URL> resourcePool = new LinkedHashMap<String, URL>();
 	
 	private final Map<String, Class<?>> classPool = new HashMap<String, Class<?>>();
 	
-	public ResourceManager(String resourceLocation) {
+	public UnitedResourceManager(String resourceLocation) {
+		this(resourceLocation, null);
+	}
+	
+	protected String getResourceLocation() {
+		return resourceLocation;
+	}
+
+	public UnitedResourceManager(String resourceLocation, ResourceManager parent) {
 		File f = new File(resourceLocation);
 		
 		if(!f.isDirectory())
 			throw new InvalidResourceException("invalid resource directory name: " + resourceLocation);
 		
+		this.parent = parent;
 		this.resourceLocation = resourceLocation;
 		
 		findResources();
 	}
-
-	protected String getResourceLocation() {
-		return resourceLocation;
-	}
-
+	
 	public URL getResource(String name) {
 		return resourcePool.get(name);
 	}
 	
 	public Enumeration<URL> getResources() {
+		final Enumeration<URL> parentResources = (parent != null) ? parent.getResources() : null;
 		final Iterator<URL> currentResources = resourcePool.values().iterator();
 		
 		return new Enumeration<URL>() {
 			public boolean hasMoreElements() {
+				if(parentResources != null && parentResources.hasMoreElements())
+					return true;
+				
 				return currentResources.hasNext();
 			}
 			
 			public URL nextElement() {
+				if(parentResources != null && parentResources.hasMoreElements())
+					return parentResources.nextElement();
+				
 				return currentResources.next();
 			}
 		};
@@ -71,6 +85,7 @@ public class ResourceManager {
 	
 	public Enumeration<URL> getResources(String name) {
 		final String filterName = name;
+		final Enumeration<URL> parentResources = (parent != null) ? parent.getResources(name) : null;
 		final Iterator<Map.Entry<String, URL>> currentResources = resourcePool.entrySet().iterator();
 		
 		return new Enumeration<URL>() {
@@ -80,6 +95,9 @@ public class ResourceManager {
 				if(entry != null)
 					return true;
 				
+				if(parentResources != null && parentResources.hasMoreElements())
+					return true;
+
 				while(currentResources.hasNext()) {
 					Map.Entry<String, URL> entry2 = currentResources.next();
 					
@@ -94,6 +112,9 @@ public class ResourceManager {
 
 			public synchronized URL nextElement() {
 				if(entry == null) {
+					if(parentResources != null && parentResources.hasMoreElements())
+						return parentResources.nextElement();
+					
 					if(!hasMoreElements())
 						throw new NoSuchElementException();
 				}
