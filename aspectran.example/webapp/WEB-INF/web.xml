@@ -17,8 +17,10 @@
 				root: /WEB-INF/aspectran/example-aspectran.xml
 				resources: [
 					/WEB-INF/aspectran
-					/WEB-INF/aspectran/classes
+					/WEB-INF/aspectran/classes1
+					/WEB-INF/aspectran/classes2
 					/WEB-INF/aspectran/lib
+					/WEB-INF/aspectran/sqlmap
 				]
 				resourceCache: false
 				autoReloading: {
