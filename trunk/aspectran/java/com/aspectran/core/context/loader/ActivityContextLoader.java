@@ -20,7 +20,7 @@ public class ActivityContextLoader implements ActivityContextReloadable {
 
 	private final ApplicationAdapter applicationAdapter;
 	
-	private final AspectranClassLoader aspectranClassLoader;
+	private AspectranClassLoader aspectranClassLoader;
 	
 	private ActivityContextReloadingHandler activityContextReloadingHandler;
 	
@@ -30,6 +30,13 @@ public class ActivityContextLoader implements ActivityContextReloadable {
 
 	public ActivityContextLoader(ApplicationAdapter applicationAdapter, AspectranClassLoader aspectranClassLoader) {
 		this.applicationAdapter = applicationAdapter;
+	}
+
+	protected AspectranClassLoader getAspectranClassLoader() {
+		return aspectranClassLoader;
+	}
+
+	protected void setAspectranClassLoader(AspectranClassLoader aspectranClassLoader) {
 		this.aspectranClassLoader = aspectranClassLoader;
 	}
 
@@ -77,10 +84,6 @@ public class ActivityContextLoader implements ActivityContextReloadable {
 
 	public String getApplicationBasePath() {
 		return applicationAdapter.getApplicationBasePath();
-	}
-	
-	public AspectranClassLoader getAspectranClassLoader() {
-		return aspectranClassLoader;
 	}
 	
 	public ActivityContextReloadingTimer startTimer(ActivityContextReloadingHandler activityContextReloadingHandler, int observationInterval) {

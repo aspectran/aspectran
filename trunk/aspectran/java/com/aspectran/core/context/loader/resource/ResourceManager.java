@@ -47,7 +47,7 @@ public class ResourceManager {
 		findResources();
 	}
 
-	protected String getResourceLocation() {
+	public String getResourceLocation() {
 		return resourceLocation;
 	}
 
@@ -133,6 +133,11 @@ public class ResourceManager {
 		
 	}
 
+	public void reset() {
+		release();
+		findResources();
+	}
+	
 	public void release() {
 		if(resourcePool != null) {
 			resourcePool.clear();

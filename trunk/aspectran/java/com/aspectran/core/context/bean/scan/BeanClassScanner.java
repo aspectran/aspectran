@@ -15,7 +15,6 @@ import java.util.jar.JarFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.aspectran.core.context.loader.AspectranClassLoader;
 import com.aspectran.core.util.ClassUtils;
 import com.aspectran.core.util.ResourceUtils;
 import com.aspectran.core.util.wildcard.WildcardMatcher;
@@ -35,10 +34,6 @@ public class BeanClassScanner {
 	private final String beanIdPrefix;
 
 	private final String beanIdSuffix;
-	
-	public BeanClassScanner(String beanIdPattern) {
-		this(beanIdPattern, new AspectranClassLoader());
-	}
 	
 	public BeanClassScanner(String beanIdPattern, ClassLoader classLoader) {
 		int wildcardStartIndex = beanIdPattern.indexOf(BEAN_ID_WILDCARD_DELIMITER);
@@ -66,14 +61,20 @@ public class BeanClassScanner {
 
 	public Map<String, Class<?>> scanClass(String classNamePattern) throws IOException, ClassNotFoundException {
 		classNamePattern = classNamePattern.replace(ClassUtils.PACKAGE_SEPARATOR, RESOURCE_PATH_SPEPARATOR);
+		//System.out.println("classNamePattern: " + classNamePattern);
 
 		String basePackageName = determineBasePackageName(classNamePattern);
 		//System.out.println("basePackageName: " + basePackageName);
 
-		String subPattern = classNamePattern.substring(basePackageName.length());
+		String subPattern;
+		
+		if(classNamePattern.length() > basePackageName.length())
+			subPattern = classNamePattern.substring(basePackageName.length());
+		else
+			subPattern = "";
+		
 		//System.out.println("subPattern: " + subPattern);
 
-		
 		WildcardPattern pattern = WildcardPattern.compile(subPattern, RESOURCE_PATH_SPEPARATOR);
 		WildcardMatcher matcher = new WildcardMatcher(pattern);
 		
@@ -294,8 +295,9 @@ public class BeanClassScanner {
 	
 	public static void main(String[] args) {
 		try {
-			BeanClassScanner loader = new BeanClassScanner("component.*ZZZ");
-			loader.scanClass("com.**.*Sql*");
+			BeanClassScanner loader = new BeanClassScanner("component.*ZZZ", ClassUtils.getDefaultClassLoader());
+			//loader.scanClass("com.**.*Sql*");
+			loader.scanClass("com");
 			System.out.println(loader.getClass().getName());
 		} catch(Exception e) {
 			e.printStackTrace();

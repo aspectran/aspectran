@@ -16,67 +16,80 @@ public class AspectranClassLoader extends ClassLoader {
 	
 	private final AspectranClassLoader top;
 
-	private final AspectranClassLoader child;
-	
-	private final String resourceLocation;
+	private AspectranClassLoader child;
 	
 	private ResourceManager resourceManager;
 	
 	public AspectranClassLoader() {
-		this(getParentClassLoader());
+		this(getDefaultClassLoader());
 	}
 	
 	public AspectranClassLoader(ClassLoader parent) {
 		super(parent);
 		this.top = this;
-		this.child = this;
-		this.resourceLocation = null;
+		this.resourceManager = null;
 	}
 	
 	public AspectranClassLoader(String resourceLocation) {
-		this(resourceLocation, getParentClassLoader());
+		this(resourceLocation, getDefaultClassLoader());
 	}
 
 	public AspectranClassLoader(String resourceLocation, ClassLoader parent) {
-		this(resourceLocation, parent, null, null);
+		this(resourceLocation, parent, null);
 	}
 	
-	protected AspectranClassLoader(String resourceLocation, ClassLoader parent, AspectranClassLoader top, AspectranClassLoader child) {
+	protected AspectranClassLoader(String resourceLocation, ClassLoader parent, AspectranClassLoader top) {
 		super(parent);
 		
 		this.top = top == null ? this : top;
-		this.child = child == null ? this : child;
-		this.resourceLocation = resourceLocation;
 
 		this.resourceManager = new ResourceManager(resourceLocation);
 	}
 
-	public static AspectranClassLoader newInstance(String[] resourceLocations) {
-		return newInstance(resourceLocations, getParentClassLoader());
+	protected AspectranClassLoader createChild(String resourceLocation) {
+		child = new AspectranClassLoader(resourceLocation, getParent(), top);
+		return child;
 	}
 	
-	public static AspectranClassLoader newInstance(String[] resourceLocations, ClassLoader parent) {
-		AspectranClassLoader acl = null;
-		AspectranClassLoader top = null;
-		
-		for(int i = resourceLocations.length - 1; i >= 0; i--) {
-			acl = new AspectranClassLoader(resourceLocations[i], parent, top);
-			
-			if(i == 0)
-				top = acl;
-		}
-		
-		if(acl == null)
-			acl = new AspectranClassLoader(parent);
-		
-		return acl;
+	protected AspectranClassLoader getTop() {
+		return top;
 	}
 	
+	protected AspectranClassLoader getChild() {
+		return child;
+	}
+	
+	protected String getResourceLocation() {
+		if(resourceManager == null)
+			return null;
+		
+		return resourceManager.getResourceLocation();
+	}
+
+	protected ResourceManager getResourceManager() {
+		return resourceManager;
+	}
+
 	public void reload() {
-		setResourceLocations(resourceLocations);
+		reload(top);
+	}
+	
+	protected void reload(AspectranClassLoader acl) {
+		if(acl.getResourceManager() != null)
+			acl.getResourceManager().reset();
+		
+		if(acl.getChild() != null)
+			reload(acl.getChild());
 	}
 	
 	public Enumeration<URL> getResources() {
+		if(resourceManager == null)
+			return null;
+		
+		return resourceManager.getResources();
+	}
+	
+	public Enumeration<URL> getAllResources() {
 		if(resourceManager == null)
 			return null;
 		
@@ -144,7 +157,31 @@ public class AspectranClassLoader extends ClassLoader {
 		}
 	}
 	
-	private static ClassLoader getParentClassLoader() {
+	public static AspectranClassLoader newInstance(String[] resourceLocations) {
+		return newInstance(resourceLocations, getDefaultClassLoader());
+	}
+	
+	public static AspectranClassLoader newInstance(String[] resourceLocations, ClassLoader parent) {
+		AspectranClassLoader top = null;
+		AspectranClassLoader acl = null;
+		
+		for(int i = 0; i < resourceLocations.length; i++) {
+			if(acl == null)
+				acl = new AspectranClassLoader(resourceLocations[i], parent);
+			else
+				acl = acl.createChild(resourceLocations[i]);
+			
+			if(i == 0)
+				top = acl;
+		}
+		
+		if(top == null)
+			top = new AspectranClassLoader(parent);
+		
+		return top;
+	}
+	
+	public static ClassLoader getDefaultClassLoader() {
 		ClassLoader cl = null;
 		
 		try {
@@ -155,6 +192,7 @@ public class AspectranClassLoader extends ClassLoader {
 		if(cl == null) {
 			cl = ActivityContext.class.getClassLoader();
 		}
+		
 		return cl;
 	}
 

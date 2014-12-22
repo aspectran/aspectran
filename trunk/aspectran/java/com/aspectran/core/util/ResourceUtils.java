@@ -15,7 +15,6 @@
  */
 package com.aspectran.core.util;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -32,7 +31,7 @@ import java.util.Properties;
 /**
  * A class to simplify access to ResourceUtils through the classloader.
  */
-public class ResourceUtils extends Object {
+public class ResourceUtils {
 
 	public static final String CLASSPATH_URL_PREFIX = "classpath:";
 
@@ -413,31 +412,6 @@ public class ResourceUtils extends Object {
 		return props;
 	}
 
-	/**
-	 * Loads a class
-	 * 
-	 * @param className -
-	 *            the class to load
-	 * @return The loaded class
-	 * @throws ClassNotFoundException
-	 *             If the class cannot be found (duh!)
-	 */
-	public static Class<?> classForName(String className) throws ClassNotFoundException {
-		Class<?> clazz = null;
-
-		try {
-			clazz = getClassLoader().loadClass(className);
-		} catch(Exception e) {
-			// Ignore. Failsafe below.
-		}
-
-		if(clazz == null) {
-			clazz = Class.forName(className);
-		}
-
-		return clazz;
-	}
-
 	private static ClassLoader getClassLoader() {
 		if(defaultClassLoader != null)
 			return defaultClassLoader;
@@ -445,11 +419,20 @@ public class ResourceUtils extends Object {
 		return ClassUtils.getDefaultClassLoader();
 	}
 
+	/**
+	 * @param argv
+	 */
 	public static void main(String argv[]) {
 		try {
-			System.out.println(new BufferedReader(ResourceUtils.getUrlAsReader("http://labs.tistory.com/guestbook"))
-					.readLine());
-			// System.out.println(ResourceUtils.getResourceURL("d:\\@WORK\\Gulendol\\Scany\\conf\\client.xml").toString());
+			//System.out.println(new BufferedReader(ResourceUtils.getUrlAsReader("http://labs.tistory.com/guestbook")).readLine());
+			// System.out.println(ResourceUtils.getResourceURL("d://@WORK//Gulendol//Scany//conf//client.xml").toString());
+			
+			String str1 = "file:///c:/Users/Gulendol/Projects/aspectran/ADE/workspace/aspectran.example/webapp/WEB-INF/aspectran/";
+			String str2 = "jar:///c:/Users/Gulendol/Projects/aspectran/ADE/workspace/aspectran.example/webapp/WEB-INF/lib/activation.jar";
+			
+			System.out.println(ResourceUtils.getFile(str1));					
+			System.out.println(ResourceUtils.getFile(str2));					
+					
 		} catch(Exception e) {
 			System.out.println(e.getMessage());
 		}

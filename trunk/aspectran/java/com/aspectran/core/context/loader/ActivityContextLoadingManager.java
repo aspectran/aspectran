@@ -1,5 +1,9 @@
 package com.aspectran.core.context.loader;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.net.URL;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -11,6 +15,7 @@ import com.aspectran.core.context.loader.config.AspectranContextConfig;
 import com.aspectran.core.context.loader.config.AspectranSchedulerConfig;
 import com.aspectran.core.context.loader.reload.ActivityContextReloadingHandler;
 import com.aspectran.core.context.loader.reload.ActivityContextReloadingTimer;
+import com.aspectran.core.util.ResourceUtils;
 import com.aspectran.core.var.apon.Parameters;
 import com.aspectran.scheduler.AspectranScheduler;
 import com.aspectran.scheduler.quartz.QuartzAspectranScheduler;
@@ -49,10 +54,10 @@ public class ActivityContextLoadingManager {
 			if(autoReloadingStartup && resourceLocations == null || resourceLocations.length == 0)
 				autoReloadingStartup = false;
 			
-			AspectranClassLoader aspectranClassLoader = activityContextLoader.getAspectranClassLoader();
+			resourceLocations = checkResourceLocations(activityContextLoader.getApplicationBasePath(), resourceLocations);
 			
-			if(aspectranClassLoader != null && resourceLocations == null || resourceLocations.length == 0)
-				aspectranClassLoader.setResourceLocations(resourceLocations);
+			AspectranClassLoader aspectranClassLoader = AspectranClassLoader.newInstance(resourceLocations);
+			activityContextLoader.setAspectranClassLoader(aspectranClassLoader);
 			
 			if(!autoReloadingStartup) {
 				activityContext = activityContextLoader.load(rootContext);
@@ -165,6 +170,45 @@ public class ActivityContextLoadingManager {
 		}
 		
 		return true;
+	}
+	
+	private static String[] checkResourceLocations(String applicationBasePath, String[] resourceLocations) throws FileNotFoundException {
+		for(int i = 0; i < resourceLocations.length; i++) {
+			if(resourceLocations[i].startsWith(ResourceUtils.CLASSPATH_URL_PREFIX) || resourceLocations[i].startsWith(ResourceUtils.FILE_URL_PREFIX)) {
+				URL url = ResourceUtils.getURL(resourceLocations[i]);
+				if(url == null) {
+					throw new FileNotFoundException("class path resource [" + resourceLocations[i] + "] cannot be resolved to URL because it does not exist");
+				}
+				resourceLocations[i] = url.getFile();
+			} else {
+				File file = new File(applicationBasePath, resourceLocations[i]);
+				if(file.isDirectory() ||
+						(file.isFile() && (resourceLocations[i].endsWith(ResourceUtils.URL_PROTOCOL_JAR) || resourceLocations[i].endsWith(ResourceUtils.URL_PROTOCOL_ZIP)))) {
+					resourceLocations[i] = file.getAbsolutePath();
+				} else {
+					throw new FileNotFoundException("invalid resource directory name: " + resourceLocations[i]);
+				}
+			}
+		}
+		
+		return resourceLocations;
+	}
+	
+	public static void main(String argv[]) {
+		String applicationBasePath = "c:/Users/Gulendol/Projects/aspectran/ADE/workspace/aspectran.example/webapp/";
+		String[] resourceLocations = new String[3];
+		resourceLocations[0] = "/WEB-INF/aspectran/classes";
+		resourceLocations[1] = "/WEB-INF/aspectran/lib";
+		resourceLocations[2] = "/WEB-INF/aspectran/xml";
+		
+		try {
+			resourceLocations = ActivityContextLoadingManager.checkResourceLocations(applicationBasePath, resourceLocations);
+			for(String r : resourceLocations) {
+				System.out.println(r);
+			}
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
 	}
 	
 }
