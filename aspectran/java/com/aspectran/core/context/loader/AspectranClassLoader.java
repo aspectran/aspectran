@@ -1,6 +1,7 @@
 package com.aspectran.core.context.loader;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -8,6 +9,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Enumeration;
+import java.util.List;
 
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.loader.resource.ResourceManager;
@@ -43,7 +45,7 @@ public class AspectranClassLoader extends ClassLoader {
 		
 		this.top = top == null ? this : top;
 
-		this.resourceManager = new ResourceManager(resourceLocation);
+		this.resourceManager = new ResourceManager(resourceLocation, this);
 	}
 
 	protected AspectranClassLoader createChild(String resourceLocation) {
@@ -94,6 +96,10 @@ public class AspectranClassLoader extends ClassLoader {
 			return null;
 		
 		return resourceManager.getResources();
+	}
+	
+	public List<File> extractResourceFileList() {
+		return null;
 	}
 
 	public Enumeration<URL> getResources(String name) {

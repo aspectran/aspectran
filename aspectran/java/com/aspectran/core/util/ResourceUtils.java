@@ -37,6 +37,10 @@ public class ResourceUtils {
 
 	public static final String FILE_URL_PREFIX = "file:";
 
+	public static final String JAR_FILE_SUFFIX = ".jar";
+
+	public static final String ZIP_FILE_SUFFIX = ".zip";
+
 	public static final String URL_PROTOCOL_FILE = "file";
 
 	public static final String URL_PROTOCOL_JAR = "jar";

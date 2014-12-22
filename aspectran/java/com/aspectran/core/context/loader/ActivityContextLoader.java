@@ -28,15 +28,20 @@ public class ActivityContextLoader implements ActivityContextReloadable {
 	
 	private ActivityContext activityContext;
 
-	public ActivityContextLoader(ApplicationAdapter applicationAdapter, AspectranClassLoader aspectranClassLoader) {
+	public ActivityContextLoader(ApplicationAdapter applicationAdapter) {
 		this.applicationAdapter = applicationAdapter;
 	}
 
-	protected AspectranClassLoader getAspectranClassLoader() {
+	public void setResourceLocations(String[] resourceLocations) {
+		AspectranClassLoader acl = AspectranClassLoader.newInstance(resourceLocations);
+		this.aspectranClassLoader = acl;
+	}
+	
+	public AspectranClassLoader getAspectranClassLoader() {
 		return aspectranClassLoader;
 	}
 
-	protected void setAspectranClassLoader(AspectranClassLoader aspectranClassLoader) {
+	public void setAspectranClassLoader(AspectranClassLoader aspectranClassLoader) {
 		this.aspectranClassLoader = aspectranClassLoader;
 	}
 
@@ -68,7 +73,8 @@ public class ActivityContextLoader implements ActivityContextReloadable {
 	}
 	
 	public ActivityContext reload() {
-		aspectranClassLoader.reload();
+		if(aspectranClassLoader != null)
+			aspectranClassLoader.reload();
 		
 		ActivityContext newActivityContext = buildActivityContext();
 		
