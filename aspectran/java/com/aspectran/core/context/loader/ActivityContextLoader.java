@@ -33,7 +33,7 @@ public class ActivityContextLoader implements ActivityContextReloadable {
 	}
 
 	public void setResourceLocations(String[] resourceLocations) {
-		AspectranClassLoader acl = AspectranClassLoader.newInstance(resourceLocations);
+		AspectranClassLoader acl = new AspectranClassLoader(resourceLocations);
 		this.aspectranClassLoader = acl;
 	}
 	
