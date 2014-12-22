@@ -32,14 +32,12 @@ import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.loader.ActivityContextLoader;
 import com.aspectran.core.context.loader.ActivityContextLoadingManager;
-import com.aspectran.core.context.loader.AspectranClassLoader;
 import com.aspectran.core.context.loader.config.AspectranConfig;
 import com.aspectran.core.context.translet.TransletNotFoundException;
 import com.aspectran.web.activity.WebActivity;
 import com.aspectran.web.activity.WebActivityDefaultHandler;
 import com.aspectran.web.activity.WebActivityImpl;
 import com.aspectran.web.adapter.WebApplicationAdapter;
-import com.aspectran.web.startup.loader.WebAspectranClassLoader;
 import com.aspectran.web.startup.loader.WebActivityContextLoader;
 
 /**
@@ -82,11 +80,9 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 			
 			AspectranConfig aspectranConfig = new AspectranConfig(aspectranConfigText);
 			
-			AspectranClassLoader aspectranClassLoader = new WebAspectranClassLoader();
-			
 			ApplicationAdapter applicationAdapter = WebApplicationAdapter.determineWebApplicationAdapter(servletContext);
 			
-			ActivityContextLoader activityContextLoader = new WebActivityContextLoader(applicationAdapter, aspectranClassLoader);
+			ActivityContextLoader activityContextLoader = new WebActivityContextLoader(applicationAdapter);
 			
 			activityContextLoadingManager = new ActivityContextLoadingManager(aspectranConfig);
 			

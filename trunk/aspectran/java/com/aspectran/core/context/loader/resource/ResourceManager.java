@@ -16,6 +16,7 @@
 package com.aspectran.core.context.loader.resource;
 
 import java.io.File;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -23,6 +24,9 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
+
+import com.aspectran.core.context.loader.AspectranClassLoader;
+import com.aspectran.core.util.ResourceUtils;
 
 
 /**
@@ -36,19 +40,35 @@ public class ResourceManager {
 	
 	private final Map<String, Class<?>> classPool = new HashMap<String, Class<?>>();
 	
-	public ResourceManager(String resourceLocation) {
+	private final AspectranClassLoader owner;
+	
+	private final boolean archived;
+	
+	public ResourceManager(String resourceLocation, AspectranClassLoader owner) {
 		File f = new File(resourceLocation);
 		
 		if(!f.isDirectory())
 			throw new InvalidResourceException("invalid resource directory name: " + resourceLocation);
 		
 		this.resourceLocation = resourceLocation;
+		this.owner = owner;
 		
-		findResources();
+		if(resourceLocation.endsWith(ResourceUtils.JAR_FILE_SUFFIX) ||
+				resourceLocation.endsWith(ResourceUtils.ZIP_FILE_SUFFIX)) {
+			this.archived = true;
+			//findResource(resourceLocation);
+		} else {
+			this.archived = false;
+			findResource();
+		}
 	}
 
 	public String getResourceLocation() {
 		return resourceLocation;
+	}
+	
+	protected boolean isArchived() {
+		return archived;
 	}
 
 	public URL getResource(String name) {
@@ -129,13 +149,33 @@ public class ResourceManager {
 		return null;
 	}
 	
-	private void findResources() {
+	private void findResource() {
+		File dir = new File(resourceLocation);
 		
+		try {
+			findResource(dir);
+		} catch(MalformedURLException e) {
+			throw new InvalidResourceException(e);
+		}
+	}
+	
+	private void findResource(File dir) throws MalformedURLException {
+		File[] list = dir.listFiles();
+		
+		for(File file : list) {
+			if(file.isDirectory()) {
+				findResource(file);
+			} else if(file.isFile()) {
+				String name = file.getAbsolutePath().substring(resourceLocation.length());
+				URL url = file.toURI().toURL();
+				resourcePool.put(name, url);
+			}
+		}
 	}
 
 	public void reset() {
 		release();
-		findResources();
+		findResource();
 	}
 	
 	public void release() {

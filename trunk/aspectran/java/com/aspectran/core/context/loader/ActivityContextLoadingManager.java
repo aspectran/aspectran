@@ -55,9 +55,7 @@ public class ActivityContextLoadingManager {
 				autoReloadingStartup = false;
 			
 			resourceLocations = checkResourceLocations(activityContextLoader.getApplicationBasePath(), resourceLocations);
-			
-			AspectranClassLoader aspectranClassLoader = AspectranClassLoader.newInstance(resourceLocations);
-			activityContextLoader.setAspectranClassLoader(aspectranClassLoader);
+			activityContextLoader.setResourceLocations(resourceLocations);
 			
 			if(!autoReloadingStartup) {
 				activityContext = activityContextLoader.load(rootContext);
@@ -174,16 +172,21 @@ public class ActivityContextLoadingManager {
 	
 	private static String[] checkResourceLocations(String applicationBasePath, String[] resourceLocations) throws FileNotFoundException {
 		for(int i = 0; i < resourceLocations.length; i++) {
-			if(resourceLocations[i].startsWith(ResourceUtils.CLASSPATH_URL_PREFIX) || resourceLocations[i].startsWith(ResourceUtils.FILE_URL_PREFIX)) {
+			if(resourceLocations[i].startsWith(ResourceUtils.CLASSPATH_URL_PREFIX) ||
+					resourceLocations[i].startsWith(ResourceUtils.FILE_URL_PREFIX)) {
 				URL url = ResourceUtils.getURL(resourceLocations[i]);
+				
 				if(url == null) {
 					throw new FileNotFoundException("class path resource [" + resourceLocations[i] + "] cannot be resolved to URL because it does not exist");
 				}
+				
 				resourceLocations[i] = url.getFile();
 			} else {
 				File file = new File(applicationBasePath, resourceLocations[i]);
+				
 				if(file.isDirectory() ||
-						(file.isFile() && (resourceLocations[i].endsWith(ResourceUtils.URL_PROTOCOL_JAR) || resourceLocations[i].endsWith(ResourceUtils.URL_PROTOCOL_ZIP)))) {
+						(file.isFile() && (resourceLocations[i].endsWith(ResourceUtils.JAR_FILE_SUFFIX) ||
+								resourceLocations[i].endsWith(ResourceUtils.ZIP_FILE_SUFFIX)))) {
 					resourceLocations[i] = file.getAbsolutePath();
 				} else {
 					throw new FileNotFoundException("invalid resource directory name: " + resourceLocations[i]);

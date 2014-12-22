@@ -3,7 +3,6 @@ package com.aspectran.web.startup.loader;
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.loader.ActivityContextLoader;
-import com.aspectran.core.context.loader.AspectranClassLoader;
 
 public class WebActivityContextLoader extends ActivityContextLoader {
 
@@ -11,8 +10,8 @@ public class WebActivityContextLoader extends ActivityContextLoader {
 	
 	private static final String DEFAULT_ROOT_CONTEXT = "/WEB-INF/aspectran/aspectranContext.xml";
 	
-	public WebActivityContextLoader(ApplicationAdapter applicationAdapter, AspectranClassLoader aspectranClassLoader) {
-		super(applicationAdapter, aspectranClassLoader);
+	public WebActivityContextLoader(ApplicationAdapter applicationAdapter) {
+		super(applicationAdapter);
 	}
 	
 	public ActivityContext load(String rootContext) {
