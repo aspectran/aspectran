@@ -9,6 +9,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Enumeration;
+import java.util.LinkedList;
 import java.util.List;
 
 import com.aspectran.core.context.ActivityContext;
@@ -16,11 +17,13 @@ import com.aspectran.core.context.loader.resource.ResourceManager;
 
 public class AspectranClassLoader extends ClassLoader {
 	
-	private final AspectranClassLoader top;
+	private final AspectranClassLoader root;
 
-	private AspectranClassLoader child;
+	private final List<AspectranClassLoader> children = new LinkedList<AspectranClassLoader>();
 	
-	private ResourceManager resourceManager;
+	private final boolean firstborn;
+	
+	private final ResourceManager resourceManager;
 	
 	public AspectranClassLoader() {
 		this(getDefaultClassLoader());
@@ -28,8 +31,9 @@ public class AspectranClassLoader extends ClassLoader {
 	
 	public AspectranClassLoader(ClassLoader parent) {
 		super(parent);
-		this.top = this;
+		this.root = this;
 		this.resourceManager = null;
+		this.firstborn = false;
 	}
 	
 	public AspectranClassLoader(String resourceLocation) {
@@ -37,30 +41,58 @@ public class AspectranClassLoader extends ClassLoader {
 	}
 
 	public AspectranClassLoader(String resourceLocation, ClassLoader parent) {
-		this(resourceLocation, parent, null);
+		this(resourceLocation, parent, null, false);
 	}
 	
-	protected AspectranClassLoader(String resourceLocation, ClassLoader parent, AspectranClassLoader top) {
+	public AspectranClassLoader(String[] resourceLocations) {
+		this(resourceLocations, getDefaultClassLoader());
+	}		
+	
+	public AspectranClassLoader(String[] resourceLocations, ClassLoader parent) {
+		this(parent);
+		
+		AspectranClassLoader acl = this;
+		
+		for(int i = 0; i < resourceLocations.length; i++) {
+			acl = acl.createChild(resourceLocations[i]);
+		}
+	}
+
+	protected AspectranClassLoader(String resourceLocation, ClassLoader parent, AspectranClassLoader root, boolean firstborn) {
 		super(parent);
 		
-		this.top = top == null ? this : top;
-
+		this.root = root == null ? this : root;
 		this.resourceManager = new ResourceManager(resourceLocation, this);
+		this.firstborn = firstborn;
+	}
+	
+	protected AspectranClassLoader createChild(String resourceLocation) {
+		boolean firstborn = (children.size() == 0);
+		
+		AspectranClassLoader child = new AspectranClassLoader(resourceLocation, this, root, firstborn);
+		children.add(child);
+		
+		return child;
+	}
+	
+	public AspectranClassLoader wishBrother(String resourceLocation) {
+		AspectranClassLoader parent = (AspectranClassLoader)getParent();
+
+		return parent.createChild(resourceLocation);
+	}
+	
+	protected AspectranClassLoader getRoot() {
+		return root;
+	}
+	
+	protected List<AspectranClassLoader> getChildren() {
+		return children;
+	}
+	
+	public boolean isFirstborn() {
+		return firstborn;
 	}
 
-	protected AspectranClassLoader createChild(String resourceLocation) {
-		child = new AspectranClassLoader(resourceLocation, getParent(), top);
-		return child;
-	}
-	
-	protected AspectranClassLoader getTop() {
-		return top;
-	}
-	
-	protected AspectranClassLoader getChild() {
-		return child;
-	}
-	
 	protected String getResourceLocation() {
 		if(resourceManager == null)
 			return null;
@@ -73,15 +105,43 @@ public class AspectranClassLoader extends ClassLoader {
 	}
 
 	public void reload() {
-		reload(top);
+		reload(root);
 	}
 	
-	protected void reload(AspectranClassLoader acl) {
-		if(acl.getResourceManager() != null)
-			acl.getResourceManager().reset();
+	protected void reload(AspectranClassLoader self) {
+		if(self.getResourceManager() != null)
+			self.getResourceManager().reset();
 		
-		if(acl.getChild() != null)
-			reload(acl.getChild());
+		AspectranClassLoader firstbon = null;
+		
+		for(AspectranClassLoader child : self.getChildren()) {
+			if(child.isFirstborn()) {
+				firstbon = child;
+			} else {
+				self.kickout(child);
+				ResourceManager rm = child.getResourceManager();
+				if(rm != null) {
+					rm.release();
+				}
+			}
+		}
+		
+		if(firstbon != null) {
+			ResourceManager rm = firstbon.getResourceManager();
+			if(rm != null) {
+				rm.reset();
+			}
+			reload(firstbon);
+		}
+	}
+	
+	protected void leave() {
+		AspectranClassLoader parent = (AspectranClassLoader)getParent();
+		parent.kickout(this);
+	}
+	
+	protected void kickout(AspectranClassLoader child) {
+		children.remove(child);
 	}
 	
 	public Enumeration<URL> getResources() {
@@ -161,30 +221,6 @@ public class AspectranClassLoader extends ClassLoader {
 		} catch (IOException ex) {
 			throw new ClassNotFoundException();
 		}
-	}
-	
-	public static AspectranClassLoader newInstance(String[] resourceLocations) {
-		return newInstance(resourceLocations, getDefaultClassLoader());
-	}
-	
-	public static AspectranClassLoader newInstance(String[] resourceLocations, ClassLoader parent) {
-		AspectranClassLoader top = null;
-		AspectranClassLoader acl = null;
-		
-		for(int i = 0; i < resourceLocations.length; i++) {
-			if(acl == null)
-				acl = new AspectranClassLoader(resourceLocations[i], parent);
-			else
-				acl = acl.createChild(resourceLocations[i]);
-			
-			if(i == 0)
-				top = acl;
-		}
-		
-		if(top == null)
-			top = new AspectranClassLoader(parent);
-		
-		return top;
 	}
 	
 	public static ClassLoader getDefaultClassLoader() {

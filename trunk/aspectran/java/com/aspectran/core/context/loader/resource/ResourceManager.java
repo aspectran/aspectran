@@ -16,14 +16,20 @@
 package com.aspectran.core.context.loader.resource;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.aspectran.core.context.loader.AspectranClassLoader;
 import com.aspectran.core.util.ResourceUtils;
@@ -33,6 +39,8 @@ import com.aspectran.core.util.ResourceUtils;
  * <p>Created: 2014. 12. 18 오후 5:51:13</p>	
  */
 public class ResourceManager {
+	
+	private final Logger logger = LoggerFactory.getLogger(ResourceManager.class);
 
 	private final String resourceLocation;
 	
@@ -152,25 +160,47 @@ public class ResourceManager {
 	private void findResource() {
 		File dir = new File(resourceLocation);
 		
-		try {
-			findResource(dir);
-		} catch(MalformedURLException e) {
-			throw new InvalidResourceException(e);
+		List<File> jarFileList = new ArrayList<File>(); 
+		
+		findResource(dir, jarFileList);
+		
+		if(jarFileList.size() > 0) {
+			for(File jarFile : jarFileList) {
+				findResourceFroJAR(jarFile);
+			}
 		}
 	}
 	
-	private void findResource(File dir) throws MalformedURLException {
-		File[] list = dir.listFiles();
-		
-		for(File file : list) {
-			if(file.isDirectory()) {
-				findResource(file);
-			} else if(file.isFile()) {
-				String name = file.getAbsolutePath().substring(resourceLocation.length());
-				URL url = file.toURI().toURL();
-				resourcePool.put(name, url);
+	private void findResource(File target, final List<File> jarFileList) {
+		target.listFiles(new FileFilter() {
+			public boolean accept(File file) {
+				if(file.isDirectory()) {
+					findResource(file, jarFileList);
+				} else if(file.isFile()) {
+					String name = file.getAbsolutePath();
+					
+					if(name.endsWith(ResourceUtils.JAR_FILE_SUFFIX)) {
+						owner.wishBrother(name);
+						jarFileList.add(file);
+					} else {
+						name = name.substring(resourceLocation.length() + 1);
+						name = name.replace('\\', ResourceUtils.RESOURCE_NAME_SPEPARATOR_CHAR);
+						
+						try {
+							URL url = file.toURI().toURL();
+							resourcePool.put(name, url);
+						} catch(MalformedURLException e) {
+							logger.error("invalid resource: " + file, e);
+						}
+					}
+				}
+				return false;
 			}
-		}
+		});
+	}
+	
+	private void findResourceFroJAR(File target) {
+		
 	}
 
 	public void reset() {

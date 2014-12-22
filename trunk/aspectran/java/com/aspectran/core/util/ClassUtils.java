@@ -53,12 +53,18 @@ public abstract class ClassUtils {
 	/** Prefix for internal array class names: "[L" */
 	public static final String INTERNAL_ARRAY_PREFIX = "[L";
 
+	/** The package separator string "." */
+	public static final String PACKAGE_SEPARATOR = ".";
+
 	/** The package separator character '.' */
-	public static final char PACKAGE_SEPARATOR = '.';
+	public static final char PACKAGE_SEPARATOR_CHAR = '.';
+	
+	/** The inner class separator string "$" */
+	public static final String INNER_CLASS_SEPARATOR= "$";
 
 	/** The inner class separator character '$' */
-	public static final char INNER_CLASS_SEPARATOR = '$';
-
+	public static final char INNER_CLASS_SEPARATOR_CHAR = '$';
+	
 	/** The CGLIB class separator character "$$" */
 	public static final String CGLIB_CLASS_SEPARATOR = "$$";
 
@@ -338,13 +344,13 @@ public abstract class ClassUtils {
 	 * @throws IllegalArgumentException if the className is empty
 	 */
 	public static String getShortName(String className) {
-		int lastDotIndex = className.lastIndexOf(PACKAGE_SEPARATOR);
+		int lastDotIndex = className.lastIndexOf(PACKAGE_SEPARATOR_CHAR);
 		int nameEndIndex = className.indexOf(CGLIB_CLASS_SEPARATOR);
 		if(nameEndIndex == -1) {
 			nameEndIndex = className.length();
 		}
 		String shortName = className.substring(lastDotIndex + 1, nameEndIndex);
-		shortName = shortName.replace(INNER_CLASS_SEPARATOR, PACKAGE_SEPARATOR);
+		shortName = shortName.replace(INNER_CLASS_SEPARATOR_CHAR, PACKAGE_SEPARATOR_CHAR);
 		return shortName;
 	}
 
@@ -379,7 +385,7 @@ public abstract class ClassUtils {
 	 */
 	public static String getClassFileName(Class<?> clazz) {
 		String className = clazz.getName();
-		int lastDotIndex = className.lastIndexOf(PACKAGE_SEPARATOR);
+		int lastDotIndex = className.lastIndexOf(PACKAGE_SEPARATOR_CHAR);
 		return className.substring(lastDotIndex + 1) + CLASS_FILE_SUFFIX;
 	}
 
@@ -392,7 +398,7 @@ public abstract class ClassUtils {
 	 */
 	public static String getPackageName(Class<?> clazz) {
 		String className = clazz.getName();
-		int lastDotIndex = className.lastIndexOf(PACKAGE_SEPARATOR);
+		int lastDotIndex = className.lastIndexOf(PACKAGE_SEPARATOR_CHAR);
 		return (lastDotIndex != -1 ? className.substring(0, lastDotIndex) : "");
 	}
 
