@@ -1,6 +1,7 @@
 package com.aspectran.core.context.bean.scan;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.io.IOException;
 import java.net.JarURLConnection;
 import java.net.URISyntaxException;
@@ -59,59 +60,127 @@ public class BeanClassScanner {
 	}
 
 	public Map<String, Class<?>> scanClass(String classNamePattern) throws IOException, ClassNotFoundException {
-		classNamePattern = classNamePattern.replace(ClassUtils.PACKAGE_SEPARATOR_CHAR, ResourceUtils.RESOURCE_NAME_SPEPARATOR_CHAR);
-		//System.out.println("classNamePattern: " + classNamePattern);
-
-		String basePackageName = determineBasePackageName(classNamePattern);
-		//System.out.println("basePackageName: " + basePackageName);
-
-		String subPattern;
+		Map<String, Class<?>> scanClasses = new LinkedHashMap<String, Class<?>>();
 		
-		if(classNamePattern.length() > basePackageName.length())
-			subPattern = classNamePattern.substring(basePackageName.length());
-		else
-			subPattern = StringUtils.EMPTY;
+		scanClass(classNamePattern, scanClasses);
 		
-		//System.out.println("subPattern: " + subPattern);
-
-		WildcardPattern pattern = WildcardPattern.compile(subPattern, ResourceUtils.RESOURCE_NAME_SPEPARATOR_CHAR);
-		WildcardMatcher matcher = new WildcardMatcher(pattern);
-		
-		Enumeration<URL> resources = classLoader.getResources(basePackageName);
-		Map<String, Class<?>> classMap = new LinkedHashMap<String, Class<?>>();
-		
-		while(resources.hasMoreElements()) {
-			URL resource = resources.nextElement();
+		return scanClasses;
+	}
+	
+	public void scanClass(String classNamePattern, Map<String, Class<?>> scanClasses) {
+		try {
+			classNamePattern = classNamePattern.replace(ClassUtils.PACKAGE_SEPARATOR_CHAR, ResourceUtils.RESOURCE_NAME_SPEPARATOR_CHAR);
+			//System.out.println("classNamePattern: " + classNamePattern);
+	
+			String basePackageName = determineBasePackageName(classNamePattern);
+			//System.out.println("basePackageName: " + basePackageName);
+	
+			String subPattern;
 			
-			if(isJarResource(resource)) {
-				Map<String, Class<?>> map = findClassesFromJarResources(resource, matcher);
-				classMap.putAll(map);
-			} else {
-				//System.out.println("========" + resource.getFile());
-				Map<String, Class<?>> map = findClasses(basePackageName, null, resource.getFile(), matcher);
-				classMap.putAll(map);
+			if(classNamePattern.length() > basePackageName.length())
+				subPattern = classNamePattern.substring(basePackageName.length());
+			else
+				subPattern = StringUtils.EMPTY;
+			
+			//System.out.println("subPattern: " + subPattern);
+	
+			WildcardPattern pattern = WildcardPattern.compile(subPattern, ResourceUtils.RESOURCE_NAME_SPEPARATOR_CHAR);
+			WildcardMatcher matcher = new WildcardMatcher(pattern);
+			
+			Enumeration<URL> resources = classLoader.getResources(basePackageName);
+			
+			if(basePackageName != null && !basePackageName.endsWith(ResourceUtils.RESOURCE_NAME_SPEPARATOR))
+				basePackageName += ResourceUtils.RESOURCE_NAME_SPEPARATOR;
+			
+			while(resources.hasMoreElements()) {
+				URL resource = resources.nextElement();
+				System.out.println("========" + resource.getFile());
+				
+				if(isJarResource(resource)) {
+					scanClassFromJarResource(resource, matcher, scanClasses);
+				} else {
+					scanClass(resource.getFile(), basePackageName, null,  matcher, scanClasses);
+				}
 			}
+		} catch(IOException e) {
+			throw new BeanClassScanningFailedException("bean-class scanning failed.", e);
 		}
+	}
+	
+	/**
+	 * Recursive method used to find all classes in a given directory and subdirs.
+	 *
+	 * @param directory   The base directory
+	 * @param packageName The package name for classes found inside the base directory
+	 * @return The classes
+	 * @throws ClassNotFoundException
+	 */
+	private Map<String, Class<?>> scanClass(final String targetPath, final String basePackageName, final String relativePackageName, final WildcardMatcher matcher, final Map<String, Class<?>> scanClasses) {
+		//System.out.println("@basePackageName: " + basePackageName);
+		//System.out.println("@relativePackageName: " + relativePackageName);
+		//System.out.println("@basePath: " + basePath);
+		final File target = new File(targetPath);
+		if(!target.exists())
+			return null;
+
+		final Map<String, Class<?>> classMap = new LinkedHashMap<String, Class<?>>();
+
+		target.listFiles(new FileFilter() {
+			public boolean accept(File file) {
+				if(file.isDirectory()) {
+					assert !file.getName().contains(".");
+					String relativePackageName2;
+					if(relativePackageName == null)
+						relativePackageName2 = file.getName() + ResourceUtils.RESOURCE_NAME_SPEPARATOR;
+					else
+						relativePackageName2 = relativePackageName + file.getName() + ResourceUtils.RESOURCE_NAME_SPEPARATOR;
+							
+					String basePath2 = targetPath + file.getName() + ResourceUtils.RESOURCE_NAME_SPEPARATOR;
+					//System.out.println("-relativePackageName2: " + relativePackageName2);
+					Map<String, Class<?>> map = scanClass(basePath2, basePackageName, relativePackageName2, matcher, scanClasses);
+					if(map != null)
+						classMap.putAll(map);
+				} else if(file.getName().endsWith(ClassUtils.CLASS_FILE_SUFFIX)) {
+					String className;
+					if(relativePackageName != null)
+						className = basePackageName + relativePackageName + file.getName().substring(0, file.getName().length() - ClassUtils.CLASS_FILE_SUFFIX.length());
+					else
+						className = basePackageName + file.getName().substring(0, file.getName().length() - ClassUtils.CLASS_FILE_SUFFIX.length());
+					String relativePath = className.substring(basePackageName.length(), className.length());
+					//System.out.println("  -file.getName(): " + file.getName());
+					//System.out.println("  -relativePath: " + relativePath);
+					if(matcher.matches(relativePath)) {
+						Class<?> classType = loadClass(className);
+						String beanId = combineBeanId(relativePath);
+						//System.out.println("  [clazz] " + className);
+						//System.out.println("  [beanId] " + combineBeanId(relativePath));
+						logger.trace("beanClass {beanId: " + beanId + ", className: " + className + "}");
+						classMap.put(beanId, classType);
+					}
+				}
+				return false;
+			}
+		});
 		
 		return classMap;
-
 	}
 
-	protected Map<String, Class<?>> findClassesFromJarResources(URL resource, WildcardMatcher matcher) throws IOException, ClassNotFoundException {
-		URLConnection con = resource.openConnection();
+	protected void scanClassFromJarResource(URL resource, WildcardMatcher matcher, Map<String, Class<?>> scanClasses) throws IOException {
+		URLConnection conn = resource.openConnection();
 		JarFile jarFile = null;
 		String jarFileUrl = null;
-		String rootEntryPath = null;
+		String entryNamePrefix = null;
 		boolean newJarFile = false;
 
-		if(con instanceof JarURLConnection) {
+		if(conn instanceof JarURLConnection) {
 			// Should usually be the case for traditional JAR files.
-			JarURLConnection jarCon = (JarURLConnection)con;
+			JarURLConnection jarCon = (JarURLConnection)conn;
 			jarCon.setUseCaches(false);
 			jarFile = jarCon.getJarFile();
 			jarFileUrl = jarCon.getJarFileURL().toExternalForm();
 			JarEntry jarEntry = jarCon.getJarEntry();
-			rootEntryPath = (jarEntry != null ? jarEntry.getName() : "");
+			entryNamePrefix = (jarEntry != null ? jarEntry.getName() : "");
+			//System.out.println("**JarURLConnection entryName: " + entryNamePrefix);
 		} else {
 			// No JarURLConnection -> need to resort to URL file parsing.
 			// We'll assume URLs of the format "jar:path!/entry", with the protocol
@@ -121,41 +190,42 @@ public class BeanClassScanner {
 			int separatorIndex = urlFile.indexOf(ResourceUtils.JAR_URL_SEPARATOR);
 			if(separatorIndex != -1) {
 				jarFileUrl = urlFile.substring(0, separatorIndex);
-				rootEntryPath = urlFile.substring(separatorIndex + ResourceUtils.JAR_URL_SEPARATOR.length());
+				entryNamePrefix = urlFile.substring(separatorIndex + ResourceUtils.JAR_URL_SEPARATOR.length());
 				jarFile = getJarFile(jarFileUrl);
 			} else {
 				jarFile = new JarFile(urlFile);
-				jarFileUrl = urlFile;
-				rootEntryPath = "";
+				//jarFileUrl = urlFile;
+				entryNamePrefix = "";
 			}
 			newJarFile = true;
 		}
-
+		
 		try {
 			//Looking for matching resources in jar file [" + jarFileUrl + "]"
-			if(rootEntryPath.length() > 0 && rootEntryPath.charAt(rootEntryPath.length() - 1) != ResourceUtils.RESOURCE_NAME_SPEPARATOR_CHAR) {
+			if(!entryNamePrefix.endsWith(ResourceUtils.RESOURCE_NAME_SPEPARATOR)) {
 				// Root entry path must end with slash to allow for proper matching.
 				// The Sun JRE does not return a slash here, but BEA JRockit does.
-				rootEntryPath = rootEntryPath + ResourceUtils.RESOURCE_NAME_SPEPARATOR_CHAR;
+				entryNamePrefix = entryNamePrefix + ResourceUtils.RESOURCE_NAME_SPEPARATOR;
 			}
+			
 			Map<String, Class<?>> classMap = new LinkedHashMap<String, Class<?>>();
+			
 			for(Enumeration<JarEntry> entries = jarFile.entries(); entries.hasMoreElements();) {
 				JarEntry entry = entries.nextElement();
-				String entryPath = entry.getName();
-				//System.out.println("entryPath: " + entryPath);
-				//System.out.println("  rootEntryPath: " + rootEntryPath);
-				if(entryPath.startsWith(rootEntryPath) && entryPath.endsWith(ClassUtils.CLASS_FILE_SUFFIX)) {
-					String relativePath = entryPath.substring(rootEntryPath.length(), entryPath.length() - ClassUtils.CLASS_FILE_SUFFIX.length());
-					//System.out.println("  relativePath: " + relativePath);
+				String entryName = entry.getName();
+				//System.out.println("entryName: " + entryName);
+				//System.out.println("  entryNamePrefix: " + entryNamePrefix);
+				if(entryName.startsWith(entryNamePrefix) && entryName.endsWith(ClassUtils.CLASS_FILE_SUFFIX)) {
+					String entryNameSuffix = entryName.substring(entryNamePrefix.length(), entryName.length() - ClassUtils.CLASS_FILE_SUFFIX.length());
+					//System.out.println("  entryNameSuffix: " + entryNameSuffix);
 					
-					if(matcher.matches(relativePath)) {
-						//System.out.println("entryPath: " + entryPath);
-						//System.out.println("  rootEntryPath: " + rootEntryPath);
-						//System.out.println("  relativePath: " + relativePath);
-						String className = rootEntryPath + relativePath;
-						className = className.replace(ResourceUtils.RESOURCE_NAME_SPEPARATOR_CHAR, ClassUtils.PACKAGE_SEPARATOR_CHAR);
-						Class<?> classType = classLoader.loadClass(className);
-						String beanId = combineBeanId(relativePath);
+					if(matcher.matches(entryNameSuffix)) {
+						//System.out.println("entryName: " + entryName);
+						//System.out.println("  entryNamePrefix: " + entryNamePrefix);
+						//System.out.println("  entryNameSuffix: " + entryNameSuffix);
+						String className = entryNamePrefix + entryNameSuffix;
+						Class<?> classType = loadClass(className);
+						String beanId = combineBeanId(entryNameSuffix);
 						logger.trace("beanClass {beanId: " + beanId + ", className: " + className + "} from jar: " + jarFile.getName());
 						//System.out.println("  [clazz] " + className);
 						//System.out.println("  [beanId] " + combineBeanId(relativePath));
@@ -163,12 +233,12 @@ public class BeanClassScanner {
 					}
 				}
 			}
-			return classMap;
 		} finally {
 			// Close jar file, but only if freshly obtained -
 			// not from JarURLConnection, which might cache the file reference.
 			if(newJarFile) {
-				jarFile.close();
+				if(jarFile != null)
+					jarFile.close();
 			}
 		}
 	}
@@ -189,68 +259,6 @@ public class BeanClassScanner {
 	protected boolean isJarResource(URL url) throws IOException {
 		String protocol = url.getProtocol();
 		return (ResourceUtils.URL_PROTOCOL_JAR.equals(protocol) || ResourceUtils.URL_PROTOCOL_ZIP.equals(protocol));
-	}
-
-	/**
-	 * Recursive method used to find all classes in a given directory and subdirs.
-	 *
-	 * @param directory   The base directory
-	 * @param packageName The package name for classes found inside the base directory
-	 * @return The classes
-	 * @throws ClassNotFoundException
-	 */
-	private Map<String, Class<?>> findClasses(String basePackageName, String relativePackageName, String basePath, WildcardMatcher matcher) throws ClassNotFoundException {
-		//System.out.println("@basePackageName: " + basePackageName);
-		//System.out.println("@relativePackageName: " + relativePackageName);
-		//System.out.println("@basePath: " + basePath);
-		File path = new File(basePath);
-		if(!path.exists())
-			return null;
-
-		if(basePackageName != null && basePackageName.length() > 0 && basePackageName.charAt(basePackageName.length() - 1) != ResourceUtils.RESOURCE_NAME_SPEPARATOR_CHAR)
-			basePackageName += ResourceUtils.RESOURCE_NAME_SPEPARATOR_CHAR;
-		
-		if(relativePackageName != null && relativePackageName.length() > 0 && relativePackageName.charAt(relativePackageName.length() - 1) != ResourceUtils.RESOURCE_NAME_SPEPARATOR_CHAR)
-			relativePackageName += ResourceUtils.RESOURCE_NAME_SPEPARATOR_CHAR;
-		
-		
-		Map<String, Class<?>> classMap = new LinkedHashMap<String, Class<?>>();
-		File[] files = path.listFiles();
-		
-		for(File file : files) {
-			if(file.isDirectory()) {
-				assert !file.getName().contains(".");
-				String relativePackageName2 = relativePackageName == null ? file.getName() : relativePackageName + file.getName();
-				String basePath2 = basePath + file.getName() + ResourceUtils.RESOURCE_NAME_SPEPARATOR_CHAR;
-				//System.out.println("-relativePackageName2: " + relativePackageName2);
-				Map<String, Class<?>> map = findClasses(basePackageName, relativePackageName2, basePath2, matcher);
-				if(map != null)
-					classMap.putAll(map);
-			} else if(file.getName().endsWith(ClassUtils.CLASS_FILE_SUFFIX)) {
-				String className = null;
-				
-				if(relativePackageName != null)
-					className = basePackageName + relativePackageName + file.getName().substring(0, file.getName().length() - ClassUtils.CLASS_FILE_SUFFIX.length());
-				else
-					className = basePackageName + file.getName().substring(0, file.getName().length() - ClassUtils.CLASS_FILE_SUFFIX.length());
-				
-				String relativePath = className.substring(basePackageName.length(), className.length());
-				//System.out.println("  -file.getName(): " + file.getName());
-				//System.out.println("  -relativePath: " + relativePath);
-				
-				if(matcher.matches(relativePath)) {
-					className = className.replace(ResourceUtils.RESOURCE_NAME_SPEPARATOR_CHAR, ClassUtils.PACKAGE_SEPARATOR_CHAR);
-					Class<?> classType = classLoader.loadClass(className);
-					String beanId = combineBeanId(relativePath);
-					//System.out.println("  [clazz] " + className);
-					//System.out.println("  [beanId] " + combineBeanId(relativePath));
-					logger.trace("beanClass {beanId: " + beanId + ", className: " + className + "}");
-					classMap.put(beanId, classType);
-				}
-			}
-		}
-		
-		return classMap;
 	}
 
 	private String determineBasePackageName(String classNamePattern) {
@@ -292,11 +300,21 @@ public class BeanClassScanner {
 		return beanId.replace(ResourceUtils.RESOURCE_NAME_SPEPARATOR_CHAR, ClassUtils.PACKAGE_SEPARATOR_CHAR);
 	}
 	
+	private Class<?> loadClass(String className) {
+		className = className.replace(ResourceUtils.RESOURCE_NAME_SPEPARATOR_CHAR, ClassUtils.PACKAGE_SEPARATOR_CHAR);
+		
+		try {
+			return classLoader.loadClass(className);
+		} catch (ClassNotFoundException e) {
+			throw new BeanClassScanningFailedException("bean-class loading failed. class name: " + className, e);
+		}
+	}
+	
 	public static void main(String[] args) {
 		try {
 			BeanClassScanner loader = new BeanClassScanner("component.*ZZZ", ClassUtils.getDefaultClassLoader());
 			//loader.scanClass("com.**.*Sql*");
-			loader.scanClass("com");
+			loader.scanClass("com.i*");
 			System.out.println(loader.getClass().getName());
 		} catch(Exception e) {
 			e.printStackTrace();
