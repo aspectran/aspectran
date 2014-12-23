@@ -17,6 +17,7 @@ package com.aspectran.core.context.loader.resource;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -27,11 +28,14 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.aspectran.core.context.loader.AspectranClassLoader;
+import com.aspectran.core.util.ClassUtils;
 import com.aspectran.core.util.ResourceUtils;
 
 
@@ -44,13 +48,15 @@ public class ResourceManager {
 
 	private final String resourceLocation;
 	
-	private final Map<String, URL> resourcePool = new LinkedHashMap<String, URL>();
-	
-	private final Map<String, Class<?>> classPool = new HashMap<String, Class<?>>();
-	
 	private final AspectranClassLoader owner;
 	
 	private final boolean archived;
+	
+	private final Map<String, URL> resourceEntryMap = new LinkedHashMap<String, URL>();
+	
+	private final Map<String, Class<?>> classCache = new HashMap<String, Class<?>>();
+
+	private final List<File> jarFileList = new ArrayList<File>(); 
 	
 	public ResourceManager(String resourceLocation, AspectranClassLoader owner) {
 		File f = new File(resourceLocation);
@@ -64,11 +70,11 @@ public class ResourceManager {
 		if(resourceLocation.endsWith(ResourceUtils.JAR_FILE_SUFFIX) ||
 				resourceLocation.endsWith(ResourceUtils.ZIP_FILE_SUFFIX)) {
 			this.archived = true;
-			//findResource(resourceLocation);
 		} else {
 			this.archived = false;
-			findResource();
 		}
+		
+		findResource();
 	}
 
 	public String getResourceLocation() {
@@ -80,11 +86,11 @@ public class ResourceManager {
 	}
 
 	public URL getResource(String name) {
-		return resourcePool.get(name);
+		return resourceEntryMap.get(name);
 	}
 	
 	public Enumeration<URL> getResources() {
-		final Iterator<URL> currentResources = resourcePool.values().iterator();
+		final Iterator<URL> currentResources = resourceEntryMap.values().iterator();
 		
 		return new Enumeration<URL>() {
 			public boolean hasMoreElements() {
@@ -99,7 +105,7 @@ public class ResourceManager {
 	
 	public Enumeration<URL> getResources(String name) {
 		final String filterName = name;
-		final Iterator<Map.Entry<String, URL>> currentResources = resourcePool.entrySet().iterator();
+		final Iterator<Map.Entry<String, URL>> currentResources = resourceEntryMap.entrySet().iterator();
 		
 		return new Enumeration<URL>() {
 			private Map.Entry<String, URL> entry;
@@ -135,18 +141,18 @@ public class ResourceManager {
 	}
 	
 	public Class<?> loadClass(String name) throws ResourceNotFoundException {
-		synchronized(classPool) {
-			Class<?> clazz = classPool.get(name);
+		synchronized(classCache) {
+			Class<?> clazz = classCache.get(name);
 			
 			if(clazz == null) {
-				URL url = resourcePool.get(name);
+				URL url = resourceEntryMap.get(name);
 				
 				if(url == null) {
 					throw new ResourceNotFoundException(name);
 				}
 				
 				clazz = loadClass(url);
-				classPool.put(name, clazz);
+				classCache.put(name, clazz);
 			}
 			
 			return clazz;
@@ -157,40 +163,65 @@ public class ResourceManager {
 		return null;
 	}
 	
+	public void reset() {
+		release();
+		findResource();
+	}
+	
+	public void release() {
+		resourceEntryMap.clear();
+		classCache.clear();
+		jarFileList.clear();
+	}
+	
 	private void findResource() {
-		File dir = new File(resourceLocation);
-		
-		List<File> jarFileList = new ArrayList<File>(); 
-		
-		findResource(dir, jarFileList);
-		
-		if(jarFileList.size() > 0) {
-			for(File jarFile : jarFileList) {
-				findResourceFroJAR(jarFile);
+		try {
+			File file = new File(resourceLocation);
+			
+			if(archived) {
+				findResourceFromJAR(file);
+				jarFileList.add(file);
+			} else {
+				findResource(file);
+				
+				if(jarFileList.size() > 0) {
+					for(File jarFile : jarFileList) {
+						findResourceFromJAR(jarFile);
+					}
+				}
 			}
+		} catch(Exception e) {
+			throw new InvalidResourceException("Faild to find resource from " + resourceLocation, e);
 		}
 	}
 	
-	private void findResource(File target, final List<File> jarFileList) {
+	private void findResource(File target) {
 		target.listFiles(new FileFilter() {
 			public boolean accept(File file) {
 				if(file.isDirectory()) {
-					findResource(file, jarFileList);
+					findResource(file);
 				} else if(file.isFile()) {
-					String name = file.getAbsolutePath();
+					String filePath = file.getAbsolutePath();
 					
-					if(name.endsWith(ResourceUtils.JAR_FILE_SUFFIX)) {
-						owner.wishBrother(name);
+					if(filePath.endsWith(ResourceUtils.JAR_FILE_SUFFIX)) {
+						owner.wishBrother(filePath);
 						jarFileList.add(file);
 					} else {
-						name = name.substring(resourceLocation.length() + 1);
-						name = name.replace('\\', ResourceUtils.RESOURCE_NAME_SPEPARATOR_CHAR);
+						String resourceName = filePath.substring(resourceLocation.length() + 1);
+						resourceName = resourceName.replace('\\', ResourceUtils.RESOURCE_NAME_SPEPARATOR_CHAR);
 						
+						URL url;
 						try {
-							URL url = file.toURI().toURL();
-							resourcePool.put(name, url);
+							url = file.toURI().toURL();
 						} catch(MalformedURLException e) {
-							logger.error("invalid resource: " + file, e);
+							throw new InvalidResourceException("invalid resource: " + filePath, e);
+						}
+						
+						if(resourceName.endsWith(ClassUtils.CLASS_FILE_SUFFIX)) {
+							String className = resourceToClassName(resourceName);
+							resourceEntryMap.put(className, url);
+						} else {
+							resourceEntryMap.put(resourceName, url);
 						}
 					}
 				}
@@ -199,22 +230,55 @@ public class ResourceManager {
 		});
 	}
 	
-	private void findResourceFroJAR(File target) {
+	private void findResourceFromJAR(File target) throws IOException {
+		JarFile jarFile = null;
 		
-	}
+		try {
+			jarFile = new JarFile(target);
+			
+			for(Enumeration<JarEntry> entries = jarFile.entries(); entries.hasMoreElements();) {
+				JarEntry entry = entries.nextElement();
+				String resourceName = entry.getName();
 
-	public void reset() {
-		release();
-		findResource();
+				//"jar:file:/C:/proj/parser/jar/parser.jar!/test.xml"
+				URL url = new URL(ResourceUtils.JAR_URL_PREFIX + target.toURI() + ResourceUtils.JAR_URL_SEPARATOR + resourceName);
+				
+				if(resourceName.endsWith(ClassUtils.CLASS_FILE_SUFFIX)) {
+					String className = resourceToClassName(resourceName);
+					resourceEntryMap.put(className, url);
+				} else {
+					resourceEntryMap.put(resourceName, url);
+				}
+			}
+			
+		} catch(IOException e) {
+			logger.error("invalid resource: " + target, e);
+		} finally {
+			if(jarFile != null)
+				jarFile.close();
+		}
 	}
 	
-	public void release() {
-		if(resourcePool != null) {
-			resourcePool.clear();
-		}
-
-		if(classPool != null) {
-			classPool.clear();
+	private static String resourceToClassName(String resourceName) {
+		String className = resourceName.substring(0, resourceName.length() - ClassUtils.CLASS_FILE_SUFFIX.length());
+		className = className.replace(ResourceUtils.RESOURCE_NAME_SPEPARATOR_CHAR, ClassUtils.PACKAGE_SEPARATOR_CHAR);
+		return className;
+	}
+	
+	public static void main(String[] args) {
+		try {
+			File file = new File("/c:/Users/Gulendol/Projects/aspectran/ADE/workspace/aspectran.example/webapp/WEB-INF/lib/cglib-nodep-3.1.jar");
+			
+			JarFile jarFile = new JarFile(file);
+			System.out.println(file.toURI().toString());
+			for(Enumeration<JarEntry> entries = jarFile.entries(); entries.hasMoreElements();) {
+				JarEntry entry = entries.nextElement();
+				String name = entry.getName();
+				System.out.println(entry);
+			}
+			
+		} catch(IOException e) {
+			e.printStackTrace();
 		}
 	}
 }
