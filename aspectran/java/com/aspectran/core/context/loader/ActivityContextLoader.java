@@ -1,7 +1,6 @@
 package com.aspectran.core.context.loader;
 
 import java.net.URL;
-import java.util.Enumeration;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -101,11 +100,11 @@ public class ActivityContextLoader implements ActivityContextReloadable {
 		return timer;
 	}
 	
-	public Enumeration<URL> getResources() {
+	public URL[] extractResources() {
 		if(aspectranClassLoader == null)
 			return null;
 		
-		return aspectranClassLoader.getResources();
+		return aspectranClassLoader.getResourceManager().extractResources();
 	}
 	
 }

@@ -1,7 +1,6 @@
 package com.aspectran.core.context.loader;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -19,11 +18,11 @@ public class AspectranClassLoader extends ClassLoader {
 	
 	private final AspectranClassLoader root;
 
-	private final List<AspectranClassLoader> children = new LinkedList<AspectranClassLoader>();
-	
-	private final boolean firstborn;
-	
 	private final ResourceManager resourceManager;
+	
+	private final List<AspectranClassLoader> children = new LinkedList<AspectranClassLoader>();
+
+	private final boolean firstborn;
 	
 	public AspectranClassLoader() {
 		this(getDefaultClassLoader());
@@ -32,7 +31,7 @@ public class AspectranClassLoader extends ClassLoader {
 	public AspectranClassLoader(ClassLoader parent) {
 		super(parent);
 		this.root = this;
-		this.resourceManager = null;
+		this.resourceManager = new ResourceManager(null, this);;
 		this.firstborn = false;
 	}
 	
@@ -81,11 +80,15 @@ public class AspectranClassLoader extends ClassLoader {
 		return parent.createChild(resourceLocation);
 	}
 	
-	protected AspectranClassLoader getRoot() {
+	public AspectranClassLoader getRoot() {
 		return root;
 	}
 	
-	protected List<AspectranClassLoader> getChildren() {
+	public boolean isRoot() {
+		return this == root;
+	}
+	
+	public List<AspectranClassLoader> getChildren() {
 		return children;
 	}
 	
@@ -93,17 +96,10 @@ public class AspectranClassLoader extends ClassLoader {
 		return firstborn;
 	}
 
-	protected String getResourceLocation() {
-		if(resourceManager == null)
-			return null;
-		
-		return resourceManager.getResourceLocation();
-	}
-
-	protected ResourceManager getResourceManager() {
+	public ResourceManager getResourceManager() {
 		return resourceManager;
 	}
-
+	
 	public void reload() {
 		reload(root);
 	}
@@ -144,25 +140,11 @@ public class AspectranClassLoader extends ClassLoader {
 		children.remove(child);
 	}
 	
-	public Enumeration<URL> getResources() {
-		if(resourceManager == null)
-			return null;
-		
-		return resourceManager.getResources();
+	public URL[] extractResources() {
+		return resourceManager.extractResources();
 	}
 	
-	public Enumeration<URL> getAllResources() {
-		if(resourceManager == null)
-			return null;
-		
-		return resourceManager.getResources();
-	}
-	
-	public List<File> extractResourceFileList() {
-		return null;
-	}
-
-	public Enumeration<URL> getResources(String name) {
+	public Enumeration<URL> getResources(String name) throws IOException {
 		if(resourceManager == null)
 			return null;
 		
