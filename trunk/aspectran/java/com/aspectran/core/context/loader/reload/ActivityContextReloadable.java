@@ -1,9 +1,7 @@
 package com.aspectran.core.context.loader.reload;
 
-import java.net.URL;
-import java.util.Enumeration;
-
 import com.aspectran.core.context.ActivityContext;
+import com.aspectran.core.context.loader.AspectranClassLoader;
 
 
 public interface ActivityContextReloadable {
@@ -12,6 +10,6 @@ public interface ActivityContextReloadable {
 
 	public ActivityContext getActivityContext();
 	
-	public Enumeration<URL> getResources();
+	public AspectranClassLoader getAspectranClassLoader();
 	
 }

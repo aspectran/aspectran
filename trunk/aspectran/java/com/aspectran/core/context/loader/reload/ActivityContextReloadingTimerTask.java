@@ -3,7 +3,6 @@ package com.aspectran.core.context.loader.reload;
 import java.io.File;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TimerTask;
@@ -11,7 +10,7 @@ import java.util.TimerTask;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.aspectran.core.context.ActivityContext;
+import com.aspectran.core.context.loader.AspectranClassLoader;
 
 public class ActivityContextReloadingTimerTask extends TimerTask {
 	
@@ -19,35 +18,36 @@ public class ActivityContextReloadingTimerTask extends TimerTask {
 	
 	private final boolean debugEnabled = logger.isDebugEnabled();
 
-	private ActivityContextReloadable activityContextReloadable;
+	private final ActivityContextReloadable activityContextReloadable;
 	
-	private Enumeration<URL> resources;
+	private final AspectranClassLoader aspectranClassLoader;
 	
-	private Map<URL, Long> modifyTimeMap;
+	private final URL[] resources;
+	
+	private Map<String, Long> modifyTimeMap = new HashMap<String, Long>();
 	
 	private boolean modified = false;
 	
 	public ActivityContextReloadingTimerTask(ActivityContextReloadable activityContextReloadable) {
 		this.activityContextReloadable = activityContextReloadable;
-		this.resources = activityContextReloadable.getResources();
+		this.aspectranClassLoader = activityContextReloadable.getAspectranClassLoader();
+		
+		if(aspectranClassLoader != null)
+			this.resources = aspectranClassLoader.extractResources();
+		else
+			this.resources = null;
 	}
 	
 	public void run() {
 		if(resources == null || modified)
 			return;
 		
-		if(modifyTimeMap == null) {
-			modifyTimeMap = new HashMap<URL, Long>();
-		}
-		
-		while(resources.hasMoreElements()) {
-			URL url = resources.nextElement();
-			
+		for(URL url : resources) {
 			try {
 				File file = new File(url.toURI());
-
+				
 				long modifiedTime = file.lastModified();
-				long modifiedTime2 = modifyTimeMap.get(url);
+				long modifiedTime2 = modifyTimeMap.get(file.getAbsoluteFile());
 				
 				if(modifiedTime != modifiedTime2) {
 					modified = true;
@@ -64,7 +64,7 @@ public class ActivityContextReloadingTimerTask extends TimerTask {
 		}
 		
 		if(modified) {
-			ActivityContext newActivityContext = activityContextReloadable.reload();
+			activityContextReloadable.reload();
 			modified = false;
 		}
 	}
