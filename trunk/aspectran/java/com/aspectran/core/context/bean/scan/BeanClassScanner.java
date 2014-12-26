@@ -314,7 +314,8 @@ public class BeanClassScanner {
 		try {
 			BeanClassScanner loader = new BeanClassScanner("component.*ZZZ", ClassUtils.getDefaultClassLoader());
 			//loader.scanClass("com.**.*Sql*");
-			loader.scanClass("com.i*");
+			//loader.scanClass("com.i*");
+			loader.scanClass("com.*");
 			System.out.println(loader.getClass().getName());
 		} catch(Exception e) {
 			e.printStackTrace();

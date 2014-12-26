@@ -17,6 +17,7 @@ package com.aspectran.core.context.loader.resource;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Enumeration;
@@ -29,6 +30,9 @@ import java.util.NoSuchElementException;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.aspectran.core.context.loader.AspectranClassLoader;
 import com.aspectran.core.util.ResourceUtils;
 
@@ -38,32 +42,21 @@ import com.aspectran.core.util.ResourceUtils;
  */
 public class ResourceManager {
 	
-	//private final Logger logger = LoggerFactory.getLogger(ResourceManager.class);
+	private final Logger logger = LoggerFactory.getLogger(ResourceManager.class);
 
 	private final String resourceLocation;
 	
 	private final AspectranClassLoader owner;
 	
-	private final boolean archived;
+	private boolean archived;
 	
 	private final ResourceEntries resourceEntries = new ResourceEntries();
 	
 	private final Map<String, Class<?>> classCache = new HashMap<String, Class<?>>();
 
 	public ResourceManager(String resourceLocation, AspectranClassLoader owner) {
-		File f = new File(resourceLocation);
-		
-		if(!f.isDirectory())
-			throw new InvalidResourceException("invalid resource directory name: " + resourceLocation);
-		
 		this.resourceLocation = resourceLocation;
 		this.owner = owner;
-		
-		if(resourceLocation != null && resourceLocation.endsWith(ResourceUtils.JAR_FILE_SUFFIX)) {
-			this.archived = true;
-		} else {
-			this.archived = false;
-		}
 		
 		if(resourceLocation != null)
 			findResource();
@@ -85,27 +78,18 @@ public class ResourceManager {
 		return resourceEntries.get(name);
 	}
 	
-	private Enumeration<URL> getParentResources(String name) throws IOException {
-		ClassLoader parentClassLoader = owner.getParent();
-		
-		if(parentClassLoader != null)
-			return  parentClassLoader.getResources(name);
-		
-		return null;
-	}
-	
 	public Enumeration<URL> getResources() {
-		final Iterator<ResourceManager> children = getChildrenResourceManagers(owner.getRoot());
+		final Iterator<AspectranClassLoader> owners = AspectranClassLoader.getAspectranClassLoaders(owner);
 		
 		return new Enumeration<URL>() {
 			private Iterator<Map.Entry<String, URL>> current;
 			
 			public synchronized boolean hasMoreElements() {
 				if(current == null || !current.hasNext()) {
-					if(!children.hasNext())
+					if(!owners.hasNext())
 						return false;
 					
-					current = children.next().getResourceEntries().entrySet().iterator();
+					current = owners.next().getResourceManager().getResourceEntries().entrySet().iterator();
 				}
 				
 				return current.hasNext();
@@ -113,7 +97,7 @@ public class ResourceManager {
 
 			public synchronized URL nextElement() {
 				if(current == null)
-					current = children.next().getResourceEntries().entrySet().iterator();
+					current = owners.next().getResourceManager().getResourceEntries().entrySet().iterator();
 
 				return current.next().getValue();
 			}
@@ -121,8 +105,19 @@ public class ResourceManager {
 	}
 	
 	public Enumeration<URL> getResources(String name) throws IOException {
-		final Enumeration<URL> inherited = getParentResources(name);
-		final Iterator<ResourceManager> children = owner.isRoot() ? getChildrenResourceManagers(owner) : null;
+		return getResources(name, null);
+	}
+	
+	public Enumeration<URL> getResources(String name, final Enumeration<URL> inherited) throws IOException {
+		System.out.println("find resource from parent: " + name);
+		System.out.println("parent results: " + inherited);
+		
+		while(inherited.hasMoreElements()) {
+			System.out.println("p: " + inherited.nextElement().toString());
+		}
+		
+		System.out.println("find resource from self: " + name);
+		final Iterator<AspectranClassLoader> owners = AspectranClassLoader.getAspectranClassLoaders(owner);
 		final String filterName = name;
 		
 		return new Enumeration<URL>() {
@@ -133,16 +128,18 @@ public class ResourceManager {
 			private boolean hasNext() {
 				while(true) {
 					if(current == null) {
-						if(!children.hasNext())
+						if(!owners.hasNext())
 							return false;
 						
-						current = children.next().getResourceEntries().entrySet().iterator();
+						current = owners.next().getResourceManager().getResourceEntries().entrySet().iterator();
 					}
 					
 					while(current.hasNext()) {
 						Map.Entry<String, URL> entry2 = current.next();
+						//System.out.println("current: " + entry2.getKey());
 						
-						if(entry2.getKey().startsWith(filterName)) {
+						//if(entry2.getKey().startsWith(filterName)) {
+						if(entry2.getKey().equals(filterName)) {
 							entry = entry2;
 							return true;
 						}
@@ -163,10 +160,7 @@ public class ResourceManager {
 						nomore = true;
 				}
 
-				if(children != null)
-					return hasNext();
-				
-				return false;
+				return hasNext();
 			}
 
 			public synchronized URL nextElement() {
@@ -211,20 +205,6 @@ public class ResourceManager {
 		return null;
 	}
 	
-	protected static Iterator<ResourceManager> getChildrenResourceManagers(final AspectranClassLoader acl) {
-		return new Iterator<ResourceManager>() {
-			private Iterator<AspectranClassLoader> owners = (acl.getChildren().size() == 0 ? null : acl.getChildren().iterator());
-			
-			public boolean hasNext() {
-				return (owners != null && owners.hasNext());
-			}
-
-			public ResourceManager next() {
-				return owners.next().getResourceManager();
-			}
-		};
-	}
-	
 	public void reset() {
 		release();
 		
@@ -238,18 +218,31 @@ public class ResourceManager {
 	}
 	
 	private void findResource() {
+		if(resourceLocation != null && resourceLocation.endsWith(ResourceUtils.JAR_FILE_SUFFIX)) {
+			this.archived = true;
+		} else {
+			this.archived = false;
+		}
+		
 		try {
 			File file = new File(resourceLocation);
 			
-			if(archived) {
+			if(this.archived) {
+				if(!file.isFile())
+					throw new FileNotFoundException("invalid resource jar file: " + resourceLocation);
+
 				findResourceFromJAR(file);
-				resourceEntries.addJarFile(file);
 			} else {
-				findResource(file);
+				if(!file.isDirectory())
+					throw new FileNotFoundException("invalid resource directory: " + resourceLocation);
 				
-				if(resourceEntries.getJarFileList().size() > 0) {
-					for(URL jarFile : resourceEntries.getJarFileList()) {
-						findResourceFromJAR(new File(jarFile.toURI()));
+				List<File> jarFileList = new LinkedList<File>();
+				
+				findResource(file, jarFileList);
+				
+				if(jarFileList.size() > 0) {
+					for(File jarFile : jarFileList) {
+						owner.wishBrother(jarFile.getAbsolutePath());
 					}
 				}
 			}
@@ -258,24 +251,23 @@ public class ResourceManager {
 		}
 	}
 	
-	private void findResource(File target) {
+	private void findResource(File target, final List<File> jarFileList) {
 		target.listFiles(new FileFilter() {
 			public boolean accept(File file) {
+				String filePath = file.getAbsolutePath();
+				String resourceName = filePath.substring(resourceLocation.length() + 1);
+				
+				resourceEntries.putResource(resourceName, file);
+
 				if(file.isDirectory()) {
-					findResource(file);
+					//System.out.println("AbsolutePath: " + filePath);
+					findResource(file, jarFileList);
 				} else if(file.isFile()) {
-					String filePath = file.getAbsolutePath();
-					
 					if(filePath.endsWith(ResourceUtils.JAR_FILE_SUFFIX)) {
-						owner.wishBrother(filePath);
-						resourceEntries.addJarFile(file);
-					} else {
-						String resourceName = filePath.substring(resourceLocation.length() + 1);
-						resourceName = resourceName.replace('\\', ResourceUtils.RESOURCE_NAME_SPEPARATOR_CHAR);
-						
-						resourceEntries.putResource(resourceName, file);
+						jarFileList.add(file);
 					}
 				}
+				
 				return false;
 			}
 		});
@@ -310,8 +302,6 @@ public class ResourceManager {
 			if(!ResourceUtils.URL_PROTOCOL_JAR.equals(url.getProtocol()))
 				resources.add(url);
 		}
-		
-		resources.addAll(resourceEntries.getJarFileList());
 		
 		return resources.toArray(new URL[resources.size()]);
 	}
