@@ -19,11 +19,8 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.jar.JarEntry;
 
-import com.aspectran.core.util.ClassUtils;
 import com.aspectran.core.util.ResourceUtils;
 
 
@@ -35,8 +32,6 @@ public class ResourceEntries extends LinkedHashMap<String, URL> {
 	/** @serial */
 	private static final long serialVersionUID = -6936820061673430782L;
 	
-	private final List<URL> jarFileList = new LinkedList<URL>(); 
-
 	public ResourceEntries() {
 		super();
 	}
@@ -93,36 +88,5 @@ public class ResourceEntries extends LinkedHashMap<String, URL> {
 		
 		return super.put(resourceName, url);
 	}
-	
-	public void addJarFile(URL url) {
-		jarFileList.add(url);
-	}
-	
-	public void addJarFile(File file) {
-		URL url;
 		
-		try {
-			url = file.toURI().toURL();
-		} catch (MalformedURLException e) {
-			throw new InvalidResourceException("invalid resource jar file: " + file, e);
-		}
-
-		addJarFile(url);
-	}
-	
-	public List<URL> getJarFileList() {
-		return jarFileList;
-	}
-
-	public void clear() {
-		super.clear();
-		jarFileList.clear();
-	}
-	
-	private static String resourceToClassName(String resourceName) {
-		String className = resourceName.substring(0, resourceName.length() - ClassUtils.CLASS_FILE_SUFFIX.length());
-		className = className.replace(ResourceUtils.RESOURCE_NAME_SPEPARATOR_CHAR, ClassUtils.PACKAGE_SEPARATOR_CHAR);
-		return className;
-	}
-	
 }
