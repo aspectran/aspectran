@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 import com.aspectran.core.context.ActivityContext;
+import com.aspectran.core.context.loader.resource.LocalResourceManager;
 import com.aspectran.core.context.loader.resource.ResourceManager;
 
 public class AspectranClassLoader extends ClassLoader {
@@ -33,7 +34,7 @@ public class AspectranClassLoader extends ClassLoader {
 	public AspectranClassLoader(ClassLoader parent) {
 		super(parent);
 		this.root = this;
-		this.resourceManager = new ResourceManager(null, this);;
+		this.resourceManager = new LocalResourceManager(null, this);;
 		this.firstborn = false;
 	}
 	
@@ -63,7 +64,7 @@ public class AspectranClassLoader extends ClassLoader {
 		super(parent);
 		
 		this.root = root == null ? this : root;
-		this.resourceManager = new ResourceManager(resourceLocation, this);
+		this.resourceManager = new LocalResourceManager(resourceLocation, this);
 		this.firstborn = firstborn;
 	}
 	
@@ -241,6 +242,8 @@ public class AspectranClassLoader extends ClassLoader {
 						} else {
 							next = null;
 						}
+					} else {
+						next = null;
 					}
 				} else {
 					next = children.next();
@@ -276,19 +279,19 @@ public class AspectranClassLoader extends ClassLoader {
 			resourceLocations[0] = "/WEB-INF/classes";
 			resourceLocations[1] = "/WEB-INF/lib";
 			
-			resourceLocations = ActivityContextLoadingManager.checkResourceLocations("file:/c:/Users/Gulendol/Projects/aspectran/ADE/workspace/aspectran.example/webapp", resourceLocations);
+			resourceLocations = ActivityContextLoadingManager.checkResourceLocations("/c:/Users/Gulendol/Projects/aspectran/ADE/workspace/aspectran.example/webapp", resourceLocations);
 			
 			for(String r : resourceLocations) {
 				System.out.println("resourceLocation: " + r);
 			}
 			
 			AspectranClassLoader acl = new AspectranClassLoader(resourceLocations);
-			ResourceManager rm = acl.getResourceManager();
+			//ResourceManager rm = acl.getResourceManager();
 			//ClassLoader acl =AspectranClassLoader.getDefaultClassLoader();
 			
 			//Enumeration<URL> res = acl.getResources("org/junit/After.class");
 			//Enumeration<URL> res = acl.getResources("com/aspectran/core/context/bean/BeanRegistry.class");
-			Enumeration<URL> res = acl.getResources("com/aspectran");
+			Enumeration<URL> res = acl.getResources("com/");
 			
 			while(res.hasMoreElements()) {
 				System.out.println(res.nextElement().toString());

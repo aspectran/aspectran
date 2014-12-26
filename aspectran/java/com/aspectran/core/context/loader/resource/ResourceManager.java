@@ -15,9 +15,6 @@
  */
 package com.aspectran.core.context.loader.resource;
 
-import java.io.File;
-import java.io.FileFilter;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Enumeration;
@@ -27,11 +24,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.aspectran.core.context.loader.AspectranClassLoader;
 import com.aspectran.core.util.ResourceUtils;
@@ -42,32 +34,14 @@ import com.aspectran.core.util.ResourceUtils;
  */
 public class ResourceManager {
 	
-	private final Logger logger = LoggerFactory.getLogger(ResourceManager.class);
-
-	private final String resourceLocation;
-	
 	private final AspectranClassLoader owner;
 	
-	private boolean archived;
-	
-	private final ResourceEntries resourceEntries = new ResourceEntries();
+	protected final ResourceEntries resourceEntries = new ResourceEntries();
 	
 	private final Map<String, Class<?>> classCache = new HashMap<String, Class<?>>();
 
-	public ResourceManager(String resourceLocation, AspectranClassLoader owner) {
-		this.resourceLocation = resourceLocation;
+	public ResourceManager(AspectranClassLoader owner) {
 		this.owner = owner;
-		
-		if(resourceLocation != null)
-			findResource();
-	}
-
-	public String getResourceLocation() {
-		return resourceLocation;
-	}
-	
-	protected boolean isArchived() {
-		return archived;
 	}
 	
 	protected ResourceEntries getResourceEntries() {
@@ -109,6 +83,9 @@ public class ResourceManager {
 	}
 	
 	public Enumeration<URL> getResources(String name, final Enumeration<URL> inherited) throws IOException {
+		if(name.endsWith(ResourceUtils.RESOURCE_NAME_SPEPARATOR))
+			name = name.substring(0, name.length() - 1);
+		
 		System.out.println("find resource from parent: " + name);
 		System.out.println("parent results: " + inherited);
 		
@@ -207,87 +184,11 @@ public class ResourceManager {
 	
 	public void reset() {
 		release();
-		
-		if(resourceLocation != null)
-			findResource();
 	}
 	
 	public void release() {
 		resourceEntries.clear();
 		classCache.clear();
-	}
-	
-	private void findResource() {
-		if(resourceLocation != null && resourceLocation.endsWith(ResourceUtils.JAR_FILE_SUFFIX)) {
-			this.archived = true;
-		} else {
-			this.archived = false;
-		}
-		
-		try {
-			File file = new File(resourceLocation);
-			
-			if(this.archived) {
-				if(!file.isFile())
-					throw new FileNotFoundException("invalid resource jar file: " + resourceLocation);
-
-				findResourceFromJAR(file);
-			} else {
-				if(!file.isDirectory())
-					throw new FileNotFoundException("invalid resource directory: " + resourceLocation);
-				
-				List<File> jarFileList = new LinkedList<File>();
-				
-				findResource(file, jarFileList);
-				
-				if(jarFileList.size() > 0) {
-					for(File jarFile : jarFileList) {
-						owner.wishBrother(jarFile.getAbsolutePath());
-					}
-				}
-			}
-		} catch(Exception e) {
-			throw new InvalidResourceException("Faild to find resource from " + resourceLocation, e);
-		}
-	}
-	
-	private void findResource(File target, final List<File> jarFileList) {
-		target.listFiles(new FileFilter() {
-			public boolean accept(File file) {
-				String filePath = file.getAbsolutePath();
-				String resourceName = filePath.substring(resourceLocation.length() + 1);
-				
-				resourceEntries.putResource(resourceName, file);
-
-				if(file.isDirectory()) {
-					//System.out.println("AbsolutePath: " + filePath);
-					findResource(file, jarFileList);
-				} else if(file.isFile()) {
-					if(filePath.endsWith(ResourceUtils.JAR_FILE_SUFFIX)) {
-						jarFileList.add(file);
-					}
-				}
-				
-				return false;
-			}
-		});
-	}
-	
-	private void findResourceFromJAR(File target) throws IOException {
-		JarFile jarFile = null;
-		
-		try {
-			jarFile = new JarFile(target);
-			
-			for(Enumeration<JarEntry> entries = jarFile.entries(); entries.hasMoreElements();) {
-				JarEntry entry = entries.nextElement();
-				
-				resourceEntries.putResource(target, entry);
-			}
-		} finally {
-			if(jarFile != null)
-				jarFile.close();
-		}
 	}
 	
 	public URL[] extractResources() {
@@ -306,32 +207,4 @@ public class ResourceManager {
 		return resources.toArray(new URL[resources.size()]);
 	}
 	
-	@SuppressWarnings("resource")
-	public static void main(String[] args) {
-		try {
-			// Windows drive letter path
-			URL url = new URL("file:///c:/Users/Gulendol/Projects/aspectran/ADE/workspace/aspectran.example/webapp/WEB-INF/lib/cglib-nodep-3.1.jar");
-			System.out.println(url.getFile());
-			System.out.println(new File(url.toURI()).exists());
-			
-			//File file = new File("/c:/Users/Gulendol/Projects/aspectran/ADE/workspace/aspectran.example/webapp/WEB-INF/lib/cglib-nodep-3.1.jar");
-			File file = new File(url.toURI());
-			//URI uri = new URI();
-			System.out.println(file.exists());
-			System.out.println(file);
-			System.out.println(file.toURI());
-//			
-//			JarFile jarFile = new JarFile(file);
-//			System.out.println(file.getAbsolutePath());
-//			System.out.println(file.toURI().toString());
-//			for(Enumeration<JarEntry> entries = jarFile.entries(); entries.hasMoreElements();) {
-//				JarEntry entry = entries.nextElement();
-//				//String name = entry.getName();
-//				System.out.println(entry);
-//			}
-			
-		} catch(Exception e) {
-			e.printStackTrace();
-		}
-	}
 }
