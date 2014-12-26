@@ -20,8 +20,8 @@ import java.io.FileFilter;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
@@ -42,7 +42,7 @@ public class LocalResourceManager extends ResourceManager {
 	private boolean archived;
 	
 	public LocalResourceManager(String resourceLocation, AspectranClassLoader owner) {
-		super(owner);
+		super();
 		
 		this.resourceLocation = resourceLocation;
 		this.owner = owner;
@@ -83,7 +83,7 @@ public class LocalResourceManager extends ResourceManager {
 				if(!file.isDirectory())
 					throw new FileNotFoundException("invalid resource directory: " + resourceLocation);
 				
-				List<File> jarFileList = new LinkedList<File>();
+				List<File> jarFileList = new ArrayList<File>();
 				
 				findResource(file, jarFileList);
 				

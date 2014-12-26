@@ -15,13 +15,9 @@
  */
 package com.aspectran.core.context.loader.resource;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
@@ -34,55 +30,133 @@ import com.aspectran.core.util.ResourceUtils;
  */
 public class ResourceManager {
 	
-	private final AspectranClassLoader owner;
-	
 	protected final ResourceEntries resourceEntries = new ResourceEntries();
 	
-	private final Map<String, Class<?>> classCache = new HashMap<String, Class<?>>();
-
-	public ResourceManager(AspectranClassLoader owner) {
-		this.owner = owner;
+	public ResourceManager() {
 	}
 	
 	protected ResourceEntries getResourceEntries() {
 		return resourceEntries;
 	}
-
+	
 	public URL getResource(String name) {
 		return resourceEntries.get(name);
 	}
-	
-	public Enumeration<URL> getResources() {
-		final Iterator<AspectranClassLoader> owners = AspectranClassLoader.getAspectranClassLoaders(owner);
+
+	public static Enumeration<URL> getResources(final Iterator<AspectranClassLoader> owners) {
 		
 		return new Enumeration<URL>() {
-			private Iterator<Map.Entry<String, URL>> current;
+			private Iterator<URL> values;
+			private URL next;
+			private URL current;
+
+			private boolean hasNext() {
+				while(true) {
+					if(values == null) {
+						if(!owners.hasNext())
+							return false;
+						
+						values = owners.next().getResourceManager().getResourceEntries().values().iterator();
+					}
+					
+					while(values.hasNext()) {
+						next = values.next();
+						return true;
+					}
+					
+					values = null;
+				}
+			}
 			
 			public synchronized boolean hasMoreElements() {
-				if(current == null || !current.hasNext()) {
-					if(!owners.hasNext())
-						return false;
-					
-					current = owners.next().getResourceManager().getResourceEntries().entrySet().iterator();
-				}
+				if(next != null)
+					return true;
 				
-				return current.hasNext();
+				return hasNext();
 			}
 
 			public synchronized URL nextElement() {
-				if(current == null)
-					current = owners.next().getResourceManager().getResourceEntries().entrySet().iterator();
+				if(next == null) {
+					if(!hasNext())
+						throw new NoSuchElementException();
+				}
 
-				return current.next().getValue();
+				current = next;
+				next = null;
+
+				return current;
+			}
+		};
+	}
+
+	public static Enumeration<URL> getResources(final Iterator<AspectranClassLoader> owners, String name) {
+		return getResources(owners, name, null);
+	}
+	
+	public static Enumeration<URL> getResources(final Iterator<AspectranClassLoader> owners, String name, final Enumeration<URL> inherited) {
+		if(name.endsWith(ResourceUtils.RESOURCE_NAME_SPEPARATOR))
+			name = name.substring(0, name.length() - 1);
+		
+		System.out.println("find resource from parent: " + name);
+		System.out.println("parent results: " + inherited);
+		
+		System.out.println("find resource from self: " + name);
+		final String filterName = name;
+		
+		return new Enumeration<URL>() {
+			private URL next;
+			private URL current;
+			private boolean nomore; //for parent
+			
+			private boolean hasNext() {
+				do {
+					if(!owners.hasNext())
+						return false;
+					
+					next = owners.next().getResourceManager().getResource(filterName);
+				} while(next == null);
+				
+				return (next != null);
+			}
+			
+			public synchronized boolean hasMoreElements() {
+				if(!nomore) {
+					if(inherited != null && inherited.hasMoreElements())
+						return true;
+					else
+						nomore = true;
+				}
+
+				if(next == null)
+					return hasNext();
+				else
+					return true;
+			}
+
+			public synchronized URL nextElement() {
+				if(!nomore) {
+					if(inherited != null && inherited.hasMoreElements())
+						return inherited.nextElement();
+				}
+				
+				if(next == null) {
+					if(!hasNext())
+						throw new NoSuchElementException();
+				}
+				
+				current = next;
+				next = null;
+
+				return current;
 			}
 		};
 	}
 	
-	public Enumeration<URL> getResources(String name) throws IOException {
-		return getResources(name, null);
+	public static Enumeration<URL> searchResources(final Iterator<AspectranClassLoader> owners, String name) {
+		return searchResources(owners, name, null);
 	}
-	
-	public Enumeration<URL> getResources(String name, final Enumeration<URL> inherited) throws IOException {
+
+	public static Enumeration<URL> searchResources(final Iterator<AspectranClassLoader> owners, String name, final Enumeration<URL> inherited) {
 		if(name.endsWith(ResourceUtils.RESOURCE_NAME_SPEPARATOR))
 			name = name.substring(0, name.length() - 1);
 		
@@ -94,7 +168,6 @@ public class ResourceManager {
 		}
 		
 		System.out.println("find resource from self: " + name);
-		final Iterator<AspectranClassLoader> owners = AspectranClassLoader.getAspectranClassLoaders(owner);
 		final String filterName = name;
 		
 		return new Enumeration<URL>() {
@@ -147,7 +220,7 @@ public class ResourceManager {
 							return inherited.nextElement();
 					}
 
-					if(!hasMoreElements())
+					if(!hasNext())
 						throw new NoSuchElementException();
 				}
 
@@ -158,29 +231,43 @@ public class ResourceManager {
 			}
 		};
 	}
+//
+//	public Class<?> loadClass(String name) throws ResourceNotFoundException {
+//		synchronized(classCache) {
+//			Class<?> c = classCache.get(name);
+//			
+//			if(c == null) {
+//				URL url = resourceEntries.get(name);
+//				
+//				if(url == null) {
+//					throw new ResourceNotFoundException(name);
+//				}
+//				
+//				c = loadClass(url);
+//				classCache.put(name, c);
+//			}
+//			
+//			return c;
+//		}
+//	}
 	
-	public Class<?> loadClass(String name) throws ResourceNotFoundException {
-		synchronized(classCache) {
-			Class<?> clazz = classCache.get(name);
-			
-			if(clazz == null) {
-				URL url = resourceEntries.get(name);
-				
-				if(url == null) {
-					throw new ResourceNotFoundException(name);
-				}
-				
-				clazz = loadClass(url);
-				classCache.put(name, clazz);
-			}
-			
-			return clazz;
-		}
-	}
-	
-	protected Class<?> loadClass(URL url) {
-		return null;
-	}
+//	protected Class<?> loadClass(URL url) {
+//		URLConnection connection = url.openConnection();
+//		InputStream input = connection.getInputStream();
+//		ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+//		int data = input.read();
+//		
+//		while(data != -1) {
+//			buffer.write(data);
+//			data = input.read();
+//		}
+//		
+//		input.close();
+//		
+//		byte[] classData = buffer.toByteArray();
+//		
+//		return owner.defineClass("reflection.MyObject", classData, 0, classData.length);
+//	}
 	
 	public void reset() {
 		release();
@@ -188,23 +275,6 @@ public class ResourceManager {
 	
 	public void release() {
 		resourceEntries.clear();
-		classCache.clear();
-	}
-	
-	public URL[] extractResources() {
-		Enumeration<URL> res = getResources();
-		List<URL> resources = new LinkedList<URL>();
-		
-		URL url = null;
-		
-		while(res.hasMoreElements()) {
-			url = res.nextElement();
-			
-			if(!ResourceUtils.URL_PROTOCOL_JAR.equals(url.getProtocol()))
-				resources.add(url);
-		}
-		
-		return resources.toArray(new URL[resources.size()]);
 	}
 	
 }
