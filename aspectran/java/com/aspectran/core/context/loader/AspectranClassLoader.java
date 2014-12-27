@@ -3,9 +3,9 @@ package com.aspectran.core.context.loader;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.instrument.ClassFileTransformer;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -26,6 +26,8 @@ public class AspectranClassLoader extends ClassLoader {
 	
 	private final Logger logger = LoggerFactory.getLogger(AspectranClassLoader.class);
 	
+	private final int id;
+	
 	private final AspectranClassLoader root;
 
 	private final String resourceLocation;
@@ -36,16 +38,14 @@ public class AspectranClassLoader extends ClassLoader {
 
 	private final boolean firstborn;
 	
+	private int reloadingTimes;
+	
 	public AspectranClassLoader() {
 		this(getDefaultClassLoader());
 	}
 	
 	public AspectranClassLoader(ClassLoader parent) {
-		super(parent);
-		this.root = this;
-		this.resourceLocation = null;
-		this.resourceManager = new LocalResourceManager(null, this);
-		this.firstborn = false;
+		this((String)null, parent);
 	}
 	
 	public AspectranClassLoader(String resourceLocation) {
@@ -54,10 +54,13 @@ public class AspectranClassLoader extends ClassLoader {
 
 	public AspectranClassLoader(String resourceLocation, ClassLoader parent) {
 		super(parent);
+		this.id = 1000;
 		this.root = this;
+		this.firstborn = false;
 		this.resourceLocation = resourceLocation;
 		this.resourceManager = new LocalResourceManager(resourceLocation, this);
-		this.firstborn = false;
+		
+		logger.debug("created a root AspectranClassLoader. " + this);
 	}
 	
 	public AspectranClassLoader(String[] resourceLocations) {
@@ -74,23 +77,23 @@ public class AspectranClassLoader extends ClassLoader {
 		}
 	}
 
-	protected AspectranClassLoader(String resourceLocation, AspectranClassLoader parent, AspectranClassLoader root, boolean firstborn) {
+	protected AspectranClassLoader(String resourceLocation, AspectranClassLoader parent) {
 		super(parent);
 		
-		parent.getChildren().add(this);
+		int childrenSize = parent.addChild(this);
 		
-		this.root = root == null ? this : root;
+		this.id = (Math.abs(parent.getId() / 1000) + 1) * 1000 + parent.getChildren().size();
+		this.root = parent.getRoot();
+		this.firstborn = (childrenSize == 1);
 		this.resourceLocation = resourceLocation;
 		this.resourceManager = new LocalResourceManager(resourceLocation, this);
-		this.firstborn = firstborn;
 	}
 	
 	protected AspectranClassLoader createChild(String resourceLocation) {
-		boolean firstborn = (children.size() == 0);
-
-		logger.debug("create a child AspectranClassLoader. {resourceLocation: " + resourceLocation + ", firstborn: " + firstborn + "}");
+		AspectranClassLoader child = new AspectranClassLoader(resourceLocation, this);
 		
-		AspectranClassLoader child = new AspectranClassLoader(resourceLocation, this, root, firstborn);
+		logger.debug("create a new child AspectranClassLoader. " + child);
+		
 		return child;
 	}
 	
@@ -100,6 +103,10 @@ public class AspectranClassLoader extends ClassLoader {
 		return parent.createChild(resourceLocation);
 	}
 	
+	public int getId() {
+		return id;
+	}
+
 	public AspectranClassLoader getRoot() {
 		return root;
 	}
@@ -110,6 +117,11 @@ public class AspectranClassLoader extends ClassLoader {
 	
 	public List<AspectranClassLoader> getChildren() {
 		return children;
+	}
+	
+	protected int addChild(AspectranClassLoader child) {
+		children.add(child);
+		return children.size();
 	}
 	
 	public boolean isFirstborn() {
@@ -129,30 +141,30 @@ public class AspectranClassLoader extends ClassLoader {
 	}
 	
 	protected void reload(AspectranClassLoader self) {
+		self.increaseReloadingTimes();
+		
+		logger.debug("reload a AspectranClassLoader. " + self);
+
 		if(self.getResourceManager() != null)
 			self.getResourceManager().reset();
 		
-		AspectranClassLoader firstbon = null;
+		AspectranClassLoader firstborn = null;
 		
 		for(AspectranClassLoader child : self.getChildren()) {
 			if(child.isFirstborn()) {
-				firstbon = child;
+				firstborn = child;
 			} else {
 				self.kickout(child);
-				ResourceManager rm = child.getResourceManager();
-				if(rm != null) {
-					rm.release();
-				}
 			}
 		}
 		
-		if(firstbon != null) {
-			ResourceManager rm = firstbon.getResourceManager();
-			if(rm != null) {
-				rm.reset();
-			}
-			reload(firstbon);
+		if(firstborn != null) {
+			reload(firstborn);
 		}
+	}
+	
+	protected void increaseReloadingTimes() {
+		reloadingTimes++;
 	}
 	
 	protected void leave() {
@@ -161,6 +173,12 @@ public class AspectranClassLoader extends ClassLoader {
 	}
 	
 	protected void kickout(AspectranClassLoader child) {
+		logger.debug("kickout a child AspectranClassLoader. " + child);
+
+		ResourceManager rm = child.getResourceManager();
+		if(rm != null) {
+			rm.release();
+		}
 		children.remove(child);
 	}
 	
@@ -192,25 +210,41 @@ public class AspectranClassLoader extends ClassLoader {
 	
 	public synchronized Class<?> loadClass(String name) throws ClassNotFoundException {
 	    // First check if the class is already loaded
-	    Class<?> c = findLoadedClass(name);
+        System.out.println("$$$$$$$$$$$$$$$$$$$find Class: " + name);
 
+		Class<?> c = null;//findLoadedClass(name);
+
+		System.out.println("==findLoadedClass(name): " + c);
+		ClassFileTransformer ss;
 	    if(c == null) {
-	        try {
-	        	byte[] classData = loadClassData(name);
-	        	System.out.println("classData: " + classData);
-	            if(getParent() != null && classData == null) {
-	                c = getParent().loadClass(name);
-	                System.out.println("getParent().loadClass: " + c);
-	            } else {
-	            	c = defineClass(name, classData, 0, classData.length);
-	            	System.out.println("defineClass: " + c);
-	            }
+	    	byte[] classData = null;
+
+	    	try  {
+		    	classData = loadClassData(name, root);
+		    	System.out.println("   classData: " + classData);
+	    	} catch(InvalidResourceException e) {
+	    		logger.error("failed to load class \"" + name + "\"", e);
+	    	}
+
+	    	if(classData != null) {
+	    		c = defineClass(name, classData, 0, classData.length);
+	    		resolveClass(c);
+	    		System.out.println("	defineClass: " + c);
+	    	}
+	    }
+	    
+	    if(c == null && root.getParent() != null) {
+	    	try {
+            	System.out.println("  getParent().loadClass");
+                c = root.getParent().loadClass(name);
+                System.out.println("	getParent().loadClass: " + c);
 	        } catch(ClassNotFoundException e) {
 	            // If still not found, then invoke
 	            // findClass to find the class.
 	            c = findClass(name);
 	        }
 	    }
+        System.out.println("$$$$$$$$$$$$$$$$$$$complete: " + name);
 
 	    return c;		
     }
@@ -236,36 +270,46 @@ public class AspectranClassLoader extends ClassLoader {
 		return null;
 	}
 	
-	protected byte[] loadClassData(String className) {
+	protected static byte[] loadClassData(String className, AspectranClassLoader owner) {
 		String resourceName = classNameToResourceName(className);
 		
 		URL url = null;
-		Enumeration<URL> res = ResourceManager.getResources(getAspectranClassLoaders(root), resourceName);
+		Enumeration<URL> res = ResourceManager.getResources(getAspectranClassLoaders(owner), resourceName);
 		
 		if(res.hasMoreElements())
 			url = res.nextElement();
-System.out.println();
-System.out.println("resourceName: " + resourceName);
-System.out.println("url: " + url);
+
+		System.out.println(" **finded resource: " + url);
+		
 		if(url == null)
 			return null;
 		
 		try {
 	        URLConnection connection = url.openConnection();
 	        InputStream input = connection.getInputStream();
-	        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+	        ByteArrayOutputStream output = new ByteArrayOutputStream();
+	
+			byte[] buffer = new byte[8192];
+			int len = 0;
+
+			while((len = input.read(buffer)) >= 0) {
+				output.write(buffer, 0, len);
+			}   
+	        
+	        /*
 	        int data = input.read();
 	
 	        while(data != -1) {
-	            buffer.write(data);
+	            output.write(data);
 	            data = input.read();
 	        }
+	        */
 	
 	        input.close();
 
-	        return buffer.toByteArray();
+	        return output.toByteArray();
 		} catch(IOException e) {
-			throw new InvalidResourceException("cannot read a class file: " + resourceName, e);
+			throw new InvalidResourceException("cannot read a class file: " + url, e);
 		}
 	}
 
@@ -343,18 +387,37 @@ System.out.println("url: " + url);
 		return resourceName;
 	}
 	
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		
+		sb.append("{id=").append(id);
+		if(getParent() instanceof AspectranClassLoader)
+			sb.append(", parent=").append(((AspectranClassLoader)getParent()).getId());
+		else
+			sb.append(", parent=").append(getParent());
+		sb.append(", root=").append(this == root);
+		sb.append(", firstborn=").append(firstborn);
+		sb.append(", resourceLocation=").append(resourceLocation);
+		sb.append(", numberOfResource=").append(resourceManager.getResourceEntriesSize());
+		sb.append(", numberOfChildren=").append(children.size());
+		sb.append(", reloadingTimes=").append(reloadingTimes);
+		sb.append("}");
+		
+		return sb.toString();
+	}
+	
 	/**
 	 * @param args
 	 */
 	@SuppressWarnings("resource")
 	public static void main(String[] args) {
 		try {
-			String[] resourceLocations = new String[2];
+			String[] resourceLocations = new String[3];
 			//resourceLocations[0] = "/WEB-INF/classes";
 			//resourceLocations[1] = "/WEB-INF/lib";
 			resourceLocations[0] = "/WEB-INF/aspectran/classes";
 			resourceLocations[1] = "/WEB-INF/aspectran/lib";
-			//resourceLocations[3] = "/WEB-INF/aspectran/xml";
+			resourceLocations[2] = "/WEB-INF/aspectran/xml";
 			
 			resourceLocations = ActivityContextLoadingManager.checkResourceLocations("c:/Users/Gulendol/Projects/aspectran/ADE/workspace/aspectran.example/webapp", resourceLocations);
 			
@@ -377,20 +440,40 @@ System.out.println("url: " + url);
 //				System.out.println(res.nextElement().toString());
 //			}
 
-			URL[] res = acl.extractResources();
-			for(URL url : res) {
-				System.out.println(url);
-			}
+//			URL[] res = acl.extractResources();
+//			for(URL url : res) {
+//				System.out.println(url);
+//			}
+//			
+//			//acl.loadClass("com.aspectran.web.activity.multipart.MultipartFileItem");
+//			System.out.println("---------------------------------------------");
+//			acl.reload();
+//			System.out.println("---------------------------------------------");
+//			acl.reload();
+//			System.out.println("---------------------------------------------");
+//
+//			res = acl.extractResources();
+//			for(URL url : res) {
+//				System.out.println(url);
+//			}
+//			System.out.println("---------------------------------------------");
+
+			//acl.loadClass("com.aspectran.web.activity.multipart.MultipartFileItem");
+			Class<?> c = acl.loadClass("test.TestClass");
+			//acl.reload();
+			//acl.loadClass("test.TestClass");
 			
-			acl.loadClass("com.aspectran.web.activity.multipart.MultipartFileItem");
+			Object object = c.newInstance();
+			System.out.println(object);
+			
+			Thread.sleep(7000);
+			
 			acl.reload();
 
-			res = acl.extractResources();
-			for(URL url : res) {
-				System.out.println(url);
-			}
-
-			acl.loadClass("com.aspectran.web.activity.multipart.MultipartFileItem");
+			c = acl.loadClass("test.TestClass");
+			object = c.newInstance();
+			System.out.println(object);
+			
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
