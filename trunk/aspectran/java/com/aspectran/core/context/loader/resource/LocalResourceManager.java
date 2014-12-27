@@ -39,22 +39,13 @@ public class LocalResourceManager extends ResourceManager {
 	
 	private final AspectranClassLoader owner;
 	
-	private boolean archived;
-	
 	public LocalResourceManager(String resourceLocation, AspectranClassLoader owner) {
 		super();
 		
 		this.resourceLocation = resourceLocation;
 		this.owner = owner;
 		
-		if(resourceLocation != null && resourceLocation.endsWith(ResourceUtils.JAR_FILE_SUFFIX)) {
-			this.archived = true;
-		} else {
-			this.archived = false;
-		}
-		
-		if(resourceLocation != null)
-			findResource();
+		findResource();
 	}
 
 	public void reset() {
@@ -65,16 +56,13 @@ public class LocalResourceManager extends ResourceManager {
 	}
 	
 	public void findResource() {
-		if(resourceLocation != null && resourceLocation.endsWith(ResourceUtils.JAR_FILE_SUFFIX)) {
-			this.archived = true;
-		} else {
-			this.archived = false;
-		}
+		if(resourceLocation == null)
+			return;
 		
 		try {
 			File file = new File(resourceLocation);
 			
-			if(this.archived) {
+			if(resourceLocation.endsWith(ResourceUtils.JAR_FILE_SUFFIX)) {
 				if(!file.isFile())
 					throw new FileNotFoundException("invalid resource jar file: " + resourceLocation);
 

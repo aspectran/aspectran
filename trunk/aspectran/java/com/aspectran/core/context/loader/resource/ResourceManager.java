@@ -97,10 +97,11 @@ public class ResourceManager {
 		if(name.endsWith(ResourceUtils.RESOURCE_NAME_SPEPARATOR))
 			name = name.substring(0, name.length() - 1);
 		
-		System.out.println("find resource from parent: " + name);
-		System.out.println("parent results: " + inherited);
+		System.out.println("-find resource from parent: " + name);
+		System.out.println("--parent results: " + inherited);
 		
 		System.out.println("find resource from self: " + name);
+		
 		final String filterName = name;
 		
 		return new Enumeration<URL>() {
@@ -146,6 +147,8 @@ public class ResourceManager {
 				
 				current = next;
 				next = null;
+				
+				System.out.println("--self results: " + current);
 
 				return current;
 			}
@@ -230,6 +233,10 @@ public class ResourceManager {
 				return url;
 			}
 		};
+	}
+	
+	public int getResourceEntriesSize() {
+		return resourceEntries.size();
 	}
 //
 //	public Class<?> loadClass(String name) throws ResourceNotFoundException {
