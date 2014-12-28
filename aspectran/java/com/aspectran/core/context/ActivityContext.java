@@ -19,6 +19,7 @@ import com.aspectran.core.activity.CoreActivity;
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.aspect.AspectRuleRegistry;
 import com.aspectran.core.context.bean.ContextBeanRegistry;
+import com.aspectran.core.context.service.ActivityContextServiceHandler;
 import com.aspectran.core.context.translet.TransletRuleRegistry;
 
 /**
@@ -37,6 +38,8 @@ public class ActivityContext {
 	private TransletRuleRegistry transletRuleRegistry;
 	
 	private String activityDefaultHandler;
+	
+	private ActivityContextServiceHandler activityContextServiceHandler;
 	
 	public ActivityContext() {
 	}
@@ -110,6 +113,10 @@ public class ActivityContext {
 		this.activityDefaultHandler = activityDefaultHandler;
 	}
 
+	public ActivityContextServiceHandler getActivityContextServiceHandler() {
+		return applicationAdapter.getActivityContextServiceHandler(this);
+	}
+	
 	/**
 	 * Destroy the translets context. 
 	 */
