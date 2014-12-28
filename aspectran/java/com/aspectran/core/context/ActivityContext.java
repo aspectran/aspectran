@@ -39,8 +39,6 @@ public class ActivityContext {
 	
 	private String activityDefaultHandler;
 	
-	private ActivityContextServiceHandler activityContextServiceHandler;
-	
 	public ActivityContext() {
 	}
 	
