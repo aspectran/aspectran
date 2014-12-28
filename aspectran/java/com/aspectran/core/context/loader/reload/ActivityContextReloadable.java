@@ -6,7 +6,7 @@ import com.aspectran.core.context.loader.AspectranClassLoader;
 
 public interface ActivityContextReloadable {
 
-	public ActivityContext reload();
+	public ActivityContext reloadActivityContext();
 
 	public ActivityContext getActivityContext();
 	
