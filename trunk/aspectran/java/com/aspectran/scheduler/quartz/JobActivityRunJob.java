@@ -38,9 +38,9 @@ public class JobActivityRunJob implements Job {
 		ResponseAdapter responseAdapter = new QuartzJobResponseAdapter(jobDetail);
 		
 		JobActivity activity = new JobActivityImpl(context, requestAdapter, responseAdapter);
-		activity.init(transletName);
-		activity.run();
-		activity.close();
+		activity.ready(transletName);
+		activity.perform();
+		activity.finish();
 	}
 	
 }

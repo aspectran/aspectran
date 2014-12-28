@@ -68,9 +68,9 @@ public class IncludeAction extends AbstractAction implements Executable {
 			}
 			
 			CoreActivity newActivity = activity.newCoreActivity();
-			newActivity.init(includeActionRule.getTransletName());
-			newActivity.runWithoutResponse();
-			newActivity.close();
+			newActivity.ready(includeActionRule.getTransletName());
+			newActivity.performWithoutResponse();
+			newActivity.finish();
 			
 			return newActivity.getProcessResult();
 			

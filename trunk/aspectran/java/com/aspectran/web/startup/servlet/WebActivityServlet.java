@@ -112,9 +112,9 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 			String requestUri = req.getRequestURI();
 
 			activity = new WebActivityImpl(activityContext, req, res);
-			activity.init(requestUri);
-			activity.run();
-			activity.close();
+			activity.ready(requestUri);
+			activity.perform();
+			activity.finish();
 
 		} catch(TransletNotFoundException e) {
 			if(activity != null) {

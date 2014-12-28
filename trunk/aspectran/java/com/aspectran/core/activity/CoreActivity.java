@@ -52,11 +52,11 @@ public interface CoreActivity {
 	
 	public CoreTranslet getCoreTranslet();
 	
-	public void init(String transletName) throws CoreActivityException;
+	public void ready(String transletName) throws CoreActivityException;
 	
-	public void run() throws CoreActivityException;
+	public void perform() throws CoreActivityException;
 	
-	public void runWithoutResponse() throws CoreActivityException;
+	public void performWithoutResponse() throws CoreActivityException;
 	
 	public void execute(List<AspectAdviceRule> aspectAdviceRuleList) throws ActionExecutionException;
 	
@@ -110,6 +110,6 @@ public interface CoreActivity {
 	
 	public JoinpointScopeType getJoinpointScope();
 
-	public void close();
+	public void finish();
 
 }
