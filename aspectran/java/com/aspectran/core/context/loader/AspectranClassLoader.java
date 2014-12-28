@@ -3,7 +3,6 @@ package com.aspectran.core.context.loader;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.instrument.ClassFileTransformer;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Enumeration;
@@ -212,11 +211,11 @@ public class AspectranClassLoader extends ClassLoader {
 	    // First check if the class is already loaded
         System.out.println("$$$$$$$$$$$$$$$$$$$find Class: " + name);
 
-		Class<?> c = null;//findLoadedClass(name);
+		Class<?> c = findLoadedClass(name);
 
 		System.out.println("==findLoadedClass(name): " + c);
-		ClassFileTransformer ss;
-	    if(c == null) {
+
+		if(c == null) {
 	    	byte[] classData = null;
 
 	    	try  {
@@ -409,17 +408,17 @@ public class AspectranClassLoader extends ClassLoader {
 	/**
 	 * @param args
 	 */
-	@SuppressWarnings("resource")
 	public static void main(String[] args) {
 		try {
 			String[] resourceLocations = new String[3];
 			//resourceLocations[0] = "/WEB-INF/classes";
 			//resourceLocations[1] = "/WEB-INF/lib";
-			resourceLocations[0] = "/WEB-INF/aspectran/classes";
-			resourceLocations[1] = "/WEB-INF/aspectran/lib";
-			resourceLocations[2] = "/WEB-INF/aspectran/xml";
+			resourceLocations[0] = "file:/c:/Users/Gulendol/Projects/aspectran/ADE/workspace/aspectran.example/webapp/WEB-INF/aspectran/./classes/";
+			resourceLocations[1] = "/WEB-INF/aspectran/./lib";
+			//resourceLocations[2] = "file:/c:/Users/Gulendol/Projects/aspectran/ADE/workspace/aspectran.example/webapp/WEB-INF/aspectran/xml";
+			resourceLocations[2] = "/WEB-INF/aspectran/./xml";
 			
-			resourceLocations = ActivityContextLoadingManager.checkResourceLocations("c:/Users/Gulendol/Projects/aspectran/ADE/workspace/aspectran.example/webapp", resourceLocations);
+			resourceLocations = ActivityContextLoadingManager.checkResourceLocations("/c:/Users/Gulendol/Projects/aspectran/ADE/workspace/aspectran.example/webapp", resourceLocations);
 			
 			for(String r : resourceLocations) {
 				System.out.println("resourceLocation: " + r);
@@ -466,16 +465,18 @@ public class AspectranClassLoader extends ClassLoader {
 			Object object = c.newInstance();
 			System.out.println(object);
 			
-			Thread.sleep(3000);
-			
-			acl = new AspectranClassLoader(resourceLocations);
-			
-			acl.reload();
-
-			c = acl.loadClass("test.TestClass");
-			object = c.newInstance();
-			System.out.println(object);
-			
+			//Thread.sleep(6000);
+			/*
+			//for(int i = 0; i < 1000; i++) {
+				acl = new AspectranClassLoader(resourceLocations);
+				
+				acl.reload();
+	
+				c = acl.loadClass("test.TestClass");
+				object = c.newInstance();
+				System.out.println(object);
+			//}
+			*/
 		} catch(Exception e) {
 			e.printStackTrace();
 		}

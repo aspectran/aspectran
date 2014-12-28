@@ -1,7 +1,7 @@
 package com.aspectran.core.context.loader;
 
-import java.io.File;
 import java.io.FileNotFoundException;
+import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.slf4j.Logger;
@@ -224,25 +224,22 @@ public class ActivityContextLoadingManager implements ActivityContextReloadable 
 	
 	protected static String[] checkResourceLocations(String applicationBasePath, String[] resourceLocations) throws FileNotFoundException {
 		for(int i = 0; i < resourceLocations.length; i++) {
-			if(resourceLocations[i].startsWith(ResourceUtils.CLASSPATH_URL_PREFIX) ||
-					resourceLocations[i].startsWith(ResourceUtils.FILE_URL_PREFIX)) {
-				URL url = ResourceUtils.getURL(resourceLocations[i]);
-				
-				if(url == null) {
+			if(resourceLocations[i].startsWith(ResourceUtils.CLASSPATH_URL_PREFIX)) {
+				String path = resourceLocations[i].substring(ResourceUtils.CLASSPATH_URL_PREFIX.length());
+				URL url = AspectranClassLoader.getDefaultClassLoader().getResource(path);
+				if(url == null)
 					throw new InvalidResourceException("class path resource [" + resourceLocations[i] + "] cannot be resolved to URL because it does not exist");
-				}
-				
 				resourceLocations[i] = url.getFile();
-			} else {
-				File file = new File(applicationBasePath, resourceLocations[i]);
-				System.out.println(file.exists());
-				if(file.isDirectory() ||
-						(file.isFile() && (resourceLocations[i].endsWith(ResourceUtils.JAR_FILE_SUFFIX)))) {
-					resourceLocations[i] = file.getAbsolutePath();
-				} else {
-					throw new InvalidResourceException("invalid resource directory: " + file.getAbsolutePath());
+			} else if(resourceLocations[i].startsWith(ResourceUtils.FILE_URL_PREFIX)) {
+				try {
+					URL url = new URL(resourceLocations[i]);
+					resourceLocations[i] = url.getFile();
+				} catch (MalformedURLException e) {
+					throw new InvalidResourceException("Resource location [" + resourceLocations[i] + "] is neither a URL not a well-formed file path");
 				}
-			}
+			} else {
+				resourceLocations[i] = applicationBasePath + resourceLocations[i];
+			}			
 		}
 		
 		return resourceLocations;
@@ -251,7 +248,7 @@ public class ActivityContextLoadingManager implements ActivityContextReloadable 
 	public static void main(String argv[]) {
 		String applicationBasePath = "c:/Users/Gulendol/Projects/aspectran/ADE/workspace/aspectran.example/webapp";
 		String[] resourceLocations = new String[3];
-		resourceLocations[0] = "/WEB-INF/aspectran/classes";
+		resourceLocations[0] = "file:/c:/Users/Gulendol/Projects/aspectran/ADE/workspace/aspectran.example/webapp/WEB-INF/aspectran/classes";
 		resourceLocations[1] = "/WEB-INF/aspectran/lib";
 		resourceLocations[2] = "/WEB-INF/aspectran/xml";
 		
