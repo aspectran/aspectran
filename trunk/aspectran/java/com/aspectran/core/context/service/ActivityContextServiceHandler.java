@@ -20,10 +20,11 @@ public class ActivityContextServiceHandler {
 	}
 	
 	public void pause() {
+		throw new UnsupportedOperationException();
 	}
 	
 	public void resume() {
-		
+		throw new UnsupportedOperationException();
 	}
 	
 	public ActivityContext restart() {

@@ -17,7 +17,6 @@ package com.aspectran.core.context.loader.resource;
 
 import java.io.File;
 import java.io.FileFilter;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -37,40 +36,43 @@ public class LocalResourceManager extends ResourceManager {
 	
 	private final String resourceLocation;
 	
+	private final int resourceLocationSubLen;
+	
 	private final AspectranClassLoader owner;
 	
 	public LocalResourceManager(String resourceLocation, AspectranClassLoader owner) {
 		super();
 		
-		this.resourceLocation = resourceLocation;
 		this.owner = owner;
 		
-		findResource();
+		if(resourceLocation != null) {
+			File file = new File(resourceLocation);
+			this.resourceLocation = file.getAbsolutePath();
+			this.resourceLocationSubLen = this.resourceLocation.length() + 1;
+			
+			if(!file.isDirectory() &&
+					(file.isFile() && !resourceLocation.endsWith(ResourceUtils.JAR_FILE_SUFFIX))) {
+				throw new InvalidResourceException("invalid resource directory or jar file: " + file.getAbsolutePath());
+			}
+
+			findResource(file);
+		} else {
+			this.resourceLocation = null;
+			this.resourceLocationSubLen = 0;
+		}
 	}
 
 	public void reset() {
 		super.reset();
 		
-		if(resourceLocation != null)
-			findResource();
+		if(resourceLocation != null) {
+			findResource(new File(resourceLocation));
+		}
 	}
 	
-	public void findResource() {
-		if(resourceLocation == null)
-			return;
-		
+	private void findResource(File file) {
 		try {
-			File file = new File(resourceLocation);
-			
-			if(resourceLocation.endsWith(ResourceUtils.JAR_FILE_SUFFIX)) {
-				if(!file.isFile())
-					throw new FileNotFoundException("invalid resource jar file: " + resourceLocation);
-
-				findResourceFromJAR(file);
-			} else {
-				if(!file.isDirectory())
-					throw new FileNotFoundException("invalid resource directory: " + resourceLocation);
-				
+			if(file.isDirectory()) {
 				List<File> jarFileList = new ArrayList<File>();
 				
 				findResource(file, jarFileList);
@@ -80,9 +82,11 @@ public class LocalResourceManager extends ResourceManager {
 						owner.wishBrother(jarFile.getAbsolutePath());
 					}
 				}
+			} else {
+				findResourceFromJAR(file);
 			}
 		} catch(Exception e) {
-			throw new InvalidResourceException("Faild to find resource from " + resourceLocation, e);
+			throw new InvalidResourceException("faild to find resource from [" + resourceLocation + "]", e);
 		}
 	}
 	
@@ -90,12 +94,12 @@ public class LocalResourceManager extends ResourceManager {
 		target.listFiles(new FileFilter() {
 			public boolean accept(File file) {
 				String filePath = file.getAbsolutePath();
-				String resourceName = filePath.substring(resourceLocation.length() + 1);
+				
+				String resourceName = filePath.substring(resourceLocationSubLen);
 				
 				resourceEntries.putResource(resourceName, file);
 
 				if(file.isDirectory()) {
-					//System.out.println("AbsolutePath: " + filePath);
 					findResource(file, jarFileList);
 				} else if(file.isFile()) {
 					if(filePath.endsWith(ResourceUtils.JAR_FILE_SUFFIX)) {
