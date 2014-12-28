@@ -9,6 +9,8 @@ import com.aspectran.core.var.apon.Parameters;
 
 public class AspectranContextAutoReloadingConfig extends AbstractParameters implements Parameters {
 
+	public static final ParameterValue reloadMethod = new ParameterValue("reloadMethod", ParameterValueType.STRING);
+	
 	public static final ParameterValue observationInterval = new ParameterValue("observationInterval", ParameterValueType.INTEGER);
 	
 	public static final ParameterValue startup = new ParameterArrayValue("startup", ParameterValueType.BOOLEAN);
@@ -17,6 +19,7 @@ public class AspectranContextAutoReloadingConfig extends AbstractParameters impl
 	
 	static {
 		parameterValues = new ParameterValue[] {
+				reloadMethod,
 				observationInterval,
 				startup
 		};

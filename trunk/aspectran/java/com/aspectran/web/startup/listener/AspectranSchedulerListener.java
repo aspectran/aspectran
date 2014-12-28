@@ -25,8 +25,8 @@ import org.slf4j.LoggerFactory;
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.loader.ActivityContextLoader;
-import com.aspectran.core.context.loader.ActivityContextLoadingManager;
 import com.aspectran.core.context.loader.config.AspectranConfig;
+import com.aspectran.core.context.service.ActivityContextService;
 import com.aspectran.web.adapter.WebApplicationAdapter;
 import com.aspectran.web.startup.loader.WebActivityContextLoader;
 
@@ -34,7 +34,7 @@ public class AspectranSchedulerListener implements ServletContextListener {
 
 	private final Logger logger = LoggerFactory.getLogger(AspectranSchedulerListener.class);
 
-	private ActivityContextLoadingManager activityContextLoadingManager;
+	private ActivityContextService aspectranServiceManager;
 
 	protected ActivityContext activityContext;
 
@@ -57,9 +57,9 @@ public class AspectranSchedulerListener implements ServletContextListener {
 			
 			ActivityContextLoader activityContextLoader = new WebActivityContextLoader(applicationAdapter);
 			
-			activityContextLoadingManager = new ActivityContextLoadingManager(aspectranConfig);
+			aspectranServiceManager = new ActivityContextService(aspectranConfig, activityContextLoader);
 			
-			activityContext = activityContextLoadingManager.createActivityContext(activityContextLoader);
+			aspectranServiceManager.start();
 			
 		} catch(Exception e) {
 			logger.error("AspectranScheduler failed to initialize: " + e.toString(), e);
@@ -72,7 +72,7 @@ public class AspectranSchedulerListener implements ServletContextListener {
 	 * @param event the event
 	 */
 	public void contextDestroyed(ServletContextEvent event) {
-		boolean cleanlyDestoryed = activityContextLoadingManager.destroyActivityContext();
+		boolean cleanlyDestoryed = aspectranServiceManager.stop();
 		
 		try {
 			WebApplicationAdapter.destoryWebApplicationAdapter(event.getServletContext());

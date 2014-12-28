@@ -31,8 +31,9 @@ import org.slf4j.LoggerFactory;
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.loader.ActivityContextLoader;
-import com.aspectran.core.context.loader.ActivityContextLoadingManager;
 import com.aspectran.core.context.loader.config.AspectranConfig;
+import com.aspectran.core.context.service.ActivityContextReloadListener;
+import com.aspectran.core.context.service.ActivityContextService;
 import com.aspectran.core.context.translet.TransletNotFoundException;
 import com.aspectran.web.activity.WebActivity;
 import com.aspectran.web.activity.WebActivityDefaultHandler;
@@ -50,7 +51,7 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 
 	private final Logger logger = LoggerFactory.getLogger(WebActivityServlet.class);
 	
-	private ActivityContextLoadingManager activityContextLoadingManager;
+	private ActivityContextService activityContextService;
 
 	protected ActivityContext activityContext;
 	
@@ -84,9 +85,15 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 			
 			ActivityContextLoader activityContextLoader = new WebActivityContextLoader(applicationAdapter);
 			
-			activityContextLoadingManager = new ActivityContextLoadingManager(aspectranConfig);
+			activityContextService = new ActivityContextService(aspectranConfig, activityContextLoader);
 			
-			activityContext = activityContextLoadingManager.createActivityContext(activityContextLoader);
+			activityContextService.setActivityContextReloadListener(new ActivityContextReloadListener() {
+				public void reloaded() {
+					activityContext = activityContextService.getActivityContext();
+				}
+			});
+			
+			activityContext = activityContextService.start();
 			
 		} catch(Exception e) {
 			logger.error("WebActivityServlet was failed to initialize: " + e.toString(), e);
@@ -142,7 +149,7 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 	public void destroy() {
 		super.destroy();
 
-		boolean cleanlyDestoryed = activityContextLoadingManager.destroyActivityContext();
+		boolean cleanlyDestoryed = activityContextService.stop();
 		
 		try {
 			WebApplicationAdapter.destoryWebApplicationAdapter(getServletContext());
