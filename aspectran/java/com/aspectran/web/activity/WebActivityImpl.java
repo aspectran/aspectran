@@ -74,8 +74,8 @@ public class WebActivityImpl extends CoreActivityImpl implements WebActivity {
 		setTransletImplementClass(WebTransletImpl.class);
 	}
 	
-	public void init(String transletName) throws CoreActivityException {
-		super.init(transletName);
+	public void ready(String transletName) throws CoreActivityException {
+		super.ready(transletName);
 		
 		RequestAdapter requestAdapter = new HttpServletRequestAdapter(request);
 		ResponseAdapter responseAdapter = new HttpServletResponseAdapter(response);

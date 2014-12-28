@@ -260,11 +260,11 @@ public class CoreActivityImpl implements CoreActivity {
 		}
 	}
 	
-	public void init(String transletName) throws CoreActivityException {
-		init(transletName, null);
+	public void ready(String transletName) throws CoreActivityException {
+		ready(transletName, null);
 	}
 	
-	protected void init(String transletName, ProcessResult processResult) throws CoreActivityException {
+	protected void ready(String transletName, ProcessResult processResult) throws CoreActivityException {
 		if(debugEnabled) {
 			logger.debug("run " + transletName);
 		}
@@ -302,7 +302,7 @@ public class CoreActivityImpl implements CoreActivity {
 		ActivityContext.setCoreActivity(this);
 	}
 	
-	public void run() throws CoreActivityException {
+	public void perform() throws CoreActivityException {
 		try {
 			withoutResponse = false;
 			
@@ -312,7 +312,7 @@ public class CoreActivityImpl implements CoreActivity {
 		}
 	}
 	
-	public void runWithoutResponse() throws CoreActivityException {
+	public void performWithoutResponse() throws CoreActivityException {
 		try {
 			withoutResponse = true;
 			
@@ -651,8 +651,8 @@ public class CoreActivityImpl implements CoreActivity {
 		}
 		
 		ProcessResult processResult = translet.getProcessResult();
-		init(forwardTransletName, processResult);
-		run();
+		ready(forwardTransletName, processResult);
+		perform();
 	}
 	
 	public void responseByContentType(List<AspectAdviceRule> aspectAdviceRuleList) throws CoreActivityException {
@@ -981,7 +981,7 @@ public class CoreActivityImpl implements CoreActivity {
 		return joinpointScope;
 	}
 	
-	public void close() {
+	public void finish() {
 	}
 	
 }

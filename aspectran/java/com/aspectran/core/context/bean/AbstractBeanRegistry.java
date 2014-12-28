@@ -134,7 +134,7 @@ public abstract class AbstractBeanRegistry {
 			if(activity == null) {
 				try {
 					activity = new VoidActivityImpl(context);
-					activity.init(null);
+					activity.ready(null);
 				} catch(CoreActivityException e) {
 					throw new BeanCreationException(beanRule, e);
 				}

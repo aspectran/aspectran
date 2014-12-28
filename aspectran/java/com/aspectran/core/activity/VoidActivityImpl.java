@@ -36,7 +36,7 @@ public final class VoidActivityImpl extends CoreActivityImpl implements CoreActi
 		super(context);
 	}
 	
-	public void init(String transletName) throws CoreActivityException {
+	public void ready(String transletName) throws CoreActivityException {
 		createCoreTranslet(CoreTranslet.class, CoreTransletImpl.class);
 	}
 	
@@ -70,12 +70,12 @@ public final class VoidActivityImpl extends CoreActivityImpl implements CoreActi
 	}
 
 	@Override
-	public void run() throws CoreActivityException {
+	public void perform() throws CoreActivityException {
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public void runWithoutResponse() throws CoreActivityException {
+	public void performWithoutResponse() throws CoreActivityException {
 		throw new UnsupportedOperationException();
 	}
 
