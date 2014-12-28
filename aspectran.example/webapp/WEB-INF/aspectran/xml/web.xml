@@ -24,7 +24,6 @@
 				]
 				resourceCache: false
 				autoReloading: {
-					reloadMethod: hard
 					observationInterval: 5
 					startup: false
 				}
@@ -34,7 +33,6 @@
 				waitOnShutdown: true
 				startup: false
 			}
-			managerTransletName: /manager
 		</param-value>
 	</context-param>
 	<listener>
