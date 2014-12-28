@@ -64,7 +64,7 @@ public class ActivityContextReloadingTimerTask extends TimerTask {
 		}
 		
 		if(modified) {
-			activityContextReloadable.reload();
+			activityContextReloadable.reloadActivityContext();
 			modified = false;
 		}
 	}
