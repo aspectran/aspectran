@@ -7,13 +7,14 @@ import java.net.URL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.ActivityContextException;
 import com.aspectran.core.context.loader.config.AspectranConfig;
 import com.aspectran.core.context.loader.config.AspectranContextAutoReloadingConfig;
 import com.aspectran.core.context.loader.config.AspectranContextConfig;
 import com.aspectran.core.context.loader.config.AspectranSchedulerConfig;
-import com.aspectran.core.context.loader.reload.ActivityContextReloadingHandler;
+import com.aspectran.core.context.loader.reload.ActivityContextReloadable;
 import com.aspectran.core.context.loader.reload.ActivityContextReloadingTimer;
 import com.aspectran.core.context.loader.resource.InvalidResourceException;
 import com.aspectran.core.util.ResourceUtils;
@@ -21,63 +22,81 @@ import com.aspectran.core.var.apon.Parameters;
 import com.aspectran.scheduler.AspectranScheduler;
 import com.aspectran.scheduler.quartz.QuartzAspectranScheduler;
 
-public class ActivityContextLoadingManager {
+public class ActivityContextLoadingManager implements ActivityContextReloadable {
 
 	private final Logger logger = LoggerFactory.getLogger(ActivityContextLoadingManager.class);
 
-	private Parameters aspectranConfig;
+	private final Parameters aspectranConfig;
 	
 	private Parameters aspectranSchedulerConfig;
+	
+	private final ActivityContextLoader activityContextLoader;
+
+	private String rootContext;
+
+	private String[] resourceLocations;
+	
+	private boolean isHardReload;
+
+	private boolean autoReloadingStartup;
+	
+	private int observationInterval;
 	
 	protected ActivityContext activityContext;
 
 	private AspectranScheduler aspectranScheduler;
 	
-	private ActivityContextReloadingTimer contextReloadingTimer;
+	private ActivityContextReloadingTimer reloadingTimer;
 	
-	public ActivityContextLoadingManager(AspectranConfig aspectranConfig) {
+	protected ActivityContextLoadingManager(AspectranConfig aspectranConfig, ActivityContextLoader activityContextLoader) {
 		this.aspectranConfig = aspectranConfig;
+		this.activityContextLoader = activityContextLoader;
 	}
 	
-	public ActivityContext createActivityContext(ActivityContextLoader activityContextLoader) throws ActivityContextException {
+	protected synchronized ActivityContext createActivityContext() throws ActivityContextException {
+		if(activityContext != null)
+			throw new ActivityContextException("Already loaded the AspectranContext. Destroy the old AspectranContext before loading.");
+		
 		logger.info("loading ActivityContext...");
 
 		try {
-			Parameters aspectranContextConfig = aspectranConfig.getParameters(AspectranConfig.context.getName());
-			Parameters aspectranContextAutoReloadingConfig = aspectranContextConfig.getParameters(AspectranContextConfig.autoReloading.getName());
-			Parameters aspectranSchedulerConfig = aspectranConfig.getParameters(AspectranConfig.scheduler.getName());
+			Parameters aspectranContextConfig = aspectranConfig.getParameters(AspectranConfig.context);
+			Parameters aspectranContextAutoReloadingConfig = aspectranContextConfig.getParameters(AspectranContextConfig.autoReloading);
+			Parameters aspectranSchedulerConfig = aspectranConfig.getParameters(AspectranConfig.scheduler);
 			
-			String rootContext = aspectranContextConfig.getString(AspectranContextConfig.root.getName());
-			String[] resourceLocations = aspectranContextConfig.getStringArray(AspectranContextConfig.resources.getName());
-			int observationInterval = aspectranContextAutoReloadingConfig.getInt(AspectranContextAutoReloadingConfig.observationInterval.getName(), -1);
-			boolean autoReloadingStartup = aspectranContextAutoReloadingConfig.getBoolean(AspectranContextAutoReloadingConfig.startup.getName(), true);
+			String rootContext = aspectranContextConfig.getString(AspectranContextConfig.root);
+			String[] resourceLocations = aspectranContextConfig.getStringArray(AspectranContextConfig.resources);
+			String reloadMethod = aspectranContextAutoReloadingConfig.getString(AspectranContextAutoReloadingConfig.reloadMethod);
+			int observationInterval = aspectranContextAutoReloadingConfig.getInt(AspectranContextAutoReloadingConfig.observationInterval, -1);
+			boolean autoReloadingStartup = aspectranContextAutoReloadingConfig.getBoolean(AspectranContextAutoReloadingConfig.startup, true);
 
 			if(autoReloadingStartup && resourceLocations == null || resourceLocations.length == 0)
 				autoReloadingStartup = false;
 			
-			resourceLocations = checkResourceLocations(activityContextLoader.getApplicationBasePath(), resourceLocations);
-			activityContextLoader.setResourceLocations(resourceLocations);
+			this.rootContext = rootContext;
+			this.resourceLocations = checkResourceLocations(getApplicationBasePath(), resourceLocations);
+			this.isHardReload = "hard".equals(reloadMethod);
+			this.autoReloadingStartup = autoReloadingStartup;
+			this.observationInterval = observationInterval;
+			this.aspectranSchedulerConfig = aspectranSchedulerConfig;
 			
-			if(!autoReloadingStartup) {
-				activityContext = activityContextLoader.load(rootContext);
-			} else {
+			AspectranClassLoader spectranClassLoader = new AspectranClassLoader(resourceLocations);
+			activityContextLoader.setAspectranClassLoader(spectranClassLoader);
+			
+			activityContext = activityContextLoader.load(rootContext);
+
+			startupAspectranScheduler();
+			
+			if(autoReloadingStartup) {
 				if(observationInterval == -1) {
-					logger.info("[Aspectran Config] 'observationInterval' is not specified, defaulting to 10 seconds.");
 					observationInterval = 10;
+					this.observationInterval = observationInterval;
+					logger.info("[Aspectran Config] 'observationInterval' is not specified, defaulting to 10 seconds.");
 				}
-
-				ActivityContextReloadingHandler contextReloadingHandler = new ActivityContextReloadingHandler() {
-					public void handle(ActivityContext newActivityContext) {
-						reloadActivityContext(newActivityContext);
-					}
-				};
-
-				activityContext = activityContextLoader.load(rootContext);
-				contextReloadingTimer = activityContextLoader.startTimer(contextReloadingHandler, observationInterval);
+				
+				startReloadingTimer();
 			}
-			
-			startupAspectranScheduler(aspectranSchedulerConfig);
-			
+
 			return activityContext;
 			
 		} catch(Exception e) {
@@ -85,9 +104,8 @@ public class ActivityContextLoadingManager {
 		}
 	}
 	
-	public boolean destroyActivityContext() {
-		if(contextReloadingTimer != null)
-			contextReloadingTimer.cancel();
+	protected synchronized boolean destroyActivityContext() {
+		stopReloadingTimer();
 		
 		boolean cleanlyDestoryed = true;
 
@@ -107,41 +125,44 @@ public class ActivityContextLoadingManager {
 		
 		return cleanlyDestoryed;
 	}
-	
-	protected ActivityContext reloadActivityContext(ActivityContext newActivityContext) {
+
+	public synchronized ActivityContext reloadActivityContext() {
 		destroyActivityContext();
 		
-		activityContext = newActivityContext;
+		if(activityContextLoader.getAspectranClassLoader() != null) {
+			if(isHardReload) {
+				AspectranClassLoader aspectranClassLoader = new AspectranClassLoader(resourceLocations);
+				activityContextLoader.setAspectranClassLoader(aspectranClassLoader);
+			} else {
+				activityContextLoader.getAspectranClassLoader().reload();
+			}
+		}
+		
+		activityContext = activityContextLoader.load(rootContext);
 		
 		try {
-			if(this.aspectranSchedulerConfig != null)
-				startupAspectranScheduler(null);
+			startupAspectranScheduler();
 		} catch(Exception e) {
 			logger.error("AspectranScheduler was failed to initialize: " + e.toString(), e);
 		}
-		
-		if(contextReloadingTimer != null)
-			contextReloadingTimer.start();
-		
+
+		startReloadingTimer();
+
 		return activityContext;
 	}
-
 	
-	protected void startupAspectranScheduler(Parameters aspectranSchedulerConfig) throws Exception {
-		if(aspectranSchedulerConfig != null)
-			this.aspectranSchedulerConfig = aspectranSchedulerConfig;
-		
+	private void startupAspectranScheduler() throws Exception {
 		if(this.aspectranSchedulerConfig == null)
 			return;
 		
 		logger.info("starting the AspectranScheduler: " + this.aspectranSchedulerConfig);
 		
-		boolean startup = this.aspectranSchedulerConfig.getBoolean(AspectranSchedulerConfig.startup.getName());
+		boolean startup = this.aspectranSchedulerConfig.getBoolean(AspectranSchedulerConfig.startup);
 		int startDelaySeconds = this.aspectranSchedulerConfig.getInt(AspectranSchedulerConfig.startDelaySeconds.getName(), -1);
-		boolean waitOnShutdown = this.aspectranSchedulerConfig.getBoolean(AspectranSchedulerConfig.waitOnShutdown.getName());
+		boolean waitOnShutdown = this.aspectranSchedulerConfig.getBoolean(AspectranSchedulerConfig.waitOnShutdown);
 		
 		if(startup) {
-			aspectranScheduler = new QuartzAspectranScheduler(activityContext);
+			AspectranScheduler aspectranScheduler = new QuartzAspectranScheduler(activityContext);
 			
 			if(waitOnShutdown)
 				aspectranScheduler.setWaitOnShutdown(true);
@@ -152,11 +173,11 @@ public class ActivityContextLoadingManager {
 			}
 			
 			aspectranScheduler.startup(startDelaySeconds);
+			this.aspectranScheduler = aspectranScheduler;
 		}
 	}
 	
-	
-	protected boolean shutdownAspectranScheduler() {
+	private boolean shutdownAspectranScheduler() {
 		if(aspectranScheduler != null) {
 			try {
 				aspectranScheduler.shutdown();
@@ -169,6 +190,36 @@ public class ActivityContextLoadingManager {
 		}
 		
 		return true;
+	}
+	
+	private void startReloadingTimer() {
+		if(autoReloadingStartup) {
+			reloadingTimer = new ActivityContextReloadingTimer(this);
+			reloadingTimer.start(observationInterval);
+		}
+	}
+	
+	private void stopReloadingTimer() {
+		if(reloadingTimer != null)
+			reloadingTimer.cancel();
+		
+		reloadingTimer = null;
+	}
+	
+	public ApplicationAdapter getApplicationAdapter() {
+		return activityContextLoader.getApplicationAdapter();
+	}
+	
+	public String getApplicationBasePath() {
+		return activityContextLoader.getApplicationAdapter().getApplicationBasePath();
+	}
+	
+	public AspectranClassLoader getAspectranClassLoader() {
+		return activityContextLoader.getAspectranClassLoader();
+	}
+	
+	public ActivityContext getActivityContext() {
+		return activityContext;
 	}
 	
 	protected static String[] checkResourceLocations(String applicationBasePath, String[] resourceLocations) throws FileNotFoundException {

@@ -1,7 +1,5 @@
 package com.aspectran.core.context.loader;
 
-import java.net.URL;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -9,11 +7,8 @@ import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.builder.ActivityContextBuilder;
 import com.aspectran.core.context.builder.XmlActivityContextBuilder;
-import com.aspectran.core.context.loader.reload.ActivityContextReloadable;
-import com.aspectran.core.context.loader.reload.ActivityContextReloadingHandler;
-import com.aspectran.core.context.loader.reload.ActivityContextReloadingTimer;
 
-public class ActivityContextLoader implements ActivityContextReloadable {
+public class ActivityContextLoader {
 
 	private final Logger logger = LoggerFactory.getLogger(ActivityContextLoader.class);
 
@@ -21,21 +16,16 @@ public class ActivityContextLoader implements ActivityContextReloadable {
 	
 	private AspectranClassLoader aspectranClassLoader;
 	
-	private ActivityContextReloadingHandler activityContextReloadingHandler;
-	
-	private String rootContext;
-	
 	private ActivityContext activityContext;
 
 	public ActivityContextLoader(ApplicationAdapter applicationAdapter) {
 		this.applicationAdapter = applicationAdapter;
 	}
-
-	public void setResourceLocations(String[] resourceLocations) {
-		AspectranClassLoader acl = new AspectranClassLoader(resourceLocations);
-		this.aspectranClassLoader = acl;
-	}
 	
+	public ApplicationAdapter getApplicationAdapter() {
+		return applicationAdapter;
+	}
+
 	public AspectranClassLoader getAspectranClassLoader() {
 		return aspectranClassLoader;
 	}
@@ -44,7 +34,7 @@ public class ActivityContextLoader implements ActivityContextReloadable {
 		this.aspectranClassLoader = aspectranClassLoader;
 	}
 
-	protected ActivityContext buildActivityContext() {
+	protected ActivityContext buildXmlActivityContext(String rootContext) {
 		try {
 			logger.info("build ActivityContext [" + rootContext + "]");
 			long startTime = System.currentTimeMillis();
@@ -66,45 +56,7 @@ public class ActivityContextLoader implements ActivityContextReloadable {
 	}
 	
 	public ActivityContext load(String rootContext) {
-		this.rootContext = rootContext;
-		
-		return buildActivityContext();
-	}
-	
-	public ActivityContext reload() {
-		if(aspectranClassLoader != null)
-			aspectranClassLoader.reload();
-		
-		ActivityContext newActivityContext = buildActivityContext();
-		
-		if(activityContextReloadingHandler != null)
-			activityContextReloadingHandler.handle(newActivityContext);
-		
-		return newActivityContext;
-	}
-	
-	public ActivityContext getActivityContext() {
-		return activityContext;
-	}
-
-	public String getApplicationBasePath() {
-		return applicationAdapter.getApplicationBasePath();
-	}
-	
-	public ActivityContextReloadingTimer startTimer(ActivityContextReloadingHandler activityContextReloadingHandler, int observationInterval) {
-		this.activityContextReloadingHandler = activityContextReloadingHandler;
-		
-		ActivityContextReloadingTimer timer = new ActivityContextReloadingTimer(this);
-		timer.start(observationInterval);
-		
-		return timer;
-	}
-	
-	public URL[] extractResources() {
-		if(aspectranClassLoader == null)
-			return null;
-		
-		return aspectranClassLoader.extractResources();
+		return buildXmlActivityContext(rootContext);
 	}
 	
 }
