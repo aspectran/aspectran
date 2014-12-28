@@ -100,7 +100,7 @@ public class ParameterValue {
 	}
 
 	@SuppressWarnings("unchecked")
-	public String getString() {
+	public String getValueAsString() {
 		if(value == null)
 			return null;
 
@@ -118,7 +118,7 @@ public class ParameterValue {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public String[] getStringArray() {
+	public String[] getValueAsStringArray() {
 		if(value == null)
 			return null;
 		
@@ -135,7 +135,7 @@ public class ParameterValue {
 		}
 	}
 
-	public int getInt() {
+	public int getValueAsInt() {
 		if(value == null)
 			return 0;
 		
@@ -146,7 +146,7 @@ public class ParameterValue {
 	}
 
 	@SuppressWarnings("unchecked")
-	public int[] getIntArray() {
+	public int[] getValueAsIntArray() {
 		if(value == null)
 			return new int[0];
 		
@@ -162,7 +162,7 @@ public class ParameterValue {
 		return intArr;
 	}
 
-	public long getLong() {
+	public long getValueAsLong() {
 		if(value == null)
 			return 0L;
 		
@@ -173,7 +173,7 @@ public class ParameterValue {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public long[] getLongArray() {
+	public long[] getValueAsLongArray() {
 		if(value == null)
 			return new long[0];
 		
@@ -189,7 +189,7 @@ public class ParameterValue {
 		return longArr;
 	}
 
-	public float getFloat() {
+	public float getValueAsFloat() {
 		if(value == null)
 			return 0.0F;
 		
@@ -200,7 +200,7 @@ public class ParameterValue {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public float[] getFloatArray() {
+	public float[] getValueAsFloatArray() {
 		if(value == null)
 			return new float[0];
 		
@@ -216,7 +216,7 @@ public class ParameterValue {
 		return floatArr;
 	}
 
-	public double getDouble() {
+	public double getValueAsDouble() {
 		if(value == null)
 			return 0.0D;
 		
@@ -227,7 +227,7 @@ public class ParameterValue {
 	}
 
 	@SuppressWarnings("unchecked")
-	public double[] getDoubleArray() {
+	public double[] getValueAsDoubleArray() {
 		if(value == null)
 			return new double[0];
 		
@@ -243,7 +243,7 @@ public class ParameterValue {
 		return doubleArr;
 	}
 	
-	public boolean getBoolean() {
+	public boolean getValueAsBoolean() {
 		if(value == null)
 			return false;
 		
@@ -254,7 +254,7 @@ public class ParameterValue {
 	}
 
 	@SuppressWarnings("unchecked")
-	public boolean[] getBooleanArray() {
+	public boolean[] getValueAsBooleanArray() {
 		if(value == null)
 			return new boolean[0];
 		

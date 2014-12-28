@@ -74,28 +74,29 @@ public abstract class AbstractParameters implements Parameters {
 		return title;
 	}
 
-	public Object getValue(String name) {
-		ParameterValue o = parameterValueMap.get(name);
+	public ParameterValue getParameter(String name) {
+		ParameterValue p = parameterValueMap.get(name);
 		
-		if(o == null)
-			return null;
+		if(p == null)
+			throw new UnknownParameterException(name, this);
 		
-		return o.getValue();
+		return p;
 	}
 
+	public Object getValue(String name) {
+		ParameterValue p = getParameter(name);
+		return p.getValue();
+	}
+	
 	public Object getValue(ParameterValue parameter) {
 		return getValue(parameter.getName());
 	}
 	
 	public String getString(String name) {
-		ParameterValue v = parameterValueMap.get(name);
-		
-		if(v == null)
-			return null;
-		
-		return v.getString();
+		ParameterValue p = getParameter(name);
+		return p.getValueAsString();
 	}
-	
+
 	public String getString(String name, String defaultValue) {
 		String s = getString(name);
 		
@@ -106,165 +107,193 @@ public abstract class AbstractParameters implements Parameters {
 	}
 
 	public String[] getStringArray(String name) {
-		ParameterValue v = parameterValueMap.get(name);
-		
-		if(v == null)
-			return null;
-		
-		return (String[])v.getValues();
+		ParameterValue p = getParameter(name);
+		return p.getValueAsStringArray();
+	}
+
+	public String getString(ParameterValue parameter) {
+		return getString(parameter.getName());
+	}
+	
+	public String getString(ParameterValue parameter, String defaultValue) {
+		return getString(parameter.getName(), defaultValue);
+	}
+
+	public String[] getStringArray(ParameterValue parameter) {
+		return getStringArray(parameter.getName());
 	}
 	
 	public int getInt(String name) {
-		ParameterValue v = parameterValueMap.get(name);
-		
-		if(v == null)
-			throw new UnknownParameterException(name, this);
-			
-		return v.getInt();
+		ParameterValue p = getParameter(name);
+		return p.getValueAsInt();
 	}
 	
 	public int getInt(String name, int defaultValue) {
-		ParameterValue v = parameterValueMap.get(name);
+		ParameterValue p = getParameter(name);
 		
-		if(v == null)
-			throw new UnknownParameterException(name, this);
+		if(p == null)
+			return defaultValue;
 		
-		return v.getInt();
+		return p.getValueAsInt();
 	}
-	
+
 	public int[] getIntArray(String name) {
-		ParameterValue v = parameterValueMap.get(name);
-		
-		if(v == null)
-			throw new UnknownParameterException(name, this);
-		
-		return v.getIntArray();
+		ParameterValue p = getParameter(name);
+		return p.getValueAsIntArray();
+	}
+
+	public int getInt(ParameterValue parameter) {
+		return getInt(parameter.getName());
+	}
+
+	public int getInt(ParameterValue parameter, int defaultValue) {
+		return getInt(parameter.getName(), defaultValue);
+	}
+
+	public int[] getIntArray(ParameterValue parameter) {
+		return getIntArray(parameter.getName());
 	}
 	
 	public long getLong(String name) {
-		ParameterValue v = parameterValueMap.get(name);
-		
-		if(v == null)
-			throw new UnknownParameterException(name, this);
-			
-		return v.getLong();
+		ParameterValue p = getParameter(name);
+		return p.getValueAsLong();
 	}
 	
 	public long getLong(String name, long defaultValue) {
-		ParameterValue v = parameterValueMap.get(name);
+		ParameterValue p = getParameter(name);
 		
-		if(v == null)
-			throw new UnknownParameterException(name, this);
+		if(p == null)
+			return defaultValue;
 		
-		return v.getLong();
+		return p.getValueAsLong();
 	}
 	
 	public long[] getLongArray(String name) {
-		ParameterValue v = parameterValueMap.get(name);
-		
-		if(v == null)
-			throw new UnknownParameterException(name, this);
-		
-		return v.getLongArray();
+		ParameterValue p = getParameter(name);
+		return p.getValueAsLongArray();
+	}
+	
+	public long getLong(ParameterValue parameter) {
+		return getLong(parameter.getName());
+	}
+	
+	public long getLong(ParameterValue parameter, long defaultValue) {
+		return getLong(parameter.getName());
+	}
+	
+	public long[] getLongArray(ParameterValue parameter) {
+		return getLongArray(parameter.getName());
 	}
 	
 	public float getFloat(String name) {
-		ParameterValue v = parameterValueMap.get(name);
-		
-		if(v == null)
-			throw new UnknownParameterException(name, this);
-			
-		return v.getFloat();
+		ParameterValue p = getParameter(name);
+		return p.getValueAsFloat();
 	}
 	
 	public float getFloat(String name, float defaultValue) {
-		ParameterValue v = parameterValueMap.get(name);
+		ParameterValue p = getParameter(name);
 		
-		if(v == null)
-			throw new UnknownParameterException(name, this);
+		if(p == null)
+			return defaultValue;
 		
-		return v.getFloat();
+		return p.getValueAsFloat();
 	}
 
 	public float[] getFloatArray(String name) {
-		ParameterValue v = parameterValueMap.get(name);
-		
-		if(v == null)
-			throw new UnknownParameterException(name, this);
-		
-		return v.getFloatArray();
+		ParameterValue p = getParameter(name);
+		return p.getValueAsFloatArray();
+	}
+	
+	public float getFloat(ParameterValue parameter) {
+		return getFloat(parameter.getName());
+	}
+	
+	public float getFloat(ParameterValue parameter, float defaultValue) {
+		return getFloat(parameter.getName(), defaultValue);
+	}
+	
+	public float[] getFloatArray(ParameterValue parameter) {
+		return getFloatArray(parameter.getName());
 	}
 	
 	public double getDouble(String name) {
-		ParameterValue v = parameterValueMap.get(name);
-		
-		if(v == null)
-			throw new UnknownParameterException(name, this);
-			
-		return v.getDouble();
+		ParameterValue p = getParameter(name);
+		return p.getValueAsDouble();
 	}
 	
 	public double getDouble(String name, double defaultValue) {
-		ParameterValue v = parameterValueMap.get(name);
+		ParameterValue p = getParameter(name);
 		
-		if(v == null)
-			throw new UnknownParameterException(name, this);
+		if(p == null)
+			return defaultValue;
 		
-		return v.getDouble();
+		return p.getValueAsDouble();
 	}
 
 	public double[] getDoubleArray(String name) {
-		ParameterValue v = parameterValueMap.get(name);
-		
-		if(v == null)
-			throw new UnknownParameterException(name, this);
-		
-		return v.getDoubleArray();
+		ParameterValue p = getParameter(name);
+		return p.getValueAsDoubleArray();
+	}
+	
+	public double getDouble(ParameterValue parameter) {
+		return getDouble(parameter.getName());
+	}
+	
+	public double getDouble(ParameterValue parameter, double defaultValue) {
+		return getDouble(parameter.getName(), defaultValue);
+	}
+	
+	public double[] getDoubleArray(ParameterValue parameter) {
+		return getDoubleArray(parameter.getName());
 	}
 	
 	public boolean getBoolean(String name) {
-		ParameterValue v = parameterValueMap.get(name);
-		
-		if(v == null)
-			throw new UnknownParameterException(name, this);
-		
-		return v.getBoolean();
+		ParameterValue p = getParameter(name);
+		return p.getValueAsBoolean();
 	}
 	
 	public boolean getBoolean(String name, boolean defaultValue) {
-		ParameterValue v = parameterValueMap.get(name);
+		ParameterValue p = getParameter(name);
 		
-		if(v == null)
-			throw new UnknownParameterException(name, this);
+		if(p == null)
+			return defaultValue;
 		
-		return v.getBoolean();
+		return p.getValueAsBoolean();
 	}
 	
 	public boolean[] getBooleanArray(String name) {
-		ParameterValue v = parameterValueMap.get(name);
-		
-		if(v == null)
-			throw new UnknownParameterException(name, this);
-		
-		return v.getBooleanArray();
+		ParameterValue p = getParameter(name);
+		return p.getValueAsBooleanArray();
+	}
+	
+	public boolean getBoolean(ParameterValue parameter) {
+		return getBoolean(parameter.getName());
+	}
+	
+	public boolean getBoolean(ParameterValue parameter, boolean defaultValue) {
+		return getBoolean(parameter.getName(), defaultValue);
+	}
+	
+	public boolean[] getBooleanArray(ParameterValue parameter) {
+		return getBooleanArray(parameter.getName());
 	}
 	
 	public Parameters getParameters(String name) {
-		ParameterValue v = parameterValueMap.get(name);
-		
-		if(v == null)
-			throw new UnknownParameterException(name, this);
-		
-		return (Parameters)v.getValue();
+		ParameterValue p = getParameter(name);
+		return (Parameters)p.getValue();
 	}
 	
 	public Parameters[] getParametersArray(String name) {
-		ParameterValue v = parameterValueMap.get(name);
-		
-		if(v == null)
-			throw new UnknownParameterException(name, this);
-		
-		return v.getParametersArray();
+		ParameterValue p = getParameter(name);
+		return p.getParametersArray();
+	}
+	
+	public Parameters getParameters(ParameterValue parameter) {
+		return getParameters(parameter.getName());
+	}
+	
+	public Parameters[] getParametersArray(ParameterValue parameter) {
+		return getParametersArray(parameter.getName());
 	}
 	
 	public String toPlaintext() {
