@@ -6,7 +6,7 @@ public class TestClass {
 		TestClass2 c2 = new TestClass2();
 		
 		
-		String hi = "Hi! ......" + c2;
+		String hi = "Hi!---------- " + c2;
 		
 		return hi;
 	}
