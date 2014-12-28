@@ -466,7 +466,9 @@ public class AspectranClassLoader extends ClassLoader {
 			Object object = c.newInstance();
 			System.out.println(object);
 			
-			Thread.sleep(7000);
+			Thread.sleep(3000);
+			
+			acl = new AspectranClassLoader(resourceLocations);
 			
 			acl.reload();
 
