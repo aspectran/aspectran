@@ -3,8 +3,6 @@
  */
 package com.aspectran.core.context.bean;
 
-
-
 /**
  *
  * @author Gulendol

@@ -33,22 +33,13 @@ public class ActivityContext {
 	
 	private AspectRuleRegistry aspectRuleRegistry;
 	
-	private ContextBeanRegistry beanRegistry;
+	private ContextBeanRegistry contextBeanRegistry;
 
 	private TransletRuleRegistry transletRuleRegistry;
 	
 	private String activityDefaultHandler;
 	
 	public ActivityContext() {
-	}
-	
-	public static CoreActivity getCoreActivity() {
-		return activityThreadLocal.get();
-	}
-	
-	public static void setCoreActivity(CoreActivity activity) {
-		if(activityThreadLocal.get() == null)
-			activityThreadLocal.set(activity);
 	}
 	
 	/**
@@ -83,16 +74,16 @@ public class ActivityContext {
 	 * @return the bean registry
 	 */
 	public ContextBeanRegistry getContextBeanRegistry() {
-		return beanRegistry;
+		return contextBeanRegistry;
 	}
 
 	/**
 	 * Sets the bean registry.
 	 *
-	 * @param beanRegistry the new bean registry
+	 * @param contextBeanRegistry the new bean registry
 	 */
-	public void setLocalBeanRegistry(ContextBeanRegistry beanRegistry) {
-		this.beanRegistry = beanRegistry;
+	public void setContextBeanRegistry(ContextBeanRegistry contextBeanRegistry) {
+		this.contextBeanRegistry = contextBeanRegistry;
 	}
 
 	public TransletRuleRegistry getTransletRuleRegistry() {
@@ -115,13 +106,30 @@ public class ActivityContext {
 		return applicationAdapter.getActivityContextServiceHandler(this);
 	}
 	
+	public CoreActivity getLocalCoreActivity() {
+		return activityThreadLocal.get();
+	}
+	
+	public void saveLocalCoreActivity(CoreActivity activity) {
+		if(activityThreadLocal.get() == null)
+			activityThreadLocal.set(activity);
+	}
+	
+	public void clearLocalCoreActivity() {
+		activityThreadLocal.set(null);
+	}
+	
 	/**
 	 * Destroy the translets context. 
 	 */
 	public void destroy() {
-		if(beanRegistry != null) {
-			beanRegistry.destroy();
-			beanRegistry = null;
+		if(aspectRuleRegistry != null) {
+			aspectRuleRegistry.destroy();
+			aspectRuleRegistry = null;
+		}
+		if(contextBeanRegistry != null) {
+			contextBeanRegistry.destroy();
+			contextBeanRegistry = null;
 		}
 		if(transletRuleRegistry != null) {
 			transletRuleRegistry.destroy();
@@ -136,7 +144,8 @@ public class ActivityContext {
 		StringBuilder sb = new StringBuilder();
 		
 		sb.append("{applicationAdapter=").append(applicationAdapter);
-		sb.append(", beanRegistry=").append(beanRegistry);
+		sb.append(", aspectRuleRegistry=").append(aspectRuleRegistry);
+		sb.append(", beanRegistry=").append(contextBeanRegistry);
 		sb.append(", transletRuleRegistry=").append(transletRuleRegistry);
 		sb.append(", activityDefaultHandler=").append(activityDefaultHandler);
 		sb.append("}");

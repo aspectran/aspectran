@@ -33,12 +33,6 @@ public class AspectRuleRegistry {
 	public AspectRule getAspectRule(String aspectId) {
 		return aspectRuleMap.get(aspectId);
 	}
-	
-	public void destroy() {
-		if(aspectRuleMap != null) {
-			aspectRuleMap.clear();
-		}
-	}
 
 	public List<AspectRule> getBeanRelevantedAspectRuleList(JoinpointScopeType joinpointScope, String transletName, String beanId) {
 		return getBeanRelevantedAspectRuleList(joinpointScope, transletName, beanId, null);
@@ -94,6 +88,12 @@ public class AspectRuleRegistry {
 		}
 		
 		return aspectAdviceRuleRegistry;
+	}
+	
+	public void destroy() {
+		if(aspectRuleMap != null) {
+			aspectRuleMap.clear();
+		}
 	}
 
 }

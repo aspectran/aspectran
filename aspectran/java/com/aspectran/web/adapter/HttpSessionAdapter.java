@@ -34,7 +34,7 @@ public class HttpSessionAdapter extends AbstractSessionAdapter implements Sessio
 		((HttpSession)adaptee).setAttribute(name, value);
 	}
 
-	public Scope getScope() {
+	public synchronized Scope getScope() {
 		Scope scope = (SessionScope)getAttribute(SESSION_SCOPE_ATTRIBUTE);
 
 		if(scope == null) {

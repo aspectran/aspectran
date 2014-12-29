@@ -115,8 +115,8 @@ public class CoreActivityImpl implements CoreActivity {
 	/** The translet. */
 	private CoreTranslet translet;
 	
-	/** Whether the response is ended. */
-	private boolean isActivityEnd;
+	/** Whether the response was ended. */
+	private boolean activityEnded;
 
 	private Exception raisedException;
 
@@ -299,7 +299,7 @@ public class CoreActivityImpl implements CoreActivity {
 			throw new CoreActivityException("AspectAdviceRuleRegistry clone failed.", e);
 		}
 		
-		ActivityContext.setCoreActivity(this);
+		context.saveLocalCoreActivity(this);
 	}
 	
 	public void perform() throws CoreActivityException {
@@ -333,12 +333,12 @@ public class CoreActivityImpl implements CoreActivity {
 						execute(beforeAdviceRuleList);
 				}
 				
-				if(isActivityEnd)
+				if(activityEnded)
 					return;
 				
 				run2nd();
 				
-				if(isActivityEnd)
+				if(activityEnded)
 					return;
 				
 				// execute After Advice Action for Translet Joinpoint
@@ -364,7 +364,7 @@ public class CoreActivityImpl implements CoreActivity {
 			if(responseByContentTypeRuleMap != null) {
 				responseByContentType(responseByContentTypeRuleMap);
 				
-				if(isActivityEnd) {
+				if(activityEnded) {
 					return;
 				}
 			}
@@ -375,7 +375,7 @@ public class CoreActivityImpl implements CoreActivity {
 				if(exceptionRaizedAdviceRuleList != null) {
 					responseByContentType(exceptionRaizedAdviceRuleList);
 					
-					if(isActivityEnd) {
+					if(activityEnded) {
 						return;
 					}
 				}
@@ -403,12 +403,12 @@ public class CoreActivityImpl implements CoreActivity {
 						execute(beforeAdviceRuleList);
 				}
 				
-				if(isActivityEnd)
+				if(activityEnded)
 					return;
 				
 				request();
 				
-				if(isActivityEnd)
+				if(activityEnded)
 					return;
 				
 				// execute After Advice Action for Request Joinpoint
@@ -435,7 +435,7 @@ public class CoreActivityImpl implements CoreActivity {
 				if(exceptionRaizedAdviceRuleList != null) {
 					responseByContentType(exceptionRaizedAdviceRuleList);
 					
-					if(isActivityEnd) {
+					if(activityEnded) {
 						return;
 					}
 				}
@@ -444,7 +444,7 @@ public class CoreActivityImpl implements CoreActivity {
 			throw new RequestException("request error", e);
 		}
 		
-		if(isActivityEnd)
+		if(activityEnded)
 			return;
 		
 		//content
@@ -463,12 +463,12 @@ public class CoreActivityImpl implements CoreActivity {
 							execute(beforeAdviceRuleList);
 					}
 					
-					if(isActivityEnd)
+					if(activityEnded)
 						return;
 					
 					process();
 					
-					if(isActivityEnd)
+					if(activityEnded)
 						return;
 					
 					// execute After Advice Action for Content Joinpoint
@@ -495,7 +495,7 @@ public class CoreActivityImpl implements CoreActivity {
 					if(exceptionRaizedAdviceRuleList != null) {
 						responseByContentType(exceptionRaizedAdviceRuleList);
 
-						if(isActivityEnd) {
+						if(activityEnded) {
 							return;
 						}
 					}
@@ -518,7 +518,7 @@ public class CoreActivityImpl implements CoreActivity {
 		}
 		*/
 		
-		if(isActivityEnd || withoutResponse)
+		if(activityEnded || withoutResponse)
 			return;
 		
 		//response
@@ -534,12 +534,12 @@ public class CoreActivityImpl implements CoreActivity {
 						execute(beforeAdviceRuleList);
 				}
 				
-				if(isActivityEnd)
+				if(activityEnded)
 					return;
 				
 				response();
 				
-				if(isActivityEnd)
+				if(activityEnded)
 					return;
 				
 				// execute After Advice Action for Request Joinpoint
@@ -566,7 +566,7 @@ public class CoreActivityImpl implements CoreActivity {
 				if(exceptionRaizedAdviceRuleList != null) {
 					responseByContentType(exceptionRaizedAdviceRuleList);
 					
-					if(isActivityEnd) {
+					if(activityEnded) {
 						return;
 					}
 				}
@@ -591,7 +591,7 @@ public class CoreActivityImpl implements CoreActivity {
 			for(ActionList actionList : contentList) {
 				execute(actionList);
 				
-				if(isActivityEnd)
+				if(activityEnded)
 					break;
 			}
 		}
@@ -662,7 +662,7 @@ public class CoreActivityImpl implements CoreActivity {
 			if(responseByContentTypeRuleMap != null) {
 				responseByContentType(responseByContentTypeRuleMap);
 				
-				if(isActivityEnd)
+				if(activityEnded)
 					return;
 			}
 		}
@@ -771,7 +771,7 @@ public class CoreActivityImpl implements CoreActivity {
 		for(Executable action : actionList) {
 			execute(action);
 			
-			if(isActivityEnd)
+			if(activityEnded)
 				break;
 		}
 	}
@@ -804,7 +804,7 @@ public class CoreActivityImpl implements CoreActivity {
 		for(AspectAdviceRule aspectAdviceRule : aspectAdviceRuleList) {
 			execute(aspectAdviceRule);
 
-			if(isActivityEnd)
+			if(activityEnded)
 				return;
 		}
 	}
@@ -869,15 +869,15 @@ public class CoreActivityImpl implements CoreActivity {
 	}
 	
 	public void activityEnd() {
-		isActivityEnd = true;
+		activityEnded = true;
 	}
 	
 	/**
 	 * 
 	 * @return true, if checks if is response end
 	 */
-	public boolean isActivityEnd() {
-		return isActivityEnd;
+	public boolean isActivityEnded() {
+		return activityEnded;
 	}
 	
 	/* (non-Javadoc)
@@ -982,6 +982,7 @@ public class CoreActivityImpl implements CoreActivity {
 	}
 	
 	public void finish() {
+		context.clearLocalCoreActivity();
 	}
 	
 }
