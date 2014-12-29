@@ -68,7 +68,7 @@ public interface CoreActivity {
 	
 	public void activityEnd();
 	
-	public boolean isActivityEnd();
+	public boolean isActivityEnded();
 	
 	public void response(Responsible res) throws ResponseException;
 	

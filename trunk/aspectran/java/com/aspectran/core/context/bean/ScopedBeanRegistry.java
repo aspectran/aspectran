@@ -1,18 +1,10 @@
 package com.aspectran.core.context.bean;
 
-import com.aspectran.core.activity.CoreActivity;
-import com.aspectran.core.adapter.ApplicationAdapter;
-import com.aspectran.core.adapter.SessionAdapter;
-import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.context.bean.scope.RequestScope;
 import com.aspectran.core.context.bean.scope.Scope;
 import com.aspectran.core.context.bean.scope.ScopedBean;
 import com.aspectran.core.context.bean.scope.ScopedBeanMap;
 import com.aspectran.core.var.rule.BeanRule;
 import com.aspectran.core.var.rule.BeanRuleMap;
-import com.aspectran.core.var.token.ItemTokenExpression;
-import com.aspectran.core.var.token.ItemTokenExpressor;
-import com.aspectran.core.var.type.BeanProxyModeType;
 import com.aspectran.core.var.type.ScopeType;
 
 /**
@@ -23,7 +15,7 @@ import com.aspectran.core.var.type.ScopeType;
  * Created: 2009. 03. 09 오후 23:48:09
  * </p>
  */
-public class ScopedBeanRegistry extends AbstractBeanRegistry implements ContextBeanRegistry {
+public abstract class ScopedBeanRegistry extends AbstractBeanRegistry {
 
 	private final Object singletonScopeLock = new Object();
 
@@ -33,8 +25,8 @@ public class ScopedBeanRegistry extends AbstractBeanRegistry implements ContextB
 	
 	private final Object applicationScopeLock = new Object();
 	
-	public ScopedBeanRegistry(ActivityContext context, BeanRuleMap beanRuleMap, BeanProxyModeType beanProxyMode) {
-		super(context, beanRuleMap, beanProxyMode);
+	public ScopedBeanRegistry(BeanRuleMap beanRuleMap) {
+		super(beanRuleMap);
 	}
 
 	public Object getBean(String id) {
@@ -59,30 +51,15 @@ public class ScopedBeanRegistry extends AbstractBeanRegistry implements ContextB
 	}
 	
 	private Object getPrototypeBean(BeanRule beanRule) {
-		CoreActivity activity = ActivityContext.getCoreActivity();
-		Object bean;
-		
-		if(activity == null)
-			bean = createBean(beanRule);
-		else
-			bean = createBean(beanRule, activity);
-
-		return bean;
+		return createBean(beanRule);
 	}
 	
 	private Object getSingletonScopeBean(BeanRule beanRule) {
-		CoreActivity activity = ActivityContext.getCoreActivity();
-
 		synchronized(singletonScopeLock) {
 			if(beanRule.isRegistered())
 				return beanRule.getBean();
 
-			Object bean;
-			
-			if(activity == null)
-				bean = createBean(beanRule);
-			else
-				bean = createBean(beanRule, activity);
+			Object bean = createBean(beanRule);
 
 			beanRule.setBean(bean);
 			beanRule.setRegistered(true);
@@ -92,70 +69,46 @@ public class ScopedBeanRegistry extends AbstractBeanRegistry implements ContextB
 	}
 
 	private Object getRequestScopeBean(BeanRule beanRule) {
-		CoreActivity activity = ActivityContext.getCoreActivity();
-		
 		synchronized(requestScopeLock) {
-			if(activity == null)
+			Scope scope = getRequestScope();
+			
+			if(scope == null)
 				throw new UnsupportedBeanScopeException(ScopeType.REQUEST, beanRule);
 			
-			Scope scope = activity.getRequestScope();
-			
-			if(scope == null) {
-				scope = new RequestScope();
-				activity.setRequestScope(scope);
-			}
-			
-			return getScopedBean(scope, beanRule, activity);
+			return getScopedBean(scope, beanRule);
 		}
 	}
 	
 	private Object getSessionScopeBean(BeanRule beanRule) {
-		CoreActivity activity = ActivityContext.getCoreActivity();
+		Scope scope = getSessionScope();
 
-		SessionAdapter session = null;
-		
-		if(activity != null)
-			session = activity.getSessionAdapter();
-
-		if(session == null)
+		if(scope == null)
 			throw new UnsupportedBeanScopeException(ScopeType.SESSION, beanRule);
 		
 		synchronized(sessionScopeLock) {
-			Scope scope = session.getScope();
-			return getScopedBean(scope, beanRule, activity);
+			return getScopedBean(scope, beanRule);
 		}
 	}
 
 	private Object getApplicationScopeBean(BeanRule beanRule) {
-		CoreActivity activity = ActivityContext.getCoreActivity();
+		Scope scope = getApplicationScope();
 
-		ApplicationAdapter application = null;
-		
-		if(activity != null)
-			application = activity.getApplicationAdapter();
-
-		if(application == null)
+		if(scope == null)
 			throw new UnsupportedBeanScopeException(ScopeType.APPLICATION, beanRule);
 
 		synchronized(applicationScopeLock) {
-			Scope scope = application.getScope();
-			return getScopedBean(scope, beanRule, activity);
+			return getScopedBean(scope, beanRule);
 		}
 	}
 	
-	private Object getScopedBean(Scope scope, BeanRule beanRule, CoreActivity activity) {
+	private Object getScopedBean(Scope scope, BeanRule beanRule) {
 		ScopedBeanMap scopedBeanMap = scope.getScopedBeanMap();
 		ScopedBean scopeBean = scopedBeanMap.get(beanRule.getId());
 			
 		if(scopeBean != null)
 			return scopeBean.getBean();
 
-		Object bean;
-		
-		if(activity == null)
-			bean = createBean(beanRule);
-		else
-			bean = createBean(beanRule, activity);
+		Object bean = createBean(beanRule);
 		
 		scopeBean = new ScopedBean(beanRule);
 		scopeBean.setBean(bean);
@@ -165,14 +118,10 @@ public class ScopedBeanRegistry extends AbstractBeanRegistry implements ContextB
 		return bean;
 	}
 	
-	protected Object createBean(BeanRule beanRule) {
-		ItemTokenExpressor expressor = new ItemTokenExpression(this);
-		return createBean(beanRule, expressor);
-	}
+	abstract protected Scope getRequestScope();
+
+	abstract protected Scope getSessionScope();
 	
-	protected Object createBean(BeanRule beanRule, CoreActivity activity) {
-		ItemTokenExpressor expressor = new ItemTokenExpression(activity);
-		return createBean(beanRule, expressor);
-	}
+	abstract protected Scope getApplicationScope();
 	
 }

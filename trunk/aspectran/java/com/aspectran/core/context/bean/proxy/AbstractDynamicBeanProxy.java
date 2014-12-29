@@ -56,7 +56,7 @@ public abstract class AbstractDynamicBeanProxy {
 				if(aspectAdviceRuleRegistry.getBeforeAdviceRuleList() != null)
 					activity.execute(aspectAdviceRuleRegistry.getBeforeAdviceRuleList());
 				
-				if(activity.isActivityEnd())
+				if(activity.isActivityEnded())
 					return null;
 				
 				if(logger.isDebugEnabled()) {
@@ -81,7 +81,7 @@ public abstract class AbstractDynamicBeanProxy {
 				if(aspectAdviceRuleRegistry.getAfterAdviceRuleList() != null)
 					activity.execute(aspectAdviceRuleRegistry.getAfterAdviceRuleList());
 				
-				if(activity.isActivityEnd())
+				if(activity.isActivityEnded())
 					return null;
 				
 				return result;
@@ -101,7 +101,7 @@ public abstract class AbstractDynamicBeanProxy {
 			if(exceptionRaizedAdviceRuleList != null) {
 				activity.responseByContentType(exceptionRaizedAdviceRuleList);
 				
-				if(activity.isActivityEnd()) {
+				if(activity.isActivityEnded()) {
 					return null;
 				}
 			}
@@ -125,7 +125,7 @@ public abstract class AbstractDynamicBeanProxy {
 				} else {
 					activity.registerAspectRule(aspectRule);
 					
-					if(activity.isActivityEnd())
+					if(activity.isActivityEnded())
 						return null;
 				}
 			}

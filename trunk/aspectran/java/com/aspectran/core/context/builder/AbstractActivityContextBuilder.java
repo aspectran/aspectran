@@ -22,7 +22,7 @@ import com.aspectran.core.context.aspect.AspectRuleRegistry;
 import com.aspectran.core.context.aspect.pointcut.Pointcut;
 import com.aspectran.core.context.aspect.pointcut.PointcutFactory;
 import com.aspectran.core.context.bean.ContextBeanRegistry;
-import com.aspectran.core.context.bean.ScopedBeanRegistry;
+import com.aspectran.core.context.bean.ContextScopedBeanRegistry;
 import com.aspectran.core.context.translet.TransletRuleRegistry;
 import com.aspectran.core.var.rule.AspectRule;
 import com.aspectran.core.var.rule.AspectRuleMap;
@@ -61,7 +61,7 @@ public abstract class AbstractActivityContextBuilder extends ContextBuilderAssis
 
 		BeanProxyModeType beanProxyMode = BeanProxyModeType.valueOf((String)getSetting(DefaultSettingType.BEAN_PROXY_MODE));
 		ContextBeanRegistry beanRegistry = makeBeanRegistry(context, beanRuleMap, beanProxyMode);
-		context.setLocalBeanRegistry(beanRegistry);
+		context.setContextBeanRegistry(beanRegistry);
 		
 		TransletRuleRegistry transletRuleRegistry = makeTransletRegistry(transletRuleMap);
 		context.setTransletRuleRegistry(transletRuleRegistry);
@@ -108,7 +108,7 @@ public abstract class AbstractActivityContextBuilder extends ContextBuilderAssis
 	protected ContextBeanRegistry makeBeanRegistry(ActivityContext context, BeanRuleMap beanRuleMap, BeanProxyModeType beanProxyMode) {
 		beanRuleMap.freeze();
 		
-		return new ScopedBeanRegistry(context, beanRuleMap, beanProxyMode);
+		return new ContextScopedBeanRegistry(context, beanRuleMap, beanProxyMode);
 	}
 
 	protected TransletRuleRegistry makeTransletRegistry(TransletRuleMap transletRuleMap) {
