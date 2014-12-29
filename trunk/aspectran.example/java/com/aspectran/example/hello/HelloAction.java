@@ -3,6 +3,7 @@ package com.aspectran.example.hello;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import com.aspectran.core.context.ActivityContext;
 import com.aspectran.web.activity.WebTranslet;
 
 public class HelloAction {
