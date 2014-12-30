@@ -45,9 +45,9 @@ public abstract class AbstractParameters implements Parameters {
 		this.parameterValueMap = new HashMap<String, ParameterValue>();
 		
 		if(parameterValues != null) {
-			for(ParameterValue parameterValue : parameterValues) {
-				parameterValue.setHolder(this);
-				parameterValueMap.put(parameterValue.getName(), parameterValue);
+			for(ParameterValue pv : parameterValues) {
+				pv.setHolder(this);
+				parameterValueMap.put(pv.getName(), pv);
 			}
 		}
 

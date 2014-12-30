@@ -2,54 +2,83 @@ package com.aspectran.core.context.service;
 
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.loader.ActivityContextLoader;
-import com.aspectran.core.context.loader.ActivityContextLoadingManager;
 import com.aspectran.core.context.loader.config.AspectranConfig;
+import com.aspectran.core.context.loader.reload.ActivityContextReloadDelegate;
 
-public class ActivityContextService extends ActivityContextLoadingManager {
+public class ActivityContextService extends AbstractActivityContextService implements ActivityContextServiceHandler {
 
-	private ActivityContextReloadListener activityContextReloadListener;
+	private static final long DEFAULT_PAUSE_TIMEOUT = 500L;
 	
-	private ActivityContextPauseResumeListener activityContextPauseResumeListener;
+	private ActivityContextServiceListener activityContextServiceListener;
 	
 	public ActivityContextService(AspectranConfig aspectranConfig, ActivityContextLoader activityContextLoader) {
 		super(aspectranConfig, activityContextLoader);
+
+		initActivityContext();
 	}
 	
-	public void setActivityContextReloadListener(
-			ActivityContextReloadListener activityContextReloadingListener) {
-		this.activityContextReloadListener = activityContextReloadingListener;
+	public void setActivityContextServiceListener(ActivityContextServiceListener activityContextServiceListener) {
+		this.activityContextServiceListener = activityContextServiceListener;
+	}
+	
+	protected ActivityContextReloadDelegate getActivityContextReloadDelegate() {
+		return new ActivityContextReloadDelegate(this);
 	}
 
 	public synchronized ActivityContext start() {
-		createActivityContext();
-		
-		ActivityContextServiceHandler activityContextServiceHandler = new ActivityContextServiceHandler(this);
-		getApplicationAdapter().putActivityContextServiceHandler(activityContext, activityContextServiceHandler);
-		
+		loadActivityContext();
+
+		if(getApplicationAdapter().getActivityContextServiceHandler(activityContext) != this)
+			getApplicationAdapter().putActivityContextServiceHandler(activityContext, this);
+
+		if(activityContextServiceListener != null)
+			activityContextServiceListener.started();
+
 		return activityContext;
 	}
 	
-	public synchronized boolean stop() {
-		return destroyActivityContext();
-	}
-	
-	public synchronized ActivityContext restart() {
+	public synchronized boolean restart() {
+		boolean cleanlyDestoryed = stop();
+		
 		reloadActivityContext();
+
+		if(activityContextServiceListener != null)
+			activityContextServiceListener.restarted();
 		
-		if(activityContextReloadListener != null)
-			activityContextReloadListener.reloaded();
-		
-		return activityContext;
+		return cleanlyDestoryed;
 	}
 
 	public synchronized void pause() {
-		if(activityContextPauseResumeListener != null)
-			activityContextPauseResumeListener.paused();
+		if(activityContextServiceListener != null)
+			activityContextServiceListener.paused(-1L);
+	}
+	
+	public synchronized void pause(long timeout) {
+		if(activityContextServiceListener != null)
+			activityContextServiceListener.paused(timeout);
 	}
 	
 	public synchronized void resume() {
-		if(activityContextPauseResumeListener != null)
-			activityContextPauseResumeListener.resumed();
+		if(activityContextServiceListener != null)
+			activityContextServiceListener.resumed();
+	}
+
+	public synchronized boolean stop() {
+		if(activityContextServiceListener != null)
+			activityContextServiceListener.paused(DEFAULT_PAUSE_TIMEOUT);
+		
+		boolean cleanlyDestoryed = destroyActivityContext();
+
+		if(activityContextServiceListener != null)
+			activityContextServiceListener.stopped();
+		
+		return cleanlyDestoryed;
 	}
 	
+	public synchronized boolean destroy() {
+		getApplicationAdapter().removeActivityContextServiceHandler(activityContext);
+		
+		return stop();
+	}
+
 }

@@ -47,13 +47,18 @@ public abstract class AbstractApplicationAdapter implements ApplicationAdapter {
 	public Map<ActivityContext, ActivityContextServiceHandler> getActivityContextServiceHandlers() {
 		return activityContextServiceHandlers;
 	}
-
-	public void putActivityContextServiceHandler(ActivityContext activityContext, ActivityContextServiceHandler activityContextServiceHandler) {
-		activityContextServiceHandlers.put(activityContext, activityContextServiceHandler);
-	}
 	
 	public ActivityContextServiceHandler getActivityContextServiceHandler(ActivityContext activityContext) {
 		return activityContextServiceHandlers.get(activityContext);
 	}
 
+	public void putActivityContextServiceHandler(ActivityContext activityContext, ActivityContextServiceHandler activityContextServiceHandler) {
+		activityContextServiceHandlers.put(activityContext, activityContextServiceHandler);
+	}
+
+	public void removeActivityContextServiceHandler(ActivityContext activityContext) {
+		if(activityContext != null)
+			activityContextServiceHandlers.remove(activityContext);
+	}
+	
 }

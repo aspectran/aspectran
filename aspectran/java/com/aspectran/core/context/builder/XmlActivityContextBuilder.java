@@ -15,9 +15,6 @@
  */
 package com.aspectran.core.context.builder;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.builder.xml.parser.AspectranNodeParser;
@@ -29,8 +26,6 @@ import com.aspectran.core.util.ResourceUtils;
  * <p>Created: 2008. 06. 14 오후 8:53:29</p>
  */
 public class XmlActivityContextBuilder extends AbstractActivityContextBuilder implements ActivityContextBuilder {
-	
-	private final Logger logger = LoggerFactory.getLogger(XmlActivityContextBuilder.class);
 	
 	private final ApplicationAdapter applicationAdapter;
 	
@@ -61,8 +56,7 @@ public class XmlActivityContextBuilder extends AbstractActivityContextBuilder im
 			return build(applicationAdapter, importResource);
 			
 		} catch(Exception e) {
-			logger.error("ActivityContext build failed", e);
-			throw new ActivityContextBuilderException("ActivityContext build failed: " + e.toString(), e);
+			throw new ActivityContextBuilderException("XmlActivityContext build failed. rootContext: " + rootContext, e);
 		}
 	}
 	

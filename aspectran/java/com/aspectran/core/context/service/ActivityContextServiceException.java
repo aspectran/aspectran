@@ -8,7 +8,7 @@
  * Contributors:
  *     Jeong Ju Ho - initial API and implementation
  ******************************************************************************/
-package com.aspectran.core.context.loader;
+package com.aspectran.core.context.service;
 
 import com.aspectran.core.context.ActivityContextException;
 
@@ -20,7 +20,7 @@ import com.aspectran.core.context.ActivityContextException;
  * @author Gulendol
  * 
  */
-public class ActivityContextLoadingFailedException extends ActivityContextException {
+public class ActivityContextServiceException extends ActivityContextException {
 
 	/** @serial */
 	private static final long serialVersionUID = 3684447750947343719L;
@@ -28,7 +28,7 @@ public class ActivityContextLoadingFailedException extends ActivityContextExcept
 	/**
 	 * Simple constructor
 	 */
-	public ActivityContextLoadingFailedException() {
+	public ActivityContextServiceException() {
 	}
 
 	/**
@@ -37,7 +37,7 @@ public class ActivityContextLoadingFailedException extends ActivityContextExcept
 	 * @param msg
 	 *            A message to associate with the exception
 	 */
-	public ActivityContextLoadingFailedException(String msg) {
+	public ActivityContextServiceException(String msg) {
 		super(msg);
 	}
 
@@ -47,7 +47,7 @@ public class ActivityContextLoadingFailedException extends ActivityContextExcept
 	 * @param cause
 	 *            The real cause of the exception
 	 */
-	public ActivityContextLoadingFailedException(Throwable cause) {
+	public ActivityContextServiceException(Throwable cause) {
 		super(cause);
 	}
 
@@ -60,7 +60,7 @@ public class ActivityContextLoadingFailedException extends ActivityContextExcept
 	 * @param cause
 	 *            The real cause of the exception
 	 */
-	public ActivityContextLoadingFailedException(String msg, Throwable cause) {
+	public ActivityContextServiceException(String msg, Throwable cause) {
 		super(msg, cause);
 	}
 }

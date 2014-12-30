@@ -123,7 +123,7 @@ public class QuartzAspectranScheduler implements AspectranScheduler {
 				}
 			}
 		} catch(Exception e) {
-			throw new SchedulerException(e);
+			throw new SchedulerException("AspectranScheduler startup failed.", e);
 		}
 	}
 	

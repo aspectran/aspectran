@@ -28,18 +28,15 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.context.loader.ActivityContextLoader;
-import com.aspectran.core.context.loader.config.AspectranConfig;
-import com.aspectran.core.context.service.ActivityContextReloadListener;
 import com.aspectran.core.context.service.ActivityContextService;
+import com.aspectran.core.context.service.ActivityContextServiceListener;
 import com.aspectran.core.context.translet.TransletNotFoundException;
 import com.aspectran.web.activity.WebActivity;
 import com.aspectran.web.activity.WebActivityDefaultHandler;
 import com.aspectran.web.activity.WebActivityImpl;
 import com.aspectran.web.adapter.WebApplicationAdapter;
-import com.aspectran.web.startup.loader.WebActivityContextLoader;
+import com.aspectran.web.context.service.WebActivityContextService;
 
 /**
  * Servlet implementation class for Servlet: Translets.
@@ -50,10 +47,14 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 	static final long serialVersionUID = 6659683668233267847L;
 
 	private final Logger logger = LoggerFactory.getLogger(WebActivityServlet.class);
+
+	public static final String ASPECTRAN_CONFIG_PARAM = "aspectran:config";
 	
 	private ActivityContextService activityContextService;
 
 	protected ActivityContext activityContext;
+	
+	private long pauseTimeout;
 	
 	/*
 	 * (non-Java-doc)
@@ -72,28 +73,41 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 	 */
 	@Override
 	public void init() throws ServletException {
-		logger.info("initializing WebActivityServlet...");
+		logger.info("initialize WebActivityServlet...");
 
 		try {
 			ServletContext servletContext = getServletContext();
 			
-			String aspectranConfigText = getServletConfig().getInitParameter(WebActivityContextLoader.ASPECTRAN_CONFIG_PARAM);
+			String aspectranConfigParam = getServletConfig().getInitParameter(ASPECTRAN_CONFIG_PARAM);
 			
-			AspectranConfig aspectranConfig = new AspectranConfig(aspectranConfigText);
+			activityContextService = new WebActivityContextService(servletContext, aspectranConfigParam);
 			
-			ApplicationAdapter applicationAdapter = WebApplicationAdapter.determineWebApplicationAdapter(servletContext);
-			
-			ActivityContextLoader activityContextLoader = new WebActivityContextLoader(applicationAdapter);
-			
-			activityContextService = new ActivityContextService(aspectranConfig, activityContextLoader);
-			
-			activityContextService.setActivityContextReloadListener(new ActivityContextReloadListener() {
-				public void reloaded() {
+			activityContextService.setActivityContextServiceListener(new ActivityContextServiceListener() {
+				public void started() {
 					activityContext = activityContextService.getActivityContext();
+					pauseTimeout = 0;
+				}
+				
+				public void restarted() {
+					started();
+				}
+
+				public void paused(long timeout) {
+					if(timeout <= 0)
+						timeout = 315360000000L; //86400000 * 365 * 10 = 10 Years;
+					pauseTimeout = System.currentTimeMillis() + timeout;
+				}
+				
+				public void resumed() {
+					pauseTimeout = 0;
+				}
+
+				public void stopped() {
+					paused(-1L);
 				}
 			});
 			
-			activityContext = activityContextService.start();
+			activityContextService.start();
 			
 		} catch(Exception e) {
 			logger.error("WebActivityServlet was failed to initialize: " + e.toString(), e);
@@ -106,16 +120,25 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 	 */
 	@Override
 	public void service(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+		String requestUri = req.getRequestURI();
+
+		if(pauseTimeout > 0L) {
+			if(pauseTimeout >= System.currentTimeMillis()) {
+				logger.info("aspectran service is paused, did not respond to the request uri [" + requestUri + "]");
+				res.sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
+				return;
+			} else {
+				pauseTimeout = 0L;
+			}
+		}
+		
 		WebActivity activity = null;
 
 		try {
-			String requestUri = req.getRequestURI();
-
 			activity = new WebActivityImpl(activityContext, req, res);
 			activity.ready(requestUri);
 			activity.perform();
 			activity.finish();
-
 		} catch(TransletNotFoundException e) {
 			if(activity != null) {
 				String activityDefaultHandler = activityContext.getActivityDefaultHandler();
@@ -149,19 +172,12 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 	public void destroy() {
 		super.destroy();
 
-		boolean cleanlyDestoryed = activityContextService.stop();
+		boolean cleanlyDestoryed = activityContextService.destroy();
 		
-		try {
-			WebApplicationAdapter.destoryWebApplicationAdapter(getServletContext());
-		} catch(Exception e) {
-			cleanlyDestoryed = false;
-			logger.error("WebApplicationAdapter was failed to destroy: " + e.toString(), e);
-		}
-
 		if(cleanlyDestoryed)
-			logger.info("WebActivityServlet was destroyed successfully.");
+			logger.info("Successfully destroyed WebActivityServlet: " + this.getServletName());
 		else
-			logger.error("WebActivityServlet was failed to destroy cleanly.");
+			logger.error("WebActivityServlet were not destroyed cleanly: " + this.getServletName());
 
 		logger.info("Do not terminate the server while the all scoped bean destroying.");
 	}
