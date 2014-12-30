@@ -18,7 +18,7 @@ public class ActivityContextReloadingTimerTask extends TimerTask {
 	
 	private final boolean debugEnabled = logger.isDebugEnabled();
 
-	private final ActivityContextReloadable activityContextReloadable;
+	private final ActivityContextReloadDelegate activityContextReloadDelegate;
 	
 	private final AspectranClassLoader aspectranClassLoader;
 	
@@ -28,9 +28,9 @@ public class ActivityContextReloadingTimerTask extends TimerTask {
 	
 	private boolean modified = false;
 	
-	public ActivityContextReloadingTimerTask(ActivityContextReloadable activityContextReloadable) {
-		this.activityContextReloadable = activityContextReloadable;
-		this.aspectranClassLoader = activityContextReloadable.getAspectranClassLoader();
+	public ActivityContextReloadingTimerTask(ActivityContextReloadDelegate activityContextReloadDelegate) {
+		this.activityContextReloadDelegate = activityContextReloadDelegate;
+		this.aspectranClassLoader = activityContextReloadDelegate.getAspectranClassLoader();
 		
 		if(aspectranClassLoader != null)
 			this.resources = aspectranClassLoader.extractResources();
@@ -64,7 +64,7 @@ public class ActivityContextReloadingTimerTask extends TimerTask {
 		}
 		
 		if(modified) {
-			activityContextReloadable.reloadActivityContext();
+			activityContextReloadDelegate.reload();
 			modified = false;
 		}
 	}

@@ -3,32 +3,21 @@ package com.aspectran.core.context.service;
 import com.aspectran.core.context.ActivityContext;
 
 
-public class ActivityContextServiceHandler {
+public interface ActivityContextServiceHandler {
 	
-	private ActivityContextService activityContextService;
-	
-	public ActivityContextServiceHandler(ActivityContextService activityContextService) {
-		this.activityContextService = activityContextService;
-	}
-	
-	public ActivityContext start() {
-		return activityContextService.start();
-	}
+	public ActivityContext start();
 
-	public boolean stop() {
-		return activityContextService.stop();
-	}
+	public boolean restart();
 	
-	public void pause() {
-		throw new UnsupportedOperationException();
-	}
+	public void pause();
 	
-	public void resume() {
-		throw new UnsupportedOperationException();
-	}
+	/**
+	 * @param timeout - the maximum time to wait in milliseconds. 
+	 */
+	public void pause(long timeout);
 	
-	public ActivityContext restart() {
-		return activityContextService.restart();
-	}
+	public void resume();
+	
+	public boolean stop();
 	
 }

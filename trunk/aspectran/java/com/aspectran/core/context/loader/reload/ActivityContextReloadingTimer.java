@@ -10,46 +10,31 @@ public class ActivityContextReloadingTimer {
 	
 	private final Logger logger = LoggerFactory.getLogger(ActivityContextReloadingTimer.class);
 
-	private ActivityContextReloadable activityContextReloadble;
+	private ActivityContextReloadDelegate activityContextReloadDelegate;
 	
 	private Timer timer;
 	
 	private TimerTask timerTask;
 	
-	private int refreshTime = 5;
-	
-	public ActivityContextReloadingTimer(ActivityContextReloadable activityContextReloadble) {
-		this.activityContextReloadble = activityContextReloadble;
-		
-		init();
-	}
-	
-	public ActivityContextReloadingTimer(ActivityContextReloadable activityContextReloadble, int refreshTime) {
-		this.activityContextReloadble = activityContextReloadble;
-		this.refreshTime = refreshTime;
+	public ActivityContextReloadingTimer(ActivityContextReloadDelegate activityContextReloadDelegate) {
+		this.activityContextReloadDelegate = activityContextReloadDelegate;
 		
 		init();
 	}
 	
 	private void init() {
-		logger.debug("ActivityContextRefreshTimer is initialized successfully.");
+		logger.debug("ActivityContextobservationIntervalr is initialized successfully.");
 	}
 	
-	public void start(int refreshTime) {
-		this.refreshTime = refreshTime;
-		
-		start();
-	}
-	
-	public void start() {
+	public void start(int observationInterval) {
 		stop();
 		
-		logger.debug("starting ActivityContextRefreshTimer...");
+		logger.debug("starting ActivityContextobservationIntervalr...");
 		
-		timerTask = new ActivityContextReloadingTimerTask(activityContextReloadble);
+		timerTask = new ActivityContextReloadingTimerTask(activityContextReloadDelegate);
 		
 		timer = new Timer();
-		timer.schedule(timerTask, 0, refreshTime * 1000L);
+		timer.schedule(timerTask, 0, observationInterval * 1000L);
 	}
 	
 	public void cancel() {
@@ -58,7 +43,7 @@ public class ActivityContextReloadingTimer {
 	
 	protected void stop() {
 		if(timer != null) {
-			logger.debug("stopping ActivityContextRefreshTimer...");
+			logger.debug("stopping ActivityContextobservationIntervalr...");
 			
 			timer.cancel();
 			timer = null;

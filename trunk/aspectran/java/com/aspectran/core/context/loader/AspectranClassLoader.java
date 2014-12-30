@@ -418,7 +418,7 @@ public class AspectranClassLoader extends ClassLoader {
 			//resourceLocations[2] = "file:/c:/Users/Gulendol/Projects/aspectran/ADE/workspace/aspectran.example/webapp/WEB-INF/aspectran/xml";
 			resourceLocations[2] = "/WEB-INF/aspectran/./xml";
 			
-			resourceLocations = ActivityContextLoadingManager.checkResourceLocations("/c:/Users/Gulendol/Projects/aspectran/ADE/workspace/aspectran.example/webapp", resourceLocations);
+			//resourceLocations = ActivityContextLoadingManager.checkResourceLocations("/c:/Users/Gulendol/Projects/aspectran/ADE/workspace/aspectran.example/webapp", resourceLocations);
 			
 			for(String r : resourceLocations) {
 				System.out.println("resourceLocation: " + r);

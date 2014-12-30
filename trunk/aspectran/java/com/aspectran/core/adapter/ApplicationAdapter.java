@@ -53,8 +53,10 @@ public interface ApplicationAdapter {
 	
 	public Map<ActivityContext, ActivityContextServiceHandler> getActivityContextServiceHandlers();
 	
+	public ActivityContextServiceHandler getActivityContextServiceHandler(ActivityContext activityContext);
+
 	public void putActivityContextServiceHandler(ActivityContext activityContext, ActivityContextServiceHandler activityContextServiceHandler);
 	
-	public ActivityContextServiceHandler getActivityContextServiceHandler(ActivityContext activityContext);
+	public void removeActivityContextServiceHandler(ActivityContext activityContext);
 
 }

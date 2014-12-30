@@ -1,4 +1,4 @@
-package com.aspectran.core.context.loader;
+package com.aspectran.core.context.service;
 
 import java.io.FileNotFoundException;
 import java.net.MalformedURLException;
@@ -10,11 +10,13 @@ import org.slf4j.LoggerFactory;
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.ActivityContextException;
+import com.aspectran.core.context.loader.ActivityContextLoader;
+import com.aspectran.core.context.loader.AspectranClassLoader;
 import com.aspectran.core.context.loader.config.AspectranConfig;
 import com.aspectran.core.context.loader.config.AspectranContextAutoReloadingConfig;
 import com.aspectran.core.context.loader.config.AspectranContextConfig;
 import com.aspectran.core.context.loader.config.AspectranSchedulerConfig;
-import com.aspectran.core.context.loader.reload.ActivityContextReloadable;
+import com.aspectran.core.context.loader.reload.ActivityContextReloadDelegate;
 import com.aspectran.core.context.loader.reload.ActivityContextReloadingTimer;
 import com.aspectran.core.context.loader.resource.InvalidResourceException;
 import com.aspectran.core.util.ResourceUtils;
@@ -22,9 +24,9 @@ import com.aspectran.core.var.apon.Parameters;
 import com.aspectran.scheduler.AspectranScheduler;
 import com.aspectran.scheduler.quartz.QuartzAspectranScheduler;
 
-public class ActivityContextLoadingManager implements ActivityContextReloadable {
+public abstract class AbstractActivityContextService {
 
-	private final Logger logger = LoggerFactory.getLogger(ActivityContextLoadingManager.class);
+	private final Logger logger = LoggerFactory.getLogger(AbstractActivityContextService.class);
 
 	private final Parameters aspectranConfig;
 	
@@ -48,16 +50,24 @@ public class ActivityContextLoadingManager implements ActivityContextReloadable 
 	
 	private ActivityContextReloadingTimer reloadingTimer;
 	
-	protected ActivityContextLoadingManager(AspectranConfig aspectranConfig, ActivityContextLoader activityContextLoader) {
+	protected AbstractActivityContextService(AspectranConfig aspectranConfig, ActivityContextLoader activityContextLoader) {
 		this.aspectranConfig = aspectranConfig;
 		this.activityContextLoader = activityContextLoader;
 	}
 	
-	protected synchronized ActivityContext createActivityContext() throws ActivityContextException {
+	public Parameters getAspectranConfig() {
+		return aspectranConfig;
+	}
+
+	public ActivityContextLoader getActivityContextLoader() {
+		return activityContextLoader;
+	}
+
+	protected synchronized void initActivityContext() throws ActivityContextException {
 		if(activityContext != null)
 			throw new ActivityContextException("Already loaded the AspectranContext. Destroy the old AspectranContext before loading.");
 		
-		logger.info("loading ActivityContext...");
+		logger.info("init ActivityContext...");
 
 		try {
 			Parameters aspectranContextConfig = aspectranConfig.getParameters(AspectranConfig.context);
@@ -79,28 +89,41 @@ public class ActivityContextLoadingManager implements ActivityContextReloadable 
 			this.autoReloadingStartup = autoReloadingStartup;
 			this.observationInterval = observationInterval;
 			this.aspectranSchedulerConfig = aspectranSchedulerConfig;
-			
-			AspectranClassLoader spectranClassLoader = new AspectranClassLoader(resourceLocations);
-			activityContextLoader.setAspectranClassLoader(spectranClassLoader);
-			
-			activityContext = activityContextLoader.load(rootContext);
 
-			startupAspectranScheduler();
-			
 			if(autoReloadingStartup) {
 				if(observationInterval == -1) {
 					observationInterval = 10;
 					this.observationInterval = observationInterval;
 					logger.info("[Aspectran Config] 'observationInterval' is not specified, defaulting to 10 seconds.");
 				}
-				
-				startReloadingTimer();
+			}
+		} catch(Exception e) {
+			throw new ActivityContextServiceException("Aspectran's ActivityContext Service failed to initialize.", e);
+		}
+	}
+	
+	protected synchronized ActivityContext loadActivityContext() throws ActivityContextException {
+		if(activityContext != null)
+			throw new ActivityContextException("Already loaded the AspectranContext. Destroy the old AspectranContext before loading.");
+		
+		logger.info("loading ActivityContext...");
+		
+		try {
+			if(activityContextLoader.getAspectranClassLoader() == null) {
+				AspectranClassLoader aspectranClassLoader = new AspectranClassLoader(resourceLocations);
+				activityContextLoader.setAspectranClassLoader(aspectranClassLoader);
 			}
 
+			activityContext = activityContextLoader.load(rootContext);
+			
+			startupAspectranScheduler();
+			
+			startReloadingTimer();
+			
 			return activityContext;
 			
 		} catch(Exception e) {
-			throw new ActivityContextLoadingFailedException("Failed to load the ActivityContext", e);
+			throw new ActivityContextServiceException("Failed to load the Aspectran's ActivityContext Service.", e);
 		}
 	}
 	
@@ -116,9 +139,9 @@ public class ActivityContextLoadingManager implements ActivityContextReloadable 
 			try {
 				activityContext.destroy();
 				activityContext = null;
-				logger.info("AspectranContext was destroyed successfully.");
+				logger.info("Successfully destroyed AspectranContext.");
 			} catch(Exception e) {
-				logger.error("AspectranContext was failed to destroy: " + e.toString(), e);
+				logger.error("Failed to destroy AspectranContext " + activityContext, e);
 				cleanlyDestoryed = false;
 			}
 		}
@@ -127,26 +150,24 @@ public class ActivityContextLoadingManager implements ActivityContextReloadable 
 	}
 
 	public synchronized ActivityContext reloadActivityContext() {
-		destroyActivityContext();
-		
-		if(activityContextLoader.getAspectranClassLoader() != null) {
-			if(isHardReload) {
-				AspectranClassLoader aspectranClassLoader = new AspectranClassLoader(resourceLocations);
-				activityContextLoader.setAspectranClassLoader(aspectranClassLoader);
-			} else {
-				activityContextLoader.getAspectranClassLoader().reload();
-			}
-		}
-		
-		activityContext = activityContextLoader.load(rootContext);
-		
 		try {
+			if(activityContextLoader.getAspectranClassLoader() != null) {
+				if(isHardReload) {
+					AspectranClassLoader aspectranClassLoader = new AspectranClassLoader(resourceLocations);
+					activityContextLoader.setAspectranClassLoader(aspectranClassLoader);
+				} else {
+					activityContextLoader.getAspectranClassLoader().reload();
+				}
+			}
+			
+			activityContext = activityContextLoader.load(rootContext);
+			
 			startupAspectranScheduler();
+	
+			startReloadingTimer();
 		} catch(Exception e) {
-			logger.error("AspectranScheduler was failed to initialize: " + e.toString(), e);
+			throw new ActivityContextServiceException("Failed to reload the Aspectran's ActivityContext Service.", e);
 		}
-
-		startReloadingTimer();
 
 		return activityContext;
 	}
@@ -182,9 +203,9 @@ public class ActivityContextLoadingManager implements ActivityContextReloadable 
 			try {
 				aspectranScheduler.shutdown();
 				aspectranScheduler = null;
-				logger.info("AspectranScheduler has been shutdown successfully.");
+				logger.info("Successfully destroyed AspectranScheduler " + aspectranScheduler);
 			} catch(Exception e) {
-				logger.error("AspectranScheduler was failed to shutdown cleanly: " + e.toString(), e);
+				logger.error("AspectranScheduler were not destroyed cleanly.", e);
 				return false;
 			}
 		}
@@ -194,7 +215,7 @@ public class ActivityContextLoadingManager implements ActivityContextReloadable 
 	
 	private void startReloadingTimer() {
 		if(autoReloadingStartup) {
-			reloadingTimer = new ActivityContextReloadingTimer(this);
+			reloadingTimer = new ActivityContextReloadingTimer(getActivityContextReloadDelegate());
 			reloadingTimer.start(observationInterval);
 		}
 	}
@@ -205,6 +226,8 @@ public class ActivityContextLoadingManager implements ActivityContextReloadable 
 		
 		reloadingTimer = null;
 	}
+	
+	abstract protected ActivityContextReloadDelegate getActivityContextReloadDelegate();
 	
 	public ApplicationAdapter getApplicationAdapter() {
 		return activityContextLoader.getApplicationAdapter();
@@ -222,7 +245,7 @@ public class ActivityContextLoadingManager implements ActivityContextReloadable 
 		return activityContext;
 	}
 	
-	protected static String[] checkResourceLocations(String applicationBasePath, String[] resourceLocations) throws FileNotFoundException {
+	private static String[] checkResourceLocations(String applicationBasePath, String[] resourceLocations) throws FileNotFoundException {
 		for(int i = 0; i < resourceLocations.length; i++) {
 			if(resourceLocations[i].startsWith(ResourceUtils.CLASSPATH_URL_PREFIX)) {
 				String path = resourceLocations[i].substring(ResourceUtils.CLASSPATH_URL_PREFIX.length());
@@ -253,7 +276,7 @@ public class ActivityContextLoadingManager implements ActivityContextReloadable 
 		resourceLocations[2] = "/WEB-INF/aspectran/xml";
 		
 		try {
-			resourceLocations = ActivityContextLoadingManager.checkResourceLocations(applicationBasePath, resourceLocations);
+			resourceLocations = AbstractActivityContextService.checkResourceLocations(applicationBasePath, resourceLocations);
 			for(String r : resourceLocations) {
 				System.out.println(r);
 			}
