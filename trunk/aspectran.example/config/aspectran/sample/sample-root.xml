@@ -19,6 +19,12 @@
 			WEB-INF/classes/lib
 		</setting>
 	</settings>
+
+	<!-- settings을 apon 형식으로 표현 -->
+	<apon for="settings">
+		transletNamePattern: /example/*
+		transletInterfaceClass: com.aspectran.web.activity.WebTranslet
+	</apon>
 	
 	<aspect id="defaultRequestRule">
 		<joinpoint scope="request"/>
@@ -231,6 +237,26 @@
 			</arguments>
 		</constructor>
 	</bean>
+	
+	<!-- bean을 apon 형식으로 표현 -->
+	<apon for="bean">
+		class: org.quartz.impl.StdSchedulerFactory
+		scope: singleton
+		constructor: {
+			arguments(properties): {
+				org.quartz.scheduler.instanceName: DefaultQuartzScheduler
+				org.quartz.scheduler.rmi.export: false
+				org.quartz.scheduler.rmi.proxy: false
+				org.quartz.scheduler.wrapJobExecutionInUserTransaction: false
+				org.quartz.threadPool.class: org.quartz.simpl.SimpleThreadPool
+				org.quartz.threadPool.threadCount: 10
+				org.quartz.threadPool.threadPriority: 5
+				org.quartz.threadPool.threadsInheritContextClassLoaderOfInitializingThread: true
+				org.quartz.jobStore.misfireThreshold: 60000
+				org.quartz.jobStore.class: org.quartz.simpl.RAMJobStore
+			}
+		}
+	</apon>
 	
 	<aspect id="scheduler1" for="scheduler">
 		<joinpoint>

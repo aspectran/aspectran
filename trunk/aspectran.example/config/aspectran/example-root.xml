@@ -4,11 +4,6 @@
 
 <aspectran>
 
-	<apon for="settings">
-		transletNamePattern: /example/*
-		transletInterfaceClass: com.aspectran.web.activity.WebTranslet
-	</apon>
-
 	<settings>
 		<setting name="transletNamePattern" value="/example/*"/>
 		<setting name="transletInterfaceClass" value="com.aspectran.web.activity.WebTranslet"/>
@@ -20,12 +15,6 @@
 	</settings>
 	
 	<import resource="aspectran/example-scheduler-aspectran.xml"/>
-	
-	<apon for="bean">
-		id: webActivityDefaultHandler
-		class: com.aspectran.web.activity.WebActivityDefaultHandler
-		scope: singleton
-	</apon>
 	
 	<bean id="webActivityDefaultHandler" class="com.aspectran.web.activity.WebActivityDefaultHandler" scope="singleton"/>
 	<bean id="jspViewDispatcher" class="com.aspectran.web.view.JspViewDispatcher" scope="singleton"/>
@@ -56,16 +45,20 @@
 	
 	<aspect id="defaultResponseRule">
 		<joinpoint scope="response"/>
-		<apon for="settings">
-			characterEncoding: utf-8
-			multipart.maxRequestSize: 10M
-			multipart.temporaryFilePath: /d:/
-		</apon>
 		<settings>
 			<setting name="characterEncoding" value="utf-8"/>
 			<setting name="defaultContentType" value="text/html"/>
 			<setting name="viewDispatcher" value="jspViewDispatcher"/>
 		</settings>
+	</aspect>
+	
+	<aspect id="defaultResponseRule2">
+		<joinpoint scope="response"/>
+		<apon for="settings">
+			characterEncoding: utf-8
+			multipart.maxRequestSize: 10M
+			multipart.temporaryFilePath: /d:/
+		</apon>
 	</aspect>
 
 	<aspect id="exception1">
