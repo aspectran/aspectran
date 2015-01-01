@@ -165,7 +165,7 @@ id CDATA #IMPLIED
 hidden (true | false) #IMPLIED
 >
 
-<!ELEMENT echo (#PCDATA | item | value | null)*>
+<!ELEMENT echo (attributes?, (item | value | null)*)>
 <!ATTLIST echo
 id CDATA #IMPLIED
 hidden (true | false) #IMPLIED
