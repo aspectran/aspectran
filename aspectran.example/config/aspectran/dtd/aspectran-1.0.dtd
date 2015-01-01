@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<!ELEMENT aspectran (settings? | typeAliases* | import* | bean* | translet* | aspect*)*>
+<!ELEMENT aspectran (settings? | apon? | typeAliases* | import* | bean* | translet* | aspect*)*>
 <!ATTLIST aspectran
 namespace CDATA #IMPLIED
 >
@@ -31,7 +31,7 @@ url CDATA #IMPLIED
 <!ATTLIST item
 name CDATA #IMPLIED
 value CDATA #IMPLIED
-type CDATA #IMPLIED
+type (item | list | map | set | properties) #IMPLIED
 valueType CDATA #IMPLIED
 defaultValue CDATA #IMPLIED
 >
@@ -60,7 +60,12 @@ property CDATA #IMPLIED
 
 <!ELEMENT null EMPTY>
 
-<!ELEMENT aspect (joinpoint?, settings?, advice?)>
+<!ELEMENT apon (#PCDATA)>
+<!ATTLIST apon
+for (settings | bean) #REQUIRED
+>
+
+<!ELEMENT aspect (joinpoint?, settings?, apon?, advice?)>
 <!ATTLIST aspect
 id ID #IMPLIED
 for (translet | scheduler) #IMPLIED
