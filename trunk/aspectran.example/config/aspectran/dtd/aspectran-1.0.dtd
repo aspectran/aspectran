@@ -62,7 +62,7 @@ property CDATA #IMPLIED
 
 <!ELEMENT apon (#PCDATA)>
 <!ATTLIST apon
-for (settings | bean) #REQUIRED
+for (typeAliases | settings | echo | attributes | properties | arguments | parameters) #REQUIRED
 >
 
 <!ELEMENT aspect (joinpoint?, settings?, apon?, advice?)>
@@ -144,7 +144,7 @@ hidden (true | false) #IMPLIED
 extends CDATA #IMPLIED
 >
 
-<!ELEMENT request (attributes?, multiparts?)>
+<!ELEMENT request (attributes?, apon?, multiparts?)>
 <!ATTLIST request
 method CDATA #IMPLIED
 characterEncoding CDATA #IMPLIED
@@ -199,7 +199,7 @@ exceptionType CDATA #IMPLIED
 >
 <!ELEMENT defaultResponse (transform? | dispatch? | redirect? | forward?)>
 
-<!ELEMENT transform ((echo? | action? | include?)*, template?)>
+<!ELEMENT transform ((echo? | action? | include? | apon?)*, template?)>
 <!ATTLIST transform
 type CDATA #IMPLIED
 contentType CDATA #IMPLIED
