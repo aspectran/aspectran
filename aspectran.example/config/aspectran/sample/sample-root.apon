@@ -1,26 +1,27 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE aspectran PUBLIC "-//aspectran.com//DTD Aspectran 1.0//EN"
-                           "../dtd/aspectran-1.0.dtd">
-
-<aspectran>
-
-	<settings>
-		<setting name="transletNamePatternPrefix" value="/test/"/>
-		<setting name="transletNamePatternSuffix" value=".do"/>
-		<setting name="transletNamePattern" value="/test/*.do"/>
-		<setting name="transletInterfaceClass" value="com.aspectran.web.activity.WebTranslet"/>
-		<setting name="transletImplementClass" value="com.aspectran.web.activity.WebTransletImpl"/>
-		<setting name="useNamespaces" value="true"/>
-		<setting name="nullableContentId" value="true"/>
-		<setting name="nullableActionId" value="true"/>
-		<setting name="beanProxyMode" value="cglib"/>
-	</settings>
-
-	<!-- settings을 apon 형식으로 표현 -->
-	<apon for="settings">
+aspectran: {
+	settings: {
 		transletNamePattern: /example/*
 		transletInterfaceClass: com.aspectran.web.activity.WebTranslet
-	</apon>
+		transletImplementClass: com.aspectran.web.activity.WebTransletImpl
+		useNamespaces: true
+		nullableContentId: true
+		nullableActionId: true
+		beanProxyMode: cglib
+	}
+	apon: {
+		id: defaultRequestRule
+		joinpoint: {
+			scope: request
+		}
+		settings: {
+			characterEncoding: utf-8
+			multipart.maxRequestSize: 10M
+			multipart.temporaryFilePath: /d:/
+		}
+	}	
+	
+}
+
 	
 	<aspect id="defaultRequestRule">
 		<joinpoint scope="request"/>

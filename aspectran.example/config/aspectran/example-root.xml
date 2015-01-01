@@ -22,18 +22,6 @@
 	<bean id="advice.*" class="com.aspectran.example.aspect.**.*Advice" scope="session"/>
 	<bean id="sampleBean" class="com.aspectran.example.bean.SampleBean" scope="singleton"/>
 	
-	<apon for="aspect">
-		id: defaultRequestRule
-		joinpoint: {
-			scope: request
-		}
-		settings: {
-			characterEncoding: utf-8
-			multipart.maxRequestSize: 10M
-			multipart.temporaryFilePath: /d:/
-		}
-	</apon>
-	
 	<aspect id="defaultRequestRule">
 		<joinpoint scope="request"/>
 		<settings>
@@ -71,11 +59,11 @@
 			<exceptionRaized>
 				<responseByContentType exceptionType="java.lang.reflect.InvocationTargetException">
 					<transform contentType="text/xml" type="transform/xml">
+						<apon for="echo">
+							errorCode: E0001
+							message: error occured.
+						</apon>
 						<echo>
-							<apon for="item">
-								errorCode: E0001
-								message: error occured.
-							</apon>
 							<item type="map">
 								<value name="errorCode">E0001</value>
 								<value name="message">error occured.</value>
