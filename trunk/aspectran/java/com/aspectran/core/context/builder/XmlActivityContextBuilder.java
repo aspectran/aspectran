@@ -41,7 +41,7 @@ public class XmlActivityContextBuilder extends AbstractActivityContextBuilder im
 	public ActivityContext build(String rootContext) throws ActivityContextBuilderException {
 		try {
 			if(rootContext == null)
-				throw new RuntimeException("contextConfigLocation must not be null");
+				throw new IllegalArgumentException("rootContext must not be null");
 			
 			ImportResource importResource = new ImportResource(getClassLoader());
 

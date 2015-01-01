@@ -1,4 +1,4 @@
-package com.aspectran.core.context.service;
+package com.aspectran.core.service;
 
 import java.io.FileNotFoundException;
 import java.net.MalformedURLException;
@@ -16,7 +16,6 @@ import com.aspectran.core.context.loader.config.AspectranConfig;
 import com.aspectran.core.context.loader.config.AspectranContextAutoReloadingConfig;
 import com.aspectran.core.context.loader.config.AspectranContextConfig;
 import com.aspectran.core.context.loader.config.AspectranSchedulerConfig;
-import com.aspectran.core.context.loader.reload.ActivityContextReloadDelegate;
 import com.aspectran.core.context.loader.reload.ActivityContextReloadingTimer;
 import com.aspectran.core.context.loader.resource.InvalidResourceException;
 import com.aspectran.core.util.ResourceUtils;
@@ -24,16 +23,20 @@ import com.aspectran.core.var.apon.Parameters;
 import com.aspectran.scheduler.AspectranScheduler;
 import com.aspectran.scheduler.quartz.QuartzAspectranScheduler;
 
-public abstract class AbstractActivityContextService {
+public abstract class AbstractAspectranService implements AspectranService {
 
-	private final Logger logger = LoggerFactory.getLogger(AbstractActivityContextService.class);
+	private final Logger logger = LoggerFactory.getLogger(AbstractAspectranService.class);
 
 	private final Parameters aspectranConfig;
 	
 	private Parameters aspectranSchedulerConfig;
 	
-	private final ActivityContextLoader activityContextLoader;
+	private ActivityContextLoader activityContextLoader;
 
+	private ApplicationAdapter applicationAdapter;
+	
+	private AspectranClassLoader aspectranClassLoader;
+	
 	private String rootContext;
 
 	private String[] resourceLocations;
@@ -50,9 +53,8 @@ public abstract class AbstractActivityContextService {
 	
 	private ActivityContextReloadingTimer reloadingTimer;
 	
-	protected AbstractActivityContextService(AspectranConfig aspectranConfig, ActivityContextLoader activityContextLoader) {
+	protected AbstractAspectranService(AspectranConfig aspectranConfig) {
 		this.aspectranConfig = aspectranConfig;
-		this.activityContextLoader = activityContextLoader;
 	}
 	
 	public Parameters getAspectranConfig() {
@@ -61,6 +63,12 @@ public abstract class AbstractActivityContextService {
 
 	public ActivityContextLoader getActivityContextLoader() {
 		return activityContextLoader;
+	}
+	
+	public void setActivityContextLoader(ActivityContextLoader activityContextLoader) {
+		this.activityContextLoader = activityContextLoader;
+		this.applicationAdapter = activityContextLoader.getApplicationAdapter();
+		this.aspectranClassLoader = activityContextLoader.getAspectranClassLoader();
 	}
 
 	protected synchronized void initActivityContext() throws ActivityContextException {
@@ -98,7 +106,7 @@ public abstract class AbstractActivityContextService {
 				}
 			}
 		} catch(Exception e) {
-			throw new ActivityContextServiceException("Aspectran's ActivityContext Service failed to initialize.", e);
+			throw new AspectranServiceException("Aspectran's ActivityContext Service failed to initialize.", e);
 		}
 	}
 	
@@ -109,6 +117,9 @@ public abstract class AbstractActivityContextService {
 		logger.info("loading ActivityContext...");
 		
 		try {
+			if(activityContextLoader == null)
+				throw new IllegalArgumentException("activityContextLoader must not be null");
+			
 			if(activityContextLoader.getAspectranClassLoader() == null) {
 				AspectranClassLoader aspectranClassLoader = new AspectranClassLoader(resourceLocations);
 				activityContextLoader.setAspectranClassLoader(aspectranClassLoader);
@@ -123,7 +134,7 @@ public abstract class AbstractActivityContextService {
 			return activityContext;
 			
 		} catch(Exception e) {
-			throw new ActivityContextServiceException("Failed to load the Aspectran's ActivityContext Service.", e);
+			throw new AspectranServiceException("Failed to load the Aspectran's ActivityContext Service.", e);
 		}
 	}
 	
@@ -151,6 +162,9 @@ public abstract class AbstractActivityContextService {
 
 	public synchronized ActivityContext reloadActivityContext() {
 		try {
+			if(activityContextLoader == null)
+				throw new IllegalArgumentException("activityContextLoader must not be null");
+
 			if(activityContextLoader.getAspectranClassLoader() != null) {
 				if(isHardReload) {
 					AspectranClassLoader aspectranClassLoader = new AspectranClassLoader(resourceLocations);
@@ -166,7 +180,7 @@ public abstract class AbstractActivityContextService {
 	
 			startReloadingTimer();
 		} catch(Exception e) {
-			throw new ActivityContextServiceException("Failed to reload the Aspectran's ActivityContext Service.", e);
+			throw new AspectranServiceException("Failed to reload the Aspectran's ActivityContext Service.", e);
 		}
 
 		return activityContext;
@@ -215,7 +229,7 @@ public abstract class AbstractActivityContextService {
 	
 	private void startReloadingTimer() {
 		if(autoReloadingStartup) {
-			reloadingTimer = new ActivityContextReloadingTimer(getActivityContextReloadDelegate());
+			reloadingTimer = new ActivityContextReloadingTimer(this);
 			reloadingTimer.start(observationInterval);
 		}
 	}
@@ -227,18 +241,19 @@ public abstract class AbstractActivityContextService {
 		reloadingTimer = null;
 	}
 	
-	abstract protected ActivityContextReloadDelegate getActivityContextReloadDelegate();
-	
 	public ApplicationAdapter getApplicationAdapter() {
-		return activityContextLoader.getApplicationAdapter();
+		return applicationAdapter;
 	}
 	
 	public String getApplicationBasePath() {
-		return activityContextLoader.getApplicationAdapter().getApplicationBasePath();
+		if(applicationAdapter == null)
+			return null;
+
+		return applicationAdapter.getApplicationBasePath();
 	}
 	
 	public AspectranClassLoader getAspectranClassLoader() {
-		return activityContextLoader.getAspectranClassLoader();
+		return aspectranClassLoader;
 	}
 	
 	public ActivityContext getActivityContext() {
@@ -276,7 +291,7 @@ public abstract class AbstractActivityContextService {
 		resourceLocations[2] = "/WEB-INF/aspectran/xml";
 		
 		try {
-			resourceLocations = AbstractActivityContextService.checkResourceLocations(applicationBasePath, resourceLocations);
+			resourceLocations = AbstractAspectranService.checkResourceLocations(applicationBasePath, resourceLocations);
 			for(String r : resourceLocations) {
 				System.out.println(r);
 			}

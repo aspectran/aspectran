@@ -29,14 +29,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.context.service.ActivityContextService;
-import com.aspectran.core.context.service.ActivityContextServiceListener;
 import com.aspectran.core.context.translet.TransletNotFoundException;
+import com.aspectran.core.service.AspectranService;
+import com.aspectran.core.service.AspectranServiceListener;
 import com.aspectran.web.activity.WebActivity;
 import com.aspectran.web.activity.WebActivityDefaultHandler;
 import com.aspectran.web.activity.WebActivityImpl;
-import com.aspectran.web.adapter.WebApplicationAdapter;
-import com.aspectran.web.context.service.WebActivityContextService;
+import com.aspectran.web.service.WebAspectranService;
 
 /**
  * Servlet implementation class for Servlet: Translets.
@@ -50,7 +49,7 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 
 	public static final String ASPECTRAN_CONFIG_PARAM = "aspectran:config";
 	
-	private ActivityContextService activityContextService;
+	private AspectranService aspectranService;
 
 	protected ActivityContext activityContext;
 	
@@ -80,11 +79,11 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 			
 			String aspectranConfigParam = getServletConfig().getInitParameter(ASPECTRAN_CONFIG_PARAM);
 			
-			activityContextService = new WebActivityContextService(servletContext, aspectranConfigParam);
+			aspectranService = new WebAspectranService(servletContext, aspectranConfigParam);
 			
-			activityContextService.setActivityContextServiceListener(new ActivityContextServiceListener() {
+			aspectranService.setActivityContextServiceListener(new AspectranServiceListener() {
 				public void started() {
-					activityContext = activityContextService.getActivityContext();
+					activityContext = aspectranService.getActivityContext();
 					pauseTimeout = 0;
 				}
 				
@@ -107,7 +106,7 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 				}
 			});
 			
-			activityContextService.start();
+			aspectranService.start();
 			
 		} catch(Exception e) {
 			logger.error("WebActivityServlet was failed to initialize: " + e.toString(), e);
@@ -172,7 +171,7 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 	public void destroy() {
 		super.destroy();
 
-		boolean cleanlyDestoryed = activityContextService.dispose();
+		boolean cleanlyDestoryed = aspectranService.dispose();
 		
 		if(cleanlyDestoryed)
 			logger.info("Successfully destroyed WebActivityServlet: " + this.getServletName());

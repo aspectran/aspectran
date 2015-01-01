@@ -19,8 +19,8 @@ import com.aspectran.core.activity.CoreActivity;
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.aspect.AspectRuleRegistry;
 import com.aspectran.core.context.bean.ContextBeanRegistry;
-import com.aspectran.core.context.service.ActivityContextServiceController;
 import com.aspectran.core.context.translet.TransletRuleRegistry;
+import com.aspectran.core.service.AspectranServiceController;
 
 /**
  * <p>Created: 2008. 06. 09 오후 2:12:40</p>
@@ -102,7 +102,7 @@ public class ActivityContext {
 		this.activityDefaultHandler = activityDefaultHandler;
 	}
 
-	public ActivityContextServiceController getActivityContextServiceHandler() {
+	public AspectranServiceController getActivityContextServiceHandler() {
 		return applicationAdapter.getActivityContextServiceController(this);
 	}
 	

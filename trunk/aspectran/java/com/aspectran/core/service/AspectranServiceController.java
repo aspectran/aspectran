@@ -1,9 +1,9 @@
-package com.aspectran.core.context.service;
+package com.aspectran.core.service;
 
 import com.aspectran.core.context.ActivityContext;
 
 
-public interface ActivityContextServiceController {
+public interface AspectranServiceController {
 	
 	public ActivityContext start();
 

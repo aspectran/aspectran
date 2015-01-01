@@ -6,18 +6,20 @@ import java.util.TimerTask;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.aspectran.core.service.AspectranService;
+
 public class ActivityContextReloadingTimer {
 	
 	private final Logger logger = LoggerFactory.getLogger(ActivityContextReloadingTimer.class);
 
-	private ActivityContextReloadDelegate activityContextReloadDelegate;
+	private AspectranService aspectranService;
 	
 	private Timer timer;
 	
 	private TimerTask timerTask;
 	
-	public ActivityContextReloadingTimer(ActivityContextReloadDelegate activityContextReloadDelegate) {
-		this.activityContextReloadDelegate = activityContextReloadDelegate;
+	public ActivityContextReloadingTimer(AspectranService aspectranService) {
+		this.aspectranService = aspectranService;
 		
 		init();
 	}
@@ -31,7 +33,7 @@ public class ActivityContextReloadingTimer {
 		
 		logger.debug("starting ActivityContextobservationIntervalr...");
 		
-		timerTask = new ActivityContextReloadingTimerTask(activityContextReloadDelegate);
+		timerTask = new ActivityContextReloadingTimerTask(aspectranService);
 		
 		timer = new Timer();
 		timer.schedule(timerTask, 0, observationInterval * 1000L);

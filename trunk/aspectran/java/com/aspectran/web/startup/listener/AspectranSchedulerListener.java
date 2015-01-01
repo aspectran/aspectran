@@ -23,15 +23,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.context.service.ActivityContextService;
-import com.aspectran.web.context.service.WebActivityContextService;
+import com.aspectran.core.service.AspectranService;
+import com.aspectran.web.service.WebAspectranService;
 import com.aspectran.web.startup.servlet.WebActivityServlet;
 
 public class AspectranSchedulerListener implements ServletContextListener {
 
 	private final Logger logger = LoggerFactory.getLogger(AspectranSchedulerListener.class);
 
-	private ActivityContextService activityContextService;
+	private AspectranService activityContextService;
 
 	protected ActivityContext activityContext;
 
@@ -48,7 +48,7 @@ public class AspectranSchedulerListener implements ServletContextListener {
 			
 			String aspectranConfigParam = servletContext.getInitParameter(WebActivityServlet.ASPECTRAN_CONFIG_PARAM);
 			
-			activityContextService = new WebActivityContextService(servletContext, aspectranConfigParam);
+			activityContextService = new WebAspectranService(servletContext, aspectranConfigParam);
 			
 			activityContextService.start();
 			

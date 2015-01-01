@@ -21,6 +21,10 @@ public class XmlActivityContextLoader implements ActivityContextLoader {
 	public XmlActivityContextLoader() {
 	}
 	
+	public XmlActivityContextLoader(ApplicationAdapter applicationAdapter) {
+		this.applicationAdapter = applicationAdapter;
+	}
+	
 	public ApplicationAdapter getApplicationAdapter() {
 		return applicationAdapter;
 	}

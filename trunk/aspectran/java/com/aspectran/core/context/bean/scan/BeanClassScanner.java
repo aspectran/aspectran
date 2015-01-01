@@ -128,7 +128,6 @@ public class BeanClassScanner {
 		target.listFiles(new FileFilter() {
 			public boolean accept(File file) {
 				if(file.isDirectory()) {
-					assert !file.getName().contains(".");
 					String relativePackageName2;
 					if(relativePackageName == null)
 						relativePackageName2 = file.getName() + ResourceUtils.RESOURCE_NAME_SPEPARATOR;

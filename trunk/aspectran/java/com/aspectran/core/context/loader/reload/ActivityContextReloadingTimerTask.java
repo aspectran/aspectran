@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.aspectran.core.context.loader.AspectranClassLoader;
+import com.aspectran.core.service.AspectranService;
 
 public class ActivityContextReloadingTimerTask extends TimerTask {
 	
@@ -18,7 +19,7 @@ public class ActivityContextReloadingTimerTask extends TimerTask {
 	
 	private final boolean debugEnabled = logger.isDebugEnabled();
 
-	private final ActivityContextReloadDelegate activityContextReloadDelegate;
+	private final AspectranService aspectranService;
 	
 	private final AspectranClassLoader aspectranClassLoader;
 	
@@ -28,9 +29,9 @@ public class ActivityContextReloadingTimerTask extends TimerTask {
 	
 	private boolean modified = false;
 	
-	public ActivityContextReloadingTimerTask(ActivityContextReloadDelegate activityContextReloadDelegate) {
-		this.activityContextReloadDelegate = activityContextReloadDelegate;
-		this.aspectranClassLoader = activityContextReloadDelegate.getAspectranClassLoader();
+	public ActivityContextReloadingTimerTask(AspectranService aspectranService) {
+		this.aspectranService = aspectranService;
+		this.aspectranClassLoader = aspectranService.getAspectranClassLoader();
 		
 		if(aspectranClassLoader != null)
 			this.resources = aspectranClassLoader.extractResources();
@@ -64,7 +65,7 @@ public class ActivityContextReloadingTimerTask extends TimerTask {
 		}
 		
 		if(modified) {
-			activityContextReloadDelegate.reload();
+			aspectranService.restart();
 			modified = false;
 		}
 	}

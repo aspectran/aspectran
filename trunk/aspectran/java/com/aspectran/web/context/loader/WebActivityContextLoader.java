@@ -1,5 +1,6 @@
 package com.aspectran.web.context.loader;
 
+import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.loader.XmlActivityContextLoader;
 
@@ -9,6 +10,10 @@ public class WebActivityContextLoader extends XmlActivityContextLoader {
 	
 	public WebActivityContextLoader() {
 		super();
+	}
+	
+	public WebActivityContextLoader(ApplicationAdapter applicationAdapter) {
+		super(applicationAdapter);
 	}
 	
 	public ActivityContext load(String rootContext) {
