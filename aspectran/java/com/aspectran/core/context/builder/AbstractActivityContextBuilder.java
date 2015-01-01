@@ -15,7 +15,6 @@
  */
 package com.aspectran.core.context.builder;
 
-import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.aspect.AspectAdviceRulePreRegister;
 import com.aspectran.core.context.aspect.AspectRuleRegistry;
@@ -44,7 +43,7 @@ public abstract class AbstractActivityContextBuilder extends ContextBuilderAssis
 		super(applicationBasePath, classLoader);
 	}
 	
-	protected ActivityContext makeActivityContext(ApplicationAdapter applicationAdapter) {
+	protected ActivityContext makeActivityContext() {
 		AspectRuleMap aspectRuleMap = getAspectRuleMap();
 		BeanRuleMap beanRuleMap = getBeanRuleMap();
 		TransletRuleMap transletRuleMap = getTransletRuleMap();
@@ -55,7 +54,6 @@ public abstract class AbstractActivityContextBuilder extends ContextBuilderAssis
 		AspectRuleRegistry aspectRuleRegistry = makeAspectRuleRegistry(aspectRuleMap, beanRuleMap, transletRuleMap);
 		
 		ActivityContext context = new ActivityContext();
-		context.setApplicationAdapter(applicationAdapter);
 		context.setAspectRuleRegistry(aspectRuleRegistry);
 		context.setActivityDefaultHandler((String)getSetting(DefaultSettingType.ACTIVITY_DEFAULT_HANDLER));
 

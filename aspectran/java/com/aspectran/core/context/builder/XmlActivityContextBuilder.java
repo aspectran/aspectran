@@ -15,7 +15,6 @@
  */
 package com.aspectran.core.context.builder;
 
-import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.builder.xml.parser.AspectranNodeParser;
 import com.aspectran.core.util.ResourceUtils;
@@ -27,15 +26,15 @@ import com.aspectran.core.util.ResourceUtils;
  */
 public class XmlActivityContextBuilder extends AbstractActivityContextBuilder implements ActivityContextBuilder {
 	
-	private final ApplicationAdapter applicationAdapter;
+	private final String applicationBasePath;
 	
-	public XmlActivityContextBuilder(ApplicationAdapter applicationAdapter) {
-		this(applicationAdapter, null);
+	public XmlActivityContextBuilder(String applicationBasePath) {
+		this(applicationBasePath, null);
 	}
 	
-	public XmlActivityContextBuilder(ApplicationAdapter applicationAdapter, ClassLoader classLoader) {
-		super(applicationAdapter.getApplicationBasePath(), classLoader);
-		this.applicationAdapter = applicationAdapter;
+	public XmlActivityContextBuilder(String applicationBasePath, ClassLoader classLoader) {
+		super(applicationBasePath, classLoader);
+		this.applicationBasePath = applicationBasePath;
 	}
 
 	public ActivityContext build(String rootContext) throws ActivityContextBuilderException {
@@ -47,24 +46,25 @@ public class XmlActivityContextBuilder extends AbstractActivityContextBuilder im
 
 			if(rootContext.startsWith(ResourceUtils.CLASSPATH_URL_PREFIX)) {
 				String resource = rootContext.substring(ResourceUtils.CLASSPATH_URL_PREFIX.length());
-				
 				importResource.setResource(resource);
+			} else if(rootContext.startsWith(ResourceUtils.FILE_URL_PREFIX)) {
+					String file = rootContext.substring(ResourceUtils.FILE_URL_PREFIX.length());
+					importResource.setFile(file);
 			} else {
 				importResource.setFile(getApplicationBasePath(), rootContext);
 			}
 			
-			return build(applicationAdapter, importResource);
-			
+			return build(applicationBasePath, importResource);
 		} catch(Exception e) {
 			throw new ActivityContextBuilderException("XmlActivityContext build failed. rootContext: " + rootContext, e);
 		}
 	}
 	
-	private ActivityContext build(ApplicationAdapter applicationAdapter, ImportResource importResource) throws Exception {
+	private ActivityContext build(String applicationBasePath, ImportResource importResource) throws Exception {
 		AspectranNodeParser parser = new AspectranNodeParser(this);
 		parser.parse(importResource);
 		
-		ActivityContext aspectranContext = makeActivityContext(applicationAdapter);
+		ActivityContext aspectranContext = makeActivityContext();
 		
 		return aspectranContext;
 	}
