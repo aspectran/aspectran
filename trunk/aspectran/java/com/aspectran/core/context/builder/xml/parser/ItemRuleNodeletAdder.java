@@ -151,7 +151,7 @@ public class ItemRuleNodeletAdder implements NodeletAdder {
 				
 				if(valueType != null) {
 					if(itemValueType == null || itemValueType == ItemValueType.CUSTOM)
-						itemValueType = new ItemValueType(valueType); //full qualified
+						itemValueType = new ItemValueType(valueType); //full qualified class name
 					
 					if(itemValueType != null)
 						ir.setValueType(itemValueType);

@@ -419,8 +419,8 @@ public class TransletRule implements ActionAddable, ResponseSettable, AspectAdvi
 					if(executable instanceof EchoAction) {
 						EchoAction action = (EchoAction)executable;
 						sb.append("         EchoAction ").append(action).append(CRLF);
-						if(action.getEchoActionRule().getItemRuleMap() != null) {
-							for(ItemRule pr : action.getEchoActionRule().getItemRuleMap())
+						if(action.getEchoActionRule().getAttributeItemRuleMap() != null) {
+							for(ItemRule pr : action.getEchoActionRule().getAttributeItemRuleMap())
 								sb.append("            Echo ").append(pr).append(CRLF);
 						}
 					} else if(executable instanceof BeanAction) {
@@ -492,8 +492,8 @@ public class TransletRule implements ActionAddable, ResponseSettable, AspectAdvi
 						if(executable instanceof EchoAction) {
 							EchoAction action = (EchoAction)executable;
 							sb.append("         EchoAction ").append(action).append(CRLF);
-							if(action.getEchoActionRule().getItemRuleMap() != null) {
-								for(ItemRule pr : action.getEchoActionRule().getItemRuleMap())
+							if(action.getEchoActionRule().getAttributeItemRuleMap() != null) {
+								for(ItemRule pr : action.getEchoActionRule().getAttributeItemRuleMap())
 									sb.append("            Echo ").append(pr).append(CRLF);
 							}
 						} else if(executable instanceof BeanAction) {
