@@ -1,7 +1,7 @@
-package com.aspectran.core.context.service;
+package com.aspectran.core.service;
 
 
-public interface ActivityContextServiceListener {
+public interface AspectranServiceListener {
 	
 	public void started();
 	

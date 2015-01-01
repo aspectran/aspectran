@@ -1,30 +1,24 @@
-package com.aspectran.core.context.service;
+package com.aspectran.core.service;
 
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.context.loader.ActivityContextLoader;
 import com.aspectran.core.context.loader.config.AspectranConfig;
-import com.aspectran.core.context.loader.reload.ActivityContextReloadDelegate;
 
-public class ActivityContextService extends AbstractActivityContextService implements ActivityContextServiceController {
+public class CoreAspectranService extends AbstractAspectranService {
 
 	private static final long DEFAULT_PAUSE_TIMEOUT = 500L;
 	
-	private ActivityContextServiceListener activityContextServiceListener;
+	private AspectranServiceListener activityContextServiceListener;
 	
-	public ActivityContextService(AspectranConfig aspectranConfig, ActivityContextLoader activityContextLoader) {
-		super(aspectranConfig, activityContextLoader);
+	public CoreAspectranService(AspectranConfig aspectranConfig) {
+		super(aspectranConfig);
 
 		initActivityContext();
 	}
 	
-	public void setActivityContextServiceListener(ActivityContextServiceListener activityContextServiceListener) {
+	public void setActivityContextServiceListener(AspectranServiceListener activityContextServiceListener) {
 		this.activityContextServiceListener = activityContextServiceListener;
 	}
 	
-	protected ActivityContextReloadDelegate getActivityContextReloadDelegate() {
-		return new ActivityContextReloadDelegate(this);
-	}
-
 	public synchronized ActivityContext start() {
 		loadActivityContext();
 

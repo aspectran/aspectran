@@ -6,7 +6,7 @@ import java.util.Map;
 
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.bean.scope.ApplicationScope;
-import com.aspectran.core.context.service.ActivityContextServiceController;
+import com.aspectran.core.service.AspectranServiceController;
 
 /**
  * The Class AbstractApplicationAdapter.
@@ -20,7 +20,7 @@ public abstract class AbstractApplicationAdapter implements ApplicationAdapter {
 	/** The adaptee. */
 	protected Object adaptee;
 	
-	protected Map<ActivityContext, ActivityContextServiceController> activityContextServiceControllers = Collections.synchronizedMap(new HashMap<ActivityContext, ActivityContextServiceController>());
+	protected Map<ActivityContext, AspectranServiceController> activityContextServiceControllers = Collections.synchronizedMap(new HashMap<ActivityContext, AspectranServiceController>());
 	
 	/**
 	 * Instantiates a new abstract session adapter.
@@ -44,15 +44,15 @@ public abstract class AbstractApplicationAdapter implements ApplicationAdapter {
 	public abstract void setAttribute(String name, Object value);
 	
 	
-	public Map<ActivityContext, ActivityContextServiceController> getActivityContextServiceHandlers() {
+	public Map<ActivityContext, AspectranServiceController> getActivityContextServiceHandlers() {
 		return activityContextServiceControllers;
 	}
 	
-	public ActivityContextServiceController getActivityContextServiceController(ActivityContext activityContext) {
+	public AspectranServiceController getActivityContextServiceController(ActivityContext activityContext) {
 		return activityContextServiceControllers.get(activityContext);
 	}
 
-	public void putActivityContextServiceController(ActivityContext activityContext, ActivityContextServiceController activityContextServiceHandler) {
+	public void putActivityContextServiceController(ActivityContext activityContext, AspectranServiceController activityContextServiceHandler) {
 		activityContextServiceControllers.put(activityContext, activityContextServiceHandler);
 	}
 

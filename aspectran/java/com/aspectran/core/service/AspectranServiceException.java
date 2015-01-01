@@ -8,7 +8,7 @@
  * Contributors:
  *     Jeong Ju Ho - initial API and implementation
  ******************************************************************************/
-package com.aspectran.core.context.service;
+package com.aspectran.core.service;
 
 import com.aspectran.core.context.ActivityContextException;
 
@@ -20,7 +20,7 @@ import com.aspectran.core.context.ActivityContextException;
  * @author Gulendol
  * 
  */
-public class ActivityContextServiceException extends ActivityContextException {
+public class AspectranServiceException extends ActivityContextException {
 
 	/** @serial */
 	private static final long serialVersionUID = 3684447750947343719L;
@@ -28,7 +28,7 @@ public class ActivityContextServiceException extends ActivityContextException {
 	/**
 	 * Simple constructor
 	 */
-	public ActivityContextServiceException() {
+	public AspectranServiceException() {
 	}
 
 	/**
@@ -37,7 +37,7 @@ public class ActivityContextServiceException extends ActivityContextException {
 	 * @param msg
 	 *            A message to associate with the exception
 	 */
-	public ActivityContextServiceException(String msg) {
+	public AspectranServiceException(String msg) {
 		super(msg);
 	}
 
@@ -47,7 +47,7 @@ public class ActivityContextServiceException extends ActivityContextException {
 	 * @param cause
 	 *            The real cause of the exception
 	 */
-	public ActivityContextServiceException(Throwable cause) {
+	public AspectranServiceException(Throwable cause) {
 		super(cause);
 	}
 
@@ -60,7 +60,7 @@ public class ActivityContextServiceException extends ActivityContextException {
 	 * @param cause
 	 *            The real cause of the exception
 	 */
-	public ActivityContextServiceException(String msg, Throwable cause) {
+	public AspectranServiceException(String msg, Throwable cause) {
 		super(msg, cause);
 	}
 }
