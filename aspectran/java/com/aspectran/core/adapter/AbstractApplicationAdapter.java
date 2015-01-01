@@ -6,7 +6,7 @@ import java.util.Map;
 
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.bean.scope.ApplicationScope;
-import com.aspectran.core.context.service.ActivityContextServiceHandler;
+import com.aspectran.core.context.service.ActivityContextServiceController;
 
 /**
  * The Class AbstractApplicationAdapter.
@@ -20,7 +20,7 @@ public abstract class AbstractApplicationAdapter implements ApplicationAdapter {
 	/** The adaptee. */
 	protected Object adaptee;
 	
-	protected Map<ActivityContext, ActivityContextServiceHandler> activityContextServiceHandlers = Collections.synchronizedMap(new HashMap<ActivityContext, ActivityContextServiceHandler>());
+	protected Map<ActivityContext, ActivityContextServiceController> activityContextServiceControllers = Collections.synchronizedMap(new HashMap<ActivityContext, ActivityContextServiceController>());
 	
 	/**
 	 * Instantiates a new abstract session adapter.
@@ -44,21 +44,21 @@ public abstract class AbstractApplicationAdapter implements ApplicationAdapter {
 	public abstract void setAttribute(String name, Object value);
 	
 	
-	public Map<ActivityContext, ActivityContextServiceHandler> getActivityContextServiceHandlers() {
-		return activityContextServiceHandlers;
+	public Map<ActivityContext, ActivityContextServiceController> getActivityContextServiceHandlers() {
+		return activityContextServiceControllers;
 	}
 	
-	public ActivityContextServiceHandler getActivityContextServiceHandler(ActivityContext activityContext) {
-		return activityContextServiceHandlers.get(activityContext);
+	public ActivityContextServiceController getActivityContextServiceController(ActivityContext activityContext) {
+		return activityContextServiceControllers.get(activityContext);
 	}
 
-	public void putActivityContextServiceHandler(ActivityContext activityContext, ActivityContextServiceHandler activityContextServiceHandler) {
-		activityContextServiceHandlers.put(activityContext, activityContextServiceHandler);
+	public void putActivityContextServiceController(ActivityContext activityContext, ActivityContextServiceController activityContextServiceHandler) {
+		activityContextServiceControllers.put(activityContext, activityContextServiceHandler);
 	}
 
-	public void removeActivityContextServiceHandler(ActivityContext activityContext) {
+	public void removeActivityContextServiceController(ActivityContext activityContext) {
 		if(activityContext != null)
-			activityContextServiceHandlers.remove(activityContext);
+			activityContextServiceControllers.remove(activityContext);
 	}
 	
 }

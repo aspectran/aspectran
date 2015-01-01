@@ -3,7 +3,7 @@ package com.aspectran.core.context.service;
 import com.aspectran.core.context.ActivityContext;
 
 
-public interface ActivityContextServiceHandler {
+public interface ActivityContextServiceController {
 	
 	public ActivityContext start();
 

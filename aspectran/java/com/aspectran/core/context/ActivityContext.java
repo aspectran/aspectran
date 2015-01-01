@@ -19,7 +19,7 @@ import com.aspectran.core.activity.CoreActivity;
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.aspect.AspectRuleRegistry;
 import com.aspectran.core.context.bean.ContextBeanRegistry;
-import com.aspectran.core.context.service.ActivityContextServiceHandler;
+import com.aspectran.core.context.service.ActivityContextServiceController;
 import com.aspectran.core.context.translet.TransletRuleRegistry;
 
 /**
@@ -102,8 +102,8 @@ public class ActivityContext {
 		this.activityDefaultHandler = activityDefaultHandler;
 	}
 
-	public ActivityContextServiceHandler getActivityContextServiceHandler() {
-		return applicationAdapter.getActivityContextServiceHandler(this);
+	public ActivityContextServiceController getActivityContextServiceHandler() {
+		return applicationAdapter.getActivityContextServiceController(this);
 	}
 	
 	public CoreActivity getLocalCoreActivity() {
