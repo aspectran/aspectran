@@ -10,7 +10,8 @@ import com.aspectran.core.context.loader.ActivityContextLoader;
 import com.aspectran.core.context.loader.config.AspectranConfig;
 import com.aspectran.core.service.CoreAspectranService;
 import com.aspectran.web.adapter.WebApplicationAdapter;
-import com.aspectran.web.context.loader.WebActivityContextLoader;
+import com.aspectran.web.context.loader.WebAponActivityContextLoader;
+import com.aspectran.web.context.loader.WebXmlActivityContextLoader;
 
 public class WebAspectranService extends CoreAspectranService {
 	
@@ -24,8 +25,14 @@ public class WebAspectranService extends CoreAspectranService {
 		this.servletContext = servletContext;
 
 		ApplicationAdapter aa = WebApplicationAdapter.determineWebApplicationAdapter(servletContext);
-		ActivityContextLoader acl = new WebActivityContextLoader(aa);
+		ActivityContextLoader acl = null;
 		
+		if(getRootContext() != null && getRootContext().endsWith(".apon"))
+			acl = new WebXmlActivityContextLoader(aa.getApplicationBasePath());
+		else
+			acl = new WebAponActivityContextLoader(aa.getApplicationBasePath());
+		
+		setApplicationAdapter(aa);
 		setActivityContextLoader(acl);
 	}
 	

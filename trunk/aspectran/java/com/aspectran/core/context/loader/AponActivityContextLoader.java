@@ -7,22 +7,22 @@ import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.builder.ActivityContextBuilder;
 import com.aspectran.core.context.builder.XmlActivityContextBuilder;
 
-public class XmlActivityContextLoader extends AbstractActivityContextLoader {
+public class AponActivityContextLoader extends AbstractActivityContextLoader {
 
-	private final Logger logger = LoggerFactory.getLogger(XmlActivityContextLoader.class);
+	private final Logger logger = LoggerFactory.getLogger(AponActivityContextLoader.class);
 
-	public XmlActivityContextLoader() {
+	public AponActivityContextLoader() {
 	}
 	
-	public XmlActivityContextLoader(String applicationBasePath) {
+	public AponActivityContextLoader(String applicationBasePath) {
 		super(applicationBasePath);
 	}
 	
 	public ActivityContext load(String rootContext) {
-		return buildXmlActivityContext(rootContext);
+		return buildAponActivityContext(rootContext);
 	}
 
-	protected ActivityContext buildXmlActivityContext(String rootContext) {
+	protected ActivityContext buildAponActivityContext(String rootContext) {
 		logger.info("build ActivityContext [" + rootContext + "]");
 		long startTime = System.currentTimeMillis();
 

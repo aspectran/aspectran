@@ -60,6 +60,10 @@ public abstract class AbstractAspectranService implements AspectranService {
 	public Parameters getAspectranConfig() {
 		return aspectranConfig;
 	}
+	
+	public void setApplicationAdapter(ApplicationAdapter applicationAdapter) {
+		this.applicationAdapter = applicationAdapter;
+	}
 
 	public ActivityContextLoader getActivityContextLoader() {
 		return activityContextLoader;
@@ -67,7 +71,6 @@ public abstract class AbstractAspectranService implements AspectranService {
 	
 	public void setActivityContextLoader(ActivityContextLoader activityContextLoader) {
 		this.activityContextLoader = activityContextLoader;
-		this.applicationAdapter = activityContextLoader.getApplicationAdapter();
 		this.aspectranClassLoader = activityContextLoader.getAspectranClassLoader();
 	}
 
@@ -126,6 +129,7 @@ public abstract class AbstractAspectranService implements AspectranService {
 			}
 
 			activityContext = activityContextLoader.load(rootContext);
+			activityContext.setApplicationAdapter(applicationAdapter);
 			
 			startupAspectranScheduler();
 			
@@ -175,6 +179,7 @@ public abstract class AbstractAspectranService implements AspectranService {
 			}
 			
 			activityContext = activityContextLoader.load(rootContext);
+			activityContext.setApplicationAdapter(applicationAdapter);
 			
 			startupAspectranScheduler();
 	
@@ -258,6 +263,10 @@ public abstract class AbstractAspectranService implements AspectranService {
 	
 	public ActivityContext getActivityContext() {
 		return activityContext;
+	}
+	
+	public String getRootContext() {
+		return rootContext;
 	}
 	
 	private static String[] checkResourceLocations(String applicationBasePath, String[] resourceLocations) throws FileNotFoundException {

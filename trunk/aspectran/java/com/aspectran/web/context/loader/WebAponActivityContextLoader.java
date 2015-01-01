@@ -1,19 +1,18 @@
 package com.aspectran.web.context.loader;
 
-import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.loader.XmlActivityContextLoader;
 
-public class WebActivityContextLoader extends XmlActivityContextLoader {
+public class WebAponActivityContextLoader extends XmlActivityContextLoader {
 
-	private static final String DEFAULT_ROOT_CONTEXT = "/WEB-INF/aspectran/aspectranContext.xml";
+	private static final String DEFAULT_ROOT_CONTEXT = "/WEB-INF/aspectran/root.apon";
 	
-	public WebActivityContextLoader() {
+	public WebAponActivityContextLoader() {
 		super();
 	}
 	
-	public WebActivityContextLoader(ApplicationAdapter applicationAdapter) {
-		super(applicationAdapter);
+	public WebAponActivityContextLoader(String applicationBasePath) {
+		super(applicationBasePath);
 	}
 	
 	public ActivityContext load(String rootContext) {
