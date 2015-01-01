@@ -51,12 +51,12 @@ public class EchoAction extends AbstractAction implements Executable {
 	 * @see org.jhlabs.translets.engine.process.action.Executable#execute(org.jhlabs.translets.action.Translet)
 	 */
 	public Object execute(CoreActivity activity) throws Exception {
-		if(echoActionRule.getItemRuleMap() == null)
+		if(echoActionRule.getAttributeItemRuleMap() == null)
 			return null;
 		
 		try {
 			ItemTokenExpressor expressor = new ItemTokenExpression(activity);
-			ValueMap valueMap = expressor.express(echoActionRule.getItemRuleMap());
+			ValueMap valueMap = expressor.express(echoActionRule.getAttributeItemRuleMap());
 			
 			return valueMap;
 		} catch(Exception e) {

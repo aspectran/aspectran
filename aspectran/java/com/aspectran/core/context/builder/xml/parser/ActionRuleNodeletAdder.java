@@ -75,6 +75,7 @@ public class ActionRuleNodeletAdder implements NodeletAdder {
 			}
 		});
 
+		parser.addNodelet(xpath, "/echo/attributes", new ItemRuleNodeletAdder(assistant));
 		parser.addNodelet(xpath, "/echo", new ItemRuleNodeletAdder(assistant));
 		
 		parser.addNodelet(xpath, "/echo/end()", new Nodelet() {
@@ -83,7 +84,7 @@ public class ActionRuleNodeletAdder implements NodeletAdder {
 				EchoActionRule echoActionRule = (EchoActionRule)assistant.popObject();
 				
 				if(irm.size() > 0)
-					echoActionRule.setItemRuleMap(irm);
+					echoActionRule.setAttributeItemRuleMap(irm);
 
 				Object o = assistant.peekObject();
 				

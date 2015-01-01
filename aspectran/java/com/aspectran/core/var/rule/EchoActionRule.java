@@ -28,7 +28,7 @@ public class EchoActionRule {
 	
 	private String actionId;
 	
-	private ItemRuleMap itemRuleMap;
+	private ItemRuleMap attributeItemRuleMap;
 
 	private boolean hidden;
 	
@@ -57,29 +57,29 @@ public class EchoActionRule {
 	 * 
 	 * @return the value rule map
 	 */
-	public ItemRuleMap getItemRuleMap() {
-		return itemRuleMap;
+	public ItemRuleMap getAttributeItemRuleMap() {
+		return attributeItemRuleMap;
 	}
 
 	/**
 	 * Sets the parameter rule map.
 	 * 
-	 * @param itemRuleMap the parameterRules to set
+	 * @param attributeItemRuleMap the parameterRules to set
 	 */
-	public void setItemRuleMap(ItemRuleMap itemRuleMap) {
-		this.itemRuleMap = itemRuleMap;
+	public void setAttributeItemRuleMap(ItemRuleMap attributeItemRuleMap) {
+		this.attributeItemRuleMap = attributeItemRuleMap;
 	}
 
 	/**
 	 * Adds the parameter rule.
 	 * 
-	 * @param itemRule the parameter rule
+	 * @param attributeItemRule the parameter rule
 	 */
-	public void addItemRule(ItemRule itemRule) {
-		if(itemRuleMap == null) 
-			itemRuleMap = new ItemRuleMap();
+	public void addItemRule(ItemRule attributeItemRule) {
+		if(attributeItemRuleMap == null) 
+			attributeItemRuleMap = new ItemRuleMap();
 		
-		itemRuleMap.putItemRule(itemRule);
+		attributeItemRuleMap.putItemRule(attributeItemRule);
 	}
 	
 	/**
@@ -146,11 +146,11 @@ public class EchoActionRule {
 		sb.append("{id=").append(actionId);
 		sb.append(", hidden=").append(hidden);
 
-		if(itemRuleMap != null) {
-			sb.append(", items=[");
+		if(attributeItemRuleMap != null) {
+			sb.append(", attributes=[");
 			int sbLength = sb.length();
 
-			for(String name : itemRuleMap.keySet()) {
+			for(String name : attributeItemRuleMap.keySet()) {
 				if(sb.length() > sbLength)
 					sb.append(", ");
 				
