@@ -8,7 +8,7 @@ aspectran: {
 		nullableActionId: true
 		beanProxyMode: cglib
 	}
-	apon: {
+	aspect: {
 		id: defaultRequestRule
 		joinpoint: {
 			scope: request
@@ -18,8 +18,25 @@ aspectran: {
 			multipart.maxRequestSize: 10M
 			multipart.temporaryFilePath: /d:/
 		}
-	}	
-	
+	}
+	bean: {
+		class: org.quartz.impl.StdSchedulerFactory
+		scope: singleton
+		constructor: {
+			arguments(properties): {
+				org.quartz.scheduler.instanceName: DefaultQuartzScheduler
+				org.quartz.scheduler.rmi.export: false
+				org.quartz.scheduler.rmi.proxy: false
+				org.quartz.scheduler.wrapJobExecutionInUserTransaction: false
+				org.quartz.threadPool.class: org.quartz.simpl.SimpleThreadPool
+				org.quartz.threadPool.threadCount: 10
+				org.quartz.threadPool.threadPriority: 5
+				org.quartz.threadPool.threadsInheritContextClassLoaderOfInitializingThread: true
+				org.quartz.jobStore.misfireThreshold: 60000
+				org.quartz.jobStore.class: org.quartz.simpl.RAMJobStore
+			}
+		}
+	}
 }
 
 	

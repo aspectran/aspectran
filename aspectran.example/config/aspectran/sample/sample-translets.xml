@@ -47,7 +47,7 @@
 		<contents>
 			<content id="echo">
 				<echo id="echo0">
-					echo0
+					<!-- echo0 template -->
 				</echo>
 				<echo id="echo1">
 					<item type="list">
