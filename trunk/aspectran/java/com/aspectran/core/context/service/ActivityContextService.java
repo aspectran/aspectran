@@ -5,7 +5,7 @@ import com.aspectran.core.context.loader.ActivityContextLoader;
 import com.aspectran.core.context.loader.config.AspectranConfig;
 import com.aspectran.core.context.loader.reload.ActivityContextReloadDelegate;
 
-public class ActivityContextService extends AbstractActivityContextService implements ActivityContextServiceHandler {
+public class ActivityContextService extends AbstractActivityContextService implements ActivityContextServiceController {
 
 	private static final long DEFAULT_PAUSE_TIMEOUT = 500L;
 	
@@ -28,8 +28,8 @@ public class ActivityContextService extends AbstractActivityContextService imple
 	public synchronized ActivityContext start() {
 		loadActivityContext();
 
-		if(getApplicationAdapter().getActivityContextServiceHandler(activityContext) != this)
-			getApplicationAdapter().putActivityContextServiceHandler(activityContext, this);
+		if(getApplicationAdapter().getActivityContextServiceController(activityContext) != this)
+			getApplicationAdapter().putActivityContextServiceController(activityContext, this);
 
 		if(activityContextServiceListener != null)
 			activityContextServiceListener.started();
@@ -75,8 +75,8 @@ public class ActivityContextService extends AbstractActivityContextService imple
 		return cleanlyDestoryed;
 	}
 	
-	public synchronized boolean destroy() {
-		getApplicationAdapter().removeActivityContextServiceHandler(activityContext);
+	public synchronized boolean dispose() {
+		getApplicationAdapter().removeActivityContextServiceController(activityContext);
 		
 		return stop();
 	}

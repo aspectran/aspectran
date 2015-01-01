@@ -4,7 +4,7 @@ import java.util.Map;
 
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.bean.scope.Scope;
-import com.aspectran.core.context.service.ActivityContextServiceHandler;
+import com.aspectran.core.context.service.ActivityContextServiceController;
 
 /**
  * The Interface ApplicationAdapter.
@@ -51,12 +51,12 @@ public interface ApplicationAdapter {
 	 */
 	public String getApplicationBasePath();
 	
-	public Map<ActivityContext, ActivityContextServiceHandler> getActivityContextServiceHandlers();
+	public Map<ActivityContext, ActivityContextServiceController> getActivityContextServiceHandlers();
 	
-	public ActivityContextServiceHandler getActivityContextServiceHandler(ActivityContext activityContext);
+	public ActivityContextServiceController getActivityContextServiceController(ActivityContext activityContext);
 
-	public void putActivityContextServiceHandler(ActivityContext activityContext, ActivityContextServiceHandler activityContextServiceHandler);
+	public void putActivityContextServiceController(ActivityContext activityContext, ActivityContextServiceController activityContextServiceHandler);
 	
-	public void removeActivityContextServiceHandler(ActivityContext activityContext);
+	public void removeActivityContextServiceController(ActivityContext activityContext);
 
 }

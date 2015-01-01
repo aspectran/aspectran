@@ -63,7 +63,7 @@ public class AspectranSchedulerListener implements ServletContextListener {
 	 * @param event the event
 	 */
 	public void contextDestroyed(ServletContextEvent event) {
-		boolean cleanlyDestoryed = activityContextService.destroy();
+		boolean cleanlyDestoryed = activityContextService.dispose();
 		
 		if(cleanlyDestoryed)
 			logger.info("Successfully destroyed AspectranScheduler.");

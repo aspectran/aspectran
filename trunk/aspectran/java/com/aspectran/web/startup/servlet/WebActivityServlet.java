@@ -172,7 +172,7 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 	public void destroy() {
 		super.destroy();
 
-		boolean cleanlyDestoryed = activityContextService.destroy();
+		boolean cleanlyDestoryed = activityContextService.dispose();
 		
 		if(cleanlyDestoryed)
 			logger.info("Successfully destroyed WebActivityServlet: " + this.getServletName());

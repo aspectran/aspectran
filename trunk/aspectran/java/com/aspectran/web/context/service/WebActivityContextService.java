@@ -28,8 +28,8 @@ public class WebActivityContextService extends ActivityContextService {
 		acl.setApplicationAdapter(aa);
 	}
 	
-	public boolean destroy() {
-		boolean cleanlyDestoryed = super.destroy();
+	public boolean dispose() {
+		boolean cleanlyDestoryed = super.dispose();
 		
 		try {
 			WebApplicationAdapter.destoryWebApplicationAdapter(servletContext);
