@@ -118,7 +118,7 @@ public class ImportResource {
 			else
 				file = new File(basePath, resource);
 			
-			if(!file.exists() || file.isFile()) {
+			if(!file.isFile()) {
 				throw new IOException("Could not find resource " + file.getAbsolutePath());
 			}
 			

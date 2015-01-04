@@ -2,7 +2,6 @@ package com.aspectran.core.context.loader.config;
 
 import com.aspectran.core.var.apon.AbstractParameters;
 import com.aspectran.core.var.apon.InvalidParameterException;
-import com.aspectran.core.var.apon.ParameterArrayValue;
 import com.aspectran.core.var.apon.ParameterValue;
 import com.aspectran.core.var.apon.ParameterValueType;
 import com.aspectran.core.var.apon.Parameters;
@@ -13,7 +12,7 @@ public class AspectranContextAutoReloadingConfig extends AbstractParameters impl
 	
 	public static final ParameterValue observationInterval = new ParameterValue("observationInterval", ParameterValueType.INTEGER);
 	
-	public static final ParameterValue startup = new ParameterArrayValue("startup", ParameterValueType.BOOLEAN);
+	public static final ParameterValue startup = new ParameterValue("startup", ParameterValueType.BOOLEAN);
 	
 	private final static ParameterValue[] parameterValues;
 	
