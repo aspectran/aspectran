@@ -14,15 +14,12 @@
 		<param-name>aspectran:config</param-name>
 		<param-value>
 			context: {
-				root: /WEB-INF/aspectran/example-aspectran.xml
+				root: /WEB-INF/aspectran/config/example-scheduler.xml
 				resources: [
-					/WEB-INF/aspectran
-					/WEB-INF/aspectran/classes1
-					/WEB-INF/aspectran/classes2
+					/WEB-INF/aspectran/classes
 					/WEB-INF/aspectran/lib
-					/WEB-INF/aspectran/sqlmap
+					/WEB-INF/aspectran/config
 				]
-				resourceCache: false
 				autoReloading: {
 					reloadMethod: hard
 					observationInterval: 5
@@ -34,7 +31,6 @@
 				waitOnShutdown: true
 				startup: false
 			}
-			managerTransletName: /manager
 		</param-value>
 	</context-param>
 	<listener>
@@ -46,60 +42,24 @@
 		<init-param>
 			<param-name>aspectran:config</param-name>
 			<param-value>
-				classPathes: [
-					WEB-INF/*.xml
-					WEB-INF/classes/**/*.class
-					WEB-INF/classes/**/*.xml
-					WEB-INF/lib/*.jar
-				]
-				autoReloading: {
-					observingPath: [
-						classpath:**
-						WEB-INF/config/sqlmap/**
+				context: {
+					root: /WEB-INF/aspectran/config/example-root.xml
+					resources: [
+						/WEB-INF/aspectran/classes
+						/WEB-INF/aspectran/lib
+						/WEB-INF/aspectran/config
 					]
-					observationInterval: 5
-					startup: false
+					autoReloading: {
+						reloadMethod: hard
+						observationInterval: 5
+						startup: false
+					}
 				}
 				scheduler: {
 					startDelaySeconds: 5
 					waitOnShutdown: true
 					startup: false
 				}
-				rootContext: classpath:aspectran/example-aspectran.xml
-			</param-value>
-		</init-param>
-
-
-		<init-param>
-			<param-name>contextConfigLocation</param-name>
-			<param-value>classpath:aspectran/example-aspectran.xml</param-value>
-		</init-param>
-		<init-param>
-			<param-name>classPathes</param-name>
-			<param-value>
-				WEB-INF/*.xml
-				WEB-INF/classes/**/*.class
-				WEB-INF/classes/**/*.xml
-				WEB-INF/lib/*.jar
-			</param-value>
-		</init-param>
-		<init-param>
-			<param-name>scheduler</param-name>
-			<param-value>
-				startDelaySeconds: 5
-				waitOnShutdown: true
-				startup: false
-			</param-value>
-		</init-param>
-		<init-param>
-			<param-name>autoReloading</param-name>
-			<param-value>
-				observingPath: [
-					classpath:**
-					WEB-INF/config/sqlmap/**
-				]
-				observationInterval: 5
-				startup: false
 			</param-value>
 		</init-param>
 		<load-on-startup>1</load-on-startup>
