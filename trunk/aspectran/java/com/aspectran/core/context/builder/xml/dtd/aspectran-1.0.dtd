@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<!ELEMENT aspectran (settings? | typeAliases* | import* | bean* | translet* | aspect*)*>
+<!ELEMENT aspectran (settings? | apon? | typeAliases* | import* | bean* | translet* | aspect*)*>
 <!ATTLIST aspectran
 namespace CDATA #IMPLIED
 >
 
 <!ELEMENT settings (setting*)>
-<!ELEMENT setting EMPTY>
+<!ELEMENT setting (#PCDATA)>
 <!ATTLIST setting
 name CDATA #REQUIRED
-value CDATA #REQUIRED
+value CDATA #IMPLIED
 >
 
 <!ELEMENT typeAliases (typeAlias*)>
@@ -31,7 +31,7 @@ url CDATA #IMPLIED
 <!ATTLIST item
 name CDATA #IMPLIED
 value CDATA #IMPLIED
-type CDATA #IMPLIED
+type (item | list | map | set | properties) #IMPLIED
 valueType CDATA #IMPLIED
 defaultValue CDATA #IMPLIED
 >
@@ -60,7 +60,12 @@ property CDATA #IMPLIED
 
 <!ELEMENT null EMPTY>
 
-<!ELEMENT aspect (joinpoint?, settings?, advice?)>
+<!ELEMENT apon (#PCDATA)>
+<!ATTLIST apon
+for (typeAliases | settings | echo | attributes | properties | arguments | parameters) #REQUIRED
+>
+
+<!ELEMENT aspect (joinpoint?, settings?, apon?, advice?)>
 <!ATTLIST aspect
 id ID #IMPLIED
 for (translet | scheduler) #IMPLIED
@@ -139,7 +144,7 @@ hidden (true | false) #IMPLIED
 extends CDATA #IMPLIED
 >
 
-<!ELEMENT request (attributes?, multiparts?)>
+<!ELEMENT request (attributes?, apon?, multiparts?)>
 <!ATTLIST request
 method CDATA #IMPLIED
 characterEncoding CDATA #IMPLIED
@@ -160,7 +165,7 @@ id CDATA #IMPLIED
 hidden (true | false) #IMPLIED
 >
 
-<!ELEMENT echo (#PCDATA | item | value | null)*>
+<!ELEMENT echo (attributes?, (item | value | null)*)>
 <!ATTLIST echo
 id CDATA #IMPLIED
 hidden (true | false) #IMPLIED
@@ -194,7 +199,7 @@ exceptionType CDATA #IMPLIED
 >
 <!ELEMENT defaultResponse (transform? | dispatch? | redirect? | forward?)>
 
-<!ELEMENT transform ((echo? | action? | include?)*, template?)>
+<!ELEMENT transform ((echo? | action? | include? | apon?)*, template?)>
 <!ATTLIST transform
 type CDATA #IMPLIED
 contentType CDATA #IMPLIED

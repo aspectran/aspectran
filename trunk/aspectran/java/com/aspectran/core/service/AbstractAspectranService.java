@@ -109,7 +109,7 @@ public abstract class AbstractAspectranService implements AspectranService {
 				}
 			}
 		} catch(Exception e) {
-			throw new AspectranServiceException("Aspectran's ActivityContext Service failed to initialize.", e);
+			throw new AspectranServiceException("Failed to initialize ActivityContext " + aspectranConfig, e);
 		}
 	}
 	
@@ -138,7 +138,7 @@ public abstract class AbstractAspectranService implements AspectranService {
 			return activityContext;
 			
 		} catch(Exception e) {
-			throw new AspectranServiceException("Failed to load the Aspectran's ActivityContext Service.", e);
+			throw new AspectranServiceException("Failed to load the ActivityContext " + aspectranConfig, e);
 		}
 	}
 	

@@ -11,8 +11,6 @@ public class CoreAspectranService extends AbstractAspectranService {
 	
 	public CoreAspectranService(AspectranConfig aspectranConfig) {
 		super(aspectranConfig);
-
-		initActivityContext();
 	}
 	
 	public void setActivityContextServiceListener(AspectranServiceListener activityContextServiceListener) {

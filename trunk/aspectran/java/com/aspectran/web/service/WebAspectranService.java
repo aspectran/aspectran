@@ -34,6 +34,8 @@ public class WebAspectranService extends CoreAspectranService {
 		
 		setApplicationAdapter(aa);
 		setActivityContextLoader(acl);
+		
+		initActivityContext();
 	}
 	
 	public boolean dispose() {

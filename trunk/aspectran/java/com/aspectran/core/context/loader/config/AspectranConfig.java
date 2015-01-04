@@ -11,7 +11,7 @@ public class AspectranConfig extends AbstractParameters implements Parameters {
 	
 	public static final ParameterValue scheduler = new ParameterArrayValue("scheduler", new AspectranSchedulerConfig());
 	
-	private final static ParameterValue[] parameterValues;
+	private static final ParameterValue[] parameterValues;
 	
 	static {
 		parameterValues = new ParameterValue[] {
