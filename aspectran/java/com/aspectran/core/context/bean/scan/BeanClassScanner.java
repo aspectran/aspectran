@@ -94,7 +94,7 @@ public class BeanClassScanner {
 			
 			while(resources.hasMoreElements()) {
 				URL resource = resources.nextElement();
-				System.out.println("========" + resource.getFile());
+				System.out.println("==scanClass=====" + resource.getFile());
 				
 				if(isJarResource(resource)) {
 					scanClassFromJarResource(resource, matcher, scanClasses);
@@ -115,15 +115,13 @@ public class BeanClassScanner {
 	 * @return The classes
 	 * @throws ClassNotFoundException
 	 */
-	private Map<String, Class<?>> scanClass(final String targetPath, final String basePackageName, final String relativePackageName, final WildcardMatcher matcher, final Map<String, Class<?>> scanClasses) {
+	private void scanClass(final String targetPath, final String basePackageName, final String relativePackageName, final WildcardMatcher matcher, final Map<String, Class<?>> scanClasses) {
 		//System.out.println("@basePackageName: " + basePackageName);
 		//System.out.println("@relativePackageName: " + relativePackageName);
 		//System.out.println("@basePath: " + basePath);
 		final File target = new File(targetPath);
 		if(!target.exists())
-			return null;
-
-		final Map<String, Class<?>> classMap = new LinkedHashMap<String, Class<?>>();
+			return;
 
 		target.listFiles(new FileFilter() {
 			public boolean accept(File file) {
@@ -136,9 +134,7 @@ public class BeanClassScanner {
 							
 					String basePath2 = targetPath + file.getName() + ResourceUtils.RESOURCE_NAME_SPEPARATOR;
 					//System.out.println("-relativePackageName2: " + relativePackageName2);
-					Map<String, Class<?>> map = scanClass(basePath2, basePackageName, relativePackageName2, matcher, scanClasses);
-					if(map != null)
-						classMap.putAll(map);
+					scanClass(basePath2, basePackageName, relativePackageName2, matcher, scanClasses);
 				} else if(file.getName().endsWith(ClassUtils.CLASS_FILE_SUFFIX)) {
 					String className;
 					if(relativePackageName != null)
@@ -151,17 +147,15 @@ public class BeanClassScanner {
 					if(matcher.matches(relativePath)) {
 						Class<?> classType = loadClass(className);
 						String beanId = combineBeanId(relativePath);
-						//System.out.println("  [clazz] " + className);
-						//System.out.println("  [beanId] " + combineBeanId(relativePath));
+						System.out.println("scaned  [clazz] " + className);
+						System.out.println("scaned  [beanId] " + combineBeanId(relativePath));
 						logger.trace("beanClass {beanId: " + beanId + ", className: " + className + "}");
-						classMap.put(beanId, classType);
+						scanClasses.put(beanId, classType);
 					}
 				}
 				return false;
 			}
 		});
-		
-		return classMap;
 	}
 
 	protected void scanClassFromJarResource(URL resource, WildcardMatcher matcher, Map<String, Class<?>> scanClasses) throws IOException {
@@ -207,8 +201,6 @@ public class BeanClassScanner {
 				entryNamePrefix = entryNamePrefix + ResourceUtils.RESOURCE_NAME_SPEPARATOR;
 			}
 			
-			Map<String, Class<?>> classMap = new LinkedHashMap<String, Class<?>>();
-			
 			for(Enumeration<JarEntry> entries = jarFile.entries(); entries.hasMoreElements();) {
 				JarEntry entry = entries.nextElement();
 				String entryName = entry.getName();
@@ -228,7 +220,7 @@ public class BeanClassScanner {
 						logger.trace("beanClass {beanId: " + beanId + ", className: " + className + "} from jar: " + jarFile.getName());
 						//System.out.println("  [clazz] " + className);
 						//System.out.println("  [beanId] " + combineBeanId(relativePath));
-						classMap.put(beanId, classType);
+						scanClasses.put(beanId, classType);
 					}
 				}
 			}

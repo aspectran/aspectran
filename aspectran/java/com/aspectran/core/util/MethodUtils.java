@@ -711,6 +711,7 @@ public class MethodUtils {
 			
 			return method;
 		} catch(NoSuchMethodException e) { /* SWALLOW */
+			e.printStackTrace();
 		}
 
 		// search through all methods
@@ -731,7 +732,10 @@ public class MethodUtils {
 					
 					for(int n = 0; n < methodParamSize; n++) {
 						if(!ClassUtils.isAssignable(methodsParams[n], parameterTypes[n])) {
+							System.out.println("methodsParams[n]: " + methodsParams[n]);
+							System.out.println("parameterTypes[n]: " + parameterTypes[n]);
 							match = false;
+							System.out.println("match: " + match);
 							break;
 						}
 					}

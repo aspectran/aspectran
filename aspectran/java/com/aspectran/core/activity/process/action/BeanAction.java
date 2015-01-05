@@ -94,6 +94,7 @@ public class BeanAction extends AbstractAction implements Executable {
 			} else if(transletArgumentApplyingCache.get(argumentItemRuleMap) == Boolean.FALSE) {
 				result = invokeMethod(null, expressor, bean, methodName, argumentItemRuleMap);
 			} else {
+				System.out.println(":::::::::::::::activity::::::::::" + activity);
 				try {
 					result = invokeMethod(activity, expressor, bean, methodName, argumentItemRuleMap);
 					
@@ -117,7 +118,6 @@ public class BeanAction extends AbstractAction implements Executable {
 	public Object invokeMethod(CoreActivity activity, ItemTokenExpressor expressor, Object bean, String methodName, ItemRuleMap argumentItemRuleMap) throws Exception {
 		Class<?>[] parameterTypes = null;
 		Object[] args = null;
-		
 		
 		if(argumentItemRuleMap != null && argumentItemRuleMap.size() > 0) {
 			int argIndex = (activity != null) ? 1 : 0;
@@ -149,6 +149,7 @@ public class BeanAction extends AbstractAction implements Executable {
 				args = new Object[] { activity.getCoreTranslet() };
 			}
 		}
+		
 		
 		Object result = MethodUtils.invokeMethod(bean, methodName, args, parameterTypes);
 		

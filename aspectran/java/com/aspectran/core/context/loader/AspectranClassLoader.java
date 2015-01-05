@@ -393,7 +393,7 @@ public class AspectranClassLoader extends ClassLoader {
 		if(getParent() instanceof AspectranClassLoader)
 			sb.append(", parent=").append(((AspectranClassLoader)getParent()).getId());
 		else
-			sb.append(", parent=").append(getParent());
+			sb.append(", parent=").append(getParent().getClass().getName());
 		sb.append(", root=").append(this == root);
 		sb.append(", firstborn=").append(firstborn);
 		sb.append(", resourceLocation=").append(resourceLocation);

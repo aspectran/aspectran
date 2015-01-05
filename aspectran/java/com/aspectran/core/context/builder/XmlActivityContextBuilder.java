@@ -15,6 +15,7 @@
  */
 package com.aspectran.core.context.builder;
 
+import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.builder.xml.parser.AspectranNodeParser;
 import com.aspectran.core.util.ResourceUtils;
@@ -26,15 +27,15 @@ import com.aspectran.core.util.ResourceUtils;
  */
 public class XmlActivityContextBuilder extends AbstractActivityContextBuilder implements ActivityContextBuilder {
 	
-	private final String applicationBasePath;
+	private final ApplicationAdapter applicationAdapter;
 	
-	public XmlActivityContextBuilder(String applicationBasePath) {
-		this(applicationBasePath, null);
+	public XmlActivityContextBuilder(ApplicationAdapter applicationAdapter) {
+		this(applicationAdapter, null);
 	}
 	
-	public XmlActivityContextBuilder(String applicationBasePath, ClassLoader classLoader) {
-		super(applicationBasePath, classLoader);
-		this.applicationBasePath = applicationBasePath;
+	public XmlActivityContextBuilder(ApplicationAdapter applicationAdapter, ClassLoader classLoader) {
+		super(applicationAdapter.getApplicationBasePath(), classLoader);
+		this.applicationAdapter = applicationAdapter;
 	}
 
 	public ActivityContext build(String rootContext) throws ActivityContextBuilderException {
@@ -54,17 +55,17 @@ public class XmlActivityContextBuilder extends AbstractActivityContextBuilder im
 				importResource.setFile(getApplicationBasePath(), rootContext);
 			}
 			
-			return build(applicationBasePath, importResource);
+			return build(importResource);
 		} catch(Exception e) {
 			throw new ActivityContextBuilderException("XmlActivityContext build failed. rootContext: " + rootContext, e);
 		}
 	}
 	
-	private ActivityContext build(String applicationBasePath, ImportResource importResource) throws Exception {
+	private ActivityContext build(ImportResource importResource) throws Exception {
 		AspectranNodeParser parser = new AspectranNodeParser(this);
 		parser.parse(importResource);
 		
-		ActivityContext aspectranContext = makeActivityContext();
+		ActivityContext aspectranContext = makeActivityContext(applicationAdapter);
 		
 		return aspectranContext;
 	}

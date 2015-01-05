@@ -1,19 +1,25 @@
 package com.aspectran.core.context.loader;
 
+import com.aspectran.core.adapter.ApplicationAdapter;
+
 
 public abstract class AbstractActivityContextLoader implements ActivityContextLoader {
 
-	protected String applicationBasePath;
+	protected ApplicationAdapter applicationAdapter;
 	
 	protected AspectranClassLoader aspectranClassLoader;
 	
 	public AbstractActivityContextLoader() {
 	}
 	
-	public AbstractActivityContextLoader(String applicationBasePath) {
-		this.applicationBasePath = applicationBasePath;
+	public ApplicationAdapter getApplicationAdapter() {
+		return applicationAdapter;
 	}
-	
+
+	public void setApplicationAdapter(ApplicationAdapter applicationAdapter) {
+		this.applicationAdapter = applicationAdapter;
+	}
+
 	public AspectranClassLoader getAspectranClassLoader() {
 		return aspectranClassLoader;
 	}

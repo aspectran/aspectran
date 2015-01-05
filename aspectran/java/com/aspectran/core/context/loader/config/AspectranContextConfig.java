@@ -13,7 +13,7 @@ public class AspectranContextConfig extends AbstractParameters implements Parame
 	
 	public static final ParameterValue resources = new ParameterArrayValue("resources", ParameterValueType.STRING);
 	
-	public static final ParameterValue autoReloading = new ParameterArrayValue("autoReloading", new AspectranContextAutoReloadingConfig());
+	public static final ParameterValue autoReloading = new ParameterValue("autoReloading", new AspectranContextAutoReloadingConfig());
 	
 	private final static ParameterValue[] parameterValues;
 	

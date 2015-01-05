@@ -24,6 +24,6 @@ import com.aspectran.core.context.ActivityContext;
  */
 public interface ActivityContextBuilder {
 	
-	public ActivityContext build(String contextConfigLocation) throws ActivityContextBuilderException;
+	public ActivityContext build(String rootContext) throws ActivityContextBuilderException;
 	
 }

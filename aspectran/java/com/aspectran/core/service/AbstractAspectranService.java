@@ -61,16 +61,13 @@ public abstract class AbstractAspectranService implements AspectranService {
 		return aspectranConfig;
 	}
 	
-	public void setApplicationAdapter(ApplicationAdapter applicationAdapter) {
-		this.applicationAdapter = applicationAdapter;
-	}
-
 	public ActivityContextLoader getActivityContextLoader() {
 		return activityContextLoader;
 	}
 	
 	public void setActivityContextLoader(ActivityContextLoader activityContextLoader) {
 		this.activityContextLoader = activityContextLoader;
+		this.applicationAdapter = activityContextLoader.getApplicationAdapter();
 		this.aspectranClassLoader = activityContextLoader.getAspectranClassLoader();
 	}
 
@@ -129,7 +126,6 @@ public abstract class AbstractAspectranService implements AspectranService {
 			}
 
 			activityContext = activityContextLoader.load(rootContext);
-			activityContext.setApplicationAdapter(applicationAdapter);
 			
 			startupAspectranScheduler();
 			
@@ -179,7 +175,6 @@ public abstract class AbstractAspectranService implements AspectranService {
 			}
 			
 			activityContext = activityContextLoader.load(rootContext);
-			activityContext.setApplicationAdapter(applicationAdapter);
 			
 			startupAspectranScheduler();
 	

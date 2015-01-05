@@ -39,7 +39,8 @@ public class ActivityContext {
 	
 	private String activityDefaultHandler;
 	
-	public ActivityContext() {
+	public ActivityContext(ApplicationAdapter applicationAdapter) {
+		this.applicationAdapter = applicationAdapter;
 	}
 	
 	/**
@@ -49,15 +50,6 @@ public class ActivityContext {
 	 */
 	public ApplicationAdapter getApplicationAdapter() {
 		return applicationAdapter;
-	}
-
-	/**
-	 * Sets the application adapter.
-	 *
-	 * @param applicationAdapter the new application adapter
-	 */
-	public void setApplicationAdapter(ApplicationAdapter applicationAdapter) {
-		this.applicationAdapter = applicationAdapter;
 	}
 
 	public AspectRuleRegistry getAspectRuleRegistry() {

@@ -41,8 +41,9 @@ public class BeanReferenceInspector {
 		List<String> unknownBeanIdList = new ArrayList<String>();
 		
 		for(Map.Entry<String, Set<Object>> entry : relationMap.entrySet()) {
-			if(!beanRuleMap.containsKey(entry.getKey())) {
-				String beanId = entry.getKey();
+			String beanId = entry.getKey();
+
+			if(!beanRuleMap.containsKey(beanId)) {
 				unknownBeanIdList.add(beanId);
 				
 				Set<Object> set = entry.getValue();
