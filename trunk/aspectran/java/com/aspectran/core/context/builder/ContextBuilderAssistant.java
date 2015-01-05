@@ -28,10 +28,13 @@ import org.slf4j.LoggerFactory;
 import com.aspectran.core.context.AspectranConstant;
 import com.aspectran.core.context.loader.AspectranClassLoader;
 import com.aspectran.core.util.ArrayStack;
+import com.aspectran.core.util.ResourceUtils;
 import com.aspectran.core.var.rule.AspectRule;
 import com.aspectran.core.var.rule.AspectRuleMap;
 import com.aspectran.core.var.rule.BeanRule;
 import com.aspectran.core.var.rule.BeanRuleMap;
+import com.aspectran.core.var.rule.RequestRule;
+import com.aspectran.core.var.rule.ResponseRule;
 import com.aspectran.core.var.rule.TransletRule;
 import com.aspectran.core.var.rule.TransletRuleMap;
 import com.aspectran.core.var.type.DefaultSettingType;
@@ -44,7 +47,9 @@ public class ContextBuilderAssistant {
 
 	private final Logger logger = LoggerFactory.getLogger(ContextBuilderAssistant.class);
 	
-	private ClassLoader classLoader;
+	private final String applicationBasePath;
+
+	private final ClassLoader classLoader;
 	
 	private ArrayStack objectStack = new ArrayStack();
 	
@@ -54,7 +59,7 @@ public class ContextBuilderAssistant {
 	
 	private Map<DefaultSettingType, String> settings = new HashMap<DefaultSettingType, String>();
 	
-	private DefaultSettings defaultSettings = new DefaultSettings();
+	private DefaultSettings defaultSettings;
 
 	private BeanReferenceInspector beanReferenceInspector = new BeanReferenceInspector();
 	
@@ -66,7 +71,6 @@ public class ContextBuilderAssistant {
 	
 	private List<ImportResource> importResourceList = new ArrayList<ImportResource>();
 
-	private String applicationBasePath;
 	
 	public ContextBuilderAssistant(String applicationBasePath, ClassLoader classLoader) {
 		if(applicationBasePath == null)
@@ -78,6 +82,8 @@ public class ContextBuilderAssistant {
 			this.classLoader = new AspectranClassLoader();
 		else
 			this.classLoader = classLoader;
+		
+		this.defaultSettings = new DefaultSettings(classLoader);
 		
 		logger.info("Application base directory path is [" + applicationBasePath + "]");
 	}
@@ -140,7 +146,7 @@ public class ContextBuilderAssistant {
 		return settings;
 	}
 
-	public void setSettings(Map<DefaultSettingType, String> settings) {
+	public void setSettings(Map<DefaultSettingType, String> settings) throws ClassNotFoundException {
 		this.settings = settings;
 		applySettings();
 	}
@@ -183,7 +189,7 @@ public class ContextBuilderAssistant {
 		this.namespace = namespace;
 	}
 	
-	public void applySettings() {
+	public void applySettings() throws ClassNotFoundException {
 		defaultSettings.set(getSettings());
 	}
 	
@@ -348,7 +354,7 @@ public class ContextBuilderAssistant {
 	public File toRealPathFile(String filePath) {
 		File file;
 		
-		if(filePath.indexOf("://") != -1) {
+		if(filePath.startsWith(ResourceUtils.FILE_URL_PREFIX)) {
 			URI uri = URI.create(filePath);
 			file = new File(uri);
 		} else {
@@ -365,8 +371,56 @@ public class ContextBuilderAssistant {
 		return transletRuleMap;
 	}
 
-	public void addTransletRule(TransletRule transletRule) {
-		transletRuleMap.put(transletRule.getName(), transletRule);
+	public void addTransletRule(TransletRule transletRule) throws CloneNotSupportedException {
+		transletRule.setTransletInterfaceClass(defaultSettings.getTransletInterfaceClass());
+		
+		if(transletRule.getRequestRule() == null) {
+			RequestRule requestRule = new RequestRule();
+			transletRule.setRequestRule(requestRule);
+		}
+		
+		if(transletRule.getResponseRule() == null) {
+			ResponseRule responseRule = new ResponseRule();
+			transletRule.setResponseRule(responseRule);
+		}
+		
+		List<ResponseRule> responseRuleList = transletRule.getResponseRuleList();
+		
+		if(responseRuleList == null || responseRuleList.size() == 0) {
+			transletRule.setName(applyNamespaceForTranslet(transletRule.getName()));
+			
+			transletRuleMap.put(transletRule.getName(), transletRule);
+		} else if(responseRuleList.size() == 1) {
+			transletRule.setResponseRule(responseRuleList.get(0));
+			transletRule.setResponseRuleList(null);
+			transletRule.setName(applyNamespaceForTranslet(transletRule.getName()));
+			
+			transletRuleMap.put(transletRule.getName(), transletRule);
+		} else if(responseRuleList.size() > 1) {
+			ResponseRule defaultResponseRule = null;
+			
+			for(ResponseRule responseRule : responseRuleList) {
+				String responseName = responseRule.getName();
+				
+				if(responseName == null || responseName.length() == 0) {
+					defaultResponseRule = responseRule;
+				} else {
+					TransletRule subTransletRule = transletRule.newSubTransletRule(responseRule);
+					subTransletRule.setName(applyNamespaceForTranslet(subTransletRule.getName()));
+					
+					transletRuleMap.put(subTransletRule.getName(), subTransletRule);
+				}
+			}
+			
+			if(defaultResponseRule != null) {
+				transletRule.setResponseRule(defaultResponseRule);
+				transletRule.setName(applyNamespaceForTranslet(transletRule.getName()));
+				responseRuleList.remove(defaultResponseRule);
+				transletRule.setResponseRuleList(responseRuleList);
+				
+				transletRuleMap.put(transletRule.getName(), transletRule);
+			}
+		}
 	}
 	
 	public String putBeanReference(String beanId, Object rule) {

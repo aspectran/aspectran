@@ -18,7 +18,6 @@ package com.aspectran.core.context.builder.xml.parser;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.nio.charset.IllegalCharsetNameException;
-import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
@@ -629,54 +628,7 @@ public class AspectranNodeParser {
 		parser.addNodelet("/aspectran/translet/end()", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
 				TransletRule transletRule = (TransletRule)assistant.popObject();
-				
-				if(transletRule.getRequestRule() == null) {
-					RequestRule requestRule = new RequestRule();
-					transletRule.setRequestRule(requestRule);
-				}
-				
-				if(transletRule.getResponseRule() == null) {
-					ResponseRule responseRule = new ResponseRule();
-					transletRule.setResponseRule(responseRule);
-				}
-				
-				List<ResponseRule> responseRuleList = transletRule.getResponseRuleList();
-				
-				if(responseRuleList == null || responseRuleList.size() == 0) {
-					transletRule.setName(assistant.applyNamespaceForTranslet(transletRule.getName()));
-					
-					assistant.addTransletRule(transletRule);
-				} else if(responseRuleList.size() == 1) {
-					transletRule.setResponseRule(responseRuleList.get(0));
-					transletRule.setResponseRuleList(null);
-					transletRule.setName(assistant.applyNamespaceForTranslet(transletRule.getName()));
-					
-					assistant.addTransletRule(transletRule);
-				} else if(responseRuleList.size() > 1) {
-					ResponseRule defaultResponseRule = null;
-					
-					for(ResponseRule responseRule : responseRuleList) {
-						String responseName = responseRule.getName();
-						
-						if(responseName == null || responseName.length() == 0) {
-							defaultResponseRule = responseRule;
-						} else {
-							TransletRule subTransletRule = transletRule.newSubTransletRule(responseRule);
-							subTransletRule.setName(assistant.applyNamespaceForTranslet(subTransletRule.getName()));
-							
-							assistant.addTransletRule(subTransletRule);
-						}
-					}
-					
-					if(defaultResponseRule != null) {
-						transletRule.setResponseRule(defaultResponseRule);
-						transletRule.setName(assistant.applyNamespaceForTranslet(transletRule.getName()));
-						responseRuleList.remove(defaultResponseRule);
-						transletRule.setResponseRuleList(responseRuleList);
-						
-						assistant.addTransletRule(transletRule);
-					}
-				}
+				assistant.addTransletRule(transletRule);
 			}
 		});
 	}
@@ -871,7 +823,7 @@ public class AspectranNodeParser {
 					}
 				}
 			}
-		});		
+		});
 	}
 	
 	/**

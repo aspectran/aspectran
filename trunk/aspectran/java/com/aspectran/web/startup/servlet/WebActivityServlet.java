@@ -145,6 +145,8 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 
 				if(activityDefaultHandler != null) {
 					try {
+						System.out.println("activity.getBean(activityDefaultHandler):" + activity.getBean(activityDefaultHandler));
+						
 						WebActivityDefaultHandler handler = (WebActivityDefaultHandler)activity.getBean(activityDefaultHandler);
 						handler.setServletContext(getServletContext());
 						handler.handle(req, res);

@@ -209,7 +209,7 @@ public class AspectranClassLoader extends ClassLoader {
 	
 	public synchronized Class<?> loadClass(String name) throws ClassNotFoundException {
 	    // First check if the class is already loaded
-        System.out.println("$$$$$$$$$$$$$$$$$$$find Class: " + name);
+        //System.out.println("$$$$$$$$$$$$$$$$$$$find Class: " + name);
 
 		Class<?> c = findLoadedClass(name);
 
@@ -234,7 +234,7 @@ public class AspectranClassLoader extends ClassLoader {
 	    
 	    if(c == null && root.getParent() != null) {
 	    	try {
-            	System.out.println("  getParent().loadClass");
+            	//System.out.println("  getParent().loadClass");
                 c = root.getParent().loadClass(name);
                 System.out.println("	getParent().loadClass: " + c);
 	        } catch(ClassNotFoundException e) {
@@ -243,7 +243,7 @@ public class AspectranClassLoader extends ClassLoader {
 	            c = findClass(name);
 	        }
 	    }
-        System.out.println("$$$$$$$$$$$$$$$$$$$complete: " + name);
+        //System.out.println("$$$$$$$$$$$$$$$$$$$complete: " + name);
 
 	    return c;		
     }
