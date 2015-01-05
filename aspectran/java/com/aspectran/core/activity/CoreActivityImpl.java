@@ -249,6 +249,14 @@ public class CoreActivityImpl implements CoreActivity {
 		if(transletImplementClass != null)
 			this.transletImplementClass = transletImplementClass;
 		
+		System.out.println(transletInterfaceClass.getClassLoader());
+		System.out.println(transletInterfaceClass.getClassLoader());
+		System.out.println(transletInterfaceClass.getClassLoader());
+		System.out.println(transletInterfaceClass.getClassLoader());
+		System.out.println(transletInterfaceClass.getClassLoader());
+		System.out.println(transletInterfaceClass.getClassLoader());
+		System.out.println(transletInterfaceClass.getClassLoader());
+		
 		//create translet instance
 		try {
 			Constructor<?> transletImplementConstructor = this.transletImplementClass.getConstructor(CoreActivity.class);

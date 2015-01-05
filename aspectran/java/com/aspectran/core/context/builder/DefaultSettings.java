@@ -17,6 +17,8 @@ package com.aspectran.core.context.builder;
 
 import java.util.Map;
 
+import com.aspectran.core.activity.CoreTranslet;
+import com.aspectran.core.activity.CoreTransletImpl;
 import com.aspectran.core.context.AspectranConstant;
 import com.aspectran.core.var.type.DefaultSettingType;
 
@@ -25,15 +27,17 @@ import com.aspectran.core.var.type.DefaultSettingType;
  */
 public class DefaultSettings implements Cloneable {
 
+	private ClassLoader classLoader;
+	
 	private String transletNamePattern;
 	
 	private String transletNamePatternPrefix;
 
 	private String transletNamePatternSuffix;
 	
-	private String transletInterfaceClass;
+	private Class<CoreTranslet> transletInterfaceClass;
 
-	private String transletInstanceClass;
+	private Class<CoreTransletImpl> transletInstanceClass;
 	
 	private String activityDefaultHandler;
 	
@@ -43,7 +47,8 @@ public class DefaultSettings implements Cloneable {
 	
 	private boolean nullableActionId = true;
 	
-	public DefaultSettings() {
+	public DefaultSettings(ClassLoader classLoader) {
+		this.classLoader = classLoader;
 	}
 	
 	public String getTransletNamePattern() {
@@ -97,20 +102,22 @@ public class DefaultSettings implements Cloneable {
 		return transletNamePatternSuffix;
 	}
 	
-	public String getTransletInterfaceClass() {
+	public Class<CoreTranslet> getTransletInterfaceClass() {
 		return transletInterfaceClass;
 	}
 
-	public void setTransletInterfaceClass(String transletInterfaceClass) {
-		this.transletInterfaceClass = transletInterfaceClass;
+	@SuppressWarnings("unchecked")
+	public void setTransletInterfaceClass(String transletInterfaceClass) throws ClassNotFoundException {
+		this.transletInterfaceClass = (Class<CoreTranslet>)classLoader.loadClass(transletInterfaceClass);
 	}
 
-	public String getTransletInstanceClass() {
+	public Class<CoreTransletImpl> getTransletInstanceClass() {
 		return transletInstanceClass;
 	}
 
-	public void setTransletInstanceClass(String transletInstanceClass) {
-		this.transletInstanceClass = transletInstanceClass;
+	@SuppressWarnings("unchecked")
+	public void setTransletInstanceClass(String transletInstanceClass) throws ClassNotFoundException {
+		this.transletInstanceClass = (Class<CoreTransletImpl>)classLoader.loadClass(transletInstanceClass);
 	}
 
 	public String getActivityDefaultHandler() {
@@ -145,7 +152,7 @@ public class DefaultSettings implements Cloneable {
 		this.nullableActionId = nullableActionId;
 	}
 
-	public void set(Map<DefaultSettingType, String> settings) {
+	public void set(Map<DefaultSettingType, String> settings) throws ClassNotFoundException {
 		if(settings.get(DefaultSettingType.USE_NAMESPACES) != null)
 			useNamespaces = Boolean.parseBoolean(settings.get(DefaultSettingType.USE_NAMESPACES));
 
@@ -165,10 +172,10 @@ public class DefaultSettings implements Cloneable {
 			setTransletNamePattern(settings.get(DefaultSettingType.TRANSLET_NAME_PATTERN));
 		
 		if(settings.get(DefaultSettingType.TRANSLET_INTERFACE_CLASS) != null)
-			transletInterfaceClass = settings.get(DefaultSettingType.TRANSLET_INTERFACE_CLASS);
+			setTransletInterfaceClass(settings.get(DefaultSettingType.TRANSLET_INTERFACE_CLASS));
 		
 		if(settings.get(DefaultSettingType.TRANSLET_IMPLEMENT_CLASS) != null)
-			transletInstanceClass = settings.get(DefaultSettingType.TRANSLET_IMPLEMENT_CLASS);
+			setTransletInstanceClass(settings.get(DefaultSettingType.TRANSLET_IMPLEMENT_CLASS));
 		
 		if(settings.get(DefaultSettingType.ACTIVITY_DEFAULT_HANDLER) != null)
 			activityDefaultHandler = settings.get(DefaultSettingType.ACTIVITY_DEFAULT_HANDLER);
