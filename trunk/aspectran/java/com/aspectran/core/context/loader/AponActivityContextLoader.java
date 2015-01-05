@@ -14,10 +14,6 @@ public class AponActivityContextLoader extends AbstractActivityContextLoader {
 	public AponActivityContextLoader() {
 	}
 	
-	public AponActivityContextLoader(String applicationBasePath) {
-		super(applicationBasePath);
-	}
-	
 	public ActivityContext load(String rootContext) {
 		return buildAponActivityContext(rootContext);
 	}
@@ -26,7 +22,7 @@ public class AponActivityContextLoader extends AbstractActivityContextLoader {
 		logger.info("build ActivityContext [" + rootContext + "]");
 		long startTime = System.currentTimeMillis();
 
-		ActivityContextBuilder builder = new XmlActivityContextBuilder(applicationBasePath, aspectranClassLoader);
+		ActivityContextBuilder builder = new XmlActivityContextBuilder(applicationAdapter, aspectranClassLoader);
 		ActivityContext activityContext = builder.build(rootContext);
 		
 		long elapsedTime = System.currentTimeMillis() - startTime;

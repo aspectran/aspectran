@@ -1,8 +1,11 @@
 package com.aspectran.core.context.loader;
 
+import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.ActivityContext;
 
 public interface ActivityContextLoader {
+
+	public ApplicationAdapter getApplicationAdapter();
 
 	public AspectranClassLoader getAspectranClassLoader();
 

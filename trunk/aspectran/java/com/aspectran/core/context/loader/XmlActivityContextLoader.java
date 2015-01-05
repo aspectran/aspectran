@@ -10,12 +10,8 @@ import com.aspectran.core.context.builder.XmlActivityContextBuilder;
 public class XmlActivityContextLoader extends AbstractActivityContextLoader {
 
 	private final Logger logger = LoggerFactory.getLogger(XmlActivityContextLoader.class);
-
-	public XmlActivityContextLoader() {
-	}
 	
-	public XmlActivityContextLoader(String applicationBasePath) {
-		super(applicationBasePath);
+	public XmlActivityContextLoader() {
 	}
 	
 	public ActivityContext load(String rootContext) {
@@ -26,7 +22,7 @@ public class XmlActivityContextLoader extends AbstractActivityContextLoader {
 		logger.info("build ActivityContext [" + rootContext + "]");
 		long startTime = System.currentTimeMillis();
 
-		ActivityContextBuilder builder = new XmlActivityContextBuilder(applicationBasePath, aspectranClassLoader);
+		ActivityContextBuilder builder = new XmlActivityContextBuilder(applicationAdapter, aspectranClassLoader);
 		ActivityContext activityContext = builder.build(rootContext);
 		
 		long elapsedTime = System.currentTimeMillis() - startTime;

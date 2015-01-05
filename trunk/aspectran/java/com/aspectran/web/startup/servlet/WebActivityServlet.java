@@ -84,6 +84,7 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 			aspectranService.setActivityContextServiceListener(new AspectranServiceListener() {
 				public void started() {
 					activityContext = aspectranService.getActivityContext();
+					System.out.println("!!!!!!!!!!!!!!!!!!!!aspectran service stared: " + activityContext);
 					pauseTimeout = 0;
 				}
 				

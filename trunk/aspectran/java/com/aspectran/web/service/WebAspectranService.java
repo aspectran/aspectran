@@ -28,11 +28,10 @@ public class WebAspectranService extends CoreAspectranService {
 		ActivityContextLoader acl = null;
 		
 		if(getRootContext() != null && getRootContext().endsWith(".apon"))
-			acl = new WebXmlActivityContextLoader(aa.getApplicationBasePath());
+			acl = new WebXmlActivityContextLoader(aa);
 		else
-			acl = new WebAponActivityContextLoader(aa.getApplicationBasePath());
-		
-		setApplicationAdapter(aa);
+			acl = new WebAponActivityContextLoader(aa);
+
 		setActivityContextLoader(acl);
 		
 		initActivityContext();
