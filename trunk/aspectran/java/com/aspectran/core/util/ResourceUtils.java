@@ -156,12 +156,16 @@ public class ResourceUtils {
 	}
 
 	public static boolean isJarURL(URL url) {
+		return URL_PROTOCOL_JAR.equals(url.getProtocol());
+	}
+
+	public static boolean isJarSimilarURL(URL url) {
 		String protocol = url.getProtocol();
 		return (URL_PROTOCOL_JAR.equals(protocol) || URL_PROTOCOL_ZIP.equals(protocol)
 				|| URL_PROTOCOL_VFSZIP.equals(protocol) || URL_PROTOCOL_WSJAR.equals(protocol) || (URL_PROTOCOL_CODE_SOURCE
-				.equals(protocol) && url.getPath().indexOf(JAR_URL_SEPARATOR) != -1));
+						.equals(protocol) && url.getPath().indexOf(JAR_URL_SEPARATOR) != -1));
 	}
-
+	
 	public static URL extractJarFileURL(URL jarUrl) throws MalformedURLException {
 		String urlFile = jarUrl.getFile();
 		int separatorIndex = urlFile.indexOf(JAR_URL_SEPARATOR);

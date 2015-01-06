@@ -266,6 +266,9 @@ public abstract class AbstractAspectranService implements AspectranService {
 	
 	private static String[] checkResourceLocations(String applicationBasePath, String[] resourceLocations) throws FileNotFoundException {
 		for(int i = 0; i < resourceLocations.length; i++) {
+			if(resourceLocations[i].indexOf('\\') != -1)
+				resourceLocations[i] = resourceLocations[i].replace('\\', '/');
+			
 			if(resourceLocations[i].startsWith(ResourceUtils.CLASSPATH_URL_PREFIX)) {
 				String path = resourceLocations[i].substring(ResourceUtils.CLASSPATH_URL_PREFIX.length());
 				URL url = AspectranClassLoader.getDefaultClassLoader().getResource(path);

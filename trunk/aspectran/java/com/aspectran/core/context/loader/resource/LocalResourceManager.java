@@ -132,7 +132,8 @@ public class LocalResourceManager extends ResourceManager {
 	public static void main(String[] args) {
 		try {
 			// Windows drive letter path
-			URL url = new URL("file:/c:/Users/Gulendol/Projects/aspectran/ADE/workspace/aspectran.example/webapp/WEB-INF/lib/cglib-nodep-3.1.jar");
+			//URL url = new URL("file:/c:/Users/Gulendol/Projects/aspectran/ADE/workspace/aspectran.example/webapp/WEB-INF/lib/cglib-nodep-3.1.jar");
+			URL url = new URL("file:/C:/Users/Gulendol/Projects/aspectran/ADE/workspace/.metadata/.plugins/org.eclipse.wst.server.core/tmp0/wtpwebapps/aspectran.example/WEB-INF/lib/ibatis-2.3.0.677.jar");
 			System.out.println(url.getFile());
 			System.out.println(new File(url.toURI()).exists());
 			
