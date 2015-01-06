@@ -29,6 +29,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.aspectran.core.context.ActivityContext;
+import com.aspectran.core.context.loader.AspectranClassLoader;
 import com.aspectran.core.context.translet.TransletNotFoundException;
 import com.aspectran.core.service.AspectranService;
 import com.aspectran.core.service.AspectranServiceListener;
@@ -78,13 +79,14 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 			ServletContext servletContext = getServletContext();
 			
 			String aspectranConfigParam = getServletConfig().getInitParameter(ASPECTRAN_CONFIG_PARAM);
+
+			AspectranClassLoader classLoader = new AspectranClassLoader();
 			
 			aspectranService = new WebAspectranService(servletContext, aspectranConfigParam);
 			
 			aspectranService.setActivityContextServiceListener(new AspectranServiceListener() {
 				public void started() {
 					activityContext = aspectranService.getActivityContext();
-					System.out.println("!!!!!!!!!!!!!!!!!!!!aspectran service stared: " + activityContext);
 					pauseTimeout = 0;
 				}
 				

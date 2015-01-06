@@ -1,6 +1,7 @@
 package com.aspectran.core.context.loader;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -53,9 +54,50 @@ public class AspectranClassLoader extends ClassLoader {
 
 	public AspectranClassLoader(String resourceLocation, ClassLoader parent) {
 		super(parent);
+		
+		if(resourceLocation == null) {
+			URL url = parent.getResource("com/ibatis");
+			
+			if(ResourceUtils.isJarURL(url)) {
+				resourceLocation = url.getFile();
+				
+				int separatorIndex = resourceLocation.indexOf(ResourceUtils.JAR_URL_SEPARATOR);
+				if(separatorIndex != -1) {
+					resourceLocation = resourceLocation.substring(0, separatorIndex);
+				}
+				
+				File f = new File("C:/Users/Gulendol/Projects/aspectran/ADE/workspace/.metadata/.plugins/org.eclipse.wst.server.core/tmp0/wtpwebapps/aspectran.example/WEB-INF/lib/ibatis-2.3.0.677.jar");
+				System.out.println(f.exists());
+				System.out.println(f.exists());
+				System.out.println(f.exists());
+				
+			}
+			
+			System.out.println(resourceLocation);
+			System.out.println(resourceLocation);
+			System.out.println(resourceLocation);
+			System.out.println(resourceLocation);
+			System.out.println(resourceLocation);
+			System.out.println(resourceLocation);
+			System.out.println(resourceLocation);
+			System.out.println(resourceLocation);
+			System.out.println(resourceLocation);
+			System.out.println(url);
+			System.out.println(url);
+			System.out.println(url);
+			System.out.println(url);
+			System.out.println(url);
+			System.out.println(url);
+			System.out.println(url);
+			System.out.println(url);
+			System.out.println(url);
+			System.out.println(url);
+			System.out.println(url);
+		}
+		
 		this.id = 1000;
 		this.root = this;
-		this.firstborn = false;
+		this.firstborn = true;
 		this.resourceLocation = resourceLocation;
 		this.resourceManager = new LocalResourceManager(resourceLocation, this);
 		
@@ -79,16 +121,49 @@ public class AspectranClassLoader extends ClassLoader {
 	protected AspectranClassLoader(String resourceLocation, AspectranClassLoader parent) {
 		super(parent);
 		
-		int childrenSize = parent.addChild(this);
+		int brotherSize = parent.addChild(this);
 		
 		this.id = (Math.abs(parent.getId() / 1000) + 1) * 1000 + parent.getChildren().size();
 		this.root = parent.getRoot();
-		this.firstborn = (childrenSize == 1);
+		this.firstborn = (brotherSize == 1);
 		this.resourceLocation = resourceLocation;
 		this.resourceManager = new LocalResourceManager(resourceLocation, this);
 	}
 	
+	public synchronized void setResourceLocation(String resourceLocation) {
+		//if(!isRoot())
+		//	throw new UnsupportedOperationException("Can specify the resource location to the root AspectranClassLoader.");
+		
+		synchronized(children) {
+			if(children.size() > 0) {
+				children.clear();
+			}
+			
+			createChild(resourceLocation);
+		}
+	}
+	
+	public synchronized void setResourceLocations(String[] resourceLocations) {
+		//if(!isRoot())
+		//	throw new UnsupportedOperationException("Can specify the resource location to the root AspectranClassLoader.");
+
+		synchronized(children) {
+			if(children.size() > 0) {
+				children.clear();
+			}
+			
+			AspectranClassLoader acl = this;
+			
+			for(String resourceLocation : resourceLocations) {
+				acl = acl.createChild(resourceLocation);
+			}
+		}
+	}
+	
 	protected AspectranClassLoader createChild(String resourceLocation) {
+		if(!firstborn)
+			throw new UnsupportedOperationException("Can create a child only firstborn.");
+		
 		AspectranClassLoader child = new AspectranClassLoader(resourceLocation, this);
 		
 		logger.debug("create a new child AspectranClassLoader. " + child);
@@ -118,7 +193,7 @@ public class AspectranClassLoader extends ClassLoader {
 		return children;
 	}
 	
-	protected int addChild(AspectranClassLoader child) {
+	private int addChild(AspectranClassLoader child) {
 		children.add(child);
 		return children.size();
 	}
