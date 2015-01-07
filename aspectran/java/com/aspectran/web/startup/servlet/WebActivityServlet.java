@@ -18,6 +18,7 @@ package com.aspectran.web.startup.servlet;
 import java.io.IOException;
 
 import javax.servlet.Servlet;
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.UnavailableException;
@@ -32,11 +33,12 @@ import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.loader.AspectranClassLoader;
 import com.aspectran.core.context.translet.TransletNotFoundException;
 import com.aspectran.core.service.AspectranService;
-import com.aspectran.core.service.AspectranServiceListener;
+import com.aspectran.core.service.AspectranServiceControllerListener;
 import com.aspectran.web.activity.WebActivity;
 import com.aspectran.web.activity.WebActivityDefaultHandler;
 import com.aspectran.web.activity.WebActivityImpl;
 import com.aspectran.web.service.WebAspectranService;
+import com.aspectran.web.startup.listener.AspectranServiceListener;
 
 /**
  * Servlet implementation class for Servlet: Translets.
@@ -73,18 +75,27 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 	 */
 	@Override
 	public void init() throws ServletException {
-		logger.info("initialize WebActivityServlet...");
+		logger.info("Initializing WebActivityServlet...");
 
 		try {
 			ServletContext servletContext = getServletContext();
+			ServletConfig servletConfig = getServletConfig();
 			
-			String aspectranConfigParam = getServletConfig().getInitParameter(ASPECTRAN_CONFIG_PARAM);
+			String aspectranConfigParam = servletConfig.getInitParameter(ASPECTRAN_CONFIG_PARAM);
 
-			AspectranClassLoader classLoader = new AspectranClassLoader();
+			if(aspectranConfigParam == null) {
+				aspectranService = (AspectranService)servletContext.getAttribute(AspectranServiceListener.ASPECTRAN_SERVICE_ATTRIBUTE);
+				
+				if(aspectranService != null)
+					aspectranService = aspectranService.createWrapperAspectranService();
+			}
+
+			if(aspectranService == null) {
+				AspectranClassLoader aspectranClassLoader = new AspectranClassLoader();
+				aspectranService = new WebAspectranService(servletContext, aspectranConfigParam, aspectranClassLoader);
+			}
 			
-			aspectranService = new WebAspectranService(servletContext, aspectranConfigParam);
-			
-			aspectranService.setActivityContextServiceListener(new AspectranServiceListener() {
+			aspectranService.setAspectranServiceControllerListener(new AspectranServiceControllerListener() {
 				public void started() {
 					activityContext = aspectranService.getActivityContext();
 					pauseTimeout = 0;

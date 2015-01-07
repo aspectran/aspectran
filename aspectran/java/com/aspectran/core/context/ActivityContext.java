@@ -95,7 +95,7 @@ public class ActivityContext {
 	}
 
 	public AspectranServiceController getActivityContextServiceHandler() {
-		return applicationAdapter.getActivityContextServiceController(this);
+		return applicationAdapter.getAspectranServiceController(this);
 	}
 	
 	public CoreActivity getLocalCoreActivity() {

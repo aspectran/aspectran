@@ -20,10 +20,10 @@ public abstract class AbstractApplicationAdapter implements ApplicationAdapter {
 	/** The adaptee. */
 	protected Object adaptee;
 	
-	protected Map<ActivityContext, AspectranServiceController> activityContextServiceControllers = Collections.synchronizedMap(new HashMap<ActivityContext, AspectranServiceController>());
+	protected Map<ActivityContext, AspectranServiceController> aspectranServiceControllers = Collections.synchronizedMap(new HashMap<ActivityContext, AspectranServiceController>());
 	
 	/**
-	 * Instantiates a new abstract session adapter.
+	 * Instantiates a new abstract application adapter.
 	 *
 	 * @param adaptee the adaptee
 	 */
@@ -45,20 +45,20 @@ public abstract class AbstractApplicationAdapter implements ApplicationAdapter {
 	
 	
 	public Map<ActivityContext, AspectranServiceController> getActivityContextServiceHandlers() {
-		return activityContextServiceControllers;
+		return aspectranServiceControllers;
 	}
 	
-	public AspectranServiceController getActivityContextServiceController(ActivityContext activityContext) {
-		return activityContextServiceControllers.get(activityContext);
+	public AspectranServiceController getAspectranServiceController(ActivityContext activityContext) {
+		return aspectranServiceControllers.get(activityContext);
 	}
 
-	public void putActivityContextServiceController(ActivityContext activityContext, AspectranServiceController activityContextServiceHandler) {
-		activityContextServiceControllers.put(activityContext, activityContextServiceHandler);
+	public void putAspectranServiceController(ActivityContext activityContext, AspectranServiceController aspectranServiceController) {
+		aspectranServiceControllers.put(activityContext, aspectranServiceController);
 	}
 
 	public void removeActivityContextServiceController(ActivityContext activityContext) {
 		if(activityContext != null)
-			activityContextServiceControllers.remove(activityContext);
+			aspectranServiceControllers.remove(activityContext);
 	}
 	
 }

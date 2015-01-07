@@ -6,6 +6,8 @@ import com.aspectran.core.context.ActivityContext;
 public interface ActivityContextLoader {
 
 	public ApplicationAdapter getApplicationAdapter();
+	
+	public void setApplicationAdapter(ApplicationAdapter applicationAdapter);
 
 	public AspectranClassLoader getAspectranClassLoader();
 

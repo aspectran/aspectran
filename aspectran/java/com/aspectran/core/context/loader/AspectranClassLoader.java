@@ -38,7 +38,7 @@ public class AspectranClassLoader extends ClassLoader {
 
 	private final boolean firstborn;
 	
-	private int reloadingTimes;
+	private int reloadedTimes;
 	
 	public AspectranClassLoader() {
 		this(getDefaultClassLoader());
@@ -56,7 +56,13 @@ public class AspectranClassLoader extends ClassLoader {
 		super(parent);
 		
 		if(resourceLocation == null) {
-			URL url = parent.getResource("com/ibatis");
+			String className = getClass().getName();
+			String resourceName = classNameToResourceName(className);
+			URL url = parent.getResource(resourceName);
+
+			System.out.println(className);
+			System.out.println(resourceName);
+			System.out.println(url);
 			
 			if(ResourceUtils.isJarURL(url)) {
 				resourceLocation = url.getFile();
@@ -65,13 +71,20 @@ public class AspectranClassLoader extends ClassLoader {
 				if(separatorIndex != -1) {
 					resourceLocation = resourceLocation.substring(0, separatorIndex);
 				}
-				
-				File f = new File("C:/Users/Gulendol/Projects/aspectran/ADE/workspace/.metadata/.plugins/org.eclipse.wst.server.core/tmp0/wtpwebapps/aspectran.example/WEB-INF/lib/ibatis-2.3.0.677.jar");
-				System.out.println(f.exists());
-				System.out.println(f.exists());
-				System.out.println(f.exists());
-				
+			} else {
+				resourceLocation = url.getFile();
+				resourceLocation = resourceLocation.substring(0, resourceLocation.indexOf(resourceName));
 			}
+
+			if(resourceLocation.startsWith(ResourceUtils.FILE_URL_PREFIX)) {
+				resourceLocation = resourceLocation.substring(ResourceUtils.FILE_URL_PREFIX.length());
+			}
+
+			System.out.println(resourceLocation);
+			System.out.println(resourceLocation);
+			File f = new File(resourceLocation);
+			System.out.println(f.exists());
+
 			
 			System.out.println(resourceLocation);
 			System.out.println(resourceLocation);
@@ -238,7 +251,7 @@ public class AspectranClassLoader extends ClassLoader {
 	}
 	
 	protected void increaseReloadingTimes() {
-		reloadingTimes++;
+		reloadedTimes++;
 	}
 	
 	protected void leave() {
@@ -474,7 +487,7 @@ public class AspectranClassLoader extends ClassLoader {
 		sb.append(", resourceLocation=").append(resourceLocation);
 		sb.append(", numberOfResource=").append(resourceManager.getResourceEntriesSize());
 		sb.append(", numberOfChildren=").append(children.size());
-		sb.append(", reloadingTimes=").append(reloadingTimes);
+		sb.append(", reloadedTimes=").append(reloadedTimes);
 		sb.append("}");
 		
 		return sb.toString();
