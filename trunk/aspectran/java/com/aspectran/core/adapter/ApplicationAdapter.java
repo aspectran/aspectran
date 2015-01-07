@@ -53,9 +53,9 @@ public interface ApplicationAdapter {
 	
 	public Map<ActivityContext, AspectranServiceController> getActivityContextServiceHandlers();
 	
-	public AspectranServiceController getActivityContextServiceController(ActivityContext activityContext);
+	public AspectranServiceController getAspectranServiceController(ActivityContext activityContext);
 
-	public void putActivityContextServiceController(ActivityContext activityContext, AspectranServiceController activityContextServiceHandler);
+	public void putAspectranServiceController(ActivityContext activityContext, AspectranServiceController activityContextServiceHandler);
 	
 	public void removeActivityContextServiceController(ActivityContext activityContext);
 

@@ -1,7 +1,7 @@
 package com.aspectran.core.service;
 
 
-public interface AspectranServiceListener {
+public interface AspectranServiceControllerListener {
 	
 	public void started();
 	

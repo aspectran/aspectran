@@ -27,11 +27,14 @@ import com.aspectran.core.service.AspectranService;
 import com.aspectran.web.service.WebAspectranService;
 import com.aspectran.web.startup.servlet.WebActivityServlet;
 
-public class AspectranSchedulerListener implements ServletContextListener {
+public class AspectranServiceListener implements ServletContextListener {
 
-	private final Logger logger = LoggerFactory.getLogger(AspectranSchedulerListener.class);
+	private final Logger logger = LoggerFactory.getLogger(AspectranServiceListener.class);
 
-	private AspectranService activityContextService;
+	public static final String ASPECTRAN_SERVICE_ATTRIBUTE = 
+			AspectranServiceListener.class.getName() + ".ASPECTRAN_SERVICE";
+	
+	private AspectranService aspectranService;
 
 	protected ActivityContext activityContext;
 
@@ -41,17 +44,19 @@ public class AspectranSchedulerListener implements ServletContextListener {
 	 * @param event the event
 	 */
 	public void contextInitialized(ServletContextEvent event) {
-		logger.info("initialize AspectranScheduler...");
+		logger.info("Initializing AspectranServiceListener...");
 
 		try {
 			ServletContext servletContext = event.getServletContext();
 			
 			String aspectranConfigParam = servletContext.getInitParameter(WebActivityServlet.ASPECTRAN_CONFIG_PARAM);
 			
-			activityContextService = new WebAspectranService(servletContext, aspectranConfigParam);
+			aspectranService = new WebAspectranService(servletContext, aspectranConfigParam);
 			
-			activityContextService.start();
+			aspectranService.start();
 			
+			servletContext.setAttribute(ASPECTRAN_SERVICE_ATTRIBUTE, aspectranService);
+			logger.debug("AspectranServiceListener attribute was created. " + aspectranService);
 		} catch(Exception e) {
 			logger.error("Failed to initialize AspectranScheduler.", e);
 		}
@@ -63,12 +68,12 @@ public class AspectranSchedulerListener implements ServletContextListener {
 	 * @param event the event
 	 */
 	public void contextDestroyed(ServletContextEvent event) {
-		boolean cleanlyDestoryed = activityContextService.dispose();
+		boolean cleanlyDestoryed = aspectranService.dispose();
 		
 		if(cleanlyDestoryed)
-			logger.info("Successfully destroyed AspectranScheduler.");
+			logger.info("Successfully destroyed AspectranServiceListener.");
 		else
-			logger.error("AspectranScheduler were not destroyed cleanly.");
+			logger.error("AspectranServiceListener were not destroyed cleanly.");
 
 		logger.info("Do not terminate the server while the all scoped bean destroying.");
 	}
