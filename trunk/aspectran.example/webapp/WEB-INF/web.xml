@@ -10,7 +10,6 @@
 		<welcome-file>index.htm</welcome-file>
 		<welcome-file>index.jsp</welcome-file>
 	</welcome-file-list>
-<!-- 
 	<context-param>
 		<param-name>aspectran:config</param-name>
 		<param-value>
@@ -35,9 +34,8 @@
 		</param-value>
 	</context-param>
 	<listener>
-		<listener-class>com.aspectran.web.startup.listener.AspectranSchedulerListener</listener-class>
+		<listener-class>com.aspectran.web.startup.listener.AspectranServiceListener</listener-class>
 	</listener>
- -->
 	<servlet>
 		<servlet-name>aspectran-example</servlet-name>
 		<servlet-class>com.aspectran.web.startup.servlet.WebActivityServlet</servlet-class>
@@ -47,7 +45,7 @@
 				context: {
 					root: /WEB-INF/aspectran/config/example-root.xml
 					resources: [
-						/WEB-INF/aspectran/classes
+						/WEB-INF/classes
 						/WEB-INF/aspectran/lib
 						/WEB-INF/aspectran/config
 					]
