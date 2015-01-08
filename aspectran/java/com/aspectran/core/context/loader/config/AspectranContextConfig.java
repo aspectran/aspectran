@@ -2,35 +2,34 @@ package com.aspectran.core.context.loader.config;
 
 import com.aspectran.core.var.apon.AbstractParameters;
 import com.aspectran.core.var.apon.InvalidParameterException;
-import com.aspectran.core.var.apon.ParameterArrayValue;
-import com.aspectran.core.var.apon.ParameterValue;
+import com.aspectran.core.var.apon.ParameterDefine;
 import com.aspectran.core.var.apon.ParameterValueType;
 import com.aspectran.core.var.apon.Parameters;
 
 public class AspectranContextConfig extends AbstractParameters implements Parameters {
 
-	public static final ParameterValue root = new ParameterValue("root", ParameterValueType.STRING);
+	public static final ParameterDefine root = new ParameterDefine("root", ParameterValueType.STRING);
 	
-	public static final ParameterValue resources = new ParameterArrayValue("resources", ParameterValueType.STRING);
+	public static final ParameterDefine resources = new ParameterDefine("resources", ParameterValueType.STRING, true);
 	
-	public static final ParameterValue autoReloading = new ParameterValue("autoReloading", new AspectranContextAutoReloadingConfig());
+	public static final ParameterDefine autoReloading = new ParameterDefine("autoReloading", new AspectranContextAutoReloadingConfig());
 	
-	private final static ParameterValue[] parameterValues;
+	private final static ParameterDefine[] parameterDefines;
 	
 	static {
-		parameterValues = new ParameterValue[] {
-				root,
-				resources,
-				autoReloading
+		parameterDefines = new ParameterDefine[] {
+			root,
+			resources,
+			autoReloading
 		};
 	}
 	
 	public AspectranContextConfig() {
-		super(AspectranContextConfig.class.getName(), parameterValues);
+		super(AspectranContextConfig.class.getName(), parameterDefines);
 	}
 	
 	public AspectranContextConfig(String plaintext) throws InvalidParameterException {
-		super(AspectranContextConfig.class.getName(), parameterValues, plaintext);
+		super(AspectranContextConfig.class.getName(), parameterDefines, plaintext);
 	}
 	
 }

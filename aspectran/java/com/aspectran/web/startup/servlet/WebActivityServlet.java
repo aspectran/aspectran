@@ -50,8 +50,6 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 
 	private final Logger logger = LoggerFactory.getLogger(WebActivityServlet.class);
 
-	public static final String ASPECTRAN_CONFIG_PARAM = "aspectran:config";
-	
 	private AspectranService aspectranService;
 
 	protected ActivityContext activityContext;
@@ -81,7 +79,7 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 			ServletContext servletContext = getServletContext();
 			ServletConfig servletConfig = getServletConfig();
 			
-			String aspectranConfigParam = servletConfig.getInitParameter(ASPECTRAN_CONFIG_PARAM);
+			String aspectranConfigParam = servletConfig.getInitParameter(WebAspectranService.ASPECTRAN_CONFIG_PARAM);
 
 			if(aspectranConfigParam == null) {
 				aspectranService = (AspectranService)servletContext.getAttribute(AspectranServiceListener.ASPECTRAN_SERVICE_ATTRIBUTE);
