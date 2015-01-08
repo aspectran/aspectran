@@ -3,7 +3,7 @@ package com.aspectran.core.var.apon;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ParameterValue {
+public class ParameterDefine implements Parameter {
 
 	private final String name;
 	
@@ -15,23 +15,23 @@ public class ParameterValue {
 	
 	private Parameters holder;
 	
-	public ParameterValue(String name, ParameterValueType parameterType) {
-		this(name, parameterType, false, null);
+	public ParameterDefine(String name, ParameterValueType parameterType) {
+		this(name, parameterType, false);
 	}
 	
-	public ParameterValue(String name, Parameters parameters) {
-		this(name, ParameterValueType.PARAMETERS, false, parameters);
-	}
-	
-	protected ParameterValue(String name, ParameterValueType parameterValueType, boolean array, Parameters parameters) {
+	public ParameterDefine(String name, ParameterValueType parameterValueType, boolean array) {
 		this.name = name;
 		this.parameterValueType = parameterValueType;
 		this.array = array;
+	}
+
+	public ParameterDefine(String name, Parameters parameters) {
+		this.name = name;
+		this.parameterValueType = ParameterValueType.PARAMETERS;
+		this.array = false;
 		
-		if(parameterValueType == ParameterValueType.PARAMETERS && parameters != null) {
-			parameters.setParent(this);
-			this.value = parameters;
-		}
+		parameters.setParent(this);
+		this.value = parameters;
 	}
 	
 	protected Parameters getHolder() {
@@ -50,7 +50,7 @@ public class ParameterValue {
 		if(holder == null)
 			return name;
 		
-		ParameterValue parent = holder.getParent();
+		ParameterDefine parent = holder.getParent();
 		
 		if(parent != null)
 			return parent.getQualifiedName() + "." + name;

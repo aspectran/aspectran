@@ -23,6 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.aspectran.core.context.ActivityContext;
+import com.aspectran.core.context.loader.AspectranClassLoader;
 import com.aspectran.core.service.AspectranService;
 import com.aspectran.web.service.WebAspectranService;
 import com.aspectran.web.startup.servlet.WebActivityServlet;
@@ -49,9 +50,10 @@ public class AspectranServiceListener implements ServletContextListener {
 		try {
 			ServletContext servletContext = event.getServletContext();
 			
-			String aspectranConfigParam = servletContext.getInitParameter(WebActivityServlet.ASPECTRAN_CONFIG_PARAM);
-			
-			aspectranService = new WebAspectranService(servletContext, aspectranConfigParam);
+			String aspectranConfigParam = servletContext.getInitParameter(WebAspectranService.ASPECTRAN_CONFIG_PARAM);
+			AspectranClassLoader aspectranClassLoader = new AspectranClassLoader();
+
+			aspectranService = new WebAspectranService(servletContext, aspectranConfigParam, aspectranClassLoader);
 			
 			aspectranService.start();
 			

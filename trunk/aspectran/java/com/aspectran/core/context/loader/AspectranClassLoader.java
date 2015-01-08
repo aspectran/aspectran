@@ -82,8 +82,17 @@ public class AspectranClassLoader extends ClassLoader {
 
 			System.out.println(resourceLocation);
 			System.out.println(resourceLocation);
-			File f = new File(resourceLocation);
+			File f = new File(resourceLocation + "/.///");
 			System.out.println(f.exists());
+			try {
+				System.out.println(f.getCanonicalPath());
+				System.out.println(f.getCanonicalFile());
+				System.out.println(f.getAbsolutePath());
+				System.out.println(f.getAbsoluteFile());
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 
 			
 			System.out.println(resourceLocation);
@@ -168,7 +177,8 @@ public class AspectranClassLoader extends ClassLoader {
 			AspectranClassLoader acl = this;
 			
 			for(String resourceLocation : resourceLocations) {
-				acl = acl.createChild(resourceLocation);
+				if(resourceLocation != null)
+					acl = acl.createChild(resourceLocation);
 			}
 		}
 	}

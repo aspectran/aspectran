@@ -20,34 +20,34 @@ public abstract class AbstractParameters implements Parameters {
 	
 	private static final String SQUARE_BRAKET_CLOSE = "]";
 
-	protected final Map<String, ParameterValue> parameterValueMap;
+	protected final Map<String, ParameterDefine> parameterDefineMap;
 	
 	private final String title;
 	
 	private final String plaintext;
 	
-	private ParameterValue parent;
+	private ParameterDefine parent;
 	
 	private boolean preparsed;
 	
-	protected AbstractParameters(String title, ParameterValue[] parameterValues) {
-		this(title, parameterValues, null);
+	protected AbstractParameters(String title, ParameterDefine[] parameterDefines) {
+		this(title, parameterDefines, null);
 	}
 
-	protected AbstractParameters(String title, ParameterValue[] parameterValues, String plaintext) {
+	protected AbstractParameters(String title, ParameterDefine[] parameterDefines, String plaintext) {
 		this.title = title;
 		this.plaintext = plaintext;
 		
-		if(parameterValues == null && plaintext != null) {
-			parameterValues = preparse(plaintext);
+		if(parameterDefines == null && plaintext != null) {
+			parameterDefines = preparse(plaintext);
 		}
 		
-		this.parameterValueMap = new HashMap<String, ParameterValue>();
+		this.parameterDefineMap = new HashMap<String, ParameterDefine>();
 		
-		if(parameterValues != null) {
-			for(ParameterValue pv : parameterValues) {
+		if(parameterDefines != null) {
+			for(ParameterDefine pv : parameterDefines) {
 				pv.setHolder(this);
-				parameterValueMap.put(pv.getName(), pv);
+				parameterDefineMap.put(pv.getName(), pv);
 			}
 		}
 
@@ -55,11 +55,11 @@ public abstract class AbstractParameters implements Parameters {
 			valuelize(plaintext);
 	}
 	
-	public ParameterValue getParent() {
+	public ParameterDefine getParent() {
 		return parent;
 	}
 
-	public void setParent(ParameterValue parent) {
+	public void setParent(ParameterDefine parent) {
 		this.parent = parent;
 	}
 
@@ -74,8 +74,8 @@ public abstract class AbstractParameters implements Parameters {
 		return title;
 	}
 
-	public ParameterValue getParameter(String name) {
-		ParameterValue p = parameterValueMap.get(name);
+	public Parameter getParameter(String name) {
+		Parameter p = parameterDefineMap.get(name);
 		
 		if(p == null)
 			throw new UnknownParameterException(name, this);
@@ -83,17 +83,21 @@ public abstract class AbstractParameters implements Parameters {
 		return p;
 	}
 
+	public Parameter getParameter(ParameterDefine parameterDefine) {
+		return getParameter(parameterDefine.getName());
+	}
+	
 	public Object getValue(String name) {
-		ParameterValue p = getParameter(name);
+		Parameter p = getParameter(name);
 		return p.getValue();
 	}
 	
-	public Object getValue(ParameterValue parameter) {
+	public Object getValue(ParameterDefine parameter) {
 		return getValue(parameter.getName());
 	}
 	
 	public String getString(String name) {
-		ParameterValue p = getParameter(name);
+		Parameter p = getParameter(name);
 		return p.getValueAsString();
 	}
 
@@ -107,29 +111,29 @@ public abstract class AbstractParameters implements Parameters {
 	}
 
 	public String[] getStringArray(String name) {
-		ParameterValue p = getParameter(name);
+		Parameter p = getParameter(name);
 		return p.getValueAsStringArray();
 	}
 
-	public String getString(ParameterValue parameter) {
+	public String getString(ParameterDefine parameter) {
 		return getString(parameter.getName());
 	}
 	
-	public String getString(ParameterValue parameter, String defaultValue) {
+	public String getString(ParameterDefine parameter, String defaultValue) {
 		return getString(parameter.getName(), defaultValue);
 	}
 
-	public String[] getStringArray(ParameterValue parameter) {
+	public String[] getStringArray(ParameterDefine parameter) {
 		return getStringArray(parameter.getName());
 	}
 	
 	public int getInt(String name) {
-		ParameterValue p = getParameter(name);
+		Parameter p = getParameter(name);
 		return p.getValueAsInt();
 	}
 	
 	public int getInt(String name, int defaultValue) {
-		ParameterValue p = getParameter(name);
+		Parameter p = getParameter(name);
 		
 		if(p == null)
 			return defaultValue;
@@ -138,29 +142,29 @@ public abstract class AbstractParameters implements Parameters {
 	}
 
 	public int[] getIntArray(String name) {
-		ParameterValue p = getParameter(name);
+		Parameter p = getParameter(name);
 		return p.getValueAsIntArray();
 	}
 
-	public int getInt(ParameterValue parameter) {
+	public int getInt(ParameterDefine parameter) {
 		return getInt(parameter.getName());
 	}
 
-	public int getInt(ParameterValue parameter, int defaultValue) {
+	public int getInt(ParameterDefine parameter, int defaultValue) {
 		return getInt(parameter.getName(), defaultValue);
 	}
 
-	public int[] getIntArray(ParameterValue parameter) {
+	public int[] getIntArray(ParameterDefine parameter) {
 		return getIntArray(parameter.getName());
 	}
 	
 	public long getLong(String name) {
-		ParameterValue p = getParameter(name);
+		Parameter p = getParameter(name);
 		return p.getValueAsLong();
 	}
 	
 	public long getLong(String name, long defaultValue) {
-		ParameterValue p = getParameter(name);
+		Parameter p = getParameter(name);
 		
 		if(p == null)
 			return defaultValue;
@@ -169,29 +173,29 @@ public abstract class AbstractParameters implements Parameters {
 	}
 	
 	public long[] getLongArray(String name) {
-		ParameterValue p = getParameter(name);
+		Parameter p = getParameter(name);
 		return p.getValueAsLongArray();
 	}
 	
-	public long getLong(ParameterValue parameter) {
+	public long getLong(ParameterDefine parameter) {
 		return getLong(parameter.getName());
 	}
 	
-	public long getLong(ParameterValue parameter, long defaultValue) {
+	public long getLong(ParameterDefine parameter, long defaultValue) {
 		return getLong(parameter.getName());
 	}
 	
-	public long[] getLongArray(ParameterValue parameter) {
+	public long[] getLongArray(ParameterDefine parameter) {
 		return getLongArray(parameter.getName());
 	}
 	
 	public float getFloat(String name) {
-		ParameterValue p = getParameter(name);
+		Parameter p = getParameter(name);
 		return p.getValueAsFloat();
 	}
 	
 	public float getFloat(String name, float defaultValue) {
-		ParameterValue p = getParameter(name);
+		Parameter p = getParameter(name);
 		
 		if(p == null)
 			return defaultValue;
@@ -200,29 +204,29 @@ public abstract class AbstractParameters implements Parameters {
 	}
 
 	public float[] getFloatArray(String name) {
-		ParameterValue p = getParameter(name);
+		Parameter p = getParameter(name);
 		return p.getValueAsFloatArray();
 	}
 	
-	public float getFloat(ParameterValue parameter) {
+	public float getFloat(ParameterDefine parameter) {
 		return getFloat(parameter.getName());
 	}
 	
-	public float getFloat(ParameterValue parameter, float defaultValue) {
+	public float getFloat(ParameterDefine parameter, float defaultValue) {
 		return getFloat(parameter.getName(), defaultValue);
 	}
 	
-	public float[] getFloatArray(ParameterValue parameter) {
+	public float[] getFloatArray(ParameterDefine parameter) {
 		return getFloatArray(parameter.getName());
 	}
 	
 	public double getDouble(String name) {
-		ParameterValue p = getParameter(name);
+		Parameter p = getParameter(name);
 		return p.getValueAsDouble();
 	}
 	
 	public double getDouble(String name, double defaultValue) {
-		ParameterValue p = getParameter(name);
+		Parameter p = getParameter(name);
 		
 		if(p == null)
 			return defaultValue;
@@ -231,29 +235,29 @@ public abstract class AbstractParameters implements Parameters {
 	}
 
 	public double[] getDoubleArray(String name) {
-		ParameterValue p = getParameter(name);
+		Parameter p = getParameter(name);
 		return p.getValueAsDoubleArray();
 	}
 	
-	public double getDouble(ParameterValue parameter) {
+	public double getDouble(ParameterDefine parameter) {
 		return getDouble(parameter.getName());
 	}
 	
-	public double getDouble(ParameterValue parameter, double defaultValue) {
+	public double getDouble(ParameterDefine parameter, double defaultValue) {
 		return getDouble(parameter.getName(), defaultValue);
 	}
 	
-	public double[] getDoubleArray(ParameterValue parameter) {
+	public double[] getDoubleArray(ParameterDefine parameter) {
 		return getDoubleArray(parameter.getName());
 	}
 	
 	public boolean getBoolean(String name) {
-		ParameterValue p = getParameter(name);
+		Parameter p = getParameter(name);
 		return p.getValueAsBoolean();
 	}
 	
 	public boolean getBoolean(String name, boolean defaultValue) {
-		ParameterValue p = getParameter(name);
+		Parameter p = getParameter(name);
 		
 		if(p == null)
 			return defaultValue;
@@ -262,37 +266,37 @@ public abstract class AbstractParameters implements Parameters {
 	}
 	
 	public boolean[] getBooleanArray(String name) {
-		ParameterValue p = getParameter(name);
+		Parameter p = getParameter(name);
 		return p.getValueAsBooleanArray();
 	}
 	
-	public boolean getBoolean(ParameterValue parameter) {
+	public boolean getBoolean(ParameterDefine parameter) {
 		return getBoolean(parameter.getName());
 	}
 	
-	public boolean getBoolean(ParameterValue parameter, boolean defaultValue) {
+	public boolean getBoolean(ParameterDefine parameter, boolean defaultValue) {
 		return getBoolean(parameter.getName(), defaultValue);
 	}
 	
-	public boolean[] getBooleanArray(ParameterValue parameter) {
+	public boolean[] getBooleanArray(ParameterDefine parameter) {
 		return getBooleanArray(parameter.getName());
 	}
 	
 	public Parameters getParameters(String name) {
-		ParameterValue p = getParameter(name);
+		Parameter p = getParameter(name);
 		return (Parameters)p.getValue();
 	}
 	
 	public Parameters[] getParametersArray(String name) {
-		ParameterValue p = getParameter(name);
+		Parameter p = getParameter(name);
 		return p.getParametersArray();
 	}
 	
-	public Parameters getParameters(ParameterValue parameter) {
+	public Parameters getParameters(ParameterDefine parameter) {
 		return getParameters(parameter.getName());
 	}
 	
-	public Parameters[] getParametersArray(ParameterValue parameter) {
+	public Parameters[] getParametersArray(ParameterDefine parameter) {
 		return getParametersArray(parameter.getName());
 	}
 	
@@ -311,32 +315,32 @@ public abstract class AbstractParameters implements Parameters {
 		return sb.toString();
 	}
 	
-	protected ParameterValue[] preparse(String plaintext) {
+	protected ParameterDefine[] preparse(String plaintext) {
 		StringTokenizer st = new StringTokenizer(plaintext, DELIMITERS);
 		
-		ParameterValue[] parameterValues = preparse(st, null);
+		ParameterDefine[] parameterDefines = preparse(st, null);
 		
 		preparsed = true;
 		
-		return parameterValues;
+		return parameterDefines;
 	}
 	
-	protected ParameterValue[] preparse(StringTokenizer st, ParameterValue parentParameterValue) {
-		List<ParameterValue> parameterValueList = new ArrayList<ParameterValue>();
+	protected ParameterDefine[] preparse(StringTokenizer st, ParameterDefine parentParameterValue) {
+		List<ParameterDefine> parameterDefineList = new ArrayList<ParameterDefine>();
 		
-		preparse(st, parameterValueList, parentParameterValue != null ? CURLY_BRAKET_OPEN : null, null);
+		preparse(st, parameterDefineList, parentParameterValue != null ? CURLY_BRAKET_OPEN : null, null);
 		
-		ParameterValue[] parameterValues = parameterValueList.toArray(new ParameterValue[parameterValueList.size()]);
+		ParameterDefine[] parameterDefines = parameterDefineList.toArray(new ParameterDefine[parameterDefineList.size()]);
 		
 		if(parentParameterValue != null) {
-			Parameters parameters = new GenericParameters(parentParameterValue.getName(), parameterValues);
+			Parameters parameters = new GenericParameters(parentParameterValue.getName(), parameterDefines);
 			parentParameterValue.setValue(parameters);
 		}
 		
-		return parameterValues;
+		return parameterDefines;
 	}
 	
-	protected void preparse(StringTokenizer st, List<ParameterValue> parameterValueList, String openBraket, ParameterValue parameterValue) {
+	protected void preparse(StringTokenizer st, List<ParameterDefine> parameterDefineList, String openBraket, ParameterDefine parameterDefine) {
 		String name = null;
 		String value = null;
 		
@@ -367,26 +371,26 @@ public abstract class AbstractParameters implements Parameters {
 				if(StringUtils.hasText(value)) {
 					if(CURLY_BRAKET_OPEN.equals(value)) {
 						if(openBraket == SQUARE_BRAKET_OPEN) {
-							preparse(st, parameterValue);
+							preparse(st, parameterDefine);
 						} else {
-							ParameterValue pv = new ParameterValue(name, ParameterValueType.PARAMETERS);
-							parameterValueList.add(pv);
+							ParameterDefine pv = new ParameterDefine(name, ParameterValueType.PARAMETERS);
+							parameterDefineList.add(pv);
 							preparse(st, pv);
 						}
 					} else if(openBraket != SQUARE_BRAKET_OPEN) {
-						ParameterValueType parameterValueType = ParameterValueType.valueOfHint(name);
+						ParameterValueType parameterDefineType = ParameterValueType.valueOfHint(name);
 						
-						if(parameterValueType == null)
-							parameterValueType = ParameterValueType.STRING;
+						if(parameterDefineType == null)
+							parameterDefineType = ParameterValueType.STRING;
 
 						if(SQUARE_BRAKET_OPEN.equals(value)) {
-							ParameterValue pv = new ParameterArrayValue(name, parameterValueType);
-							parameterValueList.add(pv);
+							ParameterDefine pv = new ParameterDefine(name, parameterDefineType, true);
+							parameterDefineList.add(pv);
 	
-							preparse(st, parameterValueList, SQUARE_BRAKET_OPEN, pv);
+							preparse(st, parameterDefineList, SQUARE_BRAKET_OPEN, pv);
 						} else {
-							ParameterValue pv = new ParameterValue(name, parameterValueType);
-							parameterValueList.add(pv);
+							ParameterDefine pv = new ParameterDefine(name, parameterDefineType);
+							parameterDefineList.add(pv);
 						}
 					}
 				}
@@ -408,7 +412,7 @@ public abstract class AbstractParameters implements Parameters {
 		valuelize(st, null, null);
 	}
 	
-	protected void valuelize(StringTokenizer st, String openBraket, ParameterValue parameterValue) {
+	protected void valuelize(StringTokenizer st, String openBraket, ParameterDefine parameterDefine) {
 		String name = null;
 		String value = null;
 		
@@ -427,7 +431,7 @@ public abstract class AbstractParameters implements Parameters {
 				}
 				
 				if(openBraket == SQUARE_BRAKET_OPEN) {
-					name = parameterValue.getName();
+					name = parameterDefine.getName();
 					value = token;
 				} else {
 					int index = token.indexOf(":");
@@ -438,42 +442,42 @@ public abstract class AbstractParameters implements Parameters {
 					name = token.substring(0, index).trim();
 					value = token.substring(index + 1).trim();
 					
-					parameterValue = parameterValueMap.get(name);
+					parameterDefine = parameterDefineMap.get(name);
 					
-					if(parameterValue == null)
+					if(parameterDefine == null)
 						throw new InvalidParameterException(title + ": invalid parameter \"" + token + "\"");
 				}
 				
 				if(StringUtils.hasText(value)) {
-					ParameterValueType parameterValueType = parameterValue.getParameterValueType();
+					ParameterValueType parameterDefineType = parameterDefine.getParameterValueType();
 					
 					if(CURLY_BRAKET_OPEN.equals(value)) {
 						if(openBraket == SQUARE_BRAKET_OPEN) {
-							AbstractParameters parameters2 = (AbstractParameters)parameterValue.getParameters(curlyBraketCount++);
+							AbstractParameters parameters2 = (AbstractParameters)parameterDefine.getParameters(curlyBraketCount++);
 							
 							if(parameters2 == null)
-								parameters2 = (AbstractParameters)parameterValue.getParameters();
+								parameters2 = (AbstractParameters)parameterDefine.getParameters();
 							
 							if(parameters2 == null)
 								throw new InvalidParameterException("Cannot parse parameter value of '" + name + "'. parameters is null.");
 							
 							parameters2.valuelize(st, CURLY_BRAKET_OPEN, null);
 						} else {
-							AbstractParameters parameters2 = (AbstractParameters)parameterValue.getParameters();
+							AbstractParameters parameters2 = (AbstractParameters)parameterDefine.getParameters();
 							parameters2.valuelize(st, CURLY_BRAKET_OPEN, null);
 						}
 					} else if(SQUARE_BRAKET_OPEN.equals(value)) {
-						valuelize(st, SQUARE_BRAKET_OPEN, parameterValue);
-					} else if(parameterValueType == ParameterValueType.STRING) {
-						parameterValue.setValue(value);
-					} else if(parameterValueType == ParameterValueType.INTEGER) {
+						valuelize(st, SQUARE_BRAKET_OPEN, parameterDefine);
+					} else if(parameterDefineType == ParameterValueType.STRING) {
+						parameterDefine.setValue(value);
+					} else if(parameterDefineType == ParameterValueType.INTEGER) {
 						try {
-							parameterValue.setValue(new Integer(value));
+							parameterDefine.setValue(new Integer(value));
 						} catch(NumberFormatException ex) {
 							throw new InvalidParameterException(title + ": Cannot parse value of '" + name + "' to an integer. \"" + token + "\"");
 						}
-					} else if(parameterValueType == ParameterValueType.BOOLEAN) {
-						parameterValue.setValue(Boolean.valueOf(value));
+					} else if(parameterDefineType == ParameterValueType.BOOLEAN) {
+						parameterDefine.setValue(Boolean.valueOf(value));
 					}
 				}
 			}

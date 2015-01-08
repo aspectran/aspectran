@@ -3,13 +3,13 @@ package com.aspectran.web.service;
 import javax.servlet.ServletContext;
 
 import com.aspectran.core.adapter.ApplicationAdapter;
-import com.aspectran.core.context.loader.ActivityContextLoader;
 import com.aspectran.core.context.loader.AspectranClassLoader;
 import com.aspectran.core.context.loader.config.AspectranConfig;
+import com.aspectran.core.context.loader.config.AspectranContextConfig;
 import com.aspectran.core.service.CoreAspectranService;
+import com.aspectran.core.var.apon.Parameter;
+import com.aspectran.core.var.apon.Parameters;
 import com.aspectran.web.adapter.WebApplicationAdapter;
-import com.aspectran.web.context.loader.WebAponActivityContextLoader;
-import com.aspectran.web.context.loader.WebXmlActivityContextLoader;
 
 public class WebAspectranService extends CoreAspectranService {
 
@@ -18,6 +18,8 @@ public class WebAspectranService extends CoreAspectranService {
 	public static final String WEB_APPLICATION_ADAPTER_ATTRIBUTE = 
 			WebApplicationAdapter.class.getName() + ".WEB_APPLICATION_ADAPTER";
 
+	private static final String DEFAULT_ROOT_CONTEXT = "/WEB-INF/aspectran/root.xml";
+	
 	public WebAspectranService(ServletContext servletContext, String aspectranConfigParam) {
 		this(servletContext, aspectranConfigParam, null);
 	}
@@ -25,22 +27,20 @@ public class WebAspectranService extends CoreAspectranService {
 	public WebAspectranService(ServletContext servletContext, String aspectranConfigParam, AspectranClassLoader aspectranClassLoader) {
 		AspectranConfig aspectranConfig = new AspectranConfig(aspectranConfigParam);
 
+		Parameters contextParams = aspectranConfig.getParameters(AspectranConfig.context);
+		Parameter rootContextParam = contextParams.getParameter(AspectranContextConfig.root);
+		String rootContext = rootContextParam.getValueAsString();
+
+		if(rootContext == null || rootContext.length() == 0) {
+			rootContextParam.setValue(DEFAULT_ROOT_CONTEXT);
+		}
+		
 		ApplicationAdapter aa = new WebApplicationAdapter(servletContext);
 		
-		ActivityContextLoader acl = null;
-		
-		if(getRootContext() != null && getRootContext().endsWith(".apon"))
-			acl = new WebXmlActivityContextLoader(aa);
-		else
-			acl = new WebAponActivityContextLoader(aa);
-		
-		acl.setAspectranClassLoader(aspectranClassLoader);
-
 		setAspectranClassLoader(aspectranClassLoader);
-		setActivityContextLoader(acl);
 		setApplicationAdapter(aa);
 		
-		initActivityContext(aspectranConfig);
+		initialize(aspectranConfig);
 	}
 	
 	/*
