@@ -16,6 +16,6 @@ public interface AspectranService extends AspectranServiceController {
 	
 	public boolean dispose();
 	
-	public AspectranService createWrapperAspectranService();
+	public AspectranService createAspectranServiceWrapper();
 
 }

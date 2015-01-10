@@ -48,7 +48,7 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 	/** @serial */
 	static final long serialVersionUID = 6659683668233267847L;
 
-	private final Logger logger = LoggerFactory.getLogger(WebActivityServlet.class);
+	private static final Logger logger = LoggerFactory.getLogger(WebActivityServlet.class);
 
 	private AspectranService aspectranService;
 
@@ -85,7 +85,7 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 				aspectranService = (AspectranService)servletContext.getAttribute(AspectranServiceListener.ASPECTRAN_SERVICE_ATTRIBUTE);
 				
 				if(aspectranService != null)
-					aspectranService = aspectranService.createWrapperAspectranService();
+					aspectranService = aspectranService.createAspectranServiceWrapper();
 			}
 
 			if(aspectranService == null) {
