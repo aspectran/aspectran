@@ -28,7 +28,7 @@ import com.aspectran.scheduler.quartz.QuartzAspectranScheduler;
 
 public abstract class AbstractAspectranService implements AspectranService {
 
-	private final Logger logger = LoggerFactory.getLogger(AbstractAspectranService.class);
+	protected static final Logger logger = LoggerFactory.getLogger(AbstractAspectranService.class);
 
 	private Parameters aspectranConfig;
 	
@@ -324,6 +324,7 @@ public abstract class AbstractAspectranService implements AspectranService {
 					String l2 = f2.getCanonicalPath();
 					
 					if(l1.equals(l2)) {
+						logger.info("");
 						resourceLocations[i] = null;
 					}
 				}

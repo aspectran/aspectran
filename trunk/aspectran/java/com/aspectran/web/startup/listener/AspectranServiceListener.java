@@ -26,11 +26,10 @@ import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.loader.AspectranClassLoader;
 import com.aspectran.core.service.AspectranService;
 import com.aspectran.web.service.WebAspectranService;
-import com.aspectran.web.startup.servlet.WebActivityServlet;
 
 public class AspectranServiceListener implements ServletContextListener {
 
-	private final Logger logger = LoggerFactory.getLogger(AspectranServiceListener.class);
+	private static final Logger logger = LoggerFactory.getLogger(AspectranServiceListener.class);
 
 	public static final String ASPECTRAN_SERVICE_ATTRIBUTE = 
 			AspectranServiceListener.class.getName() + ".ASPECTRAN_SERVICE";

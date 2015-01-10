@@ -8,7 +8,7 @@ import com.aspectran.core.context.bean.scope.Scope;
 
 public class CoreAspectranService extends AbstractAspectranService {
 
-	private final Logger logger = LoggerFactory.getLogger(CoreAspectranService.class);
+	protected static final Logger logger = LoggerFactory.getLogger(CoreAspectranService.class);
 	
 	private static final long DEFAULT_PAUSE_TIMEOUT = 500L;
 	
@@ -119,7 +119,7 @@ public class CoreAspectranService extends AbstractAspectranService {
 		return cleanlyDestoryed;
 	}
 	
-	public AspectranService createWrapperAspectranService() {
+	public AspectranService createAspectranServiceWrapper() {
 		return new CoreAspectranService(this);
 	}
 
