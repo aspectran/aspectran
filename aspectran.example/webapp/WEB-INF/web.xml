@@ -66,6 +66,6 @@
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>aspectran-example</servlet-name>
-		<url-pattern>/</url-pattern>
+		<url-pattern>/example/*</url-pattern>
 	</servlet-mapping>
 </web-app>
