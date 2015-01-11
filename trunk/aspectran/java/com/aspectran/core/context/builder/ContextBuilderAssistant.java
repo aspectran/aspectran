@@ -330,6 +330,9 @@ public class ContextBuilderAssistant {
 	 */
 	public void addBeanRule(BeanRule beanRule) {
 		beanRuleMap.putBeanRule(beanRule);
+		
+		if(logger.isTraceEnabled())
+			logger.trace("add BeanRule " + beanRule);
 	}
 	
 	public AspectRuleMap getAspectRuleMap() {
@@ -342,6 +345,9 @@ public class ContextBuilderAssistant {
 	
 	public void addAspectRule(AspectRule aspectRule) {
 		aspectRuleMap.putAspectRule(aspectRule);
+		
+		if(logger.isTraceEnabled())
+			logger.trace("add AspectRule " + aspectRule);
 	}
 
 	/**
@@ -390,12 +396,18 @@ public class ContextBuilderAssistant {
 			transletRule.setName(applyNamespaceForTranslet(transletRule.getName()));
 			
 			transletRuleMap.put(transletRule.getName(), transletRule);
+
+			if(logger.isTraceEnabled())
+				logger.trace("add TransletRule " + transletRule);
 		} else if(responseRuleList.size() == 1) {
 			transletRule.setResponseRule(responseRuleList.get(0));
 			transletRule.setResponseRuleList(null);
 			transletRule.setName(applyNamespaceForTranslet(transletRule.getName()));
 			
 			transletRuleMap.put(transletRule.getName(), transletRule);
+
+			if(logger.isTraceEnabled())
+				logger.trace("add TransletRule " + transletRule);
 		} else if(responseRuleList.size() > 1) {
 			ResponseRule defaultResponseRule = null;
 			
@@ -409,6 +421,9 @@ public class ContextBuilderAssistant {
 					subTransletRule.setName(applyNamespaceForTranslet(subTransletRule.getName()));
 					
 					transletRuleMap.put(subTransletRule.getName(), subTransletRule);
+					
+					if(logger.isTraceEnabled())
+						logger.trace("add sub TransletRule " + subTransletRule);
 				}
 			}
 			
@@ -419,6 +434,9 @@ public class ContextBuilderAssistant {
 				transletRule.setResponseRuleList(responseRuleList);
 				
 				transletRuleMap.put(transletRule.getName(), transletRule);
+				
+				if(logger.isTraceEnabled())
+					logger.trace("add TransletRule " + transletRule);
 			}
 		}
 	}

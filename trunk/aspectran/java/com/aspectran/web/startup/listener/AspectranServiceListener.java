@@ -15,14 +15,12 @@
  */
 package com.aspectran.web.startup.listener;
 
-import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.loader.AspectranClassLoader;
 import com.aspectran.core.service.AspectranService;
 import com.aspectran.web.service.WebAspectranService;
@@ -36,8 +34,6 @@ public class AspectranServiceListener implements ServletContextListener {
 	
 	private AspectranService aspectranService;
 
-	protected ActivityContext activityContext;
-
 	/**
 	 * Initialize the translets root context.
 	 * 
@@ -45,21 +41,12 @@ public class AspectranServiceListener implements ServletContextListener {
 	 */
 	public void contextInitialized(ServletContextEvent event) {
 		logger.info("Initializing AspectranServiceListener...");
-
+		
 		try {
-			ServletContext servletContext = event.getServletContext();
-			
-			String aspectranConfigParam = servletContext.getInitParameter(WebAspectranService.ASPECTRAN_CONFIG_PARAM);
 			AspectranClassLoader aspectranClassLoader = new AspectranClassLoader();
-
-			aspectranService = new WebAspectranService(servletContext, aspectranConfigParam, aspectranClassLoader);
-			
-			aspectranService.start();
-			
-			servletContext.setAttribute(ASPECTRAN_SERVICE_ATTRIBUTE, aspectranService);
-			logger.debug("AspectranServiceListener attribute was created. " + aspectranService);
+			aspectranService = WebAspectranService.newInstance(event.getServletContext(), aspectranClassLoader);
 		} catch(Exception e) {
-			logger.error("Failed to initialize AspectranScheduler.", e);
+			logger.error("Failed to initialize AspectranServiceListener.", e);
 		}
 	}
 	

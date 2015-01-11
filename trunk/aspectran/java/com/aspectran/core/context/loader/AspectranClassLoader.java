@@ -1,7 +1,6 @@
 package com.aspectran.core.context.loader;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -59,11 +58,11 @@ public class AspectranClassLoader extends ClassLoader {
 			String className = getClass().getName();
 			String resourceName = classNameToResourceName(className);
 			URL url = parent.getResource(resourceName);
-
+/*
 			System.out.println(className);
 			System.out.println(resourceName);
 			System.out.println(url);
-			
+*/		
 			if(ResourceUtils.isJarURL(url)) {
 				resourceLocation = url.getFile();
 				
@@ -79,7 +78,7 @@ public class AspectranClassLoader extends ClassLoader {
 			if(resourceLocation.startsWith(ResourceUtils.FILE_URL_PREFIX)) {
 				resourceLocation = resourceLocation.substring(ResourceUtils.FILE_URL_PREFIX.length());
 			}
-
+/*
 			System.out.println(resourceLocation);
 			System.out.println(resourceLocation);
 			File f = new File(resourceLocation + "/.///");
@@ -94,7 +93,6 @@ public class AspectranClassLoader extends ClassLoader {
 				e.printStackTrace();
 			}
 
-			
 			System.out.println(resourceLocation);
 			System.out.println(resourceLocation);
 			System.out.println(resourceLocation);
@@ -115,6 +113,7 @@ public class AspectranClassLoader extends ClassLoader {
 			System.out.println(url);
 			System.out.println(url);
 			System.out.println(url);
+*/
 		}
 		
 		this.id = 1000;

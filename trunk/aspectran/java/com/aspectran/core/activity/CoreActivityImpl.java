@@ -274,7 +274,7 @@ public class CoreActivityImpl implements CoreActivity {
 	
 	protected void ready(String transletName, ProcessResult processResult) throws CoreActivityException {
 		if(debugEnabled) {
-			logger.debug("run " + transletName);
+			logger.debug("activity run " + transletName);
 		}
 		
 		TransletRule transletRule = context.getTransletRuleRegistry().getTransletRule(transletName);

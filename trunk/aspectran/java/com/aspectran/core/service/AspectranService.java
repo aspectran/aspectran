@@ -6,16 +6,16 @@ import com.aspectran.core.context.loader.AspectranClassLoader;
 
 public interface AspectranService extends AspectranServiceController {
 
-	public void setAspectranServiceControllerListener(AspectranServiceControllerListener activityContextServiceListener);
-	
 	public AspectranClassLoader getAspectranClassLoader();
 	
 	public ApplicationAdapter getApplicationAdapter();
 	
 	public ActivityContext getActivityContext();
+
+	public void setAspectranServiceControllerListener(AspectranServiceControllerListener activityContextServiceListener);
+	
+	public boolean isHardReload();
 	
 	public boolean dispose();
-	
-	public AspectranService createAspectranServiceWrapper();
 
 }
