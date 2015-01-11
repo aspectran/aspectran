@@ -18,7 +18,6 @@ package com.aspectran.web.startup.servlet;
 import java.io.IOException;
 
 import javax.servlet.Servlet;
-import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.UnavailableException;
@@ -29,14 +28,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.loader.AspectranClassLoader;
-import com.aspectran.core.context.translet.TransletNotFoundException;
-import com.aspectran.core.service.AspectranService;
-import com.aspectran.core.service.AspectranServiceControllerListener;
-import com.aspectran.web.activity.WebActivity;
-import com.aspectran.web.activity.WebActivityDefaultHandler;
-import com.aspectran.web.activity.WebActivityImpl;
+import com.aspectran.core.util.MethodUtils;
 import com.aspectran.web.service.WebAspectranService;
 import com.aspectran.web.startup.listener.AspectranServiceListener;
 
@@ -50,11 +43,9 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 
 	private static final Logger logger = LoggerFactory.getLogger(WebActivityServlet.class);
 
-	private AspectranService aspectranService;
+	private WebAspectranService aspectranService;
 
-	protected ActivityContext activityContext;
-	
-	private long pauseTimeout;
+	public long pauseTimeout;
 	
 	/*
 	 * (non-Java-doc)
@@ -77,49 +68,26 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 
 		try {
 			ServletContext servletContext = getServletContext();
-			ServletConfig servletConfig = getServletConfig();
 			
-			String aspectranConfigParam = servletConfig.getInitParameter(WebAspectranService.ASPECTRAN_CONFIG_PARAM);
-
-			if(aspectranConfigParam == null) {
-				aspectranService = (AspectranService)servletContext.getAttribute(AspectranServiceListener.ASPECTRAN_SERVICE_ATTRIBUTE);
-				
-				if(aspectranService != null)
-					aspectranService = aspectranService.createAspectranServiceWrapper();
-			}
-
-			if(aspectranService == null) {
+			Object rootAspectranService = servletContext.getAttribute(AspectranServiceListener.ASPECTRAN_SERVICE_ATTRIBUTE);
+			
+			if(rootAspectranService == null) {
+				logger.info("Standalone AspectranService.");
 				AspectranClassLoader aspectranClassLoader = new AspectranClassLoader();
-				aspectranService = new WebAspectranService(servletContext, aspectranConfigParam, aspectranClassLoader);
+
+				Class<?> aspectranServiceClass = aspectranClassLoader.loadClass("com.aspectran.web.service.WebAspectranService");
+				Object[] args = new Object[] { (Servlet)this, aspectranClassLoader };
+				
+				aspectranService = (WebAspectranService)MethodUtils.invokeStaticMethod(aspectranServiceClass, "newInstance", args);
+			} else {
+				logger.info("Root AspectranService exists.");
+				AspectranClassLoader aspectranClassLoader = ((WebAspectranService)rootAspectranService).getAspectranClassLoader();
+
+				Class<?> aspectranServiceClass = aspectranClassLoader.loadClass("com.aspectran.web.service.WebAspectranService");
+				Object[] args = new Object[] { (Servlet)this, rootAspectranService };
+				
+				aspectranService = (WebAspectranService)MethodUtils.invokeStaticMethod(aspectranServiceClass, "newInstance", args);
 			}
-			
-			aspectranService.setAspectranServiceControllerListener(new AspectranServiceControllerListener() {
-				public void started() {
-					activityContext = aspectranService.getActivityContext();
-					pauseTimeout = 0;
-				}
-				
-				public void restarted() {
-					started();
-				}
-
-				public void paused(long timeout) {
-					if(timeout <= 0)
-						timeout = 315360000000L; //86400000 * 365 * 10 = 10 Years;
-					pauseTimeout = System.currentTimeMillis() + timeout;
-				}
-				
-				public void resumed() {
-					pauseTimeout = 0;
-				}
-
-				public void stopped() {
-					paused(-1L);
-				}
-			});
-			
-			aspectranService.start();
-			
 		} catch(Exception e) {
 			logger.error("WebActivityServlet was failed to initialize: " + e.toString(), e);
 			throw new UnavailableException(e.getMessage());
@@ -130,52 +98,8 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 	 * @see javax.servlet.http.HttpServlet#service(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
 	 */
 	@Override
-	public void service(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
-		String requestUri = req.getRequestURI();
-
-		if(pauseTimeout > 0L) {
-			if(pauseTimeout >= System.currentTimeMillis()) {
-				logger.info("aspectran service is paused, did not respond to the request uri [" + requestUri + "]");
-				res.sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
-				return;
-			} else {
-				pauseTimeout = 0L;
-			}
-		}
-		
-		WebActivity activity = null;
-
-		try {
-			activity = new WebActivityImpl(activityContext, req, res);
-			activity.ready(requestUri);
-			activity.perform();
-			activity.finish();
-		} catch(TransletNotFoundException e) {
-			if(activity != null) {
-				String activityDefaultHandler = activityContext.getActivityDefaultHandler();
-
-				if(activityDefaultHandler != null) {
-					try {
-						System.out.println("activity.getBean(activityDefaultHandler):" + activity.getBean(activityDefaultHandler));
-						
-						WebActivityDefaultHandler handler = (WebActivityDefaultHandler)activity.getBean(activityDefaultHandler);
-						handler.setServletContext(getServletContext());
-						handler.handle(req, res);
-					} catch(Exception e2) {
-						res.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-						logger.error(e.getMessage(), e2);
-					}
-
-					return;
-				}
-			}
-
-			logger.error(e.getMessage());
-			res.sendError(HttpServletResponse.SC_NOT_FOUND);
-		} catch(Exception e) {
-			logger.error(e.getMessage(), e);
-			res.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-		}
+	public void service(HttpServletRequest req, HttpServletResponse res) throws IOException {
+		aspectranService.service(this, req, res);
 	}
 
 	/* (non-Javadoc)
