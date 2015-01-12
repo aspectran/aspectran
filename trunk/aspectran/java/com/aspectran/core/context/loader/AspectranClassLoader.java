@@ -6,10 +6,12 @@ import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Enumeration;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,6 +41,10 @@ public class AspectranClassLoader extends ClassLoader {
 	
 	private int reloadedTimes;
 	
+	private Set<String> excludeClassNames;
+	
+	private Set<String> excludePackageNames;
+	
 	public AspectranClassLoader() {
 		this(getDefaultClassLoader());
 	}
@@ -54,67 +60,66 @@ public class AspectranClassLoader extends ClassLoader {
 	public AspectranClassLoader(String resourceLocation, ClassLoader parent) {
 		super(parent);
 		
-		if(resourceLocation == null) {
-			String className = getClass().getName();
-			String resourceName = classNameToResourceName(className);
-			URL url = parent.getResource(resourceName);
-/*
-			System.out.println(className);
-			System.out.println(resourceName);
-			System.out.println(url);
-*/		
-			if(ResourceUtils.isJarURL(url)) {
-				resourceLocation = url.getFile();
-				
-				int separatorIndex = resourceLocation.indexOf(ResourceUtils.JAR_URL_SEPARATOR);
-				if(separatorIndex != -1) {
-					resourceLocation = resourceLocation.substring(0, separatorIndex);
-				}
-			} else {
-				resourceLocation = url.getFile();
-				resourceLocation = resourceLocation.substring(0, resourceLocation.indexOf(resourceName));
-			}
-
-			if(resourceLocation.startsWith(ResourceUtils.FILE_URL_PREFIX)) {
-				resourceLocation = resourceLocation.substring(ResourceUtils.FILE_URL_PREFIX.length());
-			}
-/*
-			System.out.println(resourceLocation);
-			System.out.println(resourceLocation);
-			File f = new File(resourceLocation + "/.///");
-			System.out.println(f.exists());
-			try {
-				System.out.println(f.getCanonicalPath());
-				System.out.println(f.getCanonicalFile());
-				System.out.println(f.getAbsolutePath());
-				System.out.println(f.getAbsoluteFile());
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-
-			System.out.println(resourceLocation);
-			System.out.println(resourceLocation);
-			System.out.println(resourceLocation);
-			System.out.println(resourceLocation);
-			System.out.println(resourceLocation);
-			System.out.println(resourceLocation);
-			System.out.println(resourceLocation);
-			System.out.println(resourceLocation);
-			System.out.println(resourceLocation);
-			System.out.println(url);
-			System.out.println(url);
-			System.out.println(url);
-			System.out.println(url);
-			System.out.println(url);
-			System.out.println(url);
-			System.out.println(url);
-			System.out.println(url);
-			System.out.println(url);
-			System.out.println(url);
-			System.out.println(url);
-*/
-		}
+//		if(resourceLocation == null) {
+//			String className = getClass().getName();
+//			String resourceName = classNameToResourceName(className);
+//			URL url = parent.getResource(resourceName);
+///*
+//			System.out.println(className);
+//			System.out.println(resourceName);
+//			System.out.println(url);
+//*/		
+//			if(ResourceUtils.isJarURL(url)) {
+//				resourceLocation = url.getFile();
+//				
+//				int separatorIndex = resourceLocation.indexOf(ResourceUtils.JAR_URL_SEPARATOR);
+//				if(separatorIndex != -1) {
+//					resourceLocation = resourceLocation.substring(0, separatorIndex);
+//				}
+//			} else {
+//				resourceLocation = url.getFile();
+//				resourceLocation = resourceLocation.substring(0, resourceLocation.indexOf(resourceName));
+//			}
+//
+//			if(resourceLocation.startsWith(ResourceUtils.FILE_URL_PREFIX)) {
+//				resourceLocation = resourceLocation.substring(ResourceUtils.FILE_URL_PREFIX.length());
+//			}
+///*
+//			System.out.println(resourceLocation);
+//			System.out.println(resourceLocation);
+//			File f = new File(resourceLocation + "/.///");
+//			System.out.println(f.exists());
+//			try {
+//				System.out.println(f.getCanonicalPath());
+//				System.out.println(f.getCanonicalFile());
+//				System.out.println(f.getAbsolutePath());
+//				System.out.println(f.getAbsoluteFile());
+//			} catch (IOException e) {
+//				e.printStackTrace();
+//			}
+//
+//			System.out.println(resourceLocation);
+//			System.out.println(resourceLocation);
+//			System.out.println(resourceLocation);
+//			System.out.println(resourceLocation);
+//			System.out.println(resourceLocation);
+//			System.out.println(resourceLocation);
+//			System.out.println(resourceLocation);
+//			System.out.println(resourceLocation);
+//			System.out.println(resourceLocation);
+//			System.out.println(url);
+//			System.out.println(url);
+//			System.out.println(url);
+//			System.out.println(url);
+//			System.out.println(url);
+//			System.out.println(url);
+//			System.out.println(url);
+//			System.out.println(url);
+//			System.out.println(url);
+//			System.out.println(url);
+//			System.out.println(url);
+//*/
+//		}
 		
 		this.id = 1000;
 		this.root = this;
@@ -197,6 +202,77 @@ public class AspectranClassLoader extends ClassLoader {
 		AspectranClassLoader parent = (AspectranClassLoader)getParent();
 
 		return parent.createChild(resourceLocation);
+	}
+	
+	/**
+	 * Add a package name to exclude.
+	 *
+	 * @param packageName the package name to exclude
+	 */
+	public void excludePackage(String packageName) {
+		if(excludePackageNames == null) {
+			excludePackageNames = new HashSet<String>();
+		}
+
+		excludePackageNames.add(packageName + ClassUtils.PACKAGE_SEPARATOR);
+	}
+	
+	public void excludeClass(String className) {
+		if(isPackageExcluded(className))
+			return;
+		
+		if(excludeClassNames == null) {
+			excludeClassNames = new HashSet<String>();
+		}
+		
+		excludeClassNames.add(className);
+	}
+	
+	public void excludePackage(String[] packageNames) {
+		if(packageNames == null) {
+			excludePackageNames = null;
+			return;
+		}
+		
+		for(String packageName : packageNames) {
+			excludePackage(packageName);
+		}
+	}
+	
+	public void excludeClass(String[] classNames) {
+		if(classNames == null) {
+			excludeClassNames = null;
+			return;
+		}
+		
+		for(String className : classNames) {
+			excludeClass(className);
+		}
+	}
+	
+	protected boolean isExcluded(String className) {
+		if(isPackageExcluded(className))
+			return true;
+		
+		if(isClassExcluded(className))
+			return true;
+		
+		return false;
+	}
+	
+	private boolean isPackageExcluded(String className) {
+		if(excludePackageNames != null) {
+			for(String packageName : excludePackageNames) {
+				if(className.startsWith(packageName))
+					return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	private boolean isClassExcluded(String className) {
+		return (excludeClassNames != null && excludeClassNames.contains(className));
 	}
 	
 	public int getId() {
@@ -317,7 +393,7 @@ public class AspectranClassLoader extends ClassLoader {
 
 	    	try  {
 		    	classData = loadClassData(name, root);
-		    	System.out.println("   classData: " + classData);
+		    	//System.out.println("   classData: " + classData);
 	    	} catch(InvalidResourceException e) {
 	    		logger.error("failed to load class \"" + name + "\"", e);
 	    	}
@@ -345,10 +421,6 @@ public class AspectranClassLoader extends ClassLoader {
 	    return c;		
     }
 	
-	public Class<?> findClass(String name) throws ClassNotFoundException {
-		throw new ClassNotFoundException(name);
-	}
-	
 	public URL getResource(String name) {
 		URL url = super.getResource(name);
 		
@@ -362,11 +434,10 @@ public class AspectranClassLoader extends ClassLoader {
 		return findResource(name);
 	}
 
-	protected URL findResource(String name) {
-		return null;
-	}
-	
-	protected static byte[] loadClassData(String className, AspectranClassLoader owner) {
+	protected byte[] loadClassData(String className, AspectranClassLoader owner) {
+		if(isExcluded(className))
+			return null;
+		
 		String resourceName = classNameToResourceName(className);
 		
 		URL url = null;
@@ -480,6 +551,15 @@ public class AspectranClassLoader extends ClassLoader {
 	public static String classNameToResourceName(String className) {
 		String resourceName = className.replace(ClassUtils.PACKAGE_SEPARATOR_CHAR, ResourceUtils.RESOURCE_NAME_SPEPARATOR_CHAR) + 
 				ClassUtils.CLASS_FILE_SUFFIX;
+		return resourceName;
+	}
+	
+	public static String packageNameToResourceName(String packageName) {
+		String resourceName = packageName.replace(ClassUtils.PACKAGE_SEPARATOR_CHAR, ResourceUtils.RESOURCE_NAME_SPEPARATOR_CHAR);
+		
+		if(resourceName.endsWith(ResourceUtils.RESOURCE_NAME_SPEPARATOR))
+			resourceName = resourceName.substring(0, resourceName.length() - 1);
+		
 		return resourceName;
 	}
 	

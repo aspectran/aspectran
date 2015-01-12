@@ -28,8 +28,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.aspectran.core.context.loader.AspectranClassLoader;
-import com.aspectran.core.util.MethodUtils;
+import com.aspectran.core.service.AspectranService;
 import com.aspectran.web.service.WebAspectranService;
 import com.aspectran.web.startup.listener.AspectranServiceListener;
 
@@ -69,24 +68,14 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 		try {
 			ServletContext servletContext = getServletContext();
 			
-			Object rootAspectranService = servletContext.getAttribute(AspectranServiceListener.ASPECTRAN_SERVICE_ATTRIBUTE);
+			AspectranService rootAspectranService = (AspectranService)servletContext.getAttribute(AspectranServiceListener.ASPECTRAN_SERVICE_ATTRIBUTE);
 			
 			if(rootAspectranService == null) {
 				logger.info("Standalone AspectranService.");
-				AspectranClassLoader aspectranClassLoader = new AspectranClassLoader();
-
-				Class<?> aspectranServiceClass = aspectranClassLoader.loadClass("com.aspectran.web.service.WebAspectranService");
-				Object[] args = new Object[] { (Servlet)this, aspectranClassLoader };
-				
-				aspectranService = (WebAspectranService)MethodUtils.invokeStaticMethod(aspectranServiceClass, "newInstance", args);
+				aspectranService = WebAspectranService.newInstance(this);
 			} else {
 				logger.info("Root AspectranService exists.");
-				AspectranClassLoader aspectranClassLoader = ((WebAspectranService)rootAspectranService).getAspectranClassLoader();
-
-				Class<?> aspectranServiceClass = aspectranClassLoader.loadClass("com.aspectran.web.service.WebAspectranService");
-				Object[] args = new Object[] { (Servlet)this, rootAspectranService };
-				
-				aspectranService = (WebAspectranService)MethodUtils.invokeStaticMethod(aspectranServiceClass, "newInstance", args);
+				aspectranService = WebAspectranService.newInstance(this, rootAspectranService);
 			}
 		} catch(Exception e) {
 			logger.error("WebActivityServlet was failed to initialize: " + e.toString(), e);
