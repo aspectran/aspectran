@@ -21,7 +21,6 @@ import javax.servlet.ServletContextListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.aspectran.core.context.loader.AspectranClassLoader;
 import com.aspectran.core.service.AspectranService;
 import com.aspectran.web.service.WebAspectranService;
 
@@ -43,8 +42,7 @@ public class AspectranServiceListener implements ServletContextListener {
 		logger.info("Initializing AspectranServiceListener...");
 		
 		try {
-			AspectranClassLoader aspectranClassLoader = new AspectranClassLoader();
-			aspectranService = WebAspectranService.newInstance(event.getServletContext(), aspectranClassLoader);
+			aspectranService = WebAspectranService.newInstance(event.getServletContext());
 		} catch(Exception e) {
 			logger.error("Failed to initialize AspectranServiceListener.", e);
 		}

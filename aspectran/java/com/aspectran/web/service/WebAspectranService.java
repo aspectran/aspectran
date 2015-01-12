@@ -2,7 +2,6 @@ package com.aspectran.web.service;
 
 import java.io.IOException;
 
-import javax.servlet.Servlet;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
@@ -39,6 +38,17 @@ public class WebAspectranService extends CoreAspectranService {
 			WebApplicationAdapter.class.getName() + ".WEB_APPLICATION_ADAPTER";
 
 	private static final String DEFAULT_ROOT_CONTEXT = "/WEB-INF/aspectran/root.xml";
+	
+	private static final String[] excludePackageNames;
+	
+	static {
+		excludePackageNames = new String[] {
+			"com.aspectran.core",
+			"com.aspectran.scheduler",
+			"com.aspectran.support",
+			"com.aspectran.web"
+		};
+	}
 	
 	public WebAspectranService(ServletContext servletContext) {
 		ApplicationAdapter aa = new WebApplicationAdapter(servletContext);
@@ -110,7 +120,7 @@ public class WebAspectranService extends CoreAspectranService {
 				}
 			}
 
-			logger.error(e.getMessage());
+			logger.debug(e.getMessage());
 			res.sendError(HttpServletResponse.SC_NOT_FOUND);
 		} catch(Exception e) {
 			logger.error("WebActivity service failed.", e);
@@ -119,13 +129,10 @@ public class WebAspectranService extends CoreAspectranService {
 
 	}
 	
-	public static WebAspectranService newInstance(ServletContext servletContext, AspectranClassLoader aspectranClassLoader) {
+	public static WebAspectranService newInstance(ServletContext servletContext) {
 		String aspectranConfigParam = servletContext.getInitParameter(ASPECTRAN_CONFIG_PARAM);
-		
-		WebAspectranService aspectranService = new WebAspectranService(servletContext);
-		aspectranService.setAspectranClassLoader(aspectranClassLoader);
-		aspectranService.initialize(aspectranConfigParam);
-		aspectranService.start();
+
+		WebAspectranService aspectranService = newInstance(servletContext, null, aspectranConfigParam);
 		
 		servletContext.setAttribute(AspectranServiceListener.ASPECTRAN_SERVICE_ATTRIBUTE, aspectranService);
 		logger.debug("AspectranServiceListener attribute in ServletContext was created. {}: {}", AspectranServiceListener.ASPECTRAN_SERVICE_ATTRIBUTE, aspectranService);
@@ -133,47 +140,51 @@ public class WebAspectranService extends CoreAspectranService {
 		return aspectranService;
 	}
 	
-	public static WebAspectranService newInstance(final WebActivityServlet servlet, AspectranClassLoader aspectranClassLoader) {
+	public static WebAspectranService newInstance(WebActivityServlet servlet) {
 		ServletContext servletContext = servlet.getServletContext();
 		ServletConfig servletConfig = servlet.getServletConfig();
 		
 		String aspectranConfigParam = servletConfig.getInitParameter(ASPECTRAN_CONFIG_PARAM);
 		
-		WebAspectranService aspectranService = new WebAspectranService(servletContext);
-		aspectranService.setAspectranClassLoader(aspectranClassLoader);
-		aspectranService.initialize(aspectranConfigParam);
-		
-		setAspectranServiceControllerListener(aspectranService, servlet);
-		
-		aspectranService.start();
-		
-		return aspectranService;
+		return newInstance(servletContext, servlet, aspectranConfigParam);
 	}
-	
-	public static WebAspectranService newInstance(final Servlet servlet, Object rootAspectranService) {
+
+	public static WebAspectranService newInstance(WebActivityServlet servlet, AspectranService rootAspectranService) {
+		ServletContext servletContext = servlet.getServletContext();
 		ServletConfig servletConfig = servlet.getServletConfig();
 		
 		String aspectranConfigParam = servletConfig.getInitParameter(ASPECTRAN_CONFIG_PARAM);
 		
 		if(aspectranConfigParam != null) {
-			WebAspectranService aspectranService = (WebAspectranService)rootAspectranService;
-			
-			String resourceLocation = aspectranService.getAspectranClassLoader().getResourceLocation();
-			AspectranClassLoader aspectranClassLoader = new AspectranClassLoader(resourceLocation);
-			
-			return newInstance(servlet, aspectranClassLoader);
+			return newInstance(servletContext, servlet, aspectranConfigParam);
 		} else {
-			WebAspectranService aspectranService = new WebAspectranService((WebAspectranService)rootAspectranService);
+			WebAspectranService aspectranService = new WebAspectranService(rootAspectranService);
 
-			setAspectranServiceControllerListener((AspectranService)rootAspectranService, servlet);
+			setAspectranServiceControllerListener(rootAspectranService, servlet);
 			
 			aspectranService.start();
 			
 			return aspectranService;
 		}
 	}
+
+	private static WebAspectranService newInstance(ServletContext servletContext, WebActivityServlet servlet, String aspectranConfigParam) {
+		AspectranClassLoader aspectranClassLoader = new AspectranClassLoader();
+		aspectranClassLoader.excludePackage(excludePackageNames);
+		
+		WebAspectranService aspectranService = new WebAspectranService(servletContext);
+		aspectranService.setAspectranClassLoader(aspectranClassLoader);
+		aspectranService.initialize(aspectranConfigParam);
+		
+		if(servlet != null)
+			setAspectranServiceControllerListener(aspectranService, servlet);
+		
+		aspectranService.start();
+		
+		return aspectranService;
+	}
 	
-	private static void setAspectranServiceControllerListener(AspectranService aspectranService, final Servlet servlet) {
+	private static void setAspectranServiceControllerListener(AspectranService aspectranService, final WebActivityServlet servlet) {
 		aspectranService.setAspectranServiceControllerListener(new AspectranServiceControllerListener() {
 			public void started() {
 				servlet.pauseTimeout = 0;
