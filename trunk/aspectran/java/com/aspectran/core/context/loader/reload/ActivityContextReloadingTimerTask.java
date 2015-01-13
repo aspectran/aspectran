@@ -44,20 +44,27 @@ public class ActivityContextReloadingTimerTask extends TimerTask {
 			return;
 		
 		for(URL url : resources) {
+			logger.debug("Check File: " + url);
 			try {
 				File file = new File(url.toURI());
+				String filePath = file.getAbsolutePath();
 				
 				long modifiedTime = file.lastModified();
-				long modifiedTime2 = modifyTimeMap.get(file.getAbsoluteFile());
+				Long modifiedTime2 = modifyTimeMap.get(filePath);
 				
-				if(modifiedTime != modifiedTime2) {
-					modified = true;
-					
-					if(debugEnabled) {
-						logger.debug("File Modification Detected: " + url);
+				if(modifiedTime2 != null) {
+
+					if(modifiedTime != modifiedTime2.longValue()) {
+						modified = true;
+						
+						if(debugEnabled) {
+							logger.debug("File Modification Detected: " + url);
+						}
+						
+						break;
 					}
-					
-					break;
+				} else {
+					modifyTimeMap.put(filePath, modifiedTime);
 				}
 			} catch(URISyntaxException e) {
 				logger.error(e.getMessage(), e);

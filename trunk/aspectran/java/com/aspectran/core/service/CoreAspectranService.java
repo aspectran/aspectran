@@ -64,6 +64,8 @@ public class CoreAspectranService extends AbstractAspectranService {
 			
 			reloadActivityContext();
 			
+			started = true;
+			
 			logger.info("AspectranService was restarted.");
 		} else {
 			cleanlyDestoryed = rootAspectranService.restart();
