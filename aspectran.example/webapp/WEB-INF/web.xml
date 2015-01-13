@@ -23,11 +23,11 @@
 				autoReloading: {
 					reloadMethod: hard
 					observationInterval: 5
-					startup: false
+					startup: true
 				}
 			}
 			scheduler: {
-				startDelaySeconds: 5
+				startDelaySeconds: 10
 				waitOnShutdown: true
 				startup: false
 			}
