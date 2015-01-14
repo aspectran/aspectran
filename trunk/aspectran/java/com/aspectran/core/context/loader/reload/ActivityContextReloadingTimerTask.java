@@ -29,6 +29,8 @@ public class ActivityContextReloadingTimerTask extends TimerTask {
 	
 	private boolean modified = false;
 	
+	private int cycle;
+	
 	public ActivityContextReloadingTimerTask(AspectranService aspectranService) {
 		this.aspectranService = aspectranService;
 		this.aspectranClassLoader = aspectranService.getAspectranClassLoader();
@@ -44,31 +46,35 @@ public class ActivityContextReloadingTimerTask extends TimerTask {
 			return;
 		
 		for(URL url : resources) {
-			logger.debug("Check File: " + url);
+			//logger.debug("Check File: " + url);
 			try {
 				File file = new File(url.toURI());
 				String filePath = file.getAbsolutePath();
 				
 				long modifiedTime = file.lastModified();
-				Long modifiedTime2 = modifyTimeMap.get(filePath);
 				
-				if(modifiedTime2 != null) {
-
-					if(modifiedTime != modifiedTime2.longValue()) {
-						modified = true;
-						
-						if(debugEnabled) {
-							logger.debug("File Modification Detected: " + url);
-						}
-						
-						break;
-					}
-				} else {
+				if(cycle == 0) {
 					modifyTimeMap.put(filePath, modifiedTime);
+				} else {
+					Long modifiedTime2 = modifyTimeMap.get(filePath);
+					
+					if(modifiedTime2 != null) {
+						if(modifiedTime != modifiedTime2.longValue()) {
+							modified = true;
+							
+							if(debugEnabled) {
+								logger.debug("File Modification Detected: " + url);
+							}
+							
+							break;
+						}
+					}
 				}
 			} catch(URISyntaxException e) {
 				logger.error(e.getMessage(), e);
 			}
+			
+			cycle++;
 		}
 		
 		if(modified) {
