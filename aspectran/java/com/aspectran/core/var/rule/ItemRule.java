@@ -44,7 +44,9 @@ public class ItemRule {
 	private ItemValueType valueType;
 	
 	private String defaultValue;
-	
+
+	private Boolean tokenize;
+
 	private Token[] tokens;
 	
 	private List<Token[]> tokensList;
@@ -136,6 +138,14 @@ public class ItemRule {
 	 */
 	public void setDefaultValue(String defaultValue) {
 		this.defaultValue = defaultValue;
+	}
+
+	public Boolean getTokenize() {
+		return tokenize;
+	}
+
+	public void setTokenize(Boolean tokenize) {
+		this.tokenize = tokenize;
 	}
 
 	/**

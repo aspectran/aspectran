@@ -195,6 +195,21 @@ contentType CDATA #IMPLIED
 translet CDATA #IMPLIED
 >
 
+<!ELEMENT import EMPTY>
+<!ATTLIST import
+resource CDATA #IMPLIED
+file CDATA #IMPLIED
+url CDATA #IMPLIED
+>
+
+<!ELEMENT attributes (item*)>
+
+<!ELEMENT properties (item*)>
+
+<!ELEMENT arguments (item*)>
+
+<!ELEMENT parameters (item*)>
+
 <!ELEMENT item (#PCDATA | value | reference | null)*>
 <!ATTLIST item
 name CDATA #IMPLIED
@@ -218,19 +233,4 @@ attribute CDATA #IMPLIED
 property CDATA #IMPLIED
 >
 
-<!ELEMENT attributes (item*)>
-
-<!ELEMENT properties (item*)>
-
-<!ELEMENT arguments (item*)>
-
-<!ELEMENT parameters (item*)>
-
 <!ELEMENT null EMPTY>
-
-<!ELEMENT import EMPTY>
-<!ATTLIST import
-resource CDATA #IMPLIED
-file CDATA #IMPLIED
-url CDATA #IMPLIED
->

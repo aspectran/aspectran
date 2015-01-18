@@ -44,6 +44,8 @@ public final class ParameterValueType extends Type {
 	
 	public static final ParameterValueType BOOLEAN;
 	
+	public static final ParameterValueType VARIABLE;
+	
 	protected static final ParameterValueType PARAMETERS;
 	
 	private static final Map<String, ParameterValueType> types;
@@ -55,6 +57,7 @@ public final class ParameterValueType extends Type {
 		FLOAT = new ParameterValueType("float");
 		DOUBLE = new ParameterValueType("double");
 		BOOLEAN = new ParameterValueType("boolean");
+		VARIABLE = new ParameterValueType("variable");
 		PARAMETERS = new ParameterValueType("parameters");
 
 		types = new HashMap<String, ParameterValueType>();
@@ -64,6 +67,7 @@ public final class ParameterValueType extends Type {
 		types.put(FLOAT.toString(), FLOAT);
 		types.put(DOUBLE.toString(), DOUBLE);
 		types.put(BOOLEAN.toString(), BOOLEAN);
+		types.put(VARIABLE.toString(), VARIABLE);
 		types.put(PARAMETERS.toString(), PARAMETERS);
 	}
 
