@@ -80,7 +80,7 @@
 			<pointcut>
 				<target>/example/hello/*@example.hello.HelloAction^applyTheAdvice</target>
 				<target translet="/example/hello/*" bean="example.hello.HelloAction" method="applyTheAdvice">
-					<without translet="/example/hello/*" bean="example.hello.HelloAction" method="applyTheAdvice"/>
+					<exclude translet="/example/hello/*" bean="example.hello.HelloAction" method="applyTheAdvice"/>
 				</target>
 			</pointcut>
 		</joinpoint>

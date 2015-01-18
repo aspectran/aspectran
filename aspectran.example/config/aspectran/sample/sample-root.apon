@@ -1,5 +1,5 @@
 aspectran: {
-	settings: {
+	setting: {
 		transletNamePattern: /example/*
 		transletInterfaceClass: com.aspectran.web.activity.WebTranslet
 		transletImplementClass: com.aspectran.web.activity.WebTransletImpl
@@ -8,10 +8,37 @@ aspectran: {
 		nullableActionId: true
 		beanProxyMode: cglib
 	}
+	typeAlias: {
+		example1: com.aspectran.Example1 
+		example2: com.aspectran.Example2
+	}
 	aspect: {
 		id: defaultRequestRule
 		joinpoint: {
 			scope: request
+			pointcut: {
+				wildcard: /a/*.do
+				target: [
+					{
+						translet: /a/a/a.do
+						bean: com.aspectran.example.ExampleBean
+						method: doAction
+						without: [
+							{
+								translet: /a/a/a.do
+								bean: com.aspectran.example.ExampleBean
+								method: doAction
+							}
+						]
+					}
+				]
+				simpleTrigger: {
+					startDelay
+					repleatInterval
+					repeatCount
+				}
+				cronTrigger: * * 8 8
+			}
 		}
 		settings: {
 			characterEncoding: utf-8
@@ -36,6 +63,14 @@ aspectran: {
 				org.quartz.jobStore.class: org.quartz.simpl.RAMJobStore
 			}
 		}
+	}
+	tranlset: {
+	}
+	import: {
+		file: file1.apon
+	}
+	import: {
+		file: file2.apon
 	}
 }
 
