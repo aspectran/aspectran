@@ -18,9 +18,9 @@ public class AspectranContextConfig extends AbstractParameters implements Parame
 	
 	static {
 		parameterDefines = new ParameterDefine[] {
-			root,
-			resources,
-			autoReloading
+				root,
+				resources,
+				autoReloading
 		};
 	}
 	

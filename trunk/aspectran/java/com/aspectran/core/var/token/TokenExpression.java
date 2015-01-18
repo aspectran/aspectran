@@ -289,7 +289,7 @@ public class TokenExpression implements TokenExpressor {
 	/**
 	 * Gets the attribute object from request attributes or action results.
 	 * 
-	 * @param name the attribute name or action id.
+	 * @param alias the attribute name or action id.
 	 * 
 	 * @return the object
 	 */

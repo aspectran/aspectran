@@ -26,9 +26,13 @@ public class ParameterDefine implements Parameter {
 	}
 
 	public ParameterDefine(String name, Parameters parameters) {
+		this(name, parameters, false);
+	}
+	
+	public ParameterDefine(String name, Parameters parameters, boolean array) {
 		this.name = name;
 		this.parameterValueType = ParameterValueType.PARAMETERS;
-		this.array = false;
+		this.array = array;
 		
 		parameters.setParent(this);
 		this.value = parameters;

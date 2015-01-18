@@ -61,7 +61,7 @@ public class URLImportStream {
 	/**
 	 * Sets the resource.
 	 * 
-	 * @param resource the new resource
+	 * @param translet the new resource
 	 * 
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */

@@ -20,11 +20,11 @@ public abstract class AbstractParameters implements Parameters {
 	
 	private static final String SQUARE_BRAKET_CLOSE = "]";
 
-	protected final Map<String, ParameterDefine> parameterDefineMap;
+	protected Map<String, ParameterDefine> parameterDefineMap;
 	
 	private final String title;
 	
-	private final String plaintext;
+	private String text;
 	
 	private ParameterDefine parent;
 	
@@ -34,25 +34,34 @@ public abstract class AbstractParameters implements Parameters {
 		this(title, parameterDefines, null);
 	}
 
-	protected AbstractParameters(String title, ParameterDefine[] parameterDefines, String plaintext) {
+	protected AbstractParameters(String title, ParameterDefine[] parameterDefines, String text) {
 		this.title = title;
-		this.plaintext = plaintext;
 		
-		if(parameterDefines == null && plaintext != null) {
-			parameterDefines = preparse(plaintext);
+		parseText(text, parameterDefines);
+	}
+
+	public void parseText(String text) {
+		parseText(text, null);
+	}
+	
+	public void parseText(String text, ParameterDefine[] parameterDefines) {
+		this.text = text;
+		
+		if(parameterDefines == null && text != null) {
+			parameterDefines = preparse(text);
 		}
 		
 		this.parameterDefineMap = new HashMap<String, ParameterDefine>();
-		
+
 		if(parameterDefines != null) {
-			for(ParameterDefine pv : parameterDefines) {
-				pv.setHolder(this);
-				parameterDefineMap.put(pv.getName(), pv);
+			for(ParameterDefine pd : parameterDefines) {
+				pd.setHolder(this);
+				parameterDefineMap.put(pd.getName(), pd);
 			}
 		}
 
-		if(plaintext != null)
-			valuelize(plaintext);
+		if(text != null)
+			valuelize(text);
 	}
 	
 	public ParameterDefine getParent() {
@@ -300,8 +309,8 @@ public abstract class AbstractParameters implements Parameters {
 		return getParametersArray(parameter.getName());
 	}
 	
-	public String toPlaintext() {
-		return plaintext;
+	public String toText() {
+		return text;
 	}
 	
 	@Override
@@ -315,8 +324,8 @@ public abstract class AbstractParameters implements Parameters {
 		return sb.toString();
 	}
 	
-	protected ParameterDefine[] preparse(String plaintext) {
-		StringTokenizer st = new StringTokenizer(plaintext, DELIMITERS);
+	protected ParameterDefine[] preparse(String text) {
+		StringTokenizer st = new StringTokenizer(text, DELIMITERS);
 		
 		ParameterDefine[] parameterDefines = preparse(st, null);
 		
@@ -406,8 +415,8 @@ public abstract class AbstractParameters implements Parameters {
 		}
 	}
 	
-	protected void valuelize(String plaintext) {
-		StringTokenizer st = new StringTokenizer(plaintext, DELIMITERS);
+	protected void valuelize(String text) {
+		StringTokenizer st = new StringTokenizer(text, DELIMITERS);
 
 		valuelize(st, null, null);
 	}

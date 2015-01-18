@@ -58,7 +58,7 @@ public class TransletRule implements ActionAddable, ResponseSettable, AspectAdvi
 	
 	private Class<? extends CoreTranslet> transletInterfaceClass;
 	
-	private Class<? extends CoreTransletImpl> transletInstanceClass;
+	private Class<? extends CoreTransletImpl> transletImplementClass;
 
 	private AspectAdviceRuleRegistry aspectAdviceRuleRegistry;
 	
@@ -259,11 +259,11 @@ public class TransletRule implements ActionAddable, ResponseSettable, AspectAdvi
 	}
 
 	public Class<? extends CoreTransletImpl> getTransletImplementClass() {
-		return transletInstanceClass;
+		return transletImplementClass;
 	}
 
 	public void setTransletInstanceClass(Class<? extends CoreTransletImpl> transletInstanceClass) {
-		this.transletInstanceClass = transletInstanceClass;
+		this.transletImplementClass = transletInstanceClass;
 	}
 
 	public AspectAdviceRuleRegistry getAspectAdviceRuleRegistry() {
@@ -376,7 +376,7 @@ public class TransletRule implements ActionAddable, ResponseSettable, AspectAdvi
 		sb.append(", responseRuleList=").append(responseRuleList);
 		sb.append(", exceptionHandlingRuleMap=").append(exceptionHandlingRuleMap);
 		sb.append(", transletInterfaceClass=").append(transletInterfaceClass);
-		sb.append(", transletInstanceClass=").append(transletInstanceClass);
+		sb.append(", transletInstanceClass=").append(transletImplementClass);
 		sb.append(", aspectAdviceRuleRegistry=").append(aspectAdviceRuleRegistry);
 		//sb.append(", aspectAdviceRuleExists=").append(aspectAdviceRuleExists);
 		sb.append("}");

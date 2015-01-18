@@ -69,7 +69,7 @@ public class ImportResource {
 	/**
 	 * Sets the resource path to import.
 	 * 
-	 * @param resource the new resource
+	 * @param translet the new resource
 	 * 
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
@@ -86,7 +86,7 @@ public class ImportResource {
 	/**
 	 * Sets the resource.
 	 * 
-	 * @param resource the new resource
+	 * @param translet the new resource
 	 * 
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
