@@ -109,4 +109,13 @@ public final class ParameterValueType extends Type {
 		return null;
 	}
 	
+	public static String stripValueTypeHint(String name) {
+		int hintStartIndex = name.indexOf(VALUE_TYPE_HINT_OPEN);
+		
+		if(hintStartIndex > 0)
+			return name.substring(0, hintStartIndex);
+		
+		return name;
+	}
+	
 }
