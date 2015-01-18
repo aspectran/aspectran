@@ -1,5 +1,5 @@
 aspectran: {
-	setting: {
+	settings: {
 		transletNamePattern: /example/*
 		transletInterfaceClass: com.aspectran.web.activity.WebTranslet
 		transletImplementClass: com.aspectran.web.activity.WebTransletImpl
@@ -8,7 +8,7 @@ aspectran: {
 		nullableActionId: true
 		beanProxyMode: cglib
 	}
-	typeAlias: {
+	typeAliases: {
 		example1: com.aspectran.Example1 
 		example2: com.aspectran.Example2
 	}
@@ -23,7 +23,7 @@ aspectran: {
 						translet: /a/a/a.do
 						bean: com.aspectran.example.ExampleBean
 						method: doAction
-						without: [
+						exclude: [
 							{
 								translet: /a/a/a.do
 								bean: com.aspectran.example.ExampleBean
@@ -47,22 +47,64 @@ aspectran: {
 		}
 	}
 	bean: {
+		id: beanId
 		class: org.quartz.impl.StdSchedulerFactory
 		scope: singleton
 		constructor: {
-			arguments(properties): {
-				org.quartz.scheduler.instanceName: DefaultQuartzScheduler
-				org.quartz.scheduler.rmi.export: false
-				org.quartz.scheduler.rmi.proxy: false
-				org.quartz.scheduler.wrapJobExecutionInUserTransaction: false
-				org.quartz.threadPool.class: org.quartz.simpl.SimpleThreadPool
-				org.quartz.threadPool.threadCount: 10
-				org.quartz.threadPool.threadPriority: 5
-				org.quartz.threadPool.threadsInheritContextClassLoaderOfInitializingThread: true
-				org.quartz.jobStore.misfireThreshold: 60000
-				org.quartz.jobStore.class: org.quartz.simpl.RAMJobStore
-			}
+			arguments: [
+				{
+					item: {
+						name: name1
+					list: [
+						{
+							value: 
+						}
+					]
+			]
+			arguments: [
+				{
+					list: [
+						
+					]
+			
+				{
+					valueType: properties
+					value: {
+						org.quartz.scheduler.instanceName: DefaultQuartzScheduler
+						org.quartz.scheduler.rmi.export: false
+						org.quartz.scheduler.rmi.proxy: false
+						org.quartz.scheduler.wrapJobExecutionInUserTransaction: false
+						org.quartz.threadPool.class: org.quartz.simpl.SimpleThreadPool
+						org.quartz.threadPool.threadCount: 10
+						org.quartz.threadPool.threadPriority: 5
+						org.quartz.threadPool.threadsInheritContextClassLoaderOfInitializingThread: true
+						org.quartz.jobStore.misfireThreshold: 60000
+						org.quartz.jobStore.class: org.quartz.simpl.RAMJobStore
+					}
+				}
+			]
 		}
+		properties: [
+			{
+				type: map
+				name: property1
+				value: property value
+				reference:
+				valueType: java.lang.String
+				defaultValue: default value
+				tokenize: true
+				value: {
+					type: java.lang.String
+					value:
+					reference:
+					tokenize: true
+				}
+			},
+			{
+				name: property2
+				value(int): 123
+			}
+		]
 	}
 	tranlset: {
 	}
