@@ -275,8 +275,11 @@ public class ParameterDefine implements Parameter {
 	}
 	
 	public Parameters getParameters() {
-		if(parameterValueType != ParameterValueType.PARAMETERS)
+		if(value == null && parameterValueType == ParameterValueType.VARIABLE) {
+			value = new GenericParameters();
+		} else if(parameterValueType != ParameterValueType.PARAMETERS) {
 			throw new IncompatibleParameterValueTypeException(this, ParameterValueType.PARAMETERS);
+		}
 		
 		return (Parameters)value;
 	}

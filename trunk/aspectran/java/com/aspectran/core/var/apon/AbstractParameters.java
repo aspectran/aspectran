@@ -30,6 +30,8 @@ public abstract class AbstractParameters implements Parameters {
 	
 	private boolean preparsed;
 	
+	private boolean addable;
+	
 	protected AbstractParameters(String title, ParameterDefine[] parameterDefines) {
 		this(title, parameterDefines, null);
 	}
@@ -38,6 +40,9 @@ public abstract class AbstractParameters implements Parameters {
 		this.title = title;
 		
 		parseText(text, parameterDefines);
+		
+		if(parameterDefines == null && text == null)
+			addable = true;
 	}
 
 	public void parseText(String text) {
@@ -62,6 +67,10 @@ public abstract class AbstractParameters implements Parameters {
 
 		if(text != null)
 			valuelize(text);
+	}
+	
+	public void addParameterDefine(ParameterDefine parameterDefine) {
+		parameterDefineMap.put(parameterDefine.getName(), parameterDefine);
 	}
 	
 	public ParameterDefine getParent() {
@@ -391,8 +400,11 @@ public abstract class AbstractParameters implements Parameters {
 					} else if(openBraket != SQUARE_BRAKET_OPEN) {
 						ParameterValueType valueType = ParameterValueType.valueOfHint(name);
 						
-						if(valueType == null)
+						if(valueType != null) {
+							name = ParameterValueType.stripValueTypeHint(name);
+						} else {
 							valueType = ParameterValueType.STRING;
+						}
 
 						if(SQUARE_BRAKET_OPEN.equals(value)) {
 							ParameterDefine pd = new ParameterDefine(name, valueType, true);
@@ -420,11 +432,11 @@ public abstract class AbstractParameters implements Parameters {
 	protected void valuelize(String text) {
 		StringTokenizer st = new StringTokenizer(text, DELIMITERS);
 
-		valuelize(st, null, null);
+		valuelize(st, null, null, null);
 	}
 	
-	protected void valuelize(StringTokenizer st, String openBraket, ParameterDefine parameterDefine) {
-		String name = null;
+	protected void valuelize(StringTokenizer st, String openBraket, String name, ParameterDefine parameterDefine) {
+		ParameterValueType parameterValueType = null; 
 		String value = null;
 		
 		int curlyBraketCount = 0;
@@ -437,12 +449,13 @@ public abstract class AbstractParameters implements Parameters {
 				
 				if(openBraket != null) {
 					if(openBraket == CURLY_BRAKET_OPEN && CURLY_BRAKET_CLOSE.equals(token) ||
-							openBraket == SQUARE_BRAKET_OPEN && SQUARE_BRAKET_CLOSE.equals(token))
+							openBraket == SQUARE_BRAKET_OPEN && SQUARE_BRAKET_CLOSE.equals(token)) {
+						//System.out.println("*****return********* openBraket: " + openBraket + ", token: " + token);
 						return;
+					}
 				}
 				
 				if(openBraket == SQUARE_BRAKET_OPEN) {
-					name = parameterDefine.getName();
 					value = token;
 				} else {
 					int index = token.indexOf(":");
@@ -454,14 +467,49 @@ public abstract class AbstractParameters implements Parameters {
 					value = token.substring(index + 1).trim();
 					
 					parameterDefine = parameterDefineMap.get(name);
+
+					//System.out.println("************** title: " + title);
+					//System.out.println("************** name: " + name + ", value: " + value + ", token: " + token);
+					//System.out.println("************** parameterDefine: " + parameterDefine);
 					
-					if(parameterDefine == null)
-						throw new InvalidParameterException(title + ": invalid parameter \"" + token + "\"");
+					if(parameterDefine == null) {
+						if(addable) {
+							parameterValueType = ParameterValueType.valueOfHint(name);
+							if(parameterValueType != null) {
+								name = ParameterValueType.stripValueTypeHint(name);
+								parameterDefine = parameterDefineMap.get(name);
+							}
+						} else {
+							throw new InvalidParameterException(title + ": invalid parameter \"" + token + "\"");
+						}
+					}
+				}
+
+				if(parameterDefine != null && parameterDefine.getParameterValueType() != ParameterValueType.VARIABLE) {
+					parameterValueType = parameterDefine.getParameterValueType();
+				} else {
+					parameterValueType = null;
 				}
 				
 				if(StringUtils.hasText(value)) {
-					if(CURLY_BRAKET_OPEN.equals(value)) {
+					if(parameterValueType == null && CURLY_BRAKET_OPEN.equals(value)) {
+						parameterValueType = ParameterValueType.PARAMETERS;
+					} else if(SQUARE_BRAKET_OPEN.equals(value)) {
+						if(parameterDefine == null || (parameterDefine != null && parameterDefine.isArray())) {
+							//System.out.println("************** name: " + name);
+							//System.out.println("************** parameterDefine: " + parameterDefine);
+							valuelize(st, SQUARE_BRAKET_OPEN, name, parameterDefine);
+							continue;
+						}
+					}
+					
+					if(parameterValueType == ParameterValueType.PARAMETERS) {
 						if(openBraket == SQUARE_BRAKET_OPEN) {
+							if(parameterDefine == null) {
+								parameterDefine = new ParameterDefine(name, parameterValueType, true);
+								parameterDefineMap.put(name, parameterDefine);
+							}
+
 							AbstractParameters parameters2 = (AbstractParameters)parameterDefine.getParameters(curlyBraketCount++);
 							
 							if(parameters2 == null)
@@ -470,26 +518,35 @@ public abstract class AbstractParameters implements Parameters {
 							if(parameters2 == null)
 								throw new InvalidParameterException("Cannot parse parameter value of '" + name + "'. parameters is null.");
 							
-							parameters2.valuelize(st, CURLY_BRAKET_OPEN, null);
+							parameters2.valuelize(st, CURLY_BRAKET_OPEN, null, null);
 						} else {
-							AbstractParameters parameters2 = (AbstractParameters)parameterDefine.getParameters();
-							parameters2.valuelize(st, CURLY_BRAKET_OPEN, null);
-						}
-					} else if(SQUARE_BRAKET_OPEN.equals(value)) {
-						valuelize(st, SQUARE_BRAKET_OPEN, parameterDefine);
-					} else {
-						ParameterValueType valueType = parameterDefine.getParameterValueType();
+							if(parameterDefine == null) {
+								parameterDefine = new ParameterDefine(name, parameterValueType);
+								parameterDefineMap.put(name, parameterDefine);
+							}
 
-						if(valueType == ParameterValueType.STRING) {
-							parameterDefine.setValue(value);
-						} else if(valueType == ParameterValueType.INTEGER) {
+							AbstractParameters parameters2 = (AbstractParameters)parameterDefine.getParameters();
+							parameters2.valuelize(st, CURLY_BRAKET_OPEN, null, null);
+						}
+					} else {
+						if(parameterValueType == null)
+							parameterValueType = ParameterValueType.STRING;
+
+						if(parameterDefine == null) {
+							parameterDefine = new ParameterDefine(name, parameterValueType, (openBraket == SQUARE_BRAKET_OPEN));
+							parameterDefineMap.put(name, parameterDefine);
+						}
+
+						if(parameterValueType == ParameterValueType.INTEGER) {
 							try {
 								parameterDefine.setValue(new Integer(value));
 							} catch(NumberFormatException ex) {
 								throw new InvalidParameterException(title + ": Cannot parse value of '" + name + "' to an integer. \"" + token + "\"");
 							}
-						} else if(valueType == ParameterValueType.BOOLEAN) {
+						} else if(parameterValueType == ParameterValueType.BOOLEAN) {
 							parameterDefine.setValue(Boolean.valueOf(value));
+						} else {
+							parameterDefine.setValue(value);
 						}
 					}
 				}

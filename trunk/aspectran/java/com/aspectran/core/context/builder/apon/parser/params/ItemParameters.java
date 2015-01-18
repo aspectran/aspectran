@@ -7,23 +7,23 @@ import com.aspectran.core.var.apon.Parameters;
 
 public class ItemParameters extends AbstractParameters implements Parameters {
 
+	public static final ParameterDefine type;
 	public static final ParameterDefine name;
 	public static final ParameterDefine value;
-	public static final ParameterDefine type;
 	public static final ParameterDefine valueType;
 	public static final ParameterDefine defaultValue;
-	public static final ParameterDefine values;
+	public static final ParameterDefine tokenize;
 	public static final ParameterDefine reference;
 	
 	private static final ParameterDefine[] parameterDefines;
 	
 	static {
-		name = new ParameterDefine("name", ParameterValueType.STRING);
-		value = new ParameterDefine("value", ParameterValueType.STRING);
 		type = new ParameterDefine("type", ParameterValueType.STRING);
+		name = new ParameterDefine("name", ParameterValueType.STRING);
+		value = new ParameterDefine("value", ParameterValueType.VARIABLE);
 		valueType = new ParameterDefine("valueType", ParameterValueType.STRING);
 		defaultValue = new ParameterDefine("defaultValue", ParameterValueType.STRING);
-		values = new ParameterDefine("values", new ValueParameters(), true);
+		tokenize = new ParameterDefine("tokenize", ParameterValueType.BOOLEAN);
 		reference = new ParameterDefine("reference", new ReferenceParameters());
 		
 		parameterDefines = new ParameterDefine[] {
@@ -32,7 +32,7 @@ public class ItemParameters extends AbstractParameters implements Parameters {
 				type,
 				valueType,
 				defaultValue,
-				values,
+				tokenize,
 				reference
 		};
 	}
