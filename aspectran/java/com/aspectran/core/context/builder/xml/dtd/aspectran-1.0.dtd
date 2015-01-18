@@ -217,6 +217,7 @@ value CDATA #IMPLIED
 type (item | list | map | set | properties) #IMPLIED
 valueType CDATA #IMPLIED
 defaultValue CDATA #IMPLIED
+tokenize (true | false) #IMPLIED
 >
 
 <!ELEMENT value (#PCDATA | reference | null)*>
