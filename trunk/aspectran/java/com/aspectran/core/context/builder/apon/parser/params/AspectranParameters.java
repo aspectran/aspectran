@@ -16,8 +16,8 @@ public class AspectranParameters extends AbstractParameters implements Parameter
 	private static final ParameterDefine[] parameterDefines;
 	
 	static {
-		settings = new ParameterDefine("setting", new DefaultSettingsParameters());
-		typeAliases = new ParameterDefine("typeAlias", new GenericParameters());
+		settings = new ParameterDefine("settings", new DefaultSettingsParameters());
+		typeAliases = new ParameterDefine("typeAliases", new GenericParameters());
 		apons = new ParameterDefine("apon", new AponParameters(), true);
 		beans = new ParameterDefine("bean", new BeanParameters(), true);
 		imports = new ParameterDefine("import", new ImportParameters(), true);

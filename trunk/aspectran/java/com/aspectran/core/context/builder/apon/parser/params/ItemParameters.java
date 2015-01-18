@@ -14,6 +14,7 @@ public class ItemParameters extends AbstractParameters implements Parameters {
 	public static final ParameterDefine defaultValue;
 	public static final ParameterDefine values;
 	public static final ParameterDefine reference;
+	
 	private static final ParameterDefine[] parameterDefines;
 	
 	static {

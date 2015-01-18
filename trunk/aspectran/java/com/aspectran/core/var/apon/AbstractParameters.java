@@ -334,16 +334,18 @@ public abstract class AbstractParameters implements Parameters {
 		return parameterDefines;
 	}
 	
-	protected ParameterDefine[] preparse(StringTokenizer st, ParameterDefine parentParameterValue) {
+	protected ParameterDefine[] preparse(StringTokenizer st, ParameterDefine parentParameterDefine) {
 		List<ParameterDefine> parameterDefineList = new ArrayList<ParameterDefine>();
 		
-		preparse(st, parameterDefineList, parentParameterValue != null ? CURLY_BRAKET_OPEN : null, null);
+		String openBraket = parentParameterDefine != null ? CURLY_BRAKET_OPEN : null;
+		
+		preparse(st, parameterDefineList, openBraket, null);
 		
 		ParameterDefine[] parameterDefines = parameterDefineList.toArray(new ParameterDefine[parameterDefineList.size()]);
 		
-		if(parentParameterValue != null) {
-			Parameters parameters = new GenericParameters(parentParameterValue.getName(), parameterDefines);
-			parentParameterValue.setValue(parameters);
+		if(parentParameterDefine != null) {
+			Parameters parameters = new GenericParameters(parentParameterDefine.getName(), parameterDefines);
+			parentParameterDefine.setValue(parameters);
 		}
 		
 		return parameterDefines;
@@ -382,24 +384,24 @@ public abstract class AbstractParameters implements Parameters {
 						if(openBraket == SQUARE_BRAKET_OPEN) {
 							preparse(st, parameterDefine);
 						} else {
-							ParameterDefine pv = new ParameterDefine(name, ParameterValueType.PARAMETERS);
-							parameterDefineList.add(pv);
-							preparse(st, pv);
+							ParameterDefine pd = new ParameterDefine(name, ParameterValueType.PARAMETERS);
+							parameterDefineList.add(pd);
+							preparse(st, pd);
 						}
 					} else if(openBraket != SQUARE_BRAKET_OPEN) {
-						ParameterValueType parameterDefineType = ParameterValueType.valueOfHint(name);
+						ParameterValueType valueType = ParameterValueType.valueOfHint(name);
 						
-						if(parameterDefineType == null)
-							parameterDefineType = ParameterValueType.STRING;
+						if(valueType == null)
+							valueType = ParameterValueType.STRING;
 
 						if(SQUARE_BRAKET_OPEN.equals(value)) {
-							ParameterDefine pv = new ParameterDefine(name, parameterDefineType, true);
-							parameterDefineList.add(pv);
+							ParameterDefine pd = new ParameterDefine(name, valueType, true);
+							parameterDefineList.add(pd);
 	
-							preparse(st, parameterDefineList, SQUARE_BRAKET_OPEN, pv);
+							preparse(st, parameterDefineList, SQUARE_BRAKET_OPEN, pd);
 						} else {
-							ParameterDefine pv = new ParameterDefine(name, parameterDefineType);
-							parameterDefineList.add(pv);
+							ParameterDefine pd = new ParameterDefine(name, valueType);
+							parameterDefineList.add(pd);
 						}
 					}
 				}
@@ -458,8 +460,6 @@ public abstract class AbstractParameters implements Parameters {
 				}
 				
 				if(StringUtils.hasText(value)) {
-					ParameterValueType parameterDefineType = parameterDefine.getParameterValueType();
-					
 					if(CURLY_BRAKET_OPEN.equals(value)) {
 						if(openBraket == SQUARE_BRAKET_OPEN) {
 							AbstractParameters parameters2 = (AbstractParameters)parameterDefine.getParameters(curlyBraketCount++);
@@ -477,16 +477,20 @@ public abstract class AbstractParameters implements Parameters {
 						}
 					} else if(SQUARE_BRAKET_OPEN.equals(value)) {
 						valuelize(st, SQUARE_BRAKET_OPEN, parameterDefine);
-					} else if(parameterDefineType == ParameterValueType.STRING) {
-						parameterDefine.setValue(value);
-					} else if(parameterDefineType == ParameterValueType.INTEGER) {
-						try {
-							parameterDefine.setValue(new Integer(value));
-						} catch(NumberFormatException ex) {
-							throw new InvalidParameterException(title + ": Cannot parse value of '" + name + "' to an integer. \"" + token + "\"");
+					} else {
+						ParameterValueType valueType = parameterDefine.getParameterValueType();
+
+						if(valueType == ParameterValueType.STRING) {
+							parameterDefine.setValue(value);
+						} else if(valueType == ParameterValueType.INTEGER) {
+							try {
+								parameterDefine.setValue(new Integer(value));
+							} catch(NumberFormatException ex) {
+								throw new InvalidParameterException(title + ": Cannot parse value of '" + name + "' to an integer. \"" + token + "\"");
+							}
+						} else if(valueType == ParameterValueType.BOOLEAN) {
+							parameterDefine.setValue(Boolean.valueOf(value));
 						}
-					} else if(parameterDefineType == ParameterValueType.BOOLEAN) {
-						parameterDefine.setValue(Boolean.valueOf(value));
 					}
 				}
 			}

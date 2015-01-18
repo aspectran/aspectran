@@ -91,10 +91,10 @@ public class ItemRuleNodeletAdder implements NodeletAdder {
 	 * @return the reference tokens
 	 */
 	private Token[] getReferenceTokens(Properties attributes) {
-		String beanId = attributes.getProperty("bean");					
-		String parameter = attributes.getProperty("parameter");					
-		String attribute = attributes.getProperty("attribute");					
-		String property = attributes.getProperty("property");					
+		String beanId = attributes.getProperty("bean");
+		String parameter = attributes.getProperty("parameter");
+		String attribute = attributes.getProperty("attribute");
+		String property = attributes.getProperty("property"); // bean's property
 
 		Token[] tokens = new Token[1];
 		
@@ -124,12 +124,16 @@ public class ItemRuleNodeletAdder implements NodeletAdder {
 				String valueType = attributes.getProperty("valueType");
 				String value = attributes.getProperty("value");
 				String defaultValue = attributes.getProperty("defaultValue");
+				String tokenize = attributes.getProperty("tokenize");
 
 				// auto-naming if did not specify the name of the item
 				//if(StringUtils.isEmpty(name))
 				//	name = getItemNameBaseOnCount(type);
 				
 				ItemRule ir = new ItemRule();
+				
+				if(tokenize != null)
+					ir.setTokenize(Boolean.parseBoolean(tokenize));
 
 				if(!StringUtils.isEmpty(name)) {
 					ir.setName(name);
@@ -197,9 +201,19 @@ public class ItemRuleNodeletAdder implements NodeletAdder {
 			public void process(Node node, Properties attributes, String text) throws Exception {
 				String name = attributes.getProperty("name");
 				String tokenize = attributes.getProperty("tokenize");
-				boolean isTokenize = (tokenize == null || Boolean.parseBoolean(tokenize)); //default: tokenize
 				
 				ItemRule ir = (ItemRule)assistant.peekObject();
+				
+				boolean isTokenize;
+				
+				if(tokenize == null) {
+					if(ir.getTokenize() != null)
+						isTokenize = ir.getTokenize().booleanValue();
+					else
+						isTokenize = true;
+				} else {
+					isTokenize = Boolean.parseBoolean(tokenize);
+				}
 				
 				if(ir.getType() == ItemType.ITEM) {
 					if(text != null) {
