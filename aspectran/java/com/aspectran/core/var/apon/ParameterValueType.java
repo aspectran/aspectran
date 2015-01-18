@@ -32,25 +32,18 @@ public final class ParameterValueType extends Type {
 	
 	private static final String VALUE_TYPE_HINT_CLOSE = ")";
 
-	/** The "string" item type. */
 	public static final ParameterValueType STRING;
 
-	/** The "int" item type. */
 	public static final ParameterValueType INTEGER;
 	
-	/** The "long" item type. */
 	public static final ParameterValueType LONG;
 	
-	/** The "float" item type. */
 	public static final ParameterValueType FLOAT;
 	
-	/** The "double" item type. */
 	public static final ParameterValueType DOUBLE;
 	
-	/** The "boolean" item type. */
 	public static final ParameterValueType BOOLEAN;
 	
-	/** The "options" item type. */
 	protected static final ParameterValueType PARAMETERS;
 	
 	private static final Map<String, ParameterValueType> types;

@@ -14,8 +14,8 @@ public class AspectranConfig extends AbstractParameters implements Parameters {
 	
 	static {
 		parameterDefines = new ParameterDefine[] {
-			context,
-			scheduler
+				context,
+				scheduler
 		};
 	}
 	

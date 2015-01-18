@@ -32,7 +32,7 @@ public class PointcutPatternRule {
 	
 	private String patternString;
 	
-	private List<PointcutPatternRule> withoutPointcutPatternRuleList;
+	private List<PointcutPatternRule> excludePointcutPatternRuleList;
 
 	public PointcutPatternOperationType getPointcutPatternOperationType() {
 		return pointcutPatternOperationType;
@@ -74,19 +74,19 @@ public class PointcutPatternRule {
 		this.patternString = patternString;
 	}
 	
-	public List<PointcutPatternRule> getWithoutPointcutPatternRuleList() {
-		return withoutPointcutPatternRuleList;
+	public List<PointcutPatternRule> getExcludePointcutPatternRuleList() {
+		return excludePointcutPatternRuleList;
 	}
 
-	public void setWithoutPointcutPatternRuleList(List<PointcutPatternRule> withoutPointcutPatternRuleList) {
-		this.withoutPointcutPatternRuleList = withoutPointcutPatternRuleList;
+	public void setExcludePointcutPatternRuleList(List<PointcutPatternRule> excludePointcutPatternRuleList) {
+		this.excludePointcutPatternRuleList = excludePointcutPatternRuleList;
 	}
 	
-	public void addWithoutPointcutPatternRule(PointcutPatternRule withoutPointcutPatternRule) {
-		if(withoutPointcutPatternRuleList == null)
-			withoutPointcutPatternRuleList = new ArrayList<PointcutPatternRule>();
+	public void addExcludePointcutPatternRule(PointcutPatternRule excludePointcutPatternRule) {
+		if(excludePointcutPatternRuleList == null)
+			excludePointcutPatternRuleList = new ArrayList<PointcutPatternRule>();
 		
-		withoutPointcutPatternRuleList.add(withoutPointcutPatternRule);
+		excludePointcutPatternRuleList.add(excludePointcutPatternRule);
 	}
 
 	/* (non-Javadoc)

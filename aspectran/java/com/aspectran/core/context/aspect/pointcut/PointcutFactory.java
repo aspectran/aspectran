@@ -64,7 +64,7 @@ public class PointcutFactory {
 				} else {
 					PointcutPattern pointcutPattern = new PointcutPattern(pointcutPatternRule);
 					
-					List<PointcutPatternRule> withoutPointcutPatternRuleList = pointcutPatternRule.getWithoutPointcutPatternRuleList();
+					List<PointcutPatternRule> withoutPointcutPatternRuleList = pointcutPatternRule.getExcludePointcutPatternRuleList();
 					
 					if(withoutPointcutPatternRuleList != null) {
 						for(PointcutPatternRule wppr : withoutPointcutPatternRuleList) {

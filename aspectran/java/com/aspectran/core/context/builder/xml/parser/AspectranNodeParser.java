@@ -346,7 +346,7 @@ public class AspectranNodeParser {
 				assistant.pushObject(pointcutPatternRule);
 			}
 		});
-		parser.addNodelet("/aspectran/aspect/joinpoint/pointcut/target/without", new Nodelet() {
+		parser.addNodelet("/aspectran/aspect/joinpoint/pointcut/target/exclude", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
 				String translet = attributes.getProperty("translet");
 				String bean = attributes.getProperty("bean");
@@ -356,21 +356,21 @@ public class AspectranNodeParser {
 				AspectRule aspectRule = (AspectRule)assistant.peekObject(1);
 				
 				if(aspectRule.getAspectTargetType() == AspectTargetType.TRANSLET) {
-					PointcutPatternRule withoutPointcutPatternRule = new PointcutPatternRule();
-					withoutPointcutPatternRule.setPointcutPatternOperationType(PointcutPatternOperationType.WITHOUT);
+					PointcutPatternRule excludePointcutPatternRule = new PointcutPatternRule();
+					excludePointcutPatternRule.setPointcutPatternOperationType(PointcutPatternOperationType.WITHOUT);
 					
 					if(StringUtils.hasLength(translet) || StringUtils.hasLength(bean) || StringUtils.hasLength(method)) {
 						if(translet != null && translet.length() == 0)						
-							withoutPointcutPatternRule.setTransletNamePattern(translet);
+							excludePointcutPatternRule.setTransletNamePattern(translet);
 						if(bean != null && bean.length() == 0)
-							withoutPointcutPatternRule.setBeanOrActionIdPattern(bean);
+							excludePointcutPatternRule.setBeanOrActionIdPattern(bean);
 						if(method != null && method.length() == 0)
-							withoutPointcutPatternRule.setBeanMethodNamePattern(method);
+							excludePointcutPatternRule.setBeanMethodNamePattern(method);
 					} else if(StringUtils.hasText(text)) {
-						withoutPointcutPatternRule.setPatternString(text);
+						excludePointcutPatternRule.setPatternString(text);
 					}
 					
-					pointcutPatternRule.addWithoutPointcutPatternRule(withoutPointcutPatternRule);
+					pointcutPatternRule.addExcludePointcutPatternRule(excludePointcutPatternRule);
 				}
 			}
 		});

@@ -18,9 +18,9 @@ public class AspectranContextAutoReloadingConfig extends AbstractParameters impl
 	
 	static {
 		parameterValues = new ParameterDefine[] {
-			reloadMethod,
-			observationInterval,
-			startup
+				reloadMethod,
+				observationInterval,
+				startup
 		};
 	}
 	

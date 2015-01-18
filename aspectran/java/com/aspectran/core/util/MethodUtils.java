@@ -779,7 +779,7 @@ public class MethodUtils {
 	/**
 	 * Gets an instance of ClassDescriptor for the specified class.
 	 * 
-	 * @param clazz The class for which to lookup the ClassDescriptor cache.
+	 * @param userFor The class for which to lookup the ClassDescriptor cache.
 	 * @return The ClassDescriptor cache for the class
 	 */
 	private static void putMethod(MethodDescriptor md, Method method) {
