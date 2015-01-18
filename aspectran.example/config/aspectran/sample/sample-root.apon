@@ -51,24 +51,13 @@ aspectran: {
 		class: org.quartz.impl.StdSchedulerFactory
 		scope: singleton
 		constructor: {
-			arguments: [
-				{
-					item: {
-						name: name1
-					list: [
-						{
-							value: 
-						}
-					]
+			simpleArguments: [
+				arg1,
+				arg2
 			]
 			arguments: [
 				{
-					list: [
-						
-					]
-			
-				{
-					valueType: properties
+					type: properties
 					value: {
 						org.quartz.scheduler.instanceName: DefaultQuartzScheduler
 						org.quartz.scheduler.rmi.export: false
@@ -84,25 +73,35 @@ aspectran: {
 				}
 			]
 		}
+		properties-simple: {
+			method1: aaa
+			method2: bbb
+		}
 		properties: [
 			{
 				type: map
 				name: property1
-				value: property value
-				reference:
-				valueType: java.lang.String
-				defaultValue: default value
-				tokenize: true
 				value: {
 					type: java.lang.String
 					value:
-					reference:
+					reference: {
+						bean: a.bean
+					}
 					tokenize: true
 				}
+				valueType: java.lang.String
+				defaultValue: default value
+				tokenize: true
 			},
 			{
 				name: property2
 				value(int): 123
+			},
+			{
+				name: property2
+				reference: {
+					bean: a.bean
+				}
 			}
 		]
 	}
