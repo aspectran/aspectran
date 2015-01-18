@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<!ELEMENT aspectran (settings? | apon? | typeAliases* | import* | bean* | translet* | aspect*)*>
+<!ELEMENT aspectran (settings? | apon? | typeAliases* | aspect* | bean* | translet* | import*)*>
 <!ATTLIST aspectran
 namespace CDATA #IMPLIED
 >
@@ -19,46 +19,6 @@ value CDATA #IMPLIED
 alias CDATA #REQUIRED
 type CDATA #REQUIRED
 >
-
-<!ELEMENT import EMPTY>
-<!ATTLIST import
-resource CDATA #IMPLIED
-file CDATA #IMPLIED
-url CDATA #IMPLIED
->
-
-<!ELEMENT item (#PCDATA | value | reference | null)*>
-<!ATTLIST item
-name CDATA #IMPLIED
-value CDATA #IMPLIED
-type (item | list | map | set | properties) #IMPLIED
-valueType CDATA #IMPLIED
-defaultValue CDATA #IMPLIED
->
-
-<!ELEMENT value (#PCDATA | reference | null)*>
-<!ATTLIST value
-name CDATA #IMPLIED
-tokenize (true | false) #IMPLIED
->
-
-<!ELEMENT reference EMPTY>
-<!ATTLIST reference
-bean CDATA #IMPLIED
-parameter CDATA #IMPLIED
-attribute CDATA #IMPLIED
-property CDATA #IMPLIED
->
-
-<!ELEMENT attributes (item*)>
-
-<!ELEMENT properties (item*)>
-
-<!ELEMENT arguments (item*)>
-
-<!ELEMENT parameters (item*)>
-
-<!ELEMENT null EMPTY>
 
 <!ELEMENT apon (#PCDATA)>
 <!ATTLIST apon
@@ -81,15 +41,15 @@ scope (translet | request | content | action-content | bean-content | response |
 type (wildcard | regexp | simpleTrigger | cronTrigger) #IMPLIED
 >
 
-<!ELEMENT target (#PCDATA | without)*>
+<!ELEMENT target (#PCDATA | exclude)*>
 <!ATTLIST target
 translet CDATA #IMPLIED
 bean CDATA #IMPLIED
 method CDATA #IMPLIED
 >
 
-<!ELEMENT without (#PCDATA)>
-<!ATTLIST without
+<!ELEMENT exclude (#PCDATA)>
+<!ATTLIST exclude
 translet CDATA #IMPLIED
 bean CDATA #IMPLIED
 method CDATA #IMPLIED
@@ -134,7 +94,6 @@ override (true | false) #IMPLIED
 <!ELEMENT destroyMethod (#PCDATA)>
 <!ELEMENT lazyInit (#PCDATA)>
 <!ELEMENT poolSize (#PCDATA)>
-
 <!ELEMENT constructor (arguments?)>
 
 <!ELEMENT translet ((request?, (echo? | action? | include?)*, (transform | dispatch | redirect | forward)?) | (request?, contents?, response*, exception?))>
@@ -205,6 +164,7 @@ type CDATA #IMPLIED
 contentType CDATA #IMPLIED
 characterEncoding CDATA #IMPLIED
 >
+
 <!ELEMENT template (#PCDATA)>
 <!ATTLIST template
 resource CDATA #IMPLIED
@@ -226,10 +186,51 @@ url CDATA #IMPLIED
 translet CDATA #IMPLIED
 excludeNullParameters CDATA #IMPLIED
 >
+
 <!ELEMENT url (#PCDATA)>
 
 <!ELEMENT forward ((echo? | action? | include?)*, url?, parameters?)>
 <!ATTLIST forward
 contentType CDATA #IMPLIED
 translet CDATA #IMPLIED
+>
+
+<!ELEMENT item (#PCDATA | value | reference | null)*>
+<!ATTLIST item
+name CDATA #IMPLIED
+value CDATA #IMPLIED
+type (item | list | map | set | properties) #IMPLIED
+valueType CDATA #IMPLIED
+defaultValue CDATA #IMPLIED
+>
+
+<!ELEMENT value (#PCDATA | reference | null)*>
+<!ATTLIST value
+name CDATA #IMPLIED
+tokenize (true | false) #IMPLIED
+>
+
+<!ELEMENT reference EMPTY>
+<!ATTLIST reference
+bean CDATA #IMPLIED
+parameter CDATA #IMPLIED
+attribute CDATA #IMPLIED
+property CDATA #IMPLIED
+>
+
+<!ELEMENT attributes (item*)>
+
+<!ELEMENT properties (item*)>
+
+<!ELEMENT arguments (item*)>
+
+<!ELEMENT parameters (item*)>
+
+<!ELEMENT null EMPTY>
+
+<!ELEMENT import EMPTY>
+<!ATTLIST import
+resource CDATA #IMPLIED
+file CDATA #IMPLIED
+url CDATA #IMPLIED
 >
