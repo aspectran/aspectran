@@ -17,7 +17,8 @@ aspectran: {
 		joinpoint: {
 			scope: request
 			pointcut: {
-				wildcard: /a/*.do
+				type: wildcard
+				target: /a/*.do
 				target: [
 					{
 						translet: /a/a/a.do
@@ -37,7 +38,9 @@ aspectran: {
 					repleatInterval
 					repeatCount
 				}
-				cronTrigger: * * 8 8
+				cronTrigger: {
+					expression: * * 8 8
+				}
 			}
 		}
 		settings: {
@@ -104,6 +107,26 @@ aspectran: {
 				}
 			}
 		]
+		properties: {
+			(properties)
+			map1(string):{
+				kind1(int): 001
+				kind2: 002
+				kind3: 003
+			}
+			list1(int): [
+				1
+				2
+				3
+			]
+			text(string): (string)[
+				element1
+				element2
+				element3
+			]
+				
+			message: error 001
+		}
 	}
 	tranlset: {
 	}
@@ -191,6 +214,11 @@ aspectran: {
 			<setting name="defaultContentType" value="text/html"/>
 			<setting name="viewDispatcher" value="jspViewDispatcher"/>
 		</settings>
+		<settings>
+			characterEncoding: utf-8
+			defaultContentType: text/html
+			viewDispatcher: jspViewDispatcher
+		</settings>
 	</aspect>
 
 	<aspect id="error">
@@ -228,6 +256,62 @@ aspectran: {
 								<item name="variable1">error</item>
 								<item name="variable2">0001</item>
 							</properties>
+							<properties>
+								code: 001
+								message: error 001
+							</properties>
+							<properties>
+								map1(string): {
+									kind1(int): 001
+									kind2: 002
+									kind3: 003
+								}
+								list1(int): [
+									1
+									2
+									3
+								]
+								text(string): [
+									element1
+									element2
+									element3
+								]
+									
+								message: error 001
+							</properties>
+							property: [
+								code: {
+									type:
+								}
+							]
+							property: [
+								{
+									name: code
+									value: 001
+								},
+								{
+									name: message
+									value: error 001
+								}
+							]
+							property: {
+								name: message
+								value: error 001
+							}
+							property: {
+								type: map
+								name: property1
+								value: {
+									value:
+									reference: {
+										bean: a.bean
+									}
+									tokenize: true
+								}
+								valueType: java.lang.String
+								defaultValue: default value
+								tokenize: true
+							}
 						</action>
 						<echo id="error3">
 							<item name="code">0002</item>
@@ -362,7 +446,51 @@ aspectran: {
 	</apon>
 	
 	<aspect id="scheduler1" for="scheduler">
+		<joinpoint scope="request">
+			<pointcut>
+				+(/front/a/*)
+				-(/front/a/A*)
+			</pointcut>
+		</joinpoint>
+		<joinpoint scope="request">
+			<pointcut>
+				target: {
+					+: /front/a/*@bean^method
+					+: /front/b/*
+					+: /front/c/*
+					-: /front/a/A*
+					+: {
+						translet: aaa
+						bean: bbb
+						method: ccc
+					}
+				}
+				target: {
+					translet: aaa
+					bean: bbb
+					method: ccc
+					exclude: {
+						translet: aaa
+						bean: bbb
+						method: ccc
+					}
+				}
+			</pointcut>
+		</joinpoint>
 		<joinpoint>
+			<pointcut>
+				simpleTrigger: {
+					startDelay: 500
+					repleatInterval: 3000
+					repeatCount: 10
+				}
+			</pointcut>
+			<pointcut>
+				cronTrigger: {
+					expression: * * *
+				}
+			</pointcut>
+		
 			<pointcut type="simpleTrigger">
 				startDelay: 500
 				repleatInterval: 3000
