@@ -1,5 +1,5 @@
 aspectran: {
-	settings: {
+	setting: {
 		transletNamePattern: /example/*
 		transletInterfaceClass: com.aspectran.web.activity.WebTranslet
 		transletImplementClass: com.aspectran.web.activity.WebTransletImpl
@@ -8,7 +8,7 @@ aspectran: {
 		nullableActionId: true
 		beanProxyMode: cglib
 	}
-	typeAliases: {
+	typeAlias: {
 		example1: com.aspectran.Example1 
 		example2: com.aspectran.Example2
 	}
@@ -17,36 +17,125 @@ aspectran: {
 		joinpoint: {
 			scope: request
 			pointcut: {
-				type: wildcard
-				target: /a/*.do
-				target: [
-					{
-						translet: /a/a/a.do
-						bean: com.aspectran.example.ExampleBean
-						method: doAction
-						exclude: [
-							{
-								translet: /a/a/a.do
-								bean: com.aspectran.example.ExampleBean
-								method: doAction
-							}
-						]
+				target: {
+					+: /front/a/*@bean^method
+					+: /front/b/*
+					+: /front/c/*
+					-: /front/a/A*
+					+: [
+						/front/a/*@bean^method
+						/front/b/*
+						/front/c/*
+						/front/a/A*
+					]
+					-: [
+						/front/a/A*
+					]
+				}
+				target: {
+					translet: aaa
+					bean: bbb
+					method: ccc
+					exclude: {
+						translet: aaa
+						bean: bbb
+						method: ccc
 					}
-				]
+				}
 				simpleTrigger: {
-					startDelay
-					repleatInterval
-					repeatCount
+					startDelay: 500
+					repleatInterval: 3000
+					repeatCount: 10
 				}
 				cronTrigger: {
 					expression: * * 8 8
 				}
 			}
 		}
-		settings: {
+		setting: {
 			characterEncoding: utf-8
 			multipart.maxRequestSize: 10M
 			multipart.temporaryFilePath: /d:/
+		}
+		advice: {
+			before: [
+				{
+					id: action1
+					bean: common.action.a1
+					method: testXmlAction
+					argument: [
+						{
+							type: properties
+							value: {
+								org.quartz.scheduler.instanceName: DefaultQuartzScheduler
+								org.quartz.scheduler.rmi.export: false
+								org.quartz.scheduler.rmi.proxy: false
+								org.quartz.scheduler.wrapJobExecutionInUserTransaction: false
+								org.quartz.threadPool.class: org.quartz.simpl.SimpleThreadPool
+								org.quartz.threadPool.threadCount: 10
+								org.quartz.threadPool.threadPriority: 5
+								org.quartz.threadPool.threadsInheritContextClassLoaderOfInitializingThread: true
+								org.quartz.jobStore.misfireThreshold: 60000
+								org.quartz.jobStore.class: org.quartz.simpl.RAMJobStore
+							}
+						}
+					]
+					property: {
+						map1(string): {
+							kind1(int): 001
+							kind2: 002
+							kind3: 003
+						}
+						list1(int): [
+							1
+							2
+							3
+						]
+						text(string): [
+							element1
+							element2
+							element3
+						]
+						message: error 001
+					}
+					hidden: false
+				}
+				{
+					id: include1
+					include: /common/action/a1
+					hidden: true
+				}
+				{
+					id: echo1
+					echo: {
+						map1(string): {
+							kind1(int): 001
+							kind2: 002
+							kind3: 003
+						}
+						list1(int): [
+							1
+							2
+							3
+						]
+						text(string): [
+							element1
+							element2
+							element3
+						]
+						message: error 001
+					}
+					hidden: false
+				}
+			]
+			after: [
+			]
+			around: [
+			]
+			finally: [
+			]
+			exceptionRaized: [
+			]
 		}
 	}
 	bean: {
@@ -54,11 +143,7 @@ aspectran: {
 		class: org.quartz.impl.StdSchedulerFactory
 		scope: singleton
 		constructor: {
-			simpleArguments: [
-				arg1,
-				arg2
-			]
-			arguments: [
+			argument: [
 				{
 					type: properties
 					value: {
@@ -76,30 +161,22 @@ aspectran: {
 				}
 			]
 		}
-		properties-simple: {
-			method1: aaa
-			method2: bbb
-		}
-		properties: [
+		property: [
 			{
 				type: map
 				name: property1
 				value: {
-					type: java.lang.String
-					value:
-					reference: {
-						bean: a.bean
-					}
-					tokenize: true
+					code1: value1
+					code2: value2
 				}
 				valueType: java.lang.String
 				defaultValue: default value
 				tokenize: true
-			},
+			}
 			{
 				name: property2
 				value(int): 123
-			},
+			}
 			{
 				name: property2
 				reference: {
@@ -107,9 +184,8 @@ aspectran: {
 				}
 			}
 		]
-		properties: {
-			(properties)
-			map1(string):{
+		property(properties): {
+			map1(string): {
 				kind1(int): 001
 				kind2: 002
 				kind3: 003
@@ -119,12 +195,11 @@ aspectran: {
 				2
 				3
 			]
-			text(string): (string)[
+			text(string): [
 				element1
 				element2
 				element3
 			]
-				
 			message: error 001
 		}
 	}
@@ -459,11 +534,15 @@ aspectran: {
 					+: /front/b/*
 					+: /front/c/*
 					-: /front/a/A*
-					+: {
-						translet: aaa
-						bean: bbb
-						method: ccc
-					}
+					+: [
+						/front/a/*@bean^method
+						/front/b/*
+						/front/c/*
+						/front/a/A*
+					]
+					-: [
+						/front/a/A*
+					]
 				}
 				target: {
 					translet: aaa
