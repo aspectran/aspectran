@@ -45,7 +45,7 @@ public class BeanParameters extends AbstractParameters implements Parameters {
 				parent,
 				override,
 				constructor,
-				
+				properties
 		};
 	}
 	

@@ -34,7 +34,6 @@ import com.aspectran.core.util.xml.NodeletParser;
 import com.aspectran.core.var.rule.ItemRule;
 import com.aspectran.core.var.rule.ItemRuleMap;
 import com.aspectran.core.var.token.Token;
-import com.aspectran.core.var.token.TokenParser;
 import com.aspectran.core.var.type.ItemType;
 import com.aspectran.core.var.type.ItemValueType;
 import com.aspectran.core.var.type.TokenType;
@@ -119,10 +118,10 @@ public class ItemRuleNodeletAdder implements NodeletAdder {
 	public void process(String xpath, NodeletParser parser) {
 		parser.addNodelet(xpath, "/item", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
-				String name = attributes.getProperty("name");
 				String type = attributes.getProperty("type");
-				String valueType = attributes.getProperty("valueType");
+				String name = attributes.getProperty("name");
 				String value = attributes.getProperty("value");
+				String valueType = attributes.getProperty("valueType");
 				String defaultValue = attributes.getProperty("defaultValue");
 				String tokenize = attributes.getProperty("tokenize");
 
@@ -130,16 +129,12 @@ public class ItemRuleNodeletAdder implements NodeletAdder {
 				//if(StringUtils.isEmpty(name))
 				//	name = getItemNameBaseOnCount(type);
 				
-				ItemRule ir = new ItemRule();
-				
-				if(tokenize != null)
-					ir.setTokenize(Boolean.parseBoolean(tokenize));
+				ItemRule ir;
 
-				if(!StringUtils.isEmpty(name)) {
-					ir.setName(name);
-				} else {
-					ir.setUnknownName(true);
-				}
+				if(tokenize != null)
+					ir = new ItemRule(Boolean.parseBoolean(tokenize));
+				else
+					ir = new ItemRule();
 				
 				ItemType itemType = ItemType.valueOf(type);
 				
@@ -150,6 +145,12 @@ public class ItemRuleNodeletAdder implements NodeletAdder {
 					ir.setType(itemType);
 				else
 					ir.setType(ItemType.ITEM); //default
+
+				if(!StringUtils.isEmpty(name)) {
+					ir.setName(name);
+				} else {
+					ir.setUnknownName(true);
+				}
 				
 				ItemValueType itemValueType = ItemValueType.valueOf(valueType);
 				
@@ -166,7 +167,7 @@ public class ItemRuleNodeletAdder implements NodeletAdder {
 				
 				if(text != null || value != null)
 					ir.setValue((text == null) ? value : text);
-			
+
 				assistant.pushObject(ir);
 				
 				if(ir.getType() == ItemType.ITEM) {
@@ -200,49 +201,21 @@ public class ItemRuleNodeletAdder implements NodeletAdder {
 		parser.addNodelet(xpath, "/item/value", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
 				String name = attributes.getProperty("name");
-				String tokenize = attributes.getProperty("tokenize");
 				
 				ItemRule ir = (ItemRule)assistant.peekObject();
 				
-				boolean isTokenize;
-				
-				if(tokenize == null) {
-					if(ir.getTokenize() != null)
-						isTokenize = ir.getTokenize().booleanValue();
-					else
-						isTokenize = true;
-				} else {
-					isTokenize = Boolean.parseBoolean(tokenize);
-				}
-				
 				if(ir.getType() == ItemType.ITEM) {
 					if(text != null) {
-						if(isTokenize)
-							ir.setValue(text);
-						else {
-							Token[] tokens = new Token[1];
-							tokens[0] = new Token(TokenType.TEXT, ir.getName());
-							ir.setValue(tokens);
-						}
+						ir.setValue(text);
 					}
 				} else {
 					Token[] tokens = null;
 					
 					if(ir.getType() == ItemType.LIST || ir.getType() == ItemType.SET) {
-						if(isTokenize)
-							tokens = TokenParser.parse(text);
-						else {
-							tokens = new Token[1];
-							tokens[0] = new Token(TokenType.TEXT, text);
-						}
+						tokens = ir.makeTokens(text);
 					} else if(ir.getType() == ItemType.MAP || ir.getType() == ItemType.PROPERTIES) {
 						if(!StringUtils.isEmpty(name)) {
-							if(isTokenize)
-								tokens = TokenParser.parse(text);
-							else {
-								tokens = new Token[1];
-								tokens[0] = new Token(TokenType.TEXT, text);
-							}
+							tokens = ir.makeTokens(text);
 						}
 					}
 					
