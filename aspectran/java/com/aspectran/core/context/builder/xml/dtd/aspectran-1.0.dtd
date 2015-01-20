@@ -220,10 +220,9 @@ defaultValue CDATA #IMPLIED
 tokenize (true | false) #IMPLIED
 >
 
-<!ELEMENT value (#PCDATA | reference | null)*>
+<!ELEMENT value (#PCDATA | null)*>
 <!ATTLIST value
 name CDATA #IMPLIED
-tokenize (true | false) #IMPLIED
 >
 
 <!ELEMENT reference EMPTY>

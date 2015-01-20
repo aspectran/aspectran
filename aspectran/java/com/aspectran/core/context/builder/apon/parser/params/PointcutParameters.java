@@ -7,30 +7,24 @@ import com.aspectran.core.var.apon.Parameters;
 
 public class PointcutParameters extends AbstractParameters implements Parameters {
 
-	public static final ParameterDefine wildcard;
-	public static final ParameterDefine regexp;
+	public static final ParameterDefine targets;
 
 	// for scheduler
 	public static final ParameterDefine simpleTrigger;
 	public static final ParameterDefine cronTrigger;
 	
-	public static final ParameterDefine targets;
 
 	private static final ParameterDefine[] parameterDefines;
 	
 	static {
-		wildcard = new ParameterDefine("wildcard", ParameterValueType.STRING);
-		regexp = new ParameterDefine("regexp", ParameterValueType.STRING);
+		targets = new ParameterDefine("target", new TargetParameters());
 		simpleTrigger = new ParameterDefine("simpleTrigger", new SimpleTriggerParameters());
 		cronTrigger = new ParameterDefine("cronTrigger", ParameterValueType.STRING);
-		targets = new ParameterDefine("target", new TargetParameters(), true);
 		
 		parameterDefines = new ParameterDefine[] {
-				wildcard,
-				regexp,
+				targets,
 				simpleTrigger,
-				cronTrigger,
-				targets
+				cronTrigger
 		};
 	}
 	

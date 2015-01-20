@@ -25,6 +25,7 @@ import com.aspectran.core.var.token.Token;
 import com.aspectran.core.var.token.TokenParser;
 import com.aspectran.core.var.type.ItemType;
 import com.aspectran.core.var.type.ItemValueType;
+import com.aspectran.core.var.type.TokenType;
 
 /**
  * <p>Created: 2008. 03. 27 오후 3:57:48</p>
@@ -37,15 +38,15 @@ public class ItemRule {
 	/** suffix for map-type item: "{}" */
 	public static final String MAP_SUFFIX = "{}";
 
+	private ItemType type;
+	
 	private String name;
 	
-	private ItemType type;
-
 	private ItemValueType valueType;
 	
 	private String defaultValue;
 
-	private Boolean tokenize;
+	private final Boolean tokenize;
 
 	private Token[] tokens;
 	
@@ -58,6 +59,32 @@ public class ItemRule {
 	private Properties tokensProperties;
 	
 	private boolean unknownName;
+
+	public ItemRule() {
+		this(null);
+	}
+	
+	public ItemRule(Boolean tokenize) {
+		this.tokenize = tokenize;
+	}
+
+	/**
+	 * Returns the item-type of the item, for example, SINGLE, LIST, MAP, SET, PROPERTIES.
+	 * 
+	 * @return the item type
+	 */
+	public ItemType getType() {
+		return type;
+	}
+	
+	/**
+	 * Sets the item-type of a item.
+	 *
+	 * @param type the new type
+	 */
+	public void setType(ItemType type) {
+		this.type = type;
+	}
 
 	/**
 	 * Returns the name of the parameter.
@@ -84,24 +111,6 @@ public class ItemRule {
 		}
 		
 		return sb.toString();
-	}
-	
-	/**
-	 * Returns the item-type of the item, for example, SINGLE, LIST, MAP, SET, PROPERTIES.
-	 * 
-	 * @return the item type
-	 */
-	public ItemType getType() {
-		return type;
-	}
-	
-	/**
-	 * Sets the item-type of a item.
-	 *
-	 * @param type the new type
-	 */
-	public void setType(ItemType type) {
-		this.type = type;
 	}
 	
 	/**
@@ -144,10 +153,13 @@ public class ItemRule {
 		return tokenize;
 	}
 
-	public void setTokenize(Boolean tokenize) {
-		this.tokenize = tokenize;
+	public Boolean isTokenize() {
+		if(tokenize == null)
+			return false;
+		
+		return tokenize.booleanValue();
 	}
-
+	
 	/**
 	 * Gets the tokens.
 	 * 
@@ -334,13 +346,13 @@ public class ItemRule {
 	 */
 	public void setValue(String value) {
 		checkValueType(null);
-		
-		if(type == ItemType.ITEM)
+
+		if(isTokenize())
 			tokens = TokenParser.parse(value);
-		else if(type == ItemType.LIST)
-			tokensList = TokenParser.parseAsList(value);
-		else if(type == ItemType.MAP)
-			tokensMap = TokenParser.parseAsMap(value);
+		else {
+			tokens = new Token[1];
+			tokens[0] = new Token(TokenType.TEXT, value);
+		}
 	}
 	
 
@@ -565,6 +577,19 @@ public class ItemRule {
 	public void setValue(Properties tokensProperties) {
 		checkValueType(ItemType.PROPERTIES);
 		this.tokensProperties = tokensProperties;
+	}
+	
+	public Token[] makeTokens(String text) {
+		Token[] tokens;
+		
+		if(isTokenize())
+			tokens = TokenParser.parse(text);
+		else {
+			tokens = new Token[1];
+			tokens[0] = new Token(TokenType.TEXT, text);
+		}
+		
+		return tokens;
 	}
 	
 	/**

@@ -7,8 +7,8 @@ import com.aspectran.core.var.apon.Parameters;
 
 public class AspectranParameters extends AbstractParameters implements Parameters {
 
-	public static final ParameterDefine settings;
-	public static final ParameterDefine typeAliases;
+	public static final ParameterDefine setting;
+	public static final ParameterDefine typeAlias;
 	public static final ParameterDefine apons;
 	public static final ParameterDefine beans;
 	public static final ParameterDefine imports;
@@ -16,15 +16,15 @@ public class AspectranParameters extends AbstractParameters implements Parameter
 	private static final ParameterDefine[] parameterDefines;
 	
 	static {
-		settings = new ParameterDefine("settings", new DefaultSettingsParameters());
-		typeAliases = new ParameterDefine("typeAliases", new GenericParameters());
+		setting = new ParameterDefine("setting", new DefaultSettingsParameters());
+		typeAlias = new ParameterDefine("typeAlias", new GenericParameters());
 		apons = new ParameterDefine("apon", new AponParameters(), true);
 		beans = new ParameterDefine("bean", new BeanParameters(), true);
 		imports = new ParameterDefine("import", new ImportParameters(), true);
 		
 		parameterDefines = new ParameterDefine[] {
-			settings,
-			typeAliases,
+			setting,
+			typeAlias,
 			beans,
 			imports
 		};
