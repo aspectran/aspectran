@@ -93,6 +93,8 @@ public final class TransformType extends Type {
 			return XML_TRANSFORM;
 		else if(contentType == ContentType.TEXT_JSON)
 			return JSON_TRANSFORM;
+		else if(contentType == ContentType.TEXT_APON)
+			return APON_TRANSFORM;
 		
 		return null;
 	}
