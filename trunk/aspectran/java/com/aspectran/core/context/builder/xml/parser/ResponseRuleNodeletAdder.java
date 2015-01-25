@@ -75,7 +75,7 @@ public class ResponseRuleNodeletAdder implements NodeletAdder {
 				}
 				
 				if(transformType == null)
-					throw new IllegalArgumentException("Unkown transform-type '" + typeString + "'.");
+					throw new IllegalArgumentException("Unknown transform-type '" + typeString + "'.");
 
 				TransformRule tr = new TransformRule();
 				tr.setContentType(contentType);
@@ -244,7 +244,7 @@ public class ResponseRuleNodeletAdder implements NodeletAdder {
 				if(url != null && url.length() > 0)
 					rrr.setUrl(url);
 				
-				rrr.setExcludeNullParameters(excludeNullParameters);
+				rrr.setExcludeNullParameter(excludeNullParameters);
 				
 				assistant.pushObject(rrr);
 				

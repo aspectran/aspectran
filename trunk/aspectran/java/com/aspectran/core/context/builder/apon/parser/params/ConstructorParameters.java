@@ -11,7 +11,7 @@ public class ConstructorParameters extends AbstractParameters implements Paramet
 	private static final ParameterDefine[] parameterDefines;
 	
 	static {
-		arguments = new ParameterDefine("arguments", new ItemParameters(), true);
+		arguments = new ParameterDefine("argument", new ItemParameters(), true);
 		
 		parameterDefines = new ParameterDefine[] {
 				arguments

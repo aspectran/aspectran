@@ -32,7 +32,7 @@ public class BeanParameters extends AbstractParameters implements Parameters {
 		parent = new ParameterDefine("parent", ParameterValueType.STRING);
 		override = new ParameterDefine("override", ParameterValueType.BOOLEAN);
 		constructor = new ParameterDefine("constructor", new ConstructorParameters());
-		properties = new ParameterDefine("properties", new ItemParameters(), true);
+		properties = new ParameterDefine("property", new ItemParameters(), true);
 		
 		parameterDefines = new ParameterDefine[] {
 				id,

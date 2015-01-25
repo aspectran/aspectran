@@ -452,6 +452,200 @@ public class AspectranNodeParser {
 		});
 	}
 
+
+	/**
+	 * Adds the bean nodelets.
+	 */
+	private void addBeanNodelets() {
+		parser.addNodelet("/aspectran/bean", new Nodelet() {
+			public void process(Node node, Properties attributes, String text) throws Exception {
+				String id = attributes.getProperty("id");
+				String className = resolveAliasType(attributes.getProperty("class"));
+				String singleton = attributes.getProperty("singleton");
+				String scope = attributes.getProperty("scope");
+				String factoryMethod = attributes.getProperty("factoryMethod");
+				String initMethodName = attributes.getProperty("initMethod");
+				String destroyMethodName = attributes.getProperty("destroyMethod");
+				boolean lazyInit = Boolean.parseBoolean(attributes.getProperty("lazyInit"));
+				boolean override = Boolean.parseBoolean(attributes.getProperty("override"));
+
+				if(id == null) {
+//					if(assistant.isNullableBeanId()) {
+//						// When the bean id is null, the namespace does not apply.
+//						id = classType;
+//					} else {
+						throw new IllegalArgumentException("The <bean> element requires a id attribute.");
+//					}
+				} else {
+					id = assistant.applyNamespaceForBean(id);
+				}
+
+				if(className == null)
+					throw new IllegalArgumentException("The <bean> element requires a class attribute.");
+
+				Class<?> beanClass = null;
+				Map<String, Class<?>> beanClassMap = null;
+				
+				if(!WildcardPattern.hasWildcards(className)) {
+					beanClass = assistant.getClassLoader().loadClass(className);
+				} else {
+					BeanClassScanner scanner = new BeanClassScanner(id, assistant.getClassLoader());
+					beanClassMap = scanner.scanClass(className);
+				}
+				
+				ScopeType scopeType = ScopeType.valueOf(scope);
+				
+				if(scope != null && scopeType == null)
+					throw new IllegalArgumentException("No scope-type registered for scope '" + scope + "'.");
+				
+				if(scopeType == null)
+					scopeType = (singleton == null || Boolean.parseBoolean(singleton)) ? ScopeType.SINGLETON : ScopeType.PROTOTYPE; //default: singleton
+				
+				if(beanClass != null) {
+					if(initMethodName == null && beanClass.isAssignableFrom(InitializableBean.class)) {
+						initMethodName = InitializableBean.INITIALIZE_METHOD_NAME;
+					}
+
+					if(initMethodName != null) {
+						if(MethodUtils.getAccessibleMethod(beanClass, initMethodName, null) == null) {
+							throw new IllegalArgumentException("No such initialization method '" + initMethodName + "() on bean class: " + className);
+						}
+					}
+					
+					if(destroyMethodName == null && beanClass.isAssignableFrom(DisposableBean.class)) {
+						destroyMethodName = DisposableBean.DESTROY_METHOD_NAME;
+					}
+
+					if(destroyMethodName != null) {
+						if(MethodUtils.getAccessibleMethod(beanClass, destroyMethodName, null) == null) {
+							throw new IllegalArgumentException("No such destroy method '" + destroyMethodName + "() on bean class: " + className);
+						}
+					}
+
+					BeanRule beanRule = new BeanRule();
+					beanRule.setId(id);
+					beanRule.setClassName(className);
+					beanRule.setBeanClass(beanClass);
+					beanRule.setScopeType(scopeType);
+					beanRule.setFactoryMethodName(factoryMethod);
+					beanRule.setInitMethodName(initMethodName);
+					beanRule.setDestroyMethodName(destroyMethodName);
+					beanRule.setLazyInit(lazyInit);
+					beanRule.setOverride(override);
+	
+					assistant.pushObject(beanRule);
+				} else {
+					BeanRule[] beanRules = new BeanRule[beanClassMap.size()];
+					
+					int i = 0;
+					for(Map.Entry<String, Class<?>> entry : beanClassMap.entrySet()) {
+						String beanId = entry.getKey();
+						Class<?> beanClass2 = entry.getValue();
+						String initMethodName2 = initMethodName;
+						String destroyMethodName2 = destroyMethodName;
+						
+						if(initMethodName2 == null && beanClass2.isAssignableFrom(InitializableBean.class)) {
+							initMethodName2 = InitializableBean.INITIALIZE_METHOD_NAME;
+						}
+						
+						if(initMethodName2 != null) {
+							if(MethodUtils.getAccessibleMethod(beanClass, initMethodName2, null) == null) {
+								throw new IllegalArgumentException("No such initialization method '" + initMethodName2 + "() on bean class: " + beanClass2.getName());
+							}
+						}
+
+						if(destroyMethodName2 == null && beanClass2.isAssignableFrom(DisposableBean.class)) {
+							destroyMethodName2 = DisposableBean.DESTROY_METHOD_NAME;
+						}
+
+						if(destroyMethodName2 != null) {
+							if(MethodUtils.getAccessibleMethod(beanClass, destroyMethodName2, null) == null) {
+								throw new IllegalArgumentException("No such destroy method '" + destroyMethodName2 + "() on bean class: " + beanClass2.getName());
+							}
+						}
+
+						BeanRule beanRule = new BeanRule();
+						beanRule.setId(beanId);
+						beanRule.setClassName(beanClass2.getName());
+						beanRule.setBeanClass(beanClass2);
+						beanRule.setScopeType(scopeType);
+						beanRule.setFactoryMethodName(factoryMethod);
+						beanRule.setInitMethodName(initMethodName2);
+						beanRule.setDestroyMethodName(destroyMethodName2);
+						beanRule.setLazyInit(lazyInit);
+						beanRule.setOverride(override);
+						
+						beanRules[i++] = beanRule;
+					}
+	
+					assistant.pushObject(beanRules);					
+				}
+			}
+		});
+		parser.addNodelet("/aspectran/bean/constructor/argument", new Nodelet() {
+			public void process(Node node, Properties attributes, String text) throws Exception {
+				ItemRuleMap irm = new ItemRuleMap();
+				assistant.pushObject(irm);
+			}
+		});		
+		
+		parser.addNodelet("/aspectran/bean/constructor/argument", new ItemRuleNodeletAdder(assistant));
+		
+		parser.addNodelet("/aspectran/bean/constructor/argument/end()", new Nodelet() {
+			public void process(Node node, Properties attributes, String text) throws Exception {
+				ItemRuleMap irm = (ItemRuleMap)assistant.popObject();
+				Object o = assistant.peekObject();
+				
+				if(o instanceof BeanRule) {
+					BeanRule beanRule = (BeanRule)o;
+					beanRule.setConstructorArgumentItemRuleMap(irm);
+				} else {
+					for(BeanRule beanRule : (BeanRule[])o) {
+						beanRule.setConstructorArgumentItemRuleMap(irm);
+					}
+				}
+			}
+		});		
+		parser.addNodelet("/aspectran/bean/property", new Nodelet() {
+			public void process(Node node, Properties attributes, String text) throws Exception {
+				ItemRuleMap irm = new ItemRuleMap();
+				assistant.pushObject(irm);
+			}
+		});		
+
+		parser.addNodelet("/aspectran/bean/property", new ItemRuleNodeletAdder(assistant));
+
+		parser.addNodelet("/aspectran/bean/property/end()", new Nodelet() {
+			public void process(Node node, Properties attributes, String text) throws Exception {
+				ItemRuleMap irm = (ItemRuleMap)assistant.popObject();
+				Object o = assistant.peekObject();
+				
+				if(o instanceof BeanRule) {
+					BeanRule beanRule = (BeanRule)o;
+					beanRule.setPropertyItemRuleMap(irm);
+				} else {
+					for(BeanRule beanRule : (BeanRule[])o) {
+						beanRule.setPropertyItemRuleMap(irm);
+					}
+				}
+			}
+		});
+		parser.addNodelet("/aspectran/bean/end()", new Nodelet() {
+			public void process(Node node, Properties attributes, String text) throws Exception {
+				Object o = assistant.popObject();
+				
+				if(o instanceof BeanRule) {
+					BeanRule beanRule = (BeanRule)o;
+					assistant.addBeanRule(beanRule);
+				} else {
+					for(BeanRule beanRule : (BeanRule[])o) {
+						assistant.addBeanRule(beanRule);
+					}
+				}
+			}
+		});
+	}
+	
 	/**
 	 * Adds the translet nodelets.
 	 */
@@ -654,199 +848,6 @@ public class AspectranNodeParser {
 			public void process(Node node, Properties attributes, String text) throws Exception {
 				TransletRule transletRule = (TransletRule)assistant.popObject();
 				assistant.addTransletRule(transletRule);
-			}
-		});
-	}
-
-	/**
-	 * Adds the bean nodelets.
-	 */
-	private void addBeanNodelets() {
-		parser.addNodelet("/aspectran/bean", new Nodelet() {
-			public void process(Node node, Properties attributes, String text) throws Exception {
-				String id = attributes.getProperty("id");
-				String className = resolveAliasType(attributes.getProperty("class"));
-				String singleton = attributes.getProperty("singleton");
-				String scope = attributes.getProperty("scope");
-				String factoryMethod = attributes.getProperty("factoryMethod");
-				String initMethodName = attributes.getProperty("initMethod");
-				String destroyMethodName = attributes.getProperty("destroyMethod");
-				boolean lazyInit = Boolean.parseBoolean(attributes.getProperty("lazyInit"));
-				boolean override = Boolean.parseBoolean(attributes.getProperty("override"));
-
-				if(id == null) {
-//					if(assistant.isNullableBeanId()) {
-//						// When the bean id is null, the namespace does not apply.
-//						id = classType;
-//					} else {
-						throw new IllegalArgumentException("The <bean> element requires a id attribute.");
-//					}
-				} else {
-					id = assistant.applyNamespaceForBean(id);
-				}
-
-				if(className == null)
-					throw new IllegalArgumentException("The <bean> element requires a class attribute.");
-
-				Class<?> beanClass = null;
-				Map<String, Class<?>> beanClassMap = null;
-				
-				if(!WildcardPattern.hasWildcards(className)) {
-					beanClass = assistant.getClassLoader().loadClass(className);
-				} else {
-					BeanClassScanner scanner = new BeanClassScanner(id, assistant.getClassLoader());
-					beanClassMap = scanner.scanClass(className);
-				}
-				
-				ScopeType scopeType = ScopeType.valueOf(scope);
-				
-				if(scope != null && scopeType == null)
-					throw new IllegalArgumentException("No scope-type registered for scope '" + scope + "'.");
-				
-				if(scopeType == null)
-					scopeType = (singleton == null || Boolean.parseBoolean(singleton)) ? ScopeType.SINGLETON : ScopeType.PROTOTYPE; //default: singleton
-				
-				if(beanClass != null) {
-					if(initMethodName == null && beanClass.isAssignableFrom(InitializableBean.class)) {
-						initMethodName = InitializableBean.INITIALIZE_METHOD_NAME;
-					}
-
-					if(initMethodName != null) {
-						if(MethodUtils.getAccessibleMethod(beanClass, initMethodName, null) == null) {
-							throw new IllegalArgumentException("No such initialization method '" + initMethodName + "() on bean class: " + className);
-						}
-					}
-					
-					if(destroyMethodName == null && beanClass.isAssignableFrom(DisposableBean.class)) {
-						destroyMethodName = DisposableBean.DESTROY_METHOD_NAME;
-					}
-
-					if(destroyMethodName != null) {
-						if(MethodUtils.getAccessibleMethod(beanClass, destroyMethodName, null) == null) {
-							throw new IllegalArgumentException("No such destroy method '" + destroyMethodName + "() on bean class: " + className);
-						}
-					}
-
-					BeanRule beanRule = new BeanRule();
-					beanRule.setId(id);
-					beanRule.setClassName(className);
-					beanRule.setBeanClass(beanClass);
-					beanRule.setScopeType(scopeType);
-					beanRule.setFactoryMethodName(factoryMethod);
-					beanRule.setInitMethodName(initMethodName);
-					beanRule.setDestroyMethodName(destroyMethodName);
-					beanRule.setLazyInit(lazyInit);
-					beanRule.setOverride(override);
-	
-					assistant.pushObject(beanRule);
-				} else {
-					BeanRule[] beanRules = new BeanRule[beanClassMap.size()];
-					
-					int i = 0;
-					for(Map.Entry<String, Class<?>> entry : beanClassMap.entrySet()) {
-						String beanId = entry.getKey();
-						Class<?> beanClass2 = entry.getValue();
-						String initMethodName2 = initMethodName;
-						String destroyMethodName2 = destroyMethodName;
-						
-						if(initMethodName2 == null && beanClass2.isAssignableFrom(InitializableBean.class)) {
-							initMethodName2 = InitializableBean.INITIALIZE_METHOD_NAME;
-						}
-						
-						if(initMethodName2 != null) {
-							if(MethodUtils.getAccessibleMethod(beanClass, initMethodName2, null) == null) {
-								throw new IllegalArgumentException("No such initialization method '" + initMethodName2 + "() on bean class: " + beanClass2.getName());
-							}
-						}
-
-						if(destroyMethodName2 == null && beanClass2.isAssignableFrom(DisposableBean.class)) {
-							destroyMethodName2 = DisposableBean.DESTROY_METHOD_NAME;
-						}
-
-						if(destroyMethodName2 != null) {
-							if(MethodUtils.getAccessibleMethod(beanClass, destroyMethodName2, null) == null) {
-								throw new IllegalArgumentException("No such destroy method '" + destroyMethodName2 + "() on bean class: " + beanClass2.getName());
-							}
-						}
-
-						BeanRule beanRule = new BeanRule();
-						beanRule.setId(beanId);
-						beanRule.setClassName(beanClass2.getName());
-						beanRule.setBeanClass(beanClass2);
-						beanRule.setScopeType(scopeType);
-						beanRule.setFactoryMethodName(factoryMethod);
-						beanRule.setInitMethodName(initMethodName2);
-						beanRule.setDestroyMethodName(destroyMethodName2);
-						beanRule.setLazyInit(lazyInit);
-						beanRule.setOverride(override);
-						
-						beanRules[i++] = beanRule;
-					}
-	
-					assistant.pushObject(beanRules);					
-				}
-			}
-		});
-		parser.addNodelet("/aspectran/bean/constructor/argument", new Nodelet() {
-			public void process(Node node, Properties attributes, String text) throws Exception {
-				ItemRuleMap irm = new ItemRuleMap();
-				assistant.pushObject(irm);
-			}
-		});		
-		
-		parser.addNodelet("/aspectran/bean/constructor/argument", new ItemRuleNodeletAdder(assistant));
-		
-		parser.addNodelet("/aspectran/bean/constructor/argument/end()", new Nodelet() {
-			public void process(Node node, Properties attributes, String text) throws Exception {
-				ItemRuleMap irm = (ItemRuleMap)assistant.popObject();
-				Object o = assistant.peekObject();
-				
-				if(o instanceof BeanRule) {
-					BeanRule beanRule = (BeanRule)o;
-					beanRule.setConstructorArgumentItemRuleMap(irm);
-				} else {
-					for(BeanRule beanRule : (BeanRule[])o) {
-						beanRule.setConstructorArgumentItemRuleMap(irm);
-					}
-				}
-			}
-		});		
-		parser.addNodelet("/aspectran/bean/property", new Nodelet() {
-			public void process(Node node, Properties attributes, String text) throws Exception {
-				ItemRuleMap irm = new ItemRuleMap();
-				assistant.pushObject(irm);
-			}
-		});		
-
-		parser.addNodelet("/aspectran/bean/property", new ItemRuleNodeletAdder(assistant));
-
-		parser.addNodelet("/aspectran/bean/property/end()", new Nodelet() {
-			public void process(Node node, Properties attributes, String text) throws Exception {
-				ItemRuleMap irm = (ItemRuleMap)assistant.popObject();
-				Object o = assistant.peekObject();
-				
-				if(o instanceof BeanRule) {
-					BeanRule beanRule = (BeanRule)o;
-					beanRule.setPropertyItemRuleMap(irm);
-				} else {
-					for(BeanRule beanRule : (BeanRule[])o) {
-						beanRule.setPropertyItemRuleMap(irm);
-					}
-				}
-			}
-		});
-		parser.addNodelet("/aspectran/bean/end()", new Nodelet() {
-			public void process(Node node, Properties attributes, String text) throws Exception {
-				Object o = assistant.popObject();
-				
-				if(o instanceof BeanRule) {
-					BeanRule beanRule = (BeanRule)o;
-					assistant.addBeanRule(beanRule);
-				} else {
-					for(BeanRule beanRule : (BeanRule[])o) {
-						assistant.addBeanRule(beanRule);
-					}
-				}
 			}
 		});
 	}

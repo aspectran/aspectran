@@ -19,7 +19,6 @@ import com.aspectran.core.activity.process.action.Executable;
 import com.aspectran.core.var.rule.ability.ActionPossessable;
 import com.aspectran.core.var.type.ResponseType;
 
-// TODO: Auto-generated Javadoc
 /**
  * <p>Created: 2008. 03. 22 오후 5:51:58</p>
  */
