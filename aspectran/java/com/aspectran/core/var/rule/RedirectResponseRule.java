@@ -32,9 +32,6 @@ public class RedirectResponseRule extends ActionPossessSupport implements Action
 	/** The Constant RESPONSE_TYPE. */
 	public static final ResponseType RESPONSE_TYPE = ResponseType.REDIRECT;
 
-	/** The id. */
-	private String id;
-	
 	/** The content type. */
 	private String contentType;
 	
@@ -48,31 +45,13 @@ public class RedirectResponseRule extends ActionPossessSupport implements Action
 	private Token[] urlTokens;
 	
 	/** The exclude null parameters. */
-	private boolean excludeNullParameters;
+	private boolean excludeNullParameter;
 
 	/** The character encoding. */
 	private String characterEncoding;
 	
 	/** The parameter item rule map. */
 	private ItemRuleMap parameterItemRuleMap;
-
-	/**
-	 * Gets the id.
-	 * 
-	 * @return the id
-	 */
-	public String getId() {
-		return id;
-	}
-
-	/**
-	 * Sets the id.
-	 * 
-	 * @param id the new id
-	 */
-	public void setId(String id) {
-		this.id = id;
-	}
 
 	/**
 	 * Gets the content type.
@@ -158,17 +137,17 @@ public class RedirectResponseRule extends ActionPossessSupport implements Action
 	 * 
 	 * @return the exclude null parameters
 	 */
-	public boolean getExcludeNullParameters() {
-		return excludeNullParameters;
+	public boolean getExcludeNullParameter() {
+		return excludeNullParameter;
 	}
 
 	/**
 	 * Sets the exclude null parameters.
 	 * 
-	 * @param excludeNullParameters the new exclude null parameters
+	 * @param excludeNullParameter the new exclude null parameters
 	 */
-	public void setExcludeNullParameters(boolean excludeNullParameters) {
-		this.excludeNullParameters = excludeNullParameters;
+	public void setExcludeNullParameter(boolean excludeNullParameter) {
+		this.excludeNullParameter = excludeNullParameter;
 	}
 
 	/**
@@ -226,11 +205,10 @@ public class RedirectResponseRule extends ActionPossessSupport implements Action
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 
-		sb.append("{id=").append(id);
-		sb.append(", contentType=").append(contentType);
+		sb.append("{contentType=").append(contentType);
 		sb.append(", translet=").append(transletName);
 		sb.append(", url=").append(url);
-		sb.append(", excludeNullParameters=").append(excludeNullParameters);
+		sb.append(", excludeNullParameters=").append(excludeNullParameter);
 
 		if(actionList != null) {
 			sb.append(", actionList=");

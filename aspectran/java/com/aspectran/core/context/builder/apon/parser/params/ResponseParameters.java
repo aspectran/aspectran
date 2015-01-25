@@ -5,9 +5,10 @@ import com.aspectran.core.var.apon.ParameterDefine;
 import com.aspectran.core.var.apon.ParameterValueType;
 import com.aspectran.core.var.apon.Parameters;
 
-public class ResponseByContentTypeParameters extends AbstractParameters implements Parameters {
+public class ResponseParameters extends AbstractParameters implements Parameters {
 
-	public static final ParameterDefine exceptionType;
+	public static final ParameterDefine name;
+	public static final ParameterDefine characterEncoding;
 	public static final ParameterDefine transforms;
 	public static final ParameterDefine dispatchs;
 	public static final ParameterDefine redirects;
@@ -15,15 +16,18 @@ public class ResponseByContentTypeParameters extends AbstractParameters implemen
 	
 	private static final ParameterDefine[] parameterDefines;
 
+	
 	static {
-		exceptionType = new ParameterDefine("exceptionType", ParameterValueType.STRING);
+		name = new ParameterDefine("name", ParameterValueType.STRING);
+		characterEncoding = new ParameterDefine("characterEncoding", ParameterValueType.STRING);
 		dispatchs = new ParameterDefine("dispatch", new DispatchParameters(), true);
 		transforms = new ParameterDefine("transform", new TransformParameters(), true);
 		redirects = new ParameterDefine("redirect", new RedirectParameters(), true);
 		forwards = new ParameterDefine("forward", new ForwardParameters(), true);
-
+		
 		parameterDefines = new ParameterDefine[] {
-				exceptionType,
+				name,
+				characterEncoding,
 				dispatchs,
 				transforms,
 				redirects,
@@ -31,12 +35,12 @@ public class ResponseByContentTypeParameters extends AbstractParameters implemen
 		};
 	}
 	
-	public ResponseByContentTypeParameters() {
-		super(ResponseByContentTypeParameters.class.getName(), parameterDefines);
+	public ResponseParameters() {
+		super(ResponseParameters.class.getName(), parameterDefines);
 	}
 	
-	public ResponseByContentTypeParameters(String plaintext) {
-		super(ResponseByContentTypeParameters.class.getName(), parameterDefines, plaintext);
+	public ResponseParameters(String plaintext) {
+		super(ResponseParameters.class.getName(), parameterDefines, plaintext);
 	}
 	
 }

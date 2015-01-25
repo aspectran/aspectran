@@ -80,16 +80,6 @@ public class RedirectResponse implements Responsible {
 	}
 
 	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.response.Responsible#getId()
-	 */
-	public String getId() {
-		if(redirectResponseRule == null)
-			return null;
-
-		return redirectResponseRule.getId();
-	}
-
-	/* (non-Javadoc)
 	 * @see com.aspectran.core.activity.response.Responsible#getContentType()
 	 */
 	public String getContentType() {
