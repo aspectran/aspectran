@@ -105,6 +105,9 @@ characterEncoding CDATA #IMPLIED
 >
 
 <!ELEMENT multipart (fileItem*)>
+<!ATTLIST fileItem
+attribute (true | false) #IMPLIED
+>
 
 <!ELEMENT fileItem EMPTY>
 <!ATTLIST fileItem
