@@ -709,13 +709,25 @@ public class AspectranNodeParser {
 				requestRule.setAttributeItemRuleMap(irm);
 			}
 		});		
+		parser.addNodelet("/aspectran/translet/request/multipart", new Nodelet() {
+			public void process(Node node, Properties attributes, String text) throws Exception {
+				String attribute = attributes.getProperty("attribute");
+
+				if(attribute != null) {
+					Boolean fileItemCanBeAttribute = new Boolean(attribute);
+
+					RequestRule requestRule = (RequestRule)assistant.peekObject();
+					requestRule.setFileItemCanBeAttribute(fileItemCanBeAttribute);
+				}
+			}
+		});
 		parser.addNodelet("/aspectran/translet/request/multipart/fileItem", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
 				String name = attributes.getProperty("name");
 				
 				FileItemRule fir = new FileItemRule();
 				fir.setName(name);
-
+				
 				assistant.pushObject(fir);
 			}
 		});

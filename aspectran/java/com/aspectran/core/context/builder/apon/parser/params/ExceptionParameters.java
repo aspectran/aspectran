@@ -4,9 +4,8 @@ import com.aspectran.core.var.apon.AbstractParameters;
 import com.aspectran.core.var.apon.ParameterDefine;
 import com.aspectran.core.var.apon.Parameters;
 
-public class ExceptionRaizedParameters extends AbstractParameters implements Parameters {
+public class ExceptionParameters extends AbstractParameters implements Parameters {
 
-	public static final ParameterDefine actions;
 	public static final ParameterDefine responseByContentType;
 	public static final ParameterDefine defaultResponse;
 	
@@ -14,23 +13,21 @@ public class ExceptionRaizedParameters extends AbstractParameters implements Par
 
 	
 	static {
-		actions = new ParameterDefine("action", new ActionParameters(), true);
 		responseByContentType = new ParameterDefine("responseByContentType", new ResponseByContentTypeParameters());
 		defaultResponse = new ParameterDefine("defaultResponse", new DefaultResponseParameters());
-		
+	
 		parameterDefines = new ParameterDefine[] {
-				actions,
 				responseByContentType,
 				defaultResponse
 		};
 	}
 	
-	public ExceptionRaizedParameters() {
-		super(ExceptionRaizedParameters.class.getName(), parameterDefines);
+	public ExceptionParameters() {
+		super(ExceptionParameters.class.getName(), parameterDefines);
 	}
 	
-	public ExceptionRaizedParameters(String plaintext) {
-		super(ExceptionRaizedParameters.class.getName(), parameterDefines, plaintext);
+	public ExceptionParameters(String plaintext) {
+		super(ExceptionParameters.class.getName(), parameterDefines, plaintext);
 	}
 	
 }
