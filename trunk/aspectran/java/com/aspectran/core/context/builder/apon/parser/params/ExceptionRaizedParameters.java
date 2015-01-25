@@ -2,7 +2,6 @@ package com.aspectran.core.context.builder.apon.parser.params;
 
 import com.aspectran.core.var.apon.AbstractParameters;
 import com.aspectran.core.var.apon.ParameterDefine;
-import com.aspectran.core.var.apon.ParameterValueType;
 import com.aspectran.core.var.apon.Parameters;
 
 public class ExceptionRaizedParameters extends AbstractParameters implements Parameters {
@@ -15,7 +14,7 @@ public class ExceptionRaizedParameters extends AbstractParameters implements Par
 	
 	static {
 		actions = new ParameterDefine("action", new ActionParameters(), true);
-		responseByContentType = new ParameterDefine("responseByContentType", ParameterValueType.STRING);
+		responseByContentType = new ParameterDefine("responseByContentType", new ResponseByContentTypeParameters());
 		
 		parameterDefines = new ParameterDefine[] {
 				actions,

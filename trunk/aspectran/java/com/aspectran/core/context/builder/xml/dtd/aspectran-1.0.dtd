@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<!ELEMENT aspectran (settings? | apon? | typeAliases* | aspect* | bean* | translet* | import*)*>
+<!ELEMENT aspectran (settings? | typeAliases* | aspect* | bean* | translet* | import*)*>
 <!ATTLIST aspectran
 namespace CDATA #IMPLIED
 >
 
-<!ELEMENT settings (setting*)>
+<!ELEMENT settings (#PCDATA | setting)*>
 <!ELEMENT setting (#PCDATA)>
 <!ATTLIST setting
 name CDATA #REQUIRED
@@ -20,12 +20,7 @@ alias CDATA #REQUIRED
 type CDATA #REQUIRED
 >
 
-<!ELEMENT apon (#PCDATA)>
-<!ATTLIST apon
-for (typeAliases | settings | echo | attributes | properties | arguments | parameters) #REQUIRED
->
-
-<!ELEMENT aspect (joinpoint?, settings?, apon?, advice?)>
+<!ELEMENT aspect (joinpoint?, settings?, advice?)>
 <!ATTLIST aspect
 id ID #IMPLIED
 for (translet | scheduler) #IMPLIED
@@ -72,7 +67,7 @@ translet CDATA #REQUIRED
 disabled (true | false) #IMPLIED
 >
 
-<!ELEMENT bean (features?, constructor?, properties*)>
+<!ELEMENT bean (features?, constructor?, property*)>
 <!ATTLIST bean
 id CDATA #IMPLIED
 class CDATA #IMPLIED
@@ -94,7 +89,7 @@ override (true | false) #IMPLIED
 <!ELEMENT destroyMethod (#PCDATA)>
 <!ELEMENT lazyInit (#PCDATA)>
 <!ELEMENT poolSize (#PCDATA)>
-<!ELEMENT constructor (arguments?)>
+<!ELEMENT constructor (argument?)>
 
 <!ELEMENT translet ((request?, (echo? | action? | include?)*, (transform | dispatch | redirect | forward)?) | (request?, contents?, response*, exception?))>
 <!ATTLIST translet
@@ -103,13 +98,13 @@ hidden (true | false) #IMPLIED
 extends CDATA #IMPLIED
 >
 
-<!ELEMENT request (attributes?, apon?, multiparts?)>
+<!ELEMENT request (attribute?, multipart?)>
 <!ATTLIST request
 method CDATA #IMPLIED
 characterEncoding CDATA #IMPLIED
 >
 
-<!ELEMENT multiparts (fileItem*)>
+<!ELEMENT multipart (fileItem*)>
 
 <!ELEMENT fileItem EMPTY>
 <!ATTLIST fileItem
@@ -124,13 +119,13 @@ id CDATA #IMPLIED
 hidden (true | false) #IMPLIED
 >
 
-<!ELEMENT echo (attributes?, (item | value | null)*)>
+<!ELEMENT echo (#PCDATA | attribute | item | null)*>
 <!ATTLIST echo
 id CDATA #IMPLIED
 hidden (true | false) #IMPLIED
 >
 
-<!ELEMENT action (arguments?, properties?)>
+<!ELEMENT action (argument?, property?)>
 <!ATTLIST action
 id CDATA #IMPLIED
 bean CDATA #IMPLIED
@@ -138,7 +133,7 @@ method CDATA #IMPLIED
 hidden (true | false) #IMPLIED
 >
 
-<!ELEMENT include (attributes?)>
+<!ELEMENT include (attribute?)>
 <!ATTLIST include
 id CDATA #IMPLIED
 translet CDATA #REQUIRED
@@ -158,7 +153,7 @@ exceptionType CDATA #IMPLIED
 >
 <!ELEMENT defaultResponse (transform? | dispatch? | redirect? | forward?)>
 
-<!ELEMENT transform ((echo? | action? | include? | apon?)*, template?)>
+<!ELEMENT transform ((echo? | action? | include?)*, template?)>
 <!ATTLIST transform
 type CDATA #IMPLIED
 contentType CDATA #IMPLIED
@@ -179,7 +174,7 @@ noCache (true | false) #IMPLIED
 contentType CDATA #IMPLIED
 >
 
-<!ELEMENT redirect ((echo? | action? | include?)*, url?, parameters?)>
+<!ELEMENT redirect ((echo? | action? | include?)*, url?, parameter?)>
 <!ATTLIST redirect
 contentType CDATA #IMPLIED
 url CDATA #IMPLIED
@@ -189,7 +184,7 @@ excludeNullParameters CDATA #IMPLIED
 
 <!ELEMENT url (#PCDATA)>
 
-<!ELEMENT forward ((echo? | action? | include?)*, url?, parameters?)>
+<!ELEMENT forward ((echo? | action? | include?)*, url?, parameter?)>
 <!ATTLIST forward
 contentType CDATA #IMPLIED
 translet CDATA #IMPLIED
@@ -202,13 +197,13 @@ file CDATA #IMPLIED
 url CDATA #IMPLIED
 >
 
-<!ELEMENT attributes (item*)>
+<!ELEMENT attribute (#PCDATA | item)*>
 
-<!ELEMENT properties (item*)>
+<!ELEMENT property (#PCDATA | item)*>
 
-<!ELEMENT arguments (item*)>
+<!ELEMENT argument (#PCDATA | item)*>
 
-<!ELEMENT parameters (item*)>
+<!ELEMENT parameter (#PCDATA | item)*>
 
 <!ELEMENT item (#PCDATA | value | reference | null)*>
 <!ATTLIST item

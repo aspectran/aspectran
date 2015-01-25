@@ -1,5 +1,7 @@
 package com.aspectran.core.var.apon;
 
+import java.util.Set;
+
 
 public interface Parameters {
 
@@ -10,6 +12,10 @@ public interface Parameters {
 	public Object getTitle();
 
 	public String getQualifiedName();
+	
+	public String[] getParameterNames();
+	
+	public Set<String> getParameterNameSet();
 	
 	public Parameter getParameter(String name);
 	

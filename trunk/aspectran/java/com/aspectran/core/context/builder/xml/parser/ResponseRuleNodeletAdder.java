@@ -273,16 +273,16 @@ public class ResponseRuleNodeletAdder implements NodeletAdder {
 				}
 			}
 		});
-		parser.addNodelet(xpath, "/redirect/parameters", new Nodelet() {
+		parser.addNodelet(xpath, "/redirect/parameter", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
 				ItemRuleMap irm = new ItemRuleMap();
 				assistant.pushObject(irm);
 			}
 		});
 		
-		parser.addNodelet(xpath, "/redirect/parameters", new ItemRuleNodeletAdder(assistant));
+		parser.addNodelet(xpath, "/redirect/parameter", new ItemRuleNodeletAdder(assistant));
 
-		parser.addNodelet(xpath, "/redirect/parameters/end()", new Nodelet() {
+		parser.addNodelet(xpath, "/redirect/parameter/end()", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
 				ItemRuleMap irm = (ItemRuleMap)assistant.popObject();
 				
@@ -343,16 +343,16 @@ public class ResponseRuleNodeletAdder implements NodeletAdder {
 
 		parser.addNodelet(xpath, "/forward", new ActionRuleNodeletAdder(assistant));
 		
-		parser.addNodelet(xpath, "/forward/parameters", new Nodelet() {
+		parser.addNodelet(xpath, "/forward/parameter", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
 				ItemRuleMap irm = new ItemRuleMap();
 				assistant.pushObject(irm);
 			}
 		});
 
-		parser.addNodelet(xpath, "/forward/parameters", new ItemRuleNodeletAdder(assistant));
+		parser.addNodelet(xpath, "/forward/parameter", new ItemRuleNodeletAdder(assistant));
 
-		parser.addNodelet(xpath, "/forward/parameters/end()", new Nodelet() {
+		parser.addNodelet(xpath, "/forward/parameter/end()", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
 				ItemRuleMap irm = (ItemRuleMap)assistant.popObject();
 				

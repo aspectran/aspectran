@@ -30,8 +30,6 @@ public class RequestRule implements AspectAdviceSupport {
 	
 	private String characterEncoding;
 	
-	private MultipartRequestRule multipartRequestRule;
-
 	private RequestMethodType method;
 
 	private ItemRuleMap attributeItemRuleMap;
@@ -61,24 +59,6 @@ public class RequestRule implements AspectAdviceSupport {
 		this.characterEncoding = characterEncoding;
 	}
 
-	/**
-	 * Gets the multipart request rule.
-	 * 
-	 * @return the multipart request rule
-	 */
-	public MultipartRequestRule getMultipartRequestRule() {
-		return multipartRequestRule;
-	}
-
-	/**
-	 * Sets the multipart request rule.
-	 * 
-	 * @param multipartRequestRule the new multipart request rule
-	 */
-	public void setMultipartRequestRule(MultipartRequestRule multipartRequestRule) {
-		this.multipartRequestRule = multipartRequestRule;
-	}
-	
 	/**
 	 * Gets the request method type.
 	 * 
@@ -197,30 +177,6 @@ public class RequestRule implements AspectAdviceSupport {
 			fileItemRuleMap = new FileItemRuleMap();
 		
 		fileItemRuleMap.putFileItemRule(fileItemRule);
-	}
-	
-	/**
-	 * Gets the multipart temporary file path.
-	 * 
-	 * @return the multipart temporary file path
-	 */
-	public String getMultipartTemporaryFilePath() {
-		if(multipartRequestRule == null)
-			return null;
-		
-		return multipartRequestRule.getTemporaryFilePath();
-	}
-
-	/**
-	 * Gets the max multipart request size.
-	 * 
-	 * @return the max multipart request size
-	 */
-	public long getMaxMultipartRequestSize() {
-		if(multipartRequestRule == null)
-			return 0;
-		
-		return multipartRequestRule.getMaxRequestSize();
 	}
 	
 	public AspectAdviceRuleRegistry getAspectAdviceRuleRegistry() {
