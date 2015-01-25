@@ -53,6 +53,9 @@
 				</item>
 			</attributes>
 			<multiparts>
+				<settings>
+					
+				</settings>
 				<fileItem name="file1"/>
 				<fileItem name="files[]">
 					<allowFileExtentions>jpg;gif</allowFileExtentions>
