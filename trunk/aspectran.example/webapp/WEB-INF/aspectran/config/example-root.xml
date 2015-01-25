@@ -42,11 +42,11 @@
 	
 	<aspect id="defaultResponseRule2">
 		<joinpoint scope="response"/>
-		<apon for="settings">
+		<settings>
 			characterEncoding: utf-8
 			multipart.maxRequestSize: 10M
 			multipart.temporaryFilePath: /d:/
-		</apon>
+		</settings>
 	</aspect>
 
 	<aspect id="exception1">
@@ -59,10 +59,10 @@
 			<exceptionRaized>
 				<responseByContentType exceptionType="java.lang.reflect.InvocationTargetException">
 					<transform contentType="text/xml" type="transform/xml">
-						<apon for="echo">
+						<echo>
 							errorCode: E0001
 							message: error occured.
-						</apon>
+						</echo>
 						<echo>
 							<item type="map">
 								<value name="errorCode">E0001</value>

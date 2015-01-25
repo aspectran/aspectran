@@ -10,7 +10,7 @@
 	
 	<bean id="schedulerFactory" class="org.quartz.impl.StdSchedulerFactory" scope="singleton">
 		<constructor>
-			<arguments>
+			<argument>
 				<item type="properties">
 					<value name="org.quartz.scheduler.instanceName">AspectranQuartzScheduler</value>
 					<value name="org.quartz.scheduler.rmi.export">false</value>
@@ -23,7 +23,7 @@
 					<value name="org.quartz.jobStore.misfireThreshold">60000</value>
 					<value name="org.quartz.jobStore.class">org.quartz.simpl.RAMJobStore</value>
 				</item>
-			</arguments>
+			</argument>
 		</constructor>
 	</bean>
 	
@@ -86,9 +86,9 @@
 	
 	<translet name="hello">
 		<request>
-			<attributes>
+			<attribute>
 				<item name="my_name_is">aspectran</item>
-			</attributes>
+			</attribute>
 		</request>
 		<transform type="transform/text">
 			<template>
