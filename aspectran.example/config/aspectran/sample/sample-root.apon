@@ -474,10 +474,22 @@ aspectran: {
 		<advice>
 			<before>
 				<action id="xml" bean="common.action.a1" method="testXmlAction" hidden="true">
-					<properties>
+					<items for="property">
 						<item name="variable1">error</item>
 						<item name="variable2">0001</item>
-					</properties>
+					</items>
+					<items for="argument">
+						<item name="variable1">error</item>
+						<item name="variable2">0001</item>
+					</items>
+					<property>
+						<item name="variable1">error</item>
+						<item name="variable2">0001</item>
+					</property>
+					<argument>
+						<item name="variable1">error</item>
+						<item name="variable2">0001</item>
+					</argument>
 				</action>
 			</before>
 			<after>
@@ -535,18 +547,23 @@ aspectran: {
 		class: org.quartz.impl.StdSchedulerFactory
 		scope: singleton
 		constructor: {
-			arguments(properties): {
-				org.quartz.scheduler.instanceName: DefaultQuartzScheduler
-				org.quartz.scheduler.rmi.export: false
-				org.quartz.scheduler.rmi.proxy: false
-				org.quartz.scheduler.wrapJobExecutionInUserTransaction: false
-				org.quartz.threadPool.class: org.quartz.simpl.SimpleThreadPool
-				org.quartz.threadPool.threadCount: 10
-				org.quartz.threadPool.threadPriority: 5
-				org.quartz.threadPool.threadsInheritContextClassLoaderOfInitializingThread: true
-				org.quartz.jobStore.misfireThreshold: 60000
-				org.quartz.jobStore.class: org.quartz.simpl.RAMJobStore
-			}
+			argument: [
+				{
+					type: properties
+					value: {
+						org.quartz.scheduler.instanceName: DefaultQuartzScheduler
+						org.quartz.scheduler.rmi.export: false
+						org.quartz.scheduler.rmi.proxy: false
+						org.quartz.scheduler.wrapJobExecutionInUserTransaction: false
+						org.quartz.threadPool.class: org.quartz.simpl.SimpleThreadPool
+						org.quartz.threadPool.threadCount: 10
+						org.quartz.threadPool.threadPriority: 5
+						org.quartz.threadPool.threadsInheritContextClassLoaderOfInitializingThread: true
+						org.quartz.jobStore.misfireThreshold: 60000
+						org.quartz.jobStore.class: org.quartz.simpl.RAMJobStore
+					}
+				}
+			]
 		}
 	</apon>
 	
