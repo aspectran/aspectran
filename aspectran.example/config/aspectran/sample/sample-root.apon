@@ -278,11 +278,12 @@ aspectran: {
 				}
 			]
 			multipart: {
-				fileItem: {
-					name1[]: pic1
-					name2[]: pic2
-					name3[]: pic3
-				}
+				attribute: true
+				fileItem: [
+					name1[]
+					name2[]
+					name3[]
+				]
 			}
 		}
 		content: [

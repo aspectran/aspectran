@@ -52,10 +52,7 @@
 					<value name="item42">${item1}</value>
 				</item>
 			</attributes>
-			<multiparts>
-				<settings>
-					
-				</settings>
+			<multiparts attribute="true">
 				<fileItem name="file1"/>
 				<fileItem name="files[]">
 					<allowFileExtentions>jpg;gif</allowFileExtentions>
