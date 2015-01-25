@@ -56,6 +56,8 @@ aspectran: {
 			characterEncoding: utf-8
 			multipart.maxRequestSize: 10M
 			multipart.temporaryFilePath: /d:/
+			multipart.allowedFileExtensions: gif;jpg;png
+			multipart.deniedFileExtensions: php;jsp;sh;bat
 		}
 		advice: {
 			before: {
@@ -155,6 +157,21 @@ aspectran: {
 						]
 					}
 				}
+				defaultResponse: {
+					dispatch: {
+						contentType: text/html
+						template: {
+							file: /WEB-INF/jsp/login.jsp
+						}
+					}
+					transform: {
+						contentType: text/json
+						template: [
+							line1
+							line2
+						]
+					}
+				}
 			}
 			job: [
 				{
@@ -234,6 +251,182 @@ aspectran: {
 		}
 	}
 	tranlset: {
+		request: {
+			method: get
+			characterEncoding: utf-8
+			attribute: [
+				{
+					type: map
+					name: property1
+					value: {
+						code1: value1
+						code2: value2
+					}
+					valueType: java.lang.String
+					defaultValue: default value
+					tokenize: true
+				}
+				{
+					name: property2
+					value(int): 123
+				}
+				{
+					name: property2
+					reference: {
+						bean: a.bean
+					}
+				}
+			]
+			multipart: {
+				fileItem: {
+					name1[]: pic1
+					name2[]: pic2
+					name3[]: pic3
+				}
+			}
+		}
+		content: [
+			{
+				id: echo
+				action: [
+					{
+						id: action1
+						bean: common.action.a1
+						method: testXmlAction
+						argument: [
+							{
+								type: properties
+								value: {
+									org.quartz.scheduler.instanceName: DefaultQuartzScheduler
+									org.quartz.scheduler.rmi.export: false
+									org.quartz.scheduler.rmi.proxy: false
+									org.quartz.scheduler.wrapJobExecutionInUserTransaction: false
+									org.quartz.threadPool.class: org.quartz.simpl.SimpleThreadPool
+									org.quartz.threadPool.threadCount: 10
+									org.quartz.threadPool.threadPriority: 5
+									org.quartz.threadPool.threadsInheritContextClassLoaderOfInitializingThread: true
+									org.quartz.jobStore.misfireThreshold: 60000
+									org.quartz.jobStore.class: org.quartz.simpl.RAMJobStore
+								}
+							}
+						]
+						property: {
+							map1(string): {
+								kind1(int): 001
+								kind2: 002
+								kind3: 003
+							}
+							list1(int): [
+								1
+								2
+								3
+							]
+							text(string): [
+								element1
+								element2
+								element3
+							]
+							message: error 001
+						}
+						hidden: false
+					}
+					{
+						id: include1
+						include: /common/action/a1
+						hidden: true
+					}
+					{
+						id: echo1
+						echo: {
+							map1(string): {
+								kind1(int): 001
+								kind2: 002
+								kind3: 003
+							}
+							list1(int): [
+								1
+								2
+								3
+							]
+							text(string): [
+								element1
+								element2
+								element3
+							]
+							message: error 001
+						}
+						hidden: false
+					}
+				]
+			}
+		]
+		response: {
+			name: .xml
+			characterEncoding: utf-8
+			dispatch: {
+				contentType: text/html
+				template: {
+					file: /WEB-INF/jsp/login.jsp
+				}
+			}
+			transform: {
+				contentType: text/json
+				template: [
+					line1
+					line2
+				]
+			}
+		}
+		response: {
+			name: .json
+			characterEncoding: utf-8
+			dispatch: {
+				contentType: text/html
+				template: {
+					file: /WEB-INF/jsp/login.jsp
+				}
+			}
+			transform: {
+				contentType: text/json
+				template: [
+					line1
+					line2
+				]
+			}
+		}
+		exception: {
+			responseByContentType: {
+				exceptionType: com.aspectran.test.web.LoginFailedException
+				dispatch: {
+					contentType: text/html
+					template: {
+						file: /WEB-INF/jsp/login.jsp
+					}
+				}
+				transform: {
+					contentType: text/json
+					template: [
+						line1
+						line2
+					]
+				}
+			}
+			defaultResponse: {
+				dispatch: {
+					contentType: text/html
+					template: {
+						file: /WEB-INF/jsp/login.jsp
+					}
+				}
+				transform: {
+					contentType: text/json
+					template: [
+						line1
+						line2
+					]
+				}
+			}
+		}
 	}
 	import: {
 		file: file1.apon
