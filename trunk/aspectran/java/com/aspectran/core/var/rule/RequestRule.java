@@ -36,6 +36,8 @@ public class RequestRule implements AspectAdviceSupport {
 
 	private FileItemRuleMap fileItemRuleMap;
 	
+	private Boolean fileItemCanBeAttribute;
+	
 	private AspectAdviceRuleRegistry aspectAdviceRuleRegistry;
 	
 	public RequestRule() {
@@ -178,7 +180,15 @@ public class RequestRule implements AspectAdviceSupport {
 		
 		fileItemRuleMap.putFileItemRule(fileItemRule);
 	}
-	
+
+	public Boolean getFileItemCanBeAttribute() {
+		return fileItemCanBeAttribute;
+	}
+
+	public void setFileItemCanBeAttribute(Boolean fileItemCanBeAttribute) {
+		this.fileItemCanBeAttribute = fileItemCanBeAttribute;
+	}
+
 	public AspectAdviceRuleRegistry getAspectAdviceRuleRegistry() {
 		return aspectAdviceRuleRegistry;
 	}
@@ -260,6 +270,7 @@ public class RequestRule implements AspectAdviceSupport {
 			sb.append("]");
 		}
 		
+		sb.append(", fileItemCanBeAttribute=").append(fileItemCanBeAttribute);
 		sb.append("}");
 		
 		return sb.toString();
