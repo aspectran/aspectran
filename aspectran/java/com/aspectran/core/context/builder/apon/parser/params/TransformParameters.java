@@ -14,7 +14,6 @@ public class TransformParameters extends AbstractParameters implements Parameter
 	public static final ParameterDefine actions;
 	
 	private static final ParameterDefine[] parameterDefines;
-
 	
 	static {
 		transformType = new ParameterDefine("transformType", ParameterValueType.STRING);

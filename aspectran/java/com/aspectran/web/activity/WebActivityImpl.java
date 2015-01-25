@@ -56,6 +56,14 @@ import com.aspectran.web.adapter.HttpSessionAdapter;
  */
 public class WebActivityImpl extends CoreActivityImpl implements WebActivity {
 
+	private static final String MULTIPART_MAX_REQUEST_SIZE = "multipart.maxRequestSize";
+	
+	private static final String MULTIPART_TEMPORARY_FILE_PATH = "multipart.temporaryFilePath";
+	
+	private static final String MULTIPART_ALLOWED_FILE_EXTENSIONS = "multipart.allowedFileExtensions";
+	
+	private static final String MULTIPART_DENIED_FILE_EXTENSIONS = "multipart.deniedFileExtensions";
+	
 	private final Logger logger = LoggerFactory.getLogger(WebActivityImpl.class);
 
 	private final boolean debugEnabled = logger.isDebugEnabled();
@@ -144,10 +152,10 @@ public class WebActivityImpl extends CoreActivityImpl implements WebActivity {
 	private void parseMultipart() throws MultipartRequestException {
 		RequestRule requestRule = getRequestRule();
 
-		String multipartMaxRequestSize = (String)getRequestSetting("multipart.maxRequestSize");
-		String multipartTemporaryFilePath = (String)getRequestSetting("multipart.temporaryFilePath");
-		String multipartAllowedFileExtensions = (String)getRequestSetting("multipart.allowedFileExtensions");
-		String multipartDeniedFileExtensions = (String)getRequestSetting("multipart.deniedFileExtensions");
+		String multipartMaxRequestSize = (String)getRequestSetting(MULTIPART_MAX_REQUEST_SIZE);
+		String multipartTemporaryFilePath = (String)getRequestSetting(MULTIPART_TEMPORARY_FILE_PATH);
+		String multipartAllowedFileExtensions = (String)getRequestSetting(MULTIPART_ALLOWED_FILE_EXTENSIONS);
+		String multipartDeniedFileExtensions = (String)getRequestSetting(MULTIPART_DENIED_FILE_EXTENSIONS);
 		
 		MultipartRequestHandler handler = new MultipartRequestHandler(request);
 		handler.setMaxRequestSize(new Long(multipartMaxRequestSize));
@@ -192,7 +200,7 @@ public class WebActivityImpl extends CoreActivityImpl implements WebActivity {
 		
 		if(debugEnabled) {
 			if(requestAdapter.isMaxLengthExceeded()) {
-				logger.debug("Max length exceeded. maxMultipartRequestSize: " + requestRule.getMaxMultipartRequestSize());
+				logger.debug("Max length exceeded. multipart.maxRequestSize: " + multipartMaxRequestSize);
 			}
 
 			for(FileItemRule fir : fileItemRuleMap) {

@@ -1,9 +1,11 @@
 package com.aspectran.core.var.apon;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.StringTokenizer;
 
 import com.aspectran.core.util.StringUtils;
@@ -56,7 +58,7 @@ public abstract class AbstractParameters implements Parameters {
 			parameterDefines = preparse(text);
 		}
 		
-		this.parameterDefineMap = new HashMap<String, ParameterDefine>();
+		this.parameterDefineMap = new LinkedHashMap<String, ParameterDefine>();
 
 		if(parameterDefines != null) {
 			for(ParameterDefine pd : parameterDefines) {
@@ -92,6 +94,23 @@ public abstract class AbstractParameters implements Parameters {
 		return title;
 	}
 
+	public String[] getParameterNames() {
+		String[] names = new String[parameterDefineMap.size()];
+		
+		Iterator<String> iter = parameterDefineMap.keySet().iterator();
+		int i = 0;
+		
+		while(iter.hasNext()) {
+			names[i++] = iter.next();
+		}
+		
+		return names;
+	}
+
+	public Set<String> getParameterNameSet() {
+		return parameterDefineMap.keySet();
+	}
+	
 	public Parameter getParameter(String name) {
 		Parameter p = parameterDefineMap.get(name);
 		
@@ -100,7 +119,7 @@ public abstract class AbstractParameters implements Parameters {
 		
 		return p;
 	}
-
+	
 	public Parameter getParameter(ParameterDefine parameterDefine) {
 		return getParameter(parameterDefine.getName());
 	}

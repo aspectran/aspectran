@@ -4,7 +4,7 @@ import com.aspectran.core.var.apon.AbstractParameters;
 import com.aspectran.core.var.apon.ParameterDefine;
 import com.aspectran.core.var.apon.Parameters;
 
-public class ArgumentsParameters extends AbstractParameters implements Parameters {
+public class ArgumentParameters extends AbstractParameters implements Parameters {
 
 	public static final ParameterDefine items;
 	
@@ -18,12 +18,12 @@ public class ArgumentsParameters extends AbstractParameters implements Parameter
 		};
 	}
 	
-	public ArgumentsParameters() {
-		super(ArgumentsParameters.class.getName(), parameterDefines);
+	public ArgumentParameters() {
+		super(ArgumentParameters.class.getName(), parameterDefines);
 	}
 	
-	public ArgumentsParameters(String plaintext) {
-		super(ArgumentsParameters.class.getName(), parameterDefines, plaintext);
+	public ArgumentParameters(String plaintext) {
+		super(ArgumentParameters.class.getName(), parameterDefines, plaintext);
 	}
 	
 }
