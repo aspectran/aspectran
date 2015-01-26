@@ -586,6 +586,10 @@ public class AspectranNodeParser {
 			public void process(Node node, Properties attributes, String text) throws Exception {
 				ItemRuleMap irm = new ItemRuleMap();
 				assistant.pushObject(irm);
+				
+				if(text != null) {
+					
+				}
 			}
 		});		
 		
