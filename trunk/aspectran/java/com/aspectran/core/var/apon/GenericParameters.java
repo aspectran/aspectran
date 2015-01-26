@@ -15,8 +15,8 @@ public class GenericParameters extends AbstractParameters {
 		super(title, null, text);
 	}
 
-	public GenericParameters(String title, ParameterDefine[] parameterValues) {
-		super(title, parameterValues);
+	public GenericParameters(String title, ParameterDefine[] parameterDefines) {
+		super(title, parameterDefines);
 	}
 	
 	public static Parameters toParameters(String text) {

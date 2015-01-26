@@ -33,12 +33,14 @@ import com.aspectran.core.context.bean.scan.BeanClassScanner;
 import com.aspectran.core.context.builder.ContextBuilderAssistant;
 import com.aspectran.core.context.builder.DefaultSettings;
 import com.aspectran.core.context.builder.ImportResource;
+import com.aspectran.core.context.builder.apon.params.ItemParameters;
 import com.aspectran.core.util.MethodUtils;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.wildcard.WildcardPattern;
 import com.aspectran.core.util.xml.Nodelet;
 import com.aspectran.core.util.xml.NodeletParser;
 import com.aspectran.core.var.apon.GenericParameters;
+import com.aspectran.core.var.apon.ParameterHolder;
 import com.aspectran.core.var.apon.Parameters;
 import com.aspectran.core.var.rule.AspectJobAdviceRule;
 import com.aspectran.core.var.rule.AspectRule;
@@ -588,7 +590,8 @@ public class AspectranNodeParser {
 				assistant.pushObject(irm);
 				
 				if(text != null) {
-					
+					ParameterHolder holder = new ParameterHolder(text, new ItemParameters(), true);
+					holder.getParametersArray();
 				}
 			}
 		});		
