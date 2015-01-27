@@ -9,7 +9,7 @@ public class ParameterHolder {
 	public ParameterHolder(String text, Parameters parameters, boolean array) {
 		ParameterDefine[] parameterDefines = new ParameterDefine[] { new ParameterDefine(PARAMETER_NAME, parameters, array) };
 		this.parameters = new GenericParameters("holder", parameterDefines);
-		this.parameters.parseText(text);
+		this.parameters.parseText(PARAMETER_NAME + ": [\n" + text + "\n]");
 	}
 	
 	public Parameters[] getParametersArray() {

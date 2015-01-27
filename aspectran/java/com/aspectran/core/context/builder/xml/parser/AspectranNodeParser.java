@@ -32,10 +32,13 @@ import com.aspectran.core.context.bean.ablility.InitializableBean;
 import com.aspectran.core.context.bean.scan.BeanClassScanner;
 import com.aspectran.core.context.builder.ContextBuilderAssistant;
 import com.aspectran.core.context.builder.DefaultSettings;
-import com.aspectran.core.context.builder.ImportResource;
 import com.aspectran.core.context.builder.apon.params.ItemParameters;
 import com.aspectran.core.util.MethodUtils;
 import com.aspectran.core.util.StringUtils;
+import com.aspectran.core.util.io.FileImportStream;
+import com.aspectran.core.util.io.ImportStream;
+import com.aspectran.core.util.io.ResourceImportStream;
+import com.aspectran.core.util.io.URLImportStream;
 import com.aspectran.core.util.wildcard.WildcardPattern;
 import com.aspectran.core.util.xml.Nodelet;
 import com.aspectran.core.util.xml.NodeletParser;
@@ -104,8 +107,8 @@ public class AspectranNodeParser {
 	 * @param inputStream the input stream
 	 * @throws Exception the exception
 	 */
-	public void parse(ImportResource importResource) throws Exception {
-		InputStream inputStream = importResource.getInputStream();
+	public void parse(ImportStream importStream) throws Exception {
+		InputStream inputStream = importStream.getInputStream();
 		
 		try {
 			parse(inputStream);
@@ -115,8 +118,6 @@ public class AspectranNodeParser {
 				inputStream = null;
 			}
 		}
-		
-		assistant.addImportResource(importResource);
 	}
 	
 	/**
@@ -594,7 +595,7 @@ public class AspectranNodeParser {
 					holder.getParametersArray();
 				}
 			}
-		});		
+		});
 		
 		parser.addNodelet("/aspectran/bean/constructor/argument", new ItemRuleNodeletAdder(assistant));
 		
@@ -612,13 +613,13 @@ public class AspectranNodeParser {
 					}
 				}
 			}
-		});		
+		});
 		parser.addNodelet("/aspectran/bean/property", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
 				ItemRuleMap irm = new ItemRuleMap();
 				assistant.pushObject(irm);
 			}
-		});		
+		});
 
 		parser.addNodelet("/aspectran/bean/property", new ItemRuleNodeletAdder(assistant));
 
@@ -705,7 +706,7 @@ public class AspectranNodeParser {
 				ItemRuleMap irm = new ItemRuleMap();
 				assistant.pushObject(irm);
 			}
-		});		
+		});
 		
 		parser.addNodelet("/aspectran/translet/request/attribute", new ItemRuleNodeletAdder(assistant));
 
@@ -715,7 +716,7 @@ public class AspectranNodeParser {
 				RequestRule requestRule = (RequestRule)assistant.peekObject();
 				requestRule.setAttributeItemRuleMap(irm);
 			}
-		});		
+		});
 		parser.addNodelet("/aspectran/translet/request/multipart", new Nodelet() {
 			public void process(Node node, Properties attributes, String text) throws Exception {
 				String attribute = attributes.getProperty("attribute");
@@ -881,21 +882,21 @@ public class AspectranNodeParser {
 				String file = attributes.getProperty("file");
 				String url = attributes.getProperty("url");
 				
-				ImportResource ir = new ImportResource(assistant.getClassLoader());
+				ImportStream importStream = null;
 				
 				if(StringUtils.hasText(resource))
-					ir.setResource(resource);
+					importStream = new ResourceImportStream(assistant.getClassLoader(), resource);
 				else if(StringUtils.hasText(file))
-					ir.setFile(assistant.getApplicationBasePath(), file);
+					importStream = new FileImportStream(assistant.getApplicationBasePath(), file);
 				else if(StringUtils.hasText(url))
-					ir.setUrl(url);
+					importStream = new URLImportStream(url);
 				else
 					throw new IllegalArgumentException("The <import> element requires either a resource or a file or a url attribute.");
 				
 				DefaultSettings defaultSettings = (DefaultSettings)assistant.getDefaultSettings().clone();
 				
 				AspectranNodeParser aspectranNodeParser = new AspectranNodeParser(assistant);
-				aspectranNodeParser.parse(ir);
+				aspectranNodeParser.parse(importStream);
 				
 				assistant.setDefaultSettings(defaultSettings);
 			}

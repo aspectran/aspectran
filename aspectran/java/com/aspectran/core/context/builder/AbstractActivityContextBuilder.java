@@ -15,6 +15,8 @@
  */
 package com.aspectran.core.context.builder;
 
+import java.io.IOException;
+
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.aspect.AspectAdviceRulePreRegister;
@@ -24,9 +26,12 @@ import com.aspectran.core.context.aspect.pointcut.PointcutFactory;
 import com.aspectran.core.context.bean.ContextBeanRegistry;
 import com.aspectran.core.context.bean.ScopedContextBeanRegistry;
 import com.aspectran.core.context.translet.TransletRuleRegistry;
+import com.aspectran.core.util.ResourceUtils;
+import com.aspectran.core.util.io.FileImportStream;
+import com.aspectran.core.util.io.ImportStream;
+import com.aspectran.core.util.io.ResourceImportStream;
 import com.aspectran.core.var.rule.AspectRule;
 import com.aspectran.core.var.rule.AspectRuleMap;
-import com.aspectran.core.var.rule.BeanRule;
 import com.aspectran.core.var.rule.BeanRuleMap;
 import com.aspectran.core.var.rule.PointcutRule;
 import com.aspectran.core.var.rule.TransletRuleMap;
@@ -50,10 +55,10 @@ public abstract class AbstractActivityContextBuilder extends ContextBuilderAssis
 		BeanRuleMap beanRuleMap = getBeanRuleMap();
 		TransletRuleMap transletRuleMap = getTransletRuleMap();
 
-		for(BeanRule br : beanRuleMap) {
-			System.out.println("###BeanRule " + br);
-		}
-
+//		for(BeanRule br : beanRuleMap) {
+//			System.out.println("###BeanRule " + br);
+//		}
+//
 		
 		BeanReferenceInspector beanReferenceInspector = getBeanReferenceInspector();
 		beanReferenceInspector.inspect(beanRuleMap);
@@ -120,6 +125,25 @@ public abstract class AbstractActivityContextBuilder extends ContextBuilderAssis
 		transletRuleMap.freeze();
 		
 		return new TransletRuleRegistry(transletRuleMap);
+	}
+	
+	protected ImportStream makeImportStream(String rootContext) throws IOException {
+		if(rootContext == null)
+			throw new IllegalArgumentException("rootContext must not be null");
+		
+		ImportStream importStream = null;
+
+		if(rootContext.startsWith(ResourceUtils.CLASSPATH_URL_PREFIX)) {
+			String resource = rootContext.substring(ResourceUtils.CLASSPATH_URL_PREFIX.length());
+			importStream = new ResourceImportStream(getClassLoader(), resource);
+		} else if(rootContext.startsWith(ResourceUtils.FILE_URL_PREFIX)) {
+			String filePath = rootContext.substring(ResourceUtils.FILE_URL_PREFIX.length());
+			importStream = new FileImportStream(filePath);
+		} else {
+			importStream = new FileImportStream(getApplicationBasePath(), rootContext);
+		}
+
+		return importStream;
 	}
 	
 }

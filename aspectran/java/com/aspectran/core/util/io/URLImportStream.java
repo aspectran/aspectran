@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.aspectran.core.context.builder;
+package com.aspectran.core.util.io;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,46 +27,16 @@ import com.aspectran.core.var.type.ImportResourceType;
  * 
  * @author Gulendol
  */
-public class URLImportStream {
+public class URLImportStream extends AbstractImportStream implements ImportStream {
 	
 	private final static ImportResourceType importResourceType = ImportResourceType.URL;
 	
-	private String resource;
+	private final String urlString;
 
-	private long lastModified;
-	
-	public URLImportStream() {
-	}
-	
-	/**
-	 * Gets the resource.
-	 * 
-	 * @return the resource
-	 */
-	public String getResource() {
-		return resource;
-	}
+	public URLImportStream(String urlString) {
+		super(importResourceType);
 
-	/**
-	 * Sets the resource.
-	 * 
-	 * @param resource the new resource
-	 * 
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 */
-	public void setResource(String resource) throws IOException {
-		this.resource = resource;
-	}
-	
-	/**
-	 * Sets the resource.
-	 * 
-	 * @param translet the new resource
-	 * 
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 */
-	public void setUrl(String url) throws IOException {
-		this.resource = url;
+		this.urlString = urlString;
 	}
 	
 	/**
@@ -75,20 +45,12 @@ public class URLImportStream {
 	 * @return the input stream
 	 */
 	public InputStream getInputStream() throws IOException {
-		URL url = new URL(resource);
+		URL url = new URL(urlString);
 		URLConnection conn = url.openConnection();
-		lastModified = conn.getLastModified();
+		setLastModified(conn.getLastModified());
 		InputStream inputStream = conn.getInputStream();
 		
 		return inputStream;
-	}
-
-	public long getLastModified() {
-		return lastModified;
-	}
-
-	public static ImportResourceType getImportResourcetype() {
-		return importResourceType;
 	}
 	
 }

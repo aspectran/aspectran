@@ -17,7 +17,6 @@ package com.aspectran.core.context.builder;
 
 import java.io.File;
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -68,9 +67,6 @@ public class ContextBuilderAssistant {
 	private BeanRuleMap beanRuleMap = new BeanRuleMap();
 	
 	private TransletRuleMap transletRuleMap = new TransletRuleMap();
-	
-	private List<ImportResource> importResourceList = new ArrayList<ImportResource>();
-
 	
 	public ContextBuilderAssistant(String applicationBasePath, ClassLoader classLoader) {
 		if(applicationBasePath == null)
@@ -451,14 +447,6 @@ public class ContextBuilderAssistant {
 	
 	public BeanReferenceInspector getBeanReferenceInspector() {
 		return beanReferenceInspector;
-	}
-	
-	public void addImportResource(ImportResource importResource) {
-		importResourceList.add(importResource);
-	}
-	
-	public List<ImportResource> getImportResourceList() {
-		return importResourceList;
 	}
 	
 }

@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.aspectran.core.context.builder;
+package com.aspectran.core.util.io;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,7 +25,7 @@ import com.aspectran.core.var.type.ImportResourceType;
  * 
  * @author Gulendol
  */
-public class ResourceImportStream {
+public class ResourceImportStream extends AbstractImportStream implements ImportStream {
 	
 	private final static ImportResourceType importResourceType = ImportResourceType.RESOURCE;
 	
@@ -33,31 +33,11 @@ public class ResourceImportStream {
 
 	private String resource;
 
-	private long lastModified;
-	
-	public ResourceImportStream(ClassLoader classLoader) {
-		this.classLoader = classLoader;
-	}
-	
-	/**
-	 * Gets the resource.
-	 * 
-	 * @return the resource
-	 */
-	public String getResource() {
-		return resource;
-	}
+	public ResourceImportStream(ClassLoader classLoader, String resource) {
+		super(importResourceType);
 
-	/**
-	 * Sets the resource.
-	 * 
-	 * @param resource the new resource
-	 * 
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 */
-	public void setResource(String resource) throws IOException {
-		lastModified = System.currentTimeMillis();
-		this.resource = resource;
+		this.classLoader = classLoader;
+		setLastModified(System.currentTimeMillis());
 	}
 	
 	/**
@@ -69,17 +49,9 @@ public class ResourceImportStream {
 		InputStream inputStream = classLoader.getResourceAsStream(resource);
 		
 		if(inputStream == null)
-			throw new IOException("Could not find resource " + resource);
+			throw new IOException("Could not find resource to import. resource: " + resource);
 		
 		return inputStream;
 	}
 
-	public long getLastModified() {
-		return lastModified;
-	}
-
-	public ImportResourceType getImportResourceType() {
-		return importResourceType;
-	}
-	
 }
