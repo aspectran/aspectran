@@ -21,19 +21,19 @@ import com.aspectran.core.context.builder.xml.parser.AspectranNodeParser;
 import com.aspectran.core.util.io.ImportStream;
 
 /**
- * XmlAspectranContextBuilder.
+ * AponAspectranContextBuilder.
  * 
- * <p>Created: 2008. 06. 14 오후 8:53:29</p>
+ * <p>Created: 2015. 01. 27 오후 10:36:29</p>
  */
-public class XmlActivityContextBuilder extends AbstractActivityContextBuilder implements ActivityContextBuilder {
+public class AponActivityContextBuilder extends AbstractActivityContextBuilder implements ActivityContextBuilder {
 	
 	private final ApplicationAdapter applicationAdapter;
 	
-	public XmlActivityContextBuilder(ApplicationAdapter applicationAdapter) {
+	public AponActivityContextBuilder(ApplicationAdapter applicationAdapter) {
 		this(applicationAdapter, null);
 	}
 	
-	public XmlActivityContextBuilder(ApplicationAdapter applicationAdapter, ClassLoader classLoader) {
+	public AponActivityContextBuilder(ApplicationAdapter applicationAdapter, ClassLoader classLoader) {
 		super(applicationAdapter.getApplicationBasePath(), classLoader);
 		this.applicationAdapter = applicationAdapter;
 	}
@@ -41,15 +41,15 @@ public class XmlActivityContextBuilder extends AbstractActivityContextBuilder im
 	public ActivityContext build(String rootContext) throws ActivityContextBuilderException {
 		try {
 			ImportStream importStream = makeImportStream(rootContext);
-			
+
 			AspectranNodeParser parser = new AspectranNodeParser(this);
 			parser.parse(importStream);
 			
 			ActivityContext aspectranContext = makeActivityContext(applicationAdapter);
-			
+
 			return aspectranContext;
 		} catch(Exception e) {
-			throw new ActivityContextBuilderException("XmlActivityContext build failed. rootContext: " + rootContext, e);
+			throw new ActivityContextBuilderException("AponActivityContext build failed. rootContext: " + rootContext, e);
 		}
 	}
 	

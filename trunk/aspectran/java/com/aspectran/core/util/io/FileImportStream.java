@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.aspectran.core.context.builder;
+package com.aspectran.core.util.io;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -27,49 +27,23 @@ import com.aspectran.core.var.type.ImportResourceType;
  * 
  * @author Gulendol
  */
-public class FileImportStream {
+public class FileImportStream extends AbstractImportStream implements ImportStream {
 	
 	private final static ImportResourceType importResourceType = ImportResourceType.FILE;
 	
-	private String resource;
-
 	private String basePath;
 	
-	private long lastModified;
-	
-	public FileImportStream(String basePath) {
-		this.basePath = basePath;
-	}
-	
-	/**
-	 * Gets the resource.
-	 * 
-	 * @return the resource
-	 */
-	public String getResource() {
-		return resource;
-	}
+	private String filePath;
 
-	/**
-	 * Sets the resource.
-	 * 
-	 * @param translet the new resource
-	 * 
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 */
-	public void setResource(String file) throws IOException {
-		this.resource = file;
+	public FileImportStream(String filePath) {
+		this(null, filePath);
 	}
 	
-	/**
-	 * Sets the resource.
-	 * 
-	 * @param translet the new resource
-	 * 
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 */
-	public void setFile(String file) throws IOException {
-		this.resource = file;
+	public FileImportStream(String basePath, String filePath) {
+		super(importResourceType);
+	
+		this.basePath = basePath;
+		this.filePath = filePath;
 	}
 	
 	/**
@@ -81,27 +55,19 @@ public class FileImportStream {
 		File file;
 		
 		if(basePath == null)
-			file = new File(resource);
+			file = new File(filePath);
 		else
-			file = new File(basePath, resource);
+			file = new File(basePath, filePath);
 		
 		if(!file.exists() || file.isFile()) {
-			throw new IOException("Could not find resource " + file.getAbsolutePath());
+			throw new IOException("Could not find file to import. file: " + file.getAbsolutePath());
 		}
 		
-		lastModified = file.lastModified();
+		setLastModified(file.lastModified());
 		
 		InputStream inputStream = new FileInputStream(file);
 		
 		return inputStream;
-	}
-
-	public long getLastModified() {
-		return lastModified;
-	}
-	
-	public ImportResourceType getImportResourceType() {
-		return importResourceType;
 	}
 	
 }
