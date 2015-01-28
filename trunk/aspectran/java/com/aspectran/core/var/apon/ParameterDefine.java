@@ -10,6 +10,8 @@ public class ParameterDefine implements Parameter {
 	private final ParameterValueType parameterValueType;
 	
 	private final boolean array;
+	
+	private int arraySize;
 
 	private Object value;
 	
@@ -35,6 +37,7 @@ public class ParameterDefine implements Parameter {
 		this.array = array;
 		
 		parameters.setParent(this);
+		
 		this.value = parameters;
 	}
 	
@@ -73,6 +76,10 @@ public class ParameterDefine implements Parameter {
 		return array;
 	}
 
+	public int getArraySize() {
+		return arraySize;
+	}
+
 	public Object getValue() {
 		return value;
 	}
@@ -86,20 +93,59 @@ public class ParameterDefine implements Parameter {
 	}
 	
 	@SuppressWarnings("unchecked")
+	protected Parameters addParameters() {
+		Class<? extends AbstractParameters> type;
+		
+		if(arraySize == 0) {
+			type = (Class<? extends AbstractParameters>)value.getClass();
+		} else {
+			type = (Class<? extends AbstractParameters>)((List<Object>)this.value).get(0);
+		}
+		
+		try {
+			Parameters p = (Parameters)type.newInstance();
+			addValue(p);
+
+			return p;
+		} catch(Exception e) {
+			throw new InvalidParameterException(e);
+		}
+	}
+	
+	@SuppressWarnings("unchecked")
 	protected synchronized void addValue(Object value) {
 		if(this.value == null) {
 			this.value = new ArrayList<Object>();
 		}
 		
 		((List<Object>)this.value).add(value);
+		arraySize = ((List<Object>)this.value).size();
 	}
 	
 	@SuppressWarnings("unchecked")
 	public Object[] getValues() {
-		if(array) {
+		if(this.value == null)
+			return null;
+
+		if(array && arraySize > 0) {
 			return ((List<Object>)this.value).toArray(new Object[((List<Object>)this.value).size()]);
 		} else {
 			return new Object[] { this.value };
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<?> getValueList() {
+		if(this.value == null)
+			return null;
+
+		if(array && arraySize > 0) {
+			return (List<Object>)this.value;
+		} else {
+			List<Object> list = new ArrayList<Object>();
+			list.add(this.value);
+			
+			return list;
 		}
 	}
 
@@ -108,7 +154,7 @@ public class ParameterDefine implements Parameter {
 		if(value == null)
 			return null;
 
-		if(array) {
+		if(array && arraySize > 0) {
 			StringBuilder sb = new StringBuilder();
 			
 			for(int i = 0; i < ((List<Object>)value).size(); i++) {
@@ -126,7 +172,7 @@ public class ParameterDefine implements Parameter {
 		if(value == null)
 			return null;
 		
-		if(array) {
+		if(array && arraySize > 0) {
 			String[] s = new String[((List<Object>)value).size()];
 			
 			for(int i = 0; i < s.length; i++) {
@@ -298,7 +344,11 @@ public class ParameterDefine implements Parameter {
 		if(parameterValueType != ParameterValueType.PARAMETERS || !array)
 			throw new IncompatibleParameterValueTypeException(this, ParameterValueType.PARAMETERS);
 		
-		return ((List<Parameters>)value).toArray(new Parameters[((List<Parameters>)value).size()]);
+		if(arraySize > 0) {
+			return ((List<Object>)this.value).toArray(new Parameters[((List<Object>)this.value).size()]);
+		} else {
+			return new Parameters[] { (Parameters)this.value };
+		}
 	}
 
 	@SuppressWarnings("unchecked")
@@ -306,7 +356,7 @@ public class ParameterDefine implements Parameter {
 		if(parameterValueType != ParameterValueType.PARAMETERS || !array)
 			throw new IncompatibleParameterValueTypeException(this, ParameterValueType.PARAMETERS);
 		
-		return (List<Parameters>)value;
+		return (List<Parameters>)getValueList();
 	}
 	
 	/* (non-Javadoc)
@@ -319,6 +369,7 @@ public class ParameterDefine implements Parameter {
 		sb.append("{name=").append(name);
 		sb.append(", parameterValueType=").append(parameterValueType);
 		sb.append(", array=").append(array);
+		sb.append(", arraySize=").append(arraySize);
 		sb.append(", qualifiedName=").append(getQualifiedName());
 		sb.append("}");
 		

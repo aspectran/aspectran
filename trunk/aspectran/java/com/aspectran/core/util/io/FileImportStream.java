@@ -59,7 +59,7 @@ public class FileImportStream extends AbstractImportStream implements ImportStre
 		else
 			file = new File(basePath, filePath);
 		
-		if(!file.exists() || file.isFile()) {
+		if(!file.isFile()) {
 			throw new IOException("Could not find file to import. file: " + file.getAbsolutePath());
 		}
 		
