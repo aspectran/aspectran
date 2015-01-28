@@ -12,11 +12,15 @@ public interface Parameter {
 
 	public boolean isArray();
 
+	public int getArraySize();
+	
 	public Object getValue();
 	
 	public void setValue(Object value);
 	
 	public Object[] getValues();
+
+	public List<?> getValueList();
 
 	public String getValueAsString();
 	

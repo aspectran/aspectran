@@ -15,6 +15,9 @@
  */
 package com.aspectran.core.context.builder;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.builder.xml.parser.AspectranNodeParser;
@@ -42,6 +45,9 @@ public class AponActivityContextBuilder extends AbstractActivityContextBuilder i
 		try {
 			ImportStream importStream = makeImportStream(rootContext);
 
+			BufferedReader br = new BufferedReader(new InputStreamReader(importStream.getInputStream()));
+
+			
 			AspectranNodeParser parser = new AspectranNodeParser(this);
 			parser.parse(importStream);
 			

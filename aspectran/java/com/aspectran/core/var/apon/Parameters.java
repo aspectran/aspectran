@@ -4,6 +4,8 @@ import java.util.Set;
 
 
 public interface Parameters {
+	
+	public ParameterDefine[] getParameterDefines();
 
 	public void setParent(ParameterDefine parent);
 
