@@ -20,7 +20,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import com.aspectran.core.var.type.ImportResourceType;
+import com.aspectran.core.var.type.ImportStreamType;
 
 /**
  * <p>Created: 2008. 04. 24 오전 11:23:36</p>
@@ -29,7 +29,7 @@ import com.aspectran.core.var.type.ImportResourceType;
  */
 public class FileImportStream extends AbstractImportStream implements ImportStream {
 	
-	private final static ImportResourceType importResourceType = ImportResourceType.FILE;
+	private final static ImportStreamType FILE_IMPORT = ImportStreamType.FILE;
 	
 	private String basePath;
 	
@@ -40,7 +40,7 @@ public class FileImportStream extends AbstractImportStream implements ImportStre
 	}
 	
 	public FileImportStream(String basePath, String filePath) {
-		super(importResourceType);
+		super(FILE_IMPORT);
 	
 		this.basePath = basePath;
 		this.filePath = filePath;

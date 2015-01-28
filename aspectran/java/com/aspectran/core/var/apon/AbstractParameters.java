@@ -579,7 +579,6 @@ public abstract class AbstractParameters implements Parameters {
 				throw new InvalidParameterException(title + ": Cannot parse value of '" + name + "' to an array of strings.");
 			}
 		}
-		
 	}
 	
 }

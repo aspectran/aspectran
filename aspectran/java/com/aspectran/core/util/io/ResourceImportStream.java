@@ -18,7 +18,7 @@ package com.aspectran.core.util.io;
 import java.io.IOException;
 import java.io.InputStream;
 
-import com.aspectran.core.var.type.ImportResourceType;
+import com.aspectran.core.var.type.ImportStreamType;
 
 /**
  * <p>Created: 2008. 04. 24 오전 11:23:36</p>
@@ -27,14 +27,14 @@ import com.aspectran.core.var.type.ImportResourceType;
  */
 public class ResourceImportStream extends AbstractImportStream implements ImportStream {
 	
-	private final static ImportResourceType importResourceType = ImportResourceType.RESOURCE;
+	private final static ImportStreamType RESOURCE_IMPORT = ImportStreamType.RESOURCE;
 	
 	private ClassLoader classLoader;
 
 	private String resource;
 
 	public ResourceImportStream(ClassLoader classLoader, String resource) {
-		super(importResourceType);
+		super(RESOURCE_IMPORT);
 
 		this.classLoader = classLoader;
 		setLastModified(System.currentTimeMillis());
