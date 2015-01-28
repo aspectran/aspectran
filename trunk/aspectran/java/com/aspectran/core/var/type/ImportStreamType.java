@@ -24,22 +24,22 @@ import java.util.Map;
  * 
  * <p>Created: 2008. 04. 25 오전 16:47:38</p>
  */
-public final class ImportResourceType extends Type {
+public final class ImportStreamType extends Type {
 
-	public static final ImportResourceType RESOURCE;
+	public static final ImportStreamType RESOURCE;
 
-	public static final ImportResourceType FILE;
+	public static final ImportStreamType FILE;
 
-	public static final ImportResourceType URL;
+	public static final ImportStreamType URL;
 	
-	private static final Map<String, ImportResourceType> types;
+	private static final Map<String, ImportStreamType> types;
 	
 	static {
-		RESOURCE = new ImportResourceType("resource");
-		FILE = new ImportResourceType("file");
-		URL = new ImportResourceType("url");
+		RESOURCE = new ImportStreamType("resource");
+		FILE = new ImportStreamType("file");
+		URL = new ImportStreamType("url");
 
-		types = new HashMap<String, ImportResourceType>();
+		types = new HashMap<String, ImportStreamType>();
 		types.put(RESOURCE.toString(), RESOURCE);
 		types.put(FILE.toString(), FILE);
 		types.put(URL.toString(), URL);
@@ -50,7 +50,7 @@ public final class ImportResourceType extends Type {
 	 * 
 	 * @param type the type
 	 */
-	private ImportResourceType(String type) {
+	private ImportStreamType(String type) {
 		super(type);
 	}
 
@@ -61,7 +61,7 @@ public final class ImportResourceType extends Type {
 	 * 
 	 * @return the transform type
 	 */
-	public static ImportResourceType valueOf(String type) {
+	public static ImportStreamType valueOf(String type) {
 		if(type == null)
 			return null;
 		

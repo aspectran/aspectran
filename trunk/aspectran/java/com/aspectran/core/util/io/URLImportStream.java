@@ -20,7 +20,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
 
-import com.aspectran.core.var.type.ImportResourceType;
+import com.aspectran.core.var.type.ImportStreamType;
 
 /**
  * <p>Created: 2008. 04. 24 오전 11:23:36</p>
@@ -29,12 +29,12 @@ import com.aspectran.core.var.type.ImportResourceType;
  */
 public class URLImportStream extends AbstractImportStream implements ImportStream {
 	
-	private final static ImportResourceType importResourceType = ImportResourceType.URL;
+	private final static ImportStreamType URL_IMPORT = ImportStreamType.URL;
 	
 	private final String urlString;
 
 	public URLImportStream(String urlString) {
-		super(importResourceType);
+		super(URL_IMPORT);
 
 		this.urlString = urlString;
 	}

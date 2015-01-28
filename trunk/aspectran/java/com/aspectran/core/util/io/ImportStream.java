@@ -18,7 +18,7 @@ package com.aspectran.core.util.io;
 import java.io.IOException;
 import java.io.InputStream;
 
-import com.aspectran.core.var.type.ImportResourceType;
+import com.aspectran.core.var.type.ImportStreamType;
 
 /**
  * <p>Created: 2008. 04. 24 오전 11:23:36</p>
@@ -27,10 +27,10 @@ import com.aspectran.core.var.type.ImportResourceType;
  */
 public interface ImportStream {
 	
+	public ImportStreamType getImportStreamType();
+	
 	public InputStream getInputStream() throws IOException;
 
 	public long getLastModified();
-	
-	public ImportResourceType getImportResourceType();
 	
 }

@@ -15,7 +15,7 @@
  */
 package com.aspectran.core.util.io;
 
-import com.aspectran.core.var.type.ImportResourceType;
+import com.aspectran.core.var.type.ImportStreamType;
 
 /**
  * <p>Created: 2008. 04. 24 오전 11:23:36</p>
@@ -24,11 +24,11 @@ import com.aspectran.core.var.type.ImportResourceType;
  */
 public abstract class AbstractImportStream {
 	
-	private ImportResourceType importResourceType;
+	private ImportStreamType importResourceType;
 	
 	private long lastModified;
 	
-	public AbstractImportStream(ImportResourceType importResourceType) {
+	public AbstractImportStream(ImportStreamType importResourceType) {
 		this.importResourceType = importResourceType;
 	}
 
@@ -40,7 +40,7 @@ public abstract class AbstractImportStream {
 		this.lastModified = lastModified;
 	}
 
-	public ImportResourceType getImportResourceType() {
+	public ImportStreamType getImportStreamType() {
 		return importResourceType;
 	}
 	
