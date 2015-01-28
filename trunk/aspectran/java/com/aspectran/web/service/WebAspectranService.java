@@ -73,7 +73,7 @@ public class WebAspectranService extends CoreAspectranService {
 		String rootContext = rootContextParam.getValueAsString();
 
 		if(rootContext == null || rootContext.length() == 0) {
-			rootContextParam.setValue(DEFAULT_ROOT_CONTEXT);
+			rootContextParam.putValue(DEFAULT_ROOT_CONTEXT);
 		}
 
 		initialize(aspectranConfig);

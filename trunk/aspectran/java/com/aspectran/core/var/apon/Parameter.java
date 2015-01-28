@@ -16,7 +16,7 @@ public interface Parameter {
 	
 	public Object getValue();
 	
-	public void setValue(Object value);
+	public void putValue(Object value);
 	
 	public Object[] getValues();
 
