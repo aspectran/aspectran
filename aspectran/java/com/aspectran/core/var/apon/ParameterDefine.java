@@ -119,6 +119,9 @@ public class ParameterDefine implements Parameter {
 	private synchronized void addValue(Object value) {
 		if(list == null) {
 			list = new ArrayList<Object>();
+			
+			if(parameterValueType != ParameterValueType.PARAMETERS)
+				this.value = value;
 		}
 		
 		list.add(value);
