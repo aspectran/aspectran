@@ -99,7 +99,7 @@ public class AponReader {
 		
 		if(parentParameterDefine != null) {
 			Parameters parameters = new GenericParameters(parentParameterDefine.getName(), parameterDefines);
-			parentParameterDefine.setValue(parameters);
+			parentParameterDefine.putValue(parameters);
 		}
 		
 		return parameterDefines;
@@ -255,16 +255,9 @@ public class AponReader {
 								parameterDefineMap.put(name, parameterDefine);
 							}
 
-							//AbstractParameters parameters2 = (AbstractParameters)parameterDefine.getParameters(curlyBraketCount++);
-							AbstractParameters parameters2 = (AbstractParameters)parameterDefine.addParameters();
-							
-							if(parameters2 == null)
-								parameters2 = (AbstractParameters)parameterDefine.getParameters();
-							
-							if(parameters2 == null)
-								throw new InvalidParameterException("Cannot parse parameter value of '" + name + "'. parameters is null.");
-							
+							AbstractParameters parameters2 = (AbstractParameters)parameterDefine.newParameters();
 							valuelize(parameters2.getParameterDefineMap(), st, CURLY_BRAKET_OPEN, null, null);
+							parameterDefine.putValue(parameters2);
 						} else {
 							if(parameterDefine == null) {
 								parameterDefine = new ParameterDefine(name, parameterValueType);
@@ -285,14 +278,14 @@ public class AponReader {
 
 						if(parameterValueType == ParameterValueType.INTEGER) {
 							try {
-								parameterDefine.setValue(new Integer(value));
+								parameterDefine.putValue(new Integer(value));
 							} catch(NumberFormatException ex) {
 								throw new InvalidParameterException("Cannot parse value of '" + name + "' to an integer. \"" + token + "\"");
 							}
 						} else if(parameterValueType == ParameterValueType.BOOLEAN) {
-							parameterDefine.setValue(Boolean.valueOf(value));
+							parameterDefine.putValue(Boolean.valueOf(value));
 						} else {
-							parameterDefine.setValue(value);
+							parameterDefine.putValue(value);
 						}
 					}
 				}

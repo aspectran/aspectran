@@ -15,6 +15,8 @@ public class ParameterDefine implements Parameter {
 
 	private Object value;
 	
+	private List<Object> list;
+	
 	private Parameters holder;
 	
 	public ParameterDefine(String name, ParameterValueType parameterType) {
@@ -77,14 +79,17 @@ public class ParameterDefine implements Parameter {
 	}
 
 	public int getArraySize() {
-		return arraySize;
+		if(list == null)
+			return 0;
+		
+		return list.size();
 	}
 
 	public Object getValue() {
 		return value;
 	}
 	
-	public void setValue(Object value) {
+	public void putValue(Object value) {
 		if(array) {
 			addValue(value);
 		} else {
@@ -93,94 +98,79 @@ public class ParameterDefine implements Parameter {
 	}
 	
 	@SuppressWarnings("unchecked")
-	protected Parameters addParameters() {
-		Class<? extends AbstractParameters> type;
+	protected Parameters newParameters() {
+		if(parameterValueType != ParameterValueType.PARAMETERS)
+			throw new IncompatibleParameterValueTypeException(this, ParameterValueType.PARAMETERS);
+
+		if(list == null)
+			return (Parameters)value;
 		
-		if(arraySize == 0) {
-			type = (Class<? extends AbstractParameters>)value.getClass();
-		} else {
-			type = (Class<? extends AbstractParameters>)((List<Object>)this.value).get(0);
-		}
+		Class<? extends AbstractParameters> type = (Class<? extends AbstractParameters>)value.getClass();
 		
 		try {
 			Parameters p = (Parameters)type.newInstance();
-			addValue(p);
-
+			p.setParent(this);
 			return p;
 		} catch(Exception e) {
 			throw new InvalidParameterException(e);
 		}
 	}
 	
-	@SuppressWarnings("unchecked")
-	protected synchronized void addValue(Object value) {
-		if(this.value == null) {
-			this.value = new ArrayList<Object>();
+	private synchronized void addValue(Object value) {
+		if(list == null) {
+			list = new ArrayList<Object>();
 		}
 		
-		((List<Object>)this.value).add(value);
-		arraySize = ((List<Object>)this.value).size();
+		list.add(value);
 	}
 	
-	@SuppressWarnings("unchecked")
 	public Object[] getValues() {
-		if(this.value == null)
+		if(list == null)
 			return null;
 
-		if(array && arraySize > 0) {
-			return ((List<Object>)this.value).toArray(new Object[((List<Object>)this.value).size()]);
-		} else {
-			return new Object[] { this.value };
-		}
+		return list.toArray(new Object[list.size()]);
 	}
 
-	@SuppressWarnings("unchecked")
 	public List<?> getValueList() {
-		if(this.value == null)
-			return null;
-
-		if(array && arraySize > 0) {
-			return (List<Object>)this.value;
-		} else {
-			List<Object> list = new ArrayList<Object>();
-			list.add(this.value);
-			
-			return list;
-		}
+		return list;
 	}
 
-	@SuppressWarnings("unchecked")
 	public String getValueAsString() {
-		if(value == null)
-			return null;
-
-		if(array && arraySize > 0) {
+		if(array) {
+			if(list == null)
+				return null;
+			
 			StringBuilder sb = new StringBuilder();
 			
-			for(int i = 0; i < ((List<Object>)value).size(); i++) {
-				sb.append(((List<Object>)value).get(i).toString()).append("\n");
+			for(int i = 0; i < list.size(); i++) {
+				sb.append(list.get(i).toString()).append("\n");
 			}
 			
 			return sb.toString();
 		} else {
+			if(value == null)
+				return null;
+
 			return value.toString();
 		}
 	}
 	
-	@SuppressWarnings("unchecked")
 	public String[] getValueAsStringArray() {
-		if(value == null)
-			return null;
-		
-		if(array && arraySize > 0) {
-			String[] s = new String[((List<Object>)value).size()];
+		if(array) {
+			if(list == null)
+				return null;
+
+			String[] s = new String[list.size()];
 			
 			for(int i = 0; i < s.length; i++) {
-				s[i] = ((List<Object>)value).get(i).toString();
+				s[i] = list.get(i).toString();
 			}
 			
 			return s;
 		} else {
+			if(value == null)
+				return null;
+
 			return new String[] { value.toString() };
 		}
 	}
