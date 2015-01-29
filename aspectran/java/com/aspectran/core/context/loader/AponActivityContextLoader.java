@@ -5,13 +5,22 @@ import org.slf4j.LoggerFactory;
 
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.builder.ActivityContextBuilder;
-import com.aspectran.core.context.builder.XmlActivityContextBuilder;
+import com.aspectran.core.context.builder.AponActivityContextBuilder;
+import com.aspectran.core.context.builder.apon.params.AspectranParameters;
+import com.aspectran.core.var.apon.AponReader;
+import com.aspectran.core.var.apon.Parameters;
 
 public class AponActivityContextLoader extends AbstractActivityContextLoader {
 
 	private final Logger logger = LoggerFactory.getLogger(AponActivityContextLoader.class);
+	
+	private String encoding;
 
 	public AponActivityContextLoader() {
+	}
+	
+	public AponActivityContextLoader(String encoding) {
+		this.encoding = encoding;
 	}
 	
 	public ActivityContext load(String rootContext) {
@@ -22,7 +31,7 @@ public class AponActivityContextLoader extends AbstractActivityContextLoader {
 		logger.info("build ActivityContext [" + rootContext + "]");
 		long startTime = System.currentTimeMillis();
 
-		ActivityContextBuilder builder = new XmlActivityContextBuilder(applicationAdapter, aspectranClassLoader);
+		ActivityContextBuilder builder = new AponActivityContextBuilder(applicationAdapter, aspectranClassLoader, encoding);
 		ActivityContext activityContext = builder.build(rootContext);
 		
 		long elapsedTime = System.currentTimeMillis() - startTime;

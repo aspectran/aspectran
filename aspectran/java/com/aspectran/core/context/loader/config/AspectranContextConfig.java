@@ -10,6 +10,8 @@ public class AspectranContextConfig extends AbstractParameters implements Parame
 
 	public static final ParameterDefine root = new ParameterDefine("root", ParameterValueType.STRING);
 	
+	public static final ParameterDefine encoding = new ParameterDefine("encoding", ParameterValueType.STRING);
+	
 	public static final ParameterDefine resources = new ParameterDefine("resources", ParameterValueType.STRING, true);
 	
 	public static final ParameterDefine autoReloading = new ParameterDefine("autoReloading", new AspectranContextAutoReloadingConfig());
@@ -19,6 +21,7 @@ public class AspectranContextConfig extends AbstractParameters implements Parame
 	static {
 		parameterDefines = new ParameterDefine[] {
 				root,
+				encoding,
 				resources,
 				autoReloading
 		};

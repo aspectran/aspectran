@@ -17,6 +17,7 @@ package com.aspectran.core.util.io;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Reader;
 
 import com.aspectran.core.var.type.ImportStreamType;
 
@@ -30,7 +31,11 @@ public interface ImportStream {
 	public ImportStreamType getImportStreamType();
 	
 	public InputStream getInputStream() throws IOException;
+	
+	public Reader getReader() throws IOException;
 
+	public Reader getReader(String encoding) throws IOException;
+	
 	public long getLastModified();
 	
 }

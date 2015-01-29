@@ -27,8 +27,7 @@ public abstract class AbstractParameters implements Parameters {
 		
 		if(text != null) {
 			AponReader reader = new AponReader(this);
-			reader.read(text, parameterDefines);
-			this.parameterDefineMap = reader.getParameterDefineMap();
+			this.parameterDefineMap = reader.read(text, parameterDefines);
 		} else {
 			this.parameterDefineMap = new LinkedHashMap<String, ParameterDefine>();
 			
