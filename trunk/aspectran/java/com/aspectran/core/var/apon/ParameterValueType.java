@@ -34,6 +34,8 @@ public final class ParameterValueType extends Type {
 
 	public static final ParameterValueType STRING;
 
+	public static final ParameterValueType TEXT;
+
 	public static final ParameterValueType INTEGER;
 	
 	public static final ParameterValueType LONG;
@@ -52,6 +54,7 @@ public final class ParameterValueType extends Type {
 	
 	static {
 		STRING = new ParameterValueType("string");
+		TEXT = new ParameterValueType("text");
 		INTEGER = new ParameterValueType("integer");
 		LONG = new ParameterValueType("long");
 		FLOAT = new ParameterValueType("float");
@@ -61,6 +64,7 @@ public final class ParameterValueType extends Type {
 		PARAMETERS = new ParameterValueType("parameters");
 
 		types = new HashMap<String, ParameterValueType>();
+		types.put(TEXT.toString(), TEXT);
 		types.put(STRING.toString(), STRING);
 		types.put(INTEGER.toString(), INTEGER);
 		types.put(LONG.toString(), LONG);

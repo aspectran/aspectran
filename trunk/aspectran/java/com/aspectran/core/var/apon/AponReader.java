@@ -264,7 +264,7 @@ public class AponReader {
 								parameterDefineMap.put(name, parameterDefine);
 							}
 
-							AbstractParameters parameters2 = (AbstractParameters)parameterDefine.getParameters();
+							AbstractParameters parameters2 = (AbstractParameters)parameterDefine.getValueAsParameters();
 							valuelize(parameters2.getParameterDefineMap(), st, CURLY_BRAKET_OPEN, null, null);
 						}
 					} else {

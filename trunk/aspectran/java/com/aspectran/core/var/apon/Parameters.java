@@ -1,5 +1,6 @@
 package com.aspectran.core.var.apon;
 
+import java.util.List;
 import java.util.Set;
 
 
@@ -51,6 +52,10 @@ public interface Parameters {
 	
 	public int[] getIntArray(ParameterDefine parameter);
 	
+	public List<Integer> getIntList(String name);
+	
+	public List<Integer> getIntList(ParameterDefine parameter);
+	
 	public long getLong(String name);
 	
 	public long getLong(String name, long defaultValue);
@@ -63,6 +68,10 @@ public interface Parameters {
 	
 	public long[] getLongArray(ParameterDefine parameter);
 	
+	public List<Long> getLongList(String name);
+	
+	public List<Long> getLongList(ParameterDefine parameter);
+
 	public float getFloat(String name);
 	
 	public float getFloat(String name, float defaultValue);
@@ -75,6 +84,10 @@ public interface Parameters {
 	
 	public float[] getFloatArray(ParameterDefine parameter);
 	
+	public List<Float> getFloatList(String name);
+	
+	public List<Float> getFloatList(ParameterDefine parameter);
+
 	public double getDouble(String name);
 	
 	public double getDouble(String name, double defaultValue);
@@ -87,6 +100,10 @@ public interface Parameters {
 	
 	public double[] getDoubleArray(ParameterDefine parameter);
 	
+	public List<Double> getDoubleList(String name);
+	
+	public List<Double> getDoubleList(ParameterDefine parameter);
+
 	public boolean getBoolean(String name);
 	
 	public boolean getBoolean(String name, boolean defaultValue);
@@ -99,6 +116,10 @@ public interface Parameters {
 	
 	public boolean[] getBooleanArray(ParameterDefine parameter);
 	
+	public List<Boolean> getBooleanList(String name);
+	
+	public List<Boolean> getBooleanList(ParameterDefine parameter);
+
 	public Parameters getParameters(String name);
 
 	public Parameters[] getParametersArray(String name);
@@ -106,5 +127,9 @@ public interface Parameters {
 	public Parameters getParameters(ParameterDefine parameter);
 	
 	public Parameters[] getParametersArray(ParameterDefine parameter);
+	
+	public List<Parameters> getParametersList(String name);
+	
+	public List<Parameters> getParametersList(ParameterDefine parameter);
 	
 }

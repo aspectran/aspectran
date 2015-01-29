@@ -11,8 +11,6 @@ public class ParameterDefine implements Parameter {
 	
 	private final boolean array;
 	
-	private int arraySize;
-
 	private Object value;
 	
 	private List<Object> list;
@@ -26,7 +24,16 @@ public class ParameterDefine implements Parameter {
 	public ParameterDefine(String name, ParameterValueType parameterValueType, boolean array) {
 		this.name = name;
 		this.parameterValueType = parameterValueType;
-		this.array = array;
+		
+		if(parameterValueType == ParameterValueType.TEXT) {
+			this.array = true;
+		} else {
+			this.array = array;
+		}
+		
+		if(parameterValueType == ParameterValueType.PARAMETERS) {
+			this.value = new GenericParameters();
+		}
 	}
 
 	public ParameterDefine(String name, Parameters parameters) {
@@ -37,10 +44,9 @@ public class ParameterDefine implements Parameter {
 		this.name = name;
 		this.parameterValueType = ParameterValueType.PARAMETERS;
 		this.array = array;
+		this.value = parameters;
 		
 		parameters.setParent(this);
-		
-		this.value = parameters;
 	}
 	
 	protected Parameters getHolder() {
@@ -120,7 +126,7 @@ public class ParameterDefine implements Parameter {
 		if(list == null) {
 			list = new ArrayList<Object>();
 			
-			if(parameterValueType != ParameterValueType.PARAMETERS)
+			if(this.value == null)
 				this.value = value;
 		}
 		
@@ -139,23 +145,10 @@ public class ParameterDefine implements Parameter {
 	}
 
 	public String getValueAsString() {
-		if(array) {
-			if(list == null)
-				return null;
-			
-			StringBuilder sb = new StringBuilder();
-			
-			for(int i = 0; i < list.size(); i++) {
-				sb.append(list.get(i).toString()).append("\n");
-			}
-			
-			return sb.toString();
-		} else {
-			if(value == null)
-				return null;
+		if(value == null)
+			return null;
 
-			return value.toString();
-		}
+		return value.toString();
 	}
 	
 	public String[] getValueAsStringArray() {
@@ -177,143 +170,190 @@ public class ParameterDefine implements Parameter {
 			return new String[] { value.toString() };
 		}
 	}
+	
+	public String getValueAsText() {
+		if(array) {
+			if(list == null)
+				return null;
+			
+			StringBuilder sb = new StringBuilder();
+			
+			for(int i = 0; i < list.size(); i++) {
+				sb.append(list.get(i).toString()).append("\n");
+			}
+			
+			return sb.toString();
+		} else {
+			return getValueAsString();
+		}
+	}
 
 	public int getValueAsInt() {
+		if(parameterValueType != ParameterValueType.INTEGER)
+			throw new IncompatibleParameterValueTypeException(this, ParameterValueType.INTEGER);
+
 		if(value == null)
 			return 0;
 		
-		if(parameterValueType != ParameterValueType.INTEGER)
-			throw new IncompatibleParameterValueTypeException(this, ParameterValueType.INTEGER);
-		
 		return ((Integer)value).intValue();
 	}
-
-	@SuppressWarnings("unchecked")
+	
 	public int[] getValueAsIntArray() {
-		if(value == null)
+		List<Integer> intList = getValueAsIntList();
+		
+		if(intList == null)
 			return new int[0];
 		
-		if(parameterValueType != ParameterValueType.INTEGER || !array)
-			throw new IncompatibleParameterValueTypeException(this, ParameterValueType.INTEGER);
-		
-		int[] intArr = new int[((List<Object>)value).size()];
+		int[] intArr = new int[intList.size()];
 		
 		for(int i = 0; i < intArr.length; i++) {
-			intArr[i] = ((Integer)((List<Object>)value).get(i)).intValue();
+			intArr[i] = ((Integer)intList.get(i)).intValue();
 		}
 		
 		return intArr;
 	}
 
+	@SuppressWarnings("unchecked")
+	public List<Integer> getValueAsIntList() {
+		if(parameterValueType != ParameterValueType.INTEGER)
+			throw new IncompatibleParameterValueTypeException(this, ParameterValueType.INTEGER);
+
+		return (List<Integer>)getValueList();
+	}
+	
 	public long getValueAsLong() {
-		if(value == null)
-			return 0L;
-		
 		if(parameterValueType != ParameterValueType.LONG)
 			throw new IncompatibleParameterValueTypeException(this, ParameterValueType.LONG);
+		
+		if(value == null)
+			return 0L;
 		
 		return ((Long)value).longValue();
 	}
 	
-	@SuppressWarnings("unchecked")
 	public long[] getValueAsLongArray() {
-		if(value == null)
+		List<Long> longList = getValueAsLongList();
+
+		if(longList == null)
 			return new long[0];
 		
-		if(parameterValueType != ParameterValueType.LONG || !array)
-			throw new IncompatibleParameterValueTypeException(this, ParameterValueType.LONG);
-		
-		long[] longArr = new long[((List<Object>)value).size()];
+		long[] longArr = new long[longList.size()];
 		
 		for(int i = 0; i < longArr.length; i++) {
-			longArr[i] = ((Long)((List<Object>)value).get(i)).longValue();
+			longArr[i] = ((Long)longList.get(i)).longValue();
 		}
 		
 		return longArr;
 	}
 
+	@SuppressWarnings("unchecked")
+	public List<Long> getValueAsLongList() {
+		if(parameterValueType != ParameterValueType.LONG)
+			throw new IncompatibleParameterValueTypeException(this, ParameterValueType.LONG);
+
+		return (List<Long>)getValueList();
+	}
+	
 	public float getValueAsFloat() {
-		if(value == null)
-			return 0.0F;
-		
 		if(parameterValueType != ParameterValueType.FLOAT)
 			throw new IncompatibleParameterValueTypeException(this, ParameterValueType.FLOAT);
+
+		if(value == null)
+			return 0.0F;
 		
 		return ((Float)value).floatValue();
 	}
 	
-	@SuppressWarnings("unchecked")
 	public float[] getValueAsFloatArray() {
-		if(value == null)
+		List<Float> floatList = getValueAsFloatList();
+
+		if(floatList == null)
 			return new float[0];
 		
-		if(parameterValueType != ParameterValueType.FLOAT || !array)
-			throw new IncompatibleParameterValueTypeException(this, ParameterValueType.FLOAT);
-		
-		float[] floatArr = new float[((List<Object>)value).size()];
+		float[] floatArr = new float[floatList.size()];
 		
 		for(int i = 0; i < floatArr.length; i++) {
-			floatArr[i] = ((Float)((List<Object>)value).get(i)).floatValue();
+			floatArr[i] = ((Float)floatList.get(i)).floatValue();
 		}
 		
 		return floatArr;
 	}
 
+	@SuppressWarnings("unchecked")
+	public List<Float> getValueAsFloatList() {
+		if(parameterValueType != ParameterValueType.FLOAT)
+			throw new IncompatibleParameterValueTypeException(this, ParameterValueType.FLOAT);
+
+		return (List<Float>)getValueList();
+	}
+	
 	public double getValueAsDouble() {
-		if(value == null)
-			return 0.0D;
-		
 		if(parameterValueType != ParameterValueType.DOUBLE)
 			throw new IncompatibleParameterValueTypeException(this, ParameterValueType.DOUBLE);
 		
+		if(value == null)
+			return 0.0D;
+		
 		return ((Double)value).doubleValue();
 	}
-
-	@SuppressWarnings("unchecked")
+	
 	public double[] getValueAsDoubleArray() {
-		if(value == null)
+		List<Double> doubleList = getValueAsDoubleList();
+		
+		if(doubleList == null)
 			return new double[0];
-		
-		if(parameterValueType != ParameterValueType.DOUBLE || !array)
-			throw new IncompatibleParameterValueTypeException(this, ParameterValueType.DOUBLE);
-		
-		double[] doubleArr = new double[((List<Object>)value).size()];
+				
+		double[] doubleArr = new double[doubleList.size()];
 		
 		for(int i = 0; i < doubleArr.length; i++) {
-			doubleArr[i] = ((Double)((List<Object>)value).get(i)).doubleValue();
+			doubleArr[i] = ((Double)doubleList.get(i)).doubleValue();
 		}
 		
 		return doubleArr;
 	}
 	
+	@SuppressWarnings("unchecked")
+	public List<Double> getValueAsDoubleList() {
+		if(parameterValueType != ParameterValueType.DOUBLE)
+			throw new IncompatibleParameterValueTypeException(this, ParameterValueType.DOUBLE);
+
+		return (List<Double>)getValueList();
+	}
+
 	public boolean getValueAsBoolean() {
-		if(value == null)
-			return false;
-		
 		if(parameterValueType != ParameterValueType.BOOLEAN)
 			throw new IncompatibleParameterValueTypeException(this, ParameterValueType.BOOLEAN);
+		
+		if(value == null)
+			return false;
 		
 		return ((Boolean)value).booleanValue();
 	}
 
-	@SuppressWarnings("unchecked")
 	public boolean[] getValueAsBooleanArray() {
-		if(value == null)
+		List<Boolean> booleanList = getValueAsBooleanList();
+		
+		if(booleanList == null)
 			return new boolean[0];
 		
-		if(parameterValueType != ParameterValueType.BOOLEAN || !array)
-			throw new IncompatibleParameterValueTypeException(this, ParameterValueType.BOOLEAN);
-		
-		boolean[] booleanArr = new boolean[((List<Object>)value).size()];
+		boolean[] booleanArr = new boolean[booleanList.size()];
 		
 		for(int i = 0; i < booleanArr.length; i++) {
-			booleanArr[i] = ((Boolean)((List<Object>)value).get(i)).booleanValue();
+			booleanArr[i] = ((Boolean)booleanList.get(i)).booleanValue();
 		}
 		
 		return booleanArr;
 	}
 	
-	public Parameters getParameters() {
+	@SuppressWarnings("unchecked")
+	public List<Boolean> getValueAsBooleanList() {
+		if(parameterValueType != ParameterValueType.BOOLEAN)
+			throw new IncompatibleParameterValueTypeException(this, ParameterValueType.BOOLEAN);
+
+		return (List<Boolean>)getValueList();
+	}
+	
+	public Parameters getValueAsParameters() {
 		if(value == null && parameterValueType == ParameterValueType.VARIABLE) {
 			value = new GenericParameters();
 		} else if(parameterValueType != ParameterValueType.PARAMETERS) {
@@ -323,35 +363,23 @@ public class ParameterDefine implements Parameter {
 		return (Parameters)value;
 	}
 
-	protected Parameters getParameters(int index) {
-		List<Parameters> parametersList = getParametersList();
+	public Parameters[] getValueAsParametersArray() {
+		List<Parameters> parametersList = getValueAsParametersList();
 		
 		if(parametersList == null)
 			return null;
 		
-		return parametersList.get(index);
+		return parametersList.toArray(new Parameters[parametersList.size()]);
 	}
 
 	@SuppressWarnings("unchecked")
-	public Parameters[] getParametersArray() {
-		if(parameterValueType != ParameterValueType.PARAMETERS || !array)
-			throw new IncompatibleParameterValueTypeException(this, ParameterValueType.PARAMETERS);
-		
-		if(arraySize > 0) {
-			return ((List<Object>)this.value).toArray(new Parameters[((List<Object>)this.value).size()]);
-		} else {
-			return new Parameters[] { (Parameters)this.value };
-		}
-	}
-
-	@SuppressWarnings("unchecked")
-	public List<Parameters> getParametersList() {
-		if(parameterValueType != ParameterValueType.PARAMETERS || !array)
+	public List<Parameters> getValueAsParametersList() {
+		if(parameterValueType != ParameterValueType.PARAMETERS)
 			throw new IncompatibleParameterValueTypeException(this, ParameterValueType.PARAMETERS);
 		
 		return (List<Parameters>)getValueList();
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
@@ -362,7 +390,8 @@ public class ParameterDefine implements Parameter {
 		sb.append("{name=").append(name);
 		sb.append(", parameterValueType=").append(parameterValueType);
 		sb.append(", array=").append(array);
-		sb.append(", arraySize=").append(arraySize);
+		if(array)
+			sb.append(", arraySize=").append(getArraySize());
 		sb.append(", qualifiedName=").append(getQualifiedName());
 		sb.append("}");
 		
