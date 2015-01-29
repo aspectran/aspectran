@@ -15,6 +15,11 @@
  */
 package com.aspectran.core.util.io;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+
 import com.aspectran.core.var.type.ImportStreamType;
 
 /**
@@ -42,6 +47,19 @@ public abstract class AbstractImportStream {
 
 	public ImportStreamType getImportStreamType() {
 		return importResourceType;
+	}
+	
+	abstract public InputStream getInputStream() throws IOException;
+	
+	public Reader getReader() throws IOException {
+		return getReader(null);
+	}
+	
+	public Reader getReader(String encoding) throws IOException {
+		if(encoding != null)
+			return new InputStreamReader(getInputStream(), encoding);
+		else
+			return new InputStreamReader(getInputStream());
 	}
 	
 }

@@ -1,11 +1,12 @@
 package com.aspectran.core.var.apon;
 
-import java.util.ArrayList;
-import java.util.Collection;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.StringReader;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.StringTokenizer;
 
 import com.aspectran.core.util.StringUtils;
 
@@ -19,13 +20,13 @@ public class AponReader {
 	
 	protected static final String SQUARE_BRAKET_CLOSE = "]";
 
-	private static final String DELIMITERS = "\n\r\f";
+	//private static final String DELIMITERS = "\n\r\f";
 	
-	private Map<String, ParameterDefine> parameterDefineMap;
+	//private Map<String, ParameterDefine> parameterDefineMap;
 	
 	private Parameters holder;
 	
-	private boolean preparsed;
+	//private boolean preparsed;
 	
 	private boolean addable;
 	
@@ -36,11 +37,11 @@ public class AponReader {
 		this.holder = holder;
 	}
 
-	public void read(String text) {
+	/*
+	public void read(String text) throws IOException {
 		read(text, null);
 	}
-	
-	public void read(String text, ParameterDefine[] parameterDefines) {
+	public void read(String text, ParameterDefine[] parameterDefines) throws IOException {
 		if(parameterDefines == null && text != null) {
 			parameterDefines = preparse(text);
 		}
@@ -64,7 +65,75 @@ public class AponReader {
 		if(text != null)
 			valuelize(text);
 	}
+	*/
+
+	public Parameters read(String text, Parameters parameters) {
+		read(text, parameters.getParameterDefines());
+		return parameters;
+	}
+
+	public Map<String, ParameterDefine> read(String text, ParameterDefine[] parameterDefines) {
+		try {
+			BufferedReader reader = new BufferedReader(new StringReader(text));
+			Map<String, ParameterDefine> parameterDefineMap = read(reader, parameterDefines);
+			reader.close();
 	
+			return parameterDefineMap;
+		} catch(IOException e) {
+			throw new AponReadFailedException(e);
+		}
+	}
+/*
+	public Parameters read(InputStream inputStream, Parameters parameters) {
+		read(inputStream, parameters.getParameterDefines());
+		return parameters;
+	}
+
+	public Map<String, ParameterDefine> read(InputStream inputStream, ParameterDefine[] parameterDefines) {
+		try {
+			BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+			Map<String, ParameterDefine> parameterDefineMap = read(reader, parameterDefines);
+			reader.close();
+	
+			return parameterDefineMap;
+		} catch(IOException e) {
+			throw new AponReadFailedException(e);
+		}
+	}
+*/
+	public Parameters read(BufferedReader reader) throws IOException {
+		Parameters parameters = new GenericParameters();
+		read(reader, parameters);
+		return parameters;
+	}
+	
+	public Parameters read(BufferedReader reader, Parameters parameters) throws IOException {
+		read(reader, parameters.getParameterDefines());
+		return parameters;
+	}
+	
+	public Map<String, ParameterDefine> read(BufferedReader reader, ParameterDefine[] parameterDefines) throws IOException {
+		Map<String, ParameterDefine> parameterDefineMap = new LinkedHashMap<String, ParameterDefine>();
+		
+		if(parameterDefines != null) {
+			for(ParameterDefine pd : parameterDefines) {
+				if(holder != null)
+					pd.setHolder(holder);
+				
+				parameterDefineMap.put(pd.getName(), pd);
+			}
+			
+			addable = false;
+		} else {
+			addable = true;
+		}
+
+		valuelize(reader, parameterDefineMap);
+		
+		return parameterDefineMap;
+	}
+	
+	/*
 	public ParameterDefine[] getParameterDefines() {
 		Collection<ParameterDefine> values = parameterDefineMap.values();
 		return values.toArray(new ParameterDefine[values.size()]);
@@ -77,23 +146,22 @@ public class AponReader {
 	public void addParameterDefine(ParameterDefine parameterDefine) {
 		parameterDefineMap.put(parameterDefine.getName(), parameterDefine);
 	}
-	
-	private ParameterDefine[] preparse(String text) {
-		StringTokenizer st = new StringTokenizer(text, DELIMITERS);
-		
-		ParameterDefine[] parameterDefines = preparse(st, null);
+	private ParameterDefine[] preparse(String text) throws IOException {
+		BufferedReader reader = new BufferedReader(new StringReader(text));
+		ParameterDefine[] parameterDefines = preparse(reader, null);
+		reader.close();
 		
 		preparsed = true;
 		
 		return parameterDefines;
 	}
 	
-	private ParameterDefine[] preparse(StringTokenizer st, ParameterDefine parentParameterDefine) {
+	private ParameterDefine[] preparse(BufferedReader reader, ParameterDefine parentParameterDefine) throws IOException {
 		List<ParameterDefine> parameterDefineList = new ArrayList<ParameterDefine>();
 		
 		String openBraket = parentParameterDefine != null ? CURLY_BRAKET_OPEN : null;
 		
-		preparse(st, parameterDefineList, openBraket, null);
+		preparse(reader, parameterDefineList, openBraket, null);
 		
 		ParameterDefine[] parameterDefines = parameterDefineList.toArray(new ParameterDefine[parameterDefineList.size()]);
 		
@@ -105,42 +173,41 @@ public class AponReader {
 		return parameterDefines;
 	}
 	
-	private void preparse(StringTokenizer st, List<ParameterDefine> parameterDefineList, String openBraket, ParameterDefine parameterDefine) {
+	private void preparse(BufferedReader reader, List<ParameterDefine> parameterDefineList, String openBraket, ParameterDefine parameterDefine) throws IOException {
+		String buffer = null;
 		String name = null;
 		String value = null;
 		
-		while(st.hasMoreTokens()) {
-			String token = st.nextToken();
-			
-			if(StringUtils.hasText(token)) {
-				token = token.trim();
+		while((buffer = reader.readLine()) != null) {
+			if(StringUtils.hasText(buffer)) {
+				buffer = buffer.trim();
 
 				if(openBraket != null) {
-					if(openBraket == CURLY_BRAKET_OPEN && CURLY_BRAKET_CLOSE.equals(token) ||
-							openBraket == SQUARE_BRAKET_OPEN && SQUARE_BRAKET_CLOSE.equals(token))
+					if(openBraket == CURLY_BRAKET_OPEN && CURLY_BRAKET_CLOSE.equals(buffer) ||
+							openBraket == SQUARE_BRAKET_OPEN && SQUARE_BRAKET_CLOSE.equals(buffer))
 						return;
 				}
 				
 				if(openBraket == SQUARE_BRAKET_OPEN) {
-					value = token;
+					value = buffer;
 				} else {
-					int index = token.indexOf(":");
+					int index = buffer.indexOf(":");
 
 					if(index == -1)
-						throw new InvalidParameterException("Cannot parse into name-value pair. \"" + token + "\"");
+						throw new InvalidParameterException("Cannot parse into name-value pair. \"" + buffer + "\"");
 
-					name = token.substring(0, index).trim();
-					value = token.substring(index + 1).trim();
+					name = buffer.substring(0, index).trim();
+					value = buffer.substring(index + 1).trim();
 				}
 
 				if(StringUtils.hasText(value)) {
 					if(CURLY_BRAKET_OPEN.equals(value)) {
 						if(openBraket == SQUARE_BRAKET_OPEN) {
-							preparse(st, parameterDefine);
+							preparse(reader, parameterDefine);
 						} else {
 							ParameterDefine pd = new ParameterDefine(name, ParameterValueType.PARAMETERS);
 							parameterDefineList.add(pd);
-							preparse(st, pd);
+							preparse(reader, pd);
 						}
 					} else if(openBraket != SQUARE_BRAKET_OPEN) {
 						ParameterValueType valueType = ParameterValueType.valueOfHint(name);
@@ -155,7 +222,7 @@ public class AponReader {
 							ParameterDefine pd = new ParameterDefine(name, valueType, true);
 							parameterDefineList.add(pd);
 	
-							preparse(st, parameterDefineList, SQUARE_BRAKET_OPEN, pd);
+							preparse(reader, parameterDefineList, SQUARE_BRAKET_OPEN, pd);
 						} else {
 							ParameterDefine pd = new ParameterDefine(name, valueType);
 							parameterDefineList.add(pd);
@@ -173,43 +240,39 @@ public class AponReader {
 			}
 		}
 	}
-	
-	private void valuelize(String text) {
-		StringTokenizer st = new StringTokenizer(text, DELIMITERS);
-
-		valuelize(parameterDefineMap, st, null, null, null);
+	*/
+	private void valuelize(BufferedReader reader, Map<String, ParameterDefine> parameterDefineMap) throws IOException {
+		valuelize(reader, parameterDefineMap, null, null, null);
 	}
 	
-	private void valuelize(Map<String, ParameterDefine> parameterDefineMap, StringTokenizer st, String openBraket, String name, ParameterDefine parameterDefine) {
-		ParameterValueType parameterValueType = null; 
+	private void valuelize(BufferedReader reader, Map<String, ParameterDefine> parameterDefineMap, String openBraket, String name, ParameterDefine parameterDefine) throws IOException {
+		String buffer = null;
 		String value = null;
+		ParameterValueType parameterValueType = null;
 		
-		//int curlyBraketCount = 0;
-		
-		while(st.hasMoreTokens()) {
-			String token = st.nextToken();
+		while((buffer = reader.readLine()) != null) {
 			
-			if(StringUtils.hasText(token)) {
-				token = token.trim();
+			if(StringUtils.hasText(buffer)) {
+				buffer = buffer.trim();
 				
 				if(openBraket != null) {
-					if(openBraket == CURLY_BRAKET_OPEN && CURLY_BRAKET_CLOSE.equals(token) ||
-							openBraket == SQUARE_BRAKET_OPEN && SQUARE_BRAKET_CLOSE.equals(token)) {
+					if(openBraket == CURLY_BRAKET_OPEN && CURLY_BRAKET_CLOSE.equals(buffer) ||
+							openBraket == SQUARE_BRAKET_OPEN && SQUARE_BRAKET_CLOSE.equals(buffer)) {
 						//System.out.println("*****return********* openBraket: " + openBraket + ", token: " + token);
 						return;
 					}
 				}
 				
 				if(openBraket == SQUARE_BRAKET_OPEN) {
-					value = token;
+					value = buffer;
 				} else {
-					int index = token.indexOf(":");
+					int index = buffer.indexOf(":");
 					
 					if(index == -1)
-						throw new InvalidParameterException("Cannot parse into name-value pair. \"" + token + "\"");
+						throw new InvalidParameterException("Cannot parse into name-value pair. \"" + buffer + "\"");
 					
-					name = token.substring(0, index).trim();
-					value = token.substring(index + 1).trim();
+					name = buffer.substring(0, index).trim();
+					value = buffer.substring(index + 1).trim();
 					
 					parameterDefine = parameterDefineMap.get(name);
 
@@ -225,7 +288,7 @@ public class AponReader {
 								parameterDefine = parameterDefineMap.get(name);
 							}
 						} else {
-							throw new InvalidParameterException("invalid parameter \"" + token + "\"");
+							throw new InvalidParameterException("invalid parameter \"" + buffer + "\"");
 						}
 					}
 				}
@@ -243,7 +306,7 @@ public class AponReader {
 						if(parameterDefine == null || (parameterDefine != null && parameterDefine.isArray())) {
 							//System.out.println("************** name: " + name);
 							//System.out.println("************** parameterDefine: " + parameterDefine);
-							valuelize(parameterDefineMap, st, SQUARE_BRAKET_OPEN, name, parameterDefine);
+							valuelize(reader, parameterDefineMap, SQUARE_BRAKET_OPEN, name, parameterDefine);
 							continue;
 						}
 					}
@@ -256,7 +319,7 @@ public class AponReader {
 							}
 
 							AbstractParameters parameters2 = (AbstractParameters)parameterDefine.newParameters();
-							valuelize(parameters2.getParameterDefineMap(), st, CURLY_BRAKET_OPEN, null, null);
+							valuelize(reader, parameters2.getParameterDefineMap(), CURLY_BRAKET_OPEN, null, null);
 							parameterDefine.putValue(parameters2);
 						} else {
 							if(parameterDefine == null) {
@@ -265,7 +328,7 @@ public class AponReader {
 							}
 
 							AbstractParameters parameters2 = (AbstractParameters)parameterDefine.getValueAsParameters();
-							valuelize(parameters2.getParameterDefineMap(), st, CURLY_BRAKET_OPEN, null, null);
+							valuelize(reader, parameters2.getParameterDefineMap(), CURLY_BRAKET_OPEN, null, null);
 						}
 					} else {
 						if(parameterValueType == null)
@@ -280,7 +343,7 @@ public class AponReader {
 							try {
 								parameterDefine.putValue(new Integer(value));
 							} catch(NumberFormatException ex) {
-								throw new InvalidParameterException("Cannot parse value of '" + name + "' to an integer. \"" + token + "\"");
+								throw new InvalidParameterException("Cannot parse value of '" + name + "' to an integer. \"" + buffer + "\"");
 							}
 						} else if(parameterValueType == ParameterValueType.BOOLEAN) {
 							parameterDefine.putValue(Boolean.valueOf(value));
@@ -292,7 +355,7 @@ public class AponReader {
 			}
 		}
 		
-		if(!preparsed && openBraket != null) {
+		if(openBraket != null) {
 			if(openBraket == CURLY_BRAKET_OPEN) {
 				throw new InvalidParameterException("Cannot parse value of '" + name + "' to an array of strings.");
 			} else if(openBraket == SQUARE_BRAKET_OPEN) {

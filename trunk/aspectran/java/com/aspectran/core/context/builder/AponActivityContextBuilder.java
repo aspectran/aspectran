@@ -16,12 +16,13 @@
 package com.aspectran.core.context.builder;
 
 import java.io.BufferedReader;
-import java.io.InputStreamReader;
 
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.context.builder.xml.parser.AspectranNodeParser;
+import com.aspectran.core.context.builder.apon.params.AspectranParameters;
 import com.aspectran.core.util.io.ImportStream;
+import com.aspectran.core.var.apon.AponReader;
+import com.aspectran.core.var.apon.Parameters;
 
 /**
  * AponAspectranContextBuilder.
@@ -32,24 +33,35 @@ public class AponActivityContextBuilder extends AbstractActivityContextBuilder i
 	
 	private final ApplicationAdapter applicationAdapter;
 	
+	private final String encoding;
+	
 	public AponActivityContextBuilder(ApplicationAdapter applicationAdapter) {
-		this(applicationAdapter, null);
+		this(applicationAdapter, null, null);
+	}
+	
+	public AponActivityContextBuilder(ApplicationAdapter applicationAdapter, String encoding) {
+		this(applicationAdapter, null, encoding);
 	}
 	
 	public AponActivityContextBuilder(ApplicationAdapter applicationAdapter, ClassLoader classLoader) {
+		this(applicationAdapter, classLoader, null);
+	}
+	
+	public AponActivityContextBuilder(ApplicationAdapter applicationAdapter, ClassLoader classLoader, String encoding) {
 		super(applicationAdapter.getApplicationBasePath(), classLoader);
 		this.applicationAdapter = applicationAdapter;
+		this.encoding = encoding;
 	}
 
 	public ActivityContext build(String rootContext) throws ActivityContextBuilderException {
 		try {
 			ImportStream importStream = makeImportStream(rootContext);
+			BufferedReader reader = new BufferedReader(importStream.getReader(encoding));
 
-			BufferedReader br = new BufferedReader(new InputStreamReader(importStream.getInputStream()));
-
+			AponReader aponReader = new AponReader();
+			Parameters aspectranParameters = aponReader.read(reader, new AspectranParameters());
 			
-			AspectranNodeParser parser = new AspectranNodeParser(this);
-			parser.parse(importStream);
+			reader.close();
 			
 			ActivityContext aspectranContext = makeActivityContext(applicationAdapter);
 

@@ -42,6 +42,8 @@ public abstract class AbstractAspectranService implements AspectranService {
 	
 	private String rootContext;
 
+	private String encoding;
+	
 	private String[] resourceLocations;
 	
 	private boolean hardReload;
@@ -123,6 +125,7 @@ public abstract class AbstractAspectranService implements AspectranService {
 			Parameters aspectranSchedulerConfig = aspectranConfig.getParameters(AspectranConfig.scheduler);
 			
 			String rootContext = aspectranContextConfig.getString(AspectranContextConfig.root);
+			String encoding = aspectranContextConfig.getString(AspectranContextConfig.encoding);
 			String[] resourceLocations = aspectranContextConfig.getStringArray(AspectranContextConfig.resources);
 			String reloadMethod = aspectranContextAutoReloadingConfig.getString(AspectranContextAutoReloadingConfig.reloadMethod);
 			int observationInterval = aspectranContextAutoReloadingConfig.getInt(AspectranContextAutoReloadingConfig.observationInterval, -1);
@@ -132,6 +135,7 @@ public abstract class AbstractAspectranService implements AspectranService {
 				autoReloadingStartup = false;
 			
 			this.rootContext = rootContext;
+			this.encoding = encoding;
 			this.resourceLocations = checkResourceLocations(getApplicationBasePath(), aspectranClassLoader.getResourceLocation(), resourceLocations);
 			this.hardReload = "hard".equals(reloadMethod);
 			this.autoReloadingStartup = autoReloadingStartup;
