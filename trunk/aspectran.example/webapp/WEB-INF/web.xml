@@ -15,6 +15,7 @@
 		<param-value>
 			context: {
 				root: /WEB-INF/aspectran/config/example-root.xml
+				encoding: utf-8
 				resources: [
 					/WEB-INF/classes
 					/WEB-INF/aspectran/classes
