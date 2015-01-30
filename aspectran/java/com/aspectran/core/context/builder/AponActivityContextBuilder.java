@@ -15,7 +15,7 @@
  */
 package com.aspectran.core.context.builder;
 
-import java.io.BufferedReader;
+import java.io.Reader;
 
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.ActivityContext;
@@ -56,7 +56,7 @@ public class AponActivityContextBuilder extends AbstractActivityContextBuilder i
 	public ActivityContext build(String rootContext) throws ActivityContextBuilderException {
 		try {
 			ImportStream importStream = makeImportStream(rootContext);
-			BufferedReader reader = new BufferedReader(importStream.getReader(encoding));
+			Reader reader = importStream.getReader(encoding);
 
 			AponReader aponReader = new AponReader();
 			Parameters aspectranParameters = aponReader.read(reader, new AspectranParameters());

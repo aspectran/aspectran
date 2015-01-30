@@ -2,8 +2,7 @@ package com.aspectran.core.var.apon;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.Reader;
 import java.io.StringReader;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -74,7 +73,7 @@ public class AponReader {
 
 	public Map<String, ParameterDefine> read(String text, ParameterDefine[] parameterDefines) {
 		try {
-			BufferedReader reader = new BufferedReader(new StringReader(text));
+			Reader reader = new StringReader(text);
 			Map<String, ParameterDefine> parameterDefineMap = read(reader, parameterDefines);
 			reader.close();
 	
@@ -101,18 +100,18 @@ public class AponReader {
 		}
 	}
 */
-	public Parameters read(BufferedReader reader) throws IOException {
+	public Parameters read(Reader reader) throws IOException {
 		Parameters parameters = new GenericParameters();
 		read(reader, parameters);
 		return parameters;
 	}
 	
-	public Parameters read(BufferedReader reader, Parameters parameters) throws IOException {
+	public Parameters read(Reader reader, Parameters parameters) throws IOException {
 		read(reader, parameters.getParameterDefines());
 		return parameters;
 	}
 	
-	public Map<String, ParameterDefine> read(BufferedReader reader, ParameterDefine[] parameterDefines) throws IOException {
+	public Map<String, ParameterDefine> read(Reader reader, ParameterDefine[] parameterDefines) throws IOException {
 		Map<String, ParameterDefine> parameterDefineMap = new LinkedHashMap<String, ParameterDefine>();
 		
 		if(parameterDefines != null) {
@@ -128,7 +127,8 @@ public class AponReader {
 			addable = true;
 		}
 
-		valuelize(reader, parameterDefineMap);
+		BufferedReader br = new BufferedReader(reader);
+		valuelize(br, parameterDefineMap);
 		
 		return parameterDefineMap;
 	}
