@@ -17,7 +17,7 @@ package com.aspectran.core.context.builder;
 
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.context.builder.xml.parser.AspectranNodeParser;
+import com.aspectran.core.context.builder.xml.AspectranNodeParser;
 import com.aspectran.core.util.io.ImportStream;
 
 /**
