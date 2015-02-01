@@ -144,4 +144,20 @@ public class DispatchResponseRule extends ActionPossessSupport implements Action
 		
 		return sb.toString();
 	}
+	
+	public static DispatchResponseRule newInstance(String contentType, String encoding) {
+		DispatchResponseRule drr = new DispatchResponseRule();
+		drr.setContentType(contentType);
+		drr.setCharacterEncoding(encoding);
+
+		return drr;
+	}
+	
+	public static void updateTemplate(DispatchResponseRule drr, String templateFile, String templateContent, String templateEncoding, boolean noCache) {
+		drr.setTemplateFile(templateFile);
+		drr.setTemplateEncoding(templateEncoding);
+		drr.setTemplateContent(templateContent);
+		drr.setTemplateNoCache(noCache);
+	}
+	
 }

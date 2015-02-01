@@ -8,7 +8,7 @@ import com.aspectran.core.var.apon.Parameters;
 public class BeanParameters extends AbstractParameters implements Parameters {
 
 	public static final ParameterDefine id;
-	public static final ParameterDefine clazz;
+	public static final ParameterDefine className;
 	public static final ParameterDefine scope;
 	public static final ParameterDefine factoryMethod;
 	public static final ParameterDefine initMethod;
@@ -23,7 +23,7 @@ public class BeanParameters extends AbstractParameters implements Parameters {
 	
 	static {
 		id = new ParameterDefine("id", ParameterValueType.STRING);
-		clazz = new ParameterDefine("class", ParameterValueType.STRING);
+		className = new ParameterDefine("class", ParameterValueType.STRING);
 		scope = new ParameterDefine("scope", ParameterValueType.STRING);
 		factoryMethod = new ParameterDefine("factoryMethod", ParameterValueType.STRING);
 		initMethod = new ParameterDefine("initMethod", ParameterValueType.STRING);
@@ -36,7 +36,7 @@ public class BeanParameters extends AbstractParameters implements Parameters {
 		
 		parameterDefines = new ParameterDefine[] {
 				id,
-				clazz,
+				className,
 				scope,
 				factoryMethod,
 				initMethod,

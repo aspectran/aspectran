@@ -555,4 +555,14 @@ public class TransletRule implements ActionAddable, ResponseSettable, AspectAdvi
 		return actionList;
 	}
 	
+	public static TransletRule newInstance(String name) {
+		if(name == null)
+			throw new IllegalArgumentException("The <translet> element requires a name attribute.");
+
+		TransletRule transletRule = new TransletRule();
+		transletRule.setName(name);
+
+		return transletRule;
+	}
+	
 }

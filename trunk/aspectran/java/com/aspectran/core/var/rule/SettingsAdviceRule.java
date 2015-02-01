@@ -63,4 +63,13 @@ public class SettingsAdviceRule {
 		
 		settings.put(name, value);
 	}
+	
+	public static SettingsAdviceRule newInstance(AspectRule aspectRule) {
+		SettingsAdviceRule sar = new SettingsAdviceRule();
+		sar.setAspectId(aspectRule.getId());
+		sar.setAspectAdviceType(AspectAdviceType.SETTINGS);
+
+		return sar;
+	}
+
 }

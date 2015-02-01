@@ -230,4 +230,31 @@ public class RedirectResponseRule extends ActionPossessSupport implements Action
 		
 		return sb.toString();
 	}
+	
+	public static RedirectResponseRule newInstance(String contentType, String translet, String url, boolean excludeNullParameters) {
+		RedirectResponseRule rrr = new RedirectResponseRule();
+		rrr.setContentType(contentType);
+		rrr.setTransletName(translet);
+		
+		if(url != null && url.length() > 0)
+			rrr.setUrl(url);
+		
+		rrr.setExcludeNullParameter(excludeNullParameters);
+
+		return rrr;
+	}
+	
+	public static void updateUrl(RedirectResponseRule rrr, String url) {
+		if(url != null) {
+			url = url.trim();
+			
+			if(url.length() == 0)
+				url = null;
+		}
+
+		if(url != null) {
+			rrr.setUrl(url);
+		}
+	}
+	
 }

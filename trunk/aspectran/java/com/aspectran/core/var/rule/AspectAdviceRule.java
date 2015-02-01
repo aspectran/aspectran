@@ -108,4 +108,13 @@ public class AspectAdviceRule implements ActionSettable {
 		return sb.toString();
 	}
 	
+	public static AspectAdviceRule newInstance(AspectRule aspectRule, AspectAdviceType aspectAdviceType) {
+		AspectAdviceRule aspectAdviceRule = new AspectAdviceRule();
+		aspectAdviceRule.setAspectRule(aspectRule);
+		aspectAdviceRule.setAdviceBeanId(aspectRule.getAdviceBeanId());
+		aspectAdviceRule.setAspectAdviceType(aspectAdviceType);
+
+		return aspectAdviceRule;
+	}
+	
 }

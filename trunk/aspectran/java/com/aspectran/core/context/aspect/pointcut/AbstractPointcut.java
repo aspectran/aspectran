@@ -24,8 +24,10 @@ public abstract class AbstractPointcut {
 	}
 	
 	public void addPointcutPattern(List<PointcutPattern> pointcutPatternList) {
-		if(pointcutPatternList == null)
-			pointcutPatternList = new ArrayList<PointcutPattern>();
+		if(pointcutPatternList == null) {
+			pointcutPatternList = new ArrayList<PointcutPattern>(pointcutPatternList);
+			return;
+		}
 
 		pointcutPatternList.addAll(pointcutPatternList);
 	}

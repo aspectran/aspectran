@@ -15,7 +15,7 @@
  */
 package com.aspectran.core.context.builder.xml;
 
-import java.util.Properties;
+import java.util.Map;
 
 import org.w3c.dom.Node;
 
@@ -55,13 +55,10 @@ public class AspectAdviceRuleNodeletAdder implements NodeletAdder {
 	 */
 	public void process(String xpath, NodeletParser parser) {
 		parser.addNodelet(xpath, new Nodelet() {
-			public void process(Node node, Properties attributes, String text) throws Exception {
+			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
 				AspectRule ar = (AspectRule)assistant.peekObject();
 				
-				AspectAdviceRule aar = new AspectAdviceRule();
-				aar.setAspectRule(ar);
-				aar.setAdviceBeanId(ar.getAdviceBeanId());
-				aar.setAspectAdviceType(aspectAdviceType);
+				AspectAdviceRule aar = AspectAdviceRule.newInstance(ar, aspectAdviceType);
 				
 				assistant.pushObject(aar);
 			}
@@ -70,7 +67,7 @@ public class AspectAdviceRuleNodeletAdder implements NodeletAdder {
 		parser.addNodelet(xpath, new ActionRuleNodeletAdder(assistant));
 		
 		parser.addNodelet(xpath, "/end()", new Nodelet() {
-			public void process(Node node, Properties attributes, String text) throws Exception {
+			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
 				AspectAdviceRule aar = (AspectAdviceRule)assistant.popObject();
 				AspectRule ar = (AspectRule)assistant.peekObject();
 				

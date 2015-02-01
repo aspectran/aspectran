@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.StringTokenizer;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -17,6 +16,7 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.w3c.dom.CharacterData;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
@@ -40,7 +40,7 @@ public class NodeletParser {
 	
 	private final Logger logger = LoggerFactory.getLogger(NodeletParser.class);
 
-	protected final static Properties EMPTY_ATTRIBUTES = new Properties();
+	protected final static Map<String, String> EMPTY_ATTRIBUTES = new HashMap<String, String>();
 	
 	private Map<String, Nodelet> nodeletMap = new HashMap<String, Nodelet>();
 
@@ -186,12 +186,12 @@ public class NodeletParser {
 		
 		if(nodelet != null) {
 			try {
-				Properties attributes;
+				Map<String, String> attributes;
 				String text;
 
 				if(!pathString.endsWith("end()")) {
-					attributes = NodeletUtils.parseAttributes(node);
-					text = NodeletUtils.getNodeValue(node);
+					attributes = parseAttributes(node);
+					text = getNodeValue(node);
 
 					if(logger.isTraceEnabled()) {
 						StringBuilder sb = new StringBuilder(pathString);
@@ -218,6 +218,52 @@ public class NodeletParser {
 		}
 	}
 
+	private Map<String, String> parseAttributes(Node node) {
+		NamedNodeMap attributeNodes = node.getAttributes();
+		
+		if(attributeNodes == null)
+			return NodeletParser.EMPTY_ATTRIBUTES;
+
+		Map<String, String> attributes = new HashMap<String, String>();
+
+		for(int i = 0; i < attributeNodes.getLength(); i++) {
+			Node attribute = attributeNodes.item(i);
+			String value = attribute.getNodeValue();
+
+			attributes.put(attribute.getNodeName(), value);
+		}
+		
+		return attributes;
+	}
+	
+	private String getNodeValue(Node node) {
+		NodeList children = node.getChildNodes();
+		int childrenLength = children.getLength();
+		
+		if(childrenLength == 0) {
+			String value = node.getNodeValue();
+			
+			if(value != null)
+				return value.trim();
+
+			return null;
+		}
+		
+		StringBuilder sb = new StringBuilder();
+		
+		for(int i = 0; i < childrenLength; i++) {
+			Node child = children.item(i);
+			
+			if(child.getNodeType() == Node.CDATA_SECTION_NODE ||
+					child.getNodeType() == Node.TEXT_NODE) {
+				String data = ((CharacterData)child).getData();
+				sb.append(data);
+			}
+		}
+		
+		return sb.toString().trim();
+	}
+	
 	/**
 	 * Creates a JAXP Document from a reader.
 	 */

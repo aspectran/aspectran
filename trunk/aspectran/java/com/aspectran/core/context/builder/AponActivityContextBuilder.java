@@ -23,6 +23,7 @@ import com.aspectran.core.context.builder.apon.AponAssembler;
 import com.aspectran.core.context.builder.apon.params.AspectranParameters;
 import com.aspectran.core.util.io.ImportStream;
 import com.aspectran.core.var.apon.AponReader;
+import com.aspectran.core.var.apon.Parameters;
 
 /**
  * AponAspectranContextBuilder.
@@ -59,12 +60,12 @@ public class AponActivityContextBuilder extends AbstractActivityContextBuilder i
 			Reader reader = importStream.getReader(encoding);
 
 			AponReader aponReader = new AponReader();
-			AspectranParameters aspectranParameters = (AspectranParameters)aponReader.read(reader, new AspectranParameters());
+			Parameters parameters = aponReader.read(reader, new AspectranParameters());
 			
 			reader.close();
 			
 			AponAssembler assembler = new AponAssembler(this);
-			assembler.assemble(aspectranParameters);
+			assembler.assembleAspectran(parameters);
 			
 			ActivityContext aspectranContext = makeActivityContext(applicationAdapter);
 

@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
+import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.var.token.Token;
 import com.aspectran.core.var.token.TokenParser;
 import com.aspectran.core.var.type.ItemType;
@@ -606,4 +607,130 @@ public class ItemRule {
 				throw new UnsupportedOperationException("The item-type of violation has occurred. current item-type: " + type.toString());
 		}	
 	}
+	
+	public static ItemRule newInstance(String type, String name, String value, String valueType, String defaultValue, String tokenize) {
+		ItemRule itemRule;
+
+		if(tokenize != null)
+			itemRule = new ItemRule(Boolean.parseBoolean(tokenize));
+		else
+			itemRule = new ItemRule();
+		
+		ItemType itemType = ItemType.valueOf(type);
+		
+		if(type != null && itemType == null)
+			throw new IllegalArgumentException("No item-type registered for type '" + type + "'");
+		
+		if(itemType != null)
+			itemRule.setType(itemType);
+		else
+			itemRule.setType(ItemType.ITEM); //default
+
+		if(!StringUtils.isEmpty(name)) {
+			itemRule.setName(name);
+		} else {
+			itemRule.setUnknownName(true);
+		}
+		
+		itemRule.setValue(value);
+		
+		ItemValueType itemValueType = ItemValueType.valueOf(valueType);
+		
+		if(valueType != null) {
+			if(itemValueType == null || itemValueType == ItemValueType.CUSTOM)
+				itemValueType = new ItemValueType(valueType); //full qualified class name
+			
+			if(itemValueType != null)
+				itemRule.setValueType(itemValueType);
+		}
+		
+		if(defaultValue != null)
+			itemRule.setDefaultValue(defaultValue);
+		
+		return itemRule;
+	}
+	
+	/**
+	 * Update reference.
+	 *
+	 * @param itemRule the item rule
+	 * @param beanId the bean id
+	 * @param parameter the parameter name
+	 * @param attribute the attribute name
+	 * @param property the bean's property
+	 */
+	public static void updateReference(ItemRule itemRule, String beanId, String parameter, String attribute, String property) {
+		Token[] tokens = makeReferenceTokens(beanId, parameter, attribute, property);
+		
+		if(tokens[0] != null)
+			itemRule.setValue(tokens);
+	}
+	
+	public static Token[] makeReferenceTokens(String beanId, String parameter, String attribute, String property) {
+		Token[] tokens = new Token[1];
+		
+		if(!StringUtils.isEmpty(beanId)) {
+			tokens[0] = new Token(TokenType.REFERENCE_BEAN, beanId);
+			
+			if(!StringUtils.isEmpty(property))
+				tokens[0].setGetterName(property);
+		} else if(!StringUtils.isEmpty(parameter))
+			tokens[0] = new Token(TokenType.PARAMETER, parameter);
+		else if(!StringUtils.isEmpty(attribute))
+			tokens[0] = new Token(TokenType.ATTRIBUTE, attribute);
+		else
+			tokens[0] = null;
+		
+		return tokens;
+	}
+	
+	public static void namingItemRule(ItemRule itemRule, ItemRuleMap itemRuleMap) {
+		int count = 0;
+		ItemRule first = null;
+		
+		for(ItemRule ir : itemRuleMap) {
+			if(ir.isUnknownName() && ir.getType() == itemRule.getType()) {
+				count++;
+				
+				if(count == 1)
+					first = ir;
+			}
+		}
+		
+		if(count == 0) {
+			itemRule.setName(itemRule.getType().toString());
+		} else {
+			if(count == 1) {
+				String name = first.getType().toString() + count;
+				first.setName(name);
+			}				
+			
+			String name = itemRule.getType().toString() + (++count);
+			itemRule.setName(name);
+		}
+	}
+
+	
+	@SuppressWarnings("unchecked")
+	public static Iterator<Token[]> tokenIterator(ItemRule itemRule) {
+		Iterator<Token[]> iter = null;
+		
+		if(itemRule.getType() == ItemType.LIST) {
+			List<Token[]> list = itemRule.getTokensList();
+			iter = list.iterator();
+		} else if(itemRule.getType() == ItemType.SET) {
+			Set<Token[]> set = itemRule.getTokensSet();
+			iter = set.iterator();
+		} else if(itemRule.getType() == ItemType.MAP) {
+			Map<String, Token[]> map = itemRule.getTokensMap();
+			iter = map.values().iterator();
+		} else if(itemRule.getType() == ItemType.PROPERTIES) {
+			Properties prop = itemRule.getTokensProperties();
+			//iterator = (Iterator<Token[]>)((Collection<Token[]>)prop.values().iterator());
+			iter = (Iterator<Token[]>)(Iterator<?>)prop.values().iterator();
+		}
+		
+		return iter;
+	}
+	
 }

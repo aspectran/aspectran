@@ -15,7 +15,7 @@
  */
 package com.aspectran.core.context.builder.xml;
 
-import java.util.Properties;
+import java.util.Map;
 
 import org.w3c.dom.Node;
 
@@ -57,16 +57,14 @@ public class ActionRuleNodeletAdder implements NodeletAdder {
 	 */
 	public void process(String xpath, NodeletParser parser) {
 		parser.addNodelet(xpath, "/echo", new Nodelet() {
-			public void process(Node node, Properties attributes, String text) throws Exception {
-				String id = attributes.getProperty("id");
-				boolean hidden = Boolean.parseBoolean(attributes.getProperty("hidden"));
+			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
+				String id = attributes.get("id");
+				boolean hidden = Boolean.parseBoolean(attributes.get("hidden"));
 
 				if(!assistant.isNullableActionId() && StringUtils.isEmpty(id))
 					throw new IllegalArgumentException("The <echo> element requires a id attribute.");
 				
-				EchoActionRule echoActionRule = new EchoActionRule();
-				echoActionRule.setActionId(id);
-				echoActionRule.setHidden(hidden);
+				EchoActionRule echoActionRule = EchoActionRule.newInstance(id, hidden);
 
 				assistant.pushObject(echoActionRule);
 				
@@ -79,7 +77,7 @@ public class ActionRuleNodeletAdder implements NodeletAdder {
 		parser.addNodelet(xpath, "/echo", new ItemRuleNodeletAdder(assistant));
 		
 		parser.addNodelet(xpath, "/echo/end()", new Nodelet() {
-			public void process(Node node, Properties attributes, String text) throws Exception {
+			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
 				ItemRuleMap irm = (ItemRuleMap)assistant.popObject();
 				EchoActionRule echoActionRule = (EchoActionRule)assistant.popObject();
 				
@@ -98,27 +96,23 @@ public class ActionRuleNodeletAdder implements NodeletAdder {
 			}
 		});
 		parser.addNodelet(xpath, "/action", new Nodelet() {
-			public void process(Node node, Properties attributes, String text) throws Exception {
-				String id = attributes.getProperty("id");
-				String beanId = attributes.getProperty("bean");
-				String methodName = attributes.getProperty("method");
-				boolean hidden = Boolean.parseBoolean(attributes.getProperty("hidden"));
+			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
+				String id = attributes.get("id");
+				String beanId = attributes.get("bean");
+				String methodName = attributes.get("method");
+				boolean hidden = Boolean.parseBoolean(attributes.get("hidden"));
 
 				if(!assistant.isNullableActionId() && StringUtils.isEmpty(id))
 					throw new IllegalArgumentException("The <action> element requires a id attribute.");
 				
-				BeanActionRule beanActionRule = new BeanActionRule();
-				beanActionRule.setActionId(id);
-				beanActionRule.setBeanId(beanId);
-				beanActionRule.setMethodName(methodName);
-				beanActionRule.setHidden(hidden);
+				BeanActionRule beanActionRule = BeanActionRule.newInstance(id, beanId, methodName, hidden);
 
 				assistant.pushObject(beanActionRule);
 			}
 		});
 		
 		parser.addNodelet(xpath, "/action/argument", new Nodelet() {
-			public void process(Node node, Properties attributes, String text) throws Exception {
+			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
 				ItemRuleMap irm = new ItemRuleMap();
 				assistant.pushObject(irm);
 			}
@@ -127,7 +121,7 @@ public class ActionRuleNodeletAdder implements NodeletAdder {
 		parser.addNodelet(xpath, "/action/argument", new ItemRuleNodeletAdder(assistant));
 
 		parser.addNodelet(xpath, "/action/argument/end()", new Nodelet() {
-			public void process(Node node, Properties attributes, String text) throws Exception {
+			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
 				ItemRuleMap irm = (ItemRuleMap)assistant.popObject();
 				
 				if(irm.size() > 0) {
@@ -138,7 +132,7 @@ public class ActionRuleNodeletAdder implements NodeletAdder {
 		});
 
 		parser.addNodelet(xpath, "/action/property", new Nodelet() {
-			public void process(Node node, Properties attributes, String text) throws Exception {
+			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
 				ItemRuleMap irm = new ItemRuleMap();
 				assistant.pushObject(irm);
 			}
@@ -147,7 +141,7 @@ public class ActionRuleNodeletAdder implements NodeletAdder {
 		parser.addNodelet(xpath, "/action/property", new ItemRuleNodeletAdder(assistant));
 
 		parser.addNodelet(xpath, "/action/property/end()", new Nodelet() {
-			public void process(Node node, Properties attributes, String text) throws Exception {
+			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
 				ItemRuleMap irm = (ItemRuleMap)assistant.popObject();
 				
 				if(irm.size() > 0) {
@@ -158,7 +152,7 @@ public class ActionRuleNodeletAdder implements NodeletAdder {
 		});
 		
 		parser.addNodelet(xpath, "/action/end()", new Nodelet() {
-			public void process(Node node, Properties attributes, String text) throws Exception {
+			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
 				BeanActionRule beanActionRule = (BeanActionRule)assistant.popObject();
 
 				Object o = assistant.peekObject();
@@ -179,27 +173,24 @@ public class ActionRuleNodeletAdder implements NodeletAdder {
 			}
 		});
 		parser.addNodelet(xpath, "/include", new Nodelet() {
-			public void process(Node node, Properties attributes, String text) throws Exception {
-				String id = attributes.getProperty("id");
-				String transletName = attributes.getProperty("translet");
-				boolean hidden = Boolean.parseBoolean(attributes.getProperty("hidden"));
+			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
+				String id = attributes.get("id");
+				String transletName = attributes.get("translet");
+				boolean hidden = Boolean.parseBoolean(attributes.get("hidden"));
 
 				transletName = assistant.getFullTransletName(transletName);
 				
 				if(!assistant.isNullableActionId() && StringUtils.isEmpty(id))
 					throw new IllegalArgumentException("The <include> element requires a id attribute.");
 				
-				IncludeActionRule includeActionRule = new IncludeActionRule();
-				includeActionRule.setActionId(id);
-				includeActionRule.setTransletName(transletName);
-				includeActionRule.setHidden(hidden);
+				IncludeActionRule includeActionRule = IncludeActionRule.newInstance(id, transletName, hidden);
 
 				assistant.pushObject(includeActionRule);
 			}
 		});
 
 		parser.addNodelet(xpath, "/include/attribute", new Nodelet() {
-			public void process(Node node, Properties attributes, String text) throws Exception {
+			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
 				ItemRuleMap irm = new ItemRuleMap();
 				assistant.pushObject(irm);
 			}
@@ -208,7 +199,7 @@ public class ActionRuleNodeletAdder implements NodeletAdder {
 		parser.addNodelet(xpath, "/include/attribute", new ItemRuleNodeletAdder(assistant));
 
 		parser.addNodelet(xpath, "/include/attribute/end()", new Nodelet() {
-			public void process(Node node, Properties attributes, String text) throws Exception {
+			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
 				ItemRuleMap irm = (ItemRuleMap)assistant.popObject();
 				
 				if(irm.size() > 0) {
@@ -219,7 +210,7 @@ public class ActionRuleNodeletAdder implements NodeletAdder {
 		});
 		
 		parser.addNodelet(xpath, "/include/end()", new Nodelet() {
-			public void process(Node node, Properties attributes, String text) throws Exception {
+			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
 				IncludeActionRule includeActionRule = (IncludeActionRule)assistant.popObject();
 				
 				Object o = assistant.peekObject();

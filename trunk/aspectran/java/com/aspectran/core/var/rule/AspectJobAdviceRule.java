@@ -24,7 +24,7 @@ public class AspectJobAdviceRule {
 
 	private String aspectId;
 	
-	private AspectAdviceType aspectAdviceType;
+	private final AspectAdviceType aspectAdviceType = AspectAdviceType.JOB;
 	
 	private String jobTransletName;
 	
@@ -40,10 +40,6 @@ public class AspectJobAdviceRule {
 
 	public AspectAdviceType getAspectAdviceType() {
 		return aspectAdviceType;
-	}
-
-	public void setAspectAdviceType(AspectAdviceType aspectAdviceType) {
-		this.aspectAdviceType = aspectAdviceType;
 	}
 
 	public String getJobTransletName() {
@@ -75,6 +71,15 @@ public class AspectJobAdviceRule {
 		sb.append("}");
 		
 		return sb.toString();
+	}
+	
+	public static AspectJobAdviceRule newInstance(AspectRule aspectRule, String transletName, boolean disabled) {
+		AspectJobAdviceRule ajar = new AspectJobAdviceRule();
+		ajar.setAspectId(aspectRule.getId());
+		ajar.setJobTransletName(transletName);
+		ajar.setDisabled(disabled);
+		
+		return ajar;
 	}
 	
 }

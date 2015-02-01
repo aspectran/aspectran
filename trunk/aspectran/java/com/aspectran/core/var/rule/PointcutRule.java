@@ -18,7 +18,11 @@ package com.aspectran.core.var.rule;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.aspectran.core.context.builder.apon.params.CronTriggerParameters;
+import com.aspectran.core.context.builder.apon.params.SimpleTriggerParameters;
+import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.var.apon.Parameters;
+import com.aspectran.core.var.type.AspectTargetType;
 import com.aspectran.core.var.type.PointcutType;
 
 public class PointcutRule {
@@ -29,8 +33,10 @@ public class PointcutRule {
 	
 	private String patternString;
 	
-	private Parameters simpleScheduleParameters;
-
+	private Parameters simpleTriggerParameters;
+	
+	private Parameters cronTriggerParameters;
+	
 	public PointcutType getPointcutType() {
 		return pointcutType;
 	}
@@ -63,12 +69,20 @@ public class PointcutRule {
 		this.patternString = patternString;
 	}
 	
-	public Parameters getSimpleScheduleParameters() {
-		return simpleScheduleParameters;
+	public Parameters getSimpleTriggerParameters() {
+		return simpleTriggerParameters;
 	}
 
-	public void setSimpleScheduleParameters(Parameters simpleScheduleParameters) {
-		this.simpleScheduleParameters = simpleScheduleParameters;
+	public void setSimpleTriggerParameters(Parameters simpleTriggerParameters) {
+		this.simpleTriggerParameters = simpleTriggerParameters;
+	}
+	
+	public Parameters getCronTriggerParameters() {
+		return cronTriggerParameters;
+	}
+
+	public void setCronTriggerParameters(Parameters cronTriggerParameters) {
+		this.cronTriggerParameters = cronTriggerParameters;
 	}
 
 	/* (non-Javadoc)
@@ -83,6 +97,43 @@ public class PointcutRule {
 		sb.append("}");
 		
 		return sb.toString();
+	}
+	
+	public static PointcutRule newInstance(AspectRule aspectRule, String type, String text) {
+		PointcutType pointcutType = null;
+		
+		if(aspectRule.getAspectTargetType() == AspectTargetType.SCHEDULER) {
+			pointcutType = PointcutType.valueOf(type);
+			
+			if(pointcutType != PointcutType.SIMPLE_TRIGGER && pointcutType != PointcutType.CRON_TRIGGER)
+				throw new IllegalArgumentException("scheduler's pointcut-type must be 'simpleTrigger' or 'cronTrigger'.");
+			
+			if(!StringUtils.hasText(text))
+				throw new IllegalArgumentException("Pointcut pattern can not be null");
+		} else {
+			if(type != null) {
+				pointcutType = PointcutType.valueOf(type);
+
+				if(pointcutType != PointcutType.WILDCARD && pointcutType != PointcutType.REGEXP)
+					throw new IllegalArgumentException("translet's pointcut-type must be 'wildcard' or 'regexp'.");
+			} else {
+				pointcutType = PointcutType.WILDCARD;
+			}
+		}
+		
+		PointcutRule pointcutRule = new PointcutRule();
+		pointcutRule.setPointcutType(pointcutType);
+		pointcutRule.setPatternString(text);
+		
+		if(pointcutType == PointcutType.SIMPLE_TRIGGER) {
+			Parameters simpleTriggerParameters = new SimpleTriggerParameters(text);
+			pointcutRule.setSimpleTriggerParameters(simpleTriggerParameters);
+		} else if(pointcutType == PointcutType.CRON_TRIGGER) {
+			Parameters cronTriggerParameters = new CronTriggerParameters(text);
+			pointcutRule.setCronTriggerParameters(cronTriggerParameters);
+		}
+		
+		return pointcutRule;
 	}
 	
 }

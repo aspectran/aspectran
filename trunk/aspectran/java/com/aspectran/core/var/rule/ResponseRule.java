@@ -15,6 +15,8 @@
  */
 package com.aspectran.core.var.rule;
 
+import java.nio.charset.Charset;
+import java.nio.charset.IllegalCharsetNameException;
 import java.util.List;
 
 import com.aspectran.core.activity.response.ForwardResponse;
@@ -207,6 +209,17 @@ public class ResponseRule implements ResponseSettable, AspectAdviceSupport {
 		sb.append("} ");
 		
 		return sb.toString();
+	}
+	
+	public static ResponseRule newInstance(String name, String characterEncoding) {
+		if(characterEncoding != null && !Charset.isSupported(characterEncoding))
+			throw new IllegalCharsetNameException("Given charset name is illegal. '" + characterEncoding + "'");
+		
+		ResponseRule responseRule = new ResponseRule();
+		responseRule.setName(name);
+		responseRule.setCharacterEncoding(characterEncoding);
+		
+		return responseRule;
 	}
 
 }

@@ -7,21 +7,30 @@ import com.aspectran.core.var.apon.Parameters;
 
 public class SimpleTriggerParameters extends AbstractParameters implements Parameters {
 
-	public static final ParameterDefine startDelay;
-	public static final ParameterDefine repleatInterval;
-	public static final ParameterDefine repeatCount;
-	
-	private static final ParameterDefine[] parameterDefines;
+	public static final ParameterDefine withIntervalInMilliseconds;
+	public static final ParameterDefine withIntervalInMinutes;
+	public static final ParameterDefine withIntervalInSeconds;
+	public static final ParameterDefine withIntervalInHours;
+	public static final ParameterDefine withRepeatCount;
+	public static final ParameterDefine repeatForever;
+
+	private final static ParameterDefine[] parameterDefines;
 	
 	static {
-		startDelay = new ParameterDefine("startDelay", ParameterValueType.INTEGER);
-		repleatInterval = new ParameterDefine("repleatInterval", ParameterValueType.INTEGER);
-		repeatCount = new ParameterDefine("repeatCount", ParameterValueType.INTEGER);
+		withIntervalInMilliseconds = new ParameterDefine("withIntervalInMilliseconds", ParameterValueType.INTEGER);
+		withIntervalInMinutes = new ParameterDefine("withIntervalInMinutes", ParameterValueType.INTEGER);
+		withIntervalInSeconds = new ParameterDefine("withIntervalInSeconds", ParameterValueType.INTEGER);
+		withIntervalInHours = new ParameterDefine("withIntervalInHours", ParameterValueType.INTEGER);
+		withRepeatCount = new ParameterDefine("withRepeatCount", ParameterValueType.INTEGER);
+		repeatForever = new ParameterDefine("repeatForever", ParameterValueType.BOOLEAN);
 		
 		parameterDefines = new ParameterDefine[] {
-				startDelay,
-				repleatInterval,
-				repeatCount
+				withIntervalInMilliseconds,
+				withIntervalInMinutes,
+				withIntervalInSeconds,
+				withIntervalInHours,
+				withRepeatCount,
+				repeatForever
 		};
 	}
 	

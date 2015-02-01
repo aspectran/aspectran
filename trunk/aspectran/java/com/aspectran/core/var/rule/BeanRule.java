@@ -15,6 +15,9 @@
  */
 package com.aspectran.core.var.rule;
 
+import com.aspectran.core.context.bean.ablility.DisposableBean;
+import com.aspectran.core.context.bean.ablility.InitializableBean;
+import com.aspectran.core.util.MethodUtils;
 import com.aspectran.core.var.type.ScopeType;
 
 /**
@@ -51,6 +54,8 @@ public class BeanRule {
 	private boolean override;
 
 	private boolean overrided;
+
+	private boolean stealthily;
 	
 	/**
 	 * Gets the id.
@@ -284,6 +289,14 @@ public class BeanRule {
 		this.overrided = overrided;
 	}
 
+	public boolean isStealthily() {
+		return stealthily;
+	}
+
+	public void setStealthily(boolean stealthily) {
+		this.stealthily = stealthily;
+	}
+
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
@@ -333,4 +346,52 @@ public class BeanRule {
 		return sb.toString();
 	}
 
+	public static BeanRule newInstance(String id, Class<?> beanClass, String scope, boolean singleton, String factoryMethod, String initMethodName, String destroyMethodName, boolean lazyInit, boolean override) {
+		if(id == null)
+			throw new IllegalArgumentException("The <bean> element requires a id attribute.");
+		
+		String className = beanClass.getName();
+		
+		ScopeType scopeType = ScopeType.valueOf(scope);
+		
+		if(scope != null && scopeType == null)
+			throw new IllegalArgumentException("No scope-type registered for scope '" + scope + "'.");
+		
+		if(scopeType == null)
+			scopeType = singleton ? ScopeType.SINGLETON : ScopeType.PROTOTYPE;
+
+		if(initMethodName == null && beanClass.isAssignableFrom(InitializableBean.class)) {
+			initMethodName = InitializableBean.INITIALIZE_METHOD_NAME;
+		}
+
+		if(initMethodName != null) {
+			if(MethodUtils.getAccessibleMethod(beanClass, initMethodName, null) == null) {
+				throw new IllegalArgumentException("No such initialization method '" + initMethodName + "() on bean class: " + className);
+			}
+		}
+		
+		if(destroyMethodName == null && beanClass.isAssignableFrom(DisposableBean.class)) {
+			destroyMethodName = DisposableBean.DESTROY_METHOD_NAME;
+		}
+
+		if(destroyMethodName != null) {
+			if(MethodUtils.getAccessibleMethod(beanClass, destroyMethodName, null) == null) {
+				throw new IllegalArgumentException("No such destroy method '" + destroyMethodName + "() on bean class: " + className);
+			}
+		}
+
+		BeanRule beanRule = new BeanRule();
+		beanRule.setId(id);
+		beanRule.setClassName(className);
+		beanRule.setBeanClass(beanClass);
+		beanRule.setScopeType(scopeType);
+		beanRule.setFactoryMethodName(factoryMethod);
+		beanRule.setInitMethodName(initMethodName);
+		beanRule.setDestroyMethodName(destroyMethodName);
+		beanRule.setLazyInit(lazyInit);
+		beanRule.setOverride(override);
+		
+		return beanRule;
+	}
+	
 }

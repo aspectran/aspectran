@@ -132,4 +132,13 @@ public class ForwardResponseRule extends ActionPossessSupport implements ActionP
 		
 		return sb.toString();
 	}
+	
+	public static ForwardResponseRule newInstance(String contentType, String transletName) {
+		ForwardResponseRule frr = new ForwardResponseRule();
+		frr.setContentType(contentType);
+		frr.setTransletName(transletName);
+
+		return frr;
+	}
+	
 }

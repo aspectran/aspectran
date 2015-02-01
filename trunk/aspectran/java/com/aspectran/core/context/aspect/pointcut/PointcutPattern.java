@@ -32,7 +32,7 @@ public class PointcutPattern {
 
 	private String beanMethodNamePattern;
 	
-	private List<PointcutPattern> withoutPointcutPatternList;
+	private List<PointcutPattern> minusPointcutPatternList;
 	
 	public PointcutPattern() {
 	}
@@ -76,20 +76,20 @@ public class PointcutPattern {
 		this.beanMethodNamePattern = beanMethodNamePattern;
 	}
 	
-	public List<PointcutPattern> getWithoutPointcutPatternList() {
-		return withoutPointcutPatternList;
+	public List<PointcutPattern> getMinusPointcutPatternList() {
+		return minusPointcutPatternList;
 	}
 
-	public void setWithoutPointcutPatternList(
+	public void setMinusPointcutPatternList(
 			List<PointcutPattern> withoutPointcutPatternList) {
-		this.withoutPointcutPatternList = withoutPointcutPatternList;
+		this.minusPointcutPatternList = withoutPointcutPatternList;
 	}
 	
-	public void addWithoutPointcutPattern(PointcutPattern withoutPointcutPattern) {
-		if(withoutPointcutPatternList == null)
-			withoutPointcutPatternList = new ArrayList<PointcutPattern>();
+	public void addMinusPointcutPattern(PointcutPattern minusPointcutPattern) {
+		if(minusPointcutPatternList == null)
+			minusPointcutPatternList = new ArrayList<PointcutPattern>();
 		
-		withoutPointcutPatternList.add(withoutPointcutPattern);
+		minusPointcutPatternList.add(minusPointcutPattern);
 	}
 
 	public static String combinePatternString(String transletName, String beanId, String methodName) {

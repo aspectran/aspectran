@@ -20,11 +20,14 @@ import java.util.List;
 
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.activity.process.action.Executable;
+import com.aspectran.core.util.ResourceUtils;
+import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.var.rule.ability.ActionPossessable;
 import com.aspectran.core.var.token.Token;
 import com.aspectran.core.var.token.Tokenizer;
 import com.aspectran.core.var.type.ContentType;
 import com.aspectran.core.var.type.ResponseType;
+import com.aspectran.core.var.type.TokenType;
 import com.aspectran.core.var.type.TransformType;
 
 /**
@@ -328,4 +331,59 @@ public class TransformRule extends ActionPossessSupport implements ActionPossess
 		
 		return sb.toString();
 	}
+	
+	public static TransformRule newInstance(String type, String contentType, String characterEncoding) {
+		TransformType transformType = TransformType.valueOf(type);
+
+		if(transformType == null && contentType != null) {
+			transformType = TransformType.valueOf(ContentType.valueOf(contentType));
+		}
+		
+		if(transformType == null)
+			throw new IllegalArgumentException("Unknown transform-type '" + type + "'.");
+
+		TransformRule tr = new TransformRule();
+		tr.setContentType(contentType);
+		tr.setTransformType(transformType);
+		tr.setCharacterEncoding(characterEncoding);
+		
+		return tr;
+	}
+	
+	public static void updateTemplate(TransformRule tr, File templateFile, String templateUrl, String templateContent, String encoding, boolean noCache) {
+		if(tr.getTransformType() == TransformType.XML_TRANSFORM ||
+			tr.getTransformType() == TransformType.JSON_TRANSFORM ||
+			tr.getTransformType() == TransformType.CUSTOM_TRANSFORM)
+			return;
+		
+		if(StringUtils.hasText(encoding))
+			tr.setTemplateEncoding(encoding);
+
+		tr.setTemplateNoCache(noCache);
+
+		if(tr.getTransformType() == TransformType.XSL_TRANSFORM) {
+			if(templateFile == null)
+				throw new IllegalArgumentException("The <template> element requires either a resource or a file attribute.");
+			
+			if(!templateFile.isFile())
+				throw new IllegalArgumentException("Invalid template file " + templateFile.getAbsolutePath());
+
+			tr.setTemplateFile(templateFile);
+		} else if(tr.getTransformType() == TransformType.TEXT_TRANSFORM) {
+			if(templateFile != null) {
+				if(!templateFile.isFile())
+					throw new IllegalArgumentException("Invalid template file '" + templateFile.getAbsolutePath() + "'.");
+				
+				tr.setTemplateFile(templateFile);
+			} else if(templateUrl != null) {
+				tr.setTemplateUrl(templateUrl);
+			} else if(StringUtils.hasLength(templateContent)) {
+				tr.setTemplateContent(templateContent);
+			}
+			
+			if(tr.getTemplateFile() == null && tr.getTemplateUrl() == null && tr.getTemplateContent() == null)
+				throw new IllegalArgumentException("The <template> element requires either a resource or a file or a url attribute.");
+		}
+	}
+	
 }

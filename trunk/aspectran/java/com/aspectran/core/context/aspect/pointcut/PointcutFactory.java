@@ -13,9 +13,9 @@ import com.aspectran.core.var.type.PointcutType;
 
 public class PointcutFactory {
 
-	private final String withinOperationPrefix = "+(";
+	private final String plusOperationPrefix = "+(";
 	
-	private final String withoutOperationPrefix = "-(";
+	private final String minusOperationPrefix = "-(";
 	
 	private final String operationSuffix = ")";
 	
@@ -64,12 +64,12 @@ public class PointcutFactory {
 				} else {
 					PointcutPattern pointcutPattern = new PointcutPattern(pointcutPatternRule);
 					
-					List<PointcutPatternRule> withoutPointcutPatternRuleList = pointcutPatternRule.getExcludePointcutPatternRuleList();
+					List<PointcutPatternRule> withoutPointcutPatternRuleList = pointcutPatternRule.getMinusPointcutPatternRuleList();
 					
 					if(withoutPointcutPatternRuleList != null) {
 						for(PointcutPatternRule wppr : withoutPointcutPatternRuleList) {
 							PointcutPattern wpp = new PointcutPattern(wppr);
-							pointcutPattern.addWithoutPointcutPattern(wpp);;
+							pointcutPattern.addMinusPointcutPattern(wpp);;
 						}
 					}
 
@@ -104,36 +104,36 @@ public class PointcutFactory {
 				if(pattern.length() > 0) {
 					PointcutPatternOperationType pointcutPatternOperationType = null;
 					
-					if(pattern.startsWith(withinOperationPrefix)) {
-						pattern = patternString.substring(withinOperationPrefix.length());
+					if(pattern.startsWith(plusOperationPrefix)) {
+						pattern = patternString.substring(plusOperationPrefix.length());
 						if(pattern.endsWith(operationSuffix))
 							pattern.substring(0, pattern.length() - 1);
 						
-						pointcutPatternOperationType = PointcutPatternOperationType.WITHIN;
-					} else if(pattern.startsWith(withoutOperationPrefix)) {
-						pattern = patternString.substring(withoutOperationPrefix.length());
+						pointcutPatternOperationType = PointcutPatternOperationType.PLUS;
+					} else if(pattern.startsWith(minusOperationPrefix)) {
+						pattern = patternString.substring(minusOperationPrefix.length());
 						if(pattern.endsWith(operationSuffix))
 							pattern.substring(0, pattern.length() - 1);
 						
-						pointcutPatternOperationType = PointcutPatternOperationType.WITHOUT;
+						pointcutPatternOperationType = PointcutPatternOperationType.MINUS;
 					} else {
-						pointcutPatternOperationType = PointcutPatternOperationType.WITHIN;
+						pointcutPatternOperationType = PointcutPatternOperationType.PLUS;
 					}
 
-					if(pointcutPatternOperationType == PointcutPatternOperationType.WITHIN) {
+					if(pointcutPatternOperationType == PointcutPatternOperationType.PLUS) {
 						if(pointcutPattern != null) {
 							pointcutPatternList.add(pointcutPattern);
 							pointcutPattern = null;
 						}
 						
 						pointcutPattern =  PointcutPattern.createPointcutPattern(pointcutPatternOperationType, pattern);
-					} else if(pointcutPatternOperationType == PointcutPatternOperationType.WITHOUT) {
+					} else if(pointcutPatternOperationType == PointcutPatternOperationType.MINUS) {
 						PointcutPattern wpp =  PointcutPattern.createPointcutPattern(pointcutPatternOperationType, pattern);
 
 						if(pointcutPattern == null)
 							pointcutPattern = new PointcutPattern();
 						
-						pointcutPattern.addWithoutPointcutPattern(wpp);
+						pointcutPattern.addMinusPointcutPattern(wpp);
 					}
 				}
 			}
