@@ -164,4 +164,11 @@ public class EchoActionRule {
 		
 		return sb.toString();
 	}
+	
+	public static EchoActionRule newInstance(String id, boolean hidden) {
+		EchoActionRule echoActionRule = new EchoActionRule();
+		echoActionRule.setActionId(id);
+		echoActionRule.setHidden(hidden);
+		return echoActionRule;
+	}
 }

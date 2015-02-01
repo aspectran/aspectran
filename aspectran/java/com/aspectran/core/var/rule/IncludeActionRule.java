@@ -18,6 +18,7 @@ package com.aspectran.core.var.rule;
 import java.util.List;
 
 import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
+import com.aspectran.core.util.StringUtils;
 
 
 /**
@@ -187,4 +188,14 @@ public class IncludeActionRule {
 		
 		return sb.toString();
 	}
+	
+	public static IncludeActionRule newInstance(String id, String transletName, boolean hidden) {
+		IncludeActionRule includeActionRule = new IncludeActionRule();
+		includeActionRule.setActionId(id);
+		includeActionRule.setTransletName(transletName);
+		includeActionRule.setHidden(hidden);
+
+		return includeActionRule;
+	}
+	
 }

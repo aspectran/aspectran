@@ -252,4 +252,15 @@ public class BeanActionRule implements ArgumentPossessable, PropertyPossessable,
 		
 		return sb.toString();
 	}
+	
+	public static BeanActionRule newInstance(String id, String beanId, String methodName, boolean hidden) {
+		BeanActionRule beanActionRule = new BeanActionRule();
+		beanActionRule.setActionId(id);
+		beanActionRule.setBeanId(beanId);
+		beanActionRule.setMethodName(methodName);
+		beanActionRule.setHidden(hidden);
+
+		return beanActionRule;
+	}
+	
 }

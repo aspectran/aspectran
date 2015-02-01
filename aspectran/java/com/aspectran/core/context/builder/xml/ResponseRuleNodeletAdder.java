@@ -16,7 +16,7 @@
 package com.aspectran.core.context.builder.xml;
 
 import java.io.File;
-import java.util.Properties;
+import java.util.Map;
 
 import org.w3c.dom.Node;
 
@@ -35,9 +35,7 @@ import com.aspectran.core.var.rule.TransformRule;
 import com.aspectran.core.var.rule.ability.ResponseAddable;
 import com.aspectran.core.var.rule.ability.ResponseSettable;
 import com.aspectran.core.var.token.Token;
-import com.aspectran.core.var.type.ContentType;
 import com.aspectran.core.var.type.TokenType;
-import com.aspectran.core.var.type.TransformType;
 
 /**
  * The Class ResponseRuleNodeletAdder.
@@ -63,24 +61,12 @@ public class ResponseRuleNodeletAdder implements NodeletAdder {
 	 */
 	public void process(String xpath, NodeletParser parser) {
 		parser.addNodelet(xpath, "/transform", new Nodelet() {
-			public void process(Node node, Properties attributes, String text) throws Exception {
-				String typeString = attributes.getProperty("type");
-				String contentType = attributes.getProperty("contentType");
-				String characterEncoding = attributes.getProperty("characterEncoding");
+			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
+				String typeString = attributes.get("type");
+				String contentType = attributes.get("contentType");
+				String characterEncoding = attributes.get("characterEncoding");
 
-				TransformType transformType = TransformType.valueOf(typeString);
-
-				if(transformType == null && contentType != null) {
-					transformType = TransformType.valueOf(ContentType.valueOf(contentType));
-				}
-				
-				if(transformType == null)
-					throw new IllegalArgumentException("Unknown transform-type '" + typeString + "'.");
-
-				TransformRule tr = new TransformRule();
-				tr.setContentType(contentType);
-				tr.setTransformType(transformType);
-				tr.setCharacterEncoding(characterEncoding);
+				TransformRule tr = TransformRule.newInstance(typeString, contentType, characterEncoding);
 
 				assistant.pushObject(tr);
 				
@@ -92,75 +78,39 @@ public class ResponseRuleNodeletAdder implements NodeletAdder {
 		parser.addNodelet(xpath, "/transform", new ActionRuleNodeletAdder(assistant));
 		
 		parser.addNodelet(xpath, "/transform/template", new Nodelet() {
-			public void process(Node node, Properties attributes, String text) throws Exception {
-				String resource = attributes.getProperty("resource");
-				String filePath = attributes.getProperty("file");
-				String templateUrl = attributes.getProperty("url");
-				String encoding = attributes.getProperty("encoding");
-				boolean noCache = Boolean.parseBoolean(attributes.getProperty("noCache"));
+			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
+				String resource = attributes.get("resource");
+				String filePath = attributes.get("file");
+				String templateUrl = attributes.get("url");
 				String templateContent = text;
+				String encoding = attributes.get("encoding");
+				boolean noCache = Boolean.parseBoolean(attributes.get("noCache"));
+
+				File templateFile = null;
+
+				if(StringUtils.hasText(resource))
+					templateFile = ResourceUtils.getResourceAsFile(resource);
+				else if(StringUtils.hasText(filePath))
+					templateFile = assistant.toRealPathFile(filePath);
 
 				TransformRule tr = (TransformRule)assistant.peekObject(1);
-				
-				if(tr.getTransformType() == TransformType.XML_TRANSFORM ||
-					tr.getTransformType() == TransformType.JSON_TRANSFORM ||
-					tr.getTransformType() == TransformType.CUSTOM_TRANSFORM)
-					return;
 				
 				if(StringUtils.hasText(encoding))
 					tr.setTemplateEncoding(encoding);
 				
-				if(tr.getTransformType() == TransformType.XSL_TRANSFORM) {
-					File templateFile = null;
-
-					if(StringUtils.hasText(resource))
-						templateFile = ResourceUtils.getResourceAsFile(resource);
-					else if(StringUtils.hasText(filePath))
-						templateFile = assistant.toRealPathFile(filePath);
-
-					if(templateFile == null)
-						throw new IllegalArgumentException("The <template> element requires either a resource or a file attribute.");
-					
-					if(!templateFile.isFile())
-						throw new IllegalArgumentException("Invalid template file " + templateFile.getAbsolutePath());
-
-					tr.setTemplateFile(templateFile);
-					tr.setTemplateNoCache(noCache);
-				} else if(tr.getTransformType() == TransformType.TEXT_TRANSFORM) {
-					File templateFile = null;
-
-					if(StringUtils.hasText(resource))
-						templateFile = ResourceUtils.getResourceAsFile(resource);
-					else if(StringUtils.hasText(filePath))
-						templateFile = assistant.toRealPathFile(filePath);
-					
-					if(templateFile != null) {
-						if(!templateFile.isFile())
-							throw new IllegalArgumentException("Invalid template file '" + templateFile.getAbsolutePath() + "'.");
-						
-						tr.setTemplateFile(templateFile);
-					} else if(templateUrl != null) {
-						tr.setTemplateUrl(templateUrl);
-					} else if(StringUtils.hasLength(templateContent)) {
-						tr.setTemplateContent(templateContent);
-						if(tr.getContentTokens() != null) {
-							for(Token token : tr.getContentTokens()) {
-								if(token.getType() == TokenType.REFERENCE_BEAN) {
-									assistant.putBeanReference(token.getName(), tr);
-								}
-							}
+				TransformRule.updateTemplate(tr, templateFile, templateUrl, templateContent, encoding, noCache);
+				
+				if(tr.getContentTokens() != null) {
+					for(Token token : tr.getContentTokens()) {
+						if(token.getType() == TokenType.REFERENCE_BEAN) {
+							assistant.putBeanReference(token.getName(), tr);
 						}
 					}
-					
-					if(tr.getTemplateFile() == null && tr.getTemplateUrl() == null && tr.getTemplateContent() == null)
-						throw new IllegalArgumentException("The <template> element requires either a resource or a file or a url attribute.");
-
-					tr.setTemplateNoCache(noCache);
 				}
 			}
 		});
 		parser.addNodelet(xpath, "/transform/end()", new Nodelet() {
-			public void process(Node node, Properties attributes, String text) throws Exception {
+			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
 				ActionList actionList = (ActionList)assistant.popObject();
 				TransformRule tr = (TransformRule)assistant.popObject();
 				
@@ -179,13 +129,11 @@ public class ResponseRuleNodeletAdder implements NodeletAdder {
 			}
 		});
 		parser.addNodelet(xpath, "/dispatch", new Nodelet() {
-			public void process(Node node, Properties attributes, String text) throws Exception {
-				String contentType = attributes.getProperty("contentType");
-				String encoding = attributes.getProperty("encoding");
+			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
+				String contentType = attributes.get("contentType");
+				String encoding = attributes.get("encoding");
 				
-				DispatchResponseRule drr = new DispatchResponseRule();
-				drr.setContentType(contentType);
-				drr.setCharacterEncoding(encoding);
+				DispatchResponseRule drr = DispatchResponseRule.newInstance(contentType, encoding);
 				
 				assistant.pushObject(drr);
 
@@ -197,22 +145,18 @@ public class ResponseRuleNodeletAdder implements NodeletAdder {
 		parser.addNodelet(xpath, "/dispatch", new ActionRuleNodeletAdder(assistant));
 
 		parser.addNodelet(xpath, "/dispatch/template", new Nodelet() {
-			public void process(Node node, Properties attributes, String text) throws Exception {
-				String templateFile = attributes.getProperty("file");
-				String templateEncoding = attributes.getProperty("encoding");
-				boolean noCache = Boolean.parseBoolean(attributes.getProperty("noCache"));
+			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
+				String templateFile = attributes.get("file");
 				String templateContent = text;
+				String templateEncoding = attributes.get("encoding");
+				boolean noCache = Boolean.parseBoolean(attributes.get("noCache"));
 				
 				DispatchResponseRule drr = (DispatchResponseRule)assistant.peekObject(1);
-				
-				drr.setTemplateFile(templateFile);
-				drr.setTemplateEncoding(templateEncoding);
-				drr.setTemplateContent(templateContent);
-				drr.setTemplateNoCache(noCache);
+				DispatchResponseRule.updateTemplate(drr, templateFile, templateContent, templateEncoding, noCache);
 			}
 		});
 		parser.addNodelet(xpath, "/dispatch/end()", new Nodelet() {
-			public void process(Node node, Properties attributes, String text) throws Exception {
+			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
 				ActionList actionList = (ActionList)assistant.popObject();
 				DispatchResponseRule drr = (DispatchResponseRule)assistant.popObject();
 				
@@ -231,20 +175,13 @@ public class ResponseRuleNodeletAdder implements NodeletAdder {
 			}
 		});
 		parser.addNodelet(xpath, "/redirect", new Nodelet() {
-			public void process(Node node, Properties attributes, String text) throws Exception {
-				String contentType = attributes.getProperty("contentType"); // ResponseByContentType에서 content type에 따라 분기
-				String translet = attributes.getProperty("translet");
-				String url = attributes.getProperty("url");
-				boolean excludeNullParameters = Boolean.parseBoolean(attributes.getProperty("excludeNullParameters"));
+			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
+				String contentType = attributes.get("contentType"); // ResponseByContentType에서 content type에 따라 분기
+				String translet = attributes.get("translet");
+				String url = attributes.get("url");
+				boolean excludeNullParameters = Boolean.parseBoolean(attributes.get("excludeNullParameters"));
 				
-				RedirectResponseRule rrr = new RedirectResponseRule();
-				rrr.setContentType(contentType);
-				rrr.setTransletName(translet);
-				
-				if(url != null && url.length() > 0)
-					rrr.setUrl(url);
-				
-				rrr.setExcludeNullParameter(excludeNullParameters);
+				RedirectResponseRule rrr = RedirectResponseRule.newInstance(contentType, translet, url, excludeNullParameters);
 				
 				assistant.pushObject(rrr);
 				
@@ -256,25 +193,13 @@ public class ResponseRuleNodeletAdder implements NodeletAdder {
 		parser.addNodelet(xpath, "/redirect", new ActionRuleNodeletAdder(assistant));
 
 		parser.addNodelet(xpath, "/redirect/url", new Nodelet() {
-			public void process(Node node, Properties attributes, String text) throws Exception {
-				String url = text;
-				
-				if(url != null) {
-					url = url.trim();
-					
-					if(url.length() == 0)
-						url = null;
-				}
-
-				if(url != null) {
-					RedirectResponseRule rrr = (RedirectResponseRule)assistant.peekObject(1);
-					
-					rrr.setUrl(url);
-				}
+			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
+				RedirectResponseRule rrr = (RedirectResponseRule)assistant.peekObject(1);
+				RedirectResponseRule.updateUrl(rrr, text);
 			}
 		});
 		parser.addNodelet(xpath, "/redirect/parameter", new Nodelet() {
-			public void process(Node node, Properties attributes, String text) throws Exception {
+			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
 				ItemRuleMap irm = new ItemRuleMap();
 				assistant.pushObject(irm);
 			}
@@ -283,18 +208,17 @@ public class ResponseRuleNodeletAdder implements NodeletAdder {
 		parser.addNodelet(xpath, "/redirect/parameter", new ItemRuleNodeletAdder(assistant));
 
 		parser.addNodelet(xpath, "/redirect/parameter/end()", new Nodelet() {
-			public void process(Node node, Properties attributes, String text) throws Exception {
+			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
 				ItemRuleMap irm = (ItemRuleMap)assistant.popObject();
 				
 				if(irm.size() > 0) {
 					RedirectResponseRule rrr = (RedirectResponseRule)assistant.peekObject(1);
-					
 					rrr.setParameterItemRuleMap(irm);
 				}
 			}
 		});
 		parser.addNodelet(xpath, "/redirect/end()", new Nodelet() {
-			public void process(Node node, Properties attributes, String text) throws Exception {
+			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
 				ActionList actionList = (ActionList)assistant.popObject();
 				RedirectResponseRule rrr = (RedirectResponseRule)assistant.popObject();
 				
@@ -324,15 +248,13 @@ public class ResponseRuleNodeletAdder implements NodeletAdder {
 			}
 		});
 		parser.addNodelet(xpath, "/forward", new Nodelet() {
-			public void process(Node node, Properties attributes, String text) throws Exception {
-				String contentType = attributes.getProperty("contentType");
-				String transletName = attributes.getProperty("translet");
+			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
+				String contentType = attributes.get("contentType");
+				String transletName = attributes.get("translet");
 				
 				transletName = assistant.getFullTransletName(transletName);
 				
-				ForwardResponseRule frr = new ForwardResponseRule();
-				frr.setContentType(contentType);
-				frr.setTransletName(transletName);
+				ForwardResponseRule frr = ForwardResponseRule.newInstance(contentType, transletName);
 				
 				assistant.pushObject(frr);
 
@@ -344,7 +266,7 @@ public class ResponseRuleNodeletAdder implements NodeletAdder {
 		parser.addNodelet(xpath, "/forward", new ActionRuleNodeletAdder(assistant));
 		
 		parser.addNodelet(xpath, "/forward/parameter", new Nodelet() {
-			public void process(Node node, Properties attributes, String text) throws Exception {
+			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
 				ItemRuleMap irm = new ItemRuleMap();
 				assistant.pushObject(irm);
 			}
@@ -353,18 +275,17 @@ public class ResponseRuleNodeletAdder implements NodeletAdder {
 		parser.addNodelet(xpath, "/forward/parameter", new ItemRuleNodeletAdder(assistant));
 
 		parser.addNodelet(xpath, "/forward/parameter/end()", new Nodelet() {
-			public void process(Node node, Properties attributes, String text) throws Exception {
+			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
 				ItemRuleMap irm = (ItemRuleMap)assistant.popObject();
 				
 				if(irm.size() > 0) {
 					ForwardResponseRule frr = (ForwardResponseRule)assistant.peekObject(1);
-					
 					frr.setParameterItemRuleMap(irm);
 				}
 			}
 		});
 		parser.addNodelet(xpath, "/forward/end()", new Nodelet() {
-			public void process(Node node, Properties attributes, String text) throws Exception {
+			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
 				ActionList actionList = (ActionList)assistant.popObject();
 				ForwardResponseRule frr = (ForwardResponseRule)assistant.popObject();
 				

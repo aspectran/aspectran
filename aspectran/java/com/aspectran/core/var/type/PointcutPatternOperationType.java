@@ -20,19 +20,19 @@ import java.util.Map;
 
 public final class PointcutPatternOperationType extends Type {
 
-	public static final PointcutPatternOperationType WITHIN;
+	public static final PointcutPatternOperationType PLUS;
 
-	public static final PointcutPatternOperationType WITHOUT;
+	public static final PointcutPatternOperationType MINUS;
 	
 	private static final Map<String, PointcutPatternOperationType> types;
 	
 	static {
-		WITHIN = new PointcutPatternOperationType("within");
-		WITHOUT = new PointcutPatternOperationType("without");
+		PLUS = new PointcutPatternOperationType("+");
+		MINUS = new PointcutPatternOperationType("-");
 
 		types = new HashMap<String, PointcutPatternOperationType>();
-		types.put(WITHIN.toString(), WITHIN);
-		types.put(WITHOUT.toString(), WITHOUT);
+		types.put(PLUS.toString(), PLUS);
+		types.put(MINUS.toString(), MINUS);
 	}
 
 	private PointcutPatternOperationType(String type) {

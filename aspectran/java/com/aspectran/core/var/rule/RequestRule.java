@@ -15,6 +15,8 @@
  */
 package com.aspectran.core.var.rule;
 
+import java.nio.charset.Charset;
+import java.nio.charset.IllegalCharsetNameException;
 import java.util.List;
 
 import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
@@ -275,4 +277,25 @@ public class RequestRule implements AspectAdviceSupport {
 		
 		return sb.toString();
 	}
+	
+	public static RequestRule newInstance(String method, String characterEncoding) {
+		RequestMethodType methodType = null;
+		
+		if(method != null) {
+			methodType = RequestMethodType.valueOf(method);
+			
+			if(methodType == null)
+				throw new IllegalArgumentException("Unknown request method type '" + method + "'");
+		}
+		
+		if(characterEncoding != null && !Charset.isSupported(characterEncoding))
+			throw new IllegalCharsetNameException("Given charset name is illegal. '" + characterEncoding + "'");
+		
+		RequestRule requestRule = new RequestRule();
+		requestRule.setMethod(methodType);
+		requestRule.setCharacterEncoding(characterEncoding);
+		
+		return requestRule;
+	}
+	
 }

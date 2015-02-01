@@ -30,10 +30,10 @@ public class WildcardPointcut extends AbstractPointcut implements Pointcut {
 		if(pointcutPatternList != null) {
 			for(PointcutPattern pp : pointcutPatternList) {
 				if(matches(pp, transletName, beanOrActionId, beanMethodName)) {
-					List<PointcutPattern> wppl = pp.getWithoutPointcutPatternList();
+					List<PointcutPattern> mppl = pp.getMinusPointcutPatternList();
 					
-					if(wppl != null) {
-						for(PointcutPattern wpp : wppl) {
+					if(mppl != null) {
+						for(PointcutPattern wpp : mppl) {
 							if(matches(wpp, transletName, beanOrActionId, beanMethodName)) {
 								return false;
 							}
@@ -91,7 +91,7 @@ public class WildcardPointcut extends AbstractPointcut implements Pointcut {
 		if(pointcutPatternList != null) {
 			for(PointcutPattern pp : pointcutPatternList) {
 				if(strictMatches(pp, transletName, beanOrActionId, beanMethodName)) {
-					List<PointcutPattern> wppl = pp.getWithoutPointcutPatternList();
+					List<PointcutPattern> wppl = pp.getMinusPointcutPatternList();
 					
 					if(wppl != null) {
 						for(PointcutPattern wpp : wppl) {

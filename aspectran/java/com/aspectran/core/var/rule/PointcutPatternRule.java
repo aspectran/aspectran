@@ -18,6 +18,8 @@ package com.aspectran.core.var.rule;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.aspectran.core.util.StringUtils;
+import com.aspectran.core.var.type.AspectTargetType;
 import com.aspectran.core.var.type.PointcutPatternOperationType;
 
 public class PointcutPatternRule {
@@ -32,7 +34,7 @@ public class PointcutPatternRule {
 	
 	private String patternString;
 	
-	private List<PointcutPatternRule> excludePointcutPatternRuleList;
+	private List<PointcutPatternRule> minusPointcutPatternRuleList;
 
 	public PointcutPatternOperationType getPointcutPatternOperationType() {
 		return pointcutPatternOperationType;
@@ -74,19 +76,19 @@ public class PointcutPatternRule {
 		this.patternString = patternString;
 	}
 	
-	public List<PointcutPatternRule> getExcludePointcutPatternRuleList() {
-		return excludePointcutPatternRuleList;
+	public List<PointcutPatternRule> getMinusPointcutPatternRuleList() {
+		return minusPointcutPatternRuleList;
 	}
 
-	public void setExcludePointcutPatternRuleList(List<PointcutPatternRule> excludePointcutPatternRuleList) {
-		this.excludePointcutPatternRuleList = excludePointcutPatternRuleList;
+	public void setMinusPointcutPatternRuleList(List<PointcutPatternRule> minusPointcutPatternRuleList) {
+		this.minusPointcutPatternRuleList = minusPointcutPatternRuleList;
 	}
 	
-	public void addExcludePointcutPatternRule(PointcutPatternRule excludePointcutPatternRule) {
-		if(excludePointcutPatternRuleList == null)
-			excludePointcutPatternRuleList = new ArrayList<PointcutPatternRule>();
+	public void addExcludePointcutPatternRule(PointcutPatternRule minusPointcutPatternRule) {
+		if(minusPointcutPatternRuleList == null)
+			minusPointcutPatternRuleList = new ArrayList<PointcutPatternRule>();
 		
-		excludePointcutPatternRuleList.add(excludePointcutPatternRule);
+		minusPointcutPatternRuleList.add(minusPointcutPatternRule);
 	}
 
 	/* (non-Javadoc)
@@ -104,6 +106,27 @@ public class PointcutPatternRule {
 		sb.append("}");
 		
 		return sb.toString();
+	}
+	
+	public static PointcutPatternRule newInstance(AspectRule aspectRule, String translet, String bean, String method, String patternString) {
+		PointcutPatternRule pointcutPatternRule = new PointcutPatternRule();
+
+		if(aspectRule.getAspectTargetType() == AspectTargetType.TRANSLET) {
+			pointcutPatternRule.setPointcutPatternOperationType(PointcutPatternOperationType.PLUS);
+		
+			if(StringUtils.hasLength(translet) || StringUtils.hasLength(bean) || StringUtils.hasLength(method)) {
+				if(translet != null && translet.length() == 0)						
+					pointcutPatternRule.setTransletNamePattern(translet);
+				if(bean != null && bean.length() == 0)
+					pointcutPatternRule.setBeanOrActionIdPattern(bean);
+				if(method != null && method.length() == 0)
+					pointcutPatternRule.setBeanMethodNamePattern(method);
+			} else if(StringUtils.hasText(patternString)) {
+				pointcutPatternRule.setPatternString(patternString);
+			}
+		}
+		
+		return pointcutPatternRule;
 	}
 	
 }

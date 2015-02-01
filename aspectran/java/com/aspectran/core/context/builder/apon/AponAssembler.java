@@ -16,10 +16,13 @@
 package com.aspectran.core.context.builder.apon;
 
 import java.util.Iterator;
+import java.util.List;
 
 import com.aspectran.core.context.builder.ContextBuilderAssistant;
+import com.aspectran.core.context.builder.apon.params.AspectParameters;
 import com.aspectran.core.context.builder.apon.params.AspectranParameters;
-import com.aspectran.core.context.builder.apon.params.DefaultSettingsParameters;
+import com.aspectran.core.var.apon.Parameters;
+import com.aspectran.core.var.rule.AspectRule;
 import com.aspectran.core.var.type.DefaultSettingType;
 
 /**
@@ -35,11 +38,13 @@ public class AponAssembler {
 		this.assistant = assistant;
 	}
 	
-	public void assemble(AspectranParameters parameters) {
-		assemble((DefaultSettingsParameters)parameters.getParameters(AspectranParameters.setting));
+	public void assembleAspectran(Parameters parameters) {
+		assembleDefaultSettings(parameters.getParameters(AspectranParameters.setting));
+		assembleTypeAlias(parameters.getParameters(AspectranParameters.typeAlias));
+		assembleAspects(parameters.getParametersList(AspectranParameters.aspects));
 	}
 	
-	public void assemble(DefaultSettingsParameters parameters) {
+	public void assembleDefaultSettings(Parameters parameters) {
 		if(parameters == null)
 			return;
 		
@@ -61,6 +66,39 @@ public class AponAssembler {
 		}
 	}
 	
+	public void assembleTypeAlias(Parameters parameters) {
+		if(parameters == null)
+			return;
+		
+		Iterator<String> iter = parameters.getParameterNameSet().iterator();
+		
+		while(iter.hasNext()) {
+			String alias = iter.next();
+			assistant.addTypeAlias(alias, parameters.getString(alias));
+		}
+	}
 	
+	public void assembleAspects(List<Parameters> parametersList) {
+		for(Parameters parameters : parametersList) {
+			assembleAspect(parameters);
+		}
+	}
+	
+	public void assembleAspect(Parameters parameters) {
+//		public static final ParameterDefine id;
+//		public static final ParameterDefine useFor;
+//		public static final ParameterDefine jointpoint;
+//		public static final ParameterDefine setting;
+//		public static final ParameterDefine advice;
+
+		String id = parameters.getString(AspectParameters.id);
+		String useFor = parameters.getString(AspectParameters.useFor);
+		Parameters joinpointParams = parameters.getParameters(AspectParameters.jointpoint);
+		Parameters settingParams = parameters.getParameters(AspectParameters.setting);
+		Parameters asviceParams = parameters.getParameters(AspectParameters.advice);
+
+		AspectRule aspectRule = new AspectRule();
+		
+	}
 	
 }

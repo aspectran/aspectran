@@ -1,5 +1,6 @@
 package com.aspectran.core.util.xml;
 
+import java.util.Map;
 import java.util.Properties;
 
 import org.w3c.dom.Node;
@@ -26,5 +27,5 @@ public interface Nodelet {
      * </ul>
      *
      */
-    void process(Node node, Properties attributes, String text) throws Exception;
+    void process(Node node, Map<String, String> attributes, String text) throws Exception;
 }

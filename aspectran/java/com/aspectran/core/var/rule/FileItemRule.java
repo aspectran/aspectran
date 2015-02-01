@@ -75,4 +75,12 @@ public class FileItemRule {
 		
 		return sb.toString();
 	}
+	
+	public static FileItemRule newInstance(String name) {
+		FileItemRule fir = new FileItemRule();
+		fir.setName(name);
+
+		return fir;
+	}
+	
 }

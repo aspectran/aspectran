@@ -172,4 +172,23 @@ public class AspectRule {
 		return sb.toString();
 	}
 	
+	public static AspectRule newInstance(String id, String useFor) {
+		AspectTargetType aspectTargetType = null;
+		
+		if(useFor != null) {
+			aspectTargetType = AspectTargetType.valueOf(useFor);
+			
+			if(aspectTargetType == null)
+				throw new IllegalArgumentException("Unknown aspect target '" + useFor + "'");
+		} else {
+			aspectTargetType = AspectTargetType.TRANSLET;
+		}
+		
+		AspectRule aspectRule = new AspectRule();
+		aspectRule.setId(id);
+		aspectRule.setAspectTargetType(aspectTargetType);
+		
+		return aspectRule;
+	}
+	
 }

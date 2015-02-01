@@ -206,4 +206,24 @@ public class ResponseByContentTypeRule implements ResponseAddable {
 		return forwardResponse;
 	}
 
+	public static ResponseByContentTypeRule newInstance() {
+		ResponseByContentTypeRule rbctr = new ResponseByContentTypeRule();
+		
+		return rbctr;
+	}
+	
+	public static ResponseByContentTypeRule newInstance(String exceptionType) {
+		ResponseByContentTypeRule rbctr = new ResponseByContentTypeRule();
+		rbctr.setExceptionType(exceptionType);
+		
+		return rbctr;
+	}
+	
+	public static ResponseByContentTypeRule newInstance(Responsible responsible) {
+		ResponseByContentTypeRule rbctr = new ResponseByContentTypeRule();
+		rbctr.setDefaultResponse(responsible);
+		
+		return rbctr;
+	}
+	
 }

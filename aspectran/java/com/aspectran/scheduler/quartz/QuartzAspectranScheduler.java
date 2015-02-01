@@ -22,6 +22,7 @@ import org.slf4j.LoggerFactory;
 
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.AspectranConstant;
+import com.aspectran.core.context.builder.apon.params.SimpleTriggerParameters;
 import com.aspectran.core.var.apon.Parameters;
 import com.aspectran.core.var.rule.AspectJobAdviceRule;
 import com.aspectran.core.var.rule.AspectRule;
@@ -171,13 +172,13 @@ public class QuartzAspectranScheduler implements AspectranScheduler {
 		Trigger trigger = null;
 
 		if(pointcutRule.getPointcutType() == PointcutType.SIMPLE_TRIGGER) {
-			Parameters simpleScheduleParameters = pointcutRule.getSimpleScheduleParameters();
-			Integer withIntervalInMilliseconds = (Integer)simpleScheduleParameters.getValue(SimpleScheduleParameters.withIntervalInMilliseconds);
-			Integer withIntervalInMinutes = (Integer)simpleScheduleParameters.getValue(SimpleScheduleParameters.withIntervalInMinutes);
-			Integer withIntervalInSeconds = (Integer)simpleScheduleParameters.getValue(SimpleScheduleParameters.withIntervalInSeconds);
-			Integer withIntervalInHours = (Integer)simpleScheduleParameters.getValue(SimpleScheduleParameters.withIntervalInHours);
-			Integer withRepeatCount = (Integer)simpleScheduleParameters.getValue(SimpleScheduleParameters.withRepeatCount);
-			Boolean repeatForever = (Boolean)simpleScheduleParameters.getValue(SimpleScheduleParameters.repeatForever);
+			Parameters simpleTriggerParameters = pointcutRule.getSimpleTriggerParameters();
+			Integer withIntervalInMilliseconds = (Integer)simpleTriggerParameters.getValue(SimpleTriggerParameters.withIntervalInMilliseconds);
+			Integer withIntervalInMinutes = (Integer)simpleTriggerParameters.getValue(SimpleTriggerParameters.withIntervalInMinutes);
+			Integer withIntervalInSeconds = (Integer)simpleTriggerParameters.getValue(SimpleTriggerParameters.withIntervalInSeconds);
+			Integer withIntervalInHours = (Integer)simpleTriggerParameters.getValue(SimpleTriggerParameters.withIntervalInHours);
+			Integer withRepeatCount = (Integer)simpleTriggerParameters.getValue(SimpleTriggerParameters.withRepeatCount);
+			Boolean repeatForever = (Boolean)simpleTriggerParameters.getValue(SimpleTriggerParameters.repeatForever);
 
 			SimpleScheduleBuilder simpleSchedule = SimpleScheduleBuilder.simpleSchedule();
 

@@ -8,7 +8,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 public class NodeletUtils {
-
+/*
 	public static boolean getBooleanAttribute(Properties attribs, String name, boolean def) {
 		String value = attribs.getProperty(name);
 		
@@ -29,8 +29,22 @@ public class NodeletUtils {
 		}
 	}
 
-	public static Properties parseAttributes(Node n) {
-		return parseAttributes(n, null);
+	public static Properties parseAttributes(Node node) {
+		NamedNodeMap attributeNodes = node.getAttributes();
+		
+		if(attributeNodes == null)
+			return NodeletParser.EMPTY_ATTRIBUTES;
+
+		Properties attributes = new Properties();
+
+		for(int i = 0; i < attributeNodes.getLength(); i++) {
+			Node attribute = attributeNodes.item(i);
+			String value = attribute.getNodeValue();
+
+			attributes.put(attribute.getNodeName(), value);
+		}
+		
+		return attributes;
 	}
 
 	public static Properties parseAttributes(Node n, Properties variables) {
@@ -48,7 +62,7 @@ public class NodeletUtils {
 			if(variables != null) {
 				value = parsePropertyTokens(attribute.getNodeValue(), variables);
 			}
-			
+
 			attributes.put(attribute.getNodeName(), value);
 		}
 		
@@ -84,7 +98,7 @@ public class NodeletUtils {
 		
 		return newString;
 	}
-	
+
 	public static String getNodeValue(Node node) {
 		NodeList children = node.getChildNodes();
 		int childrenLength = children.getLength();
@@ -112,4 +126,5 @@ public class NodeletUtils {
 		
 		return sb.toString().trim();
 	}
+	 */
 }
