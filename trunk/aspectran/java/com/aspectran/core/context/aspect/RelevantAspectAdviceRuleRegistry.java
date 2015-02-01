@@ -4,9 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.aspectran.core.context.aspect.pointcut.Pointcut;
-import com.aspectran.core.context.aspect.pointcut.PointcutPattern;
 import com.aspectran.core.var.rule.AspectAdviceRule;
 import com.aspectran.core.var.rule.AspectRule;
+import com.aspectran.core.var.rule.PointcutPatternRule;
 
 
 public class RelevantAspectAdviceRuleRegistry extends AspectAdviceRuleRegistry {
@@ -14,7 +14,7 @@ public class RelevantAspectAdviceRuleRegistry extends AspectAdviceRuleRegistry {
 	private Map<String, AspectAdviceRuleRegistry> aspectAdviceRuleRegistryCache = new HashMap<String, AspectAdviceRuleRegistry>();
 	
 	public AspectAdviceRuleRegistry retrieve(String transletName, String beanId, String methodName) {
-		String patternString = PointcutPattern.combinePatternString(transletName, beanId, methodName);
+		String patternString = PointcutPatternRule.combinePatternString(transletName, beanId, methodName);
 		AspectAdviceRuleRegistry aarr = null;
 
 		synchronized(aspectAdviceRuleRegistryCache) {

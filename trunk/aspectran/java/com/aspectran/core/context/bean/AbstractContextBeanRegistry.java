@@ -16,7 +16,6 @@ import com.aspectran.core.activity.CoreActivityException;
 import com.aspectran.core.activity.VoidActivityImpl;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.aspect.AspectRuleRegistry;
-import com.aspectran.core.context.aspect.pointcut.PointcutPattern;
 import com.aspectran.core.context.bean.proxy.CglibDynamicBeanProxy;
 import com.aspectran.core.context.bean.proxy.JdkDynamicBeanProxy;
 import com.aspectran.core.util.MethodUtils;
@@ -27,6 +26,7 @@ import com.aspectran.core.var.rule.BeanRule;
 import com.aspectran.core.var.rule.BeanRuleMap;
 import com.aspectran.core.var.rule.ItemRule;
 import com.aspectran.core.var.rule.ItemRuleMap;
+import com.aspectran.core.var.rule.PointcutPatternRule;
 import com.aspectran.core.var.token.ItemTokenExpression;
 import com.aspectran.core.var.token.ItemTokenExpressor;
 import com.aspectran.core.var.type.BeanProxyModeType;
@@ -199,7 +199,7 @@ public abstract class AbstractContextBeanRegistry implements ContextBeanRegistry
 		}
 		
 		String joinpointScopeString = joinpointScope == null ? null : joinpointScope.toString();
-		String patternString = PointcutPattern.combinePatternString(joinpointScopeString, transletName, beanId, null);
+		String patternString = PointcutPatternRule.combinePatternString(joinpointScopeString, transletName, beanId, null);
 
 		List<AspectRule> aspectRuleList;
 		

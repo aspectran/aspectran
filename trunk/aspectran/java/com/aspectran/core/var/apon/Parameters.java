@@ -40,6 +40,14 @@ public interface Parameters {
 	
 	public String[] getStringArray(ParameterDefine parameter);
 	
+	public List<String> getStringList(String name);
+
+	public List<String> getStringList(ParameterDefine parameter);
+	
+	public String getText(String name);	
+	
+	public String getText(ParameterDefine parameter);	
+	
 	public int getInt(String name);
 	
 	public int getInt(String name, int defaultValue);

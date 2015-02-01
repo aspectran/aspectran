@@ -125,11 +125,6 @@ public abstract class AbstractParameters implements Parameters {
 		return s;
 	}
 
-	public String[] getStringArray(String name) {
-		Parameter p = getParameter(name);
-		return p.getValueAsStringArray();
-	}
-
 	public String getString(ParameterDefine parameter) {
 		return getString(parameter.getName());
 	}
@@ -138,13 +133,31 @@ public abstract class AbstractParameters implements Parameters {
 		return getString(parameter.getName(), defaultValue);
 	}
 
+	public String[] getStringArray(String name) {
+		Parameter p = getParameter(name);
+		return p.getValueAsStringArray();
+	}
+
 	public String[] getStringArray(ParameterDefine parameter) {
 		return getStringArray(parameter.getName());
+	}
+	
+	public List<String> getStringList(String name) {
+		Parameter p = getParameter(name);
+		return p.getValueAsStringList();
+	}
+
+	public List<String> getStringList(ParameterDefine parameter) {
+		return getStringList(parameter.getName());
 	}
 	
 	public String getText(String name) {
 		Parameter p = getParameter(name);
 		return p.getValueAsText();
+	}
+	
+	public String getText(ParameterDefine parameter) {
+		return getText(parameter.getName());
 	}
 	
 	public int getInt(String name) {

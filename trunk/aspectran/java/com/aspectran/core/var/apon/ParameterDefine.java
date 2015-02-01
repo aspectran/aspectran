@@ -171,6 +171,23 @@ public class ParameterDefine implements Parameter {
 		}
 	}
 	
+	public List<String> getValueAsStringList() {
+		if(list == null)
+			return null;
+
+		if(parameterValueType == ParameterValueType.STRING) {
+			return (List<String>)getValueList();
+		}
+		
+		List<String> list2 = new ArrayList<String>();
+		
+		for(Object o : list) {
+			list2.add(o.toString());
+		}
+		
+		return list2;
+	}
+	
 	public String getValueAsText() {
 		if(array) {
 			if(list == null)
