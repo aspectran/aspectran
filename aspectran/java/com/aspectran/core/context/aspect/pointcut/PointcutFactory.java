@@ -1,139 +1,128 @@
 package com.aspectran.core.context.aspect.pointcut;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.var.rule.PointcutPatternRule;
 import com.aspectran.core.var.rule.PointcutRule;
-import com.aspectran.core.var.type.PointcutPatternOperationType;
 import com.aspectran.core.var.type.PointcutType;
 
 public class PointcutFactory {
 
-	private final String plusOperationPrefix = "+(";
+//	private final String plusOperationPrefix = "+(";
+//	
+//	private final String minusOperationPrefix = "-(";
+//	
+//	private final String operationSuffix = ")";
+//	
+//	private Map<String, List<PointcutPatternRule>> pointcutPatternCache = new HashMap<String, List<PointcutPatternRule>>();
+//	
+//	private List<Pointcut> pointcutList = new ArrayList<Pointcut>();
 	
-	private final String minusOperationPrefix = "-(";
-	
-	private final String operationSuffix = ")";
-	
-	private Map<String, List<PointcutPattern>> pointcutPatternCache = new HashMap<String, List<PointcutPattern>>();
-	
-	private List<Pointcut> pointcutList = new ArrayList<Pointcut>();
-	
-	public Pointcut createPointcut(PointcutRule pointcutRule) {
+	public static Pointcut createPointcut(PointcutRule pointcutRule) {
 		if(pointcutRule.getPointcutType() == PointcutType.WILDCARD) {
-			Pointcut pointcut = createWildcardPointcut(pointcutRule);
-			pointcutList.add(pointcut);
+			return createWildcardPointcut(pointcutRule.getPointcutPatternRuleList());
 		} else if(pointcutRule.getPointcutType() == PointcutType.REGEXP) {
-			Pointcut pointcut = createRegexpPointcut(pointcutRule);
-			pointcutList.add(pointcut);
+			return createRegexpPointcut(pointcutRule.getPointcutPatternRuleList());
 		}
 
 		return null;
 	}
 	
-	protected Pointcut createWildcardPointcut(PointcutRule pointcutRule) {
-		WildcardPointcut wildcardPointcut =  new WildcardPointcut();
-		
-		return createPointcut(pointcutRule, wildcardPointcut);
+	private static Pointcut createWildcardPointcut(List<PointcutPatternRule> pointcutPatternRuleList) {
+		return new WildcardPointcut(pointcutPatternRuleList);
 	}
 	
-	protected Pointcut createRegexpPointcut(PointcutRule pointcutRule) {
-		RegexpPointcut regexpPointcut =  new RegexpPointcut();
-		
-		return createPointcut(pointcutRule, regexpPointcut);
+	private static Pointcut createRegexpPointcut(List<PointcutPatternRule> pointcutPatternRuleList) {
+		return new RegexpPointcut(pointcutPatternRuleList);
 	}
 	
+	/*
 	private Pointcut createPointcut(PointcutRule pointcutRule, Pointcut pointcut) {
 		List<PointcutPatternRule> pointcutPatternRuleList = pointcutRule.getPointcutPatternRuleList();
 		
 		if(pointcutPatternRuleList != null && pointcutPatternRuleList.size() > 0) {
 			for(PointcutPatternRule pointcutPatternRule : pointcutPatternRuleList) {
 				if(pointcutPatternRule.getPatternString() != null) {
-					List<PointcutPattern> pointcutPatternList = pointcutPatternCache.get(pointcutPatternRule.getPatternString());
+					List<PointcutPatternRule> pointcutPatternList = pointcutPatternCache.get(pointcutPatternRule.getPatternString());
 				
 					if(pointcutPatternList == null) {
 						pointcutPatternList = parsePattern(pointcutPatternRule.getPatternString());
 						pointcutPatternCache.put(pointcutPatternRule.getPatternString(), pointcutPatternList);
 					} 
 				
-					pointcut.addPointcutPattern(pointcutPatternList);
+					pointcut.addPointcutPatternRule(pointcutPatternList);
 				} else {
-					PointcutPattern pointcutPattern = new PointcutPattern(pointcutPatternRule);
+					PointcutPatternRule pointcutPattern = new PointcutPatternRule(pointcutPatternRule);
 					
-					List<PointcutPatternRule> withoutPointcutPatternRuleList = pointcutPatternRule.getMinusPointcutPatternRuleList();
+					List<PointcutPatternRule> minusPointcutPatternRuleList = pointcutPatternRule.getExcludePointcutPatternRuleList();
 					
-					if(withoutPointcutPatternRuleList != null) {
-						for(PointcutPatternRule wppr : withoutPointcutPatternRuleList) {
-							PointcutPattern wpp = new PointcutPattern(wppr);
-							pointcutPattern.addMinusPointcutPattern(wpp);;
+					if(minusPointcutPatternRuleList != null) {
+						for(PointcutPatternRule wppr : minusPointcutPatternRuleList) {
+							PointcutPatternRule wpp = new PointcutPatternRule(wppr);
+							pointcutPattern.addMinusPointcutPatternRule(wpp);;
 						}
 					}
 
-					pointcut.addPointcutPattern(pointcutPattern);
+					pointcut.addPointcutPatternRule(pointcutPattern);
 				}
 			}
 		} else if(pointcutRule.getPatternString() != null) {
-			List<PointcutPattern> pointcutPatternList = pointcutPatternCache.get(pointcutRule.getPatternString());
+			List<PointcutPatternRule> pointcutPatternList = pointcutPatternCache.get(pointcutRule.getPatternString());
 			
 			if(pointcutPatternList == null) {
 				pointcutPatternList = parsePattern(pointcutRule.getPatternString());
 				pointcutPatternCache.put(pointcutRule.getPatternString(), pointcutPatternList);
 			} 
 		
-			pointcut.addPointcutPattern(pointcutPatternList);
+			pointcut.addPointcutPatternRule(pointcutPatternList);
 		}
 		
 		return pointcut;
 	}
 	
-	
-	protected List<PointcutPattern> parsePattern(String patternString) {
+	protected List<PointcutPatternRule> parsePattern(String patternString) {
 		String[] patterns = StringUtils.tokenize(patternString, "\n\t,;:| ");
-		List<PointcutPattern> pointcutPatternList = null;
+		List<PointcutPatternRule> pointcutPatternList = null;
 		
 		if(patterns.length > 0) {
-			pointcutPatternList = new ArrayList<PointcutPattern>();
+			pointcutPatternList = new ArrayList<PointcutPatternRule>();
 			
-			PointcutPattern pointcutPattern = null;
+			PointcutPatternRule pointcutPattern = null;
 			
 			for(String pattern : patterns) {
 				if(pattern.length() > 0) {
-					PointcutPatternOperationType pointcutPatternOperationType = null;
+					PointcutPatternRuleOperationType pointcutPatternOperationType = null;
 					
 					if(pattern.startsWith(plusOperationPrefix)) {
 						pattern = patternString.substring(plusOperationPrefix.length());
 						if(pattern.endsWith(operationSuffix))
 							pattern.substring(0, pattern.length() - 1);
 						
-						pointcutPatternOperationType = PointcutPatternOperationType.PLUS;
+						pointcutPatternOperationType = PointcutPatternRuleOperationType.PLUS;
 					} else if(pattern.startsWith(minusOperationPrefix)) {
 						pattern = patternString.substring(minusOperationPrefix.length());
 						if(pattern.endsWith(operationSuffix))
 							pattern.substring(0, pattern.length() - 1);
 						
-						pointcutPatternOperationType = PointcutPatternOperationType.MINUS;
+						pointcutPatternOperationType = PointcutPatternRuleOperationType.MINUS;
 					} else {
-						pointcutPatternOperationType = PointcutPatternOperationType.PLUS;
+						pointcutPatternOperationType = PointcutPatternRuleOperationType.PLUS;
 					}
 
-					if(pointcutPatternOperationType == PointcutPatternOperationType.PLUS) {
+					if(pointcutPatternOperationType == PointcutPatternRuleOperationType.PLUS) {
 						if(pointcutPattern != null) {
 							pointcutPatternList.add(pointcutPattern);
 							pointcutPattern = null;
 						}
 						
-						pointcutPattern =  PointcutPattern.createPointcutPattern(pointcutPatternOperationType, pattern);
-					} else if(pointcutPatternOperationType == PointcutPatternOperationType.MINUS) {
-						PointcutPattern wpp =  PointcutPattern.createPointcutPattern(pointcutPatternOperationType, pattern);
+						pointcutPattern =  PointcutPatternRule.createPointcutPatternRule(pattern);
+					} else if(pointcutPatternOperationType == PointcutPatternRuleOperationType.MINUS) {
+						PointcutPatternRule wpp =  PointcutPatternRule.createPointcutPatternRule(pattern);
 
 						if(pointcutPattern == null)
-							pointcutPattern = new PointcutPattern();
+							pointcutPattern = new PointcutPatternRule();
 						
-						pointcutPattern.addMinusPointcutPattern(wpp);
+						pointcutPattern.addMinusPointcutPatternRule(wpp);
 					}
 				}
 			}
@@ -160,5 +149,6 @@ public class PointcutFactory {
 			pointcutList = null;
 		}
 	}
+ */
 	
 }

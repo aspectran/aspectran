@@ -26,6 +26,8 @@ public interface Parameter {
 	
 	public String[] getValueAsStringArray();
 
+	public List<String> getValueAsStringList();
+	
 	public String getValueAsText();
 	
 	public int getValueAsInt();

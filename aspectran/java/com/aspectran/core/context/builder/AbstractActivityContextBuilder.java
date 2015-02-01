@@ -80,14 +80,12 @@ public abstract class AbstractActivityContextBuilder extends ContextBuilderAssis
 	}
 	
 	protected AspectRuleRegistry makeAspectRuleRegistry(AspectRuleMap aspectRuleMap, BeanRuleMap beanRuleMap, TransletRuleMap transletRuleMap) {
-		PointcutFactory pointcutFactory = new PointcutFactory();
-		
 		for(AspectRule aspectRule : aspectRuleMap) {
 			if(aspectRule.getAspectTargetType() == AspectTargetType.TRANSLET) {
 				PointcutRule pointcutRule = aspectRule.getPointcutRule();
 				
 				if(pointcutRule != null) {
-					Pointcut pointcut = pointcutFactory.createPointcut(pointcutRule);
+					Pointcut pointcut = PointcutFactory.createPointcut(pointcutRule);
 					aspectRule.setPointcut(pointcut);
 					
 //					List<PointcutPattern> pointcutPatternList = pointcut.getPointcutPatternList();
@@ -109,8 +107,6 @@ public abstract class AbstractActivityContextBuilder extends ContextBuilderAssis
 		
 		AspectAdviceRulePreRegister aspectAdviceRuleRegister = new AspectAdviceRulePreRegister(aspectRuleMap);
 		aspectAdviceRuleRegister.register(beanRuleMap, transletRuleMap);
-
-		pointcutFactory.close();
 		
 		return new AspectRuleRegistry(aspectRuleMap);
 	}

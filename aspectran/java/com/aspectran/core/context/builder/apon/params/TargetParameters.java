@@ -7,8 +7,8 @@ import com.aspectran.core.var.apon.Parameters;
 
 public class TargetParameters extends AbstractParameters implements Parameters {
 
-	public static final ParameterDefine plus;
-	public static final ParameterDefine minus;
+	public static final ParameterDefine pluses;
+	public static final ParameterDefine minuses;
 	
 	public static final ParameterDefine translet;
 	public static final ParameterDefine bean;
@@ -18,16 +18,16 @@ public class TargetParameters extends AbstractParameters implements Parameters {
 	private static final ParameterDefine[] parameterDefines;
 	
 	static {
-		plus = new ParameterDefine("+", ParameterValueType.STRING);
-		minus = new ParameterDefine("-", ParameterValueType.STRING);
+		pluses = new ParameterDefine("+", ParameterValueType.STRING, true);
+		minuses = new ParameterDefine("-", ParameterValueType.STRING, true);
 		translet = new ParameterDefine("translet", ParameterValueType.STRING);
 		bean = new ParameterDefine("bean", ParameterValueType.STRING);
 		method = new ParameterDefine("method", ParameterValueType.STRING);
 		excludeTargets = new ParameterDefine("exclude", new ExcludeTargetParameters(), true);
 		
 		parameterDefines = new ParameterDefine[] {
-				plus,
-				minus,
+				pluses,
+				minuses,
 				bean,
 				method,
 				excludeTargets

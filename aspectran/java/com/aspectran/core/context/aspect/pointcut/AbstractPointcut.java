@@ -3,29 +3,24 @@ package com.aspectran.core.context.aspect.pointcut;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.aspectran.core.var.rule.PointcutPatternRule;
+
 
 public abstract class AbstractPointcut {
 	
-	protected List<PointcutPattern> pointcutPatternList;
+	protected final List<PointcutPatternRule> pointcutPatternRuleList;
 
-	public List<PointcutPattern> getPointcutPatternList() {
-		return pointcutPatternList;
-	}
-
-	public void setPointcutPatternList(List<PointcutPattern> pointcutPatternList) {
-		this.pointcutPatternList = pointcutPatternList;
+	public AbstractPointcut(List<PointcutPatternRule> pointcutPatternRuleList) {
+		this.pointcutPatternRuleList = pointcutPatternRuleList;
 	}
 	
-	public void addPointcutPattern(PointcutPattern pointcutPattern) {
-		if(pointcutPatternList == null)
-			pointcutPatternList = new ArrayList<PointcutPattern>();
-		
-		pointcutPatternList.add(pointcutPattern);
+	public List<PointcutPatternRule> getPointcutPatternRuleList() {
+		return pointcutPatternRuleList;
 	}
-	
-	public void addPointcutPattern(List<PointcutPattern> pointcutPatternList) {
+
+	public void addPointcutPatternRule(List<PointcutPatternRule> pointcutPatternList) {
 		if(pointcutPatternList == null) {
-			pointcutPatternList = new ArrayList<PointcutPattern>(pointcutPatternList);
+			pointcutPatternList = new ArrayList<PointcutPatternRule>(pointcutPatternList);
 			return;
 		}
 

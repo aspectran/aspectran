@@ -2,14 +2,12 @@ package com.aspectran.core.context.aspect.pointcut;
 
 import java.util.List;
 
+import com.aspectran.core.var.rule.PointcutPatternRule;
+
 public interface Pointcut {
 	
-	public List<PointcutPattern> getPointcutPatternList();
+	public List<PointcutPatternRule> getPointcutPatternRuleList();
 	
-	public void addPointcutPattern(PointcutPattern pointcutPattern);
-	
-	public void addPointcutPattern(List<PointcutPattern> pointcutPatternList);
-
 	public boolean matches(String transletName);
 	
 	public boolean matches(String transletName, String beanOrActionId);

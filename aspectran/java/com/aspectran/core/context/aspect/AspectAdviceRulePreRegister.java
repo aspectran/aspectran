@@ -8,10 +8,10 @@ import org.slf4j.LoggerFactory;
 import com.aspectran.core.activity.process.ContentList;
 import com.aspectran.core.activity.process.action.Executable;
 import com.aspectran.core.context.aspect.pointcut.Pointcut;
-import com.aspectran.core.context.aspect.pointcut.PointcutPattern;
 import com.aspectran.core.var.rule.AspectRule;
 import com.aspectran.core.var.rule.AspectRuleMap;
 import com.aspectran.core.var.rule.BeanRuleMap;
+import com.aspectran.core.var.rule.PointcutPatternRule;
 import com.aspectran.core.var.rule.RequestRule;
 import com.aspectran.core.var.rule.ResponseRule;
 import com.aspectran.core.var.rule.TransletRule;
@@ -47,10 +47,10 @@ public class AspectAdviceRulePreRegister extends AspectAdviceRuleRegister {
 					if(pointcut == null) {
 						aspectRule.setOnlyTransletRelevanted(true);
 					} else {
-						List<PointcutPattern> pointcutPatternList = pointcut.getPointcutPatternList();
+						List<PointcutPatternRule> pointcutPatternList = pointcut.getPointcutPatternRuleList();
 						boolean onlyTransletRelevanted = true;
 						
-						for(PointcutPattern pp : pointcutPatternList) {
+						for(PointcutPatternRule pp : pointcutPatternList) {
 							if(pp.getBeanOrActionIdPattern() != null || pp.getBeanMethodNamePattern() != null) {
 								onlyTransletRelevanted = false;
 								break;
