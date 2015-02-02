@@ -18,11 +18,6 @@ package com.aspectran.core.var.rule;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.aspectran.core.context.builder.apon.params.TargetParameters;
-import com.aspectran.core.util.StringUtils;
-import com.aspectran.core.var.apon.Parameters;
-import com.aspectran.core.var.type.AspectTargetType;
-
 public class PointcutPatternRule {
 	
 	public static final char POINTCUT_BEAN_DELIMITER = '@';
@@ -201,36 +196,6 @@ public class PointcutPatternRule {
 			pointcutPatternRule.setBeanOrActionIdPattern(bean);
 		if(method != null && method.length() > 0)
 			pointcutPatternRule.setBeanMethodNamePattern(method);
-		
-		return pointcutPatternRule;
-	}
-	
-	
-	public static PointcutPatternRule newInstance(String text) {
-		Parameters targetParameters = new TargetParameters(text);
-		String translet = targetParameters.getString(TargetParameters.translet);
-		String bean = targetParameters.getString(TargetParameters.bean);
-		String method = targetParameters.getString(TargetParameters.method);
-		List<Parameters> excludeTargetList = targetParameters.getParametersList(TargetParameters.excludeTargets);
-
-		if(StringUtils.hasLength(translet) || StringUtils.hasLength(bean) || StringUtils.hasLength(method) || (excludeTargetList != null && excludeTargetList.size() > 0)) {
-			PointcutPatternRule pointcutPatternRule = newInstance(translet, bean, method);
-			
-			if(excludeTargetList != null && excludeTargetList.size() > 0) {
-				for(Parameters excludeTarget : excludeTargetList) {
-					translet = excludeTarget.getString(TargetParameters.translet);
-					bean = excludeTarget.getString(TargetParameters.bean);
-					method = excludeTarget.getString(TargetParameters.method);
-
-					if(StringUtils.hasLength(translet) || StringUtils.hasLength(bean) || StringUtils.hasLength(method)) {
-						PointcutPatternRule excludePointcutPatternRule = newInstance(translet, bean, method);
-						pointcutPatternRule.addExcludePointcutPatternRule(excludePointcutPatternRule);
-					}
-				}
-			}
-		}
-
-		//TODO
 		
 		return pointcutPatternRule;
 	}

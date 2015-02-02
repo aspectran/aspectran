@@ -28,6 +28,7 @@ public class TargetParameters extends AbstractParameters implements Parameters {
 		parameterDefines = new ParameterDefine[] {
 				pluses,
 				minuses,
+				translet,
 				bean,
 				method,
 				excludeTargets
