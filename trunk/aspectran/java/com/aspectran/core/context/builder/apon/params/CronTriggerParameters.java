@@ -12,7 +12,7 @@ public class CronTriggerParameters extends AbstractParameters implements Paramet
 	private final static ParameterDefine[] parameterDefines;
 	
 	static {
-		expression = new ParameterDefine("withIntervalInMilliseconds", ParameterValueType.STRING);
+		expression = new ParameterDefine("expression", ParameterValueType.STRING);
 		
 		parameterDefines = new ParameterDefine[] {
 				expression
