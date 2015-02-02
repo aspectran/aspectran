@@ -15,56 +15,85 @@
  */
 package com.aspectran.core.var.rule;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
+import com.aspectran.core.context.builder.apon.params.ItemParameters;
 import com.aspectran.core.util.StringUtils;
+import com.aspectran.core.var.apon.Parameters;
 import com.aspectran.core.var.token.Token;
 import com.aspectran.core.var.token.TokenParser;
 import com.aspectran.core.var.type.ItemType;
 import com.aspectran.core.var.type.ItemValueType;
 import com.aspectran.core.var.type.TokenType;
 
+// TODO: Auto-generated Javadoc
 /**
  * <p>Created: 2008. 03. 27 오후 3:57:48</p>
  */
+/**
+ * @author Gulendol
+ *
+ */
 public class ItemRule {
 
-	/** suffix for list-type item: "[]" */
+	/**  suffix for list-type item: "[]". */
 	public static final String LIST_SUFFIX = "[]";
 	
-	/** suffix for map-type item: "{}" */
+	/**  suffix for map-type item: "{}". */
 	public static final String MAP_SUFFIX = "{}";
 
+	/** The type. */
 	private ItemType type;
 	
+	/** The name. */
 	private String name;
 	
+	/** The value type. */
 	private ItemValueType valueType;
 	
+	/** The default value. */
 	private String defaultValue;
 
+	/** The tokenize. */
 	private final Boolean tokenize;
 
+	/** The tokens. */
 	private Token[] tokens;
 	
+	/** The tokens list. */
 	private List<Token[]> tokensList;
 	
+	/** The tokens map. */
 	private Map<String, Token[]> tokensMap;
 	
+	/** The tokens set. */
 	private Set<Token[]> tokensSet;
 	
+	/** The tokens properties. */
 	private Properties tokensProperties;
 	
+	/** The unknown name. */
 	private boolean unknownName;
 
+	/**
+	 * Instantiates a new item rule.
+	 */
 	public ItemRule() {
 		this(null);
 	}
 	
+	/**
+	 * Instantiates a new item rule.
+	 *
+	 * @param tokenize the tokenize
+	 */
 	public ItemRule(Boolean tokenize) {
 		this.tokenize = tokenize;
 	}
@@ -150,10 +179,20 @@ public class ItemRule {
 		this.defaultValue = defaultValue;
 	}
 
+	/**
+	 * Gets the tokenize.
+	 *
+	 * @return the tokenize
+	 */
 	public Boolean getTokenize() {
 		return tokenize;
 	}
 
+	/**
+	 * Checks if is tokenize.
+	 *
+	 * @return the boolean
+	 */
 	public Boolean isTokenize() {
 		if(tokenize == null)
 			return false;
@@ -206,10 +245,20 @@ public class ItemRule {
 		return tokensProperties;
 	}
 	
+	/**
+	 * Checks if is unknown name.
+	 *
+	 * @return true, if is unknown name
+	 */
 	public boolean isUnknownName() {
 		return unknownName;
 	}
 
+	/**
+	 * Sets the unknown name.
+	 *
+	 * @param unknownName the new unknown name
+	 */
 	public void setUnknownName(boolean unknownName) {
 		this.unknownName = unknownName;
 	}
@@ -580,6 +629,12 @@ public class ItemRule {
 		this.tokensProperties = tokensProperties;
 	}
 	
+	/**
+	 * Make tokens.
+	 *
+	 * @param text the text
+	 * @return the token[]
+	 */
 	public Token[] makeTokens(String text) {
 		Token[] tokens;
 		
@@ -608,6 +663,17 @@ public class ItemRule {
 		}	
 	}
 	
+	/**
+	 * New instance.
+	 *
+	 * @param type the type
+	 * @param name the name
+	 * @param value the value
+	 * @param valueType the value type
+	 * @param defaultValue the default value
+	 * @param tokenize the tokenize
+	 * @return the item rule
+	 */
 	public static ItemRule newInstance(String type, String name, String value, String valueType, String defaultValue, String tokenize) {
 		ItemRule itemRule;
 
@@ -666,6 +732,15 @@ public class ItemRule {
 			itemRule.setValue(tokens);
 	}
 	
+	/**
+	 * Make reference tokens.
+	 *
+	 * @param beanId the bean id
+	 * @param parameter the parameter
+	 * @param attribute the attribute
+	 * @param property the property
+	 * @return the token[]
+	 */
 	public static Token[] makeReferenceTokens(String beanId, String parameter, String attribute, String property) {
 		Token[] tokens = new Token[1];
 		
@@ -684,6 +759,12 @@ public class ItemRule {
 		return tokens;
 	}
 	
+	/**
+	 * Naming item rule.
+	 *
+	 * @param itemRule the item rule
+	 * @param itemRuleMap the item rule map
+	 */
 	public static void namingItemRule(ItemRule itemRule, ItemRuleMap itemRuleMap) {
 		int count = 0;
 		ItemRule first = null;
@@ -711,6 +792,12 @@ public class ItemRule {
 	}
 
 	
+	/**
+	 * Token iterator.
+	 *
+	 * @param itemRule the item rule
+	 * @return the iterator
+	 */
 	@SuppressWarnings("unchecked")
 	public static Iterator<Token[]> tokenIterator(ItemRule itemRule) {
 		Iterator<Token[]> iter = null;
@@ -731,6 +818,151 @@ public class ItemRule {
 		}
 		
 		return iter;
+	}
+	
+	/**
+	 * Parses the value.
+	 *
+	 * @param itemRule the item rule
+	 * @param valueName the value name
+	 * @param valueText the value text
+	 * @return the token[]
+	 */
+	public static Token[] parseValue(ItemRule itemRule, String valueName, String valueText) {
+		if(itemRule.getType() == ItemType.ITEM) {
+			if(valueText != null) {
+				itemRule.setValue(valueText);
+			}
+			
+			return null;
+		} else {
+			Token[] tokens = null;
+			
+			if(itemRule.getType() == ItemType.LIST || itemRule.getType() == ItemType.SET) {
+				tokens = itemRule.makeTokens(valueText);
+			} else if(itemRule.getType() == ItemType.MAP || itemRule.getType() == ItemType.PROPERTIES) {
+				if(!StringUtils.isEmpty(valueName)) {
+					tokens = itemRule.makeTokens(valueText);
+				}
+			}
+			
+			return tokens;
+		}
+	}
+	
+	/**
+	 * Begin value collection.
+	 *
+	 * @param itemRule the item rule
+	 */
+	public static void beginValueCollection(ItemRule itemRule) {
+		if(itemRule.getType() == ItemType.LIST) {
+			List<Token[]> tokensList = new ArrayList<Token[]>();
+			itemRule.setValue(tokensList);
+		} else if(itemRule.getType() == ItemType.MAP) {
+			Map<String, Token[]> tokensMap = new LinkedHashMap<String, Token[]>();
+			itemRule.setValue(tokensMap);
+		} else if(itemRule.getType() == ItemType.SET) {
+			Set<Token[]> tokensSet = new LinkedHashSet<Token[]>();
+			itemRule.setValue(tokensSet);
+		} else if(itemRule.getType() == ItemType.PROPERTIES) {
+			Properties tokensProp = new Properties();
+			itemRule.setValue(tokensProp);
+		}
+	}
+	
+	/**
+	 * Finish value collection.
+	 *
+	 * @param itemRule the item rule
+	 * @param name the name
+	 * @param tokens the tokens
+	 */
+	public static void finishValueCollection(ItemRule itemRule, String name, Token[] tokens) {
+		if(itemRule.getType() == ItemType.LIST) {
+			List<Token[]> list = itemRule.getTokensList();
+			list.add(tokens);
+		} else if(itemRule.getType() == ItemType.SET) {
+			Set<Token[]> set = itemRule.getTokensSet();
+			set.add(tokens);
+		} else if(itemRule.getType() == ItemType.MAP) {
+			if(!StringUtils.isEmpty(name)) {
+				Map<String, Token[]> map = itemRule.getTokensMap();
+				map.put(name, tokens);
+			}
+		} else if(itemRule.getType() == ItemType.PROPERTIES) {
+			if(!StringUtils.isEmpty(name)) {
+				Properties prop = itemRule.getTokensProperties();
+				prop.put(name, tokens);
+			}
+		}
+	}
+	
+	/**
+	 * Adds the item rule.
+	 *
+	 * @param itemRuleMap the item rule map
+	 * @param itemRule the item rule
+	 */
+	public static void addItemRule(ItemRuleMap itemRuleMap, ItemRule itemRule) {
+		itemRuleMap.putItemRule(itemRule);
+
+		if(itemRule.isUnknownName())
+			ItemRule.namingItemRule(itemRule, itemRuleMap);
+	}
+	
+	
+	/**
+	 * Convert then Parameters to the item rule.
+	 * <pre>
+	 * [
+	 * 	{
+	 *		type: map
+	 *		name: property1
+	 *		value: {
+	 *			code1: value1
+	 *			code2: value2
+	 *		}
+	 *		valueType: java.lang.String
+	 *		defaultValue: default value
+	 *		tokenize: true
+	 *	}
+	 *	{
+	 *		name: property2
+	 *		value(int): 123
+	 *	}
+	 *	{
+	 *		name: property2
+	 *		reference: {
+	 *			bean: a.bean
+	 *		}
+	 *	}
+	 * ]
+	 *</pre>
+	 *
+	 * @return the item rule
+	 */
+	public static ItemRule toItemRule(Parameters itemParameters) {
+//		type = new ParameterDefine("type", ParameterValueType.STRING);
+//		name = new ParameterDefine("name", ParameterValueType.STRING);
+//		value = new ParameterDefine("value", ParameterValueType.VARIABLE);
+//		valueType = new ParameterDefine("valueType", ParameterValueType.STRING);
+//		defaultValue = new ParameterDefine("defaultValue", ParameterValueType.VARIABLE);
+//		tokenize = new ParameterDefine("tokenize", ParameterValueType.BOOLEAN);
+//		reference = new ParameterDefine("reference", new ReferenceParameters());
+
+		String type = itemParameters.getString(ItemParameters.type);
+		String name = itemParameters.getString(ItemParameters.name);
+		Parameters value = itemParameters.getParameters(ItemParameters.value);
+		String valueType = itemParameters.getString(ItemParameters.valueType);
+		String defaultValue = itemParameters.getString(ItemParameters.defaultValue);
+		boolean tokenize = itemParameters.getBoolean(ItemParameters.tokenize);
+		Parameters referenceParameters = itemParameters.getParameters(ItemParameters.reference);
+		
+		ItemRule itemRule = ItemRule.newInstance(type, name, value, valueType, defaultValue, tokenize);
+		
+		return itemRule;
+		
 	}
 	
 }

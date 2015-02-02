@@ -383,46 +383,14 @@ public class AspectranNodeParser {
 				String destroyMethodName = attributes.get("destroyMethod");
 				boolean lazyInit = Boolean.parseBoolean(attributes.get("lazyInit"));
 				boolean override = Boolean.parseBoolean(attributes.get("override"));
-				
-				if(id == null) {
-					throw new IllegalArgumentException("The <bean> element requires a id attribute.");
-				} else {
+
+				if(id != null) {
 					id = assistant.applyNamespaceForBean(id);
 				}
 
-				if(className == null)
-					throw new IllegalArgumentException("The <bean> element requires a class attribute.");
-
-				Class<?> beanClass = null;
-				Map<String, Class<?>> beanClassMap = null;
-				
-				if(!WildcardPattern.hasWildcards(className)) {
-					beanClass = assistant.getClassLoader().loadClass(className);
-				} else {
-					BeanClassScanner scanner = new BeanClassScanner(id, assistant.getClassLoader());
-					beanClassMap = scanner.scanClass(className);
-				}
-								
-				if(beanClass != null) {
-					BeanRule beanRule = BeanRule.newInstance(id, beanClass, scope, singleton, factoryMethod, initMethodName, destroyMethodName, lazyInit, override);
+				BeanRule[] beanRules = BeanRule.newInstance(assistant.getClassLoader(), id, className, scope, singleton, factoryMethod, initMethodName, destroyMethodName, lazyInit, override);
 	
-					assistant.pushObject(beanRule);
-				} else {
-					BeanRule[] beanRules = new BeanRule[beanClassMap.size()];
-					
-					int i = 0;
-					for(Map.Entry<String, Class<?>> entry : beanClassMap.entrySet()) {
-						String beanId = entry.getKey();
-						Class<?> beanClass2 = entry.getValue();
-						
-						BeanRule beanRule = BeanRule.newInstance(beanId, beanClass2, scope, singleton, factoryMethod, initMethodName, destroyMethodName, lazyInit, override);
-						beanRule.setStealthily(true);
-						
-						beanRules[i++] = beanRule;
-					}
-	
-					assistant.pushObject(beanRules);					
-				}
+				assistant.pushObject(beanRules);					
 			}
 		});
 		parser.addNodelet("/aspectran/bean/constructor/argument", new Nodelet() {
@@ -432,7 +400,7 @@ public class AspectranNodeParser {
 				
 				if(text != null) {
 					ParameterHolder holder = new ParameterHolder(text, new ItemParameters(), true);
-					holder.getParametersArray();
+					List<Parameters> argumentParameterList = holder.getParametersList();
 					//TODO
 				}
 			}
@@ -443,15 +411,10 @@ public class AspectranNodeParser {
 		parser.addNodelet("/aspectran/bean/constructor/argument/end()", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
 				ItemRuleMap irm = (ItemRuleMap)assistant.popObject();
-				Object o = assistant.peekObject();
+				BeanRule[] beanRules = (BeanRule[])assistant.peekObject();
 				
-				if(o instanceof BeanRule) {
-					BeanRule beanRule = (BeanRule)o;
+				for(BeanRule beanRule : beanRules) {
 					beanRule.setConstructorArgumentItemRuleMap(irm);
-				} else {
-					for(BeanRule beanRule : (BeanRule[])o) {
-						beanRule.setConstructorArgumentItemRuleMap(irm);
-					}
 				}
 			}
 		});
@@ -467,29 +430,19 @@ public class AspectranNodeParser {
 		parser.addNodelet("/aspectran/bean/property/end()", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
 				ItemRuleMap irm = (ItemRuleMap)assistant.popObject();
-				Object o = assistant.peekObject();
+				BeanRule[] beanRules = (BeanRule[])assistant.peekObject();
 				
-				if(o instanceof BeanRule) {
-					BeanRule beanRule = (BeanRule)o;
+				for(BeanRule beanRule : beanRules) {
 					beanRule.setPropertyItemRuleMap(irm);
-				} else {
-					for(BeanRule beanRule : (BeanRule[])o) {
-						beanRule.setPropertyItemRuleMap(irm);
-					}
 				}
 			}
 		});
 		parser.addNodelet("/aspectran/bean/end()", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
-				Object o = assistant.popObject();
+				BeanRule[] beanRules = (BeanRule[])assistant.popObject();
 				
-				if(o instanceof BeanRule) {
-					BeanRule beanRule = (BeanRule)o;
+				for(BeanRule beanRule : beanRules) {
 					assistant.addBeanRule(beanRule);
-				} else {
-					for(BeanRule beanRule : (BeanRule[])o) {
-						assistant.addBeanRule(beanRule);
-					}
 				}
 			}
 		});

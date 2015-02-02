@@ -15,9 +15,19 @@
  */
 package com.aspectran.core.var.rule;
 
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
+
 import com.aspectran.core.context.bean.ablility.DisposableBean;
 import com.aspectran.core.context.bean.ablility.InitializableBean;
+import com.aspectran.core.context.bean.scan.BeanClassScanner;
+import com.aspectran.core.context.builder.apon.params.ReferenceParameters;
 import com.aspectran.core.util.MethodUtils;
+import com.aspectran.core.util.wildcard.WildcardPattern;
+import com.aspectran.core.var.apon.ParameterDefine;
+import com.aspectran.core.var.apon.ParameterValueType;
+import com.aspectran.core.var.apon.Parameters;
 import com.aspectran.core.var.type.ScopeType;
 
 /**
@@ -345,13 +355,14 @@ public class BeanRule {
 		
 		return sb.toString();
 	}
-
-	public static BeanRule newInstance(String id, Class<?> beanClass, String scope, boolean singleton, String factoryMethod, String initMethodName, String destroyMethodName, boolean lazyInit, boolean override) {
+	
+	public static BeanRule[] newInstance(ClassLoader classLoader, String id, String className, String scope, boolean singleton, String factoryMethod, String initMethodName, String destroyMethodName, boolean lazyInit, boolean override) throws ClassNotFoundException, IOException {
 		if(id == null)
 			throw new IllegalArgumentException("The <bean> element requires a id attribute.");
-		
-		String className = beanClass.getName();
-		
+
+		if(className == null)
+			throw new IllegalArgumentException("The <bean> element requires a class attribute.");
+
 		ScopeType scopeType = ScopeType.valueOf(scope);
 		
 		if(scope != null && scopeType == null)
@@ -359,14 +370,64 @@ public class BeanRule {
 		
 		if(scopeType == null)
 			scopeType = singleton ? ScopeType.SINGLETON : ScopeType.PROTOTYPE;
+		
+		BeanRule[] beanRules = null;
+		
+		if(!WildcardPattern.hasWildcards(className)) {
+			Class<?> beanClass = classLoader.loadClass(className);
+			
+			BeanRule beanRule = new BeanRule();
+			beanRule.setId(id);
+			beanRule.setClassName(className);
+			beanRule.setBeanClass(beanClass);
+			beanRule.setScopeType(scopeType);
+			beanRule.setFactoryMethodName(factoryMethod);
+			beanRule.setLazyInit(lazyInit);
+			beanRule.setOverride(override);
+			
+			updateAccessibleMethod(beanRule, beanClass, initMethodName, destroyMethodName);			
+			
+			beanRules = new BeanRule[] { beanRule };
+		} else {
+			BeanClassScanner scanner = new BeanClassScanner(id, classLoader);
+			Map<String, Class<?>> beanClassMap = scanner.scanClass(className);
+			
+			if(beanClassMap != null && beanClassMap.size() > 0) {
+				beanRules = new BeanRule[beanClassMap.size()];
+	
+				int i = 0;
+				for(Map.Entry<String, Class<?>> entry : beanClassMap.entrySet()) {
+					String beanId = entry.getKey();
+					Class<?> beanClass2 = entry.getValue();
+					
+					BeanRule beanRule = new BeanRule();
+					beanRule.setId(beanId);
+					beanRule.setClassName(className);
+					beanRule.setBeanClass(beanClass2);
+					beanRule.setScopeType(scopeType);
+					beanRule.setFactoryMethodName(factoryMethod);
+					beanRule.setLazyInit(lazyInit);
+					beanRule.setOverride(override);
+					beanRule.setStealthily(true);
+					
+					updateAccessibleMethod(beanRule, beanClass2, initMethodName, destroyMethodName);			
 
+					beanRules[i++] = beanRule;
+				}
+			}
+		}
+		
+		return beanRules;
+	}
+	
+	private static void updateAccessibleMethod(BeanRule beanRule, Class<?> beanClass, String initMethodName, String destroyMethodName) {
 		if(initMethodName == null && beanClass.isAssignableFrom(InitializableBean.class)) {
 			initMethodName = InitializableBean.INITIALIZE_METHOD_NAME;
 		}
 
 		if(initMethodName != null) {
 			if(MethodUtils.getAccessibleMethod(beanClass, initMethodName, null) == null) {
-				throw new IllegalArgumentException("No such initialization method '" + initMethodName + "() on bean class: " + className);
+				throw new IllegalArgumentException("No such initialization method '" + initMethodName + "() on bean class: " + beanClass);
 			}
 		}
 		
@@ -376,22 +437,27 @@ public class BeanRule {
 
 		if(destroyMethodName != null) {
 			if(MethodUtils.getAccessibleMethod(beanClass, destroyMethodName, null) == null) {
-				throw new IllegalArgumentException("No such destroy method '" + destroyMethodName + "() on bean class: " + className);
+				throw new IllegalArgumentException("No such destroy method '" + destroyMethodName + "() on bean class: " + beanClass);
 			}
 		}
 
-		BeanRule beanRule = new BeanRule();
-		beanRule.setId(id);
-		beanRule.setClassName(className);
-		beanRule.setBeanClass(beanClass);
-		beanRule.setScopeType(scopeType);
-		beanRule.setFactoryMethodName(factoryMethod);
 		beanRule.setInitMethodName(initMethodName);
 		beanRule.setDestroyMethodName(destroyMethodName);
-		beanRule.setLazyInit(lazyInit);
-		beanRule.setOverride(override);
+	}
+	
+	public static void addListConstructorArgument(BeanRule beanRule, List<Parameters> itemParametersList) {
+//		type = new ParameterDefine("type", ParameterValueType.STRING);
+//		name = new ParameterDefine("name", ParameterValueType.STRING);
+//		value = new ParameterDefine("value", ParameterValueType.VARIABLE);
+//		valueType = new ParameterDefine("valueType", ParameterValueType.STRING);
+//		defaultValue = new ParameterDefine("defaultValue", ParameterValueType.VARIABLE);
+//		tokenize = new ParameterDefine("tokenize", ParameterValueType.BOOLEAN);
+//		reference = new ParameterDefine("reference", new ReferenceParameters());
+
+		for(Parameters parameters : itemParametersList) {
+			
+		}
 		
-		return beanRule;
 	}
 	
 }
