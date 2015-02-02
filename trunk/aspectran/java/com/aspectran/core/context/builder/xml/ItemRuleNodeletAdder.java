@@ -15,19 +15,12 @@
  */
 package com.aspectran.core.context.builder.xml;
 
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
 
 import org.w3c.dom.Node;
 
 import com.aspectran.core.context.builder.ContextBuilderAssistant;
-import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.xml.Nodelet;
 import com.aspectran.core.util.xml.NodeletAdder;
 import com.aspectran.core.util.xml.NodeletParser;
@@ -54,7 +47,7 @@ public class ItemRuleNodeletAdder implements NodeletAdder {
 	public ItemRuleNodeletAdder(ContextBuilderAssistant assistant) {
 		this.assistant = assistant;
 	}
-	
+	/*
 	protected void namingItemRule(ItemRule itemRule, ItemRuleMap itemRuleMap) {
 		int count = 0;
 		ItemRule first = null;
@@ -80,7 +73,7 @@ public class ItemRuleNodeletAdder implements NodeletAdder {
 			itemRule.setName(name);
 		}
 	}
-	
+	*/
 	/**
 	 * Process.
 	 */
@@ -105,21 +98,8 @@ public class ItemRuleNodeletAdder implements NodeletAdder {
 
 				assistant.pushObject(itemRule);
 				
-				if(itemRule.getType() == ItemType.ITEM) {
-					//pass
-				} else if(itemRule.getType() == ItemType.LIST) {
-					List<Token[]> tokensList = new ArrayList<Token[]>();
-					itemRule.setValue(tokensList);
-				} else if(itemRule.getType() == ItemType.MAP) {
-					Map<String, Token[]> tokensMap = new LinkedHashMap<String, Token[]>();
-					itemRule.setValue(tokensMap);
-				} else if(itemRule.getType() == ItemType.SET) {
-					Set<Token[]> tokensSet = new LinkedHashSet<Token[]>();
-					itemRule.setValue(tokensSet);
-				} else if(itemRule.getType() == ItemType.PROPERTIES) {
-					Properties tokensProp = new Properties();
-					itemRule.setValue(tokensProp);
-				}
+				if(itemRule.getType() != ItemType.ITEM)
+					ItemRule.beginValueCollection(itemRule);
 			}
 		});
 		parser.addNodelet(xpath, "/item/reference", new Nodelet() {
@@ -139,21 +119,9 @@ public class ItemRuleNodeletAdder implements NodeletAdder {
 				
 				ItemRule itemRule = (ItemRule)assistant.peekObject();
 				
-				if(itemRule.getType() == ItemType.ITEM) {
-					if(text != null) {
-						itemRule.setValue(text);
-					}
-				} else {
-					Token[] tokens = null;
-					
-					if(itemRule.getType() == ItemType.LIST || itemRule.getType() == ItemType.SET) {
-						tokens = itemRule.makeTokens(text);
-					} else if(itemRule.getType() == ItemType.MAP || itemRule.getType() == ItemType.PROPERTIES) {
-						if(!StringUtils.isEmpty(name)) {
-							tokens = itemRule.makeTokens(text);
-						}
-					}
-					
+				Token[] tokens = ItemRule.parseValue(itemRule, name, text);
+
+				if(tokens != null) {
 					assistant.pushObject(name);
 					assistant.pushObject(tokens);
 				}
@@ -200,24 +168,9 @@ public class ItemRuleNodeletAdder implements NodeletAdder {
 					Token[] tokens = (Token[])assistant.popObject();
 					String name = (String)assistant.popObject();
 					ItemRule itemRule = (ItemRule)assistant.peekObject();
-					
-					if(itemRule.getType() == ItemType.LIST) {
-						List<Token[]> list = itemRule.getTokensList();
-						list.add(tokens);
-					} else if(itemRule.getType() == ItemType.SET) {
-						Set<Token[]> set = itemRule.getTokensSet();
-						set.add(tokens);
-					} else if(itemRule.getType() == ItemType.MAP) {
-						if(!StringUtils.isEmpty(name)) {
-							Map<String, Token[]> map = itemRule.getTokensMap();
-							map.put(name, tokens);
-						}
-					} else if(itemRule.getType() == ItemType.PROPERTIES) {
-						if(!StringUtils.isEmpty(name)) {
-							Properties prop = itemRule.getTokensProperties();
-							prop.put(name, tokens);
-						}
-					}
+
+					if(itemRule.getType() != ItemType.ITEM)
+						ItemRule.finishValueCollection(itemRule, name, tokens);
 				}
 			}
 		});
@@ -226,11 +179,7 @@ public class ItemRuleNodeletAdder implements NodeletAdder {
 				ItemRule itemRule = (ItemRule)assistant.popObject();
 				ItemRuleMap itemRuleMap = (ItemRuleMap)assistant.peekObject();
 
-				itemRuleMap.putItemRule(itemRule);
-
-				if(itemRule.isUnknownName())
-					ItemRule.namingItemRule(itemRule, itemRuleMap);
-
+				ItemRule.addItemRule(itemRuleMap, itemRule);
 				Iterator<Token[]> iter = ItemRule.tokenIterator(itemRule);
 				
 				if(iter != null) {

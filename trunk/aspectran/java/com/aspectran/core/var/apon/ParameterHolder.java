@@ -1,5 +1,7 @@
 package com.aspectran.core.var.apon;
 
+import java.util.List;
+
 public class ParameterHolder {
 
 	private static final String PARAMETER_NAME = "item";
@@ -19,8 +21,8 @@ public class ParameterHolder {
 		return parameters.getParametersArray(PARAMETER_NAME);
 	}
 
-	public Parameters getParameters() {
-		return parameters.getParameters(PARAMETER_NAME);
+	public List<Parameters> getParametersList() {
+		return parameters.getParametersList(PARAMETER_NAME);
 	}
 	
 }
