@@ -150,7 +150,7 @@ public class NodeletParser {
 			path.add(elementName);
 			processNodelet(node, path.toString());
 			processNodelet(node, new StringBuilder("//").append(elementName).toString());
-
+			/*
 			// Attribute
 			NamedNodeMap attributes = node.getAttributes();
 			int n = attributes.getLength();
@@ -162,7 +162,7 @@ public class NodeletParser {
 				processNodelet(node, new StringBuilder("//@").append(attrName).toString());
 				path.remove();
 			}
-
+			*/
 			// Children
 			NodeList children = node.getChildNodes();
 			for(int i = 0; i < children.getLength(); i++) {
@@ -176,7 +176,9 @@ public class NodeletParser {
 			// Text
 			path.add("text()");
 			processNodelet(node, path.toString());
+			/*
 			processNodelet(node, "//text()");
+			*/
 			path.remove();
 		}
 	}
@@ -249,19 +251,25 @@ public class NodeletParser {
 			return null;
 		}
 		
-		StringBuilder sb = new StringBuilder();
+		StringBuilder sb = null;
 		
 		for(int i = 0; i < childrenLength; i++) {
 			Node child = children.item(i);
 			
 			if(child.getNodeType() == Node.CDATA_SECTION_NODE ||
 					child.getNodeType() == Node.TEXT_NODE) {
-				String data = ((CharacterData)child).getData();
-				sb.append(data);
+				String data = ((CharacterData)child).getData().trim();
+				
+				if(data.length() > 0) {
+					if(sb == null)
+						sb = new StringBuilder(data);
+					else
+						sb.append(data.trim());
+				}
 			}
 		}
 		
-		return sb.toString().trim();
+		return sb == null ? null : sb.toString();
 	}
 	
 	/**

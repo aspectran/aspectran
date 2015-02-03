@@ -442,7 +442,7 @@ public class BeanRule {
 		beanRule.setDestroyMethodName(destroyMethodName);
 	}
 	
-	public static void addListConstructorArgument(BeanRule beanRule, List<Parameters> itemParametersList) {
+	public static ItemRuleMap addListConstructorArgument(BeanRule beanRule, List<Parameters> itemParametersList) {
 //		type = new ParameterDefine("type", ParameterValueType.STRING);
 //		name = new ParameterDefine("name", ParameterValueType.STRING);
 //		value = new ParameterDefine("value", ParameterValueType.VARIABLE);
@@ -460,7 +460,11 @@ public class BeanRule {
 			}
 			
 			beanRule.setConstructorArgumentItemRuleMap(itemRuleMap);
+			
+			return itemRuleMap;
 		}
+		
+		return null;
 	}
 	
 }

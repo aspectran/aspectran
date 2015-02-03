@@ -27,6 +27,7 @@ import java.util.Set;
 import com.aspectran.core.context.builder.apon.params.ItemParameters;
 import com.aspectran.core.context.builder.apon.params.ReferenceParameters;
 import com.aspectran.core.util.StringUtils;
+import com.aspectran.core.var.apon.ParameterHolder;
 import com.aspectran.core.var.apon.Parameters;
 import com.aspectran.core.var.token.Token;
 import com.aspectran.core.var.token.TokenParser;
@@ -988,6 +989,11 @@ public class ItemRule {
 		}
 		
 		return itemRule;
+	}
+	
+	public static List<Parameters> toParametersList(String text) {
+		ParameterHolder holder = new ParameterHolder(text, new ItemParameters(), true);
+		return holder.getParametersList();
 	}
 	
 }
