@@ -160,7 +160,7 @@ public abstract class AbstractParameters implements Parameters {
 		return getText(parameter.getName());
 	}
 	
-	public int getInt(String name) {
+	public Integer getInt(String name) {
 		Parameter p = getParameter(name);
 		return p.getValueAsInt();
 	}
@@ -174,12 +174,12 @@ public abstract class AbstractParameters implements Parameters {
 		return p.getValueAsInt();
 	}
 
-	public int[] getIntArray(String name) {
+	public Integer[] getIntArray(String name) {
 		Parameter p = getParameter(name);
 		return p.getValueAsIntArray();
 	}
 
-	public int getInt(ParameterDefine parameter) {
+	public Integer getInt(ParameterDefine parameter) {
 		return getInt(parameter.getName());
 	}
 
@@ -187,7 +187,7 @@ public abstract class AbstractParameters implements Parameters {
 		return getInt(parameter.getName(), defaultValue);
 	}
 
-	public int[] getIntArray(ParameterDefine parameter) {
+	public Integer[] getIntArray(ParameterDefine parameter) {
 		return getIntArray(parameter.getName());
 	}
 
@@ -200,7 +200,7 @@ public abstract class AbstractParameters implements Parameters {
 		return getIntList(parameter.getName());
 	}
 
-	public long getLong(String name) {
+	public Long getLong(String name) {
 		Parameter p = getParameter(name);
 		return p.getValueAsLong();
 	}
@@ -214,12 +214,12 @@ public abstract class AbstractParameters implements Parameters {
 		return p.getValueAsLong();
 	}
 	
-	public long[] getLongArray(String name) {
+	public Long[] getLongArray(String name) {
 		Parameter p = getParameter(name);
 		return p.getValueAsLongArray();
 	}
 	
-	public long getLong(ParameterDefine parameter) {
+	public Long getLong(ParameterDefine parameter) {
 		return getLong(parameter.getName());
 	}
 	
@@ -227,7 +227,7 @@ public abstract class AbstractParameters implements Parameters {
 		return getLong(parameter.getName());
 	}
 	
-	public long[] getLongArray(ParameterDefine parameter) {
+	public Long[] getLongArray(ParameterDefine parameter) {
 		return getLongArray(parameter.getName());
 	}
 	
@@ -240,7 +240,7 @@ public abstract class AbstractParameters implements Parameters {
 		return getLongList(parameter.getName());
 	}
 	
-	public float getFloat(String name) {
+	public Float getFloat(String name) {
 		Parameter p = getParameter(name);
 		return p.getValueAsFloat();
 	}
@@ -254,12 +254,12 @@ public abstract class AbstractParameters implements Parameters {
 		return p.getValueAsFloat();
 	}
 
-	public float[] getFloatArray(String name) {
+	public Float[] getFloatArray(String name) {
 		Parameter p = getParameter(name);
 		return p.getValueAsFloatArray();
 	}
 	
-	public float getFloat(ParameterDefine parameter) {
+	public Float getFloat(ParameterDefine parameter) {
 		return getFloat(parameter.getName());
 	}
 	
@@ -267,7 +267,7 @@ public abstract class AbstractParameters implements Parameters {
 		return getFloat(parameter.getName(), defaultValue);
 	}
 	
-	public float[] getFloatArray(ParameterDefine parameter) {
+	public Float[] getFloatArray(ParameterDefine parameter) {
 		return getFloatArray(parameter.getName());
 	}
 
@@ -280,7 +280,7 @@ public abstract class AbstractParameters implements Parameters {
 		return getFloatList(parameter.getName());
 	}
 
-	public double getDouble(String name) {
+	public Double getDouble(String name) {
 		Parameter p = getParameter(name);
 		return p.getValueAsDouble();
 	}
@@ -294,12 +294,12 @@ public abstract class AbstractParameters implements Parameters {
 		return p.getValueAsDouble();
 	}
 
-	public double[] getDoubleArray(String name) {
+	public Double[] getDoubleArray(String name) {
 		Parameter p = getParameter(name);
 		return p.getValueAsDoubleArray();
 	}
 	
-	public double getDouble(ParameterDefine parameter) {
+	public Double getDouble(ParameterDefine parameter) {
 		return getDouble(parameter.getName());
 	}
 	
@@ -307,7 +307,7 @@ public abstract class AbstractParameters implements Parameters {
 		return getDouble(parameter.getName(), defaultValue);
 	}
 	
-	public double[] getDoubleArray(ParameterDefine parameter) {
+	public Double[] getDoubleArray(ParameterDefine parameter) {
 		return getDoubleArray(parameter.getName());
 	}
 	
@@ -320,7 +320,7 @@ public abstract class AbstractParameters implements Parameters {
 		return getDoubleList(parameter.getName());
 	}
 	
-	public boolean getBoolean(String name) {
+	public Boolean getBoolean(String name) {
 		Parameter p = getParameter(name);
 		return p.getValueAsBoolean();
 	}
@@ -334,12 +334,12 @@ public abstract class AbstractParameters implements Parameters {
 		return p.getValueAsBoolean();
 	}
 	
-	public boolean[] getBooleanArray(String name) {
+	public Boolean[] getBooleanArray(String name) {
 		Parameter p = getParameter(name);
 		return p.getValueAsBooleanArray();
 	}
 	
-	public boolean getBoolean(ParameterDefine parameter) {
+	public Boolean getBoolean(ParameterDefine parameter) {
 		return getBoolean(parameter.getName());
 	}
 	
@@ -347,7 +347,7 @@ public abstract class AbstractParameters implements Parameters {
 		return getBoolean(parameter.getName(), defaultValue);
 	}
 	
-	public boolean[] getBooleanArray(ParameterDefine parameter) {
+	public Boolean[] getBooleanArray(ParameterDefine parameter) {
 		return getBooleanArray(parameter.getName());
 	}
 	

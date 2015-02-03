@@ -102,17 +102,6 @@ public class ItemRuleNodeletAdder implements NodeletAdder {
 					ItemRule.beginValueCollection(itemRule);
 			}
 		});
-		parser.addNodelet(xpath, "/item/reference", new Nodelet() {
-			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
-				String beanId = attributes.get("bean");
-				String parameter = attributes.get("parameter");
-				String attribute = attributes.get("attribute");
-				String property = attributes.get("property"); // bean's property
-
-				ItemRule itemRule = (ItemRule)assistant.peekObject();
-				ItemRule.updateReference(itemRule, beanId, parameter, attribute, property);
-			}
-		});
 		parser.addNodelet(xpath, "/item/value", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
 				String name = attributes.get("name");
@@ -172,6 +161,17 @@ public class ItemRuleNodeletAdder implements NodeletAdder {
 					if(itemRule.getType() != ItemType.ITEM)
 						ItemRule.finishValueCollection(itemRule, name, tokens);
 				}
+			}
+		});
+		parser.addNodelet(xpath, "/item/reference", new Nodelet() {
+			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
+				String beanId = attributes.get("bean");
+				String parameter = attributes.get("parameter");
+				String attribute = attributes.get("attribute");
+				String property = attributes.get("property"); // bean's property
+
+				ItemRule itemRule = (ItemRule)assistant.peekObject();
+				ItemRule.updateReference(itemRule, beanId, parameter, attribute, property);
 			}
 		});
 		parser.addNodelet(xpath, "/item/end()", new Nodelet() {
