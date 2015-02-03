@@ -42,6 +42,7 @@ import com.aspectran.core.var.rule.AspectJobAdviceRule;
 import com.aspectran.core.var.rule.AspectRule;
 import com.aspectran.core.var.rule.BeanRule;
 import com.aspectran.core.var.rule.FileItemRule;
+import com.aspectran.core.var.rule.ItemRule;
 import com.aspectran.core.var.rule.ItemRuleMap;
 import com.aspectran.core.var.rule.PointcutPatternRule;
 import com.aspectran.core.var.rule.PointcutRule;
@@ -393,12 +394,30 @@ public class AspectranNodeParser {
 		});
 		parser.addNodelet("/aspectran/bean/constructor/argument", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
+				if(text != null) {
+					List<Parameters> argumentParameterList = ItemRule.toParametersList(text);
+					
+					if(argumentParameterList != null) {
+						BeanRule[] beanRules = (BeanRule[])assistant.peekObject();
+						
+						for(BeanRule beanRule : beanRules) {
+							BeanRule.addListConstructorArgument(beanRule, argumentParameterList);
+							//TODO irm clone
+						}
+					}
+				}
+				
+				ItemRuleMap irm = new ItemRuleMap();
+				assistant.pushObject(irm);
+			}
+		});
+		parser.addNodelet("/aspectran/bean/constructor/argument", new Nodelet() {
+			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
 				ItemRuleMap irm = new ItemRuleMap();
 				assistant.pushObject(irm);
 				
 				if(text != null) {
-					ParameterHolder holder = new ParameterHolder(text, new ItemParameters(), true);
-					List<Parameters> argumentParameterList = holder.getParametersList();
+					List<Parameters> argumentParameterList = ItemRule.toParametersList(text);
 					
 					if(argumentParameterList != null) {
 						BeanRule[] beanRules = (BeanRule[])assistant.peekObject(1);
@@ -407,13 +426,10 @@ public class AspectranNodeParser {
 							BeanRule.addListConstructorArgument(beanRule, argumentParameterList);
 						}
 					}
-					//TODO
 				}
 			}
 		});
-		
 		parser.addNodelet("/aspectran/bean/constructor/argument", new ItemRuleNodeletAdder(assistant));
-		
 		parser.addNodelet("/aspectran/bean/constructor/argument/end()", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
 				ItemRuleMap irm = (ItemRuleMap)assistant.popObject();

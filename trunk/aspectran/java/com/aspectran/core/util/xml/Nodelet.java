@@ -1,7 +1,6 @@
 package com.aspectran.core.util.xml;
 
 import java.util.Map;
-import java.util.Properties;
 
 import org.w3c.dom.Node;
 
