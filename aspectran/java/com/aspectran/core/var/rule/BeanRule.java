@@ -22,11 +22,8 @@ import java.util.Map;
 import com.aspectran.core.context.bean.ablility.DisposableBean;
 import com.aspectran.core.context.bean.ablility.InitializableBean;
 import com.aspectran.core.context.bean.scan.BeanClassScanner;
-import com.aspectran.core.context.builder.apon.params.ReferenceParameters;
 import com.aspectran.core.util.MethodUtils;
 import com.aspectran.core.util.wildcard.WildcardPattern;
-import com.aspectran.core.var.apon.ParameterDefine;
-import com.aspectran.core.var.apon.ParameterValueType;
 import com.aspectran.core.var.apon.Parameters;
 import com.aspectran.core.var.type.ScopeType;
 
@@ -454,10 +451,16 @@ public class BeanRule {
 //		tokenize = new ParameterDefine("tokenize", ParameterValueType.BOOLEAN);
 //		reference = new ParameterDefine("reference", new ReferenceParameters());
 
-		for(Parameters parameters : itemParametersList) {
+		if(itemParametersList != null && itemParametersList.size() > 0) {
+			ItemRuleMap itemRuleMap = new ItemRuleMap();
 			
+			for(Parameters parameters : itemParametersList) {
+				ItemRule itemRule = ItemRule.toItemRule(parameters);
+				itemRuleMap.putItemRule(itemRule);
+			}
+			
+			beanRule.setConstructorArgumentItemRuleMap(itemRuleMap);
 		}
-		
 	}
 	
 }

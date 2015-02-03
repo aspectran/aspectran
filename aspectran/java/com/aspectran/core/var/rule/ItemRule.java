@@ -25,6 +25,7 @@ import java.util.Properties;
 import java.util.Set;
 
 import com.aspectran.core.context.builder.apon.params.ItemParameters;
+import com.aspectran.core.context.builder.apon.params.ReferenceParameters;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.var.apon.Parameters;
 import com.aspectran.core.var.token.Token;
@@ -943,26 +944,50 @@ public class ItemRule {
 	 * @return the item rule
 	 */
 	public static ItemRule toItemRule(Parameters itemParameters) {
-//		type = new ParameterDefine("type", ParameterValueType.STRING);
-//		name = new ParameterDefine("name", ParameterValueType.STRING);
-//		value = new ParameterDefine("value", ParameterValueType.VARIABLE);
-//		valueType = new ParameterDefine("valueType", ParameterValueType.STRING);
-//		defaultValue = new ParameterDefine("defaultValue", ParameterValueType.VARIABLE);
-//		tokenize = new ParameterDefine("tokenize", ParameterValueType.BOOLEAN);
-//		reference = new ParameterDefine("reference", new ReferenceParameters());
-
 		String type = itemParameters.getString(ItemParameters.type);
 		String name = itemParameters.getString(ItemParameters.name);
-		Parameters value = itemParameters.getParameters(ItemParameters.value);
 		String valueType = itemParameters.getString(ItemParameters.valueType);
 		String defaultValue = itemParameters.getString(ItemParameters.defaultValue);
-		boolean tokenize = itemParameters.getBoolean(ItemParameters.tokenize);
+		String tokenize = itemParameters.getString(ItemParameters.tokenize);
 		Parameters referenceParameters = itemParameters.getParameters(ItemParameters.reference);
 		
-		ItemRule itemRule = ItemRule.newInstance(type, name, value, valueType, defaultValue, tokenize);
+		ItemRule itemRule = ItemRule.newInstance(type, name, null, valueType, defaultValue, tokenize);
+		
+		if(referenceParameters != null) {
+			String bean = referenceParameters.getString(ReferenceParameters.bean);
+			String parameter = referenceParameters.getString(ReferenceParameters.parameter);
+			String attribute = referenceParameters.getString(ReferenceParameters.attribute);
+			String property = referenceParameters.getString(ReferenceParameters.property);
+			
+			updateReference(itemRule, bean, parameter, attribute, property);
+		} else {
+			if(itemRule.getType() == ItemType.ITEM) {
+				String value = itemParameters.getString(ItemParameters.value);
+				parseValue(itemRule, null, value);
+			} else if(itemRule.getType() == ItemType.LIST || itemRule.getType() == ItemType.SET) {
+				List<String> stringList = itemParameters.getStringList(ItemParameters.value);
+				
+				if(stringList != null) {
+					for(String value : stringList) {
+						parseValue(itemRule, null, value);
+					}
+				}
+			} else {
+				Parameters parameters = itemParameters.getParameters(ItemParameters.value);
+				
+				if(parameters != null) {
+					Set<String> parametersNames = parameters.getParameterNameSet();
+					
+					if(parametersNames != null) {
+						for(String valueName : parametersNames) {
+							parseValue(itemRule, valueName, parameters.getString(valueName));
+						}
+					}
+				} 
+			}
+		}
 		
 		return itemRule;
-		
 	}
 	
 }

@@ -30,33 +30,33 @@ public interface Parameter {
 	
 	public String getValueAsText();
 	
-	public int getValueAsInt();
+	public Integer getValueAsInt();
 
-	public int[] getValueAsIntArray();
+	public Integer[] getValueAsIntArray();
 
 	public List<Integer> getValueAsIntList();
 
-	public long getValueAsLong();
+	public Long getValueAsLong();
 	
-	public long[] getValueAsLongArray();
+	public Long[] getValueAsLongArray();
 
 	public List<Long> getValueAsLongList();
 
-	public float getValueAsFloat();
+	public Float getValueAsFloat();
 	
-	public float[] getValueAsFloatArray();
+	public Float[] getValueAsFloatArray();
 
 	public List<Float> getValueAsFloatList();
 
-	public double getValueAsDouble();
+	public Double getValueAsDouble();
 
-	public double[] getValueAsDoubleArray();
+	public Double[] getValueAsDoubleArray();
 	
 	public List<Double> getValueAsDoubleList();
 	
-	public boolean getValueAsBoolean();
+	public Boolean getValueAsBoolean();
 
-	public boolean[] getValueAsBooleanArray();
+	public Boolean[] getValueAsBooleanArray();
 	
 	public List<Boolean> getValueAsBooleanList();
 	

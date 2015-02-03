@@ -8,11 +8,8 @@ import com.aspectran.core.var.apon.Parameters;
 public class ReferenceParameters extends AbstractParameters implements Parameters {
 
 	public static final ParameterDefine bean;
-	
 	public static final ParameterDefine parameter;
-	
 	public static final ParameterDefine attribute;
-	
 	public static final ParameterDefine property;
 	
 	private static final ParameterDefine[] parameterDefines;

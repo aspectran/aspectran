@@ -25,7 +25,6 @@ import org.w3c.dom.Node;
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.activity.process.ContentList;
 import com.aspectran.core.activity.response.ResponseMap;
-import com.aspectran.core.context.bean.scan.BeanClassScanner;
 import com.aspectran.core.context.builder.ContextBuilderAssistant;
 import com.aspectran.core.context.builder.DefaultSettings;
 import com.aspectran.core.context.builder.apon.params.ItemParameters;
@@ -34,7 +33,6 @@ import com.aspectran.core.util.io.FileImportStream;
 import com.aspectran.core.util.io.ImportStream;
 import com.aspectran.core.util.io.ResourceImportStream;
 import com.aspectran.core.util.io.URLImportStream;
-import com.aspectran.core.util.wildcard.WildcardPattern;
 import com.aspectran.core.util.xml.Nodelet;
 import com.aspectran.core.util.xml.NodeletParser;
 import com.aspectran.core.var.apon.GenericParameters;
@@ -401,6 +399,14 @@ public class AspectranNodeParser {
 				if(text != null) {
 					ParameterHolder holder = new ParameterHolder(text, new ItemParameters(), true);
 					List<Parameters> argumentParameterList = holder.getParametersList();
+					
+					if(argumentParameterList != null) {
+						BeanRule[] beanRules = (BeanRule[])assistant.peekObject(1);
+						
+						for(BeanRule beanRule : beanRules) {
+							BeanRule.addListConstructorArgument(beanRule, argumentParameterList);
+						}
+					}
 					//TODO
 				}
 			}

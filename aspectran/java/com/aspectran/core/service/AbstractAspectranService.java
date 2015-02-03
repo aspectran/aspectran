@@ -166,7 +166,7 @@ public abstract class AbstractAspectranService implements AspectranService {
 		try {
 			if(activityContextLoader == null) {
 				if(rootContext != null && rootContext.endsWith(".apon"))
-					activityContextLoader = new AponActivityContextLoader();
+					activityContextLoader = new AponActivityContextLoader(encoding);
 				else
 					activityContextLoader = new XmlActivityContextLoader();
 				
