@@ -128,40 +128,52 @@ public class PointcutRule {
 	}
 	
 	public static PointcutRule newInstance(AspectRule aspectRule, String type, String text) {
-		PointcutRule pointcutRule = new PointcutRule();
-		pointcutRule.setPatternString(text);
-
 		if(StringUtils.hasText(text)) {
 			Parameters pointcutParameters = new PointcutParameters(text);
-			
-			if(aspectRule.getAspectTargetType() == AspectTargetType.SCHEDULER) {
-				Parameters simpleTriggerParameters = pointcutParameters.getParameters(PointcutParameters.simpleTrigger);
-				Parameters cronTriggerParameters = pointcutParameters.getParameters(PointcutParameters.cronTrigger);
+			return newInstance(aspectRule, type, pointcutParameters);
+		} else {
+			return newInstance(aspectRule, type, (Parameters)null);
+		}
+	}
+	
+	public static PointcutRule newInstance(AspectRule aspectRule, String type, Parameters pointcutParameters) {
+		PointcutRule pointcutRule = new PointcutRule();
 
+		if(aspectRule.getAspectTargetType() == AspectTargetType.SCHEDULER) {
+			PointcutType pointcutType = null;
+			Parameters simpleTriggerParameters = null;
+			Parameters cronTriggerParameters = null;
+
+			if(pointcutParameters != null) {
+				simpleTriggerParameters = pointcutParameters.getParameters(PointcutParameters.simpleTrigger);
+				cronTriggerParameters = pointcutParameters.getParameters(PointcutParameters.cronTrigger);
+	
 				if(simpleTriggerParameters != null) {
-					pointcutRule.setPointcutType(PointcutType.SIMPLE_TRIGGER);
+					pointcutType = PointcutType.SIMPLE_TRIGGER;
 					pointcutRule.setSimpleTriggerParameters(simpleTriggerParameters);
 				} else if(cronTriggerParameters != null) {
-					pointcutRule.setPointcutType(PointcutType.CRON_TRIGGER);
-					pointcutRule.setSimpleTriggerParameters(cronTriggerParameters);
+					pointcutType = PointcutType.CRON_TRIGGER;
+					pointcutRule.setCronTriggerParameters(cronTriggerParameters);
 				}
-				
-				PointcutType pointcutType = pointcutRule.getPointcutType();
-				
-				if(pointcutType == null) {
-					pointcutType = PointcutType.valueOf(type);
-				
-					if(pointcutType != PointcutType.SIMPLE_TRIGGER && pointcutType != PointcutType.CRON_TRIGGER)
-						throw new IllegalArgumentException("Unknown pointcut-type '" + type + "'. Scheduler's pointcut-type must be 'simpleTrigger' or 'cronTrigger'.");
-					
-					pointcutRule.setPointcutType(pointcutType);
-				}
-				
-				if(pointcutType == PointcutType.SIMPLE_TRIGGER && simpleTriggerParameters == null)
-					throw new IllegalArgumentException("Not specified 'simpleTrigger'. Scheduler's pointcut-type must be 'simpleTrigger' or 'cronTrigger'.");
-				else if(pointcutType == PointcutType.CRON_TRIGGER && cronTriggerParameters == null)
-					throw new IllegalArgumentException("Not specified 'cronTrigger'. Scheduler's pointcut-type must be 'simpleTrigger' or 'cronTrigger'.");
+			}
+			
+			if(pointcutType != null) {
+				pointcutRule.setPointcutType(pointcutType);
 			} else {
+				pointcutType = PointcutType.valueOf(type);
+				
+				if(pointcutType != PointcutType.SIMPLE_TRIGGER && pointcutType != PointcutType.CRON_TRIGGER)
+					throw new IllegalArgumentException("Unknown pointcut-type '" + type + "'. Scheduler's pointcut-type must be 'simpleTrigger' or 'cronTrigger'.");
+				
+				pointcutRule.setPointcutType(pointcutType);
+			}
+			
+			if(pointcutType == PointcutType.SIMPLE_TRIGGER && simpleTriggerParameters == null)
+				throw new IllegalArgumentException("Not specified 'simpleTrigger'. Scheduler's pointcut-type must be 'simpleTrigger' or 'cronTrigger'.");
+			else if(pointcutType == PointcutType.CRON_TRIGGER && cronTriggerParameters == null)
+				throw new IllegalArgumentException("Not specified 'cronTrigger'. Scheduler's pointcut-type must be 'simpleTrigger' or 'cronTrigger'.");
+		} else {
+			if(pointcutParameters != null) {
 				List<Parameters> targetParametersList = pointcutParameters.getParametersList(PointcutParameters.targets);
 				
 				for(Parameters targetParameters : targetParametersList) {

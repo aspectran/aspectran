@@ -8,7 +8,6 @@ import com.aspectran.core.var.apon.Parameters;
 public class JoinpointParameters extends AbstractParameters implements Parameters {
 
 	public static final ParameterDefine scope;
-	
 	public static final ParameterDefine pointcut;
 	
 	private static final ParameterDefine[] parameterDefines;

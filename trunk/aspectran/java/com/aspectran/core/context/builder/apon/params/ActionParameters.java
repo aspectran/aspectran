@@ -36,10 +36,10 @@ public class ActionParameters extends AbstractParameters implements Parameters {
 				method,
 				hidden,
 				arguments,
+				properties,
 				include,
 				echo,
 				hidden
-				
 		};
 	}
 	

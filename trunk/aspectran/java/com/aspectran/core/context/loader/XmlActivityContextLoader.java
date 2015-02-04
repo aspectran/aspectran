@@ -15,10 +15,6 @@ public class XmlActivityContextLoader extends AbstractActivityContextLoader {
 	}
 	
 	public ActivityContext load(String rootContext) {
-		return buildXmlActivityContext(rootContext);
-	}
-
-	protected ActivityContext buildXmlActivityContext(String rootContext) {
 		logger.info("build ActivityContext [" + rootContext + "]");
 		long startTime = System.currentTimeMillis();
 

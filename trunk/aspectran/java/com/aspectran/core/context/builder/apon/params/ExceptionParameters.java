@@ -11,7 +11,6 @@ public class ExceptionParameters extends AbstractParameters implements Parameter
 	
 	private static final ParameterDefine[] parameterDefines;
 
-	
 	static {
 		responseByContentType = new ParameterDefine("responseByContentType", new ResponseByContentTypeParameters());
 		defaultResponse = new ParameterDefine("defaultResponse", new DefaultResponseParameters());

@@ -191,4 +191,19 @@ public class AspectRule {
 		return aspectRule;
 	}
 	
+	public static void updateJoinpointScope(AspectRule aspectRule, String scope) {
+		JoinpointScopeType joinpointScope = null;
+		
+		if(scope != null) {
+			joinpointScope = JoinpointScopeType.valueOf(scope);
+			
+			if(joinpointScope == null)
+				throw new IllegalArgumentException("Unknown joinpoint scope '" + scope + "'");
+		} else {
+			joinpointScope = JoinpointScopeType.TRANSLET;
+		}
+		
+		aspectRule.setJoinpointScope(joinpointScope);
+	}
+	
 }
