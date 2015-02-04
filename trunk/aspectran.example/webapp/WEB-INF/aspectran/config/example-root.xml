@@ -157,7 +157,7 @@
 	<translet name="echo">
 		<transform type="transform/text" contentType="text/html">
 			<echo id="echo">
-				<item name="map0" type="map" valueType="string">
+				<item name="map0" type="map" valueType="string" tokenize="true">
 					<value name="item1">${item1:default1}</value>
 					<value name="item2">${item2:default2}</value>
 				</item>
@@ -165,13 +165,17 @@
 			<template>
 <![CDATA[
 <html>
+<style>
+body { background-color: blue; color: white; }
+dt { font-weight: bold; color: yellow; }
+</style>
 <body>
 	<dl>
 		<dt>item1</dt>
 		<dd>@{echo^map0.item1}</dd>
 		<dt>item2</dt>
 		<dd>@{echo^map0.item2}</dd>
-	</ul>
+	</dl>
 </body>
 </html>
 ]]>
