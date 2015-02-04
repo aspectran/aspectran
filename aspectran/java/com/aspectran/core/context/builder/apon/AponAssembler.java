@@ -19,10 +19,14 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.aspectran.core.context.builder.ContextBuilderAssistant;
+import com.aspectran.core.context.builder.apon.params.AdviceParameters;
 import com.aspectran.core.context.builder.apon.params.AspectParameters;
 import com.aspectran.core.context.builder.apon.params.AspectranParameters;
+import com.aspectran.core.context.builder.apon.params.JoinpointParameters;
 import com.aspectran.core.var.apon.Parameters;
 import com.aspectran.core.var.rule.AspectRule;
+import com.aspectran.core.var.rule.PointcutRule;
+import com.aspectran.core.var.rule.SettingsAdviceRule;
 import com.aspectran.core.var.type.DefaultSettingType;
 
 /**
@@ -91,13 +95,41 @@ public class AponAssembler {
 //		public static final ParameterDefine setting;
 //		public static final ParameterDefine advice;
 
+
 		String id = parameters.getString(AspectParameters.id);
 		String useFor = parameters.getString(AspectParameters.useFor);
-		Parameters joinpointParams = parameters.getParameters(AspectParameters.jointpoint);
-		Parameters settingParams = parameters.getParameters(AspectParameters.setting);
-		Parameters asviceParams = parameters.getParameters(AspectParameters.advice);
+		AspectRule aspectRule = AspectRule.newInstance(id, useFor);
 
-		AspectRule aspectRule = new AspectRule();
+		Parameters joinpointParams = parameters.getParameters(AspectParameters.jointpoint);
+		String scope = joinpointParams.getString(JoinpointParameters.scope);
+		AspectRule.updateJoinpointScope(aspectRule, scope);
+
+		Parameters pointcutParams = joinpointParams.getParameters(JoinpointParameters.pointcut);
+		PointcutRule pointcutRule = PointcutRule.newInstance(aspectRule, null, pointcutParams);
+		aspectRule.setPointcutRule(pointcutRule);
+
+		Parameters settingParams = parameters.getParameters(AspectParameters.setting);
+		if(settingParams != null) {
+			SettingsAdviceRule settingsAdviceRule = SettingsAdviceRule.newInstance(aspectRule, settingParams);
+			aspectRule.setSettingsAdviceRule(settingsAdviceRule);
+		}
+		
+		Parameters adviceParams = parameters.getParameters(AspectParameters.advice);
+		String bean = adviceParams.getString(AdviceParameters.bean);
+		List<Parameters> begoreActionParamsList = adviceParams.getParametersList(AdviceParameters.beforeActions);
+		List<Parameters> afterActionParamsList = adviceParams.getParametersList(AdviceParameters.afterActions);
+		List<Parameters> aroundActionParamsList = adviceParams.getParametersList(AdviceParameters.aroundActions);
+		List<Parameters> finallyActionParamsList = adviceParams.getParametersList(AdviceParameters.finallyActions);
+		List<Parameters> exceptionRaizedParamsList = adviceParams.getParametersList(AdviceParameters.exceptionRaized);
+
+		//		bean = new ParameterDefine("bean", ParameterValueType.STRING);
+//		beforeActions = new ParameterDefine("before", new ActionParameters(), true);
+//		afterActions = new ParameterDefine("after", new ActionParameters(), true);
+//		aroundActions = new ParameterDefine("around", new ActionParameters(), true);
+//		finallyActions = new ParameterDefine("finally", new ActionParameters(), true);
+//		exceptionRaized = new ParameterDefine("exceptionRaized", new ExceptionRaizedParameters());
+//		jobs = new ParameterDefine("job", new JobParameters(), true);
+		
 		
 	}
 	

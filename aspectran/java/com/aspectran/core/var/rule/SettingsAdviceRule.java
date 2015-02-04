@@ -17,7 +17,11 @@ package com.aspectran.core.var.rule;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
+import com.aspectran.core.util.StringUtils;
+import com.aspectran.core.var.apon.GenericParameters;
+import com.aspectran.core.var.apon.Parameters;
 import com.aspectran.core.var.type.AspectAdviceType;
 
 public class SettingsAdviceRule {
@@ -64,10 +68,29 @@ public class SettingsAdviceRule {
 		settings.put(name, value);
 	}
 	
-	public static SettingsAdviceRule newInstance(AspectRule aspectRule) {
+	public static SettingsAdviceRule newInstance(AspectRule aspectRule, String text) {
+		if(StringUtils.hasText(text)) {
+			Parameters settingsParameters = new GenericParameters(text);
+			return newInstance(aspectRule, settingsParameters);
+		} else {
+			return newInstance(aspectRule, (Parameters)null);
+		}
+	}
+	
+	public static SettingsAdviceRule newInstance(AspectRule aspectRule, Parameters settingsParameters) {
 		SettingsAdviceRule sar = new SettingsAdviceRule();
 		sar.setAspectId(aspectRule.getId());
 		sar.setAspectAdviceType(AspectAdviceType.SETTINGS);
+	
+		if(settingsParameters != null) {
+			Set<String> parametersNames = settingsParameters.getParameterNameSet();
+			
+			if(parametersNames != null) {
+				for(String name : parametersNames) {
+					sar.putSetting(name, settingsParameters.getString(name));
+				}
+			}
+		}
 
 		return sar;
 	}

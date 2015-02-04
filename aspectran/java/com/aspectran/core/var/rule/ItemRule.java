@@ -913,6 +913,19 @@ public class ItemRule {
 			ItemRule.namingItemRule(itemRule, itemRuleMap);
 	}
 	
+	public static ItemRuleMap toItemRuleMap(List<Parameters> itemParametersList) {
+		if(itemParametersList == null || itemParametersList.size() == 0)
+			return null;
+		
+		ItemRuleMap itemRuleMap = new ItemRuleMap();
+		
+		for(Parameters parameters : itemParametersList) {
+			ItemRule itemRule = toItemRule(parameters);
+			itemRuleMap.putItemRule(itemRule);
+		}
+		
+		return itemRuleMap;
+	}
 	
 	/**
 	 * Convert then Parameters to the item rule.

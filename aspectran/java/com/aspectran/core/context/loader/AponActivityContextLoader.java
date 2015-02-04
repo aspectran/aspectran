@@ -24,10 +24,6 @@ public class AponActivityContextLoader extends AbstractActivityContextLoader {
 	}
 	
 	public ActivityContext load(String rootContext) {
-		return buildAponActivityContext(rootContext);
-	}
-
-	protected ActivityContext buildAponActivityContext(String rootContext) {
 		logger.info("build ActivityContext [" + rootContext + "]");
 		long startTime = System.currentTimeMillis();
 

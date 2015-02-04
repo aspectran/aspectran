@@ -442,29 +442,44 @@ public class BeanRule {
 		beanRule.setDestroyMethodName(destroyMethodName);
 	}
 	
-	public static ItemRuleMap addListConstructorArgument(BeanRule beanRule, List<Parameters> itemParametersList) {
-//		type = new ParameterDefine("type", ParameterValueType.STRING);
-//		name = new ParameterDefine("name", ParameterValueType.STRING);
-//		value = new ParameterDefine("value", ParameterValueType.VARIABLE);
-//		valueType = new ParameterDefine("valueType", ParameterValueType.STRING);
-//		defaultValue = new ParameterDefine("defaultValue", ParameterValueType.VARIABLE);
-//		tokenize = new ParameterDefine("tokenize", ParameterValueType.BOOLEAN);
-//		reference = new ParameterDefine("reference", new ReferenceParameters());
-
-		if(itemParametersList != null && itemParametersList.size() > 0) {
-			ItemRuleMap itemRuleMap = new ItemRuleMap();
-			
-			for(Parameters parameters : itemParametersList) {
-				ItemRule itemRule = ItemRule.toItemRule(parameters);
-				itemRuleMap.putItemRule(itemRule);
-			}
-			
-			beanRule.setConstructorArgumentItemRuleMap(itemRuleMap);
-			
-			return itemRuleMap;
-		}
+	public static void addConstructorArgument(BeanRule[] beanRules, List<Parameters> argumentParameterList) {
+		ItemRuleMap itemRuleMap = ItemRule.toItemRuleMap(argumentParameterList);
 		
-		return null;
+		if(itemRuleMap == null)
+			return;
+		
+		if(beanRules.length == 1) {
+			beanRules[0].setConstructorArgumentItemRuleMap(itemRuleMap);
+		} else if(beanRules.length > 1) {
+			beanRules[0].setConstructorArgumentItemRuleMap(itemRuleMap);
+			
+			for(BeanRule beanRule : beanRules) {
+				if(beanRule == beanRules[0])
+					beanRule.setConstructorArgumentItemRuleMap(itemRuleMap);
+				else
+					beanRule.setConstructorArgumentItemRuleMap((ItemRuleMap)itemRuleMap.clone());
+			}
+		}
+	}
+	
+	public static void addProperty(BeanRule[] beanRules, List<Parameters> propertyParameterList) {
+		ItemRuleMap itemRuleMap = ItemRule.toItemRuleMap(propertyParameterList);
+		
+		if(itemRuleMap == null)
+			return;
+		
+		if(beanRules.length == 1) {
+			beanRules[0].setPropertyItemRuleMap(itemRuleMap);
+		} else if(beanRules.length > 1) {
+			beanRules[0].setPropertyItemRuleMap(itemRuleMap);
+			
+			for(BeanRule beanRule : beanRules) {
+				if(beanRule == beanRules[0])
+					beanRule.setPropertyItemRuleMap(itemRuleMap);
+				else
+					beanRule.setPropertyItemRuleMap((ItemRuleMap)itemRuleMap.clone());
+			}
+		}
 	}
 	
 }
