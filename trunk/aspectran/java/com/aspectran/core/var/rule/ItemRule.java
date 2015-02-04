@@ -843,7 +843,7 @@ public class ItemRule {
 			if(itemRule.getType() == ItemType.LIST || itemRule.getType() == ItemType.SET) {
 				tokens = itemRule.makeTokens(valueText);
 			} else if(itemRule.getType() == ItemType.MAP || itemRule.getType() == ItemType.PROPERTIES) {
-				if(!StringUtils.isEmpty(valueName)) {
+				if(!StringUtils.isEmpty(valueText)) {
 					tokens = itemRule.makeTokens(valueText);
 				}
 			}

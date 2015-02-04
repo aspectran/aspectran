@@ -27,7 +27,6 @@ import com.aspectran.core.activity.process.ContentList;
 import com.aspectran.core.activity.response.ResponseMap;
 import com.aspectran.core.context.builder.ContextBuilderAssistant;
 import com.aspectran.core.context.builder.DefaultSettings;
-import com.aspectran.core.context.builder.apon.params.ItemParameters;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.io.FileImportStream;
 import com.aspectran.core.util.io.ImportStream;
@@ -36,7 +35,6 @@ import com.aspectran.core.util.io.URLImportStream;
 import com.aspectran.core.util.xml.Nodelet;
 import com.aspectran.core.util.xml.NodeletParser;
 import com.aspectran.core.var.apon.GenericParameters;
-import com.aspectran.core.var.apon.ParameterHolder;
 import com.aspectran.core.var.apon.Parameters;
 import com.aspectran.core.var.rule.AspectJobAdviceRule;
 import com.aspectran.core.var.rule.AspectRule;
@@ -400,9 +398,19 @@ public class AspectranNodeParser {
 					if(argumentParameterList != null) {
 						BeanRule[] beanRules = (BeanRule[])assistant.peekObject();
 						
-						for(BeanRule beanRule : beanRules) {
-							BeanRule.addListConstructorArgument(beanRule, argumentParameterList);
-							//TODO irm clone
+						if(beanRules.length == 1) {
+							BeanRule.addListConstructorArgument(beanRules[0], argumentParameterList);
+						} else {
+							ItemRuleMap irm = null;
+							
+							for(BeanRule beanRule : beanRules) {
+								if(irm == null) {
+									irm = BeanRule.addListConstructorArgument(beanRule, argumentParameterList);
+								} else {
+									beanRule.setConstructorArgumentItemRuleMap((ItemRuleMap)irm.clone());
+								}
+								//TODO irm clone
+							}
 						}
 					}
 				}
