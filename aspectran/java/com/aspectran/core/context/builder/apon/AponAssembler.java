@@ -19,14 +19,17 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.aspectran.core.context.builder.ContextBuilderAssistant;
+import com.aspectran.core.context.builder.apon.params.ActionParameters;
 import com.aspectran.core.context.builder.apon.params.AdviceParameters;
 import com.aspectran.core.context.builder.apon.params.AspectParameters;
 import com.aspectran.core.context.builder.apon.params.AspectranParameters;
 import com.aspectran.core.context.builder.apon.params.JoinpointParameters;
 import com.aspectran.core.var.apon.Parameters;
+import com.aspectran.core.var.rule.AspectAdviceRule;
 import com.aspectran.core.var.rule.AspectRule;
 import com.aspectran.core.var.rule.PointcutRule;
 import com.aspectran.core.var.rule.SettingsAdviceRule;
+import com.aspectran.core.var.type.AspectAdviceType;
 import com.aspectran.core.var.type.DefaultSettingType;
 
 /**
@@ -115,12 +118,23 @@ public class AponAssembler {
 		}
 		
 		Parameters adviceParams = parameters.getParameters(AspectParameters.advice);
-		String bean = adviceParams.getString(AdviceParameters.bean);
+		String adviceBeanId = adviceParams.getString(AdviceParameters.bean);
+		aspectRule.setAdviceBeanId(adviceBeanId);
+		
 		List<Parameters> begoreActionParamsList = adviceParams.getParametersList(AdviceParameters.beforeActions);
+		if(begoreActionParamsList != null && begoreActionParamsList.size() > 0) {
+			AspectAdviceRule aspectAdviceRule = AspectAdviceRule.newInstance(aspectRule, AspectAdviceType.BEFORE);
+			for(Parameters actionParameters : begoreActionParamsList) {
+				actionParameters.
+				aspectAdviceRule.setBeanAction(beanActionRule);
+			}
+		}
+		
 		List<Parameters> afterActionParamsList = adviceParams.getParametersList(AdviceParameters.afterActions);
 		List<Parameters> aroundActionParamsList = adviceParams.getParametersList(AdviceParameters.aroundActions);
 		List<Parameters> finallyActionParamsList = adviceParams.getParametersList(AdviceParameters.finallyActions);
 		List<Parameters> exceptionRaizedParamsList = adviceParams.getParametersList(AdviceParameters.exceptionRaized);
+		List<Parameters> jobParamsList = adviceParams.getParametersList(AdviceParameters.jobs);
 
 		//		bean = new ParameterDefine("bean", ParameterValueType.STRING);
 //		beforeActions = new ParameterDefine("before", new ActionParameters(), true);
@@ -130,6 +144,23 @@ public class AponAssembler {
 //		exceptionRaized = new ParameterDefine("exceptionRaized", new ExceptionRaizedParameters());
 //		jobs = new ParameterDefine("job", new JobParameters(), true);
 		
+		
+	}
+	
+	public void assembleAction(Parameters parameters) {
+//		id = new ParameterDefine("id", ParameterValueType.STRING);
+//		bean = new ParameterDefine("class", ParameterValueType.STRING);
+//		method = new ParameterDefine("scope", ParameterValueType.STRING);
+//		arguments = new ParameterDefine("argument", new ItemParameters(), true);
+//		properties = new ParameterDefine("property", new ItemParameters(), true);
+//		include = new ParameterDefine("include", ParameterValueType.STRING);
+//		echo = new ParameterDefine("echo", new GenericParameters());
+//		hidden = new ParameterDefine("hidden", ParameterValueType.BOOLEAN);
+		String id = parameters.getString(ActionParameters.id);
+		String className = parameters.getString(ActionParameters.className);
+		String method = parameters.getString(ActionParameters.method);
+		List<Parameters> argumentParamsList = parameters.getParametersList(ActionParameters.arguments);
+		List<Parameters> propertyParamsList = parameters.getParametersList(ActionParameters.properties);
 		
 	}
 	

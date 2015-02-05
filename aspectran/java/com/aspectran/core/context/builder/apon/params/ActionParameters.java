@@ -9,7 +9,7 @@ import com.aspectran.core.var.apon.Parameters;
 public class ActionParameters extends AbstractParameters implements Parameters {
 
 	public static final ParameterDefine id;
-	public static final ParameterDefine bean;
+	public static final ParameterDefine className;
 	public static final ParameterDefine method;
 	public static final ParameterDefine arguments;
 	public static final ParameterDefine properties;
@@ -19,10 +19,9 @@ public class ActionParameters extends AbstractParameters implements Parameters {
 	
 	private static final ParameterDefine[] parameterDefines;
 
-	
 	static {
 		id = new ParameterDefine("id", ParameterValueType.STRING);
-		bean = new ParameterDefine("class", ParameterValueType.STRING);
+		className = new ParameterDefine("class", ParameterValueType.STRING);
 		method = new ParameterDefine("scope", ParameterValueType.STRING);
 		arguments = new ParameterDefine("argument", new ItemParameters(), true);
 		properties = new ParameterDefine("property", new ItemParameters(), true);
@@ -32,9 +31,8 @@ public class ActionParameters extends AbstractParameters implements Parameters {
 		
 		parameterDefines = new ParameterDefine[] {
 				id,
-				bean,
+				className,
 				method,
-				hidden,
 				arguments,
 				properties,
 				include,

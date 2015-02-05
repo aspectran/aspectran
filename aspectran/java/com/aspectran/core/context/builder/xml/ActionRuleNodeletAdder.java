@@ -72,10 +72,8 @@ public class ActionRuleNodeletAdder implements NodeletAdder {
 				assistant.pushObject(irm);
 			}
 		});
-
 		parser.addNodelet(xpath, "/echo/attribute", new ItemRuleNodeletAdder(assistant));
 		parser.addNodelet(xpath, "/echo", new ItemRuleNodeletAdder(assistant));
-		
 		parser.addNodelet(xpath, "/echo/end()", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
 				ItemRuleMap irm = (ItemRuleMap)assistant.popObject();
@@ -110,16 +108,13 @@ public class ActionRuleNodeletAdder implements NodeletAdder {
 				assistant.pushObject(beanActionRule);
 			}
 		});
-		
 		parser.addNodelet(xpath, "/action/argument", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
 				ItemRuleMap irm = new ItemRuleMap();
 				assistant.pushObject(irm);
 			}
 		});
-
 		parser.addNodelet(xpath, "/action/argument", new ItemRuleNodeletAdder(assistant));
-
 		parser.addNodelet(xpath, "/action/argument/end()", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
 				ItemRuleMap irm = (ItemRuleMap)assistant.popObject();
@@ -130,16 +125,13 @@ public class ActionRuleNodeletAdder implements NodeletAdder {
 				}
 			}
 		});
-
 		parser.addNodelet(xpath, "/action/property", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
 				ItemRuleMap irm = new ItemRuleMap();
 				assistant.pushObject(irm);
 			}
 		});
-
 		parser.addNodelet(xpath, "/action/property", new ItemRuleNodeletAdder(assistant));
-
 		parser.addNodelet(xpath, "/action/property/end()", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
 				ItemRuleMap irm = (ItemRuleMap)assistant.popObject();
@@ -150,7 +142,6 @@ public class ActionRuleNodeletAdder implements NodeletAdder {
 				}
 			}
 		});
-		
 		parser.addNodelet(xpath, "/action/end()", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
 				BeanActionRule beanActionRule = (BeanActionRule)assistant.popObject();
@@ -195,9 +186,7 @@ public class ActionRuleNodeletAdder implements NodeletAdder {
 				assistant.pushObject(irm);
 			}
 		});
-
 		parser.addNodelet(xpath, "/include/attribute", new ItemRuleNodeletAdder(assistant));
-
 		parser.addNodelet(xpath, "/include/attribute/end()", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
 				ItemRuleMap irm = (ItemRuleMap)assistant.popObject();
@@ -208,7 +197,6 @@ public class ActionRuleNodeletAdder implements NodeletAdder {
 				}
 			}
 		});
-		
 		parser.addNodelet(xpath, "/include/end()", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
 				IncludeActionRule includeActionRule = (IncludeActionRule)assistant.popObject();
