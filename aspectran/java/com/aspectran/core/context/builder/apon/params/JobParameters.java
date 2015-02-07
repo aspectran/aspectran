@@ -8,7 +8,6 @@ import com.aspectran.core.var.apon.Parameters;
 public class JobParameters extends AbstractParameters implements Parameters {
 
 	public static final ParameterDefine translet;
-	
 	public static final ParameterDefine disabled;
 	
 	private static final ParameterDefine[] parameterDefines;

@@ -94,7 +94,6 @@ public class BeanAction extends AbstractAction implements Executable {
 			} else if(transletArgumentApplyingCache.get(argumentItemRuleMap) == Boolean.FALSE) {
 				result = invokeMethod(null, expressor, bean, methodName, argumentItemRuleMap);
 			} else {
-				System.out.println(":::::::::::::::activity::::::::::" + activity);
 				try {
 					result = invokeMethod(activity, expressor, bean, methodName, argumentItemRuleMap);
 					

@@ -18,7 +18,6 @@ package com.aspectran.core.var.rule;
 import java.util.List;
 
 import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
-import com.aspectran.core.util.StringUtils;
 
 
 /**

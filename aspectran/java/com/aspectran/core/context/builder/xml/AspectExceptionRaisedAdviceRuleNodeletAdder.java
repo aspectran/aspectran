@@ -63,9 +63,7 @@ public class AspectExceptionRaisedAdviceRuleNodeletAdder implements NodeletAdder
 				assistant.pushObject(aar);
 			}
 		});
-
 		parser.addNodelet(xpath, new ActionRuleNodeletAdder(assistant));
-
 		parser.addNodelet(xpath, "/responseByContentType", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
 				String exceptionType = attributes.get("exceptionType");
@@ -75,9 +73,7 @@ public class AspectExceptionRaisedAdviceRuleNodeletAdder implements NodeletAdder
 				assistant.pushObject(rbctr);
 			}
 		});
-		
 		parser.addNodelet(xpath, "/responseByContentType", new ResponseRuleNodeletAdder(assistant));
-
 		parser.addNodelet(xpath, "/responseByContentType/end()", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
 				ResponseByContentTypeRule rbctr = (ResponseByContentTypeRule)assistant.popObject();
@@ -85,16 +81,13 @@ public class AspectExceptionRaisedAdviceRuleNodeletAdder implements NodeletAdder
 				aar.addResponseByContentTypeRule(rbctr);
 			}
 		});
-
 		parser.addNodelet(xpath, "/defaultResponse", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
 				ResponseByContentTypeRule rbctr = ResponseByContentTypeRule.newInstance();
 				assistant.pushObject(rbctr);
 			}
 		});
-		
 		parser.addNodelet(xpath, "/defaultResponse", new ResponseRuleNodeletAdder(assistant));
-
 		parser.addNodelet(xpath, "/defaultResponse/end()", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
 				ResponseByContentTypeRule rbctr = (ResponseByContentTypeRule)assistant.popObject();
@@ -114,7 +107,6 @@ public class AspectExceptionRaisedAdviceRuleNodeletAdder implements NodeletAdder
 				}
 			}
 		});
-		
 		parser.addNodelet(xpath, "/end()", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
 				AspectAdviceRule aar = (AspectAdviceRule)assistant.popObject();

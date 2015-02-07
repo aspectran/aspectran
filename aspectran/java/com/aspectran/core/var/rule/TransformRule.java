@@ -20,14 +20,12 @@ import java.util.List;
 
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.activity.process.action.Executable;
-import com.aspectran.core.util.ResourceUtils;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.var.rule.ability.ActionPossessable;
 import com.aspectran.core.var.token.Token;
 import com.aspectran.core.var.token.Tokenizer;
 import com.aspectran.core.var.type.ContentType;
 import com.aspectran.core.var.type.ResponseType;
-import com.aspectran.core.var.type.TokenType;
 import com.aspectran.core.var.type.TransformType;
 
 /**

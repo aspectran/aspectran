@@ -25,14 +25,14 @@ import com.aspectran.core.activity.response.Responsible;
 import com.aspectran.core.activity.response.dispatch.DispatchResponse;
 import com.aspectran.core.activity.response.transform.AbstractTransform;
 import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
-import com.aspectran.core.var.rule.ability.ResponseSettable;
+import com.aspectran.core.var.rule.ability.ResponseRuleApplicable;
 
 /**
  * <p>
  * Created: 2008. 03. 22 오후 5:48:09
  * </p>
  */
-public class ResponseRule implements ResponseSettable, AspectAdviceSupport {
+public class ResponseRule implements ResponseRuleApplicable, AspectAdviceSupport {
 
 	public static final String CHARACTER_ENCODING_SETTING_NAME = "characterEncoding";
 
@@ -93,7 +93,7 @@ public class ResponseRule implements ResponseSettable, AspectAdviceSupport {
 	 * 
 	 * @return the transform response
 	 */
-	public AbstractTransform setResponse(TransformRule tr) {
+	public AbstractTransform applyResponseRule(TransformRule tr) {
 		AbstractTransform transformResponse = AbstractTransform.createTransformer(tr);
 		
 		this.response = transformResponse;
@@ -108,7 +108,7 @@ public class ResponseRule implements ResponseSettable, AspectAdviceSupport {
 	 * 
 	 * @return the dispatch response
 	 */
-	public DispatchResponse setResponse(DispatchResponseRule drr) {
+	public DispatchResponse applyResponseRule(DispatchResponseRule drr) {
 		DispatchResponse dispatchResponse = new DispatchResponse(drr);
 		
 		this.response = dispatchResponse;
@@ -123,7 +123,7 @@ public class ResponseRule implements ResponseSettable, AspectAdviceSupport {
 	 * 
 	 * @return the redirect response
 	 */
-	public RedirectResponse setResponse(RedirectResponseRule rrr) {
+	public RedirectResponse applyResponseRule(RedirectResponseRule rrr) {
 		RedirectResponse redirectResponse = new RedirectResponse(rrr);
 
 		this.response = redirectResponse;
@@ -138,7 +138,7 @@ public class ResponseRule implements ResponseSettable, AspectAdviceSupport {
 	 * 
 	 * @return the forward response
 	 */
-	public ForwardResponse setResponse(ForwardResponseRule frr) {
+	public ForwardResponse applyResponseRule(ForwardResponseRule frr) {
 		ForwardResponse forwardResponse = new ForwardResponse(frr);
 
 		this.response = forwardResponse;

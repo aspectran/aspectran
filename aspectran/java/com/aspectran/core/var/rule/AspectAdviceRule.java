@@ -18,24 +18,30 @@ package com.aspectran.core.var.rule;
 import com.aspectran.core.activity.process.action.BeanAction;
 import com.aspectran.core.activity.process.action.EchoAction;
 import com.aspectran.core.activity.process.action.Executable;
-import com.aspectran.core.var.rule.ability.ActionSettable;
+import com.aspectran.core.var.rule.ability.ActionRuleApplicable;
 import com.aspectran.core.var.type.AspectAdviceType;
 
 /**
  * <p>Created: 2008. 04. 01 오후 11:19:28</p>
  */
-public class AspectAdviceRule implements ActionSettable {
+public class AspectAdviceRule implements ActionRuleApplicable {
 
-	private AspectRule aspectRule;
+	private final AspectRule aspectRule;
 	
-	private AspectAdviceType aspectAdviceType;
+	private final String adviceBeanId;
 	
-	private String adviceBeanId;
+	private final AspectAdviceType aspectAdviceType;
 	
 	private Executable action;
 	
 	private ResponseByContentTypeRuleMap responseByContentTypeRuleMap;
 
+	public AspectAdviceRule(AspectRule aspectRule, AspectAdviceType aspectAdviceType) {
+		this.aspectRule = aspectRule;
+		this.adviceBeanId = aspectRule.getAdviceBeanId();
+		this.aspectAdviceType = aspectAdviceType;
+	}
+	
 	public String getAspectId() {
 		return aspectRule.getId();
 	}
@@ -44,33 +50,25 @@ public class AspectAdviceRule implements ActionSettable {
 		return aspectRule;
 	}
 
-	public void setAspectRule(AspectRule aspectRule) {
-		this.aspectRule = aspectRule;
+	public String getAdviceBeanId() {
+		return adviceBeanId;
 	}
 
 	public AspectAdviceType getAspectAdviceType() {
 		return aspectAdviceType;
 	}
 
-	public void setAspectAdviceType(AspectAdviceType aspectAdviceType) {
-		this.aspectAdviceType = aspectAdviceType;
-	}
-
-	public String getAdviceBeanId() {
-		return adviceBeanId;
-	}
-
-	public void setAdviceBeanId(String adviceBeanId) {
-		this.adviceBeanId = adviceBeanId;
-	}
-
-	public void setEchoAction(EchoActionRule echoActionRule) {
+	public void applyEchoActionRule(EchoActionRule echoActionRule) {
 		action = new EchoAction(echoActionRule, null);
 	}
 
-	public void setBeanAction(BeanActionRule beanActionRule) {
+	public void applyBeanActionRule(BeanActionRule beanActionRule) {
 		beanActionRule.setAspectAdviceRule(this);
 		action = new BeanAction(beanActionRule, null);
+	}
+	
+	public void applyIncludeActionRule(IncludeActionRule includeActionRule) {
+		throw new UnsupportedOperationException("There is nothing that can be apply to IncludeActionRule. The aspecet-advice is not support include-action.");
 	}
 	
 	public Executable getExecutableAction() {
@@ -109,12 +107,31 @@ public class AspectAdviceRule implements ActionSettable {
 	}
 	
 	public static AspectAdviceRule newInstance(AspectRule aspectRule, AspectAdviceType aspectAdviceType) {
-		AspectAdviceRule aspectAdviceRule = new AspectAdviceRule();
-		aspectAdviceRule.setAspectRule(aspectRule);
-		aspectAdviceRule.setAdviceBeanId(aspectRule.getAdviceBeanId());
-		aspectAdviceRule.setAspectAdviceType(aspectAdviceType);
+		AspectAdviceRule aspectAdviceRule = new AspectAdviceRule(aspectRule, aspectAdviceType);
 
 		return aspectAdviceRule;
 	}
+//
+//	public static void updateAction(AspectAdviceRule aspectAdviceRule, Parameters actionParameters) {
+////		id = new ParameterDefine("id", ParameterValueType.STRING);
+////		beanId = new ParameterDefine("beanId", ParameterValueType.STRING);
+////		method = new ParameterDefine("method", ParameterValueType.STRING);
+////		arguments = new ParameterDefine("argument", new ItemParameters(), true);
+////		properties = new ParameterDefine("property", new ItemParameters(), true);
+////		include = new ParameterDefine("include", ParameterValueType.STRING);
+////		echo = new ParameterDefine("echo", new GenericParameters());
+////		attributes = new ParameterDefine("attribute", new ItemParameters(), true);
+////		hidden = new ParameterDefine("hidden", ParameterValueType.BOOLEAN);
+//
+//		String id = actionParameters.getString(ActionParameters.id);
+//		String beanId = actionParameters.getString(ActionParameters.beanId);
+//		String methodName = actionParameters.getString(ActionParameters.methodName);
+//		String include = actionParameters.getString(ActionParameters.include);
+//		boolean hidden = actionParameters.getBoolean(ActionParameters.include);
+//		
+//		if(beanId != null && methodName != null) {
+//			BeanActionRule beanActionRule = BeanActionRule.newInstance(id, beanId, methodName, hidden);
+//		}
+//	}
 	
 }

@@ -13,7 +13,6 @@ public class DispatchParameters extends AbstractParameters implements Parameters
 	public static final ParameterDefine actions;
 	
 	private static final ParameterDefine[] parameterDefines;
-
 	
 	static {
 		contentType = new ParameterDefine("contentType", ParameterValueType.STRING);

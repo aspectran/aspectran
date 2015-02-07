@@ -145,10 +145,10 @@ public class DispatchResponseRule extends ActionPossessSupport implements Action
 		return sb.toString();
 	}
 	
-	public static DispatchResponseRule newInstance(String contentType, String encoding) {
+	public static DispatchResponseRule newInstance(String contentType, String characterEncoding) {
 		DispatchResponseRule drr = new DispatchResponseRule();
 		drr.setContentType(contentType);
-		drr.setCharacterEncoding(encoding);
+		drr.setCharacterEncoding(characterEncoding);
 
 		return drr;
 	}

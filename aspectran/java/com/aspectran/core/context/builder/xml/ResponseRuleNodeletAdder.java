@@ -32,8 +32,7 @@ import com.aspectran.core.var.rule.ForwardResponseRule;
 import com.aspectran.core.var.rule.ItemRuleMap;
 import com.aspectran.core.var.rule.RedirectResponseRule;
 import com.aspectran.core.var.rule.TransformRule;
-import com.aspectran.core.var.rule.ability.ResponseAddable;
-import com.aspectran.core.var.rule.ability.ResponseSettable;
+import com.aspectran.core.var.rule.ability.ResponseRuleApplicable;
 import com.aspectran.core.var.token.Token;
 import com.aspectran.core.var.type.TokenType;
 
@@ -74,9 +73,7 @@ public class ResponseRuleNodeletAdder implements NodeletAdder {
 				assistant.pushObject(actionList);
 			}
 		});
-		
 		parser.addNodelet(xpath, "/transform", new ActionRuleNodeletAdder(assistant));
-		
 		parser.addNodelet(xpath, "/transform/template", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
 				String resource = attributes.get("resource");
@@ -117,23 +114,16 @@ public class ResponseRuleNodeletAdder implements NodeletAdder {
 				if(!actionList.isEmpty())
 					tr.setActionList(actionList);
 				
-				Object o = assistant.peekObject();
-				
-				if(o instanceof ResponseSettable) {
-					ResponseSettable settable = (ResponseSettable)o; //TransletRule, ResponseRule
-					settable.setResponse(tr);
-				} else if(o instanceof ResponseAddable) {
-					ResponseAddable addable = (ResponseAddable)o; //ResponseByContentTypeRule
-					addable.addResponse(tr);
-				}
+				ResponseRuleApplicable applicable = (ResponseRuleApplicable)assistant.peekObject();
+				applicable.applyResponseRule(tr);
 			}
 		});
 		parser.addNodelet(xpath, "/dispatch", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
 				String contentType = attributes.get("contentType");
-				String encoding = attributes.get("encoding");
+				String characterEncoding = attributes.get("characterEncoding");
 				
-				DispatchResponseRule drr = DispatchResponseRule.newInstance(contentType, encoding);
+				DispatchResponseRule drr = DispatchResponseRule.newInstance(contentType, characterEncoding);
 				
 				assistant.pushObject(drr);
 
@@ -163,15 +153,8 @@ public class ResponseRuleNodeletAdder implements NodeletAdder {
 				if(!actionList.isEmpty())
 					drr.setActionList(actionList);
 				
-				Object o = assistant.peekObject();
-				
-				if(o instanceof ResponseSettable) {
-					ResponseSettable settable = (ResponseSettable)o; //TransletRule, ResponseRule
-					settable.setResponse(drr);
-				} else if(o instanceof ResponseAddable) {
-					ResponseAddable addable = (ResponseAddable)o; //ResponseByContentTypeRule
-					addable.addResponse(drr);
-				}
+				ResponseRuleApplicable applicable = (ResponseRuleApplicable)assistant.peekObject();
+				applicable.applyResponseRule(drr);
 			}
 		});
 		parser.addNodelet(xpath, "/redirect", new Nodelet() {
@@ -228,15 +211,8 @@ public class ResponseRuleNodeletAdder implements NodeletAdder {
 				if(!actionList.isEmpty())
 					rrr.setActionList(actionList);
 				
-				Object o = assistant.peekObject();
-				
-				if(o instanceof ResponseSettable) {
-					ResponseSettable settable = (ResponseSettable)o; //TransletRule, ResponseRule
-					settable.setResponse(rrr);
-				} else if(o instanceof ResponseAddable) {
-					ResponseAddable addable = (ResponseAddable)o; //ResponseByContentTypeRule
-					addable.addResponse(rrr);
-				}
+				ResponseRuleApplicable applicable = (ResponseRuleApplicable)assistant.peekObject();
+				applicable.applyResponseRule(rrr);
 				
 				if(rrr.getUrlTokens() != null) {
 					for(Token token : rrr.getUrlTokens()) {
@@ -295,15 +271,8 @@ public class ResponseRuleNodeletAdder implements NodeletAdder {
 				if(!actionList.isEmpty())
 					frr.setActionList(actionList);
 				
-				Object o = assistant.peekObject();
-				
-				if(o instanceof ResponseSettable) {
-					ResponseSettable settable = (ResponseSettable)o; //TransletRule, ResponseRule
-					settable.setResponse(frr);
-				} else if(o instanceof ResponseAddable) { //ResponseByContentTypeRule
-					ResponseAddable addable = (ResponseAddable)o;
-					addable.addResponse(frr);
-				}
+				ResponseRuleApplicable applicable = (ResponseRuleApplicable)assistant.peekObject();
+				applicable.applyResponseRule(frr);
 			}
 		});
 	}

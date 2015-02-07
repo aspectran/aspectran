@@ -18,35 +18,35 @@ import com.aspectran.core.var.rule.TransformRule;
  * @since 2011. 2. 21.
  *
  */
-public interface ResponseSettable {
+public interface ResponseRuleApplicable {
 
-	public AbstractTransform setResponse(TransformRule tr);
+	public AbstractTransform applyResponseRule(TransformRule transformRule);
 	
 	/**
 	 * Sets the response rule.
 	 * 
-	 * @param drr the drr
+	 * @param dispatchResponseRule the drr
 	 * 
 	 * @return the dispatch response
 	 */
-	public DispatchResponse setResponse(DispatchResponseRule drr);
+	public DispatchResponse applyResponseRule(DispatchResponseRule dispatchResponseRule);
 	
 	/**
 	 * Sets the response rule.
 	 * 
-	 * @param rrr the rrr
+	 * @param redirectResponseRule the rrr
 	 * 
 	 * @return the redirect response
 	 */
-	public RedirectResponse setResponse(RedirectResponseRule rrr);
+	public RedirectResponse applyResponseRule(RedirectResponseRule redirectResponseRule);
 	
 	/**
 	 * Sets the response rule.
 	 * 
-	 * @param frr the frr
+	 * @param forwardResponseRule the frr
 	 * 
 	 * @return the forward response
 	 */
-	public ForwardResponse setResponse(ForwardResponseRule frr);
+	public ForwardResponse applyResponseRule(ForwardResponseRule forwardResponseRule);
 	
 }
