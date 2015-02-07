@@ -35,7 +35,6 @@ import com.aspectran.core.var.type.ItemType;
 import com.aspectran.core.var.type.ItemValueType;
 import com.aspectran.core.var.type.TokenType;
 
-// TODO: Auto-generated Javadoc
 /**
  * <p>Created: 2008. 03. 27 오후 3:57:48</p>
  */

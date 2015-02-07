@@ -24,13 +24,11 @@ import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.xml.Nodelet;
 import com.aspectran.core.util.xml.NodeletAdder;
 import com.aspectran.core.util.xml.NodeletParser;
-import com.aspectran.core.var.rule.AspectAdviceRule;
 import com.aspectran.core.var.rule.BeanActionRule;
 import com.aspectran.core.var.rule.EchoActionRule;
 import com.aspectran.core.var.rule.IncludeActionRule;
 import com.aspectran.core.var.rule.ItemRuleMap;
-import com.aspectran.core.var.rule.ability.ActionAddable;
-import com.aspectran.core.var.rule.ability.ActionSettable;
+import com.aspectran.core.var.rule.ability.ActionRuleApplicable;
 
 /**
  * The Class ActionNodeletAdder.
@@ -82,15 +80,8 @@ public class ActionRuleNodeletAdder implements NodeletAdder {
 				if(irm.size() > 0)
 					echoActionRule.setAttributeItemRuleMap(irm);
 
-				Object o = assistant.peekObject();
-				
-				if(o instanceof ActionSettable) {
-					ActionSettable settable = (AspectAdviceRule)o;
-					settable.setEchoAction(echoActionRule);
-				} else if(o instanceof ActionAddable) {
-					ActionAddable addable = (ActionAddable)o;
-					addable.addEchoAction(echoActionRule);
-				}
+				ActionRuleApplicable applicable = (ActionRuleApplicable)assistant.peekObject();
+				applicable.applyEchoActionRule(echoActionRule);
 			}
 		});
 		parser.addNodelet(xpath, "/action", new Nodelet() {
@@ -146,21 +137,12 @@ public class ActionRuleNodeletAdder implements NodeletAdder {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
 				BeanActionRule beanActionRule = (BeanActionRule)assistant.popObject();
 
-				Object o = assistant.peekObject();
-				
-				if(o instanceof ActionSettable) {
-					ActionSettable settable = (AspectAdviceRule)o;
-					settable.setBeanAction(beanActionRule);
-					
-					//AspectAdviceRule may not have the bean id.
-					if(beanActionRule.getBeanId() != null)
-						assistant.putBeanReference(beanActionRule.getBeanId(), beanActionRule);
-				} else if(o instanceof ActionAddable) {
-					ActionAddable addable = (ActionAddable)o;
-					addable.addBeanAction(beanActionRule);
-					
+				ActionRuleApplicable applicable = (ActionRuleApplicable)assistant.peekObject();
+				applicable.applyBeanActionRule(beanActionRule);
+
+				//AspectAdviceRule may not have the bean id.
+				if(beanActionRule.getBeanId() != null)
 					assistant.putBeanReference(beanActionRule.getBeanId(), beanActionRule);
-				}
 			}
 		});
 		parser.addNodelet(xpath, "/include", new Nodelet() {
@@ -201,14 +183,8 @@ public class ActionRuleNodeletAdder implements NodeletAdder {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
 				IncludeActionRule includeActionRule = (IncludeActionRule)assistant.popObject();
 				
-				Object o = assistant.peekObject();
-				
-				if(o instanceof ActionSettable) {
-					//There is nothing that can be set to IncludeAction.
-				} else if(o instanceof ActionAddable) {
-					ActionAddable addable = (ActionAddable)o;
-					addable.addIncludeAction(includeActionRule);
-				}
+				ActionRuleApplicable applicable = (ActionRuleApplicable)assistant.peekObject();
+				applicable.applyIncludeActionRule(includeActionRule);
 			}
 		});
 	}

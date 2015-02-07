@@ -12,7 +12,6 @@ public class ExceptionRaizedParameters extends AbstractParameters implements Par
 	
 	private static final ParameterDefine[] parameterDefines;
 
-	
 	static {
 		actions = new ParameterDefine("action", new ActionParameters(), true);
 		responseByContentType = new ParameterDefine("responseByContentType", new ResponseByContentTypeParameters());

@@ -24,14 +24,14 @@ import com.aspectran.core.activity.process.action.IncludeAction;
 import com.aspectran.core.var.rule.BeanActionRule;
 import com.aspectran.core.var.rule.EchoActionRule;
 import com.aspectran.core.var.rule.IncludeActionRule;
-import com.aspectran.core.var.rule.ability.ActionAddable;
+import com.aspectran.core.var.rule.ability.ActionRuleApplicable;
 
 /**
  * The action list class.
  * 
  * <p>Created: 2008. 03. 23 오전 1:38:14</p>
  */
-public class ActionList extends ArrayList<Executable> implements ActionAddable {
+public class ActionList extends ArrayList<Executable> implements ActionRuleApplicable {
 	
 	/** @serial */
 	static final long serialVersionUID = 4636431127789162551L;
@@ -98,7 +98,7 @@ public class ActionList extends ArrayList<Executable> implements ActionAddable {
 	 * 
 	 * @param echoActionRule the echo action rule
 	 */
-	public void addEchoAction(EchoActionRule echoActionRule) {
+	public void applyEchoActionRule(EchoActionRule echoActionRule) {
 		EchoAction echoAction = new EchoAction(echoActionRule, this);
 		add(echoAction);
 	}
@@ -113,8 +113,7 @@ public class ActionList extends ArrayList<Executable> implements ActionAddable {
 	 * @throws IllegalAccessException the illegal access exception
 	 * @throws NoSuchMethodException the no such method exception
 	 */
-	public void addBeanAction(BeanActionRule beanActionRule) throws ClassNotFoundException, InstantiationException,
-			IllegalAccessException, NoSuchMethodException {
+	public void applyBeanActionRule(BeanActionRule beanActionRule) {
 		BeanAction beanAction = new BeanAction(beanActionRule, this);
 
 		add(beanAction);
@@ -125,7 +124,7 @@ public class ActionList extends ArrayList<Executable> implements ActionAddable {
 	 * 
 	 * @param includeActionRule the process call action rule
 	 */
-	public void addIncludeAction(IncludeActionRule includeActionRule) {
+	public void applyIncludeActionRule(IncludeActionRule includeActionRule) {
 		IncludeAction includeAction = new IncludeAction(includeActionRule, this);
 		add(includeAction);
 	}

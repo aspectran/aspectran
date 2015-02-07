@@ -15,11 +15,10 @@ public class TemplateParameters extends AbstractParameters implements Parameters
 
 	private static final ParameterDefine[] parameterDefines;
 
-	
 	static {
 		file = new ParameterDefine("file", ParameterValueType.STRING);
 		url = new ParameterDefine("url", ParameterValueType.STRING);
-		content = new ParameterDefine("content", ParameterValueType.STRING, true);
+		content = new ParameterDefine("content", ParameterValueType.TEXT);
 		encoding = new ParameterDefine("encoding", ParameterValueType.STRING);
 		noCache = new ParameterDefine("noCache", ParameterValueType.BOOLEAN);
 		

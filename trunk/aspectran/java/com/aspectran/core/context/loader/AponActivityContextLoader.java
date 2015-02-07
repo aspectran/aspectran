@@ -6,9 +6,6 @@ import org.slf4j.LoggerFactory;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.builder.ActivityContextBuilder;
 import com.aspectran.core.context.builder.AponActivityContextBuilder;
-import com.aspectran.core.context.builder.apon.params.AspectranParameters;
-import com.aspectran.core.var.apon.AponReader;
-import com.aspectran.core.var.apon.Parameters;
 
 public class AponActivityContextLoader extends AbstractActivityContextLoader {
 

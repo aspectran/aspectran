@@ -33,15 +33,15 @@ import com.aspectran.core.activity.response.dispatch.DispatchResponse;
 import com.aspectran.core.activity.response.transform.AbstractTransform;
 import com.aspectran.core.context.AspectranConstant;
 import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
-import com.aspectran.core.var.rule.ability.ActionAddable;
-import com.aspectran.core.var.rule.ability.ResponseSettable;
+import com.aspectran.core.var.rule.ability.ActionRuleApplicable;
+import com.aspectran.core.var.rule.ability.ResponseRuleApplicable;
 import com.aspectran.core.var.type.ResponseType;
 import com.aspectran.core.var.type.TransformType;
 
 /**
  * <p>Created: 2008. 03. 22 오후 5:48:09</p>
  */
-public class TransletRule implements ActionAddable, ResponseSettable, AspectAdviceSupport, Cloneable {
+public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicable, AspectAdviceSupport, Cloneable {
 
 	private String name;
 
@@ -168,13 +168,13 @@ public class TransletRule implements ActionAddable, ResponseSettable, AspectAdvi
 		responseRuleList.add(responseRule);
 	}
 
-	public AbstractTransform setResponse(TransformRule tr) {
+	public AbstractTransform applyResponseRule(TransformRule tr) {
 		addActionList(tr.getActionList());
 		
 		if(responseRule == null)
 			responseRule = new ResponseRule();
 		
-		return responseRule.setResponse(tr);
+		return responseRule.applyResponseRule(tr);
 	}
 	
 	/**
@@ -184,13 +184,13 @@ public class TransletRule implements ActionAddable, ResponseSettable, AspectAdvi
 	 * 
 	 * @return the dispatch response
 	 */
-	public DispatchResponse setResponse(DispatchResponseRule drr) {
+	public DispatchResponse applyResponseRule(DispatchResponseRule drr) {
 		addActionList(drr.getActionList());
 
 		if(responseRule == null)
 			responseRule = new ResponseRule();
 		
-		return responseRule.setResponse(drr);
+		return responseRule.applyResponseRule(drr);
 	}
 	
 	/**
@@ -200,13 +200,13 @@ public class TransletRule implements ActionAddable, ResponseSettable, AspectAdvi
 	 * 
 	 * @return the redirect response
 	 */
-	public RedirectResponse setResponse(RedirectResponseRule rrr) {
+	public RedirectResponse applyResponseRule(RedirectResponseRule rrr) {
 		addActionList(rrr.getActionList());
 
 		if(responseRule == null)
 			responseRule = new ResponseRule();
 		
-		return responseRule.setResponse(rrr);
+		return responseRule.applyResponseRule(rrr);
 	}
 	
 	/**
@@ -216,13 +216,13 @@ public class TransletRule implements ActionAddable, ResponseSettable, AspectAdvi
 	 * 
 	 * @return the forward response
 	 */
-	public ForwardResponse setResponse(ForwardResponseRule frr) {
+	public ForwardResponse applyResponseRule(ForwardResponseRule frr) {
 		addActionList(frr.getActionList());
 
 		if(responseRule == null)
 			responseRule = new ResponseRule();
 		
-		return responseRule.setResponse(frr);
+		return responseRule.applyResponseRule(frr);
 	}
 	
 	private void addActionList(ActionList actionList) {
@@ -523,17 +523,16 @@ public class TransletRule implements ActionAddable, ResponseSettable, AspectAdvi
 		return sb.toString();
 	}
 
-	public void addEchoAction(EchoActionRule echoActionRule) {
-		getActionList().addEchoAction(echoActionRule);
+	public void applyEchoActionRule(EchoActionRule echoActionRule) {
+		getActionList().applyEchoActionRule(echoActionRule);
 	}
 
-	public void addBeanAction(BeanActionRule beanActionRule) throws ClassNotFoundException, InstantiationException,
-			IllegalAccessException, NoSuchMethodException {
-		getActionList().addBeanAction(beanActionRule);
+	public void applyBeanActionRule(BeanActionRule beanActionRule) {
+		getActionList().applyBeanActionRule(beanActionRule);
 	}
 
-	public void addIncludeAction(IncludeActionRule includeActionRule) {
-		getActionList().addIncludeAction(includeActionRule);
+	public void applyIncludeActionRule(IncludeActionRule includeActionRule) {
+		getActionList().applyIncludeActionRule(includeActionRule);
 	}
 	
 	private ActionList getActionList() {

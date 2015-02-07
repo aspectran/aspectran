@@ -21,12 +21,12 @@ import com.aspectran.core.activity.response.ResponseMap;
 import com.aspectran.core.activity.response.Responsible;
 import com.aspectran.core.activity.response.dispatch.DispatchResponse;
 import com.aspectran.core.activity.response.transform.AbstractTransform;
-import com.aspectran.core.var.rule.ability.ResponseAddable;
+import com.aspectran.core.var.rule.ability.ResponseRuleApplicable;
 
 /**
  * <p>Created: 2008. 04. 01 오후 11:19:28</p>
  */
-public class ResponseByContentTypeRule implements ResponseAddable {
+public class ResponseByContentTypeRule implements ResponseRuleApplicable {
 
 	private ResponseMap responseMap = new ResponseMap();
 	
@@ -80,14 +80,14 @@ public class ResponseByContentTypeRule implements ResponseAddable {
 	/**
 	 * Adds the response rule.
 	 * 
-	 * @param tr the tr
+	 * @param transformRule the tr
 	 * 
 	 * @return the transform response
 	 */
-	public AbstractTransform addResponse(TransformRule tr) {
-		AbstractTransform transformResponse = AbstractTransform.createTransformer(tr);
+	public AbstractTransform applyResponseRule(TransformRule transformRule) {
+		AbstractTransform transformResponse = AbstractTransform.createTransformer(transformRule);
 		
-		responseMap.put(tr.getContentType(), transformResponse);
+		responseMap.put(transformRule.getContentType(), transformResponse);
 		
 		return transformResponse;
 	}
@@ -95,14 +95,14 @@ public class ResponseByContentTypeRule implements ResponseAddable {
 	/**
 	 * Adds the response rule.
 	 * 
-	 * @param drr the drr
+	 * @param dispatchResponseRule the drr
 	 * 
 	 * @return the dispatch response
 	 */
-	public DispatchResponse addResponse(DispatchResponseRule drr) {
-		DispatchResponse dispatchResponse = new DispatchResponse(drr);
+	public DispatchResponse applyResponseRule(DispatchResponseRule dispatchResponseRule) {
+		DispatchResponse dispatchResponse = new DispatchResponse(dispatchResponseRule);
 		
-		responseMap.put(drr.getContentType(), dispatchResponse);
+		responseMap.put(dispatchResponseRule.getContentType(), dispatchResponse);
 		
 		return dispatchResponse;
 	}
@@ -110,14 +110,14 @@ public class ResponseByContentTypeRule implements ResponseAddable {
 	/**
 	 * Adds the response rule.
 	 * 
-	 * @param rrr the rrr
+	 * @param redirectResponseRule the rrr
 	 * 
 	 * @return the redirect response
 	 */
-	public RedirectResponse addResponse(RedirectResponseRule rrr) {
-		RedirectResponse redirectResponse = new RedirectResponse(rrr);
+	public RedirectResponse applyResponseRule(RedirectResponseRule redirectResponseRule) {
+		RedirectResponse redirectResponse = new RedirectResponse(redirectResponseRule);
 
-		responseMap.put(rrr.getContentType(), redirectResponse);
+		responseMap.put(redirectResponseRule.getContentType(), redirectResponse);
 		
 		return redirectResponse;
 	}
@@ -125,14 +125,14 @@ public class ResponseByContentTypeRule implements ResponseAddable {
 	/**
 	 * Adds the response rule.
 	 * 
-	 * @param frr the frr
+	 * @param forwardResponseRule the frr
 	 * 
 	 * @return the forward response
 	 */
-	public ForwardResponse addResponse(ForwardResponseRule frr) {
-		ForwardResponse forwardResponse = new ForwardResponse(frr);
+	public ForwardResponse applyResponseRule(ForwardResponseRule forwardResponseRule) {
+		ForwardResponse forwardResponse = new ForwardResponse(forwardResponseRule);
 
-		responseMap.put(frr.getContentType(), forwardResponse);
+		responseMap.put(forwardResponseRule.getContentType(), forwardResponse);
 		
 		return forwardResponse;
 	}
@@ -149,12 +149,12 @@ public class ResponseByContentTypeRule implements ResponseAddable {
 	/**
 	 * Sets the default response rule.
 	 * 
-	 * @param tr the new default response rule
+	 * @param transformRule the new default response rule
 	 * 
 	 * @return the transform response
 	 */
-	public AbstractTransform setDefaultResponse(TransformRule tr) {
-		AbstractTransform transformResponse = AbstractTransform.createTransformer(tr);
+	public AbstractTransform setDefaultResponse(TransformRule transformRule) {
+		AbstractTransform transformResponse = AbstractTransform.createTransformer(transformRule);
 		
 		this.defaultResponse = transformResponse;
 		
@@ -164,12 +164,12 @@ public class ResponseByContentTypeRule implements ResponseAddable {
 	/**
 	 * Sets the default response rule.
 	 * 
-	 * @param drr the new default response rule
+	 * @param dispatchResponseRule the new default response rule
 	 * 
 	 * @return the dispatch response
 	 */
-	public DispatchResponse setDefaultResponse(DispatchResponseRule drr) {
-		DispatchResponse dispatchResponse = new DispatchResponse(drr);
+	public DispatchResponse setDefaultResponse(DispatchResponseRule dispatchResponseRule) {
+		DispatchResponse dispatchResponse = new DispatchResponse(dispatchResponseRule);
 		
 		this.defaultResponse = dispatchResponse;
 		
@@ -179,12 +179,12 @@ public class ResponseByContentTypeRule implements ResponseAddable {
 	/**
 	 * Sets the default response rule.
 	 * 
-	 * @param rrr the new default response rule
+	 * @param redirectResponseRule the new default response rule
 	 * 
 	 * @return the redirect response
 	 */
-	public RedirectResponse setDefaultResponse(RedirectResponseRule rrr) {
-		RedirectResponse redirectResponse = new RedirectResponse(rrr);
+	public RedirectResponse setDefaultResponse(RedirectResponseRule redirectResponseRule) {
+		RedirectResponse redirectResponse = new RedirectResponse(redirectResponseRule);
 
 		this.defaultResponse = redirectResponse;
 		
@@ -194,12 +194,12 @@ public class ResponseByContentTypeRule implements ResponseAddable {
 	/**
 	 * Sets the default response rule.
 	 * 
-	 * @param frr the new default response rule
+	 * @param forwardResponseRule the new default response rule
 	 * 
 	 * @return the forward response
 	 */
-	public ForwardResponse setDefaultResponse(ForwardResponseRule frr) {
-		ForwardResponse forwardResponse = new ForwardResponse(frr);
+	public ForwardResponse setDefaultResponse(ForwardResponseRule forwardResponseRule) {
+		ForwardResponse forwardResponse = new ForwardResponse(forwardResponseRule);
 
 		this.defaultResponse = forwardResponse;
 		
