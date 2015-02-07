@@ -92,24 +92,29 @@ aspectran: {
 								}
 							}
 						]
-						property: {
-							map1(string): {
-								kind1(int): 001
-								kind2: 002
-								kind3: 003
+						property: [
+							{
+								type: map
+								name: property1
+								value: {
+									code1: value1
+									code2: value2
+								}
+								valueType: java.lang.String
+								defaultValue: default value
+								tokenize: true
 							}
-							list1(int): [
-								1
-								2
-								3
-							]
-							text(string): [
-								element1
-								element2
-								element3
-							]
-							message: error 001
-						}
+							{
+								name: property2
+								value(int): 123
+							}
+							{
+								name: property2
+								reference: {
+									bean: a.bean
+								}
+							}
+						]
 						hidden: false
 					}
 					{
@@ -182,6 +187,7 @@ aspectran: {
 					}
 				}
 			}
+			bean: abc.bean
 			job: [
 				{
 					tranlset: /scheduler1/test1.job

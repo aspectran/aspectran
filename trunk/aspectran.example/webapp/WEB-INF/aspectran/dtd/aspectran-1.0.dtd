@@ -175,6 +175,7 @@ noCache (true | false) #IMPLIED
 <!ELEMENT dispatch ((echo? | action? | include?)*, template)>
 <!ATTLIST dispatch
 contentType CDATA #IMPLIED
+characterEncoding CDATA #IMPLIED
 >
 
 <!ELEMENT redirect ((echo? | action? | include?)*, url?, parameter?)>
