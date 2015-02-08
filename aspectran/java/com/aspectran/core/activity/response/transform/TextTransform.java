@@ -29,6 +29,7 @@ import com.aspectran.core.activity.CoreActivity;
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.activity.response.Responsible;
 import com.aspectran.core.adapter.ResponseAdapter;
+import com.aspectran.core.var.rule.TemplateRule;
 import com.aspectran.core.var.rule.TransformRule;
 import com.aspectran.core.var.token.Token;
 import com.aspectran.core.var.token.TokenExpression;
@@ -43,8 +44,10 @@ public class TextTransform extends AbstractTransform implements Responsible {
 
 	private final Logger logger = LoggerFactory.getLogger(TextTransform.class);
 
-	private boolean debugEnabled = logger.isDebugEnabled();
+	private final boolean debugEnabled = logger.isDebugEnabled();
 
+	private final TemplateRule templateRule;
+	
 	private Token[] contentTokens;
 
 	private long templateLastModifiedTime;
@@ -66,10 +69,12 @@ public class TextTransform extends AbstractTransform implements Responsible {
 	 */
 	public TextTransform(TransformRule transformRule) {
 		super(transformRule);
-		this.templateFile = transformRule.getTemplateFile();
-		this.templateUrl = transformRule.getTemplateUrl();
-		this.contentTokens = transformRule.getContentTokens();
-		this.templateNoCache = transformRule.getTemplateNoCache();
+		this.templateRule = transformRule.getTemplateRule();
+		this.templateFile = templateRule.getRealFile();
+		this.templateUrl = templateRule.getUrl();
+		this.templateEncoding = templateRule.getEncoding();
+		this.contentTokens = templateRule.getContentTokens();
+		this.templateNoCache = templateRule.isNoCache();
 	}
 
 	/* (non-Javadoc)

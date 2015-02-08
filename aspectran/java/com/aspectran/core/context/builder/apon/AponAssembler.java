@@ -30,6 +30,7 @@ import com.aspectran.core.context.builder.apon.params.JobParameters;
 import com.aspectran.core.context.builder.apon.params.JoinpointParameters;
 import com.aspectran.core.context.builder.apon.params.ResponseByContentTypeParameters;
 import com.aspectran.core.context.builder.apon.params.TemplateParameters;
+import com.aspectran.core.context.builder.apon.params.TransformParameters;
 import com.aspectran.core.var.apon.Parameters;
 import com.aspectran.core.var.rule.AspectAdviceRule;
 import com.aspectran.core.var.rule.AspectJobAdviceRule;
@@ -43,6 +44,8 @@ import com.aspectran.core.var.rule.ItemRuleMap;
 import com.aspectran.core.var.rule.PointcutRule;
 import com.aspectran.core.var.rule.ResponseByContentTypeRule;
 import com.aspectran.core.var.rule.SettingsAdviceRule;
+import com.aspectran.core.var.rule.TemplateRule;
+import com.aspectran.core.var.rule.TransformRule;
 import com.aspectran.core.var.rule.ability.ActionRuleApplicable;
 import com.aspectran.core.var.token.Token;
 import com.aspectran.core.var.type.AspectAdviceType;
@@ -249,14 +252,44 @@ public class AponAssembler {
 
 		if(templateParams != null) {
 			String file = templateParams.getString(TemplateParameters.file);
+			String encoding = templateParams.getString(TemplateParameters.encoding);
+			boolean noCache = templateParams.getBoolean(TemplateParameters.noCache);
+			TemplateRule templateRule = TemplateRule.newInstance(file, null, null, null, encoding, noCache);
+			drr.setTemplateRule(templateRule);
+		}
+		
+		return drr;
+	}
+	
+	public TransformRule assembleTransformResponseRule(Parameters transformParameters) {
+		String transformType = transformParameters.getString(TransformParameters.transformType);
+		String contentType = transformParameters.getString(TransformParameters.contentType);
+		String characterEncoding = transformParameters.getString(TransformParameters.characterEncoding);
+		Parameters templateParams = transformParameters.getParameters(TransformParameters.template);
+		List<Parameters> actionParamsList = transformParameters.getParametersList(TransformParameters.actions);
+		
+		TransformRule tr = TransformRule.newInstance(transformType, contentType, characterEncoding);
+		
+		if(actionParamsList != null && actionParamsList.size()> 0) {
+			ActionList actionList = new ActionList();
+			for(Parameters actionParameters : actionParamsList) {
+				assembleActionRule(actionParameters, actionList);
+			}
+			tr.setActionList(actionList);
+		}
+		
+		if(templateParams != null) {
+			String file = templateParams.getString(TemplateParameters.file);
+			String resource = templateParams.getString(TemplateParameters.resource);
 			String url = templateParams.getString(TemplateParameters.url);
 			String content = templateParams.getText(TemplateParameters.content);
 			String encoding = templateParams.getString(TemplateParameters.encoding);
 			boolean noCache = templateParams.getBoolean(TemplateParameters.noCache);
-			DispatchResponseRule.updateTemplate(drr, file, content, encoding, noCache);
+			TemplateRule templateRule = TemplateRule.newInstance(file, resource, url, content, encoding, noCache);
+			tr.setTemplateRule(templateRule);
 		}
 		
-		return drr;
+		return tr;
 	}
 	
 	public void assembleActionRule(Parameters actionParameters, ActionRuleApplicable actionRuleApplicable) {

@@ -24,7 +24,6 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.Map;
 
-import com.aspectran.core.activity.process.result.ProcessResult;
 import com.aspectran.core.util.BeanUtils;
 
 /**
@@ -78,11 +77,12 @@ public class JsonWriter {
 	 * @throws InvocationTargetException the invocation target exception
 	 */
 	public void write(Object object) throws IOException, InvocationTargetException {
-		if(object instanceof ProcessResult) {
+		/*if(object instanceof ProcessResult) {
 			indentDepth++;
-			write((ProcessResult)object);
+			write(object);
 			indentDepth--;
-		} else if(object instanceof String ||
+		} else */
+		if(object instanceof String ||
 					object instanceof Number ||
 					object instanceof Boolean ||
 					object instanceof Date) {
@@ -149,7 +149,6 @@ public class JsonWriter {
 			openBrace();
 
 			if(readablePropertyNames != null && readablePropertyNames.length > 0) {
-
 				for(int i = 0; i < readablePropertyNames.length; i++) {
 					Object value = BeanUtils.getObject(object, readablePropertyNames[i]);
 

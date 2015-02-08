@@ -34,7 +34,7 @@ public class ForwardResponseRule extends ActionPossessSupport implements ActionP
 	private String transletName;
 	
 	/** The parameter item rule map. */
-	private ItemRuleMap parameterItemRuleMap;
+	private ItemRuleMap attributeItemRuleMap;
 
 	/**
 	 * Gets the content type.
@@ -77,29 +77,29 @@ public class ForwardResponseRule extends ActionPossessSupport implements ActionP
 	 * 
 	 * @return the parameter rule map
 	 */
-	public ItemRuleMap getParameterItemRuleMap() {
-		return parameterItemRuleMap;
+	public ItemRuleMap getAttributeItemRuleMap() {
+		return attributeItemRuleMap;
 	}
 
 	/**
 	 * Sets the parameter rule map.
 	 * 
-	 * @param parameterItemRuleMap the new parameter rule map
+	 * @param attributeItemRuleMap the new parameter rule map
 	 */
-	public void setParameterItemRuleMap(ItemRuleMap parameterItemRuleMap) {
-		this.parameterItemRuleMap = parameterItemRuleMap;
+	public void setAttributeItemRuleMap(ItemRuleMap attributeItemRuleMap) {
+		this.attributeItemRuleMap = attributeItemRuleMap;
 	}
 	
 	/**
 	 * Adds the parameter rule.
 	 * 
-	 * @param parameterItemRule the parameter rule
+	 * @param attributeItemRule the parameter rule
 	 */
-	public void addParameterValueRule(ItemRule parameterItemRule) {
-		if(parameterItemRuleMap == null) 
-			parameterItemRuleMap = new ItemRuleMap();
+	public void addAttributeValueRule(ItemRule attributeItemRule) {
+		if(attributeItemRuleMap == null) 
+			attributeItemRuleMap = new ItemRuleMap();
 		
-		parameterItemRuleMap.putItemRule(parameterItemRule);
+		attributeItemRuleMap.putItemRule(attributeItemRule);
 	}
 
 	/* (non-Javadoc)
@@ -110,7 +110,7 @@ public class ForwardResponseRule extends ActionPossessSupport implements ActionP
 		StringBuilder sb = new StringBuilder();
 
 		sb.append("{contentType=").append(contentType);
-		sb.append(", path=").append(transletName);
+		sb.append(", translet=").append(transletName);
 
 		if(actionList != null) {
 			sb.append(", actionList=");
@@ -134,6 +134,9 @@ public class ForwardResponseRule extends ActionPossessSupport implements ActionP
 	}
 	
 	public static ForwardResponseRule newInstance(String contentType, String transletName) {
+		if(transletName == null)
+			throw new IllegalArgumentException("The <forward> element requires a translet attribute.");
+		
 		ForwardResponseRule frr = new ForwardResponseRule();
 		frr.setContentType(contentType);
 		frr.setTransletName(transletName);

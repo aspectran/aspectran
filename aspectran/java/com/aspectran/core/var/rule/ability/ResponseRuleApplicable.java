@@ -3,10 +3,7 @@
  */
 package com.aspectran.core.var.rule.ability;
 
-import com.aspectran.core.activity.response.ForwardResponse;
-import com.aspectran.core.activity.response.RedirectResponse;
-import com.aspectran.core.activity.response.dispatch.DispatchResponse;
-import com.aspectran.core.activity.response.transform.AbstractTransform;
+import com.aspectran.core.activity.response.Responsible;
 import com.aspectran.core.var.rule.DispatchResponseRule;
 import com.aspectran.core.var.rule.ForwardResponseRule;
 import com.aspectran.core.var.rule.RedirectResponseRule;
@@ -20,7 +17,7 @@ import com.aspectran.core.var.rule.TransformRule;
  */
 public interface ResponseRuleApplicable {
 
-	public AbstractTransform applyResponseRule(TransformRule transformRule);
+	public Responsible applyResponseRule(TransformRule transformRule);
 	
 	/**
 	 * Sets the response rule.
@@ -29,7 +26,7 @@ public interface ResponseRuleApplicable {
 	 * 
 	 * @return the dispatch response
 	 */
-	public DispatchResponse applyResponseRule(DispatchResponseRule dispatchResponseRule);
+	public Responsible applyResponseRule(DispatchResponseRule dispatchResponseRule);
 	
 	/**
 	 * Sets the response rule.
@@ -38,7 +35,7 @@ public interface ResponseRuleApplicable {
 	 * 
 	 * @return the redirect response
 	 */
-	public RedirectResponse applyResponseRule(RedirectResponseRule redirectResponseRule);
+	public Responsible applyResponseRule(RedirectResponseRule redirectResponseRule);
 	
 	/**
 	 * Sets the response rule.
@@ -47,6 +44,6 @@ public interface ResponseRuleApplicable {
 	 * 
 	 * @return the forward response
 	 */
-	public ForwardResponse applyResponseRule(ForwardResponseRule forwardResponseRule);
+	public Responsible applyResponseRule(ForwardResponseRule forwardResponseRule);
 	
 }

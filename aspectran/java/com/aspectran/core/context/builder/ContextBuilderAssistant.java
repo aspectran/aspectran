@@ -16,6 +16,7 @@
 package com.aspectran.core.context.builder;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
@@ -347,18 +348,33 @@ public class ContextBuilderAssistant {
 	}
 
 	/**
+	 * To real path.
+	 * 
+	 * @param filePath the file path
+	 * 
+	 * @return the file
+	 * @throws IOException 
+	 */
+	public String toRealPath(String filePath) throws IOException {
+		File file = toRealPathAsFile(filePath);
+		return file.getCanonicalPath();
+	}
+	
+	/**
 	 * To real path as file.
 	 * 
 	 * @param filePath the file path
 	 * 
 	 * @return the file
 	 */
-	public File toRealPathFile(String filePath) {
+	public File toRealPathAsFile(String filePath) {
 		File file;
 		
 		if(filePath.startsWith(ResourceUtils.FILE_URL_PREFIX)) {
 			URI uri = URI.create(filePath);
 			file = new File(uri);
+		} else if(filePath.startsWith(ResourceUtils.CLASSPATH_URL_PREFIX)) {
+			file = new File(getClassLoader().getResource(filePath).getFile());
 		} else {
 			if(applicationBasePath != null)
 				file = new File(applicationBasePath, filePath);

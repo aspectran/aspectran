@@ -168,7 +168,7 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 		responseRuleList.add(responseRule);
 	}
 
-	public AbstractTransform applyResponseRule(TransformRule tr) {
+	public Responsible applyResponseRule(TransformRule tr) {
 		addActionList(tr.getActionList());
 		
 		if(responseRule == null)
@@ -184,7 +184,7 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 	 * 
 	 * @return the dispatch response
 	 */
-	public DispatchResponse applyResponseRule(DispatchResponseRule drr) {
+	public Responsible applyResponseRule(DispatchResponseRule drr) {
 		addActionList(drr.getActionList());
 
 		if(responseRule == null)
@@ -200,7 +200,7 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 	 * 
 	 * @return the redirect response
 	 */
-	public RedirectResponse applyResponseRule(RedirectResponseRule rrr) {
+	public Responsible applyResponseRule(RedirectResponseRule rrr) {
 		addActionList(rrr.getActionList());
 
 		if(responseRule == null)
@@ -216,7 +216,7 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 	 * 
 	 * @return the forward response
 	 */
-	public ForwardResponse applyResponseRule(ForwardResponseRule frr) {
+	public Responsible applyResponseRule(ForwardResponseRule frr) {
 		addActionList(frr.getActionList());
 
 		if(responseRule == null)
@@ -472,8 +472,8 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 				} else if(responsible.getResponseType() == ResponseType.FORWARD) {
 					ForwardResponse fr = (ForwardResponse)responsible;
 					sb.append("      ForwardResponse " + fr.getForwardResponseRule()).append(CRLF);
-					if(fr.getForwardResponseRule().getParameterItemRuleMap() != null) {
-						for(ItemRule pr : fr.getForwardResponseRule().getParameterItemRuleMap())
+					if(fr.getForwardResponseRule().getAttributeItemRuleMap() != null) {
+						for(ItemRule pr : fr.getForwardResponseRule().getAttributeItemRuleMap())
 							sb.append("            Parameter ").append(pr).append(CRLF);
 					}
 				} else if(responsible.getResponseType() == ResponseType.REDIRECT) {

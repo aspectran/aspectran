@@ -23,7 +23,7 @@ import com.aspectran.core.activity.response.ForwardResponse;
 import com.aspectran.core.activity.response.RedirectResponse;
 import com.aspectran.core.activity.response.Responsible;
 import com.aspectran.core.activity.response.dispatch.DispatchResponse;
-import com.aspectran.core.activity.response.transform.AbstractTransform;
+import com.aspectran.core.activity.response.transform.TransformFactory;
 import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
 import com.aspectran.core.var.rule.ability.ResponseRuleApplicable;
 
@@ -93,12 +93,12 @@ public class ResponseRule implements ResponseRuleApplicable, AspectAdviceSupport
 	 * 
 	 * @return the transform response
 	 */
-	public AbstractTransform applyResponseRule(TransformRule tr) {
-		AbstractTransform transformResponse = AbstractTransform.createTransformer(tr);
+	public Responsible applyResponseRule(TransformRule tr) {
+		Responsible response = TransformFactory.createTransform(tr);
 		
-		this.response = transformResponse;
+		this.response = response;
 		
-		return transformResponse;
+		return response;
 	}
 
 	/**
@@ -108,12 +108,12 @@ public class ResponseRule implements ResponseRuleApplicable, AspectAdviceSupport
 	 * 
 	 * @return the dispatch response
 	 */
-	public DispatchResponse applyResponseRule(DispatchResponseRule drr) {
-		DispatchResponse dispatchResponse = new DispatchResponse(drr);
+	public Responsible applyResponseRule(DispatchResponseRule drr) {
+		Responsible response = new DispatchResponse(drr);
 		
-		this.response = dispatchResponse;
+		this.response = response;
 		
-		return dispatchResponse;
+		return response;
 	}
 	
 	/**
@@ -123,12 +123,12 @@ public class ResponseRule implements ResponseRuleApplicable, AspectAdviceSupport
 	 * 
 	 * @return the redirect response
 	 */
-	public RedirectResponse applyResponseRule(RedirectResponseRule rrr) {
-		RedirectResponse redirectResponse = new RedirectResponse(rrr);
+	public Responsible applyResponseRule(RedirectResponseRule rrr) {
+		Responsible response = new RedirectResponse(rrr);
 
-		this.response = redirectResponse;
+		this.response = response;
 		
-		return redirectResponse;
+		return response;
 	}
 	
 	/**
@@ -138,12 +138,12 @@ public class ResponseRule implements ResponseRuleApplicable, AspectAdviceSupport
 	 * 
 	 * @return the forward response
 	 */
-	public ForwardResponse applyResponseRule(ForwardResponseRule frr) {
-		ForwardResponse forwardResponse = new ForwardResponse(frr);
+	public Responsible applyResponseRule(ForwardResponseRule frr) {
+		Responsible response = new ForwardResponse(frr);
 
-		this.response = forwardResponse;
+		this.response = response;
 		
-		return forwardResponse;
+		return response;
 	}
 	
 	public AspectAdviceRuleRegistry getAspectAdviceRuleRegistry() {

@@ -156,38 +156,4 @@ public abstract class AbstractTransform implements Responsible {
 		return reader;
 	}
 	
-	/**
-	 * Creates the transformer.
-	 * 
-	 * @param tr the tr
-	 * 
-	 * @return the transform response
-	 */
-	public static AbstractTransform createTransformer(TransformRule tr) {
-		TransformType tranformType = tr.getTransformType();
-		
-		AbstractTransform transformResponse = null;
-		
-		if(tranformType == TransformType.XSL_TRANSFORM) {
-			transformResponse = new XslTransform(tr);
-		} else if(tranformType == TransformType.XML_TRANSFORM) {
-			if(tr.getContentType() == null)
-				tr.setContentType(ContentType.TEXT_XML.toString());
-
-			transformResponse = new XmlTransform(tr);
-		} else if(tranformType == TransformType.TEXT_TRANSFORM) {
-			transformResponse = new TextTransform(tr);
-		} else if(tranformType == TransformType.JSON_TRANSFORM) {
-			if(tr.getContentType() == null)
-				tr.setContentType(ContentType.TEXT_PLAIN.toString());
-			
-			transformResponse = new JsonTransform(tr);
-		} else if(tranformType == TransformType.CUSTOM_TRANSFORM) {
-			transformResponse = new CustomTransform(tr);
-		} else {
-			throw new IllegalArgumentException("Cannot create a transformer. Cause: Unkown transform-type '" + tr.toString() + "'.");
-		}
-		
-		return transformResponse;
-	}
 }

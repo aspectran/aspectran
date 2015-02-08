@@ -23,6 +23,7 @@ import org.slf4j.LoggerFactory;
 import com.aspectran.core.activity.CoreActivity;
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.adapter.RequestAdapter;
+import com.aspectran.core.var.ValueMap;
 import com.aspectran.core.var.rule.ForwardResponseRule;
 import com.aspectran.core.var.token.ItemTokenExpression;
 import com.aspectran.core.var.token.ItemTokenExpressor;
@@ -62,17 +63,14 @@ public class ForwardResponse implements Responsible {
 			logger.debug("response " + forwardResponseRule);
 		}
 
-		Map<String, Object> valueMap = null;
-		
-		if(forwardResponseRule.getParameterItemRuleMap() != null) {
+		if(forwardResponseRule.getAttributeItemRuleMap() != null) {
 			ItemTokenExpressor expressor = new ItemTokenExpression(activity);
-			valueMap = expressor.express(forwardResponseRule.getParameterItemRuleMap());
-		}
-		
-		if(valueMap != null) {
+			ValueMap valueMap = expressor.express(forwardResponseRule.getAttributeItemRuleMap());
+
 			for(Map.Entry<String, Object> entry : valueMap.entrySet())
 				requestAdapter.setAttribute(entry.getKey(), entry.getValue());
 		}
+		
 	}
 	
 	/* (non-Javadoc)

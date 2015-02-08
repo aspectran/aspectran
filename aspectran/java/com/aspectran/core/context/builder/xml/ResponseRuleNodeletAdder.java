@@ -22,7 +22,6 @@ import org.w3c.dom.Node;
 
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.context.builder.ContextBuilderAssistant;
-import com.aspectran.core.util.ResourceUtils;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.xml.Nodelet;
 import com.aspectran.core.util.xml.NodeletAdder;
@@ -31,6 +30,7 @@ import com.aspectran.core.var.rule.DispatchResponseRule;
 import com.aspectran.core.var.rule.ForwardResponseRule;
 import com.aspectran.core.var.rule.ItemRuleMap;
 import com.aspectran.core.var.rule.RedirectResponseRule;
+import com.aspectran.core.var.rule.TemplateRule;
 import com.aspectran.core.var.rule.TransformRule;
 import com.aspectran.core.var.rule.ability.ResponseRuleApplicable;
 import com.aspectran.core.var.token.Token;
@@ -61,11 +61,11 @@ public class ResponseRuleNodeletAdder implements NodeletAdder {
 	public void process(String xpath, NodeletParser parser) {
 		parser.addNodelet(xpath, "/transform", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
-				String typeString = attributes.get("type");
+				String type = attributes.get("type");
 				String contentType = attributes.get("contentType");
 				String characterEncoding = attributes.get("characterEncoding");
 
-				TransformRule tr = TransformRule.newInstance(typeString, contentType, characterEncoding);
+				TransformRule tr = TransformRule.newInstance(type, contentType, characterEncoding);
 
 				assistant.pushObject(tr);
 				
@@ -76,31 +76,27 @@ public class ResponseRuleNodeletAdder implements NodeletAdder {
 		parser.addNodelet(xpath, "/transform", new ActionRuleNodeletAdder(assistant));
 		parser.addNodelet(xpath, "/transform/template", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
+				String file = attributes.get("file");
 				String resource = attributes.get("resource");
-				String filePath = attributes.get("file");
-				String templateUrl = attributes.get("url");
-				String templateContent = text;
+				String url = attributes.get("url");
 				String encoding = attributes.get("encoding");
 				boolean noCache = Boolean.parseBoolean(attributes.get("noCache"));
-
-				File templateFile = null;
-
-				if(StringUtils.hasText(resource))
-					templateFile = ResourceUtils.getResourceAsFile(resource);
-				else if(StringUtils.hasText(filePath))
-					templateFile = assistant.toRealPathFile(filePath);
-
-				TransformRule tr = (TransformRule)assistant.peekObject(1);
 				
-				if(StringUtils.hasText(encoding))
-					tr.setTemplateEncoding(encoding);
+				TemplateRule templateRule = TemplateRule.newInstance(file, resource, url, text, encoding, noCache);
 				
-				TransformRule.updateTemplate(tr, templateFile, templateUrl, templateContent, encoding, noCache);
+				if(StringUtils.hasText(resource)) {
+					templateRule.setRealFile(new File(assistant.getClassLoader().getResource(resource).getFile()));
+				} else if(StringUtils.hasText(file)) {
+					templateRule.setRealFile(assistant.toRealPathAsFile(file));
+				}
+
+				TransformRule transformRule = (TransformRule)assistant.peekObject(1);
+				transformRule.setTemplateRule(templateRule);
 				
-				if(tr.getContentTokens() != null) {
-					for(Token token : tr.getContentTokens()) {
+				if(templateRule.getContentTokens() != null) {
+					for(Token token : templateRule.getContentTokens()) {
 						if(token.getType() == TokenType.REFERENCE_BEAN) {
-							assistant.putBeanReference(token.getName(), tr);
+							assistant.putBeanReference(token.getName(), transformRule);
 						}
 					}
 				}
@@ -131,18 +127,17 @@ public class ResponseRuleNodeletAdder implements NodeletAdder {
 				assistant.pushObject(actionList);
 			}
 		});
-
 		parser.addNodelet(xpath, "/dispatch", new ActionRuleNodeletAdder(assistant));
-
 		parser.addNodelet(xpath, "/dispatch/template", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
-				String templateFile = attributes.get("file");
-				String templateContent = text;
-				String templateEncoding = attributes.get("encoding");
+				String file = attributes.get("file");
+				String encoding = attributes.get("encoding");
 				boolean noCache = Boolean.parseBoolean(attributes.get("noCache"));
 				
+				TemplateRule templateRule = TemplateRule.newInstance(file, null, null, null, encoding, noCache);
+				
 				DispatchResponseRule drr = (DispatchResponseRule)assistant.peekObject(1);
-				DispatchResponseRule.updateTemplate(drr, templateFile, templateContent, templateEncoding, noCache);
+				drr.setTemplateRule(templateRule);
 			}
 		});
 		parser.addNodelet(xpath, "/dispatch/end()", new Nodelet() {
@@ -172,9 +167,7 @@ public class ResponseRuleNodeletAdder implements NodeletAdder {
 				assistant.pushObject(actionList);
 			}
 		});
-
 		parser.addNodelet(xpath, "/redirect", new ActionRuleNodeletAdder(assistant));
-
 		parser.addNodelet(xpath, "/redirect/url", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
 				RedirectResponseRule rrr = (RedirectResponseRule)assistant.peekObject(1);
@@ -187,9 +180,7 @@ public class ResponseRuleNodeletAdder implements NodeletAdder {
 				assistant.pushObject(irm);
 			}
 		});
-		
 		parser.addNodelet(xpath, "/redirect/parameter", new ItemRuleNodeletAdder(assistant));
-
 		parser.addNodelet(xpath, "/redirect/parameter/end()", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
 				ItemRuleMap irm = (ItemRuleMap)assistant.popObject();
@@ -238,25 +229,21 @@ public class ResponseRuleNodeletAdder implements NodeletAdder {
 				assistant.pushObject(actionList);
 			}
 		});
-
 		parser.addNodelet(xpath, "/forward", new ActionRuleNodeletAdder(assistant));
-		
 		parser.addNodelet(xpath, "/forward/parameter", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
 				ItemRuleMap irm = new ItemRuleMap();
 				assistant.pushObject(irm);
 			}
 		});
-
 		parser.addNodelet(xpath, "/forward/parameter", new ItemRuleNodeletAdder(assistant));
-
 		parser.addNodelet(xpath, "/forward/parameter/end()", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
 				ItemRuleMap irm = (ItemRuleMap)assistant.popObject();
 				
 				if(irm.size() > 0) {
 					ForwardResponseRule frr = (ForwardResponseRule)assistant.peekObject(1);
-					frr.setParameterItemRuleMap(irm);
+					frr.setAttributeItemRuleMap(irm);
 				}
 			}
 		});
@@ -265,9 +252,6 @@ public class ResponseRuleNodeletAdder implements NodeletAdder {
 				ActionList actionList = (ActionList)assistant.popObject();
 				ForwardResponseRule frr = (ForwardResponseRule)assistant.popObject();
 				
-				if(frr.getParameterItemRuleMap() == null)
-					throw new IllegalArgumentException("The <forward> element requires a path attribute.");
-
 				if(!actionList.isEmpty())
 					frr.setActionList(actionList);
 				

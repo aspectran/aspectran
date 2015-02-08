@@ -20,7 +20,7 @@ import com.aspectran.core.activity.response.RedirectResponse;
 import com.aspectran.core.activity.response.ResponseMap;
 import com.aspectran.core.activity.response.Responsible;
 import com.aspectran.core.activity.response.dispatch.DispatchResponse;
-import com.aspectran.core.activity.response.transform.AbstractTransform;
+import com.aspectran.core.activity.response.transform.TransformFactory;
 import com.aspectran.core.var.rule.ability.ResponseRuleApplicable;
 
 /**
@@ -84,12 +84,12 @@ public class ResponseByContentTypeRule implements ResponseRuleApplicable {
 	 * 
 	 * @return the transform response
 	 */
-	public AbstractTransform applyResponseRule(TransformRule transformRule) {
-		AbstractTransform transformResponse = AbstractTransform.createTransformer(transformRule);
+	public Responsible applyResponseRule(TransformRule transformRule) {
+		Responsible response = TransformFactory.createTransform(transformRule);
 		
-		responseMap.put(transformRule.getContentType(), transformResponse);
+		responseMap.put(transformRule.getContentType(), response);
 		
-		return transformResponse;
+		return response;
 	}
 
 	/**
@@ -99,7 +99,7 @@ public class ResponseByContentTypeRule implements ResponseRuleApplicable {
 	 * 
 	 * @return the dispatch response
 	 */
-	public DispatchResponse applyResponseRule(DispatchResponseRule dispatchResponseRule) {
+	public Responsible applyResponseRule(DispatchResponseRule dispatchResponseRule) {
 		DispatchResponse dispatchResponse = new DispatchResponse(dispatchResponseRule);
 		
 		responseMap.put(dispatchResponseRule.getContentType(), dispatchResponse);
@@ -114,7 +114,7 @@ public class ResponseByContentTypeRule implements ResponseRuleApplicable {
 	 * 
 	 * @return the redirect response
 	 */
-	public RedirectResponse applyResponseRule(RedirectResponseRule redirectResponseRule) {
+	public Responsible applyResponseRule(RedirectResponseRule redirectResponseRule) {
 		RedirectResponse redirectResponse = new RedirectResponse(redirectResponseRule);
 
 		responseMap.put(redirectResponseRule.getContentType(), redirectResponse);
@@ -129,12 +129,12 @@ public class ResponseByContentTypeRule implements ResponseRuleApplicable {
 	 * 
 	 * @return the forward response
 	 */
-	public ForwardResponse applyResponseRule(ForwardResponseRule forwardResponseRule) {
-		ForwardResponse forwardResponse = new ForwardResponse(forwardResponseRule);
+	public Responsible applyResponseRule(ForwardResponseRule forwardResponseRule) {
+		Responsible response = new ForwardResponse(forwardResponseRule);
 
-		responseMap.put(forwardResponseRule.getContentType(), forwardResponse);
+		responseMap.put(forwardResponseRule.getContentType(), response);
 		
-		return forwardResponse;
+		return response;
 	}
 
 	/**
@@ -153,12 +153,12 @@ public class ResponseByContentTypeRule implements ResponseRuleApplicable {
 	 * 
 	 * @return the transform response
 	 */
-	public AbstractTransform setDefaultResponse(TransformRule transformRule) {
-		AbstractTransform transformResponse = AbstractTransform.createTransformer(transformRule);
+	public Responsible setDefaultResponse(TransformRule transformRule) {
+		Responsible response = TransformFactory.createTransform(transformRule);
 		
-		this.defaultResponse = transformResponse;
+		this.defaultResponse = response;
 		
-		return transformResponse;
+		return response;
 	}
 
 	/**

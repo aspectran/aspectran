@@ -15,6 +15,8 @@
  */
 package com.aspectran.core.activity.response.dispatch;
 
+import java.io.File;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,6 +26,7 @@ import com.aspectran.core.activity.response.ResponseException;
 import com.aspectran.core.activity.response.Responsible;
 import com.aspectran.core.var.rule.DispatchResponseRule;
 import com.aspectran.core.var.rule.ResponseRule;
+import com.aspectran.core.var.rule.TemplateRule;
 import com.aspectran.core.var.type.ResponseType;
 
 /**
@@ -41,6 +44,10 @@ public class DispatchResponse implements Responsible {
 
 	private final DispatchResponseRule dispatchResponseRule;
 	
+	private final TemplateRule templateRule;
+	
+	private File templateFile;
+	
 	private ViewDispatcher viewDispatcher;
 
 	/**
@@ -50,6 +57,8 @@ public class DispatchResponse implements Responsible {
 	 */
 	public DispatchResponse(DispatchResponseRule dispatchResponseRule) {
 		this.dispatchResponseRule = dispatchResponseRule;
+		this.templateRule = dispatchResponseRule.getTemplateRule();
+		this.templateFile = templateRule.getRealFile();
 	}
 
 	/* (non-Javadoc)
@@ -69,7 +78,7 @@ public class DispatchResponse implements Responsible {
 			}
 
 			if(debugEnabled) {
-				logger.debug("Dispatch {viewDispatcher: " + viewDispatcherName + ", template: " + dispatchResponseRule.getTemplateFile() + "}");
+				logger.debug("Dispatch {viewDispatcher: " + viewDispatcherName + ", template: " + templateFile + "}");
 				logger.debug("Dispatch Response OK.");
 			}
 		} catch(Exception e) {
