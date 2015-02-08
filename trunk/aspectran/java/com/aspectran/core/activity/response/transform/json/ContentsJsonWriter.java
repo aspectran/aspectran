@@ -23,7 +23,7 @@ import java.util.Iterator;
 import com.aspectran.core.activity.process.result.ActionResult;
 import com.aspectran.core.activity.process.result.ContentResult;
 import com.aspectran.core.activity.process.result.ProcessResult;
-import com.aspectran.core.var.json.JsonWriter;
+import com.aspectran.core.util.json.JsonWriter;
 
 /**
  * <p>Created: 2008. 06. 12 오후 8:20:54</p>

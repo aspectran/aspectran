@@ -21,9 +21,9 @@ import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.builder.apon.AponAssembler;
 import com.aspectran.core.context.builder.apon.params.AspectranParameters;
+import com.aspectran.core.util.apon.AponReader;
+import com.aspectran.core.util.apon.Parameters;
 import com.aspectran.core.util.io.ImportStream;
-import com.aspectran.core.var.apon.AponReader;
-import com.aspectran.core.var.apon.Parameters;
 
 /**
  * AponAspectranContextBuilder.

@@ -21,7 +21,7 @@ import java.util.List;
 import com.aspectran.core.context.builder.apon.params.PointcutParameters;
 import com.aspectran.core.context.builder.apon.params.TargetParameters;
 import com.aspectran.core.util.StringUtils;
-import com.aspectran.core.var.apon.Parameters;
+import com.aspectran.core.util.apon.Parameters;
 import com.aspectran.core.var.type.AspectTargetType;
 import com.aspectran.core.var.type.PointcutType;
 

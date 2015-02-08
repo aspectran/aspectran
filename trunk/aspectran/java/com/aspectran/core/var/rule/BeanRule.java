@@ -23,8 +23,8 @@ import com.aspectran.core.context.bean.ablility.DisposableBean;
 import com.aspectran.core.context.bean.ablility.InitializableBean;
 import com.aspectran.core.context.bean.scan.BeanClassScanner;
 import com.aspectran.core.util.MethodUtils;
+import com.aspectran.core.util.apon.Parameters;
 import com.aspectran.core.util.wildcard.WildcardPattern;
-import com.aspectran.core.var.apon.Parameters;
 import com.aspectran.core.var.type.ScopeType;
 
 /**
