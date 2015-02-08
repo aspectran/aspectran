@@ -66,7 +66,6 @@ public class ResponseRuleNodeletAdder implements NodeletAdder {
 				String characterEncoding = attributes.get("characterEncoding");
 
 				TransformRule tr = TransformRule.newInstance(type, contentType, characterEncoding);
-
 				assistant.pushObject(tr);
 				
 				ActionList actionList = new ActionList();

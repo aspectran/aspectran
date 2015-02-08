@@ -59,7 +59,7 @@ bean CDATA #IMPLIED
 <!ELEMENT after (echo | action)>
 <!ELEMENT around (echo | action)>
 <!ELEMENT finally (echo | action)>
-<!ELEMENT exceptionRaized (action?, responseByContentType*, defaultResponse?)>
+<!ELEMENT exceptionRaized (action?, responseByContentType*)>
 
 <!ELEMENT job EMPTY>
 <!ATTLIST job
@@ -148,13 +148,12 @@ hidden (true | false) #IMPLIED
 name CDATA #IMPLIED
 characterEncoding CDATA #IMPLIED
 >
-<!ELEMENT exception (responseByContentType*, defaultResponse?)>
+<!ELEMENT exception (responseByContentType*)>
 
 <!ELEMENT responseByContentType (transform? | dispatch? | redirect? | forward?)*>
 <!ATTLIST responseByContentType
 exceptionType CDATA #IMPLIED
 >
-<!ELEMENT defaultResponse (transform? | dispatch? | redirect? | forward?)>
 
 <!ELEMENT transform ((echo? | action? | include?)*, template?)>
 <!ATTLIST transform
@@ -188,7 +187,7 @@ excludeNullParameters CDATA #IMPLIED
 
 <!ELEMENT url (#PCDATA)>
 
-<!ELEMENT forward ((echo? | action? | include?)*, url?, parameter?)>
+<!ELEMENT forward ((echo? | action? | include?)*, url?, attribute?)>
 <!ATTLIST forward
 contentType CDATA #IMPLIED
 translet CDATA #IMPLIED

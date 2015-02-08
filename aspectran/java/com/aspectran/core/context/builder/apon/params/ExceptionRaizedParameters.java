@@ -6,21 +6,18 @@ import com.aspectran.core.util.apon.Parameters;
 
 public class ExceptionRaizedParameters extends AbstractParameters implements Parameters {
 
-	public static final ParameterDefine actions;
-	public static final ParameterDefine responseByContentType;
-	public static final ParameterDefine defaultResponse;
+	public static final ParameterDefine action;
+	public static final ParameterDefine responseByContentTypes;
 	
 	private static final ParameterDefine[] parameterDefines;
 
 	static {
-		actions = new ParameterDefine("action", new ActionParameters(), true);
-		responseByContentType = new ParameterDefine("responseByContentType", new ResponseByContentTypeParameters());
-		defaultResponse = new ParameterDefine("defaultResponse", new DefaultResponseParameters());
+		action = new ParameterDefine("action", new ActionParameters());
+		responseByContentTypes = new ParameterDefine("responseByContentType", new ResponseByContentTypeParameters(), true);
 		
 		parameterDefines = new ParameterDefine[] {
-				actions,
-				responseByContentType,
-				defaultResponse
+				action,
+				responseByContentTypes
 		};
 	}
 	

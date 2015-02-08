@@ -19,7 +19,6 @@ import java.util.Map;
 
 import org.w3c.dom.Node;
 
-import com.aspectran.core.activity.response.ResponseMap;
 import com.aspectran.core.context.builder.ContextBuilderAssistant;
 import com.aspectran.core.util.xml.Nodelet;
 import com.aspectran.core.util.xml.NodeletAdder;
@@ -27,7 +26,6 @@ import com.aspectran.core.util.xml.NodeletParser;
 import com.aspectran.core.var.rule.AspectAdviceRule;
 import com.aspectran.core.var.rule.AspectRule;
 import com.aspectran.core.var.rule.ResponseByContentTypeRule;
-import com.aspectran.core.var.rule.ResponseByContentTypeRuleMap;
 import com.aspectran.core.var.type.AspectAdviceType;
 
 /**
@@ -59,7 +57,6 @@ public class AspectExceptionRaisedAdviceRuleNodeletAdder implements NodeletAdder
 				AspectRule ar = (AspectRule)assistant.peekObject();
 				
 				AspectAdviceRule aar = AspectAdviceRule.newInstance(ar, AspectAdviceType.EXCPETION_RAIZED);
-				
 				assistant.pushObject(aar);
 			}
 		});
@@ -69,7 +66,6 @@ public class AspectExceptionRaisedAdviceRuleNodeletAdder implements NodeletAdder
 				String exceptionType = attributes.get("exceptionType");
 
 				ResponseByContentTypeRule rbctr = ResponseByContentTypeRule.newInstance(exceptionType);
-				
 				assistant.pushObject(rbctr);
 			}
 		});
@@ -79,32 +75,6 @@ public class AspectExceptionRaisedAdviceRuleNodeletAdder implements NodeletAdder
 				ResponseByContentTypeRule rbctr = (ResponseByContentTypeRule)assistant.popObject();
 				AspectAdviceRule aar = (AspectAdviceRule)assistant.peekObject();
 				aar.addResponseByContentTypeRule(rbctr);
-			}
-		});
-		parser.addNodelet(xpath, "/defaultResponse", new Nodelet() {
-			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
-				ResponseByContentTypeRule rbctr = ResponseByContentTypeRule.newInstance();
-				assistant.pushObject(rbctr);
-			}
-		});
-		parser.addNodelet(xpath, "/defaultResponse", new ResponseRuleNodeletAdder(assistant));
-		parser.addNodelet(xpath, "/defaultResponse/end()", new Nodelet() {
-			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
-				ResponseByContentTypeRule rbctr = (ResponseByContentTypeRule)assistant.popObject();
-				ResponseMap responseMap = rbctr.getResponseMap();
-				
-				if(responseMap.size() > 0) {
-					AspectAdviceRule aar = (AspectAdviceRule)assistant.peekObject();
-					ResponseByContentTypeRuleMap rbctrm = aar.getResponseByContentTypeRuleMap();
-					
-					if(rbctrm == null)
-						rbctrm = new ResponseByContentTypeRuleMap();
-					
-					ResponseByContentTypeRule responseByContentTypeRule = ResponseByContentTypeRule.newInstance(responseMap.get(0));
-					
-					rbctrm.putResponseByContentTypeRule(responseByContentTypeRule);
-					aar.setResponseByContentTypeRuleMap(rbctrm);
-				}
 			}
 		});
 		parser.addNodelet(xpath, "/end()", new Nodelet() {
