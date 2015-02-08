@@ -188,7 +188,7 @@ excludeNullParameters CDATA #IMPLIED
 
 <!ELEMENT url (#PCDATA)>
 
-<!ELEMENT forward ((echo? | action? | include?)*, url?, parameter?)>
+<!ELEMENT forward ((echo? | action? | include?)*, url?, attribute?)>
 <!ATTLIST forward
 contentType CDATA #IMPLIED
 translet CDATA #IMPLIED

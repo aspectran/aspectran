@@ -183,9 +183,13 @@ dt { font-weight: bold; color: yellow; }
 		</transform>
 	</translet>
 
-	<translet name="hello/sampleBean.xml">
+	<translet name="hello/sampleBean.txt">
 		<transform type="transform/text">
-			<action bean="sampleBean" method="hello"/>
+			<action id="sample" bean="sampleBean" method="hello"/>
+			<template>
+text: @{sample}
+length: @{sample^length}
+			</template>
 		</transform>
 	</translet>
 
