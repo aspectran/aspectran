@@ -41,6 +41,7 @@ import com.aspectran.core.activity.response.transform.xml.ContentsInputSource;
 import com.aspectran.core.activity.response.transform.xml.ContentsXMLReader;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.context.AspectranConstant;
+import com.aspectran.core.var.rule.TemplateRule;
 import com.aspectran.core.var.rule.TransformRule;
 import com.aspectran.core.var.type.ContentType;
 
@@ -63,6 +64,8 @@ public class XslTransform extends AbstractTransform implements Responsible {
 	
 	private boolean debugEnabled = logger.isDebugEnabled();
 	
+	private final TemplateRule templateRule;
+	
 	private long templateLastModifiedTime;
 	
 	private File templateFile;
@@ -82,8 +85,9 @@ public class XslTransform extends AbstractTransform implements Responsible {
 	 */
 	protected XslTransform(TransformRule transformRule) {
 		super(transformRule);
-		this.templateFile = transformRule.getTemplateFile();
-		this.templateNoCache = transformRule.getTemplateNoCache();
+		this.templateRule = transformRule.getTemplateRule();
+		this.templateFile = templateRule.getRealFile();
+		this.templateNoCache = templateRule.isNoCache();
 	}
 
 	/* (non-Javadoc)
@@ -178,8 +182,8 @@ public class XslTransform extends AbstractTransform implements Responsible {
 					templates = createXsltTemplates(templateFile);
 					templateLastModifiedTime = lastModifiedTime;
 					
-					String contentType = transformRule.getContentType();
-					String outputEncoding = getOutputEncoding(templates);;
+					contentType = transformRule.getContentType();
+					outputEncoding = getOutputEncoding(templates);;
 
 					if(contentType == null)
 						contentType = getContentType(templates);

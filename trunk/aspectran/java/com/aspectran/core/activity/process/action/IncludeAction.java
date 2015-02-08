@@ -56,14 +56,11 @@ public class IncludeAction extends AbstractAction implements Executable {
 	public Object execute(CoreActivity activity) throws Exception {
 		try {
 			RequestAdapter request = activity.getRequestAdapter();
-			ValueMap valueMap = null;
 			
 			if(includeActionRule.getAttributeItemRuleMap() != null) {
 				ItemTokenExpressor expressor = new ItemTokenExpression(activity);
-				valueMap = expressor.express(includeActionRule.getAttributeItemRuleMap());
-			}
-			
-			if(valueMap != null) {
+				ValueMap valueMap = expressor.express(includeActionRule.getAttributeItemRuleMap());
+
 				for(Map.Entry<String, Object> entry : valueMap.entrySet())
 					request.setAttribute(entry.getKey(), entry.getValue());
 			}

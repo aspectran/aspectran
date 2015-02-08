@@ -71,16 +71,16 @@ public class JspViewDispatcher implements ViewDispatcher {
 					responseAdapter.setCharacterEncoding(characterEncoding);
 			}
 			
-			String templateFile = dispatchResponseRule.getTemplateFile();
+			String templatePath = dispatchResponseRule.getTemplateRule().getFile();
 			ProcessResult processResult = activity.getProcessResult();
 
 			if(processResult != null)
-				parse(requestAdapter, processResult, null);
+				setAttribute(requestAdapter, processResult, null);
 
 			HttpServletRequest request = (HttpServletRequest)requestAdapter.getAdaptee();
 			HttpServletResponse response = (HttpServletResponse)responseAdapter.getAdaptee();
 			
-			RequestDispatcher requestDispatcher = request.getRequestDispatcher(templateFile);
+			RequestDispatcher requestDispatcher = request.getRequestDispatcher(templatePath);
 			requestDispatcher.forward(request, response);
 
 			if(debugEnabled) {
@@ -103,7 +103,7 @@ public class JspViewDispatcher implements ViewDispatcher {
 					logger.debug(sb2.toString());
 				}
 
-				logger.debug("JSP Dispatch {templateFile: " + templateFile + "}");
+				logger.debug("JSP Dispatch {templatePath: " + templatePath + "}");
 			}
 		} catch(Exception e) {
 			throw new DispatchResponseException("Dispatch response error: " + dispatchResponseRule, e);
@@ -117,13 +117,13 @@ public class JspViewDispatcher implements ViewDispatcher {
 	 * @param processResult the process result
 	 * @param parentFullActionId the parent action path
 	 */
-	private void parse(RequestAdapter requestAdapter, ProcessResult processResult, String parentFullActionId) {
+	private void setAttribute(RequestAdapter requestAdapter, ProcessResult processResult, String parentFullActionId) {
 		for(ContentResult contentResult : processResult) {
 			for(ActionResult actionResult : contentResult) {
 				Object actionResultValue = actionResult.getResultValue();
 
 				if(actionResultValue instanceof ProcessResult)
-					parse(requestAdapter, (ProcessResult)actionResultValue, actionResult.getFullActionId());
+					setAttribute(requestAdapter, (ProcessResult)actionResultValue, actionResult.getFullActionId());
 				else
 					requestAdapter.setAttribute(actionResult.getFullActionId(parentFullActionId), actionResultValue);
 			}

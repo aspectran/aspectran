@@ -8,6 +8,7 @@ import com.aspectran.core.var.apon.Parameters;
 public class TemplateParameters extends AbstractParameters implements Parameters {
 
 	public static final ParameterDefine file;
+	public static final ParameterDefine resource;
 	public static final ParameterDefine url;
 	public static final ParameterDefine content;
 	public static final ParameterDefine encoding;
@@ -17,6 +18,7 @@ public class TemplateParameters extends AbstractParameters implements Parameters
 
 	static {
 		file = new ParameterDefine("file", ParameterValueType.STRING);
+		resource = new ParameterDefine("url", ParameterValueType.STRING);
 		url = new ParameterDefine("url", ParameterValueType.STRING);
 		content = new ParameterDefine("content", ParameterValueType.TEXT);
 		encoding = new ParameterDefine("encoding", ParameterValueType.STRING);
@@ -24,6 +26,7 @@ public class TemplateParameters extends AbstractParameters implements Parameters
 		
 		parameterDefines = new ParameterDefine[] {
 				file,
+				resource,
 				url,
 				content,
 				encoding,

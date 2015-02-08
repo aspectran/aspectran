@@ -32,13 +32,7 @@ public class DispatchResponseRule extends ActionPossessSupport implements Action
 
 	protected String characterEncoding;
 
-	private String templateFile;
-	
-	private String templateEncoding;
-
-	private String templateContent;
-	
-	private boolean templateNoCache;
+	private TemplateRule templateRule;
 	
 	/**
 	 * Gets the content type.
@@ -76,36 +70,15 @@ public class DispatchResponseRule extends ActionPossessSupport implements Action
 		this.characterEncoding = characterEncoding;
 	}
 
-	public String getTemplateFile() {
-		return templateFile;
+	public TemplateRule getTemplateRule() {
+		return templateRule;
 	}
 
-	public void setTemplateFile(String templateFile) {
-		this.templateFile = templateFile;
-	}
-
-	public String getTemplateEncoding() {
-		return templateEncoding;
-	}
-
-	public void setTemplateEncoding(String templateEncoding) {
-		this.templateEncoding = templateEncoding;
-	}
-
-	public String getTemplateContent() {
-		return templateContent;
-	}
-
-	public void setTemplateContent(String templateContent) {
-		this.templateContent = templateContent;
-	}
-
-	public boolean getTemplateNoCache() {
-		return templateNoCache;
-	}
-
-	public void setTemplateNoCache(boolean templateNoCache) {
-		this.templateNoCache = templateNoCache;
+	public void setTemplateRule(TemplateRule templateRule) {
+		this.templateRule = templateRule;
+		
+		if(templateRule.getEncoding() != null && characterEncoding == null)
+			characterEncoding = templateRule.getEncoding();
 	}
 
 	/* (non-Javadoc)
@@ -117,6 +90,7 @@ public class DispatchResponseRule extends ActionPossessSupport implements Action
 
 		sb.append("{contentType=").append(contentType);
 		sb.append(", characterEncoding=").append(characterEncoding);
+		sb.append(", templateRule=").append(templateRule);
 		
 		if(actionList != null) {
 			sb.append(", actionList=");
@@ -134,12 +108,6 @@ public class DispatchResponseRule extends ActionPossessSupport implements Action
 			sb.append(']');
 		}
 
-		if(templateFile != null) {
-			sb.append(", templateFile=").append(templateFile);
-			sb.append(", templateEncoding=").append(templateEncoding);
-			sb.append(", templateNoCache=").append(templateNoCache);
-		}
-		
 		sb.append("}");
 		
 		return sb.toString();
@@ -151,13 +119,6 @@ public class DispatchResponseRule extends ActionPossessSupport implements Action
 		drr.setCharacterEncoding(characterEncoding);
 
 		return drr;
-	}
-	
-	public static void updateTemplate(DispatchResponseRule drr, String templateFile, String templateContent, String templateEncoding, boolean noCache) {
-		drr.setTemplateFile(templateFile);
-		drr.setTemplateEncoding(templateEncoding);
-		drr.setTemplateContent(templateContent);
-		drr.setTemplateNoCache(noCache);
 	}
 	
 }
