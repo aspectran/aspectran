@@ -9,7 +9,7 @@ public class ForwardParameters extends AbstractParameters implements Parameters 
 
 	public static final ParameterDefine contentType;
 	public static final ParameterDefine translet;
-	public static final ParameterDefine parameters;
+	public static final ParameterDefine attributes;
 	public static final ParameterDefine actions;
 	
 	private static final ParameterDefine[] parameterDefines;
@@ -17,13 +17,13 @@ public class ForwardParameters extends AbstractParameters implements Parameters 
 	static {
 		contentType = new ParameterDefine("contentType", ParameterValueType.STRING);
 		translet = new ParameterDefine("translet", ParameterValueType.STRING);
-		parameters = new ParameterDefine("parameter", new ItemParameters(), true);
+		attributes = new ParameterDefine("attribute", new ItemParameters(), true);
 		actions = new ParameterDefine("action", new ActionParameters(), true);
 		
 		parameterDefines = new ParameterDefine[] {
 				contentType,
 				translet,
-				parameters,
+				attributes,
 				actions
 		};
 	}

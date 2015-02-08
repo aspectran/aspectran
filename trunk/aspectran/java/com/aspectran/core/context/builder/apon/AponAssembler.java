@@ -26,8 +26,10 @@ import com.aspectran.core.context.builder.apon.params.AspectParameters;
 import com.aspectran.core.context.builder.apon.params.AspectranParameters;
 import com.aspectran.core.context.builder.apon.params.DispatchParameters;
 import com.aspectran.core.context.builder.apon.params.ExceptionRaizedParameters;
+import com.aspectran.core.context.builder.apon.params.ForwardParameters;
 import com.aspectran.core.context.builder.apon.params.JobParameters;
 import com.aspectran.core.context.builder.apon.params.JoinpointParameters;
+import com.aspectran.core.context.builder.apon.params.RedirectParameters;
 import com.aspectran.core.context.builder.apon.params.ResponseByContentTypeParameters;
 import com.aspectran.core.context.builder.apon.params.TemplateParameters;
 import com.aspectran.core.context.builder.apon.params.TransformParameters;
@@ -38,10 +40,12 @@ import com.aspectran.core.var.rule.AspectRule;
 import com.aspectran.core.var.rule.BeanActionRule;
 import com.aspectran.core.var.rule.DispatchResponseRule;
 import com.aspectran.core.var.rule.EchoActionRule;
+import com.aspectran.core.var.rule.ForwardResponseRule;
 import com.aspectran.core.var.rule.IncludeActionRule;
 import com.aspectran.core.var.rule.ItemRule;
 import com.aspectran.core.var.rule.ItemRuleMap;
 import com.aspectran.core.var.rule.PointcutRule;
+import com.aspectran.core.var.rule.RedirectResponseRule;
 import com.aspectran.core.var.rule.ResponseByContentTypeRule;
 import com.aspectran.core.var.rule.SettingsAdviceRule;
 import com.aspectran.core.var.rule.TemplateRule;
@@ -137,52 +141,52 @@ public class AponAssembler {
 			assistant.putBeanReference(adviceBeanId, aspectRule);
 		}
 		
-		List<Parameters> beforeActionParamsList = adviceParams.getParametersList(AdviceParameters.beforeActions);
-		if(beforeActionParamsList != null && beforeActionParamsList.size() > 0) {
-			for(Parameters actionParameters : beforeActionParamsList) {
-				AspectAdviceRule aspectAdviceRule = AspectAdviceRule.newInstance(aspectRule, AspectAdviceType.BEFORE);
-				assembleActionRule(actionParameters, aspectAdviceRule);
-				aspectRule.addAspectAdviceRule(aspectAdviceRule);
-			}
+		Parameters beforeActionParams = adviceParams.getParameters(AdviceParameters.beforeAction);
+		if(beforeActionParams != null) {
+			AspectAdviceRule aspectAdviceRule = AspectAdviceRule.newInstance(aspectRule, AspectAdviceType.BEFORE);
+			assembleActionRule(beforeActionParams, aspectAdviceRule);
+			aspectRule.addAspectAdviceRule(aspectAdviceRule);
 		}
 		
-		List<Parameters> afterActionParamsList = adviceParams.getParametersList(AdviceParameters.afterActions);
-		if(afterActionParamsList != null && afterActionParamsList.size() > 0) {
-			for(Parameters actionParameters : afterActionParamsList) {
-				AspectAdviceRule aspectAdviceRule = AspectAdviceRule.newInstance(aspectRule, AspectAdviceType.AFTER);
-				assembleActionRule(actionParameters, aspectAdviceRule);
-				aspectRule.addAspectAdviceRule(aspectAdviceRule);
-			}
+		Parameters afterActionParams = adviceParams.getParameters(AdviceParameters.afterAction);
+		if(afterActionParams != null) {
+			AspectAdviceRule aspectAdviceRule = AspectAdviceRule.newInstance(aspectRule, AspectAdviceType.AFTER);
+			assembleActionRule(afterActionParams, aspectAdviceRule);
+			aspectRule.addAspectAdviceRule(aspectAdviceRule);
 		}
 
-		List<Parameters> aroundActionParamsList = adviceParams.getParametersList(AdviceParameters.aroundActions);
-		if(aroundActionParamsList != null && aroundActionParamsList.size() > 0) {
-			for(Parameters actionParameters : aroundActionParamsList) {
-				AspectAdviceRule aspectAdviceRule = AspectAdviceRule.newInstance(aspectRule, AspectAdviceType.AROUND);
-				assembleActionRule(actionParameters, aspectAdviceRule);
-				aspectRule.addAspectAdviceRule(aspectAdviceRule);
-			}
+		Parameters aroundActionParams = adviceParams.getParameters(AdviceParameters.aroundAction);
+		if(aroundActionParams != null) {
+			AspectAdviceRule aspectAdviceRule = AspectAdviceRule.newInstance(aspectRule, AspectAdviceType.AROUND);
+			assembleActionRule(aroundActionParams, aspectAdviceRule);
+			aspectRule.addAspectAdviceRule(aspectAdviceRule);
 		}
 
-		List<Parameters> finallyActionParamsList = adviceParams.getParametersList(AdviceParameters.finallyActions);
-		if(finallyActionParamsList != null && finallyActionParamsList.size() > 0) {
-			for(Parameters actionParameters : finallyActionParamsList) {
-				AspectAdviceRule aspectAdviceRule = AspectAdviceRule.newInstance(aspectRule, AspectAdviceType.AROUND);
-				assembleActionRule(actionParameters, aspectAdviceRule);
-				aspectRule.addAspectAdviceRule(aspectAdviceRule);
-			}
+		Parameters finallyActionParams = adviceParams.getParameters(AdviceParameters.finallyAction);
+		if(finallyActionParams != null) {
+			AspectAdviceRule aspectAdviceRule = AspectAdviceRule.newInstance(aspectRule, AspectAdviceType.AROUND);
+			assembleActionRule(finallyActionParams, aspectAdviceRule);
+			aspectRule.addAspectAdviceRule(aspectAdviceRule);
 		}
 
 		Parameters exceptionRaizedParams = adviceParams.getParameters(AdviceParameters.exceptionRaized);
 		if(exceptionRaizedParams != null) {
-//			actions = new ParameterDefine("action", new ActionParameters(), true);
-//			responseByContentType = new ParameterDefine("responseByContentType", new ResponseByContentTypeParameters());
-//			defaultResponse = new ParameterDefine("defaultResponse", new DefaultResponseParameters());
-
 			AspectAdviceRule aspectAdviceRule = AspectAdviceRule.newInstance(aspectRule, AspectAdviceType.EXCPETION_RAIZED);
-			List<Parameters> actionParamsList = exceptionRaizedParams.getParametersList(ExceptionRaizedParameters.actions);
+
+			Parameters actionParams = exceptionRaizedParams.getParameters(ExceptionRaizedParameters.action);
+			if(actionParams != null) {
+				assembleActionRule(actionParams, aspectAdviceRule);
+			}
+
+			List<Parameters> rrtrParametersList = exceptionRaizedParams.getParametersList(ExceptionRaizedParameters.responseByContentTypes);
+			if(rrtrParametersList != null && rrtrParametersList.size() > 0) {
+				for(Parameters rrtrParameters : rrtrParametersList) {
+					ResponseByContentTypeRule rrtr = assembleResponseByContentTypeRule(rrtrParameters);
+					aspectAdviceRule.addResponseByContentTypeRule(rrtr);
+				}
+			}
 			
-			
+			aspectRule.addAspectAdviceRule(aspectAdviceRule);
 		}
 		
 		List<Parameters> jobParamsList = adviceParams.getParametersList(AdviceParameters.jobs);
@@ -209,14 +213,16 @@ public class AponAssembler {
 	public ResponseByContentTypeRule assembleResponseByContentTypeRule(Parameters responseByContentTypeParameters) {
 		ResponseByContentTypeRule rbctr = new ResponseByContentTypeRule();
 		
-//		exceptionType = new ParameterDefine("exceptionType", ParameterValueType.STRING);
-//		dispatchs = new ParameterDefine("dispatch", new DispatchParameters(), true);
-//		transforms = new ParameterDefine("transform", new TransformParameters(), true);
-//		redirects = new ParameterDefine("redirect", new RedirectParameters(), true);
-//		forwards = new ParameterDefine("forward", new ForwardParameters(), true);
-		
 		String exceptionType = responseByContentTypeParameters.getString(ResponseByContentTypeParameters.exceptionType);
 		rbctr.setExceptionType(exceptionType);
+		
+		List<Parameters> transformParamsList = responseByContentTypeParameters.getParametersList(ResponseByContentTypeParameters.transforms);
+		if(transformParamsList != null && transformParamsList.size() > 0) {
+			for(Parameters transformParameters : transformParamsList) {
+				TransformRule tr = assembleTransformRule(transformParameters);
+				rbctr.applyResponseRule(tr);
+			}
+		}
 		
 		List<Parameters> dispatchParamsList = responseByContentTypeParameters.getParametersList(ResponseByContentTypeParameters.dispatchs);
 		if(dispatchParamsList != null && dispatchParamsList.size() > 0) {
@@ -225,13 +231,55 @@ public class AponAssembler {
 				rbctr.applyResponseRule(drr);
 			}
 		}
-		
-		List<Parameters> transformParamsList = responseByContentTypeParameters.getParametersList(ResponseByContentTypeParameters.transforms);
+
 		List<Parameters> redirectParamsList = responseByContentTypeParameters.getParametersList(ResponseByContentTypeParameters.redirects);
-		List<Parameters> tranformParamsList = responseByContentTypeParameters.getParametersList(ResponseByContentTypeParameters.transforms);
+		if(redirectParamsList != null && redirectParamsList.size() > 0) {
+			for(Parameters redirectParameters : redirectParamsList) {
+				RedirectResponseRule rrr = assembleRedirectResponseRule(redirectParameters);
+				rbctr.applyResponseRule(rrr);
+			}
+		}
 		
+		List<Parameters> forwardParamsList = responseByContentTypeParameters.getParametersList(ResponseByContentTypeParameters.forwards);
+		if(forwardParamsList != null && forwardParamsList.size() > 0) {
+			for(Parameters forwardParameters : forwardParamsList) {
+				ForwardResponseRule frr = assembleForwardResponseRule(forwardParameters);
+				rbctr.applyResponseRule(frr);
+			}
+		}
 		
 		return rbctr;
+	}
+	
+	public TransformRule assembleTransformRule(Parameters transformParameters) {
+		String transformType = transformParameters.getString(TransformParameters.transformType);
+		String contentType = transformParameters.getString(TransformParameters.contentType);
+		String characterEncoding = transformParameters.getString(TransformParameters.characterEncoding);
+		Parameters templateParams = transformParameters.getParameters(TransformParameters.template);
+		List<Parameters> actionParamsList = transformParameters.getParametersList(TransformParameters.actions);
+		
+		TransformRule tr = TransformRule.newInstance(transformType, contentType, characterEncoding);
+		
+		if(actionParamsList != null && actionParamsList.size()> 0) {
+			ActionList actionList = new ActionList();
+			for(Parameters actionParameters : actionParamsList) {
+				assembleActionRule(actionParameters, actionList);
+			}
+			tr.setActionList(actionList);
+		}
+		
+		if(templateParams != null) {
+			String file = templateParams.getString(TemplateParameters.file);
+			String resource = templateParams.getString(TemplateParameters.resource);
+			String url = templateParams.getString(TemplateParameters.url);
+			String content = templateParams.getText(TemplateParameters.content);
+			String encoding = templateParams.getString(TemplateParameters.encoding);
+			boolean noCache = templateParams.getBoolean(TemplateParameters.noCache);
+			TemplateRule templateRule = TemplateRule.newInstance(file, resource, url, content, encoding, noCache);
+			tr.setTemplateRule(templateRule);
+		}
+		
+		return tr;
 	}
 	
 	public DispatchResponseRule assembleDispatchResponseRule(Parameters dispatchParameters) {
@@ -261,35 +309,54 @@ public class AponAssembler {
 		return drr;
 	}
 	
-	public TransformRule assembleTransformResponseRule(Parameters transformParameters) {
-		String transformType = transformParameters.getString(TransformParameters.transformType);
-		String contentType = transformParameters.getString(TransformParameters.contentType);
-		String characterEncoding = transformParameters.getString(TransformParameters.characterEncoding);
-		Parameters templateParams = transformParameters.getParameters(TransformParameters.template);
-		List<Parameters> actionParamsList = transformParameters.getParametersList(TransformParameters.actions);
+	public RedirectResponseRule assembleRedirectResponseRule(Parameters redirectParameters) {
+		String contentType = redirectParameters.getString(RedirectParameters.contentType);
+		String translet = redirectParameters.getString(RedirectParameters.translet);
+		String url = redirectParameters.getString(RedirectParameters.url);
+		List<Parameters> parameterParamsList = redirectParameters.getParametersList(RedirectParameters.parameters);
+		boolean excludeNullParameter = redirectParameters.getBoolean(RedirectParameters.excludeNullParameter);
+		List<Parameters> actionParamsList = redirectParameters.getParametersList(RedirectParameters.actions);
 		
-		TransformRule tr = TransformRule.newInstance(transformType, contentType, characterEncoding);
+		RedirectResponseRule rrr = RedirectResponseRule.newInstance(contentType, translet, url, excludeNullParameter);
+		
+		ItemRuleMap parameterItemRuleMap = assembleItemRuleMap(parameterParamsList);
+		if(parameterItemRuleMap != null) {
+			rrr.setParameterItemRuleMap(parameterItemRuleMap);
+		}
 		
 		if(actionParamsList != null && actionParamsList.size()> 0) {
 			ActionList actionList = new ActionList();
 			for(Parameters actionParameters : actionParamsList) {
 				assembleActionRule(actionParameters, actionList);
 			}
-			tr.setActionList(actionList);
+			rrr.setActionList(actionList);
 		}
 		
-		if(templateParams != null) {
-			String file = templateParams.getString(TemplateParameters.file);
-			String resource = templateParams.getString(TemplateParameters.resource);
-			String url = templateParams.getString(TemplateParameters.url);
-			String content = templateParams.getText(TemplateParameters.content);
-			String encoding = templateParams.getString(TemplateParameters.encoding);
-			boolean noCache = templateParams.getBoolean(TemplateParameters.noCache);
-			TemplateRule templateRule = TemplateRule.newInstance(file, resource, url, content, encoding, noCache);
-			tr.setTemplateRule(templateRule);
+		return rrr;
+	}
+	
+	public ForwardResponseRule assembleForwardResponseRule(Parameters forwardParameters) {
+		String contentType = forwardParameters.getString(ForwardParameters.contentType);
+		String translet = forwardParameters.getString(ForwardParameters.translet);
+		List<Parameters> attributeParamsList = forwardParameters.getParametersList(ForwardParameters.attributes);
+		List<Parameters> actionParamsList = forwardParameters.getParametersList(ForwardParameters.actions);
+		
+		ForwardResponseRule rrr = ForwardResponseRule.newInstance(contentType, translet);
+		
+		ItemRuleMap attributeItemRuleMap = assembleItemRuleMap(attributeParamsList);
+		if(attributeItemRuleMap != null) {
+			rrr.setAttributeItemRuleMap(attributeItemRuleMap);
 		}
 		
-		return tr;
+		if(actionParamsList != null && actionParamsList.size()> 0) {
+			ActionList actionList = new ActionList();
+			for(Parameters actionParameters : actionParamsList) {
+				assembleActionRule(actionParameters, actionList);
+			}
+			rrr.setActionList(actionList);
+		}
+		
+		return rrr;
 	}
 	
 	public void assembleActionRule(Parameters actionParameters, ActionRuleApplicable actionRuleApplicable) {

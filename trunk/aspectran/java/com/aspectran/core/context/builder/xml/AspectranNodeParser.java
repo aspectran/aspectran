@@ -24,7 +24,6 @@ import org.w3c.dom.Node;
 
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.activity.process.ContentList;
-import com.aspectran.core.activity.response.ResponseMap;
 import com.aspectran.core.context.builder.ContextBuilderAssistant;
 import com.aspectran.core.context.builder.DefaultSettings;
 import com.aspectran.core.util.StringUtils;
@@ -562,44 +561,19 @@ public class AspectranNodeParser {
 				transletRule.addResponseRule(responseRule);
 			}
 		});
-		parser.addNodelet("/aspectran/translet/exception", new Nodelet() {
-			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
-				ResponseByContentTypeRule rbctr = ResponseByContentTypeRule.newInstance();
-				assistant.pushObject(rbctr);
-			}
-		});
 		parser.addNodelet("/aspectran/translet/exception/responseByContentType", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
 				String exceptionType = attributes.get("exceptionType");
 
-				ResponseByContentTypeRule rbctr = (ResponseByContentTypeRule)assistant.peekObject();
-				rbctr.setExceptionType(exceptionType);
-			}
-		});
-		parser.addNodelet("/aspectran/translet/exception/responseByContentType", new ResponseRuleNodeletAdder(assistant));
-		parser.addNodelet("/aspectran/translet/exception/defaultResponse", new Nodelet() {
-			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
-				ResponseByContentTypeRule rbctr = ResponseByContentTypeRule.newInstance();
+				ResponseByContentTypeRule rbctr = ResponseByContentTypeRule.newInstance(exceptionType);
 				assistant.pushObject(rbctr);
 			}
 		});
-		parser.addNodelet("/aspectran/translet/exception/defaultResponse", new ResponseRuleNodeletAdder(assistant));
-		parser.addNodelet("/aspectran/translet/exception/defaultResponse/end()", new Nodelet() {
-			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
-				ResponseByContentTypeRule rbctr = (ResponseByContentTypeRule)assistant.popObject();
-				ResponseMap responseMap = rbctr.getResponseMap();
-				
-				if(responseMap.size() > 0) {
-					ResponseByContentTypeRule rbctr2 = (ResponseByContentTypeRule)assistant.peekObject();
-					rbctr2.setDefaultResponse(responseMap.get(0));
-				}
-			}
-		});
-		parser.addNodelet("/aspectran/translet/exception/end()", new Nodelet() {
+		parser.addNodelet("/aspectran/translet/exception/responseByContentType", new ResponseRuleNodeletAdder(assistant));
+		parser.addNodelet("/aspectran/translet/exception/responseByContentType/end()", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
 				ResponseByContentTypeRule rbctr = (ResponseByContentTypeRule)assistant.popObject();
 				TransletRule transletRule = (TransletRule)assistant.peekObject();
-
 				transletRule.addExceptionHandlingRule(rbctr);
 			}
 		});

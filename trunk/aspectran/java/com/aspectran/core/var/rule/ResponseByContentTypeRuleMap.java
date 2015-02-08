@@ -38,12 +38,13 @@ public class ResponseByContentTypeRuleMap extends LinkedHashMap<String, Response
 	public ResponseByContentTypeRule putResponseByContentTypeRule(ResponseByContentTypeRule responseByContentTypeRule) {
 		String exceptionType = responseByContentTypeRule.getExceptionType();
 		
-		if(exceptionType == null) {
+		if(exceptionType != null) {
+			put(exceptionType, responseByContentTypeRule);
+		} else { 
 			this.defaultResponseByContentTypeRule = responseByContentTypeRule;
-			return responseByContentTypeRule;
 		}
 		
-		return put(exceptionType, responseByContentTypeRule);
+		return responseByContentTypeRule;
 	}
 	
 	public ResponseByContentTypeRule getResponseByContentTypeRule(Exception ex) {

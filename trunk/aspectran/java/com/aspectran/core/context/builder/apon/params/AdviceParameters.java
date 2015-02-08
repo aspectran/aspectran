@@ -8,10 +8,10 @@ import com.aspectran.core.util.apon.Parameters;
 public class AdviceParameters extends AbstractParameters implements Parameters {
 
 	public static final ParameterDefine bean;
-	public static final ParameterDefine beforeActions;
-	public static final ParameterDefine afterActions;
-	public static final ParameterDefine aroundActions;
-	public static final ParameterDefine finallyActions;
+	public static final ParameterDefine beforeAction;
+	public static final ParameterDefine afterAction;
+	public static final ParameterDefine aroundAction;
+	public static final ParameterDefine finallyAction;
 	public static final ParameterDefine exceptionRaized;
 	public static final ParameterDefine jobs;
 	
@@ -19,19 +19,19 @@ public class AdviceParameters extends AbstractParameters implements Parameters {
 	
 	static {
 		bean = new ParameterDefine("bean", ParameterValueType.STRING);
-		beforeActions = new ParameterDefine("before", new ActionParameters(), true);
-		afterActions = new ParameterDefine("after", new ActionParameters(), true);
-		aroundActions = new ParameterDefine("around", new ActionParameters(), true);
-		finallyActions = new ParameterDefine("finally", new ActionParameters(), true);
+		beforeAction = new ParameterDefine("before", new ActionParameters());
+		afterAction = new ParameterDefine("after", new ActionParameters());
+		aroundAction = new ParameterDefine("around", new ActionParameters());
+		finallyAction = new ParameterDefine("finally", new ActionParameters());
 		exceptionRaized = new ParameterDefine("exceptionRaized", new ExceptionRaizedParameters());
 		jobs = new ParameterDefine("job", new JobParameters(), true);
 		
 		parameterDefines = new ParameterDefine[] {
 				bean,
-				beforeActions,
-				afterActions,
-				aroundActions,
-				finallyActions,
+				beforeAction,
+				afterAction,
+				aroundAction,
+				finallyAction,
 				exceptionRaized,
 				jobs
 		};
