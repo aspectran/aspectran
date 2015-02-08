@@ -20,8 +20,8 @@ import java.util.Map;
 import java.util.Set;
 
 import com.aspectran.core.util.StringUtils;
-import com.aspectran.core.var.apon.GenericParameters;
-import com.aspectran.core.var.apon.Parameters;
+import com.aspectran.core.util.apon.GenericParameters;
+import com.aspectran.core.util.apon.Parameters;
 import com.aspectran.core.var.type.AspectAdviceType;
 
 public class SettingsAdviceRule {

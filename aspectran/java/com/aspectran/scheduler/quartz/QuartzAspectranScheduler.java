@@ -23,7 +23,7 @@ import org.slf4j.LoggerFactory;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.AspectranConstant;
 import com.aspectran.core.context.builder.apon.params.SimpleTriggerParameters;
-import com.aspectran.core.var.apon.Parameters;
+import com.aspectran.core.util.apon.Parameters;
 import com.aspectran.core.var.rule.AspectJobAdviceRule;
 import com.aspectran.core.var.rule.AspectRule;
 import com.aspectran.core.var.rule.AspectRuleMap;

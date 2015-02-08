@@ -1,8 +1,8 @@
 package com.aspectran.core.context.builder.apon.params;
 
-import com.aspectran.core.var.apon.AbstractParameters;
-import com.aspectran.core.var.apon.ParameterDefine;
-import com.aspectran.core.var.apon.Parameters;
+import com.aspectran.core.util.apon.AbstractParameters;
+import com.aspectran.core.util.apon.ParameterDefine;
+import com.aspectran.core.util.apon.Parameters;
 
 public class ConstructorParameters extends AbstractParameters implements Parameters {
 
