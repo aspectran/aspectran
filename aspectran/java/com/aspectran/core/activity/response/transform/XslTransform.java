@@ -143,8 +143,8 @@ public class XslTransform extends AbstractTransform implements Responsible {
 				StringWriter writer = new StringWriter();
 				TransformerFactory transformerFactory = TransformerFactory.newInstance();
 				transformer = transformerFactory.newTransformer();
-				transformer.setOutputProperty(OutputKeys.INDENT, XmlTransform.OUTPUT_INDENT);
-				transformer.setOutputProperty(OutputKeys.METHOD, XmlTransform.OUTPUT_METHOD);
+				transformer.setOutputProperty(OutputKeys.INDENT, XmlTransform.OUTPUT_INDENT_YES);
+				transformer.setOutputProperty(OutputKeys.METHOD, XmlTransform.OUTPUT_METHOD_XML);
 				transformer.transform(new SAXSource(xreader, isource), new StreamResult(writer));
 				logger.trace("XML Source: " + AspectranConstant.LINE_SEPARATOR + writer.toString());
 			}
