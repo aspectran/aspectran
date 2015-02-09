@@ -44,9 +44,9 @@ import com.aspectran.core.var.rule.TransformRule;
  */
 public class XmlTransform extends AbstractTransform implements Responsible {
 
-	public static final String OUTPUT_INDENT = "yes";
+	public static final String OUTPUT_INDENT_YES = "yes";
 
-	public static final String OUTPUT_METHOD = "xml";
+	public static final String OUTPUT_METHOD_XML = "xml";
 	
 	private final Logger logger = LoggerFactory.getLogger(XmlTransform.class);
 
@@ -92,9 +92,11 @@ public class XmlTransform extends AbstractTransform implements Responsible {
 			String encoding = transformRule.getCharacterEncoding();
 			
 			TransformerFactory transformerFactory = TransformerFactory.newInstance();
+			transformerFactory.setAttribute("indent-number", new Integer(1));
+
 			Transformer transformer = transformerFactory.newTransformer();
-			transformer.setOutputProperty(OutputKeys.INDENT, OUTPUT_INDENT);
-			transformer.setOutputProperty(OutputKeys.METHOD, OUTPUT_METHOD);
+			transformer.setOutputProperty(OutputKeys.INDENT, OUTPUT_INDENT_YES);
+			transformer.setOutputProperty(OutputKeys.METHOD, OUTPUT_METHOD_XML);
 			
 			if(encoding != null)
 				transformer.setOutputProperty(OutputKeys.ENCODING, encoding);
