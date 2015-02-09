@@ -13,6 +13,7 @@
 			<destroyMethod></destroyMethod>
 			<lazyInit>false</lazyInit>
 			<poolSize>0</poolSize>
+			<override>false</override>
 		</features>
 		<constructor>
 			<arguments>
