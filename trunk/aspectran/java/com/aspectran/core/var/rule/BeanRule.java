@@ -51,7 +51,7 @@ public class BeanRule {
 	
 	protected Boolean lazyInit;
 
-	protected Boolean override;
+	protected Boolean important;
 
 	protected ItemRuleMap constructorArgumentItemRuleMap;
 	
@@ -213,16 +213,16 @@ public class BeanRule {
 		this.lazyInit = lazyInit;
 	}
 
-	public Boolean getOverride() {
-		return override;
+	public Boolean getImportant() {
+		return important;
 	}
 
-	public boolean isOverride() {
-		return BooleanUtils.toBoolean(override);
+	public boolean isImportant() {
+		return BooleanUtils.toBoolean(important);
 	}
 	
-	public void setOverride(Boolean override) {
-		this.override = override;
+	public void setImportanct(Boolean important) {
+		this.important = important;
 	}
 
 	/**
@@ -327,7 +327,7 @@ public class BeanRule {
 		sb.append(", initMethod=").append(initMethodName);
 		sb.append(", destroyMethod=").append(destroyMethodName);
 		sb.append(", lazyInit=").append(lazyInit);
-		sb.append(", override=").append(override);
+		sb.append(", important=").append(important);
 
 		if(constructorArgumentItemRuleMap != null) {
 			sb.append(", constructorArguments=[");
@@ -362,7 +362,7 @@ public class BeanRule {
 		return sb.toString();
 	}
 	
-	public static BeanRule[] newInstance(ClassLoader classLoader, String id, String className, String scope, boolean singleton, String factoryMethod, String initMethodName, String destroyMethodName, Boolean lazyInit, Boolean override) throws ClassNotFoundException, IOException {
+	public static BeanRule[] newInstance(ClassLoader classLoader, String id, String className, String scope, Boolean singleton, String factoryMethod, String initMethodName, String destroyMethodName, Boolean lazyInit, Boolean important) throws ClassNotFoundException, IOException {
 		if(id == null)
 			throw new IllegalArgumentException("The <bean> element requires a id attribute.");
 
@@ -375,7 +375,7 @@ public class BeanRule {
 			throw new IllegalArgumentException("No scope-type registered for scope '" + scope + "'.");
 		
 		if(scopeType == null)
-			scopeType = singleton ? ScopeType.SINGLETON : ScopeType.PROTOTYPE;
+			scopeType = singleton == Boolean.TRUE ? ScopeType.SINGLETON : ScopeType.PROTOTYPE;
 		
 		BeanRule[] beanRules = null;
 		
@@ -389,7 +389,7 @@ public class BeanRule {
 			beanRule.setScopeType(scopeType);
 			beanRule.setFactoryMethodName(factoryMethod);
 			beanRule.setLazyInit(lazyInit);
-			beanRule.setOverride(override);
+			beanRule.setImportanct(important);
 			
 			updateAccessibleMethod(beanRule, beanClass, initMethodName, destroyMethodName);			
 			
@@ -413,7 +413,7 @@ public class BeanRule {
 					beanRule.setScopeType(scopeType);
 					beanRule.setFactoryMethodName(factoryMethod);
 					beanRule.setLazyInit(lazyInit);
-					beanRule.setOverride(override);
+					beanRule.setImportanct(important);
 					beanRule.setStealthily(true);
 					
 					updateAccessibleMethod(beanRule, beanClass2, initMethodName, destroyMethodName);			
@@ -451,7 +451,7 @@ public class BeanRule {
 		beanRule.setDestroyMethodName(destroyMethodName);
 	}
 	
-	public static void addConstructorArgument(BeanRule[] beanRules, List<Parameters> argumentParameterList) {
+	public static void updateConstructorArgument(BeanRule[] beanRules, List<Parameters> argumentParameterList) {
 		ItemRuleMap itemRuleMap = ItemRule.toItemRuleMap(argumentParameterList);
 		
 		if(itemRuleMap == null)
@@ -471,7 +471,7 @@ public class BeanRule {
 		}
 	}
 	
-	public static void addProperty(BeanRule[] beanRules, List<Parameters> propertyParameterList) {
+	public static void updateProperty(BeanRule[] beanRules, List<Parameters> propertyParameterList) {
 		ItemRuleMap itemRuleMap = ItemRule.toItemRuleMap(propertyParameterList);
 		
 		if(itemRuleMap == null)

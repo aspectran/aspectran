@@ -15,6 +15,7 @@
  */
 package com.aspectran.core.context.builder.apon;
 
+import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 
@@ -25,25 +26,22 @@ import com.aspectran.core.context.builder.apon.params.AdviceParameters;
 import com.aspectran.core.context.builder.apon.params.AspectParameters;
 import com.aspectran.core.context.builder.apon.params.AspectranParameters;
 import com.aspectran.core.context.builder.apon.params.BeanParameters;
-import com.aspectran.core.context.builder.apon.params.DefaultSettingsParameters;
 import com.aspectran.core.context.builder.apon.params.DispatchParameters;
 import com.aspectran.core.context.builder.apon.params.ExceptionRaizedParameters;
 import com.aspectran.core.context.builder.apon.params.ForwardParameters;
-import com.aspectran.core.context.builder.apon.params.ImportParameters;
 import com.aspectran.core.context.builder.apon.params.JobParameters;
 import com.aspectran.core.context.builder.apon.params.JoinpointParameters;
 import com.aspectran.core.context.builder.apon.params.RedirectParameters;
 import com.aspectran.core.context.builder.apon.params.ResponseByContentTypeParameters;
 import com.aspectran.core.context.builder.apon.params.TemplateParameters;
 import com.aspectran.core.context.builder.apon.params.TransformParameters;
-import com.aspectran.core.context.builder.apon.params.TransletParameters;
-import com.aspectran.core.util.apon.GenericParameters;
-import com.aspectran.core.util.apon.ParameterDefine;
+import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.apon.Parameters;
 import com.aspectran.core.var.rule.AspectAdviceRule;
 import com.aspectran.core.var.rule.AspectJobAdviceRule;
 import com.aspectran.core.var.rule.AspectRule;
 import com.aspectran.core.var.rule.BeanActionRule;
+import com.aspectran.core.var.rule.BeanRule;
 import com.aspectran.core.var.rule.DispatchResponseRule;
 import com.aspectran.core.var.rule.EchoActionRule;
 import com.aspectran.core.var.rule.ForwardResponseRule;
@@ -87,6 +85,7 @@ public class AponAssembler {
 		assembleDefaultSettings(aspectranParameters.getParameters(AspectranParameters.setting));
 		assembleTypeAlias(aspectranParameters.getParameters(AspectranParameters.typeAlias));
 		assembleAspectRule(aspectranParameters.getParametersList(AspectranParameters.aspects));
+		assembleBeanRule(aspectranParameters.getParametersList(AspectranParameters.beans));
 	}
 	
 	public void assembleDefaultSettings(Parameters parameters) {
@@ -120,6 +119,51 @@ public class AponAssembler {
 		while(iter.hasNext()) {
 			String alias = iter.next();
 			assistant.addTypeAlias(alias, parameters.getString(alias));
+		}
+	}
+
+	public void assembleBeanRule(List<Parameters> beanParametersList) {
+		for(Parameters beanParameters : beanParametersList) {
+			assembleAspectRule(beanParameters);
+		}
+	}
+
+	public void assembleBeanRule(Parameters beanParameters) throws ClassNotFoundException, IOException {
+		String id = beanParameters.getString(BeanParameters.id);
+		String className = beanParameters.getString(BeanParameters.className);
+		String scope = beanParameters.getString(BeanParameters.scope);
+		Boolean singleton = beanParameters.getBoolean(BeanParameters.singleton);
+		String factoryMethod = beanParameters.getString(BeanParameters.factoryMethod);
+		String initMethod = beanParameters.getString(BeanParameters.initMethod);
+		String destroyMethod = beanParameters.getString(BeanParameters.destroyMethod);
+		Boolean lazyInit = beanParameters.getBoolean(BeanParameters.lazyInit);
+		Boolean important = beanParameters.getBoolean(BeanParameters.important);
+		List<Parameters> constructorArgumentParamsList = beanParameters.getParametersList(BeanParameters.constructor);
+		List<Parameters> propertyParamsList = beanParameters.getParametersList(BeanParameters.properties);
+		
+		if(id != null) {
+			id = assistant.applyNamespaceForBean(id);
+		}
+		
+		ItemRuleMap constructorArgumentItemRuleMap = assembleItemRuleMap(constructorArgumentParamsList);
+		ItemRuleMap propertyItemRuleMap = assembleItemRuleMap(propertyParamsList);
+
+		BeanRule[] beanRules = BeanRule.newInstance(assistant.getClassLoader(), id, className, scope, singleton, factoryMethod, initMethod, destroyMethod, lazyInit, important);
+		
+		if(beanRules.length == 1) {
+			if(constructorArgumentItemRuleMap != null)
+				beanRules[0].setConstructorArgumentItemRuleMap(constructorArgumentItemRuleMap);
+			if(propertyItemRuleMap != null)
+				beanRules[0].setPropertyItemRuleMap(propertyItemRuleMap);
+			assistant.addBeanRule(beanRules[0]);
+		} else if(beanRules.length > 1) {
+			for(BeanRule beanRule : beanRules) {
+				if(constructorArgumentItemRuleMap != null)
+					beanRule.setConstructorArgumentItemRuleMap(constructorArgumentItemRuleMap);
+				if(propertyItemRuleMap != null)
+					beanRule.setPropertyItemRuleMap(propertyItemRuleMap);
+				assistant.addBeanRule(beanRule);
+			}
 		}
 	}
 	
@@ -208,6 +252,9 @@ public class AponAssembler {
 			for(Parameters jobParameters : jobParamsList) {
 				String translet = jobParameters.getString(JobParameters.translet);
 				Boolean disabled = jobParameters.getBoolean(JobParameters.disabled);
+				
+				translet = assistant.getFullTransletName(translet);
+				
 				AspectJobAdviceRule ajar = AspectJobAdviceRule.newInstance(aspectRule, translet, disabled);
 				aspectRule.addAspectJobAdviceRule(ajar);
 			}
@@ -351,6 +398,8 @@ public class AponAssembler {
 		List<Parameters> actionParamsList = forwardParameters.getParametersList(ForwardParameters.actions);
 		Boolean defaultResponse = forwardParameters.getBoolean(ForwardParameters.defaultResponse);
 		
+		translet = assistant.getFullTransletName(translet);
+		
 		ForwardResponseRule rrr = ForwardResponseRule.newInstance(contentType, translet, defaultResponse);
 		
 		ItemRuleMap attributeItemRuleMap = assembleItemRuleMap(attributeParamsList);
@@ -378,6 +427,9 @@ public class AponAssembler {
 		String include = actionParameters.getString(ActionParameters.include);
 		List<Parameters> echoParamsList = actionParameters.getParametersList(ActionParameters.echo);
 		Boolean hidden = actionParameters.getBoolean(ActionParameters.include);
+		
+		if(!assistant.isNullableActionId() && StringUtils.isEmpty(id))
+			throw new IllegalArgumentException("The <echo>, <action>, <include> element requires a id attribute.");
 		
 		if(beanId != null && methodName != null) {
 			BeanActionRule beanActionRule = BeanActionRule.newInstance(id, beanId, methodName, hidden);
