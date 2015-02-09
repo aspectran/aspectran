@@ -31,19 +31,21 @@ public class BeanRuleMap extends LinkedHashMap<String, BeanRule> implements Iter
 	
 	private boolean freezed;
 	
-	public BeanRule put(String key, BeanRule value) {
+	public BeanRule put(String beanId, BeanRule beanRule) {
 		if(freezed)
 			throw new UnsupportedOperationException("freezed BeanRuleMap: " + toString());
 
-		if(value.isOverride()) {
-			if(containsKey(value))
-				value.setOverrided(true);
-		} else {
-			if(containsKey(value))
+		BeanRule br = get(beanId);
+		
+		if(br != null) {
+			if(br.isImportant()) {
 				return null;
+			} else {
+				beanRule.setOverrided(true);
+			}
 		}
 		
-		return super.put(key, value);
+		return super.put(beanId, beanRule);
 	}
 
 	/**

@@ -355,18 +355,18 @@ public class AspectranNodeParser {
 				String id = attributes.get("id");
 				String className = resolveAliasType(attributes.get("class"));
 				String scope = attributes.get("scope");
-				boolean singleton = Boolean.parseBoolean(attributes.get("singleton"));
+				Boolean singleton = BooleanUtils.toNullableBooleanObject(attributes.get("singleton"));
 				String factoryMethod = attributes.get("factoryMethod");
 				String initMethodName = attributes.get("initMethod");
 				String destroyMethodName = attributes.get("destroyMethod");
 				Boolean lazyInit = BooleanUtils.toNullableBooleanObject(attributes.get("lazyInit"));
-				Boolean override = BooleanUtils.toNullableBooleanObject(attributes.get("override"));
+				Boolean important = BooleanUtils.toNullableBooleanObject(attributes.get("important"));
 
 				if(id != null) {
 					id = assistant.applyNamespaceForBean(id);
 				}
 
-				BeanRule[] beanRules = BeanRule.newInstance(assistant.getClassLoader(), id, className, scope, singleton, factoryMethod, initMethodName, destroyMethodName, lazyInit, override);
+				BeanRule[] beanRules = BeanRule.newInstance(assistant.getClassLoader(), id, className, scope, singleton, factoryMethod, initMethodName, destroyMethodName, lazyInit, important);
 	
 				assistant.pushObject(beanRules);					
 			}
@@ -378,7 +378,7 @@ public class AspectranNodeParser {
 					
 					if(argumentParameterList != null) {
 						BeanRule[] beanRules = (BeanRule[])assistant.peekObject();
-						BeanRule.addConstructorArgument(beanRules, argumentParameterList);
+						BeanRule.updateConstructorArgument(beanRules, argumentParameterList);
 					}
 				}
 				
@@ -404,7 +404,7 @@ public class AspectranNodeParser {
 					
 					if(argumentParameterList != null) {
 						BeanRule[] beanRules = (BeanRule[])assistant.peekObject();
-						BeanRule.addProperty(beanRules, argumentParameterList);
+						BeanRule.updateProperty(beanRules, argumentParameterList);
 					}
 				}
 				

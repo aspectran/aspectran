@@ -67,7 +67,7 @@ translet CDATA #REQUIRED
 disabled (true | false) #IMPLIED
 >
 
-<!ELEMENT bean (features?, constructor?, property*)>
+<!ELEMENT bean (features?, constructor?, property?)>
 <!ATTLIST bean
 id CDATA #IMPLIED
 class CDATA #IMPLIED
@@ -76,11 +76,10 @@ factoryMethod CDATA #IMPLIED
 initMethod CDATA #IMPLIED
 destoryMethod CDATA #IMPLIED
 lazyInit (true | false) #IMPLIED
-parent CDATA #IMPLIED
 override (true | false) #IMPLIED
 >
 
-<!ELEMENT features (class?, scope?, factoryMethod?, initMethod?, destroyMethod?, lazyInit?, poolSize?)>
+<!ELEMENT features (class?, scope?, factoryMethod?, initMethod?, destroyMethod?, lazyInit?, important?)>
 
 <!ELEMENT class (#PCDATA)>
 <!ELEMENT scope (#PCDATA)>
@@ -88,7 +87,7 @@ override (true | false) #IMPLIED
 <!ELEMENT initMethod (#PCDATA)>
 <!ELEMENT destroyMethod (#PCDATA)>
 <!ELEMENT lazyInit (#PCDATA)>
-<!ELEMENT poolSize (#PCDATA)>
+<!ELEMENT important (#PCDATA)>
 <!ELEMENT constructor (argument?)>
 
 <!ELEMENT translet ((request?, (echo? | action? | include?)*, (transform | dispatch | redirect | forward)?) | (request?, contents?, response*, exception?))>
@@ -160,6 +159,7 @@ exceptionType CDATA #IMPLIED
 type CDATA #IMPLIED
 contentType CDATA #IMPLIED
 characterEncoding CDATA #IMPLIED
+default (true | false) #IMPLIED
 >
 
 <!ELEMENT template (#PCDATA)>
@@ -175,6 +175,7 @@ noCache (true | false) #IMPLIED
 <!ATTLIST dispatch
 contentType CDATA #IMPLIED
 characterEncoding CDATA #IMPLIED
+default (true | false) #IMPLIED
 >
 
 <!ELEMENT redirect ((echo? | action? | include?)*, url?, parameter?)>
@@ -183,6 +184,7 @@ contentType CDATA #IMPLIED
 url CDATA #IMPLIED
 translet CDATA #IMPLIED
 excludeNullParameters CDATA #IMPLIED
+default (true | false) #IMPLIED
 >
 
 <!ELEMENT url (#PCDATA)>
