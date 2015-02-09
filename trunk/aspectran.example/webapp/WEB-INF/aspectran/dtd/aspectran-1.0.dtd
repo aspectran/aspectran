@@ -160,6 +160,7 @@ exceptionType CDATA #IMPLIED
 type CDATA #IMPLIED
 contentType CDATA #IMPLIED
 characterEncoding CDATA #IMPLIED
+default (true | false) #IMPLIED
 >
 
 <!ELEMENT template (#PCDATA)>
@@ -175,6 +176,7 @@ noCache (true | false) #IMPLIED
 <!ATTLIST dispatch
 contentType CDATA #IMPLIED
 characterEncoding CDATA #IMPLIED
+default (true | false) #IMPLIED
 >
 
 <!ELEMENT redirect ((echo? | action? | include?)*, url?, parameter?)>
@@ -183,6 +185,7 @@ contentType CDATA #IMPLIED
 url CDATA #IMPLIED
 translet CDATA #IMPLIED
 excludeNullParameters CDATA #IMPLIED
+default (true | false) #IMPLIED
 >
 
 <!ELEMENT url (#PCDATA)>
