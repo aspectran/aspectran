@@ -34,6 +34,8 @@ public class DispatchResponseRule extends ActionPossessSupport implements Action
 
 	private TemplateRule templateRule;
 	
+	private Boolean defaultResponse;
+
 	/**
 	 * Gets the content type.
 	 * 
@@ -81,6 +83,14 @@ public class DispatchResponseRule extends ActionPossessSupport implements Action
 			characterEncoding = templateRule.getEncoding();
 	}
 
+	protected Boolean getDefaultResponse() {
+		return defaultResponse;
+	}
+
+	protected void setDefaultResponse(Boolean defaultResponse) {
+		this.defaultResponse = defaultResponse;
+	}
+
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
@@ -91,6 +101,8 @@ public class DispatchResponseRule extends ActionPossessSupport implements Action
 		sb.append("{contentType=").append(contentType);
 		sb.append(", characterEncoding=").append(characterEncoding);
 		sb.append(", templateRule=").append(templateRule);
+		if(defaultResponse != null)
+			sb.append(", defaultResponse=").append(defaultResponse);
 		
 		if(actionList != null) {
 			sb.append(", actionList=");
@@ -113,10 +125,11 @@ public class DispatchResponseRule extends ActionPossessSupport implements Action
 		return sb.toString();
 	}
 	
-	public static DispatchResponseRule newInstance(String contentType, String characterEncoding) {
+	public static DispatchResponseRule newInstance(String contentType, String characterEncoding, Boolean defaultResponse) {
 		DispatchResponseRule drr = new DispatchResponseRule();
 		drr.setContentType(contentType);
 		drr.setCharacterEncoding(characterEncoding);
+		drr.setDefaultResponse(defaultResponse);
 
 		return drr;
 	}

@@ -36,6 +36,8 @@ public class ForwardResponseRule extends ActionPossessSupport implements ActionP
 	/** The parameter item rule map. */
 	private ItemRuleMap attributeItemRuleMap;
 
+	private Boolean defaultResponse;
+
 	/**
 	 * Gets the content type.
 	 * 
@@ -102,6 +104,14 @@ public class ForwardResponseRule extends ActionPossessSupport implements ActionP
 		attributeItemRuleMap.putItemRule(attributeItemRule);
 	}
 
+	protected Boolean getDefaultResponse() {
+		return defaultResponse;
+	}
+
+	protected void setDefaultResponse(Boolean defaultResponse) {
+		this.defaultResponse = defaultResponse;
+	}
+
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
@@ -111,6 +121,8 @@ public class ForwardResponseRule extends ActionPossessSupport implements ActionP
 
 		sb.append("{contentType=").append(contentType);
 		sb.append(", translet=").append(transletName);
+		if(defaultResponse != null)
+			sb.append(", defaultResponse=").append(defaultResponse);
 
 		if(actionList != null) {
 			sb.append(", actionList=");
@@ -133,13 +145,14 @@ public class ForwardResponseRule extends ActionPossessSupport implements ActionP
 		return sb.toString();
 	}
 	
-	public static ForwardResponseRule newInstance(String contentType, String transletName) {
+	public static ForwardResponseRule newInstance(String contentType, String transletName, Boolean defaultResponse) {
 		if(transletName == null)
 			throw new IllegalArgumentException("The <forward> element requires a translet attribute.");
 		
 		ForwardResponseRule frr = new ForwardResponseRule();
 		frr.setContentType(contentType);
 		frr.setTransletName(transletName);
+		frr.setDefaultResponse(defaultResponse);
 
 		return frr;
 	}

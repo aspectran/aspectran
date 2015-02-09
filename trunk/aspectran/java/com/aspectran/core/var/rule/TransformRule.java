@@ -40,6 +40,8 @@ public class TransformRule extends ActionPossessSupport implements ActionPossess
 	
 	private ActionList actionList;
 	
+	private Boolean defaultResponse;
+	
 	/**
 	 * Gets the transform type.
 	 * 
@@ -167,6 +169,14 @@ public class TransformRule extends ActionPossessSupport implements ActionPossess
 		this.actionList = actionList;
 	}
 
+	protected Boolean getDefaultResponse() {
+		return defaultResponse;
+	}
+
+	protected void setDefaultResponse(Boolean defaultResponse) {
+		this.defaultResponse = defaultResponse;
+	}
+
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
@@ -178,12 +188,14 @@ public class TransformRule extends ActionPossessSupport implements ActionPossess
 		sb.append(", contentType=").append(contentType);
 		sb.append(", characterEncoding=").append(characterEncoding);
 		sb.append(", templateRule=").append(templateRule);
+		if(defaultResponse != null)
+			sb.append(", defaultResponse=").append(defaultResponse);
 		sb.append("}");
 		
 		return sb.toString();
 	}
 	
-	public static TransformRule newInstance(String type, String contentType, String characterEncoding) {
+	public static TransformRule newInstance(String type, String contentType, String characterEncoding, Boolean defaultResponse) {
 		TransformType transformType = TransformType.valueOf(type);
 
 		if(transformType == null && contentType != null) {
@@ -197,6 +209,7 @@ public class TransformRule extends ActionPossessSupport implements ActionPossess
 		tr.setContentType(contentType);
 		tr.setTransformType(transformType);
 		tr.setCharacterEncoding(characterEncoding);
+		tr.setDefaultResponse(defaultResponse);
 		
 		return tr;
 	}

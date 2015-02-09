@@ -28,7 +28,7 @@ public class AspectJobAdviceRule {
 	
 	private String jobTransletName;
 	
-	private boolean disabled;
+	private Boolean disabled;
 
 	public String getAspectId() {
 		return aspectId;
@@ -49,12 +49,12 @@ public class AspectJobAdviceRule {
 	public void setJobTransletName(String jobTransletName) {
 		this.jobTransletName = jobTransletName;
 	}
-	
-	public boolean isDisabled() {
+
+	public Boolean getDisabled() {
 		return disabled;
 	}
 
-	public void setDisabled(boolean disabled) {
+	public void setDisabled(Boolean disabled) {
 		this.disabled = disabled;
 	}
 
@@ -68,6 +68,7 @@ public class AspectJobAdviceRule {
 		sb.append("{aspectId=").append(aspectId);
 		sb.append(", aspectAdviceType=").append(aspectAdviceType);
 		sb.append(", jobTransletName=").append(jobTransletName);
+		sb.append(", disabled=").append(disabled);
 		sb.append("}");
 		
 		return sb.toString();

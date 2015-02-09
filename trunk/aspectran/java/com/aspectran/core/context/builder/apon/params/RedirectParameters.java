@@ -13,6 +13,7 @@ public class RedirectParameters extends AbstractParameters implements Parameters
 	public static final ParameterDefine parameters;
 	public static final ParameterDefine excludeNullParameter;
 	public static final ParameterDefine actions;
+	public static final ParameterDefine defaultResponse;
 	
 	private static final ParameterDefine[] parameterDefines;
 	
@@ -23,6 +24,7 @@ public class RedirectParameters extends AbstractParameters implements Parameters
 		parameters = new ParameterDefine("parameter", new ItemParameters(), true);
 		excludeNullParameter = new ParameterDefine("excludeNullParameter", ParameterValueType.BOOLEAN);
 		actions = new ParameterDefine("action", new ActionParameters(), true);
+		defaultResponse = new ParameterDefine("defaultResponse", ParameterValueType.BOOLEAN);
 		
 		parameterDefines = new ParameterDefine[] {
 				contentType,
@@ -30,7 +32,8 @@ public class RedirectParameters extends AbstractParameters implements Parameters
 				url,
 				parameters,
 				excludeNullParameter,
-				actions
+				actions,
+				defaultResponse
 		};
 	}
 	
