@@ -547,7 +547,7 @@ aspectran: {
 					<dispatch contentType="text/html">
 						<template file="/WEB-INF/jsp/login.jsp"/>
 					</dispatch>
-					<transform contentType="text/json">
+					<transform contentType="text/json" default="true">
 						<template>{}</template>
 					</transform>
 				</responseByContentType>
