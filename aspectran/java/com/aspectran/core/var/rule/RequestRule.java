@@ -20,6 +20,7 @@ import java.nio.charset.IllegalCharsetNameException;
 import java.util.List;
 
 import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
+import com.aspectran.core.util.BooleanUtils;
 import com.aspectran.core.var.type.RequestMethodType;
 
 
@@ -185,6 +186,10 @@ public class RequestRule implements AspectAdviceSupport {
 
 	public Boolean getFileItemCanBeAttribute() {
 		return fileItemCanBeAttribute;
+	}
+
+	public boolean isFileItemCanBeAttribute() {
+		return BooleanUtils.toBoolean(fileItemCanBeAttribute);
 	}
 
 	public void setFileItemCanBeAttribute(Boolean fileItemCanBeAttribute) {

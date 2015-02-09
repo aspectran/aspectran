@@ -81,7 +81,7 @@ public class ResponseRuleNodeletAdder implements NodeletAdder {
 				String resource = attributes.get("resource");
 				String url = attributes.get("url");
 				String encoding = attributes.get("encoding");
-				boolean noCache = Boolean.parseBoolean(attributes.get("noCache"));
+				Boolean noCache = BooleanUtils.toNullableBooleanObject(attributes.get("noCache"));
 				
 				TemplateRule templateRule = TemplateRule.newInstance(file, resource, url, text, encoding, noCache);
 				
@@ -134,7 +134,7 @@ public class ResponseRuleNodeletAdder implements NodeletAdder {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
 				String file = attributes.get("file");
 				String encoding = attributes.get("encoding");
-				boolean noCache = Boolean.parseBoolean(attributes.get("noCache"));
+				Boolean noCache = BooleanUtils.toNullableBooleanObject(attributes.get("noCache"));
 				
 				TemplateRule templateRule = TemplateRule.newInstance(file, null, null, null, encoding, noCache);
 				

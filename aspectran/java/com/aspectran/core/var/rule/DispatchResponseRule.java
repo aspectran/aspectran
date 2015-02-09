@@ -16,6 +16,7 @@
 package com.aspectran.core.var.rule;
 
 import com.aspectran.core.activity.process.action.Executable;
+import com.aspectran.core.util.BooleanUtils;
 import com.aspectran.core.var.rule.ability.ActionPossessable;
 import com.aspectran.core.var.type.ResponseType;
 
@@ -83,11 +84,15 @@ public class DispatchResponseRule extends ActionPossessSupport implements Action
 			characterEncoding = templateRule.getEncoding();
 	}
 
-	protected Boolean getDefaultResponse() {
+	public Boolean getDefaultResponse() {
 		return defaultResponse;
 	}
 
-	protected void setDefaultResponse(Boolean defaultResponse) {
+	public boolean isDefaultResponse() {
+		return BooleanUtils.toBoolean(defaultResponse);
+	}
+
+	public void setDefaultResponse(Boolean defaultResponse) {
 		this.defaultResponse = defaultResponse;
 	}
 

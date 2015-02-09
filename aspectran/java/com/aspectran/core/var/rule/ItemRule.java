@@ -26,6 +26,7 @@ import java.util.Set;
 
 import com.aspectran.core.context.builder.apon.params.ItemParameters;
 import com.aspectran.core.context.builder.apon.params.ReferenceParameters;
+import com.aspectran.core.util.BooleanUtils;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.apon.ParameterHolder;
 import com.aspectran.core.util.apon.Parameters;
@@ -194,11 +195,8 @@ public class ItemRule {
 	 *
 	 * @return the boolean
 	 */
-	public Boolean isTokenize() {
-		if(tokenize == null)
-			return false;
-		
-		return tokenize.booleanValue();
+	public boolean isTokenize() {
+		return BooleanUtils.toBoolean(tokenize);
 	}
 	
 	/**

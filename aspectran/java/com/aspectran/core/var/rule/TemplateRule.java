@@ -18,6 +18,7 @@ package com.aspectran.core.var.rule;
 import java.io.File;
 import java.util.List;
 
+import com.aspectran.core.util.BooleanUtils;
 import com.aspectran.core.var.rule.ability.ActionPossessable;
 import com.aspectran.core.var.token.Token;
 import com.aspectran.core.var.token.Tokenizer;
@@ -41,7 +42,7 @@ public class TemplateRule extends ActionPossessSupport implements ActionPossessa
 	
 	private Token[] contentTokens;
 	
-	private boolean noCache;
+	private Boolean noCache;
 	
 	private File realFile;
 	
@@ -77,11 +78,15 @@ public class TemplateRule extends ActionPossessSupport implements ActionPossessa
 		this.encoding = encoding;
 	}
 
-	public boolean isNoCache() {
+	public Boolean getNoCache() {
 		return noCache;
 	}
 
-	public void setNoCache(boolean noCache) {
+	public boolean isNoCache() {
+		return BooleanUtils.toBoolean(noCache);
+	}
+
+	public void setNoCache(Boolean noCache) {
 		this.noCache = noCache;
 	}
 
@@ -144,7 +149,7 @@ public class TemplateRule extends ActionPossessSupport implements ActionPossessa
 		return sb.toString();
 	}
 	
-	public static TemplateRule newInstance(String file, String resource, String url, String content, String encoding, boolean noCache) {
+	public static TemplateRule newInstance(String file, String resource, String url, String content, String encoding, Boolean noCache) {
 		if(file == null && resource == null && url == null && content == null)
 			throw new IllegalArgumentException("The <template> element requires either a resource or a file or a url attribute.");
 		
