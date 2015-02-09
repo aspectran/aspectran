@@ -16,6 +16,7 @@
 package com.aspectran.core.var.rule;
 
 import com.aspectran.core.activity.process.ActionList;
+import com.aspectran.core.util.BooleanUtils;
 import com.aspectran.core.var.rule.ability.ActionPossessable;
 import com.aspectran.core.var.type.ContentType;
 import com.aspectran.core.var.type.ResponseType;
@@ -169,11 +170,15 @@ public class TransformRule extends ActionPossessSupport implements ActionPossess
 		this.actionList = actionList;
 	}
 
-	protected Boolean getDefaultResponse() {
+	public Boolean getDefaultResponse() {
 		return defaultResponse;
 	}
 
-	protected void setDefaultResponse(Boolean defaultResponse) {
+	public boolean isDefaultResponse() {
+		return BooleanUtils.toBoolean(defaultResponse);
+	}
+
+	public void setDefaultResponse(Boolean defaultResponse) {
 		this.defaultResponse = defaultResponse;
 	}
 

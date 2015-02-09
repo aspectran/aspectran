@@ -18,6 +18,7 @@ package com.aspectran.core.var.rule;
 import java.util.List;
 
 import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
+import com.aspectran.core.util.BooleanUtils;
 import com.aspectran.core.var.rule.ability.ArgumentPossessable;
 import com.aspectran.core.var.rule.ability.PropertyPossessable;
 
@@ -36,7 +37,7 @@ public class BeanActionRule implements ArgumentPossessable, PropertyPossessable,
 	
 	protected ItemRuleMap argumentItemRuleMap;
 	
-	protected boolean hidden;
+	protected Boolean hidden;
 	
 	private AspectAdviceRule aspectAdviceRule;
 	
@@ -91,8 +92,12 @@ public class BeanActionRule implements ArgumentPossessable, PropertyPossessable,
 	 * 
 	 * @return the hidden
 	 */
-	public boolean getHidden() {
+	public Boolean getHidden() {
 		return hidden;
+	}
+
+	public boolean isHidden() {
+		return BooleanUtils.toBoolean(hidden);
 	}
 
 	/**
@@ -100,7 +105,7 @@ public class BeanActionRule implements ArgumentPossessable, PropertyPossessable,
 	 * 
 	 * @param hidden the new hidden
 	 */
-	public void setHidden(boolean hidden) {
+	public void setHidden(Boolean hidden) {
 		this.hidden = hidden;
 	}
 
@@ -253,7 +258,7 @@ public class BeanActionRule implements ArgumentPossessable, PropertyPossessable,
 		return sb.toString();
 	}
 	
-	public static BeanActionRule newInstance(String id, String beanId, String methodName, boolean hidden) {
+	public static BeanActionRule newInstance(String id, String beanId, String methodName, Boolean hidden) {
 		BeanActionRule beanActionRule = new BeanActionRule();
 		beanActionRule.setActionId(id);
 		beanActionRule.setBeanId(beanId);

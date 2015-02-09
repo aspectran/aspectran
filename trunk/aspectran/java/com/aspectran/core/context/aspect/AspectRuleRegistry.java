@@ -43,7 +43,7 @@ public class AspectRuleRegistry {
 		
 		for(AspectRule aspectRule : aspectRuleMap) {
 			//Translet에 한정된 것은 제외
-			if(aspectRule.getAspectTargetType() == AspectTargetType.TRANSLET && !aspectRule.isOnlyTransletRelevanted()) {
+			if(aspectRule.getAspectTargetType() == AspectTargetType.TRANSLET && !aspectRule.getOnlyTransletRelevanted()) {
 				JoinpointScopeType joinpointScope2 = aspectRule.getJoinpointScope();
 				
 				if(joinpointScope == null ||
@@ -71,7 +71,7 @@ public class AspectRuleRegistry {
 		      
 		for(AspectRule aspectRule : aspectRuleMap) {
 			//Translet에 한정된 것은 제외
-			if(aspectRule.getAspectTargetType() == AspectTargetType.TRANSLET && !aspectRule.isOnlyTransletRelevanted()) {
+			if(aspectRule.getAspectTargetType() == AspectTargetType.TRANSLET && !aspectRule.getOnlyTransletRelevanted()) {
 				JoinpointScopeType joinpointScope2 = aspectRule.getJoinpointScope();
 			
 				if(joinpointScope == null ||

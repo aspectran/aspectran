@@ -16,6 +16,7 @@
 package com.aspectran.core.var.rule;
 
 import com.aspectran.core.activity.process.action.Executable;
+import com.aspectran.core.util.BooleanUtils;
 import com.aspectran.core.var.rule.ability.ActionPossessable;
 import com.aspectran.core.var.token.Token;
 import com.aspectran.core.var.token.Tokenizer;
@@ -143,6 +144,10 @@ public class RedirectResponseRule extends ActionPossessSupport implements Action
 		return excludeNullParameter;
 	}
 
+	public boolean isExcludeNullParameter() {
+		return BooleanUtils.toBoolean(excludeNullParameter);
+	}
+
 	/**
 	 * Sets the exclude null parameters.
 	 * 
@@ -200,11 +205,15 @@ public class RedirectResponseRule extends ActionPossessSupport implements Action
 		parameterItemRuleMap.putItemRule(parameterItemRule);
 	}
 	
-	protected Boolean getDefaultResponse() {
+	public Boolean getDefaultResponse() {
 		return defaultResponse;
 	}
 
-	protected void setDefaultResponse(Boolean defaultResponse) {
+	public boolean isDefaultResponse() {
+		return BooleanUtils.toBoolean(defaultResponse);
+	}
+
+	public void setDefaultResponse(Boolean defaultResponse) {
 		this.defaultResponse = defaultResponse;
 	}
 

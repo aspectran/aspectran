@@ -18,6 +18,7 @@ package com.aspectran.core.var.rule;
 import java.util.List;
 
 import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
+import com.aspectran.core.util.BooleanUtils;
 
 
 
@@ -30,7 +31,7 @@ public class EchoActionRule {
 	
 	private ItemRuleMap attributeItemRuleMap;
 
-	private boolean hidden;
+	private Boolean hidden;
 	
 	private AspectAdviceRuleRegistry aspectAdviceRuleRegistry;
 	
@@ -87,8 +88,12 @@ public class EchoActionRule {
 	 * 
 	 * @return the hidden
 	 */
-	public boolean getHidden() {
+	public Boolean getHidden() {
 		return hidden;
+	}
+
+	public boolean isHidden() {
+		return BooleanUtils.toBoolean(hidden);
 	}
 
 	/**
@@ -96,7 +101,7 @@ public class EchoActionRule {
 	 * 
 	 * @param hidden the new hidden
 	 */
-	public void setHidden(boolean hidden) {
+	public void setHidden(Boolean hidden) {
 		this.hidden = hidden;
 	}
 
@@ -165,7 +170,7 @@ public class EchoActionRule {
 		return sb.toString();
 	}
 	
-	public static EchoActionRule newInstance(String id, boolean hidden) {
+	public static EchoActionRule newInstance(String id, Boolean hidden) {
 		EchoActionRule echoActionRule = new EchoActionRule();
 		echoActionRule.setActionId(id);
 		echoActionRule.setHidden(hidden);

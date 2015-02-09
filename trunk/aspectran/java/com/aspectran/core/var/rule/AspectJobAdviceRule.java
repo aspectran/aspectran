@@ -15,6 +15,7 @@
  */
 package com.aspectran.core.var.rule;
 
+import com.aspectran.core.util.BooleanUtils;
 import com.aspectran.core.var.type.AspectAdviceType;
 
 /**
@@ -53,6 +54,10 @@ public class AspectJobAdviceRule {
 	public Boolean getDisabled() {
 		return disabled;
 	}
+	
+	public boolean isDisabled() {
+		return BooleanUtils.toBoolean(disabled);
+	}
 
 	public void setDisabled(Boolean disabled) {
 		this.disabled = disabled;
@@ -74,7 +79,7 @@ public class AspectJobAdviceRule {
 		return sb.toString();
 	}
 	
-	public static AspectJobAdviceRule newInstance(AspectRule aspectRule, String transletName, boolean disabled) {
+	public static AspectJobAdviceRule newInstance(AspectRule aspectRule, String transletName, Boolean disabled) {
 		AspectJobAdviceRule ajar = new AspectJobAdviceRule();
 		ajar.setAspectId(aspectRule.getId());
 		ajar.setJobTransletName(transletName);

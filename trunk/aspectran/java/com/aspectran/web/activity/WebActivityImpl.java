@@ -195,7 +195,7 @@ public class WebActivityImpl extends CoreActivityImpl implements WebActivity {
 		
 		requestAdapter.setMaxLengthExceeded(handler.isMaxLengthExceeded());
 		
-		if(requestRule.getFileItemCanBeAttribute() == Boolean.TRUE) {
+		if(requestRule.isFileItemCanBeAttribute()) {
 			for(Map.Entry<String, Object> entry : fileItemMap.entrySet())
 				request.setAttribute(entry.getKey(), entry.getValue());
 		}

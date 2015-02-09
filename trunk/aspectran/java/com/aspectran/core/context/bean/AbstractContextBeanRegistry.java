@@ -73,7 +73,6 @@ public abstract class AbstractContextBeanRegistry implements ContextBeanRegistry
 				if(scope == ScopeType.SINGLETON) {
 					if(!beanRule.isRegistered() && !beanRule.isLazyInit()) {
 						Object bean = createBean(beanRule);
-	System.out.println("@@createSingletonBean " + beanRule);
 						beanRule.setBean(bean);
 						beanRule.setRegistered(true);
 					}

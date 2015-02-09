@@ -182,7 +182,7 @@ public class BeanAction extends AbstractAction implements Executable {
 	 * @see org.jhlabs.translets.engine.process.action.Executable#isHidden()
 	 */
 	public boolean isHidden() {
-		return beanActionRule.getHidden();
+		return beanActionRule.isHidden();
 	}
 
 	public ActionType getActionType() {

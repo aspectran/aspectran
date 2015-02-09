@@ -22,6 +22,7 @@ import java.util.Map;
 import com.aspectran.core.context.bean.ablility.DisposableBean;
 import com.aspectran.core.context.bean.ablility.InitializableBean;
 import com.aspectran.core.context.bean.scan.BeanClassScanner;
+import com.aspectran.core.util.BooleanUtils;
 import com.aspectran.core.util.MethodUtils;
 import com.aspectran.core.util.apon.Parameters;
 import com.aspectran.core.util.wildcard.WildcardPattern;
@@ -48,7 +49,9 @@ public class BeanRule {
 	
 	protected String destroyMethodName;
 	
-	protected boolean lazyInit;
+	protected Boolean lazyInit;
+
+	protected Boolean override;
 
 	protected ItemRuleMap constructorArgumentItemRuleMap;
 	
@@ -58,8 +61,6 @@ public class BeanRule {
 	
 	private boolean registered;
 	
-	private boolean override;
-
 	private boolean overrided;
 
 	private boolean stealthily;
@@ -195,8 +196,12 @@ public class BeanRule {
 	 *
 	 * @return true, if is lazy init
 	 */
-	public boolean isLazyInit() {
+	public Boolean getLazyInit() {
 		return lazyInit;
+	}
+
+	public boolean isLazyInit() {
+		return BooleanUtils.toBoolean(lazyInit);
 	}
 
 	/**
@@ -204,8 +209,20 @@ public class BeanRule {
 	 *
 	 * @param lazyInit the new lazy init
 	 */
-	public void setLazyInit(boolean lazyInit) {
+	public void setLazyInit(Boolean lazyInit) {
 		this.lazyInit = lazyInit;
+	}
+
+	public Boolean getOverride() {
+		return override;
+	}
+
+	public boolean isOverride() {
+		return BooleanUtils.toBoolean(override);
+	}
+	
+	public void setOverride(Boolean override) {
+		this.override = override;
 	}
 
 	/**
@@ -280,14 +297,6 @@ public class BeanRule {
 		this.registered = registered;
 	}
 
-	public boolean isOverride() {
-		return override;
-	}
-
-	public void setOverride(boolean override) {
-		this.override = override;
-	}
-	
 	public boolean isOverrided() {
 		return overrided;
 	}
@@ -353,7 +362,7 @@ public class BeanRule {
 		return sb.toString();
 	}
 	
-	public static BeanRule[] newInstance(ClassLoader classLoader, String id, String className, String scope, boolean singleton, String factoryMethod, String initMethodName, String destroyMethodName, boolean lazyInit, boolean override) throws ClassNotFoundException, IOException {
+	public static BeanRule[] newInstance(ClassLoader classLoader, String id, String className, String scope, boolean singleton, String factoryMethod, String initMethodName, String destroyMethodName, Boolean lazyInit, Boolean override) throws ClassNotFoundException, IOException {
 		if(id == null)
 			throw new IllegalArgumentException("The <bean> element requires a id attribute.");
 

@@ -90,7 +90,7 @@ public class ResponseByContentTypeRule implements ResponseRuleApplicable {
 		if(transformRule.getContentType() != null)
 			responseMap.put(transformRule.getContentType(), response);
 		
-		if(transformRule.getDefaultResponse() == Boolean.TRUE)
+		if(transformRule.isDefaultResponse())
 			defaultResponse = response;
 		
 		if(defaultResponse == null && transformRule.getContentType() == null)
@@ -112,7 +112,7 @@ public class ResponseByContentTypeRule implements ResponseRuleApplicable {
 		if(dispatchResponseRule.getContentType() != null)
 			responseMap.put(dispatchResponseRule.getContentType(), response);
 		
-		if(dispatchResponseRule.getDefaultResponse() == Boolean.TRUE)
+		if(dispatchResponseRule.isDefaultResponse())
 			defaultResponse = response;
 		
 		if(defaultResponse == null && dispatchResponseRule.getContentType() == null)
@@ -156,7 +156,7 @@ public class ResponseByContentTypeRule implements ResponseRuleApplicable {
 		if(forwardResponseRule.getContentType() != null)
 			responseMap.put(forwardResponseRule.getContentType(), response);
 		
-		if(forwardResponseRule.getDefaultResponse() == Boolean.TRUE)
+		if(forwardResponseRule.isDefaultResponse())
 			defaultResponse = response;
 		
 		if(defaultResponse == null && forwardResponseRule.getContentType() == null)

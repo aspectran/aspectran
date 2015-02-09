@@ -18,6 +18,7 @@ package com.aspectran.core.var.rule;
 import java.util.List;
 
 import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
+import com.aspectran.core.util.BooleanUtils;
 
 
 /**
@@ -35,7 +36,7 @@ public class IncludeActionRule {
 	private ItemRuleMap attributeItemRuleMap;
 	
 	/** The hidden. */
-	private boolean hidden;
+	private Boolean hidden;
 	
 	private AspectAdviceRuleRegistry aspectAdviceRuleRegistry;
 
@@ -110,8 +111,12 @@ public class IncludeActionRule {
 	 * 
 	 * @return the hidden
 	 */
-	public boolean getHidden() {
+	public Boolean getHidden() {
 		return hidden;
+	}
+
+	public Boolean isHidden() {
+		return BooleanUtils.toBoolean(hidden);
 	}
 
 	/**
@@ -119,7 +124,7 @@ public class IncludeActionRule {
 	 * 
 	 * @param hidden the new hidden
 	 */
-	public void setHidden(boolean hidden) {
+	public void setHidden(Boolean hidden) {
 		this.hidden = hidden;
 	}
 
@@ -188,7 +193,7 @@ public class IncludeActionRule {
 		return sb.toString();
 	}
 	
-	public static IncludeActionRule newInstance(String id, String transletName, boolean hidden) {
+	public static IncludeActionRule newInstance(String id, String transletName, Boolean hidden) {
 		IncludeActionRule includeActionRule = new IncludeActionRule();
 		includeActionRule.setActionId(id);
 		includeActionRule.setTransletName(transletName);

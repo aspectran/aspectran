@@ -20,6 +20,7 @@ import java.util.Map;
 import org.w3c.dom.Node;
 
 import com.aspectran.core.context.builder.ContextBuilderAssistant;
+import com.aspectran.core.util.BooleanUtils;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.xml.Nodelet;
 import com.aspectran.core.util.xml.NodeletAdder;
@@ -57,7 +58,7 @@ public class ActionRuleNodeletAdder implements NodeletAdder {
 		parser.addNodelet(xpath, "/echo", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
 				String id = attributes.get("id");
-				boolean hidden = Boolean.parseBoolean(attributes.get("hidden"));
+				Boolean hidden = BooleanUtils.toNullableBooleanObject(attributes.get("hidden"));
 
 				if(!assistant.isNullableActionId() && StringUtils.isEmpty(id))
 					throw new IllegalArgumentException("The <echo> element requires a id attribute.");
@@ -89,7 +90,7 @@ public class ActionRuleNodeletAdder implements NodeletAdder {
 				String id = attributes.get("id");
 				String beanId = attributes.get("bean");
 				String methodName = attributes.get("method");
-				boolean hidden = Boolean.parseBoolean(attributes.get("hidden"));
+				Boolean hidden = BooleanUtils.toNullableBooleanObject(attributes.get("hidden"));
 
 				if(!assistant.isNullableActionId() && StringUtils.isEmpty(id))
 					throw new IllegalArgumentException("The <action> element requires a id attribute.");
@@ -149,7 +150,7 @@ public class ActionRuleNodeletAdder implements NodeletAdder {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
 				String id = attributes.get("id");
 				String transletName = attributes.get("translet");
-				boolean hidden = Boolean.parseBoolean(attributes.get("hidden"));
+				Boolean hidden = BooleanUtils.toNullableBooleanObject(attributes.get("hidden"));
 
 				transletName = assistant.getFullTransletName(transletName);
 				

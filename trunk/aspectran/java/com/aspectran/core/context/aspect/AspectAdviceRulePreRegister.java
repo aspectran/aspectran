@@ -72,7 +72,7 @@ public class AspectAdviceRulePreRegister extends AspectAdviceRuleRegister {
 		for(AspectRule aspectRule : aspectRuleMap) {
 			AspectTargetType aspectTargetType = aspectRule.getAspectTargetType();
 			
-			if(aspectTargetType == AspectTargetType.TRANSLET && aspectRule.isOnlyTransletRelevanted()) {
+			if(aspectTargetType == AspectTargetType.TRANSLET && aspectRule.getOnlyTransletRelevanted()) {
 				JoinpointScopeType joinpointScope = aspectRule.getJoinpointScope();
 				Pointcut pointcut = aspectRule.getPointcut();
 				

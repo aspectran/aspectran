@@ -26,6 +26,7 @@ import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.activity.process.ContentList;
 import com.aspectran.core.context.builder.ContextBuilderAssistant;
 import com.aspectran.core.context.builder.DefaultSettings;
+import com.aspectran.core.util.BooleanUtils;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.apon.GenericParameters;
 import com.aspectran.core.util.apon.Parameters;
@@ -327,7 +328,7 @@ public class AspectranNodeParser {
 		parser.addNodelet("/aspectran/aspect/advice/job", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
 				String transletName = attributes.get("translet");
-				boolean disabled = Boolean.parseBoolean(attributes.get("disabled"));
+				Boolean disabled = BooleanUtils.toNullableBooleanObject(attributes.get("disabled"));
 
 				transletName = assistant.getFullTransletName(transletName);
 				AspectRule ar = (AspectRule)assistant.peekObject();
@@ -358,8 +359,8 @@ public class AspectranNodeParser {
 				String factoryMethod = attributes.get("factoryMethod");
 				String initMethodName = attributes.get("initMethod");
 				String destroyMethodName = attributes.get("destroyMethod");
-				boolean lazyInit = Boolean.parseBoolean(attributes.get("lazyInit"));
-				boolean override = Boolean.parseBoolean(attributes.get("override"));
+				Boolean lazyInit = BooleanUtils.toNullableBooleanObject(attributes.get("lazyInit"));
+				Boolean override = BooleanUtils.toNullableBooleanObject(attributes.get("override"));
 
 				if(id != null) {
 					id = assistant.applyNamespaceForBean(id);
@@ -477,7 +478,7 @@ public class AspectranNodeParser {
 				String attribute = attributes.get("attribute");
 
 				if(attribute != null) {
-					Boolean fileItemCanBeAttribute = Boolean.valueOf(attribute);
+					Boolean fileItemCanBeAttribute = BooleanUtils.toNullableBooleanObject(attribute);
 
 					RequestRule requestRule = (RequestRule)assistant.peekObject();
 					requestRule.setFileItemCanBeAttribute(fileItemCanBeAttribute);
@@ -516,7 +517,7 @@ public class AspectranNodeParser {
 		parser.addNodelet("/aspectran/translet/contents/content", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
 				String id = attributes.get("id");
-				boolean hidden = Boolean.parseBoolean(attributes.get("hidden"));
+				Boolean hidden = BooleanUtils.toNullableBooleanObject(attributes.get("hidden"));
 
 				if(!assistant.isNullableContentId() && StringUtils.isEmpty(id))
 					throw new IllegalArgumentException("The <content> element requires a id attribute.");
