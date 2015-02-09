@@ -229,7 +229,7 @@ public class QuartzAspectranScheduler implements AspectranScheduler {
 	}
 
 	private JobDetail buildJobDetail(AspectJobAdviceRule aspectJobAdviceRule, int index) {
-		if(aspectJobAdviceRule.isDisabled())
+		if(aspectJobAdviceRule.getDisabled() == Boolean.TRUE)
 			return null;
 		
 		String jobName = index + (AspectranConstant.TRANSLET_NAME_SEPARATOR + aspectJobAdviceRule.getJobTransletName());

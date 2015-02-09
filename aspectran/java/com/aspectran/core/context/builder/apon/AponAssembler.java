@@ -257,8 +257,9 @@ public class AponAssembler {
 		String characterEncoding = transformParameters.getString(TransformParameters.characterEncoding);
 		Parameters templateParams = transformParameters.getParameters(TransformParameters.template);
 		List<Parameters> actionParamsList = transformParameters.getParametersList(TransformParameters.actions);
+		Boolean defaultResponse = transformParameters.getBoolean(TransformParameters.defaultResponse);
 		
-		TransformRule tr = TransformRule.newInstance(transformType, contentType, characterEncoding);
+		TransformRule tr = TransformRule.newInstance(transformType, contentType, characterEncoding, defaultResponse);
 		
 		if(actionParamsList != null && actionParamsList.size()> 0) {
 			ActionList actionList = new ActionList();
@@ -287,8 +288,9 @@ public class AponAssembler {
 		String characterEncoding = dispatchParameters.getString(DispatchParameters.characterEncoding);
 		Parameters templateParams = dispatchParameters.getParameters(DispatchParameters.template);
 		List<Parameters> actionParamsList = dispatchParameters.getParametersList(DispatchParameters.actions);
+		Boolean defaultResponse = dispatchParameters.getBoolean(DispatchParameters.defaultResponse);
 		
-		DispatchResponseRule drr = DispatchResponseRule.newInstance(contentType, characterEncoding);
+		DispatchResponseRule drr = DispatchResponseRule.newInstance(contentType, characterEncoding, defaultResponse);
 		
 		if(actionParamsList != null && actionParamsList.size()> 0) {
 			ActionList actionList = new ActionList();
@@ -316,8 +318,9 @@ public class AponAssembler {
 		List<Parameters> parameterParamsList = redirectParameters.getParametersList(RedirectParameters.parameters);
 		boolean excludeNullParameter = redirectParameters.getBoolean(RedirectParameters.excludeNullParameter);
 		List<Parameters> actionParamsList = redirectParameters.getParametersList(RedirectParameters.actions);
+		Boolean defaultResponse = redirectParameters.getBoolean(RedirectParameters.defaultResponse);
 		
-		RedirectResponseRule rrr = RedirectResponseRule.newInstance(contentType, translet, url, excludeNullParameter);
+		RedirectResponseRule rrr = RedirectResponseRule.newInstance(contentType, translet, url, excludeNullParameter, defaultResponse);
 		
 		ItemRuleMap parameterItemRuleMap = assembleItemRuleMap(parameterParamsList);
 		if(parameterItemRuleMap != null) {
@@ -340,8 +343,9 @@ public class AponAssembler {
 		String translet = forwardParameters.getString(ForwardParameters.translet);
 		List<Parameters> attributeParamsList = forwardParameters.getParametersList(ForwardParameters.attributes);
 		List<Parameters> actionParamsList = forwardParameters.getParametersList(ForwardParameters.actions);
+		Boolean defaultResponse = forwardParameters.getBoolean(ForwardParameters.defaultResponse);
 		
-		ForwardResponseRule rrr = ForwardResponseRule.newInstance(contentType, translet);
+		ForwardResponseRule rrr = ForwardResponseRule.newInstance(contentType, translet, defaultResponse);
 		
 		ItemRuleMap attributeItemRuleMap = assembleItemRuleMap(attributeParamsList);
 		if(attributeItemRuleMap != null) {

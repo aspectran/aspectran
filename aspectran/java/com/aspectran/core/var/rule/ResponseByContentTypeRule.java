@@ -73,8 +73,8 @@ public class ResponseByContentTypeRule implements ResponseRuleApplicable {
 		return defaultResponse;
 	}
 
-	public void setDefaultResponse(Responsible defaultResponse) {
-		this.defaultResponse = defaultResponse;
+	public void setDefaultResponse(Responsible response) {
+		this.defaultResponse = response;
 	}
 
 	/**
@@ -89,7 +89,11 @@ public class ResponseByContentTypeRule implements ResponseRuleApplicable {
 		
 		if(transformRule.getContentType() != null)
 			responseMap.put(transformRule.getContentType(), response);
-		else
+		
+		if(transformRule.getDefaultResponse() == Boolean.TRUE)
+			defaultResponse = response;
+		
+		if(defaultResponse == null && transformRule.getContentType() == null)
 			defaultResponse = response;
 		
 		return response;
@@ -107,7 +111,11 @@ public class ResponseByContentTypeRule implements ResponseRuleApplicable {
 		
 		if(dispatchResponseRule.getContentType() != null)
 			responseMap.put(dispatchResponseRule.getContentType(), response);
-		else
+		
+		if(dispatchResponseRule.getDefaultResponse() == Boolean.TRUE)
+			defaultResponse = response;
+		
+		if(defaultResponse == null && dispatchResponseRule.getContentType() == null)
 			defaultResponse = response;
 		
 		return response;
@@ -125,7 +133,11 @@ public class ResponseByContentTypeRule implements ResponseRuleApplicable {
 
 		if(redirectResponseRule.getContentType() != null)
 			responseMap.put(redirectResponseRule.getContentType(), response);
-		else
+		
+		if(redirectResponseRule.getDefaultResponse() == Boolean.TRUE)
+			defaultResponse = response;
+		
+		if(defaultResponse == null && redirectResponseRule.getContentType() == null)
 			defaultResponse = response;
 		
 		return response;
@@ -143,7 +155,11 @@ public class ResponseByContentTypeRule implements ResponseRuleApplicable {
 
 		if(forwardResponseRule.getContentType() != null)
 			responseMap.put(forwardResponseRule.getContentType(), response);
-		else
+		
+		if(forwardResponseRule.getDefaultResponse() == Boolean.TRUE)
+			defaultResponse = response;
+		
+		if(defaultResponse == null && forwardResponseRule.getContentType() == null)
 			defaultResponse = response;
 		
 		return response;
@@ -156,66 +172,6 @@ public class ResponseByContentTypeRule implements ResponseRuleApplicable {
 	 */
 	public void addResponse(Responsible response) {
 		responseMap.put(response.getContentType(), response);
-	}
-	
-	/**
-	 * Sets the default response rule.
-	 * 
-	 * @param transformRule the new default response rule
-	 * 
-	 * @return the transform response
-	 */
-	public Responsible setDefaultResponse(TransformRule transformRule) {
-		Responsible response = TransformFactory.createTransform(transformRule);
-		
-		this.defaultResponse = response;
-		
-		return response;
-	}
-
-	/**
-	 * Sets the default response rule.
-	 * 
-	 * @param dispatchResponseRule the new default response rule
-	 * 
-	 * @return the dispatch response
-	 */
-	public DispatchResponse setDefaultResponse(DispatchResponseRule dispatchResponseRule) {
-		DispatchResponse dispatchResponse = new DispatchResponse(dispatchResponseRule);
-		
-		this.defaultResponse = dispatchResponse;
-		
-		return dispatchResponse;
-	}
-	
-	/**
-	 * Sets the default response rule.
-	 * 
-	 * @param redirectResponseRule the new default response rule
-	 * 
-	 * @return the redirect response
-	 */
-	public RedirectResponse setDefaultResponse(RedirectResponseRule redirectResponseRule) {
-		RedirectResponse redirectResponse = new RedirectResponse(redirectResponseRule);
-
-		this.defaultResponse = redirectResponse;
-		
-		return redirectResponse;
-	}
-	
-	/**
-	 * Sets the default response rule.
-	 * 
-	 * @param forwardResponseRule the new default response rule
-	 * 
-	 * @return the forward response
-	 */
-	public ForwardResponse setDefaultResponse(ForwardResponseRule forwardResponseRule) {
-		ForwardResponse forwardResponse = new ForwardResponse(forwardResponseRule);
-
-		this.defaultResponse = forwardResponse;
-		
-		return forwardResponse;
 	}
 	
 	public static ResponseByContentTypeRule newInstance(String exceptionType) {

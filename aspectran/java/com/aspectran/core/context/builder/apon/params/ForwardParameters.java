@@ -11,6 +11,7 @@ public class ForwardParameters extends AbstractParameters implements Parameters 
 	public static final ParameterDefine translet;
 	public static final ParameterDefine attributes;
 	public static final ParameterDefine actions;
+	public static final ParameterDefine defaultResponse;
 	
 	private static final ParameterDefine[] parameterDefines;
 	
@@ -19,12 +20,14 @@ public class ForwardParameters extends AbstractParameters implements Parameters 
 		translet = new ParameterDefine("translet", ParameterValueType.STRING);
 		attributes = new ParameterDefine("attribute", new ItemParameters(), true);
 		actions = new ParameterDefine("action", new ActionParameters(), true);
+		defaultResponse = new ParameterDefine("defaultResponse", ParameterValueType.BOOLEAN);
 		
 		parameterDefines = new ParameterDefine[] {
 				contentType,
 				translet,
 				attributes,
-				actions
+				actions,
+				defaultResponse
 		};
 	}
 	

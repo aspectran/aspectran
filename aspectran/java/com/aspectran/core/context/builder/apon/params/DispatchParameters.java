@@ -11,6 +11,7 @@ public class DispatchParameters extends AbstractParameters implements Parameters
 	public static final ParameterDefine characterEncoding;
 	public static final ParameterDefine template;
 	public static final ParameterDefine actions;
+	public static final ParameterDefine defaultResponse;
 	
 	private static final ParameterDefine[] parameterDefines;
 	
@@ -19,12 +20,14 @@ public class DispatchParameters extends AbstractParameters implements Parameters
 		characterEncoding = new ParameterDefine("characterEncoding", ParameterValueType.STRING);
 		template = new ParameterDefine("template", new TemplateParameters());
 		actions = new ParameterDefine("action", new ActionParameters(), true);
+		defaultResponse = new ParameterDefine("defaultResponse", ParameterValueType.BOOLEAN);
 		
 		parameterDefines = new ParameterDefine[] {
 				contentType,
 				characterEncoding,
 				template,
-				actions
+				actions,
+				defaultResponse
 		};
 	}
 	

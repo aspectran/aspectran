@@ -45,13 +45,15 @@ public class RedirectResponseRule extends ActionPossessSupport implements Action
 	private Token[] urlTokens;
 	
 	/** The exclude null parameters. */
-	private boolean excludeNullParameter;
+	private Boolean excludeNullParameter;
 
 	/** The character encoding. */
 	private String characterEncoding;
 	
 	/** The parameter item rule map. */
 	private ItemRuleMap parameterItemRuleMap;
+
+	private Boolean defaultResponse;
 
 	/**
 	 * Gets the content type.
@@ -137,7 +139,7 @@ public class RedirectResponseRule extends ActionPossessSupport implements Action
 	 * 
 	 * @return the exclude null parameters
 	 */
-	public boolean getExcludeNullParameter() {
+	public Boolean getExcludeNullParameter() {
 		return excludeNullParameter;
 	}
 
@@ -146,7 +148,7 @@ public class RedirectResponseRule extends ActionPossessSupport implements Action
 	 * 
 	 * @param excludeNullParameter the new exclude null parameters
 	 */
-	public void setExcludeNullParameter(boolean excludeNullParameter) {
+	public void setExcludeNullParameter(Boolean excludeNullParameter) {
 		this.excludeNullParameter = excludeNullParameter;
 	}
 
@@ -198,6 +200,14 @@ public class RedirectResponseRule extends ActionPossessSupport implements Action
 		parameterItemRuleMap.putItemRule(parameterItemRule);
 	}
 	
+	protected Boolean getDefaultResponse() {
+		return defaultResponse;
+	}
+
+	protected void setDefaultResponse(Boolean defaultResponse) {
+		this.defaultResponse = defaultResponse;
+	}
+
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
@@ -209,6 +219,8 @@ public class RedirectResponseRule extends ActionPossessSupport implements Action
 		sb.append(", translet=").append(transletName);
 		sb.append(", url=").append(url);
 		sb.append(", excludeNullParameters=").append(excludeNullParameter);
+		if(defaultResponse != null)
+			sb.append(", defaultResponse=").append(defaultResponse);
 
 		if(actionList != null) {
 			sb.append(", actionList=");
@@ -231,7 +243,7 @@ public class RedirectResponseRule extends ActionPossessSupport implements Action
 		return sb.toString();
 	}
 	
-	public static RedirectResponseRule newInstance(String contentType, String translet, String url, boolean excludeNullParameters) {
+	public static RedirectResponseRule newInstance(String contentType, String translet, String url, Boolean excludeNullParameters, Boolean defaultResponse) {
 		RedirectResponseRule rrr = new RedirectResponseRule();
 		rrr.setContentType(contentType);
 		rrr.setTransletName(translet);
@@ -240,6 +252,8 @@ public class RedirectResponseRule extends ActionPossessSupport implements Action
 			rrr.setUrl(url);
 		
 		rrr.setExcludeNullParameter(excludeNullParameters);
+		
+		rrr.setDefaultResponse(defaultResponse);
 
 		return rrr;
 	}

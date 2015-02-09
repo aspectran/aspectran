@@ -22,6 +22,7 @@ import org.w3c.dom.Node;
 
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.context.builder.ContextBuilderAssistant;
+import com.aspectran.core.util.BooleanUtils;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.xml.Nodelet;
 import com.aspectran.core.util.xml.NodeletAdder;
@@ -64,8 +65,9 @@ public class ResponseRuleNodeletAdder implements NodeletAdder {
 				String type = attributes.get("type");
 				String contentType = attributes.get("contentType");
 				String characterEncoding = attributes.get("characterEncoding");
+				Boolean defaultResponse = BooleanUtils.toNullableBooleanObject(attributes.get("defaultResponse"));
 
-				TransformRule tr = TransformRule.newInstance(type, contentType, characterEncoding);
+				TransformRule tr = TransformRule.newInstance(type, contentType, characterEncoding, defaultResponse);
 				assistant.pushObject(tr);
 				
 				ActionList actionList = new ActionList();
@@ -117,8 +119,9 @@ public class ResponseRuleNodeletAdder implements NodeletAdder {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
 				String contentType = attributes.get("contentType");
 				String characterEncoding = attributes.get("characterEncoding");
-				
-				DispatchResponseRule drr = DispatchResponseRule.newInstance(contentType, characterEncoding);
+				Boolean defaultResponse = BooleanUtils.toNullableBooleanObject(attributes.get("defaultResponse"));
+
+				DispatchResponseRule drr = DispatchResponseRule.newInstance(contentType, characterEncoding, defaultResponse);
 				
 				assistant.pushObject(drr);
 
@@ -156,9 +159,10 @@ public class ResponseRuleNodeletAdder implements NodeletAdder {
 				String contentType = attributes.get("contentType"); // ResponseByContentType에서 content type에 따라 분기
 				String translet = attributes.get("translet");
 				String url = attributes.get("url");
-				boolean excludeNullParameters = Boolean.parseBoolean(attributes.get("excludeNullParameters"));
+				Boolean excludeNullParameters = BooleanUtils.toNullableBooleanObject(attributes.get("excludeNullParameters"));
+				Boolean defaultResponse = BooleanUtils.toNullableBooleanObject(attributes.get("defaultResponse"));
 				
-				RedirectResponseRule rrr = RedirectResponseRule.newInstance(contentType, translet, url, excludeNullParameters);
+				RedirectResponseRule rrr = RedirectResponseRule.newInstance(contentType, translet, url, excludeNullParameters, defaultResponse);
 				
 				assistant.pushObject(rrr);
 				
@@ -217,11 +221,11 @@ public class ResponseRuleNodeletAdder implements NodeletAdder {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
 				String contentType = attributes.get("contentType");
 				String transletName = attributes.get("translet");
+				Boolean defaultResponse = BooleanUtils.toNullableBooleanObject(attributes.get("defaultResponse"));
 				
 				transletName = assistant.getFullTransletName(transletName);
 				
-				ForwardResponseRule frr = ForwardResponseRule.newInstance(contentType, transletName);
-				
+				ForwardResponseRule frr = ForwardResponseRule.newInstance(contentType, transletName, defaultResponse);
 				assistant.pushObject(frr);
 
 				ActionList actionList = new ActionList();
