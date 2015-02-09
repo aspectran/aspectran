@@ -24,15 +24,21 @@ import com.aspectran.core.context.builder.apon.params.ActionParameters;
 import com.aspectran.core.context.builder.apon.params.AdviceParameters;
 import com.aspectran.core.context.builder.apon.params.AspectParameters;
 import com.aspectran.core.context.builder.apon.params.AspectranParameters;
+import com.aspectran.core.context.builder.apon.params.BeanParameters;
+import com.aspectran.core.context.builder.apon.params.DefaultSettingsParameters;
 import com.aspectran.core.context.builder.apon.params.DispatchParameters;
 import com.aspectran.core.context.builder.apon.params.ExceptionRaizedParameters;
 import com.aspectran.core.context.builder.apon.params.ForwardParameters;
+import com.aspectran.core.context.builder.apon.params.ImportParameters;
 import com.aspectran.core.context.builder.apon.params.JobParameters;
 import com.aspectran.core.context.builder.apon.params.JoinpointParameters;
 import com.aspectran.core.context.builder.apon.params.RedirectParameters;
 import com.aspectran.core.context.builder.apon.params.ResponseByContentTypeParameters;
 import com.aspectran.core.context.builder.apon.params.TemplateParameters;
 import com.aspectran.core.context.builder.apon.params.TransformParameters;
+import com.aspectran.core.context.builder.apon.params.TransletParameters;
+import com.aspectran.core.util.apon.GenericParameters;
+import com.aspectran.core.util.apon.ParameterDefine;
 import com.aspectran.core.util.apon.Parameters;
 import com.aspectran.core.var.rule.AspectAdviceRule;
 import com.aspectran.core.var.rule.AspectJobAdviceRule;
@@ -70,6 +76,14 @@ public class AponAssembler {
 	}
 	
 	public void assembleAspectran(Parameters aspectranParameters) {
+//		setting = new ParameterDefine("setting", new DefaultSettingsParameters());
+//		typeAlias = new ParameterDefine("typeAlias", new GenericParameters());
+//		aspects = new ParameterDefine("aspect", new AspectParameters(), true);
+//		beans = new ParameterDefine("bean", new BeanParameters(), true);
+//		translets = new ParameterDefine("translet", new TransletParameters(), true);
+//		imports = new ParameterDefine("import", new ImportParameters(), true);
+
+		
 		assembleDefaultSettings(aspectranParameters.getParameters(AspectranParameters.setting));
 		assembleTypeAlias(aspectranParameters.getParameters(AspectranParameters.typeAlias));
 		assembleAspectRule(aspectranParameters.getParametersList(AspectranParameters.aspects));
@@ -193,19 +207,11 @@ public class AponAssembler {
 		if(jobParamsList != null && jobParamsList.size() > 0) {
 			for(Parameters jobParameters : jobParamsList) {
 				String translet = jobParameters.getString(JobParameters.translet);
-				boolean disabled = jobParameters.getBoolean(JobParameters.disabled);
+				Boolean disabled = jobParameters.getBoolean(JobParameters.disabled);
 				AspectJobAdviceRule ajar = AspectJobAdviceRule.newInstance(aspectRule, translet, disabled);
 				aspectRule.addAspectJobAdviceRule(ajar);
 			}
 		}
-
-		//		bean = new ParameterDefine("bean", ParameterValueType.STRING);
-//		beforeActions = new ParameterDefine("before", new ActionParameters(), true);
-//		afterActions = new ParameterDefine("after", new ActionParameters(), true);
-//		aroundActions = new ParameterDefine("around", new ActionParameters(), true);
-//		finallyActions = new ParameterDefine("finally", new ActionParameters(), true);
-//		exceptionRaized = new ParameterDefine("exceptionRaized", new ExceptionRaizedParameters());
-//		jobs = new ParameterDefine("job", new JobParameters(), true);
 		
 		assistant.addAspectRule(aspectRule);
 	}
@@ -275,7 +281,7 @@ public class AponAssembler {
 			String url = templateParams.getString(TemplateParameters.url);
 			String content = templateParams.getText(TemplateParameters.content);
 			String encoding = templateParams.getString(TemplateParameters.encoding);
-			boolean noCache = templateParams.getBoolean(TemplateParameters.noCache);
+			Boolean noCache = templateParams.getBoolean(TemplateParameters.noCache);
 			TemplateRule templateRule = TemplateRule.newInstance(file, resource, url, content, encoding, noCache);
 			tr.setTemplateRule(templateRule);
 		}
@@ -303,7 +309,7 @@ public class AponAssembler {
 		if(templateParams != null) {
 			String file = templateParams.getString(TemplateParameters.file);
 			String encoding = templateParams.getString(TemplateParameters.encoding);
-			boolean noCache = templateParams.getBoolean(TemplateParameters.noCache);
+			Boolean noCache = templateParams.getBoolean(TemplateParameters.noCache);
 			TemplateRule templateRule = TemplateRule.newInstance(file, null, null, null, encoding, noCache);
 			drr.setTemplateRule(templateRule);
 		}
@@ -316,7 +322,7 @@ public class AponAssembler {
 		String translet = redirectParameters.getString(RedirectParameters.translet);
 		String url = redirectParameters.getString(RedirectParameters.url);
 		List<Parameters> parameterParamsList = redirectParameters.getParametersList(RedirectParameters.parameters);
-		boolean excludeNullParameter = redirectParameters.getBoolean(RedirectParameters.excludeNullParameter);
+		Boolean excludeNullParameter = redirectParameters.getBoolean(RedirectParameters.excludeNullParameter);
 		List<Parameters> actionParamsList = redirectParameters.getParametersList(RedirectParameters.actions);
 		Boolean defaultResponse = redirectParameters.getBoolean(RedirectParameters.defaultResponse);
 		
@@ -371,7 +377,7 @@ public class AponAssembler {
 		List<Parameters> propertyParamsList = actionParameters.getParametersList(ActionParameters.properties);
 		String include = actionParameters.getString(ActionParameters.include);
 		List<Parameters> echoParamsList = actionParameters.getParametersList(ActionParameters.echo);
-		boolean hidden = actionParameters.getBoolean(ActionParameters.include);
+		Boolean hidden = actionParameters.getBoolean(ActionParameters.include);
 		
 		if(beanId != null && methodName != null) {
 			BeanActionRule beanActionRule = BeanActionRule.newInstance(id, beanId, methodName, hidden);
