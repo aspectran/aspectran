@@ -69,11 +69,11 @@ import com.aspectran.core.var.type.TokenType;
  * 
  * <p>Created: 2015. 01. 27 오후 10:36:29</p>
  */
-public class AponAssembler {
+public class AspectranAponAssembler {
 	
 	private final ContextBuilderAssistant assistant;
 	
-	public AponAssembler(ContextBuilderAssistant assistant) {
+	public AspectranAponAssembler(ContextBuilderAssistant assistant) {
 		this.assistant = assistant;
 	}
 	
