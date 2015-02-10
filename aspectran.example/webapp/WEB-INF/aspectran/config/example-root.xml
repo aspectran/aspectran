@@ -127,7 +127,7 @@
 	</translet>
 
 	<translet name="hello/countTo10.xml">
-		<transform type="transform/xml">
+		<transform type="transform/xml" pretty="true">
 			<action id="result" bean="example.hello.HelloAction" method="countTo10AsArray"/>
 		</transform>
 	</translet>
@@ -142,14 +142,14 @@
 			</transform>
 		</response>
 		<response name=".xml">
-			<transform type="transform/xml">
+			<transform type="transform/xml" pretty="true">
 				<action bean="example.hello.HelloAction" method="countTo10AsArray"/>
 			</transform>
 		</response>
 	</translet>
 
 	<translet name="hello/applyTheAdvice.xml">
-		<transform type="transform/xml">
+		<transform type="transform/xml" pretty="true">
 			<action id="applyTheAdvice" bean="example.hello.HelloAction" method="applyTheAdvice"/>
 		</transform>
 	</translet>
