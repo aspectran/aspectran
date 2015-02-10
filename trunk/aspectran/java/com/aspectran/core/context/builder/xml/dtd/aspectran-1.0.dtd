@@ -160,6 +160,7 @@ type CDATA #IMPLIED
 contentType CDATA #IMPLIED
 characterEncoding CDATA #IMPLIED
 default (true | false) #IMPLIED
+pretty (true | false) #IMPLIED
 >
 
 <!ELEMENT template (#PCDATA)>

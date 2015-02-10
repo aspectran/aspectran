@@ -311,8 +311,9 @@ public class AponAssembler {
 		Parameters templateParams = transformParameters.getParameters(TransformParameters.template);
 		List<Parameters> actionParamsList = transformParameters.getParametersList(TransformParameters.actions);
 		Boolean defaultResponse = transformParameters.getBoolean(TransformParameters.defaultResponse);
+		Boolean pretty = transformParameters.getBoolean(TransformParameters.pretty);
 		
-		TransformRule tr = TransformRule.newInstance(transformType, contentType, characterEncoding, defaultResponse);
+		TransformRule tr = TransformRule.newInstance(transformType, contentType, characterEncoding, defaultResponse, pretty);
 		
 		if(actionParamsList != null && actionParamsList.size()> 0) {
 			ActionList actionList = new ActionList();

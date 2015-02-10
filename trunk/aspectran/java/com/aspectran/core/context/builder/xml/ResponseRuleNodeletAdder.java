@@ -66,8 +66,9 @@ public class ResponseRuleNodeletAdder implements NodeletAdder {
 				String contentType = attributes.get("contentType");
 				String characterEncoding = attributes.get("characterEncoding");
 				Boolean defaultResponse = BooleanUtils.toNullableBooleanObject(attributes.get("defaultResponse"));
+				Boolean pretty = BooleanUtils.toNullableBooleanObject(attributes.get("pretty"));
 
-				TransformRule tr = TransformRule.newInstance(type, contentType, characterEncoding, defaultResponse);
+				TransformRule tr = TransformRule.newInstance(type, contentType, characterEncoding, defaultResponse, pretty);
 				assistant.pushObject(tr);
 				
 				ActionList actionList = new ActionList();
