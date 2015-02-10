@@ -44,6 +44,8 @@ public class JsonTransform extends AbstractTransform implements Responsible {
 	
 	private final boolean debugEnabled = logger.isDebugEnabled();
 	
+	private boolean pretty;
+	
 	/**
 	 * Instantiates a new JSON transformer.
 	 * 
@@ -51,6 +53,8 @@ public class JsonTransform extends AbstractTransform implements Responsible {
 	 */
 	public JsonTransform(TransformRule transformRule) {
 		super(transformRule);
+		
+		this.pretty = transformRule.isPretty();
 	}
 
 	/* (non-Javadoc)
@@ -76,8 +80,7 @@ public class JsonTransform extends AbstractTransform implements Responsible {
 			Writer output = responseAdapter.getWriter();
 			ProcessResult processResult = activity.getProcessResult();
 
-			boolean prettyWrite = (traceEnabled || debugEnabled);
-			JsonWriter jsonWriter = new ContentsJsonWriter(output, prettyWrite);
+			JsonWriter jsonWriter = new ContentsJsonWriter(output, pretty);
 			jsonWriter.write(processResult);
 			jsonWriter.flush();
 			

@@ -43,6 +43,8 @@ public class TransformRule extends ActionPossessSupport implements ActionPossess
 	
 	private Boolean defaultResponse;
 	
+	private Boolean pretty;
+	
 	/**
 	 * Gets the transform type.
 	 * 
@@ -182,6 +184,18 @@ public class TransformRule extends ActionPossessSupport implements ActionPossess
 		this.defaultResponse = defaultResponse;
 	}
 
+	public Boolean getPretty() {
+		return pretty;
+	}
+
+	public boolean isPretty() {
+		return BooleanUtils.toBoolean(pretty);
+	}
+
+	public void setPretty(Boolean pretty) {
+		this.pretty = pretty;
+	}
+
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
@@ -200,7 +214,7 @@ public class TransformRule extends ActionPossessSupport implements ActionPossess
 		return sb.toString();
 	}
 	
-	public static TransformRule newInstance(String type, String contentType, String characterEncoding, Boolean defaultResponse) {
+	public static TransformRule newInstance(String type, String contentType, String characterEncoding, Boolean defaultResponse, Boolean pretty) {
 		TransformType transformType = TransformType.valueOf(type);
 
 		if(transformType == null && contentType != null) {
@@ -215,6 +229,7 @@ public class TransformRule extends ActionPossessSupport implements ActionPossess
 		tr.setTransformType(transformType);
 		tr.setCharacterEncoding(characterEncoding);
 		tr.setDefaultResponse(defaultResponse);
+		tr.setPretty(pretty);
 		
 		return tr;
 	}

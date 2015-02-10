@@ -13,6 +13,7 @@ public class TransformParameters extends AbstractParameters implements Parameter
 	public static final ParameterDefine template;
 	public static final ParameterDefine actions;
 	public static final ParameterDefine defaultResponse;
+	public static final ParameterDefine pretty;
 	
 	private static final ParameterDefine[] parameterDefines;
 	
@@ -23,6 +24,7 @@ public class TransformParameters extends AbstractParameters implements Parameter
 		template = new ParameterDefine("template", new TemplateParameters());
 		actions = new ParameterDefine("action", new ActionParameters(), true);
 		defaultResponse = new ParameterDefine("defaultResponse", ParameterValueType.BOOLEAN);
+		pretty = new ParameterDefine("pretty", ParameterValueType.BOOLEAN);
 		
 		parameterDefines = new ParameterDefine[] {
 				transformType,
@@ -30,7 +32,8 @@ public class TransformParameters extends AbstractParameters implements Parameter
 				characterEncoding,
 				template,
 				actions,
-				defaultResponse
+				defaultResponse,
+				pretty
 		};
 	}
 	

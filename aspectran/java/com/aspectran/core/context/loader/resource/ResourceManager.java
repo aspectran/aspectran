@@ -97,10 +97,10 @@ public class ResourceManager {
 		if(name.endsWith(ResourceUtils.RESOURCE_NAME_SPEPARATOR))
 			name = name.substring(0, name.length() - 1);
 		
-		System.out.println("-find resource from parent: " + name);
-		System.out.println("--parent results: " + inherited);
+		//System.out.println("-find resource from parent: " + name);
+		//System.out.println("--parent results: " + inherited);
 		
-		System.out.println("find resource from self: " + name);
+		//System.out.println("find resource from self: " + name);
 		
 		final String filterName = name;
 		
@@ -148,7 +148,7 @@ public class ResourceManager {
 				current = next;
 				next = null;
 				
-				System.out.println("--self results: " + current);
+				//System.out.println("--self results: " + current);
 
 				return current;
 			}
@@ -163,14 +163,15 @@ public class ResourceManager {
 		if(name.endsWith(ResourceUtils.RESOURCE_NAME_SPEPARATOR))
 			name = name.substring(0, name.length() - 1);
 		
-		System.out.println("find resource from parent: " + name);
-		System.out.println("parent results: " + inherited);
-		
-		while(inherited.hasMoreElements()) {
-			System.out.println("p: " + inherited.nextElement().toString());
-		}
-		
-		System.out.println("find resource from self: " + name);
+//		System.out.println("find resource from parent: " + name);
+//		System.out.println("parent results: " + inherited);
+//		
+//		while(inherited.hasMoreElements()) {
+//			System.out.println("p: " + inherited.nextElement().toString());
+//		}
+//		
+//		System.out.println("find resource from self: " + name);
+
 		final String filterName = name;
 		
 		return new Enumeration<URL>() {

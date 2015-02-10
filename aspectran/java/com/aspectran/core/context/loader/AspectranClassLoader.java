@@ -386,7 +386,7 @@ public class AspectranClassLoader extends ClassLoader {
 
 		Class<?> c = findLoadedClass(name);
 
-		System.out.println("==findLoadedClass(name): " + c);
+		//System.out.println("==findLoadedClass(name): " + c);
 
 		if(c == null) {
 	    	byte[] classData = null;
@@ -401,7 +401,7 @@ public class AspectranClassLoader extends ClassLoader {
 	    	if(classData != null) {
 	    		c = defineClass(name, classData, 0, classData.length);
 	    		resolveClass(c);
-	    		System.out.println("	defineClass: " + c);
+	    		//System.out.println("	defineClass: " + c);
 	    	}
 	    }
 	    
@@ -409,7 +409,7 @@ public class AspectranClassLoader extends ClassLoader {
 	    	try {
             	//System.out.println("  getParent().loadClass");
                 c = root.getParent().loadClass(name);
-                System.out.println("	getParent().loadClass: " + c);
+                //System.out.println("	getParent().loadClass: " + c);
 	        } catch(ClassNotFoundException e) {
 	            // If still not found, then invoke
 	            // findClass to find the class.
@@ -446,7 +446,7 @@ public class AspectranClassLoader extends ClassLoader {
 		if(res.hasMoreElements())
 			url = res.nextElement();
 
-		System.out.println(" **finded resource: " + url);
+		//System.out.println(" **finded resource: " + url);
 		
 		if(url == null)
 			return null;

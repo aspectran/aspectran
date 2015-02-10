@@ -44,15 +44,21 @@ import com.aspectran.core.var.rule.TransformRule;
  */
 public class XmlTransform extends AbstractTransform implements Responsible {
 
-	public static final String OUTPUT_INDENT_YES = "yes";
-
 	public static final String OUTPUT_METHOD_XML = "xml";
 	
+	public static final String OUTPUT_INDENT_YES = "yes";
+
+	public static final String INDENT_NUMBER_KEY = "indent-number";
+
+	public static final Integer INDENT_NUMBER_VAL = new Integer(1);
+
 	private final Logger logger = LoggerFactory.getLogger(XmlTransform.class);
 
 	private final boolean traceEnabled = logger.isTraceEnabled();
 
 	private final boolean debugEnabled = logger.isDebugEnabled();
+	
+	private boolean pretty;
 
 	/**
 	 * Instantiates a new xML transformer.
@@ -61,6 +67,8 @@ public class XmlTransform extends AbstractTransform implements Responsible {
 	 */
 	public XmlTransform(TransformRule transformRule) {
 		super(transformRule);
+		
+		this.pretty = transformRule.isPretty();
 	}
 
 	/* (non-Javadoc)
@@ -92,11 +100,15 @@ public class XmlTransform extends AbstractTransform implements Responsible {
 			String encoding = transformRule.getCharacterEncoding();
 			
 			TransformerFactory transformerFactory = TransformerFactory.newInstance();
-			transformerFactory.setAttribute("indent-number", new Integer(1));
+			
+			if(pretty)
+				transformerFactory.setAttribute(INDENT_NUMBER_KEY, INDENT_NUMBER_VAL);
 
 			Transformer transformer = transformerFactory.newTransformer();
-			transformer.setOutputProperty(OutputKeys.INDENT, OUTPUT_INDENT_YES);
 			transformer.setOutputProperty(OutputKeys.METHOD, OUTPUT_METHOD_XML);
+
+			if(pretty)
+				transformer.setOutputProperty(OutputKeys.INDENT, OUTPUT_INDENT_YES);
 			
 			if(encoding != null)
 				transformer.setOutputProperty(OutputKeys.ENCODING, encoding);
