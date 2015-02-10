@@ -14,7 +14,6 @@ public class RequestParameters extends AbstractParameters implements Parameters 
 	
 	private static final ParameterDefine[] parameterDefines;
 
-	
 	static {
 		method = new ParameterDefine("method", ParameterValueType.STRING);
 		characterEncoding = new ParameterDefine("characterEncoding", ParameterValueType.STRING);
