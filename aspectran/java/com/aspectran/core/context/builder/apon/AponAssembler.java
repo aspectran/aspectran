@@ -31,10 +31,13 @@ import com.aspectran.core.context.builder.apon.params.ExceptionRaizedParameters;
 import com.aspectran.core.context.builder.apon.params.ForwardParameters;
 import com.aspectran.core.context.builder.apon.params.JobParameters;
 import com.aspectran.core.context.builder.apon.params.JoinpointParameters;
+import com.aspectran.core.context.builder.apon.params.MultipartParameters;
 import com.aspectran.core.context.builder.apon.params.RedirectParameters;
+import com.aspectran.core.context.builder.apon.params.RequestParameters;
 import com.aspectran.core.context.builder.apon.params.ResponseByContentTypeParameters;
 import com.aspectran.core.context.builder.apon.params.TemplateParameters;
 import com.aspectran.core.context.builder.apon.params.TransformParameters;
+import com.aspectran.core.context.builder.apon.params.TransletParameters;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.apon.Parameters;
 import com.aspectran.core.var.rule.AspectAdviceRule;
@@ -50,6 +53,7 @@ import com.aspectran.core.var.rule.ItemRule;
 import com.aspectran.core.var.rule.ItemRuleMap;
 import com.aspectran.core.var.rule.PointcutRule;
 import com.aspectran.core.var.rule.RedirectResponseRule;
+import com.aspectran.core.var.rule.RequestRule;
 import com.aspectran.core.var.rule.ResponseByContentTypeRule;
 import com.aspectran.core.var.rule.SettingsAdviceRule;
 import com.aspectran.core.var.rule.TemplateRule;
@@ -73,7 +77,7 @@ public class AponAssembler {
 		this.assistant = assistant;
 	}
 	
-	public void assembleAspectran(Parameters aspectranParameters) {
+	public void assembleAspectran(Parameters aspectranParameters) throws ClassNotFoundException, IOException {
 //		setting = new ParameterDefine("setting", new DefaultSettingsParameters());
 //		typeAlias = new ParameterDefine("typeAlias", new GenericParameters());
 //		aspects = new ParameterDefine("aspect", new AspectParameters(), true);
@@ -82,10 +86,34 @@ public class AponAssembler {
 //		imports = new ParameterDefine("import", new ImportParameters(), true);
 
 		
-		assembleDefaultSettings(aspectranParameters.getParameters(AspectranParameters.setting));
-		assembleTypeAlias(aspectranParameters.getParameters(AspectranParameters.typeAlias));
-		assembleAspectRule(aspectranParameters.getParametersList(AspectranParameters.aspects));
-		assembleBeanRule(aspectranParameters.getParametersList(AspectranParameters.beans));
+		Parameters settingParameters = aspectranParameters.getParameters(AspectranParameters.setting);
+		if(settingParameters != null)
+			assembleDefaultSettings(settingParameters);
+
+		Parameters typeAliasParameters = aspectranParameters.getParameters(AspectranParameters.typeAlias);
+		if(typeAliasParameters != null)
+			assembleTypeAlias(typeAliasParameters);
+		
+		List<Parameters> aspectParametersList = aspectranParameters.getParametersList(AspectranParameters.aspects);
+		if(aspectParametersList != null) {
+			for(Parameters aspectParameters : aspectParametersList) {
+				assembleAspectRule(aspectParameters);
+			}
+		}
+
+		List<Parameters> beanParametersList = aspectranParameters.getParametersList(AspectranParameters.beans);
+		if(beanParametersList != null) {
+			for(Parameters beanParameters : beanParametersList) {
+				assembleBeanRule(beanParameters);
+			}
+		}
+
+		List<Parameters> transletParametersList = aspectranParameters.getParametersList(AspectranParameters.translets);
+		if(transletParametersList != null) {
+			for(Parameters transletParameters : transletParametersList) {
+				assembleTransletRule(transletParameters);
+			}
+		}
 	}
 	
 	public void assembleDefaultSettings(Parameters parameters) {
@@ -122,12 +150,54 @@ public class AponAssembler {
 		}
 	}
 
-	public void assembleBeanRule(List<Parameters> beanParametersList) {
-		for(Parameters beanParameters : beanParametersList) {
-			assembleAspectRule(beanParameters);
-		}
+	public void assembleTransletRule(Parameters transletParameters) {
+//		request = new ParameterDefine("request", new RequestParameters());
+//		contents = new ParameterDefine("content", new ContentParameters(), true);
+//		responses = new ParameterDefine("response", new ResponseParameters(), true);
+//		exception = new ParameterDefine("exception", new ExceptionParameters(), true);
+		
+		Parameters requestParamters = transletParameters.getParameters(TransletParameters.request);
+		if(requestParamters != null)
+			assembleRequestRule(requestParamters);
+		
+		
+		List<Parameters> contentParamtersList = transletParameters.getParametersList(TransletParameters.contents);
+		List<Parameters> reponseParamtersList = transletParameters.getParametersList(TransletParameters.responses);
+		Parameters exceptionParamters = transletParameters.getParameters(TransletParameters.exception);
+		
+	
 	}
+	
+	public RequestRule assembleRequestRule(Parameters requestParameters) {
+//		method = new ParameterDefine("method", ParameterValueType.STRING);
+//		characterEncoding = new ParameterDefine("characterEncoding", ParameterValueType.STRING);
+//		attributes = new ParameterDefine("attribute", new ItemParameters(), true);
+//		multipart = new ParameterDefine("multipart", new MultipartParameters());
+		
+		String method = requestParameters.getString(RequestParameters.method);
+		String characterEncoding = requestParameters.getString(RequestParameters.characterEncoding);
+		List<Parameters> attributeParamsList = requestParameters.getParametersList(RequestParameters.attributes);
+		Parameters multipartParamters = requestParameters.getParameters(RequestParameters.multipart);
+		
+		RequestRule requestRule = RequestRule.newInstance(method, characterEncoding);
 
+		ItemRuleMap attributeItemRuleMap = assembleItemRuleMap(attributeParamsList);
+		if(attributeItemRuleMap != null) {
+			requestRule.setAttributeItemRuleMap(attributeItemRuleMap);
+		}
+
+		
+		return requestRule;
+	}
+	
+	public void assembleMultipartRule(Parameters multipartParameters) {
+		Boolean attribute = multipartParameters.getBoolean(MultipartParameters.attribute);
+		List<Parameters> fileItemParamsList = multipartParameters.getParametersList(MultipartParameters.fileItems);
+		
+	}
+	
+
+	
 	public void assembleBeanRule(Parameters beanParameters) throws ClassNotFoundException, IOException {
 		String id = beanParameters.getString(BeanParameters.id);
 		String className = beanParameters.getString(BeanParameters.className);
@@ -164,12 +234,6 @@ public class AponAssembler {
 					beanRule.setPropertyItemRuleMap(propertyItemRuleMap);
 				assistant.addBeanRule(beanRule);
 			}
-		}
-	}
-	
-	public void assembleAspectRule(List<Parameters> aspectParametersList) {
-		for(Parameters aspectParameters : aspectParametersList) {
-			assembleAspectRule(aspectParameters);
 		}
 	}
 	
