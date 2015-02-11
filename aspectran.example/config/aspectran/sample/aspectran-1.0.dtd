@@ -97,15 +97,10 @@ hidden (true | false) #IMPLIED
 extends CDATA #IMPLIED
 >
 
-<!ELEMENT request (attribute?, multipart?)>
+<!ELEMENT request (attribute?)>
 <!ATTLIST request
 method CDATA #IMPLIED
 characterEncoding CDATA #IMPLIED
->
-
-<!ELEMENT multipart (item*)>
-<!ATTLIST multipart
-attribute (true | false) #IMPLIED
 >
 
 <!ELEMENT contents (content*)>
