@@ -173,13 +173,8 @@ public class WebActivityImpl extends CoreActivityImpl implements WebActivity {
 		
 		FileItemRuleMap fileItemRuleMap = requestRule.getFileItemRuleMap();
 		
-		FileItemMap fileItemMap = requestAdapter.getFileItemMap();
-		
-		if(fileItemMap == null) {
-			fileItemMap = new FileItemMap();
-			requestAdapter.setFileItemMap(fileItemMap);
-		}
-		
+		FileItemMap fileItemMap = requestAdapter.touchFileItemMap();
+
 		for(FileItemRule fir : fileItemRuleMap) {
 			if(fir.getUnityType() == FileItemUnityType.ARRAY) {
 				MultipartFileItem[] multipartFileItems = handler.getMultipartFileItems(fir.getName());

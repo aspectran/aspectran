@@ -36,6 +36,14 @@ public abstract class AbstractRequest {
 	public void setFileItemMap(FileItemMap fileItemMap) {
 		this.fileItemMap = fileItemMap;
 	}
+	
+	public FileItemMap touchFileItemMap() {
+		if(fileItemMap == null) {
+			fileItemMap = new FileItemMap();
+		}
+		
+		return fileItemMap;
+	}
 
 	/**
 	 * Checks if is max length exceeded.

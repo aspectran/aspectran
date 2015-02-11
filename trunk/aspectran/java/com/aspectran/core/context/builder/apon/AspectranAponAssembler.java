@@ -155,6 +155,11 @@ public class AspectranAponAssembler {
 //		contents = new ParameterDefine("content", new ContentParameters(), true);
 //		responses = new ParameterDefine("response", new ResponseParameters(), true);
 //		exception = new ParameterDefine("exception", new ExceptionParameters(), true);
+//		actions = new ParameterDefine("action", new ActionParameters(), true);
+//		dispatchs = new ParameterDefine("dispatch", new DispatchParameters(), true);
+//		transforms = new ParameterDefine("transform", new TransformParameters(), true);
+//		redirects = new ParameterDefine("redirect", new RedirectParameters(), true);
+//		forwards = new ParameterDefine("forward", new ForwardParameters(), true);
 		
 		Parameters requestParamters = transletParameters.getParameters(TransletParameters.request);
 		if(requestParamters != null)
@@ -177,7 +182,7 @@ public class AspectranAponAssembler {
 		String method = requestParameters.getString(RequestParameters.method);
 		String characterEncoding = requestParameters.getString(RequestParameters.characterEncoding);
 		List<Parameters> attributeParamsList = requestParameters.getParametersList(RequestParameters.attributes);
-		Parameters multipartParamters = requestParameters.getParameters(RequestParameters.multipart);
+		Parameters multipartParameters = requestParameters.getParameters(RequestParameters.multipart);
 		
 		RequestRule requestRule = RequestRule.newInstance(method, characterEncoding);
 
@@ -186,6 +191,11 @@ public class AspectranAponAssembler {
 			requestRule.setAttributeItemRuleMap(attributeItemRuleMap);
 		}
 
+		Boolean fileItemCanBeAttribute = multipartParameters.getBoolean(MultipartParameters.attribute);
+		requestRule.setFileItemCanBeAttribute(fileItemCanBeAttribute);
+		
+		multipartParameters.getBoolean(MultipartParameters.fileItems);
+		
 		
 		return requestRule;
 	}
