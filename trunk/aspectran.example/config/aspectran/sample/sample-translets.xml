@@ -39,10 +39,6 @@
 					<value>${item1}</value>
 				</item>
 			</attribute>
-			<multipart>
-				<item name="file1"/>
-				<item name="files[]"/>
-			</multipart>
 		</request>
 		<contents>
 			<content id="echo">
