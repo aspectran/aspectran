@@ -79,12 +79,12 @@ public class WebActivityImpl extends CoreActivityImpl implements WebActivity {
 	
 	public WebActivityImpl(ActivityContext context, HttpServletRequest request, HttpServletResponse response) {
 		super(context);
-		
-		setTransletInterfaceClass(WebTranslet.class);
-		setTransletImplementClass(WebTransletImpl.class);
 
 		this.request = request;
 		this.response = response;
+		
+		setTransletInterfaceClass(WebTranslet.class);
+		setTransletImplementClass(WebTransletImpl.class);
 	}
 	
 	public void ready(String transletName) throws CoreActivityException {
