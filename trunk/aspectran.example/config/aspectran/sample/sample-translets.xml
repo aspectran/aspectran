@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE aspectran PUBLIC "-//aspectran.com//DTD Aspectran 1.0//EN"
-                           "../dtd/aspectran-1.0.dtd">
+                           "aspectran-1.0.dtd">
 
 <aspectran namespace="t1">
 
@@ -14,7 +14,7 @@
 
 	<translet name="front/welcome" extends="./front">
 		<request method="get" characterEncoding="utf-8">
-			<attributes>
+			<attribute>
 				<item name="param0" value="Value"/>
 				<item name="param01">
 					<reference bean="common.action.a1"/>
@@ -24,8 +24,8 @@
 					<value>1111111</value>
 					<value>1111111</value>
 				</item>
-				<item name="param2" type="list">
-					<value tokenize="false">${item1:222222}</value>
+				<item name="param2" type="list" tokenize="false">
+					<value>${item1:222222}</value>
 					<value>%{testTicket1:11111} fff %{item10:99}</value>
 					<value>#{common.ticket.t1^date}</value>
 					<value>#{common.ticket.t1^int}</value>
@@ -38,11 +38,11 @@
 					<value>${item0}</value>
 					<value>${item1}</value>
 				</item>
-			</attributes>
-			<multiparts>
-				<fileItem name="file1"/>
-				<fileItem name="files[]"/>
-			</multiparts>
+			</attribute>
+			<multipart>
+				<item name="file1"/>
+				<item name="files[]"/>
+			</multipart>
 		</request>
 		<contents>
 			<content id="echo">
@@ -66,7 +66,7 @@
 			</content>
 			<content id="content0" hidden="false">
 				<action id="a" bean="common.action.a1" method="queryForObject">
-					<arguments>
+					<argument>
 						<item type="map">
 							<value name="arg1">한---- -글</value>
 							<value name="arg11">@{item1}</value>
@@ -82,27 +82,27 @@
 						<item>
 							<reference parameter="attr01"/>
 						</item>
-					</arguments>
+					</argument>
 				</action>
 				<include id="include1" translet="./home2">
-					<attributes>
+					<attribute>
 						<item name="item0">한--- --글</item>
 						<item name="item1">@{item1}</item>
 						<item name="item2">@{item2:aaa}</item>
-					</attributes>
+					</attribute>
 				</include>
 				<action id="beanAction1" bean="action.testBean" method="testAction">
-					<properties>
+					<property>
 						<item name="item0">한-----글</item>
 						<item name="item1">@{item1}</item>
 						<item name="item2">@{item2:aaa}</item>
-					</properties>
+					</property>
 				</action>
 			</content>
 			<content hidden="false">
 				<!--
 				<include translet="home2" ignoreTicket="true">
-					<attributes>
+					<attribute>
 						<item name="item0">
 							한==*     
 							${item1}
@@ -110,7 +110,7 @@
 						</item>
 						<item name="item1">${item1}</item>
 						<item name="item2">${item2:aaa}</item>
-					</attributes>
+					</attribute>
 				</include>
 				-->
 			</content>
@@ -124,16 +124,16 @@
 					</item>
 				</echo>
 				<action bean="responseHeaderSpecifier" method="setHeader">
-					<arguments>
+					<argument>
 						<item name="Content-Disposition">inline</item>
 						<item name="filename">파일명.txt</item>
-					</arguments>
+					</argument>
 				</action>
 				<action bean="responseHeaderSpecifier" method="setHeader">
-					<arguments>
+					<argument>
 						<item name="Content-Disposition">inline</item>
 						<item name="filename">파일명.txt</item>
-					</arguments>
+					</argument>
 				</action>
 			</transform>
 		</response>
@@ -146,10 +146,10 @@
 					</item>
 				</echo>
 				<action bean="responseHeaderSpecifier" method="setHeader">
-					<arguments>
+					<argument>
 						<item name="Content-Type">application/vnd.ms-xls</item>
 						<item name="filename">X${item9:한-글} 파일명.txt</item>
-					</arguments>
+					</argument>
 				</action>
 				<template file="WEB-INF/xsl/service/test.xsl" noCache="true"/>
 			</transform>
@@ -174,10 +174,10 @@
 					</item>
 				</echo>
 				<action bean="responseHeaderSpecifier" method="setHeader">
-					<arguments>
+					<argument>
 						<item name="Content-Type">application/vnd.ms-xls</item>
 						<item name="filename">X${item9:한-글} 파일명.xls</item>
-					</arguments>
+					</argument>
 				</action>
 				<template file="/WEB-INF/jsp/hello.jsp" encoding="utf-8"/>
 			</dispatch>
@@ -227,10 +227,10 @@
 				</transform>
 				<transform contentType="text/xml" type="transform/xml">
 					<action id="xml" bean="common.action.a1" method="testXmlAction" hidden="true">
-						<properties>
+						<property>
 							<item name="variable1">error</item>
 							<item name="variable2">0001</item>
-						</properties>
+						</property>
 					</action>
 					<echo id="error3">
 						<item name="code">0002</item>
@@ -253,10 +253,8 @@
 						</item>
 					</echo>
 				</transform>
-			</responseByContentType>
-			<defaultResponse>
 				<redirect translet="error"/>
-			</defaultResponse>
+			</responseByContentType>
 		</exception>
 	</translet>
 	
@@ -268,31 +266,31 @@
 			</item>
 		</echo>
 		<action id="json1" bean="sqlMapExecutor" method="select">
-			<arguments>
+			<argument>
 				<item name="sqlmap">sqlmap</item>
 				<item name="param" type="map">
 					<value name="param1">param1</value>
 					<value name="param2">param2</value>
 					<value name="param3">param3</value>
 				</item>
-			</arguments>
+			</argument>
 		</action>
 		<action id="json2" bean="sqlMapExecutor" method="select">
-			<arguments>
+			<argument>
 				<item name="sqlmap">sqlmap</item>
 				<item name="param" type="map">
 					<value name="param1">param1</value>
 					<value name="param2">param2</value>
 					<value name="param3">param3</value>
 				</item>
-			</arguments>
+			</argument>
 		</action>
 		<include id="include1" translet="./home2">
-			<attributes>
+			<attribute>
 				<item name="item0">한--- --글</item>
 				<item name="item1">@{item1}</item>
 				<item name="item2">@{item2:aaa}</item>
-			</attributes>
+			</attribute>
 		</include>
 		<transform type="transform/json" contentType="text/json"/>
 	</translet>
@@ -300,14 +298,14 @@
 	<translet name="json">
 		<transform type="transform/json" contentType="text/json">
 			<action id="json" bean="sqlMapExecutor" method="select">
-				<arguments>
+				<argument>
 					<item name="sqlmap">sqlmap</item>
 					<item name="param" type="map">
 						<value name="param1">param1</value>
 						<value name="param2">param2</value>
 						<value name="param3">param3</value>
 					</item>
-				</arguments>
+				</argument>
 			</action>
 		</transform>
 	</translet>
@@ -315,10 +313,10 @@
 	<translet name="xml">
 		<transform type="transform/xml" contentType="text/xml">
 			<action id="xml" bean="common.action.a1" method="testXmlAction222">
-				<properties>
+				<property>
 					<item name="variable1">application/vnd.ms-xls</item>
 					<item name="variable2">X${item9:한-글} 파일명.xls</item>
-				</properties>
+				</property>
 			</action>
 		</transform>
 	</translet>
@@ -355,11 +353,11 @@
 			<ticket name="testTicket" rejectInvalidTicket="true"/>
 		</require>
 		<request method="get">
-			<attributes>
+			<attribute>
 				<item name="item0">${item0:한글2}</item>
 				<item name="item1">${item1}</item>
 				<item name="item2">${item2:aaa}</item>
-			</attributes>
+			</attribute>
 		</request>
 		<process>
 			<content id="content9">
@@ -369,11 +367,11 @@
 					<item name="item2"/>
 				</echo>
 				<include translet="home3" ignoreTicket="true">
-					<attributes>
+					<attribute>
 						<item name="item0">한!!!!!!!!!글</item>
 						<item name="item1">@{item1}</item>
 						<item name="item2">@{item2:aaa}</item>
-					</attributes>
+					</attribute>
 				</include>
 			</content>
 		</process>
@@ -387,11 +385,11 @@
 			<ticket name="testTicket" rejectInvalidTicket="true"/>
 		</require>
 		<request method="get">
-			<attributes>
+			<attribute>
 				<item name="item0">${item0:한글2}</item>
 				<item name="item1">${item1}</item>
 				<item name="item2">${item2:aaa}</item>
-			</attributes>
+			</attribute>
 		</request>
 		<process>
 			<content>
@@ -421,9 +419,9 @@
 
 	<translet name="redirect">
 		<request method="get">
-			<attributes>
+			<attribute>
 				<item name="q">한글1</item>
-			</attributes>
+			</attribute>
 		</request>
 		<response>
 			<redirect>
@@ -441,9 +439,9 @@
 			<ticket name="testTicket2" rejectInvalidTicket="false"/>
 		</require>
 		<request method="get">
-			<attributes>
+			<attribute>
 				<item name="q">한글2</item>
-			</attributes>
+			</attribute>
 		</request>
 		<response>
 			<redirect url="http://search.naver.com/search.naver">
@@ -456,9 +454,9 @@
 
 	<translet name="forward">
 		<request method="get">
-			<attributes>
+			<attribute>
 				<item name="q">한글3</item>
-			</attributes>
+			</attribute>
 		</request>
 		<response>
 			<forward translet="home">
