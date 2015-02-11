@@ -89,7 +89,7 @@ public class MultipartRequestWrapper extends HttpServletRequestWrapper {
 	 * 
 	 * @return the multipart item names
 	 */
-	public Enumeration<String> getMultipartItemNames() {
+	public Enumeration<String> getMultipartFileItemNames() {
         return handler.getMultipartFileItemNames();
     }
     

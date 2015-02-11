@@ -15,7 +15,6 @@
  */
 package com.aspectran.web.activity;
 
-import java.io.UnsupportedEncodingException;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -55,7 +54,7 @@ import com.aspectran.web.adapter.HttpSessionAdapter;
 /**
  * <p>Created: 2008. 04. 28 오전 12:48:48</p>
  */
-public class WebActivityImpl extends CoreActivityImpl implements WebActivity {
+public class WebActivityImplBak extends CoreActivityImpl implements WebActivity {
 
 	private static final String MULTIPART_MAX_REQUEST_SIZE = "multipart.maxRequestSize";
 	
@@ -65,62 +64,26 @@ public class WebActivityImpl extends CoreActivityImpl implements WebActivity {
 	
 	private static final String MULTIPART_DENIED_FILE_EXTENSIONS = "multipart.deniedFileExtensions";
 	
-	private final Logger logger = LoggerFactory.getLogger(WebActivityImpl.class);
+	private final Logger logger = LoggerFactory.getLogger(WebActivityImplBak.class);
 
 	private final boolean debugEnabled = logger.isDebugEnabled();
-	
-	private RequestRule requestRule;
-	
-	private ResponseRule responseRule;
 	
 	private HttpServletRequest request;
 	
 	private HttpServletResponse response;
 	
-	public WebActivityImpl(ActivityContext context, HttpServletRequest request, HttpServletResponse response) {
+	public WebActivityImplBak(ActivityContext context, HttpServletRequest request, HttpServletResponse response) {
 		super(context);
+		
+		this.request = request;
+		this.response = response;
 		
 		setTransletInterfaceClass(WebTranslet.class);
 		setTransletImplementClass(WebTransletImpl.class);
-
-		this.request = request;
-		this.response = response;
 	}
 	
 	public void ready(String transletName) throws CoreActivityException {
 		super.ready(transletName);
-
-		requestRule = getRequestRule();
-		responseRule = getResponseRule();
-		
-		checkCharacterEncoding();		
-	}
-	
-	protected void request(CoreTranslet translet) throws RequestException {
-		String method = request.getMethod();
-		RequestMethodType methodType = requestRule.getMethod();
-		
-        if(methodType != null && !method.equalsIgnoreCase(methodType.toString()))
-        	return;
-		
-		try {
-			String contentType = request.getContentType();
-			
-	        if(method.equalsIgnoreCase(RequestMethodType.POST.toString())
-	        		&& contentType != null
-	        		&& contentType.startsWith("multipart/form-data")) {
-	        	
-	        	request = parseMultipart();
-	        }
-
-	        ValueMap valueMap = parseParameter();
-	        
-	        if(valueMap != null)
-	        	translet.setDeclaredAttributeMap(valueMap);
-        
-		} catch(Exception e) {
-			throw new RequestException(e);
-		}
 		
 		RequestAdapter requestAdapter = new HttpServletRequestAdapter(request);
 		ResponseAdapter responseAdapter = new HttpServletResponseAdapter(response);
@@ -130,33 +93,78 @@ public class WebActivityImpl extends CoreActivityImpl implements WebActivity {
 		setResponseAdapter(responseAdapter);
 		setSessionAdapter(sessionAdapter);
 	}
-
-	private void checkCharacterEncoding() throws CoreActivityException {
-		try {
-			String characterEncoding = requestRule.getCharacterEncoding();
-			
-			if(characterEncoding == null)
-				characterEncoding = (String)getRequestSetting(RequestRule.CHARACTER_ENCODING_SETTING_NAME);
-			
-			if(characterEncoding != null)
-				request.setCharacterEncoding(characterEncoding);
+	
+	protected void request(CoreTranslet translet) throws RequestException {
+		RequestRule requestRule = getRequestRule();
+		ResponseRule responseRule = getResponseRule();
+		RequestAdapter requestAdapter = getRequestAdapter();
+		ResponseAdapter responseAdapter = getResponseAdapter();
 		
-			responseRule.getCharacterEncoding();
+		try {
+			if(requestAdapter != null) {
+				String characterEncoding = requestRule.getCharacterEncoding();
+				
+				if(characterEncoding == null)
+					characterEncoding = (String)getRequestSetting(RequestRule.CHARACTER_ENCODING_SETTING_NAME);
+				
+				if(characterEncoding != null)
+					requestAdapter.setCharacterEncoding(characterEncoding);
+			}
+			
+			if(responseAdapter != null) {
+				String characterEncoding = responseRule.getCharacterEncoding();
+
+				if(characterEncoding == null)
+					characterEncoding = (String)getResponseSetting(ResponseRule.CHARACTER_ENCODING_SETTING_NAME);
+
+				if(characterEncoding != null)
+					responseAdapter.setCharacterEncoding(characterEncoding);
+			}
+		
+			String method = request.getMethod();
+			RequestMethodType methodType = getRequestRule().getMethod();
+			
+	        if(methodType != null
+	        		&& !method.equalsIgnoreCase(methodType.toString()))
+	        	return;
+	        	
+	        String contentType = request.getContentType();
 	
-			if(characterEncoding == null)
-				characterEncoding = (String)getResponseSetting(ResponseRule.CHARACTER_ENCODING_SETTING_NAME);
+	        if(method.equalsIgnoreCase(RequestMethodType.POST.toString())
+	        		&& contentType != null
+	        		&& contentType.startsWith("multipart/form-data")) {
+	        	parseMultipart();
+	        }
 	
-			if(characterEncoding != null)
-				response.setCharacterEncoding(characterEncoding);
-		} catch(UnsupportedEncodingException e) {
-			throw new CoreActivityException(e);
+	        ValueMap valueMap = parseParameter();
+	        
+	        if(valueMap != null)
+	        	translet.setDeclaredAttributeMap(valueMap);
+        
+		} catch(Exception e) {
+			throw new RequestException(e);
 		}
 	}
 	
+	private boolean isMultipart() {
+		String method = request.getMethod();
+        String contentType = request.getContentType();
+		
+        if(method.equalsIgnoreCase(RequestMethodType.POST.toString())
+        		&& contentType != null
+        		&& contentType.startsWith("multipart/form-data")) {
+        	return true;
+        }
+        
+        return false;
+	}
+
 	/**
 	 * Parses the multipart parameters.
 	 */
-	private MultipartRequestWrapper parseMultipart() throws MultipartRequestException {
+	private void parseMultipart() throws MultipartRequestException {
+		RequestRule requestRule = getRequestRule();
+
 		String multipartMaxRequestSize = (String)getRequestSetting(MULTIPART_MAX_REQUEST_SIZE);
 		String multipartTemporaryFilePath = (String)getRequestSetting(MULTIPART_TEMPORARY_FILE_PATH);
 		String multipartAllowedFileExtensions = (String)getRequestSetting(MULTIPART_ALLOWED_FILE_EXTENSIONS);
@@ -171,14 +179,61 @@ public class WebActivityImpl extends CoreActivityImpl implements WebActivity {
 		
 		// sets the servlet request wrapper
 		MultipartRequestWrapper wrapper = new MultipartRequestWrapper(handler);
+		request = wrapper;
 		
-		return wrapper;
+		RequestAdapter requestAdapter = new HttpServletRequestAdapter(request);
+		setRequestAdapter(requestAdapter);
+		
+		FileItemRuleMap fileItemRuleMap = requestRule.getFileItemRuleMap();
+		
+		FileItemMap fileItemMap = requestAdapter.touchFileItemMap();
+
+		for(FileItemRule fir : fileItemRuleMap) {
+			if(fir.getUnityType() == FileItemUnityType.ARRAY) {
+				MultipartFileItem[] multipartFileItems = handler.getMultipartFileItems(fir.getName());
+				
+				if(multipartFileItems != null) {
+					fileItemMap.putFileItem(fir.getName(), multipartFileItems);
+				}
+			} else {
+				MultipartFileItem multipartFileItem = handler.getMultipartFileItem(fir.getName());
+				fileItemMap.putFileItem(fir.getName(), multipartFileItem);
+			}
+		}
+		
+		requestAdapter.setMaxLengthExceeded(handler.isMaxLengthExceeded());
+		
+		if(requestRule.isFileItemCanBeAttribute()) {
+			for(Map.Entry<String, Object> entry : fileItemMap.entrySet())
+				request.setAttribute(entry.getKey(), entry.getValue());
+		}
+		
+		if(debugEnabled) {
+			if(requestAdapter.isMaxLengthExceeded()) {
+				logger.debug("Max length exceeded. multipart.maxRequestSize: " + multipartMaxRequestSize);
+			}
+
+			for(FileItemRule fir : fileItemRuleMap) {
+				if(fir.getUnityType() == FileItemUnityType.ARRAY) {
+					FileItem[] fileItems = fileItemMap.getFileItems(fir.getName());
+					
+					for(int i = 0; i < fileItems.length; i++) {
+						logger.debug("fileItem[" + i + "] name=" + fir.getName() + " " + fileItems[i]);
+					}
+				} else {
+					FileItem f = fileItemMap.getFileItem(fir.getName());
+					logger.debug("fileItem name=" + fir.getName() + " " + f);
+				}
+			}
+		}
 	}
 	
 	/**
 	 * Parses the parameter.
 	 */
 	private ValueMap parseParameter() {
+		RequestRule requestRule = getRequestRule();
+		
 		if(requestRule.getAttributeItemRuleMap() != null) {
 			ItemTokenExpressor expressor = new ItemTokenExpression(this);
 			ValueMap valueMap = expressor.express(requestRule.getAttributeItemRuleMap());
@@ -195,7 +250,7 @@ public class WebActivityImpl extends CoreActivityImpl implements WebActivity {
 	}
 	
 	public CoreActivity newCoreActivity() {
-		WebActivityImpl webActivity = new WebActivityImpl(getActivityContext(), request, response);
+		WebActivityImplBak webActivity = new WebActivityImplBak(getActivityContext(), request, response);
 		return webActivity;
 	}
 	
