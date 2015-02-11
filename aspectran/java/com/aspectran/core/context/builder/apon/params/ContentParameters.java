@@ -14,7 +14,7 @@ public class ContentParameters extends AbstractParameters implements Parameters 
 	
 	static {
 		id = new ParameterDefine("id", ParameterValueType.STRING);
-		actions = new ParameterDefine("before", new ActionParameters(), true);
+		actions = new ParameterDefine("action", new ActionParameters(), true);
 		
 		parameterDefines = new ParameterDefine[] {
 				id,

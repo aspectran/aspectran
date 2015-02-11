@@ -83,6 +83,8 @@ public interface RequestAdapter {
 	public FileItemMap getFileItemMap();
 
 	public void setFileItemMap(FileItemMap fileItemMap);
+
+	public FileItemMap touchFileItemMap();
 	
 	/**
 	 * Checks if is max length exceeded.

@@ -16,7 +16,6 @@ public class ResponseParameters extends AbstractParameters implements Parameters
 	
 	private static final ParameterDefine[] parameterDefines;
 
-	
 	static {
 		name = new ParameterDefine("name", ParameterValueType.STRING);
 		characterEncoding = new ParameterDefine("characterEncoding", ParameterValueType.STRING);
