@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.aspectran.core.activity.variable;
+package com.aspectran.core.activity.request.parameter;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -21,7 +21,7 @@ import java.util.Map;
 /**
  * <p>Created: 2008. 03. 29 오후 6:23:00</p>
  */
-public class FileItemMap extends LinkedHashMap<String, Object> {
+public class FileParameterMap extends LinkedHashMap<String, Object> {
 	
 	/** @serial */
 	static final long serialVersionUID = 8579876394671525755L;
@@ -33,11 +33,11 @@ public class FileItemMap extends LinkedHashMap<String, Object> {
 	 * 
 	 * @return the value
 	 */
-	public FileItem getFileItem(String name) {
+	public FileParameter getFileItem(String name) {
 		Object value = get(name);
 		
 		if(value instanceof String)
-			return (FileItem)value;
+			return (FileParameter)value;
 		
 		return null;
 	}
@@ -49,11 +49,11 @@ public class FileItemMap extends LinkedHashMap<String, Object> {
 	 * 
 	 * @return the values
 	 */
-	public FileItem[] getFileItems(String name) {
+	public FileParameter[] getFileItems(String name) {
 		Object value = get(name);
 		
-		if(value instanceof FileItem[])
-			return (FileItem[])value;
+		if(value instanceof FileParameter[])
+			return (FileParameter[])value;
 		
 		return null;
 	}
@@ -63,7 +63,7 @@ public class FileItemMap extends LinkedHashMap<String, Object> {
 	 */
 	@Override
 	public Object put(String key, Object value) {
-		if(value == null || value instanceof FileItem || value instanceof FileItem[])
+		if(value == null || value instanceof FileParameter || value instanceof FileParameter[])
 			return super.put(key, value);
 
 		throw new IllegalArgumentException("Invalid value type.");
@@ -86,7 +86,7 @@ public class FileItemMap extends LinkedHashMap<String, Object> {
 	 * @param name the file item name
 	 * @param fileItem the file item
 	 */
-	public void putFileItem(String name, FileItem fileItem) {
+	public void putFileItem(String name, FileParameter fileItem) {
 		super.put(name, fileItem);
 	}
 	
@@ -97,7 +97,7 @@ public class FileItemMap extends LinkedHashMap<String, Object> {
 	 * @param name the file item name
 	 * @param fileItems the file items
 	 */
-	public void putFileItem(String name, FileItem[] fileItems) {
+	public void putFileItem(String name, FileParameter[] fileItems) {
 		super.put(name, fileItems);
 	}
 	
@@ -106,7 +106,7 @@ public class FileItemMap extends LinkedHashMap<String, Object> {
 	 * 
 	 * @param fileItemMap the file item map
 	 */
-	public void putFileItem(FileItemMap fileItemMap) {
+	public void putFileItem(FileParameterMap fileItemMap) {
 		super.putAll(fileItemMap);
 	}
 	
@@ -115,12 +115,12 @@ public class FileItemMap extends LinkedHashMap<String, Object> {
 	 */
 	public void rollback() {
 		for(Object o : values()) {
-			if(o instanceof FileItem[]) {
-				for(FileItem f : (FileItem[])o) {
+			if(o instanceof FileParameter[]) {
+				for(FileParameter f : (FileParameter[])o) {
 					f.rollback();
 				}
 			} else {
-				((FileItem)o).rollback();
+				((FileParameter)o).rollback();
 			}
 		}
 	}

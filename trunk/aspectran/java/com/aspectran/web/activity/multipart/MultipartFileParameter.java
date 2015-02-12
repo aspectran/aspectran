@@ -20,10 +20,11 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
+import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItem;
 
-import com.aspectran.core.activity.variable.FileItem;
+import com.aspectran.core.activity.request.parameter.FileParameter;
 import com.aspectran.core.util.FileUtils;
 
 /**
@@ -31,9 +32,9 @@ import com.aspectran.core.util.FileUtils;
  * 
  * <p>Created: 2008. 04. 11 오후 8:55:25</p>
  */
-public class MultipartFileItem extends FileItem {
+public class MultipartFileParameter extends FileParameter {
 
-	private org.apache.commons.fileupload.FileItem fileItem;
+	private final FileItem fileItem;
 
 	private final long fileSize;
 
@@ -42,14 +43,16 @@ public class MultipartFileItem extends FileItem {
 	 * 
 	 * @param fileItem the FileItem to wrap
 	 */
-	public MultipartFileItem(org.apache.commons.fileupload.FileItem fileItem) {
+	public MultipartFileParameter(FileItem fileItem) {
 		this.fileItem = fileItem;
 		this.fileSize = fileItem.getSize();
 	}
 
 	/**
-	 * Gets the content type.
-	 * 
+	 * Gets the content type of the data being uploaded. This is never null, and
+	 * defaults to "content/unknown" when the mime type of the data couldn't be
+	 * determined and was not set manually.
+	 *  
 	 * @return the content type
 	 */
 	public String getContentType() {
