@@ -4,11 +4,11 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 
+import com.aspectran.core.context.rule.BeanRule;
+import com.aspectran.core.context.rule.BeanRuleMap;
+import com.aspectran.core.context.rule.type.ScopeType;
 import com.aspectran.core.util.MethodUtils;
 import com.aspectran.core.util.ReflectionUtils;
-import com.aspectran.core.var.rule.BeanRule;
-import com.aspectran.core.var.rule.BeanRuleMap;
-import com.aspectran.core.var.type.ScopeType;
 
 /**
  * <p>

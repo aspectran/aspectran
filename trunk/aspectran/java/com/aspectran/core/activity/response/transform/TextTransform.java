@@ -28,14 +28,14 @@ import org.slf4j.LoggerFactory;
 import com.aspectran.core.activity.CoreActivity;
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.activity.response.Responsible;
+import com.aspectran.core.activity.variable.token.Token;
+import com.aspectran.core.activity.variable.token.TokenExpression;
+import com.aspectran.core.activity.variable.token.TokenExpressor;
+import com.aspectran.core.activity.variable.token.Tokenizer;
 import com.aspectran.core.adapter.ResponseAdapter;
-import com.aspectran.core.var.rule.TemplateRule;
-import com.aspectran.core.var.rule.TransformRule;
-import com.aspectran.core.var.token.Token;
-import com.aspectran.core.var.token.TokenExpression;
-import com.aspectran.core.var.token.TokenExpressor;
-import com.aspectran.core.var.token.Tokenizer;
-import com.aspectran.core.var.type.TokenType;
+import com.aspectran.core.context.rule.TemplateRule;
+import com.aspectran.core.context.rule.TransformRule;
+import com.aspectran.core.context.rule.type.TokenType;
 
 /**
  * <p>Created: 2008. 03. 22 오후 5:51:58</p>

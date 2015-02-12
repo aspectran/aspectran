@@ -20,15 +20,15 @@ import java.util.Map;
 
 import org.w3c.dom.Node;
 
+import com.aspectran.core.activity.variable.token.Token;
 import com.aspectran.core.context.builder.ContextBuilderAssistant;
+import com.aspectran.core.context.rule.ItemRule;
+import com.aspectran.core.context.rule.ItemRuleMap;
+import com.aspectran.core.context.rule.type.ItemType;
+import com.aspectran.core.context.rule.type.TokenType;
 import com.aspectran.core.util.xml.Nodelet;
 import com.aspectran.core.util.xml.NodeletAdder;
 import com.aspectran.core.util.xml.NodeletParser;
-import com.aspectran.core.var.rule.ItemRule;
-import com.aspectran.core.var.rule.ItemRuleMap;
-import com.aspectran.core.var.token.Token;
-import com.aspectran.core.var.type.ItemType;
-import com.aspectran.core.var.type.TokenType;
 
 /**
  * The Class ItemRuleNodeletAdder.

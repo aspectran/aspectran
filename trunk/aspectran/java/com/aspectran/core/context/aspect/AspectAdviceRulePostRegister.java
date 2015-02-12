@@ -1,6 +1,6 @@
 package com.aspectran.core.context.aspect;
 
-import com.aspectran.core.var.rule.AspectRule;
+import com.aspectran.core.context.rule.AspectRule;
 
 
 public class AspectAdviceRulePostRegister extends AspectAdviceRuleRegister {

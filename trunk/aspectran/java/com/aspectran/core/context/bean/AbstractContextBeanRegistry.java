@@ -14,24 +14,24 @@ import org.slf4j.LoggerFactory;
 import com.aspectran.core.activity.CoreActivity;
 import com.aspectran.core.activity.CoreActivityException;
 import com.aspectran.core.activity.VoidActivityImpl;
+import com.aspectran.core.activity.variable.ValueObjectMap;
+import com.aspectran.core.activity.variable.token.ItemTokenExpression;
+import com.aspectran.core.activity.variable.token.ItemTokenExpressor;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.aspect.AspectRuleRegistry;
 import com.aspectran.core.context.bean.proxy.CglibDynamicBeanProxy;
 import com.aspectran.core.context.bean.proxy.JdkDynamicBeanProxy;
+import com.aspectran.core.context.rule.AspectRule;
+import com.aspectran.core.context.rule.BeanRule;
+import com.aspectran.core.context.rule.BeanRuleMap;
+import com.aspectran.core.context.rule.ItemRule;
+import com.aspectran.core.context.rule.ItemRuleMap;
+import com.aspectran.core.context.rule.PointcutPatternRule;
+import com.aspectran.core.context.rule.type.BeanProxyModeType;
+import com.aspectran.core.context.rule.type.JoinpointScopeType;
+import com.aspectran.core.context.rule.type.ScopeType;
 import com.aspectran.core.util.MethodUtils;
 import com.aspectran.core.util.ReflectionUtils;
-import com.aspectran.core.var.ValueObjectMap;
-import com.aspectran.core.var.rule.AspectRule;
-import com.aspectran.core.var.rule.BeanRule;
-import com.aspectran.core.var.rule.BeanRuleMap;
-import com.aspectran.core.var.rule.ItemRule;
-import com.aspectran.core.var.rule.ItemRuleMap;
-import com.aspectran.core.var.rule.PointcutPatternRule;
-import com.aspectran.core.var.token.ItemTokenExpression;
-import com.aspectran.core.var.token.ItemTokenExpressor;
-import com.aspectran.core.var.type.BeanProxyModeType;
-import com.aspectran.core.var.type.JoinpointScopeType;
-import com.aspectran.core.var.type.ScopeType;
 
 /**
  * SINGLETON: 모든 singleton 빈은context 생성시 초기화 된다.

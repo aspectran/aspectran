@@ -16,9 +16,9 @@
 package com.aspectran.core.activity.response.transform;
 
 import com.aspectran.core.activity.response.Responsible;
-import com.aspectran.core.var.rule.TransformRule;
-import com.aspectran.core.var.type.ContentType;
-import com.aspectran.core.var.type.TransformType;
+import com.aspectran.core.context.rule.TransformRule;
+import com.aspectran.core.context.rule.type.ContentType;
+import com.aspectran.core.context.rule.type.TransformType;
 
 /**
  * <p>Created: 2008. 03. 22 오후 5:51:58</p>

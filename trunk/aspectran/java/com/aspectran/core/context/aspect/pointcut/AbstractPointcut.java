@@ -3,7 +3,7 @@ package com.aspectran.core.context.aspect.pointcut;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.aspectran.core.var.rule.PointcutPatternRule;
+import com.aspectran.core.context.rule.PointcutPatternRule;
 
 
 public abstract class AbstractPointcut {

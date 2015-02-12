@@ -20,7 +20,7 @@ import java.util.Map;
 import com.aspectran.core.activity.CoreTranslet;
 import com.aspectran.core.activity.CoreTransletImpl;
 import com.aspectran.core.context.AspectranConstant;
-import com.aspectran.core.var.type.DefaultSettingType;
+import com.aspectran.core.context.rule.type.DefaultSettingType;
 
 /**
  * <p>Created: 2008. 03. 22 오후 5:48:09</p>

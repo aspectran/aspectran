@@ -20,16 +20,16 @@ import java.util.Map;
 import org.w3c.dom.Node;
 
 import com.aspectran.core.context.builder.ContextBuilderAssistant;
+import com.aspectran.core.context.rule.BeanActionRule;
+import com.aspectran.core.context.rule.EchoActionRule;
+import com.aspectran.core.context.rule.IncludeActionRule;
+import com.aspectran.core.context.rule.ItemRuleMap;
+import com.aspectran.core.context.rule.ability.ActionRuleApplicable;
 import com.aspectran.core.util.BooleanUtils;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.xml.Nodelet;
 import com.aspectran.core.util.xml.NodeletAdder;
 import com.aspectran.core.util.xml.NodeletParser;
-import com.aspectran.core.var.rule.BeanActionRule;
-import com.aspectran.core.var.rule.EchoActionRule;
-import com.aspectran.core.var.rule.IncludeActionRule;
-import com.aspectran.core.var.rule.ItemRuleMap;
-import com.aspectran.core.var.rule.ability.ActionRuleApplicable;
 
 /**
  * The Class ActionNodeletAdder.

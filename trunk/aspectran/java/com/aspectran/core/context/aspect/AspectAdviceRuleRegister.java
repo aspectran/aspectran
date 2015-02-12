@@ -2,10 +2,10 @@ package com.aspectran.core.context.aspect;
 
 import java.util.List;
 
-import com.aspectran.core.var.rule.AspectAdviceRule;
-import com.aspectran.core.var.rule.AspectRule;
-import com.aspectran.core.var.rule.SettingsAdviceRule;
-import com.aspectran.core.var.type.AspectAdviceType;
+import com.aspectran.core.context.rule.AspectAdviceRule;
+import com.aspectran.core.context.rule.AspectRule;
+import com.aspectran.core.context.rule.SettingsAdviceRule;
+import com.aspectran.core.context.rule.type.AspectAdviceType;
 
 public class AspectAdviceRuleRegister {
 	

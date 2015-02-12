@@ -17,7 +17,7 @@ package com.aspectran.core.activity.response.dispatch;
 
 import com.aspectran.core.activity.CoreActivity;
 import com.aspectran.core.activity.response.ResponseException;
-import com.aspectran.core.var.rule.DispatchResponseRule;
+import com.aspectran.core.context.rule.DispatchResponseRule;
 
 /**
  * <p>Created: 2008. 03. 23 오후 12:52:04</p>

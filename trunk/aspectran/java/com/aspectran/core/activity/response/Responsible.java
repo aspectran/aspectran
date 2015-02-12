@@ -17,7 +17,7 @@ package com.aspectran.core.activity.response;
 
 import com.aspectran.core.activity.CoreActivity;
 import com.aspectran.core.activity.process.ActionList;
-import com.aspectran.core.var.type.ResponseType;
+import com.aspectran.core.context.rule.type.ResponseType;
 
 /**
  * <p>Created: 2008. 03. 23 오후 12:52:04</p>

@@ -22,12 +22,12 @@ import org.slf4j.LoggerFactory;
 
 import com.aspectran.core.activity.CoreActivity;
 import com.aspectran.core.activity.process.ActionList;
+import com.aspectran.core.activity.variable.ValueObjectMap;
+import com.aspectran.core.activity.variable.token.ItemTokenExpression;
+import com.aspectran.core.activity.variable.token.ItemTokenExpressor;
 import com.aspectran.core.adapter.RequestAdapter;
-import com.aspectran.core.var.ValueObjectMap;
-import com.aspectran.core.var.rule.ForwardResponseRule;
-import com.aspectran.core.var.token.ItemTokenExpression;
-import com.aspectran.core.var.token.ItemTokenExpressor;
-import com.aspectran.core.var.type.ResponseType;
+import com.aspectran.core.context.rule.ForwardResponseRule;
+import com.aspectran.core.context.rule.type.ResponseType;
 
 /**
  * <p>Created: 2008. 03. 22 오후 5:51:58</p>

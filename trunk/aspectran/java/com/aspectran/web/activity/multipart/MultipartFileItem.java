@@ -23,8 +23,8 @@ import java.io.InputStream;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItem;
 
+import com.aspectran.core.activity.variable.FileItem;
 import com.aspectran.core.util.FileUtils;
-import com.aspectran.core.var.FileItem;
 
 /**
  * MultipartItem implementation for Jakarta Commons FileUpload.

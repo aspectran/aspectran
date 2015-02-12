@@ -28,8 +28,8 @@ import com.aspectran.core.activity.response.Responsible;
 import com.aspectran.core.activity.response.transform.json.ContentsJsonWriter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.context.AspectranConstant;
+import com.aspectran.core.context.rule.TransformRule;
 import com.aspectran.core.util.json.JsonWriter;
-import com.aspectran.core.var.rule.TransformRule;
 
 /**
  * <p>

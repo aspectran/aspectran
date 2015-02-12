@@ -1,7 +1,7 @@
 package com.aspectran.core.context.translet;
 
-import com.aspectran.core.var.rule.TransletRule;
-import com.aspectran.core.var.rule.TransletRuleMap;
+import com.aspectran.core.context.rule.TransletRule;
+import com.aspectran.core.context.rule.TransletRuleMap;
 
 public class TransletRuleRegistry {
 

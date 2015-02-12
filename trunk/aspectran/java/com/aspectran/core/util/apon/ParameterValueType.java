@@ -18,7 +18,7 @@ package com.aspectran.core.util.apon;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.aspectran.core.var.type.Type;
+import com.aspectran.core.context.rule.type.Type;
 
 
 /**

@@ -23,7 +23,6 @@ import com.aspectran.core.context.builder.apon.AspectranAponAssembler;
 import com.aspectran.core.context.builder.apon.params.AspectranParameters;
 import com.aspectran.core.util.apon.AponReader;
 import com.aspectran.core.util.apon.Parameters;
-import com.aspectran.core.util.io.ImportStream;
 
 /**
  * AponAspectranContextBuilder.
@@ -56,7 +55,7 @@ public class AponActivityContextBuilder extends AbstractActivityContextBuilder i
 
 	public ActivityContext build(String rootContext) throws ActivityContextBuilderException {
 		try {
-			ImportStream importStream = makeImportStream(rootContext);
+			Importable importStream = makeImportStream(rootContext);
 			Reader reader = importStream.getReader(encoding);
 
 			AponReader aponReader = new AponReader();

@@ -21,21 +21,21 @@ import java.util.Map;
 import org.w3c.dom.Node;
 
 import com.aspectran.core.activity.process.ActionList;
+import com.aspectran.core.activity.variable.token.Token;
 import com.aspectran.core.context.builder.ContextBuilderAssistant;
+import com.aspectran.core.context.rule.DispatchResponseRule;
+import com.aspectran.core.context.rule.ForwardResponseRule;
+import com.aspectran.core.context.rule.ItemRuleMap;
+import com.aspectran.core.context.rule.RedirectResponseRule;
+import com.aspectran.core.context.rule.TemplateRule;
+import com.aspectran.core.context.rule.TransformRule;
+import com.aspectran.core.context.rule.ability.ResponseRuleApplicable;
+import com.aspectran.core.context.rule.type.TokenType;
 import com.aspectran.core.util.BooleanUtils;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.xml.Nodelet;
 import com.aspectran.core.util.xml.NodeletAdder;
 import com.aspectran.core.util.xml.NodeletParser;
-import com.aspectran.core.var.rule.DispatchResponseRule;
-import com.aspectran.core.var.rule.ForwardResponseRule;
-import com.aspectran.core.var.rule.ItemRuleMap;
-import com.aspectran.core.var.rule.RedirectResponseRule;
-import com.aspectran.core.var.rule.TemplateRule;
-import com.aspectran.core.var.rule.TransformRule;
-import com.aspectran.core.var.rule.ability.ResponseRuleApplicable;
-import com.aspectran.core.var.token.Token;
-import com.aspectran.core.var.type.TokenType;
 
 /**
  * The Class ResponseRuleNodeletAdder.

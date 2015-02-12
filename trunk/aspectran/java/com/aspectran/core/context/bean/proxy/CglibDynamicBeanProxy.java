@@ -11,8 +11,8 @@ import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;
 
 import com.aspectran.core.activity.CoreActivity;
-import com.aspectran.core.var.rule.AspectRule;
-import com.aspectran.core.var.rule.BeanRule;
+import com.aspectran.core.context.rule.AspectRule;
+import com.aspectran.core.context.rule.BeanRule;
 
 /**
  * @author aspectran
