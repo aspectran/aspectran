@@ -45,7 +45,7 @@ import com.aspectran.core.var.type.FileItemUnityType;
 import com.aspectran.core.var.type.RequestMethodType;
 import com.aspectran.web.activity.multipart.MultipartFileItem;
 import com.aspectran.web.activity.multipart.MultipartRequestException;
-import com.aspectran.web.activity.multipart.MultipartRequestHandler;
+import com.aspectran.web.activity.multipart.MultipartRequestDataParser;
 import com.aspectran.web.activity.multipart.MultipartRequestWrapper;
 import com.aspectran.web.adapter.HttpServletRequestAdapter;
 import com.aspectran.web.adapter.HttpServletResponseAdapter;
@@ -170,7 +170,7 @@ public class WebActivityImplBak extends CoreActivityImpl implements WebActivity 
 		String multipartAllowedFileExtensions = (String)getRequestSetting(MULTIPART_ALLOWED_FILE_EXTENSIONS);
 		String multipartDeniedFileExtensions = (String)getRequestSetting(MULTIPART_DENIED_FILE_EXTENSIONS);
 		
-		MultipartRequestHandler handler = new MultipartRequestHandler(request);
+		MultipartRequestDataParser handler = new MultipartRequestDataParser(request);
 		handler.setMaxRequestSize(new Long(multipartMaxRequestSize));
 		handler.setTemporaryFilePath(multipartTemporaryFilePath);
 		handler.setAllowedFileExtensions(multipartAllowedFileExtensions);
