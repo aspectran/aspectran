@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.aspectran.core.activity.variable;
+package com.aspectran.core.activity.request.parameter;
 
 import com.aspectran.core.util.FileUtils;
 
@@ -28,7 +28,7 @@ import java.io.OutputStream;
 /**
  * <p>Created: 2008. 04. 11 오후 4:19:40</p>
  */
-public class FileItem {
+public class FileParameter {
 	
 	private File file;
 	
@@ -41,7 +41,7 @@ public class FileItem {
 	/**
 	 * Instantiates a new file item.
 	 */
-	protected FileItem() {
+	protected FileParameter() {
 	}
 	
 	/**
@@ -51,7 +51,7 @@ public class FileItem {
 	 * 
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
-	public FileItem(File file) {
+	public FileParameter(File file) {
 		this.file = file;
 	}
 	

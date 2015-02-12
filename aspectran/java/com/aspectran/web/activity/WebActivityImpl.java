@@ -29,7 +29,7 @@ import com.aspectran.core.activity.CoreActivityException;
 import com.aspectran.core.activity.CoreActivityImpl;
 import com.aspectran.core.activity.CoreTranslet;
 import com.aspectran.core.activity.request.RequestException;
-import com.aspectran.core.activity.variable.FileItem;
+import com.aspectran.core.activity.request.parameter.FileParameter;
 import com.aspectran.core.activity.variable.ValueObjectMap;
 import com.aspectran.core.activity.variable.token.ItemTokenExpression;
 import com.aspectran.core.activity.variable.token.ItemTokenExpressor;
@@ -190,7 +190,7 @@ public class WebActivityImpl extends CoreActivityImpl implements WebActivity {
 				
 				if(requestWrapper != null) {
 					if(itemRule.getValueType() == ItemValueType.FILE_ITEM && itemRule.getValue() == null) {
-						FileItem fileItem = requestWrapper.getFileItem(name);
+						FileParameter fileParameter = requestWrapper.getFileParameter(name);
 					}
 				} else {
 					Object value = valueMap.get(name);

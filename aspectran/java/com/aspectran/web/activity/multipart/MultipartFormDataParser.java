@@ -53,7 +53,7 @@ public class MultipartFormDataParser {
 
 	private final Map<String, List<String>> parsedParameterMap;
 
-	private final Map<String, List<MultipartFileItem>> multipartFileItemMap;
+	private final Map<String, List<MultipartFileParameter>> multipartFileParameterMap;
 
 	private boolean maxLengthExceeded;
 	
@@ -73,7 +73,7 @@ public class MultipartFormDataParser {
 	public MultipartFormDataParser(HttpServletRequest request) throws MultipartRequestException {
 		this.request = request;
 		this.parsedParameterMap = new HashMap<String, List<String>>();
-		this.multipartFileItemMap = new HashMap<String, List<MultipartFileItem>>();
+		this.multipartFileParameterMap = new HashMap<String, List<MultipartFileParameter>>();
 	}
 
 	/**
@@ -221,17 +221,17 @@ public class MultipartFormDataParser {
 				if(!valid)
 					continue;
 
-				List<MultipartFileItem> multipartFileItemList;
+				List<MultipartFileParameter> multipartFileItemList;
 
-				if(multipartFileItemMap.get(fieldName) != null)
-					multipartFileItemList = multipartFileItemMap.get(fieldName);
+				if(multipartFileParameterMap.get(fieldName) != null)
+					multipartFileItemList = multipartFileParameterMap.get(fieldName);
 				else
-					multipartFileItemList = new ArrayList<MultipartFileItem>();
+					multipartFileItemList = new ArrayList<MultipartFileParameter>();
 
-				MultipartFileItem multipartFileItem = new MultipartFileItem(fileItem);
+				MultipartFileParameter multipartFileItem = new MultipartFileParameter(fileItem);
 				multipartFileItemList.add(multipartFileItem);
 				
-				multipartFileItemMap.put(fieldName, multipartFileItemList);
+				multipartFileParameterMap.put(fieldName, multipartFileItemList);
 			}
 		}
 	}
@@ -316,8 +316,8 @@ public class MultipartFormDataParser {
 	 * 
 	 * @return the multipart file item names
 	 */
-	public Enumeration<String> getMultipartFileItemNames() {
-		return Collections.enumeration(multipartFileItemMap.keySet());
+	public Enumeration<String> getMultipartFileParameterNames() {
+		return Collections.enumeration(multipartFileParameterMap.keySet());
 	}
 
 	/**
@@ -327,8 +327,8 @@ public class MultipartFormDataParser {
 	 * 
 	 * @return the multipart item
 	 */
-	public MultipartFileItem getMultipartFileItem(String name) {
-		List<MultipartFileItem> items = multipartFileItemMap.get(name);
+	public MultipartFileParameter getMultipartFileParameter(String name) {
+		List<MultipartFileParameter> items = multipartFileParameterMap.get(name);
 
 		if(items == null || items.size() == 0)
 			return null;
@@ -336,8 +336,8 @@ public class MultipartFormDataParser {
 		return items.get(0);
 	}
 
-	public List<MultipartFileItem> getMultipartFileItemList(String name) {
-		List<MultipartFileItem> fileItemList = multipartFileItemMap.get(name);
+	public List<MultipartFileParameter> getMultipartFileParameterList(String name) {
+		List<MultipartFileParameter> fileItemList = multipartFileParameterMap.get(name);
 		return fileItemList;
 	}
 	
@@ -348,13 +348,13 @@ public class MultipartFormDataParser {
 	 * 
 	 * @return the multipart file items
 	 */
-	public MultipartFileItem[] getMultipartFileItems(String name) {
-		List<MultipartFileItem> items = multipartFileItemMap.get(name);
+	public MultipartFileParameter[] getMultipartFileParameters(String name) {
+		List<MultipartFileParameter> items = multipartFileParameterMap.get(name);
 		
 		if(items == null)
 			return null;
 		
-		return items.toArray(new MultipartFileItem[items.size()]);
+		return items.toArray(new MultipartFileParameter[items.size()]);
 	}
 
 	/**

@@ -28,8 +28,8 @@ import com.aspectran.core.activity.CoreActivityException;
 import com.aspectran.core.activity.CoreActivityImpl;
 import com.aspectran.core.activity.CoreTranslet;
 import com.aspectran.core.activity.request.RequestException;
-import com.aspectran.core.activity.variable.FileItem;
-import com.aspectran.core.activity.variable.FileItemMap;
+import com.aspectran.core.activity.request.parameter.FileParameterMap;
+import com.aspectran.core.activity.request.parameter.FileParameter;
 import com.aspectran.core.activity.variable.ValueObjectMap;
 import com.aspectran.core.activity.variable.token.ItemTokenExpression;
 import com.aspectran.core.activity.variable.token.ItemTokenExpressor;
@@ -43,7 +43,7 @@ import com.aspectran.core.context.rule.RequestRule;
 import com.aspectran.core.context.rule.ResponseRule;
 import com.aspectran.core.context.rule.type.FileItemUnityType;
 import com.aspectran.core.context.rule.type.RequestMethodType;
-import com.aspectran.web.activity.multipart.MultipartFileItem;
+import com.aspectran.web.activity.multipart.MultipartFileParameter;
 import com.aspectran.web.activity.multipart.MultipartRequestException;
 import com.aspectran.web.activity.multipart.MultipartFormDataParser;
 import com.aspectran.web.activity.multipart.MultipartRequestWrapper;
@@ -186,17 +186,17 @@ public class WebActivityImplBak extends CoreActivityImpl implements WebActivity 
 		
 		FileItemRuleMap fileItemRuleMap = requestRule.getFileItemRuleMap();
 		
-		FileItemMap fileItemMap = requestAdapter.touchFileItemMap();
+		FileParameterMap fileItemMap = requestAdapter.touchFileParameterMap();
 
 		for(FileItemRule fir : fileItemRuleMap) {
 			if(fir.getUnityType() == FileItemUnityType.ARRAY) {
-				MultipartFileItem[] multipartFileItems = handler.getMultipartFileItems(fir.getName());
+				MultipartFileParameter[] multipartFileItems = handler.getMultipartFileParameters(fir.getName());
 				
 				if(multipartFileItems != null) {
 					fileItemMap.putFileItem(fir.getName(), multipartFileItems);
 				}
 			} else {
-				MultipartFileItem multipartFileItem = handler.getMultipartFileItem(fir.getName());
+				MultipartFileParameter multipartFileItem = handler.getMultipartFileParameter(fir.getName());
 				fileItemMap.putFileItem(fir.getName(), multipartFileItem);
 			}
 		}
@@ -215,13 +215,13 @@ public class WebActivityImplBak extends CoreActivityImpl implements WebActivity 
 
 			for(FileItemRule fir : fileItemRuleMap) {
 				if(fir.getUnityType() == FileItemUnityType.ARRAY) {
-					FileItem[] fileItems = fileItemMap.getFileItems(fir.getName());
+					FileParameter[] fileItems = fileItemMap.getFileItems(fir.getName());
 					
 					for(int i = 0; i < fileItems.length; i++) {
 						logger.debug("fileItem[" + i + "] name=" + fir.getName() + " " + fileItems[i]);
 					}
 				} else {
-					FileItem f = fileItemMap.getFileItem(fir.getName());
+					FileParameter f = fileItemMap.getFileItem(fir.getName());
 					logger.debug("fileItem name=" + fir.getName() + " " + f);
 				}
 			}

@@ -22,7 +22,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequestWrapper;
 
-import com.aspectran.core.activity.variable.FileItem;
+import com.aspectran.core.activity.request.parameter.FileParameter;
 
 /**
  * This class functions as a wrapper around HttpServletRequest to provide
@@ -92,8 +92,8 @@ public class MultipartRequestWrapper extends HttpServletRequestWrapper {
 	 * 
 	 * @return the multipart item names
 	 */
-	public Enumeration<String> getFileItemNames() {
-        return handler.getMultipartFileItemNames();
+	public Enumeration<String> getFileParameterNames() {
+        return handler.getMultipartFileParameterNames();
     }
     
 	/**
@@ -103,8 +103,8 @@ public class MultipartRequestWrapper extends HttpServletRequestWrapper {
 	 * 
 	 * @return the multipart file item
 	 */
-	public FileItem getFileItem(String name) {
-		return handler.getMultipartFileItem(name);
+	public FileParameter getFileParameter(String name) {
+		return handler.getMultipartFileParameter(name);
 	}
 	
 	/**
@@ -114,12 +114,12 @@ public class MultipartRequestWrapper extends HttpServletRequestWrapper {
 	 * 
 	 * @return the multipart items
 	 */
-	public FileItem[] getFileItems(String name) {
-		return handler.getMultipartFileItems(name);
+	public FileParameter[] getFileParameters(String name) {
+		return handler.getMultipartFileParameters(name);
 	}
 	
-	public List<MultipartFileItem> getFileItemList(String name) {
-		return handler.getMultipartFileItemList(name);
+	public List<FileParameter> getFileParameterList(String name) {
+		return handler.getMultipartFileParameterList(name);
 	}
 
 	/**

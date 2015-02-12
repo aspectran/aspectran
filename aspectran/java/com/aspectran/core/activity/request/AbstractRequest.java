@@ -3,7 +3,7 @@
  */
 package com.aspectran.core.activity.request;
 
-import com.aspectran.core.activity.variable.FileItemMap;
+import com.aspectran.core.activity.request.parameter.FileParameterMap;
 
 /**
  * The Class AbstractRequest.
@@ -14,7 +14,7 @@ import com.aspectran.core.activity.variable.FileItemMap;
 public abstract class AbstractRequest {
 
 	/** The file item map. */
-	protected FileItemMap fileItemMap;
+	protected FileParameterMap fileParameterMap;
 	
 	/** The max length exceeded. */
 	protected boolean maxLengthExceeded;
@@ -24,25 +24,25 @@ public abstract class AbstractRequest {
 	 * 
 	 * @return the file item map
 	 */
-	public FileItemMap getFileItemMap() {
-		return fileItemMap;
+	public FileParameterMap getFileParameterMap() {
+		return fileParameterMap;
 	}
 
 	/**
 	 * Sets the file item map.
 	 *
-	 * @param fileItemMap the new file item map
+	 * @param fileParameterMap the new file item map
 	 */
-	public void setFileItemMap(FileItemMap fileItemMap) {
-		this.fileItemMap = fileItemMap;
+	public void setFileParameterMap(FileParameterMap fileParameterMap) {
+		this.fileParameterMap = fileParameterMap;
 	}
 	
-	public FileItemMap touchFileItemMap() {
-		if(fileItemMap == null) {
-			fileItemMap = new FileItemMap();
+	public FileParameterMap touchFileParameterMap() {
+		if(fileParameterMap == null) {
+			fileParameterMap = new FileParameterMap();
 		}
 		
-		return fileItemMap;
+		return fileParameterMap;
 	}
 
 	/**
