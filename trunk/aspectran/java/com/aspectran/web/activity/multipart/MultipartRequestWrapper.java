@@ -32,7 +32,7 @@ import com.aspectran.core.activity.variable.FileItem;
  */
 public class MultipartRequestWrapper extends HttpServletRequestWrapper {
 
-	private MultipartRequestDataParser handler;
+	private MultipartFormDataParser handler;
 	
 	/**
 	 * Instantiates a new multipart request wrapper.
@@ -41,7 +41,7 @@ public class MultipartRequestWrapper extends HttpServletRequestWrapper {
 	 * 
 	 * @throws MultipartRequestException the multipart request exception
 	 */
-	public MultipartRequestWrapper(MultipartRequestDataParser handler) throws MultipartRequestException {
+	public MultipartRequestWrapper(MultipartFormDataParser handler) throws MultipartRequestException {
 		super(handler.getRequest());
 		this.handler = handler;
 		handler.parse();

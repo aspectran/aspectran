@@ -39,7 +39,7 @@ import com.aspectran.core.util.FileUtils;
 /**
  * Multi-part form data request handler.
  */
-public class MultipartRequestDataParser {
+public class MultipartFormDataParser {
 
 	public static final long MAX_REQUEST_SIZE = 250 * 1024 * 1024;
 
@@ -70,7 +70,7 @@ public class MultipartRequestDataParser {
 	 * 
 	 * @throws MultipartRequestException the multipart request exception
 	 */
-	public MultipartRequestDataParser(HttpServletRequest request) throws MultipartRequestException {
+	public MultipartFormDataParser(HttpServletRequest request) throws MultipartRequestException {
 		this.request = request;
 		this.parsedParameterMap = new HashMap<String, List<String>>();
 		this.multipartFileItemMap = new HashMap<String, List<MultipartFileItem>>();
