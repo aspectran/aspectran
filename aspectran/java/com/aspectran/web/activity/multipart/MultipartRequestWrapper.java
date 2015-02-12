@@ -17,9 +17,12 @@ package com.aspectran.web.activity.multipart;
 
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequestWrapper;
+
+import com.aspectran.core.var.FileItem;
 
 /**
  * This class functions as a wrapper around HttpServletRequest to provide
@@ -89,7 +92,7 @@ public class MultipartRequestWrapper extends HttpServletRequestWrapper {
 	 * 
 	 * @return the multipart item names
 	 */
-	public Enumeration<String> getMultipartFileItemNames() {
+	public Enumeration<String> getFileItemNames() {
         return handler.getMultipartFileItemNames();
     }
     
@@ -100,7 +103,7 @@ public class MultipartRequestWrapper extends HttpServletRequestWrapper {
 	 * 
 	 * @return the multipart file item
 	 */
-	public MultipartFileItem getMultipartFileItem(String name) {
+	public FileItem getFileItem(String name) {
 		return handler.getMultipartFileItem(name);
 	}
 	
@@ -111,8 +114,12 @@ public class MultipartRequestWrapper extends HttpServletRequestWrapper {
 	 * 
 	 * @return the multipart items
 	 */
-	public MultipartFileItem[] getMultipartFileItems(String name) {
+	public FileItem[] getFileItems(String name) {
 		return handler.getMultipartFileItems(name);
+	}
+	
+	public List<MultipartFileItem> getFileItemList(String name) {
+		return handler.getMultipartFileItemList(name);
 	}
 
 	/**

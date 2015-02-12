@@ -34,17 +34,15 @@ import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.var.FileItem;
-import com.aspectran.core.var.FileItemMap;
-import com.aspectran.core.var.ValueMap;
-import com.aspectran.core.var.rule.FileItemRule;
-import com.aspectran.core.var.rule.FileItemRuleMap;
+import com.aspectran.core.var.ValueObjectMap;
+import com.aspectran.core.var.rule.ItemRule;
+import com.aspectran.core.var.rule.ItemRuleMap;
 import com.aspectran.core.var.rule.RequestRule;
 import com.aspectran.core.var.rule.ResponseRule;
 import com.aspectran.core.var.token.ItemTokenExpression;
 import com.aspectran.core.var.token.ItemTokenExpressor;
-import com.aspectran.core.var.type.FileItemUnityType;
+import com.aspectran.core.var.type.ItemValueType;
 import com.aspectran.core.var.type.RequestMethodType;
-import com.aspectran.web.activity.multipart.MultipartFileItem;
 import com.aspectran.web.activity.multipart.MultipartRequestException;
 import com.aspectran.web.activity.multipart.MultipartRequestHandler;
 import com.aspectran.web.activity.multipart.MultipartRequestWrapper;
@@ -93,7 +91,7 @@ public class WebActivityImpl extends CoreActivityImpl implements WebActivity {
 		requestRule = getRequestRule();
 		responseRule = getResponseRule();
 		
-		checkCharacterEncoding();		
+		determineCharacterEncoding();
 	}
 	
 	protected void request(CoreTranslet translet) throws RequestException {
@@ -104,22 +102,24 @@ public class WebActivityImpl extends CoreActivityImpl implements WebActivity {
         	return;
 		
 		try {
+			MultipartRequestWrapper requestWrapper = null;
+			
 			String contentType = request.getContentType();
 			
 	        if(method.equalsIgnoreCase(RequestMethodType.POST.toString())
 	        		&& contentType != null
 	        		&& contentType.startsWith("multipart/form-data")) {
 	        	
-	        	request = parseMultipart();
+	        	requestWrapper = parseMultipartFormData();
 	        }
 
-	        ValueMap valueMap = parseParameter();
+	        ValueObjectMap valueMap = parseParameter(requestWrapper);
 	        
 	        if(valueMap != null)
 	        	translet.setDeclaredAttributeMap(valueMap);
         
 		} catch(Exception e) {
-			throw new RequestException(e);
+			throw new RequestException("Could not parse multipart servlet request.", e);
 		}
 		
 		RequestAdapter requestAdapter = new HttpServletRequestAdapter(request);
@@ -131,7 +131,7 @@ public class WebActivityImpl extends CoreActivityImpl implements WebActivity {
 		setSessionAdapter(sessionAdapter);
 	}
 
-	private void checkCharacterEncoding() throws CoreActivityException {
+	private void determineCharacterEncoding() throws CoreActivityException {
 		try {
 			String characterEncoding = requestRule.getCharacterEncoding();
 			
@@ -156,7 +156,7 @@ public class WebActivityImpl extends CoreActivityImpl implements WebActivity {
 	/**
 	 * Parses the multipart parameters.
 	 */
-	private MultipartRequestWrapper parseMultipart() throws MultipartRequestException {
+	private MultipartRequestWrapper parseMultipartFormData() throws MultipartRequestException {
 		String multipartMaxRequestSize = (String)getRequestSetting(MULTIPART_MAX_REQUEST_SIZE);
 		String multipartTemporaryFilePath = (String)getRequestSetting(MULTIPART_TEMPORARY_FILE_PATH);
 		String multipartAllowedFileExtensions = (String)getRequestSetting(MULTIPART_ALLOWED_FILE_EXTENSIONS);
@@ -170,19 +170,35 @@ public class WebActivityImpl extends CoreActivityImpl implements WebActivity {
 		handler.parse();
 		
 		// sets the servlet request wrapper
-		MultipartRequestWrapper wrapper = new MultipartRequestWrapper(handler);
+		MultipartRequestWrapper requestWrapper = new MultipartRequestWrapper(handler);
 		
-		return wrapper;
+		return requestWrapper;
 	}
 	
 	/**
 	 * Parses the parameter.
 	 */
-	private ValueMap parseParameter() {
-		if(requestRule.getAttributeItemRuleMap() != null) {
+	private ValueObjectMap parseParameter(MultipartRequestWrapper requestWrapper) {
+		ItemRuleMap attributeItemRuleMap = requestRule.getAttributeItemRuleMap();
+		
+		if(attributeItemRuleMap != null) {
 			ItemTokenExpressor expressor = new ItemTokenExpression(this);
-			ValueMap valueMap = expressor.express(requestRule.getAttributeItemRuleMap());
+			ValueObjectMap valueMap = expressor.express(attributeItemRuleMap);
 
+			for(ItemRule itemRule : attributeItemRuleMap.values()) {
+				String name = itemRule.getName();
+				
+				if(requestWrapper != null) {
+					if(itemRule.getValueType() == ItemValueType.FILE_ITEM && itemRule.getValue() == null) {
+						FileItem fileItem = requestWrapper.getFileItem(name);
+					}
+				} else {
+					Object value = valueMap.get(name);
+					if(value != null)
+						request.setAttribute(name, value);
+				}
+			}
+			
 			if(valueMap != null && valueMap.size() > 0) {
 				for(Map.Entry<String, Object> entry : valueMap.entrySet())
 					request.setAttribute(entry.getKey(), entry.getValue());

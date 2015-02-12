@@ -20,7 +20,7 @@ import com.aspectran.core.context.bean.proxy.CglibDynamicBeanProxy;
 import com.aspectran.core.context.bean.proxy.JdkDynamicBeanProxy;
 import com.aspectran.core.util.MethodUtils;
 import com.aspectran.core.util.ReflectionUtils;
-import com.aspectran.core.var.ValueMap;
+import com.aspectran.core.var.ValueObjectMap;
 import com.aspectran.core.var.rule.AspectRule;
 import com.aspectran.core.var.rule.BeanRule;
 import com.aspectran.core.var.rule.BeanRuleMap;
@@ -102,7 +102,7 @@ public abstract class AbstractContextBeanRegistry implements ContextBeanRegistry
 				else
 					expressor = new ItemTokenExpression(activity);
 				
-				ValueMap valueMap = expressor.express(constructorArgumentItemRuleMap);
+				ValueObjectMap valueMap = expressor.express(constructorArgumentItemRuleMap);
 	
 				int parameterSize = constructorArgumentItemRuleMap.size();
 				Object[] args = new Object[parameterSize];

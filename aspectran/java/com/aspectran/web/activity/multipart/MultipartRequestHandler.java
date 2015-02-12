@@ -335,6 +335,11 @@ public class MultipartRequestHandler {
 
 		return items.get(0);
 	}
+
+	public List<MultipartFileItem> getMultipartFileItemList(String name) {
+		List<MultipartFileItem> fileItemList = multipartFileItemMap.get(name);
+		return fileItemList;
+	}
 	
 	/**
 	 * Gets the multipart items.

@@ -20,7 +20,7 @@ import java.util.Map;
 
 import com.aspectran.core.activity.CoreActivity;
 import com.aspectran.core.context.bean.BeanRegistry;
-import com.aspectran.core.var.ValueMap;
+import com.aspectran.core.var.ValueObjectMap;
 import com.aspectran.core.var.rule.ItemRule;
 import com.aspectran.core.var.rule.ItemRuleMap;
 import com.aspectran.core.var.type.ItemType;
@@ -56,8 +56,8 @@ public class ItemTokenExpression extends TokenExpression implements ItemTokenExp
 	 * 
 	 * @return the value map
 	 */
-	public ValueMap express(ItemRuleMap itemRuleMap) {
-		ValueMap valueMap = new ValueMap();
+	public ValueObjectMap express(ItemRuleMap itemRuleMap) {
+		ValueObjectMap valueMap = new ValueObjectMap();
 		
 		express(itemRuleMap, valueMap);
 		
