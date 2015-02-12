@@ -27,7 +27,7 @@ import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
 import com.aspectran.core.util.BeanUtils;
 import com.aspectran.core.util.MethodUtils;
-import com.aspectran.core.var.ValueMap;
+import com.aspectran.core.var.ValueObjectMap;
 import com.aspectran.core.var.rule.BeanActionRule;
 import com.aspectran.core.var.rule.ItemRule;
 import com.aspectran.core.var.rule.ItemRuleMap;
@@ -79,7 +79,7 @@ public class BeanAction extends AbstractAction implements Executable {
 			ItemTokenExpressor expressor = new ItemTokenExpression(activity);
 
 			if(propertyItemRuleMap != null) {
-				ValueMap valueMap = expressor.express(propertyItemRuleMap);
+				ValueObjectMap valueMap = expressor.express(propertyItemRuleMap);
 				
 				// set properties for ActionBean
 				for(Map.Entry<String, Object> entry : valueMap.entrySet()) {
@@ -121,7 +121,7 @@ public class BeanAction extends AbstractAction implements Executable {
 		if(argumentItemRuleMap != null && argumentItemRuleMap.size() > 0) {
 			int argIndex = (activity != null) ? 1 : 0;
 
-			ValueMap valueMap = expressor.express(argumentItemRuleMap);
+			ValueObjectMap valueMap = expressor.express(argumentItemRuleMap);
 			
 			parameterTypes = new Class<?>[argumentItemRuleMap.size() + argIndex];
 			args = new Object[parameterTypes.length];

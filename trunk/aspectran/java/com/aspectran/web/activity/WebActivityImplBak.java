@@ -34,7 +34,7 @@ import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.var.FileItem;
 import com.aspectran.core.var.FileItemMap;
-import com.aspectran.core.var.ValueMap;
+import com.aspectran.core.var.ValueObjectMap;
 import com.aspectran.core.var.rule.FileItemRule;
 import com.aspectran.core.var.rule.FileItemRuleMap;
 import com.aspectran.core.var.rule.RequestRule;
@@ -136,7 +136,7 @@ public class WebActivityImplBak extends CoreActivityImpl implements WebActivity 
 	        	parseMultipart();
 	        }
 	
-	        ValueMap valueMap = parseParameter();
+	        ValueObjectMap valueMap = parseParameter();
 	        
 	        if(valueMap != null)
 	        	translet.setDeclaredAttributeMap(valueMap);
@@ -231,12 +231,12 @@ public class WebActivityImplBak extends CoreActivityImpl implements WebActivity 
 	/**
 	 * Parses the parameter.
 	 */
-	private ValueMap parseParameter() {
+	private ValueObjectMap parseParameter() {
 		RequestRule requestRule = getRequestRule();
 		
 		if(requestRule.getAttributeItemRuleMap() != null) {
 			ItemTokenExpressor expressor = new ItemTokenExpression(this);
-			ValueMap valueMap = expressor.express(requestRule.getAttributeItemRuleMap());
+			ValueObjectMap valueMap = expressor.express(requestRule.getAttributeItemRuleMap());
 
 			if(valueMap != null && valueMap.size() > 0) {
 				for(Map.Entry<String, Object> entry : valueMap.entrySet())

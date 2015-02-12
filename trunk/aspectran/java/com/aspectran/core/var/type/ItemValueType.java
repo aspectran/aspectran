@@ -46,6 +46,9 @@ public final class ItemValueType extends Type {
 	/** The "custom" item type. */
 	public static final ItemValueType FILE;
 	
+	/** The "custom" item type. */
+	public static final ItemValueType FILE_ITEM;
+	
 	private static final Map<String, ItemValueType> types;
 	
 	private String fullQualifiedName;
@@ -58,6 +61,7 @@ public final class ItemValueType extends Type {
 		//ARRAY_LIST = new ItemValueType("arrayList", "java.util.ArrayList");
 		CUSTOM = new ItemValueType("custom", null);
 		FILE = new ItemValueType("file", null);
+		FILE_ITEM = new ItemValueType("fileItem", null);
 
 		types = new HashMap<String, ItemValueType>();
 		types.put(STRING.toString(), STRING);

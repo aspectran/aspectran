@@ -21,7 +21,7 @@ import org.slf4j.LoggerFactory;
 import com.aspectran.core.activity.CoreActivity;
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
-import com.aspectran.core.var.ValueMap;
+import com.aspectran.core.var.ValueObjectMap;
 import com.aspectran.core.var.rule.EchoActionRule;
 import com.aspectran.core.var.token.ItemTokenExpression;
 import com.aspectran.core.var.token.ItemTokenExpressor;
@@ -56,7 +56,7 @@ public class EchoAction extends AbstractAction implements Executable {
 		
 		try {
 			ItemTokenExpressor expressor = new ItemTokenExpression(activity);
-			ValueMap valueMap = expressor.express(echoActionRule.getAttributeItemRuleMap());
+			ValueObjectMap valueMap = expressor.express(echoActionRule.getAttributeItemRuleMap());
 			
 			return valueMap;
 		} catch(Exception e) {

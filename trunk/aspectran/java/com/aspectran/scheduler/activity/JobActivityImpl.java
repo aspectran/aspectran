@@ -24,7 +24,7 @@ import com.aspectran.core.activity.request.RequestException;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.var.ValueMap;
+import com.aspectran.core.var.ValueObjectMap;
 import com.aspectran.core.var.rule.RequestRule;
 import com.aspectran.core.var.rule.ResponseRule;
 import com.aspectran.core.var.token.ItemTokenExpression;
@@ -72,7 +72,7 @@ public class JobActivityImpl extends CoreActivityImpl implements JobActivity {
 					responseAdapter.setCharacterEncoding(characterEncoding);
 			}
 	
-	        ValueMap valueMap = parseParameter();
+	        ValueObjectMap valueMap = parseParameter();
 	        
 	        if(valueMap != null)
 	        	translet.setDeclaredAttributeMap(valueMap);
@@ -85,12 +85,12 @@ public class JobActivityImpl extends CoreActivityImpl implements JobActivity {
 	/**
 	 * Parses the parameter.
 	 */
-	private ValueMap parseParameter() {
+	private ValueObjectMap parseParameter() {
 		RequestRule requestRule = getRequestRule();
 		
 		if(requestRule.getAttributeItemRuleMap() != null) {
 			ItemTokenExpressor expressor = new ItemTokenExpression(this);
-			ValueMap valueMap = expressor.express(requestRule.getAttributeItemRuleMap());
+			ValueObjectMap valueMap = expressor.express(requestRule.getAttributeItemRuleMap());
 
 			if(valueMap != null && valueMap.size() > 0) {
 				for(Map.Entry<String, Object> entry : valueMap.entrySet())

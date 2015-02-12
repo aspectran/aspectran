@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.aspectran.core.activity.CoreActivity;
 import com.aspectran.core.adapter.AbstractResponseAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
-import com.aspectran.core.var.ValueMap;
+import com.aspectran.core.var.ValueObjectMap;
 import com.aspectran.core.var.rule.RedirectResponseRule;
 import com.aspectran.core.var.token.ItemTokenExpression;
 import com.aspectran.core.var.token.ItemTokenExpressor;
@@ -101,7 +101,7 @@ public class HttpServletResponseAdapter extends AbstractResponseAdapter implemen
 		if(redirectResponseRule.getParameterItemRuleMap() != null) {
 			ItemTokenExpressor expressor = new ItemTokenExpression(activity);
 			expressor.setTokenValueHandler(handler);
-			ValueMap valueMap = expressor.express(redirectResponseRule.getParameterItemRuleMap());
+			ValueObjectMap valueMap = expressor.express(redirectResponseRule.getParameterItemRuleMap());
 
 			if(valueMap != null && valueMap.size() > 0) {
 				sb.append(QUESTION_CHAR);
