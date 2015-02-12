@@ -15,28 +15,41 @@
  */
 package com.aspectran.scheduler.activity;
 
+import java.io.UnsupportedEncodingException;
 import java.util.Map;
 
 import com.aspectran.core.activity.CoreActivity;
+import com.aspectran.core.activity.CoreActivityException;
 import com.aspectran.core.activity.CoreActivityImpl;
 import com.aspectran.core.activity.CoreTranslet;
 import com.aspectran.core.activity.request.RequestException;
+import com.aspectran.core.activity.variable.ValueObjectMap;
+import com.aspectran.core.activity.variable.token.ItemTokenExpression;
+import com.aspectran.core.activity.variable.token.ItemTokenExpressor;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.var.ValueObjectMap;
-import com.aspectran.core.var.rule.RequestRule;
-import com.aspectran.core.var.rule.ResponseRule;
-import com.aspectran.core.var.token.ItemTokenExpression;
-import com.aspectran.core.var.token.ItemTokenExpressor;
+import com.aspectran.core.context.rule.RequestRule;
+import com.aspectran.core.context.rule.ResponseRule;
 
 /**
  * <p>Created: 2013. 11. 18 오후 3:40:48</p>
  */
 public class JobActivityImpl extends CoreActivityImpl implements JobActivity {
 
+	private RequestRule requestRule;
+	
+	private ResponseRule responseRule;
+	
+	private RequestAdapter requestAdapter;
+	
+	private ResponseAdapter responseAdapter;
+
 	public JobActivityImpl(ActivityContext context, RequestAdapter requestAdapter, ResponseAdapter responseAdapter) {
 		super(context);
+		
+		this.requestAdapter = requestAdapter;
+		this.responseAdapter = responseAdapter;
 		
 		setRequestAdapter(requestAdapter);
 		setResponseAdapter(responseAdapter);
@@ -45,12 +58,16 @@ public class JobActivityImpl extends CoreActivityImpl implements JobActivity {
 		setTransletImplementClass(JobTransletImpl.class);
 	}
 	
-	protected void request(CoreTranslet translet) throws RequestException {
-		RequestRule requestRule = getRequestRule();
-		ResponseRule responseRule = getResponseRule();
-		RequestAdapter requestAdapter = getRequestAdapter();
-		ResponseAdapter responseAdapter = getResponseAdapter();
+	public void ready(String transletName) throws CoreActivityException {
+		super.ready(transletName);
+
+		requestRule = getRequestRule();
+		responseRule = getResponseRule();
 		
+		determineCharacterEncoding();
+	}
+	
+	protected void request(CoreTranslet translet) throws RequestException {
 		try {
 			if(requestAdapter != null) {
 				String characterEncoding = requestRule.getCharacterEncoding();
@@ -79,6 +96,26 @@ public class JobActivityImpl extends CoreActivityImpl implements JobActivity {
         
 		} catch(Exception e) {
 			throw new RequestException(e);
+		}
+	}
+	
+	private void determineCharacterEncoding() throws CoreActivityException {
+		try {
+			String characterEncoding = requestRule.getCharacterEncoding();
+			
+			if(characterEncoding == null)
+				characterEncoding = (String)getRequestSetting(RequestRule.CHARACTER_ENCODING_SETTING_NAME);
+			
+			if(characterEncoding != null)
+				requestAdapter.setCharacterEncoding(characterEncoding);
+		
+			if(characterEncoding == null)
+				characterEncoding = (String)getResponseSetting(ResponseRule.CHARACTER_ENCODING_SETTING_NAME);
+
+			if(characterEncoding != null)
+				responseAdapter.setCharacterEncoding(characterEncoding);
+		} catch(UnsupportedEncodingException e) {
+			throw new CoreActivityException(e);
 		}
 	}
 	

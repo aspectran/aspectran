@@ -22,7 +22,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequestWrapper;
 
-import com.aspectran.core.var.FileItem;
+import com.aspectran.core.activity.variable.FileItem;
 
 /**
  * This class functions as a wrapper around HttpServletRequest to provide

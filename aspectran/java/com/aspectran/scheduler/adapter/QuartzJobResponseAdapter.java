@@ -9,8 +9,8 @@ import org.quartz.JobDetail;
 import com.aspectran.core.activity.CoreActivity;
 import com.aspectran.core.adapter.AbstractResponseAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
-import com.aspectran.core.var.rule.RedirectResponseRule;
-import com.aspectran.core.var.type.ContentType;
+import com.aspectran.core.context.rule.RedirectResponseRule;
+import com.aspectran.core.context.rule.type.ContentType;
 
 /**
  * 

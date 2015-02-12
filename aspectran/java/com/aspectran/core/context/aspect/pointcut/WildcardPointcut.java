@@ -5,8 +5,8 @@ import java.util.Map;
 import java.util.WeakHashMap;
 
 import com.aspectran.core.context.AspectranConstant;
+import com.aspectran.core.context.rule.PointcutPatternRule;
 import com.aspectran.core.util.wildcard.WildcardPattern;
-import com.aspectran.core.var.rule.PointcutPatternRule;
 
 /**
  * The Class WildcardPointcut.

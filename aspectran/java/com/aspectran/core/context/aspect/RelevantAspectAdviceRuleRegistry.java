@@ -4,9 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.aspectran.core.context.aspect.pointcut.Pointcut;
-import com.aspectran.core.var.rule.AspectAdviceRule;
-import com.aspectran.core.var.rule.AspectRule;
-import com.aspectran.core.var.rule.PointcutPatternRule;
+import com.aspectran.core.context.rule.AspectAdviceRule;
+import com.aspectran.core.context.rule.AspectRule;
+import com.aspectran.core.context.rule.PointcutPatternRule;
 
 
 public class RelevantAspectAdviceRuleRegistry extends AspectAdviceRuleRegistry {

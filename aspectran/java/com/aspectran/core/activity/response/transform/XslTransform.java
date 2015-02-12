@@ -41,9 +41,9 @@ import com.aspectran.core.activity.response.transform.xml.ContentsInputSource;
 import com.aspectran.core.activity.response.transform.xml.ContentsXMLReader;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.context.AspectranConstant;
-import com.aspectran.core.var.rule.TemplateRule;
-import com.aspectran.core.var.rule.TransformRule;
-import com.aspectran.core.var.type.ContentType;
+import com.aspectran.core.context.rule.TemplateRule;
+import com.aspectran.core.context.rule.TransformRule;
+import com.aspectran.core.context.rule.type.ContentType;
 
 /**
  * <p>

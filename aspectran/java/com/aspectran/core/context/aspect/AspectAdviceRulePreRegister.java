@@ -8,16 +8,16 @@ import org.slf4j.LoggerFactory;
 import com.aspectran.core.activity.process.ContentList;
 import com.aspectran.core.activity.process.action.Executable;
 import com.aspectran.core.context.aspect.pointcut.Pointcut;
-import com.aspectran.core.var.rule.AspectRule;
-import com.aspectran.core.var.rule.AspectRuleMap;
-import com.aspectran.core.var.rule.BeanRuleMap;
-import com.aspectran.core.var.rule.PointcutPatternRule;
-import com.aspectran.core.var.rule.RequestRule;
-import com.aspectran.core.var.rule.ResponseRule;
-import com.aspectran.core.var.rule.TransletRule;
-import com.aspectran.core.var.rule.TransletRuleMap;
-import com.aspectran.core.var.type.AspectTargetType;
-import com.aspectran.core.var.type.JoinpointScopeType;
+import com.aspectran.core.context.rule.AspectRule;
+import com.aspectran.core.context.rule.AspectRuleMap;
+import com.aspectran.core.context.rule.BeanRuleMap;
+import com.aspectran.core.context.rule.PointcutPatternRule;
+import com.aspectran.core.context.rule.RequestRule;
+import com.aspectran.core.context.rule.ResponseRule;
+import com.aspectran.core.context.rule.TransletRule;
+import com.aspectran.core.context.rule.TransletRuleMap;
+import com.aspectran.core.context.rule.type.AspectTargetType;
+import com.aspectran.core.context.rule.type.JoinpointScopeType;
 
 public class AspectAdviceRulePreRegister extends AspectAdviceRuleRegister {
 	

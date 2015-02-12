@@ -26,32 +26,32 @@ import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.activity.process.ContentList;
 import com.aspectran.core.context.builder.ContextBuilderAssistant;
 import com.aspectran.core.context.builder.DefaultSettings;
+import com.aspectran.core.context.builder.Importable;
+import com.aspectran.core.context.builder.ImportableFile;
+import com.aspectran.core.context.builder.ImportableResource;
+import com.aspectran.core.context.builder.ImportableUrl;
+import com.aspectran.core.context.rule.AspectJobAdviceRule;
+import com.aspectran.core.context.rule.AspectRule;
+import com.aspectran.core.context.rule.BeanRule;
+import com.aspectran.core.context.rule.FileItemRule;
+import com.aspectran.core.context.rule.ItemRule;
+import com.aspectran.core.context.rule.ItemRuleMap;
+import com.aspectran.core.context.rule.PointcutPatternRule;
+import com.aspectran.core.context.rule.PointcutRule;
+import com.aspectran.core.context.rule.RequestRule;
+import com.aspectran.core.context.rule.ResponseByContentTypeRule;
+import com.aspectran.core.context.rule.ResponseRule;
+import com.aspectran.core.context.rule.SettingsAdviceRule;
+import com.aspectran.core.context.rule.TransletRule;
+import com.aspectran.core.context.rule.type.AspectAdviceType;
+import com.aspectran.core.context.rule.type.AspectTargetType;
+import com.aspectran.core.context.rule.type.DefaultSettingType;
 import com.aspectran.core.util.BooleanUtils;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.apon.GenericParameters;
 import com.aspectran.core.util.apon.Parameters;
-import com.aspectran.core.util.io.FileImportStream;
-import com.aspectran.core.util.io.ImportStream;
-import com.aspectran.core.util.io.ResourceImportStream;
-import com.aspectran.core.util.io.URLImportStream;
 import com.aspectran.core.util.xml.Nodelet;
 import com.aspectran.core.util.xml.NodeletParser;
-import com.aspectran.core.var.rule.AspectJobAdviceRule;
-import com.aspectran.core.var.rule.AspectRule;
-import com.aspectran.core.var.rule.BeanRule;
-import com.aspectran.core.var.rule.FileItemRule;
-import com.aspectran.core.var.rule.ItemRule;
-import com.aspectran.core.var.rule.ItemRuleMap;
-import com.aspectran.core.var.rule.PointcutPatternRule;
-import com.aspectran.core.var.rule.PointcutRule;
-import com.aspectran.core.var.rule.RequestRule;
-import com.aspectran.core.var.rule.ResponseByContentTypeRule;
-import com.aspectran.core.var.rule.ResponseRule;
-import com.aspectran.core.var.rule.SettingsAdviceRule;
-import com.aspectran.core.var.rule.TransletRule;
-import com.aspectran.core.var.type.AspectAdviceType;
-import com.aspectran.core.var.type.AspectTargetType;
-import com.aspectran.core.var.type.DefaultSettingType;
 
 /**
  * Translet Map Parser.
@@ -93,8 +93,8 @@ public class AspectranNodeParser {
 	 * @param inputStream the input stream
 	 * @throws Exception the exception
 	 */
-	public void parse(ImportStream importStream) throws Exception {
-		InputStream inputStream = importStream.getInputStream();
+	public void parse(Importable importable) throws Exception {
+		InputStream inputStream = importable.getInputStream();
 		
 		try {
 			parser.parse(inputStream);
@@ -596,21 +596,21 @@ public class AspectranNodeParser {
 				String file = attributes.get("file");
 				String url = attributes.get("url");
 				
-				ImportStream importStream = null;
+				Importable importable = null;
 				
 				if(StringUtils.hasText(resource))
-					importStream = new ResourceImportStream(assistant.getClassLoader(), resource);
+					importable = new ImportableResource(assistant.getClassLoader(), resource);
 				else if(StringUtils.hasText(file))
-					importStream = new FileImportStream(assistant.getApplicationBasePath(), file);
+					importable = new ImportableFile(assistant.getApplicationBasePath(), file);
 				else if(StringUtils.hasText(url))
-					importStream = new URLImportStream(url);
+					importable = new ImportableUrl(url);
 				else
 					throw new IllegalArgumentException("The <import> element requires either a resource or a file or a url attribute.");
 				
 				DefaultSettings defaultSettings = (DefaultSettings)assistant.getDefaultSettings().clone();
 				
 				AspectranNodeParser aspectranNodeParser = new AspectranNodeParser(assistant);
-				aspectranNodeParser.parse(importStream);
+				aspectranNodeParser.parse(importable);
 				
 				assistant.setDefaultSettings(defaultSettings);
 			}

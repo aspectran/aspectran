@@ -20,12 +20,12 @@ import java.util.Map;
 import org.w3c.dom.Node;
 
 import com.aspectran.core.context.builder.ContextBuilderAssistant;
+import com.aspectran.core.context.rule.AspectAdviceRule;
+import com.aspectran.core.context.rule.AspectRule;
+import com.aspectran.core.context.rule.type.AspectAdviceType;
 import com.aspectran.core.util.xml.Nodelet;
 import com.aspectran.core.util.xml.NodeletAdder;
 import com.aspectran.core.util.xml.NodeletParser;
-import com.aspectran.core.var.rule.AspectAdviceRule;
-import com.aspectran.core.var.rule.AspectRule;
-import com.aspectran.core.var.type.AspectAdviceType;
 
 /**
  * The Class AspectAdviceRuleNodeletAdder.

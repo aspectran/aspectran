@@ -28,9 +28,9 @@ import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.bean.BeanRegistry;
 import com.aspectran.core.context.bean.scope.Scope;
-import com.aspectran.core.var.rule.AspectAdviceRule;
-import com.aspectran.core.var.rule.AspectRule;
-import com.aspectran.core.var.type.JoinpointScopeType;
+import com.aspectran.core.context.rule.AspectAdviceRule;
+import com.aspectran.core.context.rule.AspectRule;
+import com.aspectran.core.context.rule.type.JoinpointScopeType;
 
 /**
  * Action Translator.

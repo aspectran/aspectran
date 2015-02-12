@@ -25,7 +25,7 @@ import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.bean.scope.Scope;
-import com.aspectran.core.var.rule.AspectAdviceRule;
+import com.aspectran.core.context.rule.AspectAdviceRule;
 
 /**
  * <p>Created: 2008. 04. 28 오전 12:48:48</p>

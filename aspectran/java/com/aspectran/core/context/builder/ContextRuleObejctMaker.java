@@ -1,9 +1,9 @@
 package com.aspectran.core.context.builder;
 
-import com.aspectran.core.var.rule.AspectRule;
-import com.aspectran.core.var.rule.SettingsAdviceRule;
-import com.aspectran.core.var.type.AspectAdviceType;
-import com.aspectran.core.var.type.AspectTargetType;
+import com.aspectran.core.context.rule.AspectRule;
+import com.aspectran.core.context.rule.SettingsAdviceRule;
+import com.aspectran.core.context.rule.type.AspectAdviceType;
+import com.aspectran.core.context.rule.type.AspectTargetType;
 
 public class ContextRuleObejctMaker {
 

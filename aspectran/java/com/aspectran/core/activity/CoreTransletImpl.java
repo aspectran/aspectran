@@ -29,10 +29,10 @@ import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
-import com.aspectran.core.var.rule.AspectAdviceRule;
-import com.aspectran.core.var.rule.ForwardResponseRule;
-import com.aspectran.core.var.rule.RedirectResponseRule;
-import com.aspectran.core.var.rule.TransformRule;
+import com.aspectran.core.context.rule.AspectAdviceRule;
+import com.aspectran.core.context.rule.ForwardResponseRule;
+import com.aspectran.core.context.rule.RedirectResponseRule;
+import com.aspectran.core.context.rule.TransformRule;
 
 
 /**

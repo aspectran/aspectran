@@ -13,10 +13,10 @@ import com.aspectran.core.activity.CoreActivity;
 import com.aspectran.core.context.aspect.AspectAdviceRulePostRegister;
 import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
 import com.aspectran.core.context.aspect.pointcut.Pointcut;
-import com.aspectran.core.var.rule.AspectAdviceRule;
-import com.aspectran.core.var.rule.AspectRule;
-import com.aspectran.core.var.rule.BeanRule;
-import com.aspectran.core.var.type.JoinpointScopeType;
+import com.aspectran.core.context.rule.AspectAdviceRule;
+import com.aspectran.core.context.rule.AspectRule;
+import com.aspectran.core.context.rule.BeanRule;
+import com.aspectran.core.context.rule.type.JoinpointScopeType;
 
 /**
  * @author aspectran

@@ -2,9 +2,9 @@ package com.aspectran.core.context.aspect.pointcut;
 
 import java.util.List;
 
-import com.aspectran.core.var.rule.PointcutPatternRule;
-import com.aspectran.core.var.rule.PointcutRule;
-import com.aspectran.core.var.type.PointcutType;
+import com.aspectran.core.context.rule.PointcutPatternRule;
+import com.aspectran.core.context.rule.PointcutRule;
+import com.aspectran.core.context.rule.type.PointcutType;
 
 public class PointcutFactory {
 

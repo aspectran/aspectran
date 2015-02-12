@@ -24,10 +24,10 @@ import com.aspectran.core.activity.CoreActivity;
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.activity.response.ResponseException;
 import com.aspectran.core.activity.response.Responsible;
-import com.aspectran.core.var.rule.DispatchResponseRule;
-import com.aspectran.core.var.rule.ResponseRule;
-import com.aspectran.core.var.rule.TemplateRule;
-import com.aspectran.core.var.type.ResponseType;
+import com.aspectran.core.context.rule.DispatchResponseRule;
+import com.aspectran.core.context.rule.ResponseRule;
+import com.aspectran.core.context.rule.TemplateRule;
+import com.aspectran.core.context.rule.type.ResponseType;
 
 /**
  * JSP or other web resource integration.

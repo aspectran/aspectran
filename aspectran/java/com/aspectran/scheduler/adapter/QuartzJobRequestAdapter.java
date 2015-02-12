@@ -5,9 +5,9 @@ import java.util.Enumeration;
 
 import org.quartz.JobDetail;
 
+import com.aspectran.core.activity.variable.AttributeMap;
 import com.aspectran.core.adapter.AbstractRequestAdapter;
 import com.aspectran.core.adapter.RequestAdapter;
-import com.aspectran.core.var.AttributeMap;
 
 /**
  * 

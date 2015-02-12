@@ -49,11 +49,11 @@ public class MultipartRequestDataParser {
 
 	private long maxRequestSize = MAX_REQUEST_SIZE;
 
-	private HttpServletRequest request;
+	private final HttpServletRequest request;
 
-	private Map<String, List<String>> parsedParameterMap;
+	private final Map<String, List<String>> parsedParameterMap;
 
-	private Map<String, List<MultipartFileItem>> multipartFileItemMap;
+	private final Map<String, List<MultipartFileItem>> multipartFileItemMap;
 
 	private boolean maxLengthExceeded;
 	
