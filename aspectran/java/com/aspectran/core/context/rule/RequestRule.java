@@ -21,7 +21,6 @@ import java.util.List;
 
 import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
 import com.aspectran.core.context.rule.type.RequestMethodType;
-import com.aspectran.core.util.BooleanUtils;
 
 /**
  * <p>Created: 2008. 03. 22 오후 5:48:09</p>
@@ -37,8 +36,6 @@ public class RequestRule implements AspectAdviceSupport {
 	private ItemRuleMap attributeItemRuleMap;
 
 	private FileItemRuleMap fileItemRuleMap;
-	
-	private Boolean fileItemCanBeAttribute;
 	
 	private AspectAdviceRuleRegistry aspectAdviceRuleRegistry;
 	
@@ -183,18 +180,6 @@ public class RequestRule implements AspectAdviceSupport {
 		fileItemRuleMap.putFileItemRule(fileItemRule);
 	}
 
-	public Boolean getFileItemCanBeAttribute() {
-		return fileItemCanBeAttribute;
-	}
-
-	public boolean isFileItemCanBeAttribute() {
-		return BooleanUtils.toBoolean(fileItemCanBeAttribute);
-	}
-
-	public void setFileItemCanBeAttribute(Boolean fileItemCanBeAttribute) {
-		this.fileItemCanBeAttribute = fileItemCanBeAttribute;
-	}
-
 	public AspectAdviceRuleRegistry getAspectAdviceRuleRegistry() {
 		return aspectAdviceRuleRegistry;
 	}
@@ -244,10 +229,8 @@ public class RequestRule implements AspectAdviceSupport {
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-
 		sb.append("{method=").append(method);
 		sb.append(", characterEncoding=").append(characterEncoding);
-		
 		if(attributeItemRuleMap != null) {
 			sb.append(", attributes=[");
 			int sbLength = sb.length();
@@ -261,7 +244,6 @@ public class RequestRule implements AspectAdviceSupport {
 
 			sb.append("]");
 		}
-		
 		if(fileItemRuleMap != null) {
 			sb.append(", fileItems=[");
 			int sbLength = sb.length();
@@ -275,8 +257,6 @@ public class RequestRule implements AspectAdviceSupport {
 			
 			sb.append("]");
 		}
-		
-		sb.append(", fileItemCanBeAttribute=").append(fileItemCanBeAttribute);
 		sb.append("}");
 		
 		return sb.toString();

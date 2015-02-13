@@ -17,12 +17,15 @@ package com.aspectran.web.activity.multipart;
 
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequestWrapper;
 
 import com.aspectran.core.activity.request.parameter.FileParameter;
+import com.aspectran.core.context.rule.ItemRule;
+import com.aspectran.core.context.rule.type.ItemType;
 
 /**
  * This class functions as a wrapper around HttpServletRequest to provide
@@ -32,7 +35,7 @@ import com.aspectran.core.activity.request.parameter.FileParameter;
  */
 public class MultipartRequestWrapper extends HttpServletRequestWrapper {
 
-	private MultipartFormDataParser handler;
+	private MultipartFormDataParser parser;
 	
 	/**
 	 * Instantiates a new multipart request wrapper.
@@ -43,7 +46,7 @@ public class MultipartRequestWrapper extends HttpServletRequestWrapper {
 	 */
 	public MultipartRequestWrapper(MultipartFormDataParser handler) throws MultipartRequestException {
 		super(handler.getRequest());
-		this.handler = handler;
+		this.parser = handler;
 		handler.parse();
 	}
 
@@ -52,7 +55,7 @@ public class MultipartRequestWrapper extends HttpServletRequestWrapper {
 	 */
 	@Override
 	public Enumeration<String> getParameterNames() {
-		return handler.getMultipartParameterNames();
+		return parser.getParameterNames();
 	}
 	
 	/* (non-Javadoc)
@@ -60,7 +63,7 @@ public class MultipartRequestWrapper extends HttpServletRequestWrapper {
 	 */
 	@Override
 	public String getParameter(String name) {
-		return handler.getMultipartParameter(name);
+		return parser.getParameter(name);
 	}
 
 	/* (non-Javadoc)
@@ -68,7 +71,7 @@ public class MultipartRequestWrapper extends HttpServletRequestWrapper {
 	 */
 	@Override
 	public String[] getParameterValues(String name) {
-		return handler.getMultipartParameterValues(name);
+		return parser.getParameterValues(name);
 	}
 
 	/* (non-Javadoc)
@@ -93,7 +96,7 @@ public class MultipartRequestWrapper extends HttpServletRequestWrapper {
 	 * @return the multipart item names
 	 */
 	public Enumeration<String> getFileParameterNames() {
-        return handler.getMultipartFileParameterNames();
+        return parser.getFileParameterNames();
     }
     
 	/**
@@ -104,7 +107,7 @@ public class MultipartRequestWrapper extends HttpServletRequestWrapper {
 	 * @return the multipart file item
 	 */
 	public FileParameter getFileParameter(String name) {
-		return handler.getMultipartFileParameter(name);
+		return parser.getFileParameter(name);
 	}
 	
 	/**
@@ -115,11 +118,11 @@ public class MultipartRequestWrapper extends HttpServletRequestWrapper {
 	 * @return the multipart items
 	 */
 	public FileParameter[] getFileParameters(String name) {
-		return handler.getMultipartFileParameters(name);
+		return parser.getFileParameters(name);
 	}
 	
 	public List<FileParameter> getFileParameterList(String name) {
-		return handler.getMultipartFileParameterList(name);
+		return parser.getFileParameterList(name);
 	}
 
 	/**
@@ -128,6 +131,23 @@ public class MultipartRequestWrapper extends HttpServletRequestWrapper {
 	 * @return true, if is max length exceeded
 	 */
 	public boolean isMaxLengthExceeded() {
-		return handler.isMaxLengthExceeded();
+		return parser.isMaxLengthExceeded();
 	}
+	
+	public Object getFileParameter(String name, ItemRule itemRule) {
+		if(itemRule.getType() == ItemType.LIST) {
+			return getFileParameters(name);
+		} else if(itemRule.getType() == ItemType.SET) {
+			List<FileParameter> fileParameterList = getFileParameterList(name);
+			
+			if(fileParameterList != null) {
+				return new LinkedHashSet<FileParameter>(fileParameterList);
+			}
+		} else {
+			return getFileParameter(name);
+		}
+		
+		return null;
+	}
+	
 }
