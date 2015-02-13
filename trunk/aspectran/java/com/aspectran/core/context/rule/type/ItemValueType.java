@@ -31,6 +31,18 @@ public final class ItemValueType extends Type {
 	/** The "int" item type. */
 	public static final ItemValueType INT;
 	
+	/** The "long" item type. */
+	public static final ItemValueType LONG;
+	
+	/** The "float" item type. */
+	public static final ItemValueType FLOAT;
+	
+	/** The "double" item type. */
+	public static final ItemValueType DOUBLE;
+	
+	/** The "boolean" item type. */
+	public static final ItemValueType BOOLEAN;
+	
 	/** The "hashMap" item type. */
 	//public static final ItemValueType HASH_MAP;
 
@@ -47,7 +59,7 @@ public final class ItemValueType extends Type {
 	public static final ItemValueType FILE;
 	
 	/** The "custom" item type. */
-	public static final ItemValueType FILE_ITEM;
+	public static final ItemValueType MULTIPART_FILE;
 	
 	private static final Map<String, ItemValueType> types;
 	
@@ -55,22 +67,31 @@ public final class ItemValueType extends Type {
 	
 	static {
 		STRING = new ItemValueType("string", "java.lang.String");
-		INT = new ItemValueType("int", "int");
+		INT = new ItemValueType("int", "java.lang.Integer");
+		LONG = new ItemValueType("long", "java.lang.Long");
+		FLOAT = new ItemValueType("float", "java.lang.Float");
+		DOUBLE = new ItemValueType("double", "java.lang.Double");
+		BOOLEAN = new ItemValueType("boolean", "java.lang.Boolean");
 		//HASH_MAP = new ItemValueType("hashMap", "java.util.HashMap");
 		//LINKED_HASH_MAP = new ItemValueType("linkedHashMap", "java.util.LinkedHashMap");
 		//ARRAY_LIST = new ItemValueType("arrayList", "java.util.ArrayList");
 		CUSTOM = new ItemValueType("custom", null);
 		FILE = new ItemValueType("file", null);
-		FILE_ITEM = new ItemValueType("fileItem", null);
+		MULTIPART_FILE = new ItemValueType("multipartFile", null);
 
 		types = new HashMap<String, ItemValueType>();
 		types.put(STRING.toString(), STRING);
 		types.put(INT.toString(), INT);
+		types.put(LONG.toString(), LONG);
+		types.put(FLOAT.toString(), FLOAT);
+		types.put(DOUBLE.toString(), DOUBLE);
+		types.put(BOOLEAN.toString(), BOOLEAN);
 		//types.put(HASH_MAP.toString(), HASH_MAP);
 		//types.put(LINKED_HASH_MAP.toString(), LINKED_HASH_MAP);
 		//types.put(ARRAY_LIST.toString(), ARRAY_LIST);
 		types.put(CUSTOM.toString(), CUSTOM);
 		types.put(FILE.toString(), FILE);
+		types.put(MULTIPART_FILE.toString(), MULTIPART_FILE);
 	}
 
 	/**

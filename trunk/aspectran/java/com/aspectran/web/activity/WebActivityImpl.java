@@ -16,20 +16,15 @@
 package com.aspectran.web.activity;
 
 import java.io.UnsupportedEncodingException;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.aspectran.core.activity.CoreActivity;
 import com.aspectran.core.activity.CoreActivityException;
 import com.aspectran.core.activity.CoreActivityImpl;
 import com.aspectran.core.activity.CoreTranslet;
 import com.aspectran.core.activity.request.RequestException;
-import com.aspectran.core.activity.request.parameter.FileParameter;
 import com.aspectran.core.activity.variable.ValueObjectMap;
 import com.aspectran.core.activity.variable.token.ItemTokenExpression;
 import com.aspectran.core.activity.variable.token.ItemTokenExpressor;
@@ -43,8 +38,8 @@ import com.aspectran.core.context.rule.RequestRule;
 import com.aspectran.core.context.rule.ResponseRule;
 import com.aspectran.core.context.rule.type.ItemValueType;
 import com.aspectran.core.context.rule.type.RequestMethodType;
-import com.aspectran.web.activity.multipart.MultipartRequestException;
 import com.aspectran.web.activity.multipart.MultipartFormDataParser;
+import com.aspectran.web.activity.multipart.MultipartRequestException;
 import com.aspectran.web.activity.multipart.MultipartRequestWrapper;
 import com.aspectran.web.adapter.HttpServletRequestAdapter;
 import com.aspectran.web.adapter.HttpServletResponseAdapter;
@@ -62,10 +57,6 @@ public class WebActivityImpl extends CoreActivityImpl implements WebActivity {
 	private static final String MULTIPART_ALLOWED_FILE_EXTENSIONS = "multipart.allowedFileExtensions";
 	
 	private static final String MULTIPART_DENIED_FILE_EXTENSIONS = "multipart.deniedFileExtensions";
-	
-	private final Logger logger = LoggerFactory.getLogger(WebActivityImpl.class);
-
-	private final boolean debugEnabled = logger.isDebugEnabled();
 	
 	private RequestRule requestRule;
 	
@@ -111,7 +102,14 @@ public class WebActivityImpl extends CoreActivityImpl implements WebActivity {
 	        		&& contentType.startsWith("multipart/form-data")) {
 	        	
 	        	requestWrapper = parseMultipartFormData();
+	        	request = requestWrapper;
 	        }
+
+			RequestAdapter requestAdapter = new HttpServletRequestAdapter(request);
+			setRequestAdapter(requestAdapter);
+			
+			if(requestWrapper != null)
+				requestAdapter.setMaxLengthExceeded(requestWrapper.isMaxLengthExceeded());
 
 	        ValueObjectMap valueMap = parseParameter(requestWrapper);
 	        
@@ -122,12 +120,10 @@ public class WebActivityImpl extends CoreActivityImpl implements WebActivity {
 			throw new RequestException("Could not parse multipart servlet request.", e);
 		}
 		
-		RequestAdapter requestAdapter = new HttpServletRequestAdapter(request);
 		ResponseAdapter responseAdapter = new HttpServletResponseAdapter(response);
-		SessionAdapter sessionAdapter = new HttpSessionAdapter(request.getSession());
-
-		setRequestAdapter(requestAdapter);
 		setResponseAdapter(responseAdapter);
+
+		SessionAdapter sessionAdapter = new HttpSessionAdapter(request.getSession());
 		setSessionAdapter(sessionAdapter);
 	}
 
@@ -189,23 +185,43 @@ public class WebActivityImpl extends CoreActivityImpl implements WebActivity {
 				String name = itemRule.getName();
 				
 				if(requestWrapper != null) {
-					if(itemRule.getValueType() == ItemValueType.FILE_ITEM && itemRule.getValue() == null) {
-						FileParameter fileParameter = requestWrapper.getFileParameter(name);
+					if(itemRule.getValueType() == ItemValueType.MULTIPART_FILE && valueMap.get(name) == null) {
+						Object value = requestWrapper.getFileParameter(name, itemRule);
+						valueMap.put(name, value);
+						request.setAttribute(name, value);
 					}
 				} else {
 					Object value = valueMap.get(name);
-					if(value != null)
+					if(value != null) {
 						request.setAttribute(name, value);
+					}
 				}
 			}
-			
-			if(valueMap != null && valueMap.size() > 0) {
-				for(Map.Entry<String, Object> entry : valueMap.entrySet())
-					request.setAttribute(entry.getKey(), entry.getValue());
-				
+
+			if(valueMap.size() > 0)
 				return valueMap;
+		}
+		
+		/*
+		if(debugEnabled) {
+			if(requestAdapter.isMaxLengthExceeded()) {
+				logger.debug("Max length exceeded. multipart.maxRequestSize: " + multipartMaxRequestSize);
+			}
+
+			for(FileItemRule fir : fileItemRuleMap) {
+				if(fir.getUnityType() == FileItemUnityType.ARRAY) {
+					FileParameter[] fileItems = fileItemMap.getFileItems(fir.getName());
+					
+					for(int i = 0; i < fileItems.length; i++) {
+						logger.debug("fileItem[" + i + "] name=" + fir.getName() + " " + fileItems[i]);
+					}
+				} else {
+					FileParameter f = fileItemMap.getFileItem(fir.getName());
+					logger.debug("fileItem name=" + fir.getName() + " " + f);
+				}
 			}
 		}
+		*/
 		
 		return null;
 	}

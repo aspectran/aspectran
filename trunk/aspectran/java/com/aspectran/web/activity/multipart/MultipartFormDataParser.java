@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -33,27 +32,34 @@ import org.apache.commons.fileupload.FileUploadBase.SizeLimitExceededException;
 import org.apache.commons.fileupload.RequestContext;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import com.aspectran.core.activity.request.parameter.FileParameter;
 import com.aspectran.core.util.FileUtils;
 
 /**
  * Multi-part form data request handler.
  */
 public class MultipartFormDataParser {
+	
+	private static final Logger logger = LoggerFactory.getLogger(MultipartFormDataParser.class);
 
 	public static final long MAX_REQUEST_SIZE = 250 * 1024 * 1024;
 
 	public static final int DEFAULT_SIZE_THRESHOLD = 256 * 1024;
 
-	private String temporaryFilePath;
+	private String characterEncoding;
 
+	private String temporaryFilePath;
+	
 	private long maxRequestSize = MAX_REQUEST_SIZE;
 
 	private final HttpServletRequest request;
 
-	private final Map<String, List<String>> parsedParameterMap;
+	private final Map<String, List<String>> parsedParameterListMap;
 
-	private final Map<String, List<MultipartFileParameter>> multipartFileParameterMap;
+	private final Map<String, List<FileParameter>> parsedFileParameterListMap;
 
 	private boolean maxLengthExceeded;
 	
@@ -72,8 +78,10 @@ public class MultipartFormDataParser {
 	 */
 	public MultipartFormDataParser(HttpServletRequest request) throws MultipartRequestException {
 		this.request = request;
-		this.parsedParameterMap = new HashMap<String, List<String>>();
-		this.multipartFileParameterMap = new HashMap<String, List<MultipartFileParameter>>();
+		this.characterEncoding = request.getCharacterEncoding();
+		
+		this.parsedParameterListMap = new HashMap<String, List<String>>();
+		this.parsedFileParameterListMap = new HashMap<String, List<FileParameter>>();
 	}
 
 	/**
@@ -83,6 +91,14 @@ public class MultipartFormDataParser {
 	 */
 	public HttpServletRequest getRequest() {
 		return request;
+	}
+
+	public String getCharacterEncoding() {
+		return characterEncoding;
+	}
+
+	public void setCharacterEncoding(String characterEncoding) {
+		this.characterEncoding = characterEncoding;
 	}
 
 	/**
@@ -170,17 +186,18 @@ public class MultipartFormDataParser {
 			upload.setSizeMax(maxRequestSize);
 			upload.setHeaderEncoding(request.getCharacterEncoding());
 
-			List<FileItem> fileItemList;
+			Map<String, List<FileItem>> fileItemListMap;
 
 			try {
-				RequestContext requestContent = createRequestContext(request);
-				fileItemList = upload.parseRequest(requestContent);
+				RequestContext requestContext = createRequestContext(request);
+				fileItemListMap = upload.parseParameterMap(requestContext);
 			} catch(SizeLimitExceededException e) {
+				logger.warn("Max length exceeded. multipart.maxRequestSize: " + maxRequestSize, e);
 				maxLengthExceeded = true;
 				return;
 			}
 
-			parseMultipart(fileItemList);
+			parseMultipart(fileItemListMap);
 			
 			parsed = true;
 		} catch(Exception e) {
@@ -193,49 +210,48 @@ public class MultipartFormDataParser {
 	 * 
 	 * @param fileItemList the items
 	 */
-	private void parseMultipart(List<FileItem> fileItemList) {
-		Iterator<FileItem> iterator = fileItemList.iterator();
+	private void parseMultipart(Map<String, List<FileItem>> fileItemListMap) {
+		for(Map.Entry<String, List<FileItem>> entry : fileItemListMap.entrySet()) {
+			String fieldName = entry.getKey();
+			List<FileItem> fileItemList = entry.getValue();
 
-		while(iterator.hasNext()) {
-			FileItem fileItem = iterator.next();
-			String fieldName = fileItem.getFieldName();
-
-			if(fileItem.isFormField()) {
-				List<String> stringValues;
-
-				if(parsedParameterMap.get(fieldName) != null)
-					stringValues = parsedParameterMap.get(fieldName);
-				else
-					stringValues = new ArrayList<String>();
-
-				stringValues.add(getString(fileItem));
-				parsedParameterMap.put(fieldName, stringValues);
-			} else {
-				// Skip file uploads that don't have a file name - meaning that
-				// no file was selected.
-				if(fileItem.getName() == null || fileItem.getName().trim().length() == 0)
-					continue;
-				
-				boolean valid = FileUtils.isValidFileExtension(fileItem.getName(), allowedFileExtensions, deniedFileExtensions);
-				
-				if(!valid)
-					continue;
-
-				List<MultipartFileParameter> multipartFileItemList;
-
-				if(multipartFileParameterMap.get(fieldName) != null)
-					multipartFileItemList = multipartFileParameterMap.get(fieldName);
-				else
-					multipartFileItemList = new ArrayList<MultipartFileParameter>();
-
-				MultipartFileParameter multipartFileItem = new MultipartFileParameter(fileItem);
-				multipartFileItemList.add(multipartFileItem);
-				
-				multipartFileParameterMap.put(fieldName, multipartFileItemList);
+			if(fileItemList != null && fileItemList.size() > 0) {
+				for(FileItem fileItem : fileItemList) {
+					if(fileItem.isFormField()) {
+						List<String> parameterList = parsedParameterListMap.get(fieldName);
+						
+						if(parameterList == null) {
+							parameterList = new ArrayList<String>(fileItemList.size());
+							parsedParameterListMap.put(fieldName, parameterList);
+						}
+						
+						parameterList.add(getString(fileItem));
+					} else {
+						// Skip file uploads that don't have a file name - meaning that
+						// no file was selected.
+						if(fileItem.getName() == null || fileItem.getName().trim().length() == 0)
+							continue;
+						
+						boolean valid = FileUtils.isValidFileExtension(fileItem.getName(), allowedFileExtensions, deniedFileExtensions);
+						
+						if(!valid)
+							continue;
+						
+						List<FileParameter> fileParameterList = parsedFileParameterListMap.get(fieldName);
+						
+						if(fileParameterList == null) {
+							fileParameterList = new ArrayList<FileParameter>(fileItemListMap.size());
+							parsedFileParameterListMap.put(fieldName, fileParameterList);
+						}
+						
+						FileParameter fileParameter = new MultipartFileParameter(fileItem);
+						fileParameterList.add(fileParameter);
+					}
+				}
 			}
 		}
 	}
-
+	
 	/**
 	 * Gets the string.
 	 * 
@@ -244,12 +260,11 @@ public class MultipartFormDataParser {
 	 * @return the string
 	 */
 	private String getString(FileItem fileItem) {
-		String encoding = request.getCharacterEncoding();
 		String value = null;
 
-		if(encoding != null) {
+		if(characterEncoding != null) {
 			try {
-				value = fileItem.getString(encoding);
+				value = fileItem.getString(characterEncoding);
 			} catch(Exception e) {
 				value = null;
 			}
@@ -275,8 +290,8 @@ public class MultipartFormDataParser {
 	 * 
 	 * @return the parameter names
 	 */
-	public Enumeration<String> getMultipartParameterNames() {
-		return Collections.enumeration(parsedParameterMap.keySet());
+	public Enumeration<String> getParameterNames() {
+		return Collections.enumeration(parsedParameterListMap.keySet());
 	}
 
 	/**
@@ -286,8 +301,8 @@ public class MultipartFormDataParser {
 	 * 
 	 * @return String 파라메터 값
 	 */
-	public String getMultipartParameter(String name) {
-		List<String> items = parsedParameterMap.get(name);
+	public String getParameter(String name) {
+		List<String> items = parsedParameterListMap.get(name);
 
 		if(items == null || items.size() == 0)
 			return null;
@@ -302,8 +317,8 @@ public class MultipartFormDataParser {
 	 * 
 	 * @return String[] 파라메터 값
 	 */
-	public String[] getMultipartParameterValues(String name) {
-		List<String> items = parsedParameterMap.get(name);
+	public String[] getParameterValues(String name) {
+		List<String> items = parsedParameterListMap.get(name);
 
 		if(items == null || items.size() == 0)
 			return null;
@@ -311,13 +326,17 @@ public class MultipartFormDataParser {
 		return items.toArray(new String[items.size()]);
 	}
 
+	public List<String> getParameterList(String name) {
+		return parsedParameterListMap.get(name);
+	}
+	
 	/**
 	 * Gets the multipart file item names.
 	 * 
 	 * @return the multipart file item names
 	 */
-	public Enumeration<String> getMultipartFileParameterNames() {
-		return Collections.enumeration(multipartFileParameterMap.keySet());
+	public Enumeration<String> getFileParameterNames() {
+		return Collections.enumeration(parsedFileParameterListMap.keySet());
 	}
 
 	/**
@@ -327,8 +346,8 @@ public class MultipartFormDataParser {
 	 * 
 	 * @return the multipart item
 	 */
-	public MultipartFileParameter getMultipartFileParameter(String name) {
-		List<MultipartFileParameter> items = multipartFileParameterMap.get(name);
+	public FileParameter getFileParameter(String name) {
+		List<FileParameter> items = parsedFileParameterListMap.get(name);
 
 		if(items == null || items.size() == 0)
 			return null;
@@ -336,11 +355,6 @@ public class MultipartFormDataParser {
 		return items.get(0);
 	}
 
-	public List<MultipartFileParameter> getMultipartFileParameterList(String name) {
-		List<MultipartFileParameter> fileItemList = multipartFileParameterMap.get(name);
-		return fileItemList;
-	}
-	
 	/**
 	 * Gets the multipart items.
 	 * 
@@ -348,8 +362,8 @@ public class MultipartFormDataParser {
 	 * 
 	 * @return the multipart file items
 	 */
-	public MultipartFileParameter[] getMultipartFileParameters(String name) {
-		List<MultipartFileParameter> items = multipartFileParameterMap.get(name);
+	public FileParameter[] getFileParameters(String name) {
+		List<FileParameter> items = parsedFileParameterListMap.get(name);
 		
 		if(items == null)
 			return null;
@@ -357,6 +371,10 @@ public class MultipartFormDataParser {
 		return items.toArray(new MultipartFileParameter[items.size()]);
 	}
 
+	public List<FileParameter> getFileParameterList(String name) {
+		return parsedFileParameterListMap.get(name);
+	}
+	
 	/**
 	 * Creates a RequestContext needed by Jakarta Commons Upload.
 	 * 
