@@ -15,6 +15,7 @@
 	<translet name="front/welcome" extends="./front">
 		<request method="get" characterEncoding="utf-8">
 			<attribute>
+				<item name="param-1"/>
 				<item name="param0" value="Value"/>
 				<item name="param01">
 					<reference bean="common.action.a1"/>
@@ -26,7 +27,7 @@
 				</item>
 				<item name="param2" type="list" tokenize="false">
 					<value>${item1:222222}</value>
-					<value>%{testTicket1:11111} fff %{item10:99}</value>
+					<value>${testTicket1:11111} fff ${item10:99}</value>
 					<value>#{common.ticket.t1^date}</value>
 					<value>#{common.ticket.t1^int}</value>
 				</item>
@@ -119,18 +120,6 @@
 						<value name="item42">${item1}</value>
 					</item>
 				</echo>
-				<action bean="responseHeaderSpecifier" method="setHeader">
-					<argument>
-						<item name="Content-Disposition">inline</item>
-						<item name="filename">파일명.txt</item>
-					</argument>
-				</action>
-				<action bean="responseHeaderSpecifier" method="setHeader">
-					<argument>
-						<item name="Content-Disposition">inline</item>
-						<item name="filename">파일명.txt</item>
-					</argument>
-				</action>
 			</transform>
 		</response>
 		<response name="download">
@@ -143,8 +132,10 @@
 				</echo>
 				<action bean="responseHeaderSpecifier" method="setHeader">
 					<argument>
-						<item name="Content-Type">application/vnd.ms-xls</item>
-						<item name="filename">X${item9:한-글} 파일명.txt</item>
+						<item type="map">
+							<value name="Content-Disposition">inline</value>
+							<value name="filename">파일명.txt</value>
+						</item>
 					</argument>
 				</action>
 				<template file="WEB-INF/xsl/service/test.xsl" noCache="true"/>
@@ -171,8 +162,10 @@
 				</echo>
 				<action bean="responseHeaderSpecifier" method="setHeader">
 					<argument>
-						<item name="Content-Type">application/vnd.ms-xls</item>
-						<item name="filename">X${item9:한-글} 파일명.xls</item>
+						<item type="map">
+							<value name="Content-Disposition">inline</value>
+							<value name="filename">파일명.txt</value>
+						</item>
 					</argument>
 				</action>
 				<template file="/WEB-INF/jsp/hello.jsp" encoding="utf-8"/>
