@@ -140,29 +140,23 @@ public class Token {
 			return defaultText;
 		
 		StringBuilder sb = new StringBuilder();
-		
 		if(type == TokenType.PARAMETER)
 			sb.append(PARAMETER_SYMBOL);
 		else if(type == TokenType.ATTRIBUTE)
 			sb.append(ATTRIBUTE_SYMBOL);
 		else if(type == TokenType.REFERENCE_BEAN)
 			sb.append(REFERENCE_BEAN_SYMBOL);
-
 		sb.append(START_BRACKET);
-
 		if(name != null)
 			sb.append(name);
-		
 		if(getterName != null) {
 			sb.append(BEAN_PROPERTY_DELIMITER);
 			sb.append(getterName);
 		}
-		
 		if(defaultText != null) {
 			sb.append(DEFAULT_VALUE_SEPARATOR);
 			sb.append(defaultText);
 		}
-
 		sb.append(END_BRACKET);
 
 		return sb.toString();

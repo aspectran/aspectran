@@ -1,6 +1,5 @@
 package com.aspectran.core.adapter;
 
-import com.aspectran.core.context.bean.scope.Scope;
 
 /**
  * The Class AbstractSessionAdapter.
@@ -21,14 +20,9 @@ public abstract class AbstractSessionAdapter implements SessionAdapter {
 		this.adaptee = adaptee;
 	}
 	
-	public Object getAdaptee() {
-		return adaptee;
+	@SuppressWarnings("unchecked")
+	public <T> T getAdaptee() {
+		return (T)adaptee;
 	}
-	
-	public abstract Scope getScope();
-	
-	public abstract Object getAttribute(String name);
-
-	public abstract void setAttribute(String name, Object value);
 
 }

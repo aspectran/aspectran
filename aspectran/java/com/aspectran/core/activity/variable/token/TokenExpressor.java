@@ -43,7 +43,9 @@ public interface TokenExpressor {
 	 * 
 	 * @return the string
 	 */
-	public String express(Token[] tokens);
+	public Object express(Token[] tokens);
+	
+	public String expressAsString(Token[] tokens);
 	
 	/**
 	 * Express as String.
@@ -53,18 +55,10 @@ public interface TokenExpressor {
 	 * 
 	 * @return the string
 	 */
+	public Object express(String parameterName, Token[] tokens);
+
 	public String expressAsString(String parameterName, Token[] tokens);
-
-	/**
-	 * Express as Object.
-	 * 
-	 * @param parameterName the parameter name
-	 * @param token the token
-	 * 
-	 * @return the object
-	 */
-	public Object expressAsObject(String parameterName, Token token);
-
+	
 	/**
 	 * Express as List.
 	 * 

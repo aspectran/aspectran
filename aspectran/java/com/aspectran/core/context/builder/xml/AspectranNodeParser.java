@@ -33,7 +33,6 @@ import com.aspectran.core.context.builder.ImportableUrl;
 import com.aspectran.core.context.rule.AspectJobAdviceRule;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.BeanRule;
-import com.aspectran.core.context.rule.FileItemRule;
 import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.PointcutPatternRule;
@@ -471,34 +470,6 @@ public class AspectranNodeParser {
 				ItemRuleMap irm = (ItemRuleMap)assistant.popObject();
 				RequestRule requestRule = (RequestRule)assistant.peekObject();
 				requestRule.setAttributeItemRuleMap(irm);
-			}
-		});
-		parser.addNodelet("/aspectran/translet/request/multipart", new Nodelet() {
-			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
-				String attribute = attributes.get("attribute");
-
-				if(attribute != null) {
-					Boolean fileItemCanBeAttribute = BooleanUtils.toNullableBooleanObject(attribute);
-
-					RequestRule requestRule = (RequestRule)assistant.peekObject();
-					requestRule.setFileItemCanBeAttribute(fileItemCanBeAttribute);
-				}
-			}
-		});
-		parser.addNodelet("/aspectran/translet/request/multipart/fileItem", new Nodelet() {
-			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
-				String name = attributes.get("name");
-				
-				FileItemRule fir = FileItemRule.newInstance(name);
-				
-				assistant.pushObject(fir);
-			}
-		});
-		parser.addNodelet("/aspectran/translet/request/multipart/fileItem/end()", new Nodelet() {
-			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
-				FileItemRule fir = (FileItemRule)assistant.popObject();
-				RequestRule requestRule = (RequestRule)assistant.peekObject();
-				requestRule.addFileItemRule(fir);
 			}
 		});
 		parser.addNodelet("/aspectran/translet/request/end()", new Nodelet() {

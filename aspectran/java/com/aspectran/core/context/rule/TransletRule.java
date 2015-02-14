@@ -403,10 +403,6 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 				for(ItemRule ir : requestRule.getAttributeItemRuleMap())
 					sb.append("      Attribute ").append(ir).append(CRLF);
 			}
-			if(requestRule.getFileItemRuleMap() != null) {
-				for(FileItemRule fir : requestRule.getFileItemRuleMap())
-					sb.append("      FileItem ").append(fir).append(CRLF);
-			}
 		}
 		
 		if(contentList != null) {

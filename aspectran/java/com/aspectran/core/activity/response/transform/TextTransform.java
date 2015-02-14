@@ -101,7 +101,7 @@ public class TextTransform extends AbstractTransform implements Responsible {
 				responseAdapter.setCharacterEncoding(outputEncoding);
 			
 			TokenExpressor expressor = new TokenExpression(activity);
-			String content = expressor.express(getContentTokens());
+			String content = expressor.expressAsString(getContentTokens());
 
 			if(content != null) {
 				Writer output = responseAdapter.getWriter();

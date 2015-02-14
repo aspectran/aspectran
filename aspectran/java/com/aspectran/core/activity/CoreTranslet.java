@@ -123,13 +123,13 @@ public abstract interface CoreTranslet {
 	
 	public ApplicationAdapter getApplicationAdapter();
 	
-	public Object getRequestAdaptee();
+	public <T> T getRequestAdaptee();
 	
-	public Object getResponseAdaptee();
+	public <T> T getResponseAdaptee();
 	
-	public Object getSessionAdaptee();
+	public <T> T getSessionAdaptee();
 	
-	public Object getBean(String beanId);
+	public <T> T getBean(String beanId);
 	
 	/**
 	 * To respond immediately terminate.

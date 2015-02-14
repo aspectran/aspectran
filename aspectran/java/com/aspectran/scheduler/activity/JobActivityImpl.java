@@ -69,26 +69,6 @@ public class JobActivityImpl extends CoreActivityImpl implements JobActivity {
 	
 	protected void request(CoreTranslet translet) throws RequestException {
 		try {
-			if(requestAdapter != null) {
-				String characterEncoding = requestRule.getCharacterEncoding();
-				
-				if(characterEncoding == null)
-					characterEncoding = (String)getRequestSetting(RequestRule.CHARACTER_ENCODING_SETTING_NAME);
-				
-				if(characterEncoding != null)
-					requestAdapter.setCharacterEncoding(characterEncoding);
-			}
-			
-			if(responseAdapter != null) {
-				String characterEncoding = responseRule.getCharacterEncoding();
-
-				if(characterEncoding == null)
-					characterEncoding = (String)getResponseSetting(ResponseRule.CHARACTER_ENCODING_SETTING_NAME);
-
-				if(characterEncoding != null)
-					responseAdapter.setCharacterEncoding(characterEncoding);
-			}
-	
 	        ValueObjectMap valueMap = parseParameter();
 	        
 	        if(valueMap != null)
@@ -109,9 +89,11 @@ public class JobActivityImpl extends CoreActivityImpl implements JobActivity {
 			if(characterEncoding != null)
 				requestAdapter.setCharacterEncoding(characterEncoding);
 		
+			characterEncoding = responseRule.getCharacterEncoding();
+	
 			if(characterEncoding == null)
 				characterEncoding = (String)getResponseSetting(ResponseRule.CHARACTER_ENCODING_SETTING_NAME);
-
+	
 			if(characterEncoding != null)
 				responseAdapter.setCharacterEncoding(characterEncoding);
 		} catch(UnsupportedEncodingException e) {
@@ -140,9 +122,10 @@ public class JobActivityImpl extends CoreActivityImpl implements JobActivity {
 		return null;
 	}
 	
-	public CoreActivity newCoreActivity() {
+	@SuppressWarnings("unchecked")
+	public <T extends CoreActivity> T newActivity() {
 		JobActivityImpl activity = new JobActivityImpl(getActivityContext(), getRequestAdapter(), getResponseAdapter());
-		return activity;
+		return (T)activity;
 	}
 
 }

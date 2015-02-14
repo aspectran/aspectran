@@ -77,8 +77,8 @@ public class JspViewDispatcher implements ViewDispatcher {
 			if(processResult != null)
 				setAttribute(requestAdapter, processResult, null);
 
-			HttpServletRequest request = (HttpServletRequest)requestAdapter.getAdaptee();
-			HttpServletResponse response = (HttpServletResponse)responseAdapter.getAdaptee();
+			HttpServletRequest request = requestAdapter.getAdaptee();
+			HttpServletResponse response = responseAdapter.getAdaptee();
 			
 			RequestDispatcher requestDispatcher = request.getRequestDispatcher(templatePath);
 			requestDispatcher.forward(request, response);

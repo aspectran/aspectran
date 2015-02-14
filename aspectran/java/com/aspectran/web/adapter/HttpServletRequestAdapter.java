@@ -45,8 +45,9 @@ public class HttpServletRequestAdapter extends AbstractRequestAdapter implements
 		return ((HttpServletRequest)adaptee).getParameterNames();
 	}
 	
-	public Object getAttribute(String name) {
-		return ((HttpServletRequest)adaptee).getAttribute(name);
+	@SuppressWarnings("unchecked")
+	public <T> T getAttribute(String name) {
+		return (T)((HttpServletRequest)adaptee).getAttribute(name);
 	}
 	
 	public void setAttribute(String name, Object o) {

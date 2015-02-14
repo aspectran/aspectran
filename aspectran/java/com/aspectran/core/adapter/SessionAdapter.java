@@ -11,6 +11,13 @@ import com.aspectran.core.context.bean.scope.Scope;
 public interface SessionAdapter {
 
 	/**
+	 * Gets the adaptee.
+	 *
+	 * @return the adaptee
+	 */
+	public <T> T getAdaptee();
+	
+	/**
 	 * Gets the scope.
 	 *
 	 * @return the scope
@@ -18,19 +25,12 @@ public interface SessionAdapter {
 	public Scope getScope();
 	
 	/**
-	 * Gets the adaptee.
-	 *
-	 * @return the adaptee
-	 */
-	public Object getAdaptee();
-	
-	/**
 	 * Gets the attribute.
 	 *
 	 * @param name the name
 	 * @return the attribute
 	 */
-	public Object getAttribute(String name);
+	public <T> T getAttribute(String name);
 
 	/**
 	 * Sets the attribute.

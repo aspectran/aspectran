@@ -44,7 +44,7 @@ import com.aspectran.core.util.ReflectionUtils;
 public abstract class AbstractContextBeanRegistry implements ContextBeanRegistry {
 	
 	/** The logger. */
-	private final Logger logger = LoggerFactory.getLogger(AbstractBeanRegistryBak.class);
+	private final Logger logger = LoggerFactory.getLogger(AbstractContextBeanRegistry.class);
 	
 	protected final ActivityContext context;
 

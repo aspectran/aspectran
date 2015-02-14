@@ -35,8 +35,6 @@ public class RequestRule implements AspectAdviceSupport {
 
 	private ItemRuleMap attributeItemRuleMap;
 
-	private FileItemRuleMap fileItemRuleMap;
-	
 	private AspectAdviceRuleRegistry aspectAdviceRuleRegistry;
 	
 	public RequestRule() {
@@ -139,24 +137,6 @@ public class RequestRule implements AspectAdviceSupport {
 	}
 
 	/**
-	 * Gets the file item rule map.
-	 * 
-	 * @return the file item rule map
-	 */
-	public FileItemRuleMap getFileItemRuleMap() {
-		return fileItemRuleMap;
-	}
-
-	/**
-	 * Sets the file item rule map.
-	 * 
-	 * @param fileItemRuleMap the new file item rule map
-	 */
-	public void setFileItemRuleMap(FileItemRuleMap fileItemRuleMap) {
-		this.fileItemRuleMap = fileItemRuleMap;
-	}
-	
-	/**
 	 * Adds the parameter rule for attributes.
 	 * 
 	 * @param attributeItemRule the parameter rule for attributes
@@ -168,18 +148,6 @@ public class RequestRule implements AspectAdviceSupport {
 		attributeItemRuleMap.putItemRule(attributeItemRule);
 	}
 	
-	/**
-	 * Adds the file item rule.
-	 * 
-	 * @param fileItemRule the file item rule
-	 */
-	public void addFileItemRule(FileItemRule fileItemRule) {
-		if(fileItemRuleMap == null) 
-			fileItemRuleMap = new FileItemRuleMap();
-		
-		fileItemRuleMap.putFileItemRule(fileItemRule);
-	}
-
 	public AspectAdviceRuleRegistry getAspectAdviceRuleRegistry() {
 		return aspectAdviceRuleRegistry;
 	}
@@ -242,19 +210,6 @@ public class RequestRule implements AspectAdviceSupport {
 				sb.append(name);
 			}
 
-			sb.append("]");
-		}
-		if(fileItemRuleMap != null) {
-			sb.append(", fileItems=[");
-			int sbLength = sb.length();
-			
-			for(String name : fileItemRuleMap.keySet()) {
-				if(sb.length() > sbLength)
-					sb.append(", ");
-				
-				sb.append(name);
-			}
-			
 			sb.append("]");
 		}
 		sb.append("}");

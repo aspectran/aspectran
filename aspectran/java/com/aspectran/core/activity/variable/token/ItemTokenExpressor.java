@@ -15,8 +15,6 @@
  */
 package com.aspectran.core.activity.variable.token;
 
-import java.util.Map;
-
 import com.aspectran.core.activity.variable.ValueObjectMap;
 import com.aspectran.core.context.rule.ItemRuleMap;
 
@@ -44,7 +42,7 @@ public interface ItemTokenExpressor {
 	 * 
 	 * @return the value map
 	 */
-	public void express(ItemRuleMap itemRuleMap, Map<String, Object> valueMap);
+	public void express(ItemRuleMap itemRuleMap, ValueObjectMap valueMap);
 	
 	/**
 	 * Sets the token value handler.

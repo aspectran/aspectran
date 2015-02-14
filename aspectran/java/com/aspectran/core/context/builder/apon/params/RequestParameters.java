@@ -10,7 +10,6 @@ public class RequestParameters extends AbstractParameters implements Parameters 
 	public static final ParameterDefine method;
 	public static final ParameterDefine characterEncoding;
 	public static final ParameterDefine attributes;
-	public static final ParameterDefine multipart;
 	
 	private static final ParameterDefine[] parameterDefines;
 
@@ -18,13 +17,11 @@ public class RequestParameters extends AbstractParameters implements Parameters 
 		method = new ParameterDefine("method", ParameterValueType.STRING);
 		characterEncoding = new ParameterDefine("characterEncoding", ParameterValueType.STRING);
 		attributes = new ParameterDefine("attribute", new ItemParameters(), true);
-		multipart = new ParameterDefine("multipart", new MultipartParameters());
 		
 		parameterDefines = new ParameterDefine[] {
 				method,
 				characterEncoding,
-				attributes,
-				multipart
+				attributes
 		};
 	}
 	
