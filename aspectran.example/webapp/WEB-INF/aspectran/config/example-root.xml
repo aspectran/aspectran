@@ -194,7 +194,15 @@ The length of the output string is @{sample^length:0} bytes.
 	</translet>
 
 	<translet name="goNaver">
-		<redirect url="http://www.naver.com"/>
+		<redirect url="http://search.naver.com/search.naver">
+			<parameter>
+				<item name="where">nexearch</item>
+				<item name="query">서울</item>
+				<item name="sm">top_hty</item>
+				<item name="fbm">1</item>
+				<item name="ie">utf8</item>
+			</parameter>
+		</redirect>
 	</translet>
 	
 </aspectran>

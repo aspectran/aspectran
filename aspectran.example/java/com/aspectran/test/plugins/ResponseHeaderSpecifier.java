@@ -5,7 +5,6 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.aspectran.core.var.ArgumentMap;
 import com.aspectran.web.activity.WebTranslet;
 
 /**
@@ -15,11 +14,11 @@ import com.aspectran.web.activity.WebTranslet;
  */
 public class ResponseHeaderSpecifier {
 	
-	public void execute(WebTranslet translet, ArgumentMap arguments) throws Exception {
-		HttpServletRequest request = translet.getHttpServletRequest();
-		HttpServletResponse response = translet.getHttpServletResponse();
+	public void execute(WebTranslet translet, Map<String, String> headers) throws Exception {
+		HttpServletRequest request = translet.getRequestAdaptee();
+		HttpServletResponse response = translet.getResponseAdaptee();
 
-		for(Map.Entry<String, Object> entry : arguments.entrySet()) {
+		for(Map.Entry<String, String> entry : headers.entrySet()) {
 			String name = entry.getKey();
 			String value = entry.getValue().toString();
 			
