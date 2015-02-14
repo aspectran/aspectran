@@ -15,9 +15,6 @@
  */
 package com.aspectran.web.activity;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import com.aspectran.core.activity.CoreTranslet;
 
 /**
@@ -26,9 +23,5 @@ import com.aspectran.core.activity.CoreTranslet;
  * </p>
  */
 public interface WebTranslet extends CoreTranslet {
-
-	public HttpServletRequest getHttpServletRequest();
-
-	public HttpServletResponse getHttpServletResponse();
 
 }

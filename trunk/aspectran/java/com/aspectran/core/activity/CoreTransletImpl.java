@@ -176,21 +176,21 @@ public class CoreTransletImpl implements CoreTranslet {
 		return activity.getActivityContext().getApplicationAdapter();
 	}
 	
-	public Object getRequestAdaptee() {
+	public <T> T getRequestAdaptee() {
 		if(getRequestAdapter() != null)
 			return getRequestAdapter().getAdaptee();
 		else
 			return null;
 	}
 	
-	public Object getResponseAdaptee() {
+	public <T> T getResponseAdaptee() {
 		if(getResponseAdapter() != null)
 			return getResponseAdapter().getAdaptee();
 		else
 			return null;
 	}
 
-	public Object getSessionAdaptee() {
+	public <T> T getSessionAdaptee() {
 		if(getSessionAdapter() != null)
 			return getSessionAdapter().getAdaptee();
 		else
@@ -212,7 +212,7 @@ public class CoreTransletImpl implements CoreTranslet {
 	 * @param id the id
 	 * @return the bean
 	 */
-	public Object getBean(String id) {
+	public <T> T getBean(String id) {
 		return activity.getBean(id);
 	}
 

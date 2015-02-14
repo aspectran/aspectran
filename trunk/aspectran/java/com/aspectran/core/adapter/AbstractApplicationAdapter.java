@@ -15,11 +15,11 @@ import com.aspectran.core.service.AspectranServiceController;
 */
 public abstract class AbstractApplicationAdapter implements ApplicationAdapter {
 	
-	protected ApplicationScope scope = new ApplicationScope();
-	
 	/** The adaptee. */
 	protected Object adaptee;
-	
+
+	protected ApplicationScope scope = new ApplicationScope();
+
 	protected Map<ActivityContext, AspectranServiceController> aspectranServiceControllers = Collections.synchronizedMap(new HashMap<ActivityContext, AspectranServiceController>());
 	
 	/**
@@ -31,19 +31,15 @@ public abstract class AbstractApplicationAdapter implements ApplicationAdapter {
 		this.adaptee = adaptee;
 	}
 	
+	@SuppressWarnings("unchecked")
+	public <T> T getAdaptee() {
+		return (T)adaptee;
+	}
+	
 	public ApplicationScope getScope() {
 		return scope;
 	}
 
-	public Object getAdaptee() {
-		return adaptee;
-	}
-	
-	public abstract Object getAttribute(String name);
-
-	public abstract void setAttribute(String name, Object value);
-	
-	
 	public Map<ActivityContext, AspectranServiceController> getActivityContextServiceHandlers() {
 		return aspectranServiceControllers;
 	}

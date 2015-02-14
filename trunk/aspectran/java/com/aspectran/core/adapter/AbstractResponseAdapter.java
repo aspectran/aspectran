@@ -1,12 +1,5 @@
 package com.aspectran.core.adapter;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
-import java.io.Writer;
-
-import com.aspectran.core.activity.CoreActivity;
-import com.aspectran.core.context.rule.RedirectResponseRule;
 
 /**
  * The Class AbstractResponseAdapter.
@@ -27,24 +20,9 @@ public abstract class AbstractResponseAdapter implements ResponseAdapter {
 		this.adaptee = adaptee;
 	}
 	
-	public Object getAdaptee() {
-		return adaptee;
+	@SuppressWarnings("unchecked")
+	public <T> T getAdaptee() {
+		return (T)adaptee;
 	}
-	
-	public abstract String getCharacterEncoding();
-	
-	public abstract void setCharacterEncoding(String characterEncoding) throws UnsupportedEncodingException;
-	
-	public abstract String getContentType();
-
-	public abstract void setContentType(String contentType);
-	
-	public abstract OutputStream getOutputStream() throws IOException;
-	
-	public abstract Writer getWriter() throws IOException;
-	
-	public abstract void redirect(String reqeustUri) throws IOException;
-	
-	public abstract String redirect(CoreActivity activity, RedirectResponseRule redirectResponseRule) throws IOException;
 	
 }

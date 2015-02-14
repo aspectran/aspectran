@@ -34,8 +34,7 @@ public class WebAspectranService extends CoreAspectranService {
 	
 	public static final String ASPECTRAN_CONFIG_PARAM = "aspectran:config";
 
-	public static final String WEB_APPLICATION_ADAPTER_ATTRIBUTE = 
-			WebApplicationAdapter.class.getName() + ".WEB_APPLICATION_ADAPTER";
+	public static final String WEB_APPLICATION_ADAPTER_ATTRIBUTE =  WebApplicationAdapter.class.getName() + ".WEB_APPLICATION_ADAPTER";
 
 	private static final String DEFAULT_ROOT_CONTEXT = "/WEB-INF/aspectran/root.xml";
 	

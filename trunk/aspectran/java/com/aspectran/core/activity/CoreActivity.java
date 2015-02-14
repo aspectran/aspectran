@@ -45,7 +45,9 @@ public interface CoreActivity {
 	public ResponseAdapter getResponseAdapter();
 	
 	public SessionAdapter getSessionAdapter();
-	
+
+	public ApplicationAdapter getApplicationAdapter();
+
 	public Class<? extends CoreTranslet> getTransletInterfaceClass();
 	
 	public Class<? extends CoreTransletImpl> getTransletImplementClass();
@@ -78,9 +80,7 @@ public interface CoreActivity {
 	
 	public Responsible getResponse();
 	
-	public Object getBean(String id);
-	
-	public ApplicationAdapter getApplicationAdapter();
+	public <T> T getBean(String id);
 	
 	public String getTransletName();
 	
@@ -88,7 +88,7 @@ public interface CoreActivity {
 	
 	public void setRequestScope(Scope requestScope);
 	
-	public CoreActivity newCoreActivity();
+	public <T extends CoreActivity> T newActivity();
 	
 	public BeanRegistry getBeanRegistry();
 	

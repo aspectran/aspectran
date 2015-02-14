@@ -18,7 +18,7 @@ public interface RequestAdapter {
 	 *
 	 * @return the adaptee
 	 */
-	public Object getAdaptee();
+	public <T> T getAdaptee();
 
 	/**
 	 * Gets the character encoding.
@@ -58,7 +58,7 @@ public interface RequestAdapter {
 	 * @param name the name
 	 * @return the attribute
 	 */
-	public Object getAttribute(String name);
+	public <T> T getAttribute(String name);
 	
 	/**
 	 * Stores an attribute in this request.

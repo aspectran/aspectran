@@ -111,10 +111,10 @@ public class WebActivityImpl extends CoreActivityImpl implements WebActivity {
 			if(requestWrapper != null)
 				requestAdapter.setMaxLengthExceeded(requestWrapper.isMaxLengthExceeded());
 
-	        ValueObjectMap valueMap = parseParameter(requestWrapper);
+	        ValueObjectMap voMap = parseParameter(requestWrapper);
 	        
-	        if(valueMap != null)
-	        	translet.setDeclaredAttributeMap(valueMap);
+	        if(voMap != null)
+	        	translet.setDeclaredAttributeMap(voMap);
         
 		} catch(Exception e) {
 			throw new RequestException("Could not parse multipart servlet request.", e);
@@ -137,7 +137,7 @@ public class WebActivityImpl extends CoreActivityImpl implements WebActivity {
 			if(characterEncoding != null)
 				request.setCharacterEncoding(characterEncoding);
 		
-			responseRule.getCharacterEncoding();
+			characterEncoding = responseRule.getCharacterEncoding();
 	
 			if(characterEncoding == null)
 				characterEncoding = (String)getResponseSetting(ResponseRule.CHARACTER_ENCODING_SETTING_NAME);
@@ -185,7 +185,7 @@ public class WebActivityImpl extends CoreActivityImpl implements WebActivity {
 				String name = itemRule.getName();
 				
 				if(requestWrapper != null) {
-					if(itemRule.getValueType() == ItemValueType.MULTIPART_FILE && valueMap.get(name) == null) {
+					if(itemRule.getValueType() == ItemValueType.MULTIPART_FILE) {
 						Object value = requestWrapper.getFileParameter(name, itemRule);
 						valueMap.put(name, value);
 						request.setAttribute(name, value);
@@ -226,9 +226,10 @@ public class WebActivityImpl extends CoreActivityImpl implements WebActivity {
 		return null;
 	}
 	
-	public CoreActivity newCoreActivity() {
+	@SuppressWarnings("unchecked")
+	public <T extends CoreActivity> T newActivity() {
 		WebActivityImpl webActivity = new WebActivityImpl(getActivityContext(), request, response);
-		return webActivity;
+		return (T)webActivity;
 	}
 	
 	/* (non-Javadoc)

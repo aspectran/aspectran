@@ -15,9 +15,6 @@
  */
 package com.aspectran.web.activity;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import com.aspectran.core.activity.CoreActivity;
 import com.aspectran.core.activity.CoreTransletImpl;
 
@@ -33,20 +30,6 @@ public class WebTransletImpl extends CoreTransletImpl implements WebTranslet {
 	 */
 	public WebTransletImpl(CoreActivity activity) {
 		super(activity);
-	}
-
-	/* (non-Javadoc)
-	 * @see com.aspectran.web.activity.WebTranslet#getHttpServletRequest()
-	 */
-	public HttpServletRequest getHttpServletRequest() {
-		return (HttpServletRequest)getRequestAdapter().getAdaptee();
-	}
-
-	/* (non-Javadoc)
-	 * @see com.aspectran.web.activity.WebTranslet#getHttpServletResponse()
-	 */
-	public HttpServletResponse getHttpServletResponse() {
-		return (HttpServletResponse)getResponseAdapter().getAdaptee();
 	}
 	
 }

@@ -26,8 +26,9 @@ public class WebApplicationAdapter extends AbstractApplicationAdapter implements
 		this.applicationBasePath = servletContext.getRealPath("/");
 	}
 
-	public Object getAttribute(String name) {
-		return ((ServletContext)adaptee).getAttribute(name);
+	@SuppressWarnings("unchecked")
+	public <T> T getAttribute(String name) {
+		return (T)((ServletContext)adaptee).getAttribute(name);
 	}
 
 	public void setAttribute(String name, Object value) {

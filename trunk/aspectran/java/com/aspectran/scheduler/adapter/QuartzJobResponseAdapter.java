@@ -25,7 +25,7 @@ public class QuartzJobResponseAdapter extends AbstractResponseAdapter implements
 	public QuartzJobResponseAdapter(JobDetail jobDetail) {
 		super(null);
 		
-		this.jobDetail = jobDetail;
+		this.jobDetail = (JobDetail)jobDetail;
 	}
 	
 	public String getCharacterEncoding() {

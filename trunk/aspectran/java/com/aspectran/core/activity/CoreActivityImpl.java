@@ -887,9 +887,10 @@ public class CoreActivityImpl implements CoreActivity {
 		return context;
 	}
 	
-	public CoreActivity newCoreActivity() {
+	@SuppressWarnings("unchecked")
+	public <T extends CoreActivity> T newActivity() {
 		CoreActivity coreActivity = new CoreActivityImpl(getActivityContext());
-		return coreActivity;
+		return (T)coreActivity;
 	}
 
 	/**
@@ -905,7 +906,7 @@ public class CoreActivityImpl implements CoreActivity {
 		return context.getContextBeanRegistry();
 	}
 	
-	public Object getBean(String id) {
+	public <T> T getBean(String id) {
 		return context.getContextBeanRegistry().getBean(id);
 	}
 	

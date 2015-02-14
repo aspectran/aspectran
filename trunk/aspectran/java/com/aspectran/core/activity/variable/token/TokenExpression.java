@@ -18,8 +18,8 @@ package com.aspectran.core.activity.variable.token;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -83,16 +83,15 @@ public class TokenExpression implements TokenExpressor {
 		if(tokenType == TokenType.TEXT) {
 			value = token.getDefaultText();
 		} else	if(tokenType == TokenType.PARAMETER) {
-			value = getParameterValue(token.getName(), token.getDefaultText());
+			value = getParameter(token.getName(), token.getDefaultText());
 		} else	if(tokenType == TokenType.ATTRIBUTE) {
 			value = getAttribute(token);
 		} else	if(tokenType == TokenType.REFERENCE_BEAN) {
-			//TODO
 			value = referenceBean(token);
 		}
 
-		if(value != null && tokenValueHandler != null)
-			return tokenValueHandler.handle(tokenType, value);
+//		if(value != null && tokenValueHandler != null)
+//			return tokenValueHandler.handle(tokenType, value);
 		
 		return value;
 	}
@@ -104,24 +103,53 @@ public class TokenExpression implements TokenExpressor {
 	 * 
 	 * @return the string
 	 */
-	public String express(Token[] tokens) {
+	public Object express(Token[] tokens) {
+		if(tokens == null || tokens.length == 0)
+			return null;
+
+		if(tokens.length > 1) {
+			StringBuilder sb = new StringBuilder();
+			
+			for(Token t : tokens) {
+				Object value = express(t);
+				
+				if(value != null)
+					sb.append(value.toString());
+			}
+			
+			return sb.toString();
+		} else {
+			return express(tokens[0]);
+		}
+	}
+
+	public String expressAsString(Token[] tokens) {
+		Object value = express(tokens);
+		
 		if(tokens == null)
 			return null;
 		
-		if(tokens.length == 0)
-			return StringUtils.EMPTY;
-		
-		StringBuilder sb = new StringBuilder();
-		
-		for(Token t : tokens) {
-			Object value = express(t);
-			
-			if(value != null)
-				sb.append(value.toString());
-		}
-		
-		return sb.toString();
+		return value.toString();
 	}
+
+	//	public String express(Token[] tokens) {
+//		if(tokens == null)
+//			return null;
+//		
+//		if(tokens.length == 0)
+//			return StringUtils.EMPTY;
+//		
+//		StringBuilder sb = new StringBuilder();
+//		
+//		for(Token t : tokens) {
+//			Object value = express(t);
+//			
+//			if(value != null)
+//				sb.append(value.toString());
+//		}
+//		
+//		return sb.toString();
+//	}
 	
 	/**
 	 * Express as String.
@@ -131,32 +159,27 @@ public class TokenExpression implements TokenExpressor {
 	 * 
 	 * @return the string
 	 */
+	public Object express(String parameterName, Token[] tokens) {
+		if(tokens == null || tokens.length == 0)
+			return getParameter(parameterName, null);
+		
+		Object value = express(tokens);
+		
+		if(value == null)
+			return null;
+		
+		return value;
+	}
+
 	public String expressAsString(String parameterName, Token[] tokens) {
-		if(tokens == null) {
-			Token t = new Token(TokenType.PARAMETER, parameterName);
-			return (String)express(t);
-		}
+		Object value = express(parameterName, tokens);
 		
-		return express(tokens);
-	}
-
-	/**
-	 * Express as Object.
-	 * 
-	 * @param parameterName the parameter name
-	 * @param token the token
-	 * 
-	 * @return the object
-	 */
-	public Object expressAsObject(String parameterName, Token token) {
-		if(token == null) {
-			Token t = new Token(TokenType.ATTRIBUTE, parameterName);
-			return express(t);
-		}
+		if(value == null)
+			return null;
 		
-		return express(token);
+		return value.toString();
 	}
-
+	
 	/**
 	 * Express as List.
 	 * 
@@ -166,22 +189,13 @@ public class TokenExpression implements TokenExpressor {
 	 * @return the object[]
 	 */
 	public List<Object> expressAsList(String parameterName, List<Token[]> tokensList) {
-		if(tokensList == null || tokensList.size() == 0)
-			return getParameterValueAsList(parameterName);
+		if(tokensList == null || tokensList.isEmpty())
+			return cast(getParameterAsList(parameterName));
 		
 		List<Object> valueList = new ArrayList<Object>(tokensList.size());
 
 		for(Token[] tokens : tokensList) {
-			Object value = null;
-
-			if(tokens == null || tokens.length == 0) {
-				value = expressAsObject(parameterName, null);
-			} else if(tokens.length == 1) {
-				value = expressAsObject(parameterName, tokens[0]);
-			} else {
-				value = expressAsString(parameterName, tokens);
-			}
-
+			Object value = express(parameterName, tokens);
 			valueList.add(value);
 		}
 		
@@ -197,22 +211,13 @@ public class TokenExpression implements TokenExpressor {
 	 * @return the object[]
 	 */
 	public Set<Object> expressAsSet(String parameterName, Set<Token[]> tokensSet) {
-		if(tokensSet == null || tokensSet.size() == 0)
-			return getParameterValueAsSet(parameterName);
+		if(tokensSet == null || tokensSet.isEmpty())
+			return cast(getParameterAsSet(parameterName));
 		
 		Set<Object> valueSet = new HashSet<Object>(tokensSet.size());
 
 		for(Token[] tokens : tokensSet) {
-			Object value = null;
-
-			if(tokens == null || tokens.length == 0) {
-				value = expressAsObject(parameterName, null);
-			} else if(tokens.length == 1) {
-				value = expressAsObject(parameterName, tokens[0]);
-			} else {
-				value = expressAsString(parameterName, tokens);
-			}
-
+			Object value = express(parameterName, tokens);
 			valueSet.add(value);
 		}
 		
@@ -228,16 +233,21 @@ public class TokenExpression implements TokenExpressor {
 	 * @return the map< string, object>
 	 */
 	public Map<String, Object> expressAsMap(String parameterName, Map<String, Token[]> tokensMap) {
-		Map<String, Object> valueMap = new LinkedHashMap<String, Object>();
-
-		if(tokensMap == null) {
-			Token t = new Token(TokenType.PARAMETER, parameterName);
-			valueMap.put(parameterName, express(t));
+		if(tokensMap == null || tokensMap.isEmpty()) {
+			String value = getParameter(parameterName, null);
+			
+			if(value == null)
+				return null;
+			
+			Map<String, Object> valueMap = new LinkedHashMap<String, Object>();
+			valueMap.put(parameterName, value);
 			return valueMap;
 		}
 		
+		Map<String, Object> valueMap = new LinkedHashMap<String, Object>();
+		
 		for(Map.Entry<String, Token[]> entry : tokensMap.entrySet()) {
-			Object value = express(entry.getValue());
+			Object value = express(entry.getKey(), entry.getValue());
 			valueMap.put(entry.getKey(), value);
 		}
 		
@@ -253,39 +263,98 @@ public class TokenExpression implements TokenExpressor {
 	 * @return the Properties
 	 */
 	public Properties expressAsProperties(String parameterName, Properties tokensProp) {
-		Properties valueProp = new Properties();
-		
-		if(tokensProp == null) {
-			Token t = new Token(TokenType.PARAMETER, parameterName);
-			valueProp.put(parameterName, express(t));
-			return valueProp;
+		if(tokensProp == null || tokensProp.isEmpty()) {
+			String value = getParameter(parameterName, null);
+
+			if(value == null)
+				return null;
+
+			Properties prop = new Properties();
+			prop.put(parameterName, value);
+			return prop;
 		}
 		
-		Iterator<Map.Entry<Object, Object>> iter = tokensProp.entrySet().iterator();
-		
-		while(iter.hasNext()) {
-			Map.Entry<Object, Object> entry = iter.next();
-			Object value = express((Token[])entry.getValue());
-			valueProp.put(entry.getKey(), value);
+		Properties prop = new Properties();
+
+		for(Map.Entry<Object, Object> entry : tokensProp.entrySet()) {
+			Object value = express(entry.getKey().toString(), (Token[])entry.getValue());
+			prop.put(entry.getKey(), value);
 		}
 		
-		return valueProp;
+		return prop;
+	}
+	
+	/**
+	 * Gets the parameter values.
+	 * 
+	 * @param name the name
+	 * 
+	 * @return the parameter values
+	 */
+	private List<String> getParameterAsList(String name) {
+		String[] values = getParameterValues(name);
+		
+		if(values == null)
+			return null;
+		
+		List<String> valueList = new ArrayList<String>(values.length);
+		
+		for(int i = 0; i < values.length; i++) {
+			valueList.add(values[i]);
+		}
+		
+		return valueList;
+	}
+	
+	/**
+	 * Gets the parameter values.
+	 * 
+	 * @param name the name
+	 * 
+	 * @return the parameter values
+	 */
+	private Set<String> getParameterAsSet(String name) {
+		String[] values = getParameterValues(name);
+		
+		if(values == null)
+			return null;
+
+		Set<String> valueSet = new LinkedHashSet<String>(values.length);
+		
+		for(int i = 0; i < values.length; i++) {
+			valueSet.add(values[i]);
+		}
+		
+		return valueSet;
 	}
 
-	protected Object referenceBean(Token token) {
-		Object value = beanRegistry.getBean(token.getName());
+	/**
+	 * Gets the parameter.
+	 * 
+	 * @param name the name
+	 * @param defaultValue the default value
+	 * 
+	 * @return the value of parameter
+	 */
+	protected String getParameter(String name, String defaultValue) {
+		String value = null;
 		
-		if(value != null) {
-			if(token.getGetterName() != null)
-				value = invokeBeanProperty(value, token.getGetterName());
-		}
+		if(requestAdapter != null && name != null)
+			value = requestAdapter.getParameter(name);
 		
 		if(value == null)
-			return token.getDefaultText();
+			return defaultValue;
 		
 		return value;
 	}
+	
+	protected String[] getParameterValues(String name) {
+		if(requestAdapter == null)
+			return null;
 
+		return requestAdapter.getParameterValues(name);
+	}
+	
 	/**
 	 * Gets the attribute object from request attributes or action results.
 	 * 
@@ -310,70 +379,20 @@ public class TokenExpression implements TokenExpressor {
 		return value;
 	}
 	
-	/**
-	 * Gets the parameter.
-	 * 
-	 * @param name the name
-	 * @param defaultValue the default value
-	 * 
-	 * @return the value of parameter
-	 */
-	private Object getParameterValue(String name, String defaultValue) {
-		Object value = null;
+	protected Object referenceBean(Token token) {
+		Object value = beanRegistry.getBean(token.getName());
 		
-		if(requestAdapter != null && name != null)
-			value = requestAdapter.getParameter(name);
+		if(value != null) {
+			if(token.getGetterName() != null)
+				value = invokeBeanProperty(value, token.getGetterName());
+		}
 		
 		if(value == null)
-			return defaultValue;
+			return token.getDefaultText();
 		
 		return value;
 	}
-	
-	/**
-	 * Gets the parameter values.
-	 * 
-	 * @param name the name
-	 * 
-	 * @return the parameter values
-	 */
-	private List<Object> getParameterValueAsList(String name) {
-		if(requestAdapter == null)
-			return null;
 
-		String[] values = requestAdapter.getParameterValues(name);
-		
-		List<Object> valueList = new ArrayList<Object>(values.length);
-		
-		for(int i = 0; i < values.length; i++) {
-			valueList.add(values[i]);
-		}
-		
-		return valueList;
-	}
-	
-	/**
-	 * Gets the parameter values.
-	 * 
-	 * @param name the name
-	 * 
-	 * @return the parameter values
-	 */
-	private Set<Object> getParameterValueAsSet(String name) {
-		if(requestAdapter == null)
-			return null;
-		
-		String[] values = requestAdapter.getParameterValues(name);
-		
-		Set<Object> valueSet = new HashSet<Object>(values.length);
-		
-		for(int i = 0; i < values.length; i++) {
-			valueSet.add(values[i]);
-		}
-		
-		return valueSet;
-	}
-	
 	/**
 	 * Invoke bean property.
 	 * 
@@ -493,6 +512,22 @@ public class TokenExpression implements TokenExpressor {
 		} catch(Exception e) {
 			throw new InvocationTargetException(e, "Error getting ordinal list from JavaBean. Cause: " + e);
 		}
+	}
+	
+	/**
+	 * This method will cast List<"?"> to List<T> assuming ? is castable to T.
+	 */
+	@SuppressWarnings("unchecked")
+	protected static <T> List<T> cast(List<?> list){
+        return (List<T>)list;
+	}
+	
+	/**
+	 * This method will cast Set<"?"> to Set<T> assuming ? is castable to T.
+	 */
+	@SuppressWarnings("unchecked")
+	protected static <T> Set<T> cast(Set<?> set){
+		return (Set<T>)set;
 	}
 	
 }

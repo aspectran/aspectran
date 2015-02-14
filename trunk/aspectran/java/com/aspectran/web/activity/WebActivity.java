@@ -15,9 +15,6 @@
  */
 package com.aspectran.web.activity;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import com.aspectran.core.activity.CoreActivity;
 
 /**
@@ -27,9 +24,5 @@ import com.aspectran.core.activity.CoreActivity;
  * <p>Created: 2008. 03. 22 오후 5:48:09</p>
  */
 public interface WebActivity extends CoreActivity {
-	
-	public HttpServletRequest getHttpServletRequest();
-
-	public HttpServletResponse getHttpServletResponse();
 	
 }

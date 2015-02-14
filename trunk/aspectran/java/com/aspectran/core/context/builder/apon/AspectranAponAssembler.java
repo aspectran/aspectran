@@ -32,7 +32,6 @@ import com.aspectran.core.context.builder.apon.params.ExceptionRaizedParameters;
 import com.aspectran.core.context.builder.apon.params.ForwardParameters;
 import com.aspectran.core.context.builder.apon.params.JobParameters;
 import com.aspectran.core.context.builder.apon.params.JoinpointParameters;
-import com.aspectran.core.context.builder.apon.params.MultipartParameters;
 import com.aspectran.core.context.builder.apon.params.RedirectParameters;
 import com.aspectran.core.context.builder.apon.params.RequestParameters;
 import com.aspectran.core.context.builder.apon.params.ResponseByContentTypeParameters;
@@ -182,7 +181,6 @@ public class AspectranAponAssembler {
 		String method = requestParameters.getString(RequestParameters.method);
 		String characterEncoding = requestParameters.getString(RequestParameters.characterEncoding);
 		List<Parameters> attributeParamsList = requestParameters.getParametersList(RequestParameters.attributes);
-		Parameters multipartParameters = requestParameters.getParameters(RequestParameters.multipart);
 		
 		RequestRule requestRule = RequestRule.newInstance(method, characterEncoding);
 
@@ -191,22 +189,8 @@ public class AspectranAponAssembler {
 			requestRule.setAttributeItemRuleMap(attributeItemRuleMap);
 		}
 
-		Boolean fileItemCanBeAttribute = multipartParameters.getBoolean(MultipartParameters.attribute);
-		requestRule.setFileItemCanBeAttribute(fileItemCanBeAttribute);
-		
-		multipartParameters.getBoolean(MultipartParameters.fileItems);
-		
-		
 		return requestRule;
 	}
-	
-	public void assembleMultipartRule(Parameters multipartParameters) {
-		Boolean attribute = multipartParameters.getBoolean(MultipartParameters.attribute);
-		List<Parameters> fileItemParamsList = multipartParameters.getParametersList(MultipartParameters.fileItems);
-		
-	}
-	
-
 	
 	public void assembleBeanRule(Parameters beanParameters) throws ClassNotFoundException, IOException {
 		String id = beanParameters.getString(BeanParameters.id);

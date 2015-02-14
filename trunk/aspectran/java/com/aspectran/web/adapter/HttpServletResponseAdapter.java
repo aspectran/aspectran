@@ -78,33 +78,37 @@ public class HttpServletResponseAdapter extends AbstractResponseAdapter implemen
 	
 	public String redirect(CoreActivity activity, RedirectResponseRule redirectResponseRule) throws IOException {
 		String characterEncoding = ((HttpServletResponse)adaptee).getCharacterEncoding();
+		String url = null;
+		int questionPos = -1;
 		
 		Token[] urlTokens = redirectResponseRule.getUrlTokens();
-		TokenValueHandler handler = new ParameterValueEncoder(characterEncoding);
+		//TokenValueHandler handler = new ParameterValueEncoder(characterEncoding);
 
 		if(urlTokens != null && urlTokens.length > 0) {
 			TokenExpressor expressor = new TokenExpression(activity);
-			expressor.setTokenValueHandler(handler);
-			String url = expressor.express(urlTokens);
-			redirect(url);
-			return url;
+			//expressor.setTokenValueHandler(handler);
+			url = expressor.expressAsString(urlTokens);
+		} else {
+			url = redirectResponseRule.getUrl();
 		}
 
 		StringBuilder sb = new StringBuilder(256);
 
-		if(redirectResponseRule.getTransletName() != null) {
+		if(url != null) {
+			sb.append(url);
+			questionPos = url.indexOf(QUESTION_CHAR);
+		} else if(redirectResponseRule.getTransletName() != null) {
 			sb.append(redirectResponseRule.getTransletName());
-		} else if(redirectResponseRule.getUrl() != null) {
-			sb.append(redirectResponseRule.getUrl());
 		}
-
+		
 		if(redirectResponseRule.getParameterItemRuleMap() != null) {
 			ItemTokenExpressor expressor = new ItemTokenExpression(activity);
-			expressor.setTokenValueHandler(handler);
+			//expressor.setTokenValueHandler(handler);
 			ValueObjectMap valueMap = expressor.express(redirectResponseRule.getParameterItemRuleMap());
 
 			if(valueMap != null && valueMap.size() > 0) {
-				sb.append(QUESTION_CHAR);
+				if(questionPos == -1)
+					sb.append(QUESTION_CHAR);
 
 				String name = null;
 				Object value = null;
@@ -120,6 +124,7 @@ public class HttpServletResponseAdapter extends AbstractResponseAdapter implemen
 						sb.append(name).append(EQUAL_CHAR);
 
 						if(value != null) {
+							value = URLEncoder.encode(value.toString(), characterEncoding);
 							sb.append(value.toString());
 						}
 					}
@@ -127,7 +132,7 @@ public class HttpServletResponseAdapter extends AbstractResponseAdapter implemen
 			}
 		}
 
-		String url = sb.toString();
+		url = sb.toString();
 		redirect(url);
 		
 		return url;

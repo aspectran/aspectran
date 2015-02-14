@@ -13,6 +13,6 @@ package com.aspectran.core.context.bean;
  */
 public interface BeanRegistry {
 
-	public Object getBean(String id);
+	public <T> T getBean(String id);
 	
 }

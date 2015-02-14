@@ -21,7 +21,7 @@ public interface ResponseAdapter {
 	 *
 	 * @return the adaptee
 	 */
-	public Object getAdaptee();
+	public <T> T getAdaptee();
 	
 	/**
 	 * Gets the character encoding.

@@ -43,10 +43,11 @@ public final class VoidActivityImpl extends CoreActivityImpl implements CoreActi
 	protected void request(CoreTranslet translet) throws RequestException {
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Override
-	public CoreActivity newCoreActivity() {
+	public <T extends CoreActivity> T newActivity() {
 		VoidActivityImpl voidActivity = new VoidActivityImpl(getActivityContext());
-		return voidActivity;
+		return (T)voidActivity;
 	}
 
 	@Override

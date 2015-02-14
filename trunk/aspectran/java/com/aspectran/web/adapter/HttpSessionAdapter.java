@@ -26,8 +26,9 @@ public class HttpSessionAdapter extends AbstractSessionAdapter implements Sessio
 		super(session);
 	}
 	
-	public Object getAttribute(String name) {
-		return ((HttpSession)adaptee).getAttribute(name);
+	@SuppressWarnings("unchecked")
+	public <T> T getAttribute(String name) {
+		return (T)((HttpSession)adaptee).getAttribute(name);
 	}
 
 	public void setAttribute(String name, Object value) {

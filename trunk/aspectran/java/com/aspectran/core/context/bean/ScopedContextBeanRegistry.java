@@ -32,22 +32,23 @@ public class ScopedContextBeanRegistry extends AbstractContextBeanRegistry {
 		super(context, beanRuleMap, beanProxyMode);
 	}
 	
-	public Object getBean(String id) {
+	@SuppressWarnings("unchecked")
+	public <T> T getBean(String id) {
 		BeanRule beanRule = beanRuleMap.get(id);
 		
 		if(beanRule == null)
 			throw new BeanNotFoundException(id);
 		
 		if(beanRule.getScopeType() == ScopeType.PROTOTYPE) {
-			return createBean(beanRule);
+			return (T)createBean(beanRule);
 		} else if(beanRule.getScopeType() == ScopeType.SINGLETON) {
-			return getSingletonScopeBean(beanRule);
+			return (T)getSingletonScopeBean(beanRule);
 		} else if(beanRule.getScopeType() == ScopeType.REQUEST) {
-			return getRequestScopeBean(beanRule);
+			return (T)getRequestScopeBean(beanRule);
 		} else if(beanRule.getScopeType() == ScopeType.SESSION) {
-			return getSessionScopeBean(beanRule);
+			return (T)getSessionScopeBean(beanRule);
 		} else if(beanRule.getScopeType() == ScopeType.APPLICATION) {
-			return getApplicationScopeBean(beanRule);
+			return (T)getApplicationScopeBean(beanRule);
 		}
 		
 		throw new BeanException();
