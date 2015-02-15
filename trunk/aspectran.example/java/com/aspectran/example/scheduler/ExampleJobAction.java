@@ -3,11 +3,11 @@ package com.aspectran.example.scheduler;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import com.aspectran.scheduler.activity.JobTranslet;
+import com.aspectran.core.activity.Translet;
 
 public class ExampleJobAction {
 
-	public String countTo10(JobTranslet translet) {
+	public String countTo10(Translet translet) {
 		StringBuilder sb = new StringBuilder();
 		
 		for(int i = 1; i <= 10; i++) {
@@ -17,7 +17,7 @@ public class ExampleJobAction {
 		return sb.toString();
 	}
 	
-	public int[] countTo10AsArray(JobTranslet translet) {
+	public int[] countTo10AsArray(Translet translet) {
 		int arr[] = new int[10];
 		
 		for(int i = 0; i < arr.length; i++) {
@@ -27,7 +27,7 @@ public class ExampleJobAction {
 		return arr;
 	}
 	
-	public Map<String, Object> applyTheAdvice(JobTranslet translet) {
+	public Map<String, Object> applyTheAdvice(Translet translet) {
 		String beforeAdviceResult = translet.getBeforeAdviceResult("helloAdvice");
 		String afterAdviceResult = translet.getAfterAdviceResult("helloAdvice");
 		
@@ -40,7 +40,7 @@ public class ExampleJobAction {
 		return result;
 	}
 	
-	public Object errorCaused(JobTranslet translet) {
+	public Object errorCaused(Translet translet) {
 		int i = 1 / 0;
 		
 		return i;
