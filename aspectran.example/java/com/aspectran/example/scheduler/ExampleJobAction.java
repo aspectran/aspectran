@@ -27,9 +27,9 @@ public class ExampleJobAction {
 		return arr;
 	}
 	
-	public Object applyTheAdvice(JobTranslet translet) {
-		Object beforeAdviceResult = translet.getBeforeAdviceResult("helloAdvice");
-		Object afterAdviceResult = translet.getAfterAdviceResult("helloAdvice");
+	public Map<String, Object> applyTheAdvice(JobTranslet translet) {
+		String beforeAdviceResult = translet.getBeforeAdviceResult("helloAdvice");
+		String afterAdviceResult = translet.getAfterAdviceResult("helloAdvice");
 		
 		Map<String, Object> result = new LinkedHashMap<String, Object>();
 		result.put("beforeAdviceResult", beforeAdviceResult);
