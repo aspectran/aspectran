@@ -134,7 +134,6 @@ public class ActivityContext {
 	 */
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		
 		sb.append("{applicationAdapter=").append(applicationAdapter);
 		sb.append(", aspectRuleRegistry=").append(aspectRuleRegistry);
 		sb.append(", beanRegistry=").append(contextBeanRegistry);

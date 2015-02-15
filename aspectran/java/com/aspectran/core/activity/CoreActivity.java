@@ -48,11 +48,11 @@ public interface CoreActivity {
 
 	public ApplicationAdapter getApplicationAdapter();
 
-	public Class<? extends CoreTranslet> getTransletInterfaceClass();
+	public Class<? extends Translet> getTransletInterfaceClass();
 	
 	public Class<? extends CoreTransletImpl> getTransletImplementClass();
 	
-	public CoreTranslet getCoreTranslet();
+	public Translet getTranslet();
 	
 	public void ready(String transletName) throws CoreActivityException;
 	

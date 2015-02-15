@@ -23,7 +23,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.aspectran.core.activity.CoreActivity;
 import com.aspectran.core.activity.CoreActivityException;
 import com.aspectran.core.activity.CoreActivityImpl;
-import com.aspectran.core.activity.CoreTranslet;
+import com.aspectran.core.activity.Translet;
 import com.aspectran.core.activity.request.RequestException;
 import com.aspectran.core.activity.variable.ValueObjectMap;
 import com.aspectran.core.activity.variable.token.ItemTokenExpression;
@@ -85,7 +85,7 @@ public class WebActivityImpl extends CoreActivityImpl implements WebActivity {
 		determineCharacterEncoding();
 	}
 	
-	protected void request(CoreTranslet translet) throws RequestException {
+	protected void request(Translet translet) throws RequestException {
 		String method = request.getMethod();
 		RequestMethodType methodType = requestRule.getMethod();
 		
