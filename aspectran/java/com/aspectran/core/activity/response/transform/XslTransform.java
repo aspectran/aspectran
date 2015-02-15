@@ -33,7 +33,7 @@ import javax.xml.transform.stream.StreamSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.aspectran.core.activity.CoreActivity;
+import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.activity.process.result.ProcessResult;
 import com.aspectran.core.activity.response.Responsible;
@@ -93,7 +93,7 @@ public class XslTransform extends AbstractTransform implements Responsible {
 	/* (non-Javadoc)
 	 * @see com.aspectran.core.activity.response.Responsible#response(com.aspectran.core.activity.CoreActivity)
 	 */
-	public void response(CoreActivity activity) throws TransformResponseException {
+	public void response(Activity activity) throws TransformResponseException {
 		ResponseAdapter responseAdapter = activity.getResponseAdapter();
 		
 		if(responseAdapter == null)

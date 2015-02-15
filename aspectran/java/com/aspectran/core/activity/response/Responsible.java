@@ -15,7 +15,7 @@
  */
 package com.aspectran.core.activity.response;
 
-import com.aspectran.core.activity.CoreActivity;
+import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.context.rule.type.ResponseType;
 
@@ -52,5 +52,5 @@ public interface Responsible {
 	 * 
 	 * @throws ResponseException the response exception
 	 */
-	public void response(CoreActivity activity) throws ResponseException;
+	public void response(Activity activity) throws ResponseException;
 }

@@ -6,7 +6,7 @@ import java.io.Writer;
 
 import org.quartz.JobDetail;
 
-import com.aspectran.core.activity.CoreActivity;
+import com.aspectran.core.activity.Activity;
 import com.aspectran.core.adapter.AbstractResponseAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.context.rule.RedirectResponseRule;
@@ -55,7 +55,7 @@ public class QuartzJobResponseAdapter extends AbstractResponseAdapter implements
 	public void redirect(String requestUri) throws IOException {
 	}
 	
-	public String redirect(CoreActivity activity, RedirectResponseRule redirectResponseRule) throws IOException {
+	public String redirect(Activity activity, RedirectResponseRule redirectResponseRule) throws IOException {
 		return null;
 	}
 

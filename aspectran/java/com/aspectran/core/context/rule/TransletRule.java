@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.aspectran.core.activity.CoreTranslet;
-import com.aspectran.core.activity.CoreTransletImpl;
+import com.aspectran.core.activity.Translet;
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.activity.process.ContentList;
 import com.aspectran.core.activity.process.action.BeanAction;
@@ -56,9 +56,9 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 	
 	private ResponseByContentTypeRuleMap exceptionHandlingRuleMap;
 	
-	private Class<? extends CoreTranslet> transletInterfaceClass;
+	private Class<? extends Translet> transletInterfaceClass;
 	
-	private Class<? extends CoreTransletImpl> transletImplementClass;
+	private Class<? extends CoreTranslet> transletImplementClass;
 
 	private AspectAdviceRuleRegistry aspectAdviceRuleRegistry;
 	
@@ -250,19 +250,19 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 		exceptionHandlingRuleMap.putResponseByContentTypeRule(responseByContentTypeRule);
 	}
 	
-	public Class<? extends CoreTranslet> getTransletInterfaceClass() {
+	public Class<? extends Translet> getTransletInterfaceClass() {
 		return transletInterfaceClass;
 	}
 
-	public void setTransletInterfaceClass(Class<? extends CoreTranslet> transletInterfaceClass) {
+	public void setTransletInterfaceClass(Class<? extends Translet> transletInterfaceClass) {
 		this.transletInterfaceClass = transletInterfaceClass;
 	}
 
-	public Class<? extends CoreTransletImpl> getTransletImplementClass() {
+	public Class<? extends CoreTranslet> getTransletImplementClass() {
 		return transletImplementClass;
 	}
 
-	public void setTransletInstanceClass(Class<? extends CoreTransletImpl> transletInstanceClass) {
+	public void setTransletInstanceClass(Class<? extends CoreTranslet> transletInstanceClass) {
 		this.transletImplementClass = transletInstanceClass;
 	}
 

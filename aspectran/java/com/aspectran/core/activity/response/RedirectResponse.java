@@ -18,7 +18,7 @@ package com.aspectran.core.activity.response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.aspectran.core.activity.CoreActivity;
+import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.context.rule.RedirectResponseRule;
@@ -50,7 +50,7 @@ public class RedirectResponse implements Responsible {
 	/* (non-Javadoc)
 	 * @see com.aspectran.core.activity.response.Responsible#response(com.aspectran.core.activity.CoreActivity)
 	 */
-	public void response(CoreActivity activity) throws ResponseException {
+	public void response(Activity activity) throws ResponseException {
 		ResponseAdapter responseAdapter = activity.getResponseAdapter();
 		
 		if(responseAdapter == null)

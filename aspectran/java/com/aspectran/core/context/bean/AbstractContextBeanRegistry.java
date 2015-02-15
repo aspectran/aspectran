@@ -11,9 +11,9 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.aspectran.core.activity.CoreActivity;
-import com.aspectran.core.activity.CoreActivityException;
-import com.aspectran.core.activity.VoidActivityImpl;
+import com.aspectran.core.activity.Activity;
+import com.aspectran.core.activity.ActivityException;
+import com.aspectran.core.activity.VoidActivity;
 import com.aspectran.core.activity.variable.ValueObjectMap;
 import com.aspectran.core.activity.variable.token.ItemTokenExpression;
 import com.aspectran.core.activity.variable.token.ItemTokenExpressor;
@@ -82,7 +82,7 @@ public abstract class AbstractContextBeanRegistry implements ContextBeanRegistry
 	}
 
 	protected Object createBean(BeanRule beanRule) {
-		CoreActivity activity = null;
+		Activity activity = null;
 		
 		if(context != null)
 			activity = context.getLocalCoreActivity();
@@ -90,7 +90,7 @@ public abstract class AbstractContextBeanRegistry implements ContextBeanRegistry
 		return createBean(beanRule, activity);
 	}
 
-	private Object createBean(BeanRule beanRule, CoreActivity activity) {
+	private Object createBean(BeanRule beanRule, Activity activity) {
 		try {
 			ItemRuleMap constructorArgumentItemRuleMap = beanRule.getConstructorArgumentItemRuleMap();
 			
@@ -129,7 +129,7 @@ public abstract class AbstractContextBeanRegistry implements ContextBeanRegistry
 		}
 	}
 
-	private Object createBean(BeanRule beanRule, Class<?>[] argTypes, Object[] args, CoreActivity activity) {
+	private Object createBean(BeanRule beanRule, Class<?>[] argTypes, Object[] args, Activity activity) {
 		/*
 		 * 0. DynamicProxy 빈을 만들 것인지를 먼저 결정하라. 
 		 * 1. 빈과 관련된 AspectRule을 추출하고, 캐슁하라.
@@ -148,9 +148,9 @@ public abstract class AbstractContextBeanRegistry implements ContextBeanRegistry
 		if(aspectRuleList != null) {
 			if(activity == null) {
 				try {
-					activity = new VoidActivityImpl(context);
+					activity = new VoidActivity(context);
 					activity.ready(null);
-				} catch(CoreActivityException e) {
+				} catch(ActivityException e) {
 					throw new BeanCreationException(beanRule, e);
 				}
 			}
@@ -180,7 +180,7 @@ public abstract class AbstractContextBeanRegistry implements ContextBeanRegistry
 	 * @param beanRule the bean rule
 	 * @return the list
 	 */
-	private List<AspectRule> retrieveAspectRuleList(BeanRule beanRule, CoreActivity activity) {
+	private List<AspectRule> retrieveAspectRuleList(BeanRule beanRule, Activity activity) {
 		String transletName = null;
 		JoinpointScopeType joinpointScope = null;
 		String beanId = beanRule.getId();

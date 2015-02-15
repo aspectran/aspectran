@@ -25,7 +25,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.aspectran.core.activity.CoreActivity;
+import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.activity.response.Responsible;
 import com.aspectran.core.activity.variable.token.Token;
@@ -80,7 +80,7 @@ public class TextTransform extends AbstractTransform implements Responsible {
 	/* (non-Javadoc)
 	 * @see com.aspectran.core.activity.response.Responsible#response(com.aspectran.core.activity.CoreActivity)
 	 */
-	public void response(CoreActivity activity) throws TransformResponseException {
+	public void response(Activity activity) throws TransformResponseException {
 		ResponseAdapter responseAdapter = activity.getResponseAdapter();
 		
 		if(responseAdapter == null)

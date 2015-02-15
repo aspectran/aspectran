@@ -20,7 +20,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.aspectran.core.activity.CoreActivity;
+import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.activity.variable.ValueObjectMap;
 import com.aspectran.core.activity.variable.token.ItemTokenExpression;
@@ -53,7 +53,7 @@ public class IncludeAction extends AbstractAction implements Executable {
 	/* (non-Javadoc)
 	 * @see org.jhlabs.translets.engine.process.action.Executable#execute(org.jhlabs.translets.action.Translet)
 	 */
-	public Object execute(CoreActivity activity) throws Exception {
+	public Object execute(Activity activity) throws Exception {
 		try {
 			RequestAdapter request = activity.getRequestAdapter();
 			
@@ -65,7 +65,7 @@ public class IncludeAction extends AbstractAction implements Executable {
 					request.setAttribute(entry.getKey(), entry.getValue());
 			}
 			
-			CoreActivity newActivity = activity.newActivity();
+			Activity newActivity = activity.newActivity();
 			newActivity.ready(includeActionRule.getTransletName());
 			newActivity.performWithoutResponse();
 			newActivity.finish();

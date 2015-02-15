@@ -15,7 +15,7 @@
  */
 package com.aspectran.core.context;
 
-import com.aspectran.core.activity.CoreActivity;
+import com.aspectran.core.activity.Activity;
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.aspect.AspectRuleRegistry;
 import com.aspectran.core.context.bean.ContextBeanRegistry;
@@ -27,7 +27,7 @@ import com.aspectran.core.service.AspectranServiceController;
  */
 public class ActivityContext {
 	
-	private static ThreadLocal<CoreActivity> activityThreadLocal = new ThreadLocal<CoreActivity>();
+	private static ThreadLocal<Activity> activityThreadLocal = new ThreadLocal<Activity>();
 
 	private ApplicationAdapter applicationAdapter;
 	
@@ -98,11 +98,11 @@ public class ActivityContext {
 		return applicationAdapter.getAspectranServiceController(this);
 	}
 	
-	public CoreActivity getLocalCoreActivity() {
+	public Activity getLocalCoreActivity() {
 		return activityThreadLocal.get();
 	}
 	
-	public void saveLocalCoreActivity(CoreActivity activity) {
+	public void saveLocalCoreActivity(Activity activity) {
 		if(activityThreadLocal.get() == null)
 			activityThreadLocal.set(activity);
 	}
