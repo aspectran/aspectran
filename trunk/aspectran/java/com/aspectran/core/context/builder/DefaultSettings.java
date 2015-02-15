@@ -18,7 +18,7 @@ package com.aspectran.core.context.builder;
 import java.util.Map;
 
 import com.aspectran.core.activity.CoreTranslet;
-import com.aspectran.core.activity.CoreTransletImpl;
+import com.aspectran.core.activity.Translet;
 import com.aspectran.core.context.AspectranConstant;
 import com.aspectran.core.context.rule.type.DefaultSettingType;
 
@@ -35,9 +35,9 @@ public class DefaultSettings implements Cloneable {
 
 	private String transletNamePatternSuffix;
 	
-	private Class<CoreTranslet> transletInterfaceClass;
+	private Class<Translet> transletInterfaceClass;
 
-	private Class<CoreTransletImpl> transletInstanceClass;
+	private Class<CoreTranslet> transletInstanceClass;
 	
 	private String activityDefaultHandler;
 	
@@ -102,22 +102,22 @@ public class DefaultSettings implements Cloneable {
 		return transletNamePatternSuffix;
 	}
 	
-	public Class<CoreTranslet> getTransletInterfaceClass() {
+	public Class<Translet> getTransletInterfaceClass() {
 		return transletInterfaceClass;
 	}
 
 	@SuppressWarnings("unchecked")
 	public void setTransletInterfaceClass(String transletInterfaceClass) throws ClassNotFoundException {
-		this.transletInterfaceClass = (Class<CoreTranslet>)classLoader.loadClass(transletInterfaceClass);
+		this.transletInterfaceClass = (Class<Translet>)classLoader.loadClass(transletInterfaceClass);
 	}
 
-	public Class<CoreTransletImpl> getTransletInstanceClass() {
+	public Class<CoreTranslet> getTransletInstanceClass() {
 		return transletInstanceClass;
 	}
 
 	@SuppressWarnings("unchecked")
 	public void setTransletInstanceClass(String transletInstanceClass) throws ClassNotFoundException {
-		this.transletInstanceClass = (Class<CoreTransletImpl>)classLoader.loadClass(transletInstanceClass);
+		this.transletInstanceClass = (Class<CoreTranslet>)classLoader.loadClass(transletInstanceClass);
 	}
 
 	public String getActivityDefaultHandler() {

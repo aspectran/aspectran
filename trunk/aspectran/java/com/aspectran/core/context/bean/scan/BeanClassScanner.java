@@ -94,7 +94,7 @@ public class BeanClassScanner {
 			
 			while(resources.hasMoreElements()) {
 				URL resource = resources.nextElement();
-				System.out.println("==scanClass=====" + resource.getFile());
+				System.out.println("classNamePattern: " + classNamePattern + "==scanClass=====" + resource.getFile());
 				
 				if(isJarResource(resource)) {
 					scanClassFromJarResource(resource, matcher, scanClasses);
@@ -147,8 +147,8 @@ public class BeanClassScanner {
 					if(matcher.matches(relativePath)) {
 						Class<?> classType = loadClass(className);
 						String beanId = combineBeanId(relativePath);
-						System.out.println("scaned  [clazz] " + className);
-						System.out.println("scaned  [beanId] " + combineBeanId(relativePath));
+						//System.out.println("scaned  [clazz] " + className);
+						//System.out.println("scaned  [beanId] " + combineBeanId(relativePath));
 						logger.trace("beanClass {beanId: " + beanId + ", className: " + className + "}");
 						scanClasses.put(beanId, classType);
 					}

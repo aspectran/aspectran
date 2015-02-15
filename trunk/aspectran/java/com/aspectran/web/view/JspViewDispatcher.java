@@ -24,7 +24,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.aspectran.core.activity.CoreActivity;
+import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.process.result.ActionResult;
 import com.aspectran.core.activity.process.result.ContentResult;
 import com.aspectran.core.activity.process.result.ProcessResult;
@@ -51,7 +51,7 @@ public class JspViewDispatcher implements ViewDispatcher {
 	/* (non-Javadoc)
 	 * @see com.aspectran.core.activity.response.dispatch.ViewDispatcher#dispatch(com.aspectran.core.activity.AspectranActivity, com.aspectran.base.rule.DispatchResponseRule)
 	 */
-	public void dispatch(CoreActivity activity, DispatchResponseRule dispatchResponseRule) throws DispatchResponseException {
+	public void dispatch(Activity activity, DispatchResponseRule dispatchResponseRule) throws DispatchResponseException {
 		try {
 			RequestAdapter requestAdapter = activity.getRequestAdapter();
 			ResponseAdapter responseAdapter = activity.getResponseAdapter();

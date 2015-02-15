@@ -8,7 +8,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.List;
 
-import com.aspectran.core.activity.CoreActivity;
+import com.aspectran.core.activity.Activity;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.BeanRule;
 
@@ -18,7 +18,7 @@ import com.aspectran.core.context.rule.BeanRule;
  */
 public class JdkDynamicBeanProxy extends AbstractDynamicBeanProxy implements InvocationHandler {
 
-	protected JdkDynamicBeanProxy(CoreActivity activity, List<AspectRule> aspectRuleList, BeanRule beanRule) {
+	protected JdkDynamicBeanProxy(Activity activity, List<AspectRule> aspectRuleList, BeanRule beanRule) {
 		super(activity, aspectRuleList, beanRule);
 	}
 
@@ -26,7 +26,7 @@ public class JdkDynamicBeanProxy extends AbstractDynamicBeanProxy implements Inv
 		return dynamicInvoke(proxy, method, args, null);
 	}
 	
-	public static Object newInstance(CoreActivity activity, List<AspectRule> aspectRuleList, BeanRule beanRule, Object obj) {
+	public static Object newInstance(Activity activity, List<AspectRule> aspectRuleList, BeanRule beanRule, Object obj) {
 		JdkDynamicBeanProxy proxy = new JdkDynamicBeanProxy(activity, aspectRuleList, beanRule);
 		
 		return Proxy.newProxyInstance(obj.getClass().getClassLoader(), obj.getClass().getInterfaces(), proxy);

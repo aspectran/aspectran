@@ -9,7 +9,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.aspectran.core.activity.CoreActivity;
+import com.aspectran.core.activity.Activity;
 import com.aspectran.core.context.aspect.AspectAdviceRulePostRegister;
 import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
 import com.aspectran.core.context.aspect.pointcut.Pointcut;
@@ -27,13 +27,13 @@ public abstract class AbstractDynamicBeanProxy {
 	/** The logger. */
 	private final Logger logger = LoggerFactory.getLogger(AbstractDynamicBeanProxy.class);
 
-	protected CoreActivity activity;
+	protected Activity activity;
 	
 	protected List<AspectRule> aspectRuleList;
 
 	protected BeanRule beanRule;
 	
-	protected AbstractDynamicBeanProxy(CoreActivity activity, List<AspectRule> aspectRuleList, BeanRule beanRule) {
+	protected AbstractDynamicBeanProxy(Activity activity, List<AspectRule> aspectRuleList, BeanRule beanRule) {
 		this.activity = activity;
 		this.aspectRuleList = aspectRuleList;
 		this.beanRule = beanRule;

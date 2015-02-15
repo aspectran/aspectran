@@ -297,6 +297,9 @@ public abstract class AbstractAspectranService implements AspectranService {
 	}
 	
 	private static String[] checkResourceLocations(String applicationBasePath, String rootResourceLocation, String[] resourceLocations) throws IOException {
+		if(resourceLocations == null)
+			return null;
+		
 		for(int i = 0; i < resourceLocations.length; i++) {
 			if(resourceLocations[i].startsWith(ResourceUtils.CLASSPATH_URL_PREFIX)) {
 				String path = resourceLocations[i].substring(ResourceUtils.CLASSPATH_URL_PREFIX.length());

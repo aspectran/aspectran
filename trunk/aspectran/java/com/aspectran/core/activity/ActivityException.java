@@ -16,51 +16,47 @@
 package com.aspectran.core.activity;
 
 /**
- * This exception will be thrown when a translets configuration is not valid.
+ * This exception will be thrown when a translet process is failed..
  * 
  * <p>Created: 2008. 01. 07 오전 3:35:55</p>
  */
-public class AdaptingFailedException extends RuntimeException {
+public class ActivityException extends Exception {
 	
 	/** @serial */
-	static final long serialVersionUID = -1205477794213156219L;
+	static final long serialVersionUID = -4400747654771758521L;
 
 	/**
-	 * Simple constructor
+	 * Simple constructor.
 	 */
-	public AdaptingFailedException() {
+	public ActivityException() {
 	}
 
 	/**
-	 * Constructor to create exception with a message
+	 * Constructor to create exception with a message.
 	 * 
-	 * @param msg
-	 *            A message to associate with the exception
+	 * @param msg A message to associate with the exception
 	 */
-	public AdaptingFailedException(String msg) {
+	public ActivityException(String msg) {
 		super(msg);
 	}
 
 	/**
-	 * Constructor to create exception to wrap another exception
+	 * Constructor to create exception to wrap another exception.
 	 * 
-	 * @param cause
-	 *            The real cause of the exception
+	 * @param cause The real cause of the exception
 	 */
-	public AdaptingFailedException(Throwable cause) {
+	public ActivityException(Throwable cause) {
 		super(cause);
 	}
 
 	/**
 	 * Constructor to create exception to wrap another exception and pass a
-	 * message
+	 * message.
 	 * 
-	 * @param msg
-	 *            The message
-	 * @param cause
-	 *            The real cause of the exception
+	 * @param msg The message
+	 * @param cause The real cause of the exception
 	 */
-	public AdaptingFailedException(String msg, Throwable cause) {
+	public ActivityException(String msg, Throwable cause) {
 		super(msg, cause);
 	}
 }

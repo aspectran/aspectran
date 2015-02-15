@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.aspectran.core.activity.Activity;
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.ActivityContextException;
 import com.aspectran.core.context.loader.AspectranClassLoader;
@@ -21,9 +22,8 @@ import com.aspectran.core.service.AspectranServiceControllerListener;
 import com.aspectran.core.service.CoreAspectranService;
 import com.aspectran.core.util.apon.Parameter;
 import com.aspectran.core.util.apon.Parameters;
-import com.aspectran.web.activity.WebActivity;
 import com.aspectran.web.activity.WebActivityDefaultHandler;
-import com.aspectran.web.activity.WebActivityImpl;
+import com.aspectran.web.activity.WebActivity;
 import com.aspectran.web.adapter.WebApplicationAdapter;
 import com.aspectran.web.startup.listener.AspectranServiceListener;
 import com.aspectran.web.startup.servlet.WebActivityServlet;
@@ -91,10 +91,10 @@ public class WebAspectranService extends CoreAspectranService {
 			}
 		}
 		
-		WebActivity activity = null;
+		Activity activity = null;
 
 		try {
-			activity = new WebActivityImpl(activityContext, req, res);
+			activity = new WebActivity(activityContext, req, res);
 			activity.ready(requestUri);
 			activity.perform();
 			activity.finish();
@@ -104,8 +104,7 @@ public class WebAspectranService extends CoreAspectranService {
 
 				if(activityDefaultHandler != null) {
 					try {
-						System.out.println("activity.getBean(activityDefaultHandler):" + activity.getBean(activityDefaultHandler));
-						
+						//System.out.println("activity.getBean(activityDefaultHandler):" + activity.getBean(activityDefaultHandler));
 						WebActivityDefaultHandler handler = (WebActivityDefaultHandler)activity.getBean(activityDefaultHandler);
 						handler.setServletContext(servlet.getServletContext());
 						handler.handle(req, res);

@@ -138,7 +138,7 @@ public abstract interface Translet {
 	
 	public Class<? extends Translet> getTransletInterfaceClass();
 
-	public Class<? extends CoreTransletImpl> getTransletImplementClass();
+	public Class<? extends CoreTranslet> getTransletImplementClass();
 	
 	public boolean isExceptionRaised();
 

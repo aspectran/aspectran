@@ -25,7 +25,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
-import com.aspectran.core.activity.CoreActivity;
+import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.request.parameter.FileParameter;
 import com.aspectran.core.activity.variable.ValueObjectMap;
 import com.aspectran.core.context.bean.BeanRegistry;
@@ -53,7 +53,7 @@ public class ItemTokenExpression extends TokenExpression implements ItemTokenExp
 	 *
 	 * @param activity the activity
 	 */
-	public ItemTokenExpression(CoreActivity activity) {
+	public ItemTokenExpression(Activity activity) {
 		super(activity);
 	}
 	

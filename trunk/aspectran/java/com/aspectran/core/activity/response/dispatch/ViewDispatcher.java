@@ -15,7 +15,7 @@
  */
 package com.aspectran.core.activity.response.dispatch;
 
-import com.aspectran.core.activity.CoreActivity;
+import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.response.ResponseException;
 import com.aspectran.core.context.rule.DispatchResponseRule;
 
@@ -31,5 +31,5 @@ public interface ViewDispatcher {
 	 * @param viewName the view name
 	 * @throws ResponseException the response exception
 	 */
-	public void dispatch(CoreActivity activity, DispatchResponseRule dispatchResponseRule) throws ResponseException;
+	public void dispatch(Activity activity, DispatchResponseRule dispatchResponseRule) throws ResponseException;
 }

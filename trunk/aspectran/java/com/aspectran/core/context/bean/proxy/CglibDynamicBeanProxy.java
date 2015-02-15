@@ -10,7 +10,7 @@ import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;
 
-import com.aspectran.core.activity.CoreActivity;
+import com.aspectran.core.activity.Activity;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.BeanRule;
 
@@ -20,7 +20,7 @@ import com.aspectran.core.context.rule.BeanRule;
  */
 public class CglibDynamicBeanProxy extends AbstractDynamicBeanProxy implements MethodInterceptor {
 
-	protected CglibDynamicBeanProxy(CoreActivity activity, List<AspectRule> aspectRuleList, BeanRule beanRule) {
+	protected CglibDynamicBeanProxy(Activity activity, List<AspectRule> aspectRuleList, BeanRule beanRule) {
 		super(activity, aspectRuleList, beanRule);
 	}
 
@@ -36,7 +36,7 @@ public class CglibDynamicBeanProxy extends AbstractDynamicBeanProxy implements M
 		return dynamicInvoke(object, method, args, proxyMethodInvoker);
 	}
 	
-	public static Object newInstance(CoreActivity activity, List<AspectRule> aspectRuleList, BeanRule beanRule, Class<?>[] constructorArgTypes, Object[] constructorArgs) {
+	public static Object newInstance(Activity activity, List<AspectRule> aspectRuleList, BeanRule beanRule, Class<?>[] constructorArgTypes, Object[] constructorArgs) {
 		Enhancer enhancer = new Enhancer();
 		enhancer.setSuperclass(beanRule.getBeanClass());
 		enhancer.setCallback(new CglibDynamicBeanProxy(activity, aspectRuleList, beanRule));

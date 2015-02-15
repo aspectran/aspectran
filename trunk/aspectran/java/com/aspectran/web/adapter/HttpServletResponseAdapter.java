@@ -9,7 +9,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
-import com.aspectran.core.activity.CoreActivity;
+import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.variable.ValueObjectMap;
 import com.aspectran.core.activity.variable.token.ItemTokenExpression;
 import com.aspectran.core.activity.variable.token.ItemTokenExpressor;
@@ -74,7 +74,7 @@ public class HttpServletResponseAdapter extends AbstractResponseAdapter implemen
 		((HttpServletResponse)adaptee).sendRedirect(requestUri);
 	}
 	
-	public String redirect(CoreActivity activity, RedirectResponseRule redirectResponseRule) throws IOException {
+	public String redirect(Activity activity, RedirectResponseRule redirectResponseRule) throws IOException {
 		String characterEncoding = ((HttpServletResponse)adaptee).getCharacterEncoding();
 		String url = null;
 		int questionPos = -1;

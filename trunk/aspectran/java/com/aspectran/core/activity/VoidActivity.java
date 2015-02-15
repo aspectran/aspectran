@@ -30,24 +30,24 @@ import com.aspectran.core.context.rule.AspectAdviceRule;
 /**
  * <p>Created: 2008. 04. 28 오전 12:48:48</p>
  */
-public final class VoidActivityImpl extends CoreActivityImpl implements CoreActivity {
+public final class VoidActivity extends CoreActivity implements Activity {
 	
-	public VoidActivityImpl(ActivityContext context) {
+	public VoidActivity(ActivityContext context) {
 		super(context);
 	}
 	
-	public void ready(String transletName) throws CoreActivityException {
-		createTranslet(CoreTranslet.class, CoreTransletImpl.class);
+	public void ready(String transletName) throws ActivityException {
+		newTranslet();
 	}
 	
-	protected void request(CoreTranslet translet) throws RequestException {
+	protected void request(Translet translet) throws RequestException {
 	}
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T extends CoreActivity> T newActivity() {
-		VoidActivityImpl voidActivity = new VoidActivityImpl(getActivityContext());
-		return (T)voidActivity;
+	public <T extends Activity> T newActivity() {
+		VoidActivity activity = new VoidActivity(getActivityContext());
+		return (T)activity;
 	}
 
 	@Override
@@ -71,12 +71,12 @@ public final class VoidActivityImpl extends CoreActivityImpl implements CoreActi
 	}
 
 	@Override
-	public void perform() throws CoreActivityException {
+	public void perform() throws ActivityException {
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public void performWithoutResponse() throws CoreActivityException {
+	public void performWithoutResponse() throws ActivityException {
 		throw new UnsupportedOperationException();
 	}
 
@@ -91,7 +91,7 @@ public final class VoidActivityImpl extends CoreActivityImpl implements CoreActi
 	}
 
 	@Override
-	public void responseByContentType(List<AspectAdviceRule> aspectAdviceRuleList) throws CoreActivityException {
+	public void responseByContentType(List<AspectAdviceRule> aspectAdviceRuleList) throws ActivityException {
 		throw new UnsupportedOperationException();
 	}
 

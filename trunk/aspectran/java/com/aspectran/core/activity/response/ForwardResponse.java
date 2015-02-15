@@ -20,7 +20,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.aspectran.core.activity.CoreActivity;
+import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.activity.variable.ValueObjectMap;
 import com.aspectran.core.activity.variable.token.ItemTokenExpression;
@@ -53,7 +53,7 @@ public class ForwardResponse implements Responsible {
 	/* (non-Javadoc)
 	 * @see com.aspectran.core.activity.response.Responsible#response(com.aspectran.core.activity.CoreActivity)
 	 */
-	public void response(CoreActivity activity) {
+	public void response(Activity activity) {
 		RequestAdapter requestAdapter = activity.getRequestAdapter();
 		
 		if(requestAdapter == null)
