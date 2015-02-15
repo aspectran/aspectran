@@ -55,6 +55,17 @@ public class TransletInstantiationException extends RuntimeException {
 		super("Could not instantiate translet class [" + transletInstanceClass.getName() + "] interface [" + transletInterfaceClass.getName() + "]", cause);
 		this.transletInstanceClass = transletInstanceClass;
 	}
+	
+	/**
+	 * Create a new BeanInstantiationException.
+	 * @param beanClass the offending bean class
+	 * @param msg the detail message
+	 * @param cause the root cause
+	 */
+	public TransletInstantiationException(Class<? extends CoreTranslet> transletInstanceClass, Throwable cause) {
+		super("Could not instantiate translet class [" + transletInstanceClass.getName() + "]", cause);
+		this.transletInstanceClass = transletInstanceClass;
+	}
 
 	public Class<? extends Translet> getTransletInterfaceClass() {
 		return transletInterfaceClass;

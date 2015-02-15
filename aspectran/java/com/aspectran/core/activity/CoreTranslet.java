@@ -160,20 +160,20 @@ public class CoreTranslet implements Translet {
 		response(res);
 	}
 	
-	public RequestAdapter getRequestAdapter() {
-		return activity.getRequestAdapter();
-	}
-	
-	public ResponseAdapter getResponseAdapter() {
-		return activity.getResponseAdapter();
+	public ApplicationAdapter getApplicationAdapter() {
+		return activity.getActivityContext().getApplicationAdapter();
 	}
 
 	public SessionAdapter getSessionAdapter() {
 		return activity.getSessionAdapter();
 	}
 	
-	public ApplicationAdapter getApplicationAdapter() {
-		return activity.getActivityContext().getApplicationAdapter();
+	public RequestAdapter getRequestAdapter() {
+		return activity.getRequestAdapter();
+	}
+	
+	public ResponseAdapter getResponseAdapter() {
+		return activity.getResponseAdapter();
 	}
 	
 	public <T> T getRequestAdaptee() {

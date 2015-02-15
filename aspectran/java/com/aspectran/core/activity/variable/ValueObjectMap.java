@@ -54,4 +54,10 @@ public class ValueObjectMap extends LinkedHashMap<String, Object> {
 		
 		return o.toString();
 	}
+	
+	@SuppressWarnings("unchecked")
+	public <T> T getValue(String key) {
+		return (T)get(key);
+	}
+	
 }

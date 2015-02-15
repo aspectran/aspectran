@@ -15,7 +15,6 @@
  */
 package com.aspectran.core.activity;
 
-import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,10 +33,6 @@ import com.aspectran.core.activity.request.RequestException;
 import com.aspectran.core.activity.response.ForwardResponse;
 import com.aspectran.core.activity.response.ResponseException;
 import com.aspectran.core.activity.response.Responsible;
-import com.aspectran.core.adapter.ApplicationAdapter;
-import com.aspectran.core.adapter.RequestAdapter;
-import com.aspectran.core.adapter.ResponseAdapter;
-import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.aspect.AspectAdviceRuleRegister;
 import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
@@ -54,7 +49,6 @@ import com.aspectran.core.context.rule.type.ActionType;
 import com.aspectran.core.context.rule.type.AspectAdviceType;
 import com.aspectran.core.context.rule.type.JoinpointScopeType;
 import com.aspectran.core.context.rule.type.ResponseType;
-import com.aspectran.core.context.translet.TransletInstantiationException;
 import com.aspectran.core.context.translet.TransletNotFoundException;
 
 /**
@@ -63,7 +57,7 @@ import com.aspectran.core.context.translet.TransletNotFoundException;
  * 
  * <p>Created: 2008. 03. 22 오후 5:48:09</p>
  */
-public class CoreActivity implements Activity {
+public class CoreActivity extends AbstractActivity implements Activity {
 
 	/** The logger. */
 	private final Logger logger = LoggerFactory.getLogger(CoreActivity.class);
@@ -77,15 +71,6 @@ public class CoreActivity implements Activity {
 	/** The context. */
 	private final ActivityContext context;
 
-	/** The request adapter. */
-	private RequestAdapter requestAdapter;
-
-	/** The response adapter. */
-	private ResponseAdapter responseAdapter;
-
-	/** The session adapter. */
-	private SessionAdapter sessionAdapter;
-	
 	/** The translet interface class. */
 	private Class<? extends Translet> transletInterfaceClass;
 	
@@ -136,83 +121,8 @@ public class CoreActivity implements Activity {
 	 * @param context the translets context
 	 */
 	public CoreActivity(ActivityContext context) {
+		super(context.getApplicationAdapter());
 		this.context = context;
-	}
-
-	/**
-	 * Gets the application adapter.
-	 *
-	 * @return the application adapter
-	 */
-	public ApplicationAdapter getApplicationAdapter() {
-		return context.getApplicationAdapter();
-	}
-
-
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.CoreActivity#getSessionAdapter()
-	 */
-	public SessionAdapter getSessionAdapter() {
-		return sessionAdapter;
-	}
-	
-	/**
-	 * Sets the session adapter.
-	 *
-	 * @param sessionAdapter the new session adapter
-	 */
-	protected void setSessionAdapter(SessionAdapter sessionAdapter) {
-		this.sessionAdapter = sessionAdapter;
-	}
-
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.CoreActivity#getRequestAdapter()
-	 */
-	public RequestAdapter getRequestAdapter() {
-		return requestAdapter;
-	}
-	
-	/**
-	 * Sets the request adapter.
-	 *
-	 * @param requestAdapter the new request adapter
-	 */
-	protected void setRequestAdapter(RequestAdapter requestAdapter) {
-		this.requestAdapter = requestAdapter;
-	}
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.CoreActivity#getResponseAdapter()
-	 */
-	public ResponseAdapter getResponseAdapter() {
-		return responseAdapter;
-	}
-
-	/**
-	 * Sets the response adapter.
-	 *
-	 * @param responseAdapter the new response adapter
-	 */
-	protected void setResponseAdapter(ResponseAdapter responseAdapter) {
-		this.responseAdapter = responseAdapter;
-	}
-	
-	/**
-	 * Gets the translet interface class.
-	 *
-	 * @return the translet interface class
-	 */
-	public Class<? extends Translet> getTransletInterfaceClass() {
-		return transletInterfaceClass;
-	}
-
-	/**
-	 * Sets the translet interface class.
-	 *
-	 * @param transletInterfaceClass the new translet interface class
-	 */
-	protected void setTransletInterfaceClass(Class<? extends Translet> transletInterfaceClass) {
-		this.transletInterfaceClass = transletInterfaceClass;
 	}
 
 	/**
@@ -901,16 +811,25 @@ public class CoreActivity implements Activity {
 			return translet;
 		}
 		
-		//create a custom translet instance
-		try {
-			Constructor<?> transletImplementConstructor = this.transletImplementClass.getConstructor(Activity.class);
-			Object[] args = new Object[] { this };
-			
-			translet = (Translet)transletImplementConstructor.newInstance(args);
-			return translet;
-		} catch(Exception e) {
-			throw new TransletInstantiationException(this.transletInterfaceClass, this.transletImplementClass, e);
-		}
+		return super.newTranslet(this.transletImplementClass);
+	}
+	
+	/**
+	 * Gets the translet interface class.
+	 *
+	 * @return the translet interface class
+	 */
+	public Class<? extends Translet> getTransletInterfaceClass() {
+		return transletInterfaceClass;
+	}
+
+	/**
+	 * Sets the translet interface class.
+	 *
+	 * @param transletInterfaceClass the new translet interface class
+	 */
+	protected void setTransletInterfaceClass(Class<? extends Translet> transletInterfaceClass) {
+		this.transletInterfaceClass = transletInterfaceClass;
 	}
 
 	public BeanRegistry getBeanRegistry() {
