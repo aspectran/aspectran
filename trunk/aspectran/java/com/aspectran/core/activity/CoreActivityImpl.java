@@ -87,7 +87,7 @@ public class CoreActivityImpl implements CoreActivity {
 	private SessionAdapter sessionAdapter;
 	
 	/** The translet interface class. */
-	private Class<? extends CoreTranslet> transletInterfaceClass;
+	private Class<? extends Translet> transletInterfaceClass;
 	
 	/** The translet instance class. */
 	private Class<? extends CoreTransletImpl> transletImplementClass;
@@ -113,7 +113,7 @@ public class CoreActivityImpl implements CoreActivity {
 	private boolean withoutResponse;
 	
 	/** The translet. */
-	private CoreTranslet translet;
+	private Translet translet;
 	
 	/** Whether the response was ended. */
 	private boolean activityEnded;
@@ -192,7 +192,7 @@ public class CoreActivityImpl implements CoreActivity {
 	 *
 	 * @return the translet interface class
 	 */
-	public Class<? extends CoreTranslet> getTransletInterfaceClass() {
+	public Class<? extends Translet> getTransletInterfaceClass() {
 		return transletInterfaceClass;
 	}
 
@@ -201,7 +201,7 @@ public class CoreActivityImpl implements CoreActivity {
 	 *
 	 * @param transletInterfaceClass the new translet interface class
 	 */
-	protected void setTransletInterfaceClass(Class<? extends CoreTranslet> transletInterfaceClass) {
+	protected void setTransletInterfaceClass(Class<? extends Translet> transletInterfaceClass) {
 		this.transletInterfaceClass = transletInterfaceClass;
 	}
 
@@ -231,7 +231,7 @@ public class CoreActivityImpl implements CoreActivity {
 		this.requestScope = requestScope;
 	}
 
-	public CoreTranslet getCoreTranslet() {
+	public Translet getTranslet() {
 		return translet;
 	}
 
@@ -242,7 +242,7 @@ public class CoreActivityImpl implements CoreActivity {
 		return translet.getProcessResult();
 	}
 	
-	protected void createCoreTranslet(Class<? extends CoreTranslet> transletInterfaceClass, Class<? extends CoreTransletImpl> transletImplementClass) {
+	protected void createTranslet(Class<? extends Translet> transletInterfaceClass, Class<? extends CoreTransletImpl> transletImplementClass) {
 		if(transletInterfaceClass != null)
 			this.transletInterfaceClass = transletInterfaceClass;
 
@@ -254,7 +254,7 @@ public class CoreActivityImpl implements CoreActivity {
 			Constructor<?> transletImplementConstructor = this.transletImplementClass.getConstructor(CoreActivity.class);
 			Object[] args = new Object[] { this };
 			
-			translet = (CoreTranslet)transletImplementConstructor.newInstance(args);
+			translet = (Translet)transletImplementConstructor.newInstance(args);
 		} catch(Exception e) {
 			throw new TransletInstantiationException(this.transletInterfaceClass, this.transletImplementClass, e);
 		}
@@ -278,7 +278,7 @@ public class CoreActivityImpl implements CoreActivity {
 			logger.debug("translet " + transletRule);
 		}
 
-		createCoreTranslet(transletRule.getTransletInterfaceClass(), transletRule.getTransletImplementClass());
+		createTranslet(transletRule.getTransletInterfaceClass(), transletRule.getTransletImplementClass());
 		
 		if(processResult != null)
 			translet.setProcessResult(processResult);
@@ -298,7 +298,7 @@ public class CoreActivityImpl implements CoreActivity {
 		} catch(CloneNotSupportedException e) {
 			throw new CoreActivityException("AspectAdviceRuleRegistry clone failed.", e);
 		}
-		
+
 		context.saveLocalCoreActivity(this);
 	}
 	
@@ -580,7 +580,7 @@ public class CoreActivityImpl implements CoreActivity {
 		request(translet);
 	}
 	
-	protected void request(CoreTranslet translet) throws RequestException {
+	protected void request(Translet translet) throws RequestException {
 	}
 	
 	private ProcessResult process() throws CoreActivityException {

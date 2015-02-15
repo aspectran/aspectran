@@ -16,11 +16,9 @@ import com.aspectran.core.activity.variable.token.ItemTokenExpressor;
 import com.aspectran.core.activity.variable.token.Token;
 import com.aspectran.core.activity.variable.token.TokenExpression;
 import com.aspectran.core.activity.variable.token.TokenExpressor;
-import com.aspectran.core.activity.variable.token.TokenValueHandler;
 import com.aspectran.core.adapter.AbstractResponseAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.context.rule.RedirectResponseRule;
-import com.aspectran.core.context.rule.type.TokenType;
 
 /**
  * The Class HttpServletResponseAdapter.
@@ -138,7 +136,7 @@ public class HttpServletResponseAdapter extends AbstractResponseAdapter implemen
 		return url;
 	}
 }
-
+/*
 final class ParameterValueEncoder implements TokenValueHandler {
 
 	private String characterEncoding;
@@ -161,3 +159,4 @@ final class ParameterValueEncoder implements TokenValueHandler {
 		return value;
 	}
 }
+*/

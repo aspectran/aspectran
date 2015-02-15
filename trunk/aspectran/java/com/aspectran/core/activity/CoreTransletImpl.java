@@ -230,7 +230,7 @@ public class CoreTransletImpl implements CoreTranslet {
 		activity.activityEnd();
 	}
 
-	public Class<? extends CoreTranslet> getTransletInterfaceClass() {
+	public Class<? extends Translet> getTransletInterfaceClass() {
 		return activity.getTransletInterfaceClass();
 	}
 
@@ -246,11 +246,12 @@ public class CoreTransletImpl implements CoreTranslet {
 		return activity.getRaisedException();
 	}
 	
-	public Object getAspectAdviceBean(String aspectId) {
+	@SuppressWarnings("unchecked")
+	public <T> T getAspectAdviceBean(String aspectId) {
 		if(aspectAdviceResult == null)
 			return null;
 		
-		return aspectAdviceResult.getAspectAdviceBean(aspectId);
+		return (T)aspectAdviceResult.getAspectAdviceBean(aspectId);
 	}
 	
 	public void putAspectAdviceBean(String aspectId, Object adviceBean) {
@@ -260,25 +261,28 @@ public class CoreTransletImpl implements CoreTranslet {
 		aspectAdviceResult.putAspectAdviceBean(aspectId, adviceBean);
 	}
 	
-	public Object getBeforeAdviceResult(String aspectId) {
+	@SuppressWarnings("unchecked")
+	public <T> T getBeforeAdviceResult(String aspectId) {
 		if(aspectAdviceResult == null)
 			return null;
 		
-		return aspectAdviceResult.getBeforeAdviceResult(aspectId);
+		return (T)aspectAdviceResult.getBeforeAdviceResult(aspectId);
 	}
 	
-	public Object getAfterAdviceResult(String aspectId) {
+	@SuppressWarnings("unchecked")
+	public <T> T getAfterAdviceResult(String aspectId) {
 		if(aspectAdviceResult == null)
 			return null;
 
-		return aspectAdviceResult.getAfterAdviceResult(aspectId);
+		return (T)aspectAdviceResult.getAfterAdviceResult(aspectId);
 	}
 	
-	public Object getFinallyAdviceResult(String aspectId) {
+	@SuppressWarnings("unchecked")
+	public <T> T getFinallyAdviceResult(String aspectId) {
 		if(aspectAdviceResult == null)
 			return null;
 
-		return aspectAdviceResult.getFinallyAdviceResult(aspectId);
+		return (T)aspectAdviceResult.getFinallyAdviceResult(aspectId);
 	}
 	
 	public void putAdviceResult(AspectAdviceRule aspectAdviceRule, Object adviceActionResult) {

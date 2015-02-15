@@ -37,7 +37,7 @@ public final class VoidActivityImpl extends CoreActivityImpl implements CoreActi
 	}
 	
 	public void ready(String transletName) throws CoreActivityException {
-		createCoreTranslet(CoreTranslet.class, CoreTransletImpl.class);
+		createTranslet(CoreTranslet.class, CoreTransletImpl.class);
 	}
 	
 	protected void request(CoreTranslet translet) throws RequestException {

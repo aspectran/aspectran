@@ -80,7 +80,6 @@ public class WebAspectranService extends CoreAspectranService {
 	
 	public void service(WebActivityServlet servlet, HttpServletRequest req, HttpServletResponse res) throws IOException {
 		String requestUri = req.getRequestURI();
-		System.out.println(requestUri);
 
 		if(servlet.pauseTimeout > 0L) {
 			if(servlet.pauseTimeout >= System.currentTimeMillis()) {
