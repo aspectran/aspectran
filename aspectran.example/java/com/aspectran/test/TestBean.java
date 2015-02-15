@@ -9,7 +9,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.aspectran.web.activity.WebTranslet;
+import com.aspectran.core.activity.Translet;
 
 /**
  *
@@ -67,7 +67,7 @@ public class TestBean {
 		this.variable2 = variable2;
 	}
 
-	public Object testAction(WebTranslet translet) {
+	public Object testAction(Translet translet) {
 		List<Object> list = new ArrayList<Object>();
 		
 		list.add("aaaaaa");
@@ -95,11 +95,11 @@ public class TestBean {
 		return list;
 	}
 	
-	public Object testAction2(WebTranslet translet) {
+	public Object testAction2(Translet translet) {
 		return this;
 	}
 	
-	public Object testXmlAction(WebTranslet translet) {
+	public Object testXmlAction(Translet translet) {
 		return this;
 	}
 	

@@ -5,7 +5,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.aspectran.web.activity.WebTranslet;
+import com.aspectran.core.activity.Translet;
 
 /**
  *
@@ -14,7 +14,7 @@ import com.aspectran.web.activity.WebTranslet;
  */
 public class ResponseHeaderSpecifier {
 	
-	public void execute(WebTranslet translet, Map<String, String> headers) throws Exception {
+	public void execute(Translet translet, Map<String, String> headers) throws Exception {
 		HttpServletRequest request = translet.getRequestAdaptee();
 		HttpServletResponse response = translet.getResponseAdaptee();
 

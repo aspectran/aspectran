@@ -1,8 +1,8 @@
 package com.aspectran.example.bean;
 
+import com.aspectran.core.activity.Translet;
 import com.aspectran.core.context.bean.ablility.DisposableBean;
 import com.aspectran.core.context.bean.ablility.InitializableBean;
-import com.aspectran.web.activity.WebTranslet;
 
 public class SampleBean implements InitializableBean, DisposableBean {
 
@@ -16,7 +16,7 @@ public class SampleBean implements InitializableBean, DisposableBean {
 		System.out.println("destroy sample bean.");
 	}
 	
-	public String hello(WebTranslet translet) {
+	public String hello(Translet translet) {
 		return "Hello~";
 	}
 	

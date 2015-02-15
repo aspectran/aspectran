@@ -18,7 +18,6 @@
 				encoding: utf-8
 				resources: [
 					/WEB-INF/classes
-					/WEB-INF/aspectran/classes
 					/WEB-INF/aspectran/config
 				]
 				autoReloading: {
