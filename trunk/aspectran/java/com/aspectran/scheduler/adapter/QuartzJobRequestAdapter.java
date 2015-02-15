@@ -48,9 +48,8 @@ public class QuartzJobRequestAdapter extends AbstractRequestAdapter implements R
 		return null;
 	}
 	
-	@SuppressWarnings("unchecked")
 	public <T> T getAttribute(String name) {
-		return (T)attributeMap.get(name);
+		return attributeMap.getValue(name);
 	}
 	
 	public void setAttribute(String name, Object o) {

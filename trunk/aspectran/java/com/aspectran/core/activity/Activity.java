@@ -39,21 +39,11 @@ import com.aspectran.core.context.rule.type.JoinpointScopeType;
  * <p>Created: 2008. 03. 22 오후 5:48:09</p>
  */
 public interface Activity {
-	
-	public ApplicationAdapter getApplicationAdapter();
 
-	public SessionAdapter getSessionAdapter();
-	
-	public RequestAdapter getRequestAdapter();
-	
-	public ResponseAdapter getResponseAdapter();
-	
 	public Class<? extends Translet> getTransletInterfaceClass();
 	
 	public Class<? extends CoreTranslet> getTransletImplementClass();
-	
-	public Translet getTranslet();
-	
+
 	public void ready(String transletName) throws ActivityException;
 	
 	public void perform() throws ActivityException;
@@ -75,11 +65,17 @@ public interface Activity {
 	public void response(Responsible res) throws ResponseException;
 	
 	public void responseByContentType(List<AspectAdviceRule> aspectAdviceRuleList) throws ActivityException;
-	
-	public ActivityContext getActivityContext();
-	
+
 	public Responsible getResponse();
-	
+
+	public boolean isExceptionRaised();
+
+	public Exception getRaisedException();
+
+	public void setRaisedException(Exception raisedException);
+
+	public ActivityContext getActivityContext();
+
 	public <T> T getBean(String id);
 	
 	public String getTransletName();
@@ -89,14 +85,18 @@ public interface Activity {
 	public void setRequestScope(Scope requestScope);
 	
 	public <T extends Activity> T newActivity();
+
+	public Translet getTranslet();
 	
+	public ApplicationAdapter getApplicationAdapter();
+
+	public SessionAdapter getSessionAdapter();
+	
+	public RequestAdapter getRequestAdapter();
+	
+	public ResponseAdapter getResponseAdapter();
+
 	public BeanRegistry getBeanRegistry();
-	
-	public boolean isExceptionRaised();
-
-	public Exception getRaisedException();
-
-	public void setRaisedException(Exception raisedException);
 	
 	public Object getTransletSetting(String settingName);
 	

@@ -115,13 +115,13 @@ public abstract interface Translet {
 	
 	public void forward(ForwardResponseRule forwardResponseRule) throws ResponseException;
 	
-	public RequestAdapter getRequestAdapter();
-	
-	public ResponseAdapter getResponseAdapter();
+	public ApplicationAdapter getApplicationAdapter();
 	
 	public SessionAdapter getSessionAdapter();
 	
-	public ApplicationAdapter getApplicationAdapter();
+	public RequestAdapter getRequestAdapter();
+	
+	public ResponseAdapter getResponseAdapter();
 	
 	public <T> T getRequestAdaptee();
 	
