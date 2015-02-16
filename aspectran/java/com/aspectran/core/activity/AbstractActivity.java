@@ -32,15 +32,15 @@ import com.aspectran.core.context.translet.TransletInstantiationException;
 public abstract class AbstractActivity {
 
 	private ApplicationAdapter applicationAdapter;
+
+	/** The session adapter. */
+	private SessionAdapter sessionAdapter;
 	
 	/** The request adapter. */
 	private RequestAdapter requestAdapter;
 
 	/** The response adapter. */
 	private ResponseAdapter responseAdapter;
-
-	/** The session adapter. */
-	private SessionAdapter sessionAdapter;
 
 	protected AbstractActivity(ApplicationAdapter applicationAdapter) {
 		this.applicationAdapter = applicationAdapter;
@@ -115,6 +115,5 @@ public abstract class AbstractActivity {
 			throw new TransletInstantiationException(transletImplementClass, e);
 		}
 	}
-
 	
 }
