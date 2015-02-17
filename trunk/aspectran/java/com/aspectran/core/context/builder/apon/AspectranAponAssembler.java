@@ -20,6 +20,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.aspectran.core.activity.process.ActionList;
+import com.aspectran.core.activity.process.ContentList;
 import com.aspectran.core.activity.variable.token.Token;
 import com.aspectran.core.context.builder.ContextBuilderAssistant;
 import com.aspectran.core.context.builder.apon.params.ActionParameters;
@@ -27,6 +28,7 @@ import com.aspectran.core.context.builder.apon.params.AdviceParameters;
 import com.aspectran.core.context.builder.apon.params.AspectParameters;
 import com.aspectran.core.context.builder.apon.params.AspectranParameters;
 import com.aspectran.core.context.builder.apon.params.BeanParameters;
+import com.aspectran.core.context.builder.apon.params.ContentParameters;
 import com.aspectran.core.context.builder.apon.params.DispatchParameters;
 import com.aspectran.core.context.builder.apon.params.ExceptionRaizedParameters;
 import com.aspectran.core.context.builder.apon.params.ForwardParameters;
@@ -164,20 +166,44 @@ public class AspectranAponAssembler {
 		if(requestParamters != null)
 			assembleRequestRule(requestParamters);
 		
-		
 		List<Parameters> contentParamtersList = transletParameters.getParametersList(TransletParameters.contents);
+		if(contentParamtersList != null && !contentParamtersList.isEmpty()) {
+			ContentList contentList = new ContentList();
+			for(Parameters contentParamters : contentParamtersList) {
+				assembleContentRule(contentParamters, contentList);
+			}
+		}
+		
+		
+		
 		List<Parameters> reponseParamtersList = transletParameters.getParametersList(TransletParameters.responses);
 		Parameters exceptionParamters = transletParameters.getParameters(TransletParameters.exception);
 		
 	
 	}
 	
-	public RequestRule assembleRequestRule(Parameters requestParameters) {
-//		method = new ParameterDefine("method", ParameterValueType.STRING);
-//		characterEncoding = new ParameterDefine("characterEncoding", ParameterValueType.STRING);
-//		attributes = new ParameterDefine("attribute", new ItemParameters(), true);
-//		multipart = new ParameterDefine("multipart", new MultipartParameters());
+	public void assembleContentRule(Parameters contentParameters, ContentList contentList) {
+//		id = new ParameterDefine("id", ParameterValueType.STRING);
+//		hidden = new ParameterDefine("hidden", ParameterValueType.BOOLEAN);
+//		actions = new ParameterDefine("action", new ActionParameters(), true);
+
 		
+		String id = contentParameters.getString(ContentParameters.id);
+		Boolean hidden = contentParameters.getBoolean(ContentParameters.hidden);
+		List<Parameters> actionParamsList = contentParameters.getParametersList(ContentParameters.actions);
+		
+		ActionList actionList = ActionList.newInstance(id, hidden, contentList);
+
+		if(actionParamsList != null && !actionParamsList.isEmpty()) {
+			for(Parameters actionParameters : actionParamsList) {
+				assembleActionRule(actionParameters, actionList);
+			}
+		}
+		
+		contentList.addActionList(actionList);
+	}
+	
+	public RequestRule assembleRequestRule(Parameters requestParameters) {
 		String method = requestParameters.getString(RequestParameters.method);
 		String characterEncoding = requestParameters.getString(RequestParameters.characterEncoding);
 		List<Parameters> attributeParamsList = requestParameters.getParametersList(RequestParameters.attributes);

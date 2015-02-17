@@ -64,7 +64,6 @@ public class ActionRuleNodeletAdder implements NodeletAdder {
 					throw new IllegalArgumentException("The <echo> element requires a id attribute.");
 				
 				EchoActionRule echoActionRule = EchoActionRule.newInstance(id, hidden);
-
 				assistant.pushObject(echoActionRule);
 				
 				ItemRuleMap irm = new ItemRuleMap();
@@ -96,7 +95,6 @@ public class ActionRuleNodeletAdder implements NodeletAdder {
 					throw new IllegalArgumentException("The <action> element requires a id attribute.");
 				
 				BeanActionRule beanActionRule = BeanActionRule.newInstance(id, beanId, methodName, hidden);
-
 				assistant.pushObject(beanActionRule);
 			}
 		});
@@ -158,7 +156,6 @@ public class ActionRuleNodeletAdder implements NodeletAdder {
 					throw new IllegalArgumentException("The <include> element requires a id attribute.");
 				
 				IncludeActionRule includeActionRule = IncludeActionRule.newInstance(id, transletName, hidden);
-
 				assistant.pushObject(includeActionRule);
 			}
 		});

@@ -25,6 +25,7 @@ import com.aspectran.core.context.rule.BeanActionRule;
 import com.aspectran.core.context.rule.EchoActionRule;
 import com.aspectran.core.context.rule.IncludeActionRule;
 import com.aspectran.core.context.rule.ability.ActionRuleApplicable;
+import com.aspectran.core.util.BooleanUtils;
 
 /**
  * The action list class.
@@ -36,14 +37,16 @@ public class ActionList extends ArrayList<Executable> implements ActionRuleAppli
 	/** @serial */
 	static final long serialVersionUID = 4636431127789162551L;
 
-	private String contentId;
+	private final String contentId;
 
-	private boolean hidden;
+	private Boolean hidden;
 	
-	private ContentList parent;
+	private Boolean omittable;
+	
+	private final ContentList parent;
 
 	public ActionList() {
-		super();
+		this(null, null);
 	}
 	
 	/**
@@ -72,6 +75,10 @@ public class ActionList extends ArrayList<Executable> implements ActionRuleAppli
 	 * @return true, if is hidden
 	 */
 	public boolean isHidden() {
+		return BooleanUtils.toBoolean(hidden);
+	}
+
+	public Boolean getHidden() {
 		return hidden;
 	}
 
@@ -80,8 +87,20 @@ public class ActionList extends ArrayList<Executable> implements ActionRuleAppli
 	 * 
 	 * @param hidden the new hidden
 	 */
-	public void setHidden(boolean hidden) {
+	public void setHidden(Boolean hidden) {
 		this.hidden = hidden;
+	}
+
+	public boolean isOmittable() {
+		return BooleanUtils.toBoolean(omittable);
+	}
+	
+	public Boolean getOmittable() {
+		return omittable;
+	}
+
+	public void setOmittable(Boolean omittable) {
+		this.omittable = omittable;
 	}
 
 	/**
@@ -138,6 +157,7 @@ public class ActionList extends ArrayList<Executable> implements ActionRuleAppli
 
 		sb.append("{id=").append(contentId);
 		sb.append(", hidden=").append(hidden);
+		sb.append(", omittable=").append(omittable);
 		sb.append(", executables=");
 
 		if(size() > 0) {
@@ -159,4 +179,14 @@ public class ActionList extends ArrayList<Executable> implements ActionRuleAppli
 
 		return sb.toString();
 	}
+	
+	public static ActionList newInstance(String id, Boolean hidden, ContentList contentList) {
+		ActionList actionList = new ActionList(id, contentList);
+		
+		if(hidden != null)
+			actionList.setHidden(hidden);
+		
+		return actionList;
+	}
+	
 }

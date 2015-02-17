@@ -124,6 +124,13 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 		this.contentList = contentList;
 	}
 
+	public synchronized ContentList touchContentList() {
+		if(contentList == null)
+			contentList = new ContentList();
+		
+		return contentList;
+	}
+	
 	/**
 	 * Gets the response rule.
 	 * 
@@ -229,9 +236,7 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 		if(actionList == null)
 			return;
 		
-		if(contentList == null)
-			contentList = new ContentList();
-		
+		touchContentList();		
 		contentList.add(actionList);
 	}
 

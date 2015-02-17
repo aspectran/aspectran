@@ -47,7 +47,7 @@ public class ContentsXMLReader implements XMLReader {
 
 	private static final String CONTENT_TAG = "content";
 
-	private static final String RESULTS_TAG = "results";
+	private static final String RESULT_TAG = "result";
 
 	private static final String INCLUDE_TAG = "include";
 
@@ -196,7 +196,7 @@ public class ContentsXMLReader implements XMLReader {
 
 			handler.startDocument();
 
-			if(processResult == null || processResult.size() == 0) {
+			if(processResult == null || processResult.isEmpty()) {
 				handler.startElement(StringUtils.EMPTY, EMPTY_TAG, EMPTY_TAG, nullAttrs);
 				handler.endElement(StringUtils.EMPTY, EMPTY_TAG, EMPTY_TAG);
 			} else {
@@ -246,9 +246,9 @@ public class ContentsXMLReader implements XMLReader {
 					parse((ProcessResult)resultValue);
 					handler.endElement(StringUtils.EMPTY, INCLUDE_TAG, INCLUDE_TAG);
 				} else {
-					handler.startElement(StringUtils.EMPTY, RESULTS_TAG, RESULTS_TAG, resultsAttrs);
+					handler.startElement(StringUtils.EMPTY, RESULT_TAG, RESULT_TAG, resultsAttrs);
 					parse(resultValue);
-					handler.endElement(StringUtils.EMPTY, RESULTS_TAG, RESULTS_TAG);
+					handler.endElement(StringUtils.EMPTY, RESULT_TAG, RESULT_TAG);
 				}
 			}
 
