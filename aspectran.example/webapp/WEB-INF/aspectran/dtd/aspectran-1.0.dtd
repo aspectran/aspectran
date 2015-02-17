@@ -90,34 +90,28 @@ override (true | false) #IMPLIED
 <!ELEMENT important (#PCDATA)>
 <!ELEMENT constructor (argument?)>
 
-<!ELEMENT translet ((request?, (echo? | action? | include?)*, (transform | dispatch | redirect | forward)?) | (request?, contents?, response*, exception?))>
+<!ELEMENT translet ((request?, (echo? | action? | include?)*, (transform | dispatch | redirect | forward)?) | (request?, content*, contents?, response*, exception?))>
 <!ATTLIST translet
 name CDATA #REQUIRED
 hidden (true | false) #IMPLIED
 extends CDATA #IMPLIED
 >
 
-<!ELEMENT request (attribute?, multipart?)>
+<!ELEMENT request (attribute?)>
 <!ATTLIST request
 method CDATA #IMPLIED
 characterEncoding CDATA #IMPLIED
 >
 
-<!ELEMENT multipart (fileItem*)>
-<!ATTLIST fileItem
-attribute (true | false) #IMPLIED
->
-
-<!ELEMENT fileItem EMPTY>
-<!ATTLIST fileItem
-name CDATA #REQUIRED
->
-
 <!ELEMENT contents (content*)>
+<!ATTLIST content
+name CDATA #IMPLIED
+>
 
 <!ELEMENT content (echo? | action? | include?)*>
 <!ATTLIST content
 id CDATA #IMPLIED
+name CDATA #IMPLIED
 hidden (true | false) #IMPLIED
 >
 
