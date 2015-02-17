@@ -17,8 +17,6 @@ package com.aspectran.core.activity;
 
 import java.util.Map;
 
-import com.aspectran.core.activity.process.result.ActionResult;
-import com.aspectran.core.activity.process.result.ContentResult;
 import com.aspectran.core.activity.process.result.ProcessResult;
 import com.aspectran.core.activity.response.ResponseException;
 import com.aspectran.core.activity.response.Responsible;
@@ -71,28 +69,10 @@ public abstract interface Translet {
 	 */
 	public void setProcessResult(ProcessResult processResult);
 
-	/**
-	 * Adds the content result.
-	 * 
-	 * @param contentResult the content result
-	 */
-	public void addContentResult(ContentResult contentResult);
-
-	/**
-	 * Adds the action result.
-	 *
-	 * @param actionResult the action result
-	 */
-	public void addActionResult(ActionResult actionResult);
+	public ProcessResult touchProcessResult();
 	
-	/**
-	 * Adds the action result.
-	 *
-	 * @param actionId the action id
-	 * @param resultValue the result value
-	 */
-	public void addActionResult(String actionId, Object resultValue);
-
+	public ProcessResult touchProcessResult(String contentName);
+	
 	/**
 	 * Response.
 	 * 

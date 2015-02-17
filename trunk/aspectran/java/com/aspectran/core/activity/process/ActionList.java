@@ -37,14 +37,16 @@ public class ActionList extends ArrayList<Executable> implements ActionRuleAppli
 	/** @serial */
 	static final long serialVersionUID = 4636431127789162551L;
 
+	private String name;
+	
 	private final String contentId;
 
+	private final ContentList parent;
+	
 	private Boolean hidden;
 	
 	private Boolean omittable;
 	
-	private final ContentList parent;
-
 	public ActionList() {
 		this(null, null);
 	}
@@ -60,6 +62,14 @@ public class ActionList extends ArrayList<Executable> implements ActionRuleAppli
 		this.parent = parent;
 	}
 	
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
 	/**
 	 * Gets the content id.
 	 * 

@@ -25,6 +25,26 @@ public class ProcessResult extends ArrayList<ContentResult> {
 	/** @serial */
 	static final long serialVersionUID = 4734650376929217378L;
 
+	private String name;
+	
+	private boolean omittable;
+	
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public boolean isOmittable() {
+		return omittable;
+	}
+
+	public void setOmittable(boolean omittable) {
+		this.omittable = omittable;
+	}
+
 	/**
 	 * Adds the content result.
 	 * 
@@ -34,7 +54,16 @@ public class ProcessResult extends ArrayList<ContentResult> {
 		add(contentResult);
 	}
 	
-	public ActionResult getActionResult(String actionId) {
+	public ContentResult findContentResult(String contentId) {
+		for(ContentResult contentResult : this) {
+			if(contentResult.getContentId() != null && contentResult.getContentId().equals(contentId))
+				return contentResult;
+		}
+		
+		return null;
+	}
+	
+	public ActionResult findActionResult(String actionId) {
 		for(ContentResult contentResult : this) {
 			ActionResult actionResult = contentResult.getActionResult(actionId);
 			
@@ -46,7 +75,7 @@ public class ProcessResult extends ArrayList<ContentResult> {
 	}
 	
 	public Object getResultValue(String actionId) {
-		ActionResult actionResult = getActionResult(actionId);
+		ActionResult actionResult = findActionResult(actionId);
 		
 		if(actionResult != null)
 			return actionResult.getResultValue();

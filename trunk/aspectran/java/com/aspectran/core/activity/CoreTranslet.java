@@ -18,8 +18,6 @@ package com.aspectran.core.activity;
 import java.util.Map;
 
 import com.aspectran.core.activity.aspect.result.AspectAdviceResult;
-import com.aspectran.core.activity.process.result.ActionResult;
-import com.aspectran.core.activity.process.result.ContentResult;
 import com.aspectran.core.activity.process.result.ProcessResult;
 import com.aspectran.core.activity.response.ResponseException;
 import com.aspectran.core.activity.response.ResponseNotFoundException;
@@ -45,8 +43,6 @@ public class CoreTranslet implements Translet {
 	protected Map<String, Object> declaredAttributeMap;
 	
 	protected ProcessResult processResult;
-	
-	private ContentResult contentResult;
 	
 	private AspectAdviceResult aspectAdviceResult;
 	
@@ -86,32 +82,21 @@ public class CoreTranslet implements Translet {
 		this.processResult = processResult;
 	}
 
-	/**
-	 * Adds the content result.
-	 * 
-	 * @param contentResult the content result
-	 */
-	public void addContentResult(ContentResult contentResult) {
-		if(processResult == null)
+	public ProcessResult touchProcessResult() {
+		return touchProcessResult(null);
+	}
+	
+	public ProcessResult touchProcessResult(String contentsName) {
+		if(processResult == null) {
 			processResult = new ProcessResult();
-		
-		processResult.add(contentResult);
-		
-		this.contentResult = contentResult;
-	}
-	
-	public void addActionResult(ActionResult actionResult) {
-		if(contentResult != null) {
-			contentResult.add(actionResult);
+			
+			if(contentsName != null)
+				processResult.setName(contentsName);
 		}
-	}
-	
-	public void addActionResult(String actionId, Object resultValue) {
-		if(contentResult != null) {
-			contentResult.addActionResult(actionId, resultValue);
-		}
-	}
 
+		return processResult;
+	}
+	
 	public void response() {
 		activity.activityEnd();
 	}

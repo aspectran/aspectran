@@ -669,22 +669,33 @@ public class CoreActivity extends AbstractActivity implements Activity {
 			logger.debug("executable actions " + actionList.toString());
 		}
 		
+		ContentResult contentResult = null;
+		
 		if(!actionList.isHidden()) {
-			ContentResult contentResult = new ContentResult();
+			contentResult = new ContentResult();
+			contentResult.setName(actionList.getName());
 			contentResult.setContentId(actionList.getContentId());
+			contentResult.setOmittable(actionList.isOmittable());
 
-			translet.addContentResult(contentResult);
+			ContentList contentList = actionList.getParent();
+			String contentsName = contentList != null ? contentList.getName() : null;
+			
+			ProcessResult processResult = translet.touchProcessResult(contentsName);
+			processResult.addContentResult(contentResult);
+			
+			if(contentList != null && contentList.isOmittable())
+				processResult.setOmittable(true);
 		}
 		
 		for(Executable action : actionList) {
-			execute(action);
+			execute(action, contentResult);
 			
 			if(activityEnded)
 				break;
 		}
 	}
 	
-	private void execute(Executable action) throws ActionExecutionException {
+	private void execute(Executable action, ContentResult contentResult) throws ActionExecutionException {
 		if(debugEnabled)
 			logger.debug("execute action " + action.toString());
 		
@@ -694,8 +705,8 @@ public class CoreActivity extends AbstractActivity implements Activity {
 			//if(debugEnabled)
 			//	logger.debug("action " + action + " result: " + resultValue);
 			
-			if(!action.isHidden() && resultValue != ActionResult.NO_RESULT) {
-				translet.addActionResult(action.getActionId(), resultValue);
+			if(contentResult != null && !action.isHidden() && resultValue != ActionResult.NO_RESULT) {
+				contentResult.addActionResult(action.getActionId(), resultValue);
 				
 				if(debugEnabled)
 					logger.debug("actionResult [" + resultValue + "] action " + action.toString());

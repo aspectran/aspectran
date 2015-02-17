@@ -49,7 +49,7 @@ public class ContentsXMLReader implements XMLReader {
 
 	private static final String RESULT_TAG = "result";
 
-	private static final String INCLUDE_TAG = "include";
+	//private static final String INCLUDE_TAG = "include";
 
 	private static final String ROWS_TAG = "rows";
 
@@ -196,13 +196,27 @@ public class ContentsXMLReader implements XMLReader {
 
 			handler.startDocument();
 
-			if(processResult == null || processResult.isEmpty()) {
+			if(processResult != null && !processResult.isEmpty()) {
+				String contentsName = processResult.getName();
+				
+				if(!processResult.isOmittable()) {
+					if(contentsName != null)
+						handler.startElement(StringUtils.EMPTY, contentsName, contentsName, nullAttrs);
+					else
+						handler.startElement(StringUtils.EMPTY, CONTENTS_TAG, CONTENTS_TAG, nullAttrs);
+				}
+				
+				parse(processResult);
+
+				if(!processResult.isOmittable()) {
+					if(contentsName != null)
+						handler.endElement(StringUtils.EMPTY, contentsName, contentsName);
+					else
+						handler.endElement(StringUtils.EMPTY, CONTENTS_TAG, CONTENTS_TAG);
+				}
+			} else {
 				handler.startElement(StringUtils.EMPTY, EMPTY_TAG, EMPTY_TAG, nullAttrs);
 				handler.endElement(StringUtils.EMPTY, EMPTY_TAG, EMPTY_TAG);
-			} else {
-				handler.startElement(StringUtils.EMPTY, CONTENTS_TAG, CONTENTS_TAG, nullAttrs);
-				parse(processResult);
-				handler.endElement(StringUtils.EMPTY, CONTENTS_TAG, CONTENTS_TAG);
 			}
 
 			handler.endDocument();
@@ -231,7 +245,14 @@ public class ContentsXMLReader implements XMLReader {
 			else
 				contentAttrs.addAttribute(null, ID_STRING, ID_STRING, null, contentResult.getContentId());
 
-			handler.startElement(StringUtils.EMPTY, CONTENT_TAG, CONTENT_TAG, contentAttrs);
+			String contentName = contentResult.getName();
+			
+			if(!contentResult.isOmittable()) {
+				if(contentName != null)
+					handler.startElement(StringUtils.EMPTY, contentName, contentName, contentAttrs);
+				else
+					handler.startElement(StringUtils.EMPTY, CONTENT_TAG, CONTENT_TAG, contentAttrs);
+			}
 
 			for(ActionResult actionResult : contentResult) {
 				if(actionResult.getActionId() == null)
@@ -242,9 +263,9 @@ public class ContentsXMLReader implements XMLReader {
 				Object resultValue = actionResult.getResultValue();
 
 				if(resultValue instanceof ProcessResult) {
-					handler.startElement(StringUtils.EMPTY, INCLUDE_TAG, INCLUDE_TAG, resultsAttrs);
+					//handler.startElement(StringUtils.EMPTY, INCLUDE_TAG, INCLUDE_TAG, resultsAttrs);
 					parse((ProcessResult)resultValue);
-					handler.endElement(StringUtils.EMPTY, INCLUDE_TAG, INCLUDE_TAG);
+					//handler.endElement(StringUtils.EMPTY, INCLUDE_TAG, INCLUDE_TAG);
 				} else {
 					handler.startElement(StringUtils.EMPTY, RESULT_TAG, RESULT_TAG, resultsAttrs);
 					parse(resultValue);
@@ -252,7 +273,12 @@ public class ContentsXMLReader implements XMLReader {
 				}
 			}
 
-			handler.endElement(StringUtils.EMPTY, CONTENT_TAG, CONTENT_TAG);
+			if(!contentResult.isOmittable()) {
+				if(contentResult.getName() != null)
+					handler.endElement(StringUtils.EMPTY, contentName, contentName);
+				else
+					handler.endElement(StringUtils.EMPTY, CONTENT_TAG, CONTENT_TAG);
+			}
 		}
 	}
 
