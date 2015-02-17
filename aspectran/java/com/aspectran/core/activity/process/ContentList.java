@@ -21,6 +21,7 @@ import java.util.List;
 import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
 import com.aspectran.core.context.rule.AspectAdviceRule;
 import com.aspectran.core.context.rule.AspectAdviceSupport;
+import com.aspectran.core.util.BooleanUtils;
 
 /**
  * Then content list class.
@@ -32,8 +33,22 @@ public class ContentList extends ArrayList<ActionList> implements AspectAdviceSu
 	/** @serial */
 	static final long serialVersionUID = 2567969961069441527L;
 	
+	private Boolean omittable;
+	
 	private AspectAdviceRuleRegistry aspectAdviceRuleRegistry;
 
+	public boolean isOmittable() {
+		return BooleanUtils.toBoolean(omittable);
+	}
+
+	public Boolean getOmittable() {
+		return omittable;
+	}
+
+	public void setOmittable(Boolean omittable) {
+		this.omittable = omittable;
+	}
+	
 	/**
 	 * Adds the action list.
 	 * 
@@ -92,19 +107,14 @@ public class ContentList extends ArrayList<ActionList> implements AspectAdviceSu
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		
 		if(size() > 0) {
 			sb.append('[');
-			
 			for(int i = 0; i < size(); i++) {
 				ActionList content = get(i);
-
 				if(i > 0)
 					sb.append(", ");
-				
 				sb.append(content.toString());
 			}
-
 			sb.append(']');
 		}
 		

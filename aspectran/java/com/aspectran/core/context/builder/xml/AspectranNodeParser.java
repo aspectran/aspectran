@@ -494,9 +494,7 @@ public class AspectranNodeParser {
 					throw new IllegalArgumentException("The <content> element requires a id attribute.");
 				
 				ContentList contentList = (ContentList)assistant.peekObject();
-				ActionList actionList = new ActionList(id, contentList);
-				actionList.setHidden(hidden);
-
+				ActionList actionList = ActionList.newInstance(id, hidden, contentList);
 				assistant.pushObject(actionList);
 			}
 		});

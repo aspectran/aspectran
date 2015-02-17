@@ -8,16 +8,19 @@ import com.aspectran.core.util.apon.Parameters;
 public class ContentParameters extends AbstractParameters implements Parameters {
 
 	public static final ParameterDefine id;
+	public static final ParameterDefine hidden;
 	public static final ParameterDefine actions;
 	
 	private static final ParameterDefine[] parameterDefines;
 	
 	static {
 		id = new ParameterDefine("id", ParameterValueType.STRING);
+		hidden = new ParameterDefine("hidden", ParameterValueType.BOOLEAN);
 		actions = new ParameterDefine("action", new ActionParameters(), true);
 		
 		parameterDefines = new ParameterDefine[] {
 				id,
+				hidden,
 				actions
 		};
 	}
