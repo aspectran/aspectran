@@ -33,9 +33,19 @@ public class ContentList extends ArrayList<ActionList> implements AspectAdviceSu
 	/** @serial */
 	static final long serialVersionUID = 2567969961069441527L;
 	
+	private String name;
+	
 	private Boolean omittable;
 	
 	private AspectAdviceRuleRegistry aspectAdviceRuleRegistry;
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
 
 	public boolean isOmittable() {
 		return BooleanUtils.toBoolean(omittable);

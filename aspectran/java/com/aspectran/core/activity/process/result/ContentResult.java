@@ -25,8 +25,20 @@ public class ContentResult extends ArrayList<ActionResult> {
 	/** @serial */
 	static final long serialVersionUID = 7394299260107452305L;
 	
+	private String name;
+	
 	private String contentId;
 	
+	private boolean omittable;
+	
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
 	/**
 	 * Gets the content id.
 	 * 
@@ -54,6 +66,14 @@ public class ContentResult extends ArrayList<ActionResult> {
 		return null;
 	}
 	
+	public boolean isOmittable() {
+		return omittable;
+	}
+
+	public void setOmittable(boolean omittable) {
+		this.omittable = omittable;
+	}
+
 	/**
 	 * Adds the action result.
 	 * 
