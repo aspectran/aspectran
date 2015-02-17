@@ -301,7 +301,8 @@ aspectran: {
 		}
 		content: [
 			{
-				id: echo
+				id: content1
+				hidden: false;
 				action: [
 					{
 						id: action1
