@@ -2,12 +2,15 @@ package com.aspectran.core.context.builder.apon.params;
 
 import com.aspectran.core.util.apon.AbstractParameters;
 import com.aspectran.core.util.apon.ParameterDefine;
+import com.aspectran.core.util.apon.ParameterValueType;
 import com.aspectran.core.util.apon.Parameters;
 
 public class TransletParameters extends AbstractParameters implements Parameters {
 
+	public static final ParameterDefine name;
 	public static final ParameterDefine request;
-	public static final ParameterDefine contents;
+	public static final ParameterDefine contents1;
+	public static final ParameterDefine contents2;
 	public static final ParameterDefine responses;
 	public static final ParameterDefine exception;
 	public static final ParameterDefine actions;
@@ -19,8 +22,10 @@ public class TransletParameters extends AbstractParameters implements Parameters
 	private static final ParameterDefine[] parameterDefines;
 	
 	static {
+		name = new ParameterDefine("name", ParameterValueType.STRING);
 		request = new ParameterDefine("request", new RequestParameters());
-		contents = new ParameterDefine("content", new ContentParameters(), true);
+		contents1 = new ParameterDefine("contents", new ContentParameters());
+		contents2 = new ParameterDefine("content", new ContentParameters(), true);
 		responses = new ParameterDefine("response", new ResponseParameters(), true);
 		exception = new ParameterDefine("exception", new ExceptionParameters(), true);
 		actions = new ParameterDefine("action", new ActionParameters(), true);
@@ -30,8 +35,10 @@ public class TransletParameters extends AbstractParameters implements Parameters
 		forwards = new ParameterDefine("forward", new ForwardParameters(), true);
 		
 		parameterDefines = new ParameterDefine[] {
+				name,
 				request,
-				contents,
+				contents1,
+				contents2,
 				responses,
 				exception,
 				actions,

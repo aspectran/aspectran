@@ -104,14 +104,16 @@ characterEncoding CDATA #IMPLIED
 >
 
 <!ELEMENT contents (content*)>
-<!ATTLIST content
+<!ATTLIST contents
 name CDATA #IMPLIED
+omittable (true | false) #IMPLIED
 >
 
 <!ELEMENT content (echo? | action? | include?)*>
 <!ATTLIST content
 id CDATA #IMPLIED
 name CDATA #IMPLIED
+omittable (true | false) #IMPLIED
 hidden (true | false) #IMPLIED
 >
 

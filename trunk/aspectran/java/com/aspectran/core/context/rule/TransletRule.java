@@ -125,8 +125,10 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 	}
 
 	public synchronized ContentList touchContentList() {
-		if(contentList == null)
+		if(contentList == null) {
 			contentList = new ContentList();
+			contentList.setOmittable(Boolean.TRUE);
+		}
 		
 		return contentList;
 	}

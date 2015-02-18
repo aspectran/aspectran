@@ -173,8 +173,10 @@ public class CoreActivity extends AbstractActivity implements Activity {
 		
 		TransletRule transletRule = context.getTransletRuleRegistry().getTransletRule(transletName);
 
-		if(transletRule == null)
+		if(transletRule == null) {
+			logger.debug("translet not found " + transletRule);
 			throw new TransletNotFoundException(transletName);
+		}
 		
 		if(debugEnabled) {
 			logger.debug("translet " + transletRule);
@@ -494,7 +496,16 @@ public class CoreActivity extends AbstractActivity implements Activity {
 	private ProcessResult process() throws ActivityException {
 		// execute action on contents area
 		ContentList contentList = transletRule.getContentList();
-		
+		System.out.println(contentList);
+		System.out.println(contentList);
+		System.out.println(contentList);
+		System.out.println(contentList);
+		System.out.println(contentList);
+		System.out.println(contentList);
+		System.out.println(contentList);
+		System.out.println(contentList);
+		System.out.println(contentList);
+
 		if(contentList != null) {
 			for(ActionList actionList : contentList) {
 				execute(actionList);
@@ -686,6 +697,17 @@ public class CoreActivity extends AbstractActivity implements Activity {
 			if(contentList != null && contentList.isOmittable())
 				processResult.setOmittable(true);
 		}
+
+		System.out.println(contentResult);
+		System.out.println(contentResult);
+		System.out.println(contentResult);
+		System.out.println(contentResult);
+		System.out.println(contentResult);
+		System.out.println(contentResult);
+		System.out.println(contentResult);
+		System.out.println(contentResult);
+		System.out.println(contentResult);
+		System.out.println(contentResult);
 		
 		for(Executable action : actionList) {
 			execute(action, contentResult);

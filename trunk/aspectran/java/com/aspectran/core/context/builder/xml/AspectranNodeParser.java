@@ -481,20 +481,26 @@ public class AspectranNodeParser {
 		});
 		parser.addNodelet("/aspectran/translet/contents", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
-				ContentList contentList = new ContentList();
+				String name = attributes.get("name");
+				Boolean omittable = BooleanUtils.toNullableBooleanObject(attributes.get("omittable"));
+				
+				ContentList contentList = ContentList.newInstance(name, omittable);
 				assistant.pushObject(contentList);
 			}
 		});
 		parser.addNodelet("/aspectran/translet/contents/content", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
 				String id = attributes.get("id");
+				String name = attributes.get("name");
+				Boolean omittable = BooleanUtils.toNullableBooleanObject(attributes.get("omittable"));
 				Boolean hidden = BooleanUtils.toNullableBooleanObject(attributes.get("hidden"));
 
 				if(!assistant.isNullableContentId() && StringUtils.isEmpty(id))
 					throw new IllegalArgumentException("The <content> element requires a id attribute.");
-				
+
 				ContentList contentList = (ContentList)assistant.peekObject();
-				ActionList actionList = ActionList.newInstance(id, hidden, contentList);
+				
+				ActionList actionList = ActionList.newInstance(id, name, omittable, hidden, contentList);
 				assistant.pushObject(actionList);
 			}
 		});
@@ -503,6 +509,7 @@ public class AspectranNodeParser {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
 				ActionList actionList = (ActionList)assistant.popObject();
 				ContentList contentList = (ContentList)assistant.peekObject();
+				
 				contentList.addActionList(actionList);
 			}
 		});
@@ -510,7 +517,36 @@ public class AspectranNodeParser {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
 				ContentList contentList = (ContentList)assistant.popObject();
 				TransletRule transletRule = (TransletRule)assistant.peekObject();
+				
 				transletRule.setContentList(contentList);
+			}
+		});
+		parser.addNodelet("/aspectran/translet/content", new Nodelet() {
+			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
+				String id = attributes.get("id");
+				String name = attributes.get("name");
+				Boolean omittable = BooleanUtils.toNullableBooleanObject(attributes.get("omittable"));
+				Boolean hidden = BooleanUtils.toNullableBooleanObject(attributes.get("hidden"));
+
+				if(!assistant.isNullableContentId() && StringUtils.isEmpty(id))
+					throw new IllegalArgumentException("The <content> element requires a id attribute.");
+
+				TransletRule transletRule = (TransletRule)assistant.peekObject();
+
+				ContentList contentList = transletRule.touchContentList();
+				assistant.pushObject(contentList);
+				
+				ActionList actionList = ActionList.newInstance(id, name, omittable, hidden, contentList);
+				assistant.pushObject(actionList);
+			}
+		});
+		parser.addNodelet("/aspectran/translet/content", new ActionRuleNodeletAdder(assistant));
+		parser.addNodelet("/aspectran/translet/content/end()", new Nodelet() {
+			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
+				ActionList actionList = (ActionList)assistant.popObject();
+				ContentList contentList = (ContentList)assistant.popObject();
+				
+				contentList.addActionList(actionList);
 			}
 		});
 		parser.addNodelet("/aspectran/translet/response", new Nodelet() {
