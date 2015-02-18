@@ -29,6 +29,7 @@ import com.aspectran.core.context.builder.apon.params.AspectParameters;
 import com.aspectran.core.context.builder.apon.params.AspectranParameters;
 import com.aspectran.core.context.builder.apon.params.BeanParameters;
 import com.aspectran.core.context.builder.apon.params.ContentParameters;
+import com.aspectran.core.context.builder.apon.params.ContentsParameters;
 import com.aspectran.core.context.builder.apon.params.DispatchParameters;
 import com.aspectran.core.context.builder.apon.params.ExceptionRaizedParameters;
 import com.aspectran.core.context.builder.apon.params.ForwardParameters;
@@ -58,6 +59,7 @@ import com.aspectran.core.context.rule.ResponseByContentTypeRule;
 import com.aspectran.core.context.rule.SettingsAdviceRule;
 import com.aspectran.core.context.rule.TemplateRule;
 import com.aspectran.core.context.rule.TransformRule;
+import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.ability.ActionRuleApplicable;
 import com.aspectran.core.context.rule.type.AspectAdviceType;
 import com.aspectran.core.context.rule.type.DefaultSettingType;
@@ -151,7 +153,7 @@ public class AspectranAponAssembler {
 		}
 	}
 
-	public void assembleTransletRule(Parameters transletParameters) {
+	public TransletRule assembleTransletRule(Parameters transletParameters) {
 //		request = new ParameterDefine("request", new RequestParameters());
 //		contents = new ParameterDefine("content", new ContentParameters(), true);
 //		responses = new ParameterDefine("response", new ResponseParameters(), true);
@@ -162,15 +164,27 @@ public class AspectranAponAssembler {
 //		redirects = new ParameterDefine("redirect", new RedirectParameters(), true);
 //		forwards = new ParameterDefine("forward", new ForwardParameters(), true);
 		
-		Parameters requestParamters = transletParameters.getParameters(TransletParameters.request);
-		if(requestParamters != null)
-			assembleRequestRule(requestParamters);
+		String name = transletParameters.getString(TransletParameters.name);
+		TransletRule transletRule = TransletRule.newInstance(name);
 		
-		List<Parameters> contentParamtersList = transletParameters.getParametersList(TransletParameters.contents);
-		if(contentParamtersList != null && !contentParamtersList.isEmpty()) {
-			ContentList contentList = new ContentList();
-			for(Parameters contentParamters : contentParamtersList) {
-				assembleContentRule(contentParamters, contentList);
+		Parameters requestParamters = transletParameters.getParameters(TransletParameters.request);
+		if(requestParamters != null) {
+			RequestRule requestRule = assembleRequestRule(requestParamters);
+			transletRule.setRequestRule(requestRule);
+		}
+		
+		Parameters contentsParameters = transletParameters.getParameters(TransletParameters.contents1);
+		if(contentsParameters != null) {
+			ContentList contentList = assembleContentList(contentsParameters);
+			transletRule.setContentList(contentList);
+		}
+		
+		List<Parameters> contentParametersList = transletParameters.getParametersList(TransletParameters.contents2);
+		if(contentParametersList != null && !contentParametersList.isEmpty()) {
+			ContentList contentList = transletRule.touchContentList();
+			for(Parameters contentParamters : contentParametersList) {
+				ActionList actionList = assembleActionList(contentParamters, contentList);
+				contentList.addActionList(actionList);
 			}
 		}
 		
@@ -179,20 +193,34 @@ public class AspectranAponAssembler {
 		List<Parameters> reponseParamtersList = transletParameters.getParametersList(TransletParameters.responses);
 		Parameters exceptionParamters = transletParameters.getParameters(TransletParameters.exception);
 		
-	
+		return transletRule;
 	}
 	
-	public void assembleContentRule(Parameters contentParameters, ContentList contentList) {
-//		id = new ParameterDefine("id", ParameterValueType.STRING);
-//		hidden = new ParameterDefine("hidden", ParameterValueType.BOOLEAN);
-//		actions = new ParameterDefine("action", new ActionParameters(), true);
-
+	public ContentList assembleContentList(Parameters contentsParameters) {
+		String name = contentsParameters.getString(ContentsParameters.name);
+		Boolean omittable = contentsParameters.getBoolean(ContentsParameters.omittable);
+		List<Parameters> contentParametersList = contentsParameters.getParametersList(ContentsParameters.contents);
 		
+		ContentList contentList = ContentList.newInstance(name, omittable);
+		
+		if(contentParametersList != null) {
+			for(Parameters contentParamters : contentParametersList) {
+				ActionList actionList = assembleActionList(contentParamters, contentList);
+				contentList.addActionList(actionList);
+			}
+		}
+		
+		return contentList;
+	}
+	
+	public ActionList assembleActionList(Parameters contentParameters, ContentList contentList) {
 		String id = contentParameters.getString(ContentParameters.id);
+		String name = contentParameters.getString(ContentParameters.name);
+		Boolean omittable = contentParameters.getBoolean(ContentParameters.omittable);
 		Boolean hidden = contentParameters.getBoolean(ContentParameters.hidden);
 		List<Parameters> actionParamsList = contentParameters.getParametersList(ContentParameters.actions);
 		
-		ActionList actionList = ActionList.newInstance(id, hidden, contentList);
+		ActionList actionList = ActionList.newInstance(id, name, omittable, hidden, contentList);
 
 		if(actionParamsList != null && !actionParamsList.isEmpty()) {
 			for(Parameters actionParameters : actionParamsList) {
@@ -200,7 +228,7 @@ public class AspectranAponAssembler {
 			}
 		}
 		
-		contentList.addActionList(actionList);
+		return actionList;
 	}
 	
 	public RequestRule assembleRequestRule(Parameters requestParameters) {

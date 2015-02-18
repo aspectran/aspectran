@@ -117,17 +117,27 @@ public class ContentList extends ArrayList<ActionList> implements AspectAdviceSu
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		if(size() > 0) {
-			sb.append('[');
-			for(int i = 0; i < size(); i++) {
-				ActionList content = get(i);
-				if(i > 0)
-					sb.append(", ");
-				sb.append(content.toString());
-			}
-			sb.append(']');
+		sb.append("{name=").append(name);
+		sb.append(", omittable=").append(omittable);
+		sb.append(", contents=");
+		sb.append('[');
+		for(int i = 0; i < size(); i++) {
+			ActionList content = get(i);
+			if(i > 0)
+				sb.append(", ");
+			sb.append(content.toString());
 		}
+		sb.append(']');
 		
 		return sb.toString();
 	}
+	
+	public static ContentList newInstance(String name, Boolean omittable) {
+		ContentList contentList = new ContentList();
+		contentList.setName(name);
+		contentList.setOmittable(omittable);
+		
+		return contentList;
+	}
+	
 }

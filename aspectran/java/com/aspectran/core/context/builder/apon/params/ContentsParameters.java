@@ -5,38 +5,32 @@ import com.aspectran.core.util.apon.ParameterDefine;
 import com.aspectran.core.util.apon.ParameterValueType;
 import com.aspectran.core.util.apon.Parameters;
 
-public class ContentParameters extends AbstractParameters implements Parameters {
+public class ContentsParameters extends AbstractParameters implements Parameters {
 
-	public static final ParameterDefine id;
 	public static final ParameterDefine name;
 	public static final ParameterDefine omittable;
-	public static final ParameterDefine hidden;
-	public static final ParameterDefine actions;
+	public static final ParameterDefine contents;
 	
 	private static final ParameterDefine[] parameterDefines;
 	
 	static {
-		id = new ParameterDefine("id", ParameterValueType.STRING);
 		name = new ParameterDefine("name", ParameterValueType.STRING);
 		omittable = new ParameterDefine("omittable", ParameterValueType.BOOLEAN);
-		hidden = new ParameterDefine("hidden", ParameterValueType.BOOLEAN);
-		actions = new ParameterDefine("action", new ActionParameters(), true);
+		contents = new ParameterDefine("content", new ContentParameters(), true);
 		
 		parameterDefines = new ParameterDefine[] {
-				id,
 				name,
 				omittable,
-				hidden,
-				actions
+				contents
 		};
 	}
 	
-	public ContentParameters() {
-		super(ContentParameters.class.getName(), parameterDefines);
+	public ContentsParameters() {
+		super(ContentsParameters.class.getName(), parameterDefines);
 	}
 	
-	public ContentParameters(String plaintext) {
-		super(ContentParameters.class.getName(), parameterDefines, plaintext);
+	public ContentsParameters(String plaintext) {
+		super(ContentsParameters.class.getName(), parameterDefines, plaintext);
 	}
 	
 }

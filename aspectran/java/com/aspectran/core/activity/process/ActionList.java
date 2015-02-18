@@ -164,37 +164,30 @@ public class ActionList extends ArrayList<Executable> implements ActionRuleAppli
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-
 		sb.append("{id=").append(contentId);
 		sb.append(", hidden=").append(hidden);
 		sb.append(", omittable=").append(omittable);
 		sb.append(", executables=");
+		sb.append('[');
+		for(int i = 0; i < size(); i++) {
+			Executable action = get(i);
 
-		if(size() > 0) {
-			sb.append('[');
+			if(i > 0)
+				sb.append(", ");
 
-			for(int i = 0; i < size(); i++) {
-				Executable action = get(i);
-
-				if(i > 0)
-					sb.append(", ");
-
-				sb.append(action.getActionId());
-			}
-
-			sb.append(']');
+			sb.append(action.getActionId());
 		}
-
+		sb.append(']');
 		sb.append("}");
 
 		return sb.toString();
 	}
 	
-	public static ActionList newInstance(String id, Boolean hidden, ContentList contentList) {
+	public static ActionList newInstance(String id, String name, Boolean omittable, Boolean hidden, ContentList contentList) {
 		ActionList actionList = new ActionList(id, contentList);
-		
-		if(hidden != null)
-			actionList.setHidden(hidden);
+		actionList.setName(name);
+		actionList.setOmittable(omittable);
+		actionList.setHidden(hidden);
 		
 		return actionList;
 	}
