@@ -58,16 +58,16 @@ public class AspectAdviceRule implements ActionRuleApplicable {
 		return aspectAdviceType;
 	}
 
-	public void applyEchoActionRule(EchoActionRule echoActionRule) {
+	public void applyActionRule(EchoActionRule echoActionRule) {
 		action = new EchoAction(echoActionRule, null);
 	}
 
-	public void applyBeanActionRule(BeanActionRule beanActionRule) {
+	public void applyActionRule(BeanActionRule beanActionRule) {
 		beanActionRule.setAspectAdviceRule(this);
 		action = new BeanAction(beanActionRule, null);
 	}
 	
-	public void applyIncludeActionRule(IncludeActionRule includeActionRule) {
+	public void applyActionRule(IncludeActionRule includeActionRule) {
 		throw new UnsupportedOperationException("There is nothing that can be apply to IncludeActionRule. The aspecet-advice is not support include-action.");
 	}
 	

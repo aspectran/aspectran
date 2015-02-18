@@ -21,6 +21,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 
 import com.aspectran.core.context.rule.type.ImportType;
+import com.aspectran.core.util.StringUtils;
 
 /**
  * <p>Created: 2008. 04. 24 오전 11:23:36</p>
@@ -60,6 +61,21 @@ public abstract class Importable {
 			return new InputStreamReader(getInputStream(), encoding);
 		else
 			return new InputStreamReader(getInputStream());
+	}
+	
+	public static Importable newInstance(ContextBuilderAssistant assistant, String resource, String file, String url) {
+		Importable importable;
+		
+		if(StringUtils.hasText(resource))
+			importable = new ImportableResource(assistant.getClassLoader(), resource);
+		else if(StringUtils.hasText(file))
+			importable = new ImportableFile(assistant.getApplicationBasePath(), file);
+		else if(StringUtils.hasText(url))
+			importable = new ImportableUrl(url);
+		else
+			throw new IllegalArgumentException("The <import> element requires either a resource or a file or a url attribute.");
+
+		return importable;
 	}
 	
 }

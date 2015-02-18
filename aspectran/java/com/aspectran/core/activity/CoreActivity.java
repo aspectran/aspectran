@@ -496,15 +496,6 @@ public class CoreActivity extends AbstractActivity implements Activity {
 	private ProcessResult process() throws ActivityException {
 		// execute action on contents area
 		ContentList contentList = transletRule.getContentList();
-		System.out.println(contentList);
-		System.out.println(contentList);
-		System.out.println(contentList);
-		System.out.println(contentList);
-		System.out.println(contentList);
-		System.out.println(contentList);
-		System.out.println(contentList);
-		System.out.println(contentList);
-		System.out.println(contentList);
 
 		if(contentList != null) {
 			for(ActionList actionList : contentList) {
@@ -698,17 +689,6 @@ public class CoreActivity extends AbstractActivity implements Activity {
 				processResult.setOmittable(true);
 		}
 
-		System.out.println(contentResult);
-		System.out.println(contentResult);
-		System.out.println(contentResult);
-		System.out.println(contentResult);
-		System.out.println(contentResult);
-		System.out.println(contentResult);
-		System.out.println(contentResult);
-		System.out.println(contentResult);
-		System.out.println(contentResult);
-		System.out.println(contentResult);
-		
 		for(Executable action : actionList) {
 			execute(action, contentResult);
 			

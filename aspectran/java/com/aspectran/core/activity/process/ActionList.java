@@ -51,6 +51,10 @@ public class ActionList extends ArrayList<Executable> implements ActionRuleAppli
 		this(null, null);
 	}
 	
+	public ActionList(ContentList parent) {
+		this(null, parent);
+	}
+	
 	/**
 	 * Instantiates a new action list.
 	 * 
@@ -127,7 +131,7 @@ public class ActionList extends ArrayList<Executable> implements ActionRuleAppli
 	 * 
 	 * @param echoActionRule the echo action rule
 	 */
-	public void applyEchoActionRule(EchoActionRule echoActionRule) {
+	public void applyActionRule(EchoActionRule echoActionRule) {
 		EchoAction echoAction = new EchoAction(echoActionRule, this);
 		add(echoAction);
 	}
@@ -142,9 +146,8 @@ public class ActionList extends ArrayList<Executable> implements ActionRuleAppli
 	 * @throws IllegalAccessException the illegal access exception
 	 * @throws NoSuchMethodException the no such method exception
 	 */
-	public void applyBeanActionRule(BeanActionRule beanActionRule) {
+	public void applyActionRule(BeanActionRule beanActionRule) {
 		BeanAction beanAction = new BeanAction(beanActionRule, this);
-
 		add(beanAction);
 	}
 
@@ -153,7 +156,7 @@ public class ActionList extends ArrayList<Executable> implements ActionRuleAppli
 	 * 
 	 * @param includeActionRule the process call action rule
 	 */
-	public void applyIncludeActionRule(IncludeActionRule includeActionRule) {
+	public void applyActionRule(IncludeActionRule includeActionRule) {
 		IncludeAction includeAction = new IncludeAction(includeActionRule, this);
 		add(includeAction);
 	}

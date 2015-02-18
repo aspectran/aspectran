@@ -55,16 +55,16 @@ public class AponActivityContextBuilder extends AbstractActivityContextBuilder i
 
 	public ActivityContext build(String rootContext) throws ActivityContextBuilderException {
 		try {
-			Importable importStream = makeImportStream(rootContext);
-			Reader reader = importStream.getReader(encoding);
+			Importable importable = makeImportStream(rootContext);
+			Reader reader = importable.getReader(encoding);
 
 			AponReader aponReader = new AponReader();
-			Parameters parameters = aponReader.read(reader, new AspectranParameters());
+			Parameters aspectranParameters = aponReader.read(reader, new AspectranParameters());
 			
 			reader.close();
 			
-			AspectranAponAssembler aponAssembler = new AspectranAponAssembler(this);
-			aponAssembler.assembleAspectran(parameters);
+			AspectranAponAssembler aponAssembler = new AspectranAponAssembler(this, encoding);
+			aponAssembler.assembleAspectran(aspectranParameters);
 			
 			ActivityContext aspectranContext = makeActivityContext(applicationAdapter);
 

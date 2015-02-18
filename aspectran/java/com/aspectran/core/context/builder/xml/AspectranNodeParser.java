@@ -27,9 +27,6 @@ import com.aspectran.core.activity.process.ContentList;
 import com.aspectran.core.context.builder.ContextBuilderAssistant;
 import com.aspectran.core.context.builder.DefaultSettings;
 import com.aspectran.core.context.builder.Importable;
-import com.aspectran.core.context.builder.ImportableFile;
-import com.aspectran.core.context.builder.ImportableResource;
-import com.aspectran.core.context.builder.ImportableUrl;
 import com.aspectran.core.context.rule.AspectJobAdviceRule;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.BeanRule;
@@ -442,7 +439,6 @@ public class AspectranNodeParser {
 				String name = attributes.get("name");
 
 				TransletRule transletRule = TransletRule.newInstance(name);
-
 				assistant.pushObject(transletRule);
 			}
 		});
@@ -454,7 +450,6 @@ public class AspectranNodeParser {
 				String characterEncoding = attributes.get("characterEncoding");
 
 				RequestRule requestRule = RequestRule.newInstance(method, characterEncoding);
-				
 				assistant.pushObject(requestRule);
 			}
 		});
@@ -509,7 +504,6 @@ public class AspectranNodeParser {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
 				ActionList actionList = (ActionList)assistant.popObject();
 				ContentList contentList = (ContentList)assistant.peekObject();
-				
 				contentList.addActionList(actionList);
 			}
 		});
@@ -517,7 +511,6 @@ public class AspectranNodeParser {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
 				ContentList contentList = (ContentList)assistant.popObject();
 				TransletRule transletRule = (TransletRule)assistant.peekObject();
-				
 				transletRule.setContentList(contentList);
 			}
 		});
@@ -545,7 +538,6 @@ public class AspectranNodeParser {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
 				ActionList actionList = (ActionList)assistant.popObject();
 				ContentList contentList = (ContentList)assistant.popObject();
-				
 				contentList.addActionList(actionList);
 			}
 		});
@@ -555,7 +547,6 @@ public class AspectranNodeParser {
 				String characterEncoding = attributes.get("characterEncoding");
 
 				ResponseRule responseRule = ResponseRule.newInstance(name, characterEncoding);
-
 				assistant.pushObject(responseRule);
 			}
 		});
@@ -601,16 +592,7 @@ public class AspectranNodeParser {
 				String file = attributes.get("file");
 				String url = attributes.get("url");
 				
-				Importable importable = null;
-				
-				if(StringUtils.hasText(resource))
-					importable = new ImportableResource(assistant.getClassLoader(), resource);
-				else if(StringUtils.hasText(file))
-					importable = new ImportableFile(assistant.getApplicationBasePath(), file);
-				else if(StringUtils.hasText(url))
-					importable = new ImportableUrl(url);
-				else
-					throw new IllegalArgumentException("The <import> element requires either a resource or a file or a url attribute.");
+				Importable importable = Importable.newInstance(assistant, resource, file, url);
 				
 				DefaultSettings defaultSettings = (DefaultSettings)assistant.getDefaultSettings().clone();
 				
