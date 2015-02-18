@@ -70,4 +70,8 @@
 		<servlet-name>aspectran-example</servlet-name>
 		<url-pattern>/example/*</url-pattern>
 	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>aspectran-example</servlet-name>
+		<url-pattern>/scheduler/*</url-pattern>
+	</servlet-mapping>
 </web-app>
