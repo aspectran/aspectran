@@ -264,6 +264,7 @@ aspectran: {
 		}
 	}
 	tranlset: {
+		name: /example/hello
 		request: {
 			method: get
 			characterEncoding: utf-8
@@ -298,6 +299,11 @@ aspectran: {
 					name3[]
 				]
 			}
+		}
+		contents: {
+			name: contentsName
+			content: [
+			]
 		}
 		content: [
 			{

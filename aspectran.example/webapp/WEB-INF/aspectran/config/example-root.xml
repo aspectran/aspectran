@@ -94,12 +94,41 @@
 		</advice>
 	</aspect>
 
-	<translet name="/hello">
+	<translet name="hello">
 		<transform type="transform/text">
 			<template>
 				hello~ ${name}
 			</template>
 		</transform>
+	</translet>
+
+	<translet name="hello2">
+		<contents name="hello1" omittable="false">
+			<content name="hello2">
+				<action id="countTo10" bean="example.hello.HelloAction" method="countTo10AsArray"/>
+			</content>
+		</contents>
+		<response>
+			<transform type="transform/xml"/>
+		</response>
+	</translet>
+
+	<translet name="hello3">
+		<content name="hello3">
+			<action id="countTo10" bean="example.hello.HelloAction" method="countTo10AsArray"/>
+		</content>
+		<response>
+			<transform type="transform/xml"/>
+		</response>
+	</translet>
+
+	<translet name="hello4">
+		<content name="includeHello3">
+			<include translet="/example/hello3"/>
+		</content>
+		<response>
+			<transform type="transform/xml"/>
+		</response>
 	</translet>
 
 	<translet name="hello/countTo10">
