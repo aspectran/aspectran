@@ -77,11 +77,11 @@ public class ActionRuleNodeletAdder implements NodeletAdder {
 				ItemRuleMap irm = (ItemRuleMap)assistant.popObject();
 				EchoActionRule echoActionRule = (EchoActionRule)assistant.popObject();
 				
-				if(irm.size() > 0)
+				if(!irm.isEmpty())
 					echoActionRule.setAttributeItemRuleMap(irm);
 
 				ActionRuleApplicable applicable = (ActionRuleApplicable)assistant.peekObject();
-				applicable.applyEchoActionRule(echoActionRule);
+				applicable.applyActionRule(echoActionRule);
 			}
 		});
 		parser.addNodelet(xpath, "/action", new Nodelet() {
@@ -126,7 +126,7 @@ public class ActionRuleNodeletAdder implements NodeletAdder {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
 				ItemRuleMap irm = (ItemRuleMap)assistant.popObject();
 				
-				if(irm.size() > 0) {
+				if(!irm.isEmpty()) {
 					BeanActionRule beanActionRule = (BeanActionRule)assistant.peekObject();
 					beanActionRule.setPropertyItemRuleMap(irm);
 				}
@@ -137,7 +137,7 @@ public class ActionRuleNodeletAdder implements NodeletAdder {
 				BeanActionRule beanActionRule = (BeanActionRule)assistant.popObject();
 
 				ActionRuleApplicable applicable = (ActionRuleApplicable)assistant.peekObject();
-				applicable.applyBeanActionRule(beanActionRule);
+				applicable.applyActionRule(beanActionRule);
 
 				//AspectAdviceRule may not have the bean id.
 				if(beanActionRule.getBeanId() != null)
@@ -159,7 +159,6 @@ public class ActionRuleNodeletAdder implements NodeletAdder {
 				assistant.pushObject(includeActionRule);
 			}
 		});
-
 		parser.addNodelet(xpath, "/include/attribute", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
 				ItemRuleMap irm = new ItemRuleMap();
@@ -171,7 +170,7 @@ public class ActionRuleNodeletAdder implements NodeletAdder {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
 				ItemRuleMap irm = (ItemRuleMap)assistant.popObject();
 				
-				if(irm.size() > 0) {
+				if(!irm.isEmpty()) {
 					IncludeActionRule includeActionRule = (IncludeActionRule)assistant.peekObject();
 					includeActionRule.setAttributeItemRuleMap(irm);
 				}
@@ -182,7 +181,7 @@ public class ActionRuleNodeletAdder implements NodeletAdder {
 				IncludeActionRule includeActionRule = (IncludeActionRule)assistant.popObject();
 				
 				ActionRuleApplicable applicable = (ActionRuleApplicable)assistant.peekObject();
-				applicable.applyIncludeActionRule(includeActionRule);
+				applicable.applyActionRule(includeActionRule);
 			}
 		});
 	}

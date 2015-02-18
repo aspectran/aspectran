@@ -15,10 +15,10 @@ import com.aspectran.core.context.rule.IncludeActionRule;
  */
 public interface ActionRuleApplicable {
 
-	public void applyEchoActionRule(EchoActionRule echoActionRule);
+	public void applyActionRule(EchoActionRule echoActionRule);
 	
-	public void applyBeanActionRule(BeanActionRule beanActionRule);
+	public void applyActionRule(BeanActionRule beanActionRule);
 	
-	public void applyIncludeActionRule(IncludeActionRule includeActionRule);
+	public void applyActionRule(IncludeActionRule includeActionRule);
 
 }

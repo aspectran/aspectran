@@ -16,6 +16,7 @@
 package com.aspectran.core.context.builder.apon;
 
 import java.io.IOException;
+import java.io.Reader;
 import java.util.Iterator;
 import java.util.List;
 
@@ -23,6 +24,8 @@ import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.activity.process.ContentList;
 import com.aspectran.core.activity.variable.token.Token;
 import com.aspectran.core.context.builder.ContextBuilderAssistant;
+import com.aspectran.core.context.builder.DefaultSettings;
+import com.aspectran.core.context.builder.Importable;
 import com.aspectran.core.context.builder.apon.params.ActionParameters;
 import com.aspectran.core.context.builder.apon.params.AdviceParameters;
 import com.aspectran.core.context.builder.apon.params.AspectParameters;
@@ -31,13 +34,16 @@ import com.aspectran.core.context.builder.apon.params.BeanParameters;
 import com.aspectran.core.context.builder.apon.params.ContentParameters;
 import com.aspectran.core.context.builder.apon.params.ContentsParameters;
 import com.aspectran.core.context.builder.apon.params.DispatchParameters;
+import com.aspectran.core.context.builder.apon.params.ExceptionParameters;
 import com.aspectran.core.context.builder.apon.params.ExceptionRaizedParameters;
 import com.aspectran.core.context.builder.apon.params.ForwardParameters;
+import com.aspectran.core.context.builder.apon.params.ImportParameters;
 import com.aspectran.core.context.builder.apon.params.JobParameters;
 import com.aspectran.core.context.builder.apon.params.JoinpointParameters;
 import com.aspectran.core.context.builder.apon.params.RedirectParameters;
 import com.aspectran.core.context.builder.apon.params.RequestParameters;
 import com.aspectran.core.context.builder.apon.params.ResponseByContentTypeParameters;
+import com.aspectran.core.context.builder.apon.params.ResponseParameters;
 import com.aspectran.core.context.builder.apon.params.TemplateParameters;
 import com.aspectran.core.context.builder.apon.params.TransformParameters;
 import com.aspectran.core.context.builder.apon.params.TransletParameters;
@@ -56,15 +62,18 @@ import com.aspectran.core.context.rule.PointcutRule;
 import com.aspectran.core.context.rule.RedirectResponseRule;
 import com.aspectran.core.context.rule.RequestRule;
 import com.aspectran.core.context.rule.ResponseByContentTypeRule;
+import com.aspectran.core.context.rule.ResponseRule;
 import com.aspectran.core.context.rule.SettingsAdviceRule;
 import com.aspectran.core.context.rule.TemplateRule;
 import com.aspectran.core.context.rule.TransformRule;
 import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.ability.ActionRuleApplicable;
+import com.aspectran.core.context.rule.ability.ResponseRuleApplicable;
 import com.aspectran.core.context.rule.type.AspectAdviceType;
 import com.aspectran.core.context.rule.type.DefaultSettingType;
 import com.aspectran.core.context.rule.type.TokenType;
 import com.aspectran.core.util.StringUtils;
+import com.aspectran.core.util.apon.AponReader;
 import com.aspectran.core.util.apon.Parameters;
 
 /**
@@ -76,19 +85,14 @@ public class AspectranAponAssembler {
 	
 	private final ContextBuilderAssistant assistant;
 	
-	public AspectranAponAssembler(ContextBuilderAssistant assistant) {
+	private final String encoding;
+	
+	public AspectranAponAssembler(ContextBuilderAssistant assistant, String encoding) {
 		this.assistant = assistant;
+		this.encoding = encoding;
 	}
 	
-	public void assembleAspectran(Parameters aspectranParameters) throws ClassNotFoundException, IOException {
-//		setting = new ParameterDefine("setting", new DefaultSettingsParameters());
-//		typeAlias = new ParameterDefine("typeAlias", new GenericParameters());
-//		aspects = new ParameterDefine("aspect", new AspectParameters(), true);
-//		beans = new ParameterDefine("bean", new BeanParameters(), true);
-//		translets = new ParameterDefine("translet", new TransletParameters(), true);
-//		imports = new ParameterDefine("import", new ImportParameters(), true);
-
-		
+	public void assembleAspectran(Parameters aspectranParameters) throws ClassNotFoundException, IOException, CloneNotSupportedException {
 		Parameters settingParameters = aspectranParameters.getParameters(AspectranParameters.setting);
 		if(settingParameters != null)
 			assembleDefaultSettings(settingParameters);
@@ -117,6 +121,33 @@ public class AspectranAponAssembler {
 				assembleTransletRule(transletParameters);
 			}
 		}
+		
+		List<Parameters> importParametersList = aspectranParameters.getParametersList(AspectranParameters.imports);
+		if(importParametersList != null) {
+			for(Parameters importParameters : importParametersList) {
+				assembleImport(importParameters);
+			}
+		}
+	}
+	
+	public void assembleImport(Parameters importParameters) throws CloneNotSupportedException, IOException, ClassNotFoundException {
+		String resource = importParameters.getString(ImportParameters.resource);
+		String file = importParameters.getString(ImportParameters.file);
+		String url = importParameters.getString(ImportParameters.url);
+		
+		Importable importable = Importable.newInstance(assistant, resource, file, url);
+		
+		DefaultSettings defaultSettings = (DefaultSettings)assistant.getDefaultSettings().clone();
+		
+		Reader reader = importable.getReader(encoding);
+		AponReader aponReader = new AponReader();
+		Parameters aspectranParameters = aponReader.read(reader, new AspectranParameters());
+		reader.close();
+		
+		AspectranAponAssembler aponAssembler = new AspectranAponAssembler(assistant, encoding);
+		aponAssembler.assembleAspectran(aspectranParameters);
+
+		assistant.setDefaultSettings(defaultSettings);
 	}
 	
 	public void assembleDefaultSettings(Parameters parameters) {
@@ -153,17 +184,7 @@ public class AspectranAponAssembler {
 		}
 	}
 
-	public TransletRule assembleTransletRule(Parameters transletParameters) {
-//		request = new ParameterDefine("request", new RequestParameters());
-//		contents = new ParameterDefine("content", new ContentParameters(), true);
-//		responses = new ParameterDefine("response", new ResponseParameters(), true);
-//		exception = new ParameterDefine("exception", new ExceptionParameters(), true);
-//		actions = new ParameterDefine("action", new ActionParameters(), true);
-//		dispatchs = new ParameterDefine("dispatch", new DispatchParameters(), true);
-//		transforms = new ParameterDefine("transform", new TransformParameters(), true);
-//		redirects = new ParameterDefine("redirect", new RedirectParameters(), true);
-//		forwards = new ParameterDefine("forward", new ForwardParameters(), true);
-		
+	public void assembleTransletRule(Parameters transletParameters) throws CloneNotSupportedException {
 		String name = transletParameters.getString(TransletParameters.name);
 		TransletRule transletRule = TransletRule.newInstance(name);
 		
@@ -188,12 +209,82 @@ public class AspectranAponAssembler {
 			}
 		}
 		
+		List<Parameters> responseParametersList = transletParameters.getParametersList(TransletParameters.responses);
+		if(responseParametersList != null) {
+			for(Parameters responseParamters : responseParametersList) {
+				ResponseRule responseRule = assembleResponseRule(responseParamters);
+				transletRule.addResponseRule(responseRule);
+			}
+		}
 		
+		Parameters exceptionParameters = transletParameters.getParameters(TransletParameters.exception);
+		if(exceptionParameters != null) {
+			List<Parameters> rrtrParametersList = exceptionParameters.getParametersList(ExceptionParameters.responseByContentTypes);
+			if(rrtrParametersList != null && !rrtrParametersList.isEmpty()) {
+				for(Parameters rrtrParameters : rrtrParametersList) {
+					ResponseByContentTypeRule rrtr = assembleResponseByContentTypeRule(rrtrParameters);
+					transletRule.addExceptionHandlingRule(rrtr);
+				}
+			}
+		}
 		
-		List<Parameters> reponseParamtersList = transletParameters.getParametersList(TransletParameters.responses);
-		Parameters exceptionParamters = transletParameters.getParameters(TransletParameters.exception);
+		List<Parameters> actionParametersList = transletParameters.getParametersList(TransletParameters.actions);
+		if(actionParametersList != null) {
+			for(Parameters actionParameters : actionParametersList) {
+				assembleActionRule(actionParameters, transletRule);
+			}
+		}
 		
-		return transletRule;
+		List<Parameters> transformParamsList = transletParameters.getParametersList(TransletParameters.transforms);
+		if(transformParamsList != null && !transformParamsList.isEmpty()) {
+			assembleTransformRule(transformParamsList, transletRule);
+		}
+		
+		List<Parameters> dispatchParamsList = transletParameters.getParametersList(TransletParameters.dispatchs);
+		if(dispatchParamsList != null && !dispatchParamsList.isEmpty()) {
+			assembleDispatchResponseRule(dispatchParamsList, transletRule);
+		}
+
+		List<Parameters> redirectParamsList = transletParameters.getParametersList(TransletParameters.redirects);
+		if(redirectParamsList != null && !redirectParamsList.isEmpty()) {
+			assembleRedirectResponseRule(redirectParamsList, transletRule);
+		}
+		
+		List<Parameters> forwardParamsList = transletParameters.getParametersList(TransletParameters.forwards);
+		if(forwardParamsList != null && !forwardParamsList.isEmpty()) {
+			assembleForwardResponseRule(forwardParamsList, transletRule);
+		}
+
+		assistant.addTransletRule(transletRule);
+	}
+	
+	public ResponseRule assembleResponseRule(Parameters responseParameters) {
+		String name = responseParameters.getString(ResponseParameters.name);
+		String characterEncoding = responseParameters.getString(ResponseParameters.characterEncoding);
+
+		ResponseRule responseRule = ResponseRule.newInstance(name, characterEncoding);
+		
+		List<Parameters> transformParamsList = responseParameters.getParametersList(ResponseParameters.transforms);
+		if(transformParamsList != null && !transformParamsList.isEmpty()) {
+			assembleTransformRule(transformParamsList, responseRule);
+		}
+		
+		List<Parameters> dispatchParamsList = responseParameters.getParametersList(ResponseParameters.dispatchs);
+		if(dispatchParamsList != null && !dispatchParamsList.isEmpty()) {
+			assembleDispatchResponseRule(dispatchParamsList, responseRule);
+		}
+
+		List<Parameters> redirectParamsList = responseParameters.getParametersList(ResponseParameters.redirects);
+		if(redirectParamsList != null && !redirectParamsList.isEmpty()) {
+			assembleRedirectResponseRule(redirectParamsList, responseRule);
+		}
+		
+		List<Parameters> forwardParamsList = responseParameters.getParametersList(ResponseParameters.forwards);
+		if(forwardParamsList != null && !forwardParamsList.isEmpty()) {
+			assembleForwardResponseRule(forwardParamsList, responseRule);
+		}
+		
+		return responseRule;
 	}
 	
 	public ContentList assembleContentList(Parameters contentsParameters) {
@@ -382,40 +473,56 @@ public class AspectranAponAssembler {
 		rbctr.setExceptionType(exceptionType);
 		
 		List<Parameters> transformParamsList = responseByContentTypeParameters.getParametersList(ResponseByContentTypeParameters.transforms);
-		if(transformParamsList != null && transformParamsList.size() > 0) {
-			for(Parameters transformParameters : transformParamsList) {
-				TransformRule tr = assembleTransformRule(transformParameters);
-				rbctr.applyResponseRule(tr);
-			}
+		if(transformParamsList != null && !transformParamsList.isEmpty()) {
+			assembleTransformRule(transformParamsList, rbctr);
 		}
 		
 		List<Parameters> dispatchParamsList = responseByContentTypeParameters.getParametersList(ResponseByContentTypeParameters.dispatchs);
-		if(dispatchParamsList != null && dispatchParamsList.size() > 0) {
-			for(Parameters dispatchParameters : dispatchParamsList) {
-				DispatchResponseRule drr = assembleDispatchResponseRule(dispatchParameters);
-				rbctr.applyResponseRule(drr);
-			}
+		if(dispatchParamsList != null && !dispatchParamsList.isEmpty()) {
+			assembleDispatchResponseRule(dispatchParamsList, rbctr);
 		}
 
 		List<Parameters> redirectParamsList = responseByContentTypeParameters.getParametersList(ResponseByContentTypeParameters.redirects);
-		if(redirectParamsList != null && redirectParamsList.size() > 0) {
-			for(Parameters redirectParameters : redirectParamsList) {
-				RedirectResponseRule rrr = assembleRedirectResponseRule(redirectParameters);
-				rbctr.applyResponseRule(rrr);
-			}
+		if(redirectParamsList != null && !redirectParamsList.isEmpty()) {
+			assembleRedirectResponseRule(redirectParamsList, rbctr);
 		}
 		
 		List<Parameters> forwardParamsList = responseByContentTypeParameters.getParametersList(ResponseByContentTypeParameters.forwards);
-		if(forwardParamsList != null && forwardParamsList.size() > 0) {
-			for(Parameters forwardParameters : forwardParamsList) {
-				ForwardResponseRule frr = assembleForwardResponseRule(forwardParameters);
-				rbctr.applyResponseRule(frr);
-			}
+		if(forwardParamsList != null && !forwardParamsList.isEmpty()) {
+			assembleForwardResponseRule(forwardParamsList, rbctr);
 		}
 		
 		return rbctr;
 	}
 	
+	public void assembleTransformRule(List<Parameters> transformParamsList, ResponseRuleApplicable responseRuleApplicable) {
+		for(Parameters transformParameters : transformParamsList) {
+			TransformRule tr = assembleTransformRule(transformParameters);
+			responseRuleApplicable.applyResponseRule(tr);
+		}
+	}
+	
+	public void assembleDispatchResponseRule(List<Parameters> dispatchParamsList, ResponseRuleApplicable responseRuleApplicable) {
+		for(Parameters dispatchParameters : dispatchParamsList) {
+			DispatchResponseRule drr = assembleDispatchResponseRule(dispatchParameters);
+			responseRuleApplicable.applyResponseRule(drr);
+		}
+	}
+	
+	public void assembleRedirectResponseRule(List<Parameters> redirectParamsList, ResponseRuleApplicable responseRuleApplicable) {
+		for(Parameters redirectParameters : redirectParamsList) {
+			RedirectResponseRule rrr = assembleRedirectResponseRule(redirectParameters);
+			responseRuleApplicable.applyResponseRule(rrr);
+		}
+	}
+	
+	public void assembleForwardResponseRule(List<Parameters> forwardParamsList, ResponseRuleApplicable responseRuleApplicable) {
+		for(Parameters forwardParameters : forwardParamsList) {
+			ForwardResponseRule frr = assembleForwardResponseRule(forwardParameters);
+			responseRuleApplicable.applyResponseRule(frr);
+		}
+	}
+
 	public TransformRule assembleTransformRule(Parameters transformParameters) {
 		String transformType = transformParameters.getString(TransformParameters.transformType);
 		String contentType = transformParameters.getString(TransformParameters.contentType);
@@ -554,18 +661,18 @@ public class AspectranAponAssembler {
 			if(propertyItemRuleMap != null) {
 				beanActionRule.setPropertyItemRuleMap(propertyItemRuleMap);
 			}
-			actionRuleApplicable.applyBeanActionRule(beanActionRule);
+			actionRuleApplicable.applyActionRule(beanActionRule);
 			assistant.putBeanReference(beanId, beanActionRule);
 		} else if(echoParamsList != null) {
 			EchoActionRule echoActionRule = EchoActionRule.newInstance(id, hidden);
 			ItemRuleMap attributeItemRuleMap = assembleItemRuleMap(echoParamsList);
 			echoActionRule.setAttributeItemRuleMap(attributeItemRuleMap);
-			actionRuleApplicable.applyEchoActionRule(echoActionRule);
+			actionRuleApplicable.applyActionRule(echoActionRule);
 		} else if(include != null) {
 			IncludeActionRule includeActionRule = IncludeActionRule.newInstance(id, include, hidden);
 			ItemRuleMap attributeItemRuleMap = assembleItemRuleMap(echoParamsList);
 			includeActionRule.setAttributeItemRuleMap(attributeItemRuleMap);
-			actionRuleApplicable.applyIncludeActionRule(includeActionRule);
+			actionRuleApplicable.applyActionRule(includeActionRule);
 		}
 	}
 	

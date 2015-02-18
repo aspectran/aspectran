@@ -68,6 +68,12 @@ public class ContentList extends ArrayList<ActionList> implements AspectAdviceSu
 		add(actionList);
 	}
 
+	public ActionList newActionList() {
+		ActionList actionList = new ActionList(this);
+		add(actionList);
+		return actionList;
+	}
+	
 	public AspectAdviceRuleRegistry getAspectAdviceRuleRegistry() {
 		return aspectAdviceRuleRegistry;
 	}

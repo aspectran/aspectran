@@ -132,6 +132,28 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 		
 		return contentList;
 	}
+
+	public void applyActionRule(EchoActionRule echoActionRule) {
+		touchActionList().applyActionRule(echoActionRule);
+	}
+
+	public void applyActionRule(BeanActionRule beanActionRule) {
+		touchActionList().applyActionRule(beanActionRule);
+	}
+
+	public void applyActionRule(IncludeActionRule includeActionRule) {
+		touchActionList().applyActionRule(includeActionRule);
+	}
+	
+	private ActionList touchActionList() {
+		touchContentList();
+		
+		if(contentList.size() == 1) {
+			return contentList.get(0);
+		} else {
+			return contentList.newActionList();
+		}
+	}
 	
 	/**
 	 * Gets the response rule.
@@ -524,37 +546,6 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 		}
 
 		return sb.toString();
-	}
-
-	public void applyEchoActionRule(EchoActionRule echoActionRule) {
-		getActionList().applyEchoActionRule(echoActionRule);
-	}
-
-	public void applyBeanActionRule(BeanActionRule beanActionRule) {
-		getActionList().applyBeanActionRule(beanActionRule);
-	}
-
-	public void applyIncludeActionRule(IncludeActionRule includeActionRule) {
-		getActionList().applyIncludeActionRule(includeActionRule);
-	}
-	
-	private ActionList getActionList() {
-		ActionList actionList;		
-		
-		if(contentList == null) {
-			actionList = new ActionList();
-			contentList = new ContentList();
-			contentList.add(actionList);
-		} else {
-			if(contentList.size() > 0)
-				actionList = contentList.get(0);
-			else {
-				actionList = new ActionList();
-				contentList.add(actionList);
-			}
-		}
-		
-		return actionList;
 	}
 	
 	public static TransletRule newInstance(String name) {
