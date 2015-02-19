@@ -44,9 +44,9 @@ import com.aspectran.core.context.rule.ResponseRule;
  */
 public class JspViewDispatcher implements ViewDispatcher {
 
-	private final Logger logger = LoggerFactory.getLogger(JspViewDispatcher.class);
+	private static final Logger logger = LoggerFactory.getLogger(JspViewDispatcher.class);
 
-	private final boolean debugEnabled = logger.isDebugEnabled();
+	private static final boolean debugEnabled = logger.isDebugEnabled();
 
 	/* (non-Javadoc)
 	 * @see com.aspectran.core.activity.response.dispatch.ViewDispatcher#dispatch(com.aspectran.core.activity.AspectranActivity, com.aspectran.base.rule.DispatchResponseRule)
