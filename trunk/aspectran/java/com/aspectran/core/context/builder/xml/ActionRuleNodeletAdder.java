@@ -74,13 +74,13 @@ public class ActionRuleNodeletAdder implements NodeletAdder {
 		parser.addNodelet(xpath, "/echo", new ItemRuleNodeletAdder(assistant));
 		parser.addNodelet(xpath, "/echo/end()", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
-				ItemRuleMap irm = (ItemRuleMap)assistant.popObject();
-				EchoActionRule echoActionRule = (EchoActionRule)assistant.popObject();
+				ItemRuleMap irm = assistant.popObject();
+				EchoActionRule echoActionRule = assistant.popObject();
 				
 				if(!irm.isEmpty())
 					echoActionRule.setAttributeItemRuleMap(irm);
 
-				ActionRuleApplicable applicable = (ActionRuleApplicable)assistant.peekObject();
+				ActionRuleApplicable applicable = assistant.peekObject();
 				applicable.applyActionRule(echoActionRule);
 			}
 		});
@@ -107,10 +107,10 @@ public class ActionRuleNodeletAdder implements NodeletAdder {
 		parser.addNodelet(xpath, "/action/argument", new ItemRuleNodeletAdder(assistant));
 		parser.addNodelet(xpath, "/action/argument/end()", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
-				ItemRuleMap irm = (ItemRuleMap)assistant.popObject();
+				ItemRuleMap irm = assistant.popObject();
 				
 				if(irm.size() > 0) {
-					BeanActionRule beanActionRule = (BeanActionRule)assistant.peekObject();
+					BeanActionRule beanActionRule = assistant.peekObject();
 					beanActionRule.setArgumentItemRuleMap(irm);
 				}
 			}
@@ -124,19 +124,19 @@ public class ActionRuleNodeletAdder implements NodeletAdder {
 		parser.addNodelet(xpath, "/action/property", new ItemRuleNodeletAdder(assistant));
 		parser.addNodelet(xpath, "/action/property/end()", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
-				ItemRuleMap irm = (ItemRuleMap)assistant.popObject();
+				ItemRuleMap irm = assistant.popObject();
 				
 				if(!irm.isEmpty()) {
-					BeanActionRule beanActionRule = (BeanActionRule)assistant.peekObject();
+					BeanActionRule beanActionRule = assistant.peekObject();
 					beanActionRule.setPropertyItemRuleMap(irm);
 				}
 			}
 		});
 		parser.addNodelet(xpath, "/action/end()", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
-				BeanActionRule beanActionRule = (BeanActionRule)assistant.popObject();
+				BeanActionRule beanActionRule = assistant.popObject();
 
-				ActionRuleApplicable applicable = (ActionRuleApplicable)assistant.peekObject();
+				ActionRuleApplicable applicable = assistant.peekObject();
 				applicable.applyActionRule(beanActionRule);
 
 				//AspectAdviceRule may not have the bean id.
@@ -168,19 +168,19 @@ public class ActionRuleNodeletAdder implements NodeletAdder {
 		parser.addNodelet(xpath, "/include/attribute", new ItemRuleNodeletAdder(assistant));
 		parser.addNodelet(xpath, "/include/attribute/end()", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
-				ItemRuleMap irm = (ItemRuleMap)assistant.popObject();
+				ItemRuleMap irm = assistant.popObject();
 				
 				if(!irm.isEmpty()) {
-					IncludeActionRule includeActionRule = (IncludeActionRule)assistant.peekObject();
+					IncludeActionRule includeActionRule = assistant.peekObject();
 					includeActionRule.setAttributeItemRuleMap(irm);
 				}
 			}
 		});
 		parser.addNodelet(xpath, "/include/end()", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
-				IncludeActionRule includeActionRule = (IncludeActionRule)assistant.popObject();
+				IncludeActionRule includeActionRule = assistant.popObject();
 				
-				ActionRuleApplicable applicable = (ActionRuleApplicable)assistant.peekObject();
+				ActionRuleApplicable applicable = assistant.peekObject();
 				applicable.applyActionRule(includeActionRule);
 			}
 		});

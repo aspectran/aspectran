@@ -911,7 +911,7 @@ public class ItemRule {
 	}
 	
 	public static ItemRuleMap toItemRuleMap(List<Parameters> itemParametersList) {
-		if(itemParametersList == null || itemParametersList.size() == 0)
+		if(itemParametersList == null || itemParametersList.isEmpty())
 			return null;
 		
 		ItemRuleMap itemRuleMap = new ItemRuleMap();

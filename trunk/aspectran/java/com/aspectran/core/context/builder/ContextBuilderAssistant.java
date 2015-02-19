@@ -103,8 +103,9 @@ public class ContextBuilderAssistant {
 	 * 
 	 * @return the object
 	 */
-	public Object popObject() {
-		return objectStack.pop();
+	@SuppressWarnings("unchecked")
+	public <T> T popObject() {
+		return (T)objectStack.pop();
 	}
 	
 	/**
@@ -112,8 +113,9 @@ public class ContextBuilderAssistant {
 	 * 
 	 * @return the object
 	 */
-	public Object peekObject() {
-		return objectStack.peek();
+	@SuppressWarnings("unchecked")
+	public <T> T peekObject() {
+		return (T)objectStack.peek();
 	}
 	
 	/**
@@ -121,8 +123,9 @@ public class ContextBuilderAssistant {
 	 * 
 	 * @return the object
 	 */
-	public Object peekObject(int n) {
-		return objectStack.peek(n);
+	@SuppressWarnings("unchecked")
+	public <T> T peekObject(int n) {
+		return (T)objectStack.peek(n);
 	}
 	
 	/**
@@ -177,6 +180,22 @@ public class ContextBuilderAssistant {
 		return typeAliases.get(alias);
 	}
 	
+	/**
+	 * Returns the resolve alias type.
+	 * 
+	 * @param alias the alias
+	 * 
+	 * @return the string
+	 */
+	public String resolveAliasType(String alias) {
+		String type = getAliasType(alias);
+
+		if(type == null)
+			return alias;
+
+		return type;
+	}
+
 	/**
 	 * Sets the namespace.
 	 * 

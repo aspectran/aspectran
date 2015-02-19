@@ -72,7 +72,7 @@ public class AspectranNodeParser {
 		this.assistant = assistant;
 
 		parser.setValidation(true);
-		parser.setEntityResolver(new AspectranDtdResolver());
+		parser.setEntityResolver(new AspectranDtdResolver(assistant.getClassLoader()));
 
 		addRootNodelets();
 		addSettingsNodelets();
@@ -102,22 +102,6 @@ public class AspectranNodeParser {
 				inputStream = null;
 			}
 		}
-	}
-
-	/**
-	 * Returns the resolve alias type.
-	 * 
-	 * @param alias the alias
-	 * 
-	 * @return the string
-	 */
-	protected String resolveAliasType(String alias) {
-		String type = assistant.getAliasType(alias);
-
-		if(type == null)
-			return alias;
-
-		return type;
 	}
 
 	/**
@@ -216,38 +200,11 @@ public class AspectranNodeParser {
 				assistant.pushObject(aspectRule);
 			}
 		});
-		parser.addNodelet("/aspectran/aspect/settings", new Nodelet() {
-			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
-				AspectRule aspectRule = (AspectRule)assistant.peekObject();
-				
-				SettingsAdviceRule sar = SettingsAdviceRule.newInstance(aspectRule, text);
-				
-				assistant.pushObject(sar);
-			}
-		});
-		parser.addNodelet("/aspectran/aspect/settings/setting", new Nodelet() {
-			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
-				String name = attributes.get("name");
-				String value = attributes.get("value");
-				
-				if(name != null) {
-					SettingsAdviceRule sar = (SettingsAdviceRule)assistant.peekObject();
-					sar.putSetting(name, value);
-				}
-			}
-		});
-		parser.addNodelet("/aspectran/aspect/settings/end()", new Nodelet() {
-			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
-				SettingsAdviceRule sar = (SettingsAdviceRule)assistant.popObject();
-				AspectRule aspectRule = (AspectRule)assistant.peekObject();
-				aspectRule.setSettingsAdviceRule(sar);
-			}
-		});	
 		parser.addNodelet("/aspectran/aspect/joinpoint", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
 				String scope = attributes.get("scope");
 
-				AspectRule aspectRule = (AspectRule)assistant.peekObject();
+				AspectRule aspectRule = assistant.peekObject();
 				AspectRule.updateJoinpointScope(aspectRule, scope);
 			}
 		});
@@ -255,7 +212,7 @@ public class AspectranNodeParser {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
 				String type = attributes.get("type");
 				
-				AspectRule aspectRule = (AspectRule)assistant.peekObject();
+				AspectRule aspectRule = assistant.peekObject();
 				
 				PointcutRule pointcutRule = PointcutRule.newInstance(aspectRule, type, text);
 				aspectRule.setPointcutRule(pointcutRule);
@@ -267,7 +224,7 @@ public class AspectranNodeParser {
 				String bean = attributes.get("bean");
 				String method = attributes.get("method");
 				
-				AspectRule aspectRule = (AspectRule)assistant.peekObject();
+				AspectRule aspectRule = assistant.peekObject();
 				
 				if(aspectRule.getAspectTargetType() == AspectTargetType.TRANSLET) {
 					List<PointcutPatternRule> pointcutPatternRuleList = PointcutRule.newPointcutPatternRuleList();
@@ -285,8 +242,7 @@ public class AspectranNodeParser {
 				String bean = attributes.get("bean");
 				String method = attributes.get("method");
 				
-				@SuppressWarnings("unchecked")
-				List<PointcutPatternRule> pointcutPatternRuleList = (List<PointcutPatternRule>)assistant.peekObject();
+				List<PointcutPatternRule> pointcutPatternRuleList = assistant.peekObject();
 				
 				if(pointcutPatternRuleList != null) {
 					PointcutRule.addExcludePointcutPatternRule(pointcutPatternRuleList, translet, bean, method);
@@ -295,21 +251,47 @@ public class AspectranNodeParser {
 		});
 		parser.addNodelet("/aspectran/aspect/joinpoint/pointcut/target/end()", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
-				@SuppressWarnings("unchecked")
-				List<PointcutPatternRule> pointcutPatternRuleList = (List<PointcutPatternRule>)assistant.popObject();
+				List<PointcutPatternRule> pointcutPatternRuleList = assistant.popObject();
 				
 				if(pointcutPatternRuleList != null) {
-					AspectRule aspectRule = (AspectRule)assistant.peekObject();
+					AspectRule aspectRule = assistant.peekObject();
 					aspectRule.getPointcutRule().addPointcutPatternRule(pointcutPatternRuleList);
 				}
 			}
 		});
+		parser.addNodelet("/aspectran/aspect/settings", new Nodelet() {
+			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
+				AspectRule aspectRule = assistant.peekObject();
+				
+				SettingsAdviceRule sar = SettingsAdviceRule.newInstance(aspectRule, text);
+				
+				assistant.pushObject(sar);
+			}
+		});
+		parser.addNodelet("/aspectran/aspect/settings/setting", new Nodelet() {
+			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
+				String name = attributes.get("name");
+				String value = attributes.get("value");
+				
+				if(name != null) {
+					SettingsAdviceRule sar = assistant.peekObject();
+					sar.putSetting(name, value);
+				}
+			}
+		});
+		parser.addNodelet("/aspectran/aspect/settings/end()", new Nodelet() {
+			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
+				SettingsAdviceRule sar = assistant.popObject();
+				AspectRule aspectRule = assistant.peekObject();
+				aspectRule.setSettingsAdviceRule(sar);
+			}
+		});	
 		parser.addNodelet("/aspectran/aspect/advice", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
 				String beanId = attributes.get("bean");
 				
 				if(beanId != null && beanId.length() > 0) {
-					AspectRule aspectRule = (AspectRule)assistant.peekObject();
+					AspectRule aspectRule = assistant.peekObject();
 					aspectRule.setAdviceBeanId(beanId);
 					
 					assistant.putBeanReference(beanId, aspectRule);
@@ -327,7 +309,7 @@ public class AspectranNodeParser {
 				Boolean disabled = BooleanUtils.toNullableBooleanObject(attributes.get("disabled"));
 
 				transletName = assistant.getFullTransletName(transletName);
-				AspectRule ar = (AspectRule)assistant.peekObject();
+				AspectRule ar = assistant.peekObject();
 				
 				AspectJobAdviceRule ajar = AspectJobAdviceRule.newInstance(ar, transletName, disabled);
 				ar.addAspectJobAdviceRule(ajar);
@@ -335,7 +317,7 @@ public class AspectranNodeParser {
 		});
 		parser.addNodelet("/aspectran/aspect/end()", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
-				AspectRule aspectRule = (AspectRule)assistant.popObject();
+				AspectRule aspectRule = assistant.popObject();
 				assistant.addAspectRule(aspectRule);
 			}
 		});
@@ -349,7 +331,7 @@ public class AspectranNodeParser {
 		parser.addNodelet("/aspectran/bean", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
 				String id = attributes.get("id");
-				String className = resolveAliasType(attributes.get("class"));
+				String className = assistant.resolveAliasType(attributes.get("class"));
 				String scope = attributes.get("scope");
 				Boolean singleton = BooleanUtils.toNullableBooleanObject(attributes.get("singleton"));
 				String factoryMethod = attributes.get("factoryMethod");
@@ -373,7 +355,7 @@ public class AspectranNodeParser {
 					List<Parameters> argumentParameterList = ItemRule.toParametersList(text);
 					
 					if(argumentParameterList != null) {
-						BeanRule[] beanRules = (BeanRule[])assistant.peekObject();
+						BeanRule[] beanRules = assistant.peekObject();
 						BeanRule.updateConstructorArgument(beanRules, argumentParameterList);
 					}
 				}
@@ -385,8 +367,8 @@ public class AspectranNodeParser {
 		parser.addNodelet("/aspectran/bean/constructor/argument", new ItemRuleNodeletAdder(assistant));
 		parser.addNodelet("/aspectran/bean/constructor/argument/end()", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
-				ItemRuleMap irm = (ItemRuleMap)assistant.popObject();
-				BeanRule[] beanRules = (BeanRule[])assistant.peekObject();
+				ItemRuleMap irm = assistant.popObject();
+				BeanRule[] beanRules = assistant.peekObject();
 				
 				for(BeanRule beanRule : beanRules) {
 					beanRule.setConstructorArgumentItemRuleMap(irm);
@@ -399,7 +381,7 @@ public class AspectranNodeParser {
 					List<Parameters> argumentParameterList = ItemRule.toParametersList(text);
 					
 					if(argumentParameterList != null) {
-						BeanRule[] beanRules = (BeanRule[])assistant.peekObject();
+						BeanRule[] beanRules = assistant.peekObject();
 						BeanRule.updateProperty(beanRules, argumentParameterList);
 					}
 				}
@@ -411,8 +393,8 @@ public class AspectranNodeParser {
 		parser.addNodelet("/aspectran/bean/property", new ItemRuleNodeletAdder(assistant));
 		parser.addNodelet("/aspectran/bean/property/end()", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
-				ItemRuleMap irm = (ItemRuleMap)assistant.popObject();
-				BeanRule[] beanRules = (BeanRule[])assistant.peekObject();
+				ItemRuleMap irm = assistant.popObject();
+				BeanRule[] beanRules = assistant.peekObject();
 				
 				for(BeanRule beanRule : beanRules) {
 					beanRule.setPropertyItemRuleMap(irm);
@@ -421,7 +403,7 @@ public class AspectranNodeParser {
 		});
 		parser.addNodelet("/aspectran/bean/end()", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
-				BeanRule[] beanRules = (BeanRule[])assistant.popObject();
+				BeanRule[] beanRules = assistant.popObject();
 				
 				for(BeanRule beanRule : beanRules) {
 					assistant.addBeanRule(beanRule);
@@ -462,15 +444,15 @@ public class AspectranNodeParser {
 		parser.addNodelet("/aspectran/translet/request/attribute", new ItemRuleNodeletAdder(assistant));
 		parser.addNodelet("/aspectran/translet/request/attribute/end()", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
-				ItemRuleMap irm = (ItemRuleMap)assistant.popObject();
-				RequestRule requestRule = (RequestRule)assistant.peekObject();
+				ItemRuleMap irm = assistant.popObject();
+				RequestRule requestRule = assistant.peekObject();
 				requestRule.setAttributeItemRuleMap(irm);
 			}
 		});
 		parser.addNodelet("/aspectran/translet/request/end()", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
-				RequestRule requestRule = (RequestRule)assistant.popObject();
-				TransletRule transletRule = (TransletRule)assistant.peekObject();
+				RequestRule requestRule = assistant.popObject();
+				TransletRule transletRule = assistant.peekObject();
 				transletRule.setRequestRule(requestRule);
 			}
 		});
@@ -493,7 +475,7 @@ public class AspectranNodeParser {
 				if(!assistant.isNullableContentId() && StringUtils.isEmpty(id))
 					throw new IllegalArgumentException("The <content> element requires a id attribute.");
 
-				ContentList contentList = (ContentList)assistant.peekObject();
+				ContentList contentList = assistant.peekObject();
 				
 				ActionList actionList = ActionList.newInstance(id, name, omittable, hidden, contentList);
 				assistant.pushObject(actionList);
@@ -502,15 +484,15 @@ public class AspectranNodeParser {
 		parser.addNodelet("/aspectran/translet/contents/content", new ActionRuleNodeletAdder(assistant));
 		parser.addNodelet("/aspectran/translet/contents/content/end()", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
-				ActionList actionList = (ActionList)assistant.popObject();
-				ContentList contentList = (ContentList)assistant.peekObject();
+				ActionList actionList = assistant.popObject();
+				ContentList contentList = assistant.peekObject();
 				contentList.addActionList(actionList);
 			}
 		});
 		parser.addNodelet("/aspectran/translet/contents/end()", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
-				ContentList contentList = (ContentList)assistant.popObject();
-				TransletRule transletRule = (TransletRule)assistant.peekObject();
+				ContentList contentList = assistant.popObject();
+				TransletRule transletRule = assistant.peekObject();
 				transletRule.setContentList(contentList);
 			}
 		});
@@ -524,7 +506,7 @@ public class AspectranNodeParser {
 				if(!assistant.isNullableContentId() && StringUtils.isEmpty(id))
 					throw new IllegalArgumentException("The <content> element requires a id attribute.");
 
-				TransletRule transletRule = (TransletRule)assistant.peekObject();
+				TransletRule transletRule = assistant.peekObject();
 
 				ContentList contentList = transletRule.touchContentList();
 				assistant.pushObject(contentList);
@@ -536,8 +518,8 @@ public class AspectranNodeParser {
 		parser.addNodelet("/aspectran/translet/content", new ActionRuleNodeletAdder(assistant));
 		parser.addNodelet("/aspectran/translet/content/end()", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
-				ActionList actionList = (ActionList)assistant.popObject();
-				ContentList contentList = (ContentList)assistant.popObject();
+				ActionList actionList = assistant.popObject();
+				ContentList contentList = assistant.popObject();
 				contentList.addActionList(actionList);
 			}
 		});
@@ -553,8 +535,8 @@ public class AspectranNodeParser {
 		parser.addNodelet("/aspectran/translet/response", new ResponseRuleNodeletAdder(assistant));
 		parser.addNodelet("/aspectran/translet/response/end()", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
-				ResponseRule responseRule = (ResponseRule)assistant.popObject();
-				TransletRule transletRule = (TransletRule)assistant.peekObject();
+				ResponseRule responseRule = assistant.popObject();
+				TransletRule transletRule = assistant.peekObject();
 				transletRule.addResponseRule(responseRule);
 			}
 		});
@@ -569,14 +551,14 @@ public class AspectranNodeParser {
 		parser.addNodelet("/aspectran/translet/exception/responseByContentType", new ResponseRuleNodeletAdder(assistant));
 		parser.addNodelet("/aspectran/translet/exception/responseByContentType/end()", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
-				ResponseByContentTypeRule rbctr = (ResponseByContentTypeRule)assistant.popObject();
-				TransletRule transletRule = (TransletRule)assistant.peekObject();
+				ResponseByContentTypeRule rbctr = assistant.popObject();
+				TransletRule transletRule = assistant.peekObject();
 				transletRule.addExceptionHandlingRule(rbctr);
 			}
 		});
 		parser.addNodelet("/aspectran/translet/end()", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
-				TransletRule transletRule = (TransletRule)assistant.popObject();
+				TransletRule transletRule = assistant.popObject();
 				assistant.addTransletRule(transletRule);
 			}
 		});
@@ -594,7 +576,7 @@ public class AspectranNodeParser {
 				
 				Importable importable = Importable.newInstance(assistant, resource, file, url);
 				
-				DefaultSettings defaultSettings = (DefaultSettings)assistant.getDefaultSettings().clone();
+				DefaultSettings defaultSettings = assistant.getDefaultSettings().clone();
 				
 				AspectranNodeParser aspectranNodeParser = new AspectranNodeParser(assistant);
 				aspectranNodeParser.parse(importable);
