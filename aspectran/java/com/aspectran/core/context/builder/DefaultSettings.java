@@ -181,8 +181,8 @@ public class DefaultSettings implements Cloneable {
 			activityDefaultHandler = settings.get(DefaultSettingType.ACTIVITY_DEFAULT_HANDLER);
 	}
 	
-	public Object clone() throws CloneNotSupportedException {                      
-		return super.clone();              
+	public DefaultSettings clone() throws CloneNotSupportedException {                      
+		return (DefaultSettings) super.clone();              
 	}
 	
 //	

@@ -56,20 +56,18 @@ public class AspectAdviceRuleNodeletAdder implements NodeletAdder {
 	public void process(String xpath, NodeletParser parser) {
 		parser.addNodelet(xpath, new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
-				AspectRule ar = (AspectRule)assistant.peekObject();
+				AspectRule aspectRule = assistant.peekObject();
 				
-				AspectAdviceRule aar = AspectAdviceRule.newInstance(ar, aspectAdviceType);
-				
+				AspectAdviceRule aar = AspectAdviceRule.newInstance(aspectRule, aspectAdviceType);
 				assistant.pushObject(aar);
 			}
 		});
 		parser.addNodelet(xpath, new ActionRuleNodeletAdder(assistant));
 		parser.addNodelet(xpath, "/end()", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
-				AspectAdviceRule aar = (AspectAdviceRule)assistant.popObject();
-				AspectRule ar = (AspectRule)assistant.peekObject();
-				
-				ar.addAspectAdviceRule(aar);
+				AspectAdviceRule aar = assistant.popObject();
+				AspectRule aspectRule = assistant.peekObject();
+				aspectRule.addAspectAdviceRule(aar);
 			}
 		});
 	}

@@ -106,7 +106,7 @@ public class ItemRuleNodeletAdder implements NodeletAdder {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
 				String name = attributes.get("name");
 				
-				ItemRule itemRule = (ItemRule)assistant.peekObject();
+				ItemRule itemRule = assistant.peekObject();
 				
 				Token[] tokens = ItemRule.parseValue(itemRule, name, text);
 
@@ -154,9 +154,9 @@ public class ItemRuleNodeletAdder implements NodeletAdder {
 				if(object instanceof ItemRule) {
 					//pass
 				} else {
-					Token[] tokens = (Token[])assistant.popObject();
-					String name = (String)assistant.popObject();
-					ItemRule itemRule = (ItemRule)assistant.peekObject();
+					Token[] tokens = assistant.popObject();
+					String name = assistant.popObject();
+					ItemRule itemRule = assistant.peekObject();
 
 					if(itemRule.getType() != ItemType.ITEM)
 						ItemRule.finishValueCollection(itemRule, name, tokens);
@@ -170,14 +170,14 @@ public class ItemRuleNodeletAdder implements NodeletAdder {
 				String attribute = attributes.get("attribute");
 				String property = attributes.get("property"); // bean's property
 
-				ItemRule itemRule = (ItemRule)assistant.peekObject();
+				ItemRule itemRule = assistant.peekObject();
 				ItemRule.updateReference(itemRule, beanId, parameter, attribute, property);
 			}
 		});
 		parser.addNodelet(xpath, "/item/end()", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
-				ItemRule itemRule = (ItemRule)assistant.popObject();
-				ItemRuleMap itemRuleMap = (ItemRuleMap)assistant.peekObject();
+				ItemRule itemRule = assistant.popObject();
+				ItemRuleMap itemRuleMap = assistant.peekObject();
 
 				ItemRule.addItemRule(itemRuleMap, itemRule);
 				Iterator<Token[]> iter = ItemRule.tokenIterator(itemRule);
