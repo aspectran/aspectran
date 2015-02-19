@@ -78,7 +78,7 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 				aspectranService = WebAspectranService.newInstance(this, rootAspectranService);
 			}
 		} catch(Exception e) {
-			logger.error("WebActivityServlet was failed to initialize: " + e.toString(), e);
+			//logger.error("WebActivityServlet was failed to initialize: " + e.toString(), e);
 			throw new UnavailableException(e.getMessage());
 		}
 	}

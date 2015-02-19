@@ -15,6 +15,7 @@
  */
 package com.aspectran.core.context.builder.xml;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
@@ -83,8 +84,9 @@ public class AspectranDtdResolver implements EntityResolver {
 	 * @param source the source
 	 * 
 	 * @return the input source
+	 * @throws IOException 
 	 */
-	private InputSource getInputSource(String path) {
+	private InputSource getInputSource(String path) throws IOException {
 		InputSource source = null;
 		
 		if(path != null) {

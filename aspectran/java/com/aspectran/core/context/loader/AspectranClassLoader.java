@@ -423,17 +423,20 @@ public class AspectranClassLoader extends ClassLoader {
 	
 	public URL getResource(String name) {
 		URL url = super.getResource(name);
-		
+
 		if(url == null) {
 			Enumeration<URL> res = ResourceManager.getResources(getAspectranClassLoaders(root), name);
 			
 			if(res.hasMoreElements())
-				return res.nextElement();
+				url = res.nextElement();
 		}
-		
-		return findResource(name);
-	}
 
+		if(url == null)
+			return findResource(name);
+		
+		return url;
+	}
+	
 	protected byte[] loadClassData(String className, AspectranClassLoader owner) {
 		if(isExcluded(className))
 			return null;
