@@ -25,7 +25,7 @@ import org.w3c.dom.Node;
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.activity.process.ContentList;
 import com.aspectran.core.context.builder.ContextBuilderAssistant;
-import com.aspectran.core.context.builder.DefaultSettings;
+import com.aspectran.core.context.builder.ImportHandler;
 import com.aspectran.core.context.builder.Importable;
 import com.aspectran.core.context.rule.AspectJobAdviceRule;
 import com.aspectran.core.context.rule.AspectRule;
@@ -576,12 +576,10 @@ public class AspectranNodeParser {
 				
 				Importable importable = Importable.newInstance(assistant, resource, file, url);
 				
-				DefaultSettings defaultSettings = assistant.getDefaultSettings().clone();
+				ImportHandler importHandler = assistant.getImportHandler();
 				
-				AspectranNodeParser aspectranNodeParser = new AspectranNodeParser(assistant);
-				aspectranNodeParser.parse(importable);
-				
-				assistant.setDefaultSettings(defaultSettings);
+				if(importHandler != null)
+					importHandler.handle(importable);
 			}
 		});
 	}

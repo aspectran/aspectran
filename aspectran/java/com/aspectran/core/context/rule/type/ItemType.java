@@ -25,10 +25,10 @@ import java.util.Map;
  */
 public final class ItemType extends Type {
 	
-	/** The "item" item type. */
+	/** The "single" item type. */
 	public static final ItemType SINGLE;
 
-	/** The "array" item type. */
+	/** The "list" item type. */
 	public static final ItemType LIST;
 	
 	/** The "map" item type. */
