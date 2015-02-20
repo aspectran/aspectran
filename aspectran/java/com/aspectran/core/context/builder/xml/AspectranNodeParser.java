@@ -67,14 +67,12 @@ public class AspectranNodeParser {
 	 */
 	public AspectranNodeParser(ContextBuilderAssistant assistant) {
 		assistant.clearObjectStack();
-		assistant.setNamespace(null);
 		
 		this.assistant = assistant;
 
 		parser.setValidation(true);
 		parser.setEntityResolver(new AspectranDtdResolver(assistant.getClassLoader()));
 
-		addRootNodelets();
 		addSettingsNodelets();
 		addTypeAliasNodelets();
 		addAspectRuleNodelets();
@@ -102,26 +100,6 @@ public class AspectranNodeParser {
 				inputStream = null;
 			}
 		}
-	}
-
-	/**
-	 * Adds the aspectran nodelets.
-	 */
-	private void addRootNodelets() {
-		parser.addNodelet("/aspectran", new Nodelet() {
-			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
-				String namespace = attributes.get("namespace");
-
-				if(namespace != null) {
-					namespace = namespace.trim();
-
-					if(namespace.length() == 0)
-						namespace = null;
-				}
-
-				assistant.setNamespace(namespace);
-			}
-		});
 	}
 
 	/**
@@ -308,7 +286,7 @@ public class AspectranNodeParser {
 				String transletName = attributes.get("translet");
 				Boolean disabled = BooleanUtils.toNullableBooleanObject(attributes.get("disabled"));
 
-				transletName = assistant.getFullTransletName(transletName);
+				transletName = assistant.applyTransletNamePattern(transletName);
 				AspectRule ar = assistant.peekObject();
 				
 				AspectJobAdviceRule ajar = AspectJobAdviceRule.newInstance(ar, transletName, disabled);
@@ -322,7 +300,6 @@ public class AspectranNodeParser {
 			}
 		});
 	}
-
 
 	/**
 	 * Adds the bean nodelets.
@@ -340,12 +317,7 @@ public class AspectranNodeParser {
 				Boolean lazyInit = BooleanUtils.toNullableBooleanObject(attributes.get("lazyInit"));
 				Boolean important = BooleanUtils.toNullableBooleanObject(attributes.get("important"));
 
-				if(id != null) {
-					id = assistant.applyNamespaceForBean(id);
-				}
-
 				BeanRule[] beanRules = BeanRule.newInstance(assistant.getClassLoader(), id, className, scope, singleton, factoryMethod, initMethodName, destroyMethodName, lazyInit, important);
-	
 				assistant.pushObject(beanRules);					
 			}
 		});

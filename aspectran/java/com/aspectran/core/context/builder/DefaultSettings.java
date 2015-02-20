@@ -41,7 +41,7 @@ public class DefaultSettings implements Cloneable {
 	
 	private String activityDefaultHandler;
 	
-	private boolean useNamespaces = true;
+//	private boolean useNamespaces = true;
 
 	private boolean nullableContentId = true;
 	
@@ -127,7 +127,7 @@ public class DefaultSettings implements Cloneable {
 	public void setActivityDefaultHandler(String activityDefaultHandler) {
 		this.activityDefaultHandler = activityDefaultHandler;
 	}
-
+/*
 	public boolean isUseNamespaces() {
 		return useNamespaces;
 	}
@@ -135,7 +135,7 @@ public class DefaultSettings implements Cloneable {
 	public void setUseNamespaces(boolean useNamespaces) {
 		this.useNamespaces = useNamespaces;
 	}
-
+*/
 	public boolean isNullableContentId() {
 		return nullableContentId;
 	}
@@ -153,15 +153,10 @@ public class DefaultSettings implements Cloneable {
 	}
 
 	public void set(Map<DefaultSettingType, String> settings) throws ClassNotFoundException {
+/*
 		if(settings.get(DefaultSettingType.USE_NAMESPACES) != null)
 			useNamespaces = Boolean.parseBoolean(settings.get(DefaultSettingType.USE_NAMESPACES));
-
-		if(settings.get(DefaultSettingType.NULLABLE_CONTENT_ID) != null)
-			nullableContentId = (settings.get(DefaultSettingType.NULLABLE_CONTENT_ID) == null || Boolean.parseBoolean(settings.get(DefaultSettingType.NULLABLE_CONTENT_ID)));
-		
-		if(settings.get(DefaultSettingType.NULLABLE_ACTION_ID) != null)
-			nullableActionId = (settings.get(DefaultSettingType.NULLABLE_ACTION_ID) == null || Boolean.parseBoolean(settings.get(DefaultSettingType.NULLABLE_ACTION_ID)));
-		
+*/
 		if(settings.get(DefaultSettingType.TRANSLET_NAME_PATTERN_PREFIX) != null)
 			setTransletNamePatternPrefix(settings.get(DefaultSettingType.TRANSLET_NAME_PATTERN_PREFIX));
 		
@@ -179,6 +174,12 @@ public class DefaultSettings implements Cloneable {
 		
 		if(settings.get(DefaultSettingType.ACTIVITY_DEFAULT_HANDLER) != null)
 			activityDefaultHandler = settings.get(DefaultSettingType.ACTIVITY_DEFAULT_HANDLER);
+
+		if(settings.get(DefaultSettingType.NULLABLE_CONTENT_ID) != null)
+			nullableContentId = (settings.get(DefaultSettingType.NULLABLE_CONTENT_ID) == null || Boolean.parseBoolean(settings.get(DefaultSettingType.NULLABLE_CONTENT_ID)));
+		
+		if(settings.get(DefaultSettingType.NULLABLE_ACTION_ID) != null)
+			nullableActionId = (settings.get(DefaultSettingType.NULLABLE_ACTION_ID) == null || Boolean.parseBoolean(settings.get(DefaultSettingType.NULLABLE_ACTION_ID)));
 	}
 	
 	public DefaultSettings clone() throws CloneNotSupportedException {                      
