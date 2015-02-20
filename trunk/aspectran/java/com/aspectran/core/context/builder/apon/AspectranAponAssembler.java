@@ -16,7 +16,6 @@
 package com.aspectran.core.context.builder.apon;
 
 import java.io.IOException;
-import java.io.Reader;
 import java.util.Iterator;
 import java.util.List;
 
@@ -24,7 +23,7 @@ import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.activity.process.ContentList;
 import com.aspectran.core.activity.variable.token.Token;
 import com.aspectran.core.context.builder.ContextBuilderAssistant;
-import com.aspectran.core.context.builder.DefaultSettings;
+import com.aspectran.core.context.builder.ImportHandler;
 import com.aspectran.core.context.builder.Importable;
 import com.aspectran.core.context.builder.apon.params.ActionParameters;
 import com.aspectran.core.context.builder.apon.params.AdviceParameters;
@@ -73,7 +72,6 @@ import com.aspectran.core.context.rule.type.AspectAdviceType;
 import com.aspectran.core.context.rule.type.DefaultSettingType;
 import com.aspectran.core.context.rule.type.TokenType;
 import com.aspectran.core.util.StringUtils;
-import com.aspectran.core.util.apon.AponReader;
 import com.aspectran.core.util.apon.Parameters;
 
 /**
@@ -85,14 +83,11 @@ public class AspectranAponAssembler {
 	
 	private final ContextBuilderAssistant assistant;
 	
-	private final String encoding;
-	
-	public AspectranAponAssembler(ContextBuilderAssistant assistant, String encoding) {
+	public AspectranAponAssembler(ContextBuilderAssistant assistant) {
 		this.assistant = assistant;
-		this.encoding = encoding;
 	}
 	
-	public void assembleAspectran(Parameters aspectranParameters) throws ClassNotFoundException, IOException, CloneNotSupportedException {
+	public void assembleAspectran(Parameters aspectranParameters) throws Exception {
 		Parameters settingParameters = aspectranParameters.getParameters(AspectranParameters.setting);
 		if(settingParameters != null)
 			assembleDefaultSettings(settingParameters);
@@ -130,24 +125,16 @@ public class AspectranAponAssembler {
 		}
 	}
 	
-	public void assembleImport(Parameters importParameters) throws CloneNotSupportedException, IOException, ClassNotFoundException {
+	public void assembleImport(Parameters importParameters) throws Exception {
 		String resource = importParameters.getString(ImportParameters.resource);
 		String file = importParameters.getString(ImportParameters.file);
 		String url = importParameters.getString(ImportParameters.url);
 		
 		Importable importable = Importable.newInstance(assistant, resource, file, url);
-		
-		DefaultSettings defaultSettings = (DefaultSettings)assistant.getDefaultSettings().clone();
-		
-		Reader reader = importable.getReader(encoding);
-		AponReader aponReader = new AponReader();
-		Parameters aspectranParameters = aponReader.read(reader, new AspectranParameters());
-		reader.close();
-		
-		AspectranAponAssembler aponAssembler = new AspectranAponAssembler(assistant, encoding);
-		aponAssembler.assembleAspectran(aspectranParameters);
 
-		assistant.setDefaultSettings(defaultSettings);
+		ImportHandler importHandler = assistant.getImportHandler();
+		if(importHandler != null)
+			importHandler.handle(importable);
 	}
 	
 	public void assembleDefaultSettings(Parameters parameters) {

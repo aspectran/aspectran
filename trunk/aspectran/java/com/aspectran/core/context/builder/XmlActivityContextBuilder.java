@@ -17,6 +17,7 @@ package com.aspectran.core.context.builder;
 
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.ActivityContext;
+import com.aspectran.core.context.builder.xml.AspectranNodeImportHandler;
 import com.aspectran.core.context.builder.xml.AspectranNodeParser;
 
 /**
@@ -39,8 +40,11 @@ public class XmlActivityContextBuilder extends AbstractActivityContextBuilder im
 
 	public ActivityContext build(String rootContext) throws ActivityContextBuilderException {
 		try {
-			Importable importable = makeImportable(rootContext);
+			ImportHandler importHandler = new AspectranNodeImportHandler(this);
+			setImportHandler(importHandler);
 			
+			Importable importable = makeImportable(rootContext);
+	
 			AspectranNodeParser parser = new AspectranNodeParser(this);
 			parser.parse(importable);
 			

@@ -69,6 +69,8 @@ public class ContextBuilderAssistant {
 	
 	private TransletRuleMap transletRuleMap = new TransletRuleMap();
 	
+	private ImportHandler importHandler;
+	
 	public ContextBuilderAssistant(String applicationBasePath, ClassLoader classLoader) {
 		if(applicationBasePath == null)
 			this.applicationBasePath = new File(".").getAbsoluteFile().toString();
@@ -482,6 +484,14 @@ public class ContextBuilderAssistant {
 	
 	public BeanReferenceInspector getBeanReferenceInspector() {
 		return beanReferenceInspector;
+	}
+
+	public ImportHandler getImportHandler() {
+		return importHandler;
+	}
+
+	public void setImportHandler(ImportHandler importHandler) {
+		this.importHandler = importHandler;
 	}
 	
 }

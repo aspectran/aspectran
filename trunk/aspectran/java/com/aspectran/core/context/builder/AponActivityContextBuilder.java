@@ -20,6 +20,7 @@ import java.io.Reader;
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.builder.apon.AspectranAponAssembler;
+import com.aspectran.core.context.builder.apon.AspectranAponImportHandler;
 import com.aspectran.core.context.builder.apon.params.AspectranParameters;
 import com.aspectran.core.util.apon.AponReader;
 import com.aspectran.core.util.apon.Parameters;
@@ -55,6 +56,9 @@ public class AponActivityContextBuilder extends AbstractActivityContextBuilder i
 
 	public ActivityContext build(String rootContext) throws ActivityContextBuilderException {
 		try {
+			ImportHandler importHandler = new AspectranAponImportHandler(this, encoding);
+			setImportHandler(importHandler);
+			
 			Importable importable = makeImportable(rootContext);
 			Reader reader = importable.getReader(encoding);
 
@@ -63,7 +67,7 @@ public class AponActivityContextBuilder extends AbstractActivityContextBuilder i
 			
 			reader.close();
 			
-			AspectranAponAssembler aponAssembler = new AspectranAponAssembler(this, encoding);
+			AspectranAponAssembler aponAssembler = new AspectranAponAssembler(this);
 			aponAssembler.assembleAspectran(aspectranParameters);
 			
 			ActivityContext aspectranContext = makeActivityContext(applicationAdapter);
