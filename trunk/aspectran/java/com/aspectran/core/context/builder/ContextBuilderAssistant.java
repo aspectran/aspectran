@@ -39,7 +39,6 @@ import com.aspectran.core.context.rule.type.DefaultSettingType;
 import com.aspectran.core.util.ArrayStack;
 import com.aspectran.core.util.ResourceUtils;
 
-
 /**
  * <p>Created: 2008. 04. 01 오후 10:25:35</p>
  */
@@ -53,9 +52,11 @@ public class ContextBuilderAssistant {
 	
 	private ArrayStack objectStack = new ArrayStack();
 	
-	private Map<String, String> typeAliases = new HashMap<String, String>();
+	private boolean useTypeAliases;
 	
-	private String namespace;
+	private boolean useTransletNamePattern;
+	
+	private Map<String, String> typeAliases = new HashMap<String, String>();
 	
 	private Map<DefaultSettingType, String> settings = new HashMap<DefaultSettingType, String>();
 	
@@ -83,6 +84,9 @@ public class ContextBuilderAssistant {
 			this.classLoader = classLoader;
 		
 		this.defaultSettings = new DefaultSettings(classLoader);
+		
+		this.useTypeAliases = true;
+		this.useTransletNamePattern = true;
 		
 		logger.info("Application base directory path is [" + applicationBasePath + "]");
 	}
@@ -144,6 +148,22 @@ public class ContextBuilderAssistant {
 		typeAliases.clear();
 	}
 
+	protected boolean isUseTypeAliases() {
+		return useTypeAliases;
+	}
+
+	protected void setUseTypeAliases(boolean useTypeAliases) {
+		this.useTypeAliases = useTypeAliases;
+	}
+
+	protected boolean isUseTransletNamePattern() {
+		return useTransletNamePattern;
+	}
+
+	protected void setUseTransletNamePattern(boolean useTransletNamePattern) {
+		this.useTransletNamePattern = useTransletNamePattern;
+	}
+
 	public Map<DefaultSettingType, String> getSettings() {
 		return settings;
 	}
@@ -159,6 +179,10 @@ public class ContextBuilderAssistant {
 	
 	public Object getSetting(DefaultSettingType settingType) {
 		return settings.get(settingType);
+	}
+	
+	public void applySettings() throws ClassNotFoundException {
+		defaultSettings.set(getSettings());
 	}
 	
 	/**
@@ -190,6 +214,9 @@ public class ContextBuilderAssistant {
 	 * @return the string
 	 */
 	public String resolveAliasType(String alias) {
+		if(!useTypeAliases)
+			return alias;
+
 		String type = getAliasType(alias);
 
 		if(type == null)
@@ -197,30 +224,21 @@ public class ContextBuilderAssistant {
 
 		return type;
 	}
-
-	/**
-	 * Sets the namespace.
-	 * 
-	 * @param namespace the new namespace
-	 */
-	public void setNamespace(String namespace) {
-		this.namespace = namespace;
-	}
-	
-	public void applySettings() throws ClassNotFoundException {
-		defaultSettings.set(getSettings());
-	}
 	
 	/**
 	 * Returns the trnaslet name of the prefix and suffix are combined.
 	 * 
-	 * @param transletName
-	 * @return
+	 * @param transletName the translet name
+	 * 
+	 * @return the string
 	 */
-	public String getFullTransletName(String transletName) {
+	public String applyTransletNamePattern(String transletName) {
+		if(!useTransletNamePattern)
+			return transletName;
+
 		if(transletName != null && transletName.length() > 0 && transletName.charAt(0) == AspectranConstant.TRANSLET_NAME_SEPARATOR)
 			return transletName;
-		
+
 		if(defaultSettings.getTransletNamePatternPrefix() == null && 
 				defaultSettings.getTransletNamePatternSuffix() == null)
 			return transletName;
@@ -229,7 +247,7 @@ public class ContextBuilderAssistant {
 		
 		if(defaultSettings.getTransletNamePatternPrefix() != null)
 			sb.append(defaultSettings.getTransletNamePatternPrefix());
-		
+
 		sb.append(transletName);
 		
 		if(defaultSettings.getTransletNamePatternSuffix() != null)
@@ -237,36 +255,7 @@ public class ContextBuilderAssistant {
 		
 		return sb.toString();
 	}
-	
-	/**
-	 * Apply namespace for a translet.
-	 * 
-	 * @param transletName the name
-	 * 
-	 * @return the string
-	 */
-	public String applyNamespaceForTranslet(String transletName) {
-		if(transletName != null && transletName.length() > 0 && transletName.charAt(0) == AspectranConstant.TRANSLET_NAME_SEPARATOR)
-			return transletName;
-		
-		StringBuilder sb = new StringBuilder();
-		
-		if(defaultSettings.getTransletNamePatternPrefix() != null)
-			sb.append(defaultSettings.getTransletNamePatternPrefix());
-		
-		if(defaultSettings.isUseNamespaces() && namespace != null) {
-			sb.append(namespace);
-			sb.append(AspectranConstant.TRANSLET_NAME_SEPARATOR);
-		}
-		
-		sb.append(transletName);
-		
-		if(defaultSettings.getTransletNamePatternSuffix() != null)
-			sb.append(defaultSettings.getTransletNamePatternSuffix());
-		
-		return sb.toString();
-	}
-	
+/*	
 	public String applyNamespaceForBean(String beanId) {
 		if(!defaultSettings.isUseNamespaces() || namespace == null)
 			return beanId;
@@ -278,6 +267,7 @@ public class ContextBuilderAssistant {
 		
 		return sb.toString();
 	}
+*/
 /*	
 	public String replaceTransletNameSuffix(String name, String transletNameSuffix) {
 		if(inheritedAspectranSettings.getTransletNamePatternSuffix() == null)
@@ -426,7 +416,7 @@ public class ContextBuilderAssistant {
 		List<ResponseRule> responseRuleList = transletRule.getResponseRuleList();
 		
 		if(responseRuleList == null || responseRuleList.size() == 0) {
-			transletRule.setName(applyNamespaceForTranslet(transletRule.getName()));
+			transletRule.setName(applyTransletNamePattern(transletRule.getName()));
 			
 			transletRuleMap.put(transletRule.getName(), transletRule);
 
@@ -435,7 +425,7 @@ public class ContextBuilderAssistant {
 		} else if(responseRuleList.size() == 1) {
 			transletRule.setResponseRule(responseRuleList.get(0));
 			transletRule.setResponseRuleList(null);
-			transletRule.setName(applyNamespaceForTranslet(transletRule.getName()));
+			transletRule.setName(applyTransletNamePattern(transletRule.getName()));
 			
 			transletRuleMap.put(transletRule.getName(), transletRule);
 
@@ -451,7 +441,7 @@ public class ContextBuilderAssistant {
 					defaultResponseRule = responseRule;
 				} else {
 					TransletRule subTransletRule = transletRule.newSubTransletRule(responseRule);
-					subTransletRule.setName(applyNamespaceForTranslet(subTransletRule.getName()));
+					subTransletRule.setName(applyTransletNamePattern(subTransletRule.getName()));
 					
 					transletRuleMap.put(subTransletRule.getName(), subTransletRule);
 					
@@ -462,7 +452,7 @@ public class ContextBuilderAssistant {
 			
 			if(defaultResponseRule != null) {
 				transletRule.setResponseRule(defaultResponseRule);
-				transletRule.setName(applyNamespaceForTranslet(transletRule.getName()));
+				transletRule.setName(applyTransletNamePattern(transletRule.getName()));
 				responseRuleList.remove(defaultResponseRule);
 				transletRule.setResponseRuleList(responseRuleList);
 				

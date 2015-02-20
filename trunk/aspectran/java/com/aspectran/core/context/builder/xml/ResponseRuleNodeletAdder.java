@@ -222,7 +222,7 @@ public class ResponseRuleNodeletAdder implements NodeletAdder {
 				String transletName = attributes.get("translet");
 				Boolean defaultResponse = BooleanUtils.toNullableBooleanObject(attributes.get("defaultResponse"));
 				
-				transletName = assistant.getFullTransletName(transletName);
+				transletName = assistant.applyTransletNamePattern(transletName);
 				
 				ForwardResponseRule frr = ForwardResponseRule.newInstance(contentType, transletName, defaultResponse);
 				assistant.pushObject(frr);

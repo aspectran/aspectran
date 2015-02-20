@@ -150,7 +150,7 @@ public class ActionRuleNodeletAdder implements NodeletAdder {
 				String transletName = attributes.get("translet");
 				Boolean hidden = BooleanUtils.toNullableBooleanObject(attributes.get("hidden"));
 
-				transletName = assistant.getFullTransletName(transletName);
+				transletName = assistant.applyTransletNamePattern(transletName);
 				
 				if(!assistant.isNullableActionId() && StringUtils.isEmpty(id))
 					throw new IllegalArgumentException("The <include> element requires a id attribute.");

@@ -251,7 +251,7 @@ public class AspectranAponAssembler {
 				String translet = jobParameters.getString(JobParameters.translet);
 				Boolean disabled = jobParameters.getBoolean(JobParameters.disabled);
 				
-				translet = assistant.getFullTransletName(translet);
+				translet = assistant.applyTransletNamePattern(translet);
 				
 				AspectJobAdviceRule ajar = AspectJobAdviceRule.newInstance(aspectRule, translet, disabled);
 				aspectRule.addAspectJobAdviceRule(ajar);
@@ -273,10 +273,6 @@ public class AspectranAponAssembler {
 		Boolean important = beanParameters.getBoolean(BeanParameters.important);
 		List<Parameters> constructorArgumentParametersList = beanParameters.getParametersList(BeanParameters.constructor);
 		List<Parameters> propertyParametersList = beanParameters.getParametersList(BeanParameters.properties);
-		
-		if(id != null) {
-			id = assistant.applyNamespaceForBean(id);
-		}
 		
 		ItemRuleMap constructorArgumentItemRuleMap = assembleItemRuleMap(constructorArgumentParametersList);
 		ItemRuleMap propertyItemRuleMap = assembleItemRuleMap(propertyParametersList);
@@ -646,7 +642,7 @@ public class AspectranAponAssembler {
 		List<Parameters> actionParametersList = forwardParameters.getParametersList(ForwardParameters.actions);
 		Boolean defaultResponse = forwardParameters.getBoolean(ForwardParameters.defaultResponse);
 		
-		translet = assistant.getFullTransletName(translet);
+		translet = assistant.applyTransletNamePattern(translet);
 		
 		ForwardResponseRule rrr = ForwardResponseRule.newInstance(contentType, translet, defaultResponse);
 		
