@@ -21,9 +21,9 @@ public class RedirectParameters extends AbstractParameters implements Parameters
 		contentType = new ParameterDefine("contentType", ParameterValueType.STRING);
 		translet = new ParameterDefine("translet", ParameterValueType.STRING);
 		url = new ParameterDefine("url", ParameterValueType.STRING);
-		parameters = new ParameterDefine("parameter", new ItemParameters(), true);
+		parameters = new ParameterDefine("parameter", ItemParameters.class, true);
 		excludeNullParameter = new ParameterDefine("excludeNullParameter", ParameterValueType.BOOLEAN);
-		actions = new ParameterDefine("action", new ActionParameters(), true);
+		actions = new ParameterDefine("action", ActionParameters.class, true);
 		defaultResponse = new ParameterDefine("defaultResponse", ParameterValueType.BOOLEAN);
 		
 		parameterDefines = new ParameterDefine[] {

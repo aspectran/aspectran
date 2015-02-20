@@ -17,12 +17,12 @@ public class AspectranParameters extends AbstractParameters implements Parameter
 	private static final ParameterDefine[] parameterDefines;
 	
 	static {
-		setting = new ParameterDefine("setting", new DefaultSettingsParameters());
-		typeAlias = new ParameterDefine("typeAlias", new GenericParameters());
-		aspects = new ParameterDefine("aspect", new AspectParameters(), true);
-		beans = new ParameterDefine("bean", new BeanParameters(), true);
-		translets = new ParameterDefine("translet", new TransletParameters(), true);
-		imports = new ParameterDefine("import", new ImportParameters(), true);
+		setting = new ParameterDefine("setting", DefaultSettingsParameters.class);
+		typeAlias = new ParameterDefine("typeAlias", GenericParameters.class);
+		aspects = new ParameterDefine("aspect", AspectParameters.class, true);
+		beans = new ParameterDefine("bean", BeanParameters.class, true);
+		translets = new ParameterDefine("translet", TransletParameters.class, true);
+		imports = new ParameterDefine("import", ImportParameters.class, true);
 		
 		parameterDefines = new ParameterDefine[] {
 			setting,

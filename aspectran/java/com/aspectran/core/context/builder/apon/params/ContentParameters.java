@@ -20,7 +20,7 @@ public class ContentParameters extends AbstractParameters implements Parameters 
 		name = new ParameterDefine("name", ParameterValueType.STRING);
 		omittable = new ParameterDefine("omittable", ParameterValueType.BOOLEAN);
 		hidden = new ParameterDefine("hidden", ParameterValueType.BOOLEAN);
-		actions = new ParameterDefine("action", new ActionParameters(), true);
+		actions = new ParameterDefine("action", ActionParameters.class, true);
 		
 		parameterDefines = new ParameterDefine[] {
 				id,

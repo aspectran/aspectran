@@ -1,6 +1,5 @@
 package com.aspectran.core.util.apon;
 
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -9,13 +8,13 @@ import java.util.Set;
 
 public abstract class AbstractParameters implements Parameters {
 
-	protected Map<String, ParameterDefine> parameterDefineMap;
+	protected Map<String, ParameterValue> parameterValueMap;
 	
 	private final String title;
 	
 	private String text;
 	
-	private ParameterDefine parent;
+	private ParameterValue parent;
 	
 	protected AbstractParameters(String title, ParameterDefine[] parameterDefines) {
 		this(title, parameterDefines, null);
@@ -24,40 +23,35 @@ public abstract class AbstractParameters implements Parameters {
 	protected AbstractParameters(String title, ParameterDefine[] parameterDefines, String text) {
 		this.title = title;
 		this.text = text;
+		this.parameterValueMap = new LinkedHashMap<String, ParameterValue>();
+		
+		if(parameterDefines != null) {
+			for(ParameterDefine pd : parameterDefines) {
+				ParameterValue pv = pd.newParameterValue();
+				pv.setHolder(this);
+				parameterValueMap.put(pd.getName(), pv);
+			}
+		}
 		
 		if(text != null) {
-			AponReader reader = new AponReader(this);
-			this.parameterDefineMap = reader.read(text, parameterDefines);
-		} else {
-			this.parameterDefineMap = new LinkedHashMap<String, ParameterDefine>();
-			
-			if(parameterDefines != null) {
-				for(ParameterDefine pd : parameterDefines) {
-					pd.setHolder(this);
-					parameterDefineMap.put(pd.getName(), pd);
-				}
-			}
+			AponReader reader = new AponReader();
+			this.parameterValueMap = reader.read(text, parameterValueMap);
 		}
 	}
 	
-	protected Map<String, ParameterDefine> getParameterDefineMap() {
-		return parameterDefineMap;
-	}
-
-	public ParameterDefine[] getParameterDefines() {
-		Collection<ParameterDefine> values = parameterDefineMap.values();
-		return values.toArray(new ParameterDefine[values.size()]);
+	public Map<String, ParameterValue> getParameterValueMap() {
+		return parameterValueMap;
 	}
 	
-	public void addParameterDefine(ParameterDefine parameterDefine) {
-		parameterDefineMap.put(parameterDefine.getName(), parameterDefine);
+	public void addParameterValue(ParameterValue parameterValue) {
+		parameterValueMap.put(parameterValue.getName(), parameterValue);
 	}
 	
-	public ParameterDefine getParent() {
+	public ParameterValue getParent() {
 		return parent;
 	}
 
-	public void setParent(ParameterDefine parent) {
+	public void setParent(ParameterValue parent) {
 		this.parent = parent;
 	}
 
@@ -73,9 +67,9 @@ public abstract class AbstractParameters implements Parameters {
 	}
 
 	public String[] getParameterNames() {
-		String[] names = new String[parameterDefineMap.size()];
+		String[] names = new String[parameterValueMap.size()];
 		
-		Iterator<String> iter = parameterDefineMap.keySet().iterator();
+		Iterator<String> iter = parameterValueMap.keySet().iterator();
 		int i = 0;
 		
 		while(iter.hasNext()) {
@@ -86,11 +80,11 @@ public abstract class AbstractParameters implements Parameters {
 	}
 
 	public Set<String> getParameterNameSet() {
-		return parameterDefineMap.keySet();
+		return parameterValueMap.keySet();
 	}
 	
 	public Parameter getParameter(String name) {
-		Parameter p = parameterDefineMap.get(name);
+		Parameter p = parameterValueMap.get(name);
 		
 		if(p == null)
 			throw new UnknownParameterException(name, this);
@@ -107,8 +101,26 @@ public abstract class AbstractParameters implements Parameters {
 		return p.getValue();
 	}
 	
-	public Object getValue(ParameterDefine parameter) {
-		return getValue(parameter.getName());
+	public Object getValue(ParameterDefine parameterDefine) {
+		return getValue(parameterDefine.getName());
+	}
+	
+	public void setValue(String name, Object value) {
+		Parameter p = getParameter(name);
+		p.setValue(value);
+	}
+	
+	public void setValue(ParameterDefine parameterDefine, Object value) {
+		setValue(parameterDefine.getName(), value);
+	}
+	
+	public void putValue(String name, Object value) {
+		Parameter p = getParameter(name);
+		p.putValue(value);
+	}
+	
+	public void putValue(ParameterDefine parameterDefine, Object value) {
+		putValue(parameterDefine.getName(), value);
 	}
 	
 	public String getString(String name) {
@@ -125,12 +137,12 @@ public abstract class AbstractParameters implements Parameters {
 		return s;
 	}
 
-	public String getString(ParameterDefine parameter) {
-		return getString(parameter.getName());
+	public String getString(ParameterDefine parameterDefine) {
+		return getString(parameterDefine.getName());
 	}
 	
-	public String getString(ParameterDefine parameter, String defaultValue) {
-		return getString(parameter.getName(), defaultValue);
+	public String getString(ParameterDefine parameterDefine, String defaultValue) {
+		return getString(parameterDefine.getName(), defaultValue);
 	}
 
 	public String[] getStringArray(String name) {
@@ -138,8 +150,8 @@ public abstract class AbstractParameters implements Parameters {
 		return p.getValueAsStringArray();
 	}
 
-	public String[] getStringArray(ParameterDefine parameter) {
-		return getStringArray(parameter.getName());
+	public String[] getStringArray(ParameterDefine parameterDefine) {
+		return getStringArray(parameterDefine.getName());
 	}
 	
 	public List<String> getStringList(String name) {
@@ -147,8 +159,8 @@ public abstract class AbstractParameters implements Parameters {
 		return p.getValueAsStringList();
 	}
 
-	public List<String> getStringList(ParameterDefine parameter) {
-		return getStringList(parameter.getName());
+	public List<String> getStringList(ParameterDefine parameterDefine) {
+		return getStringList(parameterDefine.getName());
 	}
 	
 	public String getText(String name) {
@@ -156,8 +168,8 @@ public abstract class AbstractParameters implements Parameters {
 		return p.getValueAsText();
 	}
 	
-	public String getText(ParameterDefine parameter) {
-		return getText(parameter.getName());
+	public String getText(ParameterDefine parameterDefine) {
+		return getText(parameterDefine.getName());
 	}
 	
 	public Integer getInt(String name) {
@@ -179,16 +191,16 @@ public abstract class AbstractParameters implements Parameters {
 		return p.getValueAsIntArray();
 	}
 
-	public Integer getInt(ParameterDefine parameter) {
-		return getInt(parameter.getName());
+	public Integer getInt(ParameterDefine parameterDefine) {
+		return getInt(parameterDefine.getName());
 	}
 
-	public int getInt(ParameterDefine parameter, int defaultValue) {
-		return getInt(parameter.getName(), defaultValue);
+	public int getInt(ParameterDefine parameterDefine, int defaultValue) {
+		return getInt(parameterDefine.getName(), defaultValue);
 	}
 
-	public Integer[] getIntArray(ParameterDefine parameter) {
-		return getIntArray(parameter.getName());
+	public Integer[] getIntArray(ParameterDefine parameterDefine) {
+		return getIntArray(parameterDefine.getName());
 	}
 
 	public List<Integer> getIntList(String name) {
@@ -196,8 +208,8 @@ public abstract class AbstractParameters implements Parameters {
 		return p.getValueAsIntList();
 	}
 
-	public List<Integer> getIntList(ParameterDefine parameter) {
-		return getIntList(parameter.getName());
+	public List<Integer> getIntList(ParameterDefine parameterDefine) {
+		return getIntList(parameterDefine.getName());
 	}
 
 	public Long getLong(String name) {
@@ -219,16 +231,16 @@ public abstract class AbstractParameters implements Parameters {
 		return p.getValueAsLongArray();
 	}
 	
-	public Long getLong(ParameterDefine parameter) {
-		return getLong(parameter.getName());
+	public Long getLong(ParameterDefine parameterDefine) {
+		return getLong(parameterDefine.getName());
 	}
 	
-	public long getLong(ParameterDefine parameter, long defaultValue) {
-		return getLong(parameter.getName());
+	public long getLong(ParameterDefine parameterDefine, long defaultValue) {
+		return getLong(parameterDefine.getName());
 	}
 	
-	public Long[] getLongArray(ParameterDefine parameter) {
-		return getLongArray(parameter.getName());
+	public Long[] getLongArray(ParameterDefine parameterDefine) {
+		return getLongArray(parameterDefine.getName());
 	}
 	
 	public List<Long> getLongList(String name) {
@@ -236,8 +248,8 @@ public abstract class AbstractParameters implements Parameters {
 		return p.getValueAsLongList();
 	}
 
-	public List<Long> getLongList(ParameterDefine parameter) {
-		return getLongList(parameter.getName());
+	public List<Long> getLongList(ParameterDefine parameterDefine) {
+		return getLongList(parameterDefine.getName());
 	}
 	
 	public Float getFloat(String name) {
@@ -259,16 +271,16 @@ public abstract class AbstractParameters implements Parameters {
 		return p.getValueAsFloatArray();
 	}
 	
-	public Float getFloat(ParameterDefine parameter) {
-		return getFloat(parameter.getName());
+	public Float getFloat(ParameterDefine parameterDefine) {
+		return getFloat(parameterDefine.getName());
 	}
 	
-	public float getFloat(ParameterDefine parameter, float defaultValue) {
-		return getFloat(parameter.getName(), defaultValue);
+	public float getFloat(ParameterDefine parameterDefine, float defaultValue) {
+		return getFloat(parameterDefine.getName(), defaultValue);
 	}
 	
-	public Float[] getFloatArray(ParameterDefine parameter) {
-		return getFloatArray(parameter.getName());
+	public Float[] getFloatArray(ParameterDefine parameterDefine) {
+		return getFloatArray(parameterDefine.getName());
 	}
 
 	public List<Float> getFloatList(String name) {
@@ -276,8 +288,8 @@ public abstract class AbstractParameters implements Parameters {
 		return p.getValueAsFloatList();
 	}
 
-	public List<Float> getFloatList(ParameterDefine parameter) {
-		return getFloatList(parameter.getName());
+	public List<Float> getFloatList(ParameterDefine parameterDefine) {
+		return getFloatList(parameterDefine.getName());
 	}
 
 	public Double getDouble(String name) {
@@ -299,16 +311,16 @@ public abstract class AbstractParameters implements Parameters {
 		return p.getValueAsDoubleArray();
 	}
 	
-	public Double getDouble(ParameterDefine parameter) {
-		return getDouble(parameter.getName());
+	public Double getDouble(ParameterDefine parameterDefine) {
+		return getDouble(parameterDefine.getName());
 	}
 	
-	public double getDouble(ParameterDefine parameter, double defaultValue) {
-		return getDouble(parameter.getName(), defaultValue);
+	public double getDouble(ParameterDefine parameterDefine, double defaultValue) {
+		return getDouble(parameterDefine.getName(), defaultValue);
 	}
 	
-	public Double[] getDoubleArray(ParameterDefine parameter) {
-		return getDoubleArray(parameter.getName());
+	public Double[] getDoubleArray(ParameterDefine parameterDefine) {
+		return getDoubleArray(parameterDefine.getName());
 	}
 	
 	public List<Double> getDoubleList(String name) {
@@ -316,8 +328,8 @@ public abstract class AbstractParameters implements Parameters {
 		return p.getValueAsDoubleList();
 	}
 
-	public List<Double> getDoubleList(ParameterDefine parameter) {
-		return getDoubleList(parameter.getName());
+	public List<Double> getDoubleList(ParameterDefine parameterDefine) {
+		return getDoubleList(parameterDefine.getName());
 	}
 	
 	public Boolean getBoolean(String name) {
@@ -339,16 +351,16 @@ public abstract class AbstractParameters implements Parameters {
 		return p.getValueAsBooleanArray();
 	}
 	
-	public Boolean getBoolean(ParameterDefine parameter) {
-		return getBoolean(parameter.getName());
+	public Boolean getBoolean(ParameterDefine parameterDefine) {
+		return getBoolean(parameterDefine.getName());
 	}
 	
-	public boolean getBoolean(ParameterDefine parameter, boolean defaultValue) {
-		return getBoolean(parameter.getName(), defaultValue);
+	public boolean getBoolean(ParameterDefine parameterDefine, boolean defaultValue) {
+		return getBoolean(parameterDefine.getName(), defaultValue);
 	}
 	
-	public Boolean[] getBooleanArray(ParameterDefine parameter) {
-		return getBooleanArray(parameter.getName());
+	public Boolean[] getBooleanArray(ParameterDefine parameterDefine) {
+		return getBooleanArray(parameterDefine.getName());
 	}
 	
 	public List<Boolean> getBooleanList(String name) {
@@ -356,35 +368,39 @@ public abstract class AbstractParameters implements Parameters {
 		return p.getValueAsBooleanList();
 	}
 
-	public List<Boolean> getBooleanList(ParameterDefine parameter) {
-		return getBooleanList(parameter.getName());
+	public List<Boolean> getBooleanList(ParameterDefine parameterDefine) {
+		return getBooleanList(parameterDefine.getName());
 	}
 
-	public Parameters getParameters(String name) {
+	@SuppressWarnings("unchecked")
+	public <T extends Parameters> T getParameters(String name) {
 		Parameter p = getParameter(name);
-		return (Parameters)p.getValue();
+		return (T)p.getValue();
 	}
 
-	public Parameters getParameters(ParameterDefine parameter) {
-		return getParameters(parameter.getName());
+	@SuppressWarnings("unchecked")
+	public <T extends Parameters> T getParameters(ParameterDefine parameterDefine) {
+		return (T)getParameters(parameterDefine.getName());
 	}
 	
-	public Parameters[] getParametersArray(String name) {
+	@SuppressWarnings("unchecked")
+	public <T extends Parameters> T[] getParametersArray(String name) {
 		Parameter p = getParameter(name);
-		return p.getValueAsParametersArray();
+		return (T[])p.getValueAsParametersArray();
 	}
 	
-	public Parameters[] getParametersArray(ParameterDefine parameter) {
-		return getParametersArray(parameter.getName());
+	public <T extends Parameters> T[] getParametersArray(ParameterDefine parameterDefine) {
+		return getParametersArray(parameterDefine.getName());
 	}
 	
-	public List<Parameters> getParametersList(String name) {
+	@SuppressWarnings("unchecked")
+	public <T extends Parameters> List<T> getParametersList(String name) {
 		Parameter p = getParameter(name);
-		return p.getValueAsParametersList();
+		return (List<T>)p.getValueAsParametersList();
 	}
 	
-	public List<Parameters> getParametersList(ParameterDefine parameter) {
-		return getParametersList(parameter.getName());
+	public <T extends Parameters> List<T> getParametersList(ParameterDefine parameterDefine) {
+		return getParametersList(parameterDefine.getName());
 	}
 	
 	public String toText() {
@@ -394,7 +410,6 @@ public abstract class AbstractParameters implements Parameters {
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-
 		sb.append("{title=").append(title);
 		sb.append(", qualifiedName=").append(getQualifiedName());
 		sb.append("}");

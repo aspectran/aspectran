@@ -18,8 +18,8 @@ public class DispatchParameters extends AbstractParameters implements Parameters
 	static {
 		contentType = new ParameterDefine("contentType", ParameterValueType.STRING);
 		characterEncoding = new ParameterDefine("characterEncoding", ParameterValueType.STRING);
-		template = new ParameterDefine("template", new TemplateParameters());
-		actions = new ParameterDefine("action", new ActionParameters(), true);
+		template = new ParameterDefine("template", TemplateParameters.class);
+		actions = new ParameterDefine("action", ActionParameters.class, true);
 		defaultResponse = new ParameterDefine("defaultResponse", ParameterValueType.BOOLEAN);
 		
 		parameterDefines = new ParameterDefine[] {

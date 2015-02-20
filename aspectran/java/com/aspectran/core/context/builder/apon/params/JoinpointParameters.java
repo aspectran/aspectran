@@ -14,7 +14,7 @@ public class JoinpointParameters extends AbstractParameters implements Parameter
 	
 	static {
 		scope = new ParameterDefine("scope", ParameterValueType.STRING);
-		pointcut = new ParameterDefine("pointcut", new PointcutParameters());
+		pointcut = new ParameterDefine("pointcut", PointcutParameters.class);
 		
 		parameterDefines = new ParameterDefine[] {
 				scope,

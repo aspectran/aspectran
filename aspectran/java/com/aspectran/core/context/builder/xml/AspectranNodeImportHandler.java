@@ -16,7 +16,6 @@
 package com.aspectran.core.context.builder.xml;
 
 import com.aspectran.core.context.builder.ContextBuilderAssistant;
-import com.aspectran.core.context.builder.DefaultSettings;
 import com.aspectran.core.context.builder.ImportHandler;
 import com.aspectran.core.context.builder.Importable;
 
@@ -34,12 +33,12 @@ public class AspectranNodeImportHandler implements ImportHandler {
 	}
 	
 	public void handle(Importable importable) throws Exception {
-		DefaultSettings defaultSettings = assistant.getDefaultSettings().clone();
+		assistant.backupDefaultSettings();
 		
 		AspectranNodeParser aspectranNodeParser = new AspectranNodeParser(assistant);
 		aspectranNodeParser.parse(importable);
 		
-		assistant.setDefaultSettings(defaultSettings);
+		assistant.restoreDefaultSettings();
 	}
 
 }

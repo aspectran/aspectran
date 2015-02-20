@@ -26,11 +26,11 @@ public class ActionParameters extends AbstractParameters implements Parameters {
 		id = new ParameterDefine("id", ParameterValueType.STRING);
 		beanId = new ParameterDefine("beanId", ParameterValueType.STRING);
 		methodName = new ParameterDefine("method", ParameterValueType.STRING);
-		arguments = new ParameterDefine("argument", new ItemParameters(), true);
-		properties = new ParameterDefine("property", new ItemParameters(), true);
+		arguments = new ParameterDefine("argument", ItemParameters.class, true);
+		properties = new ParameterDefine("property", ItemParameters.class, true);
 		include = new ParameterDefine("include", ParameterValueType.STRING);
-		echo = new ParameterDefine("echo", new ItemParameters(), true);
-		attributes = new ParameterDefine("attribute", new ItemParameters(), true);
+		echo = new ParameterDefine("echo", ItemParameters.class, true);
+		attributes = new ParameterDefine("attribute", ItemParameters.class, true);
 		hidden = new ParameterDefine("hidden", ParameterValueType.BOOLEAN);
 		
 		parameterDefines = new ParameterDefine[] {

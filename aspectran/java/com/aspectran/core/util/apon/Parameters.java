@@ -1,16 +1,17 @@
 package com.aspectran.core.util.apon;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 
 public interface Parameters {
 	
-	public ParameterDefine[] getParameterDefines();
+	public Map<String, ParameterValue> getParameterValueMap();
 
-	public void setParent(ParameterDefine parent);
+	public void setParent(ParameterValue parent);
 
-	public ParameterDefine getParent();
+	public ParameterValue getParent();
 	
 	public Object getTitle();
 
@@ -26,7 +27,15 @@ public interface Parameters {
 	
 	public Object getValue(String name);
 
-	public Object getValue(ParameterDefine parameter);
+	public Object getValue(ParameterDefine parameterDefine);
+	
+	public void setValue(String name, Object value);
+	
+	public void setValue(ParameterDefine parameterDefine, Object value);
+	
+	public void putValue(String name, Object value);
+	
+	public void putValue(ParameterDefine parameterDefine, Object value);
 	
 	public String getString(String name);
 
@@ -34,19 +43,19 @@ public interface Parameters {
 
 	public String[] getStringArray(String name);
 
-	public String getString(ParameterDefine parameter);
+	public String getString(ParameterDefine parameterDefine);
 	
-	public String getString(ParameterDefine parameter, String defaultValue);
+	public String getString(ParameterDefine parameterDefine, String defaultValue);
 	
-	public String[] getStringArray(ParameterDefine parameter);
+	public String[] getStringArray(ParameterDefine parameterDefine);
 	
 	public List<String> getStringList(String name);
 
-	public List<String> getStringList(ParameterDefine parameter);
+	public List<String> getStringList(ParameterDefine parameterDefine);
 	
 	public String getText(String name);	
 	
-	public String getText(ParameterDefine parameter);	
+	public String getText(ParameterDefine parameterDefine);	
 	
 	public Integer getInt(String name);
 	
@@ -54,15 +63,15 @@ public interface Parameters {
 	
 	public Integer[] getIntArray(String name);
 	
-	public Integer getInt(ParameterDefine parameter);
+	public Integer getInt(ParameterDefine parameterDefine);
 	
-	public int getInt(ParameterDefine parameter, int defaultValue);
+	public int getInt(ParameterDefine parameterDefine, int defaultValue);
 	
-	public Integer[] getIntArray(ParameterDefine parameter);
+	public Integer[] getIntArray(ParameterDefine parameterDefine);
 	
 	public List<Integer> getIntList(String name);
 	
-	public List<Integer> getIntList(ParameterDefine parameter);
+	public List<Integer> getIntList(ParameterDefine parameterDefine);
 	
 	public Long getLong(String name);
 	
@@ -70,15 +79,15 @@ public interface Parameters {
 	
 	public Long[] getLongArray(String name);
 	
-	public Long getLong(ParameterDefine parameter);
+	public Long getLong(ParameterDefine parameterDefine);
 	
-	public long getLong(ParameterDefine parameter, long defaultValue);
+	public long getLong(ParameterDefine parameterDefine, long defaultValue);
 	
-	public Long[] getLongArray(ParameterDefine parameter);
+	public Long[] getLongArray(ParameterDefine parameterDefine);
 	
 	public List<Long> getLongList(String name);
 	
-	public List<Long> getLongList(ParameterDefine parameter);
+	public List<Long> getLongList(ParameterDefine parameterDefine);
 
 	public Float getFloat(String name);
 	
@@ -86,15 +95,15 @@ public interface Parameters {
 	
 	public Float[] getFloatArray(String name);
 	
-	public Float getFloat(ParameterDefine parameter);
+	public Float getFloat(ParameterDefine parameterDefine);
 	
-	public float getFloat(ParameterDefine parameter, float defaultValue);
+	public float getFloat(ParameterDefine parameterDefine, float defaultValue);
 	
-	public Float[] getFloatArray(ParameterDefine parameter);
+	public Float[] getFloatArray(ParameterDefine parameterDefine);
 	
 	public List<Float> getFloatList(String name);
 	
-	public List<Float> getFloatList(ParameterDefine parameter);
+	public List<Float> getFloatList(ParameterDefine parameterDefine);
 
 	public Double getDouble(String name);
 	
@@ -102,15 +111,15 @@ public interface Parameters {
 	
 	public Double[] getDoubleArray(String name);
 
-	public Double getDouble(ParameterDefine parameter);
+	public Double getDouble(ParameterDefine parameterDefine);
 	
-	public double getDouble(ParameterDefine parameter, double defaultValue);
+	public double getDouble(ParameterDefine parameterDefine, double defaultValue);
 	
-	public Double[] getDoubleArray(ParameterDefine parameter);
+	public Double[] getDoubleArray(ParameterDefine parameterDefine);
 	
 	public List<Double> getDoubleList(String name);
 	
-	public List<Double> getDoubleList(ParameterDefine parameter);
+	public List<Double> getDoubleList(ParameterDefine parameterDefine);
 
 	public Boolean getBoolean(String name);
 	
@@ -118,26 +127,26 @@ public interface Parameters {
 
 	public Boolean[] getBooleanArray(String name);
 
-	public Boolean getBoolean(ParameterDefine parameter);
+	public Boolean getBoolean(ParameterDefine parameterDefine);
 	
-	public boolean getBoolean(ParameterDefine parameter, boolean defaultValue);
+	public boolean getBoolean(ParameterDefine parameterDefine, boolean defaultValue);
 	
-	public Boolean[] getBooleanArray(ParameterDefine parameter);
+	public Boolean[] getBooleanArray(ParameterDefine parameterDefine);
 	
 	public List<Boolean> getBooleanList(String name);
 	
-	public List<Boolean> getBooleanList(ParameterDefine parameter);
+	public List<Boolean> getBooleanList(ParameterDefine parameterDefine);
 
-	public Parameters getParameters(String name);
+	public <T extends Parameters> T getParameters(String name);
 
-	public Parameters[] getParametersArray(String name);
+	public <T extends Parameters> T[] getParametersArray(String name);
 	
-	public Parameters getParameters(ParameterDefine parameter);
+	public <T extends Parameters> T getParameters(ParameterDefine parameterDefine);
 	
-	public Parameters[] getParametersArray(ParameterDefine parameter);
+	public <T extends Parameters> T[] getParametersArray(ParameterDefine parameterDefine);
 	
-	public List<Parameters> getParametersList(String name);
+	public <T extends Parameters> List<T> getParametersList(String name);
 	
-	public List<Parameters> getParametersList(ParameterDefine parameter);
+	public <T extends Parameters> List<T> getParametersList(ParameterDefine parameterDefine);
 	
 }

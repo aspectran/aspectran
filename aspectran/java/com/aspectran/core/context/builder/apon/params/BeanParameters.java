@@ -31,8 +31,8 @@ public class BeanParameters extends AbstractParameters implements Parameters {
 		destroyMethod = new ParameterDefine("destroyMethod", ParameterValueType.STRING);
 		lazyInit = new ParameterDefine("lazyInit", ParameterValueType.BOOLEAN);
 		important = new ParameterDefine("important", ParameterValueType.BOOLEAN);
-		constructor = new ParameterDefine("constructor", new ConstructorParameters());
-		properties = new ParameterDefine("property", new ItemParameters(), true);
+		constructor = new ParameterDefine("constructor", ConstructorParameters.class);
+		properties = new ParameterDefine("property", ItemParameters.class, true);
 		
 		parameterDefines = new ParameterDefine[] {
 				id,

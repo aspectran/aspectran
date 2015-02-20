@@ -1002,7 +1002,7 @@ public class ItemRule {
 	}
 	
 	public static List<Parameters> toParametersList(String text) {
-		ParameterHolder holder = new ParameterHolder(text, new ItemParameters(), true);
+		ParameterHolder holder = new ParameterHolder(text, ItemParameters.class, true);
 		return holder.getParametersList();
 	}
 	

@@ -23,7 +23,7 @@ public class TargetParameters extends AbstractParameters implements Parameters {
 		translet = new ParameterDefine("translet", ParameterValueType.STRING);
 		bean = new ParameterDefine("bean", ParameterValueType.STRING);
 		method = new ParameterDefine("method", ParameterValueType.STRING);
-		excludeTargets = new ParameterDefine("exclude", new ExcludeTargetParameters(), true);
+		excludeTargets = new ParameterDefine("exclude", ExcludeTargetParameters.class, true);
 		
 		parameterDefines = new ParameterDefine[] {
 				pluses,

@@ -21,8 +21,8 @@ public class TransformParameters extends AbstractParameters implements Parameter
 		transformType = new ParameterDefine("transformType", ParameterValueType.STRING);
 		contentType = new ParameterDefine("contentType", ParameterValueType.STRING);
 		characterEncoding = new ParameterDefine("characterEncoding", ParameterValueType.STRING);
-		template = new ParameterDefine("template", new TemplateParameters());
-		actions = new ParameterDefine("action", new ActionParameters(), true);
+		template = new ParameterDefine("template", TemplateParameters.class);
+		actions = new ParameterDefine("action", ActionParameters.class, true);
 		defaultResponse = new ParameterDefine("defaultResponse", ParameterValueType.BOOLEAN);
 		pretty = new ParameterDefine("pretty", ParameterValueType.BOOLEAN);
 		

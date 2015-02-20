@@ -24,7 +24,7 @@ public class ItemParameters extends AbstractParameters implements Parameters {
 		valueType = new ParameterDefine("valueType", ParameterValueType.STRING);
 		defaultValue = new ParameterDefine("defaultValue", ParameterValueType.STRING);
 		tokenize = new ParameterDefine("tokenize", ParameterValueType.BOOLEAN);
-		reference = new ParameterDefine("reference", new ReferenceParameters());
+		reference = new ParameterDefine("reference", ReferenceParameters.class);
 		
 		parameterDefines = new ParameterDefine[] {
 				type,
