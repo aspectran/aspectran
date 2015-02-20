@@ -12,7 +12,7 @@ public class DefaultSettingsParameters extends AbstractParameters implements Par
 	public static final ParameterDefine transletNamePatternSuffix;
 	public static final ParameterDefine transletInterfaceClass;
 	public static final ParameterDefine transletImplementClass;
-	public static final ParameterDefine useNamespaces;
+	public static final ParameterDefine activityDefaultHandler;
 	public static final ParameterDefine nullableContentId;
 	public static final ParameterDefine nullableActionId;
 	public static final ParameterDefine beanProxyMode;
@@ -25,7 +25,7 @@ public class DefaultSettingsParameters extends AbstractParameters implements Par
 		transletNamePatternSuffix = new ParameterDefine("transletNamePatternSuffix", ParameterValueType.STRING);
 		transletInterfaceClass = new ParameterDefine("transletInterfaceClass", ParameterValueType.STRING);
 		transletImplementClass = new ParameterDefine("transletImplementClass", ParameterValueType.STRING);
-		useNamespaces = new ParameterDefine("useNamespaces", ParameterValueType.BOOLEAN);
+		activityDefaultHandler = new ParameterDefine("activityDefaultHandler", ParameterValueType.STRING);
 		nullableContentId = new ParameterDefine("nullableContentId", ParameterValueType.BOOLEAN);
 		nullableActionId = new ParameterDefine("nullableActionId", ParameterValueType.BOOLEAN);
 		beanProxyMode = new ParameterDefine("beanProxyMode", ParameterValueType.STRING);
@@ -34,7 +34,7 @@ public class DefaultSettingsParameters extends AbstractParameters implements Par
 				transletNamePattern,
 				transletInterfaceClass,
 				transletImplementClass,
-				useNamespaces,
+				activityDefaultHandler,
 				nullableContentId,
 				nullableActionId,
 				beanProxyMode

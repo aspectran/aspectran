@@ -15,7 +15,7 @@
  */
 package com.aspectran.core.context.builder;
 
-
+import java.util.List;
 
 /**
  * This exception will be thrown when a translet request is failed.
@@ -40,8 +40,8 @@ public class BeanReferenceException extends RuntimeException {
 	 * 
 	 * @param msg A message to associate with the exception
 	 */
-	public BeanReferenceException(String[] beanIds) {
-		super(getMessage(beanIds));
+	public BeanReferenceException(List<String> unknownBeanIdList) {
+		super(getMessage(unknownBeanIdList));
 	}
 	
 	public BeanReferenceInspector getBeanReferenceInspector() {
@@ -52,14 +52,14 @@ public class BeanReferenceException extends RuntimeException {
 		this.beanReferenceInspector = beanReferenceInspector;
 	}
 
-	private static String getMessage(String[] beanIds) {
+	private static String getMessage(List<String> unknownBeanIdList) {
 		StringBuilder sb = new StringBuilder();
 		sb.append("Cannot resolve reference to bean. unknown bean id [");
 		
-		for(int i = 0; i < beanIds.length; i++) {
+		for(int i = 0; i < unknownBeanIdList.size(); i++) {
 			if(i > 0)
 				sb.append(",");
-			sb.append(beanIds[i]);
+			sb.append(unknownBeanIdList.get(i));
 		}
 		
 		sb.append("]");

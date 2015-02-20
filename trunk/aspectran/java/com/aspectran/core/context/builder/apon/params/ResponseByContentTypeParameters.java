@@ -17,10 +17,10 @@ public class ResponseByContentTypeParameters extends AbstractParameters implemen
 
 	static {
 		exceptionType = new ParameterDefine("exceptionType", ParameterValueType.STRING);
-		dispatchs = new ParameterDefine("dispatch", new DispatchParameters(), true);
-		transforms = new ParameterDefine("transform", new TransformParameters(), true);
-		redirects = new ParameterDefine("redirect", new RedirectParameters(), true);
-		forwards = new ParameterDefine("forward", new ForwardParameters(), true);
+		dispatchs = new ParameterDefine("dispatch", DispatchParameters.class, true);
+		transforms = new ParameterDefine("transform", TransformParameters.class, true);
+		redirects = new ParameterDefine("redirect", RedirectParameters.class, true);
+		forwards = new ParameterDefine("forward", ForwardParameters.class, true);
 
 		parameterDefines = new ParameterDefine[] {
 				exceptionType,

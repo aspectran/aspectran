@@ -12,13 +12,12 @@ public class PointcutParameters extends AbstractParameters implements Parameters
 	public static final ParameterDefine simpleTrigger;
 	public static final ParameterDefine cronTrigger;
 	
-
 	private static final ParameterDefine[] parameterDefines;
 	
 	static {
-		targets = new ParameterDefine("target", new TargetParameters(), true);
-		simpleTrigger = new ParameterDefine("simpleTrigger", new SimpleTriggerParameters());
-		cronTrigger = new ParameterDefine("cronTrigger", new CronTriggerParameters());
+		targets = new ParameterDefine("target", TargetParameters.class, true);
+		simpleTrigger = new ParameterDefine("simpleTrigger", SimpleTriggerParameters.class);
+		cronTrigger = new ParameterDefine("cronTrigger", CronTriggerParameters.class);
 		
 		parameterDefines = new ParameterDefine[] {
 				targets,

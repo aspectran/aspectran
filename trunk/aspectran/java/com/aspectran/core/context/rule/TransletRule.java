@@ -291,8 +291,8 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 		return transletImplementClass;
 	}
 
-	public void setTransletInstanceClass(Class<? extends CoreTranslet> transletInstanceClass) {
-		this.transletImplementClass = transletInstanceClass;
+	public void setTransletImplementClass(Class<? extends CoreTranslet> transletImplementClass) {
+		this.transletImplementClass = transletImplementClass;
 	}
 
 	public AspectAdviceRuleRegistry getAspectAdviceRuleRegistry() {

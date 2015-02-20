@@ -21,6 +21,7 @@ import com.aspectran.core.activity.CoreTranslet;
 import com.aspectran.core.activity.Translet;
 import com.aspectran.core.context.AspectranConstant;
 import com.aspectran.core.context.rule.type.DefaultSettingType;
+import com.aspectran.core.util.BooleanUtils;
 
 /**
  * <p>Created: 2008. 03. 22 오후 5:48:09</p>
@@ -36,16 +37,16 @@ public class DefaultSettings implements Cloneable {
 	private String transletNamePatternSuffix;
 	
 	private Class<Translet> transletInterfaceClass;
-
-	private Class<CoreTranslet> transletInstanceClass;
+	
+	private Class<CoreTranslet> transletImplementClass;
+	
+	private Boolean nullableContentId;
+	
+	private Boolean nullableActionId;
 	
 	private String activityDefaultHandler;
 	
-//	private boolean useNamespaces = true;
-
-	private boolean nullableContentId = true;
-	
-	private boolean nullableActionId = true;
+	private String beanProxyMode;
 	
 	public DefaultSettings(ClassLoader classLoader) {
 		this.classLoader = classLoader;
@@ -102,6 +103,13 @@ public class DefaultSettings implements Cloneable {
 		return transletNamePatternSuffix;
 	}
 	
+	public String getTransletInterfaceClassName() {
+		if(transletInterfaceClass == null)
+			return null;
+		
+		return transletInterfaceClass.getName();
+	}
+	
 	public Class<Translet> getTransletInterfaceClass() {
 		return transletInterfaceClass;
 	}
@@ -111,32 +119,27 @@ public class DefaultSettings implements Cloneable {
 		this.transletInterfaceClass = (Class<Translet>)classLoader.loadClass(transletInterfaceClass);
 	}
 
-	public Class<CoreTranslet> getTransletInstanceClass() {
-		return transletInstanceClass;
+	public String getTransletImplementClassName() {
+		if(transletImplementClass == null)
+			return null;
+		
+		return transletImplementClass.getName();
+	}
+	
+	public Class<CoreTranslet> getTransletImplementClass() {
+		return transletImplementClass;
 	}
 
 	@SuppressWarnings("unchecked")
-	public void setTransletInstanceClass(String transletInstanceClass) throws ClassNotFoundException {
-		this.transletInstanceClass = (Class<CoreTranslet>)classLoader.loadClass(transletInstanceClass);
+	public void setTransletImplementClass(String transletImplementClass) throws ClassNotFoundException {
+		this.transletImplementClass = (Class<CoreTranslet>)classLoader.loadClass(transletImplementClass);
 	}
 
-	public String getActivityDefaultHandler() {
-		return activityDefaultHandler;
-	}
-
-	public void setActivityDefaultHandler(String activityDefaultHandler) {
-		this.activityDefaultHandler = activityDefaultHandler;
-	}
-/*
-	public boolean isUseNamespaces() {
-		return useNamespaces;
-	}
-
-	public void setUseNamespaces(boolean useNamespaces) {
-		this.useNamespaces = useNamespaces;
-	}
-*/
 	public boolean isNullableContentId() {
+		return BooleanUtils.toBoolean(nullableContentId, true);
+	}
+
+	public Boolean getNullableContentId() {
 		return nullableContentId;
 	}
 
@@ -145,45 +148,64 @@ public class DefaultSettings implements Cloneable {
 	}
 
 	public boolean isNullableActionId() {
+		return BooleanUtils.toBoolean(nullableActionId, true);
+	}
+
+	public Boolean getNullableActionId() {
 		return nullableActionId;
 	}
 
 	public void setNullableActionId(boolean nullableActionId) {
 		this.nullableActionId = nullableActionId;
 	}
+	
+	public String getActivityDefaultHandler() {
+		return activityDefaultHandler;
+	}
+	
+	public void setActivityDefaultHandler(String activityDefaultHandler) {
+		this.activityDefaultHandler = activityDefaultHandler;
+	}
+	
+	public String getBeanProxyMode() {
+		return beanProxyMode;
+	}
+
+	public void setBeanProxyMode(String beanProxyMode) {
+		this.beanProxyMode = beanProxyMode;
+	}
 
 	public void set(Map<DefaultSettingType, String> settings) throws ClassNotFoundException {
-/*
-		if(settings.get(DefaultSettingType.USE_NAMESPACES) != null)
-			useNamespaces = Boolean.parseBoolean(settings.get(DefaultSettingType.USE_NAMESPACES));
-*/
+		if(settings.get(DefaultSettingType.TRANSLET_NAME_PATTERN) != null)
+			setTransletNamePattern(settings.get(DefaultSettingType.TRANSLET_NAME_PATTERN));
+		
 		if(settings.get(DefaultSettingType.TRANSLET_NAME_PATTERN_PREFIX) != null)
 			setTransletNamePatternPrefix(settings.get(DefaultSettingType.TRANSLET_NAME_PATTERN_PREFIX));
 		
 		if(settings.get(DefaultSettingType.TRANSLET_NAME_PATTERN_SUFFIX) != null)
 			setTransletNamePatternSuffix(settings.get(DefaultSettingType.TRANSLET_NAME_PATTERN_SUFFIX));
 		
-		if(settings.get(DefaultSettingType.TRANSLET_NAME_PATTERN) != null)
-			setTransletNamePattern(settings.get(DefaultSettingType.TRANSLET_NAME_PATTERN));
-		
 		if(settings.get(DefaultSettingType.TRANSLET_INTERFACE_CLASS) != null)
 			setTransletInterfaceClass(settings.get(DefaultSettingType.TRANSLET_INTERFACE_CLASS));
 		
 		if(settings.get(DefaultSettingType.TRANSLET_IMPLEMENT_CLASS) != null)
-			setTransletInstanceClass(settings.get(DefaultSettingType.TRANSLET_IMPLEMENT_CLASS));
-		
-		if(settings.get(DefaultSettingType.ACTIVITY_DEFAULT_HANDLER) != null)
-			activityDefaultHandler = settings.get(DefaultSettingType.ACTIVITY_DEFAULT_HANDLER);
+			setTransletImplementClass(settings.get(DefaultSettingType.TRANSLET_IMPLEMENT_CLASS));
 
 		if(settings.get(DefaultSettingType.NULLABLE_CONTENT_ID) != null)
 			nullableContentId = (settings.get(DefaultSettingType.NULLABLE_CONTENT_ID) == null || Boolean.parseBoolean(settings.get(DefaultSettingType.NULLABLE_CONTENT_ID)));
 		
 		if(settings.get(DefaultSettingType.NULLABLE_ACTION_ID) != null)
 			nullableActionId = (settings.get(DefaultSettingType.NULLABLE_ACTION_ID) == null || Boolean.parseBoolean(settings.get(DefaultSettingType.NULLABLE_ACTION_ID)));
+		
+		if(settings.get(DefaultSettingType.ACTIVITY_DEFAULT_HANDLER) != null)
+			activityDefaultHandler = settings.get(DefaultSettingType.ACTIVITY_DEFAULT_HANDLER);
+		
+		if(settings.get(DefaultSettingType.BEAN_PROXY_MODE) != null)
+			beanProxyMode = settings.get(DefaultSettingType.BEAN_PROXY_MODE);
 	}
 	
 	public DefaultSettings clone() throws CloneNotSupportedException {                      
-		return (DefaultSettings) super.clone();              
+		return (DefaultSettings)super.clone();              
 	}
 	
 //	

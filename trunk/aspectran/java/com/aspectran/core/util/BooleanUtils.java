@@ -31,8 +31,12 @@ public class BooleanUtils {
 	}
 	
 	public static boolean toBoolean(Boolean bool) {
+		return toBoolean(bool, false);
+	}
+	
+	public static boolean toBoolean(Boolean bool, boolean defaultValue) {
 		if(bool == null)
-			return false;
+			return defaultValue;
 		
 		return bool.booleanValue();
 	}

@@ -14,7 +14,7 @@ public class AspectranContextConfig extends AbstractParameters implements Parame
 	
 	public static final ParameterDefine resources = new ParameterDefine("resources", ParameterValueType.STRING, true);
 	
-	public static final ParameterDefine autoReloading = new ParameterDefine("autoReloading", new AspectranContextAutoReloadingConfig());
+	public static final ParameterDefine autoReloading = new ParameterDefine("autoReloading", AspectranContextAutoReloadingConfig.class);
 	
 	private final static ParameterDefine[] parameterDefines;
 	

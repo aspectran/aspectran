@@ -18,7 +18,6 @@ package com.aspectran.core.context.builder.apon;
 import java.io.Reader;
 
 import com.aspectran.core.context.builder.ContextBuilderAssistant;
-import com.aspectran.core.context.builder.DefaultSettings;
 import com.aspectran.core.context.builder.ImportHandler;
 import com.aspectran.core.context.builder.Importable;
 import com.aspectran.core.context.builder.apon.params.AspectranParameters;
@@ -42,7 +41,7 @@ public class AspectranAponImportHandler implements ImportHandler {
 	}
 	
 	public void handle(Importable importable) throws Exception {
-		DefaultSettings defaultSettings = assistant.getDefaultSettings().clone();
+		assistant.backupDefaultSettings();
 		
 		Reader reader = importable.getReader(encoding);
 		AponReader aponReader = new AponReader();
@@ -52,7 +51,7 @@ public class AspectranAponImportHandler implements ImportHandler {
 		AspectranAponDisassembler aponDisassembler = new AspectranAponDisassembler(assistant);
 		aponDisassembler.disassembleAspectran(aspectranParameters);
 
-		assistant.setDefaultSettings(defaultSettings);
+		assistant.restoreDefaultSettings();
 	}
 
 }

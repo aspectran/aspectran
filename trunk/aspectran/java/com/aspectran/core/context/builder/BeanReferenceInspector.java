@@ -68,14 +68,12 @@ public class BeanReferenceInspector {
 			}
 		}
 		
-		if(unknownBeanIdList.size() > 0) {
-			String[] beanIds = unknownBeanIdList.toArray(new String[unknownBeanIdList.size()]);
-
-			for(String beanId : beanIds) {
+		if(!unknownBeanIdList.isEmpty()) {
+			for(String beanId : unknownBeanIdList) {
 				relationMap.remove(beanId);
 			}
 			
-			BeanReferenceException bre = new BeanReferenceException(beanIds);
+			BeanReferenceException bre = new BeanReferenceException(unknownBeanIdList);
 			bre.setBeanReferenceInspector(this);
 			
 			throw bre;

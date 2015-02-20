@@ -41,7 +41,7 @@ public class IncompatibleParameterValueTypeException extends InvalidParameterExc
 		super(msg);
 	}
 
-	public IncompatibleParameterValueTypeException(ParameterDefine parameterValue, ParameterValueType expectedParameterValueType) {
+	public IncompatibleParameterValueTypeException(ParameterValue parameterValue, ParameterValueType expectedParameterValueType) {
 		super("Incompatible value type with expected value type \"" + expectedParameterValueType + "\" for the specified parameter " + parameterValue);
 	}
 

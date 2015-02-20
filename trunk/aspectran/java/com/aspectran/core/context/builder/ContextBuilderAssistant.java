@@ -62,6 +62,8 @@ public class ContextBuilderAssistant {
 	
 	private DefaultSettings defaultSettings;
 
+	private DefaultSettings previousDefaultSettings;
+	
 	private BeanReferenceInspector beanReferenceInspector = new BeanReferenceInspector();
 	
 	private AspectRuleMap aspectRuleMap = new AspectRuleMap();
@@ -82,8 +84,6 @@ public class ContextBuilderAssistant {
 			this.classLoader = new AspectranClassLoader();
 		else
 			this.classLoader = classLoader;
-		
-		this.defaultSettings = new DefaultSettings(classLoader);
 		
 		this.useTypeAliases = true;
 		this.useTransletNamePattern = true;
@@ -141,13 +141,6 @@ public class ContextBuilderAssistant {
 		objectStack.clear();
 	}
 	
-	/**
-	 * Clear type aliases.
-	 */
-	public void clearTypeAliases() {
-		typeAliases.clear();
-	}
-
 	protected boolean isUseTypeAliases() {
 		return useTypeAliases;
 	}
@@ -182,6 +175,9 @@ public class ContextBuilderAssistant {
 	}
 	
 	public void applySettings() throws ClassNotFoundException {
+		if(defaultSettings == null)
+			defaultSettings = new DefaultSettings(classLoader);
+
 		defaultSettings.set(getSettings());
 	}
 	
@@ -226,6 +222,13 @@ public class ContextBuilderAssistant {
 	}
 	
 	/**
+	 * Clear type aliases.
+	 */
+	public void clearTypeAliases() {
+		typeAliases.clear();
+	}
+	
+	/**
 	 * Returns the trnaslet name of the prefix and suffix are combined.
 	 * 
 	 * @param transletName the translet name
@@ -233,7 +236,7 @@ public class ContextBuilderAssistant {
 	 * @return the string
 	 */
 	public String applyTransletNamePattern(String transletName) {
-		if(!useTransletNamePattern)
+		if(!useTransletNamePattern || defaultSettings == null)
 			return transletName;
 
 		if(transletName != null && transletName.length() > 0 && transletName.charAt(0) == AspectranConstant.TRANSLET_NAME_SEPARATOR)
@@ -289,6 +292,9 @@ public class ContextBuilderAssistant {
 	 * @return true, if is allow null content id
 	 */
 	public boolean isNullableContentId() {
+		if(defaultSettings == null)
+			return true;
+		
 		return defaultSettings.isNullableContentId();
 	}
 
@@ -298,6 +304,9 @@ public class ContextBuilderAssistant {
 	 * @return true, if is allow null action id
 	 */
 	public boolean isNullableActionId() {
+		if(defaultSettings == null)
+			return true;
+
 		return defaultSettings.isNullableActionId();
 	}
 
@@ -312,7 +321,19 @@ public class ContextBuilderAssistant {
 	public void setDefaultSettings(DefaultSettings defaultSettings) {
 		this.defaultSettings = defaultSettings;
 	}
+	
+	public void backupDefaultSettings() throws CloneNotSupportedException {
+		previousDefaultSettings = defaultSettings;
+		
+		if(defaultSettings != null)
+			defaultSettings = defaultSettings.clone();
+	}
 
+	public void restoreDefaultSettings() {
+		defaultSettings = previousDefaultSettings;
+		previousDefaultSettings = null;
+	}
+	
 	/**
 	 * Gets the bean rule map.
 	 * 
@@ -401,7 +422,10 @@ public class ContextBuilderAssistant {
 	}
 
 	public void addTransletRule(TransletRule transletRule) throws CloneNotSupportedException {
-		transletRule.setTransletInterfaceClass(defaultSettings.getTransletInterfaceClass());
+		if(defaultSettings != null) {
+			transletRule.setTransletInterfaceClass(defaultSettings.getTransletInterfaceClass());
+			transletRule.setTransletImplementClass(defaultSettings.getTransletImplementClass());
+		}
 		
 		if(transletRule.getRequestRule() == null) {
 			RequestRule requestRule = new RequestRule();

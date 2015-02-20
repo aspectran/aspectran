@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 import com.aspectran.core.util.StringUtils;
@@ -23,7 +22,7 @@ public class AponReader {
 	
 	//private Map<String, ParameterDefine> parameterDefineMap;
 	
-	private Parameters holder;
+	//private Parameters holder;
 	
 	//private boolean preparsed;
 	
@@ -31,11 +30,11 @@ public class AponReader {
 	
 	public AponReader() {
 	}
-
+	/*
 	public AponReader(Parameters holder) {
 		this.holder = holder;
 	}
-
+	*/
 	/*
 	public void read(String text) throws IOException {
 		read(text, null);
@@ -67,17 +66,17 @@ public class AponReader {
 	*/
 
 	public Parameters read(String text, Parameters parameters) {
-		read(text, parameters.getParameterDefines());
+		read(text, parameters.getParameterValueMap());
 		return parameters;
 	}
 
-	public Map<String, ParameterDefine> read(String text, ParameterDefine[] parameterDefines) {
+	public Map<String, ParameterValue> read(String text, Map<String, ParameterValue> parameterValueMap) {
 		try {
 			Reader reader = new StringReader(text);
-			Map<String, ParameterDefine> parameterDefineMap = read(reader, parameterDefines);
+			read(reader, parameterValueMap);
 			reader.close();
 	
-			return parameterDefineMap;
+			return parameterValueMap;
 		} catch(IOException e) {
 			throw new AponReadFailedException(e);
 		}
@@ -107,30 +106,21 @@ public class AponReader {
 	}
 	
 	public Parameters read(Reader reader, Parameters parameters) throws IOException {
-		read(reader, parameters.getParameterDefines());
+		read(reader, parameters.getParameterValueMap());
 		return parameters;
 	}
 	
-	public Map<String, ParameterDefine> read(Reader reader, ParameterDefine[] parameterDefines) throws IOException {
-		Map<String, ParameterDefine> parameterDefineMap = new LinkedHashMap<String, ParameterDefine>();
-		
-		if(parameterDefines != null) {
-			for(ParameterDefine pd : parameterDefines) {
-				if(holder != null)
-					pd.setHolder(holder);
-				
-				parameterDefineMap.put(pd.getName(), pd);
-			}
-			
+	public Map<String, ParameterValue> read(Reader reader, Map<String, ParameterValue> parameterValueMap) throws IOException {
+		if(parameterValueMap != null && !parameterValueMap.isEmpty()) {
 			addable = false;
 		} else {
 			addable = true;
 		}
 
 		BufferedReader br = new BufferedReader(reader);
-		valuelize(br, parameterDefineMap);
+		valuelize(br, parameterValueMap);
 		
-		return parameterDefineMap;
+		return parameterValueMap;
 	}
 	
 	/*
@@ -241,11 +231,11 @@ public class AponReader {
 		}
 	}
 	*/
-	private void valuelize(BufferedReader reader, Map<String, ParameterDefine> parameterDefineMap) throws IOException {
-		valuelize(reader, parameterDefineMap, null, null, null);
+	private void valuelize(BufferedReader reader, Map<String, ParameterValue> parameterValueMap) throws IOException {
+		valuelize(reader, parameterValueMap, null, null, null);
 	}
 	
-	private void valuelize(BufferedReader reader, Map<String, ParameterDefine> parameterDefineMap, String openBraket, String name, ParameterDefine parameterDefine) throws IOException {
+	private void valuelize(BufferedReader reader, Map<String, ParameterValue> parameterValueMap, String openBraket, String name, ParameterValue parameterValue) throws IOException {
 		String buffer = null;
 		String value = null;
 		ParameterValueType parameterValueType = null;
@@ -274,18 +264,18 @@ public class AponReader {
 					name = buffer.substring(0, index).trim();
 					value = buffer.substring(index + 1).trim();
 					
-					parameterDefine = parameterDefineMap.get(name);
+					parameterValue = parameterValueMap.get(name);
 
 					//System.out.println("************** title: " + title);
 					//System.out.println("************** name: " + name + ", value: " + value + ", token: " + token);
 					//System.out.println("************** parameterDefine: " + parameterDefine);
 					
-					if(parameterDefine == null) {
+					if(parameterValue == null) {
 						if(addable) {
 							parameterValueType = ParameterValueType.valueOfHint(name);
 							if(parameterValueType != null) {
 								name = ParameterValueType.stripValueTypeHint(name);
-								parameterDefine = parameterDefineMap.get(name);
+								parameterValue = parameterValueMap.get(name);
 							}
 						} else {
 							throw new InvalidParameterException("invalid parameter \"" + buffer + "\"");
@@ -293,8 +283,8 @@ public class AponReader {
 					}
 				}
 
-				if(parameterDefine != null && parameterDefine.getParameterValueType() != ParameterValueType.VARIABLE) {
-					parameterValueType = parameterDefine.getParameterValueType();
+				if(parameterValue != null && parameterValue.getParameterValueType() != ParameterValueType.VARIABLE) {
+					parameterValueType = parameterValue.getParameterValueType();
 				} else {
 					parameterValueType = null;
 				}
@@ -303,52 +293,52 @@ public class AponReader {
 					if(parameterValueType == null && CURLY_BRAKET_OPEN.equals(value)) {
 						parameterValueType = ParameterValueType.PARAMETERS;
 					} else if(SQUARE_BRAKET_OPEN.equals(value)) {
-						if(parameterDefine == null || (parameterDefine != null && parameterDefine.isArray())) {
+						if(parameterValue == null || (parameterValue != null && parameterValue.isArray())) {
 							//System.out.println("************** name: " + name);
 							//System.out.println("************** parameterDefine: " + parameterDefine);
-							valuelize(reader, parameterDefineMap, SQUARE_BRAKET_OPEN, name, parameterDefine);
+							valuelize(reader, parameterValueMap, SQUARE_BRAKET_OPEN, name, parameterValue);
 							continue;
 						}
 					}
 					
 					if(parameterValueType == ParameterValueType.PARAMETERS) {
 						if(openBraket == SQUARE_BRAKET_OPEN) {
-							if(parameterDefine == null) {
-								parameterDefine = new ParameterDefine(name, parameterValueType, true);
-								parameterDefineMap.put(name, parameterDefine);
+							if(parameterValue == null) {
+								parameterValue = new ParameterValue(name, parameterValueType, true);
+								parameterValueMap.put(name, parameterValue);
 							}
 
-							AbstractParameters parameters2 = (AbstractParameters)parameterDefine.newParameters();
-							valuelize(reader, parameters2.getParameterDefineMap(), CURLY_BRAKET_OPEN, null, null);
-							parameterDefine.putValue(parameters2);
+							AbstractParameters parameters2 = (AbstractParameters)parameterValue.newParameters();
+							valuelize(reader, parameters2.getParameterValueMap(), CURLY_BRAKET_OPEN, null, null);
+							parameterValue.putValue(parameters2);
 						} else {
-							if(parameterDefine == null) {
-								parameterDefine = new ParameterDefine(name, parameterValueType);
-								parameterDefineMap.put(name, parameterDefine);
+							if(parameterValue == null) {
+								parameterValue = new ParameterValue(name, parameterValueType);
+								parameterValueMap.put(name, parameterValue);
 							}
 
-							AbstractParameters parameters2 = (AbstractParameters)parameterDefine.touchValueAsParameters();
-							valuelize(reader, parameters2.getParameterDefineMap(), CURLY_BRAKET_OPEN, null, null);
+							AbstractParameters parameters2 = (AbstractParameters)parameterValue.touchValueAsParameters();
+							valuelize(reader, parameters2.getParameterValueMap(), CURLY_BRAKET_OPEN, null, null);
 						}
 					} else {
 						if(parameterValueType == null)
 							parameterValueType = ParameterValueType.STRING;
 
-						if(parameterDefine == null) {
-							parameterDefine = new ParameterDefine(name, parameterValueType, (openBraket == SQUARE_BRAKET_OPEN));
-							parameterDefineMap.put(name, parameterDefine);
+						if(parameterValue == null) {
+							parameterValue = new ParameterValue(name, parameterValueType, (openBraket == SQUARE_BRAKET_OPEN));
+							parameterValueMap.put(name, parameterValue);
 						}
 
 						if(parameterValueType == ParameterValueType.INTEGER) {
 							try {
-								parameterDefine.putValue(new Integer(value));
+								parameterValue.putValue(new Integer(value));
 							} catch(NumberFormatException ex) {
 								throw new InvalidParameterException("Cannot parse value of '" + name + "' to an integer. \"" + buffer + "\"");
 							}
 						} else if(parameterValueType == ParameterValueType.BOOLEAN) {
-							parameterDefine.putValue(Boolean.valueOf(value));
+							parameterValue.putValue(Boolean.valueOf(value));
 						} else {
-							parameterDefine.putValue(value);
+							parameterValue.putValue(value);
 						}
 					}
 				}

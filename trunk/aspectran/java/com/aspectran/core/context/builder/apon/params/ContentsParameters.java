@@ -16,7 +16,7 @@ public class ContentsParameters extends AbstractParameters implements Parameters
 	static {
 		name = new ParameterDefine("name", ParameterValueType.STRING);
 		omittable = new ParameterDefine("omittable", ParameterValueType.BOOLEAN);
-		contents = new ParameterDefine("content", new ContentParameters(), true);
+		contents = new ParameterDefine("content", ContentParameters.class, true);
 		
 		parameterDefines = new ParameterDefine[] {
 				name,

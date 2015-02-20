@@ -109,8 +109,8 @@ public class AspectranNodeParser {
 		parser.addNodelet("/aspectran/settings", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
 				if(text != null) {
-					Parameters params = new GenericParameters(text);
-					Iterator<String> iter = params.getParameterNameSet().iterator();
+					Parameters parameters = new GenericParameters(text);
+					Iterator<String> iter = parameters.getParameterNameSet().iterator();
 					
 					while(iter.hasNext()) {
 						String name = iter.next();
@@ -124,7 +124,7 @@ public class AspectranNodeParser {
 								throw new IllegalArgumentException("Unknown setting name '" + name + "'");
 						}
 						
-						assistant.putSetting(settingType, params.getString(name));
+						assistant.putSetting(settingType, parameters.getString(name));
 					}
 				}
 			}
@@ -157,11 +157,24 @@ public class AspectranNodeParser {
 	 * Adds the type alias nodelets.
 	 */
 	private void addTypeAliasNodelets() {
-		parser.addNodelet("/aspectran/typeAlias", new Nodelet() {
+		parser.addNodelet("/aspectran/typeAliases", new Nodelet() {
+			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
+				if(text != null) {
+					Parameters parameters = new GenericParameters(text);
+					Iterator<String> iter = parameters.getParameterNameSet().iterator();
+					
+					while(iter.hasNext()) {
+						String alias = iter.next();
+						assistant.addTypeAlias(alias, parameters.getString(alias));
+					}
+				}
+			}
+		});
+		parser.addNodelet("/aspectran/typeAliases/typeAlias", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
 				String alias = attributes.get("alias");
 				String type = attributes.get("type");
-
+				
 				assistant.addTypeAlias(alias, type);
 			}
 		});

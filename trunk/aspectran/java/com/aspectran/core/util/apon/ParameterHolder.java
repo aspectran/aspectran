@@ -8,8 +8,8 @@ public class ParameterHolder {
 	
 	private final GenericParameters parameters;
 	
-	public ParameterHolder(String text, Parameters parameters, boolean array) {
-		ParameterDefine[] parameterDefines = new ParameterDefine[] { new ParameterDefine(PARAMETER_NAME, parameters, array) };
+	public ParameterHolder(String text, Class<? extends AbstractParameters> parametersClass, boolean array) {
+		ParameterDefine[] parameterDefines = new ParameterDefine[] { new ParameterDefine(PARAMETER_NAME, parametersClass, array) };
 		
 		if(text != null)
 			text = PARAMETER_NAME + ": [\n" + text + "\n]";
