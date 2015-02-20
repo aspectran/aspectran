@@ -98,7 +98,7 @@ public class ItemRuleNodeletAdder implements NodeletAdder {
 
 				assistant.pushObject(itemRule);
 				
-				if(itemRule.getType() != ItemType.ITEM)
+				if(itemRule.getType() != ItemType.SINGLE)
 					ItemRule.beginValueCollection(itemRule);
 			}
 		});
@@ -158,7 +158,7 @@ public class ItemRuleNodeletAdder implements NodeletAdder {
 					String name = assistant.popObject();
 					ItemRule itemRule = assistant.peekObject();
 
-					if(itemRule.getType() != ItemType.ITEM)
+					if(itemRule.getType() != ItemType.SINGLE)
 						ItemRule.finishValueCollection(itemRule, name, tokens);
 				}
 			}
