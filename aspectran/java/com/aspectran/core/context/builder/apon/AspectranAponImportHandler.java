@@ -49,8 +49,8 @@ public class AspectranAponImportHandler implements ImportHandler {
 		Parameters aspectranParameters = aponReader.read(reader, new AspectranParameters());
 		reader.close();
 		
-		AspectranAponAssembler aponAssembler = new AspectranAponAssembler(assistant);
-		aponAssembler.assembleAspectran(aspectranParameters);
+		AspectranAponDisassembler aponDisassembler = new AspectranAponDisassembler(assistant);
+		aponDisassembler.disassembleAspectran(aspectranParameters);
 
 		assistant.setDefaultSettings(defaultSettings);
 	}
