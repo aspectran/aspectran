@@ -7,7 +7,6 @@
 	<settings>
 		<setting name="transletNamePattern" value="/example/*"/>
 		<setting name="activityDefaultHandler" value="webActivityDefaultHandler"/>
-		<setting name="useNamespaces" value="true"/>
 		<setting name="nullableContentId" value="true"/>
 		<setting name="nullableActionId" value="true"/>
 	</settings>

@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!ELEMENT aspectran (settings? | typeAliases* | aspect* | bean* | translet* | import*)*>
-<!ATTLIST aspectran
-namespace CDATA #IMPLIED
->
 
 <!ELEMENT settings (#PCDATA | setting)*>
 <!ELEMENT setting (#PCDATA)>
