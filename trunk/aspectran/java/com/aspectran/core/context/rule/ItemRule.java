@@ -273,7 +273,7 @@ public class ItemRule {
 		sb.append(", name=").append(name);
 		sb.append(", value=");
 		
-		if(type == ItemType.ITEM) {
+		if(type == ItemType.SINGLE) {
 			if(tokens != null) {
 				for(Token t : tokens) {
 					sb.append(t.toString());
@@ -384,7 +384,7 @@ public class ItemRule {
 			this.name = name;
 			
 			if(type == null)
-				type = ItemType.ITEM;
+				type = ItemType.SINGLE;
 		}
 	}
 
@@ -584,7 +584,7 @@ public class ItemRule {
 	 * @param tokens the new value
 	 */
 	public void setValue(Token[] tokens) {
-			checkValueType(ItemType.ITEM);
+			checkValueType(ItemType.SINGLE);
 			this.tokens = tokens;
 	}
 	
@@ -689,7 +689,7 @@ public class ItemRule {
 		if(itemType != null)
 			itemRule.setType(itemType);
 		else
-			itemRule.setType(ItemType.ITEM); //default
+			itemRule.setType(ItemType.SINGLE); //default
 
 		if(!StringUtils.isEmpty(name)) {
 			itemRule.setName(name);
@@ -828,7 +828,7 @@ public class ItemRule {
 	 * @return the token[]
 	 */
 	public static Token[] parseValue(ItemRule itemRule, String valueName, String valueText) {
-		if(itemRule.getType() == ItemType.ITEM) {
+		if(itemRule.getType() == ItemType.SINGLE) {
 			if(valueText != null) {
 				itemRule.setValue(valueText);
 			}
@@ -972,7 +972,7 @@ public class ItemRule {
 			
 			updateReference(itemRule, bean, parameter, attribute, property);
 		} else {
-			if(itemRule.getType() == ItemType.ITEM) {
+			if(itemRule.getType() == ItemType.SINGLE) {
 				String value = itemParameters.getString(ItemParameters.value);
 				parseValue(itemRule, null, value);
 			} else if(itemRule.getType() == ItemType.LIST || itemRule.getType() == ItemType.SET) {

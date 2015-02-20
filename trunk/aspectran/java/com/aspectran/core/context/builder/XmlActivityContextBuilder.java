@@ -39,10 +39,10 @@ public class XmlActivityContextBuilder extends AbstractActivityContextBuilder im
 
 	public ActivityContext build(String rootContext) throws ActivityContextBuilderException {
 		try {
-			Importable importStream = makeImportStream(rootContext);
+			Importable importable = makeImportable(rootContext);
 			
 			AspectranNodeParser parser = new AspectranNodeParser(this);
-			parser.parse(importStream);
+			parser.parse(importable);
 			
 			ActivityContext aspectranContext = makeActivityContext(applicationAdapter);
 			

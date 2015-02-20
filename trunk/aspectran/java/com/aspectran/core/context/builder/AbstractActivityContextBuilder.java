@@ -120,23 +120,23 @@ public abstract class AbstractActivityContextBuilder extends ContextBuilderAssis
 		return new TransletRuleRegistry(transletRuleMap);
 	}
 	
-	protected Importable makeImportStream(String rootContext) throws IOException {
+	protected Importable makeImportable(String rootContext) throws IOException {
 		if(rootContext == null)
 			throw new IllegalArgumentException("rootContext must not be null");
 		
-		Importable importStream = null;
+		Importable importable = null;
 
 		if(rootContext.startsWith(ResourceUtils.CLASSPATH_URL_PREFIX)) {
 			String resource = rootContext.substring(ResourceUtils.CLASSPATH_URL_PREFIX.length());
-			importStream = new ImportableResource(getClassLoader(), resource);
+			importable = new ImportableResource(getClassLoader(), resource);
 		} else if(rootContext.startsWith(ResourceUtils.FILE_URL_PREFIX)) {
 			String filePath = rootContext.substring(ResourceUtils.FILE_URL_PREFIX.length());
-			importStream = new ImportableFile(filePath);
+			importable = new ImportableFile(filePath);
 		} else {
-			importStream = new ImportableFile(getApplicationBasePath(), rootContext);
+			importable = new ImportableFile(getApplicationBasePath(), rootContext);
 		}
 
-		return importStream;
+		return importable;
 	}
 	
 }

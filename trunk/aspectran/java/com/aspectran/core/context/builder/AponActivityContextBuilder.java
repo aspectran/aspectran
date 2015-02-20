@@ -55,7 +55,7 @@ public class AponActivityContextBuilder extends AbstractActivityContextBuilder i
 
 	public ActivityContext build(String rootContext) throws ActivityContextBuilderException {
 		try {
-			Importable importable = makeImportStream(rootContext);
+			Importable importable = makeImportable(rootContext);
 			Reader reader = importable.getReader(encoding);
 
 			AponReader aponReader = new AponReader();

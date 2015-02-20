@@ -26,7 +26,7 @@ import java.util.Map;
 public final class ItemType extends Type {
 	
 	/** The "item" item type. */
-	public static final ItemType ITEM;
+	public static final ItemType SINGLE;
 
 	/** The "array" item type. */
 	public static final ItemType LIST;
@@ -43,14 +43,14 @@ public final class ItemType extends Type {
 	private static final Map<String, ItemType> types;
 	
 	static {
-		ITEM = new ItemType("item");
+		SINGLE = new ItemType("single");
 		LIST = new ItemType("list");
 		MAP = new ItemType("map");
 		SET = new ItemType("set");
 		PROPERTIES = new ItemType("properties");
 
 		types = new HashMap<String, ItemType>();
-		types.put(ITEM.toString(), ITEM);
+		types.put(SINGLE.toString(), SINGLE);
 		types.put(LIST.toString(), LIST);
 		types.put(MAP.toString(), MAP);
 		types.put(SET.toString(), SET);

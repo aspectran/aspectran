@@ -84,7 +84,7 @@ public class ItemTokenExpression extends TokenExpression implements ItemTokenExp
 			ItemValueType valueType = ir.getValueType();
 			Object value = null;
 			
-			if(itemType == ItemType.ITEM) {
+			if(itemType == ItemType.SINGLE) {
 				Token[] tokens = ir.getTokens();
 				value = express(ir.getName(), tokens, valueType);
 			} else if(itemType == ItemType.LIST) {
