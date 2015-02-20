@@ -3,7 +3,6 @@ aspectran: {
 		transletNamePattern: /example/*
 		transletInterfaceClass: com.aspectran.web.activity.WebTranslet
 		transletImplementClass: com.aspectran.web.activity.WebTransletImpl
-		useNamespaces: true
 		nullableContentId: true
 		nullableActionId: true
 		beanProxyMode: cglib
