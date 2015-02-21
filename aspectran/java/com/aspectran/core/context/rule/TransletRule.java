@@ -398,7 +398,6 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		
 		sb.append("{name=").append(name);
 		sb.append(", requestRule=").append(requestRule);
 		sb.append(", responseRule=").append(responseRule);

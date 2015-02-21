@@ -332,27 +332,23 @@ public class BeanRule implements Cloneable {
 		if(constructorArgumentItemRuleMap != null) {
 			sb.append(", constructorArguments=[");
 			int sbLength = sb.length();
-
 			for(String name : constructorArgumentItemRuleMap.keySet()) {
 				if(sb.length() > sbLength)
 					sb.append(", ");
 				
 				sb.append(name);
 			}
-
 			sb.append("]");
 		}
 		if(propertyItemRuleMap != null) {
 			sb.append(", properties=[");
 			int sbLength = sb.length();
-			
 			for(String name : propertyItemRuleMap.keySet()) {
 				if(sb.length() > sbLength)
 					sb.append(", ");
 				
 				sb.append(name);
 			}
-			
 			sb.append("]");
 		}
 		sb.append("}");

@@ -223,18 +223,15 @@ public class RedirectResponseRule extends ActionPossessSupport implements Action
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-
 		sb.append("{contentType=").append(contentType);
 		sb.append(", translet=").append(transletName);
 		sb.append(", url=").append(url);
 		sb.append(", excludeNullParameters=").append(excludeNullParameter);
 		if(defaultResponse != null)
 			sb.append(", defaultResponse=").append(defaultResponse);
-
 		if(actionList != null) {
 			sb.append(", actionList=");
 			sb.append('[');
-
 			for(int i = 0; i < actionList.size(); i++) {
 				Executable action = actionList.get(i);
 
@@ -243,10 +240,8 @@ public class RedirectResponseRule extends ActionPossessSupport implements Action
 
 				sb.append(action.getActionId());
 			}
-
 			sb.append(']');
 		}
-
 		sb.append("}");
 		
 		return sb.toString();

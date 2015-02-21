@@ -202,7 +202,6 @@ public class TransformRule extends ActionPossessSupport implements ActionPossess
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-
 		sb.append("{transformType=").append(transformType);
 		sb.append(", contentType=").append(contentType);
 		sb.append(", characterEncoding=").append(characterEncoding);

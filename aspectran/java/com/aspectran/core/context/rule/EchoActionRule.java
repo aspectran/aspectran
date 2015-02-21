@@ -147,24 +147,18 @@ public class EchoActionRule {
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		
 		sb.append("{id=").append(actionId);
 		sb.append(", hidden=").append(hidden);
-
 		if(attributeItemRuleMap != null) {
 			sb.append(", attributes=[");
 			int sbLength = sb.length();
-
 			for(String name : attributeItemRuleMap.keySet()) {
 				if(sb.length() > sbLength)
 					sb.append(", ");
-				
 				sb.append(name);
 			}
-
 			sb.append("]");
 		}
-		
 		sb.append("}");
 		
 		return sb.toString();

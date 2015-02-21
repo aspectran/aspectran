@@ -138,7 +138,6 @@ public class TemplateRule extends ActionPossessSupport implements ActionPossessa
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-
 		sb.append("{file=").append(file);
 		sb.append(", resource=").append(resource);
 		sb.append(", url=").append(url);

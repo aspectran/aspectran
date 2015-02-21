@@ -69,7 +69,6 @@ public class AspectJobAdviceRule {
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-
 		sb.append("{aspectId=").append(aspectId);
 		sb.append(", aspectAdviceType=").append(aspectAdviceType);
 		sb.append(", jobTransletName=").append(jobTransletName);
