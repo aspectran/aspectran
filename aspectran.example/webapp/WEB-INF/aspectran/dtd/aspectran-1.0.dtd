@@ -28,23 +28,9 @@ for (translet | scheduler) #IMPLIED
 scope (translet | request | content | action-content | bean-content | response | action | bean) #IMPLIED
 >
 
-<!ELEMENT pointcut (#PCDATA | target)*>
+<!ELEMENT pointcut (#PCDATA)>
 <!ATTLIST pointcut
 type (wildcard | regexp | simpleTrigger | cronTrigger) #IMPLIED
->
-
-<!ELEMENT target (#PCDATA | exclude)*>
-<!ATTLIST target
-translet CDATA #IMPLIED
-bean CDATA #IMPLIED
-method CDATA #IMPLIED
->
-
-<!ELEMENT exclude (#PCDATA)>
-<!ATTLIST exclude
-translet CDATA #IMPLIED
-bean CDATA #IMPLIED
-method CDATA #IMPLIED
 >
 
 <!ELEMENT advice ((before?, after?, around?, finally?, exceptionRaized?) | job*)>
