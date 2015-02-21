@@ -21,7 +21,7 @@ import com.aspectran.core.activity.aspect.result.AspectAdviceResult;
 import com.aspectran.core.activity.process.result.ProcessResult;
 import com.aspectran.core.activity.response.ResponseException;
 import com.aspectran.core.activity.response.ResponseNotFoundException;
-import com.aspectran.core.activity.response.Responsible;
+import com.aspectran.core.activity.response.Response;
 import com.aspectran.core.activity.response.TransformResponseFactory;
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.adapter.RequestAdapter;
@@ -101,7 +101,7 @@ public class CoreTranslet implements Translet {
 		activity.activityEnd();
 	}
 
-	public void response(Responsible res) throws ResponseException {
+	public void response(Response res) throws ResponseException {
 		activity.response(res);
 	}
 	
@@ -113,7 +113,7 @@ public class CoreTranslet implements Translet {
 	 * @throws ResponseException the response exception
 	 */
 	public void transform(TransformRule transformRule) throws ResponseException {
-		Responsible res = TransformResponseFactory.getResponse(transformRule);
+		Response res = TransformResponseFactory.getResponse(transformRule);
 		
 		if(res == null)
 			throw new ResponseNotFoundException("transform response is not found. transformRule" + transformRule);
@@ -129,7 +129,7 @@ public class CoreTranslet implements Translet {
 	 * @throws ResponseException the response exception
 	 */
 	public void redirect(RedirectResponseRule redirectResponseRule) throws ResponseException {
-		Responsible res = TransformResponseFactory.getResponse(redirectResponseRule);
+		Response res = TransformResponseFactory.getResponse(redirectResponseRule);
 		response(res);
 	}
 	
@@ -141,7 +141,7 @@ public class CoreTranslet implements Translet {
 	 * @throws ResponseException the response exception
 	 */
 	public void forward(ForwardResponseRule forwardResponseRule) throws ResponseException {
-		Responsible res = TransformResponseFactory.getResponse(forwardResponseRule);
+		Response res = TransformResponseFactory.getResponse(forwardResponseRule);
 		response(res);
 	}
 	

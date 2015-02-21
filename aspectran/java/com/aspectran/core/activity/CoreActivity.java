@@ -32,7 +32,7 @@ import com.aspectran.core.activity.process.result.ProcessResult;
 import com.aspectran.core.activity.request.RequestException;
 import com.aspectran.core.activity.response.ForwardResponse;
 import com.aspectran.core.activity.response.ResponseException;
-import com.aspectran.core.activity.response.Responsible;
+import com.aspectran.core.activity.response.Response;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.aspect.AspectAdviceRuleRegister;
 import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
@@ -514,7 +514,7 @@ public class CoreActivity extends AbstractActivity implements Activity {
 	 *
 	 * @return the response
 	 */
-	public Responsible getResponse() {
+	public Response getResponse() {
 		if(responseRule == null)
 			return null;
 
@@ -522,7 +522,7 @@ public class CoreActivity extends AbstractActivity implements Activity {
 	}
 	
 	private void response() throws ActivityException {
-		Responsible res = getResponse();
+		Response res = getResponse();
 		
 		if(res != null)
 			response(res);
@@ -538,7 +538,7 @@ public class CoreActivity extends AbstractActivity implements Activity {
 	 * 
 	 * @throws ResponseException the response exception
 	 */
-	public void response(Responsible res) throws ResponseException {
+	public void response(Response res) throws ResponseException {
 		res.response(this);
 		
 		if(res.getResponseType() == ResponseType.FORWARD) {
@@ -594,10 +594,10 @@ public class CoreActivity extends AbstractActivity implements Activity {
 	 * @throws RequestException 
 	 */
 	private void responseByContentType(ResponseByContentTypeRule responseByContentTypeRule) throws ActivityException {
-		Responsible response = getResponse();
+		Response response = getResponse();
 
 		if(response != null && response.getContentType() != null) {
-			Responsible response2 = responseByContentTypeRule.getResponse(response.getContentType());
+			Response response2 = responseByContentTypeRule.getResponse(response.getContentType());
 			ResponseRule newResponseRule = responseRule.newResponseRule(response2);
 			responseRule = newResponseRule;
 			

@@ -36,7 +36,7 @@ import org.slf4j.LoggerFactory;
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.activity.process.result.ProcessResult;
-import com.aspectran.core.activity.response.Responsible;
+import com.aspectran.core.activity.response.Response;
 import com.aspectran.core.activity.response.transform.xml.ContentsInputSource;
 import com.aspectran.core.activity.response.transform.xml.ContentsXMLReader;
 import com.aspectran.core.adapter.ResponseAdapter;
@@ -50,7 +50,7 @@ import com.aspectran.core.context.rule.type.ContentType;
  * Created: 2008. 03. 22 오후 5:51:58
  * </p>
  */
-public class XslTransform extends AbstractTransform implements Responsible {
+public class XslTransform extends TransformResponse implements Response {
 	
 	public static final String OUTPUT_METHOD_XML = "xml";
 

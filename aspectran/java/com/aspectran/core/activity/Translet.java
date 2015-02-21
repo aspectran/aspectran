@@ -19,7 +19,7 @@ import java.util.Map;
 
 import com.aspectran.core.activity.process.result.ProcessResult;
 import com.aspectran.core.activity.response.ResponseException;
-import com.aspectran.core.activity.response.Responsible;
+import com.aspectran.core.activity.response.Response;
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
@@ -87,7 +87,7 @@ public abstract interface Translet {
 	 * 
 	 * @throws ResponseException the response exception
 	 */
-	public void response(Responsible res) throws ResponseException;
+	public void response(Response res) throws ResponseException;
 
 	public void transform(TransformRule transformRule) throws ResponseException;
 

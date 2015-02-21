@@ -21,9 +21,9 @@ import com.aspectran.core.context.rule.type.TransformType;
  */
 public class TransformResponseFactory {
 
-	public static Responsible getResponse(TransformRule transformRule) {
+	public static Response getResponse(TransformRule transformRule) {
 		TransformType type = transformRule.getTransformType();
-		Responsible res = null;
+		Response res = null;
 		
 		if(type == TransformType.XML_TRANSFORM) {
 			res = new XmlTransform(transformRule);
@@ -38,15 +38,15 @@ public class TransformResponseFactory {
 		return res;
 	}
 	
-	public static Responsible getResponse(ForwardResponseRule forwardResponseRule) {
+	public static Response getResponse(ForwardResponseRule forwardResponseRule) {
 		return new ForwardResponse(forwardResponseRule);
 	}
 	
-	public static Responsible getResponse(RedirectResponseRule redirectResponseRule) {
+	public static Response getResponse(RedirectResponseRule redirectResponseRule) {
 		return new RedirectResponse(redirectResponseRule);
 	}
 	
-	public static Responsible getResponse(DispatchResponseRule dispatchResponseRule) {
+	public static Response getResponse(DispatchResponseRule dispatchResponseRule) {
 		return new DispatchResponse(dispatchResponseRule);
 	}
 }

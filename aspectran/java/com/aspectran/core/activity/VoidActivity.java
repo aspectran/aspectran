@@ -19,7 +19,7 @@ import java.util.List;
 
 import com.aspectran.core.activity.request.RequestException;
 import com.aspectran.core.activity.response.ResponseException;
-import com.aspectran.core.activity.response.Responsible;
+import com.aspectran.core.activity.response.Response;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
@@ -86,7 +86,7 @@ public final class VoidActivity extends CoreActivity implements Activity {
 	}
 
 	@Override
-	public void response(Responsible res) throws ResponseException {
+	public void response(Response res) throws ResponseException {
 		throw new UnsupportedOperationException();
 	}
 
@@ -96,7 +96,7 @@ public final class VoidActivity extends CoreActivity implements Activity {
 	}
 
 	@Override
-	public Responsible getResponse() {
+	public Response getResponse() {
 		throw new UnsupportedOperationException();
 	}
 

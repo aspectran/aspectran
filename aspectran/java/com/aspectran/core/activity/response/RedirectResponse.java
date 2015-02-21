@@ -27,7 +27,7 @@ import com.aspectran.core.context.rule.type.ResponseType;
 /**
  * <p>Created: 2008. 03. 22 오후 5:51:58</p>
  */
-public class RedirectResponse implements Responsible {
+public class RedirectResponse implements Response {
 	
 	/** The logger. */
 	private final Logger logger = LoggerFactory.getLogger(RedirectResponse.class);

@@ -32,7 +32,7 @@ import com.aspectran.core.context.rule.type.ResponseType;
 /**
  * <p>Created: 2008. 03. 22 오후 5:51:58</p>
  */
-public class ForwardResponse implements Responsible {
+public class ForwardResponse implements Response {
 
 	private final Logger logger = LoggerFactory.getLogger(ForwardResponse.class);
 	

@@ -15,7 +15,7 @@
  */
 package com.aspectran.core.activity.response.transform;
 
-import com.aspectran.core.activity.response.Responsible;
+import com.aspectran.core.activity.response.Response;
 import com.aspectran.core.context.rule.TransformRule;
 import com.aspectran.core.context.rule.type.ContentType;
 import com.aspectran.core.context.rule.type.TransformType;
@@ -32,10 +32,10 @@ public class TransformFactory {
 	 * 
 	 * @return the transform response
 	 */
-	public static Responsible createTransform(TransformRule tr) {
+	public static Response createTransform(TransformRule tr) {
 		TransformType tranformType = tr.getTransformType();
 		
-		Responsible transform = null;
+		Response transform = null;
 		
 		if(tranformType == TransformType.XSL_TRANSFORM) {
 			transform = new XslTransform(tr);

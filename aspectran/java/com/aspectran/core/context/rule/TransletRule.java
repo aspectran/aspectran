@@ -28,9 +28,9 @@ import com.aspectran.core.activity.process.action.Executable;
 import com.aspectran.core.activity.process.action.IncludeAction;
 import com.aspectran.core.activity.response.ForwardResponse;
 import com.aspectran.core.activity.response.RedirectResponse;
-import com.aspectran.core.activity.response.Responsible;
+import com.aspectran.core.activity.response.Response;
 import com.aspectran.core.activity.response.dispatch.DispatchResponse;
-import com.aspectran.core.activity.response.transform.AbstractTransform;
+import com.aspectran.core.activity.response.transform.TransformResponse;
 import com.aspectran.core.context.AspectranConstant;
 import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
 import com.aspectran.core.context.rule.ability.ActionRuleApplicable;
@@ -170,7 +170,7 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 	 * @param responseRule the new response rule
 	 */
 	public void setResponseRule(ResponseRule responseRule) {
-		Responsible response = responseRule.getResponse();
+		Response response = responseRule.getResponse();
 		
 		if(response != null) {
 			addActionList(response.getActionList());
@@ -199,7 +199,7 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 		responseRuleList.add(responseRule);
 	}
 
-	public Responsible applyResponseRule(TransformRule tr) {
+	public Response applyResponseRule(TransformRule tr) {
 		addActionList(tr.getActionList());
 		
 		if(responseRule == null)
@@ -215,7 +215,7 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 	 * 
 	 * @return the dispatch response
 	 */
-	public Responsible applyResponseRule(DispatchResponseRule drr) {
+	public Response applyResponseRule(DispatchResponseRule drr) {
 		addActionList(drr.getActionList());
 
 		if(responseRule == null)
@@ -231,7 +231,7 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 	 * 
 	 * @return the redirect response
 	 */
-	public Responsible applyResponseRule(RedirectResponseRule rrr) {
+	public Response applyResponseRule(RedirectResponseRule rrr) {
 		addActionList(rrr.getActionList());
 
 		if(responseRule == null)
@@ -247,7 +247,7 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 	 * 
 	 * @return the forward response
 	 */
-	public Responsible applyResponseRule(ForwardResponseRule frr) {
+	public Response applyResponseRule(ForwardResponseRule frr) {
 		addActionList(frr.getActionList());
 
 		if(responseRule == null)
@@ -474,10 +474,10 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 			sb.append("   Response ").append(responseRule).append(CRLF);
 
 			if(responseRule.getResponse() != null) {
-				Responsible responsible = responseRule.getResponse();
+				Response responsible = responseRule.getResponse();
 
 				if(responsible.getResponseType() == ResponseType.TRANSFORM) {
-					AbstractTransform tr = (AbstractTransform)responsible;
+					TransformResponse tr = (TransformResponse)responsible;
 					if(tr.getTransformType() == TransformType.XSL_TRANSFORM) {
 						sb.append("      XSLTransformer ");
 					} else if(tr.getTransformType() == TransformType.XML_TRANSFORM) {
