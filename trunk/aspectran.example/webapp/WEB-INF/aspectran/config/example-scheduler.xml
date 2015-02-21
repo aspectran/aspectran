@@ -32,9 +32,9 @@
 	<aspect id="exception2" for="translet">
 		<joinpoint scope="translet">
 			<pointcut>
-				<target>
+				target: {
 					+: /scheduler/*
-				</target>
+				}
 			</pointcut>
 		</joinpoint>
 		<advice>

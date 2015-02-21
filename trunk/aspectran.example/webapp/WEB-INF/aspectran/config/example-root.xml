@@ -49,7 +49,9 @@
 	<aspect id="exception1">
 		<joinpoint scope="translet">
 			<pointcut>
-				<target translet="/example/hello/*"/>
+				target: {
+					translet: /example/hello/*
+				}
 			</pointcut>
 		</joinpoint>
 		<advice>
@@ -75,12 +77,21 @@
 	<aspect id="helloAdvice">
 		<joinpoint scope="content">
 			<pointcut>
-				<target>
+			 	type: wildcard
+				target: {
 					+: /example/hello/*@example.hello.HelloAction^applyTheAdvice
-				</target>
-				<target translet="/example/hello/*" bean="example.hello.HelloAction" method="applyTheAdvice">
-					<exclude translet="/example/hello/*" bean="example.hello.HelloAction" method="applyTheAdvice"/>
-				</target>
+					-: /aaaa*@*^bbb
+				}
+				target: {
+					translet: /example/hello/*
+					bean: example.hello.HelloAction
+					method: applyTheAdvice
+					exclude: {
+						translet: /example/hello/*
+						bean: example.hello.HelloAction
+						method: applyTheAdvice
+					}					
+				}
 			</pointcut>
 		</joinpoint>
 		<advice bean="advice.HelloAdvice">

@@ -17,6 +17,7 @@ aspectran: {
 		joinpoint: {
 			scope: request
 			pointcut: {
+				type: wildcard
 				target: {
 					+: /front/a/*@bean^method
 					+: /front/b/*
@@ -781,12 +782,6 @@ aspectran: {
 	</apon>
 	
 	<aspect id="scheduler1" for="scheduler">
-		<joinpoint scope="request">
-			<pointcut>
-				+(/front/a/*)
-				-(/front/a/A*)
-			</pointcut>
-		</joinpoint>
 		<joinpoint scope="request">
 			<pointcut>
 				target: {
