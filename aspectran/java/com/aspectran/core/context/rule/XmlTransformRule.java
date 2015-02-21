@@ -22,12 +22,12 @@ import com.aspectran.core.context.rule.type.TransformType;
  * Created: 2008. 03. 22 오후 5:51:58
  * </p>
  */
-public class XMLTransformRule extends TransformRule {
+public class XmlTransformRule extends TransformRule {
 	
 	/**
 	 * Instantiates a new XML transform rule.
 	 */
-	public XMLTransformRule() {
+	public XmlTransformRule() {
 		super.transformType = TransformType.XML_TRANSFORM;
 	}
 
