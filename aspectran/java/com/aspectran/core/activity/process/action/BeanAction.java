@@ -188,6 +188,11 @@ public class BeanAction extends AbstractAction implements Executable {
 		return ActionType.BEAN;
 	}
 	
+	@SuppressWarnings("unchecked")
+	public <T> T getActionRule() {
+		return (T)beanActionRule;
+	}
+
 	public AspectAdviceRuleRegistry getAspectAdviceRuleRegistry() {
 		return beanActionRule.getAspectAdviceRuleRegistry();
 	}

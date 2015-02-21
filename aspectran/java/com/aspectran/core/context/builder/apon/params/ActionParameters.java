@@ -15,8 +15,9 @@ public class ActionParameters extends AbstractParameters implements Parameters {
 	public static final ParameterDefine properties;
 	
 	public static final ParameterDefine include;
-	public static final ParameterDefine echo;
 	public static final ParameterDefine attributes;
+
+	public static final ParameterDefine echo;
 	
 	public static final ParameterDefine hidden;
 	
@@ -29,8 +30,8 @@ public class ActionParameters extends AbstractParameters implements Parameters {
 		arguments = new ParameterDefine("argument", ItemParameters.class, true);
 		properties = new ParameterDefine("property", ItemParameters.class, true);
 		include = new ParameterDefine("include", ParameterValueType.STRING);
-		echo = new ParameterDefine("echo", ItemParameters.class, true);
 		attributes = new ParameterDefine("attribute", ItemParameters.class, true);
+		echo = new ParameterDefine("echo", ItemParameters.class, true);
 		hidden = new ParameterDefine("hidden", ParameterValueType.BOOLEAN);
 		
 		parameterDefines = new ParameterDefine[] {
@@ -40,8 +41,8 @@ public class ActionParameters extends AbstractParameters implements Parameters {
 				arguments,
 				properties,
 				include,
-				echo,
 				attributes,
+				echo,
 				hidden
 		};
 	}

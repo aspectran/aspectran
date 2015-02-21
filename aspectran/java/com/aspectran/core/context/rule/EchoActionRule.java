@@ -170,4 +170,5 @@ public class EchoActionRule {
 		echoActionRule.setHidden(hidden);
 		return echoActionRule;
 	}
+	
 }

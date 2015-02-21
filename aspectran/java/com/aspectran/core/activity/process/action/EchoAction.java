@@ -91,7 +91,12 @@ public class EchoAction extends AbstractAction implements Executable {
 	public ActionType getActionType() {
 		return ActionType.ECHO;
 	}
-	
+
+	@SuppressWarnings("unchecked")
+	public <T> T getActionRule() {
+		return (T)echoActionRule;
+	}
+
 	public AspectAdviceRuleRegistry getAspectAdviceRuleRegistry() {
 		return echoActionRule.getAspectAdviceRuleRegistry();
 	}

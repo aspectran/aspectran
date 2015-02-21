@@ -385,24 +385,24 @@ public class AspectranAponDisassembler {
 
 		ResponseRule responseRule = ResponseRule.newInstance(name, characterEncoding);
 		
-		List<Parameters> transformParametersList = responseParameters.getParametersList(ResponseParameters.transforms);
-		if(transformParametersList != null && !transformParametersList.isEmpty()) {
-			disassembleTransformRule(transformParametersList, responseRule);
+		Parameters transformParameters = responseParameters.getParameters(ResponseParameters.transforms);
+		if(transformParameters != null) {
+			responseRule.applyResponseRule(disassembleTransformRule(transformParameters));
 		}
 		
-		List<Parameters> dispatchParametersList = responseParameters.getParametersList(ResponseParameters.dispatchs);
-		if(dispatchParametersList != null && !dispatchParametersList.isEmpty()) {
-			disassembleDispatchResponseRule(dispatchParametersList, responseRule);
+		Parameters dispatchParameters = responseParameters.getParameters(ResponseParameters.dispatchs);
+		if(dispatchParameters != null) {
+			responseRule.applyResponseRule(disassembleDispatchResponseRule(dispatchParameters));
 		}
 
-		List<Parameters> redirectParametersList = responseParameters.getParametersList(ResponseParameters.redirects);
-		if(redirectParametersList != null && !redirectParametersList.isEmpty()) {
-			disassembleRedirectResponseRule(redirectParametersList, responseRule);
+		Parameters redirectParameters = responseParameters.getParameters(ResponseParameters.redirects);
+		if(redirectParameters != null) {
+			responseRule.applyResponseRule(disassembleRedirectResponseRule(redirectParameters));
 		}
 		
-		List<Parameters> forwardParametersList = responseParameters.getParametersList(ResponseParameters.forwards);
-		if(forwardParametersList != null && !forwardParametersList.isEmpty()) {
-			disassembleForwardResponseRule(forwardParametersList, responseRule);
+		Parameters forwardParameters = responseParameters.getParameters(ResponseParameters.forwards);
+		if(forwardParameters != null) {
+			responseRule.applyResponseRule(disassembleForwardResponseRule(forwardParameters));
 		}
 		
 		return responseRule;

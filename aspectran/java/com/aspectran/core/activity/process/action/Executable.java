@@ -64,6 +64,8 @@ public interface Executable {
 	 */
 	public ActionType getActionType();
 	
+	public <T> T getActionRule();
+	
 	/**
 	 * Gets the aspect advice registry.
 	 *

@@ -22,6 +22,7 @@ import org.slf4j.LoggerFactory;
 
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.AspectranConstant;
+import com.aspectran.core.context.builder.apon.params.CronTriggerParameters;
 import com.aspectran.core.context.builder.apon.params.SimpleTriggerParameters;
 import com.aspectran.core.context.rule.AspectJobAdviceRule;
 import com.aspectran.core.context.rule.AspectRule;
@@ -201,7 +202,10 @@ public class QuartzAspectranScheduler implements AspectranScheduler {
 					.withSchedule(simpleSchedule)
 					.build();
 		} else {
-			CronScheduleBuilder cronSchedule = CronScheduleBuilder.cronSchedule(pointcutRule.getPatternString());
+			Parameters cronTriggerParameters = pointcutRule.getCronTriggerParameters();
+			String expression = cronTriggerParameters.getString(CronTriggerParameters.expression);
+			
+			CronScheduleBuilder cronSchedule = CronScheduleBuilder.cronSchedule(expression);
 			
 			trigger = TriggerBuilder.newTrigger()
 					.withIdentity(name, group)
