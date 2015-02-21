@@ -30,7 +30,6 @@ import com.aspectran.core.context.builder.Importable;
 import com.aspectran.core.context.rule.AspectJobAdviceRule;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.BeanRule;
-import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.PointcutPatternRule;
 import com.aspectran.core.context.rule.PointcutRule;
@@ -330,19 +329,15 @@ public class AspectranNodeParser {
 				Boolean lazyInit = BooleanUtils.toNullableBooleanObject(attributes.get("lazyInit"));
 				Boolean important = BooleanUtils.toNullableBooleanObject(attributes.get("important"));
 
-				BeanRule[] beanRules = BeanRule.newInstance(assistant.getClassLoader(), id, className, scope, singleton, factoryMethod, initMethodName, destroyMethodName, lazyInit, important);
-				assistant.pushObject(beanRules);					
+				BeanRule beanRule = BeanRule.newInstance(id, className, scope, singleton, factoryMethod, initMethodName, destroyMethodName, lazyInit, important);
+				assistant.pushObject(beanRule);					
 			}
 		});
 		parser.addNodelet("/aspectran/bean/constructor/argument", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
 				if(text != null) {
-					List<Parameters> argumentParameterList = ItemRule.toParametersList(text);
-					
-					if(argumentParameterList != null) {
-						BeanRule[] beanRules = assistant.peekObject();
-						BeanRule.updateConstructorArgument(beanRules, argumentParameterList);
-					}
+					BeanRule beanRule = assistant.peekObject();
+					BeanRule.updateConstructorArgument(beanRule, text);
 				}
 				
 				ItemRuleMap irm = new ItemRuleMap();
@@ -353,22 +348,15 @@ public class AspectranNodeParser {
 		parser.addNodelet("/aspectran/bean/constructor/argument/end()", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
 				ItemRuleMap irm = assistant.popObject();
-				BeanRule[] beanRules = assistant.peekObject();
-				
-				for(BeanRule beanRule : beanRules) {
-					beanRule.setConstructorArgumentItemRuleMap(irm);
-				}
+				BeanRule beanRule = assistant.peekObject();
+				beanRule.setConstructorArgumentItemRuleMap(irm);
 			}
 		});
 		parser.addNodelet("/aspectran/bean/property", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
 				if(text != null) {
-					List<Parameters> argumentParameterList = ItemRule.toParametersList(text);
-					
-					if(argumentParameterList != null) {
-						BeanRule[] beanRules = assistant.peekObject();
-						BeanRule.updateProperty(beanRules, argumentParameterList);
-					}
+					BeanRule beanRule = assistant.peekObject();
+					BeanRule.updateProperty(beanRule, text);
 				}
 				
 				ItemRuleMap irm = new ItemRuleMap();
@@ -379,20 +367,14 @@ public class AspectranNodeParser {
 		parser.addNodelet("/aspectran/bean/property/end()", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
 				ItemRuleMap irm = assistant.popObject();
-				BeanRule[] beanRules = assistant.peekObject();
-				
-				for(BeanRule beanRule : beanRules) {
-					beanRule.setPropertyItemRuleMap(irm);
-				}
+				BeanRule beanRule = assistant.peekObject();
+				beanRule.setPropertyItemRuleMap(irm);
 			}
 		});
 		parser.addNodelet("/aspectran/bean/end()", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
-				BeanRule[] beanRules = assistant.popObject();
-				
-				for(BeanRule beanRule : beanRules) {
-					assistant.addBeanRule(beanRule);
-				}
+				BeanRule beanRule = assistant.popObject();
+				assistant.addBeanRule(beanRule);
 			}
 		});
 	}

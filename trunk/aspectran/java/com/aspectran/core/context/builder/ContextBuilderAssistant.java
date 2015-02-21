@@ -26,6 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.aspectran.core.context.AspectranConstant;
+import com.aspectran.core.context.bean.scan.BeanClassScanner;
 import com.aspectran.core.context.loader.AspectranClassLoader;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.AspectRuleMap;
@@ -38,6 +39,7 @@ import com.aspectran.core.context.rule.TransletRuleMap;
 import com.aspectran.core.context.rule.type.DefaultSettingType;
 import com.aspectran.core.util.ArrayStack;
 import com.aspectran.core.util.ResourceUtils;
+import com.aspectran.core.util.wildcard.WildcardPattern;
 
 /**
  * <p>Created: 2008. 04. 01 오후 10:25:35</p>
@@ -141,6 +143,48 @@ public class ContextBuilderAssistant {
 		objectStack.clear();
 	}
 	
+	public String getApplicationBasePath() {
+		return applicationBasePath;
+	}
+
+	/**
+	 * To real path.
+	 * 
+	 * @param filePath the file path
+	 * 
+	 * @return the file
+	 * @throws IOException 
+	 */
+	public String toRealPath(String filePath) throws IOException {
+		File file = toRealPathAsFile(filePath);
+		return file.getCanonicalPath();
+	}
+
+	/**
+	 * To real path as file.
+	 * 
+	 * @param filePath the file path
+	 * 
+	 * @return the file
+	 */
+	public File toRealPathAsFile(String filePath) {
+		File file;
+		
+		if(filePath.startsWith(ResourceUtils.FILE_URL_PREFIX)) {
+			URI uri = URI.create(filePath);
+			file = new File(uri);
+		} else if(filePath.startsWith(ResourceUtils.CLASSPATH_URL_PREFIX)) {
+			file = new File(getClassLoader().getResource(filePath).getFile());
+		} else {
+			if(applicationBasePath != null)
+				file = new File(applicationBasePath, filePath);
+			else
+				file = new File(filePath);
+		}
+		
+		return file;
+	}
+
 	protected boolean isUseTypeAliases() {
 		return useTypeAliases;
 	}
@@ -310,10 +354,6 @@ public class ContextBuilderAssistant {
 		return defaultSettings.isNullableActionId();
 	}
 
-	public String getApplicationBasePath() {
-		return applicationBasePath;
-	}
-	
 	public DefaultSettings getDefaultSettings() {
 		return defaultSettings;
 	}
@@ -342,34 +382,53 @@ public class ContextBuilderAssistant {
 	public BeanRuleMap getBeanRuleMap() {
 		return beanRuleMap;
 	}
-
-	/**
-	 * Sets the bean rule map.
-	 * 
-	 * @param beanRuleMap the new bean rule map
-	 */
-	public void setBeanRuleMap(BeanRuleMap beanRuleMap) {
-		this.beanRuleMap = beanRuleMap;
-	}
 	
 	/**
 	 * Adds the bean rule.
 	 *
 	 * @param beanRule the bean rule
+	 * @throws CloneNotSupportedException 
+	 * @throws IOException 
+	 * @throws ClassNotFoundException 
 	 */
-	public void addBeanRule(BeanRule beanRule) {
-		beanRuleMap.putBeanRule(beanRule);
+	public void addBeanRule(BeanRule beanRule) throws CloneNotSupportedException, ClassNotFoundException, IOException {
+		String className = beanRule.getClassName();
 		
-		if(logger.isTraceEnabled())
-			logger.trace("add BeanRule " + beanRule);
+		if(!WildcardPattern.hasWildcards(className)) {
+			Class<?> beanClass = classLoader.loadClass(className);
+			beanRule.setBeanClass(beanClass);
+			BeanRule.checkAccessibleMethod(beanRule);
+			beanRuleMap.putBeanRule(beanRule);
+			if(logger.isTraceEnabled())
+				logger.trace("add BeanRule " + beanRule);
+		} else {
+			BeanClassScanner scanner = new BeanClassScanner(beanRule.getId(), classLoader);
+			Map<String, Class<?>> beanClassMap = scanner.scanClass(className);
+			
+			if(beanClassMap != null && !beanClassMap.isEmpty()) {
+				for(Map.Entry<String, Class<?>> entry : beanClassMap.entrySet()) {
+					BeanRule beanRule2 = beanRule.clone();
+					
+					String beanId = entry.getKey();
+					Class<?> beanClass = entry.getValue();
+					
+					beanRule2.setId(beanId);
+					beanRule2.setClassName(beanClass.getName());
+					beanRule2.setBeanClass(beanClass);
+					beanRule2.setStealthily(true);
+
+					BeanRule.checkAccessibleMethod(beanRule2);
+					
+					beanRuleMap.putBeanRule(beanRule2);
+					if(logger.isTraceEnabled())
+						logger.trace("add BeanRule " + beanRule2);
+				}
+			}
+		}
 	}
 	
 	public AspectRuleMap getAspectRuleMap() {
 		return aspectRuleMap;
-	}
-
-	public void setAspectRuleMap(AspectRuleMap aspectRuleMap) {
-		this.aspectRuleMap = aspectRuleMap;
 	}
 	
 	public void addAspectRule(AspectRule aspectRule) {
@@ -379,44 +438,6 @@ public class ContextBuilderAssistant {
 			logger.trace("add AspectRule " + aspectRule);
 	}
 
-	/**
-	 * To real path.
-	 * 
-	 * @param filePath the file path
-	 * 
-	 * @return the file
-	 * @throws IOException 
-	 */
-	public String toRealPath(String filePath) throws IOException {
-		File file = toRealPathAsFile(filePath);
-		return file.getCanonicalPath();
-	}
-	
-	/**
-	 * To real path as file.
-	 * 
-	 * @param filePath the file path
-	 * 
-	 * @return the file
-	 */
-	public File toRealPathAsFile(String filePath) {
-		File file;
-		
-		if(filePath.startsWith(ResourceUtils.FILE_URL_PREFIX)) {
-			URI uri = URI.create(filePath);
-			file = new File(uri);
-		} else if(filePath.startsWith(ResourceUtils.CLASSPATH_URL_PREFIX)) {
-			file = new File(getClassLoader().getResource(filePath).getFile());
-		} else {
-			if(applicationBasePath != null)
-				file = new File(applicationBasePath, filePath);
-			else
-				file = new File(filePath);
-		}
-		
-		return file;
-	}
-	
 	public TransletRuleMap getTransletRuleMap() {
 		return transletRuleMap;
 	}

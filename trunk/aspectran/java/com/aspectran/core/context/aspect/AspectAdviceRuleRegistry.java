@@ -114,8 +114,9 @@ public class AspectAdviceRuleRegistry implements Cloneable {
 		return settings.get(settingName);
 	}
 	
-	public Object clone() throws CloneNotSupportedException {                      
-		return super.clone();              
+	public AspectAdviceRuleRegistry clone() throws CloneNotSupportedException {
+		// shallow copy
+		return (AspectAdviceRuleRegistry)super.clone();              
 	}
 
 	public int getAspectRuleCount() {

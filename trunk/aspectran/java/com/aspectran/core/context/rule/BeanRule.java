@@ -15,25 +15,21 @@
  */
 package com.aspectran.core.context.rule;
 
-import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 
 import com.aspectran.core.context.bean.ablility.DisposableBean;
 import com.aspectran.core.context.bean.ablility.InitializableBean;
-import com.aspectran.core.context.bean.scan.BeanClassScanner;
 import com.aspectran.core.context.rule.type.ScopeType;
 import com.aspectran.core.util.BooleanUtils;
 import com.aspectran.core.util.MethodUtils;
 import com.aspectran.core.util.apon.Parameters;
-import com.aspectran.core.util.wildcard.WildcardPattern;
 
 /**
  * <p>
  * Created: 2009. 03. 09 오후 23:48:09
  * </p>
  */
-public class BeanRule {
+public class BeanRule implements Cloneable {
 
 	protected String id;
 
@@ -312,14 +308,18 @@ public class BeanRule {
 	public void setStealthily(boolean stealthily) {
 		this.stealthily = stealthily;
 	}
-
+	
+	public BeanRule clone() throws CloneNotSupportedException {
+		// shallow copy
+		return (BeanRule)super.clone();              
+	}
+	
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-
 		sb.append("{id=").append(id);
 		sb.append(", class=").append(className);
 		sb.append(", scope=").append(scopeType);
@@ -328,7 +328,7 @@ public class BeanRule {
 		sb.append(", destroyMethod=").append(destroyMethodName);
 		sb.append(", lazyInit=").append(lazyInit);
 		sb.append(", important=").append(important);
-
+		sb.append(", stealthily=").append(stealthily);
 		if(constructorArgumentItemRuleMap != null) {
 			sb.append(", constructorArguments=[");
 			int sbLength = sb.length();
@@ -342,7 +342,6 @@ public class BeanRule {
 
 			sb.append("]");
 		}
-		
 		if(propertyItemRuleMap != null) {
 			sb.append(", properties=[");
 			int sbLength = sb.length();
@@ -356,19 +355,47 @@ public class BeanRule {
 			
 			sb.append("]");
 		}
-		
 		sb.append("}");
 		
 		return sb.toString();
 	}
 	
-	public static BeanRule[] newInstance(ClassLoader classLoader, String id, String className, String scope, Boolean singleton, String factoryMethod, String initMethodName, String destroyMethodName, Boolean lazyInit, Boolean important) throws ClassNotFoundException, IOException {
+	public static BeanRule newInstance(String id, String className, String scope, Boolean singleton, String factoryMethod, String initMethodName, String destroyMethodName, Boolean lazyInit, Boolean important) {
 		if(id == null)
 			throw new IllegalArgumentException("The <bean> element requires a id attribute.");
 
 		if(className == null)
 			throw new IllegalArgumentException("The <bean> element requires a class attribute.");
 
+		ScopeType scopeType = ScopeType.valueOf(scope);
+		
+		if(scope != null && scopeType == null)
+			throw new IllegalArgumentException("No scope-type registered for scope '" + scope + "'.");
+		
+		if(scopeType == null)
+			scopeType = singleton == Boolean.TRUE ? ScopeType.SINGLETON : ScopeType.PROTOTYPE;
+		
+		BeanRule beanRule = new BeanRule();
+		beanRule.setId(id);
+		beanRule.setClassName(className);
+		beanRule.setScopeType(scopeType);
+		beanRule.setFactoryMethodName(factoryMethod);
+		beanRule.setInitMethodName(initMethodName);
+		beanRule.setDestroyMethodName(destroyMethodName);
+		beanRule.setLazyInit(lazyInit);
+		beanRule.setImportanct(important);
+		
+		return beanRule;
+	}
+	
+/*
+	public static BeanRule[] newInstance2(ClassLoader classLoader, String id, String className, String scope, Boolean singleton, String factoryMethod, String initMethodName, String destroyMethodName, Boolean lazyInit, Boolean important) throws ClassNotFoundException, IOException {
+		if(id == null)
+			throw new IllegalArgumentException("The <bean> element requires a id attribute.");
+		
+		if(className == null)
+			throw new IllegalArgumentException("The <bean> element requires a class attribute.");
+		
 		ScopeType scopeType = ScopeType.valueOf(scope);
 		
 		if(scope != null && scopeType == null)
@@ -400,7 +427,7 @@ public class BeanRule {
 			
 			if(beanClassMap != null && beanClassMap.size() > 0) {
 				beanRules = new BeanRule[beanClassMap.size()];
-	
+				
 				int i = 0;
 				for(Map.Entry<String, Class<?>> entry : beanClassMap.entrySet()) {
 					String beanId = entry.getKey();
@@ -417,7 +444,7 @@ public class BeanRule {
 					beanRule.setStealthily(true);
 					
 					updateAccessibleMethod(beanRule, beanClass2, initMethodName, destroyMethodName);			
-
+					
 					beanRules[i++] = beanRule;
 				}
 			}
@@ -450,9 +477,65 @@ public class BeanRule {
 		beanRule.setInitMethodName(initMethodName);
 		beanRule.setDestroyMethodName(destroyMethodName);
 	}
+*/
+	public static void checkAccessibleMethod(BeanRule beanRule) {
+		Class<?> beanClass = beanRule.getBeanClass();
+		String initMethodName = beanRule.getInitMethodName();
+		String destroyMethodName = beanRule.getDestroyMethodName();
+		
+		if(initMethodName == null && beanClass.isAssignableFrom(InitializableBean.class)) {
+			initMethodName = InitializableBean.INITIALIZE_METHOD_NAME;
+			beanRule.setInitMethodName(initMethodName);
+		}
+
+		if(initMethodName != null) {
+			if(MethodUtils.getAccessibleMethod(beanClass, initMethodName, null) == null) {
+				throw new IllegalArgumentException("No such initialization method '" + initMethodName + "() on bean class: " + beanClass);
+			}
+		}
+		
+		if(destroyMethodName == null && beanClass.isAssignableFrom(DisposableBean.class)) {
+			destroyMethodName = DisposableBean.DESTROY_METHOD_NAME;
+			beanRule.setDestroyMethodName(destroyMethodName);
+		}
+
+		if(destroyMethodName != null) {
+			if(MethodUtils.getAccessibleMethod(beanClass, destroyMethodName, null) == null) {
+				throw new IllegalArgumentException("No such destroy method '" + destroyMethodName + "() on bean class: " + beanClass);
+			}
+		}
+	}
+
+	public static void updateConstructorArgument(BeanRule beanRule, String text) {
+		List<Parameters> argumentParametersList = ItemRule.toParametersList(text);
+		
+		if(argumentParametersList == null)
+			return;
+		
+		ItemRuleMap constructorArgumentItemRuleMap = ItemRule.toItemRuleMap(argumentParametersList);
+		
+		if(constructorArgumentItemRuleMap == null)
+			return;
+		
+		beanRule.setConstructorArgumentItemRuleMap(constructorArgumentItemRuleMap);
+	}
 	
-	public static void updateConstructorArgument(BeanRule[] beanRules, List<Parameters> argumentParameterList) {
-		ItemRuleMap itemRuleMap = ItemRule.toItemRuleMap(argumentParameterList);
+	public static void updateProperty(BeanRule beanRule, String text) {
+		List<Parameters> propertyParametersList = ItemRule.toParametersList(text);
+		
+		if(propertyParametersList == null)
+			return;
+		
+		ItemRuleMap propertyItemRuleMap = ItemRule.toItemRuleMap(propertyParametersList);
+		
+		if(propertyItemRuleMap == null)
+			return;
+		
+		beanRule.setPropertyItemRuleMap(propertyItemRuleMap);
+	}
+/*
+	public static void updateConstructorArgument(BeanRule[] beanRules, List<Parameters> argumentParametersList) {
+		ItemRuleMap itemRuleMap = ItemRule.toItemRuleMap(argumentParametersList);
 		
 		if(itemRuleMap == null)
 			return;
@@ -490,5 +573,5 @@ public class BeanRule {
 			}
 		}
 	}
-	
+*/
 }

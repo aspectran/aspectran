@@ -263,7 +263,7 @@ public class AspectranAponDisassembler {
 		assistant.addAspectRule(aspectRule);
 	}
 
-	public void disassembleBeanRule(Parameters beanParameters) throws ClassNotFoundException, IOException {
+	public void disassembleBeanRule(Parameters beanParameters) throws ClassNotFoundException, IOException, CloneNotSupportedException {
 		String id = beanParameters.getString(BeanParameters.id);
 		String className = assistant.resolveAliasType(beanParameters.getString(BeanParameters.className));
 		String scope = beanParameters.getString(BeanParameters.scope);
@@ -276,26 +276,18 @@ public class AspectranAponDisassembler {
 		List<Parameters> constructorArgumentParametersList = beanParameters.getParametersList(BeanParameters.constructor);
 		List<Parameters> propertyParametersList = beanParameters.getParametersList(BeanParameters.properties);
 		
+		BeanRule beanRule = BeanRule.newInstance(id, className, scope, singleton, factoryMethod, initMethod, destroyMethod, lazyInit, important);
+
 		ItemRuleMap constructorArgumentItemRuleMap = disassembleItemRuleMap(constructorArgumentParametersList);
 		ItemRuleMap propertyItemRuleMap = disassembleItemRuleMap(propertyParametersList);
-	
-		BeanRule[] beanRules = BeanRule.newInstance(assistant.getClassLoader(), id, className, scope, singleton, factoryMethod, initMethod, destroyMethod, lazyInit, important);
+
+		if(constructorArgumentItemRuleMap != null)
+			beanRule.setConstructorArgumentItemRuleMap(constructorArgumentItemRuleMap);
 		
-		if(beanRules.length == 1) {
-			if(constructorArgumentItemRuleMap != null)
-				beanRules[0].setConstructorArgumentItemRuleMap(constructorArgumentItemRuleMap);
-			if(propertyItemRuleMap != null)
-				beanRules[0].setPropertyItemRuleMap(propertyItemRuleMap);
-			assistant.addBeanRule(beanRules[0]);
-		} else if(beanRules.length > 1) {
-			for(BeanRule beanRule : beanRules) {
-				if(constructorArgumentItemRuleMap != null)
-					beanRule.setConstructorArgumentItemRuleMap(constructorArgumentItemRuleMap);
-				if(propertyItemRuleMap != null)
-					beanRule.setPropertyItemRuleMap(propertyItemRuleMap);
-				assistant.addBeanRule(beanRule);
-			}
-		}
+		if(propertyItemRuleMap != null)
+			beanRule.setPropertyItemRuleMap(propertyItemRuleMap);
+		
+		assistant.addBeanRule(beanRule);
 	}
 
 	public void disassembleTransletRule(Parameters transletParameters) throws CloneNotSupportedException {
