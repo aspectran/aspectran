@@ -160,7 +160,6 @@ public class AspectRule {
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		
 		sb.append("{id=").append(id);
 		sb.append(", for=").append(aspectTargetType);
 		sb.append(", joinpointScope=").append(joinpointScope);

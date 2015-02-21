@@ -202,7 +202,6 @@ public class ResponseRule implements ResponseRuleApplicable, AspectAdviceSupport
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-
 		sb.append("{name=").append(name);
 		sb.append(", characterEncoding=").append(characterEncoding);
 		sb.append(", response=").append(response);

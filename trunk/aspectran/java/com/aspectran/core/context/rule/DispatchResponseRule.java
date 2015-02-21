@@ -102,29 +102,22 @@ public class DispatchResponseRule extends ActionPossessSupport implements Action
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-
 		sb.append("{contentType=").append(contentType);
 		sb.append(", characterEncoding=").append(characterEncoding);
 		sb.append(", templateRule=").append(templateRule);
 		if(defaultResponse != null)
 			sb.append(", defaultResponse=").append(defaultResponse);
-		
 		if(actionList != null) {
 			sb.append(", actionList=");
 			sb.append('[');
-
 			for(int i = 0; i < actionList.size(); i++) {
 				Executable action = actionList.get(i);
-
 				if(i > 0)
 					sb.append(", ");
-
 				sb.append(action.getActionId());
 			}
-
 			sb.append(']');
 		}
-
 		sb.append("}");
 		
 		return sb.toString();

@@ -96,7 +96,6 @@ public class AspectAdviceRule implements ActionRuleApplicable {
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-
 		sb.append("{aspectId=").append(aspectRule != null ? aspectRule.getId() : null);
 		sb.append(", aspectAdviceType=").append(aspectAdviceType);
 		sb.append(", action=").append(action);

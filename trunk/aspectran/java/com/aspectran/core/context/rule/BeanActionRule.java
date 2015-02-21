@@ -219,40 +219,31 @@ public class BeanActionRule implements ArgumentPossessable, PropertyPossessable,
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		
 		sb.append("{id=").append(actionId);
 		sb.append(", bean=").append(beanId);
 		sb.append(", method=").append(methodName);
 		sb.append(", hidden=").append(hidden);
-
 		if(propertyItemRuleMap != null) {
 			sb.append(", properties=[");
 			int sbLength = sb.length();
-
 			for(String name : propertyItemRuleMap.keySet()) {
 				if(sb.length() > sbLength)
 					sb.append(", ");
 				
 				sb.append(name);
 			}
-
 			sb.append("]");
 		}
-		
 		if(argumentItemRuleMap != null) {
 			sb.append(", arguments=[");
 			int sbLength = sb.length();
-			
 			for(String name : argumentItemRuleMap.keySet()) {
 				if(sb.length() > sbLength)
 					sb.append(", ");
-				
 				sb.append(name);
 			}
-			
 			sb.append("]");
 		}
-		
 		sb.append("}");
 		
 		return sb.toString();
