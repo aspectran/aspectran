@@ -202,6 +202,10 @@ public class ContextBuilderAssistant {
 		defaultSettings.set(getSettings());
 	}
 	
+	public Map<String, String> getTypeAliases() {
+		return typeAliases;
+	}
+
 	/**
 	 * Adds the type alias.
 	 * 
