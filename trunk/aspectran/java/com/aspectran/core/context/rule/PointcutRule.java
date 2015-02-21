@@ -31,9 +31,7 @@ public class PointcutRule {
 	
 	private List<PointcutPatternRule> pointcutPatternRuleList;
 	
-	private String patternString;
-	
-	private Parameters targetParameters;
+	private List<Parameters> targetParametersList;
 	
 	private Parameters simpleTriggerParameters;
 	
@@ -81,20 +79,19 @@ public class PointcutRule {
 		return new ArrayList<PointcutPatternRule>();
 	}
 
-	public String getPatternString() {
-		return patternString;
+	public List<Parameters> touchTargetParametersList() {
+		if(targetParametersList == null)
+			targetParametersList = new ArrayList<Parameters>();
+		
+		return targetParametersList;
 	}
 
-	public void setPatternString(String patternString) {
-		this.patternString = patternString;
+	public List<Parameters> getTargetParametersList() {
+		return targetParametersList;
 	}
 	
-	public Parameters getTargetParameters() {
-		return targetParameters;
-	}
-
-	public void setTargetParameters(Parameters targetParameters) {
-		this.targetParameters = targetParameters;
+	public void setTargetParametersList(List<Parameters> targetParametersList) {
+		this.targetParametersList = targetParametersList;
 	}
 
 	public Parameters getSimpleTriggerParameters() {
@@ -121,7 +118,9 @@ public class PointcutRule {
 		StringBuilder sb = new StringBuilder();
 		
 		sb.append("{pointcutType=").append(pointcutType);
-		sb.append(", patternString=").append(patternString);
+		sb.append(", targetParametersList=").append(targetParametersList);
+		sb.append(", simpleTriggerParameters=").append(simpleTriggerParameters);
+		sb.append(", cronTriggerParameters=").append(cronTriggerParameters);
 		sb.append("}");
 		
 		return sb.toString();
@@ -174,10 +173,24 @@ public class PointcutRule {
 				throw new IllegalArgumentException("Not specified 'cronTrigger'. Scheduler's pointcut-type must be 'simpleTrigger' or 'cronTrigger'.");
 		} else {
 			if(pointcutParameters != null) {
+				PointcutType pointcutType = null;
+				
+				if(type == null)
+					type = pointcutParameters.getString(PointcutParameters.type);
+				
+				if(type != null) {
+					pointcutType = PointcutType.valueOf(type);
+					if(pointcutType == null)
+						throw new IllegalArgumentException("Unknown pointcut-type '" + type + "'. Translet's pointcut-type must be 'wildcard' or 'regexp'.");
+					
+					aspectRule.setPointcutType(pointcutType);
+				}
+				
 				List<Parameters> targetParametersList = pointcutParameters.getParametersList(PointcutParameters.targets);
 				
 				for(Parameters targetParameters : targetParametersList) {
 					addPointcutPatternRule(pointcutRule.touchPointcutPatternRuleList(), targetParameters);
+					pointcutRule.touchTargetParametersList().add(targetParameters);
 				}
 			}
 		}
@@ -218,7 +231,7 @@ public class PointcutRule {
 */
 		return pointcutRule;
 	}
-
+/*
 	public static void addPointcutPatternRule(List<PointcutPatternRule> pointcutPatternRuleList, String translet, String bean, String method, String text) {
 		addPointcutPatternRule(pointcutPatternRuleList, translet, bean, method);
 		addPointcutPatternRule(pointcutPatternRuleList, text);
@@ -241,19 +254,20 @@ public class PointcutRule {
 			addPointcutPatternRule(pointcutPatternRuleList, targetParameters);
 		}
 	}
+*/
 
-	public static List<PointcutPatternRule> addPointcutPatternRule(List<PointcutPatternRule> pointcutPatternRuleList, Parameters targetParameters) {
+	private static List<PointcutPatternRule> addPointcutPatternRule(List<PointcutPatternRule> pointcutPatternRuleList, Parameters targetParameters) {
 		String translet = targetParameters.getString(TargetParameters.translet);
 		String bean = targetParameters.getString(TargetParameters.bean);
 		String method = targetParameters.getString(TargetParameters.method);
-		List<Parameters> excludeTargetList = targetParameters.getParametersList(TargetParameters.excludeTargets);
+		List<Parameters> excludeTargetParametersList = targetParameters.getParametersList(TargetParameters.excludeTargets);
 		
-		if(StringUtils.hasLength(translet) || StringUtils.hasLength(bean) || StringUtils.hasLength(method) || (excludeTargetList != null && excludeTargetList.size() > 0)) {
+		if(StringUtils.hasLength(translet) || StringUtils.hasLength(bean) || StringUtils.hasLength(method) || (excludeTargetParametersList != null && !excludeTargetParametersList.isEmpty())) {
 			PointcutPatternRule pointcutPatternRule = PointcutPatternRule.newInstance(translet, bean, method);
 			
-			if(excludeTargetList != null && excludeTargetList.size() > 0) {
-				for(Parameters excludeTarget : excludeTargetList) {
-					addExcludePointcutPatternRule(pointcutPatternRule, excludeTarget);
+			if(excludeTargetParametersList != null && !excludeTargetParametersList.isEmpty()) {
+				for(Parameters excludeTargetParameters : excludeTargetParametersList) {
+					addExcludePointcutPatternRule(pointcutPatternRule, excludeTargetParameters);
 				}
 			}
 			
@@ -265,7 +279,7 @@ public class PointcutRule {
 		
 		List<PointcutPatternRule> minusPointcutPatternRuleList = null;
 		
-		if(minusPatternStringList != null && minusPatternStringList.size() > 0) {
+		if(minusPatternStringList != null && !minusPatternStringList.isEmpty()) {
 			minusPointcutPatternRuleList = new ArrayList<PointcutPatternRule>(minusPatternStringList.size());
 			
 			for(String patternString : minusPatternStringList) {
@@ -274,7 +288,7 @@ public class PointcutRule {
 			}
 		}
 		
-		if(plusPatternStringList != null && plusPatternStringList.size() > 0) {
+		if(plusPatternStringList != null && !plusPatternStringList.isEmpty()) {
 			for(String patternString : plusPatternStringList) {
 				PointcutPatternRule pointcutPatternRule = PointcutPatternRule.parsePatternString(patternString);
 				
@@ -288,25 +302,28 @@ public class PointcutRule {
 		return pointcutPatternRuleList;
 	}
 
-	public static void addExcludePointcutPatternRule(PointcutPatternRule pointcutPatternRule, Parameters excludeTargetParameters) {
+	private static void addExcludePointcutPatternRule(PointcutPatternRule pointcutPatternRule, Parameters excludeTargetParameters) {
 		String translet = excludeTargetParameters.getString(TargetParameters.translet);
 		String bean = excludeTargetParameters.getString(TargetParameters.bean);
 		String method = excludeTargetParameters.getString(TargetParameters.method);
 
-		addExcludePointcutPatternRule(pointcutPatternRule, translet, bean, method);
-	}
-
-	public static void addExcludePointcutPatternRule(List<PointcutPatternRule> pointcutPatternRuleList, String translet, String bean, String method) {
-		for(PointcutPatternRule pointcutPatternRule : pointcutPatternRuleList) {
-			addExcludePointcutPatternRule(pointcutPatternRule, translet, bean, method);
-		}
-	}
-
-	public static void addExcludePointcutPatternRule(PointcutPatternRule pointcutPatternRule, String translet, String bean, String method) {
 		if(StringUtils.hasLength(translet) || StringUtils.hasLength(bean) || StringUtils.hasLength(method)) {
 			PointcutPatternRule ppr = PointcutPatternRule.newInstance(translet, bean, method);
 			pointcutPatternRule.addExcludePointcutPatternRule(ppr);
 		}
 	}
-	
+/*
+	private static void addExcludePointcutPatternRule(List<PointcutPatternRule> pointcutPatternRuleList, String translet, String bean, String method) {
+		for(PointcutPatternRule pointcutPatternRule : pointcutPatternRuleList) {
+			addExcludePointcutPatternRule(pointcutPatternRule, translet, bean, method);
+		}
+	}
+	private static void addExcludePointcutPatternRule(PointcutPatternRule pointcutPatternRule, String translet, String bean, String method) {
+		if(StringUtils.hasLength(translet) || StringUtils.hasLength(bean) || StringUtils.hasLength(method)) {
+			PointcutPatternRule ppr = PointcutPatternRule.newInstance(translet, bean, method);
+			pointcutPatternRule.addExcludePointcutPatternRule(ppr);
+		}
+	}
+ */
+
 }

@@ -17,7 +17,6 @@ package com.aspectran.core.context.builder.xml;
 
 import java.io.InputStream;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 import org.w3c.dom.Node;
@@ -31,7 +30,6 @@ import com.aspectran.core.context.rule.AspectJobAdviceRule;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
-import com.aspectran.core.context.rule.PointcutPatternRule;
 import com.aspectran.core.context.rule.PointcutRule;
 import com.aspectran.core.context.rule.RequestRule;
 import com.aspectran.core.context.rule.ResponseByContentTypeRule;
@@ -39,7 +37,6 @@ import com.aspectran.core.context.rule.ResponseRule;
 import com.aspectran.core.context.rule.SettingsAdviceRule;
 import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.type.AspectAdviceType;
-import com.aspectran.core.context.rule.type.AspectTargetType;
 import com.aspectran.core.context.rule.type.DefaultSettingType;
 import com.aspectran.core.util.BooleanUtils;
 import com.aspectran.core.util.StringUtils;
@@ -208,6 +205,7 @@ public class AspectranNodeParser {
 				aspectRule.setPointcutRule(pointcutRule);
 			}
 		});
+/*
 		parser.addNodelet("/aspectran/aspect/joinpoint/pointcut/target", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
 				String translet = attributes.get("translet");
@@ -249,6 +247,7 @@ public class AspectranNodeParser {
 				}
 			}
 		});
+*/
 		parser.addNodelet("/aspectran/aspect/settings", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
 				AspectRule aspectRule = assistant.peekObject();

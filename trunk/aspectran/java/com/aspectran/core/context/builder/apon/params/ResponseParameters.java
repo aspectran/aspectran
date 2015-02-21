@@ -19,10 +19,10 @@ public class ResponseParameters extends AbstractParameters implements Parameters
 	static {
 		name = new ParameterDefine("name", ParameterValueType.STRING);
 		characterEncoding = new ParameterDefine("characterEncoding", ParameterValueType.STRING);
-		dispatchs = new ParameterDefine("dispatch", DispatchParameters.class, true);
-		transforms = new ParameterDefine("transform", TransformParameters.class, true);
-		redirects = new ParameterDefine("redirect", RedirectParameters.class, true);
-		forwards = new ParameterDefine("forward", ForwardParameters.class, true);
+		dispatchs = new ParameterDefine("dispatch", DispatchParameters.class);
+		transforms = new ParameterDefine("transform", TransformParameters.class);
+		redirects = new ParameterDefine("redirect", RedirectParameters.class);
+		forwards = new ParameterDefine("forward", ForwardParameters.class);
 	
 		parameterDefines = new ParameterDefine[] {
 				name,

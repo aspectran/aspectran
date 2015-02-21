@@ -22,11 +22,11 @@ import java.util.Map;
 
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.activity.process.ContentList;
+import com.aspectran.core.activity.response.Responsible;
 import com.aspectran.core.activity.variable.token.Token;
+import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
 import com.aspectran.core.context.builder.ContextBuilderAssistant;
 import com.aspectran.core.context.builder.DefaultSettings;
-import com.aspectran.core.context.builder.ImportHandler;
-import com.aspectran.core.context.builder.Importable;
 import com.aspectran.core.context.builder.apon.params.ActionParameters;
 import com.aspectran.core.context.builder.apon.params.AdviceParameters;
 import com.aspectran.core.context.builder.apon.params.AspectParameters;
@@ -37,11 +37,10 @@ import com.aspectran.core.context.builder.apon.params.ContentsParameters;
 import com.aspectran.core.context.builder.apon.params.DefaultSettingsParameters;
 import com.aspectran.core.context.builder.apon.params.DispatchParameters;
 import com.aspectran.core.context.builder.apon.params.ExceptionParameters;
-import com.aspectran.core.context.builder.apon.params.ExceptionRaizedParameters;
 import com.aspectran.core.context.builder.apon.params.ForwardParameters;
-import com.aspectran.core.context.builder.apon.params.ImportParameters;
-import com.aspectran.core.context.builder.apon.params.JobParameters;
+import com.aspectran.core.context.builder.apon.params.ItemParameters;
 import com.aspectran.core.context.builder.apon.params.JoinpointParameters;
+import com.aspectran.core.context.builder.apon.params.PointcutParameters;
 import com.aspectran.core.context.builder.apon.params.RedirectParameters;
 import com.aspectran.core.context.builder.apon.params.RequestParameters;
 import com.aspectran.core.context.builder.apon.params.ResponseByContentTypeParameters;
@@ -74,11 +73,13 @@ import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.TransletRuleMap;
 import com.aspectran.core.context.rule.ability.ActionRuleApplicable;
 import com.aspectran.core.context.rule.ability.ResponseRuleApplicable;
+import com.aspectran.core.context.rule.type.ActionType;
 import com.aspectran.core.context.rule.type.AspectAdviceType;
-import com.aspectran.core.context.rule.type.DefaultSettingType;
 import com.aspectran.core.context.rule.type.TokenType;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.apon.GenericParameters;
+import com.aspectran.core.util.apon.ParameterDefine;
+import com.aspectran.core.util.apon.ParameterValueType;
 import com.aspectran.core.util.apon.Parameters;
 
 /**
@@ -140,7 +141,7 @@ public class AspectranAponAssembler {
 		if(!aspectRuleMap.isEmpty()) {
 			List<Parameters> aspectParametersList = aspectranParameters.getParametersList(AspectranParameters.aspects);
 			for(Parameters aspectParameters : aspectParametersList) {
-				assembleAspectRule(aspectParameters);
+				//assembleAspectRule(aspectParameters);
 			}
 			
 		}
@@ -148,142 +149,227 @@ public class AspectranAponAssembler {
 		return aspectranParameters;
 	}
 	
-	public void assembleImport(Parameters importParameters) throws Exception {
-		String resource = importParameters.getString(ImportParameters.resource);
-		String file = importParameters.getString(ImportParameters.file);
-		String url = importParameters.getString(ImportParameters.url);
+	public Parameters assembleAspectRule(AspectRule aspectRule) {
+//		id = new ParameterDefine("id", ParameterValueType.STRING);
+//		useFor = new ParameterDefine("useFor", ParameterValueType.STRING);
+//		jointpoint = new ParameterDefine("joinpoint", JoinpointParameters.class);
+//		setting = new ParameterDefine("setting", GenericParameters.class);
+//		advice = new ParameterDefine("advice", AdviceParameters.class);
 		
-		Importable importable = Importable.newInstance(assistant, resource, file, url);
-
-		ImportHandler importHandler = assistant.getImportHandler();
-		if(importHandler != null)
-			importHandler.handle(importable);
-	}
-	
-	public void assembleDefaultSettings(Parameters parameters) {
-		if(parameters == null)
-			return;
+		Parameters aspectParameters = new AspectParameters();
+		aspectParameters.setValue(AspectParameters.id, aspectRule.getId());
+		aspectParameters.setValue(AspectParameters.useFor, aspectRule.getAspectTargetType());
 		
-		Iterator<String> iter = parameters.getParameterNameSet().iterator();
+//		scope = new ParameterDefine("scope", ParameterValueType.STRING);
+//		pointcut = new ParameterDefine("pointcut", PointcutParameters.class);
 		
-		while(iter.hasNext()) {
-			String name = iter.next();
-			
-			DefaultSettingType settingType = null;
-			
-			if(name != null) {
-				settingType = DefaultSettingType.valueOf(name);
-				
-				if(settingType == null)
-					throw new IllegalArgumentException("Unknown setting name '" + name + "'");
-			}
-			
-			assistant.putSetting(settingType, parameters.getString(name));
-		}
-	}
-	
-	public void assembleTypeAlias(Parameters parameters) {
-		if(parameters == null)
-			return;
-		
-		Iterator<String> iter = parameters.getParameterNameSet().iterator();
-		
-		while(iter.hasNext()) {
-			String alias = iter.next();
-			assistant.addTypeAlias(alias, parameters.getString(alias));
-		}
-	}
-
-	public void assembleAspectRule(Parameters aspectParameters) {
-		String id = aspectParameters.getString(AspectParameters.id);
-		String useFor = aspectParameters.getString(AspectParameters.useFor);
-		AspectRule aspectRule = AspectRule.newInstance(id, useFor);
-	
 		Parameters joinpointParameters = aspectParameters.getParameters(AspectParameters.jointpoint);
-		String scope = joinpointParameters.getString(JoinpointParameters.scope);
-		AspectRule.updateJoinpointScope(aspectRule, scope);
-	
+		joinpointParameters.setValue(JoinpointParameters.scope, aspectRule.getJoinpointScope());
+		
+//		targets = new ParameterDefine("target", TargetParameters.class, true);
+//		simpleTrigger = new ParameterDefine("simpleTrigger", SimpleTriggerParameters.class);
+//		cronTrigger = new ParameterDefine("cronTrigger", CronTriggerParameters.class);
+		
 		Parameters pointcutParameters = joinpointParameters.getParameters(JoinpointParameters.pointcut);
-		PointcutRule pointcutRule = PointcutRule.newInstance(aspectRule, null, pointcutParameters);
-		aspectRule.setPointcutRule(pointcutRule);
-	
-		Parameters settingParameters = aspectParameters.getParameters(AspectParameters.setting);
-		if(settingParameters != null) {
-			SettingsAdviceRule settingsAdviceRule = SettingsAdviceRule.newInstance(aspectRule, settingParameters);
-			aspectRule.setSettingsAdviceRule(settingsAdviceRule);
-		}
-		
-		Parameters adviceParameters = aspectParameters.getParameters(AspectParameters.advice);
-		String adviceBeanId = adviceParameters.getString(AdviceParameters.bean);
-		if(adviceBeanId != null) {
-			aspectRule.setAdviceBeanId(adviceBeanId);
-			assistant.putBeanReference(adviceBeanId, aspectRule);
-		}
-		
-		Parameters beforeActionParameters = adviceParameters.getParameters(AdviceParameters.beforeAction);
-		if(beforeActionParameters != null) {
-			AspectAdviceRule aspectAdviceRule = AspectAdviceRule.newInstance(aspectRule, AspectAdviceType.BEFORE);
-			assembleActionRule(beforeActionParameters, aspectAdviceRule);
-			aspectRule.addAspectAdviceRule(aspectAdviceRule);
-		}
-		
-		Parameters afterActionParameters = adviceParameters.getParameters(AdviceParameters.afterAction);
-		if(afterActionParameters != null) {
-			AspectAdviceRule aspectAdviceRule = AspectAdviceRule.newInstance(aspectRule, AspectAdviceType.AFTER);
-			assembleActionRule(afterActionParameters, aspectAdviceRule);
-			aspectRule.addAspectAdviceRule(aspectAdviceRule);
-		}
-	
-		Parameters aroundActionParameters = adviceParameters.getParameters(AdviceParameters.aroundAction);
-		if(aroundActionParameters != null) {
-			AspectAdviceRule aspectAdviceRule = AspectAdviceRule.newInstance(aspectRule, AspectAdviceType.AROUND);
-			assembleActionRule(aroundActionParameters, aspectAdviceRule);
-			aspectRule.addAspectAdviceRule(aspectAdviceRule);
-		}
-	
-		Parameters finallyActionParameters = adviceParameters.getParameters(AdviceParameters.finallyAction);
-		if(finallyActionParameters != null) {
-			AspectAdviceRule aspectAdviceRule = AspectAdviceRule.newInstance(aspectRule, AspectAdviceType.AROUND);
-			assembleActionRule(finallyActionParameters, aspectAdviceRule);
-			aspectRule.addAspectAdviceRule(aspectAdviceRule);
-		}
-	
-		Parameters exceptionRaizedParameters = adviceParameters.getParameters(AdviceParameters.exceptionRaized);
-		if(exceptionRaizedParameters != null) {
-			AspectAdviceRule aspectAdviceRule = AspectAdviceRule.newInstance(aspectRule, AspectAdviceType.EXCPETION_RAIZED);
-	
-			Parameters actionParameters = exceptionRaizedParameters.getParameters(ExceptionRaizedParameters.action);
-			if(actionParameters != null) {
-				assembleActionRule(actionParameters, aspectAdviceRule);
-			}
-	
-			List<Parameters> rrtrParametersList = exceptionRaizedParameters.getParametersList(ExceptionRaizedParameters.responseByContentTypes);
-			if(rrtrParametersList != null && !rrtrParametersList.isEmpty()) {
-				for(Parameters rrtrParameters : rrtrParametersList) {
-					ResponseByContentTypeRule rrtr = assembleResponseByContentTypeRule(rrtrParameters);
-					aspectAdviceRule.addResponseByContentTypeRule(rrtr);
+
+		PointcutRule pointcutRule = aspectRule.getPointcutRule();
+		if(pointcutRule != null) {
+			List<Parameters> targetParametersList = pointcutRule.getTargetParametersList();
+			if(targetParametersList != null) {
+				for(Parameters targetParameters : targetParametersList) {
+					pointcutParameters.putValue(PointcutParameters.targets, targetParameters);
 				}
 			}
-			
-			aspectRule.addAspectAdviceRule(aspectAdviceRule);
+			pointcutParameters.setValue(PointcutParameters.simpleTrigger, pointcutRule.getSimpleTriggerParameters());
+			pointcutParameters.setValue(PointcutParameters.cronTrigger, pointcutRule.getCronTriggerParameters());
 		}
 		
-		List<Parameters> jobParametersList = adviceParameters.getParametersList(AdviceParameters.jobs);
-		if(jobParametersList != null && !jobParametersList.isEmpty()) {
-			for(Parameters jobParameters : jobParametersList) {
-				String translet = jobParameters.getString(JobParameters.translet);
-				Boolean disabled = jobParameters.getBoolean(JobParameters.disabled);
-				
-				translet = assistant.applyTransletNamePattern(translet);
-				
-				AspectJobAdviceRule ajar = AspectJobAdviceRule.newInstance(aspectRule, translet, disabled);
-				aspectRule.addAspectJobAdviceRule(ajar);
+		SettingsAdviceRule settingsAdviceRule = aspectRule.getSettingsAdviceRule();
+		if(settingsAdviceRule != null) {
+			Map<String, String> settings = settingsAdviceRule.getSettings();
+			if(settings != null) {
+				GenericParameters settingParameters = aspectParameters.getParameters(AspectParameters.setting);
+				for(Map.Entry<String, String> entry : settings.entrySet()) {
+					settingParameters.putValue(entry.getKey(), entry.getValue());
+				}
+			}
+		}
+
+		Parameters adviceParameters = aspectParameters.getParameters(AspectParameters.advice);
+		adviceParameters.setValue(AdviceParameters.bean, aspectRule.getAdviceBeanId());
+		
+		List<AspectAdviceRule> aspectAdviceRuleList = aspectRule.getAspectAdviceRuleList();
+		if(aspectAdviceRuleList != null) {
+			for(AspectAdviceRule aspectAdviceRule : aspectAdviceRuleList) {
+				if(aspectAdviceRule.getAspectAdviceType() == AspectAdviceType.BEFORE) {
+					if(aspectAdviceRule.getActionType() == ActionType.ECHO) {
+						EchoActionRule echoActionRule = aspectAdviceRule.getExecutableAction().getActionRule();
+						adviceParameters.setValue(AdviceParameters.beforeAction, assembleActionParameters(echoActionRule));
+					} else if(aspectAdviceRule.getActionType() == ActionType.BEAN) {
+						BeanActionRule beanActionRule = aspectAdviceRule.getExecutableAction().getActionRule();
+						adviceParameters.setValue(AdviceParameters.beforeAction, assembleActionParameters(beanActionRule));
+					}
+				} else if(aspectAdviceRule.getAspectAdviceType() == AspectAdviceType.AFTER) {
+					if(aspectAdviceRule.getActionType() == ActionType.ECHO) {
+						EchoActionRule echoActionRule = aspectAdviceRule.getExecutableAction().getActionRule();
+						adviceParameters.setValue(AdviceParameters.afterAction, assembleActionParameters(echoActionRule));
+					} else if(aspectAdviceRule.getActionType() == ActionType.BEAN) {
+						BeanActionRule beanActionRule = aspectAdviceRule.getExecutableAction().getActionRule();
+						adviceParameters.setValue(AdviceParameters.afterAction, assembleActionParameters(beanActionRule));
+					}
+				} else if(aspectAdviceRule.getAspectAdviceType() == AspectAdviceType.AROUND) {
+					if(aspectAdviceRule.getActionType() == ActionType.ECHO) {
+						EchoActionRule echoActionRule = aspectAdviceRule.getExecutableAction().getActionRule();
+						adviceParameters.setValue(AdviceParameters.aroundAction, assembleActionParameters(echoActionRule));
+					} else if(aspectAdviceRule.getActionType() == ActionType.BEAN) {
+						BeanActionRule beanActionRule = aspectAdviceRule.getExecutableAction().getActionRule();
+						adviceParameters.setValue(AdviceParameters.aroundAction, assembleActionParameters(beanActionRule));
+					}
+				} else if(aspectAdviceRule.getAspectAdviceType() == AspectAdviceType.FINALLY) {
+					if(aspectAdviceRule.getActionType() == ActionType.ECHO) {
+						EchoActionRule echoActionRule = aspectAdviceRule.getExecutableAction().getActionRule();
+						adviceParameters.setValue(AdviceParameters.finallyAction, assembleActionParameters(echoActionRule));
+					} else if(aspectAdviceRule.getActionType() == ActionType.BEAN) {
+						BeanActionRule beanActionRule = aspectAdviceRule.getExecutableAction().getActionRule();
+						adviceParameters.setValue(AdviceParameters.finallyAction, assembleActionParameters(beanActionRule));
+					}
+				} else if(aspectAdviceRule.getAspectAdviceType() == AspectAdviceType.EXCPETION_RAIZED) {
+					//adviceParameters.setValue(AdviceParameters.exceptionRaized, assembleActionParameters(echoActionRule));
+				}
 			}
 		}
 		
+		List<AspectJobAdviceRule> aspectJobAdviceRuleList = aspectRule.getAspectJobAdviceRuleList();
+		
+
+
+	
+		
 		assistant.addAspectRule(aspectRule);
+		
+		return aspectParameters;
 	}
 
+	
+	public Parameters assembleResponseParameters(ResponseRule responseRule) {
+		ResponseParameters responseParameters = new ResponseParameters();
+		
+//		private String name;
+//		
+//		private String characterEncoding;
+//		
+//		private AspectAdviceRuleRegistry aspectAdviceRuleRegistry;
+//		
+//		private Responsible response;
+		
+//		name = new ParameterDefine("name", ParameterValueType.STRING);
+//		characterEncoding = new ParameterDefine("characterEncoding", ParameterValueType.STRING);
+//		dispatchs = new ParameterDefine("dispatch", DispatchParameters.class);
+//		transforms = new ParameterDefine("transform", TransformParameters.class);
+//		redirects = new ParameterDefine("redirect", RedirectParameters.class);
+//		forwards = new ParameterDefine("forward", ForwardParameters.class);
+
+		responseParameters.setValue(ResponseParameters.name, responseRule.getName());
+		responseParameters.setValue(ResponseParameters.characterEncoding, responseRule.getCharacterEncoding());
+		
+		
+		return responseParameters;
+	}
+	
+	public Parameters assembleActionParameters(BeanActionRule beanActionRule) {
+		ActionParameters actionParameters = new ActionParameters();
+		actionParameters.setValue(ActionParameters.id, beanActionRule.getActionId());
+		actionParameters.setValue(ActionParameters.beanId, beanActionRule.getBeanId());
+		actionParameters.setValue(ActionParameters.methodName, beanActionRule.getMethodName());
+		
+		ItemRuleMap propertyItemRuleMap = beanActionRule.getPropertyItemRuleMap();
+		if(propertyItemRuleMap != null) {
+			for(ItemRule itemRule : propertyItemRuleMap) {
+				actionParameters.putValue(ActionParameters.properties, assembleItemParameters(itemRule));
+			}
+		}
+		
+		ItemRuleMap argumentItemRuleMap = beanActionRule.getArgumentItemRuleMap();
+		if(argumentItemRuleMap != null) {
+			for(ItemRule itemRule : argumentItemRuleMap) {
+				actionParameters.putValue(ActionParameters.arguments, assembleItemParameters(itemRule));
+			}
+		}
+		
+		actionParameters.setValue(ActionParameters.hidden, beanActionRule.getHidden());
+		
+		return actionParameters;
+	}
+	
+	public Parameters assembleActionParameters(EchoActionRule echoActionRule) {
+		ActionParameters actionParameters = new ActionParameters();
+		actionParameters.setValue(ActionParameters.id, echoActionRule.getActionId());
+		
+		ItemRuleMap attributeItemRuleMap = echoActionRule.getAttributeItemRuleMap();
+		if(attributeItemRuleMap != null) {
+			for(ItemRule itemRule : attributeItemRuleMap) {
+				actionParameters.putValue(ActionParameters.echo, assembleItemParameters(itemRule));
+			}
+		}
+		
+		actionParameters.setValue(ActionParameters.hidden, echoActionRule.getHidden());
+		
+		return actionParameters;
+	}
+	
+	public Parameters assembleActionParameters(IncludeActionRule includeActionRule) {
+		ActionParameters actionParameters = new ActionParameters();
+		actionParameters.setValue(ActionParameters.id, includeActionRule.getActionId());
+		actionParameters.setValue(ActionParameters.include, includeActionRule.getTransletName());
+		
+		ItemRuleMap attributeItemRuleMap = includeActionRule.getAttributeItemRuleMap();
+		if(attributeItemRuleMap != null) {
+			for(ItemRule itemRule : attributeItemRuleMap) {
+				actionParameters.putValue(ActionParameters.attributes, assembleItemParameters(itemRule));
+			}
+		}
+		
+		actionParameters.setValue(ActionParameters.hidden, includeActionRule.getHidden());
+		
+		return actionParameters;
+	}
+
+	public Parameters assembleItemParameters(ItemRule itemRule) {
+		ItemParameters itemParameters = new ItemParameters();
+		if(itemRule.getType() != null)
+			itemParameters.setValue(ItemParameters.type, itemRule.getType().toString());
+		itemParameters.setValue(ItemParameters.name, itemRule.getName());
+		if(itemRule.getTokens() != null)
+			itemParameters.setValue(ItemParameters.value, itemRule.getValue());
+		if(itemRule.getValueType() != null)
+			itemParameters.setValue(ItemParameters.valueType, itemRule.getValueType());
+		if(itemRule.getDefaultValue() != null)
+			itemParameters.setValue(ItemParameters.defaultValue, itemRule.getDefaultValue());
+		if(itemRule.getTokenize() != null)
+			itemParameters.setValue(ItemParameters.tokenize, itemRule.getTokenize());
+		
+		return itemParameters;
+	}
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	public void assembleBeanRule(Parameters beanParameters) throws ClassNotFoundException, IOException, CloneNotSupportedException {
 		String id = beanParameters.getString(BeanParameters.id);
 		String className = assistant.resolveAliasType(beanParameters.getString(BeanParameters.className));

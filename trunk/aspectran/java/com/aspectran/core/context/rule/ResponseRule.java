@@ -26,6 +26,7 @@ import com.aspectran.core.activity.response.dispatch.DispatchResponse;
 import com.aspectran.core.activity.response.transform.TransformFactory;
 import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
 import com.aspectran.core.context.rule.ability.ResponseRuleApplicable;
+import com.aspectran.core.context.rule.type.ResponseType;
 
 /**
  * <p>
@@ -86,6 +87,17 @@ public class ResponseRule implements ResponseRuleApplicable, AspectAdviceSupport
 		this.response = response;
 	}
 
+	public ResponseType getResponseType() {
+		if(response == null)
+			return null;
+		
+		return response.getResponseType();
+	}
+	
+	public <T> T getResponsibleResponse() {
+		return (T)response;
+	}
+	
 	/**
 	 * Sets the default response rule.
 	 * 

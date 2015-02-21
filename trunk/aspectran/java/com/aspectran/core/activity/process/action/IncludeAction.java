@@ -104,6 +104,11 @@ public class IncludeAction extends AbstractAction implements Executable {
 	public ActionType getActionType() {
 		return ActionType.INCLUDE;
 	}
+	
+	@SuppressWarnings("unchecked")
+	public <T> T getActionRule() {
+		return (T)includeActionRule;
+	}
 
 	public AspectAdviceRuleRegistry getAspectAdviceRuleRegistry() {
 		return includeActionRule.getAspectAdviceRuleRegistry();

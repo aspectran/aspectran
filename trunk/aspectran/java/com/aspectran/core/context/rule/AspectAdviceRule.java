@@ -19,6 +19,7 @@ import com.aspectran.core.activity.process.action.BeanAction;
 import com.aspectran.core.activity.process.action.EchoAction;
 import com.aspectran.core.activity.process.action.Executable;
 import com.aspectran.core.context.rule.ability.ActionRuleApplicable;
+import com.aspectran.core.context.rule.type.ActionType;
 import com.aspectran.core.context.rule.type.AspectAdviceType;
 
 /**
@@ -73,6 +74,13 @@ public class AspectAdviceRule implements ActionRuleApplicable {
 	
 	public Executable getExecutableAction() {
 		return action;
+	}
+	
+	public ActionType getActionType() {
+		if(action == null)
+			return null;
+		
+		return action.getActionType();
 	}
 
 	public ResponseByContentTypeRuleMap getResponseByContentTypeRuleMap() {

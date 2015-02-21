@@ -30,7 +30,7 @@ public class SettingsAdviceRule {
 	
 	private AspectAdviceType aspectAdviceType;
 
-	private Map<String, Object> settings;
+	private Map<String, String> settings;
 
 	public String getAspectId() {
 		return aspectId;
@@ -48,21 +48,21 @@ public class SettingsAdviceRule {
 		this.aspectAdviceType = aspectAdviceType;
 	}
 
-	public Map<String, Object> getSettings() {
+	public Map<String, String> getSettings() {
 		return settings;
 	}
 
-	public void setSettings(Map<String, Object> settings) {
+	public void setSettings(Map<String, String> settings) {
 		this.settings = settings;
 	}
 	
-	public Object getSetting(String name) {
+	public String getSetting(String name) {
 		return settings.get(name);
 	}
 	
 	public void putSetting(String name, String value) {
 		if(settings == null) {
-			settings = new HashMap<String, Object>();
+			settings = new HashMap<String, String>();
 		}
 		
 		settings.put(name, value);
