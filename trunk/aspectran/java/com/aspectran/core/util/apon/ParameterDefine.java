@@ -4,9 +4,9 @@ public class ParameterDefine {
 
 	private final String name;
 	
-	private ParameterValueType parameterValueType;
+	private final ParameterValueType parameterValueType;
 	
-	private Class<? extends AbstractParameters> parametersClass;
+	private final Class<? extends AbstractParameters> parametersClass;
 	
 	private final boolean array;
 	
@@ -17,6 +17,7 @@ public class ParameterDefine {
 	public ParameterDefine(String name, ParameterValueType parameterValueType, boolean array) {
 		this.name = name;
 		this.parameterValueType = parameterValueType;
+		this.parametersClass = null;
 		
 		if(parameterValueType == ParameterValueType.TEXT) {
 			this.array = true;
@@ -31,8 +32,8 @@ public class ParameterDefine {
 	
 	public ParameterDefine(String name, Class<? extends AbstractParameters> parametersClass, boolean array) {
 		this.name = name;
-		this.parametersClass = parametersClass;
 		this.parameterValueType = ParameterValueType.PARAMETERS;
+		this.parametersClass = parametersClass;
 		this.array = array;
 	}
 	

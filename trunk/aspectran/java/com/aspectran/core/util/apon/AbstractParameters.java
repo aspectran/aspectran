@@ -35,7 +35,7 @@ public abstract class AbstractParameters implements Parameters {
 		
 		if(text != null) {
 			AponReader reader = new AponReader();
-			this.parameterValueMap = reader.read(text, parameterValueMap);
+			parameterValueMap = reader.read(text, parameterValueMap);
 		}
 	}
 	
