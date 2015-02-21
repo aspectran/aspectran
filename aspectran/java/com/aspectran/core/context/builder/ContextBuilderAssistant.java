@@ -54,10 +54,6 @@ public class ContextBuilderAssistant {
 	
 	private ArrayStack objectStack = new ArrayStack();
 	
-	private boolean useTypeAliases;
-	
-	private boolean useTransletNamePattern;
-	
 	private Map<String, String> typeAliases = new HashMap<String, String>();
 	
 	private Map<DefaultSettingType, String> settings = new HashMap<DefaultSettingType, String>();
@@ -68,11 +64,11 @@ public class ContextBuilderAssistant {
 	
 	private BeanReferenceInspector beanReferenceInspector = new BeanReferenceInspector();
 	
-	private AspectRuleMap aspectRuleMap = new AspectRuleMap();
+	protected AspectRuleMap aspectRuleMap = new AspectRuleMap();
 	
-	private BeanRuleMap beanRuleMap = new BeanRuleMap();
+	protected BeanRuleMap beanRuleMap = new BeanRuleMap();
 	
-	private TransletRuleMap transletRuleMap = new TransletRuleMap();
+	protected TransletRuleMap transletRuleMap = new TransletRuleMap();
 	
 	private ImportHandler importHandler;
 	
@@ -86,9 +82,6 @@ public class ContextBuilderAssistant {
 			this.classLoader = new AspectranClassLoader();
 		else
 			this.classLoader = classLoader;
-		
-		this.useTypeAliases = true;
-		this.useTransletNamePattern = true;
 		
 		logger.info("Application base directory path is [" + applicationBasePath + "]");
 	}
@@ -185,22 +178,6 @@ public class ContextBuilderAssistant {
 		return file;
 	}
 
-	protected boolean isUseTypeAliases() {
-		return useTypeAliases;
-	}
-
-	protected void setUseTypeAliases(boolean useTypeAliases) {
-		this.useTypeAliases = useTypeAliases;
-	}
-
-	protected boolean isUseTransletNamePattern() {
-		return useTransletNamePattern;
-	}
-
-	protected void setUseTransletNamePattern(boolean useTransletNamePattern) {
-		this.useTransletNamePattern = useTransletNamePattern;
-	}
-
 	public Map<DefaultSettingType, String> getSettings() {
 		return settings;
 	}
@@ -254,9 +231,6 @@ public class ContextBuilderAssistant {
 	 * @return the string
 	 */
 	public String resolveAliasType(String alias) {
-		if(!useTypeAliases)
-			return alias;
-
 		String type = getAliasType(alias);
 
 		if(type == null)
@@ -280,7 +254,7 @@ public class ContextBuilderAssistant {
 	 * @return the string
 	 */
 	public String applyTransletNamePattern(String transletName) {
-		if(!useTransletNamePattern || defaultSettings == null)
+		if(defaultSettings == null)
 			return transletName;
 
 		if(transletName != null && transletName.length() > 0 && transletName.charAt(0) == AspectranConstant.TRANSLET_NAME_SEPARATOR)
