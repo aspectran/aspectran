@@ -18,6 +18,7 @@ package com.aspectran.core.context.builder.apon;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.activity.process.ContentList;
@@ -51,8 +52,10 @@ import com.aspectran.core.context.builder.apon.params.TransletParameters;
 import com.aspectran.core.context.rule.AspectAdviceRule;
 import com.aspectran.core.context.rule.AspectJobAdviceRule;
 import com.aspectran.core.context.rule.AspectRule;
+import com.aspectran.core.context.rule.AspectRuleMap;
 import com.aspectran.core.context.rule.BeanActionRule;
 import com.aspectran.core.context.rule.BeanRule;
+import com.aspectran.core.context.rule.BeanRuleMap;
 import com.aspectran.core.context.rule.DispatchResponseRule;
 import com.aspectran.core.context.rule.EchoActionRule;
 import com.aspectran.core.context.rule.ForwardResponseRule;
@@ -68,12 +71,14 @@ import com.aspectran.core.context.rule.SettingsAdviceRule;
 import com.aspectran.core.context.rule.TemplateRule;
 import com.aspectran.core.context.rule.TransformRule;
 import com.aspectran.core.context.rule.TransletRule;
+import com.aspectran.core.context.rule.TransletRuleMap;
 import com.aspectran.core.context.rule.ability.ActionRuleApplicable;
 import com.aspectran.core.context.rule.ability.ResponseRuleApplicable;
 import com.aspectran.core.context.rule.type.AspectAdviceType;
 import com.aspectran.core.context.rule.type.DefaultSettingType;
 import com.aspectran.core.context.rule.type.TokenType;
 import com.aspectran.core.util.StringUtils;
+import com.aspectran.core.util.apon.GenericParameters;
 import com.aspectran.core.util.apon.Parameters;
 
 /**
@@ -93,55 +98,53 @@ public class AspectranAponAssembler {
 		Parameters aspectranParameters = new AspectranParameters();
 		
 		DefaultSettings defaultSettings = assistant.getDefaultSettings();
-		DefaultSettingsParameters settingParameters = aspectranParameters.getParameters(AspectranParameters.setting);
-		settingParameters.setValue(DefaultSettingsParameters.transletNamePattern, defaultSettings.getTransletNamePattern());
-		settingParameters.setValue(DefaultSettingsParameters.transletNamePatternPrefix, defaultSettings.getTransletNamePatternPrefix());
-		settingParameters.setValue(DefaultSettingsParameters.transletNamePatternSuffix, defaultSettings.getTransletNamePatternSuffix());
-		settingParameters.setValue(DefaultSettingsParameters.transletInterfaceClass, defaultSettings.getTransletInterfaceClassName());
-		settingParameters.setValue(DefaultSettingsParameters.transletImplementClass, defaultSettings.getTransletImplementClassName());
-		settingParameters.setValue(DefaultSettingsParameters.nullableContentId, defaultSettings.getNullableContentId());
-		settingParameters.setValue(DefaultSettingsParameters.nullableActionId, defaultSettings.getNullableActionId());
-		settingParameters.setValue(DefaultSettingsParameters.activityDefaultHandler, defaultSettings.getActivityDefaultHandler());
-		settingParameters.setValue(DefaultSettingsParameters.beanProxyMode, defaultSettings);
+		if(defaultSettings != null) {
+			DefaultSettingsParameters settingParameters = aspectranParameters.getParameters(AspectranParameters.setting);
+			settingParameters.setValue(DefaultSettingsParameters.transletNamePattern, defaultSettings.getTransletNamePattern());
+			settingParameters.setValue(DefaultSettingsParameters.transletNamePatternPrefix, defaultSettings.getTransletNamePatternPrefix());
+			settingParameters.setValue(DefaultSettingsParameters.transletNamePatternSuffix, defaultSettings.getTransletNamePatternSuffix());
+			settingParameters.setValue(DefaultSettingsParameters.transletInterfaceClass, defaultSettings.getTransletInterfaceClassName());
+			settingParameters.setValue(DefaultSettingsParameters.transletImplementClass, defaultSettings.getTransletImplementClassName());
+			settingParameters.setValue(DefaultSettingsParameters.nullableContentId, defaultSettings.getNullableContentId());
+			settingParameters.setValue(DefaultSettingsParameters.nullableActionId, defaultSettings.getNullableActionId());
+			settingParameters.setValue(DefaultSettingsParameters.activityDefaultHandler, defaultSettings.getActivityDefaultHandler());
+			settingParameters.setValue(DefaultSettingsParameters.beanProxyMode, defaultSettings);
+		}
 		
-		
-//		
-//		Parameters settingParameters = aspectranParameters.getParameters(AspectranParameters.setting);
-//		if(settingParameters != null)
-//			assembleDefaultSettings(settingParameters);
+		Map<String, String> typeAliases = assistant.getTypeAliases();
+		if(!typeAliases.isEmpty()) {
+			GenericParameters typeAliasParameters = aspectranParameters.getParameters(AspectranParameters.typeAlias);
+			for(Map.Entry<String, String> entry : typeAliases.entrySet()) {
+				typeAliasParameters.putValue(entry.getKey(), entry.getValue());
+			}
+		}
 
-		Parameters typeAliasParameters = aspectranParameters.getParameters(AspectranParameters.typeAlias);
-		if(typeAliasParameters != null)
-			assembleTypeAlias(typeAliasParameters);
+		AspectRuleMap aspectRuleMap = assistant.getAspectRuleMap();
+		for(AspectRule aspectRule : aspectRuleMap) {
+			Parameters p = new AspectParameters();
+			aspectranParameters.putValue(AspectranParameters.aspects, p);
+		}
 		
-		List<Parameters> aspectParametersList = aspectranParameters.getParametersList(AspectranParameters.aspects);
-		if(aspectParametersList != null) {
+		BeanRuleMap beanRuleMap = assistant.getBeanRuleMap();
+		for(BeanRule beanRule : beanRuleMap) {
+			Parameters p = new AspectParameters();
+			aspectranParameters.putValue(AspectranParameters.beans, p);
+		}
+		
+		TransletRuleMap transletRuleMap = assistant.getTransletRuleMap();
+		for(TransletRule transletRule : transletRuleMap) {
+			Parameters p = new AspectParameters();
+			aspectranParameters.putValue(AspectranParameters.translets, p);
+		}
+		
+		if(!aspectRuleMap.isEmpty()) {
+			List<Parameters> aspectParametersList = aspectranParameters.getParametersList(AspectranParameters.aspects);
 			for(Parameters aspectParameters : aspectParametersList) {
 				assembleAspectRule(aspectParameters);
 			}
+			
 		}
 
-		List<Parameters> beanParametersList = aspectranParameters.getParametersList(AspectranParameters.beans);
-		if(beanParametersList != null) {
-			for(Parameters beanParameters : beanParametersList) {
-				assembleBeanRule(beanParameters);
-			}
-		}
-
-		List<Parameters> transletParametersList = aspectranParameters.getParametersList(AspectranParameters.translets);
-		if(transletParametersList != null) {
-			for(Parameters transletParameters : transletParametersList) {
-				assembleTransletRule(transletParameters);
-			}
-		}
-		
-		List<Parameters> importParametersList = aspectranParameters.getParametersList(AspectranParameters.imports);
-		if(importParametersList != null) {
-			for(Parameters importParameters : importParametersList) {
-				assembleImport(importParameters);
-			}
-		}
-		
 		return aspectranParameters;
 	}
 	
