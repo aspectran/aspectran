@@ -25,18 +25,17 @@ import java.io.Reader;
 import java.net.URL;
 import java.net.URLConnection;
 
-import com.aspectran.core.activity.response.Responsible;
+import com.aspectran.core.activity.response.Response;
 import com.aspectran.core.context.rule.TransformRule;
 import com.aspectran.core.context.rule.type.ResponseType;
 import com.aspectran.core.context.rule.type.TransformType;
 
-// TODO: Auto-generated Javadoc
 /**
  * <p>
  * Created: 2008. 03. 22 오후 5:51:58
  * </p>
  */
-public abstract class AbstractTransform implements Responsible {
+public abstract class TransformResponse implements Response {
 	
 	/** The transform rule. */
 	protected final TransformRule transformRule;
@@ -46,7 +45,7 @@ public abstract class AbstractTransform implements Responsible {
 	 * 
 	 * @param transformRule the transform rule
 	 */
-	public AbstractTransform(TransformRule transformRule) {
+	public TransformResponse(TransformRule transformRule) {
 		this.transformRule = transformRule;
 	}
 

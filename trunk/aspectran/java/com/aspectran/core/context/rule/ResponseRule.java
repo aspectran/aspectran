@@ -21,7 +21,7 @@ import java.util.List;
 
 import com.aspectran.core.activity.response.ForwardResponse;
 import com.aspectran.core.activity.response.RedirectResponse;
-import com.aspectran.core.activity.response.Responsible;
+import com.aspectran.core.activity.response.Response;
 import com.aspectran.core.activity.response.dispatch.DispatchResponse;
 import com.aspectran.core.activity.response.transform.TransformFactory;
 import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
@@ -45,7 +45,7 @@ public class ResponseRule implements ResponseRuleApplicable, AspectAdviceSupport
 	
 	private AspectAdviceRuleRegistry aspectAdviceRuleRegistry;
 	
-	private Responsible response;
+	private Response response;
 	
 	/**
 	 * Instantiates a new response rule.
@@ -79,11 +79,11 @@ public class ResponseRule implements ResponseRuleApplicable, AspectAdviceSupport
 		this.characterEncoding = characterEncoding;
 	}
 
-	public Responsible getResponse() {
+	public Response getResponse() {
 		return response;
 	}
 
-	public void setResponse(Responsible response) {
+	public void setResponse(Response response) {
 		this.response = response;
 	}
 
@@ -94,7 +94,8 @@ public class ResponseRule implements ResponseRuleApplicable, AspectAdviceSupport
 		return response.getResponseType();
 	}
 	
-	public <T> T getResponsibleResponse() {
+	@SuppressWarnings("unchecked")
+	public <T> T getRespondent() {
 		return (T)response;
 	}
 	
@@ -105,8 +106,8 @@ public class ResponseRule implements ResponseRuleApplicable, AspectAdviceSupport
 	 * 
 	 * @return the transform response
 	 */
-	public Responsible applyResponseRule(TransformRule tr) {
-		Responsible response = TransformFactory.createTransform(tr);
+	public Response applyResponseRule(TransformRule tr) {
+		Response response = TransformFactory.createTransform(tr);
 		
 		this.response = response;
 		
@@ -120,8 +121,8 @@ public class ResponseRule implements ResponseRuleApplicable, AspectAdviceSupport
 	 * 
 	 * @return the dispatch response
 	 */
-	public Responsible applyResponseRule(DispatchResponseRule drr) {
-		Responsible response = new DispatchResponse(drr);
+	public Response applyResponseRule(DispatchResponseRule drr) {
+		Response response = new DispatchResponse(drr);
 		
 		this.response = response;
 		
@@ -135,8 +136,8 @@ public class ResponseRule implements ResponseRuleApplicable, AspectAdviceSupport
 	 * 
 	 * @return the redirect response
 	 */
-	public Responsible applyResponseRule(RedirectResponseRule rrr) {
-		Responsible response = new RedirectResponse(rrr);
+	public Response applyResponseRule(RedirectResponseRule rrr) {
+		Response response = new RedirectResponse(rrr);
 
 		this.response = response;
 		
@@ -150,8 +151,8 @@ public class ResponseRule implements ResponseRuleApplicable, AspectAdviceSupport
 	 * 
 	 * @return the forward response
 	 */
-	public Responsible applyResponseRule(ForwardResponseRule frr) {
-		Responsible response = new ForwardResponse(frr);
+	public Response applyResponseRule(ForwardResponseRule frr) {
+		Response response = new ForwardResponse(frr);
 
 		this.response = response;
 		
@@ -201,7 +202,7 @@ public class ResponseRule implements ResponseRuleApplicable, AspectAdviceSupport
 		return aspectAdviceRuleRegistry.getExceptionRaizedAdviceRuleList();
 	}
 
-	public ResponseRule newResponseRule(Responsible response) {
+	public ResponseRule newResponseRule(Response response) {
 		ResponseRule responseRule = new ResponseRule();
 		responseRule.setCharacterEncoding(characterEncoding);
 		responseRule.setResponse(response);

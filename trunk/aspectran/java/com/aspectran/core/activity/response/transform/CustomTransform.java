@@ -20,7 +20,7 @@ import org.slf4j.LoggerFactory;
 
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.process.ActionList;
-import com.aspectran.core.activity.response.Responsible;
+import com.aspectran.core.activity.response.Response;
 import com.aspectran.core.context.rule.TransformRule;
 
 /**
@@ -28,7 +28,7 @@ import com.aspectran.core.context.rule.TransformRule;
  * Created: 2008. 06. 24 오전 4:07:58
  * </p>
  */
-public class CustomTransform extends AbstractTransform implements Responsible {
+public class CustomTransform extends TransformResponse implements Response {
 
 	private final Logger logger = LoggerFactory.getLogger(CustomTransform.class);
 

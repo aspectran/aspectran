@@ -24,7 +24,7 @@ import org.slf4j.LoggerFactory;
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.activity.process.result.ProcessResult;
-import com.aspectran.core.activity.response.Responsible;
+import com.aspectran.core.activity.response.Response;
 import com.aspectran.core.activity.response.transform.json.ContentsJsonWriter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.context.AspectranConstant;
@@ -36,7 +36,7 @@ import com.aspectran.core.util.json.JsonWriter;
  * Created: 2008. 03. 22 오후 5:51:58
  * </p>
  */
-public class JsonTransform extends AbstractTransform implements Responsible {
+public class JsonTransform extends TransformResponse implements Response {
 	
 	private final Logger logger = LoggerFactory.getLogger(JsonTransform.class);
 	

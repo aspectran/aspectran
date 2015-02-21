@@ -18,7 +18,7 @@ public class TemplateParameters extends AbstractParameters implements Parameters
 
 	static {
 		file = new ParameterDefine("file", ParameterValueType.STRING);
-		resource = new ParameterDefine("url", ParameterValueType.STRING);
+		resource = new ParameterDefine("resource", ParameterValueType.STRING);
 		url = new ParameterDefine("url", ParameterValueType.STRING);
 		content = new ParameterDefine("content", ParameterValueType.TEXT);
 		encoding = new ParameterDefine("encoding", ParameterValueType.STRING);

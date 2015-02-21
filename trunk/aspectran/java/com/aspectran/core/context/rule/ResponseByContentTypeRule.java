@@ -18,7 +18,7 @@ package com.aspectran.core.context.rule;
 import com.aspectran.core.activity.response.ForwardResponse;
 import com.aspectran.core.activity.response.RedirectResponse;
 import com.aspectran.core.activity.response.ResponseMap;
-import com.aspectran.core.activity.response.Responsible;
+import com.aspectran.core.activity.response.Response;
 import com.aspectran.core.activity.response.dispatch.DispatchResponse;
 import com.aspectran.core.activity.response.transform.TransformFactory;
 import com.aspectran.core.context.rule.ability.ResponseRuleApplicable;
@@ -30,7 +30,7 @@ public class ResponseByContentTypeRule implements ResponseRuleApplicable {
 
 	private ResponseMap responseMap = new ResponseMap();
 	
-	private Responsible defaultResponse;
+	private Response defaultResponse;
 
 	private String exceptionType;
 	
@@ -42,8 +42,8 @@ public class ResponseByContentTypeRule implements ResponseRuleApplicable {
 		this.exceptionType = exceptionType;
 	}
 
-	public Responsible getResponse(String contentType) {
-		Responsible response = responseMap.get(contentType);
+	public Response getResponse(String contentType) {
+		Response response = responseMap.get(contentType);
 		
 		if(response != null)
 			return response;
@@ -69,11 +69,11 @@ public class ResponseByContentTypeRule implements ResponseRuleApplicable {
 		this.responseMap = responseMap;
 	}
 	
-	public Responsible getDefaultResponse() {
+	public Response getDefaultResponse() {
 		return defaultResponse;
 	}
 
-	public void setDefaultResponse(Responsible response) {
+	public void setDefaultResponse(Response response) {
 		this.defaultResponse = response;
 	}
 
@@ -84,8 +84,8 @@ public class ResponseByContentTypeRule implements ResponseRuleApplicable {
 	 * 
 	 * @return the transform response
 	 */
-	public Responsible applyResponseRule(TransformRule transformRule) {
-		Responsible response = TransformFactory.createTransform(transformRule);
+	public Response applyResponseRule(TransformRule transformRule) {
+		Response response = TransformFactory.createTransform(transformRule);
 		
 		if(transformRule.getContentType() != null)
 			responseMap.put(transformRule.getContentType(), response);
@@ -106,8 +106,8 @@ public class ResponseByContentTypeRule implements ResponseRuleApplicable {
 	 * 
 	 * @return the dispatch response
 	 */
-	public Responsible applyResponseRule(DispatchResponseRule dispatchResponseRule) {
-		Responsible response = new DispatchResponse(dispatchResponseRule);
+	public Response applyResponseRule(DispatchResponseRule dispatchResponseRule) {
+		Response response = new DispatchResponse(dispatchResponseRule);
 		
 		if(dispatchResponseRule.getContentType() != null)
 			responseMap.put(dispatchResponseRule.getContentType(), response);
@@ -128,8 +128,8 @@ public class ResponseByContentTypeRule implements ResponseRuleApplicable {
 	 * 
 	 * @return the redirect response
 	 */
-	public Responsible applyResponseRule(RedirectResponseRule redirectResponseRule) {
-		Responsible response = new RedirectResponse(redirectResponseRule);
+	public Response applyResponseRule(RedirectResponseRule redirectResponseRule) {
+		Response response = new RedirectResponse(redirectResponseRule);
 
 		if(redirectResponseRule.getContentType() != null)
 			responseMap.put(redirectResponseRule.getContentType(), response);
@@ -150,8 +150,8 @@ public class ResponseByContentTypeRule implements ResponseRuleApplicable {
 	 * 
 	 * @return the forward response
 	 */
-	public Responsible applyResponseRule(ForwardResponseRule forwardResponseRule) {
-		Responsible response = new ForwardResponse(forwardResponseRule);
+	public Response applyResponseRule(ForwardResponseRule forwardResponseRule) {
+		Response response = new ForwardResponse(forwardResponseRule);
 
 		if(forwardResponseRule.getContentType() != null)
 			responseMap.put(forwardResponseRule.getContentType(), response);
@@ -170,7 +170,7 @@ public class ResponseByContentTypeRule implements ResponseRuleApplicable {
 	 * 
 	 * @param resonse the resonse
 	 */
-	public void addResponse(Responsible response) {
+	public void addResponse(Response response) {
 		responseMap.put(response.getContentType(), response);
 	}
 	

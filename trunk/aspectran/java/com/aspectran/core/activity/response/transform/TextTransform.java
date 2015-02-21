@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory;
 
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.process.ActionList;
-import com.aspectran.core.activity.response.Responsible;
+import com.aspectran.core.activity.response.Response;
 import com.aspectran.core.activity.variable.token.Token;
 import com.aspectran.core.activity.variable.token.TokenExpression;
 import com.aspectran.core.activity.variable.token.TokenExpressor;
@@ -40,7 +40,7 @@ import com.aspectran.core.context.rule.type.TokenType;
 /**
  * <p>Created: 2008. 03. 22 오후 5:51:58</p>
  */
-public class TextTransform extends AbstractTransform implements Responsible {
+public class TextTransform extends TransformResponse implements Response {
 
 	private final Logger logger = LoggerFactory.getLogger(TextTransform.class);
 

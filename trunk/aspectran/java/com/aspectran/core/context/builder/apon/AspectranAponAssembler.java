@@ -22,9 +22,12 @@ import java.util.Map;
 
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.activity.process.ContentList;
-import com.aspectran.core.activity.response.Responsible;
+import com.aspectran.core.activity.process.action.Executable;
+import com.aspectran.core.activity.response.ForwardResponse;
+import com.aspectran.core.activity.response.RedirectResponse;
+import com.aspectran.core.activity.response.dispatch.DispatchResponse;
+import com.aspectran.core.activity.response.transform.TransformResponse;
 import com.aspectran.core.activity.variable.token.Token;
-import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
 import com.aspectran.core.context.builder.ContextBuilderAssistant;
 import com.aspectran.core.context.builder.DefaultSettings;
 import com.aspectran.core.context.builder.apon.params.ActionParameters;
@@ -75,11 +78,10 @@ import com.aspectran.core.context.rule.ability.ActionRuleApplicable;
 import com.aspectran.core.context.rule.ability.ResponseRuleApplicable;
 import com.aspectran.core.context.rule.type.ActionType;
 import com.aspectran.core.context.rule.type.AspectAdviceType;
+import com.aspectran.core.context.rule.type.ResponseType;
 import com.aspectran.core.context.rule.type.TokenType;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.apon.GenericParameters;
-import com.aspectran.core.util.apon.ParameterDefine;
-import com.aspectran.core.util.apon.ParameterValueType;
 import com.aspectran.core.util.apon.Parameters;
 
 /**
@@ -272,8 +274,102 @@ public class AspectranAponAssembler {
 		responseParameters.setValue(ResponseParameters.name, responseRule.getName());
 		responseParameters.setValue(ResponseParameters.characterEncoding, responseRule.getCharacterEncoding());
 		
+		if(responseRule.getResponseType() == ResponseType.TRANSFORM) {
+			TransformResponse transformResponse = responseRule.getRespondent();
+			responseParameters.setValue(ResponseParameters.transform, assembleTransformParameters(transformResponse.getTransformRule()));
+		} else if(responseRule.getResponseType() == ResponseType.DISPATCH) {
+			DispatchResponse dispatchResponse = responseRule.getRespondent();
+			responseParameters.setValue(ResponseParameters.dispatch, assembleDispatchParameters(dispatchResponse.getDispatchResponseRule()));
+		} else if(responseRule.getResponseType() == ResponseType.FORWARD) {
+			ForwardResponse forwardResponse = responseRule.getRespondent();
+			forwardResponse.getForwardResponseRule();
+		} else if(responseRule.getResponseType() == ResponseType.REDIRECT) {
+			RedirectResponse redirectResponse = responseRule.getRespondent();
+			redirectResponse.getRedirectResponseRule();
+		}
+		
 		
 		return responseParameters;
+	}
+	
+	public Parameters assembleTransformParameters(TransformRule transformRule) {
+		TransformParameters transformParameters = new TransformParameters();
+
+		if(transformRule.getTransformType() != null)
+			transformParameters.setValue(TransformParameters.transformType, transformRule.getTransformType().toString());
+
+		if(transformRule.getContentType() != null)
+			transformParameters.setValue(TransformParameters.contentType, transformRule.getContentType().toString());
+		
+		transformParameters.setValue(TransformParameters.characterEncoding, transformRule.getCharacterEncoding());
+
+		if(transformRule.getTemplateRule() != null)
+			transformParameters.setValue(TransformParameters.template, assembleTemplateParameters(transformRule.getTemplateRule()));
+		
+		ActionList actionList = transformRule.getActionList();
+		if(actionList != null) {
+			for(Executable action : actionList) {
+				if(action.getActionType() == ActionType.ECHO) {
+					EchoActionRule echoActionRule = action.getActionRule();
+					transformParameters.putValue(TransformParameters.actions, assembleActionParameters(echoActionRule));
+				} else if(action.getActionType() == ActionType.BEAN) {
+					BeanActionRule beanActionRule = action.getActionRule();
+					transformParameters.setValue(TransformParameters.actions, assembleActionParameters(beanActionRule));
+				} else if(action.getActionType() == ActionType.INCLUDE) {
+					IncludeActionRule includeActionRule = action.getActionRule();
+					transformParameters.setValue(TransformParameters.actions, assembleActionParameters(includeActionRule));
+				}
+			}
+		}
+
+		transformParameters.setValue(TransformParameters.defaultResponse, transformRule.getDefaultResponse());
+		transformParameters.setValue(TransformParameters.pretty, transformRule.getPretty());
+		
+		return transformParameters;
+	}
+	
+	public Parameters assembleDispatchParameters(DispatchResponseRule dispatchResponseRule) {
+		DispatchParameters dispatchParameters = new DispatchParameters();
+
+		if(dispatchResponseRule.getContentType() != null)
+			dispatchParameters.setValue(DispatchParameters.contentType, dispatchResponseRule.getContentType().toString());
+		
+		dispatchParameters.setValue(DispatchParameters.characterEncoding, dispatchResponseRule.getCharacterEncoding());
+		
+		if(dispatchResponseRule.getTemplateRule() != null)
+			dispatchParameters.setValue(DispatchParameters.template, assembleTemplateParameters(dispatchResponseRule.getTemplateRule()));
+		
+		ActionList actionList = dispatchResponseRule.getActionList();
+		if(actionList != null) {
+			for(Executable action : actionList) {
+				if(action.getActionType() == ActionType.ECHO) {
+					EchoActionRule echoActionRule = action.getActionRule();
+					dispatchParameters.putValue(DispatchParameters.actions, assembleActionParameters(echoActionRule));
+				} else if(action.getActionType() == ActionType.BEAN) {
+					BeanActionRule beanActionRule = action.getActionRule();
+					dispatchParameters.setValue(DispatchParameters.actions, assembleActionParameters(beanActionRule));
+				} else if(action.getActionType() == ActionType.INCLUDE) {
+					IncludeActionRule includeActionRule = action.getActionRule();
+					dispatchParameters.setValue(DispatchParameters.actions, assembleActionParameters(includeActionRule));
+				}
+			}
+		}
+		
+		dispatchParameters.setValue(DispatchParameters.defaultResponse, dispatchResponseRule.getDefaultResponse());
+		
+		return dispatchParameters;
+	}
+	
+	public Parameters assembleTemplateParameters(TemplateRule templateRule) {
+		TemplateParameters templateParameters = new TemplateParameters();
+		templateParameters.setValue(TemplateParameters.file, templateRule.getFile());
+		templateParameters.setValue(TemplateParameters.resource, templateRule.getResource());
+		templateParameters.setValue(TemplateParameters.url, templateRule.getUrl());
+		templateParameters.setValue(TemplateParameters.content, templateRule.getContent());
+		templateParameters.setValue(TemplateParameters.encoding, templateRule.getEncoding());
+		templateParameters.setValue(TemplateParameters.noCache, templateRule.getNoCache());
+		
+		return templateParameters;
 	}
 	
 	public Parameters assembleActionParameters(BeanActionRule beanActionRule) {
@@ -492,22 +588,22 @@ public class AspectranAponAssembler {
 
 		ResponseRule responseRule = ResponseRule.newInstance(name, characterEncoding);
 		
-		List<Parameters> transformParametersList = responseParameters.getParametersList(ResponseParameters.transforms);
+		List<Parameters> transformParametersList = responseParameters.getParametersList(ResponseParameters.transform);
 		if(transformParametersList != null && !transformParametersList.isEmpty()) {
 			assembleTransformRule(transformParametersList, responseRule);
 		}
 		
-		List<Parameters> dispatchParametersList = responseParameters.getParametersList(ResponseParameters.dispatchs);
+		List<Parameters> dispatchParametersList = responseParameters.getParametersList(ResponseParameters.dispatch);
 		if(dispatchParametersList != null && !dispatchParametersList.isEmpty()) {
 			assembleDispatchResponseRule(dispatchParametersList, responseRule);
 		}
 
-		List<Parameters> redirectParametersList = responseParameters.getParametersList(ResponseParameters.redirects);
+		List<Parameters> redirectParametersList = responseParameters.getParametersList(ResponseParameters.redirect);
 		if(redirectParametersList != null && !redirectParametersList.isEmpty()) {
 			assembleRedirectResponseRule(redirectParametersList, responseRule);
 		}
 		
-		List<Parameters> forwardParametersList = responseParameters.getParametersList(ResponseParameters.forwards);
+		List<Parameters> forwardParametersList = responseParameters.getParametersList(ResponseParameters.forward);
 		if(forwardParametersList != null && !forwardParametersList.isEmpty()) {
 			assembleForwardResponseRule(forwardParametersList, responseRule);
 		}

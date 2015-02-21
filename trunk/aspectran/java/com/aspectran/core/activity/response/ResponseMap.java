@@ -21,7 +21,7 @@ import java.util.LinkedHashMap;
 /**
  * <p>Created: 2008. 03. 29 오후 11:50:02</p>
  */
-public class ResponseMap extends LinkedHashMap<String, Responsible> implements Iterable<Responsible> {
+public class ResponseMap extends LinkedHashMap<String, Response> implements Iterable<Response> {
 
 	/** @serial */
 	static final long serialVersionUID = 2093093144584776388L;
@@ -34,7 +34,7 @@ public class ResponseMap extends LinkedHashMap<String, Responsible> implements I
 	 * @return the response
 	 * @throws IndexOutOfBoundsException if the index is out of range (index < 0 || index >= size()) 
 	 */
-	public Responsible get(int index) {
+	public Response get(int index) {
 		if(index < 0 || index >= size())
 			throw new IndexOutOfBoundsException("index is out of range.");
 		
@@ -46,7 +46,7 @@ public class ResponseMap extends LinkedHashMap<String, Responsible> implements I
 	/* (non-Javadoc)
 	 * @see java.lang.Iterable#iterator()
 	 */
-	public Iterator<Responsible> iterator() {
+	public Iterator<Response> iterator() {
 		return this.values().iterator();
 	}
 }

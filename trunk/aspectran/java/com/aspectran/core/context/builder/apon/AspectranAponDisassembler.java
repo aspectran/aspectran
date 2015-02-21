@@ -385,22 +385,22 @@ public class AspectranAponDisassembler {
 
 		ResponseRule responseRule = ResponseRule.newInstance(name, characterEncoding);
 		
-		Parameters transformParameters = responseParameters.getParameters(ResponseParameters.transforms);
+		Parameters transformParameters = responseParameters.getParameters(ResponseParameters.transform);
 		if(transformParameters != null) {
 			responseRule.applyResponseRule(disassembleTransformRule(transformParameters));
 		}
 		
-		Parameters dispatchParameters = responseParameters.getParameters(ResponseParameters.dispatchs);
+		Parameters dispatchParameters = responseParameters.getParameters(ResponseParameters.dispatch);
 		if(dispatchParameters != null) {
 			responseRule.applyResponseRule(disassembleDispatchResponseRule(dispatchParameters));
 		}
 
-		Parameters redirectParameters = responseParameters.getParameters(ResponseParameters.redirects);
+		Parameters redirectParameters = responseParameters.getParameters(ResponseParameters.redirect);
 		if(redirectParameters != null) {
 			responseRule.applyResponseRule(disassembleRedirectResponseRule(redirectParameters));
 		}
 		
-		Parameters forwardParameters = responseParameters.getParameters(ResponseParameters.forwards);
+		Parameters forwardParameters = responseParameters.getParameters(ResponseParameters.forward);
 		if(forwardParameters != null) {
 			responseRule.applyResponseRule(disassembleForwardResponseRule(forwardParameters));
 		}
