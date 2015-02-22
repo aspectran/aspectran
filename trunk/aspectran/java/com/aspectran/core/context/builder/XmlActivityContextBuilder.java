@@ -17,8 +17,8 @@ package com.aspectran.core.context.builder;
 
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.context.builder.xml.AspectranNodeImportHandler;
 import com.aspectran.core.context.builder.xml.AspectranNodeParser;
+import com.aspectran.core.context.rule.type.ImportFileType;
 
 /**
  * XmlAspectranContextBuilder.
@@ -40,10 +40,10 @@ public class XmlActivityContextBuilder extends AbstractActivityContextBuilder im
 
 	public ActivityContext build(String rootContext) throws ActivityContextBuilderException {
 		try {
-			ImportHandler importHandler = new AspectranNodeImportHandler(this);
+			ImportHandler importHandler = new XmlImportHandler(this);
 			setImportHandler(importHandler);
 			
-			Importable importable = makeImportable(rootContext);
+			Importable importable = makeXmlImportable(rootContext);
 	
 			AspectranNodeParser parser = new AspectranNodeParser(this);
 			parser.parse(importable);
@@ -54,6 +54,10 @@ public class XmlActivityContextBuilder extends AbstractActivityContextBuilder im
 		} catch(Exception e) {
 			throw new ActivityContextBuilderException("XmlActivityContext build failed. rootContext: " + rootContext, e);
 		}
+	}
+
+	private Importable makeXmlImportable(String rootContext) {
+		return makeImportable(rootContext, ImportFileType.XML);
 	}
 	
 }

@@ -129,8 +129,9 @@ public class AspectranAponDisassembler {
 		String resource = importParameters.getString(ImportParameters.resource);
 		String file = importParameters.getString(ImportParameters.file);
 		String url = importParameters.getString(ImportParameters.url);
+		String fileType = importParameters.getString(ImportParameters.fileType);
 		
-		Importable importable = Importable.newInstance(assistant, resource, file, url);
+		Importable importable = Importable.newInstance(assistant, resource, file, url, fileType);
 
 		ImportHandler importHandler = assistant.getImportHandler();
 		if(importHandler != null)

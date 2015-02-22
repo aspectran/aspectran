@@ -5,21 +5,26 @@ import org.slf4j.LoggerFactory;
 
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.builder.ActivityContextBuilder;
-import com.aspectran.core.context.builder.XmlActivityContextBuilder;
+import com.aspectran.core.context.builder.HybridActivityContextBuilder;
 
-public class XmlActivityContextLoader extends AbstractActivityContextLoader {
+public class HybridActivityContextLoader extends AbstractActivityContextLoader {
 
-	private final Logger logger = LoggerFactory.getLogger(XmlActivityContextLoader.class);
+	private final Logger logger = LoggerFactory.getLogger(HybridActivityContextLoader.class);
 	
-	public XmlActivityContextLoader() {
+	private String encoding;
+
+	public HybridActivityContextLoader() {
+	}
+	
+	public HybridActivityContextLoader(String encoding) {
+		this.encoding = encoding;
 	}
 	
 	public ActivityContext load(String rootContext) {
 		logger.info("build ActivityContext [" + rootContext + "]");
 		long startTime = System.currentTimeMillis();
 
-		ActivityContextBuilder builder = new XmlActivityContextBuilder(applicationAdapter, aspectranClassLoader);
-		builder.setHybridLoading(isHybridLoading());
+		ActivityContextBuilder builder = new HybridActivityContextBuilder(applicationAdapter, aspectranClassLoader, encoding);
 		ActivityContext activityContext = builder.build(rootContext);
 		
 		long elapsedTime = System.currentTimeMillis() - startTime;

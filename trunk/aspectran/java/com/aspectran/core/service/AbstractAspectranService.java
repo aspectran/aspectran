@@ -12,9 +12,8 @@ import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.ActivityContextException;
 import com.aspectran.core.context.loader.ActivityContextLoader;
-import com.aspectran.core.context.loader.AponActivityContextLoader;
 import com.aspectran.core.context.loader.AspectranClassLoader;
-import com.aspectran.core.context.loader.XmlActivityContextLoader;
+import com.aspectran.core.context.loader.HybridActivityContextLoader;
 import com.aspectran.core.context.loader.config.AspectranConfig;
 import com.aspectran.core.context.loader.config.AspectranContextAutoReloadingConfig;
 import com.aspectran.core.context.loader.config.AspectranContextConfig;
@@ -46,6 +45,8 @@ public abstract class AbstractAspectranService implements AspectranService {
 	
 	private String[] resourceLocations;
 	
+	private boolean hybridLoading;
+
 	private boolean hardReload;
 
 	private boolean autoReloadingStartup;
@@ -127,6 +128,7 @@ public abstract class AbstractAspectranService implements AspectranService {
 			String rootContext = aspectranContextConfig.getString(AspectranContextConfig.root);
 			String encoding = aspectranContextConfig.getString(AspectranContextConfig.encoding);
 			String[] resourceLocations = aspectranContextConfig.getStringArray(AspectranContextConfig.resources);
+			boolean hybridLoading = aspectranContextConfig.getBoolean(AspectranContextConfig.hybridLoading, false);
 			String reloadMethod = aspectranContextAutoReloadingConfig.getString(AspectranContextAutoReloadingConfig.reloadMethod);
 			int observationInterval = aspectranContextAutoReloadingConfig.getInt(AspectranContextAutoReloadingConfig.observationInterval, -1);
 			boolean autoReloadingStartup = aspectranContextAutoReloadingConfig.getBoolean(AspectranContextAutoReloadingConfig.startup, true);
@@ -137,6 +139,7 @@ public abstract class AbstractAspectranService implements AspectranService {
 			this.rootContext = rootContext;
 			this.encoding = encoding;
 			this.resourceLocations = checkResourceLocations(getApplicationBasePath(), aspectranClassLoader.getResourceLocation(), resourceLocations);
+			this.hybridLoading = hybridLoading;
 			this.hardReload = "hard".equals(reloadMethod);
 			this.autoReloadingStartup = autoReloadingStartup;
 			this.observationInterval = observationInterval;
@@ -165,21 +168,16 @@ public abstract class AbstractAspectranService implements AspectranService {
 		
 		try {
 			if(activityContextLoader == null) {
-				if(rootContext != null && rootContext.endsWith(".apon"))
-					activityContextLoader = new AponActivityContextLoader(encoding);
-				else
-					activityContextLoader = new XmlActivityContextLoader();
-				
+				activityContextLoader = new HybridActivityContextLoader(encoding);
 				activityContextLoader.setAspectranClassLoader(aspectranClassLoader);
 				activityContextLoader.setApplicationAdapter(applicationAdapter);
+				activityContextLoader.setHybridLoading(hybridLoading);
 			}
 			
 			activityContextLoader.setAspectranClassLoader(aspectranClassLoader);
-			
 			activityContext = activityContextLoader.load(rootContext);
 			
 			startupAspectranScheduler();
-			
 			startReloadingTimer();
 			
 			return activityContext;

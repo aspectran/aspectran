@@ -30,12 +30,13 @@ public abstract class AbstractParameters implements Parameters {
 				ParameterValue pv = pd.newParameterValue();
 				pv.setHolder(this);
 				parameterValueMap.put(pd.getName(), pv);
+				//System.out.println("&& ParameterValue=" + pv);
 			}
 		}
 		
 		if(text != null) {
 			AponReader reader = new AponReader();
-			parameterValueMap = reader.read(text, parameterValueMap);
+			reader.read(text, parameterValueMap);
 		}
 	}
 	

@@ -248,7 +248,7 @@ public class AponReader {
 				if(openBraket != null) {
 					if(openBraket == CURLY_BRAKET_OPEN && CURLY_BRAKET_CLOSE.equals(buffer) ||
 							openBraket == SQUARE_BRAKET_OPEN && SQUARE_BRAKET_CLOSE.equals(buffer)) {
-						//System.out.println("*****return********* openBraket: " + openBraket + ", token: " + token);
+						//System.out.println("*****return********* openBraket: " + openBraket + ", token: " + buffer);
 						return;
 					}
 				}
@@ -267,8 +267,8 @@ public class AponReader {
 					parameterValue = parameterValueMap.get(name);
 
 					//System.out.println("************** title: " + title);
-					//System.out.println("************** name: " + name + ", value: " + value + ", token: " + token);
-					//System.out.println("************** parameterDefine: " + parameterDefine);
+					//System.out.println("0************** name: " + name + ", value: " + value + ", buffer: " + buffer);
+					//System.out.println("0************** parameterValue: " + parameterValue);
 					
 					if(parameterValue == null) {
 						if(addable) {
@@ -289,37 +289,43 @@ public class AponReader {
 					parameterValueType = null;
 				}
 				
+				//System.out.println("01************** parameterValueType: " + parameterValueType);
+				
 				if(StringUtils.hasText(value)) {
 					if(parameterValueType == null && CURLY_BRAKET_OPEN.equals(value)) {
 						parameterValueType = ParameterValueType.PARAMETERS;
+						//System.out.println("02************** parameterValueType: " + parameterValueType);
 					} else if(SQUARE_BRAKET_OPEN.equals(value)) {
 						if(parameterValue == null || (parameterValue != null && parameterValue.isArray())) {
-							//System.out.println("************** name: " + name);
-							//System.out.println("************** parameterDefine: " + parameterDefine);
+							//System.out.println("1**************[ name: " + name);
+							//System.out.println("1**************[ parameterValue: " + parameterValue);
 							valuelize(reader, parameterValueMap, SQUARE_BRAKET_OPEN, name, parameterValue);
 							continue;
 						}
 					}
 					
 					if(parameterValueType == ParameterValueType.PARAMETERS) {
-						if(openBraket == SQUARE_BRAKET_OPEN) {
-							if(parameterValue == null) {
+						//System.out.println("03************** parameterValue: " + parameterValue);
+						if(parameterValue == null) {
+							if(openBraket == SQUARE_BRAKET_OPEN) {
 								parameterValue = new ParameterValue(name, parameterValueType, true);
 								parameterValueMap.put(name, parameterValue);
-							}
-
-							AbstractParameters parameters2 = (AbstractParameters)parameterValue.newParameters();
-							valuelize(reader, parameters2.getParameterValueMap(), CURLY_BRAKET_OPEN, null, null);
-							parameterValue.putValue(parameters2);
-						} else {
-							if(parameterValue == null) {
+							} else {
 								parameterValue = new ParameterValue(name, parameterValueType);
 								parameterValueMap.put(name, parameterValue);
 							}
-
-							AbstractParameters parameters2 = (AbstractParameters)parameterValue.touchValueAsParameters();
-							valuelize(reader, parameters2.getParameterValueMap(), CURLY_BRAKET_OPEN, null, null);
 						}
+						//System.out.println("04************** parameterValue: " + parameterValue);
+
+						AbstractParameters parameters2 = (AbstractParameters)parameterValue.newParameters();
+						//System.out.println("05************** parameters2: " + parameters2);
+						//System.out.println("new************** parameterValue.newParameters(): " + parameterValue);
+						valuelize(reader, parameters2.getParameterValueMap(), CURLY_BRAKET_OPEN, null, null);
+						parameterValue.putValue(parameters2);
+
+//							AbstractParameters parameters2 = (AbstractParameters)parameterValue.touchValueAsParameters();
+//							System.out.println("************** parameterValue.touchValueAsParameters(): " + parameterValue);
+//							valuelize(reader, parameters2.getParameterValueMap(), CURLY_BRAKET_OPEN, null, null);
 					} else {
 						if(parameterValueType == null)
 							parameterValueType = ParameterValueType.STRING;
@@ -340,6 +346,8 @@ public class AponReader {
 						} else {
 							parameterValue.putValue(value);
 						}
+						
+						//System.out.println("val************ parameterValue.putValue(): name=" + name + ", value=" + value);
 					}
 				}
 			}

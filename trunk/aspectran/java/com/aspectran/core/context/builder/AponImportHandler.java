@@ -13,31 +13,42 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.aspectran.core.context.builder.xml;
+package com.aspectran.core.context.builder;
 
-import com.aspectran.core.context.builder.ContextBuilderAssistant;
-import com.aspectran.core.context.builder.ImportHandler;
-import com.aspectran.core.context.builder.Importable;
+import java.io.Reader;
+
+import com.aspectran.core.context.builder.apon.AspectranAponDisassembler;
+import com.aspectran.core.context.builder.apon.params.AspectranParameters;
+import com.aspectran.core.util.apon.AponReader;
+import com.aspectran.core.util.apon.Parameters;
 
 /**
  * Translet Map Parser.
  * 
  * <p>Created: 2008. 06. 14 오전 4:39:24</p>
  */
-public class AspectranNodeImportHandler implements ImportHandler {
+public class AponImportHandler implements ImportHandler {
 	
 	private final ContextBuilderAssistant assistant;
 	
-	public AspectranNodeImportHandler(ContextBuilderAssistant assistant) {
+	private final String encoding;
+	
+	public AponImportHandler(ContextBuilderAssistant assistant, String encoding) {
 		this.assistant = assistant;
+		this.encoding = encoding;
 	}
 	
 	public void handle(Importable importable) throws Exception {
 		assistant.backupDefaultSettings();
 		
-		AspectranNodeParser aspectranNodeParser = new AspectranNodeParser(assistant);
-		aspectranNodeParser.parse(importable);
+		Reader reader = importable.getReader(encoding);
+		AponReader aponReader = new AponReader();
+		Parameters aspectranParameters = aponReader.read(reader, new AspectranParameters());
+		reader.close();
 		
+		AspectranAponDisassembler aponDisassembler = new AspectranAponDisassembler(assistant);
+		aponDisassembler.disassembleAspectran(aspectranParameters);
+
 		assistant.restoreDefaultSettings();
 	}
 

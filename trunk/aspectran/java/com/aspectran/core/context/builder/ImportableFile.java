@@ -20,6 +20,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import com.aspectran.core.context.rule.type.ImportFileType;
 import com.aspectran.core.context.rule.type.ImportType;
 
 /**
@@ -35,17 +36,38 @@ public class ImportableFile extends Importable {
 	
 	private String filePath;
 
-	public ImportableFile(String filePath) {
-		this(null, filePath);
+	public ImportableFile(String filePath, ImportFileType importFileType) {
+		this(null, filePath, importFileType);
 	}
 	
-	public ImportableFile(String basePath, String filePath) {
+	public ImportableFile(String basePath, String filePath, ImportFileType importFileType) {
 		super(FILE_IMPORT);
 	
+		if(importFileType == null)
+			importFileType = filePath.endsWith(".apon") ? ImportFileType.APON : ImportFileType.XML;
+		
+		setImportFileType(importFileType);
+
 		this.basePath = basePath;
 		this.filePath = filePath;
 	}
 	
+	public String getBasePath() {
+		return basePath;
+	}
+
+	public void setBasePath(String basePath) {
+		this.basePath = basePath;
+	}
+
+	public String getFilePath() {
+		return filePath;
+	}
+
+	public void setFilePath(String filePath) {
+		this.filePath = filePath;
+	}
+
 	/**
 	 * Gets the input stream.
 	 * 

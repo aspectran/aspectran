@@ -20,6 +20,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
 
+import com.aspectran.core.context.rule.type.ImportFileType;
 import com.aspectran.core.context.rule.type.ImportType;
 
 /**
@@ -33,9 +34,14 @@ public class ImportableUrl extends Importable {
 	
 	private final String urlString;
 
-	public ImportableUrl(String urlString) {
+	public ImportableUrl(String urlString, ImportFileType importFileType) {
 		super(URL_IMPORT);
 
+		if(importFileType == null)
+			importFileType = urlString.endsWith(".apon") ? ImportFileType.APON : ImportFileType.XML;
+		
+		setImportFileType(importFileType);
+		
 		this.urlString = urlString;
 	}
 	
@@ -49,7 +55,7 @@ public class ImportableUrl extends Importable {
 		URLConnection conn = url.openConnection();
 		setLastModified(conn.getLastModified());
 		InputStream inputStream = conn.getInputStream();
-		
+
 		return inputStream;
 	}
 	

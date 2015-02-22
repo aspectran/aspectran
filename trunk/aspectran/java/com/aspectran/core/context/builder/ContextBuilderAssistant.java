@@ -72,6 +72,8 @@ public class ContextBuilderAssistant {
 	
 	private ImportHandler importHandler;
 	
+	private boolean hybridLoading;
+	
 	public ContextBuilderAssistant(String applicationBasePath, ClassLoader classLoader) {
 		if(applicationBasePath == null)
 			this.applicationBasePath = new File(".").getAbsoluteFile().toString();
@@ -505,6 +507,14 @@ public class ContextBuilderAssistant {
 
 	public void setImportHandler(ImportHandler importHandler) {
 		this.importHandler = importHandler;
+	}
+	
+	public boolean isHybridLoading() {
+		return hybridLoading;
+	}
+
+	public void setHybridLoading(boolean hybridLoading) {
+		this.hybridLoading = hybridLoading;
 	}
 	
 }

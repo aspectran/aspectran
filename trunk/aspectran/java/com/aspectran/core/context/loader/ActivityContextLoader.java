@@ -13,6 +13,8 @@ public interface ActivityContextLoader {
 
 	public void setAspectranClassLoader(AspectranClassLoader aspectranClassLoader);
 
+	public void setHybridLoading(boolean hybridLoading);
+	
 	public ActivityContext load(String rootContext);
 	
 }

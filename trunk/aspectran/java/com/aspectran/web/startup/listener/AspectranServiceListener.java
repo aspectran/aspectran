@@ -54,14 +54,16 @@ public class AspectranServiceListener implements ServletContextListener {
 	 * @param event the event
 	 */
 	public void contextDestroyed(ServletContextEvent event) {
-		boolean cleanlyDestoryed = aspectranService.dispose();
-		
-		if(cleanlyDestoryed)
-			logger.info("Successfully destroyed AspectranServiceListener.");
-		else
-			logger.error("AspectranServiceListener were not destroyed cleanly.");
-
-		logger.info("Do not terminate the server while the all scoped bean destroying.");
+		if(aspectranService != null) {
+			boolean cleanlyDestoryed = aspectranService.dispose();
+			
+			if(cleanlyDestoryed)
+				logger.info("Successfully destroyed AspectranServiceListener.");
+			else
+				logger.error("AspectranServiceListener were not destroyed cleanly.");
+	
+			logger.info("Do not terminate the server while the all scoped bean destroying.");
+		}
 	}
 	
 }

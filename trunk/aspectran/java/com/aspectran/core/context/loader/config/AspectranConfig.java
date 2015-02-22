@@ -6,13 +6,15 @@ import com.aspectran.core.util.apon.Parameters;
 
 public class AspectranConfig extends AbstractParameters implements Parameters {
 
-	public static final ParameterDefine context = new ParameterDefine("context", AspectranContextConfig.class);
-	
-	public static final ParameterDefine scheduler = new ParameterDefine("scheduler", AspectranSchedulerConfig.class);
+	public static final ParameterDefine context;
+	public static final ParameterDefine scheduler;
 	
 	private static final ParameterDefine[] parameterDefines;
 	
 	static {
+		context = new ParameterDefine("context", AspectranContextConfig.class);
+		scheduler = new ParameterDefine("scheduler", AspectranSchedulerConfig.class);
+
 		parameterDefines = new ParameterDefine[] {
 				context,
 				scheduler

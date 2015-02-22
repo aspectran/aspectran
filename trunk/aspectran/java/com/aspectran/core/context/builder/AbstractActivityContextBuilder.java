@@ -15,8 +15,6 @@
  */
 package com.aspectran.core.context.builder;
 
-import java.io.IOException;
-
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.aspect.AspectAdviceRulePreRegister;
@@ -33,6 +31,7 @@ import com.aspectran.core.context.rule.TransletRuleMap;
 import com.aspectran.core.context.rule.type.AspectTargetType;
 import com.aspectran.core.context.rule.type.BeanProxyModeType;
 import com.aspectran.core.context.rule.type.DefaultSettingType;
+import com.aspectran.core.context.rule.type.ImportFileType;
 import com.aspectran.core.context.translet.TransletRuleRegistry;
 import com.aspectran.core.util.ResourceUtils;
 
@@ -120,22 +119,22 @@ public abstract class AbstractActivityContextBuilder extends ContextBuilderAssis
 		return new TransletRuleRegistry(transletRuleMap);
 	}
 	
-	protected Importable makeImportable(String rootContext) throws IOException {
+	protected Importable makeImportable(String rootContext, ImportFileType importFileType) {
 		if(rootContext == null)
 			throw new IllegalArgumentException("rootContext must not be null");
-		
+
 		Importable importable = null;
 
 		if(rootContext.startsWith(ResourceUtils.CLASSPATH_URL_PREFIX)) {
 			String resource = rootContext.substring(ResourceUtils.CLASSPATH_URL_PREFIX.length());
-			importable = new ImportableResource(getClassLoader(), resource);
+			importable = new ImportableResource(getClassLoader(), resource, importFileType);
 		} else if(rootContext.startsWith(ResourceUtils.FILE_URL_PREFIX)) {
 			String filePath = rootContext.substring(ResourceUtils.FILE_URL_PREFIX.length());
-			importable = new ImportableFile(filePath);
+			importable = new ImportableFile(filePath, importFileType);
 		} else {
-			importable = new ImportableFile(getApplicationBasePath(), rootContext);
+			importable = new ImportableFile(getApplicationBasePath(), rootContext, importFileType);
 		}
-
+		
 		return importable;
 	}
 	

@@ -13,14 +13,14 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.aspectran.core.context.builder.apon;
+package com.aspectran.core.context.builder;
 
 import java.io.Reader;
 
-import com.aspectran.core.context.builder.ContextBuilderAssistant;
-import com.aspectran.core.context.builder.ImportHandler;
-import com.aspectran.core.context.builder.Importable;
+import com.aspectran.core.context.builder.apon.AspectranAponDisassembler;
 import com.aspectran.core.context.builder.apon.params.AspectranParameters;
+import com.aspectran.core.context.builder.xml.AspectranNodeParser;
+import com.aspectran.core.context.rule.type.ImportFileType;
 import com.aspectran.core.util.apon.AponReader;
 import com.aspectran.core.util.apon.Parameters;
 
@@ -29,13 +29,13 @@ import com.aspectran.core.util.apon.Parameters;
  * 
  * <p>Created: 2008. 06. 14 오전 4:39:24</p>
  */
-public class AspectranAponImportHandler implements ImportHandler {
+public class HybridImportHandler implements ImportHandler {
 	
 	private final ContextBuilderAssistant assistant;
 	
 	private final String encoding;
 	
-	public AspectranAponImportHandler(ContextBuilderAssistant assistant, String encoding) {
+	public HybridImportHandler(ContextBuilderAssistant assistant, String encoding) {
 		this.assistant = assistant;
 		this.encoding = encoding;
 	}
@@ -43,13 +43,18 @@ public class AspectranAponImportHandler implements ImportHandler {
 	public void handle(Importable importable) throws Exception {
 		assistant.backupDefaultSettings();
 		
-		Reader reader = importable.getReader(encoding);
-		AponReader aponReader = new AponReader();
-		Parameters aspectranParameters = aponReader.read(reader, new AspectranParameters());
-		reader.close();
-		
-		AspectranAponDisassembler aponDisassembler = new AspectranAponDisassembler(assistant);
-		aponDisassembler.disassembleAspectran(aspectranParameters);
+		if(importable.getImportFileType() == ImportFileType.APON) {
+			Reader reader = importable.getReader(encoding);
+			AponReader aponReader = new AponReader();
+			Parameters aspectranParameters = aponReader.read(reader, new AspectranParameters());
+			reader.close();
+			
+			AspectranAponDisassembler aponDisassembler = new AspectranAponDisassembler(assistant);
+			aponDisassembler.disassembleAspectran(aspectranParameters);
+		} else {
+			AspectranNodeParser aspectranNodeParser = new AspectranNodeParser(assistant);
+			aspectranNodeParser.parse(importable);
+		}
 
 		assistant.restoreDefaultSettings();
 	}
