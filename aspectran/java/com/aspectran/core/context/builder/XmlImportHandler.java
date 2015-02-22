@@ -15,17 +15,28 @@
  */
 package com.aspectran.core.context.builder;
 
-import com.aspectran.core.context.ActivityContext;
+import com.aspectran.core.context.builder.xml.AspectranNodeParser;
 
 /**
- * TransletsContext builder.
+ * Translet Map Parser.
  * 
- * <p>Created: 2008. 06. 14 오후 8:53:29</p>
+ * <p>Created: 2008. 06. 14 오전 4:39:24</p>
  */
-public interface ActivityContextBuilder {
+public class XmlImportHandler implements ImportHandler {
 	
-	public void setHybridLoading(boolean hybridLoading);
+	private final ContextBuilderAssistant assistant;
 	
-	public ActivityContext build(String rootContext) throws ActivityContextBuilderException;
+	public XmlImportHandler(ContextBuilderAssistant assistant) {
+		this.assistant = assistant;
+	}
 	
+	public void handle(Importable importable) throws Exception {
+		assistant.backupDefaultSettings();
+		
+		AspectranNodeParser aspectranNodeParser = new AspectranNodeParser(assistant);
+		aspectranNodeParser.parse(importable);
+		
+		assistant.restoreDefaultSettings();
+	}
+
 }

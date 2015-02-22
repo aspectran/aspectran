@@ -24,6 +24,8 @@ public class ParameterDefine {
 		} else {
 			this.array = array;
 		}
+		
+		//System.out.println("&& name=" + name + ", parameterValueType=" + parameterValueType);
 	}
 
 	public ParameterDefine(String name, Class<? extends AbstractParameters> parametersClass) {
@@ -53,6 +55,7 @@ public class ParameterDefine {
 		ParameterValue parameterValue;
 		
 		if(parameterValueType == ParameterValueType.PARAMETERS && parametersClass != null) {
+			/*
 			Parameters parameters;
 			
 			try {
@@ -60,8 +63,8 @@ public class ParameterDefine {
 			} catch(ReflectiveOperationException e) {
 				throw new InvalidParameterException("Could not instantiate parameters class " + this, e);
 			}
-			
-			parameterValue = new ParameterValue(name, parameters, array);
+			*/
+			parameterValue = new ParameterValue(name, parametersClass, array);
 		} else {
 			parameterValue = new ParameterValue(name, parameterValueType, array);
 		}

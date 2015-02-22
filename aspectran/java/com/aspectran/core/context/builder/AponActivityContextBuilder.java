@@ -20,8 +20,8 @@ import java.io.Reader;
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.builder.apon.AspectranAponDisassembler;
-import com.aspectran.core.context.builder.apon.AspectranAponImportHandler;
 import com.aspectran.core.context.builder.apon.params.AspectranParameters;
+import com.aspectran.core.context.rule.type.ImportFileType;
 import com.aspectran.core.util.apon.AponReader;
 import com.aspectran.core.util.apon.Parameters;
 
@@ -56,10 +56,10 @@ public class AponActivityContextBuilder extends AbstractActivityContextBuilder i
 
 	public ActivityContext build(String rootContext) throws ActivityContextBuilderException {
 		try {
-			ImportHandler importHandler = new AspectranAponImportHandler(this, encoding);
+			ImportHandler importHandler = new AponImportHandler(this, encoding);
 			setImportHandler(importHandler);
 			
-			Importable importable = makeImportable(rootContext);
+			Importable importable = makeAponImportable(rootContext);
 			Reader reader = importable.getReader(encoding);
 
 			AponReader aponReader = new AponReader();
@@ -76,6 +76,10 @@ public class AponActivityContextBuilder extends AbstractActivityContextBuilder i
 		} catch(Exception e) {
 			throw new ActivityContextBuilderException("AponActivityContext build failed. rootContext: " + rootContext, e);
 		}
+	}
+	
+	private Importable makeAponImportable(String rootContext) {
+		return makeImportable(rootContext, ImportFileType.APON);
 	}
 	
 }

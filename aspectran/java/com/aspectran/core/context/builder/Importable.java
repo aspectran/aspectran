@@ -20,6 +20,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 
+import com.aspectran.core.context.rule.type.ImportFileType;
 import com.aspectran.core.context.rule.type.ImportType;
 import com.aspectran.core.util.StringUtils;
 
@@ -31,6 +32,8 @@ import com.aspectran.core.util.StringUtils;
 public abstract class Importable {
 	
 	private ImportType importType;
+	
+	private ImportFileType importFileType;
 	
 	private long lastModified;
 	
@@ -50,6 +53,14 @@ public abstract class Importable {
 		return importType;
 	}
 	
+	public ImportFileType getImportFileType() {
+		return importFileType;
+	}
+
+	public void setImportFileType(ImportFileType importFileType) {
+		this.importFileType = importFileType;
+	}
+
 	abstract public InputStream getInputStream() throws IOException;
 	
 	public Reader getReader() throws IOException {
@@ -63,17 +74,22 @@ public abstract class Importable {
 			return new InputStreamReader(getInputStream());
 	}
 	
-	public static Importable newInstance(ContextBuilderAssistant assistant, String resource, String file, String url) {
+	public static Importable newInstance(ContextBuilderAssistant assistant, String resource, String file, String url, String fileType) {
+		ImportFileType importFileType = ImportFileType.valueOf(fileType);
 		Importable importable;
 		
-		if(StringUtils.hasText(resource))
-			importable = new ImportableResource(assistant.getClassLoader(), resource);
-		else if(StringUtils.hasText(file))
-			importable = new ImportableFile(assistant.getApplicationBasePath(), file);
-		else if(StringUtils.hasText(url))
-			importable = new ImportableUrl(url);
-		else
+		if(StringUtils.hasText(resource)) {
+			importable = new ImportableResource(assistant.getClassLoader(), resource, importFileType);
+		} else if(StringUtils.hasText(file)) {
+			importable = new ImportableFile(assistant.getApplicationBasePath(), file, importFileType);
+		} else if(StringUtils.hasText(url)) {
+			importable = new ImportableUrl(url, importFileType);
+		} else {
 			throw new IllegalArgumentException("The <import> element requires either a resource or a file or a url attribute.");
+		}
+		
+		if(assistant.isHybridLoading() && importable.getImportType() == ImportType.FILE && importable.getImportFileType() == ImportFileType.XML)
+			importable = new ImportableHybrid((ImportableFile)importable);
 
 		return importable;
 	}

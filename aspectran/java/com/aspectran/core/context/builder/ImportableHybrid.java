@@ -15,6 +15,8 @@
  */
 package com.aspectran.core.context.builder;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -26,24 +28,23 @@ import com.aspectran.core.context.rule.type.ImportType;
  * 
  * @author Gulendol
  */
-public class ImportableResource extends Importable {
+public class ImportableHybrid extends Importable {
 	
-	private final static ImportType RESOURCE_IMPORT = ImportType.RESOURCE;
+	private final static ImportType FILE_IMPORT = ImportType.FILE;
 	
-	private ClassLoader classLoader;
+	private ImportableFile importableFile;
+	
+	private String basePath;
+	
+	private String filePath;
 
-	private String resource;
-
-	public ImportableResource(ClassLoader classLoader, String resource, ImportFileType importFileType) {
-		super(RESOURCE_IMPORT);
-
-		if(importFileType == null)
-			importFileType = resource.endsWith(".apon") ? ImportFileType.APON : ImportFileType.XML;
+	public ImportableHybrid(ImportableFile importableFile) {
+		super(FILE_IMPORT);
 		
-		setImportFileType(importFileType);
+		setImportFileType(ImportFileType.APON);
 		
-		this.classLoader = classLoader;
-		setLastModified(System.currentTimeMillis());
+		this.basePath = importableFile.getBasePath();
+		this.filePath = importableFile.getFilePath() + "." + ImportFileType.APON.toString();
 	}
 	
 	/**
@@ -52,12 +53,22 @@ public class ImportableResource extends Importable {
 	 * @return the input stream
 	 */
 	public InputStream getInputStream() throws IOException {
-		InputStream inputStream = classLoader.getResourceAsStream(resource);
+		File file;
 		
-		if(inputStream == null)
-			throw new IOException("Could not find resource to import. resource: " + resource);
+		if(basePath == null)
+			file = new File(filePath);
+		else
+			file = new File(basePath, filePath);
+		
+		if(!file.isFile()) {
+			throw new IOException("Could not find file to import. file: " + file.getAbsolutePath());
+		}
+		
+		setLastModified(file.lastModified());
+		
+		InputStream inputStream = new FileInputStream(file);
 		
 		return inputStream;
 	}
-
+	
 }

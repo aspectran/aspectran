@@ -94,7 +94,7 @@ public class GenericParameters extends AbstractParameters {
 	}
 	
 	public void putValue(String name, Parameters value) {
-		ParameterValue p = new ParameterValue(name, value);
+		ParameterValue p = new ParameterValue(name, ParameterValueType.PARAMETERS);
 		p.putValue(value);
 		parameterValueMap.put(name, p);
 	}

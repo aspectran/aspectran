@@ -9,6 +9,8 @@ public class ParameterValue implements Parameter {
 	
 	private ParameterValueType parameterValueType;
 	
+	private Class<? extends AbstractParameters> parametersClass;
+	
 	private final boolean array;
 	
 	private Object value;
@@ -31,22 +33,24 @@ public class ParameterValue implements Parameter {
 			this.array = array;
 		}
 		
-		if(parameterValueType == ParameterValueType.PARAMETERS) {
-			this.value = new GenericParameters();
-		}
+		//if(parameterValueType == ParameterValueType.PARAMETERS) {
+			//this.value = new GenericParameters();
+			//this.parametersClass = GenericParameters.class;
+		//}
 	}
 
-	public ParameterValue(String name, Parameters parameters) {
-		this(name, parameters, false);
+	public ParameterValue(String name, Class<? extends AbstractParameters> parametersClass) {
+		this(name, parametersClass, false);
 	}
 	
-	public ParameterValue(String name, Parameters parameters, boolean array) {
+	public ParameterValue(String name, Class<? extends AbstractParameters> parametersClass, boolean array) {
 		this.name = name;
 		this.parameterValueType = ParameterValueType.PARAMETERS;
+		this.parametersClass = parametersClass;
 		this.array = array;
-		this.value = parameters;
+		//this.value = parameters;
 		
-		parameters.setParent(this);
+		//parameters.setParent(this);
 	}
 	
 	protected Parameters getHolder() {
@@ -346,35 +350,45 @@ public class ParameterValue implements Parameter {
 		return (List<Parameters>)getValueList();
 	}
 
-	@SuppressWarnings("unchecked")
+	//@SuppressWarnings("unchecked")
 	protected Parameters newParameters() {
-		checkParameterValueType(ParameterValueType.PARAMETERS);
+		if(parameterValueType == ParameterValueType.VARIABLE) {
+			parameterValueType = ParameterValueType.PARAMETERS;
+			parametersClass = GenericParameters.class;
+		} else {
+			checkParameterValueType(ParameterValueType.PARAMETERS);
+			if(parametersClass == null)
+				parametersClass = GenericParameters.class;
+		}
 
-		if(list == null)
-			return (Parameters)value;
+		//if(list == null)
+		//	return (Parameters)value;
 		
-		Class<? extends AbstractParameters> type = (Class<? extends AbstractParameters>)value.getClass();
+		//Class<? extends AbstractParameters> type = (Class<? extends AbstractParameters>)value.getClass();
 		
 		try {
-			Parameters p = (Parameters)type.newInstance();
+			Parameters p = (Parameters)parametersClass.newInstance();
 			p.setParent(this);
 			return p;
 		} catch(Exception e) {
 			throw new InvalidParameterException(e);
 		}
 	}
-
+/*
 	protected Parameters touchValueAsParameters() {
 		if(value == null && parameterValueType == ParameterValueType.VARIABLE) {
-			value = new GenericParameters();
 			parameterValueType = ParameterValueType.PARAMETERS;
+			parametersClass = GenericParameters.class;
+			value = new GenericParameters();
 		} else {
 			checkParameterValueType(ParameterValueType.PARAMETERS);
 		}
 		
+		
+		
 		return (Parameters)value;
 	}
-
+*/
 	private void checkParameterValueType(ParameterValueType parameterValueType) {
 		if(this.parameterValueType != ParameterValueType.VARIABLE && this.parameterValueType != parameterValueType)
 			throw new IncompatibleParameterValueTypeException(this, parameterValueType);
@@ -389,6 +403,7 @@ public class ParameterValue implements Parameter {
 
 		sb.append("{name=").append(name);
 		sb.append(", parameterValueType=").append(parameterValueType);
+		sb.append(", parametersClass=").append(parametersClass);
 		sb.append(", array=").append(array);
 		if(array)
 			sb.append(", arraySize=").append(getArraySize());

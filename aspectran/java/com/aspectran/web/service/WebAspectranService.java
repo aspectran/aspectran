@@ -20,10 +20,9 @@ import com.aspectran.core.context.translet.TransletNotFoundException;
 import com.aspectran.core.service.AspectranService;
 import com.aspectran.core.service.AspectranServiceControllerListener;
 import com.aspectran.core.service.CoreAspectranService;
-import com.aspectran.core.util.apon.Parameter;
 import com.aspectran.core.util.apon.Parameters;
-import com.aspectran.web.activity.WebActivityDefaultHandler;
 import com.aspectran.web.activity.WebActivity;
+import com.aspectran.web.activity.WebActivityDefaultHandler;
 import com.aspectran.web.adapter.WebApplicationAdapter;
 import com.aspectran.web.startup.listener.AspectranServiceListener;
 import com.aspectran.web.startup.servlet.WebActivityServlet;
@@ -67,12 +66,11 @@ public class WebAspectranService extends CoreAspectranService {
 			aspectranConfig = new AspectranConfig();
 		}
 
-		Parameters contextParams = aspectranConfig.getParameters(AspectranConfig.context);
-		Parameter rootContextParam = contextParams.getParameter(AspectranContextConfig.root);
-		String rootContext = rootContextParam.getValueAsString();
+		Parameters contextParameters = aspectranConfig.getParameters(AspectranConfig.context);
+		String rootContext = contextParameters.getString(AspectranContextConfig.root);
 
 		if(rootContext == null || rootContext.length() == 0) {
-			rootContextParam.putValue(DEFAULT_ROOT_CONTEXT);
+			contextParameters.setValue(AspectranContextConfig.root, DEFAULT_ROOT_CONTEXT);
 		}
 
 		initialize(aspectranConfig);

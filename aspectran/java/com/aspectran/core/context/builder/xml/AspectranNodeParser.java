@@ -200,7 +200,6 @@ public class AspectranNodeParser {
 				String type = attributes.get("type");
 				
 				AspectRule aspectRule = assistant.peekObject();
-				
 				PointcutRule pointcutRule = PointcutRule.newInstance(aspectRule, type, text);
 				aspectRule.setPointcutRule(pointcutRule);
 			}
@@ -539,8 +538,9 @@ public class AspectranNodeParser {
 				String resource = attributes.get("resource");
 				String file = attributes.get("file");
 				String url = attributes.get("url");
+				String fileType = attributes.get("fileType");
 				
-				Importable importable = Importable.newInstance(assistant, resource, file, url);
+				Importable importable = Importable.newInstance(assistant, resource, file, url, fileType);
 				
 				ImportHandler importHandler = assistant.getImportHandler();
 				
