@@ -399,7 +399,8 @@ public class ParameterValue implements Parameter {
 
 		sb.append("{name=").append(name);
 		sb.append(", parameterValueType=").append(parameterValueType);
-		sb.append(", parametersClass=").append(parametersClass);
+		if(parameterValueType == ParameterValueType.PARAMETERS)
+			sb.append(", parametersClass=").append(parametersClass);
 		sb.append(", array=").append(array);
 		if(array)
 			sb.append(", arraySize=").append(getArraySize());

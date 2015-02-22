@@ -6,7 +6,6 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.util.Map;
 
-import com.aspectran.core.util.BooleanUtils;
 import com.aspectran.core.util.StringUtils;
 
 public class AponReader {
@@ -242,7 +241,6 @@ public class AponReader {
 		ParameterValueType parameterValueType = null;
 		
 		while((buffer = reader.readLine()) != null) {
-			
 			if(StringUtils.hasText(buffer)) {
 				buffer = buffer.trim();
 				
@@ -335,10 +333,32 @@ public class AponReader {
 							try {
 								parameterValue.putValue(new Integer(value));
 							} catch(NumberFormatException ex) {
-								throw new InvalidParameterException("Cannot parse value of '" + name + "' to an integer. \"" + buffer + "\"");
+								throw new IncompatibleParameterValueTypeException(parameterValue, ParameterValueType.INTEGER);
+								//throw new InvalidParameterException("Cannot parse value of '" + name + "' to an Integer. \"" + buffer + "\"");
+							}
+						} else if(parameterValueType == ParameterValueType.LONG) {
+							try {
+								parameterValue.putValue(new Long(value));
+							} catch(NumberFormatException ex) {
+								throw new IncompatibleParameterValueTypeException(parameterValue, ParameterValueType.LONG);
+								//throw new InvalidParameterException("Cannot parse value of '" + name + "' to an Long. \"" + buffer + "\"");
+							}
+						} else if(parameterValueType == ParameterValueType.FLOAT) {
+							try {
+								parameterValue.putValue(new Float(value));
+							} catch(NumberFormatException ex) {
+								throw new IncompatibleParameterValueTypeException(parameterValue, ParameterValueType.FLOAT);
+								//throw new InvalidParameterException("Cannot parse value of '" + name + "' to an Float. \"" + buffer + "\"");
+							}
+						} else if(parameterValueType == ParameterValueType.DOUBLE) {
+							try {
+								parameterValue.putValue(new Double(value));
+							} catch(NumberFormatException ex) {
+								throw new IncompatibleParameterValueTypeException(parameterValue, ParameterValueType.DOUBLE);
+								//throw new InvalidParameterException("Cannot parse value of '" + name + "' to an Double. \"" + buffer + "\"");
 							}
 						} else if(parameterValueType == ParameterValueType.BOOLEAN) {
-							parameterValue.putValue(BooleanUtils.toNullableBooleanObject(value));
+							parameterValue.putValue(Boolean.valueOf(value));
 						} else {
 							parameterValue.putValue(value);
 						}
