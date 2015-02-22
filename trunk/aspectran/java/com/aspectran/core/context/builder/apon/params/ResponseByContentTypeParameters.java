@@ -10,24 +10,24 @@ public class ResponseByContentTypeParameters extends AbstractParameters implemen
 	public static final ParameterDefine exceptionType;
 	public static final ParameterDefine transforms;
 	public static final ParameterDefine dispatchs;
-	public static final ParameterDefine redirects;
 	public static final ParameterDefine forwards;
+	public static final ParameterDefine redirects;
 	
 	private static final ParameterDefine[] parameterDefines;
 
 	static {
 		exceptionType = new ParameterDefine("exceptionType", ParameterValueType.STRING);
-		dispatchs = new ParameterDefine("dispatch", DispatchParameters.class, true);
 		transforms = new ParameterDefine("transform", TransformParameters.class, true);
-		redirects = new ParameterDefine("redirect", RedirectParameters.class, true);
+		dispatchs = new ParameterDefine("dispatch", DispatchParameters.class, true);
 		forwards = new ParameterDefine("forward", ForwardParameters.class, true);
+		redirects = new ParameterDefine("redirect", RedirectParameters.class, true);
 
 		parameterDefines = new ParameterDefine[] {
 				exceptionType,
-				dispatchs,
 				transforms,
-				redirects,
-				forwards
+				dispatchs,
+				forwards,
+				redirects
 		};
 	}
 	
