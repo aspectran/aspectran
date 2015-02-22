@@ -20,6 +20,7 @@
 					/WEB-INF/classes
 					/WEB-INF/aspectran/config
 				]
+				hybridLoading: true
 				autoReloading: {
 					reloadMethod: hard
 					observationInterval: 5
