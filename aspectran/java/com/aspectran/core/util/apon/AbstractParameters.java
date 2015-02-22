@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.aspectran.core.util.BooleanUtils;
+
 public abstract class AbstractParameters implements Parameters {
 
 	protected Map<String, ParameterValue> parameterValueMap;
@@ -344,7 +346,7 @@ public abstract class AbstractParameters implements Parameters {
 		if(p == null)
 			return defaultValue;
 		
-		return p.getValueAsBoolean();
+		return BooleanUtils.toBoolean(p.getValueAsBoolean(), defaultValue);
 	}
 	
 	public Boolean[] getBooleanArray(String name) {

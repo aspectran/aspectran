@@ -304,10 +304,6 @@ public class ParameterValue implements Parameter {
 
 	public Boolean getValueAsBoolean() {
 		checkParameterValueType(ParameterValueType.BOOLEAN);
-		
-		if(value == null)
-			return false;
-		
 		return (Boolean)value;
 	}
 
