@@ -6,6 +6,7 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.util.Map;
 
+import com.aspectran.core.util.BooleanUtils;
 import com.aspectran.core.util.StringUtils;
 
 public class AponReader {
@@ -307,17 +308,12 @@ public class AponReader {
 					if(parameterValueType == ParameterValueType.PARAMETERS) {
 						//System.out.println("03************** parameterValue: " + parameterValue);
 						if(parameterValue == null) {
-							if(openBraket == SQUARE_BRAKET_OPEN) {
-								parameterValue = new ParameterValue(name, parameterValueType, true);
-								parameterValueMap.put(name, parameterValue);
-							} else {
-								parameterValue = new ParameterValue(name, parameterValueType);
-								parameterValueMap.put(name, parameterValue);
-							}
+							parameterValue = new ParameterValue(name, parameterValueType, (openBraket == SQUARE_BRAKET_OPEN));
+							parameterValueMap.put(name, parameterValue);
 						}
 						//System.out.println("04************** parameterValue: " + parameterValue);
 
-						AbstractParameters parameters2 = (AbstractParameters)parameterValue.newParameters();
+						Parameters parameters2 = parameterValue.newParameters();
 						//System.out.println("05************** parameters2: " + parameters2);
 						//System.out.println("new************** parameterValue.newParameters(): " + parameterValue);
 						valuelize(reader, parameters2.getParameterValueMap(), CURLY_BRAKET_OPEN, null, null);
@@ -342,7 +338,7 @@ public class AponReader {
 								throw new InvalidParameterException("Cannot parse value of '" + name + "' to an integer. \"" + buffer + "\"");
 							}
 						} else if(parameterValueType == ParameterValueType.BOOLEAN) {
-							parameterValue.putValue(Boolean.valueOf(value));
+							parameterValue.putValue(BooleanUtils.toNullableBooleanObject(value));
 						} else {
 							parameterValue.putValue(value);
 						}
