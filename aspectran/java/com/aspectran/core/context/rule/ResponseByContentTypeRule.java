@@ -27,12 +27,12 @@ import com.aspectran.core.context.rule.ability.ResponseRuleApplicable;
  * <p>Created: 2008. 04. 01 오후 11:19:28</p>
  */
 public class ResponseByContentTypeRule implements ResponseRuleApplicable {
+	
+	private String exceptionType;
 
 	private ResponseMap responseMap = new ResponseMap();
 	
 	private Response defaultResponse;
-
-	private String exceptionType;
 	
 	public String getExceptionType() {
 		return exceptionType;

@@ -25,12 +25,15 @@ import com.aspectran.core.activity.process.ContentList;
 import com.aspectran.core.activity.process.action.Executable;
 import com.aspectran.core.activity.response.ForwardResponse;
 import com.aspectran.core.activity.response.RedirectResponse;
+import com.aspectran.core.activity.response.Response;
+import com.aspectran.core.activity.response.ResponseMap;
 import com.aspectran.core.activity.response.dispatch.DispatchResponse;
 import com.aspectran.core.activity.response.transform.TransformResponse;
 import com.aspectran.core.activity.variable.token.Token;
 import com.aspectran.core.context.builder.ContextBuilderAssistant;
 import com.aspectran.core.context.builder.DefaultSettings;
 import com.aspectran.core.context.builder.apon.params.ActionParameters;
+import com.aspectran.core.context.builder.apon.params.AdviceActionParameters;
 import com.aspectran.core.context.builder.apon.params.AdviceParameters;
 import com.aspectran.core.context.builder.apon.params.AspectParameters;
 import com.aspectran.core.context.builder.apon.params.AspectranParameters;
@@ -40,8 +43,10 @@ import com.aspectran.core.context.builder.apon.params.ContentsParameters;
 import com.aspectran.core.context.builder.apon.params.DefaultSettingsParameters;
 import com.aspectran.core.context.builder.apon.params.DispatchParameters;
 import com.aspectran.core.context.builder.apon.params.ExceptionParameters;
+import com.aspectran.core.context.builder.apon.params.ExceptionRaizedParameters;
 import com.aspectran.core.context.builder.apon.params.ForwardParameters;
 import com.aspectran.core.context.builder.apon.params.ItemParameters;
+import com.aspectran.core.context.builder.apon.params.JobParameters;
 import com.aspectran.core.context.builder.apon.params.JoinpointParameters;
 import com.aspectran.core.context.builder.apon.params.PointcutParameters;
 import com.aspectran.core.context.builder.apon.params.RedirectParameters;
@@ -68,6 +73,7 @@ import com.aspectran.core.context.rule.PointcutRule;
 import com.aspectran.core.context.rule.RedirectResponseRule;
 import com.aspectran.core.context.rule.RequestRule;
 import com.aspectran.core.context.rule.ResponseByContentTypeRule;
+import com.aspectran.core.context.rule.ResponseByContentTypeRuleMap;
 import com.aspectran.core.context.rule.ResponseRule;
 import com.aspectran.core.context.rule.SettingsAdviceRule;
 import com.aspectran.core.context.rule.TemplateRule;
@@ -124,7 +130,7 @@ public class AspectranAponAssembler {
 
 		AspectRuleMap aspectRuleMap = assistant.getAspectRuleMap();
 		for(AspectRule aspectRule : aspectRuleMap) {
-			Parameters p = new AspectParameters();
+			Parameters p = assembleAspectParameters(aspectRule);
 			aspectranParameters.putValue(AspectranParameters.aspects, p);
 		}
 		
@@ -139,38 +145,17 @@ public class AspectranAponAssembler {
 			Parameters p = new AspectParameters();
 			aspectranParameters.putValue(AspectranParameters.translets, p);
 		}
-		
-		if(!aspectRuleMap.isEmpty()) {
-			List<Parameters> aspectParametersList = aspectranParameters.getParametersList(AspectranParameters.aspects);
-			for(Parameters aspectParameters : aspectParametersList) {
-				//assembleAspectRule(aspectParameters);
-			}
-			
-		}
 
 		return aspectranParameters;
 	}
 	
-	public Parameters assembleAspectRule(AspectRule aspectRule) {
-//		id = new ParameterDefine("id", ParameterValueType.STRING);
-//		useFor = new ParameterDefine("useFor", ParameterValueType.STRING);
-//		jointpoint = new ParameterDefine("joinpoint", JoinpointParameters.class);
-//		setting = new ParameterDefine("setting", GenericParameters.class);
-//		advice = new ParameterDefine("advice", AdviceParameters.class);
-		
+	public Parameters assembleAspectParameters(AspectRule aspectRule) {
 		Parameters aspectParameters = new AspectParameters();
 		aspectParameters.setValue(AspectParameters.id, aspectRule.getId());
 		aspectParameters.setValue(AspectParameters.useFor, aspectRule.getAspectTargetType());
 		
-//		scope = new ParameterDefine("scope", ParameterValueType.STRING);
-//		pointcut = new ParameterDefine("pointcut", PointcutParameters.class);
-		
 		Parameters joinpointParameters = aspectParameters.getParameters(AspectParameters.jointpoint);
 		joinpointParameters.setValue(JoinpointParameters.scope, aspectRule.getJoinpointScope());
-		
-//		targets = new ParameterDefine("target", TargetParameters.class, true);
-//		simpleTrigger = new ParameterDefine("simpleTrigger", SimpleTriggerParameters.class);
-//		cronTrigger = new ParameterDefine("cronTrigger", CronTriggerParameters.class);
 		
 		Parameters pointcutParameters = joinpointParameters.getParameters(JoinpointParameters.pointcut);
 
@@ -204,73 +189,99 @@ public class AspectranAponAssembler {
 		if(aspectAdviceRuleList != null) {
 			for(AspectAdviceRule aspectAdviceRule : aspectAdviceRuleList) {
 				if(aspectAdviceRule.getAspectAdviceType() == AspectAdviceType.BEFORE) {
+					Parameters adviceActionParameters = adviceParameters.getParameters(AdviceParameters.beforeAdvice);
 					if(aspectAdviceRule.getActionType() == ActionType.ECHO) {
 						EchoActionRule echoActionRule = aspectAdviceRule.getExecutableAction().getActionRule();
-						adviceParameters.setValue(AdviceParameters.beforeAction, assembleActionParameters(echoActionRule));
+						adviceActionParameters.setValue(AdviceActionParameters.action, assembleActionParameters(echoActionRule));
 					} else if(aspectAdviceRule.getActionType() == ActionType.BEAN) {
 						BeanActionRule beanActionRule = aspectAdviceRule.getExecutableAction().getActionRule();
-						adviceParameters.setValue(AdviceParameters.beforeAction, assembleActionParameters(beanActionRule));
+						adviceActionParameters.setValue(AdviceActionParameters.action, assembleActionParameters(beanActionRule));
 					}
 				} else if(aspectAdviceRule.getAspectAdviceType() == AspectAdviceType.AFTER) {
+					Parameters adviceActionParameters = adviceParameters.getParameters(AdviceParameters.afterAdvice);
 					if(aspectAdviceRule.getActionType() == ActionType.ECHO) {
 						EchoActionRule echoActionRule = aspectAdviceRule.getExecutableAction().getActionRule();
-						adviceParameters.setValue(AdviceParameters.afterAction, assembleActionParameters(echoActionRule));
+						adviceActionParameters.setValue(AdviceActionParameters.action, assembleActionParameters(echoActionRule));
 					} else if(aspectAdviceRule.getActionType() == ActionType.BEAN) {
 						BeanActionRule beanActionRule = aspectAdviceRule.getExecutableAction().getActionRule();
-						adviceParameters.setValue(AdviceParameters.afterAction, assembleActionParameters(beanActionRule));
+						adviceActionParameters.setValue(AdviceActionParameters.action, assembleActionParameters(beanActionRule));
 					}
 				} else if(aspectAdviceRule.getAspectAdviceType() == AspectAdviceType.AROUND) {
+					Parameters adviceActionParameters = adviceParameters.getParameters(AdviceParameters.aroundAdvice);
 					if(aspectAdviceRule.getActionType() == ActionType.ECHO) {
 						EchoActionRule echoActionRule = aspectAdviceRule.getExecutableAction().getActionRule();
-						adviceParameters.setValue(AdviceParameters.aroundAction, assembleActionParameters(echoActionRule));
+						adviceActionParameters.setValue(AdviceActionParameters.action, assembleActionParameters(echoActionRule));
 					} else if(aspectAdviceRule.getActionType() == ActionType.BEAN) {
 						BeanActionRule beanActionRule = aspectAdviceRule.getExecutableAction().getActionRule();
-						adviceParameters.setValue(AdviceParameters.aroundAction, assembleActionParameters(beanActionRule));
+						adviceActionParameters.setValue(AdviceActionParameters.action, assembleActionParameters(beanActionRule));
 					}
 				} else if(aspectAdviceRule.getAspectAdviceType() == AspectAdviceType.FINALLY) {
+					Parameters adviceActionParameters = adviceParameters.getParameters(AdviceParameters.finallyAdvice);
 					if(aspectAdviceRule.getActionType() == ActionType.ECHO) {
 						EchoActionRule echoActionRule = aspectAdviceRule.getExecutableAction().getActionRule();
-						adviceParameters.setValue(AdviceParameters.finallyAction, assembleActionParameters(echoActionRule));
+						adviceActionParameters.setValue(AdviceActionParameters.action, assembleActionParameters(echoActionRule));
 					} else if(aspectAdviceRule.getActionType() == ActionType.BEAN) {
 						BeanActionRule beanActionRule = aspectAdviceRule.getExecutableAction().getActionRule();
-						adviceParameters.setValue(AdviceParameters.finallyAction, assembleActionParameters(beanActionRule));
+						adviceActionParameters.setValue(AdviceActionParameters.action, assembleActionParameters(beanActionRule));
 					}
 				} else if(aspectAdviceRule.getAspectAdviceType() == AspectAdviceType.EXCPETION_RAIZED) {
-					//adviceParameters.setValue(AdviceParameters.exceptionRaized, assembleActionParameters(echoActionRule));
+					Parameters exceptionRaizedParameters = adviceParameters.getParameters(AdviceParameters.exceptionRaized);
+					if(aspectAdviceRule.getActionType() == ActionType.ECHO) {
+						EchoActionRule echoActionRule = aspectAdviceRule.getExecutableAction().getActionRule();
+						exceptionRaizedParameters.setValue(ExceptionRaizedParameters.action, assembleActionParameters(echoActionRule));
+					} else if(aspectAdviceRule.getActionType() == ActionType.BEAN) {
+						BeanActionRule beanActionRule = aspectAdviceRule.getExecutableAction().getActionRule();
+						exceptionRaizedParameters.setValue(ExceptionRaizedParameters.action, assembleActionParameters(beanActionRule));
+					}
+					ResponseByContentTypeRuleMap responseByContentTypeRuleMap = aspectAdviceRule.getResponseByContentTypeRuleMap();
+					for(ResponseByContentTypeRule rbctr : responseByContentTypeRuleMap) {
+						exceptionRaizedParameters.putValue(ExceptionRaizedParameters.responseByContentTypes, assembleResponseByContentTypeParameters(rbctr));
+					}
 				}
 			}
 		}
 		
 		List<AspectJobAdviceRule> aspectJobAdviceRuleList = aspectRule.getAspectJobAdviceRuleList();
-		
-
-
-	
-		
-		assistant.addAspectRule(aspectRule);
+		if(aspectJobAdviceRuleList != null) {
+			for(AspectJobAdviceRule aspectJobAdviceRule : aspectJobAdviceRuleList) {
+				Parameters jobParameters = new JobParameters();
+				jobParameters.setValue(JobParameters.translet, aspectJobAdviceRule.getJobTransletName());
+				jobParameters.setValue(JobParameters.disabled, aspectJobAdviceRule.getDisabled());
+				adviceParameters.putValue(AdviceParameters.jobs, jobParameters);
+			}
+		}
 		
 		return aspectParameters;
 	}
 
+	public Parameters assembleResponseByContentTypeParameters(ResponseByContentTypeRule responseByContentTypeRule) {
+		ResponseByContentTypeParameters rbctp = new ResponseByContentTypeParameters();
+		
+		rbctp.setValue(ResponseByContentTypeParameters.exceptionType, responseByContentTypeRule.getExceptionType());
+		
+		ResponseMap responseMap = responseByContentTypeRule.getResponseMap();
+		for(Response response : responseMap) {
+			if(response.getResponseType() == ResponseType.TRANSFORM) {
+				TransformResponse transformResponse = (TransformResponse)response;
+				rbctp.putValue(ResponseByContentTypeParameters.transforms, assembleTransformParameters(transformResponse.getTransformRule()));
+			} else if(response.getResponseType() == ResponseType.DISPATCH) {
+				DispatchResponse dispatchResponse = (DispatchResponse)response;
+				rbctp.putValue(ResponseByContentTypeParameters.dispatchs, assembleDispatchParameters(dispatchResponse.getDispatchResponseRule()));
+			} else if(response.getResponseType() == ResponseType.FORWARD) {
+				ForwardResponse forwardResponse = (ForwardResponse)response;
+				rbctp.putValue(ResponseByContentTypeParameters.forwards, assembleForwardParameters(forwardResponse.getForwardResponseRule()));
+			} else if(response.getResponseType() == ResponseType.REDIRECT) {
+				RedirectResponse redirectResponse = (RedirectResponse)response;
+				rbctp.putValue(ResponseByContentTypeParameters.redirects, assembleRedirectParameters(redirectResponse.getRedirectResponseRule()));
+			}
+		}
+		
+		return rbctp;
+	}
 	
 	public Parameters assembleResponseParameters(ResponseRule responseRule) {
 		ResponseParameters responseParameters = new ResponseParameters();
 		
-//		private String name;
-//		
-//		private String characterEncoding;
-//		
-//		private AspectAdviceRuleRegistry aspectAdviceRuleRegistry;
-//		
-//		private Responsible response;
-		
-//		name = new ParameterDefine("name", ParameterValueType.STRING);
-//		characterEncoding = new ParameterDefine("characterEncoding", ParameterValueType.STRING);
-//		dispatchs = new ParameterDefine("dispatch", DispatchParameters.class);
-//		transforms = new ParameterDefine("transform", TransformParameters.class);
-//		redirects = new ParameterDefine("redirect", RedirectParameters.class);
-//		forwards = new ParameterDefine("forward", ForwardParameters.class);
-
 		responseParameters.setValue(ResponseParameters.name, responseRule.getName());
 		responseParameters.setValue(ResponseParameters.characterEncoding, responseRule.getCharacterEncoding());
 		
@@ -282,12 +293,11 @@ public class AspectranAponAssembler {
 			responseParameters.setValue(ResponseParameters.dispatch, assembleDispatchParameters(dispatchResponse.getDispatchResponseRule()));
 		} else if(responseRule.getResponseType() == ResponseType.FORWARD) {
 			ForwardResponse forwardResponse = responseRule.getRespondent();
-			forwardResponse.getForwardResponseRule();
+			responseParameters.setValue(ResponseParameters.forward, assembleForwardParameters(forwardResponse.getForwardResponseRule()));
 		} else if(responseRule.getResponseType() == ResponseType.REDIRECT) {
 			RedirectResponse redirectResponse = responseRule.getRespondent();
-			redirectResponse.getRedirectResponseRule();
+			responseParameters.setValue(ResponseParameters.redirect, assembleRedirectParameters(redirectResponse.getRedirectResponseRule()));
 		}
-		
 		
 		return responseParameters;
 	}
@@ -314,10 +324,10 @@ public class AspectranAponAssembler {
 					transformParameters.putValue(TransformParameters.actions, assembleActionParameters(echoActionRule));
 				} else if(action.getActionType() == ActionType.BEAN) {
 					BeanActionRule beanActionRule = action.getActionRule();
-					transformParameters.setValue(TransformParameters.actions, assembleActionParameters(beanActionRule));
+					transformParameters.putValue(TransformParameters.actions, assembleActionParameters(beanActionRule));
 				} else if(action.getActionType() == ActionType.INCLUDE) {
 					IncludeActionRule includeActionRule = action.getActionRule();
-					transformParameters.setValue(TransformParameters.actions, assembleActionParameters(includeActionRule));
+					transformParameters.putValue(TransformParameters.actions, assembleActionParameters(includeActionRule));
 				}
 			}
 		}
@@ -347,10 +357,10 @@ public class AspectranAponAssembler {
 					dispatchParameters.putValue(DispatchParameters.actions, assembleActionParameters(echoActionRule));
 				} else if(action.getActionType() == ActionType.BEAN) {
 					BeanActionRule beanActionRule = action.getActionRule();
-					dispatchParameters.setValue(DispatchParameters.actions, assembleActionParameters(beanActionRule));
+					dispatchParameters.putValue(DispatchParameters.actions, assembleActionParameters(beanActionRule));
 				} else if(action.getActionType() == ActionType.INCLUDE) {
 					IncludeActionRule includeActionRule = action.getActionRule();
-					dispatchParameters.setValue(DispatchParameters.actions, assembleActionParameters(includeActionRule));
+					dispatchParameters.putValue(DispatchParameters.actions, assembleActionParameters(includeActionRule));
 				}
 			}
 		}
@@ -358,6 +368,81 @@ public class AspectranAponAssembler {
 		dispatchParameters.setValue(DispatchParameters.defaultResponse, dispatchResponseRule.getDefaultResponse());
 		
 		return dispatchParameters;
+	}
+	
+	public Parameters assembleForwardParameters(ForwardResponseRule forwardResponseRule) {
+		ForwardParameters forwardParameters = new ForwardParameters();
+		
+		if(forwardResponseRule.getContentType() != null)
+			forwardParameters.setValue(ForwardParameters.contentType, forwardResponseRule.getContentType().toString());
+		
+		forwardParameters.setValue(ForwardParameters.translet, forwardResponseRule.getTransletName());
+		
+		ItemRuleMap attributeItemRuleMap = forwardResponseRule.getAttributeItemRuleMap();
+		if(attributeItemRuleMap != null) {
+			for(ItemRule itemRule : attributeItemRuleMap) {
+				forwardParameters.putValue(ForwardParameters.attributes, assembleItemParameters(itemRule));
+			}
+		}
+		
+		ActionList actionList = forwardResponseRule.getActionList();
+		if(actionList != null) {
+			for(Executable action : actionList) {
+				if(action.getActionType() == ActionType.ECHO) {
+					EchoActionRule echoActionRule = action.getActionRule();
+					forwardParameters.putValue(ForwardParameters.actions, assembleActionParameters(echoActionRule));
+				} else if(action.getActionType() == ActionType.BEAN) {
+					BeanActionRule beanActionRule = action.getActionRule();
+					forwardParameters.putValue(ForwardParameters.actions, assembleActionParameters(beanActionRule));
+				} else if(action.getActionType() == ActionType.INCLUDE) {
+					IncludeActionRule includeActionRule = action.getActionRule();
+					forwardParameters.putValue(ForwardParameters.actions, assembleActionParameters(includeActionRule));
+				}
+			}
+		}
+		
+		forwardParameters.setValue(ForwardParameters.defaultResponse, forwardResponseRule.getDefaultResponse());
+		
+		return forwardParameters;
+	}
+	
+	public Parameters assembleRedirectParameters(RedirectResponseRule redirectResponseRule) {
+		RedirectParameters redirectParameters = new RedirectParameters();
+
+		if(redirectResponseRule.getContentType() != null)
+			redirectParameters.setValue(RedirectParameters.contentType, redirectResponseRule.getContentType().toString());
+		
+		redirectParameters.setValue(RedirectParameters.translet, redirectResponseRule.getTransletName());
+		redirectParameters.setValue(RedirectParameters.url, redirectResponseRule.getUrl());
+		
+		ItemRuleMap parameterItemRuleMap = redirectResponseRule.getParameterItemRuleMap();
+		if(parameterItemRuleMap != null) {
+			for(ItemRule itemRule : parameterItemRuleMap) {
+				redirectParameters.putValue(RedirectParameters.parameters, assembleItemParameters(itemRule));
+			}
+		}
+
+		redirectParameters.setValue(RedirectParameters.excludeNullParameter, redirectResponseRule.getExcludeNullParameter());
+
+		ActionList actionList = redirectResponseRule.getActionList();
+		if(actionList != null) {
+			for(Executable action : actionList) {
+				if(action.getActionType() == ActionType.ECHO) {
+					EchoActionRule echoActionRule = action.getActionRule();
+					redirectParameters.putValue(RedirectParameters.actions, assembleActionParameters(echoActionRule));
+				} else if(action.getActionType() == ActionType.BEAN) {
+					BeanActionRule beanActionRule = action.getActionRule();
+					redirectParameters.putValue(RedirectParameters.actions, assembleActionParameters(beanActionRule));
+				} else if(action.getActionType() == ActionType.INCLUDE) {
+					IncludeActionRule includeActionRule = action.getActionRule();
+					redirectParameters.putValue(RedirectParameters.actions, assembleActionParameters(includeActionRule));
+				}
+			}
+		}
+		
+		redirectParameters.setValue(RedirectParameters.defaultResponse, redirectResponseRule.getDefaultResponse());
+		
+		return redirectParameters;
 	}
 	
 	public Parameters assembleTemplateParameters(TemplateRule templateRule) {

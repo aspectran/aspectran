@@ -26,6 +26,7 @@ import com.aspectran.core.context.builder.ContextBuilderAssistant;
 import com.aspectran.core.context.builder.ImportHandler;
 import com.aspectran.core.context.builder.Importable;
 import com.aspectran.core.context.builder.apon.params.ActionParameters;
+import com.aspectran.core.context.builder.apon.params.AdviceActionParameters;
 import com.aspectran.core.context.builder.apon.params.AdviceParameters;
 import com.aspectran.core.context.builder.apon.params.AspectParameters;
 import com.aspectran.core.context.builder.apon.params.AspectranParameters;
@@ -200,31 +201,35 @@ public class AspectranAponDisassembler {
 			assistant.putBeanReference(adviceBeanId, aspectRule);
 		}
 		
-		Parameters beforeActionParameters = adviceParameters.getParameters(AdviceParameters.beforeAction);
-		if(beforeActionParameters != null) {
+		Parameters beforeAdviceParameters = adviceParameters.getParameters(AdviceParameters.beforeAdvice);
+		if(beforeAdviceParameters != null) {
+			Parameters actionParameters = beforeAdviceParameters.getParameters(AdviceActionParameters.action);
 			AspectAdviceRule aspectAdviceRule = AspectAdviceRule.newInstance(aspectRule, AspectAdviceType.BEFORE);
-			disassembleActionRule(beforeActionParameters, aspectAdviceRule);
+			disassembleActionRule(actionParameters, aspectAdviceRule);
 			aspectRule.addAspectAdviceRule(aspectAdviceRule);
 		}
 		
-		Parameters afterActionParameters = adviceParameters.getParameters(AdviceParameters.afterAction);
-		if(afterActionParameters != null) {
+		Parameters afterAdviceParameters = adviceParameters.getParameters(AdviceParameters.afterAdvice);
+		if(afterAdviceParameters != null) {
+			Parameters actionParameters = afterAdviceParameters.getParameters(AdviceActionParameters.action);
 			AspectAdviceRule aspectAdviceRule = AspectAdviceRule.newInstance(aspectRule, AspectAdviceType.AFTER);
-			disassembleActionRule(afterActionParameters, aspectAdviceRule);
+			disassembleActionRule(actionParameters, aspectAdviceRule);
 			aspectRule.addAspectAdviceRule(aspectAdviceRule);
 		}
 	
-		Parameters aroundActionParameters = adviceParameters.getParameters(AdviceParameters.aroundAction);
-		if(aroundActionParameters != null) {
+		Parameters aroundAdviceParameters = adviceParameters.getParameters(AdviceParameters.aroundAdvice);
+		if(aroundAdviceParameters != null) {
+			Parameters actionParameters = aroundAdviceParameters.getParameters(AdviceActionParameters.action);
 			AspectAdviceRule aspectAdviceRule = AspectAdviceRule.newInstance(aspectRule, AspectAdviceType.AROUND);
-			disassembleActionRule(aroundActionParameters, aspectAdviceRule);
+			disassembleActionRule(actionParameters, aspectAdviceRule);
 			aspectRule.addAspectAdviceRule(aspectAdviceRule);
 		}
 	
-		Parameters finallyActionParameters = adviceParameters.getParameters(AdviceParameters.finallyAction);
-		if(finallyActionParameters != null) {
+		Parameters finallyAdviceParameters = adviceParameters.getParameters(AdviceParameters.finallyAdvice);
+		if(finallyAdviceParameters != null) {
+			Parameters actionParameters = finallyAdviceParameters.getParameters(AdviceActionParameters.action);
 			AspectAdviceRule aspectAdviceRule = AspectAdviceRule.newInstance(aspectRule, AspectAdviceType.AROUND);
-			disassembleActionRule(finallyActionParameters, aspectAdviceRule);
+			disassembleActionRule(actionParameters, aspectAdviceRule);
 			aspectRule.addAspectAdviceRule(aspectAdviceRule);
 		}
 	
