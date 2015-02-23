@@ -20,7 +20,7 @@ public class AponReader {
 	
 	protected static final char ROUND_BRACKET_CLOSE = ')';
 	
-	protected static final char TEXT_LINE_START = ';';
+	protected static final char TEXT_LINE_START = '|';
 		
 	protected static final char NAME_VALUE_SEPARATOR = ':';
 	
@@ -247,11 +247,12 @@ public class AponReader {
 					if(SQUARE_BRACKET_CLOSE == trim.charAt(0))
 						return;
 				
-					if(TEXT_LINE_START == trim.charAt(0)) {
-						value = trim.substring(1);
-					} else {
-						value = trim;
-					}
+					value = trim;
+//					if(TEXT_LINE_START == trim.charAt(0)) {
+//						value = trim.substring(1);
+//					} else {
+//						value = trim;
+//					}
 				}
 			} else {
 				if(tlen == 0)
