@@ -164,8 +164,13 @@ aspectran: {
 					transform: {
 						contentType: text/json
 						template: [
-							line1
-							line2
+							![
+line2
+							]
+							![
+line1
+	line2
+							]
 						]
 					}
 				}
@@ -176,12 +181,19 @@ aspectran: {
 							file: /WEB-INF/jsp/login.jsp
 						}
 					}
-					transform: !{
+					transform: {
 						contentType: text/json
-						template: ![
+						template: [
+							![
 line1
 	line2
 	line2-1
+							]
+							![
+line1
+	line2
+	line2-1
+							]
 						]
 					}
 				}

@@ -301,22 +301,35 @@ public class AponReader {
 						parameterValueType = ParameterValueType.PARAMETERS;
 						noTrim = false;
 						//System.out.println("02************** parameterValueType: " + parameterValueType);
-					} else if(parameterValue == null || (parameterValue != null && parameterValue.isArray())) {
+					} else if(parameterValue == null) {
 						if(NOTRIM_SQUARE_BRAKET_OPEN.equals(trim)) {
 							valuelize(reader, parameterValueMap, SQUARE_BRAKET_OPEN, true, name, parameterValue);
 							noTrim = false;
 							continue;
 						}
-						
 						if(SQUARE_BRAKET_OPEN.equals(trim)) {
-							if(parameterValue != null && parameterValue.getParameterValueType() == ParameterValueType.TEXT)
-								noTrim = true;
-							else
-								noTrim = false;
-							
-							valuelize(reader, parameterValueMap, SQUARE_BRAKET_OPEN, noTrim, name, parameterValue);
+							valuelize(reader, parameterValueMap, SQUARE_BRAKET_OPEN, false, name, parameterValue);
 							noTrim = false;
 							continue;
+						}
+					} else {
+						if(parameterValue.getParameterValueType() == ParameterValueType.TEXT) {
+							if(NOTRIM_SQUARE_BRAKET_OPEN.equals(trim)) {
+								valuelize(reader, parameterValueMap, SQUARE_BRAKET_OPEN, true, name, parameterValue);
+								noTrim = false;
+								continue;
+							}
+							if(SQUARE_BRAKET_OPEN.equals(trim)) {
+								valuelize(reader, parameterValueMap, SQUARE_BRAKET_OPEN, false, name, parameterValue);
+								noTrim = false;
+								continue;
+							}
+						} else {
+							if(SQUARE_BRAKET_OPEN.equals(trim)) {
+								valuelize(reader, parameterValueMap, SQUARE_BRAKET_OPEN, false, name, parameterValue);
+								noTrim = false;
+								continue;
+							}
 						}
 					}
 					
