@@ -166,14 +166,14 @@ public abstract class AbstractParameters implements Parameters {
 		return getStringList(parameterDefine.getName());
 	}
 	
-	public String getText(String name) {
-		Parameter p = getParameter(name);
-		return p.getValueAsText();
-	}
-	
-	public String getText(ParameterDefine parameterDefine) {
-		return getText(parameterDefine.getName());
-	}
+//	public String getText(String name) {
+//		Parameter p = getParameter(name);
+//		return p.getValueAsText();
+//	}
+//	
+//	public String getText(ParameterDefine parameterDefine) {
+//		return getText(parameterDefine.getName());
+//	}
 	
 	public Integer getInt(String name) {
 		Parameter p = getParameter(name);
