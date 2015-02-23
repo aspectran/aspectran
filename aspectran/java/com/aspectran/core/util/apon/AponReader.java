@@ -6,27 +6,23 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.util.Map;
 
-import com.aspectran.core.util.StringUtils;
-
 public class AponReader {
 
-	protected static final String CURLY_BRAKET_OPEN = "{";
+	protected static final char CURLY_BRACKET_OPEN = '{';
 
-	protected static final String CURLY_BRAKET_CLOSE = "}";
+	protected static final char CURLY_BRACKET_CLOSE = '}';
 	
-	protected static final String SQUARE_BRAKET_OPEN = "[";
+	protected static final char SQUARE_BRACKET_OPEN = '[';
 	
-	protected static final String NOTRIM_SQUARE_BRAKET_OPEN = "![";
-	
-	protected static final String SQUARE_BRAKET_CLOSE = "]";
+	protected static final char SQUARE_BRACKET_CLOSE = ']';
 
-	//private static final String DELIMITERS = "\n\r\f";
+	protected static final char ROUND_BRACKET_OPEN = '(';
 	
-	//private Map<String, ParameterDefine> parameterDefineMap;
+	protected static final char ROUND_BRACKET_CLOSE = ')';
 	
-	//private Parameters holder;
-	
-	//private boolean preparsed;
+	protected static final char TEXT_LINE_START = ';';
+		
+	protected static final char NAME_VALUE_SEPARATOR = ':';
 	
 	private boolean addable;
 	
@@ -234,182 +230,201 @@ public class AponReader {
 	}
 	*/
 	private void valuelize(BufferedReader reader, Map<String, ParameterValue> parameterValueMap) throws IOException {
-		valuelize(reader, parameterValueMap, null, false, null, null);
+		valuelize(reader, parameterValueMap, ' ', null, null);
 	}
 	
-	private void valuelize(BufferedReader reader, Map<String, ParameterValue> parameterValueMap, String openBraket, boolean noTrim, String name, ParameterValue parameterValue) throws IOException {
-		String line = null;
-		String trim = null;
-		String value = null;
+	private void valuelize(BufferedReader reader, Map<String, ParameterValue> parameterValueMap, char openBracket, String name, ParameterValue parameterValue) throws IOException {
 		ParameterValueType parameterValueType = null;
+		String line = null;
+		String value = null;
 		
 		while((line = reader.readLine()) != null) {
-			if(openBraket == SQUARE_BRAKET_OPEN && parameterValue != null )
-			
-			if(StringUtils.hasText(line)) {
-				trim = line.trim();
-				
-				if(openBraket != null) {
-					if((openBraket == CURLY_BRAKET_OPEN && CURLY_BRAKET_CLOSE.equals(trim)) ||
-							(openBraket == SQUARE_BRAKET_OPEN && SQUARE_BRAKET_CLOSE.equals(trim))) {
-						//System.out.println("*****return********* openBraket: " + openBraket + ", token: " + buffer);
+			String trim = line.trim();
+			int tlen = trim.length();
+
+			if(openBracket == SQUARE_BRACKET_OPEN) {
+				if(tlen > 0) {
+					if(SQUARE_BRACKET_CLOSE == trim.charAt(0))
 						return;
+				
+					if(TEXT_LINE_START == trim.charAt(0)) {
+						value = trim.substring(1);
+					} else {
+						value = trim;
 					}
 				}
+			} else {
+				if(tlen == 0)
+					continue;
 				
-				if(openBraket == SQUARE_BRAKET_OPEN) {
-					value = noTrim ? line : trim;
-				} else {
-					int index = trim.indexOf(":");
-					
-					if(index == -1)
-						throw new InvalidParameterException("Cannot parse into name-value pair. \"" + trim + "\"");
-					
-					name = trim.substring(0, index).trim();
-					value = trim.substring(index + 1).trim();
-					trim = value;
-					
-					parameterValue = parameterValueMap.get(name);
+				if(openBracket == CURLY_BRACKET_OPEN && CURLY_BRACKET_CLOSE == trim.charAt(0))
+					return;
 
-					//System.out.println("************** title: " + title);
-					//System.out.println("0************** name: " + name + ", value: " + value + ", buffer: " + buffer);
-					//System.out.println("0************** parameterValue: " + parameterValue);
-					
-					if(parameterValue == null) {
-						if(addable) {
-							parameterValueType = ParameterValueType.valueOfHint(name);
-							if(parameterValueType != null) {
-								name = ParameterValueType.stripValueTypeHint(name);
-								parameterValue = parameterValueMap.get(name);
-							}
-						} else {
-							throw new InvalidParameterException("invalid parameter \"" + trim + "\"");
-						}
-					}
-				}
+				int index = trim.indexOf(NAME_VALUE_SEPARATOR);
+				
+				if(index == -1)
+					throw new InvalidParameterException("Cannot parse into name-value pair. \"" + trim + "\"");
+				
+				name = trim.substring(0, index).trim();
+				value = trim.substring(index + 1).trim();
+				
+				parameterValue = parameterValueMap.get(name);
 
-				if(parameterValue != null && parameterValue.getParameterValueType() != ParameterValueType.VARIABLE) {
-					parameterValueType = parameterValue.getParameterValueType();
-				} else {
-					parameterValueType = null;
-				}
+				//System.out.println("************** title: " + title);
+				//System.out.println("0************** name: " + name + ", value: " + value + ", buffer: " + buffer);
+				//System.out.println("0************** parameterValue: " + parameterValue);
 				
-				//System.out.println("01************** parameterValueType: " + parameterValueType);
-				
-				//if(StringUtils.hasText(value)) {
-					if(parameterValueType == null && CURLY_BRAKET_OPEN.equals(trim)) {
-						parameterValueType = ParameterValueType.PARAMETERS;
-						noTrim = false;
-						//System.out.println("02************** parameterValueType: " + parameterValueType);
-					} else if(parameterValue == null) {
-						if(NOTRIM_SQUARE_BRAKET_OPEN.equals(trim)) {
-							valuelize(reader, parameterValueMap, SQUARE_BRAKET_OPEN, true, name, parameterValue);
-							noTrim = false;
-							continue;
-						}
-						if(SQUARE_BRAKET_OPEN.equals(trim)) {
-							valuelize(reader, parameterValueMap, SQUARE_BRAKET_OPEN, false, name, parameterValue);
-							noTrim = false;
-							continue;
+				if(parameterValue == null) {
+					if(addable) {
+						parameterValueType = ParameterValueType.valueOfHint(name);
+						if(parameterValueType != null) {
+							name = ParameterValueType.stripValueTypeHint(name);
+							parameterValue = parameterValueMap.get(name);
 						}
 					} else {
-						if(parameterValue.getParameterValueType() == ParameterValueType.TEXT) {
-							if(NOTRIM_SQUARE_BRAKET_OPEN.equals(trim)) {
-								valuelize(reader, parameterValueMap, SQUARE_BRAKET_OPEN, true, name, parameterValue);
-								noTrim = false;
-								continue;
-							}
-							if(SQUARE_BRAKET_OPEN.equals(trim)) {
-								valuelize(reader, parameterValueMap, SQUARE_BRAKET_OPEN, false, name, parameterValue);
-								noTrim = false;
-								continue;
-							}
-						} else {
-							if(SQUARE_BRAKET_OPEN.equals(trim)) {
-								valuelize(reader, parameterValueMap, SQUARE_BRAKET_OPEN, false, name, parameterValue);
-								noTrim = false;
-								continue;
-							}
-						}
+						throw new InvalidParameterException("invalid parameter \"" + trim + "\"");
 					}
-					
-					if(parameterValueType == ParameterValueType.PARAMETERS) {
-						//System.out.println("03************** parameterValue: " + parameterValue);
-						if(parameterValue == null) {
-							parameterValue = new ParameterValue(name, parameterValueType, (openBraket == SQUARE_BRAKET_OPEN));
-							parameterValueMap.put(name, parameterValue);
-						}
-						//System.out.println("04************** parameterValue: " + parameterValue);
+				}
+			}
 
-						Parameters parameters2 = parameterValue.newParameters();
-						//System.out.println("05************** parameters2: " + parameters2);
-						//System.out.println("new************** parameterValue.newParameters(): " + parameterValue);
-						valuelize(reader, parameters2.getParameterValueMap(), CURLY_BRAKET_OPEN, false, null, null);
-						//parameterValue.putValue(parameters2);
+			if(parameterValue != null && parameterValue.getParameterValueType() != ParameterValueType.VARIABLE) {
+				parameterValueType = parameterValue.getParameterValueType();
+				
+				if(!parameterValue.isArray()) {
+					if(parameterValueType == ParameterValueType.PARAMETERS && (value.length() != 1 || CURLY_BRACKET_OPEN != value.charAt(0)))
+						throw new IncompatibleParameterValueTypeException(parameterValue, parameterValueType);
+					if(parameterValueType == ParameterValueType.TEXT && (value.length() != 1 || ROUND_BRACKET_OPEN != value.charAt(0)))
+						throw new IncompatibleParameterValueTypeException(parameterValue, parameterValueType);
+				}
+			} else {
+				parameterValueType = null;
+			}
+				
+			//System.out.println("01************** parameterValueType: " + parameterValueType);
+			
+			//if(StringUtils.hasText(value)) {
+			if(parameterValueType == null) {
+				if(value.length() == 1) {
+					if(CURLY_BRACKET_OPEN == value.charAt(0)) {
+						parameterValueType = ParameterValueType.PARAMETERS;
+					} else if(ROUND_BRACKET_OPEN == value.charAt(0)) {
+						parameterValueType = ParameterValueType.TEXT;
+					}
+				}
+			} else if(parameterValue == null || (parameterValue != null && parameterValue.isArray())) {
+				if(value.length() == 1 && SQUARE_BRACKET_OPEN == value.charAt(0)) {
+					//System.out.println("1**************[ name: " + name);
+					//System.out.println("1**************[ parameterValue: " + parameterValue);
+					valuelize(reader, parameterValueMap, SQUARE_BRACKET_OPEN, name, parameterValue);
+					continue;
+				}
+			}
+			
+			if(parameterValueType == ParameterValueType.PARAMETERS) {
+				//System.out.println("03************** parameterValue: " + parameterValue);
+				if(parameterValue == null) {
+					parameterValue = new ParameterValue(name, parameterValueType, (openBracket == SQUARE_BRACKET_OPEN));
+					parameterValueMap.put(name, parameterValue);
+				}
+				//System.out.println("04************** parameterValue: " + parameterValue);
+
+				Parameters parameters2 = parameterValue.newParameters();
+				//System.out.println("05************** parameters2: " + parameters2);
+				//System.out.println("new************** parameterValue.newParameters(): " + parameterValue);
+				valuelize(reader, parameters2.getParameterValueMap(), CURLY_BRACKET_OPEN, null, null);
+				//parameterValue.putValue(parameters2);
 
 //							AbstractParameters parameters2 = (AbstractParameters)parameterValue.touchValueAsParameters();
 //							System.out.println("************** parameterValue.touchValueAsParameters(): " + parameterValue);
 //							valuelize(reader, parameters2.getParameterValueMap(), CURLY_BRAKET_OPEN, null, null);
-					} else {
-						if(parameterValueType == null) {
-							if(noTrim)
-								parameterValueType = ParameterValueType.TEXT;
-							else
-								parameterValueType = ParameterValueType.STRING;
-						}
+			} else if(parameterValueType == ParameterValueType.TEXT) {
+				if(parameterValue == null) {
+					parameterValue = new ParameterValue(name, parameterValueType, (openBracket == SQUARE_BRACKET_OPEN));
+					parameterValueMap.put(name, parameterValue);
+				}
 
-						if(parameterValue == null) {
-							parameterValue = new ParameterValue(name, parameterValueType, (openBraket == SQUARE_BRAKET_OPEN));
-							parameterValueMap.put(name, parameterValue);
-						}
+				value = valuelizeText(reader);
+				if(value == null)
+					throw new IncompatibleParameterValueTypeException(parameterValue, parameterValueType);
 
-						if(parameterValueType == ParameterValueType.INTEGER) {
-							try {
-								parameterValue.putValue(new Integer(trim));
-							} catch(NumberFormatException ex) {
-								throw new IncompatibleParameterValueTypeException(parameterValue, ParameterValueType.INTEGER);
-								//throw new InvalidParameterException("Cannot parse value of '" + name + "' to an Integer. \"" + buffer + "\"");
-							}
-						} else if(parameterValueType == ParameterValueType.LONG) {
-							try {
-								parameterValue.putValue(new Long(trim));
-							} catch(NumberFormatException ex) {
-								throw new IncompatibleParameterValueTypeException(parameterValue, ParameterValueType.LONG);
-								//throw new InvalidParameterException("Cannot parse value of '" + name + "' to an Long. \"" + buffer + "\"");
-							}
-						} else if(parameterValueType == ParameterValueType.FLOAT) {
-							try {
-								parameterValue.putValue(new Float(trim));
-							} catch(NumberFormatException ex) {
-								throw new IncompatibleParameterValueTypeException(parameterValue, ParameterValueType.FLOAT);
-								//throw new InvalidParameterException("Cannot parse value of '" + name + "' to an Float. \"" + buffer + "\"");
-							}
-						} else if(parameterValueType == ParameterValueType.DOUBLE) {
-							try {
-								parameterValue.putValue(new Double(trim));
-							} catch(NumberFormatException ex) {
-								throw new IncompatibleParameterValueTypeException(parameterValue, ParameterValueType.DOUBLE);
-								//throw new InvalidParameterException("Cannot parse value of '" + name + "' to an Double. \"" + buffer + "\"");
-							}
-						} else if(parameterValueType == ParameterValueType.BOOLEAN) {
-							parameterValue.putValue(Boolean.valueOf(trim));
-						} else {
-							parameterValue.putValue(value);
-						}
-						
-						//System.out.println("val************ parameterValue.putValue(): name=" + name + ", value=" + value);
+				parameterValue.setValue(value);
+			} else {
+				if(parameterValueType == null) {
+					parameterValueType = ParameterValueType.STRING;
+				}
+
+				if(parameterValue == null) {
+					parameterValue = new ParameterValue(name, parameterValueType, (openBracket == SQUARE_BRACKET_OPEN));
+					parameterValueMap.put(name, parameterValue);
+				}
+
+				if(parameterValueType == ParameterValueType.INTEGER) {
+					try {
+						parameterValue.putValue(new Integer(value));
+					} catch(NumberFormatException ex) {
+						throw new IncompatibleParameterValueTypeException(parameterValue, ParameterValueType.INTEGER);
+						//throw new InvalidParameterException("Cannot parse value of '" + name + "' to an Integer. \"" + buffer + "\"");
 					}
-				//}
+				} else if(parameterValueType == ParameterValueType.LONG) {
+					try {
+						parameterValue.putValue(new Long(value));
+					} catch(NumberFormatException ex) {
+						throw new IncompatibleParameterValueTypeException(parameterValue, ParameterValueType.LONG);
+						//throw new InvalidParameterException("Cannot parse value of '" + name + "' to an Long. \"" + buffer + "\"");
+					}
+				} else if(parameterValueType == ParameterValueType.FLOAT) {
+					try {
+						parameterValue.putValue(new Float(value));
+					} catch(NumberFormatException ex) {
+						throw new IncompatibleParameterValueTypeException(parameterValue, ParameterValueType.FLOAT);
+						//throw new InvalidParameterException("Cannot parse value of '" + name + "' to an Float. \"" + buffer + "\"");
+					}
+				} else if(parameterValueType == ParameterValueType.DOUBLE) {
+					try {
+						parameterValue.putValue(new Double(value));
+					} catch(NumberFormatException ex) {
+						throw new IncompatibleParameterValueTypeException(parameterValue, ParameterValueType.DOUBLE);
+						//throw new InvalidParameterException("Cannot parse value of '" + name + "' to an Double. \"" + buffer + "\"");
+					}
+				} else if(parameterValueType == ParameterValueType.BOOLEAN) {
+					parameterValue.putValue(Boolean.valueOf(value));
+				} else {
+					parameterValue.putValue(value);
+				}
+				
+				//System.out.println("val************ parameterValue.putValue(): name=" + name + ", value=" + value);
 			}
+				//}
 		}
 		
-		if(openBraket != null) {
-			if(openBraket == CURLY_BRAKET_OPEN) {
-				throw new InvalidParameterException("Cannot parse value of '" + name + "' to an array of strings.");
-			} else if(openBraket == SQUARE_BRAKET_OPEN) {
-				throw new InvalidParameterException("Cannot parse value of '" + name + "' to an array of strings.");
-			}
+		if(openBracket == CURLY_BRACKET_OPEN) {
+			throw new InvalidParameterException("Cannot parse value of '" + name + "' to an array of strings.");
+		} else if(openBracket == SQUARE_BRACKET_OPEN) {
+			throw new InvalidParameterException("Cannot parse value of '" + name + "' to an array of strings.");
 		}
 	}
 	
+	private String valuelizeText(BufferedReader reader) throws IOException {
+		StringBuilder sb = new StringBuilder();
+		String line = null;
+		
+		while((line = reader.readLine()) != null) {
+			String trim = line.trim();
+			int tlen = trim.length();
+
+			if(tlen > 0) {
+				if(ROUND_BRACKET_CLOSE == trim.charAt(0)) {
+					return sb.toString();
+				}
+				
+				if(TEXT_LINE_START == trim.charAt(0)) {
+					int index = line.indexOf(TEXT_LINE_START);
+					String value = line.substring(index + 1);
+					sb.append(value);
+				}
+			}
+		}
+		
+		return null;
+	}
 }

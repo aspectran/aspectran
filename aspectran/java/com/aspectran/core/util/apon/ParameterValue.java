@@ -26,12 +26,13 @@ public class ParameterValue implements Parameter {
 	public ParameterValue(String name, ParameterValueType parameterValueType, boolean array) {
 		this.name = name;
 		this.parameterValueType = parameterValueType;
-		
-		if(parameterValueType == ParameterValueType.TEXT) {
-			this.array = true;
-		} else {
-			this.array = array;
-		}
+		this.array = array;
+//		
+//		if(parameterValueType == ParameterValueType.TEXT) {
+//			this.array = true;
+//		} else {
+//			this.array = array;
+//		}
 		
 		//if(parameterValueType == ParameterValueType.PARAMETERS) {
 			//this.value = new GenericParameters();
@@ -122,8 +123,8 @@ public class ParameterValue implements Parameter {
 		if(list == null) {
 			list = new ArrayList<Object>();
 			
-			if(this.value == null)
-				this.value = value;
+//			if(this.value == null)
+//				this.value = value;
 		}
 		
 		list.add(value);
@@ -185,22 +186,22 @@ public class ParameterValue implements Parameter {
 		return list2;
 	}
 	
-	public String getValueAsText() {
-		if(array) {
-			if(list == null)
-				return null;
-			
-			StringBuilder sb = new StringBuilder();
-			
-			for(int i = 0; i < list.size(); i++) {
-				sb.append(list.get(i).toString()).append("\n");
-			}
-			
-			return sb.toString();
-		} else {
-			return getValueAsString();
-		}
-	}
+//	public String getValueAsText() {
+//		if(array) {
+//			if(list == null)
+//				return null;
+//			
+//			StringBuilder sb = new StringBuilder();
+//			
+//			for(int i = 0; i < list.size(); i++) {
+//				sb.append(list.get(i).toString()).append("\n");
+//			}
+//			
+//			return sb.toString();
+//		} else {
+//			return getValueAsString();
+//		}
+//	}
 
 	public Integer getValueAsInt() {
 		checkParameterValueType(ParameterValueType.INTEGER);

@@ -30,7 +30,7 @@ public interface Parameter {
 
 	public List<String> getValueAsStringList();
 	
-	public String getValueAsText();
+	//public String getValueAsText();
 	
 	public Integer getValueAsInt();
 

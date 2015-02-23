@@ -53,9 +53,9 @@ public interface Parameters {
 
 	public List<String> getStringList(ParameterDefine parameterDefine);
 	
-	public String getText(String name);	
-	
-	public String getText(ParameterDefine parameterDefine);	
+//	public String getText(String name);	
+//	
+//	public String getText(ParameterDefine parameterDefine);	
 	
 	public Integer getInt(String name);
 	

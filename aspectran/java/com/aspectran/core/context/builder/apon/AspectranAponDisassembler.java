@@ -549,7 +549,7 @@ public class AspectranAponDisassembler {
 			String file = templateParameters.getString(TemplateParameters.file);
 			String resource = templateParameters.getString(TemplateParameters.resource);
 			String url = templateParameters.getString(TemplateParameters.url);
-			String content = templateParameters.getText(TemplateParameters.content);
+			String content = templateParameters.getString(TemplateParameters.content);
 			String encoding = templateParameters.getString(TemplateParameters.encoding);
 			Boolean noCache = templateParameters.getBoolean(TemplateParameters.noCache);
 			TemplateRule templateRule = TemplateRule.newInstance(file, resource, url, content, encoding, noCache);
