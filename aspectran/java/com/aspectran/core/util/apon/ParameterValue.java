@@ -365,6 +365,7 @@ public class ParameterValue implements Parameter {
 		try {
 			Parameters p = (Parameters)parametersClass.newInstance();
 			p.setParent(this);
+			putValue(p);
 			return p;
 		} catch(Exception e) {
 			throw new InvalidParameterException(e);

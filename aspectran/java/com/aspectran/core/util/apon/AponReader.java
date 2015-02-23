@@ -16,6 +16,8 @@ public class AponReader {
 	
 	protected static final String SQUARE_BRAKET_OPEN = "[";
 	
+	protected static final String NOTRIM_SQUARE_BRAKET_OPEN = "![";
+	
 	protected static final String SQUARE_BRAKET_CLOSE = "]";
 
 	//private static final String DELIMITERS = "\n\r\f";
@@ -232,36 +234,40 @@ public class AponReader {
 	}
 	*/
 	private void valuelize(BufferedReader reader, Map<String, ParameterValue> parameterValueMap) throws IOException {
-		valuelize(reader, parameterValueMap, null, null, null);
+		valuelize(reader, parameterValueMap, null, false, null, null);
 	}
 	
-	private void valuelize(BufferedReader reader, Map<String, ParameterValue> parameterValueMap, String openBraket, String name, ParameterValue parameterValue) throws IOException {
-		String buffer = null;
+	private void valuelize(BufferedReader reader, Map<String, ParameterValue> parameterValueMap, String openBraket, boolean noTrim, String name, ParameterValue parameterValue) throws IOException {
+		String line = null;
+		String trim = null;
 		String value = null;
 		ParameterValueType parameterValueType = null;
 		
-		while((buffer = reader.readLine()) != null) {
-			if(StringUtils.hasText(buffer)) {
-				buffer = buffer.trim();
+		while((line = reader.readLine()) != null) {
+			if(openBraket == SQUARE_BRAKET_OPEN && parameterValue != null )
+			
+			if(StringUtils.hasText(line)) {
+				trim = line.trim();
 				
 				if(openBraket != null) {
-					if(openBraket == CURLY_BRAKET_OPEN && CURLY_BRAKET_CLOSE.equals(buffer) ||
-							openBraket == SQUARE_BRAKET_OPEN && SQUARE_BRAKET_CLOSE.equals(buffer)) {
+					if((openBraket == CURLY_BRAKET_OPEN && CURLY_BRAKET_CLOSE.equals(trim)) ||
+							(openBraket == SQUARE_BRAKET_OPEN && SQUARE_BRAKET_CLOSE.equals(trim))) {
 						//System.out.println("*****return********* openBraket: " + openBraket + ", token: " + buffer);
 						return;
 					}
 				}
 				
 				if(openBraket == SQUARE_BRAKET_OPEN) {
-					value = buffer;
+					value = noTrim ? line : trim;
 				} else {
-					int index = buffer.indexOf(":");
+					int index = trim.indexOf(":");
 					
 					if(index == -1)
-						throw new InvalidParameterException("Cannot parse into name-value pair. \"" + buffer + "\"");
+						throw new InvalidParameterException("Cannot parse into name-value pair. \"" + trim + "\"");
 					
-					name = buffer.substring(0, index).trim();
-					value = buffer.substring(index + 1).trim();
+					name = trim.substring(0, index).trim();
+					value = trim.substring(index + 1).trim();
+					trim = value;
 					
 					parameterValue = parameterValueMap.get(name);
 
@@ -277,7 +283,7 @@ public class AponReader {
 								parameterValue = parameterValueMap.get(name);
 							}
 						} else {
-							throw new InvalidParameterException("invalid parameter \"" + buffer + "\"");
+							throw new InvalidParameterException("invalid parameter \"" + trim + "\"");
 						}
 					}
 				}
@@ -290,15 +296,26 @@ public class AponReader {
 				
 				//System.out.println("01************** parameterValueType: " + parameterValueType);
 				
-				if(StringUtils.hasText(value)) {
-					if(parameterValueType == null && CURLY_BRAKET_OPEN.equals(value)) {
+				//if(StringUtils.hasText(value)) {
+					if(parameterValueType == null && CURLY_BRAKET_OPEN.equals(trim)) {
 						parameterValueType = ParameterValueType.PARAMETERS;
+						noTrim = false;
 						//System.out.println("02************** parameterValueType: " + parameterValueType);
-					} else if(SQUARE_BRAKET_OPEN.equals(value)) {
-						if(parameterValue == null || (parameterValue != null && parameterValue.isArray())) {
-							//System.out.println("1**************[ name: " + name);
-							//System.out.println("1**************[ parameterValue: " + parameterValue);
-							valuelize(reader, parameterValueMap, SQUARE_BRAKET_OPEN, name, parameterValue);
+					} else if(parameterValue == null || (parameterValue != null && parameterValue.isArray())) {
+						if(NOTRIM_SQUARE_BRAKET_OPEN.equals(trim)) {
+							valuelize(reader, parameterValueMap, SQUARE_BRAKET_OPEN, true, name, parameterValue);
+							noTrim = false;
+							continue;
+						}
+						
+						if(SQUARE_BRAKET_OPEN.equals(trim)) {
+							if(parameterValue != null && parameterValue.getParameterValueType() == ParameterValueType.TEXT)
+								noTrim = true;
+							else
+								noTrim = false;
+							
+							valuelize(reader, parameterValueMap, SQUARE_BRAKET_OPEN, noTrim, name, parameterValue);
+							noTrim = false;
 							continue;
 						}
 					}
@@ -314,15 +331,19 @@ public class AponReader {
 						Parameters parameters2 = parameterValue.newParameters();
 						//System.out.println("05************** parameters2: " + parameters2);
 						//System.out.println("new************** parameterValue.newParameters(): " + parameterValue);
-						valuelize(reader, parameters2.getParameterValueMap(), CURLY_BRAKET_OPEN, null, null);
-						parameterValue.putValue(parameters2);
+						valuelize(reader, parameters2.getParameterValueMap(), CURLY_BRAKET_OPEN, false, null, null);
+						//parameterValue.putValue(parameters2);
 
 //							AbstractParameters parameters2 = (AbstractParameters)parameterValue.touchValueAsParameters();
 //							System.out.println("************** parameterValue.touchValueAsParameters(): " + parameterValue);
 //							valuelize(reader, parameters2.getParameterValueMap(), CURLY_BRAKET_OPEN, null, null);
 					} else {
-						if(parameterValueType == null)
-							parameterValueType = ParameterValueType.STRING;
+						if(parameterValueType == null) {
+							if(noTrim)
+								parameterValueType = ParameterValueType.TEXT;
+							else
+								parameterValueType = ParameterValueType.STRING;
+						}
 
 						if(parameterValue == null) {
 							parameterValue = new ParameterValue(name, parameterValueType, (openBraket == SQUARE_BRAKET_OPEN));
@@ -331,41 +352,41 @@ public class AponReader {
 
 						if(parameterValueType == ParameterValueType.INTEGER) {
 							try {
-								parameterValue.putValue(new Integer(value));
+								parameterValue.putValue(new Integer(trim));
 							} catch(NumberFormatException ex) {
 								throw new IncompatibleParameterValueTypeException(parameterValue, ParameterValueType.INTEGER);
 								//throw new InvalidParameterException("Cannot parse value of '" + name + "' to an Integer. \"" + buffer + "\"");
 							}
 						} else if(parameterValueType == ParameterValueType.LONG) {
 							try {
-								parameterValue.putValue(new Long(value));
+								parameterValue.putValue(new Long(trim));
 							} catch(NumberFormatException ex) {
 								throw new IncompatibleParameterValueTypeException(parameterValue, ParameterValueType.LONG);
 								//throw new InvalidParameterException("Cannot parse value of '" + name + "' to an Long. \"" + buffer + "\"");
 							}
 						} else if(parameterValueType == ParameterValueType.FLOAT) {
 							try {
-								parameterValue.putValue(new Float(value));
+								parameterValue.putValue(new Float(trim));
 							} catch(NumberFormatException ex) {
 								throw new IncompatibleParameterValueTypeException(parameterValue, ParameterValueType.FLOAT);
 								//throw new InvalidParameterException("Cannot parse value of '" + name + "' to an Float. \"" + buffer + "\"");
 							}
 						} else if(parameterValueType == ParameterValueType.DOUBLE) {
 							try {
-								parameterValue.putValue(new Double(value));
+								parameterValue.putValue(new Double(trim));
 							} catch(NumberFormatException ex) {
 								throw new IncompatibleParameterValueTypeException(parameterValue, ParameterValueType.DOUBLE);
 								//throw new InvalidParameterException("Cannot parse value of '" + name + "' to an Double. \"" + buffer + "\"");
 							}
 						} else if(parameterValueType == ParameterValueType.BOOLEAN) {
-							parameterValue.putValue(Boolean.valueOf(value));
+							parameterValue.putValue(Boolean.valueOf(trim));
 						} else {
 							parameterValue.putValue(value);
 						}
 						
 						//System.out.println("val************ parameterValue.putValue(): name=" + name + ", value=" + value);
 					}
-				}
+				//}
 			}
 		}
 		
