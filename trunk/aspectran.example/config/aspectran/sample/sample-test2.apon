@@ -1,0 +1,32 @@
+aspectran: {
+	aaa: {
+		aaa: {
+			setting: [
+				{
+					transletNamePattern: /example/*
+				}
+			]
+		}
+		setting: [
+			{
+				transletNamePattern: /example/*
+			}
+		]
+	}
+}
+aspectran: {
+	aaa: {
+		aaa: {
+			setting: [
+				{
+					transletNamePattern: /example/*
+				}
+			]
+		}
+		setting: [
+			{
+				transletNamePattern: /example/*
+			}
+		]
+	}
+}

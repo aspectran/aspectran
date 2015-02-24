@@ -204,7 +204,7 @@ public class ParameterValue implements Parameter {
 //	}
 
 	public Integer getValueAsInt() {
-		checkParameterValueType(ParameterValueType.INTEGER);
+		checkParameterValueType(ParameterValueType.INT);
 
 		if(value == null)
 			return null;
@@ -223,7 +223,7 @@ public class ParameterValue implements Parameter {
 
 	@SuppressWarnings("unchecked")
 	public List<Integer> getValueAsIntList() {
-		checkParameterValueType(ParameterValueType.INTEGER);
+		checkParameterValueType(ParameterValueType.INT);
 
 		return (List<Integer>)getValueList();
 	}

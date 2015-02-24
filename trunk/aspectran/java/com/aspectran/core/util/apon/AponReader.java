@@ -250,33 +250,33 @@ public class AponReader {
 			tlen = trim.length();
 
 			if(openBracket == SQUARE_BRACKET_OPEN) {
-				if(tlen > 0) {
-					if(SQUARE_BRACKET_CLOSE == trim.charAt(0))
-						return lineNumber;
+				value = trim;
+				vchar = (value != null && value.length() == 1) ? value.charAt(0) : ' ';
 				
-					value = trim;
-//					if(TEXT_LINE_START == trim.charAt(0)) {
-//						value = trim.substring(1);
-//					} else {
-//						value = trim;
-//					}
-				} else {
-					value = null;
-				}
+				System.out.println(lineNumber + ": " + line);
+
+				if(SQUARE_BRACKET_CLOSE == vchar)
+					return lineNumber;
 			} else {
 				if(tlen == 0)
 					continue;
 				
-				if(openBracket == CURLY_BRACKET_OPEN && CURLY_BRACKET_CLOSE == trim.charAt(0))
-					return lineNumber;
+				System.out.println(lineNumber + ": " + line  + "+" + openBracket + "+");
+
+				if(tlen == 1) {
+					if(openBracket == CURLY_BRACKET_OPEN && CURLY_BRACKET_CLOSE == trim.charAt(0)) {
+						System.out.println(lineNumber + ": ***********close curly bracket. openBracket: " + openBracket);
+						return lineNumber;
+					}
+				}
 
 				int index = trim.indexOf(NAME_VALUE_SEPARATOR);
-				
 				if(index == -1)
 					throw new InvalidParameterException(lineNumber, line, trim, "Cannot parse into name-value pair.");
 				
 				name = trim.substring(0, index).trim();
 				value = trim.substring(index + 1).trim();
+				vchar = (value != null && value.length() == 1) ? value.charAt(0) : ' ';
 				
 				parameterValue = parameterValueMap.get(name);
 
@@ -289,6 +289,7 @@ public class AponReader {
 				} else {
 					if(addable) {
 						parameterValueType = ParameterValueType.valueOfHint(name);
+						//System.out.println(lineNumber + " - valueOfHint: " + parameterValueType);
 						if(parameterValueType != null) {
 							name = ParameterValueType.stripValueTypeHint(name);
 							parameterValue = parameterValueMap.get(name);
@@ -301,8 +302,6 @@ public class AponReader {
 				if(parameterValueType == ParameterValueType.VARIABLE)
 					parameterValueType = null;
 			}
-			
-			vchar = (value != null && value.length() > 0) ? value.charAt(0) : ' ';
 			
 			if(parameterValue != null) {
 				if(!parameterValue.isArray()) {
@@ -322,7 +321,7 @@ public class AponReader {
 				}
 			}
 
-			//System.out.println(lineNumber + " - 01************** parameterValueType: " + parameterValueType);
+			System.out.println(lineNumber + " - 01************** parameterValueType: " + parameterValueType);
 			
 			//if(StringUtils.hasText(value)) {
 			if(parameterValueType == null) {
@@ -348,7 +347,9 @@ public class AponReader {
 				Parameters parameters2 = parameterValue.newParameters();
 				//System.out.println("05************** parameters2: " + parameters2);
 				//System.out.println("new************** parameterValue.newParameters(): " + parameterValue);
+				System.out.println(lineNumber + " - 03 curly bracket open: " + openBracket);
 				lineNumber = valuelize(parameters2.getParameterValueMap(), reader, lineNumber, CURLY_BRACKET_OPEN, null, null, null);
+				System.out.println(lineNumber + " - 04 curly bracket opened: " + openBracket);
 				//parameterValue.putValue(parameters2);
 
 //							AbstractParameters parameters2 = (AbstractParameters)parameterValue.touchValueAsParameters();
@@ -360,11 +361,9 @@ public class AponReader {
 					parameterValueMap.put(name, parameterValue);
 				}
 
-				value = valuelizeText(reader);
-				if(value == null)
-					throw new IncompatibleParameterValueTypeException(parameterValue, parameterValueType);
-
-				parameterValue.putValue(value);
+				StringBuilder sb = new StringBuilder();
+				lineNumber = valuelizeText(reader, lineNumber, sb);
+				parameterValue.putValue(sb.toString());
 			} else {
 				if(parameterValue == null) {
 					parameterValue = new ParameterValue(name, parameterValueType, (openBracket == SQUARE_BRACKET_OPEN));
@@ -373,11 +372,11 @@ public class AponReader {
 				
 				if(parameterValueType == ParameterValueType.STRING) {
 					parameterValue.putValue(value);
-				} else if(parameterValueType == ParameterValueType.INTEGER) {
+				} else if(parameterValueType == ParameterValueType.INT) {
 					try {
 						parameterValue.putValue(new Integer(value));
 					} catch(NumberFormatException ex) {
-						throw new IncompatibleParameterValueTypeException(parameterValue, ParameterValueType.INTEGER);
+						throw new IncompatibleParameterValueTypeException(parameterValue, ParameterValueType.INT);
 						//throw new InvalidParameterException("Cannot parse value of '" + name + "' to an Integer. \"" + buffer + "\"");
 					}
 				} else if(parameterValueType == ParameterValueType.LONG) {
@@ -418,35 +417,35 @@ public class AponReader {
 		return lineNumber;
 	}
 	
-	private String valuelizeText(BufferedReader reader) throws IOException {
-		StringBuilder sb = new StringBuilder();
+	private int valuelizeText(BufferedReader reader, int lineNumber, StringBuilder sb) throws IOException {
 		String line;
-		String trim;
+		String trim = null;
 		int tlen;
 		char tchar;
 		
 		while((line = reader.readLine()) != null) {
+			lineNumber++;
 			trim = line.trim();
 			tlen = trim.length();
 			tchar = tlen > 0 ? trim.charAt(0) : ' ';
 			
 			if(tlen == 1 && ROUND_BRACKET_CLOSE == tchar)
-				return sb.toString();
+				return lineNumber;
 				
 			if(TEXT_LINE_START == tchar) {
 				String value = line.substring(line.indexOf(TEXT_LINE_START) + 1);
 				sb.append(value);
 			} else if(tlen > 0) {
-				throw new InvalidParameterException("the closing round bracket is missing or Text-line is must start with a ';' character.");
+				throw new InvalidParameterException(lineNumber, line, trim, "The closing round bracket was missing or Each text line is must start with a ';' character.");
 			}
 		}
 		
-		return null;
+		throw new InvalidParameterException(lineNumber, line, trim, "The end of the text line was reached with no closing round bracket found.");
 	}
 	
 	public static void main(String argv[]) {
 		try {
-			Importable importable = new ImportableFile("/c:/Users/Gulendol/Projects/aspectran/ADE/workspace/aspectran.example/config/aspectran/sample/sample-test.apon", ImportFileType.APON);
+			Importable importable = new ImportableFile("/c:/Users/Gulendol/Projects/aspectran/ADE/workspace/aspectran.example/config/aspectran/sample/sample-test2.apon", ImportFileType.APON);
 			AponReader aponReader = new AponReader();
 			aponReader.read(importable.getReader());
 		} catch(Exception e) {
