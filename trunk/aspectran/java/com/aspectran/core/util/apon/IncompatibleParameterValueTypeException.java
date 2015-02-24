@@ -44,6 +44,10 @@ public class IncompatibleParameterValueTypeException extends InvalidParameterExc
 	public IncompatibleParameterValueTypeException(ParameterValue parameterValue, ParameterValueType expectedParameterValueType) {
 		super("Incompatible value type with expected value type \"" + expectedParameterValueType + "\" for the specified parameter " + parameterValue);
 	}
+	
+	public IncompatibleParameterValueTypeException(int lineNumber, String line, String trim, ParameterValue parameterValue, ParameterValueType expectedParameterValueType) {
+		super(makeMessage(lineNumber, line, trim, parameterValue, expectedParameterValueType));
+	}
 
 	/**
 	 * Constructor to create exception to wrap another exception.
@@ -64,4 +68,10 @@ public class IncompatibleParameterValueTypeException extends InvalidParameterExc
 	public IncompatibleParameterValueTypeException(String msg, Throwable cause) {
 		super(msg, cause);
 	}
+
+	protected static String makeMessage(int lineNumber, String line, String trim, ParameterValue parameterValue, ParameterValueType expectedParameterValueType) {
+		String msg = "Incompatible value type with expected value type \"" + expectedParameterValueType + "\" for the specified parameter " + parameterValue;
+		return InvalidParameterException.makeMessage(lineNumber, line, trim, msg);
+	}
+	
 }
