@@ -230,17 +230,19 @@ public class AponReader {
 	}
 	*/
 	private void valuelize(BufferedReader reader, Map<String, ParameterValue> parameterValueMap) throws IOException {
-		valuelize(reader, parameterValueMap, ' ', null, null);
+		valuelize(reader, parameterValueMap, ' ', null, null, null);
 	}
 	
-	private void valuelize(BufferedReader reader, Map<String, ParameterValue> parameterValueMap, char openBracket, String name, ParameterValue parameterValue) throws IOException {
-		ParameterValueType parameterValueType = null;
-		String line = null;
-		String value = null;
+	private void valuelize(BufferedReader reader, Map<String, ParameterValue> parameterValueMap, char openBracket, String name, ParameterValue parameterValue, ParameterValueType parameterValueType) throws IOException {
+		String line;
+		String value;
+		String trim;
+		int tlen;
+		char vchar;
 		
 		while((line = reader.readLine()) != null) {
-			String trim = line.trim();
-			int tlen = trim.length();
+			trim = line.trim();
+			tlen = trim.length();
 
 			if(openBracket == SQUARE_BRACKET_OPEN) {
 				if(tlen > 0) {
@@ -253,6 +255,8 @@ public class AponReader {
 //					} else {
 //						value = trim;
 //					}
+				} else {
+					value = null;
 				}
 			} else {
 				if(tlen == 0)
@@ -275,7 +279,9 @@ public class AponReader {
 				//System.out.println("0************** name: " + name + ", value: " + value + ", buffer: " + buffer);
 				//System.out.println("0************** parameterValue: " + parameterValue);
 				
-				if(parameterValue == null) {
+				if(parameterValue != null) {
+					parameterValueType = parameterValue.getParameterValueType();
+				} else {
 					if(addable) {
 						parameterValueType = ParameterValueType.valueOfHint(name);
 						if(parameterValueType != null) {
@@ -286,37 +292,38 @@ public class AponReader {
 						throw new InvalidParameterException("invalid parameter \"" + trim + "\"");
 					}
 				}
-			}
-
-			if(parameterValue != null && parameterValue.getParameterValueType() != ParameterValueType.VARIABLE) {
-				parameterValueType = parameterValue.getParameterValueType();
 				
+				if(parameterValueType == ParameterValueType.VARIABLE)
+					parameterValueType = null;
+			}
+			
+			vchar = (value != null && value.length() > 0) ? value.charAt(0) : ' ';
+			
+			if(parameterValue != null) {
 				if(!parameterValue.isArray()) {
-					if(parameterValueType == ParameterValueType.PARAMETERS && (value.length() != 1 || CURLY_BRACKET_OPEN != value.charAt(0)))
+					if(parameterValueType == ParameterValueType.PARAMETERS && CURLY_BRACKET_OPEN != vchar)
 						throw new IncompatibleParameterValueTypeException(parameterValue, parameterValueType);
-					if(parameterValueType == ParameterValueType.TEXT && (value.length() != 1 || ROUND_BRACKET_OPEN != value.charAt(0)))
+					if(parameterValueType == ParameterValueType.TEXT && ROUND_BRACKET_OPEN != vchar)
 						throw new IncompatibleParameterValueTypeException(parameterValue, parameterValueType);
 				}
-			} else {
-				parameterValueType = null;
 			}
 				
 			//System.out.println("01************** parameterValueType: " + parameterValueType);
 			
 			//if(StringUtils.hasText(value)) {
 			if(parameterValueType == null) {
-				if(value.length() == 1) {
-					if(CURLY_BRACKET_OPEN == value.charAt(0)) {
-						parameterValueType = ParameterValueType.PARAMETERS;
-					} else if(ROUND_BRACKET_OPEN == value.charAt(0)) {
-						parameterValueType = ParameterValueType.TEXT;
-					}
+				if(CURLY_BRACKET_OPEN == vchar) {
+					parameterValueType = ParameterValueType.PARAMETERS;
+				} else if(ROUND_BRACKET_OPEN == vchar) {
+					parameterValueType = ParameterValueType.TEXT;
+				} else {
+					parameterValueType = ParameterValueType.STRING;
 				}
 			} else if(parameterValue == null || (parameterValue != null && parameterValue.isArray())) {
-				if(value.length() == 1 && SQUARE_BRACKET_OPEN == value.charAt(0)) {
+				if(SQUARE_BRACKET_OPEN == vchar) {
 					//System.out.println("1**************[ name: " + name);
 					//System.out.println("1**************[ parameterValue: " + parameterValue);
-					valuelize(reader, parameterValueMap, SQUARE_BRACKET_OPEN, name, parameterValue);
+					valuelize(reader, parameterValueMap, SQUARE_BRACKET_OPEN, name, parameterValue, parameterValueType);
 					continue;
 				}
 			}
@@ -332,7 +339,7 @@ public class AponReader {
 				Parameters parameters2 = parameterValue.newParameters();
 				//System.out.println("05************** parameters2: " + parameters2);
 				//System.out.println("new************** parameterValue.newParameters(): " + parameterValue);
-				valuelize(reader, parameters2.getParameterValueMap(), CURLY_BRACKET_OPEN, null, null);
+				valuelize(reader, parameters2.getParameterValueMap(), CURLY_BRACKET_OPEN, null, null, null);
 				//parameterValue.putValue(parameters2);
 
 //							AbstractParameters parameters2 = (AbstractParameters)parameterValue.touchValueAsParameters();
@@ -350,16 +357,14 @@ public class AponReader {
 
 				parameterValue.setValue(value);
 			} else {
-				if(parameterValueType == null) {
-					parameterValueType = ParameterValueType.STRING;
-				}
-
 				if(parameterValue == null) {
 					parameterValue = new ParameterValue(name, parameterValueType, (openBracket == SQUARE_BRACKET_OPEN));
 					parameterValueMap.put(name, parameterValue);
 				}
-
-				if(parameterValueType == ParameterValueType.INTEGER) {
+				
+				if(parameterValueType == ParameterValueType.STRING) {
+					parameterValue.putValue(value);
+				} else if(parameterValueType == ParameterValueType.INTEGER) {
 					try {
 						parameterValue.putValue(new Integer(value));
 					} catch(NumberFormatException ex) {
@@ -389,10 +394,7 @@ public class AponReader {
 					}
 				} else if(parameterValueType == ParameterValueType.BOOLEAN) {
 					parameterValue.putValue(Boolean.valueOf(value));
-				} else {
-					parameterValue.putValue(value);
 				}
-				
 				//System.out.println("val************ parameterValue.putValue(): name=" + name + ", value=" + value);
 			}
 				//}
@@ -407,22 +409,22 @@ public class AponReader {
 	
 	private String valuelizeText(BufferedReader reader) throws IOException {
 		StringBuilder sb = new StringBuilder();
-		String line = null;
+		String line;
+		String trim;
+		int tlen;
+		char tchar;
 		
 		while((line = reader.readLine()) != null) {
-			String trim = line.trim();
-			int tlen = trim.length();
-
-			if(tlen > 0) {
-				if(ROUND_BRACKET_CLOSE == trim.charAt(0)) {
-					return sb.toString();
-				}
+			trim = line.trim();
+			tlen = trim.length();
+			tchar = tlen > 0 ? trim.charAt(0) : ' ';
+			
+			if(tlen == 1 && ROUND_BRACKET_CLOSE == tchar)
+				return sb.toString();
 				
-				if(TEXT_LINE_START == trim.charAt(0)) {
-					int index = line.indexOf(TEXT_LINE_START);
-					String value = line.substring(index + 1);
-					sb.append(value);
-				}
+			if(TEXT_LINE_START == tchar) {
+				String value = line.substring(line.indexOf(TEXT_LINE_START) + 1);
+				sb.append(value);
 			}
 		}
 		
