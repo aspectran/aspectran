@@ -401,9 +401,9 @@ public class AponReader {
 		}
 		
 		if(openBracket == CURLY_BRACKET_OPEN) {
-			throw new InvalidParameterException("Cannot parse value of '" + name + "' to an array of strings.");
+			throw new MissingClosingBracketException("curly", name, parameterValue);
 		} else if(openBracket == SQUARE_BRACKET_OPEN) {
-			throw new InvalidParameterException("Cannot parse value of '" + name + "' to an array of strings.");
+			throw new MissingClosingBracketException("square", name, parameterValue);
 		}
 	}
 	
@@ -425,6 +425,8 @@ public class AponReader {
 			if(TEXT_LINE_START == tchar) {
 				String value = line.substring(line.indexOf(TEXT_LINE_START) + 1);
 				sb.append(value);
+			} else if(tlen > 0) {
+				throw new InvalidParameterException("the closing round bracket is missing or Text-line is must start with a ';' character.");
 			}
 		}
 		
