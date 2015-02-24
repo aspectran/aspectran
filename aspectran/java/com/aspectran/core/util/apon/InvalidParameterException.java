@@ -73,7 +73,7 @@ public class InvalidParameterException extends RuntimeException {
 	}
 	
 	protected static String makeMessage(int lineNumber, String line, String trim, String msg) {
-		int column = line.indexOf(trim);
+		int column = (trim != null) ? line.indexOf(trim) : 0;
 		
 		StringBuilder sb = new StringBuilder();
 		if(msg != null)
@@ -83,7 +83,7 @@ public class InvalidParameterException extends RuntimeException {
 			String lspace = line.substring(0, column);
 			int tabCnt = StringUtils.search(lspace, "\t");
 			
-			if(trim.length() > 33)
+			if(trim != null && trim.length() > 33)
 				trim = trim.substring(0, 30) + "...";
 			
 			sb.append(", Column ").append(column + 1);

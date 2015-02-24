@@ -38,13 +38,13 @@ public class GenericParameters extends AbstractParameters {
 	}
 	
 	public void putValue(String name, Integer value) {
-		ParameterValue p = new ParameterValue(name, ParameterValueType.INTEGER);
+		ParameterValue p = new ParameterValue(name, ParameterValueType.INT);
 		p.putValue(value);
 		parameterValueMap.put(name, p);
 	}
 	
 	public void putValue(String name, Integer[] values) {
-		ParameterValue p = new ParameterValue(name, ParameterValueType.INTEGER, true);
+		ParameterValue p = new ParameterValue(name, ParameterValueType.INT, true);
 		for(Integer value : values) {
 			p.putValue(value);
 		}

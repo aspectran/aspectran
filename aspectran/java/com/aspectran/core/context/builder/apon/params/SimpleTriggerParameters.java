@@ -17,11 +17,11 @@ public class SimpleTriggerParameters extends AbstractParameters implements Param
 	private final static ParameterDefine[] parameterDefines;
 	
 	static {
-		withIntervalInMilliseconds = new ParameterDefine("withIntervalInMilliseconds", ParameterValueType.INTEGER);
-		withIntervalInMinutes = new ParameterDefine("withIntervalInMinutes", ParameterValueType.INTEGER);
-		withIntervalInSeconds = new ParameterDefine("withIntervalInSeconds", ParameterValueType.INTEGER);
-		withIntervalInHours = new ParameterDefine("withIntervalInHours", ParameterValueType.INTEGER);
-		withRepeatCount = new ParameterDefine("withRepeatCount", ParameterValueType.INTEGER);
+		withIntervalInMilliseconds = new ParameterDefine("withIntervalInMilliseconds", ParameterValueType.INT);
+		withIntervalInMinutes = new ParameterDefine("withIntervalInMinutes", ParameterValueType.INT);
+		withIntervalInSeconds = new ParameterDefine("withIntervalInSeconds", ParameterValueType.INT);
+		withIntervalInHours = new ParameterDefine("withIntervalInHours", ParameterValueType.INT);
+		withRepeatCount = new ParameterDefine("withRepeatCount", ParameterValueType.INT);
 		repeatForever = new ParameterDefine("repeatForever", ParameterValueType.BOOLEAN);
 		
 		parameterDefines = new ParameterDefine[] {

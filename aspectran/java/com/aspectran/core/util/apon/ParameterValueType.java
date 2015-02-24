@@ -28,15 +28,15 @@ import com.aspectran.core.context.rule.type.Type;
  */
 public final class ParameterValueType extends Type {
 
-	private static final String VALUE_TYPE_HINT_OPEN = "(";
+	private static final char VALUE_TYPE_HINT_OPEN = '(';
 	
-	private static final String VALUE_TYPE_HINT_CLOSE = ")";
+	private static final char VALUE_TYPE_HINT_CLOSE = ')';
 
 	public static final ParameterValueType STRING;
 
 	public static final ParameterValueType TEXT;
 
-	public static final ParameterValueType INTEGER;
+	public static final ParameterValueType INT;
 	
 	public static final ParameterValueType LONG;
 	
@@ -55,7 +55,7 @@ public final class ParameterValueType extends Type {
 	static {
 		STRING = new ParameterValueType("string");
 		TEXT = new ParameterValueType("text");
-		INTEGER = new ParameterValueType("integer");
+		INT = new ParameterValueType("int");
 		LONG = new ParameterValueType("long");
 		FLOAT = new ParameterValueType("float");
 		DOUBLE = new ParameterValueType("double");
@@ -66,7 +66,7 @@ public final class ParameterValueType extends Type {
 		types = new HashMap<String, ParameterValueType>();
 		types.put(TEXT.toString(), TEXT);
 		types.put(STRING.toString(), STRING);
-		types.put(INTEGER.toString(), INTEGER);
+		types.put(INT.toString(), INT);
 		types.put(LONG.toString(), LONG);
 		types.put(FLOAT.toString(), FLOAT);
 		types.put(DOUBLE.toString(), DOUBLE);
@@ -104,9 +104,7 @@ public final class ParameterValueType extends Type {
 			
 			if(hintEndIndex > hintStartIndex) {
 				String typeHint = name.substring(hintStartIndex + 1, hintEndIndex);
-				
 				return valueOf(typeHint);
-				
 			}
 		}
 

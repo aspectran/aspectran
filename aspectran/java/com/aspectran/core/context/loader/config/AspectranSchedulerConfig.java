@@ -15,7 +15,7 @@ public class AspectranSchedulerConfig extends AbstractParameters implements Para
 	private final static ParameterDefine[] parameterDefines;
 	
 	static {
-		startDelaySeconds = new ParameterDefine("startDelaySeconds", ParameterValueType.INTEGER);
+		startDelaySeconds = new ParameterDefine("startDelaySeconds", ParameterValueType.INT);
 		waitOnShutdown = new ParameterDefine("waitOnShutdown", ParameterValueType.BOOLEAN);
 		startup = new ParameterDefine("startup", ParameterValueType.BOOLEAN);
 
