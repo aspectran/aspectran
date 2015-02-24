@@ -6,6 +6,10 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.util.Map;
 
+import com.aspectran.core.context.builder.Importable;
+import com.aspectran.core.context.builder.ImportableFile;
+import com.aspectran.core.context.rule.type.ImportFileType;
+
 public class AponReader {
 
 	protected static final char CURLY_BRACKET_OPEN = '{';
@@ -230,10 +234,10 @@ public class AponReader {
 	}
 	*/
 	private void valuelize(BufferedReader reader, Map<String, ParameterValue> parameterValueMap) throws IOException {
-		valuelize(reader, parameterValueMap, ' ', null, null, null);
+		valuelize(parameterValueMap, reader, 0, ' ', null, null, null);
 	}
 	
-	private void valuelize(BufferedReader reader, Map<String, ParameterValue> parameterValueMap, char openBracket, String name, ParameterValue parameterValue, ParameterValueType parameterValueType) throws IOException {
+	private int valuelize(Map<String, ParameterValue> parameterValueMap, BufferedReader reader, int lineNumber, char openBracket, String name, ParameterValue parameterValue, ParameterValueType parameterValueType) throws IOException {
 		String line;
 		String value;
 		String trim;
@@ -241,13 +245,14 @@ public class AponReader {
 		char vchar;
 		
 		while((line = reader.readLine()) != null) {
+			lineNumber++;
 			trim = line.trim();
 			tlen = trim.length();
 
 			if(openBracket == SQUARE_BRACKET_OPEN) {
 				if(tlen > 0) {
 					if(SQUARE_BRACKET_CLOSE == trim.charAt(0))
-						return;
+						return lineNumber;
 				
 					value = trim;
 //					if(TEXT_LINE_START == trim.charAt(0)) {
@@ -263,12 +268,12 @@ public class AponReader {
 					continue;
 				
 				if(openBracket == CURLY_BRACKET_OPEN && CURLY_BRACKET_CLOSE == trim.charAt(0))
-					return;
+					return lineNumber;
 
 				int index = trim.indexOf(NAME_VALUE_SEPARATOR);
 				
 				if(index == -1)
-					throw new InvalidParameterException("Cannot parse into name-value pair. \"" + trim + "\"");
+					throw new InvalidParameterException(lineNumber, line, trim, "Cannot parse into name-value pair.");
 				
 				name = trim.substring(0, index).trim();
 				value = trim.substring(index + 1).trim();
@@ -302,13 +307,22 @@ public class AponReader {
 			if(parameterValue != null) {
 				if(!parameterValue.isArray()) {
 					if(parameterValueType == ParameterValueType.PARAMETERS && CURLY_BRACKET_OPEN != vchar)
-						throw new IncompatibleParameterValueTypeException(parameterValue, parameterValueType);
+						throw new IncompatibleParameterValueTypeException(lineNumber, line, trim, parameterValue, parameterValueType);
 					if(parameterValueType == ParameterValueType.TEXT && ROUND_BRACKET_OPEN != vchar)
-						throw new IncompatibleParameterValueTypeException(parameterValue, parameterValueType);
+						throw new IncompatibleParameterValueTypeException(lineNumber, line, trim, parameterValue, parameterValueType);
 				}
 			}
 				
-			//System.out.println("01************** parameterValueType: " + parameterValueType);
+			if(parameterValue == null || (parameterValue != null && parameterValue.isArray())) {
+				if(SQUARE_BRACKET_OPEN == vchar) {
+					//System.out.println("1**************[ name: " + name);
+					//System.out.println("1**************[ parameterValue: " + parameterValue);
+					lineNumber = valuelize(parameterValueMap, reader, lineNumber, SQUARE_BRACKET_OPEN, name, parameterValue, parameterValueType);
+					continue;
+				}
+			}
+
+			//System.out.println(lineNumber + " - 01************** parameterValueType: " + parameterValueType);
 			
 			//if(StringUtils.hasText(value)) {
 			if(parameterValueType == null) {
@@ -319,15 +333,10 @@ public class AponReader {
 				} else {
 					parameterValueType = ParameterValueType.STRING;
 				}
-			} else if(parameterValue == null || (parameterValue != null && parameterValue.isArray())) {
-				if(SQUARE_BRACKET_OPEN == vchar) {
-					//System.out.println("1**************[ name: " + name);
-					//System.out.println("1**************[ parameterValue: " + parameterValue);
-					valuelize(reader, parameterValueMap, SQUARE_BRACKET_OPEN, name, parameterValue, parameterValueType);
-					continue;
-				}
 			}
 			
+			System.out.println(lineNumber + " - 02************** parameterValueType: " + parameterValueType);
+
 			if(parameterValueType == ParameterValueType.PARAMETERS) {
 				//System.out.println("03************** parameterValue: " + parameterValue);
 				if(parameterValue == null) {
@@ -339,7 +348,7 @@ public class AponReader {
 				Parameters parameters2 = parameterValue.newParameters();
 				//System.out.println("05************** parameters2: " + parameters2);
 				//System.out.println("new************** parameterValue.newParameters(): " + parameterValue);
-				valuelize(reader, parameters2.getParameterValueMap(), CURLY_BRACKET_OPEN, null, null, null);
+				lineNumber = valuelize(parameters2.getParameterValueMap(), reader, lineNumber, CURLY_BRACKET_OPEN, null, null, null);
 				//parameterValue.putValue(parameters2);
 
 //							AbstractParameters parameters2 = (AbstractParameters)parameterValue.touchValueAsParameters();
@@ -355,7 +364,7 @@ public class AponReader {
 				if(value == null)
 					throw new IncompatibleParameterValueTypeException(parameterValue, parameterValueType);
 
-				parameterValue.setValue(value);
+				parameterValue.putValue(value);
 			} else {
 				if(parameterValue == null) {
 					parameterValue = new ParameterValue(name, parameterValueType, (openBracket == SQUARE_BRACKET_OPEN));
@@ -405,6 +414,8 @@ public class AponReader {
 		} else if(openBracket == SQUARE_BRACKET_OPEN) {
 			throw new MissingClosingBracketException("square", name, parameterValue);
 		}
+		
+		return lineNumber;
 	}
 	
 	private String valuelizeText(BufferedReader reader) throws IOException {
@@ -432,4 +443,16 @@ public class AponReader {
 		
 		return null;
 	}
+	
+	public static void main(String argv[]) {
+		try {
+			Importable importable = new ImportableFile("/c:/Users/Gulendol/Projects/aspectran/ADE/workspace/aspectran.example/config/aspectran/sample/sample-test.apon", ImportFileType.APON);
+			AponReader aponReader = new AponReader();
+			aponReader.read(importable.getReader());
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	
 }

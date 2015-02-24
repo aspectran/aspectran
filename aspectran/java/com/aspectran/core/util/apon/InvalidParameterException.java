@@ -15,6 +15,8 @@
  */
 package com.aspectran.core.util.apon;
 
+import com.aspectran.core.util.StringUtils;
+
 
 /**
  * This exception will be thrown when a translet request is failed.
@@ -42,6 +44,15 @@ public class InvalidParameterException extends RuntimeException {
 	}
 
 	/**
+	 * Constructor to create exception with a message.
+	 * 
+	 * @param msg A message to associate with the exception
+	 */
+	public InvalidParameterException(int lineNumber, String line, String trim, String msg) {
+		super(makeMessage(lineNumber, line, trim, msg));
+	}
+
+	/**
 	 * Constructor to create exception to wrap another exception.
 	 * 
 	 * @param cause The real cause of the exception
@@ -59,5 +70,36 @@ public class InvalidParameterException extends RuntimeException {
 	 */
 	public InvalidParameterException(String msg, Throwable cause) {
 		super(msg, cause);
+	}
+	
+	protected static String makeMessage(int lineNumber, String line, String trim, String msg) {
+		int column = line.indexOf(trim);
+		
+		StringBuilder sb = new StringBuilder();
+		if(msg != null)
+			sb.append(msg);
+		sb.append(" Line number ").append(lineNumber);
+		if(column != -1) {
+			String lspace = line.substring(0, column);
+			int tabCnt = StringUtils.search(lspace, "\t");
+			
+			if(trim.length() > 33)
+				trim = trim.substring(0, 30) + "...";
+			
+			sb.append(", Column ").append(column + 1);
+			
+			if(tabCnt == 0) {
+				sb.append(column);
+			} else {
+				sb.append(" (");
+				sb.append("Tab ").append(tabCnt);
+				sb.append(", Space ").append(column - tabCnt);
+				sb.append(")");
+			}
+			
+			sb.append(": ").append(trim);
+		}
+		
+		return sb.toString();
 	}
 }
