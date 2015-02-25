@@ -149,4 +149,6 @@ public interface Parameters {
 	
 	public <T extends Parameters> List<T> getParametersList(ParameterDefine parameterDefine);
 	
+	public String toText();
+	
 }

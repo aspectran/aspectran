@@ -145,6 +145,9 @@ public class ParameterValue implements Parameter {
 		if(value == null)
 			return null;
 
+		if(value instanceof Parameters)
+			return ((Parameters)value).toText();
+		
 		return value.toString();
 	}
 	
