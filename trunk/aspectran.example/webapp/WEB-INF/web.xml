@@ -14,11 +14,11 @@
 		<param-name>aspectran:config</param-name>
 		<param-value>
 			context: {
-				root: /WEB-INF/aspectran/config/example-root.xml
-				encoding: utf-8
+				root: "/WEB-INF/aspectran/config/example-root.xml"
+				encoding: "utf-8"
 				resources: [
-					/WEB-INF/classes
-					/WEB-INF/aspectran/config
+					"/WEB-INF/classes"
+					"/WEB-INF/aspectran/config"
 				]
 				hybridLoading: true
 				autoReloading: {
@@ -45,11 +45,11 @@
 			<param-name>aspectran:config</param-name>
 			<param-value>
 				context: {
-					root: /WEB-INF/aspectran/config/example-root.xml
+					root: "/WEB-INF/aspectran/config/example-root.xml"
 					resources: [
-						/WEB-INF/classes
-						/WEB-INF/aspectran/lib
-						/WEB-INF/aspectran/config
+						"/WEB-INF/classes"
+						"/WEB-INF/aspectran/lib"
+						"/WEB-INF/aspectran/config"
 					]
 					autoReloading: {
 						reloadMethod: hard

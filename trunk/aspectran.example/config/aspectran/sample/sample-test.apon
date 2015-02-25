@@ -265,7 +265,7 @@ aspectran: {
 			}
 		]
 		property(properties): {
-			map1(string): {
+			map1: {
 				kind1(int): 001
 				kind2: 002
 				kind3: 003
