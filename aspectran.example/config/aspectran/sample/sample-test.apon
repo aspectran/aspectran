@@ -1,57 +1,57 @@
 aspectran: {
 	setting: {
-		transletNamePattern: /example/*
-		transletInterfaceClass: com.aspectran.web.activity.WebTranslet
-		transletImplementClass: com.aspectran.web.activity.WebTransletImpl
-		nullableContentId: true
-		nullableActionId: true
-		beanProxyMode: cglib
+		transletNamePattern: "/example/*"
+		transletInterfaceClass: "com.aspectran.web.activity.WebTranslet"
+		transletImplementClass: "com.aspectran.web.activity.WebTransletImpl"
+		nullableContentId: "true"
+		nullableActionId: "true"
+		beanProxyMode: "cglib"
 	}
 	typeAlias: {
-		example1: com.aspectran.Example1 
-		example2: com.aspectran.Example2
+		example1: "com.aspectran.Example1 "
+		example2: "com.aspectran.Example2"
 	}
 	aspect: {
-		id: defaultRequestRule
-		useFor: scheduler
+		id: "defaultRequestRule"
+		useFor: "scheduler"
 		joinpoint: {
-			scope: request
+			scope: "request"
 			pointcut: {
-				type: wildcard
+				type: "wildcard"
 				target: {
 					+: [
-						/front/a/*@bean^method
-						/front/b/*
-						/front/c/*
-						/front/a/A*
+						"/front/a/*@bean^method"
+						"/front/b/*"
+						"/front/c/*"
+						"/front/a/A*"
 					]
 					-: [
-						/front/a/A*
+						"/front/a/A*"
 					]
 				}
 				target: {
-					+: /front/a/*@bean^method
-					+: /front/b/*
-					+: /front/c/*
-					-: /front/a/A*
-					-: /front/a/A*
+					+: "/front/a/*@bean^method"
+					+: "/front/b/*"
+					+: "/front/c/*"
+					-: "/front/a/A*"
+					-: "/front/a/A*"
 				}
 				target: {
-					+: /front/a/*@bean^method
-					+: /front/a/*@bean^method
+					+: "/front/a/*@bean^method"
+					+: "/front/a/*@bean^method"
 					exclude: [
-						/front/a/*@bean^method
-						/front/a/*@bean^method
+						"/front/a/*@bean^method"
+						"/front/a/*@bean^method"
 					]
 				}
 				target: {
-					translet: aaa
-					bean: bbb
-					method: ccc
+					translet: "aaa"
+					bean: "bbb"
+					method: "ccc"
 					exclude: {
-						translet: aaa
-						bean: bbb
-						method: ccc
+						translet: "aaa"
+						bean: "bbb"
+						method: "ccc"
 					}
 				}
 				simpleTrigger: {
@@ -60,72 +60,72 @@ aspectran: {
 					repeatCount: 10
 				}
 				cronTrigger: {
-					expression: * * 8 8
+					expression: "* * 8 8"
 				}
 			}
 		}
 		setting: {
-			characterEncoding: utf-8
-			multipart.maxRequestSize: 10M
-			multipart.temporaryFilePath: /d:/
-			multipart.allowedFileExtensions: gif;jpg;png
-			multipart.deniedFileExtensions: php;jsp;sh;bat
+			characterEncoding: "utf-8"
+			multipart.maxRequestSize: "10M"
+			multipart.temporaryFilePath: "/d:/"
+			multipart.allowedFileExtensions: "gif;jpg;png"
+			multipart.deniedFileExtensions: "php;jsp;sh;bat"
 		}
 		advice: {
 			before: {
 				action: {
-					id: action1
-					bean: common.action.a1
-					method: testXmlAction
+					id: "action1"
+					bean: "common.action.a1"
+					method: "testXmlAction"
 					argument: [
 						{
-							type: properties
+							type: "properties"
 							value: {
-								org.quartz.scheduler.instanceName: DefaultQuartzScheduler
-								org.quartz.scheduler.rmi.export: false
-								org.quartz.scheduler.rmi.proxy: false
-								org.quartz.scheduler.wrapJobExecutionInUserTransaction: false
-								org.quartz.threadPool.class: org.quartz.simpl.SimpleThreadPool
+								org.quartz.scheduler.instanceName: "DefaultQuartzScheduler"
+								org.quartz.scheduler.rmi.export: "false"
+								org.quartz.scheduler.rmi.proxy: "false"
+								org.quartz.scheduler.wrapJobExecutionInUserTransaction: "false"
+								org.quartz.threadPool.class: "org.quartz.simpl.SimpleThreadPool"
 								org.quartz.threadPool.threadCount: 10
 								org.quartz.threadPool.threadPriority: 5
-								org.quartz.threadPool.threadsInheritContextClassLoaderOfInitializingThread: true
+								org.quartz.threadPool.threadsInheritContextClassLoaderOfInitializingThread: "true"
 								org.quartz.jobStore.misfireThreshold: 60000
-								org.quartz.jobStore.class: org.quartz.simpl.RAMJobStore
+								org.quartz.jobStore.class: "org.quartz.simpl.RAMJobStore"
 							}
 						}
 					]
 					property: [
 						{
-							type: map
-							name: property1
+							type: "map"
+							name: "property1"
 							value: {
-								code1: value1
-								code2: value2
+								code1: "value1"
+								code2: "value2"
 							}
-							valueType: java.lang.String
-							defaultValue: default value
-							tokenize: true
+							valueType: "java.lang.String"
+							defaultValue: "default value"
+							tokenize: "true"
 						}
 						{
-							name: property2
+							name: "property2"
 							value(int): 123
 						}
 						{
-							name: property2
+							name: "property2"
 							reference: {
-								bean: a.bean
+								bean: "a.bean"
 							}
 						}
 					]
-					hidden: false
+					hidden: "false"
 				}
 				action: {
-					id: include1
-					include: /common/action/a1
-					hidden: true
+					id: "include1"
+					include: "/common/action/a1"
+					hidden: "true"
 				}
 				action: {
-					id: echo1
+					id: "echo1"
 					echo: {
 						map1(string): {
 							kind1(int): 001
@@ -142,9 +142,9 @@ aspectran: {
 							element2
 							element3
 						]
-						message: error 001
+						message: "error 001"
 					}
-					hidden: false
+					hidden: "false"
 				}
 			}
 			after: {
@@ -157,15 +157,15 @@ aspectran: {
 				action: [
 				]
 				responseByContentType: {
-					exceptionType: com.aspectran.test.web.LoginFailedException
+					exceptionType: "com.aspectran.test.web.LoginFailedException"
 					dispatch: {
-						contentType: text/html
+						contentType: "text/html"
 						template: {
-							file: /WEB-INF/jsp/login.jsp
+							file: "/WEB-INF/jsp/login.jsp"
 						}
 					}
 					transform: {
-						contentType: text/json
+						contentType: "text/json"
 						template(text): [
 							(
 								|동해물과 백두산이
@@ -189,13 +189,13 @@ aspectran: {
 				}
 				responseByContentType: {
 					dispatch: {
-						contentType: text/html
+						contentType: "text/html"
 						template: {
-							file: /WEB-INF/jsp/login.jsp
+							file: "/WEB-INF/jsp/login.jsp"
 						}
 					}
 					transform: {
-						contentType: text/json
+						contentType: "text/json"
 						template: (
 							|line1
 							|	line2
@@ -207,61 +207,61 @@ aspectran: {
 					}
 				}
 			}
-			bean: abc.bean
+			bean: "abc.bean"
 			job: [
 				{
-					tranlset: /scheduler1/test1.job
-					disabled: false;
+					tranlset: "/scheduler1/test1.job"
+					disabled: "false;"
 				}
 				{
-					tranlset: /scheduler1/test2.job
-					disabled: true;
+					tranlset: "/scheduler1/test2.job"
+					disabled: "true;"
 				}
 			]
 		}
 	}
 	bean: {
-		id: beanId
-		class: org.quartz.impl.StdSchedulerFactory
-		scope: singleton
+		id: "beanId"
+		class: "org.quartz.impl.StdSchedulerFactory"
+		scope: "singleton"
 		constructor: {
 			argument: [
 				{
-					type: properties
+					type: "properties"
 					value: {
-						org.quartz.scheduler.instanceName: DefaultQuartzScheduler
-						org.quartz.scheduler.rmi.export: false
-						org.quartz.scheduler.rmi.proxy: false
-						org.quartz.scheduler.wrapJobExecutionInUserTransaction: false
-						org.quartz.threadPool.class: org.quartz.simpl.SimpleThreadPool
+						org.quartz.scheduler.instanceName: "DefaultQuartzScheduler"
+						org.quartz.scheduler.rmi.export: "false"
+						org.quartz.scheduler.rmi.proxy: "false"
+						org.quartz.scheduler.wrapJobExecutionInUserTransaction: "false"
+						org.quartz.threadPool.class: "org.quartz.simpl.SimpleThreadPool"
 						org.quartz.threadPool.threadCount: 10
 						org.quartz.threadPool.threadPriority: 5
-						org.quartz.threadPool.threadsInheritContextClassLoaderOfInitializingThread: true
+						org.quartz.threadPool.threadsInheritContextClassLoaderOfInitializingThread: "true"
 						org.quartz.jobStore.misfireThreshold: 60000
-						org.quartz.jobStore.class: org.quartz.simpl.RAMJobStore
+						org.quartz.jobStore.class: "org.quartz.simpl.RAMJobStore"
 					}
 				}
 			]
 		}
 		property: [
 			{
-				type: map
-				name: property1
+				type: "map"
+				name: "property1"
 				value: {
-					code1: value1
-					code2: value2
+					code1: "value1"
+					code2: "value2"
 				}
-				valueType: java.lang.String
-				defaultValue: default value
-				tokenize: true
+				valueType: "java.lang.String"
+				defaultValue: "default value"
+				tokenize: "true"
 			}
 			{
-				name: property2
+				name: "property2"
 				value(int): 123
 			}
 			{
-				name: property2
-				reference: fdfdfd
+				name: "property2"
+				reference: "fdfdfd"
 			}
 		]
 		property(properties): {
@@ -280,74 +280,74 @@ aspectran: {
 				element2
 				element3
 			]
-			message: error 001
+			message: "error 001"
 		}
 	}
 	tranlset: {
-		name: /example/hello
+		name: "/example/hello"
 		request: {
-			method: get
-			characterEncoding: utf-8
+			method: "get"
+			characterEncoding: "utf-8"
 			attribute: [
 				{
-					type: map
-					name: property1
+					type: "map"
+					name: "property1"
 					value: {
-						code1: value1
-						code2: value2
+						code1: "value1"
+						code2: "value2"
 					}
-					valueType: java.lang.String
-					defaultValue: default value
-					tokenize: true
+					valueType: "java.lang.String"
+					defaultValue: "default value"
+					tokenize: "true"
 				}
 				{
-					name: property2
+					name: "property2"
 					value(int): 123
 				}
 				{
-					name: property2
+					name: "property2"
 					reference: {
-						bean: a.bean
+						bean: "a.bean"
 					}
 				}
 			]
 			multipart: {
-				attribute: true
+				attribute: "true"
 				fileItem: [
-					name1[]
-					name2[]
-					name3[]
+					"name1[]"
+					"name2[]"
+					"name3[]"
 				]
 			}
 		}
 		contents: {
-			name: contentsName
+			name: "contentsName"
 			content: [
 			]
 		}
 		content: [
 			{
-				id: content1
-				hidden: false;
+				id: "content1"
+				hidden: "false;"
 				action: [
 					{
-						id: action1
-						bean: common.action.a1
-						method: testXmlAction
+						id: "action1"
+						bean: "common.action.a1"
+						method: "testXmlAction"
 						argument: [
 							{
-								type: properties
+								type: "properties"
 								value: {
-									org.quartz.scheduler.instanceName: DefaultQuartzScheduler
-									org.quartz.scheduler.rmi.export: false
-									org.quartz.scheduler.rmi.proxy: false
-									org.quartz.scheduler.wrapJobExecutionInUserTransaction: false
-									org.quartz.threadPool.class: org.quartz.simpl.SimpleThreadPool
+									org.quartz.scheduler.instanceName: "DefaultQuartzScheduler"
+									org.quartz.scheduler.rmi.export: "false"
+									org.quartz.scheduler.rmi.proxy: "false"
+									org.quartz.scheduler.wrapJobExecutionInUserTransaction: "false"
+									org.quartz.threadPool.class: "org.quartz.simpl.SimpleThreadPool"
 									org.quartz.threadPool.threadCount: 10
 									org.quartz.threadPool.threadPriority: 5
-									org.quartz.threadPool.threadsInheritContextClassLoaderOfInitializingThread: true
+									org.quartz.threadPool.threadsInheritContextClassLoaderOfInitializingThread: "true"
 									org.quartz.jobStore.misfireThreshold: 60000
-									org.quartz.jobStore.class: org.quartz.simpl.RAMJobStore
+									org.quartz.jobStore.class: "org.quartz.simpl.RAMJobStore"
 								}
 							}
 						]
@@ -367,17 +367,17 @@ aspectran: {
 								element2
 								element3
 							]
-							message: error 001
+							message: "error 001"
 						}
-						hidden: false
+						hidden: "false"
 					}
 					{
-						id: include1
-						include: /common/action/a1
-						hidden: true
+						id: "include1"
+						include: "/common/action/a1"
+						hidden: "true"
 					}
 					{
-						id: echo1
+						id: "echo1"
 						echo: {
 							map1(string): {
 								kind1(int): 001
@@ -394,85 +394,85 @@ aspectran: {
 								element2
 								element3
 							]
-							message: error 001
+							message: "error 001"
 						}
-						hidden: false
+						hidden: "false"
 					}
 				]
 			}
 		]
 		response: {
-			name: .xml
-			characterEncoding: utf-8
+			name: ".xml"
+			characterEncoding: "utf-8"
 			dispatch: {
-				contentType: text/html
+				contentType: "text/html"
 				template: {
-					file: /WEB-INF/jsp/login.jsp
+					file: "/WEB-INF/jsp/login.jsp"
 				}
 			}
 			transform: {
-				contentType: text/json
+				contentType: "text/json"
 				template: [
-					line1
-					line2
+					"line1"
+					"line2"
 				]
 			}
 		}
 		response: {
-			name: .json
-			characterEncoding: utf-8
+			name: ".json"
+			characterEncoding: "utf-8"
 			dispatch: {
-				contentType: text/html
+				contentType: "text/html"
 				template: {
-					file: /WEB-INF/jsp/login.jsp
+					file: "/WEB-INF/jsp/login.jsp"
 				}
 			}
 			transform: {
-				contentType: text/json
+				contentType: "text/json"
 				template: [
-					line1
-					line2
+					"line1"
+					"line2"
 				]
 			}
 		}
 		exception: {
 			responseByContentType: {
-				exceptionType: com.aspectran.test.web.LoginFailedException
+				exceptionType: "com.aspectran.test.web.LoginFailedException""
 				dispatch: {
-					contentType: text/html
+					contentType: "text/html"
 					template: {
-						file: /WEB-INF/jsp/login.jsp
+						file: "/WEB-INF/jsp/login.jsp"
 					}
 				}
 				transform: {
-					contentType: text/json
+					contentType: "text/json"
 					template: [
-						line1
-						line2
+						"line1"
+						"line2"
 					]
 				}
 			}
 			defaultResponse: {
 				dispatch: {
-					contentType: text/html
+					contentType: "text/html"
 					template: {
-						file: /WEB-INF/jsp/login.jsp
+						file: "/WEB-INF/jsp/login.jsp"
 					}
 				}
 				transform: {
-					contentType: text/json
+					contentType: "text/json"
 					template: [
-						line1
-						line2
+						"line1"
+						"line2"
 					]
 				}
 			}
 		}
 	}
 	import: {
-		file: file1.apon
+		file: "file1.apon"
 	}
 	import: {
-		file: file2.apon
+		file: "file2.apon"
 	}
 }

@@ -237,6 +237,17 @@ public class AponReader {
 		valuelize(parameterValueMap, reader, 0, ' ', null, null, null);
 	}
 	
+	/**
+	 * @param parameterValueMap
+	 * @param reader
+	 * @param lineNumber
+	 * @param openBracket
+	 * @param name
+	 * @param parameterValue
+	 * @param parameterValueType
+	 * @return
+	 * @throws IOException
+	 */
 	private int valuelize(Map<String, ParameterValue> parameterValueMap, BufferedReader reader, int lineNumber, char openBracket, String name, ParameterValue parameterValue, ParameterValueType parameterValueType) throws IOException {
 		String line;
 		String value;
@@ -249,21 +260,24 @@ public class AponReader {
 			lineNumber++;
 			trim = line.trim();
 			tlen = trim.length();
+			
+			if(tlen == 0 || trim.charAt(0) == '#')
+				continue;
 
 			if(openBracket == SQUARE_BRACKET_OPEN) {
 				value = trim;
 				vlen = value.length();
-				vchar = (value != null && vlen == 1) ? value.charAt(0) : ' ';
+				vchar = (vlen == 1) ? value.charAt(0) : ' ';
 				
 				System.out.println(lineNumber + ": " + line);
 
 				if(SQUARE_BRACKET_CLOSE == vchar)
 					return lineNumber;
 			} else {
-				if(tlen == 0)
-					continue;
+				//if(tlen == 0)
+				//	continue;
 				
-				System.out.println(lineNumber + ": " + line  + "+" + openBracket + "+");
+				System.out.println(lineNumber + ": " + line  + openBracket);
 
 				if(tlen == 1) {
 					if(openBracket == CURLY_BRACKET_OPEN && CURLY_BRACKET_CLOSE == trim.charAt(0)) {
@@ -276,10 +290,13 @@ public class AponReader {
 				if(index == -1)
 					throw new InvalidParameterException(lineNumber, line, trim, "Cannot parse into name-value pair.");
 				
+				if(index == 0)
+					throw new InvalidParameterException(lineNumber, line, trim, "Cannot find parameter name.");
+				
 				name = trim.substring(0, index).trim();
 				value = trim.substring(index + 1).trim();
 				vlen = value.length();
-				vchar = (value != null && vlen == 1) ? value.charAt(0) : ' ';
+				vchar = (vlen == 1) ? value.charAt(0) : ' ';
 				
 				parameterValue = parameterValueMap.get(name);
 
@@ -291,7 +308,7 @@ public class AponReader {
 					parameterValueType = parameterValue.getParameterValueType();
 				} else {
 					if(!addable)
-						throw new InvalidParameterException("invalid parameter \"" + trim + "\"");
+						throw new InvalidParameterException(lineNumber, line, trim, "Only acceptable pre-defined parameters. Undefined parameter name: " + name);
 
 					parameterValueType = ParameterValueType.valueOfHint(name);
 					if(parameterValueType != null) {
@@ -300,15 +317,22 @@ public class AponReader {
 					}
 					//System.out.println(lineNumber + " - valueOfHint: " + parameterValueType);
 					
-					if(parameterValueType != null && CURLY_BRACKET_OPEN == vchar) {
-						parameterValueType = ParameterValueType.PARAMETERS;
-					}
 				}
 				
 				if(parameterValueType == ParameterValueType.VARIABLE)
 					parameterValueType = null;
+				
+				if(parameterValueType != null) {
+					if(parameterValueType != ParameterValueType.PARAMETERS && CURLY_BRACKET_OPEN == vchar)
+						throw new IncompatibleParameterValueTypeException(lineNumber, line, trim, parameterValue, parameterValueType);
+					if(parameterValueType != ParameterValueType.TEXT && ROUND_BRACKET_OPEN == vchar)
+						throw new IncompatibleParameterValueTypeException(lineNumber, line, trim, parameterValue, parameterValueType);
+					if(parameterValue != null && !parameterValue.isArray() && SQUARE_BRACKET_OPEN == vchar)
+						throw new IncompatibleParameterValueTypeException(lineNumber, line, trim, "value is not array");
+				}
 			}
 			
+			//TODO
 			if(parameterValue != null) {
 				if(!parameterValue.isArray()) {
 					if(parameterValueType == ParameterValueType.PARAMETERS && CURLY_BRACKET_OPEN != vchar)
@@ -335,10 +359,6 @@ public class AponReader {
 					parameterValueType = ParameterValueType.PARAMETERS;
 				} else if(ROUND_BRACKET_OPEN == vchar) {
 					parameterValueType = ParameterValueType.TEXT;
-				} else {
-					if(vlen > 0 && value.charAt(0) == '"')
-						parameterValueType = ParameterValueType.STRING;
-					//else if(Boolean.)
 				}
 			}
 			
@@ -364,47 +384,71 @@ public class AponReader {
 				lineNumber = valuelizeText(reader, lineNumber, sb);
 				parameterValue.putValue(sb.toString());
 			} else {
+				if(vlen == 0) {
+					value = null;
+					
+					if(parameterValueType == null)
+						parameterValueType = ParameterValueType.STRING;
+				} else {
+					if(value.charAt(0) == '"') {
+						if(vlen == 1 || value.charAt(vlen - 1) != '"')
+							throw new InvalidParameterException(lineNumber, line, trim, "Unclosed quotation mark.");						
+							
+						value = value.substring(1, vlen - 1);
+						
+						if(parameterValueType == null)
+							parameterValueType = ParameterValueType.STRING;
+					} else if(parameterValueType == null) {
+						if(value.equals("true") || value.equals("false")) {
+							parameterValueType = ParameterValueType.BOOLEAN;
+						} else {
+							try {
+								Integer.parseInt(value);
+								parameterValueType = ParameterValueType.INT;
+							} catch(NumberFormatException e1) {
+								try {
+									Long.parseLong(value);
+									parameterValueType = ParameterValueType.LONG;
+								} catch(NumberFormatException e2) {
+									try {
+										Float.parseFloat(value);
+										parameterValueType = ParameterValueType.FLOAT;
+									} catch(NumberFormatException e3) {
+										try {
+											Double.parseDouble(value);
+											parameterValueType = ParameterValueType.DOUBLE;
+										} catch(NumberFormatException e4) {
+											throw new InvalidParameterException(lineNumber, line, trim, "Unknown value type. Strings must be enclosed between double quotation marks.");
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+				
 				if(parameterValue == null) {
 					parameterValue = new ParameterValue(name, parameterValueType, (openBracket == SQUARE_BRACKET_OPEN));
 					parameterValueMap.put(name, parameterValue);
+				} else {
+					if(parameterValue.getParameterValueType() != parameterValueType)
+						throw new IncompatibleParameterValueTypeException(lineNumber, line, trim, parameterValue, parameterValue.getParameterValueType());						
 				}
 				
 				if(parameterValueType == ParameterValueType.STRING) {
 					parameterValue.putValue(value);
 				} else if(parameterValueType == ParameterValueType.INT) {
-					try {
-						parameterValue.putValue(new Integer(value));
-					} catch(NumberFormatException ex) {
-						throw new IncompatibleParameterValueTypeException(parameterValue, ParameterValueType.INT);
-						//throw new InvalidParameterException("Cannot parse value of '" + name + "' to an Integer. \"" + buffer + "\"");
-					}
+					parameterValue.putValue(new Integer(value));
 				} else if(parameterValueType == ParameterValueType.LONG) {
-					try {
-						parameterValue.putValue(new Long(value));
-					} catch(NumberFormatException ex) {
-						throw new IncompatibleParameterValueTypeException(parameterValue, ParameterValueType.LONG);
-						//throw new InvalidParameterException("Cannot parse value of '" + name + "' to an Long. \"" + buffer + "\"");
-					}
+					parameterValue.putValue(new Long(value));
 				} else if(parameterValueType == ParameterValueType.FLOAT) {
-					try {
-						parameterValue.putValue(new Float(value));
-					} catch(NumberFormatException ex) {
-						throw new IncompatibleParameterValueTypeException(parameterValue, ParameterValueType.FLOAT);
-						//throw new InvalidParameterException("Cannot parse value of '" + name + "' to an Float. \"" + buffer + "\"");
-					}
+					parameterValue.putValue(new Float(value));
 				} else if(parameterValueType == ParameterValueType.DOUBLE) {
-					try {
-						parameterValue.putValue(new Double(value));
-					} catch(NumberFormatException ex) {
-						throw new IncompatibleParameterValueTypeException(parameterValue, ParameterValueType.DOUBLE);
-						//throw new InvalidParameterException("Cannot parse value of '" + name + "' to an Double. \"" + buffer + "\"");
-					}
+					parameterValue.putValue(new Double(value));
 				} else if(parameterValueType == ParameterValueType.BOOLEAN) {
 					parameterValue.putValue(Boolean.valueOf(value));
 				}
-				//System.out.println("val************ parameterValue.putValue(): name=" + name + ", value=" + value);
 			}
-				//}
 		}
 		
 		if(openBracket == CURLY_BRACKET_OPEN) {
@@ -441,8 +485,6 @@ public class AponReader {
 		
 		throw new InvalidParameterException(lineNumber, line, trim, "The end of the text line was reached with no closing round bracket found.");
 	}
-	
-	private void strip
 	
 	public static void main(String argv[]) {
 		try {

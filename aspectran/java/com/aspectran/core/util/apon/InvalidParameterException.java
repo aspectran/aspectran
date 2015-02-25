@@ -78,7 +78,7 @@ public class InvalidParameterException extends RuntimeException {
 		StringBuilder sb = new StringBuilder();
 		if(msg != null)
 			sb.append(msg);
-		sb.append(" Line number ").append(lineNumber);
+		sb.append(" Line number: ").append(lineNumber);
 		if(column != -1) {
 			String lspace = line.substring(0, column);
 			int tabCnt = StringUtils.search(lspace, "\t");
@@ -86,7 +86,7 @@ public class InvalidParameterException extends RuntimeException {
 			if(trim != null && trim.length() > 33)
 				trim = trim.substring(0, 30) + "...";
 			
-			sb.append(", Column ").append(column + 1);
+			sb.append(", Column: ").append(column + 1);
 			
 			if(tabCnt == 0) {
 				sb.append(column);
