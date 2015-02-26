@@ -30,46 +30,22 @@ public class AponReader {
 	
 	private static final char COMMENT_LINE_START = '#';
 	
-	private static final char NO_CONTROL_CHAR = ' ';
+	private static final char NO_CONTROL_CHAR = 0;
+	
+	private static final char QUOTE_CHAR = '"';
+	
+	private static final char ESCAPE_CHAR = '\\';
+	
+	private static final String NULL = "null";
+	
+	private static final String TRUE = "true";
+	
+	private static final String FALSE = "false";
 	
 	private boolean addable;
 	
 	public AponReader() {
 	}
-	/*
-	public AponReader(Parameters holder) {
-		this.holder = holder;
-	}
-	*/
-	/*
-	public void read(String text) throws IOException {
-		read(text, null);
-	}
-	public void read(String text, ParameterDefine[] parameterDefines) throws IOException {
-		if(parameterDefines == null && text != null) {
-			parameterDefines = preparse(text);
-		}
-		
-		this.parameterDefineMap = new LinkedHashMap<String, ParameterDefine>();
-
-		if(parameterDefines != null) {
-			for(ParameterDefine pd : parameterDefines) {
-				if(holder != null)
-					pd.setHolder(holder);
-				
-				parameterDefineMap.put(pd.getName(), pd);
-			}
-		}
-
-		if(parameterDefines == null && text == null)
-			addable = true;
-		else
-			addable = false;
-		
-		if(text != null)
-			valuelize(text);
-	}
-	*/
 
 	public Parameters read(String text, Parameters parameters) {
 		read(text, parameters.getParameterValueMap());
@@ -87,24 +63,7 @@ public class AponReader {
 			throw new AponReadFailedException(e);
 		}
 	}
-/*
-	public Parameters read(InputStream inputStream, Parameters parameters) {
-		read(inputStream, parameters.getParameterDefines());
-		return parameters;
-	}
 
-	public Map<String, ParameterDefine> read(InputStream inputStream, ParameterDefine[] parameterDefines) {
-		try {
-			BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-			Map<String, ParameterDefine> parameterDefineMap = read(reader, parameterDefines);
-			reader.close();
-	
-			return parameterDefineMap;
-		} catch(IOException e) {
-			throw new AponReadFailedException(e);
-		}
-	}
-*/
 	public Parameters read(Reader reader) throws IOException {
 		Parameters parameters = new GenericParameters();
 		read(reader, parameters);
@@ -128,115 +87,7 @@ public class AponReader {
 		
 		return parameterValueMap;
 	}
-	
-	/*
-	public ParameterDefine[] getParameterDefines() {
-		Collection<ParameterDefine> values = parameterDefineMap.values();
-		return values.toArray(new ParameterDefine[values.size()]);
-	}
-	
-	public Map<String, ParameterDefine> getParameterDefineMap() {
-		return parameterDefineMap;
-	}
-	
-	public void addParameterDefine(ParameterDefine parameterDefine) {
-		parameterDefineMap.put(parameterDefine.getName(), parameterDefine);
-	}
-	private ParameterDefine[] preparse(String text) throws IOException {
-		BufferedReader reader = new BufferedReader(new StringReader(text));
-		ParameterDefine[] parameterDefines = preparse(reader, null);
-		reader.close();
-		
-		preparsed = true;
-		
-		return parameterDefines;
-	}
-	
-	private ParameterDefine[] preparse(BufferedReader reader, ParameterDefine parentParameterDefine) throws IOException {
-		List<ParameterDefine> parameterDefineList = new ArrayList<ParameterDefine>();
-		
-		String openBraket = parentParameterDefine != null ? CURLY_BRAKET_OPEN : null;
-		
-		preparse(reader, parameterDefineList, openBraket, null);
-		
-		ParameterDefine[] parameterDefines = parameterDefineList.toArray(new ParameterDefine[parameterDefineList.size()]);
-		
-		if(parentParameterDefine != null) {
-			Parameters parameters = new GenericParameters(parentParameterDefine.getName(), parameterDefines);
-			parentParameterDefine.putValue(parameters);
-		}
-		
-		return parameterDefines;
-	}
-	
-	private void preparse(BufferedReader reader, List<ParameterDefine> parameterDefineList, String openBraket, ParameterDefine parameterDefine) throws IOException {
-		String buffer = null;
-		String name = null;
-		String value = null;
-		
-		while((buffer = reader.readLine()) != null) {
-			if(StringUtils.hasText(buffer)) {
-				buffer = buffer.trim();
 
-				if(openBraket != null) {
-					if(openBraket == CURLY_BRAKET_OPEN && CURLY_BRAKET_CLOSE.equals(buffer) ||
-							openBraket == SQUARE_BRAKET_OPEN && SQUARE_BRAKET_CLOSE.equals(buffer))
-						return;
-				}
-				
-				if(openBraket == SQUARE_BRAKET_OPEN) {
-					value = buffer;
-				} else {
-					int index = buffer.indexOf(":");
-
-					if(index == -1)
-						throw new InvalidParameterException("Cannot parse into name-value pair. \"" + buffer + "\"");
-
-					name = buffer.substring(0, index).trim();
-					value = buffer.substring(index + 1).trim();
-				}
-
-				if(StringUtils.hasText(value)) {
-					if(CURLY_BRAKET_OPEN.equals(value)) {
-						if(openBraket == SQUARE_BRAKET_OPEN) {
-							preparse(reader, parameterDefine);
-						} else {
-							ParameterDefine pd = new ParameterDefine(name, ParameterValueType.PARAMETERS);
-							parameterDefineList.add(pd);
-							preparse(reader, pd);
-						}
-					} else if(openBraket != SQUARE_BRAKET_OPEN) {
-						ParameterValueType valueType = ParameterValueType.valueOfHint(name);
-						
-						if(valueType != null) {
-							name = ParameterValueType.stripValueTypeHint(name);
-						} else {
-							valueType = ParameterValueType.STRING;
-						}
-
-						if(SQUARE_BRAKET_OPEN.equals(value)) {
-							ParameterDefine pd = new ParameterDefine(name, valueType, true);
-							parameterDefineList.add(pd);
-	
-							preparse(reader, parameterDefineList, SQUARE_BRAKET_OPEN, pd);
-						} else {
-							ParameterDefine pd = new ParameterDefine(name, valueType);
-							parameterDefineList.add(pd);
-						}
-					}
-				}
-			}
-		}
-		
-		if(openBraket != null) {
-			if(openBraket == CURLY_BRAKET_OPEN) {
-				throw new InvalidParameterException("Cannot parse value of '" + name + "' to an array of strings.");
-			} else if(openBraket == SQUARE_BRAKET_OPEN) {
-				throw new InvalidParameterException("Cannot parse value of '" + name + "' to an array of strings.");
-			}
-		}
-	}
-	*/
 	private void valuelize(BufferedReader reader, Map<String, ParameterValue> parameterValueMap) throws IOException {
 		valuelize(parameterValueMap, reader, 0, NO_CONTROL_CHAR, null, null, null);
 	}
@@ -383,8 +234,8 @@ public class AponReader {
 					if(parameterValueType == null)
 						parameterValueType = ParameterValueType.STRING;
 				} else {
-					if(value.charAt(0) == '"') {
-						if(vlen == 1 || value.charAt(vlen - 1) != '"')
+					if(value.charAt(0) == QUOTE_CHAR) {
+						if(vlen == 1 || value.charAt(vlen - 1) != QUOTE_CHAR)
 							throw new InvalidParameterException(lineNumber, line, trim, "Unclosed quotation mark.");						
 							
 						value = value.substring(1, vlen - 1);
@@ -392,7 +243,9 @@ public class AponReader {
 						if(parameterValueType == null)
 							parameterValueType = ParameterValueType.STRING;
 					} else if(parameterValueType == null) {
-						if(value.equals("true") || value.equals("false")) {
+						if(NULL.equals(value)) {
+							value = null;
+						} else if(TRUE.equals(value) || FALSE.equals(value)) {
 							parameterValueType = ParameterValueType.BOOLEAN;
 						} else {
 							try {
@@ -429,7 +282,7 @@ public class AponReader {
 				}
 				
 				if(parameterValueType == ParameterValueType.STRING) {
-					parameterValue.putValue(value);
+					parameterValue.putValue(unescape(value));
 				} else if(parameterValueType == ParameterValueType.INT) {
 					parameterValue.putValue(new Integer(value));
 				} else if(parameterValueType == ParameterValueType.LONG) {
@@ -477,6 +330,57 @@ public class AponReader {
 		}
 		
 		throw new InvalidParameterException(lineNumber, line, trim, "The end of the text line was reached with no closing round bracket found.");
+	}
+	
+	private String unescape(String value) {
+		int vlen = value.length();
+
+		if(value == null || vlen == 0 || value.indexOf(ESCAPE_CHAR) == -1)
+			return value;
+
+		char b = value.charAt(0);
+		char c = 0;
+
+		StringBuilder sb = new StringBuilder(vlen);
+
+		for(int i = 1; i < vlen; i++) {
+			c = value.charAt(i);
+			
+			if(b == ESCAPE_CHAR) {
+				switch(c) {
+				case ESCAPE_CHAR:
+				case QUOTE_CHAR:
+					sb.append(c);
+					break;
+				case 'b':
+					sb.append('\b');
+					break;
+				case 't':
+					sb.append('\t');
+					break;
+				case 'n':
+					sb.append('\n');
+					break;
+				case 'f':
+					sb.append('\f');
+					break;
+				case 'r':
+					sb.append('\r');
+					break;
+				default:
+					sb.append(b);
+				}
+			} else {
+				sb.append(b);
+			}
+			
+			b = c;
+		}
+		
+		if(c != 0)
+			sb.append(c);
+		
+		return sb.toString();
 	}
 	
 	public static void main(String argv[]) {
