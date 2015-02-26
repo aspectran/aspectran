@@ -127,10 +127,10 @@ aspectran: {
 				action: {
 					id: "echo1"
 					echo: {
-						map1(string): {
+						map1: {
 							kind1(int): 001
-							kind2: 002
-							kind3: 003
+							kind2(float): 002
+							kind3(double): 003
 						}
 						list1(int): [
 							1
@@ -352,7 +352,7 @@ aspectran: {
 							}
 						]
 						property: {
-							map1(string): {
+							map1: {
 								kind1(int): 001
 								kind2: 002
 								kind3: 003
@@ -379,7 +379,7 @@ aspectran: {
 					{
 						id: "echo1"
 						echo: {
-							map1(string): {
+							map1(parameter): {
 								kind1(int): 001
 								kind2: 002
 								kind3: 003
@@ -470,7 +470,7 @@ aspectran: {
 		}
 	}
 	import: {
-		file: "file1.apon"
+		file: "f"ile1.apon"
 	}
 	import: {
 		file: "file2.apon"
