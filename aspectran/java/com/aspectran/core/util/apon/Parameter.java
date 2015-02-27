@@ -11,6 +11,8 @@ public interface Parameter {
 	public ParameterValueType getParameterValueType();
 
 	public boolean isArray();
+	
+	public boolean isAssigned();
 
 	public int getArraySize();
 	
