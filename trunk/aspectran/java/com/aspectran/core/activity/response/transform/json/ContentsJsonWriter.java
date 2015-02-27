@@ -58,10 +58,10 @@ public class ContentsJsonWriter extends JsonWriter {
 	 * @throws InvocationTargetException the invocation target exception
 	 */
 	public void write(ProcessResult processResult) throws IOException, InvocationTargetException {
-		openBrace();
+		openCurlyBracket();
 		write(processResult, null);
 		nextLine();
-		closeBrace();
+		closeCurlyBracket();
 	}
 
 	/**
