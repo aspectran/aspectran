@@ -1,39 +1,39 @@
 package com.aspectran.core.util.apon;
 
 
-public class AponDocument {
+public class AponFormat {
 
-	public static final char CURLY_BRACKET_OPEN = '{';
+	protected static final char CURLY_BRACKET_OPEN = '{';
 
-	public static final char CURLY_BRACKET_CLOSE = '}';
+	protected static final char CURLY_BRACKET_CLOSE = '}';
 	
-	public static final char SQUARE_BRACKET_OPEN = '[';
+	protected static final char SQUARE_BRACKET_OPEN = '[';
 	
-	public static final char SQUARE_BRACKET_CLOSE = ']';
+	protected static final char SQUARE_BRACKET_CLOSE = ']';
 
-	public static final char ROUND_BRACKET_OPEN = '(';
+	protected static final char ROUND_BRACKET_OPEN = '(';
 	
-	public static final char ROUND_BRACKET_CLOSE = ')';
+	protected static final char ROUND_BRACKET_CLOSE = ')';
 	
-	public static final char TEXT_LINE_START = '|';
+	protected static final char TEXT_LINE_START = '|';
 		
-	public static final char NAME_VALUE_SEPARATOR = ':';
+	protected static final char NAME_VALUE_SEPARATOR = ':';
 	
-	public static final char COMMENT_LINE_START = '#';
+	protected static final char COMMENT_LINE_START = '#';
 	
-	public static final char NO_CONTROL_CHAR = 0;
+	protected static final char NO_CONTROL_CHAR = 0;
 	
-	public static final char QUOTE_CHAR = '"';
+	protected static final char QUOTE_CHAR = '"';
 	
-	public static final char ESCAPE_CHAR = '\\';
+	protected static final char ESCAPE_CHAR = '\\';
 	
-	public static final String NULL = "null";
+	protected static final String NULL = "null";
 	
-	public static final String TRUE = "true";
+	protected static final String TRUE = "true";
 	
-	public static final String FALSE = "false";
+	protected static final String FALSE = "false";
 	
-	public static String unescape(String value) {
+	protected static String unescape(String value) {
 		int vlen = value.length();
 
 		if(value == null || vlen == 0 || value.indexOf(ESCAPE_CHAR) == -1)

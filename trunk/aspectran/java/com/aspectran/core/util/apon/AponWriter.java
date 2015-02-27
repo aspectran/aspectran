@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.Map;
 
-public class AponWriter extends AponDocument {
+public class AponWriter extends AponFormat {
 
 	private boolean addable;
 	
