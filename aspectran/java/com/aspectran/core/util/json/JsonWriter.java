@@ -61,14 +61,6 @@ public class JsonWriter {
 	}
 	
 	/**
-	 * Flush.
-	 * @throws IOException 
-	 */
-	public void flush() throws IOException {
-		writer.flush();
-	}
-
-	/**
 	 * Write.
 	 * 
 	 * @param object the object
@@ -91,7 +83,7 @@ public class JsonWriter {
 			@SuppressWarnings("unchecked")
 			Map<String, Object> map = (Map<String, Object>)object;
 
-			openBrace();
+			openCurlyBracket();
 
 			Iterator<String> iter = map.keySet().iterator();
 
@@ -111,7 +103,7 @@ public class JsonWriter {
 				nextLine();
 			}
 
-			closeBrace();
+			closeCurlyBracket();
 		} else if(object instanceof Collection<?>) {
 			@SuppressWarnings("unchecked")
 			Iterator<Object> iter = ((Collection<Object>)object).iterator();
@@ -146,7 +138,7 @@ public class JsonWriter {
 		} else {
 			String[] readablePropertyNames = BeanUtils.getReadablePropertyNames(object);
 
-			openBrace();
+			openCurlyBracket();
 
 			if(readablePropertyNames != null && readablePropertyNames.length > 0) {
 				for(int i = 0; i < readablePropertyNames.length; i++) {
@@ -169,7 +161,7 @@ public class JsonWriter {
 				}
 			}
 
-			closeBrace();
+			closeCurlyBracket();
 		}
 	}
 
@@ -254,7 +246,7 @@ public class JsonWriter {
 	 * 
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
-	protected void openBrace() throws IOException {
+	protected void openCurlyBracket() throws IOException {
 		if(!willWriteValue)
 			indent();
 
@@ -269,7 +261,7 @@ public class JsonWriter {
 	 * 
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
-	protected void closeBrace() throws IOException {
+	protected void closeCurlyBracket() throws IOException {
 		indentDepth--;
 
 		indent();
@@ -305,6 +297,14 @@ public class JsonWriter {
 		indent();
 
 		writer.write("]");
+	}
+
+	/**
+	 * Flush.
+	 * @throws IOException 
+	 */
+	public void flush() throws IOException {
+		writer.flush();
 	}
 
 	/**
