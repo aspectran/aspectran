@@ -19,6 +19,8 @@ public class ParameterValue implements Parameter {
 	
 	private Parameters holder;
 	
+	private boolean assigned;
+	
 	public ParameterValue(String name, ParameterValueType parameterType) {
 		this(name, parameterType, false);
 	}
@@ -88,6 +90,10 @@ public class ParameterValue implements Parameter {
 	public boolean isArray() {
 		return array;
 	}
+	
+	public boolean isAssigned() {
+		return assigned;
+	}
 
 	public int getArraySize() {
 		if(list == null)
@@ -109,6 +115,7 @@ public class ParameterValue implements Parameter {
 		} else {
 			this.value = value;
 		}
+		assigned = true;
 	}
 	
 	public void putValue(Object value) {
@@ -117,6 +124,7 @@ public class ParameterValue implements Parameter {
 		} else {
 			this.value = value;
 		}
+		assigned = true;
 	}
 	
 	private synchronized void addValue(Object value) {

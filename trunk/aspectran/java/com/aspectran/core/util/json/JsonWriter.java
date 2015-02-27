@@ -196,7 +196,7 @@ public class JsonWriter {
 	protected void writeName(String name) throws IOException {
 		indent();
 
-		writer.write(quote(name));
+		writer.write(escape(name));
 		writer.write(":");
 
 		if(prettyWrite)
@@ -216,7 +216,7 @@ public class JsonWriter {
 		if(!willWriteValue)
 			indent();
 
-		writer.write(quote(value));
+		writer.write(escape(value));
 
 		willWriteValue = false;
 	}
@@ -317,7 +317,7 @@ public class JsonWriter {
 	 * 
 	 * @return  A String correctly formatted for insertion in a JSON text.
 	 */
-	public static String quote(String string) {
+	public static String escape(String string) {
 		if(string == null || string.length() == 0)
 			return "\"\"";
 
