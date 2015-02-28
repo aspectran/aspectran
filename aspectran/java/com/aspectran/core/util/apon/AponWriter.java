@@ -29,55 +29,38 @@ public class AponWriter extends AponFormat {
 	public void write(Parameters parameters) throws IOException {
 		Map<String, ParameterValue> parameterValueMap = parameters.getParameterValueMap();
 		
-		indentPlus();
 		for(Parameter pv : parameterValueMap.values()) {
 			if(pv.isAssigned()) {
 				write(pv);
 			}
 		}
-		indentMinus();
 	}
 
 	public void write(Parameter parameter) throws IOException {
-		indent();
 		writeName(parameter.getName());
 		
 		if(parameter.getParameterValueType() == ParameterValueType.PARAMETERS) {
 			if(parameter.isArray()) {
 				openSquareBracket();
-				nextLine();
-				indentPlus();
 				for(Parameters p : parameter.getValueAsParametersList()) {
 					indent();
 					openCurlyBracket();
-					nextLine();
 					write(p);
-					indent();
 					closeCurlyBracket();
-					nextLine();
 				}
-				indentMinus();
-				indent();
 				closeSquareBracket();
 			} else {
 				openCurlyBracket();
-				nextLine();
 				write(parameter.getValueAsParameters());
-				indent();
 				closeCurlyBracket();
 			}
 		} else if(parameter.getParameterValueType() == ParameterValueType.STRING || parameter.getParameterValueType() == ParameterValueType.VARIABLE) {
 			if(parameter.isArray()) {
 				openSquareBracket();
-				nextLine();
-				indentPlus();
 				for(String value : parameter.getValueAsStringList()) {
 					indent();
 					writeString(value);
-					nextLine();
 				}
-				indentMinus();
-				indent();
 				closeSquareBracket();
 			} else {
 				writeString(parameter.getValueAsString());
@@ -87,10 +70,10 @@ public class AponWriter extends AponFormat {
 		} else {
 			write(parameter.getValue());
 		}
-		nextLine();
 	}
 	
 	private void writeName(String name) throws IOException {
+		indent();
 		writer.write(name);
 		writer.write(NAME_VALUE_SEPARATOR);
 		writer.write(SPACE_CHAR);
@@ -100,35 +83,47 @@ public class AponWriter extends AponFormat {
 		writer.write(QUOTE_CHAR);
 		writer.write(escape(value));
 		writer.write(QUOTE_CHAR);
+		nextLine();
 	}
 	
-	private void writeText(String value) {
-		
+	private void writeText(String value) throws IOException {
+		nextLine();
 	}
 	
 	private void write(Object value) throws IOException {
 		if(value == null) {
 			writer.write(NULL);
-			return;
+		} else {
+			writer.write(value.toString());
 		}
 		
-		writer.write(value.toString());
+		nextLine();
 	}
 	
 	private void openCurlyBracket() throws IOException {
 		writer.write(CURLY_BRACKET_OPEN);
+		nextLine();
+		indentPlus();
 	}
 
 	private void closeCurlyBracket() throws IOException {
+		indentMinus();
+		indent();
 		writer.write(CURLY_BRACKET_CLOSE);
+		nextLine();
 	}
 
 	private void openSquareBracket() throws IOException {
 		writer.write(SQUARE_BRACKET_OPEN);
+		nextLine();
+		indentPlus();
 	}
 
 	private void closeSquareBracket() throws IOException {
+		indentMinus();
+		indent();
 		writer.write(SQUARE_BRACKET_CLOSE);
+		nextLine();
 	}
 
 	private void nextLine() throws IOException {
@@ -137,7 +132,7 @@ public class AponWriter extends AponFormat {
 	
 	private void indent() throws IOException {
 		if(prettyWrite) {
-			for(int i = 1; i < indentDepth; i++) {
+			for(int i = 0; i < indentDepth; i++) {
 				writer.write('\t');
 			}
 		}
@@ -180,6 +175,5 @@ public class AponWriter extends AponFormat {
 			e.printStackTrace();
 		}
 	}
-
 	
 }

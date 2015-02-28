@@ -3,8 +3,8 @@ aspectran: {
 		transletNamePattern: "/example/*"
 		transletInterfaceClass: "com.aspectran.web.activity.WebTranslet"
 		transletImplementClass: "com.aspectran.web.activity.WebTransletImpl"
-		nullableContentId: "true"
-		nullableActionId: "true"
+		nullableContentId: true
+		nullableActionId: true
 		beanProxyMode: "cglib"
 	}
 	typeAlias: {
@@ -82,13 +82,13 @@ aspectran: {
 							type: "properties"
 							value: {
 								org.quartz.scheduler.instanceName: "DefaultQuartzScheduler"
-								org.quartz.scheduler.rmi.export: "false"
-								org.quartz.scheduler.rmi.proxy: "false"
-								org.quartz.scheduler.wrapJobExecutionInUserTransaction: "false"
+								org.quartz.scheduler.rmi.export: false
+								org.quartz.scheduler.rmi.proxy: false
+								org.quartz.scheduler.wrapJobExecutionInUserTransaction: false
 								org.quartz.threadPool.class: "org.quartz.simpl.SimpleThreadPool"
 								org.quartz.threadPool.threadCount: 10
 								org.quartz.threadPool.threadPriority: 5
-								org.quartz.threadPool.threadsInheritContextClassLoaderOfInitializingThread: "true"
+								org.quartz.threadPool.threadsInheritContextClassLoaderOfInitializingThread: true
 								org.quartz.jobStore.misfireThreshold: 60000
 								org.quartz.jobStore.class: "org.quartz.simpl.RAMJobStore"
 							}
@@ -104,7 +104,7 @@ aspectran: {
 							}
 							valueType: "java.lang.String"
 							defaultValue: "default value"
-							tokenize: "true"
+							tokenize: true
 						}
 						{
 							name: "property2"
@@ -117,12 +117,12 @@ aspectran: {
 							}
 						}
 					]
-					hidden: "false"
+					hidden: false
 				}
 				action: {
 					id: "include1"
 					include: "/common/action/a1"
-					hidden: "true"
+					hidden: true
 				}
 				action: {
 					id: "echo1"
@@ -144,7 +144,7 @@ aspectran: {
 						]
 						message: "error 001"
 					}
-					hidden: "false"
+					hidden: false
 				}
 			}
 			after: {
@@ -230,13 +230,13 @@ aspectran: {
 					type: "properties"
 					value: {
 						org.quartz.scheduler.instanceName: "DefaultQuartzScheduler"
-						org.quartz.scheduler.rmi.export: "false"
-						org.quartz.scheduler.rmi.proxy: "false"
-						org.quartz.scheduler.wrapJobExecutionInUserTransaction: "false"
+						org.quartz.scheduler.rmi.export: false
+						org.quartz.scheduler.rmi.proxy: false
+						org.quartz.scheduler.wrapJobExecutionInUserTransaction: false
 						org.quartz.threadPool.class: "org.quartz.simpl.SimpleThreadPool"
 						org.quartz.threadPool.threadCount: 10
 						org.quartz.threadPool.threadPriority: 5
-						org.quartz.threadPool.threadsInheritContextClassLoaderOfInitializingThread: "true"
+						org.quartz.threadPool.threadsInheritContextClassLoaderOfInitializingThread: true
 						org.quartz.jobStore.misfireThreshold: 60000
 						org.quartz.jobStore.class: "org.quartz.simpl.RAMJobStore"
 					}
@@ -253,7 +253,7 @@ aspectran: {
 				}
 				valueType: "java.lang.String"
 				defaultValue: "default value"
-				tokenize: "true"
+				tokenize: true
 			}
 			{
 				name: "property2"
@@ -298,7 +298,7 @@ aspectran: {
 					}
 					valueType: "java.lang.String"
 					defaultValue: "default value"
-					tokenize: "true"
+					tokenize: true
 				}
 				{
 					name: "property2"
@@ -312,7 +312,7 @@ aspectran: {
 				}
 			]
 			multipart: {
-				attribute: "true"
+				attribute: true
 				fileItem: [
 					"name1[]"
 					"name2[]"
@@ -339,13 +339,13 @@ aspectran: {
 								type: "properties"
 								value: {
 									org.quartz.scheduler.instanceName: "DefaultQuartzScheduler"
-									org.quartz.scheduler.rmi.export: "false"
-									org.quartz.scheduler.rmi.proxy: "false"
-									org.quartz.scheduler.wrapJobExecutionInUserTransaction: "false"
+									org.quartz.scheduler.rmi.export: false
+									org.quartz.scheduler.rmi.proxy: false
+									org.quartz.scheduler.wrapJobExecutionInUserTransaction: false
 									org.quartz.threadPool.class: "org.quartz.simpl.SimpleThreadPool"
 									org.quartz.threadPool.threadCount: 10
 									org.quartz.threadPool.threadPriority: 5
-									org.quartz.threadPool.threadsInheritContextClassLoaderOfInitializingThread: "true"
+									org.quartz.threadPool.threadsInheritContextClassLoaderOfInitializingThread: true
 									org.quartz.jobStore.misfireThreshold: 60000
 									org.quartz.jobStore.class: "org.quartz.simpl.RAMJobStore"
 								}
@@ -369,12 +369,12 @@ aspectran: {
 							]
 							message: "error 001"
 						}
-						hidden: "false"
+						hidden: false
 					}
 					{
 						id: "include1"
 						include: "/common/action/a1"
-						hidden: "true"
+						hidden: true
 					}
 					{
 						id: "echo1"
@@ -396,7 +396,7 @@ aspectran: {
 							]
 							message: "error 001"
 						}
-						hidden: "false"
+						hidden: false
 					}
 				]
 			}
