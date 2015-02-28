@@ -1,6 +1,9 @@
 package com.aspectran.core.util.apon;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.Reader;
+import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.Map;
@@ -37,38 +40,98 @@ public class AponWriter extends AponFormat {
 	}
 
 	public void write(Parameter parameter) throws IOException {
-		writeName(parameter.getName());
-		
 		if(parameter.getParameterValueType() == ParameterValueType.PARAMETERS) {
 			if(parameter.isArray()) {
-				openSquareBracket();
-				for(Parameters p : parameter.getValueAsParametersList()) {
-					indent();
-					openCurlyBracket();
-					write(p);
-					closeCurlyBracket();
+				if(parameter.isBracketed()) {
+					writeName(parameter.getName());
+					openSquareBracket();
+					for(Parameters p : parameter.getValueAsParametersList()) {
+						indent();
+						openCurlyBracket();
+						write(p);
+						closeCurlyBracket();
+					}
+					closeSquareBracket();
+				} else {
+					for(Parameters p : parameter.getValueAsParametersList()) {
+						writeName(parameter.getName());
+						openCurlyBracket();
+						write(p);
+						closeCurlyBracket();
+					}
 				}
-				closeSquareBracket();
 			} else {
+				writeName(parameter.getName());
 				openCurlyBracket();
 				write(parameter.getValueAsParameters());
 				closeCurlyBracket();
 			}
 		} else if(parameter.getParameterValueType() == ParameterValueType.STRING || parameter.getParameterValueType() == ParameterValueType.VARIABLE) {
 			if(parameter.isArray()) {
-				openSquareBracket();
-				for(String value : parameter.getValueAsStringList()) {
-					indent();
-					writeString(value);
+				if(parameter.isBracketed()) {
+					writeName(parameter.getName());
+					openSquareBracket();
+					for(String value : parameter.getValueAsStringList()) {
+						indent();
+						writeString(value);
+					}
+					closeSquareBracket();
+				} else {
+					for(String value : parameter.getValueAsStringList()) {
+						writeName(parameter.getName());
+						writeString(value);
+					}
 				}
-				closeSquareBracket();
 			} else {
+				writeName(parameter.getName());
 				writeString(parameter.getValueAsString());
 			}
 		} else if(parameter.getParameterValueType() == ParameterValueType.TEXT) {
-			writeText(parameter.getValueAsString());
+			if(parameter.isArray()) {
+				if(parameter.isBracketed()) {
+					writeName(parameter.getName());
+					openSquareBracket();
+					for(String value : parameter.getValueAsStringList()) {
+						indent();
+						openRoundBracket();
+						writeText(value);
+						closeRoundBracket();
+					}
+					closeSquareBracket();
+				} else {
+					for(String value : parameter.getValueAsStringList()) {
+						writeName(parameter.getName());
+						openRoundBracket();
+						writeText(value);
+						closeRoundBracket();
+					}
+				}
+			} else {
+				writeName(parameter.getName());
+				openRoundBracket();
+				writeText(parameter.getValueAsString());
+				closeRoundBracket();
+			}
 		} else {
-			write(parameter.getValue());
+			if(parameter.isArray()) {
+				if(parameter.isBracketed()) {
+					writeName(parameter.getName());
+					openSquareBracket();
+					for(Object value : parameter.getValueList()) {
+						indent();
+						write(value);
+					}
+					closeSquareBracket();
+				} else {
+					for(Object value : parameter.getValueList()) {
+						writeName(parameter.getName());
+						write(value);
+					}
+				}
+			} else {
+				writeName(parameter.getName());
+				write(parameter.getValue());
+			}
 		}
 	}
 	
@@ -87,7 +150,16 @@ public class AponWriter extends AponFormat {
 	}
 	
 	private void writeText(String value) throws IOException {
-		nextLine();
+		Reader r = new StringReader(value);
+		BufferedReader br = new BufferedReader(r);
+		String line;
+		
+		while((line = br.readLine()) != null) {
+			indent();
+			writer.write(TEXT_LINE_START);
+			writer.write(line);
+			nextLine();
+		}
 	}
 	
 	private void write(Object value) throws IOException {
@@ -126,6 +198,19 @@ public class AponWriter extends AponFormat {
 		nextLine();
 	}
 
+	private void openRoundBracket() throws IOException {
+		writer.write(ROUND_BRACKET_OPEN);
+		nextLine();
+		indentPlus();
+	}
+	
+	private void closeRoundBracket() throws IOException {
+		indentMinus();
+		indent();
+		writer.write(ROUND_BRACKET_CLOSE);
+		nextLine();
+	}
+	
 	private void nextLine() throws IOException {
 		writer.write("\n");
 	}
@@ -152,10 +237,6 @@ public class AponWriter extends AponFormat {
 	
 	public void flush() throws IOException {
 		writer.flush();
-	}
-	
-	private String escape(String value) {
-		return value;
 	}
 	
 	public static void main(String argv[]) {

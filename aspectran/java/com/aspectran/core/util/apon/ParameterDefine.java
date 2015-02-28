@@ -64,9 +64,9 @@ public class ParameterDefine {
 				throw new InvalidParameterException("Could not instantiate parameters class " + this, e);
 			}
 			*/
-			parameterValue = new ParameterValue(name, parametersClass, array);
+			parameterValue = new ParameterValue(name, parametersClass, array, true);
 		} else {
-			parameterValue = new ParameterValue(name, parameterValueType, array);
+			parameterValue = new ParameterValue(name, parameterValueType, array, true);
 		}
 
 		return parameterValue;

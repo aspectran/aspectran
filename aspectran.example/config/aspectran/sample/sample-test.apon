@@ -34,26 +34,28 @@ aspectran: {
 					+: "/front/b/*"
 					+: "/front/c/*"
 					-: "/front/a/A*"
-					-: "/front/a/A*"
+					-: "/front/a/A111111111*"
 				}
-				target: {
-					+: "/front/a/*@bean^method"
-					+: "/front/a/*@bean^method"
-					exclude: [
-						"/front/a/*@bean^method"
-						"/front/a/*@bean^method"
-					]
-				}
-				target: {
-					translet: "aaa"
-					bean: "bbb"
-					method: "ccc"
-					exclude: {
+				target: [
+					{
+						+: "/front/a/*@bean^method"
+						+: "/front/a/*@bean^method"
+						exclude: [
+							"/front/a/*@bean^method"
+							"/front/a/*@bean^method"
+						]
+					}
+					{
 						translet: "aaa"
 						bean: "bbb"
 						method: "ccc"
+						exclude: {
+							translet: "aaa"
+							bean: "bbb"
+							method: "ccc"
+						}
 					}
-				}
+				]
 				simpleTrigger: {
 					startDelay: 500
 					repleatInterval: 3000
@@ -328,7 +330,7 @@ aspectran: {
 		content: [
 			{
 				id: "content1"
-				hidden: "false;"
+				hidden: false
 				action: [
 					{
 						id: "action1"
@@ -401,6 +403,20 @@ aspectran: {
 				]
 			}
 		]
+		content: {
+			id: "content1"
+			hidden: true
+			action: {
+				id: "include3"
+				include: "/common/action/a1"
+				hidden: true
+			}
+			action: {
+				id: "include4"
+				include: "/common/action/a1"
+				hidden: true
+			}
+		} 
 		response: {
 			name: ".xml"
 			characterEncoding: "utf-8"
@@ -473,6 +489,6 @@ aspectran: {
 		file: "f"ile1.\napon"
 	}
 	import: {
-		file: "file2.apon"
+		file: "file2.apon\nabc"
 	}
 }

@@ -10,38 +10,8 @@ import com.aspectran.core.context.builder.Importable;
 import com.aspectran.core.context.builder.ImportableFile;
 import com.aspectran.core.context.rule.type.ImportFileType;
 
-public class AponReader {
+public class AponReader extends AponFormat {
 
-	private static final char CURLY_BRACKET_OPEN = '{';
-
-	private static final char CURLY_BRACKET_CLOSE = '}';
-	
-	private static final char SQUARE_BRACKET_OPEN = '[';
-	
-	private static final char SQUARE_BRACKET_CLOSE = ']';
-
-	private static final char ROUND_BRACKET_OPEN = '(';
-	
-	private static final char ROUND_BRACKET_CLOSE = ')';
-	
-	private static final char TEXT_LINE_START = '|';
-		
-	private static final char NAME_VALUE_SEPARATOR = ':';
-	
-	private static final char COMMENT_LINE_START = '#';
-	
-	private static final char NO_CONTROL_CHAR = 0;
-	
-	private static final char QUOTE_CHAR = '"';
-	
-	private static final char ESCAPE_CHAR = '\\';
-	
-	private static final String NULL = "null";
-	
-	private static final String TRUE = "true";
-	
-	private static final String FALSE = "false";
-	
 	private boolean addable;
 	
 	public AponReader() {
@@ -282,7 +252,7 @@ public class AponReader {
 				}
 				
 				if(parameterValueType == ParameterValueType.STRING) {
-					parameterValue.putValue(unescape(value));
+					parameterValue.putValue(unescape(value, lineNumber, line, trim));
 				} else if(parameterValueType == ParameterValueType.INT) {
 					parameterValue.putValue(new Integer(value));
 				} else if(parameterValueType == ParameterValueType.LONG) {
@@ -293,6 +263,12 @@ public class AponReader {
 					parameterValue.putValue(new Double(value));
 				} else if(parameterValueType == ParameterValueType.BOOLEAN) {
 					parameterValue.putValue(Boolean.valueOf(value));
+				}
+			}
+			
+			if(parameterValue.isArray() && parameterValue.isBracketed()) {
+				if(openBracket != SQUARE_BRACKET_OPEN) {
+					parameterValue.setBracketed(false);
 				}
 			}
 		}
@@ -322,8 +298,9 @@ public class AponReader {
 				return lineNumber;
 				
 			if(TEXT_LINE_START == tchar) {
-				String value = line.substring(line.indexOf(TEXT_LINE_START) + 1);
-				sb.append(value);
+				if(sb.length() > 0)
+					sb.append(NEXT_LINE_CHAR);
+				sb.append(line.substring(line.indexOf(TEXT_LINE_START) + 1));
 			} else if(tlen > 0) {
 				throw new InvalidParameterException(lineNumber, line, trim, "The closing round bracket was missing or Each text line is must start with a ';' character.");
 			}
@@ -332,57 +309,18 @@ public class AponReader {
 		throw new InvalidParameterException(lineNumber, line, trim, "The end of the text line was reached with no closing round bracket found.");
 	}
 	
-	private String unescape(String value) {
-		int vlen = value.length();
-
-		if(value == null || vlen == 0 || value.indexOf(ESCAPE_CHAR) == -1)
+	private String unescape(String value, int lineNumber, String line, String trim) {
+		String s = unescape(value);
+		
+		if(value == s)
 			return value;
-
-		char b = value.charAt(0);
-		char c = 0;
-
-		StringBuilder sb = new StringBuilder(vlen);
-
-		for(int i = 1; i < vlen; i++) {
-			c = value.charAt(i);
-			
-			if(b == ESCAPE_CHAR) {
-				switch(c) {
-				case ESCAPE_CHAR:
-				case QUOTE_CHAR:
-					sb.append(c);
-					break;
-				case 'b':
-					sb.append('\b');
-					break;
-				case 't':
-					sb.append('\t');
-					break;
-				case 'n':
-					sb.append('\n');
-					break;
-				case 'f':
-					sb.append('\f');
-					break;
-				case 'r':
-					sb.append('\r');
-					break;
-				default:
-					sb.append(b);
-				}
-			} else {
-				sb.append(b);
-			}
-			
-			b = c;
-		}
 		
-		if(c != 0)
-			sb.append(c);
+		if(s == null)
+			throw new InvalidParameterException(lineNumber, line, trim, "Invalid escape sequence (valid ones are  \\b  \\t  \\n  \\f  \\r  \\\"  \\\\ )");
 		
-		return sb.toString();
+		return s;
 	}
-	
+
 	public static void main(String argv[]) {
 		try {
 			Importable importable = new ImportableFile("/c:/Users/Gulendol/Projects/aspectran/ADE/workspace/aspectran.example/config/aspectran/sample/sample-test.apon", ImportFileType.APON);
@@ -393,5 +331,4 @@ public class AponReader {
 		}
 	}
 
-	
 }
