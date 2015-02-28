@@ -321,16 +321,15 @@ public class JsonWriter {
 		if(string == null || string.length() == 0)
 			return "\"\"";
 
-		char b;
-		char c = 0;
-		int i;
 		int len = string.length();
 		StringBuilder sb = new StringBuilder(len + 4);
+		char b;
+		char c = 0;
 		String t;
 
 		sb.append('"');
 
-		for(i = 0; i < len; i++) {
+		for(int i = 0; i < len; i++) {
 			b = c;
 			c = string.charAt(i);
 

@@ -11,7 +11,11 @@ public class ParameterValue implements Parameter {
 	
 	private Class<? extends AbstractParameters> parametersClass;
 	
-	private final boolean array;
+	private boolean array;
+	
+	private boolean bracketed;
+	
+	private final boolean predefined;
 	
 	private Object value;
 	
@@ -26,34 +30,36 @@ public class ParameterValue implements Parameter {
 	}
 	
 	public ParameterValue(String name, ParameterValueType parameterValueType, boolean array) {
+		this(name, parameterValueType, array, false);
+	}
+
+	protected ParameterValue(String name, ParameterValueType parameterValueType, boolean array, boolean predefined) {
 		this.name = name;
 		this.parameterValueType = parameterValueType;
 		this.array = array;
-//		
-//		if(parameterValueType == ParameterValueType.TEXT) {
-//			this.array = true;
-//		} else {
-//			this.array = array;
-//		}
-		
-		//if(parameterValueType == ParameterValueType.PARAMETERS) {
-			//this.value = new GenericParameters();
-			//this.parametersClass = GenericParameters.class;
-		//}
-	}
+		this.predefined = predefined;
 
+		if(array)
+			this.bracketed = true;
+	}
+	
 	public ParameterValue(String name, Class<? extends AbstractParameters> parametersClass) {
 		this(name, parametersClass, false);
 	}
 	
 	public ParameterValue(String name, Class<? extends AbstractParameters> parametersClass, boolean array) {
+		this(name, parametersClass, array, false);
+	}
+	
+	protected ParameterValue(String name, Class<? extends AbstractParameters> parametersClass, boolean array, boolean predefined) {
 		this.name = name;
 		this.parameterValueType = ParameterValueType.PARAMETERS;
 		this.parametersClass = parametersClass;
 		this.array = array;
-		//this.value = parameters;
-		
-		//parameters.setParent(this);
+		this.predefined = predefined;
+
+		if(array)
+			this.bracketed = true;
 	}
 	
 	protected Parameters getHolder() {
@@ -90,7 +96,19 @@ public class ParameterValue implements Parameter {
 	public boolean isArray() {
 		return array;
 	}
-	
+
+	public boolean isBracketed() {
+		return bracketed;
+	}
+
+	public void setBracketed(boolean bracketed) {
+		this.bracketed = bracketed;
+	}
+
+	public boolean isPredefined() {
+		return predefined;
+	}
+
 	public boolean isAssigned() {
 		return assigned;
 	}
@@ -101,41 +119,57 @@ public class ParameterValue implements Parameter {
 		
 		return list.size();
 	}
-
-	public Object getValue() {
-		return value;
-	}
 	
 	@SuppressWarnings("unchecked")
 	public void setValue(Object value) {
 		if(array) {
 			list = (List<Object>)value;
-			if(list != null && !list.isEmpty())
-				this.value = list.get(0);
+			if(this.value != null)
+				this.value = null;
 		} else {
 			this.value = value;
+			if(this.list != null)
+				this.list = null;
 		}
+		
 		assigned = true;
 	}
 	
 	public void putValue(Object value) {
-		if(array) {
+		if(!predefined && !array && this.value != null) {
+			addValue(this.value);
 			addValue(value);
+			this.value = null;
+			array = true;
+			bracketed = false;
 		} else {
-			this.value = value;
+			if(array) {
+				addValue(value);
+			} else {
+				this.value = value;
+				assigned = true;
+			}
 		}
-		assigned = true;
 	}
 	
 	private synchronized void addValue(Object value) {
 		if(list == null) {
 			list = new ArrayList<Object>();
-			
-//			if(this.value == null)
-//				this.value = value;
+			assigned = true;
 		}
 		
 		list.add(value);
+	}
+
+	public Object getValue() {
+		if(array)
+			return list;
+		else
+			return value;
+	}
+
+	public List<?> getValueList() {
+		return list;
 	}
 	
 	public Object[] getValues() {
@@ -143,10 +177,6 @@ public class ParameterValue implements Parameter {
 			return null;
 
 		return list.toArray(new Object[list.size()]);
-	}
-
-	public List<?> getValueList() {
-		return list;
 	}
 
 	public String getValueAsString() {
@@ -368,6 +398,8 @@ public class ParameterValue implements Parameter {
 			if(parametersClass == null)
 				parametersClass = GenericParameters.class;
 		}
+
+		//System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&: this.individual: " + this.individual + ", individual: " + individual);
 
 		//if(list == null)
 		//	return (Parameters)value;

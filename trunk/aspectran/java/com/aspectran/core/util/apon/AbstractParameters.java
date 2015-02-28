@@ -32,7 +32,6 @@ public abstract class AbstractParameters implements Parameters {
 				ParameterValue pv = pd.newParameterValue();
 				pv.setHolder(this);
 				parameterValueMap.put(pd.getName(), pv);
-				//System.out.println("&& ParameterValue=" + pv);
 			}
 		}
 		

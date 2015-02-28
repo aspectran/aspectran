@@ -12,6 +12,8 @@ public interface Parameter {
 
 	public boolean isArray();
 	
+	public boolean isBracketed();
+	
 	public boolean isAssigned();
 
 	public int getArraySize();

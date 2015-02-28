@@ -26,7 +26,9 @@ public class AponFormat {
 	protected static final char QUOTE_CHAR = '"';
 	
 	protected static final char ESCAPE_CHAR = '\\';
-	
+
+	protected static final char NEXT_LINE_CHAR = '\n';
+
 	protected static final char SPACE_CHAR = ' ';
 	
 	protected static final String NULL = "null";
@@ -35,21 +37,77 @@ public class AponFormat {
 	
 	protected static final String FALSE = "false";
 	
-	protected static String unescape(String value) {
+	public static String escape(String value) {
+		if(value == null)
+			return null;
+		
 		int vlen = value.length();
 
-		if(value == null || vlen == 0 || value.indexOf(ESCAPE_CHAR) == -1)
+		if(vlen == 0)
 			return value;
 
-		char b = value.charAt(0);
-		char c = 0;
+		StringBuilder sb = new StringBuilder(vlen);
+		char c;
+		String t;
+
+		for(int i = 0; i < vlen; i++) {
+			c = value.charAt(i);
+
+			switch(c) {
+			case '\\':
+			case '"':
+				sb.append('\\');
+				sb.append(c);
+				break;
+			case '\b':
+				sb.append("\\b");
+				break;
+			case '\t':
+				sb.append("\\t");
+				break;
+			case '\n':
+				sb.append("\\n");
+				break;
+			case '\f':
+				sb.append("\\f");
+				break;
+			case '\r':
+				sb.append("\\r");
+				break;
+			default:
+				if(c < ' ' || (c >= '\u0080' && c < '\u00a0') || (c >= '\u2000' && c < '\u2100')) {
+					t = "000" + Integer.toHexString(c);
+					sb.append("\\u" + t.substring(t.length() - 4));
+				} else {
+					sb.append(c);
+				}
+			}
+		}
+		
+		return sb.toString();
+	}
+	
+	public static String unescape(String value) {
+		if(value == null)
+			return null;
+		
+		int vlen = value.length();
+
+		if(vlen == 0 || value.indexOf(ESCAPE_CHAR) == -1)
+			return value;
 
 		StringBuilder sb = new StringBuilder(vlen);
-
-		for(int i = 1; i < vlen; i++) {
+		char c;
+		
+		for(int i = 0; i < vlen; i++) {
 			c = value.charAt(i);
 			
-			if(b == ESCAPE_CHAR) {
+			if(c == ESCAPE_CHAR) {
+				if(++i < vlen)
+					c = value.charAt(i);
+				else
+					c = 0;
+
 				switch(c) {
 				case ESCAPE_CHAR:
 				case QUOTE_CHAR:
@@ -71,18 +129,13 @@ public class AponFormat {
 					sb.append('\r');
 					break;
 				default:
-					sb.append(b);
+					return null;
 				}
 			} else {
-				sb.append(b);
+				sb.append(c);
 			}
-			
-			b = c;
 		}
-		
-		if(c != 0)
-			sb.append(c);
-		
+
 		return sb.toString();
 	}
 	
