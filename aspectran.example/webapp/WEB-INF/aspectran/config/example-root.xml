@@ -40,9 +40,9 @@
 	<aspect id="defaultResponseRule2">
 		<joinpoint scope="response"/>
 		<settings>
-			characterEncoding: utf-8
-			multipart.maxRequestSize: 10M
-			multipart.temporaryFilePath: /d:/
+			characterEncoding: "utf-8"
+			multipart.maxRequestSize: "10M"
+			multipart.temporaryFilePath: "/d:/"
 		</settings>
 	</aspect>
 
@@ -50,7 +50,7 @@
 		<joinpoint scope="translet">
 			<pointcut>
 				target: {
-					translet: /example/hello/*
+					translet: "/example/hello/*"
 				}
 			</pointcut>
 		</joinpoint>
@@ -59,8 +59,8 @@
 				<responseByContentType exceptionType="java.lang.reflect.InvocationTargetException">
 					<transform contentType="text/xml" type="transform/xml">
 						<echo>
-							errorCode: E0001
-							message: error occured.
+							errorCode: "E0001"
+							message: "error occured."
 						</echo>
 						<echo>
 							<item type="map">
@@ -77,19 +77,19 @@
 	<aspect id="helloAdvice">
 		<joinpoint scope="content">
 			<pointcut>
-			 	type: wildcard
+			 	type: "wildcard"
 				target: {
-					+: /example/hello/*@example.hello.HelloAction^applyTheAdvice
-					-: /aaaa*@*^bbb
+					+: "/example/hello/*@example.hello.HelloAction^applyTheAdvice"
+					-: "/aaaa*@*^bbb"
 				}
 				target: {
-					translet: /example/hello/*
-					bean: example.hello.HelloAction
-					method: applyTheAdvice
+					translet: "/example/hello/*"
+					bean: "example.hello.HelloAction"
+					method: "applyTheAdvice"
 					exclude: {
-						translet: /example/hello/*
-						bean: example.hello.HelloAction
-						method: applyTheAdvice
+						translet: "/example/hello/*"
+						bean: "example.hello.HelloAction"
+						method: "applyTheAdvice"
 					}					
 				}
 			</pointcut>
