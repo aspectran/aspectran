@@ -33,7 +33,7 @@ public class JsonWriter {
 
 	private Writer writer;
 
-	private boolean prettyWrite;
+	private boolean prettyFormat;
 
 	private int indentDepth;
 
@@ -52,11 +52,11 @@ public class JsonWriter {
 	 * Instantiates a new json writer.
 	 * 
 	 * @param writer the writer
-	 * @param prettyWrite the pretty write
+	 * @param prettyFormat the pretty write
 	 */
-	public JsonWriter(Writer writer, boolean prettyWrite) {
+	public JsonWriter(Writer writer, boolean prettyFormat) {
 		this.writer = writer;
-		this.prettyWrite = prettyWrite;
+		this.prettyFormat = prettyFormat;
 		this.indentDepth = 0;
 	}
 	
@@ -171,7 +171,7 @@ public class JsonWriter {
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	protected void indent() throws IOException {
-		if(prettyWrite) {
+		if(prettyFormat) {
 			for(int i = 0; i < indentDepth; i++) {
 				writer.write('\t');
 			}
@@ -191,7 +191,7 @@ public class JsonWriter {
 		writer.write(escape(name));
 		writer.write(":");
 
-		if(prettyWrite)
+		if(prettyFormat)
 			writer.write(" ");
 
 		willWriteValue = true;
@@ -237,7 +237,7 @@ public class JsonWriter {
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	protected void nextLine() throws IOException {
-		if(prettyWrite)
+		if(prettyFormat)
 			writer.write("\n");
 	}
 

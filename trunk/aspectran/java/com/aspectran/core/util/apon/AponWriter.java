@@ -16,7 +16,7 @@ public class AponWriter extends AponFormat {
 
 	private Writer writer;
 
-	private boolean prettyWrite;
+	private boolean prettyFormat;
 	
 	private int indentDepth;
 	
@@ -24,9 +24,9 @@ public class AponWriter extends AponFormat {
 		this(writer, true);
 	}
 	
-	public AponWriter(Writer writer, boolean prettyWrite) {
+	public AponWriter(Writer writer, boolean prettyFormat) {
 		this.writer = writer;
-		this.prettyWrite = prettyWrite;
+		this.prettyFormat = prettyFormat;
 	}
 	
 	public void write(Parameters parameters) throws IOException {
@@ -216,7 +216,7 @@ public class AponWriter extends AponFormat {
 	}
 	
 	private void indent() throws IOException {
-		if(prettyWrite) {
+		if(prettyFormat) {
 			for(int i = 0; i < indentDepth; i++) {
 				writer.write('\t');
 			}
@@ -224,13 +224,13 @@ public class AponWriter extends AponFormat {
 	}
 	
 	private void indentPlus() throws IOException {
-		if(prettyWrite) {
+		if(prettyFormat) {
 			indentDepth++;
 		}
 	}
 	
 	private void indentMinus() throws IOException {
-		if(prettyWrite) {
+		if(prettyFormat) {
 			indentDepth--;
 		}
 	}
