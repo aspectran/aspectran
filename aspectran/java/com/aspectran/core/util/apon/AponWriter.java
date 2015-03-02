@@ -212,13 +212,13 @@ public class AponWriter extends AponFormat {
 	}
 	
 	private void nextLine() throws IOException {
-		writer.write("\n");
+		writer.write(NEXT_LINE_CHAR);
 	}
 	
 	private void indent() throws IOException {
 		if(prettyFormat) {
 			for(int i = 0; i < indentDepth; i++) {
-				writer.write('\t');
+				writer.write(INDENT_CHAR);
 			}
 		}
 	}
