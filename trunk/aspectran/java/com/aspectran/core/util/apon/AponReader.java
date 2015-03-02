@@ -110,7 +110,7 @@ public class AponReader extends AponFormat {
 					throw new InvalidParameterException(lineNumber, line, trim, "Cannot parse into name-value pair.");
 				
 				if(index == 0)
-					throw new InvalidParameterException(lineNumber, line, trim, "Cannot find parameter name.");
+					throw new InvalidParameterException(lineNumber, line, trim, "Can not recognize the parameter name.");
 				
 				name = trim.substring(0, index).trim();
 				value = trim.substring(index + 1).trim();
