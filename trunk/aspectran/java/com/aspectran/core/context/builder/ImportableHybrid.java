@@ -41,6 +41,9 @@ public class ImportableHybrid extends Importable {
 	public ImportableHybrid(ImportableFile importableFile) {
 		super(FILE_IMPORT);
 		
+		if(importableFile.getImportFileType() != ImportFileType.XML)
+			throw new IOException("");
+		
 		setImportFileType(ImportFileType.APON);
 		
 		this.importableFile = importableFile;
