@@ -43,6 +43,7 @@ public class ImportableHybrid extends Importable {
 		
 		setImportFileType(ImportFileType.APON);
 		
+		this.importableFile = importableFile;
 		this.basePath = importableFile.getBasePath();
 		this.filePath = importableFile.getFilePath() + "." + ImportFileType.APON.toString();
 	}
@@ -53,6 +54,8 @@ public class ImportableHybrid extends Importable {
 	 * @return the input stream
 	 */
 	public InputStream getInputStream() throws IOException {
+		importableFile.getInputStream();
+		
 		File file;
 		
 		if(basePath == null)
