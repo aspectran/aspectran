@@ -59,5 +59,19 @@ public class ImportableResource extends Importable {
 		
 		return inputStream;
 	}
+	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("{importType=").append(getImportType());
+		sb.append(", resource=").append(resource);
+		sb.append("}");
+		
+		return sb.toString();
+	}
+
 
 }

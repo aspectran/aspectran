@@ -41,9 +41,6 @@ public class ImportableHybrid extends Importable {
 	public ImportableHybrid(ImportableFile importableFile) {
 		super(FILE_IMPORT);
 		
-		if(importableFile.getImportFileType() != ImportFileType.XML)
-			throw new IOException("");
-		
 		setImportFileType(ImportFileType.APON);
 		
 		this.importableFile = importableFile;
@@ -75,6 +72,20 @@ public class ImportableHybrid extends Importable {
 		InputStream inputStream = new FileInputStream(file);
 		
 		return inputStream;
+	}
+	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("{importType=").append(getImportType());
+		sb.append(", basePath=").append(basePath);
+		sb.append(", filePath=").append(filePath);
+		sb.append("}");
+		
+		return sb.toString();
 	}
 	
 }

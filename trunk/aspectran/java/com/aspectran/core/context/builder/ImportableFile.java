@@ -92,4 +92,18 @@ public class ImportableFile extends Importable {
 		return inputStream;
 	}
 	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("{importType=").append(getImportType());
+		sb.append(", basePath=").append(basePath);
+		sb.append(", filePath=").append(filePath);
+		sb.append("}");
+		
+		return sb.toString();
+	}
+	
 }

@@ -55,13 +55,17 @@ public class AponActivityContextBuilder extends AbstractActivityContextBuilder i
 	}
 
 	public ActivityContext build(String rootContext) throws ActivityContextBuilderException {
+		Importable importable = makeImportable(rootContext, ImportFileType.APON);
+		return build(importable);
+	}
+	
+	public ActivityContext build(Importable importable) throws ActivityContextBuilderException {
 		try {
 			ImportHandler importHandler = new AponImportHandler(this, encoding);
 			setImportHandler(importHandler);
 			
-			Importable importable = makeAponImportable(rootContext);
 			Reader reader = importable.getReader(encoding);
-
+			
 			AponReader aponReader = new AponReader();
 			Parameters aspectranParameters = aponReader.read(reader, new AspectranParameters());
 			
@@ -71,15 +75,11 @@ public class AponActivityContextBuilder extends AbstractActivityContextBuilder i
 			aponDisassembler.disassembleAspectran(aspectranParameters);
 			
 			ActivityContext aspectranContext = makeActivityContext(applicationAdapter);
-
+			
 			return aspectranContext;
 		} catch(Exception e) {
-			throw new ActivityContextBuilderException("AponActivityContext build failed. rootContext: " + rootContext, e);
+			throw new ActivityContextBuilderException("AponActivityContext build failed. rootContext: " + importable, e);
 		}
-	}
-	
-	private Importable makeAponImportable(String rootContext) {
-		return makeImportable(rootContext, ImportFileType.APON);
 	}
 	
 }
