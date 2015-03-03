@@ -39,12 +39,15 @@ public class XmlActivityContextBuilder extends AbstractActivityContextBuilder im
 	}
 
 	public ActivityContext build(String rootContext) throws ActivityContextBuilderException {
+		Importable importable = makeImportable(rootContext, ImportFileType.XML);
+		return build(importable);
+	}
+	
+	protected ActivityContext build(Importable importable) throws ActivityContextBuilderException {
 		try {
 			ImportHandler importHandler = new XmlImportHandler(this);
 			setImportHandler(importHandler);
 			
-			Importable importable = makeXmlImportable(rootContext);
-	
 			AspectranNodeParser parser = new AspectranNodeParser(this);
 			parser.parse(importable);
 			
@@ -52,12 +55,8 @@ public class XmlActivityContextBuilder extends AbstractActivityContextBuilder im
 			
 			return aspectranContext;
 		} catch(Exception e) {
-			throw new ActivityContextBuilderException("XmlActivityContext build failed. rootContext: " + rootContext, e);
+			throw new ActivityContextBuilderException("XmlActivityContext build failed. rootContext " + importable, e);
 		}
-	}
-
-	private Importable makeXmlImportable(String rootContext) {
-		return makeImportable(rootContext, ImportFileType.XML);
 	}
 	
 }

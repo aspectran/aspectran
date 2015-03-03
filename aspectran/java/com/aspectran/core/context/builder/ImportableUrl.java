@@ -59,4 +59,17 @@ public class ImportableUrl extends Importable {
 		return inputStream;
 	}
 	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("{importType=").append(getImportType());
+		sb.append(", url=").append(urlString);
+		sb.append("}");
+		
+		return sb.toString();
+	}
+	
 }
