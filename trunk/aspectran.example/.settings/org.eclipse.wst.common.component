@@ -2,7 +2,7 @@
     <wb-module deploy-name="aspectran-web">
         <wb-resource deploy-path="/" source-path="/webapp"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/java"/>
-        <wb-resource deploy-path="/WEB-INF/classes" source-path="/main"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/aspectran"/>
         <property name="context-root" value="/"/>
         <property name="java-output-path" value="/aspectran-web/WEB-INF/classes"/>
     </wb-module>
