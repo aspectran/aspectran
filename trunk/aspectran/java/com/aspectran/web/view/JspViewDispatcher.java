@@ -65,7 +65,7 @@ public class JspViewDispatcher implements ViewDispatcher {
 			if(outputEncoding != null)
 				responseAdapter.setCharacterEncoding(outputEncoding);
 			else {
-				String characterEncoding = (String)activity.getResponseSetting(ResponseRule.CHARACTER_ENCODING_SETTING_NAME);
+				String characterEncoding = activity.getResponseSetting(ResponseRule.CHARACTER_ENCODING_SETTING_NAME);
 				
 				if(characterEncoding != null)
 					responseAdapter.setCharacterEncoding(characterEncoding);

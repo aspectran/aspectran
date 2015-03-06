@@ -853,19 +853,19 @@ public class CoreActivity extends AbstractActivity implements Activity {
 		return context.getContextBeanRegistry().getBean(id);
 	}
 	
-	public Object getTransletSetting(String settingName) {
+	public <T> T getTransletSetting(String settingName) {
 		return getSetting(transletAspectAdviceRuleRegistry, settingName);
 	}
 	
-	public Object getRequestSetting(String settingName) {
+	public <T> T getRequestSetting(String settingName) {
 		return getSetting(requestAspectAdviceRuleRegistry, settingName);
 	}
 	
-	public Object getResponseSetting(String settingName) {
+	public <T> T getResponseSetting(String settingName) {
 		return getSetting(responseAspectAdviceRuleRegistry, settingName);
 	}
 
-	private Object getSetting(AspectAdviceRuleRegistry aspectAdviceRuleRegistry, String settingName) {
+	private <T> T getSetting(AspectAdviceRuleRegistry aspectAdviceRuleRegistry, String settingName) {
 		if(aspectAdviceRuleRegistry != null)
 			return aspectAdviceRuleRegistry.getSetting(settingName);
 		

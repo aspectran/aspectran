@@ -9,9 +9,9 @@ public interface ActivityContextLoader {
 	
 	public void setApplicationAdapter(ApplicationAdapter applicationAdapter);
 
-	public AspectranClassLoader getAspectranClassLoader();
-
-	public void setAspectranClassLoader(AspectranClassLoader aspectranClassLoader);
+//	public AspectranClassLoader getAspectranClassLoader();
+//
+//	public void setAspectranClassLoader(AspectranClassLoader aspectranClassLoader);
 
 	public void setHybridLoading(boolean hybridLoading);
 	

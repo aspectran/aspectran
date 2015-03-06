@@ -107,11 +107,12 @@ public class AspectAdviceRuleRegistry implements Cloneable {
 		}
 	}
 	
-	public Object getSetting(String settingName) {
+	@SuppressWarnings("unchecked")
+	public <T> T getSetting(String settingName) {
 		if(settings == null)
 			return null;
 		
-		return settings.get(settingName);
+		return (T)settings.get(settingName);
 	}
 	
 	public AspectAdviceRuleRegistry clone() throws CloneNotSupportedException {

@@ -32,25 +32,14 @@ import com.aspectran.core.util.apon.Parameters;
  */
 public class AponActivityContextBuilder extends AbstractActivityContextBuilder implements ActivityContextBuilder {
 	
-	private final ApplicationAdapter applicationAdapter;
-	
 	private final String encoding;
 	
 	public AponActivityContextBuilder(ApplicationAdapter applicationAdapter) {
-		this(applicationAdapter, null, null);
+		this(applicationAdapter, null);
 	}
 	
 	public AponActivityContextBuilder(ApplicationAdapter applicationAdapter, String encoding) {
-		this(applicationAdapter, null, encoding);
-	}
-	
-	public AponActivityContextBuilder(ApplicationAdapter applicationAdapter, ClassLoader classLoader) {
-		this(applicationAdapter, classLoader, null);
-	}
-	
-	public AponActivityContextBuilder(ApplicationAdapter applicationAdapter, ClassLoader classLoader, String encoding) {
-		super(applicationAdapter.getApplicationBasePath(), classLoader);
-		this.applicationAdapter = applicationAdapter;
+		setApplicationAdapter(applicationAdapter);
 		this.encoding = encoding;
 	}
 
@@ -74,7 +63,7 @@ public class AponActivityContextBuilder extends AbstractActivityContextBuilder i
 			AspectranAponDisassembler aponDisassembler = new AspectranAponDisassembler(this);
 			aponDisassembler.disassembleAspectran(aspectranParameters);
 			
-			ActivityContext aspectranContext = makeActivityContext(applicationAdapter);
+			ActivityContext aspectranContext = makeActivityContext(getApplicationAdapter());
 			
 			return aspectranContext;
 		} catch(Exception e) {

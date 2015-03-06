@@ -35,25 +35,14 @@ import com.aspectran.core.util.apon.Parameters;
  */
 public class HybridActivityContextBuilder extends AbstractActivityContextBuilder implements ActivityContextBuilder {
 	
-	private final ApplicationAdapter applicationAdapter;
-	
 	private final String encoding;
 	
 	public HybridActivityContextBuilder(ApplicationAdapter applicationAdapter) {
-		this(applicationAdapter, null, null);
+		this(applicationAdapter, null);
 	}
 	
 	public HybridActivityContextBuilder(ApplicationAdapter applicationAdapter, String encoding) {
-		this(applicationAdapter, null, encoding);
-	}
-	
-	public HybridActivityContextBuilder(ApplicationAdapter applicationAdapter, ClassLoader classLoader) {
-		this(applicationAdapter, classLoader, null);
-	}
-	
-	public HybridActivityContextBuilder(ApplicationAdapter applicationAdapter, ClassLoader classLoader, String encoding) {
-		super(applicationAdapter.getApplicationBasePath(), classLoader);
-		this.applicationAdapter = applicationAdapter;
+		setApplicationAdapter(applicationAdapter);
 		this.encoding = encoding;
 	}
 
@@ -80,7 +69,7 @@ public class HybridActivityContextBuilder extends AbstractActivityContextBuilder
 
 			}
 			
-			ActivityContext aspectranContext = makeActivityContext(applicationAdapter);
+			ActivityContext aspectranContext = makeActivityContext(getApplicationAdapter());
 
 			return aspectranContext;
 		} catch(Exception e) {

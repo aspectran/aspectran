@@ -7,7 +7,7 @@ public abstract class AbstractActivityContextLoader implements ActivityContextLo
 
 	protected ApplicationAdapter applicationAdapter;
 	
-	protected AspectranClassLoader aspectranClassLoader;
+	//protected AspectranClassLoader aspectranClassLoader;
 	
 	private boolean hybridLoading;
 	
@@ -22,13 +22,13 @@ public abstract class AbstractActivityContextLoader implements ActivityContextLo
 		this.applicationAdapter = applicationAdapter;
 	}
 
-	public AspectranClassLoader getAspectranClassLoader() {
-		return aspectranClassLoader;
-	}
-
-	public void setAspectranClassLoader(AspectranClassLoader aspectranClassLoader) {
-		this.aspectranClassLoader = aspectranClassLoader;
-	}
+//	public AspectranClassLoader getAspectranClassLoader() {
+//		return aspectranClassLoader;
+//	}
+//
+//	public void setAspectranClassLoader(AspectranClassLoader aspectranClassLoader) {
+//		this.aspectranClassLoader = aspectranClassLoader;
+//	}
 
 	public boolean isHybridLoading() {
 		return hybridLoading;

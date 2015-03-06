@@ -15,9 +15,9 @@
  */
 package com.aspectran.core.activity.response.transform;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -119,14 +119,13 @@ public abstract class TransformResponse implements Response {
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	protected Reader getTemplateAsReader(File file, String encoding) throws IOException {
-		InputStream inputStream = getTemplateAsStream(file);
-		
 		Reader reader;
 		
-		if(encoding != null)
-			reader = new BufferedReader(new InputStreamReader(inputStream, encoding));
-		else
-			reader = new BufferedReader(new InputStreamReader(inputStream));
+		if(encoding != null) {
+			InputStream inputStream = getTemplateAsStream(file);
+			reader = new InputStreamReader(inputStream, encoding);
+		} else
+			reader = new FileReader(file);
 
 		return reader;
 	}
@@ -143,13 +142,12 @@ public abstract class TransformResponse implements Response {
 	 */
 	protected Reader getTemplateAsReader(URL url, String encoding) throws IOException {
 		InputStream inputStream = getTemplateAsStream(url);
-		
 		Reader reader;
 		
 		if(encoding != null)
-			reader = new BufferedReader(new InputStreamReader(inputStream, encoding));
+			reader = new InputStreamReader(inputStream, encoding);
 		else
-			reader = new BufferedReader(new InputStreamReader(inputStream));
+			reader = new InputStreamReader(inputStream);
 
 		return reader;
 	}

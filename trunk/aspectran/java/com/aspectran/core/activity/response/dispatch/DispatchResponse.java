@@ -15,18 +15,15 @@
  */
 package com.aspectran.core.activity.response.dispatch;
 
-import java.io.File;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.process.ActionList;
-import com.aspectran.core.activity.response.ResponseException;
 import com.aspectran.core.activity.response.Response;
+import com.aspectran.core.activity.response.ResponseException;
 import com.aspectran.core.context.rule.DispatchResponseRule;
 import com.aspectran.core.context.rule.ResponseRule;
-import com.aspectran.core.context.rule.TemplateRule;
 import com.aspectran.core.context.rule.type.ResponseType;
 
 /**
@@ -44,10 +41,6 @@ public class DispatchResponse implements Response {
 
 	private final DispatchResponseRule dispatchResponseRule;
 	
-	private final TemplateRule templateRule;
-	
-	private File templateFile;
-	
 	private ViewDispatcher viewDispatcher;
 
 	/**
@@ -57,8 +50,6 @@ public class DispatchResponse implements Response {
 	 */
 	public DispatchResponse(DispatchResponseRule dispatchResponseRule) {
 		this.dispatchResponseRule = dispatchResponseRule;
-		this.templateRule = dispatchResponseRule.getTemplateRule();
-		this.templateFile = templateRule.getRealFile();
 	}
 
 	/* (non-Javadoc)
@@ -66,20 +57,14 @@ public class DispatchResponse implements Response {
 	 */
 	public void response(Activity activity) throws ResponseException {
 		try {
-			String viewDispatcherName = null;
-			
-			if(viewDispatcher == null) {
-				viewDispatcherName = (String)activity.getResponseSetting(ResponseRule.VIEW_DISPATCHER_SETTING_NAME);
-				viewDispatcher = (ViewDispatcher)activity.getBean(viewDispatcherName);
+			if(debugEnabled) {
+				logger.debug("response " + dispatchResponseRule);
 			}
+
+			determineViewDispatcher(activity);
 			
 			if(viewDispatcher != null) {
 				viewDispatcher.dispatch(activity, dispatchResponseRule);
-			}
-
-			if(debugEnabled) {
-				logger.debug("Dispatch {viewDispatcher: " + viewDispatcherName + ", template: " + templateFile + "}");
-				logger.debug("Dispatch Response OK.");
 			}
 		} catch(Exception e) {
 			throw new DispatchResponseException("Dispatch Response error: " + dispatchResponseRule, e);
@@ -115,4 +100,19 @@ public class DispatchResponse implements Response {
 	public ActionList getActionList() {
 		return dispatchResponseRule.getActionList();
 	}
+	
+	private void determineViewDispatcher(Activity activity) {
+		if(viewDispatcher == null) {
+			synchronized(this) {
+				if(viewDispatcher == null) {
+					String viewDispatcherName = activity.getResponseSetting(ResponseRule.VIEW_DISPATCHER_SETTING_NAME);
+					viewDispatcher = (ViewDispatcher)activity.getBean(viewDispatcherName);
+				}
+			}
+		}
+		
+		if(viewDispatcher == null)
+			throw new RuntimeException("View Dispatcher is not defined.");
+	}
+	
 }

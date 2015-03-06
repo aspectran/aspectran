@@ -27,7 +27,7 @@ public class TokenParser {
 			if(!trimStringToken) {
 				// 문자열 타입 토큰을 trim하지 않았으면,
 				// 처음과 끝에 위치한 토큰 문자열을 각각 앞trim, 뒷trim을 한다.
-				tokens = Tokenizer.optimizeTokens(tokens);
+				tokens = Tokenizer.optimize(tokens);
 			}
 		} else {
 			tokens = null;

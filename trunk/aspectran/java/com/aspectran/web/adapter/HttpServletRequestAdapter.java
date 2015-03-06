@@ -62,4 +62,5 @@ public class HttpServletRequestAdapter extends AbstractRequestAdapter implements
 	public void removeAttribute(String name) {
 		((HttpServletRequest)adaptee).removeAttribute(name);
 	}
+
 }

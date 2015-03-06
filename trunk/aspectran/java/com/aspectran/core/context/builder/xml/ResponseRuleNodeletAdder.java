@@ -15,7 +15,6 @@
  */
 package com.aspectran.core.context.builder.xml;
 
-import java.io.File;
 import java.util.Map;
 
 import org.w3c.dom.Node;
@@ -32,7 +31,6 @@ import com.aspectran.core.context.rule.TransformRule;
 import com.aspectran.core.context.rule.ability.ResponseRuleApplicable;
 import com.aspectran.core.context.rule.type.TokenType;
 import com.aspectran.core.util.BooleanUtils;
-import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.xml.Nodelet;
 import com.aspectran.core.util.xml.NodeletAdder;
 import com.aspectran.core.util.xml.NodeletParser;
@@ -85,12 +83,6 @@ public class ResponseRuleNodeletAdder implements NodeletAdder {
 				Boolean noCache = BooleanUtils.toNullableBooleanObject(attributes.get("noCache"));
 				
 				TemplateRule templateRule = TemplateRule.newInstance(file, resource, url, text, encoding, noCache);
-				
-				if(StringUtils.hasText(resource)) {
-					templateRule.setRealFile(new File(assistant.getClassLoader().getResource(resource).getFile()));
-				} else if(StringUtils.hasText(file)) {
-					templateRule.setRealFile(assistant.toRealPathAsFile(file));
-				}
 
 				TransformRule transformRule = assistant.peekObject(1);
 				transformRule.setTemplateRule(templateRule);

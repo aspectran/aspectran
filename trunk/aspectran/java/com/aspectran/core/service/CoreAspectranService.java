@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.bean.scope.Scope;
+import com.aspectran.core.context.loader.AspectranClassLoader;
 
 public class CoreAspectranService extends AbstractAspectranService {
 
@@ -13,35 +14,14 @@ public class CoreAspectranService extends AbstractAspectranService {
 	
 	private static final long DEFAULT_PAUSE_TIMEOUT = 500L;
 	
-	private AspectranService rootAspectranService;
-	
 	private AspectranServiceControllerListener activityContextServiceListener;
 	
 	private boolean started;
 	
-	public CoreAspectranService() {
-	}
-	
-	public CoreAspectranService(AspectranService rootAspectranService) {
-		this.rootAspectranService = rootAspectranService;
-		super.aspectranClassLoader = rootAspectranService.getAspectranClassLoader();
-		super.applicationAdapter = rootAspectranService.getApplicationAdapter();
-		super.activityContext = rootAspectranService.getActivityContext();
-	}
-	
-	public void setAspectranServiceControllerListener(AspectranServiceControllerListener activityContextServiceListener) {
-		this.activityContextServiceListener = activityContextServiceListener;
-	}
-	
 	public synchronized ActivityContext start() {
-		if(rootAspectranService == null) {
-			loadActivityContext();
-	
-			if(getApplicationAdapter().getAspectranServiceController(activityContext) != this)
-				getApplicationAdapter().putAspectranServiceController(activityContext, this);
-			
-			logger.info("AspectranService was started.");
-		}
+		loadActivityContext();
+
+		logger.info("AspectranService was started.");
 
 		if(activityContextServiceListener != null)
 			activityContextServiceListener.started();
@@ -59,20 +39,16 @@ public class CoreAspectranService extends AbstractAspectranService {
 
 		boolean cleanlyDestoryed;
 		
-		if(rootAspectranService == null) {
+		if(isHardReload())
+			cleanlyDestoryed = dispose();
+		else
 			cleanlyDestoryed = stop();
-			
-			reloadActivityContext();
-			
-			started = true;
-			
-			logger.info("AspectranService was restarted.");
-		} else {
-			cleanlyDestoryed = rootAspectranService.restart();
-			
-			if(rootAspectranService.isHardReload())
-				super.aspectranClassLoader = rootAspectranService.getAspectranClassLoader();
-		}
+		
+		reloadActivityContext();
+		
+		started = true;
+		
+		logger.info("AspectranService was restarted.");
 
 		if(activityContextServiceListener != null)
 			activityContextServiceListener.restarted();
@@ -102,15 +78,9 @@ public class CoreAspectranService extends AbstractAspectranService {
 		if(activityContextServiceListener != null)
 			activityContextServiceListener.paused(DEFAULT_PAUSE_TIMEOUT);
 		
-		boolean cleanlyDestoryed;
-		
-		if(rootAspectranService == null) {
-			cleanlyDestoryed = destroyActivityContext();
+		boolean cleanlyDestoryed = destroyActivityContext();
 			
-			logger.info("AspectranService was stoped.");
-		} else {
-			cleanlyDestoryed = rootAspectranService.stop();
-		}
+		logger.info("AspectranService was stoped.");
 
 		if(activityContextServiceListener != null)
 			activityContextServiceListener.stopped();
@@ -123,27 +93,45 @@ public class CoreAspectranService extends AbstractAspectranService {
 	public synchronized boolean dispose() {
 		boolean cleanlyDestoryed = stop();
 		
-		if(rootAspectranService == null) {
-			ApplicationAdapter applicationAdapter = getApplicationAdapter();
-			
-			if(applicationAdapter != null) {
-				try {
-					Scope scope = getApplicationAdapter().getScope();
-			
-					if(scope != null)
-						scope.destroy();
-				} catch(Exception e) {
-					cleanlyDestoryed = false;
-					logger.error("WebApplicationAdapter were not destroyed cleanly.", e);
-				}
-
-				applicationAdapter.removeActivityContextServiceController(activityContext);
+		ApplicationAdapter applicationAdapter = getApplicationAdapter();
+		
+		if(applicationAdapter != null) {
+			try {
+				Scope scope = getApplicationAdapter().getScope();
+		
+				if(scope != null)
+					scope.destroy();
+			} catch(Exception e) {
+				cleanlyDestoryed = false;
+				logger.error("WebApplicationAdapter were not destroyed cleanly.", e);
 			}
-			
-			logger.info("AspectranService was disposed.");
 		}
+		
+		logger.info("AspectranService was disposed.");
 		
 		return cleanlyDestoryed;
 	}
+	
+	public void setAspectranServiceControllerListener(AspectranServiceControllerListener activityContextServiceListener) {
+		this.activityContextServiceListener = activityContextServiceListener;
+	}
+	
+	public static AspectranClassLoader newAspectranClassLoader(String[] resourceLocations) {
+		String[] excludePackageNames = new String[] {
+				"com.aspectran.core",
+				"com.aspectran.scheduler",
+				"com.aspectran.support",
+				"com.aspectran.web"
+			};
 
+		AspectranClassLoader acl = new AspectranClassLoader();
+		acl.excludePackage(excludePackageNames);
+		
+		if(resourceLocations != null && resourceLocations.length > 0) {
+			acl.setResourceLocations(resourceLocations);
+		}
+		
+		return acl;
+	}
+	
 }

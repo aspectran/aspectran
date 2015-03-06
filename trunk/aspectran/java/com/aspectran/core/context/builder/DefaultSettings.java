@@ -28,15 +28,17 @@ import com.aspectran.core.util.BooleanUtils;
  */
 public class DefaultSettings implements Cloneable {
 
-	private ClassLoader classLoader;
-	
 	private String transletNamePattern;
 	
 	private String transletNamePatternPrefix;
 
 	private String transletNamePatternSuffix;
 	
+	private String transletInterfaceClassName;
+	
 	private Class<Translet> transletInterfaceClass;
+	
+	private String transletImplementClassName;
 	
 	private Class<CoreTranslet> transletImplementClass;
 	
@@ -48,8 +50,7 @@ public class DefaultSettings implements Cloneable {
 	
 	private String beanProxyMode;
 	
-	public DefaultSettings(ClassLoader classLoader) {
-		this.classLoader = classLoader;
+	public DefaultSettings() {
 	}
 	
 	public String getTransletNamePattern() {
@@ -104,35 +105,35 @@ public class DefaultSettings implements Cloneable {
 	}
 	
 	public String getTransletInterfaceClassName() {
-		if(transletInterfaceClass == null)
-			return null;
-		
-		return transletInterfaceClass.getName();
+		return transletInterfaceClassName;
 	}
-	
+
+	public void setTransletInterfaceClassName(String transletInterfaceClassName) {
+		this.transletInterfaceClassName = transletInterfaceClassName;
+	}
+
 	public Class<Translet> getTransletInterfaceClass() {
 		return transletInterfaceClass;
 	}
 
-	@SuppressWarnings("unchecked")
-	public void setTransletInterfaceClass(String transletInterfaceClass) throws ClassNotFoundException {
-		this.transletInterfaceClass = (Class<Translet>)classLoader.loadClass(transletInterfaceClass);
+	public void setTransletInterfaceClass(Class<Translet> transletInterfaceClass) {
+		this.transletInterfaceClass = transletInterfaceClass;
 	}
 
 	public String getTransletImplementClassName() {
-		if(transletImplementClass == null)
-			return null;
-		
-		return transletImplementClass.getName();
+		return transletImplementClassName;
 	}
-	
+
+	public void setTransletImplementClassName(String transletImplementClassName) {
+		this.transletImplementClassName = transletImplementClassName;
+	}
+
 	public Class<CoreTranslet> getTransletImplementClass() {
 		return transletImplementClass;
 	}
 
-	@SuppressWarnings("unchecked")
-	public void setTransletImplementClass(String transletImplementClass) throws ClassNotFoundException {
-		this.transletImplementClass = (Class<CoreTranslet>)classLoader.loadClass(transletImplementClass);
+	public void setTransletImplementClass(Class<CoreTranslet> transletImplementClass) {
+		this.transletImplementClass = transletImplementClass;
 	}
 
 	public boolean isNullableContentId() {
@@ -175,7 +176,7 @@ public class DefaultSettings implements Cloneable {
 		this.beanProxyMode = beanProxyMode;
 	}
 
-	public void set(Map<DefaultSettingType, String> settings) throws ClassNotFoundException {
+	public void apply(Map<DefaultSettingType, String> settings) throws ClassNotFoundException {
 		if(settings.get(DefaultSettingType.TRANSLET_NAME_PATTERN) != null)
 			setTransletNamePattern(settings.get(DefaultSettingType.TRANSLET_NAME_PATTERN));
 		
@@ -186,10 +187,10 @@ public class DefaultSettings implements Cloneable {
 			setTransletNamePatternSuffix(settings.get(DefaultSettingType.TRANSLET_NAME_PATTERN_SUFFIX));
 		
 		if(settings.get(DefaultSettingType.TRANSLET_INTERFACE_CLASS) != null)
-			setTransletInterfaceClass(settings.get(DefaultSettingType.TRANSLET_INTERFACE_CLASS));
+			setTransletInterfaceClassName(settings.get(DefaultSettingType.TRANSLET_INTERFACE_CLASS));
 		
 		if(settings.get(DefaultSettingType.TRANSLET_IMPLEMENT_CLASS) != null)
-			setTransletImplementClass(settings.get(DefaultSettingType.TRANSLET_IMPLEMENT_CLASS));
+			setTransletImplementClassName(settings.get(DefaultSettingType.TRANSLET_IMPLEMENT_CLASS));
 
 		if(settings.get(DefaultSettingType.NULLABLE_CONTENT_ID) != null)
 			nullableContentId = (settings.get(DefaultSettingType.NULLABLE_CONTENT_ID) == null || Boolean.parseBoolean(settings.get(DefaultSettingType.NULLABLE_CONTENT_ID)));

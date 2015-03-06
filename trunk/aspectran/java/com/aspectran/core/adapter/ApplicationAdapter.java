@@ -1,8 +1,9 @@
 package com.aspectran.core.adapter;
 
-import java.util.Map;
+import java.io.File;
+import java.io.IOException;
+import java.util.Enumeration;
 
-import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.bean.scope.Scope;
 import com.aspectran.core.service.AspectranServiceController;
 
@@ -44,19 +45,18 @@ public interface ApplicationAdapter {
 	 */
 	public void setAttribute(String name, Object value);
 	
-	/**
-	 * Gets the application base directory path.
-	 *
-	 * @return the application basedirectory path
-	 */
+	public Enumeration<String> getAttributeNames();
+	
+	public void removeAttribute(String name);
+	
+	public AspectranServiceController getAspectranServiceController();
+
+	public ClassLoader getClassLoader();
+	
 	public String getApplicationBasePath();
 	
-	public Map<ActivityContext, AspectranServiceController> getActivityContextServiceHandlers();
+	public String toRealPath(String filePath) throws IOException;
 	
-	public AspectranServiceController getAspectranServiceController(ActivityContext activityContext);
-
-	public void putAspectranServiceController(ActivityContext activityContext, AspectranServiceController activityContextServiceHandler);
-	
-	public void removeActivityContextServiceController(ActivityContext activityContext);
+	public File toRealPathAsFile(String filePath);
 
 }

@@ -98,11 +98,11 @@ public interface Activity {
 
 	public BeanRegistry getBeanRegistry();
 	
-	public Object getTransletSetting(String settingName);
+	public <T> T getTransletSetting(String settingName);
 	
-	public Object getRequestSetting(String settingName);
+	public <T> T getRequestSetting(String settingName);
 	
-	public Object getResponseSetting(String settingName);
+	public <T> T getResponseSetting(String settingName);
 	
 	public void registerAspectRule(AspectRule aspectRule) throws ActionExecutionException;
 	

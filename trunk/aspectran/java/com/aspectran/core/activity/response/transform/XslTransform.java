@@ -19,9 +19,11 @@ import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.net.URL;
 import java.util.Properties;
 
 import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Source;
 import javax.xml.transform.Templates;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
@@ -39,6 +41,7 @@ import com.aspectran.core.activity.process.result.ProcessResult;
 import com.aspectran.core.activity.response.Response;
 import com.aspectran.core.activity.response.transform.xml.ContentsInputSource;
 import com.aspectran.core.activity.response.transform.xml.ContentsXMLReader;
+import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.context.AspectranConstant;
 import com.aspectran.core.context.rule.TemplateRule;
@@ -68,16 +71,22 @@ public class XslTransform extends TransformResponse implements Response {
 	
 	private long templateLastModifiedTime;
 	
-	private File templateFile;
+	private String templateFile;
+	
+	private String templateResource;
+	
+	private String templateUrl;
+
+	private boolean noCache;
 	
 	private Templates templates;
-	
-	private boolean templateNoCache;
 	
 	private String contentType;
 	
 	private String outputEncoding;
 	
+	private boolean templateLoaded;
+
 	/**
 	 * Instantiates a new xSL transformer.
 	 * 
@@ -86,8 +95,10 @@ public class XslTransform extends TransformResponse implements Response {
 	protected XslTransform(TransformRule transformRule) {
 		super(transformRule);
 		this.templateRule = transformRule.getTemplateRule();
-		this.templateFile = templateRule.getRealFile();
-		this.templateNoCache = templateRule.isNoCache();
+		this.templateFile = templateRule.getFile();
+		this.templateResource = templateRule.getResource();
+		this.templateUrl = templateRule.getUrl();
+		this.noCache = templateRule.isNoCache();
 	}
 
 	/* (non-Javadoc)
@@ -104,26 +115,8 @@ public class XslTransform extends TransformResponse implements Response {
 		}
 
 		try {
-			Templates templates;
-			String contentType;
-			String outputEncoding;
-
-			if(templateNoCache) {
-				templates = createXsltTemplates(templateFile);
-				contentType = transformRule.getContentType();
-				outputEncoding = getOutputEncoding(templates);;
-
-				if(contentType == null)
-					contentType = getContentType(templates);
-				
-				if(outputEncoding == null)
-					outputEncoding = transformRule.getCharacterEncoding();
-			} else {
-				templates = getTemplates();
-				contentType = this.contentType;
-				outputEncoding = this.outputEncoding;
-			}
-
+			loadTemplate(activity.getApplicationAdapter());
+			
 			if(contentType != null)
 				responseAdapter.setContentType(contentType);
 
@@ -160,64 +153,97 @@ public class XslTransform extends TransformResponse implements Response {
 		return transformRule.getActionList();
 	}
 	
-	/**
-	 * Gets the templates.
-	 * 
-	 * @return the templates
-	 * 
-	 * @throws TransformerConfigurationException the transformer configuration exception
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 */
-	public Templates getTemplates() throws TransformerConfigurationException, IOException {
-		if(templateFile == null)
-			throw new TransformerConfigurationException("Template file is null.");
-		
-		long lastModifiedTime = templateFile.lastModified();
-		
-		if(lastModifiedTime > templateLastModifiedTime) {
-			synchronized(this) {
-				lastModifiedTime = templateFile.lastModified();
+	public void loadTemplate(ApplicationAdapter applicationAdapter) throws TransformerConfigurationException, IOException {
+		if(templateFile != null) {
+			if(noCache) {
+				File file = applicationAdapter.toRealPathAsFile(templateFile);
+				templates = createTemplates(file);
+				determineOutoutStyle();
+			} else {
+				File file = applicationAdapter.toRealPathAsFile(templateFile);
+				long lastModifiedTime = file.lastModified();
 				
 				if(lastModifiedTime > templateLastModifiedTime) {
-					templates = createXsltTemplates(templateFile);
-					templateLastModifiedTime = lastModifiedTime;
-					
-					contentType = transformRule.getContentType();
-					outputEncoding = getOutputEncoding(templates);;
-
-					if(contentType == null)
-						contentType = getContentType(templates);
-					
-					if(outputEncoding == null)
-						outputEncoding = transformRule.getCharacterEncoding();
+					synchronized(this) {
+						lastModifiedTime = file.lastModified();
+						if(lastModifiedTime > templateLastModifiedTime) {
+							templates = createTemplates(file);
+							determineOutoutStyle();
+							templateLastModifiedTime = lastModifiedTime;
+						}
+					}
+				}
+			}
+		} else if(templateResource != null) {
+			if(noCache) {
+				ClassLoader classLoader = applicationAdapter.getClassLoader();
+				File file = new File(classLoader.getResource(templateResource).getFile());
+				templates = createTemplates(file);
+				determineOutoutStyle();
+			} else {
+				if(!templateLoaded) {
+					synchronized(this) {
+						if(!templateLoaded) {
+							ClassLoader classLoader = applicationAdapter.getClassLoader();
+							File file = new File(classLoader.getResource(templateResource).getFile());
+							templates = createTemplates(file);
+							determineOutoutStyle();
+							templateLoaded = true;
+						}
+					}
+				}
+			}
+		} else if(templateUrl != null) {
+			if(noCache) {
+				templates = createTemplates(new URL(templateUrl));
+				determineOutoutStyle();
+			} else {
+				if(!templateLoaded) {
+					synchronized(this) {
+						if(!templateLoaded) {
+							templates = createTemplates(new URL(templateUrl));
+							determineOutoutStyle();
+							templateLoaded = true;
+						}
+					}
 				}
 			}
 		}
+		
+		if(templates == null)
+			throw new TransformerConfigurationException("Template file is null.");
+	}
 
-		return templates;
+	private void determineOutoutStyle() {
+    	contentType = transformRule.getContentType();
+		outputEncoding = getOutputEncoding(templates);;
+		
+		if(contentType == null)
+			contentType = getContentType(templates);
+		
+		if(outputEncoding == null)
+			outputEncoding = transformRule.getCharacterEncoding();
 	}
 	
-    /**
-     * Creates the xslt templates.
-     * 
-     * @param templateFile the template file
-     * 
-     * @return the templates
-     * 
-     * @throws TransformerConfigurationException the transformer configuration exception
-     */
-    private Templates createXsltTemplates(File templateFile) throws TransformerConfigurationException {
-    	TransformerFactory transFactory = TransformerFactory.newInstance();
-    	transFactory.setAttribute("generate-translet", Boolean.TRUE);
-    	return transFactory.newTemplates(new StreamSource(templateFile));
+    private Templates createTemplates(File templateFile) throws TransformerConfigurationException {
+    	Source source = new StreamSource(templateFile);
+    	Templates templates = createTemplates(source);
+		return templates;
     }
     
-    /**
-     * Gets the content type.
-     *
-     * @param templates the templates
-     * @return the content type
-     */
+    private Templates createTemplates(URL url) throws TransformerConfigurationException, IOException {
+    	Source source = new StreamSource(getTemplateAsStream(url));
+    	Templates templates = createTemplates(source);
+		return templates;
+    }
+
+    private Templates createTemplates(Source source) throws TransformerConfigurationException {
+    	TransformerFactory transFactory = TransformerFactory.newInstance();
+    	transFactory.setAttribute("generate-translet", Boolean.TRUE);
+    	Templates templates = transFactory.newTemplates(source);
+    	return templates;
+    }
+
     private String getContentType(Templates templates) {
 		Properties outputProperties = templates.getOutputProperties();
 		String outputMethod = outputProperties.getProperty(OutputKeys.METHOD);
@@ -235,12 +261,6 @@ public class XslTransform extends TransformResponse implements Response {
 		return contentType;
     }
     
-    /**
-     * Gets the output encoding.
-     *
-     * @param templates the templates
-     * @return the output encoding
-     */
     private String getOutputEncoding(Templates templates) {
     	Properties outputProperties = templates.getOutputProperties();
     	String outputEncoding = outputProperties.getProperty(OutputKeys.ENCODING);

@@ -28,7 +28,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.aspectran.core.service.AspectranService;
 import com.aspectran.web.service.WebAspectranService;
 import com.aspectran.web.startup.listener.AspectranServiceListener;
 
@@ -43,9 +42,9 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 	private static final Logger logger = LoggerFactory.getLogger(WebActivityServlet.class);
 
 	private WebAspectranService aspectranService;
-
-	public long pauseTimeout;
 	
+	private boolean standalone;
+
 	/*
 	 * (non-Java-doc)
 	 * 
@@ -68,14 +67,16 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 		try {
 			ServletContext servletContext = getServletContext();
 			
-			AspectranService rootAspectranService = (AspectranService)servletContext.getAttribute(AspectranServiceListener.ASPECTRAN_SERVICE_ATTRIBUTE);
+			WebAspectranService rootAspectranService = (WebAspectranService)servletContext.getAttribute(AspectranServiceListener.ASPECTRAN_SERVICE_ATTRIBUTE);
 			
 			if(rootAspectranService == null) {
 				logger.info("Standalone AspectranService.");
 				aspectranService = WebAspectranService.newInstance(this);
+				standalone = true;
 			} else {
 				logger.info("Root AspectranService exists.");
 				aspectranService = WebAspectranService.newInstance(this, rootAspectranService);
+				standalone = (rootAspectranService != aspectranService);
 			}
 		} catch(Exception e) {
 			//logger.error("WebActivityServlet was failed to initialize: " + e.toString(), e);
@@ -98,14 +99,16 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 	public void destroy() {
 		super.destroy();
 
-		boolean cleanlyDestoryed = aspectranService.dispose();
-		
-		if(cleanlyDestoryed)
-			logger.info("Successfully destroyed WebActivityServlet: " + this.getServletName());
-		else
-			logger.error("WebActivityServlet were not destroyed cleanly: " + this.getServletName());
-
-		logger.info("Do not terminate the server while the all scoped bean destroying.");
+		if(standalone) {
+			boolean cleanlyDestoryed = aspectranService.dispose();
+			
+			if(cleanlyDestoryed)
+				logger.info("Successfully destroyed WebActivityServlet: " + this.getServletName());
+			else
+				logger.error("WebActivityServlet were not destroyed cleanly: " + this.getServletName());
+	
+			logger.info("Do not terminate the server while the all scoped bean destroying.");
+		}
 	}
 	
 }
