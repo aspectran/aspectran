@@ -126,7 +126,7 @@ public class TokenExpression implements TokenExpressor {
 	public String expressAsString(Token[] tokens) {
 		Object value = express(tokens);
 		
-		if(tokens == null)
+		if(value == null)
 			return null;
 		
 		return value.toString();

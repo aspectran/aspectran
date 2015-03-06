@@ -30,8 +30,7 @@ public class ShallowContextBuilderAssistant extends ContextBuilderAssistant {
 
 	private final Logger logger = LoggerFactory.getLogger(ShallowContextBuilderAssistant.class);
 	
-	public ShallowContextBuilderAssistant(String applicationBasePath, ClassLoader classLoader) {
-		super(applicationBasePath, classLoader);
+	public ShallowContextBuilderAssistant() {
 	}
 
 	/**

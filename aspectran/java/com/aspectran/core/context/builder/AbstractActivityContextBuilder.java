@@ -42,20 +42,11 @@ import com.aspectran.core.util.ResourceUtils;
  */
 public abstract class AbstractActivityContextBuilder extends ContextBuilderAssistant {
 	
-	protected AbstractActivityContextBuilder(String applicationBasePath, ClassLoader classLoader) {
-		super(applicationBasePath, classLoader);
-	}
-	
 	protected ActivityContext makeActivityContext(ApplicationAdapter applicationAdapter) {
 		AspectRuleMap aspectRuleMap = getAspectRuleMap();
 		BeanRuleMap beanRuleMap = getBeanRuleMap();
 		TransletRuleMap transletRuleMap = getTransletRuleMap();
 
-//		for(BeanRule br : beanRuleMap) {
-//			System.out.println("###BeanRule " + br);
-//		}
-//
-		
 		BeanReferenceInspector beanReferenceInspector = getBeanReferenceInspector();
 		beanReferenceInspector.inspect(beanRuleMap);
 		

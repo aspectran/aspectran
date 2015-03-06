@@ -18,7 +18,7 @@ public class XmlActivityContextLoader extends AbstractActivityContextLoader {
 		logger.info("build ActivityContext [" + rootContext + "]");
 		long startTime = System.currentTimeMillis();
 
-		ActivityContextBuilder builder = new XmlActivityContextBuilder(applicationAdapter, aspectranClassLoader);
+		ActivityContextBuilder builder = new XmlActivityContextBuilder(applicationAdapter);
 		builder.setHybridLoading(isHybridLoading());
 		ActivityContext activityContext = builder.build(rootContext);
 		

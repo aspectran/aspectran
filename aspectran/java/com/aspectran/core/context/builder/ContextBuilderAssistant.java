@@ -15,9 +15,7 @@
  */
 package com.aspectran.core.context.builder;
 
-import java.io.File;
 import java.io.IOException;
-import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,9 +23,11 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.aspectran.core.activity.CoreTranslet;
+import com.aspectran.core.activity.Translet;
+import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.AspectranConstant;
 import com.aspectran.core.context.bean.scan.BeanClassScanner;
-import com.aspectran.core.context.loader.AspectranClassLoader;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.AspectRuleMap;
 import com.aspectran.core.context.rule.BeanRule;
@@ -38,7 +38,6 @@ import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.TransletRuleMap;
 import com.aspectran.core.context.rule.type.DefaultSettingType;
 import com.aspectran.core.util.ArrayStack;
-import com.aspectran.core.util.ResourceUtils;
 import com.aspectran.core.util.wildcard.WildcardPattern;
 
 /**
@@ -48,9 +47,11 @@ public class ContextBuilderAssistant {
 
 	private final Logger logger = LoggerFactory.getLogger(ContextBuilderAssistant.class);
 	
-	private final String applicationBasePath;
+	private ApplicationAdapter applicationAdapter;
+	
+	private String applicationBasePath;
 
-	private final ClassLoader classLoader;
+	private ClassLoader classLoader;
 	
 	private ArrayStack objectStack = new ArrayStack();
 	
@@ -74,24 +75,41 @@ public class ContextBuilderAssistant {
 	
 	private boolean hybridLoading;
 	
-	public ContextBuilderAssistant(String applicationBasePath, ClassLoader classLoader) {
-		if(applicationBasePath == null)
-			this.applicationBasePath = new File(".").getAbsoluteFile().toString();
-		else
-			this.applicationBasePath = applicationBasePath;
-		
-		if(classLoader == null)
-			this.classLoader = new AspectranClassLoader();
-		else
-			this.classLoader = classLoader;
-		
-		logger.info("Application base directory path is [" + applicationBasePath + "]");
+//	public ContextBuilderAssistant(String applicationBasePath, ClassLoader classLoader) {
+//		if(applicationBasePath == null)
+//			this.applicationBasePath = new File(".").getAbsoluteFile().toString();
+//		else
+//			this.applicationBasePath = applicationBasePath;
+//		
+//		if(classLoader == null)
+//			this.classLoader = new AspectranClassLoader();
+//		else
+//			this.classLoader = classLoader;
+//		
+//		logger.info("Application base directory path is [" + applicationBasePath + "]");
+//	}
+//	
+	public ContextBuilderAssistant() {
+	}
+	
+	public ApplicationAdapter getApplicationAdapter() {
+		return applicationAdapter;
+	}
+
+	public void setApplicationAdapter(ApplicationAdapter applicationAdapter) {
+		this.applicationAdapter = applicationAdapter;
+		this.applicationBasePath = applicationAdapter.getApplicationBasePath();
+		this.classLoader = applicationAdapter.getClassLoader();
+	}
+
+	public String getApplicationBasePath() {
+		return applicationBasePath;
 	}
 	
 	public ClassLoader getClassLoader() {
 		return classLoader;
 	}
-
+	
 	/**
 	 * Push object.
 	 * 
@@ -137,48 +155,44 @@ public class ContextBuilderAssistant {
 	public void clearObjectStack() {
 		objectStack.clear();
 	}
-	
-	public String getApplicationBasePath() {
-		return applicationBasePath;
-	}
 
-	/**
-	 * To real path.
-	 * 
-	 * @param filePath the file path
-	 * 
-	 * @return the file
-	 * @throws IOException 
-	 */
-	public String toRealPath(String filePath) throws IOException {
-		File file = toRealPathAsFile(filePath);
-		return file.getCanonicalPath();
-	}
-
-	/**
-	 * To real path as file.
-	 * 
-	 * @param filePath the file path
-	 * 
-	 * @return the file
-	 */
-	public File toRealPathAsFile(String filePath) {
-		File file;
-		
-		if(filePath.startsWith(ResourceUtils.FILE_URL_PREFIX)) {
-			URI uri = URI.create(filePath);
-			file = new File(uri);
-		} else if(filePath.startsWith(ResourceUtils.CLASSPATH_URL_PREFIX)) {
-			file = new File(getClassLoader().getResource(filePath).getFile());
-		} else {
-			if(applicationBasePath != null)
-				file = new File(applicationBasePath, filePath);
-			else
-				file = new File(filePath);
-		}
-		
-		return file;
-	}
+//	/**
+//	 * To real path.
+//	 * 
+//	 * @param filePath the file path
+//	 * 
+//	 * @return the file
+//	 * @throws IOException 
+//	 */
+//	public String toRealPath(String filePath) throws IOException {
+//		File file = toRealPathAsFile(filePath);
+//		return file.getCanonicalPath();
+//	}
+//
+//	/**
+//	 * To real path as file.
+//	 * 
+//	 * @param filePath the file path
+//	 * 
+//	 * @return the file
+//	 */
+//	public File toRealPathAsFile(String filePath) {
+//		File file;
+//		
+//		if(filePath.startsWith(ResourceUtils.FILE_URL_PREFIX)) {
+//			URI uri = URI.create(filePath);
+//			file = new File(uri);
+//		} else if(filePath.startsWith(ResourceUtils.CLASSPATH_URL_PREFIX)) {
+//			file = new File(getClassLoader().getResource(filePath).getFile());
+//		} else {
+//			if(applicationBasePath != null)
+//				file = new File(applicationBasePath, filePath);
+//			else
+//				file = new File(filePath);
+//		}
+//		
+//		return file;
+//	}
 
 	public Map<DefaultSettingType, String> getSettings() {
 		return settings;
@@ -197,11 +211,23 @@ public class ContextBuilderAssistant {
 		return settings.get(settingType);
 	}
 	
+	@SuppressWarnings("unchecked")
 	public void applySettings() throws ClassNotFoundException {
 		if(defaultSettings == null)
-			defaultSettings = new DefaultSettings(classLoader);
+			defaultSettings = new DefaultSettings();
 
-		defaultSettings.set(getSettings());
+		defaultSettings.apply(getSettings());
+		
+		if(classLoader != null) {
+			if(defaultSettings.getTransletInterfaceClassName() != null) {
+				Class<?> transletInterfaceClass = classLoader.loadClass(defaultSettings.getTransletInterfaceClassName());
+				defaultSettings.setTransletInterfaceClass((Class<Translet>)transletInterfaceClass);
+			}
+			if(defaultSettings.getTransletImplementClassName() != null) {
+				Class<?> transletImplementClass = classLoader.loadClass(defaultSettings.getTransletImplementClassName());
+				defaultSettings.setTransletImplementClass((Class<CoreTranslet>)transletImplementClass);
+			}
+		}
 	}
 	
 	public Map<String, String> getTypeAliases() {

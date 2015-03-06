@@ -27,15 +27,8 @@ import com.aspectran.core.context.rule.type.ImportFileType;
  */
 public class XmlActivityContextBuilder extends AbstractActivityContextBuilder implements ActivityContextBuilder {
 	
-	private final ApplicationAdapter applicationAdapter;
-	
 	public XmlActivityContextBuilder(ApplicationAdapter applicationAdapter) {
-		this(applicationAdapter, null);
-	}
-	
-	public XmlActivityContextBuilder(ApplicationAdapter applicationAdapter, ClassLoader classLoader) {
-		super(applicationAdapter.getApplicationBasePath(), classLoader);
-		this.applicationAdapter = applicationAdapter;
+		setApplicationAdapter(applicationAdapter);
 	}
 
 	public ActivityContext build(String rootContext) throws ActivityContextBuilderException {
@@ -51,7 +44,7 @@ public class XmlActivityContextBuilder extends AbstractActivityContextBuilder im
 			AspectranNodeParser parser = new AspectranNodeParser(this);
 			parser.parse(importable);
 			
-			ActivityContext aspectranContext = makeActivityContext(applicationAdapter);
+			ActivityContext aspectranContext = makeActivityContext(getApplicationAdapter());
 			
 			return aspectranContext;
 		} catch(Exception e) {

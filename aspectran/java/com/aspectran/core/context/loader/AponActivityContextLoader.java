@@ -24,7 +24,7 @@ public class AponActivityContextLoader extends AbstractActivityContextLoader {
 		logger.info("build ActivityContext [" + rootContext + "]");
 		long startTime = System.currentTimeMillis();
 
-		ActivityContextBuilder builder = new AponActivityContextBuilder(applicationAdapter, aspectranClassLoader, encoding);
+		ActivityContextBuilder builder = new AponActivityContextBuilder(applicationAdapter, encoding);
 		ActivityContext activityContext = builder.build(rootContext);
 		
 		long elapsedTime = System.currentTimeMillis() - startTime;

@@ -15,7 +15,6 @@
  */
 package com.aspectran.core.context.rule;
 
-import java.io.File;
 import java.util.List;
 
 import com.aspectran.core.activity.variable.token.Token;
@@ -43,8 +42,6 @@ public class TemplateRule extends ActionPossessSupport implements ActionPossessa
 	private Token[] contentTokens;
 	
 	private Boolean noCache;
-	
-	private File realFile;
 	
 	public String getFile() {
 		return file;
@@ -113,7 +110,7 @@ public class TemplateRule extends ActionPossessSupport implements ActionPossessa
 	
 			if(tokenList.size() > 0) {
 				contentTokens = tokenList.toArray(new Token[tokenList.size()]);
-				contentTokens = Tokenizer.optimizeTokens(contentTokens);
+				contentTokens = Tokenizer.optimize(contentTokens);
 			} else {
 				contentTokens = null;
 			}
@@ -122,14 +119,6 @@ public class TemplateRule extends ActionPossessSupport implements ActionPossessa
 
 	public Token[] getContentTokens() {
 		return contentTokens;
-	}
-
-	public File getRealFile() {
-		return realFile;
-	}
-
-	public void setRealFile(File realFile) {
-		this.realFile = realFile;
 	}
 
 	/* (non-Javadoc)

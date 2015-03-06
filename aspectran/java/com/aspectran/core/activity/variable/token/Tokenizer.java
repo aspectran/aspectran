@@ -273,7 +273,7 @@ public class Tokenizer {
 	 * 
 	 * @return the token[]
 	 */
-	public static Token[] optimizeTokens(Token[] tokens) {
+	public static Token[] optimize(Token[] tokens) {
 		if(tokens == null)
 			return tokens;
 		

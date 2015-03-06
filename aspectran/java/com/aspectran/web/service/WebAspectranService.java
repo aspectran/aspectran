@@ -11,13 +11,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.aspectran.core.activity.Activity;
-import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.ActivityContextException;
-import com.aspectran.core.context.loader.AspectranClassLoader;
 import com.aspectran.core.context.loader.config.AspectranConfig;
 import com.aspectran.core.context.loader.config.AspectranContextConfig;
 import com.aspectran.core.context.translet.TransletNotFoundException;
-import com.aspectran.core.service.AspectranService;
 import com.aspectran.core.service.AspectranServiceControllerListener;
 import com.aspectran.core.service.CoreAspectranService;
 import com.aspectran.core.util.apon.Parameters;
@@ -33,28 +30,15 @@ public class WebAspectranService extends CoreAspectranService {
 	
 	public static final String ASPECTRAN_CONFIG_PARAM = "aspectran:config";
 
-	public static final String WEB_APPLICATION_ADAPTER_ATTRIBUTE =  WebApplicationAdapter.class.getName() + ".WEB_APPLICATION_ADAPTER";
+	//public static final String WEB_APPLICATION_ADAPTER_ATTRIBUTE =  WebApplicationAdapter.class.getName() + ".WEB_APPLICATION_ADAPTER";
 
 	private static final String DEFAULT_ROOT_CONTEXT = "/WEB-INF/aspectran/root.xml";
 	
-	private static final String[] excludePackageNames;
-	
-	static {
-		excludePackageNames = new String[] {
-			"com.aspectran.core",
-			"com.aspectran.scheduler",
-			"com.aspectran.support",
-			"com.aspectran.web"
-		};
-	}
+	protected long pauseTimeout;
 	
 	public WebAspectranService(ServletContext servletContext) {
-		ApplicationAdapter aa = new WebApplicationAdapter(servletContext);
-		setApplicationAdapter(aa);
-	}
-	
-	public WebAspectranService(AspectranService aspectranService) {
-		super(aspectranService);
+		WebApplicationAdapter waa = new WebApplicationAdapter(this, servletContext);
+		setApplicationAdapter(waa);
 	}
 	
 	private synchronized void initialize(String aspectranConfigParam) throws ActivityContextException {
@@ -79,13 +63,13 @@ public class WebAspectranService extends CoreAspectranService {
 	public void service(WebActivityServlet servlet, HttpServletRequest req, HttpServletResponse res) throws IOException {
 		String requestUri = req.getRequestURI();
 
-		if(servlet.pauseTimeout > 0L) {
-			if(servlet.pauseTimeout >= System.currentTimeMillis()) {
+		if(pauseTimeout > 0L) {
+			if(pauseTimeout >= System.currentTimeMillis()) {
 				logger.info("aspectran service is paused, did not respond to the request uri [" + requestUri + "]");
 				res.sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
 				return;
 			} else {
-				servlet.pauseTimeout = 0L;
+				pauseTimeout = 0L;
 			}
 		}
 		
@@ -127,7 +111,7 @@ public class WebAspectranService extends CoreAspectranService {
 	public static WebAspectranService newInstance(ServletContext servletContext) {
 		String aspectranConfigParam = servletContext.getInitParameter(ASPECTRAN_CONFIG_PARAM);
 
-		WebAspectranService aspectranService = newInstance(servletContext, null, aspectranConfigParam);
+		WebAspectranService aspectranService = newInstance(servletContext, aspectranConfigParam);
 		
 		servletContext.setAttribute(AspectranServiceListener.ASPECTRAN_SERVICE_ATTRIBUTE, aspectranService);
 		logger.debug("AspectranServiceListener attribute in ServletContext was created. {}: {}", AspectranServiceListener.ASPECTRAN_SERVICE_ATTRIBUTE, aspectranService);
@@ -141,48 +125,37 @@ public class WebAspectranService extends CoreAspectranService {
 		
 		String aspectranConfigParam = servletConfig.getInitParameter(ASPECTRAN_CONFIG_PARAM);
 		
-		return newInstance(servletContext, servlet, aspectranConfigParam);
+		return newInstance(servletContext, aspectranConfigParam);
 	}
 
-	public static WebAspectranService newInstance(WebActivityServlet servlet, AspectranService rootAspectranService) {
+	public static WebAspectranService newInstance(WebActivityServlet servlet, WebAspectranService rootAspectranService) {
 		ServletContext servletContext = servlet.getServletContext();
 		ServletConfig servletConfig = servlet.getServletConfig();
 		
 		String aspectranConfigParam = servletConfig.getInitParameter(ASPECTRAN_CONFIG_PARAM);
 		
 		if(aspectranConfigParam != null) {
-			return newInstance(servletContext, servlet, aspectranConfigParam);
+			return newInstance(servletContext, aspectranConfigParam);
 		} else {
-			WebAspectranService aspectranService = new WebAspectranService(rootAspectranService);
-
-			setAspectranServiceControllerListener(rootAspectranService, servlet);
-			
-			aspectranService.start();
-			
-			return aspectranService;
+			return rootAspectranService;
 		}
 	}
 
-	private static WebAspectranService newInstance(ServletContext servletContext, WebActivityServlet servlet, String aspectranConfigParam) {
-		AspectranClassLoader aspectranClassLoader = new AspectranClassLoader();
-		aspectranClassLoader.excludePackage(excludePackageNames);
-		
+	private static WebAspectranService newInstance(ServletContext servletContext, String aspectranConfigParam) {
 		WebAspectranService aspectranService = new WebAspectranService(servletContext);
-		aspectranService.setAspectranClassLoader(aspectranClassLoader);
 		aspectranService.initialize(aspectranConfigParam);
 		
-		if(servlet != null)
-			setAspectranServiceControllerListener(aspectranService, servlet);
+		WebAspectranService.addAspectranServiceControllerListener(aspectranService);
 		
 		aspectranService.start();
 		
 		return aspectranService;
 	}
 	
-	private static void setAspectranServiceControllerListener(AspectranService aspectranService, final WebActivityServlet servlet) {
+	private static void addAspectranServiceControllerListener(final WebAspectranService aspectranService) {
 		aspectranService.setAspectranServiceControllerListener(new AspectranServiceControllerListener() {
 			public void started() {
-				servlet.pauseTimeout = 0;
+				aspectranService.pauseTimeout = 0;
 			}
 			
 			public void restarted() {
@@ -192,11 +165,12 @@ public class WebAspectranService extends CoreAspectranService {
 			public void paused(long timeout) {
 				if(timeout <= 0)
 					timeout = 315360000000L; //86400000 * 365 * 10 = 10 Years;
-				servlet.pauseTimeout = System.currentTimeMillis() + timeout;
+				
+				aspectranService.pauseTimeout = System.currentTimeMillis() + timeout;
 			}
 			
 			public void resumed() {
-				servlet.pauseTimeout = 0;
+				aspectranService.pauseTimeout = 0;
 			}
 			
 			public void stopped() {
