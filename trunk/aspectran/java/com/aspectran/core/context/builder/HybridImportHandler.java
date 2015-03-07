@@ -53,7 +53,7 @@ public class HybridImportHandler implements ImportHandler {
 			aponDisassembler.disassembleAspectran(aspectranParameters);
 		} else {
 			AspectranNodeParser aspectranNodeParser = new AspectranNodeParser(assistant);
-			aspectranNodeParser.parse(importable);
+			aspectranNodeParser.parse(importable.getInputStream());
 		}
 
 		assistant.restoreDefaultSettings();

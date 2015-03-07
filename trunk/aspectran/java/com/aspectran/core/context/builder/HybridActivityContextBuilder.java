@@ -15,18 +15,8 @@
  */
 package com.aspectran.core.context.builder;
 
-import java.io.IOException;
-import java.io.Reader;
-
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.context.builder.apon.AspectranAponDisassembler;
-import com.aspectran.core.context.builder.apon.params.AspectranParameters;
-import com.aspectran.core.context.builder.xml.AspectranNodeParser;
-import com.aspectran.core.context.rule.type.ImportFileType;
-import com.aspectran.core.context.rule.type.ImportType;
-import com.aspectran.core.util.apon.AponReader;
-import com.aspectran.core.util.apon.Parameters;
 
 /**
  * AponAspectranContextBuilder.
@@ -48,26 +38,14 @@ public class HybridActivityContextBuilder extends AbstractActivityContextBuilder
 
 	public ActivityContext build(String rootContext) throws ActivityContextBuilderException {
 		try {
+			if(rootContext == null)
+				throw new IllegalArgumentException("rootContext must not be null");
+
 			ImportHandler importHandler = new HybridImportHandler(this, encoding);
 			setImportHandler(importHandler);
 			
-			Importable importable = makeHybridImportable(rootContext);
-			
-			if(importable.getImportFileType() == ImportFileType.APON) {
-				Reader reader = importable.getReader(encoding);
-	
-				AponReader aponReader = new AponReader();
-				Parameters aspectranParameters = aponReader.read(reader, new AspectranParameters());
-				
-				reader.close();
-				
-				AspectranAponDisassembler aponDisassembler = new AspectranAponDisassembler(this);
-				aponDisassembler.disassembleAspectran(aspectranParameters);
-			} else {
-				AspectranNodeParser parser = new AspectranNodeParser(this);
-				parser.parse(importable);
-
-			}
+			Importable importable = makeImportable(rootContext);
+			importHandler.handle(importable);
 			
 			ActivityContext aspectranContext = makeActivityContext(getApplicationAdapter());
 
@@ -76,7 +54,7 @@ public class HybridActivityContextBuilder extends AbstractActivityContextBuilder
 			throw new ActivityContextBuilderException("HybridActivityContext build failed. rootContext: " + rootContext, e);
 		}
 	}
-	
+/*	
 	private Importable makeHybridImportable(String rootContext) throws IOException {
 		ImportFileType importFileType = rootContext.endsWith(".apon") ? ImportFileType.APON : ImportFileType.XML;
 		
@@ -87,5 +65,5 @@ public class HybridActivityContextBuilder extends AbstractActivityContextBuilder
 
 		return importable;
 	}
-	
+*/
 }

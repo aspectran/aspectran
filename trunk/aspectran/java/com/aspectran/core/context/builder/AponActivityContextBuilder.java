@@ -15,15 +15,9 @@
  */
 package com.aspectran.core.context.builder;
 
-import java.io.Reader;
-
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.context.builder.apon.AspectranAponDisassembler;
-import com.aspectran.core.context.builder.apon.params.AspectranParameters;
 import com.aspectran.core.context.rule.type.ImportFileType;
-import com.aspectran.core.util.apon.AponReader;
-import com.aspectran.core.util.apon.Parameters;
 
 /**
  * AponAspectranContextBuilder.
@@ -44,30 +38,21 @@ public class AponActivityContextBuilder extends AbstractActivityContextBuilder i
 	}
 
 	public ActivityContext build(String rootContext) throws ActivityContextBuilderException {
-		Importable importable = makeImportable(rootContext, ImportFileType.APON);
-		return build(importable);
-	}
-	
-	public ActivityContext build(Importable importable) throws ActivityContextBuilderException {
 		try {
+			if(rootContext == null)
+				throw new IllegalArgumentException("rootContext must not be null");
+
 			ImportHandler importHandler = new AponImportHandler(this, encoding);
 			setImportHandler(importHandler);
 			
-			Reader reader = importable.getReader(encoding);
-			
-			AponReader aponReader = new AponReader();
-			Parameters aspectranParameters = aponReader.read(reader, new AspectranParameters());
-			
-			reader.close();
-			
-			AspectranAponDisassembler aponDisassembler = new AspectranAponDisassembler(this);
-			aponDisassembler.disassembleAspectran(aspectranParameters);
-			
+			Importable importable = makeImportable(rootContext, ImportFileType.APON);
+			importHandler.handle(importable);
+						
 			ActivityContext aspectranContext = makeActivityContext(getApplicationAdapter());
 			
 			return aspectranContext;
 		} catch(Exception e) {
-			throw new ActivityContextBuilderException("AponActivityContext build failed. rootContext: " + importable, e);
+			throw new ActivityContextBuilderException("AponActivityContext build failed. rootContext: " + rootContext, e);
 		}
 	}
 	
