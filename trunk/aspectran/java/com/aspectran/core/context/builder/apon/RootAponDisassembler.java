@@ -81,11 +81,11 @@ import com.aspectran.core.util.apon.Parameters;
  * 
  * <p>Created: 2015. 01. 27 오후 10:36:29</p>
  */
-public class AspectranAponDisassembler {
+public class RootAponDisassembler {
 	
 	private final ContextBuilderAssistant assistant;
 	
-	public AspectranAponDisassembler(ContextBuilderAssistant assistant) {
+	public RootAponDisassembler(ContextBuilderAssistant assistant) {
 		this.assistant = assistant;
 	}
 	

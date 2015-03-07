@@ -53,6 +53,7 @@ import com.aspectran.core.context.builder.apon.params.RedirectParameters;
 import com.aspectran.core.context.builder.apon.params.RequestParameters;
 import com.aspectran.core.context.builder.apon.params.ResponseByContentTypeParameters;
 import com.aspectran.core.context.builder.apon.params.ResponseParameters;
+import com.aspectran.core.context.builder.apon.params.RootParameters;
 import com.aspectran.core.context.builder.apon.params.TemplateParameters;
 import com.aspectran.core.context.builder.apon.params.TransformParameters;
 import com.aspectran.core.context.builder.apon.params.TransletParameters;
@@ -62,7 +63,6 @@ import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.AspectRuleMap;
 import com.aspectran.core.context.rule.BeanActionRule;
 import com.aspectran.core.context.rule.BeanRule;
-import com.aspectran.core.context.rule.BeanRuleMap;
 import com.aspectran.core.context.rule.DispatchResponseRule;
 import com.aspectran.core.context.rule.EchoActionRule;
 import com.aspectran.core.context.rule.ForwardResponseRule;
@@ -79,7 +79,6 @@ import com.aspectran.core.context.rule.SettingsAdviceRule;
 import com.aspectran.core.context.rule.TemplateRule;
 import com.aspectran.core.context.rule.TransformRule;
 import com.aspectran.core.context.rule.TransletRule;
-import com.aspectran.core.context.rule.TransletRuleMap;
 import com.aspectran.core.context.rule.ability.ActionRuleApplicable;
 import com.aspectran.core.context.rule.ability.ResponseRuleApplicable;
 import com.aspectran.core.context.rule.type.ActionType;
@@ -95,12 +94,18 @@ import com.aspectran.core.util.apon.Parameters;
  * 
  * <p>Created: 2015. 01. 27 오후 10:36:29</p>
  */
-public class AspectranAponAssembler {
+public class RootAponAssembler {
 	
 	private final ContextBuilderAssistant assistant;
 	
-	public AspectranAponAssembler(ContextBuilderAssistant assistant) {
+	public RootAponAssembler(ContextBuilderAssistant assistant) {
 		this.assistant = assistant;
+	}
+	
+	public Parameters assembleRoot() throws Exception {
+		Parameters rootParameters = new RootParameters();
+		rootParameters.setValue(RootParameters.aspectran, assembleAspectran());
+		return rootParameters;
 	}
 	
 	public Parameters assembleAspectran() throws Exception {

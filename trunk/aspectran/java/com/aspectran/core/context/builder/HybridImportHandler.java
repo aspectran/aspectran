@@ -26,9 +26,9 @@ import java.io.Writer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.aspectran.core.context.builder.apon.AspectranAponAssembler;
-import com.aspectran.core.context.builder.apon.AspectranAponDisassembler;
-import com.aspectran.core.context.builder.apon.params.AspectranParameters;
+import com.aspectran.core.context.builder.apon.RootAponAssembler;
+import com.aspectran.core.context.builder.apon.RootAponDisassembler;
+import com.aspectran.core.context.builder.apon.params.RootParameters;
 import com.aspectran.core.context.builder.xml.AspectranNodeParser;
 import com.aspectran.core.context.rule.type.ImportFileType;
 import com.aspectran.core.context.rule.type.ImportType;
@@ -53,7 +53,7 @@ public class HybridImportHandler extends AbstractImportHandler implements Import
 	
 	private AspectranNodeParser aspectranNodeParser;
 	
-	private AspectranAponDisassembler aspectranAponDisassembler;
+	private RootAponDisassembler rootAponDisassembler;
 	
 	public HybridImportHandler(ContextBuilderAssistant assistant, String encoding, boolean hybridLoading) {
 		this.assistant = assistant;
@@ -67,13 +67,13 @@ public class HybridImportHandler extends AbstractImportHandler implements Import
 		if(importable.getImportFileType() == ImportFileType.APON) {
 			Reader reader = importable.getReader(encoding);
 			AponReader aponReader = new AponReader();
-			Parameters aspectranParameters = aponReader.read(reader, new AspectranParameters());
+			Parameters rootParameters = aponReader.read(reader, new RootParameters());
 			reader.close();
 			
-			if(aspectranAponDisassembler == null)
-				aspectranAponDisassembler = new AspectranAponDisassembler(assistant);
+			if(rootAponDisassembler == null)
+				rootAponDisassembler = new RootAponDisassembler(assistant);
 			
-			aspectranAponDisassembler.disassembleAspectran(aspectranParameters);
+			rootAponDisassembler.disassembleAspectran(rootParameters);
 		} else {
 			if(aspectranNodeParser == null)
 				aspectranNodeParser = new AspectranNodeParser(assistant);
@@ -113,11 +113,11 @@ public class HybridImportHandler extends AbstractImportHandler implements Import
 			AspectranNodeParser parser = new AspectranNodeParser(assistant, false);
 			parser.parse(importableFile.getInputStream());
 			
-			AspectranAponAssembler assembler = new AspectranAponAssembler(assistant);
-			Parameters aspectranParameters = assembler.assembleAspectran();
+			RootAponAssembler assembler = new RootAponAssembler(assistant);
+			Parameters rootParameters = assembler.assembleRoot();
 			
 			AponWriter aponWriter = new AponWriter(writer, true);
-			aponWriter.write(aspectranParameters);
+			aponWriter.write(rootParameters);
 			aponWriter.flush();
 			
 			file.setLastModified(importableFile.getLastModified());
