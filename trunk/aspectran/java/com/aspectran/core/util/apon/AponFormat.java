@@ -29,7 +29,7 @@ public class AponFormat {
 
 	protected static final char NEXT_LINE_CHAR = '\n';
 
-	protected static final char INDENT_CHAR = '\n';
+	protected static final char INDENT_CHAR = '\t';
 	
 	protected static final char SPACE_CHAR = ' ';
 	

@@ -99,7 +99,8 @@ public class ImportableFile extends Importable {
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("{importType=").append(getImportType());
-		sb.append(", basePath=").append(basePath);
+		if(basePath != null)
+			sb.append(", basePath=").append(basePath);
 		sb.append(", filePath=").append(filePath);
 		sb.append("}");
 		

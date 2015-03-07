@@ -15,32 +15,39 @@
  */
 package com.aspectran.core.context.builder;
 
-import com.aspectran.core.context.builder.xml.AspectranNodeParser;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Translet Map Parser.
  * 
  * <p>Created: 2008. 06. 14 오전 4:39:24</p>
  */
-public class XmlImportHandler extends AbstractImportHandler implements ImportHandler {
+public abstract class AbstractImportHandler implements ImportHandler {
 	
-	private final ContextBuilderAssistant assistant;
+	private List<Importable> pendingList;
 	
-	private AspectranNodeParser aspectranNodeParser;
-	
-	public XmlImportHandler(ContextBuilderAssistant assistant) {
-		this.assistant = assistant;
-		aspectranNodeParser = new AspectranNodeParser(assistant);
+	public AbstractImportHandler() {
 	}
 	
-	public void handle(Importable importable) throws Exception {
-		DefaultSettings defaultSettings = assistant.backupDefaultSettings();
+	public void pending(Importable importable) {
+		if(pendingList == null)
+			pendingList = new ArrayList<Importable>();
 		
-		aspectranNodeParser.parse(importable.getInputStream());
-		
-		handle();
-		
-		assistant.restoreDefaultSettings(defaultSettings);
+		pendingList.add(importable);
 	}
+	
+	protected void handle() throws Exception {
+		if(pendingList != null) {
+			List<Importable> pendedList = pendingList;
+			pendingList = null;
+			
+			for(Importable imp : pendedList) {
+				handle(imp);
+			}
+		}
+	}
+	
+	abstract public void handle(Importable importable) throws Exception;
 
 }

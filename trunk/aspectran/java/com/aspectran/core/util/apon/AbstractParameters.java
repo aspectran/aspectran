@@ -14,8 +14,6 @@ public abstract class AbstractParameters implements Parameters {
 	
 	private final String title;
 	
-	private String text;
-	
 	private ParameterValue parent;
 	
 	protected AbstractParameters(String title, ParameterDefine[] parameterDefines) {
@@ -24,7 +22,6 @@ public abstract class AbstractParameters implements Parameters {
 
 	protected AbstractParameters(String title, ParameterDefine[] parameterDefines, String text) {
 		this.title = title;
-		this.text = text;
 		this.parameterValueMap = new LinkedHashMap<String, ParameterValue>();
 		
 		if(parameterDefines != null) {
@@ -404,9 +401,36 @@ public abstract class AbstractParameters implements Parameters {
 	public <T extends Parameters> List<T> getParametersList(ParameterDefine parameterDefine) {
 		return getParametersList(parameterDefine.getName());
 	}
+
+	@SuppressWarnings("unchecked")
+	public <T extends Parameters> T newParameters(String name) {
+		Parameter p = getParameter(name);
+		Parameters parameters = p.newParameters();
+		return (T)parameters;
+	}
+	
+	public <T extends Parameters> T newParameters(ParameterDefine parameterDefine) {
+		return touchParameters(parameterDefine.getName());
+	}
+	
+	@SuppressWarnings("unchecked")
+	public <T extends Parameters> T touchParameters(String name) {
+		Parameters parameters = (T)getParameters(name);
+		
+		if(parameters == null) {
+			Parameter p = getParameter(name);
+			parameters = p.newParameters();
+		}
+		
+		return (T)parameters;
+	}
+	
+	public <T extends Parameters> T touchParameters(ParameterDefine parameterDefine) {
+		return touchParameters(parameterDefine.getName());
+	}
 	
 	public String toText() {
-		return text;
+		return AponWriter.toText(this);
 	}
 	
 	@Override

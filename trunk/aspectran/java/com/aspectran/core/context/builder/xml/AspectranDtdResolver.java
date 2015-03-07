@@ -17,6 +17,7 @@ package com.aspectran.core.context.builder.xml;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringReader;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -31,19 +32,23 @@ import org.xml.sax.SAXException;
  */
 public class AspectranDtdResolver implements EntityResolver {
 
-	private static final String ASPECTRAN_DTD = "com/aspectran/core/context/builder/xml/dtd/aspectran-1.0.dtd";
+	private static final String ASPECTRAN_DTD = "/com/aspectran/core/context/builder/xml/dtd/aspectran-1.0.dtd";
 
 	private static final Map<String, String> doctypeMap = new HashMap<String, String>();
 
-	private final ClassLoader classLoader;
+	private final boolean validating;
 	
 	static {
 		doctypeMap.put("-//aspectran.com//DTD Aspectran 1.0//EN".toUpperCase(), ASPECTRAN_DTD);
 		doctypeMap.put("aspectran-1.0.dtd".toUpperCase(), ASPECTRAN_DTD);
 	}
 
-	public AspectranDtdResolver(ClassLoader classLoader) {
-		this.classLoader = classLoader;
+	public AspectranDtdResolver() {
+		this(true);
+	}
+	
+	public AspectranDtdResolver(boolean validating) {
+		this.validating = validating;
 	}
 	
 	/**
@@ -57,23 +62,26 @@ public class AspectranDtdResolver implements EntityResolver {
 	 * @throws SAXException If anything goes wrong
 	 */
 	public InputSource resolveEntity(String publicId, String systemId) throws SAXException {
-		
-		try {
-			InputSource source = null;
-
-			if(publicId != null) {
-				String path = doctypeMap.get(publicId.toUpperCase());
-				source = getInputSource(path);
+		if(validating) {
+			try {
+				InputSource source = null;
+	
+				if(publicId != null) {
+					String path = doctypeMap.get(publicId.toUpperCase());
+					source = getInputSource(path);
+				}
+				
+				if(source == null && systemId != null) {
+					String path = doctypeMap.get(systemId.toUpperCase());
+					source = getInputSource(path);
+				}
+	
+				return source;
+			} catch(Exception e) {
+				throw new SAXException(e.toString());
 			}
-			
-			if(source == null && systemId != null) {
-				String path = doctypeMap.get(systemId.toUpperCase());
-				source = getInputSource(path);
-			}
-
-			return source;
-		} catch(Exception e) {
-			throw new SAXException(e.toString());
+		} else {
+			return new InputSource(new StringReader(""));
 		}
 	}
 
@@ -90,7 +98,8 @@ public class AspectranDtdResolver implements EntityResolver {
 		InputSource source = null;
 		
 		if(path != null) {
-			InputStream in = classLoader.getResourceAsStream(path);
+			InputStream in = getClass().getResourceAsStream(path);
+			
 			source = new InputSource(in);
 		}
 		

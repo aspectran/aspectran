@@ -44,6 +44,7 @@ import com.aspectran.core.context.builder.apon.params.RedirectParameters;
 import com.aspectran.core.context.builder.apon.params.RequestParameters;
 import com.aspectran.core.context.builder.apon.params.ResponseByContentTypeParameters;
 import com.aspectran.core.context.builder.apon.params.ResponseParameters;
+import com.aspectran.core.context.builder.apon.params.RootParameters;
 import com.aspectran.core.context.builder.apon.params.TemplateParameters;
 import com.aspectran.core.context.builder.apon.params.TransformParameters;
 import com.aspectran.core.context.builder.apon.params.TransletParameters;
@@ -86,6 +87,11 @@ public class AspectranAponDisassembler {
 	
 	public AspectranAponDisassembler(ContextBuilderAssistant assistant) {
 		this.assistant = assistant;
+	}
+	
+	public void disassembleRoot(Parameters rootParameters) throws Exception {
+		Parameters aspectranParameters = rootParameters.getParameters(RootParameters.aspectran);
+		disassembleAspectran(aspectranParameters);
 	}
 	
 	public void disassembleAspectran(Parameters aspectranParameters) throws Exception {
@@ -136,7 +142,7 @@ public class AspectranAponDisassembler {
 
 		ImportHandler importHandler = assistant.getImportHandler();
 		if(importHandler != null)
-			importHandler.handle(importable);
+			importHandler.pending(importable);
 	}
 	
 	public void disassembleDefaultSettings(Parameters parameters) throws ClassNotFoundException {

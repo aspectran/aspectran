@@ -27,29 +27,34 @@ import com.aspectran.core.util.apon.Parameters;
  * 
  * <p>Created: 2008. 06. 14 오전 4:39:24</p>
  */
-public class AponImportHandler implements ImportHandler {
+public class AponImportHandler extends AbstractImportHandler implements ImportHandler {
 	
 	private final ContextBuilderAssistant assistant;
 	
 	private final String encoding;
 	
+	private AspectranAponDisassembler aspectranAponDisassembler;
+	
 	public AponImportHandler(ContextBuilderAssistant assistant, String encoding) {
 		this.assistant = assistant;
 		this.encoding = encoding;
+		
+		aspectranAponDisassembler = new AspectranAponDisassembler(assistant);
 	}
 	
 	public void handle(Importable importable) throws Exception {
-		assistant.backupDefaultSettings();
+		DefaultSettings defaultSettings = assistant.backupDefaultSettings();
 		
 		Reader reader = importable.getReader(encoding);
 		AponReader aponReader = new AponReader();
 		Parameters aspectranParameters = aponReader.read(reader, new AspectranParameters());
 		reader.close();
 		
-		AspectranAponDisassembler aponDisassembler = new AspectranAponDisassembler(assistant);
-		aponDisassembler.disassembleAspectran(aspectranParameters);
+		aspectranAponDisassembler.disassembleAspectran(aspectranParameters);
 
-		assistant.restoreDefaultSettings();
+		handle();
+
+		assistant.restoreDefaultSettings(defaultSettings);
 	}
 
 }

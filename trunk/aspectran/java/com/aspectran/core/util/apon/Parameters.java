@@ -149,6 +149,14 @@ public interface Parameters {
 	
 	public <T extends Parameters> List<T> getParametersList(ParameterDefine parameterDefine);
 	
+	public <T extends Parameters> T newParameters(String name);
+	
+	public <T extends Parameters> T newParameters(ParameterDefine parameterDefine);
+	
+	public <T extends Parameters> T touchParameters(String name);
+	
+	public <T extends Parameters> T touchParameters(ParameterDefine parameterDefine);
+	
 	public String toText();
 	
 }

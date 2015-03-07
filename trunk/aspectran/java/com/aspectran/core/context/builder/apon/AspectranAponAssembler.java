@@ -108,21 +108,21 @@ public class AspectranAponAssembler {
 		
 		DefaultSettings defaultSettings = assistant.getDefaultSettings();
 		if(defaultSettings != null) {
-			DefaultSettingsParameters settingParameters = aspectranParameters.getParameters(AspectranParameters.setting);
+			DefaultSettingsParameters settingParameters = aspectranParameters.newParameters(AspectranParameters.setting);
 			settingParameters.setValue(DefaultSettingsParameters.transletNamePattern, defaultSettings.getTransletNamePattern());
 			settingParameters.setValue(DefaultSettingsParameters.transletNamePatternPrefix, defaultSettings.getTransletNamePatternPrefix());
 			settingParameters.setValue(DefaultSettingsParameters.transletNamePatternSuffix, defaultSettings.getTransletNamePatternSuffix());
-			settingParameters.setValue(DefaultSettingsParameters.transletInterfaceClass, defaultSettings.getTransletInterfaceClassName());
-			settingParameters.setValue(DefaultSettingsParameters.transletImplementClass, defaultSettings.getTransletImplementClassName());
+			settingParameters.setValue(DefaultSettingsParameters.transletInterfaceClassName, defaultSettings.getTransletInterfaceClassName());
+			settingParameters.setValue(DefaultSettingsParameters.transletImplementClassName, defaultSettings.getTransletImplementClassName());
 			settingParameters.setValue(DefaultSettingsParameters.nullableContentId, defaultSettings.getNullableContentId());
 			settingParameters.setValue(DefaultSettingsParameters.nullableActionId, defaultSettings.getNullableActionId());
 			settingParameters.setValue(DefaultSettingsParameters.activityDefaultHandler, defaultSettings.getActivityDefaultHandler());
-			settingParameters.setValue(DefaultSettingsParameters.beanProxyMode, defaultSettings);
+			settingParameters.setValue(DefaultSettingsParameters.beanProxyMode, defaultSettings.getBeanProxyMode());
 		}
 		
 		Map<String, String> typeAliases = assistant.getTypeAliases();
 		if(!typeAliases.isEmpty()) {
-			GenericParameters typeAliasParameters = aspectranParameters.getParameters(AspectranParameters.typeAlias);
+			GenericParameters typeAliasParameters = aspectranParameters.newParameters(AspectranParameters.typeAlias);
 			for(Map.Entry<String, String> entry : typeAliases.entrySet()) {
 				typeAliasParameters.putValue(entry.getKey(), entry.getValue());
 			}
@@ -133,7 +133,7 @@ public class AspectranAponAssembler {
 			Parameters p = assembleAspectParameters(aspectRule);
 			aspectranParameters.putValue(AspectranParameters.aspects, p);
 		}
-		
+		/*
 		BeanRuleMap beanRuleMap = assistant.getBeanRuleMap();
 		for(BeanRule beanRule : beanRuleMap) {
 			Parameters p = new AspectParameters();
@@ -145,7 +145,7 @@ public class AspectranAponAssembler {
 			Parameters p = new AspectParameters();
 			aspectranParameters.putValue(AspectranParameters.translets, p);
 		}
-
+*/
 		return aspectranParameters;
 	}
 	
@@ -154,10 +154,10 @@ public class AspectranAponAssembler {
 		aspectParameters.setValue(AspectParameters.id, aspectRule.getId());
 		aspectParameters.setValue(AspectParameters.useFor, aspectRule.getAspectTargetType());
 		
-		Parameters joinpointParameters = aspectParameters.getParameters(AspectParameters.jointpoint);
+		Parameters joinpointParameters = aspectParameters.newParameters(AspectParameters.jointpoint);
 		joinpointParameters.setValue(JoinpointParameters.scope, aspectRule.getJoinpointScope());
 		
-		Parameters pointcutParameters = joinpointParameters.getParameters(JoinpointParameters.pointcut);
+		Parameters pointcutParameters = joinpointParameters.newParameters(JoinpointParameters.pointcut);
 
 		PointcutRule pointcutRule = aspectRule.getPointcutRule();
 		if(pointcutRule != null) {
@@ -175,21 +175,21 @@ public class AspectranAponAssembler {
 		if(settingsAdviceRule != null) {
 			Map<String, String> settings = settingsAdviceRule.getSettings();
 			if(settings != null) {
-				GenericParameters settingParameters = aspectParameters.getParameters(AspectParameters.setting);
+				GenericParameters settingParameters = aspectParameters.newParameters(AspectParameters.setting);
 				for(Map.Entry<String, String> entry : settings.entrySet()) {
 					settingParameters.putValue(entry.getKey(), entry.getValue());
 				}
 			}
 		}
 
-		Parameters adviceParameters = aspectParameters.getParameters(AspectParameters.advice);
+		Parameters adviceParameters = aspectParameters.newParameters(AspectParameters.advice);
 		adviceParameters.setValue(AdviceParameters.bean, aspectRule.getAdviceBeanId());
 		
 		List<AspectAdviceRule> aspectAdviceRuleList = aspectRule.getAspectAdviceRuleList();
 		if(aspectAdviceRuleList != null) {
 			for(AspectAdviceRule aspectAdviceRule : aspectAdviceRuleList) {
 				if(aspectAdviceRule.getAspectAdviceType() == AspectAdviceType.BEFORE) {
-					Parameters adviceActionParameters = adviceParameters.getParameters(AdviceParameters.beforeAdvice);
+					Parameters adviceActionParameters = adviceParameters.newParameters(AdviceParameters.beforeAdvice);
 					if(aspectAdviceRule.getActionType() == ActionType.ECHO) {
 						EchoActionRule echoActionRule = aspectAdviceRule.getExecutableAction().getActionRule();
 						adviceActionParameters.setValue(AdviceActionParameters.action, assembleActionParameters(echoActionRule));
@@ -198,7 +198,7 @@ public class AspectranAponAssembler {
 						adviceActionParameters.setValue(AdviceActionParameters.action, assembleActionParameters(beanActionRule));
 					}
 				} else if(aspectAdviceRule.getAspectAdviceType() == AspectAdviceType.AFTER) {
-					Parameters adviceActionParameters = adviceParameters.getParameters(AdviceParameters.afterAdvice);
+					Parameters adviceActionParameters = adviceParameters.newParameters(AdviceParameters.afterAdvice);
 					if(aspectAdviceRule.getActionType() == ActionType.ECHO) {
 						EchoActionRule echoActionRule = aspectAdviceRule.getExecutableAction().getActionRule();
 						adviceActionParameters.setValue(AdviceActionParameters.action, assembleActionParameters(echoActionRule));
@@ -207,7 +207,7 @@ public class AspectranAponAssembler {
 						adviceActionParameters.setValue(AdviceActionParameters.action, assembleActionParameters(beanActionRule));
 					}
 				} else if(aspectAdviceRule.getAspectAdviceType() == AspectAdviceType.AROUND) {
-					Parameters adviceActionParameters = adviceParameters.getParameters(AdviceParameters.aroundAdvice);
+					Parameters adviceActionParameters = adviceParameters.newParameters(AdviceParameters.aroundAdvice);
 					if(aspectAdviceRule.getActionType() == ActionType.ECHO) {
 						EchoActionRule echoActionRule = aspectAdviceRule.getExecutableAction().getActionRule();
 						adviceActionParameters.setValue(AdviceActionParameters.action, assembleActionParameters(echoActionRule));
@@ -216,7 +216,7 @@ public class AspectranAponAssembler {
 						adviceActionParameters.setValue(AdviceActionParameters.action, assembleActionParameters(beanActionRule));
 					}
 				} else if(aspectAdviceRule.getAspectAdviceType() == AspectAdviceType.FINALLY) {
-					Parameters adviceActionParameters = adviceParameters.getParameters(AdviceParameters.finallyAdvice);
+					Parameters adviceActionParameters = adviceParameters.newParameters(AdviceParameters.finallyAdvice);
 					if(aspectAdviceRule.getActionType() == ActionType.ECHO) {
 						EchoActionRule echoActionRule = aspectAdviceRule.getExecutableAction().getActionRule();
 						adviceActionParameters.setValue(AdviceActionParameters.action, assembleActionParameters(echoActionRule));
@@ -225,7 +225,7 @@ public class AspectranAponAssembler {
 						adviceActionParameters.setValue(AdviceActionParameters.action, assembleActionParameters(beanActionRule));
 					}
 				} else if(aspectAdviceRule.getAspectAdviceType() == AspectAdviceType.EXCPETION_RAIZED) {
-					Parameters exceptionRaizedParameters = adviceParameters.getParameters(AdviceParameters.exceptionRaized);
+					Parameters exceptionRaizedParameters = adviceParameters.newParameters(AdviceParameters.exceptionRaized);
 					if(aspectAdviceRule.getActionType() == ActionType.ECHO) {
 						EchoActionRule echoActionRule = aspectAdviceRule.getExecutableAction().getActionRule();
 						exceptionRaizedParameters.setValue(ExceptionRaizedParameters.action, assembleActionParameters(echoActionRule));

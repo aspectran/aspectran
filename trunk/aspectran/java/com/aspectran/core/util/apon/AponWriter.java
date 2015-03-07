@@ -42,95 +42,111 @@ public class AponWriter extends AponFormat {
 	public void write(Parameter parameter) throws IOException {
 		if(parameter.getParameterValueType() == ParameterValueType.PARAMETERS) {
 			if(parameter.isArray()) {
-				if(parameter.isBracketed()) {
-					writeName(parameter.getName());
-					openSquareBracket();
-					for(Parameters p : parameter.getValueAsParametersList()) {
-						indent();
-						openCurlyBracket();
-						write(p);
-						closeCurlyBracket();
-					}
-					closeSquareBracket();
-				} else {
-					for(Parameters p : parameter.getValueAsParametersList()) {
+				if(parameter.getValueAsParametersList() != null) {
+					if(parameter.isBracketed()) {
 						writeName(parameter.getName());
-						openCurlyBracket();
-						write(p);
-						closeCurlyBracket();
+						openSquareBracket();
+						for(Parameters p : parameter.getValueAsParametersList()) {
+							indent();
+							openCurlyBracket();
+							write(p);
+							closeCurlyBracket();
+						}
+						closeSquareBracket();
+					} else {
+						for(Parameters p : parameter.getValueAsParametersList()) {
+							writeName(parameter.getName());
+							openCurlyBracket();
+							write(p);
+							closeCurlyBracket();
+						}
 					}
 				}
 			} else {
-				writeName(parameter.getName());
-				openCurlyBracket();
-				write(parameter.getValueAsParameters());
-				closeCurlyBracket();
+				if(parameter.getValueAsParameters() != null) {
+					writeName(parameter.getName());
+					openCurlyBracket();
+					write(parameter.getValueAsParameters());
+					closeCurlyBracket();
+				}
 			}
 		} else if(parameter.getParameterValueType() == ParameterValueType.STRING || parameter.getParameterValueType() == ParameterValueType.VARIABLE) {
 			if(parameter.isArray()) {
-				if(parameter.isBracketed()) {
-					writeName(parameter.getName());
-					openSquareBracket();
-					for(String value : parameter.getValueAsStringList()) {
-						indent();
-						writeString(value);
-					}
-					closeSquareBracket();
-				} else {
-					for(String value : parameter.getValueAsStringList()) {
+				if(parameter.getValueAsStringList() != null) {
+					if(parameter.isBracketed()) {
 						writeName(parameter.getName());
-						writeString(value);
+						openSquareBracket();
+						for(String value : parameter.getValueAsStringList()) {
+							indent();
+							writeString(value);
+						}
+						closeSquareBracket();
+					} else {
+						for(String value : parameter.getValueAsStringList()) {
+							writeName(parameter.getName());
+							writeString(value);
+						}
 					}
 				}
 			} else {
-				writeName(parameter.getName());
-				writeString(parameter.getValueAsString());
+				if(parameter.getValueAsString() != null) {
+					writeName(parameter.getName());
+					writeString(parameter.getValueAsString());
+				}
 			}
 		} else if(parameter.getParameterValueType() == ParameterValueType.TEXT) {
 			if(parameter.isArray()) {
-				if(parameter.isBracketed()) {
-					writeName(parameter.getName());
-					openSquareBracket();
-					for(String value : parameter.getValueAsStringList()) {
-						indent();
-						openRoundBracket();
-						writeText(value);
-						closeRoundBracket();
-					}
-					closeSquareBracket();
-				} else {
-					for(String value : parameter.getValueAsStringList()) {
+				if(parameter.getValueAsStringList() != null) {
+					if(parameter.isBracketed()) {
 						writeName(parameter.getName());
-						openRoundBracket();
-						writeText(value);
-						closeRoundBracket();
+						openSquareBracket();
+						for(String value : parameter.getValueAsStringList()) {
+							indent();
+							openRoundBracket();
+							writeText(value);
+							closeRoundBracket();
+						}
+						closeSquareBracket();
+					} else {
+						for(String value : parameter.getValueAsStringList()) {
+							writeName(parameter.getName());
+							openRoundBracket();
+							writeText(value);
+							closeRoundBracket();
+						}
 					}
 				}
 			} else {
-				writeName(parameter.getName());
-				openRoundBracket();
-				writeText(parameter.getValueAsString());
-				closeRoundBracket();
+				if(parameter.getValueAsString() != null) {
+					writeName(parameter.getName());
+					openRoundBracket();
+					writeText(parameter.getValueAsString());
+					closeRoundBracket();
+				}
 			}
 		} else {
 			if(parameter.isArray()) {
-				if(parameter.isBracketed()) {
-					writeName(parameter.getName());
-					openSquareBracket();
-					for(Object value : parameter.getValueList()) {
-						indent();
-						write(value);
-					}
-					closeSquareBracket();
-				} else {
-					for(Object value : parameter.getValueList()) {
+				if(parameter.getValueList() != null) {
+					if(parameter.isBracketed()) {
 						writeName(parameter.getName());
-						write(value);
+						openSquareBracket();
+						for(Object value : parameter.getValueList()) {
+							indent();
+							write(value);
+						}
+						closeSquareBracket();
+					} else {
+						for(Object value : parameter.getValueList()) {
+							writeName(parameter.getName());
+							write(value);
+						}
 					}
 				}
 			} else {
-				writeName(parameter.getName());
-				write(parameter.getValue());
+				if(parameter.getValue() != null) {
+					writeName(parameter.getName());
+					write(parameter.getValue());
+				}
 			}
 		}
 	}
@@ -237,6 +253,22 @@ public class AponWriter extends AponFormat {
 	
 	public void flush() throws IOException {
 		writer.flush();
+	}
+	
+	public static String toText(Parameters parameters) {
+		if(parameters == null)
+			return null;
+		
+		try {
+			StringWriter writer = new StringWriter();
+			AponWriter aponWriter = new AponWriter(writer);
+			aponWriter.write(parameters);
+			aponWriter.flush();
+			
+			return writer.toString();
+		} catch(IOException e) {
+			return null;
+		}
 	}
 	
 	public static void main(String argv[]) {
