@@ -255,6 +255,9 @@ public class AponWriter extends AponFormat {
 		writer.flush();
 	}
 	
+	public void close() throws IOException {
+		writer.close();
+	}
 	public static String toText(Parameters parameters) {
 		if(parameters == null)
 			return null;
@@ -263,7 +266,7 @@ public class AponWriter extends AponFormat {
 			StringWriter writer = new StringWriter();
 			AponWriter aponWriter = new AponWriter(writer);
 			aponWriter.write(parameters);
-			aponWriter.flush();
+			aponWriter.close();
 			
 			return writer.toString();
 		} catch(IOException e) {
@@ -281,7 +284,7 @@ public class AponWriter extends AponFormat {
 			
 			AponWriter aponWriter = new AponWriter(writer);
 			aponWriter.write(parameters);
-			aponWriter.flush();
+			aponWriter.close();
 			
 			System.out.print(writer.toString());
 		} catch(Exception e) {
