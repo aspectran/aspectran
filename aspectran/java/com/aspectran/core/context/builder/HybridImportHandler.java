@@ -116,9 +116,9 @@ public class HybridImportHandler extends AbstractImportHandler implements Import
 			RootAponAssembler assembler = new RootAponAssembler(assistant);
 			Parameters rootParameters = assembler.assembleRoot();
 			
-			AponWriter aponWriter = new AponWriter(writer, true);
+			AponWriter aponWriter = new AponWriter(writer);
 			aponWriter.write(rootParameters);
-			aponWriter.flush();
+			writer.close();
 			
 			file.setLastModified(importableFile.getLastModified());
 		} catch(Exception e) {
