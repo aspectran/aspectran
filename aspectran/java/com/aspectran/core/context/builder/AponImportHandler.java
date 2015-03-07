@@ -17,8 +17,8 @@ package com.aspectran.core.context.builder;
 
 import java.io.Reader;
 
-import com.aspectran.core.context.builder.apon.AspectranAponDisassembler;
-import com.aspectran.core.context.builder.apon.params.AspectranParameters;
+import com.aspectran.core.context.builder.apon.RootAponDisassembler;
+import com.aspectran.core.context.builder.apon.params.RootParameters;
 import com.aspectran.core.util.apon.AponReader;
 import com.aspectran.core.util.apon.Parameters;
 
@@ -33,13 +33,13 @@ public class AponImportHandler extends AbstractImportHandler implements ImportHa
 	
 	private final String encoding;
 	
-	private AspectranAponDisassembler aspectranAponDisassembler;
+	private RootAponDisassembler rootAponDisassembler;
 	
 	public AponImportHandler(ContextBuilderAssistant assistant, String encoding) {
 		this.assistant = assistant;
 		this.encoding = encoding;
 		
-		aspectranAponDisassembler = new AspectranAponDisassembler(assistant);
+		rootAponDisassembler = new RootAponDisassembler(assistant);
 	}
 	
 	public void handle(Importable importable) throws Exception {
@@ -47,10 +47,10 @@ public class AponImportHandler extends AbstractImportHandler implements ImportHa
 		
 		Reader reader = importable.getReader(encoding);
 		AponReader aponReader = new AponReader();
-		Parameters aspectranParameters = aponReader.read(reader, new AspectranParameters());
+		Parameters rootParameters = aponReader.read(reader, new RootParameters());
 		reader.close();
 		
-		aspectranAponDisassembler.disassembleAspectran(aspectranParameters);
+		rootAponDisassembler.disassembleRoot(rootParameters);
 
 		handle();
 
