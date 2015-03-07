@@ -62,12 +62,15 @@ public class AspectranNodeParser {
 	 * @param assistant the assistant for Context Builder
 	 */
 	public AspectranNodeParser(ContextBuilderAssistant assistant) {
-		assistant.clearObjectStack();
-		
-		this.assistant = assistant;
+		this(assistant, true);
+	}
 
-		parser.setValidation(true);
-		parser.setEntityResolver(new AspectranDtdResolver(assistant.getClassLoader()));
+	public AspectranNodeParser(ContextBuilderAssistant assistant, boolean validating) {
+		this.assistant = assistant;
+		assistant.clearObjectStack();
+
+		parser.setValidating(validating);
+		parser.setEntityResolver(new AspectranDtdResolver(validating));
 
 		addSettingsNodelets();
 		addTypeAliasNodelets();
@@ -87,7 +90,7 @@ public class AspectranNodeParser {
 		try {
 			parser.parse(inputStream);
 		} catch(Exception e) {
-			throw new Exception("Error parsing aspectran configuration. Cause: " + e, e);
+			throw new Exception("Error parsing aspectran configuration.", e);
 		} finally {
 			if(inputStream != null) {
 				inputStream.close();
@@ -543,7 +546,7 @@ public class AspectranNodeParser {
 				ImportHandler importHandler = assistant.getImportHandler();
 				
 				if(importHandler != null)
-					importHandler.handle(importable);
+					importHandler.pending(importable);
 			}
 		});
 	}

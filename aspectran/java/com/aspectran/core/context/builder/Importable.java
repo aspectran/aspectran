@@ -88,8 +88,8 @@ public abstract class Importable {
 			throw new IllegalArgumentException("The <import> element requires either a resource or a file or a url attribute.");
 		}
 		
-		if(assistant.isHybridLoading() && importable.getImportType() == ImportType.FILE && importable.getImportFileType() == ImportFileType.XML)
-			importable = new ImportableHybrid((ImportableFile)importable);
+//		if(assistant.isHybridLoading() && importable.getImportType() == ImportType.FILE && importable.getImportFileType() == ImportFileType.XML)
+//			importable = new ImportableHybrid((ImportableFile)importable);
 
 		return importable;
 	}

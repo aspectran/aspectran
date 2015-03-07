@@ -71,5 +71,7 @@ public interface Parameter {
 	public Parameters[] getValueAsParametersArray();
 
 	public List<Parameters> getValueAsParametersList();
+	
+	public Parameters newParameters();
 
 }

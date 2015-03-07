@@ -61,8 +61,6 @@ public class ContextBuilderAssistant {
 	
 	private DefaultSettings defaultSettings;
 
-	private DefaultSettings previousDefaultSettings;
-	
 	private BeanReferenceInspector beanReferenceInspector = new BeanReferenceInspector();
 	
 	protected AspectRuleMap aspectRuleMap = new AspectRuleMap();
@@ -286,6 +284,27 @@ public class ContextBuilderAssistant {
 		typeAliases.clear();
 	}
 	
+	public DefaultSettings getDefaultSettings() {
+		return defaultSettings;
+	}
+
+	public void setDefaultSettings(DefaultSettings defaultSettings) {
+		this.defaultSettings = defaultSettings;
+	}
+	
+	public DefaultSettings backupDefaultSettings() throws CloneNotSupportedException {
+		DefaultSettings previousDefaultSettings = defaultSettings;
+		
+		if(defaultSettings != null)
+			defaultSettings = defaultSettings.clone();
+		
+		return previousDefaultSettings;
+	}
+
+	public void restoreDefaultSettings(DefaultSettings defaultSettings) {
+		setDefaultSettings(defaultSettings);
+	}
+	
 	/**
 	 * Returns the trnaslet name of the prefix and suffix are combined.
 	 * 
@@ -366,26 +385,6 @@ public class ContextBuilderAssistant {
 			return true;
 
 		return defaultSettings.isNullableActionId();
-	}
-
-	public DefaultSettings getDefaultSettings() {
-		return defaultSettings;
-	}
-
-	public void setDefaultSettings(DefaultSettings defaultSettings) {
-		this.defaultSettings = defaultSettings;
-	}
-	
-	public void backupDefaultSettings() throws CloneNotSupportedException {
-		previousDefaultSettings = defaultSettings;
-		
-		if(defaultSettings != null)
-			defaultSettings = defaultSettings.clone();
-	}
-
-	public void restoreDefaultSettings() {
-		defaultSettings = previousDefaultSettings;
-		previousDefaultSettings = null;
 	}
 	
 	/**

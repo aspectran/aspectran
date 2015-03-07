@@ -10,8 +10,8 @@ public class DefaultSettingsParameters extends AbstractParameters implements Par
 	public static final ParameterDefine transletNamePattern;
 	public static final ParameterDefine transletNamePatternPrefix;
 	public static final ParameterDefine transletNamePatternSuffix;
-	public static final ParameterDefine transletInterfaceClass;
-	public static final ParameterDefine transletImplementClass;
+	public static final ParameterDefine transletInterfaceClassName;
+	public static final ParameterDefine transletImplementClassName;
 	public static final ParameterDefine activityDefaultHandler;
 	public static final ParameterDefine nullableContentId;
 	public static final ParameterDefine nullableActionId;
@@ -23,8 +23,8 @@ public class DefaultSettingsParameters extends AbstractParameters implements Par
 		transletNamePattern = new ParameterDefine("transletNamePattern", ParameterValueType.STRING);
 		transletNamePatternPrefix = new ParameterDefine("transletNamePatternPrefix", ParameterValueType.STRING);
 		transletNamePatternSuffix = new ParameterDefine("transletNamePatternSuffix", ParameterValueType.STRING);
-		transletInterfaceClass = new ParameterDefine("transletInterfaceClass", ParameterValueType.STRING);
-		transletImplementClass = new ParameterDefine("transletImplementClass", ParameterValueType.STRING);
+		transletInterfaceClassName = new ParameterDefine("transletInterfaceClassName", ParameterValueType.STRING);
+		transletImplementClassName = new ParameterDefine("transletImplementClassName", ParameterValueType.STRING);
 		activityDefaultHandler = new ParameterDefine("activityDefaultHandler", ParameterValueType.STRING);
 		nullableContentId = new ParameterDefine("nullableContentId", ParameterValueType.BOOLEAN);
 		nullableActionId = new ParameterDefine("nullableActionId", ParameterValueType.BOOLEAN);
@@ -32,8 +32,10 @@ public class DefaultSettingsParameters extends AbstractParameters implements Par
 		
 		parameterDefines = new ParameterDefine[] {
 				transletNamePattern,
-				transletInterfaceClass,
-				transletImplementClass,
+				transletNamePatternPrefix,
+				transletNamePatternSuffix,
+				transletInterfaceClassName,
+				transletImplementClassName,
 				activityDefaultHandler,
 				nullableContentId,
 				nullableActionId,

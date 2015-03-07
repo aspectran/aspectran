@@ -11,8 +11,12 @@ public class ParameterHolder {
 	public ParameterHolder(String text, Class<? extends AbstractParameters> parametersClass, boolean array) {
 		ParameterDefine[] parameterDefines = new ParameterDefine[] { new ParameterDefine(PARAMETER_NAME, parametersClass, array) };
 		
-		if(text != null)
-			text = PARAMETER_NAME + ": [\n" + text + "\n]";
+		if(text != null) {
+			if(array)
+				text = PARAMETER_NAME + ": [\n\t{\n" + text + "\n\t}\n]";
+			else
+				text = PARAMETER_NAME + ": {\n" + text + "\n}";
+		}
 		
 		this.parameters = new GenericParameters("holder", parameterDefines, text);
 	}

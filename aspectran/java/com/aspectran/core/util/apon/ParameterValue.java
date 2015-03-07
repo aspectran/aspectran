@@ -123,16 +123,19 @@ public class ParameterValue implements Parameter {
 	@SuppressWarnings("unchecked")
 	public void setValue(Object value) {
 		if(array) {
-			list = (List<Object>)value;
-			if(this.value != null)
-				this.value = null;
+			if(value instanceof List) {
+				list = (List<Object>)value;
+				assigned = true;
+			} else {
+				list = null;
+				addValue(value);
+			}
+			this.value = null;
 		} else {
 			this.value = value;
-			if(this.list != null)
-				this.list = null;
+			this.list = null;
+			assigned = true;
 		}
-		
-		assigned = true;
 	}
 	
 	public void putValue(Object value) {
@@ -389,7 +392,7 @@ public class ParameterValue implements Parameter {
 	}
 
 	//@SuppressWarnings("unchecked")
-	protected Parameters newParameters() {
+	public Parameters newParameters() {
 		if(parameterValueType == ParameterValueType.VARIABLE) {
 			parameterValueType = ParameterValueType.PARAMETERS;
 			parametersClass = GenericParameters.class;

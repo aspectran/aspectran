@@ -44,7 +44,7 @@ public class NodeletParser {
 	
 	private Map<String, Nodelet> nodeletMap = new HashMap<String, Nodelet>();
 
-	private boolean validation;
+	private boolean validating;
 
 	private EntityResolver entityResolver;
 	
@@ -114,7 +114,7 @@ public class NodeletParser {
 			Document doc = createDocument(reader);
 			parse(doc.getLastChild());
 		} catch(Exception e) {
-			throw new NodeletException("Error parsing XML. Cause: " + e, e);
+			throw new NodeletException("Error parsing XML.", e);
 		}
 	}
 
@@ -126,7 +126,7 @@ public class NodeletParser {
 			Document doc = createDocument(inputStream);
 			parse(doc.getLastChild());
 		} catch(Exception e) {
-			throw new NodeletException("Error parsing XML. Cause: " + e, e);
+			throw new NodeletException("Error parsing XML", e);
 		}
 	}
 
@@ -278,8 +278,7 @@ public class NodeletParser {
 	private Document createDocument(Reader reader) throws ParserConfigurationException, FactoryConfigurationError,
 			SAXException, IOException {
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-		factory.setValidating(validation);
-
+		factory.setValidating(validating);
 		factory.setNamespaceAware(false);
 		factory.setIgnoringComments(true);
 		factory.setIgnoringElementContentWhitespace(false);
@@ -310,8 +309,7 @@ public class NodeletParser {
 	private Document createDocument(InputStream inputStream) throws ParserConfigurationException,
 			FactoryConfigurationError, SAXException, IOException {
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-		factory.setValidating(validation);
-
+		factory.setValidating(validating);
 		factory.setNamespaceAware(false);
 		factory.setIgnoringComments(true);
 		factory.setIgnoringElementContentWhitespace(false);
@@ -336,8 +334,8 @@ public class NodeletParser {
 		return builder.parse(new InputSource(inputStream));
 	}
 
-	public void setValidation(boolean validation) {
-		this.validation = validation;
+	public void setValidating(boolean validating) {
+		this.validating = validating;
 	}
 
 	public void setEntityResolver(EntityResolver resolver) {
