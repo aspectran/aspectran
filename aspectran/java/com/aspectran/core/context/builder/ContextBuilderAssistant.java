@@ -109,6 +109,14 @@ public class ContextBuilderAssistant {
 	public ClassLoader getClassLoader() {
 		return classLoader;
 	}
+
+	public boolean isHybridLoading() {
+		return hybridLoading;
+	}
+
+	public void setHybridLoading(boolean hybridLoading) {
+		this.hybridLoading = hybridLoading;
+	}
 	
 	/**
 	 * Push object.
@@ -533,14 +541,6 @@ public class ContextBuilderAssistant {
 
 	public void setImportHandler(ImportHandler importHandler) {
 		this.importHandler = importHandler;
-	}
-	
-	public boolean isHybridLoading() {
-		return hybridLoading;
-	}
-
-	public void setHybridLoading(boolean hybridLoading) {
-		this.hybridLoading = hybridLoading;
 	}
 	
 }

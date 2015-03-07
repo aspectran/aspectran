@@ -34,7 +34,7 @@ public class XmlImportHandler implements ImportHandler {
 		assistant.backupDefaultSettings();
 		
 		AspectranNodeParser aspectranNodeParser = new AspectranNodeParser(assistant);
-		aspectranNodeParser.parse(importable);
+		aspectranNodeParser.parse(importable.getInputStream());
 		
 		assistant.restoreDefaultSettings();
 	}

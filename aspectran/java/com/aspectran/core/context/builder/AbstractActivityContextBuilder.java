@@ -110,10 +110,12 @@ public abstract class AbstractActivityContextBuilder extends ContextBuilderAssis
 		return new TransletRuleRegistry(transletRuleMap);
 	}
 	
+	protected Importable makeImportable(String rootContext) {
+		ImportFileType importFileType = rootContext.toLowerCase().endsWith(".apon") ? ImportFileType.APON : ImportFileType.XML;
+		return makeImportable(rootContext, importFileType);
+	}
+	
 	protected Importable makeImportable(String rootContext, ImportFileType importFileType) {
-		if(rootContext == null)
-			throw new IllegalArgumentException("rootContext must not be null");
-
 		Importable importable = null;
 
 		if(rootContext.startsWith(ResourceUtils.CLASSPATH_URL_PREFIX)) {

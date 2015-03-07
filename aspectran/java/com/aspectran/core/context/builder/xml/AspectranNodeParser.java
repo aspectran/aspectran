@@ -83,9 +83,7 @@ public class AspectranNodeParser {
 	 * @param inputStream the input stream
 	 * @throws Exception the exception
 	 */
-	public void parse(Importable importable) throws Exception {
-		InputStream inputStream = importable.getInputStream();
-		
+	public void parse(InputStream inputStream) throws Exception {
 		try {
 			parser.parse(inputStream);
 		} catch(Exception e) {

@@ -20,6 +20,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import com.aspectran.core.context.builder.xml.AspectranNodeParser;
 import com.aspectran.core.context.rule.type.ImportFileType;
 import com.aspectran.core.context.rule.type.ImportType;
 
@@ -55,6 +56,10 @@ public class ImportableHybrid extends Importable {
 	 */
 	public InputStream getInputStream() throws IOException {
 		importableFile.getInputStream();
+		
+		
+//		AspectranNodeParser parser = new AspectranNodeParser(this);
+//		parser.parse(importable);
 		
 		File file;
 		
