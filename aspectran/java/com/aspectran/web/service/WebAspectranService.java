@@ -124,6 +124,7 @@ public class WebAspectranService extends CoreAspectranService {
 		ServletConfig servletConfig = servlet.getServletConfig();
 		
 		String aspectranConfigParam = servletConfig.getInitParameter(ASPECTRAN_CONFIG_PARAM);
+		System.out.println("aspectranConfigParam: " + aspectranConfigParam);
 		
 		return newInstance(servletContext, aspectranConfigParam);
 	}

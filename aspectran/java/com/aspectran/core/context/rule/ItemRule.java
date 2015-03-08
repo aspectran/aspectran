@@ -133,16 +133,7 @@ public class ItemRule {
 	 * @return the value
 	 */
 	public String getValue() {
-		if(tokens == null)
-			return null;
-		
-		StringBuilder sb = new StringBuilder();
-		
-		for(Token t : tokens) {
-			sb.append(t.toString());
-		}
-		
-		return sb.toString();
+		return toString(tokens);
 	}
 	
 	/**
@@ -217,6 +208,22 @@ public class ItemRule {
 		return tokensList;
 	}
 
+	public List<String> getValueList() {
+		if(tokensList == null)
+			return null;
+		
+		List<String> list = new ArrayList<String>();
+		
+		if(tokensList.size() == 0)
+			return list;
+		
+		for(Token[] tokens : tokensList) {
+			list.add(toString(tokens));
+		}
+		
+		return list;
+	}
+	
 	/**
 	 * Gets the tokens map.
 	 * 
@@ -224,6 +231,22 @@ public class ItemRule {
 	 */
 	public Map<String, Token[]> getTokensMap() {
 		return tokensMap;
+	}
+
+	public Map<String, String> getValueMap() {
+		if(tokensMap == null)
+			return null;
+		
+		Map<String, String> map = new LinkedHashMap<String, String>();
+		
+		if(tokensMap.size() == 0)
+			return map;
+		
+		for(Map.Entry<String, Token[]> entry : tokensMap.entrySet()) {
+			map.put(entry.getKey(), toString(entry.getValue()));
+		}
+		
+		return map;
 	}
 	
 	/**
@@ -234,16 +257,33 @@ public class ItemRule {
 	public Set<Token[]> getTokensSet() {
 		return tokensSet;
 	}
-	
+
+	public Set<String> getValueSet() {
+		if(tokensSet == null)
+			return null;
+		
+		Set<String> set = new LinkedHashSet<String>();
+		
+		if(tokensSet.size() == 0)
+			return set;
+		
+		for(Token[] tokens : tokensSet) {
+			set.add(toString(tokens));
+		}
+		
+		return set;
+	}
+
 	/**
 	 * Gets the tokens properties.
 	 *
 	 * @return the tokens properties
 	 */
+/*
 	public Properties getTokensProperties() {
 		return tokensProperties;
 	}
-	
+*/
 	/**
 	 * Checks if is unknown name.
 	 *
@@ -262,6 +302,22 @@ public class ItemRule {
 		this.unknownName = unknownName;
 	}
 
+	private String toString(Token[] tokens) {
+		if(tokens == null)
+			return null;
+		
+		if(tokens.length == 0)
+			return StringUtils.EMPTY;
+		
+		StringBuilder sb = new StringBuilder();
+		
+		for(Token t : tokens) {
+			sb.append(t.toString());
+		}
+		
+		return sb.toString();
+	}
+	
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
@@ -394,14 +450,16 @@ public class ItemRule {
 	 * @param value the new value
 	 */
 	public void setValue(String value) {
-		checkValueType(null);
-
+		Token[] tokens;
+		
 		if(isTokenize())
 			tokens = TokenParser.parse(value);
 		else {
 			tokens = new Token[1];
 			tokens[0] = new Token(TokenType.TEXT, value);
 		}
+		
+		setValue(tokens);
 	}
 	
 
@@ -584,7 +642,7 @@ public class ItemRule {
 	 * @param tokens the new value
 	 */
 	public void setValue(Token[] tokens) {
-			checkValueType(ItemType.SINGLE);
+			checkValueType(ItemType.SINGLE, null);
 			this.tokens = tokens;
 	}
 	
@@ -594,7 +652,7 @@ public class ItemRule {
 	 * @param tokensList the new value
 	 */
 	public void setValue(List<Token[]> tokensList) {
-		checkValueType(ItemType.LIST);
+		checkValueType(ItemType.LIST, null);
 		this.tokensList = tokensList;
 	}
 	
@@ -604,7 +662,7 @@ public class ItemRule {
 	 * @param tokensMap the tokens map
 	 */
 	public void setValue(Map<String, Token[]> tokensMap) {
-		checkValueType(ItemType.MAP);
+		checkValueType(ItemType.MAP, ItemType.PROPERTIES);
 		this.tokensMap = tokensMap;
 	}
 	
@@ -614,20 +672,20 @@ public class ItemRule {
 	 * @param tokensSet the new value
 	 */
 	public void setValue(Set<Token[]> tokensSet) {
-		checkValueType(ItemType.SET);
+		checkValueType(ItemType.SET, null);
 		this.tokensSet = tokensSet;
 	}
-	
 	/**
 	 * Sets the value.
 	 *
 	 * @param tokensProperties the new value
 	 */
+/*	
 	public void setValue(Properties tokensProperties) {
 		checkValueType(ItemType.PROPERTIES);
 		this.tokensProperties = tokensProperties;
 	}
-	
+*/	
 	/**
 	 * Make tokens.
 	 *
@@ -652,12 +710,12 @@ public class ItemRule {
 	 *
 	 * @param compareItemType the compare item type
 	 */
-	private void checkValueType(ItemType compareItemType) {
+	private void checkValueType(ItemType compareItemType, ItemType compareItemType2) {
 		if(type == null)
 			throw new UnsupportedOperationException("No item-type specified. Set the item-type first.");
 		
-		if(compareItemType != null) {
-			if(type != compareItemType)
+		if(compareItemType != null && compareItemType2 != null) {
+			if(type != compareItemType && type != compareItemType2)
 				throw new UnsupportedOperationException("The item-type of violation has occurred. current item-type: " + type.toString());
 		}	
 	}
@@ -797,7 +855,6 @@ public class ItemRule {
 	 * @param itemRule the item rule
 	 * @return the iterator
 	 */
-	@SuppressWarnings("unchecked")
 	public static Iterator<Token[]> tokenIterator(ItemRule itemRule) {
 		Iterator<Token[]> iter = null;
 		
@@ -807,13 +864,15 @@ public class ItemRule {
 		} else if(itemRule.getType() == ItemType.SET) {
 			Set<Token[]> set = itemRule.getTokensSet();
 			iter = set.iterator();
-		} else if(itemRule.getType() == ItemType.MAP) {
+		} else if(itemRule.getType() == ItemType.MAP || itemRule.getType() == ItemType.PROPERTIES) {
 			Map<String, Token[]> map = itemRule.getTokensMap();
 			iter = map.values().iterator();
+/*
 		} else if(itemRule.getType() == ItemType.PROPERTIES) {
 			Properties prop = itemRule.getTokensProperties();
 			//iterator = (Iterator<Token[]>)((Collection<Token[]>)prop.values().iterator());
 			iter = (Iterator<Token[]>)(Iterator<?>)prop.values().iterator();
+*/
 		}
 		
 		return iter;
@@ -858,15 +917,17 @@ public class ItemRule {
 		if(itemRule.getType() == ItemType.LIST) {
 			List<Token[]> tokensList = new ArrayList<Token[]>();
 			itemRule.setValue(tokensList);
-		} else if(itemRule.getType() == ItemType.MAP) {
+		} else if(itemRule.getType() == ItemType.MAP || itemRule.getType() == ItemType.PROPERTIES) {
 			Map<String, Token[]> tokensMap = new LinkedHashMap<String, Token[]>();
 			itemRule.setValue(tokensMap);
 		} else if(itemRule.getType() == ItemType.SET) {
 			Set<Token[]> tokensSet = new LinkedHashSet<Token[]>();
 			itemRule.setValue(tokensSet);
+/*
 		} else if(itemRule.getType() == ItemType.PROPERTIES) {
 			Properties tokensProp = new Properties();
 			itemRule.setValue(tokensProp);
+ */
 		}
 	}
 	
@@ -884,16 +945,18 @@ public class ItemRule {
 		} else if(itemRule.getType() == ItemType.SET) {
 			Set<Token[]> set = itemRule.getTokensSet();
 			set.add(tokens);
-		} else if(itemRule.getType() == ItemType.MAP) {
+		} else if(itemRule.getType() == ItemType.MAP || itemRule.getType() == ItemType.PROPERTIES) {
 			if(!StringUtils.isEmpty(name)) {
 				Map<String, Token[]> map = itemRule.getTokensMap();
 				map.put(name, tokens);
 			}
+/*
 		} else if(itemRule.getType() == ItemType.PROPERTIES) {
 			if(!StringUtils.isEmpty(name)) {
 				Properties prop = itemRule.getTokensProperties();
 				prop.put(name, tokens);
 			}
+*/
 		}
 	}
 	

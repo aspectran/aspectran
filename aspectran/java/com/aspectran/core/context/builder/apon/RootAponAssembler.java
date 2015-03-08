@@ -83,6 +83,7 @@ import com.aspectran.core.context.rule.ability.ActionRuleApplicable;
 import com.aspectran.core.context.rule.ability.ResponseRuleApplicable;
 import com.aspectran.core.context.rule.type.ActionType;
 import com.aspectran.core.context.rule.type.AspectAdviceType;
+import com.aspectran.core.context.rule.type.ItemType;
 import com.aspectran.core.context.rule.type.ResponseType;
 import com.aspectran.core.context.rule.type.TokenType;
 import com.aspectran.core.util.StringUtils;
@@ -311,7 +312,7 @@ public class RootAponAssembler {
 		TransformParameters transformParameters = new TransformParameters();
 
 		if(transformRule.getTransformType() != null)
-			transformParameters.setValue(TransformParameters.transformType, transformRule.getTransformType().toString());
+			transformParameters.setValue(TransformParameters.type, transformRule.getTransformType().toString());
 
 		if(transformRule.getContentType() != null)
 			transformParameters.setValue(TransformParameters.contentType, transformRule.getContentType().toString());
@@ -525,14 +526,34 @@ public class RootAponAssembler {
 		if(itemRule.getType() != null)
 			itemParameters.setValue(ItemParameters.type, itemRule.getType().toString());
 		itemParameters.setValue(ItemParameters.name, itemRule.getName());
-		if(itemRule.getTokens() != null)
-			itemParameters.setValue(ItemParameters.value, itemRule.getValue());
 		if(itemRule.getValueType() != null)
 			itemParameters.setValue(ItemParameters.valueType, itemRule.getValueType());
 		if(itemRule.getDefaultValue() != null)
 			itemParameters.setValue(ItemParameters.defaultValue, itemRule.getDefaultValue());
 		if(itemRule.getTokenize() != null)
 			itemParameters.setValue(ItemParameters.tokenize, itemRule.getTokenize());
+
+		if(itemRule.getType() == ItemType.SINGLE) {
+			String value = itemRule.getValue();
+			if(value != null) {
+				itemParameters.setValue(ItemParameters.value, value);
+			}
+		} else if(itemRule.getType() == ItemType.LIST) {
+			List<String> valueList = itemRule.getValueList();
+			if(valueList != null) {
+				for(String value : valueList) {
+					itemParameters.putValue(ItemParameters.value, value);
+				}
+			}
+		} else if(itemRule.getType() == ItemType.MAP || itemRule.getType() == ItemType.PROPERTIES) {
+			Map<String, String> valueMap = itemRule.getValueMap();
+			if(valueMap != null) {
+				Parameters para = itemParameters.newParameters(ItemParameters.value);
+				for(Map.Entry<String, String> entry : valueMap.entrySet()) {
+					para.putValue(entry.getKey(), entry.getValue());
+				}
+			}
+		}
 		
 		return itemParameters;
 	}
@@ -814,7 +835,7 @@ public class RootAponAssembler {
 	}
 	
 	public TransformRule assembleTransformRule(Parameters transformParameters) {
-		String transformType = transformParameters.getString(TransformParameters.transformType);
+		String transformType = transformParameters.getString(TransformParameters.type);
 		String contentType = transformParameters.getString(TransformParameters.contentType);
 		String characterEncoding = transformParameters.getString(TransformParameters.characterEncoding);
 		Parameters templateParameters = transformParameters.getParameters(TransformParameters.template);

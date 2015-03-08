@@ -25,14 +25,14 @@ public class TransletParameters extends AbstractParameters implements Parameters
 		name = new ParameterDefine("name", ParameterValueType.STRING);
 		request = new ParameterDefine("request", RequestParameters.class);
 		contents1 = new ParameterDefine("contents", ContentParameters.class);
-		contents2 = new ParameterDefine("content", ContentParameters.class, true);
-		responses = new ParameterDefine("response", ResponseParameters.class, true);
-		exception = new ParameterDefine("exception", ExceptionParameters.class, true);
-		actions = new ParameterDefine("action", ActionParameters.class, true);
-		dispatchs = new ParameterDefine("dispatch", DispatchParameters.class, true);
-		transforms = new ParameterDefine("transform", TransformParameters.class, true);
-		redirects = new ParameterDefine("redirect", RedirectParameters.class, true);
-		forwards = new ParameterDefine("forward", ForwardParameters.class, true);
+		contents2 = new ParameterDefine("content", ContentParameters.class, true, true);
+		responses = new ParameterDefine("response", ResponseParameters.class, true, true);
+		exception = new ParameterDefine("exception", ExceptionParameters.class, true, true);
+		actions = new ParameterDefine("action", ActionParameters.class, true, true);
+		dispatchs = new ParameterDefine("dispatch", DispatchParameters.class, true, true);
+		transforms = new ParameterDefine("transform", TransformParameters.class, true, true);
+		redirects = new ParameterDefine("redirect", RedirectParameters.class, true, true);
+		forwards = new ParameterDefine("forward", ForwardParameters.class, true, true);
 		
 		parameterDefines = new ParameterDefine[] {
 				name,

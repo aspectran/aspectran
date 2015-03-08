@@ -7,7 +7,7 @@ import com.aspectran.core.util.apon.Parameters;
 
 public class TransformParameters extends AbstractParameters implements Parameters {
 
-	public static final ParameterDefine transformType;
+	public static final ParameterDefine type;
 	public static final ParameterDefine contentType;
 	public static final ParameterDefine characterEncoding;
 	public static final ParameterDefine template;
@@ -18,16 +18,16 @@ public class TransformParameters extends AbstractParameters implements Parameter
 	private static final ParameterDefine[] parameterDefines;
 	
 	static {
-		transformType = new ParameterDefine("transformType", ParameterValueType.STRING);
+		type = new ParameterDefine("type", ParameterValueType.STRING);
 		contentType = new ParameterDefine("contentType", ParameterValueType.STRING);
 		characterEncoding = new ParameterDefine("characterEncoding", ParameterValueType.STRING);
 		template = new ParameterDefine("template", TemplateParameters.class);
-		actions = new ParameterDefine("action", ActionParameters.class, true);
+		actions = new ParameterDefine("action", ActionParameters.class, true, true);
 		defaultResponse = new ParameterDefine("defaultResponse", ParameterValueType.BOOLEAN);
 		pretty = new ParameterDefine("pretty", ParameterValueType.BOOLEAN);
 		
 		parameterDefines = new ParameterDefine[] {
-				transformType,
+				type,
 				contentType,
 				characterEncoding,
 				template,

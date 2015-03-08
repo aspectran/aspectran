@@ -25,21 +25,25 @@ public class ParameterValue implements Parameter {
 	
 	private boolean assigned;
 	
-	public ParameterValue(String name, ParameterValueType parameterType) {
-		this(name, parameterType, false);
+	public ParameterValue(String name, ParameterValueType parameterValueType) {
+		this(name, parameterValueType, false);
 	}
-	
+
 	public ParameterValue(String name, ParameterValueType parameterValueType, boolean array) {
 		this(name, parameterValueType, array, false);
 	}
-
-	protected ParameterValue(String name, ParameterValueType parameterValueType, boolean array, boolean predefined) {
+	
+	public ParameterValue(String name, ParameterValueType parameterValueType, boolean array, boolean noBracket) {
+		this(name, parameterValueType, array, noBracket, false);
+	}
+	
+	protected ParameterValue(String name, ParameterValueType parameterValueType, boolean array, boolean noBracket, boolean predefined) {
 		this.name = name;
 		this.parameterValueType = parameterValueType;
 		this.array = array;
-		this.predefined = predefined;
+		this.predefined = (predefined && parameterValueType != ParameterValueType.VARIABLE);
 
-		if(array)
+		if(this.array && !noBracket && (parameterValueType == ParameterValueType.PARAMETERS || parameterValueType == ParameterValueType.VARIABLE))
 			this.bracketed = true;
 	}
 	
@@ -51,14 +55,18 @@ public class ParameterValue implements Parameter {
 		this(name, parametersClass, array, false);
 	}
 	
-	protected ParameterValue(String name, Class<? extends AbstractParameters> parametersClass, boolean array, boolean predefined) {
+	public ParameterValue(String name, Class<? extends AbstractParameters> parametersClass, boolean array, boolean noBracket) {
+		this(name, parametersClass, array, noBracket, false);
+	}
+	
+	protected ParameterValue(String name, Class<? extends AbstractParameters> parametersClass, boolean array, boolean noBracket, boolean predefined) {
 		this.name = name;
 		this.parameterValueType = ParameterValueType.PARAMETERS;
 		this.parametersClass = parametersClass;
 		this.array = array;
 		this.predefined = predefined;
 
-		if(array)
+		if(this.array && !noBracket)
 			this.bracketed = true;
 	}
 	

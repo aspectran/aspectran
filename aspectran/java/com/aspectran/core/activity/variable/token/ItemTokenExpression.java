@@ -94,7 +94,7 @@ public class ItemTokenExpression extends TokenExpression implements ItemTokenExp
 			} else if(itemType == ItemType.MAP) {
 				value = expressAsMap(ir.getName(), ir.getTokensMap(), valueType);
 			} else if(itemType == ItemType.PROPERTIES) {
-				value = expressAsProperties(ir.getName(), ir.getTokensProperties(), valueType);
+				value = expressAsProperties(ir.getName(), ir.getTokensMap(), valueType);
 			}
 			
 			valueObjectMap.put(ir.getName(), value);
@@ -203,8 +203,8 @@ public class ItemTokenExpression extends TokenExpression implements ItemTokenExp
 	 * 
 	 * @return the Properties
 	 */
-	private Properties expressAsProperties(String parameterName, Properties tokensProp, ItemValueType valueType) {
-		if(tokensProp == null || tokensProp.isEmpty()) {
+	private Properties expressAsProperties(String parameterName, Map<String, Token[]> tokensMap, ItemValueType valueType) {
+		if(tokensMap == null || tokensMap.isEmpty()) {
 			Object value = getParameter(parameterName, null);
 
 			if(value == null)
@@ -220,8 +220,8 @@ public class ItemTokenExpression extends TokenExpression implements ItemTokenExp
 		
 		Properties prop = new Properties();
 
-		for(Map.Entry<Object, Object> entry : tokensProp.entrySet()) {
-			Object value = express(entry.getKey().toString(), (Token[])entry.getValue());
+		for(Map.Entry<String, Token[]> entry : tokensMap.entrySet()) {
+			Object value = express(entry.getKey(), entry.getValue());
 
 			if(valueType != null)
 				value = valuelize(value, valueType);

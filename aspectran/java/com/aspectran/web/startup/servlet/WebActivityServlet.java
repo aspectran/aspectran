@@ -68,7 +68,7 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 			ServletContext servletContext = getServletContext();
 			
 			WebAspectranService rootAspectranService = (WebAspectranService)servletContext.getAttribute(AspectranServiceListener.ASPECTRAN_SERVICE_ATTRIBUTE);
-			
+
 			if(rootAspectranService == null) {
 				logger.info("Standalone AspectranService.");
 				aspectranService = WebAspectranService.newInstance(this);
@@ -79,7 +79,7 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 				standalone = (rootAspectranService != aspectranService);
 			}
 		} catch(Exception e) {
-			//logger.error("WebActivityServlet was failed to initialize: " + e.toString(), e);
+			//logger.error("WebActivityServlet was failed to initialize", e);
 			throw new UnavailableException(e.getMessage());
 		}
 	}
