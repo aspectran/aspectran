@@ -1,0 +1,87 @@
+# C:\Users\Gulendol\Projects\aspectran\ADE\workspace\aspectran.example\webapp\WEB-INF\aspectran\config\example-scheduler.xml.apon
+aspectran: {
+	setting: {
+		transletNamePattern: "/scheduler/*.job"
+		transletNamePatternPrefix: "/scheduler/"
+		transletNamePatternSuffix: ".job"
+	}
+	aspect: {
+		id: "exception2"
+		useFor: "translet"
+		joinpoint: {
+			scope: "translet"
+			pointcut: {
+				target: {
+					+: "/scheduler/*"
+				}
+			}
+		}
+		advice: {
+			exceptionRaized: {
+				responseByContentType: {
+					exceptionType: "java.lang.reflect.InvocationTargetException"
+					transform: {
+						type: "transform/xml"
+						contentType: "text/xml"
+						action: {
+							echo: {
+								type: "map"
+								name: "map2"
+								value: {
+									errorCode: "E0001"
+									message: "error occured."
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	aspect: {
+		id: "scheduler1"
+		useFor: "scheduler"
+		joinpoint: {
+			scope: "translet"
+			pointcut: {
+				cronTrigger: {
+					expression: "0/5 * * * * ?"
+				}
+			}
+		}
+		advice: {
+			bean: "schedulerFactory"
+			job: {
+				translet: "hello"
+				disabled: false
+			}
+			job: {
+				translet: "countTo10"
+				disabled: true
+			}
+			job: {
+				translet: "countTo10.xml"
+				disabled: true
+			}
+		}
+	}
+	aspect: {
+		id: "scheduler2"
+		useFor: "scheduler"
+		joinpoint: {
+			scope: "translet"
+			pointcut: {
+				cronTrigger: {
+					expression: "0/5 * * * * ?"
+				}
+			}
+		}
+		advice: {
+			bean: "schedulerFactory"
+			job: {
+				translet: "errorCaused"
+				disabled: true
+			}
+		}
+	}
+}

@@ -1,0 +1,129 @@
+# C:\Users\Gulendol\Projects\aspectran\ADE\workspace\aspectran.example\webapp\WEB-INF\aspectran\config\example-root.xml.apon
+aspectran: {
+	setting: {
+		transletNamePattern: "/example/*"
+		transletNamePatternPrefix: "/example/"
+		activityDefaultHandler: "webActivityDefaultHandler"
+		nullableContentId: true
+		nullableActionId: true
+	}
+	aspect: {
+		id: "defaultRequestRule"
+		useFor: "translet"
+		joinpoint: {
+			scope: "request"
+			pointcut: {
+			}
+		}
+		setting: {
+			multipart.temporaryFilePath: "/d:/"
+			multipart.maxRequestSize: "10M"
+			characterEncoding: "utf-8"
+		}
+		advice: {
+		}
+	}
+	aspect: {
+		id: "defaultResponseRule"
+		useFor: "translet"
+		joinpoint: {
+			scope: "response"
+			pointcut: {
+			}
+		}
+		setting: {
+			viewDispatcher: "jspViewDispatcher"
+			characterEncoding: "utf-8"
+			defaultContentType: "text/html"
+		}
+		advice: {
+		}
+	}
+	aspect: {
+		id: "defaultResponseRule2"
+		useFor: "translet"
+		joinpoint: {
+			scope: "response"
+			pointcut: {
+			}
+		}
+		setting: {
+			multipart.temporaryFilePath: "/d:/"
+			multipart.maxRequestSize: "10M"
+			characterEncoding: "utf-8"
+		}
+		advice: {
+		}
+	}
+	aspect: {
+		id: "exception1"
+		useFor: "translet"
+		joinpoint: {
+			scope: "translet"
+			pointcut: {
+				target: {
+					translet: "/example/hello/*"
+				}
+			}
+		}
+		advice: {
+			exceptionRaized: {
+				responseByContentType: {
+					exceptionType: "java.lang.reflect.InvocationTargetException"
+					transform: {
+						type: "transform/xml"
+						contentType: "text/xml"
+						action: {
+						}
+						action: {
+							echo: {
+								type: "map"
+								name: "map2"
+								value: {
+									errorCode: "E0001"
+									message: "error occured."
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	aspect: {
+		id: "helloAdvice"
+		useFor: "translet"
+		joinpoint: {
+			scope: "content"
+			pointcut: {
+				target: {
+					+: "/example/hello/*@example.hello.HelloAction^applyTheAdvice"
+					-: "/aaaa*@*^bbb"
+				}
+				target: {
+					translet: "/example/hello/*"
+					bean: "example.hello.HelloAction"
+					method: "applyTheAdvice"
+					exclude: {
+						translet: "/example/hello/*"
+						bean: "example.hello.HelloAction"
+						method: "applyTheAdvice"
+					}
+				}
+			}
+		}
+		advice: {
+			bean: "advice.HelloAdvice"
+			before: {
+				action: {
+					method: "beforeCountTo10"
+				}
+			}
+			after: {
+				action: {
+					method: "afterCountTo10"
+				}
+			}
+		}
+	}
+}
