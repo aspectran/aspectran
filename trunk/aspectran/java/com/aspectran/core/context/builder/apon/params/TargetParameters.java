@@ -18,12 +18,12 @@ public class TargetParameters extends AbstractParameters implements Parameters {
 	private static final ParameterDefine[] parameterDefines;
 	
 	static {
-		pluses = new ParameterDefine("+", ParameterValueType.STRING, true);
-		minuses = new ParameterDefine("-", ParameterValueType.STRING, true);
+		pluses = new ParameterDefine("+", ParameterValueType.STRING, true, true);
+		minuses = new ParameterDefine("-", ParameterValueType.STRING, true, true);
 		translet = new ParameterDefine("translet", ParameterValueType.STRING);
 		bean = new ParameterDefine("bean", ParameterValueType.STRING);
 		method = new ParameterDefine("method", ParameterValueType.STRING);
-		excludeTargets = new ParameterDefine("exclude", ExcludeTargetParameters.class, true);
+		excludeTargets = new ParameterDefine("exclude", ExcludeTargetParameters.class, true, true);
 		
 		parameterDefines = new ParameterDefine[] {
 				pluses,

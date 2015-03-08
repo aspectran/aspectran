@@ -13,7 +13,7 @@ public class ExceptionRaizedParameters extends AbstractParameters implements Par
 
 	static {
 		action = new ParameterDefine("action", ActionParameters.class);
-		responseByContentTypes = new ParameterDefine("responseByContentType", ResponseByContentTypeParameters.class, true);
+		responseByContentTypes = new ParameterDefine("responseByContentType", ResponseByContentTypeParameters.class, true, true);
 		
 		parameterDefines = new ParameterDefine[] {
 				action,

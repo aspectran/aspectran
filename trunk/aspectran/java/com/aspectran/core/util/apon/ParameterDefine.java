@@ -10,22 +10,26 @@ public class ParameterDefine {
 	
 	private final boolean array;
 	
-	public ParameterDefine(String name, ParameterValueType parameterType) {
-		this(name, parameterType, false);
+	private final boolean noBracket;
+	
+	public ParameterDefine(String name, ParameterValueType parameterValueType) {
+		this(name, parameterValueType, false);
 	}
 	
 	public ParameterDefine(String name, ParameterValueType parameterValueType, boolean array) {
+		this(name, parameterValueType, array, false);
+	}
+	
+	public ParameterDefine(String name, ParameterValueType parameterValueType, boolean array, boolean noBracket) {
 		this.name = name;
 		this.parameterValueType = parameterValueType;
 		this.parametersClass = null;
+		this.array = (parameterValueType == ParameterValueType.TEXT) ? true : array;
 		
-		if(parameterValueType == ParameterValueType.TEXT) {
-			this.array = true;
-		} else {
-			this.array = array;
-		}
-		
-		//System.out.println("&& name=" + name + ", parameterValueType=" + parameterValueType);
+		if(this.array && parameterValueType == ParameterValueType.PARAMETERS)
+			this.noBracket = noBracket;
+		else
+			this.noBracket = false;
 	}
 
 	public ParameterDefine(String name, Class<? extends AbstractParameters> parametersClass) {
@@ -33,10 +37,19 @@ public class ParameterDefine {
 	}
 	
 	public ParameterDefine(String name, Class<? extends AbstractParameters> parametersClass, boolean array) {
+		this(name, parametersClass, array, false);
+	}
+	
+	public ParameterDefine(String name, Class<? extends AbstractParameters> parametersClass, boolean array, boolean noBracket) {
 		this.name = name;
 		this.parameterValueType = ParameterValueType.PARAMETERS;
 		this.parametersClass = parametersClass;
 		this.array = array;
+		
+		if(this.array && parameterValueType == ParameterValueType.PARAMETERS)
+			this.noBracket = noBracket;
+		else
+			this.noBracket = false;
 	}
 	
 	public String getName() {
@@ -51,6 +64,10 @@ public class ParameterDefine {
 		return array;
 	}
 	
+	public boolean isNoBracket() {
+		return noBracket;
+	}
+
 	public ParameterValue newParameterValue() {
 		ParameterValue parameterValue;
 		
@@ -64,9 +81,9 @@ public class ParameterDefine {
 				throw new InvalidParameterException("Could not instantiate parameters class " + this, e);
 			}
 			*/
-			parameterValue = new ParameterValue(name, parametersClass, array, true);
+			parameterValue = new ParameterValue(name, parametersClass, array, noBracket, true);
 		} else {
-			parameterValue = new ParameterValue(name, parameterValueType, array, true);
+			parameterValue = new ParameterValue(name, parameterValueType, array, noBracket, true);
 		}
 
 		return parameterValue;

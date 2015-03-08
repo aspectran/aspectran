@@ -533,7 +533,7 @@ public class RootAponDisassembler {
 	}
 	
 	public TransformRule disassembleTransformRule(Parameters transformParameters) {
-		String transformType = transformParameters.getString(TransformParameters.transformType);
+		String transformType = transformParameters.getString(TransformParameters.type);
 		String contentType = transformParameters.getString(TransformParameters.contentType);
 		String characterEncoding = transformParameters.getString(TransformParameters.characterEncoding);
 		Parameters templateParameters = transformParameters.getParameters(TransformParameters.template);

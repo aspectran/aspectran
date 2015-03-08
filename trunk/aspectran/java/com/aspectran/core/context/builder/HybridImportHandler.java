@@ -117,6 +117,7 @@ public class HybridImportHandler extends AbstractImportHandler implements Import
 			Parameters rootParameters = assembler.assembleRoot();
 			
 			AponWriter aponWriter = new AponWriter(writer);
+			aponWriter.comment(file.getAbsolutePath());
 			aponWriter.write(rootParameters);
 			writer.close();
 			

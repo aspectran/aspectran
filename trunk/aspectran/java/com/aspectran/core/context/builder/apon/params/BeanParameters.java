@@ -32,7 +32,7 @@ public class BeanParameters extends AbstractParameters implements Parameters {
 		lazyInit = new ParameterDefine("lazyInit", ParameterValueType.BOOLEAN);
 		important = new ParameterDefine("important", ParameterValueType.BOOLEAN);
 		constructor = new ParameterDefine("constructor", ConstructorParameters.class);
-		properties = new ParameterDefine("property", ItemParameters.class, true);
+		properties = new ParameterDefine("property", ItemParameters.class, true, true);
 		
 		parameterDefines = new ParameterDefine[] {
 				id,

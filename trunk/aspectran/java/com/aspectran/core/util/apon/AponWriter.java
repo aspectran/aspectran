@@ -151,6 +151,26 @@ public class AponWriter extends AponFormat {
 		}
 	}
 	
+	public void comment(String describe) throws IOException {
+		if(describe.indexOf(AponFormat.NEXT_LINE_CHAR) != -1) {
+			Reader reader = new StringReader(describe);
+			BufferedReader br = new BufferedReader(reader);
+			String line;
+			while((line = br.readLine()) != null) {
+				writer.write(AponFormat.COMMENT_LINE_START);
+				writer.write(AponFormat.SPACE_CHAR);
+				writer.write(line);
+				nextLine();
+			}
+			reader.close();
+		} else {
+			writer.write(AponFormat.COMMENT_LINE_START);
+			writer.write(AponFormat.SPACE_CHAR);
+			writer.write(describe);
+			nextLine();
+		}
+	}
+	
 	private void writeName(String name) throws IOException {
 		indent();
 		writer.write(name);
@@ -191,11 +211,11 @@ public class AponWriter extends AponFormat {
 	private void openCurlyBracket() throws IOException {
 		writer.write(CURLY_BRACKET_OPEN);
 		nextLine();
-		indentPlus();
+		increaseIndent();
 	}
 
 	private void closeCurlyBracket() throws IOException {
-		indentMinus();
+		decreaseIndent();
 		indent();
 		writer.write(CURLY_BRACKET_CLOSE);
 		nextLine();
@@ -204,11 +224,11 @@ public class AponWriter extends AponFormat {
 	private void openSquareBracket() throws IOException {
 		writer.write(SQUARE_BRACKET_OPEN);
 		nextLine();
-		indentPlus();
+		increaseIndent();
 	}
 
 	private void closeSquareBracket() throws IOException {
-		indentMinus();
+		decreaseIndent();
 		indent();
 		writer.write(SQUARE_BRACKET_CLOSE);
 		nextLine();
@@ -217,11 +237,11 @@ public class AponWriter extends AponFormat {
 	private void openRoundBracket() throws IOException {
 		writer.write(ROUND_BRACKET_OPEN);
 		nextLine();
-		indentPlus();
+		increaseIndent();
 	}
 	
 	private void closeRoundBracket() throws IOException {
-		indentMinus();
+		decreaseIndent();
 		indent();
 		writer.write(ROUND_BRACKET_CLOSE);
 		nextLine();
@@ -239,13 +259,13 @@ public class AponWriter extends AponFormat {
 		}
 	}
 	
-	private void indentPlus() throws IOException {
+	private void increaseIndent() throws IOException {
 		if(prettyFormat) {
 			indentDepth++;
 		}
 	}
 	
-	private void indentMinus() throws IOException {
+	private void decreaseIndent() throws IOException {
 		if(prettyFormat) {
 			indentDepth--;
 		}

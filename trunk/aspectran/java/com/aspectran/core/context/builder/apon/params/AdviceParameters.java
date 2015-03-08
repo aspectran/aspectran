@@ -24,7 +24,7 @@ public class AdviceParameters extends AbstractParameters implements Parameters {
 		aroundAdvice = new ParameterDefine("around", AdviceActionParameters.class);
 		finallyAdvice = new ParameterDefine("finally", AdviceActionParameters.class);
 		exceptionRaized = new ParameterDefine("exceptionRaized", ExceptionRaizedParameters.class);
-		jobs = new ParameterDefine("job", JobParameters.class, true);
+		jobs = new ParameterDefine("job", JobParameters.class, true, true);
 		
 		parameterDefines = new ParameterDefine[] {
 				bean,
