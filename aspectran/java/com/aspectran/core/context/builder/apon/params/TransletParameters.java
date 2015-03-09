@@ -14,25 +14,25 @@ public class TransletParameters extends AbstractParameters implements Parameters
 	public static final ParameterDefine responses;
 	public static final ParameterDefine exception;
 	public static final ParameterDefine actions;
-	public static final ParameterDefine transforms;
-	public static final ParameterDefine dispatchs;
-	public static final ParameterDefine redirects;
-	public static final ParameterDefine forwards;
+	public static final ParameterDefine transform;
+	public static final ParameterDefine dispatch;
+	public static final ParameterDefine redirect;
+	public static final ParameterDefine forward;
 
 	private static final ParameterDefine[] parameterDefines;
 	
 	static {
 		name = new ParameterDefine("name", ParameterValueType.STRING);
 		request = new ParameterDefine("request", RequestParameters.class);
-		contents1 = new ParameterDefine("contents", ContentParameters.class);
+		contents1 = new ParameterDefine("contents", ContentsParameters.class);
 		contents2 = new ParameterDefine("content", ContentParameters.class, true, true);
 		responses = new ParameterDefine("response", ResponseParameters.class, true, true);
 		exception = new ParameterDefine("exception", ExceptionParameters.class, true, true);
 		actions = new ParameterDefine("action", ActionParameters.class, true, true);
-		dispatchs = new ParameterDefine("dispatch", DispatchParameters.class, true, true);
-		transforms = new ParameterDefine("transform", TransformParameters.class, true, true);
-		redirects = new ParameterDefine("redirect", RedirectParameters.class, true, true);
-		forwards = new ParameterDefine("forward", ForwardParameters.class, true, true);
+		transform = new ParameterDefine("transform", TransformParameters.class);
+		dispatch = new ParameterDefine("dispatch", DispatchParameters.class);
+		redirect = new ParameterDefine("redirect", RedirectParameters.class);
+		forward = new ParameterDefine("forward", ForwardParameters.class);
 		
 		parameterDefines = new ParameterDefine[] {
 				name,
@@ -42,10 +42,10 @@ public class TransletParameters extends AbstractParameters implements Parameters
 				responses,
 				exception,
 				actions,
-				dispatchs,
-				transforms,
-				redirects,
-				forwards
+				transform,
+				dispatch,
+				redirect,
+				forward
 		};
 	}
 	

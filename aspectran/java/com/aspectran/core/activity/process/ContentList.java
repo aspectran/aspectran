@@ -68,9 +68,13 @@ public class ContentList extends ArrayList<ActionList> implements AspectAdviceSu
 		add(actionList);
 	}
 
-	public ActionList newActionList() {
+	public ActionList newActionList(boolean omittable) {
 		ActionList actionList = new ActionList(this);
+		if(omittable)
+			actionList.setOmittable(Boolean.TRUE);
+		
 		add(actionList);
+		
 		return actionList;
 	}
 	

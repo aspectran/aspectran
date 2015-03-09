@@ -109,7 +109,7 @@ public class ActionRuleNodeletAdder implements NodeletAdder {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
 				ItemRuleMap irm = assistant.popObject();
 				
-				if(irm.size() > 0) {
+				if(!irm.isEmpty()) {
 					BeanActionRule beanActionRule = assistant.peekObject();
 					beanActionRule.setArgumentItemRuleMap(irm);
 				}

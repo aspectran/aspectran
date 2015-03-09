@@ -26,7 +26,6 @@ aspectran: {
 						action: {
 							echo: {
 								type: "map"
-								name: "map2"
 								value: {
 									errorCode: "E0001"
 									message: "error occured."
@@ -82,6 +81,152 @@ aspectran: {
 				translet: "errorCaused"
 				disabled: true
 			}
+		}
+	}
+	bean: {
+		id: "schedulerFactory"
+		class: "org.quartz.impl.StdSchedulerFactory"
+		scope: "singleton"
+		constructor: {
+			argument: {
+				type: "properties"
+				value: {
+					org.quartz.scheduler.instanceName: "AspectranQuartzScheduler"
+					org.quartz.scheduler.rmi.export: "false"
+					org.quartz.scheduler.rmi.proxy: "false"
+					org.quartz.scheduler.wrapJobExecutionInUserTransaction: "false"
+					org.quartz.threadPool.class: "org.quartz.simpl.SimpleThreadPool"
+					org.quartz.threadPool.threadCount: "10"
+					org.quartz.threadPool.threadPriority: "5"
+					org.quartz.threadPool.threadsInheritContextClassLoaderOfInitializingThread: "true"
+					org.quartz.jobStore.misfireThreshold: "60000"
+					org.quartz.jobStore.class: "org.quartz.simpl.RAMJobStore"
+				}
+			}
+		}
+	}
+	bean: {
+		id: "exampleJobAction"
+		class: "com.aspectran.example.scheduler.ExampleJobAction"
+		singleton: true
+	}
+	translet: {
+		name: "hello"
+		request: {
+			attribute: {
+				type: "single"
+				name: "my_name_is"
+				value: "aspectran"
+			}
+		}
+		transform: {
+			type: "transform/text"
+			contentType: "text/plain"
+			template: {
+				content: (
+					|hello~ @{my_name_is}!!
+				)
+			}
+		}
+	}
+	translet: {
+		name: "countTo10"
+		transform: {
+			type: "transform/text"
+			contentType: "text/plain"
+			template: {
+				content: (
+					|@{result1}
+				)
+			}
+			action: {
+				id: "result1"
+				beanId: "exampleJobAction"
+				method: "countTo10"
+			}
+		}
+	}
+	translet: {
+		name: "countTo10twice"
+		content: {
+			action: {
+				id: "result1"
+				beanId: "exampleJobAction"
+				method: "countTo10"
+			}
+			action: {
+				id: "result2"
+				beanId: "exampleJobAction"
+				method: "countTo10"
+			}
+		}
+		transform: {
+			type: "transform/text"
+			contentType: "text/plain"
+			template: {
+				content: (
+					|(first)
+					|@{result1}
+					|(second)
+					|@{result2}
+				)
+			}
+		}
+	}
+	translet: {
+		name: "countTo10.xml"
+		transform: {
+			type: "transform/xml"
+			contentType: "text/xml"
+			action: {
+				id: "result"
+				beanId: "exampleJobAction"
+				method: "countTo10AsArray"
+			}
+		}
+	}
+	translet: {
+		name: "countTo10ext"
+		response: {
+			transform: {
+				type: "transform/text"
+				contentType: "text/plain"
+				template: {
+					content: (
+						|@{result}
+					)
+				}
+				action: {
+					id: "result"
+					beanId: "exampleJobAction"
+					method: "countTo10"
+				}
+			}
+		}
+		response: {
+			name: ".xml"
+			transform: {
+				type: "transform/xml"
+				contentType: "text/xml"
+				action: {
+					beanId: "exampleJobAction"
+					method: "countTo10AsArray"
+				}
+			}
+		}
+	}
+	translet: {
+		name: "errorCaused"
+		content: {
+			action: {
+				id: "result"
+				beanId: "exampleJobAction"
+				method: "errorCaused"
+			}
+		}
+		transform: {
+			type: "transform/xml"
+			contentType: "text/xml"
 		}
 	}
 }

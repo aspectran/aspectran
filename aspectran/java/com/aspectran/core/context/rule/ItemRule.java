@@ -817,33 +817,27 @@ public class ItemRule {
 	}
 	
 	/**
-	 * Naming item rule.
+	 * Naming for Unnamed item name.
 	 *
 	 * @param itemRule the item rule
 	 * @param itemRuleMap the item rule map
 	 */
-	public static void namingItemRule(ItemRule itemRule, ItemRuleMap itemRuleMap) {
+	public static void naming(ItemRule itemRule, ItemRuleMap itemRuleMap) {
 		int count = 0;
-		ItemRule first = null;
 		
 		for(ItemRule ir : itemRuleMap) {
 			if(ir.isUnknownName() && ir.getType() == itemRule.getType()) {
 				count++;
 				
-				if(count == 1)
-					first = ir;
+				if(itemRule == ir)
+					break;
 			}
 		}
 		
 		if(count == 0) {
 			itemRule.setName(itemRule.getType().toString());
 		} else {
-			if(count == 1) {
-				String name = first.getType().toString() + count;
-				first.setName(name);
-			}				
-			
-			String name = itemRule.getType().toString() + (++count);
+			String name = itemRule.getType().toString() + count;
 			itemRule.setName(name);
 		}
 	}
@@ -970,7 +964,7 @@ public class ItemRule {
 		itemRuleMap.putItemRule(itemRule);
 
 		if(itemRule.isUnknownName())
-			ItemRule.namingItemRule(itemRule, itemRuleMap);
+			ItemRule.naming(itemRule, itemRuleMap);
 	}
 	
 	public static ItemRuleMap toItemRuleMap(List<Parameters> itemParametersList) {

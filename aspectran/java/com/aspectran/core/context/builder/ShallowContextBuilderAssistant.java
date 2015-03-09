@@ -17,9 +17,6 @@ package com.aspectran.core.context.builder;
 
 import java.io.IOException;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.TransletRule;
 
@@ -28,9 +25,8 @@ import com.aspectran.core.context.rule.TransletRule;
  */
 public class ShallowContextBuilderAssistant extends ContextBuilderAssistant {
 
-	private final Logger logger = LoggerFactory.getLogger(ShallowContextBuilderAssistant.class);
-	
 	public ShallowContextBuilderAssistant() {
+		setImportHandler(new ShallowImportHandler());
 	}
 
 	/**
@@ -65,16 +61,10 @@ public class ShallowContextBuilderAssistant extends ContextBuilderAssistant {
 	 */
 	public void addBeanRule(BeanRule beanRule) throws CloneNotSupportedException, ClassNotFoundException, IOException {
 		beanRuleMap.putBeanRule(beanRule);
-
-		if(logger.isTraceEnabled())
-			logger.trace("add BeanRule " + beanRule);
 	}
 
 	public void addTransletRule(TransletRule transletRule) throws CloneNotSupportedException {
 		transletRuleMap.putTransletRule(transletRule);
-		
-		if(logger.isTraceEnabled())
-			logger.trace("add TransletRule " + transletRule);
 	}
 	
 }

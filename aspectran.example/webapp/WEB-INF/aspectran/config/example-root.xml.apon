@@ -78,7 +78,6 @@ aspectran: {
 						action: {
 							echo: {
 								type: "map"
-								name: "map2"
 								value: {
 									errorCode: "E0001"
 									message: "error occured."
@@ -125,5 +124,281 @@ aspectran: {
 				}
 			}
 		}
+	}
+	bean: {
+		id: "webActivityDefaultHandler"
+		class: "com.aspectran.web.activity.WebActivityDefaultHandler"
+		scope: "singleton"
+	}
+	bean: {
+		id: "jspViewDispatcher"
+		class: "com.aspectran.web.view.JspViewDispatcher"
+		scope: "singleton"
+	}
+	bean: {
+		id: "example.*"
+		class: "com.aspectran.example.**.*Action"
+		scope: "singleton"
+	}
+	bean: {
+		id: "advice.*"
+		class: "com.aspectran.example.aspect.**.*Advice"
+		scope: "session"
+	}
+	bean: {
+		id: "sampleBean"
+		class: "com.aspectran.example.bean.SampleBean"
+		scope: "singleton"
+	}
+	translet: {
+		name: "hello"
+		transform: {
+			type: "transform/text"
+			contentType: "text/plain"
+			template: {
+				content: (
+					|hello~ ${name}
+				)
+			}
+		}
+	}
+	translet: {
+		name: "hello2"
+		contents: {
+			content: {
+				action: {
+					id: "countTo10"
+					beanId: "example.hello.HelloAction"
+					method: "countTo10AsArray"
+				}
+			}
+		}
+		response: {
+			transform: {
+				type: "transform/xml"
+				contentType: "text/xml"
+			}
+		}
+	}
+	translet: {
+		name: "hello3"
+		content: {
+			action: {
+				id: "countTo10"
+				beanId: "example.hello.HelloAction"
+				method: "countTo10AsArray"
+			}
+		}
+		response: {
+			transform: {
+				type: "transform/xml"
+				contentType: "text/xml"
+			}
+		}
+	}
+	translet: {
+		name: "hello4"
+		content: {
+			action: {
+				include: "/example/hello3"
+			}
+		}
+		response: {
+			transform: {
+				type: "transform/xml"
+				contentType: "text/xml"
+			}
+		}
+	}
+	translet: {
+		name: "hello/countTo10"
+		transform: {
+			type: "transform/text"
+			contentType: "text/plain"
+			template: {
+				content: (
+					|@{result1}
+				)
+			}
+			action: {
+				id: "result1"
+				beanId: "example.hello.HelloAction"
+				method: "countTo10"
+			}
+		}
+	}
+	translet: {
+		name: "hello/countTo10twice"
+		content: {
+			action: {
+				id: "result1"
+				beanId: "example.hello.HelloAction"
+				method: "countTo10"
+			}
+			action: {
+				id: "result2"
+				beanId: "example.hello.HelloAction"
+				method: "countTo10"
+			}
+		}
+		transform: {
+			type: "transform/text"
+			contentType: "text/plain"
+			template: {
+				content: (
+					|(first)
+					|@{result1}
+					|(second)
+					|@{result2}
+				)
+			}
+		}
+	}
+	translet: {
+		name: "hello/countTo10.xml"
+		transform: {
+			type: "transform/xml"
+			contentType: "text/xml"
+			action: {
+				id: "result"
+				beanId: "example.hello.HelloAction"
+				method: "countTo10AsArray"
+			}
+			pretty: true
+		}
+	}
+	translet: {
+		name: "hello/countTo10ext"
+		response: {
+			transform: {
+				type: "transform/text"
+				contentType: "text/plain"
+				template: {
+					content: (
+						|@{result}
+					)
+				}
+				action: {
+					id: "result"
+					beanId: "example.hello.HelloAction"
+					method: "countTo10"
+				}
+			}
+		}
+		response: {
+			name: ".xml"
+			transform: {
+				type: "transform/xml"
+				contentType: "text/xml"
+				action: {
+					beanId: "example.hello.HelloAction"
+					method: "countTo10AsArray"
+				}
+				pretty: true
+			}
+		}
+	}
+	translet: {
+		name: "hello/applyTheAdvice.xml"
+		transform: {
+			type: "transform/xml"
+			contentType: "text/xml"
+			action: {
+				id: "applyTheAdvice"
+				beanId: "example.hello.HelloAction"
+				method: "applyTheAdvice"
+			}
+			pretty: true
+		}
+	}
+	translet: {
+		name: "echo"
+		transform: {
+			type: "transform/text"
+			contentType: "text/html"
+			template: {
+				content: (
+					|<html>
+					|<style>
+					|body { background-color: blue; color: white; }
+					|dt { font-weight: bold; color: yellow; }
+					|</style>
+					|<body>
+					|	<dl>
+					|		<dt>item1</dt>
+					|		<dd>@{echo^map0.item1}</dd>
+					|		<dt>item2</dt>
+					|		<dd>@{echo^map0.item2}</dd>
+					|	</dl>
+					|</body>
+					|</html>
+				)
+			}
+			action: {
+				id: "echo"
+				echo: {
+					type: "map"
+					name: "map0"
+					value: {
+						item1: "${item1}"
+						item2: "${item2}"
+					}
+					valueType: "string"
+					tokenize: true
+				}
+			}
+		}
+	}
+	translet: {
+		name: "hello/sampleBean.txt"
+		transform: {
+			type: "transform/text"
+			contentType: "text/plain"
+			template: {
+				content: (
+					|text: @{sample}
+					|The length of the output string is @{sample^length:0} bytes.
+				)
+			}
+			action: {
+				id: "sample"
+				beanId: "sampleBean"
+				method: "hello"
+			}
+		}
+	}
+	translet: {
+		name: "goNaver"
+		redirect: {
+			url: "http://search.naver.com/search.naver"
+			parameter: {
+				type: "single"
+				name: "where"
+				value: "nexearch"
+			}
+			parameter: {
+				type: "single"
+				name: "query"
+				value: "서울"
+			}
+			parameter: {
+				type: "single"
+				name: "sm"
+				value: "top_hty"
+			}
+			parameter: {
+				type: "single"
+				name: "fbm"
+				value: "1"
+			}
+			parameter: {
+				type: "single"
+				name: "ie"
+				value: "utf8"
+			}
+		}
+	}
+	import: {
+		file: "/WEB-INF/aspectran/config/example-scheduler.xml"
 	}
 }

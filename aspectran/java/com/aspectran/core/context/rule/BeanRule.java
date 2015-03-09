@@ -39,6 +39,8 @@ public class BeanRule implements Cloneable {
 
 	protected ScopeType scopeType;
 
+	protected Boolean singleton;
+
 	protected String factoryMethodName;
 	
 	protected String initMethodName;
@@ -131,6 +133,14 @@ public class BeanRule implements Cloneable {
 	 */
 	public void setScopeType(ScopeType scopeType) {
 		this.scopeType = scopeType;
+	}
+
+	public Boolean getSingleton() {
+		return singleton;
+	}
+
+	public void setSingleton(Boolean singleton) {
+		this.singleton = singleton;
 	}
 
 	/**
@@ -375,6 +385,7 @@ public class BeanRule implements Cloneable {
 		beanRule.setId(id);
 		beanRule.setClassName(className);
 		beanRule.setScopeType(scopeType);
+		beanRule.setSingleton(singleton);
 		beanRule.setFactoryMethodName(factoryMethod);
 		beanRule.setInitMethodName(initMethodName);
 		beanRule.setDestroyMethodName(destroyMethodName);

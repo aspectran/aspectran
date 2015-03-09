@@ -15,43 +15,18 @@
  */
 package com.aspectran.core.context.builder;
 
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Translet Map Parser.
  * 
  * <p>Created: 2008. 06. 14 오전 4:39:24</p>
  */
-public abstract class AbstractImportHandler implements ImportHandler {
+public class ShallowImportHandler extends AbstractImportHandler implements ImportHandler {
 	
-	private List<Importable> pendingList;
-	
-	public AbstractImportHandler() {
+	public ShallowImportHandler() {
 	}
 	
-	public void pending(Importable importable) {
-		if(pendingList == null)
-			pendingList = new ArrayList<Importable>();
-		
-		pendingList.add(importable);
-	}
-	
-	protected void handle() throws Exception {
-		if(pendingList != null) {
-			List<Importable> pendedList = pendingList;
-			pendingList = null;
-			
-			for(Importable imp : pendedList) {
-				handle(imp);
-			}
-		}
-	}
-	
-	abstract public void handle(Importable importable) throws Exception;
-	
-	public List<Importable> getPendingList() {
-		return pendingList;
+	public void handle(Importable importable) throws Exception {
 	}
 
 }
