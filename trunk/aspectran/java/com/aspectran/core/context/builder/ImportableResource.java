@@ -30,9 +30,9 @@ public class ImportableResource extends Importable {
 	
 	private final static ImportType RESOURCE_IMPORT = ImportType.RESOURCE;
 	
-	private ClassLoader classLoader;
+	private final ClassLoader classLoader;
 
-	private String resource;
+	private final String resource;
 
 	public ImportableResource(ClassLoader classLoader, String resource, ImportFileType importFileType) {
 		super(RESOURCE_IMPORT);
@@ -43,9 +43,15 @@ public class ImportableResource extends Importable {
 		setImportFileType(importFileType);
 		
 		this.classLoader = classLoader;
+		this.resource = resource;
+		
 		setLastModified(System.currentTimeMillis());
 	}
 	
+	public String getDistinguishedName() {
+		return resource;
+	}
+
 	/**
 	 * Gets the input stream.
 	 * 

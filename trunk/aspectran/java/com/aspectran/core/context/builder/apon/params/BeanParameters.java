@@ -25,7 +25,7 @@ public class BeanParameters extends AbstractParameters implements Parameters {
 		id = new ParameterDefine("id", ParameterValueType.STRING);
 		className = new ParameterDefine("class", ParameterValueType.STRING);
 		scope = new ParameterDefine("scope", ParameterValueType.STRING);
-		singleton = new ParameterDefine("scope", ParameterValueType.BOOLEAN);
+		singleton = new ParameterDefine("singleton", ParameterValueType.BOOLEAN);
 		factoryMethod = new ParameterDefine("factoryMethod", ParameterValueType.STRING);
 		initMethod = new ParameterDefine("initMethod", ParameterValueType.STRING);
 		destroyMethod = new ParameterDefine("destroyMethod", ParameterValueType.STRING);

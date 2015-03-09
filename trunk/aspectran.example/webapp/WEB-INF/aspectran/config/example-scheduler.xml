@@ -27,7 +27,7 @@
 		</constructor>
 	</bean>
 	
-	<bean id="exampleJobAction" class="com.aspectran.example.scheduler.ExampleJobAction" scope="singleton"/>
+	<bean id="exampleJobAction" class="com.aspectran.example.scheduler.ExampleJobAction" singleton="true"/>
 	
 	<aspect id="exception2" for="translet">
 		<joinpoint scope="translet">
@@ -154,9 +154,8 @@
 	</translet>
 
 	<translet name="errorCaused">
-		<transform type="transform/xml">
-			<action id="result" bean="exampleJobAction" method="errorCaused"/>
-		</transform>
+		<action id="result" bean="exampleJobAction" method="errorCaused"/>
+		<transform type="transform/xml"/>
 	</translet>
 
 </aspectran>

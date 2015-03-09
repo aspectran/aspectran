@@ -32,9 +32,9 @@ public class ImportableFile extends Importable {
 	
 	private final static ImportType FILE_IMPORT = ImportType.FILE;
 	
-	private String basePath;
+	private final String basePath;
 	
-	private String filePath;
+	private final String filePath;
 
 	public ImportableFile(String filePath, ImportFileType importFileType) {
 		this(null, filePath, importFileType);
@@ -56,18 +56,14 @@ public class ImportableFile extends Importable {
 		return basePath;
 	}
 
-	public void setBasePath(String basePath) {
-		this.basePath = basePath;
-	}
-
 	public String getFilePath() {
 		return filePath;
 	}
 
-	public void setFilePath(String filePath) {
-		this.filePath = filePath;
+	public String getDistinguishedName() {
+		return filePath;
 	}
-
+	
 	/**
 	 * Gets the input stream.
 	 * 

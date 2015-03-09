@@ -290,14 +290,15 @@ public class RootAponDisassembler {
 		
 		BeanRule beanRule = BeanRule.newInstance(id, className, scope, singleton, factoryMethod, initMethod, destroyMethod, lazyInit, important);
 
-		ItemRuleMap constructorArgumentItemRuleMap = disassembleItemRuleMap(constructorArgumentParametersList);
-		ItemRuleMap propertyItemRuleMap = disassembleItemRuleMap(propertyParametersList);
-
-		if(constructorArgumentItemRuleMap != null)
+		if(constructorArgumentParametersList != null && !constructorArgumentParametersList.isEmpty()) {
+			ItemRuleMap constructorArgumentItemRuleMap = disassembleItemRuleMap(constructorArgumentParametersList);
 			beanRule.setConstructorArgumentItemRuleMap(constructorArgumentItemRuleMap);
+		}
 		
-		if(propertyItemRuleMap != null)
+		if(propertyParametersList != null && !propertyParametersList.isEmpty()) {
+			ItemRuleMap propertyItemRuleMap = disassembleItemRuleMap(propertyParametersList);
 			beanRule.setPropertyItemRuleMap(propertyItemRuleMap);
+		}
 		
 		assistant.addBeanRule(beanRule);
 	}
@@ -320,7 +321,7 @@ public class RootAponDisassembler {
 		
 		List<Parameters> contentParametersList = transletParameters.getParametersList(TransletParameters.contents2);
 		if(contentParametersList != null && !contentParametersList.isEmpty()) {
-			ContentList contentList = transletRule.touchContentList();
+			ContentList contentList = transletRule.touchContentList(true);
 			for(Parameters contentParamters : contentParametersList) {
 				ActionList actionList = disassembleActionList(contentParamters, contentList);
 				contentList.addActionList(actionList);
@@ -353,24 +354,28 @@ public class RootAponDisassembler {
 			}
 		}
 		
-		List<Parameters> transformParametersList = transletParameters.getParametersList(TransletParameters.transforms);
-		if(transformParametersList != null && !transformParametersList.isEmpty()) {
-			disassembleTransformRule(transformParametersList, transletRule);
+		Parameters transformParameters = transletParameters.getParameters(TransletParameters.transform);
+		if(transformParameters != null) {
+			TransformRule tr = disassembleTransformRule(transformParameters);
+			transletRule.applyResponseRule(tr);
 		}
 		
-		List<Parameters> dispatchParametersList = transletParameters.getParametersList(TransletParameters.dispatchs);
-		if(dispatchParametersList != null && !dispatchParametersList.isEmpty()) {
-			disassembleDispatchResponseRule(dispatchParametersList, transletRule);
+		Parameters dispatchParameters = transletParameters.getParameters(TransletParameters.dispatch);
+		if(dispatchParameters != null) {
+			DispatchResponseRule drr = disassembleDispatchResponseRule(dispatchParameters);
+			transletRule.applyResponseRule(drr);
 		}
 
-		List<Parameters> redirectParametersList = transletParameters.getParametersList(TransletParameters.redirects);
-		if(redirectParametersList != null && !redirectParametersList.isEmpty()) {
-			disassembleRedirectResponseRule(redirectParametersList, transletRule);
+		Parameters redirectParameters = transletParameters.getParameters(TransletParameters.redirect);
+		if(redirectParameters != null) {
+			RedirectResponseRule rrr = disassembleRedirectResponseRule(redirectParameters);
+			transletRule.applyResponseRule(rrr);
 		}
 		
-		List<Parameters> forwardParametersList = transletParameters.getParametersList(TransletParameters.forwards);
-		if(forwardParametersList != null && !forwardParametersList.isEmpty()) {
-			disassembleForwardResponseRule(forwardParametersList, transletRule);
+		Parameters forwardParameters = transletParameters.getParameters(TransletParameters.forward);
+		if(forwardParameters != null) {
+			ForwardResponseRule frr = disassembleForwardResponseRule(forwardParameters);
+			transletRule.applyResponseRule(frr);
 		}
 
 		assistant.addTransletRule(transletRule);

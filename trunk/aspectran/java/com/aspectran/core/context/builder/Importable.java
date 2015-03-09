@@ -61,6 +61,8 @@ public abstract class Importable {
 		this.importFileType = importFileType;
 	}
 
+	abstract public String getDistinguishedName();
+	
 	abstract public InputStream getInputStream() throws IOException;
 	
 	public Reader getReader() throws IOException {

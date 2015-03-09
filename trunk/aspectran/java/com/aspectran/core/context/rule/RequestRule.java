@@ -25,7 +25,7 @@ import com.aspectran.core.context.rule.type.RequestMethodType;
 /**
  * <p>Created: 2008. 03. 22 오후 5:48:09</p>
  */
-public class RequestRule implements AspectAdviceSupport {
+public class RequestRule implements AspectAdviceSupport, Cloneable {
 
 	public static final String CHARACTER_ENCODING_SETTING_NAME = "characterEncoding";
 	
@@ -75,48 +75,6 @@ public class RequestRule implements AspectAdviceSupport {
 	public void setMethod(RequestMethodType method) {
 		this.method = method;
 	}
-
-//
-//	/**
-//	 * Gets the ticket rule.
-//	 * 
-//	 * @param ticketId the ticket id
-//	 * 
-//	 * @return the ticket rule
-//	 */
-//	public TicketBeanActionRule getTicketBeanActionRule(String ticketId) {
-//		return ticketBeanActionRuleMap.get(ticketId);
-//	}
-//
-//	/**
-//	 * Adds the ticket rule.
-//	 * 
-//	 * @param ticketRule the ticket rule
-//	 */
-//	public void addTicketBeanActionRule(TicketBeanActionRule ticketRule) {
-//		if(ticketBeanActionRuleMap == null)
-//			ticketBeanActionRuleMap = new TicketBeanActionRuleMap();
-//		
-//		ticketBeanActionRuleMap.putTicketRule(ticketRule);
-//	}
-//
-//	/**
-//	 * Gets the ticket rule map.
-//	 * 
-//	 * @return the ticket rule map
-//	 */
-//	public TicketBeanActionRuleMap getTicketBeanActionRuleMap() {
-//		return ticketBeanActionRuleMap;
-//	}
-//
-//	/**
-//	 * Sets the ticket rule map.
-//	 * 
-//	 * @param ticketBeanActionRuleMap the new ticket rule map
-//	 */
-//	public void setTicketBeanActionRuleMap(TicketBeanActionRuleMap ticketBeanActionRuleMap) {
-//		this.ticketBeanActionRuleMap = ticketBeanActionRuleMap;
-//	}
 
 	/**
 	 * Gets the parameter rule map for attributes.
@@ -202,19 +160,25 @@ public class RequestRule implements AspectAdviceSupport {
 		if(attributeItemRuleMap != null) {
 			sb.append(", attributes=[");
 			int sbLength = sb.length();
-
 			for(String name : attributeItemRuleMap.keySet()) {
 				if(sb.length() > sbLength)
 					sb.append(", ");
-				
 				sb.append(name);
 			}
-
 			sb.append("]");
 		}
 		sb.append("}");
 		
 		return sb.toString();
+	}
+	
+	public RequestRule clone() {
+		RequestRule newRequestRule = new RequestRule();
+		newRequestRule.setCharacterEncoding(characterEncoding);
+		newRequestRule.setMethod(method);
+		newRequestRule.setAttributeItemRuleMap(attributeItemRuleMap);
+		
+		return newRequestRule;
 	}
 	
 	public static RequestRule newInstance(String method, String characterEncoding) {

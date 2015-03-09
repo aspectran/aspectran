@@ -45,6 +45,10 @@ public class ImportableUrl extends Importable {
 		this.urlString = urlString;
 	}
 	
+	public String getDistinguishedName() {
+		return urlString;
+	}
+
 	/**
 	 * Gets the input stream.
 	 * 

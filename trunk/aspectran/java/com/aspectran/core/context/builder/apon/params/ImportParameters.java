@@ -7,22 +7,22 @@ import com.aspectran.core.util.apon.Parameters;
 
 public class ImportParameters extends AbstractParameters implements Parameters {
 
-	public static final ParameterDefine resource;
 	public static final ParameterDefine file;
+	public static final ParameterDefine resource;
 	public static final ParameterDefine url;
 	public static final ParameterDefine fileType;
 	
 	private static final ParameterDefine[] parameterDefines;
 	
 	static {
-		resource = new ParameterDefine("resource", ParameterValueType.STRING);
 		file = new ParameterDefine("file", ParameterValueType.STRING);
+		resource = new ParameterDefine("resource", ParameterValueType.STRING);
 		url = new ParameterDefine("url", ParameterValueType.STRING);
 		fileType = new ParameterDefine("fileType", ParameterValueType.STRING);
 		
 		parameterDefines = new ParameterDefine[] {
-				resource,
 				file,
+				resource,
 				url,
 				fileType
 		};

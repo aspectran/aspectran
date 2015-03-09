@@ -27,8 +27,8 @@ public class ResponseParameters extends AbstractParameters implements Parameters
 		parameterDefines = new ParameterDefine[] {
 				name,
 				characterEncoding,
-				dispatch,
 				transform,
+				dispatch,
 				forward,
 				redirect
 		};

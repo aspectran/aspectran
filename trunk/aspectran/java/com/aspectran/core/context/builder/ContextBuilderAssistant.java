@@ -466,42 +466,39 @@ public class ContextBuilderAssistant {
 			transletRule.setRequestRule(requestRule);
 		}
 		
-		if(transletRule.getResponseRule() == null) {
-			ResponseRule responseRule = new ResponseRule();
-			transletRule.setResponseRule(responseRule);
-		}
-		
 		List<ResponseRule> responseRuleList = transletRule.getResponseRuleList();
 		
-		if(responseRuleList == null || responseRuleList.size() == 0) {
+		if(responseRuleList == null || responseRuleList.isEmpty()) {
+			transletRule.determineResponseRule();
 			transletRule.setName(applyTransletNamePattern(transletRule.getName()));
-			
-			transletRuleMap.put(transletRule.getName(), transletRule);
+			transletRuleMap.putTransletRule(transletRule);
 
 			if(logger.isTraceEnabled())
 				logger.trace("add TransletRule " + transletRule);
 		} else if(responseRuleList.size() == 1) {
 			transletRule.setResponseRule(responseRuleList.get(0));
-			transletRule.setResponseRuleList(null);
+			transletRule.determineResponseRule();
 			transletRule.setName(applyTransletNamePattern(transletRule.getName()));
-			
-			transletRuleMap.put(transletRule.getName(), transletRule);
+			transletRuleMap.putTransletRule(transletRule);
 
 			if(logger.isTraceEnabled())
 				logger.trace("add TransletRule " + transletRule);
-		} else if(responseRuleList.size() > 1) {
+		} else {
 			ResponseRule defaultResponseRule = null;
 			
 			for(ResponseRule responseRule : responseRuleList) {
 				String responseName = responseRule.getName();
 				
 				if(responseName == null || responseName.length() == 0) {
+					if(defaultResponseRule != null) {
+						logger.warn("ignore duplicated default response rule " + defaultResponseRule + " of transletRule " + transletRule);
+					}
 					defaultResponseRule = responseRule;
 				} else {
-					TransletRule subTransletRule = transletRule.newSubTransletRule(responseRule);
+					TransletRule subTransletRule = TransletRule.newSubTransletRule(transletRule, responseRule);
+					subTransletRule.determineResponseRule();
 					subTransletRule.setName(applyTransletNamePattern(subTransletRule.getName()));
-					
-					transletRuleMap.put(subTransletRule.getName(), subTransletRule);
+					transletRuleMap.putTransletRule(subTransletRule);
 					
 					if(logger.isTraceEnabled())
 						logger.trace("add sub TransletRule " + subTransletRule);
@@ -510,11 +507,9 @@ public class ContextBuilderAssistant {
 			
 			if(defaultResponseRule != null) {
 				transletRule.setResponseRule(defaultResponseRule);
+				transletRule.determineResponseRule();
 				transletRule.setName(applyTransletNamePattern(transletRule.getName()));
-				responseRuleList.remove(defaultResponseRule);
-				transletRule.setResponseRuleList(responseRuleList);
-				
-				transletRuleMap.put(transletRule.getName(), transletRule);
+				transletRuleMap.putTransletRule(transletRule);
 				
 				if(logger.isTraceEnabled())
 					logger.trace("add TransletRule " + transletRule);

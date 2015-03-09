@@ -15,8 +15,6 @@
  */
 package com.aspectran.core.context.builder.apon;
 
-import java.io.IOException;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -29,22 +27,23 @@ import com.aspectran.core.activity.response.Response;
 import com.aspectran.core.activity.response.ResponseMap;
 import com.aspectran.core.activity.response.dispatch.DispatchResponse;
 import com.aspectran.core.activity.response.transform.TransformResponse;
-import com.aspectran.core.activity.variable.token.Token;
 import com.aspectran.core.context.builder.ContextBuilderAssistant;
 import com.aspectran.core.context.builder.DefaultSettings;
+import com.aspectran.core.context.builder.Importable;
 import com.aspectran.core.context.builder.apon.params.ActionParameters;
 import com.aspectran.core.context.builder.apon.params.AdviceActionParameters;
 import com.aspectran.core.context.builder.apon.params.AdviceParameters;
 import com.aspectran.core.context.builder.apon.params.AspectParameters;
 import com.aspectran.core.context.builder.apon.params.AspectranParameters;
 import com.aspectran.core.context.builder.apon.params.BeanParameters;
+import com.aspectran.core.context.builder.apon.params.ConstructorParameters;
 import com.aspectran.core.context.builder.apon.params.ContentParameters;
 import com.aspectran.core.context.builder.apon.params.ContentsParameters;
 import com.aspectran.core.context.builder.apon.params.DefaultSettingsParameters;
 import com.aspectran.core.context.builder.apon.params.DispatchParameters;
-import com.aspectran.core.context.builder.apon.params.ExceptionParameters;
 import com.aspectran.core.context.builder.apon.params.ExceptionRaizedParameters;
 import com.aspectran.core.context.builder.apon.params.ForwardParameters;
+import com.aspectran.core.context.builder.apon.params.ImportParameters;
 import com.aspectran.core.context.builder.apon.params.ItemParameters;
 import com.aspectran.core.context.builder.apon.params.JobParameters;
 import com.aspectran.core.context.builder.apon.params.JoinpointParameters;
@@ -63,6 +62,7 @@ import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.AspectRuleMap;
 import com.aspectran.core.context.rule.BeanActionRule;
 import com.aspectran.core.context.rule.BeanRule;
+import com.aspectran.core.context.rule.BeanRuleMap;
 import com.aspectran.core.context.rule.DispatchResponseRule;
 import com.aspectran.core.context.rule.EchoActionRule;
 import com.aspectran.core.context.rule.ForwardResponseRule;
@@ -79,15 +79,15 @@ import com.aspectran.core.context.rule.SettingsAdviceRule;
 import com.aspectran.core.context.rule.TemplateRule;
 import com.aspectran.core.context.rule.TransformRule;
 import com.aspectran.core.context.rule.TransletRule;
-import com.aspectran.core.context.rule.ability.ActionRuleApplicable;
-import com.aspectran.core.context.rule.ability.ResponseRuleApplicable;
+import com.aspectran.core.context.rule.TransletRuleMap;
 import com.aspectran.core.context.rule.type.ActionType;
 import com.aspectran.core.context.rule.type.AspectAdviceType;
+import com.aspectran.core.context.rule.type.ImportType;
 import com.aspectran.core.context.rule.type.ItemType;
 import com.aspectran.core.context.rule.type.ResponseType;
-import com.aspectran.core.context.rule.type.TokenType;
-import com.aspectran.core.util.StringUtils;
+import com.aspectran.core.context.rule.type.ScopeType;
 import com.aspectran.core.util.apon.GenericParameters;
+import com.aspectran.core.util.apon.ParameterDefine;
 import com.aspectran.core.util.apon.Parameters;
 
 /**
@@ -139,19 +139,26 @@ public class RootAponAssembler {
 			Parameters p = assembleAspectParameters(aspectRule);
 			aspectranParameters.putValue(AspectranParameters.aspects, p);
 		}
-		/*
+
 		BeanRuleMap beanRuleMap = assistant.getBeanRuleMap();
 		for(BeanRule beanRule : beanRuleMap) {
-			Parameters p = new AspectParameters();
+			Parameters p = assembleBeanParameters(beanRule);
 			aspectranParameters.putValue(AspectranParameters.beans, p);
 		}
 		
 		TransletRuleMap transletRuleMap = assistant.getTransletRuleMap();
 		for(TransletRule transletRule : transletRuleMap) {
-			Parameters p = new AspectParameters();
+			Parameters p = assembleTransletParameters(transletRule);
 			aspectranParameters.putValue(AspectranParameters.translets, p);
 		}
-*/
+		
+		List<Importable> pendingList = assistant.getImportHandler().getPendingList();
+		if(pendingList != null) {
+			for(Importable imp : pendingList) {
+				aspectranParameters.putValue(AspectranParameters.imports, assembleImportParameters(imp));
+			}
+		}
+
 		return aspectranParameters;
 	}
 	
@@ -260,9 +267,138 @@ public class RootAponAssembler {
 		return aspectParameters;
 	}
 
+	public Parameters assembleBeanParameters(BeanRule beanRule) {
+		Parameters beanParameters = new BeanParameters();
+		beanParameters.setValue(BeanParameters.id, beanRule.getId());
+		beanParameters.setValue(BeanParameters.className, beanRule.getClassName());
+		if(beanRule.getSingleton() == Boolean.TRUE && beanRule.getScopeType() == ScopeType.SINGLETON)
+			beanParameters.setValue(BeanParameters.singleton, beanRule.getSingleton());
+		else
+			beanParameters.setValue(BeanParameters.scope, beanRule.getScopeType().toString());
+		beanParameters.setValue(BeanParameters.factoryMethod, beanRule.getFactoryMethodName());
+		beanParameters.setValue(BeanParameters.initMethod, beanRule.getInitMethodName());
+		beanParameters.setValue(BeanParameters.destroyMethod, beanRule.getDestroyMethodName());
+		beanParameters.setValue(BeanParameters.lazyInit, beanRule.getLazyInit());
+		beanParameters.setValue(BeanParameters.important, beanRule.getImportant());
+		beanParameters.setValue(BeanParameters.important, beanRule.getImportant());
+		
+		ItemRuleMap constructorArgumentItemRuleMap = beanRule.getConstructorArgumentItemRuleMap();
+		if(constructorArgumentItemRuleMap != null) {
+			ConstructorParameters constructorParameters = beanParameters.newParameters(BeanParameters.constructor);
+			for(ItemRule itemRule : constructorArgumentItemRuleMap) {
+				constructorParameters.putValue(ConstructorParameters.arguments, assembleItemParameters(itemRule));
+			}
+		}
+		
+		ItemRuleMap propertyItemRuleMap = beanRule.getPropertyItemRuleMap();
+		if(propertyItemRuleMap != null) {
+			for(ItemRule itemRule : propertyItemRuleMap) {
+				beanParameters.putValue(BeanParameters.properties, assembleItemParameters(itemRule));
+			}
+		}
+		
+		return beanParameters;
+	}
+	
+	public Parameters assembleTransletParameters(TransletRule transletRule) {
+		Parameters transletParameters = new TransletParameters();
+		transletParameters.setValue(TransletParameters.name, transletRule.getName());
+
+		RequestRule requestRule = transletRule.getRequestRule();
+		if(requestRule != null) {
+			RequestParameters requestParameters = transletParameters.newParameters(TransletParameters.request);
+			requestParameters.setValue(RequestParameters.method, requestRule.getMethod());
+			requestParameters.setValue(RequestParameters.characterEncoding, requestRule.getCharacterEncoding());
+			
+			ItemRuleMap attributeItemRuleMap = requestRule.getAttributeItemRuleMap();
+			if(attributeItemRuleMap != null) {
+				for(ItemRule itemRule : attributeItemRuleMap) {
+					requestParameters.putValue(RequestParameters.attributes, assembleItemParameters(itemRule));
+				}
+			}
+		}
+		
+		if(transletRule.isExplicitContent()) {
+			ContentList contentList = transletRule.getContentList();
+			if(contentList != null) {
+				if(!contentList.isOmittable()) {
+					Parameters contentsParameters = transletParameters.newParameters(TransletParameters.contents1);
+					for(ActionList actionList : contentList) {
+						Parameters contentParameters = contentsParameters.newParameters(ContentsParameters.contents);
+						assembleActionList(actionList, contentParameters, ContentParameters.actions);
+					}
+				} else {
+					for(ActionList actionList : contentList) {
+						Parameters contentParameters = transletParameters.newParameters(TransletParameters.contents2);
+						assembleActionList(actionList, contentParameters, ContentParameters.actions);
+					}
+				}
+			}
+		} else {
+			ContentList contentList = transletRule.getContentList();
+			if(contentList != null) {
+				for(ActionList actionList : contentList) {
+					assembleActionList(actionList, transletParameters, TransletParameters.actions);
+				}
+			}
+		}
+		
+		List<ResponseRule> responseRuleList = transletRule.getResponseRuleList();
+		if(responseRuleList != null) {
+			for(ResponseRule responseRule : responseRuleList) {
+				transletParameters.putValue(TransletParameters.responses, assembleResponseParameters(responseRule));
+			}
+		} else {
+			ResponseRule responseRule = transletRule.getResponseRule();
+			if(responseRule != null && !transletRule.isImplicitResponse()) {
+				transletParameters.putValue(TransletParameters.responses, assembleResponseParameters(responseRule));
+			} else {
+				Response response = responseRule.getResponse();
+				if(response.getResponseType() == ResponseType.TRANSFORM) {
+					TransformResponse transformResponse = (TransformResponse)response;
+					transletParameters.putValue(TransletParameters.transform, assembleTransformParameters(transformResponse.getTransformRule()));
+				} else if(response.getResponseType() == ResponseType.DISPATCH) {
+					DispatchResponse dispatchResponse = (DispatchResponse)response;
+					transletParameters.putValue(TransletParameters.dispatch, assembleDispatchParameters(dispatchResponse.getDispatchResponseRule()));
+				} else if(response.getResponseType() == ResponseType.FORWARD) {
+					ForwardResponse forwardResponse = (ForwardResponse)response;
+					transletParameters.putValue(TransletParameters.forward, assembleForwardParameters(forwardResponse.getForwardResponseRule()));
+				} else if(response.getResponseType() == ResponseType.REDIRECT) {
+					RedirectResponse redirectResponse = (RedirectResponse)response;
+					transletParameters.putValue(TransletParameters.redirect, assembleRedirectParameters(redirectResponse.getRedirectResponseRule()));
+				}
+			}
+		}
+		
+		ResponseByContentTypeRuleMap exceptionHandlingRuleMap = transletRule.getExceptionHandlingRuleMap();
+		if(exceptionHandlingRuleMap != null) {
+			for(ResponseByContentTypeRule rbctr : exceptionHandlingRuleMap) {
+				transletParameters.putValue(TransletParameters.exception, assembleResponseByContentTypeParameters(rbctr));
+			}
+
+		}
+		
+		return transletParameters;
+	}
+	
+	public Parameters assembleImportParameters(Importable imp) {
+		Parameters importParameters = new ImportParameters();
+		
+		if(imp.getImportType() == ImportType.FILE) {
+			importParameters.setValue(ImportParameters.file, imp.getDistinguishedName());
+		} else if(imp.getImportType() == ImportType.RESOURCE) {
+			importParameters.setValue(ImportParameters.resource, imp.getDistinguishedName());
+		} else if(imp.getImportType() == ImportType.URL) {
+			importParameters.setValue(ImportParameters.url, imp.getDistinguishedName());
+			importParameters.setValue(ImportParameters.fileType, imp.getImportFileType());
+		}
+		
+		return importParameters;
+		
+	}
+	
 	public Parameters assembleResponseByContentTypeParameters(ResponseByContentTypeRule responseByContentTypeRule) {
 		ResponseByContentTypeParameters rbctp = new ResponseByContentTypeParameters();
-		
 		rbctp.setValue(ResponseByContentTypeParameters.exceptionType, responseByContentTypeRule.getExceptionType());
 		
 		ResponseMap responseMap = responseByContentTypeRule.getResponseMap();
@@ -324,18 +460,7 @@ public class RootAponAssembler {
 		
 		ActionList actionList = transformRule.getActionList();
 		if(actionList != null) {
-			for(Executable action : actionList) {
-				if(action.getActionType() == ActionType.ECHO) {
-					EchoActionRule echoActionRule = action.getActionRule();
-					transformParameters.putValue(TransformParameters.actions, assembleActionParameters(echoActionRule));
-				} else if(action.getActionType() == ActionType.BEAN) {
-					BeanActionRule beanActionRule = action.getActionRule();
-					transformParameters.putValue(TransformParameters.actions, assembleActionParameters(beanActionRule));
-				} else if(action.getActionType() == ActionType.INCLUDE) {
-					IncludeActionRule includeActionRule = action.getActionRule();
-					transformParameters.putValue(TransformParameters.actions, assembleActionParameters(includeActionRule));
-				}
-			}
+			assembleActionList(actionList, transformParameters, TransformParameters.actions);
 		}
 
 		transformParameters.setValue(TransformParameters.defaultResponse, transformRule.getDefaultResponse());
@@ -357,18 +482,7 @@ public class RootAponAssembler {
 		
 		ActionList actionList = dispatchResponseRule.getActionList();
 		if(actionList != null) {
-			for(Executable action : actionList) {
-				if(action.getActionType() == ActionType.ECHO) {
-					EchoActionRule echoActionRule = action.getActionRule();
-					dispatchParameters.putValue(DispatchParameters.actions, assembleActionParameters(echoActionRule));
-				} else if(action.getActionType() == ActionType.BEAN) {
-					BeanActionRule beanActionRule = action.getActionRule();
-					dispatchParameters.putValue(DispatchParameters.actions, assembleActionParameters(beanActionRule));
-				} else if(action.getActionType() == ActionType.INCLUDE) {
-					IncludeActionRule includeActionRule = action.getActionRule();
-					dispatchParameters.putValue(DispatchParameters.actions, assembleActionParameters(includeActionRule));
-				}
-			}
+			assembleActionList(actionList, dispatchParameters, DispatchParameters.actions);
 		}
 		
 		dispatchParameters.setValue(DispatchParameters.defaultResponse, dispatchResponseRule.getDefaultResponse());
@@ -393,18 +507,7 @@ public class RootAponAssembler {
 		
 		ActionList actionList = forwardResponseRule.getActionList();
 		if(actionList != null) {
-			for(Executable action : actionList) {
-				if(action.getActionType() == ActionType.ECHO) {
-					EchoActionRule echoActionRule = action.getActionRule();
-					forwardParameters.putValue(ForwardParameters.actions, assembleActionParameters(echoActionRule));
-				} else if(action.getActionType() == ActionType.BEAN) {
-					BeanActionRule beanActionRule = action.getActionRule();
-					forwardParameters.putValue(ForwardParameters.actions, assembleActionParameters(beanActionRule));
-				} else if(action.getActionType() == ActionType.INCLUDE) {
-					IncludeActionRule includeActionRule = action.getActionRule();
-					forwardParameters.putValue(ForwardParameters.actions, assembleActionParameters(includeActionRule));
-				}
-			}
+			assembleActionList(actionList, forwardParameters, ForwardParameters.actions);
 		}
 		
 		forwardParameters.setValue(ForwardParameters.defaultResponse, forwardResponseRule.getDefaultResponse());
@@ -432,18 +535,7 @@ public class RootAponAssembler {
 
 		ActionList actionList = redirectResponseRule.getActionList();
 		if(actionList != null) {
-			for(Executable action : actionList) {
-				if(action.getActionType() == ActionType.ECHO) {
-					EchoActionRule echoActionRule = action.getActionRule();
-					redirectParameters.putValue(RedirectParameters.actions, assembleActionParameters(echoActionRule));
-				} else if(action.getActionType() == ActionType.BEAN) {
-					BeanActionRule beanActionRule = action.getActionRule();
-					redirectParameters.putValue(RedirectParameters.actions, assembleActionParameters(beanActionRule));
-				} else if(action.getActionType() == ActionType.INCLUDE) {
-					IncludeActionRule includeActionRule = action.getActionRule();
-					redirectParameters.putValue(RedirectParameters.actions, assembleActionParameters(includeActionRule));
-				}
-			}
+			assembleActionList(actionList, redirectParameters, RedirectParameters.actions);
 		}
 		
 		redirectParameters.setValue(RedirectParameters.defaultResponse, redirectResponseRule.getDefaultResponse());
@@ -461,6 +553,21 @@ public class RootAponAssembler {
 		templateParameters.setValue(TemplateParameters.noCache, templateRule.getNoCache());
 		
 		return templateParameters;
+	}
+	
+	public void assembleActionList(ActionList actionList, Parameters parameters, ParameterDefine parameterDefine) {
+		for(Executable action : actionList) {
+			if(action.getActionType() == ActionType.ECHO) {
+				EchoActionRule echoActionRule = action.getActionRule();
+				parameters.putValue(parameterDefine, assembleActionParameters(echoActionRule));
+			} else if(action.getActionType() == ActionType.BEAN) {
+				BeanActionRule beanActionRule = action.getActionRule();
+				parameters.putValue(parameterDefine, assembleActionParameters(beanActionRule));
+			} else if(action.getActionType() == ActionType.INCLUDE) {
+				IncludeActionRule includeActionRule = action.getActionRule();
+				parameters.putValue(parameterDefine, assembleActionParameters(includeActionRule));
+			}
+		}
 	}
 	
 	public Parameters assembleActionParameters(BeanActionRule beanActionRule) {
@@ -525,7 +632,8 @@ public class RootAponAssembler {
 		ItemParameters itemParameters = new ItemParameters();
 		if(itemRule.getType() != null)
 			itemParameters.setValue(ItemParameters.type, itemRule.getType().toString());
-		itemParameters.setValue(ItemParameters.name, itemRule.getName());
+		if(!itemRule.isUnknownName())
+			itemParameters.setValue(ItemParameters.name, itemRule.getName());
 		if(itemRule.getValueType() != null)
 			itemParameters.setValue(ItemParameters.valueType, itemRule.getValueType());
 		if(itemRule.getDefaultValue() != null)
@@ -556,440 +664,6 @@ public class RootAponAssembler {
 		}
 		
 		return itemParameters;
-	}
-
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	public void assembleBeanRule(Parameters beanParameters) throws ClassNotFoundException, IOException, CloneNotSupportedException {
-		String id = beanParameters.getString(BeanParameters.id);
-		String className = assistant.resolveAliasType(beanParameters.getString(BeanParameters.className));
-		String scope = beanParameters.getString(BeanParameters.scope);
-		Boolean singleton = beanParameters.getBoolean(BeanParameters.singleton);
-		String factoryMethod = beanParameters.getString(BeanParameters.factoryMethod);
-		String initMethod = beanParameters.getString(BeanParameters.initMethod);
-		String destroyMethod = beanParameters.getString(BeanParameters.destroyMethod);
-		Boolean lazyInit = beanParameters.getBoolean(BeanParameters.lazyInit);
-		Boolean important = beanParameters.getBoolean(BeanParameters.important);
-		List<Parameters> constructorArgumentParametersList = beanParameters.getParametersList(BeanParameters.constructor);
-		List<Parameters> propertyParametersList = beanParameters.getParametersList(BeanParameters.properties);
-		
-		BeanRule beanRule = BeanRule.newInstance(id, className, scope, singleton, factoryMethod, initMethod, destroyMethod, lazyInit, important);
-
-		ItemRuleMap constructorArgumentItemRuleMap = assembleItemRuleMap(constructorArgumentParametersList);
-		ItemRuleMap propertyItemRuleMap = assembleItemRuleMap(propertyParametersList);
-
-		if(constructorArgumentItemRuleMap != null)
-			beanRule.setConstructorArgumentItemRuleMap(constructorArgumentItemRuleMap);
-		
-		if(propertyItemRuleMap != null)
-			beanRule.setPropertyItemRuleMap(propertyItemRuleMap);
-		
-		assistant.addBeanRule(beanRule);
-	}
-
-	public void assembleTransletRule(Parameters transletParameters) throws CloneNotSupportedException {
-		String name = transletParameters.getString(TransletParameters.name);
-		TransletRule transletRule = TransletRule.newInstance(name);
-		
-		Parameters requestParamters = transletParameters.getParameters(TransletParameters.request);
-		if(requestParamters != null) {
-			RequestRule requestRule = assembleRequestRule(requestParamters);
-			transletRule.setRequestRule(requestRule);
-		}
-		
-		Parameters contentsParameters = transletParameters.getParameters(TransletParameters.contents1);
-		if(contentsParameters != null) {
-			ContentList contentList = assembleContentList(contentsParameters);
-			transletRule.setContentList(contentList);
-		}
-		
-		List<Parameters> contentParametersList = transletParameters.getParametersList(TransletParameters.contents2);
-		if(contentParametersList != null && !contentParametersList.isEmpty()) {
-			ContentList contentList = transletRule.touchContentList();
-			for(Parameters contentParamters : contentParametersList) {
-				ActionList actionList = assembleActionList(contentParamters, contentList);
-				contentList.addActionList(actionList);
-			}
-		}
-		
-		List<Parameters> responseParametersList = transletParameters.getParametersList(TransletParameters.responses);
-		if(responseParametersList != null) {
-			for(Parameters responseParamters : responseParametersList) {
-				ResponseRule responseRule = assembleResponseRule(responseParamters);
-				transletRule.addResponseRule(responseRule);
-			}
-		}
-		
-		Parameters exceptionParameters = transletParameters.getParameters(TransletParameters.exception);
-		if(exceptionParameters != null) {
-			List<Parameters> rrtrParametersList = exceptionParameters.getParametersList(ExceptionParameters.responseByContentTypes);
-			if(rrtrParametersList != null && !rrtrParametersList.isEmpty()) {
-				for(Parameters rrtrParameters : rrtrParametersList) {
-					ResponseByContentTypeRule rrtr = assembleResponseByContentTypeRule(rrtrParameters);
-					transletRule.addExceptionHandlingRule(rrtr);
-				}
-			}
-		}
-		
-		List<Parameters> actionParametersList = transletParameters.getParametersList(TransletParameters.actions);
-		if(actionParametersList != null) {
-			for(Parameters actionParameters : actionParametersList) {
-				assembleActionRule(actionParameters, transletRule);
-			}
-		}
-		
-		List<Parameters> transformParametersList = transletParameters.getParametersList(TransletParameters.transforms);
-		if(transformParametersList != null && !transformParametersList.isEmpty()) {
-			assembleTransformRule(transformParametersList, transletRule);
-		}
-		
-		List<Parameters> dispatchParametersList = transletParameters.getParametersList(TransletParameters.dispatchs);
-		if(dispatchParametersList != null && !dispatchParametersList.isEmpty()) {
-			assembleDispatchResponseRule(dispatchParametersList, transletRule);
-		}
-
-		List<Parameters> redirectParametersList = transletParameters.getParametersList(TransletParameters.redirects);
-		if(redirectParametersList != null && !redirectParametersList.isEmpty()) {
-			assembleRedirectResponseRule(redirectParametersList, transletRule);
-		}
-		
-		List<Parameters> forwardParametersList = transletParameters.getParametersList(TransletParameters.forwards);
-		if(forwardParametersList != null && !forwardParametersList.isEmpty()) {
-			assembleForwardResponseRule(forwardParametersList, transletRule);
-		}
-
-		assistant.addTransletRule(transletRule);
-	}
-	
-	public RequestRule assembleRequestRule(Parameters requestParameters) {
-		String method = requestParameters.getString(RequestParameters.method);
-		String characterEncoding = requestParameters.getString(RequestParameters.characterEncoding);
-		List<Parameters> attributeParametersList = requestParameters.getParametersList(RequestParameters.attributes);
-		
-		RequestRule requestRule = RequestRule.newInstance(method, characterEncoding);
-	
-		ItemRuleMap attributeItemRuleMap = assembleItemRuleMap(attributeParametersList);
-		if(attributeItemRuleMap != null) {
-			requestRule.setAttributeItemRuleMap(attributeItemRuleMap);
-		}
-	
-		return requestRule;
-	}
-
-	public ResponseRule assembleResponseRule(Parameters responseParameters) {
-		String name = responseParameters.getString(ResponseParameters.name);
-		String characterEncoding = responseParameters.getString(ResponseParameters.characterEncoding);
-
-		ResponseRule responseRule = ResponseRule.newInstance(name, characterEncoding);
-		
-		List<Parameters> transformParametersList = responseParameters.getParametersList(ResponseParameters.transform);
-		if(transformParametersList != null && !transformParametersList.isEmpty()) {
-			assembleTransformRule(transformParametersList, responseRule);
-		}
-		
-		List<Parameters> dispatchParametersList = responseParameters.getParametersList(ResponseParameters.dispatch);
-		if(dispatchParametersList != null && !dispatchParametersList.isEmpty()) {
-			assembleDispatchResponseRule(dispatchParametersList, responseRule);
-		}
-
-		List<Parameters> redirectParametersList = responseParameters.getParametersList(ResponseParameters.redirect);
-		if(redirectParametersList != null && !redirectParametersList.isEmpty()) {
-			assembleRedirectResponseRule(redirectParametersList, responseRule);
-		}
-		
-		List<Parameters> forwardParametersList = responseParameters.getParametersList(ResponseParameters.forward);
-		if(forwardParametersList != null && !forwardParametersList.isEmpty()) {
-			assembleForwardResponseRule(forwardParametersList, responseRule);
-		}
-		
-		return responseRule;
-	}
-	
-	public ContentList assembleContentList(Parameters contentsParameters) {
-		String name = contentsParameters.getString(ContentsParameters.name);
-		Boolean omittable = contentsParameters.getBoolean(ContentsParameters.omittable);
-		List<Parameters> contentParametersList = contentsParameters.getParametersList(ContentsParameters.contents);
-		
-		ContentList contentList = ContentList.newInstance(name, omittable);
-		
-		if(contentParametersList != null) {
-			for(Parameters contentParamters : contentParametersList) {
-				ActionList actionList = assembleActionList(contentParamters, contentList);
-				contentList.addActionList(actionList);
-			}
-		}
-		
-		return contentList;
-	}
-	
-	public ActionList assembleActionList(Parameters contentParameters, ContentList contentList) {
-		String id = contentParameters.getString(ContentParameters.id);
-		String name = contentParameters.getString(ContentParameters.name);
-		Boolean omittable = contentParameters.getBoolean(ContentParameters.omittable);
-		Boolean hidden = contentParameters.getBoolean(ContentParameters.hidden);
-		List<Parameters> actionParametersList = contentParameters.getParametersList(ContentParameters.actions);
-		
-		if(!assistant.isNullableContentId() && StringUtils.isEmpty(id))
-			throw new IllegalArgumentException("The <content> element requires a id attribute.");
-		
-		ActionList actionList = ActionList.newInstance(id, name, omittable, hidden, contentList);
-
-		if(actionParametersList != null && !actionParametersList.isEmpty()) {
-			for(Parameters actionParameters : actionParametersList) {
-				assembleActionRule(actionParameters, actionList);
-			}
-		}
-		
-		return actionList;
-	}
-	
-	public void assembleActionRule(Parameters actionParameters, ActionRuleApplicable actionRuleApplicable) {
-		String id = actionParameters.getString(ActionParameters.id);
-		String beanId = actionParameters.getString(ActionParameters.beanId);
-		String methodName = actionParameters.getString(ActionParameters.methodName);
-		List<Parameters> argumentParametersList = actionParameters.getParametersList(ActionParameters.arguments);
-		List<Parameters> propertyParametersList = actionParameters.getParametersList(ActionParameters.properties);
-		String include = actionParameters.getString(ActionParameters.include);
-		List<Parameters> echoParametersList = actionParameters.getParametersList(ActionParameters.echo);
-		Boolean hidden = actionParameters.getBoolean(ActionParameters.include);
-		
-		if(!assistant.isNullableActionId() && StringUtils.isEmpty(id))
-			throw new IllegalArgumentException("The <echo>, <action>, <include> element requires a id attribute.");
-		
-		if(beanId != null && methodName != null) {
-			BeanActionRule beanActionRule = BeanActionRule.newInstance(id, beanId, methodName, hidden);
-			ItemRuleMap argumentItemRuleMap = assembleItemRuleMap(argumentParametersList);
-			if(argumentItemRuleMap != null) {
-				beanActionRule.setArgumentItemRuleMap(argumentItemRuleMap);
-			}
-			ItemRuleMap propertyItemRuleMap = assembleItemRuleMap(propertyParametersList);
-			if(propertyItemRuleMap != null) {
-				beanActionRule.setPropertyItemRuleMap(propertyItemRuleMap);
-			}
-			actionRuleApplicable.applyActionRule(beanActionRule);
-			assistant.putBeanReference(beanId, beanActionRule);
-		} else if(echoParametersList != null) {
-			EchoActionRule echoActionRule = EchoActionRule.newInstance(id, hidden);
-			ItemRuleMap attributeItemRuleMap = assembleItemRuleMap(echoParametersList);
-			echoActionRule.setAttributeItemRuleMap(attributeItemRuleMap);
-			actionRuleApplicable.applyActionRule(echoActionRule);
-		} else if(include != null) {
-			IncludeActionRule includeActionRule = IncludeActionRule.newInstance(id, include, hidden);
-			ItemRuleMap attributeItemRuleMap = assembleItemRuleMap(echoParametersList);
-			includeActionRule.setAttributeItemRuleMap(attributeItemRuleMap);
-			actionRuleApplicable.applyActionRule(includeActionRule);
-		}
-	}
-
-	public ResponseByContentTypeRule assembleResponseByContentTypeRule(Parameters responseByContentTypeParameters) {
-		ResponseByContentTypeRule rbctr = new ResponseByContentTypeRule();
-		
-		String exceptionType = responseByContentTypeParameters.getString(ResponseByContentTypeParameters.exceptionType);
-		rbctr.setExceptionType(exceptionType);
-		
-		List<Parameters> transformParametersList = responseByContentTypeParameters.getParametersList(ResponseByContentTypeParameters.transforms);
-		if(transformParametersList != null && !transformParametersList.isEmpty()) {
-			assembleTransformRule(transformParametersList, rbctr);
-		}
-		
-		List<Parameters> dispatchParametersList = responseByContentTypeParameters.getParametersList(ResponseByContentTypeParameters.dispatchs);
-		if(dispatchParametersList != null && !dispatchParametersList.isEmpty()) {
-			assembleDispatchResponseRule(dispatchParametersList, rbctr);
-		}
-
-		List<Parameters> redirectParametersList = responseByContentTypeParameters.getParametersList(ResponseByContentTypeParameters.redirects);
-		if(redirectParametersList != null && !redirectParametersList.isEmpty()) {
-			assembleRedirectResponseRule(redirectParametersList, rbctr);
-		}
-		
-		List<Parameters> forwardParametersList = responseByContentTypeParameters.getParametersList(ResponseByContentTypeParameters.forwards);
-		if(forwardParametersList != null && !forwardParametersList.isEmpty()) {
-			assembleForwardResponseRule(forwardParametersList, rbctr);
-		}
-		
-		return rbctr;
-	}
-	
-	public void assembleTransformRule(List<Parameters> transformParametersList, ResponseRuleApplicable responseRuleApplicable) {
-		for(Parameters transformParameters : transformParametersList) {
-			TransformRule tr = assembleTransformRule(transformParameters);
-			responseRuleApplicable.applyResponseRule(tr);
-		}
-	}
-	
-	public TransformRule assembleTransformRule(Parameters transformParameters) {
-		String transformType = transformParameters.getString(TransformParameters.type);
-		String contentType = transformParameters.getString(TransformParameters.contentType);
-		String characterEncoding = transformParameters.getString(TransformParameters.characterEncoding);
-		Parameters templateParameters = transformParameters.getParameters(TransformParameters.template);
-		List<Parameters> actionParametersList = transformParameters.getParametersList(TransformParameters.actions);
-		Boolean defaultResponse = transformParameters.getBoolean(TransformParameters.defaultResponse);
-		Boolean pretty = transformParameters.getBoolean(TransformParameters.pretty);
-		
-		TransformRule tr = TransformRule.newInstance(transformType, contentType, characterEncoding, defaultResponse, pretty);
-		
-		if(actionParametersList != null && !actionParametersList.isEmpty()) {
-			ActionList actionList = new ActionList();
-			for(Parameters actionParameters : actionParametersList) {
-				assembleActionRule(actionParameters, actionList);
-			}
-			tr.setActionList(actionList);
-		}
-		
-		if(templateParameters != null) {
-			String file = templateParameters.getString(TemplateParameters.file);
-			String resource = templateParameters.getString(TemplateParameters.resource);
-			String url = templateParameters.getString(TemplateParameters.url);
-			String content = templateParameters.getString(TemplateParameters.content);
-			String encoding = templateParameters.getString(TemplateParameters.encoding);
-			Boolean noCache = templateParameters.getBoolean(TemplateParameters.noCache);
-			TemplateRule templateRule = TemplateRule.newInstance(file, resource, url, content, encoding, noCache);
-			tr.setTemplateRule(templateRule);
-		}
-		
-		return tr;
-	}
-
-	public void assembleDispatchResponseRule(List<Parameters> dispatchParametersList, ResponseRuleApplicable responseRuleApplicable) {
-		for(Parameters dispatchParameters : dispatchParametersList) {
-			DispatchResponseRule drr = assembleDispatchResponseRule(dispatchParameters);
-			responseRuleApplicable.applyResponseRule(drr);
-		}
-	}
-	
-	public DispatchResponseRule assembleDispatchResponseRule(Parameters dispatchParameters) {
-		String contentType = dispatchParameters.getString(DispatchParameters.contentType);
-		String characterEncoding = dispatchParameters.getString(DispatchParameters.characterEncoding);
-		Parameters templateParameters = dispatchParameters.getParameters(DispatchParameters.template);
-		List<Parameters> actionParametersList = dispatchParameters.getParametersList(DispatchParameters.actions);
-		Boolean defaultResponse = dispatchParameters.getBoolean(DispatchParameters.defaultResponse);
-		
-		DispatchResponseRule drr = DispatchResponseRule.newInstance(contentType, characterEncoding, defaultResponse);
-		
-		if(actionParametersList != null && !actionParametersList.isEmpty()) {
-			ActionList actionList = new ActionList();
-			for(Parameters actionParameters : actionParametersList) {
-				assembleActionRule(actionParameters, actionList);
-			}
-			drr.setActionList(actionList);
-		}
-	
-		if(templateParameters != null) {
-			String file = templateParameters.getString(TemplateParameters.file);
-			String encoding = templateParameters.getString(TemplateParameters.encoding);
-			Boolean noCache = templateParameters.getBoolean(TemplateParameters.noCache);
-			TemplateRule templateRule = TemplateRule.newInstance(file, null, null, null, encoding, noCache);
-			drr.setTemplateRule(templateRule);
-		}
-		
-		return drr;
-	}
-
-	public void assembleRedirectResponseRule(List<Parameters> redirectParametersList, ResponseRuleApplicable responseRuleApplicable) {
-		for(Parameters redirectParameters : redirectParametersList) {
-			RedirectResponseRule rrr = assembleRedirectResponseRule(redirectParameters);
-			responseRuleApplicable.applyResponseRule(rrr);
-		}
-	}
-	
-	public RedirectResponseRule assembleRedirectResponseRule(Parameters redirectParameters) {
-		String contentType = redirectParameters.getString(RedirectParameters.contentType);
-		String translet = redirectParameters.getString(RedirectParameters.translet);
-		String url = redirectParameters.getString(RedirectParameters.url);
-		List<Parameters> parameterParametersList = redirectParameters.getParametersList(RedirectParameters.parameters);
-		Boolean excludeNullParameter = redirectParameters.getBoolean(RedirectParameters.excludeNullParameter);
-		List<Parameters> actionParametersList = redirectParameters.getParametersList(RedirectParameters.actions);
-		Boolean defaultResponse = redirectParameters.getBoolean(RedirectParameters.defaultResponse);
-		
-		RedirectResponseRule rrr = RedirectResponseRule.newInstance(contentType, translet, url, excludeNullParameter, defaultResponse);
-		
-		ItemRuleMap parameterItemRuleMap = assembleItemRuleMap(parameterParametersList);
-		if(parameterItemRuleMap != null) {
-			rrr.setParameterItemRuleMap(parameterItemRuleMap);
-		}
-		
-		if(actionParametersList != null && !actionParametersList.isEmpty()) {
-			ActionList actionList = new ActionList();
-			for(Parameters actionParameters : actionParametersList) {
-				assembleActionRule(actionParameters, actionList);
-			}
-			rrr.setActionList(actionList);
-		}
-		
-		return rrr;
-	}
-
-	public void assembleForwardResponseRule(List<Parameters> forwardParametersList, ResponseRuleApplicable responseRuleApplicable) {
-		for(Parameters forwardParameters : forwardParametersList) {
-			ForwardResponseRule frr = assembleForwardResponseRule(forwardParameters);
-			responseRuleApplicable.applyResponseRule(frr);
-		}
-	}
-
-	public ForwardResponseRule assembleForwardResponseRule(Parameters forwardParameters) {
-		String contentType = forwardParameters.getString(ForwardParameters.contentType);
-		String translet = forwardParameters.getString(ForwardParameters.translet);
-		List<Parameters> attributeParametersList = forwardParameters.getParametersList(ForwardParameters.attributes);
-		List<Parameters> actionParametersList = forwardParameters.getParametersList(ForwardParameters.actions);
-		Boolean defaultResponse = forwardParameters.getBoolean(ForwardParameters.defaultResponse);
-		
-		translet = assistant.applyTransletNamePattern(translet);
-		
-		ForwardResponseRule rrr = ForwardResponseRule.newInstance(contentType, translet, defaultResponse);
-		
-		ItemRuleMap attributeItemRuleMap = assembleItemRuleMap(attributeParametersList);
-		if(attributeItemRuleMap != null) {
-			rrr.setAttributeItemRuleMap(attributeItemRuleMap);
-		}
-		
-		if(actionParametersList != null && !actionParametersList.isEmpty()) {
-			ActionList actionList = new ActionList();
-			for(Parameters actionParameters : actionParametersList) {
-				assembleActionRule(actionParameters, actionList);
-			}
-			rrr.setActionList(actionList);
-		}
-		
-		return rrr;
-	}
-	
-	public ItemRuleMap assembleItemRuleMap(List<Parameters> itemParametersList) {
-		ItemRuleMap itemRuleMap = ItemRule.toItemRuleMap(itemParametersList);
-		
-		if(itemRuleMap != null) {
-			for(ItemRule itemRule : itemRuleMap) {
-				Iterator<Token[]> iter = ItemRule.tokenIterator(itemRule);
-				
-				if(iter != null) {
-					while(iter.hasNext()) {
-						for(Token token : iter.next()) {
-							if(token.getType() == TokenType.REFERENCE_BEAN) {
-								assistant.putBeanReference(token.getName(), itemRule);
-							}
-						}
-					}
-				}
-			}
-		}
-		
-		return itemRuleMap;
 	}
 	
 }
