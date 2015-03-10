@@ -4,6 +4,8 @@ import java.util.List;
 
 public interface Parameter {
 
+	public Parameters getContainer();
+	
 	public String getName();
 
 	public String getQualifiedName();
@@ -72,6 +74,6 @@ public interface Parameter {
 
 	public List<Parameters> getValueAsParametersList();
 	
-	public Parameters newParameters();
+	public Parameters newParameters(Parameter prototype);
 
 }

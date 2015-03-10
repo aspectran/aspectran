@@ -23,11 +23,11 @@ public class JoinpointParameters extends AbstractParameters implements Parameter
 	}
 	
 	public JoinpointParameters() {
-		super(JoinpointParameters.class.getName(), parameterDefines);
+		super(parameterDefines);
 	}
 	
-	public JoinpointParameters(String plaintext) {
-		super(JoinpointParameters.class.getName(), parameterDefines, plaintext);
+	public JoinpointParameters(String text) {
+		super(parameterDefines, text);
 	}
 	
 }

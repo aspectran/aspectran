@@ -38,11 +38,11 @@ public class RedirectParameters extends AbstractParameters implements Parameters
 	}
 	
 	public RedirectParameters() {
-		super(RedirectParameters.class.getName(), parameterDefines);
+		super(parameterDefines);
 	}
 	
-	public RedirectParameters(String plaintext) {
-		super(RedirectParameters.class.getName(), parameterDefines, plaintext);
+	public RedirectParameters(String text) {
+		super(parameterDefines, text);
 	}
 	
 }

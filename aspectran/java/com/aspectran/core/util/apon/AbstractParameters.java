@@ -13,20 +13,17 @@ public abstract class AbstractParameters implements Parameters {
 
 	protected Map<String, ParameterValue> parameterValueMap;
 	
-	private final String title;
-	
-	private ParameterValue parent;
+	private Parameter prototype;
 	
 	private final boolean addable;
 	
-	protected AbstractParameters(String title, ParameterDefine[] parameterDefines) {
-		this.title = title;
+	protected AbstractParameters(ParameterDefine[] parameterDefines) {
 		this.parameterValueMap = new LinkedHashMap<String, ParameterValue>();
 		
 		if(parameterDefines != null) {
 			for(ParameterDefine pd : parameterDefines) {
 				ParameterValue pv = pd.newParameterValue();
-				pv.setHolder(this);
+				pv.setContainer(this);
 				parameterValueMap.put(pd.getName(), pv);
 			}
 			addable = false;
@@ -35,14 +32,14 @@ public abstract class AbstractParameters implements Parameters {
 		}
 	}
 
-	protected AbstractParameters(String title, ParameterDefine[] parameterDefines, String text) {
-		this(title, parameterDefines);
+	protected AbstractParameters(ParameterDefine[] parameterDefines, String text) {
+		this(parameterDefines);
 		
 		if(text != null) {
 			try {
 				AponReader reader = new AponReader(text);
 				try {
-					reader.valuelize(parameterValueMap);
+					reader.read(this);
 				} finally {
 					reader.close();
 				}
@@ -56,33 +53,33 @@ public abstract class AbstractParameters implements Parameters {
 		return parameterValueMap;
 	}
 	
-	public boolean isAddable() {
-		return addable;
-	}
-
 	public void addParameterValue(ParameterValue parameterValue) {
 		parameterValueMap.put(parameterValue.getName(), parameterValue);
 	}
 	
-	public ParameterValue getParent() {
-		return parent;
+	public Parameter getPrototype() {
+		return prototype;
 	}
 
-	public void setParent(ParameterValue parent) {
-		this.parent = parent;
-	}
-
-	public String getTitle() {
-		return title;
+	public void setPrototype(Parameter prototype) {
+		this.prototype = prototype;
 	}
 
 	public String getQualifiedName() {
-		if(parent != null)
-			return parent.getQualifiedName();
+		if(prototype != null)
+			return prototype.getQualifiedName();
 		
-		return title;
+		return this.getClass().getName();
 	}
 
+	public Parameter getParent() {
+		if(prototype != null)
+			if(prototype.getContainer() != null)
+				if(prototype.getContainer().getPrototype() != null)
+					return prototype.getContainer().getPrototype();
+		return null;
+	}
+	
 	public String[] getParameterNames() {
 		String[] names = new String[parameterValueMap.size()];
 		
@@ -420,15 +417,22 @@ public abstract class AbstractParameters implements Parameters {
 		return getParametersList(parameterDefine.getName());
 	}
 
+	public ParameterValue newParameterValue(String name, ParameterValueType parameterValueType, boolean array) {
+		ParameterValue pv = new ParameterValue(name, parameterValueType, array);
+		pv.setContainer(this);
+		parameterValueMap.put(name, pv);
+		return pv;
+	}
+	
 	@SuppressWarnings("unchecked")
 	public <T extends Parameters> T newParameters(String name) {
 		Parameter p = getParameter(name);
-		Parameters parameters = p.newParameters();
+		Parameters parameters = p.newParameters(p);
 		return (T)parameters;
 	}
 	
 	public <T extends Parameters> T newParameters(ParameterDefine parameterDefine) {
-		return touchParameters(parameterDefine.getName());
+		return newParameters(parameterDefine.getName());
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -436,8 +440,7 @@ public abstract class AbstractParameters implements Parameters {
 		Parameters parameters = (T)getParameters(name);
 		
 		if(parameters == null) {
-			Parameter p = getParameter(name);
-			parameters = p.newParameters();
+			parameters = newParameters(name);
 		}
 		
 		return (T)parameters;
@@ -450,12 +453,18 @@ public abstract class AbstractParameters implements Parameters {
 	public String toText() {
 		return AponWriter.toText(this);
 	}
-	
+
+	public boolean isAddable() {
+		return addable;
+	}
+
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("{title=").append(title);
-		sb.append(", qualifiedName=").append(getQualifiedName());
+		sb.append("{qualifiedName=").append(getQualifiedName());
+		sb.append(", parameters=").append(parameterValueMap.keySet());
+		sb.append(", parent=").append(getParent());
+		sb.append(", addable=").append(addable);
 		sb.append("}");
 		
 		return sb.toString();

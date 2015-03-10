@@ -32,11 +32,11 @@ public class DispatchParameters extends AbstractParameters implements Parameters
 	}
 	
 	public DispatchParameters() {
-		super(DispatchParameters.class.getName(), parameterDefines);
+		super(parameterDefines);
 	}
 	
-	public DispatchParameters(String plaintext) {
-		super(DispatchParameters.class.getName(), parameterDefines, plaintext);
+	public DispatchParameters(String text) {
+		super(parameterDefines, text);
 	}
 	
 }

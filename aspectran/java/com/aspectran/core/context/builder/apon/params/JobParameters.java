@@ -23,11 +23,11 @@ public class JobParameters extends AbstractParameters implements Parameters {
 	}
 	
 	public JobParameters() {
-		super(JobParameters.class.getName(), parameterDefines);
+		super(parameterDefines);
 	}
 	
-	public JobParameters(String plaintext) {
-		super(JobParameters.class.getName(), parameterDefines, plaintext);
+	public JobParameters(String text) {
+		super(parameterDefines, text);
 	}
 	
 }

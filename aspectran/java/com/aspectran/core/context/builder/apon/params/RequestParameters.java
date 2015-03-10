@@ -26,11 +26,11 @@ public class RequestParameters extends AbstractParameters implements Parameters 
 	}
 	
 	public RequestParameters() {
-		super(RequestParameters.class.getName(), parameterDefines);
+		super(parameterDefines);
 	}
 	
-	public RequestParameters(String plaintext) {
-		super(RequestParameters.class.getName(), parameterDefines, plaintext);
+	public RequestParameters(String text) {
+		super(parameterDefines, text);
 	}
 	
 }

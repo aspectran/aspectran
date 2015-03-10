@@ -32,11 +32,11 @@ public class ContentParameters extends AbstractParameters implements Parameters 
 	}
 	
 	public ContentParameters() {
-		super(ContentParameters.class.getName(), parameterDefines);
+		super(parameterDefines);
 	}
 	
-	public ContentParameters(String plaintext) {
-		super(ContentParameters.class.getName(), parameterDefines, plaintext);
+	public ContentParameters(String text) {
+		super(parameterDefines, text);
 	}
 	
 }

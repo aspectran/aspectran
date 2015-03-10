@@ -35,11 +35,11 @@ public class SimpleTriggerParameters extends AbstractParameters implements Param
 	}
 	
 	public SimpleTriggerParameters() {
-		super(SimpleTriggerParameters.class.getName(), parameterDefines);
+		super(parameterDefines);
 	}
 	
-	public SimpleTriggerParameters(String plaintext) {
-		super(SimpleTriggerParameters.class.getName(), parameterDefines, plaintext);
+	public SimpleTriggerParameters(String text) {
+		super(parameterDefines, text);
 	}
 	
 }

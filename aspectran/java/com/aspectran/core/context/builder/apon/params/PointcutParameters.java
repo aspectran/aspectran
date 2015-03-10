@@ -31,11 +31,11 @@ public class PointcutParameters extends AbstractParameters implements Parameters
 	}
 	
 	public PointcutParameters() {
-		super(PointcutParameters.class.getName(), parameterDefines);
+		super(parameterDefines);
 	}
 	
-	public PointcutParameters(String plaintext) {
-		super(PointcutParameters.class.getName(), parameterDefines, plaintext);
+	public PointcutParameters(String text) {
+		super(parameterDefines, text);
 	}
 	
 }

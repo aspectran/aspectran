@@ -44,11 +44,11 @@ public class DefaultSettingsParameters extends AbstractParameters implements Par
 	}
 	
 	public DefaultSettingsParameters() {
-		super(DefaultSettingsParameters.class.getName(), parameterDefines);
+		super(parameterDefines);
 	}
 	
-	public DefaultSettingsParameters(String plaintext) {
-		super(DefaultSettingsParameters.class.getName(), parameterDefines, plaintext);
+	public DefaultSettingsParameters(String text) {
+		super(parameterDefines, text);
 	}
 	
 }

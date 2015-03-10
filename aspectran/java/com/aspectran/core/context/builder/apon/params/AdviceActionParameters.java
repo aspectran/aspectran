@@ -19,11 +19,11 @@ public class AdviceActionParameters extends AbstractParameters implements Parame
 	}
 	
 	public AdviceActionParameters() {
-		super(AdviceActionParameters.class.getName(), parameterDefines);
+		super(parameterDefines);
 	}
 	
-	public AdviceActionParameters(String plaintext) {
-		super(AdviceActionParameters.class.getName(), parameterDefines, plaintext);
+	public AdviceActionParameters(String text) {
+		super(parameterDefines, text);
 	}
 	
 }

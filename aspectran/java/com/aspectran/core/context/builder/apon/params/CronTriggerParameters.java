@@ -20,11 +20,11 @@ public class CronTriggerParameters extends AbstractParameters implements Paramet
 	}
 	
 	public CronTriggerParameters() {
-		super(CronTriggerParameters.class.getName(), parameterDefines);
+		super(parameterDefines);
 	}
 	
-	public CronTriggerParameters(String plaintext) {
-		super(CronTriggerParameters.class.getName(), parameterDefines, plaintext);
+	public CronTriggerParameters(String text) {
+		super(parameterDefines, text);
 	}
 	
 }

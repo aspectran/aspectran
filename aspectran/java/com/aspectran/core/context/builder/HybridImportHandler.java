@@ -74,7 +74,10 @@ public class HybridImportHandler extends AbstractImportHandler implements Import
 			if(importable.getImportType() == ImportType.FILE) {
 				File aponFile = findAponFile((ImportableFile)importable);
 
+				System.out.println(importable.getLastModified() + ", " + aponFile.lastModified());
+				
 				if(importable.getLastModified() == aponFile.lastModified()) {
+					logger.info("Rapid Aspectran Context Configuration Loading: " + aponFile);
 					hybridon = true;
 
 					Parameters rootParameters = AponReader.read(aponFile, new RootParameters());
@@ -109,10 +112,11 @@ public class HybridImportHandler extends AbstractImportHandler implements Import
 		logger.info("Save as Apon Format: " + importableFile);
 		
 		File file = null;
-		AponWriter writer = null;
 		
 		try {
 			file = findAponFile(importableFile);
+			
+			AponWriter writer;
 			
 			if(encoding != null) {
 				OutputStream outputStream = new FileOutputStream(file);
@@ -120,23 +124,24 @@ public class HybridImportHandler extends AbstractImportHandler implements Import
 			} else {
 				writer = new AponWriter(new FileWriter(file));
 			}
-
-			ContextBuilderAssistant assistant = new ShallowContextBuilderAssistant();
-			AspectranNodeParser parser = new AspectranNodeParser(assistant, false);
-			parser.parse(importableFile.getInputStream());
 			
-			RootAponAssembler assembler = new RootAponAssembler(assistant);
-			Parameters rootParameters = assembler.assembleRoot();
-			
-			writer.comment(file.getAbsolutePath());
-			writer.write(rootParameters);
+			try {
+				ContextBuilderAssistant assistant = new ShallowContextBuilderAssistant();
+				AspectranNodeParser parser = new AspectranNodeParser(assistant, false);
+				parser.parse(importableFile.getInputStream());
+				
+				RootAponAssembler assembler = new RootAponAssembler(assistant);
+				Parameters rootParameters = assembler.assembleRoot();
+				
+				writer.comment(file.getAbsolutePath());
+				writer.write(rootParameters);
+			} finally {
+				writer.close();
+			}
 			
 			file.setLastModified(importableFile.getLastModified());
 		} catch(Exception e) {
 			logger.error("Can't save file " + file, e);
-		} finally {
-			if(writer != null)
-				writer.close();
 		}
 	}
 	

@@ -19,11 +19,11 @@ public class RootParameters extends AbstractParameters implements Parameters {
 	}
 	
 	public RootParameters() {
-		super(RootParameters.class.getName(), parameterDefines);
+		super(parameterDefines);
 	}
 	
-	public RootParameters(String plaintext) {
-		super(RootParameters.class.getName(), parameterDefines, plaintext);
+	public RootParameters(String text) {
+		super(parameterDefines, text);
 	}
 	
 }

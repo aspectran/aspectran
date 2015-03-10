@@ -38,11 +38,11 @@ public class ItemParameters extends AbstractParameters implements Parameters {
 	}
 	
 	public ItemParameters() {
-		super(ItemParameters.class.getName(), parameterDefines);
+		super(parameterDefines);
 	}
 	
-	public ItemParameters(String plaintext) {
-		super(ItemParameters.class.getName(), parameterDefines, plaintext);
+	public ItemParameters(String text) {
+		super(parameterDefines, text);
 	}
 	
 }

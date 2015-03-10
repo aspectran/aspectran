@@ -201,74 +201,76 @@ public class RootAponDisassembler {
 		}
 		
 		Parameters adviceParameters = aspectParameters.getParameters(AspectParameters.advice);
-		String adviceBeanId = adviceParameters.getString(AdviceParameters.bean);
-		if(adviceBeanId != null) {
-			aspectRule.setAdviceBeanId(adviceBeanId);
-			assistant.putBeanReference(adviceBeanId, aspectRule);
-		}
-		
-		Parameters beforeAdviceParameters = adviceParameters.getParameters(AdviceParameters.beforeAdvice);
-		if(beforeAdviceParameters != null) {
-			Parameters actionParameters = beforeAdviceParameters.getParameters(AdviceActionParameters.action);
-			AspectAdviceRule aspectAdviceRule = AspectAdviceRule.newInstance(aspectRule, AspectAdviceType.BEFORE);
-			disassembleActionRule(actionParameters, aspectAdviceRule);
-			aspectRule.addAspectAdviceRule(aspectAdviceRule);
-		}
-		
-		Parameters afterAdviceParameters = adviceParameters.getParameters(AdviceParameters.afterAdvice);
-		if(afterAdviceParameters != null) {
-			Parameters actionParameters = afterAdviceParameters.getParameters(AdviceActionParameters.action);
-			AspectAdviceRule aspectAdviceRule = AspectAdviceRule.newInstance(aspectRule, AspectAdviceType.AFTER);
-			disassembleActionRule(actionParameters, aspectAdviceRule);
-			aspectRule.addAspectAdviceRule(aspectAdviceRule);
-		}
-	
-		Parameters aroundAdviceParameters = adviceParameters.getParameters(AdviceParameters.aroundAdvice);
-		if(aroundAdviceParameters != null) {
-			Parameters actionParameters = aroundAdviceParameters.getParameters(AdviceActionParameters.action);
-			AspectAdviceRule aspectAdviceRule = AspectAdviceRule.newInstance(aspectRule, AspectAdviceType.AROUND);
-			disassembleActionRule(actionParameters, aspectAdviceRule);
-			aspectRule.addAspectAdviceRule(aspectAdviceRule);
-		}
-	
-		Parameters finallyAdviceParameters = adviceParameters.getParameters(AdviceParameters.finallyAdvice);
-		if(finallyAdviceParameters != null) {
-			Parameters actionParameters = finallyAdviceParameters.getParameters(AdviceActionParameters.action);
-			AspectAdviceRule aspectAdviceRule = AspectAdviceRule.newInstance(aspectRule, AspectAdviceType.AROUND);
-			disassembleActionRule(actionParameters, aspectAdviceRule);
-			aspectRule.addAspectAdviceRule(aspectAdviceRule);
-		}
-	
-		Parameters exceptionRaizedParameters = adviceParameters.getParameters(AdviceParameters.exceptionRaized);
-		if(exceptionRaizedParameters != null) {
-			AspectAdviceRule aspectAdviceRule = AspectAdviceRule.newInstance(aspectRule, AspectAdviceType.EXCPETION_RAIZED);
-	
-			Parameters actionParameters = exceptionRaizedParameters.getParameters(ExceptionRaizedParameters.action);
-			if(actionParameters != null) {
-				disassembleActionRule(actionParameters, aspectAdviceRule);
-			}
-	
-			List<Parameters> rrtrParametersList = exceptionRaizedParameters.getParametersList(ExceptionRaizedParameters.responseByContentTypes);
-			if(rrtrParametersList != null && !rrtrParametersList.isEmpty()) {
-				for(Parameters rrtrParameters : rrtrParametersList) {
-					ResponseByContentTypeRule rrtr = disassembleResponseByContentTypeRule(rrtrParameters);
-					aspectAdviceRule.addResponseByContentTypeRule(rrtr);
-				}
+		if(adviceParameters != null) {
+			String adviceBeanId = adviceParameters.getString(AdviceParameters.bean);
+			if(adviceBeanId != null) {
+				aspectRule.setAdviceBeanId(adviceBeanId);
+				assistant.putBeanReference(adviceBeanId, aspectRule);
 			}
 			
-			aspectRule.addAspectAdviceRule(aspectAdviceRule);
-		}
+			Parameters beforeAdviceParameters = adviceParameters.getParameters(AdviceParameters.beforeAdvice);
+			if(beforeAdviceParameters != null) {
+				Parameters actionParameters = beforeAdviceParameters.getParameters(AdviceActionParameters.action);
+				AspectAdviceRule aspectAdviceRule = AspectAdviceRule.newInstance(aspectRule, AspectAdviceType.BEFORE);
+				disassembleActionRule(actionParameters, aspectAdviceRule);
+				aspectRule.addAspectAdviceRule(aspectAdviceRule);
+			}
+			
+			Parameters afterAdviceParameters = adviceParameters.getParameters(AdviceParameters.afterAdvice);
+			if(afterAdviceParameters != null) {
+				Parameters actionParameters = afterAdviceParameters.getParameters(AdviceActionParameters.action);
+				AspectAdviceRule aspectAdviceRule = AspectAdviceRule.newInstance(aspectRule, AspectAdviceType.AFTER);
+				disassembleActionRule(actionParameters, aspectAdviceRule);
+				aspectRule.addAspectAdviceRule(aspectAdviceRule);
+			}
 		
-		List<Parameters> jobParametersList = adviceParameters.getParametersList(AdviceParameters.jobs);
-		if(jobParametersList != null && !jobParametersList.isEmpty()) {
-			for(Parameters jobParameters : jobParametersList) {
-				String translet = jobParameters.getString(JobParameters.translet);
-				Boolean disabled = jobParameters.getBoolean(JobParameters.disabled);
+			Parameters aroundAdviceParameters = adviceParameters.getParameters(AdviceParameters.aroundAdvice);
+			if(aroundAdviceParameters != null) {
+				Parameters actionParameters = aroundAdviceParameters.getParameters(AdviceActionParameters.action);
+				AspectAdviceRule aspectAdviceRule = AspectAdviceRule.newInstance(aspectRule, AspectAdviceType.AROUND);
+				disassembleActionRule(actionParameters, aspectAdviceRule);
+				aspectRule.addAspectAdviceRule(aspectAdviceRule);
+			}
+		
+			Parameters finallyAdviceParameters = adviceParameters.getParameters(AdviceParameters.finallyAdvice);
+			if(finallyAdviceParameters != null) {
+				Parameters actionParameters = finallyAdviceParameters.getParameters(AdviceActionParameters.action);
+				AspectAdviceRule aspectAdviceRule = AspectAdviceRule.newInstance(aspectRule, AspectAdviceType.AROUND);
+				disassembleActionRule(actionParameters, aspectAdviceRule);
+				aspectRule.addAspectAdviceRule(aspectAdviceRule);
+			}
+		
+			Parameters exceptionRaizedParameters = adviceParameters.getParameters(AdviceParameters.exceptionRaized);
+			if(exceptionRaizedParameters != null) {
+				AspectAdviceRule aspectAdviceRule = AspectAdviceRule.newInstance(aspectRule, AspectAdviceType.EXCPETION_RAIZED);
+		
+				Parameters actionParameters = exceptionRaizedParameters.getParameters(ExceptionRaizedParameters.action);
+				if(actionParameters != null) {
+					disassembleActionRule(actionParameters, aspectAdviceRule);
+				}
+		
+				List<Parameters> rrtrParametersList = exceptionRaizedParameters.getParametersList(ExceptionRaizedParameters.responseByContentTypes);
+				if(rrtrParametersList != null && !rrtrParametersList.isEmpty()) {
+					for(Parameters rrtrParameters : rrtrParametersList) {
+						ResponseByContentTypeRule rrtr = disassembleResponseByContentTypeRule(rrtrParameters);
+						aspectAdviceRule.addResponseByContentTypeRule(rrtr);
+					}
+				}
 				
-				translet = assistant.applyTransletNamePattern(translet);
-				
-				AspectJobAdviceRule ajar = AspectJobAdviceRule.newInstance(aspectRule, translet, disabled);
-				aspectRule.addAspectJobAdviceRule(ajar);
+				aspectRule.addAspectAdviceRule(aspectAdviceRule);
+			}
+			
+			List<Parameters> jobParametersList = adviceParameters.getParametersList(AdviceParameters.jobs);
+			if(jobParametersList != null && !jobParametersList.isEmpty()) {
+				for(Parameters jobParameters : jobParametersList) {
+					String translet = jobParameters.getString(JobParameters.translet);
+					Boolean disabled = jobParameters.getBoolean(JobParameters.disabled);
+					
+					translet = assistant.applyTransletNamePattern(translet);
+					
+					AspectJobAdviceRule ajar = AspectJobAdviceRule.newInstance(aspectRule, translet, disabled);
+					aspectRule.addAspectJobAdviceRule(ajar);
+				}
 			}
 		}
 		
@@ -563,14 +565,6 @@ public class RootAponDisassembler {
 			String content = templateParameters.getString(TemplateParameters.content);
 			String encoding = templateParameters.getString(TemplateParameters.encoding);
 			Boolean noCache = templateParameters.getBoolean(TemplateParameters.noCache);
-			System.out.println(file);
-			System.out.println(resource);
-			System.out.println(content);
-			System.out.println(encoding);
-			System.out.println(noCache);
-			System.out.println(templateParameters);
-			System.out.println(templateParameters);
-			System.out.println(templateParameters);
 			TemplateRule templateRule = TemplateRule.newInstance(file, resource, url, content, encoding, noCache);
 			tr.setTemplateRule(templateRule);
 		}

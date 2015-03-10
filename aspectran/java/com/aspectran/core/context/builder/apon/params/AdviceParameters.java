@@ -38,11 +38,11 @@ public class AdviceParameters extends AbstractParameters implements Parameters {
 	}
 	
 	public AdviceParameters() {
-		super(AdviceParameters.class.getName(), parameterDefines);
+		super(parameterDefines);
 	}
 	
-	public AdviceParameters(String plaintext) {
-		super(AdviceParameters.class.getName(), parameterDefines, plaintext);
+	public AdviceParameters(String text) {
+		super(parameterDefines, text);
 	}
 	
 }

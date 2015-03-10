@@ -32,11 +32,11 @@ public class ResponseByContentTypeParameters extends AbstractParameters implemen
 	}
 	
 	public ResponseByContentTypeParameters() {
-		super(ResponseByContentTypeParameters.class.getName(), parameterDefines);
+		super(parameterDefines);
 	}
 	
-	public ResponseByContentTypeParameters(String plaintext) {
-		super(ResponseByContentTypeParameters.class.getName(), parameterDefines, plaintext);
+	public ResponseByContentTypeParameters(String text) {
+		super(parameterDefines, text);
 	}
 	
 }

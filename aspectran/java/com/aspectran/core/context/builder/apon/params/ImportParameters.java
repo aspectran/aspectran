@@ -29,11 +29,11 @@ public class ImportParameters extends AbstractParameters implements Parameters {
 	}
 	
 	public ImportParameters() {
-		super(ImportParameters.class.getName(), parameterDefines);
+		super(parameterDefines);
 	}
 	
-	public ImportParameters(String plaintext) {
-		super(ImportParameters.class.getName(), parameterDefines, plaintext);
+	public ImportParameters(String text) {
+		super(parameterDefines, text);
 	}
 	
 }

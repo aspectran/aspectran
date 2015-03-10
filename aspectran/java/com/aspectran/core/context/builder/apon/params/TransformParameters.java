@@ -38,11 +38,11 @@ public class TransformParameters extends AbstractParameters implements Parameter
 	}
 	
 	public TransformParameters() {
-		super(TransformParameters.class.getName(), parameterDefines);
+		super(parameterDefines);
 	}
 	
-	public TransformParameters(String plaintext) {
-		super(TransformParameters.class.getName(), parameterDefines, plaintext);
+	public TransformParameters(String text) {
+		super(parameterDefines, text);
 	}
 	
 }

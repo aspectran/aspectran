@@ -36,11 +36,11 @@ public class TargetParameters extends AbstractParameters implements Parameters {
 	}
 	
 	public TargetParameters() {
-		super(TargetParameters.class.getName(), parameterDefines);
+		super(parameterDefines);
 	}
 	
-	public TargetParameters(String plaintext) {
-		super(TargetParameters.class.getName(), parameterDefines, plaintext);
+	public TargetParameters(String text) {
+		super(parameterDefines, text);
 	}
 	
 }

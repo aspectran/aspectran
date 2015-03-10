@@ -739,6 +739,12 @@ public class CoreActivity extends AbstractActivity implements Activity {
 	private Object execute(AspectAdviceRule aspectAdviceRule) throws ActionExecutionException {
 		Executable action = aspectAdviceRule.getExecutableAction();
 		
+		if(action == null) {
+			//logger.error("no specified action on AspectAdviceRule " + aspectAdviceRule);
+			//return null;
+			throw new ActionExecutionException("no specified action on AspectAdviceRule " + aspectAdviceRule);
+		}
+		
 		if(action.getActionType() == ActionType.BEAN && aspectAdviceRule.getAdviceBeanId() != null) {
 			Object adviceBean = translet.getAspectAdviceBean(aspectAdviceRule.getAspectId());
 			

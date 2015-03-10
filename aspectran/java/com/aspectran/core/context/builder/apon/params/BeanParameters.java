@@ -50,11 +50,11 @@ public class BeanParameters extends AbstractParameters implements Parameters {
 	}
 	
 	public BeanParameters() {
-		super(BeanParameters.class.getName(), parameterDefines);
+		super(parameterDefines);
 	}
 	
-	public BeanParameters(String plaintext) {
-		super(BeanParameters.class.getName(), parameterDefines, plaintext);
+	public BeanParameters(String text) {
+		super(parameterDefines, text);
 	}
 	
 }

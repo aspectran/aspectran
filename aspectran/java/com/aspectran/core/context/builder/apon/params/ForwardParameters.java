@@ -32,11 +32,11 @@ public class ForwardParameters extends AbstractParameters implements Parameters 
 	}
 	
 	public ForwardParameters() {
-		super(ForwardParameters.class.getName(), parameterDefines);
+		super(parameterDefines);
 	}
 	
-	public ForwardParameters(String plaintext) {
-		super(ForwardParameters.class.getName(), parameterDefines, plaintext);
+	public ForwardParameters(String text) {
+		super(parameterDefines, text);
 	}
 	
 }

@@ -9,15 +9,13 @@ public interface Parameters {
 	
 	public Map<String, ParameterValue> getParameterValueMap();
 
-	public boolean isAddable();
-	
-	public void setParent(ParameterValue parent);
+	public void setPrototype(Parameter parent);
 
-	public ParameterValue getParent();
+	public Parameter getPrototype();
 	
-	public Object getTitle();
-
 	public String getQualifiedName();
+	
+	public Parameter getParent();
 	
 	public String[] getParameterNames();
 	
@@ -147,6 +145,8 @@ public interface Parameters {
 	
 	public <T extends Parameters> List<T> getParametersList(ParameterDefine parameterDefine);
 	
+	public ParameterValue newParameterValue(String name, ParameterValueType parameterValueType, boolean array);
+	
 	public <T extends Parameters> T newParameters(String name);
 	
 	public <T extends Parameters> T newParameters(ParameterDefine parameterDefine);
@@ -156,5 +156,7 @@ public interface Parameters {
 	public <T extends Parameters> T touchParameters(ParameterDefine parameterDefine);
 	
 	public String toText();
-
+	
+	public boolean isAddable();
+	
 }
