@@ -1,7 +1,12 @@
 package com.aspectran.core.util.apon;
 
 import java.io.BufferedReader;
+import java.io.Closeable;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.Map;
@@ -10,61 +15,46 @@ import com.aspectran.core.context.builder.Importable;
 import com.aspectran.core.context.builder.ImportableFile;
 import com.aspectran.core.context.rule.type.ImportFileType;
 
-public class AponReader extends AponFormat {
+public class AponReader extends AponFormat implements Closeable {
 
+	private Reader reader;
+	
 	private boolean addable;
 	
-	public AponReader() {
+	public AponReader(String text) {
+		this(new StringReader(text));
 	}
 
-	public Parameters read(String text, Parameters parameters) {
-		read(text, parameters.getParameterValueMap());
-		return parameters;
+	public AponReader(Reader reader) {
+		this.reader = reader;
 	}
-
-	public Map<String, ParameterValue> read(String text, Map<String, ParameterValue> parameterValueMap) {
-		try {
-			Reader reader = new StringReader(text);
-			read(reader, parameterValueMap);
-			reader.close();
 	
-			return parameterValueMap;
-		} catch(IOException e) {
-			throw new AponReadFailedException(e);
-		}
-	}
-
-	public Parameters read(Reader reader) throws IOException {
+	public Parameters read() throws IOException {
 		Parameters parameters = new GenericParameters();
-		read(reader, parameters);
+		read(parameters);
 		return parameters;
 	}
 	
-	public Parameters read(Reader reader, Parameters parameters) throws IOException {
-		read(reader, parameters.getParameterValueMap());
-		return parameters;
-	}
-	
-	public Map<String, ParameterValue> read(Reader reader, Map<String, ParameterValue> parameterValueMap) throws IOException {
-		if(parameterValueMap != null && !parameterValueMap.isEmpty()) {
-			addable = false;
-		} else {
-			addable = true;
+	public Parameters read(Parameters parameters) throws IOException {
+		if(parameters == null) {
+			parameters = new GenericParameters();
 		}
 
-		BufferedReader br = new BufferedReader(reader);
-		valuelize(br, parameterValueMap);
+		addable = parameters.isAddable();
 		
-		return parameterValueMap;
+		valuelize(parameters.getParameterValueMap());
+		
+		return parameters;
 	}
-
-	private void valuelize(BufferedReader reader, Map<String, ParameterValue> parameterValueMap) throws IOException {
-		valuelize(parameterValueMap, reader, 0, NO_CONTROL_CHAR, null, null, null);
+	
+	protected void valuelize(Map<String, ParameterValue> parameterValueMap) throws IOException {
+		BufferedReader buffered = new BufferedReader(reader);
+		valuelize(parameterValueMap, buffered, 0, NO_CONTROL_CHAR, null, null, null);
 	}
 	
 	/**
 	 * @param parameterValueMap
-	 * @param reader
+	 * @param buffered
 	 * @param lineNumber
 	 * @param openBracket
 	 * @param name
@@ -73,7 +63,7 @@ public class AponReader extends AponFormat {
 	 * @return
 	 * @throws IOException
 	 */
-	private int valuelize(Map<String, ParameterValue> parameterValueMap, BufferedReader reader, int lineNumber, char openBracket, String name, ParameterValue parameterValue, ParameterValueType parameterValueType) throws IOException {
+	private int valuelize(Map<String, ParameterValue> parameterValueMap, BufferedReader buffered, int lineNumber, char openBracket, String name, ParameterValue parameterValue, ParameterValueType parameterValueType) throws IOException {
 		String line;
 		String value;
 		String trim;
@@ -81,7 +71,7 @@ public class AponReader extends AponFormat {
 		int vlen;
 		char cchar;
 		
-		while((line = reader.readLine()) != null) {
+		while((line = buffered.readLine()) != null) {
 			lineNumber++;
 			trim = line.trim();
 			tlen = trim.length();
@@ -160,7 +150,7 @@ public class AponReader extends AponFormat {
 				if(SQUARE_BRACKET_OPEN == cchar) {
 					//System.out.println("1**************[ name: " + name);
 					//System.out.println("1**************[ parameterValue: " + parameterValue);
-					lineNumber = valuelize(parameterValueMap, reader, lineNumber, SQUARE_BRACKET_OPEN, name, parameterValue, parameterValueType);
+					lineNumber = valuelize(parameterValueMap, buffered, lineNumber, SQUARE_BRACKET_OPEN, name, parameterValue, parameterValueType);
 					continue;
 				}
 			}
@@ -187,7 +177,9 @@ public class AponReader extends AponFormat {
 				//System.out.println("04************** parameterValue: " + parameterValue);
 
 				Parameters parameters2 = parameterValue.newParameters();
-				lineNumber = valuelize(parameters2.getParameterValueMap(), reader, lineNumber, CURLY_BRACKET_OPEN, null, null, null);
+				addable = parameters2.isAddable();
+				
+				lineNumber = valuelize(parameters2.getParameterValueMap(), buffered, lineNumber, CURLY_BRACKET_OPEN, null, null, null);
 			} else if(parameterValueType == ParameterValueType.TEXT) {
 				if(parameterValue == null) {
 					parameterValue = new ParameterValue(name, parameterValueType, (openBracket == SQUARE_BRACKET_OPEN));
@@ -195,7 +187,7 @@ public class AponReader extends AponFormat {
 				}
 
 				StringBuilder sb = new StringBuilder();
-				lineNumber = valuelizeText(reader, lineNumber, sb);
+				lineNumber = valuelizeText(buffered, lineNumber, sb);
 				parameterValue.putValue(sb.toString());
 			} else {
 				if(vlen == 0) {
@@ -247,8 +239,11 @@ public class AponReader extends AponFormat {
 					parameterValue = new ParameterValue(name, parameterValueType, (openBracket == SQUARE_BRACKET_OPEN));
 					parameterValueMap.put(name, parameterValue);
 				} else {
-					if(parameterValue.getParameterValueType() != parameterValueType)
-						throw new IncompatibleParameterValueTypeException(lineNumber, line, trim, parameterValue, parameterValue.getParameterValueType());						
+					if(parameterValue.getParameterValueType() == ParameterValueType.VARIABLE) {
+						parameterValue.setParameterValueType(parameterValueType);
+					} else if(parameterValue.getParameterValueType() != parameterValueType) {
+						throw new IncompatibleParameterValueTypeException(lineNumber, line, trim, parameterValue, parameterValue.getParameterValueType());
+					}
 				}
 				
 				if(parameterValueType == ParameterValueType.STRING) {
@@ -282,13 +277,13 @@ public class AponReader extends AponFormat {
 		return lineNumber;
 	}
 	
-	private int valuelizeText(BufferedReader reader, int lineNumber, StringBuilder sb) throws IOException {
+	private int valuelizeText(BufferedReader buffered, int lineNumber, StringBuilder sb) throws IOException {
 		String line;
 		String trim = null;
 		int tlen;
 		char tchar;
 		
-		while((line = reader.readLine()) != null) {
+		while((line = buffered.readLine()) != null) {
 			lineNumber++;
 			trim = line.trim();
 			tlen = trim.length();
@@ -305,7 +300,7 @@ public class AponReader extends AponFormat {
 				throw new InvalidParameterException(lineNumber, line, trim, "The closing round bracket was missing or Each text line is must start with a ';' character.");
 			}
 		}
-		
+
 		throw new InvalidParameterException(lineNumber, line, trim, "The end of the text line was reached with no closing round bracket found.");
 	}
 	
@@ -320,12 +315,94 @@ public class AponReader extends AponFormat {
 		
 		return s;
 	}
+	
+	public void close() throws IOException {
+		if(reader != null)
+			reader.close();
+		
+		reader = null;
+	}
 
+	public static Parameters read(String text) {
+		return read(text, null);
+	}
+
+	public static Parameters read(String text, Parameters parameters) {
+		try {
+			AponReader reader = new AponReader(new StringReader(text));
+			
+			try {
+				reader.read(parameters);
+			} finally {
+				reader.close();
+			}
+	
+			return parameters;
+		} catch(IOException e) {
+			throw new AponReadFailedException(e);
+		}
+	}
+
+	public static Parameters read(File file) throws IOException {
+		return read(file, null, null);
+	}
+	
+	public static Parameters read(File file, String encoding) throws IOException {
+		return read(file, encoding, null);
+	}
+	
+	public static Parameters read(File file, Parameters parameters) throws IOException {
+		return read(file, null, parameters);
+	}
+	
+	public static Parameters read(File file, String encoding, Parameters parameters) throws IOException {
+		AponReader reader;
+		
+		if(encoding == null) {
+			reader = new AponReader(new FileReader(file));
+		} else {
+			reader = new AponReader(new InputStreamReader(new FileInputStream(file), encoding));
+		}
+		
+		try {
+			Parameters p = reader.read(parameters);
+			return p;
+		} finally {
+			reader.close();
+		}
+	}
+	
+	public static Parameters read(Reader reader) throws IOException {
+		AponReader aponReader = new AponReader(reader);
+		
+		try {
+			return aponReader.read();
+		} finally {
+			aponReader.close();
+		}
+	}
+	
+	public static Parameters read(Reader reader, Parameters parameters) throws IOException {
+		AponReader aponReader = new AponReader(reader);
+		
+		try {
+			aponReader.read(parameters);
+		} finally {
+			aponReader.close();
+		}
+		
+		return parameters;
+	}
+	
 	public static void main(String argv[]) {
 		try {
 			Importable importable = new ImportableFile("/c:/Users/Gulendol/Projects/aspectran/ADE/workspace/aspectran.example/config/aspectran/sample/sample-test.apon", ImportFileType.APON);
-			AponReader aponReader = new AponReader();
-			aponReader.read(importable.getReader());
+			AponReader reader = new AponReader(importable.getReader());
+			try {
+				reader.read();
+			} finally {
+				reader.close();
+			}
 		} catch(Exception e) {
 			e.printStackTrace();
 		}

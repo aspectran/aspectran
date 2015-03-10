@@ -9,6 +9,8 @@ public interface Parameters {
 	
 	public Map<String, ParameterValue> getParameterValueMap();
 
+	public boolean isAddable();
+	
 	public void setParent(ParameterValue parent);
 
 	public ParameterValue getParent();
@@ -52,10 +54,6 @@ public interface Parameters {
 	public List<String> getStringList(String name);
 
 	public List<String> getStringList(ParameterDefine parameterDefine);
-	
-//	public String getText(String name);	
-//	
-//	public String getText(ParameterDefine parameterDefine);	
 	
 	public Integer getInt(String name);
 	
@@ -158,5 +156,5 @@ public interface Parameters {
 	public <T extends Parameters> T touchParameters(ParameterDefine parameterDefine);
 	
 	public String toText();
-	
+
 }

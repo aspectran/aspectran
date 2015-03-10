@@ -15,8 +15,6 @@
  */
 package com.aspectran.core.context.builder;
 
-import java.io.Reader;
-
 import com.aspectran.core.context.builder.apon.RootAponDisassembler;
 import com.aspectran.core.context.builder.apon.params.RootParameters;
 import com.aspectran.core.util.apon.AponReader;
@@ -45,10 +43,7 @@ public class AponImportHandler extends AbstractImportHandler implements ImportHa
 	public void handle(Importable importable) throws Exception {
 		DefaultSettings defaultSettings = assistant.backupDefaultSettings();
 		
-		Reader reader = importable.getReader(encoding);
-		AponReader aponReader = new AponReader();
-		Parameters rootParameters = aponReader.read(reader, new RootParameters());
-		reader.close();
+		Parameters rootParameters = AponReader.read(importable.getReader(encoding), new RootParameters());
 		
 		rootAponDisassembler.disassembleRoot(rootParameters);
 

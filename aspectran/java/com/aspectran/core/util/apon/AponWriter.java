@@ -1,6 +1,7 @@
 package com.aspectran.core.util.apon;
 
 import java.io.BufferedReader;
+import java.io.Closeable;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
@@ -12,7 +13,7 @@ import com.aspectran.core.context.builder.Importable;
 import com.aspectran.core.context.builder.ImportableFile;
 import com.aspectran.core.context.rule.type.ImportFileType;
 
-public class AponWriter extends AponFormat {
+public class AponWriter extends AponFormat implements Closeable {
 
 	private Writer writer;
 
@@ -276,8 +277,12 @@ public class AponWriter extends AponFormat {
 	}
 	
 	public void close() throws IOException {
-		writer.close();
+		if(writer != null)
+			writer.close();
+		
+		writer = null;
 	}
+	
 	public static String toText(Parameters parameters) {
 		if(parameters == null)
 			return null;
@@ -297,14 +302,20 @@ public class AponWriter extends AponFormat {
 	public static void main(String argv[]) {
 		try {
 			Importable importable = new ImportableFile("/c:/Users/Gulendol/Projects/aspectran/ADE/workspace/aspectran.example/config/aspectran/sample/sample-test.apon", ImportFileType.APON);
-			AponReader aponReader = new AponReader();
-			Parameters parameters = aponReader.read(importable.getReader());
+			AponReader reader = new AponReader(importable.getReader());
+			Parameters parameters;
+			try {
+				parameters = reader.read();
+			} finally {
+				reader.close();
+			}
 			
-			StringWriter writer = new StringWriter();
-			
-			AponWriter aponWriter = new AponWriter(writer);
-			aponWriter.write(parameters);
-			aponWriter.close();
+			AponWriter writer = new AponWriter(new StringWriter());
+			try {
+				writer.write(parameters);
+			} finally {
+				writer.close();
+			}
 			
 			System.out.print(writer.toString());
 		} catch(Exception e) {

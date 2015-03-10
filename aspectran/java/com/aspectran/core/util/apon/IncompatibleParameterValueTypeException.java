@@ -78,7 +78,7 @@ public class IncompatibleParameterValueTypeException extends InvalidParameterExc
 		sb.append("Incompatible value type with expected value type \"");
 		sb.append(expectedParameterValueType).append("\"");
 		if(parameterValue != null)
-			sb.append("\" for the specified parameter ").append(parameterValue);
+			sb.append(" for the specified parameter ").append(parameterValue);
 		sb.append(".");
 		
 		return InvalidParameterException.makeMessage(lineNumber, line, trim, sb.toString());

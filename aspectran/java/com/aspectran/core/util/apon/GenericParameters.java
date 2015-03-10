@@ -4,7 +4,7 @@ package com.aspectran.core.util.apon;
 public class GenericParameters extends AbstractParameters implements Parameters {
 
 	public GenericParameters() {
-		super(null, null, null);
+		super(null, null);
 	}
 	
 	public GenericParameters(String text) {

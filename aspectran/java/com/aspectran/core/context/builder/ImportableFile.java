@@ -52,6 +52,10 @@ public class ImportableFile extends Importable {
 		this.filePath = filePath;
 	}
 	
+	public String getDistinguishedName() {
+		return filePath;
+	}
+	
 	public String getBasePath() {
 		return basePath;
 	}
@@ -60,8 +64,19 @@ public class ImportableFile extends Importable {
 		return filePath;
 	}
 
-	public String getDistinguishedName() {
-		return filePath;
+	public File getFile() {
+		File file;
+		if(basePath == null)
+			file = new File(filePath);
+		else
+			file = new File(basePath, filePath);
+		
+		return file;
+	}
+	
+	public long getLastModified() {
+		File file = getFile();
+		return file.lastModified();
 	}
 	
 	/**
@@ -70,12 +85,7 @@ public class ImportableFile extends Importable {
 	 * @return the input stream
 	 */
 	public InputStream getInputStream() throws IOException {
-		File file;
-		
-		if(basePath == null)
-			file = new File(filePath);
-		else
-			file = new File(basePath, filePath);
+		File file = getFile();
 		
 		if(!file.isFile()) {
 			throw new IOException("Could not find file to import. file: " + file.getAbsolutePath());
