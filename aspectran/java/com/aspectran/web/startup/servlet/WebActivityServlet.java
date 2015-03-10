@@ -74,7 +74,7 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 				aspectranService = WebAspectranService.newInstance(this);
 				standalone = true;
 			} else {
-				logger.info("Root AspectranService exists.");
+				logger.info("The root AspectranService exists.");
 				aspectranService = WebAspectranService.newInstance(this, rootAspectranService);
 				standalone = (rootAspectranService != aspectranService);
 			}
@@ -103,9 +103,9 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 			boolean cleanlyDestoryed = aspectranService.dispose();
 			
 			if(cleanlyDestoryed)
-				logger.info("Successfully destroyed WebActivityServlet: " + this.getServletName());
+				logger.info("Successfully destroyed WebActivityServlet: {}", this.getServletName());
 			else
-				logger.error("WebActivityServlet were not destroyed cleanly: " + this.getServletName());
+				logger.error("WebActivityServlet were not destroyed cleanly: {}", this.getServletName());
 	
 			logger.info("Do not terminate the server while the all scoped bean destroying.");
 		}

@@ -667,10 +667,6 @@ public class CoreActivity extends AbstractActivity implements Activity {
 	 * @throws ActivityException 
 	 */
 	protected void execute(ActionList actionList) throws ActivityException {
-		if(debugEnabled) {
-			logger.debug("executable actions " + actionList.toString());
-		}
-		
 		ContentResult contentResult = null;
 		
 		if(!actionList.isHidden()) {
@@ -699,22 +695,17 @@ public class CoreActivity extends AbstractActivity implements Activity {
 	
 	private void execute(Executable action, ContentResult contentResult) throws ActionExecutionException {
 		if(debugEnabled)
-			logger.debug("execute action " + action.toString());
+			logger.debug("action " + action.toString());
 		
 		try {
 			Object resultValue = action.execute(this);
 		
-			//if(debugEnabled)
-			//	logger.debug("action " + action + " result: " + resultValue);
-			
 			if(contentResult != null && !action.isHidden() && resultValue != ActionResult.NO_RESULT) {
 				contentResult.addActionResult(action.getActionId(), resultValue);
-				
-				if(debugEnabled)
-					logger.debug("actionResult [" + resultValue + "] action " + action.toString());
-			} else if(traceEnabled) {
-				logger.debug("actionResult [" + resultValue + "] action " + action.toString());
 			}
+			
+			if(traceEnabled)
+				logger.debug("actionResult {}", resultValue);
 		} catch(Exception e) {
 			setRaisedException(e);
 			throw new ActionExecutionException("action execution error", e);
@@ -742,7 +733,7 @@ public class CoreActivity extends AbstractActivity implements Activity {
 		if(action == null) {
 			//logger.error("no specified action on AspectAdviceRule " + aspectAdviceRule);
 			//return null;
-			throw new ActionExecutionException("no specified action on AspectAdviceRule " + aspectAdviceRule);
+			throw new ActionExecutionException("No specified action on AspectAdviceRule {}" + aspectAdviceRule);
 		}
 		
 		if(action.getActionType() == ActionType.BEAN && aspectAdviceRule.getAdviceBeanId() != null) {
@@ -751,22 +742,24 @@ public class CoreActivity extends AbstractActivity implements Activity {
 			if(adviceBean == null)
 				adviceBean = getBean(aspectAdviceRule.getAdviceBeanId());
 			
-			logger.debug("adviceBean [" + adviceBean + "] aspectAdviceRule " + aspectAdviceRule);
+			if(debugEnabled)
+				logger.debug("aspectAdvice {} {}", aspectAdviceRule, adviceBean);
+			
 			translet.putAspectAdviceBean(aspectAdviceRule.getAspectId(), adviceBean);
 		}
 		
 		try {
-			if(debugEnabled)
-				logger.debug("execute action " + action.toString());
+			//if(debugEnabled)
+			//	logger.debug("action {}", action);
 
 			Object adviceActionResult = action.execute(this);
 			
 			if(adviceActionResult != null && adviceActionResult != ActionResult.NO_RESULT) {
-				logger.debug("adviceActionResult [" + adviceActionResult + "] aspectAdviceRule " + aspectAdviceRule);
 				translet.putAdviceResult(aspectAdviceRule, adviceActionResult);
-			} else if(traceEnabled) {
-				logger.debug("adviceActionResult [" + adviceActionResult + "] aspectAdviceRule " + aspectAdviceRule);
 			}
+			
+			if(traceEnabled)
+				logger.trace("adviceActionResult {}", adviceActionResult);
 			
 			return adviceActionResult;
 		} catch(Exception e) {
@@ -790,7 +783,7 @@ public class CoreActivity extends AbstractActivity implements Activity {
 
 	public void setRaisedException(Exception raisedException) {
 		if(this.raisedException == null) {
-			logger.error("original raised exception:", raisedException);
+			logger.error("original raised exception: ", raisedException);
 			this.raisedException = raisedException;
 		}
 	}

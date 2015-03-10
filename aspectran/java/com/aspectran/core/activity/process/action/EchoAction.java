@@ -111,7 +111,7 @@ public class EchoAction extends AbstractAction implements Executable {
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("{fullActionId=").append(fullActionId);
+		sb.append("{qualifiedActionId=").append(qualifiedActionId);
 		sb.append(", actionType=").append(getActionType());
 		sb.append(", echoActionRule=").append(echoActionRule.toString());
 		sb.append("}");

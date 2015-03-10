@@ -74,8 +74,6 @@ public class HybridImportHandler extends AbstractImportHandler implements Import
 			if(importable.getImportType() == ImportType.FILE) {
 				File aponFile = findAponFile((ImportableFile)importable);
 
-				System.out.println(importable.getLastModified() + ", " + aponFile.lastModified());
-				
 				if(importable.getLastModified() == aponFile.lastModified()) {
 					logger.info("Rapid Aspectran Context Configuration Loading: " + aponFile);
 					hybridon = true;
@@ -109,7 +107,7 @@ public class HybridImportHandler extends AbstractImportHandler implements Import
 	}
 	
 	private void saveAsAponFormat(ImportableFile importableFile) throws Exception {
-		logger.info("Save as Apon Format: " + importableFile);
+		logger.info("Save as Apon Format {}", importableFile);
 		
 		File file = null;
 		
@@ -141,7 +139,7 @@ public class HybridImportHandler extends AbstractImportHandler implements Import
 			
 			file.setLastModified(importableFile.getLastModified());
 		} catch(Exception e) {
-			logger.error("Can't save file " + file, e);
+			logger.error("Can't save file {}", file, e);
 		}
 	}
 	

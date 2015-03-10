@@ -189,7 +189,7 @@ public abstract class AbstractAspectranService implements AspectranService {
 				activityContext = null;
 				logger.info("Successfully destroyed AspectranContext.");
 			} catch(Exception e) {
-				logger.error("Failed to destroy AspectranContext " + activityContext, e);
+				logger.error("Failed to destroy AspectranContext {}", activityContext, e);
 				cleanlyDestoryed = false;
 			}
 		}
@@ -225,7 +225,7 @@ public abstract class AbstractAspectranService implements AspectranService {
 		if(this.aspectranSchedulerConfig == null)
 			return;
 		
-		logger.info("Starting the AspectranScheduler: " + this.aspectranSchedulerConfig);
+		logger.info("Starting the AspectranScheduler {}", this.aspectranSchedulerConfig);
 		
 		boolean startup = this.aspectranSchedulerConfig.getBoolean(AspectranSchedulerConfig.startup);
 		int startDelaySeconds = this.aspectranSchedulerConfig.getInt(AspectranSchedulerConfig.startDelaySeconds.getName(), -1);
@@ -252,7 +252,7 @@ public abstract class AbstractAspectranService implements AspectranService {
 			try {
 				aspectranScheduler.shutdown();
 				aspectranScheduler = null;
-				logger.info("Successfully destroyed AspectranScheduler " + aspectranScheduler);
+				logger.info("Successfully destroyed AspectranScheduler {}", aspectranScheduler);
 			} catch(Exception e) {
 				logger.error("AspectranScheduler were not destroyed cleanly.", e);
 				return false;

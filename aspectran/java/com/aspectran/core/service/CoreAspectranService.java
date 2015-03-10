@@ -12,7 +12,7 @@ public class CoreAspectranService extends AbstractAspectranService {
 
 	private static final Logger logger = LoggerFactory.getLogger(CoreAspectranService.class);
 	
-	private static final long DEFAULT_PAUSE_TIMEOUT = 500L;
+	private static final long DEFAULT_PAUSE_TIMEOUT = 321L;
 	
 	private AspectranServiceControllerListener activityContextServiceListener;
 	

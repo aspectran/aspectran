@@ -24,7 +24,7 @@ public class HybridActivityContextLoader extends AbstractActivityContextLoader {
 	}
 	
 	public ActivityContext load(String rootContext) {
-		logger.info("build ActivityContext [" + rootContext + "]");
+		logger.info("build ActivityContext: ", rootContext);
 		long startTime = System.currentTimeMillis();
 
 		ActivityContextBuilder builder = new HybridActivityContextBuilder(applicationAdapter, encoding);
@@ -32,7 +32,7 @@ public class HybridActivityContextLoader extends AbstractActivityContextLoader {
 		ActivityContext activityContext = builder.build(rootContext);
 		
 		long elapsedTime = System.currentTimeMillis() - startTime;
-		logger.info("ActivityContext build completed in " + elapsedTime + " ms");
+		logger.info("ActivityContext build completed in {} ms.", elapsedTime);
 		
 		return activityContext;
 	}

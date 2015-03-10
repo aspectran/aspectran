@@ -25,15 +25,15 @@ public abstract class AbstractAction {
 
 	protected final ActionList parent;
 	
-	protected final String fullActionId;
+	protected final String qualifiedActionId;
 
 	public AbstractAction(String actionId, ActionList parent) {
 		this.parent = parent;
 		
 		if(parent != null)
-			this.fullActionId = FullActionIdConcator.concat(parent.getContentId(), actionId);
+			this.qualifiedActionId = FullActionIdConcator.concat(parent.getContentId(), actionId);
 		else
-			this.fullActionId = actionId;
+			this.qualifiedActionId = actionId;
 	}
 	
 	public ActionList getParent() {
@@ -42,8 +42,8 @@ public abstract class AbstractAction {
 	
 	public abstract String getActionId();
 
-	public String getFullActionId() {
-		return fullActionId;
+	public String getQualifiedActionId() {
+		return qualifiedActionId;
 	}
 	
 }

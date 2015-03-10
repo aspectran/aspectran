@@ -345,7 +345,7 @@ public class AspectranClassLoader extends ClassLoader {
 	}
 	
 	protected void kickout(AspectranClassLoader child) {
-		logger.debug("kickout a child AspectranClassLoader. " + child);
+		logger.debug("kickout a child AspectranClassLoader: {}", child);
 
 		ResourceManager rm = child.getResourceManager();
 		if(rm != null) {
@@ -395,7 +395,7 @@ public class AspectranClassLoader extends ClassLoader {
 		    	classData = loadClassData(name, root);
 		    	//System.out.println("   classData: " + classData);
 	    	} catch(InvalidResourceException e) {
-	    		logger.error("failed to load class \"" + name + "\"", e);
+	    		logger.error("failed to load class \"{}\"", name, e);
 	    	}
 
 	    	if(classData != null) {
@@ -568,7 +568,6 @@ public class AspectranClassLoader extends ClassLoader {
 	
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		
 		sb.append("{id=").append(id);
 		if(getParent() instanceof AspectranClassLoader)
 			sb.append(", parent=").append(((AspectranClassLoader)getParent()).getId());

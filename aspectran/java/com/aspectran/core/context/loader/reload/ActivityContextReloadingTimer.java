@@ -25,13 +25,13 @@ public class ActivityContextReloadingTimer {
 	}
 	
 	private void init() {
-		logger.debug("ActivityContextobservationIntervalr is initialized successfully.");
+		logger.debug("ActivityContextRefreshTimer is initialized successfully.");
 	}
 	
 	public void start(int observationInterval) {
 		stop();
 		
-		logger.debug("starting ActivityContextobservationIntervalr...");
+		logger.debug("Starting ActivityContextRefreshTimer...");
 		
 		timerTask = new ActivityContextReloadingTimerTask(aspectranService);
 		
@@ -45,7 +45,7 @@ public class ActivityContextReloadingTimer {
 	
 	protected void stop() {
 		if(timer != null) {
-			logger.debug("stopping ActivityContextobservationIntervalr...");
+			logger.debug("Stopping ActivityContextRefreshTimer...");
 			
 			timer.cancel();
 			timer = null;
