@@ -203,7 +203,7 @@ public class RootAponDisassembler {
 		Parameters adviceParameters = aspectParameters.getParameters(AspectParameters.advice);
 		if(adviceParameters != null) {
 			String adviceBeanId = adviceParameters.getString(AdviceParameters.bean);
-			if(adviceBeanId != null) {
+			if(!StringUtils.isEmpty(adviceBeanId)) {
 				aspectRule.setAdviceBeanId(adviceBeanId);
 				assistant.putBeanReference(adviceBeanId, aspectRule);
 			}
@@ -478,7 +478,7 @@ public class RootAponDisassembler {
 		if(!assistant.isNullableActionId() && StringUtils.isEmpty(id))
 			throw new IllegalArgumentException("The <echo>, <action>, <include> element requires a id attribute.");
 		
-		if(beanId != null && methodName != null) {
+		if(!StringUtils.isEmpty(methodName)) {
 			BeanActionRule beanActionRule = BeanActionRule.newInstance(id, beanId, methodName, hidden);
 			ItemRuleMap argumentItemRuleMap = disassembleItemRuleMap(argumentParametersList);
 			if(argumentItemRuleMap != null) {
@@ -489,9 +489,13 @@ public class RootAponDisassembler {
 				beanActionRule.setPropertyItemRuleMap(propertyItemRuleMap);
 			}
 			actionRuleApplicable.applyActionRule(beanActionRule);
-			assistant.putBeanReference(beanId, beanActionRule);
+			if(!StringUtils.isEmpty(beanId)) {
+				assistant.putBeanReference(beanId, beanActionRule);
+			}
 		} else if(echoParametersList != null) {
 			EchoActionRule echoActionRule = EchoActionRule.newInstance(id, hidden);
+			System.out.println("===================================");
+			System.out.println(echoParametersList);
 			ItemRuleMap attributeItemRuleMap = disassembleItemRuleMap(echoParametersList);
 			echoActionRule.setAttributeItemRuleMap(attributeItemRuleMap);
 			actionRuleApplicable.applyActionRule(echoActionRule);

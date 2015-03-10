@@ -26,6 +26,7 @@ import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.type.ItemType;
 import com.aspectran.core.context.rule.type.TokenType;
+import com.aspectran.core.util.BooleanUtils;
 import com.aspectran.core.util.xml.Nodelet;
 import com.aspectran.core.util.xml.NodeletAdder;
 import com.aspectran.core.util.xml.NodeletParser;
@@ -85,7 +86,7 @@ public class ItemRuleNodeletAdder implements NodeletAdder {
 				String value = attributes.get("value");
 				String valueType = attributes.get("valueType");
 				String defaultValue = attributes.get("defaultValue");
-				String tokenize = attributes.get("tokenize");
+				Boolean tokenize = BooleanUtils.toNullableBooleanObject(attributes.get("tokenize"));
 
 				if(text != null)
 					value = text;
@@ -159,7 +160,7 @@ public class ItemRuleNodeletAdder implements NodeletAdder {
 					ItemRule itemRule = assistant.peekObject();
 
 					if(itemRule.getType() != ItemType.SINGLE)
-						ItemRule.finishValueCollection(itemRule, name, tokens);
+						ItemRule.flushValueCollection(itemRule, name, tokens);
 				}
 			}
 		});

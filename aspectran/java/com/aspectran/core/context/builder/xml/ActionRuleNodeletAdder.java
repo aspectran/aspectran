@@ -139,7 +139,7 @@ public class ActionRuleNodeletAdder implements NodeletAdder {
 				applicable.applyActionRule(beanActionRule);
 
 				//AspectAdviceRule may not have the bean id.
-				if(beanActionRule.getBeanId() != null)
+				if(!StringUtils.isEmpty(beanActionRule.getBeanId()))
 					assistant.putBeanReference(beanActionRule.getBeanId(), beanActionRule);
 			}
 		});
