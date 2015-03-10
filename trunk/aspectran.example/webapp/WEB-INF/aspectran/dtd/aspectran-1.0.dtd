@@ -74,7 +74,7 @@ important (true | false) #IMPLIED
 <!ELEMENT important (#PCDATA)>
 <!ELEMENT constructor (argument?)>
 
-<!ELEMENT translet ((request?, (echo? | action? | include?)*, (transform | dispatch | redirect | forward)?) | (request?, content*, contents?, response*, exception?))>
+<!ELEMENT translet ((request?, (echo? | action? | include?)*, (transform | dispatch | redirect | forward)?) | (request?, content*, contents?, (transform | dispatch | redirect | forward)?) | (request?, content*, contents?, response*, exception?))>
 <!ATTLIST translet
 name CDATA #REQUIRED
 hidden (true | false) #IMPLIED
