@@ -108,31 +108,22 @@ public class ContentResult extends ArrayList<ActionResult> {
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		
 		sb.append("{contentId=").append(contentId);
 		sb.append(", actionResults=");
-
 		if(size() > 0) {
 			sb.append('[');
-			
 			String name;
 			int offset;
-			
 			for(int i = 0; i < size(); i++) {
 				ActionResult actionResult = get(i);
-				
 				if(i > 0)
 					sb.append(", ");
-				
 				name = actionResult.toString();
 				offset = name.lastIndexOf('.') + 1;
-				
 				sb.append(name.substring(offset));
 			}
-
 			sb.append(']');
 		}
-		
 		sb.append("}");
 		
 		return sb.toString();
