@@ -279,7 +279,7 @@ public class AspectranNodeParser {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
 				String beanId = attributes.get("bean");
 				
-				if(beanId != null && beanId.length() > 0) {
+				if(!StringUtils.isEmpty(beanId)) {
 					AspectRule aspectRule = assistant.peekObject();
 					aspectRule.setAdviceBeanId(beanId);
 					

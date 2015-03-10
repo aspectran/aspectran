@@ -731,11 +731,11 @@ public class ItemRule {
 	 * @param tokenize the tokenize
 	 * @return the item rule
 	 */
-	public static ItemRule newInstance(String type, String name, String value, String valueType, String defaultValue, String tokenize) {
+	public static ItemRule newInstance(String type, String name, String value, String valueType, String defaultValue, Boolean tokenize) {
 		ItemRule itemRule;
 
 		if(tokenize != null)
-			itemRule = new ItemRule(Boolean.parseBoolean(tokenize));
+			itemRule = new ItemRule(tokenize);
 		else
 			itemRule = new ItemRule();
 		
@@ -862,12 +862,6 @@ public class ItemRule {
 			Map<String, Token[]> map = itemRule.getTokensMap();
 			if(map != null)
 				iter = map.values().iterator();
-/*
-		} else if(itemRule.getType() == ItemType.PROPERTIES) {
-			Properties prop = itemRule.getTokensProperties();
-			//iterator = (Iterator<Token[]>)((Collection<Token[]>)prop.values().iterator());
-			iter = (Iterator<Token[]>)(Iterator<?>)prop.values().iterator();
-*/
 		}
 		
 		return iter;
@@ -912,17 +906,12 @@ public class ItemRule {
 		if(itemRule.getType() == ItemType.LIST) {
 			List<Token[]> tokensList = new ArrayList<Token[]>();
 			itemRule.setValue(tokensList);
-		} else if(itemRule.getType() == ItemType.MAP || itemRule.getType() == ItemType.PROPERTIES) {
-			Map<String, Token[]> tokensMap = new LinkedHashMap<String, Token[]>();
-			itemRule.setValue(tokensMap);
 		} else if(itemRule.getType() == ItemType.SET) {
 			Set<Token[]> tokensSet = new LinkedHashSet<Token[]>();
 			itemRule.setValue(tokensSet);
-/*
-		} else if(itemRule.getType() == ItemType.PROPERTIES) {
-			Properties tokensProp = new Properties();
-			itemRule.setValue(tokensProp);
- */
+		} else if(itemRule.getType() == ItemType.MAP || itemRule.getType() == ItemType.PROPERTIES) {
+			Map<String, Token[]> tokensMap = new LinkedHashMap<String, Token[]>();
+			itemRule.setValue(tokensMap);
 		}
 	}
 	
@@ -933,7 +922,7 @@ public class ItemRule {
 	 * @param name the name
 	 * @param tokens the tokens
 	 */
-	public static void finishValueCollection(ItemRule itemRule, String name, Token[] tokens) {
+	public static void flushValueCollection(ItemRule itemRule, String name, Token[] tokens) {
 		if(itemRule.getType() == ItemType.LIST) {
 			List<Token[]> list = itemRule.getTokensList();
 			list.add(tokens);
@@ -945,13 +934,6 @@ public class ItemRule {
 				Map<String, Token[]> map = itemRule.getTokensMap();
 				map.put(name, tokens);
 			}
-/*
-		} else if(itemRule.getType() == ItemType.PROPERTIES) {
-			if(!StringUtils.isEmpty(name)) {
-				Properties prop = itemRule.getTokensProperties();
-				prop.put(name, tokens);
-			}
-*/
 		}
 	}
 	
@@ -969,6 +951,8 @@ public class ItemRule {
 	}
 	
 	public static ItemRuleMap toItemRuleMap(List<Parameters> itemParametersList) {
+		System.out.println("1===================================");
+		System.out.println(itemParametersList);
 		if(itemParametersList == null || itemParametersList.isEmpty())
 			return null;
 		
@@ -1013,11 +997,13 @@ public class ItemRule {
 	 * @return the item rule
 	 */
 	public static ItemRule toItemRule(Parameters itemParameters) {
+		System.out.println("2======-----------=============================");
+		System.out.println(itemParameters);
 		String type = itemParameters.getString(ItemParameters.type);
 		String name = itemParameters.getString(ItemParameters.name);
 		String valueType = itemParameters.getString(ItemParameters.valueType);
 		String defaultValue = itemParameters.getString(ItemParameters.defaultValue);
-		String tokenize = itemParameters.getString(ItemParameters.tokenize);
+		Boolean tokenize = itemParameters.getBoolean(ItemParameters.tokenize);
 		Parameters referenceParameters = itemParameters.getParameters(ItemParameters.reference);
 		
 		ItemRule itemRule = ItemRule.newInstance(type, name, null, valueType, defaultValue, tokenize);
@@ -1037,19 +1023,26 @@ public class ItemRule {
 				List<String> stringList = itemParameters.getStringList(ItemParameters.value);
 				
 				if(stringList != null) {
+					beginValueCollection(itemRule);
 					for(String value : stringList) {
-						parseValue(itemRule, null, value);
+						Token[] tokens = parseValue(itemRule, null, value);
+						flushValueCollection(itemRule, name, tokens);
 					}
 				}
-			} else {
+			} else if(itemRule.getType() == ItemType.MAP || itemRule.getType() == ItemType.PROPERTIES) {
 				Parameters parameters = itemParameters.getParameters(ItemParameters.value);
-				
+
 				if(parameters != null) {
 					Set<String> parametersNames = parameters.getParameterNameSet();
 					
 					if(parametersNames != null) {
+						beginValueCollection(itemRule);
 						for(String valueName : parametersNames) {
-							parseValue(itemRule, valueName, parameters.getString(valueName));
+							Token[] tokens = parseValue(itemRule, valueName, parameters.getString(valueName));
+							flushValueCollection(itemRule, valueName, tokens);
+							System.out.println("3======-----------=============================" + tokens);
+							System.out.println("valueName: " + valueName + ", value: " + parameters.getString(valueName));
+							//System.out.println(parametersNames);
 						}
 					}
 				} 
