@@ -16,7 +16,7 @@
 package com.aspectran.core.activity.process.action;
 
 import com.aspectran.core.activity.process.ActionList;
-import com.aspectran.core.activity.process.FullActionIdConcator;
+import com.aspectran.core.activity.process.ActionIdQualifier;
 
 /**
  * <p>Created: 2008. 03. 22 오후 5:50:35</p>
@@ -31,7 +31,7 @@ public abstract class AbstractAction {
 		this.parent = parent;
 		
 		if(parent != null)
-			this.qualifiedActionId = FullActionIdConcator.concat(parent.getContentId(), actionId);
+			this.qualifiedActionId = ActionIdQualifier.concat(parent.getContentId(), actionId);
 		else
 			this.qualifiedActionId = actionId;
 	}

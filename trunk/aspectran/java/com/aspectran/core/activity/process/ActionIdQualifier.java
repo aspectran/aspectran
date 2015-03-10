@@ -20,7 +20,7 @@ import com.aspectran.core.context.AspectranConstant;
 /*
  * <p>Created: 2008. 7. 2. 오전 12:16:12</p>
  */
-public class FullActionIdConcator {
+public class ActionIdQualifier {
 
 	/**
 	 * Make a qualified action ID.
