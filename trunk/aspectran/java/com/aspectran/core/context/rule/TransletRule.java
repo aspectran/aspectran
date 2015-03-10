@@ -119,14 +119,16 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 			explicitContent = true;
 	}
 
-	public synchronized ContentList touchContentList(boolean omittable) {
+	public ContentList touchContentList(boolean explicitContent) {
+		this.explicitContent = explicitContent;
+		return touchContentList();
+	}
+	
+	public synchronized ContentList touchContentList() {
 		if(contentList == null) {
 			contentList = new ContentList();
-			if(omittable)
-				contentList.setOmittable(Boolean.TRUE);
+			contentList.setOmittable(Boolean.TRUE);
 		}
-		
-		explicitContent = true;
 		
 		return contentList;
 	}
@@ -148,7 +150,7 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 	}
 	
 	private ActionList touchActionList() {
-		touchContentList(true);
+		touchContentList();
 		
 		if(contentList.size() == 1) {
 			return contentList.get(0);
@@ -254,7 +256,7 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 		if(actionList == null)
 			return;
 		
-		touchContentList(true);		
+		touchContentList();		
 		contentList.add(actionList);
 	}
 	

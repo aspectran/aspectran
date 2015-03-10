@@ -95,9 +95,9 @@ public class RootAponDisassembler {
 	}
 	
 	public void disassembleAspectran(Parameters aspectranParameters) throws Exception {
-		Parameters settingParameters = aspectranParameters.getParameters(AspectranParameters.setting);
-		if(settingParameters != null)
-			disassembleDefaultSettings(settingParameters);
+		Parameters defaultSettingsParameters = aspectranParameters.getParameters(AspectranParameters.setting);
+		if(defaultSettingsParameters != null)
+			disassembleDefaultSettings(defaultSettingsParameters);
 
 		Parameters typeAliasParameters = aspectranParameters.getParameters(AspectranParameters.typeAlias);
 		if(typeAliasParameters != null)
@@ -145,11 +145,11 @@ public class RootAponDisassembler {
 			importHandler.pending(importable);
 	}
 	
-	public void disassembleDefaultSettings(Parameters parameters) throws ClassNotFoundException {
-		if(parameters == null)
+	public void disassembleDefaultSettings(Parameters defaultSettingsParameters) throws ClassNotFoundException {
+		if(defaultSettingsParameters == null)
 			return;
 		
-		Iterator<String> iter = parameters.getParameterNameSet().iterator();
+		Iterator<String> iter = defaultSettingsParameters.getParameterNameSet().iterator();
 		
 		while(iter.hasNext()) {
 			String name = iter.next();
@@ -160,10 +160,10 @@ public class RootAponDisassembler {
 				settingType = DefaultSettingType.valueOf(name);
 				
 				if(settingType == null)
-					throw new IllegalArgumentException("Unknown setting name '" + name + "'");
+					throw new IllegalArgumentException("Unknown default setting name '" + name + "'");
 			}
 			
-			assistant.putSetting(settingType, parameters.getString(name));
+			assistant.putSetting(settingType, defaultSettingsParameters.getString(name));
 		}
 		
 		assistant.applySettings();
@@ -321,7 +321,7 @@ public class RootAponDisassembler {
 		
 		List<Parameters> contentParametersList = transletParameters.getParametersList(TransletParameters.contents2);
 		if(contentParametersList != null && !contentParametersList.isEmpty()) {
-			ContentList contentList = transletRule.touchContentList(true);
+			ContentList contentList = transletRule.touchContentList();
 			for(Parameters contentParamters : contentParametersList) {
 				ActionList actionList = disassembleActionList(contentParamters, contentList);
 				contentList.addActionList(actionList);
@@ -471,7 +471,7 @@ public class RootAponDisassembler {
 		List<Parameters> propertyParametersList = actionParameters.getParametersList(ActionParameters.properties);
 		String include = actionParameters.getString(ActionParameters.include);
 		List<Parameters> echoParametersList = actionParameters.getParametersList(ActionParameters.echo);
-		Boolean hidden = actionParameters.getBoolean(ActionParameters.include);
+		Boolean hidden = actionParameters.getBoolean(ActionParameters.hidden);
 		
 		if(!assistant.isNullableActionId() && StringUtils.isEmpty(id))
 			throw new IllegalArgumentException("The <echo>, <action>, <include> element requires a id attribute.");
@@ -563,6 +563,14 @@ public class RootAponDisassembler {
 			String content = templateParameters.getString(TemplateParameters.content);
 			String encoding = templateParameters.getString(TemplateParameters.encoding);
 			Boolean noCache = templateParameters.getBoolean(TemplateParameters.noCache);
+			System.out.println(file);
+			System.out.println(resource);
+			System.out.println(content);
+			System.out.println(encoding);
+			System.out.println(noCache);
+			System.out.println(templateParameters);
+			System.out.println(templateParameters);
+			System.out.println(templateParameters);
 			TemplateRule templateRule = TemplateRule.newInstance(file, resource, url, content, encoding, noCache);
 			tr.setTemplateRule(templateRule);
 		}

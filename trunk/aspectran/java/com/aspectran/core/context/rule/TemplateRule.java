@@ -102,12 +102,10 @@ public class TemplateRule extends ActionPossessSupport implements ActionPossessa
 	 */
 	public void setContent(String content) {
 		this.content = content;
-		
 		if(content == null || content.length() == 0) {
 			contentTokens = null;
 		} else {
 			List<Token> tokenList = Tokenizer.tokenize(content, false);
-	
 			if(tokenList.size() > 0) {
 				contentTokens = tokenList.toArray(new Token[tokenList.size()]);
 				contentTokens = Tokenizer.optimize(contentTokens);
@@ -139,7 +137,7 @@ public class TemplateRule extends ActionPossessSupport implements ActionPossessa
 	
 	public static TemplateRule newInstance(String file, String resource, String url, String content, String encoding, Boolean noCache) {
 		if(file == null && resource == null && url == null && content == null)
-			throw new IllegalArgumentException("The <template> element requires either a resource or a file or a url attribute.");
+			throw new IllegalArgumentException("The <template> element requires either a file or a resource or a url attribute.");
 		
 		TemplateRule tr = new TemplateRule();
 		tr.setFile(file);

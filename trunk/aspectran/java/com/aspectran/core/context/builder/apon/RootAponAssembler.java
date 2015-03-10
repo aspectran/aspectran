@@ -118,8 +118,8 @@ public class RootAponAssembler {
 			settingParameters.setValue(DefaultSettingsParameters.transletNamePattern, defaultSettings.getTransletNamePattern());
 			settingParameters.setValue(DefaultSettingsParameters.transletNamePatternPrefix, defaultSettings.getTransletNamePatternPrefix());
 			settingParameters.setValue(DefaultSettingsParameters.transletNamePatternSuffix, defaultSettings.getTransletNamePatternSuffix());
-			settingParameters.setValue(DefaultSettingsParameters.transletInterfaceClassName, defaultSettings.getTransletInterfaceClassName());
-			settingParameters.setValue(DefaultSettingsParameters.transletImplementClassName, defaultSettings.getTransletImplementClassName());
+			settingParameters.setValue(DefaultSettingsParameters.transletInterfaceClass, defaultSettings.getTransletInterfaceClassName());
+			settingParameters.setValue(DefaultSettingsParameters.transletImplementClass, defaultSettings.getTransletImplementClassName());
 			settingParameters.setValue(DefaultSettingsParameters.nullableContentId, defaultSettings.getNullableContentId());
 			settingParameters.setValue(DefaultSettingsParameters.nullableActionId, defaultSettings.getNullableActionId());
 			settingParameters.setValue(DefaultSettingsParameters.activityDefaultHandler, defaultSettings.getActivityDefaultHandler());
@@ -630,7 +630,7 @@ public class RootAponAssembler {
 
 	public Parameters assembleItemParameters(ItemRule itemRule) {
 		ItemParameters itemParameters = new ItemParameters();
-		if(itemRule.getType() != null)
+		if(itemRule.getType() != null && itemRule.getType() != ItemType.SINGLE)
 			itemParameters.setValue(ItemParameters.type, itemRule.getType().toString());
 		if(!itemRule.isUnknownName())
 			itemParameters.setValue(ItemParameters.name, itemRule.getName());

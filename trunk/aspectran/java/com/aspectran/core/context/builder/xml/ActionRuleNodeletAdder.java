@@ -135,7 +135,6 @@ public class ActionRuleNodeletAdder implements NodeletAdder {
 		parser.addNodelet(xpath, "/action/end()", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
 				BeanActionRule beanActionRule = assistant.popObject();
-
 				ActionRuleApplicable applicable = assistant.peekObject();
 				applicable.applyActionRule(beanActionRule);
 
@@ -179,7 +178,6 @@ public class ActionRuleNodeletAdder implements NodeletAdder {
 		parser.addNodelet(xpath, "/include/end()", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
 				IncludeActionRule includeActionRule = assistant.popObject();
-				
 				ActionRuleApplicable applicable = assistant.peekObject();
 				applicable.applyActionRule(includeActionRule);
 			}

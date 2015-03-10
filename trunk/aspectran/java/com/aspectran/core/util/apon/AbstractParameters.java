@@ -1,5 +1,6 @@
 package com.aspectran.core.util.apon;
 
+import java.io.IOException;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -16,11 +17,9 @@ public abstract class AbstractParameters implements Parameters {
 	
 	private ParameterValue parent;
 	
+	private final boolean addable;
+	
 	protected AbstractParameters(String title, ParameterDefine[] parameterDefines) {
-		this(title, parameterDefines, null);
-	}
-
-	protected AbstractParameters(String title, ParameterDefine[] parameterDefines, String text) {
 		this.title = title;
 		this.parameterValueMap = new LinkedHashMap<String, ParameterValue>();
 		
@@ -30,11 +29,26 @@ public abstract class AbstractParameters implements Parameters {
 				pv.setHolder(this);
 				parameterValueMap.put(pd.getName(), pv);
 			}
+			addable = false;
+		} else {
+			addable = true;
 		}
+	}
+
+	protected AbstractParameters(String title, ParameterDefine[] parameterDefines, String text) {
+		this(title, parameterDefines);
 		
 		if(text != null) {
-			AponReader reader = new AponReader();
-			reader.read(text, parameterValueMap);
+			try {
+				AponReader reader = new AponReader(text);
+				try {
+					reader.valuelize(parameterValueMap);
+				} finally {
+					reader.close();
+				}
+			} catch(IOException e) {
+				throw new AponReadFailedException(e);
+			}
 		}
 	}
 	
@@ -42,6 +56,10 @@ public abstract class AbstractParameters implements Parameters {
 		return parameterValueMap;
 	}
 	
+	public boolean isAddable() {
+		return addable;
+	}
+
 	public void addParameterValue(ParameterValue parameterValue) {
 		parameterValueMap.put(parameterValue.getName(), parameterValue);
 	}

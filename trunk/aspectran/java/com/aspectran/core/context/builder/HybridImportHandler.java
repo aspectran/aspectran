@@ -20,8 +20,6 @@ import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.io.Reader;
-import java.io.Writer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,30 +61,47 @@ public class HybridImportHandler extends AbstractImportHandler implements Import
 	
 	public void handle(Importable importable) throws Exception {
 		DefaultSettings defaultSettings = assistant.backupDefaultSettings();
+		boolean hybridon = false;
 		
 		if(importable.getImportFileType() == ImportFileType.APON) {
-			Reader reader = importable.getReader(encoding);
-			AponReader aponReader = new AponReader();
-			Parameters rootParameters = aponReader.read(reader, new RootParameters());
-			reader.close();
+			Parameters rootParameters = AponReader.read(importable.getReader(encoding), new RootParameters());
 			
 			if(rootAponDisassembler == null)
 				rootAponDisassembler = new RootAponDisassembler(assistant);
 			
 			rootAponDisassembler.disassembleAspectran(rootParameters);
 		} else {
-			if(aspectranNodeParser == null)
-				aspectranNodeParser = new AspectranNodeParser(assistant);
+			if(importable.getImportType() == ImportType.FILE) {
+				File aponFile = findAponFile((ImportableFile)importable);
+
+				if(importable.getLastModified() == aponFile.lastModified()) {
+					hybridon = true;
+
+					Parameters rootParameters = AponReader.read(aponFile, new RootParameters());
+					
+					if(rootAponDisassembler == null)
+						rootAponDisassembler = new RootAponDisassembler(assistant);
+					
+					rootAponDisassembler.disassembleRoot(rootParameters);
+				}
+			}
 			
-			aspectranNodeParser.parse(importable.getInputStream());
+			if(!hybridon) {
+				if(aspectranNodeParser == null)
+					aspectranNodeParser = new AspectranNodeParser(assistant);
+				
+				aspectranNodeParser.parse(importable.getInputStream());
+			}
 		}
 		
 		handle();
 
 		assistant.restoreDefaultSettings(defaultSettings);
 		
-		if(hybridLoading && importable.getImportType() == ImportType.FILE && importable.getImportFileType() == ImportFileType.XML) {
-			saveAsAponFormat((ImportableFile)importable);
+		if(!hybridon) {
+			if(hybridLoading && importable.getImportType() == ImportType.FILE && importable.getImportFileType() == ImportFileType.XML) {
+				saveAsAponFormat((ImportableFile)importable);
+			}
 		}
 	}
 	
@@ -94,19 +109,16 @@ public class HybridImportHandler extends AbstractImportHandler implements Import
 		logger.info("Save as Apon Format: " + importableFile);
 		
 		File file = null;
+		AponWriter writer = null;
 		
 		try {
-			String basePath = importableFile.getBasePath();
-			String filePath = importableFile.getFilePath() + "." + ImportFileType.APON.toString();
-	
-			file = new File(basePath, filePath);
-			Writer writer = null;
+			file = findAponFile(importableFile);
 			
 			if(encoding != null) {
 				OutputStream outputStream = new FileOutputStream(file);
-				writer = new OutputStreamWriter(outputStream, encoding);
+				writer = new AponWriter(new OutputStreamWriter(outputStream, encoding));
 			} else {
-				writer = new FileWriter(file);
+				writer = new AponWriter(new FileWriter(file));
 			}
 
 			ContextBuilderAssistant assistant = new ShallowContextBuilderAssistant();
@@ -116,15 +128,24 @@ public class HybridImportHandler extends AbstractImportHandler implements Import
 			RootAponAssembler assembler = new RootAponAssembler(assistant);
 			Parameters rootParameters = assembler.assembleRoot();
 			
-			AponWriter aponWriter = new AponWriter(writer);
-			aponWriter.comment(file.getAbsolutePath());
-			aponWriter.write(rootParameters);
-			writer.close();
+			writer.comment(file.getAbsolutePath());
+			writer.write(rootParameters);
 			
 			file.setLastModified(importableFile.getLastModified());
 		} catch(Exception e) {
 			logger.error("Can't save file " + file, e);
+		} finally {
+			if(writer != null)
+				writer.close();
 		}
+	}
+	
+	private File findAponFile(ImportableFile importableFile) {
+		String basePath = importableFile.getBasePath();
+		String filePath = importableFile.getFilePath() + "." + ImportFileType.APON.toString();
+		File file = new File(basePath, filePath);
+		
+		return file;
 	}
 
 }

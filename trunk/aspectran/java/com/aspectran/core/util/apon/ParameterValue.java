@@ -101,6 +101,10 @@ public class ParameterValue implements Parameter {
 		return parameterValueType;
 	}
 
+	public void setParameterValueType(ParameterValueType parameterValueType) {
+		this.parameterValueType = parameterValueType;
+	}
+
 	public boolean isArray() {
 		return array;
 	}

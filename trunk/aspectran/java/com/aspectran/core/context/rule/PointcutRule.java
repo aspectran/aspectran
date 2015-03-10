@@ -187,10 +187,11 @@ public class PointcutRule {
 				}
 				
 				List<Parameters> targetParametersList = pointcutParameters.getParametersList(PointcutParameters.targets);
-				
-				for(Parameters targetParameters : targetParametersList) {
-					addPointcutPatternRule(pointcutRule.touchPointcutPatternRuleList(), targetParameters);
-					pointcutRule.touchTargetParametersList().add(targetParameters);
+				if(targetParametersList != null) {
+					for(Parameters targetParameters : targetParametersList) {
+						addPointcutPatternRule(pointcutRule.touchPointcutPatternRuleList(), targetParameters);
+						pointcutRule.touchTargetParametersList().add(targetParameters);
+					}
 				}
 			}
 		}

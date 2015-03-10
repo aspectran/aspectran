@@ -860,7 +860,8 @@ public class ItemRule {
 			iter = set.iterator();
 		} else if(itemRule.getType() == ItemType.MAP || itemRule.getType() == ItemType.PROPERTIES) {
 			Map<String, Token[]> map = itemRule.getTokensMap();
-			iter = map.values().iterator();
+			if(map != null)
+				iter = map.values().iterator();
 /*
 		} else if(itemRule.getType() == ItemType.PROPERTIES) {
 			Properties prop = itemRule.getTokensProperties();
