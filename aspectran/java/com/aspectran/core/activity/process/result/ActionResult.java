@@ -15,7 +15,7 @@
  */
 package com.aspectran.core.activity.process.result;
 
-import com.aspectran.core.activity.process.FullActionIdConcator;
+import com.aspectran.core.activity.process.ActionIdQualifier;
 
 /**
  * <p>Created: 2008. 03. 23 오후 12:01:24</p>
@@ -102,7 +102,7 @@ public class ActionResult {
 	 * @return the action path
 	 */
 	public String getFullActionId() {
-		return FullActionIdConcator.concat(getContentId(), actionId);
+		return ActionIdQualifier.concat(getContentId(), actionId);
 	}
 
 	/**
@@ -113,7 +113,7 @@ public class ActionResult {
 	 * @return the action path
 	 */
 	public String getFullActionId(String parentFullActionId) {
-		return FullActionIdConcator.concat(parentFullActionId, getContentId(), actionId);
+		return ActionIdQualifier.concat(parentFullActionId, getContentId(), actionId);
 	}
 
 	/* (non-Javadoc)
