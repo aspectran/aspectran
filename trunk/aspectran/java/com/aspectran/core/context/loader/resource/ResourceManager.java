@@ -44,7 +44,6 @@ public class ResourceManager {
 	}
 
 	public static Enumeration<URL> getResources(final Iterator<AspectranClassLoader> owners) {
-		
 		return new Enumeration<URL>() {
 			private Iterator<URL> values;
 			private URL next;

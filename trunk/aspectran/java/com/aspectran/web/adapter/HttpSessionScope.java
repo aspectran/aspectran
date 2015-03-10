@@ -20,14 +20,14 @@ public class HttpSessionScope extends SessionScope implements HttpSessionBinding
 		HttpSession session = event.getSession();
 		
 		if(debugEnabled)
-			logger.debug("session-scope bound: {}, {}", session.getId(), event.getValue());
+			logger.debug("Session Bound: {}, {}", session.getId(), event.getValue());
 	}
 
 	public void valueUnbound(HttpSessionBindingEvent event) {
 		HttpSession session = event.getSession();
 
 		if(debugEnabled)
-			logger.debug("session-scope unbound: {}, {}", session.getId(), event.getValue());
+			logger.debug("Session Unbound: {}, {}", session.getId(), event.getValue());
 		
 		Scope scope = (SessionScope)event.getValue();
 		

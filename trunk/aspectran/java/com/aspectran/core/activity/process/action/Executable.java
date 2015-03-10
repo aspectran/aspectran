@@ -32,7 +32,7 @@ public interface Executable {
 	 */
 	public String getActionId();
 
-	public String getFullActionId();
+	public String getQualifiedActionId();
 
 	/**
 	 * Execute this action.

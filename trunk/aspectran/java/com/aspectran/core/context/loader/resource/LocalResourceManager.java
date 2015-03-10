@@ -120,7 +120,6 @@ public class LocalResourceManager extends ResourceManager {
 			
 			for(Enumeration<JarEntry> entries = jarFile.entries(); entries.hasMoreElements();) {
 				JarEntry entry = entries.nextElement();
-				
 				resourceEntries.putResource(target, entry);
 			}
 		} finally {

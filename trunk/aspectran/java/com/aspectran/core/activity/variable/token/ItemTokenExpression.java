@@ -90,7 +90,7 @@ public class ItemTokenExpression extends TokenExpression implements ItemTokenExp
 			} else if(itemType == ItemType.LIST) {
 				value = expressAsList(ir.getName(), ir.getTokensList(), valueType);
 			} else if(itemType == ItemType.SET) {
-				value = expressAsSet(ir.getName(), ir.getTokensSet(), valueType);
+				value = expressAsSet(ir.getName(), ir.getTokensList(), valueType);
 			} else if(itemType == ItemType.MAP) {
 				value = expressAsMap(ir.getName(), ir.getTokensMap(), valueType);
 			} else if(itemType == ItemType.PROPERTIES) {
@@ -140,13 +140,13 @@ public class ItemTokenExpression extends TokenExpression implements ItemTokenExp
 	 * 
 	 * @return the object[]
 	 */
-	private Set<Object> expressAsSet(String parameterName, Set<Token[]> tokensSet, ItemValueType valueType) {
-		if(tokensSet == null || tokensSet.isEmpty())
+	private Set<Object> expressAsSet(String parameterName, List<Token[]> tokensList, ItemValueType valueType) {
+		if(tokensList == null || tokensList.isEmpty())
 			return getParameterAsSet(parameterName, valueType);
 		
-		Set<Object> valueSet = new HashSet<Object>(tokensSet.size());
+		Set<Object> valueSet = new HashSet<Object>(tokensList.size());
 
-		for(Token[] tokens : tokensSet) {
+		for(Token[] tokens : tokensList) {
 			Object value = express(parameterName, tokens);
 			
 			if(valueType != null)

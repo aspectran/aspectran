@@ -30,8 +30,6 @@ public class WebAspectranService extends CoreAspectranService {
 	
 	public static final String ASPECTRAN_CONFIG_PARAM = "aspectran:config";
 
-	//public static final String WEB_APPLICATION_ADAPTER_ATTRIBUTE =  WebApplicationAdapter.class.getName() + ".WEB_APPLICATION_ADAPTER";
-
 	private static final String DEFAULT_ROOT_CONTEXT = "/WEB-INF/aspectran/root.xml";
 	
 	protected long pauseTimeout;
@@ -65,7 +63,7 @@ public class WebAspectranService extends CoreAspectranService {
 
 		if(pauseTimeout > 0L) {
 			if(pauseTimeout >= System.currentTimeMillis()) {
-				logger.info("aspectran service is paused, did not respond to the request uri [" + requestUri + "]");
+				logger.info("aspectran service is paused, did not respond to the request uri: {}", requestUri);
 				res.sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
 				return;
 			} else {
@@ -86,7 +84,6 @@ public class WebAspectranService extends CoreAspectranService {
 
 				if(activityDefaultHandler != null) {
 					try {
-						//System.out.println("activity.getBean(activityDefaultHandler):" + activity.getBean(activityDefaultHandler));
 						WebActivityDefaultHandler handler = (WebActivityDefaultHandler)activity.getBean(activityDefaultHandler);
 						handler.setServletContext(servlet.getServletContext());
 						handler.handle(req, res);
@@ -124,7 +121,6 @@ public class WebAspectranService extends CoreAspectranService {
 		ServletConfig servletConfig = servlet.getServletConfig();
 		
 		String aspectranConfigParam = servletConfig.getInitParameter(ASPECTRAN_CONFIG_PARAM);
-		System.out.println("aspectranConfigParam: " + aspectranConfigParam);
 		
 		return newInstance(servletContext, aspectranConfigParam);
 	}
@@ -179,46 +175,5 @@ public class WebAspectranService extends CoreAspectranService {
 			}
 		});
 	}
-	
-	/*
-	private WebApplicationAdapter determineWebApplicationAdapter() {
-		WebApplicationAdapter webApplicationAdapter = (WebApplicationAdapter)servletContext.getAttribute(WEB_APPLICATION_ADAPTER_ATTRIBUTE);
-		
-		if(webApplicationAdapter == null)
-			webApplicationAdapter = createWebApplicationAdapter();
 
-		return webApplicationAdapter;
-	}
-	
-	private WebApplicationAdapter getWebApplicationAdapter(ServletContext servletContext) {
-		return (WebApplicationAdapter)servletContext.getAttribute(WEB_APPLICATION_ADAPTER_ATTRIBUTE);
-	}
-	
-	private WebApplicationAdapter createWebApplicationAdapter() {
-		WebApplicationAdapter webApplicationAdapter = new WebApplicationAdapter(servletContext);
-		servletContext.setAttribute(WEB_APPLICATION_ADAPTER_ATTRIBUTE, webApplicationAdapter);
-		
-		logger.debug("WebApplicationAdapter attribute was created. " + webApplicationAdapter);
-		
-		return webApplicationAdapter;
-	}
-
-	private void destoryWebApplicationAdapter() {
-		WebApplicationAdapter webApplicationAdapter = getWebApplicationAdapter(servletContext);
-		
-		if(webApplicationAdapter != null) {
-			Scope scope = webApplicationAdapter.getScope();
-	
-			if(scope != null)
-				scope.destroy();
-
-			if(servletContext.getAttribute(WEB_APPLICATION_ADAPTER_ATTRIBUTE) != null) {
-				servletContext.removeAttribute(WEB_APPLICATION_ADAPTER_ATTRIBUTE);
-				logger.debug("WebApplicationAdapter attribute was removed.");
-			} else {
-				logger.debug("WebApplicationAdapter attribute was already removed.");
-			}
-		}
-	}
-	*/
 }

@@ -94,7 +94,9 @@ public class BeanClassScanner {
 			
 			while(resources.hasMoreElements()) {
 				URL resource = resources.nextElement();
-				System.out.println("classNamePattern: " + classNamePattern + "==scanClass=====" + resource.getFile());
+				//System.out.println("classNamePattern: " + classNamePattern + "==scanClass=====" + resource.getFile());
+				
+				logger.debug("Bean Scanning: {} at {}", classNamePattern, resource.getFile());
 				
 				if(isJarResource(resource)) {
 					scanClassFromJarResource(resource, matcher, scanClasses);

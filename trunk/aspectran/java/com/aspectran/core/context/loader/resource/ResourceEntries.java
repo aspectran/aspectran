@@ -48,7 +48,6 @@ public class ResourceEntries extends LinkedHashMap<String, URL> {
 //		try {
 //			//System.out.println("directory: " + file.toURL());
 //		} catch (MalformedURLException e) {
-//			// TODO Auto-generated catch block
 //			e.printStackTrace();
 //		}
 		

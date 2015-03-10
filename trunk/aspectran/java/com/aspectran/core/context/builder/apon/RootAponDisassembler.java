@@ -77,7 +77,7 @@ import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.apon.Parameters;
 
 /**
- * AspectranAponDisassembler.
+ * RootAponDisassembler.
  * 
  * <p>Created: 2015. 01. 27 오후 10:36:29</p>
  */
@@ -494,8 +494,6 @@ public class RootAponDisassembler {
 			}
 		} else if(echoParametersList != null) {
 			EchoActionRule echoActionRule = EchoActionRule.newInstance(id, hidden);
-			System.out.println("===================================");
-			System.out.println(echoParametersList);
 			ItemRuleMap attributeItemRuleMap = disassembleItemRuleMap(echoParametersList);
 			echoActionRule.setAttributeItemRuleMap(attributeItemRuleMap);
 			actionRuleApplicable.applyActionRule(echoActionRule);
