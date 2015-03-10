@@ -51,7 +51,6 @@ aspectran: {
 			}
 		}
 		advice: {
-			bean: "schedulerFactory"
 			job: {
 				translet: "hello"
 				disabled: false
@@ -78,7 +77,6 @@ aspectran: {
 			}
 		}
 		advice: {
-			bean: "schedulerFactory"
 			job: {
 				translet: "errorCaused"
 				disabled: true
