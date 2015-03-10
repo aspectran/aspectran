@@ -29,11 +29,11 @@ public class ReferenceParameters extends AbstractParameters implements Parameter
 	}
 	
 	public ReferenceParameters() {
-		super(ReferenceParameters.class.getName(), parameterDefines);
+		super(parameterDefines);
 	}
 	
-	public ReferenceParameters(String plaintext) {
-		super(ReferenceParameters.class.getName(), parameterDefines, plaintext);
+	public ReferenceParameters(String text) {
+		super(parameterDefines, text);
 	}
 	
 }

@@ -26,11 +26,11 @@ public class ExcludeTargetParameters extends AbstractParameters implements Param
 	}
 	
 	public ExcludeTargetParameters() {
-		super(ExcludeTargetParameters.class.getName(), parameterDefines);
+		super(parameterDefines);
 	}
 	
-	public ExcludeTargetParameters(String plaintext) {
-		super(ExcludeTargetParameters.class.getName(), parameterDefines, plaintext);
+	public ExcludeTargetParameters(String text) {
+		super(parameterDefines, text);
 	}
 	
 }

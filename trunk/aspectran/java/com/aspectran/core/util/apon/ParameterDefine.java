@@ -24,7 +24,7 @@ public class ParameterDefine {
 		this.name = name;
 		this.parameterValueType = parameterValueType;
 		this.parametersClass = null;
-		this.array = (parameterValueType == ParameterValueType.TEXT) ? true : array;
+		this.array = array;
 		
 		if(this.array && parameterValueType == ParameterValueType.PARAMETERS)
 			this.noBracket = noBracket;
@@ -72,15 +72,6 @@ public class ParameterDefine {
 		ParameterValue parameterValue;
 		
 		if(parameterValueType == ParameterValueType.PARAMETERS && parametersClass != null) {
-			/*
-			Parameters parameters;
-			
-			try {
-				parameters = parametersClass.newInstance();
-			} catch(ReflectiveOperationException e) {
-				throw new InvalidParameterException("Could not instantiate parameters class " + this, e);
-			}
-			*/
 			parameterValue = new ParameterValue(name, parametersClass, array, noBracket, true);
 		} else {
 			parameterValue = new ParameterValue(name, parameterValueType, array, noBracket, true);

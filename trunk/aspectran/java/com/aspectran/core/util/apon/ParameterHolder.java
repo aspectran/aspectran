@@ -18,7 +18,7 @@ public class ParameterHolder {
 				text = PARAMETER_NAME + ": {\n" + text + "\n}";
 		}
 		
-		this.parameters = new GenericParameters("holder", parameterDefines, text);
+		this.parameters = new GenericParameters(parameterDefines, text);
 	}
 	
 	public Parameters[] getParametersArray() {

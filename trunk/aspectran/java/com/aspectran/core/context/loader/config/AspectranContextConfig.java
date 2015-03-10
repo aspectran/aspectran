@@ -1,7 +1,6 @@
 package com.aspectran.core.context.loader.config;
 
 import com.aspectran.core.util.apon.AbstractParameters;
-import com.aspectran.core.util.apon.InvalidParameterException;
 import com.aspectran.core.util.apon.ParameterDefine;
 import com.aspectran.core.util.apon.ParameterValueType;
 import com.aspectran.core.util.apon.Parameters;
@@ -33,11 +32,11 @@ public class AspectranContextConfig extends AbstractParameters implements Parame
 	}
 	
 	public AspectranContextConfig() {
-		super(AspectranContextConfig.class.getName(), parameterDefines);
+		super(parameterDefines);
 	}
 	
-	public AspectranContextConfig(String plaintext) throws InvalidParameterException {
-		super(AspectranContextConfig.class.getName(), parameterDefines, plaintext);
+	public AspectranContextConfig(String text) {
+		super(parameterDefines, text);
 	}
 	
 }

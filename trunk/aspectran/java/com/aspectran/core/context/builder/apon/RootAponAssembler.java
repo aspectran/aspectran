@@ -170,10 +170,9 @@ public class RootAponAssembler {
 		Parameters joinpointParameters = aspectParameters.newParameters(AspectParameters.jointpoint);
 		joinpointParameters.setValue(JoinpointParameters.scope, aspectRule.getJoinpointScope());
 		
-		Parameters pointcutParameters = joinpointParameters.newParameters(JoinpointParameters.pointcut);
-
 		PointcutRule pointcutRule = aspectRule.getPointcutRule();
 		if(pointcutRule != null) {
+			Parameters pointcutParameters = joinpointParameters.newParameters(JoinpointParameters.pointcut);
 			List<Parameters> targetParametersList = pointcutRule.getTargetParametersList();
 			if(targetParametersList != null) {
 				for(Parameters targetParameters : targetParametersList) {
@@ -195,11 +194,10 @@ public class RootAponAssembler {
 			}
 		}
 
-		Parameters adviceParameters = aspectParameters.newParameters(AspectParameters.advice);
-		adviceParameters.setValue(AdviceParameters.bean, aspectRule.getAdviceBeanId());
-		
 		List<AspectAdviceRule> aspectAdviceRuleList = aspectRule.getAspectAdviceRuleList();
 		if(aspectAdviceRuleList != null) {
+			Parameters adviceParameters = aspectParameters.newParameters(AspectParameters.advice);
+			adviceParameters.setValue(AdviceParameters.bean, aspectRule.getAdviceBeanId());
 			for(AspectAdviceRule aspectAdviceRule : aspectAdviceRuleList) {
 				if(aspectAdviceRule.getAspectAdviceType() == AspectAdviceType.BEFORE) {
 					Parameters adviceActionParameters = adviceParameters.newParameters(AdviceParameters.beforeAdvice);
@@ -256,6 +254,7 @@ public class RootAponAssembler {
 		
 		List<AspectJobAdviceRule> aspectJobAdviceRuleList = aspectRule.getAspectJobAdviceRuleList();
 		if(aspectJobAdviceRuleList != null) {
+			Parameters adviceParameters = aspectParameters.touchParameters(AspectParameters.advice);
 			for(AspectJobAdviceRule aspectJobAdviceRule : aspectJobAdviceRuleList) {
 				Parameters jobParameters = new JobParameters();
 				jobParameters.setValue(JobParameters.translet, aspectJobAdviceRule.getJobTransletName());

@@ -22,11 +22,11 @@ public class AspectranConfig extends AbstractParameters implements Parameters {
 	}
 	
 	public AspectranConfig() {
-		super(AspectranConfig.class.getName(), parameterDefines);
+		super(parameterDefines);
 	}
 	
-	public AspectranConfig(String plaintext) {
-		super(AspectranConfig.class.getName(), parameterDefines, plaintext);
+	public AspectranConfig(String text) {
+		super(parameterDefines, text);
 	}
 	
 }

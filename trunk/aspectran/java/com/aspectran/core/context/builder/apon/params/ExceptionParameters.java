@@ -19,11 +19,11 @@ public class ExceptionParameters extends AbstractParameters implements Parameter
 	}
 	
 	public ExceptionParameters() {
-		super(ExceptionParameters.class.getName(), parameterDefines);
+		super(parameterDefines);
 	}
 	
-	public ExceptionParameters(String plaintext) {
-		super(ExceptionParameters.class.getName(), parameterDefines, plaintext);
+	public ExceptionParameters(String text) {
+		super(parameterDefines, text);
 	}
 	
 }

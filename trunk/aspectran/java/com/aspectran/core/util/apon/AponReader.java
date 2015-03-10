@@ -17,16 +17,18 @@ import com.aspectran.core.context.rule.type.ImportFileType;
 
 public class AponReader extends AponFormat implements Closeable {
 
-	private Reader reader;
+	private BufferedReader reader;
 	
 	private boolean addable;
+	
+	private int lineNumber;
 	
 	public AponReader(String text) {
 		this(new StringReader(text));
 	}
 
 	public AponReader(Reader reader) {
-		this.reader = reader;
+		this.reader = new BufferedReader(reader);
 	}
 	
 	public Parameters read() throws IOException {
@@ -42,19 +44,14 @@ public class AponReader extends AponFormat implements Closeable {
 
 		addable = parameters.isAddable();
 		
-		valuelize(parameters.getParameterValueMap());
+		valuelize(parameters, NO_CONTROL_CHAR, null, null, null);
 		
 		return parameters;
 	}
 	
-	protected void valuelize(Map<String, ParameterValue> parameterValueMap) throws IOException {
-		BufferedReader buffered = new BufferedReader(reader);
-		valuelize(parameterValueMap, buffered, 0, NO_CONTROL_CHAR, null, null, null);
-	}
-	
 	/**
 	 * @param parameterValueMap
-	 * @param buffered
+	 * @param reader
 	 * @param lineNumber
 	 * @param openBracket
 	 * @param name
@@ -63,7 +60,9 @@ public class AponReader extends AponFormat implements Closeable {
 	 * @return
 	 * @throws IOException
 	 */
-	private int valuelize(Map<String, ParameterValue> parameterValueMap, BufferedReader buffered, int lineNumber, char openBracket, String name, ParameterValue parameterValue, ParameterValueType parameterValueType) throws IOException {
+	private int valuelize(Parameters parameters, char openBracket, String name, ParameterValue parameterValue, ParameterValueType parameterValueType) throws IOException {
+		Map<String, ParameterValue> parameterValueMap = parameters.getParameterValueMap();
+		
 		String line;
 		String value;
 		String trim;
@@ -71,12 +70,12 @@ public class AponReader extends AponFormat implements Closeable {
 		int vlen;
 		char cchar;
 		
-		while((line = buffered.readLine()) != null) {
+		while((line = reader.readLine()) != null) {
 			lineNumber++;
 			trim = line.trim();
 			tlen = trim.length();
 			
-			System.out.println("[" + lineNumber + "] " + line);
+			//System.out.println("[" + lineNumber + "] " + line);
 
 			if(tlen == 0 || trim.charAt(0) == COMMENT_LINE_START)
 				continue;
@@ -100,7 +99,7 @@ public class AponReader extends AponFormat implements Closeable {
 					throw new InvalidParameterException(lineNumber, line, trim, "Cannot parse into name-value pair.");
 				
 				if(index == 0)
-					throw new InvalidParameterException(lineNumber, line, trim, "Can not recognize the parameter name.");
+					throw new InvalidParameterException(lineNumber, line, trim, "Cannot recognize the parameter name.");
 				
 				name = trim.substring(0, index).trim();
 				value = trim.substring(index + 1).trim();
@@ -150,7 +149,7 @@ public class AponReader extends AponFormat implements Closeable {
 				if(SQUARE_BRACKET_OPEN == cchar) {
 					//System.out.println("1**************[ name: " + name);
 					//System.out.println("1**************[ parameterValue: " + parameterValue);
-					lineNumber = valuelize(parameterValueMap, buffered, lineNumber, SQUARE_BRACKET_OPEN, name, parameterValue, parameterValueType);
+					valuelize(parameters, SQUARE_BRACKET_OPEN, name, parameterValue, parameterValueType);
 					continue;
 				}
 			}
@@ -171,24 +170,26 @@ public class AponReader extends AponFormat implements Closeable {
 			if(parameterValueType == ParameterValueType.PARAMETERS) {
 				//System.out.println("03************** parameterValue: " + parameterValue);
 				if(parameterValue == null) {
-					parameterValue = new ParameterValue(name, parameterValueType, (openBracket == SQUARE_BRACKET_OPEN));
-					parameterValueMap.put(name, parameterValue);
+					parameterValue = parameters.newParameterValue(name, parameterValueType, (openBracket == SQUARE_BRACKET_OPEN));
+					//parameterValueMap.put(name, parameterValue);
 				}
 				//System.out.println("04************** parameterValue: " + parameterValue);
 
-				Parameters parameters2 = parameterValue.newParameters();
+				//Parameters parameters2 = parameterValue.newParameters();
+				Parameters parameters2 = parameters.newParameters(parameterValue.getName());
 				addable = parameters2.isAddable();
 				
-				lineNumber = valuelize(parameters2.getParameterValueMap(), buffered, lineNumber, CURLY_BRACKET_OPEN, null, null, null);
+				valuelize(parameters2, CURLY_BRACKET_OPEN, null, null, null);
 			} else if(parameterValueType == ParameterValueType.TEXT) {
 				if(parameterValue == null) {
-					parameterValue = new ParameterValue(name, parameterValueType, (openBracket == SQUARE_BRACKET_OPEN));
-					parameterValueMap.put(name, parameterValue);
+					parameterValue = parameters.newParameterValue(name, parameterValueType, (openBracket == SQUARE_BRACKET_OPEN));
+					//parameterValueMap.put(name, parameterValue);
 				}
 
 				StringBuilder sb = new StringBuilder();
-				lineNumber = valuelizeText(buffered, lineNumber, sb);
+				valuelizeText(sb);
 				parameterValue.putValue(sb.toString());
+				//System.out.println(lineNumber + ": " + sb.toString());
 			} else {
 				if(vlen == 0) {
 					value = null;
@@ -236,8 +237,8 @@ public class AponReader extends AponFormat implements Closeable {
 				}
 				
 				if(parameterValue == null) {
-					parameterValue = new ParameterValue(name, parameterValueType, (openBracket == SQUARE_BRACKET_OPEN));
-					parameterValueMap.put(name, parameterValue);
+					parameterValue = parameters.newParameterValue(name, parameterValueType, (openBracket == SQUARE_BRACKET_OPEN));
+					//parameterValueMap.put(name, parameterValue);
 				} else {
 					if(parameterValue.getParameterValueType() == ParameterValueType.VARIABLE) {
 						parameterValue.setParameterValueType(parameterValueType);
@@ -277,13 +278,13 @@ public class AponReader extends AponFormat implements Closeable {
 		return lineNumber;
 	}
 	
-	private int valuelizeText(BufferedReader buffered, int lineNumber, StringBuilder sb) throws IOException {
+	private int valuelizeText(StringBuilder sb) throws IOException {
 		String line;
 		String trim = null;
 		int tlen;
 		char tchar;
 		
-		while((line = buffered.readLine()) != null) {
+		while((line = reader.readLine()) != null) {
 			lineNumber++;
 			trim = line.trim();
 			tlen = trim.length();

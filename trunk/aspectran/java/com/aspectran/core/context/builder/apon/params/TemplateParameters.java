@@ -35,11 +35,11 @@ public class TemplateParameters extends AbstractParameters implements Parameters
 	}
 	
 	public TemplateParameters() {
-		super(TemplateParameters.class.getName(), parameterDefines);
+		super(parameterDefines);
 	}
 	
-	public TemplateParameters(String plaintext) {
-		super(TemplateParameters.class.getName(), parameterDefines, plaintext);
+	public TemplateParameters(String text) {
+		super(parameterDefines, text);
 	}
 	
 }

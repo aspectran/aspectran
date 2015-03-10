@@ -48,11 +48,11 @@ public class ActionParameters extends AbstractParameters implements Parameters {
 	}
 	
 	public ActionParameters() {
-		super(ActionParameters.class.getName(), parameterDefines);
+		super(parameterDefines);
 	}
 	
 	public ActionParameters(String plaintext) {
-		super(ActionParameters.class.getName(), parameterDefines, plaintext);
+		super(parameterDefines, plaintext);
 	}
 	
 }

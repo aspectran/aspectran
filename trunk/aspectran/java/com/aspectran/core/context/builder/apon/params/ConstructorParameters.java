@@ -19,11 +19,11 @@ public class ConstructorParameters extends AbstractParameters implements Paramet
 	}
 	
 	public ConstructorParameters() {
-		super(ConstructorParameters.class.getName(), parameterDefines);
+		super(parameterDefines);
 	}
 	
-	public ConstructorParameters(String plaintext) {
-		super(ConstructorParameters.class.getName(), parameterDefines, plaintext);
+	public ConstructorParameters(String text) {
+		super(parameterDefines, text);
 	}
 	
 }

@@ -22,11 +22,11 @@ public class ExceptionRaizedParameters extends AbstractParameters implements Par
 	}
 	
 	public ExceptionRaizedParameters() {
-		super(ExceptionRaizedParameters.class.getName(), parameterDefines);
+		super(parameterDefines);
 	}
 	
-	public ExceptionRaizedParameters(String plaintext) {
-		super(ExceptionRaizedParameters.class.getName(), parameterDefines, plaintext);
+	public ExceptionRaizedParameters(String text) {
+		super(parameterDefines, text);
 	}
 	
 }

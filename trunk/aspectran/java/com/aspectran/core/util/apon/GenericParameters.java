@@ -4,23 +4,19 @@ package com.aspectran.core.util.apon;
 public class GenericParameters extends AbstractParameters implements Parameters {
 
 	public GenericParameters() {
-		super(null, null);
+		super(null);
 	}
 	
 	public GenericParameters(String text) {
-		super(null, null, text);
+		super(null, text);
 	}
 
-	public GenericParameters(String title, String text) {
-		super(title, null, text);
-	}
-
-	public GenericParameters(String title, ParameterDefine[] parameterDefines) {
-		super(title, parameterDefines);
+	public GenericParameters(ParameterDefine[] parameterDefines) {
+		super(parameterDefines);
 	}
 	
-	public GenericParameters(String title, ParameterDefine[] parameterDefines, String text) {
-		super(title, parameterDefines, text);
+	public GenericParameters(ParameterDefine[] parameterDefines, String text) {
+		super(parameterDefines, text);
 	}
 
 	public void setValue(String name, Object value) {

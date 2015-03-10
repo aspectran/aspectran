@@ -33,11 +33,11 @@ public class AspectParameters extends AbstractParameters implements Parameters {
 	}
 	
 	public AspectParameters() {
-		super(AspectParameters.class.getName(), parameterDefines);
+		super(parameterDefines);
 	}
 	
-	public AspectParameters(String plaintext) {
-		super(AspectParameters.class.getName(), parameterDefines, plaintext);
+	public AspectParameters(String text) {
+		super(parameterDefines, text);
 	}
 	
 }

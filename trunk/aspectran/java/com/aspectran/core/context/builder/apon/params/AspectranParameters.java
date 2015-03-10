@@ -35,11 +35,11 @@ public class AspectranParameters extends AbstractParameters implements Parameter
 	}
 	
 	public AspectranParameters() {
-		super(AspectranParameters.class.getName(), parameterDefines);
+		super(parameterDefines);
 	}
 	
-	public AspectranParameters(String plaintext) {
-		super(AspectranParameters.class.getName(), parameterDefines, plaintext);
+	public AspectranParameters(String text) {
+		super(parameterDefines, text);
 	}
 	
 }

@@ -50,11 +50,11 @@ public class TransletParameters extends AbstractParameters implements Parameters
 	}
 	
 	public TransletParameters() {
-		super(TransletParameters.class.getName(), parameterDefines);
+		super(parameterDefines);
 	}
 	
-	public TransletParameters(String plaintext) {
-		super(TransletParameters.class.getName(), parameterDefines, plaintext);
+	public TransletParameters(String text) {
+		super(parameterDefines, text);
 	}
 	
 }

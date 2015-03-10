@@ -5,6 +5,8 @@ import java.util.List;
 
 public class ParameterValue implements Parameter {
 
+	private Parameters container;
+	
 	private final String name;
 	
 	private ParameterValueType parameterValueType;
@@ -20,8 +22,6 @@ public class ParameterValue implements Parameter {
 	private Object value;
 	
 	private List<Object> list;
-	
-	private Parameters holder;
 	
 	private boolean assigned;
 	
@@ -70,12 +70,12 @@ public class ParameterValue implements Parameter {
 			this.bracketed = true;
 	}
 	
-	protected Parameters getHolder() {
-		return holder;
+	public Parameters getContainer() {
+		return container;
 	}
 
-	protected void setHolder(Parameters holder) {
-		this.holder = holder;
+	public void setContainer(Parameters container) {
+		this.container = container;
 	}
 
 	public String getName() {
@@ -83,18 +83,15 @@ public class ParameterValue implements Parameter {
 	}
 
 	public String getQualifiedName() {
-		if(holder == null)
+		if(container == null)
 			return name;
 		
-		ParameterValue parent = holder.getParent();
+		Parameter prototype = container.getPrototype();
 		
-		if(parent != null)
-			return parent.getQualifiedName() + "." + name;
+		if(prototype != null)
+			return prototype.getQualifiedName() + "." + name;
 		
-		if(holder.getTitle() == null)
-			return name;
-		
-		return holder.getTitle() + "." + name;
+		return name;
 	}
 
 	public ParameterValueType getParameterValueType() {
@@ -241,23 +238,6 @@ public class ParameterValue implements Parameter {
 		
 		return list2;
 	}
-	
-//	public String getValueAsText() {
-//		if(array) {
-//			if(list == null)
-//				return null;
-//			
-//			StringBuilder sb = new StringBuilder();
-//			
-//			for(int i = 0; i < list.size(); i++) {
-//				sb.append(list.get(i).toString()).append("\n");
-//			}
-//			
-//			return sb.toString();
-//		} else {
-//			return getValueAsString();
-//		}
-//	}
 
 	public Integer getValueAsInt() {
 		checkParameterValueType(ParameterValueType.INT);
@@ -403,8 +383,7 @@ public class ParameterValue implements Parameter {
 		return (List<Parameters>)getValueList();
 	}
 
-	//@SuppressWarnings("unchecked")
-	public Parameters newParameters() {
+	public Parameters newParameters(Parameter prototype) {
 		if(parameterValueType == ParameterValueType.VARIABLE) {
 			parameterValueType = ParameterValueType.PARAMETERS;
 			parametersClass = GenericParameters.class;
@@ -414,37 +393,16 @@ public class ParameterValue implements Parameter {
 				parametersClass = GenericParameters.class;
 		}
 
-		//System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&: this.individual: " + this.individual + ", individual: " + individual);
-
-		//if(list == null)
-		//	return (Parameters)value;
-		
-		//Class<? extends AbstractParameters> type = (Class<? extends AbstractParameters>)value.getClass();
-		
 		try {
 			Parameters p = (Parameters)parametersClass.newInstance();
-			p.setParent(this);
+			p.setPrototype(prototype);
 			putValue(p);
 			return p;
 		} catch(Exception e) {
-			throw new InvalidParameterException(e);
+			throw new InvalidParameterException("Could not instantiate parameters class " + parametersClass, e);
 		}
 	}
-/*
-	protected Parameters touchValueAsParameters() {
-		if(value == null && parameterValueType == ParameterValueType.VARIABLE) {
-			parameterValueType = ParameterValueType.PARAMETERS;
-			parametersClass = GenericParameters.class;
-			value = new GenericParameters();
-		} else {
-			checkParameterValueType(ParameterValueType.PARAMETERS);
-		}
-		
-		
-		
-		return (Parameters)value;
-	}
-*/
+
 	private void checkParameterValueType(ParameterValueType parameterValueType) {
 		if(this.parameterValueType != ParameterValueType.VARIABLE && this.parameterValueType != parameterValueType)
 			throw new IncompatibleParameterValueTypeException(this, parameterValueType);
@@ -460,7 +418,7 @@ public class ParameterValue implements Parameter {
 		sb.append("{name=").append(name);
 		sb.append(", parameterValueType=").append(parameterValueType);
 		if(parameterValueType == ParameterValueType.PARAMETERS)
-			sb.append(", parametersClass=").append(parametersClass);
+			sb.append(", parametersClass=").append(parametersClass.getName());
 		sb.append(", array=").append(array);
 		if(array)
 			sb.append(", arraySize=").append(getArraySize());

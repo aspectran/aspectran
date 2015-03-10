@@ -35,11 +35,11 @@ public class ResponseParameters extends AbstractParameters implements Parameters
 	}
 	
 	public ResponseParameters() {
-		super(ResponseParameters.class.getName(), parameterDefines);
+		super(parameterDefines);
 	}
 	
-	public ResponseParameters(String plaintext) {
-		super(ResponseParameters.class.getName(), parameterDefines, plaintext);
+	public ResponseParameters(String text) {
+		super(parameterDefines, text);
 	}
 	
 }

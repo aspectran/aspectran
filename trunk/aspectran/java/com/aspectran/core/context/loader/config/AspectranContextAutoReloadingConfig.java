@@ -1,7 +1,6 @@
 package com.aspectran.core.context.loader.config;
 
 import com.aspectran.core.util.apon.AbstractParameters;
-import com.aspectran.core.util.apon.InvalidParameterException;
 import com.aspectran.core.util.apon.ParameterDefine;
 import com.aspectran.core.util.apon.ParameterValueType;
 import com.aspectran.core.util.apon.Parameters;
@@ -27,11 +26,11 @@ public class AspectranContextAutoReloadingConfig extends AbstractParameters impl
 	}
 	
 	public AspectranContextAutoReloadingConfig() {
-		super(AspectranContextAutoReloadingConfig.class.getName(), parameterValues);
+		super(parameterValues);
 	}
 	
-	public AspectranContextAutoReloadingConfig(String plaintext) throws InvalidParameterException {
-		super(AspectranContextAutoReloadingConfig.class.getName(), parameterValues, plaintext);
+	public AspectranContextAutoReloadingConfig(String text) {
+		super(parameterValues, text);
 	}
 	
 }
