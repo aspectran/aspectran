@@ -154,7 +154,9 @@
 	</translet>
 
 	<translet name="errorCaused">
-		<action id="result" bean="exampleJobAction" method="errorCaused"/>
+		<content>
+			<action id="result" bean="exampleJobAction" method="errorCaused"/>
+		</content>
 		<transform type="transform/xml"/>
 	</translet>
 
