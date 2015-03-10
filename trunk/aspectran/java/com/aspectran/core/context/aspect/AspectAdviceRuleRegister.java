@@ -25,7 +25,7 @@ public class AspectAdviceRuleRegister {
 		register(aspectAdviceRuleRegistry, aspectRule, null);
 	}
 	
-	public static void register(AspectAdviceRuleRegistry aspectAdviceRuleRegistry, AspectRule aspectRule, AspectAdviceType withoutAspectAdviceType) {
+	public static void register(AspectAdviceRuleRegistry aspectAdviceRuleRegistry, AspectRule aspectRule, AspectAdviceType excludeAspectAdviceType) {
 		SettingsAdviceRule settingsAdviceRule = aspectRule.getSettingsAdviceRule();
 		List<AspectAdviceRule> aspectAdviceRuleList = aspectRule.getAspectAdviceRuleList();
 		
@@ -34,7 +34,7 @@ public class AspectAdviceRuleRegister {
 		
 		if(aspectAdviceRuleList != null) {
 			for(AspectAdviceRule aspectAdviceRule : aspectAdviceRuleList) {
-				if(withoutAspectAdviceType == null || aspectAdviceRule.getAspectAdviceType() != withoutAspectAdviceType)
+				if(excludeAspectAdviceType == null || aspectAdviceRule.getAspectAdviceType() != excludeAspectAdviceType)
 					aspectAdviceRuleRegistry.addAspectAdviceRule(aspectAdviceRule);
 			}
 		}

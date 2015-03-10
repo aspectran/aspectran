@@ -557,7 +557,7 @@ public class CoreActivity extends AbstractActivity implements Activity {
 	 */
 	private void forward() throws ActivityException {
 		if(debugEnabled) {
-			logger.debug("forwarding for translet '" + forwardTransletName + "'");
+			logger.debug("forwarding for translet: {}", forwardTransletName);
 		}
 		
 		ProcessResult processResult = translet.getProcessResult();
@@ -602,7 +602,7 @@ public class CoreActivity extends AbstractActivity implements Activity {
 			responseRule = newResponseRule;
 			
 			if(debugEnabled) {
-				logger.debug("response by content-type: " + responseRule);
+				logger.debug("response by content-type: ", responseRule);
 			}
 
 			translet.setProcessResult(null);
@@ -873,7 +873,7 @@ public class CoreActivity extends AbstractActivity implements Activity {
 
 	public void registerAspectRule(AspectRule aspectRule) throws ActionExecutionException {
 		if(debugEnabled)
-			logger.debug("registerAspectRule " + aspectRule);
+			logger.debug("registerAspectRule {}", aspectRule);
 		
 		JoinpointScopeType joinpointScope2 = aspectRule.getJoinpointScope();
 		

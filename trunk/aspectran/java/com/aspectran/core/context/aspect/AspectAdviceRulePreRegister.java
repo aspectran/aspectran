@@ -87,12 +87,7 @@ public class AspectAdviceRulePreRegister extends AspectAdviceRuleRegister {
 					}
 				} else if(joinpointScope == JoinpointScopeType.CONTENT) {
 					if(pointcut == null || pointcut.strictMatches(transletRule.getName())) {
-						ContentList contentList = transletRule.getContentList();
-						
-						if(contentList == null) {
-							contentList = new ContentList();
-							transletRule.setContentList(contentList);
-						}
+						ContentList contentList = transletRule.touchContentList();
 
 						if(logger.isTraceEnabled())
 							logger.trace("aspectRule " + aspectRule + "\n\t> transletRule " + transletRule + "\n\t> contentList " + contentList);
