@@ -23,7 +23,7 @@ import com.aspectran.core.context.AspectranConstant;
 public class FullActionIdConcator {
 
 	/**
-	 * Make a action path.
+	 * Make a qualified action ID.
 	 * 
 	 * @param contentId the content id
 	 * @param actionId the action id
@@ -46,7 +46,7 @@ public class FullActionIdConcator {
 	}
 	
 	/**
-	 * Make a action path.
+	 * Make a qualified action ID.
 	 * 
 	 * @param parentFullActionId the parent action path
 	 * @param contentId the content id
