@@ -12,15 +12,11 @@ aspectran: {
 		useFor: "translet"
 		joinpoint: {
 			scope: "request"
-			pointcut: {
-			}
 		}
 		setting: {
 			multipart.temporaryFilePath: "/d:/"
 			multipart.maxRequestSize: "10M"
 			characterEncoding: "utf-8"
-		}
-		advice: {
 		}
 	}
 	aspect: {
@@ -28,15 +24,11 @@ aspectran: {
 		useFor: "translet"
 		joinpoint: {
 			scope: "response"
-			pointcut: {
-			}
 		}
 		setting: {
 			viewDispatcher: "jspViewDispatcher"
 			characterEncoding: "utf-8"
 			defaultContentType: "text/html"
-		}
-		advice: {
 		}
 	}
 	aspect: {
@@ -44,15 +36,11 @@ aspectran: {
 		useFor: "translet"
 		joinpoint: {
 			scope: "response"
-			pointcut: {
-			}
 		}
 		setting: {
 			multipart.temporaryFilePath: "/d:/"
 			multipart.maxRequestSize: "10M"
 			characterEncoding: "utf-8"
-		}
-		advice: {
 		}
 	}
 	aspect: {
@@ -76,13 +64,15 @@ aspectran: {
 						action: {
 						}
 						action: {
-							echo: {
-								type: "map"
-								value: {
-									errorCode: "E0001"
-									message: "error occured."
+							echo: [
+								{
+									type: "map"
+									value: {
+										errorCode: "E0001"
+										message: "error occured."
+									}
 								}
-							}
+							]
 						}
 					}
 				}
@@ -229,17 +219,15 @@ aspectran: {
 	}
 	translet: {
 		name: "hello/countTo10twice"
-		content: {
-			action: {
-				id: "result1"
-				beanId: "example.hello.HelloAction"
-				method: "countTo10"
-			}
-			action: {
-				id: "result2"
-				beanId: "example.hello.HelloAction"
-				method: "countTo10"
-			}
+		action: {
+			id: "result1"
+			beanId: "example.hello.HelloAction"
+			method: "countTo10"
+		}
+		action: {
+			id: "result2"
+			beanId: "example.hello.HelloAction"
+			method: "countTo10"
 		}
 		transform: {
 			type: "transform/text"
@@ -336,16 +324,18 @@ aspectran: {
 			}
 			action: {
 				id: "echo"
-				echo: {
-					type: "map"
-					name: "map0"
-					value: {
-						item1: "${item1}"
-						item2: "${item2}"
+				echo: [
+					{
+						type: "map"
+						name: "map0"
+						value: {
+							item1: "${item1}"
+							item2: "${item2}"
+						}
+						valueType: "string"
+						tokenize: true
 					}
-					valueType: "string"
-					tokenize: true
-				}
+				]
 			}
 		}
 	}
@@ -371,31 +361,28 @@ aspectran: {
 		name: "goNaver"
 		redirect: {
 			url: "http://search.naver.com/search.naver"
-			parameter: {
-				type: "single"
-				name: "where"
-				value: "nexearch"
-			}
-			parameter: {
-				type: "single"
-				name: "query"
-				value: "서울"
-			}
-			parameter: {
-				type: "single"
-				name: "sm"
-				value: "top_hty"
-			}
-			parameter: {
-				type: "single"
-				name: "fbm"
-				value: "1"
-			}
-			parameter: {
-				type: "single"
-				name: "ie"
-				value: "utf8"
-			}
+			parameter: [
+				{
+					name: "where"
+					value: "nexearch"
+				}
+				{
+					name: "query"
+					value: "서울"
+				}
+				{
+					name: "sm"
+					value: "top_hty"
+				}
+				{
+					name: "fbm"
+					value: "1"
+				}
+				{
+					name: "ie"
+					value: "utf8"
+				}
+			]
 		}
 	}
 	import: {
