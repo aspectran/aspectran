@@ -15,6 +15,7 @@
  */
 package com.aspectran.core.util.json;
 
+import java.io.Closeable;
 import java.io.IOException;
 import java.io.Writer;
 import java.lang.reflect.Array;
@@ -29,7 +30,7 @@ import com.aspectran.core.util.BeanUtils;
 /**
  * <p>Created: 2008. 06. 12 오후 8:20:54</p>
  */
-public class JsonWriter {
+public class JsonWriter implements Closeable {
 
 	private Writer writer;
 
@@ -307,6 +308,16 @@ public class JsonWriter {
 		writer.flush();
 	}
 
+	/* (non-Javadoc)
+	 * @see java.io.Closeable#close()
+	 */
+	public void close() throws IOException {
+		if(writer != null)
+			writer.close();
+		
+		writer = null;
+	}
+	
 	/**
 	 * Produce a string in double quotes with backslash sequences in all the
 	 * right places. A backslash will be inserted within </, allowing JSON

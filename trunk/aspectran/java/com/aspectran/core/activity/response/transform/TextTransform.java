@@ -27,6 +27,9 @@ import org.slf4j.LoggerFactory;
 
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.process.ActionList;
+import com.aspectran.core.activity.process.result.ActionResult;
+import com.aspectran.core.activity.process.result.ContentResult;
+import com.aspectran.core.activity.process.result.ProcessResult;
 import com.aspectran.core.activity.response.Response;
 import com.aspectran.core.activity.variable.token.Token;
 import com.aspectran.core.activity.variable.token.TokenExpression;
@@ -34,6 +37,7 @@ import com.aspectran.core.activity.variable.token.TokenExpressor;
 import com.aspectran.core.activity.variable.token.Tokenizer;
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
+import com.aspectran.core.context.AspectranConstant;
 import com.aspectran.core.context.rule.TemplateRule;
 import com.aspectran.core.context.rule.TransformRule;
 import com.aspectran.core.context.rule.type.TokenType;
@@ -69,7 +73,7 @@ public class TextTransform extends TransformResponse implements Response {
 	
 	private boolean templateLoaded;
 	
-	private final boolean innerContent;
+	private final boolean builtinContent;
 	
 	/**
 	 * Instantiates a new text transformer.
@@ -81,17 +85,25 @@ public class TextTransform extends TransformResponse implements Response {
 		this.templateRule = transformRule.getTemplateRule();
 		this.contentType = transformRule.getContentType();
 		this.outputEncoding = transformRule.getCharacterEncoding();
-		this.templateFile = templateRule.getFile();
-		this.templateResource = templateRule.getResource();
-		this.templateUrl = templateRule.getUrl();
-		this.templateEncoding = templateRule.getEncoding();
-		this.contentTokens = templateRule.getContentTokens();
-		this.noCache = templateRule.isNoCache();
-		
+		if(templateRule != null) {
+			this.templateFile = templateRule.getFile();
+			this.templateResource = templateRule.getResource();
+			this.templateUrl = templateRule.getUrl();
+			this.templateEncoding = templateRule.getEncoding();
+			this.contentTokens = templateRule.getContentTokens();
+			this.noCache = templateRule.isNoCache();
+		} else {
+			this.templateFile = null;
+			this.templateResource = null;
+			this.templateUrl = null;
+			this.templateEncoding = null;
+			this.contentTokens = null;
+			this.noCache = true;
+		}
 		if(contentTokens != null && templateFile == null && templateResource == null && templateUrl == null)
-			innerContent = true;
+			builtinContent = true;
 		else
-			innerContent = false;
+			builtinContent = false;
 	}
 
 	/* (non-Javadoc)
@@ -108,7 +120,7 @@ public class TextTransform extends TransformResponse implements Response {
 		}
 
 		try {
-			if(!innerContent)
+			if(templateRule != null && !builtinContent)
 				loadTemplate(activity.getApplicationAdapter());
 
 			if(contentType != null)
@@ -117,15 +129,35 @@ public class TextTransform extends TransformResponse implements Response {
 			if(outputEncoding != null)
 				responseAdapter.setCharacterEncoding(outputEncoding);
 			
-			TokenExpressor expressor = new TokenExpression(activity);
-			String content = expressor.expressAsString(contentTokens);
-
-			if(content != null) {
-				Writer output = responseAdapter.getWriter();
-				output.write(content);
-				output.flush();
-				output.close();
+			if(templateRule != null) {
+				TokenExpressor expressor = new TokenExpression(activity);
+				String content = expressor.expressAsString(contentTokens);
+				
+				if(content != null) {
+					Writer output = responseAdapter.getWriter();
+					output.write(content);
+					output.close();
+				}
+			} else {
+				ProcessResult processResult = activity.getProcessResult();
+				if(processResult != null) {
+					Writer output = responseAdapter.getWriter();
+					int chunks = 0;
+					for(ContentResult contentResult : processResult) {
+						for(ActionResult actionResult : contentResult) {
+							if(actionResult != null && actionResult != ActionResult.NO_RESULT) {
+								if(chunks++ > 0)
+									output.write(AspectranConstant.LINE_SEPARATOR);
+								
+								Object value = actionResult.getResultValue();
+								output.write(value.toString());
+							}
+						}
+					}
+					output.close();
+				}
 			}
+
 		} catch(Exception e) {
 			throw new TransformResponseException("Text Tranformation error: " + transformRule, e);
 		}

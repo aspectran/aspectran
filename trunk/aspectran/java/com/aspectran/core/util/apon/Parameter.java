@@ -11,6 +11,8 @@ public interface Parameter {
 	public String getQualifiedName();
 
 	public ParameterValueType getParameterValueType();
+	
+	public void setParameterValueType(ParameterValueType parameterValueType);
 
 	public boolean isArray();
 	
@@ -22,9 +24,9 @@ public interface Parameter {
 	
 	public Object getValue();
 	
-	public void setValue(Object value);
-	
 	public void putValue(Object value);
+	
+	public void clearValue();
 	
 	public Object[] getValues();
 
@@ -35,8 +37,6 @@ public interface Parameter {
 	public String[] getValueAsStringArray();
 
 	public List<String> getValueAsStringList();
-	
-	//public String getValueAsText();
 	
 	public Integer getValueAsInt();
 

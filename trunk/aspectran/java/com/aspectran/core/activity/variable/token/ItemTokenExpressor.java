@@ -49,6 +49,6 @@ public interface ItemTokenExpressor {
 	 *
 	 * @param tokenValueHandler the new token value handler
 	 */
-	public void setTokenValueHandler(TokenValueHandler tokenValueHandler);
+	//public void setTokenValueHandler(TokenValueHandler tokenValueHandler);
 
 }

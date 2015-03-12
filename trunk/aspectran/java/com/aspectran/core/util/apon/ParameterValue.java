@@ -129,25 +129,20 @@ public class ParameterValue implements Parameter {
 		return list.size();
 	}
 	
-	@SuppressWarnings("unchecked")
-	public void setValue(Object value) {
-		if(array) {
-			if(value instanceof List) {
-				list = (List<Object>)value;
-				assigned = true;
-			} else {
-				list = null;
-				addValue(value);
-			}
-			this.value = null;
-		} else {
-			this.value = value;
-			this.list = null;
-			assigned = true;
-		}
-	}
-	
 	public void putValue(Object value) {
+		if(!predefined) {
+			if(parameterValueType == ParameterValueType.STRING) {
+				if(value.toString().indexOf(AponFormat.NEXT_LINE_CHAR) != -1)
+					parameterValueType = ParameterValueType.TEXT;
+			} else if(parameterValueType == ParameterValueType.VARIABLE && value instanceof String) {
+				if(value.toString().indexOf(AponFormat.NEXT_LINE_CHAR) != -1) {
+					parameterValueType = ParameterValueType.TEXT;
+				} else {
+					parameterValueType = ParameterValueType.STRING;
+				}
+			}
+		}
+
 		if(!predefined && !array && this.value != null) {
 			addValue(this.value);
 			addValue(value);
@@ -162,6 +157,12 @@ public class ParameterValue implements Parameter {
 				assigned = true;
 			}
 		}
+	}
+	
+	public void clearValue() {
+		value = null;
+		list = null;
+		assigned = false;
 	}
 	
 	private synchronized void addValue(Object value) {
@@ -181,6 +182,12 @@ public class ParameterValue implements Parameter {
 	}
 
 	public List<?> getValueList() {
+		if(!predefined && value != null && list == null && parameterValueType == ParameterValueType.VARIABLE) {
+			List<Object> list = new ArrayList<Object>();
+			list.add(value);
+			return list;
+		}
+		
 		return list;
 	}
 	
@@ -195,9 +202,6 @@ public class ParameterValue implements Parameter {
 		if(value == null)
 			return null;
 
-		if(value instanceof Parameters)
-			return ((Parameters)value).toText();
-		
 		return value.toString();
 	}
 	

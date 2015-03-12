@@ -16,7 +16,6 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.loader.resource.InvalidResourceException;
 import com.aspectran.core.context.loader.resource.LocalResourceManager;
 import com.aspectran.core.context.loader.resource.ResourceManager;
@@ -539,7 +538,11 @@ public class AspectranClassLoader extends ClassLoader {
 		}
 
 		if(cl == null) {
-			cl = ActivityContext.class.getClassLoader();
+			cl = AspectranClassLoader.class.getClassLoader();
+		}
+		
+		if(cl == null) {
+			cl = ClassLoader.getSystemClassLoader();
 		}
 		
 		return cl;

@@ -45,7 +45,7 @@ public class TokenExpression implements TokenExpressor {
 	
 	protected BeanRegistry beanRegistry;
 	
-	protected TokenValueHandler tokenValueHandler;
+	//protected TokenValueHandler tokenValueHandler;
 	
 	public TokenExpression(BeanRegistry beanRegistry) {
 		this.beanRegistry = beanRegistry;
@@ -65,9 +65,11 @@ public class TokenExpression implements TokenExpressor {
 	 * 
 	 * @param tokenValueHandler the new token value handler
 	 */
+	/*
 	public void setTokenValueHandler(TokenValueHandler tokenValueHandler) {
 		this.tokenValueHandler = tokenValueHandler;
 	}
+	*/
 
 	/**
 	 * Express.
@@ -132,25 +134,6 @@ public class TokenExpression implements TokenExpressor {
 		return value.toString();
 	}
 
-	//	public String express(Token[] tokens) {
-//		if(tokens == null)
-//			return null;
-//		
-//		if(tokens.length == 0)
-//			return StringUtils.EMPTY;
-//		
-//		StringBuilder sb = new StringBuilder();
-//		
-//		for(Token t : tokens) {
-//			Object value = express(t);
-//			
-//			if(value != null)
-//				sb.append(value.toString());
-//		}
-//		
-//		return sb.toString();
-//	}
-	
 	/**
 	 * Express as String.
 	 * 

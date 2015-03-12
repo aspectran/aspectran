@@ -283,7 +283,7 @@ public class AponWriter extends AponFormat implements Closeable {
 		writer = null;
 	}
 	
-	public static String toText(Parameters parameters) {
+	public static String toString(Parameters parameters) {
 		if(parameters == null)
 			return null;
 		

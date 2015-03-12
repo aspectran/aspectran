@@ -202,8 +202,6 @@ public class FileUtils {
 			output.write(buffer, 0, len);
 		}
 
-		output.flush();
-
 		input.close();
 		output.close();
 	}

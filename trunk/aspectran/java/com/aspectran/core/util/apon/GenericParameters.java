@@ -18,15 +18,22 @@ public class GenericParameters extends AbstractParameters implements Parameters 
 	public GenericParameters(ParameterDefine[] parameterDefines, String text) {
 		super(parameterDefines, text);
 	}
-
-	public void setValue(String name, Object value) {
-		ParameterValue p = newParameterValue(name, value);
-		p.setValue(value);
-	}
 	
 	public void putValue(String name, Object value) {
-		ParameterValue p = newParameterValue(name, value);
+		Parameter p = touchParameterValue(name, value);
 		p.putValue(value);
+	}
+	
+	private Parameter touchParameterValue(String name, Object value) {
+		Parameter p = parameterValueMap.get(name);
+		
+		if(p == null && isAddable())
+			p = newParameterValue(name, determineParameterValueType(value));
+		
+		if(p == null)
+			throw new UnknownParameterException(name, this);
+		
+		return p;
 	}
 
 	private ParameterValue newParameterValue(String name, ParameterValueType parameterValueType) {
@@ -34,16 +41,12 @@ public class GenericParameters extends AbstractParameters implements Parameters 
 		parameterValueMap.put(name, p);
 		return p;
 	}
-	
-	private ParameterValue newParameterValue(String name, Object value) {
-		return newParameterValue(name, determineParameterValueType(value));
-	}
-	
+
 	private ParameterValueType determineParameterValueType(Object value) {
 		ParameterValueType parameterValueType;
 		
 		if(value instanceof String) {
-			if(((String) value).indexOf(AponFormat.NEXT_LINE_CHAR) == -1)
+			if(value.toString().indexOf(AponFormat.NEXT_LINE_CHAR) == -1)
 				parameterValueType = ParameterValueType.STRING;
 			else
 				parameterValueType = ParameterValueType.TEXT;

@@ -43,26 +43,20 @@ public final class ItemValueType extends Type {
 	/** The "boolean" item type. */
 	public static final ItemValueType BOOLEAN;
 	
-	/** The "hashMap" item type. */
-	//public static final ItemValueType HASH_MAP;
-
-	/** The "linkedHashMap" item type. */
-	//public static final ItemValueType LINKED_HASH_MAP;
+	/** The "parameters" item type. */
+	public static final ItemValueType PARAMETERS;
 	
-	/** The "arrayList" item type. */
-	//public static final ItemValueType ARRAY_LIST;
-	
-	/** The "custom" item type. */
-	public static final ItemValueType CUSTOM;
-	
-	/** The "custom" item type. */
+	/** The "file" item type. */
 	public static final ItemValueType FILE;
 	
-	/** The "custom" item type. */
+	/** The "multipart-file" item type. */
 	public static final ItemValueType MULTIPART_FILE;
 	
-	private static final Map<String, ItemValueType> types;
+	/** The "custom" item type. */
+	//public static final ItemValueType CUSTOM;
 	
+	private static final Map<String, ItemValueType> types;
+
 	private String fullQualifiedName;
 	
 	static {
@@ -72,12 +66,10 @@ public final class ItemValueType extends Type {
 		FLOAT = new ItemValueType("float", "java.lang.Float");
 		DOUBLE = new ItemValueType("double", "java.lang.Double");
 		BOOLEAN = new ItemValueType("boolean", "java.lang.Boolean");
-		//HASH_MAP = new ItemValueType("hashMap", "java.util.HashMap");
-		//LINKED_HASH_MAP = new ItemValueType("linkedHashMap", "java.util.LinkedHashMap");
-		//ARRAY_LIST = new ItemValueType("arrayList", "java.util.ArrayList");
-		CUSTOM = new ItemValueType("custom", null);
-		FILE = new ItemValueType("file", null);
-		MULTIPART_FILE = new ItemValueType("multipartFile", null);
+		PARAMETERS = new ItemValueType("parameters", "com.aspectran.core.util.apon.Parameters");
+		FILE = new ItemValueType("file", "java.io.File");
+		MULTIPART_FILE = new ItemValueType("multipart-file", "com.aspectran.core.activity.request.parameter.FileParameter.FileParameter");
+		//CUSTOM = new ItemValueType("custom", null);
 
 		types = new HashMap<String, ItemValueType>();
 		types.put(STRING.toString(), STRING);
@@ -86,12 +78,10 @@ public final class ItemValueType extends Type {
 		types.put(FLOAT.toString(), FLOAT);
 		types.put(DOUBLE.toString(), DOUBLE);
 		types.put(BOOLEAN.toString(), BOOLEAN);
-		//types.put(HASH_MAP.toString(), HASH_MAP);
-		//types.put(LINKED_HASH_MAP.toString(), LINKED_HASH_MAP);
-		//types.put(ARRAY_LIST.toString(), ARRAY_LIST);
-		types.put(CUSTOM.toString(), CUSTOM);
+		types.put(PARAMETERS.toString(), PARAMETERS);
 		types.put(FILE.toString(), FILE);
 		types.put(MULTIPART_FILE.toString(), MULTIPART_FILE);
+		//types.put(CUSTOM.toString(), CUSTOM);
 	}
 
 	/**
@@ -110,10 +100,10 @@ public final class ItemValueType extends Type {
 	 *
 	 * @param fullQualifiedName the full qualified name
 	 */
-	public ItemValueType(String fullQualifiedName) {
-		super(CUSTOM.toString());
-		this.fullQualifiedName  = fullQualifiedName;
-	}
+//	public ItemValueType(String fullQualifiedName) {
+//		super(CUSTOM.toString());
+//		this.fullQualifiedName  = fullQualifiedName;
+//	}
 	
 	/**
 	 * Gets the full qualified name.

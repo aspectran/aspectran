@@ -82,13 +82,13 @@ public class JsonTransform extends TransformResponse implements Response {
 
 			JsonWriter jsonWriter = new ContentsJsonWriter(output, pretty);
 			jsonWriter.write(processResult);
-			jsonWriter.flush();
+			jsonWriter.close();
 			
 			if(traceEnabled) {
 				StringWriter stringWriter = new StringWriter();
 				JsonWriter jsonWriter2 = new ContentsJsonWriter(stringWriter, true);
 				jsonWriter2.write(processResult);
-				jsonWriter2.flush();
+				jsonWriter2.close();
 				logger.trace("JSON Source: " + AspectranConstant.LINE_SEPARATOR + stringWriter.toString());
 			}
 		} catch(Exception e) {
