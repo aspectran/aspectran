@@ -76,18 +76,12 @@ public interface Activity {
 
 	public ActivityContext getActivityContext();
 
-	public <T> T getBean(String id);
-	
-	public String getTransletName();
-	
-	public Scope getRequestScope();
-	
-	public void setRequestScope(Scope requestScope);
-	
 	public <T extends Activity> T newActivity();
 
 	public Translet getTranslet();
 	
+	public String getTransletName();
+
 	public ApplicationAdapter getApplicationAdapter();
 
 	public SessionAdapter getSessionAdapter();
@@ -98,6 +92,8 @@ public interface Activity {
 
 	public BeanRegistry getBeanRegistry();
 	
+	public <T> T getBean(String id);
+
 	public <T> T getTransletSetting(String settingName);
 	
 	public <T> T getRequestSetting(String settingName);
@@ -106,8 +102,12 @@ public interface Activity {
 	
 	public void registerAspectRule(AspectRule aspectRule) throws ActionExecutionException;
 	
-	public Object getAspectAdviceBean(String aspectId);
+	public <T> T  getAspectAdviceBean(String aspectId);
 	
+	public Scope getRequestScope();
+
+	public void setRequestScope(Scope requestScope);
+
 	public JoinpointScopeType getJoinpointScope();
 
 	public void finish();

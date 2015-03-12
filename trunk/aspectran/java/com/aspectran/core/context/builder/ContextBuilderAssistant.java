@@ -73,20 +73,6 @@ public class ContextBuilderAssistant {
 	
 	private boolean hybridLoading;
 	
-//	public ContextBuilderAssistant(String applicationBasePath, ClassLoader classLoader) {
-//		if(applicationBasePath == null)
-//			this.applicationBasePath = new File(".").getAbsoluteFile().toString();
-//		else
-//			this.applicationBasePath = applicationBasePath;
-//		
-//		if(classLoader == null)
-//			this.classLoader = new AspectranClassLoader();
-//		else
-//			this.classLoader = classLoader;
-//		
-//		logger.info("Application base directory path is [" + applicationBasePath + "]");
-//	}
-//	
 	public ContextBuilderAssistant() {
 	}
 	
@@ -335,34 +321,7 @@ public class ContextBuilderAssistant {
 		
 		return sb.toString();
 	}
-/*	
-	public String applyNamespaceForBean(String beanId) {
-		if(!defaultSettings.isUseNamespaces() || namespace == null)
-			return beanId;
-		
-		StringBuilder sb = new StringBuilder();
-		sb.append(namespace);
-		sb.append(AspectranConstant.ID_SEPARATOR);
-		sb.append(beanId);
-		
-		return sb.toString();
-	}
-*/
-/*	
-	public String replaceTransletNameSuffix(String name, String transletNameSuffix) {
-		if(inheritedAspectranSettings.getTransletNamePatternSuffix() == null)
-			return name + AspectranConstant.TRANSLET_NAME_EXTENSION_DELIMITER + transletNameSuffix;
-		
-		int index = name.indexOf(inheritedAspectranSettings.getTransletNamePatternSuffix());
-		
-		StringBuilder sb = new StringBuilder();
-		sb.append(name.substring(0, index));
-		sb.append(AspectranConstant.TRANSLET_NAME_EXTENSION_DELIMITER);
-		sb.append(transletNameSuffix);
-		
-		return sb.toString();
-	}
-*/	
+	
 	/**
 	 * Checks if is allow null content id.
 	 * 
