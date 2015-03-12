@@ -60,15 +60,13 @@ import com.aspectran.core.context.translet.TransletNotFoundException;
 public class CoreActivity extends AbstractActivity implements Activity {
 
 	/** The logger. */
-	private final Logger logger = LoggerFactory.getLogger(CoreActivity.class);
+	private static final Logger logger = LoggerFactory.getLogger(CoreActivity.class);
 	
-	/** The debug enabled. */
-	private final boolean debugEnabled = logger.isDebugEnabled();
+	private static final boolean debugEnabled = logger.isDebugEnabled();
 
-	/** The debug enabled. */
-	private final boolean traceEnabled = logger.isTraceEnabled();
+	private static final boolean traceEnabled = logger.isTraceEnabled();
 
-	/** The context. */
+	/** The activity context. */
 	private final ActivityContext context;
 
 	/** The translet interface class. */
@@ -126,6 +124,24 @@ public class CoreActivity extends AbstractActivity implements Activity {
 	}
 
 	/**
+	 * Gets the translet interface class.
+	 *
+	 * @return the translet interface class
+	 */
+	public Class<? extends Translet> getTransletInterfaceClass() {
+		return transletInterfaceClass;
+	}
+
+	/**
+	 * Sets the translet interface class.
+	 *
+	 * @param transletInterfaceClass the new translet interface class
+	 */
+	protected void setTransletInterfaceClass(Class<? extends Translet> transletInterfaceClass) {
+		this.transletInterfaceClass = transletInterfaceClass;
+	}
+
+	/**
 	 * Gets the translet instance class.
 	 *
 	 * @return the translet instance class
@@ -143,43 +159,20 @@ public class CoreActivity extends AbstractActivity implements Activity {
 		this.transletImplementClass = transletImplementClass;
 	}
 	
-	public Scope getRequestScope() {
-		return requestScope;
-	}
-
-	public void setRequestScope(Scope requestScope) {
-		this.requestScope = requestScope;
-	}
-
-	public Translet getTranslet() {
-		return translet;
-	}
-
-	public ProcessResult getProcessResult() {
-		if(translet == null)
-			return null;
-		
-		return translet.getProcessResult();
-	}
-	
 	public void ready(String transletName) throws ActivityException {
 		ready(transletName, null);
 	}
 	
 	protected void ready(String transletName, ProcessResult processResult) throws ActivityException {
-		if(debugEnabled) {
-			logger.debug("activity ready for " + transletName);
-		}
-		
 		TransletRule transletRule = context.getTransletRuleRegistry().getTransletRule(transletName);
 
 		if(transletRule == null) {
-			logger.debug("translet not found " + transletRule);
+			logger.debug("translet not found: {}", transletRule);
 			throw new TransletNotFoundException(transletName);
 		}
 		
 		if(debugEnabled) {
-			logger.debug("translet " + transletRule);
+			logger.debug("translet {}", transletRule);
 		}
 
 		if(transletRule.getTransletInterfaceClass() != null)
@@ -581,8 +574,10 @@ public class CoreActivity extends AbstractActivity implements Activity {
 	private void responseByContentType(ResponseByContentTypeRuleMap responseByContentTypeRuleMap) throws ActivityException {
 		ResponseByContentTypeRule rbctr = responseByContentTypeRuleMap.getResponseByContentTypeRule(getRaisedException());
 		
-		if(rbctr != null)
+		if(rbctr != null) {
+			logger.info("raised exception: {}", getRaisedException().toString());
 			responseByContentType(rbctr);
+		}
 	}
 
 	/**
@@ -601,9 +596,7 @@ public class CoreActivity extends AbstractActivity implements Activity {
 			ResponseRule newResponseRule = responseRule.newResponseRule(response2);
 			responseRule = newResponseRule;
 			
-			if(debugEnabled) {
-				logger.debug("response by content-type: ", responseRule);
-			}
+			logger.info("response by content-type: {}", responseRule);
 
 			translet.setProcessResult(null);
 			
@@ -624,40 +617,6 @@ public class CoreActivity extends AbstractActivity implements Activity {
 
 	protected void setForwardTransletName(String forwardTransletName) {
 		this.forwardTransletName = forwardTransletName;
-	}
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.CoreActivity#getTransletName()
-	 */
-	public String getTransletName() {
-		return transletName;
-	}
-	
-	/**
-	 * Gets the translet rule.
-	 *
-	 * @return the translet rule
-	 */
-	protected TransletRule getTransletRule() {
-		return transletRule;
-	}
-
-	/**
-	 * Gets the request rule.
-	 *
-	 * @return the request rule
-	 */
-	protected RequestRule getRequestRule() {
-		return requestRule;
-	}
-
-	/**
-	 * Gets the response rule.
-	 *
-	 * @return the response rule
-	 */
-	protected ResponseRule getResponseRule() {
-		return responseRule;
 	}
 	
 	/**
@@ -695,7 +654,7 @@ public class CoreActivity extends AbstractActivity implements Activity {
 	
 	private void execute(Executable action, ContentResult contentResult) throws ActionExecutionException {
 		if(debugEnabled)
-			logger.debug("action " + action.toString());
+			logger.debug("action {}", action.toString());
 		
 		try {
 			Object resultValue = action.execute(this);
@@ -800,13 +759,6 @@ public class CoreActivity extends AbstractActivity implements Activity {
 		return activityEnded;
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.CoreActivity#getActivityContext()
-	 */
-	public ActivityContext getActivityContext() {
-		return context;
-	}
-	
 	@SuppressWarnings("unchecked")
 	public <T extends Activity> T newActivity() {
 		Activity activity = new CoreActivity(getActivityContext());
@@ -826,40 +778,59 @@ public class CoreActivity extends AbstractActivity implements Activity {
 		return super.newTranslet(this.transletImplementClass);
 	}
 	
-	/**
-	 * Gets the translet interface class.
-	 *
-	 * @return the translet interface class
+	public Translet getTranslet() {
+		return translet;
+	}
+
+	public ProcessResult getProcessResult() {
+		if(translet == null)
+			return null;
+		
+		return translet.getProcessResult();
+	}
+
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.activity.CoreActivity#getTransletName()
 	 */
-	public Class<? extends Translet> getTransletInterfaceClass() {
-		return transletInterfaceClass;
+	public String getTransletName() {
+		return transletName;
 	}
 
 	/**
-	 * Sets the translet interface class.
+	 * Gets the translet rule.
 	 *
-	 * @param transletInterfaceClass the new translet interface class
+	 * @return the translet rule
 	 */
-	protected void setTransletInterfaceClass(Class<? extends Translet> transletInterfaceClass) {
-		this.transletInterfaceClass = transletInterfaceClass;
+	protected TransletRule getTransletRule() {
+		return transletRule;
 	}
 
-	public BeanRegistry getBeanRegistry() {
-		return context.getContextBeanRegistry();
+	/**
+	 * Gets the request rule.
+	 *
+	 * @return the request rule
+	 */
+	protected RequestRule getRequestRule() {
+		return requestRule;
 	}
-	
-	public <T> T getBean(String id) {
-		return context.getContextBeanRegistry().getBean(id);
+
+	/**
+	 * Gets the response rule.
+	 *
+	 * @return the response rule
+	 */
+	protected ResponseRule getResponseRule() {
+		return responseRule;
 	}
-	
+
 	public <T> T getTransletSetting(String settingName) {
 		return getSetting(transletAspectAdviceRuleRegistry, settingName);
 	}
-	
+
 	public <T> T getRequestSetting(String settingName) {
 		return getSetting(requestAspectAdviceRuleRegistry, settingName);
 	}
-	
+
 	public <T> T getResponseSetting(String settingName) {
 		return getSetting(responseAspectAdviceRuleRegistry, settingName);
 	}
@@ -871,6 +842,21 @@ public class CoreActivity extends AbstractActivity implements Activity {
 		return null;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.activity.CoreActivity#getActivityContext()
+	 */
+	public ActivityContext getActivityContext() {
+		return context;
+	}
+
+	public BeanRegistry getBeanRegistry() {
+		return context.getContextBeanRegistry();
+	}
+	
+	public <T> T getBean(String id) {
+		return context.getContextBeanRegistry().getBean(id);
+	}
+	
 	public void registerAspectRule(AspectRule aspectRule) throws ActionExecutionException {
 		if(debugEnabled)
 			logger.debug("registerAspectRule {}", aspectRule);
@@ -916,10 +902,18 @@ public class CoreActivity extends AbstractActivity implements Activity {
 		}
 	}
 	
-	public Object getAspectAdviceBean(String aspectId) {
+	public <T> T getAspectAdviceBean(String aspectId) {
 		return translet.getAspectAdviceBean(aspectId);
 	}
 	
+	public Scope getRequestScope() {
+		return requestScope;
+	}
+
+	public void setRequestScope(Scope requestScope) {
+		this.requestScope = requestScope;
+	}
+
 	public JoinpointScopeType getJoinpointScope() {
 		return joinpointScope;
 	}

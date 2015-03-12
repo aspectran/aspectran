@@ -95,6 +95,15 @@ public abstract interface Translet {
 	
 	public void forward(ForwardResponseRule forwardResponseRule) throws ResponseException;
 	
+	/**
+	 * To respond immediately terminate.
+	 */
+	public void responseEnd();
+
+	public boolean isExceptionRaised();
+
+	public Exception getRaisedException();
+
 	public ApplicationAdapter getApplicationAdapter();
 	
 	public SessionAdapter getSessionAdapter();
@@ -111,19 +120,6 @@ public abstract interface Translet {
 	
 	public <T> T getBean(String beanId);
 	
-	/**
-	 * To respond immediately terminate.
-	 */
-	public void responseEnd();
-	
-	public Class<? extends Translet> getTransletInterfaceClass();
-
-	public Class<? extends CoreTranslet> getTransletImplementClass();
-	
-	public boolean isExceptionRaised();
-
-	public Exception getRaisedException();
-	
 	public <T> T getAspectAdviceBean(String aspectId);
 	
 	public void putAspectAdviceBean(String aspectId, Object adviceBean);
@@ -135,4 +131,8 @@ public abstract interface Translet {
 	public <T> T getFinallyAdviceResult(String aspectId);
 
 	public void putAdviceResult(AspectAdviceRule aspectAdviceRule, Object adviceActionResult);
+
+	public Class<? extends Translet> getTransletInterfaceClass();
+
+	public Class<? extends CoreTranslet> getTransletImplementClass();
 }

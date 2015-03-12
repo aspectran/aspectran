@@ -56,6 +56,13 @@ public class CoreTranslet implements Translet {
 		this.activity = activity;
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.translet.Translet#getTransletName()
+	 */
+	public String getTransletName() {
+		return activity.getTransletName();
+	}
+
 	public Map<String, Object> getDeclaredAttributeMap() {
 		return declaredAttributeMap;
 	}
@@ -145,6 +152,21 @@ public class CoreTranslet implements Translet {
 		response(res);
 	}
 	
+	/**
+	 * To respond immediately terminate.
+	 */
+	public void responseEnd() {
+		activity.activityEnd();
+	}
+
+	public boolean isExceptionRaised() {
+		return activity.isExceptionRaised();
+	}
+
+	public Exception getRaisedException() {
+		return activity.getRaisedException();
+	}
+
 	public ApplicationAdapter getApplicationAdapter() {
 		return activity.getActivityContext().getApplicationAdapter();
 	}
@@ -182,7 +204,7 @@ public class CoreTranslet implements Translet {
 			return null;
 	}
 	
-	public Object getApplicationAdaptee() {
+	public <T> T getApplicationAdaptee() {
 		ApplicationAdapter applicationAdapter = activity.getActivityContext().getApplicationAdapter();
 		
 		if(applicationAdapter != null)
@@ -201,36 +223,6 @@ public class CoreTranslet implements Translet {
 		return activity.getBean(id);
 	}
 
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.translet.Translet#getTransletName()
-	 */
-	public String getTransletName() {
-		return activity.getTransletName();
-	}
-	
-	/**
-	 * To respond immediately terminate.
-	 */
-	public void responseEnd() {
-		activity.activityEnd();
-	}
-
-	public Class<? extends Translet> getTransletInterfaceClass() {
-		return activity.getTransletInterfaceClass();
-	}
-
-	public Class<? extends CoreTranslet> getTransletImplementClass() {
-		return activity.getTransletImplementClass();
-	}
-
-	public boolean isExceptionRaised() {
-		return activity.isExceptionRaised();
-	}
-
-	public Exception getRaisedException() {
-		return activity.getRaisedException();
-	}
-	
 	@SuppressWarnings("unchecked")
 	public <T> T getAspectAdviceBean(String aspectId) {
 		if(aspectAdviceResult == null)
@@ -275,6 +267,14 @@ public class CoreTranslet implements Translet {
 			aspectAdviceResult = new AspectAdviceResult();
 		
 		aspectAdviceResult.putAdviceResult(aspectAdviceRule, adviceActionResult);
+	}
+
+	public Class<? extends Translet> getTransletInterfaceClass() {
+		return activity.getTransletInterfaceClass();
+	}
+
+	public Class<? extends CoreTranslet> getTransletImplementClass() {
+		return activity.getTransletImplementClass();
 	}
 	
 }
