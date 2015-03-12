@@ -360,13 +360,18 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 		sb.append("{name=").append(name);
 		sb.append(", requestRule=").append(requestRule);
 		sb.append(", responseRule=").append(responseRule);
-		sb.append(", responseRuleList=").append(responseRuleList);
-		sb.append(", exceptionHandlingRuleMap=").append(exceptionHandlingRuleMap);
-		sb.append(", transletInterfaceClass=").append(transletInterfaceClass);
-		sb.append(", transletInstanceClass=").append(transletImplementClass);
-		sb.append(", aspectAdviceRuleRegistry=").append(aspectAdviceRuleRegistry);
+		if(exceptionHandlingRuleMap != null)
+			sb.append(", exceptionHandlingRuleMap=").append(exceptionHandlingRuleMap);
+		if(transletInterfaceClass != null)
+			sb.append(", transletInterfaceClass=").append(transletInterfaceClass);
+		if(transletImplementClass != null)
+			sb.append(", transletInstanceClass=").append(transletImplementClass);
+		if(aspectAdviceRuleRegistry != null)
+			sb.append(", aspectAdviceRuleRegistry=").append(aspectAdviceRuleRegistry);
+		if(explicitContent)
 		sb.append(", explicitContent=").append(explicitContent);
-		sb.append(", implicitResponse=").append(implicitResponse);
+		if(implicitResponse)
+			sb.append(", implicitResponse=").append(implicitResponse);
 		sb.append("}");
 		
 		return sb.toString();

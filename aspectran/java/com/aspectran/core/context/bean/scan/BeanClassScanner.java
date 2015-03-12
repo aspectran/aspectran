@@ -16,6 +16,7 @@ import java.util.jar.JarFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.aspectran.core.context.loader.AspectranClassLoader;
 import com.aspectran.core.util.ClassUtils;
 import com.aspectran.core.util.ResourceUtils;
 import com.aspectran.core.util.StringUtils;
@@ -305,7 +306,7 @@ public class BeanClassScanner {
 	
 	public static void main(String[] args) {
 		try {
-			BeanClassScanner loader = new BeanClassScanner("component.*ZZZ", ClassUtils.getDefaultClassLoader());
+			BeanClassScanner loader = new BeanClassScanner("component.*ZZZ", AspectranClassLoader.getDefaultClassLoader());
 			//loader.scanClass("com.**.*Sql*");
 			//loader.scanClass("com.i*");
 			loader.scanClass("com.*");

@@ -20,7 +20,8 @@ public class SqlMapConfig {
 	static {
 		try{
 			final String resource = "sqlmap/sql-map-config.xml";
-			InputStream is = ResourceUtils.getResourceAsStream(resource);
+			ClassLoader classLoader = ResourceUtils.getClassLoader(SqlMapConfig.class.getClass());
+			InputStream is = classLoader.getResourceAsStream(resource);
 			sqlMap = SqlMapClientBuilder.buildSqlMapClient(is);
 		} catch(Exception e) {
 			e.printStackTrace();

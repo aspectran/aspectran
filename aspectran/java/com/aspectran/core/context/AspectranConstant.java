@@ -20,10 +20,7 @@ package com.aspectran.core.context;
  */
 public interface AspectranConstant {
 
-	public static final String LINE_SEPARATOR = System.getProperty("line.separator");
-
-	/** The Constant WILDCARD_CHAR. */
-	public static final char TRANSLET_NAME_PATTERN_SEPARATOR = '*';
+	public static final String LINE_SEPARATOR = "\n";
 
 	/** The Constant NAMESPACE_SEPARATOR. */
 	public static final char TRANSLET_NAME_SEPARATOR = '/';

@@ -711,7 +711,7 @@ public class MethodUtils {
 			
 			return method;
 		} catch(NoSuchMethodException e) { /* SWALLOW */
-			e.printStackTrace();
+			//e.printStackTrace();
 		}
 
 		// search through all methods

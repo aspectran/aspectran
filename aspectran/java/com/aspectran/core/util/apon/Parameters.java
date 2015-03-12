@@ -29,10 +29,6 @@ public interface Parameters {
 
 	public Object getValue(ParameterDefine parameterDefine);
 	
-	public void setValue(String name, Object value);
-	
-	public void setValue(ParameterDefine parameterDefine, Object value);
-	
 	public void putValue(String name, Object value);
 	
 	public void putValue(ParameterDefine parameterDefine, Object value);
@@ -155,8 +151,8 @@ public interface Parameters {
 	
 	public <T extends Parameters> T touchParameters(ParameterDefine parameterDefine);
 	
-	public String toText();
-	
 	public boolean isAddable();
+	
+	public String describe();
 	
 }

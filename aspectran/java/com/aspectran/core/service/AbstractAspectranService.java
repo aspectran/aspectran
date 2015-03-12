@@ -141,7 +141,7 @@ public abstract class AbstractAspectranService implements AspectranService {
 				if(observationInterval == -1) {
 					observationInterval = 10;
 					this.observationInterval = observationInterval;
-					logger.info("[Aspectran Config] 'observationInterval' is not specified, defaulting to 10 seconds.");
+					logger.info("'{}' is not specified, defaulting to 10 seconds.", aspectranContextAutoReloadingConfig.getQualifiedName());
 				}
 			}
 			
@@ -171,7 +171,7 @@ public abstract class AbstractAspectranService implements AspectranService {
 			return activityContext;
 			
 		} catch(Exception e) {
-			throw new AspectranServiceException("Failed to load the ActivityContext " + aspectranConfig, e);
+			throw new AspectranServiceException("Failed to load the ActivityContext.", e);
 		}
 	}
 	
@@ -225,7 +225,7 @@ public abstract class AbstractAspectranService implements AspectranService {
 		if(this.aspectranSchedulerConfig == null)
 			return;
 		
-		logger.info("Starting the AspectranScheduler {}", this.aspectranSchedulerConfig);
+		logger.info("Starting the AspectranScheduler {}", this.aspectranSchedulerConfig.describe());
 		
 		boolean startup = this.aspectranSchedulerConfig.getBoolean(AspectranSchedulerConfig.startup);
 		int startDelaySeconds = this.aspectranSchedulerConfig.getInt(AspectranSchedulerConfig.startDelaySeconds.getName(), -1);

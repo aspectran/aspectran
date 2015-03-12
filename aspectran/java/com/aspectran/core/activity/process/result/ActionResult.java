@@ -101,7 +101,7 @@ public class ActionResult {
 	 * 
 	 * @return the action path
 	 */
-	public String getFullActionId() {
+	public String getQuialifiedActionId() {
 		return ActionIdQualifier.concat(getContentId(), actionId);
 	}
 
@@ -112,7 +112,7 @@ public class ActionResult {
 	 * 
 	 * @return the action path
 	 */
-	public String getFullActionId(String parentFullActionId) {
+	public String getQuialifiedActionId(String parentFullActionId) {
 		return ActionIdQualifier.concat(parentFullActionId, getContentId(), actionId);
 	}
 
@@ -125,7 +125,7 @@ public class ActionResult {
 
 		sb.append("{contentId=").append(getContentId());
 		sb.append(", actionId=").append(actionId);
-		sb.append(", fullActionId=").append(getFullActionId());
+		sb.append(", getQuialifiedActionId=").append(getQuialifiedActionId());
 		sb.append(", resultValue=").append(resultValue);
 		sb.append("}");
 

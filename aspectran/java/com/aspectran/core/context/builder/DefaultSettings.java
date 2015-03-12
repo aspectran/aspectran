@@ -19,7 +19,6 @@ import java.util.Map;
 
 import com.aspectran.core.activity.CoreTranslet;
 import com.aspectran.core.activity.Translet;
-import com.aspectran.core.context.AspectranConstant;
 import com.aspectran.core.context.rule.type.DefaultSettingType;
 import com.aspectran.core.util.BooleanUtils;
 
@@ -27,6 +26,8 @@ import com.aspectran.core.util.BooleanUtils;
  * <p>Created: 2008. 03. 22 오후 5:48:09</p>
  */
 public class DefaultSettings implements Cloneable {
+	
+	private static final char TRANSLET_NAME_PATTERN_SEPARATOR = '*';
 
 	private String transletNamePattern;
 	
@@ -61,7 +62,7 @@ public class DefaultSettings implements Cloneable {
 		this.transletNamePattern = transletNamePattern;
 		
 		if(transletNamePattern != null) {
-			int index = transletNamePattern.indexOf(AspectranConstant.TRANSLET_NAME_PATTERN_SEPARATOR);
+			int index = transletNamePattern.indexOf(TRANSLET_NAME_PATTERN_SEPARATOR);
 			
 			if(index != -1) {
 				if(index == 0) {
@@ -79,7 +80,7 @@ public class DefaultSettings implements Cloneable {
 	}
 	
 	public void setTransletNamePattern(String transletNamePatternPrefix, String transletNamePatternSuffix) {
-		transletNamePattern = transletNamePatternPrefix + AspectranConstant.TRANSLET_NAME_PATTERN_SEPARATOR + transletNamePatternSuffix;
+		transletNamePattern = transletNamePatternPrefix + TRANSLET_NAME_PATTERN_SEPARATOR + transletNamePatternSuffix;
 	}
 	
 	public void setTransletNamePatternPrefix(String transletNamePatternPrefix) {

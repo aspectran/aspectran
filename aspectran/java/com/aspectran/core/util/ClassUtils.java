@@ -105,32 +105,6 @@ public abstract class ClassUtils {
 	}
 
 	/**
-	 * Return the default ClassLoader to use: typically the thread context
-	 * ClassLoader, if available; the ClassLoader that loaded the ClassUtils
-	 * class will be used as fallback.
-	 * <p>Call this method if you intend to use the thread context ClassLoader
-	 * in a scenario where you absolutely need a non-null ClassLoader reference:
-	 * for example, for class path resource loading (but not necessarily for
-	 * <code>Class.forName</code>, which accepts a <code>null</code> ClassLoader
-	 * reference as well).
-	 * @return the default ClassLoader (never <code>null</code>)
-	 * @see java.lang.Thread#getContextClassLoader()
-	 */
-	public static ClassLoader getDefaultClassLoader() {
-		ClassLoader cl = null;
-		try {
-			cl = Thread.currentThread().getContextClassLoader();
-		} catch(Throwable ex) {
-			// Cannot access thread context ClassLoader - falling back to system class loader...
-		}
-		if(cl == null) {
-			// No thread context class loader -> use class loader of this class.
-			cl = ClassUtils.class.getClassLoader();
-		}
-		return cl;
-	}
-
-	/**
 	 * Override the thread context ClassLoader with the environment's bean ClassLoader
 	 * if necessary, i.e. if the bean ClassLoader is not equivalent to the thread
 	 * context ClassLoader already.
@@ -146,22 +120,6 @@ public abstract class ClassUtils {
 		} else {
 			return null;
 		}
-	}
-
-	/**
-	 * Replacement for <code>Class.forName()</code> that also returns Class instances
-	 * for primitives (like "int") and array class names (like "String[]").
-	 * <p>Always uses the default class loader: that is, preferably the thread context
-	 * class loader, or the ClassLoader that loaded the ClassUtils class as fallback.
-	 * @param name the name of the Class
-	 * @return Class instance for the supplied name
-	 * @throws ClassNotFoundException if the class was not found
-	 * @throws LinkageError if the class file could not be loaded
-	 * @see Class#forName(String, boolean, ClassLoader)
-	 * @see #getDefaultClassLoader()
-	 */
-	public static Class<?> forName(String name) throws ClassNotFoundException, LinkageError {
-		return forName(name, getDefaultClassLoader());
 	}
 
 	/**
@@ -201,11 +159,7 @@ public abstract class ClassUtils {
 			return Array.newInstance(elementClass, 0).getClass();
 		}
 
-		ClassLoader classLoaderToUse = classLoader;
-		if(classLoaderToUse == null) {
-			classLoaderToUse = getDefaultClassLoader();
-		}
-		return classLoaderToUse.loadClass(name);
+		return classLoader.loadClass(name);
 	}
 
 	/**

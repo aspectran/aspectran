@@ -514,7 +514,7 @@ public class BeanRule implements Cloneable {
 	}
 
 	public static void updateConstructorArgument(BeanRule beanRule, String text) {
-		List<Parameters> argumentParametersList = ItemRule.toParametersList(text);
+		List<Parameters> argumentParametersList = ItemRule.toItemParametersList(text);
 		
 		if(argumentParametersList == null)
 			return;
@@ -528,7 +528,7 @@ public class BeanRule implements Cloneable {
 	}
 	
 	public static void updateProperty(BeanRule beanRule, String text) {
-		List<Parameters> propertyParametersList = ItemRule.toParametersList(text);
+		List<Parameters> propertyParametersList = ItemRule.toItemParametersList(text);
 		
 		if(propertyParametersList == null)
 			return;

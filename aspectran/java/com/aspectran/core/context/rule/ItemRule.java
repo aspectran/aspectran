@@ -24,6 +24,7 @@ import java.util.Set;
 
 import com.aspectran.core.activity.variable.token.Token;
 import com.aspectran.core.activity.variable.token.TokenParser;
+import com.aspectran.core.context.builder.apon.params.ItemHolderParameters;
 import com.aspectran.core.context.builder.apon.params.ItemParameters;
 import com.aspectran.core.context.builder.apon.params.ReferenceParameters;
 import com.aspectran.core.context.rule.type.ItemType;
@@ -31,7 +32,6 @@ import com.aspectran.core.context.rule.type.ItemValueType;
 import com.aspectran.core.context.rule.type.TokenType;
 import com.aspectran.core.util.BooleanUtils;
 import com.aspectran.core.util.StringUtils;
-import com.aspectran.core.util.apon.ParameterHolder;
 import com.aspectran.core.util.apon.Parameters;
 
 /**
@@ -80,7 +80,7 @@ public class ItemRule {
 	 * Instantiates a new item rule.
 	 */
 	public ItemRule() {
-		this(null);
+		this(Boolean.TRUE);
 	}
 	
 	/**
@@ -463,7 +463,7 @@ public class ItemRule {
 		ItemType itemType = ItemType.valueOf(type);
 		
 		if(type != null && itemType == null)
-			throw new IllegalArgumentException("No item-type registered for type '" + type + "'");
+			throw new IllegalArgumentException("Unknown Item Type: " + type);
 		
 		if(itemType != null)
 			itemRule.setType(itemType);
@@ -480,14 +480,11 @@ public class ItemRule {
 		
 		ItemValueType itemValueType = ItemValueType.valueOf(valueType);
 		
-		if(valueType != null) {
-			if(itemValueType == null || itemValueType == ItemValueType.CUSTOM)
-				itemValueType = new ItemValueType(valueType); //full qualified class name
-			
-			if(itemValueType != null)
-				itemRule.setValueType(itemValueType);
-		}
+		if(valueType != null && itemValueType == null)
+			throw new IllegalArgumentException("Unknown Item Value Type: " + valueType);
 		
+		itemRule.setValueType(itemValueType);
+
 		if(defaultValue != null)
 			itemRule.setDefaultValue(defaultValue);
 		
@@ -757,9 +754,9 @@ public class ItemRule {
 		return itemRule;
 	}
 	
-	public static List<Parameters> toParametersList(String text) {
-		ParameterHolder holder = new ParameterHolder(text, ItemParameters.class, true);
-		return holder.getParametersList();
+	public static List<Parameters> toItemParametersList(String text) {
+		Parameters holder = new ItemHolderParameters(text);
+		return holder.getParametersList(ItemHolderParameters.item);
 	}
 	
 }

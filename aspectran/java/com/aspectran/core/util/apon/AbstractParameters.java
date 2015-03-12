@@ -119,15 +119,6 @@ public abstract class AbstractParameters implements Parameters {
 		return getValue(parameterDefine.getName());
 	}
 	
-	public void setValue(String name, Object value) {
-		Parameter p = getParameter(name);
-		p.setValue(value);
-	}
-	
-	public void setValue(ParameterDefine parameterDefine, Object value) {
-		setValue(parameterDefine.getName(), value);
-	}
-	
 	public void putValue(String name, Object value) {
 		Parameter p = getParameter(name);
 		p.putValue(value);
@@ -450,16 +441,11 @@ public abstract class AbstractParameters implements Parameters {
 		return touchParameters(parameterDefine.getName());
 	}
 	
-	public String toText() {
-		return AponWriter.toText(this);
-	}
-
 	public boolean isAddable() {
 		return addable;
 	}
 
-	@Override
-	public String toString() {
+	public String describe() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("{qualifiedName=").append(getQualifiedName());
 		sb.append(", parameters=").append(parameterValueMap.keySet());
@@ -468,6 +454,11 @@ public abstract class AbstractParameters implements Parameters {
 		sb.append("}");
 		
 		return sb.toString();
+	}
+	
+	@Override
+	public String toString() {
+		return AponWriter.toString(this);
 	}
 	
 }

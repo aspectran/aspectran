@@ -94,9 +94,9 @@ public class ContentsJsonWriter extends JsonWriter {
 					if(resultValue == null) {
 						writeNull();
 					} else if(resultValue instanceof ProcessResult) {
-						write((ProcessResult)resultValue, actionResult.getFullActionId());
+						write((ProcessResult)resultValue, actionResult.getQuialifiedActionId());
 					} else {
-						writeName(actionResult.getFullActionId(parentContentId));
+						writeName(actionResult.getQuialifiedActionId(parentContentId));
 						write(resultValue);
 					}
 

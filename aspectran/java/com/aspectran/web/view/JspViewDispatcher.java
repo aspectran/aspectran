@@ -123,9 +123,9 @@ public class JspViewDispatcher implements ViewDispatcher {
 				Object actionResultValue = actionResult.getResultValue();
 
 				if(actionResultValue instanceof ProcessResult)
-					setAttribute(requestAdapter, (ProcessResult)actionResultValue, actionResult.getFullActionId());
+					setAttribute(requestAdapter, (ProcessResult)actionResultValue, actionResult.getQuialifiedActionId());
 				else
-					requestAdapter.setAttribute(actionResult.getFullActionId(parentFullActionId), actionResultValue);
+					requestAdapter.setAttribute(actionResult.getQuialifiedActionId(parentFullActionId), actionResultValue);
 			}
 		}
 	}

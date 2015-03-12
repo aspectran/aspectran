@@ -4,25 +4,25 @@ import com.aspectran.core.util.apon.AbstractParameters;
 import com.aspectran.core.util.apon.ParameterDefine;
 import com.aspectran.core.util.apon.Parameters;
 
-public class ConstructorParameters extends AbstractParameters implements Parameters {
+public class ItemHolderParameters extends AbstractParameters implements Parameters {
 
-	public static final ParameterDefine arguments;
+	public static final ParameterDefine item;
 	
 	private static final ParameterDefine[] parameterDefines;
 	
 	static {
-		arguments = new ParameterDefine("argument", ItemHolderParameters.class);
+		item = new ParameterDefine("item", ItemParameters.class, true, true);
 		
 		parameterDefines = new ParameterDefine[] {
-				arguments
+				item
 		};
 	}
 	
-	public ConstructorParameters() {
+	public ItemHolderParameters() {
 		super(parameterDefines);
 	}
 	
-	public ConstructorParameters(String text) {
+	public ItemHolderParameters(String text) {
 		super(parameterDefines, text);
 	}
 	

@@ -61,8 +61,6 @@ public class ResourceUtils {
 
 	public static final char RESOURCE_NAME_SPEPARATOR_CHAR = '/';
 	
-	private static ClassLoader defaultClassLoader;
-
 	public static boolean isUrl(String resourceLocation) {
 		if(resourceLocation == null) {
 			return false;
@@ -78,11 +76,11 @@ public class ResourceUtils {
 		}
 	}
 
-	public static URL getURL(String resourceLocation) throws FileNotFoundException {
+	public static URL getURL(String resourceLocation, ClassLoader classLoader) throws FileNotFoundException {
 		Assert.notNull(resourceLocation, "Resource location must not be null");
 		if(resourceLocation.startsWith(CLASSPATH_URL_PREFIX)) {
 			String path = resourceLocation.substring(CLASSPATH_URL_PREFIX.length());
-			URL url = ClassUtils.getDefaultClassLoader().getResource(path);
+			URL url = classLoader.getResource(path);
 			if(url == null) {
 				String description = "class path resource [" + path + "]";
 				throw new FileNotFoundException(description + " cannot be resolved to URL because it does not exist");
@@ -103,12 +101,12 @@ public class ResourceUtils {
 		}
 	}
 
-	public static File getFile(String resourceLocation) throws FileNotFoundException {
+	public static File getFile(String resourceLocation, ClassLoader classLoader) throws FileNotFoundException {
 		Assert.notNull(resourceLocation, "Resource location must not be null");
 		if(resourceLocation.startsWith(CLASSPATH_URL_PREFIX)) {
 			String path = resourceLocation.substring(CLASSPATH_URL_PREFIX.length());
 			String description = "class path resource [" + path + "]";
-			URL url = ClassUtils.getDefaultClassLoader().getResource(path);
+			URL url = classLoader.getResource(path);
 			if(url == null) {
 				throw new FileNotFoundException(description + " cannot be resolved to absolute file path "
 						+ "because it does not reside in the file system");
@@ -195,38 +193,6 @@ public class ResourceUtils {
 	}
 
 	/**
-	 * Returns the default classloader (may be null).
-	 * 
-	 * @return The default classloader
-	 */
-	public static ClassLoader getDefaultClassLoader() {
-		return defaultClassLoader;
-	}
-
-	/**
-	 * Sets the default classloader
-	 * 
-	 * @param defaultClassLoader -
-	 *            the new default ClassLoader
-	 */
-	public static void setDefaultClassLoader(ClassLoader defaultClassLoader) {
-		ResourceUtils.defaultClassLoader = defaultClassLoader;
-	}
-
-	/**
-	 * Returns the URL of the resource on the classpath
-	 * 
-	 * @param resource
-	 *            The resource to find
-	 * @return The resource
-	 * @throws IOException
-	 *             If the resource cannot be found or read
-	 */
-	public static URL getResourceURL(String resource) throws IOException {
-		return getResourceURL(getClassLoader(), resource);
-	}
-
-	/**
 	 * Returns the URL of the resource on the classpath
 	 * 
 	 * @param loader
@@ -237,7 +203,7 @@ public class ResourceUtils {
 	 * @throws IOException
 	 *             If the resource cannot be found or read
 	 */
-	public static URL getResourceURL(ClassLoader loader, String resource) throws IOException {
+	public static URL getResourceURL(String resource, ClassLoader loader) throws IOException {
 		URL url = null;
 		if(loader != null)
 			url = loader.getResource(resource);
@@ -251,19 +217,6 @@ public class ResourceUtils {
 	/**
 	 * Returns a resource on the classpath as a Stream object
 	 * 
-	 * @param resource
-	 *            The resource to find
-	 * @return The resource
-	 * @throws IOException
-	 *             If the resource cannot be found or read
-	 */
-	public static InputStream getResourceAsStream(String resource) throws IOException {
-		return getResourceAsStream(getClassLoader(), resource);
-	}
-
-	/**
-	 * Returns a resource on the classpath as a Stream object
-	 * 
 	 * @param loader
 	 *            The classloader used to load the resource
 	 * @param resource
@@ -272,10 +225,10 @@ public class ResourceUtils {
 	 * @throws IOException
 	 *             If the resource cannot be found or read
 	 */
-	public static InputStream getResourceAsStream(ClassLoader loader, String resource) throws IOException {
+	public static InputStream getResourceAsStream(String resource, ClassLoader classLoader) throws IOException {
 		InputStream in = null;
-		if(loader != null)
-			in = loader.getResourceAsStream(resource);
+		if(classLoader != null)
+			in = classLoader.getResourceAsStream(resource);
 		if(in == null)
 			in = ClassLoader.getSystemResourceAsStream(resource);
 		if(in == null)
@@ -286,25 +239,6 @@ public class ResourceUtils {
 	/**
 	 * Returns a resource on the classpath as a Properties object
 	 * 
-	 * @param resource
-	 *            The resource to find
-	 * @return The resource
-	 * @throws IOException
-	 *             If the resource cannot be found or read
-	 */
-	public static Properties getResourceAsProperties(String resource) throws IOException {
-		Properties props = new Properties();
-		InputStream in = null;
-		String propfile = resource;
-		in = getResourceAsStream(propfile);
-		props.load(in);
-		in.close();
-		return props;
-	}
-
-	/**
-	 * Returns a resource on the classpath as a Properties object
-	 * 
 	 * @param loader
 	 *            The classloader used to load the resource
 	 * @param resource
@@ -313,27 +247,14 @@ public class ResourceUtils {
 	 * @throws IOException
 	 *             If the resource cannot be found or read
 	 */
-	public static Properties getResourceAsProperties(ClassLoader loader, String resource) throws IOException {
+	public static Properties getResourceAsProperties(String resource, ClassLoader classLoader) throws IOException {
 		Properties props = new Properties();
 		InputStream in = null;
 		String propfile = resource;
-		in = getResourceAsStream(loader, propfile);
+		in = getResourceAsStream(propfile, classLoader);
 		props.load(in);
 		in.close();
 		return props;
-	}
-
-	/**
-	 * Returns a resource on the classpath as a Reader object
-	 * 
-	 * @param resource
-	 *            The resource to find
-	 * @return The resource
-	 * @throws IOException
-	 *             If the resource cannot be found or read
-	 */
-	public static Reader getResourceAsReader(String resource) throws IOException {
-		return new InputStreamReader(getResourceAsStream(resource));
 	}
 
 	/**
@@ -347,21 +268,8 @@ public class ResourceUtils {
 	 * @throws IOException
 	 *             If the resource cannot be found or read
 	 */
-	public static Reader getResourceAsReader(ClassLoader loader, String resource) throws IOException {
-		return new InputStreamReader(getResourceAsStream(loader, resource));
-	}
-
-	/**
-	 * Returns a resource on the classpath as a File object
-	 * 
-	 * @param resource
-	 *            The resource to find
-	 * @return The resource
-	 * @throws IOException
-	 *             If the resource cannot be found or read
-	 */
-	public static File getResourceAsFile(String resource) throws IOException {
-		return new File(getResourceURL(resource).getFile());
+	public static Reader getResourceAsReader(String resource, ClassLoader classLoader) throws IOException {
+		return new InputStreamReader(getResourceAsStream(resource, classLoader));
 	}
 
 	/**
@@ -375,8 +283,8 @@ public class ResourceUtils {
 	 * @throws IOException
 	 *             If the resource cannot be found or read
 	 */
-	public static File getResourceAsFile(ClassLoader loader, String resource) throws IOException {
-		return new File(getResourceURL(loader, resource).getFile());
+	public static File getResourceAsFile(String resource, ClassLoader classLoader) throws IOException {
+		return new File(getResourceURL(resource, classLoader).getFile());
 	}
 
 	/**
@@ -425,30 +333,14 @@ public class ResourceUtils {
 		in.close();
 		return props;
 	}
-
-	private static ClassLoader getClassLoader() {
-		if(defaultClassLoader != null)
-			return defaultClassLoader;
-
-		return ClassUtils.getDefaultClassLoader();
+	
+	public static ClassLoader getClassLoader(Class<?> clazz) {
+		ClassLoader cl = clazz.getClassLoader();
+		
+		if(cl == null)
+			cl = ClassLoader.getSystemClassLoader();
+		
+		return cl;
 	}
 
-	/**
-	 * @param argv
-	 */
-	public static void main(String argv[]) {
-		try {
-			//System.out.println(new BufferedReader(ResourceUtils.getUrlAsReader("http://labs.tistory.com/guestbook")).readLine());
-			// System.out.println(ResourceUtils.getResourceURL("d://@WORK//Gulendol//Scany//conf//client.xml").toString());
-			
-			String str1 = "file:///c:/Users/Gulendol/Projects/aspectran/ADE/workspace/aspectran.example/webapp/WEB-INF/aspectran/";
-			String str2 = "jar:///c:/Users/Gulendol/Projects/aspectran/ADE/workspace/aspectran.example/webapp/WEB-INF/lib/activation.jar";
-			
-			System.out.println(ResourceUtils.getFile(str1));					
-			System.out.println(ResourceUtils.getFile(str2));					
-					
-		} catch(Exception e) {
-			System.out.println(e.getMessage());
-		}
-	}
 }

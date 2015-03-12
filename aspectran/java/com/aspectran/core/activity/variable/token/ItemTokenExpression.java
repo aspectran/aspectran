@@ -33,6 +33,7 @@ import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.type.ItemType;
 import com.aspectran.core.context.rule.type.ItemValueType;
+import com.aspectran.core.util.apon.GenericParameters;
 
 /**
  * <p>Created: 2008. 06. 19 오후 9:43:28</p>
@@ -103,6 +104,10 @@ public class ItemTokenExpression extends TokenExpression implements ItemTokenExp
 	
 	private Object express(String parameterName, Token[] tokens, ItemValueType valueType) {
 		Object value = express(parameterName, tokens);
+		
+		if(value == null || valueType == null)
+			return value;
+		
 		return valuelize(value, valueType);
 	}
 	
@@ -123,7 +128,7 @@ public class ItemTokenExpression extends TokenExpression implements ItemTokenExp
 		for(Token[] tokens : tokensList) {
 			Object value = express(parameterName, tokens);
 			
-			if(valueType != null)
+			if(value != null && valueType != null)
 				value = valuelize(value, valueType);
 			
 			valueList.add(value);
@@ -149,7 +154,7 @@ public class ItemTokenExpression extends TokenExpression implements ItemTokenExp
 		for(Token[] tokens : tokensList) {
 			Object value = express(parameterName, tokens);
 			
-			if(valueType != null)
+			if(value != null && valueType != null)
 				value = valuelize(value, valueType);
 			
 			valueSet.add(value);
@@ -186,7 +191,7 @@ public class ItemTokenExpression extends TokenExpression implements ItemTokenExp
 		for(Map.Entry<String, Token[]> entry : tokensMap.entrySet()) {
 			Object value = express(entry.getKey(), entry.getValue());
 
-			if(valueType != null)
+			if(value != null && valueType != null)
 				value = valuelize(value, valueType);
 			
 			valueMap.put(entry.getKey(), value);
@@ -223,7 +228,7 @@ public class ItemTokenExpression extends TokenExpression implements ItemTokenExp
 		for(Map.Entry<String, Token[]> entry : tokensMap.entrySet()) {
 			Object value = express(entry.getKey(), entry.getValue());
 
-			if(valueType != null)
+			if(value != null && valueType != null)
 				value = valuelize(value, valueType);
 
 			prop.put(entry.getKey(), value);
@@ -248,7 +253,7 @@ public class ItemTokenExpression extends TokenExpression implements ItemTokenExp
 		List<Object> valueList = new ArrayList<Object>(values.length);
 		
 		for(String value : values) {
-			if(valueType != null)
+			if(value != null && valueType != null)
 				valueList.add(valuelize((Object)value, valueType));
 			else
 				valueList.add(value);
@@ -273,7 +278,7 @@ public class ItemTokenExpression extends TokenExpression implements ItemTokenExp
 		Set<Object> valueSet = new LinkedHashSet<Object>(values.length);
 		
 		for(String value : values) {
-			if(valueType != null)
+			if(value != null && valueType != null)
 				valueSet.add(valuelize((Object)value, valueType));
 			else
 				valueSet.add(value);
@@ -298,17 +303,25 @@ public class ItemTokenExpression extends TokenExpression implements ItemTokenExp
 				return value;
 			else
 				return Long.valueOf(value.toString());
-		} else if(valueType == ItemValueType.FLOAT)
+		} else if(valueType == ItemValueType.FLOAT) {
 			if(value instanceof Float)
 				return value;
 			else
 				return Float.valueOf(value.toString());
-		else if(valueType == ItemValueType.DOUBLE)
+		} else if(valueType == ItemValueType.DOUBLE) {
 			if(value instanceof Double)
 				return value;
 			else
 				return Double.valueOf(value.toString());
-		else if(valueType == ItemValueType.FILE) {
+		} else if(valueType == ItemValueType.BOOLEAN) {
+			if(value instanceof Boolean)
+				return value;
+			else
+				return Boolean.valueOf(value.toString());
+		} else if(valueType == ItemValueType.PARAMETERS) {
+			String text = value.toString();
+			value = new GenericParameters(text);
+		} else if(valueType == ItemValueType.FILE) {
 			String filePath = value.toString();
 			value = new File(filePath);
 		} else if(valueType == ItemValueType.MULTIPART_FILE) {

@@ -58,28 +58,12 @@ public class Token {
 		else
 			this.name = nameOrText;
 	}
-//	
-//	/**
-//	 * Instantiates a new token.
-//	 * 
-//	 * @param type the type
-//	 * @param name the name
-//	 * @param defaultValue the default value
-//	 */
-//	public Token(TokenType type, String name, String text, int i) {
-//		this.type = type;
-//		this.name = name;
-//
-//		if(text != null && (type == TokenType.PARAMETER || type == TokenType.TEXT)) {
-//			this.text = text;
-//		}
-//	}
 	
 	/**
- * Gets the type.
- * 
- * @return the type
- */
+	 * Gets the type.
+	 * 
+	 * @return the type
+	 */
 	public TokenType getType() {
 		return type;
 	}

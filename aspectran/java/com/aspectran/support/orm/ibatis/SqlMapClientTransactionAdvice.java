@@ -25,7 +25,7 @@ public class SqlMapClientTransactionAdvice {
 		this.sqlMapClient = sqlMapClient;
 	}
 
-	public SqlMapClient begin(Translet translet) throws SQLException {
+	public SqlMapClient begin() throws SQLException {
 		sqlMapClient.startTransaction();
 		
 		return sqlMapClient;

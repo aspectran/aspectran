@@ -196,7 +196,7 @@ url CDATA #IMPLIED
 name CDATA #IMPLIED
 value CDATA #IMPLIED
 type (item | list | map | set | properties) #IMPLIED
-valueType CDATA #IMPLIED
+valueType (string | int | long | float | double | boolean | parameters | file | multipart-file) #IMPLIED
 defaultValue CDATA #IMPLIED
 tokenize (true | false) #IMPLIED
 >

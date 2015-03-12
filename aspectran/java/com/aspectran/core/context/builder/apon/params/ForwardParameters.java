@@ -18,7 +18,7 @@ public class ForwardParameters extends AbstractParameters implements Parameters 
 	static {
 		contentType = new ParameterDefine("contentType", ParameterValueType.STRING);
 		translet = new ParameterDefine("translet", ParameterValueType.STRING);
-		attributes = new ParameterDefine("attribute", ItemParameters.class, true);
+		attributes = new ParameterDefine("attribute", ItemHolderParameters.class);
 		actions = new ParameterDefine("action", ActionParameters.class, true, true);
 		defaultResponse = new ParameterDefine("defaultResponse", ParameterValueType.BOOLEAN);
 		

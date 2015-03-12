@@ -138,6 +138,7 @@ public class ContentList extends ArrayList<ActionList> implements AspectAdviceSu
 			sb.append(content.toString());
 		}
 		sb.append(']');
+		sb.append('}');
 		
 		return sb.toString();
 	}

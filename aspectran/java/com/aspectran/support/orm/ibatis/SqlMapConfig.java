@@ -22,8 +22,9 @@ public class SqlMapConfig {
 	}
 	
 	protected void buildSqlMapClient(String resource) {
-		try{
-			InputStream is = ResourceUtils.getResourceAsStream(resource);
+		try {
+			ClassLoader classLoader = ResourceUtils.getClassLoader(this.getClass());
+			InputStream is = classLoader.getResourceAsStream(resource);
 			sqlMapClient = SqlMapClientBuilder.buildSqlMapClient(is);
 		} catch(Exception e) {
 			throw new RuntimeException("Error initializing SqlMapConfig class", e);

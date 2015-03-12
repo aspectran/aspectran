@@ -31,6 +31,7 @@ import com.aspectran.core.context.builder.apon.params.AdviceParameters;
 import com.aspectran.core.context.builder.apon.params.AspectParameters;
 import com.aspectran.core.context.builder.apon.params.AspectranParameters;
 import com.aspectran.core.context.builder.apon.params.BeanParameters;
+import com.aspectran.core.context.builder.apon.params.ConstructorParameters;
 import com.aspectran.core.context.builder.apon.params.ContentParameters;
 import com.aspectran.core.context.builder.apon.params.ContentsParameters;
 import com.aspectran.core.context.builder.apon.params.DispatchParameters;
@@ -38,6 +39,7 @@ import com.aspectran.core.context.builder.apon.params.ExceptionParameters;
 import com.aspectran.core.context.builder.apon.params.ExceptionRaizedParameters;
 import com.aspectran.core.context.builder.apon.params.ForwardParameters;
 import com.aspectran.core.context.builder.apon.params.ImportParameters;
+import com.aspectran.core.context.builder.apon.params.ItemHolderParameters;
 import com.aspectran.core.context.builder.apon.params.JobParameters;
 import com.aspectran.core.context.builder.apon.params.JoinpointParameters;
 import com.aspectran.core.context.builder.apon.params.RedirectParameters;
@@ -287,18 +289,21 @@ public class RootAponDisassembler {
 		String destroyMethod = beanParameters.getString(BeanParameters.destroyMethod);
 		Boolean lazyInit = beanParameters.getBoolean(BeanParameters.lazyInit);
 		Boolean important = beanParameters.getBoolean(BeanParameters.important);
-		List<Parameters> constructorArgumentParametersList = beanParameters.getParametersList(BeanParameters.constructor);
-		List<Parameters> propertyParametersList = beanParameters.getParametersList(BeanParameters.properties);
+		ConstructorParameters constructorParameters = beanParameters.getParameters(BeanParameters.constructor);
+		ItemHolderParameters propertyItemHolderParameters = beanParameters.getParameters(BeanParameters.properties);
 		
 		BeanRule beanRule = BeanRule.newInstance(id, className, scope, singleton, factoryMethod, initMethod, destroyMethod, lazyInit, important);
 
-		if(constructorArgumentParametersList != null && !constructorArgumentParametersList.isEmpty()) {
-			ItemRuleMap constructorArgumentItemRuleMap = disassembleItemRuleMap(constructorArgumentParametersList);
-			beanRule.setConstructorArgumentItemRuleMap(constructorArgumentItemRuleMap);
+		if(constructorParameters != null) {
+			Parameters constructorArgumentItemHolderParameters = constructorParameters.getParameters(ConstructorParameters.arguments);
+			if(constructorArgumentItemHolderParameters != null) {
+				ItemRuleMap constructorArgumentItemRuleMap = disassembleItemRuleMap(constructorArgumentItemHolderParameters);
+				beanRule.setConstructorArgumentItemRuleMap(constructorArgumentItemRuleMap);
+			}
 		}
 		
-		if(propertyParametersList != null && !propertyParametersList.isEmpty()) {
-			ItemRuleMap propertyItemRuleMap = disassembleItemRuleMap(propertyParametersList);
+		if(propertyItemHolderParameters != null) {
+			ItemRuleMap propertyItemRuleMap = disassembleItemRuleMap(propertyItemHolderParameters);
 			beanRule.setPropertyItemRuleMap(propertyItemRuleMap);
 		}
 		
@@ -386,12 +391,12 @@ public class RootAponDisassembler {
 	public RequestRule disassembleRequestRule(Parameters requestParameters) {
 		String method = requestParameters.getString(RequestParameters.method);
 		String characterEncoding = requestParameters.getString(RequestParameters.characterEncoding);
-		List<Parameters> attributeParametersList = requestParameters.getParametersList(RequestParameters.attributes);
+		ItemHolderParameters attributeItemHolderParameters = requestParameters.getParameters(RequestParameters.attributes);
 		
 		RequestRule requestRule = RequestRule.newInstance(method, characterEncoding);
 	
-		ItemRuleMap attributeItemRuleMap = disassembleItemRuleMap(attributeParametersList);
-		if(attributeItemRuleMap != null) {
+		if(attributeItemHolderParameters != null) {
+			ItemRuleMap attributeItemRuleMap = disassembleItemRuleMap(attributeItemHolderParameters);
 			requestRule.setAttributeItemRuleMap(attributeItemRuleMap);
 		}
 	
@@ -469,10 +474,11 @@ public class RootAponDisassembler {
 		String id = actionParameters.getString(ActionParameters.id);
 		String beanId = actionParameters.getString(ActionParameters.beanId);
 		String methodName = actionParameters.getString(ActionParameters.methodName);
-		List<Parameters> argumentParametersList = actionParameters.getParametersList(ActionParameters.arguments);
-		List<Parameters> propertyParametersList = actionParameters.getParametersList(ActionParameters.properties);
+		ItemHolderParameters argumentItemHolderParameters = actionParameters.getParameters(ActionParameters.arguments);
+		ItemHolderParameters propertyItemHolderParameters = actionParameters.getParameters(ActionParameters.properties);
 		String include = actionParameters.getString(ActionParameters.include);
-		List<Parameters> echoParametersList = actionParameters.getParametersList(ActionParameters.echo);
+		ItemHolderParameters attributeItemHolderParameters = actionParameters.getParameters(ActionParameters.attributes);
+		ItemHolderParameters echoItemHolderParameters = actionParameters.getParameters(ActionParameters.echo);
 		Boolean hidden = actionParameters.getBoolean(ActionParameters.hidden);
 		
 		if(!assistant.isNullableActionId() && StringUtils.isEmpty(id))
@@ -480,27 +486,29 @@ public class RootAponDisassembler {
 		
 		if(!StringUtils.isEmpty(methodName)) {
 			BeanActionRule beanActionRule = BeanActionRule.newInstance(id, beanId, methodName, hidden);
-			ItemRuleMap argumentItemRuleMap = disassembleItemRuleMap(argumentParametersList);
-			if(argumentItemRuleMap != null) {
+			if(argumentItemHolderParameters != null) {
+				ItemRuleMap argumentItemRuleMap = disassembleItemRuleMap(argumentItemHolderParameters);
 				beanActionRule.setArgumentItemRuleMap(argumentItemRuleMap);
 			}
-			ItemRuleMap propertyItemRuleMap = disassembleItemRuleMap(propertyParametersList);
-			if(propertyItemRuleMap != null) {
+			if(propertyItemHolderParameters != null) {
+				ItemRuleMap propertyItemRuleMap = disassembleItemRuleMap(propertyItemHolderParameters);
 				beanActionRule.setPropertyItemRuleMap(propertyItemRuleMap);
 			}
 			actionRuleApplicable.applyActionRule(beanActionRule);
 			if(!StringUtils.isEmpty(beanId)) {
 				assistant.putBeanReference(beanId, beanActionRule);
 			}
-		} else if(echoParametersList != null) {
+		} else if(echoItemHolderParameters != null) {
 			EchoActionRule echoActionRule = EchoActionRule.newInstance(id, hidden);
-			ItemRuleMap attributeItemRuleMap = disassembleItemRuleMap(echoParametersList);
+			ItemRuleMap attributeItemRuleMap = disassembleItemRuleMap(echoItemHolderParameters);
 			echoActionRule.setAttributeItemRuleMap(attributeItemRuleMap);
 			actionRuleApplicable.applyActionRule(echoActionRule);
 		} else if(include != null) {
 			IncludeActionRule includeActionRule = IncludeActionRule.newInstance(id, include, hidden);
-			ItemRuleMap attributeItemRuleMap = disassembleItemRuleMap(echoParametersList);
-			includeActionRule.setAttributeItemRuleMap(attributeItemRuleMap);
+			if(attributeItemHolderParameters != null) {
+				ItemRuleMap attributeItemRuleMap = disassembleItemRuleMap(attributeItemHolderParameters);
+				includeActionRule.setAttributeItemRuleMap(attributeItemRuleMap);
+			}
 			actionRuleApplicable.applyActionRule(includeActionRule);
 		}
 	}
@@ -620,15 +628,15 @@ public class RootAponDisassembler {
 		String contentType = redirectParameters.getString(RedirectParameters.contentType);
 		String translet = redirectParameters.getString(RedirectParameters.translet);
 		String url = redirectParameters.getString(RedirectParameters.url);
-		List<Parameters> parameterParametersList = redirectParameters.getParametersList(RedirectParameters.parameters);
+		ItemHolderParameters parameterItemHolderParametersList = redirectParameters.getParameters(RedirectParameters.parameters);
 		Boolean excludeNullParameter = redirectParameters.getBoolean(RedirectParameters.excludeNullParameter);
 		List<Parameters> actionParametersList = redirectParameters.getParametersList(RedirectParameters.actions);
 		Boolean defaultResponse = redirectParameters.getBoolean(RedirectParameters.defaultResponse);
 		
 		RedirectResponseRule rrr = RedirectResponseRule.newInstance(contentType, translet, url, excludeNullParameter, defaultResponse);
 		
-		ItemRuleMap parameterItemRuleMap = disassembleItemRuleMap(parameterParametersList);
-		if(parameterItemRuleMap != null) {
+		if(parameterItemHolderParametersList != null) {
+			ItemRuleMap parameterItemRuleMap = disassembleItemRuleMap(parameterItemHolderParametersList);
 			rrr.setParameterItemRuleMap(parameterItemRuleMap);
 		}
 		
@@ -653,7 +661,7 @@ public class RootAponDisassembler {
 	public ForwardResponseRule disassembleForwardResponseRule(Parameters forwardParameters) {
 		String contentType = forwardParameters.getString(ForwardParameters.contentType);
 		String translet = forwardParameters.getString(ForwardParameters.translet);
-		List<Parameters> attributeParametersList = forwardParameters.getParametersList(ForwardParameters.attributes);
+		ItemHolderParameters attributeItemHolderParametersList = forwardParameters.getParameters(ForwardParameters.attributes);
 		List<Parameters> actionParametersList = forwardParameters.getParametersList(ForwardParameters.actions);
 		Boolean defaultResponse = forwardParameters.getBoolean(ForwardParameters.defaultResponse);
 		
@@ -661,8 +669,8 @@ public class RootAponDisassembler {
 		
 		ForwardResponseRule rrr = ForwardResponseRule.newInstance(contentType, translet, defaultResponse);
 		
-		ItemRuleMap attributeItemRuleMap = disassembleItemRuleMap(attributeParametersList);
-		if(attributeItemRuleMap != null) {
+		if(attributeItemHolderParametersList != null) {
+			ItemRuleMap attributeItemRuleMap = disassembleItemRuleMap(attributeItemHolderParametersList);
 			rrr.setAttributeItemRuleMap(attributeItemRuleMap);
 		}
 		
@@ -677,9 +685,10 @@ public class RootAponDisassembler {
 		return rrr;
 	}
 	
-	public ItemRuleMap disassembleItemRuleMap(List<Parameters> itemParametersList) {
+	public ItemRuleMap disassembleItemRuleMap(Parameters itemHolderParameters) {
+		List<Parameters> itemParametersList = itemHolderParameters.getParametersList(ItemHolderParameters.item);
 		ItemRuleMap itemRuleMap = ItemRule.toItemRuleMap(itemParametersList);
-		
+			
 		if(itemRuleMap != null) {
 			for(ItemRule itemRule : itemRuleMap) {
 				Iterator<Token[]> iter = ItemRule.tokenIterator(itemRule);

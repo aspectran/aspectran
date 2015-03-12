@@ -257,6 +257,57 @@
 		</advice>
 	</aspect>
 
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroyMthod="close">
+		<property>
+			<item name="driverClassName" value="${driver}"/>
+			<item name="url" value="${dburl}"/>
+			<item name="username" value="${username}"/>
+			<item name="password" value="${password}"/>
+			<item name="defaultAutoCommit" value="false"/>
+			<item name="poolPreparedStatements" value="true"/>
+		</property>
+	</bean>
+
+	<bean id="sqlMapClient" class="com.aspectran.support.orm.ibatis.SqlMapClientFactory">
+		<property>
+			<item name="resource" value="classpath:/WEB-INF/sqlmap/sql-map-config.xml"/>
+			<item name="configLocation" value="classpath:/WEB-INF/sqlmap/mappings/**/*.xml"/>
+			<item name="configLocation" type="map" valueType="parameters">
+				<value name="parameters-1">
+					[
+						"classpath:/WEB-INF/sqlmap/sql-map-config.xml"
+						"classpath:/WEB-INF/sqlmap/sql-map-config.xml"
+						"classpath:/WEB-INF/sqlmap/sql-map-config.xml"
+					]
+				</value>
+			</item>
+		</property>
+		<property>
+			item: [
+				{
+					name: "where"
+					value: "nexearch"
+				}
+				{
+					name: "query"
+					value: "서울"
+				}
+				{
+					name: "sm"
+					value: "top_hty"
+				}
+				{
+					name: "fbm"
+					value: "1"
+				}
+				{
+					name: "ie"
+					value: "utf8"
+				}
+			]		
+		</property>
+	</bean>
+
 	<!--
 		Matching targets:
 			request: reserved

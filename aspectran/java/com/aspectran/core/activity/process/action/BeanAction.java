@@ -99,7 +99,7 @@ public class BeanAction extends AbstractAction implements Executable {
 					
 					transletArgumentApplyingCache.put(argumentItemRuleMap, Boolean.TRUE);
 				} catch(NoSuchMethodException e) {
-					logger.info("No such method with a translet argument. " + e);
+					logger.info("The method with the 'translet' argument was not found. So in the future will continue to call a method with no argument 'translet'.");
 					
 					result = invokeMethod(null, expressor, bean, methodName, argumentItemRuleMap);
 					
