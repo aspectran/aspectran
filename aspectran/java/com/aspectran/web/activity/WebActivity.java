@@ -228,19 +228,5 @@ public class WebActivity extends CoreActivity implements Activity {
 		WebActivity webActivity = new WebActivity(getActivityContext(), request, response);
 		return (T)webActivity;
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.web.activity.WebTranslet#getHttpServletRequest()
-	 */
-	public HttpServletRequest getHttpServletRequest() {
-		return request;
-	}
-
-	/* (non-Javadoc)
-	 * @see com.aspectran.web.activity.WebTranslet#getHttpServletResponse()
-	 */
-	public HttpServletResponse getHttpServletResponse() {
-		return response;
-	}
 
 }
