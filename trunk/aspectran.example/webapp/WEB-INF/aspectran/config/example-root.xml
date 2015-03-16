@@ -153,7 +153,7 @@
 	<translet name="hello/countTo10twice">
 		<action id="result1" bean="example.hello.HelloAction" method="countTo10"/>
 		<action id="result2" bean="example.hello.HelloAction" method="countTo10"/>
-		<transform type="transform/text">
+		<transform type="transform/text" contentType="text/plain">
 			<template>
 (first)
 @{result1}
@@ -163,10 +163,22 @@
 		</transform>
 	</translet>
 
-	<translet name="hello/countTo10.xml">
-		<transform type="transform/xml" pretty="true">
-			<action id="result" bean="example.hello.HelloAction" method="countTo10AsArray"/>
-		</transform>
+	<translet name="hello/countTo10">
+		<response name=".xml">
+			<transform type="transform/xml" pretty="true">
+				<action id="result" bean="example.hello.HelloAction" method="countTo10AsArray"/>
+			</transform>
+		</response>
+		<response name=".json">
+			<transform type="transform/json" contentType="text/plain" pretty="true">
+				<action id="result" bean="example.hello.HelloAction" method="countTo10AsArray"/>
+			</transform>
+		</response>
+		<response name=".apon">
+			<transform type="transform/apon" contentType="text/plain" pretty="true">
+				<action id="result" bean="example.hello.HelloAction" method="countTo10AsArray"/>
+			</transform>
+		</response>
 	</translet>
 
 	<translet name="hello/countTo10ext">
