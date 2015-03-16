@@ -115,17 +115,20 @@ public class JspViewDispatcher implements ViewDispatcher {
 	 * 
 	 * @param servletRequest the servlet request
 	 * @param processResult the process result
-	 * @param parentFullActionId the parent action path
+	 * @param parentQualifiedActionId the parent action path
 	 */
-	private void setAttribute(RequestAdapter requestAdapter, ProcessResult processResult, String parentFullActionId) {
+	private void setAttribute(RequestAdapter requestAdapter, ProcessResult processResult, String parentQualifiedActionId) {
 		for(ContentResult contentResult : processResult) {
 			for(ActionResult actionResult : contentResult) {
 				Object actionResultValue = actionResult.getResultValue();
 
-				if(actionResultValue instanceof ProcessResult)
+				if(actionResultValue instanceof ProcessResult) {
 					setAttribute(requestAdapter, (ProcessResult)actionResultValue, actionResult.getQuialifiedActionId());
-				else
-					requestAdapter.setAttribute(actionResult.getQuialifiedActionId(parentFullActionId), actionResultValue);
+				} else {
+					String actionId = actionResult.getQuialifiedActionId(parentQualifiedActionId);
+					if(actionId != null)
+						requestAdapter.setAttribute(actionResult.getQuialifiedActionId(parentQualifiedActionId), actionResultValue);
+				}
 			}
 		}
 	}

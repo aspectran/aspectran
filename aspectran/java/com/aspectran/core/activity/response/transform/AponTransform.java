@@ -25,10 +25,13 @@ import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.activity.process.result.ProcessResult;
 import com.aspectran.core.activity.response.Response;
+import com.aspectran.core.activity.response.transform.apon.ContentsAponAssembler;
 import com.aspectran.core.activity.response.transform.json.ContentsJsonWriter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.context.AspectranConstant;
 import com.aspectran.core.context.rule.TransformRule;
+import com.aspectran.core.util.apon.AponWriter;
+import com.aspectran.core.util.apon.Parameters;
 import com.aspectran.core.util.json.JsonWriter;
 
 /**
@@ -36,9 +39,9 @@ import com.aspectran.core.util.json.JsonWriter;
  * Created: 2008. 03. 22 오후 5:51:58
  * </p>
  */
-public class JsonTransform extends TransformResponse implements Response {
+public class AponTransform extends TransformResponse implements Response {
 	
-	private final Logger logger = LoggerFactory.getLogger(JsonTransform.class);
+	private final Logger logger = LoggerFactory.getLogger(AponTransform.class);
 	
 	private final boolean traceEnabled = logger.isTraceEnabled();
 	
@@ -47,11 +50,11 @@ public class JsonTransform extends TransformResponse implements Response {
 	private boolean pretty;
 	
 	/**
-	 * Instantiates a new JSON transformer.
+	 * Instantiates a new APON transformer.
 	 * 
 	 * @param transformRule the transform rule
 	 */
-	public JsonTransform(TransformRule transformRule) {
+	public AponTransform(TransformRule transformRule) {
 		super(transformRule);
 		
 		this.pretty = transformRule.isPretty();
@@ -80,9 +83,11 @@ public class JsonTransform extends TransformResponse implements Response {
 			Writer output = responseAdapter.getWriter();
 			ProcessResult processResult = activity.getProcessResult();
 
-			JsonWriter jsonWriter = new ContentsJsonWriter(output, pretty);
-			jsonWriter.write(processResult);
-			jsonWriter.close();
+			Parameters parameters = ContentsAponAssembler.assemble(processResult);
+			System.out.println(parameters);
+			AponWriter aponWriter = new AponWriter(output, pretty);
+			aponWriter.write(parameters);
+			aponWriter.close();
 			
 			if(traceEnabled) {
 				StringWriter stringWriter = new StringWriter();
@@ -102,5 +107,5 @@ public class JsonTransform extends TransformResponse implements Response {
 	public ActionList getActionList() {
 		return transformRule.getActionList();
 	}
-
+	
 }

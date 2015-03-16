@@ -110,7 +110,7 @@ public class ContentResult extends ArrayList<ActionResult> {
 		StringBuilder sb = new StringBuilder();
 		sb.append("{contentId=").append(contentId);
 		sb.append(", actionResults=");
-		if(size() > 0) {
+		if(!isEmpty()) {
 			sb.append('[');
 			String name;
 			int offset;

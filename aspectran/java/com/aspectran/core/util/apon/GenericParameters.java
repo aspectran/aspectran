@@ -36,12 +36,6 @@ public class GenericParameters extends AbstractParameters implements Parameters 
 		return p;
 	}
 
-	private ParameterValue newParameterValue(String name, ParameterValueType parameterValueType) {
-		ParameterValue p = new ParameterValue(name, parameterValueType);
-		parameterValueMap.put(name, p);
-		return p;
-	}
-
 	private ParameterValueType determineParameterValueType(Object value) {
 		ParameterValueType parameterValueType;
 		

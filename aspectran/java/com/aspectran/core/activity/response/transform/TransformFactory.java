@@ -51,10 +51,15 @@ public class TransformFactory {
 				tr.setContentType(ContentType.TEXT_PLAIN.toString());
 			
 			transform = new JsonTransform(tr);
+		} else if(tranformType == TransformType.APON_TRANSFORM) {
+			if(tr.getContentType() == null)
+				tr.setContentType(ContentType.TEXT_PLAIN.toString());
+			
+			transform = new AponTransform(tr);
 		} else if(tranformType == TransformType.CUSTOM_TRANSFORM) {
 			transform = new CustomTransform(tr);
 		} else {
-			throw new IllegalArgumentException("Cannot create a transformer. Cause: Unkown transform-type '" + tr.toString() + "'.");
+			throw new IllegalArgumentException("Cannot create a transformer. Cause: Unknown transform-type " + tr.toString());
 		}
 		
 		return transform;

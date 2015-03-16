@@ -43,7 +43,8 @@ public class ParameterValue implements Parameter {
 		this.array = array;
 		this.predefined = (predefined && parameterValueType != ParameterValueType.VARIABLE);
 
-		if(this.array && !noBracket && (parameterValueType == ParameterValueType.PARAMETERS || parameterValueType == ParameterValueType.VARIABLE))
+		//if(this.array && !noBracket && (parameterValueType == ParameterValueType.PARAMETERS || parameterValueType == ParameterValueType.VARIABLE))
+		if(this.array && !noBracket)
 			this.bracketed = true;
 	}
 	
@@ -148,7 +149,7 @@ public class ParameterValue implements Parameter {
 			addValue(value);
 			this.value = null;
 			array = true;
-			bracketed = false;
+			bracketed = true;
 		} else {
 			if(array) {
 				addValue(value);
@@ -418,12 +419,12 @@ public class ParameterValue implements Parameter {
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-
 		sb.append("{name=").append(name);
 		sb.append(", parameterValueType=").append(parameterValueType);
 		if(parameterValueType == ParameterValueType.PARAMETERS)
 			sb.append(", parametersClass=").append(parametersClass.getName());
 		sb.append(", array=").append(array);
+		sb.append(", bracketed=").append(bracketed);
 		if(array)
 			sb.append(", arraySize=").append(getArraySize());
 		sb.append(", qualifiedName=").append(getQualifiedName());

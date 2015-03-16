@@ -110,6 +110,10 @@ public class TextTransform extends TransformResponse implements Response {
 	 * @see com.aspectran.core.activity.response.Responsible#response(com.aspectran.core.activity.CoreActivity)
 	 */
 	public void response(Activity activity) throws TransformResponseException {
+		if(debugEnabled) {
+			logger.debug("response {}", transformRule);
+		}
+		
 		ResponseAdapter responseAdapter = activity.getResponseAdapter();
 		
 		if(responseAdapter == null)
@@ -140,20 +144,23 @@ public class TextTransform extends TransformResponse implements Response {
 				}
 			} else {
 				ProcessResult processResult = activity.getProcessResult();
+				
 				if(processResult != null) {
 					Writer output = responseAdapter.getWriter();
 					int chunks = 0;
+					
 					for(ContentResult contentResult : processResult) {
 						for(ActionResult actionResult : contentResult) {
-							if(actionResult != null && actionResult != ActionResult.NO_RESULT) {
+							Object resultValue = actionResult.getResultValue();
+							if(resultValue != null) {
 								if(chunks++ > 0)
 									output.write(AspectranConstant.LINE_SEPARATOR);
 								
-								Object value = actionResult.getResultValue();
-								output.write(value.toString());
+								output.write(resultValue.toString());
 							}
 						}
 					}
+					
 					output.close();
 				}
 			}
