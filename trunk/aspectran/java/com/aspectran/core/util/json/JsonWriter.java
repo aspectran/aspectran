@@ -70,23 +70,18 @@ public class JsonWriter implements Closeable {
 	 * @throws InvocationTargetException the invocation target exception
 	 */
 	public void write(Object object) throws IOException, InvocationTargetException {
-		/*if(object instanceof ProcessResult) {
-			indentDepth++;
-			write(object);
-			indentDepth--;
-		} else */
 		if(object instanceof String ||
-					object instanceof Number ||
 					object instanceof Boolean ||
 					object instanceof Date) {
-			writeValue(object.toString());
+			writeString(object.toString());
+		} else if(object instanceof Number) {
+			writeNumber(object.toString());
 		} else if(object instanceof Map<?, ?>) {
 			@SuppressWarnings("unchecked")
 			Map<String, Object> map = (Map<String, Object>)object;
+			Iterator<String> iter = map.keySet().iterator();
 
 			openCurlyBracket();
-
-			Iterator<String> iter = map.keySet().iterator();
 
 			while(iter.hasNext()) {
 				String name = iter.next();
@@ -98,10 +93,9 @@ public class JsonWriter implements Closeable {
 				else
 					write(map.get(name));
 
-				if(iter.hasNext())
+				if(iter.hasNext()) {
 					writeComma();
-
-				nextLine();
+				}
 			}
 
 			closeCurlyBracket();
@@ -116,20 +110,17 @@ public class JsonWriter implements Closeable {
 
 				if(iter.hasNext()) {
 					writeComma();
-					nextLine();
 				}
 			}
 
 			closeSquareBracket();
 		} else if(object.getClass().isArray()) {
-
 			openSquareBracket();
 
 			int len = Array.getLength(object);
 			for(int i = 0; i < len; i++) {
 				if(i > 0) {
 					writeComma();
-					nextLine();
 				}
 
 				write(Array.get(object, i));
@@ -139,30 +130,32 @@ public class JsonWriter implements Closeable {
 		} else {
 			String[] readablePropertyNames = BeanUtils.getReadablePropertyNames(object);
 
-			openCurlyBracket();
-
 			if(readablePropertyNames != null && readablePropertyNames.length > 0) {
+				openCurlyBracket();
+
 				for(int i = 0; i < readablePropertyNames.length; i++) {
 					Object value = BeanUtils.getObject(object, readablePropertyNames[i]);
 
-					if(object.equals(value))
+					if(object == value || object.equals(value))
 						continue;
 
 					writeName(readablePropertyNames[i]);
 
-					if(value == null)
+					if(value == null) {
 						writeNull();
-					else
+					} else {
 						write(value);
+					}
 
-					if(i < (readablePropertyNames.length - 1))
+					if(i < (readablePropertyNames.length - 1)) {
 						writeComma();
-
-					nextLine();
+					}
 				}
-			}
 
-			closeCurlyBracket();
+				closeCurlyBracket();
+			} else {
+				writeString(object.toString());
+			}
 		}
 	}
 
@@ -205,12 +198,21 @@ public class JsonWriter implements Closeable {
 	 * 
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
-	protected void writeValue(String value) throws IOException {
+	protected void writeString(String value) throws IOException {
 		if(!willWriteValue)
 			indent();
 
 		writer.write(escape(value));
 
+		willWriteValue = false;
+	}
+
+	protected void writeNumber(String value) throws IOException {
+		if(!willWriteValue)
+			indent();
+		
+		writer.write(value);
+		
 		willWriteValue = false;
 	}
 
@@ -230,6 +232,11 @@ public class JsonWriter implements Closeable {
 	 */
 	protected void writeComma() throws IOException {
 		writer.write(",");
+
+		if(prettyFormat)
+			writer.write(" ");
+		
+		nextLine();
 	}
 	
 	/**
@@ -265,6 +272,7 @@ public class JsonWriter implements Closeable {
 	protected void closeCurlyBracket() throws IOException {
 		indentDepth--;
 
+		nextLine();
 		indent();
 
 		writer.write("}");

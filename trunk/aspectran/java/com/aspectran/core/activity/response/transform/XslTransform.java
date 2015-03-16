@@ -111,7 +111,7 @@ public class XslTransform extends TransformResponse implements Response {
 			return;
 
 		if(debugEnabled) {
-			logger.debug("response " + transformRule);
+			logger.debug("response {}", transformRule);
 		}
 
 		try {

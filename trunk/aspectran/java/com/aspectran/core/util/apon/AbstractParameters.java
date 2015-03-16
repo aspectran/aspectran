@@ -49,14 +49,6 @@ public abstract class AbstractParameters implements Parameters {
 		}
 	}
 	
-	public Map<String, ParameterValue> getParameterValueMap() {
-		return parameterValueMap;
-	}
-	
-	public void addParameterValue(ParameterValue parameterValue) {
-		parameterValueMap.put(parameterValue.getName(), parameterValue);
-	}
-	
 	public Parameter getPrototype() {
 		return prototype;
 	}
@@ -79,7 +71,15 @@ public abstract class AbstractParameters implements Parameters {
 					return prototype.getContainer().getPrototype();
 		return null;
 	}
+
+	public Map<String, ParameterValue> getParameterValueMap() {
+		return parameterValueMap;
+	}
 	
+	public void addParameterValue(ParameterValue parameterValue) {
+		parameterValueMap.put(parameterValue.getName(), parameterValue);
+	}
+
 	public String[] getParameterNames() {
 		String[] names = new String[parameterValueMap.size()];
 		
@@ -406,6 +406,10 @@ public abstract class AbstractParameters implements Parameters {
 	
 	public <T extends Parameters> List<T> getParametersList(ParameterDefine parameterDefine) {
 		return getParametersList(parameterDefine.getName());
+	}
+
+	public ParameterValue newParameterValue(String name, ParameterValueType parameterValueType) {
+		return newParameterValue(name, parameterValueType, false);
 	}
 
 	public ParameterValue newParameterValue(String name, ParameterValueType parameterValueType, boolean array) {

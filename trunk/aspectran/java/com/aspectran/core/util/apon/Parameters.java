@@ -141,6 +141,8 @@ public interface Parameters {
 	
 	public <T extends Parameters> List<T> getParametersList(ParameterDefine parameterDefine);
 	
+	public ParameterValue newParameterValue(String name, ParameterValueType parameterValueType);
+	
 	public ParameterValue newParameterValue(String name, ParameterValueType parameterValueType, boolean array);
 	
 	public <T extends Parameters> T newParameters(String name);

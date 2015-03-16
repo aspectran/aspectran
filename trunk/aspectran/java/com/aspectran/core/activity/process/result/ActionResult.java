@@ -122,10 +122,9 @@ public class ActionResult {
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-
 		sb.append("{contentId=").append(getContentId());
 		sb.append(", actionId=").append(actionId);
-		sb.append(", getQuialifiedActionId=").append(getQuialifiedActionId());
+		sb.append(", quialifiedActionId=").append(getQuialifiedActionId());
 		sb.append(", resultValue=").append(resultValue);
 		sb.append("}");
 

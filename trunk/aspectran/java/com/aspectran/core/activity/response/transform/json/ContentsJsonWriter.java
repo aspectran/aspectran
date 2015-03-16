@@ -49,19 +49,15 @@ public class ContentsJsonWriter extends JsonWriter {
 		super(writer, prettyWrite);
 	}
 
-	/**
-	 * Write.
-	 * 
-	 * @param processResult the process result
-	 * 
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 * @throws InvocationTargetException the invocation target exception
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.util.json.JsonWriter#write(java.lang.Object)
 	 */
-	public void write(ProcessResult processResult) throws IOException, InvocationTargetException {
-		openCurlyBracket();
-		write(processResult, null);
-		nextLine();
-		closeCurlyBracket();
+	public void write(Object object) throws IOException, InvocationTargetException {
+		if(object instanceof ProcessResult) {
+			write((ProcessResult)object);
+		} else {
+			super.write(object);
+		}
 	}
 
 	/**
@@ -73,44 +69,77 @@ public class ContentsJsonWriter extends JsonWriter {
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 * @throws InvocationTargetException the invocation target exception
 	 */
-	private void write(ProcessResult processResult, String parentContentId) throws IOException,
-			InvocationTargetException {
-		if(processResult == null || processResult.size() == 0)
-			return;
-
-		Iterator<ContentResult> iter = processResult.iterator();
-
-		while(iter.hasNext()) {
-			ContentResult contentResult = iter.next();
-
-			if(contentResult != null && contentResult.size() > 0) {
-				Iterator<ActionResult> iter2 = contentResult.iterator();
-
-				while(iter2.hasNext()) {
-					ActionResult actionResult = iter2.next();
-
-					Object resultValue = actionResult.getResultValue();
-
-					if(resultValue == null) {
-						writeNull();
-					} else if(resultValue instanceof ProcessResult) {
-						write((ProcessResult)resultValue, actionResult.getQuialifiedActionId());
-					} else {
-						writeName(actionResult.getQuialifiedActionId(parentContentId));
-						write(resultValue);
-					}
-
-					if(iter2.hasNext()) {
-						writeComma();
-						nextLine();
-					}
-				}
-
+	private void write(ProcessResult processResult) throws IOException, InvocationTargetException {
+		if(processResult.isEmpty()) {
+			writeNull();
+		} else if(processResult.size() == 1) {
+			ContentResult contentResult = processResult.get(0);
+			write(contentResult);
+		} else {
+			openSquareBracket();
+	
+			Iterator<ContentResult> iter = processResult.iterator();
+	
+			while(iter.hasNext()) {
+				ContentResult contentResult = iter.next();
+				write(contentResult);
+	
 				if(iter.hasNext()) {
 					writeComma();
-					nextLine();
 				}
 			}
+	
+			closeSquareBracket();
+		}
+	}
+
+	private void write(ContentResult contentResult) throws IOException, InvocationTargetException {
+		if(contentResult.isEmpty()) {
+			writeNull();
+			return;
+		}
+			
+		if(contentResult.getContentId() != null) {
+			openCurlyBracket();
+			writeName(contentResult.getContentId());
+		}
+
+		if(contentResult.size() == 1) {
+			ActionResult actionResult = contentResult.get(0);
+			
+			if(actionResult.getActionId() != null) {
+				openCurlyBracket();
+			
+				writeName(actionResult.getActionId());
+				write(actionResult.getResultValue());
+				
+				closeCurlyBracket();
+			} else {
+				write(actionResult.getResultValue());
+			}
+		} else {
+			openCurlyBracket();
+	
+			Iterator<ActionResult> iter = contentResult.iterator();
+			int cnt = 0;
+	
+			while(iter.hasNext()) {
+				ActionResult actionResult = iter.next();
+				
+				if(actionResult.getActionId() != null) {
+					if(cnt++ > 0) {
+						writeComma();
+					}
+					writeName(actionResult.getActionId());
+					write(actionResult.getResultValue());
+				}
+			}
+			
+			closeCurlyBracket();
+		}
+		
+		if(contentResult.getContentId() != null) {
+			closeCurlyBracket();
 		}
 	}
 

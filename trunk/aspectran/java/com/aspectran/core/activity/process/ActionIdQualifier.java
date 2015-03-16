@@ -42,6 +42,9 @@ public class ActionIdQualifier {
 			sb.append(actionId);
 		}
 
+		if(sb.length() == 0)
+			return null;
+		
 		return sb.toString();
 	}
 	
@@ -70,6 +73,9 @@ public class ActionIdQualifier {
 			sb.append(AspectranConstant.ID_SEPARATOR);
 			sb.append(actionId);
 		}
+
+		if(sb.length() == 0)
+			return null;
 
 		return sb.toString();
 	}
