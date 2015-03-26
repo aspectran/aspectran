@@ -166,7 +166,7 @@ public class TextTransform extends TransformResponse implements Response {
 			}
 
 		} catch(Exception e) {
-			throw new TransformResponseException("Text Tranformation error: " + transformRule, e);
+			throw new TransformResponseException(transformRule, e);
 		}
 	}
 	

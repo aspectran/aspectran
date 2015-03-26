@@ -120,10 +120,10 @@ public class XmlTransform extends TransformResponse implements Response {
 			if(traceEnabled) {
 				StringWriter stringWriter = new StringWriter();
 				transformer.transform(new SAXSource(xreader, isource), new StreamResult(stringWriter));
-				logger.trace("XML Source: " + AspectranConstant.LINE_SEPARATOR + stringWriter.toString());
+				logger.trace("XML output: {}{}", AspectranConstant.LINE_SEPARATOR, stringWriter.toString());
 			}
 		} catch(Exception e) {
-			throw new TransformResponseException("XML Transformation error: " + transformRule, e);
+			throw new TransformResponseException(transformRule, e);
 		}
 	}
 	

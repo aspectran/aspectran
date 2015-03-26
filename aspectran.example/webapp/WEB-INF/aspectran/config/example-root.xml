@@ -240,7 +240,7 @@ dt { font-weight: bold; color: yellow; }
 				param2: "${param2}"
 			</item>
 		</echo>
-		<transform type="transform/text" contentType="text/plain">
+		<transform type="transform/apon" contentType="text/plain" pretty="true">
 		</transform>
 	</translet>
 

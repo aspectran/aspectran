@@ -16,6 +16,7 @@
 package com.aspectran.core.activity.response.transform;
 
 import com.aspectran.core.activity.response.ResponseException;
+import com.aspectran.core.context.rule.TransformRule;
 
 /**
  * <p>Created: 2008. 01. 07 오전 3:35:55</p>
@@ -48,7 +49,7 @@ public class TransformResponseException extends ResponseException {
 	public TransformResponseException(Throwable cause) {
 		super(cause);
 	}
-
+	
 	/**
 	 * Constructor to create exception to wrap another exception and pass a
 	 * message.
@@ -59,4 +60,13 @@ public class TransformResponseException extends ResponseException {
 	public TransformResponseException(String msg, Throwable cause) {
 		super(msg, cause);
 	}
+	
+	/**
+	 * @param transformRule
+	 * @param cause
+	 */
+	public TransformResponseException(TransformRule transformRule, Throwable cause) {
+		super("Failed to transform " + transformRule, cause);
+	}
+
 }
