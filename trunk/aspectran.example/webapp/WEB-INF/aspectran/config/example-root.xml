@@ -236,8 +236,8 @@ dt { font-weight: bold; color: yellow; }
 		<action bean="sampleBean" method="getParameters"/>
 		<echo id="echo">
 			<item name="params" valueType="parameters" tokenize="true">
-				param1: "${param1}"
-				param2: "${param2}"
+				파라메터1: "${param1}"
+				파라메터2: "${param2}"
 			</item>
 		</echo>
 		<transform type="transform/apon" contentType="text/plain" pretty="true">
