@@ -364,8 +364,8 @@ aspectran: {
 				item: {
 					name: "params"
 					value: (
-						|param1: "${param1}"
-						|				param2: "${param2}"
+						|파라메터1: "${param1}"
+						|				파라메터2: "${param2}"
 					)
 					valueType: "parameters"
 					tokenize: true
