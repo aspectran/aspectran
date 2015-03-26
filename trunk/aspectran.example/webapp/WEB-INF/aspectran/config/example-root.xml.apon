@@ -373,8 +373,9 @@ aspectran: {
 			}
 		}
 		transform: {
-			type: "transform/text"
+			type: "transform/apon"
 			contentType: "text/plain"
+			pretty: true
 		}
 	}
 	translet: {
