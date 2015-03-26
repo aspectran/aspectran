@@ -70,10 +70,11 @@ public abstract class Importable {
 	}
 	
 	public Reader getReader(String encoding) throws IOException {
-		if(encoding != null)
+		if(encoding != null) {
 			return new InputStreamReader(getInputStream(), encoding);
-		else
+		} else {
 			return new InputStreamReader(getInputStream());
+		}
 	}
 	
 	public static Importable newInstance(ContextBuilderAssistant assistant, String resource, String file, String url, String fileType) {
@@ -90,9 +91,6 @@ public abstract class Importable {
 			throw new IllegalArgumentException("The <import> element requires either a resource or a file or a url attribute.");
 		}
 		
-//		if(assistant.isHybridLoading() && importable.getImportType() == ImportType.FILE && importable.getImportFileType() == ImportFileType.XML)
-//			importable = new ImportableHybrid((ImportableFile)importable);
-
 		return importable;
 	}
 	

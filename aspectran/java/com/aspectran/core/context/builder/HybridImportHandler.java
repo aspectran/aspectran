@@ -78,7 +78,7 @@ public class HybridImportHandler extends AbstractImportHandler implements Import
 					logger.info("Rapid Aspectran Context Configuration Loading: " + aponFile);
 					hybridon = true;
 
-					Parameters rootParameters = AponReader.read(aponFile, new RootParameters());
+					Parameters rootParameters = AponReader.read(aponFile, encoding, new RootParameters());
 					
 					if(rootAponDisassembler == null)
 						rootAponDisassembler = new RootAponDisassembler(assistant);
