@@ -26,13 +26,11 @@ import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.activity.process.result.ProcessResult;
 import com.aspectran.core.activity.response.Response;
 import com.aspectran.core.activity.response.transform.apon.ContentsAponAssembler;
-import com.aspectran.core.activity.response.transform.json.ContentsJsonWriter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.context.AspectranConstant;
 import com.aspectran.core.context.rule.TransformRule;
 import com.aspectran.core.util.apon.AponWriter;
 import com.aspectran.core.util.apon.Parameters;
-import com.aspectran.core.util.json.JsonWriter;
 
 /**
  * <p>
@@ -84,20 +82,19 @@ public class AponTransform extends TransformResponse implements Response {
 			ProcessResult processResult = activity.getProcessResult();
 
 			Parameters parameters = ContentsAponAssembler.assemble(processResult);
-			System.out.println(parameters);
 			AponWriter aponWriter = new AponWriter(output, pretty);
 			aponWriter.write(parameters);
 			aponWriter.close();
 			
 			if(traceEnabled) {
 				StringWriter stringWriter = new StringWriter();
-				JsonWriter jsonWriter2 = new ContentsJsonWriter(stringWriter, true);
-				jsonWriter2.write(processResult);
-				jsonWriter2.close();
+				AponWriter aponWriter2 = new AponWriter(output, true);
+				aponWriter2.write(parameters);
+				aponWriter2.close();
 				logger.trace("JSON Source: " + AspectranConstant.LINE_SEPARATOR + stringWriter.toString());
 			}
 		} catch(Exception e) {
-			throw new TransformResponseException("JSON Transformation error: " + transformRule, e);
+			throw new TransformResponseException(transformRule, e);
 		}
 	}
 	

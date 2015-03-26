@@ -92,7 +92,7 @@ public class JsonTransform extends TransformResponse implements Response {
 				logger.trace("JSON Source: " + AspectranConstant.LINE_SEPARATOR + stringWriter.toString());
 			}
 		} catch(Exception e) {
-			throw new TransformResponseException("JSON Transformation error: " + transformRule, e);
+			throw new TransformResponseException(transformRule, e);
 		}
 	}
 	

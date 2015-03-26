@@ -56,10 +56,10 @@ public class CustomTransform extends TransformResponse implements Response {
 	public void response(Activity activity) throws TransformResponseException {
 		try {
 			if(debugEnabled) {
-				logger.debug("response " + transformRule);
+				logger.debug("response {}", transformRule);
 			}
 		} catch(Exception e) {
-			throw new TransformResponseException("Custom Transformation error: " + transformRule, e);
+			throw new TransformResponseException(transformRule, e);
 		}
 	}
 }

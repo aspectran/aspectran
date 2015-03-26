@@ -139,10 +139,10 @@ public class XslTransform extends TransformResponse implements Response {
 				transformer.setOutputProperty(OutputKeys.INDENT, XmlTransform.OUTPUT_INDENT_YES);
 				transformer.setOutputProperty(OutputKeys.METHOD, XmlTransform.OUTPUT_METHOD_XML);
 				transformer.transform(new SAXSource(xreader, isource), new StreamResult(writer));
-				logger.trace("XML Source: " + AspectranConstant.LINE_SEPARATOR + writer.toString());
+				logger.trace("XSLT output: {}{}", AspectranConstant.LINE_SEPARATOR, writer.toString());
 			}
 		} catch(Exception e) {
-			throw new TransformResponseException("XSL Transformation error: " + transformRule, e);
+			throw new TransformResponseException(transformRule, e);
 		}
 	}
 
