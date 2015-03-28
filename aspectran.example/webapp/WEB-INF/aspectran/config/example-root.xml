@@ -16,7 +16,7 @@
 	<bean id="webActivityDefaultHandler" class="com.aspectran.web.activity.WebActivityDefaultHandler" scope="singleton"/>
 	<bean id="jspViewDispatcher" class="com.aspectran.web.view.JspViewDispatcher" scope="singleton"/>
 	<bean id="example.*" class="com.aspectran.example.**.*Action" scope="singleton"/>
-	<bean id="advice.*" class="com.aspectran.example.aspect.**.*Advice" scope="session"/>
+	<bean id="advice.*" class="com.aspectran.example.aspect.**.*Advice"/>
 	<bean id="sampleBean" class="com.aspectran.example.bean.SampleBean" scope="singleton"/>
 	
 	<aspect id="defaultRequestRule">
@@ -75,22 +75,11 @@
 	</aspect>
 
 	<aspect id="helloAdvice">
-		<joinpoint scope="content">
+		<joinpoint scope="translet">
 			<pointcut>
-			 	type: "wildcard"
 				target: {
 					+: "/example/hello/*@example.hello.HelloAction^applyTheAdvice"
-					-: "/aaaa*@*^bbb"
-				}
-				target: {
-					translet: "/example/hello/*"
-					bean: "example.hello.HelloAction"
-					method: "applyTheAdvice"
-					exclude: {
-						translet: "/example/hello/*"
-						bean: "example.hello.HelloAction"
-						method: "applyTheAdvice"
-					}					
+					-: "/aaaa*@*^bbb" 
 				}
 			</pointcut>
 		</joinpoint>

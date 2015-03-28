@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE aspectran PUBLIC "-//aspectran.com//DTD Aspectran 1.0//EN"
-                           "../dtd/aspectran-1.0.dtd">
+                           "../../../webapp/WEB-INF/aspectran/dtd/aspectran-1.0.dtd">
 
 <aspectran>
 
@@ -17,10 +17,10 @@
 	</settings>
 
 	<!-- settings을 apon 형식으로 표현 -->
-	<apon for="settings">
+	<settings>
 		transletNamePattern: /example/*
 		transletInterfaceClass: com.aspectran.web.activity.WebTranslet
-	</apon>
+	</settings>
 	
 	<aspect id="defaultRequestRule">
 		<joinpoint scope="request"/>
@@ -34,18 +34,18 @@
 		<!-- 
 		<before>
 			<action id="xml" bean="common.action.a1" method="testXmlAction">
-				<properties>
+				<property>
 					<item name="variable1">error</item>
 					<item name="variable2">0001</item>
-				</properties>
+				</property>
 			</action>
 		</before>
 		<after>
 			<action id="xml" bean="common.action.a1" method="testXmlAction">
-				<properties>
+				<property>
 					<item name="variable1">error</item>
 					<item name="variable2">0001</item>
-				</properties>
+				</property>
 			</action>
 		</after>
 		-->
@@ -58,18 +58,18 @@
 		<advice>
 			<before>
 				<action id="xml" bean="common.action.a1" method="testXmlAction" hidden="true">
-					<properties>
+					<property>
 						<item name="variable1">error</item>
 						<item name="variable2">0001</item>
-					</properties>
+					</property>
 				</action>
 			</before>
 			<after>
 				<action id="xml" bean="common.action.a1" method="testXmlAction" hidden="true">
-					<properties>
+					<property>
 						<item name="variable1">error</item>
 						<item name="variable2">0001</item>
-					</properties>
+					</property>
 				</action>
 			</after>
 		</advice>
@@ -91,10 +91,10 @@
 		<advice>
 			<exceptionRaized>
 				<action id="xml" bean="common.action.a1" method="testXmlAction" hidden="true">
-					<properties>
+					<property>
 						<item name="variable1">error</item>
 						<item name="variable2">0001</item>
-					</properties>
+					</property>
 				</action>
 				<responseByContentType exceptionType="com.aspectran.test.web.LoginFailedException">
 					<dispatch contentType="text/html">
@@ -117,10 +117,10 @@
 					</transform>
 					<transform contentType="text/xml">
 						<action id="xml" bean="common.action.a1" method="testXmlAction" hidden="true">
-							<properties>
+							<property>
 								<item name="variable1">error</item>
 								<item name="variable2">0001</item>
-							</properties>
+							</property>
 						</action>
 						<echo id="error3">
 							<item name="code">0002</item>
@@ -144,9 +144,6 @@
 						</echo>
 					</transform>
 				</responseByContentType>
-				<defaultResponse>
-					<redirect translet="error"/>
-				</defaultResponse>
 			</exceptionRaized>
 		</advice>
 	</aspect>
@@ -158,10 +155,10 @@
 		<advice>
 			<around>
 				<action id="xml" bean="common.action.a1" method="testXmlAction" hidden="true">
-					<properties>
+					<property>
 						<item name="variable1">error</item>
 						<item name="variable2">0001</item>
-					</properties>
+					</property>
 				</action>
 			</around>
 		</advice>
@@ -178,18 +175,18 @@
 		<advice>
 			<before>
 				<action id="xml" bean="common.action.a1" method="testXmlAction" hidden="true">
-					<properties>
+					<property>
 						<item name="variable1">error</item>
 						<item name="variable2">0001</item>
-					</properties>
+					</property>
 				</action>
 			</before>
 			<after>
 				<action id="xml" bean="common.action.a1" method="testXmlAction" hidden="true">
-					<properties>
+					<property>
 						<item name="variable1">error</item>
 						<item name="variable2">0001</item>
-					</properties>
+					</property>
 				</action>
 			</after>
 		</advice>
@@ -204,7 +201,7 @@
     <ref bean="SystemOutTestTrigger"/>
    </list>
   </property>
-  <property name="quartzProperties">
+  <property name="quartzproperty">
    <props>
     <prop key="org.quartz.threadPool.class">org.quartz.simpl.SimpleThreadPool</prop>
     <prop key="org.quartz.threadPool.threadCount">5</prop>
@@ -217,7 +214,7 @@
 	-->
 	<bean class="org.quartz.impl.StdSchedulerFactory" scope="singleton">
 		<constructor>
-			<arguments>
+			<argument>
 				<item type="properties">
 					<value name="org.quartz.scheduler.instanceName">DefaultQuartzScheduler</value>
 					<value name="org.quartz.scheduler.rmi.export">false</value>
@@ -230,7 +227,7 @@
 					<value name="org.quartz.jobStore.misfireThreshold">60000</value>
 					<value name="org.quartz.jobStore.class">org.quartz.simpl.RAMJobStore</value>
 				</item>
-			</arguments>
+			</argument>
 		</constructor>
 	</bean>
 	
@@ -257,7 +254,8 @@
 		</advice>
 	</aspect>
 
-	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroyMthod="close">
+	<!-- dataSource 설정 -->
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroyMethod="close">
 		<property>
 			<item name="driverClassName" value="${driver}"/>
 			<item name="url" value="${dburl}"/>
@@ -268,20 +266,66 @@
 		</property>
 	</bean>
 
+	<!-- dataSource 설정 -->
+	<bean id="dataSource2" class="org.apache.commons.dbcp.BasicDataSource" destroyMethod="close">
+		<property>
+			<item name="driverClassName" value="${driver}"/>
+			<item name="url" value="${dburl}"/>
+			<item name="username" value="${username}"/>
+			<item name="password" value="${password}"/>
+			<item name="defaultAutoCommit" value="false"/>
+			<item name="poolPreparedStatements" value="true"/>
+		</property>
+	</bean>
+
+
 	<bean id="sqlMapClient" class="com.aspectran.support.orm.ibatis.SqlMapClientFactory">
 		<property>
-			<item name="resource" value="classpath:/WEB-INF/sqlmap/sql-map-config.xml"/>
-			<item name="configLocation" value="classpath:/WEB-INF/sqlmap/mappings/**/*.xml"/>
-			<item name="configLocation" type="map" valueType="parameters">
-				<value name="parameters-1">
-					[
-						"classpath:/WEB-INF/sqlmap/sql-map-config.xml"
-						"classpath:/WEB-INF/sqlmap/sql-map-config.xml"
-						"classpath:/WEB-INF/sqlmap/sql-map-config.xml"
-					]
-				</value>
-			</item>
+			<item name="configLocation" value="classpath:/WEB-INF/sqlmap/sql-map-config.xml"/>
+			<item name="mappingLocations" value="classpath:/WEB-INF/sqlmap/mappings/**/*.xml"/>
+			<item name="dataSource">#{dataSource2}</item>
 		</property>
+	</bean>
+	
+	<bean id="sqlMapClientTransactionAdvice" class="com.aspectran.support.orm.ibatis.SqlMapClientTransactionAdvice">
+		<property>
+			<item name="sqlMapClient">#{sqlMapClient}</item>
+		</property>
+	</bean>
+	
+	<!--
+		Matching targets:
+			request: reserved
+			response: reserved
+			bean: each time it is called
+			translet: each time it is called
+			action: each time it is called
+		getAspectObject:
+			a return object of <before> action.
+	-->
+	<aspect id="sqlmap">
+		<joinpoint scope="content">
+			<pointcut>
+				+(/front/a/*)
+				-(/front/a/A*)
+			</pointcut>
+		</joinpoint>
+		<advice bean="sqlMapClientTransactionAdvice">
+			<before>
+				<action method="begin"/>
+			</before>
+			<finally>
+				<action method="end"/>
+			</finally>
+		</advice>
+	</aspect>
+	
+	<bean id="a.*" class="com.**.*Aspectran*" scope="singleton"/>
+	<bean id="b.*" class="com.aspectran.test.**.Sample*Test*Bean" scope="singleton"/>
+
+	<import resource="aspectran/translets/sample.xml"/>
+	
+		<bean id="sample">
 		<property>
 			item: [
 				{
@@ -307,37 +351,5 @@
 			]		
 		</property>
 	</bean>
-
-	<!--
-		Matching targets:
-			request: reserved
-			response: reserved
-			bean: each time it is called
-			translet: each time it is called
-			action: each time it is called
-		getAspectObject:
-			a return object of <before> action.
-	-->
-	<aspect id="sqlmap">
-		<joinpoint scope="content">
-			<pointcut>
-				+(/front/a/*)
-				-(/front/a/A*)
-			</pointcut>
-		</joinpoint>
-		<advice bean="com.aspectran.support.orm.ibatis.SqlMapClientTransactionAdvice">
-			<before>
-				<action method="begin"/>
-			</before>
-			<finally>
-				<action method="commit"/>
-			</finally>
-		</advice>
-	</aspect>
-	
-	<bean id="a.*" class="com.**.*Aspectran*" scope="singleton"/>
-	<bean id="b.*" class="com.aspectran.test.**.Sample*Test*Bean" scope="singleton"/>
-
-	<import resource="aspectran/translets/sample.xml"/>
 	
 </aspectran>
