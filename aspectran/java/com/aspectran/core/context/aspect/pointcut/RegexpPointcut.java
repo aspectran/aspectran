@@ -14,23 +14,23 @@ public class RegexpPointcut extends AbstractPointcut implements Pointcut {
 		return false;
 	}
 
-	public boolean matches(String transletName, String beanOrActionId) {
+	public boolean matches(String transletName, String beanId) {
 		return false;
 	}
 
-	public boolean matches(String transletName, String beanOrActionId, String beanMethodName) {
+	public boolean matches(String transletName, String beanId, String beanMethodName) {
 		return false;
 	}
 	
-	public boolean strictMatches(String transletName) {
+	public boolean exists(String transletName) {
 		return false;
 	}
 
-	public boolean strictMatches(String transletName, String beanOrActionId) {
+	public boolean exists(String transletName, String beanId) {
 		return false;
 	}
 
-	public boolean strictMatches(String transletName, String beanOrActionId, String beanMethodName) {
+	public boolean exists(String transletName, String beanId, String beanMethodName) {
 		return false;
 	}
 	

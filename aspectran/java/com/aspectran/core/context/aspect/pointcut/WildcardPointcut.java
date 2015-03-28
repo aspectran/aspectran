@@ -27,125 +27,95 @@ public class WildcardPointcut extends AbstractPointcut implements Pointcut {
 		return matches(transletName, null, null);
 	}
 
-	public boolean matches(String transletName, String beanOrActionId) {
-		return matches(transletName, beanOrActionId, null);
+	public boolean matches(String transletName, String beanId) {
+		return matches(transletName, beanId, null);
 	}
 	
-	public boolean matches(String transletName, String beanOrActionId, String beanMethodName) {
+	public boolean matches(String transletName, String beanId, String beanMethodName) {
 		if(pointcutPatternRuleList != null) {
-			for(PointcutPatternRule pp : pointcutPatternRuleList) {
-				if(matches(pp, transletName, beanOrActionId, beanMethodName)) {
-					List<PointcutPatternRule> mppl = pp.getExcludePointcutPatternRuleList();
+			for(PointcutPatternRule ppr : pointcutPatternRuleList) {
+				if(matches(ppr, transletName, beanId, beanMethodName)) {
+					List<PointcutPatternRule> epprl = ppr.getExcludePointcutPatternRuleList();
 					
-					if(mppl != null) {
-						for(PointcutPatternRule wpp : mppl) {
-							if(matches(wpp, transletName, beanOrActionId, beanMethodName)) {
+					if(epprl != null) {
+						for(PointcutPatternRule eppr : epprl) {
+							if(matches(eppr, transletName, beanId, beanMethodName)) {
 								return false;
 							}
 						}
 					}
+					
+					return true;
 				}
 			}
 		}
 		
-		return true;
+		return false;
 	}
 	
-	protected boolean matches(PointcutPatternRule pointcutPattern, String transletName) {
-		return matches(pointcutPattern, transletName, null, null);
-	}	
-
-	protected boolean matches(PointcutPatternRule pointcutPattern, String transletName, String beanOrActionId) {
-		return matches(pointcutPattern, transletName, beanOrActionId, null);
-	}	
-	
 	/**
-	 * Matches.
 	 * 비교 항목의 값이 null이면 참으로 간주함.
 	 *
-	 * @param pointcutPattern the pointcut pattern
+	 * @param pointcutPatternRule the pointcut pattern
 	 * @param transletName the translet name
-	 * @param beanOrActionId the bean or action id
+	 * @param beanId the bean or action id
 	 * @param beanMethodName the bean method name
 	 * @return true, if successful
 	 */
-	protected boolean matches(PointcutPatternRule pointcutPattern, String transletName, String beanOrActionId, String beanMethodName) {
-		boolean matched = true;
-		
-		if(transletName != null && pointcutPattern.getTransletNamePattern() != null)
-			matched = patternMatches(pointcutPattern.getTransletNamePattern(), transletName, AspectranConstant.TRANSLET_NAME_SEPARATOR);
+	protected boolean matches(PointcutPatternRule pointcutPatternRule, String transletName, String beanId, String beanMethodName) {
+//		System.out.println("  transletName: " + transletName + " = " + pointcutPatternRule.getTransletNamePattern());
+//		System.out.println("  beanId: " + beanId + " = " + pointcutPatternRule.getBeanIdPattern());
+//		System.out.println("  beanMethodName: " + beanMethodName + " = " + pointcutPatternRule.getBeanMethodNamePattern());
+//		System.out.println("+ matched: " + matched);
 
-		if(matched && beanOrActionId != null && pointcutPattern.getBeanOrActionIdPattern() != null)
-			matched = patternMatches(pointcutPattern.getBeanOrActionIdPattern(), beanOrActionId, AspectranConstant.ID_SEPARATOR);
+		if(transletName == null && pointcutPatternRule.getTransletNamePattern() != null ||
+				beanId == null && pointcutPatternRule.getBeanIdPattern() != null ||
+				beanMethodName == null && pointcutPatternRule.getBeanMethodNamePattern() != null)
+			return false;
 		
-		if(matched && beanMethodName != null && pointcutPattern.getBeanMethodNamePattern() != null)
-			matched = patternMatches(pointcutPattern.getBeanMethodNamePattern(), beanMethodName);
-		
-		return matched;
+		return exists(pointcutPatternRule, transletName, beanId, beanMethodName);
 	}	
 	
-	public boolean strictMatches(String transletName) {
-		return strictMatches(transletName, null, null);
-	}
-
-	public boolean strictMatches(String transletName, String beanOrActionId) {
-		return strictMatches(transletName, beanOrActionId, null);
+	public boolean exists(String transletName) {
+		return exists(transletName, null, null);
 	}
 	
-	public boolean strictMatches(String transletName, String beanOrActionId, String beanMethodName) {
+	public boolean exists(String transletName, String beanId) {
+		return exists(transletName, beanId, null);
+	}
+	
+	public boolean exists(String transletName, String beanId, String beanMethodName) {
 		if(pointcutPatternRuleList != null) {
-			for(PointcutPatternRule pp : pointcutPatternRuleList) {
-				if(strictMatches(pp, transletName, beanOrActionId, beanMethodName)) {
-					List<PointcutPatternRule> wppl = pp.getExcludePointcutPatternRuleList();
-					
-					if(wppl != null) {
-						for(PointcutPatternRule wpp : wppl) {
-							if(strictMatches(wpp, transletName, beanOrActionId, beanMethodName)) {
-								return false;
-							}
-						}
-					}
+			for(PointcutPatternRule ppr : pointcutPatternRuleList) {
+				if(exists(ppr, transletName, beanId, beanMethodName)) {
+					return true;
 				}
 			}
 		}
 		
-		return true;
+		return false;
 	}
 	
-	protected boolean strictMatches(PointcutPatternRule pointcutPattern, String transletName) {
-		return strictMatches(pointcutPattern, transletName, null, null);
-	}	
-
-	protected boolean strictMatches(PointcutPatternRule pointcutPattern, String transletName, String beanOrActionId) {
-		return strictMatches(pointcutPattern, transletName, beanOrActionId, null);
-	}	
-	
-	protected boolean strictMatches(PointcutPatternRule pointcutPattern, String transletName, String beanOrActionId, String beanMethodName) {
+	/**
+	 * 비교 항목의 값이 null이면 참으로 간주함.
+	 *
+	 * @param pointcutPatternRule the pointcut pattern
+	 * @param transletName the translet name
+	 * @param beanId the bean or action id
+	 * @param beanMethodName the bean method name
+	 * @return true, if successful
+	 */
+	protected boolean exists(PointcutPatternRule pointcutPatternRule, String transletName, String beanId, String beanMethodName) {
 		boolean matched = true;
 		
-		if(pointcutPattern.getTransletNamePattern() != null) {
-			if(transletName == null) {
-				matched = false;
-			} else {
-				matched = patternMatches(pointcutPattern.getTransletNamePattern(), transletName, AspectranConstant.TRANSLET_NAME_SEPARATOR);				
-			}
-		}
-
-		if(matched && pointcutPattern.getBeanOrActionIdPattern() != null) {
-			if(beanOrActionId == null) {
-				matched = false;
-			} else {
-				matched = patternMatches(pointcutPattern.getBeanOrActionIdPattern(), beanOrActionId, AspectranConstant.ID_SEPARATOR);				
-			}
-		}
-
-		if(matched && pointcutPattern.getBeanMethodNamePattern() != null) {
-			if(beanMethodName == null) {
-				matched = false;
-			} else {
-				matched = patternMatches(pointcutPattern.getBeanMethodNamePattern(), beanMethodName);				
-			}
-		}
+		if(transletName != null && pointcutPatternRule.getTransletNamePattern() != null)
+			matched = patternMatches(pointcutPatternRule.getTransletNamePattern(), transletName, AspectranConstant.TRANSLET_NAME_SEPARATOR);
+		
+		if(matched && beanId != null && pointcutPatternRule.getBeanIdPattern() != null)
+			matched = patternMatches(pointcutPatternRule.getBeanIdPattern(), beanId, AspectranConstant.ID_SEPARATOR);
+		
+		if(matched && beanMethodName != null && pointcutPatternRule.getBeanMethodNamePattern() != null)
+			matched = patternMatches(pointcutPatternRule.getBeanMethodNamePattern(), beanMethodName);
 		
 		return matched;
 	}	

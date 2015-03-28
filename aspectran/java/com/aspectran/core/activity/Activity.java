@@ -108,7 +108,7 @@ public interface Activity {
 
 	public void setRequestScope(Scope requestScope);
 
-	public JoinpointScopeType getJoinpointScope();
+	public JoinpointScopeType getCurrentJoinpointScope();
 
 	public void finish();
 

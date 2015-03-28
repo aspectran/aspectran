@@ -28,7 +28,6 @@ import java.util.Set;
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.request.parameter.FileParameter;
 import com.aspectran.core.activity.variable.ValueObjectMap;
-import com.aspectran.core.context.bean.BeanRegistry;
 import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.type.ItemType;
@@ -40,15 +39,6 @@ import com.aspectran.core.util.apon.GenericParameters;
  */
 public class ItemTokenExpression extends TokenExpression implements ItemTokenExpressor {
 
-	/**
-	 * Instantiates a new value expression.
-	 *
-	 * @param beanRegistry the bean registry
-	 */
-	public ItemTokenExpression(BeanRegistry beanRegistry) {
-		super(beanRegistry);
-	}
-	
 	/**
 	 * Instantiates a new value expression.
 	 *

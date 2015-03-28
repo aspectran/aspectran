@@ -21,6 +21,8 @@ import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
+import com.aspectran.core.context.bean.scope.Scope;
+import com.aspectran.core.context.rule.type.JoinpointScopeType;
 import com.aspectran.core.context.translet.TransletInstantiationException;
 
 /**
@@ -41,6 +43,17 @@ public abstract class AbstractActivity {
 
 	/** The response adapter. */
 	private ResponseAdapter responseAdapter;
+	
+	/** The request scope. */
+	private Scope requestScope;
+	
+	private JoinpointScopeType currentJoinpointScope = JoinpointScopeType.TRANSLET;
+	
+	/** The translet interface class. */
+	private Class<? extends Translet> transletInterfaceClass;
+	
+	/** The translet instance class. */
+	private Class<? extends CoreTranslet> transletImplementClass;
 
 	protected AbstractActivity(ApplicationAdapter applicationAdapter) {
 		this.applicationAdapter = applicationAdapter;
@@ -103,17 +116,78 @@ public abstract class AbstractActivity {
 	protected void setResponseAdapter(ResponseAdapter responseAdapter) {
 		this.responseAdapter = responseAdapter;
 	}
+
 	
-	protected Translet newTranslet(Class<? extends CoreTranslet> transletImplementClass) {
+	/**
+	 * Gets the translet interface class.
+	 *
+	 * @return the translet interface class
+	 */
+	public Class<? extends Translet> getTransletInterfaceClass() {
+		return transletInterfaceClass;
+	}
+
+	/**
+	 * Sets the translet interface class.
+	 *
+	 * @param transletInterfaceClass the new translet interface class
+	 */
+	protected void setTransletInterfaceClass(Class<? extends Translet> transletInterfaceClass) {
+		this.transletInterfaceClass = transletInterfaceClass;
+	}
+
+	/**
+	 * Gets the translet instance class.
+	 *
+	 * @return the translet instance class
+	 */
+	public Class<? extends CoreTranslet> getTransletImplementClass() {
+		return transletImplementClass;
+	}
+
+	/**
+	 * Sets the translet instance class.
+	 *
+	 * @param transletInstanceClass the new translet instance class
+	 */
+	protected void setTransletImplementClass(Class<? extends CoreTranslet> transletImplementClass) {
+		this.transletImplementClass = transletImplementClass;
+	}
+	
+	protected Translet newTranslet(Activity activity) {
+		if(this.transletInterfaceClass == null)
+			this.transletInterfaceClass = Translet.class;
+		
+		if(this.transletImplementClass == null) {
+			this.transletImplementClass = CoreTranslet.class;
+			return new CoreTranslet(activity);
+		}
+		
 		//create a custom translet instance
 		try {
 			Constructor<?> transletImplementConstructor = transletImplementClass.getConstructor(Activity.class);
-			Object[] args = new Object[] { this };
+			Object[] args = new Object[] { activity };
 			
 			return (Translet)transletImplementConstructor.newInstance(args);
 		} catch(Exception e) {
 			throw new TransletInstantiationException(transletImplementClass, e);
 		}
+	}
+	
+	public Scope getRequestScope() {
+		return requestScope;
+	}
+
+	public void setRequestScope(Scope requestScope) {
+		this.requestScope = requestScope;
+	}
+
+	public JoinpointScopeType getCurrentJoinpointScope() {
+		return currentJoinpointScope;
+	}
+
+	protected void setCurrentJoinpointScope(JoinpointScopeType joinpointScope) {
+		this.currentJoinpointScope = joinpointScope;
 	}
 	
 }

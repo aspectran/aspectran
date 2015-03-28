@@ -15,7 +15,7 @@ public class UnsupportedBeanScopeException extends BeanException {
 	 * @param msg the detail message
 	 */
 	public UnsupportedBeanScopeException(ScopeType scopeType, BeanRule beanRule) {
-		super(scopeType + "Application scope is not defined. beanRule " + beanRule);
+		super(scopeType + " scope is not defined. beanRule " + beanRule);
 	}
 
 }

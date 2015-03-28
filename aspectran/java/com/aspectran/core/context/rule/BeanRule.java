@@ -63,6 +63,8 @@ public class BeanRule implements Cloneable {
 
 	private boolean stealthily;
 	
+	private boolean proxyMode;
+	
 	/**
 	 * Gets the id.
 	 *
@@ -319,6 +321,14 @@ public class BeanRule implements Cloneable {
 		this.stealthily = stealthily;
 	}
 	
+	public boolean isProxyMode() {
+		return proxyMode;
+	}
+
+	public void setProxyMode(boolean proxyMode) {
+		this.proxyMode = proxyMode;
+	}
+
 	public BeanRule clone() throws CloneNotSupportedException {
 		// shallow copy
 		return (BeanRule)super.clone();              
