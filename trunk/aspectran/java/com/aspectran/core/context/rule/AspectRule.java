@@ -22,7 +22,6 @@ import com.aspectran.core.context.aspect.pointcut.Pointcut;
 import com.aspectran.core.context.rule.type.AspectTargetType;
 import com.aspectran.core.context.rule.type.JoinpointScopeType;
 import com.aspectran.core.context.rule.type.PointcutType;
-import com.aspectran.core.util.BooleanUtils;
 
 public class AspectRule {
 
@@ -46,7 +45,7 @@ public class AspectRule {
 	
 	private List<AspectJobAdviceRule> aspectJobAdviceRuleList; // for scheduling aspects
 	
-	private Boolean onlyTransletRelevanted;
+	private boolean onlyTransletRelevanted;
 	
 	public String getId() {
 		return id;
@@ -142,15 +141,11 @@ public class AspectRule {
 		aspectJobAdviceRuleList.add(atar);
 	}
 
-	public Boolean getOnlyTransletRelevanted() {
+	public boolean isOnlyTransletRelevanted() {
 		return onlyTransletRelevanted;
 	}
 
-	public boolean isOnlyTransletRelevanted() {
-		return BooleanUtils.toBoolean(onlyTransletRelevanted);
-	}
-
-	public void setOnlyTransletRelevanted(Boolean onlyTransletRelevanted) {
+	public void setOnlyTransletRelevanted(boolean onlyTransletRelevanted) {
 		this.onlyTransletRelevanted = onlyTransletRelevanted;
 	}
 

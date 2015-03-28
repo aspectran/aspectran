@@ -18,6 +18,8 @@ package com.aspectran.core.context.rule;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.aspectran.core.context.rule.type.JoinpointScopeType;
+
 public class PointcutPatternRule {
 	
 	public static final char POINTCUT_BEAN_DELIMITER = '@';
@@ -30,7 +32,7 @@ public class PointcutPatternRule {
 	
 	private String transletNamePattern;
 	
-	private String beanOrActionIdPattern;
+	private String beanIdPattern;
 
 	private String beanMethodNamePattern;
 	
@@ -55,12 +57,12 @@ public class PointcutPatternRule {
 		this.transletNamePattern = transletNamePattern;
 	}
 
-	public String getBeanOrActionIdPattern() {
-		return beanOrActionIdPattern;
+	public String getBeanIdPattern() {
+		return beanIdPattern;
 	}
 
-	public void setBeanOrActionIdPattern(String beanOrActionIdPattern) {
-		this.beanOrActionIdPattern = beanOrActionIdPattern;
+	public void setBeanIdPattern(String beanIdPattern) {
+		this.beanIdPattern = beanIdPattern;
 	}
 
 	public String getBeanMethodNamePattern() {
@@ -92,9 +94,8 @@ public class PointcutPatternRule {
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		
 		sb.append("{translet=").append(transletNamePattern);
-		sb.append(", bean=").append(beanOrActionIdPattern);
+		sb.append(", bean=").append(beanIdPattern);
 		sb.append(", method=").append(beanMethodNamePattern);
 		sb.append("}");
 		
@@ -120,7 +121,7 @@ public class PointcutPatternRule {
 		return sb.toString();
 	}
 	
-	public static String combinePatternString(String joinpointScope, String transletName, String beanId, String methodName) {
+	public static String combinePatternString(JoinpointScopeType joinpointScope, String transletName, String beanId, String methodName) {
 		StringBuilder sb = new StringBuilder();
 		
 		if(joinpointScope != null) {
@@ -149,7 +150,7 @@ public class PointcutPatternRule {
 		pointcutPatternRule.setPatternString(patternString);
 		
 		String transletNamePattern = null;
-		String beanOrActionIdPattern = null;
+		String beanIdPattern = null;
 		String beanMethodNamePattern = null;
 
 		int actionDelimiterIndex = patternString.indexOf(POINTCUT_BEAN_DELIMITER);
@@ -157,29 +158,29 @@ public class PointcutPatternRule {
 		if(actionDelimiterIndex == -1)
 			transletNamePattern = patternString;
 		else if(actionDelimiterIndex == 0)
-			beanOrActionIdPattern = patternString.substring(1);
+			beanIdPattern = patternString.substring(1);
 		else {
 			transletNamePattern = patternString.substring(0, actionDelimiterIndex);
-			beanOrActionIdPattern = patternString.substring(actionDelimiterIndex + 1);
+			beanIdPattern = patternString.substring(actionDelimiterIndex + 1);
 		}
 
-		if(beanOrActionIdPattern != null) {
-			int beanMethodDelimiterIndex = beanOrActionIdPattern.indexOf(POINTCUT_METHOD_DELIMITER);
+		if(beanIdPattern != null) {
+			int beanMethodDelimiterIndex = beanIdPattern.indexOf(POINTCUT_METHOD_DELIMITER);
 			
 			if(beanMethodDelimiterIndex == 0) {
-				beanMethodNamePattern = beanOrActionIdPattern.substring(1);
-				beanOrActionIdPattern = null;
+				beanMethodNamePattern = beanIdPattern.substring(1);
+				beanIdPattern = null;
 			} else if(beanMethodDelimiterIndex > 0) {
-				beanMethodNamePattern = beanOrActionIdPattern.substring(beanMethodDelimiterIndex + 1);
-				beanOrActionIdPattern = beanOrActionIdPattern.substring(0, beanMethodDelimiterIndex);
+				beanMethodNamePattern = beanIdPattern.substring(beanMethodDelimiterIndex + 1);
+				beanIdPattern = beanIdPattern.substring(0, beanMethodDelimiterIndex);
 			}
 		}
 		
 		if(transletNamePattern != null)
 			pointcutPatternRule.setTransletNamePattern(transletNamePattern);
 		
-		if(beanOrActionIdPattern != null)
-			pointcutPatternRule.setBeanOrActionIdPattern(beanOrActionIdPattern);
+		if(beanIdPattern != null)
+			pointcutPatternRule.setBeanIdPattern(beanIdPattern);
 
 		if(beanMethodNamePattern != null)
 			pointcutPatternRule.setBeanMethodNamePattern(beanMethodNamePattern);
@@ -193,7 +194,7 @@ public class PointcutPatternRule {
 		if(translet != null && translet.length() > 0)						
 			pointcutPatternRule.setTransletNamePattern(translet);
 		if(bean != null && bean.length() > 0)
-			pointcutPatternRule.setBeanOrActionIdPattern(bean);
+			pointcutPatternRule.setBeanIdPattern(bean);
 		if(method != null && method.length() > 0)
 			pointcutPatternRule.setBeanMethodNamePattern(method);
 		

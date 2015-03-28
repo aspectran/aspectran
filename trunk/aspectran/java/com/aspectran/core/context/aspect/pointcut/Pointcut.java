@@ -10,15 +10,15 @@ public interface Pointcut {
 	
 	public boolean matches(String transletName);
 	
-	public boolean matches(String transletName, String beanOrActionId);
+	public boolean matches(String transletName, String beanId);
 	
-	public boolean matches(String transletName, String beanOrActionId, String beanMethodName);
-	
-	public boolean strictMatches(String transletName);
-	
-	public boolean strictMatches(String transletName, String beanOrActionId);
-	
-	public boolean strictMatches(String transletName, String beanOrActionId, String beanMethodName);
+	public boolean matches(String transletName, String beanId, String beanMethodName);
 
+	public boolean exists(String transletName);
+	
+	public boolean exists(String transletName, String beanId);
+	
+	public boolean exists(String transletName, String beanId, String beanMethodName);
+	
 	public void clearCache();
 }

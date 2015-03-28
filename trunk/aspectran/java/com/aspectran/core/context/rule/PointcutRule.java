@@ -116,11 +116,10 @@ public class PointcutRule {
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		
 		sb.append("{pointcutType=").append(pointcutType);
-		sb.append(", targetParametersList=").append(targetParametersList);
-		sb.append(", simpleTriggerParameters=").append(simpleTriggerParameters);
-		sb.append(", cronTriggerParameters=").append(cronTriggerParameters);
+		//sb.append(", targetParametersList=").append(targetParametersList);
+		//sb.append(", simpleTriggerParameters=").append(simpleTriggerParameters);
+		//sb.append(", cronTriggerParameters=").append(cronTriggerParameters);
 		sb.append("}");
 		
 		return sb.toString();
@@ -292,7 +291,6 @@ public class PointcutRule {
 		if(plusPatternStringList != null && !plusPatternStringList.isEmpty()) {
 			for(String patternString : plusPatternStringList) {
 				PointcutPatternRule pointcutPatternRule = PointcutPatternRule.parsePatternString(patternString);
-				
 				if(minusPointcutPatternRuleList != null)
 					pointcutPatternRule.setExcludePointcutPatternRuleList(minusPointcutPatternRuleList);
 				

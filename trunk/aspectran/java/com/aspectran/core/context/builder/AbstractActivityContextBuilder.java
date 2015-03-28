@@ -50,19 +50,22 @@ public abstract class AbstractActivityContextBuilder extends ContextBuilderAssis
 		BeanReferenceInspector beanReferenceInspector = getBeanReferenceInspector();
 		beanReferenceInspector.inspect(beanRuleMap);
 		
-		AspectRuleRegistry aspectRuleRegistry = makeAspectRuleRegistry(aspectRuleMap, beanRuleMap, transletRuleMap);
-		
 		ActivityContext context = new ActivityContext(applicationAdapter);
+
+		AspectRuleRegistry aspectRuleRegistry = makeAspectRuleRegistry(aspectRuleMap, beanRuleMap, transletRuleMap);
 		context.setAspectRuleRegistry(aspectRuleRegistry);
-		context.setActivityDefaultHandler((String)getSetting(DefaultSettingType.ACTIVITY_DEFAULT_HANDLER));
 
 		BeanProxyModeType beanProxyMode = BeanProxyModeType.valueOf((String)getSetting(DefaultSettingType.BEAN_PROXY_MODE));
 		ContextBeanRegistry contextBeanRegistry = makeContextBeanRegistry(context, beanRuleMap, beanProxyMode);
 		context.setContextBeanRegistry(contextBeanRegistry);
 		
+		contextBeanRegistry.initialize();
+		
 		TransletRuleRegistry transletRuleRegistry = makeTransletRegistry(transletRuleMap);
 		context.setTransletRuleRegistry(transletRuleRegistry);
 		
+		context.setActivityDefaultHandler((String)getSetting(DefaultSettingType.ACTIVITY_DEFAULT_HANDLER));
+
 		return context;
 	}
 	
@@ -72,7 +75,10 @@ public abstract class AbstractActivityContextBuilder extends ContextBuilderAssis
 				PointcutRule pointcutRule = aspectRule.getPointcutRule();
 				
 				if(pointcutRule != null) {
+					//System.out.println("aspectRule " + aspectRule);
+					//System.out.println("pointcutRule " + pointcutRule);
 					Pointcut pointcut = PointcutFactory.createPointcut(pointcutRule);
+					//System.out.println("pointcut " + pointcut);
 					aspectRule.setPointcut(pointcut);
 					
 //					List<PointcutPattern> pointcutPatternList = pointcut.getPointcutPatternList();
@@ -93,7 +99,8 @@ public abstract class AbstractActivityContextBuilder extends ContextBuilderAssis
 		}
 		
 		AspectAdviceRulePreRegister aspectAdviceRuleRegister = new AspectAdviceRulePreRegister(aspectRuleMap);
-		aspectAdviceRuleRegister.register(beanRuleMap, transletRuleMap);
+		aspectAdviceRuleRegister.register(beanRuleMap);
+		aspectAdviceRuleRegister.register(transletRuleMap);
 		
 		return new AspectRuleRegistry(aspectRuleMap);
 	}

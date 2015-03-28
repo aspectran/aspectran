@@ -1,13 +1,7 @@
 package com.aspectran.core.context.aspect;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.aspectran.core.context.aspect.pointcut.Pointcut;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.AspectRuleMap;
-import com.aspectran.core.context.rule.type.AspectTargetType;
-import com.aspectran.core.context.rule.type.JoinpointScopeType;
 
 public class AspectRuleRegistry {
 
@@ -33,7 +27,7 @@ public class AspectRuleRegistry {
 	public AspectRule getAspectRule(String aspectId) {
 		return aspectRuleMap.get(aspectId);
 	}
-
+/*
 	public List<AspectRule> getBeanRelevantedAspectRuleList(JoinpointScopeType joinpointScope, String transletName, String beanId) {
 		return getBeanRelevantedAspectRuleList(joinpointScope, transletName, beanId, null);
 	}
@@ -43,7 +37,7 @@ public class AspectRuleRegistry {
 		
 		for(AspectRule aspectRule : aspectRuleMap) {
 			//Translet에 한정된 것은 제외
-			if(aspectRule.getAspectTargetType() == AspectTargetType.TRANSLET && !aspectRule.getOnlyTransletRelevanted()) {
+			if(aspectRule.getAspectTargetType() == AspectTargetType.TRANSLET && !aspectRule.isOnlyTransletRelevanted()) {
 				JoinpointScopeType joinpointScope2 = aspectRule.getJoinpointScope();
 				
 				if(joinpointScope == null ||
@@ -52,6 +46,11 @@ public class AspectRuleRegistry {
 						joinpointScope2 == joinpointScope) {
 					Pointcut pointcut = aspectRule.getPointcut();
 
+					System.out.println("********joinpointScope: " + joinpointScope);
+					System.out.println("********joinpointScope2: " + joinpointScope2);
+					System.out.println("********pointcut: " + pointcut);
+					System.out.println("********beanId: " + beanId);
+					
 					if(pointcut == null || pointcut.matches(transletName, beanId, methodName)) {
 						aspectRuleList.add(aspectRule);
 					}
@@ -61,7 +60,8 @@ public class AspectRuleRegistry {
 		
 		return aspectRuleList;
 	}
-	
+*/
+/*
 	public AspectAdviceRuleRegistry getBeanRelevantedAspectAdviceRuleRegistry(JoinpointScopeType joinpointScope, String transletName, String beanId) {
 		return getBeanRelevantedAspectAdviceRuleRegistry(joinpointScope, transletName, beanId, null);
 	}
@@ -71,7 +71,7 @@ public class AspectRuleRegistry {
 		      
 		for(AspectRule aspectRule : aspectRuleMap) {
 			//Translet에 한정된 것은 제외
-			if(aspectRule.getAspectTargetType() == AspectTargetType.TRANSLET && !aspectRule.getOnlyTransletRelevanted()) {
+			if(aspectRule.getAspectTargetType() == AspectTargetType.TRANSLET && !aspectRule.isOnlyTransletRelevanted()) {
 				JoinpointScopeType joinpointScope2 = aspectRule.getJoinpointScope();
 			
 				if(joinpointScope == null ||
@@ -89,7 +89,7 @@ public class AspectRuleRegistry {
 		
 		return aspectAdviceRuleRegistry;
 	}
-	
+*/
 	public void destroy() {
 		if(aspectRuleMap != null) {
 			aspectRuleMap.clear();

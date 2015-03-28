@@ -193,8 +193,10 @@ public class RootAponDisassembler {
 		AspectRule.updateJoinpointScope(aspectRule, scope);
 	
 		Parameters pointcutParameters = joinpointParameters.getParameters(JoinpointParameters.pointcut);
-		PointcutRule pointcutRule = PointcutRule.newInstance(aspectRule, null, pointcutParameters);
-		aspectRule.setPointcutRule(pointcutRule);
+		if(pointcutParameters != null) {
+			PointcutRule pointcutRule = PointcutRule.newInstance(aspectRule, null, pointcutParameters);
+			aspectRule.setPointcutRule(pointcutRule);
+		}
 	
 		Parameters settingParameters = aspectParameters.getParameters(AspectParameters.setting);
 		if(settingParameters != null) {

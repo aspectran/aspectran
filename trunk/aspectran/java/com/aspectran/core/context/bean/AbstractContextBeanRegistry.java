@@ -12,7 +12,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.aspectran.core.activity.Activity;
-import com.aspectran.core.activity.ActivityException;
 import com.aspectran.core.activity.VoidActivity;
 import com.aspectran.core.activity.variable.ValueObjectMap;
 import com.aspectran.core.activity.variable.token.ItemTokenExpression;
@@ -26,9 +25,7 @@ import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.BeanRuleMap;
 import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
-import com.aspectran.core.context.rule.PointcutPatternRule;
 import com.aspectran.core.context.rule.type.BeanProxyModeType;
-import com.aspectran.core.context.rule.type.JoinpointScopeType;
 import com.aspectran.core.context.rule.type.ScopeType;
 import com.aspectran.core.util.MethodUtils;
 import com.aspectran.core.util.ReflectionUtils;
@@ -52,55 +49,38 @@ public abstract class AbstractContextBeanRegistry implements ContextBeanRegistry
 
 	private final BeanProxyModeType beanProxyMode;
 
-	private final AspectRuleRegistry aspectRuleRegistry;
-	
 	private final Map<String, List<AspectRule>> aspectRuleListCache = new HashMap<String, List<AspectRule>>();
+	
+	private Activity voidActivity;
+	
+	private boolean initialized;
 	
 	public AbstractContextBeanRegistry(ActivityContext context, BeanRuleMap beanRuleMap, BeanProxyModeType beanProxyMode) {
 		this.context = context;
 		this.beanRuleMap = beanRuleMap;
 		this.beanProxyMode = (beanProxyMode == null ? BeanProxyModeType.CGLIB_PROXY : beanProxyMode);
-		this.aspectRuleRegistry = context.getAspectRuleRegistry();
-		
-		createSingletonBean();
+		this.voidActivity = new VoidActivity(context);
 	}
 	
-	private void createSingletonBean() {
-		for(BeanRule beanRule : beanRuleMap) {
-			if(!beanRule.isRegistered()) {
-				ScopeType scope = beanRule.getScopeType();
-	
-				if(scope == ScopeType.SINGLETON) {
-					if(!beanRule.isRegistered() && !beanRule.isLazyInit()) {
-						Object bean = createBean(beanRule);
-						beanRule.setBean(bean);
-						beanRule.setRegistered(true);
-					}
-				}
-			}
-		}
-	}
-
 	protected Object createBean(BeanRule beanRule) {
-		Activity activity = null;
+		Activity activity = context.getLocalCoreActivity();
 		
-		if(context != null)
-			activity = context.getLocalCoreActivity();
+		if(activity == null)
+			activity = voidActivity;
 		
 		return createBean(beanRule, activity);
 	}
 
 	private Object createBean(BeanRule beanRule, Activity activity) {
 		try {
+			Object bean;
+			
 			ItemRuleMap constructorArgumentItemRuleMap = beanRule.getConstructorArgumentItemRuleMap();
+			ItemRuleMap propertyItemRuleMap = beanRule.getPropertyItemRuleMap();
+			ItemTokenExpressor expressor = null;
 			
 			if(constructorArgumentItemRuleMap != null) {
-				ItemTokenExpressor expressor = null;
-				
-				if(activity == null)
-					expressor = new ItemTokenExpression(this);
-				else
-					expressor = new ItemTokenExpression(activity);
+				expressor = new ItemTokenExpression(activity);
 				
 				ValueObjectMap valueMap = expressor.express(constructorArgumentItemRuleMap);
 	
@@ -120,16 +100,30 @@ public abstract class AbstractContextBeanRegistry implements ContextBeanRegistry
 					i++;
 				}
 				
-				return createBean(beanRule, argTypes, args, activity);
+				bean = instantiateBean(beanRule, argTypes, args);
 			} else {
-				return createBean(beanRule, null, null, activity);
+				bean = instantiateBean(beanRule, null, null);
 			}
+			/*
+			if(propertyItemRuleMap != null) {
+				if(expressor == null) {
+					if(activity == null)
+						expressor = new ItemTokenExpression(this);
+					else
+						expressor = new ItemTokenExpression(activity);
+				}
+				
+				ValueObjectMap valueMap = expressor.express(propertyItemRuleMap);
+				
+			}
+			*/
+			return bean;
 		} catch(Exception e) {
 			throw new BeanCreationException(beanRule, e);
 		}
 	}
 
-	private Object createBean(BeanRule beanRule, Class<?>[] argTypes, Object[] args, Activity activity) {
+	private Object instantiateBean(BeanRule beanRule, Class<?>[] argTypes, Object[] args) {
 		/*
 		 * 0. DynamicProxy 빈을 만들 것인지를 먼저 결정하라. 
 		 * 1. 빈과 관련된 AspectRule을 추출하고, 캐슁하라.
@@ -141,37 +135,31 @@ public abstract class AbstractContextBeanRegistry implements ContextBeanRegistry
 		/*
 		 * Bean과 관련된 AspectRule을 모두 추출.
 		 */
-		List<AspectRule> aspectRuleList = retrieveAspectRuleList(beanRule, activity);
+		Object bean;
 		
-		Object obj = null;
-		
-		if(aspectRuleList != null) {
-			if(activity == null) {
-				try {
-					activity = new VoidActivity(context);
-					activity.ready(null);
-				} catch(ActivityException e) {
-					throw new BeanCreationException(beanRule, e);
-				}
-			}
-			
+		if(beanRule.isProxyMode()) {
 			if(beanProxyMode == BeanProxyModeType.JDK_PROXY) {
-				logger.debug("JdkDynamicBeanProxy " + beanRule);
-				obj = JdkDynamicBeanProxy.newInstance(activity, aspectRuleList, beanRule, obj);
+				if(argTypes != null && args != null)
+					bean = newInstance(beanRule.getBeanClass(), argTypes, args);
+				else
+					bean = newInstance(beanRule.getBeanClass(), new Class[0], new Object[0]);
+				
+				logger.debug("JdkDynamicBeanProxy {}", beanRule);
+				bean = JdkDynamicBeanProxy.newInstance(context, beanRule, bean);
 			} else {
-				logger.debug("CglibDynamicBeanProxy " + beanRule);
-				obj = CglibDynamicBeanProxy.newInstance(activity, aspectRuleList, beanRule, argTypes, args);
+				logger.debug("CglibDynamicBeanProxy {}", beanRule);
+				bean = CglibDynamicBeanProxy.newInstance(context, beanRule, argTypes, args);
 			}
 		} else {
 			if(argTypes != null && args != null)
-				obj = newInstance(beanRule, argTypes, args);
+				bean = newInstance(beanRule.getBeanClass(), argTypes, args);
 			else
-				obj = newInstance(beanRule, new Class[0], new Object[0]);
+				bean = newInstance(beanRule.getBeanClass(), new Class[0], new Object[0]);
 		}
 		
-		return obj;
+		return bean;
 	}
-	
+
 	/**
 	 * Retrieve all Aaspect Rules associated with a bean.
 	 * Bean과 관련된 모든 AspectRule을 모두 추출하라.
@@ -180,41 +168,67 @@ public abstract class AbstractContextBeanRegistry implements ContextBeanRegistry
 	 * @param beanRule the bean rule
 	 * @return the list
 	 */
-	private List<AspectRule> retrieveAspectRuleList(BeanRule beanRule, Activity activity) {
-		String transletName = null;
-		JoinpointScopeType joinpointScope = null;
-		String beanId = beanRule.getId();
-
-		if(activity != null) {
-			/*
-			 * Translet, JoinpointScope의 적용여부를 결정 
-			 */
-			if(beanRule.getScopeType() == ScopeType.PROTOTYPE || beanRule.getScopeType() == ScopeType.REQUEST) {
-				transletName = activity.getTransletName();
-			}
-			if(beanRule.getScopeType() == ScopeType.PROTOTYPE) {
-				joinpointScope = activity.getJoinpointScope();
+//	private List<AspectRule> retrieveAspectRuleList(BeanRule beanRule, Activity activity) {
+//		String transletName = null;
+//		JoinpointScopeType joinpointScope = null;
+//		String beanId = beanRule.getId();
+//
+//		/*
+//		 * Translet, JoinpointScope의 적용여부를 결정 
+//		 */
+//		if(beanRule.getScopeType() == ScopeType.PROTOTYPE || beanRule.getScopeType() == ScopeType.REQUEST) {
+//			transletName = activity.getTransletName();
+//		}
+//		if(beanRule.getScopeType() == ScopeType.PROTOTYPE) {
+//			joinpointScope = activity.getJoinpointScope();
+//		}
+//		
+//		String joinpointScopeString = joinpointScope == null ? null : joinpointScope.toString();
+//		String patternString = PointcutPatternRule.combinePatternString(joinpointScopeString, transletName, beanId, null);
+//
+//		List<AspectRule> aspectRuleList;
+//		
+//		synchronized(aspectRuleListCache) {
+//			aspectRuleList = aspectRuleListCache.get(patternString);
+//			
+//			if(aspectRuleList == null) {
+//				System.out.println("***patternString: " + patternString);
+//				System.out.println("***beanRule: " + beanRule);
+//				System.out.println("***aspectRuleList: " + aspectRuleList);
+//				System.out.println("***transletName: " + transletName);
+//				System.out.println("***beanId: " + beanId);
+//
+//				aspectRuleList = aspectRuleRegistry.getBeanRelevantedAspectRuleList(joinpointScope, transletName, beanId);
+//				aspectRuleListCache.put(patternString, aspectRuleList);
+//			}
+//		}
+//
+//		if(aspectRuleList.size() == 0)
+//			return null;
+//		else
+//			return aspectRuleList;
+//	}
+	
+	public synchronized void initialize() {
+		if(initialized) {
+			throw new UnsupportedOperationException("ContextBeanRegistry has already been initialized.");
+		}
+		
+		for(BeanRule beanRule : beanRuleMap) {
+			if(!beanRule.isRegistered()) {
+				ScopeType scope = beanRule.getScopeType();
+	
+				if(scope == ScopeType.SINGLETON) {
+					if(!beanRule.isRegistered() && !beanRule.isLazyInit()) {
+						Object bean = createBean(beanRule, voidActivity);
+						beanRule.setBean(bean);
+						beanRule.setRegistered(true);
+					}
+				}
 			}
 		}
 		
-		String joinpointScopeString = joinpointScope == null ? null : joinpointScope.toString();
-		String patternString = PointcutPatternRule.combinePatternString(joinpointScopeString, transletName, beanId, null);
-
-		List<AspectRule> aspectRuleList;
-		
-		synchronized(aspectRuleListCache) {
-			aspectRuleList = aspectRuleListCache.get(patternString);
-			
-			if(aspectRuleList == null) {
-				aspectRuleList = aspectRuleRegistry.getBeanRelevantedAspectRuleList(joinpointScope, transletName, beanId);
-				aspectRuleListCache.put(patternString, aspectRuleList);
-			}
-		}
-		
-		if(aspectRuleList.size() == 0)
-			return null;
-		else
-			return aspectRuleList;
+		initialized = true;
 	}
 	
 	public void destroy() {
@@ -238,19 +252,21 @@ public abstract class AbstractContextBeanRegistry implements ContextBeanRegistry
 				}
 			}
 		}
+		
+		aspectRuleListCache.clear();
 	}
 	
-	private static Object newInstance(BeanRule beanRule, Class<?>[] argTypes, Object[] args) throws BeanInstantiationException {
+	private static Object newInstance(Class<?> beanClass, Class<?>[] argTypes, Object[] args) throws BeanInstantiationException {
 		Constructor<?> constructorToUse;
 		
 		try {
-			constructorToUse = getMatchConstructor(beanRule.getBeanClass(), args);
+			constructorToUse = getMatchConstructor(beanClass, args);
 
 			if(constructorToUse == null) {
-				constructorToUse = beanRule.getBeanClass().getDeclaredConstructor(argTypes);
+				constructorToUse = beanClass.getDeclaredConstructor(argTypes);
 			}
 		} catch(NoSuchMethodException e) {
-			throw new BeanInstantiationException(beanRule.getBeanClass(), "No default constructor found.", e);
+			throw new BeanInstantiationException(beanClass, "No default constructor found.", e);
 		}
 		
 		Object obj = newInstance(constructorToUse, args);

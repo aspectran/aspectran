@@ -19,13 +19,11 @@ public class PointcutFactory {
 //	private List<Pointcut> pointcutList = new ArrayList<Pointcut>();
 	
 	public static Pointcut createPointcut(PointcutRule pointcutRule) {
-		if(pointcutRule.getPointcutType() == PointcutType.WILDCARD) {
-			return createWildcardPointcut(pointcutRule.getPointcutPatternRuleList());
-		} else if(pointcutRule.getPointcutType() == PointcutType.REGEXP) {
+		if(pointcutRule.getPointcutType() == PointcutType.REGEXP) {
 			return createRegexpPointcut(pointcutRule.getPointcutPatternRuleList());
+		} else {
+			return createWildcardPointcut(pointcutRule.getPointcutPatternRuleList());
 		}
-
-		return null;
 	}
 	
 	private static Pointcut createWildcardPointcut(List<PointcutPatternRule> pointcutPatternRuleList) {

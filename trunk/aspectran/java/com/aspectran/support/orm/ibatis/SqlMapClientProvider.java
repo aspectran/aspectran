@@ -13,11 +13,11 @@ import com.ibatis.sqlmap.client.SqlMapClientBuilder;
  * <p>Created: 2008. 05. 14 오후 7:52:29</p>
  *
  */
-public class SqlMapConfig {
+public class SqlMapClientProvider {
 	
 	private SqlMapClient sqlMapClient;
 
-	public SqlMapConfig(String resource) {
+	public SqlMapClientProvider(String resource) {
 		buildSqlMapClient(resource);
 	}
 	
@@ -27,7 +27,7 @@ public class SqlMapConfig {
 			InputStream is = classLoader.getResourceAsStream(resource);
 			sqlMapClient = SqlMapClientBuilder.buildSqlMapClient(is);
 		} catch(Exception e) {
-			throw new RuntimeException("Error initializing SqlMapConfig class", e);
+			throw new RuntimeException("Error initializing SqlMapClient instance", e);
 		}
 	}
 	

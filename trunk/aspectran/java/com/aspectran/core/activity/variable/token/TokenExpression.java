@@ -47,10 +47,6 @@ public class TokenExpression implements TokenExpressor {
 	
 	//protected TokenValueHandler tokenValueHandler;
 	
-	public TokenExpression(BeanRegistry beanRegistry) {
-		this.beanRegistry = beanRegistry;
-	}
-	
 	public TokenExpression(Activity activity) {
 		this.activity = activity;
 		

@@ -13,7 +13,7 @@ public class SqlMapClientTransactionAdvice {
 	
 	private SqlMapClient sqlMapClient;
 	
-	public SqlMapClientTransactionAdvice(SqlMapConfig sqlMapConfig) {
+	public SqlMapClientTransactionAdvice(SqlMapClientProvider sqlMapConfig) {
 		this.sqlMapClient = sqlMapConfig.getSqlMapClient();
 	}
 	
@@ -31,7 +31,7 @@ public class SqlMapClientTransactionAdvice {
 		return sqlMapClient;
 	}
 	
-	public void commit(Translet translet) throws SQLException {
+	public void end(Translet translet) throws SQLException {
 		if(!translet.isExceptionRaised())
 			sqlMapClient.commitTransaction();
 		

@@ -12,6 +12,8 @@ package com.aspectran.core.context.bean;
  */
 public interface ContextBeanRegistry extends BeanRegistry {
 	
+	public void initialize();
+	
 	public void destroy();
 
 }

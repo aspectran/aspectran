@@ -31,13 +31,12 @@ import com.aspectran.core.activity.process.result.ContentResult;
 import com.aspectran.core.activity.process.result.ProcessResult;
 import com.aspectran.core.activity.request.RequestException;
 import com.aspectran.core.activity.response.ForwardResponse;
-import com.aspectran.core.activity.response.ResponseException;
 import com.aspectran.core.activity.response.Response;
+import com.aspectran.core.activity.response.ResponseException;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.aspect.AspectAdviceRuleRegister;
 import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
 import com.aspectran.core.context.bean.BeanRegistry;
-import com.aspectran.core.context.bean.scope.Scope;
 import com.aspectran.core.context.rule.AspectAdviceRule;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.RequestRule;
@@ -68,15 +67,6 @@ public class CoreActivity extends AbstractActivity implements Activity {
 
 	/** The activity context. */
 	private final ActivityContext context;
-
-	/** The translet interface class. */
-	private Class<? extends Translet> transletInterfaceClass;
-	
-	/** The translet instance class. */
-	private Class<? extends CoreTranslet> transletImplementClass;
-
-	/** The request scope. */
-	private Scope requestScope;
 
 	/** The translet rule. */
 	private TransletRule transletRule;
@@ -111,8 +101,6 @@ public class CoreActivity extends AbstractActivity implements Activity {
 	
 	private AspectAdviceRuleRegistry contentAspectAdviceRuleRegistry;
 	
-	private JoinpointScopeType joinpointScope = JoinpointScopeType.TRANSLET;
-	
 	/**
 	 * Instantiates a new action translator.
 	 *
@@ -123,42 +111,6 @@ public class CoreActivity extends AbstractActivity implements Activity {
 		this.context = context;
 	}
 
-	/**
-	 * Gets the translet interface class.
-	 *
-	 * @return the translet interface class
-	 */
-	public Class<? extends Translet> getTransletInterfaceClass() {
-		return transletInterfaceClass;
-	}
-
-	/**
-	 * Sets the translet interface class.
-	 *
-	 * @param transletInterfaceClass the new translet interface class
-	 */
-	protected void setTransletInterfaceClass(Class<? extends Translet> transletInterfaceClass) {
-		this.transletInterfaceClass = transletInterfaceClass;
-	}
-
-	/**
-	 * Gets the translet instance class.
-	 *
-	 * @return the translet instance class
-	 */
-	public Class<? extends CoreTranslet> getTransletImplementClass() {
-		return transletImplementClass;
-	}
-
-	/**
-	 * Sets the translet instance class.
-	 *
-	 * @param transletInstanceClass the new translet instance class
-	 */
-	protected void setTransletImplementClass(Class<? extends CoreTranslet> transletImplementClass) {
-		this.transletImplementClass = transletImplementClass;
-	}
-	
 	public void ready(String transletName) throws ActivityException {
 		ready(transletName, null);
 	}
@@ -176,10 +128,10 @@ public class CoreActivity extends AbstractActivity implements Activity {
 		}
 
 		if(transletRule.getTransletInterfaceClass() != null)
-			this.transletInterfaceClass = transletRule.getTransletInterfaceClass();
+			setTransletInterfaceClass(transletRule.getTransletInterfaceClass());
 
 		if(transletRule.getTransletImplementClass() != null)
-			this.transletImplementClass = transletRule.getTransletImplementClass();
+			setTransletImplementClass(transletRule.getTransletImplementClass());
 
 		newTranslet();
 		
@@ -286,15 +238,15 @@ public class CoreActivity extends AbstractActivity implements Activity {
 			
 			throw e;
 		} finally {
-			if(requestScope != null) {
-				requestScope.destroy();
+			if(getRequestScope() != null) {
+				getRequestScope().destroy();
 			}
 		}
 	}
 
 	private void run2nd() throws ActivityException {
 		//request
-		joinpointScope = JoinpointScopeType.REQUEST;
+		setCurrentJoinpointScope(JoinpointScopeType.REQUEST);
 		
 		try {
 			try {
@@ -351,7 +303,7 @@ public class CoreActivity extends AbstractActivity implements Activity {
 			return;
 		
 		//content
-		joinpointScope = JoinpointScopeType.CONTENT;
+		setCurrentJoinpointScope(JoinpointScopeType.CONTENT);
 		
 		ContentList contentList = transletRule.getContentList();
 		
@@ -425,7 +377,7 @@ public class CoreActivity extends AbstractActivity implements Activity {
 			return;
 		
 		//response
-		joinpointScope = JoinpointScopeType.RESPONSE;
+		setCurrentJoinpointScope(JoinpointScopeType.RESPONSE);
 		
 		try {
 			try {
@@ -692,7 +644,7 @@ public class CoreActivity extends AbstractActivity implements Activity {
 		if(action == null) {
 			//logger.error("no specified action on AspectAdviceRule " + aspectAdviceRule);
 			//return null;
-			throw new ActionExecutionException("No specified action on AspectAdviceRule {}" + aspectAdviceRule);
+			throw new ActionExecutionException("No specified action on AspectAdviceRule " + aspectAdviceRule);
 		}
 		
 		if(action.getActionType() == ActionType.BEAN && aspectAdviceRule.getAdviceBeanId() != null) {
@@ -765,17 +717,8 @@ public class CoreActivity extends AbstractActivity implements Activity {
 		return (T)activity;
 	}
 	
-	protected Translet newTranslet() {
-		if(this.transletInterfaceClass == null)
-			this.transletInterfaceClass = Translet.class;
-		
-		if(this.transletImplementClass == null) {
-			this.transletImplementClass = CoreTranslet.class;
-			translet = new CoreTranslet(this);
-			return translet;
-		}
-		
-		return super.newTranslet(this.transletImplementClass);
+	protected void newTranslet() {
+		translet = newTranslet(this);
 	}
 	
 	public Translet getTranslet() {
@@ -861,22 +804,22 @@ public class CoreActivity extends AbstractActivity implements Activity {
 		if(debugEnabled)
 			logger.debug("registerAspectRule {}", aspectRule);
 		
-		JoinpointScopeType joinpointScope2 = aspectRule.getJoinpointScope();
+		JoinpointScopeType joinpointScope = aspectRule.getJoinpointScope();
 		
-		if(this.joinpointScope == JoinpointScopeType.TRANSLET || this.joinpointScope == joinpointScope2) {
-			if(JoinpointScopeType.TRANSLET == joinpointScope2) {
+		if(joinpointScope == JoinpointScopeType.TRANSLET || getCurrentJoinpointScope() == joinpointScope) {
+			if(JoinpointScopeType.TRANSLET == joinpointScope) {
 				if(transletAspectAdviceRuleRegistry == null)
 					transletAspectAdviceRuleRegistry = new AspectAdviceRuleRegistry();
 				AspectAdviceRuleRegister.register(transletAspectAdviceRuleRegistry, aspectRule, AspectAdviceType.BEFORE);
-			} else if(JoinpointScopeType.REQUEST == joinpointScope2) {
+			} else if(JoinpointScopeType.REQUEST == joinpointScope) {
 				if(requestAspectAdviceRuleRegistry == null)
 					requestAspectAdviceRuleRegistry = new AspectAdviceRuleRegistry();
 				AspectAdviceRuleRegister.register(requestAspectAdviceRuleRegistry, aspectRule, AspectAdviceType.BEFORE);
-			} else if(JoinpointScopeType.RESPONSE == joinpointScope2) {
+			} else if(JoinpointScopeType.RESPONSE == joinpointScope) {
 				if(responseAspectAdviceRuleRegistry == null)
 					responseAspectAdviceRuleRegistry = new AspectAdviceRuleRegistry();
 				AspectAdviceRuleRegister.register(responseAspectAdviceRuleRegistry, aspectRule, AspectAdviceType.BEFORE);
-			} else if(JoinpointScopeType.CONTENT == joinpointScope2) {
+			} else if(JoinpointScopeType.CONTENT == joinpointScope) {
 				if(contentAspectAdviceRuleRegistry == null)
 					contentAspectAdviceRuleRegistry = new AspectAdviceRuleRegistry();
 				AspectAdviceRuleRegister.register(contentAspectAdviceRuleRegistry, aspectRule, AspectAdviceType.BEFORE);
@@ -904,18 +847,6 @@ public class CoreActivity extends AbstractActivity implements Activity {
 	
 	public <T> T getAspectAdviceBean(String aspectId) {
 		return translet.getAspectAdviceBean(aspectId);
-	}
-	
-	public Scope getRequestScope() {
-		return requestScope;
-	}
-
-	public void setRequestScope(Scope requestScope) {
-		this.requestScope = requestScope;
-	}
-
-	public JoinpointScopeType getJoinpointScope() {
-		return joinpointScope;
 	}
 	
 	public void finish() {

@@ -26,6 +26,7 @@ import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.bean.scope.Scope;
 import com.aspectran.core.context.rule.AspectAdviceRule;
+import com.aspectran.core.context.rule.type.JoinpointScopeType;
 
 /**
  * <p>Created: 2008. 04. 28 오전 12:48:48</p>
@@ -34,10 +35,10 @@ public final class VoidActivity extends CoreActivity implements Activity {
 	
 	public VoidActivity(ActivityContext context) {
 		super(context);
+		newTranslet();
 	}
 	
 	public void ready(String transletName) throws ActivityException {
-		newTranslet();
 	}
 	
 	protected void request(Translet translet) throws RequestException {
@@ -108,6 +109,10 @@ public final class VoidActivity extends CoreActivity implements Activity {
 	@Override
 	public void setRequestScope(Scope requestScope) {
 		throw new UnsupportedOperationException();
+	}
+	
+	public JoinpointScopeType getCurrentJoinpointScope() {
+		return null;
 	}
 
 }

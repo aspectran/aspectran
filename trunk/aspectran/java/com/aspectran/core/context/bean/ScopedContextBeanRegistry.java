@@ -1,5 +1,6 @@
 package com.aspectran.core.context.bean;
 
+import com.aspectran.core.activity.Activity;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.bean.scope.RequestScope;
 import com.aspectran.core.context.bean.scope.Scope;
@@ -119,18 +120,28 @@ public class ScopedContextBeanRegistry extends AbstractContextBeanRegistry {
 	}
 	
 	private Scope getRequestScope() {
-		Scope requestScope = context.getLocalCoreActivity().getRequestScope();
+		Activity activity = context.getLocalCoreActivity();
+		
+		if(activity == null)
+			return null;
+		
+		Scope requestScope = activity.getRequestScope();
 		
 		if(requestScope == null) {
 			requestScope = new RequestScope();
-			context.getLocalCoreActivity().setRequestScope(requestScope);
+			activity.setRequestScope(requestScope);
 		}
 		
 		return requestScope;
 	}
 
 	private Scope getSessionScope() {
-		return context.getLocalCoreActivity().getSessionAdapter().getScope();
+		Activity activity = context.getLocalCoreActivity();
+
+		if(activity == null)
+			return null;
+
+		return activity.getSessionAdapter().getScope();
 	}
 	
 	private Scope getApplicationScope() {
