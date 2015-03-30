@@ -105,14 +105,14 @@ public class XslTransform extends TransformResponse implements Response {
 	 * @see com.aspectran.core.activity.response.Responsible#response(com.aspectran.core.activity.CoreActivity)
 	 */
 	public void response(Activity activity) throws TransformResponseException {
+		if(debugEnabled) {
+			logger.debug("response {}", transformRule);
+		}
+
 		ResponseAdapter responseAdapter = activity.getResponseAdapter();
 		
 		if(responseAdapter == null)
 			return;
-
-		if(debugEnabled) {
-			logger.debug("response {}", transformRule);
-		}
 
 		try {
 			loadTemplate(activity.getApplicationAdapter());

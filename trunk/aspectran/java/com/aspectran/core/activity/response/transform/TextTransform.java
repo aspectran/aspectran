@@ -119,10 +119,6 @@ public class TextTransform extends TransformResponse implements Response {
 		if(responseAdapter == null)
 			return;
 
-		if(debugEnabled) {
-			logger.debug("response " + transformRule);
-		}
-
 		try {
 			if(templateRule != null && !builtinContent)
 				loadTemplate(activity.getApplicationAdapter());
