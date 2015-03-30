@@ -17,7 +17,6 @@ import com.aspectran.core.activity.variable.ValueObjectMap;
 import com.aspectran.core.activity.variable.token.ItemTokenExpression;
 import com.aspectran.core.activity.variable.token.ItemTokenExpressor;
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.context.aspect.AspectRuleRegistry;
 import com.aspectran.core.context.bean.proxy.CglibDynamicBeanProxy;
 import com.aspectran.core.context.bean.proxy.JdkDynamicBeanProxy;
 import com.aspectran.core.context.rule.AspectRule;
@@ -27,6 +26,7 @@ import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.type.BeanProxyModeType;
 import com.aspectran.core.context.rule.type.ScopeType;
+import com.aspectran.core.util.BeanUtils;
 import com.aspectran.core.util.MethodUtils;
 import com.aspectran.core.util.ReflectionUtils;
 
@@ -104,19 +104,19 @@ public abstract class AbstractContextBeanRegistry implements ContextBeanRegistry
 			} else {
 				bean = instantiateBean(beanRule, null, null);
 			}
-			/*
+
 			if(propertyItemRuleMap != null) {
 				if(expressor == null) {
-					if(activity == null)
-						expressor = new ItemTokenExpression(this);
-					else
-						expressor = new ItemTokenExpression(activity);
+					expressor = new ItemTokenExpression(activity);
 				}
 				
 				ValueObjectMap valueMap = expressor.express(propertyItemRuleMap);
 				
+				for(Map.Entry<String, Object> entry : valueMap.entrySet()) {
+					BeanUtils.setObject(bean, entry.getKey(), entry.getValue());
+				}
 			}
-			*/
+
 			return bean;
 		} catch(Exception e) {
 			throw new BeanCreationException(beanRule, e);
@@ -159,55 +159,6 @@ public abstract class AbstractContextBeanRegistry implements ContextBeanRegistry
 		
 		return bean;
 	}
-
-	/**
-	 * Retrieve all Aaspect Rules associated with a bean.
-	 * Bean과 관련된 모든 AspectRule을 모두 추출하라.
-	 *
-	 * @param activity the activity
-	 * @param beanRule the bean rule
-	 * @return the list
-	 */
-//	private List<AspectRule> retrieveAspectRuleList(BeanRule beanRule, Activity activity) {
-//		String transletName = null;
-//		JoinpointScopeType joinpointScope = null;
-//		String beanId = beanRule.getId();
-//
-//		/*
-//		 * Translet, JoinpointScope의 적용여부를 결정 
-//		 */
-//		if(beanRule.getScopeType() == ScopeType.PROTOTYPE || beanRule.getScopeType() == ScopeType.REQUEST) {
-//			transletName = activity.getTransletName();
-//		}
-//		if(beanRule.getScopeType() == ScopeType.PROTOTYPE) {
-//			joinpointScope = activity.getJoinpointScope();
-//		}
-//		
-//		String joinpointScopeString = joinpointScope == null ? null : joinpointScope.toString();
-//		String patternString = PointcutPatternRule.combinePatternString(joinpointScopeString, transletName, beanId, null);
-//
-//		List<AspectRule> aspectRuleList;
-//		
-//		synchronized(aspectRuleListCache) {
-//			aspectRuleList = aspectRuleListCache.get(patternString);
-//			
-//			if(aspectRuleList == null) {
-//				System.out.println("***patternString: " + patternString);
-//				System.out.println("***beanRule: " + beanRule);
-//				System.out.println("***aspectRuleList: " + aspectRuleList);
-//				System.out.println("***transletName: " + transletName);
-//				System.out.println("***beanId: " + beanId);
-//
-//				aspectRuleList = aspectRuleRegistry.getBeanRelevantedAspectRuleList(joinpointScope, transletName, beanId);
-//				aspectRuleListCache.put(patternString, aspectRuleList);
-//			}
-//		}
-//
-//		if(aspectRuleList.size() == 0)
-//			return null;
-//		else
-//			return aspectRuleList;
-//	}
 	
 	public synchronized void initialize() {
 		if(initialized) {

@@ -12,23 +12,23 @@ public class WildcardPattern {
 	
 	protected static final char PLUS_CHAR = '+';
 	
-	protected static int EOT_TYPE = -2;
+	protected static final int EOT_TYPE = -2;
+
+	protected static final int SKIP_TYPE = -1;
+
+	protected static final int LITERAL_TYPE = 0;
+
+	protected static final int STAR_TYPE = 1;
+
+	protected static final int STAR_STAR_TYPE = 2;
+
+	protected static final int QUESTION_TYPE = 3;
+
+	protected static final int PLUS_TYPE = 4;
+
+	protected static final int SEPARATOR_TYPE = 9;
 	
-	protected static int SKIP_TYPE = -1;
-	
-	protected static int LITERAL_TYPE = 0;
-	
-	protected static int STAR_TYPE = 1;
-	
-	protected static int STAR_STAR_TYPE = 2;
-	
-	protected static int QUESTION_TYPE = 3;
-	
-	protected static int PLUS_TYPE = 4;
-	
-	protected static int SEPARATOR_TYPE = 9;
-	
-	private char[] separators;
+	private char[] separator;
 	
 	private char[] tokens;
 
@@ -37,26 +37,20 @@ public class WildcardPattern {
 	public WildcardPattern(String patternString) {
 		parse(patternString);
 	}
+	
+	public WildcardPattern(String patternString, char separator) {
+		this.separator = new char[] { separator };
+		
+		parse(patternString);
+	}
 
 	public WildcardPattern(String patternString, String separator) {
 		if(separator != null && separator.length() > 0)
-			this.separators = separator.toCharArray();
+			this.separator = separator.toCharArray();
 		
 		parse(patternString);
 	}
-	
-	public WildcardPattern(String patternString, char separator) {
-		this.separators = new char[] { separator };
-		
-		parse(patternString);
-	}
-	
-	public WildcardPattern(String patternString, char[] separators) {
-		this.separators = separators;
-		
-		parse(patternString);
-	}
-		
+
 	private void parse(String patternString) {
 		tokens = patternString.toCharArray();
 		types = new int[tokens.length];
@@ -120,16 +114,16 @@ public class WildcardPattern {
 			}
 		}
 
-		if(separators != null) {
+		if(separator != null) {
 			int sepa = 0;
 			int skip = 0;
 
 			for(int i = 0; i < tokens.length; i++) {
 				if(types[i] > SKIP_TYPE) {
-					if(tokens[i] == separators[sepa]) {
+					if(tokens[i] == separator[sepa]) {
 						sepa++;
 					}
-					if(sepa == separators.length) {
+					if(sepa == separator.length) {
 						if(sepa == 1) {
 							types[i] = SEPARATOR_TYPE; // type 9: separator
 						} else {          
@@ -145,7 +139,7 @@ public class WildcardPattern {
 				if(sepa > 0) {
 					if(types[i] == SKIP_TYPE)
 						skip++;
-					else if(tokens[i] != separators[sepa - 1])
+					else if(tokens[i] != separator[sepa - 1])
 						sepa = 0;
 				}
 			}
@@ -165,8 +159,8 @@ public class WildcardPattern {
 		}
 	}
 
-	public char[] getSeparators() {
-		return separators;
+	public char[] getSeparator() {
+		return separator;
 	}
 
 	protected char[] getTokens() {
@@ -181,16 +175,16 @@ public class WildcardPattern {
 		return WildcardMatcher.matches(this, str);
 	}
 	
-	public static WildcardPattern compile(String patternString, String separator) {
-		return new WildcardPattern(patternString, separator);
+	public static WildcardPattern compile(String patternString) {
+		return new WildcardPattern(patternString);
 	}
 	
 	public static WildcardPattern compile(String patternString, char separator) {
 		return new WildcardPattern(patternString, separator);
 	}
 	
-	public static WildcardPattern compile(String patternString, char[] separators) {
-		return new WildcardPattern(patternString, separators);
+	public static WildcardPattern compile(String patternString, String separator) {
+		return new WildcardPattern(patternString, separator);
 	}
 	
 	public static boolean hasWildcards(String str) {
