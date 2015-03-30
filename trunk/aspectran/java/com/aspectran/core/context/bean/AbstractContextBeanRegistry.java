@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.VoidActivity;
+import com.aspectran.core.activity.process.action.BeanAction;
 import com.aspectran.core.activity.variable.ValueObjectMap;
 import com.aspectran.core.activity.variable.token.ItemTokenExpression;
 import com.aspectran.core.activity.variable.token.ItemTokenExpressor;
@@ -114,6 +115,24 @@ public abstract class AbstractContextBeanRegistry implements ContextBeanRegistry
 				
 				for(Map.Entry<String, Object> entry : valueMap.entrySet()) {
 					BeanUtils.setObject(bean, entry.getKey(), entry.getValue());
+				}
+			}
+			
+			String initMethodName = beanRule.getInitMethodName();
+			
+			if(initMethodName != null) {
+				if(beanRule.getInitMethodNeedTranslet() == null) {
+					try {
+						BeanAction.invokeMethod(activity, bean, initMethodName, null, null, true);
+						beanRule.setInitMethodNeedTranslet(Boolean.TRUE);
+					} catch(NoSuchMethodException e) {
+						logger.info("the method with the 'translet' argument was not found. So in the future will continue to call a method with no argument 'translet'. beanRule {}", beanRule);
+						
+						beanRule.setInitMethodNeedTranslet(Boolean.FALSE);
+						BeanAction.invokeMethod(activity, bean, initMethodName, null, null, false);
+					}
+				} else {
+					BeanAction.invokeMethod(activity, bean, initMethodName, null, null, beanRule.getInitMethodNeedTranslet().booleanValue());
 				}
 			}
 

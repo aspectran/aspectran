@@ -15,6 +15,7 @@
  */
 package com.aspectran.core.activity.process.action;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -28,6 +29,7 @@ import com.aspectran.core.activity.variable.ValueObjectMap;
 import com.aspectran.core.activity.variable.token.ItemTokenExpression;
 import com.aspectran.core.activity.variable.token.ItemTokenExpressor;
 import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
+import com.aspectran.core.context.rule.AspectAdviceRule;
 import com.aspectran.core.context.rule.BeanActionRule;
 import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
@@ -40,11 +42,21 @@ import com.aspectran.core.util.MethodUtils;
  */
 public class BeanAction extends AbstractAction implements Executable {
 
-	private final Logger logger = LoggerFactory.getLogger(BeanAction.class);
+	private static final Logger logger = LoggerFactory.getLogger(BeanAction.class);
 
 	private final BeanActionRule beanActionRule;
 	
-	private final Map<ItemRuleMap, Boolean> transletArgumentApplyingCache = new HashMap<ItemRuleMap, Boolean>();
+	private final String beanId;
+
+	private final String methodName;
+	
+	private final ItemRuleMap propertyItemRuleMap;
+	
+	private final ItemRuleMap argumentItemRuleMap;
+	
+	private final AspectAdviceRule aspectAdviceRule;
+	
+	private final Map<ItemRuleMap, Boolean> needTransletCache = new HashMap<ItemRuleMap, Boolean>();
 	
 	/**
 	 * Instantiates a new bean action.
@@ -55,6 +67,23 @@ public class BeanAction extends AbstractAction implements Executable {
 	public BeanAction(BeanActionRule beanActionRule, ActionList parent) {
 		super(beanActionRule.getActionId(), parent);
 		this.beanActionRule = beanActionRule;
+		this.beanId = beanActionRule.getBeanId();
+		this.methodName = beanActionRule.getMethodName();
+		
+		if(beanActionRule.getPropertyItemRuleMap() != null && !beanActionRule.getPropertyItemRuleMap().isEmpty())
+			this.propertyItemRuleMap = beanActionRule.getPropertyItemRuleMap();
+		else
+			this.propertyItemRuleMap = null;
+
+		if(beanActionRule.getArgumentItemRuleMap() != null && !beanActionRule.getArgumentItemRuleMap().isEmpty())
+			this.argumentItemRuleMap = beanActionRule.getArgumentItemRuleMap();
+		else
+			this.argumentItemRuleMap = null;
+		
+		if(beanActionRule.getAspectAdviceRule() != null)
+			this.aspectAdviceRule = beanActionRule.getAspectAdviceRule();
+		else
+			this.aspectAdviceRule = null;
 	}
 	
 	/* (non-Javadoc)
@@ -62,22 +91,18 @@ public class BeanAction extends AbstractAction implements Executable {
 	 */
 	public Object execute(Activity activity) throws Exception {
 		try {
-			String beanId = beanActionRule.getBeanId();
 			Object bean = null;
 			
 			if(beanId != null)
 				bean = activity.getBean(beanId);
-			else if(beanActionRule.getAspectAdviceRule() != null) {
-				String aspectId = beanActionRule.getAspectAdviceRule().getAspectId();
-				bean = activity.getAspectAdviceBean(aspectId);
-			}
+			else if(aspectAdviceRule != null)
+				bean = activity.getAspectAdviceBean(aspectAdviceRule.getAspectId());
 				
-			String methodName = beanActionRule.getMethodName();
-			ItemRuleMap propertyItemRuleMap = beanActionRule.getPropertyItemRuleMap();
-			ItemRuleMap argumentItemRuleMap = beanActionRule.getArgumentItemRuleMap();
-
-			ItemTokenExpressor expressor = new ItemTokenExpression(activity);
-
+			ItemTokenExpressor expressor = null;
+			
+			if(propertyItemRuleMap != null || argumentItemRuleMap != null)
+				expressor = new ItemTokenExpression(activity);
+			
 			if(propertyItemRuleMap != null) {
 				ValueObjectMap valueMap = expressor.express(propertyItemRuleMap);
 				
@@ -88,23 +113,20 @@ public class BeanAction extends AbstractAction implements Executable {
 			}
 			
 			Object result;
-			
-			if(transletArgumentApplyingCache.get(argumentItemRuleMap) == Boolean.TRUE) {
-				result = invokeMethod(activity, expressor, bean, methodName, argumentItemRuleMap);
-			} else if(transletArgumentApplyingCache.get(argumentItemRuleMap) == Boolean.FALSE) {
-				result = invokeMethod(null, expressor, bean, methodName, argumentItemRuleMap);
-			} else {
+			Boolean transletInclusion = needTransletCache.get(argumentItemRuleMap);
+
+			if(transletInclusion == null) {
 				try {
-					result = invokeMethod(activity, expressor, bean, methodName, argumentItemRuleMap);
-					
-					transletArgumentApplyingCache.put(argumentItemRuleMap, Boolean.TRUE);
+					result = invokeMethod(activity, bean, methodName, argumentItemRuleMap, expressor, true);
+					needTransletCache.put(argumentItemRuleMap, Boolean.TRUE);
 				} catch(NoSuchMethodException e) {
-					logger.info("The method with the 'translet' argument was not found. So in the future will continue to call a method with no argument 'translet'.");
+					logger.info("the method with the 'translet' argument was not found. So in the future will continue to call a method with no argument 'translet'. beanActionRule {}", beanActionRule);
 					
-					result = invokeMethod(null, expressor, bean, methodName, argumentItemRuleMap);
-					
-					transletArgumentApplyingCache.put(argumentItemRuleMap, Boolean.FALSE);
+					needTransletCache.put(argumentItemRuleMap, Boolean.FALSE);
+					result = invokeMethod(activity, bean, methodName, argumentItemRuleMap, expressor, false);
 				}
+			} else {
+				result = invokeMethod(activity, bean, methodName, argumentItemRuleMap, expressor, transletInclusion.booleanValue());
 			}
 
 			return result;
@@ -114,21 +136,25 @@ public class BeanAction extends AbstractAction implements Executable {
 		}
 	}
 	
-	public Object invokeMethod(Activity activity, ItemTokenExpressor expressor, Object bean, String methodName, ItemRuleMap argumentItemRuleMap) throws Exception {
-		Class<?>[] parameterTypes = null;
-		Object[] args = null;
+	public static Object invokeMethod(Activity activity, Object bean, String methodName, ItemRuleMap argumentItemRuleMap, ItemTokenExpressor expressor, boolean needTranslet) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+		Class<?>[] argsTypes = null;
+		Object[] argsObjects = null;
 		
-		if(argumentItemRuleMap != null && argumentItemRuleMap.size() > 0) {
-			int argIndex = (activity != null) ? 1 : 0;
-
+		if(argumentItemRuleMap != null) {
 			ValueObjectMap valueMap = expressor.express(argumentItemRuleMap);
+
+			int argIndex;
 			
-			parameterTypes = new Class<?>[argumentItemRuleMap.size() + argIndex];
-			args = new Object[parameterTypes.length];
-			
-			if(argIndex > 0) {
-				parameterTypes[0] = activity.getTransletInterfaceClass();
-				args[0] = activity.getTranslet();
+			if(needTranslet) {
+				argIndex = 1;
+				argsTypes = new Class<?>[argumentItemRuleMap.size() + argIndex];
+				argsObjects = new Object[argsTypes.length];
+				argsTypes[0] = activity.getTransletInterfaceClass();
+				argsObjects[0] = activity.getTranslet();
+			} else {
+				argIndex = 0;
+				argsTypes = new Class<?>[argumentItemRuleMap.size()];
+				argsObjects = new Object[argsTypes.length];
 			}
 			
 			Iterator<ItemRule> iter = argumentItemRuleMap.iterator();
@@ -137,19 +163,19 @@ public class BeanAction extends AbstractAction implements Executable {
 				ItemRule ir = iter.next();
 				Object o = valueMap.get(ir.getName());
 				
-				parameterTypes[argIndex] = o.getClass();
-				args[argIndex] = o;
+				argsTypes[argIndex] = o.getClass();
+				argsObjects[argIndex] = o;
 				
 				argIndex++;
 			}
 		} else {
-			if(activity != null) {
-				parameterTypes = new Class<?>[] { activity.getTransletInterfaceClass() };
-				args = new Object[] { activity.getTranslet() };
+			if(needTranslet) {
+				argsTypes = new Class<?>[] { activity.getTransletInterfaceClass() };
+				argsObjects = new Object[] { activity.getTranslet() };
 			}
 		}
 		
-		Object result = MethodUtils.invokeMethod(bean, methodName, args, parameterTypes);
+		Object result = MethodUtils.invokeMethod(bean, methodName, argsObjects, argsTypes);
 		
 		return result;
 	}

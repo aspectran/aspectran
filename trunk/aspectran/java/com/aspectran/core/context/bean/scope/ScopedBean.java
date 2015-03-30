@@ -42,7 +42,7 @@ public class ScopedBean implements DisposableBean {
 			String destroyMethodName = beanRule.getDestroyMethodName();
 	
 			try {
-				MethodUtils.invokeMethod(bean, destroyMethodName, null);
+				MethodUtils.invokeMethod(bean, destroyMethodName, null, null);
 			} catch(Exception e) {
 				throw new BeanDestroyFailedException(beanRule, e); 
 			}

@@ -35,7 +35,7 @@ import com.aspectran.core.context.rule.type.ActionType;
  */
 public class IncludeAction extends AbstractAction implements Executable {
 	
-	private final Logger logger = LoggerFactory.getLogger(IncludeAction.class);
+	private static final Logger logger = LoggerFactory.getLogger(IncludeAction.class);
 
 	private final IncludeActionRule includeActionRule;
 
