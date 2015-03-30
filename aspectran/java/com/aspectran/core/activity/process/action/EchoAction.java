@@ -32,7 +32,7 @@ import com.aspectran.core.context.rule.type.ActionType;
  */
 public class EchoAction extends AbstractAction implements Executable {
 
-	private final Logger logger = LoggerFactory.getLogger(EchoAction.class);
+	private static final Logger logger = LoggerFactory.getLogger(EchoAction.class);
 	
 	private final EchoActionRule echoActionRule;
 	

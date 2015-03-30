@@ -19,6 +19,7 @@ import java.util.List;
 
 import com.aspectran.core.context.bean.ablility.DisposableBean;
 import com.aspectran.core.context.bean.ablility.InitializableBean;
+import com.aspectran.core.context.bean.ablility.InitializableTransletBean;
 import com.aspectran.core.context.rule.type.ScopeType;
 import com.aspectran.core.util.BooleanUtils;
 import com.aspectran.core.util.MethodUtils;
@@ -45,8 +46,10 @@ public class BeanRule implements Cloneable {
 	
 	protected String initMethodName;
 	
-	protected String destroyMethodName;
+	private Boolean initMethodNeedTranslet;
 	
+	protected String destroyMethodName;
+
 	protected Boolean lazyInit;
 
 	protected Boolean important;
@@ -179,6 +182,14 @@ public class BeanRule implements Cloneable {
 	 */
 	public void setInitMethodName(String initMethodName) {
 		this.initMethodName = initMethodName;
+	}
+	
+	public Boolean getInitMethodNeedTranslet() {
+		return initMethodNeedTranslet;
+	}
+
+	public void setInitMethodNeedTranslet(Boolean initMethodNeedTranslet) {
+		this.initMethodNeedTranslet = initMethodNeedTranslet;
 	}
 
 	/**
@@ -500,23 +511,26 @@ public class BeanRule implements Cloneable {
 		String initMethodName = beanRule.getInitMethodName();
 		String destroyMethodName = beanRule.getDestroyMethodName();
 		
-		if(initMethodName == null && beanClass.isAssignableFrom(InitializableBean.class)) {
-			initMethodName = InitializableBean.INITIALIZE_METHOD_NAME;
-			beanRule.setInitMethodName(initMethodName);
-		}
-
-		if(initMethodName != null) {
+		if(initMethodName == null) {
+			if(beanClass.isAssignableFrom(InitializableTransletBean.class)) {
+				initMethodName = InitializableBean.INITIALIZE_METHOD_NAME;
+				beanRule.setInitMethodName(initMethodName);
+				beanRule.setInitMethodNeedTranslet(Boolean.TRUE);
+			} else if(beanClass.isAssignableFrom(InitializableBean.class)) {
+				initMethodName = InitializableBean.INITIALIZE_METHOD_NAME;
+				beanRule.setInitMethodName(initMethodName);
+			}
+		} else {
 			if(MethodUtils.getAccessibleMethod(beanClass, initMethodName, null) == null) {
 				throw new IllegalArgumentException("No such initialization method '" + initMethodName + "() on bean class: " + beanClass);
 			}
 		}
 		
-		if(destroyMethodName == null && beanClass.isAssignableFrom(DisposableBean.class)) {
-			destroyMethodName = DisposableBean.DESTROY_METHOD_NAME;
-			beanRule.setDestroyMethodName(destroyMethodName);
-		}
-
-		if(destroyMethodName != null) {
+		if(destroyMethodName == null) {
+			if(beanClass.isAssignableFrom(DisposableBean.class)) {
+				beanRule.setDestroyMethodName(DisposableBean.DESTROY_METHOD_NAME);
+			}
+		} else {
 			if(MethodUtils.getAccessibleMethod(beanClass, destroyMethodName, null) == null) {
 				throw new IllegalArgumentException("No such destroy method '" + destroyMethodName + "() on bean class: " + beanClass);
 			}
