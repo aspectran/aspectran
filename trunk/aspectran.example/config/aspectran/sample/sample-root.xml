@@ -279,7 +279,7 @@
 	</bean>
 
 
-	<bean id="sqlMapClient" class="com.aspectran.support.orm.ibatis.SqlMapClientFactory">
+	<bean id="sqlMapClient" class="com.aspectran.support.orm.ibatis.SqlMapClientFactory" initMethod="buildSqlMapClient">
 		<property>
 			<item name="configLocation" value="classpath:/WEB-INF/sqlmap/sql-map-config.xml"/>
 			<item name="mappingLocations" value="classpath:/WEB-INF/sqlmap/mappings/**/*.xml"/>
