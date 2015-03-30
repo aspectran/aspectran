@@ -4,10 +4,11 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import com.aspectran.core.activity.Translet;
+import com.aspectran.example.common.MyTranslet;
 
 public class HelloAction {
 
-	public String countTo10(Translet translet) {
+	public String countTo10(MyTranslet translet) {
 		StringBuilder sb = new StringBuilder();
 		
 		for(int i = 1; i <= 10; i++) {
@@ -40,7 +41,7 @@ public class HelloAction {
 		return result;
 	}
 	
-	public Object errorCaused(Translet translet) {
+	public Object errorCaused(MyTranslet translet) {
 		int i = 1 / 0;
 		
 		return i;

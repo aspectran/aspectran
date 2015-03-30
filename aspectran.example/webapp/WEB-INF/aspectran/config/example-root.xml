@@ -6,6 +6,8 @@
 
 	<settings>
 		<setting name="transletNamePattern" value="/example/*"/>
+		<setting name="transletInterfaceClass" value="com.aspectran.example.common.MyTranslet"/>
+		<setting name="transletImplementClass" value="com.aspectran.example.common.MyTransletImpl"/>
 		<setting name="activityDefaultHandler" value="webActivityDefaultHandler"/>
 		<setting name="nullableContentId" value="true"/>
 		<setting name="nullableActionId" value="true"/>
