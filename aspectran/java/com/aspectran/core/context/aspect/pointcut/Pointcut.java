@@ -20,5 +20,5 @@ public interface Pointcut {
 	
 	public boolean exists(String transletName, String beanId, String beanMethodName);
 	
-	public void clearCache();
+	public void clear();
 }

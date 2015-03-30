@@ -1,11 +1,13 @@
 package com.aspectran.core.util.wildcard;
 
+import com.aspectran.core.util.StringUtils;
+
 
 public class WildcardMatcher {
 
 	private WildcardPattern pattern;
 	
-	private char[] charArray;
+	private CharSequence input;
 	
 	private int[] separatorFlags;
 	
@@ -17,20 +19,20 @@ public class WildcardMatcher {
 		this.pattern = pattern;
 	}
 	
-	public boolean matches(String str) {
+	public boolean matches(CharSequence input) {
 		separatorCount = 0;
 		separatorIndex = 0;
 
-		if(str == null) {
-			charArray = null;
+		if(input == null) {
+			this.input = null;
 			separatorFlags = null;
 			return false;
 		}
 		
-		charArray = str.toCharArray();
-		separatorFlags = new int[charArray.length];
+		this.input = input;
+		separatorFlags = new int[input.length()];
 		
-		boolean result = matches(pattern, charArray, separatorFlags);
+		boolean result = matches(pattern, input, separatorFlags);
 		
 		if(result) {
 			for(int i = separatorFlags.length - 1; i >= 0; i--) {
@@ -90,45 +92,54 @@ public class WildcardMatcher {
 	public String find(int group) {
 		//System.out.println("group: " + group);
 		
-		if(separatorCount == 0)
-			return String.copyValueOf(charArray);
+		if(separatorCount == 0) {
+			if(input == null)
+				return null;
+			
+			return input.toString();
+		}
 		
 		if(group < 0 || group > separatorCount)
 			throw new IndexOutOfBoundsException();
 		
-		int offset = 0;
-		int count = -1;
+		int start = 0;
+		int offset = -1;
 		
 		if(group == 0) {
 			for(int i = 0; i < separatorFlags.length; i++) {
 				if(separatorFlags[i] == 1) {
-					count = i;
+					offset = i;
 					break;
 				}
 			}
 
-			if(count == -1)
-				count = separatorFlags.length;
+			if(offset == -1)
+				offset = separatorFlags.length;
 		} else {
 			for(int i = 0; i < separatorFlags.length; i++) {
 				if(separatorFlags[i] == group) {
-					offset = i + 1;
-				} else if(offset > 0 && separatorFlags[i] == group + 1) {
-					count = i - offset;
+					start = i + 1;
+				} else if(start > 0 && separatorFlags[i] == group + 1) {
+					offset = i;
 					break;
 				}
 			}
 			
-			if(offset > 0 && count == -1)
-				count = separatorFlags.length - offset;
+			//System.out.println("#1 start: " + start + ", offset: " + offset);
+			
+			if(start > 0 && offset == -1) {
+				offset = separatorFlags.length;
+				//System.out.println("#2 start: " + start + ", offset: " + offset);
+			}
+
 		}
 		
-		if(count == -1)
+		if(offset == -1)
 			return null;
-		else if(count == 0)
-			return "";
+		else if(offset == 0)
+			return StringUtils.EMPTY;
 		else
-			return String.copyValueOf(charArray, offset, count);
+			return input.subSequence(start, offset).toString();
 	}
 	
 	public int getSeparatorCount() {
@@ -139,43 +150,39 @@ public class WildcardMatcher {
 		return pattern;
 	}
 	
-	public static boolean matches(WildcardPattern pattern, String str) {
-		return matches(pattern, str.toCharArray(), null);
-	}
-	
-	public static boolean matches(WildcardPattern pattern, char[] ca) {
-		return matches(pattern, ca, null);
+	public static boolean matches(WildcardPattern pattern, CharSequence input) {
+		return matches(pattern, input, null);
 	}
 	
 	/**
 	 * @param pattern
-	 * @param ca
+	 * @param input
 	 * @param separatorFlags
 	 * @return
 	 */
-	private static boolean matches(WildcardPattern pattern, char[] ca, int[] separatorFlags) {
+	private static boolean matches(WildcardPattern pattern, CharSequence input, int[] separatorFlags) {
 		char[] tokens = pattern.getTokens();
 		int[] types = pattern.getTypes();
-		char[] separators = pattern.getSeparators();
+		char[] separators = pattern.getSeparator();
 		
 		int tokensLength = tokens.length;
-		int caLength = ca.length;
+		int inputLength = input.length();
 
 		int sepaLength = separators == null ? -1 : separators.length;
 		int sepaCount = 0;
 
 		int tokenIndex = 0;
-		int caIndex = 0;
+		int inputIndex = 0;
 		
 		//System.out.println("tokens length: " + tokensLength);
-		//System.out.println("ca length: " + caLength);
+		//System.out.println("input length: " + caLength);
 		
-		while(tokenIndex < tokensLength && caIndex < caLength) {
+		while(tokenIndex < tokensLength && inputIndex < inputLength) {
 			//System.out.println("token index=" + tokenIndex + ", token=" + tokens[tokenIndex] + ", type=" + types[tokenIndex]);
-			//System.out.println("  ca index=" + caIndex + ", char=" + ca[caIndex]);
+			//System.out.println("  input index=" + caIndex + ", char=" + input.charAt(caIndex));
 			
 			if(types[tokenIndex] == WildcardPattern.LITERAL_TYPE) {
-				if(tokens[tokenIndex++] != ca[caIndex++])
+				if(tokens[tokenIndex++] != input.charAt(inputIndex++))
 					return false;
 			} else if(types[tokenIndex] == WildcardPattern.STAR_TYPE) {
 				int t1 = tokenIndex + 1;
@@ -188,16 +195,16 @@ public class WildcardMatcher {
 				//System.out.println("*t1=" + t1 + ", t2=" + t2);
 				
 				if(t1 == t2) {
-					caIndex++;
+					inputIndex++;
 					tokenIndex++;
 				} else {
 					int t = t1;
 					do {
-						if(tokens[t] != ca[caIndex++])
+						if(tokens[t] != input.charAt(inputIndex++))
 							t = t1;
 						else
 							t++;
-					} while(t < t2 && caIndex < caLength);
+					} while(t < t2 && inputIndex < inputLength);
 					//System.out.println("*t=" + t + ", t2=" + t2 + ", caIndex=" + caIndex);
 					if(t < t2)
 						return false;
@@ -206,8 +213,8 @@ public class WildcardMatcher {
 					if(eot || t2 == tokensLength - 1) {
 						int c = caLength - 1;
 						while(t2 > t1 && c >= caIndex) {
-							//System.out.println(tokens[end - 1] + " : " + ca[c]);
-							if(tokens[--t2] != ca[c--])
+							//System.out.println(tokens[end - 1] + " : " + input.charAt(c));
+							if(tokens[--t2] != input.charAt(c--])
 								return false;
 						}
 						if(t2 != t1)
@@ -217,7 +224,7 @@ public class WildcardMatcher {
 					} else {
 						int t = t1;
 						for(; t < t2 && caIndex < caLength; caIndex++) {
-							if(tokens[t] != ca[caIndex])
+							if(tokens[t] != input.charAt(caIndex))
 								t = t1;
 							else
 								t++;
@@ -255,10 +262,10 @@ public class WildcardMatcher {
 							t1 -= sepaLength;
 							//System.out.println("!#t1: " + t1 + ", type: " + types[t1] + ", token: " + tokens[t1]);
 						}
-						int c1 = caIndex;
+						int c1 = inputIndex;
 						int t = t1;
-						while(t <= t2 && c1 < caLength) {
-							if(ca[c1] != tokens[t]) {
+						while(t <= t2 && c1 < inputLength) {
+							if(input.charAt(c1) != tokens[t]) {
 								t = t1;
 							} else {
 								t++;
@@ -267,31 +274,31 @@ public class WildcardMatcher {
 						}
 						if(t <= t2) {
 							//System.out.println("!return#c1: " + c1 + ", caLength: " + caLength);
-							//System.out.println("!return#c1: " + c1 + ", ca: " + (c1 >= caLength ? "" : ca[c1]));
+							//System.out.println("!return#c1: " + c1 + ", ca: " + (c1 >= caLength ? "" : input.charAt(c1)));
 							//System.out.println("!return#t2: " + t2 + ", type: " + types[t2] + ", token: " + tokens[t2]);
 							return false;
 						}
 						c1--;
-						//System.out.println("#c1: " + c1 + ", ca: " + ca[c1]);
+						//System.out.println("#c1: " + c1 + ", ca: " + input.charAt(c1));
 						//System.out.println("#t2: " + t2 + ", type: " + types[t2] + ", token: " + tokens[t2]);
-						int caIndex2 = caIndex;
+						int caIndex2 = inputIndex;
 						if(types[t1] == WildcardPattern.SEPARATOR_TYPE) {
-							caIndex = c1 + 1;
+							inputIndex = c1 + 1;
 							tokenIndex = t2 + 1;
-							//System.out.println("##c1: " + c1 + ", ca: " + ca[c1]);
+							//System.out.println("##c1: " + c1 + ", ca: " + input.charAt(c1));
 							//System.out.println("##tokenIndex: " + tokenIndex + ", type: " + types[tokenIndex] + ", token: " + tokens[tokenIndex]);
 						} else {
 							if(sepaLength == 1) {
 								if(types[t2] == WildcardPattern.SEPARATOR_TYPE)
 									c1--;
-								for(; c1 >= caIndex; c1--) {
-									if(ca[c1] == separators[0]) {
-										caIndex = c1;
+								for(; c1 >= inputIndex; c1--) {
+									if(input.charAt(c1) == separators[0]) {
+										inputIndex = c1;
 										break;
 									}
 								}
 								//if(c1 < caIndex) {
-									//System.out.println("###caIndex: " + caIndex + ", caIndex: " + ca[caIndex]);
+									//System.out.println("###caIndex: " + caIndex + ", caIndex: " + input.charAt(caIndex));
 									//System.out.println("###tokenIndex: " + tokenIndex + ", type: " + types[tokenIndex] + ", token: " + tokens[tokenIndex]);
 								//}
 							} else {
@@ -301,38 +308,38 @@ public class WildcardMatcher {
 									c1--;
 								}
 								int s = sepaLength - 1;
-								while(s >= 0 && c1 < caLength) {
-									if(ca[c1] == separators[s])
+								while(s >= 0 && c1 < inputLength) {
+									if(input.charAt(c1) == separators[s])
 										s--;
 									else
 										s = sepaLength - 1;
 									c1--;
 								}
 								if(s == -1) {
-									caIndex = c1 + 1;
+									inputIndex = c1 + 1;
 								}
 								//System.out.println("####t1: " + t1 + ", t2: " + t2 + ", c1: " + c1);
 							}
 							tokenIndex++;
-							if(caIndex == caIndex2 && types[tokenIndex] == WildcardPattern.SEPARATOR_TYPE)
+							if(inputIndex == caIndex2 && types[tokenIndex] == WildcardPattern.SEPARATOR_TYPE)
 								tokenIndex++;
 							//System.out.println("######caIndex: " + caIndex + ", caIndex2: " + caIndex2 + ", tokenIndex: " + tokenIndex);
 						}
-						//System.out.println("pass#caIndex: " + caIndex + ", caIndex: " + ca[caIndex]);
+						//System.out.println("pass#caIndex: " + caIndex + ", caIndex: " + input.charAt(caIndex));
 						//System.out.println("pass#tokenIndex: " + tokenIndex + ", type: " + types[tokenIndex] + ", token: " + tokens[tokenIndex]);
 
-						if(separatorFlags != null && caIndex2 < caIndex) {
+						if(separatorFlags != null && caIndex2 < inputIndex) {
 							if(sepaLength == 1) {
-								for(int k = caIndex - 1; k >= caIndex2; k--) {
-									if(ca[k] == separators[0])
+								for(int k = inputIndex - 1; k >= caIndex2; k--) {
+									if(input.charAt(k) == separators[0])
 										separatorFlags[k] = ++sepaCount;
 								}
 							} else {
-								int k = caIndex - 1;
+								int k = inputIndex - 1;
 								while(k >= caIndex2) {
 									int s = sepaLength - 1;
 									while(s >= 0) {
-										if(ca[k] == separators[s])
+										if(input.charAt(k) == separators[s])
 											s--;
 										else
 											s = sepaLength - 1;
@@ -351,7 +358,7 @@ public class WildcardMatcher {
 						tokenIndex++;
 					}
 				} else {
-					caIndex = caLength; //complete
+					inputIndex = inputLength; //complete
 					tokenIndex++;
 				}
 				/*
@@ -359,14 +366,14 @@ public class WildcardMatcher {
 					int c = caLength - 1;
 					if(sepaLength == 1) {
 						while(c > caIndex) {
-							if(ca[c] == separators[0])
+							if(input.charAt(c) == separators[0])
 								break;
 							c--;
 						}
 						if(c > caIndex) {
 							if(separatorFlags != null) {
 								for(int k = c - 1; k > caIndex; k--) {
-									if(ca[k] == separators[0])
+									if(input.charAt(k) == separators[0])
 										separatorFlags[k] = ++sepaCount;
 								}
 							}
@@ -376,7 +383,7 @@ public class WildcardMatcher {
 						while(c > caIndex) {
 							int s = sepaLength - 1;
 							while(s >= 0) {
-								if(ca[c] == separators[s])
+								if(input.charAt(c) == separators[s])
 									s--;
 								else
 									s = sepaLength - 1;
@@ -394,7 +401,7 @@ public class WildcardMatcher {
 								while(k > caIndex) {
 									int s = sepaLength - 1;
 									while(s >= 0) {
-										if(ca[k] == separators[s])
+										if(input.charAt(k) == separators[s])
 											s--;
 										else
 											s = sepaLength - 1;
@@ -419,37 +426,37 @@ public class WildcardMatcher {
 			} else if(types[tokenIndex] == WildcardPattern.QUESTION_TYPE) {
 				if(tokenIndex > tokensLength - 1 ||
 						types[tokenIndex + 1] != WildcardPattern.LITERAL_TYPE ||
-						tokens[tokenIndex + 1] != ca[caIndex]) {
+						tokens[tokenIndex + 1] != input.charAt(inputIndex)) {
 					if(sepaLength > 0) {
 						if(sepaLength == 1) {
-							if(ca[caIndex] != separators[0])
-								caIndex++;
+							if(input.charAt(inputIndex) != separators[0])
+								inputIndex++;
 						} else {
 							int s = sepaLength - 1;
-							if(caIndex + s < caLength) {
+							if(inputIndex + s < inputLength) {
 								for(; s >= 0; s--) {
-									if(ca[caIndex + s] != separators[s])
+									if(input.charAt(inputIndex + s) != separators[s])
 										break;
 								}
 							}
 							if(s != -1)
-								caIndex++;
+								inputIndex++;
 						}
 					} else {
-						caIndex++;
+						inputIndex++;
 					}
 				}
 				tokenIndex++;
 			} else if(types[tokenIndex] == WildcardPattern.PLUS_TYPE) {
 				if(sepaLength > 0) {
 					if(sepaLength == 1) {
-						if(ca[caIndex] == separators[0])
+						if(input.charAt(inputIndex) == separators[0])
 							return false;
 					} else {
-						if(caIndex + sepaLength - 1 < caLength) {
+						if(inputIndex + sepaLength - 1 < inputLength) {
 							int s = sepaLength - 1;
 							for(; s >= 0; s--) {
-								if(ca[caIndex + s] != separators[s])
+								if(input.charAt(inputIndex + s) != separators[s])
 									break;
 							}
 							if(s == -1)
@@ -457,25 +464,25 @@ public class WildcardMatcher {
 						}
 					}
 				}
-				caIndex++;
+				inputIndex++;
 				tokenIndex++;
 			} else if(types[tokenIndex] == WildcardPattern.SEPARATOR_TYPE) {
 				if(sepaLength == 1) {
-					if(tokens[tokenIndex++] != ca[caIndex++])
+					if(tokens[tokenIndex++] != input.charAt(inputIndex++))
 						return false;
 					if(separatorFlags != null)
-						separatorFlags[caIndex - 1] = ++sepaCount;
+						separatorFlags[inputIndex - 1] = ++sepaCount;
 				} else {
-					if(caIndex + sepaLength > caLength)
+					if(inputIndex + sepaLength > inputLength)
 						return false;
 					for(int s = 0; s < sepaLength; s++) {
-						if(tokens[tokenIndex++] != ca[caIndex++])
+						if(tokens[tokenIndex++] != input.charAt(inputIndex++))
 							return false;
 					}
 					if(separatorFlags != null) {
 						++sepaCount;
 						for(int s = sepaLength - 1; s >= 0; s--) {
-							separatorFlags[caIndex - s - 1] = sepaCount;
+							separatorFlags[inputIndex - s - 1] = sepaCount;
 						}
 					}
 				}
