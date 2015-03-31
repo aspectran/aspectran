@@ -96,9 +96,26 @@
 	</aspect>
 
 	<translet name="hello">
+		<action id="countTo10" bean="example.hello.HelloAction" method="countTo10Array">
+			<argument>
+				<item type="array" valueType="int">
+					<value>1</value>
+					<value>2</value>
+					<value>3</value>
+					<value>4</value>
+					<value>5</value>
+					<value>6</value>
+					<value>7</value>
+					<value>8</value>
+					<value>9</value>
+					<value>10</value>
+				</item>
+			</argument>
+		</action>
 		<transform type="transform/text">
 			<template>
 				hello~ ${name}
+				@{countTo10}
 			</template>
 		</transform>
 	</translet>
