@@ -643,7 +643,7 @@ public class RootAponAssembler {
 			if(value != null) {
 				itemParameters.putValue(ItemParameters.value, value);
 			}
-		} else if(itemRule.getType() == ItemType.LIST || itemRule.getType() == ItemType.SET) {
+		} else if(itemRule.getType() == ItemType.ARRAY || itemRule.getType() == ItemType.LIST || itemRule.getType() == ItemType.SET) {
 			List<String> valueList = itemRule.getValueList();
 			if(valueList != null) {
 				for(String value : valueList) {

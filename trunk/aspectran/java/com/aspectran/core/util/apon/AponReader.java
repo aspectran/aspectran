@@ -144,8 +144,9 @@ public class AponReader extends AponFormat implements Closeable {
 				if(parameterValueType == ParameterValueType.TEXT && ROUND_BRACKET_OPEN != cchar)
 					throw new IncompatibleParameterValueTypeException(lineNumber, line, trim, parameterValue, parameterValueType);
 			}
-				
-			if(parameterValue == null || (parameterValue != null && parameterValue.isArray())) {
+			//System.out.println("parameterValue: " + parameterValue);
+			//System.out.println("parameterValueType: " + parameterValueType);
+			if(parameterValueType == null || (parameterValue != null && parameterValue.isArray())) {
 				if(SQUARE_BRACKET_OPEN == cchar) {
 					//System.out.println("1**************[ name: " + name);
 					//System.out.println("1**************[ parameterValue: " + parameterValue);

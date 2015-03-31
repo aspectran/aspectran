@@ -43,8 +43,8 @@ import com.aspectran.core.util.apon.Parameters;
  */
 public class ItemRule {
 
-	/**  suffix for list-type item: "[]". */
-	public static final String LIST_SUFFIX = "[]";
+	/**  suffix for array-type item: "[]". */
+	public static final String ARRAY_SUFFIX = "[]";
 	
 	/**  suffix for map-type item: "{}". */
 	public static final String MAP_SUFFIX = "{}";
@@ -284,6 +284,7 @@ public class ItemRule {
 		
 		sb.append("{type=").append(type.toString());
 		sb.append(", name=").append(name);
+		sb.append(", valueType=").append(valueType);
 		sb.append(", value=");
 		
 		if(type == ItemType.SINGLE) {
@@ -292,7 +293,7 @@ public class ItemRule {
 					sb.append(t.toString());
 				}
 			}
-		} else if(type == ItemType.LIST || type == ItemType.SET) {
+		} else if(type == ItemType.ARRAY || type == ItemType.LIST || type == ItemType.SET) {
 			if(tokensList != null) {
 				sb.append('[');
 
@@ -345,9 +346,9 @@ public class ItemRule {
 	 * @param name the name to set
 	 */
 	public void setName(String name) {
-		if(name.endsWith(LIST_SUFFIX)) {
+		if(name.endsWith(ARRAY_SUFFIX)) {
 			this.name = name.substring(0, name.length() - 2);
-			type = ItemType.LIST;
+			type = ItemType.ARRAY;
 		} else if(name.endsWith(MAP_SUFFIX)) {
 			this.name = name.substring(0, name.length() - 2);
 			type = ItemType.MAP;
@@ -373,7 +374,7 @@ public class ItemRule {
 			tokens = new Token[1];
 			tokens[0] = new Token(TokenType.TEXT, value);
 		}
-		
+
 		setValue(tokens);
 	}
 
@@ -383,8 +384,8 @@ public class ItemRule {
 	 * @param tokens the new value
 	 */
 	public void setValue(Token[] tokens) {
-			checkValueType(ItemType.SINGLE, null);
-			this.tokens = tokens;
+		checkValueType(ItemType.SINGLE, null, null);
+		this.tokens = tokens;
 	}
 	
 	/**
@@ -393,7 +394,7 @@ public class ItemRule {
 	 * @param tokensList the new value
 	 */
 	public void setValue(List<Token[]> tokensList) {
-		checkValueType(ItemType.LIST, null);
+		checkValueType(ItemType.ARRAY, ItemType.LIST, ItemType.SET);
 		this.tokensList = tokensList;
 	}
 	
@@ -403,7 +404,7 @@ public class ItemRule {
 	 * @param tokensMap the tokens map
 	 */
 	public void setValue(Map<String, Token[]> tokensMap) {
-		checkValueType(ItemType.MAP, ItemType.PROPERTIES);
+		checkValueType(ItemType.MAP, ItemType.PROPERTIES, null);
 		this.tokensMap = tokensMap;
 	}
 
@@ -431,14 +432,12 @@ public class ItemRule {
 	 *
 	 * @param compareItemType the compare item type
 	 */
-	private void checkValueType(ItemType compareItemType, ItemType compareItemType2) {
+	private void checkValueType(ItemType compareItemType, ItemType compareItemType2, ItemType compareItemType3) {
 		if(type == null)
-			throw new UnsupportedOperationException("No item-type specified. Set the item-type first.");
+			throw new UnsupportedOperationException("No item-type specified. First, specify the type of item.");
 		
-		if(compareItemType != null && compareItemType2 != null) {
-			if(type != compareItemType && type != compareItemType2)
-				throw new UnsupportedOperationException("The item-type of violation has occurred. current item-type: " + type.toString());
-		}	
+		if(type != compareItemType && type != compareItemType2 && type != compareItemType3)
+			throw new UnsupportedOperationException("The item-type of violation has occurred. current item-type: " + type.toString());
 	}
 	
 	/**
@@ -475,8 +474,9 @@ public class ItemRule {
 		} else {
 			itemRule.setUnknownName(true);
 		}
-		
-		itemRule.setValue(value);
+
+		if(value != null)
+			itemRule.setValue(value);
 		
 		ItemValueType itemValueType = ItemValueType.valueOf(valueType);
 		
@@ -570,7 +570,7 @@ public class ItemRule {
 	public static Iterator<Token[]> tokenIterator(ItemRule itemRule) {
 		Iterator<Token[]> iter = null;
 		
-		if(itemRule.getType() == ItemType.LIST || itemRule.getType() == ItemType.SET) {
+		if(itemRule.getType() == ItemType.ARRAY || itemRule.getType() == ItemType.LIST || itemRule.getType() == ItemType.SET) {
 			List<Token[]> list = itemRule.getTokensList();
 			iter = list.iterator();
 		} else if(itemRule.getType() == ItemType.MAP || itemRule.getType() == ItemType.PROPERTIES) {
@@ -600,7 +600,7 @@ public class ItemRule {
 		} else {
 			Token[] tokens = null;
 			
-			if(itemRule.getType() == ItemType.LIST || itemRule.getType() == ItemType.SET) {
+			if(itemRule.getType() == ItemType.ARRAY || itemRule.getType() == ItemType.LIST || itemRule.getType() == ItemType.SET) {
 				tokens = itemRule.makeTokens(valueText);
 			} else if(itemRule.getType() == ItemType.MAP || itemRule.getType() == ItemType.PROPERTIES) {
 				if(!StringUtils.isEmpty(valueText)) {
@@ -618,7 +618,7 @@ public class ItemRule {
 	 * @param itemRule the item rule
 	 */
 	public static void beginValueCollection(ItemRule itemRule) {
-		if(itemRule.getType() == ItemType.LIST || itemRule.getType() == ItemType.SET) {
+		if(itemRule.getType() == ItemType.ARRAY || itemRule.getType() == ItemType.LIST || itemRule.getType() == ItemType.SET) {
 			List<Token[]> tokensList = new ArrayList<Token[]>();
 			itemRule.setValue(tokensList);
 		} else if(itemRule.getType() == ItemType.MAP || itemRule.getType() == ItemType.PROPERTIES) {
@@ -635,7 +635,7 @@ public class ItemRule {
 	 * @param tokens the tokens
 	 */
 	public static void flushValueCollection(ItemRule itemRule, String name, Token[] tokens) {
-		if(itemRule.getType() == ItemType.LIST || itemRule.getType() == ItemType.SET) {
+		if(itemRule.getType() == ItemType.ARRAY || itemRule.getType() == ItemType.LIST || itemRule.getType() == ItemType.SET) {
 			List<Token[]> list = itemRule.getTokensList();
 			list.add(tokens);
 		} else if(itemRule.getType() == ItemType.MAP || itemRule.getType() == ItemType.PROPERTIES) {
@@ -724,7 +724,7 @@ public class ItemRule {
 			if(itemRule.getType() == ItemType.SINGLE) {
 				String value = itemParameters.getString(ItemParameters.value);
 				parseValue(itemRule, null, value);
-			} else if(itemRule.getType() == ItemType.LIST || itemRule.getType() == ItemType.SET) {
+			} else if(itemRule.getType() == ItemType.ARRAY || itemRule.getType() == ItemType.LIST || itemRule.getType() == ItemType.SET) {
 				List<String> stringList = itemParameters.getStringList(ItemParameters.value);
 				
 				if(stringList != null) {

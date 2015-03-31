@@ -28,6 +28,9 @@ public final class ItemType extends Type {
 	/** The "single" item type. */
 	public static final ItemType SINGLE;
 
+	/** The "array" item type. */
+	public static final ItemType ARRAY;
+	
 	/** The "list" item type. */
 	public static final ItemType LIST;
 	
@@ -44,6 +47,7 @@ public final class ItemType extends Type {
 	
 	static {
 		SINGLE = new ItemType("single");
+		ARRAY = new ItemType("array");
 		LIST = new ItemType("list");
 		MAP = new ItemType("map");
 		SET = new ItemType("set");
@@ -51,6 +55,7 @@ public final class ItemType extends Type {
 
 		types = new HashMap<String, ItemType>();
 		types.put(SINGLE.toString(), SINGLE);
+		types.put(ARRAY.toString(), ARRAY);
 		types.put(LIST.toString(), LIST);
 		types.put(MAP.toString(), MAP);
 		types.put(SET.toString(), SET);

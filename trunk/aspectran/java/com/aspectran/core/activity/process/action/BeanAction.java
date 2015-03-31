@@ -15,6 +15,7 @@
  */
 package com.aspectran.core.activity.process.action;
 
+import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -25,6 +26,7 @@ import org.slf4j.LoggerFactory;
 
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.process.ActionList;
+import com.aspectran.core.activity.request.parameter.FileParameter;
 import com.aspectran.core.activity.variable.ValueObjectMap;
 import com.aspectran.core.activity.variable.token.ItemTokenExpression;
 import com.aspectran.core.activity.variable.token.ItemTokenExpressor;
@@ -34,8 +36,11 @@ import com.aspectran.core.context.rule.BeanActionRule;
 import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.type.ActionType;
+import com.aspectran.core.context.rule.type.ItemType;
+import com.aspectran.core.context.rule.type.ItemValueType;
 import com.aspectran.core.util.BeanUtils;
 import com.aspectran.core.util.MethodUtils;
+import com.aspectran.core.util.apon.Parameters;
 
 /**
  * <p>Created: 2008. 03. 22 오후 5:50:35</p>
@@ -162,8 +167,9 @@ public class BeanAction extends AbstractAction implements Executable {
 			while(iter.hasNext()) {
 				ItemRule ir = iter.next();
 				Object o = valueMap.get(ir.getName());
-				
-				argsTypes[argIndex] = o.getClass();
+
+				argsTypes[argIndex] = getArgsType(ir, o);
+				System.out.println(argsTypes[argIndex]);
 				argsObjects[argIndex] = o;
 				
 				argIndex++;
@@ -178,6 +184,36 @@ public class BeanAction extends AbstractAction implements Executable {
 		Object result = MethodUtils.invokeMethod(bean, methodName, argsObjects, argsTypes);
 		
 		return result;
+	}
+	
+	private static Class<?> getArgsType(ItemRule ir, Object argsObject) {
+		
+		ItemValueType valueType = ir.getValueType();
+		
+		if(ir.getType() == ItemType.ARRAY) {
+			System.out.println(ir);
+			if(valueType == ItemValueType.STRING) {
+				return String[].class;
+			} else if(valueType == ItemValueType.INT) {
+				return Integer[].class;
+			} else if(valueType == ItemValueType.LONG) {
+				return Long[].class;
+			} else if(valueType == ItemValueType.FLOAT) {
+				return Float[].class;
+			} else if(valueType == ItemValueType.DOUBLE) {
+				return Double[].class;
+			} else if(valueType == ItemValueType.BOOLEAN) {
+				return Boolean[].class;
+			} else if(valueType == ItemValueType.PARAMETERS) {
+				return Parameters[].class;
+			} else if(valueType == ItemValueType.FILE) {
+				return File[].class;
+			} else if(valueType == ItemValueType.MULTIPART_FILE) {
+				return FileParameter[].class;
+			}
+		}
+		
+		return argsObject.getClass();
 	}
 	
 	/**

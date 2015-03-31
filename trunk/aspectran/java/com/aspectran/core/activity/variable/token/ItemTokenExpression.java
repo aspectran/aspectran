@@ -33,6 +33,7 @@ import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.type.ItemType;
 import com.aspectran.core.context.rule.type.ItemValueType;
 import com.aspectran.core.util.apon.GenericParameters;
+import com.aspectran.core.util.apon.Parameters;
 
 /**
  * <p>Created: 2008. 06. 19 오후 9:43:28</p>
@@ -78,6 +79,8 @@ public class ItemTokenExpression extends TokenExpression implements ItemTokenExp
 			if(itemType == ItemType.SINGLE) {
 				Token[] tokens = ir.getTokens();
 				value = express(ir.getName(), tokens, valueType);
+			} else if(itemType == ItemType.ARRAY) {
+				value = expressAsArray(ir.getName(), ir.getTokensList(), valueType);
 			} else if(itemType == ItemType.LIST) {
 				value = expressAsList(ir.getName(), ir.getTokensList(), valueType);
 			} else if(itemType == ItemType.SET) {
@@ -102,6 +105,61 @@ public class ItemTokenExpression extends TokenExpression implements ItemTokenExp
 	}
 	
 	/**
+	 * Express as Array.
+	 * 
+	 * @param parameterName the parameter name
+	 * @param tokensList the tokens
+	 * 
+	 * @return the object[]
+	 */
+	private Object expressAsArray(String parameterName, List<Token[]> tokensList, ItemValueType valueType) {
+		List<Object> list = expressAsList(parameterName, tokensList, valueType);
+		
+		if(valueType == ItemValueType.STRING) {
+			return list.toArray(new String[list.size()]);
+		} else if(valueType == ItemValueType.INT) {
+			return list.toArray(new Integer[list.size()]);
+		} else if(valueType == ItemValueType.LONG) {
+			return list.toArray(new Long[list.size()]);
+		} else if(valueType == ItemValueType.FLOAT) {
+			return list.toArray(new Float[list.size()]);
+		} else if(valueType == ItemValueType.DOUBLE) {
+			return list.toArray(new Double[list.size()]);
+		} else if(valueType == ItemValueType.BOOLEAN) {
+			return list.toArray(new Boolean[list.size()]);
+		} else if(valueType == ItemValueType.PARAMETERS) {
+			return list.toArray(new Parameters[list.size()]);
+		} else if(valueType == ItemValueType.FILE) {
+			return list.toArray(new File[list.size()]);
+		} else if(valueType == ItemValueType.MULTIPART_FILE) {
+			return list.toArray(new FileParameter[list.size()]);
+		} else {
+			return list.toArray(new Object[list.size()]);
+		}
+		
+//		System.out.println("valueType: " + valueType);
+//
+//		
+//		if(tokensList == null || tokensList.isEmpty())
+//			return getParameterAsArray(parameterName, valueType);
+//		
+//		Object[] array = new Object[tokensList.size()];
+//
+//		int index = 0;
+//		
+//		for(Token[] tokens : tokensList) {
+//			Object value = express(parameterName, tokens);
+//			
+//			if(value != null && valueType != null)
+//				value = valuelize(value, valueType);
+//			
+//			array[index++] = value;
+//		}
+//		
+//		return array;
+	}
+	
+	/**
 	 * Express as List.
 	 * 
 	 * @param parameterName the parameter name
@@ -114,7 +172,7 @@ public class ItemTokenExpression extends TokenExpression implements ItemTokenExp
 			return getParameterAsList(parameterName, valueType);
 		
 		List<Object> valueList = new ArrayList<Object>(tokensList.size());
-
+		
 		for(Token[] tokens : tokensList) {
 			Object value = express(parameterName, tokens);
 			
@@ -225,6 +283,31 @@ public class ItemTokenExpression extends TokenExpression implements ItemTokenExp
 		}
 		
 		return prop;
+	}
+	
+	/**
+	 * Gets the parameter values.
+	 * 
+	 * @param name the name
+	 * 
+	 * @return the parameter values
+	 */
+	private Object[] getParameterAsArray(String name, ItemValueType valueType) {
+		String[] values = getParameterValues(name);
+		
+		if(values == null)
+			return null;
+
+		Object[] array = new Object[values.length];
+		
+		for(int i = 0; i < values.length; i++) {
+			if(values[i] != null && valueType != null)
+				array[i] = valuelize((Object)values[i], valueType);
+			else
+				array[i] = values[i];
+		}
+		
+		return array;
 	}
 	
 	/**
