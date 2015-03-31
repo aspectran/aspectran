@@ -195,7 +195,7 @@ url CDATA #IMPLIED
 <!ATTLIST item
 name CDATA #IMPLIED
 value CDATA #IMPLIED
-type (item | list | map | set | properties) #IMPLIED
+type (item | array | list | map | set | properties) #IMPLIED
 valueType (string | int | long | float | double | boolean | parameters | file | multipart-file) #IMPLIED
 defaultValue CDATA #IMPLIED
 tokenize (true | false) #IMPLIED

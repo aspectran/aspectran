@@ -47,4 +47,8 @@ public class HelloAction {
 		return i;
 	}
 	
+	public Integer[] countTo10Array(Integer[] countTo10) {
+		return countTo10;
+	}
+	
 }
