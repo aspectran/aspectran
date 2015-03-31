@@ -15,11 +15,17 @@ import com.ibatis.sqlmap.client.SqlMapClientBuilder;
  */
 public class SqlMapClientProvider {
 	
+	private String configLocation;
+	
+	private String[] mapperLocations;
+	
 	private SqlMapClient sqlMapClient;
 
 	public SqlMapClientProvider(String resource) {
 		buildSqlMapClient(resource);
 	}
+	
+	
 	
 	protected void buildSqlMapClient(String resource) {
 		try {
