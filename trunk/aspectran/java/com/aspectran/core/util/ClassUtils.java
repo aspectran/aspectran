@@ -26,12 +26,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import net.sf.cglib.core.TypeUtils;
 
 /**
  * Miscellaneous class utility methods. Mainly for internal use within the
@@ -75,33 +76,26 @@ public abstract class ClassUtils {
 	 * Map with primitive wrapper type as key and corresponding primitive
 	 * type as value, for example: Integer.class -> int.class.
 	 */
-	private static final Map<Class<?>, Class<?>> primitiveWrapperTypeMap = new HashMap<Class<?>, Class<?>>(8);
-
-	/**
-	 * Map with primitive type name as key and corresponding primitive
-	 * type as value, for example: "int" -> "int.class".
-	 */
-	private static final Map<String, Class<?>> primitiveTypeNameMap = new HashMap<String, Class<?>>(16);
+	private static final Map<Class<?>, Class<?>> primitiveWrapperTypeMap = new HashMap<Class<?>, Class<?>>(17);
 
 	static {
 		primitiveWrapperTypeMap.put(Boolean.class, boolean.class);
 		primitiveWrapperTypeMap.put(Byte.class, byte.class);
 		primitiveWrapperTypeMap.put(Character.class, char.class);
-		primitiveWrapperTypeMap.put(Double.class, double.class);
-		primitiveWrapperTypeMap.put(Float.class, float.class);
+		primitiveWrapperTypeMap.put(Short.class, short.class);
 		primitiveWrapperTypeMap.put(Integer.class, int.class);
 		primitiveWrapperTypeMap.put(Long.class, long.class);
-		primitiveWrapperTypeMap.put(Short.class, short.class);
-
-		Set<Class<?>> primitiveTypeNames = new HashSet<Class<?>>(16);
-		primitiveTypeNames.addAll(primitiveWrapperTypeMap.values());
-		primitiveTypeNames.addAll(Arrays.asList(new Class<?>[] { boolean[].class, byte[].class, char[].class,
-				double[].class, float[].class, int[].class, long[].class, short[].class }));
-		
-		for(Iterator<Class<?>> it = primitiveTypeNames.iterator(); it.hasNext();) {
-			Class<?> primitiveClass = (Class<?>)it.next();
-			primitiveTypeNameMap.put(primitiveClass.getName(), primitiveClass);
-		}
+		primitiveWrapperTypeMap.put(Float.class, float.class);
+		primitiveWrapperTypeMap.put(Double.class, double.class);
+		primitiveWrapperTypeMap.put(Boolean[].class, boolean[].class);
+		primitiveWrapperTypeMap.put(Byte[].class, byte[].class);
+		primitiveWrapperTypeMap.put(Character[].class, char[].class);
+		primitiveWrapperTypeMap.put(Short[].class, short[].class);
+		primitiveWrapperTypeMap.put(Integer[].class, int[].class);
+		primitiveWrapperTypeMap.put(Long[].class, long[].class);
+		primitiveWrapperTypeMap.put(Float[].class, float[].class);
+		primitiveWrapperTypeMap.put(Double[].class, double[].class);
+		primitiveWrapperTypeMap.put(Void.TYPE, void.class);
 	}
 
 	/**
@@ -134,11 +128,6 @@ public abstract class ClassUtils {
 	 * @see Class#forName(String, boolean, ClassLoader)
 	 */
 	public static Class<?> forName(String name, ClassLoader classLoader) throws ClassNotFoundException, LinkageError {
-		Class<?> clazz = getPrimitiveType(name);
-		if(clazz != null) {
-			return clazz;
-		}
-
 		// "java.lang.String[]" style arrays
 		if(name.endsWith(ARRAY_SUFFIX)) {
 			String elementClassName = name.substring(0, name.length() - ARRAY_SUFFIX.length());
@@ -189,27 +178,6 @@ public abstract class ClassUtils {
 			iae.initCause(ex);
 			throw iae;
 		}
-	}
-
-	/**
-	 * Resolve the given class name as primitive class, if appropriate,
-	 * according to the JVM's naming rules for primitive classes.
-	 * <p>Also supports the JVM's internal class names for primitive arrays.
-	 * Does <i>not</i> support the "[]" suffix notation for primitive arrays;
-	 * this is only supported by {@link #forName}.
-	 * @param name the name of the potentially primitive class
-	 * @return the primitive class, or <code>null</code> if the name does not denote
-	 * a primitive class or primitive array class
-	 */
-	public static Class<?> getPrimitiveType(String name) {
-		Class<?> result = null;
-		// Most class names will be quite long, considering that they
-		// SHOULD sit in a package, so a length check is worthwhile.
-		if(name != null && name.length() <= 8) {
-			// Could be a primitive - likely.
-			result = primitiveTypeNameMap.get(name);
-		}
-		return result;
 	}
 	
 	/**
@@ -673,6 +641,55 @@ public abstract class ClassUtils {
 		}
 	}
 
+	/**
+	 * <p>Converts the specified wrapper class to its corresponding primitive
+	 * class.</p>
+	 *
+	 * <p>This method is the counter part of <code>primitiveToWrapper()</code>.
+	 * If the passed in class is a wrapper class for a primitive type, this
+	 * primitive type will be returned (e.g. <code>Integer.TYPE</code> for
+	 * <code>Integer.class</code>). For other classes, or if the parameter is
+	 * <b>null</b>, the return value is <b>null</b>.</p>
+	 *
+	 * @param cls the class to convert, may be <b>null</b>
+	 * @return the corresponding primitive type if <code>cls</code> is a
+	 * wrapper class, <b>null</b> otherwise
+	 * @see #primitiveToWrapper(Class)
+	 * @since 2.4
+	 */
+	public static Class<?> wrapperToPrimitive(Class<?> cls) {
+		return (Class<?>)primitiveWrapperTypeMap.get(cls);
+	}
+	
+	/**
+	 * <p>Converts the specified array of wrapper Class objects to an array of
+	 * its corresponding primitive Class objects.</p>
+	 *
+	 * <p>This method invokes <code>wrapperToPrimitive()</code> for each element
+	 * of the passed in array.</p>
+	 *
+	 * @param classes  the class array to convert, may be null or empty
+	 * @return an array which contains for each given class, the primitive class or
+	 * <b>null</b> if the original class is not a wrapper class. <code>null</code> if null input.
+	 * Empty array if an empty array passed in.
+	 * @see #wrapperToPrimitive(Class)
+	 * @since 2.4
+	 */
+	public static Class<?>[] wrappersToPrimitives(Class<?>[] classes) {
+		if (classes == null) {
+		    return null;
+		}
+		
+		if (classes.length == 0) {
+		    return classes;
+		}
+		
+		Class<?>[] convertedClasses = new Class<?>[classes.length];
+		for(int i = 0; i < classes.length; i++) {
+		    convertedClasses[i] = wrapperToPrimitive(classes[i]);
+		}
+		return convertedClasses;
+	}
 	
 	/**
 	 * Convert a "/"-based resource path to a "."-based fully qualified class name.
