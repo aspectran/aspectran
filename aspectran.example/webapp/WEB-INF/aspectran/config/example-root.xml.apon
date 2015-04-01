@@ -138,7 +138,7 @@ aspectran: {
 		action: {
 			id: "countTo10"
 			beanId: "example.hello.HelloAction"
-			method: "countTo10Array"
+			method: "echoPrimitiveArray"
 			argument: {
 				item: {
 					type: "array"
@@ -165,7 +165,7 @@ aspectran: {
 			template: {
 				content: (
 					|hello~ ${name}
-					|				@{countTo10}
+					|echoPrimitiveArray: @{countTo10}
 				)
 			}
 		}
