@@ -1,4 +1,4 @@
-package com.aspectran.support.orm.ibatis;
+package com.aspectran.support.orm.mybatis;
 
 import java.io.InputStream;
 
@@ -13,7 +13,7 @@ import com.ibatis.sqlmap.client.SqlMapClientBuilder;
  * <p>Created: 2008. 05. 14 오후 7:52:29</p>
  *
  */
-public class SqlMapClientProvider {
+public class SqlSessionFactoryBean {
 	
 	private String configLocation;
 	
@@ -21,7 +21,7 @@ public class SqlMapClientProvider {
 	
 	private SqlMapClient sqlMapClient;
 
-	public SqlMapClientProvider(String resource) {
+	public SqlSessionFactoryBean(String resource) {
 		buildSqlMapClient(resource);
 	}
 	

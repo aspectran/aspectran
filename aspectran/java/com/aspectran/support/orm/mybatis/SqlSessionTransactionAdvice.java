@@ -1,4 +1,4 @@
-package com.aspectran.support.orm.ibatis;
+package com.aspectran.support.orm.mybatis;
 
 import java.sql.SQLException;
 
@@ -9,11 +9,11 @@ import com.ibatis.sqlmap.client.SqlMapClient;
  *
  *
  */
-public class SqlMapClientTransactionAdvice {
+public class SqlSessionTransactionAdvice {
 	
 	private SqlMapClient sqlMapClient;
 	
-	public SqlMapClientTransactionAdvice(SqlMapClientFactoryBean sqlMapConfig) {
+	public SqlSessionTransactionAdvice(SqlSessionFactoryBean sqlMapConfig) {
 		this.sqlMapClient = sqlMapConfig.getSqlMapClient();
 	}
 	
