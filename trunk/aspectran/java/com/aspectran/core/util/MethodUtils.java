@@ -146,24 +146,14 @@ public class MethodUtils {
 		if(parameterTypes == null)
 			parameterTypes = EMPTY_CLASS_PARAMETERS;
 
-		Method method = getMatchingAccessibleMethod(object.getClass(), methodName, parameterTypes);
+		MethodDescriptor md = getMatchingAccessibleMethodDescriptor(object.getClass(), methodName, parameterTypes);
 		
-		if(method == null) {
+		if(md == null) {
 			throw new NoSuchMethodException("No such accessible method: " + methodName + "() on object: "
 					+ object.getClass().getName());
 		}
 		
-		Class<?>[] methodsParams = method.getParameterTypes();
-		
-		for(int n = 0; n < methodsParams.length; n++) {
-			if(ClassUtils.isPrimitiveArray(methodsParams[n])) {
-				if(ClassUtils.isPrimitiveWrapperArray(parameterTypes[n])) {
-					args[n] = toPrimitiveArray(args[n]);
-				}
-			}
-		}
-		
-		return method.invoke(object, args);
+		return invokeMethod(object, md, args, parameterTypes);
 	}
 
 	/**
@@ -187,7 +177,6 @@ public class MethodUtils {
 	 */
 	public static Object invokeExactMethod(Object object, String methodName, Object arg) throws NoSuchMethodException,
 			IllegalAccessException, InvocationTargetException {
-
 		Object[] args = { arg };
 		return invokeExactMethod(object, methodName, args);
 	}
@@ -220,8 +209,8 @@ public class MethodUtils {
 		for(int i = 0; i < arguments; i++) {
 			parameterTypes[i] = args[i].getClass();
 		}
+		
 		return invokeExactMethod(object, methodName, args, parameterTypes);
-
 	}
 
 	/**
@@ -259,8 +248,8 @@ public class MethodUtils {
 			throw new NoSuchMethodException("No such accessible method: " + methodName + "() on object: "
 					+ object.getClass().getName());
 		}
+		
 		return method.invoke(object, args);
-
 	}
 
 	/**
@@ -301,7 +290,6 @@ public class MethodUtils {
 		}
 		
 		return method.invoke(null, args);
-
 	}
 
 	/**
@@ -333,10 +321,8 @@ public class MethodUtils {
 	 */
 	public static Object invokeStaticMethod(Class<?> objectClass, String methodName, Object arg)
 			throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
-
 		Object[] args = { arg };
 		return invokeStaticMethod(objectClass, methodName, args);
-
 	}
 
 	/**
@@ -413,14 +399,14 @@ public class MethodUtils {
 		if(parameterTypes == null)
 			parameterTypes = EMPTY_CLASS_PARAMETERS;
 
-		Method method = getMatchingAccessibleMethod(objectClass, methodName, parameterTypes);
+		MethodDescriptor md = getMatchingAccessibleMethodDescriptor(objectClass, methodName, parameterTypes);
 		
-		if(method == null) {
+		if(md == null) {
 			throw new NoSuchMethodException("No such accessible method: " + methodName + "() on class: "
 					+ objectClass.getName());
 		}
 		
-		return method.invoke(null, args);
+		return invokeMethod(null, md, args, parameterTypes);
 	}
 
 	/**
@@ -481,6 +467,24 @@ public class MethodUtils {
 		
 		return invokeExactStaticMethod(objectClass, methodName, args, parameterTypes);
 	}
+	
+	private static Object invokeMethod(Object object, MethodDescriptor md, Object[] args, Class<?>[] parameterTypes) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+		Method method = md.getMethod();
+		
+		if(md.isPrimitivelyArray()) {
+			Class<?>[] methodsParams = method.getParameterTypes();
+			
+			for(int i = 0; i < methodsParams.length; i++) {
+				if(ClassUtils.isPrimitiveArray(methodsParams[i])) {
+					if(ClassUtils.isPrimitiveWrapperArray(parameterTypes[i])) {
+						args[i] = toPrimitiveArray(args[i]);
+					}
+				}
+			}
+		}
+		
+		return method.invoke(object, args);
+	}
 
 //	/**
 //	 * <p>Return an accessible method (that is, one that can be invoked via
@@ -523,7 +527,7 @@ public class MethodUtils {
 			}
 
 			Method method = getAccessibleMethod(clazz.getMethod(methodName, parameterTypes));
-			cacheMethod(md, method);
+			cacheMethod(md, method, false);
 			
 			return method;
 		} catch(NoSuchMethodException e) {
@@ -722,9 +726,7 @@ public class MethodUtils {
 				// Current Security Manager restricts use of workarounds for reflection bugs in pre-1.4 JVMs.
 			}
 			
-			cacheMethod(md, method);
-			
-			return md;
+			return cacheMethod(md, method, true);
 		} catch(NoSuchMethodException e) { /* SWALLOW */
 			//e.printStackTrace();
 		}
@@ -783,12 +785,10 @@ public class MethodUtils {
 		}
 		
 		if(bestMatch != null) {
-			cacheMethod(md, bestMatch);
+			return cacheMethod(md, bestMatch, true);
 		} else {
-			// didn't find a match
+			return null;
 		}
-
-		return md;
 	}
 	
 	private static Object toPrimitiveArray(Object val) {
@@ -853,13 +853,27 @@ public class MethodUtils {
 	 * @param userFor The class for which to lookup the ClassDescriptor cache.
 	 * @return The ClassDescriptor cache for the class
 	 */
-	private static void cacheMethod(MethodDescriptor md, Method method) {
+	private static MethodDescriptor cacheMethod(MethodDescriptor md, Method method, boolean checkPrimitively) {
 		synchronized(cache) {
 			if(!cache.containsKey(md)) {
 				md.setMethod(method);
+				
+				if(checkPrimitively) {
+					Class<?>[] parameterTypes = method.getParameterTypes();
+					
+					for(int i = 0; i < parameterTypes.length; i++) {
+						if(parameterTypes[i].isArray() && parameterTypes[i].getComponentType().isPrimitive()) {
+							md.setPrimitivelyArray(true);
+							break;
+						}
+					}
+				}
+				
 				cache.put(md, md);
 			}
 		}
+		
+		return md;
 	}
 
 	/**
@@ -877,6 +891,8 @@ public class MethodUtils {
 		private int hashCode;
 		
 		private Method method;
+		
+		private boolean primitivelyArray;
 
 		/**
 		 * The sole constructor.
@@ -939,6 +955,14 @@ public class MethodUtils {
 
 		public void setMethod(Method method) {
 			this.method = method;
+		}
+
+		public boolean isPrimitivelyArray() {
+			return primitivelyArray;
+		}
+
+		public void setPrimitivelyArray(boolean primitivelyArray) {
+			this.primitivelyArray = primitivelyArray;
 		}
 	}
 }
