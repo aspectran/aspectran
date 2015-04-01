@@ -1,5 +1,6 @@
 package com.aspectran.core.util;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -33,7 +34,7 @@ public class MethodUtils {
 	public static final Object[] EMPTY_OBJECT_ARRAY = new Object[0];
 
 	/** Stores a cache of MethodDescriptor -> Method in a HashMap. */
-	private static Map<MethodDescriptor, Method> cache = Collections.synchronizedMap(new HashMap<MethodDescriptor, Method>());
+	private static Map<MethodDescriptor, MethodDescriptor> cache = Collections.synchronizedMap(new HashMap<MethodDescriptor, MethodDescriptor>());
 	
 	/**
 	 * <p>Invoke a named method whose parameter type matches the object type.</p>
@@ -139,12 +140,11 @@ public class MethodUtils {
 	 */
 	public static Object invokeMethod(Object object, String methodName, Object[] args, Class<?>[] parameterTypes)
 			throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
-		if(parameterTypes == null) {
-			parameterTypes = EMPTY_CLASS_PARAMETERS;
-		}
-		if(args == null) {
+		if(args == null)
 			args = EMPTY_OBJECT_ARRAY;
-		}
+
+		if(parameterTypes == null)
+			parameterTypes = EMPTY_CLASS_PARAMETERS;
 
 		Method method = getMatchingAccessibleMethod(object.getClass(), methodName, parameterTypes);
 		
@@ -152,6 +152,17 @@ public class MethodUtils {
 			throw new NoSuchMethodException("No such accessible method: " + methodName + "() on object: "
 					+ object.getClass().getName());
 		}
+		
+		Class<?>[] methodsParams = method.getParameterTypes();
+		
+		for(int n = 0; n < methodsParams.length; n++) {
+			if(ClassUtils.isPrimitiveArray(methodsParams[n])) {
+				if(ClassUtils.isPrimitiveWrapperArray(parameterTypes[n])) {
+					args[n] = toPrimitiveArray(args[n]);
+				}
+			}
+		}
+		
 		return method.invoke(object, args);
 	}
 
@@ -179,7 +190,6 @@ public class MethodUtils {
 
 		Object[] args = { arg };
 		return invokeExactMethod(object, methodName, args);
-
 	}
 
 	/**
@@ -397,12 +407,11 @@ public class MethodUtils {
 	 */
 	public static Object invokeStaticMethod(Class<?> objectClass, String methodName, Object[] args, Class<?>[] parameterTypes)
 			throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
-		if(parameterTypes == null) {
-			parameterTypes = EMPTY_CLASS_PARAMETERS;
-		}
-		if(args == null) {
+		if(args == null)
 			args = EMPTY_OBJECT_ARRAY;
-		}
+
+		if(parameterTypes == null)
+			parameterTypes = EMPTY_CLASS_PARAMETERS;
 
 		Method method = getMatchingAccessibleMethod(objectClass, methodName, parameterTypes);
 		
@@ -505,15 +514,16 @@ public class MethodUtils {
 	public static Method getAccessibleMethod(Class<?> clazz, String methodName, Class<?>[] parameterTypes) {
 		try {
 			MethodDescriptor md = new MethodDescriptor(clazz, methodName, parameterTypes, true);
-			// Check the cache first
-			Method method = cache.get(md);
 			
-			if(method != null) {
-				return method;
+			// Check the cache first
+			MethodDescriptor cached = cache.get(md);
+			
+			if(cached != null) {
+				return cached.getMethod();
 			}
 
-			method = getAccessibleMethod(clazz.getMethod(methodName, parameterTypes));
-			putMethod(md, method);
+			Method method = getAccessibleMethod(clazz.getMethod(methodName, parameterTypes));
+			cacheMethod(md, method);
 			
 			return method;
 		} catch(NoSuchMethodException e) {
@@ -645,6 +655,11 @@ public class MethodUtils {
 		// We did not find anything
 		return (null);
 	}
+	
+	public static Method getMatchingAccessibleMethod(Class<?> clazz, String methodName, Class<?>[] parameterTypes) {
+		MethodDescriptor md = getMatchingAccessibleMethodDescriptor(clazz, methodName, parameterTypes);
+		return md != null ? md.getMethod() : null;  
+	}
 
 	/**
 	 * <p>Find an accessible method that matches the given name and has compatible parameters.
@@ -669,20 +684,20 @@ public class MethodUtils {
 	 * @param parameterTypes find method with compatible parameters
 	 * @return The accessible method
 	 */
-	public static Method getMatchingAccessibleMethod(Class<?> clazz, String methodName, Class<?>[] parameterTypes) {
+	public static MethodDescriptor getMatchingAccessibleMethodDescriptor(Class<?> clazz, String methodName, Class<?>[] parameterTypes) {
 		MethodDescriptor md = new MethodDescriptor(clazz, methodName, parameterTypes, false);
 
 		// see if we can find the method directly
 		// most of the time this works and it's much faster
 		try {
 			// Check the cache first
-			Method method = cache.get(md);
+			MethodDescriptor cached = cache.get(md);
 			
-			if(method != null) {
-				return method;
+			if(cached != null) {
+				return cached;
 			}
 
-			method = clazz.getMethod(methodName, parameterTypes);
+			Method method = clazz.getMethod(methodName, parameterTypes);
 
 			try {
 				//
@@ -707,9 +722,9 @@ public class MethodUtils {
 				// Current Security Manager restricts use of workarounds for reflection bugs in pre-1.4 JVMs.
 			}
 			
-			putMethod(md, method);
+			cacheMethod(md, method);
 			
-			return method;
+			return md;
 		} catch(NoSuchMethodException e) { /* SWALLOW */
 			//e.printStackTrace();
 		}
@@ -731,11 +746,11 @@ public class MethodUtils {
 					boolean match = true;
 					
 					for(int n = 0; n < methodParamSize; n++) {
+						//System.out.println("!match: " + ClassUtils.isAssignable(methodsParams[n], parameterTypes[n]));
+						//System.out.println("methodsParams[n]: " + methodsParams[n].getCanonicalName());
+						//System.out.println("parameterTypes[n]: " + parameterTypes[n]);
 						if(!ClassUtils.isAssignable(methodsParams[n], parameterTypes[n])) {
-							System.out.println("methodsParams[n]: " + methodsParams[n]);
-							System.out.println("parameterTypes[n]: " + parameterTypes[n]);
 							match = false;
-							System.out.println("match: " + match);
 							break;
 						}
 					}
@@ -768,12 +783,68 @@ public class MethodUtils {
 		}
 		
 		if(bestMatch != null) {
-			putMethod(md, bestMatch);
+			cacheMethod(md, bestMatch);
 		} else {
 			// didn't find a match
 		}
 
-		return bestMatch;
+		return md;
+	}
+	
+	private static Object toPrimitiveArray(Object val) {
+		int len = Array.getLength(val);
+		
+		if(val instanceof Boolean[]) {
+			boolean[] arr = new boolean[len];
+			for(int i = 0; i < len; i++) {
+				arr[i] = ((Boolean)Array.get(val, i)).booleanValue();
+			}
+			return arr;
+		} else if(val instanceof Byte[]) {
+			byte[] arr = new byte[len];
+			for(int i = 0; i < len; i++) {
+				arr[i] = ((Byte)Array.get(val, i)).byteValue();
+			}
+			return arr;
+		} else if(val instanceof Character[]) {
+			char[] arr = new char[len];
+			for(int i = 0; i < len; i++) {
+				arr[i] = ((Character)Array.get(val, i)).charValue();
+			}
+			return arr;
+		} else if(val instanceof Short[]) {
+			short[] arr = new short[len];
+			for(int i = 0; i < len; i++) {
+				arr[i] = ((Short)Array.get(val, i)).shortValue();
+			}
+			return arr;
+		} else if(val instanceof Integer[]) {
+			int[] arr = new int[len];
+			for(int i = 0; i < len; i++) {
+				arr[i] = ((Integer)Array.get(val, i)).intValue();
+			}
+			return arr;
+		} else if(val instanceof Long[]) {
+			long[] arr = new long[len];
+			for(int i = 0; i < len; i++) {
+				arr[i] = ((Long)Array.get(val, i)).longValue();
+			}
+			return arr;
+		} else if(val instanceof Float[]) {
+			float[] arr = new float[len];
+			for(int i = 0; i < len; i++) {
+				arr[i] = ((Float)Array.get(val, i)).floatValue();
+			}
+			return arr;
+		} else if(val instanceof Double[]) {
+			double[] arr = new double[len];
+			for(int i = 0; i < len; i++) {
+				arr[i] = ((Double)Array.get(val, i)).doubleValue();
+			}
+			return arr;
+		}
+		
+		return null;
 	}
 	
 	/**
@@ -782,10 +853,11 @@ public class MethodUtils {
 	 * @param userFor The class for which to lookup the ClassDescriptor cache.
 	 * @return The ClassDescriptor cache for the class
 	 */
-	private static void putMethod(MethodDescriptor md, Method method) {
+	private static void cacheMethod(MethodDescriptor md, Method method) {
 		synchronized(cache) {
 			if(!cache.containsKey(md)) {
-				cache.put(md, method);
+				md.setMethod(method);
+				cache.put(md, md);
 			}
 		}
 	}
@@ -803,6 +875,8 @@ public class MethodUtils {
 		private boolean exact;
 
 		private int hashCode;
+		
+		private Method method;
 
 		/**
 		 * The sole constructor.
@@ -857,6 +931,14 @@ public class MethodUtils {
 		@Override
 		public int hashCode() {
 			return hashCode;
+		}
+
+		public Method getMethod() {
+			return method;
+		}
+
+		public void setMethod(Method method) {
+			this.method = method;
 		}
 	}
 }

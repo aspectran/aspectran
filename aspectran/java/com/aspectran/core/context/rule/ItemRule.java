@@ -15,6 +15,7 @@
  */
 package com.aspectran.core.context.rule;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -22,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.aspectran.core.activity.request.parameter.FileParameter;
 import com.aspectran.core.activity.variable.token.Token;
 import com.aspectran.core.activity.variable.token.TokenParser;
 import com.aspectran.core.context.builder.apon.params.ItemHolderParameters;
@@ -438,6 +440,34 @@ public class ItemRule {
 		
 		if(type != compareItemType && type != compareItemType2 && type != compareItemType3)
 			throw new UnsupportedOperationException("The item-type of violation has occurred. current item-type: " + type.toString());
+	}
+	
+	public static Class<?> getValueClass(ItemRule ir, Object value) {
+		ItemValueType valueType = ir.getValueType();
+		
+		if(ir.getType() == ItemType.ARRAY) {
+			if(valueType == ItemValueType.STRING) {
+				return String[].class;
+			} else if(valueType == ItemValueType.INT) {
+				return Integer[].class;
+			} else if(valueType == ItemValueType.LONG) {
+				return Long[].class;
+			} else if(valueType == ItemValueType.FLOAT) {
+				return Float[].class;
+			} else if(valueType == ItemValueType.DOUBLE) {
+				return Double[].class;
+			} else if(valueType == ItemValueType.BOOLEAN) {
+				return Boolean[].class;
+			} else if(valueType == ItemValueType.PARAMETERS) {
+				return Parameters[].class;
+			} else if(valueType == ItemValueType.FILE) {
+				return File[].class;
+			} else if(valueType == ItemValueType.MULTIPART_FILE) {
+				return FileParameter[].class;
+			}
+		}
+		
+		return value.getClass();
 	}
 	
 	/**

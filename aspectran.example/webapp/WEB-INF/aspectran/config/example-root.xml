@@ -96,7 +96,7 @@
 	</aspect>
 
 	<translet name="hello">
-		<action id="countTo10" bean="example.hello.HelloAction" method="countTo10Array">
+		<action id="countTo10" bean="example.hello.HelloAction" method="echoPrimitiveArray">
 			<argument>
 				<item type="array" valueType="int">
 					<value>1</value>
@@ -114,8 +114,8 @@
 		</action>
 		<transform type="transform/text">
 			<template>
-				hello~ ${name}
-				@{countTo10}
+hello~ ${name}
+echoPrimitiveArray: @{countTo10}
 			</template>
 		</transform>
 	</translet>

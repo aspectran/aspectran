@@ -47,8 +47,8 @@ public class HelloAction {
 		return i;
 	}
 	
-	public Integer[] countTo10Array(Integer[] countTo10) {
-		return countTo10;
+	public int[] echoPrimitiveArray(int[] intArray) {
+		return intArray;
 	}
 	
 }
