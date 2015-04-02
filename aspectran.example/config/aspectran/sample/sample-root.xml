@@ -288,9 +288,11 @@
 	</bean>
 	
 	<bean id="sqlMapClientTransactionAdvice" class="com.aspectran.support.orm.ibatis.SqlMapClientTransactionAdvice">
-		<property>
-			<item name="sqlMapClient">#{sqlMapClient}</item>
-		</property>
+		<constructor>
+			<argument>
+				<item>#{sqlMapClient}</item>
+			</argument>
+		</constructor>
 	</bean>
 	
 	<!--
@@ -314,11 +316,22 @@
 			<before>
 				<action method="begin"/>
 			</before>
+			<after>
+				<action method="commit"/>
+			</after>
 			<finally>
 				<action method="end"/>
 			</finally>
 		</advice>
 	</aspect>
+	
+	<bean id="sqlSessionTransactionAdvice" class="com.aspectran.support.orm.mybatis.SqlSessionTransactionAdvice">
+		<constructor>
+			<argument>
+				<item>#{sqlSessionFactoryBean}</item>
+			</argument>
+		</constructor>
+	</bean>
 	
 	<aspect id="sqlmap3">
 		<joinpoint scope="content">
@@ -329,7 +342,11 @@
 		</joinpoint>
 		<advice bean="sqlSessionTransactionAdvice">
 			<before>
-				<action method="open"/>
+				<action method="open">
+					<argument>
+						<item valueType="boolean">false</item>
+					</argument>
+				</action>
 			</before>
 			<after>
 				<action method="commit"/>
