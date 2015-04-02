@@ -120,7 +120,7 @@ public class ScopedContextBeanRegistry extends AbstractContextBeanRegistry {
 	}
 	
 	private Scope getRequestScope() {
-		Activity activity = context.getLocalCoreActivity();
+		Activity activity = context.getLocalActivity();
 		
 		if(activity == null)
 			return null;
@@ -136,7 +136,7 @@ public class ScopedContextBeanRegistry extends AbstractContextBeanRegistry {
 	}
 
 	private Scope getSessionScope() {
-		Activity activity = context.getLocalCoreActivity();
+		Activity activity = context.getLocalActivity();
 
 		if(activity == null)
 			return null;

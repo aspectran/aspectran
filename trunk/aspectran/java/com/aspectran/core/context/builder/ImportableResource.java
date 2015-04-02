@@ -79,5 +79,4 @@ public class ImportableResource extends Importable {
 		return sb.toString();
 	}
 
-
 }

@@ -154,7 +154,7 @@ public class CoreActivity extends AbstractActivity implements Activity {
 			throw new ActivityException("AspectAdviceRuleRegistry clone failed.", e);
 		}
 
-		context.saveLocalCoreActivity(this);
+		context.saveLocalActivity(this);
 	}
 	
 	public void perform() throws ActivityException {
@@ -850,7 +850,7 @@ public class CoreActivity extends AbstractActivity implements Activity {
 	}
 	
 	public void finish() {
-		context.clearLocalCoreActivity();
+		context.removeLocalActivity();
 	}
 	
 }
