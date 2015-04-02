@@ -436,10 +436,10 @@ public class ItemRule {
 	 */
 	private void checkValueType(ItemType compareItemType, ItemType compareItemType2, ItemType compareItemType3) {
 		if(type == null)
-			throw new UnsupportedOperationException("No item-type specified. First, specify the type of item.");
+			throw new IllegalArgumentException("item-type is required");
 		
 		if(type != compareItemType && type != compareItemType2 && type != compareItemType3)
-			throw new UnsupportedOperationException("The item-type of violation has occurred. current item-type: " + type.toString());
+			throw new IllegalArgumentException("The item-type of violation has occurred. current item-type: " + type.toString());
 	}
 	
 	public static Class<?> getValueClass(ItemRule ir, Object value) {

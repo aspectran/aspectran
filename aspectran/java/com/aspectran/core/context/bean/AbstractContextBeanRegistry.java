@@ -64,7 +64,7 @@ public abstract class AbstractContextBeanRegistry implements ContextBeanRegistry
 	}
 	
 	protected Object createBean(BeanRule beanRule) {
-		Activity activity = context.getLocalCoreActivity();
+		Activity activity = context.getLocalActivity();
 		
 		if(activity == null)
 			activity = voidActivity;

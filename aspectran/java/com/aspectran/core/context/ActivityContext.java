@@ -26,7 +26,7 @@ import com.aspectran.core.context.translet.TransletRuleRegistry;
  */
 public class ActivityContext {
 	
-	private static ThreadLocal<Activity> activityThreadLocal = new ThreadLocal<Activity>();
+	private static ThreadLocal<Activity> localActivityHolder = new ThreadLocal<Activity>();
 
 	private ApplicationAdapter applicationAdapter;
 	
@@ -93,17 +93,17 @@ public class ActivityContext {
 		this.activityDefaultHandler = activityDefaultHandler;
 	}
 
-	public Activity getLocalCoreActivity() {
-		return activityThreadLocal.get();
+	public Activity getLocalActivity() {
+		return localActivityHolder.get();
 	}
 	
-	public void saveLocalCoreActivity(Activity activity) {
-		if(activityThreadLocal.get() == null)
-			activityThreadLocal.set(activity);
+	public void saveLocalActivity(Activity activity) {
+		if(localActivityHolder.get() == null)
+			localActivityHolder.set(activity);
 	}
 	
-	public void clearLocalCoreActivity() {
-		activityThreadLocal.set(null);
+	public void removeLocalActivity() {
+		localActivityHolder.remove();
 	}
 	
 	/**

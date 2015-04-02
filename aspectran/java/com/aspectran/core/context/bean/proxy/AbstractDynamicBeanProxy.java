@@ -54,7 +54,7 @@ public abstract class AbstractDynamicBeanProxy {
 	}
 
 	public Object dynamicInvoke(Object bean, Method method, Object[] args, ProxyMethodInvoker invoker) throws Throwable {
-		Activity activity = context.getLocalCoreActivity();
+		Activity activity = context.getLocalActivity();
 		
 		String transletName = activity.getTransletName();
 		String beanId = beanRule.getId();
