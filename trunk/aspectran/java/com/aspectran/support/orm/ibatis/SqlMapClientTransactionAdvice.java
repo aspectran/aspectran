@@ -5,9 +5,12 @@ import java.sql.SQLException;
 import com.ibatis.sqlmap.client.SqlMapClient;
 
 /**
- *
- *
- */
+*
+* @author Gulendol
+*
+* <p>Created: 2015. 04. 03</p>
+*
+*/
 public class SqlMapClientTransactionAdvice {
 	
 	private SqlMapClient sqlMapClient;
@@ -24,13 +27,13 @@ public class SqlMapClientTransactionAdvice {
 		this.sqlMapClient = sqlMapClient;
 	}
 
-	public SqlMapClient begin() throws SQLException {
+	public SqlMapClient start() throws SQLException {
 		sqlMapClient.startTransaction();
 		
 		return sqlMapClient;
 	}
 	
-	public void after() throws SQLException {
+	public void commit() throws SQLException {
 		sqlMapClient.commitTransaction();
 	}
 	
