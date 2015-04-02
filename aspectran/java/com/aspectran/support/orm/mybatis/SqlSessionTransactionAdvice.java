@@ -2,8 +2,8 @@ package com.aspectran.support.orm.mybatis;
 
 import java.sql.SQLException;
 
-import com.aspectran.core.activity.Translet;
-import com.ibatis.sqlmap.client.SqlMapClient;
+import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.session.SqlSessionFactory;
 
 /**
  *
@@ -11,31 +11,37 @@ import com.ibatis.sqlmap.client.SqlMapClient;
  */
 public class SqlSessionTransactionAdvice {
 	
-	private SqlMapClient sqlMapClient;
+	private SqlSessionFactory sqlSessionFactory;
 	
-	public SqlSessionTransactionAdvice(SqlSessionFactoryBean sqlMapConfig) {
-		this.sqlMapClient = sqlMapConfig.getSqlMapClient();
-	}
+	private SqlSession sqlSession;
 	
-	public SqlMapClient getSqlMapClient() {
-		return sqlMapClient;
-	}
-
-	public void setSqlMapClient(SqlMapClient sqlMapClient) {
-		this.sqlMapClient = sqlMapClient;
-	}
-
-	public SqlMapClient begin() throws SQLException {
-		sqlMapClient.startTransaction();
-		
-		return sqlMapClient;
+	private boolean autoCommit;
+	
+	public SqlSessionTransactionAdvice(SqlSessionFactoryBean factoryBean) {
+		this.sqlSessionFactory = factoryBean.getObject();
 	}
 	
-	public void end(Translet translet) throws SQLException {
-		if(!translet.isExceptionRaised())
-			sqlMapClient.commitTransaction();
-		
-		sqlMapClient.endTransaction();
+	public SqlSession open() throws SQLException {
+		return sqlSessionFactory.openSession();
+	}
+	
+	public SqlSession open(boolean autoCommit) throws SQLException {
+		this.autoCommit = autoCommit;
+		return sqlSessionFactory.openSession(autoCommit);
+	}
+	
+	public void commit() throws SQLException {
+		if(!autoCommit)
+			sqlSession.commit();
+	}
+	
+	public void commit(boolean force) throws SQLException {
+		if(!autoCommit)
+			sqlSession.commit(force);
+	}
+	
+	public void close() throws SQLException {
+		sqlSession.close();
 	}
 	
 }
