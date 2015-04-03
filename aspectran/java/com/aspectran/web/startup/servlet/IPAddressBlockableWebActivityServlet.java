@@ -25,8 +25,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.aspectran.core.util.logging.Log;
+import com.aspectran.core.util.logging.LogFactory;
 
 /**
  * Servlet implementation class for Servlet: Translets.
@@ -36,9 +36,9 @@ public class IPAddressBlockableWebActivityServlet extends WebActivityServlet imp
 	/** @serial */
 	static final long serialVersionUID = -2369788867122156319L;
 
-	private final Logger logger = LoggerFactory.getLogger(IPAddressBlockableWebActivityServlet.class);
+	private final Log log = LogFactory.getLog(IPAddressBlockableWebActivityServlet.class);
 	
-	private boolean debugEnabled = logger.isDebugEnabled();
+	private boolean debugEnabled = log.isDebugEnabled();
 	
 	private static final String DELIMITERS = " ,;\t\n\r\f";
 	
@@ -86,7 +86,7 @@ public class IPAddressBlockableWebActivityServlet extends WebActivityServlet imp
 		
 		if(!isValidAdress(remoteAddr)) {
 			if(debugEnabled) {
-				logger.debug("Access denied '" + remoteAddr + "'.");
+				log.debug("Access denied '" + remoteAddr + "'.");
 			}
 				
 			res.sendError(HttpServletResponse.SC_NOT_FOUND);

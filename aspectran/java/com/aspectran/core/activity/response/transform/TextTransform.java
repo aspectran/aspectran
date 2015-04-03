@@ -22,9 +22,6 @@ import java.io.Writer;
 import java.net.URL;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.activity.process.result.ActionResult;
@@ -41,15 +38,17 @@ import com.aspectran.core.context.AspectranConstant;
 import com.aspectran.core.context.rule.TemplateRule;
 import com.aspectran.core.context.rule.TransformRule;
 import com.aspectran.core.context.rule.type.TokenType;
+import com.aspectran.core.util.logging.Log;
+import com.aspectran.core.util.logging.LogFactory;
 
 /**
  * <p>Created: 2008. 03. 22 오후 5:51:58</p>
  */
 public class TextTransform extends TransformResponse implements Response {
 
-	private final Logger logger = LoggerFactory.getLogger(TextTransform.class);
+	private final Log log = LogFactory.getLog(TextTransform.class);
 
-	private final boolean debugEnabled = logger.isDebugEnabled();
+	private final boolean debugEnabled = log.isDebugEnabled();
 
 	private final TemplateRule templateRule;
 
@@ -111,7 +110,7 @@ public class TextTransform extends TransformResponse implements Response {
 	 */
 	public void response(Activity activity) throws TransformResponseException {
 		if(debugEnabled) {
-			logger.debug("response {}", transformRule);
+			log.debug("response " + transformRule);
 		}
 		
 		ResponseAdapter responseAdapter = activity.getResponseAdapter();
@@ -289,12 +288,12 @@ public class TextTransform extends TransformResponse implements Response {
 					}
 				}
 				
-				logger.debug("text-transform template tokens [" + sb.toString() + "]");
+				log.debug("text-transform template tokens [" + sb.toString() + "]");
 			}
 		}
 //		
 //		if(traceEnabled) {
-//			logger.trace("Sets the content of the text-transform..." + AspectranContextConstant.LINE_SEPARATOR + getContent());
+//			log.trace("Sets the content of the text-transform..." + AspectranContextConstant.LINE_SEPARATOR + getContent());
 //		}
 	}
 }

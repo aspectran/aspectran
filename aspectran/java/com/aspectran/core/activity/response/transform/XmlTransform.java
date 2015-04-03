@@ -24,9 +24,6 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.sax.SAXSource;
 import javax.xml.transform.stream.StreamResult;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.activity.process.result.ProcessResult;
@@ -36,6 +33,8 @@ import com.aspectran.core.activity.response.transform.xml.ContentsXMLReader;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.context.AspectranConstant;
 import com.aspectran.core.context.rule.TransformRule;
+import com.aspectran.core.util.logging.Log;
+import com.aspectran.core.util.logging.LogFactory;
 
 /**
  * <p>
@@ -52,11 +51,11 @@ public class XmlTransform extends TransformResponse implements Response {
 
 	public static final Integer INDENT_NUMBER_VAL = new Integer(1);
 
-	private final Logger logger = LoggerFactory.getLogger(XmlTransform.class);
+	private final Log log = LogFactory.getLog(XmlTransform.class);
 
-	private final boolean traceEnabled = logger.isTraceEnabled();
+	private final boolean traceEnabled = log.isTraceEnabled();
 
-	private final boolean debugEnabled = logger.isDebugEnabled();
+	private final boolean debugEnabled = log.isDebugEnabled();
 	
 	private boolean pretty;
 
@@ -76,7 +75,7 @@ public class XmlTransform extends TransformResponse implements Response {
 	 */
 	public void response(Activity activity) throws TransformResponseException {
 		if(debugEnabled) {
-			logger.debug("response {}", transformRule);
+			log.debug("response " + transformRule);
 		}
 
 		ResponseAdapter responseAdapter = activity.getResponseAdapter();
@@ -120,7 +119,7 @@ public class XmlTransform extends TransformResponse implements Response {
 			if(traceEnabled) {
 				StringWriter stringWriter = new StringWriter();
 				transformer.transform(new SAXSource(xreader, isource), new StreamResult(stringWriter));
-				logger.trace("XML output: {}{}", AspectranConstant.LINE_SEPARATOR, stringWriter.toString());
+				log.trace("XML output: " + AspectranConstant.LINE_SEPARATOR + stringWriter);
 			}
 		} catch(Exception e) {
 			throw new TransformResponseException(transformRule, e);

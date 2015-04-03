@@ -15,25 +15,24 @@
  */
 package com.aspectran.core.activity.response;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.context.rule.RedirectResponseRule;
 import com.aspectran.core.context.rule.type.ResponseType;
+import com.aspectran.core.util.logging.Log;
+import com.aspectran.core.util.logging.LogFactory;
 
 /**
  * <p>Created: 2008. 03. 22 오후 5:51:58</p>
  */
 public class RedirectResponse implements Response {
 	
-	/** The logger. */
-	private final Logger logger = LoggerFactory.getLogger(RedirectResponse.class);
+	/** The log. */
+	private final Log log = LogFactory.getLog(RedirectResponse.class);
 
 	/** The debug enabled. */
-	private final boolean debugEnabled = logger.isDebugEnabled();
+	private final boolean debugEnabled = log.isDebugEnabled();
 
 	/** The redirect response rule. */
 	private final RedirectResponseRule redirectResponseRule;
@@ -57,7 +56,7 @@ public class RedirectResponse implements Response {
 			return;
 		
 		if(debugEnabled) {
-			logger.debug("response " + redirectResponseRule);
+			log.debug("response " + redirectResponseRule);
 		}
 		
 		try {

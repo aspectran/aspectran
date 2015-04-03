@@ -18,9 +18,6 @@ package com.aspectran.core.activity;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.activity.process.ContentList;
 import com.aspectran.core.activity.process.ProcessException;
@@ -49,6 +46,8 @@ import com.aspectran.core.context.rule.type.AspectAdviceType;
 import com.aspectran.core.context.rule.type.JoinpointScopeType;
 import com.aspectran.core.context.rule.type.ResponseType;
 import com.aspectran.core.context.translet.TransletNotFoundException;
+import com.aspectran.core.util.logging.Log;
+import com.aspectran.core.util.logging.LogFactory;
 
 /**
  * Action Translator.
@@ -58,12 +57,12 @@ import com.aspectran.core.context.translet.TransletNotFoundException;
  */
 public class CoreActivity extends AbstractActivity implements Activity {
 
-	/** The logger. */
-	private static final Logger logger = LoggerFactory.getLogger(CoreActivity.class);
+	/** The log. */
+	private static final Log log = LogFactory.getLog(CoreActivity.class);
 	
-	private static final boolean debugEnabled = logger.isDebugEnabled();
+	private static final boolean debugEnabled = log.isDebugEnabled();
 
-	private static final boolean traceEnabled = logger.isTraceEnabled();
+	private static final boolean traceEnabled = log.isTraceEnabled();
 
 	/** The activity context. */
 	private final ActivityContext context;
@@ -119,12 +118,12 @@ public class CoreActivity extends AbstractActivity implements Activity {
 		TransletRule transletRule = context.getTransletRuleRegistry().getTransletRule(transletName);
 
 		if(transletRule == null) {
-			logger.debug("translet not found: {}", transletRule);
+			log.debug("translet not found: " + transletRule);
 			throw new TransletNotFoundException(transletName);
 		}
 		
 		if(debugEnabled) {
-			logger.debug("translet {}", transletRule);
+			log.debug("translet " + transletRule);
 		}
 
 		if(transletRule.getTransletInterfaceClass() != null)
@@ -361,12 +360,12 @@ public class CoreActivity extends AbstractActivity implements Activity {
 		}
 		
 		/*
-		if(logger.isDebugEnabled()) {
+		if(log.isDebugEnabled()) {
 			if(getProcessResult() != null) {
-				logger.debug("contentResult:");
+				log.debug("contentResult:");
 				for(ContentResult contentResult : getProcessResult()) {
 					for(ActionResult actionResult : contentResult) {
-						logger.debug("\t{actionId: " + actionResult.getActionId() + ", resultValue: " + actionResult.getResultValue() + "}\n");
+						log.debug("\t{actionId: " + actionResult.getActionId() + ", resultValue: " + actionResult.getResultValue() + "}\n");
 					}
 				}
 			}
@@ -502,7 +501,7 @@ public class CoreActivity extends AbstractActivity implements Activity {
 	 */
 	private void forward() throws ActivityException {
 		if(debugEnabled) {
-			logger.debug("forwarding for translet: {}", forwardTransletName);
+			log.debug("forwarding for translet: " + forwardTransletName);
 		}
 		
 		ProcessResult processResult = translet.getProcessResult();
@@ -527,7 +526,7 @@ public class CoreActivity extends AbstractActivity implements Activity {
 		ResponseByContentTypeRule rbctr = responseByContentTypeRuleMap.getResponseByContentTypeRule(getRaisedException());
 		
 		if(rbctr != null) {
-			logger.info("raised exception: {}", getRaisedException().toString());
+			log.info("raised exception: " + getRaisedException());
 			responseByContentType(rbctr);
 		}
 	}
@@ -548,7 +547,7 @@ public class CoreActivity extends AbstractActivity implements Activity {
 			ResponseRule newResponseRule = responseRule.newResponseRule(response2);
 			responseRule = newResponseRule;
 			
-			logger.info("response by content-type: {}", responseRule);
+			log.info("response by content-type: " + responseRule);
 
 			translet.setProcessResult(null);
 			
@@ -606,7 +605,7 @@ public class CoreActivity extends AbstractActivity implements Activity {
 	
 	private void execute(Executable action, ContentResult contentResult) throws ActionExecutionException {
 		if(debugEnabled)
-			logger.debug("action {}", action.toString());
+			log.debug("action " + action);
 		
 		try {
 			Object resultValue = action.execute(this);
@@ -616,7 +615,7 @@ public class CoreActivity extends AbstractActivity implements Activity {
 			}
 			
 			if(traceEnabled)
-				logger.debug("actionResult {}", resultValue);
+				log.debug("actionResult " + resultValue);
 		} catch(Exception e) {
 			setRaisedException(e);
 			throw new ActionExecutionException("action execution error", e);
@@ -642,7 +641,7 @@ public class CoreActivity extends AbstractActivity implements Activity {
 		Executable action = aspectAdviceRule.getExecutableAction();
 		
 		if(action == null) {
-			//logger.error("no specified action on AspectAdviceRule " + aspectAdviceRule);
+			//log.error("no specified action on AspectAdviceRule " + aspectAdviceRule);
 			//return null;
 			throw new ActionExecutionException("No specified action on AspectAdviceRule " + aspectAdviceRule);
 		}
@@ -654,14 +653,14 @@ public class CoreActivity extends AbstractActivity implements Activity {
 				adviceBean = getBean(aspectAdviceRule.getAdviceBeanId());
 			
 			if(debugEnabled)
-				logger.debug("aspectAdvice {} {}", aspectAdviceRule, adviceBean);
+				log.debug("aspectAdvice " + aspectAdviceRule + " " + adviceBean);
 			
 			translet.putAspectAdviceBean(aspectAdviceRule.getAspectId(), adviceBean);
 		}
 		
 		try {
 			//if(debugEnabled)
-			//	logger.debug("action {}", action);
+			//	log.debug("action {}", action);
 
 			Object adviceActionResult = action.execute(this);
 			
@@ -670,7 +669,7 @@ public class CoreActivity extends AbstractActivity implements Activity {
 			}
 			
 			if(traceEnabled)
-				logger.trace("adviceActionResult {}", adviceActionResult);
+				log.trace("adviceActionResult " + adviceActionResult);
 			
 			return adviceActionResult;
 		} catch(Exception e) {
@@ -694,7 +693,7 @@ public class CoreActivity extends AbstractActivity implements Activity {
 
 	public void setRaisedException(Exception raisedException) {
 		if(this.raisedException == null) {
-			logger.error("original raised exception: ", raisedException);
+			log.error("original raised exception: ", raisedException);
 			this.raisedException = raisedException;
 		}
 	}
@@ -802,7 +801,7 @@ public class CoreActivity extends AbstractActivity implements Activity {
 	
 	public void registerAspectRule(AspectRule aspectRule) throws ActionExecutionException {
 		if(debugEnabled)
-			logger.debug("registerAspectRule {}", aspectRule);
+			log.debug("registerAspectRule " + aspectRule);
 		
 		JoinpointScopeType joinpointScope = aspectRule.getJoinpointScope();
 		

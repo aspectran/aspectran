@@ -18,9 +18,6 @@ package com.aspectran.core.activity.response.transform;
 import java.io.StringWriter;
 import java.io.Writer;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.activity.process.result.ProcessResult;
@@ -31,6 +28,8 @@ import com.aspectran.core.context.AspectranConstant;
 import com.aspectran.core.context.rule.TransformRule;
 import com.aspectran.core.util.apon.AponWriter;
 import com.aspectran.core.util.apon.Parameters;
+import com.aspectran.core.util.logging.Log;
+import com.aspectran.core.util.logging.LogFactory;
 
 /**
  * <p>
@@ -39,11 +38,11 @@ import com.aspectran.core.util.apon.Parameters;
  */
 public class AponTransform extends TransformResponse implements Response {
 	
-	private final Logger logger = LoggerFactory.getLogger(AponTransform.class);
+	private final Log log = LogFactory.getLog(AponTransform.class);
 	
-	private final boolean traceEnabled = logger.isTraceEnabled();
+	private final boolean traceEnabled = log.isTraceEnabled();
 	
-	private final boolean debugEnabled = logger.isDebugEnabled();
+	private final boolean debugEnabled = log.isDebugEnabled();
 	
 	private boolean pretty;
 	
@@ -63,7 +62,7 @@ public class AponTransform extends TransformResponse implements Response {
 	 */
 	public void response(Activity activity) throws TransformResponseException {
 		if(debugEnabled) {
-			logger.debug("response {}", transformRule);
+			log.debug("response " + transformRule);
 		}
 		
 		try {
@@ -91,7 +90,7 @@ public class AponTransform extends TransformResponse implements Response {
 				AponWriter aponWriter2 = new AponWriter(output, true);
 				aponWriter2.write(parameters);
 				aponWriter2.close();
-				logger.trace("JSON Source: " + AspectranConstant.LINE_SEPARATOR + stringWriter.toString());
+				log.trace("JSON Source: " + AspectranConstant.LINE_SEPARATOR + stringWriter.toString());
 			}
 		} catch(Exception e) {
 			throw new TransformResponseException(transformRule, e);

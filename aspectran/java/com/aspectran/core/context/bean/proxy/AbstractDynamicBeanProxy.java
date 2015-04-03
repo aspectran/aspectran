@@ -9,9 +9,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.aspect.AspectAdviceRulePostRegister;
@@ -25,6 +22,8 @@ import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.PointcutPatternRule;
 import com.aspectran.core.context.rule.type.AspectTargetType;
 import com.aspectran.core.context.rule.type.JoinpointScopeType;
+import com.aspectran.core.util.logging.Log;
+import com.aspectran.core.util.logging.LogFactory;
 
 /**
  * @author aspectran
@@ -32,12 +31,12 @@ import com.aspectran.core.context.rule.type.JoinpointScopeType;
  */
 public abstract class AbstractDynamicBeanProxy {
 
-	/** The logger. */
-	private static final Logger logger = LoggerFactory.getLogger(AbstractDynamicBeanProxy.class);
+	/** The log. */
+	private static final Log log = LogFactory.getLog(AbstractDynamicBeanProxy.class);
 
-	private static final boolean debugEnabled = logger.isDebugEnabled();
+	private static final boolean debugEnabled = log.isDebugEnabled();
 
-	private static final boolean traceEnabled = logger.isTraceEnabled();
+	private static final boolean traceEnabled = log.isTraceEnabled();
 
 	protected ActivityContext context;
 	
@@ -80,7 +79,7 @@ public abstract class AbstractDynamicBeanProxy {
 						sb.append(args[i].toString());
 					}
 					sb.append(")");
-					logger.trace(sb.toString());
+					log.trace(sb.toString());
 				}
 
 				if(aspectAdviceRuleRegistry.getBeforeAdviceRuleList() != null)
@@ -108,7 +107,7 @@ public abstract class AbstractDynamicBeanProxy {
 					activity.forceExecute(aspectAdviceRuleRegistry.getFinallyAdviceRuleList());
 				
 				if(traceEnabled) {
-					logger.trace("end method {}", methodName);
+					log.trace("end method " + methodName);
 				}
 			}
 		} catch(Exception e) {
@@ -169,7 +168,7 @@ public abstract class AbstractDynamicBeanProxy {
 				relevantAspectRuleHolderCache.put(patternString, relevantAspectRuleHolder);
 				
 				if(debugEnabled)
-					logger.debug("cache relevantAspectRuleHolder \"{}\"", patternString);
+					log.debug("cache relevantAspectRuleHolder \"" + patternString + "\"");
 			}
 		}
 		

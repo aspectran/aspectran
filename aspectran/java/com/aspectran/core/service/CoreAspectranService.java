@@ -1,16 +1,15 @@
 package com.aspectran.core.service;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.bean.scope.Scope;
 import com.aspectran.core.context.loader.AspectranClassLoader;
+import com.aspectran.core.util.logging.Log;
+import com.aspectran.core.util.logging.LogFactory;
 
 public class CoreAspectranService extends AbstractAspectranService {
 
-	private static final Logger logger = LoggerFactory.getLogger(CoreAspectranService.class);
+	private static final Log log = LogFactory.getLog(CoreAspectranService.class);
 	
 	private static final long DEFAULT_PAUSE_TIMEOUT = 321L;
 	
@@ -21,7 +20,7 @@ public class CoreAspectranService extends AbstractAspectranService {
 	public synchronized ActivityContext start() {
 		loadActivityContext();
 
-		logger.info("AspectranService was started.");
+		log.info("AspectranService was started.");
 
 		if(activityContextServiceListener != null)
 			activityContextServiceListener.started();
@@ -33,7 +32,7 @@ public class CoreAspectranService extends AbstractAspectranService {
 	
 	public synchronized boolean restart() {
 		if(!started) {
-			logger.debug("Cannot restart the AspectranService, because it is currently stopped.");
+			log.debug("Cannot restart the AspectranService, because it is currently stopped.");
 			return true;
 		}
 
@@ -48,7 +47,7 @@ public class CoreAspectranService extends AbstractAspectranService {
 		
 		started = true;
 		
-		logger.info("AspectranService was restarted.");
+		log.info("AspectranService was restarted.");
 
 		if(activityContextServiceListener != null)
 			activityContextServiceListener.restarted();
@@ -80,7 +79,7 @@ public class CoreAspectranService extends AbstractAspectranService {
 		
 		boolean cleanlyDestoryed = destroyActivityContext();
 			
-		logger.info("AspectranService was stoped.");
+		log.info("AspectranService was stoped.");
 
 		if(activityContextServiceListener != null)
 			activityContextServiceListener.stopped();
@@ -103,11 +102,11 @@ public class CoreAspectranService extends AbstractAspectranService {
 					scope.destroy();
 			} catch(Exception e) {
 				cleanlyDestoryed = false;
-				logger.error("WebApplicationAdapter were not destroyed cleanly.", e);
+				log.error("WebApplicationAdapter were not destroyed cleanly.", e);
 			}
 		}
 		
-		logger.info("AspectranService was disposed.");
+		log.info("AspectranService was disposed.");
 		
 		return cleanlyDestoryed;
 	}

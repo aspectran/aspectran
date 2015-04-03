@@ -13,18 +13,17 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.aspectran.core.context.loader.resource.InvalidResourceException;
 import com.aspectran.core.context.loader.resource.LocalResourceManager;
 import com.aspectran.core.context.loader.resource.ResourceManager;
 import com.aspectran.core.util.ClassUtils;
 import com.aspectran.core.util.ResourceUtils;
+import com.aspectran.core.util.logging.Log;
+import com.aspectran.core.util.logging.LogFactory;
 
 public class AspectranClassLoader extends ClassLoader {
 	
-	private final Logger logger = LoggerFactory.getLogger(AspectranClassLoader.class);
+	private final Log log = LogFactory.getLog(AspectranClassLoader.class);
 	
 	private final int id;
 	
@@ -126,7 +125,7 @@ public class AspectranClassLoader extends ClassLoader {
 		this.resourceLocation = resourceLocation;
 		this.resourceManager = new LocalResourceManager(resourceLocation, this);
 		
-		logger.debug("created a root AspectranClassLoader. " + this);
+		log.debug("created a root AspectranClassLoader. " + this);
 	}
 	
 	public AspectranClassLoader(String[] resourceLocations) {
@@ -192,7 +191,7 @@ public class AspectranClassLoader extends ClassLoader {
 		
 		AspectranClassLoader child = new AspectranClassLoader(resourceLocation, this);
 		
-		logger.debug("create a new child AspectranClassLoader. " + child);
+		log.debug("create a new child AspectranClassLoader. " + child);
 		
 		return child;
 	}
@@ -314,7 +313,7 @@ public class AspectranClassLoader extends ClassLoader {
 	protected void reload(AspectranClassLoader self) {
 		self.increaseReloadingTimes();
 		
-		logger.debug("reload a AspectranClassLoader. " + self);
+		log.debug("reload a AspectranClassLoader. " + self);
 
 		if(self.getResourceManager() != null)
 			self.getResourceManager().reset();
@@ -344,7 +343,7 @@ public class AspectranClassLoader extends ClassLoader {
 	}
 	
 	protected void kickout(AspectranClassLoader child) {
-		logger.debug("kickout a child AspectranClassLoader: {}", child);
+		log.debug("kickout a child AspectranClassLoader: " + child);
 
 		ResourceManager rm = child.getResourceManager();
 		if(rm != null) {
@@ -394,7 +393,7 @@ public class AspectranClassLoader extends ClassLoader {
 		    	classData = loadClassData(name, root);
 		    	//System.out.println("   classData: " + classData);
 	    	} catch(InvalidResourceException e) {
-	    		logger.error("failed to load class \"{}\"", name, e);
+	    		log.error("failed to load class \"" + name + "\"", e);
 	    	}
 
 	    	if(classData != null) {

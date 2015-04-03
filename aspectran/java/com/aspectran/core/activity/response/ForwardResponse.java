@@ -17,9 +17,6 @@ package com.aspectran.core.activity.response;
 
 import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.activity.variable.ValueObjectMap;
@@ -28,15 +25,17 @@ import com.aspectran.core.activity.variable.token.ItemTokenExpressor;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.context.rule.ForwardResponseRule;
 import com.aspectran.core.context.rule.type.ResponseType;
+import com.aspectran.core.util.logging.Log;
+import com.aspectran.core.util.logging.LogFactory;
 
 /**
  * <p>Created: 2008. 03. 22 오후 5:51:58</p>
  */
 public class ForwardResponse implements Response {
 
-	private final Logger logger = LoggerFactory.getLogger(ForwardResponse.class);
+	private final Log log = LogFactory.getLog(ForwardResponse.class);
 	
-	private final boolean debugEnabled = logger.isDebugEnabled();
+	private final boolean debugEnabled = log.isDebugEnabled();
 	
 	/** The forward response rule. */
 	private final ForwardResponseRule forwardResponseRule;
@@ -60,7 +59,7 @@ public class ForwardResponse implements Response {
 			return;
 
 		if(debugEnabled) {
-			logger.debug("response " + forwardResponseRule);
+			log.debug("response " + forwardResponseRule);
 		}
 
 		if(forwardResponseRule.getAttributeItemRuleMap() != null) {

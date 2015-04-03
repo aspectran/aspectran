@@ -25,9 +25,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import com.aspectran.core.util.logging.Log;
+import com.aspectran.core.util.logging.LogFactory;
 import com.aspectran.web.service.WebAspectranService;
 import com.aspectran.web.startup.listener.AspectranServiceListener;
 
@@ -39,7 +38,7 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 	/** @serial */
 	static final long serialVersionUID = 6659683668233267847L;
 
-	private static final Logger logger = LoggerFactory.getLogger(WebActivityServlet.class);
+	private static final Log log = LogFactory.getLog(WebActivityServlet.class);
 
 	private WebAspectranService aspectranService;
 	
@@ -62,7 +61,7 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 	 */
 	@Override
 	public void init() throws ServletException {
-		logger.info("Initializing WebActivityServlet...");
+		log.info("Initializing WebActivityServlet...");
 
 		try {
 			ServletContext servletContext = getServletContext();
@@ -70,16 +69,16 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 			WebAspectranService rootAspectranService = (WebAspectranService)servletContext.getAttribute(AspectranServiceListener.ASPECTRAN_SERVICE_ATTRIBUTE);
 
 			if(rootAspectranService == null) {
-				logger.info("Standalone AspectranService.");
+				log.info("Standalone AspectranService.");
 				aspectranService = WebAspectranService.newInstance(this);
 				standalone = true;
 			} else {
-				logger.info("The root AspectranService exists.");
+				log.info("The root AspectranService exists.");
 				aspectranService = WebAspectranService.newInstance(this, rootAspectranService);
 				standalone = (rootAspectranService != aspectranService);
 			}
 		} catch(Exception e) {
-			//logger.error("WebActivityServlet was failed to initialize", e);
+			//log.error("WebActivityServlet was failed to initialize", e);
 			throw new UnavailableException(e.getMessage());
 		}
 	}
@@ -103,11 +102,11 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 			boolean cleanlyDestoryed = aspectranService.dispose();
 			
 			if(cleanlyDestoryed)
-				logger.info("Successfully destroyed WebActivityServlet: {}", this.getServletName());
+				log.info("Successfully destroyed WebActivityServlet: " + this.getServletName());
 			else
-				logger.error("WebActivityServlet were not destroyed cleanly: {}", this.getServletName());
+				log.error("WebActivityServlet were not destroyed cleanly: " + this.getServletName());
 	
-			logger.info("Do not terminate the server while the all scoped bean destroying.");
+			log.info("Do not terminate the server while the all scoped bean destroying.");
 		}
 	}
 	

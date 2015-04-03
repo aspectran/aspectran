@@ -76,6 +76,11 @@ public class Slf4jImpl implements Log {
   }
 
   @Override
+  public void info(String s) {
+    log.info(s);
+  }
+
+  @Override
   public void trace(String s) {
     log.trace(s);
   }

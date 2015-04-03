@@ -7,9 +7,6 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.context.ActivityContextException;
 import com.aspectran.core.context.loader.config.AspectranConfig;
@@ -18,6 +15,8 @@ import com.aspectran.core.context.translet.TransletNotFoundException;
 import com.aspectran.core.service.AspectranServiceControllerListener;
 import com.aspectran.core.service.CoreAspectranService;
 import com.aspectran.core.util.apon.Parameters;
+import com.aspectran.core.util.logging.Log;
+import com.aspectran.core.util.logging.LogFactory;
 import com.aspectran.web.activity.WebActivity;
 import com.aspectran.web.activity.WebActivityDefaultHandler;
 import com.aspectran.web.adapter.WebApplicationAdapter;
@@ -26,7 +25,7 @@ import com.aspectran.web.startup.servlet.WebActivityServlet;
 
 public class WebAspectranService extends CoreAspectranService {
 	
-	private static final Logger logger = LoggerFactory.getLogger(CoreAspectranService.class);
+	private static final Log log = LogFactory.getLog(CoreAspectranService.class);
 	
 	public static final String ASPECTRAN_CONFIG_PARAM = "aspectran:config";
 
@@ -63,7 +62,7 @@ public class WebAspectranService extends CoreAspectranService {
 
 		if(pauseTimeout > 0L) {
 			if(pauseTimeout >= System.currentTimeMillis()) {
-				logger.info("aspectran service is paused, did not respond to the request uri: {}", requestUri);
+				log.info("aspectran service is paused, did not respond to the request uri: " + requestUri);
 				res.sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
 				return;
 			} else {
@@ -89,17 +88,17 @@ public class WebAspectranService extends CoreAspectranService {
 						handler.handle(req, res);
 					} catch(Exception e2) {
 						res.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-						logger.error(e.getMessage(), e2);
+						log.error(e.getMessage(), e2);
 					}
 
 					return;
 				}
 			}
 
-			logger.debug(e.getMessage());
+			log.debug(e.getMessage());
 			res.sendError(HttpServletResponse.SC_NOT_FOUND);
 		} catch(Exception e) {
-			logger.error("WebActivity service failed.", e);
+			log.error("WebActivity service failed.", e);
 			res.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 		}
 
@@ -111,7 +110,7 @@ public class WebAspectranService extends CoreAspectranService {
 		WebAspectranService aspectranService = newInstance(servletContext, aspectranConfigParam);
 		
 		servletContext.setAttribute(AspectranServiceListener.ASPECTRAN_SERVICE_ATTRIBUTE, aspectranService);
-		logger.debug("AspectranServiceListener attribute in ServletContext was created. {}: {}", AspectranServiceListener.ASPECTRAN_SERVICE_ATTRIBUTE, aspectranService);
+		log.debug("AspectranServiceListener attribute in ServletContext was created. " + AspectranServiceListener.ASPECTRAN_SERVICE_ATTRIBUTE + ": " + aspectranService);
 		
 		return aspectranService;
 	}

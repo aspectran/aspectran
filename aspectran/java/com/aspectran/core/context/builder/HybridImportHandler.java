@@ -21,9 +21,6 @@ import java.io.FileWriter;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.aspectran.core.context.builder.apon.RootAponAssembler;
 import com.aspectran.core.context.builder.apon.RootAponDisassembler;
 import com.aspectran.core.context.builder.apon.params.RootParameters;
@@ -33,6 +30,8 @@ import com.aspectran.core.context.rule.type.ImportType;
 import com.aspectran.core.util.apon.AponReader;
 import com.aspectran.core.util.apon.AponWriter;
 import com.aspectran.core.util.apon.Parameters;
+import com.aspectran.core.util.logging.Log;
+import com.aspectran.core.util.logging.LogFactory;
 
 /**
  * Translet Map Parser.
@@ -41,7 +40,7 @@ import com.aspectran.core.util.apon.Parameters;
  */
 public class HybridImportHandler extends AbstractImportHandler implements ImportHandler {
 	
-	private static final Logger logger = LoggerFactory.getLogger(HybridImportHandler.class);
+	private static final Log log = LogFactory.getLog(HybridImportHandler.class);
 	
 	private final ContextBuilderAssistant assistant;
 	
@@ -75,7 +74,7 @@ public class HybridImportHandler extends AbstractImportHandler implements Import
 				File aponFile = findAponFile((ImportableFile)importable);
 
 				if(importable.getLastModified() == aponFile.lastModified()) {
-					logger.info("Rapid Aspectran Context Configuration Loading: " + aponFile);
+					log.info("Rapid Aspectran Context Configuration Loading: " + aponFile);
 					hybridon = true;
 
 					Parameters rootParameters = AponReader.read(aponFile, encoding, new RootParameters());
@@ -107,7 +106,7 @@ public class HybridImportHandler extends AbstractImportHandler implements Import
 	}
 	
 	private void saveAsAponFormat(ImportableFile importableFile) throws Exception {
-		logger.info("Save as Apon Format {}", importableFile);
+		log.info("Save as Apon Format " + importableFile);
 		
 		File file = null;
 		
@@ -139,7 +138,7 @@ public class HybridImportHandler extends AbstractImportHandler implements Import
 			
 			file.setLastModified(importableFile.getLastModified());
 		} catch(Exception e) {
-			logger.error("Can't save file {}", file, e);
+			log.error("Can't save file " +  file, e);
 		}
 	}
 	

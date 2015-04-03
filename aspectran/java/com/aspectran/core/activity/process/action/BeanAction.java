@@ -20,9 +20,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.activity.variable.ValueObjectMap;
@@ -36,13 +33,15 @@ import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.type.ActionType;
 import com.aspectran.core.util.BeanUtils;
 import com.aspectran.core.util.MethodUtils;
+import com.aspectran.core.util.logging.Log;
+import com.aspectran.core.util.logging.LogFactory;
 
 /**
  * <p>Created: 2008. 03. 22 오후 5:50:35</p>
  */
 public class BeanAction extends AbstractAction implements Executable {
 
-	private static final Logger logger = LoggerFactory.getLogger(BeanAction.class);
+	private static final Log log = LogFactory.getLog(BeanAction.class);
 
 	private final BeanActionRule beanActionRule;
 	
@@ -120,7 +119,7 @@ public class BeanAction extends AbstractAction implements Executable {
 					result = invokeMethod(activity, bean, methodName, argumentItemRuleMap, expressor, true);
 					needTransletCache.put(argumentItemRuleMap, Boolean.TRUE);
 				} catch(NoSuchMethodException e) {
-					logger.info("the method with the 'translet' argument was not found. So in the future will continue to call a method with no argument 'translet'. beanActionRule {}", beanActionRule);
+					log.info("the method with the 'translet' argument was not found. So in the future will continue to call a method with no argument 'translet'. beanActionRule " + beanActionRule);
 					
 					needTransletCache.put(argumentItemRuleMap, Boolean.FALSE);
 					result = invokeMethod(activity, bean, methodName, argumentItemRuleMap, expressor, false);
@@ -131,7 +130,7 @@ public class BeanAction extends AbstractAction implements Executable {
 
 			return result;
 		} catch(Exception e) {
-			logger.error("action execution error: beanActionRule " + beanActionRule + " Cause: " + e.toString());
+			log.error("action execution error: beanActionRule " + beanActionRule + " Cause: " + e.toString());
 			throw e;
 		}
 	}

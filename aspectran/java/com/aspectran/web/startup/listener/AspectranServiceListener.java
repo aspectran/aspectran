@@ -18,15 +18,14 @@ package com.aspectran.web.startup.listener;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.aspectran.core.service.AspectranService;
+import com.aspectran.core.util.logging.Log;
+import com.aspectran.core.util.logging.LogFactory;
 import com.aspectran.web.service.WebAspectranService;
 
 public class AspectranServiceListener implements ServletContextListener {
 
-	private static final Logger logger = LoggerFactory.getLogger(AspectranServiceListener.class);
+	private static final Log log = LogFactory.getLog(AspectranServiceListener.class);
 
 	public static final String ASPECTRAN_SERVICE_ATTRIBUTE = 
 			AspectranServiceListener.class.getName() + ".ASPECTRAN_SERVICE";
@@ -39,12 +38,12 @@ public class AspectranServiceListener implements ServletContextListener {
 	 * @param event the event
 	 */
 	public void contextInitialized(ServletContextEvent event) {
-		logger.info("Initializing AspectranServiceListener...");
+		log.info("Initializing AspectranServiceListener...");
 		
 		try {
 			aspectranService = WebAspectranService.newInstance(event.getServletContext());
 		} catch(Exception e) {
-			logger.error("Failed to initialize AspectranServiceListener.", e);
+			log.error("Failed to initialize AspectranServiceListener.", e);
 		}
 	}
 	
@@ -58,11 +57,11 @@ public class AspectranServiceListener implements ServletContextListener {
 			boolean cleanlyDestoryed = aspectranService.dispose();
 			
 			if(cleanlyDestoryed)
-				logger.info("Successfully destroyed AspectranServiceListener.");
+				log.info("Successfully destroyed AspectranServiceListener.");
 			else
-				logger.error("AspectranServiceListener were not destroyed cleanly.");
+				log.error("AspectranServiceListener were not destroyed cleanly.");
 	
-			logger.info("Do not terminate the server while the all scoped bean destroying.");
+			log.info("Do not terminate the server while the all scoped bean destroying.");
 		}
 	}
 	

@@ -17,8 +17,6 @@ import org.quartz.SimpleScheduleBuilder;
 import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
 import org.quartz.impl.matchers.GroupMatcher;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.AspectranConstant;
@@ -31,6 +29,8 @@ import com.aspectran.core.context.rule.PointcutRule;
 import com.aspectran.core.context.rule.type.AspectTargetType;
 import com.aspectran.core.context.rule.type.PointcutType;
 import com.aspectran.core.util.apon.Parameters;
+import com.aspectran.core.util.logging.Log;
+import com.aspectran.core.util.logging.LogFactory;
 import com.aspectran.scheduler.AspectranScheduler;
 
 public class QuartzAspectranScheduler implements AspectranScheduler {
@@ -39,7 +39,7 @@ public class QuartzAspectranScheduler implements AspectranScheduler {
 
 	public final static String TRANSLET_NAME_DATA_KEY = "TRANSLET_NAME";
 	
-	private final Logger logger = LoggerFactory.getLogger(QuartzAspectranScheduler.class);
+	private final Log log = LogFactory.getLog(QuartzAspectranScheduler.class);
 
 	private ActivityContext context;
 	
@@ -111,7 +111,7 @@ public class QuartzAspectranScheduler implements AspectranScheduler {
 					}
 	
 					if(!startedSchedulerList.contains(scheduler) && !scheduler.isStarted()) {
-						logger.info("Now try to start scheduler '{}'.", scheduler.getSchedulerName());
+						log.info("Now try to start scheduler '" + scheduler.getSchedulerName() + "'.");
 						
 						if(startDelaySeconds > 0)
 							scheduler.startDelayed(startDelaySeconds);
@@ -137,7 +137,7 @@ public class QuartzAspectranScheduler implements AspectranScheduler {
 	public void shutdown() throws SchedulerException {
 		for(Scheduler scheduler : startedSchedulerList) {
 			if(!scheduler.isShutdown()) {
-				logger.info("Now try to stop scheduler '{}'.", scheduler.getSchedulerName());
+				log.info("Now try to stop scheduler '" + scheduler.getSchedulerName() + "'.");
 				scheduler.shutdown(waitOnShutdown);
 			}
 		}

@@ -32,9 +32,6 @@ import javax.xml.transform.sax.SAXSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.activity.process.result.ProcessResult;
@@ -47,6 +44,8 @@ import com.aspectran.core.context.AspectranConstant;
 import com.aspectran.core.context.rule.TemplateRule;
 import com.aspectran.core.context.rule.TransformRule;
 import com.aspectran.core.context.rule.type.ContentType;
+import com.aspectran.core.util.logging.Log;
+import com.aspectran.core.util.logging.LogFactory;
 
 /**
  * <p>
@@ -61,11 +60,11 @@ public class XslTransform extends TransformResponse implements Response {
 	
 	public static final String OUTPUT_METHOD_TEXT = "text";
 	
-	private final Logger logger = LoggerFactory.getLogger(XslTransform.class);
+	private final Log log = LogFactory.getLog(XslTransform.class);
 	
-	private boolean traceEnabled = logger.isTraceEnabled();
+	private boolean traceEnabled = log.isTraceEnabled();
 	
-	private boolean debugEnabled = logger.isDebugEnabled();
+	private boolean debugEnabled = log.isDebugEnabled();
 	
 	private final TemplateRule templateRule;
 	
@@ -106,7 +105,7 @@ public class XslTransform extends TransformResponse implements Response {
 	 */
 	public void response(Activity activity) throws TransformResponseException {
 		if(debugEnabled) {
-			logger.debug("response {}", transformRule);
+			log.debug("response " + transformRule);
 		}
 
 		ResponseAdapter responseAdapter = activity.getResponseAdapter();
@@ -139,7 +138,7 @@ public class XslTransform extends TransformResponse implements Response {
 				transformer.setOutputProperty(OutputKeys.INDENT, XmlTransform.OUTPUT_INDENT_YES);
 				transformer.setOutputProperty(OutputKeys.METHOD, XmlTransform.OUTPUT_METHOD_XML);
 				transformer.transform(new SAXSource(xreader, isource), new StreamResult(writer));
-				logger.trace("XSLT output: {}{}", AspectranConstant.LINE_SEPARATOR, writer.toString());
+				log.trace("XSLT output: " + AspectranConstant.LINE_SEPARATOR + writer);
 			}
 		} catch(Exception e) {
 			throw new TransformResponseException(transformRule, e);
