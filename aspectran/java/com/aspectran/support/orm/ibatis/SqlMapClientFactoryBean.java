@@ -1,8 +1,5 @@
 package com.aspectran.support.orm.ibatis;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Properties;
@@ -11,6 +8,7 @@ import com.aspectran.core.activity.Translet;
 import com.aspectran.core.context.bean.ablility.FactoryBean;
 import com.aspectran.core.context.bean.ablility.InitializableTransletBean;
 import com.aspectran.core.util.Assert;
+import com.aspectran.core.util.ResourceUtils;
 import com.ibatis.sqlmap.client.SqlMapClient;
 import com.ibatis.sqlmap.client.SqlMapClientBuilder;
 
@@ -54,7 +52,7 @@ public class SqlMapClientFactoryBean implements InitializableTransletBean, Facto
 	public void initialize(Translet translet) throws Exception {
 		Assert.notNull(configLocation, "Property 'configLocation' is required");
 
-		InputStream is = getInputStream(configLocation, translet);
+		InputStream is = ResourceUtils.getInputStream(configLocation, translet);
 
 		buildSqlMapClient(is);
 	}
@@ -68,11 +66,6 @@ public class SqlMapClientFactoryBean implements InitializableTransletBean, Facto
 
 	public SqlMapClient getObject() {
 		return this.sqlMapClient;
-	}
-	
-	private static InputStream getInputStream(String filePath, Translet translet) throws FileNotFoundException {
-		File file = translet.getApplicationAdapter().toRealPathAsFile(filePath);
-		return new FileInputStream(file);
 	}
 	
 }

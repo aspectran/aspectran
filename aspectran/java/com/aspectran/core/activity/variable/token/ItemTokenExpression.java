@@ -292,31 +292,6 @@ public class ItemTokenExpression extends TokenExpression implements ItemTokenExp
 	 * 
 	 * @return the parameter values
 	 */
-	private Object[] getParameterAsArray(String name, ItemValueType valueType) {
-		String[] values = getParameterValues(name);
-		
-		if(values == null)
-			return null;
-
-		Object[] array = new Object[values.length];
-		
-		for(int i = 0; i < values.length; i++) {
-			if(values[i] != null && valueType != null)
-				array[i] = valuelize((Object)values[i], valueType);
-			else
-				array[i] = values[i];
-		}
-		
-		return array;
-	}
-	
-	/**
-	 * Gets the parameter values.
-	 * 
-	 * @param name the name
-	 * 
-	 * @return the parameter values
-	 */
 	private List<Object> getParameterAsList(String name, ItemValueType valueType) {
 		String[] values = getParameterValues(name);
 		
