@@ -5,9 +5,6 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.ActivityContextException;
@@ -22,12 +19,14 @@ import com.aspectran.core.context.loader.reload.ActivityContextReloadingTimer;
 import com.aspectran.core.context.loader.resource.InvalidResourceException;
 import com.aspectran.core.util.ResourceUtils;
 import com.aspectran.core.util.apon.Parameters;
+import com.aspectran.core.util.logging.Log;
+import com.aspectran.core.util.logging.LogFactory;
 import com.aspectran.scheduler.AspectranScheduler;
 import com.aspectran.scheduler.quartz.QuartzAspectranScheduler;
 
 public abstract class AbstractAspectranService implements AspectranService {
 
-	protected static final Logger logger = LoggerFactory.getLogger(AbstractAspectranService.class);
+	protected static final Log log = LogFactory.getLog(AbstractAspectranService.class);
 
 	private Parameters aspectranConfig;
 	
@@ -110,7 +109,7 @@ public abstract class AbstractAspectranService implements AspectranService {
 		if(activityContext != null)
 			throw new ActivityContextException("Already loaded the AspectranContext. Destroy the old AspectranContext before loading.");
 		
-		logger.info("Initializing AspectranService...");
+		log.info("Initializing AspectranService...");
 		
 
 		try {
@@ -133,7 +132,7 @@ public abstract class AbstractAspectranService implements AspectranService {
 			if(autoReloadingStartup) {
 				if(observationInterval == -1) {
 					observationInterval = 10;
-					logger.info("'{}' is not specified, defaulting to 10 seconds.", aspectranContextAutoReloadingConfig.getQualifiedName());
+					log.info("'" + aspectranContextAutoReloadingConfig.getQualifiedName() + "' is not specified, defaulting to 10 seconds.");
 				}
 			}
 
@@ -159,7 +158,7 @@ public abstract class AbstractAspectranService implements AspectranService {
 		if(activityContext != null)
 			throw new ActivityContextException("Already loaded the AspectranContext. Destroy the old AspectranContext before loading.");
 		
-		logger.info("Loading ActivityContext...");
+		log.info("Loading ActivityContext...");
 		
 		try {
 			activityContext = activityContextLoader.load(rootContext);
@@ -186,9 +185,9 @@ public abstract class AbstractAspectranService implements AspectranService {
 			try {
 				activityContext.destroy();
 				activityContext = null;
-				logger.info("Successfully destroyed AspectranContext.");
+				log.info("Successfully destroyed AspectranContext.");
 			} catch(Exception e) {
-				logger.error("Failed to destroy AspectranContext {}", activityContext, e);
+				log.error("Failed to destroy AspectranContext " + activityContext, e);
 				cleanlyDestoryed = false;
 			}
 		}
@@ -224,7 +223,7 @@ public abstract class AbstractAspectranService implements AspectranService {
 		if(this.aspectranSchedulerConfig == null)
 			return;
 		
-		logger.info("Starting the AspectranScheduler {}", this.aspectranSchedulerConfig.describe());
+		log.info("Starting the AspectranScheduler " + this.aspectranSchedulerConfig.describe());
 		
 		boolean startup = this.aspectranSchedulerConfig.getBoolean(AspectranSchedulerConfig.startup);
 		int startDelaySeconds = this.aspectranSchedulerConfig.getInt(AspectranSchedulerConfig.startDelaySeconds.getName(), -1);
@@ -237,7 +236,7 @@ public abstract class AbstractAspectranService implements AspectranService {
 				aspectranScheduler.setWaitOnShutdown(true);
 			
 			if(startDelaySeconds == -1) {
-				logger.info("Scheduler option 'startDelaySeconds' is not specified. So defaulting to 5 seconds.");
+				log.info("Scheduler option 'startDelaySeconds' is not specified. So defaulting to 5 seconds.");
 				startDelaySeconds = 5;
 			}
 			
@@ -251,9 +250,9 @@ public abstract class AbstractAspectranService implements AspectranService {
 			try {
 				aspectranScheduler.shutdown();
 				aspectranScheduler = null;
-				logger.info("Successfully destroyed AspectranScheduler {}", aspectranScheduler);
+				log.info("Successfully destroyed AspectranScheduler " + aspectranScheduler);
 			} catch(Exception e) {
-				logger.error("AspectranScheduler were not destroyed cleanly.", e);
+				log.error("AspectranScheduler were not destroyed cleanly.", e);
 				return false;
 			}
 		}
@@ -319,7 +318,7 @@ public abstract class AbstractAspectranService implements AspectranService {
 					String l2 = f2.getCanonicalPath();
 					
 					if(l1.equals(l2)) {
-						//logger.info("");
+						//log.info("");
 						resourceLocations[i] = null;
 					}
 				}

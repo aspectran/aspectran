@@ -7,18 +7,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.aspectran.core.context.rule.BeanActionRule;
 import com.aspectran.core.context.rule.BeanRuleMap;
 import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.RedirectResponseRule;
 import com.aspectran.core.context.rule.TransformRule;
+import com.aspectran.core.util.logging.Log;
+import com.aspectran.core.util.logging.LogFactory;
 
 public class BeanReferenceInspector {
 
-	private final Logger logger = LoggerFactory.getLogger(BeanReferenceInspector.class);
+	private final Log log = LogFactory.getLog(BeanReferenceInspector.class);
 	
 	private Map<String, Set<Object>> relationMap = new LinkedHashMap<String, Set<Object>>();
 	
@@ -63,7 +62,7 @@ public class BeanReferenceInspector {
 						ruleName = "rule";
 					}
 					
-					logger.error("Cannot resolve reference to bean '" + beanId + "' on " + ruleName + " " + o);
+					log.error("Cannot resolve reference to bean '" + beanId + "' on " + ruleName + " " + o);
 				}
 			}
 		}

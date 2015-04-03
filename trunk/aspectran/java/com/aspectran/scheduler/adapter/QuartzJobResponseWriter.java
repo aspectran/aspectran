@@ -3,16 +3,16 @@ package com.aspectran.scheduler.adapter;
 import java.io.StringWriter;
 
 import org.quartz.JobDetail;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.aspectran.core.context.AspectranConstant;
+import com.aspectran.core.util.logging.Log;
+import com.aspectran.core.util.logging.LogFactory;
 import com.aspectran.scheduler.quartz.QuartzAspectranScheduler;
 
 public class QuartzJobResponseWriter extends StringWriter {
 
-	/** The logger. */
-	private final Logger logger = LoggerFactory.getLogger(QuartzJobResponseWriter.class);
+	/** The log. */
+	private final Log log = LogFactory.getLog(QuartzJobResponseWriter.class);
 
 	private JobDetail jobDetail;
 	
@@ -30,7 +30,7 @@ public class QuartzJobResponseWriter extends StringWriter {
 		sb.append(AspectranConstant.LINE_SEPARATOR);
 		sb.append(toString());
 		
-		logger.info(sb.toString());
+		log.info(sb.toString());
 	}
 
 }

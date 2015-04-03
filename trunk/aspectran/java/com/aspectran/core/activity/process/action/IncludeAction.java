@@ -17,9 +17,6 @@ package com.aspectran.core.activity.process.action;
 
 import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.activity.variable.ValueObjectMap;
@@ -29,13 +26,15 @@ import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
 import com.aspectran.core.context.rule.IncludeActionRule;
 import com.aspectran.core.context.rule.type.ActionType;
+import com.aspectran.core.util.logging.Log;
+import com.aspectran.core.util.logging.LogFactory;
 
 /**
  * <p>Created: 2008. 06. 05 오후 9:22:05</p>
  */
 public class IncludeAction extends AbstractAction implements Executable {
 	
-	private static final Logger logger = LoggerFactory.getLogger(IncludeAction.class);
+	private static final Log log = LogFactory.getLog(IncludeAction.class);
 
 	private final IncludeActionRule includeActionRule;
 
@@ -73,7 +72,7 @@ public class IncludeAction extends AbstractAction implements Executable {
 			return newActivity.getProcessResult();
 			
 		} catch(Exception e) {
-			logger.error("action execution error: includeActionRule " + includeActionRule + " Cause: " + e.toString());
+			log.error("action execution error: includeActionRule " + includeActionRule + " Cause: " + e.toString());
 			throw e;
 		}
 	}

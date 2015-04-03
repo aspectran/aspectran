@@ -15,13 +15,12 @@
  */
 package com.aspectran.core.activity.response.transform;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.activity.response.Response;
 import com.aspectran.core.context.rule.TransformRule;
+import com.aspectran.core.util.logging.Log;
+import com.aspectran.core.util.logging.LogFactory;
 
 /**
  * <p>
@@ -30,9 +29,9 @@ import com.aspectran.core.context.rule.TransformRule;
  */
 public class CustomTransform extends TransformResponse implements Response {
 
-	private final Logger logger = LoggerFactory.getLogger(CustomTransform.class);
+	private final Log log = LogFactory.getLog(CustomTransform.class);
 
-	private boolean debugEnabled = logger.isDebugEnabled();
+	private boolean debugEnabled = log.isDebugEnabled();
 
 	/**
 	 * Instantiates a new custom transformer.
@@ -56,7 +55,7 @@ public class CustomTransform extends TransformResponse implements Response {
 	public void response(Activity activity) throws TransformResponseException {
 		try {
 			if(debugEnabled) {
-				logger.debug("response {}", transformRule);
+				log.debug("response " + transformRule);
 			}
 		} catch(Exception e) {
 			throw new TransformResponseException(transformRule, e);

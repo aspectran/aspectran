@@ -52,6 +52,11 @@ public class NoLoggingImpl implements Log {
   }
 
   @Override
+  public void info(String s) {
+    // Do Nothing
+  }
+
+  @Override
   public void trace(String s) {
     // Do Nothing
   }

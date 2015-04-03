@@ -36,8 +36,6 @@ import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.apache.ibatis.transaction.TransactionFactory;
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 import org.apache.ibatis.type.TypeHandler;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.aspectran.core.activity.Translet;
 import com.aspectran.core.context.bean.ablility.FactoryBean;
@@ -45,6 +43,8 @@ import com.aspectran.core.context.bean.ablility.InitializableTransletBean;
 import com.aspectran.core.util.Assert;
 import com.aspectran.core.util.ResourceUtils;
 import com.aspectran.core.util.StringUtils;
+import com.aspectran.core.util.logging.Log;
+import com.aspectran.core.util.logging.LogFactory;
 
 /**
  * {@code FactoryBean} that creates an MyBatis {@code SqlSessionFactory}.
@@ -67,7 +67,7 @@ public class SqlSessionFactoryBean implements InitializableTransletBean, Factory
 	
 	private static final String CONFIG_LOCATION_DELIMITERS = ",;";
 	
-	private static final Logger logger = LoggerFactory.getLogger(SqlSessionFactoryBean.class);
+	private static final Log log = LogFactory.getLog(SqlSessionFactoryBean.class);
 
 	private String configLocation;
 
@@ -375,8 +375,8 @@ public class SqlSessionFactoryBean implements InitializableTransletBean, Factory
 			xmlConfigBuilder = new XMLConfigBuilder(configLocationStream, null, this.configurationProperties);
 			configuration = xmlConfigBuilder.getConfiguration();
 		} else {
-			if(logger.isDebugEnabled()) {
-				logger.debug("Property 'configLocation' not specified, using default MyBatis Configuration");
+			if(log.isDebugEnabled()) {
+				log.debug("Property 'configLocation' not specified, using default MyBatis Configuration");
 			}
 			configuration = new Configuration();
 			configuration.setVariables(this.configurationProperties);
@@ -397,8 +397,8 @@ public class SqlSessionFactoryBean implements InitializableTransletBean, Factory
 						packageToScan,
 						typeAliasesSuperType == null ? Object.class
 								: typeAliasesSuperType);
-				if(logger.isDebugEnabled()) {
-					logger.debug("Scanned package: '" + packageToScan
+				if(log.isDebugEnabled()) {
+					log.debug("Scanned package: '" + packageToScan
 							+ "' for aliases");
 				}
 			}
@@ -407,8 +407,8 @@ public class SqlSessionFactoryBean implements InitializableTransletBean, Factory
 		if(this.typeAliases != null && this.typeAliases.length > 0) {
 			for(Class<?> typeAlias : this.typeAliases) {
 				configuration.getTypeAliasRegistry().registerAlias(typeAlias);
-				if(logger.isDebugEnabled()) {
-					logger.debug("Registered type alias: '" + typeAlias + "'");
+				if(log.isDebugEnabled()) {
+					log.debug("Registered type alias: '" + typeAlias + "'");
 				}
 			}
 		}
@@ -416,8 +416,8 @@ public class SqlSessionFactoryBean implements InitializableTransletBean, Factory
 		if(this.plugins != null && this.plugins.length > 0) {
 			for(Interceptor plugin : this.plugins) {
 				configuration.addInterceptor(plugin);
-				if(logger.isDebugEnabled()) {
-					logger.debug("Registered plugin: '" + plugin + "'");
+				if(log.isDebugEnabled()) {
+					log.debug("Registered plugin: '" + plugin + "'");
 				}
 			}
 		}
@@ -426,8 +426,8 @@ public class SqlSessionFactoryBean implements InitializableTransletBean, Factory
 			String[] typeHandlersPackageArray = StringUtils.tokenize(this.typeHandlersPackage, CONFIG_LOCATION_DELIMITERS);
 			for(String packageToScan : typeHandlersPackageArray) {
 				configuration.getTypeHandlerRegistry().register(packageToScan);
-				if(logger.isDebugEnabled()) {
-					logger.debug("Scanned package: '" + packageToScan
+				if(log.isDebugEnabled()) {
+					log.debug("Scanned package: '" + packageToScan
 							+ "' for type handlers");
 				}
 			}
@@ -436,8 +436,8 @@ public class SqlSessionFactoryBean implements InitializableTransletBean, Factory
 		if(this.typeHandlers != null && this.typeHandlers.length > 0) {
 			for(TypeHandler<?> typeHandler : this.typeHandlers) {
 				configuration.getTypeHandlerRegistry().register(typeHandler);
-				if(logger.isDebugEnabled()) {
-					logger.debug("Registered type handler: '" + typeHandler
+				if(log.isDebugEnabled()) {
+					log.debug("Registered type handler: '" + typeHandler
 							+ "'");
 				}
 			}
@@ -447,8 +447,8 @@ public class SqlSessionFactoryBean implements InitializableTransletBean, Factory
 			try {
 				xmlConfigBuilder.parse();
 
-				if(logger.isDebugEnabled()) {
-					logger.debug("Parsed configuration file: '"
+				if(log.isDebugEnabled()) {
+					log.debug("Parsed configuration file: '"
 							+ this.configLocation + "'");
 				}
 			} catch(Exception ex) {
@@ -490,13 +490,13 @@ public class SqlSessionFactoryBean implements InitializableTransletBean, Factory
 					ErrorContext.instance().reset();
 				}
 
-				if(logger.isDebugEnabled()) {
-					logger.debug("Parsed mapper file: '" + mapperLocations[i] + "'");
+				if(log.isDebugEnabled()) {
+					log.debug("Parsed mapper file: '" + mapperLocations[i] + "'");
 				}
 			}
 		} else {
-			if(logger.isDebugEnabled()) {
-				logger.debug("Property 'mapperLocations' was not specified or no matching resources found");
+			if(log.isDebugEnabled()) {
+				log.debug("Property 'mapperLocations' was not specified or no matching resources found");
 			}
 		}
 

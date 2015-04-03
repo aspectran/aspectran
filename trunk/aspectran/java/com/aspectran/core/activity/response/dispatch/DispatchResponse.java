@@ -15,9 +15,6 @@
  */
 package com.aspectran.core.activity.response.dispatch;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.activity.response.Response;
@@ -25,6 +22,8 @@ import com.aspectran.core.activity.response.ResponseException;
 import com.aspectran.core.context.rule.DispatchResponseRule;
 import com.aspectran.core.context.rule.ResponseRule;
 import com.aspectran.core.context.rule.type.ResponseType;
+import com.aspectran.core.util.logging.Log;
+import com.aspectran.core.util.logging.LogFactory;
 
 /**
  * JSP or other web resource integration.
@@ -35,9 +34,9 @@ import com.aspectran.core.context.rule.type.ResponseType;
  */
 public class DispatchResponse implements Response {
 
-	private final Logger logger = LoggerFactory.getLogger(DispatchResponse.class);
+	private final Log log = LogFactory.getLog(DispatchResponse.class);
 
-	private final boolean debugEnabled = logger.isDebugEnabled();
+	private final boolean debugEnabled = log.isDebugEnabled();
 
 	private final DispatchResponseRule dispatchResponseRule;
 	
@@ -58,7 +57,7 @@ public class DispatchResponse implements Response {
 	public void response(Activity activity) throws ResponseException {
 		try {
 			if(debugEnabled) {
-				logger.debug("response " + dispatchResponseRule);
+				log.debug("response " + dispatchResponseRule);
 			}
 
 			determineViewDispatcher(activity);

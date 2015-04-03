@@ -20,9 +20,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.aspectran.core.activity.CoreTranslet;
 import com.aspectran.core.activity.Translet;
 import com.aspectran.core.adapter.ApplicationAdapter;
@@ -38,6 +35,8 @@ import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.TransletRuleMap;
 import com.aspectran.core.context.rule.type.DefaultSettingType;
 import com.aspectran.core.util.ArrayStack;
+import com.aspectran.core.util.logging.Log;
+import com.aspectran.core.util.logging.LogFactory;
 import com.aspectran.core.util.wildcard.WildcardPattern;
 
 /**
@@ -45,7 +44,7 @@ import com.aspectran.core.util.wildcard.WildcardPattern;
  */
 public class ContextBuilderAssistant {
 
-	private final Logger logger = LoggerFactory.getLogger(ContextBuilderAssistant.class);
+	private final Log log = LogFactory.getLog(ContextBuilderAssistant.class);
 	
 	private ApplicationAdapter applicationAdapter;
 	
@@ -371,8 +370,8 @@ public class ContextBuilderAssistant {
 			beanRule.setBeanClass(beanClass);
 			BeanRule.checkAccessibleMethod(beanRule);
 			beanRuleMap.putBeanRule(beanRule);
-			if(logger.isTraceEnabled())
-				logger.trace("add BeanRule " + beanRule);
+			if(log.isTraceEnabled())
+				log.trace("add BeanRule " + beanRule);
 		} else {
 			BeanClassScanner scanner = new BeanClassScanner(beanRule.getId(), classLoader);
 			Map<String, Class<?>> beanClassMap = scanner.scanClass(className);
@@ -392,8 +391,8 @@ public class ContextBuilderAssistant {
 					BeanRule.checkAccessibleMethod(beanRule2);
 					
 					beanRuleMap.putBeanRule(beanRule2);
-					if(logger.isTraceEnabled())
-						logger.trace("add BeanRule " + beanRule2);
+					if(log.isTraceEnabled())
+						log.trace("add BeanRule " + beanRule2);
 				}
 			}
 		}
@@ -406,8 +405,8 @@ public class ContextBuilderAssistant {
 	public void addAspectRule(AspectRule aspectRule) {
 		aspectRuleMap.putAspectRule(aspectRule);
 		
-		if(logger.isTraceEnabled())
-			logger.trace("add AspectRule " + aspectRule);
+		if(log.isTraceEnabled())
+			log.trace("add AspectRule " + aspectRule);
 	}
 
 	public TransletRuleMap getTransletRuleMap() {
@@ -432,16 +431,16 @@ public class ContextBuilderAssistant {
 			transletRule.setName(applyTransletNamePattern(transletRule.getName()));
 			transletRuleMap.putTransletRule(transletRule);
 
-			if(logger.isTraceEnabled())
-				logger.trace("add TransletRule " + transletRule);
+			if(log.isTraceEnabled())
+				log.trace("add TransletRule " + transletRule);
 		} else if(responseRuleList.size() == 1) {
 			transletRule.setResponseRule(responseRuleList.get(0));
 			transletRule.determineResponseRule();
 			transletRule.setName(applyTransletNamePattern(transletRule.getName()));
 			transletRuleMap.putTransletRule(transletRule);
 
-			if(logger.isTraceEnabled())
-				logger.trace("add TransletRule " + transletRule);
+			if(log.isTraceEnabled())
+				log.trace("add TransletRule " + transletRule);
 		} else {
 			ResponseRule defaultResponseRule = null;
 			
@@ -450,7 +449,7 @@ public class ContextBuilderAssistant {
 				
 				if(responseName == null || responseName.length() == 0) {
 					if(defaultResponseRule != null) {
-						logger.warn("ignore duplicated default response rule " + defaultResponseRule + " of transletRule " + transletRule);
+						log.warn("ignore duplicated default response rule " + defaultResponseRule + " of transletRule " + transletRule);
 					}
 					defaultResponseRule = responseRule;
 				} else {
@@ -459,8 +458,8 @@ public class ContextBuilderAssistant {
 					subTransletRule.setName(applyTransletNamePattern(subTransletRule.getName()));
 					transletRuleMap.putTransletRule(subTransletRule);
 					
-					if(logger.isTraceEnabled())
-						logger.trace("add sub TransletRule " + subTransletRule);
+					if(log.isTraceEnabled())
+						log.trace("add sub TransletRule " + subTransletRule);
 				}
 			}
 			
@@ -470,8 +469,8 @@ public class ContextBuilderAssistant {
 				transletRule.setName(applyTransletNamePattern(transletRule.getName()));
 				transletRuleMap.putTransletRule(transletRule);
 				
-				if(logger.isTraceEnabled())
-					logger.trace("add TransletRule " + transletRule);
+				if(log.isTraceEnabled())
+					log.trace("add TransletRule " + transletRule);
 			}
 		}
 	}

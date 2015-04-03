@@ -14,8 +14,6 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.FactoryConfigurationError;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.w3c.dom.CharacterData;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -29,6 +27,9 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
+import com.aspectran.core.util.logging.Log;
+import com.aspectran.core.util.logging.LogFactory;
+
 /**
  * The NodeletParser is a callback based parser similar to SAX.  The big
  * difference is that rather than having a single callback for all nodes,
@@ -38,7 +39,7 @@ import org.xml.sax.SAXParseException;
  */
 public class NodeletParser {
 	
-	private final Logger logger = LoggerFactory.getLogger(NodeletParser.class);
+	private final Log log = LogFactory.getLog(NodeletParser.class);
 
 	protected final static Map<String, String> EMPTY_ATTRIBUTES = new HashMap<String, String>();
 	
@@ -195,7 +196,7 @@ public class NodeletParser {
 					attributes = parseAttributes(node);
 					text = getNodeValue(node);
 
-					if(logger.isTraceEnabled()) {
+					if(log.isTraceEnabled()) {
 						StringBuilder sb = new StringBuilder(pathString);
 						
 						if(attributes != null && attributes.size() > 0) {
@@ -206,7 +207,7 @@ public class NodeletParser {
 							sb.append(" ").append(text);
 						}
 						
-						logger.trace(sb.toString());
+						log.trace(sb.toString());
 					}
 				} else {
 					attributes = EMPTY_ATTRIBUTES;

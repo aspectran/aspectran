@@ -30,6 +30,8 @@ public interface Log {
 
   void debug(String s);
 
+  void info(String s);
+
   void trace(String s);
 
   void warn(String s);

@@ -32,18 +32,18 @@ import org.apache.commons.fileupload.FileUploadBase.SizeLimitExceededException;
 import org.apache.commons.fileupload.RequestContext;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.aspectran.core.activity.request.parameter.FileParameter;
 import com.aspectran.core.util.FileUtils;
+import com.aspectran.core.util.logging.Log;
+import com.aspectran.core.util.logging.LogFactory;
 
 /**
  * Multi-part form data request handler.
  */
 public class MultipartFormDataParser {
 	
-	private static final Logger logger = LoggerFactory.getLogger(MultipartFormDataParser.class);
+	private static final Log log = LogFactory.getLog(MultipartFormDataParser.class);
 
 	public static final long MAX_REQUEST_SIZE = 250 * 1024 * 1024;
 
@@ -192,7 +192,7 @@ public class MultipartFormDataParser {
 				RequestContext requestContext = createRequestContext(request);
 				fileItemListMap = upload.parseParameterMap(requestContext);
 			} catch(SizeLimitExceededException e) {
-				logger.warn("Max length exceeded. multipart.maxRequestSize: " + maxRequestSize, e);
+				log.warn("Max length exceeded. multipart.maxRequestSize: " + maxRequestSize);
 				maxLengthExceeded = true;
 				return;
 			}

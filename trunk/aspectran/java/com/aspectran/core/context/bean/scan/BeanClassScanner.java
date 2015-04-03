@@ -13,20 +13,19 @@ import java.util.Map;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.aspectran.core.context.loader.AspectranClassLoader;
 import com.aspectran.core.util.ClassUtils;
 import com.aspectran.core.util.ResourceUtils;
 import com.aspectran.core.util.StringUtils;
+import com.aspectran.core.util.logging.Log;
+import com.aspectran.core.util.logging.LogFactory;
 import com.aspectran.core.util.wildcard.WildcardMatcher;
 import com.aspectran.core.util.wildcard.WildcardPattern;
 
 public class BeanClassScanner {
 
-	/** The logger. */
-	private final Logger logger = LoggerFactory.getLogger(BeanClassScanner.class);
+	/** The log. */
+	private final Log log = LogFactory.getLog(BeanClassScanner.class);
 	
 	private static final char BEAN_ID_WILDCARD_DELIMITER = '*';
 	
@@ -97,7 +96,7 @@ public class BeanClassScanner {
 				URL resource = resources.nextElement();
 				//System.out.println("classNamePattern: " + classNamePattern + "==scanClass=====" + resource.getFile());
 				
-				logger.debug("Bean Scanning: {} at {}", classNamePattern, resource.getFile());
+				log.debug("Bean Scanning: " + classNamePattern + " at " + resource.getFile());
 				
 				if(isJarResource(resource)) {
 					scanClassFromJarResource(resource, matcher, scanClasses);
@@ -152,7 +151,7 @@ public class BeanClassScanner {
 						String beanId = combineBeanId(relativePath);
 						//System.out.println("scaned  [clazz] " + className);
 						//System.out.println("scaned  [beanId] " + combineBeanId(relativePath));
-						logger.trace("beanClass {beanId: " + beanId + ", className: " + className + "}");
+						log.trace("beanClass {beanId: " + beanId + ", className: " + className + "}");
 						scanClasses.put(beanId, classType);
 					}
 				}
@@ -220,7 +219,7 @@ public class BeanClassScanner {
 						String className = entryNamePrefix + entryNameSuffix;
 						Class<?> classType = loadClass(className);
 						String beanId = combineBeanId(entryNameSuffix);
-						logger.trace("beanClass {beanId: " + beanId + ", className: " + className + "} from jar: " + jarFile.getName());
+						log.trace("beanClass {beanId: " + beanId + ", className: " + className + "} from jar: " + jarFile.getName());
 						//System.out.println("  [clazz] " + className);
 						//System.out.println("  [beanId] " + combineBeanId(relativePath));
 						scanClasses.put(beanId, classType);

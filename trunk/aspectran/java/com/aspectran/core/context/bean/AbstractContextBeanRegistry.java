@@ -8,9 +8,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.VoidActivity;
 import com.aspectran.core.activity.process.action.BeanAction;
@@ -30,6 +27,8 @@ import com.aspectran.core.context.rule.type.ScopeType;
 import com.aspectran.core.util.BeanUtils;
 import com.aspectran.core.util.MethodUtils;
 import com.aspectran.core.util.ReflectionUtils;
+import com.aspectran.core.util.logging.Log;
+import com.aspectran.core.util.logging.LogFactory;
 
 /**
  * SINGLETON: 모든 singleton 빈은context 생성시 초기화 된다.
@@ -41,8 +40,8 @@ import com.aspectran.core.util.ReflectionUtils;
  */
 public abstract class AbstractContextBeanRegistry implements ContextBeanRegistry {
 	
-	/** The logger. */
-	private final Logger logger = LoggerFactory.getLogger(AbstractContextBeanRegistry.class);
+	/** The log. */
+	private final Log log = LogFactory.getLog(AbstractContextBeanRegistry.class);
 	
 	protected final ActivityContext context;
 
@@ -126,7 +125,7 @@ public abstract class AbstractContextBeanRegistry implements ContextBeanRegistry
 						BeanAction.invokeMethod(activity, bean, initMethodName, null, null, true);
 						beanRule.setInitMethodNeedTranslet(Boolean.TRUE);
 					} catch(NoSuchMethodException e) {
-						logger.info("the method with the 'translet' argument was not found. So in the future will continue to call a method with no argument 'translet'. beanRule {}", beanRule);
+						log.info("the method with the 'translet' argument was not found. So in the future will continue to call a method with no argument 'translet'. beanRule " + beanRule);
 						
 						beanRule.setInitMethodNeedTranslet(Boolean.FALSE);
 						BeanAction.invokeMethod(activity, bean, initMethodName, null, null, false);
@@ -163,10 +162,10 @@ public abstract class AbstractContextBeanRegistry implements ContextBeanRegistry
 				else
 					bean = newInstance(beanRule.getBeanClass(), new Class[0], new Object[0]);
 				
-				logger.debug("JdkDynamicBeanProxy {}", beanRule);
+				log.debug("JdkDynamicBeanProxy " + beanRule);
 				bean = JdkDynamicBeanProxy.newInstance(context, beanRule, bean);
 			} else {
-				logger.debug("CglibDynamicBeanProxy {}", beanRule);
+				log.debug("CglibDynamicBeanProxy " + beanRule);
 				bean = CglibDynamicBeanProxy.newInstance(context, beanRule, argTypes, args);
 			}
 		} else {

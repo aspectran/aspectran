@@ -7,17 +7,16 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.TimerTask;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.aspectran.core.context.loader.AspectranClassLoader;
 import com.aspectran.core.service.AspectranService;
+import com.aspectran.core.util.logging.Log;
+import com.aspectran.core.util.logging.LogFactory;
 
 public class ActivityContextReloadingTimerTask extends TimerTask {
 	
-	private final Logger logger = LoggerFactory.getLogger(ActivityContextReloadingTimerTask.class);
+	private final Log log = LogFactory.getLog(ActivityContextReloadingTimerTask.class);
 	
-	private final boolean debugEnabled = logger.isDebugEnabled();
+	private final boolean debugEnabled = log.isDebugEnabled();
 
 	private final AspectranService aspectranService;
 	
@@ -46,7 +45,7 @@ public class ActivityContextReloadingTimerTask extends TimerTask {
 			return;
 		
 		for(URL url : resources) {
-			//logger.debug("Check File: " + url);
+			//log.debug("Check File: " + url);
 			try {
 				File file = new File(url.toURI());
 				String filePath = file.getAbsolutePath();
@@ -63,7 +62,7 @@ public class ActivityContextReloadingTimerTask extends TimerTask {
 							modified = true;
 							
 							if(debugEnabled) {
-								logger.debug("File Modification Detected: {}", url);
+								log.debug("File Modification Detected: " + url);
 							}
 							
 							break;
@@ -71,7 +70,7 @@ public class ActivityContextReloadingTimerTask extends TimerTask {
 					}
 				}
 			} catch(URISyntaxException e) {
-				logger.error(e.getMessage(), e);
+				log.error(e.getMessage(), e);
 			}
 			
 			cycle++;
