@@ -13,7 +13,7 @@ import com.ibatis.sqlmap.client.SqlMapClient;
 */
 public class SqlMapClientTransactionAdvice {
 	
-	private SqlMapClient sqlMapClient;
+	private final SqlMapClient sqlMapClient;
 	
 	public SqlMapClientTransactionAdvice(SqlMapClientFactoryBean factoryBean) {
 		this.sqlMapClient = factoryBean.getObject();
@@ -21,10 +21,6 @@ public class SqlMapClientTransactionAdvice {
 	
 	public SqlMapClient getSqlMapClient() {
 		return sqlMapClient;
-	}
-
-	public void setSqlMapClient(SqlMapClient sqlMapClient) {
-		this.sqlMapClient = sqlMapClient;
 	}
 
 	public SqlMapClient start() throws SQLException {

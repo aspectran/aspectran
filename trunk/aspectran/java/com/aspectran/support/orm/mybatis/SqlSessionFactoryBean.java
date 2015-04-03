@@ -15,9 +15,6 @@
  */
 package com.aspectran.support.orm.mybatis;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.SQLException;
@@ -46,6 +43,7 @@ import com.aspectran.core.activity.Translet;
 import com.aspectran.core.context.bean.ablility.FactoryBean;
 import com.aspectran.core.context.bean.ablility.InitializableTransletBean;
 import com.aspectran.core.util.Assert;
+import com.aspectran.core.util.ResourceUtils;
 import com.aspectran.core.util.StringUtils;
 
 /**
@@ -343,7 +341,7 @@ public class SqlSessionFactoryBean implements InitializableTransletBean, Factory
 		InputStream[] mapperLocationStreams = null;
 		
 		if(configLocation != null) {
-			configLocationStream = getInputStream(configLocation, translet);
+			configLocationStream = ResourceUtils.getInputStream(configLocation, translet);
 		}
 		
 		if(mapperLocations != null && mapperLocations.length > 0) {
@@ -351,7 +349,7 @@ public class SqlSessionFactoryBean implements InitializableTransletBean, Factory
 			
 			for(int i = 0; i < mapperLocations.length; i++) {
 				if(mapperLocations[i] != null)
-					mapperLocationStreams[i] = getInputStream(mapperLocations[i], translet);
+					mapperLocationStreams[i] = ResourceUtils.getInputStream(mapperLocations[i], translet);
 			}
 		}
 		
@@ -468,8 +466,7 @@ public class SqlSessionFactoryBean implements InitializableTransletBean, Factory
 
 		if(this.databaseIdProvider != null) {
 			try {
-				configuration.setDatabaseId(this.databaseIdProvider
-						.getDatabaseId(this.dataSource));
+				configuration.setDatabaseId(this.databaseIdProvider.getDatabaseId(this.dataSource));
 			} catch(SQLException e) {
 				throw new IllegalArgumentException("Failed getting a databaseId", e);
 			}
@@ -512,11 +509,6 @@ public class SqlSessionFactoryBean implements InitializableTransletBean, Factory
 	@Override
 	public SqlSessionFactory getObject() {
 		return this.sqlSessionFactory;
-	}
-	
-	private static InputStream getInputStream(String filePath, Translet translet) throws FileNotFoundException {
-		File file = translet.getApplicationAdapter().toRealPathAsFile(filePath);
-		return new FileInputStream(file);
 	}
 
 }

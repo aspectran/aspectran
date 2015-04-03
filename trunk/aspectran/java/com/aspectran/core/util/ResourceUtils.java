@@ -16,6 +16,7 @@
 package com.aspectran.core.util;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,6 +28,8 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Properties;
+
+import com.aspectran.core.activity.Translet;
 
 /**
  * A class to simplify access to ResourceUtils through the classloader.
@@ -343,4 +346,9 @@ public class ResourceUtils {
 		return cl;
 	}
 
+	public static InputStream getInputStream(String filePath, Translet translet) throws FileNotFoundException {
+		File file = translet.getApplicationAdapter().toRealPathAsFile(filePath);
+		return new FileInputStream(file);
+	}
+	
 }

@@ -6,12 +6,15 @@ import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 
 /**
- *
- *
- */
+*
+* @author Gulendol
+*
+* <p>Created: 2015. 04. 03</p>
+*
+*/
 public class SqlSessionTransactionAdvice {
 	
-	private SqlSessionFactory sqlSessionFactory;
+	private final SqlSessionFactory sqlSessionFactory;
 	
 	private SqlSession sqlSession;
 	
@@ -21,6 +24,10 @@ public class SqlSessionTransactionAdvice {
 		this.sqlSessionFactory = factoryBean.getObject();
 	}
 	
+	public SqlSession getSqlSession() {
+		return sqlSession;
+	}
+
 	public SqlSession open() throws SQLException {
 		return sqlSessionFactory.openSession();
 	}
