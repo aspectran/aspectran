@@ -13,10 +13,10 @@
 	<classpathentry kind="lib" path="lib/mybatis-2.3.5.jar"/>
 	<classpathentry kind="lib" path="lib/commons-logging-1.1.1.jar"/>
 	<classpathentry kind="lib" path="lib/log4j-1.2.17.jar"/>
-	<classpathentry kind="lib" path="lib/log4j-api-2.0.2.jar"/>
-	<classpathentry kind="lib" path="lib/log4j-core-2.0.2.jar"/>
 	<classpathentry kind="lib" path="lib/mybatis-3.2.8.jar"/>
 	<classpathentry kind="lib" path="lib/slf4j-api-1.7.5.jar"/>
 	<classpathentry kind="lib" path="lib/slf4j-log4j12-1.7.5.jar"/>
+	<classpathentry kind="lib" path="lib/log4j-api-2.2.jar"/>
+	<classpathentry kind="lib" path="lib/log4j-core-2.2.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
