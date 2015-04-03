@@ -112,43 +112,42 @@ public abstract class AbstractAspectranService implements AspectranService {
 		
 		logger.info("Initializing AspectranService...");
 		
-		this.aspectranConfig = aspectranConfig;
 
 		try {
+			this.aspectranConfig = aspectranConfig;
 			Parameters aspectranContextConfig = aspectranConfig.getParameters(AspectranConfig.context);
 			Parameters aspectranContextAutoReloadingConfig = aspectranContextConfig.getParameters(AspectranContextConfig.autoReloading);
-			Parameters aspectranSchedulerConfig = aspectranConfig.getParameters(AspectranConfig.scheduler);
-			
-			String rootContext = aspectranContextConfig.getString(AspectranContextConfig.root);
-			String encoding = aspectranContextConfig.getString(AspectranContextConfig.encoding);
-			String[] resourceLocations = aspectranContextConfig.getStringArray(AspectranContextConfig.resources);
-			boolean hybridLoading = aspectranContextConfig.getBoolean(AspectranContextConfig.hybridLoading, false);
-			String reloadMethod = aspectranContextAutoReloadingConfig.getString(AspectranContextAutoReloadingConfig.reloadMethod);
-			int observationInterval = aspectranContextAutoReloadingConfig.getInt(AspectranContextAutoReloadingConfig.observationInterval, -1);
-			boolean autoReloadingStartup = aspectranContextAutoReloadingConfig.getBoolean(AspectranContextAutoReloadingConfig.startup, true);
 
-			if(autoReloadingStartup && resourceLocations == null || resourceLocations.length == 0)
+			if(aspectranContextAutoReloadingConfig != null) {
+				String reloadMethod = aspectranContextAutoReloadingConfig.getString(AspectranContextAutoReloadingConfig.reloadMethod);
+				int observationInterval = aspectranContextAutoReloadingConfig.getInt(AspectranContextAutoReloadingConfig.observationInterval, -1);
+				boolean autoReloadingStartup = aspectranContextAutoReloadingConfig.getBoolean(AspectranContextAutoReloadingConfig.startup, true);
+				this.hardReload = "hard".equals(reloadMethod);
+				this.autoReloadingStartup = autoReloadingStartup;
+				this.observationInterval = observationInterval;
+			}
+
+			if(autoReloadingStartup && (resourceLocations == null || resourceLocations.length == 0))
 				autoReloadingStartup = false;
-			
-			this.rootContext = rootContext;
-			this.resourceLocations = checkResourceLocations(getApplicationBasePath(), null, resourceLocations);
-			this.hardReload = "hard".equals(reloadMethod);
-			this.autoReloadingStartup = autoReloadingStartup;
-			this.observationInterval = observationInterval;
-			this.aspectranSchedulerConfig = aspectranSchedulerConfig;
 
 			if(autoReloadingStartup) {
 				if(observationInterval == -1) {
 					observationInterval = 10;
-					this.observationInterval = observationInterval;
 					logger.info("'{}' is not specified, defaulting to 10 seconds.", aspectranContextAutoReloadingConfig.getQualifiedName());
 				}
 			}
+
+			this.rootContext = aspectranContextConfig.getString(AspectranContextConfig.root);
+			String[] resourceLocations = aspectranContextConfig.getStringArray(AspectranContextConfig.resources);
+			this.resourceLocations = checkResourceLocations(getApplicationBasePath(), null, resourceLocations);
+			this.aspectranSchedulerConfig = aspectranConfig.getParameters(AspectranConfig.scheduler);
 			
 			aspectranClassLoader = CoreAspectranService.newAspectranClassLoader(this.resourceLocations);
 			
+			String encoding = aspectranContextConfig.getString(AspectranContextConfig.encoding);
+			boolean hybridLoading = aspectranContextConfig.getBoolean(AspectranContextConfig.hybridLoading, false);
+			
 			activityContextLoader = new HybridActivityContextLoader(encoding);
-			//activityContextLoader.setAspectranClassLoader(aspectranClassLoader);
 			activityContextLoader.setApplicationAdapter(applicationAdapter);
 			activityContextLoader.setHybridLoading(hybridLoading);
 		} catch(Exception e) {
