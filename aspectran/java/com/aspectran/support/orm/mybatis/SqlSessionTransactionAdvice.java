@@ -28,6 +28,14 @@ public class SqlSessionTransactionAdvice {
 		return sqlSession;
 	}
 
+	public boolean isAutoCommit() {
+		return autoCommit;
+	}
+
+	public void setAutoCommit(boolean autoCommit) {
+		this.autoCommit = autoCommit;
+	}
+
 	public SqlSession open() throws SQLException {
 		return sqlSessionFactory.openSession();
 	}
