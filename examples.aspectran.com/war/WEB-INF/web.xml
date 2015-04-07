@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xmlns="http://java.sun.com/xml/ns/javaee"
+xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
+http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
+
+	<context-param>
+		<param-name>aspectran:config</param-name>
+		<param-value>
+			context: {
+				root: "classpath:aspectran/example-root.xml"
+			}
+			scheduler: {
+				startDelaySeconds: 10
+				waitOnShutdown: true
+				startup: false
+			}
+		</param-value>
+	</context-param>
+	<listener>
+		<listener-class>com.aspectran.web.startup.listener.AspectranServiceListener</listener-class>
+	</listener>
+	<servlet>
+		<servlet-name>aspectran-examples</servlet-name>
+		<servlet-class>com.aspectran.web.startup.servlet.WebActivityServlet</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>aspectran-examples</servlet-name>
+		<url-pattern>/example/*</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>aspectran-examples</servlet-name>
+		<url-pattern>/scheduler/*</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>Examples_aspectran_com</servlet-name>
+		<servlet-class>com.aspectran.examples.Examples_aspectran_comServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>Examples_aspectran_com</servlet-name>
+		<url-pattern>/examples_aspectran_com</url-pattern>
+	</servlet-mapping>
+	<welcome-file-list>
+		<welcome-file>index.html</welcome-file>
+	</welcome-file-list>
+</web-app>

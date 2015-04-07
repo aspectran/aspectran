@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!ELEMENT aspectran (settings? | typeAliases* | aspect* | bean* | translet* | import*)*>
+
+<!ELEMENT settings (#PCDATA | setting)*>
+<!ELEMENT setting (#PCDATA)>
+<!ATTLIST setting
+name CDATA #REQUIRED
+value CDATA #IMPLIED
+>
+
+<!ELEMENT typeAliases (typeAlias*)>
+
+<!ELEMENT typeAlias EMPTY>
+<!ATTLIST typeAlias
+alias CDATA #REQUIRED
+type CDATA #REQUIRED
+>
+
+<!ELEMENT aspect (joinpoint?, settings?, advice?)>
+<!ATTLIST aspect
+id ID #IMPLIED
+for (translet | scheduler) #IMPLIED
+>
+
+<!ELEMENT joinpoint (pointcut*)>
+<!ATTLIST joinpoint
+scope (translet | request | content | action-content | bean-content | response | action | bean) #IMPLIED
+>
+
+<!ELEMENT pointcut (#PCDATA)>
+<!ATTLIST pointcut
+type (wildcard | regexp | simpleTrigger | cronTrigger) #IMPLIED
+>
+
+<!ELEMENT advice ((before?, after?, around?, finally?, exceptionRaized?) | job*)>
+<!ATTLIST advice
+bean CDATA #IMPLIED
+>
+
+<!ELEMENT before (echo | action)>
+<!ELEMENT after (echo | action)>
+<!ELEMENT around (echo | action)>
+<!ELEMENT finally (echo | action)>
+<!ELEMENT exceptionRaized (action?, responseByContentType*)>
+
+<!ELEMENT job EMPTY>
+<!ATTLIST job
+translet CDATA #REQUIRED
+disabled (true | false) #IMPLIED
+>
+
+<!ELEMENT bean (features?, constructor?, property?)>
+<!ATTLIST bean
+id CDATA #IMPLIED
+class CDATA #IMPLIED
+scope (singleton | prototype | request | session | application) #IMPLIED
+singleton (true | false) #IMPLIED
+factoryMethod CDATA #IMPLIED
+initMethod CDATA #IMPLIED
+destroyMethod CDATA #IMPLIED
+lazyInit (true | false) #IMPLIED
+important (true | false) #IMPLIED
+>
+
+<!ELEMENT features (class?, scope?, factoryMethod?, initMethod?, destroyMethod?, lazyInit?, important?)>
+
+<!ELEMENT class (#PCDATA)>
+<!ELEMENT scope (#PCDATA)>
+<!ELEMENT factoryMethod (#PCDATA)>
+<!ELEMENT initMethod (#PCDATA)>
+<!ELEMENT destroyMethod (#PCDATA)>
+<!ELEMENT lazyInit (#PCDATA)>
+<!ELEMENT important (#PCDATA)>
+<!ELEMENT constructor (argument?)>
+
+<!ELEMENT translet ((request?, (echo? | action? | include?)*, (transform | dispatch | redirect | forward)?) | (request?, content*, contents?, (transform | dispatch | redirect | forward)?) | (request?, content*, contents?, response*, exception?))>
+<!ATTLIST translet
+name CDATA #REQUIRED
+hidden (true | false) #IMPLIED
+extends CDATA #IMPLIED
+>
+
+<!ELEMENT request (attribute?)>
+<!ATTLIST request
+method CDATA #IMPLIED
+characterEncoding CDATA #IMPLIED
+>
+
+<!ELEMENT contents (content*)>
+<!ATTLIST contents
+name CDATA #IMPLIED
+omittable (true | false) #IMPLIED
+>
+
+<!ELEMENT content (echo? | action? | include?)*>
+<!ATTLIST content
+id CDATA #IMPLIED
+name CDATA #IMPLIED
+omittable (true | false) #IMPLIED
+hidden (true | false) #IMPLIED
+>
+
+<!ELEMENT echo (#PCDATA | attribute | item | null)*>
+<!ATTLIST echo
+id CDATA #IMPLIED
+hidden (true | false) #IMPLIED
+>
+
+<!ELEMENT action (argument?, property?)>
+<!ATTLIST action
+id CDATA #IMPLIED
+bean CDATA #IMPLIED
+method CDATA #IMPLIED
+hidden (true | false) #IMPLIED
+>
+
+<!ELEMENT include (attribute?)>
+<!ATTLIST include
+id CDATA #IMPLIED
+translet CDATA #REQUIRED
+hidden (true | false) #IMPLIED
+>
+
+<!ELEMENT response (transform? | dispatch? | redirect? | forward?)>
+<!ATTLIST response
+name CDATA #IMPLIED
+characterEncoding CDATA #IMPLIED
+>
+<!ELEMENT exception (responseByContentType*)>
+
+<!ELEMENT responseByContentType (transform? | dispatch? | redirect? | forward?)*>
+<!ATTLIST responseByContentType
+exceptionType CDATA #IMPLIED
+>
+
+<!ELEMENT transform ((echo? | action? | include?)*, template?)>
+<!ATTLIST transform
+type CDATA #IMPLIED
+contentType CDATA #IMPLIED
+characterEncoding CDATA #IMPLIED
+default (true | false) #IMPLIED
+pretty (true | false) #IMPLIED
+>
+
+<!ELEMENT template (#PCDATA)>
+<!ATTLIST template
+resource CDATA #IMPLIED
+file CDATA #IMPLIED
+url CDATA #IMPLIED
+encoding CDATA #IMPLIED
+noCache (true | false) #IMPLIED
+>
+
+<!ELEMENT dispatch ((echo? | action? | include?)*, template)>
+<!ATTLIST dispatch
+contentType CDATA #IMPLIED
+characterEncoding CDATA #IMPLIED
+default (true | false) #IMPLIED
+>
+
+<!ELEMENT redirect ((echo? | action? | include?)*, url?, parameter?)>
+<!ATTLIST redirect
+contentType CDATA #IMPLIED
+url CDATA #IMPLIED
+translet CDATA #IMPLIED
+excludeNullParameters CDATA #IMPLIED
+default (true | false) #IMPLIED
+>
+
+<!ELEMENT url (#PCDATA)>
+
+<!ELEMENT forward ((echo? | action? | include?)*, url?, attribute?)>
+<!ATTLIST forward
+contentType CDATA #IMPLIED
+translet CDATA #IMPLIED
+>
+
+<!ELEMENT import EMPTY>
+<!ATTLIST import
+resource CDATA #IMPLIED
+file CDATA #IMPLIED
+url CDATA #IMPLIED
+>
+
+<!ELEMENT attribute (#PCDATA | item)*>
+
+<!ELEMENT property (#PCDATA | item)*>
+
+<!ELEMENT argument (#PCDATA | item)*>
+
+<!ELEMENT parameter (#PCDATA | item)*>
+
+<!ELEMENT item (#PCDATA | value | reference | null)*>
+<!ATTLIST item
+name CDATA #IMPLIED
+value CDATA #IMPLIED
+type (item | array | list | map | set | properties) #IMPLIED
+valueType (string | int | long | float | double | boolean | parameters | file | multipart-file) #IMPLIED
+defaultValue CDATA #IMPLIED
+tokenize (true | false) #IMPLIED
+>
+
+<!ELEMENT value (#PCDATA | null)*>
+<!ATTLIST value
+name CDATA #IMPLIED
+>
+
+<!ELEMENT reference EMPTY>
+<!ATTLIST reference
+bean CDATA #IMPLIED
+parameter CDATA #IMPLIED
+attribute CDATA #IMPLIED
+property CDATA #IMPLIED
+>
+
+<!ELEMENT null EMPTY>
