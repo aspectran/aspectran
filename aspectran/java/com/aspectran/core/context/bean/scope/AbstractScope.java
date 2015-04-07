@@ -4,10 +4,10 @@
 package com.aspectran.core.context.bean.scope;
 
 /**
+ * The Class AbstractScope.
  *
  * @author Gulendol
  * @since 2011. 3. 12.
- *
  */
 public class AbstractScope implements Scope {
 	

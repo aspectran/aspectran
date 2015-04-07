@@ -23,9 +23,9 @@ import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
 /**
- * <p>
+ * The Class CustomTransform.
+ * 
  * Created: 2008. 06. 24 오전 4:07:58
- * </p>
  */
 public class CustomTransform extends TransformResponse implements Response {
 

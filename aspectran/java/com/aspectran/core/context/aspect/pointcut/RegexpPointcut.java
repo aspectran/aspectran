@@ -8,6 +8,9 @@ import java.util.regex.Pattern;
 
 import com.aspectran.core.context.rule.PointcutPatternRule;
 
+/**
+ * The Class RegexpPointcut.
+ */
 public class RegexpPointcut extends AbstractPointcut implements Pointcut {
 	
 	private Map<String, Pattern> regexpPatternCache = new WeakHashMap<String, Pattern>();

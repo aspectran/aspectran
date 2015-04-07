@@ -15,6 +15,9 @@ import com.aspectran.scheduler.activity.JobActivity;
 import com.aspectran.scheduler.adapter.QuartzJobRequestAdapter;
 import com.aspectran.scheduler.adapter.QuartzJobResponseAdapter;
 
+/**
+ * The Class JobActivityRunJob.
+ */
 public class JobActivityRunJob implements Job {
 	
 	public JobActivityRunJob() {

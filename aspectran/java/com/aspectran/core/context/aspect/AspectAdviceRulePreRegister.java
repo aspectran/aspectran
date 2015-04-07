@@ -77,7 +77,6 @@ public class AspectAdviceRulePreRegister extends AspectAdviceRuleRegister {
 
 					beanRule.setProxyMode(true);
 					break;
-					//beanRule.addAspectRuleList(aspectRule);
 				}
 			}
 		}
@@ -124,7 +123,8 @@ public class AspectAdviceRulePreRegister extends AspectAdviceRuleRegister {
 						
 						register(responseRule, aspectRule);
 					}
-				} else { //translet scope
+				} else {
+					//translet scope
 					if(pointcut == null || pointcut.matches(transletRule.getName())) {
 						if(log.isTraceEnabled())
 							log.trace("aspectRule " + aspectRule + "\n\t> transletRule " + transletRule);

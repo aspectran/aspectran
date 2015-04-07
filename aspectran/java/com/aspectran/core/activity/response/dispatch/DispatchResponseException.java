@@ -23,7 +23,7 @@ import com.aspectran.core.activity.response.ResponseException;
 public class DispatchResponseException extends ResponseException {
 	
 	/** @serial */
-	static final long serialVersionUID = 7415015339312418407L;
+	private static final long serialVersionUID = 6318844460136930428L;
 
 	/**
 	 * Simple constructor.

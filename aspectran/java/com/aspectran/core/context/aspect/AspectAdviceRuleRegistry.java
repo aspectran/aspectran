@@ -139,10 +139,10 @@ public class AspectAdviceRuleRegistry implements Cloneable {
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("{settings=").append(settings != null ? settings.size() : 0);
-		sb.append(", beforeAdvice=").append(beforeAdviceRuleList != null ? beforeAdviceRuleList.size() : 0);
-		sb.append(", afterAdvice=").append(afterAdviceRuleList != null ? afterAdviceRuleList.size() : 0);
-		sb.append(", finallyAdvice=").append(finallyAdviceRuleList != null ? finallyAdviceRuleList.size() : 0);
-		sb.append(", exceptionRaizedAdvice=").append(exceptionRaizedAdviceRuleList != null ? exceptionRaizedAdviceRuleList.size() : 0);
+		sb.append(", beforeAdvices=").append(beforeAdviceRuleList != null ? beforeAdviceRuleList.size() : 0);
+		sb.append(", afterAdvices=").append(afterAdviceRuleList != null ? afterAdviceRuleList.size() : 0);
+		sb.append(", finallyAdvices=").append(finallyAdviceRuleList != null ? finallyAdviceRuleList.size() : 0);
+		sb.append(", exceptionRaizedAdvices=").append(exceptionRaizedAdviceRuleList != null ? exceptionRaizedAdviceRuleList.size() : 0);
 		sb.append("}");
 		
 		return sb.toString();

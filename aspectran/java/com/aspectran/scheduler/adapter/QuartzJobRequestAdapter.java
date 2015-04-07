@@ -10,6 +10,7 @@ import com.aspectran.core.adapter.AbstractRequestAdapter;
 import com.aspectran.core.adapter.RequestAdapter;
 
 /**
+ * The Class QuartzJobRequestAdapter.
  * 
  * @since 2013. 11. 20.
  */

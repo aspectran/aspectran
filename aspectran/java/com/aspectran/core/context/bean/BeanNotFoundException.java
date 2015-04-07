@@ -4,21 +4,21 @@ package com.aspectran.core.context.bean;
 public class BeanNotFoundException extends BeanException {
 
 	/** @serial */
-	static final long serialVersionUID = -7128311266333981625L;
+	private static final long serialVersionUID = 1866105813455720749L;
 
 	/**
-	 * Create a new BeanInstantiationException.
-	 * @param beanClass the offending bean class
-	 * @param msg the detail message
+	 * Instantiates a new bean not found exception.
+	 *
+	 * @param beanId the bean id
 	 */
 	public BeanNotFoundException(String beanId) {
 		this(beanId, null);
 	}
 
 	/**
-	 * Create a new BeanInstantiationException.
-	 * @param beanClass the offending bean class
-	 * @param msg the detail message
+	 * Instantiates a new bean not found exception.
+	 *
+	 * @param beanId the bean id
 	 * @param cause the root cause
 	 */
 	public BeanNotFoundException(String beanId, Throwable cause) {

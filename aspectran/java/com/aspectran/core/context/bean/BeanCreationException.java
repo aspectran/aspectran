@@ -6,21 +6,21 @@ import com.aspectran.core.context.rule.BeanRule;
 public class BeanCreationException extends BeanException {
 
 	/** @serial */
-	static final long serialVersionUID = -4615273809502623416L;
+	private static final long serialVersionUID = 8126208342749350818L;
 
 	/**
-	 * Create a new BeanInstantiationException.
-	 * @param beanClass the offending bean class
-	 * @param msg the detail message
+	 * Instantiates a new bean creation exception.
+	 *
+	 * @param beanRule the bean rule
 	 */
 	public BeanCreationException(BeanRule beanRule) {
 		this(beanRule, null);
 	}
 
 	/**
-	 * Create a new BeanInstantiationException.
-	 * @param beanClass the offending bean class
-	 * @param msg the detail message
+	 * Instantiates a new bean creation exception.
+	 *
+	 * @param beanRule the bean rule
 	 * @param cause the root cause
 	 */
 	public BeanCreationException(BeanRule beanRule, Throwable cause) {

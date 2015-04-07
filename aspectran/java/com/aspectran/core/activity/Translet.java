@@ -30,6 +30,8 @@ import com.aspectran.core.context.rule.RedirectResponseRule;
 import com.aspectran.core.context.rule.TransformRule;
 
 /**
+ * The Interface Translet.
+ * 
  * <p>Created: 2008. 7. 5. 오전 12:35:44</p>
  */
 public abstract interface Translet {
@@ -69,8 +71,19 @@ public abstract interface Translet {
 	 */
 	public void setProcessResult(ProcessResult processResult);
 
+	/**
+	 * Touch process result.
+	 *
+	 * @return the process result
+	 */
 	public ProcessResult touchProcessResult();
 	
+	/**
+	 * Touch process result.
+	 *
+	 * @param contentName the content name
+	 * @return the process result
+	 */
 	public ProcessResult touchProcessResult(String contentName);
 	
 	/**
@@ -89,10 +102,28 @@ public abstract interface Translet {
 	 */
 	public void response(Response res) throws ResponseException;
 
+	/**
+	 * Transform.
+	 *
+	 * @param transformRule the transform rule
+	 * @throws ResponseException the response exception
+	 */
 	public void transform(TransformRule transformRule) throws ResponseException;
 
+	/**
+	 * Redirect.
+	 *
+	 * @param redirectResponseRule the redirect response rule
+	 * @throws ResponseException the response exception
+	 */
 	public void redirect(RedirectResponseRule redirectResponseRule) throws ResponseException;
 	
+	/**
+	 * Forward.
+	 *
+	 * @param forwardResponseRule the forward response rule
+	 * @throws ResponseException the response exception
+	 */
 	public void forward(ForwardResponseRule forwardResponseRule) throws ResponseException;
 	
 	/**
@@ -100,39 +131,144 @@ public abstract interface Translet {
 	 */
 	public void responseEnd();
 
+	/**
+	 * Checks if is exception raised.
+	 *
+	 * @return true, if is exception raised
+	 */
 	public boolean isExceptionRaised();
 
+	/**
+	 * Gets the raised exception.
+	 *
+	 * @return the raised exception
+	 */
 	public Exception getRaisedException();
 
+	/**
+	 * Gets the application adapter.
+	 *
+	 * @return the application adapter
+	 */
 	public ApplicationAdapter getApplicationAdapter();
 	
+	/**
+	 * Gets the session adapter.
+	 *
+	 * @return the session adapter
+	 */
 	public SessionAdapter getSessionAdapter();
 	
+	/**
+	 * Gets the request adapter.
+	 *
+	 * @return the request adapter
+	 */
 	public RequestAdapter getRequestAdapter();
 	
+	/**
+	 * Gets the response adapter.
+	 *
+	 * @return the response adapter
+	 */
 	public ResponseAdapter getResponseAdapter();
 	
+	/**
+	 * Gets the request adaptee.
+	 *
+	 * @param <T> the generic type
+	 * @return the request adaptee
+	 */
 	public <T> T getRequestAdaptee();
 	
+	/**
+	 * Gets the response adaptee.
+	 *
+	 * @param <T> the generic type
+	 * @return the response adaptee
+	 */
 	public <T> T getResponseAdaptee();
 	
+	/**
+	 * Gets the session adaptee.
+	 *
+	 * @param <T> the generic type
+	 * @return the session adaptee
+	 */
 	public <T> T getSessionAdaptee();
 	
+	/**
+	 * Gets the bean.
+	 *
+	 * @param <T> the generic type
+	 * @param beanId the bean id
+	 * @return the bean
+	 */
 	public <T> T getBean(String beanId);
 	
+	/**
+	 * Gets the aspect advice bean.
+	 *
+	 * @param <T> the generic type
+	 * @param aspectId the aspect id
+	 * @return the aspect advice bean
+	 */
 	public <T> T getAspectAdviceBean(String aspectId);
 	
+	/**
+	 * Put aspect advice bean.
+	 *
+	 * @param aspectId the aspect id
+	 * @param adviceBean the advice bean
+	 */
 	public void putAspectAdviceBean(String aspectId, Object adviceBean);
 	
+	/**
+	 * Gets the before advice result.
+	 *
+	 * @param <T> the generic type
+	 * @param aspectId the aspect id
+	 * @return the before advice result
+	 */
 	public <T> T getBeforeAdviceResult(String aspectId);
 	
+	/**
+	 * Gets the after advice result.
+	 *
+	 * @param <T> the generic type
+	 * @param aspectId the aspect id
+	 * @return the after advice result
+	 */
 	public <T> T getAfterAdviceResult(String aspectId);
 	
+	/**
+	 * Gets the finally advice result.
+	 *
+	 * @param <T> the generic type
+	 * @param aspectId the aspect id
+	 * @return the finally advice result
+	 */
 	public <T> T getFinallyAdviceResult(String aspectId);
 
+	/**
+	 * Put advice result.
+	 *
+	 * @param aspectAdviceRule the aspect advice rule
+	 * @param adviceActionResult the advice action result
+	 */
 	public void putAdviceResult(AspectAdviceRule aspectAdviceRule, Object adviceActionResult);
 
+	/**
+	 * Gets the translet interface class.
+	 *
+	 * @return the translet interface class
+	 */
 	public Class<? extends Translet> getTransletInterfaceClass();
 
+	/**
+	 * Gets the translet implement class.
+	 *
+	 * @return the translet implement class
+	 */
 	public Class<? extends CoreTranslet> getTransletImplementClass();
 }

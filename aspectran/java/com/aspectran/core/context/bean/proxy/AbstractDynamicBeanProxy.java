@@ -26,8 +26,9 @@ import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
 /**
+ * The Class AbstractDynamicBeanProxy.
+ *
  * @author aspectran
- * 
  */
 public abstract class AbstractDynamicBeanProxy {
 
@@ -174,8 +175,6 @@ public abstract class AbstractDynamicBeanProxy {
 		
 		if(relevantAspectRuleHolder.getActivityAspectRuleList() != null) {
 			for(AspectRule aspectRule: relevantAspectRuleHolder.getActivityAspectRuleList()) {
-//				System.out.println("activity.registerAspectRule " + aspectRule);
-//				System.out.println("aspectRule.getJoinpointScope() " + aspectRule.getJoinpointScope());
 				activity.registerAspectRule(aspectRule);
 				
 				if(activity.isActivityEnded())

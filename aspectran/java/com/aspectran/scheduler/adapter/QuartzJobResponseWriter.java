@@ -9,6 +9,9 @@ import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 import com.aspectran.scheduler.quartz.QuartzAspectranScheduler;
 
+/**
+ * The Class QuartzJobResponseWriter.
+ */
 public class QuartzJobResponseWriter extends StringWriter {
 
 	/** The log. */

@@ -25,10 +25,10 @@ import com.aspectran.core.activity.ActivityException;
 public class RequestException extends ActivityException {
 	
 	/** @serial */
-	static final long serialVersionUID = 8423700922358095810L;
+	private static final long serialVersionUID = -890371130094039206L;
 
 	/**
-	 * Simple constructor.
+	 * Instantiates a new request exception.
 	 */
 	public RequestException() {
 	}

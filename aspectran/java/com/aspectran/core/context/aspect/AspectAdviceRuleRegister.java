@@ -9,18 +9,6 @@ import com.aspectran.core.context.rule.type.AspectAdviceType;
 
 public class AspectAdviceRuleRegister {
 	
-	
-//	protected void register(BeanRule beanRule, AspectRule aspectRule) {
-//		RelevantAspectAdviceRuleRegistry raarr = beanRule.getRelevantAspectAdviceRuleRegistry();
-//		
-//		if(raarr == null) {
-//			raarr = new RelevantAspectAdviceRuleRegistry();
-//			beanRule.setRelevantAspectAdviceRuleRegistry(raarr);
-//		}
-//		
-//		register(raarr, aspectRule);
-//	}
-	
 	public static void register(AspectAdviceRuleRegistry aspectAdviceRuleRegistry, AspectRule aspectRule) {
 		register(aspectAdviceRuleRegistry, aspectRule, null);
 	}

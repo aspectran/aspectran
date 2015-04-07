@@ -6,12 +6,12 @@ import com.aspectran.core.context.rule.BeanRule;
 public class BeanDestroyFailedException extends BeanException {
 
 	/** @serial */
-	static final long serialVersionUID = -4615273809502623416L;
+	private static final long serialVersionUID = -2416583532228763870L;
 
 	/**
 	 * Create a new BeanInstantiationException.
-	 * @param beanClass the offending bean class
-	 * @param msg the detail message
+	 *
+	 * @param beanRule the bean rule
 	 */
 	public BeanDestroyFailedException(BeanRule beanRule) {
 		this(beanRule, null);
@@ -19,8 +19,8 @@ public class BeanDestroyFailedException extends BeanException {
 
 	/**
 	 * Create a new BeanInstantiationException.
-	 * @param beanClass the offending bean class
-	 * @param msg the detail message
+	 *
+	 * @param beanRule the bean rule
 	 * @param cause the root cause
 	 */
 	public BeanDestroyFailedException(BeanRule beanRule, Throwable cause) {

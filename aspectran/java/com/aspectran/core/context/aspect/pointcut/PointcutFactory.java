@@ -6,18 +6,11 @@ import com.aspectran.core.context.rule.PointcutPatternRule;
 import com.aspectran.core.context.rule.PointcutRule;
 import com.aspectran.core.context.rule.type.PointcutType;
 
+/**
+ * A factory for creating Pointcut objects.
+ */
 public class PointcutFactory {
 
-//	private final String plusOperationPrefix = "+(";
-//	
-//	private final String minusOperationPrefix = "-(";
-//	
-//	private final String operationSuffix = ")";
-//	
-//	private Map<String, List<PointcutPatternRule>> pointcutPatternCache = new HashMap<String, List<PointcutPatternRule>>();
-//	
-//	private List<Pointcut> pointcutList = new ArrayList<Pointcut>();
-	
 	public static Pointcut createPointcut(PointcutRule pointcutRule) {
 		if(pointcutRule.getPointcutType() == PointcutType.REGEXP) {
 			return createRegexpPointcut(pointcutRule.getPointcutPatternRuleList());

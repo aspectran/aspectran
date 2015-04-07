@@ -4,10 +4,9 @@
 package com.aspectran.core.context.bean.ablility;
 
 /**
- *
- * @author Gulendol
+ * The Interface InitializableBean.
+ * 
  * @since 2011. 2. 20.
- *
  */
 public interface InitializableBean {
 
