@@ -33,6 +33,8 @@ import com.aspectran.core.context.rule.RequestRule;
 import com.aspectran.core.context.rule.ResponseRule;
 
 /**
+ * The Class JobActivity.
+ * 
  * <p>Created: 2013. 11. 18 오후 3:40:48</p>
  */
 public class JobActivity extends CoreActivity implements Activity {

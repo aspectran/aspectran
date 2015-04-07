@@ -20,6 +20,8 @@ import com.aspectran.core.activity.response.ResponseException;
 import com.aspectran.core.context.rule.DispatchResponseRule;
 
 /**
+ * The Interface ViewDispatcher.
+ * 
  * <p>Created: 2008. 03. 23 오후 12:52:04</p>
  */
 public interface ViewDispatcher {
@@ -32,4 +34,5 @@ public interface ViewDispatcher {
 	 * @throws ResponseException the response exception
 	 */
 	public void dispatch(Activity activity, DispatchResponseRule dispatchResponseRule) throws ResponseException;
+	
 }

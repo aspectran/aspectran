@@ -11,8 +11,9 @@ import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.rule.BeanRule;
 
 /**
+ * The Class JdkDynamicBeanProxy.
+ *
  * @author aspectran
- * 
  */
 public class JdkDynamicBeanProxy extends AbstractDynamicBeanProxy implements InvocationHandler {
 

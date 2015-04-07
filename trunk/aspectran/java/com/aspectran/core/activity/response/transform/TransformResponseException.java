@@ -19,6 +19,8 @@ import com.aspectran.core.activity.response.ResponseException;
 import com.aspectran.core.context.rule.TransformRule;
 
 /**
+ * The Class TransformResponseException.
+ * 
  * <p>Created: 2008. 01. 07 오전 3:35:55</p>
  */
 public class TransformResponseException extends ResponseException {

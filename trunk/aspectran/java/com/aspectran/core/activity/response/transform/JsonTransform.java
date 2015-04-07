@@ -31,9 +31,9 @@ import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
 /**
- * <p>
+ * The Class JsonTransform.
+ * 
  * Created: 2008. 03. 22 오후 5:51:58
- * </p>
  */
 public class JsonTransform extends TransformResponse implements Response {
 	

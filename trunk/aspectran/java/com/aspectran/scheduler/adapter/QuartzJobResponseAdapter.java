@@ -13,6 +13,7 @@ import com.aspectran.core.context.rule.RedirectResponseRule;
 import com.aspectran.core.context.rule.type.ContentType;
 
 /**
+ * The Class QuartzJobResponseAdapter.
  * 
  * @since 2013. 11. 20.
  */

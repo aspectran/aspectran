@@ -1,5 +1,8 @@
 package com.aspectran.scheduler;
 
+/**
+ * The Interface AspectranScheduler.
+ */
 public interface AspectranScheduler {
 
 	public int getStartDelaySeconds();

@@ -26,7 +26,7 @@ public class ActivityException extends Exception {
 	static final long serialVersionUID = -4400747654771758521L;
 
 	/**
-	 * Simple constructor.
+	 * Instantiates a new activity exception.
 	 */
 	public ActivityException() {
 	}

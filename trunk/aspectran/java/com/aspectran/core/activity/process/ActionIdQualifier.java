@@ -17,7 +17,9 @@ package com.aspectran.core.activity.process;
 
 import com.aspectran.core.context.AspectranConstant;
 
-/*
+/**
+ * The Class ActionIdQualifier.
+ * 
  * <p>Created: 2008. 7. 2. 오전 12:16:12</p>
  */
 public class ActionIdQualifier {

@@ -4,6 +4,9 @@ import java.util.List;
 
 import com.aspectran.core.context.rule.PointcutPatternRule;
 
+/**
+ * The Interface Pointcut.
+ */
 public interface Pointcut {
 	
 	public List<PointcutPatternRule> getPointcutPatternRuleList();
@@ -21,4 +24,5 @@ public interface Pointcut {
 	public boolean exists(String transletName, String beanId, String beanMethodName);
 	
 	public void clear();
+	
 }

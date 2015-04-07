@@ -4,10 +4,9 @@
 package com.aspectran.core.context.bean.ablility;
 
 /**
- *
- * @author Gulendol
+ * The Interface DisposableBean.
+ * 
  * @since 2011. 2. 20.
- *
  */
 public interface DisposableBean {
 

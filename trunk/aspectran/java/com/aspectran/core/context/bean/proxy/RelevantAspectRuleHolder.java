@@ -8,6 +8,9 @@ import java.util.List;
 import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
 import com.aspectran.core.context.rule.AspectRule;
 
+/**
+ * The Class RelevantAspectRuleHolder.
+ */
 public class RelevantAspectRuleHolder {
 
 	private AspectAdviceRuleRegistry aspectAdviceRuleRegistry;

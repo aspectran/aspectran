@@ -23,7 +23,7 @@ package com.aspectran.core.activity.aspect;
 public class AspectAdviceException extends Exception {
 	
 	/** @serial */
-	static final long serialVersionUID = 7290974002627109441L;
+	private static final long serialVersionUID = 6813516429436576091L;
 
 	/**
 	 * Simple constructor.

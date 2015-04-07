@@ -4,10 +4,11 @@
 package com.aspectran.core.context.bean.ablility;
 
 /**
+ * The Interface FactoryBean.
  *
- * @author Gulendol
+ * @param <T> the generic type
+ * 
  * @since 2015. 4. 2.
- *
  */
 public interface FactoryBean<T> {
 

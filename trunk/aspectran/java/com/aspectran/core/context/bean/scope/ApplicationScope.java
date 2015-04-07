@@ -7,10 +7,10 @@ import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
 /**
+ * The Class ApplicationScope.
  *
  * @author Gulendol
  * @since 2011. 3. 12.
- *
  */
 public class ApplicationScope extends AbstractScope implements Scope {
 	

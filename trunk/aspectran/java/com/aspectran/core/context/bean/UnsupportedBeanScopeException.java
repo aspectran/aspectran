@@ -3,11 +3,13 @@ package com.aspectran.core.context.bean;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.type.ScopeType;
 
-
+/**
+ * The Class UnsupportedBeanScopeException.
+ */
 public class UnsupportedBeanScopeException extends BeanException {
 
 	/** @serial */
-	static final long serialVersionUID = -5688264166039484239L;
+	private static final long serialVersionUID = -5350555208208267662L;
 
 	/**
 	 * Create a new BeanInstantiationException.

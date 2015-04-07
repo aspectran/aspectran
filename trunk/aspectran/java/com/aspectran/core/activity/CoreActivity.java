@@ -295,7 +295,7 @@ public class CoreActivity extends AbstractActivity implements Activity {
 				}
 			}
 				
-			throw new RequestException("request error", e);
+			throw new RequestException("request processing failed", e);
 		}
 		
 		if(activityEnded)
@@ -355,22 +355,9 @@ public class CoreActivity extends AbstractActivity implements Activity {
 					}
 				}
 				
-				throw new ProcessException("process error", e);
+				throw new ProcessException("processsing failed", e);
 			}
 		}
-		
-		/*
-		if(log.isDebugEnabled()) {
-			if(getProcessResult() != null) {
-				log.debug("contentResult:");
-				for(ContentResult contentResult : getProcessResult()) {
-					for(ActionResult actionResult : contentResult) {
-						log.debug("\t{actionId: " + actionResult.getActionId() + ", resultValue: " + actionResult.getResultValue() + "}\n");
-					}
-				}
-			}
-		}
-		*/
 		
 		if(activityEnded || withoutResponse)
 			return;
@@ -426,7 +413,7 @@ public class CoreActivity extends AbstractActivity implements Activity {
 				}
 			}
 			
-			throw new ResponseException("response error", e);
+			throw new ResponseException("response processing failed", e);
 		}
 	}
 	

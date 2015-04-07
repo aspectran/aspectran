@@ -6,7 +6,9 @@ import java.util.List;
 import com.aspectran.core.context.AspectranConstant;
 import com.aspectran.core.context.rule.PointcutPatternRule;
 
-
+/**
+ * The Class AbstractPointcut.
+ */
 public abstract class AbstractPointcut {
 	
 	protected final List<PointcutPatternRule> pointcutPatternRuleList;
@@ -68,11 +70,6 @@ public abstract class AbstractPointcut {
 	 * @return true, if successful
 	 */
 	protected boolean matches(PointcutPatternRule pointcutPatternRule, String transletName, String beanId, String beanMethodName) {
-//		System.out.println("  transletName: " + transletName + " = " + pointcutPatternRule.getTransletNamePattern());
-//		System.out.println("  beanId: " + beanId + " = " + pointcutPatternRule.getBeanIdPattern());
-//		System.out.println("  beanMethodName: " + beanMethodName + " = " + pointcutPatternRule.getBeanMethodNamePattern());
-//		System.out.println("+ matched: " + matched);
-
 		if(transletName == null && pointcutPatternRule.getTransletNamePattern() != null ||
 				beanId == null && pointcutPatternRule.getBeanIdPattern() != null ||
 				beanMethodName == null && pointcutPatternRule.getBeanMethodNamePattern() != null)

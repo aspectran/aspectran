@@ -34,7 +34,7 @@ import com.aspectran.core.context.rule.TransformRule;
 
 
 /**
- * The Class AspectranWebTranslet.
+ * The Class CoreTranslet.
  */
 public class CoreTranslet implements Translet {
 	
@@ -47,10 +47,9 @@ public class CoreTranslet implements Translet {
 	private AspectAdviceResult aspectAdviceResult;
 	
 	/**
-	 * Instantiates a new active translet.
-	 * 
-	 * @param transletRule the translet rule
-	 * @param output the output
+	 * Instantiates a new core translet.
+	 *
+	 * @param activity the activity
 	 */
 	protected CoreTranslet(Activity activity) {
 		this.activity = activity;
@@ -63,10 +62,16 @@ public class CoreTranslet implements Translet {
 		return activity.getTransletName();
 	}
 
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.activity.Translet#getDeclaredAttributeMap()
+	 */
 	public Map<String, Object> getDeclaredAttributeMap() {
 		return declaredAttributeMap;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.activity.Translet#setDeclaredAttributeMap(java.util.Map)
+	 */
 	public void setDeclaredAttributeMap(Map<String, Object> declaredAttributeMap) {
 		this.declaredAttributeMap = declaredAttributeMap;
 	}
