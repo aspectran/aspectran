@@ -135,8 +135,10 @@ public class MultipartRequestWrapper extends HttpServletRequestWrapper {
 	}
 	
 	public Object getFileParameter(String name, ItemRule itemRule) {
-		if(itemRule.getType() == ItemType.LIST) {
+		if(itemRule.getType() == ItemType.ARRAY) {
 			return getFileParameters(name);
+		} else if(itemRule.getType() == ItemType.LIST) {
+			return getFileParameterList(name);
 		} else if(itemRule.getType() == ItemType.SET) {
 			List<FileParameter> fileParameterList = getFileParameterList(name);
 			

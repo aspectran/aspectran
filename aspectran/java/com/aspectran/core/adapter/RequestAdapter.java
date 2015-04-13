@@ -3,6 +3,8 @@ package com.aspectran.core.adapter;
 import java.io.UnsupportedEncodingException;
 import java.util.Enumeration;
 
+import com.aspectran.core.activity.request.parameter.FileParameter;
+
 /**
  * The Interface RequestAdapter.
  *
@@ -49,6 +51,18 @@ public interface RequestAdapter {
 	public String[] getParameterValues(String name);
 	
 	public Enumeration<String> getParameterNames();
+
+	public FileParameter getFileParameter(String name);
+	
+	public FileParameter[] getFileParameterValues(String name);
+
+	public void setFileParameter(String name, FileParameter fileParameter);
+
+	public void setFileParameter(String name, FileParameter[] fileParameters);
+	
+	public Enumeration<String> getFileParameterNames();
+	
+	public FileParameter[] removeFileParameter(String name);
 	
 	/**
 	 * Returns the value of the named attribute as an <code>Object</code>, or <code>null</code> if no attribute of the given name exists.
@@ -78,14 +92,6 @@ public interface RequestAdapter {
 	
 	public void removeAttribute(String name);
 
-//	public FileParameter getFileParameter(String name);
-//	
-//	public FileParameterMap getFileParameterMap();
-//
-//	public void setFileParameterMap(FileParameterMap fileItemMap);
-//
-//	public FileParameterMap touchFileParameterMap();
-	
 	/**
 	 * Checks if is max length exceeded.
 	 *

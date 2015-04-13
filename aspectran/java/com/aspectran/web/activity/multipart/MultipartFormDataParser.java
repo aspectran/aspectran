@@ -347,12 +347,12 @@ public class MultipartFormDataParser {
 	 * @return the multipart item
 	 */
 	public FileParameter getFileParameter(String name) {
-		List<FileParameter> items = parsedFileParameterListMap.get(name);
+		List<FileParameter> list = parsedFileParameterListMap.get(name);
 
-		if(items == null || items.size() == 0)
+		if(list == null || list.size() == 0)
 			return null;
 
-		return items.get(0);
+		return list.get(0);
 	}
 
 	/**
@@ -363,12 +363,12 @@ public class MultipartFormDataParser {
 	 * @return the multipart file items
 	 */
 	public FileParameter[] getFileParameters(String name) {
-		List<FileParameter> items = parsedFileParameterListMap.get(name);
+		List<FileParameter> list = parsedFileParameterListMap.get(name);
 		
-		if(items == null)
+		if(list == null)
 			return null;
 		
-		return items.toArray(new MultipartFileParameter[items.size()]);
+		return list.toArray(new MultipartFileParameter[list.size()]);
 	}
 
 	public List<FileParameter> getFileParameterList(String name) {
