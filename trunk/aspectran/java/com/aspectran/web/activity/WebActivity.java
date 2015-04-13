@@ -16,6 +16,7 @@
 package com.aspectran.web.activity;
 
 import java.io.UnsupportedEncodingException;
+import java.util.Enumeration;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -107,6 +108,13 @@ public class WebActivity extends CoreActivity implements Activity {
 			setRequestAdapter(requestAdapter);
 			
 			if(requestWrapper != null) {
+				Enumeration<String> names = requestWrapper.getFileParameterNames();
+				
+				while(names.hasMoreElements()) {
+					String name = names.nextElement();
+					requestAdapter.setFileParameter(name, requestWrapper.getFileParameters(name));
+				}
+				
 				requestAdapter.setMaxLengthExceeded(requestWrapper.isMaxLengthExceeded());
 			}
 
@@ -157,7 +165,7 @@ public class WebActivity extends CoreActivity implements Activity {
 		String multipartAllowedFileExtensions = (String)getRequestSetting(MULTIPART_ALLOWED_FILE_EXTENSIONS);
 		String multipartDeniedFileExtensions = (String)getRequestSetting(MULTIPART_DENIED_FILE_EXTENSIONS);
 
-		long maxRequestSize = FileUtils.formatSizeToBytes(multipartMaxRequestSize, -1);
+		long maxRequestSize = FileUtils.formattedSizeToBytes(multipartMaxRequestSize, -1);
 		
 		MultipartFormDataParser parser = new MultipartFormDataParser(request);
 		

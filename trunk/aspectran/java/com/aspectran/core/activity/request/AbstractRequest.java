@@ -3,6 +3,12 @@
  */
 package com.aspectran.core.activity.request;
 
+import java.util.Collections;
+import java.util.Enumeration;
+
+import com.aspectran.core.activity.request.parameter.FileParameter;
+import com.aspectran.core.activity.request.parameter.FileParameterMap;
+
 
 /**
  * The Class AbstractRequest.
@@ -12,44 +18,56 @@ package com.aspectran.core.activity.request;
  */
 public abstract class AbstractRequest {
 
-//	/** The file item map. */
-//	protected FileParameterMap fileParameterMap;
+	protected FileParameterMap fileParameterMap;
 	
 	/** The max length exceeded. */
 	protected boolean maxLengthExceeded;
 	
-//	public FileParameter getFileParameter(String name) {
-//		if(fileParameterMap == null)
-//			return null;
-//		
-//		return fileParameterMap.getFileItem(name);
-//	}
-//	
-//	/**
-//	 * Returns the file item map.
-//	 * 
-//	 * @return the file item map
-//	 */
-//	public FileParameterMap getFileParameterMap() {
-//		return fileParameterMap;
-//	}
-//
-//	/**
-//	 * Sets the file item map.
-//	 *
-//	 * @param fileParameterMap the new file item map
-//	 */
-//	public void setFileParameterMap(FileParameterMap fileParameterMap) {
-//		this.fileParameterMap = fileParameterMap;
-//	}
-//	
-//	public FileParameterMap touchFileParameterMap() {
-//		if(fileParameterMap == null) {
-//			fileParameterMap = new FileParameterMap();
-//		}
-//		
-//		return fileParameterMap;
-//	}
+	public FileParameter getFileParameter(String name) {
+		if(fileParameterMap == null)
+			return null;
+		
+		return fileParameterMap.getFileParameter(name);
+	}
+	
+	public FileParameter[] getFileParameterValues(String name) {
+		if(fileParameterMap == null)
+			return null;
+		
+		return fileParameterMap.getFileParameters(name);
+	}
+
+	public void setFileParameter(String name, FileParameter fileParameter) {
+		touchFileParameterMap().putFileParameter(name, fileParameter);
+	}
+	
+	public void setFileParameter(String name, FileParameter[] fileParameters) {
+		touchFileParameterMap().putFileParameters(name, fileParameters);
+	}
+	
+	public Enumeration<String> getFileParameterNames() {
+		FileParameterMap fileParameterMap = touchFileParameterMap();
+
+		if(fileParameterMap == null)
+			return null;
+
+		return Collections.enumeration(fileParameterMap.keySet());
+	}
+	
+	public FileParameter[] removeFileParameter(String name) {
+		if(fileParameterMap == null)
+			return null;
+		
+		return fileParameterMap.remove(name);
+	}
+	
+	protected FileParameterMap touchFileParameterMap() {
+		if(fileParameterMap == null) {
+			fileParameterMap = new FileParameterMap();
+		}
+		
+		return fileParameterMap;
+	}
 
 	/**
 	 * Checks if is max length exceeded.

@@ -125,7 +125,7 @@ public class FileUtils {
 	 * 
 	 * @return the long
 	 */
-	public static long formatSizeToBytes(String sizeString, long defaultSize) {
+	public static long formattedSizeToBytes(String sizeString, long defaultSize) {
 		if(sizeString == null)
 			return defaultSize;
 
@@ -435,7 +435,7 @@ public class FileUtils {
 	 * @return String
 	 */
 	public static String obtainUniqueFileName(String path, String fileName) {
-		return makeUniqueFileName(path, fileName, null);
+		return obtainUniqueFileName(path, fileName, null);
 	}
 
 	/**
@@ -450,7 +450,7 @@ public class FileUtils {
 	 * 
 	 * @return String
 	 */
-	public static String makeUniqueFileName(String path, String fileName, String extentionSeparator) {
+	public static String obtainUniqueFileName(String path, String fileName, String extentionSeparator) {
 		String separator = (extentionSeparator == null) ? "." : extentionSeparator;
 
 		int fromIndex = fileName.lastIndexOf(separator);
@@ -489,12 +489,12 @@ public class FileUtils {
 	 * 
 	 * @return String 새로운 파일명
 	 */
-	public static String makeUniqueSafetyFileName(String path, String fileName) {
+	public static String obtainUniqueSafetyFileName(String path, String fileName) {
 		String time = new Long(System.currentTimeMillis()).toString();
 		String ext = getFileExtension(fileName);
 		String separator = "_";
 
-		return makeUniqueFileName(path, time + separator + ext, separator);
+		return obtainUniqueFileName(path, time + separator + ext, separator);
 	}
 
 	/**
@@ -583,7 +583,7 @@ public class FileUtils {
 
 		static {
 			B = new SizeUnit("B", "byte");
-			KB = new SizeUnit("KB", "kiloByte");
+			KB = new SizeUnit("KB", "kilobyte");
 			MB = new SizeUnit("MB", "megabyte");
 			GB = new SizeUnit("GB", "gigabyte");
 			TB = new SizeUnit("TB", "terabyte");
