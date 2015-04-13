@@ -38,6 +38,7 @@ import com.aspectran.core.context.rule.RequestRule;
 import com.aspectran.core.context.rule.ResponseRule;
 import com.aspectran.core.context.rule.type.ItemValueType;
 import com.aspectran.core.context.rule.type.RequestMethodType;
+import com.aspectran.core.util.FileUtils;
 import com.aspectran.web.activity.multipart.MultipartFormDataParser;
 import com.aspectran.web.activity.multipart.MultipartRequestException;
 import com.aspectran.web.activity.multipart.MultipartRequestWrapper;
@@ -105,10 +106,11 @@ public class WebActivity extends CoreActivity implements Activity {
 			RequestAdapter requestAdapter = new HttpServletRequestAdapter(request);
 			setRequestAdapter(requestAdapter);
 			
-			if(requestWrapper != null)
+			if(requestWrapper != null) {
 				requestAdapter.setMaxLengthExceeded(requestWrapper.isMaxLengthExceeded());
+			}
 
-	        ValueObjectMap voMap = parseParameter(requestWrapper);
+	        ValueObjectMap voMap = parseDeclaredParameter(requestWrapper);
 	        
 	        if(voMap != null)
 	        	translet.setDeclaredAttributeMap(voMap);
@@ -154,9 +156,14 @@ public class WebActivity extends CoreActivity implements Activity {
 		String multipartTemporaryFilePath = (String)getRequestSetting(MULTIPART_TEMPORARY_FILE_PATH);
 		String multipartAllowedFileExtensions = (String)getRequestSetting(MULTIPART_ALLOWED_FILE_EXTENSIONS);
 		String multipartDeniedFileExtensions = (String)getRequestSetting(MULTIPART_DENIED_FILE_EXTENSIONS);
+
+		long maxRequestSize = FileUtils.formatSizeToBytes(multipartMaxRequestSize, -1);
 		
 		MultipartFormDataParser parser = new MultipartFormDataParser(request);
-		parser.setMaxRequestSize(new Long(multipartMaxRequestSize));
+		
+		if(maxRequestSize > -1)
+			parser.setMaxRequestSize(maxRequestSize);
+		
 		parser.setTemporaryFilePath(multipartTemporaryFilePath);
 		parser.setAllowedFileExtensions(multipartAllowedFileExtensions);
 		parser.setDeniedFileExtensions(multipartDeniedFileExtensions);
@@ -171,7 +178,7 @@ public class WebActivity extends CoreActivity implements Activity {
 	/**
 	 * Parses the parameter.
 	 */
-	private ValueObjectMap parseParameter(MultipartRequestWrapper requestWrapper) {
+	private ValueObjectMap parseDeclaredParameter(MultipartRequestWrapper requestWrapper) {
 		ItemRuleMap attributeItemRuleMap = requestRule.getAttributeItemRuleMap();
 		
 		if(attributeItemRuleMap != null) {

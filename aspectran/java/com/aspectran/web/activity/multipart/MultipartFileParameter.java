@@ -123,7 +123,7 @@ public class MultipartFileParameter extends FileParameter {
 
 		if(!overwrite) {
 			String path = FileUtils.getPathWithoutFileName(dest.getAbsolutePath());
-			String fileName = FileUtils.makeUniqueFileName(path, dest.getName());
+			String fileName = FileUtils.obtainUniqueFileName(path, dest.getName());
 			dest = new File(path, fileName);
 		} else {
 			if(dest.exists() && !dest.delete()) {

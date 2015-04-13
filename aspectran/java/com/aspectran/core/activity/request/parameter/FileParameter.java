@@ -163,7 +163,7 @@ public class FileParameter {
 	public File saveAs(File dest, boolean overwrite) throws IOException {
 		if(!overwrite) {
 			String path = FileUtils.getPathWithoutFileName(dest.getAbsolutePath());
-			String fileName = FileUtils.makeUniqueFileName(path, dest.getName());
+			String fileName = FileUtils.obtainUniqueFileName(path, dest.getName());
 			dest = new File(path, fileName);
 		}
 		
@@ -186,6 +186,10 @@ public class FileParameter {
 		return dest;
 	}
 	
+	public File getSavedFile() {
+		return savedFile;
+	}
+
 	/**
 	 * Delete.
 	 */

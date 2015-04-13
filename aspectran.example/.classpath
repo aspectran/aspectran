@@ -16,13 +16,13 @@
 	<classpathentry kind="lib" path="/aspectran/lib/commons-logging-1.1.1.jar"/>
 	<classpathentry kind="lib" path="/aspectran/lib/junit-4.11.jar"/>
 	<classpathentry kind="lib" path="/aspectran/lib/log4j-1.2.17.jar"/>
-	<classpathentry kind="lib" path="/aspectran/lib/mybatis-2.3.5.jar"/>
-	<classpathentry kind="lib" path="/aspectran/lib/mybatis-3.2.8.jar"/>
 	<classpathentry kind="lib" path="/aspectran/lib/quartz-2.2.1.jar"/>
 	<classpathentry kind="lib" path="/aspectran/lib/quartz-jobs-2.2.1.jar"/>
 	<classpathentry kind="lib" path="/aspectran/lib/slf4j-api-1.7.5.jar"/>
 	<classpathentry kind="lib" path="/aspectran/lib/slf4j-log4j12-1.7.5.jar"/>
 	<classpathentry kind="lib" path="/aspectran/lib/log4j-api-2.2.jar"/>
 	<classpathentry kind="lib" path="/aspectran/lib/log4j-core-2.2.jar"/>
+	<classpathentry kind="lib" path="/aspectran/lib/mybatis-2.3.5.jar"/>
+	<classpathentry kind="lib" path="/aspectran/lib/mybatis-3.2.8.jar"/>
 	<classpathentry kind="output" path="webapp/WEB-INF/classes"/>
 </classpath>
