@@ -434,7 +434,7 @@ public class FileUtils {
 	 * 
 	 * @return String
 	 */
-	public static String makeUniqueFileName(String path, String fileName) {
+	public static String obtainUniqueFileName(String path, String fileName) {
 		return makeUniqueFileName(path, fileName, null);
 	}
 

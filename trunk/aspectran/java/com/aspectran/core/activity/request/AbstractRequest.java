@@ -3,7 +3,6 @@
  */
 package com.aspectran.core.activity.request;
 
-import com.aspectran.core.activity.request.parameter.FileParameterMap;
 
 /**
  * The Class AbstractRequest.
@@ -13,37 +12,44 @@ import com.aspectran.core.activity.request.parameter.FileParameterMap;
  */
 public abstract class AbstractRequest {
 
-	/** The file item map. */
-	protected FileParameterMap fileParameterMap;
+//	/** The file item map. */
+//	protected FileParameterMap fileParameterMap;
 	
 	/** The max length exceeded. */
 	protected boolean maxLengthExceeded;
 	
-	/**
-	 * Returns the file item map.
-	 * 
-	 * @return the file item map
-	 */
-	public FileParameterMap getFileParameterMap() {
-		return fileParameterMap;
-	}
-
-	/**
-	 * Sets the file item map.
-	 *
-	 * @param fileParameterMap the new file item map
-	 */
-	public void setFileParameterMap(FileParameterMap fileParameterMap) {
-		this.fileParameterMap = fileParameterMap;
-	}
-	
-	public FileParameterMap touchFileParameterMap() {
-		if(fileParameterMap == null) {
-			fileParameterMap = new FileParameterMap();
-		}
-		
-		return fileParameterMap;
-	}
+//	public FileParameter getFileParameter(String name) {
+//		if(fileParameterMap == null)
+//			return null;
+//		
+//		return fileParameterMap.getFileItem(name);
+//	}
+//	
+//	/**
+//	 * Returns the file item map.
+//	 * 
+//	 * @return the file item map
+//	 */
+//	public FileParameterMap getFileParameterMap() {
+//		return fileParameterMap;
+//	}
+//
+//	/**
+//	 * Sets the file item map.
+//	 *
+//	 * @param fileParameterMap the new file item map
+//	 */
+//	public void setFileParameterMap(FileParameterMap fileParameterMap) {
+//		this.fileParameterMap = fileParameterMap;
+//	}
+//	
+//	public FileParameterMap touchFileParameterMap() {
+//		if(fileParameterMap == null) {
+//			fileParameterMap = new FileParameterMap();
+//		}
+//		
+//		return fileParameterMap;
+//	}
 
 	/**
 	 * Checks if is max length exceeded.
