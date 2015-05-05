@@ -54,7 +54,7 @@ public final class ContentType extends Type {
 	static {
 		TEXT_PLAIN = new ContentType("text/plain");
 		TEXT_XML = new ContentType("text/xml");
-		TEXT_JSON = new ContentType("text/json");
+		TEXT_JSON = new ContentType("application/json");
 		TEXT_APON = new ContentType("text/apon");
 		TEXT_HTML = new ContentType("text/html");
 
