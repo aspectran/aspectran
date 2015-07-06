@@ -133,6 +133,29 @@ aspectran: {
 		class: "com.aspectran.example.bean.SampleBean"
 		scope: "singleton"
 	}
+	bean: {
+		id: "httpAccessControlAllowOriginFilter"
+		class: "com.aspectran.support.http.HttpAccessControlAllowOriginFilter"
+		scope: "singleton"
+		property: {
+			item: {
+				name: "withCredentials"
+				value: "true"
+				valueType: "boolean"
+				tokenize: true
+			}
+			item: {
+				type: "set"
+				name: "origins"
+				value: [
+					"http://www.yongsango.net"
+					"http://yongsango.net"
+					"http://aspectran.com:8080"
+				]
+				tokenize: true
+			}
+		}
+	}
 	translet: {
 		name: "hello"
 		action: {
