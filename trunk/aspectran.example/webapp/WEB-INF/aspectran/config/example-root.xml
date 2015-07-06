@@ -20,6 +20,16 @@
 	<bean id="example.*" class="com.aspectran.example.**.*Action" scope="singleton"/>
 	<bean id="advice.*" class="com.aspectran.example.aspect.**.*Advice"/>
 	<bean id="sampleBean" class="com.aspectran.example.bean.SampleBean" scope="singleton"/>
+	<bean id="httpAccessControlAllowOriginFilter" class="com.aspectran.support.http.HttpAccessControlAllowOriginFilter" scope="singleton">
+		<property>
+			<item name="withCredentials" valueType="boolean">true</item>
+			<item name="origins" type="set">
+				<value>http://www.yongsango.net</value>
+				<value>http://yongsango.net</value>
+				<value>http://aspectran.com:8080</value>
+			</item>
+		</property>
+	</bean>
 	
 	<aspect id="defaultRequestRule">
 		<joinpoint scope="request"/>
