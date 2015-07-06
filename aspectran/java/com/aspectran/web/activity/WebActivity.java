@@ -84,7 +84,7 @@ public class WebActivity extends CoreActivity implements Activity {
 		determineCharacterEncoding();
 	}
 	
-	protected void request(Translet translet) throws RequestException {
+	protected void adapting(Translet translet) throws ActivityException {
 		String method = request.getMethod();
 		RequestMethodType methodType = requestRule.getMethod();
 		

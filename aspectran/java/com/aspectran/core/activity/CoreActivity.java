@@ -160,6 +160,7 @@ public class CoreActivity extends AbstractActivity implements Activity {
 		try {
 			withoutResponse = false;
 			
+			adapting(translet);
 			run1st();
 		} catch(Exception e) {
 			throw new ActivityException("aspecran activity run error", e);
@@ -170,10 +171,14 @@ public class CoreActivity extends AbstractActivity implements Activity {
 		try {
 			withoutResponse = true;
 			
+			adapting(translet);
 			run1st();
 		} catch(Exception e) {
 			throw new ActivityException("aspecran activity run error without response", e);
 		}
+	}
+	
+	protected void adapting(Translet translet) throws ActivityException {
 	}
 	
 	private void run1st() throws ActivityException {
