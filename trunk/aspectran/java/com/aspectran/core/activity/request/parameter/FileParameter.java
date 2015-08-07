@@ -163,8 +163,11 @@ public class FileParameter {
 	public File saveAs(File dest, boolean overwrite) throws IOException {
 		if(!overwrite) {
 			String path = FileUtils.getPathWithoutFileName(dest.getAbsolutePath());
-			String fileName = FileUtils.obtainUniqueFileName(path, dest.getName());
-			dest = new File(path, fileName);
+			String fileName = dest.getName();
+			String newFileName = FileUtils.obtainUniqueFileName(path, dest.getName());
+			
+			if(fileName != newFileName)
+				dest = new File(path, fileName);
 		}
 		
 		InputStream input = getInputStream();
@@ -203,6 +206,17 @@ public class FileParameter {
 	public void rollback() {
 		if(savedFile != null)
 			savedFile.delete();
+	}
+	
+	public void release() {
+		if(file != null) {
+			file.setWritable(true);
+			file = null;
+		}
+		if(savedFile != null) {
+			savedFile.setWritable(true);
+			savedFile = null;
+		}
 	}
 	
 	/* (non-Javadoc)

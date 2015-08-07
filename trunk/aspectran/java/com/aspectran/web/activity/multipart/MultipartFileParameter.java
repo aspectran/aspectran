@@ -34,9 +34,9 @@ import com.aspectran.core.util.FileUtils;
  */
 public class MultipartFileParameter extends FileParameter {
 
-	private final FileItem fileItem;
+	private FileItem fileItem;
 
-	private final long fileSize;
+	private long fileSize;
 
 	/**
 	 * Create an instance wrapping the given FileItem.
@@ -123,8 +123,11 @@ public class MultipartFileParameter extends FileParameter {
 
 		if(!overwrite) {
 			String path = FileUtils.getPathWithoutFileName(dest.getAbsolutePath());
-			String fileName = FileUtils.obtainUniqueFileName(path, dest.getName());
-			dest = new File(path, fileName);
+			String fileName = dest.getName();
+			String newFileName = FileUtils.obtainUniqueFileName(path, fileName);
+			
+			if(fileName != newFileName)
+				dest = new File(path, newFileName);
 		} else {
 			if(dest.exists() && !dest.delete()) {
 				throw new IOException("Destination file [" + dest.getAbsolutePath() + "] already exists and could not be deleted.");
@@ -153,6 +156,16 @@ public class MultipartFileParameter extends FileParameter {
 		fileItem.delete();
 	}
 
+	public void release() {
+		if(fileItem != null) {
+			fileItem = null;
+		}
+		if(savedFile != null) {
+			savedFile.setWritable(true);
+			savedFile = null;
+		}
+	}
+	
 	/**
 	 * Returns the canonical name of the given file.
 	 * 
