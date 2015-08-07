@@ -471,10 +471,14 @@ public class FileUtils {
 		File f = new File(path, newFileName);
 		int cnt = 0;
 
-		while(f.exists() && cnt++ < 9999) {
+		while(f.exists() && cnt < 99999) {
+			cnt++;
 			newFileName = name + cnt + separator + ext;
 			f = new File(f.getParent(), newFileName);
 		}
+		
+		if(cnt == 0)
+			return fileName;
 
 		return newFileName;
 	}
