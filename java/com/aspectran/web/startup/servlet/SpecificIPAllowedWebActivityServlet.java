@@ -29,14 +29,14 @@ import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
 /**
- * Servlet implementation class for Servlet: Translets.
+ * The Class SpecificIPAllowedWebActivityServlet.
  */
-public class IPAddressBlockableWebActivityServlet extends WebActivityServlet implements Servlet {
+public class SpecificIPAllowedWebActivityServlet extends WebActivityServlet implements Servlet {
 
 	/** @serial */
 	static final long serialVersionUID = -2369788867122156319L;
 
-	private final Log log = LogFactory.getLog(IPAddressBlockableWebActivityServlet.class);
+	private final Log log = LogFactory.getLog(SpecificIPAllowedWebActivityServlet.class);
 	
 	private boolean debugEnabled = log.isDebugEnabled();
 	
@@ -52,7 +52,7 @@ public class IPAddressBlockableWebActivityServlet extends WebActivityServlet imp
 	/**
 	 * Instantiates a new action servlet.
 	 */
-	public IPAddressBlockableWebActivityServlet() {
+	public SpecificIPAllowedWebActivityServlet() {
 		super();
 	}
 
@@ -84,7 +84,7 @@ public class IPAddressBlockableWebActivityServlet extends WebActivityServlet imp
 	public void service(HttpServletRequest req, HttpServletResponse res) throws IOException {
 		String remoteAddr = req.getRemoteAddr();
 		
-		if(!isValidAdress(remoteAddr)) {
+		if(!isAllowedAdress(remoteAddr)) {
 			if(debugEnabled) {
 				log.debug("Access denied '" + remoteAddr + "'.");
 			}
@@ -103,7 +103,7 @@ public class IPAddressBlockableWebActivityServlet extends WebActivityServlet imp
 	 * 
 	 * @return true, if is valid access
 	 */
-	public boolean isValidAdress(String ipAddress) {
+	public boolean isAllowedAdress(String ipAddress) {
 		if(allowedAddresses == null)
 			return false;
 		
