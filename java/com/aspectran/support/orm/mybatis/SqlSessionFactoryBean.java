@@ -305,8 +305,7 @@ public class SqlSessionFactoryBean implements InitializableTransletBean, Factory
 	 * {@code DefaultSqlSessionFactory} instances.
 	 *
 	 */
-	public void setSqlSessionFactoryBuilder(
-			SqlSessionFactoryBuilder sqlSessionFactoryBuilder) {
+	public void setSqlSessionFactoryBuilder(SqlSessionFactoryBuilder sqlSessionFactoryBuilder) {
 		this.sqlSessionFactoryBuilder = sqlSessionFactoryBuilder;
 	}
 
@@ -493,11 +492,7 @@ public class SqlSessionFactoryBean implements InitializableTransletBean, Factory
 					continue;
 
 				try {
-					XMLMapperBuilder xmlMapperBuilder = new XMLMapperBuilder(
-							mapperLocationStreams[i],
-							configuration,
-							mapperLocations[i],
-							configuration.getSqlFragments());
+					XMLMapperBuilder xmlMapperBuilder = new XMLMapperBuilder(mapperLocationStreams[i], configuration, mapperLocations[i], configuration.getSqlFragments());
 					xmlMapperBuilder.parse();
 				} catch(Exception e) {
 					throw new IllegalArgumentException("Failed to parse mapping resource: '" + mapperLocations[i] + "'", e);
