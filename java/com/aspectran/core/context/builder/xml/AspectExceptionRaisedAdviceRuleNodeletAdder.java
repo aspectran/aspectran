@@ -56,7 +56,7 @@ public class AspectExceptionRaisedAdviceRuleNodeletAdder implements NodeletAdder
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
 				AspectRule aspectRule = assistant.peekObject();
 				
-				AspectAdviceRule aar = AspectAdviceRule.newInstance(aspectRule, AspectAdviceType.EXCPETION_RAIZED);
+				AspectAdviceRule aar = AspectAdviceRule.newInstance(aspectRule, AspectAdviceType.EXCPETION_RAISED);
 				assistant.pushObject(aar);
 			}
 		});

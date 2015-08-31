@@ -126,10 +126,10 @@ public abstract class AbstractDynamicBeanProxy {
 		} catch(Exception e) {
 			activity.setRaisedException(e);
 			
-			List<AspectAdviceRule> exceptionRaizedAdviceRuleList = aspectAdviceRuleRegistry.getExceptionRaizedAdviceRuleList();
+			List<AspectAdviceRule> exceptionRaisedAdviceRuleList = aspectAdviceRuleRegistry.getExceptionRaisedAdviceRuleList();
 			
-			if(exceptionRaizedAdviceRuleList != null) {
-				activity.responseByContentType(exceptionRaizedAdviceRuleList);
+			if(exceptionRaisedAdviceRuleList != null) {
+				activity.responseByContentType(exceptionRaisedAdviceRuleList);
 				
 				if(activity.isActivityEnded()) {
 					return null;

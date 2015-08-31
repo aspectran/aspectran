@@ -41,7 +41,7 @@ import com.aspectran.core.context.builder.apon.params.ContentParameters;
 import com.aspectran.core.context.builder.apon.params.ContentsParameters;
 import com.aspectran.core.context.builder.apon.params.DefaultSettingsParameters;
 import com.aspectran.core.context.builder.apon.params.DispatchParameters;
-import com.aspectran.core.context.builder.apon.params.ExceptionRaizedParameters;
+import com.aspectran.core.context.builder.apon.params.ExceptionRaisedParameters;
 import com.aspectran.core.context.builder.apon.params.ForwardParameters;
 import com.aspectran.core.context.builder.apon.params.ImportParameters;
 import com.aspectran.core.context.builder.apon.params.ItemHolderParameters;
@@ -236,18 +236,18 @@ public class RootAponAssembler {
 						BeanActionRule beanActionRule = aspectAdviceRule.getExecutableAction().getActionRule();
 						adviceActionParameters.putValue(AdviceActionParameters.action, assembleActionParameters(beanActionRule));
 					}
-				} else if(aspectAdviceRule.getAspectAdviceType() == AspectAdviceType.EXCPETION_RAIZED) {
-					Parameters exceptionRaizedParameters = adviceParameters.newParameters(AdviceParameters.exceptionRaized);
+				} else if(aspectAdviceRule.getAspectAdviceType() == AspectAdviceType.EXCPETION_RAISED) {
+					Parameters exceptionRaisedParameters = adviceParameters.newParameters(AdviceParameters.exceptionRaised);
 					if(aspectAdviceRule.getActionType() == ActionType.ECHO) {
 						EchoActionRule echoActionRule = aspectAdviceRule.getExecutableAction().getActionRule();
-						exceptionRaizedParameters.putValue(ExceptionRaizedParameters.action, assembleActionParameters(echoActionRule));
+						exceptionRaisedParameters.putValue(ExceptionRaisedParameters.action, assembleActionParameters(echoActionRule));
 					} else if(aspectAdviceRule.getActionType() == ActionType.BEAN) {
 						BeanActionRule beanActionRule = aspectAdviceRule.getExecutableAction().getActionRule();
-						exceptionRaizedParameters.putValue(ExceptionRaizedParameters.action, assembleActionParameters(beanActionRule));
+						exceptionRaisedParameters.putValue(ExceptionRaisedParameters.action, assembleActionParameters(beanActionRule));
 					}
 					ResponseByContentTypeRuleMap responseByContentTypeRuleMap = aspectAdviceRule.getResponseByContentTypeRuleMap();
 					for(ResponseByContentTypeRule rbctr : responseByContentTypeRuleMap) {
-						exceptionRaizedParameters.putValue(ExceptionRaizedParameters.responseByContentTypes, assembleResponseByContentTypeParameters(rbctr));
+						exceptionRaisedParameters.putValue(ExceptionRaisedParameters.responseByContentTypes, assembleResponseByContentTypeParameters(rbctr));
 					}
 				}
 			}

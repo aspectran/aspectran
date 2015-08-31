@@ -25,6 +25,6 @@ public interface AspectAdviceSupport {
 	
 	public List<AspectAdviceRule> getFinallyAdviceRuleList();
 	
-	public List<AspectAdviceRule> getExceptionRaizedAdviceRuleList();
+	public List<AspectAdviceRule> getExceptionRaisedAdviceRuleList();
 	
 }

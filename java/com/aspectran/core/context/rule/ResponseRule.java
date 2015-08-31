@@ -195,11 +195,11 @@ public class ResponseRule implements ResponseRuleApplicable, AspectAdviceSupport
 		return aspectAdviceRuleRegistry.getFinallyAdviceRuleList();
 	}
 	
-	public List<AspectAdviceRule> getExceptionRaizedAdviceRuleList() {
+	public List<AspectAdviceRule> getExceptionRaisedAdviceRuleList() {
 		if(aspectAdviceRuleRegistry == null)
 			return null;
 		
-		return aspectAdviceRuleRegistry.getExceptionRaizedAdviceRuleList();
+		return aspectAdviceRuleRegistry.getExceptionRaisedAdviceRuleList();
 	}
 
 	public ResponseRule newResponseRule(Response response) {

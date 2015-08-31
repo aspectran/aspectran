@@ -36,7 +36,7 @@ import com.aspectran.core.context.builder.apon.params.ContentParameters;
 import com.aspectran.core.context.builder.apon.params.ContentsParameters;
 import com.aspectran.core.context.builder.apon.params.DispatchParameters;
 import com.aspectran.core.context.builder.apon.params.ExceptionParameters;
-import com.aspectran.core.context.builder.apon.params.ExceptionRaizedParameters;
+import com.aspectran.core.context.builder.apon.params.ExceptionRaisedParameters;
 import com.aspectran.core.context.builder.apon.params.ForwardParameters;
 import com.aspectran.core.context.builder.apon.params.ImportParameters;
 import com.aspectran.core.context.builder.apon.params.ItemHolderParameters;
@@ -244,16 +244,16 @@ public class RootAponDisassembler {
 				aspectRule.addAspectAdviceRule(aspectAdviceRule);
 			}
 		
-			Parameters exceptionRaizedParameters = adviceParameters.getParameters(AdviceParameters.exceptionRaized);
-			if(exceptionRaizedParameters != null) {
-				AspectAdviceRule aspectAdviceRule = AspectAdviceRule.newInstance(aspectRule, AspectAdviceType.EXCPETION_RAIZED);
+			Parameters exceptionRaisedParameters = adviceParameters.getParameters(AdviceParameters.exceptionRaised);
+			if(exceptionRaisedParameters != null) {
+				AspectAdviceRule aspectAdviceRule = AspectAdviceRule.newInstance(aspectRule, AspectAdviceType.EXCPETION_RAISED);
 		
-				Parameters actionParameters = exceptionRaizedParameters.getParameters(ExceptionRaizedParameters.action);
+				Parameters actionParameters = exceptionRaisedParameters.getParameters(ExceptionRaisedParameters.action);
 				if(actionParameters != null) {
 					disassembleActionRule(actionParameters, aspectAdviceRule);
 				}
 		
-				List<Parameters> rrtrParametersList = exceptionRaizedParameters.getParametersList(ExceptionRaizedParameters.responseByContentTypes);
+				List<Parameters> rrtrParametersList = exceptionRaisedParameters.getParametersList(ExceptionRaisedParameters.responseByContentTypes);
 				if(rrtrParametersList != null && !rrtrParametersList.isEmpty()) {
 					for(Parameters rrtrParameters : rrtrParametersList) {
 						ResponseByContentTypeRule rrtr = disassembleResponseByContentTypeRule(rrtrParameters);

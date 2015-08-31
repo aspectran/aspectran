@@ -19,7 +19,7 @@ import com.aspectran.core.util.apon.AbstractParameters;
 import com.aspectran.core.util.apon.ParameterDefine;
 import com.aspectran.core.util.apon.Parameters;
 
-public class ExceptionRaizedParameters extends AbstractParameters implements Parameters {
+public class ExceptionRaisedParameters extends AbstractParameters implements Parameters {
 
 	public static final ParameterDefine action;
 	public static final ParameterDefine responseByContentTypes;
@@ -36,11 +36,11 @@ public class ExceptionRaizedParameters extends AbstractParameters implements Par
 		};
 	}
 	
-	public ExceptionRaizedParameters() {
+	public ExceptionRaisedParameters() {
 		super(parameterDefines);
 	}
 	
-	public ExceptionRaizedParameters(String text) {
+	public ExceptionRaisedParameters(String text) {
 		super(parameterDefines, text);
 	}
 	

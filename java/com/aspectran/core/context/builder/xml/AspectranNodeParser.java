@@ -291,7 +291,7 @@ public class AspectranNodeParser {
 		parser.addNodelet("/aspectran/aspect/advice/after", new AspectAdviceRuleNodeletAdder(assistant, AspectAdviceType.AFTER));
 		parser.addNodelet("/aspectran/aspect/advice/around", new AspectAdviceRuleNodeletAdder(assistant, AspectAdviceType.AROUND));
 		parser.addNodelet("/aspectran/aspect/advice/finally", new AspectAdviceRuleNodeletAdder(assistant, AspectAdviceType.FINALLY));
-		parser.addNodelet("/aspectran/aspect/advice/exceptionRaized", new AspectExceptionRaisedAdviceRuleNodeletAdder(assistant));
+		parser.addNodelet("/aspectran/aspect/advice/exceptionRaised", new AspectExceptionRaisedAdviceRuleNodeletAdder(assistant));
 		parser.addNodelet("/aspectran/aspect/advice/job", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
 				String transletName = attributes.get("translet");

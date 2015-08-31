@@ -33,7 +33,7 @@ scope (translet | request | content | response | action | bean) #IMPLIED
 type (wildcard | regexp | simpleTrigger | cronTrigger) #IMPLIED
 >
 
-<!ELEMENT advice ((before?, after?, around?, finally?, exceptionRaized?) | job*)>
+<!ELEMENT advice ((before?, after?, around?, finally?, exceptionRaised?) | job*)>
 <!ATTLIST advice
 bean CDATA #IMPLIED
 >
@@ -42,7 +42,7 @@ bean CDATA #IMPLIED
 <!ELEMENT after (echo | action)>
 <!ELEMENT around (echo | action)>
 <!ELEMENT finally (echo | action)>
-<!ELEMENT exceptionRaized (action?, responseByContentType*)>
+<!ELEMENT exceptionRaised (action?, responseByContentType*)>
 
 <!ELEMENT job EMPTY>
 <!ATTLIST job

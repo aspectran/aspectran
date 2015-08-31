@@ -34,7 +34,7 @@ public class AspectAdviceRuleRegistry implements Cloneable {
 	
 	private List<AspectAdviceRule> finallyAdviceRuleList;
 	
-	private List<AspectAdviceRule> exceptionRaizedAdviceRuleList;
+	private List<AspectAdviceRule> exceptionRaisedAdviceRuleList;
 	
 	private int aspectRuleCount;
 
@@ -62,12 +62,12 @@ public class AspectAdviceRuleRegistry implements Cloneable {
 		this.finallyAdviceRuleList = finallyAdviceRuleList;
 	}
 
-	public List<AspectAdviceRule> getExceptionRaizedAdviceRuleList() {
-		return exceptionRaizedAdviceRuleList;
+	public List<AspectAdviceRule> getExceptionRaisedAdviceRuleList() {
+		return exceptionRaisedAdviceRuleList;
 	}
 
-	public void setExceptionRaizedAdviceRuleList(List<AspectAdviceRule> exceptionRaizedAdviceRuleList) {
-		this.exceptionRaizedAdviceRuleList = exceptionRaizedAdviceRuleList;
+	public void setExceptionRaisedAdviceRuleList(List<AspectAdviceRule> exceptionRaisedAdviceRuleList) {
+		this.exceptionRaisedAdviceRuleList = exceptionRaisedAdviceRuleList;
 	}
 
 	public void addAspectAdviceRule(SettingsAdviceRule settingsAdviceRule) {
@@ -100,11 +100,11 @@ public class AspectAdviceRuleRegistry implements Cloneable {
 		finallyAdviceRuleList.add(0, aspectAdviceRule);
 	}
 	
-	public void addExceptionRaizedAdviceRule(AspectAdviceRule aspectAdviceRule) {
-		if(exceptionRaizedAdviceRuleList == null)
-			exceptionRaizedAdviceRuleList = new ArrayList<AspectAdviceRule>();
+	public void addExceptionRaisedAdviceRule(AspectAdviceRule aspectAdviceRule) {
+		if(exceptionRaisedAdviceRuleList == null)
+			exceptionRaisedAdviceRuleList = new ArrayList<AspectAdviceRule>();
 		
-		exceptionRaizedAdviceRuleList.add(0, aspectAdviceRule);
+		exceptionRaisedAdviceRuleList.add(0, aspectAdviceRule);
 	}
 	
 	public void addAspectAdviceRule(AspectAdviceRule aspectAdviceRule) {
@@ -117,8 +117,8 @@ public class AspectAdviceRuleRegistry implements Cloneable {
 		} else if(aspectAdviceRule.getAspectAdviceType() == AspectAdviceType.AROUND) {
 			addBeforeAdviceRule(aspectAdviceRule);
 			addAfterAdviceRule(aspectAdviceRule);
-		} else if(aspectAdviceRule.getAspectAdviceType() == AspectAdviceType.EXCPETION_RAIZED) {
-			addExceptionRaizedAdviceRule(aspectAdviceRule);
+		} else if(aspectAdviceRule.getAspectAdviceType() == AspectAdviceType.EXCPETION_RAISED) {
+			addExceptionRaisedAdviceRule(aspectAdviceRule);
 		}
 	}
 	
@@ -157,7 +157,7 @@ public class AspectAdviceRuleRegistry implements Cloneable {
 		sb.append(", beforeAdvices=").append(beforeAdviceRuleList != null ? beforeAdviceRuleList.size() : 0);
 		sb.append(", afterAdvices=").append(afterAdviceRuleList != null ? afterAdviceRuleList.size() : 0);
 		sb.append(", finallyAdvices=").append(finallyAdviceRuleList != null ? finallyAdviceRuleList.size() : 0);
-		sb.append(", exceptionRaizedAdvices=").append(exceptionRaizedAdviceRuleList != null ? exceptionRaizedAdviceRuleList.size() : 0);
+		sb.append(", exceptionRaisedAdvices=").append(exceptionRaisedAdviceRuleList != null ? exceptionRaisedAdviceRuleList.size() : 0);
 		sb.append("}");
 		
 		return sb.toString();

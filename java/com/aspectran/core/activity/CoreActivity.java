@@ -229,10 +229,10 @@ public class CoreActivity extends AbstractActivity implements Activity {
 			}
 		
 			if(transletAspectAdviceRuleRegistry != null) {
-				List<AspectAdviceRule> exceptionRaizedAdviceRuleList = transletAspectAdviceRuleRegistry.getExceptionRaizedAdviceRuleList();
+				List<AspectAdviceRule> exceptionRaisedAdviceRuleList = transletAspectAdviceRuleRegistry.getExceptionRaisedAdviceRuleList();
 				
-				if(exceptionRaizedAdviceRuleList != null) {
-					responseByContentType(exceptionRaizedAdviceRuleList);
+				if(exceptionRaisedAdviceRuleList != null) {
+					responseByContentType(exceptionRaisedAdviceRuleList);
 					
 					if(activityEnded) {
 						return;
@@ -289,10 +289,10 @@ public class CoreActivity extends AbstractActivity implements Activity {
 			setRaisedException(e);
 			
 			if(requestAspectAdviceRuleRegistry != null) {
-				List<AspectAdviceRule> exceptionRaizedAdviceRuleList = requestAspectAdviceRuleRegistry.getExceptionRaizedAdviceRuleList();
+				List<AspectAdviceRule> exceptionRaisedAdviceRuleList = requestAspectAdviceRuleRegistry.getExceptionRaisedAdviceRuleList();
 				
-				if(exceptionRaizedAdviceRuleList != null) {
-					responseByContentType(exceptionRaizedAdviceRuleList);
+				if(exceptionRaisedAdviceRuleList != null) {
+					responseByContentType(exceptionRaisedAdviceRuleList);
 					
 					if(activityEnded) {
 						return;
@@ -349,10 +349,10 @@ public class CoreActivity extends AbstractActivity implements Activity {
 				setRaisedException(e);
 				
 				if(contentAspectAdviceRuleRegistry != null) {
-					List<AspectAdviceRule> exceptionRaizedAdviceRuleList = contentAspectAdviceRuleRegistry.getExceptionRaizedAdviceRuleList();
+					List<AspectAdviceRule> exceptionRaisedAdviceRuleList = contentAspectAdviceRuleRegistry.getExceptionRaisedAdviceRuleList();
 					
-					if(exceptionRaizedAdviceRuleList != null) {
-						responseByContentType(exceptionRaizedAdviceRuleList);
+					if(exceptionRaisedAdviceRuleList != null) {
+						responseByContentType(exceptionRaisedAdviceRuleList);
 
 						if(activityEnded) {
 							return;
@@ -407,10 +407,10 @@ public class CoreActivity extends AbstractActivity implements Activity {
 			setRaisedException(e);
 			
 			if(responseAspectAdviceRuleRegistry != null) {
-				List<AspectAdviceRule> exceptionRaizedAdviceRuleList = responseAspectAdviceRuleRegistry.getExceptionRaizedAdviceRuleList();
+				List<AspectAdviceRule> exceptionRaisedAdviceRuleList = responseAspectAdviceRuleRegistry.getExceptionRaisedAdviceRuleList();
 				
-				if(exceptionRaizedAdviceRuleList != null) {
-					responseByContentType(exceptionRaizedAdviceRuleList);
+				if(exceptionRaisedAdviceRuleList != null) {
+					responseByContentType(exceptionRaisedAdviceRuleList);
 					
 					if(activityEnded) {
 						return;

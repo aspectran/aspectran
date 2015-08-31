@@ -114,11 +114,11 @@ public class ContentList extends ArrayList<ActionList> implements AspectAdviceSu
 		return aspectAdviceRuleRegistry.getFinallyAdviceRuleList();
 	}
 	
-	public List<AspectAdviceRule> getExceptionRaizedAdviceRuleList() {
+	public List<AspectAdviceRule> getExceptionRaisedAdviceRuleList() {
 		if(aspectAdviceRuleRegistry == null)
 			return null;
 		
-		return aspectAdviceRuleRegistry.getExceptionRaizedAdviceRuleList();
+		return aspectAdviceRuleRegistry.getExceptionRaisedAdviceRuleList();
 	}
 	
 	/* (non-Javadoc)

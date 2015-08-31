@@ -64,12 +64,12 @@ public class RelevantAspectAdviceRuleRegistry extends AspectAdviceRuleRegistry {
 						aarr.addFinallyAdviceRule(aspectAdviceRule);
 				}
 				
-				for(AspectAdviceRule aspectAdviceRule : getExceptionRaizedAdviceRuleList()) {
+				for(AspectAdviceRule aspectAdviceRule : getExceptionRaisedAdviceRuleList()) {
 					AspectRule aspectRule = aspectAdviceRule.getAspectRule();
 					Pointcut pointcut = aspectRule.getPointcut();
 					
 					if(pointcut == null || pointcut.matches(transletName, beanId, methodName))
-						aarr.addExceptionRaizedAdviceRule(aspectAdviceRule);
+						aarr.addExceptionRaisedAdviceRule(aspectAdviceRule);
 				}
 				
 				cache.put(patternString, aarr);
