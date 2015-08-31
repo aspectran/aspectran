@@ -35,8 +35,6 @@ public class AspectAdviceRule implements ActionRuleApplicable {
 	
 	private Executable action;
 	
-	private ResponseByContentTypeRuleMap responseByContentTypeRuleMap;
-
 	public AspectAdviceRule(AspectRule aspectRule, AspectAdviceType aspectAdviceType) {
 		this.aspectRule = aspectRule;
 		this.adviceBeanId = aspectRule.getAdviceBeanId();
@@ -59,15 +57,24 @@ public class AspectAdviceRule implements ActionRuleApplicable {
 		return aspectAdviceType;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.context.rule.ability.ActionRuleApplicable#applyActionRule(com.aspectran.core.context.rule.EchoActionRule)
+	 */
 	public void applyActionRule(EchoActionRule echoActionRule) {
 		action = new EchoAction(echoActionRule, null);
 	}
 
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.context.rule.ability.ActionRuleApplicable#applyActionRule(com.aspectran.core.context.rule.BeanActionRule)
+	 */
 	public void applyActionRule(BeanActionRule beanActionRule) {
 		beanActionRule.setAspectAdviceRule(this);
 		action = new BeanAction(beanActionRule, null);
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.context.rule.ability.ActionRuleApplicable#applyActionRule(com.aspectran.core.context.rule.IncludeActionRule)
+	 */
 	public void applyActionRule(IncludeActionRule includeActionRule) {
 		throw new UnsupportedOperationException("There is nothing that can be apply to IncludeActionRule. The aspecet-advice is not support include-action.");
 	}
@@ -83,21 +90,6 @@ public class AspectAdviceRule implements ActionRuleApplicable {
 		return action.getActionType();
 	}
 
-	public ResponseByContentTypeRuleMap getResponseByContentTypeRuleMap() {
-		return responseByContentTypeRuleMap;
-	}
-
-	public void setResponseByContentTypeRuleMap(ResponseByContentTypeRuleMap responseByContentTypeRuleMap) {
-		this.responseByContentTypeRuleMap = responseByContentTypeRuleMap;
-	}
-	
-	public void addResponseByContentTypeRule(ResponseByContentTypeRule responseByContentTypeRule) {
-		if(responseByContentTypeRuleMap == null)
-			responseByContentTypeRuleMap = new ResponseByContentTypeRuleMap();
-		
-		responseByContentTypeRuleMap.putResponseByContentTypeRule(responseByContentTypeRule);
-	}
-	
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
@@ -107,7 +99,6 @@ public class AspectAdviceRule implements ActionRuleApplicable {
 		sb.append("{aspectId=").append(aspectRule != null ? aspectRule.getId() : null);
 		sb.append(", aspectAdviceType=").append(aspectAdviceType);
 		sb.append(", action=").append(action);
-		sb.append(", responseByContentTypeRuleMap=").append(responseByContentTypeRuleMap);
 		sb.append("}");
 		
 		return sb.toString();

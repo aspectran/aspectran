@@ -19,12 +19,12 @@ import java.util.List;
 
 public interface AspectAdviceSupport {
 
-	public List<AspectAdviceRule> getBeforeAdviceRuleList();
+	public List<AspectAdviceRule> getAspectBeforeAdviceRuleList();
 	
-	public List<AspectAdviceRule> getAfterAdviceRuleList();
+	public List<AspectAdviceRule> getAspectAfterAdviceRuleList();
 	
-	public List<AspectAdviceRule> getFinallyAdviceRuleList();
+	public List<AspectAdviceRule> getAspectFinallyAdviceRuleList();
 	
-	public List<AspectAdviceRule> getExceptionRaisedAdviceRuleList();
+	public List<ExceptionHandlingRule> getAspectExceptionHandlingRuleList();
 	
 }

@@ -19,8 +19,8 @@ import java.util.List;
 
 import com.aspectran.core.activity.process.action.ActionExecutionException;
 import com.aspectran.core.activity.process.result.ProcessResult;
-import com.aspectran.core.activity.response.ResponseException;
 import com.aspectran.core.activity.response.Response;
+import com.aspectran.core.activity.response.ResponseException;
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
@@ -30,6 +30,7 @@ import com.aspectran.core.context.bean.BeanRegistry;
 import com.aspectran.core.context.bean.scope.Scope;
 import com.aspectran.core.context.rule.AspectAdviceRule;
 import com.aspectran.core.context.rule.AspectRule;
+import com.aspectran.core.context.rule.ExceptionHandlingRule;
 import com.aspectran.core.context.rule.type.JoinpointScopeType;
 
 /**
@@ -64,7 +65,7 @@ public interface Activity {
 	
 	public void response(Response res) throws ResponseException;
 	
-	public void responseByContentType(List<AspectAdviceRule> aspectAdviceRuleList) throws ActivityException;
+	public void responseByContentType(List<ExceptionHandlingRule> exceptionHandlingRuleList) throws ActivityException;
 
 	public Response getResponse();
 

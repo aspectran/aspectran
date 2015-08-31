@@ -36,7 +36,7 @@ import com.aspectran.core.util.xml.NodeletParser;
  * 
  * <p>Created: 2008. 06. 14 오전 6:56:29</p>
  */
-public class ItemRuleNodeletAdder implements NodeletAdder {
+public class ItemNodeletAdder implements NodeletAdder {
 	
 	protected ContextBuilderAssistant assistant;
 	
@@ -45,36 +45,10 @@ public class ItemRuleNodeletAdder implements NodeletAdder {
 	 *
 	 * @param assistant the assistant for Context Builder
 	 */
-	public ItemRuleNodeletAdder(ContextBuilderAssistant assistant) {
+	public ItemNodeletAdder(ContextBuilderAssistant assistant) {
 		this.assistant = assistant;
 	}
-	/*
-	protected void namingItemRule(ItemRule itemRule, ItemRuleMap itemRuleMap) {
-		int count = 0;
-		ItemRule first = null;
-		
-		for(ItemRule ir : itemRuleMap) {
-			if(ir.isUnknownName() && ir.getType() == itemRule.getType()) {
-				count++;
-				
-				if(count == 1)
-					first = ir;
-			}
-		}
-		
-		if(count == 0) {
-			itemRule.setName(itemRule.getType().toString());
-		} else {
-			if(count == 1) {
-				String name = first.getType().toString() + count;
-				first.setName(name);
-			}				
-			
-			String name = itemRule.getType().toString() + (++count);
-			itemRule.setName(name);
-		}
-	}
-	*/
+
 	/**
 	 * Process.
 	 */

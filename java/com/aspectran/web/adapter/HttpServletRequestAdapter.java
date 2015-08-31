@@ -26,7 +26,7 @@ import com.aspectran.core.adapter.RequestAdapter;
 /**
  * The Class HttpServletRequestAdapter.
  * 
- * @author Gulendol
+ * @author Juho Jeong
  * @since 2011. 3. 13.
  */
 public class HttpServletRequestAdapter extends AbstractRequestAdapter implements RequestAdapter {

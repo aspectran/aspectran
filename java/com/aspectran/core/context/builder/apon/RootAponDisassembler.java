@@ -57,6 +57,7 @@ import com.aspectran.core.context.rule.BeanActionRule;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.DispatchResponseRule;
 import com.aspectran.core.context.rule.EchoActionRule;
+import com.aspectran.core.context.rule.ExceptionHandlingRule;
 import com.aspectran.core.context.rule.ForwardResponseRule;
 import com.aspectran.core.context.rule.IncludeActionRule;
 import com.aspectran.core.context.rule.ItemRule;
@@ -244,26 +245,6 @@ public class RootAponDisassembler {
 				aspectRule.addAspectAdviceRule(aspectAdviceRule);
 			}
 		
-			Parameters exceptionRaisedParameters = adviceParameters.getParameters(AdviceParameters.exceptionRaised);
-			if(exceptionRaisedParameters != null) {
-				AspectAdviceRule aspectAdviceRule = AspectAdviceRule.newInstance(aspectRule, AspectAdviceType.EXCPETION_RAISED);
-		
-				Parameters actionParameters = exceptionRaisedParameters.getParameters(ExceptionRaisedParameters.action);
-				if(actionParameters != null) {
-					disassembleActionRule(actionParameters, aspectAdviceRule);
-				}
-		
-				List<Parameters> rrtrParametersList = exceptionRaisedParameters.getParametersList(ExceptionRaisedParameters.responseByContentTypes);
-				if(rrtrParametersList != null && !rrtrParametersList.isEmpty()) {
-					for(Parameters rrtrParameters : rrtrParametersList) {
-						ResponseByContentTypeRule rrtr = disassembleResponseByContentTypeRule(rrtrParameters);
-						aspectAdviceRule.addResponseByContentTypeRule(rrtr);
-					}
-				}
-				
-				aspectRule.addAspectAdviceRule(aspectAdviceRule);
-			}
-			
 			List<Parameters> jobParametersList = adviceParameters.getParametersList(AdviceParameters.jobs);
 			if(jobParametersList != null && !jobParametersList.isEmpty()) {
 				for(Parameters jobParameters : jobParametersList) {
@@ -277,6 +258,27 @@ public class RootAponDisassembler {
 				}
 			}
 		}
+		
+		Parameters exceptionRaisedParameters = aspectParameters.getParameters(AspectParameters.exceptionRaised);
+		if(exceptionRaisedParameters != null) {
+			ExceptionHandlingRule exceptionHandlingRule = new ExceptionHandlingRule();
+	
+			Parameters actionParameters = exceptionRaisedParameters.getParameters(ExceptionRaisedParameters.action);
+			if(actionParameters != null) {
+				disassembleActionRule(actionParameters, exceptionHandlingRule);
+			}
+	
+			List<Parameters> rrtrParametersList = exceptionRaisedParameters.getParametersList(ExceptionRaisedParameters.responseByContentTypes);
+			if(rrtrParametersList != null && !rrtrParametersList.isEmpty()) {
+				for(Parameters rrtrParameters : rrtrParametersList) {
+					ResponseByContentTypeRule rrtr = disassembleResponseByContentTypeRule(rrtrParameters);
+					exceptionHandlingRule.putResponseByContentTypeRule(rrtr);
+				}
+			}
+			
+			aspectRule.setExceptionHandlingRule(exceptionHandlingRule);
+		}
+
 		
 		assistant.addAspectRule(aspectRule);
 	}

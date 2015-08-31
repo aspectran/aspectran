@@ -17,7 +17,7 @@ alias CDATA #REQUIRED
 type CDATA #REQUIRED
 >
 
-<!ELEMENT aspect (joinpoint?, settings?, advice?)>
+<!ELEMENT aspect (joinpoint?, settings?, advice?, exceptionRaised?)>
 <!ATTLIST aspect
 id ID #IMPLIED
 for (translet | scheduler) #IMPLIED
@@ -33,7 +33,7 @@ scope (translet | request | content | response | action | bean) #IMPLIED
 type (wildcard | regexp | simpleTrigger | cronTrigger) #IMPLIED
 >
 
-<!ELEMENT advice ((before?, after?, around?, finally?, exceptionRaised?) | job*)>
+<!ELEMENT advice ((before?, after?, around?, finally?) | job*)>
 <!ATTLIST advice
 bean CDATA #IMPLIED
 >

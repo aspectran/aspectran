@@ -24,7 +24,7 @@ import com.aspectran.core.context.rule.type.ImportType;
 /**
  * <p>Created: 2008. 04. 24 오전 11:23:36</p>
  * 
- * @author Gulendol
+ * @author Juho Jeong
  */
 public class ImportableResource extends Importable {
 	

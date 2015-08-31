@@ -22,7 +22,6 @@ import org.w3c.dom.Node;
 import com.aspectran.core.context.builder.ContextBuilderAssistant;
 import com.aspectran.core.context.rule.AspectAdviceRule;
 import com.aspectran.core.context.rule.AspectRule;
-import com.aspectran.core.context.rule.ResponseByContentTypeRule;
 import com.aspectran.core.context.rule.type.AspectAdviceType;
 import com.aspectran.core.util.xml.Nodelet;
 import com.aspectran.core.util.xml.NodeletAdder;
@@ -31,12 +30,14 @@ import com.aspectran.core.util.xml.NodeletParser;
 /**
  * The Class AspectAdviceRuleNodeletAdder.
  *
- * @author Gulendol
+ * @author Juho Jeong
  * @since 2013. 8. 11.
  */
-public class AspectExceptionRaisedAdviceRuleNodeletAdder implements NodeletAdder {
+public class AspectAdviceNodeletAdder implements NodeletAdder {
 	
 	protected ContextBuilderAssistant assistant;
+	
+	private AspectAdviceType aspectAdviceType;
 	
 	/**
 	 * Instantiates a new content nodelet adder.
@@ -44,8 +45,9 @@ public class AspectExceptionRaisedAdviceRuleNodeletAdder implements NodeletAdder
 	 * @param parser the parser
 	 * @param assistant the assistant for Context Builder
 	 */
-	public AspectExceptionRaisedAdviceRuleNodeletAdder(ContextBuilderAssistant assistant) {
+	public AspectAdviceNodeletAdder(ContextBuilderAssistant assistant, AspectAdviceType aspectAdviceType) {
 		this.assistant = assistant;
+		this.aspectAdviceType = aspectAdviceType;
 	}
 
 	/**
@@ -56,27 +58,11 @@ public class AspectExceptionRaisedAdviceRuleNodeletAdder implements NodeletAdder
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
 				AspectRule aspectRule = assistant.peekObject();
 				
-				AspectAdviceRule aar = AspectAdviceRule.newInstance(aspectRule, AspectAdviceType.EXCPETION_RAISED);
+				AspectAdviceRule aar = AspectAdviceRule.newInstance(aspectRule, aspectAdviceType);
 				assistant.pushObject(aar);
 			}
 		});
 		parser.addNodelet(xpath, new ActionRuleNodeletAdder(assistant));
-		parser.addNodelet(xpath, "/responseByContentType", new Nodelet() {
-			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
-				String exceptionType = attributes.get("exceptionType");
-
-				ResponseByContentTypeRule rbctr = ResponseByContentTypeRule.newInstance(exceptionType);
-				assistant.pushObject(rbctr);
-			}
-		});
-		parser.addNodelet(xpath, "/responseByContentType", new ResponseRuleNodeletAdder(assistant));
-		parser.addNodelet(xpath, "/responseByContentType/end()", new Nodelet() {
-			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
-				ResponseByContentTypeRule rbctr = assistant.popObject();
-				AspectAdviceRule aar = assistant.peekObject();
-				aar.addResponseByContentTypeRule(rbctr);
-			}
-		});
 		parser.addNodelet(xpath, "/end()", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
 				AspectAdviceRule aar = assistant.popObject();

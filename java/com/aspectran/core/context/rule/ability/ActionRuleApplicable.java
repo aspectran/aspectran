@@ -21,7 +21,7 @@ import com.aspectran.core.context.rule.IncludeActionRule;
 
 /**
  *
- * @author Gulendol
+ * @author Juho Jeong
  * @since 2011. 2. 21.
  *
  */

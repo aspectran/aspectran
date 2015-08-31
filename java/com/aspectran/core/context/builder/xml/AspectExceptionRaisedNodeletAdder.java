@@ -20,9 +20,9 @@ import java.util.Map;
 import org.w3c.dom.Node;
 
 import com.aspectran.core.context.builder.ContextBuilderAssistant;
-import com.aspectran.core.context.rule.AspectAdviceRule;
 import com.aspectran.core.context.rule.AspectRule;
-import com.aspectran.core.context.rule.type.AspectAdviceType;
+import com.aspectran.core.context.rule.ResponseByContentTypeRule;
+import com.aspectran.core.context.rule.ExceptionHandlingRule;
 import com.aspectran.core.util.xml.Nodelet;
 import com.aspectran.core.util.xml.NodeletAdder;
 import com.aspectran.core.util.xml.NodeletParser;
@@ -30,14 +30,12 @@ import com.aspectran.core.util.xml.NodeletParser;
 /**
  * The Class AspectAdviceRuleNodeletAdder.
  *
- * @author Gulendol
+ * @author Juho Jeong
  * @since 2013. 8. 11.
  */
-public class AspectAdviceRuleNodeletAdder implements NodeletAdder {
+public class AspectExceptionRaisedNodeletAdder implements NodeletAdder {
 	
 	protected ContextBuilderAssistant assistant;
-	
-	private AspectAdviceType aspectAdviceType;
 	
 	/**
 	 * Instantiates a new content nodelet adder.
@@ -45,9 +43,8 @@ public class AspectAdviceRuleNodeletAdder implements NodeletAdder {
 	 * @param parser the parser
 	 * @param assistant the assistant for Context Builder
 	 */
-	public AspectAdviceRuleNodeletAdder(ContextBuilderAssistant assistant, AspectAdviceType aspectAdviceType) {
+	public AspectExceptionRaisedNodeletAdder(ContextBuilderAssistant assistant) {
 		this.assistant = assistant;
-		this.aspectAdviceType = aspectAdviceType;
 	}
 
 	/**
@@ -58,16 +55,34 @@ public class AspectAdviceRuleNodeletAdder implements NodeletAdder {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
 				AspectRule aspectRule = assistant.peekObject();
 				
-				AspectAdviceRule aar = AspectAdviceRule.newInstance(aspectRule, aspectAdviceType);
-				assistant.pushObject(aar);
+				ExceptionHandlingRule exceptionHandlingRule = new ExceptionHandlingRule();
+				aspectRule.setExceptionHandlingRule(exceptionHandlingRule);
+				
+				assistant.pushObject(exceptionHandlingRule);
 			}
 		});
 		parser.addNodelet(xpath, new ActionRuleNodeletAdder(assistant));
+		parser.addNodelet(xpath, "/responseByContentType", new Nodelet() {
+			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
+				String exceptionType = attributes.get("exceptionType");
+
+				ResponseByContentTypeRule rbctr = ResponseByContentTypeRule.newInstance(exceptionType);
+				assistant.pushObject(rbctr);
+			}
+		});
+		parser.addNodelet(xpath, "/responseByContentType", new ResponseNodeletAdder(assistant));
+		parser.addNodelet(xpath, "/responseByContentType/end()", new Nodelet() {
+			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
+				ResponseByContentTypeRule rbctr = assistant.popObject();
+				ExceptionHandlingRule exceptionHandlingRule = assistant.peekObject();
+				exceptionHandlingRule.putResponseByContentTypeRule(rbctr);
+			}
+		});
 		parser.addNodelet(xpath, "/end()", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
-				AspectAdviceRule aar = assistant.popObject();
+				ExceptionHandlingRule exceptionHandlingRule = assistant.popObject();
 				AspectRule aspectRule = assistant.peekObject();
-				aspectRule.addAspectAdviceRule(aar);
+				aspectRule.setExceptionHandlingRule(exceptionHandlingRule);
 			}
 		});
 	}

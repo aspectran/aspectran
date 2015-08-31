@@ -27,11 +27,11 @@ import com.aspectran.core.context.aspect.AspectAdviceRulePostRegister;
 import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
 import com.aspectran.core.context.aspect.AspectRuleRegistry;
 import com.aspectran.core.context.aspect.pointcut.Pointcut;
-import com.aspectran.core.context.rule.AspectAdviceRule;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.AspectRuleMap;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.PointcutPatternRule;
+import com.aspectran.core.context.rule.ExceptionHandlingRule;
 import com.aspectran.core.context.rule.type.AspectTargetType;
 import com.aspectran.core.context.rule.type.JoinpointScopeType;
 import com.aspectran.core.util.logging.Log;
@@ -126,10 +126,10 @@ public abstract class AbstractDynamicBeanProxy {
 		} catch(Exception e) {
 			activity.setRaisedException(e);
 			
-			List<AspectAdviceRule> exceptionRaisedAdviceRuleList = aspectAdviceRuleRegistry.getExceptionRaisedAdviceRuleList();
+			List<ExceptionHandlingRule> exceptionHandlingRuleList = aspectAdviceRuleRegistry.getExceptionHandlingRuleList();
 			
-			if(exceptionRaisedAdviceRuleList != null) {
-				activity.responseByContentType(exceptionRaisedAdviceRuleList);
+			if(exceptionHandlingRuleList != null) {
+				activity.responseByContentType(exceptionHandlingRuleList);
 				
 				if(activity.isActivityEnded()) {
 					return null;

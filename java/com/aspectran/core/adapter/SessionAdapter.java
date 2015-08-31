@@ -20,7 +20,7 @@ import com.aspectran.core.context.bean.scope.Scope;
 /**
  * The Interface SessionAdapter.
  *
- * @author Gulendol
+ * @author Juho Jeong
  * @since 2011. 3. 13.
  */
 public interface SessionAdapter {

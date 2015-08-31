@@ -20,7 +20,7 @@ import com.aspectran.core.context.rule.ItemRuleMap;
 
 /**
  *
- * @author Gulendol
+ * @author Juho Jeong
  * @since 2011. 2. 21.
  *
  */

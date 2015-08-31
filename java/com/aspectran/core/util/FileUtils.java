@@ -552,7 +552,7 @@ public class FileUtils {
 	 * 
 	 * <p>Created: 2008. 04. 16 오후 6:42:23</p>
 	 * 
-	 * @author Gulendol
+	 * @author Juho Jeong
 	 */
 	public static class SizeUnit {
 		

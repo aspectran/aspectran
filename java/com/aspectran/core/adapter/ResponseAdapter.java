@@ -26,7 +26,7 @@ import com.aspectran.core.context.rule.RedirectResponseRule;
 /**
  * The Interface ResponseAdapter.
  *
- * @author Gulendol
+ * @author Juho Jeong
  * @since 2011. 3. 13.
  */
 public interface ResponseAdapter {

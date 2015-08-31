@@ -25,7 +25,7 @@ import com.aspectran.core.service.AspectranServiceController;
 /**
  * The Interface ApplicationAdapter.
  *
- * @author Gulendol
+ * @author Juho Jeong
  * @since 2011. 3. 13.
  */
 public interface ApplicationAdapter {

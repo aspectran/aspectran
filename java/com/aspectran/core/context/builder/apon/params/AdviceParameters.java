@@ -27,7 +27,6 @@ public class AdviceParameters extends AbstractParameters implements Parameters {
 	public static final ParameterDefine afterAdvice;
 	public static final ParameterDefine aroundAdvice;
 	public static final ParameterDefine finallyAdvice;
-	public static final ParameterDefine exceptionRaised;
 	public static final ParameterDefine jobs;
 	
 	private static final ParameterDefine[] parameterDefines;
@@ -38,7 +37,6 @@ public class AdviceParameters extends AbstractParameters implements Parameters {
 		afterAdvice = new ParameterDefine("after", AdviceActionParameters.class);
 		aroundAdvice = new ParameterDefine("around", AdviceActionParameters.class);
 		finallyAdvice = new ParameterDefine("finally", AdviceActionParameters.class);
-		exceptionRaised = new ParameterDefine("exceptionRaised", ExceptionRaisedParameters.class);
 		jobs = new ParameterDefine("job", JobParameters.class, true, true);
 		
 		parameterDefines = new ParameterDefine[] {
@@ -47,7 +45,6 @@ public class AdviceParameters extends AbstractParameters implements Parameters {
 				afterAdvice,
 				aroundAdvice,
 				finallyAdvice,
-				exceptionRaised,
 				jobs
 		};
 	}

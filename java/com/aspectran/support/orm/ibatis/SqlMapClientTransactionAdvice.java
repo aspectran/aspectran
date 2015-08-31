@@ -21,7 +21,7 @@ import com.ibatis.sqlmap.client.SqlMapClient;
 
 /**
 *
-* @author Gulendol
+* @author Juho Jeong
 *
 * <p>Created: 2015. 04. 03</p>
 *

@@ -18,13 +18,21 @@ package com.aspectran.core.context.rule.type;
 import java.util.HashMap;
 import java.util.Map;
 
-
+/**
+ * Types of advice include "around," "before" and "after" advice.
+ * <pre>
+ * Before advice: Advice that executes before a join point.
+ * After advice: Advice to be executed after a join point completes normally.
+ * Finally advice: Advice to be executed regardless of the means by which a join point exits (normal or exceptional return).
+ * Around advice: Before advice + After advice
+ * Job advice: Only used for Scheduler.
+ * </pre>
+ * @author Juho Jeong
+ */
 public final class AspectAdviceType extends Type {
 
 	public static final AspectAdviceType SETTINGS;
 
-	public static final AspectAdviceType TRIGGER;
-	
 	public static final AspectAdviceType BEFORE;
 	
 	public static final AspectAdviceType AFTER;
@@ -33,30 +41,24 @@ public final class AspectAdviceType extends Type {
 	
 	public static final AspectAdviceType FINALLY;
 	
-	public static final AspectAdviceType EXCPETION_RAISED;
-	
 	public static final AspectAdviceType JOB;
 	
 	private static final Map<String, AspectAdviceType> types;
 	
 	static {
 		SETTINGS = new AspectAdviceType("settings");
-		TRIGGER = new AspectAdviceType("trigger");
 		BEFORE = new AspectAdviceType("before");
 		AFTER = new AspectAdviceType("after");
 		AROUND = new AspectAdviceType("around");
 		FINALLY = new AspectAdviceType("finally");
-		EXCPETION_RAISED = new AspectAdviceType("exceptionRaised");
-		JOB = new AspectAdviceType("trigger");
+		JOB = new AspectAdviceType("job");
 
 		types = new HashMap<String, AspectAdviceType>();
 		types.put(SETTINGS.toString(), SETTINGS);
-		types.put(TRIGGER.toString(), TRIGGER);
 		types.put(BEFORE.toString(), BEFORE);
 		types.put(AFTER.toString(), AFTER);
 		types.put(AROUND.toString(), AROUND);
 		types.put(FINALLY.toString(), FINALLY);
-		types.put(EXCPETION_RAISED.toString(), EXCPETION_RAISED);
 		types.put(JOB.toString(), JOB);
 	}
 

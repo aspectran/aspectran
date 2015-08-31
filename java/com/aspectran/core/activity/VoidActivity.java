@@ -18,14 +18,14 @@ package com.aspectran.core.activity;
 import java.util.List;
 
 import com.aspectran.core.activity.request.RequestException;
-import com.aspectran.core.activity.response.ResponseException;
 import com.aspectran.core.activity.response.Response;
+import com.aspectran.core.activity.response.ResponseException;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.bean.scope.Scope;
-import com.aspectran.core.context.rule.AspectAdviceRule;
+import com.aspectran.core.context.rule.ExceptionHandlingRule;
 import com.aspectran.core.context.rule.type.JoinpointScopeType;
 
 /**
@@ -92,7 +92,7 @@ public final class VoidActivity extends CoreActivity implements Activity {
 	}
 
 	@Override
-	public void responseByContentType(List<AspectAdviceRule> aspectAdviceRuleList) throws ActivityException {
+	public void responseByContentType(List<ExceptionHandlingRule> exceptionHandlingRuleList) throws ActivityException {
 		throw new UnsupportedOperationException();
 	}
 

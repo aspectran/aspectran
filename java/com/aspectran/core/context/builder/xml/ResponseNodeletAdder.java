@@ -40,7 +40,7 @@ import com.aspectran.core.util.xml.NodeletParser;
  * 
  * <p>Created: 2008. 06. 14 오전 6:56:29</p>
  */
-public class ResponseRuleNodeletAdder implements NodeletAdder {
+public class ResponseNodeletAdder implements NodeletAdder {
 	
 	protected ContextBuilderAssistant assistant;
 	
@@ -50,7 +50,7 @@ public class ResponseRuleNodeletAdder implements NodeletAdder {
 	 * @param parser the parser
 	 * @param assistant the assistant for Context Builder
 	 */
-	public ResponseRuleNodeletAdder(ContextBuilderAssistant assistant) {
+	public ResponseNodeletAdder(ContextBuilderAssistant assistant) {
 		this.assistant = assistant;
 	}
 	
@@ -174,7 +174,7 @@ public class ResponseRuleNodeletAdder implements NodeletAdder {
 				assistant.pushObject(irm);
 			}
 		});
-		parser.addNodelet(xpath, "/redirect/parameter", new ItemRuleNodeletAdder(assistant));
+		parser.addNodelet(xpath, "/redirect/parameter", new ItemNodeletAdder(assistant));
 		parser.addNodelet(xpath, "/redirect/parameter/end()", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
 				ItemRuleMap irm = assistant.popObject();
@@ -230,7 +230,7 @@ public class ResponseRuleNodeletAdder implements NodeletAdder {
 				assistant.pushObject(irm);
 			}
 		});
-		parser.addNodelet(xpath, "/forward/parameter", new ItemRuleNodeletAdder(assistant));
+		parser.addNodelet(xpath, "/forward/parameter", new ItemNodeletAdder(assistant));
 		parser.addNodelet(xpath, "/forward/parameter/end()", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
 				ItemRuleMap irm = assistant.popObject();

@@ -32,7 +32,7 @@ import java.io.IOException;
  * 
  * <p>Created: 2014. 12. 21 오후 12:43:55</p>
  * 
- * @author Gulendol
+ * @author Juho Jeong
  * 
  */
 public class ResourceNotFoundException extends IOException {

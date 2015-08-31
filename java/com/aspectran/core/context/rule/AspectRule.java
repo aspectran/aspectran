@@ -45,6 +45,8 @@ public class AspectRule {
 	
 	private List<AspectJobAdviceRule> aspectJobAdviceRuleList; // for scheduling aspects
 	
+	private ExceptionHandlingRule exceptionHandlingRule;
+	
 	private boolean onlyTransletRelevanted;
 	
 	public String getId() {
@@ -141,6 +143,21 @@ public class AspectRule {
 		aspectJobAdviceRuleList.add(atar);
 	}
 
+	public ExceptionHandlingRule getExceptionHandlingRule() {
+		return exceptionHandlingRule;
+	}
+
+	public void setExceptionHandlingRule(ExceptionHandlingRule exceptionHandlingRule) {
+		this.exceptionHandlingRule = exceptionHandlingRule;
+	}
+	
+	public void addResponseByContentTypeRule(ResponseByContentTypeRule responseByContentTypeRule) {
+		if(exceptionHandlingRule == null)
+			exceptionHandlingRule = new ExceptionHandlingRule();
+		
+		exceptionHandlingRule.putResponseByContentTypeRule(responseByContentTypeRule);
+	}
+
 	public boolean isOnlyTransletRelevanted() {
 		return onlyTransletRelevanted;
 	}
@@ -165,6 +182,7 @@ public class AspectRule {
 		} else if(aspectTargetType == AspectTargetType.SCHEDULER) {
 			sb.append(", aspectTriggerAdviceRuleList=").append(aspectJobAdviceRuleList);
 		}
+		sb.append(", responseByContentTypeRuleMap=").append(exceptionHandlingRule);
 		sb.append(", onlyTransletRelevanted=").append(onlyTransletRelevanted);
 		sb.append("}");
 		

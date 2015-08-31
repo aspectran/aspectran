@@ -32,7 +32,7 @@ import com.aspectran.core.context.ActivityContextException;
  * 
  * <p>Created: 2008. 01. 07 오전 3:35:55</p>
  * 
- * @author Gulendol
+ * @author Juho Jeong
  * 
  */
 public class AspectranServiceException extends ActivityContextException {

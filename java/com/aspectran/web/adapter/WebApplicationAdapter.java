@@ -26,7 +26,7 @@ import com.aspectran.core.service.AspectranService;
 /**
  * The Class WebApplicationAdapter.
  * 
- * @author Gulendol
+ * @author Juho Jeong
  * @since 2011. 3. 13.
  */
 public class WebApplicationAdapter extends AbstractApplicationAdapter implements ApplicationAdapter {

@@ -17,20 +17,59 @@ package com.aspectran.core.context.rule;
 
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.Map;
 
+import com.aspectran.core.activity.process.action.BeanAction;
+import com.aspectran.core.activity.process.action.EchoAction;
+import com.aspectran.core.activity.process.action.Executable;
+import com.aspectran.core.context.rule.ability.ActionRuleApplicable;
+import com.aspectran.core.context.rule.type.ActionType;
 
 /**
  * <p>
  * Created: 2009. 03. 09 오후 23:48:09
  * </p>
  */
-public class ResponseByContentTypeRuleMap extends LinkedHashMap<String, ResponseByContentTypeRule> implements Iterable<ResponseByContentTypeRule> {
+public class ExceptionHandlingRule implements ActionRuleApplicable, Iterable<ResponseByContentTypeRule> {
 
-	/** @serial */
-	static final long serialVersionUID = -8447972570153335744L;
+	private Executable action;
 	
 	private ResponseByContentTypeRule defaultResponseByContentTypeRule;
 	
+	private Map<String, ResponseByContentTypeRule> responseByContentTypeRuleMap = new LinkedHashMap<String, ResponseByContentTypeRule>();
+
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.context.rule.ability.ActionRuleApplicable#applyActionRule(com.aspectran.core.context.rule.EchoActionRule)
+	 */
+	public void applyActionRule(EchoActionRule echoActionRule) {
+		action = new EchoAction(echoActionRule, null);
+	}
+
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.context.rule.ability.ActionRuleApplicable#applyActionRule(com.aspectran.core.context.rule.BeanActionRule)
+	 */
+	public void applyActionRule(BeanActionRule beanActionRule) {
+		action = new BeanAction(beanActionRule, null);
+	}
+	
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.context.rule.ability.ActionRuleApplicable#applyActionRule(com.aspectran.core.context.rule.IncludeActionRule)
+	 */
+	public void applyActionRule(IncludeActionRule includeActionRule) {
+		throw new UnsupportedOperationException("There is nothing that can be apply to IncludeActionRule. The aspecet-advice is not support include-action.");
+	}
+	
+	public Executable getExecutableAction() {
+		return action;
+	}
+	
+	public ActionType getActionType() {
+		if(action == null)
+			return null;
+		
+		return action.getActionType();
+	}
+
 	public ResponseByContentTypeRule getResponseByContentTypeRule() {
 		return defaultResponseByContentTypeRule;
 	}
@@ -39,7 +78,7 @@ public class ResponseByContentTypeRuleMap extends LinkedHashMap<String, Response
 		String exceptionType = responseByContentTypeRule.getExceptionType();
 		
 		if(exceptionType != null) {
-			put(exceptionType, responseByContentTypeRule);
+			responseByContentTypeRuleMap.put(exceptionType, responseByContentTypeRule);
 		} else { 
 			this.defaultResponseByContentTypeRule = responseByContentTypeRule;
 		}
@@ -86,7 +125,7 @@ public class ResponseByContentTypeRuleMap extends LinkedHashMap<String, Response
 	 * @see java.lang.Iterable#iterator()
 	 */
 	public Iterator<ResponseByContentTypeRule> iterator() {
-		return this.values().iterator();
+		return responseByContentTypeRuleMap.values().iterator();
 	}
 
 }

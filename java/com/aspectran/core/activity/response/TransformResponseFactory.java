@@ -27,7 +27,7 @@ import com.aspectran.core.context.rule.type.TransformType;
 
 /**
  *
- * @author Gulendol
+ * @author Juho Jeong
  * @since 2011. 3. 12.
  *
  */

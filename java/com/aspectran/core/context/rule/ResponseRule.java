@@ -174,32 +174,44 @@ public class ResponseRule implements ResponseRuleApplicable, AspectAdviceSupport
 		this.aspectAdviceRuleRegistry = aspectAdviceRuleRegistry;
 	}
 	
-	public List<AspectAdviceRule> getBeforeAdviceRuleList() {
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.context.rule.AspectAdviceSupport#getAspectBeforeAdviceRuleList()
+	 */
+	public List<AspectAdviceRule> getAspectBeforeAdviceRuleList() {
 		if(aspectAdviceRuleRegistry == null)
 			return null;
 		
 		return aspectAdviceRuleRegistry.getBeforeAdviceRuleList();
 	}
 	
-	public List<AspectAdviceRule> getAfterAdviceRuleList() {
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.context.rule.AspectAdviceSupport#getAspectAfterAdviceRuleList()
+	 */
+	public List<AspectAdviceRule> getAspectAfterAdviceRuleList() {
 		if(aspectAdviceRuleRegistry == null)
 			return null;
 		
 		return aspectAdviceRuleRegistry.getAfterAdviceRuleList();
 	}
 	
-	public List<AspectAdviceRule> getFinallyAdviceRuleList() {
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.context.rule.AspectAdviceSupport#getAspectFinallyAdviceRuleList()
+	 */
+	public List<AspectAdviceRule> getAspectFinallyAdviceRuleList() {
 		if(aspectAdviceRuleRegistry == null)
 			return null;
 		
 		return aspectAdviceRuleRegistry.getFinallyAdviceRuleList();
 	}
 	
-	public List<AspectAdviceRule> getExceptionRaisedAdviceRuleList() {
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.context.rule.AspectAdviceSupport#getAspectExceptionHandlingRuleList()
+	 */
+	public List<ExceptionHandlingRule> getAspectExceptionHandlingRuleList() {
 		if(aspectAdviceRuleRegistry == null)
 			return null;
 		
-		return aspectAdviceRuleRegistry.getExceptionRaisedAdviceRuleList();
+		return aspectAdviceRuleRegistry.getExceptionHandlingRuleList();
 	}
 
 	public ResponseRule newResponseRule(Response response) {

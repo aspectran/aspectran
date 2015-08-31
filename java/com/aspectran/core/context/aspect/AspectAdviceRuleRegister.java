@@ -19,6 +19,7 @@ import java.util.List;
 
 import com.aspectran.core.context.rule.AspectAdviceRule;
 import com.aspectran.core.context.rule.AspectRule;
+import com.aspectran.core.context.rule.ExceptionHandlingRule;
 import com.aspectran.core.context.rule.SettingsAdviceRule;
 import com.aspectran.core.context.rule.type.AspectAdviceType;
 
@@ -31,6 +32,7 @@ public class AspectAdviceRuleRegister {
 	public static void register(AspectAdviceRuleRegistry aspectAdviceRuleRegistry, AspectRule aspectRule, AspectAdviceType excludeAspectAdviceType) {
 		SettingsAdviceRule settingsAdviceRule = aspectRule.getSettingsAdviceRule();
 		List<AspectAdviceRule> aspectAdviceRuleList = aspectRule.getAspectAdviceRuleList();
+		ExceptionHandlingRule rbctrm = aspectRule.getExceptionHandlingRule();
 		
 		if(settingsAdviceRule != null)
 			aspectAdviceRuleRegistry.addAspectAdviceRule(settingsAdviceRule);
@@ -40,6 +42,10 @@ public class AspectAdviceRuleRegister {
 				if(excludeAspectAdviceType == null || aspectAdviceRule.getAspectAdviceType() != excludeAspectAdviceType)
 					aspectAdviceRuleRegistry.addAspectAdviceRule(aspectAdviceRule);
 			}
+		}
+		
+		if(rbctrm != null) {
+			aspectAdviceRuleRegistry.addExceptionHandlingRule(rbctrm);
 		}
 		
 		aspectAdviceRuleRegistry.increaseAspectRuleCount();

@@ -38,7 +38,7 @@ import com.aspectran.core.context.rule.RedirectResponseRule;
 /**
  * The Class HttpServletResponseAdapter.
  * 
- * @author Gulendol
+ * @author Juho Jeong
  * @since 2011. 3. 13.
  */
 public class HttpServletResponseAdapter extends AbstractResponseAdapter implements ResponseAdapter {

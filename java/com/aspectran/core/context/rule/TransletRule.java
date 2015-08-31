@@ -48,7 +48,7 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 	
 	private boolean implicitResponse;
 
-	private ResponseByContentTypeRuleMap exceptionHandlingRuleMap;
+	private ExceptionHandlingRule exceptionHandlingRule;
 	
 	private Class<? extends Translet> transletInterfaceClass;
 	
@@ -277,19 +277,19 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 		return implicitResponse;
 	}
 
-	public ResponseByContentTypeRuleMap getExceptionHandlingRuleMap() {
-		return exceptionHandlingRuleMap;
+	public ExceptionHandlingRule getExceptionHandlingRuleMap() {
+		return exceptionHandlingRule;
 	}
 
-	public void setExceptionHandlingRuleMap(ResponseByContentTypeRuleMap responseByContentTypeRuleMap) {
-		this.exceptionHandlingRuleMap = responseByContentTypeRuleMap;
+	public void setExceptionHandlingRuleMap(ExceptionHandlingRule responseByContentTypeRuleMap) {
+		this.exceptionHandlingRule = responseByContentTypeRuleMap;
 	}
 
 	public void addExceptionHandlingRule(ResponseByContentTypeRule responseByContentTypeRule) {
-		if(exceptionHandlingRuleMap == null)
-			exceptionHandlingRuleMap = new ResponseByContentTypeRuleMap();
+		if(exceptionHandlingRule == null)
+			exceptionHandlingRule = new ExceptionHandlingRule();
 		
-		exceptionHandlingRuleMap.putResponseByContentTypeRule(responseByContentTypeRule);
+		exceptionHandlingRule.putResponseByContentTypeRule(responseByContentTypeRule);
 	}
 	
 	public Class<? extends Translet> getTransletInterfaceClass() {
@@ -323,32 +323,44 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 		this.aspectAdviceRuleRegistry = aspectAdviceRuleRegistry;
 	}
 	
-	public List<AspectAdviceRule> getBeforeAdviceRuleList() {
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.context.rule.AspectAdviceSupport#getAspectBeforeAdviceRuleList()
+	 */
+	public List<AspectAdviceRule> getAspectBeforeAdviceRuleList() {
 		if(aspectAdviceRuleRegistry == null)
 			return null;
 		
 		return aspectAdviceRuleRegistry.getBeforeAdviceRuleList();
 	}
 	
-	public List<AspectAdviceRule> getAfterAdviceRuleList() {
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.context.rule.AspectAdviceSupport#getAspectAfterAdviceRuleList()
+	 */
+	public List<AspectAdviceRule> getAspectAfterAdviceRuleList() {
 		if(aspectAdviceRuleRegistry == null)
 			return null;
 		
 		return aspectAdviceRuleRegistry.getAfterAdviceRuleList();
 	}
 	
-	public List<AspectAdviceRule> getFinallyAdviceRuleList() {
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.context.rule.AspectAdviceSupport#getAspectFinallyAdviceRuleList()
+	 */
+	public List<AspectAdviceRule> getAspectFinallyAdviceRuleList() {
 		if(aspectAdviceRuleRegistry == null)
 			return null;
 		
 		return aspectAdviceRuleRegistry.getFinallyAdviceRuleList();
 	}
 	
-	public List<AspectAdviceRule> getExceptionRaisedAdviceRuleList() {
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.context.rule.AspectAdviceSupport#getAspectExceptionHandlingRuleList()
+	 */
+	public List<ExceptionHandlingRule> getAspectExceptionHandlingRuleList() {
 		if(aspectAdviceRuleRegistry == null)
 			return null;
 		
-		return aspectAdviceRuleRegistry.getExceptionRaisedAdviceRuleList();
+		return aspectAdviceRuleRegistry.getExceptionHandlingRuleList();
 	}
 	
 	/* (non-Javadoc)
@@ -360,8 +372,8 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 		sb.append("{name=").append(name);
 		sb.append(", requestRule=").append(requestRule);
 		sb.append(", responseRule=").append(responseRule);
-		if(exceptionHandlingRuleMap != null)
-			sb.append(", exceptionHandlingRuleMap=").append(exceptionHandlingRuleMap);
+		if(exceptionHandlingRule != null)
+			sb.append(", exceptionHandlingRule=").append(exceptionHandlingRule);
 		if(transletInterfaceClass != null)
 			sb.append(", transletInterfaceClass=").append(transletInterfaceClass);
 		if(transletImplementClass != null)

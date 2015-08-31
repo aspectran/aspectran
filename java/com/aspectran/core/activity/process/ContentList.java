@@ -21,6 +21,7 @@ import java.util.List;
 import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
 import com.aspectran.core.context.rule.AspectAdviceRule;
 import com.aspectran.core.context.rule.AspectAdviceSupport;
+import com.aspectran.core.context.rule.ExceptionHandlingRule;
 import com.aspectran.core.util.BooleanUtils;
 
 /**
@@ -93,32 +94,32 @@ public class ContentList extends ArrayList<ActionList> implements AspectAdviceSu
 		this.aspectAdviceRuleRegistry = aspectAdviceRuleRegistry;
 	}
 	
-	public List<AspectAdviceRule> getBeforeAdviceRuleList() {
+	public List<AspectAdviceRule> getAspectBeforeAdviceRuleList() {
 		if(aspectAdviceRuleRegistry == null)
 			return null;
 		
 		return aspectAdviceRuleRegistry.getBeforeAdviceRuleList();
 	}
 	
-	public List<AspectAdviceRule> getAfterAdviceRuleList() {
+	public List<AspectAdviceRule> getAspectAfterAdviceRuleList() {
 		if(aspectAdviceRuleRegistry == null)
 			return null;
 		
 		return aspectAdviceRuleRegistry.getAfterAdviceRuleList();
 	}
 	
-	public List<AspectAdviceRule> getFinallyAdviceRuleList() {
+	public List<AspectAdviceRule> getAspectFinallyAdviceRuleList() {
 		if(aspectAdviceRuleRegistry == null)
 			return null;
 		
 		return aspectAdviceRuleRegistry.getFinallyAdviceRuleList();
 	}
 	
-	public List<AspectAdviceRule> getExceptionRaisedAdviceRuleList() {
+	public List<ExceptionHandlingRule> getAspectExceptionHandlingRuleList() {
 		if(aspectAdviceRuleRegistry == null)
 			return null;
 		
-		return aspectAdviceRuleRegistry.getExceptionRaisedAdviceRuleList();
+		return aspectAdviceRuleRegistry.getExceptionHandlingRuleList();
 	}
 	
 	/* (non-Javadoc)

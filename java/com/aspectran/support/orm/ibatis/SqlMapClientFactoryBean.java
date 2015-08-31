@@ -44,7 +44,7 @@ import com.ibatis.sqlmap.client.SqlMapClientBuilder;
 
 /**
 *
-* @author Gulendol
+* @author Juho Jeong
 *
 * <p>Created: 2015. 04. 03</p>
 *

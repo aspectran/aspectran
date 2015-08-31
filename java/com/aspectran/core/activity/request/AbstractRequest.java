@@ -25,7 +25,7 @@ import com.aspectran.core.activity.request.parameter.FileParameterMap;
 /**
  * The Class AbstractRequest.
  *
- * @author Gulendol
+ * @author Juho Jeong
  * @since 2011. 3. 12.
  */
 public abstract class AbstractRequest {

@@ -74,7 +74,7 @@ import com.aspectran.core.context.rule.PointcutRule;
 import com.aspectran.core.context.rule.RedirectResponseRule;
 import com.aspectran.core.context.rule.RequestRule;
 import com.aspectran.core.context.rule.ResponseByContentTypeRule;
-import com.aspectran.core.context.rule.ResponseByContentTypeRuleMap;
+import com.aspectran.core.context.rule.ExceptionHandlingRule;
 import com.aspectran.core.context.rule.ResponseRule;
 import com.aspectran.core.context.rule.SettingsAdviceRule;
 import com.aspectran.core.context.rule.TemplateRule;
@@ -236,20 +236,22 @@ public class RootAponAssembler {
 						BeanActionRule beanActionRule = aspectAdviceRule.getExecutableAction().getActionRule();
 						adviceActionParameters.putValue(AdviceActionParameters.action, assembleActionParameters(beanActionRule));
 					}
-				} else if(aspectAdviceRule.getAspectAdviceType() == AspectAdviceType.EXCPETION_RAISED) {
-					Parameters exceptionRaisedParameters = adviceParameters.newParameters(AdviceParameters.exceptionRaised);
-					if(aspectAdviceRule.getActionType() == ActionType.ECHO) {
-						EchoActionRule echoActionRule = aspectAdviceRule.getExecutableAction().getActionRule();
-						exceptionRaisedParameters.putValue(ExceptionRaisedParameters.action, assembleActionParameters(echoActionRule));
-					} else if(aspectAdviceRule.getActionType() == ActionType.BEAN) {
-						BeanActionRule beanActionRule = aspectAdviceRule.getExecutableAction().getActionRule();
-						exceptionRaisedParameters.putValue(ExceptionRaisedParameters.action, assembleActionParameters(beanActionRule));
-					}
-					ResponseByContentTypeRuleMap responseByContentTypeRuleMap = aspectAdviceRule.getResponseByContentTypeRuleMap();
-					for(ResponseByContentTypeRule rbctr : responseByContentTypeRuleMap) {
-						exceptionRaisedParameters.putValue(ExceptionRaisedParameters.responseByContentTypes, assembleResponseByContentTypeParameters(rbctr));
-					}
 				}
+			}
+		}
+		
+		ExceptionHandlingRule exceptionHandlingRule = aspectRule.getExceptionHandlingRule();
+		if(exceptionHandlingRule != null) {
+			Parameters exceptionRaisedParameters = aspectParameters.touchParameters(AspectParameters.exceptionRaised);
+			if(exceptionHandlingRule.getActionType() == ActionType.ECHO) {
+				EchoActionRule echoActionRule = exceptionHandlingRule.getExecutableAction().getActionRule();
+				exceptionRaisedParameters.putValue(ExceptionRaisedParameters.action, assembleActionParameters(echoActionRule));
+			} else if(exceptionHandlingRule.getActionType() == ActionType.BEAN) {
+				BeanActionRule beanActionRule = exceptionHandlingRule.getExecutableAction().getActionRule();
+				exceptionRaisedParameters.putValue(ExceptionRaisedParameters.action, assembleActionParameters(beanActionRule));
+			}
+			for(ResponseByContentTypeRule rbctr : exceptionHandlingRule) {
+				exceptionRaisedParameters.putValue(ExceptionRaisedParameters.responseByContentTypes, assembleResponseByContentTypeParameters(rbctr));
 			}
 		}
 		
@@ -364,7 +366,7 @@ public class RootAponAssembler {
 			}
 		}
 		
-		ResponseByContentTypeRuleMap exceptionHandlingRuleMap = transletRule.getExceptionHandlingRuleMap();
+		ExceptionHandlingRule exceptionHandlingRuleMap = transletRule.getExceptionHandlingRuleMap();
 		if(exceptionHandlingRuleMap != null) {
 			for(ResponseByContentTypeRule rbctr : exceptionHandlingRuleMap) {
 				transletParameters.putValue(TransletParameters.exception, assembleResponseByContentTypeParameters(rbctr));

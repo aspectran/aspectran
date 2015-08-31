@@ -34,7 +34,7 @@ import com.aspectran.core.util.xml.NodeletParser;
 /**
  * The Class ActionNodeletAdder.
  *
- * @author Gulendol
+ * @author Juho Jeong
  * @since 2011. 1. 9.
  */
 public class ActionRuleNodeletAdder implements NodeletAdder {
@@ -70,8 +70,8 @@ public class ActionRuleNodeletAdder implements NodeletAdder {
 				assistant.pushObject(irm);
 			}
 		});
-		parser.addNodelet(xpath, "/echo/attribute", new ItemRuleNodeletAdder(assistant));
-		parser.addNodelet(xpath, "/echo", new ItemRuleNodeletAdder(assistant));
+		parser.addNodelet(xpath, "/echo/attribute", new ItemNodeletAdder(assistant));
+		parser.addNodelet(xpath, "/echo", new ItemNodeletAdder(assistant));
 		parser.addNodelet(xpath, "/echo/end()", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
 				ItemRuleMap irm = assistant.popObject();
@@ -104,7 +104,7 @@ public class ActionRuleNodeletAdder implements NodeletAdder {
 				assistant.pushObject(irm);
 			}
 		});
-		parser.addNodelet(xpath, "/action/argument", new ItemRuleNodeletAdder(assistant));
+		parser.addNodelet(xpath, "/action/argument", new ItemNodeletAdder(assistant));
 		parser.addNodelet(xpath, "/action/argument/end()", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
 				ItemRuleMap irm = assistant.popObject();
@@ -121,7 +121,7 @@ public class ActionRuleNodeletAdder implements NodeletAdder {
 				assistant.pushObject(irm);
 			}
 		});
-		parser.addNodelet(xpath, "/action/property", new ItemRuleNodeletAdder(assistant));
+		parser.addNodelet(xpath, "/action/property", new ItemNodeletAdder(assistant));
 		parser.addNodelet(xpath, "/action/property/end()", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
 				ItemRuleMap irm = assistant.popObject();
@@ -164,7 +164,7 @@ public class ActionRuleNodeletAdder implements NodeletAdder {
 				assistant.pushObject(irm);
 			}
 		});
-		parser.addNodelet(xpath, "/include/attribute", new ItemRuleNodeletAdder(assistant));
+		parser.addNodelet(xpath, "/include/attribute", new ItemNodeletAdder(assistant));
 		parser.addNodelet(xpath, "/include/attribute/end()", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
 				ItemRuleMap irm = assistant.popObject();

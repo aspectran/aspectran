@@ -21,7 +21,7 @@ import java.util.Iterator;
 /**
  * The Class ScopedBeanMap.
  *
- * @author Gulendol
+ * @author Juho Jeong
  * @since 2011. 1. 7.
  */
 public class ScopedBeanMap extends HashMap<String, ScopedBean> implements Iterable<ScopedBean> {

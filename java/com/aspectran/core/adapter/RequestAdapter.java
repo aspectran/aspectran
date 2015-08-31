@@ -23,7 +23,7 @@ import com.aspectran.core.activity.request.parameter.FileParameter;
 /**
  * The Interface RequestAdapter.
  *
- * @author Gulendol
+ * @author Juho Jeong
  * @since 2011. 3. 13.
  */
 public interface RequestAdapter {

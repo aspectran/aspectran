@@ -22,7 +22,7 @@ import org.apache.ibatis.session.SqlSessionFactory;
 
 /**
 *
-* @author Gulendol
+* @author Juho Jeong
 *
 * <p>Created: 2015. 04. 03</p>
 *

@@ -38,7 +38,7 @@ import com.aspectran.core.context.rule.AspectAdviceRule;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.RequestRule;
 import com.aspectran.core.context.rule.ResponseByContentTypeRule;
-import com.aspectran.core.context.rule.ResponseByContentTypeRuleMap;
+import com.aspectran.core.context.rule.ExceptionHandlingRule;
 import com.aspectran.core.context.rule.ResponseRule;
 import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.type.ActionType;
@@ -218,21 +218,21 @@ public class CoreActivity extends AbstractActivity implements Activity {
 		} catch(ActivityException e) {
 			setRaisedException(e);
 			
-			ResponseByContentTypeRuleMap responseByContentTypeRuleMap = transletRule.getExceptionHandlingRuleMap();
+			ExceptionHandlingRule exceptionHandlingRule = transletRule.getExceptionHandlingRuleMap();
 			
-			if(responseByContentTypeRuleMap != null) {
-				responseByContentType(responseByContentTypeRuleMap);
+			if(exceptionHandlingRule != null) {
+				responseByContentType(exceptionHandlingRule);
 				
 				if(activityEnded) {
 					return;
 				}
 			}
-		
+			
 			if(transletAspectAdviceRuleRegistry != null) {
-				List<AspectAdviceRule> exceptionRaisedAdviceRuleList = transletAspectAdviceRuleRegistry.getExceptionRaisedAdviceRuleList();
+				List<ExceptionHandlingRule> exceptionHandlingRuleList = transletAspectAdviceRuleRegistry.getExceptionHandlingRuleList();
 				
-				if(exceptionRaisedAdviceRuleList != null) {
-					responseByContentType(exceptionRaisedAdviceRuleList);
+				if(exceptionHandlingRuleList != null) {
+					responseByContentType(exceptionHandlingRuleList);
 					
 					if(activityEnded) {
 						return;
@@ -289,10 +289,10 @@ public class CoreActivity extends AbstractActivity implements Activity {
 			setRaisedException(e);
 			
 			if(requestAspectAdviceRuleRegistry != null) {
-				List<AspectAdviceRule> exceptionRaisedAdviceRuleList = requestAspectAdviceRuleRegistry.getExceptionRaisedAdviceRuleList();
+				List<ExceptionHandlingRule> exceptionHandlingRuleList = requestAspectAdviceRuleRegistry.getExceptionHandlingRuleList();
 				
-				if(exceptionRaisedAdviceRuleList != null) {
-					responseByContentType(exceptionRaisedAdviceRuleList);
+				if(exceptionHandlingRuleList != null) {
+					responseByContentType(exceptionHandlingRuleList);
 					
 					if(activityEnded) {
 						return;
@@ -349,10 +349,10 @@ public class CoreActivity extends AbstractActivity implements Activity {
 				setRaisedException(e);
 				
 				if(contentAspectAdviceRuleRegistry != null) {
-					List<AspectAdviceRule> exceptionRaisedAdviceRuleList = contentAspectAdviceRuleRegistry.getExceptionRaisedAdviceRuleList();
+					List<ExceptionHandlingRule> exceptionHandlingRuleList = contentAspectAdviceRuleRegistry.getExceptionHandlingRuleList();
 					
-					if(exceptionRaisedAdviceRuleList != null) {
-						responseByContentType(exceptionRaisedAdviceRuleList);
+					if(exceptionHandlingRuleList != null) {
+						responseByContentType(exceptionHandlingRuleList);
 
 						if(activityEnded) {
 							return;
@@ -407,10 +407,10 @@ public class CoreActivity extends AbstractActivity implements Activity {
 			setRaisedException(e);
 			
 			if(responseAspectAdviceRuleRegistry != null) {
-				List<AspectAdviceRule> exceptionRaisedAdviceRuleList = responseAspectAdviceRuleRegistry.getExceptionRaisedAdviceRuleList();
+				List<ExceptionHandlingRule> exceptionHandlingRuleList = responseAspectAdviceRuleRegistry.getExceptionHandlingRuleList();
 				
-				if(exceptionRaisedAdviceRuleList != null) {
-					responseByContentType(exceptionRaisedAdviceRuleList);
+				if(exceptionHandlingRuleList != null) {
+					responseByContentType(exceptionHandlingRuleList);
 					
 					if(activityEnded) {
 						return;
@@ -501,21 +501,17 @@ public class CoreActivity extends AbstractActivity implements Activity {
 		perform();
 	}
 	
-	public void responseByContentType(List<AspectAdviceRule> aspectAdviceRuleList) throws ActivityException {
-		for(AspectAdviceRule aspectAdviceRule : aspectAdviceRuleList) {
-			ResponseByContentTypeRuleMap responseByContentTypeRuleMap = aspectAdviceRule.getResponseByContentTypeRuleMap();
+	public void responseByContentType(List<ExceptionHandlingRule> exceptionHandlingRuleList) throws ActivityException {
+		for(ExceptionHandlingRule exceptionHandlingRule : exceptionHandlingRuleList) {
+			responseByContentType(exceptionHandlingRule);
 			
-			if(responseByContentTypeRuleMap != null) {
-				responseByContentType(responseByContentTypeRuleMap);
-				
-				if(activityEnded)
-					return;
-			}
+			if(activityEnded)
+				return;
 		}
 	}
 
-	private void responseByContentType(ResponseByContentTypeRuleMap responseByContentTypeRuleMap) throws ActivityException {
-		ResponseByContentTypeRule rbctr = responseByContentTypeRuleMap.getResponseByContentTypeRule(getRaisedException());
+	private void responseByContentType(ExceptionHandlingRule exceptionHandlingRule) throws ActivityException {
+		ResponseByContentTypeRule rbctr = exceptionHandlingRule.getResponseByContentTypeRule(getRaisedException());
 		
 		if(rbctr != null) {
 			log.info("raised exception: " + getRaisedException());

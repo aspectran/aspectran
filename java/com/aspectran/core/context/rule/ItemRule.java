@@ -40,7 +40,7 @@ import com.aspectran.core.util.apon.Parameters;
  * <p>Created: 2008. 03. 27 오후 3:57:48</p>
  */
 /**
- * @author Gulendol
+ * @author Juho Jeong
  *
  */
 public class ItemRule {

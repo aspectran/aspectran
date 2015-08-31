@@ -24,7 +24,7 @@ import com.aspectran.core.util.MethodUtils;
 /**
  * The Class ScopedBean.
  *
- * @author Gulendol
+ * @author Juho Jeong
  * @since 2011. 1. 7.
  */
 public class ScopedBean implements DisposableBean {
