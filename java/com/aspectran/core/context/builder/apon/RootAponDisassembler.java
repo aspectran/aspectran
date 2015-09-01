@@ -349,11 +349,12 @@ public class RootAponDisassembler {
 		
 		Parameters exceptionParameters = transletParameters.getParameters(TransletParameters.exception);
 		if(exceptionParameters != null) {
-			List<Parameters> rrtrParametersList = exceptionParameters.getParametersList(ExceptionParameters.responseByContentTypes);
-			if(rrtrParametersList != null && !rrtrParametersList.isEmpty()) {
-				for(Parameters rrtrParameters : rrtrParametersList) {
-					ResponseByContentTypeRule rrtr = disassembleResponseByContentTypeRule(rrtrParameters);
-					transletRule.addExceptionHandlingRule(rrtr);
+			List<Parameters> rbctParametersList = exceptionParameters.getParametersList(ExceptionParameters.responseByContentTypes);
+			if(rbctParametersList != null && !rbctParametersList.isEmpty()) {
+				for(Parameters rbctParameters : rbctParametersList) {
+					ResponseByContentTypeRule rbctr = disassembleResponseByContentTypeRule(rbctParameters);
+					ExceptionHandlingRule exceptionHandlingRule = transletRule.touchExceptionHandlingRule();
+					exceptionHandlingRule.putResponseByContentTypeRule(rbctr);
 				}
 			}
 		}

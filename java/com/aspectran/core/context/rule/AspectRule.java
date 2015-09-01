@@ -180,9 +180,9 @@ public class AspectRule {
 			sb.append(", settingsAdviceRule=").append(settingsAdviceRule);
 			sb.append(", aspectAdviceRuleList=").append(aspectAdviceRuleList);
 		} else if(aspectTargetType == AspectTargetType.SCHEDULER) {
-			sb.append(", aspectTriggerAdviceRuleList=").append(aspectJobAdviceRuleList);
+			sb.append(", aspectJobAdviceRuleList=").append(aspectJobAdviceRuleList);
 		}
-		sb.append(", responseByContentTypeRuleMap=").append(exceptionHandlingRule);
+		sb.append(", exceptionHandlingRule=").append(exceptionHandlingRule);
 		sb.append(", onlyTransletRelevanted=").append(onlyTransletRelevanted);
 		sb.append("}");
 		

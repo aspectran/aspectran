@@ -281,15 +281,15 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 		return exceptionHandlingRule;
 	}
 
-	public void setExceptionHandlingRuleMap(ExceptionHandlingRule responseByContentTypeRuleMap) {
-		this.exceptionHandlingRule = responseByContentTypeRuleMap;
+	public void setExceptionHandlingRule(ExceptionHandlingRule exceptionHandlingRule) {
+		this.exceptionHandlingRule = exceptionHandlingRule;
 	}
 
-	public void addExceptionHandlingRule(ResponseByContentTypeRule responseByContentTypeRule) {
+	public ExceptionHandlingRule touchExceptionHandlingRule() {
 		if(exceptionHandlingRule == null)
 			exceptionHandlingRule = new ExceptionHandlingRule();
 		
-		exceptionHandlingRule.putResponseByContentTypeRule(responseByContentTypeRule);
+		return exceptionHandlingRule;
 	}
 	
 	public Class<? extends Translet> getTransletInterfaceClass() {
@@ -377,7 +377,7 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 		if(transletInterfaceClass != null)
 			sb.append(", transletInterfaceClass=").append(transletInterfaceClass);
 		if(transletImplementClass != null)
-			sb.append(", transletInstanceClass=").append(transletImplementClass);
+			sb.append(", transletImplementClass=").append(transletImplementClass);
 		if(aspectAdviceRuleRegistry != null)
 			sb.append(", aspectAdviceRuleRegistry=").append(aspectAdviceRuleRegistry);
 		if(explicitContent)
@@ -403,7 +403,7 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 		newTransletRule.setRequestRule(newRequestRule);
 		newTransletRule.setContentList(newContentList);
 		newTransletRule.setResponseRule(responseRule);
-		newTransletRule.setExceptionHandlingRuleMap(transletRule.getExceptionHandlingRuleMap());
+		newTransletRule.setExceptionHandlingRule(transletRule.getExceptionHandlingRuleMap());
 		newTransletRule.setTransletInterfaceClass(transletRule.getTransletInterfaceClass());
 		newTransletRule.setTransletImplementClass(transletRule.getTransletImplementClass());
 		

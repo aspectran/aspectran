@@ -27,7 +27,7 @@ import com.aspectran.core.context.rule.BeanRule;
 /**
  * The Class CglibDynamicBeanProxy.
  *
- * @author aspectran
+ * @author Juho Jeong
  */
 public class CglibDynamicBeanProxy extends AbstractDynamicBeanProxy implements MethodInterceptor {
 

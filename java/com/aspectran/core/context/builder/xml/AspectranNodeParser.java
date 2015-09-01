@@ -29,6 +29,7 @@ import com.aspectran.core.context.builder.Importable;
 import com.aspectran.core.context.rule.AspectJobAdviceRule;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.BeanRule;
+import com.aspectran.core.context.rule.ExceptionHandlingRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.PointcutRule;
 import com.aspectran.core.context.rule.RequestRule;
@@ -537,7 +538,9 @@ public class AspectranNodeParser {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
 				ResponseByContentTypeRule rbctr = assistant.popObject();
 				TransletRule transletRule = assistant.peekObject();
-				transletRule.addExceptionHandlingRule(rbctr);
+				
+				ExceptionHandlingRule exceptionHandlingRule = transletRule.touchExceptionHandlingRule();
+				exceptionHandlingRule.putResponseByContentTypeRule(rbctr);
 			}
 		});
 		parser.addNodelet("/aspectran/translet/end()", new Nodelet() {
