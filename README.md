@@ -1,5 +1,5 @@
 # aspectran
-Aspectran is a lightweight and extensible framework for building enterprise-class Java Web applications.
+Aspectran is a lightweight and extensible framework for building enterprise-ready Java Web applications.
 There is no need to understand complex concepts to take advantage of the Aspectran.
 There is no need to spend a completely new concept in order to take advantage of the Aspectran.
 Some of the basic concepts of Aspectran allows you to create a result that can be clear and reliable.
