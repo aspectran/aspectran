@@ -21,11 +21,14 @@ import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 
 /**
-*
+* SqlSession Transaction Advice
+* 
+* <blockquote cite="https://mybatis.github.io/mybatis-3/java-api.html">
+* By default MyBatis does not actually commit unless it detects that the database has been changed by a call to insert, update or delete. If you've somehow made changes without calling these methods, then you can pass true into the commit and rollback methods to guarantee that it will be committed (note, you still can't force a session in auto-commit mode, or one that is using an external transaction manager).
+* </blockquote>
+*  
 * @author Juho Jeong
-*
-* <p>Created: 2015. 04. 03</p>
-*
+* @since 2015. 04. 03
 */
 public class SqlSessionTransactionAdvice {
 	
@@ -35,6 +38,10 @@ public class SqlSessionTransactionAdvice {
 	
 	private boolean autoCommit;
 	
+	private boolean forceCommit;
+	
+	private boolean forceRollback;
+	
 	public SqlSessionTransactionAdvice(SqlSessionFactoryBean factoryBean) {
 		this.sqlSessionFactory = factoryBean.getObject();
 	}
@@ -43,12 +50,16 @@ public class SqlSessionTransactionAdvice {
 		return sqlSession;
 	}
 
-	public boolean isAutoCommit() {
-		return autoCommit;
-	}
-
 	public void setAutoCommit(boolean autoCommit) {
 		this.autoCommit = autoCommit;
+	}
+
+	public void setForceCommit(boolean forceCommit) {
+		this.forceCommit = forceCommit;
+	}
+
+	public void setForceRollback(boolean forceRollback) {
+		this.forceRollback = forceRollback;
 	}
 
 	public SqlSession open() throws SQLException {
@@ -62,12 +73,31 @@ public class SqlSessionTransactionAdvice {
 	
 	public void commit() throws SQLException {
 		if(!autoCommit)
-			sqlSession.commit();
+			sqlSession.commit(forceCommit);
 	}
 	
 	public void commit(boolean force) throws SQLException {
 		if(!autoCommit)
 			sqlSession.commit(force);
+	}
+	
+	/**
+	 * Rollback.
+	 * 
+	 * <blockquote cite="https://mybatis.github.io/mybatis-3/java-api.html">
+	 * Most of the time you won't have to call rollback(), as MyBatis will do that for you if you don't call commit. However, if you need more fine grained control over a session where multiple commits and rollbacks are possible, you have the rollback option there to make that possible.
+	 * </blockquote>
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public void rollback() throws SQLException {
+		if(!autoCommit)
+			sqlSession.rollback(forceRollback);
+	}
+	
+	public void rollback(boolean force) throws SQLException {
+		if(!autoCommit)
+			sqlSession.rollback(force);
 	}
 	
 	public void close() throws SQLException {
