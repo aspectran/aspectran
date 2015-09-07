@@ -19,7 +19,7 @@ public interface AspectranServiceControllerListener {
 	
 	public void started();
 	
-	public void restarted();
+	public void refreshed();
 
 	public void paused(long timeout);
 	

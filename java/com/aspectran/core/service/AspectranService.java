@@ -27,7 +27,7 @@ public interface AspectranService extends AspectranServiceController {
 	
 	public ActivityContext getActivityContext();
 
-	public void setAspectranServiceControllerListener(AspectranServiceControllerListener activityContextServiceListener);
+	public void setAspectranServiceControllerListener(AspectranServiceControllerListener aspectranServiceControllerListener);
 	
 	public boolean isHardReload();
 	

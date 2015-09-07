@@ -22,7 +22,7 @@ import org.quartz.JobDetail;
 import com.aspectran.core.context.AspectranConstant;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
-import com.aspectran.scheduler.quartz.QuartzAspectranScheduler;
+import com.aspectran.scheduler.service.QuartzSchedulerService;
 
 /**
  * The Class QuartzJobResponseWriter.
@@ -44,7 +44,7 @@ public class QuartzJobResponseWriter extends StringWriter {
 	public void flush() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("results of job [");
-		sb.append(jobDetail.getJobDataMap().get(QuartzAspectranScheduler.TRANSLET_NAME_DATA_KEY)).append("]");
+		sb.append(jobDetail.getJobDataMap().get(QuartzSchedulerService.TRANSLET_NAME_DATA_KEY)).append("]");
 		sb.append(AspectranConstant.LINE_SEPARATOR);
 		sb.append(toString());
 		

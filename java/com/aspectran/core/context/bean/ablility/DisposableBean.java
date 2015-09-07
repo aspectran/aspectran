@@ -25,7 +25,7 @@ public interface DisposableBean {
 	public static final String DESTROY_METHOD_NAME = "destroy";
 
 	/**
-	 * Invoke on destruction of a singleton.
+	 * A Dispose implementation that calls the destroy() method.
 	 *
 	 * @throws Exception the exception
 	 */

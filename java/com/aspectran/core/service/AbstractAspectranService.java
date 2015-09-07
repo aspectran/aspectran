@@ -36,8 +36,8 @@ import com.aspectran.core.util.ResourceUtils;
 import com.aspectran.core.util.apon.Parameters;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
-import com.aspectran.scheduler.AspectranScheduler;
-import com.aspectran.scheduler.quartz.QuartzAspectranScheduler;
+import com.aspectran.scheduler.service.SchedulerService;
+import com.aspectran.scheduler.service.QuartzSchedulerService;
 
 public abstract class AbstractAspectranService implements AspectranService {
 
@@ -65,7 +65,7 @@ public abstract class AbstractAspectranService implements AspectranService {
 	
 	protected ActivityContext activityContext;
 
-	private AspectranScheduler aspectranScheduler;
+	private SchedulerService schedulerService;
 	
 	private ActivityContextReloadingTimer reloadingTimer;
 	
@@ -178,7 +178,7 @@ public abstract class AbstractAspectranService implements AspectranService {
 		try {
 			activityContext = activityContextLoader.load(rootContext);
 			
-			startupAspectranScheduler();
+			startupSchedulerService();
 			startReloadingTimer();
 			
 			return activityContext;
@@ -193,7 +193,7 @@ public abstract class AbstractAspectranService implements AspectranService {
 		
 		boolean cleanlyDestoryed = true;
 
-		if(!shutdownAspectranScheduler())
+		if(!shutdownSchedulerService())
 			cleanlyDestoryed = false;
 
 		if(activityContext != null) {
@@ -224,50 +224,50 @@ public abstract class AbstractAspectranService implements AspectranService {
 			
 			activityContext = activityContextLoader.load(rootContext);
 			
-			startupAspectranScheduler();
+			startupSchedulerService();
 	
 			startReloadingTimer();
 		} catch(Exception e) {
-			throw new AspectranServiceException("Failed to reload the Aspectran's ActivityContext Service.", e);
+			throw new AspectranServiceException("Failed to reload the Aspectran's ActivityContext.", e);
 		}
 
 		return activityContext;
 	}
 	
-	private void startupAspectranScheduler() throws Exception {
+	private void startupSchedulerService() throws Exception {
 		if(this.aspectranSchedulerConfig == null)
 			return;
 		
-		log.info("Starting the AspectranScheduler " + this.aspectranSchedulerConfig.describe());
+		log.info("Starting the SchedulerService " + this.aspectranSchedulerConfig.describe());
 		
 		boolean startup = this.aspectranSchedulerConfig.getBoolean(AspectranSchedulerConfig.startup);
 		int startDelaySeconds = this.aspectranSchedulerConfig.getInt(AspectranSchedulerConfig.startDelaySeconds.getName(), -1);
 		boolean waitOnShutdown = this.aspectranSchedulerConfig.getBoolean(AspectranSchedulerConfig.waitOnShutdown);
 		
 		if(startup) {
-			AspectranScheduler aspectranScheduler = new QuartzAspectranScheduler(activityContext);
+			SchedulerService schedulerService = new QuartzSchedulerService(activityContext);
 			
 			if(waitOnShutdown)
-				aspectranScheduler.setWaitOnShutdown(true);
+				schedulerService.setWaitOnShutdown(true);
 			
 			if(startDelaySeconds == -1) {
 				log.info("Scheduler option 'startDelaySeconds' is not specified. So defaulting to 5 seconds.");
 				startDelaySeconds = 5;
 			}
 			
-			aspectranScheduler.startup(startDelaySeconds);
-			this.aspectranScheduler = aspectranScheduler;
+			schedulerService.startup(startDelaySeconds);
+			this.schedulerService = schedulerService;
 		}
 	}
 	
-	private boolean shutdownAspectranScheduler() {
-		if(aspectranScheduler != null) {
+	private boolean shutdownSchedulerService() {
+		if(schedulerService != null) {
 			try {
-				aspectranScheduler.shutdown();
-				aspectranScheduler = null;
-				log.info("Successfully destroyed AspectranScheduler " + aspectranScheduler);
+				schedulerService.shutdown();
+				schedulerService = null;
+				log.info("Aspectran's SchedulerService has not been shutdown successfully.");
 			} catch(Exception e) {
-				log.error("AspectranScheduler were not destroyed cleanly.", e);
+				log.error("Aspectran's SchedulerService has not been shutdown cleanly.", e);
 				return false;
 			}
 		}
@@ -366,9 +366,9 @@ public abstract class AbstractAspectranService implements AspectranService {
 	}
 	
 	public static void main(String argv[]) {
-		String applicationBasePath = "c:/Users/Gulendol/Projects/aspectran/ADE/workspace/aspectran.example/webapp";
+		String applicationBasePath = "c:/Users/Gulendol/Projects/aspectran/ADE/workspace/aspectran-examples/webapp";
 		String[] resourceLocations = new String[3];
-		resourceLocations[0] = "file:/c:/Users/Gulendol/Projects/aspectran/ADE/workspace/aspectran.example/webapp/WEB-INF/aspectran/classes";
+		resourceLocations[0] = "file:/c:/Users/Gulendol/Projects/aspectran/ADE/workspace/aspectran-examples/webapp/WEB-INF/aspectran/classes";
 		resourceLocations[1] = "/WEB-INF/aspectran/lib";
 		resourceLocations[2] = "/WEB-INF/aspectran/xml";
 		String rootResourceLocation = "/WEB-INF/classes";

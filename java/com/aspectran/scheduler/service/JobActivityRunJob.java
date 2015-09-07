@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.scheduler.quartz;
+package com.aspectran.scheduler.service;
 
 import org.quartz.Job;
 import org.quartz.JobDataMap;
@@ -42,8 +42,8 @@ public class JobActivityRunJob implements Job {
 		try {
 			JobDetail jobDetail = jobExecutionContext.getJobDetail();
 			JobDataMap jobDataMap = jobDetail.getJobDataMap();
-			ActivityContext context = (ActivityContext)jobDataMap.get(QuartzAspectranScheduler.ASPECTRAN_CONTEXT_DATA_KEY);
-			String transletName = jobDataMap.getString(QuartzAspectranScheduler.TRANSLET_NAME_DATA_KEY);
+			ActivityContext context = (ActivityContext)jobDataMap.get(QuartzSchedulerService.ASPECTRAN_CONTEXT_DATA_KEY);
+			String transletName = jobDataMap.getString(QuartzSchedulerService.TRANSLET_NAME_DATA_KEY);
 			
 			runActivity(context, transletName, jobDetail);
 		} catch(ActivityException e) {

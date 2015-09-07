@@ -28,26 +28,26 @@ public class CoreAspectranService extends AbstractAspectranService {
 	
 	private static final long DEFAULT_PAUSE_TIMEOUT = 321L;
 	
-	private AspectranServiceControllerListener activityContextServiceListener;
+	private AspectranServiceControllerListener aspectranServiceControllerListener;
 	
 	private boolean started;
 	
-	public synchronized ActivityContext start() {
+	public synchronized ActivityContext startup() {
 		loadActivityContext();
 
 		log.info("AspectranService was started.");
 
-		if(activityContextServiceListener != null)
-			activityContextServiceListener.started();
+		if(aspectranServiceControllerListener != null)
+			aspectranServiceControllerListener.started();
 
 		started = true;
 		
 		return activityContext;
 	}
 	
-	public synchronized boolean restart() {
+	public synchronized boolean refresh() {
 		if(!started) {
-			log.debug("Cannot restart the AspectranService, because it is currently stopped.");
+			log.debug("Cannot refresh AspectranService, because it is currently stopped.");
 			return true;
 		}
 
@@ -62,42 +62,42 @@ public class CoreAspectranService extends AbstractAspectranService {
 		
 		started = true;
 		
-		log.info("AspectranService was restarted.");
+		log.info("AspectranService was refreshed.");
 
-		if(activityContextServiceListener != null)
-			activityContextServiceListener.restarted();
+		if(aspectranServiceControllerListener != null)
+			aspectranServiceControllerListener.refreshed();
 		
 		return cleanlyDestoryed;
 	}
 
 	public synchronized void pause() {
-		if(activityContextServiceListener != null)
-			activityContextServiceListener.paused(-1L);
+		if(aspectranServiceControllerListener != null)
+			aspectranServiceControllerListener.paused(-1L);
 	}
 	
 	public synchronized void pause(long timeout) {
-		if(activityContextServiceListener != null)
-			activityContextServiceListener.paused(timeout);
+		if(aspectranServiceControllerListener != null)
+			aspectranServiceControllerListener.paused(timeout);
 	}
 	
 	public synchronized void resume() {
-		if(activityContextServiceListener != null)
-			activityContextServiceListener.resumed();
+		if(aspectranServiceControllerListener != null)
+			aspectranServiceControllerListener.resumed();
 	}
 
 	public synchronized boolean stop() {
 		if(!started)
 			return true;
 
-		if(activityContextServiceListener != null)
-			activityContextServiceListener.paused(DEFAULT_PAUSE_TIMEOUT);
+		if(aspectranServiceControllerListener != null)
+			aspectranServiceControllerListener.paused(DEFAULT_PAUSE_TIMEOUT);
 		
 		boolean cleanlyDestoryed = destroyActivityContext();
 			
-		log.info("AspectranService was stoped.");
+		log.info("AspectranService was stopped.");
 
-		if(activityContextServiceListener != null)
-			activityContextServiceListener.stopped();
+		if(aspectranServiceControllerListener != null)
+			aspectranServiceControllerListener.stopped();
 		
 		started = false;
 		
@@ -117,17 +117,17 @@ public class CoreAspectranService extends AbstractAspectranService {
 					scope.destroy();
 			} catch(Exception e) {
 				cleanlyDestoryed = false;
-				log.error("WebApplicationAdapter were not destroyed cleanly.", e);
+				log.error("ApplicationAdapter Scope has not been destroyed cleanly.", e);
 			}
 		}
 		
-		log.info("AspectranService was disposed.");
+		log.info("AspectranService has been destroyed.");
 		
 		return cleanlyDestoryed;
 	}
 	
-	public void setAspectranServiceControllerListener(AspectranServiceControllerListener activityContextServiceListener) {
-		this.activityContextServiceListener = activityContextServiceListener;
+	public void setAspectranServiceControllerListener(AspectranServiceControllerListener aspectranServiceControllerListener) {
+		this.aspectranServiceControllerListener = aspectranServiceControllerListener;
 	}
 	
 	public static AspectranClassLoader newAspectranClassLoader(String[] resourceLocations) {

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.scheduler.quartz;
+package com.aspectran.scheduler.service;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -46,18 +46,17 @@ import com.aspectran.core.context.rule.type.PointcutType;
 import com.aspectran.core.util.apon.Parameters;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
-import com.aspectran.scheduler.AspectranScheduler;
 
 /**
- * The Class QuartzAspectranScheduler.
+ * The Class QuartzSchedulerService.
  */
-public class QuartzAspectranScheduler implements AspectranScheduler {
+public class QuartzSchedulerService implements SchedulerService {
 
 	public final static String ASPECTRAN_CONTEXT_DATA_KEY = "ASPECTRAN_CONTEXT";
 
 	public final static String TRANSLET_NAME_DATA_KEY = "TRANSLET_NAME";
 	
-	private final Log log = LogFactory.getLog(QuartzAspectranScheduler.class);
+	private final Log log = LogFactory.getLog(QuartzSchedulerService.class);
 
 	private ActivityContext context;
 	
@@ -69,7 +68,7 @@ public class QuartzAspectranScheduler implements AspectranScheduler {
 	
 	private boolean waitOnShutdown = false;
 	
-	public QuartzAspectranScheduler(ActivityContext context) {
+	public QuartzSchedulerService(ActivityContext context) {
 		this.context = context;
 	}
 	
@@ -143,7 +142,7 @@ public class QuartzAspectranScheduler implements AspectranScheduler {
 				}
 			}
 		} catch(Exception e) {
-			throw new SchedulerException("AspectranScheduler startup failed.", e);
+			throw new SchedulerException("QuartzSchedulerService startup failed.", e);
 		}
 	}
 	
@@ -155,7 +154,8 @@ public class QuartzAspectranScheduler implements AspectranScheduler {
 	public void shutdown() throws SchedulerException {
 		for(Scheduler scheduler : startedSchedulerList) {
 			if(!scheduler.isShutdown()) {
-				log.info("Now try to stop scheduler '" + scheduler.getSchedulerName() + "'.");
+				//log.info("Now try to stop scheduler '" + scheduler.getSchedulerName() + "' with waitForJobsToComplete=" + waitOnShutdown);
+				log.info("Shutingdown Quartz scheduler '" + scheduler.getSchedulerName() + "' with waitForJobsToComplete=" + waitOnShutdown);
 				scheduler.shutdown(waitOnShutdown);
 			}
 		}

@@ -158,7 +158,7 @@ public class WebAspectranService extends CoreAspectranService {
 		
 		WebAspectranService.addAspectranServiceControllerListener(aspectranService);
 		
-		aspectranService.start();
+		aspectranService.startup();
 		
 		return aspectranService;
 	}
@@ -169,7 +169,7 @@ public class WebAspectranService extends CoreAspectranService {
 				aspectranService.pauseTimeout = 0;
 			}
 			
-			public void restarted() {
+			public void refreshed() {
 				started();
 			}
 			
