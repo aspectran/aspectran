@@ -135,18 +135,18 @@ public abstract class AbstractContextBeanRegistry implements ContextBeanRegistry
 			String initMethodName = beanRule.getInitMethodName();
 			
 			if(initMethodName != null) {
-				if(beanRule.getInitMethodNeedTranslet() == null) {
+				if(beanRule.getInitMethodRequiresTranslet() == null) {
 					try {
 						BeanAction.invokeMethod(activity, bean, initMethodName, null, null, true);
-						beanRule.setInitMethodNeedTranslet(Boolean.TRUE);
+						beanRule.setInitMethodRequiresTranslet(Boolean.TRUE);
 					} catch(NoSuchMethodException e) {
-						log.info("the method with the 'translet' argument was not found. So in the future will continue to call a method with no argument 'translet'. beanRule " + beanRule);
+						log.info("Cannot find a method that requires a argument translet. So in the future will continue to call a method with no argument translet. beanActionRule " + beanRule);
 						
-						beanRule.setInitMethodNeedTranslet(Boolean.FALSE);
+						beanRule.setInitMethodRequiresTranslet(Boolean.FALSE);
 						BeanAction.invokeMethod(activity, bean, initMethodName, null, null, false);
 					}
 				} else {
-					BeanAction.invokeMethod(activity, bean, initMethodName, null, null, beanRule.getInitMethodNeedTranslet().booleanValue());
+					BeanAction.invokeMethod(activity, bean, initMethodName, null, null, beanRule.getInitMethodRequiresTranslet().booleanValue());
 				}
 			}
 

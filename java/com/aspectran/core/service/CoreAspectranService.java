@@ -35,7 +35,7 @@ public class CoreAspectranService extends AbstractAspectranService {
 	public synchronized ActivityContext startup() {
 		loadActivityContext();
 
-		log.info("AspectranService was started.");
+		log.info("AspectranService was started successfully.");
 
 		if(aspectranServiceControllerListener != null)
 			aspectranServiceControllerListener.started();

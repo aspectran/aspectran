@@ -16,7 +16,6 @@
 package com.aspectran.core.activity.process.action;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -55,7 +54,7 @@ public class BeanAction extends AbstractAction implements Executable {
 	
 	private final AspectAdviceRule aspectAdviceRule;
 	
-	private final Map<ItemRuleMap, Boolean> needTransletCache = new HashMap<ItemRuleMap, Boolean>();
+	private Boolean requireTranslet;
 	
 	/**
 	 * Instantiates a new bean action.
@@ -112,20 +111,19 @@ public class BeanAction extends AbstractAction implements Executable {
 			}
 			
 			Object result;
-			Boolean transletInclusion = needTransletCache.get(argumentItemRuleMap);
 
-			if(transletInclusion == null) {
+			if(requireTranslet == null) {
 				try {
 					result = invokeMethod(activity, bean, methodName, argumentItemRuleMap, expressor, true);
-					needTransletCache.put(argumentItemRuleMap, Boolean.TRUE);
+					requireTranslet = Boolean.TRUE;
 				} catch(NoSuchMethodException e) {
-					log.info("the method with the 'translet' argument was not found. So in the future will continue to call a method with no argument 'translet'. beanActionRule " + beanActionRule);
+					log.info("Cannot find a method that requires a argument translet. So in the future will continue to call a method with no argument translet. beanActionRule " + beanActionRule);
 					
-					needTransletCache.put(argumentItemRuleMap, Boolean.FALSE);
+					requireTranslet = Boolean.FALSE;
 					result = invokeMethod(activity, bean, methodName, argumentItemRuleMap, expressor, false);
 				}
 			} else {
-				result = invokeMethod(activity, bean, methodName, argumentItemRuleMap, expressor, transletInclusion.booleanValue());
+				result = invokeMethod(activity, bean, methodName, argumentItemRuleMap, expressor, requireTranslet.booleanValue());
 			}
 
 			return result;

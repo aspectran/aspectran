@@ -69,11 +69,11 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 			WebAspectranService rootAspectranService = (WebAspectranService)servletContext.getAttribute(AspectranServiceListener.ASPECTRAN_SERVICE_ATTRIBUTE);
 
 			if(rootAspectranService == null) {
-				log.info("Standalone AspectranService.");
+				//log.info("AspectranService is running as a stand-alone mode.");
 				aspectranService = WebAspectranService.newInstance(this);
 				standalone = true;
 			} else {
-				log.info("The root AspectranService exists.");
+				//log.info("Root AspectranService exists.");
 				aspectranService = WebAspectranService.newInstance(this, rootAspectranService);
 				standalone = (rootAspectranService != aspectranService);
 			}
