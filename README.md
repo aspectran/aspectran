@@ -1,4 +1,4 @@
-# [Aspectran](http://www.aspectran.com)
+# [Aspectran](http://www.aspectran.com) [![Analytics](https://ga-beacon.appspot.com/UA-66807210-1/aspectran/readme?pixel)](https://github.com/topframe/aspectran)
 Aspectran is a lightweight and extensible framework for building enterprise-ready Java Web applications.
 There is no need to understand complex concepts to take advantage of the Aspectran.
 There is no need to spend a completely new concept in order to take advantage of the Aspectran.
