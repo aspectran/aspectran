@@ -41,7 +41,7 @@ public final class LogFactory {
   /**
    * Marker to be used by logging implementations that support markers
    */
-  public static final String MARKER = "MYBATIS";
+  public static final String MARKER = "ASPECTRAN";
 
   private static Constructor<? extends Log> logConstructor;
 
