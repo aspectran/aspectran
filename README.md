@@ -15,14 +15,12 @@ You can spend your spare time to improve the quality of the results from now on.
 ```
 com.aspectran
 ├── core          핵심 기능 패키지
-│   ├── activity    요청, 처리, 응답을 처리하는 패키지
-│   ├── adapter     핵심 기능과 구현 기능간의 인터페이스 패키지
-│   ├── context     핵심 기능 구동에 필요한 환경을 구성하는 패키지
-│   ├── service     핵심 기능을 제공하는 패키지
+│   ├── activity    요청, 처리, 응답을 처리하기 위한 패키지
+│   ├── adapter     핵심 기능과 구현 기능간의 인터페이스를 위한 패키지
+│   ├── context     핵심 기능 구동에 필요한 환경을 구성하기 위한 패키지
+│   ├── service     핵심 기능을 제공하기 위한 패키지
 │   └── util        공통 유틸리티 패키지
 ├── scheduler     핵심 기능을 상속받아서 Scheduler를 구현한 패키지
 ├── support       외부 라이브러리 지원을 위한 패키지
 └── web           핵심 기능이 상속받아서 Web 환경을 구현한 패키지
-```
-
 ```
