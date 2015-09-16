@@ -56,6 +56,7 @@ public class HttpServletRequestAdapter extends AbstractRequestAdapter implements
 		return ((HttpServletRequest)adaptee).getParameterValues(name);
 	}
 	
+	@SuppressWarnings("unchecked")
 	public Enumeration<String> getParameterNames() {
 		return ((HttpServletRequest)adaptee).getParameterNames();
 	}
@@ -69,6 +70,7 @@ public class HttpServletRequestAdapter extends AbstractRequestAdapter implements
 		((HttpServletRequest)adaptee).setAttribute(name, o);
 	}
 	
+	@SuppressWarnings("unchecked")
 	public Enumeration<String> getAttributeNames() {
 		return ((HttpServletRequest)adaptee).getAttributeNames();
 
