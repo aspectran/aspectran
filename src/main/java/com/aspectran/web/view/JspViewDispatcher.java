@@ -37,15 +37,25 @@ import com.aspectran.core.util.logging.LogFactory;
 /**
  * JSP or other web resource integration.
  * 
- * <p>
- * Created: 2008. 03. 22 오후 5:51:58
- * </p>
+ * @since 2008. 03. 22 오후 5:51:58
  */
 public class JspViewDispatcher implements ViewDispatcher {
 
 	private static final Log log = LogFactory.getLog(JspViewDispatcher.class);
 
 	private static final boolean debugEnabled = log.isDebugEnabled();
+	
+	private String templatePathPrefix;
+
+	private String templatePathSuffix;
+	
+	public void setTemplatePathPrefix(String templatePathPrefix) {
+		this.templatePathPrefix = templatePathPrefix;
+	}
+
+	public void setTemplatePathSuffix(String templatePathSuffix) {
+		this.templatePathSuffix = templatePathSuffix;
+	}
 
 	/* (non-Javadoc)
 	 * @see com.aspectran.core.activity.response.dispatch.ViewDispatcher#dispatch(com.aspectran.core.activity.AspectranActivity, com.aspectran.base.rule.DispatchResponseRule)
@@ -71,6 +81,15 @@ public class JspViewDispatcher implements ViewDispatcher {
 			}
 			
 			String templatePath = dispatchResponseRule.getTemplateRule().getFile();
+			
+			if(templatePathPrefix != null && templatePathSuffix != null) {
+				templatePath = templatePathPrefix + templatePath + templatePathSuffix;
+			} else if(templatePathPrefix != null) {
+				templatePath = templatePathPrefix + templatePath;
+			} else if(templatePathSuffix != null) {
+				templatePath = templatePath + templatePathSuffix;
+			}
+			
 			ProcessResult processResult = activity.getProcessResult();
 
 			if(processResult != null)
@@ -110,11 +129,11 @@ public class JspViewDispatcher implements ViewDispatcher {
 	}
 
 	/**
-	 * Parse.
-	 * 
-	 * @param servletRequest the servlet request
+	 * Stores an attribute in request.
+	 *
+	 * @param requestAdapter the request adapter
 	 * @param processResult the process result
-	 * @param parentQualifiedActionId the parent action path
+	 * @param parentQualifiedActionId the parent qualified action id
 	 */
 	private void setAttribute(RequestAdapter requestAdapter, ProcessResult processResult, String parentQualifiedActionId) {
 		for(ContentResult contentResult : processResult) {
