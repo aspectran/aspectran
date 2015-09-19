@@ -31,9 +31,9 @@ public class DefaultSettings implements Cloneable {
 
 	private String transletNamePattern;
 	
-	private String transletNamePatternPrefix;
+	private String transletNamePrefix;
 
-	private String transletNamePatternSuffix;
+	private String transletNameSuffix;
 	
 	private String transletInterfaceClassName;
 	
@@ -66,43 +66,43 @@ public class DefaultSettings implements Cloneable {
 			
 			if(index != -1) {
 				if(index == 0) {
-					transletNamePatternPrefix = null;
-					transletNamePatternSuffix = transletNamePattern.substring(1);
+					transletNamePrefix = null;
+					transletNameSuffix = transletNamePattern.substring(1);
 				} else if(index == (transletNamePattern.length() - 1)) {
-					transletNamePatternPrefix = transletNamePattern.substring(0, transletNamePattern.length() - 1);
-					transletNamePatternSuffix = null;
+					transletNamePrefix = transletNamePattern.substring(0, transletNamePattern.length() - 1);
+					transletNameSuffix = null;
 				} else {
-					transletNamePatternPrefix = transletNamePattern.substring(0, index);
-					transletNamePatternSuffix = transletNamePattern.substring(index + 1);
+					transletNamePrefix = transletNamePattern.substring(0, index);
+					transletNameSuffix = transletNamePattern.substring(index + 1);
 				}
 			}
 		}
 	}
 	
-	public void setTransletNamePattern(String transletNamePatternPrefix, String transletNamePatternSuffix) {
-		transletNamePattern = transletNamePatternPrefix + TRANSLET_NAME_PATTERN_SEPARATOR + transletNamePatternSuffix;
+	public void setTransletNamePattern(String transletNamePrefix, String transletNameSuffix) {
+		transletNamePattern = transletNamePrefix + TRANSLET_NAME_PATTERN_SEPARATOR + transletNameSuffix;
 	}
 	
-	public void setTransletNamePatternPrefix(String transletNamePatternPrefix) {
-		this.transletNamePatternPrefix = transletNamePatternPrefix;
+	public void setTransletNamePrefix(String transletNamePrefix) {
+		this.transletNamePrefix = transletNamePrefix;
 		
-		if(transletNamePatternSuffix != null)
-			setTransletNamePattern(transletNamePatternPrefix, transletNamePatternSuffix);
+		if(transletNameSuffix != null)
+			setTransletNamePattern(transletNamePrefix, transletNameSuffix);
 	}
 	
-	public void setTransletNamePatternSuffix(String transletNamePatternSuffix) {
-		this.transletNamePatternSuffix = transletNamePatternSuffix;
+	public void setTransletNameSuffix(String transletNameSuffix) {
+		this.transletNameSuffix = transletNameSuffix;
 		
-		if(transletNamePatternPrefix != null)
-			setTransletNamePattern(transletNamePatternPrefix, transletNamePatternSuffix);
+		if(transletNamePrefix != null)
+			setTransletNamePattern(transletNamePrefix, transletNameSuffix);
 	}
 	
-	public String getTransletNamePatternPrefix() {
-		return transletNamePatternPrefix;
+	public String getTransletNamePrefix() {
+		return transletNamePrefix;
 	}
 
-	public String getTransletNamePatternSuffix() {
-		return transletNamePatternSuffix;
+	public String getTransletNameSuffix() {
+		return transletNameSuffix;
 	}
 	
 	public String getTransletInterfaceClassName() {
@@ -181,11 +181,11 @@ public class DefaultSettings implements Cloneable {
 		if(settings.get(DefaultSettingType.TRANSLET_NAME_PATTERN) != null)
 			setTransletNamePattern(settings.get(DefaultSettingType.TRANSLET_NAME_PATTERN));
 		
-		if(settings.get(DefaultSettingType.TRANSLET_NAME_PATTERN_PREFIX) != null)
-			setTransletNamePatternPrefix(settings.get(DefaultSettingType.TRANSLET_NAME_PATTERN_PREFIX));
+		if(settings.get(DefaultSettingType.TRANSLET_NAME_PREFIX) != null)
+			setTransletNamePrefix(settings.get(DefaultSettingType.TRANSLET_NAME_PREFIX));
 		
-		if(settings.get(DefaultSettingType.TRANSLET_NAME_PATTERN_SUFFIX) != null)
-			setTransletNamePatternSuffix(settings.get(DefaultSettingType.TRANSLET_NAME_PATTERN_SUFFIX));
+		if(settings.get(DefaultSettingType.TRANSLET_NAME_SUFFIX) != null)
+			setTransletNameSuffix(settings.get(DefaultSettingType.TRANSLET_NAME_SUFFIX));
 		
 		if(settings.get(DefaultSettingType.TRANSLET_INTERFACE_CLASS) != null)
 			setTransletInterfaceClassName(settings.get(DefaultSettingType.TRANSLET_INTERFACE_CLASS));

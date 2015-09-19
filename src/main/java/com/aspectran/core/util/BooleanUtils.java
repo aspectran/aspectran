@@ -23,6 +23,10 @@ package com.aspectran.core.util;
  */
 public class BooleanUtils {
 	
+	public static Boolean toBooleanObject(String booleanString) {
+		return Boolean.valueOf(booleanString);
+	}
+	
 	public static Boolean toNullableBooleanObject(String booleanString) {
 		if(booleanString == null)
 			return null;

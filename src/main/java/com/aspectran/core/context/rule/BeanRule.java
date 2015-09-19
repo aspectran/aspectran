@@ -240,7 +240,7 @@ public class BeanRule implements Cloneable {
 		return BooleanUtils.toBoolean(important);
 	}
 	
-	public void setImportanct(Boolean important) {
+	public void setImportant(Boolean important) {
 		this.important = important;
 	}
 
@@ -411,7 +411,7 @@ public class BeanRule implements Cloneable {
 		beanRule.setInitMethodName(initMethodName);
 		beanRule.setDestroyMethodName(destroyMethodName);
 		beanRule.setLazyInit(lazyInit);
-		beanRule.setImportanct(important);
+		beanRule.setImportant(important);
 		
 		return beanRule;
 	}

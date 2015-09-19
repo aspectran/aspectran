@@ -23,6 +23,7 @@ import org.w3c.dom.Node;
 
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.activity.process.ContentList;
+import com.aspectran.core.context.bean.scan.BeanClassScanner;
 import com.aspectran.core.context.builder.ContextBuilderAssistant;
 import com.aspectran.core.context.builder.ImportHandler;
 import com.aspectran.core.context.builder.Importable;
@@ -47,9 +48,9 @@ import com.aspectran.core.util.xml.Nodelet;
 import com.aspectran.core.util.xml.NodeletParser;
 
 /**
- * Translet Map Parser.
+ * Aspectran Node Parser.
  * 
- * <p>Created: 2008. 06. 14 오전 4:39:24</p>
+ * @since 2008. 06. 14 오전 4:39:24
  */
 public class AspectranNodeParser {
 	
@@ -76,6 +77,7 @@ public class AspectranNodeParser {
 		addSettingsNodelets();
 		addTypeAliasNodelets();
 		addAspectRuleNodelets();
+		addBeansNodelets();
 		addBeanNodelets();
 		addTransletNodelets();
 		addImportNodelets();
@@ -314,6 +316,37 @@ public class AspectranNodeParser {
 	}
 
 	/**
+	 * Adds the beans nodelets.
+	 */
+	private void addBeansNodelets() {
+		parser.addNodelet("/aspectran/beans", new Nodelet() {
+			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
+				String idPrefix = attributes.get("idPrefix");
+				String idSuffix = attributes.get("idSuffix");
+				String id = BeanClassScanner.combineBeanIdPattern(idPrefix, idSuffix);
+				String className = assistant.resolveAliasType(attributes.get("class"));
+				String scope = attributes.get("scope");
+				Boolean singleton = BooleanUtils.toNullableBooleanObject(attributes.get("singleton"));
+				String factoryMethod = attributes.get("factoryMethod");
+				String initMethodName = attributes.get("initMethod");
+				String destroyMethodName = attributes.get("destroyMethod");
+				Boolean lazyInit = BooleanUtils.toNullableBooleanObject(attributes.get("lazyInit"));
+				Boolean important = BooleanUtils.toNullableBooleanObject(attributes.get("important"));
+
+				BeanRule beanRule = BeanRule.newInstance(id, className, scope, singleton, factoryMethod, initMethodName, destroyMethodName, lazyInit, important);
+				assistant.pushObject(beanRule);					
+			}
+		});
+		parser.addNodelet("/aspectran/beans", new BeanInnerNodeletAdder(assistant));
+		parser.addNodelet("/aspectran/beans/end()", new Nodelet() {
+			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
+				BeanRule beanRule = assistant.popObject();
+				assistant.addBeanRule(beanRule);
+			}
+		});
+	}
+
+	/**
 	 * Adds the bean nodelets.
 	 */
 	private void addBeanNodelets() {
@@ -333,50 +366,7 @@ public class AspectranNodeParser {
 				assistant.pushObject(beanRule);					
 			}
 		});
-		parser.addNodelet("/aspectran/bean/constructor/argument", new Nodelet() {
-			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
-				if(text != null) {
-					BeanRule beanRule = assistant.peekObject();
-					BeanRule.updateConstructorArgument(beanRule, text);
-				}
-				
-				ItemRuleMap irm = new ItemRuleMap();
-				assistant.pushObject(irm);
-			}
-		});
-		parser.addNodelet("/aspectran/bean/constructor/argument", new ItemNodeletAdder(assistant));
-		parser.addNodelet("/aspectran/bean/constructor/argument/end()", new Nodelet() {
-			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
-				ItemRuleMap irm = assistant.popObject();
-				
-				if(!irm.isEmpty()) {
-					BeanRule beanRule = assistant.peekObject();
-					beanRule.setConstructorArgumentItemRuleMap(irm);
-				}
-			}
-		});
-		parser.addNodelet("/aspectran/bean/property", new Nodelet() {
-			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
-				if(text != null) {
-					BeanRule beanRule = assistant.peekObject();
-					BeanRule.updateProperty(beanRule, text);
-				}
-				
-				ItemRuleMap irm = new ItemRuleMap();
-				assistant.pushObject(irm);
-			}
-		});
-		parser.addNodelet("/aspectran/bean/property", new ItemNodeletAdder(assistant));
-		parser.addNodelet("/aspectran/bean/property/end()", new Nodelet() {
-			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
-				ItemRuleMap irm = assistant.popObject();
-				
-				if(!irm.isEmpty()) {
-					BeanRule beanRule = assistant.peekObject();
-					beanRule.setPropertyItemRuleMap(irm);
-				}
-			}
-		});
+		parser.addNodelet("/aspectran/bean", new BeanInnerNodeletAdder(assistant));
 		parser.addNodelet("/aspectran/bean/end()", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
 				BeanRule beanRule = assistant.popObject();
@@ -384,7 +374,7 @@ public class AspectranNodeParser {
 			}
 		});
 	}
-	
+
 	/**
 	 * Adds the translet nodelets.
 	 */

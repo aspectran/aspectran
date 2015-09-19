@@ -304,19 +304,19 @@ public class ContextBuilderAssistant {
 		if(transletName != null && transletName.length() > 0 && transletName.charAt(0) == AspectranConstant.TRANSLET_NAME_SEPARATOR)
 			return transletName;
 
-		if(defaultSettings.getTransletNamePatternPrefix() == null && 
-				defaultSettings.getTransletNamePatternSuffix() == null)
+		if(defaultSettings.getTransletNamePrefix() == null && 
+				defaultSettings.getTransletNameSuffix() == null)
 			return transletName;
 		
 		StringBuilder sb = new StringBuilder();
 		
-		if(defaultSettings.getTransletNamePatternPrefix() != null)
-			sb.append(defaultSettings.getTransletNamePatternPrefix());
+		if(defaultSettings.getTransletNamePrefix() != null)
+			sb.append(defaultSettings.getTransletNamePrefix());
 
 		sb.append(transletName);
 		
-		if(defaultSettings.getTransletNamePatternSuffix() != null)
-			sb.append(defaultSettings.getTransletNamePatternSuffix());
+		if(defaultSettings.getTransletNameSuffix() != null)
+			sb.append(defaultSettings.getTransletNameSuffix());
 		
 		return sb.toString();
 	}
@@ -365,14 +365,7 @@ public class ContextBuilderAssistant {
 	public void addBeanRule(BeanRule beanRule) throws CloneNotSupportedException, ClassNotFoundException, IOException {
 		String className = beanRule.getClassName();
 		
-		if(!WildcardPattern.hasWildcards(className)) {
-			Class<?> beanClass = classLoader.loadClass(className);
-			beanRule.setBeanClass(beanClass);
-			BeanRule.checkAccessibleMethod(beanRule);
-			beanRuleMap.putBeanRule(beanRule);
-			if(log.isTraceEnabled())
-				log.trace("add BeanRule " + beanRule);
-		} else {
+		if(BeanClassScanner.isPatternedBeanId(beanRule.getId()) || WildcardPattern.hasWildcards(className)) {
 			BeanClassScanner scanner = new BeanClassScanner(beanRule.getId(), classLoader);
 			Map<String, Class<?>> beanClassMap = scanner.scanClass(className);
 			
@@ -395,6 +388,13 @@ public class ContextBuilderAssistant {
 						log.trace("add BeanRule " + beanRule2);
 				}
 			}
+		} else {
+			Class<?> beanClass = classLoader.loadClass(className);
+			beanRule.setBeanClass(beanClass);
+			BeanRule.checkAccessibleMethod(beanRule);
+			beanRuleMap.putBeanRule(beanRule);
+			if(log.isTraceEnabled())
+				log.trace("add BeanRule " + beanRule);
 		}
 	}
 	

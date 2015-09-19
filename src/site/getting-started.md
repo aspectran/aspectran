@@ -96,7 +96,7 @@ Aspectran은 다음 요건만 충족을 하면 원할한 작동이 보장됩니�
 | scheduler.startup | 스케쥴러를 기동할지 여부를 지정 |
 
 ### 2) AspectranServiceListener 등록
-웹 애플리케이션이 시작되면서 Aspectran 서비스도 함께 기동되도록 하기 위해 ***AspectranServiceListener***를 등록합니다.
+웹 어플리케이션이 시작되면서 Aspectran 서비스도 함께 기동되도록 하기 위해 ***AspectranServiceListener***를 등록합니다.
 `<listner-class>`에  "com.aspectran.web.startup.listener.AspectranServiceListener"를 지정합니다.
 컨텍스트 초기화 파라메터 "aspectran:config"를 참조해서 Aspectran 서비스 환경이 구성됩니다.
 

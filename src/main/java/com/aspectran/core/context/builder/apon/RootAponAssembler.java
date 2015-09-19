@@ -117,8 +117,8 @@ public class RootAponAssembler {
 		if(defaultSettings != null) {
 			DefaultSettingsParameters settingParameters = aspectranParameters.newParameters(AspectranParameters.setting);
 			settingParameters.putValue(DefaultSettingsParameters.transletNamePattern, defaultSettings.getTransletNamePattern());
-			settingParameters.putValue(DefaultSettingsParameters.transletNamePatternPrefix, defaultSettings.getTransletNamePatternPrefix());
-			settingParameters.putValue(DefaultSettingsParameters.transletNamePatternSuffix, defaultSettings.getTransletNamePatternSuffix());
+			settingParameters.putValue(DefaultSettingsParameters.transletNamePrefix, defaultSettings.getTransletNamePrefix());
+			settingParameters.putValue(DefaultSettingsParameters.transletNameSuffix, defaultSettings.getTransletNameSuffix());
 			settingParameters.putValue(DefaultSettingsParameters.transletInterfaceClass, defaultSettings.getTransletInterfaceClassName());
 			settingParameters.putValue(DefaultSettingsParameters.transletImplementClass, defaultSettings.getTransletImplementClassName());
 			settingParameters.putValue(DefaultSettingsParameters.nullableContentId, defaultSettings.getNullableContentId());

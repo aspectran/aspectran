@@ -42,7 +42,7 @@ public class BeanClassScanner {
 	/** The log. */
 	private final Log log = LogFactory.getLog(BeanClassScanner.class);
 	
-	private static final char BEAN_ID_WILDCARD_DELIMITER = '*';
+	public static final String BEAN_ID_WILDCARD_DELIMITER = "*";
 	
 	private final ClassLoader classLoader;
 
@@ -69,11 +69,14 @@ public class BeanClassScanner {
 		}
 		
 		this.classLoader = classLoader;
-		
-		//System.out.println("beanIdPrefix: " + beanIdPrefix);
-		//System.out.println("beanIdSuffix: " + beanIdSuffix);
 	}
 
+	public BeanClassScanner(String beanIdPrefix, String beanIdSuffix, ClassLoader classLoader) {
+		this.beanIdPrefix = beanIdPrefix;
+		this.beanIdSuffix = beanIdSuffix;
+		this.classLoader = classLoader;
+	}
+	
 	public Map<String, Class<?>> scanClass(String classNamePattern) throws IOException, ClassNotFoundException {
 		Map<String, Class<?>> scanClasses = new LinkedHashMap<String, Class<?>>();
 		
@@ -316,6 +319,23 @@ public class BeanClassScanner {
 		} catch (ClassNotFoundException e) {
 			throw new BeanClassScanningFailedException("bean-class loading failed. class name: " + className, e);
 		}
+	}
+	
+	public static String combineBeanIdPattern(String beanIdPrefix, String beanIdSuffix) {
+		if(beanIdPrefix == null && beanIdSuffix != null) {
+			return BEAN_ID_WILDCARD_DELIMITER + beanIdSuffix;
+		} else if(beanIdPrefix != null && beanIdSuffix == null) {
+			return beanIdPrefix + BEAN_ID_WILDCARD_DELIMITER;
+		} else {
+			return BEAN_ID_WILDCARD_DELIMITER;
+		}
+	}
+	
+	public static boolean isPatternedBeanId(String beanId) {
+		if(beanId == null)
+			return false;
+		
+		return (beanId.indexOf(BEAN_ID_WILDCARD_DELIMITER) > -1);
 	}
 	
 	public static void main(String[] args) {

@@ -32,7 +32,7 @@ import com.aspectran.core.util.xml.NodeletAdder;
 import com.aspectran.core.util.xml.NodeletParser;
 
 /**
- * The Class ItemRuleNodeletAdder.
+ * The Class ItemNodeletAdder.
  * 
  * <p>Created: 2008. 06. 14 오전 6:56:29</p>
  */
