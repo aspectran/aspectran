@@ -25,8 +25,8 @@ import java.util.Map;
  */
 public final class ItemType extends Type {
 	
-	/** The "single" item type. */
-	public static final ItemType SINGLE;
+	/** The "singular" item type. */
+	public static final ItemType SINGULAR;
 
 	/** The "array" item type. */
 	public static final ItemType ARRAY;
@@ -46,7 +46,7 @@ public final class ItemType extends Type {
 	private static final Map<String, ItemType> types;
 	
 	static {
-		SINGLE = new ItemType("single");
+		SINGULAR = new ItemType("singular");
 		ARRAY = new ItemType("array");
 		LIST = new ItemType("list");
 		MAP = new ItemType("map");
@@ -54,7 +54,7 @@ public final class ItemType extends Type {
 		PROPERTIES = new ItemType("properties");
 
 		types = new HashMap<String, ItemType>();
-		types.put(SINGLE.toString(), SINGLE);
+		types.put(SINGULAR.toString(), SINGULAR);
 		types.put(ARRAY.toString(), ARRAY);
 		types.put(LIST.toString(), LIST);
 		types.put(MAP.toString(), MAP);

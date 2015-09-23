@@ -138,7 +138,7 @@ public class HybridImportHandler extends AbstractImportHandler implements Import
 			
 			file.setLastModified(importableFile.getLastModified());
 		} catch(Exception e) {
-			log.error("Can't save file " +  file, e);
+			log.error("Cannot save file " +  file, e);
 		}
 	}
 	

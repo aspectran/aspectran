@@ -51,7 +51,7 @@ public class ScopedContextBeanRegistry extends AbstractContextBeanRegistry {
 	@SuppressWarnings("unchecked")
 	public <T> T getBean(String id) {
 		BeanRule beanRule = beanRuleMap.get(id);
-		
+
 		if(beanRule == null)
 			throw new BeanNotFoundException(id);
 		
@@ -135,7 +135,7 @@ public class ScopedContextBeanRegistry extends AbstractContextBeanRegistry {
 	}
 	
 	private Scope getRequestScope() {
-		Activity activity = context.getLocalActivity();
+		Activity activity = context.getCurrentActivity();
 		
 		if(activity == null)
 			return null;
@@ -151,7 +151,7 @@ public class ScopedContextBeanRegistry extends AbstractContextBeanRegistry {
 	}
 
 	private Scope getSessionScope() {
-		Activity activity = context.getLocalActivity();
+		Activity activity = context.getCurrentActivity();
 
 		if(activity == null)
 			return null;

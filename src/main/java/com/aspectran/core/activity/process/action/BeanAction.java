@@ -21,7 +21,7 @@ import java.util.Map;
 
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.process.ActionList;
-import com.aspectran.core.activity.variable.ValueObjectMap;
+import com.aspectran.core.activity.variable.ValueMap;
 import com.aspectran.core.activity.variable.token.ItemTokenExpression;
 import com.aspectran.core.activity.variable.token.ItemTokenExpressor;
 import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
@@ -54,7 +54,7 @@ public class BeanAction extends AbstractAction implements Executable {
 	
 	private final AspectAdviceRule aspectAdviceRule;
 	
-	private Boolean requireTranslet;
+	private Boolean needTranslet;
 	
 	/**
 	 * Instantiates a new bean action.
@@ -95,14 +95,14 @@ public class BeanAction extends AbstractAction implements Executable {
 				bean = activity.getBean(beanId);
 			else if(aspectAdviceRule != null)
 				bean = activity.getAspectAdviceBean(aspectAdviceRule.getAspectId());
-				
+
 			ItemTokenExpressor expressor = null;
 			
 			if(propertyItemRuleMap != null || argumentItemRuleMap != null)
 				expressor = new ItemTokenExpression(activity);
 			
 			if(propertyItemRuleMap != null) {
-				ValueObjectMap valueMap = expressor.express(propertyItemRuleMap);
+				ValueMap valueMap = expressor.express(propertyItemRuleMap);
 				
 				// set properties for ActionBean
 				for(Map.Entry<String, Object> entry : valueMap.entrySet()) {
@@ -112,18 +112,18 @@ public class BeanAction extends AbstractAction implements Executable {
 			
 			Object result;
 
-			if(requireTranslet == null) {
+			if(needTranslet == null) {
 				try {
 					result = invokeMethod(activity, bean, methodName, argumentItemRuleMap, expressor, true);
-					requireTranslet = Boolean.TRUE;
+					needTranslet = Boolean.TRUE;
 				} catch(NoSuchMethodException e) {
 					log.info("Cannot find a method that requires a argument translet. So in the future will continue to call a method with no argument translet. beanActionRule " + beanActionRule);
 					
-					requireTranslet = Boolean.FALSE;
+					needTranslet = Boolean.FALSE;
 					result = invokeMethod(activity, bean, methodName, argumentItemRuleMap, expressor, false);
 				}
 			} else {
-				result = invokeMethod(activity, bean, methodName, argumentItemRuleMap, expressor, requireTranslet.booleanValue());
+				result = invokeMethod(activity, bean, methodName, argumentItemRuleMap, expressor, needTranslet.booleanValue());
 			}
 
 			return result;
@@ -138,7 +138,7 @@ public class BeanAction extends AbstractAction implements Executable {
 		Object[] argsObjects = null;
 		
 		if(argumentItemRuleMap != null) {
-			ValueObjectMap valueMap = expressor.express(argumentItemRuleMap);
+			ValueMap valueMap = expressor.express(argumentItemRuleMap);
 
 			int argIndex;
 			
@@ -160,8 +160,11 @@ public class BeanAction extends AbstractAction implements Executable {
 				ItemRule ir = iter.next();
 				Object o = valueMap.get(ir.getName());
 
-				argsTypes[argIndex] = ItemRule.getValueClass(ir, o);
+				argsTypes[argIndex] = ItemRule.getClassOfValue(ir, o);
 				argsObjects[argIndex] = o;
+				
+				System.out.println("argsTypes[argIndex]: " + argsTypes[argIndex]);
+				System.out.println("argsObjects[argIndex]: " + argsObjects[argIndex]);
 				
 				argIndex++;
 			}

@@ -21,12 +21,12 @@ import java.util.Map;
 /**
  * <p>Created: 2008. 06. 11 오후 8:55:13</p>
  */
-public class ValueObjectMap extends LinkedHashMap<String, Object> {
+public class ValueMap extends LinkedHashMap<String, Object> {
 
 	/** @serial */
 	static final long serialVersionUID = -8779174783802247545L;
 
-	public ValueObjectMap() {
+	public ValueMap() {
 		super();
 	}
 
@@ -35,7 +35,7 @@ public class ValueObjectMap extends LinkedHashMap<String, Object> {
 	 * 
 	 * @param map the map
 	 */
-	public ValueObjectMap(Map<String, Object> map) {
+	public ValueMap(Map<String, Object> map) {
 		super(map);
 	}
 	

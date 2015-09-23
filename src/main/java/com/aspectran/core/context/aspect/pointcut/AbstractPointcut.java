@@ -19,7 +19,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.aspectran.core.context.AspectranConstant;
+import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.PointcutPatternRule;
+import com.aspectran.core.util.ClassDescriptor;
 
 /**
  * The Class AbstractPointcut.
@@ -27,9 +29,24 @@ import com.aspectran.core.context.rule.PointcutPatternRule;
 public abstract class AbstractPointcut {
 	
 	protected final List<PointcutPatternRule> pointcutPatternRuleList;
+	
+	protected final boolean existsBeanMethodNamePattern;
 
 	public AbstractPointcut(List<PointcutPatternRule> pointcutPatternRuleList) {
 		this.pointcutPatternRuleList = pointcutPatternRuleList;
+		
+		if(pointcutPatternRuleList != null) {
+			boolean existsBeanMethodNamePattern = false;
+			for(PointcutPatternRule ppr : pointcutPatternRuleList) {
+				if(ppr.getBeanMethodNamePattern() != null) {
+					existsBeanMethodNamePattern = true;
+					break;
+				}
+			}
+			this.existsBeanMethodNamePattern = existsBeanMethodNamePattern;
+		} else {
+			this.existsBeanMethodNamePattern = false;
+		}
 	}
 	
 	public List<PointcutPatternRule> getPointcutPatternRuleList() {
@@ -43,6 +60,10 @@ public abstract class AbstractPointcut {
 		}
 
 		pointcutPatternList.addAll(pointcutPatternList);
+	}
+	
+	public boolean isExistsBeanMethodNamePattern() {
+		return existsBeanMethodNamePattern;
 	}
 
 	public boolean matches(String transletName) {
@@ -112,7 +133,24 @@ public abstract class AbstractPointcut {
 		
 		return false;
 	}
-	
+
+	public boolean exists(BeanRule beanRule) {
+		if(pointcutPatternRuleList != null) {
+			ClassDescriptor cd = ClassDescriptor.getInstance(beanRule.getBeanClass());
+			
+			String beanId = beanRule.getId();
+			String[] beanMethodNames = cd.getDistinctMethodNames();
+
+			for(PointcutPatternRule ppr : pointcutPatternRuleList) {
+				if(exists(ppr, beanId, beanMethodNames)) {
+					return true;
+				}
+			}
+		}
+		
+		return false;
+	}
+
 	/**
 	 * 비교 항목의 값이 null이면 참으로 간주함.
 	 *
@@ -135,12 +173,29 @@ public abstract class AbstractPointcut {
 			matched = patternMatches(pointcutPatternRule.getBeanMethodNamePattern(), beanMethodName);
 		
 		return matched;
-	}	
+	}
+	
+	protected boolean exists(PointcutPatternRule pointcutPatternRule, String beanId, String[] beanMethodNames) {
+		boolean matched = true;
+		
+		if(beanId != null && pointcutPatternRule.getBeanIdPattern() != null)
+			matched = patternMatches(pointcutPatternRule.getBeanIdPattern(), beanId, AspectranConstant.ID_SEPARATOR);
+		
+		if(matched && pointcutPatternRule.getBeanMethodNamePattern() != null) {
+			for(String beanMethodName : beanMethodNames) {
+				matched = patternMatches(pointcutPatternRule.getBeanMethodNamePattern(), beanMethodName);
+				if(matched)
+					break;
+			}
+		}
+		
+		return matched;
+	}
 	
 	abstract protected boolean patternMatches(String pattern, String str);
 	
 	abstract protected boolean patternMatches(String pattern, String str, char separator);
-	
+
 	public void clear() {
 	}
 	

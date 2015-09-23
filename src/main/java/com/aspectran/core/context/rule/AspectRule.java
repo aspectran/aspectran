@@ -151,7 +151,7 @@ public class AspectRule {
 		this.exceptionHandlingRule = exceptionHandlingRule;
 	}
 	
-	public void addResponseByContentTypeRule(ResponseByContentTypeRule responseByContentTypeRule) {
+	public void addExceptionHandlingRule(ResponseByContentTypeRule responseByContentTypeRule) {
 		if(exceptionHandlingRule == null)
 			exceptionHandlingRule = new ExceptionHandlingRule();
 		

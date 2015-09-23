@@ -118,11 +118,11 @@ public class TokenParser {
 //			return null;
 //
 //		// When the parameter type is only and each token trim
-//		boolean trimStringToken = (unityType != ItemUnityType.SINGLE);
+//		boolean trimStringToken = (unityType != ItemUnityType.SINGULAR);
 //
 //		Object result = null;
 //		
-//		if(unityType == ItemUnityType.SINGLE)
+//		if(unityType == ItemUnityType.SINGULAR)
 //			result = parseForSingleItem(value, trimStringToken);
 //		else if(unityType == ItemUnityType.LIST)
 //			result = parseToList(value, trimStringToken);

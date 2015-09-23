@@ -25,7 +25,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
 
 import com.aspectran.core.activity.Activity;
-import com.aspectran.core.activity.variable.ValueObjectMap;
+import com.aspectran.core.activity.variable.ValueMap;
 import com.aspectran.core.activity.variable.token.ItemTokenExpression;
 import com.aspectran.core.activity.variable.token.ItemTokenExpressor;
 import com.aspectran.core.activity.variable.token.Token;
@@ -117,7 +117,7 @@ public class HttpServletResponseAdapter extends AbstractResponseAdapter implemen
 		if(redirectResponseRule.getParameterItemRuleMap() != null) {
 			ItemTokenExpressor expressor = new ItemTokenExpression(activity);
 			//expressor.setTokenValueHandler(handler);
-			ValueObjectMap valueMap = expressor.express(redirectResponseRule.getParameterItemRuleMap());
+			ValueMap valueMap = expressor.express(redirectResponseRule.getParameterItemRuleMap());
 
 			if(valueMap != null && valueMap.size() > 0) {
 				if(questionPos == -1)

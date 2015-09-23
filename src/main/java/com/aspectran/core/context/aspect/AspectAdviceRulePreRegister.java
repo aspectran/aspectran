@@ -86,12 +86,24 @@ public class AspectAdviceRulePreRegister extends AspectAdviceRuleRegister {
 			if(aspectTargetType == AspectTargetType.TRANSLET && !aspectRule.isOnlyTransletRelevanted()) {
 				Pointcut pointcut = aspectRule.getPointcut();
 				
-				if(pointcut == null || pointcut.exists(null, beanRule.getId())) {
-					if(log.isTraceEnabled())
-						log.trace("aspectRule " + aspectRule + "\n\t> beanRule " + beanRule);
-
-					beanRule.setProxyMode(true);
-					break;
+				if(pointcut != null && pointcut.isExistsBeanMethodNamePattern()) {
+					if(pointcut.exists(beanRule)) {
+						beanRule.setProxied(true);
+	
+						if(log.isTraceEnabled())
+							log.trace("apply aspectRule " + aspectRule + " to beanRule " + beanRule);
+	
+						break;
+					}
+				} else {
+					if(pointcut == null || pointcut.exists(null, beanRule.getId())) {
+						beanRule.setProxied(true);
+	
+						if(log.isTraceEnabled())
+							log.trace("apply aspectRule " + aspectRule + " to beanRule " + beanRule);
+	
+						break;
+					}
 				}
 			}
 		}
@@ -116,7 +128,7 @@ public class AspectAdviceRulePreRegister extends AspectAdviceRuleRegister {
 						RequestRule requestRule = transletRule.getRequestRule();
 						
 						if(log.isTraceEnabled())
-							log.trace("aspectRule " + aspectRule + "\n\t> transletRule " + transletRule + "\n\t> requestRule " + requestRule);
+							log.trace("apply aspectRule " + aspectRule + " to transletRule " + transletRule + " requestRule " + requestRule);
 						
 						register(requestRule, aspectRule);
 					}
@@ -125,7 +137,7 @@ public class AspectAdviceRulePreRegister extends AspectAdviceRuleRegister {
 						ContentList contentList = transletRule.touchContentList();
 
 						if(log.isTraceEnabled())
-							log.trace("aspectRule " + aspectRule + "\n\t> transletRule " + transletRule + "\n\t> contentList " + contentList);
+							log.trace("apply aspectRule " + aspectRule + " to transletRule " + transletRule + " contentList " + contentList);
 						
 						register(contentList, aspectRule);
 					}
@@ -134,7 +146,7 @@ public class AspectAdviceRulePreRegister extends AspectAdviceRuleRegister {
 						ResponseRule responseRule = transletRule.getResponseRule();
 						
 						if(log.isTraceEnabled())
-							log.trace("aspectRule " + aspectRule + "\n\t> transletRule " + transletRule + "\n\t> responseRule " + responseRule);
+							log.trace("apply aspectRule " + aspectRule + " to transletRule " + transletRule + " responseRule " + responseRule);
 						
 						register(responseRule, aspectRule);
 					}
@@ -142,7 +154,7 @@ public class AspectAdviceRulePreRegister extends AspectAdviceRuleRegister {
 					//translet scope
 					if(pointcut == null || pointcut.matches(transletRule.getName())) {
 						if(log.isTraceEnabled())
-							log.trace("aspectRule " + aspectRule + "\n\t> transletRule " + transletRule);
+							log.trace("apply aspectRule " + aspectRule + " to transletRule " + transletRule);
 						
 						register(transletRule, aspectRule);
 					}

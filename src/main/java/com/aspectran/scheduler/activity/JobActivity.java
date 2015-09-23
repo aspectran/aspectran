@@ -23,7 +23,7 @@ import com.aspectran.core.activity.ActivityException;
 import com.aspectran.core.activity.CoreActivity;
 import com.aspectran.core.activity.Translet;
 import com.aspectran.core.activity.request.RequestException;
-import com.aspectran.core.activity.variable.ValueObjectMap;
+import com.aspectran.core.activity.variable.ValueMap;
 import com.aspectran.core.activity.variable.token.ItemTokenExpression;
 import com.aspectran.core.activity.variable.token.ItemTokenExpressor;
 import com.aspectran.core.adapter.RequestAdapter;
@@ -68,10 +68,10 @@ public class JobActivity extends CoreActivity implements Activity {
 	
 	protected void request(Translet translet) throws RequestException {
 		try {
-	        ValueObjectMap voMap = parseParameter();
+	        ValueMap valueMap = parseParameter();
 	        
-	        if(voMap != null)
-	        	translet.setDeclaredAttributeMap(voMap);
+	        if(valueMap != null)
+	        	translet.setDeclaredAttributeMap(valueMap);
         
 		} catch(Exception e) {
 			throw new RequestException(e);
@@ -103,12 +103,12 @@ public class JobActivity extends CoreActivity implements Activity {
 	/**
 	 * Parses the parameter.
 	 */
-	private ValueObjectMap parseParameter() {
+	private ValueMap parseParameter() {
 		RequestRule requestRule = getRequestRule();
 		
 		if(requestRule.getAttributeItemRuleMap() != null) {
 			ItemTokenExpressor expressor = new ItemTokenExpression(this);
-			ValueObjectMap valueMap = expressor.express(requestRule.getAttributeItemRuleMap());
+			ValueMap valueMap = expressor.express(requestRule.getAttributeItemRuleMap());
 
 			if(valueMap != null && valueMap.size() > 0) {
 				for(Map.Entry<String, Object> entry : valueMap.entrySet())

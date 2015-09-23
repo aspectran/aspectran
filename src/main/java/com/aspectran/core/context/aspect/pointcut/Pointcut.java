@@ -17,6 +17,7 @@ package com.aspectran.core.context.aspect.pointcut;
 
 import java.util.List;
 
+import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.PointcutPatternRule;
 
 /**
@@ -25,6 +26,8 @@ import com.aspectran.core.context.rule.PointcutPatternRule;
 public interface Pointcut {
 	
 	public List<PointcutPatternRule> getPointcutPatternRuleList();
+	
+	public boolean isExistsBeanMethodNamePattern();
 	
 	public boolean matches(String transletName);
 	
@@ -37,7 +40,9 @@ public interface Pointcut {
 	public boolean exists(String transletName, String beanId);
 	
 	public boolean exists(String transletName, String beanId, String beanMethodName);
-	
+
+	public boolean exists(BeanRule beanRule);
+
 	public void clear();
 	
 }

@@ -21,7 +21,7 @@ package com.aspectran.core.context.bean;
  *
  * @author Juho Jeong
  * 
- * <p>Created: 2012. 11. 9. 오전 11:36:47</p>
+ * @since 2012. 11. 9
  */
 public interface BeanRegistry {
 

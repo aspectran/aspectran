@@ -35,15 +35,11 @@ public class RegexpPointcut extends AbstractPointcut implements Pointcut {
 	}
 
 	protected boolean patternMatches(String regex, String input) {
-		Pattern pattern;
-		
-		synchronized(regexpPatternCache) {
-			pattern = regexpPatternCache.get(regex);
+		Pattern pattern = regexpPatternCache.get(regex);
 			
-			if(pattern == null) {
-				pattern = Pattern.compile(regex);
-				regexpPatternCache.put(regex, pattern);
-			}
+		if(pattern == null) {
+			pattern = Pattern.compile(regex);
+			regexpPatternCache.put(regex, pattern);
 		}
 
 		Matcher matcher = pattern.matcher(input);

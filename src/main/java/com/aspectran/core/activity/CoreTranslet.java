@@ -19,9 +19,9 @@ import java.util.Map;
 
 import com.aspectran.core.activity.aspect.result.AspectAdviceResult;
 import com.aspectran.core.activity.process.result.ProcessResult;
+import com.aspectran.core.activity.response.Response;
 import com.aspectran.core.activity.response.ResponseException;
 import com.aspectran.core.activity.response.ResponseNotFoundException;
-import com.aspectran.core.activity.response.Response;
 import com.aspectran.core.activity.response.TransformResponseFactory;
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.adapter.RequestAdapter;
@@ -76,6 +76,41 @@ public class CoreTranslet implements Translet {
 		this.declaredAttributeMap = declaredAttributeMap;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.activity.Translet#getAttribute(java.lang.String)
+	 */
+	public <T> T getAttribute(String name) {
+		if(getRequestAdapter() != null) {
+			return getRequestAdapter().getAttribute(name);
+		}
+		
+		return null;
+	}
+	
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.activity.Translet#getAttribute(java.lang.String, java.lang.Object)
+	 */
+	public <T> T getAttribute(String name, T defaultValue) {
+		T value = null;
+		
+		if(getRequestAdapter() != null) {
+			value = getRequestAdapter().getAttribute(name);
+		}
+		
+		if(value == null)
+			return defaultValue;
+		
+		return value;
+	}
+	
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.activity.Translet#setAttribute(java.lang.String, java.lang.Object)
+	 */
+	public void setAttribute(String name, Object value) {
+		if(getRequestAdapter() != null)
+			getRequestAdapter().setAttribute(name, value);
+	}
+	
 	/**
 	 * Gets the process result.
 	 * 

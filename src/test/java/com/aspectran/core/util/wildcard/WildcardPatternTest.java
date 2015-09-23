@@ -15,10 +15,7 @@
  */
 package com.aspectran.core.util.wildcard;
 
-/**
- * The Class WildcardPattern.
- */
-public class WildcardPattern {
+public class WildcardPatternTest {
 
 	protected static final char ESCAPE_CHAR = '\\';
 	
@@ -52,17 +49,17 @@ public class WildcardPattern {
 
 	private int[] types;
 	
-	public WildcardPattern(String patternString) {
+	public WildcardPatternTest(String patternString) {
 		parse(patternString);
 	}
 	
-	public WildcardPattern(String patternString, char separator) {
+	public WildcardPatternTest(String patternString, char separator) {
 		this.separator = new char[] { separator };
 		
 		parse(patternString);
 	}
 
-	public WildcardPattern(String patternString, String separator) {
+	public WildcardPatternTest(String patternString, String separator) {
 		if(separator != null && separator.length() > 0)
 			this.separator = separator.toCharArray();
 		
@@ -190,19 +187,19 @@ public class WildcardPattern {
 	}
 	
 	public boolean matches(String str) {
-		return WildcardMatcher.matches(this, str);
+		return WildcardMatcherTest.matches(this, str);
 	}
 	
-	public static WildcardPattern compile(String patternString) {
-		return new WildcardPattern(patternString);
+	public static WildcardPatternTest compile(String patternString) {
+		return new WildcardPatternTest(patternString);
 	}
 	
-	public static WildcardPattern compile(String patternString, char separator) {
-		return new WildcardPattern(patternString, separator);
+	public static WildcardPatternTest compile(String patternString, char separator) {
+		return new WildcardPatternTest(patternString, separator);
 	}
 	
-	public static WildcardPattern compile(String patternString, String separator) {
-		return new WildcardPattern(patternString, separator);
+	public static WildcardPatternTest compile(String patternString, String separator) {
+		return new WildcardPatternTest(patternString, separator);
 	}
 	
 	public static boolean hasWildcards(String str) {
@@ -216,6 +213,28 @@ public class WildcardPattern {
 		}
 		
 		return false;
+	}
+	
+	public static void main(String argv[]) {
+		//String str = "\\aaa\\*\\**\\bb*.txt**";
+		//String str = "**/bb*";
+		String str = "com.**.scope.**.*Xml*";
+		WildcardPatternTest pattern = WildcardPatternTest.compile(str, ".");
+		
+		int i = 0;
+		for(char c : pattern.getTokens()) {
+			System.out.print(i);
+			System.out.print(": ");
+			System.out.print(c);
+			System.out.print(", ");
+			System.out.println(pattern.getTypes()[i]);
+			i++;
+		}
+		
+		//WildcardMatcher matcher = new WildcardMatcher(pattern);
+		boolean result = pattern.matches(str);
+		
+		System.out.println("Result: " + result);
 	}
 
 }

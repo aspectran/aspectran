@@ -28,6 +28,7 @@ import java.util.Map;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
+import com.aspectran.core.context.loader.AspectranClassLoader;
 import com.aspectran.core.util.ClassUtils;
 import com.aspectran.core.util.ResourceUtils;
 import com.aspectran.core.util.StringUtils;
@@ -36,14 +37,14 @@ import com.aspectran.core.util.logging.LogFactory;
 import com.aspectran.core.util.wildcard.WildcardMatcher;
 import com.aspectran.core.util.wildcard.WildcardPattern;
 
-public class BeanClassScanner {
+public class BeanClassScannerTest {
 
 	/** The log. */
 	private final Log log = LogFactory.getLog(BeanClassScanner.class);
 	
 	private final ClassLoader classLoader;
 
-	public BeanClassScanner(ClassLoader classLoader) {
+	public BeanClassScannerTest(ClassLoader classLoader) {
 		this.classLoader = classLoader;
 	}
 	
@@ -58,8 +59,10 @@ public class BeanClassScanner {
 	public void scanClasses(String classNamePattern, Map<String, Class<?>> scannedClasses) {
 		try {
 			classNamePattern = classNamePattern.replace(ClassUtils.PACKAGE_SEPARATOR_CHAR, ResourceUtils.RESOURCE_NAME_SPEPARATOR_CHAR);
+			//System.out.println("classNamePattern: " + classNamePattern);
 	
 			String basePackageName = determineBasePackageName(classNamePattern);
+			//System.out.println("basePackageName: " + basePackageName);
 	
 			String subPattern;
 			
@@ -68,6 +71,8 @@ public class BeanClassScanner {
 			else
 				subPattern = StringUtils.EMPTY;
 			
+			//System.out.println("subPattern: " + subPattern);
+	
 			WildcardPattern pattern = WildcardPattern.compile(subPattern, ResourceUtils.RESOURCE_NAME_SPEPARATOR_CHAR);
 			WildcardMatcher matcher = new WildcardMatcher(pattern);
 			
@@ -78,6 +83,7 @@ public class BeanClassScanner {
 			
 			while(resources.hasMoreElements()) {
 				URL resource = resources.nextElement();
+				//System.out.println("classNamePattern: " + classNamePattern + "==scanClass=====" + resource.getFile());
 				
 				if(log.isDebugEnabled())
 					log.debug("Bean Scanning: " + classNamePattern + " at " + resource.getFile());
@@ -102,6 +108,9 @@ public class BeanClassScanner {
 	 * @throws ClassNotFoundException
 	 */
 	private void scanClasses(final String targetPath, final String basePackageName, final String relativePackageName, final WildcardMatcher matcher, final Map<String, Class<?>> scannedClasses) {
+		//System.out.println("@basePackageName: " + basePackageName);
+		//System.out.println("@relativePackageName: " + relativePackageName);
+		//System.out.println("@basePath: " + basePath);
 		final File target = new File(targetPath);
 		if(!target.exists())
 			return;
@@ -116,6 +125,7 @@ public class BeanClassScanner {
 						relativePackageName2 = relativePackageName + file.getName() + ResourceUtils.RESOURCE_NAME_SPEPARATOR;
 							
 					String basePath2 = targetPath + file.getName() + ResourceUtils.RESOURCE_NAME_SPEPARATOR;
+					//System.out.println("-relativePackageName2: " + relativePackageName2);
 					scanClasses(basePath2, basePackageName, relativePackageName2, matcher, scannedClasses);
 				} else if(file.getName().endsWith(ClassUtils.CLASS_FILE_SUFFIX)) {
 					String className;
@@ -124,9 +134,13 @@ public class BeanClassScanner {
 					else
 						className = basePackageName + file.getName().substring(0, file.getName().length() - ClassUtils.CLASS_FILE_SUFFIX.length());
 					String relativePath = className.substring(basePackageName.length(), className.length());
+					//System.out.println("  -file.getName(): " + file.getName());
+					//System.out.println("  -relativePath: " + relativePath);
 					if(matcher.matches(relativePath)) {
 						Class<?> classType = loadClass(className);
 						String beanId = composeBeanId(relativePath);
+						//System.out.println("scaned  [clazz] " + className);
+						//System.out.println("scaned  [beanId] " + combineBeanId(relativePath));
 						if(log.isTraceEnabled())
 							log.trace("beanClass {beanId: " + beanId + ", className: " + className + "}");
 						scannedClasses.put(beanId, classType);
@@ -267,5 +281,35 @@ public class BeanClassScanner {
 			throw new BeanClassScanningFailedException("bean-class loading failed. class name: " + className, e);
 		}
 	}
+	
+	public static void main(String[] args) {
+		try {
+			BeanClassScanner loader = new BeanClassScanner(AspectranClassLoader.getDefaultClassLoader());
+			//loader.scanClass("com.**.*Sql*");
+			//loader.scanClass("com.i*");
+			loader.scanClasses("com.*");
+			System.out.println(loader.getClass().getName());
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		
+		
+		/*
+		Class<BeanClassLoader> clazz = BeanClassLoader.class;
+		URL resource = clazz.getResource(".");
+		System.out.println("resource: " + resource);
 
+		ClassLoader classLoader = ClassUtils.getDefaultClassLoader();
+		try {
+			Enumeration<URL> resources = classLoader.getResources("com");
+			System.out.println("resources:");
+			while(resources.hasMoreElements()) {
+				URL nextElement = resources.nextElement();
+				System.out.println(nextElement);
+			}
+		} catch(IOException e) {
+			e.printStackTrace();
+		}
+*/
+	}
 }

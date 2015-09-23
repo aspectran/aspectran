@@ -21,7 +21,7 @@ import java.util.Map;
 /**
  * <p>Created: 2008. 06. 11 오후 8:55:13</p>
  */
-public class AttributeMap extends ValueObjectMap {
+public class AttributeMap extends ValueMap {
 
 	/** @serial */
 	static final long serialVersionUID = -5350170143494113143L;

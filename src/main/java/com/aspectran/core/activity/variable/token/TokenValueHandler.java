@@ -18,7 +18,9 @@ package com.aspectran.core.activity.variable.token;
 import com.aspectran.core.context.rule.type.TokenType;
 
 /**
- * <p>Created: 2008. 05. 02 오후 2:59:23</p>
+ * The Interface TokenValueHandler.
+ *
+ * @since 2008. 05. 02
  */
 public interface TokenValueHandler {
 

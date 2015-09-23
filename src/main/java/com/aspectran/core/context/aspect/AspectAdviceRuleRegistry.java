@@ -156,7 +156,7 @@ public class AspectAdviceRuleRegistry implements Cloneable {
 		sb.append(", beforeAdvices=").append(beforeAdviceRuleList != null ? beforeAdviceRuleList.size() : 0);
 		sb.append(", afterAdvices=").append(afterAdviceRuleList != null ? afterAdviceRuleList.size() : 0);
 		sb.append(", finallyAdvices=").append(finallyAdviceRuleList != null ? finallyAdviceRuleList.size() : 0);
-		sb.append(", exceptionRaisedAdvices=").append(exceptionHandlingRuleList != null ? exceptionHandlingRuleList.size() : 0);
+		sb.append(", exceptionHandlingRules=").append(exceptionHandlingRuleList != null ? exceptionHandlingRuleList.size() : 0);
 		sb.append("}");
 		
 		return sb.toString();

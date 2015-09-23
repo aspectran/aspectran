@@ -23,7 +23,6 @@ import org.w3c.dom.Node;
 
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.activity.process.ContentList;
-import com.aspectran.core.context.bean.scan.BeanClassScanner;
 import com.aspectran.core.context.builder.ContextBuilderAssistant;
 import com.aspectran.core.context.builder.ImportHandler;
 import com.aspectran.core.context.builder.Importable;
@@ -323,7 +322,7 @@ public class AspectranNodeParser {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
 				String idPrefix = attributes.get("idPrefix");
 				String idSuffix = attributes.get("idSuffix");
-				String id = BeanClassScanner.combineBeanIdPattern(idPrefix, idSuffix);
+				String id = BeanRule.combineBeanIdPattern(idPrefix, idSuffix);
 				String className = assistant.resolveAliasType(attributes.get("class"));
 				String scope = attributes.get("scope");
 				Boolean singleton = BooleanUtils.toNullableBooleanObject(attributes.get("singleton"));
@@ -388,7 +387,7 @@ public class AspectranNodeParser {
 			}
 		});
 		parser.addNodelet("/aspectran/translet", new ActionRuleNodeletAdder(assistant));
-		parser.addNodelet("/aspectran/translet", new ResponseNodeletAdder(assistant));
+		parser.addNodelet("/aspectran/translet", new ResponseInnerNodeletAdder(assistant));
 		parser.addNodelet("/aspectran/translet/request", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
 				String method = attributes.get("method");
@@ -507,7 +506,7 @@ public class AspectranNodeParser {
 				assistant.pushObject(responseRule);
 			}
 		});
-		parser.addNodelet("/aspectran/translet/response", new ResponseNodeletAdder(assistant));
+		parser.addNodelet("/aspectran/translet/response", new ResponseInnerNodeletAdder(assistant));
 		parser.addNodelet("/aspectran/translet/response/end()", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
 				ResponseRule responseRule = assistant.popObject();
@@ -523,7 +522,7 @@ public class AspectranNodeParser {
 				assistant.pushObject(rbctr);
 			}
 		});
-		parser.addNodelet("/aspectran/translet/exception/responseByContentType", new ResponseNodeletAdder(assistant));
+		parser.addNodelet("/aspectran/translet/exception/responseByContentType", new ResponseInnerNodeletAdder(assistant));
 		parser.addNodelet("/aspectran/translet/exception/responseByContentType/end()", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
 				ResponseByContentTypeRule rbctr = assistant.popObject();

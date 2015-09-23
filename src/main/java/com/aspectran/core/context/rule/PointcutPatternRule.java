@@ -102,7 +102,7 @@ public class PointcutPatternRule {
 		return sb.toString();
 	}
 	
-	public static String combinePatternString(String transletName, String beanId, String methodName) {
+	public static String combinePatternString(String transletName, String beanId, String beanMethodName) {
 		StringBuilder sb = new StringBuilder();
 		
 		if(transletName != null)
@@ -113,9 +113,9 @@ public class PointcutPatternRule {
 			sb.append(beanId);
 		}
 		
-		if(methodName != null) {
+		if(beanMethodName != null) {
 			sb.append(POINTCUT_METHOD_DELIMITER);
-			sb.append(methodName);
+			sb.append(beanMethodName);
 		}
 		
 		return sb.toString();

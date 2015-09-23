@@ -18,8 +18,8 @@ package com.aspectran.core.activity;
 import java.util.Map;
 
 import com.aspectran.core.activity.process.result.ProcessResult;
-import com.aspectran.core.activity.response.ResponseException;
 import com.aspectran.core.activity.response.Response;
+import com.aspectran.core.activity.response.ResponseException;
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
@@ -56,6 +56,33 @@ public abstract interface Translet {
 	 * @param declaredAttributeMap the declared attribute map
 	 */
 	public void setDeclaredAttributeMap(Map<String, Object> declaredAttributeMap);
+	
+	/**
+	 * Get a named attribute and convert it into the given type.
+	 *
+	 * @param <T> the generic type
+	 * @param name the name of the attribute
+	 * @return return named value converted to type T or null if non existing.
+	 */
+	public <T> T getAttribute(String name);
+
+	/**
+	 * Get a named attribute and convert it into the given type.
+	 *
+	 * @param <T> the generic type
+	 * @param name the name of the attribute
+	 * @param defaultValue the default value to use if the named attribute does not exist. the default value is also used to define the type to convert the value to.
+	 * @return return named value converted to type T or the default value if non existing.
+	 */
+	public <T> T getAttribute(String name, T defaultValue);
+	
+	/**
+	 * Sets the attribute.
+	 *
+	 * @param name the name
+	 * @param value the value
+	 */
+	public void setAttribute(String name, Object value);
 	
 	/**
 	 * Gets the process result.

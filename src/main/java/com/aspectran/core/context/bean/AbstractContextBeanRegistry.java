@@ -24,9 +24,10 @@ import java.util.List;
 import java.util.Map;
 
 import com.aspectran.core.activity.Activity;
+import com.aspectran.core.activity.CoreActivity;
 import com.aspectran.core.activity.VoidActivity;
 import com.aspectran.core.activity.process.action.BeanAction;
-import com.aspectran.core.activity.variable.ValueObjectMap;
+import com.aspectran.core.activity.variable.ValueMap;
 import com.aspectran.core.activity.variable.token.ItemTokenExpression;
 import com.aspectran.core.activity.variable.token.ItemTokenExpressor;
 import com.aspectran.core.context.ActivityContext;
@@ -66,23 +67,22 @@ public abstract class AbstractContextBeanRegistry implements ContextBeanRegistry
 
 	private final Map<String, List<AspectRule>> aspectRuleListCache = new HashMap<String, List<AspectRule>>();
 	
-	private Activity voidActivity;
-	
 	private boolean initialized;
 	
 	public AbstractContextBeanRegistry(ActivityContext context, BeanRuleMap beanRuleMap, BeanProxyModeType beanProxyMode) {
 		this.context = context;
 		this.beanRuleMap = beanRuleMap;
 		this.beanProxyMode = (beanProxyMode == null ? BeanProxyModeType.CGLIB_PROXY : beanProxyMode);
-		this.voidActivity = new VoidActivity(context);
 	}
 	
 	protected Object createBean(BeanRule beanRule) {
-		Activity activity = context.getLocalActivity();
-		
-		if(activity == null)
+		Activity activity = context.getCurrentActivity();
+		/*
+		if(activity == null) {
 			activity = voidActivity;
-		
+			context.setCurrentActivity(activity);
+		}
+		*/
 		return createBean(beanRule, activity);
 	}
 
@@ -97,7 +97,7 @@ public abstract class AbstractContextBeanRegistry implements ContextBeanRegistry
 			if(constructorArgumentItemRuleMap != null) {
 				expressor = new ItemTokenExpression(activity);
 				
-				ValueObjectMap valueMap = expressor.express(constructorArgumentItemRuleMap);
+				ValueMap valueMap = expressor.express(constructorArgumentItemRuleMap);
 	
 				int parameterSize = constructorArgumentItemRuleMap.size();
 				Object[] args = new Object[parameterSize];
@@ -125,7 +125,7 @@ public abstract class AbstractContextBeanRegistry implements ContextBeanRegistry
 					expressor = new ItemTokenExpression(activity);
 				}
 				
-				ValueObjectMap valueMap = expressor.express(propertyItemRuleMap);
+				ValueMap valueMap = expressor.express(propertyItemRuleMap);
 				
 				for(Map.Entry<String, Object> entry : valueMap.entrySet()) {
 					BeanUtils.setObject(bean, entry.getKey(), entry.getValue());
@@ -170,7 +170,7 @@ public abstract class AbstractContextBeanRegistry implements ContextBeanRegistry
 		 */
 		Object bean;
 		
-		if(beanRule.isProxyMode()) {
+		if(beanRule.isProxied()) {
 			if(beanProxyMode == BeanProxyModeType.JDK_PROXY) {
 				if(argTypes != null && args != null)
 					bean = newInstance(beanRule.getBeanClass(), argTypes, args);
@@ -197,14 +197,17 @@ public abstract class AbstractContextBeanRegistry implements ContextBeanRegistry
 		if(initialized) {
 			throw new UnsupportedOperationException("ContextBeanRegistry has already been initialized.");
 		}
-		
+
+		CoreActivity activity = new VoidActivity(context);
+		context.setCurrentActivity(activity);
+
 		for(BeanRule beanRule : beanRuleMap) {
 			if(!beanRule.isRegistered()) {
 				ScopeType scope = beanRule.getScopeType();
 	
 				if(scope == ScopeType.SINGLETON) {
 					if(!beanRule.isRegistered() && !beanRule.isLazyInit()) {
-						Object bean = createBean(beanRule, voidActivity);
+						Object bean = createBean(beanRule, activity);
 						beanRule.setBean(bean);
 						beanRule.setRegistered(true);
 					}
@@ -212,10 +215,18 @@ public abstract class AbstractContextBeanRegistry implements ContextBeanRegistry
 			}
 		}
 		
+		context.removeCurrentActivity();
+		
 		initialized = true;
+		
+		log.info("ContextBeanRegistry has been initialized successfully.");
 	}
 	
-	public void destroy() {
+	public synchronized void destroy() {
+		if(!initialized) {
+			throw new UnsupportedOperationException("ContextBeanRegistry has not yet initialized.");
+		}
+
 		for(BeanRule beanRule : beanRuleMap) {
 			ScopeType scopeType = beanRule.getScopeType();
 
@@ -238,6 +249,10 @@ public abstract class AbstractContextBeanRegistry implements ContextBeanRegistry
 		}
 		
 		aspectRuleListCache.clear();
+		
+		initialized = false;
+		
+		log.info("ContextBeanRegistry has been destroyed successfully.");
 	}
 	
 	private static Object newInstance(Class<?> beanClass, Class<?>[] argTypes, Object[] args) throws BeanInstantiationException {

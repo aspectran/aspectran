@@ -15,13 +15,13 @@
  */
 package com.aspectran.core.activity.variable.token;
 
-import com.aspectran.core.activity.variable.ValueObjectMap;
+import com.aspectran.core.activity.variable.ValueMap;
 import com.aspectran.core.context.rule.ItemRuleMap;
 
 /**
+ * The Interface ItemTokenExpressor.
  *
- * <p>Created: 2010. 5. 6. 오전 1:41:04</p>
- *
+ * @since 2010. 5. 6
  */
 public interface ItemTokenExpressor {
 	
@@ -32,7 +32,7 @@ public interface ItemTokenExpressor {
 	 * 
 	 * @return the value map
 	 */
-	public ValueObjectMap express(ItemRuleMap itemRuleMap);
+	public ValueMap express(ItemRuleMap itemRuleMap);
 	
 	/**
 	 * Express.
@@ -42,7 +42,7 @@ public interface ItemTokenExpressor {
 	 * 
 	 * @return the value map
 	 */
-	public void express(ItemRuleMap itemRuleMap, ValueObjectMap valueMap);
+	public void express(ItemRuleMap itemRuleMap, ValueMap valueMap);
 	
 	/**
 	 * Sets the token value handler.
