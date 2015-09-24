@@ -47,8 +47,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import net.sf.cglib.core.TypeUtils;
-
 /**
  * Miscellaneous class utility methods. Mainly for internal use within the
  * framework; consider Jakarta's Commons Lang for a more comprehensive suite
@@ -57,9 +55,6 @@ import net.sf.cglib.core.TypeUtils;
  * @author Keith Donald
  * @author Rob Harrop
  * @author Juergen Hoeller
- * @since 1.1
- * @see TypeUtils
- * @see ReflectionUtils
  */
 public abstract class ClassUtils {
 
@@ -616,7 +611,6 @@ public abstract class ClassUtils {
 	 * @param lhsType the target type
 	 * @param rhsType	the value type that should be assigned to the target type
 	 * @return if the target type is assignable from the value type
-	 * @see TypeUtils#isAssignable
 	 */
 	public static boolean isAssignable(Class<?> lhsType, Class<?> rhsType) {
 		// this method does *not* do widening - you must specify exactly

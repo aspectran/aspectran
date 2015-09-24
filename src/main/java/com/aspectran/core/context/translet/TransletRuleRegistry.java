@@ -20,7 +20,7 @@ import com.aspectran.core.context.rule.TransletRuleMap;
 
 public class TransletRuleRegistry {
 
-	private final TransletRuleMap transletRuleMap;
+	private TransletRuleMap transletRuleMap;
 	
 	public TransletRuleRegistry(TransletRuleMap transletRuleMap) {
 		this.transletRuleMap = transletRuleMap;
@@ -46,6 +46,7 @@ public class TransletRuleRegistry {
 	public void destroy() {
 		if(transletRuleMap != null) {
 			transletRuleMap.clear();
+			transletRuleMap = null;
 		}
 	}
 

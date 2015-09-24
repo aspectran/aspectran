@@ -19,14 +19,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.aspectran.core.context.rule.type.JoinpointScopeType;
+import com.aspectran.core.context.rule.type.PointcutType;
 
 public class PointcutPatternRule {
 	
-	public static final char POINTCUT_BEAN_DELIMITER = '@';
+	private static final char POINTCUT_BEAN_DELIMITER = '@';
 	
-	public static final char POINTCUT_METHOD_DELIMITER = '^';
+	private static final char POINTCUT_METHOD_DELIMITER = '^';
 
-	public static final char JOINPOINT_SCOPE_DELIMITER = '$';
+	private static final char JOINPOINT_SCOPE_DELIMITER = '$';
+	
+	private PointcutType pointcutType;
 	
 	private String patternString;
 	
@@ -36,9 +39,23 @@ public class PointcutPatternRule {
 
 	private String beanMethodNamePattern;
 	
+	private int matchedTransletCount;
+	
+	private int matchedBeanCount;
+	
+	private int matchedBeanMethodCount;
+	
 	private List<PointcutPatternRule> excludePointcutPatternRuleList;
 	
 	public PointcutPatternRule() {
+	}
+	
+	public PointcutType getPointcutType() {
+		return pointcutType;
+	}
+
+	protected void setPointcutType(PointcutType pointcutType) {
+		this.pointcutType = pointcutType;
 	}
 
 	public String getPatternString() {
@@ -77,8 +94,8 @@ public class PointcutPatternRule {
 		return excludePointcutPatternRuleList;
 	}
 
-	public void setExcludePointcutPatternRuleList(List<PointcutPatternRule> minusPointcutPatternRuleList) {
-		this.excludePointcutPatternRuleList = minusPointcutPatternRuleList;
+	public void setExcludePointcutPatternRuleList(List<PointcutPatternRule> excludePointcutPatternRuleList) {
+		this.excludePointcutPatternRuleList = excludePointcutPatternRuleList;
 	}
 	
 	public void addExcludePointcutPatternRule(PointcutPatternRule excludePointcutPatternRule) {
@@ -86,6 +103,30 @@ public class PointcutPatternRule {
 			excludePointcutPatternRuleList = new ArrayList<PointcutPatternRule>();
 		
 		excludePointcutPatternRuleList.add(excludePointcutPatternRule);
+	}
+
+	public int getMatchedTransletCount() {
+		return matchedTransletCount;
+	}
+
+	public void increaseMatchedTransletCount() {
+		matchedTransletCount++;
+	}
+
+	public int getMatchedBeanCount() {
+		return matchedBeanCount;
+	}
+
+	public void increaseMatchedBeanCount() {
+		matchedBeanCount++;
+	}
+
+	public int getMatchedBeanMethodCount() {
+		return matchedBeanMethodCount;
+	}
+
+	public void increaseMatchedBeanMethodCount() {
+		matchedBeanMethodCount++;
 	}
 
 	/* (non-Javadoc)

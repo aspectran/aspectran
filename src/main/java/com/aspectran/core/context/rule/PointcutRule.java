@@ -27,7 +27,7 @@ import com.aspectran.core.util.apon.Parameters;
 
 public class PointcutRule {
 	
-	private PointcutType pointcutType;
+	private final PointcutType pointcutType;
 	
 	private List<PointcutPatternRule> pointcutPatternRuleList;
 	
@@ -37,12 +37,12 @@ public class PointcutRule {
 	
 	private Parameters cronTriggerParameters;
 	
+	public PointcutRule(PointcutType pointcutType) {
+		this.pointcutType = pointcutType;
+	}
+	
 	public PointcutType getPointcutType() {
 		return pointcutType;
-	}
-
-	public void setPointcutType(PointcutType pointcutType) {
-		this.pointcutType = pointcutType;
 	}
 
 	public List<PointcutPatternRule> getPointcutPatternRuleList() {
@@ -50,10 +50,18 @@ public class PointcutRule {
 	}
 
 	public void setPointcutPatternRuleList(List<PointcutPatternRule> pointcutPatternRuleList) {
+		for(PointcutPatternRule ppr : pointcutPatternRuleList) {
+			ppr.setPointcutType(pointcutType);
+		}
+
 		this.pointcutPatternRuleList = pointcutPatternRuleList;
 	}
 	
 	public synchronized void addPointcutPatternRule(List<PointcutPatternRule> pointcutPatternRuleList) {
+		for(PointcutPatternRule ppr : pointcutPatternRuleList) {
+			ppr.setPointcutType(pointcutType);
+		}
+		
 		if(this.pointcutPatternRuleList == null) {
 			this.pointcutPatternRuleList = pointcutPatternRuleList;
 		} else {
@@ -62,6 +70,8 @@ public class PointcutRule {
 	}
 	
 	public void addPointcutPatternRule(PointcutPatternRule pointcutPatternRule) {
+		pointcutPatternRule.setPointcutType(pointcutType);
+
 		touchPointcutPatternRuleList();
 
 		pointcutPatternRuleList.add(pointcutPatternRule);
@@ -135,7 +145,7 @@ public class PointcutRule {
 	}
 	
 	public static PointcutRule newInstance(AspectRule aspectRule, String type, Parameters pointcutParameters) {
-		PointcutRule pointcutRule = new PointcutRule();
+		PointcutRule pointcutRule = null;
 
 		if(aspectRule.getAspectTargetType() == AspectTargetType.SCHEDULER) {
 			PointcutType pointcutType = null;
@@ -148,28 +158,31 @@ public class PointcutRule {
 	
 				if(simpleTriggerParameters != null) {
 					pointcutType = PointcutType.SIMPLE_TRIGGER;
-					pointcutRule.setSimpleTriggerParameters(simpleTriggerParameters);
 				} else if(cronTriggerParameters != null) {
 					pointcutType = PointcutType.CRON_TRIGGER;
-					pointcutRule.setCronTriggerParameters(cronTriggerParameters);
 				}
 			}
 			
-			if(pointcutType != null) {
-				pointcutRule.setPointcutType(pointcutType);
-			} else {
+			if(pointcutType == null) {
 				pointcutType = PointcutType.valueOf(type);
 				
 				if(pointcutType != PointcutType.SIMPLE_TRIGGER && pointcutType != PointcutType.CRON_TRIGGER)
 					throw new IllegalArgumentException("Unknown pointcut-type '" + type + "'. Scheduler's pointcut-type must be 'simpleTrigger' or 'cronTrigger'.");
-				
-				pointcutRule.setPointcutType(pointcutType);
 			}
 			
 			if(pointcutType == PointcutType.SIMPLE_TRIGGER && simpleTriggerParameters == null)
 				throw new IllegalArgumentException("Not specified 'simpleTrigger'. Scheduler's pointcut-type must be 'simpleTrigger' or 'cronTrigger'.");
 			else if(pointcutType == PointcutType.CRON_TRIGGER && cronTriggerParameters == null)
 				throw new IllegalArgumentException("Not specified 'cronTrigger'. Scheduler's pointcut-type must be 'simpleTrigger' or 'cronTrigger'.");
+			
+			pointcutRule = new PointcutRule(pointcutType);
+			
+			if(simpleTriggerParameters != null) {
+				pointcutRule.setSimpleTriggerParameters(simpleTriggerParameters);
+			} else if(cronTriggerParameters != null) {
+				pointcutRule.setCronTriggerParameters(cronTriggerParameters);
+			}
+
 		} else {
 			if(pointcutParameters != null) {
 				PointcutType pointcutType = null;
@@ -181,9 +194,9 @@ public class PointcutRule {
 					pointcutType = PointcutType.valueOf(type);
 					if(pointcutType == null)
 						throw new IllegalArgumentException("Unknown pointcut-type '" + type + "'. Translet's pointcut-type must be 'wildcard' or 'regexp'.");
-					
-					aspectRule.setPointcutType(pointcutType);
 				}
+				
+				pointcutRule = new PointcutRule(pointcutType);
 				
 				List<Parameters> targetParametersList = pointcutParameters.getParametersList(PointcutParameters.targets);
 				if(targetParametersList != null) {

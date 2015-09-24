@@ -21,7 +21,6 @@ import java.util.List;
 import com.aspectran.core.context.aspect.pointcut.Pointcut;
 import com.aspectran.core.context.rule.type.AspectTargetType;
 import com.aspectran.core.context.rule.type.JoinpointScopeType;
-import com.aspectran.core.context.rule.type.PointcutType;
 
 public class AspectRule {
 
@@ -30,8 +29,6 @@ public class AspectRule {
 	private AspectTargetType aspectTargetType;
 	
 	private JoinpointScopeType joinpointScope;
-	
-	private PointcutType pointcutType;
 	
 	private PointcutRule pointcutRule;
 	
@@ -73,14 +70,6 @@ public class AspectRule {
 		this.joinpointScope = joinpointScope;
 	}
 
-	public PointcutType getPointcutType() {
-		return pointcutType;
-	}
-
-	public void setPointcutType(PointcutType pointcutType) {
-		this.pointcutType = pointcutType;
-	}
-	
 	public PointcutRule getPointcutRule() {
 		return pointcutRule;
 	}

@@ -23,7 +23,7 @@ import com.aspectran.core.context.rule.AspectRuleMap;
  */
 public class AspectRuleRegistry {
 
-	private final AspectRuleMap aspectRuleMap;
+	private AspectRuleMap aspectRuleMap;
 	
 	public AspectRuleRegistry(AspectRuleMap aspectRuleMap) {
 		this.aspectRuleMap = aspectRuleMap;
@@ -49,6 +49,7 @@ public class AspectRuleRegistry {
 	public void destroy() {
 		if(aspectRuleMap != null) {
 			aspectRuleMap.clear();
+			aspectRuleMap = null;
 		}
 	}
 

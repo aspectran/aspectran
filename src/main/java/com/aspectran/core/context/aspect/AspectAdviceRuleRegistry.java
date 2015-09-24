@@ -114,11 +114,11 @@ public class AspectAdviceRuleRegistry implements Cloneable {
 		this.exceptionHandlingRuleList = exceptionHandlingRuleList;
 	}
 	
-	public void addExceptionHandlingRule(ExceptionHandlingRule rbctrm) {
+	public void addExceptionHandlingRule(ExceptionHandlingRule exceptionHandlingRule) {
 		if(exceptionHandlingRuleList == null)
 			exceptionHandlingRuleList = new ArrayList<ExceptionHandlingRule>();
 		
-		exceptionHandlingRuleList.add(0, rbctrm);
+		exceptionHandlingRuleList.add(0, exceptionHandlingRule);
 	}
 	
 	@SuppressWarnings("unchecked")
