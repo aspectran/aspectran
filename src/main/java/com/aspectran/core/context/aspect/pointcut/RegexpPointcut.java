@@ -34,7 +34,7 @@ public class RegexpPointcut extends AbstractPointcut implements Pointcut {
 		super(pointcutPatternRuleList);
 	}
 
-	protected boolean patternMatches(String regex, String input) {
+	public boolean patternMatches(String regex, String input) {
 		Pattern pattern = regexpPatternCache.get(regex);
 			
 		if(pattern == null) {
@@ -47,7 +47,7 @@ public class RegexpPointcut extends AbstractPointcut implements Pointcut {
 		return matcher.matches();
 	}
 	
-	protected boolean patternMatches(String regex, String str, char separator) {
+	public boolean patternMatches(String regex, String str, char separator) {
 		return patternMatches(regex, str);
 	}
 

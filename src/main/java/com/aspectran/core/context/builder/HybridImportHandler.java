@@ -34,9 +34,7 @@ import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
 /**
- * Translet Map Parser.
- * 
- * <p>Created: 2008. 06. 14 오전 4:39:24</p>
+ * The Class HybridImportHandler.
  */
 public class HybridImportHandler extends AbstractImportHandler implements ImportHandler {
 	
@@ -60,6 +58,7 @@ public class HybridImportHandler extends AbstractImportHandler implements Import
 	
 	public void handle(Importable importable) throws Exception {
 		DefaultSettings defaultSettings = assistant.backupDefaultSettings();
+		
 		boolean hybridon = false;
 		
 		if(importable.getImportFileType() == ImportFileType.APON) {
@@ -71,7 +70,7 @@ public class HybridImportHandler extends AbstractImportHandler implements Import
 			rootAponDisassembler.disassembleAspectran(rootParameters);
 		} else {
 			if(importable.getImportType() == ImportType.FILE) {
-				File aponFile = findAponFile((ImportableFile)importable);
+				File aponFile = makeAponFile((ImportableFile)importable);
 
 				if(importable.getLastModified() == aponFile.lastModified()) {
 					log.info("Rapid Aspectran Context Configuration Loading: " + aponFile);
@@ -96,7 +95,10 @@ public class HybridImportHandler extends AbstractImportHandler implements Import
 		
 		handle();
 
-		assistant.restoreDefaultSettings(defaultSettings);
+		// First default setting is held after configuration loading is completed.
+		if(defaultSettings != null) {
+			assistant.restoreDefaultSettings(defaultSettings);
+		}
 		
 		if(!hybridon) {
 			if(hybridLoading && importable.getImportType() == ImportType.FILE && importable.getImportFileType() == ImportFileType.XML) {
@@ -106,20 +108,20 @@ public class HybridImportHandler extends AbstractImportHandler implements Import
 	}
 	
 	private void saveAsAponFormat(ImportableFile importableFile) throws Exception {
-		log.info("Save as Apon Format " + importableFile);
+		log.info("Save as Apon Format: " + importableFile);
 		
-		File file = null;
+		File aponFile = null;
 		
 		try {
-			file = findAponFile(importableFile);
+			aponFile = makeAponFile(importableFile);
 			
 			AponWriter writer;
 			
 			if(encoding != null) {
-				OutputStream outputStream = new FileOutputStream(file);
+				OutputStream outputStream = new FileOutputStream(aponFile);
 				writer = new AponWriter(new OutputStreamWriter(outputStream, encoding));
 			} else {
-				writer = new AponWriter(new FileWriter(file));
+				writer = new AponWriter(new FileWriter(aponFile));
 			}
 			
 			try {
@@ -130,19 +132,19 @@ public class HybridImportHandler extends AbstractImportHandler implements Import
 				RootAponAssembler assembler = new RootAponAssembler(assistant);
 				Parameters rootParameters = assembler.assembleRoot();
 				
-				writer.comment(file.getAbsolutePath());
+				writer.comment(aponFile.getAbsolutePath());
 				writer.write(rootParameters);
 			} finally {
 				writer.close();
 			}
 			
-			file.setLastModified(importableFile.getLastModified());
+			aponFile.setLastModified(importableFile.getLastModified());
 		} catch(Exception e) {
-			log.error("Cannot save file " +  file, e);
+			log.error("Cannot save file " +  aponFile + " to APON Format.", e);
 		}
 	}
 	
-	private File findAponFile(ImportableFile importableFile) {
+	private File makeAponFile(ImportableFile importableFile) {
 		String basePath = importableFile.getBasePath();
 		String filePath = importableFile.getFilePath() + "." + ImportFileType.APON.toString();
 		File file = new File(basePath, filePath);

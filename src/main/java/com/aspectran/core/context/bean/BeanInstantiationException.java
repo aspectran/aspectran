@@ -31,14 +31,8 @@
  */
 package com.aspectran.core.context.bean;
 
-
-
 /**
  * Exception thrown when instantiation of a bean failed.
- * Carries the offending bean class.
- *
- * @author Juergen Hoeller
- * @since 1.2.8
  */
 public class BeanInstantiationException extends BeanException {
 

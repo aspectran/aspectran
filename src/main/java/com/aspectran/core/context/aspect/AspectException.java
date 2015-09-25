@@ -13,31 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.core.context.bean;
-
+package com.aspectran.core.context.aspect;
 
 /**
- * This class is the basic exception that gets thrown from the beans pacakge.
- * 
- * <p>Created: 2008. 01. 07 오전 3:35:55</p>
+ * This class is the basic exception that gets thrown from the aspect pacakge.
  */
-public class BeanException extends RuntimeException {
+public class AspectException extends RuntimeException {
 	
 	/** @serial */
-	static final long serialVersionUID = 2598750999734896601L;
+	private static final long serialVersionUID = 3736262494374232352L;
 
 	/**
-	 * Creates a new BeanException without detail message.
+	 * Creates a new AspectException without detail message.
 	 */
-	public BeanException() {
+	public AspectException() {
 	}
 
 	/**
-	 * Constructs a BeanException with the specified detail message.
+	 * Constructs a AspectException with the specified detail message.
 	 * 
 	 * @param msg A message to associate with the exception
 	 */
-	public BeanException(String msg) {
+	public AspectException(String msg) {
 		super(msg);
 	}
 
@@ -46,18 +43,18 @@ public class BeanException extends RuntimeException {
 	 * 
 	 * @param cause The real cause of the exception
 	 */
-	public BeanException(Throwable cause) {
+	public AspectException(Throwable cause) {
 		super(cause);
 	}
 
 	/**
-	 * Constructs a BeanException with the specified error message and also the specified root cause exception.
-	 * The root cause exception is generally for TypeConversionException's root cause or something that might have caused a BeanException.
+	 * Constructs a AspectException with the specified error message and also the specified root cause exception.
+	 * The root cause exception is generally for TypeConversionException's root cause or something that might have caused a AspectException.
 	 * 
 	 * @param msg The detail message
 	 * @param cause The real cause of the exception
 	 */
-	public BeanException(String msg, Throwable cause) {
+	public AspectException(String msg, Throwable cause) {
 		super(msg, cause);
 	}
 	

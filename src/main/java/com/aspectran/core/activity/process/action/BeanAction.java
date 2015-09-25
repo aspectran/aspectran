@@ -163,9 +163,6 @@ public class BeanAction extends AbstractAction implements Executable {
 				argsTypes[argIndex] = ItemRule.getClassOfValue(ir, o);
 				argsObjects[argIndex] = o;
 				
-				System.out.println("argsTypes[argIndex]: " + argsTypes[argIndex]);
-				System.out.println("argsObjects[argIndex]: " + argsObjects[argIndex]);
-				
 				argIndex++;
 			}
 		} else {

@@ -45,22 +45,15 @@ public class ResourceEntries extends LinkedHashMap<String, URL> {
 			throw new InvalidResourceException("invalid resource file: " + file, e);
 		}
 		
-//		try {
-//			//System.out.println("directory: " + file.toURL());
-//		} catch (MalformedURLException e) {
-//			e.printStackTrace();
-//		}
-		
 		put(resourceName, url);
 	}
 	
 	public void putResource(File file, JarEntry entry) {
 		String resourceName = entry.getName();
-		//System.out.println("entry.getName(): " + resourceName);
-		//"jar:file:///C:/proj/parser/jar/parser.jar!/test.xml"
 		URL url;
 		
 		try {
+			//"jar:file:///C:/proj/parser/jar/parser.jar!/test.xml"
 			url = new URL(ResourceUtils.JAR_URL_PREFIX + file.toURI() + ResourceUtils.JAR_URL_SEPARATOR + resourceName);
 		} catch(MalformedURLException e) {
 			throw new InvalidResourceException("invalid resource jar file: " + file, e);
@@ -68,15 +61,6 @@ public class ResourceEntries extends LinkedHashMap<String, URL> {
 		
 		put(resourceName, url);
 	}
-	
-//	public void putResource(String resourceName, URL url) {
-		//if(resourceName.endsWith(ClassUtils.CLASS_FILE_SUFFIX)) {
-		//	String className = resourceToClassName(resourceName);
-		//	put(className, url);
-		//} else {
-		//	put(resourceName, url);
-		//}
-//	}
 	
 	public URL put(String resourceName, URL url) {
 		if(resourceName.indexOf('\\') != -1)

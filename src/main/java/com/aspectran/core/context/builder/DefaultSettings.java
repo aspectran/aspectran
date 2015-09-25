@@ -19,16 +19,17 @@ import java.util.Map;
 
 import com.aspectran.core.activity.CoreTranslet;
 import com.aspectran.core.activity.Translet;
+import com.aspectran.core.context.AspectranConstant;
 import com.aspectran.core.context.rule.type.DefaultSettingType;
 import com.aspectran.core.util.BooleanUtils;
 
 /**
+ * The Class DefaultSettings
+ * 
  * <p>Created: 2008. 03. 22 오후 5:48:09</p>
  */
 public class DefaultSettings implements Cloneable {
 	
-	private static final char TRANSLET_NAME_PATTERN_SEPARATOR = '*';
-
 	private String transletNamePattern;
 	
 	private String transletNamePrefix;
@@ -50,6 +51,8 @@ public class DefaultSettings implements Cloneable {
 	private String activityDefaultHandler;
 	
 	private String beanProxyMode;
+
+	private Boolean pointcutPatternVerifiable;
 	
 	public DefaultSettings() {
 	}
@@ -62,7 +65,7 @@ public class DefaultSettings implements Cloneable {
 		this.transletNamePattern = transletNamePattern;
 		
 		if(transletNamePattern != null) {
-			int index = transletNamePattern.indexOf(TRANSLET_NAME_PATTERN_SEPARATOR);
+			int index = transletNamePattern.indexOf(AspectranConstant.TRANSLET_NAME_PATTERN_SEPARATOR);
 			
 			if(index != -1) {
 				if(index == 0) {
@@ -80,7 +83,7 @@ public class DefaultSettings implements Cloneable {
 	}
 	
 	public void setTransletNamePattern(String transletNamePrefix, String transletNameSuffix) {
-		transletNamePattern = transletNamePrefix + TRANSLET_NAME_PATTERN_SEPARATOR + transletNameSuffix;
+		transletNamePattern = transletNamePrefix + AspectranConstant.TRANSLET_NAME_PATTERN_SEPARATOR + transletNameSuffix;
 	}
 	
 	public void setTransletNamePrefix(String transletNamePrefix) {
@@ -177,6 +180,18 @@ public class DefaultSettings implements Cloneable {
 		this.beanProxyMode = beanProxyMode;
 	}
 
+	public boolean isPointcutPatternVerifiable() {
+		return BooleanUtils.toBoolean(pointcutPatternVerifiable, true);
+	}
+	
+	public Boolean getPointcutPatternVerifiable() {
+		return pointcutPatternVerifiable;
+	}
+
+	public void setPointcutPatternVerifiable(boolean pointcutPatternVerifiable) {
+		this.pointcutPatternVerifiable = pointcutPatternVerifiable;
+	}
+
 	public void apply(Map<DefaultSettingType, String> settings) throws ClassNotFoundException {
 		if(settings.get(DefaultSettingType.TRANSLET_NAME_PATTERN) != null)
 			setTransletNamePattern(settings.get(DefaultSettingType.TRANSLET_NAME_PATTERN));
@@ -204,67 +219,13 @@ public class DefaultSettings implements Cloneable {
 		
 		if(settings.get(DefaultSettingType.BEAN_PROXY_MODE) != null)
 			beanProxyMode = settings.get(DefaultSettingType.BEAN_PROXY_MODE);
+
+		if(settings.get(DefaultSettingType.POINTCUT_PATTERN_VERIFIABLE) != null)
+			pointcutPatternVerifiable = (settings.get(DefaultSettingType.POINTCUT_PATTERN_VERIFIABLE) == null || Boolean.parseBoolean(settings.get(DefaultSettingType.POINTCUT_PATTERN_VERIFIABLE)));
 	}
 	
 	public DefaultSettings clone() throws CloneNotSupportedException {                      
 		return (DefaultSettings)super.clone();              
 	}
-	
-//	
-//	public String toRequestUri(String transletPath) {
-//		return toRequestUri(transletPathPatternPrefix, transletPathPatternSuffix, transletPath);
-//	}
-//	
-//	/**
-//	 * To service uri.
-//	 * 
-//	 * @param requestUriPatternPrefix the uri pattern prefix
-//	 * @param requestUriPatternSuffix the uri pattern suffix
-//	 * @param transletPath the translet path
-//	 * 
-//	 * @return the string
-//	 * @deprecated
-//	 */
-//	public static String toRequestUri(String requestUriPatternPrefix, String requestUriPatternSuffix, String transletPath) {
-//		if(requestUriPatternPrefix == null || requestUriPatternSuffix == null || transletPath == null)
-//			return transletPath;
-//		
-//		StringBuilder sb = new StringBuilder(128);
-//		
-//		if(requestUriPatternPrefix != null)
-//			sb.append(requestUriPatternPrefix);
-//
-//		sb.append(transletPath);
-//		
-//		if(requestUriPatternSuffix != null)
-//			sb.append(requestUriPatternSuffix);
-//		
-//		return sb.toString();
-//	}
-//
-//	public String toTransletPath(String requestUri) {
-//		return toTransletPath(transletPathPatternPrefix, transletPathPatternSuffix, requestUri);
-//	}
-//
-//	public static String toTransletPath(String requestUriPatternPrefix, String requestUriPatternSuffix, String requestUri) {
-//		if(requestUriPatternPrefix == null || requestUriPatternSuffix == null)
-//			return requestUri;
-//		
-//		int beginIndex;
-//		int endIndex;
-//		
-//		if(requestUriPatternPrefix != null && requestUri.startsWith(requestUriPatternPrefix))
-//			beginIndex = requestUriPatternPrefix.length();
-//		else
-//			beginIndex = 0;
-//		
-//		if(requestUriPatternSuffix != null && requestUri.endsWith(requestUriPatternSuffix))
-//			endIndex = requestUri.length() - requestUriPatternSuffix.length();
-//		else
-//			endIndex = requestUri.length();
-//		
-//		return requestUri.substring(beginIndex, endIndex);
-//	}
-	
 	
 }

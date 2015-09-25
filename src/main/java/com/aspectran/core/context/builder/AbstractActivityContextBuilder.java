@@ -15,10 +15,13 @@
  */
 package com.aspectran.core.context.builder;
 
+import java.util.List;
+
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.aspect.AspectAdviceRulePreRegister;
 import com.aspectran.core.context.aspect.AspectRuleRegistry;
+import com.aspectran.core.context.aspect.InvalidPointcutPatternException;
 import com.aspectran.core.context.aspect.pointcut.Pointcut;
 import com.aspectran.core.context.aspect.pointcut.PointcutFactory;
 import com.aspectran.core.context.bean.ContextBeanRegistry;
@@ -26,6 +29,7 @@ import com.aspectran.core.context.bean.ScopedContextBeanRegistry;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.AspectRuleMap;
 import com.aspectran.core.context.rule.BeanRuleMap;
+import com.aspectran.core.context.rule.PointcutPatternRule;
 import com.aspectran.core.context.rule.PointcutRule;
 import com.aspectran.core.context.rule.TransletRuleMap;
 import com.aspectran.core.context.rule.type.AspectTargetType;
@@ -34,13 +38,15 @@ import com.aspectran.core.context.rule.type.DefaultSettingType;
 import com.aspectran.core.context.rule.type.ImportFileType;
 import com.aspectran.core.context.translet.TransletRuleRegistry;
 import com.aspectran.core.util.ResourceUtils;
+import com.aspectran.core.util.logging.Log;
+import com.aspectran.core.util.logging.LogFactory;
 
 /**
- * TransletsContext builder.
- * 
  * <p>Created: 2008. 06. 14 오후 8:53:29</p>
  */
 public abstract class AbstractActivityContextBuilder extends ContextBuilderAssistant {
+	
+	private final Log log = LogFactory.getLog(AbstractActivityContextBuilder.class);
 	
 	protected ActivityContext makeActivityContext(ApplicationAdapter applicationAdapter) {
 		AspectRuleMap aspectRuleMap = getAspectRuleMap();
@@ -75,25 +81,8 @@ public abstract class AbstractActivityContextBuilder extends ContextBuilderAssis
 				PointcutRule pointcutRule = aspectRule.getPointcutRule();
 				
 				if(pointcutRule != null) {
-					//System.out.println("aspectRule " + aspectRule);
-					//System.out.println("pointcutRule " + pointcutRule);
 					Pointcut pointcut = PointcutFactory.createPointcut(pointcutRule);
-					//System.out.println("pointcut " + pointcut);
 					aspectRule.setPointcut(pointcut);
-					
-//					List<PointcutPattern> pointcutPatternList = pointcut.getPointcutPatternList();
-//					boolean onlyTransletRelevanted = true;
-//					
-//					for(PointcutPattern pp : pointcutPatternList) {
-//						if(pp.getBeanOrActionIdPattern() != null || pp.getBeanMethodNamePattern() != null) {
-//							onlyTransletRelevanted = false;
-//							break;
-//						}
-//					}
-//					
-//					aspectRule.setOnlyTransletRelevanted(onlyTransletRelevanted);
-//				} else {
-//					aspectRule.setOnlyTransletRelevanted(true);
 				}
 			}
 		}
@@ -101,6 +90,61 @@ public abstract class AbstractActivityContextBuilder extends ContextBuilderAssis
 		AspectAdviceRulePreRegister aspectAdviceRuleRegister = new AspectAdviceRulePreRegister(aspectRuleMap);
 		aspectAdviceRuleRegister.register(beanRuleMap);
 		aspectAdviceRuleRegister.register(transletRuleMap);
+		
+		// check offending pointcut pattern
+		boolean pointcutPatternVerifiable = isPointcutPatternVerifiable();
+		int offendingPointcutPatterns = 0;
+		
+		for(AspectRule aspectRule : aspectRuleMap) {
+			AspectTargetType aspectTargetType = aspectRule.getAspectTargetType();
+
+			if(aspectTargetType == AspectTargetType.TRANSLET) {
+				Pointcut pointcut = aspectRule.getPointcut();
+
+				if(pointcut != null) {
+					List<PointcutPatternRule> pointcutPatternRuleList = pointcut.getPointcutPatternRuleList();
+					
+					if(pointcutPatternRuleList != null) {
+						for(PointcutPatternRule ppr : pointcutPatternRuleList) {
+							if(ppr.getTransletNamePattern() != null && ppr.getMatchedTransletCount() == 0) {
+								offendingPointcutPatterns++;
+								String msg = "incorrect pointcut pattern of translet name \"" + ppr.getTransletNamePattern() + "\" : aspectRule " + aspectRule;
+								if(pointcutPatternVerifiable)
+									log.error(msg);
+								else
+									log.warn(msg);
+							}
+							if(ppr.getBeanIdPattern() != null && ppr.getMatchedBeanCount() == 0) {
+								offendingPointcutPatterns++;
+								String msg = "incorrect pointcut pattern of bean id \"" + ppr.getBeanIdPattern() + "\" : aspectRule " + aspectRule;
+								if(pointcutPatternVerifiable)
+									log.error(msg);
+								else
+									log.warn(msg);
+							}
+							if(ppr.getBeanMethodNamePattern() != null && ppr.getMatchedBeanMethodCount() == 0) {
+								offendingPointcutPatterns++;
+								String msg = "incorrect pointcut pattern of bean's method name \"" + ppr.getBeanMethodNamePattern() + "\" : aspectRule " + aspectRule;
+								if(pointcutPatternVerifiable)
+									log.error(msg);
+								else
+									log.warn(msg);
+							}
+						}
+					}
+				}
+			}
+		}
+		
+		if(offendingPointcutPatterns > 0) {
+			String msg = offendingPointcutPatterns + " Offending pointcut patterns. Please check the logs for more information.";
+			if(pointcutPatternVerifiable) {
+				log.error(msg);
+				throw new InvalidPointcutPatternException(msg);
+			} else {
+				log.warn(msg);
+			}
+		}
 		
 		return new AspectRuleRegistry(aspectRuleMap);
 	}

@@ -100,22 +100,10 @@ public abstract class AbstractAspectranService implements AspectranService {
 		this.applicationAdapter = applicationAdapter;
 	}
 
-//	public ActivityContextLoader getActivityContextLoader() {
-//		return activityContextLoader;
-//	}
-//	
-//	public void setActivityContextLoader(ActivityContextLoader activityContextLoader) {
-//		this.activityContextLoader = activityContextLoader;
-//	}
-	
 	public ActivityContext getActivityContext() {
 		return activityContext;
 	}
 	
-//	protected void setActivityContext(ActivityContext activityContext) {
-//		this.activityContext = activityContext;
-//	}
-
 	public boolean isHardReload() {
 		return hardReload;
 	}

@@ -34,27 +34,23 @@ package com.aspectran.core.context.translet;
 import com.aspectran.core.activity.CoreTranslet;
 import com.aspectran.core.activity.Translet;
 
-
 /**
- * Exception thrown when instantiation of a bean failed.
- * Carries the offending bean class.
- *
- * @author Juergen Hoeller
- * @since 1.2.8
+ * Exception thrown when instantiation of a translet failed.
  */
-public class TransletInstantiationException extends RuntimeException {
+public class TransletInstantiationException extends TransletException {
 
 	/** @serial */
-	static final long serialVersionUID = -2906926519983962457L;
+	private static final long serialVersionUID = -762767668765160738L;
 	
 	private Class<? extends Translet> transletInterfaceClass;
 
 	private Class<? extends CoreTranslet> transletInstanceClass;
 	
 	/**
-	 * Create a new BeanInstantiationException.
-	 * @param beanClass the offending bean class
-	 * @param msg the detail message
+	 * Create a new TransletInstantiationException.
+	 *
+	 * @param transletInterfaceClass the translet interface class
+	 * @param transletInstanceClass the translet instance class
 	 */
 	public TransletInstantiationException(Class<? extends Translet> transletInterfaceClass, Class<? extends CoreTranslet> transletInstanceClass) {
 		this(transletInterfaceClass, transletInstanceClass, null);
@@ -62,8 +58,9 @@ public class TransletInstantiationException extends RuntimeException {
 
 	/**
 	 * Create a new BeanInstantiationException.
-	 * @param beanClass the offending bean class
-	 * @param msg the detail message
+	 *
+	 * @param transletInterfaceClass the translet interface class
+	 * @param transletInstanceClass the translet instance class
 	 * @param cause the root cause
 	 */
 	public TransletInstantiationException(Class<? extends Translet> transletInterfaceClass, Class<? extends CoreTranslet> transletInstanceClass, Throwable cause) {
@@ -73,8 +70,8 @@ public class TransletInstantiationException extends RuntimeException {
 	
 	/**
 	 * Create a new BeanInstantiationException.
-	 * @param beanClass the offending bean class
-	 * @param msg the detail message
+	 *
+	 * @param transletInstanceClass the translet instance class
 	 * @param cause the root cause
 	 */
 	public TransletInstantiationException(Class<? extends CoreTranslet> transletInstanceClass, Throwable cause) {
@@ -82,12 +79,19 @@ public class TransletInstantiationException extends RuntimeException {
 		this.transletInstanceClass = transletInstanceClass;
 	}
 
+	/**
+	 * Return the translet interface class.
+	 *
+	 * @return the translet interface class
+	 */
 	public Class<? extends Translet> getTransletInterfaceClass() {
 		return transletInterfaceClass;
 	}
 
 	/**
-	 * Return the offending bean class.
+	 * Return the translet instance class.
+	 *
+	 * @return the translet instance class
 	 */
 	public Class<?> getTransletInstanceClass() {
 		return transletInstanceClass;

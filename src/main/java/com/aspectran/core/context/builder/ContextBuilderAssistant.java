@@ -40,6 +40,8 @@ import com.aspectran.core.util.logging.LogFactory;
 import com.aspectran.core.util.wildcard.WildcardPattern;
 
 /**
+ * The Class ContextBuilderAssistant
+ * 
  * <p>Created: 2008. 04. 01 오후 10:25:35</p>
  */
 public class ContextBuilderAssistant {
@@ -208,7 +210,7 @@ public class ContextBuilderAssistant {
 			defaultSettings = new DefaultSettings();
 
 		defaultSettings.apply(getSettings());
-		
+
 		if(classLoader != null) {
 			if(defaultSettings.getTransletInterfaceClassName() != null) {
 				Class<?> transletInterfaceClass = classLoader.loadClass(defaultSettings.getTransletInterfaceClassName());
@@ -343,6 +345,18 @@ public class ContextBuilderAssistant {
 			return true;
 
 		return defaultSettings.isNullableActionId();
+	}
+
+	/**
+	 * Checks if is pointcut pattern verifiable.
+	 *
+	 * @return true, if is pointcut pattern verifiable
+	 */
+	public boolean isPointcutPatternVerifiable() {
+		if(defaultSettings == null)
+			return true;
+		
+		return defaultSettings.isPointcutPatternVerifiable();
 	}
 	
 	/**

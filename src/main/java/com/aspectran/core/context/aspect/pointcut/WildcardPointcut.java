@@ -36,7 +36,7 @@ public class WildcardPointcut extends AbstractPointcut implements Pointcut {
 		super(pointcutPatternRuleList);
 	}
 	
-	protected boolean patternMatches(String pattern, String compareString) {
+	public boolean patternMatches(String pattern, String compareString) {
 		if(pattern.indexOf(OR_MATCH_DELIMITER) == -1) {
 			return wildcardPatternMatches(pattern, compareString);
 		} else {
@@ -53,7 +53,7 @@ public class WildcardPointcut extends AbstractPointcut implements Pointcut {
 		}
 	}
 	
-	protected boolean patternMatches(String pattern, String compareString, char separator) {
+	public boolean patternMatches(String pattern, String compareString, char separator) {
 		if(pattern.indexOf(OR_MATCH_DELIMITER) == -1) {
 			return wildcardPatternMatches(pattern, compareString, separator);
 		} else {

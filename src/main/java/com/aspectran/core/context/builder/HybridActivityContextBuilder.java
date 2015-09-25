@@ -19,7 +19,7 @@ import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.ActivityContext;
 
 /**
- * AponAspectranContextBuilder.
+ * The Class HybridActivityContextBuilder.
  * 
  * <p>Created: 2015. 01. 27 오후 10:36:29</p>
  */

@@ -19,9 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Translet Map Parser.
- * 
- * <p>Created: 2008. 06. 14 오전 4:39:24</p>
+ * The Class AbstractImportHandler.
  */
 public abstract class AbstractImportHandler implements ImportHandler {
 	
@@ -42,8 +40,8 @@ public abstract class AbstractImportHandler implements ImportHandler {
 			List<Importable> pendedList = pendingList;
 			pendingList = null;
 			
-			for(Importable imp : pendedList) {
-				handle(imp);
+			for(Importable importable : pendedList) {
+				handle(importable);
 			}
 		}
 	}
