@@ -23,7 +23,7 @@ import com.aspectran.core.context.bean.scope.ScopedBean;
 import com.aspectran.core.context.bean.scope.ScopedBeanMap;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.BeanRuleMap;
-import com.aspectran.core.context.rule.type.BeanProxyModeType;
+import com.aspectran.core.context.rule.type.BeanProxifierType;
 import com.aspectran.core.context.rule.type.ScopeType;
 
 /**
@@ -44,8 +44,8 @@ public class ScopedContextBeanRegistry extends AbstractContextBeanRegistry {
 	
 	private final Object applicationScopeLock = new Object();
 	
-	public ScopedContextBeanRegistry(ActivityContext context, BeanRuleMap beanRuleMap, BeanProxyModeType beanProxyMode) {
-		super(context, beanRuleMap, beanProxyMode);
+	public ScopedContextBeanRegistry(ActivityContext context, BeanRuleMap beanRuleMap, BeanProxifierType beanProxifierType) {
+		super(context, beanRuleMap, beanProxifierType);
 	}
 	
 	@SuppressWarnings("unchecked")

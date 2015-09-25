@@ -73,7 +73,7 @@ Aspectran은 다음 요건만 충족을 하면 원할한 작동이 보장됩니�
   </servlet-mapping>
 </web-app>
 ```
-### 1) 기본 환경 설정
+### 1) 실행 환경 설정
 먼저 컨텍스트 초기화 파라메터 "aspectran:config"를 정의합니다.
 "aspectran:config" 파라메터는 ***APON***(Aspectran Parameter Object Notation) 문서형식의 설정 값을 가질 수 있습니다.
 > ***APON***(Aspectran Parameter Object Notation)은 ***JSON***과 표기법이 비슷합니다.
@@ -121,12 +121,178 @@ Aspectran은 다음 요건만 충족을 하면 원할한 작동이 보장됩니�
 ## 4. 환경 설정 파일 작성하기
 위 `web.xml` 파일에서 `context.root`를 "/WEB-INF/aspectran/config/getting-started.xml"이라고 지정했었습니다.
 
-###### 가장 간단하게 작성된  환경 설정입니다.
+###### getting-started.xml
 ```xml
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE aspectran PUBLIC "-//aspectran.com//DTD Aspectran 1.0//EN"
+                           "http://aspectran.github.io/dtd/aspectran-1.0.dtd">
 
+<aspectran>
+
+	<!-- 기본 설정 -->
+	<settings>
+		<setting name="transletNamePattern" value="/example/*"/>
+		<setting name="activityDefaultHandler" value="webActivityDefaultHandler"/>
+		<setting name="pointcutPatternVerifiable" value="true"/>
+	</settings>
+
+	<!-- 스케쥴러 환경설정을 불러들입니다. -->
+	<!--
+	<import file="/WEB-INF/aspectran/config/example-scheduler.xml"/>
+	 -->
+
+	<!-- 매핑 URI에 해당하는 Translet이 존재하지 않을 경우 기본 서블릿이 처리할 수 있도록 합니다. -->
+	<bean id="webActivityDefaultHandler" class="com.aspectran.web.activity.WebActivityDefaultHandler" scope="singleton"/>
+
+	<!-- Aspectran의 Translet이 처리한 결과값을 화면에 표현하기 위해 JSP를 이용합니다. -->
+	<bean id="jspViewDispatcher" class="com.aspectran.web.view.JspViewDispatcher" scope="singleton">
+		<property>
+			<item name="templatePathPrefix">/WEB-INF/jsp/</item>
+			<item name="templatePathSuffix">.jsp</item>
+		</property>
+	</bean>
+
+	<!-- com.aspectran.eaxmple 패키지 하위의 모든 경로에서 클래스 이름이 "Action"으로 끝나는 클래스를 모두 찾아서 Bean으로 등록합니다. -->
+	<!-- ex) com.aspectran.example.sample.SampleAction 클래스의 bean id는 "sample.SampleAction"이 됩니다. -->
+	<beans class="com.aspectran.example.**.*Action" scope="singleton"/>
+
+	<!-- com.aspectran.eaxmple 패키지 하위의 모든 경로에서 클래스 이름이 "Advice"으로 끝나는 클래스를 모두 찾아서 ID가 "advice."으로 시작하는 Bean으로 등록합니다. -->
+	<!-- ex) com.aspectran.example.sample.SampleAdvice 클래스의 bean id는 "advice.sample.SampleAdvice"이 됩니다. -->
+	<beans class="com.aspectran.example.**.*Advice" idPrefix="advice." scope="singleton"/>
+
+	<bean id="sampleBean" class="com.aspectran.example.sample.SampleBean" scope="singleton"/>
+
+	<!-- 요청 정보를 분석하는 단계에서 사용할 기본 환경 변수를 정의합니다. -->
+	<aspect id="defaultRequestRule">
+		<joinpoint scope="request"/>
+		<settings>
+			<setting name="characterEncoding" value="utf-8"/>
+			<setting name="multipart.maxRequestSize" value="10M"/>
+			<setting name="multipart.temporaryFilePath" value="/d:/"/>
+		</settings>
+	</aspect>
+
+	<!-- 요청에 대해 응답하는 단계에서 사용할 기본 환경 변수를 정의합니다. -->
+	<aspect id="defaultResponseRule">
+		<joinpoint scope="response"/>
+		<settings>
+			<setting name="characterEncoding" value="utf-8"/>
+			<setting name="defaultContentType" value="text/html"/>
+			<setting name="viewDispatcher" value="jspViewDispatcher"/>
+		</settings>
+	</aspect>
+
+	<!-- Translet의 이름이 "/example"로 시작하는 Translet을 실행하는 중에 발생하는 에러 처리 규칙을 정의합니다.  -->
+	<aspect id="defaultExceptionHandlingRule">
+		<joinpoint scope="translet">
+			<pointcut>
+				target: {
+					translet: "/example/*"
+				}
+			</pointcut>
+		</joinpoint>
+		<exceptionRaised>
+			<responseByContentType exceptionType="java.lang.reflect.InvocationTargetException">
+				<transform type="transform/xml" contentType="text/xml">
+					<echo id="result">
+						<item type="map">
+							<value name="errorCode">E0001</value>
+							<value name="message">error occured.</value>
+						</item>
+					</echo>
+				</transform>
+			</responseByContentType>
+		</exceptionRaised>
+	</aspect>
+
+	<aspect id="helloWorldAdvice">
+		<joinpoint scope="translet">
+			<pointcut>
+				target: {
+					+: "/example/*@*^counting|echo|helloWorld"
+				}
+			</pointcut>
+		</joinpoint>
+		<advice bean="advice.helloworld.HelloWorldAdvice">
+			<before>
+				<action method="wellcome"/>
+			</before>
+			<after>
+				<action method="goodbye"/>
+			</after>
+		</advice>
+	</aspect>
+
+	<aspect id="checkCountRangeAdvice">
+		<joinpoint scope="request">
+			<pointcut>
+				target: {
+					+: "/example/counting"
+				}
+			</pointcut>
+		</joinpoint>
+		<advice bean="advice.helloworld.HelloWorldAdvice">
+			<after>
+				<action method="checkCountRange"/>
+			</after>
+		</advice>
+	</aspect>
+
+	<translet name="echo">
+		<transform type="transform/text" contentType="text/plain">
+			<template>
+				Hello, World.
+			</template>
+		</transform>
+	</translet>
+
+	<translet name="helloWorld">
+		<transform type="transform/text" contentType="text/plain">
+			<action bean="helloworld.HelloWorldAction" method="helloWorld"/>
+		</transform>
+	</translet>
+
+	<translet name="counting">
+		<request>
+			<attribute>
+				<item name="from"/>
+				<item name="to"/>
+			</attribute>
+		</request>
+		<content>
+			<action id="count1" bean="helloworld.HelloWorldAction" method="counting">
+				<argument>
+					<item valueType="int">@{from}</item>
+					<item valueType="int">@{to}</item>
+				</argument>
+			</action>
+		</content>
+		<response>
+			<transform type="transform/xml"/>
+		</response>
+	</translet>
+
+</aspectran>
 ```
 
-###### 생략하지 않고 상세하게 작성된 환경 설정입니다.
-```xml
+### 1) 기본 환경 설정
+먼저 컨텍스트 초기화 파라메터 "aspectran:config"를 정의합니다.
+"aspectran:config" 파라메터는 ***APON***(Aspectran Parameter Object Notation) 문서형식의 설정 값을 가질 수 있습니다.
+> ***APON***(Aspectran Parameter Object Notation)은 ***JSON***과 표기법이 비슷합니다.
+> 미리 정해진 형식의 파라메터를 주고 받기 위해서 새롭게 개발된 표기법입니다.
 
-```
+| 파라메터 | 설명 |
+|-----------|-------|
+| context | Aspectran 환경설정을 위한 정의 |
+| context.root | 환경 설정을 위해 가장 먼저 참조할 xml 파일의 경로  |
+| context.encoding | XML 파일을 APON 문서형식으로 변환시에 문자열 인코딩 방식을 지정 |
+| context.resources | Aspectran에서 별도로 관리할 수 있는 리소스의 경로를 배열로 지정 (Aspectran은 계층형의 ClassLoader를 별도로 내장하고 있습니다.) |
+| context.hybridLoading | 환경 설정을 빠르게 로딩하기 위해 다수의 XML 파일을 APON 문서형식으로 변환할지 여부를 지정 (XML 형식의 환경 설정 파일이 수정되면 APON 파일로 변환되고,  다음 기동 시에 XML 파일을 로딩하는 것이 아니라 APON 파일을 찾아서 로딩합니다.)
+| context.autoReloading | 리소스 자동 갱신 기능에 대한 정의 (Aspectran에서 별도로 관리하는 리소스에 대해서는 WAS를 재시작을 하지 않더라도 자동 갱신이 가능합니다.) |
+| context.autoReloading.reloadMethod | 리소스의 갱신 방법을 지정 (hard: Java Class 갱신 가능 , soft: 환경 설정 내역만 갱신 가능) |
+| context.autoReloading.observationInterval | 리소스가 수정 여부를 관찰하는 시간 간격을 초 단위로 지정 |
+| context.autoReloading.startup | 리소스 자동 갱신 기능을 사용할지 여부를 지정 |
+| scheduler | 스케쥴러 동작환경을 위한 정의 |
+| scheduler.startDelaySeconds | 모든 환경이 초기화된 후 스케쥴러가 기동될 수 있도록 시간 간격을 초 단위로 지정 |
+| scheduler.waitOnShutdown | 실행중인 Job이 종료되기를 기다렸다가 스케쥴러를 종료할지 여부를 지정 |
+| scheduler.startup | 스케쥴러를 기동할지 여부를 지정 |

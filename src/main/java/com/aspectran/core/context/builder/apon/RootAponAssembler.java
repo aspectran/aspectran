@@ -124,7 +124,7 @@ public class RootAponAssembler {
 			settingParameters.putValue(DefaultSettingsParameters.nullableContentId, defaultSettings.getNullableContentId());
 			settingParameters.putValue(DefaultSettingsParameters.nullableActionId, defaultSettings.getNullableActionId());
 			settingParameters.putValue(DefaultSettingsParameters.activityDefaultHandler, defaultSettings.getActivityDefaultHandler());
-			settingParameters.putValue(DefaultSettingsParameters.beanProxyMode, defaultSettings.getBeanProxyMode());
+			settingParameters.putValue(DefaultSettingsParameters.beanProxifier, defaultSettings.getBeanProxifier());
 		}
 		
 		Map<String, String> typeAliases = assistant.getTypeAliases();

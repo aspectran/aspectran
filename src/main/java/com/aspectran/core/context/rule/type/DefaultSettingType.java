@@ -47,8 +47,8 @@ public final class DefaultSettingType extends Type {
 	/** The Constant ACTIVITY_DEFAULT_HANDLER. */
 	public static final DefaultSettingType ACTIVITY_DEFAULT_HANDLER;
 	
-	/** The Constant BEAN_PROXY_MODE. */
-	public static final DefaultSettingType BEAN_PROXY_MODE;
+	/** The Constant BEAN_PROXIFIER. */
+	public static final DefaultSettingType BEAN_PROXIFIER;
 	
 	/** The Constant POINTCUT_PATTERN_VERIFIABLE. */
 	public static final DefaultSettingType POINTCUT_PATTERN_VERIFIABLE;
@@ -65,7 +65,7 @@ public final class DefaultSettingType extends Type {
 		NULLABLE_CONTENT_ID = new DefaultSettingType("nullableContentId");
 		NULLABLE_ACTION_ID = new DefaultSettingType("nullableActionId");
 		ACTIVITY_DEFAULT_HANDLER = new DefaultSettingType("activityDefaultHandler");
-		BEAN_PROXY_MODE = new DefaultSettingType("beanProxyMode");
+		BEAN_PROXIFIER = new DefaultSettingType("beanProxifier");
 		POINTCUT_PATTERN_VERIFIABLE = new DefaultSettingType("pointcutPatternVerifiable");
 
 		types = new HashMap<String, DefaultSettingType>();
@@ -77,7 +77,7 @@ public final class DefaultSettingType extends Type {
 		types.put(NULLABLE_CONTENT_ID.toString(), NULLABLE_CONTENT_ID);
 		types.put(NULLABLE_ACTION_ID.toString(), NULLABLE_ACTION_ID);
 		types.put(ACTIVITY_DEFAULT_HANDLER.toString(), ACTIVITY_DEFAULT_HANDLER);
-		types.put(BEAN_PROXY_MODE.toString(), BEAN_PROXY_MODE);
+		types.put(BEAN_PROXIFIER.toString(), BEAN_PROXIFIER);
 		types.put(POINTCUT_PATTERN_VERIFIABLE.toString(), POINTCUT_PATTERN_VERIFIABLE);
 	}
 

@@ -33,7 +33,7 @@ import com.aspectran.core.context.rule.PointcutPatternRule;
 import com.aspectran.core.context.rule.PointcutRule;
 import com.aspectran.core.context.rule.TransletRuleMap;
 import com.aspectran.core.context.rule.type.AspectTargetType;
-import com.aspectran.core.context.rule.type.BeanProxyModeType;
+import com.aspectran.core.context.rule.type.BeanProxifierType;
 import com.aspectran.core.context.rule.type.DefaultSettingType;
 import com.aspectran.core.context.rule.type.ImportFileType;
 import com.aspectran.core.context.translet.TransletRuleRegistry;
@@ -61,8 +61,8 @@ public abstract class AbstractActivityContextBuilder extends ContextBuilderAssis
 		AspectRuleRegistry aspectRuleRegistry = makeAspectRuleRegistry(aspectRuleMap, beanRuleMap, transletRuleMap);
 		context.setAspectRuleRegistry(aspectRuleRegistry);
 
-		BeanProxyModeType beanProxyMode = BeanProxyModeType.valueOf((String)getSetting(DefaultSettingType.BEAN_PROXY_MODE));
-		ContextBeanRegistry contextBeanRegistry = makeContextBeanRegistry(context, beanRuleMap, beanProxyMode);
+		BeanProxifierType beanProxifierType = BeanProxifierType.valueOf((String)getSetting(DefaultSettingType.BEAN_PROXIFIER));
+		ContextBeanRegistry contextBeanRegistry = makeContextBeanRegistry(context, beanRuleMap, beanProxifierType);
 		context.setContextBeanRegistry(contextBeanRegistry);
 		
 		contextBeanRegistry.initialize();
@@ -149,10 +149,10 @@ public abstract class AbstractActivityContextBuilder extends ContextBuilderAssis
 		return new AspectRuleRegistry(aspectRuleMap);
 	}
 	
-	protected ContextBeanRegistry makeContextBeanRegistry(ActivityContext context, BeanRuleMap beanRuleMap, BeanProxyModeType beanProxyMode) {
+	protected ContextBeanRegistry makeContextBeanRegistry(ActivityContext context, BeanRuleMap beanRuleMap, BeanProxifierType beanProxifierType) {
 		beanRuleMap.freeze();
 		
-		return new ScopedContextBeanRegistry(context, beanRuleMap, beanProxyMode);
+		return new ScopedContextBeanRegistry(context, beanRuleMap, beanProxifierType);
 	}
 
 	protected TransletRuleRegistry makeTransletRegistry(TransletRuleMap transletRuleMap) {

@@ -31,7 +31,7 @@ public class DefaultSettingsParameters extends AbstractParameters implements Par
 	public static final ParameterDefine activityDefaultHandler;
 	public static final ParameterDefine nullableContentId;
 	public static final ParameterDefine nullableActionId;
-	public static final ParameterDefine beanProxyMode;
+	public static final ParameterDefine beanProxifier;
 	
 	private static final ParameterDefine[] parameterDefines;
 	
@@ -44,7 +44,7 @@ public class DefaultSettingsParameters extends AbstractParameters implements Par
 		activityDefaultHandler = new ParameterDefine(DefaultSettingType.ACTIVITY_DEFAULT_HANDLER.toString(), ParameterValueType.STRING);
 		nullableContentId = new ParameterDefine(DefaultSettingType.NULLABLE_CONTENT_ID.toString(), ParameterValueType.BOOLEAN);
 		nullableActionId = new ParameterDefine(DefaultSettingType.NULLABLE_ACTION_ID.toString(), ParameterValueType.BOOLEAN);
-		beanProxyMode = new ParameterDefine(DefaultSettingType.BEAN_PROXY_MODE.toString(), ParameterValueType.STRING);
+		beanProxifier = new ParameterDefine(DefaultSettingType.BEAN_PROXIFIER.toString(), ParameterValueType.STRING);
 		
 		parameterDefines = new ParameterDefine[] {
 				transletNamePattern,
@@ -55,7 +55,7 @@ public class DefaultSettingsParameters extends AbstractParameters implements Par
 				activityDefaultHandler,
 				nullableContentId,
 				nullableActionId,
-				beanProxyMode
+				beanProxifier
 		};
 	}
 	

@@ -193,10 +193,9 @@ public class CoreActivity extends AbstractActivity implements Activity {
 						execute(beforeAdviceRuleList);
 				}
 				
-				if(activityEnded)
-					return;
-				
-				run2nd();
+				if(!activityEnded) {
+					run2nd();
+				}
 				
 				// execute After Advice Action for Translet Joinpoint
 				if(transletAspectAdviceRuleRegistry != null) {
@@ -261,10 +260,9 @@ public class CoreActivity extends AbstractActivity implements Activity {
 						execute(beforeAdviceRuleList);
 				}
 				
-				if(activityEnded)
-					return;
-				
-				request();
+				if(!activityEnded) {
+					request();
+				}
 
 				// execute After Advice Action for Request Joinpoint
 				if(requestAspectAdviceRuleRegistry != null) {
@@ -322,10 +320,9 @@ public class CoreActivity extends AbstractActivity implements Activity {
 							execute(beforeAdviceRuleList);
 					}
 					
-					if(activityEnded)
-						return;
-					
-					process();
+					if(!activityEnded) {
+						process();
+					}
 					
 					// execute After Advice Action for Content Joinpoint
 					if(contentAspectAdviceRuleRegistry != null) {
@@ -381,10 +378,9 @@ public class CoreActivity extends AbstractActivity implements Activity {
 						execute(beforeAdviceRuleList);
 				}
 				
-				if(activityEnded)
-					return;
-				
-				response();
+				if(!activityEnded) {
+					response();
+				}
 				
 				// execute After Advice Action for Request Joinpoint
 				if(responseAspectAdviceRuleRegistry != null) {
@@ -615,8 +611,6 @@ public class CoreActivity extends AbstractActivity implements Activity {
 	public void execute(List<AspectAdviceRule> aspectAdviceRuleList) throws ActionExecutionException {
 		for(AspectAdviceRule aspectAdviceRule : aspectAdviceRuleList) {
 			execute(aspectAdviceRule);
-			//if(activityEnded)
-			//	return;
 		}
 	}
 	

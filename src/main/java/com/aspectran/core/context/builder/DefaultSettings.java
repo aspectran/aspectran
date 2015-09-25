@@ -50,7 +50,7 @@ public class DefaultSettings implements Cloneable {
 	
 	private String activityDefaultHandler;
 	
-	private String beanProxyMode;
+	private String beanProxifier;
 
 	private Boolean pointcutPatternVerifiable;
 	
@@ -172,12 +172,12 @@ public class DefaultSettings implements Cloneable {
 		this.activityDefaultHandler = activityDefaultHandler;
 	}
 	
-	public String getBeanProxyMode() {
-		return beanProxyMode;
+	public String getBeanProxifier() {
+		return beanProxifier;
 	}
 
-	public void setBeanProxyMode(String beanProxyMode) {
-		this.beanProxyMode = beanProxyMode;
+	public void setBeanProxifier(String beanProxifier) {
+		this.beanProxifier = beanProxifier;
 	}
 
 	public boolean isPointcutPatternVerifiable() {
@@ -217,8 +217,8 @@ public class DefaultSettings implements Cloneable {
 		if(settings.get(DefaultSettingType.ACTIVITY_DEFAULT_HANDLER) != null)
 			activityDefaultHandler = settings.get(DefaultSettingType.ACTIVITY_DEFAULT_HANDLER);
 		
-		if(settings.get(DefaultSettingType.BEAN_PROXY_MODE) != null)
-			beanProxyMode = settings.get(DefaultSettingType.BEAN_PROXY_MODE);
+		if(settings.get(DefaultSettingType.BEAN_PROXIFIER) != null)
+			beanProxifier = settings.get(DefaultSettingType.BEAN_PROXIFIER);
 
 		if(settings.get(DefaultSettingType.POINTCUT_PATTERN_VERIFIABLE) != null)
 			pointcutPatternVerifiable = (settings.get(DefaultSettingType.POINTCUT_PATTERN_VERIFIABLE) == null || Boolean.parseBoolean(settings.get(DefaultSettingType.POINTCUT_PATTERN_VERIFIABLE)));
