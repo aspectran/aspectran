@@ -44,9 +44,6 @@ public final class DefaultSettingType extends Type {
 	/** The Constant NULLABLE_ACTION_ID. */
 	public static final DefaultSettingType NULLABLE_ACTION_ID;
 	
-	/** The Constant ACTIVITY_DEFAULT_HANDLER. */
-	public static final DefaultSettingType ACTIVITY_DEFAULT_HANDLER;
-	
 	/** The Constant BEAN_PROXIFIER. */
 	public static final DefaultSettingType BEAN_PROXIFIER;
 	
@@ -64,7 +61,6 @@ public final class DefaultSettingType extends Type {
 		TRANSLET_IMPLEMENT_CLASS = new DefaultSettingType("transletImplementClass");
 		NULLABLE_CONTENT_ID = new DefaultSettingType("nullableContentId");
 		NULLABLE_ACTION_ID = new DefaultSettingType("nullableActionId");
-		ACTIVITY_DEFAULT_HANDLER = new DefaultSettingType("activityDefaultHandler");
 		BEAN_PROXIFIER = new DefaultSettingType("beanProxifier");
 		POINTCUT_PATTERN_VERIFIABLE = new DefaultSettingType("pointcutPatternVerifiable");
 
@@ -76,7 +72,6 @@ public final class DefaultSettingType extends Type {
 		types.put(TRANSLET_IMPLEMENT_CLASS.toString(), TRANSLET_IMPLEMENT_CLASS);
 		types.put(NULLABLE_CONTENT_ID.toString(), NULLABLE_CONTENT_ID);
 		types.put(NULLABLE_ACTION_ID.toString(), NULLABLE_ACTION_ID);
-		types.put(ACTIVITY_DEFAULT_HANDLER.toString(), ACTIVITY_DEFAULT_HANDLER);
 		types.put(BEAN_PROXIFIER.toString(), BEAN_PROXIFIER);
 		types.put(POINTCUT_PATTERN_VERIFIABLE.toString(), POINTCUT_PATTERN_VERIFIABLE);
 	}

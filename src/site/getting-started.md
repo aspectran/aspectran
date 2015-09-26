@@ -73,7 +73,7 @@ Aspectran은 다음 요건만 충족을 하면 원할한 작동이 보장됩니�
   </servlet-mapping>
 </web-app>
 ```
-### 1) 실행 환경 설정
+### 1) 초기화 파라메터 정의
 먼저 컨텍스트 초기화 파라메터 "aspectran:config"를 정의합니다.
 "aspectran:config" 파라메터는 ***APON***(Aspectran Parameter Object Notation) 문서형식의 설정 값을 가질 수 있습니다.
 > ***APON***(Aspectran Parameter Object Notation)은 ***JSON***과 표기법이 비슷합니다.
@@ -275,15 +275,23 @@ Aspectran은 다음 요건만 충족을 하면 원할한 작동이 보장됩니�
 </aspectran>
 ```
 
-### 1) 기본 환경 설정
-먼저 컨텍스트 초기화 파라메터 "aspectran:config"를 정의합니다.
-"aspectran:config" 파라메터는 ***APON***(Aspectran Parameter Object Notation) 문서형식의 설정 값을 가질 수 있습니다.
-> ***APON***(Aspectran Parameter Object Notation)은 ***JSON***과 표기법이 비슷합니다.
-> 미리 정해진 형식의 파라메터를 주고 받기 위해서 새롭게 개발된 표기법입니다.
+### 1) 환경 설정 상수
+Aspectran의 기본 설정 항목에 대해 설명합니다.
 
-| 파라메터 | 설명 |
-|-----------|-------|
-| context | Aspectran 환경설정을 위한 정의 |
+| 설정 항목명 | 설명 | 사용가능한 값 | 기본 값 |
+|--- ---|--------|------------------|----------|
+| transletNamePattern | Translet 이름의 패턴. Translet 이름 문자열은 `<servlet-mapping>` 의 `<url-pattern>`의 값으로 시작해야 접근이 가능합니다.  | ex) /example/*.do | 설정하지 않음 |
+| transletNamePrefix | `transletNamePattern` 대신 prefix와 suffix를 지정할 수 있습니다. | ex) /example/ | 설정하지 않음 |
+| transletNameSuffix | `transletNamePattern` 대신 prefix와 suffix를 지정할 수 있습니다. | ex) .do | 설정하지 않음 |
+| transletInterfaceClass | 사용자 정의 Translet의 인터페이스 클래스를 지정합니다. | ex) com.aspectran.example.common.MyTranslet | 설정하지 않으면 내장 Translet을 사용 |
+| transletImplementClass | 사용자 정의 Translet의 구현 클래스를 지정합니다. | ex) com.aspectran.example.common.MyTransletImpl | 설정하지 않으면 내장 Translet을 사용 |
+| nullableContentId | `<content>`의 id 속성을 생략할 수 있는지 여부 | true or false | true |
+| nullableActionId | `<action>`의 id 속성을 생략할 수 있는지 여부 | true or false | true |
+| activityDefaultHandler | 요청에 해당하는 Translet이 존재하지 않을 때 후처리 Handler 클래스를 지정합니다. | | |
+| beanProxifier | | | |
+| pointcutPatternVerifiable | | | |
+
+
 | context.root | 환경 설정을 위해 가장 먼저 참조할 xml 파일의 경로  |
 | context.encoding | XML 파일을 APON 문서형식으로 변환시에 문자열 인코딩 방식을 지정 |
 | context.resources | Aspectran에서 별도로 관리할 수 있는 리소스의 경로를 배열로 지정 (Aspectran은 계층형의 ClassLoader를 별도로 내장하고 있습니다.) |

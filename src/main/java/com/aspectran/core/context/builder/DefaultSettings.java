@@ -48,8 +48,6 @@ public class DefaultSettings implements Cloneable {
 	
 	private Boolean nullableActionId;
 	
-	private String activityDefaultHandler;
-	
 	private String beanProxifier;
 
 	private Boolean pointcutPatternVerifiable;
@@ -164,14 +162,6 @@ public class DefaultSettings implements Cloneable {
 		this.nullableActionId = nullableActionId;
 	}
 	
-	public String getActivityDefaultHandler() {
-		return activityDefaultHandler;
-	}
-	
-	public void setActivityDefaultHandler(String activityDefaultHandler) {
-		this.activityDefaultHandler = activityDefaultHandler;
-	}
-	
 	public String getBeanProxifier() {
 		return beanProxifier;
 	}
@@ -213,9 +203,6 @@ public class DefaultSettings implements Cloneable {
 		
 		if(settings.get(DefaultSettingType.NULLABLE_ACTION_ID) != null)
 			nullableActionId = (settings.get(DefaultSettingType.NULLABLE_ACTION_ID) == null || Boolean.parseBoolean(settings.get(DefaultSettingType.NULLABLE_ACTION_ID)));
-		
-		if(settings.get(DefaultSettingType.ACTIVITY_DEFAULT_HANDLER) != null)
-			activityDefaultHandler = settings.get(DefaultSettingType.ACTIVITY_DEFAULT_HANDLER);
 		
 		if(settings.get(DefaultSettingType.BEAN_PROXIFIER) != null)
 			beanProxifier = settings.get(DefaultSettingType.BEAN_PROXIFIER);

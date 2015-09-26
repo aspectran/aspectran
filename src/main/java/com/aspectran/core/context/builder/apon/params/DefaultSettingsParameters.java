@@ -28,10 +28,10 @@ public class DefaultSettingsParameters extends AbstractParameters implements Par
 	public static final ParameterDefine transletNameSuffix;
 	public static final ParameterDefine transletInterfaceClass;
 	public static final ParameterDefine transletImplementClass;
-	public static final ParameterDefine activityDefaultHandler;
 	public static final ParameterDefine nullableContentId;
 	public static final ParameterDefine nullableActionId;
 	public static final ParameterDefine beanProxifier;
+	public static final ParameterDefine pointcutPatternVerifiable;
 	
 	private static final ParameterDefine[] parameterDefines;
 	
@@ -41,10 +41,10 @@ public class DefaultSettingsParameters extends AbstractParameters implements Par
 		transletNameSuffix = new ParameterDefine(DefaultSettingType.TRANSLET_NAME_SUFFIX.toString(), ParameterValueType.STRING);
 		transletInterfaceClass = new ParameterDefine(DefaultSettingType.TRANSLET_INTERFACE_CLASS.toString(), ParameterValueType.STRING);
 		transletImplementClass = new ParameterDefine(DefaultSettingType.TRANSLET_IMPLEMENT_CLASS.toString(), ParameterValueType.STRING);
-		activityDefaultHandler = new ParameterDefine(DefaultSettingType.ACTIVITY_DEFAULT_HANDLER.toString(), ParameterValueType.STRING);
 		nullableContentId = new ParameterDefine(DefaultSettingType.NULLABLE_CONTENT_ID.toString(), ParameterValueType.BOOLEAN);
 		nullableActionId = new ParameterDefine(DefaultSettingType.NULLABLE_ACTION_ID.toString(), ParameterValueType.BOOLEAN);
 		beanProxifier = new ParameterDefine(DefaultSettingType.BEAN_PROXIFIER.toString(), ParameterValueType.STRING);
+		pointcutPatternVerifiable = new ParameterDefine(DefaultSettingType.POINTCUT_PATTERN_VERIFIABLE.toString(), ParameterValueType.STRING);
 		
 		parameterDefines = new ParameterDefine[] {
 				transletNamePattern,
@@ -52,10 +52,10 @@ public class DefaultSettingsParameters extends AbstractParameters implements Par
 				transletNameSuffix,
 				transletInterfaceClass,
 				transletImplementClass,
-				activityDefaultHandler,
 				nullableContentId,
 				nullableActionId,
-				beanProxifier
+				beanProxifier,
+				pointcutPatternVerifiable
 		};
 	}
 	

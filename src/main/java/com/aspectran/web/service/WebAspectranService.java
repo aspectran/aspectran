@@ -33,7 +33,6 @@ import com.aspectran.core.util.apon.Parameters;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 import com.aspectran.web.activity.WebActivity;
-import com.aspectran.web.activity.WebActivityDefaultHandler;
 import com.aspectran.web.adapter.WebApplicationAdapter;
 import com.aspectran.web.startup.listener.AspectranServiceListener;
 import com.aspectran.web.startup.servlet.WebActivityServlet;
@@ -44,7 +43,11 @@ public class WebAspectranService extends CoreAspectranService {
 	
 	public static final String ASPECTRAN_CONFIG_PARAM = "aspectran:config";
 
+	public static final String ASPECTRAN_DEFAULT_SERVLET_NAME_PARAM = "aspectran:defaultServletName";
+	
 	private static final String DEFAULT_ROOT_CONTEXT = "/WEB-INF/aspectran/root.xml";
+	
+	private DefaultServletHttpRequestHandler defaultServletHttpRequestHandler;
 	
 	protected long pauseTimeout;
 	
@@ -85,44 +88,39 @@ public class WebAspectranService extends CoreAspectranService {
 			}
 		}
 		
-		Activity activity = null;
-
 		try {
-			activity = new WebActivity(activityContext, req, res);
+			Activity activity = new WebActivity(activityContext, req, res);
 			activity.ready(requestUri);
 			activity.perform();
 			activity.finish();
 		} catch(TransletNotFoundException e) {
-			if(activity != null) {
-				String activityDefaultHandler = activityContext.getActivityDefaultHandler();
-
-				if(activityDefaultHandler != null) {
-					try {
-						WebActivityDefaultHandler handler = (WebActivityDefaultHandler)activity.getBean(activityDefaultHandler);
-						handler.setServletContext(servlet.getServletContext());
-						handler.handle(req, res);
-					} catch(Exception e2) {
-						res.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-						log.error(e.getMessage(), e2);
-					}
-
-					return;
+			try {
+				if(!defaultServletHttpRequestHandler.handle(req, res)) {
+					System.out.println("&&&&&&&&&&&&" + defaultServletHttpRequestHandler);
+					res.sendError(HttpServletResponse.SC_NOT_FOUND);
 				}
+			} catch(Exception e2) {
+				res.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+				log.error(e.getMessage(), e2);
 			}
-
-			log.debug(e.getMessage());
-			res.sendError(HttpServletResponse.SC_NOT_FOUND);
 		} catch(Exception e) {
 			log.error("WebActivity service failed.", e);
 			res.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 		}
-
 	}
 	
+	public void setDefaultServletHttpRequestHandler(ServletContext servletContext, String defaultServletName) {
+		defaultServletHttpRequestHandler = new DefaultServletHttpRequestHandler(servletContext);
+		if(defaultServletName != null)
+			defaultServletHttpRequestHandler.setDefaultServletName(defaultServletName);
+	}
+
 	public static WebAspectranService newInstance(ServletContext servletContext) {
 		String aspectranConfigParam = servletContext.getInitParameter(ASPECTRAN_CONFIG_PARAM);
-
 		WebAspectranService aspectranService = newInstance(servletContext, aspectranConfigParam);
+		
+		String defaultServletName = servletContext.getInitParameter(ASPECTRAN_DEFAULT_SERVLET_NAME_PARAM);
+		aspectranService.setDefaultServletHttpRequestHandler(servletContext, defaultServletName);
 		
 		servletContext.setAttribute(AspectranServiceListener.ASPECTRAN_SERVICE_ATTRIBUTE, aspectranService);
 		log.debug("AspectranServiceListener attribute in ServletContext was created. " + AspectranServiceListener.ASPECTRAN_SERVICE_ATTRIBUTE + ": " + aspectranService);
@@ -135,8 +133,12 @@ public class WebAspectranService extends CoreAspectranService {
 		ServletConfig servletConfig = servlet.getServletConfig();
 		
 		String aspectranConfigParam = servletConfig.getInitParameter(ASPECTRAN_CONFIG_PARAM);
+		WebAspectranService aspectranService = newInstance(servletContext, aspectranConfigParam);
 		
-		return newInstance(servletContext, aspectranConfigParam);
+		String defaultServletName = servletConfig.getInitParameter(ASPECTRAN_DEFAULT_SERVLET_NAME_PARAM);
+		aspectranService.setDefaultServletHttpRequestHandler(servletContext, defaultServletName);
+		
+		return aspectranService;
 	}
 
 	public static WebAspectranService newInstance(WebActivityServlet servlet, WebAspectranService rootAspectranService) {
@@ -144,9 +146,13 @@ public class WebAspectranService extends CoreAspectranService {
 		ServletConfig servletConfig = servlet.getServletConfig();
 		
 		String aspectranConfigParam = servletConfig.getInitParameter(ASPECTRAN_CONFIG_PARAM);
+		String defaultServletName = servletConfig.getInitParameter(ASPECTRAN_DEFAULT_SERVLET_NAME_PARAM);
 		
 		if(aspectranConfigParam != null) {
-			return newInstance(servletContext, aspectranConfigParam);
+			WebAspectranService aspectranService = newInstance(servletContext, aspectranConfigParam);
+			aspectranService.setDefaultServletHttpRequestHandler(servletContext, defaultServletName);
+
+			return aspectranService;
 		} else {
 			return rootAspectranService;
 		}

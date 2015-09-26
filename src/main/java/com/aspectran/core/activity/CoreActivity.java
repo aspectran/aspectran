@@ -117,7 +117,7 @@ public class CoreActivity extends AbstractActivity implements Activity {
 		TransletRule transletRule = context.getTransletRuleRegistry().getTransletRule(transletName);
 
 		if(transletRule == null) {
-			log.debug("translet not found: " + transletRule);
+			log.debug("translet not found: " + transletName);
 			throw new TransletNotFoundException(transletName);
 		}
 		

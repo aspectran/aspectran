@@ -36,7 +36,7 @@ import com.aspectran.web.startup.listener.AspectranServiceListener;
 public class WebActivityServlet extends HttpServlet implements Servlet {
 
 	/** @serial */
-	static final long serialVersionUID = 6659683668233267847L;
+	private static final long serialVersionUID = 6659683668233267847L;
 
 	private static final Log log = LogFactory.getLog(WebActivityServlet.class);
 

@@ -70,8 +70,6 @@ public abstract class AbstractActivityContextBuilder extends ContextBuilderAssis
 		TransletRuleRegistry transletRuleRegistry = makeTransletRegistry(transletRuleMap);
 		context.setTransletRuleRegistry(transletRuleRegistry);
 		
-		context.setActivityDefaultHandler((String)getSetting(DefaultSettingType.ACTIVITY_DEFAULT_HANDLER));
-
 		return context;
 	}
 	

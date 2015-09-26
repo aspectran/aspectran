@@ -39,7 +39,7 @@ import com.aspectran.core.context.bean.BeanInstantiationException;
 public class ProxyBeanInstantiationException extends BeanInstantiationException {
 
 	/** @serial */
-	static final long serialVersionUID = -2906926519983962457L;
+	private static final long serialVersionUID = -3560168431550039638L;
 	
 	private Class<?> beanClass;
 

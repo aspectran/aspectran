@@ -36,8 +36,6 @@ public class ActivityContext {
 
 	private TransletRuleRegistry transletRuleRegistry;
 	
-	private String activityDefaultHandler;
-	
 	public ActivityContext(ApplicationAdapter applicationAdapter) {
 		this.applicationAdapter = applicationAdapter;
 	}
@@ -85,14 +83,6 @@ public class ActivityContext {
 		this.transletRuleRegistry = transletRuleRegistry;
 	}
 	
-	public String getActivityDefaultHandler() {
-		return activityDefaultHandler;
-	}
-
-	public void setActivityDefaultHandler(String activityDefaultHandler) {
-		this.activityDefaultHandler = activityDefaultHandler;
-	}
-
 	public Activity getCurrentActivity() {
 		return currentActivityHolder.get();
 	}
@@ -133,7 +123,6 @@ public class ActivityContext {
 		sb.append(", aspectRuleRegistry=").append(aspectRuleRegistry);
 		sb.append(", beanRegistry=").append(contextBeanRegistry);
 		sb.append(", transletRuleRegistry=").append(transletRuleRegistry);
-		sb.append(", activityDefaultHandler=").append(activityDefaultHandler);
 		sb.append("}");
 		
 		return sb.toString();
