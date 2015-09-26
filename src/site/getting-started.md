@@ -52,7 +52,7 @@ Aspectran은 다음 요건만 충족을 하면 원할한 작동이 보장됩니�
 				waitOnShutdown: true
 				startup: false
 			}
-		</param-value>
+	</param-value>
   </context-param>
   <listener>
     <listener-class>com.aspectran.web.startup.listener.AspectranServiceListener</listener-class>
@@ -132,7 +132,6 @@ Aspectran은 다음 요건만 충족을 하면 원할한 작동이 보장됩니�
 	<!-- 기본 설정 -->
 	<settings>
 		<setting name="transletNamePattern" value="/example/*"/>
-		<setting name="activityDefaultHandler" value="webActivityDefaultHandler"/>
 		<setting name="pointcutPatternVerifiable" value="true"/>
 	</settings>
 
@@ -140,9 +139,6 @@ Aspectran은 다음 요건만 충족을 하면 원할한 작동이 보장됩니�
 	<!--
 	<import file="/WEB-INF/aspectran/config/example-scheduler.xml"/>
 	 -->
-
-	<!-- 매핑 URI에 해당하는 Translet이 존재하지 않을 경우 기본 서블릿이 처리할 수 있도록 합니다. -->
-	<bean id="webActivityDefaultHandler" class="com.aspectran.web.activity.WebActivityDefaultHandler" scope="singleton"/>
 
 	<!-- Aspectran의 Translet이 처리한 결과값을 화면에 표현하기 위해 JSP를 이용합니다. -->
 	<bean id="jspViewDispatcher" class="com.aspectran.web.view.JspViewDispatcher" scope="singleton">
@@ -285,22 +281,99 @@ Aspectran의 기본 설정 항목에 대해 설명합니다.
 | transletNameSuffix | `transletNamePattern` 대신 prefix와 suffix를 지정할 수 있습니다. | ex) .do | 설정하지 않음 |
 | transletInterfaceClass | 사용자 정의 Translet의 인터페이스 클래스를 지정합니다. | ex) com.aspectran.example.common.MyTranslet | 설정하지 않으면 내장 Translet을 사용 |
 | transletImplementClass | 사용자 정의 Translet의 구현 클래스를 지정합니다. | ex) com.aspectran.example.common.MyTransletImpl | 설정하지 않으면 내장 Translet을 사용 |
-| nullableContentId | `<content>`의 id 속성을 생략할 수 있는지 여부 | true or false | true |
-| nullableActionId | `<action>`의 id 속성을 생략할 수 있는지 여부 | true or false | true |
-| activityDefaultHandler | 요청에 해당하는 Translet이 존재하지 않을 때 후처리 Handler 클래스를 지정합니다. | | |
-| beanProxifier | | | |
-| pointcutPatternVerifiable | | | |
+| nullableContentId | `<content>`의 id 속성을 생략할 수 있는지 여부를 지정합니다. | true or false | true |
+| nullableActionId | `<action>`의 id 속성을 생략할 수 있는지 여부를 지정합니다. | true or false | true |
+| beanProxifier | 자바 바이트코드 생성기(Byte Code Instumentation, BCI) 라이브러리를 지정합니다. | javassist or cglib or jdk | javassist |
+| pointcutPatternVerifiable | pointcut 패턴의 유효성을 체크할지 여부를 지정합니다. | true or false | true |
 
+위 설정항목을 대부분 사용한 `settings` 엘리먼트의 예제입니다.
+```xml
+<settings>
+		<setting name="transletNamePattern" value="/example/*"/>
+		<setting name="transletInterfaceClass" value="com.aspectran.example.common.MyTranslet"/>
+		<setting name="transletImplementClass" value="com.aspectran.example.common.MyTransletImpl"/>
+		<setting name="nullableContentId" value="true"/>
+		<setting name="nullableActionId" value="true"/>
+		<setting name="beanProxifier" value="javassist"/>
+		<setting name="pointcutPatternVerifiable" value="true/>
+</settings>
+```
 
-| context.root | 환경 설정을 위해 가장 먼저 참조할 xml 파일의 경로  |
-| context.encoding | XML 파일을 APON 문서형식으로 변환시에 문자열 인코딩 방식을 지정 |
-| context.resources | Aspectran에서 별도로 관리할 수 있는 리소스의 경로를 배열로 지정 (Aspectran은 계층형의 ClassLoader를 별도로 내장하고 있습니다.) |
-| context.hybridLoading | 환경 설정을 빠르게 로딩하기 위해 다수의 XML 파일을 APON 문서형식으로 변환할지 여부를 지정 (XML 형식의 환경 설정 파일이 수정되면 APON 파일로 변환되고,  다음 기동 시에 XML 파일을 로딩하는 것이 아니라 APON 파일을 찾아서 로딩합니다.)
-| context.autoReloading | 리소스 자동 갱신 기능에 대한 정의 (Aspectran에서 별도로 관리하는 리소스에 대해서는 WAS를 재시작을 하지 않더라도 자동 갱신이 가능합니다.) |
-| context.autoReloading.reloadMethod | 리소스의 갱신 방법을 지정 (hard: Java Class 갱신 가능 , soft: 환경 설정 내역만 갱신 가능) |
-| context.autoReloading.observationInterval | 리소스가 수정 여부를 관찰하는 시간 간격을 초 단위로 지정 |
-| context.autoReloading.startup | 리소스 자동 갱신 기능을 사용할지 여부를 지정 |
-| scheduler | 스케쥴러 동작환경을 위한 정의 |
-| scheduler.startDelaySeconds | 모든 환경이 초기화된 후 스케쥴러가 기동될 수 있도록 시간 간격을 초 단위로 지정 |
-| scheduler.waitOnShutdown | 실행중인 Job이 종료되기를 기다렸다가 스케쥴러를 종료할지 여부를 지정 |
-| scheduler.startup | 스케쥴러를 기동할지 여부를 지정 |
+### 2) Bean 정의
+Bean을 정의하는 방법은 두 가지가 있습니다.
+
+#### `<bean>` 엘리멘트를 사용해서 Bean을 한 개씩 정의하는 방법
+```xml
+<!-- Aspectran의 Translet이 처리한 결과값을 화면에 표현하기 위해 JSP를 이용합니다. -->
+<bean id="jspViewDispatcher" class="com.aspectran.web.view.JspViewDispatcher" scope="singleton">
+	<property>
+		<item name="templatePathPrefix">/WEB-INF/jsp/</item>
+		<item name="templatePathSuffix">.jsp</item>
+	</property>
+</bean>
+```
+```xml
+<bean id="sampleBean" class="com.aspectran.example.sample.SampleBean" scope="singleton"/>
+```
+
+#### `<beans>` 엘리멘트를 사용해서 일괄 스캔하는 방법
+```xml
+<!-- com.aspectran.eaxmple 패키지 하위의 모든 경로에서 클래스 이름이 "Action"으로 끝나는 클래스를 모두 찾아서 Bean으로 등록합니다. -->
+<!-- ex) com.aspectran.example.sample.SampleAction 클래스의 bean id는 "sample.SampleAction"이 됩니다. -->
+<beans class="com.aspectran.example.**.*Action" scope="singleton"/>
+```
+```xml
+<!-- com.aspectran.eaxmple 패키지 하위의 모든 경로에서 클래스 이름이 "Advice"으로 끝나는 클래스를 모두 찾아서 ID가 "advice."으로 시작하는 Bean으로 등록합니다. -->
+<!-- ex) com.aspectran.example.sample.SampleAdvice 클래스의 bean id는 "advice.sample.SampleAdvice"이 됩니다. -->
+<beans class="com.aspectran.example.**.*Advice" idPrefix="advice." scope="singleton"/>
+```
+> `<bean>` 엘리멘트의 class 속성에도 와일드카드를 사용할 수 있지만, `<beans>` 엘리멘트에 비해 몇가지 제약사항이 있습니다.
+> `<bean>` 엘리멘트의 id 속성은 문서 내에서 유일해야 하기 때문에 id를 반드시 지정하고, id는 `*`문자를 포함하도록 합니다.
+> `*` 문자는 인식한 Bean ID로 대체됩니다.
+
+##### 와일드카드를 사용해서 여러 클래스를 지정하기
+class 속성 값에 사용할 수 있는 와일드카드 문자들은  `*, ?, +` 이고, Escape 문자로 `\` 문자를 사용할 수 있습니다.
+여러 패키지를 포함할 경우 `.**.` 문자를 중간에 사용하면 되는데, 예를들어 `com.**.*Action`과 같이 사용할 수 있습니다.
+##### Bean ID 부여 규칙
+검색된 여러 개의 클래스에 대하여 Bean ID를 부여하는 규칙은 다음과 같습니다.
+* 와일드카드 문자가 시작되는 지점부터 끝까지를 Bean ID로 인식합니다.
+예를들어 `com.aspectran.example.**.*Action`에 해당하는 클래스가 `com.aspectran.example.hellloworld.HelloWorldAction`이면 Bean의 ID는 `helloworld.HelloWorldAction`으로 인식합니다..
+* idPrefix와 idSuffix 속성이 지정되었을 경우 인식한 Bean ID의 앞에는 idPrefix를 연결하고 뒤에는 idSuffix를 연결합니다.
+예를들어 idPrefix가 `action.`이면 조합된 Bean ID는 `action.helloworld.HelloWorldAction`이 됩니다.
+
+#### Bean을 다음과 같이 상세하게 정의할 수도 있습니다.
+```xml
+<bean id="sampleBean">
+	<features>
+		<class>com.aspectran.sample.SampleAction</class>
+		<scope>singleton</scope>
+		<initMethod>initialize</initMethod>
+		<destroyMethod>destory</destroyMethod>
+		<lazyInit>true</lazyInit>
+	</features>
+	<constructor>
+		<arguments>
+			<item>arg1</item>
+			<item type="list" valueType="int">
+				<value>1</value>
+				<value>2</value>
+				<value>3</value>
+			</item>
+		</arguments>
+	</constructor>
+	<properties>
+		<item name="name">david</item>
+		<item name="grade" type="list">
+			<value>A</value>
+			<value>B</value>
+		</item>
+		<item name="amount" type="map">
+			<value name="food" valueType="float">123456</value>
+			<value name="transportation expenses" valueType="1234">value</value>
+		</item>
+		<item name="anotherBean">
+			<reference bean="anotherBean"/>
+		</item>
+	</properties>
+</bean>
+```

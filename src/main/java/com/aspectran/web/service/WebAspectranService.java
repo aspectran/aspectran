@@ -96,7 +96,6 @@ public class WebAspectranService extends CoreAspectranService {
 		} catch(TransletNotFoundException e) {
 			try {
 				if(!defaultServletHttpRequestHandler.handle(req, res)) {
-					System.out.println("&&&&&&&&&&&&" + defaultServletHttpRequestHandler);
 					res.sendError(HttpServletResponse.SC_NOT_FOUND);
 				}
 			} catch(Exception e2) {
