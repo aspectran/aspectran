@@ -275,7 +275,7 @@ Aspectran은 다음 요건만 충족을 하면 원할한 작동이 보장됩니�
 Aspectran의 기본 설정 항목에 대해 설명합니다.
 
 | 설정 항목명 | 설명 | 사용가능한 값 | 기본 값 |
-|---------------|-- ----|-----------------|----------|
+|---|---|---|---|
 | transletNamePattern | Translet 이름의 패턴. Translet 이름 문자열은 `<servlet-mapping>` 의 `<url-pattern>`의 값으로 시작해야 접근이 가능합니다.  | ex) /example/*.do | 설정하지 않음 |
 | transletNamePrefix | `transletNamePattern` 대신 prefix와 suffix를 지정할 수 있습니다. | ex) /example/ | 설정하지 않음 |
 | transletNameSuffix | `transletNamePattern` 대신 prefix와 suffix를 지정할 수 있습니다. | ex) .do | 설정하지 않음 |
