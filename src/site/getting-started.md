@@ -9,12 +9,12 @@ Aspectran을 사용하려면 aspectran-x.x.x.jar 파일이 필요합니다.
 * logging 라이브러리(commons-logging, log4j, slf4j)
 
 Maven을 사용한다면 [pom.xml](https://github.com/topframe/aspectran/blob/master/pom.xml) 파일을 참고해서 의존 라이브러리를 추가해 주세요.
-
+- - -
 ## 2. 작동 환경
 Aspectran은 다음 요건만 충족을 하면 원할한 작동이 보장됩니다.
 * Java 6 이상
 * Servlet 2.5 이상
-
+- - -
 ## 3. 웹 컨테이너에 서블릿으로 등록하기
 `web.xml `파일을 다음과 같이 수정합니다.
 ```xml
@@ -117,7 +117,7 @@ Aspectran은 다음 요건만 충족을 하면 원할한 작동이 보장됩니�
 > Aspectran의 Translet이란?
 > 요청을 받고 결과 값을 적절히 가공해서 응답하는 처리자를 Aspectran 내부에서는 "Translet"이라고 명명하였습니다.
 > Translet은 고유 이름을 가지고 있으며, 요청 URI와 직접적으로 매핑이 됩니다.
-
+- - -
 ## 4. 환경 설정 파일 작성하기
 위 `web.xml` 파일에서 `context.root`를 "/WEB-INF/aspectran/config/getting-started.xml"이라고 지정했었습니다.
 
@@ -275,7 +275,7 @@ Aspectran은 다음 요건만 충족을 하면 원할한 작동이 보장됩니�
 Aspectran의 기본 설정 항목에 대해 설명합니다.
 
 | 설정 항목명 | 설명 | 사용가능한 값 | 기본 값 |
-|--- ---|--------|------------------|----------|
+|---------------|-- ----|-----------------|----------|
 | transletNamePattern | Translet 이름의 패턴. Translet 이름 문자열은 `<servlet-mapping>` 의 `<url-pattern>`의 값으로 시작해야 접근이 가능합니다.  | ex) /example/*.do | 설정하지 않음 |
 | transletNamePrefix | `transletNamePattern` 대신 prefix와 suffix를 지정할 수 있습니다. | ex) /example/ | 설정하지 않음 |
 | transletNameSuffix | `transletNamePattern` 대신 prefix와 suffix를 지정할 수 있습니다. | ex) .do | 설정하지 않음 |
@@ -295,7 +295,7 @@ Aspectran의 기본 설정 항목에 대해 설명합니다.
 		<setting name="nullableContentId" value="true"/>
 		<setting name="nullableActionId" value="true"/>
 		<setting name="beanProxifier" value="javassist"/>
-		<setting name="pointcutPatternVerifiable" value="true/>
+		<setting name="pointcutPatternVerifiable" value="true"/>
 </settings>
 ```
 
@@ -336,9 +336,9 @@ class 속성 값에 사용할 수 있는 와일드카드 문자들은  `*, ?, +`
 여러 패키지를 포함할 경우 `.**.` 문자를 중간에 사용하면 되는데, 예를들어 `com.**.*Action`과 같이 사용할 수 있습니다.
 ##### Bean ID 부여 규칙
 검색된 여러 개의 클래스에 대하여 Bean ID를 부여하는 규칙은 다음과 같습니다.
-* 와일드카드 문자가 시작되는 지점부터 끝까지를 Bean ID로 인식합니다.
+* 와일드카드 문자가 시작되는 지점부터 끝까지를 Bean ID로 인식합니다. 
 예를들어 `com.aspectran.example.**.*Action`에 해당하는 클래스가 `com.aspectran.example.hellloworld.HelloWorldAction`이면 Bean의 ID는 `helloworld.HelloWorldAction`으로 인식합니다..
-* idPrefix와 idSuffix 속성이 지정되었을 경우 인식한 Bean ID의 앞에는 idPrefix를 연결하고 뒤에는 idSuffix를 연결합니다.
+* idPrefix와 idSuffix 속성이 지정되었을 경우 인식한 Bean ID의 앞에는 idPrefix를 연결하고 뒤에는 idSuffix를 연결합니다. 
 예를들어 idPrefix가 `action.`이면 조합된 Bean ID는 `action.helloworld.HelloWorldAction`이 됩니다.
 
 #### Bean을 다음과 같이 상세하게 정의할 수도 있습니다.
