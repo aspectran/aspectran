@@ -46,4 +46,17 @@ public class RelevantAspectRuleHolder {
 		this.activityAspectRuleList = activityAspectRuleList;
 	}
 	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("{aspectAdviceRuleRegistry=").append(aspectAdviceRuleRegistry);
+		sb.append(", activityAspectRuleList=").append(activityAspectRuleList);
+		sb.append("}");
+		
+		return sb.toString();
+	}
+	
 }

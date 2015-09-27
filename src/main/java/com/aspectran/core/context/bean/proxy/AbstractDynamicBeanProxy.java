@@ -44,7 +44,6 @@ import com.aspectran.core.util.logging.LogFactory;
  */
 public abstract class AbstractDynamicBeanProxy {
 
-	/** The log. */
 	private static final Log log = LogFactory.getLog(AbstractDynamicBeanProxy.class);
 
 	private static final boolean debugEnabled = log.isDebugEnabled();
@@ -139,8 +138,19 @@ public abstract class AbstractDynamicBeanProxy {
 	}
 	
 	protected AspectAdviceRuleRegistry retrieveAspectAdviceRuleRegistry(Activity activity, String transletName, String beanId, String beanMethodName) throws Throwable {
-		String patternString = PointcutPatternRule.combinePatternString(transletName, beanId, beanMethodName);
+		RelevantAspectRuleHolder relevantAspectRuleHolder = getRelevantAspectRuleHolder(transletName, beanId, beanMethodName);
 		
+		if(relevantAspectRuleHolder.getActivityAspectRuleList() != null) {
+			for(AspectRule aspectRule : relevantAspectRuleHolder.getActivityAspectRuleList()) {
+				activity.registerAspectRule(aspectRule);
+			}
+		}
+		
+		return relevantAspectRuleHolder.getAspectAdviceRuleRegistry();
+	}
+	
+	private RelevantAspectRuleHolder getRelevantAspectRuleHolder(String transletName, String beanId, String beanMethodName) {
+		String patternString = PointcutPatternRule.combinePatternString(transletName, beanId, beanMethodName);
 		RelevantAspectRuleHolder relevantAspectRuleHolder;
 		
 		synchronized(relevantAspectRuleHolderCache) {
@@ -179,18 +189,13 @@ public abstract class AbstractDynamicBeanProxy {
 				
 				relevantAspectRuleHolderCache.put(patternString, relevantAspectRuleHolder);
 				
-				if(debugEnabled)
-					log.debug("cache relevantAspectRuleHolder \"" + patternString + "\"");
+				if(debugEnabled) {
+					log.debug("relevantAspectRuleHolderCache " + patternString + " " + relevantAspectRuleHolder);
+				}
 			}
 		}
 		
-		if(relevantAspectRuleHolder.getActivityAspectRuleList() != null) {
-			for(AspectRule aspectRule : relevantAspectRuleHolder.getActivityAspectRuleList()) {
-				activity.registerAspectRule(aspectRule);
-			}
-		}
-		
-		return relevantAspectRuleHolder.getAspectAdviceRuleRegistry();
+		return relevantAspectRuleHolder;
 	}
 
 }

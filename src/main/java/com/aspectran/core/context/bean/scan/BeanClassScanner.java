@@ -38,7 +38,6 @@ import com.aspectran.core.util.wildcard.WildcardPattern;
 
 public class BeanClassScanner {
 
-	/** The log. */
 	private final Log log = LogFactory.getLog(BeanClassScanner.class);
 	
 	private final ClassLoader classLoader;
@@ -127,9 +126,9 @@ public class BeanClassScanner {
 					if(matcher.matches(relativePath)) {
 						Class<?> classType = loadClass(className);
 						String beanId = composeBeanId(relativePath);
-						if(log.isTraceEnabled())
-							log.trace("beanClass {beanId: " + beanId + ", className: " + className + "}");
 						scannedClasses.put(beanId, classType);
+						if(log.isTraceEnabled())
+							log.trace("scanned beanClass {beanId: " + beanId + ", className: " + className + "}");
 					}
 				}
 				return false;
@@ -152,7 +151,6 @@ public class BeanClassScanner {
 			jarFileUrl = jarCon.getJarFileURL().toExternalForm();
 			JarEntry jarEntry = jarCon.getJarEntry();
 			entryNamePrefix = (jarEntry != null ? jarEntry.getName() : "");
-			//System.out.println("**JarURLConnection entryName: " + entryNamePrefix);
 		} else {
 			// No JarURLConnection -> need to resort to URL file parsing.
 			// We'll assume URLs of the format "jar:path!/entry", with the protocol
@@ -183,23 +181,16 @@ public class BeanClassScanner {
 			for(Enumeration<JarEntry> entries = jarFile.entries(); entries.hasMoreElements();) {
 				JarEntry entry = entries.nextElement();
 				String entryName = entry.getName();
-				//System.out.println("entryName: " + entryName);
-				//System.out.println("  entryNamePrefix: " + entryNamePrefix);
 				if(entryName.startsWith(entryNamePrefix) && entryName.endsWith(ClassUtils.CLASS_FILE_SUFFIX)) {
 					String entryNameSuffix = entryName.substring(entryNamePrefix.length(), entryName.length() - ClassUtils.CLASS_FILE_SUFFIX.length());
-					//System.out.println("  entryNameSuffix: " + entryNameSuffix);
 					
 					if(matcher.matches(entryNameSuffix)) {
-						//System.out.println("entryName: " + entryName);
-						//System.out.println("  entryNamePrefix: " + entryNamePrefix);
-						//System.out.println("  entryNameSuffix: " + entryNameSuffix);
 						String className = entryNamePrefix + entryNameSuffix;
 						Class<?> classType = loadClass(className);
 						String beanId = composeBeanId(entryNameSuffix);
-						log.trace("beanClass {beanId: " + beanId + ", className: " + className + "} from jar: " + jarFile.getName());
-						//System.out.println("  [clazz] " + className);
-						//System.out.println("  [beanId] " + combineBeanId(relativePath));
 						scannedClasses.put(beanId, classType);
+						if(log.isTraceEnabled())
+							log.trace("scanned beanClass {beanId: " + beanId + ", className: " + className + "} from jar: " + jarFile.getName());
 					}
 				}
 			}

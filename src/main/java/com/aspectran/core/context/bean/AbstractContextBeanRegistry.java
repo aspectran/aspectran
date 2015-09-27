@@ -167,10 +167,14 @@ public abstract class AbstractContextBeanRegistry implements ContextBeanRegistry
 		
 		if(beanRule.isProxied()) {
 			if(beanProxifierType == BeanProxifierType.JAVASSIST) {
-				log.debug("JavassistDynamicBeanProxy " + beanRule);
+				if(log.isTraceEnabled())
+					log.trace("JavassistDynamicBeanProxy " + beanRule);
+				
 				bean = JavassistDynamicBeanProxy.newInstance(context, beanRule, argTypes, args);
 			} else if(beanProxifierType == BeanProxifierType.CGLIB) {
-				log.debug("CglibDynamicBeanProxy " + beanRule);
+				if(log.isTraceEnabled())
+					log.trace("CglibDynamicBeanProxy " + beanRule);
+				
 				bean = CglibDynamicBeanProxy.newInstance(context, beanRule, argTypes, args);
 			} else {
 				if(argTypes != null && args != null)
@@ -178,7 +182,9 @@ public abstract class AbstractContextBeanRegistry implements ContextBeanRegistry
 				else
 					bean = newInstance(beanRule.getBeanClass(), new Class[0], new Object[0]);
 				
-				log.debug("JdkDynamicBeanProxy " + beanRule);
+				if(log.isTraceEnabled())
+					log.trace("JdkDynamicBeanProxy " + beanRule);
+				
 				bean = JdkDynamicBeanProxy.newInstance(context, beanRule, bean);
 			}
 		} else {

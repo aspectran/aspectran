@@ -81,19 +81,19 @@ Aspectran은 다음 요건만 충족을 하면 원할한 작동이 보장됩니�
 
 | 파라메터 | 설명 |
 |-----------|-------|
-| context | Aspectran 환경설정을 위한 정의 |
-| context.root | 환경 설정을 위해 가장 먼저 참조할 xml 파일의 경로  |
-| context.encoding | XML 파일을 APON 문서형식으로 변환시에 문자열 인코딩 방식을 지정 |
-| context.resources | Aspectran에서 별도로 관리할 수 있는 리소스의 경로를 배열로 지정 (Aspectran은 계층형의 ClassLoader를 별도로 내장하고 있습니다.) |
-| context.hybridLoading | 환경 설정을 빠르게 로딩하기 위해 다수의 XML 파일을 APON 문서형식으로 변환할지 여부를 지정 (XML 형식의 환경 설정 파일이 수정되면 APON 파일로 변환되고,  다음 기동 시에 XML 파일을 로딩하는 것이 아니라 APON 파일을 찾아서 로딩합니다.)
-| context.autoReloading | 리소스 자동 갱신 기능에 대한 정의 (Aspectran에서 별도로 관리하는 리소스에 대해서는 WAS를 재시작을 하지 않더라도 자동 갱신이 가능합니다.) |
-| context.autoReloading.reloadMethod | 리소스의 갱신 방법을 지정 (hard: Java Class 갱신 가능 , soft: 환경 설정 내역만 갱신 가능) |
-| context.autoReloading.observationInterval | 리소스가 수정 여부를 관찰하는 시간 간격을 초 단위로 지정 |
-| context.autoReloading.startup | 리소스 자동 갱신 기능을 사용할지 여부를 지정 |
-| scheduler | 스케쥴러 동작환경을 위한 정의 |
-| scheduler.startDelaySeconds | 모든 환경이 초기화된 후 스케쥴러가 기동될 수 있도록 시간 간격을 초 단위로 지정 |
-| scheduler.waitOnShutdown | 실행중인 Job이 종료되기를 기다렸다가 스케쥴러를 종료할지 여부를 지정 |
-| scheduler.startup | 스케쥴러를 기동할지 여부를 지정 |
+| **context** | Aspectran 환경설정을 위한 정의 |
+| **context.root** | 환경 설정을 위해 가장 먼저 참조할 xml 파일의 경로  |
+| **context.encoding** | XML 파일을 APON 문서형식으로 변환시에 문자열 인코딩 방식을 지정 |
+| **context.resources** | Aspectran에서 별도로 관리할 수 있는 리소스의 경로를 배열로 지정 (Aspectran은 계층형의 ClassLoader를 별도로 내장하고 있습니다.) ex) WEB-INF/aspectran/config, WEB-INF/aspectran/classes, WEB-INF/aspectran/lib, file:/c:/Users//Projects/java/classes |
+| **context.hybridLoading** | 환경 설정을 빠르게 로딩하기 위해 다수의 XML 파일을 APON 문서형식으로 변환할지 여부를 지정 (XML 형식의 환경 설정 파일이 수정되면 APON 파일로 변환되고,  다음 기동 시에 XML 파일을 로딩하는 것이 아니라 APON 파일을 찾아서 로딩합니다.)
+| **context.autoReloading** | 리소스 자동 갱신 기능에 대한 정의 (Aspectran에서 별도로 관리하는 리소스에 대해서는 WAS를 재시작을 하지 않더라도 자동 갱신이 가능합니다.) |
+| **context.autoReloading.reloadMethod** | 리소스의 갱신 방법을 지정 (hard: Java Class 갱신 가능 , soft: 환경 설정 내역만 갱신 가능) |
+| **context.autoReloading.observationInterval** | 리소스가 수정 여부를 관찰하는 시간 간격을 초 단위로 지정 |
+| **context.autoReloading.startup** | 리소스 자동 갱신 기능을 사용할지 여부를 지정 |
+| **scheduler** | 스케쥴러 동작환경을 위한 정의 |
+| **scheduler.startDelaySeconds** | 모든 환경이 초기화된 후 스케쥴러가 기동될 수 있도록 시간 간격을 초 단위로 지정 |
+| **scheduler.waitOnShutdown** | 실행중인 Job이 종료되기를 기다렸다가 스케쥴러를 종료할지 여부를 지정 |
+| **scheduler.startup** | 스케쥴러를 기동할지 여부를 지정 |
 
 ### 2) AspectranServiceListener 등록
 웹 어플리케이션이 시작되면서 Aspectran 서비스도 함께 기동되도록 하기 위해 ***AspectranServiceListener***를 등록합니다.
@@ -276,15 +276,15 @@ Aspectran의 기본 설정 항목에 대해 설명합니다.
 
 | 설정 항목명 | 설명 | 사용가능한 값 | 기본 값 |
 |---|---|---|---|
-| transletNamePattern | Translet 이름의 패턴. Translet 이름 문자열은 `<servlet-mapping>` 의 `<url-pattern>`의 값으로 시작해야 접근이 가능합니다.  | ex) /example/*.do | 설정하지 않음 |
-| transletNamePrefix | `transletNamePattern` 대신 prefix와 suffix를 지정할 수 있습니다. | ex) /example/ | 설정하지 않음 |
-| transletNameSuffix | `transletNamePattern` 대신 prefix와 suffix를 지정할 수 있습니다. | ex) .do | 설정하지 않음 |
-| transletInterfaceClass | 사용자 정의 Translet의 인터페이스 클래스를 지정합니다. | ex) com.aspectran.example.common.MyTranslet | 설정하지 않으면 내장 Translet을 사용 |
-| transletImplementClass | 사용자 정의 Translet의 구현 클래스를 지정합니다. | ex) com.aspectran.example.common.MyTransletImpl | 설정하지 않으면 내장 Translet을 사용 |
-| nullableContentId | `<content>`의 id 속성을 생략할 수 있는지 여부를 지정합니다. | true or false | true |
-| nullableActionId | `<action>`의 id 속성을 생략할 수 있는지 여부를 지정합니다. | true or false | true |
-| beanProxifier | 자바 바이트코드 생성기(Byte Code Instumentation, BCI) 라이브러리를 지정합니다. | javassist or cglib or jdk | javassist |
-| pointcutPatternVerifiable | pointcut 패턴의 유효성을 체크할지 여부를 지정합니다. | true or false | true |
+| **transletNamePattern** | Translet 이름의 패턴. Translet 이름 문자열은 `<servlet-mapping>` 의 `<url-pattern>`의 값으로 시작해야 접근이 가능합니다.  | ex) /example/*.do | 설정하지 않음 |
+| **transletNamePrefix** | `transletNamePattern` 대신 prefix와 suffix를 지정할 수 있습니다. | ex) /example/ | 설정하지 않음 |
+| **transletNameSuffix** | `transletNamePattern` 대신 prefix와 suffix를 지정할 수 있습니다. | ex) .do | 설정하지 않음 |
+| **transletInterfaceClass** | 사용자 정의 Translet의 인터페이스 클래스를 지정합니다. | ex) com.aspectran.example.common.MyTranslet | 설정하지 않으면 내장 Translet을 사용 |
+| **transletImplementClass** | 사용자 정의 Translet의 구현 클래스를 지정합니다. | ex) com.aspectran.example.common.MyTransletImpl | 설정하지 않으면 내장 Translet을 사용 |
+| **nullableContentId** | `<content>`의 id 속성을 생략할 수 있는지 여부를 지정합니다. | true or false | true |
+| **nullableActionId** | `<action>`의 id 속성을 생략할 수 있는지 여부를 지정합니다. | true or false | true |
+| **beanProxifier** | 자바 바이트코드 생성기(Byte Code Instumentation, BCI) 라이브러리를 지정합니다. | javassist or cglib or jdk | javassist |
+| **pointcutPatternVerifiable** | pointcut 패턴의 유효성을 체크할지 여부를 지정합니다. | true or false | true |
 
 위 설정항목을 대부분 사용한 `settings` 엘리먼트의 예제입니다.
 ```xml
@@ -300,7 +300,7 @@ Aspectran의 기본 설정 항목에 대해 설명합니다.
 ```
 
 ### 2) Bean 정의
-Bean을 정의하는 방법은 두 가지가 있습니다.
+Bean을 정의하는 방법은 두 가지가 있습니다. 와일드카드를 사용해서 Bean 클래스를 일괄 스캔해서 자동으로 Bean을 등록할 수 있습니다.
 
 #### `<bean>` 엘리멘트를 사용해서 Bean을 한 개씩 정의하는 방법
 ```xml
@@ -331,12 +331,12 @@ Bean을 정의하는 방법은 두 가지가 있습니다.
 > `<bean>` 엘리멘트의 id 속성은 문서 내에서 유일해야 하기 때문에 id를 반드시 지정하고, id는 `*`문자를 포함하도록 합니다.
 > `*` 문자는 인식한 Bean ID로 대체됩니다.
 
-##### 와일드카드를 사용해서 여러 클래스를 지정하기
+#### 와일드카드를 사용해서 여러 클래스를 지정하기
 class 속성 값에 사용할 수 있는 와일드카드 문자들은  `*, ?, +` 이고, Escape 문자로 `\` 문자를 사용할 수 있습니다.
 여러 패키지를 포함할 경우 `.**.` 문자를 중간에 사용하면 되는데, 예를들어 `com.**.*Action`과 같이 사용할 수 있습니다.
-##### Bean ID 부여 규칙
+#### Bean ID 부여 규칙
 검색된 여러 개의 클래스에 대하여 Bean ID를 부여하는 규칙은 다음과 같습니다.
-* 와일드카드 문자가 시작되는 지점부터 끝까지를 Bean ID로 인식합니다. 
+* 와일드카드 문자가 시작되는 지점부터 끝까지를 Bean ID로 인식합니다.
 예를들어 `com.aspectran.example.**.*Action`에 해당하는 클래스가 `com.aspectran.example.hellloworld.HelloWorldAction`이면 Bean의 ID는 `helloworld.HelloWorldAction`으로 인식합니다..
 * idPrefix와 idSuffix 속성이 지정되었을 경우 인식한 Bean ID의 앞에는 idPrefix를 연결하고 뒤에는 idSuffix를 연결합니다. 
 예를들어 idPrefix가 `action.`이면 조합된 Bean ID는 `action.helloworld.HelloWorldAction`이 됩니다.
@@ -377,3 +377,13 @@ class 속성 값에 사용할 수 있는 와일드카드 문자들은  `*, ?, +`
 	</properties>
 </bean>
 ```
+
+### 3) Aspect 정의
+Aspectran이 지원하는 AOP(Aspect Oriented Programming)는 다른 프레임웤에 비해 사용법이 쉽습니다.
+Aspectran의 AOP는 Translet, Bean 영역 내에서의 메쏘드 호출 조인포인트(Joingpoint)를 지원합니다.
+
+Aspect는 다음 용도로 사용될 수 있습니다.
+* 핵심 비지니스 로직과 공통적인 부가 비지니스 로직을 분리해서 코드를 작성할 수 있습니다.
+  ex) 로깅, 인증, 권한, 성능 테스트
+* 트랜잭션 처리
+  
