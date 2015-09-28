@@ -43,7 +43,7 @@ public class WildcardPatternTest {
 
 	protected static final int SEPARATOR_TYPE = 9;
 	
-	private char[] separator;
+	private char separator;
 	
 	private char[] tokens;
 
@@ -54,14 +54,7 @@ public class WildcardPatternTest {
 	}
 	
 	public WildcardPatternTest(String patternString, char separator) {
-		this.separator = new char[] { separator };
-		
-		parse(patternString);
-	}
-
-	public WildcardPatternTest(String patternString, String separator) {
-		if(separator != null && separator.length() > 0)
-			this.separator = separator.toCharArray();
+		this.separator = separator;
 		
 		parse(patternString);
 	}
@@ -112,6 +105,13 @@ public class WildcardPatternTest {
 				if(ptype == STAR_TYPE && types[i] == PLUS_CHAR) {
 					types[i] = SKIP_TYPE;
 				}
+			} else if(tokens[i] == separator) {
+				if(esc) {
+					types[i - 1] = SKIP_TYPE;
+					esc = false;
+				} else {
+					types[i] = SEPARATOR_TYPE; // type 9: separator
+				}
 			} else if(tokens[i] == ESCAPE_CHAR) {
 				types[i] = SKIP_TYPE;
 				esc = true;
@@ -128,7 +128,7 @@ public class WildcardPatternTest {
 				pindex = i;
 			}
 		}
-
+/*
 		if(separator != null) {
 			int sepa = 0;
 			int skip = 0;
@@ -159,7 +159,7 @@ public class WildcardPatternTest {
 				}
 			}
 		}
-		
+*/
 		for(int i = 0, j = 0; i < tokens.length; i++) {
 			if(types[i] == SKIP_TYPE) {
 				j++; 
@@ -174,7 +174,7 @@ public class WildcardPatternTest {
 		}
 	}
 
-	public char[] getSeparator() {
+	public char getSeparator() {
 		return separator;
 	}
 
@@ -198,10 +198,6 @@ public class WildcardPatternTest {
 		return new WildcardPatternTest(patternString, separator);
 	}
 	
-	public static WildcardPatternTest compile(String patternString, String separator) {
-		return new WildcardPatternTest(patternString, separator);
-	}
-	
 	public static boolean hasWildcards(String str) {
 		char[] ca = str.toCharArray();
 		
@@ -218,8 +214,9 @@ public class WildcardPatternTest {
 	public static void main(String argv[]) {
 		//String str = "\\aaa\\*\\**\\bb*.txt**";
 		//String str = "**/bb*";
-		String str = "com.**.scope.**.*Xml*";
-		WildcardPatternTest pattern = WildcardPatternTest.compile(str, ".");
+		String str = "com.**.scop?.**.?.bbb.?";
+		String str2 = "com.a.scope.x.y.z.bbb.i";
+		WildcardPatternTest pattern = WildcardPatternTest.compile(str, '.');
 		
 		int i = 0;
 		for(char c : pattern.getTokens()) {
@@ -232,7 +229,7 @@ public class WildcardPatternTest {
 		}
 		
 		//WildcardMatcher matcher = new WildcardMatcher(pattern);
-		boolean result = pattern.matches(str);
+		boolean result = pattern.matches(str2);
 		
 		System.out.println("Result: " + result);
 	}
