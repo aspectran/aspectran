@@ -9,12 +9,16 @@ Aspectran을 사용하려면 aspectran-x.x.x.jar 파일이 필요합니다.
 * logging 라이브러리(commons-logging, log4j, slf4j)
 
 Maven을 사용한다면 [pom.xml](https://github.com/topframe/aspectran/blob/master/pom.xml) 파일을 참고해서 의존 라이브러리를 추가해 주세요.
+
 - - -
+
 ## 2. 작동 환경
 Aspectran은 다음 요건만 충족을 하면 원할한 작동이 보장됩니다.
 * Java 6 이상
 * Servlet 2.5 이상
+
 - - -
+
 ## 3. 웹 컨테이너에 서블릿으로 등록하기
 `web.xml `파일을 다음과 같이 수정합니다.
 ```xml
@@ -85,7 +89,7 @@ Aspectran은 다음 요건만 충족을 하면 원할한 작동이 보장됩니�
 | **context.root** | 환경 설정을 위해 가장 먼저 참조할 xml 파일의 경로  |
 | **context.encoding** | XML 파일을 APON 문서형식으로 변환시에 문자열 인코딩 방식을 지정 |
 | **context.resources** | Aspectran에서 별도로 관리할 수 있는 리소스의 경로를 배열로 지정 (Aspectran은 계층형의 ClassLoader를 별도로 내장하고 있습니다.) ex) WEB-INF/aspectran/config, WEB-INF/aspectran/classes, WEB-INF/aspectran/lib, file:/c:/Users//Projects/java/classes |
-| **context.hybridLoading** | 환경 설정을 빠르게 로딩하기 위해 다수의 XML 파일을 APON 문서형식으로 변환할지 여부를 지정 (XML 형식의 환경 설정 파일이 수정되면 APON 파일로 변환되고,  다음 기동 시에 XML 파일을 로딩하는 것이 아니라 APON 파일을 찾아서 로딩합니다.)
+| **context.hybridLoading** | 환경 설정을 빠르게 로딩하기 위해 다수의 XML 파일을 APON 문서형식으로 변환할지 여부를 지정합니다. XML 형식의 환경 설정 파일이 수정되면 APON 파일로 변환되고,  다음 기동 시에 XML 파일을 로딩하는 것이 아니라 APON 파일을 찾아서 로딩합니다. 다수의 XML 파일을 파싱하는 걸리는 시간을 단축할 수 있습니다. |
 | **context.autoReloading** | 리소스 자동 갱신 기능에 대한 정의 (Aspectran에서 별도로 관리하는 리소스에 대해서는 WAS를 재시작을 하지 않더라도 자동 갱신이 가능합니다.) |
 | **context.autoReloading.reloadMethod** | 리소스의 갱신 방법을 지정 (hard: Java Class 갱신 가능 , soft: 환경 설정 내역만 갱신 가능) |
 | **context.autoReloading.observationInterval** | 리소스가 수정 여부를 관찰하는 시간 간격을 초 단위로 지정 |
@@ -117,7 +121,9 @@ Aspectran은 다음 요건만 충족을 하면 원할한 작동이 보장됩니�
 > Aspectran의 Translet이란?
 > 요청을 받고 결과 값을 적절히 가공해서 응답하는 처리자를 Aspectran 내부에서는 "Translet"이라고 명명하였습니다.
 > Translet은 고유 이름을 가지고 있으며, 요청 URI와 직접적으로 매핑이 됩니다.
+
 - - -
+
 ## 4. 환경 설정 파일 작성하기
 위 `web.xml` 파일에서 `context.root`를 "/WEB-INF/aspectran/config/getting-started.xml"이라고 지정했었습니다.
 
@@ -135,11 +141,6 @@ Aspectran은 다음 요건만 충족을 하면 원할한 작동이 보장됩니�
 		<setting name="pointcutPatternVerifiable" value="true"/>
 	</settings>
 
-	<!-- 스케쥴러 환경설정을 불러들입니다. -->
-	<!--
-	<import file="/WEB-INF/aspectran/config/example-scheduler.xml"/>
-	 -->
-
 	<!-- Aspectran의 Translet이 처리한 결과값을 화면에 표현하기 위해 JSP를 이용합니다. -->
 	<bean id="jspViewDispatcher" class="com.aspectran.web.view.JspViewDispatcher" scope="singleton">
 		<property>
@@ -150,11 +151,18 @@ Aspectran은 다음 요건만 충족을 하면 원할한 작동이 보장됩니�
 
 	<!-- com.aspectran.eaxmple 패키지 하위의 모든 경로에서 클래스 이름이 "Action"으로 끝나는 클래스를 모두 찾아서 Bean으로 등록합니다. -->
 	<!-- ex) com.aspectran.example.sample.SampleAction 클래스의 bean id는 "sample.SampleAction"이 됩니다. -->
-	<beans class="com.aspectran.example.**.*Action" scope="singleton"/>
+	<bean id="*" class="com.aspectran.example.**.*Action" scope="singleton">
+		<filter>
+			exclude: [
+				"com.aspectran.example.common.**.*"
+				"com.aspectran.example.sample.**.*"
+			]
+		</filter>
+	</bean>
 
 	<!-- com.aspectran.eaxmple 패키지 하위의 모든 경로에서 클래스 이름이 "Advice"으로 끝나는 클래스를 모두 찾아서 ID가 "advice."으로 시작하는 Bean으로 등록합니다. -->
 	<!-- ex) com.aspectran.example.sample.SampleAdvice 클래스의 bean id는 "advice.sample.SampleAdvice"이 됩니다. -->
-	<beans class="com.aspectran.example.**.*Advice" idPrefix="advice." scope="singleton"/>
+	<bean id="advice.*" class="com.aspectran.example.**.*Advice" scope="singleton"/>
 
 	<bean id="sampleBean" class="com.aspectran.example.sample.SampleBean" scope="singleton"/>
 
@@ -179,6 +187,7 @@ Aspectran은 다음 요건만 충족을 하면 원할한 작동이 보장됩니�
 	</aspect>
 
 	<!-- Translet의 이름이 "/example"로 시작하는 Translet을 실행하는 중에 발생하는 에러 처리 규칙을 정의합니다.  -->
+	<!-- 에러요인과 응답 컨텐츠의 형식에 따라 처리방식을 다르게 정할 수 있습니다. -->
 	<aspect id="defaultExceptionHandlingRule">
 		<joinpoint scope="translet">
 			<pointcut>
@@ -197,15 +206,24 @@ Aspectran은 다음 요건만 충족을 하면 원할한 작동이 보장됩니�
 						</item>
 					</echo>
 				</transform>
+				<transform type="transform/json" contentType="application/json">
+					<echo id="result">
+						<item type="map">
+							<value name="errorCode">E0001</value>
+							<value name="message">error occured.</value>
+						</item>
+					</echo>
+				</transform>
 			</responseByContentType>
 		</exceptionRaised>
 	</aspect>
 
+	<!-- "helloworld.HelloWorld.Action" 빈에서 echo, helloWorld, counting 메쏘드 호출 전 후로 환영인사와 작별인사를 건넵니다. -->
 	<aspect id="helloWorldAdvice">
 		<joinpoint scope="translet">
 			<pointcut>
 				target: {
-					+: "/example/*@*^counting|echo|helloWorld"
+					+: "/example/**/*@helloworld.HelloWorldAction^echo|helloWorld|counting"
 				}
 			</pointcut>
 		</joinpoint>
@@ -219,6 +237,8 @@ Aspectran은 다음 요건만 충족을 하면 원할한 작동이 보장됩니�
 		</advice>
 	</aspect>
 
+	<!-- "/example/counting" Translet이 호출되면 요청정보를 분석을 완료한 시점에 실행되는 지정된 Adivce가 실행됩니다. -->
+	<!-- 카운팅할 숫자의 범위에 대한 유효성을 검사합니다. -->
 	<aspect id="checkCountRangeAdvice">
 		<joinpoint scope="request">
 			<pointcut>
@@ -234,7 +254,8 @@ Aspectran은 다음 요건만 충족을 하면 원할한 작동이 보장됩니�
 		</advice>
 	</aspect>
 
-	<translet name="echo">
+	<!-- "Hello, World."라는 문구를 텍스트 형식의 컨텐츠로 응답합니다.  -->
+	<translet name="echo/${name}/${age}">
 		<transform type="transform/text" contentType="text/plain">
 			<template>
 				Hello, World.
@@ -242,12 +263,15 @@ Aspectran은 다음 요건만 충족을 하면 원할한 작동이 보장됩니�
 		</transform>
 	</translet>
 
+	<!-- helloworld.HelloWorldAction 빈에서 helloWorld 메쏘드를 실행해서 "Hello, World."라는 문구를 텍스트 형식의 컨텐츠로 응답합니다. -->
 	<translet name="helloWorld">
 		<transform type="transform/text" contentType="text/plain">
 			<action bean="helloworld.HelloWorldAction" method="helloWorld"/>
 		</transform>
 	</translet>
 
+	<!-- 숫자를 세는 Translet입니다. 시작 값과 마지막 값을 파라메터로 받습니다. -->
+	<!-- 숫자의 범위가 유효한지를 검사합니다. -->
 	<translet name="counting">
 		<request>
 			<attribute>
@@ -267,6 +291,9 @@ Aspectran은 다음 요건만 충족을 하면 원할한 작동이 보장됩니�
 			<transform type="transform/xml"/>
 		</response>
 	</translet>
+
+	<!-- 스케쥴러 환경설정을 불러들입니다. -->
+	<import file="/WEB-INF/aspectran/config/example-scheduler.xml"/>
 
 </aspectran>
 ```
@@ -302,7 +329,7 @@ Aspectran의 기본 설정 항목에 대해 설명합니다.
 ### 2) Bean 정의
 Bean을 정의하는 방법은 두 가지가 있습니다. 와일드카드를 사용해서 Bean 클래스를 일괄 스캔해서 자동으로 Bean을 등록할 수 있습니다.
 
-#### `<bean>` 엘리멘트를 사용해서 Bean을 한 개씩 정의하는 방법
+#### Bean을 한 개씩 정의하는 방법
 ```xml
 <!-- Aspectran의 Translet이 처리한 결과값을 화면에 표현하기 위해 JSP를 이용합니다. -->
 <bean id="jspViewDispatcher" class="com.aspectran.web.view.JspViewDispatcher" scope="singleton">
@@ -316,30 +343,47 @@ Bean을 정의하는 방법은 두 가지가 있습니다. 와일드카드를 �
 <bean id="sampleBean" class="com.aspectran.example.sample.SampleBean" scope="singleton"/>
 ```
 
-#### `<beans>` 엘리멘트를 사용해서 일괄 스캔하는 방법
+#### 클래스패스에 존재하는 Bean을 일괄 스캔해서 정의하는 방법
+
+com.aspectran.eaxmple 패키지 하위의 모든 경로에서 클래스 이름이 "Action"으로 끝나는 클래스를 모두 찾아서 Bean으로 등록합니다.
+> ex) com.aspectran.example.sample.SampleAction 클래스의 Bean ID는 "sample.SampleAction"이 됩니다.
+
 ```xml
-<!-- com.aspectran.eaxmple 패키지 하위의 모든 경로에서 클래스 이름이 "Action"으로 끝나는 클래스를 모두 찾아서 Bean으로 등록합니다. -->
-<!-- ex) com.aspectran.example.sample.SampleAction 클래스의 bean id는 "sample.SampleAction"이 됩니다. -->
-<beans class="com.aspectran.example.**.*Action" scope="singleton"/>
+<beans id="*" class="com.aspectran.example.**.*Action" scope="singleton"/>
 ```
+
+com.aspectran.eaxmple 패키지 하위의 모든 경로에서 클래스 이름이 "Advice"으로 끝나는 클래스를 모두 찾아서 ID가 "advice."으로 시작하는 Bean으로 등록합니다. 제외할 클래스를 지정할 수 있습니다.
+> ex) com.aspectran.example.sample.SampleAdvice 클래스의 Bean ID는 "advice.sample.SampleAdvice"이 됩니다.
+
 ```xml
-<!-- com.aspectran.eaxmple 패키지 하위의 모든 경로에서 클래스 이름이 "Advice"으로 끝나는 클래스를 모두 찾아서 ID가 "advice."으로 시작하는 Bean으로 등록합니다. -->
-<!-- ex) com.aspectran.example.sample.SampleAdvice 클래스의 bean id는 "advice.sample.SampleAdvice"이 됩니다. -->
-<beans class="com.aspectran.example.**.*Advice" idPrefix="advice." scope="singleton"/>
+<bean id="advice.*" class="com.aspectran.example.**.*Advice" scope="singleton">
+	<filter>
+		exclude: [
+			"com.aspectran.example.common.**.*"
+			"com.aspectran.example.sample.**.*"
+		]
+	</filter>
+</bean>
 ```
-> `<bean>` 엘리멘트의 class 속성에도 와일드카드를 사용할 수 있지만, `<beans>` 엘리멘트에 비해 몇가지 제약사항이 있습니다.
-> `<bean>` 엘리멘트의 id 속성은 문서 내에서 유일해야 하기 때문에 id를 반드시 지정하고, id는 `*`문자를 포함하도록 합니다.
-> `*` 문자는 인식한 Bean ID로 대체됩니다.
+
+사용자 정의 필터 클래스를 지정할 수 있습니다.
+`com.aspectran.core.context.bean.scan.ClassScanFilter` 인터페이스를 구현해야 합니다.
+
+```xml
+<bean id="advice.*" class="com.aspectran.example.**.*Advice" scope="singleton">
+	<filter class="com.aspectran.example.common.UserClassScanFilter"/>
+</bean>
+```
 
 #### 와일드카드를 사용해서 여러 클래스를 지정하기
 class 속성 값에 사용할 수 있는 와일드카드 문자들은  `*, ?, +` 이고, Escape 문자로 `\` 문자를 사용할 수 있습니다.
-여러 패키지를 포함할 경우 `.**.` 문자를 중간에 사용하면 되는데, 예를들어 `com.**.*Action`과 같이 사용할 수 있습니다.
+여러 패키지를 포함할 경우 `.**.` 문자를 중간에 사용하면 되는데, 예를들어 `com.**.service.*.*Action`과 같이 사용할 수 있습니다.
+
 #### Bean ID 부여 규칙
 검색된 여러 개의 클래스에 대하여 Bean ID를 부여하는 규칙은 다음과 같습니다.
 * 와일드카드 문자가 시작되는 지점부터 끝까지를 Bean ID로 인식합니다.
 예를들어 `com.aspectran.example.**.*Action`에 해당하는 클래스가 `com.aspectran.example.hellloworld.HelloWorldAction`이면 Bean의 ID는 `helloworld.HelloWorldAction`으로 인식합니다..
-* idPrefix와 idSuffix 속성이 지정되었을 경우 인식한 Bean ID의 앞에는 idPrefix를 연결하고 뒤에는 idSuffix를 연결합니다. 
-예를들어 idPrefix가 `action.`이면 조합된 Bean ID는 `action.helloworld.HelloWorldAction`이 됩니다.
+* id 속성에 `*` 구분자를 포함할 경우 `*` 구분자를 기준으로 앞에 있는 있는 문자열과 뒤에 있는 문자열을 인식한 Bean ID의 앞뒤로 연결합니다. 예를들어 id가 `advice.*`이면 조합된 Bean ID는 `advice.helloworld.HelloWorldAdvice`가 됩니다.
 
 #### Bean을 다음과 같이 상세하게 정의할 수도 있습니다.
 ```xml
@@ -384,6 +428,36 @@ Aspectran의 AOP는 Translet, Bean 영역 내에서의 메쏘드 호출 조인�
 
 Aspect는 다음 용도로 사용될 수 있습니다.
 * 핵심 비지니스 로직과 공통적인 부가 비지니스 로직을 분리해서 코드를 작성할 수 있습니다.
-  ex) 로깅, 인증, 권한, 성능 테스트
+  > ex) 로깅, 인증, 권한, 성능 테스트
 * 트랜잭션 처리
-  
+  > 주로 데이터베이스 트랜잭션 기능을 지원하기 사용합니다.
+
+#### Aspect를 이용해서 환경변수 선언하기
+Aspectran은 외부의 접속 요청을 Translet이 받아서 처리합니다. Translet의 내부에는 Request, Contents, Response 라는 세 가지 영역이 있습니다. Translet과 Request, Contents, Response 영역에서 참조할 수 있는 공통 환경변수를 선언할 수 있습니다.
+> Translet 내부의 세 가지 영역
+> * Request: 요청 정보를 분석하는 영역
+> * Contents: 액션을 실행하고 결과 값을 생산하는 영역
+> * Response: 생산된 결과 값을 출력하는 영역
+
+```xml
+<!-- 요청 정보를 분석하는 단계에서 사용할 기본 환경 변수를 정의합니다. -->
+<aspect id="defaultRequestRule">
+	<joinpoint scope="request"/>
+	<settings>
+		<setting name="characterEncoding" value="utf-8"/>
+		<setting name="multipart.maxRequestSize" value="10M"/>
+		<setting name="multipart.temporaryFilePath" value="/d:/"/>
+	</settings>
+</aspect>
+
+<!-- 요청에 대해 응답하는 단계에서 사용할 기본 환경 변수를 정의합니다. -->
+<aspect id="defaultResponseRule">
+	<joinpoint scope="response"/>
+	<settings>
+		<setting name="characterEncoding" value="utf-8"/>
+		<setting name="defaultContentType" value="text/html"/>
+		<setting name="viewDispatcher" value="jspViewDispatcher"/>
+	</settings>
+</aspect>
+```
+
