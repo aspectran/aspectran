@@ -74,8 +74,12 @@ public class BeanRule implements Cloneable {
 	
 	private boolean proxied;
 	
+	private String classScanFilterClassName;
+	
+	private Parameters filterParameters;
+	
 	/**
-	 * Gets the id.
+	 * Gets the bean's id.
 	 *
 	 * @return the id
 	 */
@@ -84,7 +88,7 @@ public class BeanRule implements Cloneable {
 	}
 
 	/**
-	 * Sets the id.
+	 * Sets the bean's id.
 	 *
 	 * @param id the new id
 	 */
@@ -99,6 +103,13 @@ public class BeanRule implements Cloneable {
 		}
 	}
 	
+	/**
+	 * Sets the bean's id.
+	 *
+	 * @param id the id
+	 * @param idPrefix the prefix of bean's id
+	 * @param idSuffix the suffix of bean's id
+	 */
 	public void setId(String id, String idPrefix, String idSuffix) {
 		if(idPrefix != null && idSuffix != null) {
 			this.id = idPrefix + id + idSuffix;
@@ -395,6 +406,22 @@ public class BeanRule implements Cloneable {
 		this.proxied = proxied;
 	}
 
+	public String getClassScanFilterClassName() {
+		return classScanFilterClassName;
+	}
+
+	public void setClassScanFilterClassName(String classScanFilterClassName) {
+		this.classScanFilterClassName = classScanFilterClassName;
+	}
+
+	public Parameters getFilterParameters() {
+		return filterParameters;
+	}
+
+	public void setFilterParameters(Parameters filterParameters) {
+		this.filterParameters = filterParameters;
+	}
+
 	public BeanRule clone() throws CloneNotSupportedException {
 		// shallow copy
 		return (BeanRule)super.clone();              
@@ -471,14 +498,6 @@ public class BeanRule implements Cloneable {
 		
 		return beanRule;
 	}
-/*
-	private static boolean isPatternedBeanId(String beanId) {
-		if(beanId == null)
-			return false;
-		
-		return (beanId.indexOf(BEAN_ID_PATTERN_DELIMITER) > -1);
-	}
- */
 	
 	public static String combineBeanIdPattern(String beanIdPrefix, String beanIdSuffix) {
 		if(beanIdPrefix == null && beanIdSuffix != null) {

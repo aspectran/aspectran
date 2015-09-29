@@ -23,27 +23,66 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
+import com.aspectran.core.context.builder.apon.params.FilterParameters;
 import com.aspectran.core.util.ClassUtils;
 import com.aspectran.core.util.ResourceUtils;
 import com.aspectran.core.util.StringUtils;
+import com.aspectran.core.util.apon.Parameters;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 import com.aspectran.core.util.wildcard.WildcardMatcher;
 import com.aspectran.core.util.wildcard.WildcardPattern;
 
-public class BeanClassScanner {
+public class BeanClassScanner implements ClassScanner {
 
 	private final Log log = LogFactory.getLog(BeanClassScanner.class);
 	
 	private final ClassLoader classLoader;
+	
+	private Parameters filterParameters;
+	
+	private ClassScanFilter classScanFilter;
+	
+	private Map<String, WildcardPattern> wildcardPatternCache = new HashMap<String, WildcardPattern>();
 
 	public BeanClassScanner(ClassLoader classLoader) {
 		this.classLoader = classLoader;
+	}
+	
+	public Parameters getFilterParameters() {
+		return filterParameters;
+	}
+
+	public void setFilterParameters(Parameters filterParameters) {
+		this.filterParameters = filterParameters;
+	}
+
+	public ClassScanFilter getClassScanFilter() {
+		return classScanFilter;
+	}
+
+	public void setClassScanFilter(Class<?> classScanFilterClass) {
+		try {
+			classScanFilter = (ClassScanFilter)classScanFilterClass.newInstance();
+		} catch(Exception e) {
+			throw new ClassScanFailedException("Failed to instantiate [" + classScanFilterClass + "]", e);
+		}
+	}
+
+	public void setClassScanFilter(String classScanFilterClassName) {
+		Class<?> filterClass;
+		try {
+			filterClass = classLoader.loadClass(classScanFilterClassName);
+		} catch(ClassNotFoundException e) {
+			throw new ClassScanFailedException("Failed to instantiate [" + classScanFilterClassName + "]", e);
+		}
+		setClassScanFilter(filterClass);
 	}
 	
 	public Map<String, Class<?>> scanClasses(String classNamePattern) throws IOException, ClassNotFoundException {
@@ -61,7 +100,6 @@ public class BeanClassScanner {
 			String basePackageName = determineBasePackageName(classNamePattern);
 	
 			String subPattern;
-			
 			if(classNamePattern.length() > basePackageName.length())
 				subPattern = classNamePattern.substring(basePackageName.length());
 			else
@@ -88,7 +126,7 @@ public class BeanClassScanner {
 				}
 			}
 		} catch(IOException e) {
-			throw new BeanClassScanningFailedException("bean-class scanning failed.", e);
+			throw new ClassScanFailedException("bean-class scanning failed.", e);
 		}
 	}
 	
@@ -126,9 +164,7 @@ public class BeanClassScanner {
 					if(matcher.matches(relativePath)) {
 						Class<?> classType = loadClass(className);
 						String beanId = composeBeanId(relativePath);
-						scannedClasses.put(beanId, classType);
-						if(log.isTraceEnabled())
-							log.trace("scanned beanClass {beanId: " + beanId + ", className: " + className + "}");
+						putClass(scannedClasses, beanId, className, classType);
 					}
 				}
 				return false;
@@ -188,9 +224,7 @@ public class BeanClassScanner {
 						String className = entryNamePrefix + entryNameSuffix;
 						Class<?> classType = loadClass(className);
 						String beanId = composeBeanId(entryNameSuffix);
-						scannedClasses.put(beanId, classType);
-						if(log.isTraceEnabled())
-							log.trace("scanned beanClass {beanId: " + beanId + ", className: " + className + "} from jar: " + jarFile.getName());
+						putClass(scannedClasses, beanId, className, classType);
 					}
 				}
 			}
@@ -227,7 +261,6 @@ public class BeanClassScanner {
 		WildcardMatcher matcher = new WildcardMatcher(pattern);
 
 		boolean matched = matcher.matches(classNamePattern);
-
 		if(!matched)
 			return null;
 		
@@ -241,7 +274,7 @@ public class BeanClassScanner {
 
 			sb.append(str).append(ResourceUtils.RESOURCE_NAME_SPEPARATOR_CHAR);
 		}
-
+		
 		return sb.toString();
 	}
 
@@ -255,8 +288,47 @@ public class BeanClassScanner {
 		try {
 			return classLoader.loadClass(className);
 		} catch (ClassNotFoundException e) {
-			throw new BeanClassScanningFailedException("bean-class loading failed. class name: " + className, e);
+			throw new ClassScanFailedException("bean-class loading failed. class name: " + className, e);
 		}
+	}
+	
+	private boolean putClass(Map<String, Class<?>> scannedClasses, String beanId, String className, Class<?> scannedClass) {
+		className = className.replace(ResourceUtils.RESOURCE_NAME_SPEPARATOR_CHAR, ClassUtils.PACKAGE_SEPARATOR_CHAR);
+
+		boolean valid = true;
+		
+		if(classScanFilter != null) {
+			if(!classScanFilter.filter(beanId, className, scannedClass)) {
+				valid = false;
+			}
+		}
+		
+		if(valid && filterParameters != null) {
+			String[] excludePatterns = filterParameters.getStringArray(FilterParameters.exclude);
+			
+			if(excludePatterns != null) {
+				for(String excludePattern : excludePatterns) {
+					WildcardPattern wildcardPattern = wildcardPatternCache.get(excludePattern);
+					if(wildcardPattern == null) {
+						wildcardPattern = new WildcardPattern(excludePattern, ClassUtils.PACKAGE_SEPARATOR_CHAR);
+						wildcardPatternCache.put(excludePattern, wildcardPattern);
+					}
+					if(wildcardPattern.matches(className)) {
+						valid = false;
+						break;
+					}
+				}
+			}
+		}
+		
+		if(valid) {
+			scannedClasses.put(beanId, scannedClass);
+			
+			if(log.isTraceEnabled())
+				log.trace("scanned beanClass {beanId: " + beanId + ", className: " + className + "}");
+		}
+		
+		return valid;
 	}
 
 }

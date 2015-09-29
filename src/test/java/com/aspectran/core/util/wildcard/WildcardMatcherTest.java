@@ -18,6 +18,9 @@ package com.aspectran.core.util.wildcard;
 import com.aspectran.core.util.StringUtils;
 
 
+/**
+ * The Class WildcardMatcherTest.
+ */
 public class WildcardMatcherTest {
 
 	private WildcardPatternTest pattern;
@@ -180,246 +183,247 @@ public class WildcardMatcherTest {
 		int[] types = pattern.getTypes();
 		char separator = pattern.getSeparator();
 		
-		int tokensLength = tokens.length;
-		int inputLength = input.length();
+		int tlength = tokens.length;
+		int clength = input.length();
 
 		int sepaCount = 0;
 
-		int tokenIndex = 0;
-		int inputIndex = 0;
+		int tindex = 0;
+		int cindex = 0;
+		
+		int trange1 = 0;
+		int trange2 = 0;
+		int ttemp = 0;
+		
+		int crange1 = 0;
+		int crange2 = 0;
+		int ctemp = 0;
+		
+		int scnt1 = 0;
+		int scnt2 = 0;
 		
 		//System.out.println("tokens length: " + tokensLength);
 		//System.out.println("input length: " + caLength);
 		
-		while(tokenIndex < tokensLength && inputIndex < inputLength) {
-			System.out.println("token index=" + tokenIndex + ", token=" + tokens[tokenIndex] + ", type=" + types[tokenIndex]);
-			System.out.println("  input index=" + inputIndex + ", char=" + input.charAt(inputIndex));
+		while(tindex < tlength && cindex < clength) {
+			System.out.println("token index=" + tindex + ", token=" + tokens[tindex] + ", type=" + types[tindex]);
+			System.out.println("  input index=" + cindex + ", char=" + input.charAt(cindex));
 			
-			if(types[tokenIndex] == WildcardPattern.LITERAL_TYPE) {
-				if(tokens[tokenIndex++] != input.charAt(inputIndex++)) {
+			if(types[tindex] == WildcardPattern.LITERAL_TYPE) {
+				if(tokens[tindex++] != input.charAt(cindex++)) {
 					return false;
 				}
-			} else if(types[tokenIndex] == WildcardPattern.STAR_TYPE) {
-				int t1 = tokenIndex + 1;
-				int t2 = t1;
-				for(; t2 < tokensLength; t2++) {
-					if(types[t2] == WildcardPattern.EOT_TYPE || types[t2] != WildcardPattern.LITERAL_TYPE)
-						break;
-				}
-				
-				System.out.println("*t1=" + t1 + ", t2=" + t2);
-				
-				if(t1 == t2) {
-					inputIndex++;
-					tokenIndex++;
+			} else if(types[tindex] == WildcardPattern.STAR_TYPE) {
+				trange1 = tindex + 1;
+				if(trange1 < tlength) {
+					trange2 = trange1;
+					//System.out.println("*trange1=" + trange1 + " tokens[trange1]: " + tokens[trange1] + ", trange2=" + trange2 + " tokens[trange2]: " + tokens[trange2]);
+					for(; trange2 < tlength; trange2++) {
+						if(types[trange2] == WildcardPattern.EOT_TYPE || types[trange2] != WildcardPattern.LITERAL_TYPE)
+							break;
+					}
+					
+					//System.out.println("*trange1=" + trange1 + " tokens[trange1]: " + tokens[trange1] + ", trange2=" + trange2 + " tokens[trange2]: " + tokens[trange2]);
+					
+					if(trange1 == trange2) {
+						// prefix*
+						for(; cindex < clength; cindex++) {
+							System.out.println("----star0 cindex=" + cindex + ", char=" + input.charAt(cindex));
+							if(input.charAt(cindex) == separator)
+								break;
+						}
+						tindex++;
+					} else {
+						// *suffix
+						ttemp = trange1;
+						do {
+							if(tokens[ttemp] != input.charAt(cindex++))
+								ttemp = trange1;
+							else
+								ttemp++;
+						} while(ttemp < trange2 && cindex < clength);
+						
+						System.out.println("----star1 ttemp=" + ttemp + ", t2=" + trange2 + ", cindex=" + cindex);
+						
+						if(ttemp < trange2)
+							return false;
+						
+						tindex = trange2;
+					}
 				} else {
-					int t = t1;
-					do {
-						if(tokens[t] != input.charAt(inputIndex++))
-							t = t1;
-						else
-							t++;
-					} while(t < t2 && inputIndex < inputLength);
-					
-					System.out.println("start*t=" + t + ", t2=" + t2 + ", inputIndex=" + inputIndex);
-					
-					if(t < t2)
-						return false;
-					
-					tokenIndex = t2;
+					for(; cindex < clength; cindex++) {
+						System.out.println("----star2 cindex=" + cindex + ", char=" + input.charAt(cindex));
+						if(input.charAt(cindex) == separator)
+							break;
+					}
+					tindex++;
 				}
-			} else if(types[tokenIndex] == WildcardPattern.STAR_STAR_TYPE) {
+			} else if(types[tindex] == WildcardPattern.STAR_STAR_TYPE) {
 				// a.b.**.*d.**.f
 				System.out.println("---------------star star start");
 				if(separator > 0) {
 					//"com.**.*scope.**.*Xml*"
 					//"com.**.**.?scope*.**.*Xml*"
 					//"com//j/j/*scope.**.*Xml*"
-					int t1 = -1;
-					int t2 = -1;
-					for(int n = tokenIndex + 1; n < tokensLength; n++) {
-						System.out.println("---------------types[" + n + "]: " + types[n]);
-						if(t1 == -1) {
-							if(types[n] == WildcardPattern.LITERAL_TYPE) {
-								t1 = n;
-							} else if(types[n] == WildcardPattern.SEPARATOR_TYPE) {
-								//t1 = n;
-								System.out.println("---------------*t1: " + t1);
+					trange1 = -1;
+					trange2 = -1;
+					for(ttemp = tindex + 1; ttemp < tlength; ttemp++) {
+						System.out.println("---------------types[" + ttemp + "]: " + types[ttemp]);
+						if(trange1 == -1) {
+							if(types[ttemp] == WildcardPattern.LITERAL_TYPE) {
+								trange1 = ttemp;
 							}
 						} else {
-							System.out.println("---------------+t1: " + t1);
-							if(types[n] == WildcardPattern.SEPARATOR_TYPE) {
-								t2 = n - 1;
+							System.out.println("---------------+trange1: " + trange1);
+							if(types[ttemp] == WildcardPattern.SEPARATOR_TYPE) {
+								trange2 = ttemp - 1;
 								break;
-							} else if(types[n] != WildcardPattern.LITERAL_TYPE) {
-								System.out.println("----no literal type-----------+n: " + n + ", tokens[n]: " + tokens[n]);
-								t2 = n - 1;
+							} else if(types[ttemp] != WildcardPattern.LITERAL_TYPE) {
+								System.out.println("----no literal type-----------+ttemp: " + ttemp + ", tokens[ttemp]: " + tokens[ttemp]);
+								trange2 = ttemp - 1;
 								break;
 							}
 						}
 					}
-					System.out.println("---------------@t1: " + t1 + " @t2: " + t2);
-					System.out.println("---------------@tokenIndex: " + tokenIndex);
-					if(t1 > -1 && t2 > -1) {
+					System.out.println("---------------@t1: " + trange1 + " @t2: " + trange2);
+					System.out.println("---------------@tindex: " + tindex);
+					if(trange1 > -1 && trange2 > -1) {
 						// a.**.d.?
 						// 2 + 3 = 5
-						//if(t1 > tokenIndex + 3 && types[t1 - 1] == WildcardPattern.SEPARATOR_TYPE) {
+						//if(t1 > tindex + 3 && types[t1 - 1] == WildcardPattern.SEPARATOR_TYPE) {
 						//	t1--;
 						//	System.out.println("!#t1: " + t1 + ", type: " + types[t1] + ", token: " + tokens[t1]);
 						//}
-						int c1 = inputIndex;
-						int c2 = c1;
-						int t = t1;
-						while(t <= t2 && c2 < inputLength) {
-							if(input.charAt(c2++) != tokens[t]) {
-								t = t1;
+						crange1 = cindex;
+						crange2 = crange1;
+						ttemp = trange1;
+						while(ttemp <= trange2 && crange2 < clength) {
+							if(input.charAt(crange2++) != tokens[ttemp]) {
+								ttemp = trange1;
 							} else {
-								System.out.println("---------------uu@t: " + t + " char: " + tokens[t] + ", t2: " + t2 + ", c2: " + (c2-1) + ", c2-char: " + input.charAt(c2-1));
-								t++;
+								System.out.println("---------------uu@t: " + ttemp + " char: " + tokens[ttemp] + ", t2: " + trange2 + ", c2: " + (crange2-1) + ", c2-char: " + input.charAt(crange2-1));
+								ttemp++;
 							}
 						}
-						System.out.println("---------------@t: " + t + " @t2: " + t2 + " @c2: " + c2);
-						if(t <= t2) {
-							System.out.println("!return#c2: " + c2 + ", inputLength: " + inputLength);
-							System.out.println("!return#c2: " + c2 + ", input: " + (c2 >= inputLength ? "" : input.charAt(c2)));
-							System.out.println("!return#t2: " + t2 + ", type: " + types[t2] + ", token: " + tokens[t2]);
-							return false;
-						}
-						inputIndex = c2;
-						tokenIndex = t2 + 1;
-						
-						System.out.println("!!! c1: " + c1 + ", c1-char: " + input.charAt(c1) + ", c2: " + c2 + ", c2-char: " + input.charAt(c2));
-						
-						/*
-						c1--;
-						System.out.println("#c1: " + c1 + ", char: " + input.charAt(c1));
-						System.out.println("#t2: " + t2 + ", type: " + types[t2] + ", token: " + tokens[t2]);
-						System.out.println("#t1: " + t1 + ", type: " + types[t1] + ", token: " + tokens[t1]);
-						int caIndex2 = inputIndex;
-						if(types[t1] == WildcardPattern.SEPARATOR_TYPE) {
-							inputIndex = c1 + 1;
-							tokenIndex = t2 + 1;
-							System.out.println("##c1: " + c1 + ", char: " + input.charAt(c1));
-							System.out.println("##tokenIndex: " + tokenIndex + ", type: " + types[tokenIndex] + ", token: " + tokens[tokenIndex]);
+						System.out.println("---------------@t: " + ttemp + " @t2: " + trange2 + " @c2: " + crange2);
+						if(ttemp <= trange2) {
+							System.out.println("!return# trange1: " + trange1 + ", type: " + types[trange1] + ", token: " + tokens[trange1]);
+							System.out.println("!return# trange2: " + trange2 + ", type: " + types[trange2] + ", token: " + tokens[trange2]);
+							System.out.println("!return# crange1: " + crange1 + ", char: " + input.charAt(crange1));
+							System.out.println("!return# crange2: " + crange2 + ", char: " + (crange2 >= clength ? "over" : input.charAt(crange2)));
+							tindex = trange2;
+							if(cindex > 0)
+								cindex--;
 						} else {
-							if(types[t2] == WildcardPattern.SEPARATOR_TYPE)
-								c1--;
-							for(; c1 >= inputIndex; c1--) {
-								System.out.println("for###c1: " + c1 + ", inputIndex: " + inputIndex + ", input.charAt(c1): " + input.charAt(c1));
-								if(input.charAt(c1) == separator) {
-									inputIndex = c1 + 1;
-									break;
-								}
-							}
-							System.out.println("###c1: " + c1 + ", inputIndex: " + inputIndex + ", input.charAt(c1): " + input.charAt(c1));
-							if(c1 < inputIndex) {
-								System.out.println("###inputIndex: " + inputIndex + ", char: " + input.charAt(inputIndex));
-								System.out.println("###tokenIndex: " + tokenIndex + ", type: " + types[tokenIndex] + ", token: " + tokens[tokenIndex]);
-							}
-							tokenIndex = t2;
-							System.out.println("######inputIndex: " + inputIndex + ", caIndex2: " + caIndex2 + ", tokenIndex: " + tokenIndex);
-							if(inputIndex == caIndex2 && types[tokenIndex] == WildcardPattern.SEPARATOR_TYPE)
-								tokenIndex++;
-							System.out.println("######inputIndex: " + inputIndex + ", caIndex2: " + caIndex2 + ", tokenIndex: " + tokenIndex);
-						}
-						System.out.println("pass#caIndex: " + inputIndex + ", char: " + input.charAt(inputIndex));
-						System.out.println("pass#tokenIndex: " + tokenIndex + ", type: " + types[tokenIndex] + ", token: " + tokens[tokenIndex]);
-*/
-						if(separatorFlags != null && c1 < inputIndex) {
-							for(int k = inputIndex - 1; k >= c1; k--) {
-								if(input.charAt(k) == separator) {
-									separatorFlags[k] = ++sepaCount;
-									System.out.println("!!! k: " + k + ", separatorFlags[k]: " + separatorFlags[k]);
+							cindex = crange2;
+							tindex = trange2 + 1;
+							//System.out.println("!!! c1: " + crange1 + ", c1-char: " + input.charAt(crange1) + ", c2: " + crange2 + ", c2-char: " + input.charAt(crange2));
+							if(separatorFlags != null && crange1 < cindex) {
+								for(ctemp = crange1; ctemp < cindex; ctemp++) {
+									System.out.println("!!!separator ctemp: " + ctemp + ", char: " + input.charAt(ctemp));
+									if(input.charAt(ctemp) == separator) {
+										separatorFlags[ctemp] = ++sepaCount;
+										System.out.println("!!!separator ctemp: " + ctemp + ", separatorFlags[ctemp]: " + separatorFlags[ctemp]);
+									}
 								}
 							}
 						}
 					} else {
-						tokenIndex++;
+						tindex++;
 
-						int sc1 = 0;
-						for(int n = tokenIndex; n < tokensLength; n++) {
-							System.out.println("!!! n: " + n + ", tokens[n]: " + tokens[n]);
-							if(types[n] == WildcardPattern.SEPARATOR_TYPE) {
-								sc1++;
+						scnt1 = 0;
+						for(ttemp = tindex; ttemp < tlength; ttemp++) {
+							System.out.println("!!! ttemp: " + ttemp + ", tokens[ttemp]: " + tokens[ttemp]);
+							if(types[ttemp] == WildcardPattern.SEPARATOR_TYPE) {
+								scnt1++;
 							}
 						}
-						System.out.println("!!! sc1: " + sc1);
-						if(sc1 > 0) {
-							int c1 = inputIndex;
-							int c2 = inputLength;
-							int sc2 = 0;
-							while(c2 > c1) {
-								c2--;
-								if(input.charAt(c2) == separator)
-									sc2++;
-								if(sc1 == sc2)
+						System.out.println("!!! scnt1: " + scnt1);
+						if(scnt1 > 0) {
+							crange1 = cindex;
+							crange2 = clength;
+							scnt2 = 0;
+							while(crange2 > 0 && crange1 <= crange2--) {
+								System.out.println("!!! scnt2: " + scnt2 + ", crange2: " + crange2);
+								if(input.charAt(crange2) == separator)
+									scnt2++;
+								if(scnt1 == scnt2)
 									break;
 							}
-							System.out.println("!!! sc2: " + sc2);
-							if(sc1 == sc2) {
-								inputIndex = c2;
-								System.out.println("!!! inputIndex: " + inputIndex);
+							System.out.println("!!! scnt2: " + scnt2);
+							if(scnt1 == scnt2) {
+								cindex = crange2;
+								System.out.println("!!! cindex: " + cindex);
 								if(separatorFlags != null) {
-									while(c1 < c2) {
-										if(input.charAt(c1) == separator) {
-											separatorFlags[c1] = ++sepaCount;
+									while(crange1 < crange2) {
+										if(input.charAt(crange1) == separator) {
+											separatorFlags[crange1] = ++sepaCount;
 										}
-										System.out.println("!!! c1: " + c1 + ", separatorFlags[c1]: " + separatorFlags[c1]);
-										c1++;
+										System.out.println("!!! c1: " + crange1 + ", separatorFlags[c1]: " + separatorFlags[crange1]);
+										crange1++;
 									}
 								}
 							}
 						}
 						
-						System.out.println("--------------- #end tokens[" + tokenIndex + "]: " + tokens[tokenIndex]);
+						System.out.println("--------------- #end tokens[" + tindex + "]: " + tokens[tindex]);
 					}
 				} else {
-					inputIndex = inputLength; //complete
-					tokenIndex++;
-					System.out.println("---------------star star complete inputIndex: " + inputIndex);
+					cindex = clength; //complete
+					tindex++;
+					System.out.println("---------------star star complete cindex: " + cindex);
 				}
-				System.out.println("---------------star star end inputIndex: " + inputIndex);
-			} else if(types[tokenIndex] == WildcardPattern.QUESTION_TYPE) {
-				if(tokenIndex > tokensLength - 1 ||
-						types[tokenIndex + 1] != WildcardPattern.LITERAL_TYPE ||
-						tokens[tokenIndex + 1] != input.charAt(inputIndex)) {
+				System.out.println("!# cindex: " + cindex + ", type: " + types[tindex]);
+				System.out.println("!# tindex: " + tindex + ", type: " + types[tindex] + " cindex: " + cindex + ", char: " + (cindex >= clength ? "over" : input.charAt(cindex)));
+				System.out.println("---------------star star end");
+			} else if(types[tindex] == WildcardPattern.QUESTION_TYPE) {
+				if(tindex > tlength - 1 ||
+						types[tindex + 1] != WildcardPattern.LITERAL_TYPE ||
+						tokens[tindex + 1] != input.charAt(cindex)) {
 					if(separator > 0) {
-						if(input.charAt(inputIndex) != separator)
-							inputIndex++;
+						if(input.charAt(cindex) != separator)
+							cindex++;
 					} else {
-						inputIndex++;
+						cindex++;
 					}
 				}
-				tokenIndex++;
-			} else if(types[tokenIndex] == WildcardPattern.PLUS_TYPE) {
+				tindex++;
+			} else if(types[tindex] == WildcardPattern.PLUS_TYPE) {
 				if(separator > 0) {
-					if(input.charAt(inputIndex) == separator)
+					if(input.charAt(cindex) == separator)
 						return false;
 				}
-				inputIndex++;
-				tokenIndex++;
-			} else if(types[tokenIndex] == WildcardPattern.SEPARATOR_TYPE) {
-				//System.out.println("**빠짐 tokens[tokenIndex]: " + tokens[tokenIndex] + ", input.charAt(inputIndex): " + input.charAt(inputIndex));
-				if(tokens[tokenIndex++] != input.charAt(inputIndex++)) {
+				cindex++;
+				tindex++;
+			} else if(types[tindex] == WildcardPattern.SEPARATOR_TYPE) {
+				//System.out.println("**빠짐 tokens[tindex]: " + tokens[tindex] + ", input.charAt(cindex): " + input.charAt(cindex));
+				if(tokens[tindex++] != input.charAt(cindex++)) {
 					return false;
 				}
 				if(separatorFlags != null)
-					separatorFlags[inputIndex - 1] = ++sepaCount;
-			} else if(types[tokenIndex] == WildcardPattern.EOT_TYPE) {
+					separatorFlags[cindex - 1] = ++sepaCount;
+			} else if(types[tindex] == WildcardPattern.EOT_TYPE) {
 				break;
 			} else {
-				tokenIndex++;
+				tindex++;
 			}
 		}
 		
-		System.out.println("tokenIndex: " + tokenIndex + ", tokensLength: " + tokensLength);
-		
-		if(tokenIndex < tokensLength) {
-			for(int i = tokenIndex; i < tokensLength; i++) {
-				System.out.println("types[" + i + "]: " + types[i]);
-				if(types[i] == WildcardPattern.LITERAL_TYPE ||
-						types[i] == WildcardPattern.PLUS_TYPE ||
-						types[i] == WildcardPattern.SEPARATOR_TYPE) {
+		System.out.println("---------------------------------------------------");
+		System.out.println("tindex: " + tindex + ", tlength: " + tlength);
+		System.out.println("cindex: " + cindex + ", clength: " + clength);
+		System.out.println("---------------------------------------------------");
+
+		if(cindex < clength) {
+			return false;
+		}
+
+		if(tindex < tlength) {
+			for(ttemp = tindex; ttemp < tlength; ttemp++) {
+				System.out.println("types[" + ttemp + "]: " + types[ttemp]);
+				if(types[ttemp] == WildcardPattern.LITERAL_TYPE ||
+						types[ttemp] == WildcardPattern.PLUS_TYPE ||
+						types[ttemp] == WildcardPattern.SEPARATOR_TYPE) {
 					return false;
 				}
 			}
@@ -432,8 +436,13 @@ public class WildcardMatcherTest {
 		//String str = "/aaa\\*/**/bb*.txt**";
 		//String str = "**.Sample*Test*Bean";
 		//String str = "?c?om.**.x?.*scope.**.*XmlBean*";
-		String str = "?c?om/**/x?/*scope/**/*XmlBean/**/*";
-		String str2 = "com/x/scope/x1]xscope/111111111XmlBean/000/*";
+		//String str2 = str;
+		//String str = "?c?om.**.x?.*scope.**.*XmlBean*.**.*Action?";
+		//String str2 = "com.x.scope.main.x1xscope.1234XmlBean5678.p1.p2.p3.endAction";
+		//String str = "com.aspectran.**.service.**.*Action?";
+		//String str2 = "com.aspectran.a.service.c.dAction1";
+		String str = "**/*A";
+		String str2 = "common/MyTranslet";
 		WildcardPatternTest pattern = WildcardPatternTest.compile(str, '/');
 		
 		int i = 0;
@@ -451,6 +460,7 @@ public class WildcardMatcherTest {
 		//boolean result = matcher.matches("com.aspectran.test.SampleTestBean");
 		boolean result = matcher.matches(str2);
 		
+		System.out.println("---------------------------------------------------");
 		System.out.println("result: " + result);
 		System.out.println("separatorCount: " + matcher.getSeparatorCount());
 		

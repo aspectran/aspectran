@@ -25,6 +25,7 @@ import com.aspectran.core.activity.Translet;
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.AspectranConstant;
 import com.aspectran.core.context.bean.scan.BeanClassScanner;
+import com.aspectran.core.context.bean.scan.ClassScanner;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.AspectRuleMap;
 import com.aspectran.core.context.rule.BeanRule;
@@ -148,44 +149,6 @@ public class ContextBuilderAssistant {
 	public void clearObjectStack() {
 		objectStack.clear();
 	}
-
-//	/**
-//	 * To real path.
-//	 * 
-//	 * @param filePath the file path
-//	 * 
-//	 * @return the file
-//	 * @throws IOException 
-//	 */
-//	public String toRealPath(String filePath) throws IOException {
-//		File file = toRealPathAsFile(filePath);
-//		return file.getCanonicalPath();
-//	}
-//
-//	/**
-//	 * To real path as file.
-//	 * 
-//	 * @param filePath the file path
-//	 * 
-//	 * @return the file
-//	 */
-//	public File toRealPathAsFile(String filePath) {
-//		File file;
-//		
-//		if(filePath.startsWith(ResourceUtils.FILE_URL_PREFIX)) {
-//			URI uri = URI.create(filePath);
-//			file = new File(uri);
-//		} else if(filePath.startsWith(ResourceUtils.CLASSPATH_URL_PREFIX)) {
-//			file = new File(getClassLoader().getResource(filePath).getFile());
-//		} else {
-//			if(applicationBasePath != null)
-//				file = new File(applicationBasePath, filePath);
-//			else
-//				file = new File(filePath);
-//		}
-//		
-//		return file;
-//	}
 
 	public Map<DefaultSettingType, String> getSettings() {
 		return settings;
@@ -380,7 +343,12 @@ public class ContextBuilderAssistant {
 		String className = beanRule.getClassName();
 		
 		if(WildcardPattern.hasWildcards(className)) {
-			BeanClassScanner scanner = new BeanClassScanner(classLoader);
+			ClassScanner scanner = new BeanClassScanner(classLoader);
+			if(beanRule.getClassScanFilterClassName() != null)
+				scanner.setClassScanFilter(beanRule.getClassScanFilterClassName());
+			if(beanRule.getFilterParameters() != null)
+			scanner.setFilterParameters(beanRule.getFilterParameters());
+			
 			Map<String, Class<?>> beanClassMap = scanner.scanClasses(className);
 			
 			if(beanClassMap != null && !beanClassMap.isEmpty()) {
@@ -413,7 +381,7 @@ public class ContextBuilderAssistant {
 				}
 			}
 			
-			log.info("total number of class files scanned: " + (beanClassMap == null ? 0 : beanClassMap.size()));
+			log.info("scanned class files: " + (beanClassMap == null ? 0 : beanClassMap.size()));
 		} else {
 			if(beanRule.isPatternedBeanId()) {
 				beanRule.setId(className, beanRule.getIdPrefix(), beanRule.getIdSuffix());

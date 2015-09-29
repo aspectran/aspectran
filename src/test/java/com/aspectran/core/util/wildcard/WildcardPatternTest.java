@@ -15,6 +15,9 @@
  */
 package com.aspectran.core.util.wildcard;
 
+/**
+ * The Class WildcardPatternTest.
+ */
 public class WildcardPatternTest {
 
 	protected static final char ESCAPE_CHAR = '\\';
@@ -186,8 +189,8 @@ public class WildcardPatternTest {
 		return types;
 	}
 	
-	public boolean matches(String str) {
-		return WildcardMatcherTest.matches(this, str);
+	public boolean matches(String compareString) {
+		return WildcardMatcherTest.matches(this, compareString);
 	}
 	
 	public static WildcardPatternTest compile(String patternString) {

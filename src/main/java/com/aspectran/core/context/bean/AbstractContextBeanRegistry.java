@@ -42,8 +42,8 @@ import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.type.BeanProxifierType;
 import com.aspectran.core.context.rule.type.ScopeType;
 import com.aspectran.core.util.BeanUtils;
+import com.aspectran.core.util.ClassUtils;
 import com.aspectran.core.util.MethodUtils;
-import com.aspectran.core.util.ReflectionUtils;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
@@ -57,7 +57,6 @@ import com.aspectran.core.util.logging.LogFactory;
  */
 public abstract class AbstractContextBeanRegistry implements ContextBeanRegistry {
 	
-	/** The log. */
 	private final Log log = LogFactory.getLog(AbstractContextBeanRegistry.class);
 	
 	protected final ActivityContext context;
@@ -152,17 +151,6 @@ public abstract class AbstractContextBeanRegistry implements ContextBeanRegistry
 	}
 
 	private Object instantiateBean(BeanRule beanRule, Class<?>[] argTypes, Object[] args) {
-		/*
-		 * 0. DynamicProxy 빈을 만들 것인지를 먼저 결정하라. 
-		 * 1. 빈과 관련된 AspectRule을 추출하고, 캐슁하라.
-		 * 2. 추출된 AspectRule을 AspectAdviceRegistry로 변환하고, DynamicProxy에 넘겨라
-		 * 3. DynamicProxy에서 현재 실행 시점의 JoinScope에 따라 해당 JoinScope의 AspectAdviceRegistry에 Advice를 등록하라.
-		 * 4. DynamicProxy에서 일치하는 메쏘드를 가진 AspectRule의 Advice를 실행하라.
-		 */
-
-		/*
-		 * Bean과 관련된 AspectRule을 모두 추출.
-		 */
 		Object bean;
 		
 		if(beanRule.isProxied()) {
@@ -304,7 +292,7 @@ public abstract class AbstractContextBeanRegistry implements ContextBeanRegistry
 		float matchWeight = Float.MAX_VALUE;
 		
 		for(Constructor<?> candidate : candidates) {
-			matchWeight = ReflectionUtils.getTypeDifferenceWeight(candidate.getParameterTypes(), args);
+			matchWeight = ClassUtils.getTypeDifferenceWeight(candidate.getParameterTypes(), args);
 			
 			if(matchWeight < bestMatchWeight) {
 				constructorToUse = candidate;

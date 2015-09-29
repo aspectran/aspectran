@@ -37,14 +37,14 @@ import com.aspectran.core.util.logging.LogFactory;
 import com.aspectran.core.util.wildcard.WildcardMatcher;
 import com.aspectran.core.util.wildcard.WildcardPattern;
 
-public class BeanClassScannerTest {
+public class ClassScannerTest {
 
 	/** The log. */
-	private final Log log = LogFactory.getLog(BeanClassScanner.class);
+	private final Log log = LogFactory.getLog(ClassScanner.class);
 	
 	private final ClassLoader classLoader;
 
-	public BeanClassScannerTest(ClassLoader classLoader) {
+	public ClassScannerTest(ClassLoader classLoader) {
 		this.classLoader = classLoader;
 	}
 	
@@ -95,7 +95,7 @@ public class BeanClassScannerTest {
 				}
 			}
 		} catch(IOException e) {
-			throw new BeanClassScanningFailedException("bean-class scanning failed.", e);
+			throw new ClassScanFailedException("bean-class scanning failed.", e);
 		}
 	}
 	
@@ -278,13 +278,13 @@ public class BeanClassScannerTest {
 		try {
 			return classLoader.loadClass(className);
 		} catch (ClassNotFoundException e) {
-			throw new BeanClassScanningFailedException("bean-class loading failed. class name: " + className, e);
+			throw new ClassScanFailedException("bean-class loading failed. class name: " + className, e);
 		}
 	}
 	
 	public static void main(String[] args) {
 		try {
-			BeanClassScanner loader = new BeanClassScanner(AspectranClassLoader.getDefaultClassLoader());
+			ClassScannerTest loader = new ClassScannerTest(AspectranClassLoader.getDefaultClassLoader());
 			//loader.scanClass("com.**.*Sql*");
 			//loader.scanClass("com.i*");
 			loader.scanClasses("com.*");

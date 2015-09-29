@@ -788,8 +788,8 @@ public class MethodUtils {
 		int paramSize = parameterTypes.length;
 		Method bestMatch = null;
 		Method[] methods = clazz.getMethods();
-		float bestMatchCost = Float.MAX_VALUE;
-		float myCost = Float.MAX_VALUE;
+		float bestMatchWeight = Float.MAX_VALUE;
+		float myWeight = Float.MAX_VALUE;
 
 		for(int i = 0, size = methods.length; i < size; i++) {
 			if(methods[i].getName().equals(methodName)) {
@@ -810,10 +810,10 @@ public class MethodUtils {
 						Method method = getAccessibleMethod(methods[i]);
 						if(method != null) {
 							setMethodAccessible(method); // Default access superclass workaround
-							myCost = getTotalTransformationCost(parameterTypes, method.getParameterTypes());
-							if(myCost < bestMatchCost) {
+							myWeight = ClassUtils.getTypeDifferenceWeight(parameterTypes, method.getParameterTypes());
+							if(myWeight < bestMatchWeight) {
 								bestMatch = method;
-								bestMatchCost = myCost;
+								bestMatchWeight = myWeight;
 							}
 						}
 					}
@@ -857,65 +857,6 @@ public class MethodUtils {
         } catch(final SecurityException se) {
         	// Current Security Manager restricts use of workarounds for reflection bugs in pre-1.4 JVMs.
         }
-    }
-    
-    /**
-     * Returns the sum of the object transformation cost for each class in the source
-     * argument list.
-     * @param srcArgs The source arguments
-     * @param destArgs The destination arguments
-     * @return The total transformation cost
-     */
-    private static float getTotalTransformationCost(final Class<?>[] srcArgs, final Class<?>[] destArgs) {
-        float totalCost = 0.0f;
-        for(int i = 0; i < srcArgs.length; i++) {
-            Class<?> srcClass = srcArgs[i];
-            Class<?> destClass = destArgs[i];
-            totalCost += getObjectTransformationCost(srcClass, destClass);
-        }
-
-        return totalCost;
-    }
-
-    /**
-     * Gets the number of steps required needed to turn the source class into the
-     * destination class. This represents the number of steps in the object hierarchy
-     * graph.
-     * @param srcClass The source class
-     * @param destClass The destination class
-     * @return The cost of transforming an object
-     */
-    private static float getObjectTransformationCost(Class<?> srcClass, final Class<?> destClass) {
-    	float cost = 0.0f;
-        while(srcClass != null && !destClass.equals(srcClass)) {
-            if(destClass.isPrimitive()) {
-                final Class<?> destClassWrapperClazz = ClassUtils.getPrimitiveWrapper(destClass);
-                if(destClassWrapperClazz != null && destClassWrapperClazz.equals(srcClass)) {
-                    cost += 0.25f;
-                    break;
-                }
-            }
-            if(destClass.isInterface() && ClassUtils.isAssignable(destClass, srcClass)) {
-                // slight penalty for interface match.
-                // we still want an exact match to override an interface match, but
-                // an interface match should override anything where we have to get a
-                // superclass.
-                cost += 0.25f;
-                break;
-            }
-            cost++;
-            srcClass = srcClass.getSuperclass();
-        }
-
-        /*
-         * If the destination class is null, we've travelled all the way up to
-         * an Object match. We'll penalize this by adding 1.5 to the cost.
-         */
-        if(srcClass == null) {
-            cost += 1.5f;
-        }
-
-        return cost;
     }
     
 	private static Object toPrimitiveArray(Object val) {
@@ -973,36 +914,6 @@ public class MethodUtils {
 		
 		return null;
 	}
-	
-	/**
-	 * Gets an instance of ClassDescriptor for the specified class.
-	 * 
-	 * @param userFor The class for which to lookup the ClassDescriptor cache.
-	 * @return The ClassDescriptor cache for the class
-	 */
-//	private static MethodDescriptor cacheMethodOld(MethodDescriptor md, Method method, boolean checkPrimitively) {
-//		synchronized(cache) {
-//			if(!cache.containsKey(md)) {
-//				md.setMethod(method);
-//				
-//				if(checkPrimitively) {
-//					Class<?>[] parameterTypes = method.getParameterTypes();
-//					
-//					for(int i = 0; i < parameterTypes.length; i++) {
-//						if(parameterTypes[i].isArray() && parameterTypes[i].getComponentType().isPrimitive()) {
-//							md.setPrimitivelyArray(true);
-//							break;
-//						}
-//					}
-//				}
-//				
-//				cache.put(md, md);
-//			}
-//		}
-//		
-//		return md;
-//	}
-	
 
     /**
      * Return the method from the cache, if present.
