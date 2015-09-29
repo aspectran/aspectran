@@ -34,7 +34,7 @@ public class AspectParameters extends AbstractParameters implements Parameters {
 	
 	static {
 		id = new ParameterDefine("id", ParameterValueType.STRING);
-		useFor = new ParameterDefine("useFor", ParameterValueType.STRING);
+		useFor = new ParameterDefine("for", ParameterValueType.STRING);
 		jointpoint = new ParameterDefine("joinpoint", JoinpointParameters.class);
 		setting = new ParameterDefine("setting", GenericParameters.class);
 		advice = new ParameterDefine("advice", AdviceParameters.class);

@@ -33,6 +33,7 @@ public class BeanParameters extends AbstractParameters implements Parameters {
 	public static final ParameterDefine important;
 	public static final ParameterDefine constructor;
 	public static final ParameterDefine properties;
+	public static final ParameterDefine filter;
 	
 	private static final ParameterDefine[] parameterDefines;
 	
@@ -48,6 +49,7 @@ public class BeanParameters extends AbstractParameters implements Parameters {
 		important = new ParameterDefine("important", ParameterValueType.BOOLEAN);
 		constructor = new ParameterDefine("constructor", ConstructorParameters.class);
 		properties = new ParameterDefine("property", ItemHolderParameters.class);
+		filter = new ParameterDefine("filter", FilterParameters.class);
 		
 		parameterDefines = new ParameterDefine[] {
 				id,
@@ -60,7 +62,8 @@ public class BeanParameters extends AbstractParameters implements Parameters {
 				lazyInit,
 				important,
 				constructor,
-				properties
+				properties,
+				filter
 		};
 	}
 	

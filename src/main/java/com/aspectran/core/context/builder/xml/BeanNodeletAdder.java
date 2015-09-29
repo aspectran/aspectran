@@ -77,11 +77,13 @@ public class BeanNodeletAdder implements NodeletAdder {
 				if(StringUtils.hasText(text)) {
 					filterParameters = new FilterParameters(text);
 				}
-				
-				if(classScanFilterClassName != null || filterParameters != null) {
+				if(StringUtils.hasText(classScanFilterClassName)) {
+					if(filterParameters == null)
+						filterParameters = new FilterParameters();
+					filterParameters.putValue(FilterParameters.filterClass, classScanFilterClassName);
+				}
+				if(filterParameters != null) {
 					BeanRule beanRule = assistant.peekObject();
-					if(StringUtils.hasText(classScanFilterClassName))
-						beanRule.setClassScanFilterClassName(classScanFilterClassName);
 					beanRule.setFilterParameters(filterParameters);
 				}
 			}

@@ -61,6 +61,10 @@ public class BeanClassScanner implements ClassScanner {
 
 	public void setFilterParameters(Parameters filterParameters) {
 		this.filterParameters = filterParameters;
+		
+		String classScanFilterClassName = filterParameters.getString(FilterParameters.filterClass);
+		if(classScanFilterClassName != null)
+			setClassScanFilter(classScanFilterClassName);
 	}
 
 	public ClassScanFilter getClassScanFilter() {

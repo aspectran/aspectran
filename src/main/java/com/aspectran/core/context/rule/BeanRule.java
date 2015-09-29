@@ -74,8 +74,6 @@ public class BeanRule implements Cloneable {
 	
 	private boolean proxied;
 	
-	private String classScanFilterClassName;
-	
 	private Parameters filterParameters;
 	
 	/**
@@ -404,14 +402,6 @@ public class BeanRule implements Cloneable {
 
 	public void setProxied(boolean proxied) {
 		this.proxied = proxied;
-	}
-
-	public String getClassScanFilterClassName() {
-		return classScanFilterClassName;
-	}
-
-	public void setClassScanFilterClassName(String classScanFilterClassName) {
-		this.classScanFilterClassName = classScanFilterClassName;
 	}
 
 	public Parameters getFilterParameters() {

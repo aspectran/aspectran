@@ -81,7 +81,9 @@ public class DefaultSettings implements Cloneable {
 	}
 	
 	public void setTransletNamePattern(String transletNamePrefix, String transletNameSuffix) {
-		transletNamePattern = transletNamePrefix + AspectranConstant.TRANSLET_NAME_PATTERN_SEPARATOR + transletNameSuffix;
+		this.transletNamePattern = transletNamePrefix + AspectranConstant.TRANSLET_NAME_PATTERN_SEPARATOR + transletNameSuffix;
+		this.transletNamePrefix = transletNamePrefix;
+		this.transletNameSuffix = transletNameSuffix;
 	}
 	
 	public void setTransletNamePrefix(String transletNamePrefix) {

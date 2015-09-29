@@ -22,14 +22,17 @@ import com.aspectran.core.util.apon.Parameters;
 
 public class FilterParameters extends AbstractParameters implements Parameters {
 
+	public static final ParameterDefine filterClass;
 	public static final ParameterDefine exclude;
 
 	private static final ParameterDefine[] parameterDefines;
 	
 	static {
+		filterClass = new ParameterDefine("class", ParameterValueType.STRING);
 		exclude = new ParameterDefine("exclude", ParameterValueType.STRING, true);
 		
 		parameterDefines = new ParameterDefine[] {
+				filterClass,
 				exclude
 		};
 	}

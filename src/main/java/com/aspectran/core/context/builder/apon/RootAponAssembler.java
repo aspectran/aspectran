@@ -116,15 +116,18 @@ public class RootAponAssembler {
 		DefaultSettings defaultSettings = assistant.getDefaultSettings();
 		if(defaultSettings != null) {
 			DefaultSettingsParameters settingParameters = aspectranParameters.newParameters(AspectranParameters.setting);
-			settingParameters.putValue(DefaultSettingsParameters.transletNamePattern, defaultSettings.getTransletNamePattern());
-			settingParameters.putValue(DefaultSettingsParameters.transletNamePrefix, defaultSettings.getTransletNamePrefix());
-			settingParameters.putValue(DefaultSettingsParameters.transletNameSuffix, defaultSettings.getTransletNameSuffix());
+			if(defaultSettings.getTransletNamePattern() != null) {
+				settingParameters.putValue(DefaultSettingsParameters.transletNamePattern, defaultSettings.getTransletNamePattern());
+			} else {
+				settingParameters.putValue(DefaultSettingsParameters.transletNamePrefix, defaultSettings.getTransletNamePrefix());
+				settingParameters.putValue(DefaultSettingsParameters.transletNameSuffix, defaultSettings.getTransletNameSuffix());
+			}
 			settingParameters.putValue(DefaultSettingsParameters.transletInterfaceClass, defaultSettings.getTransletInterfaceClassName());
 			settingParameters.putValue(DefaultSettingsParameters.transletImplementClass, defaultSettings.getTransletImplementClassName());
 			settingParameters.putValue(DefaultSettingsParameters.nullableContentId, defaultSettings.getNullableContentId());
 			settingParameters.putValue(DefaultSettingsParameters.nullableActionId, defaultSettings.getNullableActionId());
 			settingParameters.putValue(DefaultSettingsParameters.beanProxifier, defaultSettings.getBeanProxifier());
-			settingParameters.putValue(DefaultSettingsParameters.pointcutPatternVerifiable, defaultSettings.getBeanProxifier());
+			settingParameters.putValue(DefaultSettingsParameters.pointcutPatternVerifiable, defaultSettings.getPointcutPatternVerifiable());
 		}
 		
 		Map<String, String> typeAliases = assistant.getTypeAliases();
@@ -282,10 +285,9 @@ public class RootAponAssembler {
 		beanParameters.putValue(BeanParameters.destroyMethod, beanRule.getDestroyMethodName());
 		beanParameters.putValue(BeanParameters.lazyInit, beanRule.getLazyInit());
 		beanParameters.putValue(BeanParameters.important, beanRule.getImportant());
-		beanParameters.putValue(BeanParameters.important, beanRule.getImportant());
+		beanParameters.putValue(BeanParameters.filter, beanRule.getFilterParameters());
 		
 		ItemRuleMap constructorArgumentItemRuleMap = beanRule.getConstructorArgumentItemRuleMap();
-
 		if(constructorArgumentItemRuleMap != null) {
 			ConstructorParameters constructorParameters = beanParameters.newParameters(BeanParameters.constructor);
 			constructorParameters.putValue(ConstructorParameters.arguments, assembleItemHolderParameters(constructorArgumentItemRuleMap));

@@ -344,10 +344,8 @@ public class ContextBuilderAssistant {
 		
 		if(WildcardPattern.hasWildcards(className)) {
 			ClassScanner scanner = new BeanClassScanner(classLoader);
-			if(beanRule.getClassScanFilterClassName() != null)
-				scanner.setClassScanFilter(beanRule.getClassScanFilterClassName());
 			if(beanRule.getFilterParameters() != null)
-			scanner.setFilterParameters(beanRule.getFilterParameters());
+				scanner.setFilterParameters(beanRule.getFilterParameters());
 			
 			Map<String, Class<?>> beanClassMap = scanner.scanClasses(className);
 			
