@@ -26,8 +26,8 @@ com.aspectran
 ```
 
 ## Quick Reference Guide
-* [Introduction](https://github.com/topframe/aspectran/blob/v1-dev/src/site/ko/introduction.md)
-* [Getting started](https://github.com/topframe/aspectran/blob/v1-dev/src/site/ko/getting-started.md)
+* [Introduction](https://github.com/topframe/aspectran/blob/master/src/site/ko/introduction.md)
+* [Getting started](https://github.com/topframe/aspectran/blob/master/src/site/ko/getting-started.md)
 
 # License
 Aspectran is freely usable, licensed under the [Apache 2.0 license](http://www.apache.org/licenses/LICENSE-2.0).
