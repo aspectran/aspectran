@@ -26,11 +26,11 @@ public final class DefaultSettingType extends Type {
 	/** The Constant TRANSLET_NAME_PATTERN. */
 	public static final DefaultSettingType TRANSLET_NAME_PATTERN;
 	
-	/** The Constant TRANSLET_NAME_PATTERN_PREFIX. */
-	public static final DefaultSettingType TRANSLET_NAME_PATTERN_PREFIX;
+	/** The Constant TRANSLET_NAME_PREFIX. */
+	public static final DefaultSettingType TRANSLET_NAME_PREFIX;
 	
-	/** The Constant TRANSLET_NAME_PATTERN_SUFFIX. */
-	public static final DefaultSettingType TRANSLET_NAME_PATTERN_SUFFIX;
+	/** The Constant TRANSLET_NAME_SUFFIX. */
+	public static final DefaultSettingType TRANSLET_NAME_SUFFIX;
 	
 	/** The Constant TRANSLET_INTERFACE. */
 	public static final DefaultSettingType TRANSLET_INTERFACE_CLASS;
@@ -44,36 +44,36 @@ public final class DefaultSettingType extends Type {
 	/** The Constant NULLABLE_ACTION_ID. */
 	public static final DefaultSettingType NULLABLE_ACTION_ID;
 	
-	/** The Constant ACTIVITY_DEFAULT_HANDLER. */
-	public static final DefaultSettingType ACTIVITY_DEFAULT_HANDLER;
+	/** The Constant BEAN_PROXIFIER. */
+	public static final DefaultSettingType BEAN_PROXIFIER;
 	
-	/** The Constant BEAN_PROXY_MODE. */
-	public static final DefaultSettingType BEAN_PROXY_MODE;
+	/** The Constant POINTCUT_PATTERN_VERIFIABLE. */
+	public static final DefaultSettingType POINTCUT_PATTERN_VERIFIABLE;
 	
 	/** The Constant types. */
 	private static final Map<String, DefaultSettingType> types;
 	
 	static {
 		TRANSLET_NAME_PATTERN = new DefaultSettingType("transletNamePattern");
-		TRANSLET_NAME_PATTERN_PREFIX = new DefaultSettingType("transletNamePatternPrefix");
-		TRANSLET_NAME_PATTERN_SUFFIX = new DefaultSettingType("transletNamePatternSuffix");
+		TRANSLET_NAME_PREFIX = new DefaultSettingType("transletNamePrefix");
+		TRANSLET_NAME_SUFFIX = new DefaultSettingType("transletNameSuffix");
 		TRANSLET_INTERFACE_CLASS = new DefaultSettingType("transletInterfaceClass");
 		TRANSLET_IMPLEMENT_CLASS = new DefaultSettingType("transletImplementClass");
 		NULLABLE_CONTENT_ID = new DefaultSettingType("nullableContentId");
 		NULLABLE_ACTION_ID = new DefaultSettingType("nullableActionId");
-		ACTIVITY_DEFAULT_HANDLER = new DefaultSettingType("activityDefaultHandler");
-		BEAN_PROXY_MODE = new DefaultSettingType("beanProxyMode");
+		BEAN_PROXIFIER = new DefaultSettingType("beanProxifier");
+		POINTCUT_PATTERN_VERIFIABLE = new DefaultSettingType("pointcutPatternVerifiable");
 
 		types = new HashMap<String, DefaultSettingType>();
 		types.put(TRANSLET_NAME_PATTERN.toString(), TRANSLET_NAME_PATTERN);
-		types.put(TRANSLET_NAME_PATTERN_PREFIX.toString(), TRANSLET_NAME_PATTERN_PREFIX);
-		types.put(TRANSLET_NAME_PATTERN_SUFFIX.toString(), TRANSLET_NAME_PATTERN_SUFFIX);
+		types.put(TRANSLET_NAME_PREFIX.toString(), TRANSLET_NAME_PREFIX);
+		types.put(TRANSLET_NAME_SUFFIX.toString(), TRANSLET_NAME_SUFFIX);
 		types.put(TRANSLET_INTERFACE_CLASS.toString(), TRANSLET_INTERFACE_CLASS);
 		types.put(TRANSLET_IMPLEMENT_CLASS.toString(), TRANSLET_IMPLEMENT_CLASS);
 		types.put(NULLABLE_CONTENT_ID.toString(), NULLABLE_CONTENT_ID);
 		types.put(NULLABLE_ACTION_ID.toString(), NULLABLE_ACTION_ID);
-		types.put(ACTIVITY_DEFAULT_HANDLER.toString(), ACTIVITY_DEFAULT_HANDLER);
-		types.put(BEAN_PROXY_MODE.toString(), BEAN_PROXY_MODE);
+		types.put(BEAN_PROXIFIER.toString(), BEAN_PROXIFIER);
+		types.put(POINTCUT_PATTERN_VERIFIABLE.toString(), POINTCUT_PATTERN_VERIFIABLE);
 	}
 
 	/**

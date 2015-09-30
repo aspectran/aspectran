@@ -26,7 +26,7 @@ import com.aspectran.core.context.translet.TransletRuleRegistry;
  */
 public class ActivityContext {
 	
-	private static ThreadLocal<Activity> localActivityHolder = new ThreadLocal<Activity>();
+	private static ThreadLocal<Activity> currentActivityHolder = new ThreadLocal<Activity>();
 
 	private ApplicationAdapter applicationAdapter;
 	
@@ -35,8 +35,6 @@ public class ActivityContext {
 	private ContextBeanRegistry contextBeanRegistry;
 
 	private TransletRuleRegistry transletRuleRegistry;
-	
-	private String activityDefaultHandler;
 	
 	public ActivityContext(ApplicationAdapter applicationAdapter) {
 		this.applicationAdapter = applicationAdapter;
@@ -85,25 +83,17 @@ public class ActivityContext {
 		this.transletRuleRegistry = transletRuleRegistry;
 	}
 	
-	public String getActivityDefaultHandler() {
-		return activityDefaultHandler;
-	}
-
-	public void setActivityDefaultHandler(String activityDefaultHandler) {
-		this.activityDefaultHandler = activityDefaultHandler;
-	}
-
-	public Activity getLocalActivity() {
-		return localActivityHolder.get();
+	public Activity getCurrentActivity() {
+		return currentActivityHolder.get();
 	}
 	
-	public void saveLocalActivity(Activity activity) {
-		if(localActivityHolder.get() == null)
-			localActivityHolder.set(activity);
+	public void setCurrentActivity(Activity activity) {
+		if(currentActivityHolder.get() == null)
+			currentActivityHolder.set(activity);
 	}
 	
-	public void removeLocalActivity() {
-		localActivityHolder.remove();
+	public void removeCurrentActivity() {
+		currentActivityHolder.remove();
 	}
 	
 	/**
@@ -133,7 +123,6 @@ public class ActivityContext {
 		sb.append(", aspectRuleRegistry=").append(aspectRuleRegistry);
 		sb.append(", beanRegistry=").append(contextBeanRegistry);
 		sb.append(", transletRuleRegistry=").append(transletRuleRegistry);
-		sb.append(", activityDefaultHandler=").append(activityDefaultHandler);
 		sb.append("}");
 		
 		return sb.toString();

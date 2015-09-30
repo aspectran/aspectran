@@ -50,6 +50,7 @@ public class WebApplicationAdapter extends AbstractApplicationAdapter implements
 		((ServletContext)adaptee).setAttribute(name, o);
 	}
 	
+	@SuppressWarnings("unchecked")
 	public Enumeration<String> getAttributeNames() {
 		return ((ServletContext)adaptee).getAttributeNames();
 	}

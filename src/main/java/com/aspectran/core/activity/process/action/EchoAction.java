@@ -17,7 +17,7 @@ package com.aspectran.core.activity.process.action;
 
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.process.ActionList;
-import com.aspectran.core.activity.variable.ValueObjectMap;
+import com.aspectran.core.activity.variable.ValueMap;
 import com.aspectran.core.activity.variable.token.ItemTokenExpression;
 import com.aspectran.core.activity.variable.token.ItemTokenExpressor;
 import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
@@ -55,7 +55,7 @@ public class EchoAction extends AbstractAction implements Executable {
 		
 		try {
 			ItemTokenExpressor expressor = new ItemTokenExpression(activity);
-			ValueObjectMap valueMap = expressor.express(echoActionRule.getAttributeItemRuleMap());
+			ValueMap valueMap = expressor.express(echoActionRule.getAttributeItemRuleMap());
 			
 			return valueMap;
 		} catch(Exception e) {

@@ -61,7 +61,6 @@ public class ActionList extends ArrayList<Executable> implements ActionRuleAppli
 	 * @param parent the action list
 	 */
 	public ActionList(String contentId, ContentList parent) {
-		super();
 		this.contentId = contentId;
 		this.parent = parent;
 	}

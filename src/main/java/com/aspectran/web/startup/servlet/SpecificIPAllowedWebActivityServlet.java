@@ -34,7 +34,7 @@ import com.aspectran.core.util.logging.LogFactory;
 public class SpecificIPAllowedWebActivityServlet extends WebActivityServlet implements Servlet {
 
 	/** @serial */
-	static final long serialVersionUID = -2369788867122156319L;
+	private static final long serialVersionUID = -2369788867122156319L;
 
 	private final Log log = LogFactory.getLog(SpecificIPAllowedWebActivityServlet.class);
 	

@@ -27,7 +27,7 @@ import java.util.Set;
 
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.request.parameter.FileParameter;
-import com.aspectran.core.activity.variable.ValueObjectMap;
+import com.aspectran.core.activity.variable.ValueMap;
 import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.type.ItemType;
@@ -36,12 +36,14 @@ import com.aspectran.core.util.apon.GenericParameters;
 import com.aspectran.core.util.apon.Parameters;
 
 /**
- * <p>Created: 2008. 06. 19 오후 9:43:28</p>
+ * The Class ItemTokenExpression.
+ *
+ * @since 2008. 06. 19
  */
 public class ItemTokenExpression extends TokenExpression implements ItemTokenExpressor {
 
 	/**
-	 * Instantiates a new value expression.
+	 * Instantiates a new item token expression.
 	 *
 	 * @param activity the activity
 	 */
@@ -56,27 +58,27 @@ public class ItemTokenExpression extends TokenExpression implements ItemTokenExp
 	 * 
 	 * @return the value map
 	 */
-	public ValueObjectMap express(ItemRuleMap itemRuleMap) {
-		ValueObjectMap voMap = new ValueObjectMap();
+	public ValueMap express(ItemRuleMap itemRuleMap) {
+		ValueMap valueMap = new ValueMap();
 		
-		express(itemRuleMap, voMap);
+		express(itemRuleMap, valueMap);
 		
-		return voMap;
+		return valueMap;
 	}
 	
 	/**
 	 * Express.
 	 *
 	 * @param itemRuleMap the item rule map
-	 * @param valueObjectMap the value map
+	 * @param valueMap the value map
 	 */
-	public void express(ItemRuleMap itemRuleMap, ValueObjectMap valueObjectMap) {
+	public void express(ItemRuleMap itemRuleMap, ValueMap valueMap) {
 		for(ItemRule ir : itemRuleMap) {
 			ItemType itemType = ir.getType();
 			ItemValueType valueType = ir.getValueType();
 			Object value = null;
 			
-			if(itemType == ItemType.SINGLE) {
+			if(itemType == ItemType.SINGULAR) {
 				Token[] tokens = ir.getTokens();
 				value = express(ir.getName(), tokens, valueType);
 			} else if(itemType == ItemType.ARRAY) {
@@ -91,7 +93,7 @@ public class ItemTokenExpression extends TokenExpression implements ItemTokenExp
 				value = expressAsProperties(ir.getName(), ir.getTokensMap(), valueType);
 			}
 			
-			valueObjectMap.put(ir.getName(), value);
+			valueMap.put(ir.getName(), value);
 		}
 	}
 	

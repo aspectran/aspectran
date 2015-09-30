@@ -295,9 +295,13 @@ public class RootAponDisassembler {
 		Boolean important = beanParameters.getBoolean(BeanParameters.important);
 		ConstructorParameters constructorParameters = beanParameters.getParameters(BeanParameters.constructor);
 		ItemHolderParameters propertyItemHolderParameters = beanParameters.getParameters(BeanParameters.properties);
+		Parameters filterParameters = beanParameters.getParameters(BeanParameters.filter);
 		
 		BeanRule beanRule = BeanRule.newInstance(id, className, scope, singleton, factoryMethod, initMethod, destroyMethod, lazyInit, important);
 
+		if(filterParameters != null)
+			beanRule.setFilterParameters(filterParameters);
+		
 		if(constructorParameters != null) {
 			Parameters constructorArgumentItemHolderParameters = constructorParameters.getParameters(ConstructorParameters.arguments);
 			if(constructorArgumentItemHolderParameters != null) {

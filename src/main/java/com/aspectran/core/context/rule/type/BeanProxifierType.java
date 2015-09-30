@@ -18,29 +18,36 @@ package com.aspectran.core.context.rule.type;
 import java.util.HashMap;
 import java.util.Map;
 
-
 /**
- * Action Type.
+ * Type of BeanProxifier.
  * 
  * <p>Created: 2008. 03. 26 오전 12:58:38</p>
  */
-public final class BeanProxyModeType extends Type {
+public final class BeanProxifierType extends Type {
 
-	/** The "CGLIB" bean proxy mode type. */
-	public static final BeanProxyModeType CGLIB_PROXY;
+	/** The "CGLIB" bean proxifier. */
+	public static final BeanProxifierType CGLIB;
 
-	/** The "JDK" bean proxy mode type. */
-	public static final BeanProxyModeType JDK_PROXY;
+	/**
+	 * The "JAVASSIST" bean proxifier.
+	 * @since 1.1.0 
+	 */
+	public static final BeanProxifierType JAVASSIST;
 	
-	private static final Map<String, BeanProxyModeType> types;
+	/** The "JDK" bean proxifier. */
+	public static final BeanProxifierType JDK;
+	
+	private static final Map<String, BeanProxifierType> types;
 	
 	static {
-		CGLIB_PROXY = new BeanProxyModeType("cglib");
-		JDK_PROXY = new BeanProxyModeType("jdk");
+		CGLIB = new BeanProxifierType("cglib");
+		JAVASSIST = new BeanProxifierType("javassist");
+		JDK = new BeanProxifierType("jdk");
 
-		types = new HashMap<String, BeanProxyModeType>();
-		types.put(CGLIB_PROXY.toString(), CGLIB_PROXY);
-		types.put(JDK_PROXY.toString(), JDK_PROXY);
+		types = new HashMap<String, BeanProxifierType>();
+		types.put(CGLIB.toString(), CGLIB);
+		types.put(JAVASSIST.toString(), JAVASSIST);
+		types.put(JDK.toString(), JDK);
 	}
 
 	/**
@@ -48,18 +55,18 @@ public final class BeanProxyModeType extends Type {
 	 * 
 	 * @param type the type
 	 */
-	private BeanProxyModeType(String type) {
+	private BeanProxifierType(String type) {
 		super(type);
 	}
 
 	/**
-	 * Returns a <code>BeanProxyModeType</code> with a value represented by the specified String.
+	 * Returns a <code>BeanProxifierType</code> with a value represented by the specified String.
 	 * 
 	 * @param type the type
 	 * 
 	 * @return the action type
 	 */
-	public static BeanProxyModeType valueOf(String type) {
+	public static BeanProxifierType valueOf(String type) {
 		if(type == null)
 			return null;
 		

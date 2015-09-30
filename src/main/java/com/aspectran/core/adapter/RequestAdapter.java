@@ -82,16 +82,16 @@ public interface RequestAdapter {
 	/**
 	 * Returns the value of the named attribute as an <code>Object</code>, or <code>null</code> if no attribute of the given name exists.
 	 *
-	 * @param name the name
-	 * @return the attribute
+	 * @param name a String specifying the name of the attribute
+	 * @return an Object containing the value of the attribute, or null if the attribute does not exist
 	 */
 	public <T> T getAttribute(String name);
 	
 	/**
 	 * Stores an attribute in this request.
 	 *
-	 * @param name the name
-	 * @param o the value
+	 * @param name specifying the name of the attribute
+	 * @param value the Object to be stored
 	 */
 	public void setAttribute(String name, Object value);
 	
@@ -105,6 +105,11 @@ public interface RequestAdapter {
 	 */
 	public Enumeration<String> getAttributeNames();
 	
+	/**
+	 * Removes an attribute from this request.
+	 *
+	 * @param name a String specifying the name of the attribute to remove
+	 */
 	public void removeAttribute(String name);
 
 	/**

@@ -100,22 +100,10 @@ public abstract class AbstractAspectranService implements AspectranService {
 		this.applicationAdapter = applicationAdapter;
 	}
 
-//	public ActivityContextLoader getActivityContextLoader() {
-//		return activityContextLoader;
-//	}
-//	
-//	public void setActivityContextLoader(ActivityContextLoader activityContextLoader) {
-//		this.activityContextLoader = activityContextLoader;
-//	}
-	
 	public ActivityContext getActivityContext() {
 		return activityContext;
 	}
 	
-//	protected void setActivityContext(ActivityContext activityContext) {
-//		this.activityContext = activityContext;
-//	}
-
 	public boolean isHardReload() {
 		return hardReload;
 	}
@@ -333,7 +321,6 @@ public abstract class AbstractAspectranService implements AspectranService {
 					String l2 = f2.getCanonicalPath();
 					
 					if(l1.equals(l2)) {
-						//log.info("");
 						resourceLocations[i] = null;
 					}
 				}
@@ -363,24 +350,6 @@ public abstract class AbstractAspectranService implements AspectranService {
 		}
 		
 		return resourceLocations;
-	}
-	
-	public static void main(String argv[]) {
-		String applicationBasePath = "c:/Users/Gulendol/Projects/aspectran/ADE/workspace/aspectran-examples/webapp";
-		String[] resourceLocations = new String[3];
-		resourceLocations[0] = "file:/c:/Users/Gulendol/Projects/aspectran/ADE/workspace/aspectran-examples/webapp/WEB-INF/aspectran/classes";
-		resourceLocations[1] = "/WEB-INF/aspectran/lib";
-		resourceLocations[2] = "/WEB-INF/aspectran/xml";
-		String rootResourceLocation = "/WEB-INF/classes";
-		
-		try {
-			resourceLocations = checkResourceLocations(applicationBasePath, rootResourceLocation, resourceLocations);
-			for(String r : resourceLocations) {
-				System.out.println(r);
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 	}
 	
 }

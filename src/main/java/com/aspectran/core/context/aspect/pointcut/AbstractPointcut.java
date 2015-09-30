@@ -27,9 +27,24 @@ import com.aspectran.core.context.rule.PointcutPatternRule;
 public abstract class AbstractPointcut {
 	
 	protected final List<PointcutPatternRule> pointcutPatternRuleList;
+	
+	protected final boolean existsBeanMethodNamePattern;
 
 	public AbstractPointcut(List<PointcutPatternRule> pointcutPatternRuleList) {
 		this.pointcutPatternRuleList = pointcutPatternRuleList;
+		
+		if(pointcutPatternRuleList != null) {
+			boolean existsBeanMethodNamePattern = false;
+			for(PointcutPatternRule ppr : pointcutPatternRuleList) {
+				if(ppr.getBeanMethodNamePattern() != null) {
+					existsBeanMethodNamePattern = true;
+					break;
+				}
+			}
+			this.existsBeanMethodNamePattern = existsBeanMethodNamePattern;
+		} else {
+			this.existsBeanMethodNamePattern = false;
+		}
 	}
 	
 	public List<PointcutPatternRule> getPointcutPatternRuleList() {
@@ -44,6 +59,10 @@ public abstract class AbstractPointcut {
 
 		pointcutPatternList.addAll(pointcutPatternList);
 	}
+	
+	public boolean isExistsBeanMethodNamePattern() {
+		return existsBeanMethodNamePattern;
+	}
 
 	public boolean matches(String transletName) {
 		return matches(transletName, null, null);
@@ -57,10 +76,10 @@ public abstract class AbstractPointcut {
 		if(pointcutPatternRuleList != null) {
 			for(PointcutPatternRule ppr : pointcutPatternRuleList) {
 				if(matches(ppr, transletName, beanId, beanMethodName)) {
-					List<PointcutPatternRule> epprl = ppr.getExcludePointcutPatternRuleList();
+					List<PointcutPatternRule> epprList = ppr.getExcludePointcutPatternRuleList();
 					
-					if(epprl != null) {
-						for(PointcutPatternRule eppr : epprl) {
+					if(epprList != null) {
+						for(PointcutPatternRule eppr : epprList) {
 							if(matches(eppr, transletName, beanId, beanMethodName)) {
 								return false;
 							}
@@ -112,7 +131,7 @@ public abstract class AbstractPointcut {
 		
 		return false;
 	}
-	
+
 	/**
 	 * 비교 항목의 값이 null이면 참으로 간주함.
 	 *
@@ -125,22 +144,25 @@ public abstract class AbstractPointcut {
 	protected boolean exists(PointcutPatternRule pointcutPatternRule, String transletName, String beanId, String beanMethodName) {
 		boolean matched = true;
 		
-		if(transletName != null && pointcutPatternRule.getTransletNamePattern() != null)
+		if(transletName != null && pointcutPatternRule.getTransletNamePattern() != null) {
 			matched = patternMatches(pointcutPatternRule.getTransletNamePattern(), transletName, AspectranConstant.TRANSLET_NAME_SEPARATOR);
+		}
 		
-		if(matched && beanId != null && pointcutPatternRule.getBeanIdPattern() != null)
+		if(matched && beanId != null && pointcutPatternRule.getBeanIdPattern() != null) {
 			matched = patternMatches(pointcutPatternRule.getBeanIdPattern(), beanId, AspectranConstant.ID_SEPARATOR);
+		}
 		
-		if(matched && beanMethodName != null && pointcutPatternRule.getBeanMethodNamePattern() != null)
+		if(matched && beanMethodName != null && pointcutPatternRule.getBeanMethodNamePattern() != null) {
 			matched = patternMatches(pointcutPatternRule.getBeanMethodNamePattern(), beanMethodName);
+		}
 		
 		return matched;
-	}	
+	}
 	
-	abstract protected boolean patternMatches(String pattern, String str);
+	abstract public boolean patternMatches(String pattern, String str);
 	
-	abstract protected boolean patternMatches(String pattern, String str, char separator);
-	
+	abstract public boolean patternMatches(String pattern, String str, char separator);
+
 	public void clear() {
 	}
 	

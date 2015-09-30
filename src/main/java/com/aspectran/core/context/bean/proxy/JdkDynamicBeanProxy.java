@@ -29,10 +29,11 @@ import com.aspectran.core.context.rule.BeanRule;
  */
 public class JdkDynamicBeanProxy extends AbstractDynamicBeanProxy implements InvocationHandler {
 
-	private Object bean;
+	private final Object bean;
 	
 	protected JdkDynamicBeanProxy(ActivityContext context, BeanRule beanRule, Object bean) {
 		super(context, beanRule);
+		this.bean = bean;
 	}
 
 	public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {

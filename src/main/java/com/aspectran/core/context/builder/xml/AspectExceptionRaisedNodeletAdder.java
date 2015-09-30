@@ -21,8 +21,8 @@ import org.w3c.dom.Node;
 
 import com.aspectran.core.context.builder.ContextBuilderAssistant;
 import com.aspectran.core.context.rule.AspectRule;
-import com.aspectran.core.context.rule.ResponseByContentTypeRule;
 import com.aspectran.core.context.rule.ExceptionHandlingRule;
+import com.aspectran.core.context.rule.ResponseByContentTypeRule;
 import com.aspectran.core.util.xml.Nodelet;
 import com.aspectran.core.util.xml.NodeletAdder;
 import com.aspectran.core.util.xml.NodeletParser;
@@ -70,7 +70,7 @@ public class AspectExceptionRaisedNodeletAdder implements NodeletAdder {
 				assistant.pushObject(rbctr);
 			}
 		});
-		parser.addNodelet(xpath, "/responseByContentType", new ResponseNodeletAdder(assistant));
+		parser.addNodelet(xpath, "/responseByContentType", new ResponseInnerNodeletAdder(assistant));
 		parser.addNodelet(xpath, "/responseByContentType/end()", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
 				ResponseByContentTypeRule rbctr = assistant.popObject();

@@ -25,6 +25,7 @@ import com.aspectran.core.activity.Translet;
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.AspectranConstant;
 import com.aspectran.core.context.bean.scan.BeanClassScanner;
+import com.aspectran.core.context.bean.scan.ClassScanner;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.AspectRuleMap;
 import com.aspectran.core.context.rule.BeanRule;
@@ -40,6 +41,8 @@ import com.aspectran.core.util.logging.LogFactory;
 import com.aspectran.core.util.wildcard.WildcardPattern;
 
 /**
+ * The Class ContextBuilderAssistant
+ * 
  * <p>Created: 2008. 04. 01 오후 10:25:35</p>
  */
 public class ContextBuilderAssistant {
@@ -147,44 +150,6 @@ public class ContextBuilderAssistant {
 		objectStack.clear();
 	}
 
-//	/**
-//	 * To real path.
-//	 * 
-//	 * @param filePath the file path
-//	 * 
-//	 * @return the file
-//	 * @throws IOException 
-//	 */
-//	public String toRealPath(String filePath) throws IOException {
-//		File file = toRealPathAsFile(filePath);
-//		return file.getCanonicalPath();
-//	}
-//
-//	/**
-//	 * To real path as file.
-//	 * 
-//	 * @param filePath the file path
-//	 * 
-//	 * @return the file
-//	 */
-//	public File toRealPathAsFile(String filePath) {
-//		File file;
-//		
-//		if(filePath.startsWith(ResourceUtils.FILE_URL_PREFIX)) {
-//			URI uri = URI.create(filePath);
-//			file = new File(uri);
-//		} else if(filePath.startsWith(ResourceUtils.CLASSPATH_URL_PREFIX)) {
-//			file = new File(getClassLoader().getResource(filePath).getFile());
-//		} else {
-//			if(applicationBasePath != null)
-//				file = new File(applicationBasePath, filePath);
-//			else
-//				file = new File(filePath);
-//		}
-//		
-//		return file;
-//	}
-
 	public Map<DefaultSettingType, String> getSettings() {
 		return settings;
 	}
@@ -208,7 +173,7 @@ public class ContextBuilderAssistant {
 			defaultSettings = new DefaultSettings();
 
 		defaultSettings.apply(getSettings());
-		
+
 		if(classLoader != null) {
 			if(defaultSettings.getTransletInterfaceClassName() != null) {
 				Class<?> transletInterfaceClass = classLoader.loadClass(defaultSettings.getTransletInterfaceClassName());
@@ -304,19 +269,19 @@ public class ContextBuilderAssistant {
 		if(transletName != null && transletName.length() > 0 && transletName.charAt(0) == AspectranConstant.TRANSLET_NAME_SEPARATOR)
 			return transletName;
 
-		if(defaultSettings.getTransletNamePatternPrefix() == null && 
-				defaultSettings.getTransletNamePatternSuffix() == null)
+		if(defaultSettings.getTransletNamePrefix() == null && 
+				defaultSettings.getTransletNameSuffix() == null)
 			return transletName;
 		
 		StringBuilder sb = new StringBuilder();
 		
-		if(defaultSettings.getTransletNamePatternPrefix() != null)
-			sb.append(defaultSettings.getTransletNamePatternPrefix());
+		if(defaultSettings.getTransletNamePrefix() != null)
+			sb.append(defaultSettings.getTransletNamePrefix());
 
 		sb.append(transletName);
 		
-		if(defaultSettings.getTransletNamePatternSuffix() != null)
-			sb.append(defaultSettings.getTransletNamePatternSuffix());
+		if(defaultSettings.getTransletNameSuffix() != null)
+			sb.append(defaultSettings.getTransletNameSuffix());
 		
 		return sb.toString();
 	}
@@ -344,6 +309,18 @@ public class ContextBuilderAssistant {
 
 		return defaultSettings.isNullableActionId();
 	}
+
+	/**
+	 * Checks if is pointcut pattern verifiable.
+	 *
+	 * @return true, if is pointcut pattern verifiable
+	 */
+	public boolean isPointcutPatternVerifiable() {
+		if(defaultSettings == null)
+			return true;
+		
+		return defaultSettings.isPointcutPatternVerifiable();
+	}
 	
 	/**
 	 * Gets the bean rule map.
@@ -365,16 +342,12 @@ public class ContextBuilderAssistant {
 	public void addBeanRule(BeanRule beanRule) throws CloneNotSupportedException, ClassNotFoundException, IOException {
 		String className = beanRule.getClassName();
 		
-		if(!WildcardPattern.hasWildcards(className)) {
-			Class<?> beanClass = classLoader.loadClass(className);
-			beanRule.setBeanClass(beanClass);
-			BeanRule.checkAccessibleMethod(beanRule);
-			beanRuleMap.putBeanRule(beanRule);
-			if(log.isTraceEnabled())
-				log.trace("add BeanRule " + beanRule);
-		} else {
-			BeanClassScanner scanner = new BeanClassScanner(beanRule.getId(), classLoader);
-			Map<String, Class<?>> beanClassMap = scanner.scanClass(className);
+		if(WildcardPattern.hasWildcards(className)) {
+			ClassScanner scanner = new BeanClassScanner(classLoader);
+			if(beanRule.getFilterParameters() != null)
+				scanner.setFilterParameters(beanRule.getFilterParameters());
+			
+			Map<String, Class<?>> beanClassMap = scanner.scanClasses(className);
 			
 			if(beanClassMap != null && !beanClassMap.isEmpty()) {
 				for(Map.Entry<String, Class<?>> entry : beanClassMap.entrySet()) {
@@ -382,19 +355,45 @@ public class ContextBuilderAssistant {
 					
 					String beanId = entry.getKey();
 					Class<?> beanClass = entry.getValue();
-					
-					beanRule2.setId(beanId);
+			
+					if(beanRule.isPatternedBeanId()) {
+						beanRule2.setId(beanId, beanRule.getIdPrefix(), beanRule.getIdSuffix());
+						beanRule2.setIdPrefix(null);
+						beanRule2.setIdSuffix(null);
+					} else {
+						if(beanRule.getId() != null) {
+							beanRule2.setId(beanId, beanRule.getId(), null);
+						}
+					}
+						
 					beanRule2.setClassName(beanClass.getName());
 					beanRule2.setBeanClass(beanClass);
-					beanRule2.setStealthily(true);
+					beanRule2.setScanned(true);
 
 					BeanRule.checkAccessibleMethod(beanRule2);
 					
 					beanRuleMap.putBeanRule(beanRule2);
+					
 					if(log.isTraceEnabled())
 						log.trace("add BeanRule " + beanRule2);
 				}
 			}
+			
+			log.info("scanned class files: " + (beanClassMap == null ? 0 : beanClassMap.size()));
+		} else {
+			if(beanRule.isPatternedBeanId()) {
+				beanRule.setId(className, beanRule.getIdPrefix(), beanRule.getIdSuffix());
+				beanRule.setIdPrefix(null);
+				beanRule.setIdSuffix(null);
+			}
+			
+			Class<?> beanClass = classLoader.loadClass(className);
+			beanRule.setBeanClass(beanClass);
+			BeanRule.checkAccessibleMethod(beanRule);
+			beanRuleMap.putBeanRule(beanRule);
+			
+			if(log.isTraceEnabled())
+				log.trace("add BeanRule " + beanRule);
 		}
 	}
 	

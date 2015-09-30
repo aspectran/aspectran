@@ -22,12 +22,12 @@ import com.aspectran.core.context.rule.DispatchResponseRule;
 /**
  * The Interface ViewDispatcher.
  * 
- * <p>Created: 2008. 03. 23 오후 12:52:04</p>
+ * @sinse 2008. 03. 23
  */
 public interface ViewDispatcher {
 	
 	/**
-	 * Response.
+	 * dispatch.
 	 *
 	 * @param activity the translet
 	 * @param viewName the view name

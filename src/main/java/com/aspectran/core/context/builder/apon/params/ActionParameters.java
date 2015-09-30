@@ -40,7 +40,7 @@ public class ActionParameters extends AbstractParameters implements Parameters {
 
 	static {
 		id = new ParameterDefine("id", ParameterValueType.STRING);
-		beanId = new ParameterDefine("beanId", ParameterValueType.STRING);
+		beanId = new ParameterDefine("bean", ParameterValueType.STRING);
 		methodName = new ParameterDefine("method", ParameterValueType.STRING);
 		arguments = new ParameterDefine("argument", ItemHolderParameters.class);
 		properties = new ParameterDefine("property", ItemHolderParameters.class);

@@ -32,8 +32,14 @@ import com.aspectran.core.util.apon.Parameters;
  */
 public class BeanRule implements Cloneable {
 
+	public static final String BEAN_ID_PATTERN_DELIMITER = "*";
+
 	protected String id;
 
+	protected String idPrefix;
+	
+	protected String idSuffix;
+	
 	protected String className;
 
 	protected Class<?> beanClass;
@@ -64,12 +70,14 @@ public class BeanRule implements Cloneable {
 	
 	private boolean overrided;
 
-	private boolean stealthily;
+	private boolean scanned;
 	
-	private boolean proxyMode;
+	private boolean proxied;
+	
+	private Parameters filterParameters;
 	
 	/**
-	 * Gets the id.
+	 * Gets the bean's id.
 	 *
 	 * @return the id
 	 */
@@ -78,12 +86,54 @@ public class BeanRule implements Cloneable {
 	}
 
 	/**
-	 * Sets the id.
+	 * Sets the bean's id.
 	 *
 	 * @param id the new id
 	 */
 	public void setId(String id) {
 		this.id = id;
+		
+		String[] splitted = splitBeanIdPattern(id);
+		
+		if(splitted != null) {
+			this.idPrefix = splitted[0];
+			this.idSuffix = splitted[1];
+		}
+	}
+	
+	/**
+	 * Sets the bean's id.
+	 *
+	 * @param id the id
+	 * @param idPrefix the prefix of bean's id
+	 * @param idSuffix the suffix of bean's id
+	 */
+	public void setId(String id, String idPrefix, String idSuffix) {
+		if(idPrefix != null && idSuffix != null) {
+			this.id = idPrefix + id + idSuffix;
+		} else if(idPrefix != null) {
+			this.id = idPrefix +id;
+		} else if(idSuffix != null) {
+			this.id = id + idSuffix;
+		} else {
+			this.id = id;
+		}
+	}
+	
+	public String getIdPrefix() {
+		return idPrefix;
+	}
+
+	public void setIdPrefix(String idPrefix) {
+		this.idPrefix = idPrefix;
+	}
+
+	public String getIdSuffix() {
+		return idSuffix;
+	}
+
+	public void setIdSuffix(String idSuffix) {
+		this.idSuffix = idSuffix;
 	}
 
 	/**
@@ -240,7 +290,7 @@ public class BeanRule implements Cloneable {
 		return BooleanUtils.toBoolean(important);
 	}
 	
-	public void setImportanct(Boolean important) {
+	public void setImportant(Boolean important) {
 		this.important = important;
 	}
 
@@ -316,6 +366,11 @@ public class BeanRule implements Cloneable {
 		this.registered = registered;
 	}
 
+	/**
+	 * Returns <code>true</code> if the bean definition was overridden.
+	 *
+	 * @return true, if is overrided
+	 */
 	public boolean isOverrided() {
 		return overrided;
 	}
@@ -324,20 +379,37 @@ public class BeanRule implements Cloneable {
 		this.overrided = overrided;
 	}
 
-	public boolean isStealthily() {
-		return stealthily;
+	/**
+	 * Returns <code>true</code> if the bean is auto-scanned.
+	 *
+	 * @return true, if is scanned
+	 */
+	public boolean isScanned() {
+		return scanned;
 	}
 
-	public void setStealthily(boolean stealthily) {
-		this.stealthily = stealthily;
+	public void setScanned(boolean scanned) {
+		this.scanned = scanned;
 	}
 	
-	public boolean isProxyMode() {
-		return proxyMode;
+	public boolean isPatternedBeanId() {
+		return (idPrefix != null || idSuffix != null || id.equals(BEAN_ID_PATTERN_DELIMITER));
+	}
+	
+	public boolean isProxied() {
+		return proxied;
 	}
 
-	public void setProxyMode(boolean proxyMode) {
-		this.proxyMode = proxyMode;
+	public void setProxied(boolean proxied) {
+		this.proxied = proxied;
+	}
+
+	public Parameters getFilterParameters() {
+		return filterParameters;
+	}
+
+	public void setFilterParameters(Parameters filterParameters) {
+		this.filterParameters = filterParameters;
 	}
 
 	public BeanRule clone() throws CloneNotSupportedException {
@@ -359,7 +431,8 @@ public class BeanRule implements Cloneable {
 		sb.append(", destroyMethod=").append(destroyMethodName);
 		sb.append(", lazyInit=").append(lazyInit);
 		sb.append(", important=").append(important);
-		sb.append(", stealthily=").append(stealthily);
+		sb.append(", proxied=").append(proxied);
+		sb.append(", scanned=").append(scanned);
 		if(constructorArgumentItemRuleMap != null) {
 			sb.append(", constructorArguments=[");
 			int sbLength = sb.length();
@@ -400,7 +473,7 @@ public class BeanRule implements Cloneable {
 			throw new IllegalArgumentException("No scope-type registered for scope '" + scope + "'.");
 		
 		if(scopeType == null)
-			scopeType = singleton == Boolean.TRUE ? ScopeType.SINGLETON : ScopeType.PROTOTYPE;
+			scopeType = (singleton == Boolean.TRUE) ? ScopeType.SINGLETON : ScopeType.PROTOTYPE;
 		
 		BeanRule beanRule = new BeanRule();
 		beanRule.setId(id);
@@ -411,9 +484,37 @@ public class BeanRule implements Cloneable {
 		beanRule.setInitMethodName(initMethodName);
 		beanRule.setDestroyMethodName(destroyMethodName);
 		beanRule.setLazyInit(lazyInit);
-		beanRule.setImportanct(important);
+		beanRule.setImportant(important);
 		
 		return beanRule;
+	}
+	
+	public static String combineBeanIdPattern(String beanIdPrefix, String beanIdSuffix) {
+		if(beanIdPrefix == null && beanIdSuffix != null) {
+			return BEAN_ID_PATTERN_DELIMITER + beanIdSuffix;
+		} else if(beanIdPrefix != null && beanIdSuffix == null) {
+			return beanIdPrefix + BEAN_ID_PATTERN_DELIMITER;
+		} else {
+			return BEAN_ID_PATTERN_DELIMITER;
+		}
+	}
+	
+	public static String[] splitBeanIdPattern(String beanId) {
+		int wildcardStartIndex = beanId.indexOf(BEAN_ID_PATTERN_DELIMITER);
+		
+		if(wildcardStartIndex == -1)
+			return null;
+		
+		String beanIdPrefix = null;
+		String beanIdSuffix = null;
+		
+		if(wildcardStartIndex > 0)
+			beanIdPrefix = beanId.substring(0, wildcardStartIndex);
+		
+		if(wildcardStartIndex < beanId.length() - 1)
+			beanIdSuffix = beanId.substring(wildcardStartIndex + 1);
+		
+		return new String[] { beanIdPrefix, beanIdSuffix };
 	}
 	
 /*

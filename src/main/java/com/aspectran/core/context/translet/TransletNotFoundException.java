@@ -17,14 +17,14 @@ package com.aspectran.core.context.translet;
 
 
 /**
- * This exception will be thrown when a translet not found..
+ * This exception will be thrown when a translet not found.
  * 
  * <p>Created: 2008. 01. 07 오전 3:35:55</p>
  */
-public class TransletNotFoundException extends RuntimeException {
+public class TransletNotFoundException extends TransletException {
 	
 	/** @serial */
-	static final long serialVersionUID = 4415928593371198551L;
+	private static final long serialVersionUID = -5619283297296999361L;
 
 	private String transletName;
 	
@@ -68,4 +68,5 @@ public class TransletNotFoundException extends RuntimeException {
 	public String getTransletName() {
 		return transletName;
 	}
+	
 }

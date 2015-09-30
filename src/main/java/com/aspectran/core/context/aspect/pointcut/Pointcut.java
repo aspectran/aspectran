@@ -26,6 +26,8 @@ public interface Pointcut {
 	
 	public List<PointcutPatternRule> getPointcutPatternRuleList();
 	
+	public boolean isExistsBeanMethodNamePattern();
+	
 	public boolean matches(String transletName);
 	
 	public boolean matches(String transletName, String beanId);
@@ -37,7 +39,11 @@ public interface Pointcut {
 	public boolean exists(String transletName, String beanId);
 	
 	public boolean exists(String transletName, String beanId, String beanMethodName);
+
+	public boolean patternMatches(String pattern, String str);
 	
+	public boolean patternMatches(String pattern, String str, char separator);
+
 	public void clear();
 	
 }

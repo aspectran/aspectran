@@ -15,6 +15,9 @@
  */
 package com.aspectran.core.util.wildcard;
 
+/**
+ * The Class WildcardPattern.
+ */
 public class WildcardPattern {
 
 	protected static final char ESCAPE_CHAR = '\\';
@@ -43,7 +46,7 @@ public class WildcardPattern {
 
 	protected static final int SEPARATOR_TYPE = 9;
 	
-	private char[] separator;
+	private char separator;
 	
 	private char[] tokens;
 
@@ -54,14 +57,7 @@ public class WildcardPattern {
 	}
 	
 	public WildcardPattern(String patternString, char separator) {
-		this.separator = new char[] { separator };
-		
-		parse(patternString);
-	}
-
-	public WildcardPattern(String patternString, String separator) {
-		if(separator != null && separator.length() > 0)
-			this.separator = separator.toCharArray();
+		this.separator = separator;
 		
 		parse(patternString);
 	}
@@ -112,6 +108,13 @@ public class WildcardPattern {
 				if(ptype == STAR_TYPE && types[i] == PLUS_CHAR) {
 					types[i] = SKIP_TYPE;
 				}
+			} else if(tokens[i] == separator) {
+				if(esc) {
+					types[i - 1] = SKIP_TYPE;
+					esc = false;
+				} else {
+					types[i] = SEPARATOR_TYPE; // type 9: separator
+				}
 			} else if(tokens[i] == ESCAPE_CHAR) {
 				types[i] = SKIP_TYPE;
 				esc = true;
@@ -129,37 +132,6 @@ public class WildcardPattern {
 			}
 		}
 
-		if(separator != null) {
-			int sepa = 0;
-			int skip = 0;
-
-			for(int i = 0; i < tokens.length; i++) {
-				if(types[i] > SKIP_TYPE) {
-					if(tokens[i] == separator[sepa]) {
-						sepa++;
-					}
-					if(sepa == separator.length) {
-						if(sepa == 1) {
-							types[i] = SEPARATOR_TYPE; // type 9: separator
-						} else {          
-							for(int j = i - sepa + skip + 1; j <= i; j++) {
-								if(types[j] != SKIP_TYPE)
-									types[j] = SEPARATOR_TYPE; // type 9: separator
-							}
-						}
-						sepa = 0;
-					}
-				}
-
-				if(sepa > 0) {
-					if(types[i] == SKIP_TYPE)
-						skip++;
-					else if(tokens[i] != separator[sepa - 1])
-						sepa = 0;
-				}
-			}
-		}
-		
 		for(int i = 0, j = 0; i < tokens.length; i++) {
 			if(types[i] == SKIP_TYPE) {
 				j++; 
@@ -174,7 +146,7 @@ public class WildcardPattern {
 		}
 	}
 
-	public char[] getSeparator() {
+	public char getSeparator() {
 		return separator;
 	}
 
@@ -186,8 +158,8 @@ public class WildcardPattern {
 		return types;
 	}
 	
-	public boolean matches(String str) {
-		return WildcardMatcher.matches(this, str);
+	public boolean matches(String compareString) {
+		return WildcardMatcher.matches(this, compareString);
 	}
 	
 	public static WildcardPattern compile(String patternString) {
@@ -195,10 +167,6 @@ public class WildcardPattern {
 	}
 	
 	public static WildcardPattern compile(String patternString, char separator) {
-		return new WildcardPattern(patternString, separator);
-	}
-	
-	public static WildcardPattern compile(String patternString, String separator) {
 		return new WildcardPattern(patternString, separator);
 	}
 	
@@ -213,28 +181,6 @@ public class WildcardPattern {
 		}
 		
 		return false;
-	}
-	
-	public static void main(String argv[]) {
-		//String str = "\\aaa\\*\\**\\bb*.txt**";
-		//String str = "**/bb*";
-		String str = "com.**.scope.**.*Xml*";
-		WildcardPattern pattern = WildcardPattern.compile(str, ".");
-		
-		int i = 0;
-		for(char c : pattern.getTokens()) {
-			System.out.print(i);
-			System.out.print(": ");
-			System.out.print(c);
-			System.out.print(", ");
-			System.out.println(pattern.getTypes()[i]);
-			i++;
-		}
-		
-		//WildcardMatcher matcher = new WildcardMatcher(pattern);
-		boolean result = pattern.matches(str);
-		
-		System.out.println("Result: " + result);
 	}
 
 }

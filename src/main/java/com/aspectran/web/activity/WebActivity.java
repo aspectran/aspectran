@@ -26,7 +26,7 @@ import com.aspectran.core.activity.ActivityException;
 import com.aspectran.core.activity.CoreActivity;
 import com.aspectran.core.activity.Translet;
 import com.aspectran.core.activity.request.RequestException;
-import com.aspectran.core.activity.variable.ValueObjectMap;
+import com.aspectran.core.activity.variable.ValueMap;
 import com.aspectran.core.activity.variable.token.ItemTokenExpression;
 import com.aspectran.core.activity.variable.token.ItemTokenExpressor;
 import com.aspectran.core.adapter.RequestAdapter;
@@ -48,26 +48,46 @@ import com.aspectran.web.adapter.HttpServletResponseAdapter;
 import com.aspectran.web.adapter.HttpSessionAdapter;
 
 /**
- * <p>Created: 2008. 04. 28 오전 12:48:48</p>
+ * The Class WebActivity.
+ *
+ * @since 2008. 04. 28
  */
 public class WebActivity extends CoreActivity implements Activity {
 
+	/** The Constant MULTIPART_MAX_REQUEST_SIZE. */
 	private static final String MULTIPART_MAX_REQUEST_SIZE = "multipart.maxRequestSize";
 	
+	/** The Constant MULTIPART_TEMPORARY_FILE_PATH. */
 	private static final String MULTIPART_TEMPORARY_FILE_PATH = "multipart.temporaryFilePath";
 	
+	/** The Constant MULTIPART_ALLOWED_FILE_EXTENSIONS. */
 	private static final String MULTIPART_ALLOWED_FILE_EXTENSIONS = "multipart.allowedFileExtensions";
 	
+	/** The Constant MULTIPART_DENIED_FILE_EXTENSIONS. */
 	private static final String MULTIPART_DENIED_FILE_EXTENSIONS = "multipart.deniedFileExtensions";
 	
+	/** The request rule. */
 	private RequestRule requestRule;
 	
+	/** The response rule. */
 	private ResponseRule responseRule;
 	
+	/** The request. */
 	private HttpServletRequest request;
 	
+	/** The response. */
 	private HttpServletResponse response;
 	
+	/** The multipart request wrapper. */
+	private MultipartRequestWrapper multipartRequestWrapper;
+	
+	/**
+	 * Instantiates a new web activity.
+	 *
+	 * @param context the context
+	 * @param request the request
+	 * @param response the response
+	 */
 	public WebActivity(ActivityContext context, HttpServletRequest request, HttpServletResponse response) {
 		super(context);
 
@@ -75,58 +95,23 @@ public class WebActivity extends CoreActivity implements Activity {
 		this.response = response;
 	}
 	
-	public void ready(String transletName) throws ActivityException {
-		super.ready(transletName);
-
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.activity.CoreActivity#adapting(com.aspectran.core.activity.Translet)
+	 */
+	protected void adapting(Translet translet) throws ActivityException {
 		requestRule = getRequestRule();
 		responseRule = getResponseRule();
 		
 		determineCharacterEncoding();
-	}
-	
-	protected void adapting(Translet translet) throws ActivityException {
-		String method = request.getMethod();
-		RequestMethodType methodType = requestRule.getMethod();
-		
-        if(methodType != null && !method.equalsIgnoreCase(methodType.toString()))
-        	return;
-		
-		try {
-			MultipartRequestWrapper requestWrapper = null;
-			
-			String contentType = request.getContentType();
-			
-	        if(method.equalsIgnoreCase(RequestMethodType.POST.toString())
-	        		&& contentType != null
-	        		&& contentType.startsWith("multipart/form-data")) {
-	        	
-	        	requestWrapper = parseMultipartFormData();
-	        	request = requestWrapper;
-	        }
 
-			RequestAdapter requestAdapter = new HttpServletRequestAdapter(request);
-			setRequestAdapter(requestAdapter);
-			
-			if(requestWrapper != null) {
-				Enumeration<String> names = requestWrapper.getFileParameterNames();
-				
-				while(names.hasMoreElements()) {
-					String name = names.nextElement();
-					requestAdapter.setFileParameter(name, requestWrapper.getFileParameters(name));
-				}
-				
-				requestAdapter.setMaxLengthExceeded(requestWrapper.isMaxLengthExceeded());
-			}
+		multipartRequestWrapper = parseMultipartFormData();
+    	
+    	if(multipartRequestWrapper != null)
+    		request = multipartRequestWrapper;
 
-	        ValueObjectMap voMap = parseDeclaredParameter(requestWrapper);
-	        
-	        if(voMap != null)
-	        	translet.setDeclaredAttributeMap(voMap);
-        
-		} catch(Exception e) {
-			throw new RequestException("Could not parse multipart servlet request.", e);
-		}
-		
+		RequestAdapter requestAdapter = new HttpServletRequestAdapter(request);
+		setRequestAdapter(requestAdapter);
+
 		ResponseAdapter responseAdapter = new HttpServletResponseAdapter(response);
 		setResponseAdapter(responseAdapter);
 
@@ -134,6 +119,37 @@ public class WebActivity extends CoreActivity implements Activity {
 		setSessionAdapter(sessionAdapter);
 	}
 
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.activity.CoreActivity#request(com.aspectran.core.activity.Translet)
+	 */
+	protected void request(Translet translet) throws RequestException {
+		String method = request.getMethod();
+		RequestMethodType methodType = requestRule.getMethod();
+		
+        if(methodType == null || methodType.toString().equals(method)) {
+			if(multipartRequestWrapper != null) {
+				Enumeration<String> names = multipartRequestWrapper.getFileParameterNames();
+				
+				while(names.hasMoreElements()) {
+					String name = names.nextElement();
+					getRequestAdapter().setFileParameter(name, multipartRequestWrapper.getFileParameters(name));
+				}
+				
+				getRequestAdapter().setMaxLengthExceeded(multipartRequestWrapper.isMaxLengthExceeded());
+			}
+
+	        ValueMap valueMap = parseDeclaredParameter(multipartRequestWrapper);
+	        
+	        if(valueMap != null)
+	        	translet.setDeclaredAttributeMap(valueMap);
+        }
+	}
+	
+	/**
+	 * Determine character encoding.
+	 *
+	 * @throws ActivityException the activity exception
+	 */
 	private void determineCharacterEncoding() throws ActivityException {
 		try {
 			String characterEncoding = requestRule.getCharacterEncoding();
@@ -157,41 +173,57 @@ public class WebActivity extends CoreActivity implements Activity {
 	}
 	
 	/**
-	 * Parses the multipart parameters.
+	 * Parses the multipart form data.
+	 *
+	 * @return the multipart request wrapper
+	 * @throws MultipartRequestException the multipart request exception
 	 */
 	private MultipartRequestWrapper parseMultipartFormData() throws MultipartRequestException {
-		String multipartMaxRequestSize = (String)getRequestSetting(MULTIPART_MAX_REQUEST_SIZE);
-		String multipartTemporaryFilePath = (String)getRequestSetting(MULTIPART_TEMPORARY_FILE_PATH);
-		String multipartAllowedFileExtensions = (String)getRequestSetting(MULTIPART_ALLOWED_FILE_EXTENSIONS);
-		String multipartDeniedFileExtensions = (String)getRequestSetting(MULTIPART_DENIED_FILE_EXTENSIONS);
+		String method = request.getMethod();
+		String contentType = request.getContentType();
+		
+        if(method.equalsIgnoreCase(RequestMethodType.POST.toString())
+        		&& contentType != null
+        		&& contentType.startsWith("multipart/form-data")) {
 
-		long maxRequestSize = FileUtils.formattedSizeToBytes(multipartMaxRequestSize, -1);
-		
-		MultipartFormDataParser parser = new MultipartFormDataParser(request);
-		
-		if(maxRequestSize > -1)
-			parser.setMaxRequestSize(maxRequestSize);
-		
-		parser.setTemporaryFilePath(multipartTemporaryFilePath);
-		parser.setAllowedFileExtensions(multipartAllowedFileExtensions);
-		parser.setDeniedFileExtensions(multipartDeniedFileExtensions);
-		parser.parse();
-		
-		// sets the servlet request wrapper
-		MultipartRequestWrapper requestWrapper = new MultipartRequestWrapper(parser);
-		
-		return requestWrapper;
+			String multipartMaxRequestSize = (String)getRequestSetting(MULTIPART_MAX_REQUEST_SIZE);
+			String multipartTemporaryFilePath = (String)getRequestSetting(MULTIPART_TEMPORARY_FILE_PATH);
+			String multipartAllowedFileExtensions = (String)getRequestSetting(MULTIPART_ALLOWED_FILE_EXTENSIONS);
+			String multipartDeniedFileExtensions = (String)getRequestSetting(MULTIPART_DENIED_FILE_EXTENSIONS);
+	
+			long maxRequestSize = FileUtils.formattedSizeToBytes(multipartMaxRequestSize, -1);
+			
+			MultipartFormDataParser parser = new MultipartFormDataParser(request);
+			
+			if(maxRequestSize > -1)
+				parser.setMaxRequestSize(maxRequestSize);
+			
+			parser.setTemporaryFilePath(multipartTemporaryFilePath);
+			parser.setAllowedFileExtensions(multipartAllowedFileExtensions);
+			parser.setDeniedFileExtensions(multipartDeniedFileExtensions);
+			parser.parse();
+			
+			// sets the servlet request wrapper
+			MultipartRequestWrapper requestWrapper = new MultipartRequestWrapper(parser);
+			
+			return requestWrapper;
+        }
+        
+        return null;
 	}
 	
 	/**
 	 * Parses the parameter.
+	 *
+	 * @param requestWrapper the request wrapper
+	 * @return the value map
 	 */
-	private ValueObjectMap parseDeclaredParameter(MultipartRequestWrapper requestWrapper) {
+	private ValueMap parseDeclaredParameter(MultipartRequestWrapper requestWrapper) {
 		ItemRuleMap attributeItemRuleMap = requestRule.getAttributeItemRuleMap();
 		
 		if(attributeItemRuleMap != null) {
 			ItemTokenExpressor expressor = new ItemTokenExpression(this);
-			ValueObjectMap valueMap = expressor.express(attributeItemRuleMap);
+			ValueMap valueMap = expressor.express(attributeItemRuleMap);
 
 			for(ItemRule itemRule : attributeItemRuleMap.values()) {
 				String name = itemRule.getName();
@@ -238,6 +270,9 @@ public class WebActivity extends CoreActivity implements Activity {
 		return null;
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.activity.CoreActivity#newActivity()
+	 */
 	@SuppressWarnings("unchecked")
 	public <T extends Activity> T newActivity() {
 		WebActivity webActivity = new WebActivity(getActivityContext(), request, response);

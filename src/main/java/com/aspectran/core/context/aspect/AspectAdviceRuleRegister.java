@@ -32,20 +32,21 @@ public class AspectAdviceRuleRegister {
 	public static void register(AspectAdviceRuleRegistry aspectAdviceRuleRegistry, AspectRule aspectRule, AspectAdviceType excludeAspectAdviceType) {
 		SettingsAdviceRule settingsAdviceRule = aspectRule.getSettingsAdviceRule();
 		List<AspectAdviceRule> aspectAdviceRuleList = aspectRule.getAspectAdviceRuleList();
-		ExceptionHandlingRule rbctrm = aspectRule.getExceptionHandlingRule();
+		ExceptionHandlingRule exceptionHandlingRule = aspectRule.getExceptionHandlingRule();
 		
 		if(settingsAdviceRule != null)
 			aspectAdviceRuleRegistry.addAspectAdviceRule(settingsAdviceRule);
 		
 		if(aspectAdviceRuleList != null) {
 			for(AspectAdviceRule aspectAdviceRule : aspectAdviceRuleList) {
-				if(excludeAspectAdviceType == null || aspectAdviceRule.getAspectAdviceType() != excludeAspectAdviceType)
+				if(excludeAspectAdviceType == null || aspectAdviceRule.getAspectAdviceType() != excludeAspectAdviceType) {
 					aspectAdviceRuleRegistry.addAspectAdviceRule(aspectAdviceRule);
+				}
 			}
 		}
 		
-		if(rbctrm != null) {
-			aspectAdviceRuleRegistry.addExceptionHandlingRule(rbctrm);
+		if(exceptionHandlingRule != null) {
+			aspectAdviceRuleRegistry.addExceptionHandlingRule(exceptionHandlingRule);
 		}
 		
 		aspectAdviceRuleRegistry.increaseAspectRuleCount();

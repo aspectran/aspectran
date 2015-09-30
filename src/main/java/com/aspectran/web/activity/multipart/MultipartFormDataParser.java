@@ -392,6 +392,7 @@ public class MultipartFormDataParser {
 				return req.getContentType();
 			}
 
+			@Deprecated
 			public int getContentLength() {
 				return req.getContentLength();
 			}

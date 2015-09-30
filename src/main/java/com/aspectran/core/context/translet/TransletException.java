@@ -13,27 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.core.context.bean.scan;
+package com.aspectran.core.context.translet;
 
-import com.aspectran.core.context.bean.BeanException;
-
-public class BeanClassScanningFailedException extends BeanException {
-
+/**
+ * This class is the basic exception that gets thrown from the beans pacakge.
+ * 
+ * <p>Created: 2008. 01. 07 오전 3:35:55</p>
+ */
+public class TransletException extends RuntimeException {
+	
 	/** @serial */
-	private static final long serialVersionUID = -1301450076259511066L;
+	private static final long serialVersionUID = 3736262494374232352L;
 
 	/**
-	 * Simple constructor.
+	 * Creates a new BeanException without detail message.
 	 */
-	public BeanClassScanningFailedException() {
+	public TransletException() {
 	}
 
 	/**
-	 * Constructor to create exception with a message.
+	 * Constructs a BeanException with the specified detail message.
 	 * 
 	 * @param msg A message to associate with the exception
 	 */
-	public BeanClassScanningFailedException(String msg) {
+	public TransletException(String msg) {
 		super(msg);
 	}
 
@@ -42,18 +45,19 @@ public class BeanClassScanningFailedException extends BeanException {
 	 * 
 	 * @param cause The real cause of the exception
 	 */
-	public BeanClassScanningFailedException(Throwable cause) {
+	public TransletException(Throwable cause) {
 		super(cause);
 	}
 
 	/**
-	 * Constructor to create exception to wrap another exception and pass a
-	 * message.
+	 * Constructs a BeanException with the specified error message and also the specified root cause exception.
+	 * The root cause exception is generally for TypeConversionException's root cause or something that might have caused a BeanException.
 	 * 
-	 * @param msg The message
+	 * @param msg The detail message
 	 * @param cause The real cause of the exception
 	 */
-	public BeanClassScanningFailedException(String msg, Throwable cause) {
+	public TransletException(String msg, Throwable cause) {
 		super(msg, cause);
 	}
+	
 }

@@ -47,8 +47,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import net.sf.cglib.core.TypeUtils;
-
 /**
  * Miscellaneous class utility methods. Mainly for internal use within the
  * framework; consider Jakarta's Commons Lang for a more comprehensive suite
@@ -57,9 +55,6 @@ import net.sf.cglib.core.TypeUtils;
  * @author Keith Donald
  * @author Rob Harrop
  * @author Juergen Hoeller
- * @since 1.1
- * @see TypeUtils
- * @see ReflectionUtils
  */
 public abstract class ClassUtils {
 
@@ -92,6 +87,12 @@ public abstract class ClassUtils {
 	 * type as value, for example: Integer.class -> int.class.
 	 */
 	private static final Map<Class<?>, Class<?>> primitiveWrapperTypeMap = new HashMap<Class<?>, Class<?>>(17);
+	
+	/**
+	 * Map with primitive type as key and corresponding wrapper type as value,
+	 * for example: int.class -> Integer.class.
+	 * */
+	private static final Map<Class<?>, Class<?>> primitiveTypeToWrapperMap  = new HashMap<Class<?>, Class<?>>(17);
 
 	static {
 		primitiveWrapperTypeMap.put(Boolean.class, boolean.class);
@@ -111,6 +112,24 @@ public abstract class ClassUtils {
 		primitiveWrapperTypeMap.put(Float[].class, float[].class);
 		primitiveWrapperTypeMap.put(Double[].class, double[].class);
 		primitiveWrapperTypeMap.put(Void.TYPE, void.class);
+
+		primitiveTypeToWrapperMap.put(boolean.class, Boolean.class);
+		primitiveTypeToWrapperMap.put(byte.class, Byte.class);
+		primitiveTypeToWrapperMap.put(char.class, Character.class);
+		primitiveTypeToWrapperMap.put(short.class, Short.class);
+		primitiveTypeToWrapperMap.put(int.class, Integer.class);
+		primitiveTypeToWrapperMap.put(long.class, Long.class);
+		primitiveTypeToWrapperMap.put(float.class, Float.class);
+		primitiveTypeToWrapperMap.put(double.class, Double.class);
+		primitiveTypeToWrapperMap.put(boolean[].class, Boolean[].class);
+		primitiveTypeToWrapperMap.put(byte[].class, Byte[].class);
+		primitiveTypeToWrapperMap.put(char[].class, Character[].class);
+		primitiveTypeToWrapperMap.put(short[].class, Short[].class);
+		primitiveTypeToWrapperMap.put(int[].class, Integer[].class);
+		primitiveTypeToWrapperMap.put(long[].class, Long[].class);
+		primitiveTypeToWrapperMap.put(float[].class, Float[].class);
+		primitiveTypeToWrapperMap.put(double[].class, Double[].class);
+		primitiveTypeToWrapperMap.put(void.class, Void.TYPE);
 	}
 
 	/**
@@ -195,21 +214,6 @@ public abstract class ClassUtils {
 		}
 	}
 	
-	/**
-	 * Gets the wrapper object class for the given primitive type class.
-	 * For example, passing <code>boolean.class</code> returns <code>Boolean.class</code>
-	 * @param primitiveType the primitive type class for which a match is to be found
-	 * @return the wrapper type associated with the given primitive
-	 * or null if no match is found
-	 */
-	public static Class<?> getPrimitiveWrapper(Class<?> primitiveType) {
-		for(Map.Entry<Class<?>, Class<?>> entry : primitiveWrapperTypeMap.entrySet()) {
-			if(primitiveType.equals(entry.getValue()))
-				return entry.getKey();
-		}
-		return null;
-	}
-
 	/**
 	 * Determine whether the {@link Class} identified by the supplied name is present
 	 * and can be loaded. Will return <code>false</code> if either the class or
@@ -308,7 +312,7 @@ public abstract class ClassUtils {
 	 * @see java.beans.Introspector#decapitalize(String)
 	 */
 	public static String getShortNameAsProperty(Class<?> clazz) {
-		String shortName = ClassUtils.getShortName(clazz);
+		String shortName = getShortName(clazz);
 		int dotIndex = shortName.lastIndexOf('.');
 		shortName = (dotIndex != -1 ? shortName.substring(dotIndex + 1) : shortName);
 		return Introspector.decapitalize(shortName);
@@ -363,7 +367,7 @@ public abstract class ClassUtils {
 		StringBuffer buffer = new StringBuffer();
 		while(clazz.isArray()) {
 			clazz = clazz.getComponentType();
-			buffer.append(ClassUtils.ARRAY_SUFFIX);
+			buffer.append(ARRAY_SUFFIX);
 		}
 		buffer.insert(0, clazz.getName());
 		return buffer.toString();
@@ -616,12 +620,18 @@ public abstract class ClassUtils {
 	 * @param lhsType the target type
 	 * @param rhsType	the value type that should be assigned to the target type
 	 * @return if the target type is assignable from the value type
-	 * @see TypeUtils#isAssignable
 	 */
 	public static boolean isAssignable(Class<?> lhsType, Class<?> rhsType) {
-		// this method does *not* do widening - you must specify exactly
-		// is this the right behaviour?
-		return (lhsType.isAssignableFrom(rhsType) || lhsType.equals(primitiveWrapperTypeMap.get(rhsType)));
+		if(lhsType.isAssignableFrom(rhsType))
+			return true;
+
+		if(lhsType.isPrimitive() && rhsType.equals(getPrimitiveWrapper(lhsType)))
+			return true;
+		
+		if(rhsType.isPrimitive() && lhsType.equals(getPrimitiveWrapper(rhsType)))
+			return true;
+		
+		return false;
 	}
 
 	/**
@@ -637,6 +647,17 @@ public abstract class ClassUtils {
 	}
 
 	/**
+	 * Gets the wrapper object class for the given primitive type class.
+	 * For example, passing <code>boolean.class</code> returns <code>Boolean.class</code>
+	 * @param primitiveType the primitive type class for which a match is to be found
+	 * @return the wrapper type associated with the given primitive
+	 * or null if no match is found
+	 */
+	public static Class<?> getPrimitiveWrapper(Class<?> primitiveType) {
+		return primitiveTypeToWrapperMap.get(primitiveType);
+	}
+	
+	/**
 	 * Find a non primitive representation for given primitive class.
 	 *
 	 * @param clazz the class to find a representation for, not null
@@ -644,10 +665,10 @@ public abstract class ClassUtils {
 	 */
 	public static Class<?> toNonPrimitiveClass(Class<?> clazz) {
 		if(clazz.isPrimitive()) {
-			Class<?> primitiveClazz = getPrimitiveWrapper(clazz);
+			Class<?> primitiveClass = getPrimitiveWrapper(clazz);
 			// the above method returns
-			if(primitiveClazz != null) {
-				return primitiveClazz;
+			if(primitiveClass != null) {
+				return primitiveClass;
 			} else {
 				return clazz;
 			}
@@ -673,7 +694,7 @@ public abstract class ClassUtils {
 	 * @since 2.4
 	 */
 	public static Class<?> wrapperToPrimitive(Class<?> cls) {
-		return (Class<?>)primitiveWrapperTypeMap.get(cls);
+		return primitiveWrapperTypeMap.get(cls);
 	}
 	
 	/**
@@ -938,6 +959,92 @@ public abstract class ClassUtils {
 			// No interface class found...
 			return false;
 		}
+	}
+	
+	public static float getTypeDifferenceWeight(Class<?>[] srcArgs, Object[] destArgs) {
+		if(srcArgs.length != destArgs.length)
+			return Float.MAX_VALUE;
+		
+		float weight = 0.0f;
+		
+		for(int i = 0; i < srcArgs.length; i++) {
+			Class<?> srcClass = srcArgs[i];
+			Object destObject = destArgs[i];
+			weight += getTypeDifferenceWeight(srcClass, destObject);
+
+			if(weight == Float.MAX_VALUE)
+				break;
+		}
+		
+		return weight;
+	}
+	
+	public static float getTypeDifferenceWeight(Class<?> srcClass, Object destObject) {
+		if(!isAssignableValue(srcClass, destObject))
+			return Float.MAX_VALUE;
+		
+		return getTypeDifferenceWeight(srcClass, destObject.getClass());
+	}
+
+	/**
+	 * Returns the sum of the object transformation cost for each class in the source
+	 * argument list.
+	 * @param srcArgs The source arguments
+	 * @param destArgs The destination arguments
+	 * @return the accumulated weight for all arguments
+	 */
+	public static float getTypeDifferenceWeight(Class<?>[] srcArgs, Class<?>[] destArgs) {
+		float weight = 0.0f;
+		
+		for(int i = 0; i < srcArgs.length; i++) {
+			Class<?> srcClass = srcArgs[i];
+			Class<?> destClass = destArgs[i];
+			weight += getTypeDifferenceWeight(srcClass, destClass);
+		}
+
+		return weight;
+	}
+
+	/**
+	 * Gets the number of steps required needed to turn the source class into the
+	 * destination class. This represents the number of steps in the object hierarchy
+	 * graph.
+	 * @param srcClass The source class
+	 * @param destClass The destination class
+	 * @return The cost of transforming an object
+	 */
+	public static float getTypeDifferenceWeight(Class<?> srcClass, Class<?> destClass) {
+		if(destClass != null) {
+    		if(srcClass.isPrimitive() && destClass.equals(getPrimitiveWrapper(srcClass))
+    				|| destClass.isPrimitive() && srcClass.equals(getPrimitiveWrapper(destClass))) {
+            	return 0.25f;
+    		}
+		}
+		
+		float weight = 0.0f;
+		
+		while(destClass != null && !destClass.equals(srcClass)) {
+			if(destClass.isInterface() && destClass.equals(srcClass)) {
+				// slight penalty for interface match.
+				// we still want an exact match to override an interface match, but
+				// an interface match should override anything where we have to get a
+				// superclass.
+				weight += 0.25f;
+				break;
+			}
+			weight++;
+			destClass = destClass.getSuperclass();
+		}
+
+		/*
+		 * If the destination class is null, we've travelled all the way up to
+		 * an Object match. We'll penalize this by adding 1.5 to the cost.
+		 */
+		if(destClass == null) {
+			weight += 1.5f;
+		}
+
+		return weight;
 	}
 
 }

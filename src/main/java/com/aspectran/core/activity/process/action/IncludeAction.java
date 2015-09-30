@@ -19,7 +19,7 @@ import java.util.Map;
 
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.process.ActionList;
-import com.aspectran.core.activity.variable.ValueObjectMap;
+import com.aspectran.core.activity.variable.ValueMap;
 import com.aspectran.core.activity.variable.token.ItemTokenExpression;
 import com.aspectran.core.activity.variable.token.ItemTokenExpressor;
 import com.aspectran.core.adapter.RequestAdapter;
@@ -58,7 +58,7 @@ public class IncludeAction extends AbstractAction implements Executable {
 			
 			if(includeActionRule.getAttributeItemRuleMap() != null) {
 				ItemTokenExpressor expressor = new ItemTokenExpression(activity);
-				ValueObjectMap valueMap = expressor.express(includeActionRule.getAttributeItemRuleMap());
+				ValueMap valueMap = expressor.express(includeActionRule.getAttributeItemRuleMap());
 
 				for(Map.Entry<String, Object> entry : valueMap.entrySet())
 					request.setAttribute(entry.getKey(), entry.getValue());

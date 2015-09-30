@@ -23,82 +23,92 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
-import com.aspectran.core.context.loader.AspectranClassLoader;
+import com.aspectran.core.context.builder.apon.params.FilterParameters;
 import com.aspectran.core.util.ClassUtils;
 import com.aspectran.core.util.ResourceUtils;
 import com.aspectran.core.util.StringUtils;
+import com.aspectran.core.util.apon.Parameters;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 import com.aspectran.core.util.wildcard.WildcardMatcher;
 import com.aspectran.core.util.wildcard.WildcardPattern;
 
-public class BeanClassScanner {
+public class BeanClassScanner implements ClassScanner {
 
-	/** The log. */
 	private final Log log = LogFactory.getLog(BeanClassScanner.class);
 	
-	private static final char BEAN_ID_WILDCARD_DELIMITER = '*';
-	
 	private final ClassLoader classLoader;
-
-	private final String beanIdPrefix;
-
-	private final String beanIdSuffix;
 	
-	public BeanClassScanner(String beanIdPattern, ClassLoader classLoader) {
-		int wildcardStartIndex = beanIdPattern.indexOf(BEAN_ID_WILDCARD_DELIMITER);
-		
-		if(wildcardStartIndex == -1) {
-			this.beanIdPrefix = beanIdPattern;
-			this.beanIdSuffix = null;
-		} else {
-			if(wildcardStartIndex == 0)
-				this.beanIdPrefix = null;
-			else
-				this.beanIdPrefix = beanIdPattern.substring(0, wildcardStartIndex);
-			
-			if(wildcardStartIndex + 1 == beanIdPattern.length())
-				this.beanIdSuffix = null;
-			else
-				this.beanIdSuffix = beanIdPattern.substring(wildcardStartIndex + 1);
-		}
-		
+	private Parameters filterParameters;
+	
+	private ClassScanFilter classScanFilter;
+	
+	private Map<String, WildcardPattern> wildcardPatternCache = new HashMap<String, WildcardPattern>();
+
+	public BeanClassScanner(ClassLoader classLoader) {
 		this.classLoader = classLoader;
-		
-		//System.out.println("beanIdPrefix: " + beanIdPrefix);
-		//System.out.println("beanIdSuffix: " + beanIdSuffix);
-	}
-
-	public Map<String, Class<?>> scanClass(String classNamePattern) throws IOException, ClassNotFoundException {
-		Map<String, Class<?>> scanClasses = new LinkedHashMap<String, Class<?>>();
-		
-		scanClass(classNamePattern, scanClasses);
-		
-		return scanClasses;
 	}
 	
-	public void scanClass(String classNamePattern, Map<String, Class<?>> scanClasses) {
+	public Parameters getFilterParameters() {
+		return filterParameters;
+	}
+
+	public void setFilterParameters(Parameters filterParameters) {
+		this.filterParameters = filterParameters;
+		
+		String classScanFilterClassName = filterParameters.getString(FilterParameters.filterClass);
+		if(classScanFilterClassName != null)
+			setClassScanFilter(classScanFilterClassName);
+	}
+
+	public ClassScanFilter getClassScanFilter() {
+		return classScanFilter;
+	}
+
+	public void setClassScanFilter(Class<?> classScanFilterClass) {
+		try {
+			classScanFilter = (ClassScanFilter)classScanFilterClass.newInstance();
+		} catch(Exception e) {
+			throw new ClassScanFailedException("Failed to instantiate [" + classScanFilterClass + "]", e);
+		}
+	}
+
+	public void setClassScanFilter(String classScanFilterClassName) {
+		Class<?> filterClass;
+		try {
+			filterClass = classLoader.loadClass(classScanFilterClassName);
+		} catch(ClassNotFoundException e) {
+			throw new ClassScanFailedException("Failed to instantiate [" + classScanFilterClassName + "]", e);
+		}
+		setClassScanFilter(filterClass);
+	}
+	
+	public Map<String, Class<?>> scanClasses(String classNamePattern) throws IOException, ClassNotFoundException {
+		Map<String, Class<?>> scannedClasses = new LinkedHashMap<String, Class<?>>();
+		
+		scanClasses(classNamePattern, scannedClasses);
+		
+		return scannedClasses;
+	}
+	
+	public void scanClasses(String classNamePattern, Map<String, Class<?>> scannedClasses) {
 		try {
 			classNamePattern = classNamePattern.replace(ClassUtils.PACKAGE_SEPARATOR_CHAR, ResourceUtils.RESOURCE_NAME_SPEPARATOR_CHAR);
-			//System.out.println("classNamePattern: " + classNamePattern);
 	
 			String basePackageName = determineBasePackageName(classNamePattern);
-			//System.out.println("basePackageName: " + basePackageName);
 	
 			String subPattern;
-			
 			if(classNamePattern.length() > basePackageName.length())
 				subPattern = classNamePattern.substring(basePackageName.length());
 			else
 				subPattern = StringUtils.EMPTY;
 			
-			//System.out.println("subPattern: " + subPattern);
-	
 			WildcardPattern pattern = WildcardPattern.compile(subPattern, ResourceUtils.RESOURCE_NAME_SPEPARATOR_CHAR);
 			WildcardMatcher matcher = new WildcardMatcher(pattern);
 			
@@ -109,18 +119,18 @@ public class BeanClassScanner {
 			
 			while(resources.hasMoreElements()) {
 				URL resource = resources.nextElement();
-				//System.out.println("classNamePattern: " + classNamePattern + "==scanClass=====" + resource.getFile());
 				
-				log.debug("Bean Scanning: " + classNamePattern + " at " + resource.getFile());
+				if(log.isDebugEnabled())
+					log.debug("Bean Scanning: " + classNamePattern + " at " + resource.getFile());
 				
 				if(isJarResource(resource)) {
-					scanClassFromJarResource(resource, matcher, scanClasses);
+					scanClassesFromJarResource(resource, matcher, scannedClasses);
 				} else {
-					scanClass(resource.getFile(), basePackageName, null,  matcher, scanClasses);
+					scanClasses(resource.getFile(), basePackageName, null,  matcher, scannedClasses);
 				}
 			}
 		} catch(IOException e) {
-			throw new BeanClassScanningFailedException("bean-class scanning failed.", e);
+			throw new ClassScanFailedException("bean-class scanning failed.", e);
 		}
 	}
 	
@@ -132,10 +142,7 @@ public class BeanClassScanner {
 	 * @return The classes
 	 * @throws ClassNotFoundException
 	 */
-	private void scanClass(final String targetPath, final String basePackageName, final String relativePackageName, final WildcardMatcher matcher, final Map<String, Class<?>> scanClasses) {
-		//System.out.println("@basePackageName: " + basePackageName);
-		//System.out.println("@relativePackageName: " + relativePackageName);
-		//System.out.println("@basePath: " + basePath);
+	private void scanClasses(final String targetPath, final String basePackageName, final String relativePackageName, final WildcardMatcher matcher, final Map<String, Class<?>> scannedClasses) {
 		final File target = new File(targetPath);
 		if(!target.exists())
 			return;
@@ -150,8 +157,7 @@ public class BeanClassScanner {
 						relativePackageName2 = relativePackageName + file.getName() + ResourceUtils.RESOURCE_NAME_SPEPARATOR;
 							
 					String basePath2 = targetPath + file.getName() + ResourceUtils.RESOURCE_NAME_SPEPARATOR;
-					//System.out.println("-relativePackageName2: " + relativePackageName2);
-					scanClass(basePath2, basePackageName, relativePackageName2, matcher, scanClasses);
+					scanClasses(basePath2, basePackageName, relativePackageName2, matcher, scannedClasses);
 				} else if(file.getName().endsWith(ClassUtils.CLASS_FILE_SUFFIX)) {
 					String className;
 					if(relativePackageName != null)
@@ -159,15 +165,10 @@ public class BeanClassScanner {
 					else
 						className = basePackageName + file.getName().substring(0, file.getName().length() - ClassUtils.CLASS_FILE_SUFFIX.length());
 					String relativePath = className.substring(basePackageName.length(), className.length());
-					//System.out.println("  -file.getName(): " + file.getName());
-					//System.out.println("  -relativePath: " + relativePath);
 					if(matcher.matches(relativePath)) {
 						Class<?> classType = loadClass(className);
-						String beanId = combineBeanId(relativePath);
-						//System.out.println("scaned  [clazz] " + className);
-						//System.out.println("scaned  [beanId] " + combineBeanId(relativePath));
-						log.trace("beanClass {beanId: " + beanId + ", className: " + className + "}");
-						scanClasses.put(beanId, classType);
+						String beanId = composeBeanId(relativePath);
+						putClass(scannedClasses, beanId, className, classType);
 					}
 				}
 				return false;
@@ -175,7 +176,7 @@ public class BeanClassScanner {
 		});
 	}
 
-	protected void scanClassFromJarResource(URL resource, WildcardMatcher matcher, Map<String, Class<?>> scanClasses) throws IOException {
+	protected void scanClassesFromJarResource(URL resource, WildcardMatcher matcher, Map<String, Class<?>> scannedClasses) throws IOException {
 		URLConnection conn = resource.openConnection();
 		JarFile jarFile = null;
 		String jarFileUrl = null;
@@ -190,7 +191,6 @@ public class BeanClassScanner {
 			jarFileUrl = jarCon.getJarFileURL().toExternalForm();
 			JarEntry jarEntry = jarCon.getJarEntry();
 			entryNamePrefix = (jarEntry != null ? jarEntry.getName() : "");
-			//System.out.println("**JarURLConnection entryName: " + entryNamePrefix);
 		} else {
 			// No JarURLConnection -> need to resort to URL file parsing.
 			// We'll assume URLs of the format "jar:path!/entry", with the protocol
@@ -221,23 +221,14 @@ public class BeanClassScanner {
 			for(Enumeration<JarEntry> entries = jarFile.entries(); entries.hasMoreElements();) {
 				JarEntry entry = entries.nextElement();
 				String entryName = entry.getName();
-				//System.out.println("entryName: " + entryName);
-				//System.out.println("  entryNamePrefix: " + entryNamePrefix);
 				if(entryName.startsWith(entryNamePrefix) && entryName.endsWith(ClassUtils.CLASS_FILE_SUFFIX)) {
 					String entryNameSuffix = entryName.substring(entryNamePrefix.length(), entryName.length() - ClassUtils.CLASS_FILE_SUFFIX.length());
-					//System.out.println("  entryNameSuffix: " + entryNameSuffix);
 					
 					if(matcher.matches(entryNameSuffix)) {
-						//System.out.println("entryName: " + entryName);
-						//System.out.println("  entryNamePrefix: " + entryNamePrefix);
-						//System.out.println("  entryNameSuffix: " + entryNameSuffix);
 						String className = entryNamePrefix + entryNameSuffix;
 						Class<?> classType = loadClass(className);
-						String beanId = combineBeanId(entryNameSuffix);
-						log.trace("beanClass {beanId: " + beanId + ", className: " + className + "} from jar: " + jarFile.getName());
-						//System.out.println("  [clazz] " + className);
-						//System.out.println("  [beanId] " + combineBeanId(relativePath));
-						scanClasses.put(beanId, classType);
+						String beanId = composeBeanId(entryNameSuffix);
+						putClass(scannedClasses, beanId, className, classType);
 					}
 				}
 			}
@@ -274,7 +265,6 @@ public class BeanClassScanner {
 		WildcardMatcher matcher = new WildcardMatcher(pattern);
 
 		boolean matched = matcher.matches(classNamePattern);
-
 		if(!matched)
 			return null;
 		
@@ -288,24 +278,12 @@ public class BeanClassScanner {
 
 			sb.append(str).append(ResourceUtils.RESOURCE_NAME_SPEPARATOR_CHAR);
 		}
-
+		
 		return sb.toString();
 	}
 
-	private String combineBeanId(String relativePath) {
-		String beanId;
-		
-		if(beanIdPrefix != null && beanIdSuffix != null) {
-			beanId = beanIdPrefix + relativePath + beanIdSuffix;
-		} else if(beanIdPrefix != null) {
-			beanId = beanIdPrefix + relativePath;
-		} else if(beanIdSuffix != null) {
-			beanId = relativePath + beanIdSuffix;
-		} else {
-			beanId = relativePath;
-		}
-		
-		return beanId.replace(ResourceUtils.RESOURCE_NAME_SPEPARATOR_CHAR, ClassUtils.PACKAGE_SEPARATOR_CHAR);
+	private String composeBeanId(String relativePath) {
+		return relativePath.replace(ResourceUtils.RESOURCE_NAME_SPEPARATOR_CHAR, ClassUtils.PACKAGE_SEPARATOR_CHAR);
 	}
 	
 	private Class<?> loadClass(String className) {
@@ -314,38 +292,47 @@ public class BeanClassScanner {
 		try {
 			return classLoader.loadClass(className);
 		} catch (ClassNotFoundException e) {
-			throw new BeanClassScanningFailedException("bean-class loading failed. class name: " + className, e);
+			throw new ClassScanFailedException("bean-class loading failed. class name: " + className, e);
 		}
 	}
 	
-	public static void main(String[] args) {
-		try {
-			BeanClassScanner loader = new BeanClassScanner("component.*ZZZ", AspectranClassLoader.getDefaultClassLoader());
-			//loader.scanClass("com.**.*Sql*");
-			//loader.scanClass("com.i*");
-			loader.scanClass("com.*");
-			System.out.println(loader.getClass().getName());
-		} catch(Exception e) {
-			e.printStackTrace();
-		}
-		
-		
-		/*
-		Class<BeanClassLoader> clazz = BeanClassLoader.class;
-		URL resource = clazz.getResource(".");
-		System.out.println("resource: " + resource);
+	private boolean putClass(Map<String, Class<?>> scannedClasses, String beanId, String className, Class<?> scannedClass) {
+		className = className.replace(ResourceUtils.RESOURCE_NAME_SPEPARATOR_CHAR, ClassUtils.PACKAGE_SEPARATOR_CHAR);
 
-		ClassLoader classLoader = ClassUtils.getDefaultClassLoader();
-		try {
-			Enumeration<URL> resources = classLoader.getResources("com");
-			System.out.println("resources:");
-			while(resources.hasMoreElements()) {
-				URL nextElement = resources.nextElement();
-				System.out.println(nextElement);
+		boolean valid = true;
+		
+		if(classScanFilter != null) {
+			if(!classScanFilter.filter(beanId, className, scannedClass)) {
+				valid = false;
 			}
-		} catch(IOException e) {
-			e.printStackTrace();
 		}
-*/
+		
+		if(valid && filterParameters != null) {
+			String[] excludePatterns = filterParameters.getStringArray(FilterParameters.exclude);
+			
+			if(excludePatterns != null) {
+				for(String excludePattern : excludePatterns) {
+					WildcardPattern wildcardPattern = wildcardPatternCache.get(excludePattern);
+					if(wildcardPattern == null) {
+						wildcardPattern = new WildcardPattern(excludePattern, ClassUtils.PACKAGE_SEPARATOR_CHAR);
+						wildcardPatternCache.put(excludePattern, wildcardPattern);
+					}
+					if(wildcardPattern.matches(className)) {
+						valid = false;
+						break;
+					}
+				}
+			}
+		}
+		
+		if(valid) {
+			scannedClasses.put(beanId, scannedClass);
+			
+			if(log.isTraceEnabled())
+				log.trace("scanned beanClass {beanId: " + beanId + ", className: " + className + "}");
+		}
+		
+		return valid;
 	}
+
 }

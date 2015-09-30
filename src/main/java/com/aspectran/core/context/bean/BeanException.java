@@ -17,7 +17,7 @@ package com.aspectran.core.context.bean;
 
 
 /**
- * This exception will be thrown when a translet request is failed.
+ * This class is the basic exception that gets thrown from the beans pacakge.
  * 
  * <p>Created: 2008. 01. 07 오전 3:35:55</p>
  */
@@ -27,13 +27,13 @@ public class BeanException extends RuntimeException {
 	static final long serialVersionUID = 2598750999734896601L;
 
 	/**
-	 * Simple constructor.
+	 * Creates a new BeanException without detail message.
 	 */
 	public BeanException() {
 	}
 
 	/**
-	 * Constructor to create exception with a message.
+	 * Constructs a BeanException with the specified detail message.
 	 * 
 	 * @param msg A message to associate with the exception
 	 */
@@ -51,13 +51,14 @@ public class BeanException extends RuntimeException {
 	}
 
 	/**
-	 * Constructor to create exception to wrap another exception and pass a
-	 * message.
+	 * Constructs a BeanException with the specified error message and also the specified root cause exception.
+	 * The root cause exception is generally for TypeConversionException's root cause or something that might have caused a BeanException.
 	 * 
-	 * @param msg The message
+	 * @param msg The detail message
 	 * @param cause The real cause of the exception
 	 */
 	public BeanException(String msg, Throwable cause) {
 		super(msg, cause);
 	}
+	
 }

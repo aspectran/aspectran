@@ -18,7 +18,6 @@ package com.aspectran.core.context.loader.resource;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
@@ -27,7 +26,6 @@ import java.util.jar.JarFile;
 
 import com.aspectran.core.context.loader.AspectranClassLoader;
 import com.aspectran.core.util.ResourceUtils;
-
 
 /**
  * <p>Created: 2014. 12. 18 오후 5:51:13</p>	
@@ -127,33 +125,5 @@ public class LocalResourceManager extends ResourceManager {
 				jarFile.close();
 		}
 	}
-	
-	public static void main(String[] args) {
-		try {
-			// Windows drive letter path
-			//URL url = new URL("file:/c:/Users/Gulendol/Projects/aspectran/ADE/workspace/aspectran.example/webapp/WEB-INF/lib/cglib-nodep-3.1.jar");
-			URL url = new URL("file:/C:/Users/Gulendol/Projects/aspectran/ADE/workspace/.metadata/.plugins/org.eclipse.wst.server.core/tmp0/wtpwebapps/aspectran.example/WEB-INF/lib/ibatis-2.3.0.677.jar");
-			System.out.println(url.getFile());
-			System.out.println(new File(url.toURI()).exists());
-			
-			//File file = new File("/c:/Users/Gulendol/Projects/aspectran/ADE/workspace/aspectran.example/webapp/WEB-INF/lib/cglib-nodep-3.1.jar");
-			File file = new File(url.toURI());
-			//URI uri = new URI();
-			System.out.println(file.exists());
-			System.out.println(file);
-			System.out.println(file.toURI());
-//			
-//			JarFile jarFile = new JarFile(file);
-//			System.out.println(file.getAbsolutePath());
-//			System.out.println(file.toURI().toString());
-//			for(Enumeration<JarEntry> entries = jarFile.entries(); entries.hasMoreElements();) {
-//				JarEntry entry = entries.nextElement();
-//				//String name = entry.getName();
-//				System.out.println(entry);
-//			}
-			
-		} catch(Exception e) {
-			e.printStackTrace();
-		}
-	}
+
 }

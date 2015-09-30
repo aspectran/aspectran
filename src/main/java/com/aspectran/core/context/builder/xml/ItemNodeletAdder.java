@@ -32,7 +32,7 @@ import com.aspectran.core.util.xml.NodeletAdder;
 import com.aspectran.core.util.xml.NodeletParser;
 
 /**
- * The Class ItemRuleNodeletAdder.
+ * The Class ItemNodeletAdder.
  * 
  * <p>Created: 2008. 06. 14 오전 6:56:29</p>
  */
@@ -73,7 +73,7 @@ public class ItemNodeletAdder implements NodeletAdder {
 
 				assistant.pushObject(itemRule);
 				
-				if(itemRule.getType() != ItemType.SINGLE)
+				if(itemRule.getType() != ItemType.SINGULAR)
 					ItemRule.beginValueCollection(itemRule);
 			}
 		});
@@ -133,7 +133,7 @@ public class ItemNodeletAdder implements NodeletAdder {
 					String name = assistant.popObject();
 					ItemRule itemRule = assistant.peekObject();
 
-					if(itemRule.getType() != ItemType.SINGLE)
+					if(itemRule.getType() != ItemType.SINGULAR)
 						ItemRule.flushValueCollection(itemRule, name, tokens);
 				}
 			}
@@ -154,7 +154,7 @@ public class ItemNodeletAdder implements NodeletAdder {
 				ItemRule itemRule = assistant.popObject();
 				ItemRuleMap itemRuleMap = assistant.peekObject();
 
-				ItemRule.addItemRule(itemRuleMap, itemRule);
+				ItemRule.addItemRule(itemRule, itemRuleMap);
 				Iterator<Token[]> iter = ItemRule.tokenIterator(itemRule);
 				
 				if(iter != null) {

@@ -1,19 +1,4 @@
 /*
- *  Copyright 2004 Clinton Begin
- *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
- */
-/*
  * Copyright 2008-2015 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -33,13 +18,9 @@ package com.aspectran.core.util;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.UndeclaredThrowableException;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.StringTokenizer;
-import java.util.WeakHashMap;
 
 /**
  * BeanUtils provides methods that allow simple, reflective access to
@@ -60,9 +41,6 @@ public class BeanUtils {
 
 	private static final Object[] NO_ARGUMENTS = new Object[0];
 	
-	//private static Map<Class<?>, ClassDescriptor> cache = Collections.synchronizedMap(new HashMap<Class<?>, ClassDescriptor>());
-	private static Map<Class<?>, ClassDescriptor> cache = Collections.synchronizedMap(new WeakHashMap<Class<?>, ClassDescriptor>());
-
 	/**
 	 * Returns an array of the readable properties exposed by a bean
 	 * 
@@ -336,20 +314,31 @@ public class BeanUtils {
 				value = getIndexedProperty(object, name);
 			} else {
 				if(object instanceof Map<?, ?>) {
-					value = ((Map<?, ?>)object).get(name);
+					int index = name.indexOf('.');
+					if(index > -1) {
+						String key = name.substring(0, index);
+						value = getProperty(((Map<?, ?>)object).get(key), name.substring(index + 1));
+					} else {
+						value = ((Map<?, ?>)object).get(name);
+					}					
 				} else {
-					Method method = classCache.getGetter(name);
-					
-					if(method == null) {
-						throw new NoSuchMethodException("No GET method for property " + name + " on instance of "
-								+ object.getClass().getName());
-					}
-					
-					try {
-						value = method.invoke(object, NO_ARGUMENTS);
-					} catch(Throwable t) {
-						throw unwrapThrowable(t);
-					}
+					int index = name.indexOf('.');
+					if(index > -1) {
+						String newName = name.substring(0, index);
+						value = getProperty(getObject(object, newName), name.substring(index + 1));
+					} else {
+						Method method = classCache.getGetter(name);
+						
+						if(method == null) {
+							throw new NoSuchMethodException("No GET method for property " + name + " on instance of " + object.getClass().getName());
+						}
+						
+						try {
+							value = method.invoke(object, NO_ARGUMENTS);
+						} catch(Throwable t) {
+							throw unwrapThrowable(t);
+						}
+					}					
 				}
 			}
 			return value;
@@ -357,11 +346,9 @@ public class BeanUtils {
 			throw e;
 		} catch(Throwable t) {
 			if(object == null) {
-				throw new InvocationTargetException(t, "Could not get property '" + name
-						+ "' from null reference. Cause: " + t.toString());
+				throw new InvocationTargetException(t, "Could not get property '" + name + "' from null reference. Cause: " + t.toString());
 			} else {
-				throw new InvocationTargetException(t, "Could not get property '" + name + "' from "
-						+ object.getClass().getName() + ". Cause: " + t.toString());
+				throw new InvocationTargetException(t, "Could not get property '" + name + "' from " + object.getClass().getName() + ". Cause: " + t.toString());
 			}
 		}
 	}
@@ -382,8 +369,7 @@ public class BeanUtils {
 					Method method = classCache.getSetter(name);
 					
 					if(method == null) {
-						throw new NoSuchMethodException("No SET method for property " + name + " on instance of "
-								+ object.getClass().getName());
+						throw new NoSuchMethodException("No SET method for property " + name + " on instance of " + object.getClass().getName());
 					}
 					
 					Object[] params = new Object[1];
@@ -400,26 +386,23 @@ public class BeanUtils {
 			throw e;
 		} catch(Throwable t) {
 			if(object == null) {
-				throw new InvocationTargetException(t, "Could not set property '" + name
-						+ "' for null reference. Cause: " + t.toString());
+				throw new InvocationTargetException(t, "Could not set property '" + name + "' to value '" + value + "' for null reference. Cause: " + t.toString());
 			} else {
-				throw new InvocationTargetException(t, "Could not set property '" + name + "' for "
-						+ object.getClass().getName() + ". Cause: " + t.toString());
+				throw new InvocationTargetException(t, "Could not set property '" + name + "' to value '" + value + "' for " + object.getClass().getName() + ". Cause: " + t.toString());
 			}
 		}
 	}
 
 	public static Object getIndexedProperty(Object object, String indexedName) throws InvocationTargetException {
-
 		try {
 			String name = indexedName.substring(0, indexedName.indexOf("["));
 			int i = Integer.parseInt(indexedName.substring(indexedName.indexOf("[") + 1, indexedName.indexOf("]")));
 			Object list = null;
 
-			if(StringUtils.isEmpty(name)) {
-				list = object;
-			} else {
+			if(name.length() > 0) {
 				list = getProperty(object, name);
+			} else {
+				list = object;
 			}
 
 			Object value = null;
@@ -445,8 +428,7 @@ public class BeanUtils {
 			} else if(list instanceof short[]) {
 				value = new Short(((short[])list)[i]);
 			} else {
-				throw new IllegalArgumentException("The '" + name + "' property of the " + object.getClass().getName()
-						+ " class is not a List or Array.");
+				throw new IllegalArgumentException("The '" + name + "' property of the " + object.getClass().getName() + " class is not a List or Array.");
 			}
 
 			return value;
@@ -458,13 +440,12 @@ public class BeanUtils {
 	}
 
 	public static Class<?> getIndexedType(Object object, String indexedName) throws InvocationTargetException {
-
 		try {
 			String name = indexedName.substring(0, indexedName.indexOf("["));
 			int i = Integer.parseInt(indexedName.substring(indexedName.indexOf("[") + 1, indexedName.indexOf("]")));
 			Object list = null;
 
-			if(!StringUtils.isEmpty(name)) {
+			if(name.length() > 0) {
 				list = getProperty(object, name);
 			} else {
 				list = object;
@@ -493,8 +474,7 @@ public class BeanUtils {
 			} else if(list instanceof short[]) {
 				value = Short.class;
 			} else {
-				throw new IllegalArgumentException("The '" + name + "' property of the " + object.getClass().getName()
-						+ " class is not a List or Array.");
+				throw new IllegalArgumentException("The '" + name + "' property of the " + object.getClass().getName() + " class is not a List or Array.");
 			}
 
 			return value;
@@ -505,8 +485,7 @@ public class BeanUtils {
 		}
 	}
 
-	public static void setIndexedProperty(Object object, String indexedName, Object value)
-			throws InvocationTargetException {
+	public static void setIndexedProperty(Object object, String indexedName, Object value) throws InvocationTargetException {
 		try {
 			String name = indexedName.substring(0, indexedName.indexOf("["));
 			int i = Integer.parseInt(indexedName.substring(indexedName.indexOf("[") + 1, indexedName.indexOf("]")));
@@ -535,8 +514,7 @@ public class BeanUtils {
 			} else if(list instanceof short[]) {
 				((short[])list)[i] = ((Short)value).shortValue();
 			} else {
-				throw new IllegalArgumentException("The '" + name + "' property of the " + object.getClass().getName()
-						+ " class is not a List or Array.");
+				throw new IllegalArgumentException("The '" + name + "' property of the " + object.getClass().getName() + " class is not a List or Array.");
 			}
 		} catch(InvocationTargetException e) {
 			throw e;
@@ -551,7 +529,7 @@ public class BeanUtils {
 	 * @param t - the exception to examine
 	 * @return The root cause
 	 */
-	public static Throwable unwrapThrowable(Throwable t) {
+	private static Throwable unwrapThrowable(Throwable t) {
 		Throwable t2 = t;
 		
 		while(true) {
@@ -571,208 +549,8 @@ public class BeanUtils {
 	 * @param clazz The class for which to lookup the ClassDescriptor cache.
 	 * @return The ClassDescriptor cache for the class
 	 */
-	public static ClassDescriptor getClassDescriptor(Class<?> clazz) {
-		synchronized(clazz) {
-			ClassDescriptor descriptor = cache.get(clazz);
-			
-			if(descriptor == null) {
-				descriptor = new ClassDescriptor(clazz);
-				cache.put(clazz, descriptor);
-			}
-			
-			return descriptor;
-		}
+	private static ClassDescriptor getClassDescriptor(Class<?> clazz) {
+		return ClassDescriptor.getInstance(clazz);
 	}
-	
-	/**
-	 * This class represents a cached set of class definition information that
-	 * allows for easy mapping between property names and getter/setter methods.
-	 */
-	private static class ClassDescriptor {
-		
-		private static final String[] EMPTY_STRING_ARRAY = new String[0];
 
-		private String className;
-
-		private String[] readablePropertyNames = EMPTY_STRING_ARRAY;
-
-		private String[] writeablePropertyNames = EMPTY_STRING_ARRAY;
-
-		private Map<String, Method> setMethods = new HashMap<String, Method>();
-
-		private Map<String, Method> getMethods = new HashMap<String, Method>();
-
-		private Map<String, Class<?>> setTypes = new HashMap<String, Class<?>>();
-
-		private Map<String, Class<?>> getTypes = new HashMap<String, Class<?>>();
-
-		private ClassDescriptor(Class<?> clazz) {
-			className = clazz.getName();
-			addMethods(clazz);
-			Class<?> superClass = clazz.getSuperclass();
-
-			while(superClass != null) {
-				addMethods(superClass);
-				superClass = superClass.getSuperclass();
-			}
-
-			readablePropertyNames = (String[])getMethods.keySet().toArray(new String[getMethods.keySet().size()]);
-			writeablePropertyNames = (String[])setMethods.keySet().toArray(new String[setMethods.keySet().size()]);
-		}
-
-		private void addMethods(Class<?> cls) {
-			Method[] methods = cls.getMethods();
-
-			for(int i = 0; i < methods.length; i++) {
-				String name = methods[i].getName();
-
-				if(name.equals("getClass")) {
-					// ignore
-				} else if(name.startsWith("set") && name.length() > 3) {
-					if(methods[i].getParameterTypes().length == 1) {
-						name = dropCase(name);
-						setMethods.put(name, methods[i]);
-						setTypes.put(name, methods[i].getParameterTypes()[0]);
-					}
-				} else if(name.startsWith("get") && name.length() > 3) {
-					if(methods[i].getParameterTypes().length == 0) {
-						name = dropCase(name);
-						getMethods.put(name, methods[i]);
-						getTypes.put(name, methods[i].getReturnType());
-					}
-				} else if(name.startsWith("is") && name.length() > 2) {
-					if(methods[i].getParameterTypes().length == 0) {
-						name = dropCase(name);
-						getMethods.put(name, methods[i]);
-						getTypes.put(name, methods[i].getReturnType());
-					}
-				}
-			}
-		}
-
-		private static String dropCase(String name) {
-			if(name.startsWith("is")) {
-				name = name.substring(2);
-			} else if(name.startsWith("get") || name.startsWith("set")) {
-				name = name.substring(3);
-			} else {
-				throw new IllegalArgumentException("Error parsing property name '" + name
-						+ "'.  Didn't start with 'is', 'get' or 'set'.");
-			}
-
-			if(name.length() == 1 || (name.length() > 1 && !Character.isUpperCase(name.charAt(1)))) {
-				name = name.substring(0, 1).toLowerCase(Locale.US) + name.substring(1);
-			}
-
-			return name;
-		}
-
-		/**
-		 * Gets the name of the class the instance provides information for
-		 * 
-		 * @return The class name
-		 */
-		@SuppressWarnings("unused")
-		public String getClassName() {
-			return className;
-		}
-
-		/**
-		 * Gets the setter for a property as a Method object
-		 * 
-		 * @param propertyName - the property
-		 * @return The Method
-		 */
-		public Method getSetter(String propertyName) throws NoSuchMethodException {
-			Method method = (Method)setMethods.get(propertyName);
-			if(method == null) {
-				throw new NoSuchMethodException("There is no WRITEABLE property named '" + propertyName + "' in class '"
-						+ className + "'");
-			}
-			return method;
-		}
-
-		/**
-		 * Gets the getter for a property as a Method object
-		 * 
-		 * @param propertyName - the property
-		 * @return The Method
-		 */
-		public Method getGetter(String propertyName) throws NoSuchMethodException {
-			Method method = (Method)getMethods.get(propertyName);
-			if(method == null) {
-				throw new NoSuchMethodException("There is no READABLE property named '" + propertyName + "' in class '"
-						+ className + "'");
-			}
-			return method;
-		}
-
-		/**
-		 * Gets the type for a property setter
-		 * 
-		 * @param propertyName - the name of the property
-		 * @return The Class of the propery setter
-		 */
-		public Class<?> getSetterType(String propertyName) throws NoSuchMethodException {
-			Class<?> clazz = (Class<?>)setTypes.get(propertyName);
-			if(clazz == null) {
-				throw new NoSuchMethodException("There is no WRITEABLE property named '" + propertyName + "' in class '"
-						+ className + "'");
-			}
-			return clazz;
-		}
-
-		/**
-		 * Gets the type for a property getter
-		 * 
-		 * @param propertyName - the name of the property
-		 * @return The Class of the propery getter
-		 */
-		public Class<?> getGetterType(String propertyName) throws NoSuchMethodException {
-			Class<?> clazz = (Class<?>)getTypes.get(propertyName);
-			if(clazz == null) {
-				throw new NoSuchMethodException("There is no READABLE property named '" + propertyName + "' in class '"
-						+ className + "'");
-			}
-			return clazz;
-		}
-
-		/**
-		 * Gets an array of the readable properties for an object
-		 * 
-		 * @return The array
-		 */
-		public String[] getReadablePropertyNames() {
-			return readablePropertyNames;
-		}
-
-		/**
-		 * Gets an array of the writeable properties for an object
-		 * 
-		 * @return The array
-		 */
-		public String[] getWriteablePropertyNames() {
-			return writeablePropertyNames;
-		}
-
-		/**
-		 * Check to see if a class has a writeable property by name
-		 * 
-		 * @param propertyName - the name of the property to check
-		 * @return True if the object has a writeable property by the name
-		 */
-		public boolean hasWritableProperty(String propertyName) {
-			return setMethods.keySet().contains(propertyName);
-		}
-
-		/**
-		 * Check to see if a class has a readable property by name
-		 * 
-		 * @param propertyName - the name of the property to check
-		 * @return True if the object has a readable property by the name
-		 */
-		public boolean hasReadableProperty(String propertyName) {
-			return getMethods.keySet().contains(propertyName);
-		}
-	}
 }

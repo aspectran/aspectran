@@ -35,9 +35,13 @@ public class CglibDynamicBeanProxy extends AbstractDynamicBeanProxy implements M
 		super(context, beanRule);
 	}
 
+	/* (non-Javadoc)
+	 * @see net.sf.cglib.proxy.MethodInterceptor#intercept(java.lang.Object, java.lang.reflect.Method, java.lang.Object[], net.sf.cglib.proxy.MethodProxy)
+	 */
 	public Object intercept(final Object proxy, final Method method, final Object[] args, final MethodProxy methodProxy) throws Throwable {
 		ProxyMethodInvoker proxyMethodInvoker = new ProxyMethodInvoker() {
 			public Object invoke() throws Throwable {
+				// execute the original method.
 				return methodProxy.invokeSuper(proxy, args);
 			}
 		};
@@ -49,13 +53,13 @@ public class CglibDynamicBeanProxy extends AbstractDynamicBeanProxy implements M
 		Enhancer enhancer = new Enhancer();
 		enhancer.setSuperclass(beanRule.getBeanClass());
 		enhancer.setCallback(new CglibDynamicBeanProxy(context, beanRule));
-		Object obj;
+		Object proxy;
 		
 		if(constructorArgs == null)
-			obj = enhancer.create();
+			proxy = enhancer.create();
 		else
-			obj = enhancer.create(constructorArgTypes, constructorArgs);
+			proxy = enhancer.create(constructorArgTypes, constructorArgs);
 		
-		return obj;
+		return proxy;
 	}
 }

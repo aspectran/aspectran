@@ -60,11 +60,11 @@ public class ShallowContextBuilderAssistant extends ContextBuilderAssistant {
 	 * @throws ClassNotFoundException 
 	 */
 	public void addBeanRule(BeanRule beanRule) throws CloneNotSupportedException, ClassNotFoundException, IOException {
-		beanRuleMap.putBeanRule(beanRule);
+		beanRuleMap.put(Integer.toString(beanRuleMap.size()), beanRule);
 	}
 
 	public void addTransletRule(TransletRule transletRule) throws CloneNotSupportedException {
-		transletRuleMap.putTransletRule(transletRule);
+		transletRuleMap.put(Integer.toString(transletRuleMap.size()), transletRule);
 	}
 	
 }

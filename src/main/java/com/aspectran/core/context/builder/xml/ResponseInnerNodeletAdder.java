@@ -40,7 +40,7 @@ import com.aspectran.core.util.xml.NodeletParser;
  * 
  * <p>Created: 2008. 06. 14 오전 6:56:29</p>
  */
-public class ResponseNodeletAdder implements NodeletAdder {
+public class ResponseInnerNodeletAdder implements NodeletAdder {
 	
 	protected ContextBuilderAssistant assistant;
 	
@@ -50,7 +50,7 @@ public class ResponseNodeletAdder implements NodeletAdder {
 	 * @param parser the parser
 	 * @param assistant the assistant for Context Builder
 	 */
-	public ResponseNodeletAdder(ContextBuilderAssistant assistant) {
+	public ResponseInnerNodeletAdder(ContextBuilderAssistant assistant) {
 		this.assistant = assistant;
 	}
 	
