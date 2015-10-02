@@ -24,7 +24,7 @@ public class WildcardPattern {
 	
 	protected static final char SPACE_CHAR = ' ';
 	
-	protected static final char STAR_CHAR = '*';
+	public static final char STAR_CHAR = '*';
 	
 	protected static final char QUESTION_CHAR = '?';
 	
@@ -52,6 +52,8 @@ public class WildcardPattern {
 
 	private int[] types;
 	
+	private String patternString;
+	
 	public WildcardPattern(String patternString) {
 		parse(patternString);
 	}
@@ -63,6 +65,8 @@ public class WildcardPattern {
 	}
 
 	private void parse(String patternString) {
+		this.patternString = patternString;
+		
 		tokens = patternString.toCharArray();
 		types = new int[tokens.length];
 
@@ -109,12 +113,17 @@ public class WildcardPattern {
 					types[i] = SKIP_TYPE;
 				}
 			} else if(tokens[i] == separator) {
+				//separator character does not escape.
+				esc = false;
+				types[i] = SEPARATOR_TYPE; // type 9: separator
+				/*
 				if(esc) {
 					types[i - 1] = SKIP_TYPE;
 					esc = false;
 				} else {
 					types[i] = SEPARATOR_TYPE; // type 9: separator
 				}
+				*/
 			} else if(tokens[i] == ESCAPE_CHAR) {
 				types[i] = SKIP_TYPE;
 				esc = true;
@@ -160,6 +169,13 @@ public class WildcardPattern {
 	
 	public boolean matches(String compareString) {
 		return WildcardMatcher.matches(this, compareString);
+	}
+	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	public String toString() {
+		return patternString;
 	}
 	
 	public static WildcardPattern compile(String patternString) {

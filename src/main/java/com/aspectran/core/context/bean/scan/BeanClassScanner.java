@@ -121,7 +121,7 @@ public class BeanClassScanner implements ClassScanner {
 				URL resource = resources.nextElement();
 				
 				if(log.isDebugEnabled())
-					log.debug("Bean Scanning: " + classNamePattern + " at " + resource.getFile());
+					log.debug("bean scanning: " + classNamePattern + " at " + resource.getFile());
 				
 				if(isJarResource(resource)) {
 					scanClassesFromJarResource(resource, matcher, scannedClasses);

@@ -29,10 +29,7 @@ public class TransletRuleMap extends LinkedHashMap<String, TransletRule> impleme
 	private boolean freezed;
 	
 	public TransletRule put(String key, TransletRule value) {
-		if(freezed)
-			throw new java.lang.UnsupportedOperationException("freezed transletRuleMap: " + toString());
-
-		return super.put(key, value);
+		throw new java.lang.UnsupportedOperationException();
 	}
 	
 //	/** The multi activity translet rule map. */
@@ -69,7 +66,18 @@ public class TransletRuleMap extends LinkedHashMap<String, TransletRule> impleme
 	 * @return the translet rule
 	 */
 	public TransletRule putTransletRule(TransletRule transletRule) {
-		return put(transletRule.getName(), transletRule);
+		if(freezed)
+			throw new UnsupportedOperationException("freezed transletRuleMap: " + toString());
+
+		String key;
+		
+		if(transletRule.getRestVerb() != null) {
+			key = TransletRule.makeRestfulTransletName(transletRule.getName(), transletRule.getRestVerb());
+		} else {
+			key = transletRule.getName();
+		}
+		
+		return super.put(key, transletRule);
 	}
 	
 	public void freeze() {

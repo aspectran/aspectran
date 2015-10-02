@@ -19,6 +19,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.Enumeration;
 
 import com.aspectran.core.activity.request.parameter.FileParameter;
+import com.aspectran.core.context.rule.type.RequestMethodType;
 
 /**
  * The Interface RequestAdapter.
@@ -34,6 +35,13 @@ public interface RequestAdapter {
 	 * @return the adaptee
 	 */
 	public <T> T getAdaptee();
+
+	/**
+	 * Gets the request method.
+	 *
+	 * @return the request method
+	 */
+	public RequestMethodType getRequestMethod();
 
 	/**
 	 * Gets the character encoding.

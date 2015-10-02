@@ -379,7 +379,8 @@ public class ContextBuilderAssistant {
 				}
 			}
 			
-			log.info("scanned class files: " + (beanClassMap == null ? 0 : beanClassMap.size()));
+			if(log.isDebugEnabled())
+				log.debug("scanned class files: " + (beanClassMap == null ? 0 : beanClassMap.size()));
 		} else {
 			if(beanRule.isPatternedBeanId()) {
 				beanRule.setId(className, beanRule.getIdPrefix(), beanRule.getIdSuffix());

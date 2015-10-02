@@ -320,7 +320,8 @@ public class RootAponDisassembler {
 
 	public void disassembleTransletRule(Parameters transletParameters) throws CloneNotSupportedException {
 		String name = transletParameters.getString(TransletParameters.name);
-		TransletRule transletRule = TransletRule.newInstance(name);
+		String restVerb = transletParameters.getString(TransletParameters.restVerb);
+		TransletRule transletRule = TransletRule.newInstance(name, restVerb);
 		
 		Parameters requestParamters = transletParameters.getParameters(TransletParameters.request);
 		if(requestParamters != null) {
@@ -398,7 +399,7 @@ public class RootAponDisassembler {
 	}
 	
 	public RequestRule disassembleRequestRule(Parameters requestParameters) {
-		String method = requestParameters.getString(RequestParameters.method);
+		String method = requestParameters.getString(RequestParameters.requestMethod);
 		String characterEncoding = requestParameters.getString(RequestParameters.characterEncoding);
 		ItemHolderParameters attributeItemHolderParameters = requestParameters.getParameters(RequestParameters.attributes);
 		

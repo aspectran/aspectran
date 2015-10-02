@@ -275,10 +275,7 @@ public class WildcardMatcherTest {
 							}
 						} else {
 							System.out.println("---------------+trange1: " + trange1);
-							if(types[ttemp] == WildcardPattern.SEPARATOR_TYPE) {
-								trange2 = ttemp - 1;
-								break;
-							} else if(types[ttemp] != WildcardPattern.LITERAL_TYPE) {
+							if(types[ttemp] != WildcardPattern.LITERAL_TYPE) {
 								System.out.println("----no literal type-----------+ttemp: " + ttemp + ", tokens[ttemp]: " + tokens[ttemp]);
 								trange2 = ttemp - 1;
 								break;
@@ -295,7 +292,7 @@ public class WildcardMatcherTest {
 						//	System.out.println("!#t1: " + t1 + ", type: " + types[t1] + ", token: " + tokens[t1]);
 						//}
 						crange1 = cindex;
-						crange2 = crange1;
+						crange2 = cindex;
 						ttemp = trange1;
 						while(ttemp <= trange2 && crange2 < clength) {
 							if(input.charAt(crange2++) != tokens[ttemp]) {
@@ -315,11 +312,9 @@ public class WildcardMatcherTest {
 							if(cindex > 0)
 								cindex--;
 						} else {
-							cindex = crange2;
-							tindex = trange2 + 1;
 							//System.out.println("!!! c1: " + crange1 + ", c1-char: " + input.charAt(crange1) + ", c2: " + crange2 + ", c2-char: " + input.charAt(crange2));
-							if(separatorFlags != null && crange1 < cindex) {
-								for(ctemp = crange1; ctemp < cindex; ctemp++) {
+							if(separatorFlags != null && crange1 < crange2) {
+								for(ctemp = crange1; ctemp < crange2; ctemp++) {
 									System.out.println("!!!separator ctemp: " + ctemp + ", char: " + input.charAt(ctemp));
 									if(input.charAt(ctemp) == separator) {
 										separatorFlags[ctemp] = ++sepaCount;
@@ -327,6 +322,8 @@ public class WildcardMatcherTest {
 									}
 								}
 							}
+							cindex = crange2;
+							tindex = trange2 + 1;
 						}
 					} else {
 						tindex++;
@@ -441,8 +438,8 @@ public class WildcardMatcherTest {
 		//String str2 = "com.x.scope.main.x1xscope.1234XmlBean5678.p1.p2.p3.endAction";
 		//String str = "com.aspectran.**.service.**.*Action?";
 		//String str2 = "com.aspectran.a.service.c.dAction1";
-		String str = "**/*A";
-		String str2 = "common/MyTranslet";
+		String str = "**\\/*A";
+		String str2 = "common/MyTransletA";
 		WildcardPatternTest pattern = WildcardPatternTest.compile(str, '/');
 		
 		int i = 0;

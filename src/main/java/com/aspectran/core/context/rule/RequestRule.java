@@ -31,7 +31,7 @@ public class RequestRule implements AspectAdviceSupport, Cloneable {
 	
 	private String characterEncoding;
 	
-	private RequestMethodType method;
+	private RequestMethodType requestMethod;
 
 	private ItemRuleMap attributeItemRuleMap;
 
@@ -59,21 +59,21 @@ public class RequestRule implements AspectAdviceSupport, Cloneable {
 	}
 
 	/**
-	 * Gets the request method type.
-	 * 
-	 * @return the request method type
+	 * Gets the request method.
+	 *
+	 * @return the request method
 	 */
-	public RequestMethodType getMethod() {
-		return method;
+	public RequestMethodType getRequestMethod() {
+		return requestMethod;
 	}
 
 	/**
-	 * Sets the request method type.
-	 * 
-	 * @param method the request method type
+	 * Sets the request method.
+	 *
+	 * @param requestMethod the new request method
 	 */
-	public void setMethod(RequestMethodType method) {
-		this.method = method;
+	public void setRequestMethod(RequestMethodType requestMethod) {
+		this.requestMethod = requestMethod;
 	}
 
 	/**
@@ -167,7 +167,7 @@ public class RequestRule implements AspectAdviceSupport, Cloneable {
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("{method=").append(method);
+		sb.append("{method=").append(requestMethod);
 		sb.append(", characterEncoding=").append(characterEncoding);
 		if(attributeItemRuleMap != null) {
 			sb.append(", attributes=[");
@@ -187,27 +187,27 @@ public class RequestRule implements AspectAdviceSupport, Cloneable {
 	public RequestRule clone() {
 		RequestRule newRequestRule = new RequestRule();
 		newRequestRule.setCharacterEncoding(characterEncoding);
-		newRequestRule.setMethod(method);
+		newRequestRule.setRequestMethod(requestMethod);
 		newRequestRule.setAttributeItemRuleMap(attributeItemRuleMap);
 		
 		return newRequestRule;
 	}
 	
-	public static RequestRule newInstance(String method, String characterEncoding) {
-		RequestMethodType methodType = null;
+	public static RequestRule newInstance(String requestMethod, String characterEncoding) {
+		RequestMethodType requestMethodType = null;
 		
-		if(method != null) {
-			methodType = RequestMethodType.valueOf(method);
+		if(requestMethod != null) {
+			requestMethodType = RequestMethodType.valueOf(requestMethod);
 			
-			if(methodType == null)
-				throw new IllegalArgumentException("Unknown request method type '" + method + "'");
+			if(requestMethodType == null)
+				throw new IllegalArgumentException("Unknown request method type '" + requestMethod + "'");
 		}
 		
 		if(characterEncoding != null && !Charset.isSupported(characterEncoding))
 			throw new IllegalCharsetNameException("Given charset name is illegal. '" + characterEncoding + "'");
 		
 		RequestRule requestRule = new RequestRule();
-		requestRule.setMethod(methodType);
+		requestRule.setRequestMethod(requestMethodType);
 		requestRule.setCharacterEncoding(characterEncoding);
 		
 		return requestRule;

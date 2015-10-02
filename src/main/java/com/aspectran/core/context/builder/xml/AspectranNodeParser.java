@@ -164,6 +164,7 @@ public class AspectranNodeParser {
 	
 	private void addAspectRuleNodelets() {
 		parser.addNodelet("/aspectran", new AspectNodeletAdder(assistant));
+		
 	}
 
 	/**
@@ -190,7 +191,7 @@ public class AspectranNodeParser {
 				String file = attributes.get("file");
 				String url = attributes.get("url");
 				String fileType = attributes.get("fileType");
-				
+
 				Importable importable = Importable.newInstance(assistant, resource, file, url, fileType);
 				
 				ImportHandler importHandler = assistant.getImportHandler();

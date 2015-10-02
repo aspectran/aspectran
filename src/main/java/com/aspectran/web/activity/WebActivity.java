@@ -25,7 +25,7 @@ import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.ActivityException;
 import com.aspectran.core.activity.CoreActivity;
 import com.aspectran.core.activity.Translet;
-import com.aspectran.core.activity.request.RequestException;
+import com.aspectran.core.activity.request.RequestMethodNotAllowedException;
 import com.aspectran.core.activity.variable.ValueMap;
 import com.aspectran.core.activity.variable.token.ItemTokenExpression;
 import com.aspectran.core.activity.variable.token.ItemTokenExpressor;
@@ -98,13 +98,13 @@ public class WebActivity extends CoreActivity implements Activity {
 	/* (non-Javadoc)
 	 * @see com.aspectran.core.activity.CoreActivity#adapting(com.aspectran.core.activity.Translet)
 	 */
-	protected void adapting(Translet translet) throws ActivityException {
+	protected void adapting(Translet translet) {
 		requestRule = getRequestRule();
 		responseRule = getResponseRule();
 		
 		determineCharacterEncoding();
 
-		multipartRequestWrapper = parseMultipartFormData();
+		multipartRequestWrapper = getMultipartRequestWrapper();
     	
     	if(multipartRequestWrapper != null)
     		request = multipartRequestWrapper;
@@ -122,27 +122,31 @@ public class WebActivity extends CoreActivity implements Activity {
 	/* (non-Javadoc)
 	 * @see com.aspectran.core.activity.CoreActivity#request(com.aspectran.core.activity.Translet)
 	 */
-	protected void request(Translet translet) throws RequestException {
+	protected void request(Translet translet) {
 		String method = request.getMethod();
-		RequestMethodType methodType = requestRule.getMethod();
+		RequestMethodType requestMethod = requestRule.getRequestMethod();
 		
-        if(methodType == null || methodType.toString().equals(method)) {
-			if(multipartRequestWrapper != null) {
-				Enumeration<String> names = multipartRequestWrapper.getFileParameterNames();
-				
-				while(names.hasMoreElements()) {
-					String name = names.nextElement();
-					getRequestAdapter().setFileParameter(name, multipartRequestWrapper.getFileParameters(name));
-				}
-				
-				getRequestAdapter().setMaxLengthExceeded(multipartRequestWrapper.isMaxLengthExceeded());
+		if(requestMethod != null && !requestMethod.toString().equals(method)) {
+			throw new RequestMethodNotAllowedException(requestMethod);
+		}
+		
+		if(multipartRequestWrapper != null) {
+			multipartRequestWrapper.parse();
+			
+			Enumeration<String> names = multipartRequestWrapper.getFileParameterNames();
+			
+			while(names.hasMoreElements()) {
+				String name = names.nextElement();
+				getRequestAdapter().setFileParameter(name, multipartRequestWrapper.getFileParameters(name));
 			}
+			
+			getRequestAdapter().setMaxLengthExceeded(multipartRequestWrapper.isMaxLengthExceeded());
+		}
 
-	        ValueMap valueMap = parseDeclaredParameter(multipartRequestWrapper);
-	        
-	        if(valueMap != null)
-	        	translet.setDeclaredAttributeMap(valueMap);
-        }
+        ValueMap valueMap = parseDeclaredParameter(multipartRequestWrapper);
+        
+        if(valueMap != null)
+        	translet.setDeclaredAttributeMap(valueMap);
 	}
 	
 	/**
@@ -150,7 +154,7 @@ public class WebActivity extends CoreActivity implements Activity {
 	 *
 	 * @throws ActivityException the activity exception
 	 */
-	private void determineCharacterEncoding() throws ActivityException {
+	private void determineCharacterEncoding() {
 		try {
 			String characterEncoding = requestRule.getCharacterEncoding();
 			
@@ -173,16 +177,16 @@ public class WebActivity extends CoreActivity implements Activity {
 	}
 	
 	/**
-	 * Parses the multipart form data.
+	 * Gets the multipart request wrapper.
 	 *
 	 * @return the multipart request wrapper
 	 * @throws MultipartRequestException the multipart request exception
 	 */
-	private MultipartRequestWrapper parseMultipartFormData() throws MultipartRequestException {
+	private MultipartRequestWrapper getMultipartRequestWrapper() {
 		String method = request.getMethod();
 		String contentType = request.getContentType();
 		
-        if(method.equalsIgnoreCase(RequestMethodType.POST.toString())
+        if(RequestMethodType.POST.toString().equals(method)
         		&& contentType != null
         		&& contentType.startsWith("multipart/form-data")) {
 
@@ -201,7 +205,6 @@ public class WebActivity extends CoreActivity implements Activity {
 			parser.setTemporaryFilePath(multipartTemporaryFilePath);
 			parser.setAllowedFileExtensions(multipartAllowedFileExtensions);
 			parser.setDeniedFileExtensions(multipartDeniedFileExtensions);
-			parser.parse();
 			
 			// sets the servlet request wrapper
 			MultipartRequestWrapper requestWrapper = new MultipartRequestWrapper(parser);

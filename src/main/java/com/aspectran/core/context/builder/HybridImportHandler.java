@@ -69,7 +69,7 @@ public class HybridImportHandler extends AbstractImportHandler implements Import
 			
 			rootAponDisassembler.disassembleAspectran(rootParameters);
 		} else {
-			if(importable.getImportType() == ImportType.FILE) {
+			if(hybridLoading && importable.getImportType() == ImportType.FILE) {
 				File aponFile = makeAponFile((ImportableFile)importable);
 
 				if(importable.getLastModified() == aponFile.lastModified()) {
@@ -100,8 +100,8 @@ public class HybridImportHandler extends AbstractImportHandler implements Import
 			assistant.restoreDefaultSettings(defaultSettings);
 		}
 		
-		if(!hybridon) {
-			if(hybridLoading && importable.getImportType() == ImportType.FILE && importable.getImportFileType() == ImportFileType.XML) {
+		if(!hybridon && hybridLoading) {
+			if(importable.getImportType() == ImportType.FILE && importable.getImportFileType() == ImportFileType.XML) {
 				saveAsAponFormat((ImportableFile)importable);
 			}
 		}

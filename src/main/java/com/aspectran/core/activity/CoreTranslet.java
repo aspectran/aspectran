@@ -31,6 +31,7 @@ import com.aspectran.core.context.rule.AspectAdviceRule;
 import com.aspectran.core.context.rule.ForwardResponseRule;
 import com.aspectran.core.context.rule.RedirectResponseRule;
 import com.aspectran.core.context.rule.TransformRule;
+import com.aspectran.core.context.rule.type.RequestMethodType;
 
 
 /**
@@ -62,6 +63,13 @@ public class CoreTranslet implements Translet {
 		return activity.getTransletName();
 	}
 
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.activity.Translet#getRestVerb()
+	 */
+	public RequestMethodType getRestVerb() {
+		return activity.getRestVerb();
+	}
+	
 	/* (non-Javadoc)
 	 * @see com.aspectran.core.activity.Translet#getDeclaredAttributeMap()
 	 */
@@ -148,7 +156,7 @@ public class CoreTranslet implements Translet {
 		activity.activityEnd();
 	}
 
-	public void response(Response res) throws ResponseException {
+	public void response(Response res) {
 		activity.response(res);
 	}
 	
@@ -159,7 +167,7 @@ public class CoreTranslet implements Translet {
 	 * 
 	 * @throws ResponseException the response exception
 	 */
-	public void transform(TransformRule transformRule) throws ResponseException {
+	public void transform(TransformRule transformRule) {
 		Response res = TransformResponseFactory.getResponse(transformRule);
 		
 		if(res == null)
@@ -175,7 +183,7 @@ public class CoreTranslet implements Translet {
 	 * 
 	 * @throws ResponseException the response exception
 	 */
-	public void redirect(RedirectResponseRule redirectResponseRule) throws ResponseException {
+	public void redirect(RedirectResponseRule redirectResponseRule) {
 		Response res = TransformResponseFactory.getResponse(redirectResponseRule);
 		response(res);
 	}
@@ -187,7 +195,7 @@ public class CoreTranslet implements Translet {
 	 * 
 	 * @throws ResponseException the response exception
 	 */
-	public void forward(ForwardResponseRule forwardResponseRule) throws ResponseException {
+	public void forward(ForwardResponseRule forwardResponseRule) {
 		Response res = TransformResponseFactory.getResponse(forwardResponseRule);
 		response(res);
 	}

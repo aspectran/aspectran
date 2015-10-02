@@ -304,11 +304,14 @@ public class RootAponAssembler {
 	public Parameters assembleTransletParameters(TransletRule transletRule) {
 		Parameters transletParameters = new TransletParameters();
 		transletParameters.putValue(TransletParameters.name, transletRule.getName());
+		
+		if(transletRule.getRestVerb() != null)
+			transletParameters.putValue(TransletParameters.restVerb, transletRule.getRestVerb().toString());
 
 		RequestRule requestRule = transletRule.getRequestRule();
 		if(requestRule != null) {
 			RequestParameters requestParameters = transletParameters.newParameters(TransletParameters.request);
-			requestParameters.putValue(RequestParameters.method, requestRule.getMethod());
+			requestParameters.putValue(RequestParameters.requestMethod, requestRule.getRequestMethod());
 			requestParameters.putValue(RequestParameters.characterEncoding, requestRule.getCharacterEncoding());
 			
 			ItemRuleMap attributeItemRuleMap = requestRule.getAttributeItemRuleMap();

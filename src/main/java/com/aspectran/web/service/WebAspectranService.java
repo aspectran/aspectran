@@ -90,7 +90,7 @@ public class WebAspectranService extends CoreAspectranService {
 		
 		try {
 			Activity activity = new WebActivity(activityContext, req, res);
-			activity.ready(requestUri);
+			activity.ready(requestUri, req.getMethod());
 			activity.perform();
 			activity.finish();
 		} catch(TransletNotFoundException e) {

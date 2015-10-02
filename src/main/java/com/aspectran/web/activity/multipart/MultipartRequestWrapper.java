@@ -40,14 +40,17 @@ public class MultipartRequestWrapper extends HttpServletRequestWrapper {
 	/**
 	 * Instantiates a new multipart request wrapper.
 	 * 
-	 * @param handler the handler
+	 * @param parser the handler
 	 * 
 	 * @throws MultipartRequestException the multipart request exception
 	 */
-	public MultipartRequestWrapper(MultipartFormDataParser handler) throws MultipartRequestException {
-		super(handler.getRequest());
-		this.parser = handler;
-		handler.parse();
+	public MultipartRequestWrapper(MultipartFormDataParser parser) {
+		super(parser.getRequest());
+		this.parser = parser;
+	}
+	
+	public void parse() throws MultipartRequestException {
+		parser.parse();
 	}
 
 	/* (non-Javadoc)

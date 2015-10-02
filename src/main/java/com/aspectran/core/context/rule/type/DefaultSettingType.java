@@ -94,4 +94,14 @@ public final class DefaultSettingType extends Type {
 	public static DefaultSettingType valueOf(String type) {
 		return types.get(type);
 	}
+	
+	/**
+	 * Returns an array containing the constants of this type, in the order they are declared.
+	 *
+	 * @return the string[]
+	 */
+	public static String[] values() {
+		return types.keySet().toArray(new String[types.size()]);
+	}
+
 }
