@@ -63,6 +63,30 @@ public class WildcardMatcher {
 		return result;
 	}
 	
+	public int separate(CharSequence input) {
+		separatorCount = 0;
+		separatorIndex = 0;
+
+		if(input == null) {
+			this.input = null;
+			separatorFlags = null;
+			return 0;
+		}
+		
+		this.input = input;
+		int len = input.length();
+		char separator = pattern.getSeparator();
+		int[] separatorFlags = new int[len];
+		
+		for(int i = 0; i < len; i++) {
+			if(input.charAt(i) == separator) {
+				separatorFlags[i] = ++separatorCount;
+			}
+		}
+		
+		return separatorCount;
+	}
+	
 	public WildcardMatcher first() {
 		separatorIndex = 0;
 		return this;
@@ -238,10 +262,7 @@ public class WildcardMatcher {
 								trange1 = ttemp;
 							}
 						} else {
-							if(types[ttemp] == WildcardPattern.SEPARATOR_TYPE) {
-								trange2 = ttemp - 1;
-								break;
-							} else if(types[ttemp] != WildcardPattern.LITERAL_TYPE) {
+							if(types[ttemp] != WildcardPattern.LITERAL_TYPE) {
 								trange2 = ttemp - 1;
 								break;
 							}
@@ -249,7 +270,7 @@ public class WildcardMatcher {
 					}
 					if(trange1 > -1 && trange2 > -1) {
 						crange1 = cindex;
-						crange2 = crange1;
+						crange2 = cindex;
 						ttemp = trange1;
 						while(ttemp <= trange2 && crange2 < clength) {
 							if(input.charAt(crange2++) != tokens[ttemp]) {
@@ -263,15 +284,15 @@ public class WildcardMatcher {
 							if(cindex > 0)
 								cindex--;
 						} else {
-							cindex = crange2;
-							tindex = trange2 + 1;
-							if(separatorFlags != null && crange1 < cindex) {
-								for(ctemp = crange1; ctemp < cindex; ctemp++) {
+							if(separatorFlags != null && crange1 < crange2) {
+								for(ctemp = crange1; ctemp < crange2; ctemp++) {
 									if(input.charAt(ctemp) == separator) {
 										separatorFlags[ctemp] = ++sepaCount;
 									}
 								}
 							}
+							cindex = crange2;
+							tindex = trange2 + 1;
 						}
 					} else {
 						tindex++;

@@ -61,6 +61,14 @@ public class AspectExceptionRaisedNodeletAdder implements NodeletAdder {
 				assistant.pushObject(exceptionHandlingRule);
 			}
 		});
+		parser.addNodelet(xpath, "/description", new Nodelet() {
+			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
+				if(text != null) {
+					ExceptionHandlingRule exceptionHandlingRule = assistant.peekObject();
+					exceptionHandlingRule.setDescription(text);
+				}
+			}
+		});
 		parser.addNodelet(xpath, new ActionRuleNodeletAdder(assistant));
 		parser.addNodelet(xpath, "/responseByContentType", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {

@@ -77,7 +77,7 @@ Aspectran은 다음 요건만 충족을 하면 원할한 작동이 보장됩니�
   </servlet-mapping>
 </web-app>
 ```
-### 1) 초기화 파라메터 정의
+### 3.1 초기화 파라메터 정의
 먼저 컨텍스트 초기화 파라메터 "aspectran:config"를 정의합니다.
 "aspectran:config" 파라메터는 ***APON***(Aspectran Parameter Object Notation) 문서형식의 설정 값을 가질 수 있습니다.
 > ***APON***(Aspectran Parameter Object Notation)은 ***JSON***과 표기법이 비슷합니다.
@@ -99,7 +99,7 @@ Aspectran은 다음 요건만 충족을 하면 원할한 작동이 보장됩니�
 | **scheduler.waitOnShutdown** | 실행중인 Job이 종료되기를 기다렸다가 스케쥴러를 종료할지 여부를 지정 |
 | **scheduler.startup** | 스케쥴러를 기동할지 여부를 지정 |
 
-### 2) AspectranServiceListener 등록
+### 3.2 AspectranServiceListener 등록
 웹 어플리케이션이 시작되면서 Aspectran 서비스도 함께 기동되도록 하기 위해 ***AspectranServiceListener***를 등록합니다.
 `<listner-class>`에  "com.aspectran.web.startup.listener.AspectranServiceListener"를 지정합니다.
 컨텍스트 초기화 파라메터 "aspectran:config"를 참조해서 Aspectran 서비스 환경이 구성됩니다.
@@ -107,20 +107,29 @@ Aspectran은 다음 요건만 충족을 하면 원할한 작동이 보장됩니�
 > AspectranServiceListener에 의해 기동된 Aspectran 서비스는 여러 WebActivityServlet에서 사용될 수 있습니다.
 > 즉, 전역적인 하나의 Aspectran 서비스 환경을 구성할 수 있습니다.
 
-### 3) WebActivityServlet 등록
+### 3.3 WebActivityServlet 등록
 `<servlet-class>`에 "com.aspectran.web.startup.servlet.WebActivityServlet"을 지정합니다.
 `<servlet-name>`에는 Aspectran 서비스를 위한 서블릿이라는 의미의 고유한 서블릿 이름을 부여해 주기 바랍니다.
 
 > 서블릿 초기화 파라메터로 "aspectran:cofnig"를 정의하면 독자적인 Aspectran 서비스 환경을 구성합니다.
 > 즉, 전역 Aspectran 서비스를 사용하지 않습니다.
 
-### 4) 서블릿 URL 패턴 등록
+### 3.4 서블릿 URL 패턴 등록
 `<url-pattern>`  해당하는 요청은 Aspectran 서비스가 처리할 수 있도록 합니다.
 만약 `<url-pattern>` 이 "/example/*"이라면 "/example/"로 시작하는 Aspectran의 Translet이 실행됩니다.
 
 > Aspectran의 Translet이란?
 > 요청을 받고 결과 값을 적절히 가공해서 응답하는 처리자를 Aspectran 내부에서는 "Translet"이라고 명명하였습니다.
 > Translet은 고유 이름을 가지고 있으며, 요청 URI와 직접적으로 매핑이 됩니다.
+
+### 3.5 DefaultServlet 이름 지정하기
+요청 URI에 해당하는 Translet이 존재하지 않을 경우 서블릿 컨테이너의 DefaultServlet에게 넘겨주는 역할을 하는 핸들러가 항상 동작하고 있습니다. 그 핸들러의 이름은 DefaultServletHttpRequestHandler입니다. DefaultServletHttpRequestHandler는 DefaultServlet의 이름이 무엇인지 자동으로 판단합니다. 만약 DefaultServlet의 이름이 다르게 지정되어야 할 경우 아래와 같은 초기화 파라메터를 추가합니다.
+```xml
+<context-param>
+	<param-name>aspectran:defaultServletName</param-name>
+	<param-value>default</param-value>
+</context-param>
+```
 
 - - -
 
@@ -298,7 +307,7 @@ Aspectran은 다음 요건만 충족을 하면 원할한 작동이 보장됩니�
 </aspectran>
 ```
 
-### 1) 환경 설정 상수
+### 4.1 환경 설정 상수
 Aspectran의 기본 설정 항목에 대해 설명합니다.
 
 | 설정 항목명 | 설명 | 사용가능한 값 | 기본 값 |
@@ -326,7 +335,7 @@ Aspectran의 기본 설정 항목에 대해 설명합니다.
 </settings>
 ```
 
-### 2) Bean 정의
+### 4.2 Bean 정의
 Bean을 정의하는 방법은 두 가지가 있습니다. 와일드카드를 사용해서 Bean 클래스를 일괄 스캔해서 자동으로 Bean을 등록할 수 있습니다.
 
 #### Bean을 한 개씩 정의하는 방법
@@ -422,7 +431,7 @@ class 속성 값에 사용할 수 있는 와일드카드 문자들은  `*, ?, +`
 </bean>
 ```
 
-### 3) Aspect 정의
+### 4.3 Aspect 정의
 Aspectran이 지원하는 AOP(Aspect Oriented Programming)는 다른 프레임웤에 비해 사용법이 쉽습니다.
 Aspectran의 AOP는 Translet, Bean 영역 내에서의 메쏘드 호출 조인포인트(Joingpoint)를 지원합니다.
 

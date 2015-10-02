@@ -96,7 +96,7 @@ public class NodeletParser {
 	 * @param nodelet the nodelet
 	 */
 	public void addNodelet(String prefix, String xpath, Nodelet nodelet) {
-		addNodelet(new StringBuilder(prefix).append(xpath).toString(), nodelet);
+		addNodelet(prefix + xpath, nodelet);
 	}
 
 	/**
@@ -119,7 +119,7 @@ public class NodeletParser {
 	 * @throws Exception the exception
 	 */
 	public void addNodelet(String prefix, String xpath, NodeletAdder nodeletAdder) {
-		addNodelet(new StringBuilder(prefix).append(xpath).toString(), nodeletAdder);
+		addNodelet(prefix + xpath, nodeletAdder);
 	}
 	
 	/**
@@ -150,9 +150,8 @@ public class NodeletParser {
 	 * Begins parsing from the provided Node.
 	 */
 	public void parse(Node node) {
-		Path path = new Path();
 		processNodelet(node, "/");
-		process(node, path);
+		process(node, new Path());
 	}
 
 	/**
@@ -165,7 +164,7 @@ public class NodeletParser {
 			String elementName = node.getNodeName();
 			path.add(elementName);
 			processNodelet(node, path.toString());
-			processNodelet(node, new StringBuilder("//").append(elementName).toString());
+			processNodelet(node, "//" + elementName.toString());
 			/*
 			// Attribute
 			NamedNodeMap attributes = node.getAttributes();
@@ -225,7 +224,7 @@ public class NodeletParser {
 						log.trace(sb.toString());
 					}
 				} else {
-					attributes = EMPTY_ATTRIBUTES;
+					attributes = null;
 					text = null;
 				}
 
@@ -274,13 +273,13 @@ public class NodeletParser {
 			
 			if(child.getNodeType() == Node.CDATA_SECTION_NODE ||
 					child.getNodeType() == Node.TEXT_NODE) {
-				String data = ((CharacterData)child).getData().trim();
+				String data = ((CharacterData)child).getData();
 				
 				if(data.length() > 0) {
 					if(sb == null)
 						sb = new StringBuilder(data);
 					else
-						sb.append(data.trim());
+						sb.append(data);
 				}
 			}
 		}

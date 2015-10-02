@@ -27,6 +27,7 @@ import com.aspectran.core.activity.response.Response;
 import com.aspectran.core.activity.response.ResponseMap;
 import com.aspectran.core.activity.response.dispatch.DispatchResponse;
 import com.aspectran.core.activity.response.transform.TransformResponse;
+import com.aspectran.core.context.builder.AssistantLocal;
 import com.aspectran.core.context.builder.ContextBuilderAssistant;
 import com.aspectran.core.context.builder.DefaultSettings;
 import com.aspectran.core.context.builder.Importable;
@@ -66,6 +67,7 @@ import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.BeanRuleMap;
 import com.aspectran.core.context.rule.DispatchResponseRule;
 import com.aspectran.core.context.rule.EchoActionRule;
+import com.aspectran.core.context.rule.ExceptionHandlingRule;
 import com.aspectran.core.context.rule.ForwardResponseRule;
 import com.aspectran.core.context.rule.IncludeActionRule;
 import com.aspectran.core.context.rule.ItemRule;
@@ -74,7 +76,6 @@ import com.aspectran.core.context.rule.PointcutRule;
 import com.aspectran.core.context.rule.RedirectResponseRule;
 import com.aspectran.core.context.rule.RequestRule;
 import com.aspectran.core.context.rule.ResponseByContentTypeRule;
-import com.aspectran.core.context.rule.ExceptionHandlingRule;
 import com.aspectran.core.context.rule.ResponseRule;
 import com.aspectran.core.context.rule.SettingsAdviceRule;
 import com.aspectran.core.context.rule.TemplateRule;
@@ -113,9 +114,13 @@ public class RootAponAssembler {
 	public Parameters assembleAspectran() throws Exception {
 		Parameters aspectranParameters = new AspectranParameters();
 		
-		DefaultSettings defaultSettings = assistant.getDefaultSettings();
+		AssistantLocal assistantLocal = assistant.getAssistantLocal();
+		if(assistantLocal.getDescription() != null)
+			aspectranParameters.putValue(AspectranParameters.description, assistantLocal.getDescription());
+		
+		DefaultSettings defaultSettings = assistantLocal.getDefaultSettings();
 		if(defaultSettings != null) {
-			DefaultSettingsParameters settingParameters = aspectranParameters.newParameters(AspectranParameters.setting);
+			DefaultSettingsParameters settingParameters = aspectranParameters.newParameters(AspectranParameters.settings);
 			if(defaultSettings.getTransletNamePattern() != null) {
 				settingParameters.putValue(DefaultSettingsParameters.transletNamePattern, defaultSettings.getTransletNamePattern());
 			} else {
@@ -168,6 +173,9 @@ public class RootAponAssembler {
 	
 	public Parameters assembleAspectParameters(AspectRule aspectRule) {
 		Parameters aspectParameters = new AspectParameters();
+		if(aspectRule.getDescription() != null) {
+			aspectParameters.putValue(AspectParameters.description, aspectRule.getDescription());
+		}
 		aspectParameters.putValue(AspectParameters.id, aspectRule.getId());
 		aspectParameters.putValue(AspectParameters.useFor, aspectRule.getAspectTargetType());
 		
@@ -246,6 +254,9 @@ public class RootAponAssembler {
 		ExceptionHandlingRule exceptionHandlingRule = aspectRule.getExceptionHandlingRule();
 		if(exceptionHandlingRule != null) {
 			Parameters exceptionRaisedParameters = aspectParameters.touchParameters(AspectParameters.exceptionRaised);
+			if(exceptionHandlingRule.getDescription() != null) {
+				exceptionRaisedParameters.putValue(ExceptionRaisedParameters.description, exceptionHandlingRule.getDescription());
+			}
 			if(exceptionHandlingRule.getActionType() == ActionType.ECHO) {
 				EchoActionRule echoActionRule = exceptionHandlingRule.getExecutableAction().getActionRule();
 				exceptionRaisedParameters.putValue(ExceptionRaisedParameters.action, assembleActionParameters(echoActionRule));
@@ -274,6 +285,9 @@ public class RootAponAssembler {
 
 	public Parameters assembleBeanParameters(BeanRule beanRule) {
 		Parameters beanParameters = new BeanParameters();
+		if(beanRule.getDescription() != null) {
+			beanParameters.putValue(BeanParameters.description, beanRule.getDescription());
+		}
 		beanParameters.putValue(BeanParameters.id, beanRule.getId());
 		beanParameters.putValue(BeanParameters.className, beanRule.getClassName());
 		if(beanRule.getSingleton() == Boolean.TRUE && beanRule.getScopeType() == ScopeType.SINGLETON)
@@ -303,12 +317,18 @@ public class RootAponAssembler {
 	
 	public Parameters assembleTransletParameters(TransletRule transletRule) {
 		Parameters transletParameters = new TransletParameters();
+		if(transletRule.getDescription() != null) {
+			transletParameters.putValue(TransletParameters.description, transletRule.getDescription());
+		}
 		transletParameters.putValue(TransletParameters.name, transletRule.getName());
+		
+		if(transletRule.getRestVerb() != null)
+			transletParameters.putValue(TransletParameters.restVerb, transletRule.getRestVerb().toString());
 
 		RequestRule requestRule = transletRule.getRequestRule();
 		if(requestRule != null) {
 			RequestParameters requestParameters = transletParameters.newParameters(TransletParameters.request);
-			requestParameters.putValue(RequestParameters.method, requestRule.getMethod());
+			requestParameters.putValue(RequestParameters.requestMethod, requestRule.getRequestMethod());
 			requestParameters.putValue(RequestParameters.characterEncoding, requestRule.getCharacterEncoding());
 			
 			ItemRuleMap attributeItemRuleMap = requestRule.getAttributeItemRuleMap();

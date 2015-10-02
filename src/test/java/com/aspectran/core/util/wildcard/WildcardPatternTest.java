@@ -109,12 +109,17 @@ public class WildcardPatternTest {
 					types[i] = SKIP_TYPE;
 				}
 			} else if(tokens[i] == separator) {
+				//separator character does not escape.
+				esc = false;
+				types[i] = SEPARATOR_TYPE; // type 9: separator
+				/*
 				if(esc) {
 					types[i - 1] = SKIP_TYPE;
 					esc = false;
 				} else {
 					types[i] = SEPARATOR_TYPE; // type 9: separator
 				}
+				*/
 			} else if(tokens[i] == ESCAPE_CHAR) {
 				types[i] = SKIP_TYPE;
 				esc = true;

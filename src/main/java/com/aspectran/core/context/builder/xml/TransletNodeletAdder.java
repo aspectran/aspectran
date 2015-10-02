@@ -59,9 +59,18 @@ public class TransletNodeletAdder implements NodeletAdder {
 		parser.addNodelet(xpath, "/translet", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
 				String name = attributes.get("name");
-
-				TransletRule transletRule = TransletRule.newInstance(name);
+				String restVerb = attributes.get("restVerb");
+				
+				TransletRule transletRule = TransletRule.newInstance(name, restVerb);
 				assistant.pushObject(transletRule);
+			}
+		});
+		parser.addNodelet(xpath, "/translet/description", new Nodelet() {
+			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
+				if(text != null) {
+					TransletRule transletRule = assistant.peekObject();
+					transletRule.setDescription(text);
+				}
 			}
 		});
 		parser.addNodelet(xpath, "/translet", new ActionRuleNodeletAdder(assistant));

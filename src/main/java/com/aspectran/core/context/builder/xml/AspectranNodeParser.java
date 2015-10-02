@@ -25,6 +25,7 @@ import com.aspectran.core.context.builder.ContextBuilderAssistant;
 import com.aspectran.core.context.builder.ImportHandler;
 import com.aspectran.core.context.builder.Importable;
 import com.aspectran.core.context.rule.type.DefaultSettingType;
+import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.apon.GenericParameters;
 import com.aspectran.core.util.apon.Parameters;
 import com.aspectran.core.util.xml.Nodelet;
@@ -88,9 +89,16 @@ public class AspectranNodeParser {
 	 * Adds the settings nodelets.
 	 */
 	private void addSettingsNodelets() {
-		parser.addNodelet("/aspectran/settings", new Nodelet() {
+		parser.addNodelet("/aspectran/description", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
 				if(text != null) {
+					assistant.getAssistantLocal().setDescription(text);
+				}
+			}
+		});
+		parser.addNodelet("/aspectran/settings", new Nodelet() {
+			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
+				if(StringUtils.hasText(text)) {
 					Parameters parameters = new GenericParameters(text);
 					Iterator<String> iter = parameters.getParameterNameSet().iterator();
 					
@@ -141,7 +149,7 @@ public class AspectranNodeParser {
 	private void addTypeAliasNodelets() {
 		parser.addNodelet("/aspectran/typeAliases", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
-				if(text != null) {
+				if(StringUtils.hasLength(text)) {
 					Parameters parameters = new GenericParameters(text);
 					Iterator<String> iter = parameters.getParameterNameSet().iterator();
 					
@@ -164,6 +172,7 @@ public class AspectranNodeParser {
 	
 	private void addAspectRuleNodelets() {
 		parser.addNodelet("/aspectran", new AspectNodeletAdder(assistant));
+		
 	}
 
 	/**
@@ -190,7 +199,7 @@ public class AspectranNodeParser {
 				String file = attributes.get("file");
 				String url = attributes.get("url");
 				String fileType = attributes.get("fileType");
-				
+
 				Importable importable = Importable.newInstance(assistant, resource, file, url, fileType);
 				
 				ImportHandler importHandler = assistant.getImportHandler();

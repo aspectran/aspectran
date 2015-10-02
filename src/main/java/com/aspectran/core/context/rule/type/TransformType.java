@@ -98,5 +98,14 @@ public final class TransformType extends Type {
 		
 		return null;
 	}
-	
+
+	/**
+	 * Returns an array containing the constants of this type, in the order they are declared.
+	 *
+	 * @return the string[]
+	 */
+	public static String[] values() {
+		return types.keySet().toArray(new String[types.size()]);
+	}
+
 }

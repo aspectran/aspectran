@@ -37,6 +37,8 @@ public class ExceptionHandlingRule implements ActionRuleApplicable, Iterable<Res
 	private ResponseByContentTypeRule defaultResponseByContentTypeRule;
 	
 	private Map<String, ResponseByContentTypeRule> responseByContentTypeRuleMap = new LinkedHashMap<String, ResponseByContentTypeRule>();
+	
+	private String description;
 
 	/* (non-Javadoc)
 	 * @see com.aspectran.core.context.rule.ability.ActionRuleApplicable#applyActionRule(com.aspectran.core.context.rule.EchoActionRule)
@@ -126,6 +128,24 @@ public class ExceptionHandlingRule implements ActionRuleApplicable, Iterable<Res
 	 */
 	public Iterator<ResponseByContentTypeRule> iterator() {
 		return responseByContentTypeRuleMap.values().iterator();
+	}
+
+	/**
+	 * Gets the description.
+	 *
+	 * @return the description
+	 */
+	public String getDescription() {
+		return description;
+	}
+
+	/**
+	 * Sets the description.
+	 *
+	 * @param description the new description
+	 */
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 }

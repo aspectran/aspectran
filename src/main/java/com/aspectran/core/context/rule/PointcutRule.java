@@ -207,67 +207,9 @@ public class PointcutRule {
 				}
 			}
 		}
-/*		
-		pointcutRule.setPointcutType(pointcutType);
-		PointcutType pointcutType = null;
-		
-		if(aspectRule.getAspectTargetType() == AspectTargetType.SCHEDULER) {
-			pointcutType = PointcutType.valueOf(type);
-			
-			if(pointcutType != PointcutType.SIMPLE_TRIGGER && pointcutType != PointcutType.CRON_TRIGGER)
-				throw new IllegalArgumentException("Unknown pointcut-type '" + type + "'. Scheduler's pointcut-type must be 'simpleTrigger' or 'cronTrigger'.");
-			
-			if(!StringUtils.hasText(text))
-				throw new IllegalArgumentException("Pointcut pattern can not be null");
-		} else {
-			if(type != null) {
-				pointcutType = PointcutType.valueOf(type);
 
-				if(pointcutType != PointcutType.WILDCARD && pointcutType != PointcutType.REGEXP)
-					throw new IllegalArgumentException("Unknown pointcut-type '" + type + "'. Translet's pointcut-type must be 'wildcard' or 'regexp'.");
-			} else {
-				pointcutType = PointcutType.WILDCARD;
-			}
-		}
-		
-		PointcutRule pointcutRule = new PointcutRule();
-		pointcutRule.setPointcutType(pointcutType);
-		pointcutRule.setPatternString(text);
-		
-		if(pointcutType == PointcutType.SIMPLE_TRIGGER) {
-			Parameters simpleTriggerParameters = new SimpleTriggerParameters(text);
-			pointcutRule.setSimpleTriggerParameters(simpleTriggerParameters);
-		} else if(pointcutType == PointcutType.CRON_TRIGGER) {
-			Parameters cronTriggerParameters = new CronTriggerParameters(text);
-			pointcutRule.setCronTriggerParameters(cronTriggerParameters);
-		}
-*/
 		return pointcutRule;
 	}
-/*
-	public static void addPointcutPatternRule(List<PointcutPatternRule> pointcutPatternRuleList, String translet, String bean, String method, String text) {
-		addPointcutPatternRule(pointcutPatternRuleList, translet, bean, method);
-		addPointcutPatternRule(pointcutPatternRuleList, text);
-	}
-
-	public static PointcutPatternRule addPointcutPatternRule(List<PointcutPatternRule> pointcutPatternRuleList, String translet, String bean, String method) {
-		PointcutPatternRule ppr = null;
-		
-		if(StringUtils.hasLength(translet) || StringUtils.hasLength(bean) || StringUtils.hasLength(method)) {
-			ppr = PointcutPatternRule.newInstance(translet, bean, method);
-			pointcutPatternRuleList.add(ppr);
-		}
-		
-		return ppr;
-	}
-
-	public static void addPointcutPatternRule(List<PointcutPatternRule> pointcutPatternRuleList, String text) {
-		if(StringUtils.hasText(text)) {
-			Parameters targetParameters = new TargetParameters(text);
-			addPointcutPatternRule(pointcutPatternRuleList, targetParameters);
-		}
-	}
-*/
 
 	private static List<PointcutPatternRule> addPointcutPatternRule(List<PointcutPatternRule> pointcutPatternRuleList, Parameters targetParameters) {
 		String translet = targetParameters.getString(TargetParameters.translet);
@@ -324,18 +266,5 @@ public class PointcutRule {
 			pointcutPatternRule.addExcludePointcutPatternRule(ppr);
 		}
 	}
-/*
-	private static void addExcludePointcutPatternRule(List<PointcutPatternRule> pointcutPatternRuleList, String translet, String bean, String method) {
-		for(PointcutPatternRule pointcutPatternRule : pointcutPatternRuleList) {
-			addExcludePointcutPatternRule(pointcutPatternRule, translet, bean, method);
-		}
-	}
-	private static void addExcludePointcutPatternRule(PointcutPatternRule pointcutPatternRule, String translet, String bean, String method) {
-		if(StringUtils.hasLength(translet) || StringUtils.hasLength(bean) || StringUtils.hasLength(method)) {
-			PointcutPatternRule ppr = PointcutPatternRule.newInstance(translet, bean, method);
-			pointcutPatternRule.addExcludePointcutPatternRule(ppr);
-		}
-	}
- */
 
 }

@@ -28,6 +28,7 @@ import com.aspectran.core.context.rule.AspectAdviceRule;
 import com.aspectran.core.context.rule.ForwardResponseRule;
 import com.aspectran.core.context.rule.RedirectResponseRule;
 import com.aspectran.core.context.rule.TransformRule;
+import com.aspectran.core.context.rule.type.RequestMethodType;
 
 /**
  * The Interface Translet.
@@ -43,6 +44,13 @@ public abstract interface Translet {
 	 */
 	public String getTransletName();
 
+	/**
+	 * Gets the REST verb.
+	 *
+	 * @return the REST verb
+	 */
+	public RequestMethodType getRestVerb();
+	
 	/**
 	 * Gets the declared attribute map.
 	 *
@@ -118,7 +126,7 @@ public abstract interface Translet {
 	 * 
 	 * @throws ResponseException the response exception
 	 */
-	public void response() throws ResponseException;
+	public void response();
 
 	/**
 	 * Response.
@@ -127,7 +135,7 @@ public abstract interface Translet {
 	 * 
 	 * @throws ResponseException the response exception
 	 */
-	public void response(Response res) throws ResponseException;
+	public void response(Response res);
 
 	/**
 	 * Transform.
@@ -135,7 +143,7 @@ public abstract interface Translet {
 	 * @param transformRule the transform rule
 	 * @throws ResponseException the response exception
 	 */
-	public void transform(TransformRule transformRule) throws ResponseException;
+	public void transform(TransformRule transformRule);
 
 	/**
 	 * Redirect.
@@ -143,7 +151,7 @@ public abstract interface Translet {
 	 * @param redirectResponseRule the redirect response rule
 	 * @throws ResponseException the response exception
 	 */
-	public void redirect(RedirectResponseRule redirectResponseRule) throws ResponseException;
+	public void redirect(RedirectResponseRule redirectResponseRule);
 	
 	/**
 	 * Forward.
@@ -151,7 +159,7 @@ public abstract interface Translet {
 	 * @param forwardResponseRule the forward response rule
 	 * @throws ResponseException the response exception
 	 */
-	public void forward(ForwardResponseRule forwardResponseRule) throws ResponseException;
+	public void forward(ForwardResponseRule forwardResponseRule);
 	
 	/**
 	 * To respond immediately terminate.

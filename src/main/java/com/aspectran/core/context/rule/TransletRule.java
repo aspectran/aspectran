@@ -23,10 +23,13 @@ import com.aspectran.core.activity.Translet;
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.activity.process.ContentList;
 import com.aspectran.core.activity.response.Response;
+import com.aspectran.core.activity.variable.token.Token;
 import com.aspectran.core.context.AspectranConstant;
 import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
 import com.aspectran.core.context.rule.ability.ActionRuleApplicable;
 import com.aspectran.core.context.rule.ability.ResponseRuleApplicable;
+import com.aspectran.core.context.rule.type.RequestMethodType;
+import com.aspectran.core.util.wildcard.WildcardPattern;
 
 /**
  * <p>Created: 2008. 03. 22 오후 5:48:09</p>
@@ -35,6 +38,12 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 
 	private String name;
 
+	private RequestMethodType restVerb;
+	
+	private WildcardPattern namePattern;
+	
+	private Token[] nameTokens;
+	
 	private RequestRule requestRule;
 	
 	private ContentList contentList;
@@ -56,6 +65,8 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 
 	private AspectAdviceRuleRegistry aspectAdviceRuleRegistry;
 	
+	private String description;
+	
 	/**
 	 * Instantiates a new translet rule.
 	 */
@@ -72,14 +83,68 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 	}
 
 	/**
-	 * Sets the tranlset name.
-	 * 
-	 * @param name the new translet name
+	 * Sets the name.
+	 *
+	 * @param name the new name
 	 */
 	public void setName(String name) {
 		this.name = name;
 	}
-	
+
+	/**
+	 * Gets the restful verb.
+	 *
+	 * @return the restful verb
+	 */
+	public RequestMethodType getRestVerb() {
+		return restVerb;
+	}
+
+	/**
+	 * Sets the rest verb.
+	 *
+	 * @param restVerb the new rest verb
+	 */
+	public void setRestVerb(RequestMethodType restVerb) {
+		this.restVerb = restVerb;
+	}
+
+	/**
+	 * Gets the name pattern.
+	 *
+	 * @return the name pattern
+	 */
+	public WildcardPattern getNamePattern() {
+		return namePattern;
+	}
+
+	/**
+	 * Sets the name pattern.
+	 *
+	 * @param namePattern the new name pattern
+	 */
+	public void setNamePattern(WildcardPattern namePattern) {
+		this.namePattern = namePattern;
+	}
+
+	/**
+	 * Gets the name tokens.
+	 *
+	 * @return the name tokens
+	 */
+	public Token[] getNameTokens() {
+		return nameTokens;
+	}
+
+	/**
+	 * Sets the name tokens.
+	 *
+	 * @param nameTokens the new name tokens
+	 */
+	public void setNameTokens(Token[] nameTokens) {
+		this.nameTokens = nameTokens;
+	}
+
 	/**
 	 * Gets the request rule.
 	 * 
@@ -363,6 +428,24 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 		return aspectAdviceRuleRegistry.getExceptionHandlingRuleList();
 	}
 	
+	/**
+	 * Gets the description.
+	 *
+	 * @return the description
+	 */
+	public String getDescription() {
+		return description;
+	}
+
+	/**
+	 * Sets the description.
+	 *
+	 * @param description the new description
+	 */
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
@@ -370,6 +453,10 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("{name=").append(name);
+		if(restVerb != null) {
+			sb.append(", restVerb=").append(restVerb);
+			sb.append(", namePattern=").append(namePattern);
+		}
 		sb.append(", requestRule=").append(requestRule);
 		sb.append(", responseRule=").append(responseRule);
 		if(exceptionHandlingRule != null)
@@ -389,6 +476,26 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 		return sb.toString();
 	}
 	
+	public static TransletRule newInstance(String name, String restVerb) {
+		if(name == null)
+			throw new IllegalArgumentException("The <translet> element requires a name attribute.");
+
+		RequestMethodType requestMethod = null;
+		
+		if(restVerb != null) {
+			requestMethod = RequestMethodType.valueOf(restVerb);
+			
+			if(requestMethod == null)
+				throw new IllegalArgumentException("Unknown REST Verb '" + restVerb + "' for translet '" + name + "'");
+		}
+
+		TransletRule transletRule = new TransletRule();
+		transletRule.setName(name);
+		transletRule.setRestVerb(requestMethod);
+
+		return transletRule;
+	}
+	
 	public static TransletRule newSubTransletRule(TransletRule transletRule, ResponseRule responseRule) {
 		RequestRule newRequestRule = new RequestRule();
 		if(newRequestRule != null)
@@ -400,6 +507,7 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 		
 		TransletRule newTransletRule = new TransletRule();
 		newTransletRule.setName(transletRule.getName());
+		newTransletRule.setRestVerb(transletRule.getRestVerb());
 		newTransletRule.setRequestRule(newRequestRule);
 		newTransletRule.setContentList(newContentList);
 		newTransletRule.setResponseRule(responseRule);
@@ -440,14 +548,8 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 		}
 	}
 	
-	public static TransletRule newInstance(String name) {
-		if(name == null)
-			throw new IllegalArgumentException("The <translet> element requires a name attribute.");
-
-		TransletRule transletRule = new TransletRule();
-		transletRule.setName(name);
-
-		return transletRule;
+	public static String makeRestfulTransletName(String transletName, RequestMethodType restVerb) {
+		return restVerb + " " + transletName;
 	}
-	
+
 }

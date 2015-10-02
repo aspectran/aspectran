@@ -18,9 +18,7 @@ package com.aspectran.core.context.builder;
 import com.aspectran.core.context.builder.xml.AspectranNodeParser;
 
 /**
- * Translet Map Parser.
- * 
- * <p>Created: 2008. 06. 14 오전 4:39:24</p>
+ * The Class XmlImportHandler.
  */
 public class XmlImportHandler extends AbstractImportHandler implements ImportHandler {
 	
@@ -34,13 +32,16 @@ public class XmlImportHandler extends AbstractImportHandler implements ImportHan
 	}
 	
 	public void handle(Importable importable) throws Exception {
-		DefaultSettings defaultSettings = assistant.backupDefaultSettings();
+		AssistantLocal assistantLocal = assistant.backupAssistantLocal();
 		
 		aspectranNodeParser.parse(importable.getInputStream());
 		
 		handle();
 		
-		assistant.restoreDefaultSettings(defaultSettings);
+		// First default setting is held after configuration loading is completed.
+		if(assistantLocal.getCloneCount() > 0) {
+			assistant.restoreAssistantLocal(assistantLocal);
+		}
 	}
 
 }

@@ -57,7 +57,7 @@ public class HybridImportHandler extends AbstractImportHandler implements Import
 	}
 	
 	public void handle(Importable importable) throws Exception {
-		DefaultSettings defaultSettings = assistant.backupDefaultSettings();
+		AssistantLocal assistantLocal = assistant.backupAssistantLocal();
 		
 		boolean hybridon = false;
 		
@@ -69,7 +69,7 @@ public class HybridImportHandler extends AbstractImportHandler implements Import
 			
 			rootAponDisassembler.disassembleAspectran(rootParameters);
 		} else {
-			if(importable.getImportType() == ImportType.FILE) {
+			if(hybridLoading && importable.getImportType() == ImportType.FILE) {
 				File aponFile = makeAponFile((ImportableFile)importable);
 
 				if(importable.getLastModified() == aponFile.lastModified()) {
@@ -96,12 +96,12 @@ public class HybridImportHandler extends AbstractImportHandler implements Import
 		handle();
 
 		// First default setting is held after configuration loading is completed.
-		if(defaultSettings != null) {
-			assistant.restoreDefaultSettings(defaultSettings);
+		if(assistantLocal.getCloneCount() > 0) {
+			assistant.restoreAssistantLocal(assistantLocal);
 		}
 		
-		if(!hybridon) {
-			if(hybridLoading && importable.getImportType() == ImportType.FILE && importable.getImportFileType() == ImportFileType.XML) {
+		if(!hybridon && hybridLoading) {
+			if(importable.getImportType() == ImportType.FILE && importable.getImportFileType() == ImportFileType.XML) {
 				saveAsAponFormat((ImportableFile)importable);
 			}
 		}

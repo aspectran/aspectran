@@ -32,7 +32,7 @@ public class Token {
 
 	public static final char END_BRACKET = '}';
 
-	public static final char DEFAULT_VALUE_SEPARATOR = ':';
+	public static final char DEFAULT_VALUE_DELIMITER = ':';
 	
 	public static final char BEAN_PROPERTY_DELIMITER = '^';
 	
@@ -138,7 +138,7 @@ public class Token {
 			sb.append(getterName);
 		}
 		if(defaultText != null) {
-			sb.append(DEFAULT_VALUE_SEPARATOR);
+			sb.append(DEFAULT_VALUE_DELIMITER);
 			sb.append(defaultText);
 		}
 		sb.append(END_BRACKET);
@@ -149,7 +149,7 @@ public class Token {
 	/**
 	 * Checks if is token symbol.
 	 * 
-	 * @param c the c
+	 * @param c the character
 	 * 
 	 * @return true, if is token symbol
 	 */

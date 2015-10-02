@@ -45,7 +45,7 @@ public class MultipartFormDataParser {
 	
 	private static final Log log = LogFactory.getLog(MultipartFormDataParser.class);
 
-	public static final long MAX_REQUEST_SIZE = 250 * 1024 * 1024;
+	public static final long DEFAULT_MAX_REQUEST_SIZE = 250 * 1024 * 1024;
 
 	public static final int DEFAULT_SIZE_THRESHOLD = 256 * 1024;
 
@@ -53,7 +53,7 @@ public class MultipartFormDataParser {
 
 	private String temporaryFilePath;
 	
-	private long maxRequestSize = MAX_REQUEST_SIZE;
+	private long maxRequestSize = DEFAULT_MAX_REQUEST_SIZE;
 
 	private final HttpServletRequest request;
 

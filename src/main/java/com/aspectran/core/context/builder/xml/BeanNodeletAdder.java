@@ -69,6 +69,14 @@ public class BeanNodeletAdder implements NodeletAdder {
 				assistant.pushObject(beanRule);					
 			}
 		});
+		parser.addNodelet(xpath, "/bean/description", new Nodelet() {
+			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
+				if(text != null) {
+					BeanRule beanRule = assistant.peekObject();
+					beanRule.setDescription(text);
+				}
+			}
+		});
 		parser.addNodelet(xpath, "/bean/filter", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
 				String classScanFilterClassName = attributes.get("class");
@@ -90,16 +98,16 @@ public class BeanNodeletAdder implements NodeletAdder {
 		});
 		parser.addNodelet(xpath, "/bean/features/class", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
-				if(text != null) {
+				if(StringUtils.hasText(text)) {
 					BeanRule beanRule = assistant.peekObject();
-					beanRule.setClassName(text);
+					beanRule.setClassName(text.trim());
 				}
 			}
 		});
 		parser.addNodelet(xpath, "/bean/features/scope", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
-				if(text != null) {
-					ScopeType scopeType = ScopeType.valueOf(text);
+				if(StringUtils.hasText(text)) {
+					ScopeType scopeType = ScopeType.valueOf(text.trim());
 					
 					if(scopeType == null)
 						throw new IllegalArgumentException("No scope-type registered for scope '" + text + "'.");
@@ -114,32 +122,32 @@ public class BeanNodeletAdder implements NodeletAdder {
 		});
 		parser.addNodelet(xpath, "/bean/features/factoryMethod", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
-				if(text != null) {
+				if(StringUtils.hasText(text)) {
 					BeanRule beanRule = assistant.peekObject();
-					beanRule.setFactoryMethodName(text);
+					beanRule.setFactoryMethodName(text.trim());
 				}
 			}
 		});
 		parser.addNodelet(xpath, "/bean/features/initMethod", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
-				if(text != null) {
+				if(StringUtils.hasText(text)) {
 					BeanRule beanRule = assistant.peekObject();
-					beanRule.setInitMethodName(text);
+					beanRule.setInitMethodName(text.trim());
 				}
 			}
 		});
 		parser.addNodelet(xpath, "/bean/features/destroyMethod", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
-				if(text != null) {
+				if(StringUtils.hasText(text)) {
 					BeanRule beanRule = assistant.peekObject();
-					beanRule.setDestroyMethodName(text);
+					beanRule.setDestroyMethodName(text.trim());
 				}
 			}
 		});
 		parser.addNodelet(xpath, "/bean/features/lazyInit", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
-				if(text != null) {
-					Boolean lazyInit = BooleanUtils.toBooleanObject(text);
+				if(StringUtils.hasText(text)) {
+					Boolean lazyInit = BooleanUtils.toBooleanObject(text.trim());
 					BeanRule beanRule = assistant.peekObject();
 					beanRule.setLazyInit(lazyInit);
 				}
@@ -147,8 +155,8 @@ public class BeanNodeletAdder implements NodeletAdder {
 		});
 		parser.addNodelet(xpath, "/bean/features/important", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
-				if(text != null) {
-					Boolean important = BooleanUtils.toBooleanObject(text);
+				if(StringUtils.hasText(text)) {
+					Boolean important = BooleanUtils.toBooleanObject(text.trim());
 					BeanRule beanRule = assistant.peekObject();
 					beanRule.setImportant(important);
 				}
@@ -156,7 +164,7 @@ public class BeanNodeletAdder implements NodeletAdder {
 		});
 		parser.addNodelet(xpath, "/bean/constructor/argument", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
-				if(text != null) {
+				if(StringUtils.hasText(text)) {
 					BeanRule beanRule = assistant.peekObject();
 					BeanRule.updateConstructorArgument(beanRule, text);
 				}
@@ -178,7 +186,7 @@ public class BeanNodeletAdder implements NodeletAdder {
 		});
 		parser.addNodelet(xpath, "/bean/property", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
-				if(text != null) {
+				if(StringUtils.hasText(text)) {
 					BeanRule beanRule = assistant.peekObject();
 					BeanRule.updateProperty(beanRule, text);
 				}

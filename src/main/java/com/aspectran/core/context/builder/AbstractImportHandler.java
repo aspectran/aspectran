@@ -18,10 +18,15 @@ package com.aspectran.core.context.builder;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.aspectran.core.util.logging.Log;
+import com.aspectran.core.util.logging.LogFactory;
+
 /**
  * The Class AbstractImportHandler.
  */
 public abstract class AbstractImportHandler implements ImportHandler {
+	
+	private final Log log = LogFactory.getLog(AbstractImportHandler.class);
 	
 	private List<Importable> pendingList;
 	
@@ -33,6 +38,9 @@ public abstract class AbstractImportHandler implements ImportHandler {
 			pendingList = new ArrayList<Importable>();
 		
 		pendingList.add(importable);
+		
+		if(log.isDebugEnabled())
+			log.debug("import pending " + importable);
 	}
 	
 	protected void handle() throws Exception {
@@ -41,6 +49,9 @@ public abstract class AbstractImportHandler implements ImportHandler {
 			pendingList = null;
 			
 			for(Importable importable : pendedList) {
+				if(log.isDebugEnabled())
+					log.debug("import " + importable);
+				
 				handle(importable);
 			}
 		}

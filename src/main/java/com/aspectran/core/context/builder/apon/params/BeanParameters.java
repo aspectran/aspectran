@@ -22,6 +22,7 @@ import com.aspectran.core.util.apon.Parameters;
 
 public class BeanParameters extends AbstractParameters implements Parameters {
 
+	public static final ParameterDefine description;
 	public static final ParameterDefine id;
 	public static final ParameterDefine className;
 	public static final ParameterDefine scope;
@@ -38,6 +39,7 @@ public class BeanParameters extends AbstractParameters implements Parameters {
 	private static final ParameterDefine[] parameterDefines;
 	
 	static {
+		description = new ParameterDefine("description", ParameterValueType.TEXT);
 		id = new ParameterDefine("id", ParameterValueType.STRING);
 		className = new ParameterDefine("class", ParameterValueType.STRING);
 		scope = new ParameterDefine("scope", ParameterValueType.STRING);
@@ -52,6 +54,7 @@ public class BeanParameters extends AbstractParameters implements Parameters {
 		filter = new ParameterDefine("filter", FilterParameters.class);
 		
 		parameterDefines = new ParameterDefine[] {
+				description,
 				id,
 				className,
 				scope,
@@ -64,7 +67,7 @@ public class BeanParameters extends AbstractParameters implements Parameters {
 				constructor,
 				properties,
 				filter
-		};
+			};
 	}
 	
 	public BeanParameters() {

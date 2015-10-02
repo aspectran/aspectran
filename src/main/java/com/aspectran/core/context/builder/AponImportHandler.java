@@ -21,9 +21,7 @@ import com.aspectran.core.util.apon.AponReader;
 import com.aspectran.core.util.apon.Parameters;
 
 /**
- * Translet Map Parser.
- * 
- * <p>Created: 2008. 06. 14 오전 4:39:24</p>
+ * The Class AponImportHandler.
  */
 public class AponImportHandler extends AbstractImportHandler implements ImportHandler {
 	
@@ -41,7 +39,7 @@ public class AponImportHandler extends AbstractImportHandler implements ImportHa
 	}
 	
 	public void handle(Importable importable) throws Exception {
-		DefaultSettings defaultSettings = assistant.backupDefaultSettings();
+		AssistantLocal assistantLocal = assistant.backupAssistantLocal();
 		
 		Parameters rootParameters = AponReader.read(importable.getReader(encoding), new RootParameters());
 		
@@ -49,7 +47,10 @@ public class AponImportHandler extends AbstractImportHandler implements ImportHa
 
 		handle();
 
-		assistant.restoreDefaultSettings(defaultSettings);
+		// First default setting is held after configuration loading is completed.
+		if(assistantLocal.getCloneCount() > 0) {
+			assistant.restoreAssistantLocal(assistantLocal);
+		}
 	}
 
 }

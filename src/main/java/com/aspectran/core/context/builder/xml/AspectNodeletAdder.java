@@ -63,6 +63,14 @@ public class AspectNodeletAdder implements NodeletAdder {
 				assistant.pushObject(aspectRule);
 			}
 		});
+		parser.addNodelet(xpath, "/aspect/description", new Nodelet() {
+			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
+				if(text != null) {
+					AspectRule aspectRule = assistant.peekObject();
+					aspectRule.setDescription(text);
+				}
+			}
+		});
 		parser.addNodelet(xpath, "/aspect/joinpoint", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
 				String scope = attributes.get("scope");

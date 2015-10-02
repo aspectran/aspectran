@@ -13,31 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.core.context.rule.type;
+package com.aspectran.core.activity.variable;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
- * The Class Type.
- * 
- * <p>Created: 2008. 04. 11 오후 6:04:16</p>
+ * <p>Created: 2015. 10. 01</p>
  */
-public abstract class Type {
+public class ParameterMap extends LinkedHashMap<String, String> {
 
-	private final String type;
-	
-	/**
-	 * Instantiates a new type.
-	 * 
-	 * @param type the type
-	 */
-	protected Type(String type) {
-		this.type = type;
+	/** @serial */
+	private static final long serialVersionUID = -7721113073663638892L;
+
+	public ParameterMap() {
+		super();
 	}
-	
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
+
+	/**
+	 * Instantiates a new parameter map.
+	 *
+	 * @param map the map
 	 */
-	public String toString() {
-		return type;
+	public ParameterMap(Map<String, String> map) {
+		super(map);
 	}
 	
 }

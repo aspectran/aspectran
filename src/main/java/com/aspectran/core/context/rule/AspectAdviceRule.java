@@ -109,27 +109,5 @@ public class AspectAdviceRule implements ActionRuleApplicable {
 
 		return aspectAdviceRule;
 	}
-//
-//	public static void updateAction(AspectAdviceRule aspectAdviceRule, Parameters actionParameters) {
-////		id = new ParameterDefine("id", ParameterValueType.STRING);
-////		beanId = new ParameterDefine("beanId", ParameterValueType.STRING);
-////		method = new ParameterDefine("method", ParameterValueType.STRING);
-////		arguments = new ParameterDefine("argument", new ItemParameters(), true);
-////		properties = new ParameterDefine("property", new ItemParameters(), true);
-////		include = new ParameterDefine("include", ParameterValueType.STRING);
-////		echo = new ParameterDefine("echo", new GenericParameters());
-////		attributes = new ParameterDefine("attribute", new ItemParameters(), true);
-////		hidden = new ParameterDefine("hidden", ParameterValueType.BOOLEAN);
-//
-//		String id = actionParameters.getString(ActionParameters.id);
-//		String beanId = actionParameters.getString(ActionParameters.beanId);
-//		String methodName = actionParameters.getString(ActionParameters.methodName);
-//		String include = actionParameters.getString(ActionParameters.include);
-//		boolean hidden = actionParameters.getBoolean(ActionParameters.include);
-//		
-//		if(beanId != null && methodName != null) {
-//			BeanActionRule beanActionRule = BeanActionRule.newInstance(id, beanId, methodName, hidden);
-//		}
-//	}
 	
 }

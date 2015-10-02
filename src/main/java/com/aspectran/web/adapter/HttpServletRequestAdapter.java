@@ -22,6 +22,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import com.aspectran.core.adapter.AbstractRequestAdapter;
 import com.aspectran.core.adapter.RequestAdapter;
+import com.aspectran.core.context.rule.type.RequestMethodType;
 
 /**
  * The Class HttpServletRequestAdapter.
@@ -38,6 +39,8 @@ public class HttpServletRequestAdapter extends AbstractRequestAdapter implements
 	 */
 	public HttpServletRequestAdapter(HttpServletRequest request) {
 		super(request);
+		
+		setRequestMethod(RequestMethodType.valueOf(request.getMethod()));
 	}
 	
 	public String getCharacterEncoding() {

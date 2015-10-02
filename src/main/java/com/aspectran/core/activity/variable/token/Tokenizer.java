@@ -52,15 +52,15 @@ public class Tokenizer {
 	/**
 	 * Tokenize.
 	 * 
-	 * @param pattern the pattern string
+	 * @param input the pattern string
 	 * @param trimStringToken the trim string token
 	 * 
 	 * @return the list< token>
 	 */
-	public static List<Token> tokenize(String pattern, boolean trimStringToken) {
+	public static List<Token> tokenize(CharSequence input, boolean trimStringToken) {
 		List<Token> tokens = new ArrayList<Token>();
 
-		int patternLength = pattern.length();
+		int patternLength = input.length();
 
 		int status = AT_STRING;
 		int tokenStartOffset = 0; // start position of token in the stringBuffer
@@ -72,7 +72,7 @@ public class Tokenizer {
 		StringBuilder defTextBuffer = new StringBuilder();
 
 		for(int i = 0; i < patternLength; i++) {
-			c = pattern.charAt(i);
+			c = input.charAt(i);
 
 			switch(status) {
 			case AT_STRING:
@@ -103,7 +103,7 @@ public class Tokenizer {
 				stringBuffer.append(c);
 
 				if(status == AT_TOKEN_NAME) {
-					if(c == Token.DEFAULT_VALUE_SEPARATOR) {
+					if(c == Token.DEFAULT_VALUE_DELIMITER) {
 						status = AT_TOKEN_DEFVAL;
 						break;
 					}

@@ -17,10 +17,8 @@ package com.aspectran.core.activity;
 
 import java.util.List;
 
-import com.aspectran.core.activity.process.action.ActionExecutionException;
 import com.aspectran.core.activity.process.result.ProcessResult;
 import com.aspectran.core.activity.response.Response;
-import com.aspectran.core.activity.response.ResponseException;
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
@@ -32,6 +30,7 @@ import com.aspectran.core.context.rule.AspectAdviceRule;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.ExceptionHandlingRule;
 import com.aspectran.core.context.rule.type.JoinpointScopeType;
+import com.aspectran.core.context.rule.type.RequestMethodType;
 
 /**
  * Action Translator.
@@ -45,15 +44,17 @@ public interface Activity {
 	
 	public Class<? extends CoreTranslet> getTransletImplementClass();
 
-	public void ready(String transletName) throws ActivityException;
+	public void ready(String transletName);
 	
-	public void perform() throws ActivityException;
+	public void ready(String transletName, String restVerb);
 	
-	public void performWithoutResponse() throws ActivityException;
+	public void perform();
 	
-	public void execute(List<AspectAdviceRule> aspectAdviceRuleList) throws ActionExecutionException;
+	public void performWithoutResponse();
 	
-	public void forceExecute(List<AspectAdviceRule> aspectAdviceRuleList) throws ActionExecutionException;
+	public void execute(List<AspectAdviceRule> aspectAdviceRuleList);
+	
+	public void forceExecute(List<AspectAdviceRule> aspectAdviceRuleList);
 	
 	public ProcessResult getProcessResult();
 	
@@ -63,9 +64,9 @@ public interface Activity {
 	
 	public boolean isActivityEnded();
 	
-	public void response(Response res) throws ResponseException;
+	public void response(Response res);
 	
-	public void responseByContentType(List<ExceptionHandlingRule> exceptionHandlingRuleList) throws ActivityException;
+	public void responseByContentType(List<ExceptionHandlingRule> exceptionHandlingRuleList);
 
 	public Response getResponse();
 
@@ -83,6 +84,8 @@ public interface Activity {
 	
 	public String getTransletName();
 
+	public RequestMethodType getRestVerb();
+	
 	public ApplicationAdapter getApplicationAdapter();
 
 	public SessionAdapter getSessionAdapter();
@@ -101,7 +104,7 @@ public interface Activity {
 	
 	public <T> T getResponseSetting(String settingName);
 	
-	public void registerAspectRule(AspectRule aspectRule) throws ActionExecutionException;
+	public void registerAspectRule(AspectRule aspectRule);
 	
 	public <T> T  getAspectAdviceBean(String aspectId);
 	

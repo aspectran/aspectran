@@ -86,7 +86,7 @@ public class ClassScannerTest {
 				//System.out.println("classNamePattern: " + classNamePattern + "==scanClass=====" + resource.getFile());
 				
 				if(log.isDebugEnabled())
-					log.debug("Bean Scanning: " + classNamePattern + " at " + resource.getFile());
+					log.debug("bean scanning: " + classNamePattern + " at " + resource.getFile());
 				
 				if(isJarResource(resource)) {
 					scanClassesFromJarResource(resource, matcher, scannedClasses);

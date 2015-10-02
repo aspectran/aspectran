@@ -213,7 +213,7 @@ public class DefaultSettings implements Cloneable {
 			pointcutPatternVerifiable = (settings.get(DefaultSettingType.POINTCUT_PATTERN_VERIFIABLE) == null || Boolean.parseBoolean(settings.get(DefaultSettingType.POINTCUT_PATTERN_VERIFIABLE)));
 	}
 	
-	public DefaultSettings clone() throws CloneNotSupportedException {                      
+	public DefaultSettings clone() throws CloneNotSupportedException {
 		return (DefaultSettings)super.clone();              
 	}
 	

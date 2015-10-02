@@ -20,6 +20,7 @@ import java.util.Enumeration;
 
 import com.aspectran.core.activity.request.parameter.FileParameter;
 import com.aspectran.core.activity.request.parameter.FileParameterMap;
+import com.aspectran.core.context.rule.type.RequestMethodType;
 
 
 /**
@@ -30,11 +31,21 @@ import com.aspectran.core.activity.request.parameter.FileParameterMap;
  */
 public abstract class AbstractRequest {
 
+	protected RequestMethodType requestMethod;
+	
 	protected FileParameterMap fileParameterMap;
 	
 	/** The max length exceeded. */
 	protected boolean maxLengthExceeded;
 	
+	public RequestMethodType getRequestMethod() {
+		return requestMethod;
+	}
+
+	protected void setRequestMethod(RequestMethodType requestMethod) {
+		this.requestMethod = requestMethod;
+	}
+
 	public FileParameter getFileParameter(String name) {
 		if(fileParameterMap == null)
 			return null;

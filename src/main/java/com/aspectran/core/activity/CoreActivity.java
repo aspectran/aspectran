@@ -16,6 +16,7 @@
 package com.aspectran.core.activity;
 
 import java.util.List;
+import java.util.Map;
 
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.activity.process.ContentList;
@@ -29,6 +30,7 @@ import com.aspectran.core.activity.request.RequestException;
 import com.aspectran.core.activity.response.ForwardResponse;
 import com.aspectran.core.activity.response.Response;
 import com.aspectran.core.activity.response.ResponseException;
+import com.aspectran.core.activity.variable.ParameterMap;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.aspect.AspectAdviceRuleRegister;
 import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
@@ -43,14 +45,14 @@ import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.type.ActionType;
 import com.aspectran.core.context.rule.type.AspectAdviceType;
 import com.aspectran.core.context.rule.type.JoinpointScopeType;
+import com.aspectran.core.context.rule.type.RequestMethodType;
 import com.aspectran.core.context.rule.type.ResponseType;
 import com.aspectran.core.context.translet.TransletNotFoundException;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
 /**
- * Action Translator.
- * processes the active request and response.
+ * The Class CoreActivity.
  * 
  * <p>Created: 2008. 03. 22 오후 5:48:09</p>
  */
@@ -82,6 +84,10 @@ public class CoreActivity extends AbstractActivity implements Activity {
 	private String forwardTransletName;
 
 	private boolean withoutResponse;
+
+	private RequestMethodType requestMethod;
+	
+	private ParameterMap pathVariableMap;
 	
 	/** The translet. */
 	private Translet translet;
@@ -109,15 +115,28 @@ public class CoreActivity extends AbstractActivity implements Activity {
 		this.context = context;
 	}
 
-	public void ready(String transletName) throws ActivityException {
-		ready(transletName, null);
+	public void ready(String transletName) {
+		ready(transletName, (ProcessResult)null);
 	}
 	
-	protected void ready(String transletName, ProcessResult processResult) throws ActivityException {
+	public void ready(String transletName, String requestMethod) {
+		this.requestMethod = RequestMethodType.valueOf(requestMethod);
+		ready(transletName, (ProcessResult)null);
+	}
+	
+	private void ready(String transletName, ProcessResult processResult) {
 		TransletRule transletRule = context.getTransletRuleRegistry().getTransletRule(transletName);
+		
+		// for RESTful
+		if(transletRule == null) {
+			ParameterMap pathVariableMap = new ParameterMap(); 
+			transletRule = context.getTransletRuleRegistry().getTransletRule(transletName, requestMethod, pathVariableMap);
+			
+			if(transletRule != null)
+				this.pathVariableMap = pathVariableMap;
+		}
 
 		if(transletRule == null) {
-			log.debug("translet not found: " + transletName);
 			throw new TransletNotFoundException(transletName);
 		}
 		
@@ -155,34 +174,32 @@ public class CoreActivity extends AbstractActivity implements Activity {
 		context.setCurrentActivity(this);
 	}
 	
-	public void perform() throws ActivityException {
-		try {
-			withoutResponse = false;
-			
-			adapting(translet);
-			
-			run1st();
-		} catch(Exception e) {
-			throw new ActivityException("aspecran activity run error", e);
+	public void perform() {
+		withoutResponse = false;
+		
+		adapting(translet);
+		
+		run1st();
+	}
+	
+	public void performWithoutResponse() {
+		withoutResponse = true;
+		
+		adapting(translet);
+		
+		run1st();
+	}
+	
+	protected void adapting(Translet translet) {
+	}
+	
+	private void run1st() {
+		if(pathVariableMap != null && !pathVariableMap.isEmpty()) {
+			for(Map.Entry<String, String> entry : pathVariableMap.entrySet()) {
+				translet.setAttribute(entry.getKey(), entry.getValue());
+			}
 		}
-	}
-	
-	public void performWithoutResponse() throws ActivityException {
-		try {
-			withoutResponse = true;
-			
-			adapting(translet);
-			
-			run1st();
-		} catch(Exception e) {
-			throw new ActivityException("aspecran activity run error without response", e);
-		}
-	}
-	
-	protected void adapting(Translet translet) throws ActivityException {
-	}
-	
-	private void run1st() throws ActivityException {
+		
 		try {
 			try {
 				// execute Before Advice Action for Translet Joinpoint
@@ -213,7 +230,7 @@ public class CoreActivity extends AbstractActivity implements Activity {
 						forceExecute(finallyAdviceRuleList);
 				}
 			}
-		} catch(ActivityException e) {
+		} catch(Exception e) {
 			setRaisedException(e);
 			
 			ExceptionHandlingRule exceptionHandlingRule = transletRule.getExceptionHandlingRuleMap();
@@ -238,7 +255,7 @@ public class CoreActivity extends AbstractActivity implements Activity {
 				}
 			}
 			
-			throw e;
+			throw new ActivityException("aspecran activity run error", e);
 		} finally {
 			if(getRequestScope() != null) {
 				getRequestScope().destroy();
@@ -246,7 +263,7 @@ public class CoreActivity extends AbstractActivity implements Activity {
 		}
 	}
 
-	private void run2nd() throws ActivityException {
+	private void run2nd() {
 		//request
 		setCurrentJoinpointScope(JoinpointScopeType.REQUEST);
 		
@@ -420,14 +437,14 @@ public class CoreActivity extends AbstractActivity implements Activity {
 		}
 	}
 	
-	private void request() throws RequestException {
+	private void request() {
 		request(translet);
 	}
 	
-	protected void request(Translet translet) throws RequestException {
+	protected void request(Translet translet) {
 	}
 	
-	private ProcessResult process() throws ActivityException {
+	private ProcessResult process() {
 		// execute action on contents area
 		ContentList contentList = transletRule.getContentList();
 
@@ -455,7 +472,7 @@ public class CoreActivity extends AbstractActivity implements Activity {
 		return responseRule.getResponse();
 	}
 	
-	private void response() throws ActivityException {
+	private void response() {
 		Response res = getResponse();
 		
 		if(res != null)
@@ -472,7 +489,7 @@ public class CoreActivity extends AbstractActivity implements Activity {
 	 * 
 	 * @throws ResponseException the response exception
 	 */
-	public void response(Response res) throws ResponseException {
+	public void response(Response res) {
 		res.response(this);
 		
 		if(res.getResponseType() == ResponseType.FORWARD) {
@@ -489,7 +506,7 @@ public class CoreActivity extends AbstractActivity implements Activity {
 	 *
 	 * @throws ResponseException the active response exception
 	 */
-	private void forward() throws ActivityException {
+	private void forward() {
 		if(debugEnabled) {
 			log.debug("forwarding for translet: " + forwardTransletName);
 		}
@@ -499,7 +516,7 @@ public class CoreActivity extends AbstractActivity implements Activity {
 		perform();
 	}
 	
-	public void responseByContentType(List<ExceptionHandlingRule> exceptionHandlingRuleList) throws ActivityException {
+	public void responseByContentType(List<ExceptionHandlingRule> exceptionHandlingRuleList) {
 		for(ExceptionHandlingRule exceptionHandlingRule : exceptionHandlingRuleList) {
 			responseByContentType(exceptionHandlingRule);
 			
@@ -508,7 +525,7 @@ public class CoreActivity extends AbstractActivity implements Activity {
 		}
 	}
 
-	private void responseByContentType(ExceptionHandlingRule exceptionHandlingRule) throws ActivityException {
+	private void responseByContentType(ExceptionHandlingRule exceptionHandlingRule) {
 		ResponseByContentTypeRule rbctr = exceptionHandlingRule.getResponseByContentTypeRule(getRaisedException());
 		
 		if(rbctr != null) {
@@ -525,7 +542,7 @@ public class CoreActivity extends AbstractActivity implements Activity {
 	 * @throws ProcessException 
 	 * @throws RequestException 
 	 */
-	private void responseByContentType(ResponseByContentTypeRule responseByContentTypeRule) throws ActivityException {
+	private void responseByContentType(ResponseByContentTypeRule responseByContentTypeRule) {
 		Response response = getResponse();
 
 		if(response != null && response.getContentType() != null) {
@@ -562,7 +579,7 @@ public class CoreActivity extends AbstractActivity implements Activity {
 	 * @param actionList the action list
 	 * @throws ActivityException 
 	 */
-	protected void execute(ActionList actionList) throws ActivityException {
+	protected void execute(ActionList actionList) {
 		ContentResult contentResult = null;
 		
 		if(!actionList.isHidden()) {
@@ -589,7 +606,7 @@ public class CoreActivity extends AbstractActivity implements Activity {
 		}
 	}
 	
-	private void execute(Executable action, ContentResult contentResult) throws ActionExecutionException {
+	private void execute(Executable action, ContentResult contentResult) {
 		if(debugEnabled)
 			log.debug("action " + action);
 		
@@ -608,24 +625,22 @@ public class CoreActivity extends AbstractActivity implements Activity {
 		}
 	}
 	
-	public void execute(List<AspectAdviceRule> aspectAdviceRuleList) throws ActionExecutionException {
+	public void execute(List<AspectAdviceRule> aspectAdviceRuleList) {
 		for(AspectAdviceRule aspectAdviceRule : aspectAdviceRuleList) {
 			execute(aspectAdviceRule);
 		}
 	}
 	
-	public void forceExecute(List<AspectAdviceRule> aspectAdviceRuleList) throws ActionExecutionException {
+	public void forceExecute(List<AspectAdviceRule> aspectAdviceRuleList) {
 		for(AspectAdviceRule aspectAdviceRule : aspectAdviceRuleList) {
 			execute(aspectAdviceRule);
 		}
 	}
 	
-	private Object execute(AspectAdviceRule aspectAdviceRule) throws ActionExecutionException {
+	private Object execute(AspectAdviceRule aspectAdviceRule) {
 		Executable action = aspectAdviceRule.getExecutableAction();
 		
 		if(action == null) {
-			//log.error("no specified action on AspectAdviceRule " + aspectAdviceRule);
-			//return null;
 			throw new ActionExecutionException("No specified action on AspectAdviceRule " + aspectAdviceRule);
 		}
 		
@@ -635,16 +650,10 @@ public class CoreActivity extends AbstractActivity implements Activity {
 			if(adviceBean == null)
 				adviceBean = getBean(aspectAdviceRule.getAdviceBeanId());
 			
-			//if(debugEnabled)
-			//	log.debug("aspectAdvice " + aspectAdviceRule + " " + adviceBean);
-			
 			translet.putAspectAdviceBean(aspectAdviceRule.getAspectId(), adviceBean);
 		}
 		
 		try {
-			//if(debugEnabled)
-			//	log.debug("action {}", action);
-
 			Object adviceActionResult = action.execute(this);
 			
 			if(adviceActionResult != null && adviceActionResult != ActionResult.NO_RESULT) {
@@ -720,6 +729,15 @@ public class CoreActivity extends AbstractActivity implements Activity {
 	public String getTransletName() {
 		return transletName;
 	}
+	
+	/**
+	 * Gets the rest verb.
+	 *
+	 * @return the rest verb
+	 */
+	public RequestMethodType getRestVerb() {
+		return transletRule.getRestVerb();
+	}
 
 	/**
 	 * Gets the translet rule.
@@ -782,7 +800,7 @@ public class CoreActivity extends AbstractActivity implements Activity {
 		return context.getContextBeanRegistry().getBean(id);
 	}
 	
-	public void registerAspectRule(AspectRule aspectRule) throws ActionExecutionException {
+	public void registerAspectRule(AspectRule aspectRule) {
 		if(debugEnabled)
 			log.debug("register AspectRule " + aspectRule);
 		
