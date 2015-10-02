@@ -79,9 +79,9 @@ public class TokenExpression implements TokenExpressor {
 		Object value = null;
 
 		if(tokenType == TokenType.TEXT) {
-			value = token.getDefaultText();
+			value = token.getDefaultValue();
 		} else	if(tokenType == TokenType.PARAMETER) {
-			value = getParameter(token.getName(), token.getDefaultText());
+			value = getParameter(token.getName(), token.getDefaultValue());
 		} else	if(tokenType == TokenType.ATTRIBUTE) {
 			value = getAttribute(token);
 		} else	if(tokenType == TokenType.REFERENCE_BEAN) {
@@ -367,7 +367,7 @@ public class TokenExpression implements TokenExpressor {
 		}
 		
 		if(value == null)
-			return token.getDefaultText();
+			return token.getDefaultValue();
 		
 		return value;
 	}

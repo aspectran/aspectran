@@ -166,7 +166,7 @@ public class Tokenizer {
 	private static Token makeToken(char symbol, StringBuilder tokenNameBuffer, StringBuilder defTextBuffer) {
 		TokenType type = null;
 		String name = null;
-		String defaultText = null;
+		String defaultValue = null;
 		String getterName = null;
 
 		if(tokenNameBuffer.length() > 0) {
@@ -195,12 +195,12 @@ public class Tokenizer {
 		}
 		
 		if(defTextBuffer.length() > 0) {
-			defaultText = defTextBuffer.toString();
+			defaultValue = defTextBuffer.toString();
 			defTextBuffer.setLength(0);
 		}
 
 		Token token = new Token(type, name);
-		token.setDefaultText(defaultText);
+		token.setDefaultValue(defaultValue);
 		token.setGetterName(getterName);
 
 		return token;
@@ -282,13 +282,13 @@ public class Tokenizer {
 		
 		if(tokens.length == 1) {
 			if(tokens[0].getType() == TokenType.TEXT)
-				firstDefaultText = tokens[0].getDefaultText();
+				firstDefaultText = tokens[0].getDefaultValue();
 		} else if(tokens.length > 1) {
 			if(tokens[0].getType() == TokenType.TEXT)
-				firstDefaultText = tokens[0].getDefaultText();
+				firstDefaultText = tokens[0].getDefaultValue();
 
 			if(tokens[tokens.length - 1].getType() == TokenType.TEXT)
-				lastDefaultText = tokens[tokens.length - 1].getDefaultText();
+				lastDefaultText = tokens[tokens.length - 1].getDefaultValue();
 		}
 
 		if(firstDefaultText != null) {

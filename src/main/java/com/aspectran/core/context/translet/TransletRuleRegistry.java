@@ -128,12 +128,12 @@ public class TransletRuleRegistry {
 
 	private static boolean preparsePathVariableMap(String requestTransletRuleName, Token[] nameTokens, ParameterMap pathVariableMap) {
 		/*
-		/example/customers/123-567/approval
-		/example/customers/
-		${id1}
-		-
-		${id2}
-		/approval
+			/example/customers/123-567/approval
+			/example/customers/
+			${id1}
+			-
+			${id2}
+			/approval
 		*/
 		int beginIndex = 0;
 		int endIndex = 0;
@@ -151,8 +151,12 @@ public class TransletRuleRegistry {
 				
 				if(endIndex > beginIndex) {
 					String value = requestTransletRuleName.substring(beginIndex, endIndex);
-					if(value.length() > 0)
+					if(value.length() > 0) {
 						pathVariableMap.put(prevToken.getName(), value);
+					} else if(prevToken.getDefaultValue() != null) {
+						// If the last token ends with a "/" can be given a default value.
+						pathVariableMap.put(prevToken.getName(), prevToken.getDefaultValue());
+					}
 					
 					beginIndex += value.length();
 				}
@@ -167,8 +171,12 @@ public class TransletRuleRegistry {
 		
 		if(lastToken != null && prevToken == lastToken) {
 			String value = requestTransletRuleName.substring(beginIndex);
-			if(value.length() > 0)
+			if(value.length() > 0) {
 				pathVariableMap.put(lastToken.getName(), value);
+			} else if(lastToken.getDefaultValue() != null) {
+				// If the last token ends with a "/" can be given a default value.
+				pathVariableMap.put(lastToken.getName(), lastToken.getDefaultValue());
+			}
 		}
 		
 		return true;
