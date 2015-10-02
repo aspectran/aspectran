@@ -82,7 +82,7 @@ class CDATA #IMPLIED
 <!ELEMENT translet ((request?, (echo? | action? | include?)*, (transform | dispatch | redirect | forward)?) | (request?, content*, contents?, (transform | dispatch | redirect | forward)?) | (request?, content*, contents?, response*, exception?))>
 <!ATTLIST translet
 name CDATA #REQUIRED
-restVerb (GET | HEAD | POST | PUT | PATCH | DELETE | OPTIONS | TRACE) #IMPLIED
+restVerb (GET | POST | PUT | PATCH | DELETE | HEAD | OPTIONS | TRACE | CONNECT) #IMPLIED
 >
 
 <!ELEMENT request (attribute?)>
