@@ -18,11 +18,13 @@ package com.aspectran.core.context.builder.apon.params;
 import com.aspectran.core.util.apon.AbstractParameters;
 import com.aspectran.core.util.apon.GenericParameters;
 import com.aspectran.core.util.apon.ParameterDefine;
+import com.aspectran.core.util.apon.ParameterValueType;
 import com.aspectran.core.util.apon.Parameters;
 
 public class AspectranParameters extends AbstractParameters implements Parameters {
 
-	public static final ParameterDefine setting;
+	public static final ParameterDefine description;
+	public static final ParameterDefine settings;
 	public static final ParameterDefine typeAlias;
 	public static final ParameterDefine aspects;
 	public static final ParameterDefine beans;
@@ -32,7 +34,8 @@ public class AspectranParameters extends AbstractParameters implements Parameter
 	private static final ParameterDefine[] parameterDefines;
 	
 	static {
-		setting = new ParameterDefine("setting", DefaultSettingsParameters.class);
+		description = new ParameterDefine("description", ParameterValueType.TEXT);
+		settings = new ParameterDefine("setting", DefaultSettingsParameters.class);
 		typeAlias = new ParameterDefine("typeAlias", GenericParameters.class);
 		aspects = new ParameterDefine("aspect", AspectParameters.class, true, true);
 		beans = new ParameterDefine("bean", BeanParameters.class, true, true);
@@ -40,13 +43,14 @@ public class AspectranParameters extends AbstractParameters implements Parameter
 		imports = new ParameterDefine("import", ImportParameters.class, true, true);
 		
 		parameterDefines = new ParameterDefine[] {
-			setting,
-			typeAlias,
-			aspects,
-			beans,
-			translets,
-			imports
-		};
+				description,
+				settings,
+				typeAlias,
+				aspects,
+				beans,
+				translets,
+				imports
+			};
 	}
 	
 	public AspectranParameters() {

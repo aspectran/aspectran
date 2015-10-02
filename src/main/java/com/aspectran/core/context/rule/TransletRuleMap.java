@@ -32,32 +32,6 @@ public class TransletRuleMap extends LinkedHashMap<String, TransletRule> impleme
 		throw new java.lang.UnsupportedOperationException();
 	}
 	
-//	/** The multi activity translet rule map. */
-//	private MultiActivityTransletRuleMap multiActivityTransletRuleMap;;
-//
-//	/**
-//	 * Instantiates a new translet rule map.
-//	 */
-//	public TransletRuleMap() {
-//		multiActivityTransletRuleMap = new MultiActivityTransletRuleMap();
-//	}
-//	
-//	/**
-//	 * Gets the translet rule by uri.
-//	 * 
-//	 * @param requestUri the service uri
-//	 * 
-//	 * @return the translet rule by uri
-//	 */
-//	public TransletRule get(Object key) {
-//		TransletRule o = super.get(key);
-//		
-//		if(o != null)
-//			return o;
-//
-//		return multiActivityTransletRuleMap.get(key);
-//	}
-
 	/**
 	 * Adds the translet rule.
 	 * 
@@ -80,6 +54,10 @@ public class TransletRuleMap extends LinkedHashMap<String, TransletRule> impleme
 		return super.put(key, transletRule);
 	}
 	
+	public void addShallowTransletRule(TransletRule transletRule) {
+		super.put(Integer.toString(size()), transletRule);
+	}
+	
 	public void freeze() {
 		freezed = true;
 	}
@@ -90,35 +68,5 @@ public class TransletRuleMap extends LinkedHashMap<String, TransletRule> impleme
 	public Iterator<TransletRule> iterator() {
 		return this.values().iterator();
 	}
-	
-//	/**
-//	 * Gets the multi activity translet rule.
-//	 *
-//	 * @param name the path
-//	 * @return the multi activity translet rule
-//	 */
-//	public MultiActivityTransletRule getMultiActivityTransletRule(String name) {
-//		return multiActivityTransletRuleMap.get(name);
-//	}
-//	
-//	/**
-//	 * Put multi activity translet rule.
-//	 *
-//	 * @param name the path
-//	 * @param responseId the response id
-//	 * @param transletRule the translet rule
-//	 * @return the translet rule
-//	 */
-//	public TransletRule putMultiActivityTransletRule(String name, String responseId, TransletRule transletRule) {
-//		MultiActivityTransletRule matr = new MultiActivityTransletRule();
-//		matr.setPath(name);
-//		matr.setResponseId(responseId);
-//		matr.setTransletRule(transletRule);
-//		
-//		multiActivityTransletRuleMap.put(name, matr);
-//		transletRule.addMultiActivityTransletRule(matr);
-//
-//		return transletRule;
-//	}
 
 }

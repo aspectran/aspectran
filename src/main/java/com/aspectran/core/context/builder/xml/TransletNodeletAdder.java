@@ -65,6 +65,14 @@ public class TransletNodeletAdder implements NodeletAdder {
 				assistant.pushObject(transletRule);
 			}
 		});
+		parser.addNodelet(xpath, "/translet/description", new Nodelet() {
+			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
+				if(text != null) {
+					TransletRule transletRule = assistant.peekObject();
+					transletRule.setDescription(text);
+				}
+			}
+		});
 		parser.addNodelet(xpath, "/translet", new ActionRuleNodeletAdder(assistant));
 		parser.addNodelet(xpath, "/translet", new ResponseInnerNodeletAdder(assistant));
 		parser.addNodelet(xpath, "/translet/request", new Nodelet() {

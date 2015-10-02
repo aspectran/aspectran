@@ -57,12 +57,12 @@ public class ContextBuilderAssistant {
 	
 	private ArrayStack objectStack = new ArrayStack();
 	
+	private AssistantLocal assistantLocal = new AssistantLocal();
+	
 	private Map<String, String> typeAliases = new HashMap<String, String>();
 	
 	private Map<DefaultSettingType, String> settings = new HashMap<DefaultSettingType, String>();
 	
-	private DefaultSettings defaultSettings;
-
 	private BeanReferenceInspector beanReferenceInspector = new BeanReferenceInspector();
 	
 	protected AspectRuleMap aspectRuleMap = new AspectRuleMap();
@@ -169,8 +169,7 @@ public class ContextBuilderAssistant {
 	
 	@SuppressWarnings("unchecked")
 	public void applySettings() throws ClassNotFoundException {
-		if(defaultSettings == null)
-			defaultSettings = new DefaultSettings();
+		DefaultSettings defaultSettings = assistantLocal.touchDefaultSettings();
 
 		defaultSettings.apply(getSettings());
 
@@ -234,25 +233,22 @@ public class ContextBuilderAssistant {
 		typeAliases.clear();
 	}
 	
-	public DefaultSettings getDefaultSettings() {
-		return defaultSettings;
+	public AssistantLocal getAssistantLocal() {
+		return assistantLocal;
 	}
 
-	public void setDefaultSettings(DefaultSettings defaultSettings) {
-		this.defaultSettings = defaultSettings;
-	}
-	
-	public DefaultSettings backupDefaultSettings() throws CloneNotSupportedException {
-		DefaultSettings previousDefaultSettings = defaultSettings;
-		
-		if(defaultSettings != null)
-			defaultSettings = defaultSettings.clone();
-		
-		return previousDefaultSettings;
+	public void setAssistantLocal(AssistantLocal assistantLocal) {
+		this.assistantLocal = assistantLocal;
 	}
 
-	public void restoreDefaultSettings(DefaultSettings defaultSettings) {
-		setDefaultSettings(defaultSettings);
+	public AssistantLocal backupAssistantLocal() throws CloneNotSupportedException {
+		AssistantLocal oldAssistantLocal = assistantLocal;
+		assistantLocal = assistantLocal.clone();
+		return oldAssistantLocal;
+	}
+
+	public void restoreAssistantLocal(AssistantLocal assistantLocal) {
+		this.assistantLocal = assistantLocal;
 	}
 	
 	/**
@@ -263,6 +259,8 @@ public class ContextBuilderAssistant {
 	 * @return the string
 	 */
 	public String applyTransletNamePattern(String transletName) {
+		DefaultSettings defaultSettings = assistantLocal.getDefaultSettings();
+		
 		if(defaultSettings == null)
 			return transletName;
 
@@ -292,6 +290,8 @@ public class ContextBuilderAssistant {
 	 * @return true, if is allow null content id
 	 */
 	public boolean isNullableContentId() {
+		DefaultSettings defaultSettings = assistantLocal.getDefaultSettings();
+		
 		if(defaultSettings == null)
 			return true;
 		
@@ -304,6 +304,8 @@ public class ContextBuilderAssistant {
 	 * @return true, if is allow null action id
 	 */
 	public boolean isNullableActionId() {
+		DefaultSettings defaultSettings = assistantLocal.getDefaultSettings();
+		
 		if(defaultSettings == null)
 			return true;
 
@@ -316,6 +318,8 @@ public class ContextBuilderAssistant {
 	 * @return true, if is pointcut pattern verifiable
 	 */
 	public boolean isPointcutPatternVerifiable() {
+		DefaultSettings defaultSettings = assistantLocal.getDefaultSettings();
+		
 		if(defaultSettings == null)
 			return true;
 		
@@ -414,6 +418,7 @@ public class ContextBuilderAssistant {
 	}
 
 	public void addTransletRule(TransletRule transletRule) throws CloneNotSupportedException {
+		DefaultSettings defaultSettings = assistantLocal.getDefaultSettings();
 		if(defaultSettings != null) {
 			transletRule.setTransletInterfaceClass(defaultSettings.getTransletInterfaceClass());
 			transletRule.setTransletImplementClass(defaultSettings.getTransletImplementClass());

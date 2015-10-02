@@ -22,6 +22,7 @@ import com.aspectran.core.util.apon.Parameters;
 
 public class TransletParameters extends AbstractParameters implements Parameters {
 
+	public static final ParameterDefine description;
 	public static final ParameterDefine name;
 	public static final ParameterDefine restVerb;
 	public static final ParameterDefine request;
@@ -38,6 +39,7 @@ public class TransletParameters extends AbstractParameters implements Parameters
 	private static final ParameterDefine[] parameterDefines;
 	
 	static {
+		description = new ParameterDefine("description", ParameterValueType.TEXT);
 		name = new ParameterDefine("name", ParameterValueType.STRING);
 		restVerb = new ParameterDefine("restVerb", ParameterValueType.STRING);
 		request = new ParameterDefine("request", RequestParameters.class);
@@ -52,6 +54,7 @@ public class TransletParameters extends AbstractParameters implements Parameters
 		forward = new ParameterDefine("forward", ForwardParameters.class);
 		
 		parameterDefines = new ParameterDefine[] {
+				description,
 				name,
 				restVerb,
 				request,
@@ -64,7 +67,7 @@ public class TransletParameters extends AbstractParameters implements Parameters
 				dispatch,
 				redirect,
 				forward
-		};
+			};
 	}
 	
 	public TransletParameters() {

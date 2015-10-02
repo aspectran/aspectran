@@ -39,7 +39,7 @@ public class AponImportHandler extends AbstractImportHandler implements ImportHa
 	}
 	
 	public void handle(Importable importable) throws Exception {
-		DefaultSettings defaultSettings = assistant.backupDefaultSettings();
+		AssistantLocal assistantLocal = assistant.backupAssistantLocal();
 		
 		Parameters rootParameters = AponReader.read(importable.getReader(encoding), new RootParameters());
 		
@@ -48,8 +48,8 @@ public class AponImportHandler extends AbstractImportHandler implements ImportHa
 		handle();
 
 		// First default setting is held after configuration loading is completed.
-		if(defaultSettings != null) {
-			assistant.restoreDefaultSettings(defaultSettings);
+		if(assistantLocal.getCloneCount() > 0) {
+			assistant.restoreAssistantLocal(assistantLocal);
 		}
 	}
 

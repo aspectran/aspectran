@@ -23,6 +23,7 @@ import com.aspectran.core.util.apon.Parameters;
 
 public class AspectParameters extends AbstractParameters implements Parameters {
 
+	public static final ParameterDefine description;
 	public static final ParameterDefine id;
 	public static final ParameterDefine useFor;
 	public static final ParameterDefine jointpoint;
@@ -33,6 +34,7 @@ public class AspectParameters extends AbstractParameters implements Parameters {
 	private static final ParameterDefine[] parameterDefines;
 	
 	static {
+		description = new ParameterDefine("description", ParameterValueType.TEXT);
 		id = new ParameterDefine("id", ParameterValueType.STRING);
 		useFor = new ParameterDefine("for", ParameterValueType.STRING);
 		jointpoint = new ParameterDefine("joinpoint", JoinpointParameters.class);
@@ -41,13 +43,14 @@ public class AspectParameters extends AbstractParameters implements Parameters {
 		exceptionRaised = new ParameterDefine("exceptionRaised", ExceptionRaisedParameters.class);
 		
 		parameterDefines = new ParameterDefine[] {
+				description,
 				id,
 				useFor,
 				jointpoint,
 				setting,
 				advice,
 				exceptionRaised
-		};
+			};
 	}
 	
 	public AspectParameters() {

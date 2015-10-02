@@ -64,7 +64,7 @@ public class ShallowContextBuilderAssistant extends ContextBuilderAssistant {
 	}
 
 	public void addTransletRule(TransletRule transletRule) throws CloneNotSupportedException {
-		transletRuleMap.put(Integer.toString(transletRuleMap.size()), transletRule);
+		transletRuleMap.addShallowTransletRule(transletRule);
 	}
 	
 }

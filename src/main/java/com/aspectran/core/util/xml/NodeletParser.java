@@ -273,13 +273,13 @@ public class NodeletParser {
 			
 			if(child.getNodeType() == Node.CDATA_SECTION_NODE ||
 					child.getNodeType() == Node.TEXT_NODE) {
-				String data = ((CharacterData)child).getData().trim();
+				String data = ((CharacterData)child).getData();
 				
 				if(data.length() > 0) {
 					if(sb == null)
 						sb = new StringBuilder(data);
 					else
-						sb.append(data.trim());
+						sb.append(data);
 				}
 			}
 		}

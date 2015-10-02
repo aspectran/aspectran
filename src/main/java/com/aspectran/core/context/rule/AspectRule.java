@@ -46,6 +46,8 @@ public class AspectRule {
 	
 	private boolean onlyTransletRelevanted;
 	
+	private String description;
+	
 	public String getId() {
 		return id;
 	}
@@ -153,6 +155,24 @@ public class AspectRule {
 
 	public void setOnlyTransletRelevanted(boolean onlyTransletRelevanted) {
 		this.onlyTransletRelevanted = onlyTransletRelevanted;
+	}
+
+	/**
+	 * Gets the description.
+	 *
+	 * @return the description
+	 */
+	public String getDescription() {
+		return description;
+	}
+
+	/**
+	 * Sets the description.
+	 *
+	 * @param description the new description
+	 */
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 	/* (non-Javadoc)

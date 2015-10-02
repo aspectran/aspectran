@@ -27,6 +27,7 @@ import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.type.ItemType;
 import com.aspectran.core.context.rule.type.TokenType;
 import com.aspectran.core.util.BooleanUtils;
+import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.xml.Nodelet;
 import com.aspectran.core.util.xml.NodeletAdder;
 import com.aspectran.core.util.xml.NodeletParser;
@@ -52,7 +53,7 @@ public class ItemNodeletAdder implements NodeletAdder {
 	/**
 	 * Process.
 	 */
-	public void process(String xpath, NodeletParser parser) {
+	public void process(final String xpath, NodeletParser parser) {
 		parser.addNodelet(xpath, "/item", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
 				String type = attributes.get("type");
@@ -62,7 +63,7 @@ public class ItemNodeletAdder implements NodeletAdder {
 				String defaultValue = attributes.get("defaultValue");
 				Boolean tokenize = BooleanUtils.toNullableBooleanObject(attributes.get("tokenize"));
 
-				if(text != null)
+				if(StringUtils.hasText(text))
 					value = text;
 
 				// auto-naming if did not specify the name of the item

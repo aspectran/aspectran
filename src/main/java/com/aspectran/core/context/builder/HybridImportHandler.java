@@ -57,7 +57,7 @@ public class HybridImportHandler extends AbstractImportHandler implements Import
 	}
 	
 	public void handle(Importable importable) throws Exception {
-		DefaultSettings defaultSettings = assistant.backupDefaultSettings();
+		AssistantLocal assistantLocal = assistant.backupAssistantLocal();
 		
 		boolean hybridon = false;
 		
@@ -96,8 +96,8 @@ public class HybridImportHandler extends AbstractImportHandler implements Import
 		handle();
 
 		// First default setting is held after configuration loading is completed.
-		if(defaultSettings != null) {
-			assistant.restoreDefaultSettings(defaultSettings);
+		if(assistantLocal.getCloneCount() > 0) {
+			assistant.restoreAssistantLocal(assistantLocal);
 		}
 		
 		if(!hybridon && hybridLoading) {

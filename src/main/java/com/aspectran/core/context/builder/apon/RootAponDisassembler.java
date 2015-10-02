@@ -98,7 +98,11 @@ public class RootAponDisassembler {
 	}
 	
 	public void disassembleAspectran(Parameters aspectranParameters) throws Exception {
-		Parameters defaultSettingsParameters = aspectranParameters.getParameters(AspectranParameters.setting);
+		String description = aspectranParameters.getString(AspectranParameters.description);
+		if(description != null)
+			assistant.getAssistantLocal().setDescription(description);
+		
+		Parameters defaultSettingsParameters = aspectranParameters.getParameters(AspectranParameters.settings);
 		if(defaultSettingsParameters != null)
 			disassembleDefaultSettings(defaultSettingsParameters);
 
@@ -185,9 +189,13 @@ public class RootAponDisassembler {
 	}
 
 	public void disassembleAspectRule(Parameters aspectParameters) {
+		String description = aspectParameters.getString(AspectParameters.description);
 		String id = aspectParameters.getString(AspectParameters.id);
 		String useFor = aspectParameters.getString(AspectParameters.useFor);
 		AspectRule aspectRule = AspectRule.newInstance(id, useFor);
+
+		if(description != null)
+			aspectRule.setDescription(description);
 	
 		Parameters joinpointParameters = aspectParameters.getParameters(AspectParameters.jointpoint);
 		String scope = joinpointParameters.getString(JoinpointParameters.scope);
@@ -263,6 +271,8 @@ public class RootAponDisassembler {
 		if(exceptionRaisedParameters != null) {
 			ExceptionHandlingRule exceptionHandlingRule = new ExceptionHandlingRule();
 	
+			exceptionHandlingRule.setDescription(exceptionRaisedParameters.getString(ExceptionRaisedParameters.description));
+
 			Parameters actionParameters = exceptionRaisedParameters.getParameters(ExceptionRaisedParameters.action);
 			if(actionParameters != null) {
 				disassembleActionRule(actionParameters, exceptionHandlingRule);
@@ -284,6 +294,7 @@ public class RootAponDisassembler {
 	}
 
 	public void disassembleBeanRule(Parameters beanParameters) throws ClassNotFoundException, IOException, CloneNotSupportedException {
+		String description = beanParameters.getString(BeanParameters.description);
 		String id = beanParameters.getString(BeanParameters.id);
 		String className = assistant.resolveAliasType(beanParameters.getString(BeanParameters.className));
 		String scope = beanParameters.getString(BeanParameters.scope);
@@ -299,6 +310,9 @@ public class RootAponDisassembler {
 		
 		BeanRule beanRule = BeanRule.newInstance(id, className, scope, singleton, factoryMethod, initMethod, destroyMethod, lazyInit, important);
 
+		if(description != null)
+			beanRule.setDescription(description);
+		
 		if(filterParameters != null)
 			beanRule.setFilterParameters(filterParameters);
 		
@@ -319,9 +333,13 @@ public class RootAponDisassembler {
 	}
 
 	public void disassembleTransletRule(Parameters transletParameters) throws CloneNotSupportedException {
+		String description = transletParameters.getString(TransletParameters.description);
 		String name = transletParameters.getString(TransletParameters.name);
 		String restVerb = transletParameters.getString(TransletParameters.restVerb);
 		TransletRule transletRule = TransletRule.newInstance(name, restVerb);
+		
+		if(description != null)
+			transletRule.setDescription(description);
 		
 		Parameters requestParamters = transletParameters.getParameters(TransletParameters.request);
 		if(requestParamters != null) {

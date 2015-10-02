@@ -32,15 +32,15 @@ public class XmlImportHandler extends AbstractImportHandler implements ImportHan
 	}
 	
 	public void handle(Importable importable) throws Exception {
-		DefaultSettings defaultSettings = assistant.backupDefaultSettings();
+		AssistantLocal assistantLocal = assistant.backupAssistantLocal();
 		
 		aspectranNodeParser.parse(importable.getInputStream());
 		
 		handle();
 		
 		// First default setting is held after configuration loading is completed.
-		if(defaultSettings != null) {
-			assistant.restoreDefaultSettings(defaultSettings);
+		if(assistantLocal.getCloneCount() > 0) {
+			assistant.restoreAssistantLocal(assistantLocal);
 		}
 	}
 

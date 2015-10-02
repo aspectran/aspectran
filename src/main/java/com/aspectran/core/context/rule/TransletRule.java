@@ -65,6 +65,8 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 
 	private AspectAdviceRuleRegistry aspectAdviceRuleRegistry;
 	
+	private String description;
+	
 	/**
 	 * Instantiates a new translet rule.
 	 */
@@ -426,6 +428,24 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 		return aspectAdviceRuleRegistry.getExceptionHandlingRuleList();
 	}
 	
+	/**
+	 * Gets the description.
+	 *
+	 * @return the description
+	 */
+	public String getDescription() {
+		return description;
+	}
+
+	/**
+	 * Sets the description.
+	 *
+	 * @param description the new description
+	 */
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
