@@ -15,177 +15,30 @@
  */
 package com.aspectran.core.util.wildcard;
 
-import com.aspectran.core.util.StringUtils;
-
 /**
  * The Class WildcardMatcherTest.
  */
-public class WildcardMatcherTest {
+public class WildcardMaskerTest {
 
-	private WildcardPatternTest pattern;
-	
-	private CharSequence input;
-	
-	private int[] separatorFlags;
-	
-	private int separatorCount;
-	
-	private int separatorIndex;
-	
-	public WildcardMatcherTest(WildcardPatternTest pattern) {
-		this.pattern = pattern;
-	}
-	
-	public boolean matches(CharSequence input) {
-		separatorCount = 0;
-		separatorIndex = 0;
-
-		if(input == null) {
-			this.input = null;
-			separatorFlags = null;
-			return false;
-		}
-		
-		this.input = input;
-		separatorFlags = new int[input.length()];
-		
-		boolean result = matches(pattern, input, separatorFlags);
-		
-		if(result) {
-			for(int i = separatorFlags.length - 1; i >= 0; i--) {
-				if(separatorFlags[i] > 0) {
-					separatorCount = separatorFlags[i];
-					break;
-				}
-			}
-		}
-		
-		
-//		for(int i : separatorFlags) {
-//			System.out.println("separatorFlag: " + i);
-//			
-//		}
-		
-		
-		return result;
-	}
-	
-	public WildcardMatcherTest first() {
-		separatorIndex = 0;
-		return this;
-	}
-
-	public WildcardMatcherTest last() {
-		separatorIndex = separatorCount;
-		return this;
-	}
-	
-	public boolean hasNext() {
-		return separatorIndex <= separatorCount;
-	}
-
-	public boolean hasPrev() {
-		return separatorIndex >= 0;
-	}
-	
-	public String next() {
-		if(separatorIndex > separatorCount)
-			return null;
-
-		return find(separatorIndex++);
-	}
-	
-	public String prev() {
-		if(separatorIndex < 0)
-			return null;
-		
-		return find(separatorIndex--);
-	}
-
-	public String find() {
-		return find(separatorIndex);
-	}
-	
-	public String find(int group) {
-		//System.out.println("group: " + group);
-		
-		if(separatorCount == 0) {
-			if(input == null)
-				return null;
-			
-			return input.toString();
-		}
-		
-		if(group < 0 || group > separatorCount)
-			throw new IndexOutOfBoundsException();
-		
-		int start = 0;
-		int offset = -1;
-		
-		if(group == 0) {
-			for(int i = 0; i < separatorFlags.length; i++) {
-				if(separatorFlags[i] == 1) {
-					offset = i;
-					break;
-				}
-			}
-
-			if(offset == -1)
-				offset = separatorFlags.length;
-		} else {
-			for(int i = 0; i < separatorFlags.length; i++) {
-				if(separatorFlags[i] == group) {
-					start = i + 1;
-				} else if(start > 0 && separatorFlags[i] == group + 1) {
-					offset = i;
-					break;
-				}
-			}
-			
-			//System.out.println("#1 start: " + start + ", offset: " + offset);
-			
-			if(start > 0 && offset == -1) {
-				offset = separatorFlags.length;
-				//System.out.println("#2 start: " + start + ", offset: " + offset);
-			}
-
-		}
-		
-		if(offset == -1)
-			return null;
-		else if(offset == 0)
-			return StringUtils.EMPTY;
-		else
-			return input.subSequence(start, offset).toString();
-	}
-	
-	public int getSeparatorCount() {
-		return separatorCount;
-	}
-	
-	public WildcardPatternTest getWildcardPattern() {
-		return pattern;
-	}
-	
-	public static boolean matches(WildcardPatternTest pattern, CharSequence input) {
-		return matches(pattern, input, null);
-	}
-	
 	/**
+	 * Erase the characters that corresponds to the wildcard, and returns collect only the remaining characters.
+	 * In other words, only it remains for the wildcard character.
+	 * 
 	 * @param pattern
 	 * @param input
 	 * @param separatorFlags
 	 * @return
 	 */
-	private static boolean matches(WildcardPatternTest pattern, CharSequence input, int[] separatorFlags) {
+	public static String mask(WildcardPatternTest pattern, CharSequence input) {
 		char[] tokens = pattern.getTokens();
 		int[] types = pattern.getTypes();
 		char separator = pattern.getSeparator();
-		
+
 		int tlength = tokens.length;
 		int clength = input.length();
 
-		int sepaCount = 0;
+		char[] masks = new char[clength];
+		char c;
 
 		int tindex = 0;
 		int cindex = 0;
@@ -210,16 +63,20 @@ public class WildcardMatcherTest {
 			
 			if(types[tindex] == WildcardPattern.LITERAL_TYPE) {
 				if(tokens[tindex++] != input.charAt(cindex++)) {
-					return false;
+					return null;
 				}
+				//masks[cindex] = input.charAt(cindex);
 			} else if(types[tindex] == WildcardPattern.STAR_TYPE) {
 				trange1 = tindex + 1;
 				if(trange1 < tlength) {
 					trange2 = trange1;
-					//System.out.println("*trange1=" + trange1 + " tokens[trange1]: " + tokens[trange1] + ", trange2=" + trange2 + " tokens[trange2]: " + tokens[trange2]);
+					System.out.println("*trange1=" + trange1 + " tokens[trange1]: " + tokens[trange1] + ", trange2=" + trange2 + " tokens[trange2]: " + tokens[trange2]);
 					for(; trange2 < tlength; trange2++) {
-						if(types[trange2] == WildcardPattern.EOT_TYPE || types[trange2] != WildcardPattern.LITERAL_TYPE)
+						System.out.println("star-1 trange2: " + trange2 + ", types[trange2]:" + types[trange2]);
+						if(types[trange2] == WildcardPattern.EOT_TYPE || types[trange2] != WildcardPattern.LITERAL_TYPE) {
+							System.out.println("star-1 break trange2: " + trange2 + ", types[trange2]:" + types[trange2]);
 							break;
+						}
 					}
 					
 					//System.out.println("*trange1=" + trange1 + " tokens[trange1]: " + tokens[trange1] + ", trange2=" + trange2 + " tokens[trange2]: " + tokens[trange2]);
@@ -228,34 +85,46 @@ public class WildcardMatcherTest {
 						// prefix*
 						for(; cindex < clength; cindex++) {
 							System.out.println("----star0 cindex=" + cindex + ", char=" + input.charAt(cindex));
-							if(input.charAt(cindex) == separator)
+							c = input.charAt(cindex);
+							if(c == separator)
 								break;
+							masks[cindex] = c;
+							System.out.println("mask cindex: " + cindex + ", char: " + c);
 						}
 						tindex++;
 					} else {
 						// *suffix
 						ttemp = trange1;
+						System.out.println("----star1 ttemp=" + ttemp + ", trange2=" + trange2 + ", cindex=" + cindex);
 						do {
-							if(input.charAt(cindex) == separator)
-								return false;
-							if(tokens[ttemp] != input.charAt(cindex++))
+							c = input.charAt(cindex);
+							if(c == separator)
+								return null;
+							if(tokens[ttemp] != c) {
 								ttemp = trange1;
-							else
+								masks[cindex] = c;
+								System.out.println("mask cindex: " + cindex + ", char: " + c);
+							} else {
 								ttemp++;
+							}
+							cindex++;
 						} while(ttemp < trange2 && cindex < clength);
 						
 						System.out.println("----star1 ttemp=" + ttemp + ", t2=" + trange2 + ", cindex=" + cindex);
 						
 						if(ttemp < trange2)
-							return false;
+							return null;
 						
 						tindex = trange2;
 					}
 				} else {
 					for(; cindex < clength; cindex++) {
 						System.out.println("----star2 cindex=" + cindex + ", char=" + input.charAt(cindex));
-						if(input.charAt(cindex) == separator)
+						c = input.charAt(cindex);
+						if(c == separator)
 							break;
+						masks[cindex] = c;
+						System.out.println("mask cindex: " + cindex + ", char: " + c + ", separator: " + separator);
 					}
 					tindex++;
 				}
@@ -296,12 +165,15 @@ public class WildcardMatcherTest {
 						crange2 = cindex;
 						ttemp = trange1;
 						while(ttemp <= trange2 && crange2 < clength) {
-							if(input.charAt(crange2++) != tokens[ttemp]) {
+							c = input.charAt(crange2);
+							if(c != tokens[ttemp]) {
 								ttemp = trange1;
+								masks[crange2] = c;
 							} else {
-								System.out.println("---------------uu@t: " + ttemp + " char: " + tokens[ttemp] + ", t2: " + trange2 + ", c2: " + (crange2-1) + ", c2-char: " + input.charAt(crange2-1));
+								System.out.println("---------------uu@t: " + ttemp + " char: " + tokens[ttemp] + ", t2: " + trange2 + ", c2: " + (crange2) + ", c2-char: " + input.charAt(crange2-1));
 								ttemp++;
 							}
+							crange2++;
 						}
 						System.out.println("---------------@t: " + ttemp + " @t2: " + trange2 + " @c2: " + crange2);
 						if(ttemp <= trange2) {
@@ -310,21 +182,19 @@ public class WildcardMatcherTest {
 							System.out.println("!return# crange1: " + crange1 + ", char: " + input.charAt(crange1));
 							System.out.println("!return# crange2: " + crange2 + ", char: " + (crange2 >= clength ? "over" : input.charAt(crange2)));
 							tindex = trange2;
-							if(cindex > 0)
+							if(cindex > 0) {
 								cindex--;
+								System.out.println("mask cindex: " + cindex + ", erase char: " + input.charAt(cindex));
+								masks[cindex] = 0; //erase
+							}
 						} else {
 							//System.out.println("!!! c1: " + crange1 + ", c1-char: " + input.charAt(crange1) + ", c2: " + crange2 + ", c2-char: " + input.charAt(crange2));
-							if(separatorFlags != null && crange1 < crange2) {
-								for(ctemp = crange1; ctemp < crange2; ctemp++) {
-									System.out.println("!!!separator ctemp: " + ctemp + ", char: " + input.charAt(ctemp));
-									if(input.charAt(ctemp) == separator) {
-										separatorFlags[ctemp] = ++sepaCount;
-										System.out.println("!!!separator ctemp: " + ctemp + ", separatorFlags[ctemp]: " + separatorFlags[ctemp]);
-									}
-								}
-							}
 							cindex = crange2;
 							tindex = trange2 + 1;
+//							for(ctemp = crange1; ctemp < crange2; ctemp++) {
+//								masks[ctemp] = input.charAt(ctemp);
+//								System.out.println("-mask ctemp: " + ctemp + ", char: " + input.charAt(ctemp));
+//							}
 						}
 					} else {
 						tindex++;
@@ -351,22 +221,21 @@ public class WildcardMatcherTest {
 							System.out.println("!!! scnt2: " + scnt2);
 							if(scnt1 == scnt2) {
 								cindex = crange2;
-								System.out.println("!!! cindex: " + cindex);
-								if(separatorFlags != null) {
-									while(crange1 < crange2) {
-										if(input.charAt(crange1) == separator) {
-											separatorFlags[crange1] = ++sepaCount;
-										}
-										System.out.println("!!! c1: " + crange1 + ", separatorFlags[c1]: " + separatorFlags[crange1]);
-										crange1++;
-									}
+								for(ctemp = crange1; ctemp < crange2; ctemp++) {
+									masks[ctemp] = input.charAt(ctemp);
+									System.out.println("mask ctemp: " + ctemp + ", char: " + input.charAt(ctemp));
 								}
+								System.out.println("!!! cindex: " + cindex);
 							}
 						}
 						
 						System.out.println("--------------- #end tokens[" + tindex + "]: " + tokens[tindex]);
 					}
 				} else {
+					for(ctemp = cindex; ctemp < clength; ctemp++) {
+						masks[ctemp] = input.charAt(ctemp);
+						System.out.println("mask ctemp: " + ctemp + ", char: " + input.charAt(ctemp));
+					}
 					cindex = clength; //complete
 					tindex++;
 					System.out.println("---------------star star complete cindex: " + cindex);
@@ -379,9 +248,12 @@ public class WildcardMatcherTest {
 						types[tindex + 1] != WildcardPattern.LITERAL_TYPE ||
 						tokens[tindex + 1] != input.charAt(cindex)) {
 					if(separator > 0) {
-						if(input.charAt(cindex) != separator)
+						if(input.charAt(cindex) != separator) {
+							masks[cindex] = input.charAt(cindex);
 							cindex++;
+						}
 					} else {
+						masks[cindex] = input.charAt(cindex);
 						cindex++;
 					}
 				}
@@ -389,17 +261,23 @@ public class WildcardMatcherTest {
 			} else if(types[tindex] == WildcardPattern.PLUS_TYPE) {
 				if(separator > 0) {
 					if(input.charAt(cindex) == separator)
-						return false;
+						return null;
 				}
+				masks[cindex] = input.charAt(cindex);
 				cindex++;
 				tindex++;
 			} else if(types[tindex] == WildcardPattern.SEPARATOR_TYPE) {
 				//System.out.println("**빠짐 tokens[tindex]: " + tokens[tindex] + ", input.charAt(cindex): " + input.charAt(cindex));
-				if(tokens[tindex++] != input.charAt(cindex++)) {
-					return false;
+				if(tokens[tindex] != input.charAt(cindex)) {
+					return null;
 				}
-				if(separatorFlags != null)
-					separatorFlags[cindex - 1] = ++sepaCount;
+				if(tindex > 0) System.out.println("separator on types[tindex - 1]:" + types[tindex - 1]);
+				if(tindex > 0 && (types[tindex - 1] == WildcardPattern.STAR_STAR_TYPE || types[tindex - 1] == WildcardPattern.STAR_TYPE)) {
+					System.out.println("separator on types[tindex - 1] == WildcardPattern.STAR_STAR_TYPE");
+					masks[cindex] = input.charAt(cindex);
+				}
+				tindex++;
+				cindex++;
 			} else if(types[tindex] == WildcardPattern.EOT_TYPE) {
 				break;
 			} else {
@@ -413,7 +291,7 @@ public class WildcardMatcherTest {
 		System.out.println("---------------------------------------------------");
 
 		if(cindex < clength) {
-			return false;
+			return null;
 		}
 
 		if(tindex < tlength) {
@@ -422,26 +300,26 @@ public class WildcardMatcherTest {
 				if(types[ttemp] == WildcardPattern.LITERAL_TYPE ||
 						types[ttemp] == WildcardPattern.PLUS_TYPE ||
 						types[ttemp] == WildcardPattern.SEPARATOR_TYPE) {
-					return false;
+					return null;
 				}
 			}
 		}
 		
-		return true;
+		StringBuilder sb = new StringBuilder();
+		for(int i = 0; i < masks.length; i++) {
+			if(masks[i] > 0)
+				sb.append(masks[i]);
+		}
+		
+		return sb.toString();
 	}
 	
 	public static void main(String argv[]) {
-		//String str = "/aaa\\*/**/bb*.txt**";
-		//String str = "**.Sample*Test*Bean";
-		//String str = "?c?om.**.x?.*scope.**.*XmlBean*";
-		//String str2 = str;
-		//String str = "?c?om.**.x?.*scope.**.*XmlBean*.**.*Action?";
-		//String str2 = "com.x.scope.main.x1xscope.1234XmlBean5678.p1.p2.p3.endAction";
-		//String str = "com.aspectran.**.service.**.*Action?";
-		//String str2 = "com.aspectran.a.service.c.dAction1";
-		String str = "*A";
-		String str2 = "common/MyTransletA";
-		WildcardPatternTest pattern = WildcardPatternTest.compile(str, '/');
+		//String str = "/com/aspectran/example/HelloWorldAction.act";
+		//String str2 = "**/*.act";
+		String str = "example.helloworld.abc.b.HelloWorldAction";
+		String str2 = "example.**.abc.**.*";
+		WildcardPatternTest pattern = WildcardPatternTest.compile(str2, '.');
 		
 		int i = 0;
 		for(char c : pattern.getTokens()) {
@@ -453,19 +331,8 @@ public class WildcardMatcherTest {
 			i++;
 		}
 		
-		WildcardMatcherTest matcher = new WildcardMatcherTest(pattern);
-		//boolean result = matcher.matches("/aaa*/mm/nn/bbZZ.txt");
-		//boolean result = matcher.matches("com.aspectran.test.SampleTestBean");
-		boolean result = matcher.matches(str2);
+		System.out.println(WildcardMaskerTest.mask(pattern, str));
 		
-		System.out.println("---------------------------------------------------");
-		System.out.println("result: " + result);
-		System.out.println("separatorCount: " + matcher.getSeparatorCount());
-		
-		System.out.println("pattern: " + str);
-		while(matcher.hasNext()) {
-			System.out.println(" -" + matcher.next());
-		}
 	}
 
 }

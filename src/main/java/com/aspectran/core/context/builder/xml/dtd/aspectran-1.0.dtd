@@ -58,6 +58,7 @@ disabled (true | false) #IMPLIED
 <!ELEMENT bean (description?, filter?, features?, constructor?, property?)>
 <!ATTLIST bean
 id CDATA #IMPLIED
+mask CDATA #IMPLIED
 class CDATA #IMPLIED
 scope (singleton | prototype | request | session | application) #IMPLIED
 singleton (true | false) #IMPLIED
@@ -92,6 +93,8 @@ class CDATA #IMPLIED
 <!ATTLIST translet
 name CDATA #REQUIRED
 restVerb (GET | POST | PUT | PATCH | DELETE | HEAD | OPTIONS | TRACE | CONNECT) #IMPLIED
+mask CDATA #IMPLIED
+path CDATA #IMPLIED
 >
 
 <!ELEMENT request (attribute?)>

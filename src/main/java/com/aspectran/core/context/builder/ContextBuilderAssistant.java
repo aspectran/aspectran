@@ -350,6 +350,8 @@ public class ContextBuilderAssistant {
 			ClassScanner scanner = new BeanClassScanner(classLoader);
 			if(beanRule.getFilterParameters() != null)
 				scanner.setFilterParameters(beanRule.getFilterParameters());
+			if(beanRule.getMaskPattern() != null)
+				scanner.setBeanIdMaskPattern(beanRule.getMaskPattern());
 			
 			Map<String, Class<?>> beanClassMap = scanner.scanClasses(className);
 			

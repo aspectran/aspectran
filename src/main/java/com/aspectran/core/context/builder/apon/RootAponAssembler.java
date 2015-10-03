@@ -289,6 +289,7 @@ public class RootAponAssembler {
 			beanParameters.putValue(BeanParameters.description, beanRule.getDescription());
 		}
 		beanParameters.putValue(BeanParameters.id, beanRule.getId());
+		beanParameters.putValue(BeanParameters.mask, beanRule.getMaskPattern());
 		beanParameters.putValue(BeanParameters.className, beanRule.getClassName());
 		if(beanRule.getSingleton() == Boolean.TRUE && beanRule.getScopeType() == ScopeType.SINGLETON)
 			beanParameters.putValue(BeanParameters.singleton, beanRule.getSingleton());

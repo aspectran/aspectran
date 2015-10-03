@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.util.Map;
 
 import com.aspectran.core.util.apon.Parameters;
+import com.aspectran.core.util.wildcard.WildcardPattern;
 
 public interface ClassScanner {
 
@@ -31,6 +32,12 @@ public interface ClassScanner {
 	public void setClassScanFilter(Class<?> classScanFilterClass);
 
 	public void setClassScanFilter(String classScanFilterClassName);
+
+	public WildcardPattern getBeanIdMaskPattern();
+
+	public void setBeanIdMaskPattern(WildcardPattern beanIdMaskPattern);
+
+	public void setBeanIdMaskPattern(String beanIdMask);
 	
 	public Map<String, Class<?>> scanClasses(String classNamePattern) throws IOException, ClassNotFoundException;
 	

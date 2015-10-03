@@ -44,6 +44,8 @@ public class BeanRule implements Cloneable {
 
 	protected Class<?> beanClass;
 
+	protected String maskPattern;
+	
 	protected ScopeType scopeType;
 
 	protected Boolean singleton;
@@ -172,6 +174,24 @@ public class BeanRule implements Cloneable {
 	 */
 	public void setBeanClass(Class<?> beanClass) {
 		this.beanClass = beanClass;
+	}
+
+	/**
+	 * Gets the mask pattern.
+	 *
+	 * @return the mask pattern
+	 */
+	public String getMaskPattern() {
+		return maskPattern;
+	}
+
+	/**
+	 * Sets the mask pattern.
+	 *
+	 * @param maskPattern the new mask pattern
+	 */
+	public void setMaskPattern(String maskPattern) {
+		this.maskPattern = maskPattern;
 	}
 
 	/**
@@ -480,7 +500,7 @@ public class BeanRule implements Cloneable {
 		return sb.toString();
 	}
 	
-	public static BeanRule newInstance(String id, String className, String scope, Boolean singleton, String factoryMethod, String initMethodName, String destroyMethodName, Boolean lazyInit, Boolean important) {
+	public static BeanRule newInstance(String id, String maskPattern, String className, String scope, Boolean singleton, String factoryMethod, String initMethodName, String destroyMethodName, Boolean lazyInit, Boolean important) {
 		if(id == null)
 			throw new IllegalArgumentException("The <bean> element requires a id attribute.");
 
@@ -497,6 +517,7 @@ public class BeanRule implements Cloneable {
 		
 		BeanRule beanRule = new BeanRule();
 		beanRule.setId(id);
+		beanRule.setMaskPattern(maskPattern);
 		beanRule.setClassName(className);
 		beanRule.setScopeType(scopeType);
 		beanRule.setSingleton(singleton);

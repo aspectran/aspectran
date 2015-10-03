@@ -29,6 +29,7 @@ import java.util.Map;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
+import com.aspectran.core.context.AspectranConstant;
 import com.aspectran.core.context.builder.apon.params.FilterParameters;
 import com.aspectran.core.util.ClassUtils;
 import com.aspectran.core.util.ResourceUtils;
@@ -48,6 +49,8 @@ public class BeanClassScanner implements ClassScanner {
 	private Parameters filterParameters;
 	
 	private ClassScanFilter classScanFilter;
+	
+	private WildcardPattern beanIdMaskPattern;
 	
 	private Map<String, WildcardPattern> wildcardPatternCache = new HashMap<String, WildcardPattern>();
 
@@ -71,6 +74,10 @@ public class BeanClassScanner implements ClassScanner {
 		return classScanFilter;
 	}
 
+	public void setClassScanFilter(ClassScanFilter classScanFilter) {
+		this.classScanFilter = classScanFilter;
+	}
+	
 	public void setClassScanFilter(Class<?> classScanFilterClass) {
 		try {
 			classScanFilter = (ClassScanFilter)classScanFilterClass.newInstance();
@@ -79,6 +86,18 @@ public class BeanClassScanner implements ClassScanner {
 		}
 	}
 
+	public WildcardPattern getBeanIdMaskPattern() {
+		return beanIdMaskPattern;
+	}
+
+	public void setBeanIdMaskPattern(WildcardPattern beanIdMaskPattern) {
+		this.beanIdMaskPattern = beanIdMaskPattern;
+	}
+
+	public void setBeanIdMaskPattern(String beanIdMask) {
+		beanIdMaskPattern = new WildcardPattern(beanIdMask, AspectranConstant.ID_SEPARATOR);
+	}
+	
 	public void setClassScanFilter(String classScanFilterClassName) {
 		Class<?> filterClass;
 		try {
@@ -299,15 +318,25 @@ public class BeanClassScanner implements ClassScanner {
 	private boolean putClass(Map<String, Class<?>> scannedClasses, String beanId, String className, Class<?> scannedClass) {
 		className = className.replace(ResourceUtils.RESOURCE_NAME_SPEPARATOR_CHAR, ClassUtils.PACKAGE_SEPARATOR_CHAR);
 
-		boolean valid = true;
-		
-		if(classScanFilter != null) {
-			if(!classScanFilter.filter(beanId, className, scannedClass)) {
-				valid = false;
+		if(beanIdMaskPattern != null) {
+			String maskedBeanId = beanIdMaskPattern.mask(beanId);
+			if(maskedBeanId != null) {
+				beanId = maskedBeanId;
+			}  else {
+				log.warn("Unmatched the pattern can not be masking. beanId: " + beanId + " (maskPattern: " + beanIdMaskPattern + ")");
 			}
 		}
+
+		if(classScanFilter != null) {
+			beanId = classScanFilter.filter(beanId, className, scannedClass);
+			if(beanId == null) {
+				return false;
+			}
+		}
+
+		boolean valid = true;
 		
-		if(valid && filterParameters != null) {
+		if(filterParameters != null) {
 			String[] excludePatterns = filterParameters.getStringArray(FilterParameters.exclude);
 			
 			if(excludePatterns != null) {

@@ -236,6 +236,8 @@ public class WildcardMatcher {
 						// *suffix
 						ttemp = trange1;
 						do {
+							if(input.charAt(cindex) == separator)
+								return false;
 							if(tokens[ttemp] != input.charAt(cindex++))
 								ttemp = trange1;
 							else
