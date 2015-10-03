@@ -29,6 +29,7 @@ public class InvalidPointcutPatternException extends AspectException {
 	 * Creates a new InvalidPointcutPatternException without detail message.
 	 */
 	public InvalidPointcutPatternException() {
+		super();
 	}
 
 	/**
@@ -67,7 +68,7 @@ public class InvalidPointcutPatternException extends AspectException {
 	 * @param msg the msg
 	 */
 	public InvalidPointcutPatternException(AspectRule aspectRule, String msg) {
-		super(msg + " : aspectRule " + aspectRule);
+		this(msg + " : aspectRule " + aspectRule);
 	}
 	
 }

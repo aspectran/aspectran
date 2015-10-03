@@ -25,7 +25,7 @@ import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.process.result.ActionResult;
 import com.aspectran.core.activity.process.result.ContentResult;
 import com.aspectran.core.activity.process.result.ProcessResult;
-import com.aspectran.core.activity.response.dispatch.DispatchResponseException;
+import com.aspectran.core.activity.response.dispatch.ViewDispatchException;
 import com.aspectran.core.activity.response.dispatch.ViewDispatcher;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
@@ -45,14 +45,26 @@ public class JspViewDispatcher implements ViewDispatcher {
 
 	private static final boolean debugEnabled = log.isDebugEnabled();
 	
+	private static final boolean traceEnabled = log.isTraceEnabled();
+	
 	private String templatePathPrefix;
 
 	private String templatePathSuffix;
 	
+	/**
+	 * Sets the template path prefix.
+	 *
+	 * @param templatePathPrefix the new template path prefix
+	 */
 	public void setTemplatePathPrefix(String templatePathPrefix) {
 		this.templatePathPrefix = templatePathPrefix;
 	}
 
+	/**
+	 * Sets the template path suffix.
+	 *
+	 * @param templatePathSuffix the new template path suffix
+	 */
 	public void setTemplatePathSuffix(String templatePathSuffix) {
 		this.templatePathSuffix = templatePathSuffix;
 	}
@@ -60,7 +72,7 @@ public class JspViewDispatcher implements ViewDispatcher {
 	/* (non-Javadoc)
 	 * @see com.aspectran.core.activity.response.dispatch.ViewDispatcher#dispatch(com.aspectran.core.activity.AspectranActivity, com.aspectran.base.rule.DispatchResponseRule)
 	 */
-	public void dispatch(Activity activity, DispatchResponseRule dispatchResponseRule) throws DispatchResponseException {
+	public void dispatch(Activity activity, DispatchResponseRule dispatchResponseRule) {
 		try {
 			RequestAdapter requestAdapter = activity.getRequestAdapter();
 			ResponseAdapter responseAdapter = activity.getResponseAdapter();
@@ -101,7 +113,7 @@ public class JspViewDispatcher implements ViewDispatcher {
 			RequestDispatcher requestDispatcher = request.getRequestDispatcher(templatePath);
 			requestDispatcher.forward(request, response);
 
-			if(debugEnabled) {
+			if(traceEnabled) {
 				Enumeration<String> attrNames = requestAdapter.getAttributeNames();
 
 				if(attrNames.hasMoreElements()) {
@@ -118,13 +130,14 @@ public class JspViewDispatcher implements ViewDispatcher {
 					}
 
 					sb2.append("]");
-					log.debug(sb2.toString());
+					log.trace(sb2.toString());
 				}
 
-				log.debug("JSP Dispatch {templatePath: " + templatePath + "}");
+				if(debugEnabled)
+					log.debug("JSP Dispatch {templatePath: " + templatePath + "}");
 			}
 		} catch(Exception e) {
-			throw new DispatchResponseException("Dispatch response error: " + dispatchResponseRule, e);
+			throw new ViewDispatchException("JSP View Dispatch Error: " + dispatchResponseRule, e);
 		}
 	}
 

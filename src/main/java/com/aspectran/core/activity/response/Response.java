@@ -20,6 +20,8 @@ import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.context.rule.type.ResponseType;
 
 /**
+ * The Interface Response.
+ * 
  * <p>Created: 2008. 03. 23 오후 12:52:04</p>
  */
 public interface Response {

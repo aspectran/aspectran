@@ -19,7 +19,7 @@ package com.aspectran.core.util;
 /**
  * Miscellaneous {@link Boolean} utility methods.
  * 
- * @author Jeong Ju Ho
+ * @author Juho Jeong
  */
 public class BooleanUtils {
 	

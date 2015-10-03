@@ -15,11 +15,8 @@
  */
 package com.aspectran.core.util.apon;
 
-
 /**
- * This exception will be thrown when a translet request is failed.
- * 
- * <p>Created: 2008. 01. 07 오전 3:35:55</p>
+ * The Class IncompatibleParameterValueTypeException.
  */
 public class IncompatibleParameterValueTypeException extends InvalidParameterException {
 	
@@ -30,6 +27,7 @@ public class IncompatibleParameterValueTypeException extends InvalidParameterExc
 	 * Simple constructor.
 	 */
 	public IncompatibleParameterValueTypeException() {
+		super();
 	}
 
 	/**

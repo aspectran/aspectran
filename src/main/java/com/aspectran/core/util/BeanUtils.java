@@ -98,8 +98,7 @@ public class BeanUtils {
 	}
 
 	/**
-	 * Returns the class that the getter will return when reading a property
-	 * value.
+	 * Returns the class that the getter will return when reading a property value.
 	 * 
 	 * @param object The bean to check
 	 * @param name The name of the property
@@ -134,8 +133,7 @@ public class BeanUtils {
 	}
 
 	/**
-	 * Returns the class that the getter will return when reading a property
-	 * value.
+	 * Returns the class that the getter will return when reading a property value.
 	 * 
 	 * @param type The class to check
 	 * @param name The name of the property

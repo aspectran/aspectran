@@ -25,7 +25,7 @@ import com.aspectran.core.context.AspectranConstant;
 public class ActionIdQualifier {
 
 	/**
-	 * Make a qualified action ID.
+	 * Make a qualified Action ID.
 	 * 
 	 * @param contentId the content id
 	 * @param actionId the action id
@@ -51,7 +51,7 @@ public class ActionIdQualifier {
 	}
 	
 	/**
-	 * Make a qualified action ID.
+	 * Make a qualified Action ID.
 	 * 
 	 * @param parentFullActionId the parent action path
 	 * @param contentId the content id

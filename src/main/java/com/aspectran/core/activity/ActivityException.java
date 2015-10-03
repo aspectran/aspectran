@@ -15,12 +15,14 @@
  */
 package com.aspectran.core.activity;
 
+import com.aspectran.core.context.AspectranException;
+
 /**
  * This exception will be thrown when a translet process is failed..
  * 
  * <p>Created: 2008. 01. 07 오전 3:35:55</p>
  */
-public class ActivityException extends RuntimeException {
+public class ActivityException extends AspectranException {
 	
 	/** @serial */
 	static final long serialVersionUID = -4400747654771758521L;
@@ -29,6 +31,7 @@ public class ActivityException extends RuntimeException {
 	 * Instantiates a new activity exception.
 	 */
 	public ActivityException() {
+		super();
 	}
 
 	/**
@@ -50,8 +53,7 @@ public class ActivityException extends RuntimeException {
 	}
 
 	/**
-	 * Constructor to create exception to wrap another exception and pass a
-	 * message.
+	 * Constructor to create exception to wrap another exception and pass a message.
 	 * 
 	 * @param msg The message
 	 * @param cause The real cause of the exception

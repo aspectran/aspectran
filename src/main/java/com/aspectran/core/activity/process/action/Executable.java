@@ -21,6 +21,8 @@ import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
 import com.aspectran.core.context.rule.type.ActionType;
 
 /**
+ * The Interface Executable.
+ * 
  * <p>Created: 2008. 03. 23 오전 10:38:29</p>
  */
 public interface Executable {
@@ -32,6 +34,11 @@ public interface Executable {
 	 */
 	public String getActionId();
 
+	/**
+	 * Gets the qualified action id.
+	 *
+	 * @return the qualified action id
+	 */
 	public String getQualifiedActionId();
 
 	/**
@@ -39,14 +46,15 @@ public interface Executable {
 	 *
 	 * @param activity the activity
 	 * @return the result of action execution
+	 * @throws Exception the exception
 	 * @throws ActionExecutionException the action execution exception
 	 */
 	public Object execute(Activity activity) throws Exception;
 	
 	/**
-	 * Checks if is hidden.
+	 * Checks if is hidden action.
 	 * 
-	 * @return true, if is hidden
+	 * @return true, if is hidden action
 	 */
 	public boolean isHidden();
 	
@@ -64,6 +72,12 @@ public interface Executable {
 	 */
 	public ActionType getActionType();
 	
+	/**
+	 * Gets the action rule.
+	 *
+	 * @param <T> the generic type
+	 * @return the action rule
+	 */
 	public <T> T getActionRule();
 	
 	/**
@@ -73,6 +87,11 @@ public interface Executable {
 	 */
 	public AspectAdviceRuleRegistry getAspectAdviceRuleRegistry();
 	
+	/**
+	 * Sets the aspect advice rule registry.
+	 *
+	 * @param aspectAdviceRuleRegistry the new aspect advice rule registry
+	 */
 	public void setAspectAdviceRuleRegistry(AspectAdviceRuleRegistry aspectAdviceRuleRegistry);
 	
 }

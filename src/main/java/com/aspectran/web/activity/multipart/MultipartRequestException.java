@@ -18,6 +18,8 @@ package com.aspectran.web.activity.multipart;
 import com.aspectran.core.activity.request.RequestException;
 
 /**
+ * The Class MultipartRequestException.
+ * 
  * <p>Created: 2008. 01. 07 오전 3:35:55</p>
  */
 public class MultipartRequestException extends RequestException {
@@ -29,6 +31,7 @@ public class MultipartRequestException extends RequestException {
 	 * Simple constructor.
 	 */
 	public MultipartRequestException() {
+		super();
 	}
 
 	/**
@@ -50,8 +53,7 @@ public class MultipartRequestException extends RequestException {
 	}
 
 	/**
-	 * Constructor to create exception to wrap another exception and pass a
-	 * message.
+	 * Constructor to create exception to wrap another exception and pass a message.
 	 * 
 	 * @param msg The message
 	 * @param cause The real cause of the exception

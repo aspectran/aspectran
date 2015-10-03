@@ -15,12 +15,14 @@
  */
 package com.aspectran.core.activity.aspect;
 
+import com.aspectran.core.context.aspect.AspectException;
+
 /**
- * This exception will be thrown when a translet process is failed..
+ * The Class AspectAdviceException.
  * 
  * <p>Created: 2008. 01. 07 오전 3:35:55</p>
  */
-public class AspectAdviceException extends Exception {
+public class AspectAdviceException extends AspectException {
 	
 	/** @serial */
 	private static final long serialVersionUID = 6813516429436576091L;
@@ -29,6 +31,7 @@ public class AspectAdviceException extends Exception {
 	 * Simple constructor.
 	 */
 	public AspectAdviceException() {
+		super();
 	}
 
 	/**
@@ -50,8 +53,7 @@ public class AspectAdviceException extends Exception {
 	}
 
 	/**
-	 * Constructor to create exception to wrap another exception and pass a
-	 * message.
+	 * Constructor to create exception to wrap another exception and pass a message.
 	 * 
 	 * @param msg The message
 	 * @param cause The real cause of the exception

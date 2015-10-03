@@ -33,6 +33,6 @@ public interface ViewDispatcher {
 	 * @param viewName the view name
 	 * @throws ResponseException the response exception
 	 */
-	public void dispatch(Activity activity, DispatchResponseRule dispatchResponseRule) throws ResponseException;
+	public void dispatch(Activity activity, DispatchResponseRule dispatchResponseRule);
 	
 }

@@ -43,7 +43,6 @@ public class BeanInstantiationException extends BeanException {
 
 	/**
 	 * Create a new BeanInstantiationException.
-	 *
 	 * @param msg the detail message
 	 * @param cause the root cause
 	 */

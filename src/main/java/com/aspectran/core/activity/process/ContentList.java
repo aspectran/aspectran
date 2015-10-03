@@ -25,7 +25,7 @@ import com.aspectran.core.context.rule.ExceptionHandlingRule;
 import com.aspectran.core.util.BooleanUtils;
 
 /**
- * Then content list class.
+ * Then Class ContentList.
  * 
  * <p>Created: 2008. 03. 22 오후 5:47:57</p>
  */

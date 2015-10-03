@@ -13,33 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.core.context.translet;
+package com.aspectran.core.activity.response.dispatch;
 
-import com.aspectran.core.context.AspectranException;
+import com.aspectran.core.activity.response.ResponseException;
 
 /**
- * This class is the basic exception that gets thrown from the beans pacakge.
+ * The Class DispatchResponseException.
  * 
  * <p>Created: 2008. 01. 07 오전 3:35:55</p>
  */
-public class TransletException extends AspectranException {
+public class ViewDispatchException extends ResponseException {
 	
 	/** @serial */
-	private static final long serialVersionUID = 3736262494374232352L;
+	private static final long serialVersionUID = -5266768905802048525L;
 
 	/**
-	 * Creates a new BeanException without detail message.
+	 * Simple constructor.
 	 */
-	public TransletException() {
+	public ViewDispatchException() {
 		super();
 	}
 
 	/**
-	 * Constructs a BeanException with the specified detail message.
+	 * Constructor to create exception with a message.
 	 * 
 	 * @param msg A message to associate with the exception
 	 */
-	public TransletException(String msg) {
+	public ViewDispatchException(String msg) {
 		super(msg);
 	}
 
@@ -48,19 +48,17 @@ public class TransletException extends AspectranException {
 	 * 
 	 * @param cause The real cause of the exception
 	 */
-	public TransletException(Throwable cause) {
+	public ViewDispatchException(Throwable cause) {
 		super(cause);
 	}
 
 	/**
-	 * Constructs a BeanException with the specified error message and also the specified root cause exception.
-	 * The root cause exception is generally for TypeConversionException's root cause or something that might have caused a BeanException.
+	 * Constructor to create exception to wrap another exception and pass a message.
 	 * 
-	 * @param msg The detail message
+	 * @param msg The message
 	 * @param cause The real cause of the exception
 	 */
-	public TransletException(String msg, Throwable cause) {
+	public ViewDispatchException(String msg, Throwable cause) {
 		super(msg, cause);
 	}
-	
 }

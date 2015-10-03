@@ -30,12 +30,16 @@ import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
 /**
+ * The Class IncludeAction.
+ * 
  * <p>Created: 2008. 06. 05 오후 9:22:05</p>
  */
 public class IncludeAction extends AbstractAction implements Executable {
 	
+	/** The Constant log. */
 	private static final Log log = LogFactory.getLog(IncludeAction.class);
 
+	/** The include action rule. */
 	private final IncludeActionRule includeActionRule;
 
 	/**
@@ -100,19 +104,31 @@ public class IncludeAction extends AbstractAction implements Executable {
 		return includeActionRule.isHidden();
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.activity.process.action.Executable#getActionType()
+	 */
 	public ActionType getActionType() {
 		return ActionType.INCLUDE;
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.activity.process.action.Executable#getActionRule()
+	 */
 	@SuppressWarnings("unchecked")
 	public <T> T getActionRule() {
 		return (T)includeActionRule;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.activity.process.action.Executable#getAspectAdviceRuleRegistry()
+	 */
 	public AspectAdviceRuleRegistry getAspectAdviceRuleRegistry() {
 		return includeActionRule.getAspectAdviceRuleRegistry();
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.activity.process.action.Executable#setAspectAdviceRuleRegistry(com.aspectran.core.context.aspect.AspectAdviceRuleRegistry)
+	 */
 	public void setAspectAdviceRuleRegistry(AspectAdviceRuleRegistry aspectAdviceRuleRegistry) {
 		includeActionRule.setAspectAdviceRuleRegistry(aspectAdviceRuleRegistry);
 	}

@@ -15,11 +15,8 @@
  */
 package com.aspectran.core.util.apon;
 
-
 /**
- * This exception will be thrown when a translet request is failed.
- * 
- * <p>Created: 2008. 01. 07 오전 3:35:55</p>
+ * The Class UnknownParameterException.
  */
 public class UnknownParameterException extends InvalidParameterException {
 	
@@ -30,6 +27,7 @@ public class UnknownParameterException extends InvalidParameterException {
 	 * Simple constructor.
 	 */
 	public UnknownParameterException() {
+		super();
 	}
 
 	/**
@@ -51,8 +49,7 @@ public class UnknownParameterException extends InvalidParameterException {
 	}
 
 	/**
-	 * Constructor to create exception to wrap another exception and pass a
-	 * message.
+	 * Constructor to create exception to wrap another exception and pass a message.
 	 * 
 	 * @param msg The message
 	 * @param cause The real cause of the exception

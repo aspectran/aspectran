@@ -18,7 +18,7 @@ package com.aspectran.core.activity.process;
 import com.aspectran.core.activity.ActivityException;
 
 /**
- * This exception will be thrown when a translet process is failed..
+ * This exception will be thrown when a translet process is failed.
  * 
  * <p>Created: 2008. 01. 07 오전 3:35:55</p>
  */
@@ -31,6 +31,7 @@ public class ProcessException extends ActivityException {
 	 * Simple constructor.
 	 */
 	public ProcessException() {
+		super();
 	}
 
 	/**
@@ -52,8 +53,7 @@ public class ProcessException extends ActivityException {
 	}
 
 	/**
-	 * Constructor to create exception to wrap another exception and pass a
-	 * message.
+	 * Constructor to create exception to wrap another exception and pass a message.
 	 * 
 	 * @param msg The message
 	 * @param cause The real cause of the exception

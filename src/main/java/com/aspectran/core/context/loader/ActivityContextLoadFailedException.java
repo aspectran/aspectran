@@ -27,8 +27,8 @@ package com.aspectran.core.context.loader;
 
 import com.aspectran.core.context.ActivityContextException;
 
-
 /**
+ * The Class ActivityContextLoadFailedException.
  * 
  * <p>Created: 2008. 01. 07 오전 3:35:55</p>
  * 
@@ -38,12 +38,13 @@ import com.aspectran.core.context.ActivityContextException;
 public class ActivityContextLoadFailedException extends ActivityContextException {
 
 	/** @serial */
-	private static final long serialVersionUID = 3684447750947343719L;
+	private static final long serialVersionUID = 3887215434517083370L;
 
 	/**
 	 * Simple constructor
 	 */
 	public ActivityContextLoadFailedException() {
+		super();
 	}
 
 	/**

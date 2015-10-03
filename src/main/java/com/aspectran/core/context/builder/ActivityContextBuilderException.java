@@ -31,13 +31,13 @@ public class ActivityContextBuilderException extends ActivityContextException {
 	 * Simple constructor
 	 */
 	public ActivityContextBuilderException() {
+		super();
 	}
 
 	/**
 	 * Constructor to create exception with a message
 	 * 
-	 * @param msg
-	 *            A message to associate with the exception
+	 * @param msg A message to associate with the exception
 	 */
 	public ActivityContextBuilderException(String msg) {
 		super(msg);
@@ -46,21 +46,17 @@ public class ActivityContextBuilderException extends ActivityContextException {
 	/**
 	 * Constructor to create exception to wrap another exception
 	 * 
-	 * @param cause
-	 *            The real cause of the exception
+	 * @param cause The real cause of the exception
 	 */
 	public ActivityContextBuilderException(Throwable cause) {
 		super(cause);
 	}
 
 	/**
-	 * Constructor to create exception to wrap another exception and pass a
-	 * message
+	 * Constructor to create exception to wrap another exception and pass a message
 	 * 
-	 * @param msg
-	 *            The message
-	 * @param cause
-	 *            The real cause of the exception
+	 * @param msg The message
+	 * @param cause The real cause of the exception
 	 */
 	public ActivityContextBuilderException(String msg, Throwable cause) {
 		super(msg, cause);

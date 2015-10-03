@@ -31,7 +31,6 @@ import com.aspectran.core.activity.response.Response;
 import com.aspectran.core.activity.response.transform.xml.ContentsInputSource;
 import com.aspectran.core.activity.response.transform.xml.ContentsXMLReader;
 import com.aspectran.core.adapter.ResponseAdapter;
-import com.aspectran.core.context.AspectranConstant;
 import com.aspectran.core.context.rule.TransformRule;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
@@ -119,7 +118,7 @@ public class XmlTransform extends TransformResponse implements Response {
 			if(traceEnabled) {
 				StringWriter stringWriter = new StringWriter();
 				transformer.transform(new SAXSource(xreader, isource), new StreamResult(stringWriter));
-				log.trace("XML output: " + AspectranConstant.LINE_SEPARATOR + stringWriter);
+				log.trace(stringWriter.toString());
 			}
 		} catch(Exception e) {
 			throw new TransformResponseException(transformRule, e);

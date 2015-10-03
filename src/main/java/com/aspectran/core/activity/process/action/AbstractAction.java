@@ -19,14 +19,24 @@ import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.activity.process.ActionIdQualifier;
 
 /**
+ * The Class AbstractAction.
+ * 
  * <p>Created: 2008. 03. 22 오후 5:50:35</p>
  */
 public abstract class AbstractAction {
 
+	/** The parent. */
 	protected final ActionList parent;
 	
+	/** The qualified action id. */
 	protected final String qualifiedActionId;
 
+	/**
+	 * Instantiates a new abstract action.
+	 *
+	 * @param actionId the action id
+	 * @param parent the parent
+	 */
 	public AbstractAction(String actionId, ActionList parent) {
 		this.parent = parent;
 		
@@ -36,12 +46,27 @@ public abstract class AbstractAction {
 			this.qualifiedActionId = actionId;
 	}
 	
+	/**
+	 * Gets the parent.
+	 *
+	 * @return the parent
+	 */
 	public ActionList getParent() {
 		return parent;
 	}
 	
+	/**
+	 * Gets the action id.
+	 *
+	 * @return the action id
+	 */
 	public abstract String getActionId();
 
+	/**
+	 * Gets the qualified action id.
+	 *
+	 * @return the qualified action id
+	 */
 	public String getQualifiedActionId() {
 		return qualifiedActionId;
 	}

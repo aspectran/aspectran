@@ -36,6 +36,8 @@ import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
 /**
+ * The Class BeanAction.
+ * 
  * <p>Created: 2008. 03. 22 오후 5:50:35</p>
  */
 public class BeanAction extends AbstractAction implements Executable {

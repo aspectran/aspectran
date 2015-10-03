@@ -18,6 +18,8 @@ package com.aspectran.core.activity.response.dispatch;
 import com.aspectran.core.activity.response.ResponseException;
 
 /**
+ * The Class DispatchResponseException.
+ * 
  * <p>Created: 2008. 01. 07 오전 3:35:55</p>
  */
 public class DispatchResponseException extends ResponseException {
@@ -29,6 +31,7 @@ public class DispatchResponseException extends ResponseException {
 	 * Simple constructor.
 	 */
 	public DispatchResponseException() {
+		super();
 	}
 
 	/**
@@ -50,8 +53,7 @@ public class DispatchResponseException extends ResponseException {
 	}
 
 	/**
-	 * Constructor to create exception to wrap another exception and pass a
-	 * message.
+	 * Constructor to create exception to wrap another exception and pass a message.
 	 * 
 	 * @param msg The message
 	 * @param cause The real cause of the exception

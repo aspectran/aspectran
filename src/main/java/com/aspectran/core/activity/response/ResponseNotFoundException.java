@@ -16,7 +16,7 @@
 package com.aspectran.core.activity.response;
 
 /**
- * This exception will be thrown when a translet response is not found..
+ * This exception will be thrown when a translet response is not found.
  * 
  * <p>Created: 2008. 01. 07 오전 3:35:55</p>
  */
@@ -29,6 +29,7 @@ public class ResponseNotFoundException extends ResponseException {
 	 * Simple constructor.
 	 */
 	public ResponseNotFoundException() {
+		super();
 	}
 
 	/**
@@ -50,8 +51,7 @@ public class ResponseNotFoundException extends ResponseException {
 	}
 
 	/**
-	 * Constructor to create exception to wrap another exception and pass a
-	 * message.
+	 * Constructor to create exception to wrap another exception and pass a message.
 	 * 
 	 * @param msg The message
 	 * @param cause The real cause of the exception

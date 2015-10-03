@@ -16,6 +16,8 @@
 package com.aspectran.core.activity.response;
 
 /**
+ * The Class ForwardingFailedException.
+ * 
  * <p>Created: 2008. 01. 07 오전 3:35:55</p>
  */
 public class ForwardingFailedException extends ResponseException {
@@ -27,6 +29,7 @@ public class ForwardingFailedException extends ResponseException {
 	 * Simple constructor.
 	 */
 	public ForwardingFailedException() {
+		super();
 	}
 
 	/**
@@ -48,8 +51,7 @@ public class ForwardingFailedException extends ResponseException {
 	}
 
 	/**
-	 * Constructor to create exception to wrap another exception and pass a
-	 * message.
+	 * Constructor to create exception to wrap another exception and pass a message.
 	 * 
 	 * @param msg The message
 	 * @param cause The real cause of the exception

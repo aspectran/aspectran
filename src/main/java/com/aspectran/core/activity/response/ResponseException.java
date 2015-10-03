@@ -18,17 +18,20 @@ package com.aspectran.core.activity.response;
 import com.aspectran.core.activity.ActivityException;
 
 /**
+ * The Class ResponseException.
+ * 
  * <p>Created: 2008. 01. 07 오전 3:35:55</p>
  */
 public class ResponseException extends ActivityException {
 	
 	/** @serial */
-	static final long serialVersionUID = 7415015339312418407L;
+	private static final long serialVersionUID = -7446545758142913255L;
 
 	/**
 	 * Simple constructor.
 	 */
 	public ResponseException() {
+		super();
 	}
 
 	/**

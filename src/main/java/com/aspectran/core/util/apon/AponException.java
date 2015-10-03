@@ -13,33 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.core.context.translet;
+package com.aspectran.core.util.apon;
 
 import com.aspectran.core.context.AspectranException;
 
 /**
- * This class is the basic exception that gets thrown from the beans pacakge.
- * 
- * <p>Created: 2008. 01. 07 오전 3:35:55</p>
+ * The Class AponException.
  */
-public class TransletException extends AspectranException {
+public class AponException extends AspectranException {
 	
 	/** @serial */
-	private static final long serialVersionUID = 3736262494374232352L;
+	private static final long serialVersionUID = 5698948413246117426L;
 
 	/**
-	 * Creates a new BeanException without detail message.
+	 * Simple constructor.
 	 */
-	public TransletException() {
+	public AponException() {
 		super();
 	}
 
 	/**
-	 * Constructs a BeanException with the specified detail message.
+	 * Constructor to create exception with a message.
 	 * 
 	 * @param msg A message to associate with the exception
 	 */
-	public TransletException(String msg) {
+	public AponException(String msg) {
 		super(msg);
 	}
 
@@ -48,19 +46,17 @@ public class TransletException extends AspectranException {
 	 * 
 	 * @param cause The real cause of the exception
 	 */
-	public TransletException(Throwable cause) {
+	public AponException(Throwable cause) {
 		super(cause);
 	}
 
 	/**
-	 * Constructs a BeanException with the specified error message and also the specified root cause exception.
-	 * The root cause exception is generally for TypeConversionException's root cause or something that might have caused a BeanException.
+	 * Constructor to create exception to wrap another exception and pass a message.
 	 * 
-	 * @param msg The detail message
+	 * @param msg The message
 	 * @param cause The real cause of the exception
 	 */
-	public TransletException(String msg, Throwable cause) {
+	public AponException(String msg, Throwable cause) {
 		super(msg, cause);
 	}
-	
 }

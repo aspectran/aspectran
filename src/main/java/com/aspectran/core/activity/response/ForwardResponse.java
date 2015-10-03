@@ -29,6 +29,8 @@ import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
 /**
+ * The Class ForwardResponse.
+ * 
  * <p>Created: 2008. 03. 22 오후 5:51:58</p>
  */
 public class ForwardResponse implements Response {
@@ -37,7 +39,6 @@ public class ForwardResponse implements Response {
 	
 	private final boolean debugEnabled = log.isDebugEnabled();
 	
-	/** The forward response rule. */
 	private final ForwardResponseRule forwardResponseRule;
 	
 	/**

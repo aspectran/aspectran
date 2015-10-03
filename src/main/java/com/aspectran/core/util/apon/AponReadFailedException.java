@@ -15,13 +15,10 @@
  */
 package com.aspectran.core.util.apon;
 
-
 /**
- * This exception will be thrown when a translet request is failed.
- * 
- * <p>Created: 2008. 01. 07 오전 3:35:55</p>
+ * The Class AponReadFailedException.
  */
-public class AponReadFailedException extends RuntimeException {
+public class AponReadFailedException extends AponException {
 	
 	/** @serial */
 	private static final long serialVersionUID = 3050709527383043944L;
@@ -30,6 +27,7 @@ public class AponReadFailedException extends RuntimeException {
 	 * Simple constructor.
 	 */
 	public AponReadFailedException() {
+		super();
 	}
 
 	/**
@@ -51,8 +49,7 @@ public class AponReadFailedException extends RuntimeException {
 	}
 
 	/**
-	 * Constructor to create exception to wrap another exception and pass a
-	 * message.
+	 * Constructor to create exception to wrap another exception and pass a message.
 	 * 
 	 * @param msg The message
 	 * @param cause The real cause of the exception

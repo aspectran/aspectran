@@ -40,7 +40,6 @@ import com.aspectran.core.activity.response.transform.xml.ContentsInputSource;
 import com.aspectran.core.activity.response.transform.xml.ContentsXMLReader;
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
-import com.aspectran.core.context.AspectranConstant;
 import com.aspectran.core.context.rule.TemplateRule;
 import com.aspectran.core.context.rule.TransformRule;
 import com.aspectran.core.context.rule.type.ContentType;
@@ -138,7 +137,7 @@ public class XslTransform extends TransformResponse implements Response {
 				transformer.setOutputProperty(OutputKeys.INDENT, XmlTransform.OUTPUT_INDENT_YES);
 				transformer.setOutputProperty(OutputKeys.METHOD, XmlTransform.OUTPUT_METHOD_XML);
 				transformer.transform(new SAXSource(xreader, isource), new StreamResult(writer));
-				log.trace("XSLT output: " + AspectranConstant.LINE_SEPARATOR + writer);
+				log.trace(writer.toString());
 			}
 		} catch(Exception e) {
 			throw new TransformResponseException(transformRule, e);

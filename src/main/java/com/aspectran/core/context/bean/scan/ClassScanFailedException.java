@@ -17,6 +17,9 @@ package com.aspectran.core.context.bean.scan;
 
 import com.aspectran.core.context.bean.BeanException;
 
+/**
+ * The Class ClassScanFailedException.
+ */
 public class ClassScanFailedException extends BeanException {
 
 	/** @serial */
@@ -26,6 +29,7 @@ public class ClassScanFailedException extends BeanException {
 	 * Simple constructor.
 	 */
 	public ClassScanFailedException() {
+		super();
 	}
 
 	/**
@@ -47,8 +51,7 @@ public class ClassScanFailedException extends BeanException {
 	}
 
 	/**
-	 * Constructor to create exception to wrap another exception and pass a
-	 * message.
+	 * Constructor to create exception to wrap another exception and pass a message.
 	 * 
 	 * @param msg The message
 	 * @param cause The real cause of the exception
