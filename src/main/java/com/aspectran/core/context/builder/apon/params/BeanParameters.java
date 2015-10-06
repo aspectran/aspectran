@@ -24,8 +24,8 @@ public class BeanParameters extends AbstractParameters implements Parameters {
 
 	public static final ParameterDefine description;
 	public static final ParameterDefine id;
-	public static final ParameterDefine className;
 	public static final ParameterDefine mask;
+	public static final ParameterDefine className;
 	public static final ParameterDefine scope;
 	public static final ParameterDefine singleton;
 	public static final ParameterDefine factoryMethod;

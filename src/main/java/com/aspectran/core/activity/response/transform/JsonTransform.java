@@ -24,6 +24,7 @@ import com.aspectran.core.activity.process.result.ProcessResult;
 import com.aspectran.core.activity.response.Response;
 import com.aspectran.core.activity.response.transform.json.ContentsJsonWriter;
 import com.aspectran.core.adapter.ResponseAdapter;
+import com.aspectran.core.context.rule.TemplateRule;
 import com.aspectran.core.context.rule.TransformRule;
 import com.aspectran.core.util.json.JsonWriter;
 import com.aspectran.core.util.logging.Log;
@@ -99,6 +100,20 @@ public class JsonTransform extends TransformResponse implements Response {
 	 */
 	public ActionList getActionList() {
 		return transformRule.getActionList();
+	}
+	
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.activity.response.Response#getTemplateRule()
+	 */
+	public TemplateRule getTemplateRule() {
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.activity.response.Response#newDerivedResponse()
+	 */
+	public Response newDerivedResponse() {
+		return this;
 	}
 
 }

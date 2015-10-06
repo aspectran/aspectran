@@ -16,20 +16,16 @@
 package com.aspectran.core.activity.process;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
-import com.aspectran.core.context.rule.AspectAdviceRule;
-import com.aspectran.core.context.rule.AspectAdviceSupport;
-import com.aspectran.core.context.rule.ExceptionHandlingRule;
 import com.aspectran.core.util.BooleanUtils;
 
 /**
- * Then Class ContentList.
+ * The Class ContentList.
  * 
  * <p>Created: 2008. 03. 22 오후 5:47:57</p>
  */
-public class ContentList extends ArrayList<ActionList> implements AspectAdviceSupport {
+public class ContentList extends ArrayList<ActionList> {
 	
 	/** @serial */
 	static final long serialVersionUID = 2567969961069441527L;
@@ -92,34 +88,6 @@ public class ContentList extends ArrayList<ActionList> implements AspectAdviceSu
 
 	public void setAspectAdviceRuleRegistry(AspectAdviceRuleRegistry aspectAdviceRuleRegistry) {
 		this.aspectAdviceRuleRegistry = aspectAdviceRuleRegistry;
-	}
-	
-	public List<AspectAdviceRule> getAspectBeforeAdviceRuleList() {
-		if(aspectAdviceRuleRegistry == null)
-			return null;
-		
-		return aspectAdviceRuleRegistry.getBeforeAdviceRuleList();
-	}
-	
-	public List<AspectAdviceRule> getAspectAfterAdviceRuleList() {
-		if(aspectAdviceRuleRegistry == null)
-			return null;
-		
-		return aspectAdviceRuleRegistry.getAfterAdviceRuleList();
-	}
-	
-	public List<AspectAdviceRule> getAspectFinallyAdviceRuleList() {
-		if(aspectAdviceRuleRegistry == null)
-			return null;
-		
-		return aspectAdviceRuleRegistry.getFinallyAdviceRuleList();
-	}
-	
-	public List<ExceptionHandlingRule> getAspectExceptionHandlingRuleList() {
-		if(aspectAdviceRuleRegistry == null)
-			return null;
-		
-		return aspectAdviceRuleRegistry.getExceptionHandlingRuleList();
 	}
 	
 	/* (non-Javadoc)

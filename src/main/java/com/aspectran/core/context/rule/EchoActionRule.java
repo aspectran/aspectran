@@ -20,20 +20,16 @@ import java.util.List;
 import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
 import com.aspectran.core.util.BooleanUtils;
 
-
-
 /**
  * <p>Created: 2008. 03. 22 오후 5:50:44</p>
  */
-public class EchoActionRule implements AspectAdviceSupport {
+public class EchoActionRule {
 	
 	private String actionId;
 	
 	private ItemRuleMap attributeItemRuleMap;
 
 	private Boolean hidden;
-	
-	private AspectAdviceRuleRegistry aspectAdviceRuleRegistry;
 	
 	/**
 	 * Gets the action id.
@@ -103,54 +99,6 @@ public class EchoActionRule implements AspectAdviceSupport {
 	 */
 	public void setHidden(Boolean hidden) {
 		this.hidden = hidden;
-	}
-
-	public AspectAdviceRuleRegistry getAspectAdviceRuleRegistry() {
-		return aspectAdviceRuleRegistry;
-	}
-
-	public void setAspectAdviceRuleRegistry(AspectAdviceRuleRegistry aspectAdviceRuleRegistry) {
-		this.aspectAdviceRuleRegistry = aspectAdviceRuleRegistry;
-	}
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.context.rule.AspectAdviceSupport#getAspectBeforeAdviceRuleList()
-	 */
-	public List<AspectAdviceRule> getAspectBeforeAdviceRuleList() {
-		if(aspectAdviceRuleRegistry == null)
-			return null;
-		
-		return aspectAdviceRuleRegistry.getBeforeAdviceRuleList();
-	}
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.context.rule.AspectAdviceSupport#getAspectAfterAdviceRuleList()
-	 */
-	public List<AspectAdviceRule> getAspectAfterAdviceRuleList() {
-		if(aspectAdviceRuleRegistry == null)
-			return null;
-		
-		return aspectAdviceRuleRegistry.getAfterAdviceRuleList();
-	}
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.context.rule.AspectAdviceSupport#getAspectFinallyAdviceRuleList()
-	 */
-	public List<AspectAdviceRule> getAspectFinallyAdviceRuleList() {
-		if(aspectAdviceRuleRegistry == null)
-			return null;
-		
-		return aspectAdviceRuleRegistry.getFinallyAdviceRuleList();
-	}
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.context.rule.AspectAdviceSupport#getAspectExceptionHandlingRuleList()
-	 */
-	public List<ExceptionHandlingRule> getAspectExceptionHandlingRuleList() {
-		if(aspectAdviceRuleRegistry == null)
-			return null;
-		
-		return aspectAdviceRuleRegistry.getExceptionHandlingRuleList();
 	}
 	
 	/* (non-Javadoc)

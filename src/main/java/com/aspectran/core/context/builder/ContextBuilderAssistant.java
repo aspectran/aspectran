@@ -15,6 +15,7 @@
  */
 package com.aspectran.core.context.builder;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -25,7 +26,6 @@ import com.aspectran.core.activity.Translet;
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.AspectranConstant;
 import com.aspectran.core.context.bean.scan.BeanClassScanner;
-import com.aspectran.core.context.bean.scan.ClassScanner;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.AspectRuleMap;
 import com.aspectran.core.context.rule.BeanRule;
@@ -35,7 +35,9 @@ import com.aspectran.core.context.rule.ResponseRule;
 import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.TransletRuleMap;
 import com.aspectran.core.context.rule.type.DefaultSettingType;
+import com.aspectran.core.context.translet.scan.TemplateFileScanner;
 import com.aspectran.core.util.ArrayStack;
+import com.aspectran.core.util.PrefixSuffixPattern;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 import com.aspectran.core.util.wildcard.WildcardPattern;
@@ -325,7 +327,18 @@ public class ContextBuilderAssistant {
 		
 		return defaultSettings.isPointcutPatternVerifiable();
 	}
+
+	public AspectRuleMap getAspectRuleMap() {
+		return aspectRuleMap;
+	}
 	
+	public void addAspectRule(AspectRule aspectRule) {
+		aspectRuleMap.putAspectRule(aspectRule);
+		
+		if(log.isTraceEnabled())
+			log.trace("add AspectRule " + aspectRule);
+	}
+
 	/**
 	 * Gets the bean rule map.
 	 * 
@@ -345,9 +358,12 @@ public class ContextBuilderAssistant {
 	 */
 	public void addBeanRule(BeanRule beanRule) throws CloneNotSupportedException, ClassNotFoundException, IOException {
 		String className = beanRule.getClassName();
+
+		PrefixSuffixPattern prefixSuffixPattern = new PrefixSuffixPattern();
+		boolean patterned = prefixSuffixPattern.split(beanRule.getId());
 		
 		if(WildcardPattern.hasWildcards(className)) {
-			ClassScanner scanner = new BeanClassScanner(classLoader);
+			BeanClassScanner scanner = new BeanClassScanner(classLoader);
 			if(beanRule.getFilterParameters() != null)
 				scanner.setFilterParameters(beanRule.getFilterParameters());
 			if(beanRule.getMaskPattern() != null)
@@ -362,22 +378,18 @@ public class ContextBuilderAssistant {
 					String beanId = entry.getKey();
 					Class<?> beanClass = entry.getValue();
 			
-					if(beanRule.isPatternedBeanId()) {
-						beanRule2.setId(beanId, beanRule.getIdPrefix(), beanRule.getIdSuffix());
-						beanRule2.setIdPrefix(null);
-						beanRule2.setIdSuffix(null);
+					if(patterned) {
+						beanRule2.setId(prefixSuffixPattern.join(beanId));
 					} else {
 						if(beanRule.getId() != null) {
-							beanRule2.setId(beanId, beanRule.getId(), null);
+							beanRule2.setId(beanRule.getId() + beanId);
 						}
 					}
-						
+
 					beanRule2.setClassName(beanClass.getName());
 					beanRule2.setBeanClass(beanClass);
 					beanRule2.setScanned(true);
-
 					BeanRule.checkAccessibleMethod(beanRule2);
-					
 					beanRuleMap.putBeanRule(beanRule2);
 					
 					if(log.isTraceEnabled())
@@ -388,10 +400,8 @@ public class ContextBuilderAssistant {
 			if(log.isDebugEnabled())
 				log.debug("scanned class files: " + (beanClassMap == null ? 0 : beanClassMap.size()));
 		} else {
-			if(beanRule.isPatternedBeanId()) {
-				beanRule.setId(className, beanRule.getIdPrefix(), beanRule.getIdSuffix());
-				beanRule.setIdPrefix(null);
-				beanRule.setIdSuffix(null);
+			if(patterned) {
+				beanRule.setId(prefixSuffixPattern.join(className));
 			}
 			
 			Class<?> beanClass = classLoader.loadClass(className);
@@ -404,17 +414,6 @@ public class ContextBuilderAssistant {
 		}
 	}
 	
-	public AspectRuleMap getAspectRuleMap() {
-		return aspectRuleMap;
-	}
-	
-	public void addAspectRule(AspectRule aspectRule) {
-		aspectRuleMap.putAspectRule(aspectRule);
-		
-		if(log.isTraceEnabled())
-			log.trace("add AspectRule " + aspectRule);
-	}
-
 	public TransletRuleMap getTransletRuleMap() {
 		return transletRuleMap;
 	}
@@ -426,6 +425,42 @@ public class ContextBuilderAssistant {
 			transletRule.setTransletImplementClass(defaultSettings.getTransletImplementClass());
 		}
 		
+		if(transletRule.getPath() != null) {
+			TemplateFileScanner scanner = new TemplateFileScanner(applicationBasePath, classLoader);
+			if(transletRule.getFilterParameters() != null)
+				scanner.setFilterParameters(transletRule.getFilterParameters());
+			if(transletRule.getMaskPattern() != null)
+				scanner.setTransletNameMaskPattern(transletRule.getMaskPattern());
+			else
+				scanner.setTransletNameMaskPattern(transletRule.getPath());
+			
+			Map<String, File> templateFileMap = scanner.scanFiles(transletRule.getPath());
+			
+			if(templateFileMap != null && !templateFileMap.isEmpty()) {
+				PrefixSuffixPattern prefixSuffixPattern = new PrefixSuffixPattern();
+				boolean patterned = prefixSuffixPattern.split(transletRule.getName());
+
+				for(Map.Entry<String, File> entry : templateFileMap.entrySet()) {
+					String filePath = entry.getKey();
+					TransletRule newTransletRule = TransletRule.newDerivedTransletRule(transletRule, filePath);
+					
+					if(patterned) {
+						newTransletRule.setName(prefixSuffixPattern.join(filePath));
+					} else {
+						if(transletRule.getName() != null) {
+							newTransletRule.setName(transletRule.getName() + filePath);
+						}
+					}
+					
+					putTransletRule(newTransletRule);
+				}
+			}
+		} else {
+			putTransletRule(transletRule);
+		}
+	}
+	
+	private void putTransletRule(TransletRule transletRule) throws CloneNotSupportedException {
 		if(transletRule.getRequestRule() == null) {
 			RequestRule requestRule = new RequestRule();
 			transletRule.setRequestRule(requestRule);
@@ -437,7 +472,6 @@ public class ContextBuilderAssistant {
 			transletRule.determineResponseRule();
 			transletRule.setName(applyTransletNamePattern(transletRule.getName()));
 			transletRuleMap.putTransletRule(transletRule);
-
 			if(log.isTraceEnabled())
 				log.trace("add TransletRule " + transletRule);
 		} else if(responseRuleList.size() == 1) {

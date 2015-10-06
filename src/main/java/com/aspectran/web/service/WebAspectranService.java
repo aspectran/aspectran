@@ -94,6 +94,9 @@ public class WebAspectranService extends CoreAspectranService {
 			activity.perform();
 			activity.finish();
 		} catch(TransletNotFoundException e) {
+			if(log.isTraceEnabled()) {
+				log.trace("translet is not found: " + requestUri);
+			}
 			try {
 				if(!defaultServletHttpRequestHandler.handle(req, res)) {
 					res.sendError(HttpServletResponse.SC_NOT_FOUND);

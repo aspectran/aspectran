@@ -19,15 +19,14 @@ import java.util.List;
 
 import com.aspectran.core.activity.variable.token.Token;
 import com.aspectran.core.activity.variable.token.Tokenizer;
-import com.aspectran.core.context.rule.ability.ActionPossessable;
 import com.aspectran.core.util.BooleanUtils;
 
 /**
- * <p>
- * Created: 2008. 03. 22 오후 5:51:58
- * </p>
+ * The Class TemplateRule.
+ * 
+ * <p>Created: 2008. 03. 22 오후 5:51:58</p>
  */
-public class TemplateRule extends ActionPossessSupport implements ActionPossessable {
+public class TemplateRule {
 	
 	private String file;
 	
@@ -87,10 +86,6 @@ public class TemplateRule extends ActionPossessSupport implements ActionPossessa
 		this.noCache = noCache;
 	}
 
-	public void setContentTokens(Token[] contentTokens) {
-		this.contentTokens = contentTokens;
-	}
-
 	public String getContent() {
 		return content;
 	}
@@ -102,6 +97,7 @@ public class TemplateRule extends ActionPossessSupport implements ActionPossessa
 	 */
 	public void setContent(String content) {
 		this.content = content;
+		
 		if(content == null || content.length() == 0) {
 			contentTokens = null;
 		} else {
@@ -114,11 +110,20 @@ public class TemplateRule extends ActionPossessSupport implements ActionPossessa
 			}
 		}
 	}
-
+	
+	private void setContent(String content, Token[] contentTokens) {
+		this.content = content;
+		this.contentTokens = contentTokens;
+	}
+	
 	public Token[] getContentTokens() {
 		return contentTokens;
 	}
 
+	public void setContentTokens(Token[] contentTokens) {
+		this.contentTokens = contentTokens;
+	}
+	
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
@@ -136,8 +141,8 @@ public class TemplateRule extends ActionPossessSupport implements ActionPossessa
 	}
 	
 	public static TemplateRule newInstance(String file, String resource, String url, String content, String encoding, Boolean noCache) {
-		if(file == null && resource == null && url == null && content == null)
-			throw new IllegalArgumentException("The <template> element requires either a file or a resource or a url attribute.");
+		//if(file == null && resource == null && url == null && content == null)
+		//	throw new IllegalArgumentException("The <template> element requires either a file or a resource or a url attribute.");
 		
 		TemplateRule tr = new TemplateRule();
 		tr.setFile(file);
@@ -148,6 +153,18 @@ public class TemplateRule extends ActionPossessSupport implements ActionPossessa
 		tr.setNoCache(noCache);
 		
 		return tr;
+	}
+	
+	public static TemplateRule newDerivedTemplateRule(TemplateRule templateRule) {
+		TemplateRule newTemplateRule = new TemplateRule();
+		newTemplateRule.setFile(templateRule.getFile());
+		newTemplateRule.setResource(templateRule.getResource());
+		newTemplateRule.setUrl(templateRule.getUrl());
+		newTemplateRule.setEncoding(templateRule.getEncoding());
+		newTemplateRule.setContent(templateRule.getContent(), templateRule.getContentTokens());
+		newTemplateRule.setNoCache(templateRule.getNoCache());
+		
+		return newTemplateRule;
 	}
 	
 }

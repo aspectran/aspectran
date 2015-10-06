@@ -39,10 +39,9 @@ import com.aspectran.core.context.rule.RequestRule;
 import com.aspectran.core.context.rule.ResponseRule;
 import com.aspectran.core.context.rule.type.ItemValueType;
 import com.aspectran.core.context.rule.type.RequestMethodType;
-import com.aspectran.core.util.FileUtils;
-import com.aspectran.web.activity.multipart.MultipartFormDataParser;
-import com.aspectran.web.activity.multipart.MultipartRequestException;
-import com.aspectran.web.activity.multipart.MultipartRequestWrapper;
+import com.aspectran.support.http.multipart.MultipartRequestException;
+import com.aspectran.support.http.multipart.MultipartRequestWrapper;
+import com.aspectran.support.http.multipart.MultipartRequestWrapperResolver;
 import com.aspectran.web.adapter.HttpServletRequestAdapter;
 import com.aspectran.web.adapter.HttpServletResponseAdapter;
 import com.aspectran.web.adapter.HttpSessionAdapter;
@@ -54,17 +53,7 @@ import com.aspectran.web.adapter.HttpSessionAdapter;
  */
 public class WebActivity extends CoreActivity implements Activity {
 
-	/** The Constant MULTIPART_MAX_REQUEST_SIZE. */
-	private static final String MULTIPART_MAX_REQUEST_SIZE = "multipart.maxRequestSize";
-	
-	/** The Constant MULTIPART_TEMPORARY_FILE_PATH. */
-	private static final String MULTIPART_TEMPORARY_FILE_PATH = "multipart.temporaryFilePath";
-	
-	/** The Constant MULTIPART_ALLOWED_FILE_EXTENSIONS. */
-	private static final String MULTIPART_ALLOWED_FILE_EXTENSIONS = "multipart.allowedFileExtensions";
-	
-	/** The Constant MULTIPART_DENIED_FILE_EXTENSIONS. */
-	private static final String MULTIPART_DENIED_FILE_EXTENSIONS = "multipart.deniedFileExtensions";
+	private static final String MULTIPART_REQUEST_WRAPPER_RESOLVER = "multipartRequestWrapperResolver";
 	
 	/** The request rule. */
 	private RequestRule requestRule;
@@ -79,7 +68,7 @@ public class WebActivity extends CoreActivity implements Activity {
 	private HttpServletResponse response;
 	
 	/** The multipart request wrapper. */
-	private MultipartRequestWrapper multipartRequestWrapper;
+	private MultipartRequestWrapper requestWrapper;
 	
 	/**
 	 * Instantiates a new web activity.
@@ -104,11 +93,6 @@ public class WebActivity extends CoreActivity implements Activity {
 		
 		determineCharacterEncoding();
 
-		multipartRequestWrapper = getMultipartRequestWrapper();
-    	
-    	if(multipartRequestWrapper != null)
-    		request = multipartRequestWrapper;
-
 		RequestAdapter requestAdapter = new HttpServletRequestAdapter(request);
 		setRequestAdapter(requestAdapter);
 
@@ -129,21 +113,26 @@ public class WebActivity extends CoreActivity implements Activity {
 		if(requestMethod != null && !requestMethod.toString().equals(method)) {
 			throw new RequestMethodNotAllowedException(requestMethod);
 		}
-		
-		if(multipartRequestWrapper != null) {
-			multipartRequestWrapper.parse();
+
+		requestWrapper = getMultipartRequestWrapper();
+    	
+		if(requestWrapper != null) {
+			request = requestWrapper;
+
+			RequestAdapter requestAdapter = getRequestAdapter();
+			requestAdapter.setAdaptee(requestWrapper);
 			
-			Enumeration<String> names = multipartRequestWrapper.getFileParameterNames();
+			Enumeration<String> names = requestWrapper.getFileParameterNames();
 			
 			while(names.hasMoreElements()) {
 				String name = names.nextElement();
-				getRequestAdapter().setFileParameter(name, multipartRequestWrapper.getFileParameters(name));
+				getRequestAdapter().setFileParameter(name, requestWrapper.getFileParameters(name));
 			}
 			
-			getRequestAdapter().setMaxLengthExceeded(multipartRequestWrapper.isMaxLengthExceeded());
+			requestAdapter.setMaxLengthExceeded(requestWrapper.isMaxLengthExceeded());
 		}
 
-        ValueMap valueMap = parseDeclaredParameter(multipartRequestWrapper);
+        ValueMap valueMap = parseDeclaredParameter(requestWrapper);
         
         if(valueMap != null)
         	translet.setDeclaredAttributeMap(valueMap);
@@ -190,26 +179,17 @@ public class WebActivity extends CoreActivity implements Activity {
         		&& contentType != null
         		&& contentType.startsWith("multipart/form-data")) {
 
-			String multipartMaxRequestSize = (String)getRequestSetting(MULTIPART_MAX_REQUEST_SIZE);
-			String multipartTemporaryFilePath = (String)getRequestSetting(MULTIPART_TEMPORARY_FILE_PATH);
-			String multipartAllowedFileExtensions = (String)getRequestSetting(MULTIPART_ALLOWED_FILE_EXTENSIONS);
-			String multipartDeniedFileExtensions = (String)getRequestSetting(MULTIPART_DENIED_FILE_EXTENSIONS);
-	
-			long maxRequestSize = FileUtils.formattedSizeToBytes(multipartMaxRequestSize, -1);
-			
-			MultipartFormDataParser parser = new MultipartFormDataParser(request);
-			
-			if(maxRequestSize > -1)
-				parser.setMaxRequestSize(maxRequestSize);
-			
-			parser.setTemporaryFilePath(multipartTemporaryFilePath);
-			parser.setAllowedFileExtensions(multipartAllowedFileExtensions);
-			parser.setDeniedFileExtensions(multipartDeniedFileExtensions);
-			
-			// sets the servlet request wrapper
-			MultipartRequestWrapper requestWrapper = new MultipartRequestWrapper(parser);
-			
-			return requestWrapper;
+			String multipartRequestWrapperResolver = getRequestSetting(MULTIPART_REQUEST_WRAPPER_RESOLVER);
+			if(multipartRequestWrapperResolver == null) {
+				throw new MultipartRequestException("'multipartRequestWrapperResolver' was not specified.");
+			}
+
+			MultipartRequestWrapperResolver resolver = getBean(multipartRequestWrapperResolver);
+			if(resolver == null) {
+				throw new MultipartRequestException("No bean named 'multipartRequestWrapperResolver' is defined");
+			}
+				
+			return resolver.getMultipartRequestWrapper(getTranslet());
         }
         
         return null;

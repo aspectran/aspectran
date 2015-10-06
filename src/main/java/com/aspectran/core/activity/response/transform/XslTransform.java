@@ -69,14 +69,6 @@ public class XslTransform extends TransformResponse implements Response {
 	
 	private long templateLastModifiedTime;
 	
-	private String templateFile;
-	
-	private String templateResource;
-	
-	private String templateUrl;
-
-	private boolean noCache;
-	
 	private Templates templates;
 	
 	private String contentType;
@@ -93,10 +85,6 @@ public class XslTransform extends TransformResponse implements Response {
 	protected XslTransform(TransformRule transformRule) {
 		super(transformRule);
 		this.templateRule = transformRule.getTemplateRule();
-		this.templateFile = templateRule.getFile();
-		this.templateResource = templateRule.getResource();
-		this.templateUrl = templateRule.getUrl();
-		this.noCache = templateRule.isNoCache();
 	}
 
 	/* (non-Javadoc)
@@ -151,7 +139,34 @@ public class XslTransform extends TransformResponse implements Response {
 		return transformRule.getActionList();
 	}
 	
-	public void loadTemplate(ApplicationAdapter applicationAdapter) throws TransformerConfigurationException, IOException {
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.activity.response.Response#getTemplateRule()
+	 */
+	public TemplateRule getTemplateRule() {
+		return templateRule;
+	}
+	
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.activity.response.Response#newDerivedResponse()
+	 */
+	public Response newDerivedResponse() {
+		TransformRule transformRule = getTransformRule();
+		
+		if(transformRule != null) {
+			TransformRule newTransformRule = TransformRule.newDerivedTransformRule(transformRule);
+			Response response = new XslTransform(newTransformRule);
+			return response;
+		}
+
+		return this;
+	}
+	
+	private void loadTemplate(ApplicationAdapter applicationAdapter) throws TransformerConfigurationException, IOException {
+		String templateFile = templateRule.getFile();
+		String templateResource = templateRule.getResource();
+		String templateUrl = templateRule.getUrl();
+		boolean noCache = templateRule.isNoCache();
+
 		if(templateFile != null) {
 			if(noCache) {
 				File file = applicationAdapter.toRealPathAsFile(templateFile);

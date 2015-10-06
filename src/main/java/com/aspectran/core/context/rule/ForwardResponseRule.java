@@ -15,12 +15,13 @@
  */
 package com.aspectran.core.context.rule;
 
-import com.aspectran.core.activity.process.action.Executable;
 import com.aspectran.core.context.rule.ability.ActionPossessable;
 import com.aspectran.core.context.rule.type.ResponseType;
 import com.aspectran.core.util.BooleanUtils;
 
 /**
+ * The Class ForwardResponseRule.
+ * 
  * <p>Created: 2008. 03. 22 오후 5:51:58</p>
  */
 public class ForwardResponseRule extends ActionPossessSupport implements ActionPossessable {
@@ -127,6 +128,7 @@ public class ForwardResponseRule extends ActionPossessSupport implements ActionP
 		sb.append(", translet=").append(transletName);
 		if(defaultResponse != null)
 			sb.append(", defaultResponse=").append(defaultResponse);
+		/*
 		if(actionList != null) {
 			sb.append(", actionList=");
 			sb.append('[');
@@ -138,6 +140,7 @@ public class ForwardResponseRule extends ActionPossessSupport implements ActionP
 			}
 			sb.append(']');
 		}
+		 */
 		sb.append("}");
 		
 		return sb.toString();

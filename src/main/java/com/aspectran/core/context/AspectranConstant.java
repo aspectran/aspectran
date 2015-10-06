@@ -24,10 +24,8 @@ public interface AspectranConstant {
 
 	public static final char TRANSLET_NAME_SEPARATOR = '/';
 
-	public static final char TRANSLET_NAME_EXTENSION_DELIMITER = '.';
+	public static final char TRANSLET_NAME_EXTENSION_SEPARATOR = '.';
 	
-	public static final char TRANSLET_NAME_PATTERN_SEPARATOR = '*';
-
 	public static final char ID_SEPARATOR = '.';
 	
 	public static final String LINE_SEPARATOR = "\n";

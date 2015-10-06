@@ -17,15 +17,16 @@ package com.aspectran.core.context.rule;
 
 import java.nio.charset.Charset;
 import java.nio.charset.IllegalCharsetNameException;
-import java.util.List;
 
 import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
 import com.aspectran.core.context.rule.type.RequestMethodType;
 
 /**
+ * The Class RequestRule.
+ * 
  * <p>Created: 2008. 03. 22 오후 5:48:09</p>
  */
-public class RequestRule implements AspectAdviceSupport, Cloneable {
+public class RequestRule {
 
 	public static final String CHARACTER_ENCODING_SETTING_NAME = "characterEncoding";
 	
@@ -120,46 +121,6 @@ public class RequestRule implements AspectAdviceSupport, Cloneable {
 	public void setAspectAdviceRuleRegistry(AspectAdviceRuleRegistry aspectAdviceRuleRegistry) {
 		this.aspectAdviceRuleRegistry = aspectAdviceRuleRegistry;
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.context.rule.AspectAdviceSupport#getAspectBeforeAdviceRuleList()
-	 */
-	public List<AspectAdviceRule> getAspectBeforeAdviceRuleList() {
-		if(aspectAdviceRuleRegistry == null)
-			return null;
-		
-		return aspectAdviceRuleRegistry.getBeforeAdviceRuleList();
-	}
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.context.rule.AspectAdviceSupport#getAspectAfterAdviceRuleList()
-	 */
-	public List<AspectAdviceRule> getAspectAfterAdviceRuleList() {
-		if(aspectAdviceRuleRegistry == null)
-			return null;
-		
-		return aspectAdviceRuleRegistry.getAfterAdviceRuleList();
-	}
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.context.rule.AspectAdviceSupport#getAspectFinallyAdviceRuleList()
-	 */
-	public List<AspectAdviceRule> getAspectFinallyAdviceRuleList() {
-		if(aspectAdviceRuleRegistry == null)
-			return null;
-		
-		return aspectAdviceRuleRegistry.getFinallyAdviceRuleList();
-	}
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.context.rule.AspectAdviceSupport#getAspectExceptionHandlingRuleList()
-	 */
-	public List<ExceptionHandlingRule> getAspectExceptionHandlingRuleList() {
-		if(aspectAdviceRuleRegistry == null)
-			return null;
-		
-		return aspectAdviceRuleRegistry.getExceptionHandlingRuleList();
-	}
 
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
@@ -182,15 +143,6 @@ public class RequestRule implements AspectAdviceSupport, Cloneable {
 		sb.append("}");
 		
 		return sb.toString();
-	}
-	
-	public RequestRule clone() {
-		RequestRule newRequestRule = new RequestRule();
-		newRequestRule.setCharacterEncoding(characterEncoding);
-		newRequestRule.setRequestMethod(requestMethod);
-		newRequestRule.setAttributeItemRuleMap(attributeItemRuleMap);
-		
-		return newRequestRule;
 	}
 	
 	public static RequestRule newInstance(String requestMethod, String characterEncoding) {

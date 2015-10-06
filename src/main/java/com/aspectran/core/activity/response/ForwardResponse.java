@@ -24,6 +24,7 @@ import com.aspectran.core.activity.variable.token.ItemTokenExpression;
 import com.aspectran.core.activity.variable.token.ItemTokenExpressor;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.context.rule.ForwardResponseRule;
+import com.aspectran.core.context.rule.TemplateRule;
 import com.aspectran.core.context.rule.type.ResponseType;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
@@ -95,6 +96,20 @@ public class ForwardResponse implements Response {
 	 */
 	public ActionList getActionList() {
 		return forwardResponseRule.getActionList();
+	}
+
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.activity.response.Response#getTemplateRule()
+	 */
+	public TemplateRule getTemplateRule() {
+		return null;
+	}
+	
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.activity.response.Response#newDerivedResponse()
+	 */
+	public Response newDerivedResponse() {
+		return this;
 	}
 
 	/**

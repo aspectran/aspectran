@@ -35,6 +35,13 @@ public interface RequestAdapter {
 	 * @return the adaptee
 	 */
 	public <T> T getAdaptee();
+	
+	/**
+	 * Sets the adaptee.
+	 *
+	 * @param adaptee the new adaptee
+	 */
+	public void setAdaptee(Object adaptee);
 
 	/**
 	 * Gets the request method.

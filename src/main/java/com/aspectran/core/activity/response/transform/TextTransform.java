@@ -58,23 +58,11 @@ public class TextTransform extends TransformResponse implements Response {
 	
 	private final String outputEncoding;
 
-	private final String templateFile;
-	
-	private final String templateResource;
-	
-	private final String templateUrl;
-
-	private final String templateEncoding;
-
-	private boolean noCache;
-
 	private Token[] contentTokens;
 
 	private long templateLastModifiedTime;
 	
 	private boolean templateLoaded;
-	
-	private final boolean builtinContent;
 	
 	/**
 	 * Instantiates a new text transformer.
@@ -86,25 +74,6 @@ public class TextTransform extends TransformResponse implements Response {
 		this.templateRule = transformRule.getTemplateRule();
 		this.contentType = transformRule.getContentType();
 		this.outputEncoding = transformRule.getCharacterEncoding();
-		if(templateRule != null) {
-			this.templateFile = templateRule.getFile();
-			this.templateResource = templateRule.getResource();
-			this.templateUrl = templateRule.getUrl();
-			this.templateEncoding = templateRule.getEncoding();
-			this.contentTokens = templateRule.getContentTokens();
-			this.noCache = templateRule.isNoCache();
-		} else {
-			this.templateFile = null;
-			this.templateResource = null;
-			this.templateUrl = null;
-			this.templateEncoding = null;
-			this.contentTokens = null;
-			this.noCache = true;
-		}
-		if(contentTokens != null && templateFile == null && templateResource == null && templateUrl == null)
-			builtinContent = true;
-		else
-			builtinContent = false;
 	}
 
 	/* (non-Javadoc)
@@ -121,16 +90,15 @@ public class TextTransform extends TransformResponse implements Response {
 			return;
 
 		try {
-			if(templateRule != null && !builtinContent)
-				loadTemplate(activity.getApplicationAdapter());
-
+			Token[] contentTokens = loadTemplate(activity.getApplicationAdapter());
+			
 			if(contentType != null)
 				responseAdapter.setContentType(contentType);
 
 			if(outputEncoding != null)
 				responseAdapter.setCharacterEncoding(outputEncoding);
 			
-			if(templateRule != null) {
+			if(contentTokens != null) {
 				TokenExpressor expressor = new TokenExpression(activity);
 				String content = expressor.expressAsString(contentTokens);
 				
@@ -173,13 +141,51 @@ public class TextTransform extends TransformResponse implements Response {
 	public ActionList getActionList() {
 		return transformRule.getActionList();
 	}
+	
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.activity.response.Response#getTemplateRule()
+	 */
+	public TemplateRule getTemplateRule() {
+		return templateRule;
+	}
+	
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.activity.response.Response#newDerivedResponse()
+	 */
+	public Response newDerivedResponse() {
+		TransformRule transformRule = getTransformRule();
+		
+		if(transformRule != null) {
+			TransformRule newTransformRule = TransformRule.newDerivedTransformRule(transformRule);
+			Response response = new TextTransform(newTransformRule);
+			return response;
+		}
+		
+		return this;
+	}
 
-	private void loadTemplate(ApplicationAdapter applicationAdapter) throws IOException {
+	private Token[] loadTemplate(ApplicationAdapter applicationAdapter) throws IOException {
+		if(templateRule == null)
+			return null;
+		
+		String templateFile = templateRule.getFile();
+		String templateResource = templateRule.getResource();
+		String templateUrl = templateRule.getUrl();
+		String templateEncoding = templateRule.getEncoding();
+		boolean noCache = templateRule.isNoCache();
+		Token[] contentTokens = templateRule.getContentTokens();
+
+		if(templateFile == null && templateResource == null && templateUrl == null) {
+			return contentTokens;
+		}
+		
+		contentTokens = null;
+		
 		if(templateFile != null) {
 			if(noCache) {
 				File file = applicationAdapter.toRealPathAsFile(templateFile);
 				Reader reader = getTemplateAsReader(file, templateEncoding);
-				setContent(reader);
+				contentTokens = getContentTokens(reader);
 				reader.close();
 			} else {
 				File file = applicationAdapter.toRealPathAsFile(templateFile);
@@ -191,9 +197,10 @@ public class TextTransform extends TransformResponse implements Response {
 	
 						if(lastModifiedTime > templateLastModifiedTime) {
 							Reader reader = getTemplateAsReader(file, templateEncoding);
-							setContent(reader);
+							contentTokens = getContentTokens(reader);
 							reader.close();
-							templateLastModifiedTime = lastModifiedTime;
+							this.templateLastModifiedTime = lastModifiedTime;
+							this.contentTokens = contentTokens;
 						}
 					}
 				}
@@ -203,7 +210,7 @@ public class TextTransform extends TransformResponse implements Response {
 				ClassLoader classLoader = applicationAdapter.getClassLoader();
 				File file = new File(classLoader.getResource(templateResource).getFile());
 				Reader reader = getTemplateAsReader(file, templateEncoding);
-				setContent(reader);
+				contentTokens = getContentTokens(reader);
 				reader.close();
 			} else {
 				if(!templateLoaded) {
@@ -212,9 +219,10 @@ public class TextTransform extends TransformResponse implements Response {
 							ClassLoader classLoader = applicationAdapter.getClassLoader();
 							File file = new File(classLoader.getResource(templateResource).getFile());
 							Reader reader = getTemplateAsReader(file, templateEncoding);
-							setContent(reader);
+							contentTokens = getContentTokens(reader);
 							reader.close();
-							templateLoaded = true;
+							this.templateLoaded = true;
+							this.contentTokens = contentTokens;
 						}
 					}
 				}
@@ -222,21 +230,27 @@ public class TextTransform extends TransformResponse implements Response {
 		} else if(templateUrl != null) {
 			if(noCache) {
 				Reader reader = getTemplateAsReader(new URL(templateUrl), templateEncoding);
-				setContent(reader);
+				contentTokens = getContentTokens(reader);
 				reader.close();
 			} else {
 				if(!templateLoaded) {
 					synchronized(this) {
 						if(!templateLoaded) {
 							Reader reader = getTemplateAsReader(new URL(templateUrl), templateEncoding);
-							setContent(reader);
+							contentTokens = getContentTokens(reader);
 							reader.close();
-							templateLoaded = true;
+							this.templateLoaded = true;
+							this.contentTokens = contentTokens;
 						}
 					}
 				}
 			}
 		}
+		
+		if(contentTokens == null)
+			return this.contentTokens;
+		
+		return contentTokens;
 	}
 /*	
 	private String getContent() {
@@ -252,7 +266,7 @@ public class TextTransform extends TransformResponse implements Response {
 		return sb.toString();
 	}
 */
-	private void setContent(Reader reader) throws IOException {
+	private Token[] getContentTokens(Reader reader) throws IOException {
 		final char[] buffer = new char[1024];
 		StringBuilder sb = new StringBuilder();
 		int len;
@@ -261,41 +275,33 @@ public class TextTransform extends TransformResponse implements Response {
 			sb.append(buffer, 0, len);
 		}
 
-		setContent(sb.toString());
+		return getContentTokens(sb.toString());
 	}
 
-	private void setContent(String content) {
-		if(content == null || content.length() == 0) {
-			contentTokens = null;
-			return;
-		}
-
+	private Token[] getContentTokens(String content) {
 		List<Token> tokenList = Tokenizer.tokenize(content, false);
+		Token[] contentTokens;
 
 		if(tokenList.size() > 0) {
 			contentTokens = tokenList.toArray(new Token[tokenList.size()]);
 			contentTokens = Tokenizer.optimize(contentTokens);
 		} else
-			contentTokens = null;
+			contentTokens = new Token[0];
 		
 		if(debugEnabled) {
-			if(contentTokens != null) {
-				StringBuilder sb = new StringBuilder();
+			StringBuilder sb = new StringBuilder();
 
-				for(Token t : contentTokens) {
-					if(t.getType() != TokenType.TEXT) {
-						if(sb.length() > 0)
-							sb.append(", ");
-						sb.append(t.toString());
-					}
+			for(Token t : contentTokens) {
+				if(t.getType() != TokenType.TEXT) {
+					if(sb.length() > 0)
+						sb.append(", ");
+					sb.append(t.toString());
 				}
-				
-				log.debug("text-transform template tokens [" + sb.toString() + "]");
 			}
+			
+			log.debug("text-transform template tokens [" + sb.toString() + "]");
 		}
-//		
-//		if(traceEnabled) {
-//			log.trace("Sets the content of the text-transform..." + AspectranContextConstant.LINE_SEPARATOR + getContent());
-//		}
+		
+		return contentTokens;
 	}
 }

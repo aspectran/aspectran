@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.web.activity.multipart;
+package com.aspectran.support.http.multipart;
 
 import java.io.File;
 import java.io.IOException;
@@ -76,7 +76,7 @@ public class MultipartFormDataParser {
 	 * 
 	 * @throws MultipartRequestException the multipart request exception
 	 */
-	public MultipartFormDataParser(HttpServletRequest request) throws MultipartRequestException {
+	public MultipartFormDataParser(HttpServletRequest request) {
 		this.request = request;
 		this.characterEncoding = request.getCharacterEncoding();
 		
@@ -163,7 +163,7 @@ public class MultipartFormDataParser {
 	 * 
 	 * @throws MultipartRequestException if multipart resolution failed
 	 */
-	public void parse() throws MultipartRequestException {
+	public void parse() {
 		if(parsed)
 			return;
 		

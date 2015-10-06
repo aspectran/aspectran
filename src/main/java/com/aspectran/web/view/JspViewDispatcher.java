@@ -31,6 +31,7 @@ import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.context.rule.DispatchResponseRule;
 import com.aspectran.core.context.rule.ResponseRule;
+import com.aspectran.core.context.rule.TemplateRule;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
@@ -47,26 +48,26 @@ public class JspViewDispatcher implements ViewDispatcher {
 	
 	private static final boolean traceEnabled = log.isTraceEnabled();
 	
-	private String templatePathPrefix;
+	private String templateFilePrefix;
 
-	private String templatePathSuffix;
+	private String templateFileSuffix;
 	
 	/**
-	 * Sets the template path prefix.
+	 * Sets the template file prefix.
 	 *
-	 * @param templatePathPrefix the new template path prefix
+	 * @param templateFilePrefix the new template file prefix
 	 */
-	public void setTemplatePathPrefix(String templatePathPrefix) {
-		this.templatePathPrefix = templatePathPrefix;
+	public void setTemplateFilePrefix(String templateFilePrefix) {
+		this.templateFilePrefix = templateFilePrefix;
 	}
 
 	/**
-	 * Sets the template path suffix.
+	 * Sets the template file suffix.
 	 *
-	 * @param templatePathSuffix the new template path suffix
+	 * @param templateFileSuffix the new template file suffix
 	 */
-	public void setTemplatePathSuffix(String templatePathSuffix) {
-		this.templatePathSuffix = templatePathSuffix;
+	public void setTemplateFileSuffix(String templateFileSuffix) {
+		this.templateFileSuffix = templateFileSuffix;
 	}
 
 	/* (non-Javadoc)
@@ -74,6 +75,26 @@ public class JspViewDispatcher implements ViewDispatcher {
 	 */
 	public void dispatch(Activity activity, DispatchResponseRule dispatchResponseRule) {
 		try {
+			TemplateRule templateRule = dispatchResponseRule.getTemplateRule();
+			if(templateRule == null) {
+				log.warn("No specified template. " + dispatchResponseRule);
+				return;
+			}
+
+			String templateFile = templateRule.getFile();
+			if(templateFile == null) {
+				log.warn("No specified template file. " + dispatchResponseRule);
+				return;
+			}
+			
+			if(templateFilePrefix != null && templateFileSuffix != null) {
+				templateFile = templateFilePrefix + templateFile + templateFileSuffix;
+			} else if(templateFilePrefix != null) {
+				templateFile = templateFilePrefix + templateFile;
+			} else if(templateFileSuffix != null) {
+				templateFile = templateFile + templateFileSuffix;
+			}
+			
 			RequestAdapter requestAdapter = activity.getRequestAdapter();
 			ResponseAdapter responseAdapter = activity.getResponseAdapter();
 
@@ -92,16 +113,6 @@ public class JspViewDispatcher implements ViewDispatcher {
 					responseAdapter.setCharacterEncoding(characterEncoding);
 			}
 			
-			String templatePath = dispatchResponseRule.getTemplateRule().getFile();
-			
-			if(templatePathPrefix != null && templatePathSuffix != null) {
-				templatePath = templatePathPrefix + templatePath + templatePathSuffix;
-			} else if(templatePathPrefix != null) {
-				templatePath = templatePathPrefix + templatePath;
-			} else if(templatePathSuffix != null) {
-				templatePath = templatePath + templatePathSuffix;
-			}
-			
 			ProcessResult processResult = activity.getProcessResult();
 
 			if(processResult != null)
@@ -110,7 +121,7 @@ public class JspViewDispatcher implements ViewDispatcher {
 			HttpServletRequest request = requestAdapter.getAdaptee();
 			HttpServletResponse response = responseAdapter.getAdaptee();
 			
-			RequestDispatcher requestDispatcher = request.getRequestDispatcher(templatePath);
+			RequestDispatcher requestDispatcher = request.getRequestDispatcher(templateFile);
 			requestDispatcher.forward(request, response);
 
 			if(traceEnabled) {
@@ -134,7 +145,7 @@ public class JspViewDispatcher implements ViewDispatcher {
 				}
 
 				if(debugEnabled)
-					log.debug("JSP Dispatch {templatePath: " + templatePath + "}");
+					log.debug("dispatch to a JSP {templateFile: " + templateFile + "}");
 			}
 		} catch(Exception e) {
 			throw new ViewDispatchException("JSP View Dispatch Error: " + dispatchResponseRule, e);

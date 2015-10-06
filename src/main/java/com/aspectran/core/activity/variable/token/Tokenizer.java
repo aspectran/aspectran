@@ -103,7 +103,7 @@ public class Tokenizer {
 				stringBuffer.append(c);
 
 				if(status == AT_TOKEN_NAME) {
-					if(c == Token.DEFAULT_VALUE_DELIMITER) {
+					if(c == Token.DEFAULT_VALUE_SEPARATOR) {
 						status = AT_TOKEN_DEFVAL;
 						break;
 					}
@@ -175,7 +175,7 @@ public class Tokenizer {
 			
 			if(symbol == Token.ATTRIBUTE_SYMBOL ||
 					symbol == Token.REFERENCE_BEAN_SYMBOL) {
-				int offset = name.indexOf(Token.BEAN_PROPERTY_DELIMITER);
+				int offset = name.indexOf(Token.BEAN_PROPERTY_SEPARATOR);
 				
 				if(offset > 0) {
 					String attrName = name.substring(0, offset);

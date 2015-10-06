@@ -23,7 +23,6 @@ import com.aspectran.core.activity.variable.ValueMap;
 import com.aspectran.core.activity.variable.token.ItemTokenExpression;
 import com.aspectran.core.activity.variable.token.ItemTokenExpressor;
 import com.aspectran.core.adapter.RequestAdapter;
-import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
 import com.aspectran.core.context.rule.IncludeActionRule;
 import com.aspectran.core.context.rule.type.ActionType;
 import com.aspectran.core.util.logging.Log;
@@ -119,20 +118,6 @@ public class IncludeAction extends AbstractAction implements Executable {
 		return (T)includeActionRule;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.process.action.Executable#getAspectAdviceRuleRegistry()
-	 */
-	public AspectAdviceRuleRegistry getAspectAdviceRuleRegistry() {
-		return includeActionRule.getAspectAdviceRuleRegistry();
-	}
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.process.action.Executable#setAspectAdviceRuleRegistry(com.aspectran.core.context.aspect.AspectAdviceRuleRegistry)
-	 */
-	public void setAspectAdviceRuleRegistry(AspectAdviceRuleRegistry aspectAdviceRuleRegistry) {
-		includeActionRule.setAspectAdviceRuleRegistry(aspectAdviceRuleRegistry);
-	}
-	
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */

@@ -19,6 +19,7 @@ import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.context.rule.RedirectResponseRule;
+import com.aspectran.core.context.rule.TemplateRule;
 import com.aspectran.core.context.rule.type.ResponseType;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
@@ -96,7 +97,21 @@ public class RedirectResponse implements Response {
 	public ActionList getActionList() {
 		return redirectResponseRule.getActionList();
 	}
+	
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.activity.response.Response#getTemplateRule()
+	 */
+	public TemplateRule getTemplateRule() {
+		return null;
+	}
 
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.activity.response.Response#newDerivedResponse()
+	 */
+	public Response newDerivedResponse() {
+		return this;
+	}
+	
 	/**
 	 * Gets the redirect response rule.
 	 * 
@@ -105,4 +120,5 @@ public class RedirectResponse implements Response {
 	public RedirectResponseRule getRedirectResponseRule() {
 		return redirectResponseRule;
 	}
+	
 }

@@ -20,7 +20,6 @@ import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.activity.variable.ValueMap;
 import com.aspectran.core.activity.variable.token.ItemTokenExpression;
 import com.aspectran.core.activity.variable.token.ItemTokenExpressor;
-import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
 import com.aspectran.core.context.rule.EchoActionRule;
 import com.aspectran.core.context.rule.type.ActionType;
 import com.aspectran.core.util.logging.Log;
@@ -96,14 +95,6 @@ public class EchoAction extends AbstractAction implements Executable {
 	@SuppressWarnings("unchecked")
 	public <T> T getActionRule() {
 		return (T)echoActionRule;
-	}
-
-	public AspectAdviceRuleRegistry getAspectAdviceRuleRegistry() {
-		return echoActionRule.getAspectAdviceRuleRegistry();
-	}
-	
-	public void setAspectAdviceRuleRegistry(AspectAdviceRuleRegistry aspectAdviceRuleRegistry) {
-		echoActionRule.setAspectAdviceRuleRegistry(aspectAdviceRuleRegistry);
 	}
 	
 	/* (non-Javadoc)

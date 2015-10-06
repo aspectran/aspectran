@@ -22,7 +22,7 @@ import com.aspectran.core.activity.process.ActionList;
  */
 public abstract class ActionPossessSupport {
 	
-	protected ActionList actionList;
+	private ActionList actionList;
 	
 	/**
 	 * Gets the action list.

@@ -13,24 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.web.activity.multipart;
+package com.aspectran.core.context.bean.scan;
 
-import com.aspectran.core.activity.request.RequestException;
+import com.aspectran.core.context.bean.BeanException;
 
 /**
- * The Class MultipartRequestException.
- * 
- * <p>Created: 2008. 01. 07 오전 3:35:55</p>
+ * The Class BeanClassScanFailedException.
  */
-public class MultipartRequestException extends RequestException {
-	
+public class BeanClassScanFailedException extends BeanException {
+
 	/** @serial */
-	static final long serialVersionUID = -3261897166973264629L;
+	private static final long serialVersionUID = -1301450076259511066L;
 
 	/**
 	 * Simple constructor.
 	 */
-	public MultipartRequestException() {
+	public BeanClassScanFailedException() {
 		super();
 	}
 
@@ -39,7 +37,7 @@ public class MultipartRequestException extends RequestException {
 	 * 
 	 * @param msg A message to associate with the exception
 	 */
-	public MultipartRequestException(String msg) {
+	public BeanClassScanFailedException(String msg) {
 		super(msg);
 	}
 
@@ -48,7 +46,7 @@ public class MultipartRequestException extends RequestException {
 	 * 
 	 * @param cause The real cause of the exception
 	 */
-	public MultipartRequestException(Throwable cause) {
+	public BeanClassScanFailedException(Throwable cause) {
 		super(cause);
 	}
 
@@ -58,7 +56,7 @@ public class MultipartRequestException extends RequestException {
 	 * @param msg The message
 	 * @param cause The real cause of the exception
 	 */
-	public MultipartRequestException(String msg, Throwable cause) {
+	public BeanClassScanFailedException(String msg, Throwable cause) {
 		super(msg, cause);
 	}
 }

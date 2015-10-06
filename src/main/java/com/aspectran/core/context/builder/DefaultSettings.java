@@ -19,9 +19,9 @@ import java.util.Map;
 
 import com.aspectran.core.activity.CoreTranslet;
 import com.aspectran.core.activity.Translet;
-import com.aspectran.core.context.AspectranConstant;
 import com.aspectran.core.context.rule.type.DefaultSettingType;
 import com.aspectran.core.util.BooleanUtils;
+import com.aspectran.core.util.PrefixSuffixPattern;
 
 /**
  * The Class DefaultSettings
@@ -63,41 +63,33 @@ public class DefaultSettings implements Cloneable {
 		this.transletNamePattern = transletNamePattern;
 		
 		if(transletNamePattern != null) {
-			int index = transletNamePattern.indexOf(AspectranConstant.TRANSLET_NAME_PATTERN_SEPARATOR);
+			PrefixSuffixPattern prefixSuffixPattern = new PrefixSuffixPattern();
 			
-			if(index != -1) {
-				if(index == 0) {
-					transletNamePrefix = null;
-					transletNameSuffix = transletNamePattern.substring(1);
-				} else if(index == (transletNamePattern.length() - 1)) {
-					transletNamePrefix = transletNamePattern.substring(0, transletNamePattern.length() - 1);
-					transletNameSuffix = null;
-				} else {
-					transletNamePrefix = transletNamePattern.substring(0, index);
-					transletNameSuffix = transletNamePattern.substring(index + 1);
-				}
+			if(prefixSuffixPattern.split(transletNamePattern)) {
+				transletNamePrefix = prefixSuffixPattern.getPrefix();
+				transletNameSuffix = prefixSuffixPattern.getSuffix();
 			}
 		}
 	}
 	
 	public void setTransletNamePattern(String transletNamePrefix, String transletNameSuffix) {
-		this.transletNamePattern = transletNamePrefix + AspectranConstant.TRANSLET_NAME_PATTERN_SEPARATOR + transletNameSuffix;
+		this.transletNamePattern = transletNamePrefix + PrefixSuffixPattern.PREFIX_SUFFIX_PATTERN_SEPARATOR + transletNameSuffix;
 		this.transletNamePrefix = transletNamePrefix;
 		this.transletNameSuffix = transletNameSuffix;
 	}
 	
 	public void setTransletNamePrefix(String transletNamePrefix) {
-		this.transletNamePrefix = transletNamePrefix;
-		
 		if(transletNameSuffix != null)
 			setTransletNamePattern(transletNamePrefix, transletNameSuffix);
+		else
+			this.transletNamePrefix = transletNamePrefix;
 	}
 	
 	public void setTransletNameSuffix(String transletNameSuffix) {
-		this.transletNameSuffix = transletNameSuffix;
-		
 		if(transletNamePrefix != null)
 			setTransletNamePattern(transletNamePrefix, transletNameSuffix);
+		else
+			this.transletNameSuffix = transletNameSuffix;
 	}
 	
 	public String getTransletNamePrefix() {

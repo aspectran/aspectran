@@ -32,9 +32,9 @@ public class Token {
 
 	public static final char END_BRACKET = '}';
 
-	public static final char DEFAULT_VALUE_DELIMITER = ':';
+	public static final char DEFAULT_VALUE_SEPARATOR = ':';
 	
-	public static final char BEAN_PROPERTY_DELIMITER = '^';
+	public static final char BEAN_PROPERTY_SEPARATOR = '^';
 	
 	private TokenType type;
 
@@ -134,11 +134,11 @@ public class Token {
 		if(name != null)
 			sb.append(name);
 		if(getterName != null) {
-			sb.append(BEAN_PROPERTY_DELIMITER);
+			sb.append(BEAN_PROPERTY_SEPARATOR);
 			sb.append(getterName);
 		}
 		if(defaultValue != null) {
-			sb.append(DEFAULT_VALUE_DELIMITER);
+			sb.append(DEFAULT_VALUE_SEPARATOR);
 			sb.append(defaultValue);
 		}
 		sb.append(END_BRACKET);

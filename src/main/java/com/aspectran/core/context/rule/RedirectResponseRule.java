@@ -15,7 +15,8 @@
  */
 package com.aspectran.core.context.rule;
 
-import com.aspectran.core.activity.process.action.Executable;
+import java.util.List;
+
 import com.aspectran.core.activity.variable.token.Token;
 import com.aspectran.core.activity.variable.token.Tokenizer;
 import com.aspectran.core.context.rule.ability.ActionPossessable;
@@ -23,9 +24,9 @@ import com.aspectran.core.context.rule.type.ResponseType;
 import com.aspectran.core.context.rule.type.TokenType;
 import com.aspectran.core.util.BooleanUtils;
 
-import java.util.List;
-
 /**
+ * The Class RedirectResponseRule.
+ * 
  * <p>Created: 2008. 03. 22 오후 5:51:58</p>
  */
 public class RedirectResponseRule extends ActionPossessSupport implements ActionPossessable {
@@ -229,6 +230,7 @@ public class RedirectResponseRule extends ActionPossessSupport implements Action
 		sb.append(", excludeNullParameters=").append(excludeNullParameter);
 		if(defaultResponse != null)
 			sb.append(", defaultResponse=").append(defaultResponse);
+		/*
 		if(actionList != null) {
 			sb.append(", actionList=");
 			sb.append('[');
@@ -242,6 +244,7 @@ public class RedirectResponseRule extends ActionPossessSupport implements Action
 			}
 			sb.append(']');
 		}
+		*/
 		sb.append("}");
 		
 		return sb.toString();

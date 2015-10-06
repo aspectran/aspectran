@@ -336,8 +336,10 @@ public class RootAponDisassembler {
 	public void disassembleTransletRule(Parameters transletParameters) throws CloneNotSupportedException {
 		String description = transletParameters.getString(TransletParameters.description);
 		String name = transletParameters.getString(TransletParameters.name);
+		String mask = transletParameters.getString(TransletParameters.mask);
+		String path = transletParameters.getString(TransletParameters.path);
 		String restVerb = transletParameters.getString(TransletParameters.restVerb);
-		TransletRule transletRule = TransletRule.newInstance(name, restVerb);
+		TransletRule transletRule = TransletRule.newInstance(name, mask, path, restVerb);
 		
 		if(description != null)
 			transletRule.setDescription(description);
