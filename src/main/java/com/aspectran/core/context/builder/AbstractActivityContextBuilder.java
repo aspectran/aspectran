@@ -37,6 +37,8 @@ import com.aspectran.core.context.rule.type.BeanProxifierType;
 import com.aspectran.core.context.rule.type.DefaultSettingType;
 import com.aspectran.core.context.rule.type.ImportFileType;
 import com.aspectran.core.context.translet.TransletRuleRegistry;
+import com.aspectran.core.util.ClassDescriptor;
+import com.aspectran.core.util.MethodUtils;
 import com.aspectran.core.util.ResourceUtils;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
@@ -69,6 +71,9 @@ public abstract class AbstractActivityContextBuilder extends ContextBuilderAssis
 		
 		TransletRuleRegistry transletRuleRegistry = makeTransletRegistry(transletRuleMap);
 		context.setTransletRuleRegistry(transletRuleRegistry);
+		
+		ClassDescriptor.clearCache();
+		MethodUtils.clearCache();
 		
 		return context;
 	}

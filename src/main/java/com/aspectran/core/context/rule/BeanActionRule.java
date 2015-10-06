@@ -15,8 +15,6 @@
  */
 package com.aspectran.core.context.rule;
 
-import java.util.List;
-
 import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
 import com.aspectran.core.context.rule.ability.ArgumentPossessable;
 import com.aspectran.core.context.rule.ability.PropertyPossessable;

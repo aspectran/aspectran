@@ -364,7 +364,7 @@ public abstract class ClassUtils {
 	 * @return a qualified name for the array class
 	 */
 	private static String getQualifiedNameForArray(Class<?> clazz) {
-		StringBuffer buffer = new StringBuffer();
+		StringBuilder buffer = new StringBuilder();
 		while(clazz.isArray()) {
 			clazz = clazz.getComponentType();
 			buffer.append(ARRAY_SUFFIX);
@@ -396,7 +396,7 @@ public abstract class ClassUtils {
 		}
 		Class<?> clazz = value.getClass();
 		if(Proxy.isProxyClass(clazz)) {
-			StringBuffer buf = new StringBuffer(clazz.getName());
+			StringBuilder buf = new StringBuilder(clazz.getName());
 			buf.append(" implementing ");
 			Class<?>[] ifcs = clazz.getInterfaces();
 			for(int i = 0; i < ifcs.length; i++) {
@@ -622,14 +622,19 @@ public abstract class ClassUtils {
 	 * @return if the target type is assignable from the value type
 	 */
 	public static boolean isAssignable(Class<?> lhsType, Class<?> rhsType) {
-		if(lhsType.isAssignableFrom(rhsType))
-			return true;
+		if(rhsType == null) {
+			if(!lhsType.isPrimitive())
+				return true;
+		} else {
+			if(lhsType.isAssignableFrom(rhsType))
+				return true;
 
-		if(lhsType.isPrimitive() && rhsType.equals(getPrimitiveWrapper(lhsType)))
-			return true;
+			if(lhsType.isPrimitive() && rhsType.equals(getPrimitiveWrapper(lhsType)))
+				return true;
 		
-		if(rhsType.isPrimitive() && lhsType.equals(getPrimitiveWrapper(rhsType)))
-			return true;
+			if(rhsType.isPrimitive() && lhsType.equals(getPrimitiveWrapper(rhsType)))
+				return true;
+		}
 		
 		return false;
 	}
@@ -821,7 +826,7 @@ public abstract class ClassUtils {
 		if(classes == null || classes.isEmpty()) {
 			return "[]";
 		}
-		StringBuffer sb = new StringBuffer("[");
+		StringBuilder sb = new StringBuilder("[");
 		for(Iterator<?> it = classes.iterator(); it.hasNext();) {
 			Class<?> clazz = (Class<?>)it.next();
 			sb.append(clazz.getName());
