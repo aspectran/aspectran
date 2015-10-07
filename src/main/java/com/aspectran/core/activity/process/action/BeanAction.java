@@ -24,7 +24,6 @@ import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.activity.variable.ValueMap;
 import com.aspectran.core.activity.variable.token.ItemTokenExpression;
 import com.aspectran.core.activity.variable.token.ItemTokenExpressor;
-import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
 import com.aspectran.core.context.rule.AspectAdviceRule;
 import com.aspectran.core.context.rule.BeanActionRule;
 import com.aspectran.core.context.rule.ItemRule;
@@ -36,6 +35,8 @@ import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
 /**
+ * The Class BeanAction.
+ * 
  * <p>Created: 2008. 03. 22 오후 5:50:35</p>
  */
 public class BeanAction extends AbstractAction implements Executable {
@@ -216,14 +217,6 @@ public class BeanAction extends AbstractAction implements Executable {
 		return (T)beanActionRule;
 	}
 
-	public AspectAdviceRuleRegistry getAspectAdviceRuleRegistry() {
-		return beanActionRule.getAspectAdviceRuleRegistry();
-	}
-	
-	public void setAspectAdviceRuleRegistry(AspectAdviceRuleRegistry aspectAdviceRuleRegistry) {
-		beanActionRule.setAspectAdviceRuleRegistry(aspectAdviceRuleRegistry);
-	}
-	
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */

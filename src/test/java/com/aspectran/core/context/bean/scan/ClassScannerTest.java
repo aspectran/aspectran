@@ -29,6 +29,7 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 import com.aspectran.core.context.loader.AspectranClassLoader;
+import com.aspectran.core.util.ClassScanner;
 import com.aspectran.core.util.ClassUtils;
 import com.aspectran.core.util.ResourceUtils;
 import com.aspectran.core.util.StringUtils;
@@ -95,7 +96,7 @@ public class ClassScannerTest {
 				}
 			}
 		} catch(IOException e) {
-			throw new ClassScanFailedException("bean-class scanning failed.", e);
+			throw new BeanClassScanFailedException("bean-class scanning failed.", e);
 		}
 	}
 	
@@ -278,7 +279,7 @@ public class ClassScannerTest {
 		try {
 			return classLoader.loadClass(className);
 		} catch (ClassNotFoundException e) {
-			throw new ClassScanFailedException("bean-class loading failed. class name: " + className, e);
+			throw new BeanClassScanFailedException("bean-class loading failed. class name: " + className, e);
 		}
 	}
 	

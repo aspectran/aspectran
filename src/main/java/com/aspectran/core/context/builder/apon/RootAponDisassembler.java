@@ -296,6 +296,7 @@ public class RootAponDisassembler {
 	public void disassembleBeanRule(Parameters beanParameters) throws ClassNotFoundException, IOException, CloneNotSupportedException {
 		String description = beanParameters.getString(BeanParameters.description);
 		String id = beanParameters.getString(BeanParameters.id);
+		String mask = beanParameters.getString(BeanParameters.mask);
 		String className = assistant.resolveAliasType(beanParameters.getString(BeanParameters.className));
 		String scope = beanParameters.getString(BeanParameters.scope);
 		Boolean singleton = beanParameters.getBoolean(BeanParameters.singleton);
@@ -308,7 +309,7 @@ public class RootAponDisassembler {
 		ItemHolderParameters propertyItemHolderParameters = beanParameters.getParameters(BeanParameters.properties);
 		Parameters filterParameters = beanParameters.getParameters(BeanParameters.filter);
 		
-		BeanRule beanRule = BeanRule.newInstance(id, className, scope, singleton, factoryMethod, initMethod, destroyMethod, lazyInit, important);
+		BeanRule beanRule = BeanRule.newInstance(id, mask, className, scope, singleton, factoryMethod, initMethod, destroyMethod, lazyInit, important);
 
 		if(description != null)
 			beanRule.setDescription(description);
@@ -335,8 +336,10 @@ public class RootAponDisassembler {
 	public void disassembleTransletRule(Parameters transletParameters) throws CloneNotSupportedException {
 		String description = transletParameters.getString(TransletParameters.description);
 		String name = transletParameters.getString(TransletParameters.name);
+		String mask = transletParameters.getString(TransletParameters.mask);
+		String path = transletParameters.getString(TransletParameters.path);
 		String restVerb = transletParameters.getString(TransletParameters.restVerb);
-		TransletRule transletRule = TransletRule.newInstance(name, restVerb);
+		TransletRule transletRule = TransletRule.newInstance(name, mask, path, restVerb);
 		
 		if(description != null)
 			transletRule.setDescription(description);

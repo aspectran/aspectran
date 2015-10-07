@@ -15,11 +15,8 @@
  */
 package com.aspectran.core.util.apon;
 
-
 /**
  * This exception will be thrown when a translet request is failed.
- * 
- * <p>Created: 2008. 01. 07 오전 3:35:55</p>
  */
 public class MissingClosingBracketException extends InvalidParameterException {
 	
@@ -30,6 +27,7 @@ public class MissingClosingBracketException extends InvalidParameterException {
 	 * Simple constructor.
 	 */
 	public MissingClosingBracketException() {
+		super();
 	}
 
 	/**
@@ -55,8 +53,7 @@ public class MissingClosingBracketException extends InvalidParameterException {
 	}
 
 	/**
-	 * Constructor to create exception to wrap another exception and pass a
-	 * message.
+	 * Constructor to create exception to wrap another exception and pass a message.
 	 * 
 	 * @param msg The message
 	 * @param cause The real cause of the exception

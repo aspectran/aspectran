@@ -23,12 +23,10 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Locale;
 import java.util.Map;
 import java.util.WeakHashMap;
 
-/**
- * @since 2008. 04. 23
- */
 public class MethodUtils {
 
     /**
@@ -69,28 +67,103 @@ public class MethodUtils {
      */
     private static final Map<MethodDescriptor, Reference<Method>> cache = Collections.synchronizedMap(new WeakHashMap<MethodDescriptor, Reference<Method>>());
 	
-    /**
-     * Set whether methods should be cached for greater performance or not,
-     * default is <code>true</code>.
-     *
-     * @param cacheMethods <code>true</code> if methods should be
-     * cached for greater performance, otherwise <code>false</code>
-     */
-    public static synchronized void setCacheMethods(final boolean cacheMethods) {
-    	cacheEnabled = cacheMethods;
-        if(!cacheEnabled) {
-            clearCache();
-        }
+	/**
+	 * Sets the value of a bean property to an Object.
+	 *
+	 * @param object The bean to change
+	 * @param setterName The property name or setter method name
+	 * @param arg use this argument
+	 * @throws NoSuchMethodException the no such method exception
+	 * @throws IllegalAccessException the illegal access exception
+	 * @throws InvocationTargetException the invocation target exception
+	 */
+    public static void invokeSetter(Object object, String setterName, Object arg)
+    		throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+		Object[] args = { arg };
+		invokeSetter(object, setterName, args);
     }
-
+    
     /**
-     * Clear the method cache.
-     * @return the number of cached methods cleared
+     * Sets the value of a bean property to an Object.
+     *
+     * @param object The bean to change
+	 * @param setterName The property name or setter method name
+     * @param args use this arguments
+     * @throws NoSuchMethodException the no such method exception
+     * @throws IllegalAccessException the illegal access exception
+     * @throws InvocationTargetException the invocation target exception
      */
-    public static synchronized int clearCache() {
-        final int size = cache.size();
-        cache.clear();
-        return size;
+    public static void invokeSetter(Object object, String setterName, Object[] args)
+    		throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+    	int index = setterName.indexOf('.');
+    	if(index > 0) {
+    		String getterName = setterName.substring(0, index);
+    		Object o = invokeGetter(object, getterName);
+    		invokeSetter(o, setterName.substring(index + 1), args);
+    	} else {
+	    	if(!setterName.startsWith("set")) {
+	    		setterName = "set" + setterName.substring(0, 1).toUpperCase(Locale.US) + setterName.substring(1);
+	    	}
+	    	invokeMethod(object, setterName, args);
+    	}
+    }
+    
+    /**
+     * Gets an Object property from a bean
+     *
+	 * @param object The bean
+	 * @param getterName The property name or getter method name
+	 * @return The property value (as an Object)
+     * @throws NoSuchMethodException the no such method exception
+     * @throws IllegalAccessException the illegal access exception
+     * @throws InvocationTargetException the invocation target exception
+     */
+    public static Object invokeGetter(Object object, String getterName)
+    		throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+    	return invokeMethod(object, getterName, null);
+    }
+    
+    /**
+     * Gets an Object property from a bean
+     *
+     * @param object The bean
+	 * @param getterName The property name or getter method name
+     * @param arg use this argument
+     * @return The property value (as an Object)
+     * @throws NoSuchMethodException the no such method exception
+     * @throws IllegalAccessException the illegal access exception
+     * @throws InvocationTargetException the invocation target exception
+     */
+    public static Object invokeGetter(Object object, String getterName, Object arg)
+    		throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+    	Object[] args = { arg };
+    	return invokeGetter(object, getterName, args);
+    }
+    
+    /**
+     * Gets an Object property from a bean
+     *
+     * @param object The bean
+	 * @param getterName The property name or getter method name
+     * @param args use this arguments
+     * @return The property value (as an Object)
+     * @throws NoSuchMethodException the no such method exception
+     * @throws IllegalAccessException the illegal access exception
+     * @throws InvocationTargetException the invocation target exception
+     */
+    public static Object invokeGetter(Object object, String getterName, Object[] args)
+    		throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+    	int index = getterName.indexOf('.');
+    	if(index > 0) {
+    		String getterName2 = getterName.substring(0, index);
+    		Object o = invokeGetter(object, getterName2);
+    		return invokeGetter(o, getterName.substring(index + 1), args);
+    	} else {
+	    	if(!getterName.startsWith("get") && !getterName.startsWith("is")) {
+	    		getterName = "get" + getterName.substring(0, 1).toUpperCase(Locale.US) + getterName.substring(1);
+	    	}
+	    	return invokeMethod(object, getterName, args);
+    	}
     }
     
 	/**
@@ -115,8 +188,7 @@ public class MethodUtils {
 	 * @return The value returned by the invoked method
 	 *
 	 * @throws NoSuchMethodException if there is no such accessible method
-	 * @throws InvocationTargetException wraps an exception thrown by the
-	 *  method invoked
+	 * @throws InvocationTargetException wraps an exception thrown by the method invoked
 	 * @throws IllegalAccessException if the requested method is not accessible
 	 *  via reflection
 	 */
@@ -163,7 +235,8 @@ public class MethodUtils {
 		Class<?>[] parameterTypes = new Class[arguments];
 		
 		for(int i = 0; i < arguments; i++) {
-			parameterTypes[i] = args[i].getClass();
+			if(args[i] != null)
+				parameterTypes[i] = args[i].getClass();
 		}
 		
 		return invokeMethod(object, methodName, args, parameterTypes);
@@ -810,7 +883,7 @@ public class MethodUtils {
 						Method method = getAccessibleMethod(methods[i]);
 						if(method != null) {
 							setMethodAccessible(method); // Default access superclass workaround
-							myWeight = ClassUtils.getTypeDifferenceWeight(parameterTypes, method.getParameterTypes());
+							myWeight = ClassUtils.getTypeDifferenceWeight(method.getParameterTypes(), parameterTypes);
 							if(myWeight < bestMatchWeight) {
 								bestMatch = method;
 								bestMatchWeight = myWeight;
@@ -945,7 +1018,30 @@ public class MethodUtils {
         }
     }
 	
+    /**
+     * Set whether methods should be cached for greater performance or not,
+     * default is <code>true</code>.
+     *
+     * @param cacheMethods <code>true</code> if methods should be
+     * cached for greater performance, otherwise <code>false</code>
+     */
+    public static synchronized void setCacheMethods(final boolean cacheMethods) {
+    	cacheEnabled = cacheMethods;
+        if(!cacheEnabled) {
+            clearCache();
+        }
+    }
 
+    /**
+     * Clear the method cache.
+     * @return the number of cached methods cleared
+     */
+    public static synchronized int clearCache() {
+        final int size = cache.size();
+        cache.clear();
+        return size;
+    }
+    
 	/**
 	 * Represents the key to looking up a Method by reflection.
 	 */

@@ -397,4 +397,14 @@ public class ClassDescriptor {
 		ClassDescriptor.cacheEnabled = cacheEnabled;
 	}
 	
+    /**
+     * Clear the ClassDescriptor cache.
+     * @return the number of cached ClassDescriptor cleared
+     */
+    public static synchronized int clearCache() {
+        final int size = cache.size();
+        cache.clear();
+        return size;
+    }
+	
 }

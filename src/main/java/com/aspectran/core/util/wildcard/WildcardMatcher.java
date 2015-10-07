@@ -28,7 +28,7 @@ public class WildcardMatcher {
 	
 	private int[] separatorFlags;
 	
-	private int separatorCount;
+	private int separatorCount = -1;
 	
 	private int separatorIndex;
 	
@@ -37,7 +37,7 @@ public class WildcardMatcher {
 	}
 	
 	public boolean matches(CharSequence input) {
-		separatorCount = 0;
+		separatorCount = -1;
 		separatorIndex = 0;
 
 		if(input == null) {
@@ -64,7 +64,7 @@ public class WildcardMatcher {
 	}
 	
 	public int separate(CharSequence input) {
-		separatorCount = 0;
+		separatorCount = -1;
 		separatorIndex = 0;
 
 		if(input == null) {
@@ -76,7 +76,7 @@ public class WildcardMatcher {
 		this.input = input;
 		int len = input.length();
 		char separator = pattern.getSeparator();
-		int[] separatorFlags = new int[len];
+		separatorFlags = new int[len];
 		
 		for(int i = 0; i < len; i++) {
 			if(input.charAt(i) == separator) {
@@ -93,7 +93,8 @@ public class WildcardMatcher {
 	}
 
 	public WildcardMatcher last() {
-		separatorIndex = separatorCount;
+		if(separatorCount > -1)
+			separatorIndex = separatorCount;
 		return this;
 	}
 	
@@ -236,6 +237,8 @@ public class WildcardMatcher {
 						// *suffix
 						ttemp = trange1;
 						do {
+							if(input.charAt(cindex) == separator)
+								return false;
 							if(tokens[ttemp] != input.charAt(cindex++))
 								ttemp = trange1;
 							else

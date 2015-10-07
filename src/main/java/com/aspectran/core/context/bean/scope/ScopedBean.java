@@ -20,7 +20,6 @@ import com.aspectran.core.context.bean.ablility.DisposableBean;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.util.MethodUtils;
 
-
 /**
  * The Class ScopedBean.
  *

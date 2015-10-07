@@ -41,4 +41,8 @@ public abstract class AbstractRequestAdapter extends AbstractRequest implements 
 		return (T)adaptee;
 	}
 	
+	public void setAdaptee(Object adaptee) {
+		this.adaptee = adaptee; 
+	}
+	
 }

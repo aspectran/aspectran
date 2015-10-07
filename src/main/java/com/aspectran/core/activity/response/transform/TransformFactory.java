@@ -27,13 +27,6 @@ import com.aspectran.core.context.rule.type.TransformType;
  */
 public class TransformFactory {
 
-	/**
-	 * Creates the transformer.
-	 * 
-	 * @param tr the tr
-	 * 
-	 * @return the transform response
-	 */
 	public static Response createTransform(TransformRule tr) {
 		TransformType tranformType = tr.getTransformType();
 		
@@ -58,8 +51,6 @@ public class TransformFactory {
 				tr.setContentType(ContentType.TEXT_PLAIN.toString());
 			
 			transform = new AponTransform(tr);
-		} else if(tranformType == TransformType.CUSTOM_TRANSFORM) {
-			transform = new CustomTransform(tr);
 		} else {
 			throw new IllegalArgumentException("Cannot create a transformer. Cause: Unknown transform-type " + tr.toString());
 		}

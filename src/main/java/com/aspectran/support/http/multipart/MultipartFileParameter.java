@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.web.activity.multipart;
+package com.aspectran.support.http.multipart;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;

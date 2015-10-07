@@ -24,6 +24,8 @@ import com.aspectran.core.activity.process.ProcessException;
  */
 public class ActionExecutionException extends ProcessException {
 	
+	private Executable action;
+	
 	/** @serial */
 	static final long serialVersionUID = 3568162614053964319L;
 
@@ -31,6 +33,7 @@ public class ActionExecutionException extends ProcessException {
 	 * Simple constructor.
 	 */
 	public ActionExecutionException() {
+		super();
 	}
 
 	/**
@@ -64,6 +67,11 @@ public class ActionExecutionException extends ProcessException {
 	
 	public ActionExecutionException(Executable action, Throwable cause) {
 		super("Action execution failed: " + action.toString() + " Cause: " + cause, cause);
+		this.action = action;
+	}
+
+	public Executable getAction() {
+		return action;
 	}
 	
 }

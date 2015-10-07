@@ -30,6 +30,8 @@
  */
 package com.aspectran.support.orm.mybatis;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.SQLException;
@@ -56,7 +58,6 @@ import com.aspectran.core.activity.Translet;
 import com.aspectran.core.context.bean.ablility.FactoryBean;
 import com.aspectran.core.context.bean.ablility.InitializableTransletBean;
 import com.aspectran.core.util.Assert;
-import com.aspectran.core.util.ResourceUtils;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
@@ -355,15 +356,18 @@ public class SqlSessionFactoryBean implements InitializableTransletBean, Factory
 		InputStream[] mapperLocationStreams = null;
 		
 		if(configLocation != null) {
-			configLocationStream = ResourceUtils.getInputStream(configLocation, translet);
+			File file = translet.getApplicationAdapter().toRealPathAsFile(configLocation);
+			configLocationStream = new FileInputStream(file);
 		}
 		
 		if(mapperLocations != null && mapperLocations.length > 0) {
 			mapperLocationStreams = new InputStream[mapperLocations.length];
 			
 			for(int i = 0; i < mapperLocations.length; i++) {
-				if(mapperLocations[i] != null)
-					mapperLocationStreams[i] = ResourceUtils.getInputStream(mapperLocations[i], translet);
+				if(mapperLocations[i] != null) {
+					File file = translet.getApplicationAdapter().toRealPathAsFile(mapperLocations[i]);
+					mapperLocationStreams[i] = new FileInputStream(file);
+				}
 			}
 		}
 		
@@ -378,8 +382,7 @@ public class SqlSessionFactoryBean implements InitializableTransletBean, Factory
 	 * instance based on an Reader.
 	 *
 	 * @return SqlSessionFactory
-	 * @throws IOException
-	 *             if loading the config file failed
+	 * @throws IOException if loading the config file failed
 	 */
 	protected SqlSessionFactory buildSqlSessionFactory(InputStream configLocationStream, InputStream[] mapperLocationStreams) throws IOException {
 		Configuration configuration;
@@ -409,11 +412,9 @@ public class SqlSessionFactoryBean implements InitializableTransletBean, Factory
 			for(String packageToScan : typeAliasPackageArray) {
 				configuration.getTypeAliasRegistry().registerAliases(
 						packageToScan,
-						typeAliasesSuperType == null ? Object.class
-								: typeAliasesSuperType);
+						typeAliasesSuperType == null ? Object.class : typeAliasesSuperType);
 				if(log.isDebugEnabled()) {
-					log.debug("Scanned package: '" + packageToScan
-							+ "' for aliases");
+					log.debug("Scanned package: '" + packageToScan + "' for aliases");
 				}
 			}
 		}

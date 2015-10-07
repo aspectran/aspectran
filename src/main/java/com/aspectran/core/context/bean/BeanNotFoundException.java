@@ -15,11 +15,15 @@
  */
 package com.aspectran.core.context.bean;
 
-
+/**
+ * The Class BeanNotFoundException.
+ */
 public class BeanNotFoundException extends BeanException {
 
 	/** @serial */
 	private static final long serialVersionUID = 1866105813455720749L;
+	
+	private String beanId;
 
 	/**
 	 * Instantiates a new bean not found exception.
@@ -38,5 +42,11 @@ public class BeanNotFoundException extends BeanException {
 	 */
 	public BeanNotFoundException(String beanId, Throwable cause) {
 		super("No bean named '" + beanId + "' is defined");
+		this.beanId = beanId;
 	}
+
+	public String getBeanId() {
+		return beanId;
+	}
+	
 }

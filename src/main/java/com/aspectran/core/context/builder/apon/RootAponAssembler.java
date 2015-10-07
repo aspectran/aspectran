@@ -289,6 +289,7 @@ public class RootAponAssembler {
 			beanParameters.putValue(BeanParameters.description, beanRule.getDescription());
 		}
 		beanParameters.putValue(BeanParameters.id, beanRule.getId());
+		beanParameters.putValue(BeanParameters.mask, beanRule.getMaskPattern());
 		beanParameters.putValue(BeanParameters.className, beanRule.getClassName());
 		if(beanRule.getSingleton() == Boolean.TRUE && beanRule.getScopeType() == ScopeType.SINGLETON)
 			beanParameters.putValue(BeanParameters.singleton, beanRule.getSingleton());
@@ -321,6 +322,8 @@ public class RootAponAssembler {
 			transletParameters.putValue(TransletParameters.description, transletRule.getDescription());
 		}
 		transletParameters.putValue(TransletParameters.name, transletRule.getName());
+		transletParameters.putValue(TransletParameters.mask, transletRule.getMaskPattern());
+		transletParameters.putValue(TransletParameters.path, transletRule.getPath());
 		
 		if(transletRule.getRestVerb() != null)
 			transletParameters.putValue(TransletParameters.restVerb, transletRule.getRestVerb().toString());
@@ -389,7 +392,7 @@ public class RootAponAssembler {
 			}
 		}
 		
-		ExceptionHandlingRule exceptionHandlingRuleMap = transletRule.getExceptionHandlingRuleMap();
+		ExceptionHandlingRule exceptionHandlingRuleMap = transletRule.getExceptionHandlingRule();
 		if(exceptionHandlingRuleMap != null) {
 			for(ResponseByContentTypeRule rbctr : exceptionHandlingRuleMap) {
 				transletParameters.putValue(TransletParameters.exception, assembleResponseByContentTypeParameters(rbctr));

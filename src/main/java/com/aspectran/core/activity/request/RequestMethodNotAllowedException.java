@@ -19,8 +19,6 @@ import com.aspectran.core.context.rule.type.RequestMethodType;
 
 /**
  * Exception thrown when a request handler does not allow a specific request method.
- * 
- * <p>Created: 2008. 01. 07 오전 3:35:55</p>
  */
 public class RequestMethodNotAllowedException extends RequestException {
 	
@@ -33,6 +31,7 @@ public class RequestMethodNotAllowedException extends RequestException {
 	 * Instantiates a new request exception.
 	 */
 	public RequestMethodNotAllowedException() {
+		super();
 	}
 
 	/**

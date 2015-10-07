@@ -17,12 +17,24 @@ package com.aspectran.core.activity.response;
 
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.process.ActionList;
+import com.aspectran.core.context.rule.TemplateRule;
 import com.aspectran.core.context.rule.type.ResponseType;
 
 /**
+ * The Interface Response.
+ * 
  * <p>Created: 2008. 03. 23 오후 12:52:04</p>
  */
 public interface Response {
+	
+	/**
+	 * Response.
+	 * 
+	 * @param activity the translet
+	 * 
+	 * @throws ResponseException the response exception
+	 */
+	public void response(Activity activity) throws ResponseException;
 	
 	/**
 	 * Gets the response type.
@@ -46,12 +58,18 @@ public interface Response {
 	public ActionList getActionList();
 	
 	/**
-	 * Response.
-	 * 
-	 * @param activity the translet
-	 * 
-	 * @throws ResponseException the response exception
+	 * Gets the template rule.
+	 *
+	 * @return the template rule
 	 */
-	public void response(Activity activity) throws ResponseException;
+	public TemplateRule getTemplateRule();
+	
+	/**
+	 * New derived response.
+	 *
+	 * @return the response
+	 * @throws CloneNotSupportedException the clone not supported exception
+	 */
+	public Response newDerivedResponse();
 	
 }

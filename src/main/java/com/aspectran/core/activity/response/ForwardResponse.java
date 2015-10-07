@@ -24,11 +24,14 @@ import com.aspectran.core.activity.variable.token.ItemTokenExpression;
 import com.aspectran.core.activity.variable.token.ItemTokenExpressor;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.context.rule.ForwardResponseRule;
+import com.aspectran.core.context.rule.TemplateRule;
 import com.aspectran.core.context.rule.type.ResponseType;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
 /**
+ * The Class ForwardResponse.
+ * 
  * <p>Created: 2008. 03. 22 오후 5:51:58</p>
  */
 public class ForwardResponse implements Response {
@@ -37,7 +40,6 @@ public class ForwardResponse implements Response {
 	
 	private final boolean debugEnabled = log.isDebugEnabled();
 	
-	/** The forward response rule. */
 	private final ForwardResponseRule forwardResponseRule;
 	
 	/**
@@ -94,6 +96,20 @@ public class ForwardResponse implements Response {
 	 */
 	public ActionList getActionList() {
 		return forwardResponseRule.getActionList();
+	}
+
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.activity.response.Response#getTemplateRule()
+	 */
+	public TemplateRule getTemplateRule() {
+		return null;
+	}
+	
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.activity.response.Response#newDerivedResponse()
+	 */
+	public Response newDerivedResponse() {
+		return this;
 	}
 
 	/**

@@ -13,22 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.web.activity.multipart;
+package com.aspectran.core.util.apon;
 
-import com.aspectran.core.activity.request.RequestException;
+import com.aspectran.core.context.AspectranException;
 
 /**
- * <p>Created: 2008. 01. 07 오전 3:35:55</p>
+ * The Class AponException.
  */
-public class MultipartRequestException extends RequestException {
+public class AponException extends AspectranException {
 	
 	/** @serial */
-	static final long serialVersionUID = -3261897166973264629L;
+	private static final long serialVersionUID = 5698948413246117426L;
 
 	/**
 	 * Simple constructor.
 	 */
-	public MultipartRequestException() {
+	public AponException() {
+		super();
 	}
 
 	/**
@@ -36,7 +37,7 @@ public class MultipartRequestException extends RequestException {
 	 * 
 	 * @param msg A message to associate with the exception
 	 */
-	public MultipartRequestException(String msg) {
+	public AponException(String msg) {
 		super(msg);
 	}
 
@@ -45,18 +46,17 @@ public class MultipartRequestException extends RequestException {
 	 * 
 	 * @param cause The real cause of the exception
 	 */
-	public MultipartRequestException(Throwable cause) {
+	public AponException(Throwable cause) {
 		super(cause);
 	}
 
 	/**
-	 * Constructor to create exception to wrap another exception and pass a
-	 * message.
+	 * Constructor to create exception to wrap another exception and pass a message.
 	 * 
 	 * @param msg The message
 	 * @param cause The real cause of the exception
 	 */
-	public MultipartRequestException(String msg, Throwable cause) {
+	public AponException(String msg, Throwable cause) {
 		super(msg, cause);
 	}
 }

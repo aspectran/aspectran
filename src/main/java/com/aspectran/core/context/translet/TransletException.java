@@ -15,12 +15,14 @@
  */
 package com.aspectran.core.context.translet;
 
+import com.aspectran.core.context.AspectranException;
+
 /**
  * This class is the basic exception that gets thrown from the beans pacakge.
  * 
  * <p>Created: 2008. 01. 07 오전 3:35:55</p>
  */
-public class TransletException extends RuntimeException {
+public class TransletException extends AspectranException {
 	
 	/** @serial */
 	private static final long serialVersionUID = 3736262494374232352L;
@@ -29,6 +31,7 @@ public class TransletException extends RuntimeException {
 	 * Creates a new BeanException without detail message.
 	 */
 	public TransletException() {
+		super();
 	}
 
 	/**

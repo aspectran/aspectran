@@ -17,7 +17,9 @@ package com.aspectran.core.context.bean;
 
 import com.aspectran.core.context.rule.BeanRule;
 
-
+/**
+ * The Class BeanCreationException.
+ */
 public class BeanCreationException extends BeanException {
 
 	/** @serial */

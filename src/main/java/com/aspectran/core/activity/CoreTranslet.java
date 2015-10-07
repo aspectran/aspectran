@@ -19,9 +19,10 @@ import java.util.Map;
 
 import com.aspectran.core.activity.aspect.result.AspectAdviceResult;
 import com.aspectran.core.activity.process.result.ProcessResult;
+import com.aspectran.core.activity.response.ForwardResponse;
+import com.aspectran.core.activity.response.RedirectResponse;
 import com.aspectran.core.activity.response.Response;
 import com.aspectran.core.activity.response.ResponseException;
-import com.aspectran.core.activity.response.ResponseNotFoundException;
 import com.aspectran.core.activity.response.TransformResponseFactory;
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.adapter.RequestAdapter;
@@ -32,7 +33,6 @@ import com.aspectran.core.context.rule.ForwardResponseRule;
 import com.aspectran.core.context.rule.RedirectResponseRule;
 import com.aspectran.core.context.rule.TransformRule;
 import com.aspectran.core.context.rule.type.RequestMethodType;
-
 
 /**
  * The Class CoreTranslet.
@@ -169,10 +169,6 @@ public class CoreTranslet implements Translet {
 	 */
 	public void transform(TransformRule transformRule) {
 		Response res = TransformResponseFactory.getResponse(transformRule);
-		
-		if(res == null)
-			throw new ResponseNotFoundException("transform response is not found. transformRule" + transformRule);
-
 		response(res);
 	}
 
@@ -184,7 +180,7 @@ public class CoreTranslet implements Translet {
 	 * @throws ResponseException the response exception
 	 */
 	public void redirect(RedirectResponseRule redirectResponseRule) {
-		Response res = TransformResponseFactory.getResponse(redirectResponseRule);
+		Response res = new RedirectResponse(redirectResponseRule);
 		response(res);
 	}
 	
@@ -196,7 +192,7 @@ public class CoreTranslet implements Translet {
 	 * @throws ResponseException the response exception
 	 */
 	public void forward(ForwardResponseRule forwardResponseRule) {
-		Response res = TransformResponseFactory.getResponse(forwardResponseRule);
+		Response res = new ForwardResponse(forwardResponseRule);
 		response(res);
 	}
 	

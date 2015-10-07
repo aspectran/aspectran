@@ -15,15 +15,14 @@
  */
 package com.aspectran.core.context.rule;
 
-import com.aspectran.core.activity.process.action.Executable;
 import com.aspectran.core.context.rule.ability.ActionPossessable;
 import com.aspectran.core.context.rule.type.ResponseType;
 import com.aspectran.core.util.BooleanUtils;
 
 /**
- * <p>
- * Created: 2008. 03. 22 오후 5:51:58
- * </p>
+ * The Class DispatchResponseRule.
+ * 
+ * <p>Created: 2008. 03. 22 오후 5:51:58</p>
  */
 public class DispatchResponseRule extends ActionPossessSupport implements ActionPossessable {
 	
@@ -80,7 +79,7 @@ public class DispatchResponseRule extends ActionPossessSupport implements Action
 	public void setTemplateRule(TemplateRule templateRule) {
 		this.templateRule = templateRule;
 		
-		if(templateRule.getEncoding() != null && characterEncoding == null)
+		if(characterEncoding == null && templateRule.getEncoding() != null)
 			characterEncoding = templateRule.getEncoding();
 	}
 
@@ -95,7 +94,7 @@ public class DispatchResponseRule extends ActionPossessSupport implements Action
 	public void setDefaultResponse(Boolean defaultResponse) {
 		this.defaultResponse = defaultResponse;
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
@@ -107,6 +106,7 @@ public class DispatchResponseRule extends ActionPossessSupport implements Action
 		sb.append(", templateRule=").append(templateRule);
 		if(defaultResponse != null)
 			sb.append(", defaultResponse=").append(defaultResponse);
+/*
 		if(actionList != null) {
 			sb.append(", actionList=");
 			sb.append('[');
@@ -118,6 +118,7 @@ public class DispatchResponseRule extends ActionPossessSupport implements Action
 			}
 			sb.append(']');
 		}
+*/
 		sb.append("}");
 		
 		return sb.toString();
@@ -131,5 +132,21 @@ public class DispatchResponseRule extends ActionPossessSupport implements Action
 
 		return drr;
 	}
-	
+
+	public static DispatchResponseRule newDerivedDispatchResponseRuleRule(DispatchResponseRule dispatchResponseRule) {
+		DispatchResponseRule newDispatchResponseRule = new DispatchResponseRule();
+		newDispatchResponseRule.setContentType(dispatchResponseRule.getContentType());
+		newDispatchResponseRule.setCharacterEncoding(dispatchResponseRule.getCharacterEncoding());
+		newDispatchResponseRule.setDefaultResponse(dispatchResponseRule.getDefaultResponse());
+		newDispatchResponseRule.setActionList(dispatchResponseRule.getActionList());
+		
+		TemplateRule templateRule = dispatchResponseRule.getTemplateRule();
+		if(templateRule != null) {
+			templateRule = TemplateRule.newDerivedTemplateRule(templateRule);
+			newDispatchResponseRule.setTemplateRule(templateRule);
+		}
+		
+		return newDispatchResponseRule;
+	}
+
 }

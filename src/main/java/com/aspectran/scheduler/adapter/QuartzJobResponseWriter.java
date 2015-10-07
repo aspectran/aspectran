@@ -29,7 +29,6 @@ import com.aspectran.scheduler.service.QuartzSchedulerService;
  */
 public class QuartzJobResponseWriter extends StringWriter {
 
-	/** The log. */
 	private final Log log = LogFactory.getLog(QuartzJobResponseWriter.class);
 
 	private JobDetail jobDetail;

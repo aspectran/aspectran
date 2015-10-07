@@ -27,13 +27,12 @@ package com.aspectran.core.service;
 
 import com.aspectran.core.context.ActivityContextException;
 
-
 /**
+ * The Class AspectranServiceException.
  * 
  * <p>Created: 2008. 01. 07 오전 3:35:55</p>
  * 
  * @author Juho Jeong
- * 
  */
 public class AspectranServiceException extends ActivityContextException {
 
@@ -44,13 +43,13 @@ public class AspectranServiceException extends ActivityContextException {
 	 * Simple constructor
 	 */
 	public AspectranServiceException() {
+		super();
 	}
 
 	/**
 	 * Constructor to create exception with a message
 	 * 
-	 * @param msg
-	 *            A message to associate with the exception
+	 * @param msg A message to associate with the exception
 	 */
 	public AspectranServiceException(String msg) {
 		super(msg);
@@ -59,21 +58,17 @@ public class AspectranServiceException extends ActivityContextException {
 	/**
 	 * Constructor to create exception to wrap another exception
 	 * 
-	 * @param cause
-	 *            The real cause of the exception
+	 * @param cause The real cause of the exception
 	 */
 	public AspectranServiceException(Throwable cause) {
 		super(cause);
 	}
 
 	/**
-	 * Constructor to create exception to wrap another exception and pass a
-	 * message
+	 * Constructor to create exception to wrap another exception and pass a message
 	 * 
-	 * @param msg
-	 *            The message
-	 * @param cause
-	 *            The real cause of the exception
+	 * @param msg The message
+	 * @param cause The real cause of the exception
 	 */
 	public AspectranServiceException(String msg, Throwable cause) {
 		super(msg, cause);

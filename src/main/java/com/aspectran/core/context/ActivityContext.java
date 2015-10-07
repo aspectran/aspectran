@@ -22,6 +22,8 @@ import com.aspectran.core.context.bean.ContextBeanRegistry;
 import com.aspectran.core.context.translet.TransletRuleRegistry;
 
 /**
+ * The Class ActivityContext.
+ * 
  * <p>Created: 2008. 06. 09 오후 2:12:40</p>
  */
 public class ActivityContext {
@@ -36,6 +38,11 @@ public class ActivityContext {
 
 	private TransletRuleRegistry transletRuleRegistry;
 	
+	/**
+	 * Instantiates a new activity context.
+	 *
+	 * @param applicationAdapter the application adapter
+	 */
 	public ActivityContext(ApplicationAdapter applicationAdapter) {
 		this.applicationAdapter = applicationAdapter;
 	}
@@ -75,29 +82,52 @@ public class ActivityContext {
 		this.contextBeanRegistry = contextBeanRegistry;
 	}
 
+	/**
+	 * Gets the translet rule registry.
+	 *
+	 * @return the translet rule registry
+	 */
 	public TransletRuleRegistry getTransletRuleRegistry() {
 		return transletRuleRegistry;
 	}
 
+	/**
+	 * Sets the translet rule registry.
+	 *
+	 * @param transletRuleRegistry the new translet rule registry
+	 */
 	public void setTransletRuleRegistry(TransletRuleRegistry transletRuleRegistry) {
 		this.transletRuleRegistry = transletRuleRegistry;
 	}
 	
+	/**
+	 * Gets the current activity.
+	 *
+	 * @return the current activity
+	 */
 	public Activity getCurrentActivity() {
 		return currentActivityHolder.get();
 	}
 	
+	/**
+	 * Sets the current activity.
+	 *
+	 * @param activity the new current activity
+	 */
 	public void setCurrentActivity(Activity activity) {
 		if(currentActivityHolder.get() == null)
 			currentActivityHolder.set(activity);
 	}
 	
+	/**
+	 * Removes the current activity.
+	 */
 	public void removeCurrentActivity() {
 		currentActivityHolder.remove();
 	}
 	
 	/**
-	 * Destroy the translets context. 
+	 * Destroy the aspectran context. 
 	 */
 	public void destroy() {
 		if(aspectRuleRegistry != null) {

@@ -41,9 +41,6 @@ public final class TransformType extends Type {
 	/** The "transform/apon" transform type. */
 	public static final TransformType APON_TRANSFORM;
 	
-	/** The "transform/custom" transform type. */
-	public static final TransformType CUSTOM_TRANSFORM;
-	
 	private static final Map<String, TransformType> types;
 	
 	static {
@@ -52,7 +49,6 @@ public final class TransformType extends Type {
 		TEXT_TRANSFORM = new TransformType("transform/text");
 		JSON_TRANSFORM = new TransformType("transform/json");
 		APON_TRANSFORM = new TransformType("transform/apon");
-		CUSTOM_TRANSFORM = new TransformType("transform/custom");
 
 		types = new HashMap<String, TransformType>();
 		types.put(XML_TRANSFORM.toString(), XML_TRANSFORM);
@@ -60,7 +56,6 @@ public final class TransformType extends Type {
 		types.put(TEXT_TRANSFORM.toString(), TEXT_TRANSFORM);
 		types.put(JSON_TRANSFORM.toString(), JSON_TRANSFORM);
 		types.put(APON_TRANSFORM.toString(), APON_TRANSFORM);
-		types.put(CUSTOM_TRANSFORM.toString(), CUSTOM_TRANSFORM);
 	}
 
 	/**

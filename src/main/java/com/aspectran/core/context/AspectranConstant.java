@@ -16,18 +16,18 @@
 package com.aspectran.core.context;
 
 /**
+ * The Class AspectranConstant.
+ * 
  * <p>Created: 2008. 04. 01 오후 10:25:35</p>
  */
 public interface AspectranConstant {
 
-	public static final String LINE_SEPARATOR = "\n";
-
 	public static final char TRANSLET_NAME_SEPARATOR = '/';
 
-	public static final char TRANSLET_NAME_EXTENSION_DELIMITER = '.';
+	public static final char TRANSLET_NAME_EXTENSION_SEPARATOR = '.';
 	
-	public static final char TRANSLET_NAME_PATTERN_SEPARATOR = '*';
-
 	public static final char ID_SEPARATOR = '.';
+	
+	public static final String LINE_SEPARATOR = "\n";
 
 }

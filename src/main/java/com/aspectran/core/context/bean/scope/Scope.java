@@ -15,7 +15,6 @@
  */
 package com.aspectran.core.context.bean.scope;
 
-
 /**
  * The Interface Scope.
  *

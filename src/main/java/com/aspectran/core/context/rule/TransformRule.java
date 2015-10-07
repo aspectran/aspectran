@@ -15,7 +15,6 @@
  */
 package com.aspectran.core.context.rule;
 
-import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.context.rule.ability.ActionPossessable;
 import com.aspectran.core.context.rule.type.ContentType;
 import com.aspectran.core.context.rule.type.ResponseType;
@@ -23,9 +22,9 @@ import com.aspectran.core.context.rule.type.TransformType;
 import com.aspectran.core.util.BooleanUtils;
 
 /**
- * <p>
- * Created: 2008. 03. 22 오후 5:51:58
- * </p>
+ * The Class TransformRule.
+ * 
+ * <p>Created: 2008. 03. 22 오후 5:51:58</p>
  */
 public class TransformRule extends ActionPossessSupport implements ActionPossessable {
 	
@@ -39,11 +38,12 @@ public class TransformRule extends ActionPossessSupport implements ActionPossess
 	
 	private TemplateRule templateRule;
 	
-	private ActionList actionList;
-	
 	private Boolean defaultResponse;
 	
 	private Boolean pretty;
+	
+	public TransformRule() {
+	}
 	
 	/**
 	 * Gets the transform type.
@@ -119,24 +119,6 @@ public class TransformRule extends ActionPossessSupport implements ActionPossess
 			characterEncoding = templateRule.getEncoding();
 	}
 
-	/**
-	 * Gets the action list.
-	 *
-	 * @return the action list
-	 */
-	public ActionList getActionList() {
-		return actionList;
-	}
-
-	/**
-	 * Sets the action list.
-	 *
-	 * @param actionList the new action list
-	 */
-	public void setActionList(ActionList actionList) {
-		this.actionList = actionList;
-	}
-
 	public Boolean getDefaultResponse() {
 		return defaultResponse;
 	}
@@ -196,6 +178,24 @@ public class TransformRule extends ActionPossessSupport implements ActionPossess
 		tr.setPretty(pretty);
 		
 		return tr;
+	}
+	
+	public static TransformRule newDerivedTransformRule(TransformRule transformRule) {
+		TransformRule newTransformRule = new TransformRule();
+		newTransformRule.setContentType(transformRule.getContentType());
+		newTransformRule.setTransformType(transformRule.getTransformType());
+		newTransformRule.setCharacterEncoding(transformRule.getCharacterEncoding());
+		newTransformRule.setDefaultResponse(transformRule.getDefaultResponse());
+		newTransformRule.setPretty(transformRule.getPretty());
+		newTransformRule.setActionList(transformRule.getActionList());
+		
+		TemplateRule templateRule = transformRule.getTemplateRule();
+		if(templateRule != null) {
+			templateRule = TemplateRule.newDerivedTemplateRule(templateRule);
+			newTransformRule.setTemplateRule(templateRule);
+		}
+		
+		return newTransformRule;
 	}
 	
 }

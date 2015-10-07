@@ -25,12 +25,13 @@ import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.process.result.ActionResult;
 import com.aspectran.core.activity.process.result.ContentResult;
 import com.aspectran.core.activity.process.result.ProcessResult;
-import com.aspectran.core.activity.response.dispatch.DispatchResponseException;
+import com.aspectran.core.activity.response.dispatch.ViewDispatchException;
 import com.aspectran.core.activity.response.dispatch.ViewDispatcher;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.context.rule.DispatchResponseRule;
 import com.aspectran.core.context.rule.ResponseRule;
+import com.aspectran.core.context.rule.TemplateRule;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
@@ -45,23 +46,55 @@ public class JspViewDispatcher implements ViewDispatcher {
 
 	private static final boolean debugEnabled = log.isDebugEnabled();
 	
-	private String templatePathPrefix;
-
-	private String templatePathSuffix;
+	private static final boolean traceEnabled = log.isTraceEnabled();
 	
-	public void setTemplatePathPrefix(String templatePathPrefix) {
-		this.templatePathPrefix = templatePathPrefix;
+	private String templateFilePrefix;
+
+	private String templateFileSuffix;
+	
+	/**
+	 * Sets the template file prefix.
+	 *
+	 * @param templateFilePrefix the new template file prefix
+	 */
+	public void setTemplateFilePrefix(String templateFilePrefix) {
+		this.templateFilePrefix = templateFilePrefix;
 	}
 
-	public void setTemplatePathSuffix(String templatePathSuffix) {
-		this.templatePathSuffix = templatePathSuffix;
+	/**
+	 * Sets the template file suffix.
+	 *
+	 * @param templateFileSuffix the new template file suffix
+	 */
+	public void setTemplateFileSuffix(String templateFileSuffix) {
+		this.templateFileSuffix = templateFileSuffix;
 	}
 
 	/* (non-Javadoc)
 	 * @see com.aspectran.core.activity.response.dispatch.ViewDispatcher#dispatch(com.aspectran.core.activity.AspectranActivity, com.aspectran.base.rule.DispatchResponseRule)
 	 */
-	public void dispatch(Activity activity, DispatchResponseRule dispatchResponseRule) throws DispatchResponseException {
+	public void dispatch(Activity activity, DispatchResponseRule dispatchResponseRule) {
 		try {
+			TemplateRule templateRule = dispatchResponseRule.getTemplateRule();
+			if(templateRule == null) {
+				log.warn("No specified template. " + dispatchResponseRule);
+				return;
+			}
+
+			String templateFile = templateRule.getFile();
+			if(templateFile == null) {
+				log.warn("No specified template file. " + dispatchResponseRule);
+				return;
+			}
+			
+			if(templateFilePrefix != null && templateFileSuffix != null) {
+				templateFile = templateFilePrefix + templateFile + templateFileSuffix;
+			} else if(templateFilePrefix != null) {
+				templateFile = templateFilePrefix + templateFile;
+			} else if(templateFileSuffix != null) {
+				templateFile = templateFile + templateFileSuffix;
+			}
+			
 			RequestAdapter requestAdapter = activity.getRequestAdapter();
 			ResponseAdapter responseAdapter = activity.getResponseAdapter();
 
@@ -80,16 +113,6 @@ public class JspViewDispatcher implements ViewDispatcher {
 					responseAdapter.setCharacterEncoding(characterEncoding);
 			}
 			
-			String templatePath = dispatchResponseRule.getTemplateRule().getFile();
-			
-			if(templatePathPrefix != null && templatePathSuffix != null) {
-				templatePath = templatePathPrefix + templatePath + templatePathSuffix;
-			} else if(templatePathPrefix != null) {
-				templatePath = templatePathPrefix + templatePath;
-			} else if(templatePathSuffix != null) {
-				templatePath = templatePath + templatePathSuffix;
-			}
-			
 			ProcessResult processResult = activity.getProcessResult();
 
 			if(processResult != null)
@@ -98,10 +121,10 @@ public class JspViewDispatcher implements ViewDispatcher {
 			HttpServletRequest request = requestAdapter.getAdaptee();
 			HttpServletResponse response = responseAdapter.getAdaptee();
 			
-			RequestDispatcher requestDispatcher = request.getRequestDispatcher(templatePath);
+			RequestDispatcher requestDispatcher = request.getRequestDispatcher(templateFile);
 			requestDispatcher.forward(request, response);
 
-			if(debugEnabled) {
+			if(traceEnabled) {
 				Enumeration<String> attrNames = requestAdapter.getAttributeNames();
 
 				if(attrNames.hasMoreElements()) {
@@ -118,13 +141,14 @@ public class JspViewDispatcher implements ViewDispatcher {
 					}
 
 					sb2.append("]");
-					log.debug(sb2.toString());
+					log.trace(sb2.toString());
 				}
 
-				log.debug("JSP Dispatch {templatePath: " + templatePath + "}");
+				if(debugEnabled)
+					log.debug("dispatch to a JSP {templateFile: " + templateFile + "}");
 			}
 		} catch(Exception e) {
-			throw new DispatchResponseException("Dispatch response error: " + dispatchResponseRule, e);
+			throw new ViewDispatchException("JSP View Dispatch Error: " + dispatchResponseRule, e);
 		}
 	}
 

@@ -32,18 +32,14 @@ import com.aspectran.core.util.apon.Parameters;
  */
 public class BeanRule implements Cloneable {
 
-	public static final String BEAN_ID_PATTERN_DELIMITER = "*";
-
 	protected String id;
 
-	protected String idPrefix;
-	
-	protected String idSuffix;
-	
 	protected String className;
 
 	protected Class<?> beanClass;
 
+	protected String maskPattern;
+	
 	protected ScopeType scopeType;
 
 	protected Boolean singleton;
@@ -94,50 +90,8 @@ public class BeanRule implements Cloneable {
 	 */
 	public void setId(String id) {
 		this.id = id;
-		
-		String[] splitted = splitBeanIdPattern(id);
-		
-		if(splitted != null) {
-			this.idPrefix = splitted[0];
-			this.idSuffix = splitted[1];
-		}
 	}
 	
-	/**
-	 * Sets the bean's id.
-	 *
-	 * @param id the id
-	 * @param idPrefix the prefix of bean's id
-	 * @param idSuffix the suffix of bean's id
-	 */
-	public void setId(String id, String idPrefix, String idSuffix) {
-		if(idPrefix != null && idSuffix != null) {
-			this.id = idPrefix + id + idSuffix;
-		} else if(idPrefix != null) {
-			this.id = idPrefix +id;
-		} else if(idSuffix != null) {
-			this.id = id + idSuffix;
-		} else {
-			this.id = id;
-		}
-	}
-	
-	public String getIdPrefix() {
-		return idPrefix;
-	}
-
-	public void setIdPrefix(String idPrefix) {
-		this.idPrefix = idPrefix;
-	}
-
-	public String getIdSuffix() {
-		return idSuffix;
-	}
-
-	public void setIdSuffix(String idSuffix) {
-		this.idSuffix = idSuffix;
-	}
-
 	/**
 	 * Gets the class type.
 	 *
@@ -172,6 +126,24 @@ public class BeanRule implements Cloneable {
 	 */
 	public void setBeanClass(Class<?> beanClass) {
 		this.beanClass = beanClass;
+	}
+
+	/**
+	 * Gets the mask pattern.
+	 *
+	 * @return the mask pattern
+	 */
+	public String getMaskPattern() {
+		return maskPattern;
+	}
+
+	/**
+	 * Sets the mask pattern.
+	 *
+	 * @param maskPattern the new mask pattern
+	 */
+	public void setMaskPattern(String maskPattern) {
+		this.maskPattern = maskPattern;
 	}
 
 	/**
@@ -394,10 +366,6 @@ public class BeanRule implements Cloneable {
 		this.scanned = scanned;
 	}
 	
-	public boolean isPatternedBeanId() {
-		return (idPrefix != null || idSuffix != null || id.equals(BEAN_ID_PATTERN_DELIMITER));
-	}
-	
 	public boolean isProxied() {
 		return proxied;
 	}
@@ -480,7 +448,7 @@ public class BeanRule implements Cloneable {
 		return sb.toString();
 	}
 	
-	public static BeanRule newInstance(String id, String className, String scope, Boolean singleton, String factoryMethod, String initMethodName, String destroyMethodName, Boolean lazyInit, Boolean important) {
+	public static BeanRule newInstance(String id, String maskPattern, String className, String scope, Boolean singleton, String factoryMethod, String initMethodName, String destroyMethodName, Boolean lazyInit, Boolean important) {
 		if(id == null)
 			throw new IllegalArgumentException("The <bean> element requires a id attribute.");
 
@@ -497,6 +465,7 @@ public class BeanRule implements Cloneable {
 		
 		BeanRule beanRule = new BeanRule();
 		beanRule.setId(id);
+		beanRule.setMaskPattern(maskPattern);
 		beanRule.setClassName(className);
 		beanRule.setScopeType(scopeType);
 		beanRule.setSingleton(singleton);
@@ -508,7 +477,7 @@ public class BeanRule implements Cloneable {
 		
 		return beanRule;
 	}
-	
+/*
 	public static String combineBeanIdPattern(String beanIdPrefix, String beanIdSuffix) {
 		if(beanIdPrefix == null && beanIdSuffix != null) {
 			return BEAN_ID_PATTERN_DELIMITER + beanIdSuffix;
@@ -518,24 +487,7 @@ public class BeanRule implements Cloneable {
 			return BEAN_ID_PATTERN_DELIMITER;
 		}
 	}
-	
-	public static String[] splitBeanIdPattern(String beanId) {
-		int wildcardStartIndex = beanId.indexOf(BEAN_ID_PATTERN_DELIMITER);
-		
-		if(wildcardStartIndex == -1)
-			return null;
-		
-		String beanIdPrefix = null;
-		String beanIdSuffix = null;
-		
-		if(wildcardStartIndex > 0)
-			beanIdPrefix = beanId.substring(0, wildcardStartIndex);
-		
-		if(wildcardStartIndex < beanId.length() - 1)
-			beanIdSuffix = beanId.substring(wildcardStartIndex + 1);
-		
-		return new String[] { beanIdPrefix, beanIdSuffix };
-	}
+*/
 
 	public static void checkAccessibleMethod(BeanRule beanRule) {
 		Class<?> beanClass = beanRule.getBeanClass();

@@ -28,7 +28,7 @@ import com.aspectran.core.context.rule.ability.ActionRuleApplicable;
 import com.aspectran.core.util.BooleanUtils;
 
 /**
- * The action list class.
+ * Then Class ActionList.
  * 
  * <p>Created: 2008. 03. 23 오전 1:38:14</p>
  */

@@ -98,8 +98,7 @@ public class BeanUtils {
 	}
 
 	/**
-	 * Returns the class that the getter will return when reading a property
-	 * value.
+	 * Returns the class that the getter will return when reading a property value.
 	 * 
 	 * @param object The bean to check
 	 * @param name The name of the property
@@ -134,8 +133,7 @@ public class BeanUtils {
 	}
 
 	/**
-	 * Returns the class that the getter will return when reading a property
-	 * value.
+	 * Returns the class that the getter will return when reading a property value.
 	 * 
 	 * @param type The class to check
 	 * @param name The name of the property
@@ -208,8 +206,7 @@ public class BeanUtils {
 	 * @param name The name of the property to set
 	 * @param value The new value to set
 	 */
-	public static void setObject(Object object, String name, Object value) throws InvocationTargetException,
-			NoSuchMethodException {
+	public static void setObject(Object object, String name, Object value) throws InvocationTargetException, NoSuchMethodException {
 		if(name.indexOf('.') > -1) {
 			StringTokenizer parser = new StringTokenizer(name, ".");
 			String property = parser.nextToken();
@@ -255,7 +252,7 @@ public class BeanUtils {
 		boolean hasProperty = false;
 		
 		if(object instanceof Map<?, ?>) {
-			hasProperty = true;// ((Map) object).containsKey(propertyName);
+			hasProperty = true; // ((Map) object).containsKey(propertyName);
 		} else {
 			if(propertyName.indexOf('.') > -1) {
 				StringTokenizer parser = new StringTokenizer(propertyName, ".");
@@ -385,6 +382,14 @@ public class BeanUtils {
 		} catch(InvocationTargetException e) {
 			throw e;
 		} catch(Throwable t) {
+			try {
+				if(value != null) {
+					MethodUtils.invokeSetter(object, name, value);
+					return;
+				}
+			} catch(Throwable tt) {
+			}
+			
 			if(object == null) {
 				throw new InvocationTargetException(t, "Could not set property '" + name + "' to value '" + value + "' for null reference. Cause: " + t.toString());
 			} else {

@@ -18,7 +18,6 @@ package com.aspectran.core.context.aspect;
 import java.util.List;
 
 import com.aspectran.core.activity.process.ContentList;
-import com.aspectran.core.activity.process.action.Executable;
 import com.aspectran.core.context.AspectranConstant;
 import com.aspectran.core.context.aspect.pointcut.Pointcut;
 import com.aspectran.core.context.rule.AspectRule;
@@ -218,7 +217,7 @@ public class AspectAdviceRulePreRegister extends AspectAdviceRuleRegister {
 		
 		register(aspectAdviceRuleRegistry, aspectRule);
 	}
-	
+/*	
 	protected void register(Executable action, AspectRule aspectRule) {
 		AspectAdviceRuleRegistry aspectAdviceRuleRegistry = action.getAspectAdviceRuleRegistry();
 		
@@ -229,8 +228,7 @@ public class AspectAdviceRulePreRegister extends AspectAdviceRuleRegister {
 		
 		register(aspectAdviceRuleRegistry, aspectRule);
 	}
-	
-	
+*/
 	private void countMatchedTranslet(Pointcut pointcut, String transletName) {
 		List<PointcutPatternRule> pointcutPatternRuleList = pointcut.getPointcutPatternRuleList();
 		

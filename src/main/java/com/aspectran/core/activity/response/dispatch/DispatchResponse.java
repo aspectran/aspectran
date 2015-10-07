@@ -21,6 +21,7 @@ import com.aspectran.core.activity.response.Response;
 import com.aspectran.core.activity.response.ResponseException;
 import com.aspectran.core.context.rule.DispatchResponseRule;
 import com.aspectran.core.context.rule.ResponseRule;
+import com.aspectran.core.context.rule.TemplateRule;
 import com.aspectran.core.context.rule.type.ResponseType;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
@@ -28,9 +29,7 @@ import com.aspectran.core.util.logging.LogFactory;
 /**
  * JSP or other web resource integration.
  * 
- * <p>
- * Created: 2008. 03. 22 오후 5:51:58
- * </p>
+ * <p> Created: 2008. 03. 22 오후 5:51:58</p>
  */
 public class DispatchResponse implements Response {
 
@@ -100,18 +99,42 @@ public class DispatchResponse implements Response {
 		return dispatchResponseRule.getActionList();
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.activity.response.Response#getTemplateRule()
+	 */
+	public TemplateRule getTemplateRule() {
+		return dispatchResponseRule.getTemplateRule();
+	}
+	
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.activity.response.Response#newDerivedResponse()
+	 */
+	public Response newDerivedResponse() {
+		if(dispatchResponseRule != null) {
+			DispatchResponseRule newDispatchResponseRule = DispatchResponseRule.newDerivedDispatchResponseRuleRule(dispatchResponseRule);
+			Response response = new DispatchResponse(newDispatchResponseRule);
+			return response;
+		}
+		
+		return this;
+	}
+
 	private void determineViewDispatcher(Activity activity) {
 		if(viewDispatcher == null) {
 			synchronized(this) {
 				if(viewDispatcher == null) {
 					String viewDispatcherName = activity.getResponseSetting(ResponseRule.VIEW_DISPATCHER_SETTING_NAME);
-					viewDispatcher = (ViewDispatcher)activity.getBean(viewDispatcherName);
+
+					if(viewDispatcherName == null)
+						throw new ViewDispatchException("View Dispatcher is not defined.");
+					
+					viewDispatcher = activity.getBean(viewDispatcherName);
+					
+					if(viewDispatcher == null)
+						throw new ViewDispatchException("No bean named '" + viewDispatcherName + "' is defined");
 				}
 			}
 		}
-		
-		if(viewDispatcher == null)
-			throw new RuntimeException("View Dispatcher is not defined.");
 	}
 	
 }

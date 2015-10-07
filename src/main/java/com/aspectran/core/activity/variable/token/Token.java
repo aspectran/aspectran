@@ -32,15 +32,15 @@ public class Token {
 
 	public static final char END_BRACKET = '}';
 
-	public static final char DEFAULT_VALUE_DELIMITER = ':';
+	public static final char DEFAULT_VALUE_SEPARATOR = ':';
 	
-	public static final char BEAN_PROPERTY_DELIMITER = '^';
+	public static final char BEAN_PROPERTY_SEPARATOR = '^';
 	
 	private TokenType type;
 
 	private String name;
 	
-	private String defaultText;
+	private String defaultValue;
 	
 	private String getterName;
 	
@@ -50,13 +50,13 @@ public class Token {
 	 * @param type the type
 	 * @param nameOrText the name
 	 */
-	public Token(TokenType type, String nameOrText) {
+	public Token(TokenType type, String nameOrDefaultValue) {
 		this.type = type;
 
 		if(type == TokenType.TEXT)
-			this.defaultText = nameOrText;
+			this.defaultValue = nameOrDefaultValue;
 		else
-			this.name = nameOrText;
+			this.name = nameOrDefaultValue;
 	}
 	
 	/**
@@ -78,23 +78,23 @@ public class Token {
 	}
 
 	/**
-	 * Gets the default text.
+	 * Gets the default value.
 	 * 
-	 * @return the default text
+	 * @return the default value
 	 */
-	public String getDefaultText() {
-		return defaultText;
+	public String getDefaultValue() {
+		return defaultValue;
 	}
 
 	/**
-	 * Sets the default text.
+	 * Sets the default value.
 	 * 
-	 * @param defaultText the default text
+	 * @param defaultText the default value
 	 * 
 	 * @return the string
 	 */
-	public String setDefaultText(String defaultText) {
-		return defaultText;
+	public void setDefaultValue(String defaultValue) {
+		this.defaultValue = defaultValue;
 	}
 	
 	/**
@@ -121,7 +121,7 @@ public class Token {
 	@Override
 	public String toString() {
 		if(type == TokenType.TEXT)
-			return defaultText;
+			return defaultValue;
 		
 		StringBuilder sb = new StringBuilder();
 		if(type == TokenType.PARAMETER)
@@ -134,12 +134,12 @@ public class Token {
 		if(name != null)
 			sb.append(name);
 		if(getterName != null) {
-			sb.append(BEAN_PROPERTY_DELIMITER);
+			sb.append(BEAN_PROPERTY_SEPARATOR);
 			sb.append(getterName);
 		}
-		if(defaultText != null) {
-			sb.append(DEFAULT_VALUE_DELIMITER);
-			sb.append(defaultText);
+		if(defaultValue != null) {
+			sb.append(DEFAULT_VALUE_SEPARATOR);
+			sb.append(defaultValue);
 		}
 		sb.append(END_BRACKET);
 

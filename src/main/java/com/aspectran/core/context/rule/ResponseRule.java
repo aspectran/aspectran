@@ -17,7 +17,6 @@ package com.aspectran.core.context.rule;
 
 import java.nio.charset.Charset;
 import java.nio.charset.IllegalCharsetNameException;
-import java.util.List;
 
 import com.aspectran.core.activity.response.ForwardResponse;
 import com.aspectran.core.activity.response.RedirectResponse;
@@ -29,11 +28,11 @@ import com.aspectran.core.context.rule.ability.ResponseRuleApplicable;
 import com.aspectran.core.context.rule.type.ResponseType;
 
 /**
- * <p>
- * Created: 2008. 03. 22 오후 5:48:09
- * </p>
+ * The Class ResponseRule.
+ * 
+ * <p>Created: 2008. 03. 22 오후 5:48:09</p>
  */
-public class ResponseRule implements ResponseRuleApplicable, AspectAdviceSupport {
+public class ResponseRule implements ResponseRuleApplicable {
 
 	public static final String CHARACTER_ENCODING_SETTING_NAME = "characterEncoding";
 
@@ -173,52 +172,19 @@ public class ResponseRule implements ResponseRuleApplicable, AspectAdviceSupport
 	public void setAspectAdviceRuleRegistry(AspectAdviceRuleRegistry aspectAdviceRuleRegistry) {
 		this.aspectAdviceRuleRegistry = aspectAdviceRuleRegistry;
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.context.rule.AspectAdviceSupport#getAspectBeforeAdviceRuleList()
-	 */
-	public List<AspectAdviceRule> getAspectBeforeAdviceRuleList() {
-		if(aspectAdviceRuleRegistry == null)
-			return null;
-		
-		return aspectAdviceRuleRegistry.getBeforeAdviceRuleList();
-	}
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.context.rule.AspectAdviceSupport#getAspectAfterAdviceRuleList()
-	 */
-	public List<AspectAdviceRule> getAspectAfterAdviceRuleList() {
-		if(aspectAdviceRuleRegistry == null)
-			return null;
-		
-		return aspectAdviceRuleRegistry.getAfterAdviceRuleList();
-	}
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.context.rule.AspectAdviceSupport#getAspectFinallyAdviceRuleList()
-	 */
-	public List<AspectAdviceRule> getAspectFinallyAdviceRuleList() {
-		if(aspectAdviceRuleRegistry == null)
-			return null;
-		
-		return aspectAdviceRuleRegistry.getFinallyAdviceRuleList();
-	}
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.context.rule.AspectAdviceSupport#getAspectExceptionHandlingRuleList()
-	 */
-	public List<ExceptionHandlingRule> getAspectExceptionHandlingRuleList() {
-		if(aspectAdviceRuleRegistry == null)
-			return null;
-		
-		return aspectAdviceRuleRegistry.getExceptionHandlingRuleList();
-	}
 
-	public ResponseRule newResponseRule(Response response) {
+	public ResponseRule newUrgentResponseRule(Response response) {
 		ResponseRule responseRule = new ResponseRule();
 		responseRule.setCharacterEncoding(characterEncoding);
 		responseRule.setResponse(response);
 		return responseRule;
+	}
+	
+	public TemplateRule getTemplateRule() {
+		if(response == null)
+			return null;
+		
+		return response.getTemplateRule();
 	}
 
 	/* (non-Javadoc)
@@ -246,4 +212,18 @@ public class ResponseRule implements ResponseRuleApplicable, AspectAdviceSupport
 		return responseRule;
 	}
 
+	public static ResponseRule newDerivedResponseRule(ResponseRule responseRule) {
+		ResponseRule newResponseRule = new ResponseRule();
+		newResponseRule.setName(responseRule.getName());
+		newResponseRule.setCharacterEncoding(responseRule.getCharacterEncoding());
+		
+		Response response = responseRule.getResponse();
+		if(response != null) {
+			response = response.newDerivedResponse();
+			newResponseRule.setResponse(response);
+		}
+		
+		return newResponseRule;
+	}
+	
 }

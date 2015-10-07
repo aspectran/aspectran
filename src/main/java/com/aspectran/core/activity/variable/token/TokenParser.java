@@ -62,9 +62,9 @@ public class TokenParser {
 		for(int i = tokenList.size() - 1; i >= 0; i--) {
 			Token t = tokenList.get(i);
 
-			if(t.getType() == TokenType.TEXT && t.getDefaultText() != null) {
+			if(t.getType() == TokenType.TEXT && t.getDefaultValue() != null) {
 				// remove empty token
-				if(t.getDefaultText().trim().length() == 0)
+				if(t.getDefaultValue().trim().length() == 0)
 					tokenList.remove(i);
 			}
 		}
@@ -95,7 +95,7 @@ public class TokenParser {
 
 			if(t.getType() == TokenType.TEXT ||
 					t.getName() == null || t.getName().length() == 0 ||
-					t.getDefaultText() == null || t.getDefaultText().length() == 0) {
+					t.getDefaultValue() == null || t.getDefaultValue().length() == 0) {
 				tokenList.remove(i);
 			}
 		}

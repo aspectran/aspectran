@@ -15,18 +15,21 @@
  */
 package com.aspectran.core.context.aspect;
 
+import com.aspectran.core.context.AspectranException;
+
 /**
  * This class is the basic exception that gets thrown from the aspect pacakge.
  */
-public class AspectException extends RuntimeException {
+public class AspectException extends AspectranException {
 	
 	/** @serial */
-	private static final long serialVersionUID = 3736262494374232352L;
+	private static final long serialVersionUID = 3778865608683444815L;
 
 	/**
 	 * Creates a new AspectException without detail message.
 	 */
 	public AspectException() {
+		super();
 	}
 
 	/**

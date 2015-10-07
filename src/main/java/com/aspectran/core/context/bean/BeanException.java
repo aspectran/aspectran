@@ -15,13 +15,14 @@
  */
 package com.aspectran.core.context.bean;
 
+import com.aspectran.core.context.AspectranException;
 
 /**
  * This class is the basic exception that gets thrown from the beans pacakge.
  * 
  * <p>Created: 2008. 01. 07 오전 3:35:55</p>
  */
-public class BeanException extends RuntimeException {
+public class BeanException extends AspectranException {
 	
 	/** @serial */
 	static final long serialVersionUID = 2598750999734896601L;
@@ -30,6 +31,7 @@ public class BeanException extends RuntimeException {
 	 * Creates a new BeanException without detail message.
 	 */
 	public BeanException() {
+		super();
 	}
 
 	/**

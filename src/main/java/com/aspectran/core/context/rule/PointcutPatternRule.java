@@ -23,9 +23,9 @@ import com.aspectran.core.context.rule.type.PointcutType;
 
 public class PointcutPatternRule {
 	
-	private static final char POINTCUT_BEAN_DELIMITER = '@';
+	private static final char POINTCUT_BEAN_ID_DELIMITER = '@';
 	
-	private static final char POINTCUT_METHOD_DELIMITER = '^';
+	private static final char POINTCUT_METHOD_NAME_DELIMITER = '^';
 
 	private static final char JOINPOINT_SCOPE_DELIMITER = '$';
 	
@@ -150,12 +150,12 @@ public class PointcutPatternRule {
 			sb.append(transletName);
 		
 		if(beanId != null) {
-			sb.append(POINTCUT_BEAN_DELIMITER);
+			sb.append(POINTCUT_BEAN_ID_DELIMITER);
 			sb.append(beanId);
 		}
 		
 		if(beanMethodName != null) {
-			sb.append(POINTCUT_METHOD_DELIMITER);
+			sb.append(POINTCUT_METHOD_NAME_DELIMITER);
 			sb.append(beanMethodName);
 		}
 		
@@ -174,12 +174,12 @@ public class PointcutPatternRule {
 			sb.append(transletName);
 		
 		if(beanId != null) {
-			sb.append(POINTCUT_BEAN_DELIMITER);
+			sb.append(POINTCUT_BEAN_ID_DELIMITER);
 			sb.append(beanId);
 		}
 		
 		if(methodName != null) {
-			sb.append(POINTCUT_METHOD_DELIMITER);
+			sb.append(POINTCUT_METHOD_NAME_DELIMITER);
 			sb.append(methodName);
 		}
 		
@@ -194,7 +194,7 @@ public class PointcutPatternRule {
 		String beanIdPattern = null;
 		String beanMethodNamePattern = null;
 
-		int actionDelimiterIndex = patternString.indexOf(POINTCUT_BEAN_DELIMITER);
+		int actionDelimiterIndex = patternString.indexOf(POINTCUT_BEAN_ID_DELIMITER);
 		
 		if(actionDelimiterIndex == -1)
 			transletNamePattern = patternString;
@@ -206,7 +206,7 @@ public class PointcutPatternRule {
 		}
 
 		if(beanIdPattern != null) {
-			int beanMethodDelimiterIndex = beanIdPattern.indexOf(POINTCUT_METHOD_DELIMITER);
+			int beanMethodDelimiterIndex = beanIdPattern.indexOf(POINTCUT_METHOD_NAME_DELIMITER);
 			
 			if(beanMethodDelimiterIndex == 0) {
 				beanMethodNamePattern = beanIdPattern.substring(1);

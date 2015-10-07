@@ -41,7 +41,6 @@ import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.type.BeanProxifierType;
 import com.aspectran.core.context.rule.type.ScopeType;
-import com.aspectran.core.util.BeanUtils;
 import com.aspectran.core.util.ClassUtils;
 import com.aspectran.core.util.MethodUtils;
 import com.aspectran.core.util.logging.Log;
@@ -122,7 +121,8 @@ public abstract class AbstractContextBeanRegistry implements ContextBeanRegistry
 				ValueMap valueMap = expressor.express(propertyItemRuleMap);
 				
 				for(Map.Entry<String, Object> entry : valueMap.entrySet()) {
-					BeanUtils.setObject(bean, entry.getKey(), entry.getValue());
+					//BeanUtils.setObject(bean, entry.getKey(), entry.getValue());
+					MethodUtils.invokeSetter(bean, entry.getKey(), entry.getValue());
 				}
 			}
 			

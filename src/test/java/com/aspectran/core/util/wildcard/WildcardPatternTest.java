@@ -21,29 +21,18 @@ package com.aspectran.core.util.wildcard;
 public class WildcardPatternTest {
 
 	protected static final char ESCAPE_CHAR = '\\';
-	
 	protected static final char SPACE_CHAR = ' ';
-	
-	protected static final char STAR_CHAR = '*';
-	
+	public static final char STAR_CHAR = '*';
 	protected static final char QUESTION_CHAR = '?';
-	
 	protected static final char PLUS_CHAR = '+';
 	
 	protected static final int EOT_TYPE = -2;
-
 	protected static final int SKIP_TYPE = -1;
-
 	protected static final int LITERAL_TYPE = 0;
-
 	protected static final int STAR_TYPE = 1;
-
 	protected static final int STAR_STAR_TYPE = 2;
-
 	protected static final int QUESTION_TYPE = 3;
-
 	protected static final int PLUS_TYPE = 4;
-
 	protected static final int SEPARATOR_TYPE = 9;
 	
 	private char separator;
@@ -51,6 +40,8 @@ public class WildcardPatternTest {
 	private char[] tokens;
 
 	private int[] types;
+
+	private String patternString;
 	
 	public WildcardPatternTest(String patternString) {
 		parse(patternString);
@@ -63,6 +54,8 @@ public class WildcardPatternTest {
 	}
 
 	private void parse(String patternString) {
+		this.patternString = patternString;
+		
 		tokens = patternString.toCharArray();
 		types = new int[tokens.length];
 
@@ -194,8 +187,32 @@ public class WildcardPatternTest {
 		return types;
 	}
 	
+	/**
+	 * If the pattern matches then returns true.
+	 *
+	 * @param compareString the compare string
+	 * @return true, if successful
+	 */
 	public boolean matches(String compareString) {
 		return WildcardMatcherTest.matches(this, compareString);
+	}
+	
+	/**
+	 * Erase the characters that corresponds to the wildcard, and returns collect only the remaining characters.
+	 * In other words, only it remains for the wildcard character.
+	 *
+	 * @param nakedString the naked string
+	 * @return the string
+	 */
+	public String mask(String nakedString) {
+		return WildcardMaskerTest.mask(this, nakedString);
+	}
+	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	public String toString() {
+		return patternString;
 	}
 	
 	public static WildcardPatternTest compile(String patternString) {

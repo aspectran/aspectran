@@ -17,11 +17,15 @@ package com.aspectran.core.context.bean;
 
 import com.aspectran.core.context.rule.BeanRule;
 
-
+/**
+ * The Class BeanDestroyFailedException.
+ */
 public class BeanDestroyFailedException extends BeanException {
 
 	/** @serial */
 	private static final long serialVersionUID = -2416583532228763870L;
+	
+	private BeanRule beanRule;
 
 	/**
 	 * Create a new BeanInstantiationException.
@@ -40,5 +44,11 @@ public class BeanDestroyFailedException extends BeanException {
 	 */
 	public BeanDestroyFailedException(BeanRule beanRule, Throwable cause) {
 		super("Cannot destroy a bean " + beanRule, cause);
+		this.beanRule = beanRule;
 	}
+
+	public BeanRule getBeanRule() {
+		return beanRule;
+	}
+	
 }

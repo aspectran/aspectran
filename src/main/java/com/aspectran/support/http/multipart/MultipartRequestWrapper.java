@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.web.activity.multipart;
+package com.aspectran.support.http.multipart;
 
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -47,10 +47,6 @@ public class MultipartRequestWrapper extends HttpServletRequestWrapper {
 	public MultipartRequestWrapper(MultipartFormDataParser parser) {
 		super(parser.getRequest());
 		this.parser = parser;
-	}
-	
-	public void parse() throws MultipartRequestException {
-		parser.parse();
 	}
 
 	/* (non-Javadoc)

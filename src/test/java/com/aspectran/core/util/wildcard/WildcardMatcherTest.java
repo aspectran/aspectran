@@ -17,7 +17,6 @@ package com.aspectran.core.util.wildcard;
 
 import com.aspectran.core.util.StringUtils;
 
-
 /**
  * The Class WildcardMatcherTest.
  */
@@ -29,7 +28,7 @@ public class WildcardMatcherTest {
 	
 	private int[] separatorFlags;
 	
-	private int separatorCount;
+	private int separatorCount = -1;
 	
 	private int separatorIndex;
 	
@@ -38,7 +37,7 @@ public class WildcardMatcherTest {
 	}
 	
 	public boolean matches(CharSequence input) {
-		separatorCount = 0;
+		separatorCount = -1;
 		separatorIndex = 0;
 
 		if(input == null) {
@@ -71,13 +70,38 @@ public class WildcardMatcherTest {
 		return result;
 	}
 	
+	public int separate(CharSequence input) {
+		separatorCount = -1;
+		separatorIndex = 0;
+
+		if(input == null) {
+			this.input = null;
+			separatorFlags = null;
+			return 0;
+		}
+		
+		this.input = input;
+		int len = input.length();
+		char separator = pattern.getSeparator();
+		separatorFlags = new int[len];
+		
+		for(int i = 0; i < len; i++) {
+			if(input.charAt(i) == separator) {
+				separatorFlags[i] = ++separatorCount;
+			}
+		}
+		
+		return separatorCount;
+	}
+	
 	public WildcardMatcherTest first() {
 		separatorIndex = 0;
 		return this;
 	}
 
 	public WildcardMatcherTest last() {
-		separatorIndex = separatorCount;
+		if(separatorCount > -1)
+			separatorIndex = separatorCount;
 		return this;
 	}
 	
@@ -237,6 +261,8 @@ public class WildcardMatcherTest {
 						// *suffix
 						ttemp = trange1;
 						do {
+							if(input.charAt(cindex) == separator)
+								return false;
 							if(tokens[ttemp] != input.charAt(cindex++))
 								ttemp = trange1;
 							else
@@ -436,11 +462,11 @@ public class WildcardMatcherTest {
 		//String str2 = str;
 		//String str = "?c?om.**.x?.*scope.**.*XmlBean*.**.*Action?";
 		//String str2 = "com.x.scope.main.x1xscope.1234XmlBean5678.p1.p2.p3.endAction";
-		//String str = "com.aspectran.**.service.**.*Action?";
-		//String str2 = "com.aspectran.a.service.c.dAction1";
-		String str = "**\\/*A";
-		String str2 = "common/MyTransletA";
-		WildcardPatternTest pattern = WildcardPatternTest.compile(str, '/');
+		String str = ".com.aspectran.**.service.**.*Action?";
+		String str2 = ".com.aspectran.a.service.c.dAction1";
+		//String str = "*A";
+		//String str2 = "common/MyTransletA";
+		WildcardPatternTest pattern = WildcardPatternTest.compile(str, '.');
 		
 		int i = 0;
 		for(char c : pattern.getTokens()) {

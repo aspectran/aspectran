@@ -31,6 +31,7 @@ public class RequestException extends ActivityException {
 	 * Instantiates a new request exception.
 	 */
 	public RequestException() {
+		super();
 	}
 
 	/**
@@ -52,8 +53,7 @@ public class RequestException extends ActivityException {
 	}
 
 	/**
-	 * Constructor to create exception to wrap another exception and pass a
-	 * message.
+	 * Constructor to create exception to wrap another exception and pass a message.
 	 * 
 	 * @param msg The message
 	 * @param cause The real cause of the exception

@@ -164,9 +164,9 @@ public class CoreActivity extends AbstractActivity implements Activity {
 			this.transletAspectAdviceRuleRegistry = transletRule.getAspectAdviceRuleRegistry(true);
 			this.requestAspectAdviceRuleRegistry = requestRule.getAspectAdviceRuleRegistry(true);
 			this.responseAspectAdviceRuleRegistry = responseRule.getAspectAdviceRuleRegistry(true);
-
-			if(transletRule.getContentList() != null)
+			if(transletRule.getContentList() != null) {
 				this.contentAspectAdviceRuleRegistry = transletRule.getContentList().getAspectAdviceRuleRegistry(true);
+			}
 		} catch(CloneNotSupportedException e) {
 			throw new ActivityException("AspectAdviceRuleRegistry clone failed.", e);
 		}
@@ -233,7 +233,7 @@ public class CoreActivity extends AbstractActivity implements Activity {
 		} catch(Exception e) {
 			setRaisedException(e);
 			
-			ExceptionHandlingRule exceptionHandlingRule = transletRule.getExceptionHandlingRuleMap();
+			ExceptionHandlingRule exceptionHandlingRule = transletRule.getExceptionHandlingRule();
 			
 			if(exceptionHandlingRule != null) {
 				responseByContentType(exceptionHandlingRule);
@@ -547,8 +547,8 @@ public class CoreActivity extends AbstractActivity implements Activity {
 
 		if(response != null && response.getContentType() != null) {
 			Response response2 = responseByContentTypeRule.getResponse(response.getContentType());
-			ResponseRule newResponseRule = responseRule.newResponseRule(response2);
-			responseRule = newResponseRule;
+			ResponseRule urgentResponseRule = responseRule.newUrgentResponseRule(response2);
+			responseRule = urgentResponseRule;
 			
 			log.info("response by content-type: " + responseRule);
 
