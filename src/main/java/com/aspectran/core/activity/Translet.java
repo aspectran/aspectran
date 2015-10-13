@@ -232,15 +232,21 @@ public abstract interface Translet {
 	 */
 	public <T> T getSessionAdaptee();
 	
-	/**
-	 * Gets the bean.
-	 *
-	 * @param <T> the generic type
-	 * @param beanId the bean id
-	 * @return the bean
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.context.bean.BeanRegistry#getBean(java.lang.String)
 	 */
 	public <T> T getBean(String beanId);
 	
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.context.bean.BeanRegistry#getBean(java.lang.Class)
+	 */
+	public <T> T getBean(Class<T> classType);
+	
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.context.bean.BeanRegistry#getBean(java.lang.String, java.lang.Class)
+	 */
+	public <T> T getBean(String id, Class<T> requiredType);
+
 	/**
 	 * Gets the aspect advice bean.
 	 *

@@ -33,8 +33,7 @@ import com.aspectran.core.context.rule.type.JoinpointScopeType;
 import com.aspectran.core.context.rule.type.RequestMethodType;
 
 /**
- * Action Translator.
- * processes the active request and response.
+ * The Interface Activity.
  * 
  * <p>Created: 2008. 03. 22 오후 5:48:09</p>
  */
@@ -97,6 +96,10 @@ public interface Activity {
 	public BeanRegistry getBeanRegistry();
 	
 	public <T> T getBean(String id);
+	
+	public <T> T getBean(Class<T> classType);
+
+	public <T> T getBean(String id, Class<T> classType);
 
 	public <T> T getTransletSetting(String settingName);
 	

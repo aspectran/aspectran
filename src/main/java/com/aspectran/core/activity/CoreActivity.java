@@ -796,8 +796,25 @@ public class CoreActivity extends AbstractActivity implements Activity {
 		return context.getContextBeanRegistry();
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.activity.Activity#getBean(java.lang.String)
+	 */
 	public <T> T getBean(String id) {
 		return context.getContextBeanRegistry().getBean(id);
+	}
+	
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.activity.Activity#getBean(java.lang.Class)
+	 */
+	public <T> T getBean(Class<T> classType) {
+		return context.getContextBeanRegistry().getBean(classType);
+	}
+	
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.activity.Activity#getBean(java.lang.String, java.lang.Class)
+	 */
+	public <T> T getBean(String id, Class<T> classType) {
+		return context.getContextBeanRegistry().getBean(id, classType);
 	}
 	
 	public void registerAspectRule(AspectRule aspectRule) {

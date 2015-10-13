@@ -62,6 +62,8 @@ public abstract class AbstractContextBeanRegistry implements ContextBeanRegistry
 
 	protected final BeanRuleMap beanRuleMap;
 
+	protected final Map<Class<?>, BeanRule> classBeanRuleMap;
+
 	private final BeanProxifierType beanProxifierType;
 
 	private final Map<String, List<AspectRule>> aspectRuleListCache = new HashMap<String, List<AspectRule>>();
@@ -71,6 +73,7 @@ public abstract class AbstractContextBeanRegistry implements ContextBeanRegistry
 	public AbstractContextBeanRegistry(ActivityContext context, BeanRuleMap beanRuleMap, BeanProxifierType beanProxifierType) {
 		this.context = context;
 		this.beanRuleMap = beanRuleMap;
+		this.classBeanRuleMap = beanRuleMap.getClassBeanRuleMap();
 		this.beanProxifierType = (beanProxifierType == null ? BeanProxifierType.JAVASSIST : beanProxifierType);
 	}
 	

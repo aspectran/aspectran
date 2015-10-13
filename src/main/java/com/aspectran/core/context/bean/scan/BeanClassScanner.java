@@ -23,7 +23,6 @@ import com.aspectran.core.context.AspectranConstant;
 import com.aspectran.core.context.builder.apon.params.FilterParameters;
 import com.aspectran.core.util.ClassScanner;
 import com.aspectran.core.util.ClassUtils;
-import com.aspectran.core.util.ResourceUtils;
 import com.aspectran.core.util.apon.Parameters;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
@@ -113,7 +112,7 @@ public class BeanClassScanner extends ClassScanner {
 
 	protected void putClass(Map<String, Class<?>> scannedClasses, String resourceName, Class<?> scannedClass) {
 		String className = scannedClass.getName();
-		String beanId = resourceName.replace(ResourceUtils.RESOURCE_NAME_SPEPARATOR_CHAR, ClassUtils.PACKAGE_SEPARATOR_CHAR);
+		String beanId = className;
 
 		if(beanIdMaskPattern != null) {
 			String maskedBeanId = beanIdMaskPattern.mask(beanId);
@@ -125,7 +124,7 @@ public class BeanClassScanner extends ClassScanner {
 		}
 
 		if(beanClassScanFilter != null) {
-			beanId = beanClassScanFilter.filter(beanId, className, scannedClass);
+			beanId = beanClassScanFilter.filter(beanId, resourceName, scannedClass);
 			if(beanId == null) {
 				return;
 			}

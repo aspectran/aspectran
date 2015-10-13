@@ -25,6 +25,7 @@ import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.BeanRuleMap;
 import com.aspectran.core.context.rule.type.BeanProxifierType;
 import com.aspectran.core.context.rule.type.ScopeType;
+import com.aspectran.core.util.ClassUtils;
 
 /**
  * SINGLETON: 모든 singleton 빈은context 생성시 초기화 된다.
@@ -48,13 +49,48 @@ public class ScopedContextBeanRegistry extends AbstractContextBeanRegistry {
 		super(context, beanRuleMap, beanProxifierType);
 	}
 	
-	@SuppressWarnings("unchecked")
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.context.bean.BeanRegistry#getBean(java.lang.String)
+	 */
 	public <T> T getBean(String id) {
 		BeanRule beanRule = beanRuleMap.get(id);
 
 		if(beanRule == null)
 			throw new BeanNotFoundException(id);
 		
+		return getBean(beanRule);
+	}
+
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.context.bean.BeanRegistry#getBean(java.lang.Class)
+	 */
+	public <T> T getBean(Class<T> classType) {
+		BeanRule beanRule = classBeanRuleMap.get(classType);
+		
+		if(beanRule == null)
+			throw new BeanNotFoundException(classType.getName());
+		
+		return getBean(beanRule);
+	}
+	
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.context.bean.BeanRegistry#getBean(java.lang.String, java.lang.Class)
+	 */
+	public <T> T getBean(String id, Class<T> requiredType) {
+		BeanRule beanRule = beanRuleMap.get(id);
+
+		if(beanRule == null)
+			throw new BeanNotFoundException(id);
+
+		if(!ClassUtils.isAssignable(beanRule.getBeanClass(), requiredType)) {
+			throw new BeanNotOfRequiredTypeException(beanRule, requiredType);
+		}
+		
+		return getBean(beanRule);
+	}
+	
+	@SuppressWarnings("unchecked")
+	private <T> T getBean(BeanRule beanRule) {
 		if(beanRule.getScopeType() == ScopeType.PROTOTYPE) {
 			return (T)createBean(beanRule);
 		} else if(beanRule.getScopeType() == ScopeType.SINGLETON) {

@@ -108,25 +108,28 @@ public class ClassScanner {
 
 		target.listFiles(new FileFilter() {
 			public boolean accept(File file) {
+				String fileName = file.getName();
 				if(file.isDirectory()) {
 					String relativePackageName2;
 					if(relativePackageName == null)
-						relativePackageName2 = file.getName() + ResourceUtils.RESOURCE_NAME_SPEPARATOR;
+						relativePackageName2 = fileName + ResourceUtils.RESOURCE_NAME_SPEPARATOR;
 					else
-						relativePackageName2 = relativePackageName + file.getName() + ResourceUtils.RESOURCE_NAME_SPEPARATOR;
+						relativePackageName2 = relativePackageName + fileName + ResourceUtils.RESOURCE_NAME_SPEPARATOR;
 							
-					String basePath2 = targetPath + file.getName() + ResourceUtils.RESOURCE_NAME_SPEPARATOR;
+					String basePath2 = targetPath + fileName + ResourceUtils.RESOURCE_NAME_SPEPARATOR;
 					scanClasses(basePath2, basePackageName, relativePackageName2, matcher, scannedClasses);
-				} else if(file.getName().endsWith(ClassUtils.CLASS_FILE_SUFFIX)) {
+				} else if(fileName.endsWith(ClassUtils.CLASS_FILE_SUFFIX)) {
 					String className;
 					if(relativePackageName != null)
-						className = basePackageName + relativePackageName + file.getName().substring(0, file.getName().length() - ClassUtils.CLASS_FILE_SUFFIX.length());
+						className = basePackageName + relativePackageName + fileName.substring(0, fileName.length() - ClassUtils.CLASS_FILE_SUFFIX.length());
 					else
-						className = basePackageName + file.getName().substring(0, file.getName().length() - ClassUtils.CLASS_FILE_SUFFIX.length());
+						className = basePackageName + fileName.substring(0, fileName.length() - ClassUtils.CLASS_FILE_SUFFIX.length());
 					String relativePath = className.substring(basePackageName.length(), className.length());
+
 					if(matcher.matches(relativePath)) {
+						String resourceName = targetPath + fileName;
 						Class<?> classType = loadClass(className);
-						putClass(scannedClasses, relativePath, classType);
+						putClass(scannedClasses, resourceName, classType);
 					}
 				}
 				return false;
@@ -162,7 +165,7 @@ public class ClassScanner {
 				jarFile = getJarFile(jarFileUrl);
 			} else {
 				jarFile = new JarFile(urlFile);
-				//jarFileUrl = urlFile;
+				jarFileUrl = urlFile;
 				entryNamePrefix = "";
 			}
 			newJarFile = true;
@@ -183,9 +186,10 @@ public class ClassScanner {
 					String entryNameSuffix = entryName.substring(entryNamePrefix.length(), entryName.length() - ClassUtils.CLASS_FILE_SUFFIX.length());
 					
 					if(matcher.matches(entryNameSuffix)) {
+						String resourceName = jarFileUrl + ResourceUtils.JAR_URL_SEPARATOR + entryName;
 						String className = entryNamePrefix + entryNameSuffix;
 						Class<?> classType = loadClass(className);
-						putClass(scannedClasses, entryNameSuffix, classType);
+						putClass(scannedClasses, resourceName, classType);
 					}
 				}
 			}

@@ -257,16 +257,27 @@ public class CoreTranslet implements Translet {
 			return null;
 	}
 	
-	/**
-	 * Gets the bean.
-	 *
-	 * @param id the id
-	 * @return the bean
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.activity.Translet#getBean(java.lang.String)
 	 */
 	public <T> T getBean(String id) {
 		return activity.getBean(id);
 	}
 
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.activity.Translet#getBean(java.lang.Class)
+	 */
+	public <T> T getBean(Class<T> classType) {
+		return activity.getBean(classType);
+	}
+	
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.activity.Translet#getBean(java.lang.String, java.lang.Class)
+	 */
+	public <T> T getBean(String id, Class<T> classType) {
+		return activity.getBean(id, classType);
+	}
+	
 	@SuppressWarnings("unchecked")
 	public <T> T getAspectAdviceBean(String aspectId) {
 		if(aspectAdviceResult == null)
