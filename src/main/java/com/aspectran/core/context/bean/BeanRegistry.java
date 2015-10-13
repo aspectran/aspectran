@@ -15,16 +15,46 @@
  */
 package com.aspectran.core.context.bean;
 
-
 /**
  * The Interface BeanRegistry.
  *
  * @author Juho Jeong
- * 
  * @since 2012. 11. 9
  */
 public interface BeanRegistry {
 
+	/**
+	 * Return an instance.
+	 *
+	 * @param <T> the generic type
+	 * @param id the id of the bean to retrieve
+	 * @return an instance of the bean
+	 */
 	public <T> T getBean(String id);
+	
+	/**
+	 * Return the bean instance that matches the given object type.
+	 * The class name and bean id must be the same.
+	 *
+	 * @param <T> the generic type
+	 * @param classType type the bean must match; can be an interface or superclass. null is disallowed.
+	 * @return an instance of the bean
+	 * 
+	 * @since 1.3.1
+	 */
+	public <T> T getBean(Class<T> classType);
+
+	/**
+	 * Return an instance.
+	 * If the bean is not of the required type then throw a BeanNotOfRequiredTypeException.
+	 *
+	 * @param <T> the generic type
+	 * @param id the id of the bean to retrieve
+	 * @param requiredType type the bean must match; can be an interface or superclass. null is disallowed.
+	 * @return an instance of the bean
+	 * 
+	 * @since 1.3.1
+	 */
+	public <T> T getBean(String id, Class<T> requiredType);
 	
 }

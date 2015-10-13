@@ -15,11 +15,14 @@
  */
 package com.aspectran.core.context.rule;
 
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
-
+import java.util.Map;
 
 /**
+ * The Class BeanRuleMap.
+ * 
  * <p>
  * Created: 2009. 03. 09 오후 23:48:09
  * </p>
@@ -70,4 +73,16 @@ public class BeanRuleMap extends LinkedHashMap<String, BeanRule> implements Iter
 		return this.values().iterator();
 	}
 
+	public Map<Class<?>, BeanRule> getClassBeanRuleMap() {
+		Map<Class<?>, BeanRule> classBeanRuleMap = new HashMap<Class<?>, BeanRule>();
+		
+		for(BeanRule beanRule : values()) {
+			if(beanRule.getId().equals(beanRule.getBeanClass().getName())) {
+				classBeanRuleMap.put(beanRule.getBeanClass(), beanRule);
+			}
+		}
+		
+		return classBeanRuleMap;
+	}
+	
 }
