@@ -63,12 +63,15 @@ public class SqlSessionTransactionAdvice {
 	}
 
 	public SqlSession open() throws SQLException {
-		return sqlSessionFactory.openSession();
+		if(sqlSession == null) {
+			sqlSession = sqlSessionFactory.openSession();
+		}
+		return sqlSession;
 	}
 	
 	public SqlSession open(boolean autoCommit) throws SQLException {
 		this.autoCommit = autoCommit;
-		return sqlSessionFactory.openSession(autoCommit);
+		return open();
 	}
 	
 	public void commit() throws SQLException {
@@ -101,7 +104,10 @@ public class SqlSessionTransactionAdvice {
 	}
 	
 	public void close() throws SQLException {
-		sqlSession.close();
+		if(sqlSession != null) {
+			sqlSession.close();
+			sqlSession = null;
+		}
 	}
 	
 }
