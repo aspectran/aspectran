@@ -82,12 +82,15 @@ public class TransletRuleRegistry {
 	}
 
 	private TransletRule findRestfulTransletRule(String restfulTransletName) {
-		for(TransletRule transletRule : restfulTransletRuleMap) {
-			WildcardPattern namePattern = transletRule.getNamePattern();
-			
-			if(namePattern.matches(restfulTransletName))
-				return transletRule;
+		if(restfulTransletRuleMap != null) {
+			for(TransletRule transletRule : restfulTransletRuleMap) {
+				WildcardPattern namePattern = transletRule.getNamePattern();
+				
+				if(namePattern.matches(restfulTransletName))
+					return transletRule;
+			}
 		}
+		
 		return null;
 	}
 	
