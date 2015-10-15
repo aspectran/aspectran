@@ -26,10 +26,6 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.util.Map;
 
-import com.aspectran.core.context.builder.Importable;
-import com.aspectran.core.context.builder.ImportableFile;
-import com.aspectran.core.context.rule.type.ImportFileType;
-
 public class AponReader extends AponFormat implements Closeable {
 
 	private BufferedReader reader;
@@ -411,18 +407,4 @@ public class AponReader extends AponFormat implements Closeable {
 		return parameters;
 	}
 	
-	public static void main(String argv[]) {
-		try {
-			Importable importable = new ImportableFile("/c:/Users/Gulendol/Projects/aspectran/ADE/workspace/aspectran.example/config/aspectran/sample/sample-test.apon", ImportFileType.APON);
-			AponReader reader = new AponReader(importable.getReader());
-			try {
-				reader.read();
-			} finally {
-				reader.close();
-			}
-		} catch(Exception e) {
-			e.printStackTrace();
-		}
-	}
-
 }

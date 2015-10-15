@@ -24,10 +24,6 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.util.Map;
 
-import com.aspectran.core.context.builder.Importable;
-import com.aspectran.core.context.builder.ImportableFile;
-import com.aspectran.core.context.rule.type.ImportFileType;
-
 public class AponWriter extends AponFormat implements Closeable {
 
 	private Writer writer;
@@ -311,30 +307,6 @@ public class AponWriter extends AponFormat implements Closeable {
 			return writer.toString();
 		} catch(IOException e) {
 			return null;
-		}
-	}
-	
-	public static void main(String argv[]) {
-		try {
-			Importable importable = new ImportableFile("/c:/Users/Gulendol/Projects/aspectran/ADE/workspace/aspectran.example/config/aspectran/sample/sample-test.apon", ImportFileType.APON);
-			AponReader reader = new AponReader(importable.getReader());
-			Parameters parameters;
-			try {
-				parameters = reader.read();
-			} finally {
-				reader.close();
-			}
-			
-			AponWriter writer = new AponWriter(new StringWriter());
-			try {
-				writer.write(parameters);
-			} finally {
-				writer.close();
-			}
-			
-			System.out.print(writer.toString());
-		} catch(Exception e) {
-			e.printStackTrace();
 		}
 	}
 	

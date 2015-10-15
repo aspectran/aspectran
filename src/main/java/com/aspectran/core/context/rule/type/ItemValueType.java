@@ -68,7 +68,7 @@ public final class ItemValueType extends Type {
 		BOOLEAN = new ItemValueType("boolean", "java.lang.Boolean");
 		PARAMETERS = new ItemValueType("parameters", "com.aspectran.core.util.apon.Parameters");
 		FILE = new ItemValueType("file", "java.io.File");
-		MULTIPART_FILE = new ItemValueType("multipart-file", "com.aspectran.core.activity.request.parameter.FileParameter.FileParameter");
+		MULTIPART_FILE = new ItemValueType("multipart-file", "com.aspectran.core.activity.request.parameter.FileParameter");
 		//CUSTOM = new ItemValueType("custom", null);
 
 		types = new HashMap<String, ItemValueType>();
