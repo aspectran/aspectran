@@ -199,9 +199,9 @@ public class RootAponAssembler {
 		if(settingsAdviceRule != null) {
 			Map<String, String> settings = settingsAdviceRule.getSettings();
 			if(settings != null) {
-				GenericParameters settingParameters = aspectParameters.newParameters(AspectParameters.setting);
+				GenericParameters settingsParameters = aspectParameters.newParameters(AspectParameters.settings);
 				for(Map.Entry<String, String> entry : settings.entrySet()) {
-					settingParameters.putValue(entry.getKey(), entry.getValue());
+					settingsParameters.putValue(entry.getKey(), entry.getValue());
 				}
 			}
 		}

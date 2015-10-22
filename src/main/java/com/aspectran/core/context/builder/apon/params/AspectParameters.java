@@ -27,7 +27,7 @@ public class AspectParameters extends AbstractParameters implements Parameters {
 	public static final ParameterDefine id;
 	public static final ParameterDefine useFor;
 	public static final ParameterDefine jointpoint;
-	public static final ParameterDefine setting;
+	public static final ParameterDefine settings;
 	public static final ParameterDefine advice;
 	public static final ParameterDefine exceptionRaised;
 	
@@ -38,7 +38,7 @@ public class AspectParameters extends AbstractParameters implements Parameters {
 		id = new ParameterDefine("id", ParameterValueType.STRING);
 		useFor = new ParameterDefine("for", ParameterValueType.STRING);
 		jointpoint = new ParameterDefine("joinpoint", JoinpointParameters.class);
-		setting = new ParameterDefine("setting", GenericParameters.class);
+		settings = new ParameterDefine("settings", GenericParameters.class);
 		advice = new ParameterDefine("advice", AdviceParameters.class);
 		exceptionRaised = new ParameterDefine("exceptionRaised", ExceptionRaisedParameters.class);
 		
@@ -47,7 +47,7 @@ public class AspectParameters extends AbstractParameters implements Parameters {
 				id,
 				useFor,
 				jointpoint,
-				setting,
+				settings,
 				advice,
 				exceptionRaised
 			};

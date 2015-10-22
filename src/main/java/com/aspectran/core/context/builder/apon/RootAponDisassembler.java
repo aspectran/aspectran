@@ -207,9 +207,9 @@ public class RootAponDisassembler {
 			aspectRule.setPointcutRule(pointcutRule);
 		}
 	
-		Parameters settingParameters = aspectParameters.getParameters(AspectParameters.setting);
-		if(settingParameters != null) {
-			SettingsAdviceRule settingsAdviceRule = SettingsAdviceRule.newInstance(aspectRule, settingParameters);
+		Parameters settingsParameters = aspectParameters.getParameters(AspectParameters.settings);
+		if(settingsParameters != null) {
+			SettingsAdviceRule settingsAdviceRule = SettingsAdviceRule.newInstance(aspectRule, settingsParameters);
 			aspectRule.setSettingsAdviceRule(settingsAdviceRule);
 		}
 		

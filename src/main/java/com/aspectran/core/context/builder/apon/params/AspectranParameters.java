@@ -35,7 +35,7 @@ public class AspectranParameters extends AbstractParameters implements Parameter
 	
 	static {
 		description = new ParameterDefine("description", ParameterValueType.TEXT);
-		settings = new ParameterDefine("setting", DefaultSettingsParameters.class);
+		settings = new ParameterDefine("settings", DefaultSettingsParameters.class);
 		typeAlias = new ParameterDefine("typeAlias", GenericParameters.class);
 		aspects = new ParameterDefine("aspect", AspectParameters.class, true, true);
 		beans = new ParameterDefine("bean", BeanParameters.class, true, true);
