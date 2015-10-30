@@ -51,4 +51,5 @@ public class ResponseMap extends LinkedHashMap<String, Response> implements Iter
 	public Iterator<Response> iterator() {
 		return this.values().iterator();
 	}
+
 }

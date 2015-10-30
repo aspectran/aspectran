@@ -27,6 +27,7 @@ import java.util.Map;
  * Around advice: Before advice + After advice
  * Job advice: Only used for Scheduler.
  * </pre>
+ * 
  * @author Juho Jeong
  */
 public final class AspectAdviceType extends Type {

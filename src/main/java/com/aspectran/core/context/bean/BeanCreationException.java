@@ -43,4 +43,5 @@ public class BeanCreationException extends BeanException {
 	public BeanCreationException(BeanRule beanRule, Throwable cause) {
 		super("Cannot create a bean " + beanRule, cause);
 	}
+
 }

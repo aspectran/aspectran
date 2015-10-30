@@ -61,4 +61,5 @@ public class RequestException extends ActivityException {
 	public RequestException(String msg, Throwable cause) {
 		super(msg, cause);
 	}
+
 }

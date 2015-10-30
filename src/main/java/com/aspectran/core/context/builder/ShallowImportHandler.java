@@ -17,7 +17,7 @@ package com.aspectran.core.context.builder;
 
 
 /**
- * Translet Map Parser.
+ * The Class ShallowImportHandler.
  * 
  * <p>Created: 2008. 06. 14 오전 4:39:24</p>
  */

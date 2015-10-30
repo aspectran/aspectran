@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.support.http.multipart;
+package com.aspectran.web.activity.request.multipart;
 
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -26,6 +26,8 @@ import javax.servlet.http.HttpServletRequestWrapper;
 import com.aspectran.core.activity.request.parameter.FileParameter;
 import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.type.ItemType;
+import com.aspectran.web.activity.request.multipart.MultipartFormDataParser;
+import com.aspectran.web.activity.request.multipart.MultipartRequestException;
 
 /**
  * This class functions as a wrapper around HttpServletRequest to provide

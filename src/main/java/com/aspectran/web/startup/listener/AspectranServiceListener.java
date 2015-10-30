@@ -23,6 +23,9 @@ import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 import com.aspectran.web.service.WebAspectranService;
 
+/**
+ * The listener interface for receiving AspectranService events.
+ */
 public class AspectranServiceListener implements ServletContextListener {
 
 	private static final Log log = LogFactory.getLog(AspectranServiceListener.class);

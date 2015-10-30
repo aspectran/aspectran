@@ -25,6 +25,9 @@ import com.aspectran.core.context.rule.ExceptionHandlingRule;
 import com.aspectran.core.context.rule.SettingsAdviceRule;
 import com.aspectran.core.context.rule.type.AspectAdviceType;
 
+/**
+ * The Class AspectAdviceRuleRegistry.
+ */
 public class AspectAdviceRuleRegistry implements Cloneable {
 
 	private Map<String, Object> settings;

@@ -33,7 +33,6 @@ import com.aspectran.core.context.ActivityContextException;
  * <p>Created: 2008. 01. 07 오전 3:35:55</p>
  * 
  * @author Juho Jeong
- * 
  */
 public class ActivityContextLoadFailedException extends ActivityContextException {
 
@@ -79,4 +78,5 @@ public class ActivityContextLoadFailedException extends ActivityContextException
 	public ActivityContextLoadFailedException(String msg, Throwable cause) {
 		super(msg, cause);
 	}
+
 }

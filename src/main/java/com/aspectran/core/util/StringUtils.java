@@ -22,7 +22,7 @@ import java.util.StringTokenizer;
 /**
  * Miscellaneous {@link String} utility methods.
  * 
- * @author Jeong Ju Ho
+ * @author Juho Jeong
  */
 public class StringUtils {
 

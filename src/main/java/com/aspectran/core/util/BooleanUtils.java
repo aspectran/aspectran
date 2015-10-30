@@ -15,7 +15,6 @@
  */
 package com.aspectran.core.util;
 
-
 /**
  * Miscellaneous {@link Boolean} utility methods.
  * 
@@ -44,4 +43,5 @@ public class BooleanUtils {
 		
 		return bool.booleanValue();
 	}
+
 }

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.support.http.multipart;
+package com.aspectran.web.activity.request.multipart;
 
 import com.aspectran.core.activity.request.RequestException;
 
@@ -61,4 +61,5 @@ public class MultipartRequestException extends RequestException {
 	public MultipartRequestException(String msg, Throwable cause) {
 		super(msg, cause);
 	}
+
 }

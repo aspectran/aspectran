@@ -54,16 +54,5 @@ public class HybridActivityContextBuilder extends AbstractActivityContextBuilder
 			throw new ActivityContextBuilderException("HybridActivityContext build failed. rootContext: " + rootContext, e);
 		}
 	}
-/*	
-	private Importable makeHybridImportable(String rootContext) throws IOException {
-		ImportFileType importFileType = rootContext.endsWith(".apon") ? ImportFileType.APON : ImportFileType.XML;
-		
-		Importable importable = makeImportable(rootContext, importFileType);
-		
-		if(isHybridLoading() && importable.getImportType() == ImportType.FILE && importable.getImportFileType() == ImportFileType.XML)
-			importable = new ImportableHybrid((ImportableFile)importable);
 
-		return importable;
-	}
-*/
 }

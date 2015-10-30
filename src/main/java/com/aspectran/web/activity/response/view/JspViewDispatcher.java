@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.web.view;
+package com.aspectran.web.activity.response.view;
 
 import java.util.Enumeration;
 
@@ -34,6 +34,7 @@ import com.aspectran.core.context.rule.ResponseRule;
 import com.aspectran.core.context.rule.TemplateRule;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.web.activity.response.view.JspViewDispatcher;
 
 /**
  * JSP or other web resource integration.

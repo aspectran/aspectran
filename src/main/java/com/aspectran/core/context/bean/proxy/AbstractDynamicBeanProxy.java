@@ -39,8 +39,6 @@ import com.aspectran.core.util.logging.LogFactory;
 
 /**
  * The Class AbstractDynamicBeanProxy.
- *
- * @author aspectran
  */
 public abstract class AbstractDynamicBeanProxy {
 

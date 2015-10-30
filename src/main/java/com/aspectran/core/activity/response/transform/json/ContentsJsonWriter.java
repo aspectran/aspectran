@@ -26,6 +26,8 @@ import com.aspectran.core.activity.process.result.ProcessResult;
 import com.aspectran.core.util.json.JsonWriter;
 
 /**
+ * The Class ContentsJsonWriter.
+ * 
  * <p>Created: 2008. 06. 12 오후 8:20:54</p>
  */
 public class ContentsJsonWriter extends JsonWriter {

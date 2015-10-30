@@ -62,4 +62,5 @@ public class ResponseException extends ActivityException {
 	public ResponseException(String msg, Throwable cause) {
 		super(msg, cause);
 	}
+
 }

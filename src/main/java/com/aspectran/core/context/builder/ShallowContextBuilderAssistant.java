@@ -21,6 +21,8 @@ import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.TransletRule;
 
 /**
+ * The Class ShallowContextBuilderAssistant.
+ * 
  * <p>Created: 2008. 04. 01 오후 10:25:35</p>
  */
 public class ShallowContextBuilderAssistant extends ContextBuilderAssistant {

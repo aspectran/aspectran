@@ -26,6 +26,9 @@ import javax.servlet.http.HttpServletResponse;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
+/**
+ * The Class DefaultServletHttpRequestHandler.
+ */
 public class DefaultServletHttpRequestHandler {
 
 	private static final Log log = LogFactory.getLog(DefaultServletHttpRequestHandler.class);

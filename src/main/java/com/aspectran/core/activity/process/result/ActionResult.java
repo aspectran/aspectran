@@ -18,6 +18,8 @@ package com.aspectran.core.activity.process.result;
 import com.aspectran.core.activity.process.ActionIdQualifier;
 
 /**
+ * The Class ActionResult.
+ * 
  * <p>Created: 2008. 03. 23 오후 12:01:24</p>
  */
 public class ActionResult {
@@ -130,4 +132,5 @@ public class ActionResult {
 
 		return sb.toString();
 	}
+
 }

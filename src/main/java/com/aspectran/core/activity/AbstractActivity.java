@@ -26,8 +26,7 @@ import com.aspectran.core.context.rule.type.JoinpointScopeType;
 import com.aspectran.core.context.translet.TransletInstantiationException;
 
 /**
- * Action Translator.
- * processes the active request and response.
+ * The Class AbstractActivity.
  * 
  * <p>Created: 2008. 03. 22 오후 5:48:09</p>
  */

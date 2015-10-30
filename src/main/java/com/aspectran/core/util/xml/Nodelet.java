@@ -42,4 +42,5 @@ public interface Nodelet {
      *
      */
     void process(Node node, Map<String, String> attributes, String text) throws Exception;
+
 }

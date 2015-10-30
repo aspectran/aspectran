@@ -61,4 +61,5 @@ public class DispatchResponseException extends ResponseException {
 	public DispatchResponseException(String msg, Throwable cause) {
 		super(msg, cause);
 	}
+
 }

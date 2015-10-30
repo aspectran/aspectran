@@ -36,11 +36,10 @@ import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.apon.Parameters;
 
 /**
+ * 
  * <p>Created: 2008. 03. 27 오후 3:57:48</p>
- */
-/**
+ * 
  * @author Juho Jeong
- *
  */
 public class ItemRule {
 

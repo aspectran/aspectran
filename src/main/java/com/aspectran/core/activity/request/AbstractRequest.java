@@ -22,7 +22,6 @@ import com.aspectran.core.activity.request.parameter.FileParameter;
 import com.aspectran.core.activity.request.parameter.FileParameterMap;
 import com.aspectran.core.context.rule.type.RequestMethodType;
 
-
 /**
  * The Class AbstractRequest.
  *

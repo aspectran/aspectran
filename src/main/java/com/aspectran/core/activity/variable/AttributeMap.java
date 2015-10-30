@@ -17,8 +17,9 @@ package com.aspectran.core.activity.variable;
 
 import java.util.Map;
 
-
 /**
+ * The Class AttributeMap.
+ * 
  * <p>Created: 2008. 06. 11 오후 8:55:13</p>
  */
 public class AttributeMap extends ValueMap {

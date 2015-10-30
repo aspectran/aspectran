@@ -20,10 +20,10 @@ import com.aspectran.core.context.rule.EchoActionRule;
 import com.aspectran.core.context.rule.IncludeActionRule;
 
 /**
+ * The Interface ActionRuleApplicable.
  *
  * @author Juho Jeong
  * @since 2011. 2. 21.
- *
  */
 public interface ActionRuleApplicable {
 

@@ -19,10 +19,10 @@ import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
 
 /**
- *
+ * The Interface ArgumentPossessable.
+ * 
  * @author Juho Jeong
  * @since 2011. 2. 21.
- *
  */
 public interface ArgumentPossessable {
 

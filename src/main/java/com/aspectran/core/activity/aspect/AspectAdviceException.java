@@ -61,4 +61,5 @@ public class AspectAdviceException extends AspectException {
 	public AspectAdviceException(String msg, Throwable cause) {
 		super(msg, cause);
 	}
+
 }

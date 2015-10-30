@@ -26,6 +26,9 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.util.Map;
 
+/**
+ * The Class AponReader.
+ */
 public class AponReader extends AponFormat implements Closeable {
 
 	private BufferedReader reader;
@@ -61,15 +64,15 @@ public class AponReader extends AponFormat implements Closeable {
 	}
 	
 	/**
-	 * @param parameterValueMap
-	 * @param reader
-	 * @param lineNumber
-	 * @param openBracket
-	 * @param name
-	 * @param parameterValue
-	 * @param parameterValueType
-	 * @return
-	 * @throws IOException
+	 * Valuelize.
+	 *
+	 * @param parameters the parameters
+	 * @param openBracket the open bracket
+	 * @param name the name
+	 * @param parameterValue the parameter value
+	 * @param parameterValueType the parameter value type
+	 * @return the int
+	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	private int valuelize(Parameters parameters, char openBracket, String name, ParameterValue parameterValue, ParameterValueType parameterValueType) throws IOException {
 		Map<String, ParameterValue> parameterValueMap = parameters.getParameterValueMap();
@@ -86,8 +89,6 @@ public class AponReader extends AponFormat implements Closeable {
 			trim = line.trim();
 			tlen = trim.length();
 			
-			//System.out.println("[" + lineNumber + "] " + line);
-
 			if(tlen == 0 || trim.charAt(0) == COMMENT_LINE_START)
 				continue;
 
@@ -132,8 +133,6 @@ public class AponReader extends AponFormat implements Closeable {
 						if(parameterValue != null)
 							parameterValueType = parameterValue.getParameterValueType();
 					}
-					//System.out.println(lineNumber + " - valueOfHint: " + parameterValueType);
-					
 				}
 				
 				if(parameterValueType == ParameterValueType.VARIABLE)
@@ -155,20 +154,13 @@ public class AponReader extends AponFormat implements Closeable {
 				if(parameterValueType == ParameterValueType.TEXT && ROUND_BRACKET_OPEN != cchar)
 					throw new IncompatibleParameterValueTypeException(lineNumber, line, trim, parameterValue, parameterValueType);
 			}
-			//System.out.println("parameterValue: " + parameterValue);
-			//System.out.println("parameterValueType: " + parameterValueType);
 			if(parameterValueType == null || (parameterValue != null && parameterValue.isArray())) {
 				if(SQUARE_BRACKET_OPEN == cchar) {
-					//System.out.println("1**************[ name: " + name);
-					//System.out.println("1**************[ parameterValue: " + parameterValue);
 					valuelize(parameters, SQUARE_BRACKET_OPEN, name, parameterValue, parameterValueType);
 					continue;
 				}
 			}
 
-			//System.out.println(lineNumber + " - 01************** parameterValueType: " + parameterValueType);
-			
-			//if(StringUtils.hasText(value)) {
 			if(parameterValueType == null) {
 				if(CURLY_BRACKET_OPEN == cchar) {
 					parameterValueType = ParameterValueType.PARAMETERS;
@@ -177,17 +169,11 @@ public class AponReader extends AponFormat implements Closeable {
 				}
 			}
 			
-			//System.out.println(lineNumber + " - 02************** parameterValueType: " + parameterValueType);
-
 			if(parameterValueType == ParameterValueType.PARAMETERS) {
-				//System.out.println("03************** parameterValue: " + parameterValue);
 				if(parameterValue == null) {
 					parameterValue = parameters.newParameterValue(name, parameterValueType, (openBracket == SQUARE_BRACKET_OPEN));
-					//parameterValueMap.put(name, parameterValue);
 				}
-				//System.out.println("04************** parameterValue: " + parameterValue);
 
-				//Parameters parameters2 = parameterValue.newParameters();
 				Parameters parameters2 = parameters.newParameters(parameterValue.getName());
 				addable = parameters2.isAddable();
 				
@@ -195,13 +181,11 @@ public class AponReader extends AponFormat implements Closeable {
 			} else if(parameterValueType == ParameterValueType.TEXT) {
 				if(parameterValue == null) {
 					parameterValue = parameters.newParameterValue(name, parameterValueType, (openBracket == SQUARE_BRACKET_OPEN));
-					//parameterValueMap.put(name, parameterValue);
 				}
 
 				StringBuilder sb = new StringBuilder();
 				valuelizeText(sb);
 				parameterValue.putValue(sb.toString());
-				//System.out.println(lineNumber + ": " + sb.toString());
 			} else {
 				if(vlen == 0) {
 					value = null;
@@ -250,7 +234,6 @@ public class AponReader extends AponFormat implements Closeable {
 				
 				if(parameterValue == null) {
 					parameterValue = parameters.newParameterValue(name, parameterValueType, (openBracket == SQUARE_BRACKET_OPEN));
-					//parameterValueMap.put(name, parameterValue);
 				} else {
 					if(parameterValue.getParameterValueType() == ParameterValueType.VARIABLE) {
 						parameterValue.setParameterValueType(parameterValueType);

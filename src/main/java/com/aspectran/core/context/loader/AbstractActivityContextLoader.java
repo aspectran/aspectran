@@ -17,7 +17,6 @@ package com.aspectran.core.context.loader;
 
 import com.aspectran.core.adapter.ApplicationAdapter;
 
-
 public abstract class AbstractActivityContextLoader implements ActivityContextLoader {
 
 	protected ApplicationAdapter applicationAdapter;

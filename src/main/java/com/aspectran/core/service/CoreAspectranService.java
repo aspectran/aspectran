@@ -134,7 +134,6 @@ public class CoreAspectranService extends AbstractAspectranService {
 		String[] excludePackageNames = new String[] {
 				"com.aspectran.core",
 				"com.aspectran.scheduler",
-				"com.aspectran.support",
 				"com.aspectran.web"
 			};
 

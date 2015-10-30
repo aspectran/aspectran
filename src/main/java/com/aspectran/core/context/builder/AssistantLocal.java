@@ -16,7 +16,7 @@
 package com.aspectran.core.context.builder;
 
 /**
- * The Class AssistantLocal
+ * The Class AssistantLocal.
  * 
  * <p>Created: 2015. 10. 2</p>
  */

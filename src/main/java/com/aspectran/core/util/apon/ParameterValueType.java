@@ -20,9 +20,8 @@ import java.util.Map;
 
 import com.aspectran.core.context.rule.type.Type;
 
-
 /**
- * Defines the type of the option value.
+ * Defines the type of the parameter value.
  * 
  * <p>Created: 2008. 03. 29 오후 3:47:00</p>
  */
@@ -82,7 +81,7 @@ public final class ParameterValueType extends Type {
 	}
 
 	/**
-	 * Returns a <code>OptionValueType</code> with a value represented by the specified String.
+	 * Returns a <code>ParameterValueType</code> with a value represented by the specified String.
 	 * 
 	 * @param type the type
 	 * 

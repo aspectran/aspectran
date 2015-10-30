@@ -34,4 +34,5 @@ public class NodeletException extends Exception {
 	public NodeletException(String msg, Throwable cause) {
 		super(msg, cause);
 	}
+
 }

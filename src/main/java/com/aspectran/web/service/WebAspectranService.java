@@ -37,6 +37,9 @@ import com.aspectran.web.adapter.WebApplicationAdapter;
 import com.aspectran.web.startup.listener.AspectranServiceListener;
 import com.aspectran.web.startup.servlet.WebActivityServlet;
 
+/**
+ * The Class WebAspectranService.
+ */
 public class WebAspectranService extends CoreAspectranService {
 	
 	private static final Log log = LogFactory.getLog(CoreAspectranService.class);

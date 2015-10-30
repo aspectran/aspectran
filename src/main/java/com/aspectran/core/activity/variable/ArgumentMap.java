@@ -17,8 +17,9 @@ package com.aspectran.core.activity.variable;
 
 import java.util.Map;
 
-
 /**
+ * The Class ArgumentMap.
+ * 
  * <p>Created: 2009. 01. 04 오후 3:3:13</p>
  */
 public class ArgumentMap extends ValueMap {

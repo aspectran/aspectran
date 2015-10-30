@@ -37,6 +37,9 @@ import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 import com.aspectran.core.util.wildcard.WildcardPattern;
 
+/**
+ * The Class AspectAdviceRulePreRegister.
+ */
 public class AspectAdviceRulePreRegister extends AspectAdviceRuleRegister {
 	
 	private final Log log = LogFactory.getLog(AspectAdviceRulePreRegister.class);

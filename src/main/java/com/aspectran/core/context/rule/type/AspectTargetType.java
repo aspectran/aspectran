@@ -18,7 +18,6 @@ package com.aspectran.core.context.rule.type;
 import java.util.HashMap;
 import java.util.Map;
 
-
 public final class AspectTargetType extends Type {
 
 	public static final AspectTargetType TRANSLET;

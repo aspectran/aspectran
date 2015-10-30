@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.support.http.multipart;
+package com.aspectran.web.activity.request.multipart;
 
 import java.io.File;
 import java.io.IOException;
@@ -37,6 +37,9 @@ import com.aspectran.core.activity.request.parameter.FileParameter;
 import com.aspectran.core.util.FileUtils;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.web.activity.request.multipart.MultipartFileParameter;
+import com.aspectran.web.activity.request.multipart.MultipartFormDataParser;
+import com.aspectran.web.activity.request.multipart.MultipartRequestException;
 
 /**
  * Multi-part form data request handler.
@@ -206,7 +209,7 @@ public class MultipartFormDataParser {
 	}
 
 	/**
-	 * 폼필드와 file item 분석.
+	 * Parse form fields and file item.
 	 * 
 	 * @param fileItemList the items
 	 */

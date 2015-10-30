@@ -18,6 +18,8 @@ package com.aspectran.core.activity.process.result;
 import java.util.ArrayList;
 
 /**
+ * The Class ContentResult.
+ * 
  * <p>Created: 2008. 03. 23 오후 12:01:24</p>
  */
 public class ContentResult extends ArrayList<ActionResult> {
@@ -128,4 +130,5 @@ public class ContentResult extends ArrayList<ActionResult> {
 		
 		return sb.toString();
 	}
+
 }

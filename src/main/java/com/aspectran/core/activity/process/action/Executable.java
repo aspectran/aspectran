@@ -27,7 +27,7 @@ import com.aspectran.core.context.rule.type.ActionType;
 public interface Executable {
 
 	/**
-	 * Gets the id.
+	 * Gets the action id.
 	 * 
 	 * @return the id
 	 */

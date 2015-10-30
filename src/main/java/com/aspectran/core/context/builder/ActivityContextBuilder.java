@@ -18,7 +18,7 @@ package com.aspectran.core.context.builder;
 import com.aspectran.core.context.ActivityContext;
 
 /**
- * TransletsContext builder.
+ * The Interface ActivityContextBuilder.
  * 
  * <p>Created: 2008. 06. 14 오후 8:53:29</p>
  */

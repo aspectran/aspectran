@@ -28,12 +28,10 @@ import com.aspectran.core.context.rule.type.ScopeType;
 import com.aspectran.core.util.ClassUtils;
 
 /**
- * SINGLETON: 모든 singleton 빈은context 생성시 초기화 된다.
- * APPLICATION: 최초 참조시 초기화 된다.
- * 초기화 시점이 다르지만, 소멸 시점은 동일하다.(context 소멸시) 
- * <p>
- * Created: 2009. 03. 09 오후 23:48:09
- * </p>
+ * 
+ * The Class ScopedContextBeanRegistry.
+ * 
+ * <p>Created: 2009. 03. 09 오후 23:48:09</p>
  */
 public class ScopedContextBeanRegistry extends AbstractContextBeanRegistry {
 

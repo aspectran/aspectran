@@ -61,4 +61,5 @@ public class ViewDispatchException extends ResponseException {
 	public ViewDispatchException(String msg, Throwable cause) {
 		super(msg, cause);
 	}
+
 }

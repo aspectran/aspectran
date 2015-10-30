@@ -39,6 +39,8 @@ import com.aspectran.core.util.BeanUtils;
 import com.aspectran.core.util.StringUtils;
 
 /**
+ * The Class ContentsXMLReader.
+ * 
  * <p>Created: 2008. 05. 26 오후 2:03:15</p>
  */
 public class ContentsXMLReader implements XMLReader {
@@ -351,4 +353,5 @@ public class ContentsXMLReader implements XMLReader {
 			}
 		}
 	}
+
 }

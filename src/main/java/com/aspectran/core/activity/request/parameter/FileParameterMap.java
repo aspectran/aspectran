@@ -18,6 +18,8 @@ package com.aspectran.core.activity.request.parameter;
 import java.util.LinkedHashMap;
 
 /**
+ * The Class FileParameterMap.
+ * 
  * <p>Created: 2008. 03. 29 오후 6:23:00</p>
  */
 public class FileParameterMap extends LinkedHashMap<String, FileParameter[]> {

@@ -23,6 +23,9 @@ import com.aspectran.core.context.rule.ExceptionHandlingRule;
 import com.aspectran.core.context.rule.SettingsAdviceRule;
 import com.aspectran.core.context.rule.type.AspectAdviceType;
 
+/**
+ * The Class AspectAdviceRuleRegister.
+ */
 public class AspectAdviceRuleRegister {
 	
 	public static void register(AspectAdviceRuleRegistry aspectAdviceRuleRegistry, AspectRule aspectRule) {

@@ -24,6 +24,9 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.util.Map;
 
+/**
+ * The Class AponWriter.
+ */
 public class AponWriter extends AponFormat implements Closeable {
 
 	private Writer writer;

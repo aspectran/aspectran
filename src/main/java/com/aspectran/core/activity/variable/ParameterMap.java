@@ -19,6 +19,8 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
+ * The Class ParameterMap.
+ * 
  * <p>Created: 2015. 10. 01</p>
  */
 public class ParameterMap extends LinkedHashMap<String, String> {

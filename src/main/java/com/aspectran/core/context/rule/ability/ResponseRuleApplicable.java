@@ -21,6 +21,9 @@ import com.aspectran.core.context.rule.ForwardResponseRule;
 import com.aspectran.core.context.rule.RedirectResponseRule;
 import com.aspectran.core.context.rule.TransformRule;
 
+/**
+ * The Interface ResponseRuleApplicable.
+ */
 public interface ResponseRuleApplicable {
 
 	/**

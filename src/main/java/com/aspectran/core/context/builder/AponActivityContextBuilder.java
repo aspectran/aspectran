@@ -20,7 +20,7 @@ import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.rule.type.ImportFileType;
 
 /**
- * AponAspectranContextBuilder.
+ * The Class AponAspectranContextBuilder.
  * 
  * <p>Created: 2015. 01. 27 오후 10:36:29</p>
  */

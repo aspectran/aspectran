@@ -13,13 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.support.http.multipart;
+package com.aspectran.web.activity.request.multipart;
 
 import javax.servlet.http.HttpServletRequest;
 
 import com.aspectran.core.activity.Translet;
 import com.aspectran.core.util.FileUtils;
+import com.aspectran.web.activity.request.multipart.MultipartFormDataParser;
+import com.aspectran.web.activity.request.multipart.MultipartRequestWrapper;
 
+/**
+ * The Class MultipartRequestWrapperResolver.
+ * 
+ * @since 1.3.1
+ */
 public class MultipartRequestWrapperResolver {
 	
 	private String temporaryFilePath;

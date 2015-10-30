@@ -59,4 +59,5 @@ public class AdapterException extends Exception {
 	public AdapterException(String msg, Throwable cause) {
 		super(msg, cause);
 	}
+
 }

@@ -18,6 +18,8 @@ package com.aspectran.core.activity.process.result;
 import java.util.ArrayList;
 
 /**
+ * The Class ProcessResult.
+ * 
  * <p>Created: 2008. 06. 09 오후 4:13:40</p>
  */
 public class ProcessResult extends ArrayList<ContentResult> {

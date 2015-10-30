@@ -59,4 +59,5 @@ public class ForwardingFailedException extends ResponseException {
 	public ForwardingFailedException(String msg, Throwable cause) {
 		super(msg, cause);
 	}
+
 }

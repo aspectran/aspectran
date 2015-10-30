@@ -60,7 +60,6 @@ public class ActivityContextReloadingTimerTask extends TimerTask {
 			return;
 		
 		for(URL url : resources) {
-			//log.debug("Check File: " + url);
 			try {
 				File file = new File(url.toURI());
 				String filePath = file.getAbsolutePath();

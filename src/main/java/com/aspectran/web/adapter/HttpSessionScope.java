@@ -24,6 +24,9 @@ import com.aspectran.core.context.bean.scope.SessionScope;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
+/**
+ * The Class HttpSessionScope.
+ */
 public class HttpSessionScope extends SessionScope implements HttpSessionBindingListener {
 
 	private static final Log log = LogFactory.getLog(HttpSessionScope.class);

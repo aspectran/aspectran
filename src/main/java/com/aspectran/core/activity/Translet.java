@@ -312,4 +312,5 @@ public abstract interface Translet {
 	 * @return the translet implement class
 	 */
 	public Class<? extends CoreTranslet> getTransletImplementClass();
+
 }

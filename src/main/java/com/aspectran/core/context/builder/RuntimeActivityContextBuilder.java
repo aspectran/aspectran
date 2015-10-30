@@ -19,6 +19,7 @@ import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.ActivityContext;
 
 /**
+ * The Class RuntimeActivityContextBuilder.
  * 
  * <p>Created: 2008. 06. 14 오후 8:53:29</p>
  */
