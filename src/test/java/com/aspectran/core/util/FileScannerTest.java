@@ -128,7 +128,7 @@ public class FileScannerTest {
 	}
 	
 	public static void main(String argv[]) {
-		FileScannerTest scanner = new FileScannerTest("c:\\Users\\Gulendol\\Projects\\topframe\\ADE\\workspace\\aspectran-examples\\src\\main\\webapp");
+		FileScannerTest scanner = new FileScannerTest(".");
 		Map<String, File> files = scanner.scanFiles("/WEB-INF/jsp/pages/**/*.jsp");
 		
 		for(Map.Entry<String, File> entry : files.entrySet()) {
