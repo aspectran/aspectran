@@ -35,7 +35,7 @@ com.aspectran
 ├── scheduler     핵심 기능을 상속받아서 Scheduler를 구현한 패키지
 │   ├── activity    Job을 실행하는 패키지
 │   ├── adapter     Scheduler와 핵심 기능 간의 인터페이스를 위한 패키지
-│   ├── service     Scheduler 서비스를 제어하기 위한 패키지
+│   └── service     Scheduler 서비스를 제어하기 위한 패키지
 └── web           핵심 기능을 상속받아서 Web 환경을 구현한 패키지
      ├── activity    Web 환경의 요청, 처리, 응답을 처리하기 위한 패키지
      ├── adapter     Web 환경과 핵심 기능 간의 인터페이스를 위한 패키지
