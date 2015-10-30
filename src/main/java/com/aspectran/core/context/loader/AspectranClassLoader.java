@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -55,7 +56,7 @@ public class AspectranClassLoader extends ClassLoader {
 
 	private final boolean firstborn;
 	
-	private int reloadedTimes;
+	private int reloadCount;
 	
 	private Set<String> excludeClassNames;
 	
@@ -112,7 +113,7 @@ public class AspectranClassLoader extends ClassLoader {
 		this.resourceManager = new LocalResourceManager(resourceLocation, this);
 	}
 	
-	public synchronized void setResourceLocation(String resourceLocation) {
+	public void setResourceLocation(String resourceLocation) {
 		synchronized(children) {
 			if(children.size() > 0) {
 				children.clear();
@@ -122,7 +123,7 @@ public class AspectranClassLoader extends ClassLoader {
 		}
 	}
 	
-	public synchronized void setResourceLocations(String[] resourceLocations) {
+	public void setResourceLocations(String[] resourceLocations) {
 		synchronized(children) {
 			if(children.size() > 0) {
 				children.clear();
@@ -137,13 +138,13 @@ public class AspectranClassLoader extends ClassLoader {
 		}
 	}
 	
-	protected AspectranClassLoader createChild(String resourceLocation) {
+	private AspectranClassLoader createChild(String resourceLocation) {
 		if(!firstborn)
-			throw new UnsupportedOperationException("Can create a child only firstborn.");
+			throw new UnsupportedOperationException("Only the firstborn AspectranClassLoader can create a child.");
 		
 		AspectranClassLoader child = new AspectranClassLoader(resourceLocation, this);
 		
-		log.debug("create a new child AspectranClassLoader. " + child);
+		log.debug("create a new child AspectranClassLoader " + child);
 		
 		return child;
 	}
@@ -167,8 +168,13 @@ public class AspectranClassLoader extends ClassLoader {
 		excludePackageNames.add(packageName + ClassUtils.PACKAGE_SEPARATOR);
 	}
 	
+	/**
+	 * Add a class name to exclude.
+	 *
+	 * @param className the class name to exclude
+	 */
 	public void excludeClass(String className) {
-		if(isPackageExcluded(className))
+		if(isExcludePackage(className))
 			return;
 		
 		if(excludeClassNames == null) {
@@ -200,17 +206,17 @@ public class AspectranClassLoader extends ClassLoader {
 		}
 	}
 	
-	protected boolean isExcluded(String className) {
-		if(isPackageExcluded(className))
+	private boolean isExcluded(String className) {
+		if(isExcludePackage(className))
 			return true;
 		
-		if(isClassExcluded(className))
+		if(isExcludeClass(className))
 			return true;
 		
 		return false;
 	}
 	
-	private boolean isPackageExcluded(String className) {
+	private boolean isExcludePackage(String className) {
 		if(excludePackageNames != null) {
 			for(String packageName : excludePackageNames) {
 				if(className.startsWith(packageName))
@@ -221,7 +227,7 @@ public class AspectranClassLoader extends ClassLoader {
 		return false;
 	}
 	
-	private boolean isClassExcluded(String className) {
+	private boolean isExcludeClass(String className) {
 		return (excludeClassNames != null && excludeClassNames.contains(className));
 	}
 	
@@ -242,8 +248,10 @@ public class AspectranClassLoader extends ClassLoader {
 	}
 	
 	private int addChild(AspectranClassLoader child) {
-		children.add(child);
-		return children.size();
+		synchronized(children) {
+			children.add(child);
+			return children.size();
+		}
 	}
 	
 	public boolean isFirstborn() {
@@ -258,43 +266,42 @@ public class AspectranClassLoader extends ClassLoader {
 		return resourceLocation;
 	}
 
-	public void reload() {
+	public synchronized void reload() {
 		reload(root);
 	}
 	
-	protected void reload(AspectranClassLoader self) {
-		self.increaseReloadingTimes();
+	private void reload(AspectranClassLoader self) {
+		self.increaseReloadCount();
 		
-		log.debug("reload a AspectranClassLoader. " + self);
+		log.debug("reload AspectranClassLoader " + self);
 
 		if(self.getResourceManager() != null)
 			self.getResourceManager().reset();
 		
 		AspectranClassLoader firstborn = null;
+		List<AspectranClassLoader> kickoutList = new ArrayList<AspectranClassLoader>();
 		
 		for(AspectranClassLoader child : self.getChildren()) {
 			if(child.isFirstborn()) {
 				firstborn = child;
 			} else {
-				self.kickout(child);
+				kickoutList.add(child);
 			}
 		}
+		
+		if(kickoutList.size() > 0)
+			self.kickout(kickoutList);
 		
 		if(firstborn != null) {
 			reload(firstborn);
 		}
 	}
 	
-	protected void increaseReloadingTimes() {
-		reloadedTimes++;
+	private void increaseReloadCount() {
+		reloadCount++;
 	}
 	
-	protected void leave() {
-		AspectranClassLoader parent = (AspectranClassLoader)getParent();
-		parent.kickout(this);
-	}
-	
-	protected void kickout(AspectranClassLoader child) {
+	private void kickout(AspectranClassLoader child) {
 		log.debug("kickout a child AspectranClassLoader: " + child);
 
 		ResourceManager rm = child.getResourceManager();
@@ -302,6 +309,12 @@ public class AspectranClassLoader extends ClassLoader {
 			rm.release();
 		}
 		children.remove(child);
+	}
+	
+	private void kickout(List<AspectranClassLoader> childList) {
+		for(AspectranClassLoader child : childList) {
+			kickout(child);
+		}
 	}
 	
 	public URL[] extractResources() {
@@ -378,7 +391,7 @@ public class AspectranClassLoader extends ClassLoader {
 		return url;
 	}
 	
-	protected byte[] loadClassData(String className, AspectranClassLoader owner) {
+	private byte[] loadClassData(String className, AspectranClassLoader owner) {
 		if(isExcluded(className))
 			return null;
 		
@@ -415,6 +428,24 @@ public class AspectranClassLoader extends ClassLoader {
 
 	public Iterator<AspectranClassLoader> getAllAspectranClassLoaders() {
 		return getAspectranClassLoaders(root);
+	}
+	
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("{id=").append(id);
+		if(getParent() instanceof AspectranClassLoader)
+			sb.append(", parent=").append(((AspectranClassLoader)getParent()).getId());
+		else
+			sb.append(", parent=").append(getParent().getClass().getName());
+		sb.append(", root=").append(this == root);
+		sb.append(", firstborn=").append(firstborn);
+		sb.append(", resourceLocation=").append(resourceLocation);
+		sb.append(", numberOfResource=").append(resourceManager.getResourceEntriesSize());
+		sb.append(", numberOfChildren=").append(children.size());
+		sb.append(", reloadCount=").append(reloadCount);
+		sb.append("}");
+		
+		return sb.toString();
 	}
 	
 	public static Iterator<AspectranClassLoader> getAspectranClassLoaders(final AspectranClassLoader root) {
@@ -459,7 +490,7 @@ public class AspectranClassLoader extends ClassLoader {
 			}
 		};
 	}
-
+	
 	public static ClassLoader getDefaultClassLoader() {
 		ClassLoader cl = null;
 		
@@ -478,7 +509,7 @@ public class AspectranClassLoader extends ClassLoader {
 		
 		return cl;
 	}
-
+	
 	public static String resourceNameToClassName(String resourceName) {
 		String className = resourceName.substring(0, resourceName.length() - ClassUtils.CLASS_FILE_SUFFIX.length());
 		className = className.replace(ResourceUtils.RESOURCE_NAME_SPEPARATOR_CHAR, ClassUtils.PACKAGE_SEPARATOR_CHAR);
@@ -498,24 +529,6 @@ public class AspectranClassLoader extends ClassLoader {
 			resourceName = resourceName.substring(0, resourceName.length() - 1);
 		
 		return resourceName;
-	}
-	
-	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		sb.append("{id=").append(id);
-		if(getParent() instanceof AspectranClassLoader)
-			sb.append(", parent=").append(((AspectranClassLoader)getParent()).getId());
-		else
-			sb.append(", parent=").append(getParent().getClass().getName());
-		sb.append(", root=").append(this == root);
-		sb.append(", firstborn=").append(firstborn);
-		sb.append(", resourceLocation=").append(resourceLocation);
-		sb.append(", numberOfResource=").append(resourceManager.getResourceEntriesSize());
-		sb.append(", numberOfChildren=").append(children.size());
-		sb.append(", reloadedTimes=").append(reloadedTimes);
-		sb.append("}");
-		
-		return sb.toString();
 	}
 	
 }
