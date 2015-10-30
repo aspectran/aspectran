@@ -488,6 +488,10 @@ public class AspectranClassLoader extends ClassLoader {
 
 				return current;
 			}
+			
+			public void remove() {
+				throw new UnsupportedOperationException("remove");
+			}
 		};
 	}
 	
