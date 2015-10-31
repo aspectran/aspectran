@@ -17,6 +17,7 @@ package com.aspectran.scheduler.adapter;
 
 import java.util.Collections;
 import java.util.Enumeration;
+import java.util.Map;
 
 import org.quartz.JobDetail;
 
@@ -53,15 +54,15 @@ public class QuartzJobRequestAdapter extends AbstractRequestAdapter implements R
 	}
 	
 	public String getParameter(String name) {
-		return null;
+		throw new UnsupportedOperationException("getParameter");
 	}
 	
 	public String[] getParameterValues(String name) {
-		return null;
+		throw new UnsupportedOperationException("getParameterValues");
 	}
 	
 	public Enumeration<String> getParameterNames() {
-		return null;
+		throw new UnsupportedOperationException("getParameterNames");
 	}
 	
 	public <T> T getAttribute(String name) {
@@ -80,4 +81,9 @@ public class QuartzJobRequestAdapter extends AbstractRequestAdapter implements R
 	public void removeAttribute(String name) {
 		attributeMap.remove(name);
 	}
+	
+	public Map<String, Object> getParameterMap() {
+		throw new UnsupportedOperationException("getParameterMap");
+	}
+	
 }
