@@ -61,7 +61,7 @@ public class QuartzJobResponseAdapter extends AbstractResponseAdapter implements
 	}
 	
 	public OutputStream getOutputStream() throws IOException {
-		return null;
+		throw new UnsupportedOperationException("getOutputStream");
 	}
 	
 	public Writer getWriter() throws IOException {
@@ -72,7 +72,7 @@ public class QuartzJobResponseAdapter extends AbstractResponseAdapter implements
 	}
 	
 	public String redirect(Activity activity, RedirectResponseRule redirectResponseRule) throws IOException {
-		return null;
+		throw new UnsupportedOperationException("redirect");
 	}
 
 }

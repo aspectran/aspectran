@@ -17,6 +17,7 @@ package com.aspectran.core.adapter;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Enumeration;
+import java.util.Map;
 
 import com.aspectran.core.activity.request.parameter.FileParameter;
 import com.aspectran.core.context.rule.type.RequestMethodType;
@@ -93,6 +94,18 @@ public interface RequestAdapter {
 	public Enumeration<String> getFileParameterNames();
 	
 	public FileParameter[] removeFileParameter(String name);
+	
+	/**
+	 * Return a mutable Map of the request parameters,
+	 * with parameter names as map keys and parameter values as map values.
+	 * If the parameter value type is the String then map value will be of type String.
+	 * If the parameter value type is the String array then map value will be of type String array.
+	 *
+	 * @return the parameter map
+	 * 
+	 * @since 1.4.0
+	 */
+	public Map<String, Object> getParameterMap();
 	
 	/**
 	 * Returns the value of the named attribute as an <code>Object</code>, or <code>null</code> if no attribute of the given name exists.

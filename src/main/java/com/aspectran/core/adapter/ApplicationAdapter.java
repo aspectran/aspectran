@@ -68,6 +68,11 @@ public interface ApplicationAdapter {
 
 	public ClassLoader getClassLoader();
 	
+	/**
+	 * Return the base path that the current web application is mapped to.
+	 *
+	 * @return the application base path
+	 */
 	public String getApplicationBasePath();
 	
 	public String toRealPath(String filePath) throws IOException;
