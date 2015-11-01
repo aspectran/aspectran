@@ -1,10 +1,8 @@
-# [Aspectran](http://www.aspectran.com) [![Analytics](https://ga-beacon.appspot.com/UA-66807210-1/aspectran/readme?pixel)](https://github.com/topframe/aspectran)
-
-[![Build Status](https://travis-ci.org/aspectran/aspectran.svg)](https://travis-ci.org/aspectran/aspectran)
+# [Aspectran](http://www.aspectran.com) [![Build Status](https://travis-ci.org/aspectran/aspectran.svg)](https://travis-ci.org/aspectran/aspectran)  [![Analytics](https://ga-beacon.appspot.com/UA-66807210-1/aspectran/readme?pixel)](https://github.com/topframe/aspectran)
 
 ![aspectran](http://www.aspectran.com/assets/img/aspectran-logo-x100.png)
 
-*Aspectran*은 엔터프라이즈급 자바 웹 응용 프로그램을 구축하기 위한 가볍고 확장 가능한 프레임워크입니다.
+*Aspectran*은 엔터프라이즈급 자바 웹 응용 프로그램을 구축하기 위한 가볍고 확장 가능한 프레임워크입니다.  
 *Aspectran*을 활용하기 위해 거창한 개념을 이해할 필요가 없습니다.  
 *Aspectran*을 활용하기 위해 새로운 개념을 받아들일 필요도 없습니다.  
 *Aspectran*의 몇 가지 기본 개념은 명확하고 신뢰할 수 있는 결과물을 만들 수 있도록 합니다.  
@@ -41,10 +39,10 @@ com.aspectran
 │   ├── adapter     Scheduler와 핵심 기능 간의 인터페이스를 위한 패키지
 │   └── service     Scheduler 서비스를 제어하기 위한 패키지
 └── web           핵심 기능을 상속받아서 Web 환경을 구현한 패키지
-     ├── activity    Web 환경의 요청, 처리, 응답을 처리하기 위한 패키지
-     ├── adapter     Web 환경과 핵심 기능 간의 인터페이스를 위한 패키지
-     ├── service     Web 환경을 위한 서비스를 제어하기 위한 패키지
-     └── startup     Web 환경에서 Aspectran 구동에 필요한 위한 패키지
+    ├── activity    Web 환경의 요청, 처리, 응답을 처리하기 위한 패키지
+    ├── adapter     Web 환경과 핵심 기능 간의 인터페이스를 위한 패키지
+    ├── service     Web 환경을 위한 서비스를 제어하기 위한 패키지
+    └── startup     Web 환경에서 Aspectran 구동에 필요한 위한 패키지
 ```
 
 ## Documentation
