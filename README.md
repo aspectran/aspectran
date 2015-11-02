@@ -1,4 +1,4 @@
-# [Aspectran](http://www.aspectran.com) [![Build Status](https://travis-ci.org/aspectran/aspectran.svg)](https://travis-ci.org/aspectran/aspectran)  [![Analytics](https://ga-beacon.appspot.com/UA-66807210-1/aspectran/readme?pixel)](https://github.com/aspectran/aspectran)
+# [Aspectran](http://www.aspectran.com) [![Build Status](https://travis-ci.org/aspectran/aspectran.svg)](https://travis-ci.org/aspectran/aspectran)  [![Analytics](https://ga-beacon.appspot.com/UA-66807210-1/aspectran/aspectran-readme?pixel)](https://github.com/aspectran/aspectran)
 
 ![aspectran](http://www.aspectran.com/assets/img/aspectran-logo-x100.png)
 
