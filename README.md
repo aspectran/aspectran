@@ -45,6 +45,10 @@ com.aspectran
     └── startup     Web 환경에서 Aspectran 구동에 필요한 위한 패키지
 ```
 
+## Getting Started
+
+* [http://www.aspectran.com/getting-started/](http://www.aspectran.com/getting-started/)
+
 ## Documentation
 
 * [http://www.aspectran.com/docs/](http://www.aspectran.com/docs/)
