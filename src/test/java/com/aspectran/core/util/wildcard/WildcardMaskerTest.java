@@ -23,11 +23,10 @@ public class WildcardMaskerTest {
 	/**
 	 * Erase the characters that corresponds to the wildcard, and returns collect only the remaining characters.
 	 * In other words, only it remains for the wildcard character.
-	 * 
-	 * @param pattern
-	 * @param input
-	 * @param separatorFlags
-	 * @return
+	 *
+	 * @param pattern the pattern
+	 * @param input the input
+	 * @return the string
 	 */
 	public static String mask(WildcardPatternTest pattern, CharSequence input) {
 		char[] tokens = pattern.getTokens();

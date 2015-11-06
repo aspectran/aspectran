@@ -27,9 +27,10 @@ public class UnsupportedBeanScopeException extends BeanException {
 	private static final long serialVersionUID = -5350555208208267662L;
 
 	/**
-	 * Create a new BeanInstantiationException.
-	 * @param beanClass the offending bean class
-	 * @param msg the detail message
+	 * Create a new UnsupportedBeanScopeException.
+	 *
+	 * @param scopeType the scope type
+	 * @param beanRule the bean rule
 	 */
 	public UnsupportedBeanScopeException(ScopeType scopeType, BeanRule beanRule) {
 		super(scopeType + " scope is not defined. beanRule " + beanRule);

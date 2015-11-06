@@ -32,8 +32,9 @@ public class UnknownParameterException extends InvalidParameterException {
 
 	/**
 	 * Constructor to create exception with a message.
-	 * 
-	 * @param msg A message to associate with the exception
+	 *
+	 * @param parameterName the parameter name
+	 * @param parameters the parameters
 	 */
 	public UnknownParameterException(String parameterName, Parameters parameters) {
 		super("Unknown parameter \"" + parameterName + "\" from " + parameters);

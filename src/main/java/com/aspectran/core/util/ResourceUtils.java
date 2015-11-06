@@ -227,10 +227,10 @@ public class ResourceUtils {
 	}
 
 	/**
-	 * Returns a resource on the classpath as a Stream object
-	 * 
-	 * @param loader The classloader used to load the resource
+	 * Returns a resource on the classpath as a Stream object.
+	 *
 	 * @param resource The resource to find
+	 * @param classLoader the class loader
 	 * @return The resource
 	 * @throws IOException If the resource cannot be found or read
 	 */
@@ -246,10 +246,10 @@ public class ResourceUtils {
 	}
 
 	/**
-	 * Returns a resource on the classpath as a Properties object
-	 * 
-	 * @param loader The classloader used to load the resource
+	 * Returns a resource on the classpath as a Properties object.
+	 *
 	 * @param resource The resource to find
+	 * @param classLoader the class loader
 	 * @return The resource
 	 * @throws IOException If the resource cannot be found or read
 	 */
@@ -264,10 +264,10 @@ public class ResourceUtils {
 	}
 
 	/**
-	 * Returns a resource on the classpath as a Reader object
-	 * 
-	 * @param loader The classloader used to load the resource
+	 * Returns a resource on the classpath as a Reader object.
+	 *
 	 * @param resource The resource to find
+	 * @param classLoader the class loader
 	 * @return The resource
 	 * @throws IOException If the resource cannot be found or read
 	 */
@@ -276,10 +276,10 @@ public class ResourceUtils {
 	}
 
 	/**
-	 * Returns a resource on the classpath as a File object
-	 * 
-	 * @param loader  the classloader used to load the resource
+	 * Returns a resource on the classpath as a File object.
+	 *
 	 * @param resource  the resource to find
+	 * @param classLoader the class loader
 	 * @return The resource
 	 * @throws IOException If the resource cannot be found or read
 	 */
@@ -288,8 +288,8 @@ public class ResourceUtils {
 	}
 
 	/**
-	 * Gets a URL as an input stream
-	 * 
+	 * Gets a URL as an input stream.
+	 *
 	 * @param urlString  the URL to get
 	 * @return An input stream with the data from the URL
 	 * @throws IOException If the resource cannot be found or read

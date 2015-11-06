@@ -34,6 +34,7 @@ public interface ResponseAdapter {
 	/**
 	 * Gets the adaptee.
 	 *
+	 * @param <T> the generic type
 	 * @return the adaptee
 	 */
 	public <T> T getAdaptee();
@@ -86,7 +87,7 @@ public interface ResponseAdapter {
 	/**
 	 * Redirect.
 	 *
-	 * @param requestUri the request uri
+	 * @param requestUri the request URI
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public void redirect(String requestUri) throws IOException;

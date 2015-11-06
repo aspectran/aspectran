@@ -30,7 +30,7 @@ public interface Response {
 	/**
 	 * Response.
 	 * 
-	 * @param activity the translet
+	 * @param activity the activity
 	 * 
 	 * @throws ResponseException the response exception
 	 */
@@ -68,7 +68,6 @@ public interface Response {
 	 * New derived response.
 	 *
 	 * @return the response
-	 * @throws CloneNotSupportedException the clone not supported exception
 	 */
 	public Response newDerivedResponse();
 	

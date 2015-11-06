@@ -67,8 +67,10 @@ public class TransformResponseException extends ResponseException {
 	}
 	
 	/**
-	 * @param transformRule
-	 * @param cause
+	 * Instantiates a new transform response exception.
+	 *
+	 * @param transformRule the transform rule
+	 * @param cause the cause
 	 */
 	public TransformResponseException(TransformRule transformRule, Throwable cause) {
 		super("Failed to transform " + transformRule, cause);

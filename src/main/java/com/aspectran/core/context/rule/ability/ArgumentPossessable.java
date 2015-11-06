@@ -42,8 +42,8 @@ public interface ArgumentPossessable {
 
 	/**
 	 * Adds the item rule for argument.
-	 * 
-	 * @param parameterRule the item rule for argument
+	 *
+	 * @param argumentItemRule the argument item rule
 	 */
 	public void addArgumentItemRule(ItemRule argumentItemRule);
 

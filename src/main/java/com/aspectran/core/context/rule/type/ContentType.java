@@ -18,12 +18,10 @@ package com.aspectran.core.context.rule.type;
 import java.util.HashMap;
 import java.util.Map;
 
-
 /**
- * Content Type.
- * 
- * <p>주로 응답기(Responser)가 생성하는 응답문서의 Content-Type을 지정하기 위해 사용된다.</p>
- * <h4>지정 가능한 Content-Type의 종류:</h4>
+ * 주로 응답기(Responser)가 생성하는 응답문서의 Content-Type을 지정하기 위해 사용된다.
+ * <p>
+ * 지정 가능한 Content-Type의 종류:
  * <dl>
  * <dt>text/plain</dt><dd>TEXT 문서</dd>
  * <dt>text/html</dt><dd>HTML 문서</dd>

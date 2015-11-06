@@ -64,9 +64,9 @@ public class RequestMethodNotAllowedException extends RequestException {
 	
 	/**
 	 * Constructor to create exception to wrap another exception and pass a message.
-	 * 
+	 *
+	 * @param requestMethod the request method
 	 * @param msg The message
-	 * @param cause The real cause of the exception
 	 */
 	public RequestMethodNotAllowedException(RequestMethodType requestMethod, String msg) {
 		super(msg);

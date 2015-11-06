@@ -30,7 +30,7 @@ import com.aspectran.core.util.apon.GenericParameters;
 import com.aspectran.core.util.apon.Parameters;
 
 /**
- * The Class ContentsAponAssembler.
+ * Converts a ProcessResult object to a APON object.
  * 
  * <p>Created: 2015. 03. 16 오후 11:14:29</p>
  */

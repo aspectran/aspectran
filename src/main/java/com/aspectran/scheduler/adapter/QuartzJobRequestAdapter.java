@@ -39,7 +39,7 @@ public class QuartzJobRequestAdapter extends AbstractRequestAdapter implements R
 	/**
 	 * Instantiates a new quartz job request adapter.
 	 *
-	 * @param request the request
+	 * @param jobDetail the job detail
 	 */
 	public QuartzJobRequestAdapter(JobDetail jobDetail) {
 		super(jobDetail);

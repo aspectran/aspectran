@@ -28,7 +28,7 @@ public interface Nodelet {
     /**
      * For a registered XPath, the NodeletParser will call the Nodelet's 
      * process method for processing. 
-     * 
+     *
      * @param node The node represents any XML node that can be registered under
      * an XPath supported by the NodeletParser.  Possible nodes are:
      * <ul>
@@ -39,7 +39,9 @@ public interface Nodelet {
      * useful where a single XPath registration cannot describe the complex
      * structure for a given XML stanza.
      * </ul>
-     *
+     * @param attributes the attributes
+     * @param text the text
+     * @throws Exception the exception
      */
     void process(Node node, Map<String, String> attributes, String text) throws Exception;
 
