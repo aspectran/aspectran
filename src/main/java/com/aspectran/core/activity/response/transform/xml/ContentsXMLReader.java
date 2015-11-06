@@ -37,9 +37,12 @@ import com.aspectran.core.activity.process.result.ContentResult;
 import com.aspectran.core.activity.process.result.ProcessResult;
 import com.aspectran.core.util.BeanUtils;
 import com.aspectran.core.util.StringUtils;
+import com.aspectran.core.util.apon.Parameter;
+import com.aspectran.core.util.apon.ParameterValue;
+import com.aspectran.core.util.apon.Parameters;
 
 /**
- * The Class ContentsXMLReader.
+ * Converts a ProcessResult object to a XML string.
  * 
  * <p>Created: 2008. 05. 26 오후 2:03:15</p>
  */
@@ -50,8 +53,6 @@ public class ContentsXMLReader implements XMLReader {
 	private static final String CONTENT_TAG = "content";
 
 	private static final String RESULT_TAG = "result";
-
-	//private static final String INCLUDE_TAG = "include";
 
 	private static final String ROWS_TAG = "rows";
 
@@ -164,9 +165,9 @@ public class ContentsXMLReader implements XMLReader {
 	}
 
 	/**
-	 * Output string.
+	 * Output a string.
 	 * 
-	 * @param s the s
+	 * @param s the input string
 	 * 
 	 * @throws SAXException the SAX exception
 	 */
@@ -175,9 +176,9 @@ public class ContentsXMLReader implements XMLReader {
 	}
 
 	/**
-	 * Output ignorable whitespace.
+	 * Output a ignorable whitespace string.
 	 * 
-	 * @param s the s
+	 * @param s the whitespace string
 	 * 
 	 * @throws SAXException the SAX exception
 	 */
@@ -265,9 +266,7 @@ public class ContentsXMLReader implements XMLReader {
 				Object resultValue = actionResult.getResultValue();
 
 				if(resultValue instanceof ProcessResult) {
-					//handler.startElement(StringUtils.EMPTY, INCLUDE_TAG, INCLUDE_TAG, resultsAttrs);
 					parse((ProcessResult)resultValue);
-					//handler.endElement(StringUtils.EMPTY, INCLUDE_TAG, INCLUDE_TAG);
 				} else {
 					handler.startElement(StringUtils.EMPTY, RESULT_TAG, RESULT_TAG, resultsAttrs);
 					parse(resultValue);
@@ -304,14 +303,27 @@ public class ContentsXMLReader implements XMLReader {
 					object instanceof Boolean ||
 					object instanceof Date) {
 			outputString(object.toString());
+		} else if(object instanceof Parameters) {
+			Map<String, ParameterValue> params = ((Parameters)object).getParameterValueMap();
+			for(Parameter p: params.values()) {
+				String name = p.getName();
+				Object value = p.getValue();
+
+				handler.startElement(StringUtils.EMPTY, name, name, nullAttrs);
+				parse(value);
+				handler.endElement(StringUtils.EMPTY, name, name);
+			}
 		} else if(object instanceof Map<?, ?>) {
 			@SuppressWarnings("unchecked")
 			Map<String, Object> map = (Map<String, Object>)object;
 
 			for(Map.Entry<String, Object> entry : map.entrySet()) {
-				handler.startElement(StringUtils.EMPTY, entry.getKey(), entry.getKey(), nullAttrs);
-				parse(entry.getValue());
-				handler.endElement(StringUtils.EMPTY, entry.getKey(), entry.getKey());
+				String name = entry.getKey();
+				Object value = entry.getValue();
+
+				handler.startElement(StringUtils.EMPTY, name, name, nullAttrs);
+				parse(value);
+				handler.endElement(StringUtils.EMPTY, name, name);
 			}
 		} else if(object instanceof Collection<?>) {
 			@SuppressWarnings("unchecked")
@@ -336,19 +348,18 @@ public class ContentsXMLReader implements XMLReader {
 			}
 
 			handler.endElement(StringUtils.EMPTY, ROWS_TAG, ROWS_TAG);
-		} else if(object != null) {
+		} else {
 			String[] readableProperyNames = BeanUtils.getReadablePropertyNames(object);
 
 			if(readableProperyNames != null && readableProperyNames.length > 0) {
 				for(String name : readableProperyNames) {
 					Object value = BeanUtils.getObject(object, name);
-
-					if(object.equals(value))
-						continue;
-
-					handler.startElement(StringUtils.EMPTY, name, name, nullAttrs);
-					parse(value);
-					handler.endElement(StringUtils.EMPTY, name, name);
+					
+					if(!object.equals(value)) {
+						handler.startElement(StringUtils.EMPTY, name, name, nullAttrs);
+						parse(value);
+						handler.endElement(StringUtils.EMPTY, name, name);
+					}
 				}
 			}
 		}
