@@ -186,7 +186,7 @@ public abstract class ClassUtils {
 	}
 
 	/**
-	 * Resolve the given class name into a Class<?> instance. Supports
+	 * Resolve the given class name into a Class&lt;?&gt; instance. Supports
 	 * primitives (like "int") and array class names (like "String[]").
 	 * <p>This is effectively equivalent to the <code>forName</code>
 	 * method with the same arguments, with the only difference being
@@ -194,7 +194,7 @@ public abstract class ClassUtils {
 	 * @param className the name of the Class
 	 * @param classLoader the class loader to use
 	 * (may be <code>null</code>, which indicates the default class loader)
-	 * @return Class<?> instance for the supplied name
+	 * @return Class&lt;?&gt; instance for the supplied name
 	 * @throws IllegalArgumentException if the class name was not resolvable
 	 * (that is, the class could not be found or the class file could not be loaded)
 	 * @see #forName(String, ClassLoader)
@@ -257,8 +257,10 @@ public abstract class ClassUtils {
 	/**
 	 * Check whether the given class is cache-safe in the given context,
 	 * i.e. whether it is loaded by the given ClassLoader or a parent of it.
+	 *
 	 * @param clazz the class to analyze
 	 * @param classLoader the ClassLoader to potentially cache metadata in
+	 * @return true, if is cache safe
 	 */
 	public static boolean isCacheSafe(Class<?> clazz, ClassLoader classLoader) {
 		ClassLoader target = clazz.getClassLoader();
@@ -529,17 +531,11 @@ public abstract class ClassUtils {
 	 * if there is one. E.g. the method may be <code>IFoo.bar()</code> and the
 	 * target class may be <code>DefaultFoo</code>. In this case, the method may be
 	 * <code>DefaultFoo.bar()</code>. This enables attributes on that method to be found.
-	 * <p><b>NOTE:</b> In contrast to {@link org.springframework.aop.support.AopUtils#getMostSpecificMethod},
-	 * this method does <i>not</i> resolve Java 5 bridge methods automatically.
-	 * Call {@link org.springframework.core.BridgeMethodResolver#findBridgedMethod}
-	 * if bridge method resolution is desirable (e.g. for obtaining metadata from
-	 * the original method definition).
 	 * @param method the method to be invoked, which may come from an interface
-	 * @param targetClass<?> the target class for the current invocation.
+	 * @param targetClass the target class for the current invocation.
 	 * May be <code>null</code> or may not even implement the method.
 	 * @return the specific target method, or the original method if the
 	 * <code>targetClass</code> doesn't implement it or is <code>null</code>
-	 * @see org.springframework.aop.support.AopUtils#getMostSpecificMethod
 	 */
 	public static Method getMostSpecificMethod(Method method, Class<?> targetClass) {
 		if(method != null && targetClass != null && !targetClass.equals(method.getDeclaringClass())) {
@@ -695,8 +691,6 @@ public abstract class ClassUtils {
 	 * @param cls the class to convert, may be <b>null</b>
 	 * @return the corresponding primitive type if <code>cls</code> is a
 	 * wrapper class, <b>null</b> otherwise
-	 * @see #primitiveToWrapper(Class)
-	 * @since 2.4
 	 */
 	public static Class<?> wrapperToPrimitive(Class<?> cls) {
 		return primitiveWrapperTypeMap.get(cls);
@@ -714,7 +708,6 @@ public abstract class ClassUtils {
 	 * <b>null</b> if the original class is not a wrapper class. <code>null</code> if null input.
 	 * Empty array if an empty array passed in.
 	 * @see #wrapperToPrimitive(Class)
-	 * @since 2.4
 	 */
 	public static Class<?>[] wrappersToPrimitives(Class<?>[] classes) {
 		if (classes == null) {
@@ -756,11 +749,7 @@ public abstract class ClassUtils {
 	 * slash ('/') to the return value. Built by taking the package of the specified
 	 * class file, converting all dots ('.') to slashes ('/'), adding a trailing slash
 	 * if necesssary, and concatenating the specified resource name to this.
-	 * <br/>As such, this function may be used to build a path suitable for
-	 * loading a resource file that is in the same package as a class file,
-	 * although {@link org.springframework.core.io.ClassPathResource} is usually
-	 * even more convenient.
-	 * @param clazz	the Class<?> whose package will be used as the base
+	 * @param clazz	the Class&lt;?&gt; whose package will be used as the base
 	 * @param resourceName the resource name to append. A leading slash is optional.
 	 * @return the built-up resource path
 	 * @see java.lang.ClassLoader#getResource
@@ -805,7 +794,7 @@ public abstract class ClassUtils {
 	 * in the given array.
 	 * <p>Basically like <code>AbstractCollection.toString()</code>, but stripping
 	 * the "class "/"interface " prefix before every class name.
-	 * @param classes a Collection of Class<?> objects (may be <code>null</code>)
+	 * @param classes a Collection of Class&lt;?&gt; objects (may be <code>null</code>)
 	 * @return a String of form "[com.foo.Bar, com.foo.Baz]"
 	 * @see java.util.AbstractCollection#toString()
 	 */
@@ -818,7 +807,7 @@ public abstract class ClassUtils {
 	 * in the given collection.
 	 * <p>Basically like <code>AbstractCollection.toString()</code>, but stripping
 	 * the "class "/"interface " prefix before every class name.
-	 * @param classes a Collection of Class<?> objects (may be <code>null</code>)
+	 * @param classes a Collection of Class&lt;?&gt; objects (may be <code>null</code>)
 	 * @return a String of form "[com.foo.Bar, com.foo.Baz]"
 	 * @see java.util.AbstractCollection#toString()
 	 */
@@ -934,11 +923,11 @@ public abstract class ClassUtils {
 	}
 
 	/**
-	 * Create a composite interface Class<?> for the given interfaces,
+	 * Create a composite interface Class&lt;?&gt; for the given interfaces,
 	 * implementing the given interfaces in one single Class.
 	 * <p>This implementation builds a JDK proxy class for the given interfaces.
 	 * @param interfaces the interfaces to merge
-	 * @param classLoader the ClassLoader to create the composite Class<?> in
+	 * @param classLoader the ClassLoader to create the composite Class&lt;?&gt; in
 	 * @return the merged interface as Class
 	 * @see java.lang.reflect.Proxy#getProxyClass
 	 */
@@ -948,9 +937,11 @@ public abstract class ClassUtils {
 
 	/**
 	 * Check whether the given class is visible in the given ClassLoader.
+	 *
 	 * @param clazz the class to check (typically an interface)
 	 * @param classLoader the ClassLoader to check against (may be <code>null</code>,
 	 * in which case this method will always return <code>true</code>)
+	 * @return true, if is visible
 	 */
 	public static boolean isVisible(Class<?> clazz, ClassLoader classLoader) {
 		if(classLoader == null) {

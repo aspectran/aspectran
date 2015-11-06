@@ -137,13 +137,8 @@ public class ActionList extends ArrayList<Executable> implements ActionRuleAppli
 
 	/**
 	 * Adds the bean action.
-	 * 
+	 *
 	 * @param beanActionRule the bean action rule
-	 * 
-	 * @throws ClassNotFoundException the class is not found exception
-	 * @throws InstantiationException the instantiation exception
-	 * @throws IllegalAccessException the illegal access exception
-	 * @throws NoSuchMethodException the no such method exception
 	 */
 	public void applyActionRule(BeanActionRule beanActionRule) {
 		BeanAction beanAction = new BeanAction(beanActionRule, this);

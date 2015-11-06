@@ -273,10 +273,11 @@ public class ClassDescriptor {
 	}
 
 	/**
-	 * Gets the setter for a property as a Method object
-	 * 
+	 * Gets the setter for a property as a Method object.
+	 *
 	 * @param propertyName - the property
 	 * @return The Method
+	 * @throws NoSuchMethodException the no such method exception
 	 */
 	public Method getSetter(String propertyName) throws NoSuchMethodException {
 		Method method = (Method)setMethods.get(propertyName);
@@ -287,10 +288,11 @@ public class ClassDescriptor {
 	}
 
 	/**
-	 * Gets the getter for a property as a Method object
-	 * 
+	 * Gets the getter for a property as a Method object.
+	 *
 	 * @param propertyName - the property
 	 * @return The Method
+	 * @throws NoSuchMethodException the no such method exception
 	 */
 	public Method getGetter(String propertyName) throws NoSuchMethodException {
 		Method method = (Method)getMethods.get(propertyName);
@@ -301,10 +303,11 @@ public class ClassDescriptor {
 	}
 
 	/**
-	 * Gets the type for a property setter
-	 * 
+	 * Gets the type for a property setter.
+	 *
 	 * @param propertyName - the name of the property
 	 * @return The Class of the propery setter
+	 * @throws NoSuchMethodException the no such method exception
 	 */
 	public Class<?> getSetterType(String propertyName) throws NoSuchMethodException {
 		Class<?> clazz = (Class<?>)setTypes.get(propertyName);
@@ -315,10 +318,11 @@ public class ClassDescriptor {
 	}
 
 	/**
-	 * Gets the type for a property getter
-	 * 
+	 * Gets the type for a property getter.
+	 *
 	 * @param propertyName - the name of the property
 	 * @return The Class of the propery getter
+	 * @throws NoSuchMethodException the no such method exception
 	 */
 	public Class<?> getGetterType(String propertyName) throws NoSuchMethodException {
 		Class<?> clazz = (Class<?>)getTypes.get(propertyName);

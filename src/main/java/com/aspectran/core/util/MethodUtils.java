@@ -819,7 +819,7 @@ public class MethodUtils {
 	 * Compatible parameters mean that every method parameter is assignable from
 	 * the given parameters.
 	 * In other words, it finds a method with the given name
-	 * that will take the parameters given.<p>
+	 * that will take the parameters given.
 	 *
 	 * <p>This method is slightly undeterminstic since it loops
 	 * through methods names and return the first matching method.</p>

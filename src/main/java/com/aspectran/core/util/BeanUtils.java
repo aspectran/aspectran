@@ -26,16 +26,8 @@ import java.util.StringTokenizer;
  * BeanUtils provides methods that allow simple, reflective access to
  * JavaBeans style properties.  Methods are provided for all simple types as
  * well as object types.
- * <p/>
- * Examples:
- * <p/>
- * StaticBeanProbe.setObject(object, propertyName, value);
- * <P>
- * Object value = StaticBeanProbe.getObject(object, propertyName);
  * 
- * <p>
- * Created: 2008. 04. 22 오후 3:47:15
- * </p>
+ * <p>Created: 2008. 04. 22 오후 3:47:15</p>
  */
 public class BeanUtils {
 
@@ -64,10 +56,11 @@ public class BeanUtils {
 	/**
 	 * Returns the class that the setter expects to receive as a parameter when
 	 * setting a property value.
-	 * 
+	 *
 	 * @param object The bean to check
 	 * @param name The name of the property
 	 * @return The type of the property
+	 * @throws NoSuchMethodException the no such method exception
 	 */
 	public static Class<?> getPropertyTypeForSetter(Object object, String name) throws NoSuchMethodException {
 		Class<?> type = object.getClass();
@@ -99,10 +92,11 @@ public class BeanUtils {
 
 	/**
 	 * Returns the class that the getter will return when reading a property value.
-	 * 
+	 *
 	 * @param object The bean to check
 	 * @param name The name of the property
 	 * @return The type of the property
+	 * @throws NoSuchMethodException the no such method exception
 	 */
 	public static Class<?> getPropertyTypeForGetter(Object object, String name) throws NoSuchMethodException {
 		Class<?> type = object.getClass();
@@ -134,10 +128,11 @@ public class BeanUtils {
 
 	/**
 	 * Returns the class that the getter will return when reading a property value.
-	 * 
+	 *
 	 * @param type The class to check
 	 * @param name The name of the property
 	 * @return The type of the property
+	 * @throws NoSuchMethodException the no such method exception
 	 */
 	private static Class<?> getClassPropertyTypeForGetter(Class<?> type, String name) throws NoSuchMethodException {
 		if(name.indexOf('.') > -1) {
@@ -156,10 +151,11 @@ public class BeanUtils {
 	/**
 	 * Returns the class that the setter expects to receive as a parameter when
 	 * setting a property value.
-	 * 
+	 *
 	 * @param type The class to check
 	 * @param name The name of the property
 	 * @return The type of the property
+	 * @throws NoSuchMethodException the no such method exception
 	 */
 	private static Class<?> getClassPropertyTypeForSetter(Class<?> type, String name) throws NoSuchMethodException {
 		if(name.indexOf('.') > -1) {
@@ -200,11 +196,13 @@ public class BeanUtils {
 	}
 
 	/**
-	 * Sets the value of a bean property to an Object
-	 * 
+	 * Sets the value of a bean property to an Object.
+	 *
 	 * @param object The bean to change
 	 * @param name The name of the property to set
 	 * @param value The new value to set
+	 * @throws InvocationTargetException the invocation target exception
+	 * @throws NoSuchMethodException the no such method exception
 	 */
 	public static void setObject(Object object, String name, Object value) throws InvocationTargetException, NoSuchMethodException {
 		if(name.indexOf('.') > -1) {
@@ -242,11 +240,12 @@ public class BeanUtils {
 	}
 
 	/**
-	 * Checks to see if a bean has a writable property be a given name
-	 * 
+	 * Checks to see if a bean has a writable property be a given name.
+	 *
 	 * @param object The bean to check
 	 * @param propertyName The property to check for
 	 * @return True if the property exists and is writable
+	 * @throws NoSuchMethodException the no such method exception
 	 */
 	public static boolean hasWritableProperty(Object object, String propertyName) throws NoSuchMethodException {
 		boolean hasProperty = false;
@@ -272,11 +271,12 @@ public class BeanUtils {
 	}
 
 	/**
-	 * Checks to see if a bean has a readable property be a given name
-	 * 
+	 * Checks to see if a bean has a readable property be a given name.
+	 *
 	 * @param object The bean to check
 	 * @param propertyName The property to check for
 	 * @return True if the property exists and is readable
+	 * @throws NoSuchMethodException the no such method exception
 	 */
 	public static boolean hasReadableProperty(Object object, String propertyName) throws NoSuchMethodException {
 		boolean hasProperty = false;

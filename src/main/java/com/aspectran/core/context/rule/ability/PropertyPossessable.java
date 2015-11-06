@@ -35,15 +35,15 @@ public interface PropertyPossessable {
 	
 	/**
 	 * Sets the parameter rule map for properties.
-	 * 
-	 * @param parameterRuleMap the new parameter rule map
+	 *
+	 * @param propertyItemRuleMap the new property item rule map
 	 */
 	public void setPropertyItemRuleMap(ItemRuleMap propertyItemRuleMap);
 
 	/**
 	 * Adds the parameter rule for property.
-	 * 
-	 * @param parameterRule the item rule for property
+	 *
+	 * @param propertyItemRule the property item rule
 	 */
 	public void addPropertyItemRule(ItemRule propertyItemRule);
 

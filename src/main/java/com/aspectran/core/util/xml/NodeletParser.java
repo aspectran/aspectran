@@ -104,7 +104,6 @@ public class NodeletParser {
 	 *
 	 * @param xpath the xpath
 	 * @param nodeletAdder the nodelet adder
-	 * @throws Exception the exception
 	 */
 	public void addNodelet(String xpath, NodeletAdder nodeletAdder) {
 		nodeletAdder.process(xpath, this);
@@ -116,7 +115,6 @@ public class NodeletParser {
 	 * @param prefix the prefix
 	 * @param xpath the xpath
 	 * @param nodeletAdder the nodelet adder
-	 * @throws Exception the exception
 	 */
 	public void addNodelet(String prefix, String xpath, NodeletAdder nodeletAdder) {
 		addNodelet(prefix + xpath, nodeletAdder);
@@ -136,6 +134,9 @@ public class NodeletParser {
 
 	/**
 	 * Begins parsing from the provided InputStream.
+	 *
+	 * @param inputStream the input stream
+	 * @throws NodeletException the nodelet exception
 	 */
 	public void parse(InputStream inputStream) throws NodeletException {
 		try {
@@ -148,6 +149,8 @@ public class NodeletParser {
 
 	/**
 	 * Begins parsing from the provided Node.
+	 *
+	 * @param node the node
 	 */
 	public void parse(Node node) {
 		processNodelet(node, "/");
@@ -157,6 +160,9 @@ public class NodeletParser {
 	/**
 	 * A recursive method that walkes the DOM tree, registers XPaths and
 	 * calls Nodelets registered under those XPaths.
+	 *
+	 * @param node the node
+	 * @param path the path
 	 */
 	private void process(Node node, Path path) {
 		if(node instanceof Element) {

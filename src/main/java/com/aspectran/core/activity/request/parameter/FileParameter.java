@@ -48,10 +48,8 @@ public class FileParameter {
 	
 	/**
 	 * Instantiates a new file parameter.
-	 * 
+	 *
 	 * @param file the file
-	 * 
-	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public FileParameter(File file) {
 		this.file = file;
@@ -98,8 +96,9 @@ public class FileParameter {
 	/**
 	 * Gets the bytes.
 	 * JVM이 다루는 Heap 메모리보다 큰 배열을 사용할 수는 없습니다.
-	 * 
+	 *
 	 * @return the bytes
+	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public byte[] getBytes() throws IOException {
 		InputStream input = getInputStream();
@@ -139,12 +138,9 @@ public class FileParameter {
 	/**
 	 * Save the uploaded file to the given destination file.
 	 * 이미 동일한 파일명을 가진 파일이 존재할 경우 다른 유일한 파일명으로 저장한다.
-	 * 
+	 *
 	 * @param destFile the destination file
-	 * 
 	 * @return saved file
-	 * 
-	 * @throws Exception the exception
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public File saveAs(File destFile) throws IOException {
@@ -153,13 +149,10 @@ public class FileParameter {
 
 	/**
 	 * Save the uploaded file to the given destination file.
-	 * 
+	 *
 	 * @param dest the destination file
 	 * @param overwrite 이미 파일이 존재할 경우 덮어 쓸지 여부
-	 * 
 	 * @return 저장된 파일
-	 * 
-	 * @throws Exception the exception
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public File saveAs(File dest, boolean overwrite) throws IOException {
