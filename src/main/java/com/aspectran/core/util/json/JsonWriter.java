@@ -26,9 +26,6 @@ import java.util.Iterator;
 import java.util.Map;
 
 import com.aspectran.core.util.BeanUtils;
-import com.aspectran.core.util.apon.Parameter;
-import com.aspectran.core.util.apon.ParameterValue;
-import com.aspectran.core.util.apon.Parameters;
 
 /**
  * The Class JsonWriter.
@@ -81,30 +78,6 @@ public class JsonWriter implements Closeable {
 			writeString(object.toString());
 		} else if(object instanceof Number) {
 			writeNumber(object.toString());
-		} else if(object instanceof Parameters) {
-			Map<String, ParameterValue> params = ((Parameters)object).getParameterValueMap();
-			Iterator<ParameterValue> iter = params.values().iterator();
-			
-			openCurlyBracket();
-			
-			while(iter.hasNext()) {
-				Parameter p = iter.next();
-				String name = p.getName();
-				Object value = p.getValue();
-				
-				writeName(name);
-
-				if(value == null)
-					writeNull();
-				else
-					write(value);
-
-				if(iter.hasNext()) {
-					writeComma();
-				}
-			}
-			
-			closeCurlyBracket();
 		} else if(object instanceof Map<?, ?>) {
 			@SuppressWarnings("unchecked")
 			Map<String, Object> map = (Map<String, Object>)object;
@@ -115,7 +88,6 @@ public class JsonWriter implements Closeable {
 			while(iter.hasNext()) {
 				String name = iter.next();
 				Object value = map.get(name);
-				
 				writeName(name);
 
 				if(value == null)
@@ -358,7 +330,7 @@ public class JsonWriter implements Closeable {
 	
 	/**
 	 * Produce a string in double quotes with backslash sequences in all the
-	 * right places. A backslash will be inserted within &lt;/, allowing JSON
+	 * right places. A backslash will be inserted within </, allowing JSON
 	 * text to be delivered in HTML. In JSON text, a string cannot contain a
 	 * control character or an unescaped quote or backslash.
 	 * 
