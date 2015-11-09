@@ -98,11 +98,16 @@ public class WebActivity extends CoreActivity implements Activity {
 
 		ResponseAdapter responseAdapter = new HttpServletResponseAdapter(response);
 		setResponseAdapter(responseAdapter);
-
-		SessionAdapter sessionAdapter = new HttpSessionAdapter(request.getSession());
-		setSessionAdapter(sessionAdapter);
 	}
 
+	public synchronized SessionAdapter getSessionAdapter() {
+		if(super.getSessionAdapter() == null) {
+			SessionAdapter sessionAdapter = new HttpSessionAdapter(request.getSession(), getActivityContext());
+			super.setSessionAdapter(sessionAdapter);
+		}
+		return super.getSessionAdapter();
+	}
+	
 	/* (non-Javadoc)
 	 * @see com.aspectran.core.activity.CoreActivity#request(com.aspectran.core.activity.Translet)
 	 */

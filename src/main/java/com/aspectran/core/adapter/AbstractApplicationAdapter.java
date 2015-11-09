@@ -56,7 +56,7 @@ public abstract class AbstractApplicationAdapter implements ApplicationAdapter {
 		return (T)adaptee;
 	}
 	
-	public ApplicationScope getScope() {
+	public ApplicationScope getApplicationScope() {
 		return scope;
 	}
 

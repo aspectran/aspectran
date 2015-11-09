@@ -52,27 +52,29 @@ public class AspectAdviceRulePreRegister extends AspectAdviceRuleRegister {
 		for(AspectRule aspectRule : aspectRuleMap) {
 			AspectTargetType aspectTargetType = aspectRule.getAspectTargetType();
 			JoinpointScopeType joinpointScope = aspectRule.getJoinpointScope();
-			Pointcut pointcut = aspectRule.getPointcut();
 
 			if(aspectTargetType == AspectTargetType.TRANSLET) {
-				if(joinpointScope == JoinpointScopeType.TRANSLET ||
-						joinpointScope == JoinpointScopeType.REQUEST ||
-						joinpointScope == JoinpointScopeType.CONTENT ||
-						joinpointScope == JoinpointScopeType.RESPONSE) {
+				if(joinpointScope == JoinpointScopeType.BEAN) {
+					aspectRule.setBeanRelevanted(true);
+				} else if(joinpointScope == JoinpointScopeType.SESSION) {
+					aspectRule.setBeanRelevanted(false);
+				} else {
+					Pointcut pointcut = aspectRule.getPointcut();
+
 					if(pointcut == null) {
-						aspectRule.setOnlyTransletRelevanted(true);
+						aspectRule.setBeanRelevanted(false);
 					} else {
 						List<PointcutPatternRule> pointcutPatternRuleList = pointcut.getPointcutPatternRuleList();
-						boolean onlyTransletRelevanted = true;
+						boolean beanRelevanted = false;
 						
 						for(PointcutPatternRule ppr : pointcutPatternRuleList) {
 							if(ppr.getBeanIdPattern() != null || ppr.getBeanMethodNamePattern() != null) {
-								onlyTransletRelevanted = false;
+								beanRelevanted = true;
 								break;
 							}
 						}
 						
-						aspectRule.setOnlyTransletRelevanted(onlyTransletRelevanted);
+						aspectRule.setBeanRelevanted(beanRelevanted);
 					}
 				}
 			}
@@ -89,7 +91,7 @@ public class AspectAdviceRulePreRegister extends AspectAdviceRuleRegister {
 		for(AspectRule aspectRule : aspectRuleMap) {
 			AspectTargetType aspectTargetType = aspectRule.getAspectTargetType();
 
-			if(aspectTargetType == AspectTargetType.TRANSLET && !aspectRule.isOnlyTransletRelevanted()) {
+			if(aspectTargetType == AspectTargetType.TRANSLET && aspectRule.isBeanRelevanted()) {
 				Pointcut pointcut = aspectRule.getPointcut();
 				
 				if(pointcut != null && pointcut.isExistsBeanMethodNamePattern()) {
@@ -126,11 +128,10 @@ public class AspectAdviceRulePreRegister extends AspectAdviceRuleRegister {
 			AspectTargetType aspectTargetType = aspectRule.getAspectTargetType();
 			
 			if(aspectTargetType == AspectTargetType.TRANSLET) {
+				JoinpointScopeType joinpointScope = aspectRule.getJoinpointScope();
 				Pointcut pointcut = aspectRule.getPointcut();
 
-				if(aspectRule.isOnlyTransletRelevanted()) {
-					JoinpointScopeType joinpointScope = aspectRule.getJoinpointScope();
-					
+				if(!aspectRule.isBeanRelevanted() && joinpointScope != JoinpointScopeType.SESSION) {
 					if(joinpointScope == JoinpointScopeType.REQUEST) {
 						if(pointcut == null || pointcut.matches(transletRule.getName())) {
 							RequestRule requestRule = transletRule.getRequestRule();

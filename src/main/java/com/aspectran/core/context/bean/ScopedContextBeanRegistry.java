@@ -187,14 +187,14 @@ public class ScopedContextBeanRegistry extends AbstractContextBeanRegistry {
 	private Scope getSessionScope() {
 		Activity activity = context.getCurrentActivity();
 
-		if(activity == null)
+		if(activity == null || activity.getSessionAdapter() == null)
 			return null;
 
-		return activity.getSessionAdapter().getScope();
+		return activity.getSessionAdapter().getSessionScope();
 	}
 	
 	private Scope getApplicationScope() {
-		return context.getApplicationAdapter().getScope();
+		return context.getApplicationAdapter().getApplicationScope();
 	}
 	
 }

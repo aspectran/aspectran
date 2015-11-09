@@ -495,11 +495,11 @@ public class BeanRule implements Cloneable {
 		String destroyMethodName = beanRule.getDestroyMethodName();
 		
 		if(initMethodName == null) {
-			if(beanClass.isAssignableFrom(InitializableTransletBean.class)) {
+			if(InitializableTransletBean.class.isAssignableFrom(beanClass)) {
 				initMethodName = InitializableBean.INITIALIZE_METHOD_NAME;
 				beanRule.setInitMethodName(initMethodName);
 				beanRule.setInitMethodRequiresTranslet(Boolean.TRUE);
-			} else if(beanClass.isAssignableFrom(InitializableBean.class)) {
+			} else if(InitializableBean.class.isAssignableFrom(beanClass)) {
 				initMethodName = InitializableBean.INITIALIZE_METHOD_NAME;
 				beanRule.setInitMethodName(initMethodName);
 			}
@@ -510,7 +510,7 @@ public class BeanRule implements Cloneable {
 		}
 		
 		if(destroyMethodName == null) {
-			if(beanClass.isAssignableFrom(DisposableBean.class)) {
+			if(DisposableBean.class.isAssignableFrom(beanClass)) {
 				beanRule.setDestroyMethodName(DisposableBean.DESTROY_METHOD_NAME);
 			}
 		} else {

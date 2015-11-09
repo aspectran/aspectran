@@ -25,6 +25,8 @@ public class AspectRuleRegistry {
 
 	private AspectRuleMap aspectRuleMap;
 	
+	private AspectAdviceRuleRegistry sessionAspectAdviceRuleRegistry;
+	
 	public AspectRuleRegistry(AspectRuleMap aspectRuleMap) {
 		this.aspectRuleMap = aspectRuleMap;
 	}
@@ -44,6 +46,14 @@ public class AspectRuleRegistry {
 	
 	public AspectRule getAspectRule(String aspectId) {
 		return aspectRuleMap.get(aspectId);
+	}
+
+	public AspectAdviceRuleRegistry getSessionAspectAdviceRuleRegistry() {
+		return sessionAspectAdviceRuleRegistry;
+	}
+
+	public void setSessionAspectAdviceRuleRegistry(AspectAdviceRuleRegistry sessionAspectAdviceRuleRegistry) {
+		this.sessionAspectAdviceRuleRegistry = sessionAspectAdviceRuleRegistry;
 	}
 
 	public void destroy() {

@@ -44,7 +44,7 @@ public class AspectRule {
 	
 	private ExceptionHandlingRule exceptionHandlingRule;
 	
-	private boolean onlyTransletRelevanted;
+	private boolean BeanRelevanted;
 	
 	private String description;
 	
@@ -149,12 +149,12 @@ public class AspectRule {
 		exceptionHandlingRule.putResponseByContentTypeRule(responseByContentTypeRule);
 	}
 
-	public boolean isOnlyTransletRelevanted() {
-		return onlyTransletRelevanted;
+	public boolean isBeanRelevanted() {
+		return BeanRelevanted;
 	}
 
-	public void setOnlyTransletRelevanted(boolean onlyTransletRelevanted) {
-		this.onlyTransletRelevanted = onlyTransletRelevanted;
+	public void setBeanRelevanted(boolean beanRelevanted) {
+		this.BeanRelevanted = beanRelevanted;
 	}
 
 	/**
@@ -192,7 +192,7 @@ public class AspectRule {
 			sb.append(", aspectJobAdviceRuleList=").append(aspectJobAdviceRuleList);
 		}
 		sb.append(", exceptionHandlingRule=").append(exceptionHandlingRule);
-		sb.append(", onlyTransletRelevanted=").append(onlyTransletRelevanted);
+		sb.append(", onlyTransletRelevanted=").append(BeanRelevanted);
 		sb.append("}");
 		
 		return sb.toString();

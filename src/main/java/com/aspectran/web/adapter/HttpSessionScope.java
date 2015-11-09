@@ -15,11 +15,11 @@
  */
 package com.aspectran.web.adapter;
 
-import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpSessionBindingEvent;
 import javax.servlet.http.HttpSessionBindingListener;
 
-import com.aspectran.core.context.bean.scope.Scope;
+import com.aspectran.core.activity.aspect.SessionScopeAdvisor;
+import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.context.bean.scope.SessionScope;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
@@ -31,25 +31,48 @@ public class HttpSessionScope extends SessionScope implements HttpSessionBinding
 
 	private static final Log log = LogFactory.getLog(HttpSessionScope.class);
 	
-	private static final boolean debugEnabled = log.isDebugEnabled();
+	private SessionAdapter sessionAdapter;
 	
+	private SessionScopeAdvisor advisor;
+	
+	public HttpSessionScope() {
+	}
+	
+	/**
+	 * Instantiates a new http session scope.
+	 *
+	 * @param sessionAdapter the session adapter
+	 * @param advisor the session scope advisor
+	 */
+	public HttpSessionScope(SessionAdapter sessionAdapter, SessionScopeAdvisor advisor) {
+		this.sessionAdapter = sessionAdapter;
+		this.advisor = advisor;
+	}
+	
+	/* (non-Javadoc)
+	 * @see javax.servlet.http.HttpSessionBindingListener#valueBound(javax.servlet.http.HttpSessionBindingEvent)
+	 */
 	public void valueBound(HttpSessionBindingEvent event) {
-		HttpSession session = event.getSession();
+		if(log.isDebugEnabled())
+			log.debug("New HttpSessionScope bound in session " + sessionAdapter);
 		
-		if(debugEnabled)
-			log.debug("Session Bound: " + session.getId() + ", " + event.getValue());
+		if(advisor != null)
+			advisor.executeBeforeAdvice();
 	}
 
+	/* (non-Javadoc)
+	 * @see javax.servlet.http.HttpSessionBindingListener#valueUnbound(javax.servlet.http.HttpSessionBindingEvent)
+	 */
 	public void valueUnbound(HttpSessionBindingEvent event) {
-		HttpSession session = event.getSession();
+		sessionAdapter.release();
 
-		if(debugEnabled)
-			log.debug("Session Unbound: " + session.getId() + ", " + event.getValue());
+		if(log.isDebugEnabled())
+			log.debug("HttpSessionScope removed from session " + sessionAdapter);
 		
-		Scope scope = (SessionScope)event.getValue();
+		if(advisor != null)
+			advisor.executeAfterAdvice();
 		
-		if(scope != null)
-			scope.destroy();
+		this.destroy();
 	}
 	
 }

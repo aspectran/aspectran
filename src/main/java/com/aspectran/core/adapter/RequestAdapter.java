@@ -31,9 +31,10 @@ import com.aspectran.core.context.rule.type.RequestMethodType;
 public interface RequestAdapter {
 	
 	/**
-	 * Gets the adaptee.
+	 * Gets the Adaptee object.
 	 *
-	 * @return the adaptee
+	 * @param <T> the generic type
+	 * @return the Adaptee object
 	 */
 	public <T> T getAdaptee();
 	
@@ -81,18 +82,58 @@ public interface RequestAdapter {
 	 */
 	public String[] getParameterValues(String name);
 	
+	/**
+	 * Gets the parameter names.
+	 *
+	 * @return the parameter names
+	 */
 	public Enumeration<String> getParameterNames();
 
+	/**
+	 * Gets the file parameter.
+	 *
+	 * @param name the parameter name
+	 * @return the file parameter
+	 */
 	public FileParameter getFileParameter(String name);
 	
+	/**
+	 * Gets the file parameter values.
+	 *
+	 * @param name the parameter name
+	 * @return the file parameter values
+	 */
 	public FileParameter[] getFileParameterValues(String name);
 
+	/**
+	 * Sets the file parameter.
+	 *
+	 * @param name the parameter name
+	 * @param fileParameter the file parameter
+	 */
 	public void setFileParameter(String name, FileParameter fileParameter);
 
+	/**
+	 * Sets the file parameter.
+	 *
+	 * @param name the parameter name
+	 * @param fileParameters the file parameters
+	 */
 	public void setFileParameter(String name, FileParameter[] fileParameters);
 	
+	/**
+	 * Gets the file parameter names.
+	 *
+	 * @return the parameter names
+	 */
 	public Enumeration<String> getFileParameterNames();
 	
+	/**
+	 * Removes the file parameter.
+	 *
+	 * @param name the file parameter name
+	 * @return the file parameter[]
+	 */
 	public FileParameter[] removeFileParameter(String name);
 	
 	/**

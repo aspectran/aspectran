@@ -19,7 +19,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Enumeration;
 
-import com.aspectran.core.context.bean.scope.Scope;
+import com.aspectran.core.context.bean.scope.ApplicationScope;
 import com.aspectran.core.service.AspectranServiceController;
 
 /**
@@ -31,9 +31,10 @@ import com.aspectran.core.service.AspectranServiceController;
 public interface ApplicationAdapter {
 	
 	/**
-	 * Gets the adaptee.
+	 * Gets the Adaptee object.
 	 *
-	 * @return the adaptee
+	 * @param <T> the generic type
+	 * @return the Adaptee object
 	 */
 	public <T> T getAdaptee();
 
@@ -42,7 +43,7 @@ public interface ApplicationAdapter {
 	 *
 	 * @return the scope
 	 */
-	public Scope getScope();
+	public ApplicationScope getApplicationScope();
 	
 	/**
 	 * Gets the attribute.

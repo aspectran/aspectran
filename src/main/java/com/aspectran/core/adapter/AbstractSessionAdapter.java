@@ -15,8 +15,10 @@
  */
 package com.aspectran.core.adapter;
 
+import java.util.Enumeration;
+
 /**
- * The Class AbstractSessionAdapter.
+ * The Abstract Class for session object adapter.
  *
  * @since 2011. 3. 13.
  */
@@ -38,5 +40,56 @@ public abstract class AbstractSessionAdapter implements SessionAdapter {
 	public <T> T getAdaptee() {
 		return (T)adaptee;
 	}
+	
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.adapter.SessionAdapter#getId()
+	 */
+	abstract public String getId();
 
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.adapter.SessionAdapter#getCreationTime()
+	 */
+	abstract public long getCreationTime();
+	
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.adapter.SessionAdapter#getLastAccessedTime()
+	 */
+	abstract public long getLastAccessedTime();
+	
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.adapter.SessionAdapter#getMaxInactiveInterval()
+	 */
+	abstract public int getMaxInactiveInterval();
+	
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.adapter.SessionAdapter#release()
+	 */
+	public void release() {
+		adaptee = null;
+	}
+	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		if(adaptee == null) {
+			return "Session has been expired.";
+		}
+		StringBuilder sb = new StringBuilder();
+		sb.append("{id=").append(getId());
+		sb.append(", creationTime=").append(getCreationTime());
+		sb.append(", lastAccessedTime=").append(getLastAccessedTime());
+		sb.append(", maxInactiveInterval=").append(getMaxInactiveInterval());
+		sb.append(", attributeNames=[");
+		for(Enumeration<String> en = getAttributeNames(); en.hasMoreElements(); ) {
+			sb.append(en.nextElement());
+			if(en.hasMoreElements())
+				sb.append(",");
+		}
+		sb.append("]}");
+		
+		return sb.toString();
+	}
+	
 }

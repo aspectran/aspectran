@@ -10,7 +10,7 @@
 
 	<groupId>com.aspectran</groupId>
 	<artifactId>aspectran</artifactId>
-	<version>1.4.0-SNAPSHOT</version>
+	<version>1.5.0-SNAPSHOT</version>
 	<name>aspectran</name>
 	<url>http://www.aspectran.com/</url>
 	<description>
@@ -67,7 +67,7 @@
 		<dependency>
 			<groupId>cglib</groupId>
 			<artifactId>cglib-nodep</artifactId>
-			<version>3.1</version>
+			<version>3.2.0</version>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>

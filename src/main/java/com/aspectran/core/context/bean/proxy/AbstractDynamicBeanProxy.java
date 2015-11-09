@@ -162,7 +162,7 @@ public abstract class AbstractDynamicBeanProxy {
 				
 				for(AspectRule aspectRule : aspectRuleMap.values()) {
 					AspectTargetType aspectTargetType = aspectRule.getAspectTargetType();
-					if(aspectTargetType == AspectTargetType.TRANSLET && !aspectRule.isOnlyTransletRelevanted()) {
+					if(aspectTargetType == AspectTargetType.TRANSLET && aspectRule.isBeanRelevanted()) {
 						Pointcut pointcut = aspectRule.getPointcut();
 
 						if(pointcut == null || pointcut.matches(transletName, beanId, beanMethodName)) {

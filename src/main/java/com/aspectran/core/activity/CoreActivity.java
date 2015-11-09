@@ -193,6 +193,10 @@ public class CoreActivity extends AbstractActivity implements Activity {
 	protected void adapting(Translet translet) {
 	}
 	
+	public void finish() {
+		context.removeCurrentActivity();
+	}
+	
 	private void run1st() {
 		if(pathVariableMap != null && !pathVariableMap.isEmpty()) {
 			for(Map.Entry<String, String> entry : pathVariableMap.entrySet()) {
@@ -255,7 +259,7 @@ public class CoreActivity extends AbstractActivity implements Activity {
 				}
 			}
 			
-			throw new ActivityException("aspecran activity run error", e);
+			throw new ActivityException("Failed to Run Activity", e);
 		} finally {
 			if(getRequestScope() != null) {
 				getRequestScope().destroy();
@@ -621,39 +625,39 @@ public class CoreActivity extends AbstractActivity implements Activity {
 				log.debug("actionResult " + resultValue);
 		} catch(Exception e) {
 			setRaisedException(e);
-			throw new ActionExecutionException("action execution error", e);
+			throw new ActionExecutionException("Failed to execute action " + action, e);
 		}
 	}
 	
 	public void execute(List<AspectAdviceRule> aspectAdviceRuleList) {
 		for(AspectAdviceRule aspectAdviceRule : aspectAdviceRuleList) {
-			execute(aspectAdviceRule);
+			execute(aspectAdviceRule, false);
 		}
 	}
 	
 	public void forceExecute(List<AspectAdviceRule> aspectAdviceRuleList) {
 		for(AspectAdviceRule aspectAdviceRule : aspectAdviceRuleList) {
-			execute(aspectAdviceRule);
+			execute(aspectAdviceRule, true);
 		}
 	}
 	
-	private Object execute(AspectAdviceRule aspectAdviceRule) {
-		Executable action = aspectAdviceRule.getExecutableAction();
-		
-		if(action == null) {
-			throw new ActionExecutionException("No specified action on AspectAdviceRule " + aspectAdviceRule);
-		}
-		
-		if(action.getActionType() == ActionType.BEAN && aspectAdviceRule.getAdviceBeanId() != null) {
-			Object adviceBean = translet.getAspectAdviceBean(aspectAdviceRule.getAspectId());
-			
-			if(adviceBean == null)
-				adviceBean = getBean(aspectAdviceRule.getAdviceBeanId());
-			
-			translet.putAspectAdviceBean(aspectAdviceRule.getAspectId(), adviceBean);
-		}
-		
+	private void execute(AspectAdviceRule aspectAdviceRule, boolean force) {
 		try {
+			Executable action = aspectAdviceRule.getExecutableAction();
+			
+			if(action == null) {
+				throw new IllegalArgumentException("No specified action on AspectAdviceRule " + aspectAdviceRule);
+			}
+			
+			if(action.getActionType() == ActionType.BEAN && aspectAdviceRule.getAdviceBeanId() != null) {
+				Object adviceBean = translet.getAspectAdviceBean(aspectAdviceRule.getAspectId());
+				
+				if(adviceBean == null)
+					adviceBean = getBean(aspectAdviceRule.getAdviceBeanId());
+				
+				translet.putAspectAdviceBean(aspectAdviceRule.getAspectId(), adviceBean);
+			}
+			
 			Object adviceActionResult = action.execute(this);
 			
 			if(adviceActionResult != null && adviceActionResult != ActionResult.NO_RESULT) {
@@ -662,11 +666,14 @@ public class CoreActivity extends AbstractActivity implements Activity {
 			
 			if(traceEnabled)
 				log.trace("adviceActionResult " + adviceActionResult);
-			
-			return adviceActionResult;
 		} catch(Exception e) {
 			setRaisedException(e);
-			throw new ActionExecutionException("action execution error", e);
+			
+			if(!force) {
+				throw new ActionExecutionException("Failed to execute advice action " + aspectAdviceRule, e);
+			} else {
+				log.error("Failed to execute advice action " + aspectAdviceRule, e);
+			}
 		}
 	}
 
@@ -854,7 +861,7 @@ public class CoreActivity extends AbstractActivity implements Activity {
 			if(aspectAdviceRuleList != null) {
 				for(AspectAdviceRule aspectAdviceRule : aspectAdviceRuleList) {
 					if(aspectAdviceRule.getAspectAdviceType() == AspectAdviceType.BEFORE) {
-						execute(aspectAdviceRule);
+						execute(aspectAdviceRule, false);
 					}
 				}
 			}
@@ -863,10 +870,6 @@ public class CoreActivity extends AbstractActivity implements Activity {
 	
 	public <T> T getAspectAdviceBean(String aspectId) {
 		return translet.getAspectAdviceBean(aspectId);
-	}
-	
-	public void finish() {
-		context.removeCurrentActivity();
 	}
 	
 }

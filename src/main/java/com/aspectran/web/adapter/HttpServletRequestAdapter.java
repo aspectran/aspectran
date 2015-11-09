@@ -26,6 +26,7 @@ import com.aspectran.core.adapter.AbstractRequestAdapter;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.context.rule.type.RequestMethodType;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class HttpServletRequestAdapter.
  * 
@@ -45,42 +46,69 @@ public class HttpServletRequestAdapter extends AbstractRequestAdapter implements
 		setRequestMethod(RequestMethodType.valueOf(request.getMethod()));
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.adapter.RequestAdapter#getCharacterEncoding()
+	 */
 	public String getCharacterEncoding() {
 		return ((HttpServletRequest)adaptee).getCharacterEncoding();
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.adapter.RequestAdapter#setCharacterEncoding(java.lang.String)
+	 */
 	public void setCharacterEncoding(String characterEncoding) throws UnsupportedEncodingException {
 		((HttpServletRequest)adaptee).setCharacterEncoding(characterEncoding);
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.adapter.RequestAdapter#getParameter(java.lang.String)
+	 */
 	public String getParameter(String name) {
 		return ((HttpServletRequest)adaptee).getParameter(name);
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.adapter.RequestAdapter#getParameterValues(java.lang.String)
+	 */
 	public String[] getParameterValues(String name) {
 		return ((HttpServletRequest)adaptee).getParameterValues(name);
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.adapter.RequestAdapter#getParameterNames()
+	 */
 	@SuppressWarnings("unchecked")
 	public Enumeration<String> getParameterNames() {
 		return ((HttpServletRequest)adaptee).getParameterNames();
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.adapter.RequestAdapter#getAttribute(java.lang.String)
+	 */
 	@SuppressWarnings("unchecked")
 	public <T> T getAttribute(String name) {
 		return (T)((HttpServletRequest)adaptee).getAttribute(name);
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.adapter.RequestAdapter#setAttribute(java.lang.String, java.lang.Object)
+	 */
 	public void setAttribute(String name, Object o) {
 		((HttpServletRequest)adaptee).setAttribute(name, o);
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.adapter.RequestAdapter#getAttributeNames()
+	 */
 	@SuppressWarnings("unchecked")
 	public Enumeration<String> getAttributeNames() {
 		return ((HttpServletRequest)adaptee).getAttributeNames();
 
 	}
 
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.adapter.RequestAdapter#removeAttribute(java.lang.String)
+	 */
 	public void removeAttribute(String name) {
 		((HttpServletRequest)adaptee).removeAttribute(name);
 	}

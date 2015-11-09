@@ -32,10 +32,10 @@ import com.aspectran.core.context.rule.RedirectResponseRule;
 public interface ResponseAdapter {
 
 	/**
-	 * Gets the adaptee.
+	 * Gets the Adaptee object.
 	 *
 	 * @param <T> the generic type
-	 * @return the adaptee
+	 * @return the Adaptee object
 	 */
 	public <T> T getAdaptee();
 	

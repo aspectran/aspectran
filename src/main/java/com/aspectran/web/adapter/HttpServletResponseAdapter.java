@@ -95,11 +95,9 @@ public class HttpServletResponseAdapter extends AbstractResponseAdapter implemen
 		int questionPos = -1;
 		
 		Token[] urlTokens = redirectResponseRule.getUrlTokens();
-		//TokenValueHandler handler = new ParameterValueEncoder(characterEncoding);
 
 		if(urlTokens != null && urlTokens.length > 0) {
 			TokenExpressor expressor = new TokenExpression(activity);
-			//expressor.setTokenValueHandler(handler);
 			url = expressor.expressAsString(urlTokens);
 		} else {
 			url = redirectResponseRule.getUrl();
@@ -116,7 +114,6 @@ public class HttpServletResponseAdapter extends AbstractResponseAdapter implemen
 		
 		if(redirectResponseRule.getParameterItemRuleMap() != null) {
 			ItemTokenExpressor expressor = new ItemTokenExpression(activity);
-			//expressor.setTokenValueHandler(handler);
 			ValueMap valueMap = expressor.express(redirectResponseRule.getParameterItemRuleMap());
 
 			if(valueMap != null && valueMap.size() > 0) {
@@ -150,28 +147,5 @@ public class HttpServletResponseAdapter extends AbstractResponseAdapter implemen
 		
 		return url;
 	}
+
 }
-/*
-final class ParameterValueEncoder implements TokenValueHandler {
-
-	private String characterEncoding;
-
-	public ParameterValueEncoder(String characterEncoding) {
-		this.characterEncoding = characterEncoding;
-	}
-
-	public Object handle(TokenType tokenType, Object value) {
-		if(tokenType == TokenType.TEXT)
-			return value;
-
-		if(characterEncoding != null && value instanceof String) {
-			try {
-				return URLEncoder.encode(value.toString(), characterEncoding);
-			} catch(UnsupportedEncodingException e) {
-			}
-		}
-
-		return value;
-	}
-}
-*/

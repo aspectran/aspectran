@@ -30,7 +30,7 @@ for (translet | scheduler) #IMPLIED
 
 <!ELEMENT joinpoint (pointcut*)>
 <!ATTLIST joinpoint
-scope (translet | request | content | response | action | bean) #IMPLIED
+scope (session | translet | request | response | content | bean) #IMPLIED
 >
 
 <!ELEMENT pointcut (#PCDATA)>

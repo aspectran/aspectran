@@ -17,7 +17,9 @@ package com.aspectran.core.activity;
 
 import java.util.List;
 
+import com.aspectran.core.activity.request.RequestException;
 import com.aspectran.core.activity.response.Response;
+import com.aspectran.core.activity.response.ResponseException;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
@@ -27,27 +29,28 @@ import com.aspectran.core.context.rule.ExceptionHandlingRule;
 import com.aspectran.core.context.rule.type.JoinpointScopeType;
 
 /**
- * The Class VoidActivity
+ * The Class SessionScopeActivity
  * 
- * <p>Created: 2008. 04. 28 오전 12:48:48</p>
+ * @since 1.5.0
  */
-public final class VoidActivity extends CoreActivity implements Activity {
-	
-	public VoidActivity(ActivityContext context) {
+public final class SessionScopeActivity extends CoreActivity implements Activity {
+
+	public SessionScopeActivity(ActivityContext context, SessionAdapter sessionAdapter) {
 		super(context);
+		setSessionAdapter(sessionAdapter);
 		newTranslet();
 	}
-	
-	public void ready(String transletName) {
+
+	public void ready(String transletName) throws ActivityException {
 	}
 	
-	protected void request(Translet translet) {
+	protected void request(Translet translet) throws RequestException {
 	}
 	
 	@SuppressWarnings("unchecked")
 	@Override
 	public <T extends Activity> T newActivity() {
-		VoidActivity activity = new VoidActivity(getActivityContext());
+		SessionScopeActivity activity = new SessionScopeActivity(getActivityContext(), getSessionAdapter());
 		return (T)activity;
 	}
 
@@ -62,22 +65,17 @@ public final class VoidActivity extends CoreActivity implements Activity {
 	}
 
 	@Override
-	public SessionAdapter getSessionAdapter() {
-		return null;
-	}
-
-	@Override
 	public String getTransletName() {
 		return null;
 	}
 
 	@Override
-	public void perform() {
+	public void perform() throws ActivityException {
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public void performWithoutResponse() {
+	public void performWithoutResponse() throws ActivityException {
 		throw new UnsupportedOperationException();
 	}
 
@@ -85,19 +83,19 @@ public final class VoidActivity extends CoreActivity implements Activity {
 	public void finish() {
 		throw new UnsupportedOperationException();
 	}
-	
+
 	@Override
 	public String getForwardTransletName() {
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public void response(Response res) {
+	public void response(Response res) throws ResponseException {
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public void responseByContentType(List<ExceptionHandlingRule> exceptionHandlingRuleList) {
+	public void responseByContentType(List<ExceptionHandlingRule> exceptionHandlingRuleList) throws ActivityException {
 		throw new UnsupportedOperationException();
 	}
 
@@ -117,7 +115,7 @@ public final class VoidActivity extends CoreActivity implements Activity {
 	}
 	
 	public JoinpointScopeType getCurrentJoinpointScope() {
-		return null;
+		return JoinpointScopeType.SESSION;
 	}
 
 }

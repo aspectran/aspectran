@@ -21,6 +21,9 @@ import java.util.Map;
           
 public final class JoinpointScopeType extends Type {
 
+	/** @since 1.5.0 */
+	public static final JoinpointScopeType SESSION;
+	
 	public static final JoinpointScopeType TRANSLET;
 	
 	public static final JoinpointScopeType REQUEST;
@@ -34,6 +37,7 @@ public final class JoinpointScopeType extends Type {
 	private static final Map<String, JoinpointScopeType> types;
 	
 	static {
+		SESSION = new JoinpointScopeType("session");
 		TRANSLET = new JoinpointScopeType("translet");
 		REQUEST = new JoinpointScopeType("request");
 		RESPONSE = new JoinpointScopeType("response");
@@ -41,6 +45,7 @@ public final class JoinpointScopeType extends Type {
 		BEAN = new JoinpointScopeType("bean");
 
 		types = new HashMap<String, JoinpointScopeType>();
+		types.put(SESSION.toString(), SESSION);
 		types.put(TRANSLET.toString(), TRANSLET);
 		types.put(REQUEST.toString(), REQUEST);
 		types.put(RESPONSE.toString(), RESPONSE);

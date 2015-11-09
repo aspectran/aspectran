@@ -19,7 +19,9 @@ import java.util.List;
 
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.ActivityContext;
+import com.aspectran.core.context.aspect.AspectAdviceRulePostRegister;
 import com.aspectran.core.context.aspect.AspectAdviceRulePreRegister;
+import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
 import com.aspectran.core.context.aspect.AspectRuleRegistry;
 import com.aspectran.core.context.aspect.InvalidPointcutPatternException;
 import com.aspectran.core.context.aspect.pointcut.Pointcut;
@@ -36,6 +38,7 @@ import com.aspectran.core.context.rule.type.AspectTargetType;
 import com.aspectran.core.context.rule.type.BeanProxifierType;
 import com.aspectran.core.context.rule.type.DefaultSettingType;
 import com.aspectran.core.context.rule.type.ImportFileType;
+import com.aspectran.core.context.rule.type.JoinpointScopeType;
 import com.aspectran.core.context.translet.TransletRuleRegistry;
 import com.aspectran.core.util.ClassDescriptor;
 import com.aspectran.core.util.MethodUtils;
@@ -79,6 +82,8 @@ public abstract class AbstractActivityContextBuilder extends ContextBuilderAssis
 	}
 	
 	protected AspectRuleRegistry makeAspectRuleRegistry(AspectRuleMap aspectRuleMap, BeanRuleMap beanRuleMap, TransletRuleMap transletRuleMap) {
+		AspectAdviceRulePostRegister sessionScopeAspectAdviceRulePostRegister = new AspectAdviceRulePostRegister();
+		
 		for(AspectRule aspectRule : aspectRuleMap) {
 			if(aspectRule.getAspectTargetType() == AspectTargetType.TRANSLET) {
 				PointcutRule pointcutRule = aspectRule.getPointcutRule();
@@ -86,6 +91,10 @@ public abstract class AbstractActivityContextBuilder extends ContextBuilderAssis
 				if(pointcutRule != null) {
 					Pointcut pointcut = PointcutFactory.createPointcut(pointcutRule);
 					aspectRule.setPointcut(pointcut);
+				}
+				
+				if(aspectRule.getJoinpointScope() == JoinpointScopeType.SESSION) {
+					sessionScopeAspectAdviceRulePostRegister.register(aspectRule);
 				}
 			}
 		}
@@ -111,7 +120,7 @@ public abstract class AbstractActivityContextBuilder extends ContextBuilderAssis
 						for(PointcutPatternRule ppr : pointcutPatternRuleList) {
 							if(ppr.getTransletNamePattern() != null && ppr.getMatchedTransletCount() == 0) {
 								offendingPointcutPatterns++;
-								String msg = "incorrect pointcut pattern of translet name \"" + ppr.getTransletNamePattern() + "\" : aspectRule " + aspectRule;
+								String msg = "Incorrect pointcut pattern of translet name \"" + ppr.getTransletNamePattern() + "\" : aspectRule " + aspectRule;
 								if(pointcutPatternVerifiable)
 									log.error(msg);
 								else
@@ -119,7 +128,7 @@ public abstract class AbstractActivityContextBuilder extends ContextBuilderAssis
 							}
 							if(ppr.getBeanIdPattern() != null && ppr.getMatchedBeanCount() == 0) {
 								offendingPointcutPatterns++;
-								String msg = "incorrect pointcut pattern of bean id \"" + ppr.getBeanIdPattern() + "\" : aspectRule " + aspectRule;
+								String msg = "Incorrect pointcut pattern of bean id \"" + ppr.getBeanIdPattern() + "\" : aspectRule " + aspectRule;
 								if(pointcutPatternVerifiable)
 									log.error(msg);
 								else
@@ -127,7 +136,7 @@ public abstract class AbstractActivityContextBuilder extends ContextBuilderAssis
 							}
 							if(ppr.getBeanMethodNamePattern() != null && ppr.getMatchedBeanMethodCount() == 0) {
 								offendingPointcutPatterns++;
-								String msg = "incorrect pointcut pattern of bean's method name \"" + ppr.getBeanMethodNamePattern() + "\" : aspectRule " + aspectRule;
+								String msg = "Incorrect pointcut pattern of bean's method name \"" + ppr.getBeanMethodNamePattern() + "\" : aspectRule " + aspectRule;
 								if(pointcutPatternVerifiable)
 									log.error(msg);
 								else
@@ -149,7 +158,13 @@ public abstract class AbstractActivityContextBuilder extends ContextBuilderAssis
 			}
 		}
 		
-		return new AspectRuleRegistry(aspectRuleMap);
+		AspectRuleRegistry aspectRuleRegistry = new AspectRuleRegistry(aspectRuleMap);
+		
+		AspectAdviceRuleRegistry sessionScopeAspectAdviceRuleRegistry = sessionScopeAspectAdviceRulePostRegister.getAspectAdviceRuleRegistry();
+		if(sessionScopeAspectAdviceRuleRegistry != null)
+			aspectRuleRegistry.setSessionAspectAdviceRuleRegistry(sessionScopeAspectAdviceRuleRegistry);
+		
+		return aspectRuleRegistry;
 	}
 	
 	protected ContextBeanRegistry makeContextBeanRegistry(ActivityContext context, BeanRuleMap beanRuleMap, BeanProxifierType beanProxifierType) {

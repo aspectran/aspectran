@@ -15,11 +15,14 @@
  */
 package com.aspectran.web.adapter;
 
+import java.util.Enumeration;
+
 import javax.servlet.http.HttpSession;
 
+import com.aspectran.core.activity.aspect.SessionScopeAdvisor;
 import com.aspectran.core.adapter.AbstractSessionAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
-import com.aspectran.core.context.bean.scope.Scope;
+import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.bean.scope.SessionScope;
 
 /**
@@ -32,29 +35,132 @@ public class HttpSessionAdapter extends AbstractSessionAdapter implements Sessio
 	
 	public static final String SESSION_SCOPE_ATTRIBUTE = HttpSessionScope.class.getName();
 	
+	private SessionScope scope;
+	
+	private ActivityContext context;
+	
 	/**
 	 * Instantiates a new http session adapter.
 	 *
 	 * @param session the session
 	 */
-	public HttpSessionAdapter(HttpSession session) {
+	public HttpSessionAdapter(HttpSession session, ActivityContext context) {
 		super(session);
+		this.context = context;
+		
+		if(getAttribute(SESSION_SCOPE_ATTRIBUTE) == null) {
+			newHttpSessionScope(false);
+		}
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.adapter.AbstractSessionAdapter#getId()
+	 */
+	public String getId() {
+		checkSessionState();
+		
+		return ((HttpSession)adaptee).getId();
+	}
+	
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.adapter.AbstractSessionAdapter#getCreationTime()
+	 */
+	public long getCreationTime() {
+		checkSessionState();
+		
+		return ((HttpSession)adaptee).getCreationTime();
+	}
+	
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.adapter.AbstractSessionAdapter#getLastAccessedTime()
+	 */
+	public long getLastAccessedTime() {
+		checkSessionState();
+		
+		return ((HttpSession)adaptee).getLastAccessedTime();
+	}
+	
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.adapter.AbstractSessionAdapter#getMaxInactiveInterval()
+	 */
+	public int getMaxInactiveInterval() {
+		checkSessionState();
+		
+		return ((HttpSession)adaptee).getMaxInactiveInterval();
+	}
+	
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.adapter.SessionAdapter#getAttributeNames()
+	 */
+	@SuppressWarnings("unchecked")
+	public Enumeration<String> getAttributeNames() {
+		checkSessionState();
+		
+		return ((HttpSession)adaptee).getAttributeNames();
+	}
+	
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.adapter.SessionAdapter#getAttribute(java.lang.String)
+	 */
 	@SuppressWarnings("unchecked")
 	public <T> T getAttribute(String name) {
+		checkSessionState();
+		
 		return (T)((HttpSession)adaptee).getAttribute(name);
 	}
 
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.adapter.SessionAdapter#setAttribute(java.lang.String, java.lang.Object)
+	 */
 	public void setAttribute(String name, Object value) {
+		checkSessionState();
+		
 		((HttpSession)adaptee).setAttribute(name, value);
 	}
+	
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.adapter.SessionAdapter#invalidate()
+	 */
+	public void invalidate() {
+		checkSessionState();
+		
+		((HttpSession)adaptee).invalidate();
+	}
 
-	public synchronized Scope getScope() {
-		Scope scope = (SessionScope)getAttribute(SESSION_SCOPE_ATTRIBUTE);
-
+	private void checkSessionState() {
+		if(adaptee == null) {
+			throw new IllegalStateException("Session has been expired.");
+		}
+	}
+	
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.adapter.SessionAdapter#getSessionScope()
+	 */
+	public SessionScope getSessionScope() {
 		if(scope == null) {
-			scope = new HttpSessionScope();
+			synchronized(this) {
+				scope = (SessionScope)getAttribute(SESSION_SCOPE_ATTRIBUTE);
+				
+				if(scope == null) {
+					newHttpSessionScope(true);
+				}
+			}
+		}
+		
+		return scope;
+	}
+	
+	/**
+	 * Return a new http session scope.
+	 *
+	 * @param force the force
+	 * @return the session scope
+	 */
+	private SessionScope newHttpSessionScope(boolean force) {
+		SessionScopeAdvisor advisor = SessionScopeAdvisor.newInstance(context, this);
+		
+		if(advisor != null || force) {
+			scope = new HttpSessionScope(this, advisor);
 			setAttribute(SESSION_SCOPE_ATTRIBUTE, scope);
 		}
 		

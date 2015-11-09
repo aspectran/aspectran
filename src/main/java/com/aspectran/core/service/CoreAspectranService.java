@@ -111,7 +111,7 @@ public class CoreAspectranService extends AbstractAspectranService {
 		
 		if(applicationAdapter != null) {
 			try {
-				Scope scope = getApplicationAdapter().getScope();
+				Scope scope = getApplicationAdapter().getApplicationScope();
 		
 				if(scope != null)
 					scope.destroy();
