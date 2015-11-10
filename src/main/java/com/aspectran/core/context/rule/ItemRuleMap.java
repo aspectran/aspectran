@@ -19,6 +19,8 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 
 /**
+ * The Class ItemRuleMap.
+ * 
  * <p>Created: 2008. 03. 29 오후 5:00:20</p>
  */
 public class ItemRuleMap extends LinkedHashMap<String, ItemRule> implements Iterable<ItemRule> {

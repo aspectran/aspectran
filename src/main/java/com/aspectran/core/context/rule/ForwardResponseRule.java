@@ -26,16 +26,12 @@ import com.aspectran.core.util.BooleanUtils;
  */
 public class ForwardResponseRule extends ActionPossessSupport implements ActionPossessable {
 	
-	/** The Constant RESPONSE_TYPE. */
 	public static final ResponseType RESPONSE_TYPE = ResponseType.FORWARD;
 
-	/** The content type. */
 	private String contentType;
 	
-	/** The translet name. */
 	private String transletName;
 	
-	/** The parameter item rule map. */
 	private ItemRuleMap attributeItemRuleMap;
 
 	private Boolean defaultResponse;
@@ -77,27 +73,27 @@ public class ForwardResponseRule extends ActionPossessSupport implements ActionP
 	}
 
 	/**
-	 * Gets the parameter rule map.
-	 * 
-	 * @return the parameter rule map
+	 * Gets the attribute item rule map.
+	 *
+	 * @return the attribute item rule map
 	 */
 	public ItemRuleMap getAttributeItemRuleMap() {
 		return attributeItemRuleMap;
 	}
 
 	/**
-	 * Sets the parameter rule map.
-	 * 
-	 * @param attributeItemRuleMap the new parameter rule map
+	 * Sets the attribute item rule map.
+	 *
+	 * @param attributeItemRuleMap the new attribute item rule map
 	 */
 	public void setAttributeItemRuleMap(ItemRuleMap attributeItemRuleMap) {
 		this.attributeItemRuleMap = attributeItemRuleMap;
 	}
 	
 	/**
-	 * Adds the parameter rule.
-	 * 
-	 * @param attributeItemRule the parameter rule
+	 * Adds the attribute value rule.
+	 *
+	 * @param attributeItemRule the attribute item rule
 	 */
 	public void addAttributeValueRule(ItemRule attributeItemRule) {
 		if(attributeItemRuleMap == null) 
@@ -106,14 +102,29 @@ public class ForwardResponseRule extends ActionPossessSupport implements ActionP
 		attributeItemRuleMap.putItemRule(attributeItemRule);
 	}
 
+	/**
+	 * Returns whether the default response.
+	 *
+	 * @return whether the default response
+	 */
 	public Boolean getDefaultResponse() {
 		return defaultResponse;
 	}
 
+	/**
+	 * Returns whether the default response.
+	 *
+	 * @return true, if is default response
+	 */
 	public boolean isDefaultResponse() {
 		return BooleanUtils.toBoolean(defaultResponse);
 	}
 
+	/**
+	 * Sets whether the default response.
+	 *
+	 * @param defaultResponse whether the default response
+	 */
 	public void setDefaultResponse(Boolean defaultResponse) {
 		this.defaultResponse = defaultResponse;
 	}
@@ -128,24 +139,19 @@ public class ForwardResponseRule extends ActionPossessSupport implements ActionP
 		sb.append(", translet=").append(transletName);
 		if(defaultResponse != null)
 			sb.append(", defaultResponse=").append(defaultResponse);
-		/*
-		if(actionList != null) {
-			sb.append(", actionList=");
-			sb.append('[');
-			for(int i = 0; i < actionList.size(); i++) {
-				Executable action = actionList.get(i);
-				if(i > 0)
-					sb.append(", ");
-				sb.append(action.getActionId());
-			}
-			sb.append(']');
-		}
-		 */
 		sb.append("}");
 		
 		return sb.toString();
 	}
 	
+	/**
+	 * Returns a new instance of ForwardResponseRule.
+	 *
+	 * @param contentType the content type
+	 * @param transletName the translet name
+	 * @param defaultResponse whether the default response
+	 * @return an instance of ForwardResponseRule
+	 */
 	public static ForwardResponseRule newInstance(String contentType, String transletName, Boolean defaultResponse) {
 		if(transletName == null)
 			throw new IllegalArgumentException("The <forward> element requires a translet attribute.");

@@ -18,6 +18,8 @@ package com.aspectran.core.context.rule;
 import com.aspectran.core.util.BooleanUtils;
 
 /**
+ * The Class EchoActionRule.
+ * 
  * <p>Created: 2008. 03. 22 오후 5:50:44</p>
  */
 public class EchoActionRule {
@@ -47,27 +49,27 @@ public class EchoActionRule {
 	}
 
 	/**
-	 * Gets the value rule map.
-	 * 
-	 * @return the value rule map
+	 * Gets the attribute item rule map.
+	 *
+	 * @return the attribute item rule map
 	 */
 	public ItemRuleMap getAttributeItemRuleMap() {
 		return attributeItemRuleMap;
 	}
 
 	/**
-	 * Sets the parameter rule map.
-	 * 
-	 * @param attributeItemRuleMap the parameterRules to set
+	 * Sets the attribute rule map.
+	 *
+	 * @param attributeItemRuleMap the new attribute item rule map
 	 */
 	public void setAttributeItemRuleMap(ItemRuleMap attributeItemRuleMap) {
 		this.attributeItemRuleMap = attributeItemRuleMap;
 	}
 
 	/**
-	 * Adds the parameter rule.
-	 * 
-	 * @param attributeItemRule the parameter rule
+	 * Adds the attribute item rule.
+	 *
+	 * @param attributeItemRule the attribute item rule
 	 */
 	public void addItemRule(ItemRule attributeItemRule) {
 		if(attributeItemRuleMap == null) 
@@ -77,22 +79,27 @@ public class EchoActionRule {
 	}
 	
 	/**
-	 * Gets the hidden.
+	 * Returns whether to hide result of the action.
 	 * 
-	 * @return the hidden
+	 * @return true, if is hidden
 	 */
 	public Boolean getHidden() {
 		return hidden;
 	}
 
+	/**
+	 * Returns whether to hide result of the action.
+	 *
+	 * @return true, if is hidden
+	 */
 	public boolean isHidden() {
 		return BooleanUtils.toBoolean(hidden);
 	}
 
 	/**
-	 * Sets the hidden.
+	 * Sets whether to hide result of the action.
 	 * 
-	 * @param hidden the new hidden
+	 * @param hidden whether to hide result of the action
 	 */
 	public void setHidden(Boolean hidden) {
 		this.hidden = hidden;
@@ -121,6 +128,13 @@ public class EchoActionRule {
 		return sb.toString();
 	}
 	
+	/**
+	 * Returns a new derived instance of EchoActionRule.
+	 *
+	 * @param id the action id
+	 * @param hidden whether to hide result of the action
+	 * @return the echo action rule
+	 */
 	public static EchoActionRule newInstance(String id, Boolean hidden) {
 		EchoActionRule echoActionRule = new EchoActionRule();
 		echoActionRule.setActionId(id);

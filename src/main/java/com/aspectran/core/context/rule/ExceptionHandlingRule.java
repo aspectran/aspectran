@@ -26,9 +26,9 @@ import com.aspectran.core.context.rule.ability.ActionRuleApplicable;
 import com.aspectran.core.context.rule.type.ActionType;
 
 /**
- * <p>
- * Created: 2009. 03. 09 오후 23:48:09
- * </p>
+ * The Class ExceptionHandlingRule.
+ * 
+ * <pCreated: 2009. 03. 09 오후 23:48:09</p>
  */
 public class ExceptionHandlingRule implements ActionRuleApplicable, Iterable<ResponseByContentTypeRule> {
 
@@ -61,10 +61,20 @@ public class ExceptionHandlingRule implements ActionRuleApplicable, Iterable<Res
 		throw new UnsupportedOperationException("There is nothing that can be apply to IncludeActionRule. The aspecet-advice is not support include-action.");
 	}
 	
+	/**
+	 * Gets the executable action.
+	 *
+	 * @return the executable action
+	 */
 	public Executable getExecutableAction() {
 		return action;
 	}
 	
+	/**
+	 * Gets the action type.
+	 *
+	 * @return the action type
+	 */
 	public ActionType getActionType() {
 		if(action == null)
 			return null;
@@ -72,10 +82,21 @@ public class ExceptionHandlingRule implements ActionRuleApplicable, Iterable<Res
 		return action.getActionType();
 	}
 
+	/**
+	 * Gets the response by content type rule.
+	 *
+	 * @return the response by content type rule
+	 */
 	public ResponseByContentTypeRule getResponseByContentTypeRule() {
 		return defaultResponseByContentTypeRule;
 	}
 
+	/**
+	 * Put response by content type rule.
+	 *
+	 * @param responseByContentTypeRule the response by content type rule
+	 * @return the response by content type rule
+	 */
 	public ResponseByContentTypeRule putResponseByContentTypeRule(ResponseByContentTypeRule responseByContentTypeRule) {
 		String exceptionType = responseByContentTypeRule.getExceptionType();
 		
@@ -88,6 +109,12 @@ public class ExceptionHandlingRule implements ActionRuleApplicable, Iterable<Res
 		return responseByContentTypeRule;
 	}
 	
+	/**
+	 * Gets the response by content type rule.
+	 *
+	 * @param ex the ex
+	 * @return the response by content type rule
+	 */
 	public ResponseByContentTypeRule getResponseByContentTypeRule(Exception ex) {
 		ResponseByContentTypeRule responseByContentTypeRule = null;
 		int deepest = Integer.MAX_VALUE;
@@ -109,10 +136,25 @@ public class ExceptionHandlingRule implements ActionRuleApplicable, Iterable<Res
 		return responseByContentTypeRule;
 	}
 	
+	/**
+	 * Gets the matched depth.
+	 *
+	 * @param exceptionType the exception type
+	 * @param ex the ex
+	 * @return the matched depth
+	 */
 	private int getMatchedDepth(String exceptionType, Exception ex) {
 		return getMatchedDepth(exceptionType, ex.getClass(), 0);
 	}
 
+	/**
+	 * Gets the matched depth.
+	 *
+	 * @param exceptionType the exception type
+	 * @param exceptionClass the exception class
+	 * @param depth the depth
+	 * @return the matched depth
+	 */
 	private int getMatchedDepth(String exceptionType, Class<?> exceptionClass, int depth) {
 		if(exceptionClass.getName().indexOf(exceptionType) != -1)
 			return depth;

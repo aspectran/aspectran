@@ -180,9 +180,9 @@ public class WebActivity extends CoreActivity implements Activity {
 		String method = request.getMethod();
 		String contentType = request.getContentType();
 		
-        if(RequestMethodType.POST.toString().equals(method)
-        		&& contentType != null
-        		&& contentType.startsWith("multipart/form-data")) {
+		if(RequestMethodType.POST.toString().equals(method)
+				&& contentType != null
+				&& contentType.startsWith("multipart/form-data")) {
 
 			String multipartRequestWrapperResolver = getRequestSetting(MULTIPART_REQUEST_WRAPPER_RESOLVER);
 			if(multipartRequestWrapperResolver == null) {

@@ -18,26 +18,24 @@ package com.aspectran.core.context.rule;
 import com.aspectran.core.util.BooleanUtils;
 
 /**
+ * The Class IncludeActionRule.
+ * 
  * <p>Created: 2008. 06. 05 오후 9:25:40</p>
  */
 public class IncludeActionRule {
 	
-	/** The id. */
 	private String actionId;
 	
-	/** The translet name. */
 	private String transletName;
 	
-	/** The attribute item rule map. */
 	private ItemRuleMap attributeItemRuleMap;
 	
-	/** The hidden. */
 	private Boolean hidden;
 	
 	/**
-	 * Gets the id.
+	 * Gets the action id.
 	 *
-	 * @return the id
+	 * @return the action id
 	 */
 	public String getActionId() {
 		return actionId;
@@ -71,27 +69,27 @@ public class IncludeActionRule {
 	}
 
 	/**
-	 * Gets the parameter rule map for attributes.
-	 * 
-	 * @return the parameter rule map for attributes
+	 * Gets the attribute item rule map.
+	 *
+	 * @return the attribute item rule map
 	 */
 	public ItemRuleMap getAttributeItemRuleMap() {
 		return attributeItemRuleMap;
 	}
 
 	/**
-	 * Sets the parameter rule map for attributes.
-	 * 
-	 * @param attributeItemRuleMap the new parameter rule map for attributes
+	 * Sets the attribute item rule map.
+	 *
+	 * @param attributeItemRuleMap the new attribute item rule map
 	 */
 	public void setAttributeItemRuleMap(ItemRuleMap attributeItemRuleMap) {
 		this.attributeItemRuleMap = attributeItemRuleMap;
 	}
 
 	/**
-	 * Adds the parameter rule for attributes.
-	 * 
-	 * @param attributeItemRule the parameter rule for attributes
+	 * Adds the attribute item rule.
+	 *
+	 * @param attributeItemRule the attribute item rule
 	 */
 	public void addAttributeItemRule(ItemRule attributeItemRule) {
 		if(attributeItemRuleMap == null) 
@@ -101,22 +99,27 @@ public class IncludeActionRule {
 	}
 	
 	/**
-	 * Gets the hidden.
+	 * Returns whether to hide result of the action.
 	 * 
-	 * @return the hidden
+	 * @return true, if is hidden
 	 */
 	public Boolean getHidden() {
 		return hidden;
 	}
 
+	/**
+	 * Returns whether to hide result of the action.
+	 *
+	 * @return true, if is hidden
+	 */
 	public Boolean isHidden() {
 		return BooleanUtils.toBoolean(hidden);
 	}
 
 	/**
-	 * Sets the hidden.
+	 * Sets whether to hide result of the action.
 	 * 
-	 * @param hidden the new hidden
+	 * @param hidden whether to hide result of the action
 	 */
 	public void setHidden(Boolean hidden) {
 		this.hidden = hidden;
@@ -146,6 +149,14 @@ public class IncludeActionRule {
 		return sb.toString();
 	}
 	
+	/**
+	 * Returns a new instance of IncludeActionRule.
+	 *
+	 * @param id the action id
+	 * @param transletName the translet name
+	 * @param hidden whether to hide result of the action
+	 * @return the include action rule
+	 */
 	public static IncludeActionRule newInstance(String id, String transletName, Boolean hidden) {
 		IncludeActionRule includeActionRule = new IncludeActionRule();
 		includeActionRule.setActionId(id);

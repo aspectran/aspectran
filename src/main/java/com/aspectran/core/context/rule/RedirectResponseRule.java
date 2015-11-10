@@ -31,28 +31,20 @@ import com.aspectran.core.util.BooleanUtils;
  */
 public class RedirectResponseRule extends ActionPossessSupport implements ActionPossessable {
 	
-	/** The Constant RESPONSE_TYPE. */
 	public static final ResponseType RESPONSE_TYPE = ResponseType.REDIRECT;
 
-	/** The content type. */
 	private String contentType;
 	
-	/** The translet name. */
 	private String transletName;
 	
-	/** The url. */
 	private String url;
 	
-	/** The url tokens. */
 	private Token[] urlTokens;
 	
-	/** The exclude null parameters. */
 	private Boolean excludeNullParameter;
 
-	/** The character encoding. */
 	private String characterEncoding;
 	
-	/** The parameter item rule map. */
 	private ItemRuleMap parameterItemRuleMap;
 
 	private Boolean defaultResponse;
@@ -206,14 +198,29 @@ public class RedirectResponseRule extends ActionPossessSupport implements Action
 		parameterItemRuleMap.putItemRule(parameterItemRule);
 	}
 	
+	/**
+	 * Returns whether the default response.
+	 *
+	 * @return whether the default response
+	 */
 	public Boolean getDefaultResponse() {
 		return defaultResponse;
 	}
 
+	/**
+	 * Returns whether the default response.
+	 *
+	 * @return true, if is default response
+	 */
 	public boolean isDefaultResponse() {
 		return BooleanUtils.toBoolean(defaultResponse);
 	}
 
+	/**
+	 * Sets whether the default response.
+	 *
+	 * @param defaultResponse whether the default response
+	 */
 	public void setDefaultResponse(Boolean defaultResponse) {
 		this.defaultResponse = defaultResponse;
 	}
@@ -230,21 +237,6 @@ public class RedirectResponseRule extends ActionPossessSupport implements Action
 		sb.append(", excludeNullParameters=").append(excludeNullParameter);
 		if(defaultResponse != null)
 			sb.append(", defaultResponse=").append(defaultResponse);
-		/*
-		if(actionList != null) {
-			sb.append(", actionList=");
-			sb.append('[');
-			for(int i = 0; i < actionList.size(); i++) {
-				Executable action = actionList.get(i);
-
-				if(i > 0)
-					sb.append(", ");
-
-				sb.append(action.getActionId());
-			}
-			sb.append(']');
-		}
-		*/
 		sb.append("}");
 		
 		return sb.toString();

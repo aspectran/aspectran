@@ -72,10 +72,20 @@ public class DispatchResponseRule extends ActionPossessSupport implements Action
 		this.characterEncoding = characterEncoding;
 	}
 
+	/**
+	 * Gets the template rule.
+	 *
+	 * @return the template rule
+	 */
 	public TemplateRule getTemplateRule() {
 		return templateRule;
 	}
 
+	/**
+	 * Sets the template rule.
+	 *
+	 * @param templateRule the new template rule
+	 */
 	public void setTemplateRule(TemplateRule templateRule) {
 		this.templateRule = templateRule;
 		
@@ -83,14 +93,29 @@ public class DispatchResponseRule extends ActionPossessSupport implements Action
 			characterEncoding = templateRule.getEncoding();
 	}
 
+	/**
+	 * Gets the default response.
+	 *
+	 * @return the default response
+	 */
 	public Boolean getDefaultResponse() {
 		return defaultResponse;
 	}
 
+	/**
+	 * Returns whether the default response.
+	 *
+	 * @return true, if is default response
+	 */
 	public boolean isDefaultResponse() {
 		return BooleanUtils.toBoolean(defaultResponse);
 	}
 
+	/**
+	 * Sets whether the default response.
+	 *
+	 * @param defaultResponse whether the default response
+	 */
 	public void setDefaultResponse(Boolean defaultResponse) {
 		this.defaultResponse = defaultResponse;
 	}
@@ -106,24 +131,19 @@ public class DispatchResponseRule extends ActionPossessSupport implements Action
 		sb.append(", templateRule=").append(templateRule);
 		if(defaultResponse != null)
 			sb.append(", defaultResponse=").append(defaultResponse);
-/*
-		if(actionList != null) {
-			sb.append(", actionList=");
-			sb.append('[');
-			for(int i = 0; i < actionList.size(); i++) {
-				Executable action = actionList.get(i);
-				if(i > 0)
-					sb.append(", ");
-				sb.append(action.getActionId());
-			}
-			sb.append(']');
-		}
-*/
 		sb.append("}");
 		
 		return sb.toString();
 	}
 	
+	/**
+	 * Returns a new instance of DispatchResponseRule.
+	 *
+	 * @param contentType the content type
+	 * @param characterEncoding the character encoding
+	 * @param defaultResponse the default response
+	 * @return an instance of DispatchResponseRule
+	 */
 	public static DispatchResponseRule newInstance(String contentType, String characterEncoding, Boolean defaultResponse) {
 		DispatchResponseRule drr = new DispatchResponseRule();
 		drr.setContentType(contentType);
@@ -133,6 +153,12 @@ public class DispatchResponseRule extends ActionPossessSupport implements Action
 		return drr;
 	}
 
+	/**
+	 * Returns a new derived instance of DispatchResponseRule.
+	 *
+	 * @param dispatchResponseRule an instance of DispatchResponseRulethe
+	 * @return the dispatch response rule
+	 */
 	public static DispatchResponseRule newDerivedDispatchResponseRuleRule(DispatchResponseRule dispatchResponseRule) {
 		DispatchResponseRule newDispatchResponseRule = new DispatchResponseRule();
 		newDispatchResponseRule.setContentType(dispatchResponseRule.getContentType());

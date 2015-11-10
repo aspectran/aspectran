@@ -24,6 +24,8 @@ import com.aspectran.core.activity.response.transform.TransformFactory;
 import com.aspectran.core.context.rule.ability.ResponseRuleApplicable;
 
 /**
+ * The Class ResponseByContentTypeRule.
+ * 
  * <p>Created: 2008. 04. 01 오후 11:19:28</p>
  */
 public class ResponseByContentTypeRule implements ResponseRuleApplicable {
