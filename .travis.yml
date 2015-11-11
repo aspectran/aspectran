@@ -7,5 +7,5 @@ jdk:
   - openjdk7
   - openjdk6
 
-script:
-  - mvn clean package
+after_success:
+  - ls -la ./target
