@@ -1,17 +1,17 @@
-/*
- * Copyright 2008-2015 the original author or authors.
+/**
+ *    Copyright 2009-2015 the original author or authors.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *    Licensed under the Apache License, Version 2.0 (the "License");
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *       http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
  */
 package com.aspectran.core.activity.variable.token;
 
@@ -21,9 +21,9 @@ import java.util.List;
 import com.aspectran.core.context.rule.type.TokenType;
 
 /**
- * <p>
- * Created: 2008. 03. 29 오전 1:55:03
- * </p>
+ * The Class Tokenizer.
+ * 
+ * <p>Created: 2008. 03. 29 오전 1:55:03</p>
  */
 public class Tokenizer {
 
@@ -32,14 +32,6 @@ public class Tokenizer {
 	private static final int AT_STRING = 1;
 
 	private static final int AT_SYMBOL = 2;
-
-//	private static final int AT_PARAMETER_SYMBOL = 2;
-//
-//	private static final int AT_ATTRIBUTE_SYMBOL = 3;
-//
-//	private static final int AT_TOKEN_PROPERTY_SYMBOL = 4;
-//
-//	private static final int AT_REFERENCE_BEAN_SYMBOL = 5;
 
 	private static final int AT_TOKEN_NAME = 3;
 
@@ -50,12 +42,12 @@ public class Tokenizer {
 	private static final char LF = '\n';
 
 	/**
-	 * Tokenize.
+	 * Tokenize a string and returns a list of tokens.
 	 * 
 	 * @param input the pattern string
 	 * @param trimStringToken the trim string token
 	 * 
-	 * @return the list< token>
+	 * @return the token list
 	 */
 	public static List<Token> tokenize(CharSequence input, boolean trimStringToken) {
 		List<Token> tokens = new ArrayList<Token>();
@@ -365,4 +357,5 @@ public class Tokenizer {
 		
 		return string.substring(0, end + 1);
 	}
+	
 }

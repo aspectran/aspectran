@@ -1,17 +1,17 @@
-/*
- * Copyright 2008-2015 the original author or authors.
+/**
+ *    Copyright 2009-2015 the original author or authors.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *    Licensed under the Apache License, Version 2.0 (the "License");
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *       http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
  */
 package com.aspectran.core.context.builder;
 
@@ -117,7 +117,8 @@ public class ContextBuilderAssistant {
 	
 	/**
 	 * Pop object.
-	 * 
+	 *
+	 * @param <T> the generic type
 	 * @return the object
 	 */
 	@SuppressWarnings("unchecked")
@@ -127,7 +128,8 @@ public class ContextBuilderAssistant {
 	
 	/**
 	 * Peek object.
-	 * 
+	 *
+	 * @param <T> the generic type
 	 * @return the object
 	 */
 	@SuppressWarnings("unchecked")
@@ -137,7 +139,9 @@ public class ContextBuilderAssistant {
 	
 	/**
 	 * Peek object.
-	 * 
+	 *
+	 * @param <T> the generic type
+	 * @param n the n
 	 * @return the object
 	 */
 	@SuppressWarnings("unchecked")
@@ -152,23 +156,51 @@ public class ContextBuilderAssistant {
 		objectStack.clear();
 	}
 
+	/**
+	 * Gets the settings.
+	 *
+	 * @return the settings
+	 */
 	public Map<DefaultSettingType, String> getSettings() {
 		return settings;
 	}
 
+	/**
+	 * Sets the settings.
+	 *
+	 * @param settings the settings
+	 * @throws ClassNotFoundException the class not found exception
+	 */
 	public void setSettings(Map<DefaultSettingType, String> settings) throws ClassNotFoundException {
 		this.settings = settings;
 		applySettings();
 	}
 
+	/**
+	 * Put setting.
+	 *
+	 * @param settingType the setting type
+	 * @param value the value
+	 */
 	public void putSetting(DefaultSettingType settingType, String value) {
 		settings.put(settingType, value);
 	}
 	
+	/**
+	 * Gets the setting.
+	 *
+	 * @param settingType the setting type
+	 * @return the setting
+	 */
 	public Object getSetting(DefaultSettingType settingType) {
 		return settings.get(settingType);
 	}
 	
+	/**
+	 * Apply settings.
+	 *
+	 * @throws ClassNotFoundException the class not found exception
+	 */
 	@SuppressWarnings("unchecked")
 	public void applySettings() throws ClassNotFoundException {
 		DefaultSettings defaultSettings = assistantLocal.touchDefaultSettings();
@@ -187,6 +219,11 @@ public class ContextBuilderAssistant {
 		}
 	}
 	
+	/**
+	 * Gets the type aliases.
+	 *
+	 * @return the type aliases
+	 */
 	public Map<String, String> getTypeAliases() {
 		return typeAliases;
 	}
@@ -235,20 +272,41 @@ public class ContextBuilderAssistant {
 		typeAliases.clear();
 	}
 	
+	/**
+	 * Gets the assistant local.
+	 *
+	 * @return the assistant local
+	 */
 	public AssistantLocal getAssistantLocal() {
 		return assistantLocal;
 	}
 
+	/**
+	 * Sets the assistant local.
+	 *
+	 * @param assistantLocal the new assistant local
+	 */
 	public void setAssistantLocal(AssistantLocal assistantLocal) {
 		this.assistantLocal = assistantLocal;
 	}
 
+	/**
+	 * Backup assistant local.
+	 *
+	 * @return the assistant local
+	 * @throws CloneNotSupportedException the clone not supported exception
+	 */
 	public AssistantLocal backupAssistantLocal() throws CloneNotSupportedException {
 		AssistantLocal oldAssistantLocal = assistantLocal;
 		assistantLocal = assistantLocal.clone();
 		return oldAssistantLocal;
 	}
 
+	/**
+	 * Restore assistant local.
+	 *
+	 * @param assistantLocal the assistant local
+	 */
 	public void restoreAssistantLocal(AssistantLocal assistantLocal) {
 		this.assistantLocal = assistantLocal;
 	}
@@ -328,10 +386,20 @@ public class ContextBuilderAssistant {
 		return defaultSettings.isPointcutPatternVerifiable();
 	}
 
+	/**
+	 * Gets the aspect rule map.
+	 *
+	 * @return the aspect rule map
+	 */
 	public AspectRuleMap getAspectRuleMap() {
 		return aspectRuleMap;
 	}
 	
+	/**
+	 * Adds the aspect rule.
+	 *
+	 * @param aspectRule the aspect rule
+	 */
 	public void addAspectRule(AspectRule aspectRule) {
 		aspectRuleMap.putAspectRule(aspectRule);
 		
@@ -352,9 +420,9 @@ public class ContextBuilderAssistant {
 	 * Adds the bean rule.
 	 *
 	 * @param beanRule the bean rule
-	 * @throws CloneNotSupportedException 
-	 * @throws IOException 
-	 * @throws ClassNotFoundException 
+	 * @throws CloneNotSupportedException the clone not supported exception
+	 * @throws ClassNotFoundException the class not found exception
+	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public void addBeanRule(BeanRule beanRule) throws CloneNotSupportedException, ClassNotFoundException, IOException {
 		String className = beanRule.getClassName();

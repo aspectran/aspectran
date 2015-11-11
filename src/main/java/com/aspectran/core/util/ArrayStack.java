@@ -1,18 +1,17 @@
-/*
- * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
+/**
+ *    Copyright 2009-2015 the original author or authors.
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *    Licensed under the Apache License, Version 2.0 (the "License");
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
  */
 package com.aspectran.core.util;
 
@@ -29,7 +28,7 @@ import java.util.EmptyStackException;
  * The removal order of an <code>ArrayStack</code> is based on insertion 
  * order: The most recently added element is removed first.  The iteration
  * order is <i>not</i> the same as the removal order.  The iterator returns
- * elements from the bottom up, whereas the {@link #remove()} method removes
+ * elements from the bottom up, whereas the {@link #pop()} method removes
  * them from the top down.
  * <p>
  * Unlike <code>Stack</code>, <code>ArrayStack</code> accepts null entries.
@@ -39,17 +38,15 @@ import java.util.EmptyStackException;
  * compability with both previous versions of BeanUtils and also allow 
  * coexistance with both collections 2.1 and 3.0.
  *
- * @see java.util.Stack
- * @since Commons Collections 1.0
- * @version $Revision: 555824 $ $Date: 2007-07-13 01:27:15 +0100 (Fri, 13 Jul 2007) $
- * 
  * @author Craig R. McClanahan
  * @author Paul Jack
  * @author Stephen Colebourne
+ * @see java.util.Stack
+ * @since Commons Collections 1.0
  */
 public class ArrayStack extends ArrayList<Object> {
 
-	/** Ensure serialization compatibility */
+	/**  Ensure serialization compatibility. */
 	static final long serialVersionUID = 4952513157310856314L;
 
 	/**
@@ -64,8 +61,7 @@ public class ArrayStack extends ArrayList<Object> {
 	 * Constructs a new empty <code>ArrayStack</code> with an initial size.
 	 * 
 	 * @param initialSize  the initial size to use
-	 * @throws IllegalArgumentException  if the specified initial size
-	 *  is negative
+	 * @throws IllegalArgumentException  if the specified initial size is negative
 	 */
 	public ArrayStack(int initialSize) {
 		super(initialSize);

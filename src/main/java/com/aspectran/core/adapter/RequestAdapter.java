@@ -1,17 +1,17 @@
-/*
- * Copyright 2008-2015 the original author or authors.
+/**
+ *    Copyright 2009-2015 the original author or authors.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *    Licensed under the Apache License, Version 2.0 (the "License");
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *       http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
  */
 package com.aspectran.core.adapter;
 
@@ -151,6 +151,7 @@ public interface RequestAdapter {
 	/**
 	 * Returns the value of the named attribute as an <code>Object</code>, or <code>null</code> if no attribute of the given name exists.
 	 *
+	 * @param <T> the generic type
 	 * @param name a String specifying the name of the attribute
 	 * @return an Object containing the value of the attribute, or null if the attribute does not exist
 	 */
@@ -182,14 +183,14 @@ public interface RequestAdapter {
 	public void removeAttribute(String name);
 
 	/**
-	 * Checks if is max length exceeded.
+	 * Returns whether request header has exceed the maximum length.
 	 *
 	 * @return true, if is max length exceeded
 	 */
 	public boolean isMaxLengthExceeded();
 
 	/**
-	 * Sets the max length exceeded.
+	 * Sets whether request header has exceed the maximum length.
 	 *
 	 * @param maxLengthExceeded the new max length exceeded
 	 */

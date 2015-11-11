@@ -1,17 +1,17 @@
-/*
- * Copyright 2008-2015 the original author or authors.
+/**
+ *    Copyright 2009-2015 the original author or authors.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *    Licensed under the Apache License, Version 2.0 (the "License");
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *       http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
  */
 package com.aspectran.core.adapter;
 
@@ -34,7 +34,6 @@ public abstract class AbstractApplicationAdapter implements ApplicationAdapter {
 	
 	protected final AspectranService aspectranService;
 	
-	/** The adaptee. */
 	protected final Object adaptee;
 
 	protected final ApplicationScope scope = new ApplicationScope();
@@ -51,19 +50,31 @@ public abstract class AbstractApplicationAdapter implements ApplicationAdapter {
 		this.adaptee = adaptee;
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.adapter.ApplicationAdapter#getAdaptee()
+	 */
 	@SuppressWarnings("unchecked")
 	public <T> T getAdaptee() {
 		return (T)adaptee;
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.adapter.ApplicationAdapter#getApplicationScope()
+	 */
 	public ApplicationScope getApplicationScope() {
 		return scope;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.adapter.ApplicationAdapter#getAspectranServiceController()
+	 */
 	public AspectranServiceController getAspectranServiceController() {
 		return aspectranService;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.adapter.ApplicationAdapter#getClassLoader()
+	 */
 	public ClassLoader getClassLoader() {
 		if(aspectranService.getAspectranClassLoader() != null)
 			return aspectranService.getAspectranClassLoader();
@@ -71,21 +82,28 @@ public abstract class AbstractApplicationAdapter implements ApplicationAdapter {
 		return AspectranClassLoader.getDefaultClassLoader();
 	}
 
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.adapter.ApplicationAdapter#getApplicationBasePath()
+	 */
 	public String getApplicationBasePath() {
 		return applicationBasePath;
 	}
 
+	/**
+	 * Sets the application base path.
+	 *
+	 * @param applicationBasePath the new application base path
+	 */
 	public void setApplicationBasePath(String applicationBasePath) {
 		this.applicationBasePath = applicationBasePath;
 	}
 
 	/**
-	 * To real path.
-	 * 
+	 * Returns to convert the given file path with the real file path.
+	 *
 	 * @param filePath the file path
-	 * 
 	 * @return the file
-	 * @throws IOException 
+	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public String toRealPath(String filePath) throws IOException {
 		File file = toRealPathAsFile(filePath);
@@ -93,7 +111,7 @@ public abstract class AbstractApplicationAdapter implements ApplicationAdapter {
 	}
 
 	/**
-	 * To real path as file.
+	 * Returns to convert the given file path with the real file path.
 	 * 
 	 * @param filePath the file path
 	 * 

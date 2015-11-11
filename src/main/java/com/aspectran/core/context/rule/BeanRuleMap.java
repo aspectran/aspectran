@@ -1,17 +1,17 @@
-/*
- * Copyright 2008-2015 the original author or authors.
+/**
+ *    Copyright 2009-2015 the original author or authors.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *    Licensed under the Apache License, Version 2.0 (the "License");
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *       http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
  */
 package com.aspectran.core.context.rule;
 
@@ -23,9 +23,7 @@ import java.util.Map;
 /**
  * The Class BeanRuleMap.
  * 
- * <p>
- * Created: 2009. 03. 09 오후 23:48:09
- * </p>
+ * <p>Created: 2009. 03. 09 오후 23:48:09</p>
  */
 public class BeanRuleMap extends LinkedHashMap<String, BeanRule> implements Iterable<BeanRule> {
 
@@ -53,9 +51,8 @@ public class BeanRuleMap extends LinkedHashMap<String, BeanRule> implements Iter
 
 	/**
 	 * Adds a value rule.
-	 * 
-	 * @param itemRule the value rule
-	 * 
+	 *
+	 * @param beanRule the bean rule
 	 * @return the value rule
 	 */
 	public BeanRule putBeanRule(BeanRule beanRule) {
@@ -73,6 +70,11 @@ public class BeanRuleMap extends LinkedHashMap<String, BeanRule> implements Iter
 		return this.values().iterator();
 	}
 
+	/**
+	 * Gets the class bean rule map.
+	 *
+	 * @return the class bean rule map
+	 */
 	public Map<Class<?>, BeanRule> getClassBeanRuleMap() {
 		Map<Class<?>, BeanRule> classBeanRuleMap = new HashMap<Class<?>, BeanRule>();
 		

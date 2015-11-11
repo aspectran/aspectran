@@ -1,17 +1,17 @@
-/*
- * Copyright 2008-2015 the original author or authors.
+/**
+ *    Copyright 2009-2015 the original author or authors.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *    Licensed under the Apache License, Version 2.0 (the "License");
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *       http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
  */
 package com.aspectran.web.activity.request.multipart;
 
@@ -96,7 +96,7 @@ public class MultipartFileParameter extends FileParameter {
 	/**
 	 * Return an byte array to read the contents of the file from.
 	 * 
-	 * @return the bytes
+	 * @return the byte array
 	 */
 	public byte[] getBytes() {
 		if(!isAvailable())
@@ -109,13 +109,11 @@ public class MultipartFileParameter extends FileParameter {
 
 	/**
 	 * Save the uploaded file to the given destination file.
-	 * 
+	 *
 	 * @param dest the destination file
 	 * @param overwrite 이미 파일이 존재할 경우 덮어 쓸지 여부
-	 * 
-	 * @return 저장된 파일
-	 * 
-	 * @throws Exception the exception
+	 * @return a saved file
+	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public File saveAs(File dest, boolean overwrite) throws IOException {
 		if(!isAvailable())
@@ -150,7 +148,7 @@ public class MultipartFileParameter extends FileParameter {
 	}
 
 	/**
-	 * Delete.
+	 * Delete a file item.
 	 */
 	public void delete() {
 		fileItem.delete();

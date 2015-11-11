@@ -1,17 +1,17 @@
-/*
- * Copyright 2008-2015 the original author or authors.
+/**
+ *    Copyright 2009-2015 the original author or authors.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *    Licensed under the Apache License, Version 2.0 (the "License");
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *       http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
  */
 package com.aspectran.core.context.builder;
 
@@ -38,21 +38,37 @@ public class BeanReferenceException extends ActivityContextBuilderException {
 
 	/**
 	 * Constructor to create exception with a message.
-	 * 
-	 * @param msg A message to associate with the exception
+	 *
+	 * @param unknownBeanIdList the unknown bean id list
 	 */
 	public BeanReferenceException(List<String> unknownBeanIdList) {
 		super(getMessage(unknownBeanIdList));
 	}
 	
+	/**
+	 * Gets the bean reference inspector.
+	 *
+	 * @return the bean reference inspector
+	 */
 	public BeanReferenceInspector getBeanReferenceInspector() {
 		return beanReferenceInspector;
 	}
 
+	/**
+	 * Sets the bean reference inspector.
+	 *
+	 * @param beanReferenceInspector the new bean reference inspector
+	 */
 	public void setBeanReferenceInspector(BeanReferenceInspector beanReferenceInspector) {
 		this.beanReferenceInspector = beanReferenceInspector;
 	}
 
+	/**
+	 * Gets the message.
+	 *
+	 * @param unknownBeanIdList the unknown bean id list
+	 * @return the message
+	 */
 	private static String getMessage(List<String> unknownBeanIdList) {
 		StringBuilder sb = new StringBuilder();
 		sb.append("Cannot resolve reference to bean. unknown bean id [");
