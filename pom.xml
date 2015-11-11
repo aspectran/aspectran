@@ -24,7 +24,7 @@
 	</contributors>
 
 	<scm>
-		<url>http://github.com/aspectran/aspectran</url>
+		<url>https://github.com/aspectran/aspectran</url>
 		<connection>scm:git:ssh://github.com/aspectran/aspectran.git</connection>
 		<developerConnection>scm:git:ssh://git@github.com/aspectran/aspectran.git</developerConnection>
 		<tag>HEAD</tag>
