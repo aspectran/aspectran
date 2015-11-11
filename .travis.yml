@@ -8,4 +8,4 @@ jdk:
   - openjdk6
 
 script:
-  - mvn clean package -q
+  - mvn clean package

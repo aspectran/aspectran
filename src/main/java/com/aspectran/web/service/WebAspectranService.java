@@ -48,7 +48,7 @@ public class WebAspectranService extends CoreAspectranService {
 
 	public static final String ASPECTRAN_DEFAULT_SERVLET_NAME_PARAM = "aspectran:defaultServletName";
 	
-	private static final String DEFAULT_ROOT_CONTEXT = "/WEB-INF/aspectran/root.xml";
+	private static final String DEFAULT_ROOT_CONTEXT = "/WEB-INF/aspectran/config/root.xml";
 	
 	private DefaultServletHttpRequestHandler defaultServletHttpRequestHandler;
 	
