@@ -39,7 +39,7 @@
 	</ciManagement>
 
 	<properties>
-		<clirr.comparisonVersion>1.4.1</clirr.comparisonVersion>
+		<clirr.comparisonVersion>1.5.0</clirr.comparisonVersion>
 		<findbugs.onlyAnalyze>com.aspectran.*</findbugs.onlyAnalyze>
 	</properties>
 
