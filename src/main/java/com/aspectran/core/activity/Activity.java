@@ -50,6 +50,8 @@ public interface Activity {
 	public void perform();
 	
 	public void performWithoutResponse();
+
+	public void finish();
 	
 	public void execute(List<AspectAdviceRule> aspectAdviceRuleList);
 	
@@ -57,13 +59,26 @@ public interface Activity {
 	
 	public ProcessResult getProcessResult();
 	
+	/**
+	 * Returns the forwarding destination translet name.
+	 *
+	 * @return the forwarding destination translet name
+	 */
 	public String getForwardTransletName();
 	
+	/**
+	 * Returns whether the current activity is completed or terminated.
+	 * 
+	 * @return true, if the current activity is completed or terminated
+	 */
+	public boolean isActivityEnded();
+
+	/**
+	 * Stop the activity and responds immediately.
+	 */
 	public void activityEnd();
 	
-	public boolean isActivityEnded();
-	
-	public void response(Response res);
+	public void response(Response response);
 	
 	public void responseByContentType(List<ExceptionHandlingRule> exceptionHandlingRuleList);
 
@@ -116,7 +131,5 @@ public interface Activity {
 	public void setRequestScope(Scope requestScope);
 
 	public JoinpointScopeType getCurrentJoinpointScope();
-
-	public void finish();
 
 }

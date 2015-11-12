@@ -28,7 +28,7 @@ import com.aspectran.core.context.rule.type.ActionType;
 /**
  * The Class ExceptionHandlingRule.
  * 
- * <pCreated: 2009. 03. 09 오후 23:48:09</p>
+ * <p>Created: 2009. 03. 09 오후 23:48:09</p>
  */
 public class ExceptionHandlingRule implements ActionRuleApplicable, Iterable<ResponseByContentTypeRule> {
 

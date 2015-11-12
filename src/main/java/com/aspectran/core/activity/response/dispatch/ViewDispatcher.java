@@ -16,22 +16,20 @@
 package com.aspectran.core.activity.response.dispatch;
 
 import com.aspectran.core.activity.Activity;
-import com.aspectran.core.activity.response.ResponseException;
 import com.aspectran.core.context.rule.DispatchResponseRule;
 
 /**
  * The Interface ViewDispatcher.
  * 
- * @sinse 2008. 03. 23
+ * @since 2008. 03. 23
  */
 public interface ViewDispatcher {
 	
 	/**
-	 * dispatch.
+	 * Dispaching according to a given rule, and transmits this response.
 	 *
-	 * @param activity the translet
-	 * @param viewName the view name
-	 * @throws ResponseException the response exception
+	 * @param activity the current activity
+	 * @param dispatchResponseRule the dispatch response rule
 	 */
 	public void dispatch(Activity activity, DispatchResponseRule dispatchResponseRule);
 	

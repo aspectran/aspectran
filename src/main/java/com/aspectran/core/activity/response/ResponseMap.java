@@ -34,7 +34,7 @@ public class ResponseMap extends LinkedHashMap<String, Response> implements Iter
 	 * @param index the index
 	 * 
 	 * @return the response
-	 * @throws IndexOutOfBoundsException if the index is out of range (index < 0 || index >= size()) 
+	 * @throws IndexOutOfBoundsException if the index is out of range (index &lt; 0 || index &gt;= size()) 
 	 */
 	public Response get(int index) {
 		if(index < 0 || index >= size())

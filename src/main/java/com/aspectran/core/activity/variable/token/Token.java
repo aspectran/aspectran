@@ -90,10 +90,8 @@ public class Token {
 
 	/**
 	 * Sets the default value.
-	 * 
-	 * @param defaultText the default value
-	 * 
-	 * @return the string
+	 *
+	 * @param defaultValue the new default value
 	 */
 	public void setDefaultValue(String defaultValue) {
 		this.defaultValue = defaultValue;
@@ -152,7 +150,6 @@ public class Token {
 	 * Checks if is token symbol.
 	 * 
 	 * @param c the character
-	 * 
 	 * @return true, if is token symbol
 	 */
 	public static boolean isTokenSymbol(char c) {
@@ -165,7 +162,6 @@ public class Token {
 	 * Token type of symbol.
 	 * 
 	 * @param symbol the symbol
-	 * 
 	 * @return the token type
 	 */
 	public static TokenType tokenTypeOfSymbol(char symbol) {

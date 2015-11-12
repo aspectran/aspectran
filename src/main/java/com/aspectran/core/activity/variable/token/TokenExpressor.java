@@ -31,7 +31,6 @@ public interface TokenExpressor {
 	 * Express.
 	 * 
 	 * @param token the token
-	 * 
 	 * @return the object
 	 */
 	public Object express(Token token);
@@ -40,11 +39,16 @@ public interface TokenExpressor {
 	 * Express as String.
 	 * 
 	 * @param tokens the tokens
-	 * 
 	 * @return the string
 	 */
 	public Object express(Token[] tokens);
 	
+	/**
+	 * Express as string.
+	 *
+	 * @param tokens the tokens
+	 * @return the string
+	 */
 	public String expressAsString(Token[] tokens);
 	
 	/**
@@ -52,11 +56,17 @@ public interface TokenExpressor {
 	 * 
 	 * @param parameterName the parameter name
 	 * @param tokens the tokens
-	 * 
 	 * @return the string
 	 */
 	public Object express(String parameterName, Token[] tokens);
 
+	/**
+	 * Express as string.
+	 *
+	 * @param parameterName the parameter name
+	 * @param tokens the tokens
+	 * @return the string
+	 */
 	public String expressAsString(String parameterName, Token[] tokens);
 	
 	/**
@@ -64,17 +74,15 @@ public interface TokenExpressor {
 	 * 
 	 * @param parameterName the parameter name
 	 * @param tokensList the tokens
-	 * 
 	 * @return the object[]
 	 */
 	public List<Object> expressAsList(String parameterName, List<Token[]> tokensList);
 
 	/**
 	 * Express as Set.
-	 * 
+	 *
 	 * @param parameterName the parameter name
-	 * @param tokensList the tokens
-	 * 
+	 * @param tokensSet the tokens set
 	 * @return the object[]
 	 */
 	public Set<Object> expressAsSet(String parameterName, Set<Token[]> tokensSet);
@@ -84,17 +92,15 @@ public interface TokenExpressor {
 	 * 
 	 * @param parameterName the parameter name
 	 * @param tokensMap the tokens map
-	 * 
-	 * @return the map< string, object>
+	 * @return the map
 	 */
 	public Map<String, Object> expressAsMap(String parameterName, Map<String, Token[]> tokensMap);
 	
 	/**
 	 * Express as Properties.
-	 * 
+	 *
 	 * @param parameterName the parameter name
-	 * @param tokensMap the tokens map
-	 * 
+	 * @param tokensProp the tokens prop
 	 * @return the Properties
 	 */
 	public Properties expressAsProperties(String parameterName, Properties tokensProp);

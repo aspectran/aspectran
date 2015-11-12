@@ -169,10 +169,9 @@ public class TokenExpression implements TokenExpressor {
 
 	/**
 	 * Express as Set.
-	 * 
+	 *
 	 * @param parameterName the parameter name
-	 * @param tokensList the tokens
-	 * 
+	 * @param tokensSet the tokens set
 	 * @return the object[]
 	 */
 	public Set<Object> expressAsSet(String parameterName, Set<Token[]> tokensSet) {
@@ -191,11 +190,10 @@ public class TokenExpression implements TokenExpressor {
 	
 	/**
 	 * Express as Map.
-	 * 
+	 *
 	 * @param parameterName the parameter name
 	 * @param tokensMap the tokens map
-	 * 
-	 * @return the map< string, object>
+	 * @return the map
 	 */
 	public Map<String, Object> expressAsMap(String parameterName, Map<String, Token[]> tokensMap) {
 		if(tokensMap == null || tokensMap.isEmpty()) {
@@ -221,10 +219,9 @@ public class TokenExpression implements TokenExpressor {
 	
 	/**
 	 * Express as Properties.
-	 * 
+	 *
 	 * @param parameterName the parameter name
-	 * @param tokensMap the tokens map
-	 * 
+	 * @param tokensProp the tokens propperties
 	 * @return the Properties
 	 */
 	public Properties expressAsProperties(String parameterName, Properties tokensProp) {
@@ -250,11 +247,11 @@ public class TokenExpression implements TokenExpressor {
 	}
 	
 	/**
-	 * Gets the parameter values.
+	 * Gets the parameter value list.
 	 * 
 	 * @param name the name
 	 * 
-	 * @return the parameter values
+	 * @return the parameter value list
 	 */
 	private List<String> getParameterAsList(String name) {
 		String[] values = getParameterValues(name);
@@ -322,9 +319,8 @@ public class TokenExpression implements TokenExpressor {
 	
 	/**
 	 * Gets the attribute object from request attributes or action results.
-	 * 
-	 * @param alias the attribute name or action id.
-	 * 
+	 *
+	 * @param token the token
 	 * @return the object
 	 */
 	protected Object getAttribute(Token token) {
@@ -373,7 +369,6 @@ public class TokenExpression implements TokenExpressor {
 			value = BeanUtils.getObject(object, propertyName);
 		} catch(InvocationTargetException e) {
 			// ignore
-			//e.printStackTrace();
 		}
 		
 		return value;
@@ -399,7 +394,6 @@ public class TokenExpression implements TokenExpressor {
 			}
 		} catch(InvocationTargetException e) {
 			// ignore
-			//e.printStackTrace();
 		}
 		
 		return value;
@@ -480,7 +474,11 @@ public class TokenExpression implements TokenExpressor {
 	}
 	
 	/**
-	 * This method will cast List<"?"> to List<T> assuming ? is castable to T.
+	 * This method will cast List&lt;"?"&gt; to List&lt;T&gt; assuming ? is castable to T.
+	 *
+	 * @param <T> the generic type
+	 * @param list the list
+	 * @return the list
 	 */
 	@SuppressWarnings("unchecked")
 	protected static <T> List<T> cast(List<?> list){
@@ -488,7 +486,11 @@ public class TokenExpression implements TokenExpressor {
 	}
 	
 	/**
-	 * This method will cast Set<"?"> to Set<T> assuming ? is castable to T.
+	 * This method will cast Set&lt;"?"&gt; to Set&lt;T&gt; assuming ? is castable to T.
+	 *
+	 * @param <T> the generic type
+	 * @param set the set
+	 * @return the sets the
 	 */
 	@SuppressWarnings("unchecked")
 	protected static <T> Set<T> cast(Set<?> set){

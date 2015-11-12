@@ -34,24 +34,18 @@ public abstract class AbstractActivity {
 
 	private ApplicationAdapter applicationAdapter;
 
-	/** The session adapter. */
 	private SessionAdapter sessionAdapter;
 	
-	/** The request adapter. */
 	private RequestAdapter requestAdapter;
 
-	/** The response adapter. */
 	private ResponseAdapter responseAdapter;
 	
-	/** The request scope. */
 	private Scope requestScope;
 	
 	private JoinpointScopeType currentJoinpointScope = JoinpointScopeType.TRANSLET;
 	
-	/** The translet interface class. */
 	private Class<? extends Translet> transletInterfaceClass;
 	
-	/** The translet instance class. */
 	private Class<? extends CoreTranslet> transletImplementClass;
 
 	protected AbstractActivity(ApplicationAdapter applicationAdapter) {
@@ -68,8 +62,10 @@ public abstract class AbstractActivity {
 	}
 
 
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.CoreActivity#getSessionAdapter()
+	/**
+	 * Gets the session adapter.
+	 *
+	 * @return the session adapter
 	 */
 	public SessionAdapter getSessionAdapter() {
 		return sessionAdapter;
@@ -84,8 +80,10 @@ public abstract class AbstractActivity {
 		this.sessionAdapter = sessionAdapter;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.CoreActivity#getRequestAdapter()
+	/**
+	 * Gets the request adapter.
+	 *
+	 * @return the request adapter
 	 */
 	public RequestAdapter getRequestAdapter() {
 		return requestAdapter;
@@ -100,8 +98,10 @@ public abstract class AbstractActivity {
 		this.requestAdapter = requestAdapter;
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.CoreActivity#getResponseAdapter()
+	/**
+	 * Gets the response adapter.
+	 *
+	 * @return the response adapter
 	 */
 	public ResponseAdapter getResponseAdapter() {
 		return responseAdapter;
@@ -136,23 +136,29 @@ public abstract class AbstractActivity {
 	}
 
 	/**
-	 * Gets the translet instance class.
+	 * Gets the translet implement class.
 	 *
-	 * @return the translet instance class
+	 * @return the translet implement class
 	 */
 	public Class<? extends CoreTranslet> getTransletImplementClass() {
 		return transletImplementClass;
 	}
 
 	/**
-	 * Sets the translet instance class.
+	 * Sets the translet implement class.
 	 *
-	 * @param transletInstanceClass the new translet instance class
+	 * @param transletImplementClass the new translet implement class
 	 */
 	protected void setTransletImplementClass(Class<? extends CoreTranslet> transletImplementClass) {
 		this.transletImplementClass = transletImplementClass;
 	}
 	
+	/**
+	 * Create a new translet.
+	 *
+	 * @param activity the activity
+	 * @return the translet
+	 */
 	protected Translet newTranslet(Activity activity) {
 		if(this.transletInterfaceClass == null)
 			this.transletInterfaceClass = Translet.class;
@@ -173,18 +179,38 @@ public abstract class AbstractActivity {
 		}
 	}
 	
+	/**
+	 * Gets the request scope.
+	 *
+	 * @return the request scope
+	 */
 	public Scope getRequestScope() {
 		return requestScope;
 	}
 
+	/**
+	 * Sets the request scope.
+	 *
+	 * @param requestScope the new request scope
+	 */
 	public void setRequestScope(Scope requestScope) {
 		this.requestScope = requestScope;
 	}
 
+	/**
+	 * Gets the current joinpoint scope.
+	 *
+	 * @return the current joinpoint scope
+	 */
 	public JoinpointScopeType getCurrentJoinpointScope() {
 		return currentJoinpointScope;
 	}
 
+	/**
+	 * Sets the current joinpoint scope.
+	 *
+	 * @param joinpointScope the new current joinpoint scope
+	 */
 	protected void setCurrentJoinpointScope(JoinpointScopeType joinpointScope) {
 		this.currentJoinpointScope = joinpointScope;
 	}

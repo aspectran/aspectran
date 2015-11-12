@@ -22,7 +22,6 @@ import com.aspectran.core.activity.process.result.ProcessResult;
 import com.aspectran.core.activity.response.ForwardResponse;
 import com.aspectran.core.activity.response.RedirectResponse;
 import com.aspectran.core.activity.response.Response;
-import com.aspectran.core.activity.response.ResponseException;
 import com.aspectran.core.activity.response.TransformResponseFactory;
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.adapter.RequestAdapter;
@@ -137,10 +136,16 @@ public class CoreTranslet implements Translet {
 		this.processResult = processResult;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.activity.Translet#touchProcessResult()
+	 */
 	public ProcessResult touchProcessResult() {
 		return touchProcessResult(null);
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.activity.Translet#touchProcessResult(java.lang.String)
+	 */
 	public ProcessResult touchProcessResult(String contentsName) {
 		if(processResult == null) {
 			processResult = new ProcessResult();
@@ -152,81 +157,89 @@ public class CoreTranslet implements Translet {
 		return processResult;
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.activity.Translet#response()
+	 */
 	public void response() {
 		activity.activityEnd();
 	}
 
-	public void response(Response res) {
-		activity.response(res);
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.activity.Translet#response(com.aspectran.core.activity.response.Response)
+	 */
+	public void response(Response response) {
+		activity.response(response);
 	}
 	
-	/**
-	 * Transform.
-	 * 
-	 * @param actionId the id
-	 * 
-	 * @throws ResponseException the response exception
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.activity.Translet#transform(com.aspectran.core.context.rule.TransformRule)
 	 */
 	public void transform(TransformRule transformRule) {
 		Response res = TransformResponseFactory.getResponse(transformRule);
 		response(res);
 	}
 
-	/**
-	 * Redirect.
-	 * 
-	 * @param actionId the id
-	 * 
-	 * @throws ResponseException the response exception
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.activity.Translet#redirect(com.aspectran.core.context.rule.RedirectResponseRule)
 	 */
 	public void redirect(RedirectResponseRule redirectResponseRule) {
 		Response res = new RedirectResponse(redirectResponseRule);
 		response(res);
 	}
 	
-	/**
-	 * Forward.
-	 * 
-	 * @param actionId the id
-	 * 
-	 * @throws ResponseException the response exception
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.activity.Translet#forward(com.aspectran.core.context.rule.ForwardResponseRule)
 	 */
 	public void forward(ForwardResponseRule forwardResponseRule) {
 		Response res = new ForwardResponse(forwardResponseRule);
 		response(res);
 	}
 	
-	/**
-	 * To respond immediately terminate.
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.activity.Translet#isExceptionRaised()
 	 */
-	public void responseEnd() {
-		activity.activityEnd();
-	}
-
 	public boolean isExceptionRaised() {
 		return activity.isExceptionRaised();
 	}
 
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.activity.Translet#getRaisedException()
+	 */
 	public Exception getRaisedException() {
 		return activity.getRaisedException();
 	}
 
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.activity.Translet#getApplicationAdapter()
+	 */
 	public ApplicationAdapter getApplicationAdapter() {
 		return activity.getActivityContext().getApplicationAdapter();
 	}
 
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.activity.Translet#getSessionAdapter()
+	 */
 	public SessionAdapter getSessionAdapter() {
 		return activity.getSessionAdapter();
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.activity.Translet#getRequestAdapter()
+	 */
 	public RequestAdapter getRequestAdapter() {
 		return activity.getRequestAdapter();
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.activity.Translet#getResponseAdapter()
+	 */
 	public ResponseAdapter getResponseAdapter() {
 		return activity.getResponseAdapter();
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.activity.Translet#getRequestAdaptee()
+	 */
 	public <T> T getRequestAdaptee() {
 		if(getRequestAdapter() != null)
 			return getRequestAdapter().getAdaptee();
@@ -234,6 +247,9 @@ public class CoreTranslet implements Translet {
 			return null;
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.activity.Translet#getResponseAdaptee()
+	 */
 	public <T> T getResponseAdaptee() {
 		if(getResponseAdapter() != null)
 			return getResponseAdapter().getAdaptee();
@@ -241,6 +257,9 @@ public class CoreTranslet implements Translet {
 			return null;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.activity.Translet#getSessionAdaptee()
+	 */
 	public <T> T getSessionAdaptee() {
 		if(getSessionAdapter() != null)
 			return getSessionAdapter().getAdaptee();
@@ -248,6 +267,12 @@ public class CoreTranslet implements Translet {
 			return null;
 	}
 	
+	/**
+	 * Gets the application adaptee.
+	 *
+	 * @param <T> the generic type
+	 * @return the application adaptee
+	 */
 	public <T> T getApplicationAdaptee() {
 		ApplicationAdapter applicationAdapter = activity.getActivityContext().getApplicationAdapter();
 		
@@ -278,6 +303,9 @@ public class CoreTranslet implements Translet {
 		return activity.getBean(id, classType);
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.activity.Translet#getAspectAdviceBean(java.lang.String)
+	 */
 	@SuppressWarnings("unchecked")
 	public <T> T getAspectAdviceBean(String aspectId) {
 		if(aspectAdviceResult == null)
@@ -286,6 +314,9 @@ public class CoreTranslet implements Translet {
 		return (T)aspectAdviceResult.getAspectAdviceBean(aspectId);
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.activity.Translet#putAspectAdviceBean(java.lang.String, java.lang.Object)
+	 */
 	public void putAspectAdviceBean(String aspectId, Object adviceBean) {
 		if(aspectAdviceResult == null)
 			aspectAdviceResult = new AspectAdviceResult();
@@ -293,6 +324,9 @@ public class CoreTranslet implements Translet {
 		aspectAdviceResult.putAspectAdviceBean(aspectId, adviceBean);
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.activity.Translet#getBeforeAdviceResult(java.lang.String)
+	 */
 	@SuppressWarnings("unchecked")
 	public <T> T getBeforeAdviceResult(String aspectId) {
 		if(aspectAdviceResult == null)
@@ -301,6 +335,9 @@ public class CoreTranslet implements Translet {
 		return (T)aspectAdviceResult.getBeforeAdviceResult(aspectId);
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.activity.Translet#getAfterAdviceResult(java.lang.String)
+	 */
 	@SuppressWarnings("unchecked")
 	public <T> T getAfterAdviceResult(String aspectId) {
 		if(aspectAdviceResult == null)
@@ -309,6 +346,9 @@ public class CoreTranslet implements Translet {
 		return (T)aspectAdviceResult.getAfterAdviceResult(aspectId);
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.activity.Translet#getFinallyAdviceResult(java.lang.String)
+	 */
 	@SuppressWarnings("unchecked")
 	public <T> T getFinallyAdviceResult(String aspectId) {
 		if(aspectAdviceResult == null)
@@ -317,6 +357,9 @@ public class CoreTranslet implements Translet {
 		return (T)aspectAdviceResult.getFinallyAdviceResult(aspectId);
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.activity.Translet#putAdviceResult(com.aspectran.core.context.rule.AspectAdviceRule, java.lang.Object)
+	 */
 	public void putAdviceResult(AspectAdviceRule aspectAdviceRule, Object adviceActionResult) {
 		if(aspectAdviceResult == null)
 			aspectAdviceResult = new AspectAdviceResult();
@@ -324,10 +367,16 @@ public class CoreTranslet implements Translet {
 		aspectAdviceResult.putAdviceResult(aspectAdviceRule, adviceActionResult);
 	}
 
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.activity.Translet#getTransletInterfaceClass()
+	 */
 	public Class<? extends Translet> getTransletInterfaceClass() {
 		return activity.getTransletInterfaceClass();
 	}
 
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.activity.Translet#getTransletImplementClass()
+	 */
 	public Class<? extends CoreTranslet> getTransletImplementClass() {
 		return activity.getTransletImplementClass();
 	}

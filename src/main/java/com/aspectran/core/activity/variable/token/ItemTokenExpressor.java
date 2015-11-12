@@ -29,7 +29,6 @@ public interface ItemTokenExpressor {
 	 * Express.
 	 * 
 	 * @param itemRuleMap the value rule map
-	 * 
 	 * @return the value map
 	 */
 	public ValueMap express(ItemRuleMap itemRuleMap);
@@ -39,8 +38,6 @@ public interface ItemTokenExpressor {
 	 * 
 	 * @param itemRuleMap the item rule map
 	 * @param valueMap the value map
-	 * 
-	 * @return the value map
 	 */
 	public void express(ItemRuleMap itemRuleMap, ValueMap valueMap);
 	

@@ -107,10 +107,10 @@ public class ItemTokenExpression extends TokenExpression implements ItemTokenExp
 	
 	/**
 	 * Express as Array.
-	 * 
+	 *
 	 * @param parameterName the parameter name
 	 * @param tokensList the tokens
-	 * 
+	 * @param valueType the value type
 	 * @return the object[]
 	 */
 	private Object expressAsArray(String parameterName, List<Token[]> tokensList, ItemValueType valueType) {
@@ -141,10 +141,10 @@ public class ItemTokenExpression extends TokenExpression implements ItemTokenExp
 	
 	/**
 	 * Express as List.
-	 * 
+	 *
 	 * @param parameterName the parameter name
 	 * @param tokensList the tokens
-	 * 
+	 * @param valueType the value type
 	 * @return the object[]
 	 */
 	private List<Object> expressAsList(String parameterName, List<Token[]> tokensList, ItemValueType valueType) {
@@ -167,10 +167,10 @@ public class ItemTokenExpression extends TokenExpression implements ItemTokenExp
 
 	/**
 	 * Express as Set.
-	 * 
+	 *
 	 * @param parameterName the parameter name
 	 * @param tokensList the tokens
-	 * 
+	 * @param valueType the value type
 	 * @return the object[]
 	 */
 	private Set<Object> expressAsSet(String parameterName, List<Token[]> tokensList, ItemValueType valueType) {
@@ -193,10 +193,10 @@ public class ItemTokenExpression extends TokenExpression implements ItemTokenExp
 	
 	/**
 	 * Express as Map.
-	 * 
+	 *
 	 * @param parameterName the parameter name
 	 * @param tokensMap the tokens map
-	 * 
+	 * @param valueType the value type
 	 * @return the map< string, object>
 	 */
 	private Map<String, Object> expressAsMap(String parameterName, Map<String, Token[]> tokensMap, ItemValueType valueType) {
@@ -230,10 +230,10 @@ public class ItemTokenExpression extends TokenExpression implements ItemTokenExp
 	
 	/**
 	 * Express as Properties.
-	 * 
+	 *
 	 * @param parameterName the parameter name
 	 * @param tokensMap the tokens map
-	 * 
+	 * @param valueType the value type
 	 * @return the Properties
 	 */
 	private Properties expressAsProperties(String parameterName, Map<String, Token[]> tokensMap, ItemValueType valueType) {
@@ -267,9 +267,9 @@ public class ItemTokenExpression extends TokenExpression implements ItemTokenExp
 	
 	/**
 	 * Gets the parameter values.
-	 * 
+	 *
 	 * @param name the name
-	 * 
+	 * @param valueType the value type
 	 * @return the parameter values
 	 */
 	private List<Object> getParameterAsList(String name, ItemValueType valueType) {
@@ -292,9 +292,9 @@ public class ItemTokenExpression extends TokenExpression implements ItemTokenExp
 	
 	/**
 	 * Gets the parameter values.
-	 * 
+	 *
 	 * @param name the name
-	 * 
+	 * @param valueType the value type
 	 * @return the parameter values
 	 */
 	private Set<Object> getParameterAsSet(String name, ItemValueType valueType) {

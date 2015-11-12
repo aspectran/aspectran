@@ -19,7 +19,6 @@ import java.util.Map;
 
 import com.aspectran.core.activity.process.result.ProcessResult;
 import com.aspectran.core.activity.response.Response;
-import com.aspectran.core.activity.response.ResponseException;
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
@@ -107,14 +106,14 @@ public abstract interface Translet {
 	public void setProcessResult(ProcessResult processResult);
 
 	/**
-	 * Touch process result.
+	 * Returns the ProcessResult. If not yet instantiated then create a new one.
 	 *
 	 * @return the process result
 	 */
 	public ProcessResult touchProcessResult();
 	
 	/**
-	 * Touch process result.
+	 * Returns the ProcessResult. If not yet instantiated then create a new one.
 	 *
 	 * @param contentName the content name
 	 * @return the process result
@@ -122,59 +121,47 @@ public abstract interface Translet {
 	public ProcessResult touchProcessResult(String contentName);
 	
 	/**
-	 * Response.
-	 * 
-	 * @throws ResponseException the response exception
+	 * Respond immediately, and the remaining jobs will be canceled.
 	 */
 	public void response();
 
 	/**
-	 * Response.
+	 * Respond immediately, and the remaining jobs will be canceled.
 	 * 
-	 * @param res the responsible
-	 * 
-	 * @throws ResponseException the response exception
+	 * @param response the response
 	 */
-	public void response(Response res);
+	public void response(Response response);
 
 	/**
-	 * Transform.
+	 * Transformation according to a given rule, and transmits this response.
 	 *
-	 * @param transformRule the transform rule
-	 * @throws ResponseException the response exception
+	 * @param transformRule the transformation rule
 	 */
 	public void transform(TransformRule transformRule);
 
 	/**
-	 * Redirect.
+	 * Redirect according to a given rule.
 	 *
 	 * @param redirectResponseRule the redirect response rule
-	 * @throws ResponseException the response exception
 	 */
 	public void redirect(RedirectResponseRule redirectResponseRule);
 	
 	/**
-	 * Forward.
+	 * Forward according to a given rule.
 	 *
 	 * @param forwardResponseRule the forward response rule
-	 * @throws ResponseException the response exception
 	 */
 	public void forward(ForwardResponseRule forwardResponseRule);
 	
 	/**
-	 * To respond immediately terminate.
-	 */
-	public void responseEnd();
-
-	/**
-	 * Checks if is exception raised.
+	 * Returns whether the exception was thrown.
 	 *
 	 * @return true, if is exception raised
 	 */
 	public boolean isExceptionRaised();
 
 	/**
-	 * Gets the raised exception.
+	 * Returns the raised exception.
 	 *
 	 * @return the raised exception
 	 */

@@ -57,8 +57,9 @@ public class ActionList extends ArrayList<Executable> implements ActionRuleAppli
 	
 	/**
 	 * Instantiates a new ActionList.
-	 * 
-	 * @param parent the action list
+	 *
+	 * @param contentId the content id
+	 * @param parent the content list
 	 */
 	public ActionList(String contentId, ContentList parent) {
 		this.contentId = contentId;
@@ -125,30 +126,24 @@ public class ActionList extends ArrayList<Executable> implements ActionRuleAppli
 		return parent;
 	}
 
-	/**
-	 * Adds the echo action.
-	 * 
-	 * @param echoActionRule the echo action rule
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.context.rule.ability.ActionRuleApplicable#applyActionRule(com.aspectran.core.context.rule.EchoActionRule)
 	 */
 	public void applyActionRule(EchoActionRule echoActionRule) {
 		EchoAction echoAction = new EchoAction(echoActionRule, this);
 		add(echoAction);
 	}
 
-	/**
-	 * Adds the bean action.
-	 *
-	 * @param beanActionRule the bean action rule
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.context.rule.ability.ActionRuleApplicable#applyActionRule(com.aspectran.core.context.rule.BeanActionRule)
 	 */
 	public void applyActionRule(BeanActionRule beanActionRule) {
 		BeanAction beanAction = new BeanAction(beanActionRule, this);
 		add(beanAction);
 	}
 
-	/**
-	 * Adds the process-call action.
-	 * 
-	 * @param includeActionRule the process call action rule
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.context.rule.ability.ActionRuleApplicable#applyActionRule(com.aspectran.core.context.rule.IncludeActionRule)
 	 */
 	public void applyActionRule(IncludeActionRule includeActionRule) {
 		IncludeAction includeAction = new IncludeAction(includeActionRule, this);

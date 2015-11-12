@@ -48,6 +48,7 @@ public interface ApplicationAdapter {
 	/**
 	 * Gets the attribute.
 	 *
+	 * @param <T> the generic type
 	 * @param name the name
 	 * @return the attribute
 	 */

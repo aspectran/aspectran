@@ -27,10 +27,25 @@ import com.aspectran.core.context.rule.IncludeActionRule;
  */
 public interface ActionRuleApplicable {
 
+	/**
+	 * Adds the echo action.
+	 * 
+	 * @param echoActionRule the echo action rule
+	 */
 	public void applyActionRule(EchoActionRule echoActionRule);
 	
+	/**
+	 * Adds the bean action.
+	 *
+	 * @param beanActionRule the bean action rule
+	 */
 	public void applyActionRule(BeanActionRule beanActionRule);
 	
+	/**
+	 * Adds the process-call action.
+	 * 
+	 * @param includeActionRule the process call action rule
+	 */
 	public void applyActionRule(IncludeActionRule includeActionRule);
 
 }

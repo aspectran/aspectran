@@ -63,6 +63,7 @@ public interface RequestAdapter {
 	 * Sets the character encoding.
 	 *
 	 * @param characterEncoding the new character encoding
+	 * @throws UnsupportedEncodingException the unsupported encoding exception
 	 */
 	public void setCharacterEncoding(String characterEncoding) throws UnsupportedEncodingException;
 	

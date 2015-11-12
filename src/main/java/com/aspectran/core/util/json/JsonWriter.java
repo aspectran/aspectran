@@ -339,8 +339,9 @@ public class JsonWriter implements Closeable {
 	}
 
 	/**
-	 * Flush.
-	 * @throws IOException 
+	 * Flushes the stream.
+	 *
+	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public void flush() throws IOException {
 		writer.flush();

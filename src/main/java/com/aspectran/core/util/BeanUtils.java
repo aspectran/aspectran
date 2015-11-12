@@ -172,11 +172,12 @@ public class BeanUtils {
 	}
 
 	/**
-	 * Gets an Object property from a bean
-	 * 
+	 * Gets an Object property from a bean.
+	 *
 	 * @param object The bean
 	 * @param name The property name
 	 * @return The property value (as an Object)
+	 * @throws InvocationTargetException the invocation target exception
 	 */
 	public static Object getObject(Object object, String name) throws InvocationTargetException {
 		if(name.indexOf('.') > -1) {

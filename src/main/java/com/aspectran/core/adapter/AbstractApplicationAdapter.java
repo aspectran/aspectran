@@ -43,6 +43,7 @@ public abstract class AbstractApplicationAdapter implements ApplicationAdapter {
 	/**
 	 * Instantiates a new AbstractApplicationAdapter.
 	 *
+	 * @param aspectranService the aspectran service
 	 * @param adaptee the adaptee
 	 */
 	public AbstractApplicationAdapter(AspectranService aspectranService, Object adaptee) {
