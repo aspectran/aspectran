@@ -31,7 +31,7 @@ import com.aspectran.web.service.WebAspectranService;
 import com.aspectran.web.startup.listener.AspectranServiceListener;
 
 /**
- * Servlet implementation class for Servlet: Translets.
+ * The Class WebActivityServlet.
  */
 public class WebActivityServlet extends HttpServlet implements Servlet {
 
@@ -44,13 +44,8 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 	
 	private boolean standalone;
 
-	/*
-	 * (non-Java-doc)
-	 * 
-	 * @see javax.servlet.http.HttpServlet#HttpServlet()
-	 */
 	/**
-	 * Instantiates a new action servlet.
+	 * Instantiates a new WebActivityServlet.
 	 */
 	public WebActivityServlet() {
 		super();
@@ -69,16 +64,17 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 			WebAspectranService rootAspectranService = (WebAspectranService)servletContext.getAttribute(AspectranServiceListener.ASPECTRAN_SERVICE_ATTRIBUTE);
 
 			if(rootAspectranService == null) {
-				//log.info("AspectranService is running as a stand-alone mode.");
+				log.info("Running AspectranService in standalone mode inside a servlet.");
+
 				aspectranService = WebAspectranService.newInstance(this);
+				
 				standalone = true;
 			} else {
-				//log.info("Root AspectranService exists.");
 				aspectranService = WebAspectranService.newInstance(this, rootAspectranService);
+				
 				standalone = (rootAspectranService != aspectranService);
 			}
 		} catch(Exception e) {
-			//log.error("WebActivityServlet was failed to initialize", e);
 			throw new UnavailableException(e.getMessage());
 		}
 	}
@@ -88,7 +84,7 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 	 */
 	@Override
 	public void service(HttpServletRequest req, HttpServletResponse res) throws IOException {
-		aspectranService.service(this, req, res);
+		aspectranService.service(req, res);
 	}
 
 	/* (non-Javadoc)

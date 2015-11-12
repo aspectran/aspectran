@@ -18,6 +18,9 @@ package com.aspectran.core.context.rule.type;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * The Class PointcutType.
+ */
 public final class PointcutType extends Type {
 
 	public static final PointcutType WILDCARD;

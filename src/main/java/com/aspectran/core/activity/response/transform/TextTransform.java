@@ -65,7 +65,7 @@ public class TextTransform extends TransformResponse implements Response {
 	private boolean templateLoaded;
 	
 	/**
-	 * Instantiates a new text transformer.
+	 * Instantiates a new TextTransform.
 	 * 
 	 * @param transformRule the transform rule
 	 */
@@ -252,20 +252,7 @@ public class TextTransform extends TransformResponse implements Response {
 		
 		return contentTokens;
 	}
-/*	
-	private String getContent() {
-		if(contentTokens == null || contentTokens.length == 0)
-			return null;
-		
-		StringBuilder sb = new StringBuilder();
-		
-		for(Token t : contentTokens) {
-			sb.append(t.toString());
-		}
-		
-		return sb.toString();
-	}
-*/
+
 	private Token[] getContentTokens(Reader reader) throws IOException {
 		final char[] buffer = new char[1024];
 		StringBuilder sb = new StringBuilder();
@@ -304,4 +291,5 @@ public class TextTransform extends TransformResponse implements Response {
 		
 		return contentTokens;
 	}
+
 }

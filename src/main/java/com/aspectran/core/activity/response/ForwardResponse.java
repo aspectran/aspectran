@@ -43,7 +43,7 @@ public class ForwardResponse implements Response {
 	private final ForwardResponseRule forwardResponseRule;
 	
 	/**
-	 * Instantiates a new forward response.
+	 * Instantiates a new ForwardResponse.
 	 * 
 	 * @param forwardResponseRule the forward response rule
 	 */

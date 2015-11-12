@@ -58,7 +58,7 @@ public class BeanAction extends AbstractAction implements Executable {
 	private Boolean needTranslet;
 	
 	/**
-	 * Instantiates a new bean action.
+	 * Instantiates a new BeanAction.
 	 *
 	 * @param beanActionRule the bean action rule
 	 * @param parent the parent

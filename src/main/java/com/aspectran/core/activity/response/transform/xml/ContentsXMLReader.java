@@ -71,7 +71,7 @@ public class ContentsXMLReader implements XMLReader {
 	private AttributesImpl resultsAttrs;
 
 	/**
-	 * Instantiates a new contents xml reader.
+	 * Instantiates a new ContentsXMLReader.
 	 */
 	public ContentsXMLReader() {
 		nullAttrs = new AttributesImpl();

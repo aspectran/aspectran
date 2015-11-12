@@ -92,7 +92,7 @@ public abstract class AbstractRequest {
 	}
 
 	/**
-	 * Checks if is max length exceeded.
+	 * Returns whether request header has exceed the maximum length.
 	 *
 	 * @return true, if is max length exceeded
 	 */
@@ -101,9 +101,9 @@ public abstract class AbstractRequest {
 	}
 
 	/**
-	 * Sets the max length exceeded.
+	 * Sets whether request header has exceed the maximum length.
 	 *
-	 * @param maxLengthExceeded the new max length exceeded
+	 * @param maxLengthExceeded whether request header has exceed the maximum length
 	 */
 	public void setMaxLengthExceeded(boolean maxLengthExceeded) {
 		this.maxLengthExceeded = maxLengthExceeded;

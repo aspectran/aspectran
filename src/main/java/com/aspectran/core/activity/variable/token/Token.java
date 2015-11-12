@@ -18,6 +18,8 @@ package com.aspectran.core.activity.variable.token;
 import com.aspectran.core.context.rule.type.TokenType;
 
 /**
+ * The Class Token.
+ * 
  * <p>Created: 2008. 03. 27 오후 10:20:06</p>
  */
 public class Token {
@@ -45,7 +47,7 @@ public class Token {
 	private String getterName;
 	
 	/**
-	 * Instantiates a new token.
+	 * Instantiates a new Token.
 	 *
 	 * @param type the type
 	 * @param nameOrDefaultValue the name or default value

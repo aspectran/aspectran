@@ -43,52 +43,73 @@ import com.aspectran.core.context.rule.RedirectResponseRule;
  */
 public class HttpServletResponseAdapter extends AbstractResponseAdapter implements ResponseAdapter {
 
-	/** The Constant QUESTION_CHAR. */
 	private static final char QUESTION_CHAR = '?';
 
-	/** The Constant AMPERSAND_CHAR. */
 	private static final char AMPERSAND_CHAR = '&';
 
-	/** The Constant EQUAL_CHAR. */
 	private static final char EQUAL_CHAR = '=';
 
 	/**
-	 * Instantiates a new http servlet response adapter.
+	 * Instantiates a new HttpServletResponseAdapter.
 	 *
-	 * @param response the response
+	 * @param response the HTTP response
 	 */
 	public HttpServletResponseAdapter(HttpServletResponse response) {
 		super(response);
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.adapter.ResponseAdapter#getCharacterEncoding()
+	 */
 	public String getCharacterEncoding() {
 		return ((HttpServletResponse)adaptee).getCharacterEncoding();
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.adapter.ResponseAdapter#setCharacterEncoding(java.lang.String)
+	 */
 	public void setCharacterEncoding(String characterEncoding) throws UnsupportedEncodingException {
 		((HttpServletResponse)adaptee).setCharacterEncoding(characterEncoding);
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.adapter.ResponseAdapter#getContentType()
+	 */
 	public String getContentType() {
 		return ((HttpServletResponse)adaptee).getContentType();
 	}
 
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.adapter.ResponseAdapter#setContentType(java.lang.String)
+	 */
 	public void setContentType(String contentType) {
 		((HttpServletResponse)adaptee).setContentType(contentType);
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.adapter.ResponseAdapter#getOutputStream()
+	 */
 	public OutputStream getOutputStream() throws IOException {
 		return ((HttpServletResponse)adaptee).getOutputStream();
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.adapter.ResponseAdapter#getWriter()
+	 */
 	public Writer getWriter() throws IOException {
 		return ((HttpServletResponse)adaptee).getWriter();
 	}
 	
-	public void redirect(String requestUri) throws IOException {
-		((HttpServletResponse)adaptee).sendRedirect(requestUri);
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.adapter.ResponseAdapter#redirect(java.lang.String)
+	 */
+	public void redirect(String url) throws IOException {
+		((HttpServletResponse)adaptee).sendRedirect(url);
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.adapter.ResponseAdapter#redirect(com.aspectran.core.activity.Activity, com.aspectran.core.context.rule.RedirectResponseRule)
+	 */
 	public String redirect(Activity activity, RedirectResponseRule redirectResponseRule) throws IOException {
 		String characterEncoding = ((HttpServletResponse)adaptee).getCharacterEncoding();
 		String url = null;

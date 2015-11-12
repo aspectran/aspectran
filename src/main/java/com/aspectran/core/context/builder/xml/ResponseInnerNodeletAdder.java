@@ -45,9 +45,8 @@ public class ResponseInnerNodeletAdder implements NodeletAdder {
 	protected ContextBuilderAssistant assistant;
 	
 	/**
-	 * Instantiates a new response rule nodelet adder.
-	 * 
-	 * @param parser the parser
+	 * Instantiates a new ResponseInnerNodeletAdder.
+	 *
 	 * @param assistant the assistant for Context Builder
 	 */
 	public ResponseInnerNodeletAdder(ContextBuilderAssistant assistant) {

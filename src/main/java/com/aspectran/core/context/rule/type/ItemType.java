@@ -18,29 +18,23 @@ package com.aspectran.core.context.rule.type;
 import java.util.HashMap;
 import java.util.Map;
 
-
 /**
- * Type of the item.
+ * The Class ItemType.
+ * 
  * <p>Created: 2008. 03. 29 오후 3:47:00</p>
  */
 public final class ItemType extends Type {
 	
-	/** The "singular" item type. */
 	public static final ItemType SINGULAR;
 
-	/** The "array" item type. */
 	public static final ItemType ARRAY;
 	
-	/** The "list" item type. */
 	public static final ItemType LIST;
 	
-	/** The "map" item type. */
 	public static final ItemType MAP;
 
-	/** The "set" item type. */
 	public static final ItemType SET;
 	
-	/** The "java.util.Properties" item type. */
 	public static final ItemType PROPERTIES;
 	
 	private static final Map<String, ItemType> types;
@@ -63,7 +57,7 @@ public final class ItemType extends Type {
 	}
 
 	/**
-	 * Instantiates a new item type.
+	 * Instantiates a new ItemType.
 	 * 
 	 * @param type the type
 	 */

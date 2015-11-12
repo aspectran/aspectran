@@ -40,7 +40,7 @@ public class MultipartRequestWrapper extends HttpServletRequestWrapper {
 	private MultipartFormDataParser parser;
 	
 	/**
-	 * Instantiates a new multipart request wrapper.
+	 * Instantiates a new MultipartRequestWrapper.
 	 * 
 	 * @param parser the handler
 	 * 

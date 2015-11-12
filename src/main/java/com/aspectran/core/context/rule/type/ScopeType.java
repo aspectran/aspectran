@@ -18,27 +18,21 @@ package com.aspectran.core.context.rule.type;
 import java.util.HashMap;
 import java.util.Map;
 
-
 /**
- * Token type.
+ * The Class ScopeType.
  * 
  * <p>Created: 2008. 12. 22 오후 2:48:00</p>
  */
 public final class ScopeType extends Type {
 	
-	/** The "singleton" scope type. */
 	public static final ScopeType SINGLETON;
 	
-	/** The "prototype" scope type. */
 	public static final ScopeType PROTOTYPE;
 	
-	/** The "request" scope type. */
 	public static final ScopeType REQUEST;
 	
-	/** The "session" scope type. */
 	public static final ScopeType SESSION;
 
-	/** The "application" scope type. */
 	public static final ScopeType APPLICATION;
 	
 	private static final Map<String, ScopeType> types;
@@ -59,7 +53,7 @@ public final class ScopeType extends Type {
 	}
 
 	/**
-	 * Instantiates a new scope type.
+	 * Instantiates a new ScopeType.
 	 * 
 	 * @param type the type
 	 */

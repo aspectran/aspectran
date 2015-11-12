@@ -76,6 +76,11 @@ public class DefaultServletHttpRequestHandler {
 		this.defaultServletName = defaultServletName;
 	}
 	
+	/**
+	 * Lookup default servlet name.
+	 *
+	 * @param servletContext the servlet context
+	 */
 	private void lookupDefaultServletName(ServletContext servletContext) {
 		if(servletContext.getNamedDispatcher(COMMON_DEFAULT_SERVLET_NAME) != null) {
 			defaultServletName = COMMON_DEFAULT_SERVLET_NAME;
@@ -92,6 +97,15 @@ public class DefaultServletHttpRequestHandler {
 		}
 	}
 
+	/**
+	 * Process the actual dispatching.
+	 *
+	 * @param request current HTTP servlet request
+	 * @param response current HTTP servlet response
+	 * @return true, if successful
+	 * @throws ServletException the servlet exception
+	 * @throws IOException if an input or output error occurs while the servlet is handling the HTTP request
+	 */
 	public boolean handle(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		if(defaultServletName != null) {
 			RequestDispatcher rd = servletContext.getNamedDispatcher(defaultServletName);

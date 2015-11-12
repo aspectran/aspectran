@@ -40,8 +40,11 @@ public class TokenParser {
 			tokens = tokenList.toArray(new Token[tokenList.size()]);
 			
 			if(!trimStringToken) {
-				// 문자열 타입 토큰을 trim하지 않았으면,
-				// 처음과 끝에 위치한 토큰 문자열을 각각 앞trim, 뒷trim을 한다.
+				/**
+				 * If you did not trim the string type token,
+				 * first token string is left trim
+				 * last token string is right trim
+				 */
 				tokens = Tokenizer.optimize(tokens);
 			}
 		} else {
@@ -112,23 +115,5 @@ public class TokenParser {
 		
 		return tokensMap;
 	}
-	
-//	public static Object parsebyUnityType(ItemUnityType unityType, String value) {
-//		if(value == null)
-//			return null;
-//
-//		// When the parameter type is only and each token trim
-//		boolean trimStringToken = (unityType != ItemUnityType.SINGULAR);
-//
-//		Object result = null;
-//		
-//		if(unityType == ItemUnityType.SINGULAR)
-//			result = parseForSingleItem(value, trimStringToken);
-//		else if(unityType == ItemUnityType.LIST)
-//			result = parseToList(value, trimStringToken);
-//		else if(unityType == ItemUnityType.MAP)
-//			result = parseToMap(value, trimStringToken);
-//		
-//		return result;
-//	}
+
 }

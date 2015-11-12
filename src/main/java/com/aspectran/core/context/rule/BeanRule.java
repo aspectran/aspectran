@@ -26,9 +26,9 @@ import com.aspectran.core.util.MethodUtils;
 import com.aspectran.core.util.apon.Parameters;
 
 /**
- * <p>
- * Created: 2009. 03. 09 오후 23:48:09
- * </p>
+ * The Class BeanRule.
+ * 
+ * <p>Created: 2009. 03. 09 오후 23:48:09</p>
  */
 public class BeanRule implements Cloneable {
 
@@ -75,18 +75,18 @@ public class BeanRule implements Cloneable {
 	private String description;
 	
 	/**
-	 * Gets the bean's id.
+	 * Returns the bean id.
 	 *
-	 * @return the id
+	 * @return the bean id
 	 */
 	public String getId() {
 		return id;
 	}
 
 	/**
-	 * Sets the bean's id.
+	 * Sets the bean id.
 	 *
-	 * @param id the new id
+	 * @param id the bean id
 	 */
 	public void setId(String id) {
 		this.id = id;
@@ -164,10 +164,20 @@ public class BeanRule implements Cloneable {
 		this.scopeType = scopeType;
 	}
 
+	/**
+	 * Returns whether Singleton. 
+	 *
+	 * @return whether Singleton
+	 */
 	public Boolean getSingleton() {
 		return singleton;
 	}
 
+	/**
+	 * Sets whether Singleton. 
+	 *
+	 * @param singleton whether Singleton
+	 */
 	public void setSingleton(Boolean singleton) {
 		this.singleton = singleton;
 	}
@@ -208,10 +218,20 @@ public class BeanRule implements Cloneable {
 		this.initMethodName = initMethodName;
 	}
 	
+	/**
+	 * Returns whether or not the initialization method requiring Translet argument.
+	 *
+	 * @return whether or not the initialization method requiring Translet argument
+	 */
 	public Boolean getInitMethodRequiresTranslet() {
 		return initMethodRequiresTranslet;
 	}
 
+	/**
+	 * Sets whether or not the initialization method requiring Translet argument.
+	 *
+	 * @param initMethodRequiresTranslet whether or not the initialization method requiring Translet argument
+	 */
 	public void setInitMethodRequiresTranslet(Boolean initMethodRequiresTranslet) {
 		this.initMethodRequiresTranslet = initMethodRequiresTranslet;
 	}
@@ -235,22 +255,27 @@ public class BeanRule implements Cloneable {
 	}
 
 	/**
-	 * Checks if is lazy init.
+	 * Returns whether the lazy initialization mode.
 	 *
-	 * @return true, if is lazy init
+	 * @return true, if is lazy initialization mode
 	 */
 	public Boolean getLazyInit() {
 		return lazyInit;
 	}
 
+	/**
+	 * Returns whether the lazy initialization mode.
+	 *
+	 * @return true, if is lazy initialization mode
+	 */
 	public boolean isLazyInit() {
 		return BooleanUtils.toBoolean(lazyInit);
 	}
 
 	/**
-	 * Sets the lazy init.
+	 * Sets whether the lazy initialization mode.
 	 *
-	 * @param lazyInit the new lazy init
+	 * @param lazyInit whether the lazy initialization mode
 	 */
 	public void setLazyInit(Boolean lazyInit) {
 		this.lazyInit = lazyInit;

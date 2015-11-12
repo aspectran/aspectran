@@ -28,7 +28,7 @@ import com.aspectran.core.context.rule.TransletRule;
 public class ShallowContextBuilderAssistant extends ContextBuilderAssistant {
 
 	/**
-	 * Instantiates a new shallow context builder assistant.
+	 * Instantiates a new ShallowContextBuilderAssistant.
 	 */
 	public ShallowContextBuilderAssistant() {
 		setImportHandler(new ShallowImportHandler());

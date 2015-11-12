@@ -48,9 +48,9 @@ public class CoreTranslet implements Translet {
 	private AspectAdviceResult aspectAdviceResult;
 	
 	/**
-	 * Instantiates a new core translet.
+	 * Instantiates a new CoreTranslet.
 	 *
-	 * @param activity the activity
+	 * @param activity the current Activity
 	 */
 	protected CoreTranslet(Activity activity) {
 		this.activity = activity;

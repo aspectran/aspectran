@@ -51,7 +51,7 @@ public final class BeanProxifierType extends Type {
 	}
 
 	/**
-	 * Instantiates a new bean proxy mode type.
+	 * Instantiates a new BeanProxifierType.
 	 * 
 	 * @param type the type
 	 */

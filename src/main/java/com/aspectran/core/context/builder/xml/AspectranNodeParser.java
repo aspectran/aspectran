@@ -43,7 +43,7 @@ public class AspectranNodeParser {
 	private final ContextBuilderAssistant assistant;
 	
 	/**
-	 * Instantiates a new aspectran node parser.
+	 * Instantiates a new AspectranNodeParser.
 	 * 
 	 * @param assistant the assistant for Context Builder
 	 */
@@ -51,6 +51,12 @@ public class AspectranNodeParser {
 		this(assistant, true);
 	}
 
+	/**
+	 * Instantiates a new AspectranNodeParser.
+	 *
+	 * @param assistant the assistant
+	 * @param validating the validating
+	 */
 	public AspectranNodeParser(ContextBuilderAssistant assistant, boolean validating) {
 		this.assistant = assistant;
 		assistant.clearObjectStack();

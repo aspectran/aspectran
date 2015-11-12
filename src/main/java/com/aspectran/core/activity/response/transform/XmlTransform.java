@@ -60,7 +60,7 @@ public class XmlTransform extends TransformResponse implements Response {
 	private boolean pretty;
 
 	/**
-	 * Instantiates a new xML transformer.
+	 * Instantiates a new XmlTransform.
 	 * 
 	 * @param transformRule the transform rule
 	 */

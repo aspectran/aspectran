@@ -18,9 +18,8 @@ package com.aspectran.core.context.rule.type;
 import java.util.HashMap;
 import java.util.Map;
 
-
 /**
- * Resource Import Type
+ * The Class ImportType.
  * 
  * <p>Created: 2008. 04. 25 오전 16:47:38</p>
  */

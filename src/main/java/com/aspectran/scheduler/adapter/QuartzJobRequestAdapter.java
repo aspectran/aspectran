@@ -37,7 +37,7 @@ public class QuartzJobRequestAdapter extends AbstractRequestAdapter implements R
 	private AttributeMap attributeMap = new AttributeMap();
 	
 	/**
-	 * Instantiates a new quartz job request adapter.
+	 * Instantiates a new QuartzJobRequestAdapter.
 	 *
 	 * @param jobDetail the job detail
 	 */
@@ -45,43 +45,73 @@ public class QuartzJobRequestAdapter extends AbstractRequestAdapter implements R
 		super(jobDetail);
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.adapter.RequestAdapter#getCharacterEncoding()
+	 */
 	public String getCharacterEncoding() {
 		return characterEncoding;
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.adapter.RequestAdapter#setCharacterEncoding(java.lang.String)
+	 */
 	public void setCharacterEncoding(String characterEncoding) {
 		this.characterEncoding = characterEncoding;
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.adapter.RequestAdapter#getParameter(java.lang.String)
+	 */
 	public String getParameter(String name) {
 		throw new UnsupportedOperationException("getParameter");
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.adapter.RequestAdapter#getParameterValues(java.lang.String)
+	 */
 	public String[] getParameterValues(String name) {
 		throw new UnsupportedOperationException("getParameterValues");
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.adapter.RequestAdapter#getParameterNames()
+	 */
 	public Enumeration<String> getParameterNames() {
 		throw new UnsupportedOperationException("getParameterNames");
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.adapter.RequestAdapter#getAttribute(java.lang.String)
+	 */
 	public <T> T getAttribute(String name) {
 		return attributeMap.getValue(name);
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.adapter.RequestAdapter#setAttribute(java.lang.String, java.lang.Object)
+	 */
 	public void setAttribute(String name, Object o) {
 		attributeMap.put(name, o);
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.adapter.RequestAdapter#getAttributeNames()
+	 */
 	public Enumeration<String> getAttributeNames() {
 		return Collections.enumeration(attributeMap.keySet());
 
 	}
 
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.adapter.RequestAdapter#removeAttribute(java.lang.String)
+	 */
 	public void removeAttribute(String name) {
 		attributeMap.remove(name);
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.adapter.RequestAdapter#getParameterMap()
+	 */
 	public Map<String, Object> getParameterMap() {
 		throw new UnsupportedOperationException("getParameterMap");
 	}

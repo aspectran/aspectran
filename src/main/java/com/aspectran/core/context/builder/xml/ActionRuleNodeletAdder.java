@@ -42,9 +42,9 @@ public class ActionRuleNodeletAdder implements NodeletAdder {
 	protected ContextBuilderAssistant assistant;
 	
 	/**
-	 * Instantiates a new content nodelet adder.
+	 * Instantiates a new ActionRuleNodeletAdder.
 	 *
-	 * @param assistant the assistant for Context Builder
+	 * @param assistant the ContextBuilderAssistant
 	 */
 	public ActionRuleNodeletAdder(ContextBuilderAssistant assistant) {
 		this.assistant = assistant;

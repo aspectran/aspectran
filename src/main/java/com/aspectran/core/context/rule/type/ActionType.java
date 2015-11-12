@@ -18,7 +18,6 @@ package com.aspectran.core.context.rule.type;
 import java.util.HashMap;
 import java.util.Map;
 
-
 /**
  * Action Type.
  * 
@@ -26,13 +25,10 @@ import java.util.Map;
  */
 public final class ActionType extends Type {
 
-	/** The "echo" action type. */
 	public static final ActionType ECHO;
 
-	/** The "bean" action type. */
 	public static final ActionType BEAN;
 	
-	/** The "include" action type. */
 	public static final ActionType INCLUDE;
 	
 	private static final Map<String, ActionType> types;
@@ -49,7 +45,7 @@ public final class ActionType extends Type {
 	}
 
 	/**
-	 * Instantiates a new action type.
+	 * Instantiates a new ActionType.
 	 * 
 	 * @param type the type
 	 */

@@ -42,7 +42,7 @@ public class IncludeAction extends AbstractAction implements Executable {
 	private final IncludeActionRule includeActionRule;
 
 	/**
-	 * Instantiates a new process call action.
+	 * Instantiates a new IncludeAction.
 	 * 
 	 * @param includeActionRule the process call action rule
 	 * @param parent the parent

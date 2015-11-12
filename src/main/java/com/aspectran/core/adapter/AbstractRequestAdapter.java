@@ -28,7 +28,7 @@ public abstract class AbstractRequestAdapter extends AbstractRequest implements 
 	protected Object adaptee;
 	
 	/**
-	 * Instantiates a new abstract request adapter.
+	 * Instantiates a new AbstractRequestAdapter.
 	 *
 	 * @param adaptee the adaptee
 	 */
@@ -36,11 +36,17 @@ public abstract class AbstractRequestAdapter extends AbstractRequest implements 
 		this.adaptee = adaptee;
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.adapter.RequestAdapter#getAdaptee()
+	 */
 	@SuppressWarnings("unchecked")
 	public <T> T getAdaptee() {
 		return (T)adaptee;
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.adapter.RequestAdapter#setAdaptee(java.lang.Object)
+	 */
 	public void setAdaptee(Object adaptee) {
 		this.adaptee = adaptee; 
 	}

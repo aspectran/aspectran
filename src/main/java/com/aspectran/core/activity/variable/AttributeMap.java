@@ -27,10 +27,18 @@ public class AttributeMap extends ValueMap {
 	/** @serial */
 	static final long serialVersionUID = -5350170143494113143L;
 
+	/**
+	 * Instantiates a AttributeMap.
+	 */
 	public AttributeMap() {
 		super();
 	}
 	
+	/**
+	 * Instantiates a new AttributeMap.
+	 *
+	 * @param map the map
+	 */
 	public AttributeMap(Map<String, Object> map) {
 		super(map);
 	}

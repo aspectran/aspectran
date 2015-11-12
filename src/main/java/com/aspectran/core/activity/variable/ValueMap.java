@@ -33,7 +33,7 @@ public class ValueMap extends LinkedHashMap<String, Object> {
 	}
 
 	/**
-	 * Instantiates a new value map.
+	 * Instantiates a new ValueMap.
 	 * 
 	 * @param map the map
 	 */
@@ -42,7 +42,7 @@ public class ValueMap extends LinkedHashMap<String, Object> {
 	}
 	
 	/**
-	 * Gets the string.
+	 * Returns the string value to which the specified key is mapped, or null if this map contains no mapping for the key.
 	 * 
 	 * @param key the key
 	 * 
@@ -57,6 +57,13 @@ public class ValueMap extends LinkedHashMap<String, Object> {
 		return o.toString();
 	}
 	
+	/**
+	 * Returns the value to which the specified key is mapped, or null if this map contains no mapping for the key.
+	 *
+	 * @param <T> the generic type
+	 * @param key the key
+	 * @return the value
+	 */
 	@SuppressWarnings("unchecked")
 	public <T> T getValue(String key) {
 		return (T)get(key);

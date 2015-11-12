@@ -62,7 +62,7 @@ public class InvalidPointcutPatternException extends AspectException {
 	}
 	
 	/**
-	 * Instantiates a new invalid pointcut pattern exception.
+	 * Instantiates a new InvalidPointcutPatternException.
 	 *
 	 * @param aspectRule the aspect rule
 	 * @param msg the msg

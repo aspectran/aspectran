@@ -25,14 +25,12 @@ import com.aspectran.core.activity.process.ActionIdQualifier;
  */
 public abstract class AbstractAction {
 
-	/** The parent. */
 	protected final ActionList parent;
 	
-	/** The qualified action id. */
 	protected final String qualifiedActionId;
 
 	/**
-	 * Instantiates a new abstract action.
+	 * Instantiates a new AbstractAction.
 	 *
 	 * @param actionId the action id
 	 * @param parent the parent

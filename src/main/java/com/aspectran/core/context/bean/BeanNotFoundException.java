@@ -26,7 +26,7 @@ public class BeanNotFoundException extends BeanException {
 	private String beanId;
 
 	/**
-	 * Instantiates a new bean not found exception.
+	 * Instantiates a new BeanNotFoundException.
 	 *
 	 * @param beanId the bean id
 	 */
@@ -35,7 +35,7 @@ public class BeanNotFoundException extends BeanException {
 	}
 
 	/**
-	 * Instantiates a new bean not found exception.
+	 * Instantiates a new BeanNotFoundException.
 	 *
 	 * @param beanId the bean id
 	 * @param cause the root cause
@@ -45,6 +45,11 @@ public class BeanNotFoundException extends BeanException {
 		this.beanId = beanId;
 	}
 
+	/**
+	 * Gets the bean id.
+	 *
+	 * @return the bean id
+	 */
 	public String getBeanId() {
 		return beanId;
 	}

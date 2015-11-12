@@ -18,24 +18,19 @@ package com.aspectran.core.context.rule.type;
 import java.util.HashMap;
 import java.util.Map;
 
-
 /**
- * Token type.
+ * The Class TokenType.
  * 
  * <p>Created: 2008. 03. 29 오전 1:21:48</p>
  */
 public final class TokenType extends Type {
 	
-	/** The "text" token type. */
 	public static final TokenType TEXT;
 	
-	/** The "parameter" token type. */
 	public static final TokenType PARAMETER;
 
-	/** The "attribute" token type. */
 	public static final TokenType ATTRIBUTE;
 
-	/** The "reference-bean" token type. */
 	public static final TokenType REFERENCE_BEAN;
 	
 	private static final Map<String, TokenType> types;
@@ -54,7 +49,7 @@ public final class TokenType extends Type {
 	}
 
 	/**
-	 * Instantiates a new token type.
+	 * Instantiates a new TokenType.
 	 * 
 	 * @param type the type
 	 */

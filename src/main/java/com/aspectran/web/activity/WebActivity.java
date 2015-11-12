@@ -71,11 +71,11 @@ public class WebActivity extends CoreActivity implements Activity {
 	private MultipartRequestWrapper requestWrapper;
 	
 	/**
-	 * Instantiates a new web activity.
+	 * Instantiates a new WebActivity.
 	 *
-	 * @param context the context
-	 * @param request the request
-	 * @param response the response
+	 * @param context the current ActivityContext
+	 * @param request the HTTP request
+	 * @param response the HTTP response
 	 */
 	public WebActivity(ActivityContext context, HttpServletRequest request, HttpServletResponse response) {
 		super(context);
@@ -100,6 +100,9 @@ public class WebActivity extends CoreActivity implements Activity {
 		setResponseAdapter(responseAdapter);
 	}
 
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.activity.AbstractActivity#getSessionAdapter()
+	 */
 	public synchronized SessionAdapter getSessionAdapter() {
 		if(super.getSessionAdapter() == null) {
 			SessionAdapter sessionAdapter = new HttpSessionAdapter(request.getSession(), getActivityContext());

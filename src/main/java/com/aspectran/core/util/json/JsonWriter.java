@@ -46,7 +46,7 @@ public class JsonWriter implements Closeable {
 	private boolean willWriteValue;
 
 	/**
-	 * Instantiates a new json writer.
+	 * Instantiates a new JsonWriter.
 	 * 
 	 * @param writer the writer
 	 */
@@ -55,7 +55,7 @@ public class JsonWriter implements Closeable {
 	}
 
 	/**
-	 * Instantiates a new json writer.
+	 * Instantiates a new JsonWriter.
 	 * 
 	 * @param writer the writer
 	 * @param prettyFormat the pretty write

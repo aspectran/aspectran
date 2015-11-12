@@ -35,6 +35,8 @@ import com.aspectran.core.util.MethodUtils;
 import com.aspectran.core.util.StringUtils;
 
 /**
+ * The Class TokenExpression.
+ * 
  * <p>Created: 2008. 03. 29 오전 12:59:16</p>
  */
 public class TokenExpression implements TokenExpressor {
@@ -45,8 +47,6 @@ public class TokenExpression implements TokenExpressor {
 	
 	protected BeanRegistry beanRegistry;
 	
-	//protected TokenValueHandler tokenValueHandler;
-	
 	public TokenExpression(Activity activity) {
 		this.activity = activity;
 		
@@ -55,17 +55,6 @@ public class TokenExpression implements TokenExpressor {
 			this.beanRegistry = activity.getBeanRegistry();
 		}
 	}
-
-	/**
-	 * Sets the token value handler.
-	 * 
-	 * @param tokenValueHandler the new token value handler
-	 */
-	/*
-	public void setTokenValueHandler(TokenValueHandler tokenValueHandler) {
-		this.tokenValueHandler = tokenValueHandler;
-	}
-	*/
 
 	/**
 	 * Express.
@@ -87,9 +76,6 @@ public class TokenExpression implements TokenExpressor {
 		} else	if(tokenType == TokenType.REFERENCE_BEAN) {
 			value = referenceBean(token);
 		}
-
-//		if(value != null && tokenValueHandler != null)
-//			return tokenValueHandler.handle(tokenType, value);
 		
 		return value;
 	}

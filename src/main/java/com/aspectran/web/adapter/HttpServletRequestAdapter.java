@@ -26,7 +26,6 @@ import com.aspectran.core.adapter.AbstractRequestAdapter;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.context.rule.type.RequestMethodType;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class HttpServletRequestAdapter.
  * 
@@ -36,9 +35,9 @@ import com.aspectran.core.context.rule.type.RequestMethodType;
 public class HttpServletRequestAdapter extends AbstractRequestAdapter implements RequestAdapter {
 	
 	/**
-	 * Instantiates a new http servlet request adapter.
+	 * Instantiates a new HttpServletRequestAdapter.
 	 *
-	 * @param request the request
+	 * @param request the HTTP request
 	 */
 	public HttpServletRequestAdapter(HttpServletRequest request) {
 		super(request);

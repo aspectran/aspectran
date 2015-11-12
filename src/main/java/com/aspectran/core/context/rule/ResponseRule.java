@@ -47,7 +47,7 @@ public class ResponseRule implements ResponseRuleApplicable {
 	private Response response;
 	
 	/**
-	 * Instantiates a new response rule.
+	 * Instantiates a new ResponseRule.
 	 */
 	public ResponseRule() {
 	}

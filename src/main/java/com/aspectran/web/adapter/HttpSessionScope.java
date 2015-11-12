@@ -35,11 +35,14 @@ public class HttpSessionScope extends SessionScope implements HttpSessionBinding
 	
 	private SessionScopeAdvisor advisor;
 	
+	/**
+	 * Instantiates a new HttpSessionScope.
+	 */
 	public HttpSessionScope() {
 	}
 	
 	/**
-	 * Instantiates a new http session scope.
+	 * Instantiates a new HttpSessionScope.
 	 *
 	 * @param sessionAdapter the session adapter
 	 * @param advisor the session scope advisor

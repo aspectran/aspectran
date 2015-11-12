@@ -31,17 +31,14 @@ import com.aspectran.core.util.logging.LogFactory;
  */
 public class RedirectResponse implements Response {
 	
-	/** The log. */
 	private final Log log = LogFactory.getLog(RedirectResponse.class);
 
-	/** The debug enabled. */
 	private final boolean debugEnabled = log.isDebugEnabled();
 
-	/** The redirect response rule. */
 	private final RedirectResponseRule redirectResponseRule;
 
 	/**
-	 * Instantiates a new redirect response.
+	 * Instantiates a new RedirectResponse.
 	 * 
 	 * @param redirectResponseRule the redirect response rule
 	 */

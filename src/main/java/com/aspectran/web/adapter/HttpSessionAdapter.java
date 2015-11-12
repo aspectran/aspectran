@@ -40,10 +40,10 @@ public class HttpSessionAdapter extends AbstractSessionAdapter implements Sessio
 	private ActivityContext context;
 	
 	/**
-	 * Instantiates a new http session adapter.
+	 * Instantiates a new HttpSessionAdapter.
 	 *
-	 * @param session the session
-	 * @param context the activity context
+	 * @param session the current HTTP session
+	 * @param context the current ActivityContext
 	 */
 	public HttpSessionAdapter(HttpSession session, ActivityContext context) {
 		super(session);

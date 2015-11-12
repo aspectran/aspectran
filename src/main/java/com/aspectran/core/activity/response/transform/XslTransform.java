@@ -78,7 +78,7 @@ public class XslTransform extends TransformResponse implements Response {
 	private boolean templateLoaded;
 
 	/**
-	 * Instantiates a new xSL transformer.
+	 * Instantiates a new XslTransform.
 	 * 
 	 * @param transformRule the transform rule
 	 */
@@ -281,21 +281,4 @@ public class XslTransform extends TransformResponse implements Response {
     	return outputEncoding;
     }
 
-//	/**
-//	 * Gets the output properties.
-//	 * 
-//	 * @return the output properties
-//	 * 
-//	 * @throws ResponseException the response exception
-//	 */
-//	public Properties getOutputProperties() throws ResponseException {
-//		try {
-//			Templates templates = getTemplates();
-//			return templates.getOutputProperties();
-//		} catch(TransformerConfigurationException e) {
-//			throw new ResponseException("XSL Transformation error: " + e.getMessageAndLocation(), e);
-//		} catch(IOException e) {
-//			throw new ResponseException("XSL Transformation error: " + e.getMessage(), e);
-//		}
-//	}
 }

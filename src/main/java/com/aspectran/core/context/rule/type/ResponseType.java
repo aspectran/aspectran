@@ -18,24 +18,19 @@ package com.aspectran.core.context.rule.type;
 import java.util.HashMap;
 import java.util.Map;
 
-
 /**
- * Response type.
+ * The Class ResponseType.
  * 
  * <p>Created: 2008. 05. 02 오전 16:21:38</p>
  */
 public final class ResponseType extends Type {
 
-	/** The "transform" response type. */
 	public static final ResponseType TRANSFORM;
 
-	/** The "dispatch" response type. */
 	public static final ResponseType DISPATCH;
 	
-	/** The "redirect" response type. */
 	public static final ResponseType REDIRECT;
 
-	/** The "forward" response type. */
 	public static final ResponseType FORWARD;
 	
 	private static final Map<String, ResponseType> types;
@@ -54,7 +49,7 @@ public final class ResponseType extends Type {
 	}
 
 	/**
-	 * Instantiates a new response type.
+	 * Instantiates a new ResponseType.
 	 * 
 	 * @param type the type
 	 */

@@ -18,6 +18,9 @@ package com.aspectran.core.context.rule.type;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * The Class PointcutPatternOperationType.
+ */
 public final class PointcutPatternOperationType extends Type {
 
 	public static final PointcutPatternOperationType PLUS;
@@ -40,7 +43,7 @@ public final class PointcutPatternOperationType extends Type {
 	}
 
 	/**
-	 * Returns a <code>PointcutType</code> with a value represented by the specified String.
+	 * Returns a <code>PointcutPatternOperationType</code> with a value represented by the specified String.
 	 * 
 	 * @param type the type
 	 * 

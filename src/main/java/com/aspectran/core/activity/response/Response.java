@@ -30,7 +30,7 @@ public interface Response {
 	/**
 	 * Response.
 	 * 
-	 * @param activity the activity
+	 * @param activity the current Activity
 	 * 
 	 * @throws ResponseException the response exception
 	 */

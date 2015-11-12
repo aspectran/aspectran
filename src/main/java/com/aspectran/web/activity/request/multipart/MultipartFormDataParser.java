@@ -73,11 +73,9 @@ public class MultipartFormDataParser {
 	private String deniedFileExtensions;
 	
 	/**
-	 * Instantiates a new multipart request handler.
+	 * Instantiates a new MultipartFormDataParser.
 	 * 
-	 * @param request the request
-	 * 
-	 * @throws MultipartRequestException the multipart request exception
+	 * @param request the HTTP request
 	 */
 	public MultipartFormDataParser(HttpServletRequest request) {
 		this.request = request;
@@ -88,9 +86,9 @@ public class MultipartFormDataParser {
 	}
 
 	/**
-	 * Gets the request.
+	 * Gets the HTTP request.
 	 * 
-	 * @return the request
+	 * @return the HTTP request
 	 */
 	public HttpServletRequest getRequest() {
 		return request;
@@ -105,9 +103,9 @@ public class MultipartFormDataParser {
 	}
 
 	/**
-	 * 임시파일의 경로를 반환한다.
+	 * Returns directory path used for temporary files.
 	 * 
-	 * @return the temporary file path
+	 * @return the directory path used for temporary files
 	 */
 	public String getTemporaryFilePath() {
 		if(temporaryFilePath == null)
@@ -117,16 +115,16 @@ public class MultipartFormDataParser {
 	}
 
 	/**
-	 * 임시파일의 경로를 지정한다. Sets the directory used to temporarily store files.
+	 * Sets the directory path used to temporarily files.
 	 * 
-	 * @param temporaryFilePath 경로
+	 * @param temporaryFilePath the directory path used for temporary files
 	 */
 	public void setTemporaryFilePath(String temporaryFilePath) {
 		this.temporaryFilePath = temporaryFilePath;
 	}
 
 	/**
-	 * 최대 업로드 크기를 반환한다.
+	 * Returns the maximum length of HTTP GET Request
 	 * 
 	 * @return the max request size
 	 */
@@ -135,9 +133,9 @@ public class MultipartFormDataParser {
 	}
 
 	/**
-	 * 최대 업로드 크기를 지정한다.
+	 * Sets the maximum length of HTTP GET Request
 	 * 
-	 * @param maxSize the max size
+	 * @param maxSize the maximum length of HTTP GET Request
 	 */
 	public void setMaxRequestSize(long maxSize) {
 		this.maxRequestSize = maxSize;
@@ -161,8 +159,6 @@ public class MultipartFormDataParser {
 
 	/**
 	 * Parse the given servlet request, resolving its multipart elements.
-	 * 
-	 * @return multipart가 아니면 false를 반환한다.
 	 * 
 	 * @throws MultipartRequestException if multipart resolution failed
 	 */
@@ -280,9 +276,9 @@ public class MultipartFormDataParser {
 	}
 
 	/**
-	 * multipart 업로드 최대 용량 초과 여부를 반환한다.
+	 * Returns whether request header has exceed the maximum length
 	 * 
-	 * @return true, if checks if is max length exceeded
+	 * @return true, if is max length exceeded
 	 */
 	public boolean isMaxLengthExceeded() {
 		return maxLengthExceeded;
@@ -300,7 +296,7 @@ public class MultipartFormDataParser {
 	/**
 	 * 파라메터 값을 반환한다.
 	 * 
-	 * @param name 파라메터명
+	 * @param name the parameter name
 	 * 
 	 * @return String 파라메터 값
 	 */
@@ -405,4 +401,5 @@ public class MultipartFormDataParser {
 			}
 		};
 	}
+
 }

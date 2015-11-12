@@ -39,7 +39,7 @@ public class ActivityContext {
 	private TransletRuleRegistry transletRuleRegistry;
 	
 	/**
-	 * Instantiates a new activity context.
+	 * Instantiates a new ActivityContext.
 	 *
 	 * @param applicationAdapter the application adapter
 	 */

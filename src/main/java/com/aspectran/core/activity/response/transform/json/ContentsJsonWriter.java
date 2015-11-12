@@ -33,7 +33,7 @@ import com.aspectran.core.util.json.JsonWriter;
 public class ContentsJsonWriter extends JsonWriter {
 
 	/**
-	 * Instantiates a new contents json writer.
+	 * Instantiates a new ContentsJsonWriter.
 	 * 
 	 * @param writer the writer
 	 */
@@ -42,7 +42,7 @@ public class ContentsJsonWriter extends JsonWriter {
 	}
 
 	/**
-	 * Instantiates a new contents json writer.
+	 * Instantiates a new ContentsJsonWriter.
 	 * 
 	 * @param writer the writer
 	 * @param prettyWrite the pretty write

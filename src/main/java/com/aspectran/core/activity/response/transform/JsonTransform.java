@@ -46,7 +46,7 @@ public class JsonTransform extends TransformResponse implements Response {
 	private boolean pretty;
 	
 	/**
-	 * Instantiates a new JSON transformer.
+	 * Instantiates a new JsonTransform.
 	 * 
 	 * @param transformRule the transform rule
 	 */

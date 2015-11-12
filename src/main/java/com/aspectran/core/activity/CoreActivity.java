@@ -65,22 +65,16 @@ public class CoreActivity extends AbstractActivity implements Activity {
 
 	private static final boolean traceEnabled = log.isTraceEnabled();
 
-	/** The activity context. */
 	private final ActivityContext context;
 
-	/** The translet rule. */
 	private TransletRule transletRule;
 	
-	/** The request rule. */
 	private RequestRule requestRule;
 	
-	/** The response rule. */
 	private ResponseRule responseRule;
 	
-	/** The translet name. */
 	private String transletName;
 	
-	/** The forward translet name. */
 	private String forwardTransletName;
 
 	private boolean withoutResponse;
@@ -89,10 +83,9 @@ public class CoreActivity extends AbstractActivity implements Activity {
 	
 	private ParameterMap pathVariableMap;
 	
-	/** The translet. */
 	private Translet translet;
 	
-	/** Whether the response process was ended. */
+	/** Whether the current activity is completed or interrupted. */
 	private boolean activityEnded;
 
 	private Exception raisedException;
@@ -702,27 +695,40 @@ public class CoreActivity extends AbstractActivity implements Activity {
 	}
 	
 	/**
+	 * Whether the current activity is completed or interrupted.
 	 * 
-	 * @return true, if checks if is response end
+	 * @return true, if the current activity is completed or interrupted
 	 */
 	public boolean isActivityEnded() {
 		return activityEnded;
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.activity.Activity#newActivity()
+	 */
 	@SuppressWarnings("unchecked")
 	public <T extends Activity> T newActivity() {
 		Activity activity = new CoreActivity(getActivityContext());
 		return (T)activity;
 	}
 	
+	/**
+	 * Create a new translet.
+	 */
 	protected void newTranslet() {
 		translet = newTranslet(this);
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.activity.Activity#getTranslet()
+	 */
 	public Translet getTranslet() {
 		return translet;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.activity.Activity#getProcessResult()
+	 */
 	public ProcessResult getProcessResult() {
 		if(translet == null)
 			return null;

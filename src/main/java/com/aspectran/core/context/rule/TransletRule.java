@@ -75,7 +75,7 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 	private String description;
 	
 	/**
-	 * Instantiates a new translet rule.
+	 * Instantiates a new TransletRule.
 	 */
 	public TransletRule() {
 	}

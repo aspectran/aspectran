@@ -23,6 +23,8 @@ import com.aspectran.core.context.rule.type.ActionType;
 import com.aspectran.core.context.rule.type.AspectAdviceType;
 
 /**
+ * The Class AspectAdviceRule.
+ * 
  * <p>Created: 2008. 04. 01 오후 11:19:28</p>
  */
 public class AspectAdviceRule implements ActionRuleApplicable {

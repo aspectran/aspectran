@@ -56,7 +56,7 @@ public class ActionList extends ArrayList<Executable> implements ActionRuleAppli
 	}
 	
 	/**
-	 * Instantiates a new action list.
+	 * Instantiates a new ActionList.
 	 * 
 	 * @param parent the action list
 	 */

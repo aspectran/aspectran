@@ -77,7 +77,7 @@ public final class DefaultSettingType extends Type {
 	}
 
 	/**
-	 * Instantiates a new activity setting type.
+	 * Instantiates a new DefaultSettingType.
 	 *
 	 * @param type the type
 	 */
@@ -89,7 +89,7 @@ public final class DefaultSettingType extends Type {
 	 * Value of.
 	 *
 	 * @param type the type
-	 * @return the activity setting type
+	 * @return the DefaultSettingType
 	 */
 	public static DefaultSettingType valueOf(String type) {
 		return types.get(type);

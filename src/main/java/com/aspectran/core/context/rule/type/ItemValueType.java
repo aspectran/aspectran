@@ -18,42 +18,30 @@ package com.aspectran.core.context.rule.type;
 import java.util.HashMap;
 import java.util.Map;
 
-
 /**
- * Unity of the item.
+ * The Class ItemValueType.
+ * 
  * <p>Created: 2008. 03. 29 오후 3:47:00</p>
  */
 public final class ItemValueType extends Type {
 	
-	/** The "string" item type. */
 	public static final ItemValueType STRING;
 
-	/** The "int" item type. */
 	public static final ItemValueType INT;
 	
-	/** The "long" item type. */
 	public static final ItemValueType LONG;
 	
-	/** The "float" item type. */
 	public static final ItemValueType FLOAT;
 	
-	/** The "double" item type. */
 	public static final ItemValueType DOUBLE;
 	
-	/** The "boolean" item type. */
 	public static final ItemValueType BOOLEAN;
 	
-	/** The "parameters" item type. */
 	public static final ItemValueType PARAMETERS;
 	
-	/** The "file" item type. */
 	public static final ItemValueType FILE;
 	
-	/** The "multipart-file" item type. */
 	public static final ItemValueType MULTIPART_FILE;
-	
-	/** The "custom" item type. */
-	//public static final ItemValueType CUSTOM;
 	
 	private static final Map<String, ItemValueType> types;
 
@@ -69,7 +57,6 @@ public final class ItemValueType extends Type {
 		PARAMETERS = new ItemValueType("parameters", "com.aspectran.core.util.apon.Parameters");
 		FILE = new ItemValueType("file", "java.io.File");
 		MULTIPART_FILE = new ItemValueType("multipart-file", "com.aspectran.core.activity.request.parameter.FileParameter");
-		//CUSTOM = new ItemValueType("custom", null);
 
 		types = new HashMap<String, ItemValueType>();
 		types.put(STRING.toString(), STRING);
@@ -81,11 +68,10 @@ public final class ItemValueType extends Type {
 		types.put(PARAMETERS.toString(), PARAMETERS);
 		types.put(FILE.toString(), FILE);
 		types.put(MULTIPART_FILE.toString(), MULTIPART_FILE);
-		//types.put(CUSTOM.toString(), CUSTOM);
 	}
 
 	/**
-	 * Instantiates a new item value type.
+	 * Instantiates a new ItemValueType.
 	 *
 	 * @param type the type
 	 * @param fullQualifiedName the full qualified name
@@ -94,16 +80,6 @@ public final class ItemValueType extends Type {
 		super(type);
 		this.fullQualifiedName  = fullQualifiedName;
 	}
-
-	/**
-	 * Instantiates a new item value type.
-	 *
-	 * @param fullQualifiedName the full qualified name
-	 */
-//	public ItemValueType(String fullQualifiedName) {
-//		super(CUSTOM.toString());
-//		this.fullQualifiedName  = fullQualifiedName;
-//	}
 	
 	/**
 	 * Gets the full qualified name.
@@ -115,7 +91,7 @@ public final class ItemValueType extends Type {
 	}
 
 	/**
-	 * Returns a <code>ValueUnityType</code> with a value represented by the specified String.
+	 * Returns a <code>ItemValueType</code> with a value represented by the specified String.
 	 * 
 	 * @param type the type
 	 * 

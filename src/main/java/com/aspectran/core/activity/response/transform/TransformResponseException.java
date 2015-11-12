@@ -31,14 +31,14 @@ public class TransformResponseException extends ResponseException {
 	private TransformRule transformRule;
 
 	/**
-	 * Simple constructor.
+	 * Instantiates a new TransformResponseException.
 	 */
 	public TransformResponseException() {
 		super();
 	}
 
 	/**
-	 * Constructor to create exception with a message.
+	 * Instantiates a new TransformResponseException.
 	 * 
 	 * @param msg A message to associate with the exception
 	 */
@@ -47,7 +47,7 @@ public class TransformResponseException extends ResponseException {
 	}
 
 	/**
-	 * Constructor to create exception to wrap another exception.
+	 * Instantiates a new TransformResponseException.
 	 * 
 	 * @param cause The real cause of the exception
 	 */
@@ -56,8 +56,7 @@ public class TransformResponseException extends ResponseException {
 	}
 	
 	/**
-	 * Constructor to create exception to wrap another exception and pass a
-	 * message.
+	 * Instantiates a new TransformResponseException.
 	 * 
 	 * @param msg The message
 	 * @param cause The real cause of the exception
@@ -67,7 +66,7 @@ public class TransformResponseException extends ResponseException {
 	}
 	
 	/**
-	 * Instantiates a new transform response exception.
+	 * Instantiates a new TransformResponseException.
 	 *
 	 * @param transformRule the transform rule
 	 * @param cause the cause
@@ -77,6 +76,11 @@ public class TransformResponseException extends ResponseException {
 		this.transformRule = transformRule;
 	}
 
+	/**
+	 * Gets the transform rule.
+	 *
+	 * @return the transform rule
+	 */
 	public TransformRule getTransformRule() {
 		return transformRule;
 	}

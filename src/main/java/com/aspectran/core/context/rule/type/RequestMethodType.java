@@ -18,9 +18,8 @@ package com.aspectran.core.context.rule.type;
 import java.util.HashMap;
 import java.util.Map;
 
-
 /**
- * Request method type.
+ * The Class RequestMethodType.
  * 
  * <p>Created: 2008. 03. 26 오전 12:58:38</p>
  */
@@ -100,7 +99,7 @@ public final class RequestMethodType extends Type {
 	}
 
 	/**
-	 * Instantiates a new request method type.
+	 * Instantiates a new RequestMethodType.
 	 * 
 	 * @param type the type
 	 */

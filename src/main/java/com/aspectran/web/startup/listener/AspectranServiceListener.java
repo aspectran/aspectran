@@ -30,13 +30,12 @@ public class AspectranServiceListener implements ServletContextListener {
 
 	private static final Log log = LogFactory.getLog(AspectranServiceListener.class);
 
-	public static final String ASPECTRAN_SERVICE_ATTRIBUTE = 
-			AspectranServiceListener.class.getName() + ".ASPECTRAN_SERVICE";
+	public static final String ASPECTRAN_SERVICE_ATTRIBUTE =  AspectranServiceListener.class.getName() + ".ASPECTRAN_SERVICE";
 	
 	private AspectranService aspectranService;
 
 	/**
-	 * Initialize the translets root context.
+	 * Initialize the Aspectran Service.
 	 * 
 	 * @param event the event
 	 */
@@ -51,7 +50,7 @@ public class AspectranServiceListener implements ServletContextListener {
 	}
 	
 	/**
-	 * Close the translets root context.
+	 * Destroy the Aspectran Service.
 	 * 
 	 * @param event the event
 	 */

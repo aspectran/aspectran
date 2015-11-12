@@ -22,6 +22,9 @@ import com.aspectran.core.context.aspect.pointcut.Pointcut;
 import com.aspectran.core.context.rule.type.AspectTargetType;
 import com.aspectran.core.context.rule.type.JoinpointScopeType;
 
+/**
+ * The Class AspectRule.
+ */
 public class AspectRule {
 
 	private String id;

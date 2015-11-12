@@ -71,10 +71,9 @@ public final class ParameterValueType extends Type {
 	}
 
 	/**
-	 * Instantiates a new item value type.
+	 * Instantiates a new ParameterValueType.
 	 *
 	 * @param type the type
-	 * @param fullQualifiedName the full qualified name
 	 */
 	private ParameterValueType(String type) {
 		super(type);

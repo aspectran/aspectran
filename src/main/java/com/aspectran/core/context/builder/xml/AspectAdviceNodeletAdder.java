@@ -40,10 +40,10 @@ public class AspectAdviceNodeletAdder implements NodeletAdder {
 	private AspectAdviceType aspectAdviceType;
 	
 	/**
-	 * Instantiates a new content nodelet adder.
-	 * 
-	 * @param parser the parser
+	 * Instantiates a new AspectAdviceNodeletAdder.
+	 *
 	 * @param assistant the assistant for Context Builder
+	 * @param aspectAdviceType the aspect advice type
 	 */
 	public AspectAdviceNodeletAdder(ContextBuilderAssistant assistant, AspectAdviceType aspectAdviceType) {
 		this.assistant = assistant;
@@ -71,4 +71,5 @@ public class AspectAdviceNodeletAdder implements NodeletAdder {
 			}
 		});
 	}
+
 }

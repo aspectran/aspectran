@@ -26,7 +26,7 @@ public class BeanCreationException extends BeanException {
 	private static final long serialVersionUID = 8126208342749350818L;
 
 	/**
-	 * Instantiates a new bean creation exception.
+	 * Instantiates a new BeanCreationException.
 	 *
 	 * @param beanRule the bean rule
 	 */
@@ -35,7 +35,7 @@ public class BeanCreationException extends BeanException {
 	}
 
 	/**
-	 * Instantiates a new bean creation exception.
+	 * Instantiates a new BeanCreationException.
 	 *
 	 * @param beanRule the bean rule
 	 * @param cause the root cause

@@ -32,7 +32,7 @@ import com.aspectran.core.service.AspectranService;
 public class WebApplicationAdapter extends AbstractApplicationAdapter implements ApplicationAdapter {
 	
 	/**
-	 * Instantiates a new web application adapter.
+	 * Instantiates a new WebApplicationAdapter.
 	 *
 	 * @param aspectranService the aspectran service
 	 * @param servletContext the servlet context

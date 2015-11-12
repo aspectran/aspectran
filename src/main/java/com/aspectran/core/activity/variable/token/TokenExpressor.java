@@ -21,9 +21,9 @@ import java.util.Properties;
 import java.util.Set;
 
 /**
- *
+ * The Interface TokenExpressor.
+ * 
  * <p>Created: 2010. 5. 6. 오전 1:35:16</p>
- *
  */
 public interface TokenExpressor {
 
@@ -99,11 +99,4 @@ public interface TokenExpressor {
 	 */
 	public Properties expressAsProperties(String parameterName, Properties tokensProp);
 	
-	/**
-	 * Sets the token value handler.
-	 *
-	 * @param tokenValueHandler the new token value handler
-	 */
-	//public void setTokenValueHandler(TokenValueHandler tokenValueHandler);
-
 }

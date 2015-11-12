@@ -44,13 +44,8 @@ public class SpecificIPAllowedWebActivityServlet extends WebActivityServlet impl
 	
 	private Set<String> allowedAddresses;
 	
-	/*
-	 * (non-Java-doc)
-	 * 
-	 * @see javax.servlet.http.HttpServlet#HttpServlet()
-	 */
 	/**
-	 * Instantiates a new action servlet.
+	 * Instantiates a new SpecificIPAllowedWebActivityServlet.
 	 */
 	public SpecificIPAllowedWebActivityServlet() {
 		super();
@@ -89,7 +84,7 @@ public class SpecificIPAllowedWebActivityServlet extends WebActivityServlet impl
 				log.debug("Access denied '" + remoteAddr + "'.");
 			}
 				
-			res.sendError(HttpServletResponse.SC_NOT_FOUND);
+			res.sendError(HttpServletResponse.SC_FORBIDDEN);
 			return;
 		}
 
@@ -97,11 +92,11 @@ public class SpecificIPAllowedWebActivityServlet extends WebActivityServlet impl
 	}
 	
 	/**
-	 * Checks if is valid access.
+	 * Returns whether a valid ip address.
 	 * 
 	 * @param ipAddress the ip address
 	 * 
-	 * @return true, if is valid access
+	 * @return true, if is a valid ip address
 	 */
 	public boolean isAllowedAdress(String ipAddress) {
 		if(allowedAddresses == null)

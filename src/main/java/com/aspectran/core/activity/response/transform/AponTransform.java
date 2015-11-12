@@ -47,7 +47,7 @@ public class AponTransform extends TransformResponse implements Response {
 	private boolean pretty;
 	
 	/**
-	 * Instantiates a new APON transformer.
+	 * Instantiates a new AponTransform.
 	 * 
 	 * @param transformRule the transform rule
 	 */
@@ -117,6 +117,5 @@ public class AponTransform extends TransformResponse implements Response {
 	public Response newDerivedResponse() {
 		return this;
 	}
-
 	
 }

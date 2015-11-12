@@ -28,14 +28,14 @@ public class RequestMethodNotAllowedException extends RequestException {
 	private RequestMethodType requestMethod;
 
 	/**
-	 * Instantiates a new request exception.
+	 * Instantiates a new RequestMethodNotAllowedException.
 	 */
 	public RequestMethodNotAllowedException() {
 		super();
 	}
 
 	/**
-	 * Constructor to create exception with a message.
+	 * Instantiates a new RequestMethodNotAllowedException.
 	 * 
 	 * @param msg A message to associate with the exception
 	 */
@@ -44,7 +44,7 @@ public class RequestMethodNotAllowedException extends RequestException {
 	}
 
 	/**
-	 * Constructor to create exception to wrap another exception.
+	 * Instantiates a new RequestMethodNotAllowedException.
 	 * 
 	 * @param cause The real cause of the exception
 	 */
@@ -53,7 +53,7 @@ public class RequestMethodNotAllowedException extends RequestException {
 	}
 
 	/**
-	 * Constructor to create exception to wrap another exception and pass a message.
+	 * Instantiates a new RequestMethodNotAllowedException.
 	 * 
 	 * @param msg The message
 	 * @param cause The real cause of the exception
@@ -63,7 +63,7 @@ public class RequestMethodNotAllowedException extends RequestException {
 	}
 	
 	/**
-	 * Constructor to create exception to wrap another exception and pass a message.
+	 * Instantiates a new RequestMethodNotAllowedException.
 	 *
 	 * @param requestMethod the request method
 	 * @param msg The message
@@ -74,7 +74,7 @@ public class RequestMethodNotAllowedException extends RequestException {
 	}
 
 	/**
-	 * Constructor to create exception to wrap another exception and pass a message.
+	 * Instantiates a new RequestMethodNotAllowedException.
 	 *
 	 * @param requestMethod the request method
 	 */
@@ -83,9 +83,9 @@ public class RequestMethodNotAllowedException extends RequestException {
 	}
 	
 	/**
-	 * Gets the request method.
+	 * Gets the request method type.
 	 *
-	 * @return the request method
+	 * @return the RequestMethodType
 	 */
 	public RequestMethodType getRequestMethod() {
 		return requestMethod;

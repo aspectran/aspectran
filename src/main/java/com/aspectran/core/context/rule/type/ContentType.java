@@ -65,7 +65,7 @@ public final class ContentType extends Type {
 	}
 
 	/**
-	 * Instantiates a new content type.
+	 * Instantiates a new ContentType.
 	 * 
 	 * @param type the type
 	 */

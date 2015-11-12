@@ -26,7 +26,7 @@ public abstract class AbstractResponseAdapter implements ResponseAdapter {
 	protected Object adaptee;
 	
 	/**
-	 * Instantiates a new abstract response adapter.
+	 * Instantiates a new AbstractResponseAdapter.
 	 *
 	 * @param adaptee the adaptee
 	 */

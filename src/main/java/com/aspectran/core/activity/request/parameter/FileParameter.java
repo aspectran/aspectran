@@ -41,13 +41,13 @@ public class FileParameter {
 	protected File savedFile;
 	
 	/**
-	 * Instantiates a new file parameter.
+	 * Instantiates a new FileParameter.
 	 */
 	protected FileParameter() {
 	}
 	
 	/**
-	 * Instantiates a new file parameter.
+	 * Instantiates a new FileParameter.
 	 *
 	 * @param file the file
 	 */

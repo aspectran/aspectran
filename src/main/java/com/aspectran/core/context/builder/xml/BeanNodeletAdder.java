@@ -41,7 +41,7 @@ public class BeanNodeletAdder implements NodeletAdder {
 	protected ContextBuilderAssistant assistant;
 	
 	/**
-	 * Instantiates a new response rule nodelet adder.
+	 * Instantiates a new BeanNodeletAdder.
 	 *
 	 * @param assistant the assistant for Context Builder
 	 */

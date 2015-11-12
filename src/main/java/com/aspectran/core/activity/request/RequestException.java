@@ -28,14 +28,14 @@ public class RequestException extends ActivityException {
 	private static final long serialVersionUID = -890371130094039206L;
 
 	/**
-	 * Instantiates a new request exception.
+	 * Instantiates a new RequestException.
 	 */
 	public RequestException() {
 		super();
 	}
 
 	/**
-	 * Constructor to create exception with a message.
+	 * Instantiates a new RequestException.
 	 * 
 	 * @param msg A message to associate with the exception
 	 */
@@ -44,7 +44,7 @@ public class RequestException extends ActivityException {
 	}
 
 	/**
-	 * Constructor to create exception to wrap another exception.
+	 * Instantiates a new RequestException.
 	 * 
 	 * @param cause The real cause of the exception
 	 */
@@ -53,7 +53,7 @@ public class RequestException extends ActivityException {
 	}
 
 	/**
-	 * Constructor to create exception to wrap another exception and pass a message.
+	 * Instantiates a new RequestException.
 	 * 
 	 * @param msg The message
 	 * @param cause The real cause of the exception

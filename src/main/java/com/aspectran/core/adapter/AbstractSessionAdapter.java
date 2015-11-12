@@ -28,7 +28,7 @@ public abstract class AbstractSessionAdapter implements SessionAdapter {
 	protected Object adaptee;
 	
 	/**
-	 * Instantiates a new abstract session adapter.
+	 * Instantiates a new AbstractSessionAdapter.
 	 *
 	 * @param adaptee the adaptee
 	 */

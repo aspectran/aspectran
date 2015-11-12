@@ -29,7 +29,7 @@ public class ContentsInputSource extends InputSource {
 	private ProcessResult processResult;
 	
 	/**
-	 * Instantiates a new contents input source.
+	 * Instantiates a new ContentsInputSource.
 	 * 
 	 * @param processResult the result of processing
 	 */

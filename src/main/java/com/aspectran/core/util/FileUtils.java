@@ -612,7 +612,7 @@ public class FileUtils {
 		private final String fullType;
 
 		/**
-		 * Instantiates a new size unit.
+		 * Instantiates a new SizeUnit.
 		 * 
 		 * @param type the type
 		 * @param fullType the full string of type

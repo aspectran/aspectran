@@ -33,7 +33,7 @@ public class ParameterMap extends LinkedHashMap<String, String> {
 	}
 
 	/**
-	 * Instantiates a new parameter map.
+	 * Instantiates a new ParameterMap.
 	 *
 	 * @param map the map
 	 */

@@ -41,7 +41,7 @@ public abstract class TransformResponse implements Response {
 	protected final TransformRule transformRule;
 	
 	/**
-	 * Instantiates a new transform response.
+	 * Instantiates a new TransformResponse.
 	 * 
 	 * @param transformRule the transform rule
 	 */

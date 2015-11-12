@@ -43,9 +43,9 @@ import com.aspectran.core.util.apon.Parameters;
 public class ItemTokenExpression extends TokenExpression implements ItemTokenExpressor {
 
 	/**
-	 * Instantiates a new item token expression.
+	 * Instantiates a new ItemTokenExpression.
 	 *
-	 * @param activity the activity
+	 * @param activity the current Activity
 	 */
 	public ItemTokenExpression(Activity activity) {
 		super(activity);
@@ -53,9 +53,8 @@ public class ItemTokenExpression extends TokenExpression implements ItemTokenExp
 	
 	/**
 	 * Express.
-	 * 
-	 * @param itemRuleMap the value rule map
-	 * 
+	 *
+	 * @param itemRuleMap the item rule map
 	 * @return the value map
 	 */
 	public ValueMap express(ItemRuleMap itemRuleMap) {
@@ -138,27 +137,6 @@ public class ItemTokenExpression extends TokenExpression implements ItemTokenExp
 		} else {
 			return list.toArray(new Object[list.size()]);
 		}
-		
-//		System.out.println("valueType: " + valueType);
-//
-//		
-//		if(tokensList == null || tokensList.isEmpty())
-//			return getParameterAsArray(parameterName, valueType);
-//		
-//		Object[] array = new Object[tokensList.size()];
-//
-//		int index = 0;
-//		
-//		for(Token[] tokens : tokensList) {
-//			Object value = express(parameterName, tokens);
-//			
-//			if(value != null && valueType != null)
-//				value = valuelize(value, valueType);
-//			
-//			array[index++] = value;
-//		}
-//		
-//		return array;
 	}
 	
 	/**
@@ -383,49 +361,4 @@ public class ItemTokenExpression extends TokenExpression implements ItemTokenExp
 		return value;
 	}
 
-//	
-//	/**
-//	 * Express as parameter map.
-//	 * 
-//	 * @param parameterRuleMap the parameter rule map
-//	 * 
-//	 * @return the parameter map
-//	 */
-//	public ParameterMap expressAsParameterMap(ParameterRuleMap parameterRuleMap) {
-//		if(parameterRuleMap == null || parameterRuleMap.size() == 0)
-//			return null;
-//		
-//		ParameterMap parameterMap = new ParameterMap();
-//		
-//		for(ParameterRule pr : parameterRuleMap) {
-//			String name = pr.getName();
-//			ParameterUnityType paramType = pr.getUnityType();
-//			
-//			if(paramType == ParameterUnityType.UNITY) {
-//				Token[] tokens = pr.getTokens();
-//				String value = null;
-//
-//				if(tokens == null || tokens.length == 0) {
-//					value = expressAsString(pr.getName(), null);
-//				} else if(tokens.length == 1) {
-//					Object obj = expressAsObject(pr.getName(), tokens[0]);
-//
-//					if(obj != null)
-//						value = obj.toString();
-//				} else {
-//					value = expressAsString(pr.getName(), tokens);
-//				}
-//
-//				parameterMap.put(name, value);
-//			} else if(paramType == ParameterUnityType.ARRAY) {
-//				Object[] value = expressAsArray(pr.getName(), pr.getTokensArray());
-//				parameterMap.put(name, value);
-//			} else if(paramType == ParameterUnityType.MAP) {
-//				Object value = expressAsMap(pr.getName(), pr.getTokensMap());
-//				parameterMap.put(name, value.toString());
-//			}
-//		}
-//		
-//		return parameterMap;
-//	}
 }

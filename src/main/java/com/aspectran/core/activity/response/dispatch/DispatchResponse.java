@@ -42,7 +42,7 @@ public class DispatchResponse implements Response {
 	private ViewDispatcher viewDispatcher;
 
 	/**
-	 * Instantiates a new dispatch response.
+	 * Instantiates a new DispatchResponse.
 	 * 
 	 * @param dispatchResponseRule the dispatch response rule
 	 */
@@ -119,6 +119,11 @@ public class DispatchResponse implements Response {
 		return this;
 	}
 
+	/**
+	 * Determine view dispatcher.
+	 *
+	 * @param activity the current Activity
+	 */
 	private void determineViewDispatcher(Activity activity) {
 		if(viewDispatcher == null) {
 			synchronized(this) {

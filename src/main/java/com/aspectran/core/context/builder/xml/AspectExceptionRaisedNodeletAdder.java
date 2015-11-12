@@ -38,9 +38,8 @@ public class AspectExceptionRaisedNodeletAdder implements NodeletAdder {
 	protected ContextBuilderAssistant assistant;
 	
 	/**
-	 * Instantiates a new content nodelet adder.
-	 * 
-	 * @param parser the parser
+	 * Instantiates a new AspectExceptionRaisedNodeletAdder.
+	 *
 	 * @param assistant the assistant for Context Builder
 	 */
 	public AspectExceptionRaisedNodeletAdder(ContextBuilderAssistant assistant) {
@@ -94,4 +93,5 @@ public class AspectExceptionRaisedNodeletAdder implements NodeletAdder {
 			}
 		});
 	}
+
 }

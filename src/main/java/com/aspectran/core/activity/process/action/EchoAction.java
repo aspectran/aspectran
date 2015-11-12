@@ -37,7 +37,7 @@ public class EchoAction extends AbstractAction implements Executable {
 	private final EchoActionRule echoActionRule;
 	
 	/**
-	 * Instantiates a new echo action.
+	 * Instantiates a new EchoAction.
 	 * 
 	 * @param echoActionRule the echo action rule
 	 * @param parent the parent

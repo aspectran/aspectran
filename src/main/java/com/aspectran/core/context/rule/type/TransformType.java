@@ -18,9 +18,8 @@ package com.aspectran.core.context.rule.type;
 import java.util.HashMap;
 import java.util.Map;
 
-
 /**
- * Transformation type for repsponse.
+ * The Class TransformType.
  * 
  * <p>Created: 2008. 04. 25 오전 16:47:38</p>
  */
@@ -59,7 +58,7 @@ public final class TransformType extends Type {
 	}
 
 	/**
-	 * Instantiates a new transform type.
+	 * Instantiates a new TransformType.
 	 * 
 	 * @param type the type
 	 */
@@ -81,6 +80,12 @@ public final class TransformType extends Type {
 		return types.get(type);
 	}
 	
+	/**
+	 * Returns a <code>TransformType</code> with a value corresponding to the specified ContentType.
+	 *
+	 * @param contentType the content type
+	 * @return the transform type
+	 */
 	public static TransformType valueOf(ContentType contentType) {
 		if(contentType == ContentType.TEXT_PLAIN)
 			return TEXT_TRANSFORM;

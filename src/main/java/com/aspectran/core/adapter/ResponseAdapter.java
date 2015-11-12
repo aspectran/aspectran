@@ -72,7 +72,7 @@ public interface ResponseAdapter {
 	 * Gets the output stream.
 	 *
 	 * @return the output stream
-	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws IOException If an input or output exception occurs
 	 */
 	public OutputStream getOutputStream() throws IOException;
 	
@@ -80,25 +80,25 @@ public interface ResponseAdapter {
 	 * Gets the writer.
 	 *
 	 * @return the writer
-	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws IOException If an input or output exception occurs
 	 */
 	public Writer getWriter() throws IOException;
 	
 	/**
-	 * Redirect.
+	 * Redirects a client to a new URL.
 	 *
-	 * @param requestUri the request URI
-	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @param url the redirect location URL
+	 * @throws IOException If an input or output exception occurs
 	 */
-	public void redirect(String requestUri) throws IOException;
+	public void redirect(String url) throws IOException;
 	
 	/**
-	 * Redirect.
+	 * Redirects a client to a new URL.
 	 *
-	 * @param activity the translet
+	 * @param activity the current Activity
 	 * @param redirectResponseRule the redirect response rule
 	 * @return the string
-	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws IOException If an input or output exception occurs
 	 */
 	public String redirect(Activity activity, RedirectResponseRule redirectResponseRule) throws IOException;
 	

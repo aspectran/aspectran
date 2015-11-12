@@ -41,7 +41,7 @@ public abstract class AbstractApplicationAdapter implements ApplicationAdapter {
 	protected String applicationBasePath;
 
 	/**
-	 * Instantiates a new abstract application adapter.
+	 * Instantiates a new AbstractApplicationAdapter.
 	 *
 	 * @param adaptee the adaptee
 	 */

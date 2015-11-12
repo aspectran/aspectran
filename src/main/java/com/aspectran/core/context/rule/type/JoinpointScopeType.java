@@ -18,7 +18,9 @@ package com.aspectran.core.context.rule.type;
 import java.util.HashMap;
 import java.util.Map;
 
-          
+/**
+ * The Class JoinpointScopeType.
+ */
 public final class JoinpointScopeType extends Type {
 
 	/** @since 1.5.0 */
@@ -58,7 +60,7 @@ public final class JoinpointScopeType extends Type {
 	}
 
 	/**
-	 * Returns a <code>JoinpointTargetType</code> with a value represented by the specified String.
+	 * Returns a <code>JoinpointScopeType</code> with a value represented by the specified String.
 	 * 
 	 * @param type the type
 	 * 

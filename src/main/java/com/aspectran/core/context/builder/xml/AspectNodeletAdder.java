@@ -41,7 +41,7 @@ public class AspectNodeletAdder implements NodeletAdder {
 	protected ContextBuilderAssistant assistant;
 	
 	/**
-	 * Instantiates a new aspect nodelet adder.
+	 * Instantiates a new AspectNodeletAdder.
 	 *
 	 * @param assistant the assistant
 	 */

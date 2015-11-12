@@ -28,14 +28,14 @@ public class ActivityException extends AspectranException {
 	static final long serialVersionUID = -4400747654771758521L;
 
 	/**
-	 * Instantiates a new activity exception.
+	 * Instantiates a new ActivityException.
 	 */
 	public ActivityException() {
 		super();
 	}
 
 	/**
-	 * Constructor to create exception with a message.
+	 * Instantiates a new ActivityException.
 	 * 
 	 * @param msg A message to associate with the exception
 	 */
@@ -44,7 +44,7 @@ public class ActivityException extends AspectranException {
 	}
 
 	/**
-	 * Constructor to create exception to wrap another exception.
+	 * Instantiates a new ActivityException.
 	 * 
 	 * @param cause The real cause of the exception
 	 */
@@ -53,7 +53,7 @@ public class ActivityException extends AspectranException {
 	}
 
 	/**
-	 * Constructor to create exception to wrap another exception and pass a message.
+	 * Instantiates a new ActivityException.
 	 * 
 	 * @param msg The message
 	 * @param cause The real cause of the exception

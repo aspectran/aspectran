@@ -44,7 +44,7 @@ public class TransletNodeletAdder implements NodeletAdder {
 	protected ContextBuilderAssistant assistant;
 	
 	/**
-	 * Instantiates a new translet nodelet adder.
+	 * Instantiates a new TransletNodeletAdder.
 	 *
 	 * @param assistant the assistant
 	 */

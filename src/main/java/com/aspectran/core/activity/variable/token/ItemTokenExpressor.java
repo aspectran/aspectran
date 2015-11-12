@@ -44,11 +44,5 @@ public interface ItemTokenExpressor {
 	 */
 	public void express(ItemRuleMap itemRuleMap, ValueMap valueMap);
 	
-	/**
-	 * Sets the token value handler.
-	 *
-	 * @param tokenValueHandler the new token value handler
-	 */
-	//public void setTokenValueHandler(TokenValueHandler tokenValueHandler);
 
 }
