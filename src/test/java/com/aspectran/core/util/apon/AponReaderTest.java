@@ -48,15 +48,10 @@ public class AponReaderTest {
 		
 		public Parameters read() throws IOException {
 			Parameters parameters = new GenericParameters();
-			read(parameters);
-			return parameters;
+			return read(parameters);
 		}
 		
-		public Parameters read(Parameters parameters) throws IOException {
-			if(parameters == null) {
-				parameters = new GenericParameters();
-			}
-
+		public <T extends Parameters> T read(T parameters) throws IOException {
 			addable = parameters.isAddable();
 			
 			valuelize(parameters, NO_CONTROL_CHAR, null, null, null);
@@ -341,10 +336,11 @@ public class AponReaderTest {
 		}
 
 		public static Parameters read(String text) {
-			return read(text, null);
+			Parameters parameters = new GenericParameters();
+			return read(text, parameters);
 		}
 
-		public static Parameters read(String text, Parameters parameters) {
+		public static <T extends Parameters> T read(String text, T parameters) {
 			try {
 				AponReader reader = new AponReader(new StringReader(text));
 				
@@ -360,19 +356,19 @@ public class AponReaderTest {
 			}
 		}
 
-		public static Parameters read(File file) throws IOException {
+		public static <T extends Parameters> T read(File file) throws IOException {
 			return read(file, null, null);
 		}
 		
-		public static Parameters read(File file, String encoding) throws IOException {
+		public static <T extends Parameters> T read(File file, String encoding) throws IOException {
 			return read(file, encoding, null);
 		}
 		
-		public static Parameters read(File file, Parameters parameters) throws IOException {
+		public static <T extends Parameters> T read(File file, T parameters) throws IOException {
 			return read(file, null, parameters);
 		}
 		
-		public static Parameters read(File file, String encoding, Parameters parameters) throws IOException {
+		public static <T extends Parameters> T read(File file, String encoding, T parameters) throws IOException {
 			AponReader reader;
 			
 			if(encoding == null) {
@@ -382,7 +378,7 @@ public class AponReaderTest {
 			}
 			
 			try {
-				Parameters p = reader.read(parameters);
+				T p = reader.read(parameters);
 				return p;
 			} finally {
 				reader.close();
@@ -399,7 +395,7 @@ public class AponReaderTest {
 			}
 		}
 		
-		public static Parameters read(Reader reader, Parameters parameters) throws IOException {
+		public static <T extends Parameters> T read(Reader reader, T parameters) throws IOException {
 			AponReader aponReader = new AponReader(reader);
 			
 			try {
@@ -419,7 +415,7 @@ public class AponReaderTest {
 			AponReader reader = new AponReader(fileReader);
 			
 			try {
-				Parameters aspectranConfig = new AspectranConfig();  
+				Parameters aspectranConfig = new AspectranConfig();
 				
 				reader.read(aspectranConfig);
 				
