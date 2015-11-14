@@ -26,7 +26,7 @@ import com.aspectran.core.activity.response.transform.apon.ContentsAponAssembler
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.context.rule.TemplateRule;
 import com.aspectran.core.context.rule.TransformRule;
-import com.aspectran.core.util.apon.AponWriter;
+import com.aspectran.core.util.apon.AponSerializer;
 import com.aspectran.core.util.apon.Parameters;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
@@ -81,15 +81,15 @@ public class AponTransform extends TransformResponse implements Response {
 			ProcessResult processResult = activity.getProcessResult();
 
 			Parameters parameters = ContentsAponAssembler.assemble(processResult);
-			AponWriter aponWriter = new AponWriter(output, pretty);
-			aponWriter.write(parameters);
-			aponWriter.close();
+			AponSerializer serializer = new AponSerializer(output, pretty);
+			serializer.write(parameters);
+			serializer.close();
 			
 			if(traceEnabled) {
-				StringWriter stringWriter = new StringWriter();
-				AponWriter aponWriter2 = new AponWriter(output, true);
-				aponWriter2.write(parameters);
-				aponWriter2.close();
+				Writer stringWriter = new StringWriter();
+				AponSerializer serializer2 = new AponSerializer(output, true);
+				serializer2.write(parameters);
+				serializer2.close();
 				log.trace(stringWriter.toString());
 			}
 		} catch(Exception e) {

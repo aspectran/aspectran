@@ -19,38 +19,32 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.Reader;
 import java.io.StringWriter;
+import java.io.Writer;
 
 import com.aspectran.core.context.loader.config.AspectranConfig;
 
-public class AponWriterTest {
+public class AponSerializerTest {
 
 	public static void main(String argv[]) {
 		try {
-			Reader fileReader = new FileReader(new File(argv[0]));
-			
-			AponReader reader = new AponReader(fileReader);
-			
+			// 먼저 AponDeserializer를 사용해서 파일로 저장된 APON 문서를 읽어서 Parameters 객체로 변환합니다.
+			Reader reader = new FileReader(new File(argv[0]));
+
 			Parameters aspectranConfig = new AspectranConfig();
 			
-			try {
-				reader.read(aspectranConfig);
-				
-				System.out.println(aspectranConfig);
-			} finally {
-				reader.close();
-			}
+			AponDeserializer deserializer = new AponDeserializer(reader);
+			deserializer.read(aspectranConfig);
+			deserializer.close();
 			
-			StringWriter stringWriter = new StringWriter();
+			System.out.println(aspectranConfig);
 			
-			AponWriter writer = new AponWriter(stringWriter);
+			Writer writer = new StringWriter();
 			
-			try {
-				writer.write(aspectranConfig);
-			} finally {
-				writer.close();
-			}
+			AponSerializer serializer = new AponSerializer(writer);
+			serializer.write(aspectranConfig);
+			serializer.close();
 			
-			System.out.println(stringWriter.toString());
+			System.out.println(writer.toString());
 			
 		} catch(Exception e) {
 			e.printStackTrace();

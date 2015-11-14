@@ -15,7 +15,6 @@
  */
 package com.aspectran.core.util.apon;
 
-
 public class AponFormat {
 
 	protected static final char CURLY_BRACKET_OPEN = '{';
@@ -44,7 +43,7 @@ public class AponFormat {
 
 	protected static final char NEXT_LINE_CHAR = '\n';
 
-	protected static final char INDENT_CHAR = '\t';
+	protected static final String INDENT_STRING = "\t";
 	
 	protected static final char SPACE_CHAR = ' ';
 	

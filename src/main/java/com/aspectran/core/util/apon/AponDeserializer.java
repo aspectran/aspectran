@@ -27,9 +27,9 @@ import java.io.StringReader;
 import java.util.Map;
 
 /**
- * The Class AponReader.
+ * Converts an APON formatted string into a Parameters object.
  */
-public class AponReader extends AponFormat implements Closeable {
+public class AponDeserializer extends AponFormat implements Closeable {
 
 	private BufferedReader reader;
 	
@@ -37,19 +37,43 @@ public class AponReader extends AponFormat implements Closeable {
 	
 	private int lineNumber;
 	
-	public AponReader(String text) {
+	/**
+	 * Instantiates a new AponDeserializer.
+	 *
+	 * @param text the APON formatted string
+	 */
+	public AponDeserializer(String text) {
 		this(new StringReader(text));
 	}
 
-	public AponReader(Reader reader) {
+	/**
+	 * Instantiates a new AponDeserializer.
+	 *
+	 * @param reader the character-input streams
+	 */
+	public AponDeserializer(Reader reader) {
 		this.reader = new BufferedReader(reader);
 	}
 	
+	/**
+	 * Converts an APON formatted string into a GenericParameters object.
+	 *
+	 * @return the parameters object
+	 * @throws IOException An I/O error occurs.
+	 */
 	public Parameters read() throws IOException {
 		Parameters parameters = new GenericParameters();
 		return read(parameters);
 	}
 	
+	/**
+	 * Converts an APON formatted string into a given Parameters object.
+	 *
+	 * @param <T> the generic type
+	 * @param parameters the parameters object
+	 * @return the parameters object
+	 * @throws IOException An I/O error occurs.
+	 */
 	public <T extends Parameters> T read(T parameters) throws IOException {
 		addable = parameters.isAddable();
 		
@@ -62,12 +86,12 @@ public class AponReader extends AponFormat implements Closeable {
 	 * Valuelize.
 	 *
 	 * @param parameters the parameters
-	 * @param openBracket the open bracket
-	 * @param name the name
+	 * @param openBracket the open bracket character
+	 * @param name the parameter name
 	 * @param parameterValue the parameter value
 	 * @param parameterValueType the parameter value type
-	 * @return the int
-	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @return the current line number
+	 * @throws IOException An I/O error occurs.
 	 */
 	private int valuelize(Parameters parameters, char openBracket, String name, ParameterValue parameterValue, ParameterValueType parameterValueType) throws IOException {
 		Map<String, ParameterValue> parameterValueMap = parameters.getParameterValueMap();
@@ -307,6 +331,9 @@ public class AponReader extends AponFormat implements Closeable {
 		return s;
 	}
 	
+	/* (non-Javadoc)
+	 * @see java.io.Closeable#close()
+	 */
 	public void close() throws IOException {
 		if(reader != null)
 			reader.close();
@@ -314,20 +341,30 @@ public class AponReader extends AponFormat implements Closeable {
 		reader = null;
 	}
 
-	public static Parameters read(String text) {
+	/**
+	 * Converts an APON formatted string into a Parameters object.
+	 *
+	 * @param text the APON formatted string
+	 * @return the parameters object
+	 */
+	public static Parameters deserialize(String text) {
 		Parameters parameters = new GenericParameters();
-		return read(text, parameters);
+		return deserialize(text, parameters);
 	}
 
-	public static <T extends Parameters> T read(String text, T parameters) {
+	/**
+	 * Converts an APON formatted string into a given Parameters object.
+	 *
+	 * @param <T> the generic type
+	 * @param text the APON formatted string
+	 * @param parameters the parameters object
+	 * @return the parameters object
+	 */
+	public static <T extends Parameters> T deserialize(String text, T parameters) {
 		try {
-			AponReader reader = new AponReader(new StringReader(text));
-			
-			try {
-				reader.read(parameters);
-			} finally {
-				reader.close();
-			}
+			AponDeserializer deserializer = new AponDeserializer(new StringReader(text));
+			deserializer.read(parameters);
+			deserializer.close();
 	
 			return parameters;
 		} catch(IOException e) {
@@ -335,53 +372,97 @@ public class AponReader extends AponFormat implements Closeable {
 		}
 	}
 
-	public static <T extends Parameters> T read(File file) throws IOException {
-		return read(file, null, null);
+	/**
+	 * Converts to a Parameters object from a file.
+	 *
+	 * @param <T> the generic type
+	 * @param file the file
+	 * @return the parameters object
+	 * @throws IOException An I/O error occurs.
+	 */
+	public static <T extends Parameters> T deserialize(File file) throws IOException {
+		return deserialize(file, null, null);
 	}
 	
-	public static <T extends Parameters> T read(File file, String encoding) throws IOException {
-		return read(file, encoding, null);
+	/**
+	 * Converts to a Parameters object from a file.
+	 *
+	 * @param <T> the generic type
+	 * @param file the file
+	 * @param encoding the character encoding
+	 * @return the parameters object
+	 * @throws IOException An I/O error occurs.
+	 */
+	public static <T extends Parameters> T deserialize(File file, String encoding) throws IOException {
+		return deserialize(file, encoding, null);
 	}
 	
-	public static <T extends Parameters> T read(File file, T parameters) throws IOException {
-		return read(file, null, parameters);
+	/**
+	 * Converts into a given Parameters object from a file.
+	 *
+	 * @param <T> the generic type
+	 * @param file the file
+	 * @param parameters the parameters object
+	 * @return the parameters object
+	 * @throws IOException An I/O error occurs.
+	 */
+	public static <T extends Parameters> T deserialize(File file, T parameters) throws IOException {
+		return deserialize(file, null, parameters);
 	}
 	
-	public static <T extends Parameters> T read(File file, String encoding, T parameters) throws IOException {
-		AponReader reader;
+	/**
+	 * Converts into a given Parameters object from a file.
+	 *
+	 * @param <T> the generic type
+	 * @param file the file
+	 * @param encoding the character encoding
+	 * @param parameters the parameters object
+	 * @return the parameters object
+	 * @throws IOException An I/O error occurs.
+	 */
+	public static <T extends Parameters> T deserialize(File file, String encoding, T parameters) throws IOException {
+		AponDeserializer deserializer;
 		
 		if(encoding == null) {
-			reader = new AponReader(new FileReader(file));
+			deserializer = new AponDeserializer(new FileReader(file));
 		} else {
-			reader = new AponReader(new InputStreamReader(new FileInputStream(file), encoding));
+			deserializer = new AponDeserializer(new InputStreamReader(new FileInputStream(file), encoding));
 		}
 		
-		try {
-			T p = reader.read(parameters);
-			return p;
-		} finally {
-			reader.close();
-		}
+		T p = deserializer.read(parameters);
+		deserializer.close();
+
+		return p;
 	}
 	
-	public static Parameters read(Reader reader) throws IOException {
-		AponReader aponReader = new AponReader(reader);
+	/**
+	 * Converts to a Parameters object from a character-input stream.
+	 *
+	 * @param reader the character-input stream
+	 * @return the parameters
+	 * @throws IOException An I/O error occurs.
+	 */
+	public static Parameters deserialize(Reader reader) throws IOException {
+		AponDeserializer deserializer = new AponDeserializer(reader);
+		Parameters p = deserializer.read();
+		deserializer.close();
 		
-		try {
-			return aponReader.read();
-		} finally {
-			aponReader.close();
-		}
+		return p;
 	}
-	
-	public static <T extends Parameters> T read(Reader reader, T parameters) throws IOException {
-		AponReader aponReader = new AponReader(reader);
-		
-		try {
-			aponReader.read(parameters);
-		} finally {
-			aponReader.close();
-		}
+
+	/**
+	 * Converts into a given Parameters object from a character-input stream.
+	 *
+	 * @param <T> the generic type
+	 * @param reader the character-input stream
+	 * @param parameters the parameters object
+	 * @return the parameters object
+	 * @throws IOException An I/O error occurs.
+	 */
+	public static <T extends Parameters> T deserialize(Reader reader, T parameters) throws IOException {
+		AponDeserializer deserializer = new AponDeserializer(reader);
+		deserializer.read(parameters);
+		deserializer.close();
 		
 		return parameters;
 	}

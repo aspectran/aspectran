@@ -22,11 +22,11 @@ import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.activity.process.result.ProcessResult;
 import com.aspectran.core.activity.response.Response;
-import com.aspectran.core.activity.response.transform.json.ContentsJsonWriter;
+import com.aspectran.core.activity.response.transform.json.ContentsJsonSerializer;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.context.rule.TemplateRule;
 import com.aspectran.core.context.rule.TransformRule;
-import com.aspectran.core.util.json.JsonWriter;
+import com.aspectran.core.util.json.JsonSerializer;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
@@ -79,15 +79,15 @@ public class JsonTransform extends TransformResponse implements Response {
 			Writer output = responseAdapter.getWriter();
 			ProcessResult processResult = activity.getProcessResult();
 
-			JsonWriter jsonWriter = new ContentsJsonWriter(output, pretty);
-			jsonWriter.write(processResult);
-			jsonWriter.close();
+			JsonSerializer serializer = new ContentsJsonSerializer(output, pretty);
+			serializer.write(processResult);
+			serializer.close();
 			
 			if(traceEnabled) {
-				StringWriter stringWriter = new StringWriter();
-				JsonWriter jsonWriter2 = new ContentsJsonWriter(stringWriter, true);
-				jsonWriter2.write(processResult);
-				jsonWriter2.close();
+				Writer stringWriter = new StringWriter();
+				JsonSerializer serializer2 = new ContentsJsonSerializer(stringWriter, true);
+				serializer2.write(processResult);
+				serializer2.close();
 				log.trace(stringWriter.toString());
 			}
 		} catch(Exception e) {

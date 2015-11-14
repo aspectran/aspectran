@@ -97,6 +97,9 @@ public class ContentsAponAssembler {
 	}
 	
 	private static void putValue(Parameters container, String name, Object value) throws InvocationTargetException {
+		if(value == null)
+			return;
+		
 		if(value instanceof Collection<?>) {
 			@SuppressWarnings("unchecked")
 			Iterator<Object> iter = ((Collection<Object>)value).iterator();

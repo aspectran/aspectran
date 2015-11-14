@@ -16,7 +16,9 @@
 package com.aspectran.core.util.json;
 
 import java.io.Closeable;
+import java.io.Flushable;
 import java.io.IOException;
+import java.io.StringWriter;
 import java.io.Writer;
 import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
@@ -31,14 +33,14 @@ import com.aspectran.core.util.apon.ParameterValue;
 import com.aspectran.core.util.apon.Parameters;
 
 /**
- * Convert object to JSON formatted string.
+ * Converts an object to a JSON formatted string.
  * If pretty-printing is enabled, includes spaces, tabs and new-lines to make the format more readable.
  * Pretty-printing is disabled by default.
  * The default indentation string is a tab character.
  * 
  * <p>Created: 2008. 06. 12 오후 8:20:54</p>
  */
-public class JsonWriter implements Closeable {
+public class JsonSerializer implements Closeable, Flushable {
 
 	private Writer writer;
 
@@ -51,47 +53,47 @@ public class JsonWriter implements Closeable {
 	private boolean willWriteValue;
 
 	/**
-	 * Instantiates a new JsonWriter.
+	 * Instantiates a new JsonSerializer.
 	 * Pretty-printing is disabled by default.
 	 * 
-	 * @param writer the character streams
+	 * @param writer the character-output stream
 	 */
-	public JsonWriter(Writer writer) {
+	public JsonSerializer(Writer writer) {
 		this(writer, false, null);
 	}
 
 	/**
-	 * Instantiates a new JsonWriter.
+	 * Instantiates a new JsonSerializer.
 	 * If pretty-printing is enabled, includes spaces, tabs and new-lines to make the format more readable.
 	 * The default indentation string is a tab character.
 	 * 
-	 * @param writer the character streams
+	 * @param writer the character-output stream
 	 * @param prettyPrint enables or disables pretty-printing.
 	 */
-	public JsonWriter(Writer writer, boolean prettyPrint) {
+	public JsonSerializer(Writer writer, boolean prettyPrint) {
 		this(writer, prettyPrint, "\t");
 	}
 	
 	/**
-	 * Instantiates a new JsonWriter.
+	 * Instantiates a new JsonSerializer.
 	 * If pretty-printing is enabled, includes spaces, tabs and new-lines to make the format more readable.
 	 *
-	 * @param writer the character streams
+	 * @param writer the character-output stream
 	 * @param prettyPrint enables or disables pretty-printing.
 	 * @param indentString the string that should be used for indentation when pretty-printing is enabled.
 	 */
-	public JsonWriter(Writer writer, boolean prettyPrint, String indentString) {
+	public JsonSerializer(Writer writer, boolean prettyPrint, String indentString) {
 		this.writer = writer;
 		this.prettyPrint = prettyPrint;
 		this.indentString = indentString;
 	}
 	
 	/**
-	 * Write a object to the character streams.
+	 * Write a object to a character stream.
 	 * 
-	 * @param object the object to write to the streams.
+	 * @param object the object to write to a character-output stream.
 	 * 
-	 * @throws IOException An I/O error occurs..
+	 * @throws IOException An I/O error occurs.
 	 * @throws InvocationTargetException the invocation target exception
 	 */
 	public void write(Object object) throws IOException, InvocationTargetException {
@@ -210,9 +212,9 @@ public class JsonWriter implements Closeable {
 	}
 
 	/**
-	 * Write a tab character to the character streams.
+	 * Write a tab character to a character stream.
 	 * 
-	 * @throws IOException An I/O error occurs..
+	 * @throws IOException An I/O error occurs.
 	 */
 	protected void indent() throws IOException {
 		if(prettyPrint) {
@@ -223,11 +225,11 @@ public class JsonWriter implements Closeable {
 	}
 
 	/**
-	 * Writes a key name to the character streams.
+	 * Writes a key name to a character stream.
 	 * 
-	 * @param name the string to write to the streams
+	 * @param name the string to write to a character-output stream
 	 * 
-	 * @throws IOException An I/O error occurs..
+	 * @throws IOException An I/O error occurs.
 	 */
 	protected void writeName(String name) throws IOException {
 		indent();
@@ -242,11 +244,11 @@ public class JsonWriter implements Closeable {
 	}
 
 	/**
-	 * Writes a string to the character streams.
+	 * Writes a string to a character stream.
 	 * 
-	 * @param value the string to write to the streams. If value is null, write a null string ("").
+	 * @param value the string to write to a character-output stream. If value is null, write a null string ("").
 	 * 
-	 * @throws IOException An I/O error occurs..
+	 * @throws IOException An I/O error occurs.
 	 */
 	protected void writeString(String value) throws IOException {
 		if(!willWriteValue)
@@ -258,10 +260,10 @@ public class JsonWriter implements Closeable {
 	}
 
 	/**
-	 *  Writes a numeric string to the character streams.
+	 *  Writes a numeric string to a character stream.
 	 *
-	 * @param value the numeric string to write to the streams.
-	 * @throws IOException An I/O error occurs..
+	 * @param value the numeric string to write to a character-output stream.
+	 * @throws IOException An I/O error occurs.
 	 */
 	protected void writeNumber(Number value) throws IOException {
 		if(!willWriteValue)
@@ -273,18 +275,18 @@ public class JsonWriter implements Closeable {
 	}
 
 	/**
-	 * Write a string "null" to the character streams.
+	 * Write a string "null" to a character stream.
 	 * 
-	 * @throws IOException An I/O error occurs..
+	 * @throws IOException An I/O error occurs.
 	 */
 	protected void writeNull() throws IOException {
 		writer.write("null");
 	}
 
 	/**
-	 * Write a comma character to the character streams.
+	 * Write a comma character to a character stream.
 	 *
-	 * @throws IOException An I/O error occurs..
+	 * @throws IOException An I/O error occurs.
 	 */
 	protected void writeComma() throws IOException {
 		writer.write(",");
@@ -296,9 +298,9 @@ public class JsonWriter implements Closeable {
 	}
 	
 	/**
-	 * Write a new line character to the character streams.
+	 * Write a new line character to a character stream.
 	 * 
-	 * @throws IOException An I/O error occurs..
+	 * @throws IOException An I/O error occurs.
 	 */
 	protected void nextLine() throws IOException {
 		if(prettyPrint)
@@ -308,7 +310,7 @@ public class JsonWriter implements Closeable {
 	/**
 	 * Open brace.
 	 * 
-	 * @throws IOException An I/O error occurs..
+	 * @throws IOException An I/O error occurs.
 	 */
 	protected void openCurlyBracket() throws IOException {
 		if(!willWriteValue)
@@ -323,7 +325,7 @@ public class JsonWriter implements Closeable {
 	/**
 	 * Close brace.
 	 * 
-	 * @throws IOException An I/O error occurs..
+	 * @throws IOException An I/O error occurs.
 	 */
 	protected void closeCurlyBracket() throws IOException {
 		indentDepth--;
@@ -337,7 +339,7 @@ public class JsonWriter implements Closeable {
 	/**
 	 * Open square bracket.
 	 * 
-	 * @throws IOException An I/O error occurs..
+	 * @throws IOException An I/O error occurs.
 	 */
 	protected void openSquareBracket() throws IOException {
 		if(!willWriteValue)
@@ -353,7 +355,7 @@ public class JsonWriter implements Closeable {
 	/**
 	 * Close square bracket.
 	 * 
-	 * @throws IOException An I/O error occurs..
+	 * @throws IOException An I/O error occurs.
 	 */
 	protected void closeSquareBracket() throws IOException {
 		indentDepth--;
@@ -364,10 +366,8 @@ public class JsonWriter implements Closeable {
 		writer.write("]");
 	}
 
-	/**
-	 * Flushes the stream.
-	 *
-	 * @throws IOException An I/O error occurs..
+	/* (non-Javadoc)
+	 * @see java.io.Flushable#flush()
 	 */
 	public void flush() throws IOException {
 		writer.flush();
@@ -390,10 +390,9 @@ public class JsonWriter implements Closeable {
 	 * control character or an unescaped quote or backslash.
 	 * 
 	 * @param string A String
-	 * 
-	 * @return  A String correctly formatted for insertion in a JSON text.
+	 * @return A String correctly formatted for insertion in a JSON text.
 	 */
-	public static String escape(String string) {
+	private static String escape(String string) {
 		if(string == null || string.length() == 0)
 			return "\"\"";
 
@@ -449,6 +448,29 @@ public class JsonWriter implements Closeable {
 		sb.append('"');
 
 		return sb.toString();
+	}
+	
+	/**
+	 * Converts an object to a JSON formatted string.
+	 *
+	 * @param object An object to convert to a JSON formatted string.
+	 * @return the JSON formatted string
+	 */
+	public static String serialize(Object object) {
+		if(object == null)
+			return null;
+		
+		try {
+			Writer writer = new StringWriter();
+			
+			JsonSerializer serializer = new JsonSerializer(writer);
+			serializer.write(object);
+			serializer.close();
+			
+			return writer.toString();
+		} catch(Exception e) {
+			throw new RuntimeException("Cannot convert to a JSON formatted string.", e);
+		}
 	}
 
 }

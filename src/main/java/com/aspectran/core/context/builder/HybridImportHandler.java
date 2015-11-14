@@ -27,8 +27,8 @@ import com.aspectran.core.context.builder.apon.params.RootParameters;
 import com.aspectran.core.context.builder.xml.AspectranNodeParser;
 import com.aspectran.core.context.rule.type.ImportFileType;
 import com.aspectran.core.context.rule.type.ImportType;
-import com.aspectran.core.util.apon.AponReader;
-import com.aspectran.core.util.apon.AponWriter;
+import com.aspectran.core.util.apon.AponDeserializer;
+import com.aspectran.core.util.apon.AponSerializer;
 import com.aspectran.core.util.apon.Parameters;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
@@ -62,7 +62,7 @@ public class HybridImportHandler extends AbstractImportHandler implements Import
 		boolean hybridon = false;
 		
 		if(importable.getImportFileType() == ImportFileType.APON) {
-			Parameters rootParameters = AponReader.read(importable.getReader(encoding), new RootParameters());
+			Parameters rootParameters = AponDeserializer.deserialize(importable.getReader(encoding), new RootParameters());
 			
 			if(rootAponDisassembler == null)
 				rootAponDisassembler = new RootAponDisassembler(assistant);
@@ -76,7 +76,7 @@ public class HybridImportHandler extends AbstractImportHandler implements Import
 					log.info("Rapid Aspectran Context Configuration Loading: " + aponFile);
 					hybridon = true;
 
-					Parameters rootParameters = AponReader.read(aponFile, encoding, new RootParameters());
+					Parameters rootParameters = AponDeserializer.deserialize(aponFile, encoding, new RootParameters());
 					
 					if(rootAponDisassembler == null)
 						rootAponDisassembler = new RootAponDisassembler(assistant);
@@ -115,13 +115,13 @@ public class HybridImportHandler extends AbstractImportHandler implements Import
 		try {
 			aponFile = makeAponFile(importableFile);
 			
-			AponWriter writer;
+			AponSerializer writer;
 			
 			if(encoding != null) {
 				OutputStream outputStream = new FileOutputStream(aponFile);
-				writer = new AponWriter(new OutputStreamWriter(outputStream, encoding));
+				writer = new AponSerializer(new OutputStreamWriter(outputStream, encoding));
 			} else {
-				writer = new AponWriter(new FileWriter(aponFile));
+				writer = new AponSerializer(new FileWriter(aponFile));
 			}
 			
 			try {

@@ -15,7 +15,7 @@
  */
 package com.aspectran.core.util.apon;
 
-public class AponReaderTest2 {
+public class AponDeserializerTest2 {
 
 	public static void main(String argv[]) {
 		try {
@@ -26,12 +26,12 @@ public class AponReaderTest2 {
 			customer.putValue(Customer.episode, "His individual skills are outstanding.\nI don't know as how he is handsome.");
 			customer.putValue(Customer.approved, false);
 			
-			String text = AponWriter.toString(customer);
+			String text = AponSerializer.serialize(customer);
 			
 			Customer customer2 = new Customer();
-			customer2 = AponReader.read(text, customer2);
+			customer2 = AponDeserializer.deserialize(text, customer2);
 			
-			String text2 = AponWriter.toString(customer2);
+			String text2 = AponSerializer.serialize(customer2);
 			
 			System.out.println("---------------------------------------------------");
 			System.out.print(text);

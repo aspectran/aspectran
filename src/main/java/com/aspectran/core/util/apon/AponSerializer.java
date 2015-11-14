@@ -17,6 +17,7 @@ package com.aspectran.core.util.apon;
 
 import java.io.BufferedReader;
 import java.io.Closeable;
+import java.io.Flushable;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
@@ -25,25 +26,62 @@ import java.io.Writer;
 import java.util.Map;
 
 /**
- * The Class AponWriter.
+ * Converts a Parameters object to an APON formatted string.
+ * If pretty-printing is enabled, includes spaces, tabs to make the format more readable.
+ * The new-lines character is always present.
+ * Pretty-printing is enabled by default.
+ * The default indentation string is a tab character.
  */
-public class AponWriter extends AponFormat implements Closeable {
+public class AponSerializer extends AponFormat implements Closeable, Flushable {
 
 	private Writer writer;
 
-	private boolean prettyFormat;
+	private boolean prettyPrint;
 	
+	private String indentString;
+
 	private int indentDepth;
 	
-	public AponWriter(Writer writer) {
+	/**
+	 * Instantiates a new AponSerializer.
+	 * Pretty-printing is enabled by default.
+	 *
+	 * @param writer the character-output stream
+	 */
+	public AponSerializer(Writer writer) {
 		this(writer, true);
 	}
 	
-	public AponWriter(Writer writer, boolean prettyFormat) {
-		this.writer = writer;
-		this.prettyFormat = prettyFormat;
+	/**
+	 * Instantiates a new AponSerializer.
+	 * The default indentation string is a tab character.
+	 *
+	 * @param writer the character-output stream
+	 * @param prettyPrint enables or disables pretty-printing.
+	 */
+	public AponSerializer(Writer writer, boolean prettyPrint) {
+		this(writer, prettyPrint, AponFormat.INDENT_STRING);
 	}
 	
+	/**
+	 * Instantiates a new AponSerializer.
+	 *
+	 * @param writer the character-output stream
+	 * @param prettyPrint enables or disables pretty-printing.
+	 * @param indentString the string that should be used for indentation when pretty-printing is enabled.
+	 */
+	public AponSerializer(Writer writer, boolean prettyPrint, String indentString) {
+		this.writer = writer;
+		this.prettyPrint = prettyPrint;
+		this.indentString = indentString;
+	}
+	
+	/**
+	 * Write a Parameters object to the character-output stream.
+	 *
+	 * @param parameters the parameters object
+	 * @throws IOException An I/O error occurs.
+	 */
 	public void write(Parameters parameters) throws IOException {
 		Map<String, ParameterValue> parameterValueMap = parameters.getParameterValueMap();
 		
@@ -54,6 +92,12 @@ public class AponWriter extends AponFormat implements Closeable {
 		}
 	}
 
+	/**
+	 * Write a Parameter object to the character-output stream.
+	 *
+	 * @param parameter the parameter object
+	 * @throws IOException An I/O error occurs.
+	 */
 	public void write(Parameter parameter) throws IOException {
 		if(parameter.getParameterValueType() == ParameterValueType.PARAMETERS) {
 			if(parameter.isArray()) {
@@ -166,6 +210,13 @@ public class AponWriter extends AponFormat implements Closeable {
 		}
 	}
 	
+	/**
+	 * Writes a comment to the character-output stream.
+	 * 
+	 * @param describe the comment to write to a character-output stream.
+	 * 
+	 * @throws IOException An I/O error occurs.
+	 */
 	public void comment(String describe) throws IOException {
 		if(describe.indexOf(AponFormat.NEXT_LINE_CHAR) != -1) {
 			Reader reader = new StringReader(describe);
@@ -267,29 +318,35 @@ public class AponWriter extends AponFormat implements Closeable {
 	}
 	
 	private void indent() throws IOException {
-		if(prettyFormat) {
+		if(prettyPrint) {
 			for(int i = 0; i < indentDepth; i++) {
-				writer.write(INDENT_CHAR);
+				writer.write(indentString);
 			}
 		}
 	}
 	
 	private void increaseIndent() throws IOException {
-		if(prettyFormat) {
+		if(prettyPrint) {
 			indentDepth++;
 		}
 	}
 	
 	private void decreaseIndent() throws IOException {
-		if(prettyFormat) {
+		if(prettyPrint) {
 			indentDepth--;
 		}
 	}
 	
+	/* (non-Javadoc)
+	 * @see java.io.Flushable#flush()
+	 */
 	public void flush() throws IOException {
 		writer.flush();
 	}
 	
+	/* (non-Javadoc)
+	 * @see java.io.Closeable#close()
+	 */
 	public void close() throws IOException {
 		if(writer != null)
 			writer.close();
@@ -297,19 +354,25 @@ public class AponWriter extends AponFormat implements Closeable {
 		writer = null;
 	}
 	
-	public static String toString(Parameters parameters) {
+	/**
+	 * Converts a Parameters object to an APON formatted string.
+	 *
+	 * @param parameters the parameters object
+	 * @return the APON formatted string
+	 */
+	public static String serialize(Parameters parameters) {
 		if(parameters == null)
 			return null;
 		
 		try {
-			StringWriter writer = new StringWriter();
-			AponWriter aponWriter = new AponWriter(writer);
-			aponWriter.write(parameters);
-			aponWriter.close();
+			Writer writer = new StringWriter();
+			AponSerializer serializer = new AponSerializer(writer);
+			serializer.write(parameters);
+			serializer.close();
 			
 			return writer.toString();
 		} catch(IOException e) {
-			return null;
+			throw new AponWriteFailedException("Cannot convert to an APON formatted string.", e);
 		}
 	}
 	

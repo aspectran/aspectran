@@ -16,17 +16,17 @@
 package com.aspectran.core.util.apon;
 
 /**
- * The Class AponException.
+ * The Class AponWriteFailedException.
  */
-public class AponException extends RuntimeException {
+public class AponWriteFailedException extends AponException {
 	
 	/** @serial */
-	private static final long serialVersionUID = 5698948413246117426L;
+	private static final long serialVersionUID = -7808057204325308915L;
 
 	/**
 	 * Simple constructor.
 	 */
-	public AponException() {
+	public AponWriteFailedException() {
 		super();
 	}
 
@@ -35,7 +35,7 @@ public class AponException extends RuntimeException {
 	 * 
 	 * @param msg A message to associate with the exception
 	 */
-	public AponException(String msg) {
+	public AponWriteFailedException(String msg) {
 		super(msg);
 	}
 
@@ -44,7 +44,7 @@ public class AponException extends RuntimeException {
 	 * 
 	 * @param cause The real cause of the exception
 	 */
-	public AponException(Throwable cause) {
+	public AponWriteFailedException(Throwable cause) {
 		super(cause);
 	}
 
@@ -54,7 +54,7 @@ public class AponException extends RuntimeException {
 	 * @param msg The message
 	 * @param cause The real cause of the exception
 	 */
-	public AponException(String msg, Throwable cause) {
+	public AponWriteFailedException(String msg, Throwable cause) {
 		super(msg, cause);
 	}
 }

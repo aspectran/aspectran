@@ -28,7 +28,7 @@ import java.util.Map;
 
 import com.aspectran.core.context.loader.config.AspectranConfig;
 
-public class AponReaderTest {
+public class AponDeserializerTest3 {
 
 	static class AponReader extends AponFormat implements Closeable {
 

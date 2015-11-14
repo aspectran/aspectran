@@ -23,36 +23,36 @@ import java.util.Iterator;
 import com.aspectran.core.activity.process.result.ActionResult;
 import com.aspectran.core.activity.process.result.ContentResult;
 import com.aspectran.core.activity.process.result.ProcessResult;
-import com.aspectran.core.util.json.JsonWriter;
+import com.aspectran.core.util.json.JsonSerializer;
 
 /**
- * Converts a ProcessResult object to a JSON string.
+ * Converts a ProcessResult object to a JSON formatted string.
  * 
  * <p>Created: 2008. 06. 12 오후 8:20:54</p>
  */
-public class ContentsJsonWriter extends JsonWriter {
+public class ContentsJsonSerializer extends JsonSerializer {
 
 	/**
-	 * Instantiates a new ContentsJsonWriter.
+	 * Instantiates a new ContentsJsonSerializer.
 	 * 
 	 * @param writer the writer
 	 */
-	public ContentsJsonWriter(Writer writer) {
+	public ContentsJsonSerializer(Writer writer) {
 		this(writer, false);
 	}
 
 	/**
-	 * Instantiates a new ContentsJsonWriter.
+	 * Instantiates a new ContentsJsonSerializer.
 	 * 
-	 * @param writer the writer
-	 * @param prettyWrite the pretty write
+	 * @param writer the character-output stream
+	 * @param prettyPrint enables or disables pretty-printing.
 	 */
-	public ContentsJsonWriter(Writer writer, boolean prettyWrite) {
-		super(writer, prettyWrite);
+	public ContentsJsonSerializer(Writer writer, boolean prettyPrint) {
+		super(writer, prettyPrint);
 	}
 
 	/* (non-Javadoc)
-	 * @see com.aspectran.core.util.json.JsonWriter#write(java.lang.Object)
+	 * @see com.aspectran.core.util.json.JsonSerializer#write(java.lang.Object)
 	 */
 	public void write(Object object) throws IOException, InvocationTargetException {
 		if(object instanceof ProcessResult) {
@@ -63,12 +63,10 @@ public class ContentsJsonWriter extends JsonWriter {
 	}
 
 	/**
-	 * Write.
-	 * 
-	 * @param processResult the process result
-	 * @param parentContentId the parent action path
-	 * 
-	 * @throws IOException Signals that an I/O exception has occurred.
+	 * Write a ProcessResult object to the character streams.
+	 *
+	 * @param processResult the ProcessResult object to write to a character-output stream.
+	 * @throws IOException An I/O error occurs.
 	 * @throws InvocationTargetException the invocation target exception
 	 */
 	private void write(ProcessResult processResult) throws IOException, InvocationTargetException {
@@ -95,6 +93,13 @@ public class ContentsJsonWriter extends JsonWriter {
 		}
 	}
 
+	/**
+	 * Write a ContentResult object to the character-output stream.
+	 *
+	 * @param contentResult the ContentResult object to write to a character-output stream.
+	 * @throws IOException An I/O error occurs.
+	 * @throws InvocationTargetException the invocation target exception
+	 */
 	private void write(ContentResult contentResult) throws IOException, InvocationTargetException {
 		if(contentResult.isEmpty()) {
 			writeNull();
