@@ -45,6 +45,7 @@ public class AponSerializer extends AponFormat implements Closeable, Flushable {
 	/**
 	 * Instantiates a new AponSerializer.
 	 * Pretty-printing is enabled by default.
+	 * The default indentation string is a tab character.
 	 *
 	 * @param writer the character-output stream
 	 */
@@ -54,6 +55,7 @@ public class AponSerializer extends AponFormat implements Closeable, Flushable {
 	
 	/**
 	 * Instantiates a new AponSerializer.
+	 * If pretty-printing is enabled, includes spaces, tabs to make the format more readable.
 	 * The default indentation string is a tab character.
 	 *
 	 * @param writer the character-output stream
@@ -65,6 +67,8 @@ public class AponSerializer extends AponFormat implements Closeable, Flushable {
 	
 	/**
 	 * Instantiates a new AponSerializer.
+	 * If pretty-printing is enabled, includes spaces, tabs to make the format more readable.
+	 * The new-lines character is always present.
 	 *
 	 * @param writer the character-output stream
 	 * @param prettyPrint enables or disables pretty-printing.
@@ -353,20 +357,53 @@ public class AponSerializer extends AponFormat implements Closeable, Flushable {
 		
 		writer = null;
 	}
-	
+
 	/**
 	 * Converts a Parameters object to an APON formatted string.
+	 * If pretty-printing is enabled, includes spaces, tabs to make the format more readable.
+	 * Pretty-printing is enabled by default.
+	 * The default indentation string is a tab character.
 	 *
 	 * @param parameters the parameters object
 	 * @return the APON formatted string
 	 */
 	public static String serialize(Parameters parameters) {
+		return serialize(parameters, true, null);
+	}
+	
+	/**
+	 * Converts a Parameters object to an APON formatted string.
+	 * If pretty-printing is enabled, includes spaces, tabs to make the format more readable.
+	 * The default indentation string is a tab character.
+	 *
+	 * @param parameters the parameters object
+	 * @param prettyPrint enables or disables pretty-printing.
+	 * @return the APON formatted string
+	 */
+	public static String serialize(Parameters parameters, boolean prettyPrint) {
+		if(prettyPrint)
+			return serialize(parameters, true, AponFormat.INDENT_STRING);
+		else
+			return serialize(parameters, false, null);
+	}
+	
+	/**
+	 * Converts a Parameters object to an APON formatted string.
+	 * If pretty-printing is enabled, includes spaces, tabs to make the format more readable.
+	 * The new-lines character is always present.
+	 *
+	 * @param parameters the parameters object
+	 * @param prettyPrint enables or disables pretty-printing.
+	 * @param indentString the string that should be used for indentation when pretty-printing is enabled.
+	 * @return the APON formatted string
+	 */
+	public static String serialize(Parameters parameters, boolean prettyPrint, String indentString) {
 		if(parameters == null)
 			return null;
 		
 		try {
 			Writer writer = new StringWriter();
-			AponSerializer serializer = new AponSerializer(writer);
+			AponSerializer serializer = new AponSerializer(writer, prettyPrint, indentString);
 			serializer.write(parameters);
 			serializer.close();
 			

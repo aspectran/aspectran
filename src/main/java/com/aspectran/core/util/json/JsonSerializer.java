@@ -39,6 +39,8 @@ import com.aspectran.core.util.apon.Parameters;
  * The default indentation string is a tab character.
  * 
  * <p>Created: 2008. 06. 12 오후 8:20:54</p>
+ * 
+ * @author Juho Jeong
  */
 public class JsonSerializer implements Closeable, Flushable {
 
@@ -452,18 +454,48 @@ public class JsonSerializer implements Closeable, Flushable {
 	
 	/**
 	 * Converts an object to a JSON formatted string.
+	 * Pretty-printing is disabled by default.
 	 *
 	 * @param object An object to convert to a JSON formatted string.
 	 * @return the JSON formatted string
 	 */
 	public static String serialize(Object object) {
+		return serialize(object, false, null);
+	}
+	
+	/**
+	 * Converts an object to a JSON formatted string.
+	 * If pretty-printing is enabled, includes spaces, tabs and new-lines to make the format more readable.
+	 * The default indentation string is a tab character.
+	 *
+	 * @param object An object to convert to a JSON formatted string.
+	 * @param prettyPrint enables or disables pretty-printing.
+	 * @return the JSON formatted string
+	 */
+	public static String serialize(Object object, boolean prettyPrint) {
+		if(prettyPrint)
+			return serialize(object, true, "\t");
+		else
+			return serialize(object, false, null);
+	}
+	
+	/**
+	 * Converts an object to a JSON formatted string.
+	 * If pretty-printing is enabled, includes spaces, tabs and new-lines to make the format more readable.
+	 *
+	 * @param object An object to convert to a JSON formatted string.
+	 * @param prettyPrint enables or disables pretty-printing.
+	 * @param indentString the string that should be used for indentation when pretty-printing is enabled.
+	 * @return the JSON formatted string
+	 */
+	public static String serialize(Object object, boolean prettyPrint, String indentString) {
 		if(object == null)
 			return null;
 		
 		try {
 			Writer writer = new StringWriter();
 			
-			JsonSerializer serializer = new JsonSerializer(writer);
+			JsonSerializer serializer = new JsonSerializer(writer, prettyPrint, indentString);
 			serializer.write(object);
 			serializer.close();
 			
