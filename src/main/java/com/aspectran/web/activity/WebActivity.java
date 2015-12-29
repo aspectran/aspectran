@@ -29,7 +29,6 @@ import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.RequestRule;
-import com.aspectran.core.context.rule.ResponseRule;
 import com.aspectran.core.context.rule.type.ItemValueType;
 import com.aspectran.core.context.rule.type.RequestMethodType;
 import com.aspectran.web.activity.request.multipart.MultipartRequestException;
@@ -54,9 +53,6 @@ public class WebActivity extends CoreActivity implements Activity {
 	
 	/** The request rule. */
 	private RequestRule requestRule;
-	
-	/** The response rule. */
-	private ResponseRule responseRule;
 	
 	/** The request. */
 	private HttpServletRequest request;
@@ -86,7 +82,6 @@ public class WebActivity extends CoreActivity implements Activity {
 	 */
 	protected void adapting(Translet translet) {
 		requestRule = getRequestRule();
-		responseRule = getResponseRule();
 		
 		RequestAdapter requestAdapter = new HttpServletRequestAdapter(request);
 		setRequestAdapter(requestAdapter);
