@@ -5,11 +5,11 @@
 	<parent>
 		<groupId>com.aspectran</groupId>
 		<artifactId>aspectran-parent</artifactId>
-		<version>1-SNAPSHOT</version>
+		<version>1</version>
 	</parent>
 
 	<artifactId>aspectran</artifactId>
-	<version>1.5.0-SNAPSHOT</version>
+	<version>1.5.0</version>
 	<name>aspectran</name>
 	<url>http://www.aspectran.com/</url>
 	<description>
