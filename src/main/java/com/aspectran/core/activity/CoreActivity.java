@@ -15,9 +15,6 @@
  */
 package com.aspectran.core.activity;
 
-import java.util.List;
-import java.util.Map;
-
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.activity.process.ContentList;
 import com.aspectran.core.activity.process.ProcessException;
@@ -35,21 +32,15 @@ import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.aspect.AspectAdviceRuleRegister;
 import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
 import com.aspectran.core.context.bean.BeanRegistry;
-import com.aspectran.core.context.rule.AspectAdviceRule;
-import com.aspectran.core.context.rule.AspectRule;
-import com.aspectran.core.context.rule.ExceptionHandlingRule;
-import com.aspectran.core.context.rule.RequestRule;
-import com.aspectran.core.context.rule.ResponseByContentTypeRule;
-import com.aspectran.core.context.rule.ResponseRule;
-import com.aspectran.core.context.rule.TransletRule;
-import com.aspectran.core.context.rule.type.ActionType;
-import com.aspectran.core.context.rule.type.AspectAdviceType;
-import com.aspectran.core.context.rule.type.JoinpointScopeType;
-import com.aspectran.core.context.rule.type.RequestMethodType;
-import com.aspectran.core.context.rule.type.ResponseType;
+import com.aspectran.core.context.rule.*;
+import com.aspectran.core.context.rule.type.*;
 import com.aspectran.core.context.translet.TransletNotFoundException;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
+
+import java.io.UnsupportedEncodingException;
+import java.util.List;
+import java.util.Map;
 
 /**
  * The Class CoreActivity.
@@ -172,15 +163,40 @@ public class CoreActivity extends AbstractActivity implements Activity {
 
 		context.setCurrentActivity(this);
 	}
-	
+
+	/**
+	 * Determine character encoding.
+	 */
+	private void determineCharacterEncoding() {
+		try {
+			String characterEncoding = requestRule.getCharacterEncoding();
+
+			if(characterEncoding == null)
+				characterEncoding = (String)getRequestSetting(RequestRule.CHARACTER_ENCODING_SETTING_NAME);
+
+			if(characterEncoding != null)
+				getRequestAdapter().setCharacterEncoding(characterEncoding);
+
+			characterEncoding = responseRule.getCharacterEncoding();
+
+			if(characterEncoding == null)
+				characterEncoding = (String)getResponseSetting(ResponseRule.CHARACTER_ENCODING_SETTING_NAME);
+
+			if(characterEncoding != null)
+				getResponseAdapter().setCharacterEncoding(characterEncoding);
+		} catch(UnsupportedEncodingException e) {
+			throw new ActivityException(e);
+		}
+	}
+
 	/* (non-Javadoc)
 	 * @see com.aspectran.core.activity.Activity#perform()
 	 */
 	public void perform() {
-		withoutResponse = false;
-		
 		adapting(translet);
-		
+
+		determineCharacterEncoding();
+
 		run1st();
 	}
 	
@@ -189,10 +205,8 @@ public class CoreActivity extends AbstractActivity implements Activity {
 	 */
 	public void performWithoutResponse() {
 		withoutResponse = true;
-		
-		adapting(translet);
-		
-		run1st();
+
+		perform();
 	}
 	
 	protected void adapting(Translet translet) {

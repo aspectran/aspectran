@@ -188,7 +188,7 @@ public class QuartzSchedulerService implements SchedulerService {
 	}
 	
 	private Trigger buildTrigger(String name, String group, PointcutRule pointcutRule, Date startDate) {
-		Trigger trigger = null;
+		Trigger trigger;
 
 		if(pointcutRule.getPointcutType() == PointcutType.SIMPLE_TRIGGER) {
 			Parameters simpleTriggerParameters = pointcutRule.getSimpleTriggerParameters();

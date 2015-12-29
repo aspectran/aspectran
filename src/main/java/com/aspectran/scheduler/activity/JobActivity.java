@@ -15,11 +15,7 @@
  */
 package com.aspectran.scheduler.activity;
 
-import java.io.UnsupportedEncodingException;
-import java.util.Map;
-
 import com.aspectran.core.activity.Activity;
-import com.aspectran.core.activity.ActivityException;
 import com.aspectran.core.activity.CoreActivity;
 import com.aspectran.core.activity.Translet;
 import com.aspectran.core.activity.request.RequestException;
@@ -30,7 +26,8 @@ import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.rule.RequestRule;
-import com.aspectran.core.context.rule.ResponseRule;
+
+import java.util.Map;
 
 /**
  * The Class JobActivity.
@@ -39,34 +36,14 @@ import com.aspectran.core.context.rule.ResponseRule;
  */
 public class JobActivity extends CoreActivity implements Activity {
 
-	private RequestRule requestRule;
-	
-	private ResponseRule responseRule;
-	
-	private RequestAdapter requestAdapter;
-	
-	private ResponseAdapter responseAdapter;
-
 	public JobActivity(ActivityContext context, RequestAdapter requestAdapter, ResponseAdapter responseAdapter) {
 		super(context);
-		
-		this.requestAdapter = requestAdapter;
-		this.responseAdapter = responseAdapter;
-		
+
 		setRequestAdapter(requestAdapter);
 		setResponseAdapter(responseAdapter);
 	}
-	
-	public void ready(String transletName) throws ActivityException {
-		super.ready(transletName);
 
-		requestRule = getRequestRule();
-		responseRule = getResponseRule();
-		
-		determineCharacterEncoding();
-	}
-	
-	protected void request(Translet translet) throws RequestException {
+	protected void request(Translet translet) {
 		try {
 	        ValueMap valueMap = parseParameter();
 	        
@@ -75,28 +52,6 @@ public class JobActivity extends CoreActivity implements Activity {
         
 		} catch(Exception e) {
 			throw new RequestException(e);
-		}
-	}
-	
-	private void determineCharacterEncoding() throws ActivityException {
-		try {
-			String characterEncoding = requestRule.getCharacterEncoding();
-			
-			if(characterEncoding == null)
-				characterEncoding = (String)getRequestSetting(RequestRule.CHARACTER_ENCODING_SETTING_NAME);
-			
-			if(characterEncoding != null)
-				requestAdapter.setCharacterEncoding(characterEncoding);
-		
-			characterEncoding = responseRule.getCharacterEncoding();
-	
-			if(characterEncoding == null)
-				characterEncoding = (String)getResponseSetting(ResponseRule.CHARACTER_ENCODING_SETTING_NAME);
-	
-			if(characterEncoding != null)
-				responseAdapter.setCharacterEncoding(characterEncoding);
-		} catch(UnsupportedEncodingException e) {
-			throw new ActivityException(e);
 		}
 	}
 	

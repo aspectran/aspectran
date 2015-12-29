@@ -15,14 +15,7 @@
  */
 package com.aspectran.web.activity;
 
-import java.io.UnsupportedEncodingException;
-import java.util.Enumeration;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import com.aspectran.core.activity.Activity;
-import com.aspectran.core.activity.ActivityException;
 import com.aspectran.core.activity.CoreActivity;
 import com.aspectran.core.activity.Translet;
 import com.aspectran.core.activity.request.RequestMethodNotAllowedException;
@@ -45,6 +38,10 @@ import com.aspectran.web.activity.request.multipart.MultipartRequestWrapperResol
 import com.aspectran.web.adapter.HttpServletRequestAdapter;
 import com.aspectran.web.adapter.HttpServletResponseAdapter;
 import com.aspectran.web.adapter.HttpSessionAdapter;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.Enumeration;
 
 /**
  * The Class WebActivity.
@@ -91,8 +88,6 @@ public class WebActivity extends CoreActivity implements Activity {
 		requestRule = getRequestRule();
 		responseRule = getResponseRule();
 		
-		determineCharacterEncoding();
-
 		RequestAdapter requestAdapter = new HttpServletRequestAdapter(request);
 		setRequestAdapter(requestAdapter);
 
@@ -144,33 +139,6 @@ public class WebActivity extends CoreActivity implements Activity {
         
         if(valueMap != null)
         	translet.setDeclaredAttributeMap(valueMap);
-	}
-	
-	/**
-	 * Determine character encoding.
-	 *
-	 * @throws ActivityException the activity exception
-	 */
-	private void determineCharacterEncoding() {
-		try {
-			String characterEncoding = requestRule.getCharacterEncoding();
-			
-			if(characterEncoding == null)
-				characterEncoding = (String)getRequestSetting(RequestRule.CHARACTER_ENCODING_SETTING_NAME);
-			
-			if(characterEncoding != null)
-				request.setCharacterEncoding(characterEncoding);
-		
-			characterEncoding = responseRule.getCharacterEncoding();
-	
-			if(characterEncoding == null)
-				characterEncoding = (String)getResponseSetting(ResponseRule.CHARACTER_ENCODING_SETTING_NAME);
-	
-			if(characterEncoding != null)
-				response.setCharacterEncoding(characterEncoding);
-		} catch(UnsupportedEncodingException e) {
-			throw new ActivityException(e);
-		}
 	}
 	
 	/**
