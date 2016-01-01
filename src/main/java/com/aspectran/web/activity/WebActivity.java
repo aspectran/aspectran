@@ -28,7 +28,6 @@ import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
-import com.aspectran.core.context.rule.RequestRule;
 import com.aspectran.core.context.rule.type.ItemValueType;
 import com.aspectran.core.context.rule.type.RequestMethodType;
 import com.aspectran.web.activity.request.multipart.MultipartRequestException;
@@ -50,9 +49,6 @@ import java.util.Enumeration;
 public class WebActivity extends CoreActivity implements Activity {
 
 	private static final String MULTIPART_REQUEST_WRAPPER_RESOLVER = "multipartRequestWrapperResolver";
-	
-	/** The request rule. */
-	private RequestRule requestRule;
 	
 	/** The request. */
 	private HttpServletRequest request;
@@ -81,8 +77,6 @@ public class WebActivity extends CoreActivity implements Activity {
 	 * @see com.aspectran.core.activity.CoreActivity#adapting(com.aspectran.core.activity.Translet)
 	 */
 	protected void adapting(Translet translet) {
-		requestRule = getRequestRule();
-		
 		RequestAdapter requestAdapter = new HttpServletRequestAdapter(request);
 		setRequestAdapter(requestAdapter);
 
@@ -106,7 +100,7 @@ public class WebActivity extends CoreActivity implements Activity {
 	 */
 	protected void request(Translet translet) {
 		String method = request.getMethod();
-		RequestMethodType requestMethod = requestRule.getRequestMethod();
+		RequestMethodType requestMethod = getRequestRule().getRequestMethod();
 		
 		if(requestMethod != null && !requestMethod.toString().equals(method)) {
 			throw new RequestMethodNotAllowedException(requestMethod);
@@ -169,11 +163,11 @@ public class WebActivity extends CoreActivity implements Activity {
 	/**
 	 * Parses the parameter.
 	 *
-	 * @param requestWrapper the request wrapper
+	 * @param requestWrapper the multipart request wrapper
 	 * @return the value map
 	 */
 	private ValueMap parseDeclaredParameter(MultipartRequestWrapper requestWrapper) {
-		ItemRuleMap attributeItemRuleMap = requestRule.getAttributeItemRuleMap();
+		ItemRuleMap attributeItemRuleMap = getRequestRule().getAttributeItemRuleMap();
 		
 		if(attributeItemRuleMap != null) {
 			ItemTokenExpressor expressor = new ItemTokenExpression(this);
@@ -199,28 +193,7 @@ public class WebActivity extends CoreActivity implements Activity {
 			if(valueMap.size() > 0)
 				return valueMap;
 		}
-		
-		/*
-		if(debugEnabled) {
-			if(requestAdapter.isMaxLengthExceeded()) {
-				logger.debug("Max length exceeded. multipart.maxRequestSize: " + multipartMaxRequestSize);
-			}
 
-			for(FileItemRule fir : fileItemRuleMap) {
-				if(fir.getUnityType() == FileItemUnityType.ARRAY) {
-					FileParameter[] fileItems = fileItemMap.getFileItems(fir.getName());
-					
-					for(int i = 0; i < fileItems.length; i++) {
-						logger.debug("fileItem[" + i + "] name=" + fir.getName() + " " + fileItems[i]);
-					}
-				} else {
-					FileParameter f = fileItemMap.getFileItem(fir.getName());
-					logger.debug("fileItem name=" + fir.getName() + " " + f);
-				}
-			}
-		}
-		*/
-		
 		return null;
 	}
 	
