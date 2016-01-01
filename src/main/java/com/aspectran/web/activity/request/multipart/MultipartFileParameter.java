@@ -111,7 +111,7 @@ public class MultipartFileParameter extends FileParameter {
 	 * Save the uploaded file to the given destination file.
 	 *
 	 * @param dest the destination file
-	 * @param overwrite 이미 파일이 존재할 경우 덮어 쓸지 여부
+	 * @param overwrite whether to overwrite if the file already exists
 	 * @return a saved file
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
@@ -203,4 +203,5 @@ public class MultipartFileParameter extends FileParameter {
 		// Check whether current file size is different than original one.
 		return (this.fileItem.getSize() == this.fileSize);
 	}
+
 }

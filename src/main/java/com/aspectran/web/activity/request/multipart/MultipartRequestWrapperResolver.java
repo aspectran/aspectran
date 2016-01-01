@@ -24,7 +24,7 @@ import com.aspectran.web.activity.request.multipart.MultipartRequestWrapper;
 
 /**
  * The Class MultipartRequestWrapperResolver.
- * 
+ *
  * @since 1.3.1
  */
 public class MultipartRequestWrapperResolver {
@@ -37,45 +37,99 @@ public class MultipartRequestWrapperResolver {
 
 	private String deniedFileExtensions;
 
+	/**
+	 * Instantiates a new Multipart request wrapper resolver.
+	 */
 	public MultipartRequestWrapperResolver() {
 	}
 
+	/**
+	 * Gets temporary file path.
+	 *
+	 * @return the temporary file path
+	 */
 	public String getTemporaryFilePath() {
 		return temporaryFilePath;
 	}
 
+	/**
+	 * Sets temporary file path.
+	 *
+	 * @param temporaryFilePath the temporary file path
+	 */
 	public void setTemporaryFilePath(String temporaryFilePath) {
 		this.temporaryFilePath = temporaryFilePath;
 	}
 
+	/**
+	 * Gets max request size.
+	 *
+	 * @return the max request size
+	 */
 	public long getMaxRequestSize() {
 		return maxRequestSize;
 	}
 
+	/**
+	 * Sets max request size.
+	 *
+	 * @param maxRequestSize the max request size
+	 */
 	public void setMaxRequestSize(long maxRequestSize) {
 		this.maxRequestSize = maxRequestSize;
 	}
 
+	/**
+	 * Sets max request size.
+	 *
+	 * @param maxRequestSize the max request size
+	 */
 	public void setMaxRequestSize(String maxRequestSize) {
 		this.maxRequestSize = FileUtils.formattedSizeToBytes(maxRequestSize, -1);
 	}
-	
+
+	/**
+	 * Gets allowed file extensions.
+	 *
+	 * @return the allowed file extensions
+	 */
 	public String getAllowedFileExtensions() {
 		return allowedFileExtensions;
 	}
 
+	/**
+	 * Sets allowed file extensions.
+	 *
+	 * @param allowedFileExtensions the allowed file extensions
+	 */
 	public void setAllowedFileExtensions(String allowedFileExtensions) {
 		this.allowedFileExtensions = allowedFileExtensions;
 	}
 
+	/**
+	 * Gets denied file extensions.
+	 *
+	 * @return the denied file extensions
+	 */
 	public String getDeniedFileExtensions() {
 		return deniedFileExtensions;
 	}
 
+	/**
+	 * Sets denied file extensions.
+	 *
+	 * @param deniedFileExtensions the denied file extensions
+	 */
 	public void setDeniedFileExtensions(String deniedFileExtensions) {
 		this.deniedFileExtensions = deniedFileExtensions;
 	}
 
+	/**
+	 * Gets multipart request wrapper.
+	 *
+	 * @param translet the translet
+	 * @return the multipart request wrapper
+	 */
 	public MultipartRequestWrapper getMultipartRequestWrapper(Translet translet) {
 		HttpServletRequest request = translet.getRequestAdaptee();
 		

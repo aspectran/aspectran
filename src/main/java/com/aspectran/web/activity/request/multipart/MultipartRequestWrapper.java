@@ -32,18 +32,18 @@ import com.aspectran.web.activity.request.multipart.MultipartRequestException;
 /**
  * This class functions as a wrapper around HttpServletRequest to provide
  * working getParameter methods for multipart requests.
- * 
+ *
  * <p>Created: 2008. 04. 11 오후 1:47:48</p>
  */
 public class MultipartRequestWrapper extends HttpServletRequestWrapper {
 
 	private MultipartFormDataParser parser;
-	
+
 	/**
 	 * Instantiates a new MultipartRequestWrapper.
-	 * 
+	 *
 	 * @param parser the handler
-	 * 
+	 *
 	 * @throws MultipartRequestException the multipart request exception
 	 */
 	public MultipartRequestWrapper(MultipartFormDataParser parser) {
@@ -90,51 +90,58 @@ public class MultipartRequestWrapper extends HttpServletRequestWrapper {
 		
 		return map;
 	}
-	
+
 	/**
-	 * Gets the multipart item names.
-	 * 
+	 * Gets the multipart file parameter names.
+	 *
 	 * @return the multipart item names
 	 */
 	public Enumeration<String> getFileParameterNames() {
         return parser.getFileParameterNames();
     }
-    
+
 	/**
-	 * Gets the multipart file item.
-	 * 
-	 * @param name the name of the multipart file item
-	 * 
-	 * @return the multipart file item
+	 * Gets the file parameter.
+	 *
+	 * @param name the name of the file parameter
+	 *
+	 * @return the file parameter
 	 */
 	public FileParameter getFileParameter(String name) {
 		return parser.getFileParameter(name);
 	}
-	
+
 	/**
-	 * Gets the multipart file items.
-	 * 
-	 * @param name the name of the multipart file item
-	 * 
-	 * @return the multipart items
+	 * Gets the file parameters.
+	 *
+	 * @param name the name of the file parameter
+	 *
+	 * @return the file parameters
 	 */
 	public FileParameter[] getFileParameters(String name) {
 		return parser.getFileParameters(name);
 	}
-	
+
 	public List<FileParameter> getFileParameterList(String name) {
 		return parser.getFileParameterList(name);
 	}
 
 	/**
 	 * Checks if is max length exceeded.
-	 * 
+	 *
 	 * @return true, if is max length exceeded
 	 */
 	public boolean isMaxLengthExceeded() {
 		return parser.isMaxLengthExceeded();
 	}
-	
+
+	/**
+	 * Returns the file parameter for the given parameter name.
+	 *
+	 * @param name     the file parameter name
+	 * @param itemRule the item rule
+	 * @return the file parameter object
+	 */
 	public Object getFileParameter(String name, ItemRule itemRule) {
 		if(itemRule.getType() == ItemType.ARRAY) {
 			return getFileParameters(name);

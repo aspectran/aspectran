@@ -48,8 +48,14 @@ public class MultipartFormDataParser {
 	
 	private static final Log log = LogFactory.getLog(MultipartFormDataParser.class);
 
+	/**
+	 * The constant DEFAULT_MAX_REQUEST_SIZE.
+	 */
 	public static final long DEFAULT_MAX_REQUEST_SIZE = 250 * 1024 * 1024;
 
+	/**
+	 * The constant DEFAULT_SIZE_THRESHOLD.
+	 */
 	public static final int DEFAULT_SIZE_THRESHOLD = 256 * 1024;
 
 	private String characterEncoding;
@@ -71,10 +77,10 @@ public class MultipartFormDataParser {
 	private String allowedFileExtensions;
 
 	private String deniedFileExtensions;
-	
+
 	/**
 	 * Instantiates a new MultipartFormDataParser.
-	 * 
+	 *
 	 * @param request the HTTP request
 	 */
 	public MultipartFormDataParser(HttpServletRequest request) {
@@ -87,24 +93,34 @@ public class MultipartFormDataParser {
 
 	/**
 	 * Gets the HTTP request.
-	 * 
+	 *
 	 * @return the HTTP request
 	 */
 	public HttpServletRequest getRequest() {
 		return request;
 	}
 
+	/**
+	 * Gets character encoding.
+	 *
+	 * @return the character encoding
+	 */
 	public String getCharacterEncoding() {
 		return characterEncoding;
 	}
 
+	/**
+	 * Sets character encoding.
+	 *
+	 * @param characterEncoding the character encoding
+	 */
 	public void setCharacterEncoding(String characterEncoding) {
 		this.characterEncoding = characterEncoding;
 	}
 
 	/**
 	 * Returns directory path used for temporary files.
-	 * 
+	 *
 	 * @return the directory path used for temporary files
 	 */
 	public String getTemporaryFilePath() {
@@ -116,7 +132,7 @@ public class MultipartFormDataParser {
 
 	/**
 	 * Sets the directory path used to temporarily files.
-	 * 
+	 *
 	 * @param temporaryFilePath the directory path used for temporary files
 	 */
 	public void setTemporaryFilePath(String temporaryFilePath) {
@@ -125,7 +141,7 @@ public class MultipartFormDataParser {
 
 	/**
 	 * Returns the maximum length of HTTP GET Request
-	 * 
+	 *
 	 * @return the max request size
 	 */
 	public long getMaxRequestSize() {
@@ -134,32 +150,52 @@ public class MultipartFormDataParser {
 
 	/**
 	 * Sets the maximum length of HTTP GET Request
-	 * 
+	 *
 	 * @param maxSize the maximum length of HTTP GET Request
 	 */
 	public void setMaxRequestSize(long maxSize) {
 		this.maxRequestSize = maxSize;
 	}
 
+	/**
+	 * Gets allowed file extensions.
+	 *
+	 * @return the allowed file extensions
+	 */
 	public String getAllowedFileExtensions() {
 		return allowedFileExtensions;
 	}
 
+	/**
+	 * Sets allowed file extensions.
+	 *
+	 * @param allowedFileExtensions the allowed file extensions
+	 */
 	public void setAllowedFileExtensions(String allowedFileExtensions) {
 		this.allowedFileExtensions = allowedFileExtensions;
 	}
 
+	/**
+	 * Gets denied file extensions.
+	 *
+	 * @return the denied file extensions
+	 */
 	public String getDeniedFileExtensions() {
 		return deniedFileExtensions;
 	}
 
+	/**
+	 * Sets denied file extensions.
+	 *
+	 * @param deniedFileExtensions the denied file extensions
+	 */
 	public void setDeniedFileExtensions(String deniedFileExtensions) {
 		this.deniedFileExtensions = deniedFileExtensions;
 	}
 
 	/**
 	 * Parse the given servlet request, resolving its multipart elements.
-	 * 
+	 *
 	 * @throws MultipartRequestException if multipart resolution failed
 	 */
 	public void parse() {
@@ -206,10 +242,10 @@ public class MultipartFormDataParser {
 
 	/**
 	 * Parse form fields and file item.
-	 * 
-	 * @param fileItemList the items
+	 *
+	 * @param fileItemListMap the file item list map
 	 */
-	private void parseMultipart(Map<String, List<FileItem>> fileItemListMap) {
+	public void parseMultipart(Map<String, List<FileItem>> fileItemListMap) {
 		for(Map.Entry<String, List<FileItem>> entry : fileItemListMap.entrySet()) {
 			String fieldName = entry.getKey();
 			List<FileItem> fileItemList = entry.getValue();
@@ -277,7 +313,7 @@ public class MultipartFormDataParser {
 
 	/**
 	 * Returns whether request header has exceed the maximum length
-	 * 
+	 *
 	 * @return true, if is max length exceeded
 	 */
 	public boolean isMaxLengthExceeded() {
@@ -286,7 +322,7 @@ public class MultipartFormDataParser {
 
 	/**
 	 * Gets the parameter names.
-	 * 
+	 *
 	 * @return the parameter names
 	 */
 	public Enumeration<String> getParameterNames() {
@@ -294,11 +330,10 @@ public class MultipartFormDataParser {
 	}
 
 	/**
-	 * 파라메터 값을 반환한다.
-	 * 
+	 * Returns the parameter value.
+	 *
 	 * @param name the parameter name
-	 * 
-	 * @return String 파라메터 값
+	 * @return String the parameter value
 	 */
 	public String getParameter(String name) {
 		List<String> items = parsedParameterListMap.get(name);
@@ -310,11 +345,10 @@ public class MultipartFormDataParser {
 	}
 
 	/**
-	 * 파라메터 값을 반환한다.
-	 * 
-	 * @param name 파라메터명
-	 * 
-	 * @return String[] 파라메터 값
+	 * Returns an array of the parameter values.
+	 *
+	 * @param name the parameter name
+	 * @return String[] an array of the parameter values
 	 */
 	public String[] getParameterValues(String name) {
 		List<String> items = parsedParameterListMap.get(name);
@@ -325,13 +359,19 @@ public class MultipartFormDataParser {
 		return items.toArray(new String[items.size()]);
 	}
 
+	/**
+	 * Gets parameter list.
+	 *
+	 * @param name the name
+	 * @return the parameter list
+	 */
 	public List<String> getParameterList(String name) {
 		return parsedParameterListMap.get(name);
 	}
-	
+
 	/**
 	 * Gets the multipart file item names.
-	 * 
+	 *
 	 * @return the multipart file item names
 	 */
 	public Enumeration<String> getFileParameterNames() {
@@ -340,9 +380,8 @@ public class MultipartFormDataParser {
 
 	/**
 	 * Gets the multipart file item.
-	 * 
+	 *
 	 * @param name the name of the multipart file item
-	 * 
 	 * @return the multipart item
 	 */
 	public FileParameter getFileParameter(String name) {
@@ -356,9 +395,8 @@ public class MultipartFormDataParser {
 
 	/**
 	 * Gets the multipart items.
-	 * 
+	 *
 	 * @param name the name
-	 * 
 	 * @return the multipart file items
 	 */
 	public FileParameter[] getFileParameters(String name) {
@@ -370,6 +408,12 @@ public class MultipartFormDataParser {
 		return list.toArray(new MultipartFileParameter[list.size()]);
 	}
 
+	/**
+	 * Gets file parameter list.
+	 *
+	 * @param name the name
+	 * @return the file parameter list
+	 */
 	public List<FileParameter> getFileParameterList(String name) {
 		return parsedFileParameterListMap.get(name);
 	}

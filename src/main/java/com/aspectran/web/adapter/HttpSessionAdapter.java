@@ -154,7 +154,7 @@ public class HttpSessionAdapter extends AbstractSessionAdapter implements Sessio
 	/**
 	 * Return a new http session scope.
 	 *
-	 * @param force the force
+	 * @param force Whether to create a new session scope to force
 	 * @return the session scope
 	 */
 	private SessionScope newHttpSessionScope(boolean force) {
