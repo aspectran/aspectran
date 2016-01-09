@@ -27,9 +27,13 @@ import com.aspectran.core.util.BooleanUtils;
  * <p>Created: 2008. 03. 22 오후 5:51:58</p>
  */
 public class TemplateRule {
-	
+
+	private String id;
+
+	private String engine;
+
 	private String file;
-	
+
 	private String resource;
 	
 	private String url;
@@ -41,7 +45,28 @@ public class TemplateRule {
 	private Token[] contentTokens;
 	
 	private Boolean noCache;
-	
+
+	private boolean builtin;
+
+	public TemplateRule() {
+	}
+
+	public TemplateRule(String engine) {
+		this.engine = engine;
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public String getEngine() {
+		return engine;
+	}
+
 	public String getFile() {
 		return file;
 	}
@@ -86,6 +111,14 @@ public class TemplateRule {
 		this.noCache = noCache;
 	}
 
+	public boolean isBuiltin() {
+		return builtin;
+	}
+
+	public void setBuiltin(boolean builtin) {
+		this.builtin = builtin;
+	}
+
 	public String getContent() {
 		return content;
 	}
@@ -101,12 +134,14 @@ public class TemplateRule {
 		if(content == null || content.length() == 0) {
 			contentTokens = null;
 		} else {
-			List<Token> tokenList = Tokenizer.tokenize(content, false);
-			if(tokenList.size() > 0) {
-				contentTokens = tokenList.toArray(new Token[tokenList.size()]);
-				contentTokens = Tokenizer.optimize(contentTokens);
-			} else {
-				contentTokens = null;
+			if(engine == null) {
+				List<Token> tokenList = Tokenizer.tokenize(content, false);
+				if (tokenList.size() > 0) {
+					contentTokens = tokenList.toArray(new Token[tokenList.size()]);
+					contentTokens = Tokenizer.optimize(contentTokens);
+				} else {
+					contentTokens = null;
+				}
 			}
 		}
 	}
@@ -130,7 +165,11 @@ public class TemplateRule {
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("{file=").append(file);
+		sb.append("{");
+		if(!builtin)
+			sb.append("id=").append(id).append(", ");
+		sb.append("engine=").append(engine);
+		sb.append(", file=").append(file);
 		sb.append(", resource=").append(resource);
 		sb.append(", url=").append(url);
 		sb.append(", encoding=").append(encoding);
@@ -140,11 +179,9 @@ public class TemplateRule {
 		return sb.toString();
 	}
 	
-	public static TemplateRule newInstance(String file, String resource, String url, String content, String encoding, Boolean noCache) {
-		//if(file == null && resource == null && url == null && content == null)
-		//	throw new IllegalArgumentException("The <template> element requires either a file or a resource or a url attribute.");
-		
-		TemplateRule tr = new TemplateRule();
+	public static TemplateRule newInstance(String id, String engine, String file, String resource, String url, String content, String encoding, Boolean noCache) {
+		TemplateRule tr = new TemplateRule(engine);
+		tr.setId(id);
 		tr.setFile(file);
 		tr.setResource(resource);
 		tr.setUrl(url);
@@ -155,6 +192,19 @@ public class TemplateRule {
 		return tr;
 	}
 	
+	public static TemplateRule newInstanceForBuiltin(String engine, String file, String resource, String url, String content, String encoding, Boolean noCache) {
+		TemplateRule tr = new TemplateRule(engine);
+		tr.setFile(file);
+		tr.setResource(resource);
+		tr.setUrl(url);
+		tr.setContent(content);
+		tr.setEncoding(encoding);
+		tr.setNoCache(noCache);
+		tr.setBuiltin(true);
+
+		return tr;
+	}
+
 	public static TemplateRule newDerivedTemplateRule(TemplateRule templateRule) {
 		TemplateRule newTemplateRule = new TemplateRule();
 		newTemplateRule.setFile(templateRule.getFile());
@@ -163,7 +213,8 @@ public class TemplateRule {
 		newTemplateRule.setEncoding(templateRule.getEncoding());
 		newTemplateRule.setContent(templateRule.getContent(), templateRule.getContentTokens());
 		newTemplateRule.setNoCache(templateRule.getNoCache());
-		
+		newTemplateRule.setBuiltin(true);
+
 		return newTemplateRule;
 	}
 	

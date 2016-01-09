@@ -51,7 +51,9 @@ public class DefaultSettings implements Cloneable {
 	private String beanProxifier;
 
 	private Boolean pointcutPatternVerifiable;
-	
+
+	private String defaultTemplateEngine;
+
 	public DefaultSettings() {
 	}
 	
@@ -176,6 +178,14 @@ public class DefaultSettings implements Cloneable {
 		this.pointcutPatternVerifiable = pointcutPatternVerifiable;
 	}
 
+	public String getDefaultTemplateEngine() {
+		return defaultTemplateEngine;
+	}
+
+	public void setDefaultTemplateEngine(String defaultTemplateEngine) {
+		this.defaultTemplateEngine = defaultTemplateEngine;
+	}
+
 	public void apply(Map<DefaultSettingType, String> settings) throws ClassNotFoundException {
 		if(settings.get(DefaultSettingType.TRANSLET_NAME_PATTERN) != null)
 			setTransletNamePattern(settings.get(DefaultSettingType.TRANSLET_NAME_PATTERN));
@@ -203,6 +213,9 @@ public class DefaultSettings implements Cloneable {
 
 		if(settings.get(DefaultSettingType.POINTCUT_PATTERN_VERIFIABLE) != null)
 			pointcutPatternVerifiable = (settings.get(DefaultSettingType.POINTCUT_PATTERN_VERIFIABLE) == null || Boolean.parseBoolean(settings.get(DefaultSettingType.POINTCUT_PATTERN_VERIFIABLE)));
+
+		if(settings.get(DefaultSettingType.DEFAULT_TEMPLATE_ENGINE) != null)
+			defaultTemplateEngine = settings.get(DefaultSettingType.DEFAULT_TEMPLATE_ENGINE);
 	}
 	
 	public DefaultSettings clone() throws CloneNotSupportedException {

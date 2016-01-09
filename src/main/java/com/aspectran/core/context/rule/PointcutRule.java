@@ -25,6 +25,9 @@ import com.aspectran.core.context.rule.type.PointcutType;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.apon.Parameters;
 
+/**
+ * The Class PointcutRule.
+ */
 public class PointcutRule {
 	
 	private final PointcutType pointcutType;

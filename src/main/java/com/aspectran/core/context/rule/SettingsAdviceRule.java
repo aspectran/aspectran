@@ -24,6 +24,9 @@ import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.apon.GenericParameters;
 import com.aspectran.core.util.apon.Parameters;
 
+/**
+ * The Class SettingsAdviceRule.
+ */
 public class SettingsAdviceRule {
 
 	private String aspectId;
@@ -55,11 +58,11 @@ public class SettingsAdviceRule {
 	public void setSettings(Map<String, String> settings) {
 		this.settings = settings;
 	}
-	
+
 	public String getSetting(String name) {
 		return settings.get(name);
 	}
-	
+
 	public void putSetting(String name, String value) {
 		if(settings == null) {
 			settings = new HashMap<String, String>();
@@ -67,7 +70,7 @@ public class SettingsAdviceRule {
 		
 		settings.put(name, value);
 	}
-	
+
 	public static SettingsAdviceRule newInstance(AspectRule aspectRule, String text) {
 		if(StringUtils.hasText(text)) {
 			Parameters settingsParameters = new GenericParameters(text);
@@ -76,7 +79,7 @@ public class SettingsAdviceRule {
 			return newInstance(aspectRule, (Parameters)null);
 		}
 	}
-	
+
 	public static SettingsAdviceRule newInstance(AspectRule aspectRule, Parameters settingsParameters) {
 		SettingsAdviceRule sar = new SettingsAdviceRule();
 		sar.setAspectId(aspectRule.getId());

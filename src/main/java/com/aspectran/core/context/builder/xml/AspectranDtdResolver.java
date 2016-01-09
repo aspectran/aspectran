@@ -32,15 +32,15 @@ import org.xml.sax.SAXException;
  */
 public class AspectranDtdResolver implements EntityResolver {
 
-	private static final String ASPECTRAN_DTD = "/com/aspectran/core/context/builder/xml/dtd/aspectran-1.0.dtd";
+	private static final String ASPECTRAN_DTD = "/com/aspectran/core/context/builder/xml/dtd/aspectran-2.0.dtd";
 
 	private static final Map<String, String> doctypeMap = new HashMap<String, String>();
 
 	private final boolean validating;
 	
 	static {
-		doctypeMap.put("-//aspectran.com//DTD Aspectran 1.0//EN".toUpperCase(), ASPECTRAN_DTD);
-		doctypeMap.put("aspectran-1.0.dtd".toUpperCase(), ASPECTRAN_DTD);
+		doctypeMap.put("-//ASPECTRAN//DTD Aspectran Configuration 2.0//EN".toUpperCase(), ASPECTRAN_DTD);
+		doctypeMap.put("aspectran-2.0.dtd".toUpperCase(), ASPECTRAN_DTD);
 	}
 
 	public AspectranDtdResolver() {
@@ -103,4 +103,5 @@ public class AspectranDtdResolver implements EntityResolver {
 		
 		return source;
 	}
+
 }

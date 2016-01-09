@@ -189,12 +189,19 @@ public class AspectranNodeParser {
 	}
 
 	/**
+	 * Adds the template nodelets.
+	 */
+	private void addTemplateNodelets() {
+		parser.addNodelet("/template", new TemplateNodeletAdder(assistant));
+	}
+	
+	/**
 	 * Adds the translet nodelets.
 	 */
 	private void addTransletNodelets() {
 		parser.addNodelet("/aspectran", new TransletNodeletAdder(assistant));
 	}
-	
+
 	/**
 	 * Adds the import nodelets.
 	 */

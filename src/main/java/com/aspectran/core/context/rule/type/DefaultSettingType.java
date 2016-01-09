@@ -50,6 +50,9 @@ public final class DefaultSettingType extends Type {
 	/** The Constant POINTCUT_PATTERN_VERIFIABLE. */
 	public static final DefaultSettingType POINTCUT_PATTERN_VERIFIABLE;
 	
+	/** The Constant DEFAULT_TEMPLATE_ENGINE. */
+	public static final DefaultSettingType DEFAULT_TEMPLATE_ENGINE;
+
 	/** The Constant types. */
 	private static final Map<String, DefaultSettingType> types;
 	
@@ -63,6 +66,7 @@ public final class DefaultSettingType extends Type {
 		NULLABLE_ACTION_ID = new DefaultSettingType("nullableActionId");
 		BEAN_PROXIFIER = new DefaultSettingType("beanProxifier");
 		POINTCUT_PATTERN_VERIFIABLE = new DefaultSettingType("pointcutPatternVerifiable");
+		DEFAULT_TEMPLATE_ENGINE = new DefaultSettingType("defaultTemplateEngine");
 
 		types = new HashMap<String, DefaultSettingType>();
 		types.put(TRANSLET_NAME_PATTERN.toString(), TRANSLET_NAME_PATTERN);
@@ -74,6 +78,7 @@ public final class DefaultSettingType extends Type {
 		types.put(NULLABLE_ACTION_ID.toString(), NULLABLE_ACTION_ID);
 		types.put(BEAN_PROXIFIER.toString(), BEAN_PROXIFIER);
 		types.put(POINTCUT_PATTERN_VERIFIABLE.toString(), POINTCUT_PATTERN_VERIFIABLE);
+		types.put(DEFAULT_TEMPLATE_ENGINE.toString(), DEFAULT_TEMPLATE_ENGINE);
 	}
 
 	/**

@@ -22,14 +22,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.aspectran.core.context.rule.BeanActionRule;
-import com.aspectran.core.context.rule.BeanRuleMap;
-import com.aspectran.core.context.rule.ItemRule;
-import com.aspectran.core.context.rule.RedirectResponseRule;
-import com.aspectran.core.context.rule.TransformRule;
+import com.aspectran.core.context.rule.*;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
+/**
+ * The Class BeanReferenceInspector.
+ */
 public class BeanReferenceInspector {
 
 	private final Log log = LogFactory.getLog(BeanReferenceInspector.class);
@@ -73,6 +72,8 @@ public class BeanReferenceInspector {
 						ruleName = "transformRule";
 					} else if(o instanceof RedirectResponseRule) {
 						ruleName = "redirectResponseRule";
+					} else if(o instanceof TemplateRule) {
+						ruleName = "templateRule";
 					} else {
 						ruleName = "rule";
 					}

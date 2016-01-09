@@ -21,6 +21,9 @@ import java.util.List;
 import com.aspectran.core.context.rule.type.JoinpointScopeType;
 import com.aspectran.core.context.rule.type.PointcutType;
 
+/**
+ * The Class PointcutPatternRule.
+ */
 public class PointcutPatternRule {
 	
 	private static final char POINTCUT_BEAN_ID_DELIMITER = '@';

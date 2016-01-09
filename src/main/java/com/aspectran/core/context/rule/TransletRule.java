@@ -33,6 +33,8 @@ import com.aspectran.core.util.apon.Parameters;
 import com.aspectran.core.util.wildcard.WildcardPattern;
 
 /**
+ * The Class TransletRule.
+ *
  * <p>Created: 2008. 03. 22 오후 5:48:09</p>
  */
 public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicable {

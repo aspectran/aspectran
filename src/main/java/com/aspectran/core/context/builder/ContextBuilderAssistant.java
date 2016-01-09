@@ -26,14 +26,7 @@ import com.aspectran.core.activity.Translet;
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.AspectranConstant;
 import com.aspectran.core.context.bean.scan.BeanClassScanner;
-import com.aspectran.core.context.rule.AspectRule;
-import com.aspectran.core.context.rule.AspectRuleMap;
-import com.aspectran.core.context.rule.BeanRule;
-import com.aspectran.core.context.rule.BeanRuleMap;
-import com.aspectran.core.context.rule.RequestRule;
-import com.aspectran.core.context.rule.ResponseRule;
-import com.aspectran.core.context.rule.TransletRule;
-import com.aspectran.core.context.rule.TransletRuleMap;
+import com.aspectran.core.context.rule.*;
 import com.aspectran.core.context.rule.type.DefaultSettingType;
 import com.aspectran.core.context.translet.scan.TemplateFileScanner;
 import com.aspectran.core.util.ArrayStack;
@@ -70,7 +63,9 @@ public class ContextBuilderAssistant {
 	protected AspectRuleMap aspectRuleMap = new AspectRuleMap();
 	
 	protected BeanRuleMap beanRuleMap = new BeanRuleMap();
-	
+
+	protected TemplateRuleMap templateRuleMap = new TemplateRuleMap();
+
 	protected TransletRuleMap transletRuleMap = new TransletRuleMap();
 	
 	private ImportHandler importHandler;
@@ -481,7 +476,15 @@ public class ContextBuilderAssistant {
 				log.trace("add BeanRule " + beanRule);
 		}
 	}
-	
+
+	public TemplateRuleMap getTemplateRuleMap() {
+		return templateRuleMap;
+	}
+
+	public void addTemplateRule(TemplateRule templateRule) {
+		templateRuleMap.putTemplateRule(templateRule);
+	}
+
 	public TransletRuleMap getTransletRuleMap() {
 		return transletRuleMap;
 	}
