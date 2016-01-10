@@ -408,7 +408,7 @@ public class TokenExpression implements TokenExpressor {
 				if(object instanceof Map<?, ?>) {
 					value = ((Map<?, ?>)object).get(name);
 				} else {
-					value = MethodUtils.invokeMethod(object, name, null);
+					value = MethodUtils.invokeMethod(object, name);
 				}
 			}
 			return value;

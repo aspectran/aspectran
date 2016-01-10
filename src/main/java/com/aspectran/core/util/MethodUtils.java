@@ -38,7 +38,7 @@ public class MethodUtils {
      * which may introduce memory-leak problems.
      */
     private static boolean cacheEnabled = true;
-    
+
 	/** An empty class array */
 	public static final Class<?>[] EMPTY_CLASS_PARAMETERS = new Class[0];
 
@@ -66,7 +66,7 @@ public class MethodUtils {
      * objects and hence end up with different entries in the map.
      */
     private static final Map<MethodDescriptor, Reference<Method>> cache = Collections.synchronizedMap(new WeakHashMap<MethodDescriptor, Reference<Method>>());
-	
+
 	/**
 	 * Sets the value of a bean property to an Object.
 	 *
@@ -82,7 +82,7 @@ public class MethodUtils {
 		Object[] args = { arg };
 		invokeSetter(object, setterName, args);
     }
-    
+
     /**
      * Sets the value of a bean property to an Object.
      *
@@ -107,9 +107,9 @@ public class MethodUtils {
 	    	invokeMethod(object, setterName, args);
     	}
     }
-    
+
     /**
-     * Gets an Object property from a bean
+     * Gets an Object property from a bean.
      *
 	 * @param object The bean
 	 * @param getterName The property name or getter method name
@@ -120,11 +120,11 @@ public class MethodUtils {
      */
     public static Object invokeGetter(Object object, String getterName)
     		throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
-    	return invokeMethod(object, getterName, null);
+    	return invokeMethod(object, getterName);
     }
-    
+
     /**
-     * Gets an Object property from a bean
+     * Gets an Object property from a bean.
      *
      * @param object The bean
 	 * @param getterName The property name or getter method name
@@ -139,9 +139,9 @@ public class MethodUtils {
     	Object[] args = { arg };
     	return invokeGetter(object, getterName, args);
     }
-    
+
     /**
-     * Gets an Object property from a bean
+     * Gets an Object property from a bean.
      *
      * @param object The bean
 	 * @param getterName The property name or getter method name
@@ -165,7 +165,23 @@ public class MethodUtils {
 	    	return invokeMethod(object, getterName, args);
     	}
     }
-    
+
+	/**
+	 * <p>Invoke a named method whose parameter type matches the object type.</p>
+	 *
+	 * @param object invoke method on this object
+	 * @param methodName get method with this name
+	 * @return The value returned by the invoked method
+	 *
+	 * @throws NoSuchMethodException if there is no such accessible method
+	 * @throws InvocationTargetException wraps an exception thrown by the method invoked
+	 * @throws IllegalAccessException if the requested method is not accessible
+	 */
+	public static Object invokeMethod(Object object, String methodName)
+			throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+		return invokeMethod(object, methodName, EMPTY_OBJECT_ARRAY, EMPTY_CLASS_PARAMETERS);
+	}
+
 	/**
 	 * <p>Invoke a named method whose parameter type matches the object type.</p>
 	 *
@@ -179,7 +195,7 @@ public class MethodUtils {
 	 * would match a <code>boolean</code> primitive.</p>
 	 *
 	 * <p> This is a convenient wrapper for
-	 * {@link #invokeMethod(Object object,String methodName,Object [] args)}.
+	 * {@link #invokeMethod(Object object,String methodName,Object[] args)}.
 	 * </p>
 	 *
 	 * @param object invoke method on this object
@@ -202,7 +218,7 @@ public class MethodUtils {
 	 * <p>Invoke a named method whose parameter type matches the object type.</p>
 	 *
 	 * <p>The behaviour of this method is less deterministic
-	 * than {@link #invokeExactMethod(Object object,String methodName,Object [] args)}.
+	 * than {@link #invokeExactMethod(Object object,String methodName,Object[] args)}.
 	 * It loops through all methods with names that match
 	 * and then executes the first it finds with compatable parameters.</p>
 	 *
@@ -211,7 +227,7 @@ public class MethodUtils {
 	 * would match a <code>boolean</code> primitive.</p>
 	 *
 	 * <p> This is a convenient wrapper for
-	 * {@link #invokeMethod(Object object,String methodName,Object [] args,Class[] parameterTypes)}.
+	 * {@link #invokeMethod(Object object,String methodName,Object[] args,Class[] parameterTypes)}.
 	 * </p>
 	 *
 	 * @param object invoke method on this object
@@ -227,16 +243,23 @@ public class MethodUtils {
 	 */
 	public static Object invokeMethod(Object object, String methodName, Object[] args)
 			throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+		Class<?>[] parameterTypes;
+
 		if(args == null) {
 			args = EMPTY_OBJECT_ARRAY;
-		}
-		
-		int arguments = args.length;
-		Class<?>[] parameterTypes = new Class[arguments];
-		
-		for(int i = 0; i < arguments; i++) {
-			if(args[i] != null)
-				parameterTypes[i] = args[i].getClass();
+			parameterTypes = EMPTY_CLASS_PARAMETERS;
+		} else {
+			int arguments = args.length;
+			if(arguments == 0) {
+				parameterTypes = EMPTY_CLASS_PARAMETERS;
+			} else {
+				parameterTypes = new Class[arguments];
+
+				for (int i = 0; i < arguments; i++) {
+					if (args[i] != null)
+						parameterTypes[i] = args[i].getClass();
+				}
+			}
 		}
 		
 		return invokeMethod(object, methodName, args, parameterTypes);
@@ -247,7 +270,7 @@ public class MethodUtils {
 	 *
 	 * <p>The behaviour of this method is less deterministic
 	 * than {@link
-	 * #invokeExactMethod(Object object,String methodName,Object [] args,Class[] parameterTypes)}.
+	 * #invokeExactMethod(Object object,String methodName,Object[] args,Class[] parameterTypes)}.
 	 * It loops through all methods with names that match
 	 * and then executes the first it finds with compatable parameters.</p>
 	 *
@@ -286,11 +309,10 @@ public class MethodUtils {
 	}
 
 	/**
-	 * <p>Invoke a method whose parameter type matches exactly the object
-	 * type.</p>
+	 * <p>Invoke a method whose parameter type matches exactly the object type.</p>
 	 *
 	 * <p> This is a convenient wrapper for
-	 * {@link #invokeExactMethod(Object object,String methodName,Object [] args)}.
+	 * {@link #invokeExactMethod(Object object,String methodName,Object[] args)}.
 	 * </p>
 	 *
 	 * @param object invoke method on this object
@@ -311,8 +333,7 @@ public class MethodUtils {
 	}
 
 	/**
-	 * <p>Invoke a method whose parameter types match exactly the object
-	 * types.</p>
+	 * <p>Invoke a method whose parameter types match exactly the object types.</p>
 	 *
 	 * <p> This uses reflection to invoke the method obtained from a call to
 	 * <code>getAccessibleMethod()</code>.</p>
@@ -343,8 +364,7 @@ public class MethodUtils {
 	}
 
 	/**
-	 * <p>Invoke a method whose parameter types match exactly the parameter
-	 * types given.</p>
+	 * <p>Invoke a method whose parameter types match exactly the parameter types given.</p>
 	 *
 	 * <p>This uses reflection to invoke the method obtained from a call to
 	 * <code>getAccessibleMethod()</code>.</p>
@@ -381,8 +401,7 @@ public class MethodUtils {
 	}
 
 	/**
-	 * <p>Invoke a static method whose parameter types match exactly the parameter
-	 * types given.</p>
+	 * <p>Invoke a static method whose parameter types match exactly the parameter types given.</p>
 	 *
 	 * <p>This uses reflection to invoke the method obtained from a call to
 	 * {@link #getAccessibleMethod(Class, String, Class[])}.</p>
@@ -431,7 +450,7 @@ public class MethodUtils {
 	 * would match a <code>boolean</code> primitive.</p>
 	 *
 	 * <p> This is a convenient wrapper for
-	 * {@link #invokeStaticMethod(Class objectClass,String methodName,Object [] args)}.
+	 * {@link #invokeStaticMethod(Class objectClass,String methodName,Object[] args)}.
 	 * </p>
 	 *
 	 * @param objectClass invoke static method on this class
@@ -455,7 +474,7 @@ public class MethodUtils {
 	 * <p>Invoke a named static method whose parameter type matches the object type.</p>
 	 *
 	 * <p>The behaviour of this method is less deterministic
-	 * than {@link #invokeExactMethod(Object object,String methodName,Object [] args)}.
+	 * than {@link #invokeExactMethod(Object object,String methodName,Object[] args)}.
 	 * It loops through all methods with names that match
 	 * and then executes the first it finds with compatable parameters.</p>
 	 *
@@ -464,7 +483,7 @@ public class MethodUtils {
 	 * would match a <code>boolean</code> primitive.</p>
 	 *
 	 * <p> This is a convenient wrapper for
-	 * {@link #invokeStaticMethod(Class objectClass,String methodName,Object [] args,Class[] parameterTypes)}.
+	 * {@link #invokeStaticMethod(Class objectClass,String methodName,Object[] args,Class[] parameterTypes)}.
 	 * </p>
 	 *
 	 * @param objectClass invoke static method on this class
@@ -496,7 +515,7 @@ public class MethodUtils {
 	 *
 	 * <p>The behaviour of this method is less deterministic
 	 * than {@link
-	 * #invokeExactStaticMethod(Class objectClass,String methodName,Object [] args,Class[] parameterTypes)}.
+	 * #invokeExactStaticMethod(Class objectClass,String methodName,Object[] args,Class[] parameterTypes)}.
 	 * It loops through all methods with names that match
 	 * and then executes the first it finds with compatable parameters.</p>
 	 *
@@ -535,11 +554,10 @@ public class MethodUtils {
 	}
 
 	/**
-	 * <p>Invoke a static method whose parameter type matches exactly the object
-	 * type.</p>
+	 * <p>Invoke a static method whose parameter type matches exactly the object type.</p>
 	 *
 	 * <p> This is a convenient wrapper for
-	 * {@link #invokeExactStaticMethod(Class objectClass,String methodName,Object [] args)}.
+	 * {@link #invokeExactStaticMethod(Class objectClass,String methodName,Object[] args)}.
 	 * </p>
 	 *
 	 * @param objectClass invoke static method on this class
@@ -560,8 +578,7 @@ public class MethodUtils {
 	}
 
 	/**
-	 * <p>Invoke a static method whose parameter types match exactly the object
-	 * types.</p>
+	 * <p>Invoke a static method whose parameter types match exactly the object types.</p>
 	 *
 	 * <p> This uses reflection to invoke the method obtained from a call to
 	 * {@link #getAccessibleMethod(Class, String, Class[])}.</p>
@@ -813,7 +830,7 @@ public class MethodUtils {
 		// We did not find anything
 		return null;
 	}
-	
+
 	/**
 	 * <p>Find an accessible method that matches the given name and has compatible parameters.
 	 * Compatible parameters mean that every method parameter is assignable from
@@ -826,7 +843,7 @@ public class MethodUtils {
 	 *
 	 * <p>This method is used by
 	 * {@link
-	 * #invokeMethod(Object object,String methodName,Object [] args,Class[] parameterTypes)}.
+	 * #invokeMethod(Object object,String methodName,Object[] args,Class[] parameterTypes)}.
 	 *
 	 * <p>This method can match primitive parameter by passing in wrapper classes.
 	 * For example, a <code>Boolean</code> will match a primitive <code>boolean</code>
@@ -1017,7 +1034,7 @@ public class MethodUtils {
             }
         }
     }
-	
+
     /**
      * Set whether methods should be cached for greater performance or not,
      * default is <code>true</code>.
@@ -1111,4 +1128,5 @@ public class MethodUtils {
 			return hashCode;
 		}
 	}
+
 }
