@@ -20,20 +20,28 @@ import com.aspectran.core.context.rule.BeanRule;
 /**
  * The Class BeanDestroyFailedException.
  */
-public class BeanDestroyFailedException extends BeanException {
+public class BeanDestroyFailedException extends BeanRuleException {
 
 	/** @serial */
 	private static final long serialVersionUID = -2416583532228763870L;
 	
-	private BeanRule beanRule;
-
 	/**
 	 * Create a new BeanInstantiationException.
 	 *
 	 * @param beanRule the bean rule
 	 */
 	public BeanDestroyFailedException(BeanRule beanRule) {
-		this(beanRule, null);
+		this(beanRule, "Cannot destroy a bean ");
+	}
+
+	/**
+	 * Create a new BeanInstantiationException.
+	 *
+	 * @param beanRule the bean rule
+	 * @param msg The detail message
+	 */
+	public BeanDestroyFailedException(BeanRule beanRule, String msg) {
+		super(beanRule, msg);
 	}
 
 	/**
@@ -43,12 +51,18 @@ public class BeanDestroyFailedException extends BeanException {
 	 * @param cause the root cause
 	 */
 	public BeanDestroyFailedException(BeanRule beanRule, Throwable cause) {
-		super("Cannot destroy a bean " + beanRule, cause);
-		this.beanRule = beanRule;
+		this(beanRule, "Cannot destroy a bean", cause);
 	}
 
-	public BeanRule getBeanRule() {
-		return beanRule;
+	/**
+	 * Create a new BeanInstantiationException.
+	 *
+	 * @param beanRule the bean rule
+	 * @param msg The detail message
+	 * @param cause the root cause
+	 */
+	public BeanDestroyFailedException(BeanRule beanRule, String msg, Throwable cause) {
+		super(beanRule, msg, cause);
 	}
-	
+
 }

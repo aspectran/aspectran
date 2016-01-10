@@ -26,9 +26,11 @@ import com.aspectran.core.context.rule.BeanRuleMap;
 import com.aspectran.core.context.rule.type.BeanProxifierType;
 import com.aspectran.core.context.rule.type.ScopeType;
 import com.aspectran.core.util.ClassUtils;
+import com.aspectran.core.util.MethodUtils;
+
+import java.lang.reflect.InvocationTargetException;
 
 /**
- * 
  * The Class ScopedContextBeanRegistry.
  * 
  * <p>Created: 2009. 03. 09 오후 23:48:09</p>
@@ -167,7 +169,34 @@ public class ScopedContextBeanRegistry extends AbstractContextBeanRegistry {
 		
 		return bean;
 	}
-	
+
+	protected Object createBean(BeanRule beanRule) {
+		if(beanRule.isFactoryBeanReferenced()) {
+			String factoryBeanId = beanRule.getFactoryBeanId();
+			String factoryMethodName = beanRule.getFactoryMethodName();
+
+			try {
+				Object bean = getBean(factoryBeanId);
+				return MethodUtils.invokeMethod(bean, factoryMethodName);
+			} catch(Exception e) {
+				throw new BeanCreationException(beanRule, "An exception occurred during the execution of a factory method from the referenced factory bean.", e);
+			}
+		} else {
+			Object bean = super.createBean(beanRule);
+			String factoryMethodName = beanRule.getFactoryMethodName();
+
+			if(factoryMethodName != null) {
+				try {
+					return MethodUtils.invokeMethod(bean, factoryMethodName);
+				} catch(Exception e) {
+					throw new BeanCreationException(beanRule, "An exception occurred during the execution of a factory method in the bean object.", e);
+				}
+			}
+
+			return bean;
+		}
+	}
+
 	private Scope getRequestScope() {
 		Activity activity = context.getCurrentActivity();
 		

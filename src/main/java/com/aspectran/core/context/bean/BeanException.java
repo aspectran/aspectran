@@ -18,7 +18,7 @@ package com.aspectran.core.context.bean;
 import com.aspectran.core.context.AspectranException;
 
 /**
- * This class is the basic exception that gets thrown from the beans pacakge.
+ * This class is the basic exception that gets thrown from the bean pacakge.
  * 
  * <p>Created: 2008. 01. 07 오전 3:35:55</p>
  */

@@ -31,6 +31,7 @@ import com.aspectran.core.activity.variable.ValueMap;
 import com.aspectran.core.activity.variable.token.ItemTokenExpression;
 import com.aspectran.core.activity.variable.token.ItemTokenExpressor;
 import com.aspectran.core.context.ActivityContext;
+import com.aspectran.core.context.bean.ablility.FactoryBean;
 import com.aspectran.core.context.bean.proxy.CglibDynamicBeanProxy;
 import com.aspectran.core.context.bean.proxy.JavassistDynamicBeanProxy;
 import com.aspectran.core.context.bean.proxy.JdkDynamicBeanProxy;
@@ -121,7 +122,6 @@ public abstract class AbstractContextBeanRegistry implements ContextBeanRegistry
 				ValueMap valueMap = expressor.express(propertyItemRuleMap);
 				
 				for(Map.Entry<String, Object> entry : valueMap.entrySet()) {
-					//BeanUtils.setObject(bean, entry.getKey(), entry.getValue());
 					MethodUtils.invokeSetter(bean, entry.getKey(), entry.getValue());
 				}
 			}
@@ -141,6 +141,22 @@ public abstract class AbstractContextBeanRegistry implements ContextBeanRegistry
 					}
 				} else {
 					BeanAction.invokeMethod(activity, bean, initMethodName, null, null, beanRule.getInitMethodRequiresTranslet().booleanValue());
+				}
+			}
+
+			if(beanRule.isFactoryBeanImplmented()) {
+				FactoryBean factory = (FactoryBean)bean;
+
+				try {
+					bean = factory.getObject();
+				} catch(Exception ex) {
+					throw new BeanCreationException(beanRule, "FactoryBean threw exception on object creation", ex);
+				}
+
+				if(bean == null) {
+					throw new FactoryBeanNotInitializedException(beanRule,
+									"FactoryBean returned null object: " +
+									"probably not fully initialized (maybe due to circular bean reference)");
 				}
 			}
 
@@ -168,7 +184,7 @@ public abstract class AbstractContextBeanRegistry implements ContextBeanRegistry
 				if(argTypes != null && args != null)
 					bean = newInstance(beanRule.getBeanClass(), argTypes, args);
 				else
-					bean = newInstance(beanRule.getBeanClass(), new Class[0], new Object[0]);
+					bean = newInstance(beanRule.getBeanClass());
 				
 				if(log.isTraceEnabled())
 					log.trace("JdkDynamicBeanProxy " + beanRule);
@@ -179,7 +195,7 @@ public abstract class AbstractContextBeanRegistry implements ContextBeanRegistry
 			if(argTypes != null && args != null)
 				bean = newInstance(beanRule.getBeanClass(), argTypes, args);
 			else
-				bean = newInstance(beanRule.getBeanClass(), new Class[0], new Object[0]);
+				bean = newInstance(beanRule.getBeanClass());
 		}
 		
 		return bean;
@@ -246,10 +262,10 @@ public abstract class AbstractContextBeanRegistry implements ContextBeanRegistry
 		
 		log.info("ContextBeanRegistry has been destroyed successfully.");
 	}
-	
+
 	private static Object newInstance(Class<?> beanClass, Class<?>[] argTypes, Object[] args) throws BeanInstantiationException {
 		Constructor<?> constructorToUse;
-		
+
 		try {
 			constructorToUse = getMatchConstructor(beanClass, args);
 
@@ -259,12 +275,16 @@ public abstract class AbstractContextBeanRegistry implements ContextBeanRegistry
 		} catch(NoSuchMethodException e) {
 			throw new BeanInstantiationException(beanClass, "No default constructor found.", e);
 		}
-		
+
 		Object obj = newInstance(constructorToUse, args);
-		
+
 		return obj;
 	}
-	
+
+	private static Object newInstance(Class<?> beanClass) throws BeanInstantiationException {
+		return newInstance(beanClass, MethodUtils.EMPTY_CLASS_PARAMETERS, MethodUtils.EMPTY_OBJECT_ARRAY);
+	}
+
 	private static Object newInstance(Constructor<?> ctor, Object[] args) throws BeanInstantiationException {
 		try {
 			if(!Modifier.isPublic(ctor.getModifiers()) ||
@@ -283,7 +303,7 @@ public abstract class AbstractContextBeanRegistry implements ContextBeanRegistry
 			throw new BeanInstantiationException(ctor.getDeclaringClass(), "Constructor threw exception", ex.getTargetException());
 		}
 	}
-	
+
 	private static Constructor<?> getMatchConstructor(Class<?> clazz, Object[] args) {
 		Constructor<?>[] candidates = clazz.getDeclaredConstructors();
 
