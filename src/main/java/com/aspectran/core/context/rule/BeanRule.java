@@ -18,6 +18,7 @@ package com.aspectran.core.context.rule;
 import java.util.List;
 
 import com.aspectran.core.context.bean.ablility.DisposableBean;
+import com.aspectran.core.context.bean.ablility.FactoryBean;
 import com.aspectran.core.context.bean.ablility.InitializableBean;
 import com.aspectran.core.context.bean.ablility.InitializableTransletBean;
 import com.aspectran.core.context.rule.type.ScopeType;
@@ -44,8 +45,10 @@ public class BeanRule implements Cloneable {
 
 	protected Boolean singleton;
 
-	protected String factoryMethodName;
+	protected String factoryBeanId;
 	
+	protected String factoryMethodName;
+
 	protected String initMethodName;
 	
 	private Boolean initMethodRequiresTranslet;
@@ -61,7 +64,11 @@ public class BeanRule implements Cloneable {
 	protected ItemRuleMap propertyItemRuleMap;
 	
 	private Object bean;
+
+	private boolean factoryBeanReferenced;
 	
+	private boolean factoryBeanImplmented;
+
 	private boolean registered;
 	
 	private boolean overrided;
@@ -180,6 +187,24 @@ public class BeanRule implements Cloneable {
 	 */
 	public void setSingleton(Boolean singleton) {
 		this.singleton = singleton;
+	}
+
+	/**
+	 * Gets the factory bean id.
+	 *
+	 * @return the factory bean id
+	 */
+	public String getFactoryBeanId() {
+		return factoryBeanId;
+	}
+
+	/**
+	 * Sets the factory bean id.
+	 *
+	 * @param factoryBeanId the new factory bean id
+	 */
+	public void setFactoryBeanId(String factoryBeanId) {
+		this.factoryBeanId = factoryBeanId;
 	}
 
 	/**
@@ -347,6 +372,22 @@ public class BeanRule implements Cloneable {
 		this.bean = bean;
 	}
 
+	public boolean isFactoryBeanReferenced() {
+		return factoryBeanReferenced;
+	}
+
+	public void setFactoryBeanReferenced(boolean factoryBeanReferenced) {
+		this.factoryBeanReferenced = factoryBeanReferenced;
+	}
+
+	public boolean isFactoryBeanImplmented() {
+		return factoryBeanImplmented;
+	}
+
+	public void setFactoryBeanImplmented(boolean factoryBeanImplmented) {
+		this.factoryBeanImplmented = factoryBeanImplmented;
+	}
+
 	/**
 	 * Checks if is registered.
 	 *
@@ -437,140 +478,179 @@ public class BeanRule implements Cloneable {
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("{id=").append(id);
-		sb.append(", class=").append(className);
-		sb.append(", scope=").append(scopeType);
-		sb.append(", factoryMethod=").append(factoryMethodName);
-		sb.append(", initMethod=").append(initMethodName);
-		sb.append(", destroyMethod=").append(destroyMethodName);
-		sb.append(", lazyInit=").append(lazyInit);
-		sb.append(", important=").append(important);
-		sb.append(", proxied=").append(proxied);
-		sb.append(", scanned=").append(scanned);
-		if(constructorArgumentItemRuleMap != null) {
-			sb.append(", constructorArguments=[");
-			int sbLength = sb.length();
-			for(String name : constructorArgumentItemRuleMap.keySet()) {
-				if(sb.length() > sbLength)
-					sb.append(", ");
-				
-				sb.append(name);
+		if(!factoryBeanReferenced) {
+			sb.append(", class=").append(className);
+			sb.append(", scope=").append(scopeType);
+			sb.append(", factoryBean=").append(factoryBeanId);
+			sb.append(", factoryMethod=").append(factoryMethodName);
+			sb.append(", initMethod=").append(initMethodName);
+			sb.append(", destroyMethod=").append(destroyMethodName);
+			sb.append(", lazyInit=").append(lazyInit);
+			sb.append(", important=").append(important);
+			sb.append(", proxied=").append(proxied);
+			sb.append(", scanned=").append(scanned);
+			if (constructorArgumentItemRuleMap != null) {
+				sb.append(", constructorArguments=[");
+				int sbLength = sb.length();
+				for (String name : constructorArgumentItemRuleMap.keySet()) {
+					if (sb.length() > sbLength)
+						sb.append(", ");
+
+					sb.append(name);
+				}
+				sb.append("]");
 			}
-			sb.append("]");
-		}
-		if(propertyItemRuleMap != null) {
-			sb.append(", properties=[");
-			int sbLength = sb.length();
-			for(String name : propertyItemRuleMap.keySet()) {
-				if(sb.length() > sbLength)
-					sb.append(", ");
-				
-				sb.append(name);
+			if (propertyItemRuleMap != null) {
+				sb.append(", properties=[");
+				int sbLength = sb.length();
+				for (String name : propertyItemRuleMap.keySet()) {
+					if (sb.length() > sbLength)
+						sb.append(", ");
+
+					sb.append(name);
+				}
+				sb.append("]");
 			}
-			sb.append("]");
+		} else {
+			sb.append(", scope=").append(scopeType);
+			sb.append(", factoryBean=").append(factoryBeanId);
+			sb.append(", factoryMethod=").append(factoryMethodName);
+			sb.append(", lazyInit=").append(lazyInit);
+			sb.append(", important=").append(important);
 		}
 		sb.append("}");
 		
 		return sb.toString();
 	}
 	
-	public static BeanRule newInstance(String id, String maskPattern, String className, String scope, Boolean singleton, String factoryMethod, String initMethodName, String destroyMethodName, Boolean lazyInit, Boolean important) {
+	public static BeanRule newInstance(String id, String maskPattern, String className, String scope, Boolean singleton, String factoryBeanId, String factoryMethodName, String initMethodName, String destroyMethodName, Boolean lazyInit, Boolean important) {
 		if(id == null)
 			throw new IllegalArgumentException("The <bean> element requires a id attribute.");
 
-		if(className == null)
-			throw new IllegalArgumentException("The <bean> element requires a class attribute.");
+		boolean factoryBeanReferenced;
+
+		if(className == null && factoryBeanId != null) {
+			factoryBeanReferenced = true;
+		} else {
+			factoryBeanReferenced = false;
+
+			if(className == null)
+				throw new IllegalArgumentException("The <bean> element requires a class attribute.");
+		}
 
 		ScopeType scopeType = ScopeType.valueOf(scope);
-		
+
 		if(scope != null && scopeType == null)
 			throw new IllegalArgumentException("No scope-type registered for scope '" + scope + "'.");
-		
+
 		if(scopeType == null)
 			scopeType = (singleton == Boolean.TRUE) ? ScopeType.SINGLETON : ScopeType.PROTOTYPE;
-		
+
 		BeanRule beanRule = new BeanRule();
-		beanRule.setId(id);
-		beanRule.setMaskPattern(maskPattern);
-		beanRule.setClassName(className);
-		beanRule.setScopeType(scopeType);
-		beanRule.setSingleton(singleton);
-		beanRule.setFactoryMethodName(factoryMethod);
-		beanRule.setInitMethodName(initMethodName);
-		beanRule.setDestroyMethodName(destroyMethodName);
-		beanRule.setLazyInit(lazyInit);
-		beanRule.setImportant(important);
-		
+
+		if(factoryBeanReferenced) {
+			beanRule.setId(id);
+			beanRule.setScopeType(scopeType);
+			beanRule.setSingleton(singleton);
+			beanRule.setFactoryBeanId(factoryBeanId);
+			beanRule.setFactoryMethodName(factoryMethodName);
+			beanRule.setLazyInit(lazyInit);
+			beanRule.setImportant(important);
+			beanRule.setFactoryBeanReferenced(true);
+		} else {
+			beanRule.setId(id);
+			beanRule.setMaskPattern(maskPattern);
+			beanRule.setClassName(className);
+			beanRule.setScopeType(scopeType);
+			beanRule.setSingleton(singleton);
+			beanRule.setFactoryMethodName(factoryMethodName);
+			beanRule.setInitMethodName(initMethodName);
+			beanRule.setDestroyMethodName(destroyMethodName);
+			beanRule.setLazyInit(lazyInit);
+			beanRule.setImportant(important);
+		}
+
 		return beanRule;
 	}
-/*
-	public static String combineBeanIdPattern(String beanIdPrefix, String beanIdSuffix) {
-		if(beanIdPrefix == null && beanIdSuffix != null) {
-			return BEAN_ID_PATTERN_DELIMITER + beanIdSuffix;
-		} else if(beanIdPrefix != null && beanIdSuffix == null) {
-			return beanIdPrefix + BEAN_ID_PATTERN_DELIMITER;
-		} else {
-			return BEAN_ID_PATTERN_DELIMITER;
+
+	public static void checkFactoryBeanImplement(BeanRule beanRule) {
+		Class<?> beanClass = beanRule.getBeanClass();
+
+		if(FactoryBean.class.isAssignableFrom(beanClass)) {
+			beanRule.setFactoryBeanImplmented(true);
 		}
 	}
-*/
 
 	public static void checkAccessibleMethod(BeanRule beanRule) {
-		Class<?> beanClass = beanRule.getBeanClass();
-		String initMethodName = beanRule.getInitMethodName();
-		String destroyMethodName = beanRule.getDestroyMethodName();
-		
-		if(initMethodName == null) {
-			if(InitializableTransletBean.class.isAssignableFrom(beanClass)) {
-				initMethodName = InitializableBean.INITIALIZE_METHOD_NAME;
-				beanRule.setInitMethodName(initMethodName);
-				beanRule.setInitMethodRequiresTranslet(Boolean.TRUE);
-			} else if(InitializableBean.class.isAssignableFrom(beanClass)) {
-				initMethodName = InitializableBean.INITIALIZE_METHOD_NAME;
-				beanRule.setInitMethodName(initMethodName);
+		if(!beanRule.isFactoryBeanReferenced()) {
+			Class<?> beanClass = beanRule.getBeanClass();
+			String factoryMethodName = beanRule.getFactoryMethodName();
+			String initMethodName = beanRule.getInitMethodName();
+			String destroyMethodName = beanRule.getDestroyMethodName();
+
+			if(!beanRule.isFactoryBeanReferenced() && factoryMethodName != null) {
+				if(MethodUtils.getAccessibleMethod(beanClass, factoryMethodName, null) == null) {
+					throw new IllegalArgumentException("No such factory method '" + factoryMethodName + "() on bean class: " + beanClass);
+				}
 			}
-		} else {
-			if(MethodUtils.getAccessibleMethod(beanClass, initMethodName, null) == null) {
-				throw new IllegalArgumentException("No such initialization method '" + initMethodName + "() on bean class: " + beanClass);
+
+			if(initMethodName == null) {
+				if(InitializableTransletBean.class.isAssignableFrom(beanClass)) {
+					initMethodName = InitializableBean.INITIALIZE_METHOD_NAME;
+					beanRule.setInitMethodName(initMethodName);
+					beanRule.setInitMethodRequiresTranslet(Boolean.TRUE);
+				} else if (InitializableBean.class.isAssignableFrom(beanClass)) {
+					initMethodName = InitializableBean.INITIALIZE_METHOD_NAME;
+					beanRule.setInitMethodName(initMethodName);
+				}
+			} else {
+				if(MethodUtils.getAccessibleMethod(beanClass, initMethodName, null) == null) {
+					throw new IllegalArgumentException("No such initialization method '" + initMethodName + "() on bean class: " + beanClass);
+				}
 			}
-		}
-		
-		if(destroyMethodName == null) {
-			if(DisposableBean.class.isAssignableFrom(beanClass)) {
-				beanRule.setDestroyMethodName(DisposableBean.DESTROY_METHOD_NAME);
-			}
-		} else {
-			if(MethodUtils.getAccessibleMethod(beanClass, destroyMethodName, null) == null) {
-				throw new IllegalArgumentException("No such destroy method '" + destroyMethodName + "() on bean class: " + beanClass);
+
+			if(destroyMethodName == null) {
+				if(DisposableBean.class.isAssignableFrom(beanClass)) {
+					beanRule.setDestroyMethodName(DisposableBean.DESTROY_METHOD_NAME);
+				}
+			} else {
+				if(MethodUtils.getAccessibleMethod(beanClass, destroyMethodName, null) == null) {
+					throw new IllegalArgumentException("No such destroy method '" + destroyMethodName + "() on bean class: " + beanClass);
+				}
 			}
 		}
 	}
 
 	public static void updateConstructorArgument(BeanRule beanRule, String text) {
-		List<Parameters> argumentParametersList = ItemRule.toItemParametersList(text);
-		
-		if(argumentParametersList == null)
-			return;
-		
-		ItemRuleMap constructorArgumentItemRuleMap = ItemRule.toItemRuleMap(argumentParametersList);
-		
-		if(constructorArgumentItemRuleMap == null)
-			return;
-		
-		beanRule.setConstructorArgumentItemRuleMap(constructorArgumentItemRuleMap);
+		if(!beanRule.isFactoryBeanReferenced()) {
+			List<Parameters> argumentParametersList = ItemRule.toItemParametersList(text);
+
+			if(argumentParametersList == null)
+				return;
+
+			ItemRuleMap constructorArgumentItemRuleMap = ItemRule.toItemRuleMap(argumentParametersList);
+
+			if(constructorArgumentItemRuleMap == null)
+				return;
+
+			beanRule.setConstructorArgumentItemRuleMap(constructorArgumentItemRuleMap);
+		}
 	}
 	
 	public static void updateProperty(BeanRule beanRule, String text) {
-		List<Parameters> propertyParametersList = ItemRule.toItemParametersList(text);
-		
-		if(propertyParametersList == null)
-			return;
-		
-		ItemRuleMap propertyItemRuleMap = ItemRule.toItemRuleMap(propertyParametersList);
-		
-		if(propertyItemRuleMap == null)
-			return;
-		
-		beanRule.setPropertyItemRuleMap(propertyItemRuleMap);
+		if(!beanRule.isFactoryBeanReferenced()) {
+			List<Parameters> propertyParametersList = ItemRule.toItemParametersList(text);
+
+			if(propertyParametersList == null)
+				return;
+
+			ItemRuleMap propertyItemRuleMap = ItemRule.toItemRuleMap(propertyParametersList);
+
+			if(propertyItemRuleMap == null)
+				return;
+
+			beanRule.setPropertyItemRuleMap(propertyItemRuleMap);
+		}
 	}
 
 }
