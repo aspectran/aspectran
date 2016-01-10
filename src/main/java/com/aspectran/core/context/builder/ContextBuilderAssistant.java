@@ -28,7 +28,7 @@ import com.aspectran.core.context.AspectranConstant;
 import com.aspectran.core.context.bean.scan.BeanClassScanner;
 import com.aspectran.core.context.rule.*;
 import com.aspectran.core.context.rule.type.DefaultSettingType;
-import com.aspectran.core.context.translet.scan.TemplateFileScanner;
+import com.aspectran.core.context.template.scan.TemplateFileScanner;
 import com.aspectran.core.util.ArrayStack;
 import com.aspectran.core.util.PrefixSuffixPattern;
 import com.aspectran.core.util.logging.Log;
@@ -452,6 +452,7 @@ public class ContextBuilderAssistant {
 					beanRule2.setClassName(beanClass.getName());
 					beanRule2.setBeanClass(beanClass);
 					beanRule2.setScanned(true);
+					BeanRule.checkFactoryBeanImplement(beanRule2);
 					BeanRule.checkAccessibleMethod(beanRule2);
 					beanRuleMap.putBeanRule(beanRule2);
 					
@@ -469,6 +470,7 @@ public class ContextBuilderAssistant {
 			
 			Class<?> beanClass = classLoader.loadClass(className);
 			beanRule.setBeanClass(beanClass);
+			BeanRule.checkFactoryBeanImplement(beanRule);
 			BeanRule.checkAccessibleMethod(beanRule);
 			beanRuleMap.putBeanRule(beanRule);
 			

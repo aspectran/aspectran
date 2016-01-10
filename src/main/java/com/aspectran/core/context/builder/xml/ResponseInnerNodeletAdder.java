@@ -124,12 +124,11 @@ public class ResponseInnerNodeletAdder implements NodeletAdder {
 		parser.addNodelet(xpath, "/dispatch", new ActionRuleNodeletAdder(assistant));
 		parser.addNodelet(xpath, "/dispatch/template", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
-				String engine = attributes.get("engine");
 				String file = attributes.get("file");
 				String encoding = attributes.get("encoding");
 				Boolean noCache = BooleanUtils.toNullableBooleanObject(attributes.get("noCache"));
 				
-				TemplateRule templateRule = TemplateRule.newInstanceForBuiltin(engine, file, null, null, null, encoding, noCache);
+				TemplateRule templateRule = TemplateRule.newInstanceForBuiltin(null, file, null, null, null, encoding, noCache);
 				
 				DispatchResponseRule drr = assistant.peekObject(1);
 				drr.setTemplateRule(templateRule);
@@ -149,7 +148,7 @@ public class ResponseInnerNodeletAdder implements NodeletAdder {
 		});
 		parser.addNodelet(xpath, "/redirect", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
-				String contentType = attributes.get("contentType"); // ResponseByContentType에서 content type에 따라 분기
+				String contentType = attributes.get("contentType");
 				String translet = attributes.get("translet");
 				String url = attributes.get("url");
 				Boolean excludeNullParameters = BooleanUtils.toNullableBooleanObject(attributes.get("excludeNullParameters"));
@@ -255,4 +254,5 @@ public class ResponseInnerNodeletAdder implements NodeletAdder {
 			}
 		});
 	}
+
 }
