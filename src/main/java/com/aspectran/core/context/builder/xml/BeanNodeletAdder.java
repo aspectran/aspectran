@@ -60,13 +60,14 @@ public class BeanNodeletAdder implements NodeletAdder {
 				String mask = attributes.get("mask");
 				String scope = attributes.get("scope");
 				Boolean singleton = BooleanUtils.toNullableBooleanObject(attributes.get("singleton"));
+				String factoryBean = attributes.get("factoryBean");
 				String factoryMethod = attributes.get("factoryMethod");
 				String initMethodName = attributes.get("initMethod");
 				String destroyMethodName = attributes.get("destroyMethod");
 				Boolean lazyInit = BooleanUtils.toNullableBooleanObject(attributes.get("lazyInit"));
 				Boolean important = BooleanUtils.toNullableBooleanObject(attributes.get("important"));
 
-				BeanRule beanRule = BeanRule.newInstance(id, mask, className, scope, singleton, factoryMethod, initMethodName, destroyMethodName, lazyInit, important);
+				BeanRule beanRule = BeanRule.newInstance(id, mask, className, scope, singleton, factoryBean, factoryMethod, initMethodName, destroyMethodName, lazyInit, important);
 				assistant.pushObject(beanRule);					
 			}
 		});
@@ -118,6 +119,14 @@ public class BeanNodeletAdder implements NodeletAdder {
 					
 					if(scopeType == ScopeType.SINGLETON)
 						beanRule.setSingleton(Boolean.TRUE);
+				}
+			}
+		});
+		parser.addNodelet(xpath, "/bean/features/factoryBean", new Nodelet() {
+			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
+				if(StringUtils.hasText(text)) {
+					BeanRule beanRule = assistant.peekObject();
+					beanRule.setFactoryBeanId(text.trim());
 				}
 			}
 		});
