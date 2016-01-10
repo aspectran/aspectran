@@ -28,6 +28,7 @@ public class BeanParameters extends AbstractParameters implements Parameters {
 	public static final ParameterDefine className;
 	public static final ParameterDefine scope;
 	public static final ParameterDefine singleton;
+	public static final ParameterDefine factoryBean;
 	public static final ParameterDefine factoryMethod;
 	public static final ParameterDefine initMethod;
 	public static final ParameterDefine destroyMethod;
@@ -46,6 +47,7 @@ public class BeanParameters extends AbstractParameters implements Parameters {
 		className = new ParameterDefine("class", ParameterValueType.STRING);
 		scope = new ParameterDefine("scope", ParameterValueType.STRING);
 		singleton = new ParameterDefine("singleton", ParameterValueType.BOOLEAN);
+		factoryBean = new ParameterDefine("factoryBean", ParameterValueType.STRING);
 		factoryMethod = new ParameterDefine("factoryMethod", ParameterValueType.STRING);
 		initMethod = new ParameterDefine("initMethod", ParameterValueType.STRING);
 		destroyMethod = new ParameterDefine("destroyMethod", ParameterValueType.STRING);
@@ -62,6 +64,7 @@ public class BeanParameters extends AbstractParameters implements Parameters {
 				className,
 				scope,
 				singleton,
+				factoryBean,
 				factoryMethod,
 				initMethod,
 				destroyMethod,

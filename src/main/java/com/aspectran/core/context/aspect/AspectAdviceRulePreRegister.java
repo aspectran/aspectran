@@ -83,7 +83,9 @@ public class AspectAdviceRulePreRegister extends AspectAdviceRuleRegister {
 	
 	public void register(BeanRuleMap beanRuleMap) {
 		for(BeanRule beanRule : beanRuleMap) {
-			determineProxyBean(beanRule);
+			if(!beanRule.isFactoryBeanReferenced()) {
+				determineProxyBean(beanRule);
+			}
 		}
 	}
 	

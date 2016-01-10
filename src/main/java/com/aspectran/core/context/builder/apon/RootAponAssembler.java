@@ -93,7 +93,7 @@ import com.aspectran.core.util.apon.ParameterDefine;
 import com.aspectran.core.util.apon.Parameters;
 
 /**
- * RootAponAssembler.
+ * The Class RootAponAssembler.
  * 
  * <p>Created: 2015. 01. 27 오후 10:36:29</p>
  */
@@ -295,6 +295,7 @@ public class RootAponAssembler {
 			beanParameters.putValue(BeanParameters.singleton, beanRule.getSingleton());
 		else
 			beanParameters.putValue(BeanParameters.scope, beanRule.getScopeType().toString());
+		beanParameters.putValue(BeanParameters.factoryBean, beanRule.getFactoryBeanId());
 		beanParameters.putValue(BeanParameters.factoryMethod, beanRule.getFactoryMethodName());
 		beanParameters.putValue(BeanParameters.initMethod, beanRule.getInitMethodName());
 		beanParameters.putValue(BeanParameters.destroyMethod, beanRule.getDestroyMethodName());

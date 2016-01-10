@@ -80,7 +80,7 @@ import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.apon.Parameters;
 
 /**
- * RootAponDisassembler.
+ * The Class RootAponDisassembler.
  * 
  * <p>Created: 2015. 01. 27 오후 10:36:29</p>
  */
@@ -300,6 +300,7 @@ public class RootAponDisassembler {
 		String className = assistant.resolveAliasType(beanParameters.getString(BeanParameters.className));
 		String scope = beanParameters.getString(BeanParameters.scope);
 		Boolean singleton = beanParameters.getBoolean(BeanParameters.singleton);
+		String factoryBean = beanParameters.getString(BeanParameters.factoryBean);
 		String factoryMethod = beanParameters.getString(BeanParameters.factoryMethod);
 		String initMethod = beanParameters.getString(BeanParameters.initMethod);
 		String destroyMethod = beanParameters.getString(BeanParameters.destroyMethod);
@@ -309,7 +310,7 @@ public class RootAponDisassembler {
 		ItemHolderParameters propertyItemHolderParameters = beanParameters.getParameters(BeanParameters.properties);
 		Parameters filterParameters = beanParameters.getParameters(BeanParameters.filter);
 		
-		BeanRule beanRule = BeanRule.newInstance(id, mask, className, scope, singleton, factoryMethod, initMethod, destroyMethod, lazyInit, important);
+		BeanRule beanRule = BeanRule.newInstance(id, mask, className, scope, singleton, factoryBean, factoryMethod, initMethod, destroyMethod, lazyInit, important);
 
 		if(description != null)
 			beanRule.setDescription(description);
@@ -600,13 +601,14 @@ public class RootAponDisassembler {
 		}
 		
 		if(templateParameters != null) {
+			String engine = templateParameters.getString(TemplateParameters.engine);
 			String file = templateParameters.getString(TemplateParameters.file);
 			String resource = templateParameters.getString(TemplateParameters.resource);
 			String url = templateParameters.getString(TemplateParameters.url);
 			String content = templateParameters.getString(TemplateParameters.content);
 			String encoding = templateParameters.getString(TemplateParameters.encoding);
 			Boolean noCache = templateParameters.getBoolean(TemplateParameters.noCache);
-			TemplateRule templateRule = TemplateRule.newInstance(file, resource, url, content, encoding, noCache);
+			TemplateRule templateRule = TemplateRule.newInstanceForBuiltin(engine, file, resource, url, content, encoding, noCache);
 			tr.setTemplateRule(templateRule);
 		}
 		
@@ -641,7 +643,7 @@ public class RootAponDisassembler {
 			String file = templateParameters.getString(TemplateParameters.file);
 			String encoding = templateParameters.getString(TemplateParameters.encoding);
 			Boolean noCache = templateParameters.getBoolean(TemplateParameters.noCache);
-			TemplateRule templateRule = TemplateRule.newInstance(file, null, null, null, encoding, noCache);
+			TemplateRule templateRule = TemplateRule.newInstanceForBuiltin(null, file, null, null, null, encoding, noCache);
 			drr.setTemplateRule(templateRule);
 		}
 		
