@@ -11,6 +11,6 @@ import java.util.Map;
  */
 public interface TemplateEngine {
 
-    public String process(TemplateRule templateRule, Reader reader, Map<String, String> dataModel, Writer writer);
+    public void process(TemplateRule templateRule, Reader reader, Map<String, String> dataModel, Writer writer);
 
 }
