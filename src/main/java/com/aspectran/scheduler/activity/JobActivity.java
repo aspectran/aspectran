@@ -19,13 +19,13 @@ import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.CoreActivity;
 import com.aspectran.core.activity.Translet;
 import com.aspectran.core.activity.request.RequestException;
-import com.aspectran.core.activity.variable.ValueMap;
-import com.aspectran.core.activity.variable.token.ItemTokenExpression;
-import com.aspectran.core.activity.variable.token.ItemTokenExpressor;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.context.ActivityContext;
+import com.aspectran.core.context.expr.ItemTokenExpression;
+import com.aspectran.core.context.expr.ItemTokenExpressor;
 import com.aspectran.core.context.rule.RequestRule;
+import com.aspectran.core.context.variable.ValueMap;
 
 import java.util.Map;
 

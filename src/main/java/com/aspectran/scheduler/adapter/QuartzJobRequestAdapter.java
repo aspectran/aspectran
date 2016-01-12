@@ -21,9 +21,9 @@ import java.util.Map;
 
 import org.quartz.JobDetail;
 
-import com.aspectran.core.activity.variable.AttributeMap;
 import com.aspectran.core.adapter.AbstractRequestAdapter;
 import com.aspectran.core.adapter.RequestAdapter;
+import com.aspectran.core.context.variable.AttributeMap;
 
 /**
  * The Class QuartzJobRequestAdapter.

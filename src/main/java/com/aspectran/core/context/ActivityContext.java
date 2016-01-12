@@ -19,6 +19,7 @@ import com.aspectran.core.activity.Activity;
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.aspect.AspectRuleRegistry;
 import com.aspectran.core.context.bean.ContextBeanRegistry;
+import com.aspectran.core.context.template.TemplateRuleRegistry;
 import com.aspectran.core.context.translet.TransletRuleRegistry;
 
 /**
@@ -37,6 +38,8 @@ public class ActivityContext {
 	private ContextBeanRegistry contextBeanRegistry;
 
 	private TransletRuleRegistry transletRuleRegistry;
+	
+	private TemplateRuleRegistry templateRuleRegistry;
 	
 	/**
 	 * Instantiates a new ActivityContext.
@@ -101,6 +104,24 @@ public class ActivityContext {
 	}
 	
 	/**
+	 * Gets the template rule registry.
+	 *
+	 * @return the template rule registry
+	 */
+	public TemplateRuleRegistry getTemplateRuleRegistry() {
+		return templateRuleRegistry;
+	}
+
+	/**
+	 * Sets the template rule registry.
+	 *
+	 * @param templateRuleRegistry the new template rule registry
+	 */
+	public void setTemplateRuleRegistry(TemplateRuleRegistry templateRuleRegistry) {
+		this.templateRuleRegistry = templateRuleRegistry;
+	}
+
+	/**
 	 * Gets the current activity.
 	 *
 	 * @return the current activity
@@ -142,6 +163,10 @@ public class ActivityContext {
 			transletRuleRegistry.destroy();
 			transletRuleRegistry = null;
 		}
+		if(templateRuleRegistry != null) {
+			templateRuleRegistry.destroy();
+			templateRuleRegistry = null;
+		}
 	}
 	
 	/* (non-Javadoc)
@@ -153,6 +178,7 @@ public class ActivityContext {
 		sb.append(", aspectRuleRegistry=").append(aspectRuleRegistry);
 		sb.append(", beanRegistry=").append(contextBeanRegistry);
 		sb.append(", transletRuleRegistry=").append(transletRuleRegistry);
+		sb.append(", templateRuleRegistry=").append(templateRuleRegistry);
 		sb.append("}");
 		
 		return sb.toString();

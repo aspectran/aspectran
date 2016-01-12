@@ -20,8 +20,8 @@ import java.util.Map;
 
 import org.w3c.dom.Node;
 
-import com.aspectran.core.activity.variable.token.Token;
 import com.aspectran.core.context.builder.ContextBuilderAssistant;
+import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.type.ItemType;

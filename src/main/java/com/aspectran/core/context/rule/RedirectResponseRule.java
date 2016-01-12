@@ -17,8 +17,8 @@ package com.aspectran.core.context.rule;
 
 import java.util.List;
 
-import com.aspectran.core.activity.variable.token.Token;
-import com.aspectran.core.activity.variable.token.Tokenizer;
+import com.aspectran.core.context.expr.token.Token;
+import com.aspectran.core.context.expr.token.Tokenizer;
 import com.aspectran.core.context.rule.ability.ActionPossessable;
 import com.aspectran.core.context.rule.type.ResponseType;
 import com.aspectran.core.context.rule.type.TokenType;

@@ -24,11 +24,11 @@ import java.util.Map;
 import java.util.Set;
 
 import com.aspectran.core.activity.request.parameter.FileParameter;
-import com.aspectran.core.activity.variable.token.Token;
-import com.aspectran.core.activity.variable.token.TokenParser;
 import com.aspectran.core.context.builder.apon.params.ItemHolderParameters;
 import com.aspectran.core.context.builder.apon.params.ItemParameters;
 import com.aspectran.core.context.builder.apon.params.ReferenceParameters;
+import com.aspectran.core.context.expr.token.Token;
+import com.aspectran.core.context.expr.token.TokenParser;
 import com.aspectran.core.context.rule.type.ItemType;
 import com.aspectran.core.context.rule.type.ItemValueType;
 import com.aspectran.core.context.rule.type.TokenType;

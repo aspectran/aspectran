@@ -191,7 +191,7 @@ public class TransformRule extends ActionPossessSupport implements ActionPossess
 		
 		TemplateRule templateRule = transformRule.getTemplateRule();
 		if(templateRule != null) {
-			templateRule = TemplateRule.newDerivedTemplateRule(templateRule);
+			templateRule = TemplateRule.newDerivedBuiltinTemplateRule(templateRule);
 			newTransformRule.setTemplateRule(templateRule);
 		}
 		

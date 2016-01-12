@@ -17,6 +17,8 @@ package com.aspectran.core.context.builder;
 
 import java.util.List;
 
+import com.aspectran.core.activity.CoreActivity;
+import com.aspectran.core.activity.VoidActivity;
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.aspect.AspectAdviceRulePostRegister;
@@ -33,12 +35,14 @@ import com.aspectran.core.context.rule.AspectRuleMap;
 import com.aspectran.core.context.rule.BeanRuleMap;
 import com.aspectran.core.context.rule.PointcutPatternRule;
 import com.aspectran.core.context.rule.PointcutRule;
+import com.aspectran.core.context.rule.TemplateRuleMap;
 import com.aspectran.core.context.rule.TransletRuleMap;
 import com.aspectran.core.context.rule.type.AspectTargetType;
 import com.aspectran.core.context.rule.type.BeanProxifierType;
 import com.aspectran.core.context.rule.type.DefaultSettingType;
 import com.aspectran.core.context.rule.type.ImportFileType;
 import com.aspectran.core.context.rule.type.JoinpointScopeType;
+import com.aspectran.core.context.template.TemplateRuleRegistry;
 import com.aspectran.core.context.translet.TransletRuleRegistry;
 import com.aspectran.core.util.ClassDescriptor;
 import com.aspectran.core.util.MethodUtils;
@@ -57,6 +61,7 @@ public abstract class AbstractActivityContextBuilder extends ContextBuilderAssis
 		AspectRuleMap aspectRuleMap = getAspectRuleMap();
 		BeanRuleMap beanRuleMap = getBeanRuleMap();
 		TransletRuleMap transletRuleMap = getTransletRuleMap();
+		TemplateRuleMap templateRuleMap = getTemplateRuleMap();
 
 		BeanReferenceInspector beanReferenceInspector = getBeanReferenceInspector();
 		beanReferenceInspector.inspect(beanRuleMap);
@@ -67,14 +72,20 @@ public abstract class AbstractActivityContextBuilder extends ContextBuilderAssis
 		context.setAspectRuleRegistry(aspectRuleRegistry);
 
 		BeanProxifierType beanProxifierType = BeanProxifierType.valueOf((String)getSetting(DefaultSettingType.BEAN_PROXIFIER));
-		ContextBeanRegistry contextBeanRegistry = makeContextBeanRegistry(context, beanRuleMap, beanProxifierType);
+		ContextBeanRegistry contextBeanRegistry = makeContextBeanRegistry(beanRuleMap, beanProxifierType);
 		context.setContextBeanRegistry(contextBeanRegistry);
 		
-		contextBeanRegistry.initialize();
-		
-		TransletRuleRegistry transletRuleRegistry = makeTransletRegistry(transletRuleMap);
+		TransletRuleRegistry transletRuleRegistry = makeTransletRuleRegistry(transletRuleMap);
 		context.setTransletRuleRegistry(transletRuleRegistry);
+
+		TemplateRuleRegistry templateRuleRegistry = makeTemplateRuleRegistry(templateRuleMap);
+		context.setTemplateRuleRegistry(templateRuleRegistry);
 		
+		CoreActivity activity = new VoidActivity(context);
+		context.setCurrentActivity(activity);
+		contextBeanRegistry.initialize(context);
+		context.removeCurrentActivity();
+
 		ClassDescriptor.clearCache();
 		MethodUtils.clearCache();
 		
@@ -167,16 +178,22 @@ public abstract class AbstractActivityContextBuilder extends ContextBuilderAssis
 		return aspectRuleRegistry;
 	}
 	
-	protected ContextBeanRegistry makeContextBeanRegistry(ActivityContext context, BeanRuleMap beanRuleMap, BeanProxifierType beanProxifierType) {
+	protected ContextBeanRegistry makeContextBeanRegistry(BeanRuleMap beanRuleMap, BeanProxifierType beanProxifierType) {
 		beanRuleMap.freeze();
 		
-		return new ScopedContextBeanRegistry(context, beanRuleMap, beanProxifierType);
+		return new ScopedContextBeanRegistry(beanRuleMap, beanProxifierType);
 	}
 
-	protected TransletRuleRegistry makeTransletRegistry(TransletRuleMap transletRuleMap) {
+	protected TransletRuleRegistry makeTransletRuleRegistry(TransletRuleMap transletRuleMap) {
 		transletRuleMap.freeze();
 		
 		return new TransletRuleRegistry(transletRuleMap);
+	}
+	
+	protected TemplateRuleRegistry makeTemplateRuleRegistry(TemplateRuleMap templateRuleMap) {
+		templateRuleMap.freeze();
+		
+		return new TemplateRuleRegistry(templateRuleMap);
 	}
 	
 	protected Importable makeImportable(String rootContext) {

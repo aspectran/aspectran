@@ -24,17 +24,14 @@ import java.util.List;
 import java.util.Map;
 
 import com.aspectran.core.activity.Activity;
-import com.aspectran.core.activity.CoreActivity;
-import com.aspectran.core.activity.VoidActivity;
 import com.aspectran.core.activity.process.action.BeanAction;
-import com.aspectran.core.activity.variable.ValueMap;
-import com.aspectran.core.activity.variable.token.ItemTokenExpression;
-import com.aspectran.core.activity.variable.token.ItemTokenExpressor;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.bean.ablility.FactoryBean;
 import com.aspectran.core.context.bean.proxy.CglibDynamicBeanProxy;
 import com.aspectran.core.context.bean.proxy.JavassistDynamicBeanProxy;
 import com.aspectran.core.context.bean.proxy.JdkDynamicBeanProxy;
+import com.aspectran.core.context.expr.ItemTokenExpression;
+import com.aspectran.core.context.expr.ItemTokenExpressor;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.BeanRuleMap;
@@ -42,6 +39,7 @@ import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.type.BeanProxifierType;
 import com.aspectran.core.context.rule.type.ScopeType;
+import com.aspectran.core.context.variable.ValueMap;
 import com.aspectran.core.util.ClassUtils;
 import com.aspectran.core.util.MethodUtils;
 import com.aspectran.core.util.logging.Log;
@@ -56,7 +54,7 @@ public abstract class AbstractContextBeanRegistry implements ContextBeanRegistry
 	
 	private final Log log = LogFactory.getLog(AbstractContextBeanRegistry.class);
 	
-	protected final ActivityContext context;
+	protected ActivityContext context;
 
 	protected final BeanRuleMap beanRuleMap;
 
@@ -68,8 +66,7 @@ public abstract class AbstractContextBeanRegistry implements ContextBeanRegistry
 	
 	private boolean initialized;
 	
-	public AbstractContextBeanRegistry(ActivityContext context, BeanRuleMap beanRuleMap, BeanProxifierType beanProxifierType) {
-		this.context = context;
+	public AbstractContextBeanRegistry(BeanRuleMap beanRuleMap, BeanProxifierType beanProxifierType) {
 		this.beanRuleMap = beanRuleMap;
 		this.classBeanRuleMap = beanRuleMap.getClassBeanRuleMap();
 		this.beanProxifierType = (beanProxifierType == null ? BeanProxifierType.JAVASSIST : beanProxifierType);
@@ -145,7 +142,7 @@ public abstract class AbstractContextBeanRegistry implements ContextBeanRegistry
 			}
 
 			if(beanRule.isFactoryBeanImplmented()) {
-				FactoryBean factory = (FactoryBean)bean;
+				FactoryBean<?> factory = (FactoryBean<?>)bean;
 
 				try {
 					bean = factory.getObject();
@@ -201,13 +198,13 @@ public abstract class AbstractContextBeanRegistry implements ContextBeanRegistry
 		return bean;
 	}
 	
-	public synchronized void initialize() {
+	public synchronized void initialize(ActivityContext context) {
 		if(initialized) {
 			throw new UnsupportedOperationException("ContextBeanRegistry has already been initialized.");
 		}
 
-		CoreActivity activity = new VoidActivity(context);
-		context.setCurrentActivity(activity);
+		this.context = context;
+		Activity activity = context.getCurrentActivity();
 
 		for(BeanRule beanRule : beanRuleMap) {
 			if(!beanRule.isRegistered()) {
@@ -222,8 +219,6 @@ public abstract class AbstractContextBeanRegistry implements ContextBeanRegistry
 				}
 			}
 		}
-		
-		context.removeCurrentActivity();
 		
 		initialized = true;
 		

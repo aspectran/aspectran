@@ -17,14 +17,14 @@ package com.aspectran.core.context.translet;
 
 import java.util.List;
 
-import com.aspectran.core.activity.variable.ParameterMap;
-import com.aspectran.core.activity.variable.token.Token;
-import com.aspectran.core.activity.variable.token.Tokenizer;
 import com.aspectran.core.context.AspectranConstant;
+import com.aspectran.core.context.expr.token.Token;
+import com.aspectran.core.context.expr.token.Tokenizer;
 import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.TransletRuleMap;
 import com.aspectran.core.context.rule.type.RequestMethodType;
 import com.aspectran.core.context.rule.type.TokenType;
+import com.aspectran.core.context.variable.ParameterMap;
 import com.aspectran.core.util.wildcard.WildcardPattern;
 
 public class TransletRuleRegistry {

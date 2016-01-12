@@ -16,7 +16,6 @@
 package com.aspectran.core.context.bean;
 
 import com.aspectran.core.activity.Activity;
-import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.bean.scope.RequestScope;
 import com.aspectran.core.context.bean.scope.Scope;
 import com.aspectran.core.context.bean.scope.ScopedBean;
@@ -27,8 +26,6 @@ import com.aspectran.core.context.rule.type.BeanProxifierType;
 import com.aspectran.core.context.rule.type.ScopeType;
 import com.aspectran.core.util.ClassUtils;
 import com.aspectran.core.util.MethodUtils;
-
-import java.lang.reflect.InvocationTargetException;
 
 /**
  * The Class ScopedContextBeanRegistry.
@@ -45,8 +42,8 @@ public class ScopedContextBeanRegistry extends AbstractContextBeanRegistry {
 	
 	private final Object applicationScopeLock = new Object();
 	
-	public ScopedContextBeanRegistry(ActivityContext context, BeanRuleMap beanRuleMap, BeanProxifierType beanProxifierType) {
-		super(context, beanRuleMap, beanProxifierType);
+	public ScopedContextBeanRegistry(BeanRuleMap beanRuleMap, BeanProxifierType beanProxifierType) {
+		super(beanRuleMap, beanProxifierType);
 	}
 	
 	/* (non-Javadoc)

@@ -27,7 +27,6 @@ import com.aspectran.core.activity.request.RequestException;
 import com.aspectran.core.activity.response.ForwardResponse;
 import com.aspectran.core.activity.response.Response;
 import com.aspectran.core.activity.response.ResponseException;
-import com.aspectran.core.activity.variable.ParameterMap;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.aspect.AspectAdviceRuleRegister;
 import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
@@ -35,6 +34,7 @@ import com.aspectran.core.context.bean.BeanRegistry;
 import com.aspectran.core.context.rule.*;
 import com.aspectran.core.context.rule.type.*;
 import com.aspectran.core.context.translet.TransletNotFoundException;
+import com.aspectran.core.context.variable.ParameterMap;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 

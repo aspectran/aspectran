@@ -168,7 +168,7 @@ public class DispatchResponseRule extends ActionPossessSupport implements Action
 		
 		TemplateRule templateRule = dispatchResponseRule.getTemplateRule();
 		if(templateRule != null) {
-			templateRule = TemplateRule.newDerivedTemplateRule(templateRule);
+			templateRule = TemplateRule.newDerivedBuiltinTemplateRule(templateRule);
 			newDispatchResponseRule.setTemplateRule(templateRule);
 		}
 		

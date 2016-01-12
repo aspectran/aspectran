@@ -25,15 +25,15 @@ import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
 
 import com.aspectran.core.activity.Activity;
-import com.aspectran.core.activity.variable.ValueMap;
-import com.aspectran.core.activity.variable.token.ItemTokenExpression;
-import com.aspectran.core.activity.variable.token.ItemTokenExpressor;
-import com.aspectran.core.activity.variable.token.Token;
-import com.aspectran.core.activity.variable.token.TokenExpression;
-import com.aspectran.core.activity.variable.token.TokenExpressor;
 import com.aspectran.core.adapter.AbstractResponseAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
+import com.aspectran.core.context.expr.ItemTokenExpression;
+import com.aspectran.core.context.expr.ItemTokenExpressor;
+import com.aspectran.core.context.expr.TokenExpression;
+import com.aspectran.core.context.expr.TokenExpressor;
+import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.rule.RedirectResponseRule;
+import com.aspectran.core.context.variable.ValueMap;
 
 /**
  * The Class HttpServletResponseAdapter.

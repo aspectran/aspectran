@@ -17,7 +17,6 @@ package com.aspectran.core.activity;
 
 import java.util.List;
 
-import com.aspectran.core.activity.request.RequestException;
 import com.aspectran.core.activity.response.Response;
 import com.aspectran.core.activity.response.ResponseException;
 import com.aspectran.core.adapter.RequestAdapter;
@@ -41,10 +40,10 @@ public final class SessionScopeActivity extends CoreActivity implements Activity
 		newTranslet();
 	}
 
-	public void ready(String transletName) throws ActivityException {
+	public void ready(String transletName) {
 	}
 	
-	protected void request(Translet translet) throws RequestException {
+	protected void request(Translet translet) {
 	}
 	
 	@SuppressWarnings("unchecked")

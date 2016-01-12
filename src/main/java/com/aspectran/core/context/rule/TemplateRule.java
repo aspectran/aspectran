@@ -17,8 +17,8 @@ package com.aspectran.core.context.rule;
 
 import java.util.List;
 
-import com.aspectran.core.activity.variable.token.Token;
-import com.aspectran.core.activity.variable.token.Tokenizer;
+import com.aspectran.core.context.expr.token.Token;
+import com.aspectran.core.context.expr.token.Tokenizer;
 import com.aspectran.core.util.BooleanUtils;
 
 /**
@@ -123,18 +123,13 @@ public class TemplateRule {
 		return content;
 	}
 
-	/**
-	 * Sets the template content.
-	 * 
-	 * @param content the templateContent to set
-	 */
 	public void setContent(String content) {
 		this.content = content;
 		
-		if(content == null || content.length() == 0) {
-			contentTokens = null;
-		} else {
-			if(engine == null) {
+		if(engine != null) {
+			if(content == null || content.length() == 0) {
+				contentTokens = null;
+			} else {
 				List<Token> tokenList = Tokenizer.tokenize(content, false);
 				if (tokenList.size() > 0) {
 					contentTokens = tokenList.toArray(new Token[tokenList.size()]);
@@ -144,11 +139,6 @@ public class TemplateRule {
 				}
 			}
 		}
-	}
-	
-	private void setContent(String content, Token[] contentTokens) {
-		this.content = content;
-		this.contentTokens = contentTokens;
 	}
 	
 	public Token[] getContentTokens() {
@@ -166,8 +156,9 @@ public class TemplateRule {
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("{");
-		if(!builtin)
+		if(!builtin) {
 			sb.append("id=").append(id).append(", ");
+		}
 		sb.append("engine=").append(engine);
 		sb.append(", file=").append(file);
 		sb.append(", resource=").append(resource);
@@ -205,13 +196,14 @@ public class TemplateRule {
 		return tr;
 	}
 
-	public static TemplateRule newDerivedTemplateRule(TemplateRule templateRule) {
-		TemplateRule newTemplateRule = new TemplateRule();
+	public static TemplateRule newDerivedBuiltinTemplateRule(TemplateRule templateRule) {
+		TemplateRule newTemplateRule = new TemplateRule(templateRule.getEngine());
 		newTemplateRule.setFile(templateRule.getFile());
 		newTemplateRule.setResource(templateRule.getResource());
 		newTemplateRule.setUrl(templateRule.getUrl());
 		newTemplateRule.setEncoding(templateRule.getEncoding());
-		newTemplateRule.setContent(templateRule.getContent(), templateRule.getContentTokens());
+		newTemplateRule.setContent(templateRule.getContent());
+		newTemplateRule.setContentTokens(templateRule.getContentTokens());
 		newTemplateRule.setNoCache(templateRule.getNoCache());
 		newTemplateRule.setBuiltin(true);
 

@@ -15,6 +15,8 @@
  */
 package com.aspectran.core.context.bean;
 
+import com.aspectran.core.context.ActivityContext;
+
 /**
  * The Interface ContextBeanRegistry.
  *
@@ -24,7 +26,7 @@ package com.aspectran.core.context.bean;
  */
 public interface ContextBeanRegistry extends BeanRegistry {
 	
-	public void initialize();
+	public void initialize(ActivityContext context);
 	
 	public void destroy();
 
