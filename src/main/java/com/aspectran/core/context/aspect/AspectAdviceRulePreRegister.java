@@ -15,27 +15,21 @@
  */
 package com.aspectran.core.context.aspect;
 
-import java.util.List;
-
 import com.aspectran.core.activity.process.ContentList;
 import com.aspectran.core.context.AspectranConstant;
 import com.aspectran.core.context.aspect.pointcut.Pointcut;
-import com.aspectran.core.context.rule.AspectRule;
-import com.aspectran.core.context.rule.AspectRuleMap;
-import com.aspectran.core.context.rule.BeanRule;
-import com.aspectran.core.context.rule.BeanRuleMap;
-import com.aspectran.core.context.rule.PointcutPatternRule;
-import com.aspectran.core.context.rule.RequestRule;
-import com.aspectran.core.context.rule.ResponseRule;
-import com.aspectran.core.context.rule.TransletRule;
-import com.aspectran.core.context.rule.TransletRuleMap;
+import com.aspectran.core.context.bean.BeanRuleRegistry;
+import com.aspectran.core.context.rule.*;
 import com.aspectran.core.context.rule.type.AspectTargetType;
 import com.aspectran.core.context.rule.type.JoinpointScopeType;
 import com.aspectran.core.context.rule.type.PointcutType;
+import com.aspectran.core.context.translet.TransletRuleRegistry;
 import com.aspectran.core.util.ClassDescriptor;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 import com.aspectran.core.util.wildcard.WildcardPattern;
+
+import java.util.List;
 
 /**
  * The Class AspectAdviceRulePreRegister.
@@ -44,12 +38,12 @@ public class AspectAdviceRulePreRegister extends AspectAdviceRuleRegister {
 	
 	private final Log log = LogFactory.getLog(AspectAdviceRulePreRegister.class);
 	
-	private AspectRuleMap aspectRuleMap;
+	private AspectRuleRegistry aspectRuleRegistry;
 	
-	public AspectAdviceRulePreRegister(AspectRuleMap aspectRuleMap) {
-		this.aspectRuleMap = aspectRuleMap;
+	public AspectAdviceRulePreRegister(AspectRuleRegistry aspectRuleRegistry) {
+		this.aspectRuleRegistry = aspectRuleRegistry;
 		
-		for(AspectRule aspectRule : aspectRuleMap) {
+		for(AspectRule aspectRule : aspectRuleRegistry.getAspectRules()) {
 			AspectTargetType aspectTargetType = aspectRule.getAspectTargetType();
 			JoinpointScopeType joinpointScope = aspectRule.getJoinpointScope();
 
@@ -81,8 +75,8 @@ public class AspectAdviceRulePreRegister extends AspectAdviceRuleRegister {
 		}
 	}
 	
-	public void register(BeanRuleMap beanRuleMap) {
-		for(BeanRule beanRule : beanRuleMap) {
+	public void register(BeanRuleRegistry beanRuleRegistry) {
+		for(BeanRule beanRule : beanRuleRegistry.getBeanRules()) {
 			if(!beanRule.isFactoryBeanReferenced()) {
 				determineProxyBean(beanRule);
 			}
@@ -90,7 +84,7 @@ public class AspectAdviceRulePreRegister extends AspectAdviceRuleRegister {
 	}
 	
 	private void determineProxyBean(BeanRule beanRule) {
-		for(AspectRule aspectRule : aspectRuleMap) {
+		for(AspectRule aspectRule : aspectRuleRegistry.getAspectRules()) {
 			AspectTargetType aspectTargetType = aspectRule.getAspectTargetType();
 
 			if(aspectTargetType == AspectTargetType.TRANSLET && aspectRule.isBeanRelevanted()) {
@@ -119,14 +113,14 @@ public class AspectAdviceRulePreRegister extends AspectAdviceRuleRegister {
 		}
 	}
 	
-	public void register(TransletRuleMap transletRuleMap) {
-		for(TransletRule transletRule : transletRuleMap) {
+	public void register(TransletRuleRegistry transletRuleRegistry) {
+		for(TransletRule transletRule : transletRuleRegistry.getTransletRules()) {
 			register(transletRule);
 		}
 	}
 	
 	private void register(TransletRule transletRule) {
-		for(AspectRule aspectRule : aspectRuleMap) {
+		for(AspectRule aspectRule : aspectRuleRegistry.getAspectRules()) {
 			AspectTargetType aspectTargetType = aspectRule.getAspectTargetType();
 			
 			if(aspectTargetType == AspectTargetType.TRANSLET) {

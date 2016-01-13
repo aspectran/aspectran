@@ -13,19 +13,10 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package com.aspectran.core.context.template.engine;
-
-import com.aspectran.core.context.rule.TemplateRule;
-
-import java.io.Reader;
-import java.io.Writer;
-import java.util.Map;
+package com.aspectran.core.context.template;
 
 /**
- * Created by gulendol on 2016. 1. 9..
+ * Created by gulendol on 2016. 1. 14..
  */
-public interface TemplateEngine {
-
-    public void process(TemplateRule templateRule, Reader reader, Map<String, String> dataModel, Writer writer);
-
+public interface TemplateProcessor {
 }

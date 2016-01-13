@@ -28,8 +28,6 @@ public class TemplateRuleMap extends LinkedHashMap<String, TemplateRule> impleme
 	/** @serial */
 	private static final long serialVersionUID = 4921723518146075919L;
 
-	private boolean freezed;
-
 	/**
 	 * Adds the template rule.
 	 * 
@@ -38,16 +36,9 @@ public class TemplateRuleMap extends LinkedHashMap<String, TemplateRule> impleme
 	 * @return the template rule
 	 */
 	public TemplateRule putTemplateRule(TemplateRule templateRule) {
-		if(freezed)
-			throw new UnsupportedOperationException("freezed templateRuleMap: " + toString());
-
 		return super.put(templateRule.getId(), templateRule);
 	}
 
-	public void freeze() {
-		freezed = true;
-	}
-	
 	/* (non-Javadoc)
 	 * @see java.lang.Iterable#iterator()
 	 */

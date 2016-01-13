@@ -13,19 +13,21 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package com.aspectran.core.context.template.engine;
+package com.aspectran.core.context.bean;
 
-import com.aspectran.core.context.rule.TemplateRule;
-
-import java.io.Reader;
-import java.io.Writer;
-import java.util.Map;
+import com.aspectran.core.context.ActivityContext;
 
 /**
- * Created by gulendol on 2016. 1. 9..
+ * The Interface BeanFactory.
+ *
+ * @author Juho Jeong
+ * 
+ * <p>Created: 2012. 11. 9. 오전 11:36:47</p>
  */
-public interface TemplateEngine {
-
-    public void process(TemplateRule templateRule, Reader reader, Map<String, String> dataModel, Writer writer);
+public interface BeanFactory {
+	
+	public void initialize(ActivityContext context);
+	
+	public void destroy();
 
 }

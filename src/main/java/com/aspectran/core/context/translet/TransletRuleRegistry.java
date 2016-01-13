@@ -16,6 +16,7 @@
 package com.aspectran.core.context.translet;
 
 import java.io.File;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -107,7 +108,11 @@ public class TransletRuleRegistry {
 		
 		return null;
 	}
-	
+
+	public Collection<TransletRule> getTransletRules() {
+		return transletRuleMap.values();
+	}
+
 	public void clear() {
 		transletRuleMap.clear();
 		restfulTransletRuleMap.clear();

@@ -18,7 +18,7 @@ package com.aspectran.core.context;
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.aspect.AspectRuleRegistry;
-import com.aspectran.core.context.bean.ContextBeanRegistry;
+import com.aspectran.core.context.bean.BeanRegistry;
 import com.aspectran.core.context.template.TemplateRuleRegistry;
 import com.aspectran.core.context.translet.TransletRuleRegistry;
 
@@ -35,7 +35,7 @@ public class ActivityContext {
 	
 	private AspectRuleRegistry aspectRuleRegistry;
 	
-	private ContextBeanRegistry contextBeanRegistry;
+	private BeanRegistry beanRegistry;
 
 	private TransletRuleRegistry transletRuleRegistry;
 	
@@ -72,17 +72,17 @@ public class ActivityContext {
 	 *
 	 * @return the bean registry
 	 */
-	public ContextBeanRegistry getContextBeanRegistry() {
-		return contextBeanRegistry;
+	public BeanRegistry getBeanRegistry() {
+		return beanRegistry;
 	}
 
 	/**
 	 * Sets the bean registry.
 	 *
-	 * @param contextBeanRegistry the new bean registry
+	 * @param beanRegistry the new bean registry
 	 */
-	public void setContextBeanRegistry(ContextBeanRegistry contextBeanRegistry) {
-		this.contextBeanRegistry = contextBeanRegistry;
+	public void setBeanRegistry(BeanRegistry beanRegistry) {
+		this.beanRegistry = beanRegistry;
 	}
 
 	/**
@@ -152,19 +152,19 @@ public class ActivityContext {
 	 */
 	public void destroy() {
 		if(aspectRuleRegistry != null) {
-			aspectRuleRegistry.destroy();
+			aspectRuleRegistry.clear();
 			aspectRuleRegistry = null;
 		}
-		if(contextBeanRegistry != null) {
-			contextBeanRegistry.destroy();
-			contextBeanRegistry = null;
+		if(beanRegistry != null) {
+			beanRegistry.destroy();
+			beanRegistry = null;
 		}
 		if(transletRuleRegistry != null) {
-			transletRuleRegistry.destroy();
+			transletRuleRegistry.clear();
 			transletRuleRegistry = null;
 		}
 		if(templateRuleRegistry != null) {
-			templateRuleRegistry.destroy();
+			templateRuleRegistry.clear();
 			templateRuleRegistry = null;
 		}
 	}
@@ -176,7 +176,7 @@ public class ActivityContext {
 		StringBuilder sb = new StringBuilder();
 		sb.append("{applicationAdapter=").append(applicationAdapter);
 		sb.append(", aspectRuleRegistry=").append(aspectRuleRegistry);
-		sb.append(", beanRegistry=").append(contextBeanRegistry);
+		sb.append(", beanRegistry=").append(beanRegistry);
 		sb.append(", transletRuleRegistry=").append(transletRuleRegistry);
 		sb.append(", templateRuleRegistry=").append(templateRuleRegistry);
 		sb.append("}");

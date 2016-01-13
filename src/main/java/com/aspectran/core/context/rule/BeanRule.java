@@ -71,8 +71,6 @@ public class BeanRule implements Cloneable {
 
 	private boolean registered;
 	
-	private boolean overrided;
-
 	private boolean scanned;
 	
 	private boolean proxied;
@@ -407,19 +405,6 @@ public class BeanRule implements Cloneable {
 	}
 
 	/**
-	 * Returns <code>true</code> if the bean definition was overridden.
-	 *
-	 * @return true, if is overrided
-	 */
-	public boolean isOverrided() {
-		return overrided;
-	}
-	
-	public void setOverrided(boolean overrided) {
-		this.overrided = overrided;
-	}
-
-	/**
 	 * Returns <code>true</code> if the bean is auto-scanned.
 	 *
 	 * @return true, if is scanned
@@ -481,7 +466,6 @@ public class BeanRule implements Cloneable {
 		if(!factoryBeanReferenced) {
 			sb.append(", class=").append(className);
 			sb.append(", scope=").append(scopeType);
-			sb.append(", factoryBean=").append(factoryBeanId);
 			sb.append(", factoryMethod=").append(factoryMethodName);
 			sb.append(", initMethod=").append(initMethodName);
 			sb.append(", destroyMethod=").append(destroyMethodName);

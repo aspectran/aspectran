@@ -855,28 +855,28 @@ public class CoreActivity extends AbstractActivity implements Activity {
 	}
 
 	public BeanRegistry getBeanRegistry() {
-		return context.getContextBeanRegistry();
+		return context.getBeanRegistry();
 	}
 	
 	/* (non-Javadoc)
 	 * @see com.aspectran.core.activity.Activity#getBean(java.lang.String)
 	 */
 	public <T> T getBean(String id) {
-		return context.getContextBeanRegistry().getBean(id);
+		return context.getBeanRegistry().getBean(id);
 	}
 	
 	/* (non-Javadoc)
 	 * @see com.aspectran.core.activity.Activity#getBean(java.lang.Class)
 	 */
 	public <T> T getBean(Class<T> classType) {
-		return context.getContextBeanRegistry().getBean(classType);
+		return context.getBeanRegistry().getBean(classType);
 	}
 	
 	/* (non-Javadoc)
 	 * @see com.aspectran.core.activity.Activity#getBean(java.lang.String, java.lang.Class)
 	 */
 	public <T> T getBean(String id, Class<T> classType) {
-		return context.getContextBeanRegistry().getBean(id, classType);
+		return context.getBeanRegistry().getBean(id, classType);
 	}
 	
 	/* (non-Javadoc)

@@ -21,7 +21,7 @@ package com.aspectran.core.context.bean;
  * @author Juho Jeong
  * @since 2012. 11. 9
  */
-public interface BeanRegistry {
+public interface BeanRegistry extends BeanFactory {
 
 	/**
 	 * Return an instance.

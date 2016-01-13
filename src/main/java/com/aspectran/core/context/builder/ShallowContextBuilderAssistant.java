@@ -45,31 +45,59 @@ public class ShallowContextBuilderAssistant extends ContextBuilderAssistant {
 		setImportHandler(new ShallowImportHandler());
 	}
 
+	@Override
 	public String resolveAliasType(String alias) {
 		return alias;
 	}
-	
+
+	@Override
 	public String applyTransletNamePattern(String transletName) {
 		return transletName;
 	}
-	
+
+	@Override
 	public void applyTransletInterface(DefaultSettings defaultSettings) throws ClassNotFoundException {
+		//ignore
 	}
-	
+
+	@Override
 	public void addAspectRule(AspectRule aspectRule) {
 		aspectRuleMap.put(Integer.toString(aspectRuleMap.size()), aspectRule);
 	}
-	
+
+	@Override
 	public void addBeanRule(BeanRule beanRule) throws CloneNotSupportedException, ClassNotFoundException, IOException {
 		beanRuleMap.put(Integer.toString(beanRuleMap.size()), beanRule);
 	}
 
+	@Override
 	public void addTransletRule(TransletRule transletRule) throws CloneNotSupportedException {
-		transletRuleMap.addShallowTransletRule(transletRule);
+		transletRuleMap.put(Integer.toString(transletRuleMap.size()), transletRule);
 	}
-	
+
+	@Override
 	public void addTemplateRule(TemplateRule templateRule) {
 		templateRuleMap.put(Integer.toString(transletRuleMap.size()), templateRule);
 	}
-	
+
+	@Override
+	public AspectRuleMap getAspectRuleMap() {
+		return aspectRuleMap;
+	}
+
+	@Override
+	public BeanRuleMap getBeanRuleMap() {
+		return beanRuleMap;
+	}
+
+	@Override
+	public TemplateRuleMap getTemplateRuleMap() {
+		return templateRuleMap;
+	}
+
+	@Override
+	public TransletRuleMap getTransletRuleMap() {
+		return transletRuleMap;
+	}
+
 }
