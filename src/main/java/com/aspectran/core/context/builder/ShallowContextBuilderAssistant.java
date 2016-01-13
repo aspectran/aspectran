@@ -17,8 +17,14 @@ package com.aspectran.core.context.builder;
 
 import java.io.IOException;
 
+import com.aspectran.core.context.rule.AspectRule;
+import com.aspectran.core.context.rule.AspectRuleMap;
 import com.aspectran.core.context.rule.BeanRule;
+import com.aspectran.core.context.rule.BeanRuleMap;
+import com.aspectran.core.context.rule.TemplateRule;
+import com.aspectran.core.context.rule.TemplateRuleMap;
 import com.aspectran.core.context.rule.TransletRule;
+import com.aspectran.core.context.rule.TransletRuleMap;
 
 /**
  * The Class ShallowContextBuilderAssistant.
@@ -27,52 +33,43 @@ import com.aspectran.core.context.rule.TransletRule;
  */
 public class ShallowContextBuilderAssistant extends ContextBuilderAssistant {
 
-	/**
-	 * Instantiates a new ShallowContextBuilderAssistant.
-	 */
+	protected final AspectRuleMap aspectRuleMap = new AspectRuleMap();
+	
+	protected final BeanRuleMap beanRuleMap = new BeanRuleMap();
+
+	protected final TemplateRuleMap templateRuleMap = new TemplateRuleMap();
+
+	protected final TransletRuleMap transletRuleMap = new TransletRuleMap();
+	
 	public ShallowContextBuilderAssistant() {
 		setImportHandler(new ShallowImportHandler());
 	}
 
-	/**
-	 * Returns the resolve alias type.
-	 * 
-	 * @param alias the alias
-	 * 
-	 * @return the string
-	 */
 	public String resolveAliasType(String alias) {
 		return alias;
 	}
 	
-	/**
-	 * Returns the trnaslet name of the prefix and suffix are combined.
-	 * 
-	 * @param transletName the translet name
-	 * 
-	 * @return the string
-	 */
 	public String applyTransletNamePattern(String transletName) {
 		return transletName;
 	}
 	
-	/**
-	 * Adds the bean rule.
-	 *
-	 * @param beanRule the bean rule
-	 * @throws CloneNotSupportedException the clone not supported exception
-	 * @throws ClassNotFoundException the class not found exception
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 */
+	public void applyTransletInterface(DefaultSettings defaultSettings) throws ClassNotFoundException {
+	}
+	
+	public void addAspectRule(AspectRule aspectRule) {
+		aspectRuleMap.put(Integer.toString(aspectRuleMap.size()), aspectRule);
+	}
+	
 	public void addBeanRule(BeanRule beanRule) throws CloneNotSupportedException, ClassNotFoundException, IOException {
 		beanRuleMap.put(Integer.toString(beanRuleMap.size()), beanRule);
 	}
 
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.context.builder.ContextBuilderAssistant#addTransletRule(com.aspectran.core.context.rule.TransletRule)
-	 */
 	public void addTransletRule(TransletRule transletRule) throws CloneNotSupportedException {
 		transletRuleMap.addShallowTransletRule(transletRule);
+	}
+	
+	public void addTemplateRule(TemplateRule templateRule) {
+		templateRuleMap.put(Integer.toString(transletRuleMap.size()), templateRule);
 	}
 	
 }

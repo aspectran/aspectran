@@ -32,7 +32,7 @@ public class HybridActivityContextBuilder extends AbstractActivityContextBuilder
 	}
 	
 	public HybridActivityContextBuilder(ApplicationAdapter applicationAdapter, String encoding) {
-		setApplicationAdapter(applicationAdapter);
+		super(applicationAdapter);
 		this.encoding = encoding;
 	}
 

@@ -57,6 +57,10 @@ public abstract class AbstractActivityContextBuilder extends ContextBuilderAssis
 	
 	private final Log log = LogFactory.getLog(AbstractActivityContextBuilder.class);
 	
+	public AbstractActivityContextBuilder(ApplicationAdapter applicationAdapter) {
+		super(applicationAdapter);
+	}
+	
 	protected ActivityContext makeActivityContext(ApplicationAdapter applicationAdapter) {
 		AspectRuleMap aspectRuleMap = getAspectRuleMap();
 		BeanRuleMap beanRuleMap = getBeanRuleMap();

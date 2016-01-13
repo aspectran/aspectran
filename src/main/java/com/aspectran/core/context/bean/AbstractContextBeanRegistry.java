@@ -18,9 +18,7 @@ package com.aspectran.core.context.bean;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 import com.aspectran.core.activity.Activity;
@@ -32,7 +30,6 @@ import com.aspectran.core.context.bean.proxy.JavassistDynamicBeanProxy;
 import com.aspectran.core.context.bean.proxy.JdkDynamicBeanProxy;
 import com.aspectran.core.context.expr.ItemTokenExpression;
 import com.aspectran.core.context.expr.ItemTokenExpressor;
-import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.BeanRuleMap;
 import com.aspectran.core.context.rule.ItemRule;
@@ -62,8 +59,6 @@ public abstract class AbstractContextBeanRegistry implements ContextBeanRegistry
 
 	private final BeanProxifierType beanProxifierType;
 
-	private final Map<String, List<AspectRule>> aspectRuleListCache = new HashMap<String, List<AspectRule>>();
-	
 	private boolean initialized;
 	
 	public AbstractContextBeanRegistry(BeanRuleMap beanRuleMap, BeanProxifierType beanProxifierType) {
@@ -250,8 +245,6 @@ public abstract class AbstractContextBeanRegistry implements ContextBeanRegistry
 				}
 			}
 		}
-		
-		aspectRuleListCache.clear();
 		
 		initialized = false;
 		

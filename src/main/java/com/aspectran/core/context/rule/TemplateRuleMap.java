@@ -30,10 +30,6 @@ public class TemplateRuleMap extends LinkedHashMap<String, TemplateRule> impleme
 
 	private boolean freezed;
 
-	public TemplateRule put(String key, TemplateRule value) {
-		throw new UnsupportedOperationException();
-	}
-	
 	/**
 	 * Adds the template rule.
 	 * 

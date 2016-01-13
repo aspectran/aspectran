@@ -17,25 +17,23 @@ package com.aspectran.core.context.aspect;
 
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.AspectRuleMap;
+import com.aspectran.core.util.logging.Log;
+import com.aspectran.core.util.logging.LogFactory;
 
 /**
  * The Class AspectRuleRegistry.
  */
 public class AspectRuleRegistry {
 
-	private AspectRuleMap aspectRuleMap;
+	private final Log log = LogFactory.getLog(AspectRuleRegistry.class);
+
+	private final AspectRuleMap aspectRuleMap = new AspectRuleMap();
 	
 	private AspectAdviceRuleRegistry sessionAspectAdviceRuleRegistry;
 	
-	public AspectRuleRegistry(AspectRuleMap aspectRuleMap) {
-		this.aspectRuleMap = aspectRuleMap;
+	public AspectRuleRegistry() {
 	}
 	
-	/**
-	 * Gets the aspect rule map.
-	 * 
-	 * @return the aspect rule map
-	 */
 	public AspectRuleMap getAspectRuleMap() {
 		return aspectRuleMap;
 	}
@@ -56,11 +54,15 @@ public class AspectRuleRegistry {
 		this.sessionAspectAdviceRuleRegistry = sessionAspectAdviceRuleRegistry;
 	}
 
-	public void destroy() {
-		if(aspectRuleMap != null) {
-			aspectRuleMap.clear();
-			aspectRuleMap = null;
-		}
+	public void addAspectRule(AspectRule aspectRule) {
+		aspectRuleMap.putAspectRule(aspectRule);
+		
+		if(log.isTraceEnabled())
+			log.trace("add AspectRule " + aspectRule);
 	}
 
+	public void clear() {
+		aspectRuleMap.clear();
+	}
+	
 }

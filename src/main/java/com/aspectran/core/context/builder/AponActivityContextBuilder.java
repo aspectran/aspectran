@@ -33,7 +33,7 @@ public class AponActivityContextBuilder extends AbstractActivityContextBuilder i
 	}
 	
 	public AponActivityContextBuilder(ApplicationAdapter applicationAdapter, String encoding) {
-		setApplicationAdapter(applicationAdapter);
+		super(applicationAdapter);
 		this.encoding = encoding;
 	}
 

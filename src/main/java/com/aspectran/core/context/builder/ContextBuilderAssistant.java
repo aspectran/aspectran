@@ -15,25 +15,23 @@
  */
 package com.aspectran.core.context.builder;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import com.aspectran.core.activity.CoreTranslet;
 import com.aspectran.core.activity.Translet;
 import com.aspectran.core.adapter.ApplicationAdapter;
-import com.aspectran.core.context.AspectranConstant;
-import com.aspectran.core.context.bean.scan.BeanClassScanner;
-import com.aspectran.core.context.rule.*;
+import com.aspectran.core.context.aspect.AspectRuleRegistry;
+import com.aspectran.core.context.bean.BeanRuleRegistry;
+import com.aspectran.core.context.rule.AspectRule;
+import com.aspectran.core.context.rule.BeanRule;
+import com.aspectran.core.context.rule.TemplateRule;
+import com.aspectran.core.context.rule.TemplateRuleMap;
+import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.type.DefaultSettingType;
-import com.aspectran.core.context.template.scan.TemplateFileScanner;
+import com.aspectran.core.context.translet.TransletRuleRegistry;
 import com.aspectran.core.util.ArrayStack;
-import com.aspectran.core.util.PrefixSuffixPattern;
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
-import com.aspectran.core.util.wildcard.WildcardPattern;
 
 /**
  * The Class ContextBuilderAssistant
@@ -42,8 +40,6 @@ import com.aspectran.core.util.wildcard.WildcardPattern;
  */
 public class ContextBuilderAssistant {
 
-	private final Log log = LogFactory.getLog(ContextBuilderAssistant.class);
-	
 	private ApplicationAdapter applicationAdapter;
 	
 	private String applicationBasePath;
@@ -60,29 +56,39 @@ public class ContextBuilderAssistant {
 	
 	private BeanReferenceInspector beanReferenceInspector = new BeanReferenceInspector();
 	
-	protected AspectRuleMap aspectRuleMap = new AspectRuleMap();
+	private final AspectRuleRegistry aspectRuleRegistry;
 	
-	protected BeanRuleMap beanRuleMap = new BeanRuleMap();
+	private final BeanRuleRegistry beanRuleRegistry;
 
-	protected TemplateRuleMap templateRuleMap = new TemplateRuleMap();
+	private final TemplateRuleMap templateRuleMap;
 
-	protected TransletRuleMap transletRuleMap = new TransletRuleMap();
+	private final TransletRuleRegistry transletRuleRegistry;
 	
 	private ImportHandler importHandler;
 	
 	private boolean hybridLoading;
 	
-	public ContextBuilderAssistant() {
+	public ContextBuilderAssistant(ApplicationAdapter applicationAdapter) {
+		this.applicationAdapter = applicationAdapter;
+		this.applicationBasePath = applicationAdapter.getApplicationBasePath();
+		this.classLoader = applicationAdapter.getClassLoader();
+		
+		aspectRuleRegistry = new AspectRuleRegistry();
+		beanRuleRegistry = new BeanRuleRegistry(classLoader);
+		templateRuleMap = new TemplateRuleMap();
+		transletRuleRegistry = new TransletRuleRegistry(applicationAdapter);
+		transletRuleRegistry.setAssistantLocal(assistantLocal);
+	}
+	
+	protected ContextBuilderAssistant() {
+		this.aspectRuleRegistry = null;
+		this.beanRuleRegistry = null;
+		this.templateRuleMap = null;
+		this.transletRuleRegistry = null;
 	}
 	
 	public ApplicationAdapter getApplicationAdapter() {
 		return applicationAdapter;
-	}
-
-	public void setApplicationAdapter(ApplicationAdapter applicationAdapter) {
-		this.applicationAdapter = applicationAdapter;
-		this.applicationBasePath = applicationAdapter.getApplicationBasePath();
-		this.classLoader = applicationAdapter.getClassLoader();
 	}
 
 	public String getApplicationBasePath() {
@@ -196,21 +202,28 @@ public class ContextBuilderAssistant {
 	 *
 	 * @throws ClassNotFoundException the class not found exception
 	 */
-	@SuppressWarnings("unchecked")
 	public void applySettings() throws ClassNotFoundException {
 		DefaultSettings defaultSettings = assistantLocal.touchDefaultSettings();
-
 		defaultSettings.apply(getSettings());
 
-		if(classLoader != null) {
-			if(defaultSettings.getTransletInterfaceClassName() != null) {
-				Class<?> transletInterfaceClass = classLoader.loadClass(defaultSettings.getTransletInterfaceClassName());
-				defaultSettings.setTransletInterfaceClass((Class<Translet>)transletInterfaceClass);
-			}
-			if(defaultSettings.getTransletImplementClassName() != null) {
-				Class<?> transletImplementClass = classLoader.loadClass(defaultSettings.getTransletImplementClassName());
-				defaultSettings.setTransletImplementClass((Class<CoreTranslet>)transletImplementClass);
-			}
+		applyTransletInterface(defaultSettings);
+	}
+	
+	/**
+	 * Apply translet interface.
+	 *
+	 * @param defaultSettings the default settings
+	 * @throws ClassNotFoundException the class not found exception
+	 */
+	@SuppressWarnings("unchecked")
+	public void applyTransletInterface(DefaultSettings defaultSettings) throws ClassNotFoundException {
+		if(defaultSettings.getTransletInterfaceClassName() != null) {
+			Class<?> transletInterfaceClass = classLoader.loadClass(defaultSettings.getTransletInterfaceClassName());
+			defaultSettings.setTransletInterfaceClass((Class<Translet>)transletInterfaceClass);
+		}
+		if(defaultSettings.getTransletImplementClassName() != null) {
+			Class<?> transletImplementClass = classLoader.loadClass(defaultSettings.getTransletImplementClassName());
+			defaultSettings.setTransletImplementClass((Class<CoreTranslet>)transletImplementClass);
 		}
 	}
 	
@@ -268,6 +281,17 @@ public class ContextBuilderAssistant {
 	}
 	
 	/**
+	 * Returns the trnaslet name of the prefix and suffix are combined.
+	 * 
+	 * @param transletName the translet name
+	 * 
+	 * @return the string
+	 */
+	public String applyTransletNamePattern(String transletName) {
+		return transletRuleRegistry.applyTransletNamePattern(transletName);
+	}
+	
+	/**
 	 * Gets the assistant local.
 	 *
 	 * @return the assistant local
@@ -283,6 +307,7 @@ public class ContextBuilderAssistant {
 	 */
 	public void setAssistantLocal(AssistantLocal assistantLocal) {
 		this.assistantLocal = assistantLocal;
+		transletRuleRegistry.setAssistantLocal(assistantLocal);
 	}
 
 	/**
@@ -293,7 +318,9 @@ public class ContextBuilderAssistant {
 	 */
 	public AssistantLocal backupAssistantLocal() throws CloneNotSupportedException {
 		AssistantLocal oldAssistantLocal = assistantLocal;
-		assistantLocal = assistantLocal.clone();
+
+		setAssistantLocal(assistantLocal.clone());
+		
 		return oldAssistantLocal;
 	}
 
@@ -303,40 +330,7 @@ public class ContextBuilderAssistant {
 	 * @param assistantLocal the assistant local
 	 */
 	public void restoreAssistantLocal(AssistantLocal assistantLocal) {
-		this.assistantLocal = assistantLocal;
-	}
-	
-	/**
-	 * Returns the trnaslet name of the prefix and suffix are combined.
-	 * 
-	 * @param transletName the translet name
-	 * 
-	 * @return the string
-	 */
-	public String applyTransletNamePattern(String transletName) {
-		DefaultSettings defaultSettings = assistantLocal.getDefaultSettings();
-		
-		if(defaultSettings == null)
-			return transletName;
-
-		if(transletName != null && transletName.length() > 0 && transletName.charAt(0) == AspectranConstant.TRANSLET_NAME_SEPARATOR)
-			return transletName;
-
-		if(defaultSettings.getTransletNamePrefix() == null && 
-				defaultSettings.getTransletNameSuffix() == null)
-			return transletName;
-		
-		StringBuilder sb = new StringBuilder();
-		
-		if(defaultSettings.getTransletNamePrefix() != null)
-			sb.append(defaultSettings.getTransletNamePrefix());
-
-		sb.append(transletName);
-		
-		if(defaultSettings.getTransletNameSuffix() != null)
-			sb.append(defaultSettings.getTransletNameSuffix());
-		
-		return sb.toString();
+		setAssistantLocal(assistantLocal);
 	}
 	
 	/**
@@ -386,8 +380,8 @@ public class ContextBuilderAssistant {
 	 *
 	 * @return the aspect rule map
 	 */
-	public AspectRuleMap getAspectRuleMap() {
-		return aspectRuleMap;
+	public AspectRuleRegistry getAspectRuleRegistry() {
+		return aspectRuleRegistry;
 	}
 	
 	/**
@@ -396,10 +390,7 @@ public class ContextBuilderAssistant {
 	 * @param aspectRule the aspect rule
 	 */
 	public void addAspectRule(AspectRule aspectRule) {
-		aspectRuleMap.putAspectRule(aspectRule);
-		
-		if(log.isTraceEnabled())
-			log.trace("add AspectRule " + aspectRule);
+		aspectRuleRegistry.addAspectRule(aspectRule);
 	}
 
 	/**
@@ -407,8 +398,8 @@ public class ContextBuilderAssistant {
 	 * 
 	 * @return the bean rule map
 	 */
-	public BeanRuleMap getBeanRuleMap() {
-		return beanRuleMap;
+	public BeanRuleRegistry getBeanRuleRegistry() {
+		return beanRuleRegistry;
 	}
 	
 	/**
@@ -420,63 +411,7 @@ public class ContextBuilderAssistant {
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public void addBeanRule(BeanRule beanRule) throws CloneNotSupportedException, ClassNotFoundException, IOException {
-		String className = beanRule.getClassName();
-
-		PrefixSuffixPattern prefixSuffixPattern = new PrefixSuffixPattern();
-		boolean patterned = prefixSuffixPattern.split(beanRule.getId());
-		
-		if(WildcardPattern.hasWildcards(className)) {
-			BeanClassScanner scanner = new BeanClassScanner(classLoader);
-			if(beanRule.getFilterParameters() != null)
-				scanner.setFilterParameters(beanRule.getFilterParameters());
-			if(beanRule.getMaskPattern() != null)
-				scanner.setBeanIdMaskPattern(beanRule.getMaskPattern());
-			
-			Map<String, Class<?>> beanClassMap = scanner.scanClasses(className);
-			
-			if(beanClassMap != null && !beanClassMap.isEmpty()) {
-				for(Map.Entry<String, Class<?>> entry : beanClassMap.entrySet()) {
-					BeanRule beanRule2 = beanRule.clone();
-					
-					String beanId = entry.getKey();
-					Class<?> beanClass = entry.getValue();
-			
-					if(patterned) {
-						beanRule2.setId(prefixSuffixPattern.join(beanId));
-					} else {
-						if(beanRule.getId() != null) {
-							beanRule2.setId(beanRule.getId() + beanId);
-						}
-					}
-
-					beanRule2.setClassName(beanClass.getName());
-					beanRule2.setBeanClass(beanClass);
-					beanRule2.setScanned(true);
-					BeanRule.checkFactoryBeanImplement(beanRule2);
-					BeanRule.checkAccessibleMethod(beanRule2);
-					beanRuleMap.putBeanRule(beanRule2);
-					
-					if(log.isTraceEnabled())
-						log.trace("add BeanRule " + beanRule2);
-				}
-			}
-			
-			if(log.isDebugEnabled())
-				log.debug("scanned class files: " + (beanClassMap == null ? 0 : beanClassMap.size()));
-		} else {
-			if(patterned) {
-				beanRule.setId(prefixSuffixPattern.join(className));
-			}
-			
-			Class<?> beanClass = classLoader.loadClass(className);
-			beanRule.setBeanClass(beanClass);
-			BeanRule.checkFactoryBeanImplement(beanRule);
-			BeanRule.checkAccessibleMethod(beanRule);
-			beanRuleMap.putBeanRule(beanRule);
-			
-			if(log.isTraceEnabled())
-				log.trace("add BeanRule " + beanRule);
-		}
+		beanRuleRegistry.addBeanRule(beanRule);
 	}
 
 	public TemplateRuleMap getTemplateRuleMap() {
@@ -487,110 +422,16 @@ public class ContextBuilderAssistant {
 		templateRuleMap.putTemplateRule(templateRule);
 	}
 
-	public TransletRuleMap getTransletRuleMap() {
-		return transletRuleMap;
+	public TransletRuleRegistry getTransletRuleRegistry() {
+		return transletRuleRegistry;
 	}
 
 	public void addTransletRule(TransletRule transletRule) throws CloneNotSupportedException {
-		DefaultSettings defaultSettings = assistantLocal.getDefaultSettings();
-		if(defaultSettings != null) {
-			transletRule.setTransletInterfaceClass(defaultSettings.getTransletInterfaceClass());
-			transletRule.setTransletImplementClass(defaultSettings.getTransletImplementClass());
-		}
-		
-		if(transletRule.getPath() != null) {
-			TemplateFileScanner scanner = new TemplateFileScanner(applicationBasePath, classLoader);
-			if(transletRule.getFilterParameters() != null)
-				scanner.setFilterParameters(transletRule.getFilterParameters());
-			if(transletRule.getMaskPattern() != null)
-				scanner.setTransletNameMaskPattern(transletRule.getMaskPattern());
-			else
-				scanner.setTransletNameMaskPattern(transletRule.getPath());
-			
-			Map<String, File> templateFileMap = scanner.scanFiles(transletRule.getPath());
-			
-			if(templateFileMap != null && !templateFileMap.isEmpty()) {
-				PrefixSuffixPattern prefixSuffixPattern = new PrefixSuffixPattern();
-				boolean patterned = prefixSuffixPattern.split(transletRule.getName());
-
-				for(Map.Entry<String, File> entry : templateFileMap.entrySet()) {
-					String filePath = entry.getKey();
-					TransletRule newTransletRule = TransletRule.newDerivedTransletRule(transletRule, filePath);
-					
-					if(patterned) {
-						newTransletRule.setName(prefixSuffixPattern.join(filePath));
-					} else {
-						if(transletRule.getName() != null) {
-							newTransletRule.setName(transletRule.getName() + filePath);
-						}
-					}
-					
-					putTransletRule(newTransletRule);
-				}
-			}
-		} else {
-			putTransletRule(transletRule);
-		}
-	}
-	
-	private void putTransletRule(TransletRule transletRule) throws CloneNotSupportedException {
-		if(transletRule.getRequestRule() == null) {
-			RequestRule requestRule = new RequestRule();
-			transletRule.setRequestRule(requestRule);
-		}
-		
-		List<ResponseRule> responseRuleList = transletRule.getResponseRuleList();
-		
-		if(responseRuleList == null || responseRuleList.isEmpty()) {
-			transletRule.determineResponseRule();
-			transletRule.setName(applyTransletNamePattern(transletRule.getName()));
-			transletRuleMap.putTransletRule(transletRule);
-			if(log.isTraceEnabled())
-				log.trace("add TransletRule " + transletRule);
-		} else if(responseRuleList.size() == 1) {
-			transletRule.setResponseRule(responseRuleList.get(0));
-			transletRule.determineResponseRule();
-			transletRule.setName(applyTransletNamePattern(transletRule.getName()));
-			transletRuleMap.putTransletRule(transletRule);
-
-			if(log.isTraceEnabled())
-				log.trace("add TransletRule " + transletRule);
-		} else {
-			ResponseRule defaultResponseRule = null;
-			
-			for(ResponseRule responseRule : responseRuleList) {
-				String responseName = responseRule.getName();
-				
-				if(responseName == null || responseName.length() == 0) {
-					if(defaultResponseRule != null) {
-						log.warn("ignore duplicated default response rule " + defaultResponseRule + " of transletRule " + transletRule);
-					}
-					defaultResponseRule = responseRule;
-				} else {
-					TransletRule subTransletRule = TransletRule.newSubTransletRule(transletRule, responseRule);
-					subTransletRule.determineResponseRule();
-					subTransletRule.setName(applyTransletNamePattern(subTransletRule.getName()));
-					transletRuleMap.putTransletRule(subTransletRule);
-					
-					if(log.isTraceEnabled())
-						log.trace("add sub TransletRule " + subTransletRule);
-				}
-			}
-			
-			if(defaultResponseRule != null) {
-				transletRule.setResponseRule(defaultResponseRule);
-				transletRule.determineResponseRule();
-				transletRule.setName(applyTransletNamePattern(transletRule.getName()));
-				transletRuleMap.putTransletRule(transletRule);
-				
-				if(log.isTraceEnabled())
-					log.trace("add TransletRule " + transletRule);
-			}
-		}
+		transletRuleRegistry.addTransletRule(transletRule);
 	}
 	
 	public String putBeanReference(String beanId, Object rule) {
-		if(!beanRuleMap.containsKey(beanId)) {
+		if(beanRuleRegistry != null && !beanRuleRegistry.contains(beanId)) {
 			beanReferenceInspector.putRelation(beanId, rule);
 		}
 		
