@@ -28,12 +28,6 @@ public class TransletRuleMap extends LinkedHashMap<String, TransletRule> impleme
 	/** @serial */
 	static final long serialVersionUID = -6355555002181276839L;
 
-	private boolean freezed;
-	
-	public TransletRule put(String key, TransletRule value) {
-		throw new java.lang.UnsupportedOperationException();
-	}
-	
 	/**
 	 * Adds the translet rule.
 	 * 
@@ -42,9 +36,6 @@ public class TransletRuleMap extends LinkedHashMap<String, TransletRule> impleme
 	 * @return the translet rule
 	 */
 	public TransletRule putTransletRule(TransletRule transletRule) {
-		if(freezed)
-			throw new UnsupportedOperationException("freezed transletRuleMap: " + toString());
-
 		String key;
 		
 		if(transletRule.getRestVerb() != null) {
@@ -54,14 +45,6 @@ public class TransletRuleMap extends LinkedHashMap<String, TransletRule> impleme
 		}
 		
 		return super.put(key, transletRule);
-	}
-	
-	public void addShallowTransletRule(TransletRule transletRule) {
-		super.put(Integer.toString(size()), transletRule);
-	}
-	
-	public void freeze() {
-		freezed = true;
 	}
 	
 	/* (non-Javadoc)

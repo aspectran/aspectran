@@ -58,30 +58,7 @@ import com.aspectran.core.context.builder.apon.params.RootParameters;
 import com.aspectran.core.context.builder.apon.params.TemplateParameters;
 import com.aspectran.core.context.builder.apon.params.TransformParameters;
 import com.aspectran.core.context.builder.apon.params.TransletParameters;
-import com.aspectran.core.context.rule.AspectAdviceRule;
-import com.aspectran.core.context.rule.AspectJobAdviceRule;
-import com.aspectran.core.context.rule.AspectRule;
-import com.aspectran.core.context.rule.AspectRuleMap;
-import com.aspectran.core.context.rule.BeanActionRule;
-import com.aspectran.core.context.rule.BeanRule;
-import com.aspectran.core.context.rule.BeanRuleMap;
-import com.aspectran.core.context.rule.DispatchResponseRule;
-import com.aspectran.core.context.rule.EchoActionRule;
-import com.aspectran.core.context.rule.ExceptionHandlingRule;
-import com.aspectran.core.context.rule.ForwardResponseRule;
-import com.aspectran.core.context.rule.IncludeActionRule;
-import com.aspectran.core.context.rule.ItemRule;
-import com.aspectran.core.context.rule.ItemRuleMap;
-import com.aspectran.core.context.rule.PointcutRule;
-import com.aspectran.core.context.rule.RedirectResponseRule;
-import com.aspectran.core.context.rule.RequestRule;
-import com.aspectran.core.context.rule.ResponseByContentTypeRule;
-import com.aspectran.core.context.rule.ResponseRule;
-import com.aspectran.core.context.rule.SettingsAdviceRule;
-import com.aspectran.core.context.rule.TemplateRule;
-import com.aspectran.core.context.rule.TransformRule;
-import com.aspectran.core.context.rule.TransletRule;
-import com.aspectran.core.context.rule.TransletRuleMap;
+import com.aspectran.core.context.rule.*;
 import com.aspectran.core.context.rule.type.ActionType;
 import com.aspectran.core.context.rule.type.AspectAdviceType;
 import com.aspectran.core.context.rule.type.ImportType;
@@ -161,6 +138,12 @@ public class RootAponAssembler {
 			aspectranParameters.putValue(AspectranParameters.translets, p);
 		}
 		
+		TemplateRuleMap templateRuleMap = assistant.getTemplateRuleMap();
+		for(TemplateRule templateRule : templateRuleMap) {
+			Parameters p = assembleTemplateParameters(templateRule);
+			aspectranParameters.putValue(AspectranParameters.templates, p);
+		}
+
 		List<Importable> pendingList = assistant.getImportHandler().getPendingList();
 		if(pendingList != null) {
 			for(Importable imp : pendingList) {
@@ -564,6 +547,8 @@ public class RootAponAssembler {
 	
 	public Parameters assembleTemplateParameters(TemplateRule templateRule) {
 		TemplateParameters templateParameters = new TemplateParameters();
+		templateParameters.putValue(TemplateParameters.id, templateRule.getId());
+		templateParameters.putValue(TemplateParameters.engine, templateRule.getEngine());
 		templateParameters.putValue(TemplateParameters.file, templateRule.getFile());
 		templateParameters.putValue(TemplateParameters.resource, templateRule.getResource());
 		templateParameters.putValue(TemplateParameters.url, templateRule.getUrl());

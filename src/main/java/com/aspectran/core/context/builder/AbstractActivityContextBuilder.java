@@ -15,33 +15,20 @@
  */
 package com.aspectran.core.context.builder;
 
-import java.util.List;
-
 import com.aspectran.core.activity.CoreActivity;
 import com.aspectran.core.activity.VoidActivity;
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.context.aspect.AspectAdviceRulePostRegister;
-import com.aspectran.core.context.aspect.AspectAdviceRulePreRegister;
-import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
-import com.aspectran.core.context.aspect.AspectRuleRegistry;
-import com.aspectran.core.context.aspect.InvalidPointcutPatternException;
+import com.aspectran.core.context.aspect.*;
 import com.aspectran.core.context.aspect.pointcut.Pointcut;
 import com.aspectran.core.context.aspect.pointcut.PointcutFactory;
+import com.aspectran.core.context.bean.BeanRegistry;
+import com.aspectran.core.context.bean.BeanRuleRegistry;
 import com.aspectran.core.context.bean.ContextBeanRegistry;
-import com.aspectran.core.context.bean.ScopedContextBeanRegistry;
 import com.aspectran.core.context.rule.AspectRule;
-import com.aspectran.core.context.rule.AspectRuleMap;
-import com.aspectran.core.context.rule.BeanRuleMap;
 import com.aspectran.core.context.rule.PointcutPatternRule;
 import com.aspectran.core.context.rule.PointcutRule;
-import com.aspectran.core.context.rule.TemplateRuleMap;
-import com.aspectran.core.context.rule.TransletRuleMap;
-import com.aspectran.core.context.rule.type.AspectTargetType;
-import com.aspectran.core.context.rule.type.BeanProxifierType;
-import com.aspectran.core.context.rule.type.DefaultSettingType;
-import com.aspectran.core.context.rule.type.ImportFileType;
-import com.aspectran.core.context.rule.type.JoinpointScopeType;
+import com.aspectran.core.context.rule.type.*;
 import com.aspectran.core.context.template.TemplateRuleRegistry;
 import com.aspectran.core.context.translet.TransletRuleRegistry;
 import com.aspectran.core.util.ClassDescriptor;
@@ -49,6 +36,8 @@ import com.aspectran.core.util.MethodUtils;
 import com.aspectran.core.util.ResourceUtils;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
+
+import java.util.List;
 
 /**
  * <p>Created: 2008. 06. 14 오후 8:53:29</p>
@@ -62,32 +51,29 @@ public abstract class AbstractActivityContextBuilder extends ContextBuilderAssis
 	}
 	
 	protected ActivityContext makeActivityContext(ApplicationAdapter applicationAdapter) {
-		AspectRuleMap aspectRuleMap = getAspectRuleMap();
-		BeanRuleMap beanRuleMap = getBeanRuleMap();
-		TransletRuleMap transletRuleMap = getTransletRuleMap();
-		TemplateRuleMap templateRuleMap = getTemplateRuleMap();
+		AspectRuleRegistry aspectRuleRegistry = getAspectRuleRegistry();
+		BeanRuleRegistry beanRuleRegistry = getBeanRuleRegistry();
+		TransletRuleRegistry transletRuleRegistry = getTransletRuleRegistry();
+		TemplateRuleRegistry templateRuleRegistry = getTemplateRuleRegistry();
 
 		BeanReferenceInspector beanReferenceInspector = getBeanReferenceInspector();
-		beanReferenceInspector.inspect(beanRuleMap);
+		beanReferenceInspector.inspect(beanRuleRegistry);
 		
 		ActivityContext context = new ActivityContext(applicationAdapter);
 
-		AspectRuleRegistry aspectRuleRegistry = makeAspectRuleRegistry(aspectRuleMap, beanRuleMap, transletRuleMap);
+		initAspectRuleRegistry(aspectRuleRegistry, beanRuleRegistry, transletRuleRegistry);
 		context.setAspectRuleRegistry(aspectRuleRegistry);
 
 		BeanProxifierType beanProxifierType = BeanProxifierType.valueOf((String)getSetting(DefaultSettingType.BEAN_PROXIFIER));
-		ContextBeanRegistry contextBeanRegistry = makeContextBeanRegistry(beanRuleMap, beanProxifierType);
-		context.setContextBeanRegistry(contextBeanRegistry);
+		BeanRegistry beanRegistry = makeBeanRegistry(beanRuleRegistry, beanProxifierType);
+		context.setBeanRegistry(beanRegistry);
 		
-		TransletRuleRegistry transletRuleRegistry = makeTransletRuleRegistry(transletRuleMap);
 		context.setTransletRuleRegistry(transletRuleRegistry);
-
-		TemplateRuleRegistry templateRuleRegistry = makeTemplateRuleRegistry(templateRuleMap);
 		context.setTemplateRuleRegistry(templateRuleRegistry);
 		
 		CoreActivity activity = new VoidActivity(context);
 		context.setCurrentActivity(activity);
-		contextBeanRegistry.initialize(context);
+		beanRegistry.initialize(context);
 		context.removeCurrentActivity();
 
 		ClassDescriptor.clearCache();
@@ -96,10 +82,10 @@ public abstract class AbstractActivityContextBuilder extends ContextBuilderAssis
 		return context;
 	}
 	
-	protected AspectRuleRegistry makeAspectRuleRegistry(AspectRuleMap aspectRuleMap, BeanRuleMap beanRuleMap, TransletRuleMap transletRuleMap) {
+	protected void initAspectRuleRegistry(AspectRuleRegistry aspectRuleRegistry, BeanRuleRegistry beanRuleRegistry, TransletRuleRegistry transletRuleRegistry) {
 		AspectAdviceRulePostRegister sessionScopeAspectAdviceRulePostRegister = new AspectAdviceRulePostRegister();
 		
-		for(AspectRule aspectRule : aspectRuleMap) {
+		for(AspectRule aspectRule : aspectRuleRegistry.getAspectRules()) {
 			if(aspectRule.getAspectTargetType() == AspectTargetType.TRANSLET) {
 				PointcutRule pointcutRule = aspectRule.getPointcutRule();
 				
@@ -114,15 +100,15 @@ public abstract class AbstractActivityContextBuilder extends ContextBuilderAssis
 			}
 		}
 		
-		AspectAdviceRulePreRegister aspectAdviceRuleRegister = new AspectAdviceRulePreRegister(aspectRuleMap);
-		aspectAdviceRuleRegister.register(beanRuleMap);
-		aspectAdviceRuleRegister.register(transletRuleMap);
+		AspectAdviceRulePreRegister aspectAdviceRuleRegister = new AspectAdviceRulePreRegister(aspectRuleRegistry);
+		aspectAdviceRuleRegister.register(beanRuleRegistry);
+		aspectAdviceRuleRegister.register(transletRuleRegistry);
 		
 		// check offending pointcut pattern
 		boolean pointcutPatternVerifiable = isPointcutPatternVerifiable();
 		int offendingPointcutPatterns = 0;
 		
-		for(AspectRule aspectRule : aspectRuleMap) {
+		for(AspectRule aspectRule : aspectRuleRegistry.getAspectRules()) {
 			AspectTargetType aspectTargetType = aspectRule.getAspectTargetType();
 
 			if(aspectTargetType == AspectTargetType.TRANSLET) {
@@ -173,33 +159,15 @@ public abstract class AbstractActivityContextBuilder extends ContextBuilderAssis
 			}
 		}
 		
-		AspectRuleRegistry aspectRuleRegistry = new AspectRuleRegistry(aspectRuleMap);
-		
 		AspectAdviceRuleRegistry sessionScopeAspectAdviceRuleRegistry = sessionScopeAspectAdviceRulePostRegister.getAspectAdviceRuleRegistry();
 		if(sessionScopeAspectAdviceRuleRegistry != null)
 			aspectRuleRegistry.setSessionAspectAdviceRuleRegistry(sessionScopeAspectAdviceRuleRegistry);
-		
-		return aspectRuleRegistry;
 	}
 	
-	protected ContextBeanRegistry makeContextBeanRegistry(BeanRuleMap beanRuleMap, BeanProxifierType beanProxifierType) {
-		beanRuleMap.freeze();
-		
-		return new ScopedContextBeanRegistry(beanRuleMap, beanProxifierType);
+	protected BeanRegistry makeBeanRegistry(BeanRuleRegistry beanRuleRegistry, BeanProxifierType beanProxifierType) {
+		return new ContextBeanRegistry(beanRuleRegistry, beanProxifierType);
 	}
 
-	protected TransletRuleRegistry makeTransletRuleRegistry(TransletRuleMap transletRuleMap) {
-		transletRuleMap.freeze();
-		
-		return new TransletRuleRegistry(transletRuleMap);
-	}
-	
-	protected TemplateRuleRegistry makeTemplateRuleRegistry(TemplateRuleMap templateRuleMap) {
-		templateRuleMap.freeze();
-		
-		return new TemplateRuleRegistry(templateRuleMap);
-	}
-	
 	protected Importable makeImportable(String rootContext) {
 		ImportFileType importFileType = rootContext.toLowerCase().endsWith(".apon") ? ImportFileType.APON : ImportFileType.XML;
 		return makeImportable(rootContext, importFileType);

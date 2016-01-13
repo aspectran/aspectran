@@ -29,6 +29,7 @@ public class AspectranParameters extends AbstractParameters implements Parameter
 	public static final ParameterDefine aspects;
 	public static final ParameterDefine beans;
 	public static final ParameterDefine translets;
+	public static final ParameterDefine templates;
 	public static final ParameterDefine imports;
 	
 	private static final ParameterDefine[] parameterDefines;
@@ -40,6 +41,7 @@ public class AspectranParameters extends AbstractParameters implements Parameter
 		aspects = new ParameterDefine("aspect", AspectParameters.class, true, true);
 		beans = new ParameterDefine("bean", BeanParameters.class, true, true);
 		translets = new ParameterDefine("translet", TransletParameters.class, true, true);
+		templates = new ParameterDefine("template", TemplateParameters.class, true, true);
 		imports = new ParameterDefine("import", ImportParameters.class, true, true);
 		
 		parameterDefines = new ParameterDefine[] {
@@ -49,6 +51,7 @@ public class AspectranParameters extends AbstractParameters implements Parameter
 				aspects,
 				beans,
 				translets,
+				templates,
 				imports
 			};
 	}

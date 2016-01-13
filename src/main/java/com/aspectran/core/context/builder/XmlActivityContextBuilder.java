@@ -27,7 +27,7 @@ import com.aspectran.core.context.rule.type.ImportFileType;
 public class XmlActivityContextBuilder extends AbstractActivityContextBuilder implements ActivityContextBuilder {
 	
 	public XmlActivityContextBuilder(ApplicationAdapter applicationAdapter) {
-		setApplicationAdapter(applicationAdapter);
+		super(applicationAdapter);
 	}
 
 	public ActivityContext build(String rootContext) throws ActivityContextBuilderException {

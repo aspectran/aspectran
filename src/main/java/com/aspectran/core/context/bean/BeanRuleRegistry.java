@@ -1,7 +1,24 @@
+/**
+ *    Copyright 2009-2015 the original author or authors.
+ *
+ *    Licensed under the Apache License, Version 2.0 (the "License");
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
 package com.aspectran.core.context.bean;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.aspectran.core.context.bean.scan.BeanClassScanner;
@@ -13,6 +30,11 @@ import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 import com.aspectran.core.util.wildcard.WildcardPattern;
 
+/**
+ * The type Bean rule registry.
+ *
+ * @since 2.0.0
+ */
 public class BeanRuleRegistry {
 	
 	private final Log log = LogFactory.getLog(BeanRuleRegistry.class);
@@ -46,7 +68,11 @@ public class BeanRuleRegistry {
 	public boolean contains(Class<?> classType) {
 		return classBeanRuleMap.containsKey(classType);
 	}
-	
+
+	public Collection<BeanRule> getBeanRules() {
+		return beanRuleMap.values();
+	}
+
 	/**
 	 * Adds the bean rule.
 	 *
@@ -122,7 +148,11 @@ public class BeanRuleRegistry {
 				log.trace("add BeanRule " + beanRule);
 		}
 	}
-	
+
+	public BeanRuleMap getBeanRuleMap() {
+		return beanRuleMap;
+	}
+
 	public void clear() {
 		beanRuleMap.clear();
 		classBeanRuleMap.clear();

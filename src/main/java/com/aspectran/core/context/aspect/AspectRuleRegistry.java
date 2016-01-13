@@ -20,6 +20,8 @@ import com.aspectran.core.context.rule.AspectRuleMap;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
+import java.util.Collection;
+
 /**
  * The Class AspectRuleRegistry.
  */
@@ -46,6 +48,21 @@ public class AspectRuleRegistry {
 		return aspectRuleMap.get(aspectId);
 	}
 
+	public void addAspectRule(AspectRule aspectRule) {
+		aspectRuleMap.putAspectRule(aspectRule);
+		
+		if(log.isTraceEnabled())
+			log.trace("add AspectRule " + aspectRule);
+	}
+
+	public Collection<AspectRule> getAspectRules() {
+		return aspectRuleMap.values();
+	}
+
+	public void clear() {
+		aspectRuleMap.clear();
+	}
+
 	public AspectAdviceRuleRegistry getSessionAspectAdviceRuleRegistry() {
 		return sessionAspectAdviceRuleRegistry;
 	}
@@ -54,15 +71,4 @@ public class AspectRuleRegistry {
 		this.sessionAspectAdviceRuleRegistry = sessionAspectAdviceRuleRegistry;
 	}
 
-	public void addAspectRule(AspectRule aspectRule) {
-		aspectRuleMap.putAspectRule(aspectRule);
-		
-		if(log.isTraceEnabled())
-			log.trace("add AspectRule " + aspectRule);
-	}
-
-	public void clear() {
-		aspectRuleMap.clear();
-	}
-	
 }

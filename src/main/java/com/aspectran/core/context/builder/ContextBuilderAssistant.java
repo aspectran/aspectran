@@ -24,12 +24,9 @@ import com.aspectran.core.activity.Translet;
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.aspect.AspectRuleRegistry;
 import com.aspectran.core.context.bean.BeanRuleRegistry;
-import com.aspectran.core.context.rule.AspectRule;
-import com.aspectran.core.context.rule.BeanRule;
-import com.aspectran.core.context.rule.TemplateRule;
-import com.aspectran.core.context.rule.TemplateRuleMap;
-import com.aspectran.core.context.rule.TransletRule;
+import com.aspectran.core.context.rule.*;
 import com.aspectran.core.context.rule.type.DefaultSettingType;
+import com.aspectran.core.context.template.TemplateRuleRegistry;
 import com.aspectran.core.context.translet.TransletRuleRegistry;
 import com.aspectran.core.util.ArrayStack;
 
@@ -60,7 +57,7 @@ public class ContextBuilderAssistant {
 	
 	private final BeanRuleRegistry beanRuleRegistry;
 
-	private final TemplateRuleMap templateRuleMap;
+	private final TemplateRuleRegistry templateRuleRegistry;
 
 	private final TransletRuleRegistry transletRuleRegistry;
 	
@@ -75,7 +72,7 @@ public class ContextBuilderAssistant {
 		
 		aspectRuleRegistry = new AspectRuleRegistry();
 		beanRuleRegistry = new BeanRuleRegistry(classLoader);
-		templateRuleMap = new TemplateRuleMap();
+		templateRuleRegistry = new TemplateRuleRegistry();
 		transletRuleRegistry = new TransletRuleRegistry(applicationAdapter);
 		transletRuleRegistry.setAssistantLocal(assistantLocal);
 	}
@@ -83,7 +80,7 @@ public class ContextBuilderAssistant {
 	protected ContextBuilderAssistant() {
 		this.aspectRuleRegistry = null;
 		this.beanRuleRegistry = null;
-		this.templateRuleMap = null;
+		this.templateRuleRegistry = null;
 		this.transletRuleRegistry = null;
 	}
 	
@@ -376,15 +373,6 @@ public class ContextBuilderAssistant {
 	}
 
 	/**
-	 * Gets the aspect rule map.
-	 *
-	 * @return the aspect rule map
-	 */
-	public AspectRuleRegistry getAspectRuleRegistry() {
-		return aspectRuleRegistry;
-	}
-	
-	/**
 	 * Adds the aspect rule.
 	 *
 	 * @param aspectRule the aspect rule
@@ -393,15 +381,6 @@ public class ContextBuilderAssistant {
 		aspectRuleRegistry.addAspectRule(aspectRule);
 	}
 
-	/**
-	 * Gets the bean rule map.
-	 * 
-	 * @return the bean rule map
-	 */
-	public BeanRuleRegistry getBeanRuleRegistry() {
-		return beanRuleRegistry;
-	}
-	
 	/**
 	 * Adds the bean rule.
 	 *
@@ -414,22 +393,97 @@ public class ContextBuilderAssistant {
 		beanRuleRegistry.addBeanRule(beanRule);
 	}
 
-	public TemplateRuleMap getTemplateRuleMap() {
-		return templateRuleMap;
+	/**
+	 * Add translet rule.
+	 *
+	 * @param transletRule the translet rule
+	 * @throws CloneNotSupportedException the clone not supported exception
+	 */
+	public void addTransletRule(TransletRule transletRule) throws CloneNotSupportedException {
+		transletRuleRegistry.addTransletRule(transletRule);
 	}
 
+	/**
+	 * Add template rule.
+	 *
+	 * @param templateRule the template rule
+	 */
 	public void addTemplateRule(TemplateRule templateRule) {
-		templateRuleMap.putTemplateRule(templateRule);
+		templateRuleRegistry.addTemplateRule(templateRule);
 	}
 
+	/**
+	 * Gets aspect rule registry.
+	 *
+	 * @return the aspect rule registry
+	 */
+	public AspectRuleRegistry getAspectRuleRegistry() {
+		return aspectRuleRegistry;
+	}
+
+	/**
+	 * Gets bean rule registry.
+	 *
+	 * @return the bean rule registry
+	 */
+	public BeanRuleRegistry getBeanRuleRegistry() {
+		return beanRuleRegistry;
+	}
+
+	/**
+	 * Gets translet rule registry.
+	 *
+	 * @return the translet rule registry
+	 */
 	public TransletRuleRegistry getTransletRuleRegistry() {
 		return transletRuleRegistry;
 	}
 
-	public void addTransletRule(TransletRule transletRule) throws CloneNotSupportedException {
-		transletRuleRegistry.addTransletRule(transletRule);
+	/**
+	 * Gets template rule registry.
+	 *
+	 * @return the template rule registry
+	 */
+	public TemplateRuleRegistry getTemplateRuleRegistry() {
+		return getTemplateRuleRegistry();
 	}
-	
+
+	/**
+	 * Gets aspect rule map.
+	 *
+	 * @return the aspect rule map
+	 */
+	public AspectRuleMap getAspectRuleMap() {
+		return aspectRuleRegistry.getAspectRuleMap();
+	}
+
+	/**
+	 * Gets bean rule map.
+	 *
+	 * @return the bean rule map
+	 */
+	public BeanRuleMap getBeanRuleMap() {
+		return beanRuleRegistry.getBeanRuleMap();
+	}
+
+	/**
+	 * Gets template rule map.
+	 *
+	 * @return the template rule map
+	 */
+	public TemplateRuleMap getTemplateRuleMap() {
+		return templateRuleRegistry.getTemplateRuleMap();
+	}
+
+	/**
+	 * Gets translet rule map.
+	 *
+	 * @return the translet rule map
+	 */
+	public TransletRuleMap getTransletRuleMap() {
+		return transletRuleRegistry.getTransletRuleMap();
+	}
+
 	public String putBeanReference(String beanId, Object rule) {
 		if(beanRuleRegistry != null && !beanRuleRegistry.contains(beanId)) {
 			beanReferenceInspector.putRelation(beanId, rule);

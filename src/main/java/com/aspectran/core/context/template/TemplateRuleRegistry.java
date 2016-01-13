@@ -1,17 +1,35 @@
+/**
+ *    Copyright 2009-2015 the original author or authors.
+ *
+ *    Licensed under the Apache License, Version 2.0 (the "License");
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
 package com.aspectran.core.context.template;
 
 import com.aspectran.core.context.rule.TemplateRule;
 import com.aspectran.core.context.rule.TemplateRuleMap;
+import com.aspectran.core.util.logging.Log;
+import com.aspectran.core.util.logging.LogFactory;
 
 /**
  * Created by gulendol on 2016. 1. 11..
  */
 public class TemplateRuleRegistry {
 
-    private TemplateRuleMap templateRuleMap;
+    private final Log log = LogFactory.getLog(TemplateRuleRegistry.class);
 
-    public TemplateRuleRegistry(TemplateRuleMap templateRuleMap) {
-        this.templateRuleMap = templateRuleMap;
+    private TemplateRuleMap templateRuleMap = new TemplateRuleMap();
+
+    public TemplateRuleRegistry() {
     }
 
     public TemplateRuleMap getTemplateRuleMap() {
@@ -26,11 +44,15 @@ public class TemplateRuleRegistry {
         return templateRuleMap.get(templateId);
     }
 
-    public void destroy() {
-        if(templateRuleMap != null) {
-            templateRuleMap.clear();
-            templateRuleMap = null;
-        }
+    public void addTemplateRule(TemplateRule templateRule) {
+        templateRuleMap.putTemplateRule(templateRule);
+
+        if(log.isTraceEnabled())
+            log.trace("add TemplateRule " + templateRule);
+    }
+
+    public void clear() {
+        templateRuleMap.clear();
     }
 
 }

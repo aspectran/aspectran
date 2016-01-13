@@ -15,10 +15,7 @@
  */
 package com.aspectran.core.context.rule;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * The Class BeanRuleMap.
@@ -29,23 +26,16 @@ public class BeanRuleMap extends LinkedHashMap<String, BeanRule> implements Iter
 
 	/** @serial */
 	static final long serialVersionUID = 6582559285464575704L;
-	
-	private boolean freezed;
-	
-	public BeanRule put(String beanId, BeanRule beanRule) {
-		if(freezed)
-			throw new UnsupportedOperationException("freezed BeanRuleMap: " + toString());
 
-		BeanRule br = get(beanId);
-		
-		if(br != null) {
-			if(br.isImportant()) {
-				return null;
-			} else {
-				beanRule.setOverrided(true);
-			}
-		}
-		
+	private Set<String> importantBeanIdSet = new HashSet<String>();
+
+	public BeanRule put(String beanId, BeanRule beanRule) {
+		if(importantBeanIdSet.contains(beanId))
+			return null;
+
+		if(beanRule.isImportant())
+			importantBeanIdSet.add(beanRule.getId());
+
 		return super.put(beanId, beanRule);
 	}
 
@@ -59,10 +49,6 @@ public class BeanRuleMap extends LinkedHashMap<String, BeanRule> implements Iter
 		return put(beanRule.getId(), beanRule);
 	}
 	
-	public void freeze() {
-		freezed = true;
-	}
-	
 	/* (non-Javadoc)
 	 * @see java.lang.Iterable#iterator()
 	 */
@@ -70,21 +56,4 @@ public class BeanRuleMap extends LinkedHashMap<String, BeanRule> implements Iter
 		return this.values().iterator();
 	}
 
-	/**
-	 * Gets the class bean rule map.
-	 *
-	 * @return the class bean rule map
-	 */
-	public Map<Class<?>, BeanRule> getClassBeanRuleMap() {
-		Map<Class<?>, BeanRule> classBeanRuleMap = new HashMap<Class<?>, BeanRule>();
-		
-		for(BeanRule beanRule : values()) {
-			if(beanRule.getId().equals(beanRule.getBeanClass().getName())) {
-				classBeanRuleMap.put(beanRule.getBeanClass(), beanRule);
-			}
-		}
-		
-		return classBeanRuleMap;
-	}
-	
 }

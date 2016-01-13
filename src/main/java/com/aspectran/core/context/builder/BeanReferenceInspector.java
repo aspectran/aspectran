@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.aspectran.core.context.bean.BeanRuleRegistry;
 import com.aspectran.core.context.rule.*;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
@@ -50,13 +51,13 @@ public class BeanReferenceInspector {
 		}
 	}
 	
-	public void inspect(BeanRuleMap beanRuleMap) {
+	public void inspect(BeanRuleRegistry beanRuleRegistry) {
 		List<String> unknownBeanIdList = new ArrayList<String>();
 		
 		for(Map.Entry<String, Set<Object>> entry : relationMap.entrySet()) {
 			String beanId = entry.getKey();
 
-			if(!beanRuleMap.containsKey(beanId)) {
+			if(!beanRuleRegistry.contains(beanId)) {
 				unknownBeanIdList.add(beanId);
 				
 				Set<Object> set = entry.getValue();
