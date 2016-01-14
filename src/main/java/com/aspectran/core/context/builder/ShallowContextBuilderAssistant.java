@@ -33,13 +33,13 @@ import com.aspectran.core.context.rule.TransletRuleMap;
  */
 public class ShallowContextBuilderAssistant extends ContextBuilderAssistant {
 
-	protected final AspectRuleMap aspectRuleMap = new AspectRuleMap();
+	private final AspectRuleMap aspectRuleMap = new AspectRuleMap();
 	
-	protected final BeanRuleMap beanRuleMap = new BeanRuleMap();
+	private final BeanRuleMap beanRuleMap = new BeanRuleMap();
 
-	protected final TemplateRuleMap templateRuleMap = new TemplateRuleMap();
+	private final TemplateRuleMap templateRuleMap = new TemplateRuleMap();
 
-	protected final TransletRuleMap transletRuleMap = new TransletRuleMap();
+	private final TransletRuleMap transletRuleMap = new TransletRuleMap();
 	
 	public ShallowContextBuilderAssistant() {
 		setImportHandler(new ShallowImportHandler());
@@ -77,7 +77,7 @@ public class ShallowContextBuilderAssistant extends ContextBuilderAssistant {
 
 	@Override
 	public void addTemplateRule(TemplateRule templateRule) {
-		templateRuleMap.put(Integer.toString(transletRuleMap.size()), templateRule);
+		templateRuleMap.put(Integer.toString(templateRuleMap.size()), templateRule);
 	}
 
 	@Override

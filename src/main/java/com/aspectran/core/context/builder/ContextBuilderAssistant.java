@@ -72,16 +72,16 @@ public class ContextBuilderAssistant {
 		
 		aspectRuleRegistry = new AspectRuleRegistry();
 		beanRuleRegistry = new BeanRuleRegistry(classLoader);
-		templateRuleRegistry = new TemplateRuleRegistry();
 		transletRuleRegistry = new TransletRuleRegistry(applicationAdapter);
 		transletRuleRegistry.setAssistantLocal(assistantLocal);
+		templateRuleRegistry = new TemplateRuleRegistry();
 	}
 	
 	protected ContextBuilderAssistant() {
 		this.aspectRuleRegistry = null;
 		this.beanRuleRegistry = null;
-		this.templateRuleRegistry = null;
 		this.transletRuleRegistry = null;
+		this.templateRuleRegistry = null;
 	}
 	
 	public ApplicationAdapter getApplicationAdapter() {

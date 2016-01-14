@@ -15,16 +15,16 @@
  */
 package com.aspectran.core.context.template.engine.freemaker;
 
-import com.aspectran.core.context.bean.ablility.FactoryBean;
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
-import freemarker.template.Configuration;
-import freemarker.template.SimpleHash;
-import freemarker.template.TemplateException;
-
 import java.io.IOException;
 import java.util.Map;
 import java.util.Properties;
+
+import com.aspectran.core.util.logging.Log;
+import com.aspectran.core.util.logging.LogFactory;
+
+import freemarker.template.Configuration;
+import freemarker.template.SimpleHash;
+import freemarker.template.TemplateException;
 
 /**
  * Factory that configures a FreeMarker Configuration.

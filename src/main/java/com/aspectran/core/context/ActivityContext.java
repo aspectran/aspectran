@@ -19,7 +19,7 @@ import com.aspectran.core.activity.Activity;
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.aspect.AspectRuleRegistry;
 import com.aspectran.core.context.bean.BeanRegistry;
-import com.aspectran.core.context.template.TemplateRuleRegistry;
+import com.aspectran.core.context.template.TemplateProcessor;
 import com.aspectran.core.context.translet.TransletRuleRegistry;
 
 /**
@@ -39,7 +39,7 @@ public class ActivityContext {
 
 	private TransletRuleRegistry transletRuleRegistry;
 	
-	private TemplateRuleRegistry templateRuleRegistry;
+	private TemplateProcessor templateProcessor;
 	
 	/**
 	 * Instantiates a new ActivityContext.
@@ -104,21 +104,21 @@ public class ActivityContext {
 	}
 	
 	/**
-	 * Gets the template rule registry.
+	 * Gets the template processor.
 	 *
-	 * @return the template rule registry
+	 * @return the template processor
 	 */
-	public TemplateRuleRegistry getTemplateRuleRegistry() {
-		return templateRuleRegistry;
+	public TemplateProcessor gettemplateProcessor() {
+		return templateProcessor;
 	}
 
 	/**
-	 * Sets the template rule registry.
+	 * Sets the template processor.
 	 *
-	 * @param templateRuleRegistry the new template rule registry
+	 * @param templateProcessor the new template processor
 	 */
-	public void setTemplateRuleRegistry(TemplateRuleRegistry templateRuleRegistry) {
-		this.templateRuleRegistry = templateRuleRegistry;
+	public void setTemplateProcessor(TemplateProcessor templateProcessor) {
+		this.templateProcessor = templateProcessor;
 	}
 
 	/**
@@ -163,9 +163,9 @@ public class ActivityContext {
 			transletRuleRegistry.clear();
 			transletRuleRegistry = null;
 		}
-		if(templateRuleRegistry != null) {
-			templateRuleRegistry.clear();
-			templateRuleRegistry = null;
+		if(templateProcessor != null) {
+			templateProcessor.destroy();
+			templateProcessor = null;
 		}
 	}
 	
@@ -178,7 +178,7 @@ public class ActivityContext {
 		sb.append(", aspectRuleRegistry=").append(aspectRuleRegistry);
 		sb.append(", beanRegistry=").append(beanRegistry);
 		sb.append(", transletRuleRegistry=").append(transletRuleRegistry);
-		sb.append(", templateRuleRegistry=").append(templateRuleRegistry);
+		sb.append(", templateProcessor=").append(templateProcessor);
 		sb.append("}");
 		
 		return sb.toString();

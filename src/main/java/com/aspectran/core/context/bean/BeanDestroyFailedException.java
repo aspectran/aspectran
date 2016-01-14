@@ -26,7 +26,7 @@ public class BeanDestroyFailedException extends BeanRuleException {
 	private static final long serialVersionUID = -2416583532228763870L;
 	
 	/**
-	 * Create a new BeanInstantiationException.
+	 * Create a new BeanDestroyFailedException.
 	 *
 	 * @param beanRule the bean rule
 	 */
@@ -35,7 +35,7 @@ public class BeanDestroyFailedException extends BeanRuleException {
 	}
 
 	/**
-	 * Create a new BeanInstantiationException.
+	 * Create a new BeanDestroyFailedException.
 	 *
 	 * @param beanRule the bean rule
 	 * @param msg The detail message
@@ -45,7 +45,7 @@ public class BeanDestroyFailedException extends BeanRuleException {
 	}
 
 	/**
-	 * Create a new BeanInstantiationException.
+	 * Create a new BeanDestroyFailedException.
 	 *
 	 * @param beanRule the bean rule
 	 * @param cause the root cause
@@ -55,7 +55,7 @@ public class BeanDestroyFailedException extends BeanRuleException {
 	}
 
 	/**
-	 * Create a new BeanInstantiationException.
+	 * Create a new BeanDestroyFailedException.
 	 *
 	 * @param beanRule the bean rule
 	 * @param msg The detail message

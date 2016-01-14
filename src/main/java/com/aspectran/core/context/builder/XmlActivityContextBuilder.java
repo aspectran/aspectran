@@ -30,7 +30,7 @@ public class XmlActivityContextBuilder extends AbstractActivityContextBuilder im
 		super(applicationAdapter);
 	}
 
-	public ActivityContext build(String rootContext) throws ActivityContextBuilderException {
+	public ActivityContext build(String rootContext) {
 		try {
 			if(rootContext == null)
 				throw new IllegalArgumentException("rootContext must not be null");
@@ -45,7 +45,7 @@ public class XmlActivityContextBuilder extends AbstractActivityContextBuilder im
 			
 			return aspectranContext;
 		} catch(Exception e) {
-			throw new ActivityContextBuilderException("XmlActivityContext build failed. rootContext: " + rootContext, e);
+			throw new ActivityContextBuilderException("Failed to build a XML Activity Context: " + rootContext, e);
 		}
 	}
 	

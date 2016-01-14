@@ -18,7 +18,6 @@ package com.aspectran.core.context.bean;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import com.aspectran.core.context.bean.scan.BeanClassScanner;
@@ -53,16 +52,16 @@ public class BeanRuleRegistry {
 		this.classLoader = classLoader;
 	}
 
-	public BeanRule getBeanRule(String id) {
-		return beanRuleMap.get(id);
+	public BeanRule getBeanRule(String beanId) {
+		return beanRuleMap.get(beanId);
 	}
 	
 	public BeanRule getBeanRule(Class<?> classType) {
 		return classBeanRuleMap.get(classType);
 	}
 	
-	public boolean contains(String id) {
-		return beanRuleMap.containsKey(id);
+	public boolean contains(String beanId) {
+		return beanRuleMap.containsKey(beanId);
 	}
 	
 	public boolean contains(Class<?> classType) {

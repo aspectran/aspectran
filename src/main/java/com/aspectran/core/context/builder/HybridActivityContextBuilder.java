@@ -36,7 +36,7 @@ public class HybridActivityContextBuilder extends AbstractActivityContextBuilder
 		this.encoding = encoding;
 	}
 
-	public ActivityContext build(String rootContext) throws ActivityContextBuilderException {
+	public ActivityContext build(String rootContext) {
 		try {
 			if(rootContext == null)
 				throw new IllegalArgumentException("rootContext must not be null");
@@ -51,7 +51,7 @@ public class HybridActivityContextBuilder extends AbstractActivityContextBuilder
 
 			return aspectranContext;
 		} catch(Exception e) {
-			throw new ActivityContextBuilderException("HybridActivityContext build failed. rootContext: " + rootContext, e);
+			throw new ActivityContextBuilderException("Failed to build a Hybrid Activity Context: " + rootContext, e);
 		}
 	}
 

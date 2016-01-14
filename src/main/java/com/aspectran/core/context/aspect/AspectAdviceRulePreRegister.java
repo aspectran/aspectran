@@ -217,18 +217,7 @@ public class AspectAdviceRulePreRegister extends AspectAdviceRuleRegister {
 		
 		register(aspectAdviceRuleRegistry, aspectRule);
 	}
-/*	
-	protected void register(Executable action, AspectRule aspectRule) {
-		AspectAdviceRuleRegistry aspectAdviceRuleRegistry = action.getAspectAdviceRuleRegistry();
-		
-		if(aspectAdviceRuleRegistry == null) {
-			aspectAdviceRuleRegistry = new AspectAdviceRuleRegistry();
-			action.setAspectAdviceRuleRegistry(aspectAdviceRuleRegistry);
-		}
-		
-		register(aspectAdviceRuleRegistry, aspectRule);
-	}
-*/
+
 	private void countMatchedTranslet(Pointcut pointcut, String transletName) {
 		List<PointcutPatternRule> pointcutPatternRuleList = pointcut.getPointcutPatternRuleList();
 		

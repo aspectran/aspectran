@@ -15,17 +15,15 @@
  */
 package com.aspectran.core.context.template;
 
+import java.io.Reader;
+import java.io.Writer;
+import java.util.Map;
+
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.context.bean.BeanDestroyFailedException;
-import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.TemplateRule;
-import com.aspectran.core.context.rule.type.ScopeType;
-import com.aspectran.core.util.MethodUtils;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
-
-import java.util.Collection;
 
 /**
  * Created by gulendol on 2016. 1. 14..
@@ -48,6 +46,20 @@ public class ContextTemplateProcessor implements TemplateProcessor {
         return templateRuleRegistry;
     }
 
+    public void process(String templateId, Reader reader, Writer writer) {
+    	Activity activity = context.getCurrentActivity();
+    	
+    	
+    }
+    
+    public void process(String templateId, Map<String, String> dataModel, Reader reader, Writer writer) {
+    	
+    }
+    
+    private void process(TemplateRule templateRule, Map<String, String> dataModel, Reader reader, Writer writer) {
+    	
+    }
+    
     public synchronized void initialize(ActivityContext context) {
         if(initialized) {
             throw new UnsupportedOperationException("BeanFactory has already been initialized.");
@@ -69,6 +81,5 @@ public class ContextTemplateProcessor implements TemplateProcessor {
 
         log.info("ContextTemplateProcessor has been destroyed successfully.");
     }
-
 
 }

@@ -15,8 +15,15 @@
  */
 package com.aspectran.core.context.template;
 
+import com.aspectran.core.context.ActivityContext;
+
 /**
  * Created by gulendol on 2016. 1. 14..
  */
 public interface TemplateProcessor {
+	
+	public void initialize(ActivityContext context);
+	
+	public void destroy();
+	
 }

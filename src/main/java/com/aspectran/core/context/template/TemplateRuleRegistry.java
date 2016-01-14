@@ -27,7 +27,7 @@ public class TemplateRuleRegistry {
 
     private final Log log = LogFactory.getLog(TemplateRuleRegistry.class);
 
-    private TemplateRuleMap templateRuleMap = new TemplateRuleMap();
+    private final TemplateRuleMap templateRuleMap = new TemplateRuleMap();
 
     public TemplateRuleRegistry() {
     }

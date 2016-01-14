@@ -37,7 +37,7 @@ public class AponActivityContextBuilder extends AbstractActivityContextBuilder i
 		this.encoding = encoding;
 	}
 
-	public ActivityContext build(String rootContext) throws ActivityContextBuilderException {
+	public ActivityContext build(String rootContext) {
 		try {
 			if(rootContext == null)
 				throw new IllegalArgumentException("rootContext must not be null");
@@ -52,7 +52,7 @@ public class AponActivityContextBuilder extends AbstractActivityContextBuilder i
 			
 			return aspectranContext;
 		} catch(Exception e) {
-			throw new ActivityContextBuilderException("AponActivityContext build failed. rootContext: " + rootContext, e);
+			throw new ActivityContextBuilderException("Failed to build a APON Activity Context: " + rootContext, e);
 		}
 	}
 	

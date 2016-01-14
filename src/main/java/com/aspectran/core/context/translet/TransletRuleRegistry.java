@@ -26,7 +26,6 @@ import com.aspectran.core.context.builder.AssistantLocal;
 import com.aspectran.core.context.builder.DefaultSettings;
 import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.expr.token.Tokenizer;
-import com.aspectran.core.context.loader.AspectranClassLoader;
 import com.aspectran.core.context.rule.RequestRule;
 import com.aspectran.core.context.rule.ResponseRule;
 import com.aspectran.core.context.rule.TransletRule;
@@ -126,7 +125,7 @@ public class TransletRuleRegistry {
 		}
 		
 		if(transletRule.getPath() != null) {
-			TemplateFileScanner scanner = new TemplateFileScanner(getApplicationBasePath(), getClassLoader());
+			TemplateFileScanner scanner = new TemplateFileScanner(applicationAdapter.getApplicationBasePath(), applicationAdapter.getClassLoader());
 			if(transletRule.getFilterParameters() != null)
 				scanner.setFilterParameters(transletRule.getFilterParameters());
 			if(transletRule.getMaskPattern() != null)
@@ -346,22 +345,6 @@ public class TransletRuleRegistry {
 		}
 		
 		return true;
-	}
-	
-	private ClassLoader getClassLoader() {
-		ClassLoader classLoader = applicationAdapter.getClassLoader();
-		
-		if(classLoader == null)
-			return AspectranClassLoader.getDefaultClassLoader();
-		else
-			return classLoader;
-	}
-	
-	private String getApplicationBasePath() {
-		if(applicationAdapter != null)
-			return applicationAdapter.getApplicationBasePath();
-		
-		return null;
 	}
 
 }

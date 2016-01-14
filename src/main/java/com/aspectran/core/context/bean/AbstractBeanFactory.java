@@ -22,6 +22,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 import com.aspectran.core.activity.Activity;
+import com.aspectran.core.activity.VoidActivity;
 import com.aspectran.core.activity.process.action.BeanAction;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.bean.ablility.FactoryBean;
@@ -195,7 +196,9 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 		}
 
 		this.context = context;
-		Activity activity = context.getCurrentActivity();
+
+		Activity activity = new VoidActivity(context);
+		context.setCurrentActivity(activity);
 
 		for(BeanRule beanRule : beanRuleRegistry.getBeanRules()) {
 			if(!beanRule.isRegistered()) {
@@ -210,7 +213,9 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 				}
 			}
 		}
-		
+
+		context.removeCurrentActivity();
+
 		initialized = true;
 		
 		log.info("BeanFactory has been initialized successfully.");
