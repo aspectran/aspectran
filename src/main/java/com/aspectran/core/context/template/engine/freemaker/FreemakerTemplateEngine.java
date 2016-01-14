@@ -34,7 +34,8 @@ public class FreemakerTemplateEngine implements TemplateEngine {
         this.configuration = configuration;
     }
 
-    public void process(TemplateRule templateRule, Reader reader, Map<String, String> dataModel, Writer writer) {
+    @Override
+    public void process(TemplateRule templateRule, Map<String, String> dataModel, Reader reader, Writer writer) {
 
     }
 

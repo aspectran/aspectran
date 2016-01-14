@@ -15,8 +15,20 @@
  */
 package com.aspectran.core.context.template.engine.st;
 
+import com.aspectran.core.context.rule.TemplateRule;
+import com.aspectran.core.context.template.engine.TemplateEngine;
+
+import java.io.Reader;
+import java.io.Writer;
+import java.util.Map;
+
 /**
  * Created by gulendol on 2016. 1. 9..
  */
-public class StringTemplateEngine {
+public class StringTemplateEngine implements TemplateEngine {
+    @Override
+    public void process(TemplateRule templateRule, Map<String, String> dataModel, Reader reader, Writer writer) {
+
+    }
+
 }
