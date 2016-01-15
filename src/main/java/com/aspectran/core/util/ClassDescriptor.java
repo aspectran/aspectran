@@ -15,6 +15,7 @@
  */
 package com.aspectran.core.util;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.ReflectPermission;
 import java.util.ArrayList;
@@ -48,6 +49,8 @@ public class ClassDescriptor {
 
 	private String className;
 
+	private Map<String, Field> fields = new HashMap<String, Field>();
+	
 	private Map<String, Method> setMethods = new HashMap<String, Method>();
 
 	private Map<String, Method> getMethods = new HashMap<String, Method>();
@@ -58,6 +61,8 @@ public class ClassDescriptor {
 	
 	private ClassDescriptor(Class<?> clazz) {
 		className = clazz.getName();
+
+		addFields(clazz);
 		
 		Method[] methods = getClassMethods(clazz);
 		
@@ -75,6 +80,18 @@ public class ClassDescriptor {
 		distinctMethodNames = (String[])nameSet.toArray(new String[nameSet.size()]);
 	}
 
+	private void addFields(Class<?> clazz) {
+		while(clazz != null) {
+            for(Field field : clazz.getDeclaredFields()) {
+                if(!fields.containsKey(field.getName())) {
+                    fields.put(field.getName(), field);
+                }
+            }
+
+            clazz = clazz.getSuperclass();
+        }
+	}
+	
 	private void addGetMethods(Method[] methods) {
 		for(int i = 0; i < methods.length; i++) {
 			Method method = methods[i];

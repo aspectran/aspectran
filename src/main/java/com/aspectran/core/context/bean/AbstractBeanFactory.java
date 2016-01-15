@@ -26,6 +26,7 @@ import com.aspectran.core.activity.VoidActivity;
 import com.aspectran.core.activity.process.action.BeanAction;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.bean.ablility.FactoryBean;
+import com.aspectran.core.context.bean.annotation.Autowired;
 import com.aspectran.core.context.bean.proxy.CglibDynamicBeanProxy;
 import com.aspectran.core.context.bean.proxy.JavassistDynamicBeanProxy;
 import com.aspectran.core.context.bean.proxy.JdkDynamicBeanProxy;
@@ -149,6 +150,8 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 				}
 			}
 
+			//TODO beanRule.getBeanClass().isAnnotationPresent(Autowired.class);
+			
 			return bean;
 		} catch(Exception e) {
 			throw new BeanCreationException(beanRule, e);

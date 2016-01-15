@@ -15,7 +15,6 @@
  */
 package com.aspectran.core.context.template;
 
-import com.aspectran.core.context.bean.BeanException;
 import com.aspectran.core.context.rule.TemplateRule;
 
 /**
