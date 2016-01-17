@@ -114,7 +114,6 @@ public abstract class AbstractAspectranService implements AspectranService {
 		
 		log.info("Initializing AspectranService...");
 		
-
 		try {
 			this.aspectranConfig = aspectranConfig;
 			Parameters aspectranContextConfig = aspectranConfig.getParameters(AspectranConfig.context);

@@ -46,6 +46,8 @@ public interface Activity {
 	public void ready(String transletName);
 	
 	public void ready(String transletName, String restVerb);
+
+	public void ready(String transletName, RequestMethodType requestMethod);
 	
 	public void perform();
 	

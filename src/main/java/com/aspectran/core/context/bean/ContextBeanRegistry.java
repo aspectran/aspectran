@@ -60,11 +60,11 @@ public class ContextBeanRegistry extends AbstractBeanFactory implements BeanRegi
 	/* (non-Javadoc)
 	 * @see com.aspectran.core.context.bean.BeanRegistry#getBean(java.lang.Class)
 	 */
-	public <T> T getBean(Class<T> classType) {
-		BeanRule beanRule = beanRuleRegistry.getBeanRule(classType);
+	public <T> T getBean(Class<T> requiredType) {
+		BeanRule beanRule = beanRuleRegistry.getBeanRule(requiredType);
 		
 		if(beanRule == null)
-			throw new BeanNotFoundException(classType.getName());
+			throw new BeanNotFoundException(requiredType.getName());
 		
 		return getBean(beanRule);
 	}

@@ -49,7 +49,6 @@ import java.util.Map;
  */
 public class CoreActivity extends AbstractActivity implements Activity {
 
-	/** The log. */
 	private static final Log log = LogFactory.getLog(CoreActivity.class);
 	
 	private static final boolean debugEnabled = log.isDebugEnabled();
@@ -109,11 +108,16 @@ public class CoreActivity extends AbstractActivity implements Activity {
 	/* (non-Javadoc)
 	 * @see com.aspectran.core.activity.Activity#ready(java.lang.String, java.lang.String)
 	 */
-	public void ready(String transletName, String requestMethod) {
-		this.requestMethod = RequestMethodType.valueOf(requestMethod);
+	public void ready(String transletName, String restVerb) {
+		this.requestMethod = RequestMethodType.valueOf(restVerb);
 		ready(transletName, (ProcessResult)null);
 	}
-	
+
+	public void ready(String transletName, RequestMethodType requestMethod) {
+		this.requestMethod = requestMethod;
+		ready(transletName, (ProcessResult)null);
+	}
+
 	private void ready(String transletName, ProcessResult processResult) {
 		TransletRule transletRule = context.getTransletRuleRegistry().getTransletRule(transletName);
 		

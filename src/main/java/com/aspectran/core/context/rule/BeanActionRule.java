@@ -60,11 +60,21 @@ public class BeanActionRule implements ArgumentPossessable, PropertyPossessable 
 	public void setActionId(String actionId) {
 		this.actionId = actionId;
 	}
-	
+
+	/**
+	 * Gets bean id.
+	 *
+	 * @return the bean id
+	 */
 	public String getBeanId() {
 		return beanId;
 	}
 
+	/**
+	 * Sets bean id.
+	 *
+	 * @param beanId the bean id
+	 */
 	public void setBeanId(String beanId) {
 		this.beanId = beanId;
 	}

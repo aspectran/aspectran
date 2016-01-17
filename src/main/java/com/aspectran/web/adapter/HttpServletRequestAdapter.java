@@ -102,7 +102,6 @@ public class HttpServletRequestAdapter extends AbstractRequestAdapter implements
 	@SuppressWarnings("unchecked")
 	public Enumeration<String> getAttributeNames() {
 		return ((HttpServletRequest)adaptee).getAttributeNames();
-
 	}
 
 	/* (non-Javadoc)

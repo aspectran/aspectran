@@ -52,11 +52,11 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 	
 	private final Log log = LogFactory.getLog(AbstractBeanFactory.class);
 	
-	protected ActivityContext context;
-
 	protected final BeanRuleRegistry beanRuleRegistry;
 
 	private final BeanProxifierType beanProxifierType;
+
+	protected ActivityContext context;
 
 	private boolean initialized;
 	

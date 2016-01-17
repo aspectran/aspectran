@@ -15,6 +15,8 @@
  */
 package com.aspectran.core.context.expr;
 
+import java.io.IOException;
+import java.io.Writer;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -105,6 +107,18 @@ public class TokenExpression implements TokenExpressor {
 			return sb.toString();
 		} else {
 			return express(tokens[0]);
+		}
+	}
+
+	public void express(Token[] tokens, Writer writer) throws IOException {
+		if(tokens == null || tokens.length == 0)
+			return;
+
+		for(Token t : tokens) {
+			Object value = express(t);
+
+			if(value != null)
+				writer.write(value.toString());
 		}
 	}
 
@@ -325,20 +339,20 @@ public class TokenExpression implements TokenExpressor {
 	 * @return the object
 	 */
 	protected Object getAttribute(Token token) {
-		Object value = null;
+		Object object = null;
 		
 		if(requestAdapter != null)
-			value = requestAdapter.getAttribute(token.getName());
+			object = requestAdapter.getAttribute(token.getName());
 		
-		if(value == null && activity.getProcessResult() != null)
-			value = activity.getProcessResult().getResultValue(token.getName());
+		if(object == null && activity.getProcessResult() != null)
+			object = activity.getProcessResult().getResultValue(token.getName());
 
-		if(value != null) {
+		if(object != null) {
 			if(token.getGetterName() != null)
-				value = invokeObjectProperty(value, token.getGetterName());
+				object = invokeObjectProperty(object, token.getGetterName());
 		}
 		
-		return value;
+		return object;
 	}
 	
 	protected Object referenceBean(Token token) {

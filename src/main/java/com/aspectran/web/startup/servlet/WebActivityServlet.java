@@ -64,7 +64,7 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 			WebAspectranService rootAspectranService = (WebAspectranService)servletContext.getAttribute(AspectranServiceListener.ASPECTRAN_SERVICE_ATTRIBUTE);
 
 			if(rootAspectranService == null) {
-				log.info("Running AspectranService in standalone mode inside a servlet.");
+				log.info("Running AspectranService in console mode inside a servlet.");
 
 				aspectranService = WebAspectranService.newInstance(this);
 				

@@ -15,6 +15,8 @@
  */
 package com.aspectran.core.context.expr;
 
+import java.io.IOException;
+import java.io.Writer;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -52,7 +54,7 @@ public interface TokenExpressor {
 	 * @return the string
 	 */
 	public String expressAsString(Token[] tokens);
-	
+
 	/**
 	 * Express as String.
 	 * 
@@ -62,6 +64,8 @@ public interface TokenExpressor {
 	 */
 	public Object express(String parameterName, Token[] tokens);
 
+	public void express(Token[] tokens, Writer writer) throws IOException;
+
 	/**
 	 * Express as string.
 	 *
@@ -70,7 +74,7 @@ public interface TokenExpressor {
 	 * @return the string
 	 */
 	public String expressAsString(String parameterName, Token[] tokens);
-	
+
 	/**
 	 * Express as List.
 	 * 

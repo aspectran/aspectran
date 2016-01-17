@@ -111,6 +111,9 @@ public class BeanClassScanner extends ClassScanner {
 	}
 
 	protected void putClass(Map<String, Class<?>> scannedClasses, String resourceName, Class<?> scannedClass) {
+		if(scannedClass.isInterface())
+			return;
+
 		String className = scannedClass.getName();
 		String beanId = className;
 

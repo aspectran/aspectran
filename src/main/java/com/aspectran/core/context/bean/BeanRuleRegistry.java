@@ -16,10 +16,12 @@
 package com.aspectran.core.context.bean;
 
 import java.io.IOException;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
+import com.aspectran.core.context.bean.ablility.DisposableBean;
+import com.aspectran.core.context.bean.ablility.FactoryBean;
+import com.aspectran.core.context.bean.ablility.InitializableBean;
+import com.aspectran.core.context.bean.ablility.InitializableTransletBean;
 import com.aspectran.core.context.bean.scan.BeanClassScanner;
 import com.aspectran.core.context.loader.AspectranClassLoader;
 import com.aspectran.core.context.rule.BeanRule;
@@ -44,32 +46,51 @@ public class BeanRuleRegistry {
 
 	private final Map<Class<?>, BeanRule> classBeanRuleMap = new HashMap<Class<?>, BeanRule>();
 
+	private final Map<Class<?>, BeanRule> interfaceBeanRuleMap = new HashMap<Class<?>, BeanRule>();
+
+	private final Set<Class<?>> ignoredDependencyInterfaces = new HashSet<Class<?>>();
+
 	public BeanRuleRegistry() {
-		this.classLoader = AspectranClassLoader.getDefaultClassLoader();
+		this(AspectranClassLoader.getDefaultClassLoader());
 	}
 	
 	public BeanRuleRegistry(ClassLoader classLoader) {
 		this.classLoader = classLoader;
+
+		ignoreDependencyInterface(DisposableBean.class);
+		ignoreDependencyInterface(FactoryBean.class);
+		ignoreDependencyInterface(InitializableBean.class);
+		ignoreDependencyInterface(InitializableTransletBean.class);
 	}
 
 	public BeanRule getBeanRule(String beanId) {
 		return beanRuleMap.get(beanId);
 	}
 	
-	public BeanRule getBeanRule(Class<?> classType) {
-		return classBeanRuleMap.get(classType);
+	public BeanRule getBeanRule(Class<?> requiredType) {
+		if(requiredType.isInterface())
+			return interfaceBeanRuleMap.get(requiredType);
+
+		return classBeanRuleMap.get(requiredType);
 	}
 	
 	public boolean contains(String beanId) {
 		return beanRuleMap.containsKey(beanId);
 	}
 	
-	public boolean contains(Class<?> classType) {
-		return classBeanRuleMap.containsKey(classType);
+	public boolean contains(Class<?> requiredType) {
+		if(requiredType.isInterface())
+			return interfaceBeanRuleMap.containsKey(requiredType);
+
+		return classBeanRuleMap.containsKey(requiredType);
 	}
 
 	public Collection<BeanRule> getBeanRules() {
 		return beanRuleMap.values();
+	}
+
+	public BeanRuleMap getBeanRuleMap() {
+		return beanRuleMap;
 	}
 
 	/**
@@ -110,17 +131,14 @@ public class BeanRuleRegistry {
 						}
 					}
 
-					beanRule2.setClassName(beanClass.getName());
 					beanRule2.setBeanClass(beanClass);
 					beanRule2.setScanned(true);
 					BeanRule.checkFactoryBeanImplement(beanRule2);
 					BeanRule.checkAccessibleMethod(beanRule2);
 					beanRuleMap.putBeanRule(beanRule2);
-					
-					if(beanRule2.getId().equals(beanRule2.getBeanClass().getName())) {
-						classBeanRuleMap.put(beanRule2.getBeanClass(), beanRule2);
-					}
-					
+
+					addClassBeanRule(beanRule2);
+
 					if(log.isTraceEnabled())
 						log.trace("add BeanRule " + beanRule2);
 				}
@@ -139,22 +157,33 @@ public class BeanRuleRegistry {
 			BeanRule.checkAccessibleMethod(beanRule);
 			beanRuleMap.putBeanRule(beanRule);
 
-			if(beanRule.getId().equals(beanRule.getBeanClass().getName())) {
-				classBeanRuleMap.put(beanRule.getBeanClass(), beanRule);
-			}
-			
+			addClassBeanRule(beanRule);
+
 			if(log.isTraceEnabled())
 				log.trace("add BeanRule " + beanRule);
 		}
 	}
 
-	public BeanRuleMap getBeanRuleMap() {
-		return beanRuleMap;
+	private void addClassBeanRule(BeanRule beanRule) {
+		Class<?> beanClass = beanRule.getBeanClass();
+
+		classBeanRuleMap.put(beanClass, beanRule);
+
+		for(Class<?> ifc : beanClass.getInterfaces()) {
+			if(!ignoredDependencyInterfaces.contains(ifc)) {
+				interfaceBeanRuleMap.put(ifc, beanRule);
+			}
+		}
+	}
+
+	public void ignoreDependencyInterface(Class<?> ifc) {
+		this.ignoredDependencyInterfaces.add(ifc);
 	}
 
 	public void clear() {
 		beanRuleMap.clear();
 		classBeanRuleMap.clear();
+		interfaceBeanRuleMap.clear();
 	}
 	
 }

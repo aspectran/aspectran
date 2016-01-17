@@ -59,7 +59,7 @@ public class ClassScanner {
 		
 		return scannedClasses;
 	}
-	
+
 	public void scanClasses(String classNamePattern, Map<String, Class<?>> scannedClasses) throws IOException {
 		classNamePattern = classNamePattern.replace(ClassUtils.PACKAGE_SEPARATOR_CHAR, ResourceUtils.RESOURCE_NAME_SPEPARATOR_CHAR);
 
@@ -83,7 +83,7 @@ public class ClassScanner {
 			URL resource = resources.nextElement();
 			
 			if(log.isDebugEnabled())
-				log.debug("bean scanning: " + classNamePattern + " at " + resource.getFile());
+				log.debug("class scanning: " + classNamePattern + " at " + resource.getFile());
 			
 			if(isJarResource(resource)) {
 				scanClassesFromJarResource(resource, matcher, scannedClasses);
@@ -92,14 +92,15 @@ public class ClassScanner {
 			}
 		}
 	}
-	
+
 	/**
 	 * Recursive method used to find all classes in a given directory and subdirs.
 	 *
-	 * @param directory   The base directory
-	 * @param packageName The package name for classes found inside the base directory
-	 * @return The classes
-	 * @throws ClassNotFoundException
+	 * @param targetPath          the target path
+	 * @param basePackageName     the base package name
+	 * @param relativePackageName the relative package name
+	 * @param matcher             the matcher
+	 * @param scannedClasses      the scanned classes
 	 */
 	private void scanClasses(final String targetPath, final String basePackageName, final String relativePackageName, final WildcardMatcher matcher, final Map<String, Class<?>> scannedClasses) {
 		final File target = new File(targetPath);

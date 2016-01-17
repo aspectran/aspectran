@@ -26,7 +26,7 @@ import com.aspectran.core.util.MethodUtils;
  * @author Juho Jeong
  * @since 2011. 1. 7.
  */
-public class ScopedBean implements DisposableBean {
+public class ScopedBean {
 
 	private BeanRule beanRule;
 	
@@ -53,7 +53,7 @@ public class ScopedBean implements DisposableBean {
 			String destroyMethodName = beanRule.getDestroyMethodName();
 	
 			try {
-				MethodUtils.invokeMethod(bean, destroyMethodName, null, null);
+				MethodUtils.invokeExactMethod(beanRule.getBean(), destroyMethodName, null);
 			} catch(Exception e) {
 				throw new BeanDestroyFailedException(beanRule, e); 
 			}

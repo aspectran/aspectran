@@ -131,6 +131,7 @@ public class BeanRule implements Cloneable {
 	 */
 	public void setBeanClass(Class<?> beanClass) {
 		this.beanClass = beanClass;
+		this.className = beanClass.getName();
 	}
 
 	/**
@@ -580,12 +581,10 @@ public class BeanRule implements Cloneable {
 
 			if(initMethodName == null) {
 				if(InitializableTransletBean.class.isAssignableFrom(beanClass)) {
-					initMethodName = InitializableBean.INITIALIZE_METHOD_NAME;
-					beanRule.setInitMethodName(initMethodName);
+					beanRule.setInitMethodName(InitializableBean.INITIALIZE_METHOD_NAME);
 					beanRule.setInitMethodRequiresTranslet(Boolean.TRUE);
-				} else if (InitializableBean.class.isAssignableFrom(beanClass)) {
-					initMethodName = InitializableBean.INITIALIZE_METHOD_NAME;
-					beanRule.setInitMethodName(initMethodName);
+				} else if(InitializableBean.class.isAssignableFrom(beanClass)) {
+					beanRule.setInitMethodName(InitializableBean.INITIALIZE_METHOD_NAME);
 				}
 			} else {
 				if(MethodUtils.getAccessibleMethod(beanClass, initMethodName, null) == null) {

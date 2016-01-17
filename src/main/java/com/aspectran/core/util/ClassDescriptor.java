@@ -397,7 +397,7 @@ public class ClassDescriptor {
 	}
 
 	/**
-	 * Gets an instance of ClassInfo for the specified class.
+	 * Gets an instance of ClassDescriptor for the specified class.
 	 * @param clazz The class for which to lookup the method cache.
 	 * @return The method cache for the class
 	 */

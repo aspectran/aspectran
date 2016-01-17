@@ -255,8 +255,8 @@ public class MethodUtils {
 			} else {
 				parameterTypes = new Class[arguments];
 
-				for (int i = 0; i < arguments; i++) {
-					if (args[i] != null)
+				for(int i = 0; i < arguments; i++) {
+					if(args[i] != null)
 						parameterTypes[i] = args[i].getClass();
 				}
 			}
@@ -351,15 +351,25 @@ public class MethodUtils {
 	 */
 	public static Object invokeExactMethod(Object object, String methodName, Object[] args)
 			throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+		Class<?>[] parameterTypes;
+
 		if(args == null) {
 			args = EMPTY_OBJECT_ARRAY;
+			parameterTypes = EMPTY_CLASS_PARAMETERS;
+		} else {
+			int arguments = args.length;
+			if(arguments == 0) {
+				parameterTypes = EMPTY_CLASS_PARAMETERS;
+			} else {
+				parameterTypes = new Class[arguments];
+
+				for(int i = 0; i < arguments; i++) {
+					if(args[i] != null)
+						parameterTypes[i] = args[i].getClass();
+				}
+			}
 		}
-		int arguments = args.length;
-		Class<?>[] parameterTypes = new Class[arguments];
-		for(int i = 0; i < arguments; i++) {
-			parameterTypes[i] = args[i].getClass();
-		}
-		
+
 		return invokeExactMethod(object, methodName, args, parameterTypes);
 	}
 
@@ -712,12 +722,12 @@ public class MethodUtils {
     public static Method getAccessibleMethod(Class<?> clazz, Method method) {
         // Make sure we have a method to check
         if(method == null) {
-            return (null);
+            return null;
         }
 
         // If the requested method is not public we cannot call it
         if(!Modifier.isPublic(method.getModifiers())) {
-            return (null);
+            return null;
         }
 
         boolean sameClass = true;
@@ -733,7 +743,7 @@ public class MethodUtils {
         // If the class is public, we are done
         if(Modifier.isPublic(clazz.getModifiers())) {
             if(!sameClass && !Modifier.isPublic(method.getDeclaringClass().getModifiers())) {
-                setMethodAccessible(method); // Default access superclass workaround
+                makeAccessible(method); // Default access superclass workaround
             }
             return (method);
         }
@@ -868,7 +878,7 @@ public class MethodUtils {
 
 			method = clazz.getMethod(methodName, parameterTypes);
 
-			setMethodAccessible(method); // Default access superclass workaround
+			makeAccessible(method); // Default access superclass workaround
 			
 			cacheMethod(md, method);
 			return method;
@@ -899,7 +909,7 @@ public class MethodUtils {
 						// get accessible version of method
 						Method method = getAccessibleMethod(methods[i]);
 						if(method != null) {
-							setMethodAccessible(method); // Default access superclass workaround
+							makeAccessible(method); // Default access superclass workaround
 							myWeight = ClassUtils.getTypeDifferenceWeight(method.getParameterTypes(), parameterTypes);
 							if(myWeight < bestMatchWeight) {
 								bestMatch = method;
@@ -917,38 +927,22 @@ public class MethodUtils {
 		
 		return bestMatch;
 	}
-	
-	/**
-     * Try to make the method accessible
-     * @param method The source arguments
-     */
-    private static void setMethodAccessible(final Method method) {
-        try {
-            //
-            // XXX Default access superclass workaround
-            //
-            // When a public class has a default access superclass
-            // with public methods, these methods are accessible.
-            // Calling them from compiled code works fine.
-            //
-            // Unfortunately, using reflection to invoke these methods
-            // seems to (wrongly) to prevent access even when the method
-            // modifer is public.
-            //
-            // The following workaround solves the problem but will only
-            // work from sufficiently privilages code.
-            //
-            // Better workarounds would be greatfully accepted.
-            //
-            if(!method.isAccessible()) {
-                method.setAccessible(true);
-            }
 
-        } catch(final SecurityException se) {
-        	// Current Security Manager restricts use of workarounds for reflection bugs in pre-1.4 JVMs.
-        }
-    }
-    
+	/**
+	 * Make the given method accessible, explicitly setting it accessible if
+	 * necessary. The {@code setAccessible(true)} method is only called
+	 * when actually necessary, to avoid unnecessary conflicts with a JVM
+	 * SecurityManager (if active).
+	 * @param method the method to make accessible
+	 * @see java.lang.reflect.Method#setAccessible
+	 */
+	public static void makeAccessible(Method method) {
+		if((!Modifier.isPublic(method.getModifiers()) ||
+				!Modifier.isPublic(method.getDeclaringClass().getModifiers())) && !method.isAccessible()) {
+			method.setAccessible(true);
+		}
+	}
+
 	private static Object toPrimitiveArray(Object val) {
 		int len = Array.getLength(val);
 		

@@ -31,18 +31,7 @@ public class BeanNotFoundException extends BeanException {
 	 * @param beanId the bean id
 	 */
 	public BeanNotFoundException(String beanId) {
-		this(beanId, null);
-	}
-
-	/**
-	 * Instantiates a new BeanNotFoundException.
-	 *
-	 * @param beanId the bean id
-	 * @param cause the root cause
-	 */
-	public BeanNotFoundException(String beanId, Throwable cause) {
 		super("No bean named '" + beanId + "' is defined");
-		this.beanId = beanId;
 	}
 
 	/**
