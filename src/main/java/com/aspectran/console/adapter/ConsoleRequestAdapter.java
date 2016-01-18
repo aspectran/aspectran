@@ -15,18 +15,14 @@
  */
 package com.aspectran.console.adapter;
 
-import com.aspectran.core.adapter.AbstractRequestAdapter;
-import com.aspectran.core.adapter.RequestAdapter;
-import com.aspectran.core.context.rule.type.RequestMethodType;
-
-import javax.servlet.http.HttpServletRequest;
-import java.io.Console;
-import java.io.UnsupportedEncodingException;
-import java.nio.charset.Charset;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
+
+import com.aspectran.console.activity.ConsoleActivity;
+import com.aspectran.core.adapter.AbstractRequestAdapter;
+import com.aspectran.core.adapter.RequestAdapter;
 
 /**
  * The Class ConsoleRequestAdapter.
@@ -43,10 +39,10 @@ public class ConsoleRequestAdapter extends AbstractRequestAdapter implements Req
 	/**
 	 * Instantiates a new ConsoleRequestAdapter.
 	 *
-	 * @param console the HTTP request
+	 * @param console the console
 	 */
-	public ConsoleRequestAdapter(Console console) {
-		super(console);
+	public ConsoleRequestAdapter(ConsoleActivity activity) {
+		super(activity);
 	}
 	
 	/* (non-Javadoc)
@@ -80,7 +76,6 @@ public class ConsoleRequestAdapter extends AbstractRequestAdapter implements Req
 	/* (non-Javadoc)
 	 * @see com.aspectran.core.adapter.RequestAdapter#getParameterNames()
 	 */
-	@SuppressWarnings("unchecked")
 	public Enumeration<String> getParameterNames() {
 		return Collections.enumeration(parameters.keySet());
 	}
@@ -103,7 +98,6 @@ public class ConsoleRequestAdapter extends AbstractRequestAdapter implements Req
 	/* (non-Javadoc)
 	 * @see com.aspectran.core.adapter.RequestAdapter#getAttributeNames()
 	 */
-	@SuppressWarnings("unchecked")
 	public Enumeration<String> getAttributeNames() {
 		return Collections.enumeration(attributes.keySet());
 	}
