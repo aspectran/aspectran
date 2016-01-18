@@ -65,7 +65,14 @@ public class QuartzJobRequestAdapter extends AbstractRequestAdapter implements R
 	public String getParameter(String name) {
 		throw new UnsupportedOperationException("getParameter");
 	}
-	
+
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.adapter.RequestAdapter#setParameter(java.lang.String, java.lang.String)
+	 */
+	public void setParameter(String name, String value) {
+		throw new UnsupportedOperationException("setParameter");
+	}
+
 	/* (non-Javadoc)
 	 * @see com.aspectran.core.adapter.RequestAdapter#getParameterValues(java.lang.String)
 	 */

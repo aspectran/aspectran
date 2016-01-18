@@ -46,7 +46,7 @@ public class ConsoleResponseAdapter extends AbstractResponseAdapter implements R
 	/**
 	 * Instantiates a new ConsoleResponseAdapter.
 	 *
-	 * @param console the console
+	 * @param activity the console activity
 	 */
 	public ConsoleResponseAdapter(ConsoleActivity activity) {
 		super(activity);

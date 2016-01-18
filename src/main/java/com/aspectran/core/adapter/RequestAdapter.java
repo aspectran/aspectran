@@ -70,11 +70,19 @@ public interface RequestAdapter {
 	/**
 	 * Gets the parameter.
 	 *
-	 * @param name the name
-	 * @return the parameter
+	 * @param name the parameter name
+	 * @return the parameter value
 	 */
 	public String getParameter(String name);
-	
+
+	/**
+	 * Sets parameter.
+	 *
+	 * @param name the parameter name
+	 * @param value the parameter value
+	 */
+	public void setParameter(String name, String value);
+
 	/**
 	 * Gets the parameter values.
 	 *

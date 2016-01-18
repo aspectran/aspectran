@@ -95,14 +95,15 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 		super.destroy();
 
 		if(standalone) {
-			boolean cleanlyDestoryed = aspectranService.dispose();
-			
-			if(cleanlyDestoryed)
-				log.info("Successfully destroyed WebActivityServlet: " + this.getServletName());
-			else
-				log.error("WebActivityServlet were not destroyed cleanly: " + this.getServletName());
-	
 			log.info("Do not terminate the server while the all scoped bean destroying.");
+
+			boolean cleanlyDestoryed = aspectranService.dispose();
+
+			if(cleanlyDestoryed) {
+				log.info("Successfully destroyed WebActivityServlet: " + this.getServletName());
+			} else {
+				log.error("WebActivityServlet were not destroyed cleanly: " + this.getServletName());
+			}
 		}
 	}
 	

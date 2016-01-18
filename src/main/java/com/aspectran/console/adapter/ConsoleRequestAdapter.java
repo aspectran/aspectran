@@ -39,7 +39,7 @@ public class ConsoleRequestAdapter extends AbstractRequestAdapter implements Req
 	/**
 	 * Instantiates a new ConsoleRequestAdapter.
 	 *
-	 * @param console the console
+	 * @param activity the console activity
 	 */
 	public ConsoleRequestAdapter(ConsoleActivity activity) {
 		super(activity);
@@ -65,10 +65,17 @@ public class ConsoleRequestAdapter extends AbstractRequestAdapter implements Req
 	public String getParameter(String name) {
 		return parameters.get(name);
 	}
-	
+
 	/* (non-Javadoc)
-	 * @see com.aspectran.core.adapter.RequestAdapter#getParameterValues(java.lang.String)
+	 * @see com.aspectran.core.adapter.RequestAdapter#setParameter(java.lang.String, java.lang.String)
 	 */
+	public void setParameter(String name, String value) {
+		parameters.put(name, value);
+	}
+
+	/* (non-Javadoc)
+         * @see com.aspectran.core.adapter.RequestAdapter#getParameterValues(java.lang.String)
+         */
 	public String[] getParameterValues(String name) {
 		return parameters.values().toArray(new String[parameters.size()]);
 	}

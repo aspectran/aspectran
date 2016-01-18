@@ -59,7 +59,7 @@ public class WebAspectranService extends CoreAspectranService {
 		setApplicationAdapter(waa);
 	}
 	
-	private synchronized void initialize(String aspectranConfigParam) throws ActivityContextException {
+	private void initialize(String aspectranConfigParam) throws ActivityContextException {
 		AspectranConfig aspectranConfig;
 		
 		if(aspectranConfigParam != null) {
@@ -69,6 +69,11 @@ public class WebAspectranService extends CoreAspectranService {
 		}
 
 		Parameters contextParameters = aspectranConfig.getParameters(AspectranConfig.context);
+
+		if(contextParameters == null) {
+			contextParameters = aspectranConfig.newParameters(AspectranConfig.context);
+		}
+
 		String rootContext = contextParameters.getString(AspectranContextConfig.root);
 
 		if(rootContext == null || rootContext.length() == 0) {

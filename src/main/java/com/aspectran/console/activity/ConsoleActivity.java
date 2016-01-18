@@ -26,14 +26,16 @@ import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.expr.ItemTokenExpression;
 import com.aspectran.core.context.expr.ItemTokenExpressor;
+import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
+import com.aspectran.core.context.rule.type.TokenType;
 import com.aspectran.core.context.variable.ValueMap;
 
 /**
  * The Class ConsoleActivity.
  *
- * @since 2008. 04. 28
+ * @since 2016. 1. 18.
  */
 public class ConsoleActivity extends CoreActivity implements Activity {
 
@@ -82,11 +84,34 @@ public class ConsoleActivity extends CoreActivity implements Activity {
 		ItemRuleMap attributeItemRuleMap = getRequestRule().getAttributeItemRuleMap();
 
 		if(attributeItemRuleMap != null) {
+			System.out.println("Required Attributtes:");
+
 			for(ItemRule itemRule : attributeItemRuleMap.values()) {
-				System.out.printf("@ %s: $s", itemRule.getName(), itemRule.toString());
+				System.out.printf("@ %s: %s", itemRule.getName(), itemRule.toString());
 			}
-			
-			
+
+			System.out.println();
+			System.out.println("Input Parameters:");
+
+			for(ItemRule itemRule : attributeItemRuleMap.values()) {
+				Token[] tokens = itemRule.getTokens();
+
+				if(tokens != null && tokens.length > 0) {
+					for(Token token : tokens) {
+						if(token.getType() == TokenType.PARAMETER) {
+							System.out.printf("$ %s: ", token.getName());
+							if(token.getDefaultValue() == null) {
+								System.out.printf("(%s)", token.getDefaultValue());
+								String input = System.console().readLine();
+								if(input == null || input.length() > 0) {
+									getRequestAdapter().setParameter(token.getName(), input);
+								}
+							}
+						}
+					}
+				}
+			}
+
 			ItemTokenExpressor expressor = new ItemTokenExpression(this);
 			ValueMap valueMap = expressor.express(attributeItemRuleMap);
 
