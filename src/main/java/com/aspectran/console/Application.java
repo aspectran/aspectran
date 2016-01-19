@@ -17,8 +17,6 @@ package com.aspectran.console;
 
 import com.aspectran.console.service.ConsoleAspectranService;
 
-import java.io.IOException;
-
 /**
  * Created by gulendol on 2016. 1. 17..
  */
@@ -39,7 +37,7 @@ public class Application {
             while(true) {
                 String command = System.console().readLine("Command> ");
 
-                if("exit".equals(command))
+                if("quit".equals(command))
                     break;
 
                 aspectranService.service(command);

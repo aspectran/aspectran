@@ -445,7 +445,7 @@ public class ContextBuilderAssistant {
 	 * @return the template rule registry
 	 */
 	public TemplateRuleRegistry getTemplateRuleRegistry() {
-		return getTemplateRuleRegistry();
+		return templateRuleRegistry;
 	}
 
 	/**

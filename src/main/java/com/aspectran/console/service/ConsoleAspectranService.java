@@ -15,6 +15,9 @@
  */
 package com.aspectran.console.service;
 
+import java.io.File;
+import java.io.IOException;
+
 import com.aspectran.console.activity.ConsoleActivity;
 import com.aspectran.console.adapter.ConsoleApplicationAdapter;
 import com.aspectran.core.activity.Activity;
@@ -25,18 +28,11 @@ import com.aspectran.core.service.AspectranServiceControllerListener;
 import com.aspectran.core.service.CoreAspectranService;
 import com.aspectran.core.util.apon.AponDeserializer;
 import com.aspectran.core.util.apon.Parameters;
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
-
-import java.io.File;
-import java.io.IOException;
 
 /**
  * The Class ConsoleAspectranService.
  */
 public class ConsoleAspectranService extends CoreAspectranService {
-
-	private static final Log log = LogFactory.getLog(CoreAspectranService.class);
 
 	private static final String DEFAULT_ROOT_CONTEXT = "config/aspectran-config.xml";
 

@@ -87,10 +87,10 @@ public class ConsoleActivity extends CoreActivity implements Activity {
 			System.out.println("Required Attributtes:");
 
 			for(ItemRule itemRule : attributeItemRuleMap.values()) {
-				System.out.printf("@ %s: %s", itemRule.getName(), itemRule.toString());
+				System.out.printf("@ %s: %s", itemRule.getName(), itemRule.getValue());
+				System.out.println();
 			}
 
-			System.out.println();
 			System.out.println("Input Parameters:");
 
 			for(ItemRule itemRule : attributeItemRuleMap.values()) {
@@ -102,12 +102,18 @@ public class ConsoleActivity extends CoreActivity implements Activity {
 							System.out.printf("$ %s: ", token.getName());
 							if(token.getDefaultValue() == null) {
 								System.out.printf("(%s)", token.getDefaultValue());
-								String input = System.console().readLine();
-								if(input == null || input.length() > 0) {
-									getRequestAdapter().setParameter(token.getName(), input);
-								}
+							}
+							String input = System.console().readLine();
+							if(input == null || input.length() > 0) {
+								getRequestAdapter().setParameter(token.getName(), input);
 							}
 						}
+					}
+				} else {
+					System.out.printf("$ %s: ", itemRule.getName());
+					String input = System.console().readLine();
+					if(input == null || input.length() > 0) {
+						getRequestAdapter().setParameter(itemRule.getName(), input);
 					}
 				}
 			}
