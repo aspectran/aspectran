@@ -208,7 +208,7 @@ public class AspectRule {
 			aspectTargetType = AspectTargetType.valueOf(useFor);
 			
 			if(aspectTargetType == null)
-				throw new IllegalArgumentException("Unknown aspect target '" + useFor + "'");
+				throw new IllegalArgumentException("No aspect target type registered for '" + useFor + "'.");
 		} else {
 			aspectTargetType = AspectTargetType.TRANSLET;
 		}
@@ -227,7 +227,7 @@ public class AspectRule {
 			joinpointScope = JoinpointScopeType.valueOf(scope);
 			
 			if(joinpointScope == null)
-				throw new IllegalArgumentException("Unknown joinpoint scope '" + scope + "'");
+				throw new IllegalArgumentException("No joinpoint scope type registered for '" + scope + "'.");
 		} else {
 			joinpointScope = JoinpointScopeType.TRANSLET;
 		}

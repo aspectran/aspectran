@@ -170,7 +170,7 @@ public class RequestRule {
 			requestMethodType = RequestMethodType.valueOf(requestMethod);
 			
 			if(requestMethodType == null)
-				throw new IllegalArgumentException("Unknown request method type '" + requestMethod + "'");
+				throw new IllegalArgumentException("No request method type registered for '" + requestMethod + "'.");
 		}
 		
 		if(characterEncoding != null && !Charset.isSupported(characterEncoding))

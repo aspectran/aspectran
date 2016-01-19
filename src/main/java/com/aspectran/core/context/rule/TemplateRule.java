@@ -30,7 +30,7 @@ public class TemplateRule {
 
 	private String id;
 
-	private String engine;
+	private final String engine;
 
 	private String file;
 
@@ -49,6 +49,7 @@ public class TemplateRule {
 	private boolean builtin;
 
 	public TemplateRule() {
+		this(null);
 	}
 
 	public TemplateRule(String engine) {
@@ -126,17 +127,15 @@ public class TemplateRule {
 	public void setContent(String content) {
 		this.content = content;
 		
-		if(engine != null) {
-			if(content == null || content.length() == 0) {
-				contentTokens = null;
+		if(content == null || content.length() == 0) {
+			contentTokens = null;
+		} else if(engine == null) {
+			List<Token> tokenList = Tokenizer.tokenize(content, false);
+			if(tokenList.size() > 0) {
+				contentTokens = tokenList.toArray(new Token[tokenList.size()]);
+				contentTokens = Tokenizer.optimize(contentTokens);
 			} else {
-				List<Token> tokenList = Tokenizer.tokenize(content, false);
-				if (tokenList.size() > 0) {
-					contentTokens = tokenList.toArray(new Token[tokenList.size()]);
-					contentTokens = Tokenizer.optimize(contentTokens);
-				} else {
-					contentTokens = null;
-				}
+				contentTokens = null;
 			}
 		}
 	}

@@ -498,7 +498,7 @@ public class ItemRule {
 		ItemType itemType = ItemType.valueOf(type);
 		
 		if(type != null && itemType == null)
-			throw new IllegalArgumentException("Unknown Item Type: " + type);
+			throw new IllegalArgumentException("No item type registered for '" + type + "'.");
 		
 		if(itemType != null)
 			itemRule.setType(itemType);
@@ -517,7 +517,7 @@ public class ItemRule {
 		ItemValueType itemValueType = ItemValueType.valueOf(valueType);
 		
 		if(valueType != null && itemValueType == null)
-			throw new IllegalArgumentException("Unknown Item Value Type: " + valueType);
+			throw new IllegalArgumentException("No item value type registered for '" + valueType + "'.");
 		
 		itemRule.setValueType(itemValueType);
 

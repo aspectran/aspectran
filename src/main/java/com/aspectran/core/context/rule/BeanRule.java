@@ -510,7 +510,7 @@ public class BeanRule implements Cloneable {
 	
 	public static BeanRule newInstance(String id, String maskPattern, String className, String scope, Boolean singleton, String factoryBeanId, String factoryMethodName, String initMethodName, String destroyMethodName, Boolean lazyInit, Boolean important) {
 		if(id == null)
-			throw new IllegalArgumentException("The <bean> element requires a id attribute.");
+			throw new IllegalArgumentException("The <bean> element requires an id attribute.");
 
 		boolean factoryBeanReferenced;
 
@@ -526,7 +526,7 @@ public class BeanRule implements Cloneable {
 		ScopeType scopeType = ScopeType.valueOf(scope);
 
 		if(scope != null && scopeType == null)
-			throw new IllegalArgumentException("No scope-type registered for scope '" + scope + "'.");
+			throw new IllegalArgumentException("No scope type registered for '" + scope + "'.");
 
 		if(scopeType == null)
 			scopeType = (singleton == Boolean.TRUE) ? ScopeType.SINGLETON : ScopeType.PROTOTYPE;

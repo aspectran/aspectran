@@ -523,7 +523,7 @@ public class RootAponAssembler {
 		RedirectParameters redirectParameters = new RedirectParameters();
 
 		if(redirectResponseRule.getContentType() != null)
-			redirectParameters.putValue(RedirectParameters.contentType, redirectResponseRule.getContentType().toString());
+			redirectParameters.putValue(RedirectParameters.contentType, redirectResponseRule.getContentType());
 		
 		redirectParameters.putValue(RedirectParameters.translet, redirectResponseRule.getTransletName());
 		redirectParameters.putValue(RedirectParameters.url, redirectResponseRule.getUrl());
@@ -547,8 +547,13 @@ public class RootAponAssembler {
 	
 	public Parameters assembleTemplateParameters(TemplateRule templateRule) {
 		TemplateParameters templateParameters = new TemplateParameters();
-		templateParameters.putValue(TemplateParameters.id, templateRule.getId());
-		templateParameters.putValue(TemplateParameters.engine, templateRule.getEngine());
+
+		if(templateRule.getId() != null)
+			templateParameters.putValue(TemplateParameters.id, templateRule.getId());
+
+		if(templateRule.getEngine() != null)
+			templateParameters.putValue(TemplateParameters.engine, templateRule.getEngine());
+
 		templateParameters.putValue(TemplateParameters.file, templateRule.getFile());
 		templateParameters.putValue(TemplateParameters.resource, templateRule.getResource());
 		templateParameters.putValue(TemplateParameters.url, templateRule.getUrl());

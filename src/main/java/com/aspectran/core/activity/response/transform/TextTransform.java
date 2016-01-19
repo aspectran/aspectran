@@ -125,7 +125,7 @@ public class TextTransform extends TransformResponse implements Response {
 							}
 						}
 					}
-					
+
 					output.close();
 				}
 			}
@@ -221,8 +221,8 @@ public class TextTransform extends TransformResponse implements Response {
 							Reader reader = getTemplateAsReader(file, templateEncoding);
 							contentTokens = getContentTokens(reader);
 							reader.close();
-							this.templateLoaded = true;
 							this.contentTokens = contentTokens;
+							this.templateLoaded = true;
 						}
 					}
 				}
@@ -239,8 +239,8 @@ public class TextTransform extends TransformResponse implements Response {
 							Reader reader = getTemplateAsReader(new URL(templateUrl), templateEncoding);
 							contentTokens = getContentTokens(reader);
 							reader.close();
-							this.templateLoaded = true;
 							this.contentTokens = contentTokens;
+							this.templateLoaded = true;
 						}
 					}
 				}

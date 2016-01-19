@@ -479,7 +479,7 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 			requestMethod = RequestMethodType.valueOf(restVerb);
 			
 			if(requestMethod == null)
-				throw new IllegalArgumentException("Unknown REST Verb '" + restVerb + "' for translet '" + name + "'");
+				throw new IllegalArgumentException("No REST Verb type registered for '" + restVerb + "'.");
 		}
 
 		TransletRule transletRule = new TransletRule();

@@ -168,7 +168,7 @@ public class TransformRule extends ActionPossessSupport implements ActionPossess
 		}
 		
 		if(transformType == null)
-			throw new IllegalArgumentException("Unknown transform-type '" + type + "'.");
+			throw new IllegalArgumentException("No transform type registered for '" + type + "'.");
 
 		TransformRule tr = new TransformRule();
 		tr.setContentType(contentType);

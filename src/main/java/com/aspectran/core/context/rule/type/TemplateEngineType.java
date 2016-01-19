@@ -22,14 +22,18 @@ import java.util.Map;
  * The Class TemplateEngineType.
  * 
  * <p>Created: 2016. 01. 09</p>
+ *
+ * @since 2.0.0
  */
 public final class TemplateEngineType extends Type {
 
 	public static final TemplateEngineType TOKEN;
 
+	public static final TemplateEngineType FREEMAKER;
+
 	public static final TemplateEngineType PEBBLE;
 
-	public static final TemplateEngineType FREEMAKER;
+	public static final TemplateEngineType CUSTOM;
 
 	private static final Map<String, TemplateEngineType> types;
 
@@ -37,11 +41,13 @@ public final class TemplateEngineType extends Type {
 		TOKEN = new TemplateEngineType("token");
 		PEBBLE = new TemplateEngineType("pebble");
 		FREEMAKER = new TemplateEngineType("freemaker");
+		CUSTOM = new TemplateEngineType("custom");
 
 		types = new HashMap<String, TemplateEngineType>();
 		types.put(TOKEN.toString(), TOKEN);
 		types.put(PEBBLE.toString(), PEBBLE);
 		types.put(FREEMAKER.toString(), FREEMAKER);
+		types.put(CUSTOM.toString(), CUSTOM);
 	}
 
 	/**
