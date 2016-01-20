@@ -45,9 +45,9 @@ public class CoreAspectranService extends AbstractAspectranService {
 		return activityContext;
 	}
 	
-	public synchronized boolean refresh() {
+	public synchronized boolean restart() {
 		if(!started) {
-			log.debug("Cannot refresh AspectranService, because it is currently stopped.");
+			log.debug("Cannot restart AspectranService, because it is currently stopped.");
 			return true;
 		}
 
@@ -62,7 +62,7 @@ public class CoreAspectranService extends AbstractAspectranService {
 		
 		started = true;
 		
-		log.info("AspectranService was refreshed.");
+		log.info("AspectranService was restarted.");
 
 		if(aspectranServiceControllerListener != null)
 			aspectranServiceControllerListener.refreshed();

@@ -91,7 +91,7 @@ public class ActivityContextReloadingTimerTask extends TimerTask {
 		}
 		
 		if(modified) {
-			aspectranService.refresh();
+			aspectranService.restart();
 			modified = false;
 		}
 	}

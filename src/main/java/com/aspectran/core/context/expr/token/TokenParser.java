@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.aspectran.core.context.rule.type.TokenType;
+import com.aspectran.core.util.StringUtils;
 
 public class TokenParser {
 
@@ -114,6 +115,48 @@ public class TokenParser {
 		}
 		
 		return tokensMap;
+	}
+
+
+	/**
+	 * Convert the given string into tokens.
+	 *
+	 * @param text the text
+	 * @return the token[]
+	 */
+	public static Token[] makeTokens(String text, boolean tokenize) {
+		Token[] tokens;
+
+		if(tokenize)
+			tokens = TokenParser.parse(text);
+		else {
+			tokens = new Token[1];
+			tokens[0] = new Token(TokenType.TEXT, text);
+		}
+
+		return tokens;
+	}
+
+	/**
+	 * Convert to string from token array.
+	 *
+	 * @param tokens the tokens
+	 * @return the string
+	 */
+	public static String toString(Token[] tokens) {
+		if(tokens == null)
+			return null;
+
+		if(tokens.length == 0)
+			return StringUtils.EMPTY;
+
+		StringBuilder sb = new StringBuilder();
+
+		for(Token t : tokens) {
+			sb.append(t.toString());
+		}
+
+		return sb.toString();
 	}
 
 }

@@ -27,6 +27,7 @@ import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.expr.ItemTokenExpression;
 import com.aspectran.core.context.expr.ItemTokenExpressor;
 import com.aspectran.core.context.expr.token.Token;
+import com.aspectran.core.context.expr.token.TokenParser;
 import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.type.TokenType;
@@ -87,7 +88,12 @@ public class ConsoleActivity extends CoreActivity implements Activity {
 			System.out.println("Required Attributtes:");
 
 			for(ItemRule itemRule : attributeItemRuleMap.values()) {
-				System.out.printf("@ %s: %s", itemRule.getName(), itemRule.getValue());
+				Token[] tokens = itemRule.getTokens();
+				if(tokens == null) {
+					tokens = new Token[] { new Token(TokenType.PARAMETER, itemRule.getName()) };
+				}
+
+				System.out.printf(" @%s: %s", itemRule.getName(), TokenParser.toString(tokens));
 				System.out.println();
 			}
 
@@ -99,7 +105,7 @@ public class ConsoleActivity extends CoreActivity implements Activity {
 				if(tokens != null && tokens.length > 0) {
 					for(Token token : tokens) {
 						if(token.getType() == TokenType.PARAMETER) {
-							System.out.printf("$ %s: ", token.getName());
+							System.out.printf(" $%s: ", token.getName());
 							if(token.getDefaultValue() == null) {
 								System.out.printf("(%s)", token.getDefaultValue());
 							}
@@ -110,7 +116,7 @@ public class ConsoleActivity extends CoreActivity implements Activity {
 						}
 					}
 				} else {
-					System.out.printf("$ %s: ", itemRule.getName());
+					System.out.printf(" $%s: ", itemRule.getName());
 					String input = System.console().readLine();
 					if(input == null || input.length() > 0) {
 						getRequestAdapter().setParameter(itemRule.getName(), input);

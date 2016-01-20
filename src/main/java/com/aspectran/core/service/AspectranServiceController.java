@@ -22,7 +22,7 @@ public interface AspectranServiceController {
 	
 	public ActivityContext startup();
 
-	public boolean refresh();
+	public boolean restart();
 	
 	/**
 	 * Suspends a service's operation.

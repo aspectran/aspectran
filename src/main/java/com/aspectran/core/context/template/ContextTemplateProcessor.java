@@ -88,24 +88,24 @@ public class ContextTemplateProcessor implements TemplateProcessor {
     
     public synchronized void initialize(ActivityContext context) {
         if(initialized) {
-            throw new UnsupportedOperationException("ContextTemplateProcessor has already been initialized.");
+            throw new UnsupportedOperationException("TemplateProcessor has already been initialized.");
         }
 
         this.context = context;
 
         initialized = true;
 
-        log.info("ContextTemplateProcessor has been initialized successfully.");
+        log.info("TemplateProcessor has been initialized successfully.");
     }
 
     public synchronized void destroy() {
         if(!initialized) {
-            throw new UnsupportedOperationException("ContextTemplateProcessor has not yet initialized.");
+            throw new UnsupportedOperationException("TemplateProcessor has not yet initialized.");
         }
 
         initialized = false;
 
-        log.info("ContextTemplateProcessor has been destroyed successfully.");
+        log.info("TemplateProcessor has been destroyed successfully.");
     }
 
 }

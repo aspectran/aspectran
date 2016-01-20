@@ -94,9 +94,9 @@ public class ConsoleResponseAdapter extends AbstractResponseAdapter implements R
 	 */
 	public Writer getWriter() throws IOException {
 		if(characterEncoding != null)
-			return new PrintWriter(new BufferedWriter(new OutputStreamWriter(printStream, characterEncoding)));
+			return new PrintWriter(new OutputStreamWriter(printStream, characterEncoding), true);
 		else
-			return new PrintWriter(printStream);
+			return new PrintWriter(printStream, true);
 	}
 	
 	/* (non-Javadoc)

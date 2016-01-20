@@ -37,10 +37,23 @@ public class Application {
             while(true) {
                 String command = System.console().readLine("Command> ");
 
-                if("quit".equals(command))
+                if("restart".equals(command)) {
+                    aspectranService.restart();
+                    System.out.println("Aspectran service has been restarted.");
+                } else if("pause".equals(command)) {
+                    aspectranService.pause();
+                    System.out.println("Aspectran service has been paused.");
+                } else if("resume".equals(command)) {
+                    aspectranService.resume();
+                    System.out.println("Aspectran service has been resumed.");
+                } else if("quit".equals(command)) {
+                    System.out.println("Good bye.");
                     break;
+                } else {
+                    aspectranService.service(command);
+                }
 
-                aspectranService.service(command);
+                System.out.println();
             }
 
         } catch(Exception e) {

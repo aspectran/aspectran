@@ -105,7 +105,7 @@ public class TextTransform extends TransformResponse implements Response {
 				if(content != null) {
 					Writer output = responseAdapter.getWriter();
 					output.write(content);
-					output.close();
+					output.flush();
 				}
 			} else {
 				ProcessResult processResult = activity.getProcessResult();
@@ -126,7 +126,7 @@ public class TextTransform extends TransformResponse implements Response {
 						}
 					}
 
-					output.close();
+					output.flush();
 				}
 			}
 
