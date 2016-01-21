@@ -89,7 +89,7 @@ public class AspectranClassLoader extends ClassLoader {
 	
 	public AspectranClassLoader(String[] resourceLocations) {
 		this(resourceLocations, getDefaultClassLoader());
-	}		
+	}
 	
 	public AspectranClassLoader(String[] resourceLocations, ClassLoader parent) {
 		this(parent);

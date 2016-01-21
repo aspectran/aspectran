@@ -16,7 +16,6 @@
 package com.aspectran.core.util.apon;
 
 import java.io.BufferedReader;
-import java.io.Closeable;
 import java.io.Flushable;
 import java.io.IOException;
 import java.io.Reader;
@@ -32,7 +31,7 @@ import java.util.Map;
  * Pretty-printing is enabled by default.
  * The default indentation string is a tab character.
  */
-public class AponSerializer extends AponFormat implements Closeable, Flushable {
+public class AponSerializer extends AponFormat implements Flushable {
 
 	private Writer writer;
 

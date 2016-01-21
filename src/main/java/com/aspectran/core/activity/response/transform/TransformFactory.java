@@ -27,32 +27,32 @@ import com.aspectran.core.context.rule.type.TransformType;
  */
 public class TransformFactory {
 
-	public static Response createTransform(TransformRule tr) {
-		TransformType tranformType = tr.getTransformType();
+	public static Response createTransform(TransformRule transformRule) {
+		TransformType tranformType = transformRule.getTransformType();
 		
 		Response transform = null;
 		
 		if(tranformType == TransformType.XSL_TRANSFORM) {
-			transform = new XslTransform(tr);
+			transform = new XslTransform(transformRule);
 		} else if(tranformType == TransformType.XML_TRANSFORM) {
-			if(tr.getContentType() == null)
-				tr.setContentType(ContentType.TEXT_XML.toString());
+			if(transformRule.getContentType() == null)
+				transformRule.setContentType(ContentType.TEXT_XML.toString());
 
-			transform = new XmlTransform(tr);
+			transform = new XmlTransform(transformRule);
 		} else if(tranformType == TransformType.TEXT_TRANSFORM) {
-			transform = new TextTransform(tr);
+			transform = new TextTransform(transformRule);
 		} else if(tranformType == TransformType.JSON_TRANSFORM) {
-			if(tr.getContentType() == null)
-				tr.setContentType(ContentType.TEXT_PLAIN.toString());
+			if(transformRule.getContentType() == null)
+				transformRule.setContentType(ContentType.TEXT_PLAIN.toString());
 			
-			transform = new JsonTransform(tr);
+			transform = new JsonTransform(transformRule);
 		} else if(tranformType == TransformType.APON_TRANSFORM) {
-			if(tr.getContentType() == null)
-				tr.setContentType(ContentType.TEXT_PLAIN.toString());
+			if(transformRule.getContentType() == null)
+				transformRule.setContentType(ContentType.TEXT_PLAIN.toString());
 			
-			transform = new AponTransform(tr);
+			transform = new AponTransform(transformRule);
 		} else {
-			throw new IllegalArgumentException("Cannot create a transformer. Cause: Unknown transform-type " + tr.toString());
+			throw new TransformResponseException(transformRule, "Unknown transform type");
 		}
 		
 		return transform;

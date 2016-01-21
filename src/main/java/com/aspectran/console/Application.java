@@ -18,15 +18,21 @@ package com.aspectran.console;
 import com.aspectran.console.service.ConsoleAspectranService;
 
 /**
+ * The Aspectran Console Application.
+ * 
  * Created by gulendol on 2016. 1. 17..
  */
 public class Application {
+	
+	private static final String DEFAULT_ASPECTRAN_CONFIG_FILE = "aspectran-config.apon";
 
     public static void main(String[] args) {
         String aspectranConfigFile = null;
 
         if(args.length > 0)
             aspectranConfigFile = args[0];
+        else
+        	aspectranConfigFile = DEFAULT_ASPECTRAN_CONFIG_FILE;
 
         ConsoleAspectranService aspectranService = null;
         int exitStatus = 0;

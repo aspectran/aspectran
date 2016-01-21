@@ -32,6 +32,8 @@ import com.aspectran.core.adapter.RequestAdapter;
  */
 public class ConsoleRequestAdapter extends AbstractRequestAdapter implements RequestAdapter {
 
+	protected static final String FILE_ENCODING_PROP_NAME = "file.encoding";
+	
 	private Map<String, String> parameters = new HashMap<String, String>();
 
 	private Map<String, Object> attributes = new HashMap<String, Object>();
@@ -49,14 +51,14 @@ public class ConsoleRequestAdapter extends AbstractRequestAdapter implements Req
 	 * @see com.aspectran.core.adapter.RequestAdapter#getCharacterEncoding()
 	 */
 	public String getCharacterEncoding() {
-		return System.getProperty("file.encoding");
+		return System.getProperty(FILE_ENCODING_PROP_NAME);
 	}
 	
 	/* (non-Javadoc)
 	 * @see com.aspectran.core.adapter.RequestAdapter#setCharacterEncoding(java.lang.String)
 	 */
 	public void setCharacterEncoding(String characterEncoding) {
-		System.setProperty("file.encoding", characterEncoding);
+		System.setProperty(FILE_ENCODING_PROP_NAME, characterEncoding);
 	}
 	
 	/* (non-Javadoc)

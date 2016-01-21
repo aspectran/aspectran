@@ -42,7 +42,7 @@ public class BeanRuleException extends BeanException {
 	 * Instantiates a new BeanRuleException.
 	 *
 	 * @param beanRule the bean rule
-	 * @param msg The detail message
+	 * @param msg the detail message
 	 * @param cause the root cause
 	 */
 	public BeanRuleException(BeanRule beanRule, String msg, Throwable cause) {

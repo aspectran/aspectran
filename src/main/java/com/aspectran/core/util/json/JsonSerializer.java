@@ -15,7 +15,6 @@
  */
 package com.aspectran.core.util.json;
 
-import java.io.Closeable;
 import java.io.Flushable;
 import java.io.IOException;
 import java.io.StringWriter;
@@ -42,7 +41,7 @@ import com.aspectran.core.util.apon.Parameters;
  * 
  * @author Juho Jeong
  */
-public class JsonSerializer implements Closeable, Flushable {
+public class JsonSerializer implements Flushable {
 
 	private Writer writer;
 

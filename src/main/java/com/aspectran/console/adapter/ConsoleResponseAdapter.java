@@ -15,7 +15,6 @@
  */
 package com.aspectran.console.adapter;
 
-import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -51,7 +50,7 @@ public class ConsoleResponseAdapter extends AbstractResponseAdapter implements R
 	public ConsoleResponseAdapter(ConsoleActivity activity) {
 		super(activity);
 		printStream = System.out;
-		characterEncoding = System.getProperty("file.encoding");
+		characterEncoding = System.getProperty(ConsoleRequestAdapter.FILE_ENCODING_PROP_NAME);
 	}
 	
 	/* (non-Javadoc)
