@@ -171,5 +171,7 @@ public interface Parameters {
 	public boolean isAddable();
 	
 	public String describe();
+
+	public String describe(boolean details);
 	
 }

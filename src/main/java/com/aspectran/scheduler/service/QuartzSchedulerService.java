@@ -141,6 +141,8 @@ public class QuartzSchedulerService implements SchedulerService {
 					eachAspectSchedulerMap.put(aspectRule.getId(), scheduler);
 				}
 			}
+
+			log.info("SchedulerService was started successfully.");
 		} catch(Exception e) {
 			throw new SchedulerException("QuartzSchedulerService startup failed.", e);
 		}

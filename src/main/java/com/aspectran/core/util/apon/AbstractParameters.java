@@ -462,16 +462,23 @@ public abstract class AbstractParameters implements Parameters {
 	}
 
 	public String describe() {
-		StringBuilder sb = new StringBuilder();
-		sb.append("{qualifiedName=").append(getQualifiedName());
-		sb.append(", parameters=").append(parameterValueMap.keySet());
-		sb.append(", parent=").append(getParent());
-		sb.append(", addable=").append(addable);
-		sb.append("}");
-		
-		return sb.toString();
+		return describe(false);
 	}
 	
+	public String describe(boolean details) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("{qualifiedName=").append(getQualifiedName());
+		if(details)
+			sb.append(", parameters=").append(parameterValueMap);
+		else
+			sb.append(", parameters=").append(parameterValueMap.keySet());
+		if(getParent() != null)
+			sb.append(", parent=").append(getParent());
+		sb.append("}");
+
+		return sb.toString();
+	}
+
 	@Override
 	public String toString() {
 		return AponSerializer.serialize(this);

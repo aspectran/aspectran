@@ -271,7 +271,7 @@ public class TextTransform extends TransformResponse implements Response {
 
 		if(tokenList.size() > 0) {
 			contentTokens = tokenList.toArray(new Token[tokenList.size()]);
-			contentTokens = Tokenizer.optimize(contentTokens);
+			//contentTokens = Tokenizer.optimize(contentTokens);
 		} else
 			contentTokens = new Token[0];
 		

@@ -31,6 +31,9 @@ import com.aspectran.core.util.apon.Parameters;
 
 /**
  * The Class ConsoleAspectranService.
+ *
+ * @author Juho Jeong
+ * @since 2016. 1. 18.
  */
 public class ConsoleAspectranService extends CoreAspectranService {
 

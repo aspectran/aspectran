@@ -113,7 +113,7 @@ public abstract class AbstractAspectranService implements AspectranService {
 			throw new ActivityContextException("Already loaded the AspectranContext. Destroy the old AspectranContext before loading.");
 		
 		log.info("Initializing AspectranService...");
-		
+
 		try {
 			this.aspectranConfig = aspectranConfig;
 			Parameters aspectranContextConfig = aspectranConfig.getParameters(AspectranConfig.context);
@@ -160,7 +160,8 @@ public abstract class AbstractAspectranService implements AspectranService {
 		if(activityContext != null)
 			throw new ActivityContextException("Already loaded the AspectranContext. Destroy the old AspectranContext before loading.");
 		
-		log.info("Loading ActivityContext...");
+		if(log.isDebugEnabled())
+			log.debug("Loading ActivityContext...");
 		
 		try {
 			activityContext = activityContextLoader.load(rootContext);
@@ -225,7 +226,9 @@ public abstract class AbstractAspectranService implements AspectranService {
 		if(this.aspectranSchedulerConfig == null)
 			return;
 		
-		log.info("Starting the SchedulerService " + this.aspectranSchedulerConfig.describe());
+		if(log.isDebugEnabled()) {
+			log.debug("Starting the SchedulerService " + this.aspectranSchedulerConfig.describe(true));
+		}
 		
 		boolean startup = this.aspectranSchedulerConfig.getBoolean(AspectranSchedulerConfig.startup);
 		int startDelaySeconds = this.aspectranSchedulerConfig.getInt(AspectranSchedulerConfig.startDelaySeconds.getName(), -1);
@@ -276,7 +279,6 @@ public abstract class AbstractAspectranService implements AspectranService {
 		reloadingTimer = null;
 	}
 	
-
 	private static String[] checkResourceLocations(String applicationBasePath, String rootResourceLocation, String[] resourceLocations) throws IOException {
 		if(resourceLocations == null)
 			return null;

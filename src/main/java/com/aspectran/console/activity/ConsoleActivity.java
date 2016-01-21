@@ -36,6 +36,7 @@ import com.aspectran.core.context.variable.ValueMap;
 /**
  * The Class ConsoleActivity.
  *
+ * @author Juho Jeong
  * @since 2016. 1. 18.
  */
 public class ConsoleActivity extends CoreActivity implements Activity {
@@ -93,7 +94,7 @@ public class ConsoleActivity extends CoreActivity implements Activity {
 					tokens = new Token[] { new Token(TokenType.PARAMETER, itemRule.getName()) };
 				}
 
-				System.out.printf(" @%s: %s", itemRule.getName(), TokenParser.toString(tokens));
+				System.out.printf("  @%s: %s", itemRule.getName(), TokenParser.toString(tokens));
 				System.out.println();
 			}
 
@@ -105,20 +106,20 @@ public class ConsoleActivity extends CoreActivity implements Activity {
 				if(tokens != null && tokens.length > 0) {
 					for(Token token : tokens) {
 						if(token.getType() == TokenType.PARAMETER) {
-							System.out.printf(" $%s: ", token.getName());
-							if(token.getDefaultValue() == null) {
+							System.out.printf("  $%s: ", token.getName());
+							if(token.getDefaultValue() != null) {
 								System.out.printf("(%s)", token.getDefaultValue());
 							}
 							String input = System.console().readLine();
-							if(input == null || input.length() > 0) {
+							if(input != null && input.length() > 0) {
 								getRequestAdapter().setParameter(token.getName(), input);
 							}
 						}
 					}
 				} else {
-					System.out.printf(" $%s: ", itemRule.getName());
+					System.out.printf("  $%s: ", itemRule.getName());
 					String input = System.console().readLine();
-					if(input == null || input.length() > 0) {
+					if(input != null && input.length() > 0) {
 						getRequestAdapter().setParameter(itemRule.getName(), input);
 					}
 				}

@@ -19,8 +19,9 @@ import com.aspectran.console.service.ConsoleAspectranService;
 
 /**
  * The Aspectran Console Application.
- * 
- * Created by gulendol on 2016. 1. 17..
+ *
+ * @author Juho Jeong
+ * @since 2016. 1. 17.
  */
 public class Application {
 	
@@ -53,7 +54,6 @@ public class Application {
                     aspectranService.resume();
                     System.out.println("Aspectran service has been resumed.");
                 } else if("quit".equals(command)) {
-                    System.out.println("Good bye.");
                     break;
                 } else {
                     aspectranService.service(command);
@@ -69,13 +69,7 @@ public class Application {
             if(aspectranService != null) {
                 System.out.println("Do not terminate the server while the all scoped bean destroying.");
 
-                boolean cleanlyDestoryed = aspectranService.dispose();
-
-                if (cleanlyDestoryed) {
-                    System.out.println("Successfully destroyed ConsoleAspectranService.");
-                } else {
-                    System.out.println("ConsoleAspectranService were not destroyed cleanly.");
-                }
+                aspectranService.dispose();
             }
         }
 

@@ -133,7 +133,7 @@ public class TemplateRule {
 			List<Token> tokenList = Tokenizer.tokenize(content, false);
 			if(tokenList.size() > 0) {
 				contentTokens = tokenList.toArray(new Token[tokenList.size()]);
-				contentTokens = Tokenizer.optimize(contentTokens);
+				//contentTokens = Tokenizer.optimize(contentTokens);
 			} else {
 				contentTokens = null;
 			}

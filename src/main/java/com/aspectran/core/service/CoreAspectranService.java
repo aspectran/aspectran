@@ -121,8 +121,8 @@ public class CoreAspectranService extends AbstractAspectranService {
 			}
 		}
 		
-		log.info("AspectranService has been destroyed.");
-		
+		log.info("AspectranService has been shut down successfully.");
+
 		return cleanlyDestoryed;
 	}
 	
