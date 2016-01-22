@@ -17,9 +17,7 @@ package com.aspectran.console.adapter;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.io.PrintStream;
-import java.io.PrintWriter;
 import java.io.Writer;
 
 import com.aspectran.console.activity.ConsoleActivity;
@@ -93,9 +91,9 @@ public class ConsoleResponseAdapter extends AbstractResponseAdapter implements R
 	 */
 	public Writer getWriter() throws IOException {
 		if(characterEncoding != null)
-			return new PrintWriter(new OutputStreamWriter(printStream, characterEncoding), true);
+			return new ConsolePrintWriter(printStream, characterEncoding);
 		else
-			return new PrintWriter(printStream, true);
+			return new ConsolePrintWriter(printStream);
 	}
 	
 	/* (non-Javadoc)
