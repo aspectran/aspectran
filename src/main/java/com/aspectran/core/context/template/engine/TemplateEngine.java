@@ -16,16 +16,23 @@
 package com.aspectran.core.context.template.engine;
 
 import com.aspectran.core.context.rule.TemplateRule;
+import freemarker.template.TemplateException;
 
+import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
+import java.util.Locale;
 import java.util.Map;
 
 /**
- * Created by gulendol on 2016. 1. 9..
+ * <p>Created: 2016. 1. 9.</p>
  */
 public interface TemplateEngine {
 
-    public void process(TemplateRule templateRule, Map<String, String> dataModel, Reader reader, Writer writer);
+    public void process(String templateName, Map<String, Object> dataModel, Reader reader, Writer writer) throws TemplateEngineProcessException;
+
+    public void process(String templateName, Map<String, Object> dataModel, Writer writer) throws TemplateEngineProcessException;
+
+    public void process(String templateName, Map<String, Object> dataModel, Writer writer, Locale locale) throws TemplateEngineProcessException;
 
 }

@@ -66,7 +66,7 @@ public class ContentList extends ArrayList<ActionList> {
 	}
 
 	public ActionList newActionList(boolean omittable) {
-		ActionList actionList = new ActionList(this);
+		ActionList actionList = new ActionList();
 		if(omittable)
 			actionList.setOmittable(Boolean.TRUE);
 		

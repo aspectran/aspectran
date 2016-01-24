@@ -15,12 +15,6 @@
  */
 package com.aspectran.web.activity.response.view;
 
-import java.util.Enumeration;
-
-import javax.servlet.RequestDispatcher;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.process.result.ActionResult;
 import com.aspectran.core.activity.process.result.ContentResult;
@@ -34,7 +28,11 @@ import com.aspectran.core.context.rule.ResponseRule;
 import com.aspectran.core.context.rule.TemplateRule;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
-import com.aspectran.web.activity.response.view.JspViewDispatcher;
+
+import javax.servlet.RequestDispatcher;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.Enumeration;
 
 /**
  * JSP or other web resource integration.
@@ -49,32 +47,32 @@ public class JspViewDispatcher implements ViewDispatcher {
 	
 	private static final boolean traceEnabled = log.isTraceEnabled();
 	
-	private String templateFilePrefix;
+	private String templateNamePrefix;
 
-	private String templateFileSuffix;
+	private String templateNameSuffix;
 	
 	/**
-	 * Sets the template file prefix.
+	 * Sets the template name prefix.
 	 *
-	 * @param templateFilePrefix the new template file prefix
+	 * @param templateNamePrefix the new template name prefix
 	 */
-	public void setTemplateFilePrefix(String templateFilePrefix) {
-		this.templateFilePrefix = templateFilePrefix;
+	public void setTemplateNamePrefix(String templateNamePrefix) {
+		this.templateNamePrefix = templateNamePrefix;
 	}
 
 	/**
-	 * Sets the template file suffix.
+	 * Sets the template name suffix.
 	 *
-	 * @param templateFileSuffix the new template file suffix
+	 * @param templateNameSuffix the new template name suffix
 	 */
-	public void setTemplateFileSuffix(String templateFileSuffix) {
-		this.templateFileSuffix = templateFileSuffix;
+	public void setTemplateNameSuffix(String templateNameSuffix) {
+		this.templateNameSuffix = templateNameSuffix;
 	}
 
 	/* (non-Javadoc)
 	 * @see com.aspectran.core.activity.response.dispatch.ViewDispatcher#dispatch(com.aspectran.core.activity.AspectranActivity, com.aspectran.base.rule.DispatchResponseRule)
 	 */
-	public void dispatch(Activity activity, DispatchResponseRule dispatchResponseRule) {
+	public void dispatch(Activity activity, DispatchResponseRule dispatchResponseRule) throws ViewDispatchException {
 		try {
 			TemplateRule templateRule = dispatchResponseRule.getTemplateRule();
 			if(templateRule == null) {
@@ -82,18 +80,18 @@ public class JspViewDispatcher implements ViewDispatcher {
 				return;
 			}
 
-			String templateFile = templateRule.getFile();
-			if(templateFile == null) {
-				log.warn("No specified template file. " + dispatchResponseRule);
+			String templateName = templateRule.getName();
+			if(templateName == null) {
+				log.warn("No specified template name " + dispatchResponseRule);
 				return;
 			}
 			
-			if(templateFilePrefix != null && templateFileSuffix != null) {
-				templateFile = templateFilePrefix + templateFile + templateFileSuffix;
-			} else if(templateFilePrefix != null) {
-				templateFile = templateFilePrefix + templateFile;
-			} else if(templateFileSuffix != null) {
-				templateFile = templateFile + templateFileSuffix;
+			if(templateNamePrefix != null && templateNameSuffix != null) {
+				templateName = templateNamePrefix + templateName + templateNameSuffix;
+			} else if(templateNamePrefix != null) {
+				templateName = templateNamePrefix + templateName;
+			} else if(templateNameSuffix != null) {
+				templateName = templateName + templateNameSuffix;
 			}
 			
 			RequestAdapter requestAdapter = activity.getRequestAdapter();
@@ -117,12 +115,12 @@ public class JspViewDispatcher implements ViewDispatcher {
 			ProcessResult processResult = activity.getProcessResult();
 
 			if(processResult != null)
-				setAttribute(requestAdapter, processResult, null);
+				setAttribute(requestAdapter, processResult);
 
 			HttpServletRequest request = requestAdapter.getAdaptee();
 			HttpServletResponse response = responseAdapter.getAdaptee();
 			
-			RequestDispatcher requestDispatcher = request.getRequestDispatcher(templateFile);
+			RequestDispatcher requestDispatcher = request.getRequestDispatcher(templateName);
 			requestDispatcher.forward(request, response);
 
 			if(traceEnabled) {
@@ -144,10 +142,11 @@ public class JspViewDispatcher implements ViewDispatcher {
 					sb2.append("]");
 					log.trace(sb2.toString());
 				}
-
-				if(debugEnabled)
-					log.debug("dispatch to a JSP {templateFile: " + templateFile + "}");
 			}
+
+			if(debugEnabled)
+				log.debug("dispatch to a JSP {templateFile: " + templateName + "}");
+
 		} catch(Exception e) {
 			throw new ViewDispatchException("JSP View Dispatch Error: " + dispatchResponseRule, e);
 		}
@@ -158,19 +157,18 @@ public class JspViewDispatcher implements ViewDispatcher {
 	 *
 	 * @param requestAdapter the request adapter
 	 * @param processResult the process result
-	 * @param parentQualifiedActionId the parent qualified action id
 	 */
-	private void setAttribute(RequestAdapter requestAdapter, ProcessResult processResult, String parentQualifiedActionId) {
+	private void setAttribute(RequestAdapter requestAdapter, ProcessResult processResult) {
 		for(ContentResult contentResult : processResult) {
 			for(ActionResult actionResult : contentResult) {
 				Object actionResultValue = actionResult.getResultValue();
 
 				if(actionResultValue instanceof ProcessResult) {
-					setAttribute(requestAdapter, (ProcessResult)actionResultValue, actionResult.getQuialifiedActionId());
+					setAttribute(requestAdapter, (ProcessResult)actionResultValue);
 				} else {
-					String actionId = actionResult.getQuialifiedActionId(parentQualifiedActionId);
+					String actionId = actionResult.getActionId();
 					if(actionId != null)
-						requestAdapter.setAttribute(actionResult.getQuialifiedActionId(parentQualifiedActionId), actionResultValue);
+						requestAdapter.setAttribute(actionId, actionResultValue);
 				}
 			}
 		}

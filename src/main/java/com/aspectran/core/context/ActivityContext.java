@@ -31,7 +31,7 @@ public class ActivityContext {
 	
 	private static ThreadLocal<Activity> currentActivityHolder = new ThreadLocal<Activity>();
 
-	private ApplicationAdapter applicationAdapter;
+	private final ApplicationAdapter applicationAdapter;
 	
 	private AspectRuleRegistry aspectRuleRegistry;
 	
@@ -48,6 +48,10 @@ public class ActivityContext {
 	 */
 	public ActivityContext(ApplicationAdapter applicationAdapter) {
 		this.applicationAdapter = applicationAdapter;
+	}
+
+	public ClassLoader getClassLoader() {
+		return applicationAdapter.getClassLoader();
 	}
 	
 	/**
@@ -108,7 +112,7 @@ public class ActivityContext {
 	 *
 	 * @return the template processor
 	 */
-	public TemplateProcessor gettemplateProcessor() {
+	public TemplateProcessor getTemplateProcessor() {
 		return templateProcessor;
 	}
 

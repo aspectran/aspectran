@@ -29,7 +29,7 @@ public class AspectRuleMap extends LinkedHashMap<String, AspectRule> implements 
 	static final long serialVersionUID = 3857952055410456475L;
 
 	/**
-	 * Adds a value rule.
+	 * Adds a aspect rule.
 	 *
 	 * @param aspectRule the aspect rule
 	 * @return the value rule

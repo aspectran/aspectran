@@ -15,19 +15,13 @@
  */
 package com.aspectran.web.service;
 
-import java.io.IOException;
-
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.context.ActivityContextException;
 import com.aspectran.core.context.loader.config.AspectranConfig;
 import com.aspectran.core.context.loader.config.AspectranContextConfig;
 import com.aspectran.core.context.translet.TransletNotFoundException;
 import com.aspectran.core.service.AspectranServiceControllerListener;
+import com.aspectran.core.service.AspectranServiceException;
 import com.aspectran.core.service.CoreAspectranService;
 import com.aspectran.core.util.apon.Parameters;
 import com.aspectran.core.util.logging.Log;
@@ -36,6 +30,12 @@ import com.aspectran.web.activity.WebActivity;
 import com.aspectran.web.adapter.WebApplicationAdapter;
 import com.aspectran.web.startup.listener.AspectranServiceListener;
 import com.aspectran.web.startup.servlet.WebActivityServlet;
+
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 /**
  * The Class WebAspectranService.
@@ -59,7 +59,7 @@ public class WebAspectranService extends CoreAspectranService {
 		setApplicationAdapter(waa);
 	}
 	
-	private void initialize(String aspectranConfigParam) throws ActivityContextException {
+	private void initialize(String aspectranConfigParam) throws AspectranServiceException {
 		AspectranConfig aspectranConfig;
 		
 		if(aspectranConfigParam != null) {
@@ -143,8 +143,9 @@ public class WebAspectranService extends CoreAspectranService {
 	 *
 	 * @param servletContext the servlet context
 	 * @return the web aspectran service
+	 * @throws AspectranServiceException the aspectran service exception
 	 */
-	public static WebAspectranService newInstance(ServletContext servletContext) {
+	public static WebAspectranService newInstance(ServletContext servletContext) throws AspectranServiceException {
 		String aspectranConfigParam = servletContext.getInitParameter(ASPECTRAN_CONFIG_PARAM);
 		WebAspectranService aspectranService = newInstance(servletContext, aspectranConfigParam);
 		
@@ -156,14 +157,15 @@ public class WebAspectranService extends CoreAspectranService {
 		
 		return aspectranService;
 	}
-	
+
 	/**
 	 * Returns a new instance of WebAspectranService.
 	 *
-	 * @param servlet the servlet
+	 * @param servlet the web activity servlet
 	 * @return the web aspectran service
+	 * @throws AspectranServiceException the aspectran service exception
 	 */
-	public static WebAspectranService newInstance(WebActivityServlet servlet) {
+	public static WebAspectranService newInstance(WebActivityServlet servlet) throws AspectranServiceException {
 		ServletContext servletContext = servlet.getServletContext();
 		ServletConfig servletConfig = servlet.getServletConfig();
 		
@@ -183,7 +185,7 @@ public class WebAspectranService extends CoreAspectranService {
 	 * @param rootAspectranService the root aspectran service
 	 * @return the web aspectran service
 	 */
-	public static WebAspectranService newInstance(WebActivityServlet servlet, WebAspectranService rootAspectranService) {
+	public static WebAspectranService newInstance(WebActivityServlet servlet, WebAspectranService rootAspectranService) throws AspectranServiceException {
 		ServletContext servletContext = servlet.getServletContext();
 		ServletConfig servletConfig = servlet.getServletConfig();
 		
@@ -206,8 +208,9 @@ public class WebAspectranService extends CoreAspectranService {
 	 * @param servletContext the servlet context
 	 * @param aspectranConfigParam the aspectran config param
 	 * @return the web aspectran service
+	 * @throws AspectranServiceException the aspectran service exception
 	 */
-	private static WebAspectranService newInstance(ServletContext servletContext, String aspectranConfigParam) {
+	private static WebAspectranService newInstance(ServletContext servletContext, String aspectranConfigParam) throws AspectranServiceException {
 		WebAspectranService aspectranService = new WebAspectranService(servletContext);
 		aspectranService.initialize(aspectranConfigParam);
 		

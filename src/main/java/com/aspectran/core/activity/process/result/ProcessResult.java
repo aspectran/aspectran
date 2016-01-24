@@ -55,17 +55,8 @@ public class ProcessResult extends ArrayList<ContentResult> {
 	public void addContentResult(ContentResult contentResult) {
 		add(contentResult);
 	}
-	
-	public ContentResult findContentResult(String contentId) {
-		for(ContentResult contentResult : this) {
-			if(contentResult.getContentId() != null && contentResult.getContentId().equals(contentId))
-				return contentResult;
-		}
-		
-		return null;
-	}
-	
-	public ActionResult findActionResult(String actionId) {
+
+	public ActionResult getActionResult(String actionId) {
 		for(ContentResult contentResult : this) {
 			ActionResult actionResult = contentResult.getActionResult(actionId);
 			
@@ -77,7 +68,7 @@ public class ProcessResult extends ArrayList<ContentResult> {
 	}
 	
 	public Object getResultValue(String actionId) {
-		ActionResult actionResult = findActionResult(actionId);
+		ActionResult actionResult = getActionResult(actionId);
 		
 		if(actionResult != null)
 			return actionResult.getResultValue();

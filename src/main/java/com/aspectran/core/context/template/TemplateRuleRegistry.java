@@ -21,7 +21,9 @@ import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
 /**
- * Created by gulendol on 2016. 1. 11..
+ * The Class TemplateRuleRegistry.
+ *
+ * <p>Created: 2016. 1. 11.</p>
  */
 public class TemplateRuleRegistry {
 

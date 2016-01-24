@@ -554,6 +554,7 @@ public class RootAponAssembler {
 		if(templateRule.getEngine() != null)
 			templateParameters.putValue(TemplateParameters.engine, templateRule.getEngine());
 
+		templateParameters.putValue(TemplateParameters.name, templateRule.getName());
 		templateParameters.putValue(TemplateParameters.file, templateRule.getFile());
 		templateParameters.putValue(TemplateParameters.resource, templateRule.getResource());
 		templateParameters.putValue(TemplateParameters.url, templateRule.getUrl());

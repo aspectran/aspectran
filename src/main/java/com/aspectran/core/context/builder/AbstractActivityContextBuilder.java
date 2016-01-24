@@ -58,7 +58,7 @@ public abstract class AbstractActivityContextBuilder extends ContextBuilderAssis
 		super(applicationAdapter);
 	}
 	
-	protected ActivityContext makeActivityContext(ApplicationAdapter applicationAdapter) {
+	protected ActivityContext makeActivityContext(ApplicationAdapter applicationAdapter) throws BeanReferenceException {
 		AspectRuleRegistry aspectRuleRegistry = getAspectRuleRegistry();
 		BeanRuleRegistry beanRuleRegistry = getBeanRuleRegistry();
 		TransletRuleRegistry transletRuleRegistry = getTransletRuleRegistry();

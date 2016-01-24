@@ -15,12 +15,12 @@
  */
 package com.aspectran.core.context.aspect;
 
-import com.aspectran.core.context.AspectranException;
+import com.aspectran.core.context.AspectranRuntimeException;
 
 /**
  * This class is the basic exception that gets thrown from the aspect pacakge.
  */
-public class AspectException extends AspectranException {
+public class AspectException extends AspectranRuntimeException {
 	
 	/** @serial */
 	private static final long serialVersionUID = 3778865608683444815L;
@@ -52,8 +52,7 @@ public class AspectException extends AspectranException {
 
 	/**
 	 * Constructs a AspectException with the specified error message and also the specified root cause exception.
-	 * The root cause exception is generally for TypeConversionException's root cause or something that might have caused a AspectException.
-	 * 
+	 *
 	 * @param msg The detail message
 	 * @param cause The real cause of the exception
 	 */

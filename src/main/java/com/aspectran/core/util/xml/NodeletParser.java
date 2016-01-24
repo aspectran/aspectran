@@ -146,7 +146,7 @@ public class NodeletParser {
 			Document doc = createDocument(inputStream);
 			parse(doc.getLastChild());
 		} catch(Exception e) {
-			throw new NodeletException("Error parsing XML", e);
+			throw new NodeletException("Error parsing XML.", e);
 		}
 	}
 
@@ -295,9 +295,16 @@ public class NodeletParser {
 		
 		return sb == null ? null : sb.toString();
 	}
-	
+
 	/**
 	 * Creates a JAXP Document from a reader.
+	 *
+	 * @param reader the reader
+	 * @return the document
+	 * @throws ParserConfigurationException the parser configuration exception
+	 * @throws FactoryConfigurationError the factory configuration error
+	 * @throws SAXException the sax exception
+	 * @throws IOException the io exception
 	 */
 	private Document createDocument(Reader reader) throws ParserConfigurationException, FactoryConfigurationError,
 			SAXException, IOException {
@@ -329,6 +336,13 @@ public class NodeletParser {
 
 	/**
 	 * Creates a JAXP Document from an InputStream.
+	 *
+	 * @param inputStream the input stream
+	 * @return the document
+	 * @throws ParserConfigurationException the parser configuration exception
+	 * @throws FactoryConfigurationError the factory configuration error
+	 * @throws SAXException the sax exception
+	 * @throws IOException the io exception
 	 */
 	private Document createDocument(InputStream inputStream) throws ParserConfigurationException,
 			FactoryConfigurationError, SAXException, IOException {

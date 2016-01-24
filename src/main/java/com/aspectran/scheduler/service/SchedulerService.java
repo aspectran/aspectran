@@ -28,16 +28,16 @@ public interface SchedulerService {
 	
 	public void setWaitOnShutdown(boolean waitOnShutdown);
 	
-	public void startup() throws Exception;
+	public void startup() throws SchedulerServiceException;
 	
-	public void startup(int delaySeconds) throws Exception;
+	public void startup(int delaySeconds) throws SchedulerServiceException;
 	
-	public void shutdown() throws Exception;
+	public void shutdown() throws SchedulerServiceException;
 	
-	public void shutdown(boolean waitForJobsToComplete) throws Exception;
+	public void shutdown(boolean waitForJobsToComplete) throws SchedulerServiceException;
 	
-	public void pause(String schedulerId) throws Exception;
+	public void pause(String schedulerId) throws SchedulerServiceException;
 	
-	public void resume(String schedulerId) throws Exception;
+	public void resume(String schedulerId) throws SchedulerServiceException;
 	
 }

@@ -15,15 +15,11 @@
  */
 package com.aspectran.scheduler.adapter;
 
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.Map;
-
-import org.quartz.JobDetail;
-
 import com.aspectran.core.adapter.AbstractRequestAdapter;
 import com.aspectran.core.adapter.RequestAdapter;
-import com.aspectran.core.context.variable.AttributeMap;
+import org.quartz.JobDetail;
+
+import java.util.*;
 
 /**
  * The Class QuartzJobRequestAdapter.
@@ -33,8 +29,8 @@ import com.aspectran.core.context.variable.AttributeMap;
 public class QuartzJobRequestAdapter extends AbstractRequestAdapter implements RequestAdapter {
 	
 	private String characterEncoding;
-	
-	private AttributeMap attributeMap = new AttributeMap();
+
+	private Map<String, Object> attributeMap = new HashMap<String, Object>();
 	
 	/**
 	 * Instantiates a new QuartzJobRequestAdapter.
@@ -63,35 +59,35 @@ public class QuartzJobRequestAdapter extends AbstractRequestAdapter implements R
 	 * @see com.aspectran.core.adapter.RequestAdapter#getParameter(java.lang.String)
 	 */
 	public String getParameter(String name) {
-		throw new UnsupportedOperationException("getParameter");
+		return null;
 	}
 
 	/* (non-Javadoc)
 	 * @see com.aspectran.core.adapter.RequestAdapter#setParameter(java.lang.String, java.lang.String)
 	 */
 	public void setParameter(String name, String value) {
-		throw new UnsupportedOperationException("setParameter");
+		// ignore
 	}
 
 	/* (non-Javadoc)
 	 * @see com.aspectran.core.adapter.RequestAdapter#getParameterValues(java.lang.String)
 	 */
 	public String[] getParameterValues(String name) {
-		throw new UnsupportedOperationException("getParameterValues");
+		return null;
 	}
 	
 	/* (non-Javadoc)
 	 * @see com.aspectran.core.adapter.RequestAdapter#getParameterNames()
 	 */
 	public Enumeration<String> getParameterNames() {
-		throw new UnsupportedOperationException("getParameterNames");
+		return null;
 	}
 	
 	/* (non-Javadoc)
 	 * @see com.aspectran.core.adapter.RequestAdapter#getAttribute(java.lang.String)
 	 */
 	public <T> T getAttribute(String name) {
-		return attributeMap.getValue(name);
+		return (T)attributeMap.get(name);
 	}
 	
 	/* (non-Javadoc)
@@ -106,7 +102,6 @@ public class QuartzJobRequestAdapter extends AbstractRequestAdapter implements R
 	 */
 	public Enumeration<String> getAttributeNames() {
 		return Collections.enumeration(attributeMap.keySet());
-
 	}
 
 	/* (non-Javadoc)
@@ -120,7 +115,14 @@ public class QuartzJobRequestAdapter extends AbstractRequestAdapter implements R
 	 * @see com.aspectran.core.adapter.RequestAdapter#getParameterMap()
 	 */
 	public Map<String, Object> getParameterMap() {
-		throw new UnsupportedOperationException("getParameterMap");
+		return null;
+	}
+	
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.adapter.RequestAdapter#getAttributeMap()
+	 */
+	public Map<String, Object> getAttributeMap() {
+		return attributeMap;
 	}
 	
 }

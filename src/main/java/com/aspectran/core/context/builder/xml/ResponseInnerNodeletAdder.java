@@ -76,13 +76,14 @@ public class ResponseInnerNodeletAdder implements NodeletAdder {
 		parser.addNodelet(xpath, "/transform/template", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
 				String engine = attributes.get("engine");
+				String name = attributes.get("name");
 				String file = attributes.get("file");
 				String resource = attributes.get("resource");
 				String url = attributes.get("url");
 				String encoding = attributes.get("encoding");
 				Boolean noCache = BooleanUtils.toNullableBooleanObject(attributes.get("noCache"));
 				
-				TemplateRule templateRule = TemplateRule.newInstanceForBuiltin(engine, file, resource, url, text, encoding, noCache);
+				TemplateRule templateRule = TemplateRule.newInstanceForBuiltin(engine, name, file, resource, url, text, encoding, noCache);
 
 				TransformRule transformRule = assistant.peekObject(1);
 				transformRule.setTemplateRule(templateRule);
@@ -124,11 +125,11 @@ public class ResponseInnerNodeletAdder implements NodeletAdder {
 		parser.addNodelet(xpath, "/dispatch", new ActionRuleNodeletAdder(assistant));
 		parser.addNodelet(xpath, "/dispatch/template", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
-				String file = attributes.get("file");
+				String name = attributes.get("name");
 				String encoding = attributes.get("encoding");
 				Boolean noCache = BooleanUtils.toNullableBooleanObject(attributes.get("noCache"));
 				
-				TemplateRule templateRule = TemplateRule.newInstanceForBuiltin(null, file, null, null, null, encoding, noCache);
+				TemplateRule templateRule = TemplateRule.newInstanceForBuiltin(null, name, null, null, null, null, encoding, noCache);
 				
 				DispatchResponseRule drr = assistant.peekObject(1);
 				drr.setTemplateRule(templateRule);

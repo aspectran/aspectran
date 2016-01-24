@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
+import com.aspectran.core.context.AspectranRuntimeException;
 import com.aspectran.core.context.loader.AspectranClassLoader;
 import com.aspectran.core.util.ResourceUtils;
 
@@ -38,7 +39,7 @@ public class LocalResourceManager extends ResourceManager {
 	
 	private final AspectranClassLoader owner;
 	
-	public LocalResourceManager(String resourceLocation, AspectranClassLoader owner) {
+	public LocalResourceManager(String resourceLocation, AspectranClassLoader owner) throws InvalidResourceException {
 		super();
 		
 		this.owner = owner;
@@ -60,7 +61,7 @@ public class LocalResourceManager extends ResourceManager {
 		}
 	}
 
-	public void reset() {
+	public void reset() throws InvalidResourceException {
 		super.reset();
 		
 		if(resourceLocation != null) {
@@ -68,7 +69,7 @@ public class LocalResourceManager extends ResourceManager {
 		}
 	}
 	
-	private void findResource(File file) {
+	private void findResource(File file) throws InvalidResourceException {
 		try {
 			if(file.isDirectory()) {
 				List<File> jarFileList = new ArrayList<File>();
@@ -94,8 +95,12 @@ public class LocalResourceManager extends ResourceManager {
 				String filePath = file.getAbsolutePath();
 				
 				String resourceName = filePath.substring(resourceLocationSubLen);
-				
-				resourceEntries.putResource(resourceName, file);
+
+				try {
+					resourceEntries.putResource(resourceName, file);
+				} catch(InvalidResourceException e) {
+					throw new AspectranRuntimeException(e);
+				}
 
 				if(file.isDirectory()) {
 					findResource(file, jarFileList);
@@ -110,7 +115,7 @@ public class LocalResourceManager extends ResourceManager {
 		});
 	}
 	
-	private void findResourceFromJAR(File target) throws IOException {
+	private void findResourceFromJAR(File target) throws InvalidResourceException, IOException {
 		JarFile jarFile = null;
 		
 		try {

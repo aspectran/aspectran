@@ -15,14 +15,11 @@
  */
 package com.aspectran.console.adapter;
 
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
-
 import com.aspectran.console.activity.ConsoleActivity;
 import com.aspectran.core.adapter.AbstractRequestAdapter;
 import com.aspectran.core.adapter.RequestAdapter;
+
+import java.util.*;
 
 /**
  * The Class ConsoleRequestAdapter.
@@ -34,9 +31,9 @@ public class ConsoleRequestAdapter extends AbstractRequestAdapter implements Req
 
 	protected static final String FILE_ENCODING_PROP_NAME = "file.encoding";
 	
-	private Map<String, String> parameters = new HashMap<String, String>();
+	private Map<String, Object> parameterMap = new HashMap<String, Object>();
 
-	private Map<String, Object> attributes = new HashMap<String, Object>();
+	private Map<String, Object> attributeMap = new HashMap<String, Object>();
 
 	/**
 	 * Instantiates a new ConsoleRequestAdapter.
@@ -65,28 +62,33 @@ public class ConsoleRequestAdapter extends AbstractRequestAdapter implements Req
 	 * @see com.aspectran.core.adapter.RequestAdapter#getParameter(java.lang.String)
 	 */
 	public String getParameter(String name) {
-		return parameters.get(name);
+		Object value = parameterMap.get(name);
+
+		if(value == null)
+			return null;
+
+		return value.toString();
 	}
 
 	/* (non-Javadoc)
 	 * @see com.aspectran.core.adapter.RequestAdapter#setParameter(java.lang.String, java.lang.String)
 	 */
 	public void setParameter(String name, String value) {
-		parameters.put(name, value);
+		parameterMap.put(name, value);
 	}
 
 	/* (non-Javadoc)
          * @see com.aspectran.core.adapter.RequestAdapter#getParameterValues(java.lang.String)
          */
 	public String[] getParameterValues(String name) {
-		return parameters.values().toArray(new String[parameters.size()]);
+		return null;
 	}
 	
 	/* (non-Javadoc)
 	 * @see com.aspectran.core.adapter.RequestAdapter#getParameterNames()
 	 */
 	public Enumeration<String> getParameterNames() {
-		return Collections.enumeration(parameters.keySet());
+		return Collections.enumeration(parameterMap.keySet());
 	}
 	
 	/* (non-Javadoc)
@@ -94,35 +96,42 @@ public class ConsoleRequestAdapter extends AbstractRequestAdapter implements Req
 	 */
 	@SuppressWarnings("unchecked")
 	public <T> T getAttribute(String name) {
-		return (T)attributes.get(name);
+		return (T)attributeMap.get(name);
 	}
 	
 	/* (non-Javadoc)
 	 * @see com.aspectran.core.adapter.RequestAdapter#setAttribute(java.lang.String, java.lang.Object)
 	 */
 	public void setAttribute(String name, Object o) {
-		attributes.put(name, o);
+		attributeMap.put(name, o);
 	}
 	
 	/* (non-Javadoc)
 	 * @see com.aspectran.core.adapter.RequestAdapter#getAttributeNames()
 	 */
 	public Enumeration<String> getAttributeNames() {
-		return Collections.enumeration(attributes.keySet());
+		return Collections.enumeration(attributeMap.keySet());
 	}
 
 	/* (non-Javadoc)
 	 * @see com.aspectran.core.adapter.RequestAdapter#removeAttribute(java.lang.String)
 	 */
 	public void removeAttribute(String name) {
-		attributes.remove(name);
+		attributeMap.remove(name);
 	}
 	
 	/* (non-Javadoc)
 	 * @see com.aspectran.core.adapter.RequestAdapter#getParameterMap()
 	 */
 	public Map<String, Object> getParameterMap() {
-		return new HashMap<String, Object>(parameters);
+		return parameterMap;
+	}
+
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.adapter.RequestAdapter#getAttributeMap()
+	 */
+	public Map<String, Object> getAttributeMap() {
+		return attributeMap;
 	}
 
 }

@@ -15,15 +15,35 @@
  */
 package com.aspectran.core.context.template;
 
+import com.aspectran.core.activity.Activity;
 import com.aspectran.core.context.ActivityContext;
+import com.aspectran.core.context.rule.TemplateRule;
+
+import java.io.Writer;
 
 /**
- * Created by gulendol on 2016. 1. 14..
+ * The Interface TemplateProcessor.
+ *
+ * <p>Created: 2016. 1. 14.</p>
  */
 public interface TemplateProcessor {
 	
 	public void initialize(ActivityContext context);
-	
+
 	public void destroy();
-	
+
+	public TemplateRuleRegistry getTemplateRuleRegistry();
+
+	public String process(String templateId);
+
+	public void process(String templateId, Writer writer);
+
+	public String process(TemplateRule templateRule);
+
+	public void process(TemplateRule templateRule, Writer writer);
+
+	public void process(String templateId, Activity activity, Writer writer);
+
+	public void process(TemplateRule templateRule, Activity activity, Writer writer);
+
 }

@@ -17,6 +17,7 @@ package com.aspectran.core.context.loader;
 
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.builder.ActivityContextBuilder;
+import com.aspectran.core.context.builder.ActivityContextBuilderException;
 import com.aspectran.core.context.builder.HybridActivityContextBuilder;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
@@ -37,7 +38,7 @@ public class HybridActivityContextLoader extends AbstractActivityContextLoader {
 		this.encoding = (encoding == null) ? DEFAULT_ENCODING : encoding;
 	}
 	
-	public ActivityContext load(String rootContext) {
+	public ActivityContext load(String rootContext) throws ActivityContextBuilderException {
 		log.info("Build ActivityContext: " + rootContext);
 		long startTime = System.currentTimeMillis();
 

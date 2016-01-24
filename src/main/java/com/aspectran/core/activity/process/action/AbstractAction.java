@@ -16,7 +16,6 @@
 package com.aspectran.core.activity.process.action;
 
 import com.aspectran.core.activity.process.ActionList;
-import com.aspectran.core.activity.process.ActionIdQualifier;
 
 /**
  * The Class AbstractAction.
@@ -27,8 +26,6 @@ public abstract class AbstractAction {
 
 	protected final ActionList parent;
 	
-	protected final String qualifiedActionId;
-
 	/**
 	 * Instantiates a new AbstractAction.
 	 *
@@ -37,11 +34,6 @@ public abstract class AbstractAction {
 	 */
 	public AbstractAction(String actionId, ActionList parent) {
 		this.parent = parent;
-		
-		if(parent != null)
-			this.qualifiedActionId = ActionIdQualifier.concat(parent.getContentId(), actionId);
-		else
-			this.qualifiedActionId = actionId;
 	}
 	
 	/**
@@ -60,13 +52,4 @@ public abstract class AbstractAction {
 	 */
 	public abstract String getActionId();
 
-	/**
-	 * Gets the qualified action id.
-	 *
-	 * @return the qualified action id
-	 */
-	public String getQualifiedActionId() {
-		return qualifiedActionId;
-	}
-	
 }

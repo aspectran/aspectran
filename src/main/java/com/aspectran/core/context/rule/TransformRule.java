@@ -115,8 +115,10 @@ public class TransformRule extends ActionPossessSupport implements ActionPossess
 	public void setTemplateRule(TemplateRule templateRule) {
 		this.templateRule = templateRule;
 
-		if(templateRule.getEncoding() != null && characterEncoding == null)
-			characterEncoding = templateRule.getEncoding();
+		if(templateRule != null) {
+			if(templateRule.getEncoding() != null && this.characterEncoding == null)
+				this.characterEncoding = templateRule.getEncoding();
+		}
 	}
 
 	public Boolean getDefaultResponse() {

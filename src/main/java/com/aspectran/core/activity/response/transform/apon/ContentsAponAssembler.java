@@ -15,19 +15,19 @@
  */
 package com.aspectran.core.activity.response.transform.apon;
 
-import java.lang.reflect.Array;
-import java.lang.reflect.InvocationTargetException;
-import java.util.Collection;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.Map;
-
 import com.aspectran.core.activity.process.result.ActionResult;
 import com.aspectran.core.activity.process.result.ContentResult;
 import com.aspectran.core.activity.process.result.ProcessResult;
 import com.aspectran.core.util.BeanUtils;
 import com.aspectran.core.util.apon.GenericParameters;
 import com.aspectran.core.util.apon.Parameters;
+
+import java.lang.reflect.Array;
+import java.lang.reflect.InvocationTargetException;
+import java.util.Collection;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * Converts a ProcessResult object to a APON object.
@@ -44,7 +44,7 @@ public class ContentsAponAssembler {
 		if(processResult.size() == 1) {
 			ContentResult contentResult = processResult.get(0);
 			
-			if(contentResult.getContentId() == null && contentResult.size() == 1) {
+			if(contentResult.getName() == null && contentResult.size() == 1) {
 				ActionResult actionResult = contentResult.get(0);
 				Object resultValue = actionResult.getResultValue();
 				
@@ -78,9 +78,9 @@ public class ContentsAponAssembler {
 			return;
 		}
 		
-		if(contentResult.getContentId() != null) {
+		if(contentResult.getName() != null) {
 			Parameters p = new GenericParameters();
-			container.putValue(contentResult.getContentId(), p);
+			container.putValue(contentResult.getName(), p);
 			container = p;
 		}
 

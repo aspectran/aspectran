@@ -118,7 +118,9 @@ public class BeanAction extends AbstractAction implements Executable {
 					result = invokeMethod(activity, bean, methodName, argumentItemRuleMap, expressor, true);
 					needTranslet = Boolean.TRUE;
 				} catch(NoSuchMethodException e) {
-					log.info("Cannot find a method that requires a argument translet. So in the future will continue to call a method with no argument translet. beanActionRule " + beanActionRule);
+					if(log.isDebugEnabled()) {
+						log.debug("Cannot find a method that requires a argument translet. So in the future will continue to call a method with no argument translet. beanActionRule " + beanActionRule);
+					}
 					
 					needTranslet = Boolean.FALSE;
 					result = invokeMethod(activity, bean, methodName, argumentItemRuleMap, expressor, false);
@@ -223,8 +225,7 @@ public class BeanAction extends AbstractAction implements Executable {
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("{qualifiedActionId=").append(qualifiedActionId);
-		sb.append(", actionType=").append(getActionType());
+		sb.append("{actionType=").append(getActionType());
 		sb.append(", beanActionRule=").append(beanActionRule.toString());
 		sb.append("}");
 

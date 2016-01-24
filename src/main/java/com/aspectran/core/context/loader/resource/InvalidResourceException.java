@@ -32,9 +32,9 @@ package com.aspectran.core.context.loader.resource;
 
 import com.aspectran.core.context.ActivityContextException;
 
-
 /**
- * 
+ * The Class InvalidResourceException.
+ *
  * <p>Created: 2008. 01. 07 오전 3:35:55</p>
  * 
  * @author Juho Jeong
@@ -54,8 +54,7 @@ public class InvalidResourceException extends ActivityContextException {
 	/**
 	 * Constructor to create exception with a message
 	 * 
-	 * @param msg
-	 *            A message to associate with the exception
+	 * @param msg a message to associate with the exception
 	 */
 	public InvalidResourceException(String msg) {
 		super(msg);
@@ -64,8 +63,7 @@ public class InvalidResourceException extends ActivityContextException {
 	/**
 	 * Constructor to create exception to wrap another exception
 	 * 
-	 * @param cause
-	 *            The real cause of the exception
+	 * @param cause the real cause of the exception
 	 */
 	public InvalidResourceException(Throwable cause) {
 		super(cause);
@@ -75,10 +73,8 @@ public class InvalidResourceException extends ActivityContextException {
 	 * Constructor to create exception to wrap another exception and pass a
 	 * message
 	 * 
-	 * @param msg
-	 *            The message
-	 * @param cause
-	 *            The real cause of the exception
+	 * @param msg the message
+	 * @param cause the real cause of the exception
 	 */
 	public InvalidResourceException(String msg, Throwable cause) {
 		super(msg, cause);

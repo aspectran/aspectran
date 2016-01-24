@@ -17,6 +17,7 @@ package com.aspectran.core.activity.request;
 
 import java.util.Collections;
 import java.util.Enumeration;
+import java.util.Locale;
 
 import com.aspectran.core.activity.request.parameter.FileParameter;
 import com.aspectran.core.activity.request.parameter.FileParameterMap;
@@ -33,7 +34,9 @@ public abstract class AbstractRequest {
 	protected RequestMethodType requestMethod;
 	
 	protected FileParameterMap fileParameterMap;
-	
+
+	protected Locale locale;
+
 	/** The max length exceeded. */
 	protected boolean maxLengthExceeded;
 	
@@ -107,6 +110,17 @@ public abstract class AbstractRequest {
 	 */
 	public void setMaxLengthExceeded(boolean maxLengthExceeded) {
 		this.maxLengthExceeded = maxLengthExceeded;
+	}
+
+	public Locale getLocale() {
+		if(locale == null)
+			return Locale.getDefault();
+
+		return locale;
+	}
+
+	public void setLocale(Locale locale) {
+		this.locale = locale;
 	}
 
 }

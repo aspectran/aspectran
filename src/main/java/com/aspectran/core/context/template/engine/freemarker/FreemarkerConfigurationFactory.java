@@ -13,23 +13,22 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package com.aspectran.core.context.template.engine.freemaker;
+package com.aspectran.core.context.template.engine.freemarker;
+
+import com.aspectran.core.util.logging.Log;
+import com.aspectran.core.util.logging.LogFactory;
+import freemarker.template.Configuration;
+import freemarker.template.SimpleHash;
+import freemarker.template.TemplateException;
 
 import java.io.IOException;
 import java.util.Map;
 import java.util.Properties;
 
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
-
-import freemarker.template.Configuration;
-import freemarker.template.SimpleHash;
-import freemarker.template.TemplateException;
-
 /**
  * Factory that configures a FreeMarker Configuration.
  *
- * <p>Created: 2016. 01. 09</p>
+ * <p>Created: 2016. 1. 9.</p>
  */
 public class FreeMarkerConfigurationFactory {
 

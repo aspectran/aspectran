@@ -18,7 +18,7 @@ package com.aspectran.core.context.builder;
 import com.aspectran.core.context.ActivityContextException;
 
 /**
- * This exception will be thrown when a translets configuration is not valid.
+ * This exception will be thrown when a ActivityContext build failed.
  * 
  * <p>Created: 2008. 01. 07 오전 3:35:55</p>
  */
@@ -28,35 +28,35 @@ public class ActivityContextBuilderException extends ActivityContextException {
 	static final long serialVersionUID = 5702282474852901391L;
 
 	/**
-	 * Simple constructor
+	 * Simple constructor.
 	 */
 	public ActivityContextBuilderException() {
 		super();
 	}
 
 	/**
-	 * Constructor to create exception with a message
+	 * Constructor to create exception with a message.
 	 * 
-	 * @param msg A message to associate with the exception
+	 * @param msg the specific message
 	 */
 	public ActivityContextBuilderException(String msg) {
 		super(msg);
 	}
 
 	/**
-	 * Constructor to create exception to wrap another exception
+	 * Constructor to create exception to wrap another exception.
 	 * 
-	 * @param cause The real cause of the exception
+	 * @param cause the real cause of the exception
 	 */
 	public ActivityContextBuilderException(Throwable cause) {
 		super(cause);
 	}
 
 	/**
-	 * Constructor to create exception to wrap another exception and pass a message
+	 * Constructor to create exception to wrap another exception and pass a message.
 	 * 
-	 * @param msg The message
-	 * @param cause The real cause of the exception
+	 * @param msg the specific message
+	 * @param cause the real cause of the exception
 	 */
 	public ActivityContextBuilderException(String msg, Throwable cause) {
 		super(msg, cause);

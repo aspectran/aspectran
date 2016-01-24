@@ -16,7 +16,7 @@
 package com.aspectran.core.context.aspect;
 
 import com.aspectran.core.activity.process.ContentList;
-import com.aspectran.core.context.AspectranConstant;
+import com.aspectran.core.context.AspectranConstants;
 import com.aspectran.core.context.aspect.pointcut.Pointcut;
 import com.aspectran.core.context.bean.BeanRuleRegistry;
 import com.aspectran.core.context.rule.*;
@@ -234,7 +234,7 @@ public class AspectAdviceRulePreRegister extends AspectAdviceRuleRegister {
 		boolean matched = true;
 		
 		if(pointcutPatternRule.getTransletNamePattern() != null) {
-			matched = pointcut.patternMatches(pointcutPatternRule.getTransletNamePattern(), transletName, AspectranConstant.TRANSLET_NAME_SEPARATOR);
+			matched = pointcut.patternMatches(pointcutPatternRule.getTransletNamePattern(), transletName, AspectranConstants.TRANSLET_NAME_SEPARATOR);
 		}
 		
 		return matched;
@@ -277,7 +277,7 @@ public class AspectAdviceRulePreRegister extends AspectAdviceRuleRegister {
 		boolean matched = true;
 		
 		if(beanId != null && pointcutPatternRule.getBeanIdPattern() != null) {
-			matched = pointcut.patternMatches(pointcutPatternRule.getBeanIdPattern(), beanId, AspectranConstant.ID_SEPARATOR);
+			matched = pointcut.patternMatches(pointcutPatternRule.getBeanIdPattern(), beanId, AspectranConstants.ID_SEPARATOR);
 			if(matched)
 				pointcutPatternRule.increaseMatchedBeanCount();
 		}

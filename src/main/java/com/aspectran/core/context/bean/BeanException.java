@@ -15,14 +15,14 @@
  */
 package com.aspectran.core.context.bean;
 
-import com.aspectran.core.context.AspectranException;
+import com.aspectran.core.context.AspectranRuntimeException;
 
 /**
  * This class is the basic exception that gets thrown from the bean pacakge.
  * 
  * <p>Created: 2008. 01. 07 오전 3:35:55</p>
  */
-public class BeanException extends AspectranException {
+public class BeanException extends AspectranRuntimeException {
 	
 	/** @serial */
 	static final long serialVersionUID = 2598750999734896601L;
@@ -37,7 +37,7 @@ public class BeanException extends AspectranException {
 	/**
 	 * Constructs a BeanException with the specified detail message.
 	 * 
-	 * @param msg A message to associate with the exception
+	 * @param msg the detail message
 	 */
 	public BeanException(String msg) {
 		super(msg);
@@ -46,7 +46,7 @@ public class BeanException extends AspectranException {
 	/**
 	 * Constructor to create exception to wrap another exception.
 	 * 
-	 * @param cause The real cause of the exception
+	 * @param cause the real cause of the exception
 	 */
 	public BeanException(Throwable cause) {
 		super(cause);
@@ -54,10 +54,9 @@ public class BeanException extends AspectranException {
 
 	/**
 	 * Constructs a BeanException with the specified error message and also the specified root cause exception.
-	 * The root cause exception is generally for TypeConversionException's root cause or something that might have caused a BeanException.
-	 * 
-	 * @param msg The detail message
-	 * @param cause The real cause of the exception
+	 *
+	 * @param msg the detail message
+	 * @param cause the real cause of the exception
 	 */
 	public BeanException(String msg, Throwable cause) {
 		super(msg, cause);

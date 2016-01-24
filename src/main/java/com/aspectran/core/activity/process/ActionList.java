@@ -39,31 +39,14 @@ public class ActionList extends ArrayList<Executable> implements ActionRuleAppli
 
 	private String name;
 	
-	private final String contentId;
-
-	private final ContentList parent;
-	
 	private Boolean hidden;
 	
 	private Boolean omittable;
 	
-	public ActionList() {
-		this(null, null);
-	}
-	
-	public ActionList(ContentList parent) {
-		this(null, parent);
-	}
-	
 	/**
 	 * Instantiates a new ActionList.
-	 *
-	 * @param contentId the content id
-	 * @param parent the content list
 	 */
-	public ActionList(String contentId, ContentList parent) {
-		this.contentId = contentId;
-		this.parent = parent;
+	public ActionList() {
 	}
 	
 	public String getName() {
@@ -72,15 +55,6 @@ public class ActionList extends ArrayList<Executable> implements ActionRuleAppli
 
 	public void setName(String name) {
 		this.name = name;
-	}
-
-	/**
-	 * Gets the content id.
-	 * 
-	 * @return the content id
-	 */
-	public String getContentId() {
-		return contentId;
 	}
 
 	/**
@@ -117,15 +91,6 @@ public class ActionList extends ArrayList<Executable> implements ActionRuleAppli
 		this.omittable = omittable;
 	}
 
-	/**
-	 * Gets the content list.
-	 * 
-	 * @return the content list
-	 */
-	public ContentList getParent() {
-		return parent;
-	}
-
 	/* (non-Javadoc)
 	 * @see com.aspectran.core.context.rule.ability.ActionRuleApplicable#applyActionRule(com.aspectran.core.context.rule.EchoActionRule)
 	 */
@@ -156,7 +121,7 @@ public class ActionList extends ArrayList<Executable> implements ActionRuleAppli
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("{id=").append(contentId);
+		sb.append("{name=").append(name);
 		sb.append(", hidden=").append(hidden);
 		sb.append(", omittable=").append(omittable);
 		sb.append(", executables=");
@@ -175,8 +140,8 @@ public class ActionList extends ArrayList<Executable> implements ActionRuleAppli
 		return sb.toString();
 	}
 	
-	public static ActionList newInstance(String id, String name, Boolean omittable, Boolean hidden, ContentList contentList) {
-		ActionList actionList = new ActionList(id, contentList);
+	public static ActionList newInstance(String id, String name, Boolean omittable, Boolean hidden) {
+		ActionList actionList = new ActionList();
 		actionList.setName(name);
 		actionList.setOmittable(omittable);
 		actionList.setHidden(hidden);

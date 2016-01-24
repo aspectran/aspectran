@@ -17,19 +17,20 @@ package com.aspectran.core.context.template;
 
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.context.ActivityContext;
+import com.aspectran.core.context.expr.TokenExpression;
+import com.aspectran.core.context.expr.TokenExpressor;
+import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.rule.TemplateRule;
 import com.aspectran.core.context.template.engine.TemplateEngine;
-import com.aspectran.core.context.template.engine.TemplateEngineException;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
-import java.io.Reader;
-import java.io.StringWriter;
-import java.io.Writer;
-import java.util.Map;
+import java.io.*;
 
 /**
- * Created by gulendol on 2016. 1. 14..
+ * The Class ContextTemplateProcessor.
+ *
+ * <p>Created: 2016. 1. 14.</p>
  */
 public class ContextTemplateProcessor implements TemplateProcessor {
 
@@ -49,41 +50,80 @@ public class ContextTemplateProcessor implements TemplateProcessor {
         return templateRuleRegistry;
     }
 
-    public String process(String templateId, Reader reader) {
+    public String process(String templateId) {
         StringWriter writer = new StringWriter();
-        process(templateId, reader, writer);
+        process(templateId, writer);
 
         return writer.toString();
     }
 
-    public void process(String templateId, Reader reader, Writer writer) {
+    public void process(String templateId, Writer writer) {
     	Activity activity = context.getCurrentActivity();
 
-        TemplateDataMap templateDataMap = new TemplateDataMap(activity);
-
-        process(templateId, templateDataMap, reader, writer);
+        process(templateId, activity, writer);
     }
     
-    public void process(String templateId, Map<String, String> dataModel, Reader reader, Writer writer) {
+    public String process(TemplateRule templateRule) {
+        StringWriter writer = new StringWriter();
+        process(templateRule, writer);
+
+        return writer.toString();
+    }
+
+    public void process(TemplateRule templateRule, Writer writer) {
+    	Activity activity = context.getCurrentActivity();
+
+        process(templateRule, activity, writer);
+    }
+
+    public void process(String templateId, Activity activity, Writer writer) {
     	TemplateRule templateRule = templateRuleRegistry.getTemplateRule(templateId);
 
         if(templateRule == null) {
             throw new TemplateNotFoundException(templateId);
         }
 
-        process(templateRule, dataModel, reader, writer);
+        process(templateRule, activity, writer);
     }
-    
-    private void process(TemplateRule templateRule, Map<String, String> dataModel, Reader reader, Writer writer) {
-    	String engineBeanId = templateRule.getEngine();
 
-        TemplateEngine engine = context.getBeanRegistry().getBean(engineBeanId);
+    public void process(TemplateRule templateRule, Activity activity, Writer writer) {
+        try {
+            String engineBeanId = templateRule.getEngine();
 
-        if(engine == null) {
-            throw new TemplateEngineException(templateRule, "Template Engine Bean is not registered.");
+            if(engineBeanId != null) {
+                TemplateEngine engine = context.getBeanRegistry().getBean(engineBeanId);
+
+                if(engine == null)
+                    throw new IllegalArgumentException("No template engine bean registered for '" + engineBeanId + "'.");
+
+                TemplateDataMap templateDataMap = new TemplateDataMap(activity);
+
+                if(templateRule.isUseExternalSource()) {
+                    String templateName = templateRule.getName();
+                    engine.process(templateName, templateDataMap, writer, templateDataMap.getLocale());
+                } else {
+                    String templateSource = templateRule.getTemplateSource(activity.getApplicationAdapter());
+
+                    if(templateSource != null) {
+                        String templateName = templateRule.getId();
+                        if(templateName == null)
+                            templateName = templateRule.getEngine() + "/" + templateRule.hashCode();
+
+                        Reader reader = new StringReader(templateSource);
+                        engine.process(templateName, templateDataMap, reader, writer);
+                    }
+                }
+            } else {
+                Token[] contentTokens = templateRule.getContentTokens(activity.getApplicationAdapter());
+
+                if(contentTokens != null) {
+                    TokenExpressor expressor = new TokenExpression(activity);
+                    expressor.express(contentTokens, writer);
+                }
+            }
+        } catch(Exception e) {
+            throw new TemplateProcessorException(templateRule, "Template processing failed.", e);
         }
-
-        engine.process(templateRule, dataModel, reader, writer);
     }
     
     public synchronized void initialize(ActivityContext context) {

@@ -53,7 +53,7 @@ public class DispatchResponse implements Response {
 	/* (non-Javadoc)
 	 * @see org.jhlabs.translets.engine.response.Responsible#response(org.jhlabs.translets.action.Translet)
 	 */
-	public void response(Activity activity) throws ResponseException {
+	public void response(Activity activity) {
 		try {
 			if(debugEnabled) {
 				log.debug("response " + dispatchResponseRule);
@@ -131,12 +131,12 @@ public class DispatchResponse implements Response {
 					String viewDispatcherName = activity.getResponseSetting(ResponseRule.VIEW_DISPATCHER_SETTING_NAME);
 
 					if(viewDispatcherName == null)
-						throw new ViewDispatchException("View Dispatcher is not defined.");
+						throw new DispatchResponseException("View Dispatcher is not defined.");
 					
 					viewDispatcher = activity.getBean(viewDispatcherName);
 					
 					if(viewDispatcher == null)
-						throw new ViewDispatchException("No bean named '" + viewDispatcherName + "' is defined");
+						throw new DispatchResponseException("No bean named '" + viewDispatcherName + "' is defined");
 				}
 			}
 		}

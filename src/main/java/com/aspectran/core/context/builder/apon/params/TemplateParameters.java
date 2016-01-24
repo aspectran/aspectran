@@ -24,6 +24,7 @@ public class TemplateParameters extends AbstractParameters implements Parameters
 
 	public static final ParameterDefine id;
 	public static final ParameterDefine engine;
+	public static final ParameterDefine name;
 	public static final ParameterDefine file;
 	public static final ParameterDefine resource;
 	public static final ParameterDefine url;
@@ -36,6 +37,7 @@ public class TemplateParameters extends AbstractParameters implements Parameters
 	static {
 		id = new ParameterDefine("id", ParameterValueType.STRING);
 		engine = new ParameterDefine("engine", ParameterValueType.STRING);
+		name = new ParameterDefine("name", ParameterValueType.STRING);
 		file = new ParameterDefine("file", ParameterValueType.STRING);
 		resource = new ParameterDefine("resource", ParameterValueType.STRING);
 		url = new ParameterDefine("url", ParameterValueType.STRING);
@@ -46,6 +48,7 @@ public class TemplateParameters extends AbstractParameters implements Parameters
 		parameterDefines = new ParameterDefine[] {
 				id,
 				engine,
+				name,
 				file,
 				resource,
 				url,

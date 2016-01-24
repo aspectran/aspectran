@@ -31,6 +31,7 @@ import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.ExceptionHandlingRule;
 import com.aspectran.core.context.rule.type.JoinpointScopeType;
 import com.aspectran.core.context.rule.type.RequestMethodType;
+import com.aspectran.core.context.template.TemplateProcessor;
 
 /**
  * The Interface Activity.
@@ -112,6 +113,8 @@ public interface Activity {
 
 	public BeanRegistry getBeanRegistry();
 	
+	public TemplateProcessor getTemplateProcessor();
+
 	public <T> T getBean(String id);
 	
 	public <T> T getBean(Class<T> classType);

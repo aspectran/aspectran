@@ -31,6 +31,6 @@ public interface ViewDispatcher {
 	 * @param activity the current activity
 	 * @param dispatchResponseRule the dispatch response rule
 	 */
-	public void dispatch(Activity activity, DispatchResponseRule dispatchResponseRule);
+	public void dispatch(Activity activity, DispatchResponseRule dispatchResponseRule) throws ViewDispatchException;
 	
 }

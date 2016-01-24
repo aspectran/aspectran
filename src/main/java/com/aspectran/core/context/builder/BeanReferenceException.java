@@ -18,7 +18,7 @@ package com.aspectran.core.context.builder;
 import java.util.List;
 
 /**
- * This exception will be thrown when a translet request is failed.
+ * This exception will be thrown when Cannot resolve reference to bean.
  * 
  * <p>Created: 2008. 01. 07 오전 3:35:55</p>
  */
@@ -71,7 +71,7 @@ public class BeanReferenceException extends ActivityContextBuilderException {
 	 */
 	private static String getMessage(List<String> unknownBeanIdList) {
 		StringBuilder sb = new StringBuilder();
-		sb.append("Cannot resolve reference to bean. unknown bean id [");
+		sb.append("Cannot resolve reference to bean [");
 		
 		for(int i = 0; i < unknownBeanIdList.size(); i++) {
 			if(i > 0)

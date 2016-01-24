@@ -19,6 +19,7 @@ import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.bean.scope.Scope;
 import com.aspectran.core.context.loader.AspectranClassLoader;
+import com.aspectran.core.context.loader.resource.InvalidResourceException;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
@@ -32,7 +33,7 @@ public class CoreAspectranService extends AbstractAspectranService {
 	
 	private boolean started;
 	
-	public synchronized ActivityContext startup() {
+	public synchronized ActivityContext startup() throws AspectranServiceException {
 		loadActivityContext();
 
 		log.info("AspectranService was started successfully.");
@@ -45,7 +46,7 @@ public class CoreAspectranService extends AbstractAspectranService {
 		return activityContext;
 	}
 	
-	public synchronized boolean restart() {
+	public synchronized boolean restart() throws AspectranServiceException {
 		if(!started) {
 			log.debug("Cannot restart AspectranService, because it is currently stopped.");
 			return true;
@@ -130,7 +131,7 @@ public class CoreAspectranService extends AbstractAspectranService {
 		this.aspectranServiceControllerListener = aspectranServiceControllerListener;
 	}
 	
-	public static AspectranClassLoader newAspectranClassLoader(String[] resourceLocations) {
+	public static AspectranClassLoader newAspectranClassLoader(String[] resourceLocations) throws InvalidResourceException {
 		String[] excludePackageNames = new String[] {
 				"com.aspectran.core",
 				"com.aspectran.scheduler",

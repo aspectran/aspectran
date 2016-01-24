@@ -15,11 +15,12 @@
  */
 package com.aspectran.scheduler.adapter;
 
+import java.io.IOException;
 import java.io.StringWriter;
 
 import org.quartz.JobDetail;
 
-import com.aspectran.core.context.AspectranConstant;
+import com.aspectran.core.context.AspectranConstants;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 import com.aspectran.scheduler.service.QuartzSchedulerService;
@@ -41,13 +42,21 @@ public class QuartzJobResponseWriter extends StringWriter {
 	
 	@Override
 	public void flush() {
-		StringBuilder sb = new StringBuilder();
-		sb.append("results of job [");
-		sb.append(jobDetail.getJobDataMap().get(QuartzSchedulerService.TRANSLET_NAME_DATA_KEY)).append("]");
-		sb.append(AspectranConstant.LINE_SEPARATOR);
-		sb.append(toString());
-		
-		log.info(sb.toString());
+		if(getBuffer().length() > 0) {
+			StringBuilder sb = new StringBuilder();
+			sb.append("results of job [");
+			sb.append(jobDetail.getJobDataMap().get(QuartzSchedulerService.TRANSLET_NAME_DATA_KEY)).append("]");
+			sb.append(AspectranConstants.LINE_SEPARATOR);
+			sb.append(toString());
+
+			getBuffer().setLength(0);
+
+			log.info(sb.toString());
+		}
+	}
+
+	public void close() throws IOException {
+		flush();
 	}
 
 }

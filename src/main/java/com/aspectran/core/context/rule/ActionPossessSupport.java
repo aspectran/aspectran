@@ -18,7 +18,7 @@ package com.aspectran.core.context.rule;
 import com.aspectran.core.activity.process.ActionList;
 
 /**
- * The Class ActionyResponseSupport.
+ * The Class ActionPossessSupport.
  */
 public abstract class ActionPossessSupport {
 	

@@ -15,7 +15,7 @@
  */
 package com.aspectran.core.activity.process;
 
-import com.aspectran.core.context.AspectranConstant;
+import com.aspectran.core.context.AspectranConstants;
 
 /**
  * The Class ActionIdQualifier.
@@ -40,7 +40,7 @@ public class ActionIdQualifier {
 		sb.append(contentId);
 
 		if(actionId != null) {
-			sb.append(AspectranConstant.ID_SEPARATOR);
+			sb.append(AspectranConstants.ID_SEPARATOR);
 			sb.append(actionId);
 		}
 
@@ -67,12 +67,12 @@ public class ActionIdQualifier {
 		sb.append(parentFullActionId);
 
 		if(contentId != null) {
-			sb.append(AspectranConstant.ID_SEPARATOR);
+			sb.append(AspectranConstants.ID_SEPARATOR);
 			sb.append(contentId);
 		}
 
 		if(actionId != null) {
-			sb.append(AspectranConstant.ID_SEPARATOR);
+			sb.append(AspectranConstants.ID_SEPARATOR);
 			sb.append(actionId);
 		}
 

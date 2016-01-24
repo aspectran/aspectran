@@ -32,7 +32,7 @@ import com.aspectran.core.util.xml.Nodelet;
 import com.aspectran.core.util.xml.NodeletParser;
 
 /**
- * Aspectran Node Parser.
+ * The Class AspectranNodeParser.
  * 
  * @since 2008. 06. 14 오전 4:39:24
  */

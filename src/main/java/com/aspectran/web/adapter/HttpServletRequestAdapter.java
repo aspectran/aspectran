@@ -18,6 +18,7 @@ package com.aspectran.web.adapter;
 import java.io.UnsupportedEncodingException;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -128,16 +129,38 @@ public class HttpServletRequestAdapter extends AbstractRequestAdapter implements
 	    while(enm.hasMoreElements()) {
 	        String name = enm.nextElement();
 	        String[] values = getParameterValues(name);
-	        if(values != null) {
-	        	if(values.length == 1) {
-	        		params.put(name, values[0]);
-	        	} else {
-	        		params.put(name, values);
-	        	}
-	        }
+			if(values != null && values.length == 1) {
+				params.put(name, values[0]);
+			} else {
+				params.put(name, values);
+			}
 	    }
 	    
 	    return params;
+	}
+
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.adapter.RequestAdapter#getAttributeMap()
+	 */
+	public Map<String, Object> getAttributeMap() {
+		Map<String, Object> attrs = new HashMap<String, Object>();
+		Enumeration<String> enm = getAttributeNames();
+
+		while(enm.hasMoreElements()) {
+			String name = enm.nextElement();
+			Object value = getAttribute(name);
+			attrs.put(name, value);
+		}
+
+		return attrs;
+	}
+
+	@Override
+	public Locale getLocale() {
+		if(super.locale != null)
+			return super.locale;
+
+		return ((HttpServletRequest)adaptee).getLocale();
 	}
 
 }

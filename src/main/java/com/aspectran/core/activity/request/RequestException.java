@@ -37,7 +37,7 @@ public class RequestException extends ActivityException {
 	/**
 	 * Instantiates a new RequestException.
 	 * 
-	 * @param msg A message to associate with the exception
+	 * @param msg the message
 	 */
 	public RequestException(String msg) {
 		super(msg);
@@ -46,7 +46,7 @@ public class RequestException extends ActivityException {
 	/**
 	 * Instantiates a new RequestException.
 	 * 
-	 * @param cause The real cause of the exception
+	 * @param cause the real cause of the exception
 	 */
 	public RequestException(Throwable cause) {
 		super(cause);
@@ -55,8 +55,8 @@ public class RequestException extends ActivityException {
 	/**
 	 * Instantiates a new RequestException.
 	 * 
-	 * @param msg The message
-	 * @param cause The real cause of the exception
+	 * @param msg the message
+	 * @param cause the real cause of the exception
 	 */
 	public RequestException(String msg, Throwable cause) {
 		super(msg, cause);

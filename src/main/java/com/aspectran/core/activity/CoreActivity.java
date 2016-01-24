@@ -33,6 +33,7 @@ import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
 import com.aspectran.core.context.bean.BeanRegistry;
 import com.aspectran.core.context.rule.*;
 import com.aspectran.core.context.rule.type.*;
+import com.aspectran.core.context.template.TemplateProcessor;
 import com.aspectran.core.context.translet.TransletNotFoundException;
 import com.aspectran.core.context.variable.ParameterMap;
 import com.aspectran.core.util.logging.Log;
@@ -480,6 +481,13 @@ public class CoreActivity extends AbstractActivity implements Activity {
 
 		if(contentList != null) {
 			for(ActionList actionList : contentList) {
+				if(!actionList.isHidden()) {
+					ProcessResult processResult = translet.touchProcessResult(contentList.getName());
+
+					if(contentList.isOmittable())
+						processResult.setOmittable(true);
+				}
+
 				execute(actionList);
 				
 				if(activityEnded)
@@ -612,23 +620,11 @@ public class CoreActivity extends AbstractActivity implements Activity {
 	protected void execute(ActionList actionList) {
 		ContentResult contentResult = null;
 		
-		if(!actionList.isHidden()) {
+		for(Executable action : actionList) {
 			contentResult = new ContentResult();
 			contentResult.setName(actionList.getName());
-			contentResult.setContentId(actionList.getContentId());
 			contentResult.setOmittable(actionList.isOmittable());
 
-			ContentList contentList = actionList.getParent();
-			String contentsName = contentList != null ? contentList.getName() : null;
-			
-			ProcessResult processResult = translet.touchProcessResult(contentsName);
-			processResult.addContentResult(contentResult);
-			
-			if(contentList != null && contentList.isOmittable())
-				processResult.setOmittable(true);
-		}
-
-		for(Executable action : actionList) {
 			execute(action, contentResult);
 			
 			if(activityEnded)
@@ -644,7 +640,9 @@ public class CoreActivity extends AbstractActivity implements Activity {
 			Object resultValue = action.execute(this);
 		
 			if(contentResult != null && !action.isHidden() && resultValue != ActionResult.NO_RESULT) {
-				contentResult.addActionResult(action.getActionId(), resultValue);
+				ActionResult actionResult = new ActionResult(contentResult);
+				actionResult.setActionId(action.getActionId());
+				actionResult.setResultValue(resultValue);
 			}
 			
 			if(traceEnabled)
@@ -861,7 +859,10 @@ public class CoreActivity extends AbstractActivity implements Activity {
 	public BeanRegistry getBeanRegistry() {
 		return context.getBeanRegistry();
 	}
-	
+
+	public TemplateProcessor getTemplateProcessor() {
+		return context.getTemplateProcessor();
+	}
 	/* (non-Javadoc)
 	 * @see com.aspectran.core.activity.Activity#getBean(java.lang.String)
 	 */

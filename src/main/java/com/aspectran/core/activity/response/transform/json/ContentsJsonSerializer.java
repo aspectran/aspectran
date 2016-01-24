@@ -15,15 +15,15 @@
  */
 package com.aspectran.core.activity.response.transform.json;
 
-import java.io.IOException;
-import java.io.Writer;
-import java.lang.reflect.InvocationTargetException;
-import java.util.Iterator;
-
 import com.aspectran.core.activity.process.result.ActionResult;
 import com.aspectran.core.activity.process.result.ContentResult;
 import com.aspectran.core.activity.process.result.ProcessResult;
 import com.aspectran.core.util.json.JsonSerializer;
+
+import java.io.IOException;
+import java.io.Writer;
+import java.lang.reflect.InvocationTargetException;
+import java.util.Iterator;
 
 /**
  * Converts a ProcessResult object to a JSON formatted string.
@@ -106,9 +106,9 @@ public class ContentsJsonSerializer extends JsonSerializer {
 			return;
 		}
 			
-		if(contentResult.getContentId() != null) {
+		if(contentResult.getName() != null) {
 			openCurlyBracket();
-			writeName(contentResult.getContentId());
+			writeName(contentResult.getName());
 		}
 
 		if(contentResult.size() == 1) {
@@ -145,7 +145,7 @@ public class ContentsJsonSerializer extends JsonSerializer {
 			closeCurlyBracket();
 		}
 		
-		if(contentResult.getContentId() != null) {
+		if(contentResult.getName() != null) {
 			closeCurlyBracket();
 		}
 	}

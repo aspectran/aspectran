@@ -17,6 +17,7 @@ package com.aspectran.core.context.loader;
 
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.ActivityContext;
+import com.aspectran.core.context.builder.ActivityContextBuilderException;
 
 public interface ActivityContextLoader {
 
@@ -26,6 +27,6 @@ public interface ActivityContextLoader {
 
 	public void setHybridLoading(boolean hybridLoading);
 	
-	public ActivityContext load(String rootContext);
+	public ActivityContext load(String rootContext) throws ActivityContextBuilderException;
 	
 }

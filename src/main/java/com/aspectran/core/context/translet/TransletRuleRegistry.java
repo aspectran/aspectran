@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.aspectran.core.adapter.ApplicationAdapter;
-import com.aspectran.core.context.AspectranConstant;
+import com.aspectran.core.context.AspectranConstants;
 import com.aspectran.core.context.builder.AssistantLocal;
 import com.aspectran.core.context.builder.DefaultSettings;
 import com.aspectran.core.context.expr.token.Token;
@@ -245,7 +245,7 @@ public class TransletRuleRegistry {
 		if(defaultSettings == null)
 			return transletName;
 
-		if(transletName != null && transletName.length() > 0 && transletName.charAt(0) == AspectranConstant.TRANSLET_NAME_SEPARATOR)
+		if(transletName != null && transletName.length() > 0 && transletName.charAt(0) == AspectranConstants.TRANSLET_NAME_SEPARATOR)
 			return transletName;
 
 		if(defaultSettings.getTransletNamePrefix() == null && 
@@ -283,7 +283,7 @@ public class TransletRuleRegistry {
 		}
 		
 		String restfulNamePattern = TransletRule.makeRestfulTransletName(sb.toString(), restVerb);
-		WildcardPattern namePattern = WildcardPattern.compile(restfulNamePattern, AspectranConstant.TRANSLET_NAME_SEPARATOR);
+		WildcardPattern namePattern = WildcardPattern.compile(restfulNamePattern, AspectranConstants.TRANSLET_NAME_SEPARATOR);
 		
 		transletRule.setNamePattern(namePattern);
 		transletRule.setNameTokens(nameTokens);

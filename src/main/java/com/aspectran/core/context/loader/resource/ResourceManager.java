@@ -15,17 +15,18 @@
  */
 package com.aspectran.core.context.loader.resource;
 
+import com.aspectran.core.context.loader.AspectranClassLoader;
+import com.aspectran.core.util.ResourceUtils;
+
 import java.net.URL;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
-import com.aspectran.core.context.loader.AspectranClassLoader;
-import com.aspectran.core.util.ResourceUtils;
-
-
 /**
+ * The Class ResourceManager.
+ *
  * <p>Created: 2014. 12. 18 오후 5:51:13</p>	
  */
 public class ResourceManager {
@@ -96,11 +97,6 @@ public class ResourceManager {
 		if(name.endsWith(ResourceUtils.RESOURCE_NAME_SPEPARATOR))
 			name = name.substring(0, name.length() - 1);
 		
-		//System.out.println("-find resource from parent: " + name);
-		//System.out.println("--parent results: " + inherited);
-		
-		//System.out.println("find resource from self: " + name);
-		
 		final String filterName = name;
 		
 		return new Enumeration<URL>() {
@@ -147,8 +143,6 @@ public class ResourceManager {
 				current = next;
 				next = null;
 				
-				//System.out.println("--self results: " + current);
-
 				return current;
 			}
 		};
@@ -161,15 +155,6 @@ public class ResourceManager {
 	public static Enumeration<URL> searchResources(final Iterator<AspectranClassLoader> owners, String name, final Enumeration<URL> inherited) {
 		if(name.endsWith(ResourceUtils.RESOURCE_NAME_SPEPARATOR))
 			name = name.substring(0, name.length() - 1);
-		
-//		System.out.println("find resource from parent: " + name);
-//		System.out.println("parent results: " + inherited);
-//		
-//		while(inherited.hasMoreElements()) {
-//			System.out.println("p: " + inherited.nextElement().toString());
-//		}
-//		
-//		System.out.println("find resource from self: " + name);
 
 		final String filterName = name;
 		
@@ -189,9 +174,7 @@ public class ResourceManager {
 					
 					while(current.hasNext()) {
 						Map.Entry<String, URL> entry2 = current.next();
-						//System.out.println("current: " + entry2.getKey());
-						
-						//if(entry2.getKey().startsWith(filterName)) {
+
 						if(entry2.getKey().equals(filterName)) {
 							entry = entry2;
 							return true;
@@ -238,45 +221,8 @@ public class ResourceManager {
 	public int getResourceEntriesSize() {
 		return resourceEntries.size();
 	}
-//
-//	public Class<?> loadClass(String name) throws ResourceNotFoundException {
-//		synchronized(classCache) {
-//			Class<?> c = classCache.get(name);
-//			
-//			if(c == null) {
-//				URL url = resourceEntries.get(name);
-//				
-//				if(url == null) {
-//					throw new ResourceNotFoundException(name);
-//				}
-//				
-//				c = loadClass(url);
-//				classCache.put(name, c);
-//			}
-//			
-//			return c;
-//		}
-//	}
-	
-//	protected Class<?> loadClass(URL url) {
-//		URLConnection connection = url.openConnection();
-//		InputStream input = connection.getInputStream();
-//		ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-//		int data = input.read();
-//		
-//		while(data != -1) {
-//			buffer.write(data);
-//			data = input.read();
-//		}
-//		
-//		input.close();
-//		
-//		byte[] classData = buffer.toByteArray();
-//		
-//		return owner.defineClass("reflection.MyObject", classData, 0, classData.length);
-//	}
-	
-	public void reset() {
+
+	public void reset() throws InvalidResourceException {
 		release();
 	}
 	

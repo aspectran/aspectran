@@ -52,8 +52,7 @@ public class InvalidPointcutPatternException extends AspectException {
 
 	/**
 	 * Constructs a InvalidPointcutPatternException with the specified error message and also the specified root cause exception.
-	 * The root cause exception is generally for TypeConversionException's root cause or something that might have caused a InvalidPointcutPatternException.
-	 * 
+	 *
 	 * @param msg The detail message
 	 * @param cause The real cause of the exception
 	 */

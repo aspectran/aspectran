@@ -28,6 +28,6 @@ public interface NodeletAdder {
      * @param xpath the xpath
      * @param parser the nodelet parser
      */
-    void process (String xpath, NodeletParser parser);
+    void process(String xpath, NodeletParser parser);
     
 }

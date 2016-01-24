@@ -16,16 +16,17 @@
 package com.aspectran.core.activity.response.dispatch;
 
 import com.aspectran.core.activity.response.ResponseException;
+import com.aspectran.core.context.AspectranCheckedException;
 
 /**
  * The Class ViewDispatchException.
  * 
  * <p>Created: 2008. 01. 07 오전 3:35:55</p>
  */
-public class ViewDispatchException extends ResponseException {
-	
+public class ViewDispatchException extends AspectranCheckedException {
+
 	/** @serial */
-	private static final long serialVersionUID = -5266768905802048525L;
+	private static final long serialVersionUID = 5341799597740412582L;
 
 	/**
 	 * Simple constructor.
@@ -37,7 +38,7 @@ public class ViewDispatchException extends ResponseException {
 	/**
 	 * Constructor to create exception with a message.
 	 * 
-	 * @param msg A message to associate with the exception
+	 * @param msg the message
 	 */
 	public ViewDispatchException(String msg) {
 		super(msg);
@@ -46,7 +47,7 @@ public class ViewDispatchException extends ResponseException {
 	/**
 	 * Constructor to create exception to wrap another exception.
 	 * 
-	 * @param cause The real cause of the exception
+	 * @param cause the real cause of the exception
 	 */
 	public ViewDispatchException(Throwable cause) {
 		super(cause);
@@ -55,8 +56,8 @@ public class ViewDispatchException extends ResponseException {
 	/**
 	 * Constructor to create exception to wrap another exception and pass a message.
 	 * 
-	 * @param msg The message
-	 * @param cause The real cause of the exception
+	 * @param msg the message
+	 * @param cause the real cause of the exception
 	 */
 	public ViewDispatchException(String msg, Throwable cause) {
 		super(msg, cause);

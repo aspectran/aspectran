@@ -53,13 +53,14 @@ public class TemplateNodeletAdder implements NodeletAdder {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
 				String id = attributes.get("id");
 				String engine = attributes.get("engine");
-				String resource = attributes.get("resource");
+				String name = attributes.get("name");
 				String file = attributes.get("file");
+				String resource = attributes.get("resource");
 				String url = attributes.get("url");
 				String encoding = attributes.get("encoding");
 				Boolean noCache = BooleanUtils.toNullableBooleanObject(attributes.get("noCache"));
 
-				TemplateRule templateRule = TemplateRule.newInstance(id, engine, file, resource, url, text, encoding, noCache);
+				TemplateRule templateRule = TemplateRule.newInstance(id, engine, name, file, resource, url, text, encoding, noCache);
 				assistant.pushObject(templateRule);
 
 				if(!StringUtils.isEmpty(engine)) {

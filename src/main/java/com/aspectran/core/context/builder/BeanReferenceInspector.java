@@ -51,7 +51,7 @@ public class BeanReferenceInspector {
 		}
 	}
 	
-	public void inspect(BeanRuleRegistry beanRuleRegistry) {
+	public void inspect(BeanRuleRegistry beanRuleRegistry) throws BeanReferenceException {
 		List<String> unknownBeanIdList = new ArrayList<String>();
 		
 		for(Map.Entry<String, Set<Object>> entry : relationMap.entrySet()) {

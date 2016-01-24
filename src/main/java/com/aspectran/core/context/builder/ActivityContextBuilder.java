@@ -26,6 +26,6 @@ public interface ActivityContextBuilder {
 	
 	public void setHybridLoading(boolean hybridLoading);
 	
-	public ActivityContext build(String rootContext);
+	public ActivityContext build(String rootContext) throws ActivityContextBuilderException;
 	
 }

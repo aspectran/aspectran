@@ -15,12 +15,12 @@
  */
 package com.aspectran.core.util.logging;
 
-import com.aspectran.core.context.AspectranException;
+import com.aspectran.core.context.AspectranRuntimeException;
 
 /**
  * @author Clinton Begin
  */
-public class LogException extends AspectranException {
+public class LogException extends AspectranRuntimeException {
 
 	/**
 	 * @serial

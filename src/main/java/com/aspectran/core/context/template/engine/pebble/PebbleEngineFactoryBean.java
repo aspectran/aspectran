@@ -13,22 +13,29 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package com.aspectran.core.context.template.engine.freemaker;
+package com.aspectran.core.context.template.engine.pebble;
 
+import com.aspectran.core.context.ActivityContext;
+import com.aspectran.core.context.bean.ablility.ActivityContextAware;
 import com.aspectran.core.context.bean.ablility.FactoryBean;
 import com.aspectran.core.context.bean.ablility.InitializableBean;
-import freemarker.template.Configuration;
+import com.mitchellbosecke.pebble.PebbleEngine;
 
 /**
- * JavaBean to configure FreeMarker.
+ * JavaBean to configure Pebble Engine.
  *
- * Note: Aspectran's FreeMarker support requires FreeMarker 2.3 or higher.
- *
- * Created by gulendol on 2016. 1. 9..
+ * <p>Created: 2016. 1. 25.</p>
  */
-public class FreeMarkerConfigurationFactoryBean extends FreeMarkerConfigurationFactory implements InitializableBean, FactoryBean<Configuration> {
+public class PebbleEngineFactoryBean extends PebbleEngineFactory implements ActivityContextAware, InitializableBean, FactoryBean<PebbleEngine> {
 
-    private Configuration configuration;
+    private ActivityContext context;
+
+    private PebbleEngine engine;
+
+    @Override
+    public void setActivityContext(ActivityContext context) {
+        this.context = context;
+    }
 
     /**
      * Initialize FreeMarkerConfigurationFactory's Configuration
@@ -38,14 +45,14 @@ public class FreeMarkerConfigurationFactoryBean extends FreeMarkerConfigurationF
      */
     @Override
     public void initialize() throws Exception {
-        if(this.configuration == null) {
-            this.configuration = createConfiguration();
+        if(this.engine == null) {
+            this.engine = createPebbleEngine(context.getClassLoader());
         }
     }
 
     @Override
-    public Configuration getObject() {
-        return this.configuration;
+    public PebbleEngine getObject() {
+        return this.engine;
     }
 
 }

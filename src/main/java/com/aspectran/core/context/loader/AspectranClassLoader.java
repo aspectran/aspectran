@@ -62,19 +62,19 @@ public class AspectranClassLoader extends ClassLoader {
 	
 	private Set<String> excludePackageNames;
 	
-	public AspectranClassLoader() {
+	public AspectranClassLoader() throws InvalidResourceException {
 		this(getDefaultClassLoader());
 	}
 	
-	public AspectranClassLoader(ClassLoader parent) {
+	public AspectranClassLoader(ClassLoader parent) throws InvalidResourceException {
 		this((String)null, parent);
 	}
 	
-	public AspectranClassLoader(String resourceLocation) {
+	public AspectranClassLoader(String resourceLocation) throws InvalidResourceException {
 		this(resourceLocation, getDefaultClassLoader());
 	}
 
-	public AspectranClassLoader(String resourceLocation, ClassLoader parent) {
+	public AspectranClassLoader(String resourceLocation, ClassLoader parent) throws InvalidResourceException {
 		super(parent);
 		
 		this.id = 1000;
@@ -87,11 +87,11 @@ public class AspectranClassLoader extends ClassLoader {
 			log.debug("created a root AspectranClassLoader. " + this);
 	}
 	
-	public AspectranClassLoader(String[] resourceLocations) {
+	public AspectranClassLoader(String[] resourceLocations) throws InvalidResourceException {
 		this(resourceLocations, getDefaultClassLoader());
 	}
 	
-	public AspectranClassLoader(String[] resourceLocations, ClassLoader parent) {
+	public AspectranClassLoader(String[] resourceLocations, ClassLoader parent) throws InvalidResourceException {
 		this(parent);
 		
 		AspectranClassLoader acl = this;
@@ -101,7 +101,7 @@ public class AspectranClassLoader extends ClassLoader {
 		}
 	}
 
-	protected AspectranClassLoader(String resourceLocation, AspectranClassLoader parent) {
+	protected AspectranClassLoader(String resourceLocation, AspectranClassLoader parent) throws InvalidResourceException {
 		super(parent);
 		
 		int brotherSize = parent.addChild(this);
@@ -113,7 +113,7 @@ public class AspectranClassLoader extends ClassLoader {
 		this.resourceManager = new LocalResourceManager(resourceLocation, this);
 	}
 	
-	public void setResourceLocation(String resourceLocation) {
+	public void setResourceLocation(String resourceLocation) throws InvalidResourceException {
 		synchronized(children) {
 			if(children.size() > 0) {
 				children.clear();
@@ -123,7 +123,7 @@ public class AspectranClassLoader extends ClassLoader {
 		}
 	}
 	
-	public void setResourceLocations(String[] resourceLocations) {
+	public void setResourceLocations(String[] resourceLocations) throws InvalidResourceException {
 		synchronized(children) {
 			if(children.size() > 0) {
 				children.clear();
@@ -138,7 +138,7 @@ public class AspectranClassLoader extends ClassLoader {
 		}
 	}
 	
-	private AspectranClassLoader createChild(String resourceLocation) {
+	private AspectranClassLoader createChild(String resourceLocation) throws InvalidResourceException {
 		if(!firstborn)
 			throw new UnsupportedOperationException("Only the firstborn AspectranClassLoader can create a child.");
 		
@@ -149,7 +149,7 @@ public class AspectranClassLoader extends ClassLoader {
 		return child;
 	}
 	
-	public AspectranClassLoader wishBrother(String resourceLocation) {
+	public AspectranClassLoader wishBrother(String resourceLocation) throws InvalidResourceException {
 		AspectranClassLoader parent = (AspectranClassLoader)getParent();
 
 		return parent.createChild(resourceLocation);
@@ -266,11 +266,11 @@ public class AspectranClassLoader extends ClassLoader {
 		return resourceLocation;
 	}
 
-	public synchronized void reload() {
+	public synchronized void reload() throws InvalidResourceException {
 		reload(root);
 	}
 	
-	private void reload(AspectranClassLoader self) {
+	private void reload(AspectranClassLoader self) throws InvalidResourceException {
 		self.increaseReloadCount();
 		
 		log.debug("reload AspectranClassLoader " + self);
@@ -353,7 +353,7 @@ public class AspectranClassLoader extends ClassLoader {
 	    	try  {
 		    	classData = loadClassData(name, root);
 	    	} catch(InvalidResourceException e) {
-	    		log.error("failed to load class \"" + name + "\"", e);
+	    		log.error("failed to load class '" + name + "'", e);
 	    	}
 
 	    	if(classData != null) {
@@ -391,7 +391,7 @@ public class AspectranClassLoader extends ClassLoader {
 		return url;
 	}
 	
-	private byte[] loadClassData(String className, AspectranClassLoader owner) {
+	private byte[] loadClassData(String className, AspectranClassLoader owner) throws InvalidResourceException {
 		if(isExcluded(className))
 			return null;
 		

@@ -20,32 +20,32 @@ import com.aspectran.core.context.ActivityContext;
 
 public interface AspectranServiceController {
 	
-	public ActivityContext startup();
+	public ActivityContext startup() throws AspectranServiceException;
 
-	public boolean restart();
+	public boolean restart() throws AspectranServiceException;
 	
 	/**
 	 * Suspends a service's operation.
 	 */
-	public void pause();
+	public void pause() throws AspectranServiceException;
 	
 	/**
 	 * Suspends a service's operation.
 	 * 
 	 * @param timeout - the maximum time to wait in milliseconds. 
 	 */
-	public void pause(long timeout);
+	public void pause(long timeout) throws AspectranServiceException;
 	
 	/**
 	 * Continues a service after it has been paused.
 	 */
-	public void resume();
+	public void resume() throws AspectranServiceException;
 	
 	/**
 	 * Stops this service and any services that are dependent on this service.
 	 *
 	 * @return true, if successful
 	 */
-	public boolean stop();
+	public boolean stop() throws AspectranServiceException;
 	
 }

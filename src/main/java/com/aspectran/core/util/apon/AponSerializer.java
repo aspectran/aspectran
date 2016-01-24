@@ -321,7 +321,7 @@ public class AponSerializer extends AponFormat implements Flushable {
 	}
 	
 	private void indent() throws IOException {
-		if(prettyPrint) {
+		if(prettyPrint && indentString != null) {
 			for(int i = 0; i < indentDepth; i++) {
 				writer.write(indentString);
 			}
@@ -367,7 +367,7 @@ public class AponSerializer extends AponFormat implements Flushable {
 	 * @return the APON formatted string
 	 */
 	public static String serialize(Parameters parameters) {
-		return serialize(parameters, true, null);
+		return serialize(parameters, true, AponFormat.INDENT_STRING);
 	}
 	
 	/**
@@ -383,7 +383,7 @@ public class AponSerializer extends AponFormat implements Flushable {
 		if(prettyPrint)
 			return serialize(parameters, true, AponFormat.INDENT_STRING);
 		else
-			return serialize(parameters, false, null);
+			return serialize(parameters, false, AponFormat.INDENT_STRING);
 	}
 	
 	/**

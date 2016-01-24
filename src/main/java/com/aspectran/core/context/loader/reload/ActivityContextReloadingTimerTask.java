@@ -22,8 +22,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.TimerTask;
 
+import com.aspectran.core.context.AspectranRuntimeException;
 import com.aspectran.core.context.loader.AspectranClassLoader;
 import com.aspectran.core.service.AspectranService;
+import com.aspectran.core.service.AspectranServiceException;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
@@ -91,7 +93,11 @@ public class ActivityContextReloadingTimerTask extends TimerTask {
 		}
 		
 		if(modified) {
-			aspectranService.restart();
+			try {
+				aspectranService.restart();
+			} catch(AspectranServiceException e) {
+				throw new AspectranRuntimeException(e);
+			}
 			modified = false;
 		}
 	}

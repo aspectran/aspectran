@@ -19,7 +19,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.aspectran.core.context.AspectranConstant;
+import com.aspectran.core.context.AspectranConstants;
 import com.aspectran.core.context.builder.apon.params.FilterParameters;
 import com.aspectran.core.util.ClassScanner;
 import com.aspectran.core.util.ClassUtils;
@@ -81,7 +81,7 @@ public class BeanClassScanner extends ClassScanner {
 	}
 
 	public void setBeanIdMaskPattern(String beanIdMaskPattern) {
-		this.beanIdMaskPattern = new WildcardPattern(beanIdMaskPattern, AspectranConstant.ID_SEPARATOR);
+		this.beanIdMaskPattern = new WildcardPattern(beanIdMaskPattern, AspectranConstants.ID_SEPARATOR);
 	}
 	
 	public void setBeanClassScanFilter(String classScanFilterClassName) {

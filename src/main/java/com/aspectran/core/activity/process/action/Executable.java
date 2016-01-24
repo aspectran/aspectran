@@ -34,13 +34,6 @@ public interface Executable {
 	public String getActionId();
 
 	/**
-	 * Gets the qualified action id.
-	 *
-	 * @return the qualified action id
-	 */
-	public String getQualifiedActionId();
-
-	/**
 	 * Execute this action.
 	 *
 	 * @param activity the activity

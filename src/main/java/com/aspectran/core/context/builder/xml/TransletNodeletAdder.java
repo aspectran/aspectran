@@ -129,9 +129,7 @@ public class TransletNodeletAdder implements NodeletAdder {
 				if(!assistant.isNullableContentId() && StringUtils.isEmpty(id))
 					throw new IllegalArgumentException("The <content> element requires a id attribute.");
 
-				ContentList contentList = assistant.peekObject();
-				
-				ActionList actionList = ActionList.newInstance(id, name, omittable, hidden, contentList);
+				ActionList actionList = ActionList.newInstance(id, name, omittable, hidden);
 				assistant.pushObject(actionList);
 			}
 		});
@@ -171,7 +169,7 @@ public class TransletNodeletAdder implements NodeletAdder {
 				ContentList contentList = transletRule.touchContentList(true);
 				assistant.pushObject(contentList);
 				
-				ActionList actionList = ActionList.newInstance(id, name, omittable, hidden, contentList);
+				ActionList actionList = ActionList.newInstance(id, name, omittable, hidden);
 				assistant.pushObject(actionList);
 			}
 		});

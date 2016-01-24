@@ -100,7 +100,7 @@ class CDATA #IMPLIED
 <!ELEMENT template (#PCDATA)>
 <!ATTLIST template
 id CDATA #IMPLIED
-engine (pebble | freemaker | st) #IMPLIED
+engine CDATA #IMPLIED
 resource CDATA #IMPLIED
 file CDATA #IMPLIED
 url CDATA #IMPLIED
@@ -134,7 +134,6 @@ omittable (true | false) #IMPLIED
 
 <!ELEMENT content (echo? | action? | include?)*>
 <!ATTLIST content
-id CDATA #IMPLIED
 name CDATA #IMPLIED
 omittable (true | false) #IMPLIED
 hidden (true | false) #IMPLIED

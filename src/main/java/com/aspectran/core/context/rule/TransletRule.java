@@ -23,7 +23,7 @@ import com.aspectran.core.activity.Translet;
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.activity.process.ContentList;
 import com.aspectran.core.activity.response.Response;
-import com.aspectran.core.context.AspectranConstant;
+import com.aspectran.core.context.AspectranConstants;
 import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
 import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.rule.ability.ActionRuleApplicable;
@@ -554,10 +554,10 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 		if(responseName != null && responseName.length() > 0) {
 			String transletName = transletRule.getName();
 
-			if(responseName.charAt(0) == AspectranConstant.TRANSLET_NAME_EXTENSION_SEPARATOR) {
+			if(responseName.charAt(0) == AspectranConstants.TRANSLET_NAME_EXTENSION_SEPARATOR) {
 				transletName += responseName;
 			} else {
-				transletName += AspectranConstant.TRANSLET_NAME_SEPARATOR + responseName;
+				transletName += AspectranConstants.TRANSLET_NAME_SEPARATOR + responseName;
 			}
 			
 			transletRule.setName(transletName);

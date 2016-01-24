@@ -17,6 +17,7 @@ package com.aspectran.core.adapter;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Enumeration;
+import java.util.Locale;
 import java.util.Map;
 
 import com.aspectran.core.activity.request.parameter.FileParameter;
@@ -146,18 +147,6 @@ public interface RequestAdapter {
 	public FileParameter[] removeFileParameter(String name);
 	
 	/**
-	 * Return a mutable Map of the request parameters,
-	 * with parameter names as map keys and parameter values as map values.
-	 * If the parameter value type is the String then map value will be of type String.
-	 * If the parameter value type is the String array then map value will be of type String array.
-	 *
-	 * @return the parameter map
-	 * 
-	 * @since 1.4.0
-	 */
-	public Map<String, Object> getParameterMap();
-	
-	/**
 	 * Returns the value of the named attribute as an <code>Object</code>, or <code>null</code> if no attribute of the given name exists.
 	 *
 	 * @param <T> the generic type
@@ -192,6 +181,28 @@ public interface RequestAdapter {
 	public void removeAttribute(String name);
 
 	/**
+	 * Return a mutable Map of the request parameters,
+	 * with parameter names as map keys and parameter values as map values.
+	 * If the parameter value type is the String then map value will be of type String.
+	 * If the parameter value type is the String array then map value will be of type String array.
+	 *
+	 * @return the parameter map
+	 *
+	 * @since 1.4.0
+	 */
+	public Map<String, Object> getParameterMap();
+
+	/**
+	 * Return a mutable Map of the request attributes,
+	 * with attribute names as map keys and attribute value as map value.
+	 *
+	 * @return the attribute map
+	 *
+	 * @since 2.0.0
+	 */
+	public Map<String, Object> getAttributeMap();
+
+	/**
 	 * Returns whether request header has exceed the maximum length.
 	 *
 	 * @return true, if is max length exceeded
@@ -204,5 +215,11 @@ public interface RequestAdapter {
 	 * @param maxLengthExceeded the new max length exceeded
 	 */
 	public void setMaxLengthExceeded(boolean maxLengthExceeded);
-	
+
+	/**
+	 * Returns the preferred <code>Locale</code>.
+	 * @return a Locale
+     */
+	public Locale getLocale();
+
 }

@@ -13,39 +13,38 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package com.aspectran.core.context.template.engine;
+package com.aspectran.core.context.template;
 
 import com.aspectran.core.context.rule.TemplateRule;
-import com.aspectran.core.context.template.TemplateRuleException;
 
 /**
- * This class is the basic exception that gets thrown from the template engine pacakge.
+ * This class is the basic exception that gets thrown from the template pacakge.
  * 
- * <p>Created: 2016. 01. 15</p>
+ * <p>Created: 2016. 01. 15.</p>
  */
-public class TemplateEngineException extends TemplateRuleException {
+public class TemplateProcessorException extends TemplateRuleException {
 
 	/** @serial */
-	private static final long serialVersionUID = -2280211078256350741L;
+	private static final long serialVersionUID = -1495281620922964138L;
 
 	/**
-	 * Instantiates a new TemplateEngineException.
+	 * Instantiates a new TemplateProcessorException.
 	 *
 	 * @param templateRule the template rule
-	 * @param msg The detail message
+	 * @param msg the detail message
 	 */
-	public TemplateEngineException(TemplateRule templateRule, String msg) {
+	public TemplateProcessorException(TemplateRule templateRule, String msg) {
 		super(templateRule, msg);
 	}
 
 	/**
-	 * Instantiates a new TemplateEngineException.
+	 * Instantiates a new TemplateProcessorException.
 	 *
 	 * @param templateRule the template rule
-	 * @param msg The detail message
+	 * @param msg the detail message
 	 * @param cause the root cause
 	 */
-	public TemplateEngineException(TemplateRule templateRule, String msg, Throwable cause) {
+	public TemplateProcessorException(TemplateRule templateRule, String msg, Throwable cause) {
 		super(templateRule, msg, cause);
 	}
 

@@ -108,10 +108,10 @@ public abstract class AbstractAspectranService implements AspectranService {
 		return hardReload;
 	}
 
-	protected synchronized void initialize(AspectranConfig aspectranConfig) throws ActivityContextException {
+	protected synchronized void initialize(AspectranConfig aspectranConfig) throws AspectranServiceException {
 		if(activityContext != null)
-			throw new ActivityContextException("Already loaded the AspectranContext. Destroy the old AspectranContext before loading.");
-		
+			throw new AspectranServiceException("Already loaded the AspectranContext. Destroy the old AspectranContext before loading.");
+
 		log.info("Initializing AspectranService...");
 
 		try {
@@ -156,9 +156,9 @@ public abstract class AbstractAspectranService implements AspectranService {
 		}
 	}
 	
-	protected synchronized ActivityContext loadActivityContext() throws ActivityContextException {
+	protected synchronized ActivityContext loadActivityContext() throws AspectranServiceException {
 		if(activityContext != null)
-			throw new ActivityContextException("Already loaded the AspectranContext. Destroy the old AspectranContext before loading.");
+			throw new AspectranServiceException("Already loaded the AspectranContext. Destroy the old AspectranContext before loading.");
 		
 		if(log.isDebugEnabled())
 			log.debug("Loading ActivityContext...");
@@ -198,7 +198,7 @@ public abstract class AbstractAspectranService implements AspectranService {
 		return cleanlyDestoryed;
 	}
 
-	public synchronized ActivityContext reloadActivityContext() {
+	public synchronized ActivityContext reloadActivityContext() throws AspectranServiceException {
 		try {
 			if(activityContextLoader == null)
 				throw new IllegalArgumentException("activityContextLoader must not be null");
@@ -279,7 +279,7 @@ public abstract class AbstractAspectranService implements AspectranService {
 		reloadingTimer = null;
 	}
 	
-	private static String[] checkResourceLocations(String applicationBasePath, String rootResourceLocation, String[] resourceLocations) throws IOException {
+	private static String[] checkResourceLocations(String applicationBasePath, String rootResourceLocation, String[] resourceLocations) throws InvalidResourceException {
 		if(resourceLocations == null)
 			return null;
 		

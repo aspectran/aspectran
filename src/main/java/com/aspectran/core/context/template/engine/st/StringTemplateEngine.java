@@ -15,20 +15,29 @@
  */
 package com.aspectran.core.context.template.engine.st;
 
-import com.aspectran.core.context.rule.TemplateRule;
 import com.aspectran.core.context.template.engine.TemplateEngine;
+import com.aspectran.core.context.template.engine.TemplateEngineProcessException;
 
 import java.io.Reader;
 import java.io.Writer;
+import java.util.Locale;
 import java.util.Map;
 
 /**
- * Created by gulendol on 2016. 1. 9..
+ * <p>Created: 2016. 1. 9.</p>
  */
 public class StringTemplateEngine implements TemplateEngine {
-    @Override
-    public void process(TemplateRule templateRule, Map<String, String> dataModel, Reader reader, Writer writer) {
 
+    @Override
+    public void process(String templateName, Map<String, Object> dataModel, Reader reader, Writer writer) throws TemplateEngineProcessException {
+    }
+
+    @Override
+    public void process(String templateName, Map<String, Object> dataModel, Writer writer) throws TemplateEngineProcessException {
+    }
+
+    @Override
+    public void process(String templateName, Map<String, Object> dataModel, Writer writer, Locale locale) throws TemplateEngineProcessException {
     }
 
 }

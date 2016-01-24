@@ -25,23 +25,25 @@ import com.aspectran.core.activity.process.ActionIdQualifier;
 public class ActionResult {
 	
 	public static final Object NO_RESULT = new Object();
-	
+
+	private final ContentResult parent;
+
 	private String actionId;
 
 	private Object resultValue;
-	
-	private ContentResult parent;
+
+	public ActionResult(ContentResult parent) {
+		this.parent = parent;
+		this.parent.addActionResult(this);
+	}
 
 	/**
-	 * Gets the content id.
-	 * 
-	 * @return the content id
+	 * Gets the parent.
+	 *
+	 * @return the parent
 	 */
-	public String getContentId() {
-		if(parent != null)
-			return parent.getContentId();
-		
-		return null;
+	public ContentResult getParent() {
+		return parent;
 	}
 
 	/**
@@ -80,53 +82,13 @@ public class ActionResult {
 		this.resultValue = resultValue;
 	}
 
-	/**
-	 * Gets the parent.
-	 * 
-	 * @return the parent
-	 */
-	public ContentResult getParent() {
-		return parent;
-	}
-
-	/**
-	 * Sets the parent.
-	 * 
-	 * @param parent the new parent
-	 */
-	protected void setParent(ContentResult parent) {
-		this.parent = parent;
-	}
-
-	/**
-	 * Gets the action path.
-	 * 
-	 * @return the action path
-	 */
-	public String getQuialifiedActionId() {
-		return ActionIdQualifier.concat(getContentId(), actionId);
-	}
-
-	/**
-	 * Gets the action path.
-	 * 
-	 * @param parentFullActionId the parent action path
-	 * 
-	 * @return the action path
-	 */
-	public String getQuialifiedActionId(String parentFullActionId) {
-		return ActionIdQualifier.concat(parentFullActionId, getContentId(), actionId);
-	}
-
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("{contentId=").append(getContentId());
-		sb.append(", actionId=").append(actionId);
-		sb.append(", quialifiedActionId=").append(getQuialifiedActionId());
+		sb.append("{actionId=").append(actionId);
 		sb.append(", resultValue=").append(resultValue);
 		sb.append("}");
 

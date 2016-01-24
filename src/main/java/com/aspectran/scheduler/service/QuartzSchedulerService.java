@@ -34,7 +34,7 @@ import org.quartz.TriggerBuilder;
 import org.quartz.impl.matchers.GroupMatcher;
 
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.context.AspectranConstant;
+import com.aspectran.core.context.AspectranConstants;
 import com.aspectran.core.context.builder.apon.params.CronTriggerParameters;
 import com.aspectran.core.context.builder.apon.params.SimpleTriggerParameters;
 import com.aspectran.core.context.rule.AspectJobAdviceRule;
@@ -88,12 +88,12 @@ public class QuartzSchedulerService implements SchedulerService {
 		this.waitOnShutdown = waitOnShutdown;
 	}
 
-	public void startup(int delaySeconds) throws SchedulerException {
+	public void startup(int delaySeconds) throws SchedulerServiceException {
 		this.startDelaySeconds = delaySeconds;
 		startup();
 	}
 	
-	public void startup() throws SchedulerException {
+	public void startup() throws SchedulerServiceException {
 		AspectRuleMap aspectRuleMap = context.getAspectRuleRegistry().getAspectRuleMap();
 		
 		if(aspectRuleMap == null)
@@ -144,44 +144,56 @@ public class QuartzSchedulerService implements SchedulerService {
 
 			log.info("SchedulerService was started successfully.");
 		} catch(Exception e) {
-			throw new SchedulerException("QuartzSchedulerService startup failed.", e);
+			throw new SchedulerServiceException("QuartzSchedulerService startup failed.", e);
 		}
 	}
 	
-	public void shutdown(boolean waitForJobsToComplete) throws SchedulerException {
+	public void shutdown(boolean waitForJobsToComplete) throws SchedulerServiceException {
 		this.waitOnShutdown = waitForJobsToComplete;
 		shutdown(waitOnShutdown);
 	}
 	
-	public void shutdown() throws SchedulerException {
-		for(Scheduler scheduler : startedSchedulerList) {
-			if(!scheduler.isShutdown()) {
-				//log.info("Now try to stop scheduler '" + scheduler.getSchedulerName() + "' with waitForJobsToComplete=" + waitOnShutdown);
-				log.info("Shutingdown Quartz scheduler '" + scheduler.getSchedulerName() + "' with waitForJobsToComplete=" + waitOnShutdown);
-				scheduler.shutdown(waitOnShutdown);
+	public void shutdown() throws SchedulerServiceException {
+		try {
+			for(Scheduler scheduler : startedSchedulerList) {
+				if(!scheduler.isShutdown()) {
+					//log.info("Now try to stop scheduler '" + scheduler.getSchedulerName() + "' with waitForJobsToComplete=" + waitOnShutdown);
+					log.info("Shutingdown Quartz scheduler '" + scheduler.getSchedulerName() + "' with waitForJobsToComplete=" + waitOnShutdown);
+					scheduler.shutdown(waitOnShutdown);
+				}
 			}
+		} catch(Exception e) {
+			throw new SchedulerServiceException("SchedulerService shutdown failed.", e);
 		}
 	}
 	
-	public void refresh(ActivityContext context) throws SchedulerException {
+	public void refresh(ActivityContext context) throws SchedulerServiceException {
 		this.context = context;
 		shutdown();
 		startup();
 	}
 	
-	public void pause(String aspectId) throws SchedulerException {
-		Scheduler scheduler = getScheduler(aspectId);
-		
-		if(scheduler != null && scheduler.isStarted()) {
-			scheduler.pauseJobs(GroupMatcher.jobGroupEquals(aspectId));
+	public void pause(String aspectId) throws SchedulerServiceException {
+		try {
+			Scheduler scheduler = getScheduler(aspectId);
+
+			if(scheduler != null && scheduler.isStarted()) {
+				scheduler.pauseJobs(GroupMatcher.jobGroupEquals(aspectId));
+			}
+		} catch(Exception e) {
+			throw new SchedulerServiceException("SchedulerService pause failed.", e);
 		}
 	}
 	
-	public void resume(String aspectId) throws SchedulerException {
-		Scheduler scheduler = getScheduler(aspectId);
-		
-		if(scheduler != null && scheduler.isStarted()) {
-			scheduler.resumeJobs(GroupMatcher.jobGroupEquals(aspectId));
+	public void resume(String aspectId) throws SchedulerServiceException {
+		try {
+			Scheduler scheduler = getScheduler(aspectId);
+
+			if(scheduler != null && scheduler.isStarted()) {
+				scheduler.resumeJobs(GroupMatcher.jobGroupEquals(aspectId));
+			}
+		} catch(Exception e) {
+			throw new SchedulerServiceException("SchedulerService resume failed.", e);
 		}
 	}
 
@@ -256,7 +268,7 @@ public class QuartzSchedulerService implements SchedulerService {
 		if(aspectJobAdviceRule.isDisabled())
 			return null;
 		
-		String jobName = index + (AspectranConstant.TRANSLET_NAME_SEPARATOR + aspectJobAdviceRule.getJobTransletName());
+		String jobName = index + (AspectranConstants.TRANSLET_NAME_SEPARATOR + aspectJobAdviceRule.getJobTransletName());
 		String jobGroup = aspectJobAdviceRule.getAspectId();
 		
 		JobDataMap jobDataMap = new JobDataMap();

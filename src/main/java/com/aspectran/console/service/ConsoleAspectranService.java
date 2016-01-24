@@ -25,6 +25,7 @@ import com.aspectran.core.context.loader.config.AspectranConfig;
 import com.aspectran.core.context.loader.config.AspectranContextConfig;
 import com.aspectran.core.context.translet.TransletNotFoundException;
 import com.aspectran.core.service.AspectranServiceControllerListener;
+import com.aspectran.core.service.AspectranServiceException;
 import com.aspectran.core.service.CoreAspectranService;
 import com.aspectran.core.util.apon.AponDeserializer;
 import com.aspectran.core.util.apon.Parameters;
@@ -50,9 +51,8 @@ public class ConsoleAspectranService extends CoreAspectranService {
 	 * Process the actual dispatching to the activity. 
 	 *
 	 * @param command the translet name
-	 * @throws IOException
 	 */
-	public void service(String command) throws IOException {
+	public void service(String command) {
 		if(pauseTimeout > 0L) {
 			if(pauseTimeout >= System.currentTimeMillis()) {
 				System.out.println("Aspectran service is paused, did not respond to the command: " + command);
@@ -80,7 +80,7 @@ public class ConsoleAspectranService extends CoreAspectranService {
 	 * @param aspectranConfigFile the aspectran config file
 	 * @return the web aspectran service
 	 */
-	public static ConsoleAspectranService newInstance(String aspectranConfigFile) throws IOException {
+	public static ConsoleAspectranService newInstance(String aspectranConfigFile) throws AspectranServiceException, IOException {
 		AspectranConfig aspectranConfig = new AspectranConfig();
 
 		if(aspectranConfigFile != null && aspectranConfigFile.length() > 0) {

@@ -16,7 +16,7 @@
 package com.aspectran.core.context.template.engine;
 
 /**
- * Created by gulendol on 2016. 1. 9..
+ * <p>Created: 2016. 1. 9.</p>
  */
 public class TemplateEngineFactory {
 }

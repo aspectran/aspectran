@@ -37,7 +37,7 @@ package com.aspectran.core.context;
  * 
  * @author Juho Jeong
  */
-public class ActivityContextException extends AspectranException {
+public class ActivityContextException extends AspectranCheckedException {
 
 	/** @serial */
 	private static final long serialVersionUID = 5842257746374237516L;

@@ -120,6 +120,8 @@ public class TokenExpression implements TokenExpressor {
 			if(value != null)
 				writer.write(value.toString());
 		}
+
+		writer.flush();
 	}
 
 	public String expressAsString(Token[] tokens) {
@@ -340,12 +342,12 @@ public class TokenExpression implements TokenExpressor {
 	 */
 	protected Object getAttribute(Token token) {
 		Object object = null;
-		
-		if(requestAdapter != null)
-			object = requestAdapter.getAttribute(token.getName());
-		
-		if(object == null && activity.getProcessResult() != null)
+
+		if(activity.getProcessResult() != null)
 			object = activity.getProcessResult().getResultValue(token.getName());
+
+		if(object == null && requestAdapter != null)
+			object = requestAdapter.getAttribute(token.getName());
 
 		if(object != null) {
 			if(token.getGetterName() != null)

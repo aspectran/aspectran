@@ -491,7 +491,7 @@ public class RootAponDisassembler {
 		if(!assistant.isNullableContentId() && StringUtils.isEmpty(id))
 			throw new IllegalArgumentException("The <content> element requires a id attribute.");
 		
-		ActionList actionList = ActionList.newInstance(id, name, omittable, hidden, contentList);
+		ActionList actionList = ActionList.newInstance(id, name, omittable, hidden);
 
 		if(actionParametersList != null && !actionParametersList.isEmpty()) {
 			for(Parameters actionParameters : actionParametersList) {
@@ -602,13 +602,14 @@ public class RootAponDisassembler {
 		
 		if(templateParameters != null) {
 			String engine = templateParameters.getString(TemplateParameters.engine);
+			String name = templateParameters.getString(TemplateParameters.name);
 			String file = templateParameters.getString(TemplateParameters.file);
 			String resource = templateParameters.getString(TemplateParameters.resource);
 			String url = templateParameters.getString(TemplateParameters.url);
 			String content = templateParameters.getString(TemplateParameters.content);
 			String encoding = templateParameters.getString(TemplateParameters.encoding);
 			Boolean noCache = templateParameters.getBoolean(TemplateParameters.noCache);
-			TemplateRule templateRule = TemplateRule.newInstanceForBuiltin(engine, file, resource, url, content, encoding, noCache);
+			TemplateRule templateRule = TemplateRule.newInstanceForBuiltin(engine, name, file, resource, url, content, encoding, noCache);
 			tr.setTemplateRule(templateRule);
 		}
 		
@@ -640,10 +641,10 @@ public class RootAponDisassembler {
 		}
 	
 		if(templateParameters != null) {
-			String file = templateParameters.getString(TemplateParameters.file);
+			String name = templateParameters.getString(TemplateParameters.name);
 			String encoding = templateParameters.getString(TemplateParameters.encoding);
 			Boolean noCache = templateParameters.getBoolean(TemplateParameters.noCache);
-			TemplateRule templateRule = TemplateRule.newInstanceForBuiltin(null, file, null, null, null, encoding, noCache);
+			TemplateRule templateRule = TemplateRule.newInstanceForBuiltin(null, name, null, null, null, null, encoding, noCache);
 			drr.setTemplateRule(templateRule);
 		}
 		

@@ -30,7 +30,7 @@
  */
 package com.aspectran.core.service;
 
-import com.aspectran.core.context.ActivityContextException;
+import com.aspectran.core.context.AspectranCheckedException;
 
 /**
  * The Class AspectranServiceException.
@@ -39,10 +39,10 @@ import com.aspectran.core.context.ActivityContextException;
  * 
  * @author Juho Jeong
  */
-public class AspectranServiceException extends ActivityContextException {
+public class AspectranServiceException extends AspectranCheckedException {
 
 	/** @serial */
-	private static final long serialVersionUID = 3684447750947343719L;
+	private static final long serialVersionUID = -7460804495296696284L;
 
 	/**
 	 * Simple constructor
@@ -54,7 +54,7 @@ public class AspectranServiceException extends ActivityContextException {
 	/**
 	 * Constructor to create exception with a message
 	 * 
-	 * @param msg A message to associate with the exception
+	 * @param msg a message to associate with the exception
 	 */
 	public AspectranServiceException(String msg) {
 		super(msg);
@@ -63,7 +63,7 @@ public class AspectranServiceException extends ActivityContextException {
 	/**
 	 * Constructor to create exception to wrap another exception
 	 * 
-	 * @param cause The real cause of the exception
+	 * @param cause the real cause of the exception
 	 */
 	public AspectranServiceException(Throwable cause) {
 		super(cause);
@@ -72,10 +72,11 @@ public class AspectranServiceException extends ActivityContextException {
 	/**
 	 * Constructor to create exception to wrap another exception and pass a message
 	 * 
-	 * @param msg The message
-	 * @param cause The real cause of the exception
+	 * @param msg the message
+	 * @param cause the real cause of the exception
 	 */
 	public AspectranServiceException(String msg, Throwable cause) {
 		super(msg, cause);
 	}
+
 }

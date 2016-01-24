@@ -31,7 +31,7 @@ public class TemplateRuleException extends TemplateException {
 	 * Instantiates a new TemplateRuleException.
 	 *
 	 * @param templateRule the template rule
-	 * @param msg The detail message
+	 * @param msg the detail message
 	 */
 	public TemplateRuleException(TemplateRule templateRule, String msg) {
 		super(msg + " " + templateRule);
@@ -42,7 +42,7 @@ public class TemplateRuleException extends TemplateException {
 	 * Instantiates a new TemplateRuleException.
 	 *
 	 * @param templateRule the template rule
-	 * @param msg The detail message
+	 * @param msg the detail message
 	 * @param cause the root cause
 	 */
 	public TemplateRuleException(TemplateRule templateRule, String msg, Throwable cause) {

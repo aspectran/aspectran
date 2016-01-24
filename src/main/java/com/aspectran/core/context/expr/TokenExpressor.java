@@ -46,7 +46,9 @@ public interface TokenExpressor {
 	 * @return the string
 	 */
 	public Object express(Token[] tokens);
-	
+
+	public void express(Token[] tokens, Writer writer) throws IOException;
+
 	/**
 	 * Express as string.
 	 *
@@ -63,8 +65,6 @@ public interface TokenExpressor {
 	 * @return the string
 	 */
 	public Object express(String parameterName, Token[] tokens);
-
-	public void express(Token[] tokens, Writer writer) throws IOException;
 
 	/**
 	 * Express as string.

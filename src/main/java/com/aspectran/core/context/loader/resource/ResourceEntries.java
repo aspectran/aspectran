@@ -36,7 +36,7 @@ public class ResourceEntries extends LinkedHashMap<String, URL> {
 		super();
 	}
 	
-	public void putResource(String resourceName, File file) {
+	public void putResource(String resourceName, File file) throws InvalidResourceException {
 		URL url;
 		
 		try {
@@ -48,7 +48,7 @@ public class ResourceEntries extends LinkedHashMap<String, URL> {
 		put(resourceName, url);
 	}
 	
-	public void putResource(File file, JarEntry entry) {
+	public void putResource(File file, JarEntry entry) throws InvalidResourceException {
 		String resourceName = entry.getName();
 		URL url;
 		

@@ -17,6 +17,7 @@ package com.aspectran.core.util;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.StringTokenizer;
 
 /**
@@ -423,5 +424,29 @@ public class StringUtils {
 
 		return tokens.toArray(new String[tokens.size()]);
 	}
-	
+
+	public static Locale deduceLocale(String input) {
+		if(input == null)
+			return null;
+		Locale locale = Locale.getDefault();
+		if(input.length() > 0 && input.charAt(0) == '"')
+			input = input.substring(1, input.length() -1);
+		StringTokenizer st = new StringTokenizer(input, ",_ ");
+		String lang = "";
+		String country = "";
+		if(st.hasMoreTokens()) {
+			lang = st.nextToken();
+		}
+		if(st.hasMoreTokens()) {
+			country = st.nextToken();
+		}
+		if(!st.hasMoreTokens()) {
+			locale = new Locale(lang, country);
+		}
+		else {
+			locale = new Locale(lang, country, st.nextToken());
+		}
+		return locale;
+	}
+
 }

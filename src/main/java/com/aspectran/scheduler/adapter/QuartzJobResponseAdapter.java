@@ -41,7 +41,7 @@ public class QuartzJobResponseAdapter extends AbstractResponseAdapter implements
 	public QuartzJobResponseAdapter(JobDetail jobDetail) {
 		super(null);
 		
-		this.jobDetail = (JobDetail)jobDetail;
+		this.jobDetail = jobDetail;
 	}
 	
 	public String getCharacterEncoding() {
@@ -61,7 +61,7 @@ public class QuartzJobResponseAdapter extends AbstractResponseAdapter implements
 	}
 	
 	public OutputStream getOutputStream() throws IOException {
-		throw new UnsupportedOperationException("getOutputStream");
+		return new QuartzJobResponseOutputStream(jobDetail);
 	}
 	
 	public Writer getWriter() throws IOException {

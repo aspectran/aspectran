@@ -25,6 +25,7 @@ import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.VoidActivity;
 import com.aspectran.core.activity.process.action.BeanAction;
 import com.aspectran.core.context.ActivityContext;
+import com.aspectran.core.context.bean.ablility.ActivityContextAware;
 import com.aspectran.core.context.bean.ablility.FactoryBean;
 import com.aspectran.core.context.bean.annotation.Autowired;
 import com.aspectran.core.context.bean.proxy.CglibDynamicBeanProxy;
@@ -104,6 +105,10 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 				bean = instantiateBean(beanRule, null, null);
 			}
 
+			if(bean instanceof ActivityContextAware) {
+				((ActivityContextAware)bean).setActivityContext(context);
+			}
+
 			if(propertyItemRuleMap != null) {
 				if(expressor == null) {
 					expressor = new ItemTokenExpression(activity);
@@ -124,7 +129,9 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 						BeanAction.invokeMethod(activity, bean, initMethodName, null, null, true);
 						beanRule.setInitMethodRequiresTranslet(Boolean.TRUE);
 					} catch(NoSuchMethodException e) {
-						log.info("Cannot find a method that requires a argument translet. So in the future will continue to call a method with no argument translet. beanActionRule " + beanRule);
+						if(log.isDebugEnabled()) {
+							log.debug("Cannot find a method that requires a argument translet. So in the future will continue to call a method with no argument translet. beanActionRule " + beanRule);
+						}
 						
 						beanRule.setInitMethodRequiresTranslet(Boolean.FALSE);
 						BeanAction.invokeMethod(activity, bean, initMethodName, null, null, false);

@@ -15,23 +15,6 @@
  */
 package com.aspectran.core.activity.response.transform.xml;
 
-import java.io.IOException;
-import java.lang.reflect.Array;
-import java.lang.reflect.InvocationTargetException;
-import java.util.Collection;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.Map;
-
-import org.xml.sax.ContentHandler;
-import org.xml.sax.DTDHandler;
-import org.xml.sax.EntityResolver;
-import org.xml.sax.ErrorHandler;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-import org.xml.sax.XMLReader;
-import org.xml.sax.helpers.AttributesImpl;
-
 import com.aspectran.core.activity.process.result.ActionResult;
 import com.aspectran.core.activity.process.result.ContentResult;
 import com.aspectran.core.activity.process.result.ProcessResult;
@@ -40,6 +23,16 @@ import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.apon.Parameter;
 import com.aspectran.core.util.apon.ParameterValue;
 import com.aspectran.core.util.apon.Parameters;
+import org.xml.sax.*;
+import org.xml.sax.helpers.AttributesImpl;
+
+import java.io.IOException;
+import java.lang.reflect.Array;
+import java.lang.reflect.InvocationTargetException;
+import java.util.Collection;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * Converts a ProcessResult object to a XML string.
@@ -66,17 +59,11 @@ public class ContentsXMLReader implements XMLReader {
 
 	private AttributesImpl nullAttrs;
 
-	private AttributesImpl contentAttrs;
-
-	private AttributesImpl resultsAttrs;
-
 	/**
 	 * Instantiates a new ContentsXMLReader.
 	 */
 	public ContentsXMLReader() {
 		nullAttrs = new AttributesImpl();
-		contentAttrs = new AttributesImpl();
-		resultsAttrs = new AttributesImpl();
 	}
 
 	/* (non-Javadoc)
@@ -243,34 +230,33 @@ public class ContentsXMLReader implements XMLReader {
 	 */
 	private void parse(ProcessResult processResult) throws IOException, SAXException, InvocationTargetException {
 		for(ContentResult contentResult : processResult) {
-			if(contentResult.getContentId() == null)
-				contentAttrs.clear();
-			else
-				contentAttrs.addAttribute(null, ID_STRING, ID_STRING, null, contentResult.getContentId());
-
 			String contentName = contentResult.getName();
 			
 			if(!contentResult.isOmittable()) {
 				if(contentName != null)
-					handler.startElement(StringUtils.EMPTY, contentName, contentName, contentAttrs);
+					handler.startElement(StringUtils.EMPTY, contentName, contentName, nullAttrs);
 				else
-					handler.startElement(StringUtils.EMPTY, CONTENT_TAG, CONTENT_TAG, contentAttrs);
+					handler.startElement(StringUtils.EMPTY, CONTENT_TAG, CONTENT_TAG, nullAttrs);
 			}
 
 			for(ActionResult actionResult : contentResult) {
-				if(actionResult.getActionId() == null)
-					resultsAttrs.clear();
-				else
-					resultsAttrs.addAttribute(null, ID_STRING, ID_STRING, null, actionResult.getActionId());
-
+				String actionId = actionResult.getActionId();
 				Object resultValue = actionResult.getResultValue();
 
 				if(resultValue instanceof ProcessResult) {
 					parse((ProcessResult)resultValue);
 				} else {
-					handler.startElement(StringUtils.EMPTY, RESULT_TAG, RESULT_TAG, resultsAttrs);
+					if(actionId != null)
+						handler.startElement(StringUtils.EMPTY, actionId, actionId, nullAttrs);
+					else
+						handler.startElement(StringUtils.EMPTY, RESULT_TAG, RESULT_TAG, nullAttrs);
+
 					parse(resultValue);
-					handler.endElement(StringUtils.EMPTY, RESULT_TAG, RESULT_TAG);
+
+					if(actionId != null)
+						handler.endElement(StringUtils.EMPTY, actionId, actionId);
+					else
+						handler.endElement(StringUtils.EMPTY, RESULT_TAG, RESULT_TAG);
 				}
 			}
 
