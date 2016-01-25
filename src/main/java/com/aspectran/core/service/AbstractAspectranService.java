@@ -22,7 +22,6 @@ import java.net.URL;
 
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.context.ActivityContextException;
 import com.aspectran.core.context.loader.ActivityContextLoader;
 import com.aspectran.core.context.loader.AspectranClassLoader;
 import com.aspectran.core.context.loader.HybridActivityContextLoader;

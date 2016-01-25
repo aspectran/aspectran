@@ -15,10 +15,6 @@
  */
 package com.aspectran.core.context.template.engine;
 
-import com.aspectran.core.context.rule.TemplateRule;
-import freemarker.template.TemplateException;
-
-import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
 import java.util.Locale;

@@ -16,7 +16,6 @@
 package com.aspectran.web.service;
 
 import com.aspectran.core.activity.Activity;
-import com.aspectran.core.context.ActivityContextException;
 import com.aspectran.core.context.loader.config.AspectranConfig;
 import com.aspectran.core.context.loader.config.AspectranContextConfig;
 import com.aspectran.core.context.translet.TransletNotFoundException;

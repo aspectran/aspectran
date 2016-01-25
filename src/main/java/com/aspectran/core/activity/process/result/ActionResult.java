@@ -15,8 +15,6 @@
  */
 package com.aspectran.core.activity.process.result;
 
-import com.aspectran.core.activity.process.ActionIdQualifier;
-
 /**
  * The Class ActionResult.
  * 

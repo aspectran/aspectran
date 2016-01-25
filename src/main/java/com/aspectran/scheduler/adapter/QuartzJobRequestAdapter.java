@@ -86,6 +86,7 @@ public class QuartzJobRequestAdapter extends AbstractRequestAdapter implements R
 	/* (non-Javadoc)
 	 * @see com.aspectran.core.adapter.RequestAdapter#getAttribute(java.lang.String)
 	 */
+	@SuppressWarnings("unchecked")
 	public <T> T getAttribute(String name) {
 		return (T)attributeMap.get(name);
 	}

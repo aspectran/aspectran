@@ -15,7 +15,6 @@
  */
 package com.aspectran.core.activity.response.dispatch;
 
-import com.aspectran.core.activity.response.ResponseException;
 import com.aspectran.core.context.AspectranCheckedException;
 
 /**

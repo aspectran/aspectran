@@ -17,7 +17,6 @@ package com.aspectran.core.context.template;
 
 import java.util.HashMap;
 import java.util.Locale;
-import java.util.Map;
 
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.adapter.RequestAdapter;
@@ -30,8 +29,6 @@ public class TemplateDataMap extends HashMap<String, Object> {
 	private final Activity activity;
 
 	private RequestAdapter requestAdapter;
-
-	private Map<String, Object> attributeMap;
 
 	public TemplateDataMap(Activity activity) {
 		this.activity = activity;

@@ -15,6 +15,24 @@
  */
 package com.aspectran.core.activity.response.transform.xml;
 
+import java.io.IOException;
+import java.lang.reflect.Array;
+import java.lang.reflect.InvocationTargetException;
+import java.util.Collection;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.Map;
+
+import org.xml.sax.Attributes;
+import org.xml.sax.ContentHandler;
+import org.xml.sax.DTDHandler;
+import org.xml.sax.EntityResolver;
+import org.xml.sax.ErrorHandler;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.XMLReader;
+import org.xml.sax.helpers.AttributesImpl;
+
 import com.aspectran.core.activity.process.result.ActionResult;
 import com.aspectran.core.activity.process.result.ContentResult;
 import com.aspectran.core.activity.process.result.ProcessResult;
@@ -23,16 +41,6 @@ import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.apon.Parameter;
 import com.aspectran.core.util.apon.ParameterValue;
 import com.aspectran.core.util.apon.Parameters;
-import org.xml.sax.*;
-import org.xml.sax.helpers.AttributesImpl;
-
-import java.io.IOException;
-import java.lang.reflect.Array;
-import java.lang.reflect.InvocationTargetException;
-import java.util.Collection;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.Map;
 
 /**
  * Converts a ProcessResult object to a XML string.
@@ -52,18 +60,15 @@ public class ContentsXMLReader implements XMLReader {
 	private static final String ROW_TAG = "row";
 
 	private static final String EMPTY_TAG = "empty";
-
-	private static final String ID_STRING = "id";
+	
+	private static final Attributes NULL_ATTRS = new AttributesImpl();
 
 	protected ContentHandler handler;
-
-	private AttributesImpl nullAttrs;
 
 	/**
 	 * Instantiates a new ContentsXMLReader.
 	 */
 	public ContentsXMLReader() {
-		nullAttrs = new AttributesImpl();
 	}
 
 	/* (non-Javadoc)
@@ -191,9 +196,9 @@ public class ContentsXMLReader implements XMLReader {
 				
 				if(!processResult.isOmittable()) {
 					if(contentsName != null)
-						handler.startElement(StringUtils.EMPTY, contentsName, contentsName, nullAttrs);
+						handler.startElement(StringUtils.EMPTY, contentsName, contentsName, NULL_ATTRS);
 					else
-						handler.startElement(StringUtils.EMPTY, CONTENTS_TAG, CONTENTS_TAG, nullAttrs);
+						handler.startElement(StringUtils.EMPTY, CONTENTS_TAG, CONTENTS_TAG, NULL_ATTRS);
 				}
 				
 				parse(processResult);
@@ -205,7 +210,7 @@ public class ContentsXMLReader implements XMLReader {
 						handler.endElement(StringUtils.EMPTY, CONTENTS_TAG, CONTENTS_TAG);
 				}
 			} else {
-				handler.startElement(StringUtils.EMPTY, EMPTY_TAG, EMPTY_TAG, nullAttrs);
+				handler.startElement(StringUtils.EMPTY, EMPTY_TAG, EMPTY_TAG, NULL_ATTRS);
 				handler.endElement(StringUtils.EMPTY, EMPTY_TAG, EMPTY_TAG);
 			}
 
@@ -234,9 +239,9 @@ public class ContentsXMLReader implements XMLReader {
 			
 			if(!contentResult.isOmittable()) {
 				if(contentName != null)
-					handler.startElement(StringUtils.EMPTY, contentName, contentName, nullAttrs);
+					handler.startElement(StringUtils.EMPTY, contentName, contentName, NULL_ATTRS);
 				else
-					handler.startElement(StringUtils.EMPTY, CONTENT_TAG, CONTENT_TAG, nullAttrs);
+					handler.startElement(StringUtils.EMPTY, CONTENT_TAG, CONTENT_TAG, NULL_ATTRS);
 			}
 
 			for(ActionResult actionResult : contentResult) {
@@ -247,9 +252,9 @@ public class ContentsXMLReader implements XMLReader {
 					parse((ProcessResult)resultValue);
 				} else {
 					if(actionId != null)
-						handler.startElement(StringUtils.EMPTY, actionId, actionId, nullAttrs);
+						handler.startElement(StringUtils.EMPTY, actionId, actionId, NULL_ATTRS);
 					else
-						handler.startElement(StringUtils.EMPTY, RESULT_TAG, RESULT_TAG, nullAttrs);
+						handler.startElement(StringUtils.EMPTY, RESULT_TAG, RESULT_TAG, NULL_ATTRS);
 
 					parse(resultValue);
 
@@ -295,7 +300,7 @@ public class ContentsXMLReader implements XMLReader {
 				String name = p.getName();
 				Object value = p.getValue();
 
-				handler.startElement(StringUtils.EMPTY, name, name, nullAttrs);
+				handler.startElement(StringUtils.EMPTY, name, name, NULL_ATTRS);
 				parse(value);
 				handler.endElement(StringUtils.EMPTY, name, name);
 			}
@@ -307,28 +312,28 @@ public class ContentsXMLReader implements XMLReader {
 				String name = entry.getKey();
 				Object value = entry.getValue();
 
-				handler.startElement(StringUtils.EMPTY, name, name, nullAttrs);
+				handler.startElement(StringUtils.EMPTY, name, name, NULL_ATTRS);
 				parse(value);
 				handler.endElement(StringUtils.EMPTY, name, name);
 			}
 		} else if(object instanceof Collection<?>) {
 			@SuppressWarnings("unchecked")
 			Iterator<Object> list = ((Collection<Object>)object).iterator();
-			handler.startElement(StringUtils.EMPTY, ROWS_TAG, ROWS_TAG, nullAttrs);
+			handler.startElement(StringUtils.EMPTY, ROWS_TAG, ROWS_TAG, NULL_ATTRS);
 
 			while(list.hasNext()) {
-				handler.startElement(StringUtils.EMPTY, ROW_TAG, ROW_TAG, nullAttrs);
+				handler.startElement(StringUtils.EMPTY, ROW_TAG, ROW_TAG, NULL_ATTRS);
 				parse(list.next());
 				handler.endElement(StringUtils.EMPTY, ROW_TAG, ROW_TAG);
 			}
 
 			handler.endElement(StringUtils.EMPTY, ROWS_TAG, ROWS_TAG);
 		} else if(object.getClass().isArray()) {
-			handler.startElement(StringUtils.EMPTY, ROWS_TAG, ROWS_TAG, nullAttrs);
+			handler.startElement(StringUtils.EMPTY, ROWS_TAG, ROWS_TAG, NULL_ATTRS);
 
 			int len = Array.getLength(object);
 			for(int i = 0; i < len; i++) {
-				handler.startElement(StringUtils.EMPTY, ROW_TAG, ROW_TAG, nullAttrs);
+				handler.startElement(StringUtils.EMPTY, ROW_TAG, ROW_TAG, NULL_ATTRS);
 				parse(Array.get(object, i));
 				handler.endElement(StringUtils.EMPTY, ROW_TAG, ROW_TAG);
 			}
@@ -342,7 +347,7 @@ public class ContentsXMLReader implements XMLReader {
 					Object value = BeanUtils.getObject(object, name);
 					
 					if(!object.equals(value)) {
-						handler.startElement(StringUtils.EMPTY, name, name, nullAttrs);
+						handler.startElement(StringUtils.EMPTY, name, name, NULL_ATTRS);
 						parse(value);
 						handler.endElement(StringUtils.EMPTY, name, name);
 					}
