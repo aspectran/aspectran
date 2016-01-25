@@ -15,14 +15,11 @@
  */
 package com.aspectran.core.context.template.engine.freemarker;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Map;
-import java.util.Properties;
-
+import com.aspectran.core.adapter.ApplicationAdapter;
+import com.aspectran.core.context.bean.aware.ApplicationAdapterAware;
+import com.aspectran.core.util.ResourceUtils;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
-
 import freemarker.cache.ClassTemplateLoader;
 import freemarker.cache.FileTemplateLoader;
 import freemarker.cache.MultiTemplateLoader;
@@ -31,22 +28,38 @@ import freemarker.template.Configuration;
 import freemarker.template.SimpleHash;
 import freemarker.template.TemplateException;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+
 /**
  * Factory that configures a FreeMarker Configuration.
  *
  * <p>Created: 2016. 1. 9.</p>
  */
-public class FreeMarkerConfigurationFactory {
+public class FreeMarkerConfigurationFactory implements ApplicationAdapterAware {
 
-    protected final Log logger = LogFactory.getLog(getClass());
+    private final Log log = LogFactory.getLog(FreeMarkerConfigurationFactory.class);
+
+    private ApplicationAdapter applicationAdapter;
 
     private Properties freemarkerSettings;
 
     private Map<String, Object> freemarkerVariables;
 
     private String defaultEncoding;
-    
-    private TemplateLoader templateLoader;
+
+    private String[] templateLoaderPaths;
+
+    private TemplateLoader[] templateLoaders;
+
+    @Override
+    public void setApplicationAdapter(ApplicationAdapter applicationAdapter) {
+        this.applicationAdapter = applicationAdapter;
+    }
 
     /**
      * Set properties that contain well-known FreeMarker keys which will be
@@ -77,8 +90,28 @@ public class FreeMarkerConfigurationFactory {
         this.defaultEncoding = defaultEncoding;
     }
 
-    public void setTemplateLoader(TemplateLoader templateLoader) {
-		this.templateLoader = templateLoader;
+    public void setTemplateLoaderPath(String templateLoaderPath) throws IOException {
+		this.templateLoaderPaths = new String[] { templateLoaderPath };
+	}
+
+    public void setTemplateLoaderPath(String[] templateLoaderPaths) {
+		this.templateLoaderPaths = templateLoaderPaths;
+	}
+
+    public void setTemplateLoaderPath(List<String> templateLoaderPathList) {
+        this.templateLoaderPaths = templateLoaderPathList.toArray(new String[templateLoaderPathList.size()]);
+	}
+
+    public void setTemplateLoader(TemplateLoader templateLoaders) {
+		this.templateLoaders = new TemplateLoader[] {templateLoaders};
+	}
+
+    public void setTemplateLoader(TemplateLoader[] templateLoaders) {
+		this.templateLoaders = templateLoaders;
+	}
+
+    public void setTemplateLoader(List<TemplateLoader> templateLoaderList) {
+        this.templateLoaders = templateLoaderList.toArray(new TemplateLoader[templateLoaderList.size()]);
 	}
 
 	/**
@@ -87,34 +120,44 @@ public class FreeMarkerConfigurationFactory {
      * @throws IOException if the config file wasn't found
      * @throws TemplateException on FreeMarker initialization failure
      */
-    public Configuration createConfiguration(ClassLoader classLoader) throws IOException, TemplateException {
-    	FileTemplateLoader ftl1 = new FileTemplateLoader(new File("/tmp/templates"));
-    	FileTemplateLoader ftl2 = new FileTemplateLoader(new File("/usr/data/templates"));
-    	ClassTemplateLoader ctl = new ClassTemplateLoader(getClass(), "");
-    	TemplateLoader[] loaders = new TemplateLoader[] { ftl1, ftl2, ctl };
-    	MultiTemplateLoader mtl = new MultiTemplateLoader(loaders);
-    	
+    public Configuration createConfiguration() throws IOException, TemplateException {
     	Configuration config = newConfiguration();
-        //config.setClassLoaderForTemplateLoading(classLoader);
         Properties props = new Properties();
 
         // Merge local properties if specified.
-        if (this.freemarkerSettings != null) {
+        if(this.freemarkerSettings != null) {
             props.putAll(this.freemarkerSettings);
         }
 
         // FreeMarker will only accept known keys in its setSettings and
         // setAllSharedVariables methods.
-        if (!props.isEmpty()) {
+        if(!props.isEmpty()) {
             config.setSettings(props);
         }
 
-        if (this.freemarkerVariables != null && freemarkerVariables.size() > 0) {
+        if(this.freemarkerVariables != null && freemarkerVariables.size() > 0) {
             config.setAllSharedVariables(new SimpleHash(this.freemarkerVariables, config.getObjectWrapper()));
         }
 
-        if (this.defaultEncoding != null) {
+        if(this.defaultEncoding != null) {
             config.setDefaultEncoding(this.defaultEncoding);
+        }
+
+        if(templateLoaders == null) {
+            if(templateLoaderPaths != null && templateLoaderPaths.length > 0) {
+                List<TemplateLoader> templateLoaderList = new ArrayList<TemplateLoader>();
+                for(String path : templateLoaderPaths) {
+                    templateLoaderList.add(getTemplateLoaderForPath(path));
+                }
+                setTemplateLoader(templateLoaderList);
+            }
+        }
+
+        if(templateLoaders != null) {
+            TemplateLoader templateLoader = getAggregateTemplateLoader(templateLoaders);
+            if(templateLoader != null) {
+                config.setTemplateLoader(templateLoader);
+            }
         }
 
         return config;
@@ -128,10 +171,57 @@ public class FreeMarkerConfigurationFactory {
      * @return the Configuration object
      * @throws IOException if a config file wasn't found
      * @throws TemplateException on FreeMarker initialization failure
-     * @see #createConfiguration()
      */
     protected Configuration newConfiguration() throws IOException, TemplateException {
         return new Configuration(Configuration.DEFAULT_INCOMPATIBLE_IMPROVEMENTS);
+    }
+
+    /**
+     * Return a TemplateLoader based on the given TemplateLoader list.
+     * If more than one TemplateLoader has been registered, a FreeMarker
+     * MultiTemplateLoader needs to be created.
+     * @param templateLoaders the final List of TemplateLoader instances
+     * @return the aggregate TemplateLoader
+     */
+    protected TemplateLoader getAggregateTemplateLoader(TemplateLoader[] templateLoaders) {
+        int loaderCount = templateLoaders.length;
+        switch(loaderCount) {
+            case 0:
+                //log.info("No FreeMarker TemplateLoaders specified.");
+                return null;
+            case 1:
+                return templateLoaders[0];
+            default:
+                return new MultiTemplateLoader(templateLoaders);
+        }
+    }
+
+    /**
+     * Determine a FreeMarker TemplateLoader for the given path.
+     * @param templateLoaderPath the path to load templates from
+     * @return an appropriate TemplateLoader
+     * @see freemarker.cache.FileTemplateLoader
+     */
+    protected TemplateLoader getTemplateLoaderForPath(String templateLoaderPath) throws IOException {
+        if(templateLoaderPath.startsWith(ResourceUtils.CLASSPATH_URL_PREFIX)) {
+            String basePackagePath = templateLoaderPath.substring(ResourceUtils.CLASSPATH_URL_PREFIX.length());
+            if(log.isDebugEnabled()) {
+                log.debug("Template loader path [" + templateLoaderPath + "] resolved to class path [" + basePackagePath + "]");
+            }
+            return new ClassTemplateLoader(applicationAdapter.getClassLoader(), basePackagePath);
+        } else if(templateLoaderPath.startsWith(ResourceUtils.FILE_URL_PREFIX)) {
+            File file = new File(templateLoaderPath.substring(ResourceUtils.FILE_URL_PREFIX.length()));
+            if(log.isDebugEnabled()) {
+                log.debug("Template loader path [" + templateLoaderPath + "] resolved to file path [" + file.getAbsolutePath() + "]");
+            }
+            return new FileTemplateLoader(file);
+        } else {
+            File file = new File(applicationAdapter.getApplicationBasePath(), templateLoaderPath);
+            if(log.isDebugEnabled()) {
+                log.debug("Template loader path [" + templateLoaderPath + "] resolved to file path [" + file.getAbsolutePath() + "]");
+            }
+            return new FileTemplateLoader(file);
+        }
     }
 
 }

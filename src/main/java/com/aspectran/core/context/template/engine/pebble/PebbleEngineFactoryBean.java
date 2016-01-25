@@ -15,10 +15,8 @@
  */
 package com.aspectran.core.context.template.engine.pebble;
 
-import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.bean.ablility.FactoryBean;
 import com.aspectran.core.context.bean.ablility.InitializableBean;
-import com.aspectran.core.context.bean.aware.ActivityContextAware;
 import com.mitchellbosecke.pebble.PebbleEngine;
 
 /**
@@ -26,16 +24,9 @@ import com.mitchellbosecke.pebble.PebbleEngine;
  *
  * <p>Created: 2016. 1. 25.</p>
  */
-public class PebbleEngineFactoryBean extends PebbleEngineFactory implements ActivityContextAware, InitializableBean, FactoryBean<PebbleEngine> {
-
-    private ActivityContext context;
+public class PebbleEngineFactoryBean extends PebbleEngineFactory implements InitializableBean, FactoryBean<PebbleEngine> {
 
     private PebbleEngine engine;
-
-    @Override
-    public void setActivityContext(ActivityContext context) {
-        this.context = context;
-    }
 
     /**
      * Initialize FreeMarkerConfigurationFactory's Configuration
@@ -46,7 +37,7 @@ public class PebbleEngineFactoryBean extends PebbleEngineFactory implements Acti
     @Override
     public void initialize() throws Exception {
         if(this.engine == null) {
-            this.engine = createPebbleEngine(context.getClassLoader());
+            this.engine = createPebbleEngine();
         }
     }
 

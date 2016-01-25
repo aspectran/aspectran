@@ -15,11 +15,8 @@
  */
 package com.aspectran.core.context.template.engine.freemarker;
 
-import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.bean.ablility.FactoryBean;
 import com.aspectran.core.context.bean.ablility.InitializableBean;
-import com.aspectran.core.context.bean.aware.ActivityContextAware;
-
 import freemarker.template.Configuration;
 
 /**
@@ -29,16 +26,9 @@ import freemarker.template.Configuration;
  *
  * <p>Created: 2016. 1. 9.</p>
  */
-public class FreeMarkerConfigurationFactoryBean extends FreeMarkerConfigurationFactory implements ActivityContextAware, InitializableBean, FactoryBean<Configuration> {
+public class FreeMarkerConfigurationFactoryBean extends FreeMarkerConfigurationFactory implements InitializableBean, FactoryBean<Configuration> {
 
-	private ActivityContext context;
-	
     private Configuration configuration;
-
-	@Override
-	public void setActivityContext(ActivityContext context) {
-		this.context = context;
-	}
 
     /**
      * Initialize FreeMarkerConfigurationFactory's Configuration
@@ -49,7 +39,7 @@ public class FreeMarkerConfigurationFactoryBean extends FreeMarkerConfigurationF
     @Override
     public void initialize() throws Exception {
         if(this.configuration == null) {
-            this.configuration = createConfiguration(null);
+            this.configuration = createConfiguration();
         }
     }
 

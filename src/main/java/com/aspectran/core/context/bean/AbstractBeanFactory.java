@@ -27,7 +27,9 @@ import com.aspectran.core.activity.process.action.BeanAction;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.bean.ablility.FactoryBean;
 import com.aspectran.core.context.bean.aware.ActivityContextAware;
+import com.aspectran.core.context.bean.aware.ApplicationAdapterAware;
 import com.aspectran.core.context.bean.aware.Aware;
+import com.aspectran.core.context.bean.aware.ClassLoaderAware;
 import com.aspectran.core.context.bean.proxy.CglibDynamicBeanProxy;
 import com.aspectran.core.context.bean.proxy.JavassistDynamicBeanProxy;
 import com.aspectran.core.context.bean.proxy.JdkDynamicBeanProxy;
@@ -105,9 +107,7 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 				bean = instantiateBean(beanRule, null, null);
 			}
 
-			if(bean instanceof ActivityContextAware) {
-				((ActivityContextAware)bean).setActivityContext(context);
-			}
+			invokeAwareMethods(bean);
 
 			if(propertyItemRuleMap != null) {
 				if(expressor == null) {
@@ -200,19 +200,19 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 		return bean;
 	}
 	
-//	private void invokeAwareMethods(final String beanName, final Object bean) {
-//		if (bean instanceof Aware) {
-//			if (bean instanceof BeanNameAware) {
-//				((BeanNameAware) bean).setBeanName(beanName);
-//			}
-//			if (bean instanceof BeanClassLoaderAware) {
-//				((BeanClassLoaderAware) bean).setBeanClassLoader(getBeanClassLoader());
-//			}
-//			if (bean instanceof BeanFactoryAware) {
-//				((BeanFactoryAware) bean).setBeanFactory(AbstractAutowireCapableBeanFactory.this);
-//			}
-//		}
-//	}
+	private void invokeAwareMethods(final Object bean) {
+		if(bean instanceof Aware) {
+			if(bean instanceof ActivityContextAware) {
+				((ActivityContextAware)bean).setActivityContext(context);
+			}
+			if(bean instanceof ApplicationAdapterAware) {
+				((ApplicationAdapterAware)bean).setApplicationAdapter(context.getApplicationAdapter());
+			}
+			if(bean instanceof ClassLoaderAware) {
+				((ClassLoaderAware)bean).setClassLoader(context.getClassLoader());
+			}
+		}
+	}
 	
 	public synchronized void initialize(ActivityContext context) {
 		if(initialized) {
