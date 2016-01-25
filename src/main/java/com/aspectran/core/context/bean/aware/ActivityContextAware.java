@@ -13,7 +13,7 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package com.aspectran.core.context.bean.ablility;
+package com.aspectran.core.context.bean.aware;
 
 import com.aspectran.core.context.ActivityContext;
 
@@ -24,7 +24,7 @@ import com.aspectran.core.context.ActivityContext;
  *
  * @since 2.0.0
  */
-public interface ActivityContextAware {
+public interface ActivityContextAware extends Aware {
 
 	public void setActivityContext(ActivityContext context);
 

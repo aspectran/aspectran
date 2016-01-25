@@ -25,9 +25,9 @@ import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.VoidActivity;
 import com.aspectran.core.activity.process.action.BeanAction;
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.context.bean.ablility.ActivityContextAware;
 import com.aspectran.core.context.bean.ablility.FactoryBean;
-import com.aspectran.core.context.bean.annotation.Autowired;
+import com.aspectran.core.context.bean.aware.ActivityContextAware;
+import com.aspectran.core.context.bean.aware.Aware;
 import com.aspectran.core.context.bean.proxy.CglibDynamicBeanProxy;
 import com.aspectran.core.context.bean.proxy.JavassistDynamicBeanProxy;
 import com.aspectran.core.context.bean.proxy.JdkDynamicBeanProxy;
@@ -199,6 +199,20 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 		
 		return bean;
 	}
+	
+//	private void invokeAwareMethods(final String beanName, final Object bean) {
+//		if (bean instanceof Aware) {
+//			if (bean instanceof BeanNameAware) {
+//				((BeanNameAware) bean).setBeanName(beanName);
+//			}
+//			if (bean instanceof BeanClassLoaderAware) {
+//				((BeanClassLoaderAware) bean).setBeanClassLoader(getBeanClassLoader());
+//			}
+//			if (bean instanceof BeanFactoryAware) {
+//				((BeanFactoryAware) bean).setBeanFactory(AbstractAutowireCapableBeanFactory.this);
+//			}
+//		}
+//	}
 	
 	public synchronized void initialize(ActivityContext context) {
 		if(initialized) {

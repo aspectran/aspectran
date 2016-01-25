@@ -16,9 +16,9 @@
 package com.aspectran.core.context.template.engine.pebble;
 
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.context.bean.ablility.ActivityContextAware;
 import com.aspectran.core.context.bean.ablility.FactoryBean;
 import com.aspectran.core.context.bean.ablility.InitializableBean;
+import com.aspectran.core.context.bean.aware.ActivityContextAware;
 import com.mitchellbosecke.pebble.PebbleEngine;
 
 /**

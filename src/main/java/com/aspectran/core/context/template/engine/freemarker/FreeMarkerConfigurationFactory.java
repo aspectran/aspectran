@@ -15,15 +15,21 @@
  */
 package com.aspectran.core.context.template.engine.freemarker;
 
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
-import freemarker.template.Configuration;
-import freemarker.template.SimpleHash;
-import freemarker.template.TemplateException;
-
+import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 import java.util.Properties;
+
+import com.aspectran.core.util.logging.Log;
+import com.aspectran.core.util.logging.LogFactory;
+
+import freemarker.cache.ClassTemplateLoader;
+import freemarker.cache.FileTemplateLoader;
+import freemarker.cache.MultiTemplateLoader;
+import freemarker.cache.TemplateLoader;
+import freemarker.template.Configuration;
+import freemarker.template.SimpleHash;
+import freemarker.template.TemplateException;
 
 /**
  * Factory that configures a FreeMarker Configuration.
@@ -39,6 +45,8 @@ public class FreeMarkerConfigurationFactory {
     private Map<String, Object> freemarkerVariables;
 
     private String defaultEncoding;
+    
+    private TemplateLoader templateLoader;
 
     /**
      * Set properties that contain well-known FreeMarker keys which will be
@@ -69,14 +77,25 @@ public class FreeMarkerConfigurationFactory {
         this.defaultEncoding = defaultEncoding;
     }
 
-    /**
+    public void setTemplateLoader(TemplateLoader templateLoader) {
+		this.templateLoader = templateLoader;
+	}
+
+	/**
      * Prepare the FreeMarker Configuration and return it.
      * @return the FreeMarker Configuration object
      * @throws IOException if the config file wasn't found
      * @throws TemplateException on FreeMarker initialization failure
      */
-    public Configuration createConfiguration() throws IOException, TemplateException {
-        Configuration config = newConfiguration();
+    public Configuration createConfiguration(ClassLoader classLoader) throws IOException, TemplateException {
+    	FileTemplateLoader ftl1 = new FileTemplateLoader(new File("/tmp/templates"));
+    	FileTemplateLoader ftl2 = new FileTemplateLoader(new File("/usr/data/templates"));
+    	ClassTemplateLoader ctl = new ClassTemplateLoader(getClass(), "");
+    	TemplateLoader[] loaders = new TemplateLoader[] { ftl1, ftl2, ctl };
+    	MultiTemplateLoader mtl = new MultiTemplateLoader(loaders);
+    	
+    	Configuration config = newConfiguration();
+        //config.setClassLoaderForTemplateLoading(classLoader);
         Properties props = new Properties();
 
         // Merge local properties if specified.
