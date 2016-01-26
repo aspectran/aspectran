@@ -15,13 +15,12 @@
  */
 package com.aspectran.core.context.template.engine.st;
 
-import com.aspectran.core.context.template.engine.TemplateEngine;
-import com.aspectran.core.context.template.engine.TemplateEngineProcessException;
-
-import java.io.Reader;
 import java.io.Writer;
 import java.util.Locale;
 import java.util.Map;
+
+import com.aspectran.core.context.template.engine.TemplateEngine;
+import com.aspectran.core.context.template.engine.TemplateEngineProcessException;
 
 /**
  * <p>Created: 2016. 1. 9.</p>
@@ -29,7 +28,7 @@ import java.util.Map;
 public class StringTemplateEngine implements TemplateEngine {
 
     @Override
-    public void process(String templateName, Map<String, Object> dataModel, Reader reader, Writer writer) throws TemplateEngineProcessException {
+    public void process(String templateName, Map<String, Object> dataModel, String templateSource, Writer writer) throws TemplateEngineProcessException {
     }
 
     @Override

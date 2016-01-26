@@ -109,8 +109,7 @@ public class ContextTemplateProcessor implements TemplateProcessor {
                         if(templateName == null)
                             templateName = templateRule.getEngine() + "/" + templateRule.hashCode();
 
-                        Reader reader = new StringReader(templateSource);
-                        engine.process(templateName, templateDataMap, reader, writer);
+                        engine.process(templateName, templateDataMap, templateSource, writer);
                     }
                 }
             } else {

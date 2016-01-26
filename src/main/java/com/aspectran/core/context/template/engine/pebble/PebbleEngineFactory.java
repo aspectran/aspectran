@@ -15,6 +15,12 @@
  */
 package com.aspectran.core.context.template.engine.pebble;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.bean.aware.ApplicationAdapterAware;
 import com.aspectran.core.util.ResourceUtils;
@@ -26,15 +32,10 @@ import com.mitchellbosecke.pebble.loader.ClasspathLoader;
 import com.mitchellbosecke.pebble.loader.DelegatingLoader;
 import com.mitchellbosecke.pebble.loader.FileLoader;
 import com.mitchellbosecke.pebble.loader.Loader;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
+import com.mitchellbosecke.pebble.loader.StringLoader;
 
 /**
- * Factory that configures a FreeMarker Configuration.
+ * Factory that configures a Pebble Engine Configuration.
  *
  * <p>Created: 2016. 1. 9.</p>
  */
@@ -90,7 +91,6 @@ public class PebbleEngineFactory implements ApplicationAdapterAware {
     }
 
     public PebbleEngine createPebbleEngine() throws IOException {
-
         PebbleEngine.Builder builder = new PebbleEngine.Builder();
         builder.strictVariables(strictVariables);
 
@@ -108,37 +108,43 @@ public class PebbleEngineFactory implements ApplicationAdapterAware {
             }
         }
 
-        if(templateLoaders != null) {
-            Loader<?> templateLoader = getAggregateTemplateLoader(templateLoaders);
-            if(templateLoader != null) {
-                builder.loader(templateLoader);
-            }
-        }
-
+        Loader<?> templateLoader = getAggregateTemplateLoader(templateLoaders);
+        builder.loader(templateLoader);
+        
         return builder.build();
     }
 
     /**
      * Return a Template Loader based on the given Template Loader list.
-     * If more than one TemplateLoader has been registered, a FreeMarker
-     * MultiTemplateLoader needs to be created.
+     * If more than one Template Loader has been registered, a DelegatingLoader needs to be created.
      * @param templateLoaders the final List of TemplateLoader instances
      * @return the aggregate TemplateLoader
      */
     protected Loader<?> getAggregateTemplateLoader(Loader<?>[] templateLoaders) {
-        int loaderCount = templateLoaders.length;
+        int loaderCount = (templateLoaders == null) ? 0 : templateLoaders.length;
         switch(loaderCount) {
             case 0:
-                //log.info("No FreeMarker TemplateLoaders specified.");
-                return null;
+            	// Register default template loaders.
+            	Loader<?> stringLoader = new StringLoader();
+            	//if(log.isDebugEnabled()) {
+	        		log.info("Pebble Engine Template Loader not specified. Default Template Loader registered: " + stringLoader);
+	        	//}
+            	return stringLoader;
             case 1:
+            	//if(log.isDebugEnabled()) {
+	        		log.info("One Pebble Engine Template Loader registered: " + templateLoaders[0]);
+	        	//}
                 return templateLoaders[0];
             default:
                 List<Loader<?>> defaultLoadingStrategies = new ArrayList<Loader<?>>();
                 for(Loader<?> loader : templateLoaders) {
                     defaultLoadingStrategies.add(loader);
                 }
-                return new DelegatingLoader(defaultLoadingStrategies);
+                Loader<?> delegatingLoader = new DelegatingLoader(defaultLoadingStrategies);
+            	//if(log.isDebugEnabled()) {
+	        		log.info("Multiple Pebble Engine Template Loader registered: " + delegatingLoader);
+	        	//}
+	        	return delegatingLoader;
         }
     }
 
@@ -153,25 +159,27 @@ public class PebbleEngineFactory implements ApplicationAdapterAware {
             if(log.isDebugEnabled()) {
                 log.debug("Template loader path [" + templateLoaderPath + "] resolved to class path [" + basePackagePath + "]");
             }
-            return new ClasspathLoader(applicationAdapter.getClassLoader());
+            ClasspathLoader loader = new ClasspathLoader(applicationAdapter.getClassLoader());
+            loader.setPrefix(basePackagePath);
+            return loader;
         } else if(templateLoaderPath.startsWith(ResourceUtils.FILE_URL_PREFIX)) {
             File file = new File(templateLoaderPath.substring(ResourceUtils.FILE_URL_PREFIX.length()));
             String prefix = file.getAbsolutePath();
             if(log.isDebugEnabled()) {
                 log.debug("Template loader path [" + templateLoaderPath + "] resolved to file path [" + prefix + "]");
             }
-            FileLoader fileLoader = new FileLoader();
-            fileLoader.setPrefix(prefix);
-            return fileLoader;
+            FileLoader loader = new FileLoader();
+            loader.setPrefix(prefix);
+            return loader;
         } else {
             File file = new File(applicationAdapter.getApplicationBasePath(), templateLoaderPath);
             String prefix = file.getAbsolutePath();
             if(log.isDebugEnabled()) {
                 log.debug("Template loader path [" + templateLoaderPath + "] resolved to file path [" + prefix + "]");
             }
-            FileLoader fileLoader = new FileLoader();
-            fileLoader.setPrefix(prefix);
-            return fileLoader;
+            FileLoader loader = new FileLoader();
+            loader.setPrefix(prefix);
+            return loader;
         }
     }
 

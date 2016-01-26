@@ -153,11 +153,9 @@ public class FreeMarkerConfigurationFactory implements ApplicationAdapterAware {
             }
         }
 
-        if(templateLoaders != null) {
-            TemplateLoader templateLoader = getAggregateTemplateLoader(templateLoaders);
-            if(templateLoader != null) {
-                config.setTemplateLoader(templateLoader);
-            }
+        TemplateLoader templateLoader = getAggregateTemplateLoader(templateLoaders);
+        if(templateLoader != null) {
+            config.setTemplateLoader(templateLoader);
         }
 
         return config;
@@ -184,15 +182,24 @@ public class FreeMarkerConfigurationFactory implements ApplicationAdapterAware {
      * @return the aggregate TemplateLoader
      */
     protected TemplateLoader getAggregateTemplateLoader(TemplateLoader[] templateLoaders) {
-        int loaderCount = templateLoaders.length;
+    	int loaderCount = (templateLoaders == null) ? 0 : templateLoaders.length;
         switch(loaderCount) {
             case 0:
-                //log.info("No FreeMarker TemplateLoaders specified.");
+            	//if(log.isDebugEnabled()) {
+                	log.info("No FreeMarker TemplateLoaders specified. Can be used only inner template source.");
+            	//
                 return null;
             case 1:
+            	//if(log.isDebugEnabled()) {
+            		log.info("One FreeMarker TemplateLoader registered: " + templateLoaders[0]);
+            	//}
                 return templateLoaders[0];
             default:
-                return new MultiTemplateLoader(templateLoaders);
+            	TemplateLoader loader = new MultiTemplateLoader(templateLoaders);
+            	//if(log.isDebugEnabled()) {
+            		log.info("Multiple FreeMarker TemplateLoader registered: " + loader);
+        		//}
+                return loader;
         }
     }
 

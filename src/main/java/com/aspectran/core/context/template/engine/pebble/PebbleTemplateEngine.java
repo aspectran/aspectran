@@ -15,15 +15,14 @@
  */
 package com.aspectran.core.context.template.engine.pebble;
 
+import java.io.Writer;
+import java.util.Locale;
+import java.util.Map;
+
 import com.aspectran.core.context.template.engine.TemplateEngine;
 import com.aspectran.core.context.template.engine.TemplateEngineProcessException;
 import com.mitchellbosecke.pebble.PebbleEngine;
 import com.mitchellbosecke.pebble.template.PebbleTemplate;
-
-import java.io.Reader;
-import java.io.Writer;
-import java.util.Locale;
-import java.util.Map;
 
 /**
  * The Class PebbleTemplateEngine.
@@ -39,20 +38,25 @@ public class PebbleTemplateEngine implements TemplateEngine {
     }
 
     @Override
-    public void process(String templateName, Map<String, Object> dataModel, Reader reader, Writer writer) throws TemplateEngineProcessException {
-        throw new UnsupportedOperationException();
+    public void process(String templateName, Map<String, Object> model, String templateSource, Writer writer) throws TemplateEngineProcessException {
+        try {
+            PebbleTemplate compiledTemplate = engine.getTemplate(templateSource);
+            compiledTemplate.evaluate(writer, model);
+        } catch(Exception e) {
+            throw new TemplateEngineProcessException(e);
+        }
     }
 
     @Override
-    public void process(String templateName, Map<String, Object> dataModel, Writer writer) throws TemplateEngineProcessException {
-        process(templateName, dataModel, writer, null);
+    public void process(String templateName, Map<String, Object> model, Writer writer) throws TemplateEngineProcessException {
+        process(templateName, model, writer, null);
     }
 
     @Override
-    public void process(String templateName, Map<String, Object> dataModel, Writer writer, Locale locale) throws TemplateEngineProcessException {
+    public void process(String templateName, Map<String, Object> model, Writer writer, Locale locale) throws TemplateEngineProcessException {
         try {
             PebbleTemplate compiledTemplate = engine.getTemplate(templateName);
-            compiledTemplate.evaluate(writer, dataModel, locale);
+            compiledTemplate.evaluate(writer, model, locale);
         } catch(Exception e) {
             throw new TemplateEngineProcessException(e);
         }

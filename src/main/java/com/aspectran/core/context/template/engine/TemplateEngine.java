@@ -15,7 +15,6 @@
  */
 package com.aspectran.core.context.template.engine;
 
-import java.io.Reader;
 import java.io.Writer;
 import java.util.Locale;
 import java.util.Map;
@@ -25,10 +24,10 @@ import java.util.Map;
  */
 public interface TemplateEngine {
 
-    public void process(String templateName, Map<String, Object> dataModel, Reader reader, Writer writer) throws TemplateEngineProcessException;
+    public void process(String templateName, Map<String, Object> model, String templateSource, Writer writer) throws TemplateEngineProcessException;
 
-    public void process(String templateName, Map<String, Object> dataModel, Writer writer) throws TemplateEngineProcessException;
+    public void process(String templateName, Map<String, Object> model, Writer writer) throws TemplateEngineProcessException;
 
-    public void process(String templateName, Map<String, Object> dataModel, Writer writer, Locale locale) throws TemplateEngineProcessException;
+    public void process(String templateName, Map<String, Object> model, Writer writer, Locale locale) throws TemplateEngineProcessException;
 
 }

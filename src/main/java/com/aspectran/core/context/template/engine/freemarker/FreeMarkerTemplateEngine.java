@@ -15,15 +15,17 @@
  */
 package com.aspectran.core.context.template.engine.freemarker;
 
-import com.aspectran.core.context.template.engine.TemplateEngine;
-import com.aspectran.core.context.template.engine.TemplateEngineProcessException;
-import freemarker.template.Configuration;
-import freemarker.template.Template;
-
 import java.io.Reader;
+import java.io.StringReader;
 import java.io.Writer;
 import java.util.Locale;
 import java.util.Map;
+
+import com.aspectran.core.context.template.engine.TemplateEngine;
+import com.aspectran.core.context.template.engine.TemplateEngineProcessException;
+
+import freemarker.template.Configuration;
+import freemarker.template.Template;
 
 /**
  * The Class FreemakerTemplateEngine.
@@ -39,25 +41,26 @@ public class FreeMarkerTemplateEngine implements TemplateEngine {
     }
 
     @Override
-    public void process(String templateName, Map<String, Object> dataModel, Reader reader, Writer writer) throws TemplateEngineProcessException {
+    public void process(String templateName, Map<String, Object> model, String templateSource, Writer writer) throws TemplateEngineProcessException {
         try {
-            Template template = new Template(templateName, reader, configuration);
-            template.process(dataModel, writer);
+        	Reader reader = new StringReader(templateSource);
+        	Template template = new Template(templateName, reader, configuration);
+            template.process(model, writer);
         } catch(Exception e) {
             throw new TemplateEngineProcessException(e);
         }
     }
 
     @Override
-    public void process(String templateName, Map<String, Object> dataModel, Writer writer) throws TemplateEngineProcessException {
-        process(templateName, dataModel, writer, null);
+    public void process(String templateName, Map<String, Object> model, Writer writer) throws TemplateEngineProcessException {
+        process(templateName, model, writer, null);
     }
 
     @Override
-    public void process(String templateName, Map<String, Object> dataModel, Writer writer, Locale locale) throws TemplateEngineProcessException {
+    public void process(String templateName, Map<String, Object> model, Writer writer, Locale locale) throws TemplateEngineProcessException {
         try {
             Template template = configuration.getTemplate(templateName, locale);
-            template.process(dataModel, writer);
+            template.process(model, writer);
         } catch(Exception e) {
             throw new TemplateEngineProcessException(e);
         }
