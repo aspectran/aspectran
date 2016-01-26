@@ -45,14 +45,20 @@ public class Application {
                 String command = System.console().readLine("Command> ");
 
                 if("restart".equals(command)) {
+                	System.out.println("Aspectran service has been restarted.");
                     aspectranService.restart();
-                    System.out.println("Aspectran service has been restarted.");
+                } else if("reload".equals(command)) {
+                	System.out.println("Aspectran service has been reloaded.");
+                	aspectranService.reload();
+                } else if("refresh".equals(command)) {
+                	System.out.println("Aspectran service has been refreshed.");
+                	aspectranService.refresh();
                 } else if("pause".equals(command)) {
+                	System.out.println("Aspectran service has been paused.");
                     aspectranService.pause();
-                    System.out.println("Aspectran service has been paused.");
                 } else if("resume".equals(command)) {
+                	System.out.println("Aspectran service has been resumed.");
                     aspectranService.resume();
-                    System.out.println("Aspectran service has been resumed.");
                 } else if("quit".equals(command)) {
                     break;
                 } else {

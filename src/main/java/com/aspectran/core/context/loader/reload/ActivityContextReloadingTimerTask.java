@@ -94,7 +94,7 @@ public class ActivityContextReloadingTimerTask extends TimerTask {
 		
 		if(modified) {
 			try {
-				aspectranService.restart();
+				aspectranService.refresh();
 			} catch(AspectranServiceException e) {
 				throw new AspectranRuntimeException(e);
 			}

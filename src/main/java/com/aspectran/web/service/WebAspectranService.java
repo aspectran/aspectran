@@ -226,7 +226,11 @@ public class WebAspectranService extends CoreAspectranService {
 				aspectranService.pauseTimeout = 0;
 			}
 			
-			public void refreshed() {
+			public void restarted() {
+				started();
+			}
+			
+			public void reloaded() {
 				started();
 			}
 			

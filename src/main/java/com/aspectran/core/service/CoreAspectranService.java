@@ -23,6 +23,9 @@ import com.aspectran.core.context.loader.resource.InvalidResourceException;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
+/**
+ * The Class CoreAspectranService.
+ */
 public class CoreAspectranService extends AbstractAspectranService {
 
 	private static final Log log = LogFactory.getLog(CoreAspectranService.class);
@@ -52,12 +55,7 @@ public class CoreAspectranService extends AbstractAspectranService {
 			return true;
 		}
 
-		boolean cleanlyDestoryed;
-		
-		if(isHardReload())
-			cleanlyDestoryed = dispose();
-		else
-			cleanlyDestoryed = stop();
+		boolean cleanlyDestoryed = dispose();
 		
 		reloadActivityContext();
 		
@@ -66,14 +64,43 @@ public class CoreAspectranService extends AbstractAspectranService {
 		log.info("AspectranService was restarted.");
 
 		if(aspectranServiceControllerListener != null)
-			aspectranServiceControllerListener.refreshed();
+			aspectranServiceControllerListener.restarted();
 		
 		return cleanlyDestoryed;
 	}
 
+	public synchronized boolean reload() throws AspectranServiceException {
+		if(!started) {
+			log.debug("Cannot restart AspectranService, because it is currently stopped.");
+			return true;
+		}
+		
+		boolean cleanlyDestoryed = stop();
+		
+		reloadActivityContext();
+		
+		started = true;
+		
+		log.info("AspectranService was reloaded.");
+		
+		if(aspectranServiceControllerListener != null)
+			aspectranServiceControllerListener.reloaded();
+		
+		return cleanlyDestoryed;
+	}
+	
+	public synchronized boolean refresh() throws AspectranServiceException {
+		if(isHardReload())
+			return restart();
+		else
+			return reload();
+	}
+	
 	public synchronized void pause() {
 		if(aspectranServiceControllerListener != null)
 			aspectranServiceControllerListener.paused(-1L);
+		
+		log.info("AspectranService was paused.");
 	}
 	
 	public synchronized void pause(long timeout) {
@@ -84,6 +111,8 @@ public class CoreAspectranService extends AbstractAspectranService {
 	public synchronized void resume() {
 		if(aspectranServiceControllerListener != null)
 			aspectranServiceControllerListener.resumed();
+		
+		log.info("AspectranService was resumed.");
 	}
 
 	public synchronized boolean stop() {

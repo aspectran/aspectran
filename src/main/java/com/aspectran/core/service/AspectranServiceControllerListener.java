@@ -15,12 +15,17 @@
  */
 package com.aspectran.core.service;
 
+/**
+ * The listener interface for receiving AspectranServiceController events.
+ */
 public interface AspectranServiceControllerListener {
 	
 	public void started();
 	
-	public void refreshed();
+	public void restarted();
 
+	public void reloaded();
+	
 	public void paused(long timeout);
 	
 	public void resumed();
