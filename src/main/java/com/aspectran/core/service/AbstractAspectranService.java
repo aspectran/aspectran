@@ -38,6 +38,9 @@ import com.aspectran.core.util.logging.LogFactory;
 import com.aspectran.scheduler.service.SchedulerService;
 import com.aspectran.scheduler.service.QuartzSchedulerService;
 
+/**
+ * The Class AbstractAspectranService.
+ */
 public abstract class AbstractAspectranService implements AspectranService {
 
 	protected static final Log log = LogFactory.getLog(AbstractAspectranService.class);
@@ -151,7 +154,7 @@ public abstract class AbstractAspectranService implements AspectranService {
 			activityContextLoader.setApplicationAdapter(applicationAdapter);
 			activityContextLoader.setHybridLoading(hybridLoading);
 		} catch(Exception e) {
-			throw new AspectranServiceException("Failed to initialize AspectranService " + aspectranConfig, e);
+			throw new AspectranServiceException("Failed to initialize the AspectranService " + aspectranConfig, e);
 		}
 	}
 	
@@ -187,9 +190,9 @@ public abstract class AbstractAspectranService implements AspectranService {
 			try {
 				activityContext.destroy();
 				activityContext = null;
-				log.info("Successfully destroyed AspectranContext.");
+				log.info("Successfully destroyed the AspectranContext.");
 			} catch(Exception e) {
-				log.error("Failed to destroy AspectranContext " + activityContext, e);
+				log.error("Failed to destroy the AspectranContext " + activityContext, e);
 				cleanlyDestoryed = false;
 			}
 		}
@@ -215,7 +218,7 @@ public abstract class AbstractAspectranService implements AspectranService {
 	
 			startReloadingTimer();
 		} catch(Exception e) {
-			throw new AspectranServiceException("Failed to reload the Aspectran's ActivityContext.", e);
+			throw new AspectranServiceException("Failed to reload the ActivityContext.", e);
 		}
 
 		return activityContext;
@@ -254,9 +257,9 @@ public abstract class AbstractAspectranService implements AspectranService {
 			try {
 				schedulerService.shutdown();
 				schedulerService = null;
-				log.info("Aspectran's SchedulerService has not been shutdown successfully.");
+				log.info("SchedulerService has been shutdown successfully.");
 			} catch(Exception e) {
-				log.error("Aspectran's SchedulerService has not been shutdown cleanly.", e);
+				log.error("SchedulerService did not shutdown cleanly.", e);
 				return false;
 			}
 		}

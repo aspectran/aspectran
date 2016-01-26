@@ -19,6 +19,9 @@ import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.loader.AspectranClassLoader;
 
+/**
+ * The Interface AspectranService.
+ */
 public interface AspectranService extends AspectranServiceController {
 
 	public AspectranClassLoader getAspectranClassLoader();
