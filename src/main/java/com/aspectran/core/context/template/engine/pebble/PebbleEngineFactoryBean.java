@@ -26,24 +26,24 @@ import com.mitchellbosecke.pebble.PebbleEngine;
  */
 public class PebbleEngineFactoryBean extends PebbleEngineFactory implements InitializableBean, FactoryBean<PebbleEngine> {
 
-    private PebbleEngine engine;
+    private PebbleEngine pebbleEngine;
 
     /**
      * Initialize FreeMarkerConfigurationFactory's Configuration
      * if not overridden by a preconfigured FreeMarker Configuation.
      *
-     * @throws Exception
+     * @throws Exception if an exception occurs during initialization.
      */
     @Override
     public void initialize() throws Exception {
-        if(this.engine == null) {
-            this.engine = createPebbleEngine();
+        if(this.pebbleEngine == null) {
+            this.pebbleEngine = createPebbleEngine();
         }
     }
 
     @Override
     public PebbleEngine getObject() {
-        return this.engine;
+        return this.pebbleEngine;
     }
 
 }

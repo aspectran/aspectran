@@ -102,13 +102,13 @@ public class ConsoleAspectranService extends CoreAspectranService {
 		ConsoleAspectranService aspectranService = new ConsoleAspectranService();
 		aspectranService.initialize(aspectranConfig);
 		
-		ConsoleAspectranService.addAspectranServiceControllerListener(aspectranService);
+		addAspectranServiceControllerListener(aspectranService);
 		
 		aspectranService.startup();
 		
 		return aspectranService;
 	}
-	
+
 	private static void addAspectranServiceControllerListener(final ConsoleAspectranService aspectranService) {
 		aspectranService.setAspectranServiceControllerListener(new AspectranServiceControllerListener() {
 			public void started() {

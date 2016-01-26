@@ -15,14 +15,14 @@
  */
 package com.aspectran.core.context.template.engine.pebble;
 
-import java.io.Writer;
-import java.util.Locale;
-import java.util.Map;
-
 import com.aspectran.core.context.template.engine.TemplateEngine;
 import com.aspectran.core.context.template.engine.TemplateEngineProcessException;
 import com.mitchellbosecke.pebble.PebbleEngine;
 import com.mitchellbosecke.pebble.template.PebbleTemplate;
+
+import java.io.Writer;
+import java.util.Locale;
+import java.util.Map;
 
 /**
  * The Class PebbleTemplateEngine.
@@ -31,16 +31,16 @@ import com.mitchellbosecke.pebble.template.PebbleTemplate;
  */
 public class PebbleTemplateEngine implements TemplateEngine {
 
-    private final PebbleEngine engine;
+    private final PebbleEngine pebbleEngine;
 
-    public PebbleTemplateEngine(PebbleEngine engine) {
-        this.engine = engine;
+    public PebbleTemplateEngine(PebbleEngine pebbleEngine) {
+        this.pebbleEngine = pebbleEngine;
     }
 
     @Override
     public void process(String templateName, Map<String, Object> model, String templateSource, Writer writer) throws TemplateEngineProcessException {
         try {
-            PebbleTemplate compiledTemplate = engine.getTemplate(templateSource);
+            PebbleTemplate compiledTemplate = pebbleEngine.getTemplate(templateSource);
             compiledTemplate.evaluate(writer, model);
         } catch(Exception e) {
             throw new TemplateEngineProcessException(e);
@@ -55,7 +55,7 @@ public class PebbleTemplateEngine implements TemplateEngine {
     @Override
     public void process(String templateName, Map<String, Object> model, Writer writer, Locale locale) throws TemplateEngineProcessException {
         try {
-            PebbleTemplate compiledTemplate = engine.getTemplate(templateName);
+            PebbleTemplate compiledTemplate = pebbleEngine.getTemplate(templateName);
             compiledTemplate.evaluate(writer, model, locale);
         } catch(Exception e) {
             throw new TemplateEngineProcessException(e);

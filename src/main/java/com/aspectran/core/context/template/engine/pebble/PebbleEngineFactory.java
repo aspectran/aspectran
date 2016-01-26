@@ -15,12 +15,6 @@
  */
 package com.aspectran.core.context.template.engine.pebble;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.bean.aware.ApplicationAdapterAware;
 import com.aspectran.core.util.ResourceUtils;
@@ -28,11 +22,13 @@ import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 import com.mitchellbosecke.pebble.PebbleEngine;
-import com.mitchellbosecke.pebble.loader.ClasspathLoader;
-import com.mitchellbosecke.pebble.loader.DelegatingLoader;
-import com.mitchellbosecke.pebble.loader.FileLoader;
-import com.mitchellbosecke.pebble.loader.Loader;
-import com.mitchellbosecke.pebble.loader.StringLoader;
+import com.mitchellbosecke.pebble.loader.*;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 /**
  * Factory that configures a Pebble Engine Configuration.
@@ -117,6 +113,7 @@ public class PebbleEngineFactory implements ApplicationAdapterAware {
     /**
      * Return a Template Loader based on the given Template Loader list.
      * If more than one Template Loader has been registered, a DelegatingLoader needs to be created.
+     *
      * @param templateLoaders the final List of TemplateLoader instances
      * @return the aggregate TemplateLoader
      */
@@ -126,14 +123,14 @@ public class PebbleEngineFactory implements ApplicationAdapterAware {
             case 0:
             	// Register default template loaders.
             	Loader<?> stringLoader = new StringLoader();
-            	//if(log.isDebugEnabled()) {
-	        		log.info("Pebble Engine Template Loader not specified. Default Template Loader registered: " + stringLoader);
-	        	//}
+            	if(log.isDebugEnabled()) {
+	        		log.debug("Pebble Engine Template Loader not specified. Default Template Loader registered: " + stringLoader);
+	        	}
             	return stringLoader;
             case 1:
-            	//if(log.isDebugEnabled()) {
-	        		log.info("One Pebble Engine Template Loader registered: " + templateLoaders[0]);
-	        	//}
+            	if(log.isDebugEnabled()) {
+	        		log.debug("One Pebble Engine Template Loader registered: " + templateLoaders[0]);
+	        	}
                 return templateLoaders[0];
             default:
                 List<Loader<?>> defaultLoadingStrategies = new ArrayList<Loader<?>>();
@@ -141,15 +138,16 @@ public class PebbleEngineFactory implements ApplicationAdapterAware {
                     defaultLoadingStrategies.add(loader);
                 }
                 Loader<?> delegatingLoader = new DelegatingLoader(defaultLoadingStrategies);
-            	//if(log.isDebugEnabled()) {
-	        		log.info("Multiple Pebble Engine Template Loader registered: " + delegatingLoader);
-	        	//}
+            	if(log.isDebugEnabled()) {
+	        		log.debug("Multiple Pebble Engine Template Loader registered: " + delegatingLoader);
+	        	}
 	        	return delegatingLoader;
         }
     }
 
     /**
      * Determine a Pebble Engine Template Loader for the given path.
+     *
      * @param templateLoaderPath the path to load templates from
      * @return an appropriate Template Loader
      */

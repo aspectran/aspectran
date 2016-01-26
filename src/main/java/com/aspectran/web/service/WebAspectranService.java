@@ -213,7 +213,7 @@ public class WebAspectranService extends CoreAspectranService {
 		WebAspectranService aspectranService = new WebAspectranService(servletContext);
 		aspectranService.initialize(aspectranConfigParam);
 		
-		WebAspectranService.addAspectranServiceControllerListener(aspectranService);
+		addAspectranServiceControllerListener(aspectranService);
 		
 		aspectranService.startup();
 		

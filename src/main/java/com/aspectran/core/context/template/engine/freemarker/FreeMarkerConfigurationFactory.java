@@ -64,6 +64,7 @@ public class FreeMarkerConfigurationFactory implements ApplicationAdapterAware {
     /**
      * Set properties that contain well-known FreeMarker keys which will be
      * passed to FreeMarker's {@code Configuration.setSettings} method.
+     *
      * @see freemarker.template.Configuration#setSettings
      */
     public void setFreemarkerSettings(Properties settings) {
@@ -73,6 +74,7 @@ public class FreeMarkerConfigurationFactory implements ApplicationAdapterAware {
     /**
      * Set a Map that contains well-known FreeMarker objects which will be passed
      * to FreeMarker's {@code Configuration.setAllSharedVariables()} method.
+     *
      * @see freemarker.template.Configuration#setAllSharedVariables
      */
     public void setFreemarkerVariables(Map<String, Object> variables) {
@@ -84,6 +86,7 @@ public class FreeMarkerConfigurationFactory implements ApplicationAdapterAware {
      * If not specified, FreeMarker will use the platform file encoding.
      * <p>Used for template rendering unless there is an explicit encoding specified
      * for the rendering process (for example, on Spring's FreeMarkerView).
+     *
      * @see freemarker.template.Configuration#setDefaultEncoding
      */
     public void setDefaultEncoding(String defaultEncoding) {
@@ -116,6 +119,7 @@ public class FreeMarkerConfigurationFactory implements ApplicationAdapterAware {
 
 	/**
      * Prepare the FreeMarker Configuration and return it.
+     *
      * @return the FreeMarker Configuration object
      * @throws IOException if the config file wasn't found
      * @throws TemplateException on FreeMarker initialization failure
@@ -166,6 +170,7 @@ public class FreeMarkerConfigurationFactory implements ApplicationAdapterAware {
      * initialization (e.g. specifying a FreeMarker compatibility level which is a
      * new feature in FreeMarker 2.3.21), or for using a mock object for testing.
      * <p>Called by {@code createConfiguration()}.
+     *
      * @return the Configuration object
      * @throws IOException if a config file wasn't found
      * @throws TemplateException on FreeMarker initialization failure
@@ -178,6 +183,7 @@ public class FreeMarkerConfigurationFactory implements ApplicationAdapterAware {
      * Return a TemplateLoader based on the given TemplateLoader list.
      * If more than one TemplateLoader has been registered, a FreeMarker
      * MultiTemplateLoader needs to be created.
+     *
      * @param templateLoaders the final List of TemplateLoader instances
      * @return the aggregate TemplateLoader
      */
@@ -185,26 +191,27 @@ public class FreeMarkerConfigurationFactory implements ApplicationAdapterAware {
     	int loaderCount = (templateLoaders == null) ? 0 : templateLoaders.length;
         switch(loaderCount) {
             case 0:
-            	//if(log.isDebugEnabled()) {
-                	log.info("No FreeMarker TemplateLoaders specified. Can be used only inner template source.");
-            	//
+            	if(log.isDebugEnabled()) {
+                    log.debug("No FreeMarker TemplateLoaders specified. Can be used only inner template source.");
+                }
                 return null;
             case 1:
-            	//if(log.isDebugEnabled()) {
-            		log.info("One FreeMarker TemplateLoader registered: " + templateLoaders[0]);
-            	//}
+            	if(log.isDebugEnabled()) {
+            		log.debug("One FreeMarker TemplateLoader registered: " + templateLoaders[0]);
+            	}
                 return templateLoaders[0];
             default:
             	TemplateLoader loader = new MultiTemplateLoader(templateLoaders);
-            	//if(log.isDebugEnabled()) {
-            		log.info("Multiple FreeMarker TemplateLoader registered: " + loader);
-        		//}
+            	if(log.isDebugEnabled()) {
+            		log.debug("Multiple FreeMarker TemplateLoader registered: " + loader);
+        		}
                 return loader;
         }
     }
 
     /**
      * Determine a FreeMarker TemplateLoader for the given path.
+     *
      * @param templateLoaderPath the path to load templates from
      * @return an appropriate TemplateLoader
      * @see freemarker.cache.FileTemplateLoader
