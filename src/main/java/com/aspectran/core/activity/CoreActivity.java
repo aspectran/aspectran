@@ -286,7 +286,7 @@ public class CoreActivity extends AbstractActivity implements Activity {
 				}
 			}
 			
-			throw new ActivityException("Failed to Run Activity", e);
+			throw new ActivityException("Failed to run activity.", e);
 		} finally {
 			if(getRequestScope() != null) {
 				getRequestScope().destroy();
@@ -346,7 +346,7 @@ public class CoreActivity extends AbstractActivity implements Activity {
 				}
 			}
 				
-			throw new RequestException("request-processing failed", e);
+			throw new RequestException("Request processing failed.", e);
 		}
 		
 		if(activityEnded)
@@ -406,7 +406,7 @@ public class CoreActivity extends AbstractActivity implements Activity {
 					}
 				}
 				
-				throw new ProcessException("content-processsing failed", e);
+				throw new ProcessException("Content processing failed.", e);
 			}
 		}
 		
@@ -464,7 +464,7 @@ public class CoreActivity extends AbstractActivity implements Activity {
 				}
 			}
 			
-			throw new ResponseException("response-processing failed", e);
+			throw new ResponseException("Response processing failed.", e);
 		}
 	}
 	
@@ -538,7 +538,7 @@ public class CoreActivity extends AbstractActivity implements Activity {
 	 */
 	private void forward() {
 		if(debugEnabled) {
-			log.debug("forwarding for translet: " + forwardTransletName);
+			log.debug("forwarding to Translet [" + forwardTransletName + "]");
 		}
 		
 		ProcessResult processResult = translet.getProcessResult();
@@ -646,7 +646,7 @@ public class CoreActivity extends AbstractActivity implements Activity {
 			}
 			
 			if(traceEnabled)
-				log.debug("actionResult " + resultValue);
+				log.trace("actionResult " + resultValue);
 		} catch(Exception e) {
 			setRaisedException(e);
 			throw new ActionExecutionException("Failed to execute action " + action, e);
