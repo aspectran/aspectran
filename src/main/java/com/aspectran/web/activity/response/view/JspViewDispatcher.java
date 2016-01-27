@@ -15,12 +15,6 @@
  */
 package com.aspectran.web.activity.response.view;
 
-import java.util.Enumeration;
-
-import javax.servlet.RequestDispatcher;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.process.result.ActionResult;
 import com.aspectran.core.activity.process.result.ContentResult;
@@ -34,6 +28,10 @@ import com.aspectran.core.context.rule.ResponseRule;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
+import javax.servlet.RequestDispatcher;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 /**
  * JSP or other web resource integration.
  * 
@@ -44,8 +42,6 @@ public class JspViewDispatcher implements ViewDispatcher {
 	private static final Log log = LogFactory.getLog(JspViewDispatcher.class);
 
 	private static final boolean debugEnabled = log.isDebugEnabled();
-	
-	private static final boolean traceEnabled = log.isTraceEnabled();
 	
 	private String templateNamePrefix;
 
@@ -117,32 +113,11 @@ public class JspViewDispatcher implements ViewDispatcher {
 			RequestDispatcher requestDispatcher = request.getRequestDispatcher(dispatchName);
 			requestDispatcher.forward(request, response);
 
-			if(traceEnabled) {
-				Enumeration<String> attrNames = requestAdapter.getAttributeNames();
-
-				if(attrNames.hasMoreElements()) {
-					StringBuilder sb2 = new StringBuilder(256);
-					sb2.append("request atttibute names [");
-					String name = null;
-
-					while(attrNames.hasMoreElements()) {
-						if(name != null)
-							sb2.append(", ");
-
-						name = attrNames.nextElement();
-						sb2.append(name);
-					}
-
-					sb2.append("]");
-					log.trace(sb2.toString());
-				}
-			}
-
 			if(debugEnabled)
-				log.debug("dispatch to a JSP {templateFile: " + dispatchName + "}");
+				log.debug("dispatch to a JSP [" + dispatchName + "]");
 
 		} catch(Exception e) {
-			throw new ViewDispatchException("JSP View Dispatch Error: " + dispatchResponseRule, e);
+			throw new ViewDispatchException("Failed to dispatch to JSP " + dispatchResponseRule, e);
 		}
 	}
 
