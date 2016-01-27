@@ -110,6 +110,7 @@ public class RootAponAssembler {
 			settingParameters.putValue(DefaultSettingsParameters.nullableActionId, defaultSettings.getNullableActionId());
 			settingParameters.putValue(DefaultSettingsParameters.beanProxifier, defaultSettings.getBeanProxifier());
 			settingParameters.putValue(DefaultSettingsParameters.pointcutPatternVerifiable, defaultSettings.getPointcutPatternVerifiable());
+			settingParameters.putValue(DefaultSettingsParameters.defaultTemplateEngine, defaultSettings.getDefaultTemplateEngine());
 		}
 		
 		Map<String, String> typeAliases = assistant.getTypeAliases();
@@ -307,7 +308,7 @@ public class RootAponAssembler {
 		}
 		transletParameters.putValue(TransletParameters.name, transletRule.getName());
 		transletParameters.putValue(TransletParameters.mask, transletRule.getMaskPattern());
-		transletParameters.putValue(TransletParameters.path, transletRule.getPath());
+		transletParameters.putValue(TransletParameters.path, transletRule.getScanPath());
 		
 		if(transletRule.getRestVerb() != null)
 			transletParameters.putValue(TransletParameters.restVerb, transletRule.getRestVerb().toString());
@@ -478,13 +479,13 @@ public class RootAponAssembler {
 	public Parameters assembleDispatchParameters(DispatchResponseRule dispatchResponseRule) {
 		DispatchParameters dispatchParameters = new DispatchParameters();
 
+		if(dispatchResponseRule.getDispatchName() != null)
+			dispatchParameters.putValue(DispatchParameters.name, dispatchResponseRule.getDispatchName().toString());
+
 		if(dispatchResponseRule.getContentType() != null)
 			dispatchParameters.putValue(DispatchParameters.contentType, dispatchResponseRule.getContentType().toString());
 		
 		dispatchParameters.putValue(DispatchParameters.characterEncoding, dispatchResponseRule.getCharacterEncoding());
-		
-		if(dispatchResponseRule.getTemplateRule() != null)
-			dispatchParameters.putValue(DispatchParameters.template, assembleTemplateParameters(dispatchResponseRule.getTemplateRule()));
 		
 		ActionList actionList = dispatchResponseRule.getActionList();
 		if(actionList != null) {

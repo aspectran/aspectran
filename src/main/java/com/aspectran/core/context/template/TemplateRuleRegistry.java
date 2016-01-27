@@ -15,6 +15,8 @@
  */
 package com.aspectran.core.context.template;
 
+import com.aspectran.core.context.builder.AssistantLocal;
+import com.aspectran.core.context.builder.DefaultSettings;
 import com.aspectran.core.context.rule.TemplateRule;
 import com.aspectran.core.context.rule.TemplateRuleMap;
 import com.aspectran.core.util.logging.Log;
@@ -31,10 +33,20 @@ public class TemplateRuleRegistry {
 
     private final TemplateRuleMap templateRuleMap = new TemplateRuleMap();
 
+    private AssistantLocal assistantLocal;
+    
     public TemplateRuleRegistry() {
     }
 
-    public TemplateRuleMap getTemplateRuleMap() {
+    public AssistantLocal getAssistantLocal() {
+		return assistantLocal;
+	}
+
+	public void setAssistantLocal(AssistantLocal assistantLocal) {
+		this.assistantLocal = assistantLocal;
+	}
+
+	public TemplateRuleMap getTemplateRuleMap() {
         return templateRuleMap;
     }
 
@@ -47,6 +59,13 @@ public class TemplateRuleRegistry {
     }
 
     public void addTemplateRule(TemplateRule templateRule) {
+		DefaultSettings defaultSettings = assistantLocal.getDefaultSettings();
+		if(defaultSettings != null) {
+			if(templateRule.getEngine() == null && defaultSettings.getDefaultTemplateEngine() != null) {
+				templateRule.setEngine(defaultSettings.getDefaultTemplateEngine());
+			}
+		}
+    	
         templateRuleMap.putTemplateRule(templateRule);
 
         if(log.isTraceEnabled())

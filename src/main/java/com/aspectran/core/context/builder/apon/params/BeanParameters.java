@@ -24,8 +24,9 @@ public class BeanParameters extends AbstractParameters implements Parameters {
 
 	public static final ParameterDefine description;
 	public static final ParameterDefine id;
-	public static final ParameterDefine mask;
 	public static final ParameterDefine className;
+	public static final ParameterDefine scan;
+	public static final ParameterDefine mask;
 	public static final ParameterDefine scope;
 	public static final ParameterDefine singleton;
 	public static final ParameterDefine factoryBean;
@@ -43,8 +44,9 @@ public class BeanParameters extends AbstractParameters implements Parameters {
 	static {
 		description = new ParameterDefine("description", ParameterValueType.TEXT);
 		id = new ParameterDefine("id", ParameterValueType.STRING);
-		mask = new ParameterDefine("mask", ParameterValueType.STRING);
 		className = new ParameterDefine("class", ParameterValueType.STRING);
+		scan = new ParameterDefine("scan", ParameterValueType.STRING);
+		mask = new ParameterDefine("mask", ParameterValueType.STRING);
 		scope = new ParameterDefine("scope", ParameterValueType.STRING);
 		singleton = new ParameterDefine("singleton", ParameterValueType.BOOLEAN);
 		factoryBean = new ParameterDefine("factoryBean", ParameterValueType.STRING);
@@ -60,8 +62,9 @@ public class BeanParameters extends AbstractParameters implements Parameters {
 		parameterDefines = new ParameterDefine[] {
 				description,
 				id,
-				mask,
 				className,
+				scan,
+				mask,
 				scope,
 				singleton,
 				factoryBean,

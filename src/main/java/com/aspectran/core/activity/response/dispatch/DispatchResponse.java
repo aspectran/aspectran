@@ -102,7 +102,7 @@ public class DispatchResponse implements Response {
 	 * @see com.aspectran.core.activity.response.Response#getTemplateRule()
 	 */
 	public TemplateRule getTemplateRule() {
-		return dispatchResponseRule.getTemplateRule();
+		return null;
 	}
 	
 	/* (non-Javadoc)

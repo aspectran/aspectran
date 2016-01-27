@@ -35,7 +35,7 @@ public class TemplateRule {
 
 	private String id;
 
-	private final String engine;
+	private String engine;
 
 	private String name;
 
@@ -62,11 +62,10 @@ public class TemplateRule {
 	private boolean loaded;
 
 	public TemplateRule() {
-		this(null);
 	}
 
 	public TemplateRule(String engine) {
-		this.engine = engine;
+		this.engine = (engine != null && engine.length() == 0) ? null : engine;
 	}
 
 	public String getId() {
@@ -79,6 +78,16 @@ public class TemplateRule {
 
 	public String getEngine() {
 		return engine;
+	}
+
+	public void setEngine(String engine) {
+		if(this.engine != engine) {
+			if(this.content != null) {
+				this.contentTokens = parseContentTokens(content);
+			}
+		}
+		
+		this.engine = (engine != null && engine.length() == 0) ? null : engine;
 	}
 
 	public String getName() {
@@ -153,10 +162,16 @@ public class TemplateRule {
 	}
 
 	public void setContent(String content) {
-		this.content = content;
-		this.contentTokens = parseContentTokens(content);
+		setContent(content, true);
 	}
 
+	public void setContent(String content, boolean parse) {
+		this.content = content;
+		if(parse) {
+			this.contentTokens = parseContentTokens(content);
+		}
+	}
+	
 	public Token[] getContentTokens() {
 		return this.contentTokens;
 	}
@@ -172,8 +187,8 @@ public class TemplateRule {
 
 		if(this.file != null || this.resource != null || this.url != null) {
 			if(this.noCache) {
-				String template = loadTemplateSource(applicationAdapter);
-				return parseContentTokens(template);
+				String source = loadTemplateSource(applicationAdapter);
+				return parseContentTokens(source);
 			} else {
 				loadCachedTemplateSource(applicationAdapter);
 				return this.contentTokens;
@@ -410,18 +425,18 @@ public class TemplateRule {
 	}
 
 	public static TemplateRule newDerivedBuiltinTemplateRule(TemplateRule templateRule) {
-		TemplateRule newTemplateRule = new TemplateRule(templateRule.getEngine());
-		newTemplateRule.setName(templateRule.getName());
-		newTemplateRule.setFile(templateRule.getFile());
-		newTemplateRule.setResource(templateRule.getResource());
-		newTemplateRule.setUrl(templateRule.getUrl());
-		newTemplateRule.setEncoding(templateRule.getEncoding());
-		newTemplateRule.setContent(templateRule.getContent());
-		newTemplateRule.setContentTokens(templateRule.getContentTokens());
-		newTemplateRule.setNoCache(templateRule.getNoCache());
-		newTemplateRule.setBuiltin(true);
+		TemplateRule tr = new TemplateRule(templateRule.getEngine());
+		tr.setName(templateRule.getName());
+		tr.setFile(templateRule.getFile());
+		tr.setResource(templateRule.getResource());
+		tr.setUrl(templateRule.getUrl());
+		tr.setContent(templateRule.getContent(), false);
+		tr.setContentTokens(templateRule.getContentTokens());
+		tr.setEncoding(templateRule.getEncoding());
+		tr.setNoCache(templateRule.getNoCache());
+		tr.setBuiltin(true);
 
-		return newTemplateRule;
+		return tr;
 	}
 
 }

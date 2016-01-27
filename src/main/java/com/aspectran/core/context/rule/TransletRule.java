@@ -23,6 +23,7 @@ import com.aspectran.core.activity.Translet;
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.activity.process.ContentList;
 import com.aspectran.core.activity.response.Response;
+import com.aspectran.core.activity.response.dispatch.DispatchResponse;
 import com.aspectran.core.context.AspectranConstants;
 import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
 import com.aspectran.core.context.expr.token.Token;
@@ -47,9 +48,9 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 	
 	private Token[] nameTokens;
 	
-	private String maskPattern;
+	private String scanPath;
 	
-	private String path;
+	private String maskPattern;
 	
 	private RequestRule requestRule;
 	
@@ -153,6 +154,14 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 	public void setNameTokens(Token[] nameTokens) {
 		this.nameTokens = nameTokens;
 	}
+	
+	public String getScanPath() {
+		return scanPath;
+	}
+	
+	public void setScanPath(String scanPath) {
+		this.scanPath = scanPath;
+	}
 
 	public String getMaskPattern() {
 		return maskPattern;
@@ -160,14 +169,6 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 
 	public void setMaskPattern(String maskPattern) {
 		this.maskPattern = maskPattern;
-	}
-
-	public String getPath() {
-		return path;
-	}
-
-	public void setPath(String path) {
-		this.path = path;
 	}
 
 	/**
@@ -469,7 +470,7 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 		return sb.toString();
 	}
 	
-	public static TransletRule newInstance(String name, String mask, String path, String restVerb) {
+	public static TransletRule newInstance(String name, String scan, String mask, String restVerb) {
 		if(name == null)
 			throw new IllegalArgumentException("The <translet> element requires a name attribute.");
 
@@ -487,8 +488,8 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 		if(restVerb != null) {
 			transletRule.setRestVerb(requestMethod);
 		} else {
+			transletRule.setScanPath(scan);
 			transletRule.setMaskPattern(mask);
-			transletRule.setPath(path);
 		}
 		
 		return transletRule;
@@ -517,7 +518,7 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 		return newTransletRule;
 	}
 	
-	public static TransletRule newDerivedTransletRule(TransletRule transletRule, String templateFile) {
+	public static TransletRule newDerivedTransletRule(TransletRule transletRule, String templateName) {
 		TransletRule newTransletRule = new TransletRule();
 		newTransletRule.setName(transletRule.getName());
 		newTransletRule.setRestVerb(transletRule.getRestVerb());
@@ -529,7 +530,13 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 		ResponseRule responseRule = transletRule.getResponseRule();
 		if(responseRule != null && responseRule.getTemplateRule() != null) {
 			responseRule = ResponseRule.newDerivedResponseRule(responseRule);
-			responseRule.getTemplateRule().setFile(templateFile);
+			if(responseRule.getResponse() != null) {
+				if(responseRule.getResponse() instanceof DispatchResponse) {
+					DispatchResponse dispatchResponse = (DispatchResponse)responseRule.getResponse();
+					DispatchResponseRule dispatchResponseRule = dispatchResponse.getDispatchResponseRule();
+					dispatchResponseRule.setDispatchName(templateName);
+				}
+			}
 			newTransletRule.setResponseRule(responseRule);
 		}
 		
@@ -539,7 +546,7 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 				ResponseRule rr = responseRuleList.get(i);
 				if(rr.getTemplateRule() != null) {
 					rr = ResponseRule.newDerivedResponseRule(rr);
-					rr.getTemplateRule().setFile(templateFile);
+					rr.getTemplateRule().setFile(templateName);
 					responseRuleList.set(i, rr);
 				}
 			}

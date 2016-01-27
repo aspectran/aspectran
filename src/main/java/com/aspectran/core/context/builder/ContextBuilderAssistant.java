@@ -71,10 +71,14 @@ public class ContextBuilderAssistant {
 		this.classLoader = applicationAdapter.getClassLoader();
 		
 		aspectRuleRegistry = new AspectRuleRegistry();
+		
 		beanRuleRegistry = new BeanRuleRegistry(classLoader);
+		
 		transletRuleRegistry = new TransletRuleRegistry(applicationAdapter);
 		transletRuleRegistry.setAssistantLocal(assistantLocal);
+		
 		templateRuleRegistry = new TemplateRuleRegistry();
+		templateRuleRegistry.setAssistantLocal(assistantLocal);
 	}
 	
 	protected ContextBuilderAssistant() {

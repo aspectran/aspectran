@@ -29,7 +29,6 @@ import com.aspectran.core.context.rule.BeanRuleMap;
 import com.aspectran.core.util.PrefixSuffixPattern;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
-import com.aspectran.core.util.wildcard.WildcardPattern;
 
 /**
  * The type Bean rule registry.
@@ -102,19 +101,19 @@ public class BeanRuleRegistry {
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public void addBeanRule(BeanRule beanRule) throws CloneNotSupportedException, ClassNotFoundException, IOException {
-		String className = beanRule.getClassName();
+		String scanPath = beanRule.getScanPath();
 
 		PrefixSuffixPattern prefixSuffixPattern = new PrefixSuffixPattern();
 		boolean patterned = prefixSuffixPattern.split(beanRule.getId());
 		
-		if(WildcardPattern.hasWildcards(className)) {
+		if(scanPath != null) {
 			BeanClassScanner scanner = new BeanClassScanner(classLoader);
 			if(beanRule.getFilterParameters() != null)
 				scanner.setFilterParameters(beanRule.getFilterParameters());
 			if(beanRule.getMaskPattern() != null)
 				scanner.setBeanIdMaskPattern(beanRule.getMaskPattern());
 			
-			Map<String, Class<?>> beanClassMap = scanner.scanClasses(className);
+			Map<String, Class<?>> beanClassMap = scanner.scanClasses(scanPath);
 			
 			if(beanClassMap != null && !beanClassMap.isEmpty()) {
 				for(Map.Entry<String, Class<?>> entry : beanClassMap.entrySet()) {
@@ -147,6 +146,8 @@ public class BeanRuleRegistry {
 			if(log.isDebugEnabled())
 				log.debug("scanned class files: " + (beanClassMap == null ? 0 : beanClassMap.size()));
 		} else {
+			String className = beanRule.getClassName();
+
 			if(patterned) {
 				beanRule.setId(prefixSuffixPattern.join(className));
 			}

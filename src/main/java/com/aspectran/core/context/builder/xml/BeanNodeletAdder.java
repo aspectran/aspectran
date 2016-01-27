@@ -57,6 +57,7 @@ public class BeanNodeletAdder implements NodeletAdder {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
 				String id = attributes.get("id");
 				String className = assistant.resolveAliasType(attributes.get("class"));
+				String scan = attributes.get("scan");
 				String mask = attributes.get("mask");
 				String scope = attributes.get("scope");
 				Boolean singleton = BooleanUtils.toNullableBooleanObject(attributes.get("singleton"));
@@ -67,7 +68,7 @@ public class BeanNodeletAdder implements NodeletAdder {
 				Boolean lazyInit = BooleanUtils.toNullableBooleanObject(attributes.get("lazyInit"));
 				Boolean important = BooleanUtils.toNullableBooleanObject(attributes.get("important"));
 
-				BeanRule beanRule = BeanRule.newInstance(id, mask, className, scope, singleton, factoryBean, factoryMethod, initMethodName, destroyMethodName, lazyInit, important);
+				BeanRule beanRule = BeanRule.newInstance(id, className, scan, mask, scope, singleton, factoryBean, factoryMethod, initMethodName, destroyMethodName, lazyInit, important);
 				assistant.pushObject(beanRule);					
 			}
 		});

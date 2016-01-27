@@ -15,6 +15,12 @@
  */
 package com.aspectran.web.activity.response.view;
 
+import java.util.Enumeration;
+
+import javax.servlet.RequestDispatcher;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.process.result.ActionResult;
 import com.aspectran.core.activity.process.result.ContentResult;
@@ -25,14 +31,8 @@ import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.context.rule.DispatchResponseRule;
 import com.aspectran.core.context.rule.ResponseRule;
-import com.aspectran.core.context.rule.TemplateRule;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
-
-import javax.servlet.RequestDispatcher;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.Enumeration;
 
 /**
  * JSP or other web resource integration.
@@ -74,24 +74,18 @@ public class JspViewDispatcher implements ViewDispatcher {
 	 */
 	public void dispatch(Activity activity, DispatchResponseRule dispatchResponseRule) throws ViewDispatchException {
 		try {
-			TemplateRule templateRule = dispatchResponseRule.getTemplateRule();
-			if(templateRule == null) {
-				log.warn("No specified template. " + dispatchResponseRule);
-				return;
-			}
-
-			String templateName = templateRule.getName();
-			if(templateName == null) {
-				log.warn("No specified template name " + dispatchResponseRule);
+			String dispatchName = dispatchResponseRule.getDispatchName();
+			if(dispatchName == null) {
+				log.warn("No specified dispatch name " + dispatchResponseRule);
 				return;
 			}
 			
 			if(templateNamePrefix != null && templateNameSuffix != null) {
-				templateName = templateNamePrefix + templateName + templateNameSuffix;
+				dispatchName = templateNamePrefix + dispatchName + templateNameSuffix;
 			} else if(templateNamePrefix != null) {
-				templateName = templateNamePrefix + templateName;
+				dispatchName = templateNamePrefix + dispatchName;
 			} else if(templateNameSuffix != null) {
-				templateName = templateName + templateNameSuffix;
+				dispatchName = dispatchName + templateNameSuffix;
 			}
 			
 			RequestAdapter requestAdapter = activity.getRequestAdapter();
@@ -120,7 +114,7 @@ public class JspViewDispatcher implements ViewDispatcher {
 			HttpServletRequest request = requestAdapter.getAdaptee();
 			HttpServletResponse response = responseAdapter.getAdaptee();
 			
-			RequestDispatcher requestDispatcher = request.getRequestDispatcher(templateName);
+			RequestDispatcher requestDispatcher = request.getRequestDispatcher(dispatchName);
 			requestDispatcher.forward(request, response);
 
 			if(traceEnabled) {
@@ -145,7 +139,7 @@ public class JspViewDispatcher implements ViewDispatcher {
 			}
 
 			if(debugEnabled)
-				log.debug("dispatch to a JSP {templateFile: " + templateName + "}");
+				log.debug("dispatch to a JSP {templateFile: " + dispatchName + "}");
 
 		} catch(Exception e) {
 			throw new ViewDispatchException("JSP View Dispatch Error: " + dispatchResponseRule, e);

@@ -296,8 +296,9 @@ public class RootAponDisassembler {
 	public void disassembleBeanRule(Parameters beanParameters) throws ClassNotFoundException, IOException, CloneNotSupportedException {
 		String description = beanParameters.getString(BeanParameters.description);
 		String id = beanParameters.getString(BeanParameters.id);
-		String mask = beanParameters.getString(BeanParameters.mask);
 		String className = assistant.resolveAliasType(beanParameters.getString(BeanParameters.className));
+		String scan = beanParameters.getString(BeanParameters.scan);
+		String mask = beanParameters.getString(BeanParameters.mask);
 		String scope = beanParameters.getString(BeanParameters.scope);
 		Boolean singleton = beanParameters.getBoolean(BeanParameters.singleton);
 		String factoryBean = beanParameters.getString(BeanParameters.factoryBean);
@@ -310,7 +311,7 @@ public class RootAponDisassembler {
 		ItemHolderParameters propertyItemHolderParameters = beanParameters.getParameters(BeanParameters.properties);
 		Parameters filterParameters = beanParameters.getParameters(BeanParameters.filter);
 		
-		BeanRule beanRule = BeanRule.newInstance(id, mask, className, scope, singleton, factoryBean, factoryMethod, initMethod, destroyMethod, lazyInit, important);
+		BeanRule beanRule = BeanRule.newInstance(id, className, scan, mask, scope, singleton, factoryBean, factoryMethod, initMethod, destroyMethod, lazyInit, important);
 
 		if(description != null)
 			beanRule.setDescription(description);
@@ -624,13 +625,13 @@ public class RootAponDisassembler {
 	}
 	
 	public DispatchResponseRule disassembleDispatchResponseRule(Parameters dispatchParameters) {
+		String name = dispatchParameters.getString(DispatchParameters.name);
 		String contentType = dispatchParameters.getString(DispatchParameters.contentType);
 		String characterEncoding = dispatchParameters.getString(DispatchParameters.characterEncoding);
-		Parameters templateParameters = dispatchParameters.getParameters(DispatchParameters.template);
 		List<Parameters> actionParametersList = dispatchParameters.getParametersList(DispatchParameters.actions);
 		Boolean defaultResponse = dispatchParameters.getBoolean(DispatchParameters.defaultResponse);
 		
-		DispatchResponseRule drr = DispatchResponseRule.newInstance(contentType, characterEncoding, defaultResponse);
+		DispatchResponseRule drr = DispatchResponseRule.newInstance(name, contentType, characterEncoding, defaultResponse);
 		
 		if(actionParametersList != null && !actionParametersList.isEmpty()) {
 			ActionList actionList = new ActionList();
@@ -638,14 +639,6 @@ public class RootAponDisassembler {
 				disassembleActionRule(actionParameters, actionList);
 			}
 			drr.setActionList(actionList);
-		}
-	
-		if(templateParameters != null) {
-			String name = templateParameters.getString(TemplateParameters.name);
-			String encoding = templateParameters.getString(TemplateParameters.encoding);
-			Boolean noCache = templateParameters.getBoolean(TemplateParameters.noCache);
-			TemplateRule templateRule = TemplateRule.newInstanceForBuiltin(null, name, null, null, null, null, encoding, noCache);
-			drr.setTemplateRule(templateRule);
 		}
 		
 		return drr;

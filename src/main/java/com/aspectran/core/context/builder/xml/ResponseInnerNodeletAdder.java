@@ -111,11 +111,12 @@ public class ResponseInnerNodeletAdder implements NodeletAdder {
 		});
 		parser.addNodelet(xpath, "/dispatch", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
+				String name = attributes.get("name");
 				String contentType = attributes.get("contentType");
 				String characterEncoding = attributes.get("characterEncoding");
 				Boolean defaultResponse = BooleanUtils.toNullableBooleanObject(attributes.get("defaultResponse"));
 
-				DispatchResponseRule drr = DispatchResponseRule.newInstance(contentType, characterEncoding, defaultResponse);
+				DispatchResponseRule drr = DispatchResponseRule.newInstance(name, contentType, characterEncoding, defaultResponse);
 				assistant.pushObject(drr);
 
 				ActionList actionList = new ActionList();
@@ -123,18 +124,6 @@ public class ResponseInnerNodeletAdder implements NodeletAdder {
 			}
 		});
 		parser.addNodelet(xpath, "/dispatch", new ActionRuleNodeletAdder(assistant));
-		parser.addNodelet(xpath, "/dispatch/template", new Nodelet() {
-			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
-				String name = attributes.get("name");
-				String encoding = attributes.get("encoding");
-				Boolean noCache = BooleanUtils.toNullableBooleanObject(attributes.get("noCache"));
-				
-				TemplateRule templateRule = TemplateRule.newInstanceForBuiltin(null, name, null, null, null, null, encoding, noCache);
-				
-				DispatchResponseRule drr = assistant.peekObject(1);
-				drr.setTemplateRule(templateRule);
-			}
-		});
 		parser.addNodelet(xpath, "/dispatch/end()", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
 				ActionList actionList = assistant.popObject();

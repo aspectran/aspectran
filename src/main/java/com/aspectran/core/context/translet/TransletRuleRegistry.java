@@ -124,30 +124,30 @@ public class TransletRuleRegistry {
 			transletRule.setTransletImplementClass(defaultSettings.getTransletImplementClass());
 		}
 		
-		if(transletRule.getPath() != null) {
+		if(transletRule.getScanPath() != null) {
 			TemplateFileScanner scanner = new TemplateFileScanner(applicationAdapter.getApplicationBasePath(), applicationAdapter.getClassLoader());
 			if(transletRule.getFilterParameters() != null)
 				scanner.setFilterParameters(transletRule.getFilterParameters());
 			if(transletRule.getMaskPattern() != null)
 				scanner.setTransletNameMaskPattern(transletRule.getMaskPattern());
 			else
-				scanner.setTransletNameMaskPattern(transletRule.getPath());
+				scanner.setTransletNameMaskPattern(transletRule.getScanPath());
 			
-			Map<String, File> templateFileMap = scanner.scanFiles(transletRule.getPath());
+			Map<String, File> templateFileMap = scanner.scanFiles(transletRule.getScanPath());
 			
 			if(templateFileMap != null && !templateFileMap.isEmpty()) {
 				PrefixSuffixPattern prefixSuffixPattern = new PrefixSuffixPattern();
 				boolean patterned = prefixSuffixPattern.split(transletRule.getName());
 
 				for(Map.Entry<String, File> entry : templateFileMap.entrySet()) {
-					String filePath = entry.getKey();
-					TransletRule newTransletRule = TransletRule.newDerivedTransletRule(transletRule, filePath);
+					String templateName = entry.getKey();
+					TransletRule newTransletRule = TransletRule.newDerivedTransletRule(transletRule, templateName);
 					
 					if(patterned) {
-						newTransletRule.setName(prefixSuffixPattern.join(filePath));
+						newTransletRule.setName(prefixSuffixPattern.join(templateName));
 					} else {
 						if(transletRule.getName() != null) {
-							newTransletRule.setName(transletRule.getName() + filePath);
+							newTransletRule.setName(transletRule.getName() + templateName);
 						}
 					}
 					

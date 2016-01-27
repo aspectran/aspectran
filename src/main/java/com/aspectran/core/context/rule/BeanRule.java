@@ -39,6 +39,8 @@ public class BeanRule implements Cloneable {
 
 	protected Class<?> beanClass;
 
+	protected String scanPath;
+	
 	protected String maskPattern;
 	
 	protected ScopeType scopeType;
@@ -132,6 +134,24 @@ public class BeanRule implements Cloneable {
 	public void setBeanClass(Class<?> beanClass) {
 		this.beanClass = beanClass;
 		this.className = beanClass.getName();
+	}
+
+	/**
+	 * Gets the scan path.
+	 *
+	 * @return the scan path
+	 */
+	public String getScanPath() {
+		return scanPath;
+	}
+
+	/**
+	 * Sets the scan path.
+	 *
+	 * @param scanPath the new scan path
+	 */
+	public void setScanPath(String scanPath) {
+		this.scanPath = scanPath;
 	}
 
 	/**
@@ -508,19 +528,20 @@ public class BeanRule implements Cloneable {
 		return sb.toString();
 	}
 	
-	public static BeanRule newInstance(String id, String maskPattern, String className, String scope, Boolean singleton, String factoryBeanId, String factoryMethodName, String initMethodName, String destroyMethodName, Boolean lazyInit, Boolean important) {
+	public static BeanRule newInstance(String id, String className, String scanPath, String maskPattern, String scope, Boolean singleton, String factoryBeanId, String factoryMethodName, String initMethodName, String destroyMethodName, Boolean lazyInit, Boolean important) {
 		if(id == null)
 			throw new IllegalArgumentException("The <bean> element requires an id attribute.");
 
 		boolean factoryBeanReferenced;
 
-		if(className == null && factoryBeanId != null) {
+		if(className == null && scanPath == null && factoryBeanId != null) {
 			factoryBeanReferenced = true;
 		} else {
 			factoryBeanReferenced = false;
 
-			if(className == null)
+			if(className == null && scanPath == null) {
 				throw new IllegalArgumentException("The <bean> element requires a class attribute.");
+			}
 		}
 
 		ScopeType scopeType = ScopeType.valueOf(scope);
@@ -544,8 +565,9 @@ public class BeanRule implements Cloneable {
 			beanRule.setFactoryBeanReferenced(true);
 		} else {
 			beanRule.setId(id);
-			beanRule.setMaskPattern(maskPattern);
 			beanRule.setClassName(className);
+			beanRule.setScanPath(scanPath);
+			beanRule.setMaskPattern(maskPattern);
 			beanRule.setScopeType(scopeType);
 			beanRule.setSingleton(singleton);
 			beanRule.setFactoryMethodName(factoryMethodName);

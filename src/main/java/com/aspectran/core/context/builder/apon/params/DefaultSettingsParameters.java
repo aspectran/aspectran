@@ -32,6 +32,7 @@ public class DefaultSettingsParameters extends AbstractParameters implements Par
 	public static final ParameterDefine nullableActionId;
 	public static final ParameterDefine beanProxifier;
 	public static final ParameterDefine pointcutPatternVerifiable;
+	public static final ParameterDefine defaultTemplateEngine;
 	
 	private static final ParameterDefine[] parameterDefines;
 	
@@ -45,6 +46,7 @@ public class DefaultSettingsParameters extends AbstractParameters implements Par
 		nullableActionId = new ParameterDefine(DefaultSettingType.NULLABLE_ACTION_ID.toString(), ParameterValueType.BOOLEAN);
 		beanProxifier = new ParameterDefine(DefaultSettingType.BEAN_PROXIFIER.toString(), ParameterValueType.STRING);
 		pointcutPatternVerifiable = new ParameterDefine(DefaultSettingType.POINTCUT_PATTERN_VERIFIABLE.toString(), ParameterValueType.STRING);
+		defaultTemplateEngine = new ParameterDefine(DefaultSettingType.DEFAULT_TEMPLATE_ENGINE.toString(), ParameterValueType.STRING);
 		
 		parameterDefines = new ParameterDefine[] {
 				transletNamePattern,
@@ -55,7 +57,8 @@ public class DefaultSettingsParameters extends AbstractParameters implements Par
 				nullableContentId,
 				nullableActionId,
 				beanProxifier,
-				pointcutPatternVerifiable
+				pointcutPatternVerifiable,
+				defaultTemplateEngine
 		};
 	}
 	
