@@ -21,7 +21,7 @@ import com.aspectran.core.context.ActivityContext;
 /**
  * The Class RuntimeActivityContextBuilder.
  * 
- * <p>Created: 2008. 06. 14 오후 8:53:29</p>
+ * <p>Created: 2008. 06. 14 PM 8:53:29</p>
  */
 public class RuntimeActivityContextBuilder extends AbstractActivityContextBuilder implements ActivityContextBuilder {
 	
@@ -33,7 +33,7 @@ public class RuntimeActivityContextBuilder extends AbstractActivityContextBuilde
 		try {
 			return makeActivityContext(getApplicationAdapter());
 		} catch(Exception e) {
-			throw new ActivityContextBuilderException("Faild to create Context for Aspectran Runtime Activity.", e);
+			throw new ActivityContextBuilderException("Faild to create ActivityContext for Aspectran Runtime Activity.", e);
 		}
 	}
 	

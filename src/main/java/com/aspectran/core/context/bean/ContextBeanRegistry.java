@@ -29,7 +29,7 @@ import com.aspectran.core.util.MethodUtils;
 /**
  * The Class ScopedContextBeanRegistry.
  * 
- * <p>Created: 2009. 03. 09 오후 23:48:09</p>
+ * <p>Created: 2009. 03. 09 PM 23:48:09</p>
  */
 public class ContextBeanRegistry extends AbstractBeanFactory implements BeanRegistry {
 

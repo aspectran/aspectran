@@ -38,7 +38,7 @@ import com.aspectran.core.util.xml.NodeletParser;
 /**
  * The Class ResponseRuleNodeletAdder.
  * 
- * <p>Created: 2008. 06. 14 오전 6:56:29</p>
+ * <p>Created: 2008. 06. 14 AM 6:56:29</p>
  */
 public class ResponseInnerNodeletAdder implements NodeletAdder {
 	

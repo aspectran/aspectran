@@ -25,7 +25,7 @@ import com.aspectran.core.context.rule.type.ImportType;
 import com.aspectran.core.util.StringUtils;
 
 /**
- * <p>Created: 2008. 04. 24 오전 11:23:36</p>
+ * <p>Created: 2008. 04. 24 AM 11:23:36</p>
  * 
  * @author Juho Jeong
  */

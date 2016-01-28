@@ -28,7 +28,7 @@ import com.aspectran.core.context.translet.TransletInstantiationException;
 /**
  * The Class AbstractActivity.
  * 
- * <p>Created: 2008. 03. 22 오후 5:48:09</p>
+ * <p>Created: 2008. 03. 22 PM 5:48:09</p>
  */
 public abstract class AbstractActivity {
 

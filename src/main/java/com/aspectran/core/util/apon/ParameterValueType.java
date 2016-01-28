@@ -23,7 +23,7 @@ import com.aspectran.core.context.rule.type.Type;
 /**
  * Defines the type of the parameter value.
  * 
- * <p>Created: 2008. 03. 29 오후 3:47:00</p>
+ * <p>Created: 2008. 03. 29 PM 3:47:00</p>
  */
 public final class ParameterValueType extends Type {
 

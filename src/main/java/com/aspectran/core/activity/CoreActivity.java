@@ -15,6 +15,10 @@
  */
 package com.aspectran.core.activity;
 
+import java.io.UnsupportedEncodingException;
+import java.util.List;
+import java.util.Map;
+
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.activity.process.ContentList;
 import com.aspectran.core.activity.process.ProcessException;
@@ -31,22 +35,28 @@ import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.aspect.AspectAdviceRuleRegister;
 import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
 import com.aspectran.core.context.bean.BeanRegistry;
-import com.aspectran.core.context.rule.*;
-import com.aspectran.core.context.rule.type.*;
+import com.aspectran.core.context.rule.AspectAdviceRule;
+import com.aspectran.core.context.rule.AspectRule;
+import com.aspectran.core.context.rule.ExceptionHandlingRule;
+import com.aspectran.core.context.rule.RequestRule;
+import com.aspectran.core.context.rule.ResponseByContentTypeRule;
+import com.aspectran.core.context.rule.ResponseRule;
+import com.aspectran.core.context.rule.TransletRule;
+import com.aspectran.core.context.rule.type.ActionType;
+import com.aspectran.core.context.rule.type.AspectAdviceType;
+import com.aspectran.core.context.rule.type.JoinpointScopeType;
+import com.aspectran.core.context.rule.type.RequestMethodType;
+import com.aspectran.core.context.rule.type.ResponseType;
 import com.aspectran.core.context.template.TemplateProcessor;
 import com.aspectran.core.context.translet.TransletNotFoundException;
 import com.aspectran.core.context.variable.ParameterMap;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
-import java.io.UnsupportedEncodingException;
-import java.util.List;
-import java.util.Map;
-
 /**
  * The Class CoreActivity.
  * 
- * <p>Created: 2008. 03. 22 오후 5:48:09</p>
+ * <p>Created: 2008. 03. 22 PM 5:48:09</p>
  */
 public class CoreActivity extends AbstractActivity implements Activity {
 
@@ -480,14 +490,18 @@ public class CoreActivity extends AbstractActivity implements Activity {
 		ContentList contentList = transletRule.getContentList();
 
 		if(contentList != null) {
+			ProcessResult processResult = null;
+			
 			for(ActionList actionList : contentList) {
 				if(!actionList.isHidden()) {
-					ProcessResult processResult = translet.touchProcessResult(contentList.getName());
-
+					processResult = translet.touchProcessResult(contentList.getName());
 					if(contentList.isOmittable())
 						processResult.setOmittable(true);
+					break;
 				}
-
+			}
+			
+			for(ActionList actionList : contentList) {
 				execute(actionList);
 				
 				if(activityEnded)
@@ -496,6 +510,14 @@ public class CoreActivity extends AbstractActivity implements Activity {
 		}
 		
 		return translet.getProcessResult();
+	}
+	
+	public ProcessResult getProcessResult() {
+		return translet.getProcessResult();
+	}
+	
+	public Object getProcessResult(String actionId) {
+		return translet.getProcessResult().getResultValue(actionId);
 	}
 	
 	/* (non-Javadoc)
@@ -534,7 +556,7 @@ public class CoreActivity extends AbstractActivity implements Activity {
 	}
 	
 	/**
-	 * Forwarding.
+	 * Forwards to other translet.
 	 */
 	private void forward() {
 		if(debugEnabled) {
@@ -582,6 +604,7 @@ public class CoreActivity extends AbstractActivity implements Activity {
 			
 			log.info("response by content-type: " + responseRule);
 
+			// Clear process results. No reflection to ProcessResult.
 			translet.setProcessResult(null);
 			
 			if(responseRule.getResponse() != null) {
@@ -621,7 +644,7 @@ public class CoreActivity extends AbstractActivity implements Activity {
 		ContentResult contentResult = null;
 		
 		for(Executable action : actionList) {
-			contentResult = new ContentResult();
+			contentResult = new ContentResult(translet.getProcessResult());
 			contentResult.setName(actionList.getName());
 			contentResult.setOmittable(actionList.isOmittable());
 
@@ -766,16 +789,6 @@ public class CoreActivity extends AbstractActivity implements Activity {
 	 */
 	public Translet getTranslet() {
 		return translet;
-	}
-
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.Activity#getProcessResult()
-	 */
-	public ProcessResult getProcessResult() {
-		if(translet == null)
-			return null;
-		
-		return translet.getProcessResult();
 	}
 
 	/* (non-Javadoc)

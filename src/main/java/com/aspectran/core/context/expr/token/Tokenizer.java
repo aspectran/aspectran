@@ -23,7 +23,7 @@ import com.aspectran.core.context.rule.type.TokenType;
 /**
  * The Class Tokenizer.
  * 
- * <p>Created: 2008. 03. 29 오전 1:55:03</p>
+ * <p>Created: 2008. 03. 29 AM 1:55:03</p>
  */
 public class Tokenizer {
 

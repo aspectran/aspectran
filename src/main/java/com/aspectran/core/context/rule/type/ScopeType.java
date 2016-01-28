@@ -21,7 +21,7 @@ import java.util.Map;
 /**
  * The Class ScopeType.
  * 
- * <p>Created: 2008. 12. 22 오후 2:48:00</p>
+ * <p>Created: 2008. 12. 22 PM 2:48:00</p>
  */
 public final class ScopeType extends Type {
 	

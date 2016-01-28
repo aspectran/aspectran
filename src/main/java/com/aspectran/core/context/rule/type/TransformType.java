@@ -21,7 +21,7 @@ import java.util.Map;
 /**
  * The Class TransformType.
  * 
- * <p>Created: 2008. 04. 25 오전 16:47:38</p>
+ * <p>Created: 2008. 04. 25 AM 16:47:38</p>
  */
 public final class TransformType extends Type {
 

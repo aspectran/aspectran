@@ -24,7 +24,6 @@ import java.util.Enumeration;
  */
 public abstract class AbstractSessionAdapter implements SessionAdapter {
 	
-	/** The adaptee. */
 	protected Object adaptee;
 	
 	/**
@@ -36,6 +35,9 @@ public abstract class AbstractSessionAdapter implements SessionAdapter {
 		this.adaptee = adaptee;
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.adapter.SessionAdapter#getAdaptee()
+	 */
 	@SuppressWarnings("unchecked")
 	public <T> T getAdaptee() {
 		return (T)adaptee;
@@ -74,8 +76,9 @@ public abstract class AbstractSessionAdapter implements SessionAdapter {
 	@Override
 	public String toString() {
 		if(adaptee == null) {
-			return "Session has been expired.";
+			return super.toString();
 		}
+		
 		StringBuilder sb = new StringBuilder();
 		sb.append("{id=").append(getId());
 		sb.append(", creationTime=").append(getCreationTime());

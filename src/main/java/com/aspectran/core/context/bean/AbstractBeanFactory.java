@@ -49,7 +49,7 @@ import com.aspectran.core.util.logging.LogFactory;
 /**
  * The Class AbstractBeanFactory.
  * 
- * <p>Created: 2009. 03. 09 오후 23:48:09</p>
+ * <p>Created: 2009. 03. 09 PM 23:48:09</p>
  */
 public abstract class AbstractBeanFactory implements BeanFactory {
 	

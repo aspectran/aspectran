@@ -22,7 +22,7 @@ import com.aspectran.core.util.BooleanUtils;
 /**
  * The Class ForwardResponseRule.
  * 
- * <p>Created: 2008. 03. 22 오후 5:51:58</p>
+ * <p>Created: 2008. 03. 22 PM 5:51:58</p>
  */
 public class ForwardResponseRule extends ActionPossessSupport implements ActionPossessable {
 	

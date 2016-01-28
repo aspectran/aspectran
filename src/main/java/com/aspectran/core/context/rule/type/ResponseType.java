@@ -21,7 +21,7 @@ import java.util.Map;
 /**
  * The Class ResponseType.
  * 
- * <p>Created: 2008. 05. 02 오전 16:21:38</p>
+ * <p>Created: 2008. 05. 02 AM 16:21:38</p>
  */
 public final class ResponseType extends Type {
 

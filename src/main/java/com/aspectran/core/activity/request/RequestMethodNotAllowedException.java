@@ -55,7 +55,7 @@ public class RequestMethodNotAllowedException extends RequestException {
 	/**
 	 * Instantiates a new RequestMethodNotAllowedException.
 	 * 
-	 * @param msg the message
+	 * @param msg the detail message
 	 * @param cause the real cause of the exception
 	 */
 	public RequestMethodNotAllowedException(String msg, Throwable cause) {
@@ -66,7 +66,7 @@ public class RequestMethodNotAllowedException extends RequestException {
 	 * Instantiates a new RequestMethodNotAllowedException.
 	 *
 	 * @param requestMethod the request method
-	 * @param msg the message
+	 * @param msg the detail message
 	 */
 	public RequestMethodNotAllowedException(RequestMethodType requestMethod, String msg) {
 		super(msg);

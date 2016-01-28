@@ -20,7 +20,7 @@ import com.aspectran.core.context.ActivityContext;
 /**
  * The Interface ActivityContextBuilder.
  * 
- * <p>Created: 2008. 06. 14 오후 8:53:29</p>
+ * <p>Created: 2008. 06. 14 PM 8:53:29</p>
  */
 public interface ActivityContextBuilder {
 	

@@ -23,7 +23,7 @@ import com.aspectran.core.context.rule.type.TransformType;
 /**
  * A factory for creating Transform objects.
  * 
- * <p>Created: 2008. 03. 22 오후 5:51:58</p>
+ * <p>Created: 2008. 03. 22 PM 5:51:58</p>
  */
 public class TransformFactory {
 

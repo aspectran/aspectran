@@ -130,7 +130,7 @@ public class HttpSessionAdapter extends AbstractSessionAdapter implements Sessio
 
 	private void checkSessionState() {
 		if(adaptee == null) {
-			throw new IllegalStateException("Session has been expired.");
+			throw new IllegalStateException("Session has been expired or not yet initialized.");
 		}
 	}
 	

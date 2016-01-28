@@ -40,7 +40,7 @@ import com.aspectran.core.util.StringUtils;
 /**
  * The Class TokenExpression.
  * 
- * <p>Created: 2008. 03. 29 오전 12:59:16</p>
+ * <p>Created: 2008. 03. 29 AM 12:59:16</p>
  */
 public class TokenExpression implements TokenExpressor {
 	

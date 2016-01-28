@@ -33,7 +33,7 @@ import com.aspectran.web.activity.request.multipart.MultipartRequestException;
  * This class functions as a wrapper around HttpServletRequest to provide
  * working getParameter methods for multipart requests.
  *
- * <p>Created: 2008. 04. 11 오후 1:47:48</p>
+ * <p>Created: 2008. 04. 11 PM 1:47:48</p>
  */
 public class MultipartRequestWrapper extends HttpServletRequestWrapper {
 

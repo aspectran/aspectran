@@ -33,7 +33,7 @@ import com.aspectran.core.context.rule.type.TransformType;
 /**
  * The Class TransformResponse.
  * 
- * Created: 2008. 03. 22 오후 5:51:58
+ * Created: 2008. 03. 22 PM 5:51:58
  */
 public abstract class TransformResponse implements Response {
 	

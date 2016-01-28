@@ -20,7 +20,7 @@ import com.aspectran.core.activity.process.ActionList;
 /**
  * The Class AbstractAction.
  * 
- * <p>Created: 2008. 03. 22 오후 5:50:35</p>
+ * <p>Created: 2008. 03. 22 PM 5:50:35</p>
  */
 public abstract class AbstractAction {
 

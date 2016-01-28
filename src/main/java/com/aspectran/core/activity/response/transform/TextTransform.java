@@ -33,7 +33,7 @@ import java.io.Writer;
 /**
  * The Class TextTransform.
  * 
- * <p>Created: 2008. 03. 22 오후 5:51:58</p>
+ * <p>Created: 2008. 03. 22 PM 5:51:58</p>
  */
 public class TextTransform extends TransformResponse implements Response {
 

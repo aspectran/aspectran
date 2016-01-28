@@ -32,7 +32,7 @@ import com.aspectran.core.util.logging.LogFactory;
 /**
  * The Class ForwardResponse.
  * 
- * <p>Created: 2008. 03. 22 오후 5:51:58</p>
+ * <p>Created: 2008. 03. 22 PM 5:51:58</p>
  */
 public class ForwardResponse implements Response {
 

@@ -34,7 +34,7 @@ import com.aspectran.core.util.xml.NodeletParser;
 /**
  * The Class AspectranNodeParser.
  * 
- * @since 2008. 06. 14 오전 4:39:24
+ * <p>Created: 2008. 06. 14 AM 4:39:24</p>
  */
 public class AspectranNodeParser {
 	

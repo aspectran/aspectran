@@ -24,7 +24,6 @@ import com.aspectran.core.activity.request.AbstractRequest;
 */
 public abstract class AbstractRequestAdapter extends AbstractRequest implements RequestAdapter {
 
-	/** The adaptee. */
 	protected Object adaptee;
 	
 	/**

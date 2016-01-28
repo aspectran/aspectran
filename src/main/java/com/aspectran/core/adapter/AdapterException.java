@@ -23,7 +23,7 @@ package com.aspectran.core.adapter;
 public class AdapterException extends Exception {
 	
 	/** @serial */
-	static final long serialVersionUID = 7798392272576598422L;
+	private static final long serialVersionUID = 7798392272576598422L;
 
 	/**
 	 * Simple constructor.
@@ -34,7 +34,7 @@ public class AdapterException extends Exception {
 	/**
 	 * Constructor to create exception with a message.
 	 * 
-	 * @param msg A message to associate with the exception
+	 * @param msg a message to associate with the exception
 	 */
 	public AdapterException(String msg) {
 		super(msg);
@@ -43,7 +43,7 @@ public class AdapterException extends Exception {
 	/**
 	 * Constructor to create exception to wrap another exception.
 	 * 
-	 * @param cause The real cause of the exception
+	 * @param cause the real cause of the exception
 	 */
 	public AdapterException(Throwable cause) {
 		super(cause);
@@ -53,8 +53,8 @@ public class AdapterException extends Exception {
 	 * Constructor to create exception to wrap another exception and pass a
 	 * message.
 	 * 
-	 * @param msg The message
-	 * @param cause The real cause of the exception
+	 * @param msg the detail message
+	 * @param cause the real cause of the exception
 	 */
 	public AdapterException(String msg, Throwable cause) {
 		super(msg, cause);

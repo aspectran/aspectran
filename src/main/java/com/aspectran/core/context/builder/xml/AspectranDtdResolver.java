@@ -28,7 +28,7 @@ import org.xml.sax.SAXException;
 /**
  * Offline entity resolver for the Aspectran DTDs
  * 
- * <p>Created: 2008. 06. 14 오전 4:48:34</p>
+ * <p>Created: 2008. 06. 14 AM 4:48:34</p>
  */
 public class AspectranDtdResolver implements EntityResolver {
 

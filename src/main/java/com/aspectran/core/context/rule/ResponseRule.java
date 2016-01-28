@@ -30,7 +30,7 @@ import com.aspectran.core.context.rule.type.ResponseType;
 /**
  * The Class ResponseRule.
  * 
- * <p>Created: 2008. 03. 22 오후 5:48:09</p>
+ * <p>Created: 2008. 03. 22 PM 5:48:09</p>
  */
 public class ResponseRule implements ResponseRuleApplicable {
 

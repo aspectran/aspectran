@@ -23,7 +23,7 @@ import com.aspectran.core.util.BooleanUtils;
 /**
  * The Class BeanActionRule.
  * 
- * <p>Created: 2008. 03. 22 오후 5:50:35</p>
+ * <p>Created: 2008. 03. 22 PM 5:50:35</p>
  */
 public class BeanActionRule implements ArgumentPossessable, PropertyPossessable {
 	

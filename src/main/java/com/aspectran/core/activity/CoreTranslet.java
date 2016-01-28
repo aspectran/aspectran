@@ -56,7 +56,7 @@ public class CoreTranslet implements Translet {
 	}
 	
 	/* (non-Javadoc)
-	 * @see com.aspectran.core.translet.Translet#getTransletName()
+	 * @see com.aspectran.core.activity.Translet#getTransletName()
 	 */
 	public String getTransletName() {
 		return activity.getTransletName();
@@ -118,19 +118,25 @@ public class CoreTranslet implements Translet {
 			getRequestAdapter().setAttribute(name, value);
 	}
 	
-	/**
-	 * Gets the process result.
-	 * 
-	 * @return the process result
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.activity.Translet#getProcessResult()
 	 */
 	public ProcessResult getProcessResult() {
 		return processResult;
 	}
+	
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.activity.Translet#getProcessResult(java.lang.String)
+	 */
+	public Object getProcessResult(String actionId) {
+		if(processResult == null)
+			return null;
 
-	/**
-	 * Sets the process result.
-	 * 
-	 * @param processResult the new process result
+		return processResult.getResultValue(actionId);
+	}
+
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.activity.Translet#setProcessResult(com.aspectran.core.activity.process.result.ProcessResult)
 	 */
 	public void setProcessResult(ProcessResult processResult) {
 		this.processResult = processResult;

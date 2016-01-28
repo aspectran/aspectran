@@ -29,7 +29,7 @@ import com.aspectran.core.context.rule.type.JoinpointScopeType;
 /**
  * The Class VoidActivity
  * 
- * <p>Created: 2008. 04. 28 오전 12:48:48</p>
+ * <p>Created: 2008. 04. 28 AM 12:48:48</p>
  */
 public final class VoidActivity extends CoreActivity implements Activity {
 	

@@ -21,7 +21,7 @@ import java.util.Map;
 /**
  * The Class TokenType.
  * 
- * <p>Created: 2008. 03. 29 오전 1:21:48</p>
+ * <p>Created: 2008. 03. 29 AM 1:21:48</p>
  */
 public final class TokenType extends Type {
 	

@@ -21,7 +21,7 @@ import java.util.Map;
 /**
  * Resource Import File Type
  * 
- * <p>Created: 2015. 02. 22 오전 4:52:38</p>
+ * <p>Created: 2015. 02. 22 AM 4:52:38</p>
  */
 public final class ImportFileType extends Type {
 

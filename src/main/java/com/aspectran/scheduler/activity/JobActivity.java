@@ -32,7 +32,7 @@ import java.util.Map;
 /**
  * The Class JobActivity.
  * 
- * <p>Created: 2013. 11. 18 오후 3:40:48</p>
+ * <p>Created: 2013. 11. 18 PM 3:40:48</p>
  */
 public class JobActivity extends CoreActivity implements Activity {
 

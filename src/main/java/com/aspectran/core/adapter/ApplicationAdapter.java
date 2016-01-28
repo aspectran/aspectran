@@ -39,7 +39,7 @@ public interface ApplicationAdapter {
 	public <T> T getAdaptee();
 
 	/**
-	 * Gets the scope.
+	 * Gets the application scope.
 	 *
 	 * @return the scope
 	 */
@@ -62,23 +62,56 @@ public interface ApplicationAdapter {
 	 */
 	public void setAttribute(String name, Object value);
 	
+	/**
+	 * Gets the attribute names.
+	 *
+	 * @return the attribute names
+	 */
 	public Enumeration<String> getAttributeNames();
 	
+	/**
+	 * Removes the attribute.
+	 *
+	 * @param name the name
+	 */
 	public void removeAttribute(String name);
 	
+	/**
+	 * Gets the aspectran service controller.
+	 *
+	 * @return the aspectran service controller
+	 */
 	public AspectranServiceController getAspectranServiceController();
 
+	/**
+	 * Gets the class loader.
+	 *
+	 * @return the class loader
+	 */
 	public ClassLoader getClassLoader();
 	
 	/**
-	 * Return the base path that the current web application is mapped to.
+	 * Return the base path that the current application is mapped to.
 	 *
 	 * @return the application base path
 	 */
 	public String getApplicationBasePath();
 	
+	/**
+	 * Returns to convert the given file path with the real file path.
+	 *
+	 * @param filePath the specified file path
+	 * @return the real file path
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	public String toRealPath(String filePath) throws IOException;
 	
+	/**
+	 * Returns to convert the given file path with the real file path.
+	 * 
+	 * @param filePath the specified file path
+	 * @return the real file path
+	 */
 	public File toRealPathAsFile(String filePath);
 
 }

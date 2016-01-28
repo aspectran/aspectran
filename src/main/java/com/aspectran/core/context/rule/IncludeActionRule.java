@@ -20,7 +20,7 @@ import com.aspectran.core.util.BooleanUtils;
 /**
  * The Class IncludeActionRule.
  * 
- * <p>Created: 2008. 06. 05 오후 9:25:40</p>
+ * <p>Created: 2008. 06. 05 PM 9:25:40</p>
  */
 public class IncludeActionRule {
 	

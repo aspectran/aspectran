@@ -32,7 +32,7 @@ import com.aspectran.core.context.rule.type.RequestMethodType;
 /**
  * The Interface Translet.
  * 
- * <p>Created: 2008. 7. 5. 오전 12:35:44</p>
+ * <p>Created: 2008. 7. 5. AM 12:35:44</p>
  */
 public abstract interface Translet {
 
@@ -97,6 +97,14 @@ public abstract interface Translet {
 	 * @return the process result
 	 */
 	public ProcessResult getProcessResult();
+
+	/**
+	 * Gets the action result value by specified action id.
+	 *
+	 * @param actionId the specified action id
+	 * @return the action result vlaue
+	 */
+	public Object getProcessResult(String actionId);
 
 	/**
 	 * Sets the process result.

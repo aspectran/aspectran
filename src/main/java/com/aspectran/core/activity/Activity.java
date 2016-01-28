@@ -36,7 +36,7 @@ import com.aspectran.core.context.template.TemplateProcessor;
 /**
  * The Interface Activity.
  * 
- * <p>Created: 2008. 03. 22 오후 5:48:09</p>
+ * <p>Created: 2008. 03. 22 PM 5:48:09</p>
  */
 public interface Activity {
 
@@ -61,6 +61,8 @@ public interface Activity {
 	public void forceExecute(List<AspectAdviceRule> aspectAdviceRuleList);
 	
 	public ProcessResult getProcessResult();
+	
+	public Object getProcessResult(String actionId);
 	
 	/**
 	 * Returns the forwarding destination translet name.

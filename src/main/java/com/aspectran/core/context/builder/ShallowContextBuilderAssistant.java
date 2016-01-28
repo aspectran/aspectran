@@ -29,7 +29,7 @@ import com.aspectran.core.context.rule.TransletRuleMap;
 /**
  * The Class ShallowContextBuilderAssistant.
  * 
- * <p>Created: 2008. 04. 01 오후 10:25:35</p>
+ * <p>Created: 2008. 04. 01 PM 10:25:35</p>
  */
 public class ShallowContextBuilderAssistant extends ContextBuilderAssistant {
 

@@ -27,7 +27,7 @@ import com.aspectran.core.context.expr.token.Token;
 /**
  * The Interface TokenExpressor.
  * 
- * <p>Created: 2010. 5. 6. 오전 1:35:16</p>
+ * <p>Created: 2010. 5. 6. AM 1:35:16</p>
  */
 public interface TokenExpressor {
 

@@ -21,7 +21,7 @@ import com.aspectran.core.util.BooleanUtils;
 /**
  * The Class AspectJobAdviceRule.
  * 
- * <p>Created: 2008. 04. 01 오후 11:19:28</p>
+ * <p>Created: 2008. 04. 01 PM 11:19:28</p>
  */
 public class AspectJobAdviceRule {
 

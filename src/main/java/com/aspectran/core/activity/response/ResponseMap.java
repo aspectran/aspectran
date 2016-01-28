@@ -21,7 +21,7 @@ import java.util.LinkedHashMap;
 /**
  * The Class ResponseMap.
  * 
- * <p>Created: 2008. 03. 29 오후 11:50:02</p>
+ * <p>Created: 2008. 03. 29 PM 11:50:02</p>
  */
 public class ResponseMap extends LinkedHashMap<String, Response> implements Iterable<Response> {
 

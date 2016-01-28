@@ -21,7 +21,7 @@ import java.util.LinkedHashMap;
 /**
  * The Class AspectRuleMap.
  * 
- * <p>Created: 2009. 03. 09 오후 23:48:09</p>
+ * <p>Created: 2009. 03. 09 PM 23:48:09</p>
  */
 public class AspectRuleMap extends LinkedHashMap<String, AspectRule> implements Iterable<AspectRule> {
 

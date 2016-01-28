@@ -25,7 +25,7 @@ import com.aspectran.core.util.ResourceUtils;
 
 
 /**
- * <p>Created: 2014. 12. 24 오후 4:54:13</p>
+ * <p>Created: 2014. 12. 24 PM 4:54:13</p>
  */
 public class ResourceEntries extends LinkedHashMap<String, URL> {
 

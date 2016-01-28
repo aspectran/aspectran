@@ -25,7 +25,7 @@ import com.aspectran.core.context.translet.TransletRuleRegistry;
 /**
  * The Class ActivityContext.
  * 
- * <p>Created: 2008. 06. 09 오후 2:12:40</p>
+ * <p>Created: 2008. 06. 09 PM 2:12:40</p>
  */
 public class ActivityContext {
 	

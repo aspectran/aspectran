@@ -19,7 +19,7 @@ package com.aspectran.core.context.builder;
 /**
  * The Class ShallowImportHandler.
  * 
- * <p>Created: 2008. 06. 14 오전 4:39:24</p>
+ * <p>Created: 2008. 06. 14 AM 4:39:24</p>
  */
 public class ShallowImportHandler extends AbstractImportHandler implements ImportHandler {
 	

@@ -22,7 +22,7 @@ import com.aspectran.core.context.rule.type.ActionType;
 /**
  * The Interface Executable.
  * 
- * <p>Created: 2008. 03. 23 오전 10:38:29</p>
+ * <p>Created: 2008. 03. 23 AM 10:38:29</p>
  */
 public interface Executable {
 

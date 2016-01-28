@@ -31,7 +31,7 @@ import com.aspectran.core.util.logging.LogFactory;
 /**
  * The Class IncludeAction.
  * 
- * <p>Created: 2008. 06. 05 오후 9:22:05</p>
+ * <p>Created: 2008. 06. 05 PM 9:22:05</p>
  */
 public class IncludeAction extends AbstractAction implements Executable {
 	

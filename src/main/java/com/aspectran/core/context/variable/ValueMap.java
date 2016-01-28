@@ -21,7 +21,7 @@ import java.util.Map;
 /**
  * The Class ValueMap.
  * 
- * <p>Created: 2008. 06. 11 오후 8:55:13</p>
+ * <p>Created: 2008. 06. 11 PM 8:55:13</p>
  */
 public class ValueMap extends LinkedHashMap<String, Object> {
 

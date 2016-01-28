@@ -45,7 +45,7 @@ import com.aspectran.core.util.apon.Parameters;
 /**
  * Converts a ProcessResult object to a XML string.
  * 
- * <p>Created: 2008. 05. 26 오후 2:03:15</p>
+ * <p>Created: 2008. 05. 26 PM 2:03:15</p>
  */
 public class ContentsXMLReader implements XMLReader {
 

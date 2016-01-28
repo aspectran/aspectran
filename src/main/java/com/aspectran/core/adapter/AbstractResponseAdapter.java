@@ -22,7 +22,6 @@ package com.aspectran.core.adapter;
  */
 public abstract class AbstractResponseAdapter implements ResponseAdapter {
 
-	/** The adaptee. */
 	protected Object adaptee;
 	
 	/**
@@ -34,6 +33,9 @@ public abstract class AbstractResponseAdapter implements ResponseAdapter {
 		this.adaptee = adaptee;
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.adapter.ResponseAdapter#getAdaptee()
+	 */
 	@SuppressWarnings("unchecked")
 	public <T> T getAdaptee() {
 		return (T)adaptee;

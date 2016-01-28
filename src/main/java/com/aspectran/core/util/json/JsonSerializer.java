@@ -37,7 +37,7 @@ import com.aspectran.core.util.apon.Parameters;
  * Pretty-printing is disabled by default.
  * The default indentation string is a tab character.
  * 
- * <p>Created: 2008. 06. 12 오후 8:20:54</p>
+ * <p>Created: 2008. 06. 12 PM 8:20:54</p>
  * 
  * @author Juho Jeong
  */

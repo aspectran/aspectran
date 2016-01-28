@@ -22,7 +22,7 @@ import com.aspectran.core.context.rule.type.ImportFileType;
 /**
  * The Class XmlActivityContextBuilder.
  * 
- * <p>Created: 2008. 06. 14 오후 8:53:29</p>
+ * <p>Created: 2008. 06. 14 PM 8:53:29</p>
  */
 public class XmlActivityContextBuilder extends AbstractActivityContextBuilder implements ActivityContextBuilder {
 	

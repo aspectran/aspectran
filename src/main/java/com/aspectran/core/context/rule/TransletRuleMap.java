@@ -21,7 +21,7 @@ import java.util.LinkedHashMap;
 /**
  * The Class TransletRuleMap.
  *
- * <p>Created: 2008. 03. 22 오후 5:48:09</p>
+ * <p>Created: 2008. 03. 22 PM 5:48:09</p>
  */
 public class TransletRuleMap extends LinkedHashMap<String, TransletRule> implements Iterable<TransletRule> {
 

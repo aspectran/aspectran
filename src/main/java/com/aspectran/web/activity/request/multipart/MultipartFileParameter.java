@@ -30,7 +30,7 @@ import com.aspectran.core.util.FileUtils;
 /**
  * MultipartItem implementation for Jakarta Commons FileUpload.
  * 
- * <p>Created: 2008. 04. 11 오후 8:55:25</p>
+ * <p>Created: 2008. 04. 11 PM 8:55:25</p>
  */
 public class MultipartFileParameter extends FileParameter {
 

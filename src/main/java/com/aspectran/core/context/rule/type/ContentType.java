@@ -28,7 +28,7 @@ import java.util.Map;
  * <dt>text/xml</dt><dd>XML 문서</dd>
  * </dl>
  * 
- * <p>Created: 2008. 03. 26 오전 12:58:38</p>
+ * <p>Created: 2008. 03. 26 AM 12:58:38</p>
  */
 public final class ContentType extends Type {
 

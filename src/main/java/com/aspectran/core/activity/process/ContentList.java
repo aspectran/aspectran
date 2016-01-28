@@ -23,7 +23,7 @@ import com.aspectran.core.util.BooleanUtils;
 /**
  * The Class ContentList.
  * 
- * <p>Created: 2008. 03. 22 오후 5:47:57</p>
+ * <p>Created: 2008. 03. 22 PM 5:47:57</p>
  */
 public class ContentList extends ArrayList<ActionList> {
 	

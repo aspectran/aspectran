@@ -33,7 +33,7 @@ import com.aspectran.core.util.ArrayStack;
 /**
  * The Class ContextBuilderAssistant
  * 
- * <p>Created: 2008. 04. 01 오후 10:25:35</p>
+ * <p>Created: 2008. 04. 01 PM 10:25:35</p>
  */
 public class ContextBuilderAssistant {
 

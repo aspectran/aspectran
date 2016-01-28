@@ -28,7 +28,7 @@ import java.io.OutputStream;
 /**
  * The Class FileParameter.
  * 
- * <p>Created: 2008. 04. 11 오후 4:19:40</p>
+ * <p>Created: 2008. 04. 11 PM 4:19:40</p>
  */
 public class FileParameter {
 	

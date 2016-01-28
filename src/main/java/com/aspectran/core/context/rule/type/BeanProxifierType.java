@@ -21,7 +21,7 @@ import java.util.Map;
 /**
  * Type of BeanProxifier.
  * 
- * <p>Created: 2008. 03. 26 오전 12:58:38</p>
+ * <p>Created: 2008. 03. 26 AM 12:58:38</p>
  */
 public final class BeanProxifierType extends Type {
 

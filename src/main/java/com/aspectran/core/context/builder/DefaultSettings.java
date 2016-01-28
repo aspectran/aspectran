@@ -26,7 +26,7 @@ import com.aspectran.core.util.PrefixSuffixPattern;
 /**
  * The Class DefaultSettings
  * 
- * <p>Created: 2008. 03. 22 오후 5:48:09</p>
+ * <p>Created: 2008. 03. 22 PM 5:48:09</p>
  */
 public class DefaultSettings implements Cloneable {
 	

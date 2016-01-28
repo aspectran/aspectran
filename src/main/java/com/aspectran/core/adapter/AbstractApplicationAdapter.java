@@ -99,24 +99,16 @@ public abstract class AbstractApplicationAdapter implements ApplicationAdapter {
 		this.applicationBasePath = applicationBasePath;
 	}
 
-	/**
-	 * Returns to convert the given file path with the real file path.
-	 *
-	 * @param filePath the file path
-	 * @return the file
-	 * @throws IOException Signals that an I/O exception has occurred.
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.adapter.ApplicationAdapter#toRealPath(java.lang.String)
 	 */
 	public String toRealPath(String filePath) throws IOException {
 		File file = toRealPathAsFile(filePath);
 		return file.getCanonicalPath();
 	}
 
-	/**
-	 * Returns to convert the given file path with the real file path.
-	 * 
-	 * @param filePath the file path
-	 * 
-	 * @return the file
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.adapter.ApplicationAdapter#toRealPathAsFile(java.lang.String)
 	 */
 	public File toRealPathAsFile(String filePath) {
 		File file;

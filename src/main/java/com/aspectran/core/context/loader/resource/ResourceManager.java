@@ -27,7 +27,7 @@ import java.util.NoSuchElementException;
 /**
  * The Class ResourceManager.
  *
- * <p>Created: 2014. 12. 18 오후 5:51:13</p>	
+ * <p>Created: 2014. 12. 18 PM 5:51:13</p>	
  */
 public class ResourceManager {
 	

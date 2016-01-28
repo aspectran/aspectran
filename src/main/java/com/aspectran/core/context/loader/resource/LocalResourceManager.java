@@ -29,7 +29,7 @@ import com.aspectran.core.context.loader.AspectranClassLoader;
 import com.aspectran.core.util.ResourceUtils;
 
 /**
- * <p>Created: 2014. 12. 18 오후 5:51:13</p>	
+ * <p>Created: 2014. 12. 18 PM 5:51:13</p>	
  */
 public class LocalResourceManager extends ResourceManager {
 	

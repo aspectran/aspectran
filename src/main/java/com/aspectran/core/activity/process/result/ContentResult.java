@@ -20,18 +20,29 @@ import java.util.ArrayList;
 /**
  * The Class ContentResult.
  * 
- * <p>Created: 2008. 03. 23 오후 12:01:24</p>
+ * <p>Created: 2008. 03. 23 PM 12:01:24</p>
  */
 public class ContentResult extends ArrayList<ActionResult> {
 
 	/** @serial */
-	static final long serialVersionUID = 7394299260107452305L;
+	private static final long serialVersionUID = 7394299260107452305L;
 
+	private final ProcessResult parent;
+	
 	private String name;
 	
 	private boolean omittable;
 
-	public ContentResult() {
+	public ContentResult(ProcessResult parent) {
+		this.parent = parent;
+		
+		if(parent != null) {
+			this.parent.addContentResult(this);
+		}
+	}
+
+	public ProcessResult getParent() {
+		return parent;
 	}
 
 	public String getName() {

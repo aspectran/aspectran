@@ -35,7 +35,7 @@ import com.aspectran.core.context.ActivityContextException;
 /**
  * The Class InvalidResourceException.
  *
- * <p>Created: 2008. 01. 07 오전 3:35:55</p>
+ * <p>Created: 2008. 01. 07 AM 3:35:55</p>
  * 
  * @author Juho Jeong
  * 

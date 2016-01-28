@@ -35,7 +35,7 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * JSP or other web resource integration.
  * 
- * @since 2008. 03. 22 오후 5:51:58
+ * <p>Created: 2008. 03. 22 PM 5:51:58</p>
  */
 public class JspViewDispatcher implements ViewDispatcher {
 

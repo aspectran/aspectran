@@ -32,7 +32,7 @@ import java.util.Map;
 /**
  * Converts a ProcessResult object to a APON object.
  * 
- * <p>Created: 2015. 03. 16 오후 11:14:29</p>
+ * <p>Created: 2015. 03. 16 PM 11:14:29</p>
  */
 public class ContentsAponAssembler {
 	

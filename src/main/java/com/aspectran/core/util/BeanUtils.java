@@ -27,7 +27,7 @@ import java.util.StringTokenizer;
  * JavaBeans style properties.  Methods are provided for all simple types as
  * well as object types.
  * 
- * <p>Created: 2008. 04. 22 오후 3:47:15</p>
+ * <p>Created: 2008. 04. 22 PM 3:47:15</p>
  */
 public class BeanUtils {
 

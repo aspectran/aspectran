@@ -30,7 +30,7 @@ import com.aspectran.core.util.BooleanUtils;
 /**
  * Then Class ActionList.
  * 
- * <p>Created: 2008. 03. 23 오전 1:38:14</p>
+ * <p>Created: 2008. 03. 23 AM 1:38:14</p>
  */
 public class ActionList extends ArrayList<Executable> implements ActionRuleApplicable {
 	

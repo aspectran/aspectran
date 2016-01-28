@@ -18,7 +18,7 @@ package com.aspectran.core.context.rule.type;
 /**
  * The Class Type.
  * 
- * <p>Created: 2008. 04. 11 오후 6:04:16</p>
+ * <p>Created: 2008. 04. 11 PM 6:04:16</p>
  */
 public abstract class Type {
 

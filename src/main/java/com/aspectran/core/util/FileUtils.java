@@ -550,7 +550,7 @@ public class FileUtils {
 	/**
 	 * Size unit of computer file.
 	 * 
-	 * <p>Created: 2008. 04. 16 오후 6:42:23</p>
+	 * <p>Created: 2008. 04. 16 PM 6:42:23</p>
 	 * 
 	 * @author Juho Jeong
 	 */

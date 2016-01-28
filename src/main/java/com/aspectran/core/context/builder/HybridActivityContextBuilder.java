@@ -21,7 +21,7 @@ import com.aspectran.core.context.ActivityContext;
 /**
  * The Class HybridActivityContextBuilder.
  * 
- * <p>Created: 2015. 01. 27 오후 10:36:29</p>
+ * <p>Created: 2015. 01. 27 PM 10:36:29</p>
  */
 public class HybridActivityContextBuilder extends AbstractActivityContextBuilder implements ActivityContextBuilder {
 	

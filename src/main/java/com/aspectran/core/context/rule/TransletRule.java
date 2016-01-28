@@ -36,7 +36,7 @@ import com.aspectran.core.util.wildcard.WildcardPattern;
 /**
  * The Class TransletRule.
  *
- * <p>Created: 2008. 03. 22 오후 5:48:09</p>
+ * <p>Created: 2008. 03. 22 PM 5:48:09</p>
  */
 public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicable {
 

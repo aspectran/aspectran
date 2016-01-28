@@ -24,7 +24,7 @@ import com.aspectran.core.context.rule.type.RequestMethodType;
 /**
  * The Class RequestRule.
  * 
- * <p>Created: 2008. 03. 22 오후 5:48:09</p>
+ * <p>Created: 2008. 03. 22 PM 5:48:09</p>
  */
 public class RequestRule {
 

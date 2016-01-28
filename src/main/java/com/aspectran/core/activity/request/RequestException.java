@@ -20,7 +20,7 @@ import com.aspectran.core.activity.ActivityException;
 /**
  * This exception will be thrown when a translet request is failed.
  * 
- * <p>Created: 2008. 01. 07 오전 3:35:55</p>
+ * <p>Created: 2008. 01. 07 AM 3:35:55</p>
  */
 public class RequestException extends ActivityException {
 	
@@ -37,7 +37,7 @@ public class RequestException extends ActivityException {
 	/**
 	 * Instantiates a new RequestException.
 	 * 
-	 * @param msg the message
+	 * @param msg the detail message
 	 */
 	public RequestException(String msg) {
 		super(msg);
@@ -55,7 +55,7 @@ public class RequestException extends ActivityException {
 	/**
 	 * Instantiates a new RequestException.
 	 * 
-	 * @param msg the message
+	 * @param msg the detail message
 	 * @param cause the real cause of the exception
 	 */
 	public RequestException(String msg, Throwable cause) {

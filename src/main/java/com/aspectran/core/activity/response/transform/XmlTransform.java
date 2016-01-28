@@ -39,7 +39,7 @@ import com.aspectran.core.util.logging.LogFactory;
 /**
  * The Class XmlTransform.
  * 
- * Created: 2008. 03. 22 오후 5:51:58
+ * Created: 2008. 03. 22 PM 5:51:58
  */
 public class XmlTransform extends TransformResponse implements Response {
 

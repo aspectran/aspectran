@@ -18,7 +18,7 @@ package com.aspectran.core.activity.process.result;
 /**
  * The Class ActionResult.
  * 
- * <p>Created: 2008. 03. 23 오후 12:01:24</p>
+ * <p>Created: 2008. 03. 23 PM 12:01:24</p>
  */
 public class ActionResult {
 	
@@ -32,7 +32,10 @@ public class ActionResult {
 
 	public ActionResult(ContentResult parent) {
 		this.parent = parent;
-		this.parent.addActionResult(this);
+		
+		if(parent != null) {
+			this.parent.addActionResult(this);
+		}
 	}
 
 	/**

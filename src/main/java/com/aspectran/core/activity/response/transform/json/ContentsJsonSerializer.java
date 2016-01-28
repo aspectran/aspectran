@@ -28,7 +28,7 @@ import java.util.Iterator;
 /**
  * Converts a ProcessResult object to a JSON formatted string.
  * 
- * <p>Created: 2008. 06. 12 오후 8:20:54</p>
+ * <p>Created: 2008. 06. 12 PM 8:20:54</p>
  */
 public class ContentsJsonSerializer extends JsonSerializer {
 
