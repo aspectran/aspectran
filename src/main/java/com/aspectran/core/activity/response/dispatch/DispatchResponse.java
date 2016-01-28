@@ -78,21 +78,21 @@ public class DispatchResponse implements Response {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.jhlabs.translets.engine.response.Responsible#getContentType()
+	 * @see com.aspectran.core.activity.response.Response#getContentType()
 	 */
 	public String getContentType() {
 		return dispatchResponseRule.getContentType();
 	}
 
 	/* (non-Javadoc)
-	 * @see org.jhlabs.translets.engine.response.Responsible#getResponseType()
+	 * @see com.aspectran.core.activity.response.Response#getResponseType()
 	 */
 	public ResponseType getResponseType() {
 		return DispatchResponseRule.RESPONSE_TYPE;
 	}
 	
 	/* (non-Javadoc)
-	 * @see org.jhlabs.translets.engine.response.Responsible#getActionList()
+	 * @see com.aspectran.core.activity.response.Response#getActionList()
 	 */
 	public ActionList getActionList() {
 		return dispatchResponseRule.getActionList();

@@ -35,10 +35,8 @@ import com.aspectran.core.util.logging.LogFactory;
  */
 public class IncludeAction extends AbstractAction implements Executable {
 	
-	/** The Constant log. */
 	private static final Log log = LogFactory.getLog(IncludeAction.class);
 
-	/** The include action rule. */
 	private final IncludeActionRule includeActionRule;
 
 	/**
@@ -53,7 +51,7 @@ public class IncludeAction extends AbstractAction implements Executable {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.jhlabs.translets.engine.process.action.Executable#execute(org.jhlabs.translets.action.Translet)
+	 * @see com.aspectran.core.activity.process.action.Executable#execute(com.aspectran.core.activity.Activity)
 	 */
 	public Object execute(Activity activity) throws Exception {
 		try {
@@ -90,14 +88,14 @@ public class IncludeAction extends AbstractAction implements Executable {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.jhlabs.translets.engine.process.action.Executable#getId()
+	 * @see com.aspectran.core.activity.process.action.AbstractAction#getActionId()
 	 */
 	public String getActionId() {
 		return includeActionRule.getActionId();
 	}
 	
 	/* (non-Javadoc)
-	 * @see org.jhlabs.translets.engine.process.action.Executable#isHidden()
+	 * @see com.aspectran.core.activity.process.action.Executable#isHidden()
 	 */
 	public boolean isHidden() {
 		return includeActionRule.isHidden();

@@ -48,7 +48,7 @@ public class EchoAction extends AbstractAction implements Executable {
 	}
 	
 	/* (non-Javadoc)
-	 * @see org.jhlabs.translets.engine.process.action.Executable#execute(org.jhlabs.translets.action.Translet)
+	 * @see com.aspectran.core.activity.process.action.Executable#execute(com.aspectran.core.activity.Activity)
 	 */
 	public Object execute(Activity activity) throws Exception {
 		if(echoActionRule.getAttributeItemRuleMap() == null)
@@ -75,23 +75,29 @@ public class EchoAction extends AbstractAction implements Executable {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.jhlabs.translets.engine.process.action.Executable#getId()
+	 * @see com.aspectran.core.activity.process.action.AbstractAction#getActionId()
 	 */
 	public String getActionId() {
 		return echoActionRule.getActionId();
 	}
 
 	/* (non-Javadoc)
-	 * @see org.jhlabs.translets.engine.process.action.Executable#isHidden()
+	 * @see com.aspectran.core.activity.process.action.Executable#isHidden()
 	 */
 	public boolean isHidden() {
 		return echoActionRule.isHidden();
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.activity.process.action.Executable#getActionType()
+	 */
 	public ActionType getActionType() {
 		return ActionType.ECHO;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.activity.process.action.Executable#getActionRule()
+	 */
 	@SuppressWarnings("unchecked")
 	public <T> T getActionRule() {
 		return (T)echoActionRule;

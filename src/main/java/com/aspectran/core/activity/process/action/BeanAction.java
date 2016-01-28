@@ -86,7 +86,7 @@ public class BeanAction extends AbstractAction implements Executable {
 	}
 	
 	/* (non-Javadoc)
-	 * @see org.jhlabs.translets.engine.process.action.Executable#execute(org.jhlabs.translets.action.Translet)
+	 * @see com.aspectran.core.activity.process.action.Executable#execute(com.aspectran.core.activity.Activity)
 	 */
 	public Object execute(Activity activity) throws Exception {
 		try {
@@ -190,30 +190,36 @@ public class BeanAction extends AbstractAction implements Executable {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.jhlabs.translets.engine.process.action.Executable#getParent()
+	 * @see com.aspectran.core.activity.process.action.AbstractAction#getParent()
 	 */
 	public ActionList getParent() {
 		return parent;
 	}
 
 	/* (non-Javadoc)
-	 * @see org.jhlabs.translets.engine.process.action.Executable#getId()
+	 * @see com.aspectran.core.activity.process.action.AbstractAction#getActionId()
 	 */
 	public String getActionId() {
 		return beanActionRule.getActionId();
 	}
 	
 	/* (non-Javadoc)
-	 * @see org.jhlabs.translets.engine.process.action.Executable#isHidden()
+	 * @see com.aspectran.core.activity.process.action.Executable#isHidden()
 	 */
 	public boolean isHidden() {
 		return beanActionRule.isHidden();
 	}
 
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.activity.process.action.Executable#getActionType()
+	 */
 	public ActionType getActionType() {
 		return ActionType.BEAN;
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.activity.process.action.Executable#getActionRule()
+	 */
 	@SuppressWarnings("unchecked")
 	public <T> T getActionRule() {
 		return (T)beanActionRule;
