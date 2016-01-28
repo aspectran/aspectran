@@ -65,9 +65,9 @@ public interface Response {
 	public TemplateRule getTemplateRule();
 	
 	/**
-	 * New derived response.
+	 * Create a new derived response.
 	 *
-	 * @return the response
+	 * @return the new response
 	 */
 	public Response newDerivedResponse();
 	

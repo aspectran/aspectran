@@ -42,7 +42,7 @@ public class TransformResponseFactory {
 		} else if(type == TransformType.TEXT_TRANSFORM) {
 			res = new TextTransform(transformRule);
 		} else {
-			throw new ResponseNotFoundException("transform response is not found. transformRule " + transformRule);
+			throw new ResponseNotFoundException("TransformResponse is not found. transformRule " + transformRule);
 		}
 		
 		return res;

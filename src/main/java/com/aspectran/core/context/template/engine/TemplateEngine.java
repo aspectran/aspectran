@@ -27,8 +27,7 @@ import java.util.Map;
 public interface TemplateEngine {
 
     /**
-     * Executes template, using the data-model provided, writing the generated output
-     * to the supplied {@link Writer}.
+     * Executes template, using the data-model provided, writing the generated output to the supplied {@link Writer}.
      *
      * @param templateName the template name
      * @param model the holder of the variables visible from the template (name-value pairs); usually a
@@ -40,7 +39,7 @@ public interface TemplateEngine {
     public void process(String templateName, Map<String, Object> model, String templateSource, Writer writer) throws TemplateEngineProcessException;
 
     /**
-     * Process.
+     * Executes template, using the data-model provided, writing the generated output to the supplied {@link Writer}.
      *
      * @param templateName the template name
      * @param model the holder of the variables visible from the template (name-value pairs); usually a
@@ -51,7 +50,7 @@ public interface TemplateEngine {
     public void process(String templateName, Map<String, Object> model, Writer writer) throws TemplateEngineProcessException;
 
     /**
-     * Process.
+     * Executes template, using the data-model provided, writing the generated output to the supplied {@link Writer}.
      *
      * @param templateName the template name
      * @param model the holder of the variables visible from the template (name-value pairs); usually a

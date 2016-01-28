@@ -75,7 +75,7 @@ public class FreeMarkerViewDispatcher implements ViewDispatcher {
 		try {
 			String dispatchName = dispatchResponseRule.getDispatchName();
 			if(dispatchName == null) {
-				log.warn("No specified dispatch name " + dispatchResponseRule);
+				log.warn("No specified dispatch name " + dispatchResponseRule.toString(this));
 				return;
 			}
 			
@@ -113,7 +113,7 @@ public class FreeMarkerViewDispatcher implements ViewDispatcher {
 				log.debug("dispatch to a FreeMarker template page [" + dispatchName + "]");
 
 		} catch(Exception e) {
-			throw new ViewDispatchException("Failed to dispatch to FreeMarker " + dispatchResponseRule, e);
+			throw new ViewDispatchException("Failed to dispatch to FreeMarker " + dispatchResponseRule.toString(this), e);
 		}
 	}
 

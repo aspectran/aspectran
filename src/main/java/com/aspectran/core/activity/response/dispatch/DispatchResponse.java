@@ -41,7 +41,7 @@ public class DispatchResponse implements Response {
 	private ViewDispatcher viewDispatcher;
 
 	/**
-	 * Instantiates a new DispatchResponse.
+	 * Instantiates a new DispatchResponse with specified DispatchResponseRule.
 	 * 
 	 * @param dispatchResponseRule the dispatch response rule
 	 */
@@ -50,7 +50,7 @@ public class DispatchResponse implements Response {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.jhlabs.translets.engine.response.Responsible#response(org.jhlabs.translets.action.Translet)
+	 * @see com.aspectran.core.activity.response.Response#response(com.aspectran.core.activity.Activity)
 	 */
 	public void response(Activity activity) {
 		try {
@@ -135,7 +135,7 @@ public class DispatchResponse implements Response {
 					viewDispatcher = activity.getBean(viewDispatcherName);
 					
 					if(viewDispatcher == null)
-						throw new DispatchResponseException("No bean named '" + viewDispatcherName + "' is defined");
+						throw new DispatchResponseException("No bean named '" + viewDispatcherName + "' is defined.");
 				}
 			}
 		}

@@ -58,7 +58,7 @@ public class AponTransform extends TransformResponse implements Response {
 	}
 
 	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.response.Responsible#response(com.aspectran.core.activity.CoreActivity)
+	 * @see com.aspectran.core.activity.response.Response#response(com.aspectran.core.activity.Activity)
 	 */
 	public void response(Activity activity) throws TransformResponseException {
 		if(debugEnabled) {
@@ -98,7 +98,7 @@ public class AponTransform extends TransformResponse implements Response {
 	}
 	
 	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.response.Responsible#getActionList()
+	 * @see com.aspectran.core.activity.response.Response#getActionList()
 	 */
 	public ActionList getActionList() {
 		return transformRule.getActionList();

@@ -50,14 +50,14 @@ public abstract class TransformResponse implements Response {
 	}
 
 	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.response.Responsible#getContentType()
+	 * @see com.aspectran.core.activity.response.Response#getContentType()
 	 */
 	public String getContentType() {
 		return transformRule.getContentType();
 	}
 	
 	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.response.Responsible#getResponseType()
+	 * @see com.aspectran.core.activity.response.Response#getResponseType()
 	 */
 	public ResponseType getResponseType() {
 		return TransformRule.RESPONSE_TYPE;

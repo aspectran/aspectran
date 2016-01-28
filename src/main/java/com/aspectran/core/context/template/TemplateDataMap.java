@@ -15,57 +15,21 @@
  */
 package com.aspectran.core.context.template;
 
-import java.util.HashMap;
 import java.util.Locale;
 
 import com.aspectran.core.activity.Activity;
-import com.aspectran.core.adapter.RequestAdapter;
+import com.aspectran.core.activity.process.result.ActivityProcessResultMap;
 
-public class TemplateDataMap extends HashMap<String, Object> {
+/**
+ * The Class TemplateDataMap.
+ */
+public class TemplateDataMap extends ActivityProcessResultMap {
 
 	/** @serial */
-	private static final long serialVersionUID = 4521506828465323127L;
+	private static final long serialVersionUID = -1414688689441309354L;
 	
-	private final Activity activity;
-
-	private RequestAdapter requestAdapter;
-
 	public TemplateDataMap(Activity activity) {
-		this.activity = activity;
-		this.requestAdapter = activity.getRequestAdapter();
-	}
-
-	public Object get(Object key) {
-		String name = key.toString();
-		Object value = super.get(key);
-
-		if(value != null)
-			return value;
-
-		if(activity.getProcessResult() != null) {
-			value = activity.getProcessResult().getResultValue(name);
-
-			if(value != null) {
-				put(name, value);
-				return value;
-			}
-		}
-
-		value = requestAdapter.getAttribute(name);
-
-		if(value != null) {
-			put(name, value);
-			return value;
-		}
-
-		value = requestAdapter.getParameter(name);
-
-		if(value != null) {
-			put(name, value);
-			return value;
-		}
-
-		return null;
+		super(activity);
 	}
 
 	public Locale getLocale() {

@@ -34,22 +34,37 @@ import java.io.*;
  */
 public class ContextTemplateProcessor implements TemplateProcessor {
 
+    /** The log. */
     private final Log log = LogFactory.getLog(ContextTemplateProcessor.class);
 
+    /** The context. */
     protected ActivityContext context;
 
+    /** The template rule registry. */
     protected final TemplateRuleRegistry templateRuleRegistry;
 
+    /** The initialized. */
     private boolean initialized;
 
+    /**
+     * Instantiates a new context template processor.
+     *
+     * @param templateRuleRegistry the template rule registry
+     */
     public ContextTemplateProcessor(TemplateRuleRegistry templateRuleRegistry) {
         this.templateRuleRegistry = templateRuleRegistry;
     }
 
+    /* (non-Javadoc)
+     * @see com.aspectran.core.context.template.TemplateProcessor#getTemplateRuleRegistry()
+     */
     public TemplateRuleRegistry getTemplateRuleRegistry() {
         return templateRuleRegistry;
     }
 
+    /* (non-Javadoc)
+     * @see com.aspectran.core.context.template.TemplateProcessor#process(java.lang.String)
+     */
     public String process(String templateId) {
         StringWriter writer = new StringWriter();
         process(templateId, writer);
@@ -57,12 +72,18 @@ public class ContextTemplateProcessor implements TemplateProcessor {
         return writer.toString();
     }
 
+    /* (non-Javadoc)
+     * @see com.aspectran.core.context.template.TemplateProcessor#process(java.lang.String, java.io.Writer)
+     */
     public void process(String templateId, Writer writer) {
     	Activity activity = context.getCurrentActivity();
 
         process(templateId, activity, writer);
     }
     
+    /* (non-Javadoc)
+     * @see com.aspectran.core.context.template.TemplateProcessor#process(com.aspectran.core.context.rule.TemplateRule)
+     */
     public String process(TemplateRule templateRule) {
         StringWriter writer = new StringWriter();
         process(templateRule, writer);
@@ -70,12 +91,18 @@ public class ContextTemplateProcessor implements TemplateProcessor {
         return writer.toString();
     }
 
+    /* (non-Javadoc)
+     * @see com.aspectran.core.context.template.TemplateProcessor#process(com.aspectran.core.context.rule.TemplateRule, java.io.Writer)
+     */
     public void process(TemplateRule templateRule, Writer writer) {
     	Activity activity = context.getCurrentActivity();
 
         process(templateRule, activity, writer);
     }
 
+    /* (non-Javadoc)
+     * @see com.aspectran.core.context.template.TemplateProcessor#process(java.lang.String, com.aspectran.core.activity.Activity, java.io.Writer)
+     */
     public void process(String templateId, Activity activity, Writer writer) {
     	TemplateRule templateRule = templateRuleRegistry.getTemplateRule(templateId);
 
@@ -86,6 +113,9 @@ public class ContextTemplateProcessor implements TemplateProcessor {
         process(templateRule, activity, writer);
     }
 
+    /* (non-Javadoc)
+     * @see com.aspectran.core.context.template.TemplateProcessor#process(com.aspectran.core.context.rule.TemplateRule, com.aspectran.core.activity.Activity, java.io.Writer)
+     */
     public void process(TemplateRule templateRule, Activity activity, Writer writer) {
         try {
             String engineBeanId = templateRule.getEngine();
@@ -125,6 +155,9 @@ public class ContextTemplateProcessor implements TemplateProcessor {
         }
     }
     
+    /* (non-Javadoc)
+     * @see com.aspectran.core.context.template.TemplateProcessor#initialize(com.aspectran.core.context.ActivityContext)
+     */
     public synchronized void initialize(ActivityContext context) {
         if(initialized) {
             throw new UnsupportedOperationException("TemplateProcessor has already been initialized.");
@@ -137,6 +170,9 @@ public class ContextTemplateProcessor implements TemplateProcessor {
         log.info("TemplateProcessor has been initialized successfully.");
     }
 
+    /* (non-Javadoc)
+     * @see com.aspectran.core.context.template.TemplateProcessor#destroy()
+     */
     public synchronized void destroy() {
         if(!initialized) {
             throw new UnsupportedOperationException("TemplateProcessor has not yet initialized.");

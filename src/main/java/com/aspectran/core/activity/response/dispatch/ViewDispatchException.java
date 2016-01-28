@@ -37,7 +37,7 @@ public class ViewDispatchException extends AspectranCheckedException {
 	/**
 	 * Constructor to create exception with a message.
 	 * 
-	 * @param msg the message
+	 * @param msg the detail message
 	 */
 	public ViewDispatchException(String msg) {
 		super(msg);
@@ -55,7 +55,7 @@ public class ViewDispatchException extends AspectranCheckedException {
 	/**
 	 * Constructor to create exception to wrap another exception and pass a message.
 	 * 
-	 * @param msg the message
+	 * @param msg the detail message
 	 * @param cause the real cause of the exception
 	 */
 	public ViewDispatchException(String msg, Throwable cause) {
