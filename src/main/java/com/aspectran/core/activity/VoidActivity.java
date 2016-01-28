@@ -33,17 +33,31 @@ import com.aspectran.core.context.rule.type.JoinpointScopeType;
  */
 public final class VoidActivity extends CoreActivity implements Activity {
 	
+	/**
+	 * Instantiates a new void activity.
+	 *
+	 * @param context the context
+	 */
 	public VoidActivity(ActivityContext context) {
 		super(context);
 		newTranslet();
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.activity.CoreActivity#ready(java.lang.String)
+	 */
 	public void ready(String transletName) {
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.activity.CoreActivity#request(com.aspectran.core.activity.Translet)
+	 */
 	protected void request(Translet translet) {
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.activity.CoreActivity#newActivity()
+	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public <T extends Activity> T newActivity() {
@@ -51,71 +65,113 @@ public final class VoidActivity extends CoreActivity implements Activity {
 		return (T)activity;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.activity.AbstractActivity#getRequestAdapter()
+	 */
 	@Override
 	public RequestAdapter getRequestAdapter() {
 		return null;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.activity.AbstractActivity#getResponseAdapter()
+	 */
 	@Override
 	public ResponseAdapter getResponseAdapter() {
 		return null;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.activity.AbstractActivity#getSessionAdapter()
+	 */
 	@Override
 	public SessionAdapter getSessionAdapter() {
 		return null;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.activity.CoreActivity#getTransletName()
+	 */
 	@Override
 	public String getTransletName() {
 		return null;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.activity.CoreActivity#perform()
+	 */
 	@Override
 	public void perform() {
 		throw new UnsupportedOperationException();
 	}
 
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.activity.CoreActivity#performWithoutResponse()
+	 */
 	@Override
 	public void performWithoutResponse() {
 		throw new UnsupportedOperationException();
 	}
 
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.activity.CoreActivity#finish()
+	 */
 	@Override
 	public void finish() {
 		throw new UnsupportedOperationException();
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.activity.CoreActivity#getForwardTransletName()
+	 */
 	@Override
 	public String getForwardTransletName() {
 		throw new UnsupportedOperationException();
 	}
 
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.activity.CoreActivity#response(com.aspectran.core.activity.response.Response)
+	 */
 	@Override
 	public void response(Response res) {
 		throw new UnsupportedOperationException();
 	}
 
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.activity.CoreActivity#responseByContentType(java.util.List)
+	 */
 	@Override
 	public void responseByContentType(List<ExceptionHandlingRule> exceptionHandlingRuleList) {
 		throw new UnsupportedOperationException();
 	}
 
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.activity.CoreActivity#getResponse()
+	 */
 	@Override
 	public Response getResponse() {
 		throw new UnsupportedOperationException();
 	}
 
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.activity.AbstractActivity#getRequestScope()
+	 */
 	@Override
 	public Scope getRequestScope() {
 		throw new UnsupportedOperationException();
 	}
 
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.activity.AbstractActivity#setRequestScope(com.aspectran.core.context.bean.scope.Scope)
+	 */
 	@Override
 	public void setRequestScope(Scope requestScope) {
 		throw new UnsupportedOperationException();
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.activity.AbstractActivity#getCurrentJoinpointScope()
+	 */
 	public JoinpointScopeType getCurrentJoinpointScope() {
 		return null;
 	}
