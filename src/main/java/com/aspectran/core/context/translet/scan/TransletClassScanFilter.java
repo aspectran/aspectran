@@ -13,12 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.core.context.template.scan;
+package com.aspectran.core.context.translet.scan;
 
-import java.io.File;
-
-public interface TemplateFileScanFilter {
+public interface TransletClassScanFilter {
 	
-	public String filter(String filePath, File templateFile);
+	public boolean filter(String className, String resourceName, Class<?> scannedClass);
 
 }

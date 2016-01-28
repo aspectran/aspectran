@@ -68,7 +68,7 @@ public class BeanClassScanner extends ClassScanner {
 		try {
 			beanClassScanFilter = (BeanClassScanFilter)beanClassScanFilterClass.newInstance();
 		} catch(Exception e) {
-			throw new BeanClassScanFailedException("Failed to instantiate [" + beanClassScanFilterClass + "]", e);
+			throw new BeanClassScanFailedException("Failed to instantiate BeanClassScanFilter [" + beanClassScanFilterClass + "]", e);
 		}
 	}
 
@@ -89,7 +89,7 @@ public class BeanClassScanner extends ClassScanner {
 		try {
 			filterClass = getClassLoader().loadClass(classScanFilterClassName);
 		} catch(ClassNotFoundException e) {
-			throw new BeanClassScanFailedException("Failed to instantiate [" + classScanFilterClassName + "]", e);
+			throw new BeanClassScanFailedException("Failed to instantiate BeanClassScanFilter [" + classScanFilterClassName + "]", e);
 		}
 		setBeanClassScanFilter(filterClass);
 	}
@@ -98,7 +98,7 @@ public class BeanClassScanner extends ClassScanner {
 		try {
 			return super.scanClasses(classNamePattern);
 		} catch(IOException e) {
-			throw new BeanClassScanFailedException("bean-class scanning failed. classNamePattern: " + classNamePattern, e);
+			throw new BeanClassScanFailedException("Failed to scan bean class. classNamePattern: " + classNamePattern, e);
 		}
 	}
 	
@@ -106,7 +106,7 @@ public class BeanClassScanner extends ClassScanner {
 		try {
 			super.scanClasses(classNamePattern, scannedClasses);
 		} catch(IOException e) {
-			throw new BeanClassScanFailedException("bean-class scanning failed. classNamePattern: " + classNamePattern, e);
+			throw new BeanClassScanFailedException("Failed to scan bean class. classNamePattern: " + classNamePattern, e);
 		}
 	}
 
@@ -121,8 +121,8 @@ public class BeanClassScanner extends ClassScanner {
 			String maskedBeanId = beanIdMaskPattern.mask(beanId);
 			if(maskedBeanId != null) {
 				beanId = maskedBeanId;
-			}  else {
-				log.warn("Unmatched the pattern can not be masking. beanId: " + beanId + " (maskPattern: " + beanIdMaskPattern + ")");
+			} else {
+				log.warn("Unmatched pattern can not be masking. beanId: " + beanId + " (maskPattern: " + beanIdMaskPattern + ")");
 			}
 		}
 

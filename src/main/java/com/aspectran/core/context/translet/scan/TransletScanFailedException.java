@@ -13,50 +13,51 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.core.context.template.scan;
+package com.aspectran.core.context.translet.scan;
 
 import com.aspectran.core.context.bean.BeanException;
 
 /**
- * The Class TemplateFileScanFailedException.
+ * The Class TransletScanFailedException.
  */
-public class TemplateFileScanFailedException extends BeanException {
+public class TransletScanFailedException extends BeanException {
 
 	/** @serial */
-	private static final long serialVersionUID = -6390411548631589304L;
+	private static final long serialVersionUID = -7694783910759443211L;
 
 	/**
 	 * Simple constructor.
 	 */
-	public TemplateFileScanFailedException() {
+	public TransletScanFailedException() {
 		super();
 	}
 
 	/**
 	 * Constructor to create exception with a message.
 	 * 
-	 * @param msg A message to associate with the exception
+	 * @param msg a message to associate with the exception
 	 */
-	public TemplateFileScanFailedException(String msg) {
+	public TransletScanFailedException(String msg) {
 		super(msg);
 	}
 
 	/**
 	 * Constructor to create exception to wrap another exception.
 	 * 
-	 * @param cause The real cause of the exception
+	 * @param cause the real cause of the exception
 	 */
-	public TemplateFileScanFailedException(Throwable cause) {
+	public TransletScanFailedException(Throwable cause) {
 		super(cause);
 	}
 
 	/**
 	 * Constructor to create exception to wrap another exception and pass a message.
 	 * 
-	 * @param msg The message
-	 * @param cause The real cause of the exception
+	 * @param msg the detail message
+	 * @param cause the real cause of the exception
 	 */
-	public TemplateFileScanFailedException(String msg, Throwable cause) {
+	public TransletScanFailedException(String msg, Throwable cause) {
 		super(msg, cause);
 	}
+
 }

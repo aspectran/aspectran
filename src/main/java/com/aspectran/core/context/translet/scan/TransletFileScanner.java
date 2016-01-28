@@ -13,11 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.core.context.template.scan;
-
-import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
+package com.aspectran.core.context.translet.scan;
 
 import com.aspectran.core.context.AspectranConstants;
 import com.aspectran.core.context.builder.apon.params.FilterParameters;
@@ -28,21 +24,25 @@ import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 import com.aspectran.core.util.wildcard.WildcardPattern;
 
-public class TemplateFileScanner extends FileScanner {
+import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
-	private final Log log = LogFactory.getLog(TemplateFileScanner.class);
+public class TransletFileScanner extends FileScanner {
+
+	private final Log log = LogFactory.getLog(TransletFileScanner.class);
 	
 	private final ClassLoader classLoader;
 	
 	private Parameters filterParameters;
 	
-	private TemplateFileScanFilter templateFileScanFilter;
+	private TransletFileScanFilter templateFileScanFilter;
 	
 	private WildcardPattern transletNameMaskPattern;
 	
 	private Map<String, WildcardPattern> excludePatternCache = new HashMap<String, WildcardPattern>();
 
-	public TemplateFileScanner(String applicationBasePath, ClassLoader classLoader) {
+	public TransletFileScanner(String applicationBasePath, ClassLoader classLoader) {
 		super(applicationBasePath);
 		this.classLoader = classLoader;
 	}
@@ -59,19 +59,19 @@ public class TemplateFileScanner extends FileScanner {
 			setTemplateFileScanFilter(templateFileScanFilterClassName);
 	}
 
-	public TemplateFileScanFilter getTemplateFileScanFilter() {
+	public TransletFileScanFilter getTemplateFileScanFilter() {
 		return templateFileScanFilter;
 	}
 
-	public void setTemplateFileScanFilter(TemplateFileScanFilter templateFileScanFilter) {
+	public void setTemplateFileScanFilter(TransletFileScanFilter templateFileScanFilter) {
 		this.templateFileScanFilter = templateFileScanFilter;
 	}
 	
 	public void setTemplateFileScanFilter(Class<?> templateFileScanFilterClass) {
 		try {
-			templateFileScanFilter = (TemplateFileScanFilter)templateFileScanFilterClass.newInstance();
+			templateFileScanFilter = (TransletFileScanFilter)templateFileScanFilterClass.newInstance();
 		} catch(Exception e) {
-			throw new TemplateFileScanFailedException("Failed to instantiate [" + templateFileScanFilterClass + "]", e);
+			throw new TransletScanFailedException("Failed to instantiate TemplateFileScanFilter [" + templateFileScanFilterClass + "]", e);
 		}
 	}
 
@@ -92,26 +92,26 @@ public class TemplateFileScanner extends FileScanner {
 		try {
 			filterClass = classLoader.loadClass(templateFileScanFilterClassName);
 		} catch(ClassNotFoundException e) {
-			throw new TemplateFileScanFailedException("Failed to instantiate [" + templateFileScanFilterClassName + "]", e);
+			throw new TransletScanFailedException("Failed to instantiate TemplateFileScanFilter [" + templateFileScanFilterClassName + "]", e);
 		}
 		setTemplateFileScanFilter(filterClass);
 	}
 	
 	protected void putFile(Map<String, File> scannedFiles, String filePath, File scannedFile) {
-		String filePath2 = filePath;
+		String transletName = filePath;
 		
 		if(transletNameMaskPattern != null) {
-			String maskedfilePath = transletNameMaskPattern.mask(filePath2);
-			if(maskedfilePath != null) {
-				filePath2 = maskedfilePath;
+			String maskedTransletName = transletNameMaskPattern.mask(transletName);
+			if(maskedTransletName != null) {
+				transletName = maskedTransletName;
 			}  else {
-				log.warn("Unmatched the pattern can not be masking. filePath: " + filePath2 + " (maskPattern: " + transletNameMaskPattern + ")");
+				log.warn("Unmatched the pattern can not be masking. filePath: " + transletName + " (maskPattern: " + transletNameMaskPattern + ")");
 			}
 		}
 
 		if(templateFileScanFilter != null) {
-			filePath2 = templateFileScanFilter.filter(filePath2, scannedFile);
-			if(filePath2 == null) {
+			boolean pass = templateFileScanFilter.filter(transletName, scannedFile);
+			if(!pass) {
 				return;
 			}
 		}
@@ -133,7 +133,7 @@ public class TemplateFileScanner extends FileScanner {
 			}
 		}
 		
-		super.putFile(scannedFiles, filePath2, scannedFile);
+		super.putFile(scannedFiles, transletName, scannedFile);
 		
 		if(log.isTraceEnabled())
 			log.trace("scanned template file: " + filePath);
