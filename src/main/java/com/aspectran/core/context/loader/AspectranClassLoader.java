@@ -84,7 +84,7 @@ public class AspectranClassLoader extends ClassLoader {
 		this.resourceManager = new LocalResourceManager(resourceLocation, this);
 		
 		if(log.isDebugEnabled())
-			log.debug("created a root AspectranClassLoader. " + this);
+			log.debug("Create a root AspectranClassLoader " + this);
 	}
 	
 	public AspectranClassLoader(String[] resourceLocations) throws InvalidResourceException {
@@ -144,7 +144,8 @@ public class AspectranClassLoader extends ClassLoader {
 		
 		AspectranClassLoader child = new AspectranClassLoader(resourceLocation, this);
 		
-		log.debug("create a new child AspectranClassLoader " + child);
+		if(log.isDebugEnabled())
+			log.debug("Create a new child AspectranClassLoader " + child);
 		
 		return child;
 	}
@@ -273,7 +274,8 @@ public class AspectranClassLoader extends ClassLoader {
 	private void reload(AspectranClassLoader self) throws InvalidResourceException {
 		self.increaseReloadCount();
 		
-		log.debug("reload AspectranClassLoader " + self);
+		if(log.isDebugEnabled())
+			log.debug("Reload AspectranClassLoader " + self);
 
 		if(self.getResourceManager() != null)
 			self.getResourceManager().reset();
@@ -302,7 +304,8 @@ public class AspectranClassLoader extends ClassLoader {
 	}
 	
 	private void kickout(AspectranClassLoader child) {
-		log.debug("kickout a child AspectranClassLoader: " + child);
+		if(log.isDebugEnabled())
+			log.debug("Kickout a child AspectranClassLoader " + child);
 
 		ResourceManager rm = child.getResourceManager();
 		if(rm != null) {
@@ -325,7 +328,6 @@ public class AspectranClassLoader extends ClassLoader {
 		
 		while(res.hasMoreElements()) {
 			url = res.nextElement();
-			
 			if(!ResourceUtils.URL_PROTOCOL_JAR.equals(url.getProtocol()))
 				resources.add(url);
 		}
@@ -353,7 +355,7 @@ public class AspectranClassLoader extends ClassLoader {
 	    	try  {
 		    	classData = loadClassData(name, root);
 	    	} catch(InvalidResourceException e) {
-	    		log.error("failed to load class '" + name + "'", e);
+	    		log.error("Failed to load class '" + name + "'.", e);
 	    	}
 
 	    	if(classData != null) {
@@ -422,7 +424,7 @@ public class AspectranClassLoader extends ClassLoader {
 
 	        return output.toByteArray();
 		} catch(IOException e) {
-			throw new InvalidResourceException("cannot read a class file: " + url, e);
+			throw new InvalidResourceException("Cannot read a class file '" + url + "'.", e);
 		}
 	}
 

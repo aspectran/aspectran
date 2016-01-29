@@ -54,12 +54,11 @@ public class CglibDynamicBeanProxy extends AbstractDynamicBeanProxy implements M
 		enhancer.setSuperclass(beanRule.getBeanClass());
 		enhancer.setCallback(new CglibDynamicBeanProxy(context, beanRule));
 		Object proxy;
-		
-		if(constructorArgs == null)
+		if(constructorArgs == null) {
 			proxy = enhancer.create();
-		else
+		} else {
 			proxy = enhancer.create(constructorArgTypes, constructorArgs);
-		
+		}
 		return proxy;
 	}
 }

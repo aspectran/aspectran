@@ -22,7 +22,6 @@ import com.aspectran.core.context.rule.BeanRule;
 
 import javassist.util.proxy.MethodHandler;
 import javassist.util.proxy.ProxyFactory;
-import javassist.util.proxy.ProxyObject;
 
 /**
  * The Class JavassistDynamicBeanProxy.
@@ -50,19 +49,21 @@ public class JavassistDynamicBeanProxy extends AbstractDynamicBeanProxy implemen
 		return dynamicInvoke(self, overridden, args, proxyMethodInvoker);
 	}
 	
+	/**
+	 * Creates a proxy class of bean and returns an instance of that class.
+	 *
+	 * @param context the activity context
+	 * @param beanRule the bean rule
+	 * @param constructorArgTypes the parameter types for a constructor
+	 * @param constructorArgs the arguments passed to a constructor
+	 * @return a new proxy bean object
+	 */
 	public static Object newInstance(ActivityContext context, BeanRule beanRule, Class<?>[] constructorArgTypes, Object[] constructorArgs) {
 		try {
 			ProxyFactory proxyFactory = new ProxyFactory();
 			proxyFactory.setSuperclass(beanRule.getBeanClass());
-			Class<?> proxyClass = proxyFactory.createClass();
-			Object proxy;
-			if(constructorArgs == null)
-				proxy = proxyClass.newInstance();
-			else
-				proxy = proxyFactory.create(constructorArgTypes, constructorArgs);
-			((ProxyObject)proxy).setHandler(new JavassistDynamicBeanProxy(context, beanRule));
-			
-			return proxy;
+			MethodHandler methodHandler = new JavassistDynamicBeanProxy(context, beanRule);
+			return proxyFactory.create(constructorArgTypes, constructorArgs, methodHandler);
 		} catch(Exception e) {
 			throw new ProxyBeanInstantiationException(beanRule.getBeanClass(), e);
 		}

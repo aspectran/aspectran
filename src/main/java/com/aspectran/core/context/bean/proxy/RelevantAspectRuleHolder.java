@@ -29,19 +29,39 @@ public class RelevantAspectRuleHolder {
 	
 	private List<AspectRule> activityAspectRuleList;
 
+	/**
+	 * Gets the aspect advice rule registry.
+	 *
+	 * @return the aspect advice rule registry
+	 */
 	public AspectAdviceRuleRegistry getAspectAdviceRuleRegistry() {
 		return aspectAdviceRuleRegistry;
 	}
 
+	/**
+	 * Sets the aspect advice rule registry.
+	 *
+	 * @param aspectAdviceRuleRegistry the new aspect advice rule registry
+	 */
 	public void setAspectAdviceRuleRegistry(
 			AspectAdviceRuleRegistry aspectAdviceRuleRegistry) {
 		this.aspectAdviceRuleRegistry = aspectAdviceRuleRegistry;
 	}
 
+	/**
+	 * Gets the activity aspect rule list.
+	 *
+	 * @return the activity aspect rule list
+	 */
 	public List<AspectRule> getActivityAspectRuleList() {
 		return activityAspectRuleList;
 	}
 
+	/**
+	 * Sets the activity aspect rule list.
+	 *
+	 * @param activityAspectRuleList the new activity aspect rule list
+	 */
 	public void setActivityAspectRuleList(List<AspectRule> activityAspectRuleList) {
 		this.activityAspectRuleList = activityAspectRuleList;
 	}

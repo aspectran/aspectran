@@ -20,6 +20,12 @@ package com.aspectran.core.context.bean.proxy;
  */
 public interface ProxyMethodInvoker {
 
+	/**
+	 * Invoke method for the method invocation on the proxy instance.
+	 *
+	 * @return the object
+	 * @throws Throwable the throwable
+	 */
 	public Object invoke() throws Throwable;
 	
 }
