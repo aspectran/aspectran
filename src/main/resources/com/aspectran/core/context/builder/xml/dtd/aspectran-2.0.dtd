@@ -178,6 +178,7 @@ exceptionType CDATA #IMPLIED
 <!ATTLIST transform
 type CDATA #IMPLIED
 contentType CDATA #IMPLIED
+template CDATA #IMPLIED
 characterEncoding CDATA #IMPLIED
 default (true | false) #IMPLIED
 pretty (true | false) #IMPLIED
