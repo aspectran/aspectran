@@ -183,7 +183,7 @@ default (true | false) #IMPLIED
 pretty (true | false) #IMPLIED
 >
 
-<!ELEMENT dispatch ((echo? | action? | include?)*, template)>
+<!ELEMENT dispatch (echo? | action? | include?)*>
 <!ATTLIST dispatch
 name CDATA #REQUIRED
 contentType CDATA #IMPLIED
