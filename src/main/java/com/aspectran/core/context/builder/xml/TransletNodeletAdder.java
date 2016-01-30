@@ -15,10 +15,6 @@
  */
 package com.aspectran.core.context.builder.xml;
 
-import java.util.Map;
-
-import org.w3c.dom.Node;
-
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.activity.process.ContentList;
 import com.aspectran.core.context.builder.ContextBuilderAssistant;
@@ -29,10 +25,12 @@ import com.aspectran.core.context.rule.ResponseByContentTypeRule;
 import com.aspectran.core.context.rule.ResponseRule;
 import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.util.BooleanUtils;
-import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.xml.Nodelet;
 import com.aspectran.core.util.xml.NodeletAdder;
 import com.aspectran.core.util.xml.NodeletParser;
+import org.w3c.dom.Node;
+
+import java.util.Map;
 
 /**
  * The Class TransletNodeletAdder.
@@ -121,15 +119,11 @@ public class TransletNodeletAdder implements NodeletAdder {
 		});
 		parser.addNodelet(xpath, "/translet/contents/content", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
-				String id = attributes.get("id");
 				String name = attributes.get("name");
 				Boolean omittable = BooleanUtils.toNullableBooleanObject(attributes.get("omittable"));
 				Boolean hidden = BooleanUtils.toNullableBooleanObject(attributes.get("hidden"));
 
-				if(!assistant.isNullableContentId() && StringUtils.isEmpty(id))
-					throw new IllegalArgumentException("The <content> element requires a id attribute.");
-
-				ActionList actionList = ActionList.newInstance(id, name, omittable, hidden);
+				ActionList actionList = ActionList.newInstance(name, omittable, hidden);
 				assistant.pushObject(actionList);
 			}
 		});
@@ -156,20 +150,16 @@ public class TransletNodeletAdder implements NodeletAdder {
 		});
 		parser.addNodelet(xpath, "/translet/content", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
-				String id = attributes.get("id");
 				String name = attributes.get("name");
 				Boolean omittable = BooleanUtils.toNullableBooleanObject(attributes.get("omittable"));
 				Boolean hidden = BooleanUtils.toNullableBooleanObject(attributes.get("hidden"));
-
-				if(!assistant.isNullableContentId() && StringUtils.isEmpty(id))
-					throw new IllegalArgumentException("The <content> element requires a id attribute.");
 
 				TransletRule transletRule = assistant.peekObject();
 
 				ContentList contentList = transletRule.touchContentList(true);
 				assistant.pushObject(contentList);
 				
-				ActionList actionList = ActionList.newInstance(id, name, omittable, hidden);
+				ActionList actionList = ActionList.newInstance(name, omittable, hidden);
 				assistant.pushObject(actionList);
 			}
 		});

@@ -43,39 +43,12 @@ public class GenericParameters extends AbstractParameters implements Parameters 
 		Parameter p = parameterValueMap.get(name);
 		
 		if(p == null && isAddable())
-			p = newParameterValue(name, determineParameterValueType(value));
+			p = newParameterValue(name, ParameterValueType.determineParameterValueType(value));
 		
 		if(p == null)
 			throw new UnknownParameterException(name, this);
 		
 		return p;
-	}
-
-	private ParameterValueType determineParameterValueType(Object value) {
-		ParameterValueType parameterValueType;
-		
-		if(value instanceof String) {
-			if(value.toString().indexOf(AponFormat.NEXT_LINE_CHAR) == -1)
-				parameterValueType = ParameterValueType.STRING;
-			else
-				parameterValueType = ParameterValueType.TEXT;
-		} else if(value instanceof Integer) {
-			parameterValueType = ParameterValueType.INT;
-		} else if(value instanceof Long) {
-			parameterValueType = ParameterValueType.LONG;
-		} else if(value instanceof Float) {
-			parameterValueType = ParameterValueType.FLOAT;
-		} else if(value instanceof Double) {
-			parameterValueType = ParameterValueType.DOUBLE;
-		} else if(value instanceof Boolean) {
-			parameterValueType = ParameterValueType.BOOLEAN;
-		} else if(value instanceof Parameters) {
-			parameterValueType = ParameterValueType.PARAMETERS;
-		} else {
-			parameterValueType = ParameterValueType.STRING;
-		}
-		
-		return parameterValueType;
 	}
 
 }

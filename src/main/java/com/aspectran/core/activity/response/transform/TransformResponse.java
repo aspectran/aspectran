@@ -15,6 +15,11 @@
  */
 package com.aspectran.core.activity.response.transform;
 
+import com.aspectran.core.activity.response.Response;
+import com.aspectran.core.context.rule.TransformRule;
+import com.aspectran.core.context.rule.type.ResponseType;
+import com.aspectran.core.context.rule.type.TransformType;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileReader;
@@ -24,11 +29,6 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.URL;
 import java.net.URLConnection;
-
-import com.aspectran.core.activity.response.Response;
-import com.aspectran.core.context.rule.TransformRule;
-import com.aspectran.core.context.rule.type.ResponseType;
-import com.aspectran.core.context.rule.type.TransformType;
 
 /**
  * The Class TransformResponse.
@@ -50,19 +50,19 @@ public abstract class TransformResponse implements Response {
 	}
 
 	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.response.Response#getContentType()
-	 */
-	public String getContentType() {
-		return transformRule.getContentType();
-	}
-	
-	/* (non-Javadoc)
 	 * @see com.aspectran.core.activity.response.Response#getResponseType()
 	 */
 	public ResponseType getResponseType() {
 		return TransformRule.RESPONSE_TYPE;
 	}
-	
+
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.activity.response.Response#getContentType()
+	 */
+	public String getContentType() {
+		return transformRule.getContentType();
+	}
+
 	/**
 	 * Gets the transform type.
 	 * 

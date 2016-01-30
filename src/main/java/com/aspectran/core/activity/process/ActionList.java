@@ -15,8 +15,6 @@
  */
 package com.aspectran.core.activity.process;
 
-import java.util.ArrayList;
-
 import com.aspectran.core.activity.process.action.BeanAction;
 import com.aspectran.core.activity.process.action.EchoAction;
 import com.aspectran.core.activity.process.action.Executable;
@@ -26,6 +24,8 @@ import com.aspectran.core.context.rule.EchoActionRule;
 import com.aspectran.core.context.rule.IncludeActionRule;
 import com.aspectran.core.context.rule.ability.ActionRuleApplicable;
 import com.aspectran.core.util.BooleanUtils;
+
+import java.util.ArrayList;
 
 /**
  * Then Class ActionList.
@@ -140,7 +140,7 @@ public class ActionList extends ArrayList<Executable> implements ActionRuleAppli
 		return sb.toString();
 	}
 	
-	public static ActionList newInstance(String id, String name, Boolean omittable, Boolean hidden) {
+	public static ActionList newInstance(String name, Boolean omittable, Boolean hidden) {
 		ActionList actionList = new ActionList();
 		actionList.setName(name);
 		actionList.setOmittable(omittable);

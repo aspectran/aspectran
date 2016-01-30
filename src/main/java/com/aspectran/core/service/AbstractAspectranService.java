@@ -15,11 +15,6 @@
  */
 package com.aspectran.core.service;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.loader.ActivityContextLoader;
@@ -35,8 +30,13 @@ import com.aspectran.core.util.ResourceUtils;
 import com.aspectran.core.util.apon.Parameters;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
-import com.aspectran.scheduler.service.SchedulerService;
 import com.aspectran.scheduler.service.QuartzSchedulerService;
+import com.aspectran.scheduler.service.SchedulerService;
+
+import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 /**
  * The Class AbstractAspectranService.
@@ -228,15 +228,15 @@ public abstract class AbstractAspectranService implements AspectranService {
 		if(this.aspectranSchedulerConfig == null)
 			return;
 		
-		if(log.isDebugEnabled()) {
-			log.debug("Starting the SchedulerService " + this.aspectranSchedulerConfig.describe(true));
-		}
-		
 		boolean startup = this.aspectranSchedulerConfig.getBoolean(AspectranSchedulerConfig.startup);
 		int startDelaySeconds = this.aspectranSchedulerConfig.getInt(AspectranSchedulerConfig.startDelaySeconds.getName(), -1);
 		boolean waitOnShutdown = this.aspectranSchedulerConfig.getBoolean(AspectranSchedulerConfig.waitOnShutdown);
-		
+
 		if(startup) {
+			if(log.isDebugEnabled()) {
+				log.debug("Starting the SchedulerService " + this.aspectranSchedulerConfig.describe(true));
+			}
+
 			SchedulerService schedulerService = new QuartzSchedulerService(activityContext);
 			
 			if(waitOnShutdown)

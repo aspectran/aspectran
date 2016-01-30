@@ -15,12 +15,6 @@
  */
 package com.aspectran.core.context.builder.xml;
 
-import java.io.InputStream;
-import java.util.Iterator;
-import java.util.Map;
-
-import org.w3c.dom.Node;
-
 import com.aspectran.core.context.builder.ContextBuilderAssistant;
 import com.aspectran.core.context.builder.ImportHandler;
 import com.aspectran.core.context.builder.Importable;
@@ -30,6 +24,11 @@ import com.aspectran.core.util.apon.GenericParameters;
 import com.aspectran.core.util.apon.Parameters;
 import com.aspectran.core.util.xml.Nodelet;
 import com.aspectran.core.util.xml.NodeletParser;
+import org.w3c.dom.Node;
+
+import java.io.InputStream;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * The Class AspectranNodeParser.
@@ -68,8 +67,8 @@ public class AspectranNodeParser {
 		addTypeAliasNodelets();
 		addAspectRuleNodelets();
 		addBeanNodelets();
-		addTransletNodelets();
 		addTemplateNodelets();
+		addTransletNodelets();
 		addImportNodelets();
 	}
 	
@@ -190,17 +189,17 @@ public class AspectranNodeParser {
 	}
 
 	/**
+	 * Adds the template nodelets.
+	 */
+	private void addTemplateNodelets() {
+		parser.addNodelet("/aspectran", new TemplateNodeletAdder(assistant));
+	}
+
+	/**
 	 * Adds the translet nodelets.
 	 */
 	private void addTransletNodelets() {
 		parser.addNodelet("/aspectran", new TransletNodeletAdder(assistant));
-	}
-
-	/**
-	 * Adds the template nodelets.
-	 */
-	private void addTemplateNodelets() {
-		parser.addNodelet("/template", new TemplateNodeletAdder(assistant));
 	}
 
 	/**
@@ -209,12 +208,12 @@ public class AspectranNodeParser {
 	private void addImportNodelets() {
 		parser.addNodelet("/aspectran/import", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
-				String resource = attributes.get("resource");
 				String file = attributes.get("file");
+				String resource = attributes.get("resource");
 				String url = attributes.get("url");
 				String fileType = attributes.get("fileType");
 
-				Importable importable = Importable.newInstance(assistant, resource, file, url, fileType);
+				Importable importable = Importable.newInstance(assistant, file, resource, url, fileType);
 				
 				ImportHandler importHandler = assistant.getImportHandler();
 				

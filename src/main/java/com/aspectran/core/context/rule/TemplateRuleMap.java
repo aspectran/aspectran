@@ -32,11 +32,10 @@ public class TemplateRuleMap extends LinkedHashMap<String, TemplateRule> impleme
 	 * Adds the template rule.
 	 * 
 	 * @param templateRule the template rule
-	 * 
 	 * @return the template rule
 	 */
 	public TemplateRule putTemplateRule(TemplateRule templateRule) {
-		return super.put(templateRule.getId(), templateRule);
+		return put(templateRule.getId(), templateRule);
 	}
 
 	/* (non-Javadoc)

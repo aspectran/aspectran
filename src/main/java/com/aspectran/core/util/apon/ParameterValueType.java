@@ -15,10 +15,10 @@
  */
 package com.aspectran.core.util.apon;
 
+import com.aspectran.core.context.rule.type.Type;
+
 import java.util.HashMap;
 import java.util.Map;
-
-import com.aspectran.core.context.rule.type.Type;
 
 /**
  * Defines the type of the parameter value.
@@ -112,6 +112,33 @@ public final class ParameterValueType extends Type {
 			return name.substring(0, hintStartIndex);
 		
 		return name;
+	}
+
+	public static ParameterValueType determineParameterValueType(Object value) {
+		ParameterValueType parameterValueType;
+
+		if(value instanceof String) {
+			if(value.toString().indexOf(AponFormat.NEXT_LINE_CHAR) == -1)
+				parameterValueType = ParameterValueType.STRING;
+			else
+				parameterValueType = ParameterValueType.TEXT;
+		} else if(value instanceof Integer) {
+			parameterValueType = ParameterValueType.INT;
+		} else if(value instanceof Long) {
+			parameterValueType = ParameterValueType.LONG;
+		} else if(value instanceof Float) {
+			parameterValueType = ParameterValueType.FLOAT;
+		} else if(value instanceof Double) {
+			parameterValueType = ParameterValueType.DOUBLE;
+		} else if(value instanceof Boolean) {
+			parameterValueType = ParameterValueType.BOOLEAN;
+		} else if(value instanceof Parameters) {
+			parameterValueType = ParameterValueType.PARAMETERS;
+		} else {
+			parameterValueType = ParameterValueType.STRING;
+		}
+
+		return parameterValueType;
 	}
 	
 }

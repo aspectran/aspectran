@@ -59,12 +59,16 @@ public class TemplateRuleRegistry {
     }
 
     public void addTemplateRule(TemplateRule templateRule) {
-		DefaultSettings defaultSettings = assistantLocal.getDefaultSettings();
-		if(defaultSettings != null) {
-			if(templateRule.getEngine() == null && defaultSettings.getDefaultTemplateEngine() != null) {
-				templateRule.setEngine(defaultSettings.getDefaultTemplateEngine());
-			}
-		}
+        if(templateRule.getEngine() == null || !"token".equals(templateRule.getEngine())) {
+            DefaultSettings defaultSettings = assistantLocal.getDefaultSettings();
+            if(defaultSettings != null) {
+                if(templateRule.getEngine() == null && defaultSettings.getDefaultTemplateEngine() != null) {
+                    templateRule.setEngine(defaultSettings.getDefaultTemplateEngine());
+                }
+            }
+        } else {
+            templateRule.setEngine(null);
+        }
     	
         templateRuleMap.putTemplateRule(templateRule);
 

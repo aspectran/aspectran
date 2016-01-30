@@ -15,9 +15,6 @@
  */
 package com.aspectran.core.context.rule;
 
-import java.nio.charset.Charset;
-import java.nio.charset.IllegalCharsetNameException;
-
 import com.aspectran.core.activity.response.ForwardResponse;
 import com.aspectran.core.activity.response.RedirectResponse;
 import com.aspectran.core.activity.response.Response;
@@ -26,6 +23,9 @@ import com.aspectran.core.activity.response.transform.TransformFactory;
 import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
 import com.aspectran.core.context.rule.ability.ResponseRuleApplicable;
 import com.aspectran.core.context.rule.type.ResponseType;
+
+import java.nio.charset.Charset;
+import java.nio.charset.IllegalCharsetNameException;
 
 /**
  * The Class ResponseRule.
@@ -179,11 +179,11 @@ public class ResponseRule implements ResponseRuleApplicable {
 		responseRule.setResponse(response);
 		return responseRule;
 	}
-	
+
 	public TemplateRule getTemplateRule() {
 		if(response == null)
 			return null;
-		
+
 		return response.getTemplateRule();
 	}
 

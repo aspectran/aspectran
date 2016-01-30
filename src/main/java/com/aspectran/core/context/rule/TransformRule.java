@@ -30,14 +30,16 @@ public class TransformRule extends ActionPossessSupport implements ActionPossess
 	
 	public static final ResponseType RESPONSE_TYPE = ResponseType.TRANSFORM;
 
-	protected TransformType transformType;
+	private TransformType transformType;
 
-	protected String contentType;
+	private String contentType;
 	
-	protected String characterEncoding;
-	
+	private String templateId;
+
 	private TemplateRule templateRule;
-	
+
+	private String characterEncoding;
+
 	private Boolean defaultResponse;
 	
 	private Boolean pretty;
@@ -121,6 +123,14 @@ public class TransformRule extends ActionPossessSupport implements ActionPossess
 		}
 	}
 
+	public String getTemplateId() {
+		return templateId;
+	}
+
+	public void setTemplateId(String templateId) {
+		this.templateId = templateId;
+	}
+
 	public Boolean getDefaultResponse() {
 		return defaultResponse;
 	}
@@ -153,8 +163,9 @@ public class TransformRule extends ActionPossessSupport implements ActionPossess
 		StringBuilder sb = new StringBuilder();
 		sb.append("{transformType=").append(transformType);
 		sb.append(", contentType=").append(contentType);
-		sb.append(", characterEncoding=").append(characterEncoding);
+		sb.append(", templateId=").append(templateId);
 		sb.append(", templateRule=").append(templateRule);
+		sb.append(", characterEncoding=").append(characterEncoding);
 		if(defaultResponse != null)
 			sb.append(", defaultResponse=").append(defaultResponse);
 		sb.append("}");
@@ -162,7 +173,7 @@ public class TransformRule extends ActionPossessSupport implements ActionPossess
 		return sb.toString();
 	}
 	
-	public static TransformRule newInstance(String type, String contentType, String characterEncoding, Boolean defaultResponse, Boolean pretty) {
+	public static TransformRule newInstance(String type, String contentType, String templateId, String characterEncoding, Boolean defaultResponse, Boolean pretty) {
 		TransformType transformType = TransformType.valueOf(type);
 
 		if(transformType == null && contentType != null) {
@@ -173,8 +184,11 @@ public class TransformRule extends ActionPossessSupport implements ActionPossess
 			throw new IllegalArgumentException("No transform type registered for '" + type + "'.");
 
 		TransformRule tr = new TransformRule();
-		tr.setContentType(contentType);
 		tr.setTransformType(transformType);
+		if(contentType != null) {
+			tr.setContentType(contentType);
+		}
+		tr.setTemplateId(templateId);
 		tr.setCharacterEncoding(characterEncoding);
 		tr.setDefaultResponse(defaultResponse);
 		tr.setPretty(pretty);
@@ -184,8 +198,9 @@ public class TransformRule extends ActionPossessSupport implements ActionPossess
 	
 	public static TransformRule newDerivedTransformRule(TransformRule transformRule) {
 		TransformRule newTransformRule = new TransformRule();
-		newTransformRule.setContentType(transformRule.getContentType());
 		newTransformRule.setTransformType(transformRule.getTransformType());
+		newTransformRule.setContentType(transformRule.getContentType());
+		newTransformRule.setTemplateId(transformRule.getTemplateId());
 		newTransformRule.setCharacterEncoding(transformRule.getCharacterEncoding());
 		newTransformRule.setDefaultResponse(transformRule.getDefaultResponse());
 		newTransformRule.setPretty(transformRule.getPretty());

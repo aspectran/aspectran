@@ -15,20 +15,27 @@
  */
 package com.aspectran.core.context.builder;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-
 import com.aspectran.core.activity.CoreTranslet;
 import com.aspectran.core.activity.Translet;
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.aspect.AspectRuleRegistry;
 import com.aspectran.core.context.bean.BeanRuleRegistry;
-import com.aspectran.core.context.rule.*;
+import com.aspectran.core.context.rule.AspectRule;
+import com.aspectran.core.context.rule.AspectRuleMap;
+import com.aspectran.core.context.rule.BeanRule;
+import com.aspectran.core.context.rule.BeanRuleMap;
+import com.aspectran.core.context.rule.TemplateRule;
+import com.aspectran.core.context.rule.TemplateRuleMap;
+import com.aspectran.core.context.rule.TransletRule;
+import com.aspectran.core.context.rule.TransletRuleMap;
 import com.aspectran.core.context.rule.type.DefaultSettingType;
 import com.aspectran.core.context.template.TemplateRuleRegistry;
 import com.aspectran.core.context.translet.TransletRuleRegistry;
 import com.aspectran.core.util.ArrayStack;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * The Class ContextBuilderAssistant
@@ -332,20 +339,6 @@ public class ContextBuilderAssistant {
 	 */
 	public void restoreAssistantLocal(AssistantLocal assistantLocal) {
 		setAssistantLocal(assistantLocal);
-	}
-	
-	/**
-	 * Checks if is allow null content id.
-	 * 
-	 * @return true, if is allow null content id
-	 */
-	public boolean isNullableContentId() {
-		DefaultSettings defaultSettings = assistantLocal.getDefaultSettings();
-		
-		if(defaultSettings == null)
-			return true;
-		
-		return defaultSettings.isNullableContentId();
 	}
 
 	/**

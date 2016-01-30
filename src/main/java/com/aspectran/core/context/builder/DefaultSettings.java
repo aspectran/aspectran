@@ -15,13 +15,13 @@
  */
 package com.aspectran.core.context.builder;
 
-import java.util.Map;
-
 import com.aspectran.core.activity.CoreTranslet;
 import com.aspectran.core.activity.Translet;
 import com.aspectran.core.context.rule.type.DefaultSettingType;
 import com.aspectran.core.util.BooleanUtils;
 import com.aspectran.core.util.PrefixSuffixPattern;
+
+import java.util.Map;
 
 /**
  * The Class DefaultSettings
@@ -43,8 +43,6 @@ public class DefaultSettings implements Cloneable {
 	private String transletImplementClassName;
 	
 	private Class<CoreTranslet> transletImplementClass;
-	
-	private Boolean nullableContentId;
 	
 	private Boolean nullableActionId;
 	
@@ -134,18 +132,6 @@ public class DefaultSettings implements Cloneable {
 		this.transletImplementClass = transletImplementClass;
 	}
 
-	public boolean isNullableContentId() {
-		return BooleanUtils.toBoolean(nullableContentId, true);
-	}
-
-	public Boolean getNullableContentId() {
-		return nullableContentId;
-	}
-
-	public void setNullableContentId(boolean nullableContentId) {
-		this.nullableContentId = nullableContentId;
-	}
-
 	public boolean isNullableActionId() {
 		return BooleanUtils.toBoolean(nullableActionId, true);
 	}
@@ -202,9 +188,6 @@ public class DefaultSettings implements Cloneable {
 		if(settings.get(DefaultSettingType.TRANSLET_IMPLEMENT_CLASS) != null)
 			setTransletImplementClassName(settings.get(DefaultSettingType.TRANSLET_IMPLEMENT_CLASS));
 
-		if(settings.get(DefaultSettingType.NULLABLE_CONTENT_ID) != null)
-			nullableContentId = (settings.get(DefaultSettingType.NULLABLE_CONTENT_ID) == null || Boolean.parseBoolean(settings.get(DefaultSettingType.NULLABLE_CONTENT_ID)));
-		
 		if(settings.get(DefaultSettingType.NULLABLE_ACTION_ID) != null)
 			nullableActionId = (settings.get(DefaultSettingType.NULLABLE_ACTION_ID) == null || Boolean.parseBoolean(settings.get(DefaultSettingType.NULLABLE_ACTION_ID)));
 		

@@ -41,6 +41,8 @@ public class TextTransform extends TransformResponse implements Response {
 
 	private final boolean debugEnabled = log.isDebugEnabled();
 
+	private final String templateId;
+
 	private final TemplateRule templateRule;
 
 	private final String contentType;
@@ -54,6 +56,7 @@ public class TextTransform extends TransformResponse implements Response {
 	 */
 	public TextTransform(TransformRule transformRule) {
 		super(transformRule);
+		this.templateId = transformRule.getTemplateId();
 		this.templateRule = transformRule.getTemplateRule();
 		this.contentType = transformRule.getContentType();
 		this.outputEncoding = transformRule.getCharacterEncoding();
@@ -81,7 +84,9 @@ public class TextTransform extends TransformResponse implements Response {
 
 			Writer writer = responseAdapter.getWriter();
 
-			if(templateRule != null) {
+			if(templateId != null) {
+				activity.getTemplateProcessor().process(templateId, activity, writer);
+			} else if(templateRule != null) {
 				activity.getTemplateProcessor().process(templateRule, activity, writer);
 			} else {
 				ProcessResult processResult = activity.getProcessResult();

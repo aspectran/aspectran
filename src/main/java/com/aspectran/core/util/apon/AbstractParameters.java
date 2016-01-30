@@ -15,14 +15,14 @@
  */
 package com.aspectran.core.util.apon;
 
+import com.aspectran.core.util.BooleanUtils;
+
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import com.aspectran.core.util.BooleanUtils;
 
 public abstract class AbstractParameters implements Parameters {
 
@@ -111,10 +111,8 @@ public abstract class AbstractParameters implements Parameters {
 	
 	public Parameter getParameter(String name) {
 		Parameter p = parameterValueMap.get(name);
-		
-		if(p == null)
+		if(!addable && p == null)
 			throw new UnknownParameterException(name, this);
-		
 		return p;
 	}
 	
@@ -124,6 +122,8 @@ public abstract class AbstractParameters implements Parameters {
 	
 	public Object getValue(String name) {
 		Parameter p = getParameter(name);
+		if(p == null)
+			return null;
 		return p.getValue();
 	}
 	
@@ -133,6 +133,9 @@ public abstract class AbstractParameters implements Parameters {
 	
 	public void putValue(String name, Object value) {
 		Parameter p = getParameter(name);
+		if(p == null) {
+			p = newParameterValue(name, ParameterValueType.determineParameterValueType(value));
+		}
 		p.putValue(value);
 	}
 	
@@ -142,15 +145,15 @@ public abstract class AbstractParameters implements Parameters {
 	
 	public String getString(String name) {
 		Parameter p = getParameter(name);
+		if(p == null)
+			return null;
 		return p.getValueAsString();
 	}
 
 	public String getString(String name, String defaultValue) {
 		String s = getString(name);
-		
 		if(s == null)
 			return defaultValue;
-		
 		return s;
 	}
 
@@ -164,6 +167,8 @@ public abstract class AbstractParameters implements Parameters {
 
 	public String[] getStringArray(String name) {
 		Parameter p = getParameter(name);
+		if(p == null)
+			return null;
 		return p.getValueAsStringArray();
 	}
 
@@ -173,38 +178,42 @@ public abstract class AbstractParameters implements Parameters {
 	
 	public List<String> getStringList(String name) {
 		Parameter p = getParameter(name);
+		if(p == null)
+			return null;
 		return p.getValueAsStringList();
 	}
 
 	public List<String> getStringList(ParameterDefine parameterDefine) {
 		return getStringList(parameterDefine.getName());
 	}
-	
+
 //	public String getText(String name) {
 //		Parameter p = getParameter(name);
 //		return p.getValueAsText();
 //	}
-//	
+//
 //	public String getText(ParameterDefine parameterDefine) {
 //		return getText(parameterDefine.getName());
 //	}
-	
+
 	public Integer getInt(String name) {
 		Parameter p = getParameter(name);
+		if(p == null)
+			return null;
 		return p.getValueAsInt();
 	}
 	
 	public int getInt(String name, int defaultValue) {
 		Parameter p = getParameter(name);
-		
 		if(p == null)
 			return defaultValue;
-		
 		return p.getValueAsInt();
 	}
 
 	public Integer[] getIntArray(String name) {
 		Parameter p = getParameter(name);
+		if(p == null)
+			return null;
 		return p.getValueAsIntArray();
 	}
 
@@ -222,6 +231,8 @@ public abstract class AbstractParameters implements Parameters {
 
 	public List<Integer> getIntList(String name) {
 		Parameter p = getParameter(name);
+		if(p == null)
+			return null;
 		return p.getValueAsIntList();
 	}
 
@@ -231,20 +242,22 @@ public abstract class AbstractParameters implements Parameters {
 
 	public Long getLong(String name) {
 		Parameter p = getParameter(name);
+		if(p == null)
+			return null;
 		return p.getValueAsLong();
 	}
 	
 	public long getLong(String name, long defaultValue) {
 		Parameter p = getParameter(name);
-		
 		if(p == null)
 			return defaultValue;
-		
 		return p.getValueAsLong();
 	}
 	
 	public Long[] getLongArray(String name) {
 		Parameter p = getParameter(name);
+		if(p == null)
+			return null;
 		return p.getValueAsLongArray();
 	}
 	
@@ -262,6 +275,8 @@ public abstract class AbstractParameters implements Parameters {
 	
 	public List<Long> getLongList(String name) {
 		Parameter p = getParameter(name);
+		if(p == null)
+			return null;
 		return p.getValueAsLongList();
 	}
 
@@ -271,20 +286,22 @@ public abstract class AbstractParameters implements Parameters {
 	
 	public Float getFloat(String name) {
 		Parameter p = getParameter(name);
+		if(p == null)
+			return null;
 		return p.getValueAsFloat();
 	}
 	
 	public float getFloat(String name, float defaultValue) {
 		Parameter p = getParameter(name);
-		
 		if(p == null)
 			return defaultValue;
-		
 		return p.getValueAsFloat();
 	}
 
 	public Float[] getFloatArray(String name) {
 		Parameter p = getParameter(name);
+		if(p == null)
+			return null;
 		return p.getValueAsFloatArray();
 	}
 	
@@ -302,6 +319,8 @@ public abstract class AbstractParameters implements Parameters {
 
 	public List<Float> getFloatList(String name) {
 		Parameter p = getParameter(name);
+		if(p == null)
+			return null;
 		return p.getValueAsFloatList();
 	}
 
@@ -311,20 +330,22 @@ public abstract class AbstractParameters implements Parameters {
 
 	public Double getDouble(String name) {
 		Parameter p = getParameter(name);
+		if(p == null)
+			return null;
 		return p.getValueAsDouble();
 	}
 	
 	public double getDouble(String name, double defaultValue) {
 		Parameter p = getParameter(name);
-		
 		if(p == null)
 			return defaultValue;
-		
 		return p.getValueAsDouble();
 	}
 
 	public Double[] getDoubleArray(String name) {
 		Parameter p = getParameter(name);
+		if(p == null)
+			return null;
 		return p.getValueAsDoubleArray();
 	}
 	
@@ -342,6 +363,8 @@ public abstract class AbstractParameters implements Parameters {
 	
 	public List<Double> getDoubleList(String name) {
 		Parameter p = getParameter(name);
+		if(p == null)
+			return null;
 		return p.getValueAsDoubleList();
 	}
 
@@ -351,20 +374,22 @@ public abstract class AbstractParameters implements Parameters {
 	
 	public Boolean getBoolean(String name) {
 		Parameter p = getParameter(name);
+		if(p == null)
+			return null;
 		return p.getValueAsBoolean();
 	}
 	
 	public boolean getBoolean(String name, boolean defaultValue) {
 		Parameter p = getParameter(name);
-		
 		if(p == null)
 			return defaultValue;
-		
 		return BooleanUtils.toBoolean(p.getValueAsBoolean(), defaultValue);
 	}
 	
 	public Boolean[] getBooleanArray(String name) {
 		Parameter p = getParameter(name);
+		if(p == null)
+			return null;
 		return p.getValueAsBooleanArray();
 	}
 	
@@ -382,6 +407,8 @@ public abstract class AbstractParameters implements Parameters {
 	
 	public List<Boolean> getBooleanList(String name) {
 		Parameter p = getParameter(name);
+		if(p == null)
+			return null;
 		return p.getValueAsBooleanList();
 	}
 
@@ -392,6 +419,8 @@ public abstract class AbstractParameters implements Parameters {
 	@SuppressWarnings("unchecked")
 	public <T extends Parameters> T getParameters(String name) {
 		Parameter p = getParameter(name);
+		if(p == null)
+			return null;
 		return (T)p.getValue();
 	}
 
@@ -403,6 +432,8 @@ public abstract class AbstractParameters implements Parameters {
 	@SuppressWarnings("unchecked")
 	public <T extends Parameters> T[] getParametersArray(String name) {
 		Parameter p = getParameter(name);
+		if(p == null)
+			return null;
 		return (T[])p.getValueAsParametersArray();
 	}
 	
@@ -413,6 +444,8 @@ public abstract class AbstractParameters implements Parameters {
 	@SuppressWarnings("unchecked")
 	public <T extends Parameters> List<T> getParametersList(String name) {
 		Parameter p = getParameter(name);
+		if(p == null)
+			return null;
 		return (List<T>)p.getValueAsParametersList();
 	}
 	
@@ -434,9 +467,12 @@ public abstract class AbstractParameters implements Parameters {
 	@SuppressWarnings("unchecked")
 	public <T extends Parameters> T newParameters(String name) {
 		Parameter p = getParameter(name);
+		if(p == null) {
+			throw new UnknownParameterException(name, this);
+		}
 		Parameters parameters = p.newParameters(p);
-		return (T)parameters;
-	}
+		return (T) parameters;
+}
 	
 	public <T extends Parameters> T newParameters(ParameterDefine parameterDefine) {
 		return newParameters(parameterDefine.getName());
@@ -445,11 +481,9 @@ public abstract class AbstractParameters implements Parameters {
 	@SuppressWarnings("unchecked")
 	public <T extends Parameters> T touchParameters(String name) {
 		Parameters parameters = (T)getParameters(name);
-		
 		if(parameters == null) {
 			parameters = newParameters(name);
 		}
-		
 		return (T)parameters;
 	}
 	

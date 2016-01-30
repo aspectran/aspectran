@@ -15,16 +15,18 @@
  */
 package com.aspectran.core.context.builder;
 
+import com.aspectran.core.context.rule.type.ImportFileType;
+import com.aspectran.core.context.rule.type.ImportType;
+import com.aspectran.core.util.StringUtils;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 
-import com.aspectran.core.context.rule.type.ImportFileType;
-import com.aspectran.core.context.rule.type.ImportType;
-import com.aspectran.core.util.StringUtils;
-
 /**
+ * The Class Importable.
+ *
  * <p>Created: 2008. 04. 24 AM 11:23:36</p>
  * 
  * @author Juho Jeong
@@ -77,14 +79,14 @@ public abstract class Importable {
 		}
 	}
 	
-	public static Importable newInstance(ContextBuilderAssistant assistant, String resource, String file, String url, String fileType) {
+	public static Importable newInstance(ContextBuilderAssistant assistant, String file, String resource, String url, String fileType) {
 		ImportFileType importFileType = ImportFileType.valueOf(fileType);
 		Importable importable;
 		
-		if(StringUtils.hasText(resource)) {
-			importable = new ImportableResource(assistant.getClassLoader(), resource, importFileType);
-		} else if(StringUtils.hasText(file)) {
+		if(StringUtils.hasText(file)) {
 			importable = new ImportableFile(assistant.getApplicationBasePath(), file, importFileType);
+		} else if(StringUtils.hasText(resource)) {
+			importable = new ImportableResource(assistant.getClassLoader(), resource, importFileType);
 		} else if(StringUtils.hasText(url)) {
 			importable = new ImportableUrl(url, importFileType);
 		} else {

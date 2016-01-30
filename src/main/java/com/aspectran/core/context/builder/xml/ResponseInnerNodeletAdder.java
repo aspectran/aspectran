@@ -15,10 +15,6 @@
  */
 package com.aspectran.core.context.builder.xml;
 
-import java.util.Map;
-
-import org.w3c.dom.Node;
-
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.context.builder.ContextBuilderAssistant;
 import com.aspectran.core.context.expr.token.Token;
@@ -34,6 +30,9 @@ import com.aspectran.core.util.BooleanUtils;
 import com.aspectran.core.util.xml.Nodelet;
 import com.aspectran.core.util.xml.NodeletAdder;
 import com.aspectran.core.util.xml.NodeletParser;
+import org.w3c.dom.Node;
+
+import java.util.Map;
 
 /**
  * The Class ResponseRuleNodeletAdder.
@@ -61,11 +60,12 @@ public class ResponseInnerNodeletAdder implements NodeletAdder {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
 				String type = attributes.get("type");
 				String contentType = attributes.get("contentType");
+				String templateId = attributes.get("template");
 				String characterEncoding = attributes.get("characterEncoding");
 				Boolean defaultResponse = BooleanUtils.toNullableBooleanObject(attributes.get("defaultResponse"));
 				Boolean pretty = BooleanUtils.toNullableBooleanObject(attributes.get("pretty"));
 
-				TransformRule tr = TransformRule.newInstance(type, contentType, characterEncoding, defaultResponse, pretty);
+				TransformRule tr = TransformRule.newInstance(type, contentType, templateId, characterEncoding, defaultResponse, pretty);
 				assistant.pushObject(tr);
 				
 				ActionList actionList = new ActionList();

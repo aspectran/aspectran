@@ -15,9 +15,6 @@
  */
 package com.aspectran.core.context.builder.apon;
 
-import java.util.List;
-import java.util.Map;
-
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.activity.process.ContentList;
 import com.aspectran.core.activity.process.action.Executable;
@@ -58,7 +55,31 @@ import com.aspectran.core.context.builder.apon.params.RootParameters;
 import com.aspectran.core.context.builder.apon.params.TemplateParameters;
 import com.aspectran.core.context.builder.apon.params.TransformParameters;
 import com.aspectran.core.context.builder.apon.params.TransletParameters;
-import com.aspectran.core.context.rule.*;
+import com.aspectran.core.context.rule.AspectAdviceRule;
+import com.aspectran.core.context.rule.AspectJobAdviceRule;
+import com.aspectran.core.context.rule.AspectRule;
+import com.aspectran.core.context.rule.AspectRuleMap;
+import com.aspectran.core.context.rule.BeanActionRule;
+import com.aspectran.core.context.rule.BeanRule;
+import com.aspectran.core.context.rule.BeanRuleMap;
+import com.aspectran.core.context.rule.DispatchResponseRule;
+import com.aspectran.core.context.rule.EchoActionRule;
+import com.aspectran.core.context.rule.ExceptionHandlingRule;
+import com.aspectran.core.context.rule.ForwardResponseRule;
+import com.aspectran.core.context.rule.IncludeActionRule;
+import com.aspectran.core.context.rule.ItemRule;
+import com.aspectran.core.context.rule.ItemRuleMap;
+import com.aspectran.core.context.rule.PointcutRule;
+import com.aspectran.core.context.rule.RedirectResponseRule;
+import com.aspectran.core.context.rule.RequestRule;
+import com.aspectran.core.context.rule.ResponseByContentTypeRule;
+import com.aspectran.core.context.rule.ResponseRule;
+import com.aspectran.core.context.rule.SettingsAdviceRule;
+import com.aspectran.core.context.rule.TemplateRule;
+import com.aspectran.core.context.rule.TemplateRuleMap;
+import com.aspectran.core.context.rule.TransformRule;
+import com.aspectran.core.context.rule.TransletRule;
+import com.aspectran.core.context.rule.TransletRuleMap;
 import com.aspectran.core.context.rule.type.ActionType;
 import com.aspectran.core.context.rule.type.AspectAdviceType;
 import com.aspectran.core.context.rule.type.ImportType;
@@ -68,6 +89,9 @@ import com.aspectran.core.context.rule.type.ScopeType;
 import com.aspectran.core.util.apon.GenericParameters;
 import com.aspectran.core.util.apon.ParameterDefine;
 import com.aspectran.core.util.apon.Parameters;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * The Class RootAponAssembler.
@@ -106,7 +130,6 @@ public class RootAponAssembler {
 			}
 			settingParameters.putValue(DefaultSettingsParameters.transletInterfaceClass, defaultSettings.getTransletInterfaceClassName());
 			settingParameters.putValue(DefaultSettingsParameters.transletImplementClass, defaultSettings.getTransletImplementClassName());
-			settingParameters.putValue(DefaultSettingsParameters.nullableContentId, defaultSettings.getNullableContentId());
 			settingParameters.putValue(DefaultSettingsParameters.nullableActionId, defaultSettings.getNullableActionId());
 			settingParameters.putValue(DefaultSettingsParameters.beanProxifier, defaultSettings.getBeanProxifier());
 			settingParameters.putValue(DefaultSettingsParameters.pointcutPatternVerifiable, defaultSettings.getPointcutPatternVerifiable());
@@ -460,19 +483,21 @@ public class RootAponAssembler {
 		if(transformRule.getContentType() != null)
 			transformParameters.putValue(TransformParameters.contentType, transformRule.getContentType().toString());
 		
+		if(transformRule.getTemplateId() != null)
+			transformParameters.putValue(TransformParameters.template, transformRule.getTemplateId());
+
 		transformParameters.putValue(TransformParameters.characterEncoding, transformRule.getCharacterEncoding());
+		transformParameters.putValue(TransformParameters.defaultResponse, transformRule.getDefaultResponse());
+		transformParameters.putValue(TransformParameters.pretty, transformRule.getPretty());
 
 		if(transformRule.getTemplateRule() != null)
-			transformParameters.putValue(TransformParameters.template, assembleTemplateParameters(transformRule.getTemplateRule()));
-		
+			transformParameters.putValue(TransformParameters.builtinTemplate, assembleTemplateParameters(transformRule.getTemplateRule()));
+
 		ActionList actionList = transformRule.getActionList();
 		if(actionList != null) {
 			assembleActionList(actionList, transformParameters, TransformParameters.actions);
 		}
 
-		transformParameters.putValue(TransformParameters.defaultResponse, transformRule.getDefaultResponse());
-		transformParameters.putValue(TransformParameters.pretty, transformRule.getPretty());
-		
 		return transformParameters;
 	}
 	

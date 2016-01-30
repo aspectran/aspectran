@@ -15,16 +15,22 @@
  */
 package com.aspectran.core.context.rule;
 
-import java.io.*;
-import java.net.URL;
-import java.net.URLConnection;
-import java.util.List;
-
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.expr.token.Tokenizer;
 import com.aspectran.core.context.rule.type.TokenType;
 import com.aspectran.core.util.BooleanUtils;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.List;
 
 /**
  * The Class TemplateRule.
@@ -83,7 +89,7 @@ public class TemplateRule {
 	public void setEngine(String engine) {
 		if(this.engine != engine) {
 			if(this.content != null) {
-				this.contentTokens = parseContentTokens(content);
+				this.contentTokens = parseContentTokens(this.content);
 			}
 		}
 		

@@ -15,10 +15,6 @@
  */
 package com.aspectran.core.context.builder.apon;
 
-import java.io.IOException;
-import java.util.Iterator;
-import java.util.List;
-
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.activity.process.ContentList;
 import com.aspectran.core.context.builder.ContextBuilderAssistant;
@@ -78,6 +74,10 @@ import com.aspectran.core.context.rule.type.DefaultSettingType;
 import com.aspectran.core.context.rule.type.TokenType;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.apon.Parameters;
+
+import java.io.IOException;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * The Class RootAponDisassembler.
@@ -483,16 +483,12 @@ public class RootAponDisassembler {
 	}
 	
 	public ActionList disassembleActionList(Parameters contentParameters, ContentList contentList) {
-		String id = contentParameters.getString(ContentParameters.id);
 		String name = contentParameters.getString(ContentParameters.name);
 		Boolean omittable = contentParameters.getBoolean(ContentParameters.omittable);
 		Boolean hidden = contentParameters.getBoolean(ContentParameters.hidden);
 		List<Parameters> actionParametersList = contentParameters.getParametersList(ContentParameters.actions);
 		
-		if(!assistant.isNullableContentId() && StringUtils.isEmpty(id))
-			throw new IllegalArgumentException("The <content> element requires a id attribute.");
-		
-		ActionList actionList = ActionList.newInstance(id, name, omittable, hidden);
+		ActionList actionList = ActionList.newInstance(name, omittable, hidden);
 
 		if(actionParametersList != null && !actionParametersList.isEmpty()) {
 			for(Parameters actionParameters : actionParametersList) {
@@ -585,13 +581,14 @@ public class RootAponDisassembler {
 	public TransformRule disassembleTransformRule(Parameters transformParameters) {
 		String transformType = transformParameters.getString(TransformParameters.type);
 		String contentType = transformParameters.getString(TransformParameters.contentType);
+		String templateId = transformParameters.getString(TransformParameters.template);
 		String characterEncoding = transformParameters.getString(TransformParameters.characterEncoding);
-		Parameters templateParameters = transformParameters.getParameters(TransformParameters.template);
 		List<Parameters> actionParametersList = transformParameters.getParametersList(TransformParameters.actions);
 		Boolean defaultResponse = transformParameters.getBoolean(TransformParameters.defaultResponse);
 		Boolean pretty = transformParameters.getBoolean(TransformParameters.pretty);
-		
-		TransformRule tr = TransformRule.newInstance(transformType, contentType, characterEncoding, defaultResponse, pretty);
+		Parameters templateParameters = transformParameters.getParameters(TransformParameters.builtinTemplate);
+
+		TransformRule tr = TransformRule.newInstance(transformType, contentType, templateId, characterEncoding, defaultResponse, pretty);
 		
 		if(actionParametersList != null && !actionParametersList.isEmpty()) {
 			ActionList actionList = new ActionList();

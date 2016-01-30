@@ -56,14 +56,14 @@ public interface Response {
 	 * @return the action list
 	 */
 	public ActionList getActionList();
-	
+
 	/**
 	 * Gets the template rule.
 	 *
 	 * @return the template rule
 	 */
 	public TemplateRule getTemplateRule();
-	
+
 	/**
 	 * Create a new derived response.
 	 *

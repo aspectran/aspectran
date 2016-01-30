@@ -24,31 +24,34 @@ public class TransformParameters extends AbstractParameters implements Parameter
 
 	public static final ParameterDefine type;
 	public static final ParameterDefine contentType;
-	public static final ParameterDefine characterEncoding;
 	public static final ParameterDefine template;
-	public static final ParameterDefine actions;
+	public static final ParameterDefine characterEncoding;
 	public static final ParameterDefine defaultResponse;
 	public static final ParameterDefine pretty;
-	
+	public static final ParameterDefine builtinTemplate;
+	public static final ParameterDefine actions;
+
 	private static final ParameterDefine[] parameterDefines;
 	
 	static {
 		type = new ParameterDefine("type", ParameterValueType.STRING);
 		contentType = new ParameterDefine("contentType", ParameterValueType.STRING);
+		template = new ParameterDefine("contentType", ParameterValueType.STRING);
 		characterEncoding = new ParameterDefine("characterEncoding", ParameterValueType.STRING);
-		template = new ParameterDefine("template", TemplateParameters.class);
-		actions = new ParameterDefine("action", ActionParameters.class, true, true);
 		defaultResponse = new ParameterDefine("defaultResponse", ParameterValueType.BOOLEAN);
 		pretty = new ParameterDefine("pretty", ParameterValueType.BOOLEAN);
-		
+		builtinTemplate = new ParameterDefine("template", TemplateParameters.class);
+		actions = new ParameterDefine("action", ActionParameters.class, true, true);
+
 		parameterDefines = new ParameterDefine[] {
 				type,
 				contentType,
-				characterEncoding,
 				template,
-				actions,
+				characterEncoding,
 				defaultResponse,
-				pretty
+				pretty,
+				builtinTemplate,
+				actions
 		};
 	}
 	

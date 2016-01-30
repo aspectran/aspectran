@@ -32,8 +32,8 @@ public class DispatchResponseRule extends ActionPossessSupport implements Action
 	private String contentType;
 
 	private String dispatchName;
-	
-	protected String characterEncoding;
+
+	private String characterEncoding;
 	
 	private Boolean defaultResponse;
 

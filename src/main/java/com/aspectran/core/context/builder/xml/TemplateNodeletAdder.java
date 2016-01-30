@@ -15,10 +15,6 @@
  */
 package com.aspectran.core.context.builder.xml;
 
-import java.util.Map;
-
-import org.w3c.dom.Node;
-
 import com.aspectran.core.context.builder.ContextBuilderAssistant;
 import com.aspectran.core.context.rule.TemplateRule;
 import com.aspectran.core.util.BooleanUtils;
@@ -26,6 +22,9 @@ import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.xml.Nodelet;
 import com.aspectran.core.util.xml.NodeletAdder;
 import com.aspectran.core.util.xml.NodeletParser;
+import org.w3c.dom.Node;
+
+import java.util.Map;
 
 /**
  * The Class TemplateNodeletAdder.
@@ -61,16 +60,11 @@ public class TemplateNodeletAdder implements NodeletAdder {
 				Boolean noCache = BooleanUtils.toNullableBooleanObject(attributes.get("noCache"));
 
 				TemplateRule templateRule = TemplateRule.newInstance(id, engine, name, file, resource, url, text, encoding, noCache);
-				assistant.pushObject(templateRule);
 
 				if(!StringUtils.isEmpty(engine)) {
 					assistant.putBeanReference(engine, templateRule);
 				}
-			}
-		});
-		parser.addNodelet(xpath, "/template/end()", new Nodelet() {
-			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
-				TemplateRule templateRule = assistant.popObject();
+
 				assistant.addTemplateRule(templateRule);
 			}
 		});
