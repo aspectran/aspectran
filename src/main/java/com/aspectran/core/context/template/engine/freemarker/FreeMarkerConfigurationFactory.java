@@ -17,7 +17,11 @@ package com.aspectran.core.context.template.engine.freemarker;
 
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.bean.aware.ApplicationAdapterAware;
+import com.aspectran.core.context.template.engine.freemarker.directive.CustomTrimDirective;
+import com.aspectran.core.context.template.engine.freemarker.directive.TrimDirective;
+import com.aspectran.core.context.template.engine.freemarker.directive.Trimmer;
 import com.aspectran.core.util.ResourceUtils;
+import com.aspectran.core.util.apon.Parameters;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 import freemarker.cache.ClassTemplateLoader;
@@ -26,11 +30,13 @@ import freemarker.cache.MultiTemplateLoader;
 import freemarker.cache.TemplateLoader;
 import freemarker.template.Configuration;
 import freemarker.template.SimpleHash;
+import freemarker.template.TemplateDirectiveModel;
 import freemarker.template.TemplateException;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -44,6 +50,10 @@ public class FreeMarkerConfigurationFactory implements ApplicationAdapterAware {
 
     private final Log log = LogFactory.getLog(FreeMarkerConfigurationFactory.class);
 
+    private static final String DIRECTIVE_PARAM_NAME = "directive";
+
+    private static final String DIRECTIVE_NAME_PARAM_NAME = "name";
+
     private ApplicationAdapter applicationAdapter;
 
     private Properties freemarkerSettings;
@@ -55,6 +65,8 @@ public class FreeMarkerConfigurationFactory implements ApplicationAdapterAware {
     private String[] templateLoaderPaths;
 
     private TemplateLoader[] templateLoaders;
+
+    private CustomTrimDirective[] customTrimDirectives;
 
     @Override
     public void setApplicationAdapter(ApplicationAdapter applicationAdapter) {
@@ -117,6 +129,44 @@ public class FreeMarkerConfigurationFactory implements ApplicationAdapterAware {
         this.templateLoaders = templateLoaderList.toArray(new TemplateLoader[templateLoaderList.size()]);
 	}
 
+    public void setCustomTrimDirectives(Parameters parameters) {
+        List<Parameters> parametersList = parameters.getParametersList(DIRECTIVE_PARAM_NAME);
+
+        if(parametersList != null) {
+            Map<String, CustomTrimDirective> map = new HashMap<String, CustomTrimDirective>();
+
+            for(Parameters p : parametersList) {
+                String directiveName = p.getString(DIRECTIVE_NAME_PARAM_NAME);
+                String prefix = p.getString(TrimDirective.PREFIX_PARAM_NAME);
+                String suffix = p.getString(TrimDirective.SUFFIX_PARAM_NAME);
+                String[] deprefixes = p.getStringArray(TrimDirective.DEPREFIX_PARAM_NAME);
+                String[] desuffixes = p.getStringArray(TrimDirective.DESUFFIX_PARAM_NAME);
+                Boolean caseSensitive = Boolean.valueOf(p.getString(TrimDirective.CASE_SENSITIVE_PARAM_NAME));
+
+                Trimmer trimmer = new Trimmer();
+                trimmer.setPrefix(prefix);
+                trimmer.setSuffix(suffix);
+                trimmer.setDeprefixes(deprefixes);
+                trimmer.setDesuffixes(desuffixes);
+                trimmer.setCaseSensitive(caseSensitive);
+
+                CustomTrimDirective ctd = new CustomTrimDirective(directiveName, trimmer);
+                map.put(directiveName, ctd);
+
+                if(log.isDebugEnabled()) {
+                    log.debug("CustomTrimDirective " + ctd);
+                }
+            }
+
+            if(!map.isEmpty()) {
+                customTrimDirectives = map.values().toArray(new CustomTrimDirective[map.size()]);
+                return;
+            }
+        }
+
+        customTrimDirectives = null;
+    }
+
 	/**
      * Prepare the FreeMarker Configuration and return it.
      *
@@ -147,6 +197,7 @@ public class FreeMarkerConfigurationFactory implements ApplicationAdapterAware {
             config.setDefaultEncoding(this.defaultEncoding);
         }
 
+        // determine FreeMarker TemplateLoader
         if(templateLoaders == null) {
             if(templateLoaderPaths != null && templateLoaderPaths.length > 0) {
                 List<TemplateLoader> templateLoaderList = new ArrayList<TemplateLoader>();
@@ -161,6 +212,16 @@ public class FreeMarkerConfigurationFactory implements ApplicationAdapterAware {
         if(templateLoader != null) {
             config.setTemplateLoader(templateLoader);
         }
+
+        // determine TrimDirective and CustomTrimDirectives.
+        Map<String, TemplateDirectiveModel> directives = new HashMap<String, TemplateDirectiveModel>();
+        directives.put(TrimDirective.TRIM_DIRECTIVE_NAME, new TrimDirective());
+        if(customTrimDirectives != null) {
+            for(CustomTrimDirective ctd : customTrimDirectives) {
+                directives.put(ctd.getDirectiveName(), ctd);
+            }
+        }
+        config.setSharedVariable("directive", directives);
 
         return config;
     }

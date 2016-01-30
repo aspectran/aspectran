@@ -178,6 +178,7 @@ public class ContextTemplateProcessor implements TemplateProcessor {
             throw new UnsupportedOperationException("TemplateProcessor has not yet initialized.");
         }
 
+        templateRuleRegistry.clear();
         initialized = false;
 
         log.info("TemplateProcessor has been destroyed successfully.");
