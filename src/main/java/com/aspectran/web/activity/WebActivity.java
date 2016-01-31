@@ -33,6 +33,7 @@ import com.aspectran.core.context.variable.ValueMap;
 import com.aspectran.web.activity.request.multipart.MultipartRequestException;
 import com.aspectran.web.activity.request.multipart.MultipartRequestWrapper;
 import com.aspectran.web.activity.request.multipart.MultipartRequestWrapperResolver;
+import com.aspectran.web.adapter.GZipHttpServletResponseAdapter;
 import com.aspectran.web.adapter.HttpServletRequestAdapter;
 import com.aspectran.web.adapter.HttpServletResponseAdapter;
 import com.aspectran.web.adapter.HttpSessionAdapter;
@@ -80,8 +81,14 @@ public class WebActivity extends CoreActivity implements Activity {
 		RequestAdapter requestAdapter = new HttpServletRequestAdapter(request);
 		setRequestAdapter(requestAdapter);
 
-		ResponseAdapter responseAdapter = new HttpServletResponseAdapter(response);
-		setResponseAdapter(responseAdapter);
+		String acceptEncoding = request.getHeader("Accept-Encoding");
+		if(acceptEncoding != null && acceptEncoding.indexOf("gzip") > -1) {
+			ResponseAdapter responseAdapter = new GZipHttpServletResponseAdapter(response);
+			setResponseAdapter(responseAdapter);
+		} else {
+			ResponseAdapter responseAdapter = new HttpServletResponseAdapter(response);
+			setResponseAdapter(responseAdapter);
+		}
 	}
 
 	/* (non-Javadoc)
@@ -190,7 +197,7 @@ public class WebActivity extends CoreActivity implements Activity {
 				}
 			}
 
-			if(valueMap.size() > 0)
+			if(!valueMap.isEmpty())
 				return valueMap;
 		}
 
