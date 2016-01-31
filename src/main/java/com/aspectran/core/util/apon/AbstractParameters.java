@@ -18,7 +18,6 @@ package com.aspectran.core.util.apon;
 import com.aspectran.core.util.BooleanUtils;
 
 import java.io.IOException;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -93,16 +92,7 @@ public abstract class AbstractParameters implements Parameters {
 	}
 
 	public String[] getParameterNames() {
-		String[] names = new String[parameterValueMap.size()];
-		
-		Iterator<String> iter = parameterValueMap.keySet().iterator();
-		int i = 0;
-		
-		while(iter.hasNext()) {
-			names[i++] = iter.next();
-		}
-		
-		return names;
+		return parameterValueMap.keySet().toArray(new String[parameterValueMap.size()]);
 	}
 
 	public Set<String> getParameterNameSet() {
