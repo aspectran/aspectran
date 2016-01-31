@@ -59,7 +59,6 @@ public final class VoidActivity extends CoreActivity implements Activity {
 	 * @see com.aspectran.core.activity.CoreActivity#newActivity()
 	 */
 	@SuppressWarnings("unchecked")
-	@Override
 	public <T extends Activity> T newActivity() {
 		VoidActivity activity = new VoidActivity(getActivityContext());
 		return (T)activity;
@@ -68,7 +67,6 @@ public final class VoidActivity extends CoreActivity implements Activity {
 	/* (non-Javadoc)
 	 * @see com.aspectran.core.activity.AbstractActivity#getRequestAdapter()
 	 */
-	@Override
 	public RequestAdapter getRequestAdapter() {
 		return null;
 	}
@@ -76,7 +74,6 @@ public final class VoidActivity extends CoreActivity implements Activity {
 	/* (non-Javadoc)
 	 * @see com.aspectran.core.activity.AbstractActivity#getResponseAdapter()
 	 */
-	@Override
 	public ResponseAdapter getResponseAdapter() {
 		return null;
 	}
@@ -84,7 +81,6 @@ public final class VoidActivity extends CoreActivity implements Activity {
 	/* (non-Javadoc)
 	 * @see com.aspectran.core.activity.AbstractActivity#getSessionAdapter()
 	 */
-	@Override
 	public SessionAdapter getSessionAdapter() {
 		return null;
 	}
@@ -92,7 +88,6 @@ public final class VoidActivity extends CoreActivity implements Activity {
 	/* (non-Javadoc)
 	 * @see com.aspectran.core.activity.CoreActivity#getTransletName()
 	 */
-	@Override
 	public String getTransletName() {
 		return null;
 	}
@@ -100,7 +95,6 @@ public final class VoidActivity extends CoreActivity implements Activity {
 	/* (non-Javadoc)
 	 * @see com.aspectran.core.activity.CoreActivity#perform()
 	 */
-	@Override
 	public void perform() {
 		throw new UnsupportedOperationException();
 	}
@@ -116,7 +110,6 @@ public final class VoidActivity extends CoreActivity implements Activity {
 	/* (non-Javadoc)
 	 * @see com.aspectran.core.activity.CoreActivity#finish()
 	 */
-	@Override
 	public void finish() {
 		throw new UnsupportedOperationException();
 	}
@@ -124,7 +117,6 @@ public final class VoidActivity extends CoreActivity implements Activity {
 	/* (non-Javadoc)
 	 * @see com.aspectran.core.activity.CoreActivity#getForwardTransletName()
 	 */
-	@Override
 	public String getForwardTransletName() {
 		throw new UnsupportedOperationException();
 	}
@@ -132,7 +124,6 @@ public final class VoidActivity extends CoreActivity implements Activity {
 	/* (non-Javadoc)
 	 * @see com.aspectran.core.activity.CoreActivity#response(com.aspectran.core.activity.response.Response)
 	 */
-	@Override
 	public void response(Response res) {
 		throw new UnsupportedOperationException();
 	}
@@ -140,7 +131,6 @@ public final class VoidActivity extends CoreActivity implements Activity {
 	/* (non-Javadoc)
 	 * @see com.aspectran.core.activity.CoreActivity#responseByContentType(java.util.List)
 	 */
-	@Override
 	public void responseByContentType(List<ExceptionHandlingRule> exceptionHandlingRuleList) {
 		throw new UnsupportedOperationException();
 	}
@@ -148,7 +138,6 @@ public final class VoidActivity extends CoreActivity implements Activity {
 	/* (non-Javadoc)
 	 * @see com.aspectran.core.activity.CoreActivity#getResponse()
 	 */
-	@Override
 	public Response getResponse() {
 		throw new UnsupportedOperationException();
 	}
@@ -156,7 +145,6 @@ public final class VoidActivity extends CoreActivity implements Activity {
 	/* (non-Javadoc)
 	 * @see com.aspectran.core.activity.AbstractActivity#getRequestScope()
 	 */
-	@Override
 	public Scope getRequestScope() {
 		throw new UnsupportedOperationException();
 	}
@@ -164,7 +152,6 @@ public final class VoidActivity extends CoreActivity implements Activity {
 	/* (non-Javadoc)
 	 * @see com.aspectran.core.activity.AbstractActivity#setRequestScope(com.aspectran.core.context.bean.scope.Scope)
 	 */
-	@Override
 	public void setRequestScope(Scope requestScope) {
 		throw new UnsupportedOperationException();
 	}
