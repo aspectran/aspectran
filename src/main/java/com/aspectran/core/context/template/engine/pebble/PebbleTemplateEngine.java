@@ -15,14 +15,14 @@
  */
 package com.aspectran.core.context.template.engine.pebble;
 
+import java.io.Writer;
+import java.util.Locale;
+import java.util.Map;
+
 import com.aspectran.core.context.template.engine.TemplateEngine;
 import com.aspectran.core.context.template.engine.TemplateEngineProcessException;
 import com.mitchellbosecke.pebble.PebbleEngine;
 import com.mitchellbosecke.pebble.template.PebbleTemplate;
-
-import java.io.Writer;
-import java.util.Locale;
-import java.util.Map;
 
 /**
  * The Class PebbleTemplateEngine.
@@ -42,6 +42,7 @@ public class PebbleTemplateEngine implements TemplateEngine {
         try {
             PebbleTemplate compiledTemplate = pebbleEngine.getTemplate(templateSource);
             compiledTemplate.evaluate(writer, model);
+            writer.flush();
         } catch(Exception e) {
             throw new TemplateEngineProcessException(e);
         }
@@ -57,6 +58,7 @@ public class PebbleTemplateEngine implements TemplateEngine {
         try {
             PebbleTemplate compiledTemplate = pebbleEngine.getTemplate(templateName);
             compiledTemplate.evaluate(writer, model, locale);
+            writer.flush();
         } catch(Exception e) {
             throw new TemplateEngineProcessException(e);
         }

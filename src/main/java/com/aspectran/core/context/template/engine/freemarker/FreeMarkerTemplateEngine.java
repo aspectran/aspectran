@@ -15,16 +15,17 @@
  */
 package com.aspectran.core.context.template.engine.freemarker;
 
-import com.aspectran.core.context.template.engine.TemplateEngine;
-import com.aspectran.core.context.template.engine.TemplateEngineProcessException;
-import freemarker.template.Configuration;
-import freemarker.template.Template;
-
 import java.io.Reader;
 import java.io.StringReader;
 import java.io.Writer;
 import java.util.Locale;
 import java.util.Map;
+
+import com.aspectran.core.context.template.engine.TemplateEngine;
+import com.aspectran.core.context.template.engine.TemplateEngineProcessException;
+
+import freemarker.template.Configuration;
+import freemarker.template.Template;
 
 /**
  * The Class FreemakerTemplateEngine.
@@ -45,6 +46,7 @@ public class FreeMarkerTemplateEngine implements TemplateEngine {
         	Reader reader = new StringReader(templateSource);
         	Template template = new Template(templateName, reader, configuration);
             template.process(model, writer);
+            writer.flush();
         } catch(Exception e) {
             throw new TemplateEngineProcessException(e);
         }
@@ -60,6 +62,7 @@ public class FreeMarkerTemplateEngine implements TemplateEngine {
         try {
             Template template = configuration.getTemplate(templateName, locale);
             template.process(model, writer);
+            writer.flush();
         } catch(Exception e) {
             throw new TemplateEngineProcessException(e);
         }
