@@ -224,21 +224,23 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 		Activity activity = new VoidActivity(context);
 		context.setCurrentActivity(activity);
 
-		for(BeanRule beanRule : beanRuleRegistry.getBeanRules()) {
-			if(!beanRule.isRegistered()) {
-				ScopeType scope = beanRule.getScopeType();
-	
-				if(scope == ScopeType.SINGLETON) {
-					if(!beanRule.isRegistered() && !beanRule.isLazyInit()) {
-						Object bean = createBean(beanRule, activity);
-						beanRule.setBean(bean);
-						beanRule.setRegistered(true);
+		try {
+			for(BeanRule beanRule : beanRuleRegistry.getBeanRules()) {
+				if(!beanRule.isRegistered()) {
+					ScopeType scope = beanRule.getScopeType();
+
+					if(scope == ScopeType.SINGLETON) {
+						if(!beanRule.isRegistered() && !beanRule.isLazyInit()) {
+							Object bean = createBean(beanRule, activity);
+							beanRule.setBean(bean);
+							beanRule.setRegistered(true);
+						}
 					}
 				}
 			}
+		} finally {
+			context.removeCurrentActivity();
 		}
-
-		context.removeCurrentActivity();
 
 		initialized = true;
 		
