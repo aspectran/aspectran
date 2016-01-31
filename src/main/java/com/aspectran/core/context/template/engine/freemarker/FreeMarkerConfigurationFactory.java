@@ -19,6 +19,7 @@ import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.bean.aware.ApplicationAdapterAware;
 import com.aspectran.core.context.template.engine.freemarker.directive.CustomTrimDirective;
 import com.aspectran.core.context.template.engine.freemarker.directive.TrimDirective;
+import com.aspectran.core.context.template.engine.freemarker.directive.TrimDirectiveGroup;
 import com.aspectran.core.context.template.engine.freemarker.directive.Trimmer;
 import com.aspectran.core.util.ResourceUtils;
 import com.aspectran.core.util.apon.Parameters;
@@ -30,13 +31,11 @@ import freemarker.cache.MultiTemplateLoader;
 import freemarker.cache.TemplateLoader;
 import freemarker.template.Configuration;
 import freemarker.template.SimpleHash;
-import freemarker.template.TemplateDirectiveModel;
 import freemarker.template.TemplateException;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -49,8 +48,6 @@ import java.util.Properties;
 public class FreeMarkerConfigurationFactory implements ApplicationAdapterAware {
 
     private final Log log = LogFactory.getLog(FreeMarkerConfigurationFactory.class);
-
-    private static final String DIRECTIVE_PARAM_NAME = "directive";
 
     private static final String DIRECTIVE_NAME_PARAM_NAME = "name";
 
@@ -66,7 +63,7 @@ public class FreeMarkerConfigurationFactory implements ApplicationAdapterAware {
 
     private TemplateLoader[] templateLoaders;
 
-    private CustomTrimDirective[] customTrimDirectives;
+    private TrimDirective[] trimDirectives;
 
     @Override
     public void setApplicationAdapter(ApplicationAdapter applicationAdapter) {
@@ -129,42 +126,50 @@ public class FreeMarkerConfigurationFactory implements ApplicationAdapterAware {
         this.templateLoaders = templateLoaderList.toArray(new TemplateLoader[templateLoaderList.size()]);
 	}
 
-    public void setCustomTrimDirectives(Parameters parameters) {
-        List<Parameters> parametersList = parameters.getParametersList(DIRECTIVE_PARAM_NAME);
+    public void setTrimDirectives(Parameters parameters) {
+        String[] directiveGroupNames = parameters.getParameterNames();
+        List<TrimDirective> list = new ArrayList<TrimDirective>();
 
-        if(parametersList != null) {
-            Map<String, CustomTrimDirective> map = new HashMap<String, CustomTrimDirective>();
+        for(String groupName : directiveGroupNames) {
+            List<Parameters> paramsList = parameters.getParametersList(groupName);
+            for(Parameters p : paramsList) {
+                if(p != null) {
+                    String directiveName = p.getString(DIRECTIVE_NAME_PARAM_NAME);
+                    String prefix = p.getString(TrimDirective.PREFIX_PARAM_NAME);
+                    String suffix = p.getString(TrimDirective.SUFFIX_PARAM_NAME);
+                    String[] deprefixes = p.getStringArray(TrimDirective.DEPREFIXES_PARAM_NAME);
+                    String[] desuffixes = p.getStringArray(TrimDirective.DESUFFIXES_PARAM_NAME);
+                    Boolean caseSensitive = Boolean.valueOf(p.getString(TrimDirective.CASE_SENSITIVE_PARAM_NAME));
 
-            for(Parameters p : parametersList) {
-                String directiveName = p.getString(DIRECTIVE_NAME_PARAM_NAME);
-                String prefix = p.getString(TrimDirective.PREFIX_PARAM_NAME);
-                String suffix = p.getString(TrimDirective.SUFFIX_PARAM_NAME);
-                String[] deprefixes = p.getStringArray(TrimDirective.DEPREFIX_PARAM_NAME);
-                String[] desuffixes = p.getStringArray(TrimDirective.DESUFFIX_PARAM_NAME);
-                Boolean caseSensitive = Boolean.valueOf(p.getString(TrimDirective.CASE_SENSITIVE_PARAM_NAME));
+                    if(directiveName != null) {
+                        Trimmer trimmer;
+                        if(prefix != null || suffix != null || deprefixes != null || desuffixes != null) {
+                            trimmer = new Trimmer();
+                            trimmer.setPrefix(prefix);
+                            trimmer.setSuffix(suffix);
+                            trimmer.setDeprefixes(deprefixes);
+                            trimmer.setDesuffixes(desuffixes);
+                            trimmer.setCaseSensitive(caseSensitive);
+                        } else {
+                            trimmer = null;
+                        }
 
-                Trimmer trimmer = new Trimmer();
-                trimmer.setPrefix(prefix);
-                trimmer.setSuffix(suffix);
-                trimmer.setDeprefixes(deprefixes);
-                trimmer.setDesuffixes(desuffixes);
-                trimmer.setCaseSensitive(caseSensitive);
+                        TrimDirective ctd = new CustomTrimDirective(groupName, directiveName, trimmer);
+                        list.add(ctd);
 
-                CustomTrimDirective ctd = new CustomTrimDirective(directiveName, trimmer);
-                map.put(directiveName, ctd);
-
-                if(log.isDebugEnabled()) {
-                    log.debug("CustomTrimDirective " + ctd);
+                        if(log.isDebugEnabled()) {
+                            log.debug("CustomTrimDirective " + ctd);
+                        }
+                    }
                 }
-            }
-
-            if(!map.isEmpty()) {
-                customTrimDirectives = map.values().toArray(new CustomTrimDirective[map.size()]);
-                return;
             }
         }
 
-        customTrimDirectives = null;
+        if(!list.isEmpty()) {
+            trimDirectives = list.toArray(new TrimDirective[list.size()]);
+        } else {
+            trimDirectives = null;
+        }
     }
 
 	/**
@@ -207,21 +212,18 @@ public class FreeMarkerConfigurationFactory implements ApplicationAdapterAware {
                 setTemplateLoader(templateLoaderList);
             }
         }
-
         TemplateLoader templateLoader = getAggregateTemplateLoader(templateLoaders);
         if(templateLoader != null) {
             config.setTemplateLoader(templateLoader);
         }
 
-        // determine TrimDirective and CustomTrimDirectives.
-        Map<String, TemplateDirectiveModel> directives = new HashMap<String, TemplateDirectiveModel>();
-        directives.put(TrimDirective.TRIM_DIRECTIVE_NAME, new TrimDirective());
-        if(customTrimDirectives != null) {
-            for(CustomTrimDirective ctd : customTrimDirectives) {
-                directives.put(ctd.getDirectiveName(), ctd);
+        // determine CustomTrimDirectives.
+        if(trimDirectives != null && trimDirectives.length > 0) {
+            TrimDirectiveGroup group = new TrimDirectiveGroup(trimDirectives);
+            for(Map.Entry<String, Map<String, TrimDirective>> directives : group.entrySet()) {
+                config.setSharedVariable(directives.getKey(), directives.getValue());
             }
         }
-        config.setSharedVariable("directive", directives);
 
         return config;
     }

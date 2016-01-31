@@ -113,9 +113,7 @@ public abstract class TransformResponse implements Response {
 	 * 
 	 * @param file the file
 	 * @param encoding the encoding
-	 * 
 	 * @return the template as reader
-	 * 
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	protected Reader getTemplateAsReader(File file, String encoding) throws IOException {
@@ -135,9 +133,7 @@ public abstract class TransformResponse implements Response {
 	 * 
 	 * @param url the url
 	 * @param encoding the encoding
-	 * 
 	 * @return the template as reader
-	 * 
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	protected Reader getTemplateAsReader(URL url, String encoding) throws IOException {

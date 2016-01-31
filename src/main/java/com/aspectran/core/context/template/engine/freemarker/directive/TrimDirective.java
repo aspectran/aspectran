@@ -15,10 +15,6 @@
  */
 package com.aspectran.core.context.template.engine.freemarker.directive;
 
-import freemarker.template.TemplateModelException;
-
-import java.util.Map;
-
 /**
  * The Class TrimDirective.
  *
@@ -28,47 +24,38 @@ import java.util.Map;
  * <dt>prefix="string" <dd>If the result of trimming is not empty, prefix "string" to the result.
  * <dt>suffix="string" <dd>If the result of trim is not empty, suffix "string" to the result.
  * <dt>deprefixes=["string1", "string2", ...] <dd>If the result of trimming is not empty,
- *      the first appearing string in the leading of the result will be removed.
+ * the first appearing string in the leading of the result will be removed.
  * <dt>desuffixes=["string1", "string2", ...] <dd>If the result of trimming is not empty,
- *      the first appearing string in the tail of the result will be removed.
- *</dl>
+ * the first appearing string in the tail of the result will be removed.
+ * <dt>caseSensitive="true" or "false" <dd>true to case sensitive; false to ignore case sensitive.
+ * </dl>
  *
  * <p>Created: 2016. 1. 29.</p>
  */
-public class TrimDirective extends AbstractTrimDirectiveModel {
+public interface TrimDirective {
 
     public static final String PREFIX_PARAM_NAME = "prefix";
 
     public static final String SUFFIX_PARAM_NAME = "suffix";
 
-    public static final String DEPREFIX_PARAM_NAME = "deprefixes";
+    public static final String DEPREFIXES_PARAM_NAME = "deprefixes";
 
-    public static final String DESUFFIX_PARAM_NAME = "desuffixes";
+    public static final String DESUFFIXES_PARAM_NAME = "desuffixes";
 
     public static final String CASE_SENSITIVE_PARAM_NAME = "caseSensitive";
 
-    public static final String TRIM_DIRECTIVE_NAME = "trim";
+    /**
+     * Gets group name.
+     *
+     * @return the group name
+     */
+    public String getGroupName();
 
-    public TrimDirective() {
-        super(TRIM_DIRECTIVE_NAME);
-    }
-
-    @Override
-    protected Trimmer getTrimmer(Map params) throws TemplateModelException {
-        String prefix = parseStringParameter(params, PREFIX_PARAM_NAME);
-        String suffix = parseStringParameter(params, SUFFIX_PARAM_NAME);
-        String[] deprefixes = parseSequenceParameter(params, DEPREFIX_PARAM_NAME);
-        String[] desuffixes = parseSequenceParameter(params, DESUFFIX_PARAM_NAME);
-        String caseSensitive = parseStringParameter(params, CASE_SENSITIVE_PARAM_NAME);
-
-        Trimmer trimmer = new Trimmer();
-        trimmer.setPrefix(prefix);
-        trimmer.setSuffix(suffix);
-        trimmer.setDeprefixes(deprefixes);
-        trimmer.setDesuffixes(desuffixes);
-        trimmer.setCaseSensitive(Boolean.parseBoolean(caseSensitive));
-
-        return trimmer;
-    }
+    /**
+     * Gets directive name.
+     *
+     * @return the directive name
+     */
+    public String getDirectiveName();
 
 }

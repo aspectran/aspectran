@@ -15,11 +15,6 @@
  */
 package com.aspectran.core.context.translet;
 
-import java.io.File;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.AspectranConstants;
 import com.aspectran.core.context.builder.AssistantLocal;
@@ -41,6 +36,14 @@ import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 import com.aspectran.core.util.wildcard.WildcardPattern;
 
+import java.io.File;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * The Class TransletRuleRegistry.
+ */
 public class TransletRuleRegistry {
 	
 	private final Log log = LogFactory.getLog(TransletRuleRegistry.class);

@@ -24,18 +24,41 @@ import java.util.Map;
  *
  * <p>Created: 2016. 1. 29.</p>
  */
-public class CustomTrimDirective extends AbstractTrimDirectiveModel {
+public class CustomTrimDirective extends AbstractTrimDirectiveModel implements TrimDirective {
+
+    private final String groupName;
+
+    private final String directiveName;
 
     private final Trimmer trimmer;
 
-    public CustomTrimDirective(String directiveName, Trimmer trimmer) {
-        super(directiveName);
+    /**
+     * Instantiates a new Custom trim directive.
+     *
+     * @param groupName the group name
+     * @param directiveName the directive name
+     */
+    public CustomTrimDirective(String groupName, String directiveName) {
+        this(groupName, directiveName, null);
+    }
+
+    /**
+     * Instantiates a new Custom trim directive.
+     *
+     * @param groupName the group name
+     * @param directiveName the directive name
+     * @param trimmer the trimmer
+     */
+    public CustomTrimDirective(String groupName, String directiveName, Trimmer trimmer) {
+        this.groupName = groupName;
+        this.directiveName = directiveName;
         this.trimmer = trimmer;
     }
 
     /**
      * Instantiates a new Custom trim directive.
      *
+     * @param groupName the group name
      * @param directiveName the directive name
      * @param prefix the prefix
      * @param suffix the suffix
@@ -43,8 +66,9 @@ public class CustomTrimDirective extends AbstractTrimDirectiveModel {
      * @param desuffixes the suffixes to be removed from the tailing of body string.
      * @param caseSensitive true to case sensitive; false to ignore case sensitive
      */
-    public CustomTrimDirective(String directiveName, String prefix, String suffix, String[] deprefixes, String[] desuffixes, boolean caseSensitive) {
-        super(directiveName);
+    public CustomTrimDirective(String groupName, String directiveName, String prefix, String suffix, String[] deprefixes, String[] desuffixes, boolean caseSensitive) {
+        this.groupName = groupName;
+        this.directiveName = directiveName;
 
         Trimmer trimmer = new Trimmer();
         trimmer.setPrefix(prefix);
@@ -55,9 +79,44 @@ public class CustomTrimDirective extends AbstractTrimDirectiveModel {
         this.trimmer = trimmer;
     }
 
+    /**
+     * Gets group name.
+     *
+     * @return the group name
+     */
+    public String getGroupName() {
+        return groupName;
+    }
+
+    /**
+     * Gets directive name.
+     *
+     * @return the directive name
+     */
+    public String getDirectiveName() {
+        return directiveName;
+    }
+
     @Override
     protected Trimmer getTrimmer(Map params) throws TemplateModelException {
-        return trimmer;
+        if(this.trimmer == null) {
+            String prefix = parseStringParameter(params, TrimDirective.PREFIX_PARAM_NAME);
+            String suffix = parseStringParameter(params, TrimDirective.SUFFIX_PARAM_NAME);
+            String[] deprefixes = parseSequenceParameter(params, TrimDirective.DEPREFIXES_PARAM_NAME);
+            String[] desuffixes = parseSequenceParameter(params, TrimDirective.DESUFFIXES_PARAM_NAME);
+            String caseSensitive = parseStringParameter(params, TrimDirective.CASE_SENSITIVE_PARAM_NAME);
+
+            Trimmer trimmer = new Trimmer();
+            trimmer.setPrefix(prefix);
+            trimmer.setSuffix(suffix);
+            trimmer.setDeprefixes(deprefixes);
+            trimmer.setDesuffixes(desuffixes);
+            trimmer.setCaseSensitive(Boolean.parseBoolean(caseSensitive));
+
+            return trimmer;
+        } else {
+            return this.trimmer;
+        }
     }
 
     /* (non-Javadoc)
@@ -66,7 +125,8 @@ public class CustomTrimDirective extends AbstractTrimDirectiveModel {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("{name=").append(getDirectiveName());
+        sb.append("{groupName=").append(groupName);
+        sb.append(", directiveName=").append(directiveName);
         sb.append(", trimmer=").append(trimmer);
         sb.append("}");
 

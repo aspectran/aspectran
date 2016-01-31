@@ -38,26 +38,6 @@ import java.util.Map;
  */
 public abstract class AbstractTrimDirectiveModel implements TemplateDirectiveModel {
 
-    private String directiveName;
-
-    /**
-     * Instantiates a new Abstract trim directive model.
-     *
-     * @param directiveName the directive name
-     */
-    public AbstractTrimDirectiveModel(String directiveName) {
-        this.directiveName = directiveName;
-    }
-
-    /**
-     * Gets directive name.
-     *
-     * @return the directive name
-     */
-    public String getDirectiveName() {
-        return directiveName;
-    }
-
     @Override
     public void execute(Environment env, Map params, TemplateModel[] loopVars, TemplateDirectiveBody body) throws TemplateException, IOException {
         if(body == null)
