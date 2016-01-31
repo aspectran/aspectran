@@ -28,8 +28,8 @@ import com.aspectran.core.context.bean.scope.SessionScope;
 /**
  * The Class HttpSessionAdapter.
  * 
- * @author Juho Jeong
  * @since 2011. 3. 13.
+ * @author Juho Jeong
  */
 public class HttpSessionAdapter extends AbstractSessionAdapter implements SessionAdapter {
 	

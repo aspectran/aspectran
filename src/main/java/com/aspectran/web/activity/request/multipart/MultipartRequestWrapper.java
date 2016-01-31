@@ -26,8 +26,6 @@ import javax.servlet.http.HttpServletRequestWrapper;
 import com.aspectran.core.activity.request.parameter.FileParameter;
 import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.type.ItemType;
-import com.aspectran.web.activity.request.multipart.MultipartFormDataParser;
-import com.aspectran.web.activity.request.multipart.MultipartRequestException;
 
 /**
  * This class functions as a wrapper around HttpServletRequest to provide

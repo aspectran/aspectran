@@ -30,8 +30,8 @@ import com.aspectran.core.context.rule.type.RequestMethodType;
 /**
  * The Class HttpServletRequestAdapter.
  * 
- * @author Juho Jeong
  * @since 2011. 3. 13.
+ * @author Juho Jeong
  */
 public class HttpServletRequestAdapter extends AbstractRequestAdapter implements RequestAdapter {
 	

@@ -26,6 +26,8 @@ import com.aspectran.core.util.logging.LogFactory;
 
 /**
  * The Class HttpSessionScope.
+ *
+ * @author Juho Jeong
  */
 public class HttpSessionScope extends SessionScope implements HttpSessionBindingListener {
 
