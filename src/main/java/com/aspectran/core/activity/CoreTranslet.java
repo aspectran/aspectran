@@ -45,6 +45,8 @@ public class CoreTranslet implements Translet {
 	protected ProcessResult processResult;
 	
 	private AspectAdviceResult aspectAdviceResult;
+
+	private ActivityResultDataMap activityResultDataMap;
 	
 	/**
 	 * Instantiates a new CoreTranslet.
@@ -162,7 +164,18 @@ public class CoreTranslet implements Translet {
 
 		return processResult;
 	}
-	
+
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.activity.Translet#getActivityResultDataMap()
+	 */
+	public ActivityResultDataMap getActivityResultDataMap() {
+		if(activityResultDataMap == null) {
+			activityResultDataMap = new ActivityResultDataMap(activity);
+		}
+
+		return activityResultDataMap;
+	}
+
 	/* (non-Javadoc)
 	 * @see com.aspectran.core.activity.Translet#response()
 	 */

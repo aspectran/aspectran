@@ -127,7 +127,14 @@ public abstract interface Translet {
 	 * @return the process result
 	 */
 	public ProcessResult touchProcessResult(String contentName);
-	
+
+	/**
+	 * Gets activity result data map.
+	 *
+	 * @return the activity result data map
+	 */
+	public ActivityResultDataMap getActivityResultDataMap();
+
 	/**
 	 * Respond immediately, and the remaining jobs will be canceled.
 	 */
