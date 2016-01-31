@@ -13,17 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.core.activity.process.result;
+package com.aspectran.core.activity;
 
 import java.util.HashMap;
 
-import com.aspectran.core.activity.Activity;
 import com.aspectran.core.adapter.RequestAdapter;
 
 /**
- * The Class ActivityProcessResultMap.
+ * The Class ActivityResultDataMap.
  */
-public class ActivityProcessResultMap extends HashMap<String, Object> {
+public class ActivityResultDataMap extends HashMap<String, Object> {
 
 	/** @serial */
 	private static final long serialVersionUID = -4557424414862800204L;
@@ -32,7 +31,7 @@ public class ActivityProcessResultMap extends HashMap<String, Object> {
 
 	protected RequestAdapter requestAdapter;
 
-	public ActivityProcessResultMap(Activity activity) {
+	public ActivityResultDataMap(Activity activity) {
 		this.activity = activity;
 		this.requestAdapter = activity.getRequestAdapter();
 	}
