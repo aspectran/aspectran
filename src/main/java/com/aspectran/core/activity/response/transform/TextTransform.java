@@ -15,6 +15,8 @@
  */
 package com.aspectran.core.activity.response.transform;
 
+import java.io.Writer;
+
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.activity.process.result.ActionResult;
@@ -27,8 +29,6 @@ import com.aspectran.core.context.rule.TemplateRule;
 import com.aspectran.core.context.rule.TransformRule;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
-
-import java.io.Writer;
 
 /**
  * The Class TextTransform.
@@ -105,10 +105,10 @@ public class TextTransform extends TransformResponse implements Response {
 							}
 						}
 					}
-
-					writer.flush();
 				}
 			}
+
+			writer.close();
 		} catch(Exception e) {
 			throw new TransformResponseException(transformRule, e);
 		}

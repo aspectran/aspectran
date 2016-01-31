@@ -83,6 +83,8 @@ public class JsonTransform extends TransformResponse implements Response {
 			serializer.write(processResult);
 			serializer.flush();
 
+			output.close();
+
 			if(traceEnabled) {
 				Writer stringWriter = new StringWriter();
 				JsonSerializer serializer2 = new ContentsJsonSerializer(stringWriter, true);

@@ -117,7 +117,9 @@ public class XslTransform extends TransformResponse implements Response {
 			
 			Transformer transformer = templates.newTransformer();
 			transformer.transform(new SAXSource(xreader, isource), new StreamResult(output));
-		
+
+			output.close();
+
 			if(traceEnabled) {
 				StringWriter writer = new StringWriter();
 				TransformerFactory transformerFactory = TransformerFactory.newInstance();

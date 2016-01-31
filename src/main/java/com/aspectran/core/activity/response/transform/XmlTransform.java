@@ -115,6 +115,8 @@ public class XmlTransform extends TransformResponse implements Response {
 			ContentsXMLReader xreader = new ContentsXMLReader();
 			ContentsInputSource isource = new ContentsInputSource(processResult);
 			transformer.transform(new SAXSource(xreader, isource), new StreamResult(output));
+
+			output.close();
 			
 			if(traceEnabled) {
 				StringWriter stringWriter = new StringWriter();

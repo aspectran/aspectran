@@ -85,6 +85,8 @@ public class AponTransform extends TransformResponse implements Response {
 			serializer.write(parameters);
 			serializer.flush();
 
+			output.close();
+
 			if(traceEnabled) {
 				Writer stringWriter = new StringWriter();
 				AponSerializer serializer2 = new AponSerializer(output, true);
