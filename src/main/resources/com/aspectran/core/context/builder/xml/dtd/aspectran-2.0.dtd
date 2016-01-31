@@ -186,7 +186,7 @@ pretty (true | false) #IMPLIED
 
 <!ELEMENT dispatch (echo? | action? | include?)*>
 <!ATTLIST dispatch
-name CDATA #REQUIRED
+name CDATA #IMPLIED
 contentType CDATA #IMPLIED
 characterEncoding CDATA #IMPLIED
 default (true | false) #IMPLIED
