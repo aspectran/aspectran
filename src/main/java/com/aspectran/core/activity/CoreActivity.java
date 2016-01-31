@@ -184,6 +184,7 @@ public class CoreActivity extends AbstractActivity implements Activity {
 	 */
 	private void determineCharacterEncoding() {
 		try {
+			// for request
 			String characterEncoding = requestRule.getCharacterEncoding();
 
 			if(characterEncoding == null)
@@ -192,6 +193,7 @@ public class CoreActivity extends AbstractActivity implements Activity {
 			if(characterEncoding != null)
 				getRequestAdapter().setCharacterEncoding(characterEncoding);
 
+			// for response
 			characterEncoding = responseRule.getCharacterEncoding();
 
 			if(characterEncoding == null)
