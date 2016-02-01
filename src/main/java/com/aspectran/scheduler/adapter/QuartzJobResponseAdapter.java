@@ -17,6 +17,7 @@ package com.aspectran.scheduler.adapter;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.Writer;
 
 import org.quartz.JobDetail;
@@ -61,11 +62,21 @@ public class QuartzJobResponseAdapter extends AbstractResponseAdapter implements
 	}
 	
 	public OutputStream getOutputStream() throws IOException {
-		return new QuartzJobResponseOutputStream(jobDetail);
+		return new QuartzJobOutputStream(jobDetail);
 	}
 	
 	public Writer getWriter() throws IOException {
-		return new QuartzJobResponseWriter(jobDetail);
+		String characterEncoding = getCharacterEncoding();
+
+		OutputStream os = getOutputStream();
+		Writer writer;
+
+		if(characterEncoding != null)
+			writer = new OutputStreamWriter(os, characterEncoding);
+		else
+			writer = new OutputStreamWriter(os);
+
+		return writer;
 	}
 	
 	public void redirect(String requestUri) throws IOException {

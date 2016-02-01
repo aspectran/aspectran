@@ -15,33 +15,34 @@
  */
 package com.aspectran.scheduler.adapter;
 
+import java.io.IOException;
+import java.io.OutputStream;
+
+import org.quartz.JobDetail;
+
 import com.aspectran.core.context.AspectranConstants;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 import com.aspectran.scheduler.service.QuartzSchedulerService;
-import org.quartz.JobDetail;
-
-import java.io.IOException;
-import java.io.OutputStream;
 
 /**
  * The Class QuartzJobResponseOutputStream.
  */
-public class QuartzJobResponseOutputStream extends OutputStream {
+public class QuartzJobOutputStream extends OutputStream {
 
-	private final Log log = LogFactory.getLog(QuartzJobResponseOutputStream.class);
+	private final Log log = LogFactory.getLog(QuartzJobOutputStream.class);
 
 	private JobDetail jobDetail;
 
-	private StringBuilder out;
+	private StringBuilder buffer;
 
-	public QuartzJobResponseOutputStream(JobDetail jobDetail) {
+	public QuartzJobOutputStream(JobDetail jobDetail) {
 		this.jobDetail = jobDetail;
-		this.out = new StringBuilder();
+		this.buffer = new StringBuilder();
 	}
 
 	public void write(int b) throws IOException {
-		out.append(b);
+		buffer.append(b);
 	}
 
 	public void write(byte b[]) throws IOException {
@@ -58,16 +59,16 @@ public class QuartzJobResponseOutputStream extends OutputStream {
 	}
 
 	public void flush() {
-		if(out.length() > 0) {
+		if(buffer.length() > 0) {
 			StringBuilder sb = new StringBuilder();
 			sb.append("results of job [");
 			sb.append(jobDetail.getJobDataMap().get(QuartzSchedulerService.TRANSLET_NAME_DATA_KEY)).append("]");
 			sb.append(AspectranConstants.LINE_SEPARATOR);
-			sb.append(out);
+			sb.append(buffer);
 
 			log.info(sb.toString());
 
-			out.setLength(0);
+			buffer.setLength(0);
 		}
 	}
 
