@@ -95,9 +95,9 @@ public class FreeMarkerViewDispatcher implements ViewDispatcher {
 			if(contentType != null)
 				responseAdapter.setContentType(contentType);
 
-			if(outputEncoding != null)
+			if(outputEncoding != null) {
 				responseAdapter.setCharacterEncoding(outputEncoding);
-			else {
+			} else {
 				String characterEncoding = activity.getResponseSetting(ResponseRule.CHARACTER_ENCODING_SETTING_NAME);
 				
 				if(characterEncoding != null)

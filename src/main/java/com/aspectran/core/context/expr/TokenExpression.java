@@ -59,13 +59,7 @@ public class TokenExpression implements TokenExpressor {
 		}
 	}
 
-	/**
-	 * Express.
-	 * 
-	 * @param token the token
-	 * 
-	 * @return the object
-	 */
+	@Override
 	public Object express(Token token) {
 		TokenType tokenType = token.getType();
 		Object value = null;
@@ -83,13 +77,7 @@ public class TokenExpression implements TokenExpressor {
 		return value;
 	}
 
-	/**
-	 * Express as String.
-	 * 
-	 * @param tokens the tokens
-	 * 
-	 * @return the string
-	 */
+	@Override
 	public Object express(Token[] tokens) {
 		if(tokens == null || tokens.length == 0)
 			return null;
@@ -110,6 +98,7 @@ public class TokenExpression implements TokenExpressor {
 		}
 	}
 
+	@Override
 	public void express(Token[] tokens, Writer writer) throws IOException {
 		if(tokens == null || tokens.length == 0)
 			return;
@@ -124,6 +113,7 @@ public class TokenExpression implements TokenExpressor {
 		writer.flush();
 	}
 
+	@Override
 	public String expressAsString(Token[] tokens) {
 		Object value = express(tokens);
 		
@@ -133,14 +123,7 @@ public class TokenExpression implements TokenExpressor {
 		return value.toString();
 	}
 
-	/**
-	 * Express as String.
-	 * 
-	 * @param parameterName the parameter name
-	 * @param tokens the tokens
-	 * 
-	 * @return the string
-	 */
+	@Override
 	public Object express(String parameterName, Token[] tokens) {
 		if(tokens == null || tokens.length == 0)
 			return getParameter(parameterName, null);
@@ -153,6 +136,7 @@ public class TokenExpression implements TokenExpressor {
 		return value;
 	}
 
+	@Override
 	public String expressAsString(String parameterName, Token[] tokens) {
 		Object value = express(parameterName, tokens);
 		
@@ -161,15 +145,8 @@ public class TokenExpression implements TokenExpressor {
 		
 		return value.toString();
 	}
-	
-	/**
-	 * Express as List.
-	 * 
-	 * @param parameterName the parameter name
-	 * @param tokensList the tokens
-	 * 
-	 * @return the object[]
-	 */
+
+	@Override
 	public List<Object> expressAsList(String parameterName, List<Token[]> tokensList) {
 		if(tokensList == null || tokensList.isEmpty())
 			return cast(getParameterAsList(parameterName));
@@ -184,13 +161,7 @@ public class TokenExpression implements TokenExpressor {
 		return valueList;
 	}
 
-	/**
-	 * Express as Set.
-	 *
-	 * @param parameterName the parameter name
-	 * @param tokensSet the tokens set
-	 * @return the object[]
-	 */
+	@Override
 	public Set<Object> expressAsSet(String parameterName, Set<Token[]> tokensSet) {
 		if(tokensSet == null || tokensSet.isEmpty())
 			return cast(getParameterAsSet(parameterName));
@@ -204,14 +175,8 @@ public class TokenExpression implements TokenExpressor {
 		
 		return valueSet;
 	}
-	
-	/**
-	 * Express as Map.
-	 *
-	 * @param parameterName the parameter name
-	 * @param tokensMap the tokens map
-	 * @return the map
-	 */
+
+	@Override
 	public Map<String, Object> expressAsMap(String parameterName, Map<String, Token[]> tokensMap) {
 		if(tokensMap == null || tokensMap.isEmpty()) {
 			String value = getParameter(parameterName, null);
@@ -233,14 +198,8 @@ public class TokenExpression implements TokenExpressor {
 		
 		return valueMap;
 	}
-	
-	/**
-	 * Express as Properties.
-	 *
-	 * @param parameterName the parameter name
-	 * @param tokensProp the tokens propperties
-	 * @return the Properties
-	 */
+
+	@Override
 	public Properties expressAsProperties(String parameterName, Properties tokensProp) {
 		if(tokensProp == null || tokensProp.isEmpty()) {
 			String value = getParameter(parameterName, null);
@@ -264,10 +223,9 @@ public class TokenExpression implements TokenExpressor {
 	}
 	
 	/**
-	 * Gets the parameter value list.
+	 * Gets the parameter value as List.
 	 * 
-	 * @param name the name
-	 * 
+	 * @param name the parameter name
 	 * @return the parameter value list
 	 */
 	private List<String> getParameterAsList(String name) {
@@ -288,8 +246,7 @@ public class TokenExpression implements TokenExpressor {
 	/**
 	 * Gets the parameter values.
 	 * 
-	 * @param name the name
-	 * 
+	 * @param name the parameter name
 	 * @return the parameter values
 	 */
 	private Set<String> getParameterAsSet(String name) {
@@ -310,9 +267,8 @@ public class TokenExpression implements TokenExpressor {
 	/**
 	 * Gets the parameter.
 	 * 
-	 * @param name the name
+	 * @param name the parameter name
 	 * @param defaultValue the default value
-	 * 
 	 * @return the value of parameter
 	 */
 	protected String getParameter(String name, String defaultValue) {
@@ -376,7 +332,6 @@ public class TokenExpression implements TokenExpressor {
 	 * 
 	 * @param object the object
 	 * @param propertyName the property name
-	 * 
 	 * @return the object
 	 */
 	protected Object invokeBeanProperty(Object object, String propertyName) {
@@ -443,7 +398,6 @@ public class TokenExpression implements TokenExpressor {
 	}
 	
 	private Object getIndexedProperty(Object object, String indexedName) throws InvocationTargetException {
-
 		try {
 			String name = indexedName.substring(0, indexedName.indexOf("["));
 			int i = Integer.parseInt(indexedName.substring(indexedName.indexOf("[") + 1, indexedName.indexOf("]")));

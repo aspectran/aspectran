@@ -26,20 +26,19 @@ import com.aspectran.core.context.variable.ValueMap;
 public interface ItemTokenExpressor {
 	
 	/**
-	 * Express.
+	 * Expression processing for Item Rule.
 	 * 
-	 * @param itemRuleMap the value rule map
+	 * @param itemRuleMap the item rule map
 	 * @return the value map
 	 */
 	public ValueMap express(ItemRuleMap itemRuleMap);
 	
 	/**
-	 * Express.
+	 * Expression processing for Item Rule.
 	 * 
 	 * @param itemRuleMap the item rule map
 	 * @param valueMap the value map
 	 */
 	public void express(ItemRuleMap itemRuleMap, ValueMap valueMap);
 	
-
 }

@@ -15,6 +15,10 @@
  */
 package com.aspectran.web.activity.response.view;
 
+import javax.servlet.RequestDispatcher;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.process.result.ActionResult;
 import com.aspectran.core.activity.process.result.ContentResult;
@@ -27,10 +31,6 @@ import com.aspectran.core.context.rule.DispatchResponseRule;
 import com.aspectran.core.context.rule.ResponseRule;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
-
-import javax.servlet.RequestDispatcher;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 /**
  * JSP or other web resource integration.
@@ -93,9 +93,9 @@ public class JspViewDispatcher implements ViewDispatcher {
 			if(contentType != null)
 				responseAdapter.setContentType(contentType);
 
-			if(outputEncoding != null)
+			if(outputEncoding != null) {
 				responseAdapter.setCharacterEncoding(outputEncoding);
-			else {
+			} else {
 				String characterEncoding = activity.getResponseSetting(ResponseRule.CHARACTER_ENCODING_SETTING_NAME);
 				
 				if(characterEncoding != null)

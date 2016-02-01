@@ -52,12 +52,7 @@ public class ItemTokenExpression extends TokenExpression implements ItemTokenExp
 		super(activity);
 	}
 	
-	/**
-	 * Express.
-	 *
-	 * @param itemRuleMap the item rule map
-	 * @return the value map
-	 */
+	@Override
 	public ValueMap express(ItemRuleMap itemRuleMap) {
 		ValueMap valueMap = new ValueMap();
 		
@@ -65,13 +60,8 @@ public class ItemTokenExpression extends TokenExpression implements ItemTokenExp
 		
 		return valueMap;
 	}
-	
-	/**
-	 * Express.
-	 *
-	 * @param itemRuleMap the item rule map
-	 * @param valueMap the value map
-	 */
+
+	@Override
 	public void express(ItemRuleMap itemRuleMap, ValueMap valueMap) {
 		for(ItemRule ir : itemRuleMap) {
 			ItemType itemType = ir.getType();

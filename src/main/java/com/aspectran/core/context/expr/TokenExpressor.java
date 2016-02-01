@@ -32,7 +32,7 @@ import com.aspectran.core.context.expr.token.Token;
 public interface TokenExpressor {
 
 	/**
-	 * Express.
+	 * Expression processing for Token.
 	 * 
 	 * @param token the token
 	 * @return the object
@@ -50,7 +50,7 @@ public interface TokenExpressor {
 	public void express(Token[] tokens, Writer writer) throws IOException;
 
 	/**
-	 * Express as string.
+	 * Express as String.
 	 *
 	 * @param tokens the tokens
 	 * @return the string
@@ -67,7 +67,7 @@ public interface TokenExpressor {
 	public Object express(String parameterName, Token[] tokens);
 
 	/**
-	 * Express as string.
+	 * Express as String.
 	 *
 	 * @param parameterName the parameter name
 	 * @param tokens the tokens
