@@ -171,7 +171,7 @@ public class DispatchResponseRule extends ActionPossessSupport implements Action
 	 * @param dispatchResponseRule an instance of DispatchResponseRulethe
 	 * @return the dispatch response rule
 	 */
-	public static DispatchResponseRule newDerivedDispatchResponseRuleRule(DispatchResponseRule dispatchResponseRule) {
+	public static DispatchResponseRule newDerivedDispatchResponseRule(DispatchResponseRule dispatchResponseRule) {
 		DispatchResponseRule newDispatchResponseRule = new DispatchResponseRule();
 		newDispatchResponseRule.setDispatchName(dispatchResponseRule.getDispatchName());
 		newDispatchResponseRule.setContentType(dispatchResponseRule.getContentType());

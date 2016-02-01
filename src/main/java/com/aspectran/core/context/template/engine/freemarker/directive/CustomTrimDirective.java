@@ -97,7 +97,8 @@ public class CustomTrimDirective extends AbstractTrimDirectiveModel implements T
         return directiveName;
     }
 
-    @Override
+    @SuppressWarnings("rawtypes")
+	@Override
     protected Trimmer getTrimmer(Map params) throws TemplateModelException {
         if(this.trimmer == null) {
             String prefix = parseStringParameter(params, TrimDirective.PREFIX_PARAM_NAME);

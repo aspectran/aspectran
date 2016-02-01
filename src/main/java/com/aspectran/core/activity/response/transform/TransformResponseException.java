@@ -40,7 +40,7 @@ public class TransformResponseException extends ResponseException {
 	/**
 	 * Instantiates a new TransformResponseException.
 	 * 
-	 * @param msg A message to associate with the exception
+	 * @param msg a message to associate with the exception
 	 */
 	public TransformResponseException(String msg) {
 		super(msg);
@@ -49,7 +49,7 @@ public class TransformResponseException extends ResponseException {
 	/**
 	 * Instantiates a new TransformResponseException.
 	 * 
-	 * @param cause The real cause of the exception
+	 * @param cause the real cause of the exception
 	 */
 	public TransformResponseException(Throwable cause) {
 		super(cause);
@@ -58,8 +58,8 @@ public class TransformResponseException extends ResponseException {
 	/**
 	 * Instantiates a new TransformResponseException.
 	 * 
-	 * @param msg The message
-	 * @param cause The real cause of the exception
+	 * @param msg the detail message
+	 * @param cause the real cause of the exception
 	 */
 	public TransformResponseException(String msg, Throwable cause) {
 		super(msg, cause);
@@ -69,7 +69,7 @@ public class TransformResponseException extends ResponseException {
 	 * Instantiates a new TransformResponseException.
 	 *
 	 * @param transformRule the transform rule
-	 * @param cause the cause
+	 * @param cause the real cause of the exception
 	 */
 	public TransformResponseException(TransformRule transformRule, Throwable cause) {
 		super("Failed to transform " + transformRule, cause);
@@ -81,7 +81,7 @@ public class TransformResponseException extends ResponseException {
 	 *
 	 * @param transformRule the transform rule
 	 * @param msg the detail message
-	 * @param cause the cause
+	 * @param cause the real cause of the exception
 	 */
 	public TransformResponseException(TransformRule transformRule, String msg, Throwable cause) {
 		super(msg + " " + transformRule, cause);

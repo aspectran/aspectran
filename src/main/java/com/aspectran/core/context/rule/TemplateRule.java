@@ -39,6 +39,8 @@ import java.util.List;
  */
 public class TemplateRule {
 
+	public static final String DEFAULT_TEMPLATE_ENGINE_NAME = "token";
+	
 	private String id;
 
 	private String engine;
@@ -71,7 +73,9 @@ public class TemplateRule {
 	}
 
 	public TemplateRule(String engine) {
-		this.engine = (engine != null && engine.length() == 0) ? null : engine;
+		if(engine != null && engine.length() > 0 && !engine.equals(TemplateRule.DEFAULT_TEMPLATE_ENGINE_NAME)) {
+			this.engine = engine;
+		}
 	}
 
 	public String getId() {
@@ -87,13 +91,19 @@ public class TemplateRule {
 	}
 
 	public void setEngine(String engine) {
+    	if(engine != null && (engine.length() == 0 || engine.equals(TemplateRule.DEFAULT_TEMPLATE_ENGINE_NAME))) {
+    		this.engine = null;
+    		this.contentTokens = null;
+    		return;
+    	}
+    	
 		if(this.engine != engine) {
 			if(this.content != null) {
 				this.contentTokens = parseContentTokens(this.content);
 			}
 		}
 		
-		this.engine = (engine != null && engine.length() == 0) ? null : engine;
+		this.engine = engine;
 	}
 
 	public String getName() {

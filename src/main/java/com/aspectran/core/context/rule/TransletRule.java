@@ -30,6 +30,7 @@ import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.rule.ability.ActionRuleApplicable;
 import com.aspectran.core.context.rule.ability.ResponseRuleApplicable;
 import com.aspectran.core.context.rule.type.RequestMethodType;
+import com.aspectran.core.util.PrefixSuffixPattern;
 import com.aspectran.core.util.apon.Parameters;
 import com.aspectran.core.util.wildcard.WildcardPattern;
 
@@ -518,7 +519,7 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 		return newTransletRule;
 	}
 	
-	public static TransletRule newDerivedTransletRule(TransletRule transletRule, String templateName) {
+	public static TransletRule newDerivedTransletRule(TransletRule transletRule, String newDispatchName) {
 		TransletRule newTransletRule = new TransletRule();
 		newTransletRule.setName(transletRule.getName());
 		newTransletRule.setRestVerb(transletRule.getRestVerb());
@@ -527,32 +528,46 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 		newTransletRule.setTransletInterfaceClass(transletRule.getTransletInterfaceClass());
 		newTransletRule.setTransletImplementClass(transletRule.getTransletImplementClass());
 
-		ResponseRule responseRule = transletRule.getResponseRule();
-		if(responseRule != null && responseRule.getTemplateRule() != null) {
-			responseRule = ResponseRule.newDerivedResponseRule(responseRule);
-			if(responseRule.getResponse() != null) {
-				if(responseRule.getResponse() instanceof DispatchResponse) {
-					DispatchResponse dispatchResponse = (DispatchResponse)responseRule.getResponse();
-					DispatchResponseRule dispatchResponseRule = dispatchResponse.getDispatchResponseRule();
-					dispatchResponseRule.setDispatchName(templateName);
-				}
-			}
-			newTransletRule.setResponseRule(responseRule);
+		if(transletRule.getResponseRule() != null) {
+			ResponseRule responseRule = transletRule.getResponseRule();
+			ResponseRule rr = newDerivedResponseRule(responseRule, newDispatchName);
+			newTransletRule.setResponseRule(rr);
 		}
 		
-		List<ResponseRule> responseRuleList = transletRule.getResponseRuleList();
-		if(responseRuleList != null) {
-			for(int i = 0; i < responseRuleList.size(); i++) {
-				ResponseRule rr = responseRuleList.get(i);
-				if(rr.getTemplateRule() != null) {
-					rr = ResponseRule.newDerivedResponseRule(rr);
-					rr.getTemplateRule().setFile(templateName);
-					responseRuleList.set(i, rr);
-				}
+		if(transletRule.getResponseRuleList() != null) {
+			List<ResponseRule> responseRuleList = transletRule.getResponseRuleList();
+			List<ResponseRule> newResponseRuleList = new ArrayList<ResponseRule>(responseRuleList.size());
+			for(ResponseRule responseRule : responseRuleList) {
+				ResponseRule rr = newDerivedResponseRule(responseRule, newDispatchName);
+				newResponseRuleList.add(rr);
 			}
+			newTransletRule.setResponseRuleList(newResponseRuleList);
 		}
 		
 		return newTransletRule;
+	}
+	
+	private static ResponseRule newDerivedResponseRule(ResponseRule responseRule, String newDispatchName) {
+		ResponseRule rr = ResponseRule.newDerivedResponseRule(responseRule);
+		if(rr.getResponse() != null) {
+			if(rr.getResponse() instanceof DispatchResponse) {
+				DispatchResponse dispatchResponse = (DispatchResponse)rr.getResponse();
+				DispatchResponseRule dispatchResponseRule = dispatchResponse.getDispatchResponseRule();
+				String dispatchName = dispatchResponseRule.getDispatchName();
+				
+				PrefixSuffixPattern prefixSuffixPattern = new PrefixSuffixPattern();
+				boolean patterned = prefixSuffixPattern.split(dispatchName);
+				if(patterned) {
+					dispatchResponseRule.setDispatchName(prefixSuffixPattern.join(newDispatchName));
+				} else {
+					if(dispatchName != null) {
+						dispatchResponseRule.setDispatchName(dispatchName + newDispatchName);
+					}
+				}
+				dispatchResponseRule.setDispatchName(newDispatchName);
+			}
+		}
+		return rr;
 	}
 	
 	protected static void assembleTransletName(TransletRule transletRule, ResponseRule responseRule) {

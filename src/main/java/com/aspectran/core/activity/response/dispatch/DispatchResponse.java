@@ -20,7 +20,6 @@ import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.activity.response.Response;
 import com.aspectran.core.context.rule.DispatchResponseRule;
 import com.aspectran.core.context.rule.ResponseRule;
-import com.aspectran.core.context.rule.TemplateRule;
 import com.aspectran.core.context.rule.type.ResponseType;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
@@ -64,7 +63,7 @@ public class DispatchResponse implements Response {
 				viewDispatcher.dispatch(activity, dispatchResponseRule);
 			}
 		} catch(Exception e) {
-			throw new DispatchResponseException("Dispatch Response error: " + dispatchResponseRule, e);
+			throw new DispatchResponseException(dispatchResponseRule, e);
 		}
 	}
 
@@ -99,18 +98,11 @@ public class DispatchResponse implements Response {
 	}
 	
 	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.response.Response#getTemplateRule()
-	 */
-	public TemplateRule getTemplateRule() {
-		return null;
-	}
-	
-	/* (non-Javadoc)
 	 * @see com.aspectran.core.activity.response.Response#newDerivedResponse()
 	 */
 	public Response newDerivedResponse() {
 		if(dispatchResponseRule != null) {
-			DispatchResponseRule newDispatchResponseRule = DispatchResponseRule.newDerivedDispatchResponseRuleRule(dispatchResponseRule);
+			DispatchResponseRule newDispatchResponseRule = DispatchResponseRule.newDerivedDispatchResponseRule(dispatchResponseRule);
 			Response response = new DispatchResponse(newDispatchResponseRule);
 			return response;
 		}

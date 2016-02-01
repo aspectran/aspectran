@@ -38,7 +38,8 @@ import java.util.Map;
  */
 public abstract class AbstractTrimDirectiveModel implements TemplateDirectiveModel {
 
-    @Override
+    @SuppressWarnings("rawtypes")
+	@Override
     public void execute(Environment env, Map params, TemplateModel[] loopVars, TemplateDirectiveBody body) throws TemplateException, IOException {
         if(body == null)
             return;
@@ -62,7 +63,8 @@ public abstract class AbstractTrimDirectiveModel implements TemplateDirectiveMod
      * @return the trimmer
      * @throws TemplateModelException the template model exception
      */
-    abstract protected Trimmer getTrimmer(Map params) throws TemplateModelException;
+    @SuppressWarnings("rawtypes")
+	abstract protected Trimmer getTrimmer(Map params) throws TemplateModelException;
 
     /**
      * Parse string parameter.
@@ -71,7 +73,8 @@ public abstract class AbstractTrimDirectiveModel implements TemplateDirectiveMod
      * @param paramName the param name
      * @return the string
      */
-    protected String parseStringParameter(Map params, String paramName) {
+    @SuppressWarnings("rawtypes")
+	protected String parseStringParameter(Map params, String paramName) {
         Object paramModel = params.get(paramName);
 
         if(paramModel == null)
@@ -91,7 +94,8 @@ public abstract class AbstractTrimDirectiveModel implements TemplateDirectiveMod
      * @return the string [ ]
      * @throws TemplateModelException the template model exception
      */
-    protected String[] parseSequenceParameter(Map params, String paramName) throws TemplateModelException {
+    @SuppressWarnings("rawtypes")
+	protected String[] parseSequenceParameter(Map params, String paramName) throws TemplateModelException {
         Object paramModel = params.get(paramName);
 
         if(paramModel == null)

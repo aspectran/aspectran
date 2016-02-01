@@ -180,13 +180,6 @@ public class ResponseRule implements ResponseRuleApplicable {
 		return responseRule;
 	}
 
-	public TemplateRule getTemplateRule() {
-		if(response == null)
-			return null;
-
-		return response.getTemplateRule();
-	}
-
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
@@ -219,8 +212,8 @@ public class ResponseRule implements ResponseRuleApplicable {
 		
 		Response response = responseRule.getResponse();
 		if(response != null) {
-			response = response.newDerivedResponse();
-			newResponseRule.setResponse(response);
+			Response newResponse = response.newDerivedResponse();
+			newResponseRule.setResponse(newResponse);
 		}
 		
 		return newResponseRule;

@@ -50,18 +50,18 @@ public class PebbleViewDispatcher implements ViewDispatcher {
 		this.pebbleEngine = pebbleEngine;
 	}
 	/**
-	 * Sets the template name prefix.
+	 * Sets the prefix for the template name.
 	 *
-	 * @param templateNamePrefix the new template name prefix
+	 * @param templateNamePrefix the new prefix for the template name
 	 */
 	public void setTemplateNamePrefix(String templateNamePrefix) {
 		this.templateNamePrefix = templateNamePrefix;
 	}
 
 	/**
-	 * Sets the template name suffix.
+	 * Sets the suffix for the template name.
 	 *
-	 * @param templateNameSuffix the new template name suffix
+	 * @param templateNameSuffix the new suffix for the template name
 	 */
 	public void setTemplateNameSuffix(String templateNameSuffix) {
 		this.templateNameSuffix = templateNameSuffix;
