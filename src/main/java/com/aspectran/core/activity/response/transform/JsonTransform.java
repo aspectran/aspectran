@@ -24,7 +24,6 @@ import com.aspectran.core.activity.process.result.ProcessResult;
 import com.aspectran.core.activity.response.Response;
 import com.aspectran.core.activity.response.transform.json.ContentsJsonSerializer;
 import com.aspectran.core.adapter.ResponseAdapter;
-import com.aspectran.core.context.rule.TemplateRule;
 import com.aspectran.core.context.rule.TransformRule;
 import com.aspectran.core.util.json.JsonSerializer;
 import com.aspectran.core.util.logging.Log;
@@ -76,20 +75,20 @@ public class JsonTransform extends TransformResponse implements Response {
 			if(outputEncoding != null)
 				responseAdapter.setCharacterEncoding(outputEncoding);
 			
-			Writer output = responseAdapter.getWriter();
+			Writer writer = responseAdapter.getWriter();
 			ProcessResult processResult = activity.getProcessResult();
 
-			JsonSerializer serializer = new ContentsJsonSerializer(output, pretty);
+			JsonSerializer serializer = new ContentsJsonSerializer(writer, pretty);
 			serializer.write(processResult);
 			serializer.flush();
 
-			output.close();
+			writer.close();
 
 			if(traceEnabled) {
 				Writer stringWriter = new StringWriter();
 				JsonSerializer serializer2 = new ContentsJsonSerializer(stringWriter, true);
 				serializer2.write(processResult);
-				serializer2.flush();
+				stringWriter.close();
 				log.trace(stringWriter.toString());
 			}
 		} catch(Exception e) {
@@ -102,13 +101,6 @@ public class JsonTransform extends TransformResponse implements Response {
 	 */
 	public ActionList getActionList() {
 		return transformRule.getActionList();
-	}
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.response.Response#getTemplateRule()
-	 */
-	public TemplateRule getTemplateRule() {
-		return null;
 	}
 
 	/* (non-Javadoc)

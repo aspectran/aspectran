@@ -24,7 +24,6 @@ import com.aspectran.core.activity.process.result.ProcessResult;
 import com.aspectran.core.activity.response.Response;
 import com.aspectran.core.activity.response.transform.apon.ContentsAponAssembler;
 import com.aspectran.core.adapter.ResponseAdapter;
-import com.aspectran.core.context.rule.TemplateRule;
 import com.aspectran.core.context.rule.TransformRule;
 import com.aspectran.core.util.apon.AponSerializer;
 import com.aspectran.core.util.apon.Parameters;
@@ -77,21 +76,21 @@ public class AponTransform extends TransformResponse implements Response {
 			if(outputEncoding != null)
 				responseAdapter.setCharacterEncoding(outputEncoding);
 			
-			Writer output = responseAdapter.getWriter();
+			Writer writer = responseAdapter.getWriter();
 			ProcessResult processResult = activity.getProcessResult();
 
 			Parameters parameters = ContentsAponAssembler.assemble(processResult);
-			AponSerializer serializer = new AponSerializer(output, pretty);
+			AponSerializer serializer = new AponSerializer(writer, pretty);
 			serializer.write(parameters);
 			serializer.flush();
 
-			output.close();
+			writer.close();
 
 			if(traceEnabled) {
 				Writer stringWriter = new StringWriter();
-				AponSerializer serializer2 = new AponSerializer(output, true);
+				AponSerializer serializer2 = new AponSerializer(stringWriter, true);
 				serializer2.write(parameters);
-				serializer2.flush();
+				stringWriter.close();
 				log.trace(stringWriter.toString());
 			}
 		} catch(Exception e) {
@@ -104,13 +103,6 @@ public class AponTransform extends TransformResponse implements Response {
 	 */
 	public ActionList getActionList() {
 		return transformRule.getActionList();
-	}
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.response.Response#getTemplateRule()
-	 */
-	public TemplateRule getTemplateRule() {
-		return null;
 	}
 	
 	/* (non-Javadoc)

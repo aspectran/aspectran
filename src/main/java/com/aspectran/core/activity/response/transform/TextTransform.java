@@ -122,13 +122,6 @@ public class TextTransform extends TransformResponse implements Response {
 	}
 	
 	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.response.Response#getTemplateRule()
-	 */
-	public TemplateRule getTemplateRule() {
-		return templateRule;
-	}
-	
-	/* (non-Javadoc)
 	 * @see com.aspectran.core.activity.response.Response#newDerivedResponse()
 	 */
 	public Response newDerivedResponse() {

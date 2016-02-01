@@ -17,7 +17,6 @@ package com.aspectran.core.activity.response;
 
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.process.ActionList;
-import com.aspectran.core.context.rule.TemplateRule;
 import com.aspectran.core.context.rule.type.ResponseType;
 
 /**
@@ -56,13 +55,6 @@ public interface Response {
 	 * @return the action list
 	 */
 	public ActionList getActionList();
-
-	/**
-	 * Gets the template rule.
-	 *
-	 * @return the template rule
-	 */
-	public TemplateRule getTemplateRule();
 
 	/**
 	 * Create a new derived response.
