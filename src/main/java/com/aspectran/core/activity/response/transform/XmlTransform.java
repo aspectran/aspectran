@@ -115,11 +115,10 @@ public class XmlTransform extends TransformResponse implements Response {
 			ContentsInputSource isource = new ContentsInputSource(processResult);
 			transformer.transform(new SAXSource(xreader, isource), new StreamResult(output));
 
-			output.close();
-			
 			if(traceEnabled) {
 				StringWriter stringWriter = new StringWriter();
 				transformer.transform(new SAXSource(xreader, isource), new StreamResult(stringWriter));
+				stringWriter.close(); // forward compatibility
 				log.trace(stringWriter.toString());
 			}
 		} catch(Exception e) {

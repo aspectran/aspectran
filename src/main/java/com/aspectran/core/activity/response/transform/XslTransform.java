@@ -118,16 +118,15 @@ public class XslTransform extends TransformResponse implements Response {
 			Transformer transformer = templates.newTransformer();
 			transformer.transform(new SAXSource(xreader, isource), new StreamResult(output));
 
-			output.close();
-
 			if(traceEnabled) {
-				StringWriter writer = new StringWriter();
+				StringWriter stringWriter = new StringWriter();
 				TransformerFactory transformerFactory = TransformerFactory.newInstance();
 				transformer = transformerFactory.newTransformer();
 				transformer.setOutputProperty(OutputKeys.INDENT, XmlTransform.OUTPUT_INDENT_YES);
 				transformer.setOutputProperty(OutputKeys.METHOD, XmlTransform.OUTPUT_METHOD_XML);
-				transformer.transform(new SAXSource(xreader, isource), new StreamResult(writer));
-				log.trace(writer.toString());
+				transformer.transform(new SAXSource(xreader, isource), new StreamResult(stringWriter));
+				stringWriter.close(); // forward compatibility
+				log.trace(stringWriter.toString());
 			}
 		} catch(Exception e) {
 			throw new TransformResponseException(transformRule, e);

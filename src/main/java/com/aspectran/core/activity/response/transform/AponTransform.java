@@ -84,13 +84,11 @@ public class AponTransform extends TransformResponse implements Response {
 			serializer.write(parameters);
 			serializer.flush();
 
-			writer.close();
-
 			if(traceEnabled) {
 				Writer stringWriter = new StringWriter();
 				AponSerializer serializer2 = new AponSerializer(stringWriter, true);
 				serializer2.write(parameters);
-				stringWriter.close();
+				stringWriter.close(); // forward compatibility
 				log.trace(stringWriter.toString());
 			}
 		} catch(Exception e) {

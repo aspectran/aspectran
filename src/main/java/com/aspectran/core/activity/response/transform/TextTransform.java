@@ -106,9 +106,9 @@ public class TextTransform extends TransformResponse implements Response {
 						}
 					}
 				}
-			}
 
-			writer.close();
+				writer.flush();
+			}
 		} catch(Exception e) {
 			throw new TransformResponseException(transformRule, e);
 		}

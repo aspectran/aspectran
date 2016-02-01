@@ -82,13 +82,11 @@ public class JsonTransform extends TransformResponse implements Response {
 			serializer.write(processResult);
 			serializer.flush();
 
-			writer.close();
-
 			if(traceEnabled) {
 				Writer stringWriter = new StringWriter();
 				JsonSerializer serializer2 = new ContentsJsonSerializer(stringWriter, true);
 				serializer2.write(processResult);
-				stringWriter.close();
+				stringWriter.close(); // forward compatibility
 				log.trace(stringWriter.toString());
 			}
 		} catch(Exception e) {
