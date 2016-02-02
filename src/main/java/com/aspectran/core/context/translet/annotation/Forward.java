@@ -24,10 +24,8 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface Translet {
+public @interface Forward {
 
-	String name() default "";
+	String translet();
 
-	String restVerb() default "";
-	
 }

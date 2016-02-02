@@ -24,10 +24,12 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface Translet {
+public @interface Dispatch {
 
-	String name() default "";
+	String name();
 
-	String restVerb() default "";
+	String contentType();
+	
+	String characterEncoding();
 	
 }

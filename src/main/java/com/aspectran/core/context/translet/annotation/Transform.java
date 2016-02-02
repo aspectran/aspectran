@@ -24,10 +24,16 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface Translet {
+public @interface Transform {
 
-	String name() default "";
+	String transformType();
 
-	String restVerb() default "";
+	String contentType();
 	
+	String templateId();
+	
+	String characterEncoding();
+	
+	boolean pretty() default false;
+
 }
