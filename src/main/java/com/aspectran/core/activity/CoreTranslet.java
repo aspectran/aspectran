@@ -32,6 +32,7 @@ import com.aspectran.core.context.rule.ForwardResponseRule;
 import com.aspectran.core.context.rule.RedirectResponseRule;
 import com.aspectran.core.context.rule.TransformRule;
 import com.aspectran.core.context.rule.type.RequestMethodType;
+import com.aspectran.core.context.rule.type.ResponseType;
 
 /**
  * The Class CoreTranslet.
@@ -207,11 +208,49 @@ public class CoreTranslet implements Translet {
 	}
 	
 	/* (non-Javadoc)
+	 * @see com.aspectran.core.activity.Translet#redirect(java.lang.String)
+	 */
+	public void redirect(String target) {
+		if(activity.getResponse() != null) {
+			Response res = activity.getResponse();
+			if(res.getResponseType() == ResponseType.REDIRECT) {
+				Response rr = res.replicate();
+				RedirectResponseRule rrr = ((RedirectResponse)rr).getRedirectResponseRule();
+				rrr.setTarget(target);
+				redirect(rrr);
+				return;
+			}
+		}
+		
+		RedirectResponseRule rrr = RedirectResponseRule.newInstance(target);
+		redirect(rrr);
+	}
+	
+	/* (non-Javadoc)
 	 * @see com.aspectran.core.activity.Translet#forward(com.aspectran.core.context.rule.ForwardResponseRule)
 	 */
 	public void forward(ForwardResponseRule forwardResponseRule) {
 		Response res = new ForwardResponse(forwardResponseRule);
 		response(res);
+	}
+
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.activity.Translet#forward(java.lang.String)
+	 */
+	public void forward(String transletName) {
+		if(activity.getResponse() != null) {
+			Response res = activity.getResponse();
+			if(res.getResponseType() == ResponseType.FORWARD) {
+				Response fr = res.replicate();
+				ForwardResponseRule frr = ((ForwardResponse)fr).getForwardResponseRule();
+				frr.setTransletName(transletName);
+				forward(frr);
+				return;
+			}
+		}
+		
+		ForwardResponseRule frr = ForwardResponseRule.newInstance(transletName);
+		forward(frr);
 	}
 	
 	/* (non-Javadoc)
