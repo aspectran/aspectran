@@ -112,25 +112,23 @@ public class HttpServletResponseAdapter extends AbstractResponseAdapter implemen
 	 */
 	public String redirect(Activity activity, RedirectResponseRule redirectResponseRule) throws IOException {
 		String characterEncoding = ((HttpServletResponse)adaptee).getCharacterEncoding();
-		String url = null;
+		String target = null;
 		int questionPos = -1;
 		
-		Token[] urlTokens = redirectResponseRule.getUrlTokens();
+		Token[] targetTokens = redirectResponseRule.getTargetTokens();
 
-		if(urlTokens != null && urlTokens.length > 0) {
+		if(targetTokens != null && targetTokens.length > 0) {
 			TokenExpressor expressor = new TokenExpression(activity);
-			url = expressor.expressAsString(urlTokens);
+			target = expressor.expressAsString(targetTokens);
 		} else {
-			url = redirectResponseRule.getUrl();
+			target = redirectResponseRule.getTarget();
 		}
 
 		StringBuilder sb = new StringBuilder(256);
 
-		if(url != null) {
-			sb.append(url);
-			questionPos = url.indexOf(QUESTION_CHAR);
-		} else if(redirectResponseRule.getTransletName() != null) {
-			sb.append(redirectResponseRule.getTransletName());
+		if(target != null) {
+			sb.append(target);
+			questionPos = target.indexOf(QUESTION_CHAR);
 		}
 		
 		if(redirectResponseRule.getParameterItemRuleMap() != null) {
@@ -163,10 +161,10 @@ public class HttpServletResponseAdapter extends AbstractResponseAdapter implemen
 			}
 		}
 
-		url = sb.toString();
-		redirect(url);
+		target = sb.toString();
+		redirect(target);
 		
-		return url;
+		return target;
 	}
 
 }

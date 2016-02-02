@@ -330,8 +330,8 @@ public class RootAponAssembler {
 			transletParameters.putValue(TransletParameters.description, transletRule.getDescription());
 		}
 		transletParameters.putValue(TransletParameters.name, transletRule.getName());
+		transletParameters.putValue(TransletParameters.scan, transletRule.getScanPath());
 		transletParameters.putValue(TransletParameters.mask, transletRule.getMaskPattern());
-		transletParameters.putValue(TransletParameters.path, transletRule.getScanPath());
 		
 		if(transletRule.getRestVerb() != null)
 			transletParameters.putValue(TransletParameters.restVerb, transletRule.getRestVerb().toString());
@@ -551,8 +551,7 @@ public class RootAponAssembler {
 		if(redirectResponseRule.getContentType() != null)
 			redirectParameters.putValue(RedirectParameters.contentType, redirectResponseRule.getContentType());
 		
-		redirectParameters.putValue(RedirectParameters.translet, redirectResponseRule.getTransletName());
-		redirectParameters.putValue(RedirectParameters.url, redirectResponseRule.getUrl());
+		redirectParameters.putValue(RedirectParameters.target, redirectResponseRule.getTarget());
 		
 		ItemRuleMap parameterItemRuleMap = redirectResponseRule.getParameterItemRuleMap();
 		if(parameterItemRuleMap != null) {

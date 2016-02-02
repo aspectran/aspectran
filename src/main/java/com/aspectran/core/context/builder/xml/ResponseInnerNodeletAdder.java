@@ -139,12 +139,11 @@ public class ResponseInnerNodeletAdder implements NodeletAdder {
 		parser.addNodelet(xpath, "/redirect", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
 				String contentType = attributes.get("contentType");
-				String translet = attributes.get("translet");
-				String url = attributes.get("url");
+				String target = attributes.get("target");
 				Boolean excludeNullParameters = BooleanUtils.toNullableBooleanObject(attributes.get("excludeNullParameters"));
 				Boolean defaultResponse = BooleanUtils.toNullableBooleanObject(attributes.get("defaultResponse"));
 				
-				RedirectResponseRule rrr = RedirectResponseRule.newInstance(contentType, translet, url, excludeNullParameters, defaultResponse);
+				RedirectResponseRule rrr = RedirectResponseRule.newInstance(contentType, target, excludeNullParameters, defaultResponse);
 				assistant.pushObject(rrr);
 				
 				ActionList actionList = new ActionList();
@@ -152,12 +151,6 @@ public class ResponseInnerNodeletAdder implements NodeletAdder {
 			}
 		});
 		parser.addNodelet(xpath, "/redirect", new ActionRuleNodeletAdder(assistant));
-		parser.addNodelet(xpath, "/redirect/url", new Nodelet() {
-			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
-				RedirectResponseRule rrr = assistant.peekObject(1);
-				RedirectResponseRule.updateUrl(rrr, text);
-			}
-		});
 		parser.addNodelet(xpath, "/redirect/parameter", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
 				ItemRuleMap irm = new ItemRuleMap();
@@ -180,8 +173,8 @@ public class ResponseInnerNodeletAdder implements NodeletAdder {
 				ActionList actionList = assistant.popObject();
 				RedirectResponseRule rrr = assistant.popObject();
 				
-				if(rrr.getTransletName() == null && rrr.getUrl() == null)
-					throw new IllegalArgumentException("The <redirect> element requires either a translet or a url attribute.");
+				if(rrr.getTarget() == null)
+					throw new IllegalArgumentException("The <redirect> element requires a target attribute.");
 
 				if(!actionList.isEmpty())
 					rrr.setActionList(actionList);
@@ -189,8 +182,8 @@ public class ResponseInnerNodeletAdder implements NodeletAdder {
 				ResponseRuleApplicable applicable = assistant.peekObject();
 				applicable.applyResponseRule(rrr);
 				
-				if(rrr.getUrlTokens() != null) {
-					for(Token token : rrr.getUrlTokens()) {
+				if(rrr.getTargetTokens() != null) {
+					for(Token token : rrr.getTargetTokens()) {
 						if(token.getType() == TokenType.REFERENCE_BEAN) {
 							assistant.putBeanReference(token.getName(), rrr);
 						}

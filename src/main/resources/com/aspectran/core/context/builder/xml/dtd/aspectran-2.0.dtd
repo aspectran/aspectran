@@ -192,18 +192,17 @@ characterEncoding CDATA #IMPLIED
 default (true | false) #IMPLIED
 >
 
-<!ELEMENT redirect ((echo? | action? | include?)*, url?, parameter?)>
+<!ELEMENT redirect ((echo? | action? | include?)*, parameter?)>
 <!ATTLIST redirect
 contentType CDATA #IMPLIED
-url CDATA #IMPLIED
-translet CDATA #IMPLIED
+translet CDATA #REQUIRED
 excludeNullParameters CDATA #IMPLIED
 default (true | false) #IMPLIED
 >
 
 <!ELEMENT url (#PCDATA)>
 
-<!ELEMENT forward ((echo? | action? | include?)*, url?, attribute?)>
+<!ELEMENT forward ((echo? | action? | include?)*, attribute?)>
 <!ATTLIST forward
 contentType CDATA #IMPLIED
 translet CDATA #IMPLIED

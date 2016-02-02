@@ -23,8 +23,7 @@ import com.aspectran.core.util.apon.Parameters;
 public class RedirectParameters extends AbstractParameters implements Parameters {
 
 	public static final ParameterDefine contentType;
-	public static final ParameterDefine translet;
-	public static final ParameterDefine url;
+	public static final ParameterDefine target;
 	public static final ParameterDefine parameters;
 	public static final ParameterDefine excludeNullParameter;
 	public static final ParameterDefine actions;
@@ -34,8 +33,7 @@ public class RedirectParameters extends AbstractParameters implements Parameters
 	
 	static {
 		contentType = new ParameterDefine("contentType", ParameterValueType.STRING);
-		translet = new ParameterDefine("translet", ParameterValueType.STRING);
-		url = new ParameterDefine("url", ParameterValueType.STRING);
+		target = new ParameterDefine("target", ParameterValueType.STRING);
 		parameters = new ParameterDefine("parameter", ItemHolderParameters.class);
 		excludeNullParameter = new ParameterDefine("excludeNullParameter", ParameterValueType.BOOLEAN);
 		actions = new ParameterDefine("action", ActionParameters.class, true, true);
@@ -43,8 +41,7 @@ public class RedirectParameters extends AbstractParameters implements Parameters
 		
 		parameterDefines = new ParameterDefine[] {
 				contentType,
-				translet,
-				url,
+				target,
 				parameters,
 				excludeNullParameter,
 				actions,
