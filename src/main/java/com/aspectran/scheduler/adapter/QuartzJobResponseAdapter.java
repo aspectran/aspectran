@@ -44,27 +44,33 @@ public class QuartzJobResponseAdapter extends AbstractResponseAdapter implements
 		
 		this.jobDetail = jobDetail;
 	}
-	
+
+	@Override
 	public String getCharacterEncoding() {
 		return characterEncoding;
 	}
-	
+
+	@Override
 	public void setCharacterEncoding(String characterEncoding) {
 		this.characterEncoding = characterEncoding;
 	}
-	
+
+	@Override
 	public String getContentType() {
 		return ContentType.TEXT_PLAIN.toString();
 	}
 
+	@Override
 	public void setContentType(String contentType) {
 		// only text/plain
 	}
-	
+
+	@Override
 	public OutputStream getOutputStream() throws IOException {
 		return new QuartzJobOutputStream(jobDetail);
 	}
-	
+
+	@Override
 	public Writer getWriter() throws IOException {
 		String characterEncoding = getCharacterEncoding();
 
@@ -78,10 +84,12 @@ public class QuartzJobResponseAdapter extends AbstractResponseAdapter implements
 
 		return writer;
 	}
-	
+
+	@Override
 	public void redirect(String requestUri) throws IOException {
 	}
-	
+
+	@Override
 	public String redirect(Activity activity, RedirectResponseRule redirectResponseRule) throws IOException {
 		throw new UnsupportedOperationException("redirect");
 	}

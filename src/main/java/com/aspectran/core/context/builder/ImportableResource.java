@@ -47,7 +47,8 @@ public class ImportableResource extends Importable {
 		
 		setLastModified(System.currentTimeMillis());
 	}
-	
+
+	@Override
 	public String getDistinguishedName() {
 		return resource;
 	}
@@ -57,6 +58,7 @@ public class ImportableResource extends Importable {
 	 * 
 	 * @return the input stream
 	 */
+	@Override
 	public InputStream getInputStream() throws IOException {
 		InputStream inputStream = classLoader.getResourceAsStream(resource);
 		
@@ -66,9 +68,6 @@ public class ImportableResource extends Importable {
 		return inputStream;
 	}
 	
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();

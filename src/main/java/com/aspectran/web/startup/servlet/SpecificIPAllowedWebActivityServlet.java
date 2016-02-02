@@ -51,9 +51,6 @@ public class SpecificIPAllowedWebActivityServlet extends WebActivityServlet impl
 		super();
 	}
 
-	/* (non-Javadoc)
-	 * @see javax.servlet.GenericServlet#init()
-	 */
 	@Override
 	public void init() throws ServletException {
 		String addresses = getServletConfig().getInitParameter("allowedAddresses");
@@ -72,9 +69,6 @@ public class SpecificIPAllowedWebActivityServlet extends WebActivityServlet impl
 		super.init();
 	}
 
-	/* (non-Javadoc)
-	 * @see javax.servlet.http.HttpServlet#service(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
-	 */
 	@Override
 	public void service(HttpServletRequest req, HttpServletResponse res) throws IOException {
 		String remoteAddr = req.getRemoteAddr();

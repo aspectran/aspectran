@@ -15,6 +15,10 @@
  */
 package com.aspectran.core.context.translet.scan;
 
+import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
+
 import com.aspectran.core.context.AspectranConstants;
 import com.aspectran.core.context.builder.apon.params.FilterParameters;
 import com.aspectran.core.util.ClassUtils;
@@ -23,10 +27,6 @@ import com.aspectran.core.util.apon.Parameters;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 import com.aspectran.core.util.wildcard.WildcardPattern;
-
-import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
 
 public class TransletFileScanner extends FileScanner {
 
@@ -96,7 +96,8 @@ public class TransletFileScanner extends FileScanner {
 		}
 		setTemplateFileScanFilter(filterClass);
 	}
-	
+
+	@Override
 	protected void putFile(Map<String, File> scannedFiles, String filePath, File scannedFile) {
 		String transletName = filePath;
 		

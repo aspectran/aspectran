@@ -94,6 +94,7 @@ public class BeanClassScanner extends ClassScanner {
 		setBeanClassScanFilter(filterClass);
 	}
 
+	@Override
 	public Map<String, Class<?>> scanClasses(String classNamePattern) {
 		try {
 			return super.scanClasses(classNamePattern);
@@ -101,7 +102,8 @@ public class BeanClassScanner extends ClassScanner {
 			throw new BeanClassScanFailedException("Failed to scan bean class. classNamePattern: " + classNamePattern, e);
 		}
 	}
-	
+
+	@Override
 	public void scanClasses(String classNamePattern, Map<String, Class<?>> scannedClasses) throws IOException {
 		try {
 			super.scanClasses(classNamePattern, scannedClasses);
@@ -110,6 +112,7 @@ public class BeanClassScanner extends ClassScanner {
 		}
 	}
 
+	@Override
 	protected void putClass(Map<String, Class<?>> scannedClasses, String resourceName, Class<?> scannedClass) {
 		if(scannedClass.isInterface())
 			return;

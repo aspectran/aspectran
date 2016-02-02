@@ -51,7 +51,8 @@ public class ImportableFile extends Importable {
 		this.basePath = basePath;
 		this.filePath = filePath;
 	}
-	
+
+	@Override
 	public String getDistinguishedName() {
 		return filePath;
 	}
@@ -98,9 +99,6 @@ public class ImportableFile extends Importable {
 		return inputStream;
 	}
 	
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();

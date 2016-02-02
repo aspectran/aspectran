@@ -25,7 +25,8 @@ public class ShallowImportHandler extends AbstractImportHandler implements Impor
 	
 	public ShallowImportHandler() {
 	}
-	
+
+	@Override
 	public void handle(Importable importable) throws Exception {
 	}
 

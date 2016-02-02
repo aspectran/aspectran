@@ -16,6 +16,7 @@
 package com.aspectran.core.context.rule;
 
 import java.util.List;
+import java.util.Map;
 
 import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.expr.token.Tokenizer;
@@ -179,7 +180,29 @@ public class RedirectResponseRule extends ActionPossessSupport implements Action
 		
 		parameterItemRuleMap.putItemRule(parameterItemRule);
 	}
-	
+
+	/**
+	 * Sets the parameter map.
+	 *
+	 * @param parameterMap the parameter map
+	 */
+	public void setParameterMap(Map<String, String> parameterMap) {
+		if(parameterMap == null) {
+			this.parameterItemRuleMap = null;
+			return;
+		}
+
+		ItemRuleMap params = new ItemRuleMap();
+		for(Map.Entry<String, String> entry : parameterMap.entrySet()) {
+			ItemRule ir = new ItemRule();
+			ir.setName(entry.getKey());
+			ir.setValue(entry.getValue());
+			ir.setTokenize(Boolean.FALSE);
+		}
+
+		this.parameterItemRuleMap = params;
+	}
+
 	/**
 	 * Returns whether the default response.
 	 *

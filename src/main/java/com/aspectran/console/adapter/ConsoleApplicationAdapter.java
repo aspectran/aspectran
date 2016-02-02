@@ -50,31 +50,24 @@ public class ConsoleApplicationAdapter extends AbstractApplicationAdapter implem
 		super.setApplicationBasePath(applicationBasePath);
 	}
 
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.adapter.ApplicationAdapter#getAttribute(java.lang.String)
-	 */
+	@Override
 	@SuppressWarnings("unchecked")
 	public <T> T getAttribute(String name) {
 		return (T)attributes.get(name);
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.adapter.ApplicationAdapter#setAttribute(java.lang.String, java.lang.Object)
-	 */
+
+	@Override
 	public void setAttribute(String name, Object o) {
 		attributes.put(name, o);
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.adapter.ApplicationAdapter#getAttributeNames()
-	 */
+
+	@Override
 	public Enumeration<String> getAttributeNames() {
 		return Collections.enumeration(attributes.keySet());
 	}
 
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.adapter.ApplicationAdapter#removeAttribute(java.lang.String)
-	 */
+	@Override
 	public void removeAttribute(String name) {
 		attributes.remove(name);
 	}

@@ -30,7 +30,8 @@ public class XmlImportHandler extends AbstractImportHandler implements ImportHan
 		this.assistant = assistant;
 		aspectranNodeParser = new AspectranNodeParser(assistant);
 	}
-	
+
+	@Override
 	public void handle(Importable importable) throws Exception {
 		AssistantLocal assistantLocal = assistant.backupAssistantLocal();
 		

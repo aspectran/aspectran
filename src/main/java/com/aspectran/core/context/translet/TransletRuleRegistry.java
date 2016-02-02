@@ -32,6 +32,7 @@ import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.TransletRuleMap;
 import com.aspectran.core.context.rule.type.RequestMethodType;
 import com.aspectran.core.context.rule.type.TokenType;
+import com.aspectran.core.context.translet.annotation.Translets;
 import com.aspectran.core.context.translet.scan.TransletClassScanner;
 import com.aspectran.core.context.translet.scan.TransletFileScanner;
 import com.aspectran.core.context.variable.ParameterMap;
@@ -142,14 +143,17 @@ public class TransletRuleRegistry {
 				if(transletClassMap != null && !transletClassMap.isEmpty()) {
 					for(Map.Entry<String, Class<?>> entry : transletClassMap.entrySet()) {
 						String className = entry.getKey();
-						Class<?> transletClass = entry.getValue();
+						Class<?> transletsClass = entry.getValue();
 
-						String transletName = null;
+						if(transletsClass.isAnnotationPresent(Translets.class)) {
+							String transletName = null;
 
-						//TODO
+							//TODO
 
-						TransletRule newTransletRule = TransletRule.newDerivedTransletRule(transletRule, transletName);
-						putTransletRule(newTransletRule);
+							TransletRule newTransletRule = TransletRule.replicate(transletRule, transletName);
+							putTransletRule(newTransletRule);
+
+						}
 					}
 				}
 			} else {
@@ -168,7 +172,7 @@ public class TransletRuleRegistry {
 
 					for(Map.Entry<String, File> entry : templateFileMap.entrySet()) {
 						String scannedTransletName = entry.getKey();
-						TransletRule newTransletRule = TransletRule.newDerivedTransletRule(transletRule, scannedTransletName);
+						TransletRule newTransletRule = TransletRule.replicate(transletRule, scannedTransletName);
 
 						if(prefixSuffixPattern.isSplited()) {
 							newTransletRule.setName(prefixSuffixPattern.join(scannedTransletName));

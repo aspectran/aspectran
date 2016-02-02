@@ -37,6 +37,7 @@ public class AponActivityContextBuilder extends AbstractActivityContextBuilder i
 		this.encoding = encoding;
 	}
 
+	@Override
 	public ActivityContext build(String rootContext) throws ActivityContextBuilderException {
 		try {
 			if(rootContext == null)

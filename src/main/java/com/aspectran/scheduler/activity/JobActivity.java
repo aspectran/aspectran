@@ -15,6 +15,8 @@
  */
 package com.aspectran.scheduler.activity;
 
+import java.util.Map;
+
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.CoreActivity;
 import com.aspectran.core.activity.Translet;
@@ -26,8 +28,6 @@ import com.aspectran.core.context.expr.ItemTokenExpression;
 import com.aspectran.core.context.expr.ItemTokenExpressor;
 import com.aspectran.core.context.rule.RequestRule;
 import com.aspectran.core.context.variable.ValueMap;
-
-import java.util.Map;
 
 /**
  * The Class JobActivity.
@@ -43,6 +43,7 @@ public class JobActivity extends CoreActivity implements Activity {
 		setResponseAdapter(responseAdapter);
 	}
 
+	@Override
 	protected void request(Translet translet) {
 		try {
 	        ValueMap valueMap = parseParameter();
@@ -75,7 +76,8 @@ public class JobActivity extends CoreActivity implements Activity {
 		
 		return null;
 	}
-	
+
+	@Override
 	@SuppressWarnings("unchecked")
 	public <T extends Activity> T newActivity() {
 		JobActivity activity = new JobActivity(getActivityContext(), getRequestAdapter(), getResponseAdapter());

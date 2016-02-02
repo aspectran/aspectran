@@ -519,7 +519,7 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 		return newTransletRule;
 	}
 	
-	public static TransletRule newDerivedTransletRule(TransletRule transletRule, String newDispatchName) {
+	public static TransletRule replicate(TransletRule transletRule, String newDispatchName) {
 		TransletRule newTransletRule = new TransletRule();
 		newTransletRule.setName(transletRule.getName());
 		newTransletRule.setRestVerb(transletRule.getRestVerb());

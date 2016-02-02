@@ -31,14 +31,14 @@ import com.aspectran.core.context.rule.type.RequestMethodType;
 
 /**
  * The Interface Translet.
- * 
+ *
  * <p>Created: 2008. 7. 5. AM 12:35:44</p>
  */
-public abstract interface Translet {
+public interface Translet {
 
 	/**
 	 * Returns the path of translet.
-	 * 
+	 *
 	 * @return the translet path
 	 */
 	public String getTransletName();
@@ -49,21 +49,21 @@ public abstract interface Translet {
 	 * @return the REST verb
 	 */
 	public RequestMethodType getRestVerb();
-	
+
 	/**
 	 * Gets the declared attribute map.
 	 *
 	 * @return the declared attribute map
 	 */
 	public Map<String, Object> getDeclaredAttributeMap();
-	
+
 	/**
 	 * Sets the declared attribute map.
 	 *
 	 * @param declaredAttributeMap the declared attribute map
 	 */
 	public void setDeclaredAttributeMap(Map<String, Object> declaredAttributeMap);
-	
+
 	/**
 	 * Get a named attribute and convert it into the given type.
 	 *
@@ -82,18 +82,18 @@ public abstract interface Translet {
 	 * @return return named value converted to type T or the default value if non existing.
 	 */
 	public <T> T getAttribute(String name, T defaultValue);
-	
+
 	/**
 	 * Sets the attribute.
 	 *
-	 * @param name the name
-	 * @param value the value
+	 * @param name the attribute name
+	 * @param value the attribute value
 	 */
 	public void setAttribute(String name, Object value);
-	
+
 	/**
 	 * Gets the process result.
-	 * 
+	 *
 	 * @return the process result
 	 */
 	public ProcessResult getProcessResult();
@@ -108,7 +108,7 @@ public abstract interface Translet {
 
 	/**
 	 * Sets the process result.
-	 * 
+	 *
 	 * @param processResult the new process result
 	 */
 	public void setProcessResult(ProcessResult processResult);
@@ -119,7 +119,7 @@ public abstract interface Translet {
 	 * @return the process result
 	 */
 	public ProcessResult touchProcessResult();
-	
+
 	/**
 	 * Returns the ProcessResult. If not yet instantiated then create a new one.
 	 *
@@ -142,7 +142,7 @@ public abstract interface Translet {
 
 	/**
 	 * Respond immediately, and the remaining jobs will be canceled.
-	 * 
+	 *
 	 * @param response the response
 	 */
 	public void response(Response response);
@@ -167,21 +167,45 @@ public abstract interface Translet {
 	 * @param target the target resource
 	 */
 	public void redirect(String target);
-	
+
+	/**
+	 * Redirect.
+	 *
+	 * @param target the target
+	 * @param immediately the immediately
+	 */
+	public void redirect(String target, boolean immediately);
+
+	/**
+	 * Redirect.
+	 *
+	 * @param target the target
+	 * @param parameters the parameters
+	 */
+	public void redirect(String target, Map<String, String> parameters);
+
 	/**
 	 * Forward according to a given rule.
 	 *
 	 * @param forwardResponseRule the forward response rule
 	 */
 	public void forward(ForwardResponseRule forwardResponseRule);
-	
+
 	/**
 	 * Immediately forwarding.
 	 *
 	 * @param transletName the translet name of the target to be forwarded
 	 */
 	public void forward(String transletName);
-	
+
+	/**
+	 * Forward.
+	 *
+	 * @param transletName the translet name
+	 * @param immediately the immediately
+	 */
+	public void forward(String transletName, boolean immediately);
+
 	/**
 	 * Returns whether the exception was thrown.
 	 *
@@ -202,28 +226,28 @@ public abstract interface Translet {
 	 * @return the application adapter
 	 */
 	public ApplicationAdapter getApplicationAdapter();
-	
+
 	/**
 	 * Gets the session adapter.
 	 *
 	 * @return the session adapter
 	 */
 	public SessionAdapter getSessionAdapter();
-	
+
 	/**
 	 * Gets the request adapter.
 	 *
 	 * @return the request adapter
 	 */
 	public RequestAdapter getRequestAdapter();
-	
+
 	/**
 	 * Gets the response adapter.
 	 *
 	 * @return the response adapter
 	 */
 	public ResponseAdapter getResponseAdapter();
-	
+
 	/**
 	 * Gets the request adaptee.
 	 *
@@ -231,7 +255,7 @@ public abstract interface Translet {
 	 * @return the request adaptee
 	 */
 	public <T> T getRequestAdaptee();
-	
+
 	/**
 	 * Gets the response adaptee.
 	 *
@@ -239,7 +263,7 @@ public abstract interface Translet {
 	 * @return the response adaptee
 	 */
 	public <T> T getResponseAdaptee();
-	
+
 	/**
 	 * Gets the session adaptee.
 	 *
@@ -247,19 +271,36 @@ public abstract interface Translet {
 	 * @return the session adaptee
 	 */
 	public <T> T getSessionAdaptee();
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.context.bean.BeanRegistry#getBean(java.lang.String)
+
+	/**
+	 * Return an instance.
+	 *
+	 * @param <T> the generic type
+	 * @param id the id of the bean to retrieve
+	 * @return an instance of the bean
 	 */
-	public <T> T getBean(String beanId);
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.context.bean.BeanRegistry#getBean(java.lang.Class)
+	public <T> T getBean(String id);
+
+	/**
+	 * Return the bean instance that matches the given object type.
+	 * The class name and bean id must be the same.
+	 *
+	 * @param <T> the generic type
+	 * @param classType type the bean must match; can be an interface or superclass. null is disallowed.
+	 * @return an instance of the bean
+	 * @since 1.3.1
 	 */
 	public <T> T getBean(Class<T> classType);
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.context.bean.BeanRegistry#getBean(java.lang.String, java.lang.Class)
+
+	/**
+	 * Return an instance.
+	 * If the bean is not of the required type then throw a BeanNotOfRequiredTypeException.
+	 *
+	 * @param <T> the generic type
+	 * @param id the id of the bean to retrieve
+	 * @param requiredType type the bean must match; can be an interface or superclass. null is disallowed.
+	 * @return an instance of the bean
+	 * @since 1.3.1
 	 */
 	public <T> T getBean(String id, Class<T> requiredType);
 
@@ -271,7 +312,7 @@ public abstract interface Translet {
 	 * @return the aspect advice bean
 	 */
 	public <T> T getAspectAdviceBean(String aspectId);
-	
+
 	/**
 	 * Put aspect advice bean.
 	 *
@@ -279,7 +320,7 @@ public abstract interface Translet {
 	 * @param adviceBean the advice bean
 	 */
 	public void putAspectAdviceBean(String aspectId, Object adviceBean);
-	
+
 	/**
 	 * Gets the before advice result.
 	 *
@@ -288,7 +329,7 @@ public abstract interface Translet {
 	 * @return the before advice result
 	 */
 	public <T> T getBeforeAdviceResult(String aspectId);
-	
+
 	/**
 	 * Gets the after advice result.
 	 *
@@ -297,7 +338,7 @@ public abstract interface Translet {
 	 * @return the after advice result
 	 */
 	public <T> T getAfterAdviceResult(String aspectId);
-	
+
 	/**
 	 * Gets the finally advice result.
 	 *

@@ -29,6 +29,7 @@ public class RuntimeActivityContextBuilder extends AbstractActivityContextBuilde
 		super(applicationAdapter);
 	}
 
+	@Override
 	public ActivityContext build(String contextConfigLocation) throws ActivityContextBuilderException {
 		try {
 			return makeActivityContext(getApplicationAdapter());

@@ -36,6 +36,7 @@ public class JdkDynamicBeanProxy extends AbstractDynamicBeanProxy implements Inv
 		this.bean = bean;
 	}
 
+	@Override
 	public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
 		return dynamicInvoke(bean, method, args, null);
 	}

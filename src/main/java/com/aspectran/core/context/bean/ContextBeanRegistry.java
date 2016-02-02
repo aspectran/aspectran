@@ -44,10 +44,8 @@ public class ContextBeanRegistry extends AbstractBeanFactory implements BeanRegi
 	public ContextBeanRegistry(BeanRuleRegistry beanRuleRegistry, BeanProxifierType beanProxifierType) {
 		super(beanRuleRegistry, beanProxifierType);
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.context.bean.BeanRegistry#getBean(java.lang.String)
-	 */
+
+	@Override
 	public <T> T getBean(String id) {
 		BeanRule beanRule = beanRuleRegistry.getBeanRule(id);
 
@@ -57,9 +55,7 @@ public class ContextBeanRegistry extends AbstractBeanFactory implements BeanRegi
 		return getBean(beanRule);
 	}
 
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.context.bean.BeanRegistry#getBean(java.lang.Class)
-	 */
+	@Override
 	public <T> T getBean(Class<T> requiredType) {
 		BeanRule beanRule = beanRuleRegistry.getBeanRule(requiredType);
 		
@@ -68,10 +64,8 @@ public class ContextBeanRegistry extends AbstractBeanFactory implements BeanRegi
 		
 		return getBean(beanRule);
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.context.bean.BeanRegistry#getBean(java.lang.String, java.lang.Class)
-	 */
+
+	@Override
 	public <T> T getBean(String id, Class<T> requiredType) {
 		BeanRule beanRule = beanRuleRegistry.getBeanRule(id);
 
@@ -166,6 +160,7 @@ public class ContextBeanRegistry extends AbstractBeanFactory implements BeanRegi
 		return bean;
 	}
 
+	@Override
 	protected Object createBean(BeanRule beanRule) {
 		if(beanRule.isFactoryBeanReferenced()) {
 			String factoryBeanId = beanRule.getFactoryBeanId();

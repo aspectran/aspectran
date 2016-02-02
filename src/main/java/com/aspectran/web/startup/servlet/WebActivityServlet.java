@@ -51,9 +51,6 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 		super();
 	}
 
-	/* (non-Javadoc)
-	 * @see javax.servlet.GenericServlet#init()
-	 */
 	@Override
 	public void init() throws ServletException {
 		log.info("Initializing WebActivityServlet...");
@@ -79,17 +76,11 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see javax.servlet.http.HttpServlet#service(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
-	 */
 	@Override
 	public void service(HttpServletRequest req, HttpServletResponse res) throws IOException {
 		aspectranService.service(req, res);
 	}
 
-	/* (non-Javadoc)
-	 * @see javax.servlet.GenericServlet#destroy()
-	 */
 	@Override
 	public void destroy() {
 		super.destroy();

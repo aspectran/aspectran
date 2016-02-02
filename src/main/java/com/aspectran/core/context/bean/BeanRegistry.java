@@ -39,7 +39,6 @@ public interface BeanRegistry extends BeanFactory {
 	 * @param <T> the generic type
 	 * @param classType type the bean must match; can be an interface or superclass. null is disallowed.
 	 * @return an instance of the bean
-	 * 
 	 * @since 1.3.1
 	 */
 	public <T> T getBean(Class<T> classType);
@@ -52,7 +51,6 @@ public interface BeanRegistry extends BeanFactory {
 	 * @param id the id of the bean to retrieve
 	 * @param requiredType type the bean must match; can be an interface or superclass. null is disallowed.
 	 * @return an instance of the bean
-	 * 
 	 * @since 1.3.1
 	 */
 	public <T> T getBean(String id, Class<T> requiredType);

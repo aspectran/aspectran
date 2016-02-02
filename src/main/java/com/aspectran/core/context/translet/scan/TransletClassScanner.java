@@ -15,6 +15,10 @@
  */
 package com.aspectran.core.context.translet.scan;
 
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
 import com.aspectran.core.context.builder.apon.params.FilterParameters;
 import com.aspectran.core.util.ClassScanner;
 import com.aspectran.core.util.ClassUtils;
@@ -22,10 +26,6 @@ import com.aspectran.core.util.apon.Parameters;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 import com.aspectran.core.util.wildcard.WildcardPattern;
-
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 public class TransletClassScanner extends ClassScanner {
 
@@ -79,6 +79,7 @@ public class TransletClassScanner extends ClassScanner {
 		setTransletClassScanFilter(filterClass);
 	}
 
+	@Override
 	public Map<String, Class<?>> scanClasses(String classNamePattern) {
 		try {
 			return super.scanClasses(classNamePattern);
@@ -86,7 +87,8 @@ public class TransletClassScanner extends ClassScanner {
 			throw new TransletScanFailedException("Failed to scan translet class. classNamePattern: " + classNamePattern, e);
 		}
 	}
-	
+
+	@Override
 	public void scanClasses(String classNamePattern, Map<String, Class<?>> scannedClasses) throws IOException {
 		try {
 			super.scanClasses(classNamePattern, scannedClasses);
@@ -95,6 +97,7 @@ public class TransletClassScanner extends ClassScanner {
 		}
 	}
 
+	@Override
 	protected void putClass(Map<String, Class<?>> scannedClasses, String resourceName, Class<?> scannedClass) {
 		if(scannedClass.isInterface())
 			return;

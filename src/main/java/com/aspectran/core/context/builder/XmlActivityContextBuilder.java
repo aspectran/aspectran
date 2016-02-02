@@ -30,6 +30,7 @@ public class XmlActivityContextBuilder extends AbstractActivityContextBuilder im
 		super(applicationAdapter);
 	}
 
+	@Override
 	public ActivityContext build(String rootContext) throws ActivityContextBuilderException {
 		try {
 			if(rootContext == null)

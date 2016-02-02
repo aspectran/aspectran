@@ -17,12 +17,12 @@ package com.aspectran.core.context.bean.proxy;
 
 import java.lang.reflect.Method;
 
+import com.aspectran.core.context.ActivityContext;
+import com.aspectran.core.context.rule.BeanRule;
+
 import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;
-
-import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.context.rule.BeanRule;
 
 /**
  * The Class CglibDynamicBeanProxy.
@@ -35,11 +35,10 @@ public class CglibDynamicBeanProxy extends AbstractDynamicBeanProxy implements M
 		super(context, beanRule);
 	}
 
-	/* (non-Javadoc)
-	 * @see net.sf.cglib.proxy.MethodInterceptor#intercept(java.lang.Object, java.lang.reflect.Method, java.lang.Object[], net.sf.cglib.proxy.MethodProxy)
-	 */
+	@Override
 	public Object intercept(final Object proxy, final Method method, final Object[] args, final MethodProxy methodProxy) throws Throwable {
 		ProxyMethodInvoker proxyMethodInvoker = new ProxyMethodInvoker() {
+			@Override
 			public Object invoke() throws Throwable {
 				// execute the original method.
 				return methodProxy.invokeSuper(proxy, args);

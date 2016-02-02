@@ -34,12 +34,11 @@ public class JavassistDynamicBeanProxy extends AbstractDynamicBeanProxy implemen
 	protected JavassistDynamicBeanProxy(ActivityContext context, BeanRule beanRule) {
 		super(context, beanRule);
 	}
-	
-	/* (non-Javadoc)
-	 * @see javassist.util.proxy.MethodHandler#invoke(java.lang.Object, java.lang.reflect.Method, java.lang.reflect.Method, java.lang.Object[])
-	 */
+
+	@Override
 	public Object invoke(final Object self, Method overridden, final Method proceed, final Object[] args) throws Throwable {
 		ProxyMethodInvoker proxyMethodInvoker = new ProxyMethodInvoker() {
+			@Override
 			public Object invoke() throws Throwable {
 				// execute the original method.
 				return proceed.invoke(self, args);

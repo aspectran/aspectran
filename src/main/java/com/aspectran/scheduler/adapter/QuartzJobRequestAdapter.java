@@ -15,11 +15,15 @@
  */
 package com.aspectran.scheduler.adapter;
 
-import com.aspectran.core.adapter.AbstractRequestAdapter;
-import com.aspectran.core.adapter.RequestAdapter;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.quartz.JobDetail;
 
-import java.util.*;
+import com.aspectran.core.adapter.AbstractRequestAdapter;
+import com.aspectran.core.adapter.RequestAdapter;
 
 /**
  * The Class QuartzJobRequestAdapter.
@@ -40,88 +44,64 @@ public class QuartzJobRequestAdapter extends AbstractRequestAdapter implements R
 	public QuartzJobRequestAdapter(JobDetail jobDetail) {
 		super(jobDetail);
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.adapter.RequestAdapter#getCharacterEncoding()
-	 */
+
+	@Override
 	public String getCharacterEncoding() {
 		return characterEncoding;
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.adapter.RequestAdapter#setCharacterEncoding(java.lang.String)
-	 */
+
+	@Override
 	public void setCharacterEncoding(String characterEncoding) {
 		this.characterEncoding = characterEncoding;
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.adapter.RequestAdapter#getParameter(java.lang.String)
-	 */
+
+	@Override
 	public String getParameter(String name) {
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.adapter.RequestAdapter#setParameter(java.lang.String, java.lang.String)
-	 */
+	@Override
 	public void setParameter(String name, String value) {
 		// ignore
 	}
 
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.adapter.RequestAdapter#getParameterValues(java.lang.String)
-	 */
+	@Override
 	public String[] getParameterValues(String name) {
 		return null;
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.adapter.RequestAdapter#getParameterNames()
-	 */
+
+	@Override
 	public Enumeration<String> getParameterNames() {
 		return null;
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.adapter.RequestAdapter#getAttribute(java.lang.String)
-	 */
+
+	@Override
 	@SuppressWarnings("unchecked")
 	public <T> T getAttribute(String name) {
 		return (T)attributeMap.get(name);
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.adapter.RequestAdapter#setAttribute(java.lang.String, java.lang.Object)
-	 */
+
+	@Override
 	public void setAttribute(String name, Object o) {
 		attributeMap.put(name, o);
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.adapter.RequestAdapter#getAttributeNames()
-	 */
+
+	@Override
 	public Enumeration<String> getAttributeNames() {
 		return Collections.enumeration(attributeMap.keySet());
 	}
 
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.adapter.RequestAdapter#removeAttribute(java.lang.String)
-	 */
+	@Override
 	public void removeAttribute(String name) {
 		attributeMap.remove(name);
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.adapter.RequestAdapter#getParameterMap()
-	 */
+
+	@Override
 	public Map<String, Object> getParameterMap() {
 		return null;
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.adapter.RequestAdapter#getAttributeMap()
-	 */
+
+	@Override
 	public Map<String, Object> getAttributeMap() {
 		return attributeMap;
 	}

@@ -36,6 +36,7 @@ public class HybridActivityContextBuilder extends AbstractActivityContextBuilder
 		this.encoding = encoding;
 	}
 
+	@Override
 	public ActivityContext build(String rootContext) throws ActivityContextBuilderException {
 		try {
 			if(rootContext == null)

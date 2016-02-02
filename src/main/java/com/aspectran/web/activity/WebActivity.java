@@ -15,6 +15,11 @@
  */
 package com.aspectran.web.activity;
 
+import java.util.Enumeration;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.CoreActivity;
 import com.aspectran.core.activity.Translet;
@@ -38,10 +43,6 @@ import com.aspectran.web.adapter.HttpServletRequestAdapter;
 import com.aspectran.web.adapter.HttpServletResponseAdapter;
 import com.aspectran.web.adapter.HttpSessionAdapter;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.Enumeration;
-
 /**
  * The Class WebActivity.
  *
@@ -51,13 +52,10 @@ public class WebActivity extends CoreActivity implements Activity {
 
 	private static final String MULTIPART_REQUEST_WRAPPER_RESOLVER = "multipartRequestWrapperResolver";
 	
-	/** The request. */
 	private HttpServletRequest request;
 	
-	/** The response. */
 	private HttpServletResponse response;
 	
-	/** The multipart request wrapper. */
 	private MultipartRequestWrapper requestWrapper;
 	
 	/**

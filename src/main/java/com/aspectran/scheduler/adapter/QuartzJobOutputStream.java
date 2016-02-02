@@ -41,14 +41,17 @@ public class QuartzJobOutputStream extends OutputStream {
 		this.buffer = new StringBuilder();
 	}
 
+	@Override
 	public void write(int b) throws IOException {
 		buffer.append(b);
 	}
 
+	@Override
 	public void write(byte b[]) throws IOException {
 		write(b, 0, b.length);
 	}
 
+	@Override
 	public void write(byte b[], int off, int len) throws IOException {
 		if((off | len | (b.length - (len + off)) | (off + len)) < 0)
 			throw new IndexOutOfBoundsException();
@@ -58,9 +61,10 @@ public class QuartzJobOutputStream extends OutputStream {
 		}
 	}
 
+	@Override
 	public void flush() {
 		if(buffer.length() > 0) {
-			StringBuilder sb = new StringBuilder();
+			StringBuilder sb = new StringBuilder(128);
 			sb.append("results of job [");
 			sb.append(jobDetail.getJobDataMap().get(QuartzSchedulerService.TRANSLET_NAME_DATA_KEY)).append("]");
 			sb.append(AspectranConstants.LINE_SEPARATOR);
@@ -72,6 +76,7 @@ public class QuartzJobOutputStream extends OutputStream {
 		}
 	}
 
+	@Override
 	public void close() throws IOException {
 		flush();
 	}

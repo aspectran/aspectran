@@ -139,10 +139,8 @@ public class AspectAdviceRuleRegistry implements Cloneable {
 		
 		exceptionHandlingRuleList.add(0, exceptionHandlingRule);
 	}
-	
-	/* (non-Javadoc)
-	 * @see java.lang.Object#clone()
-	 */
+
+	@Override
 	public AspectAdviceRuleRegistry clone() throws CloneNotSupportedException {
 		// deep copy
 		AspectAdviceRuleRegistry newAspectAdviceRuleRegistry = (AspectAdviceRuleRegistry)super.clone();
@@ -183,9 +181,6 @@ public class AspectAdviceRuleRegistry implements Cloneable {
 		this.aspectRuleCount++;
 	}
 	
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();

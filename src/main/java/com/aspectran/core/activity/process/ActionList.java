@@ -15,6 +15,8 @@
  */
 package com.aspectran.core.activity.process;
 
+import java.util.ArrayList;
+
 import com.aspectran.core.activity.process.action.BeanAction;
 import com.aspectran.core.activity.process.action.EchoAction;
 import com.aspectran.core.activity.process.action.Executable;
@@ -24,8 +26,6 @@ import com.aspectran.core.context.rule.EchoActionRule;
 import com.aspectran.core.context.rule.IncludeActionRule;
 import com.aspectran.core.context.rule.ability.ActionRuleApplicable;
 import com.aspectran.core.util.BooleanUtils;
-
-import java.util.ArrayList;
 
 /**
  * Then Class ActionList.
@@ -91,33 +91,24 @@ public class ActionList extends ArrayList<Executable> implements ActionRuleAppli
 		this.omittable = omittable;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.context.rule.ability.ActionRuleApplicable#applyActionRule(com.aspectran.core.context.rule.EchoActionRule)
-	 */
+	@Override
 	public void applyActionRule(EchoActionRule echoActionRule) {
 		EchoAction echoAction = new EchoAction(echoActionRule, this);
 		add(echoAction);
 	}
 
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.context.rule.ability.ActionRuleApplicable#applyActionRule(com.aspectran.core.context.rule.BeanActionRule)
-	 */
+	@Override
 	public void applyActionRule(BeanActionRule beanActionRule) {
 		BeanAction beanAction = new BeanAction(beanActionRule, this);
 		add(beanAction);
 	}
 
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.context.rule.ability.ActionRuleApplicable#applyActionRule(com.aspectran.core.context.rule.IncludeActionRule)
-	 */
+	@Override
 	public void applyActionRule(IncludeActionRule includeActionRule) {
 		IncludeAction includeAction = new IncludeAction(includeActionRule, this);
 		add(includeAction);
 	}
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();

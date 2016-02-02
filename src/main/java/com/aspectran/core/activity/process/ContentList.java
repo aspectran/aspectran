@@ -90,9 +90,6 @@ public class ContentList extends ArrayList<ActionList> {
 		this.aspectAdviceRuleRegistry = aspectAdviceRuleRegistry;
 	}
 	
-	/* (non-Javadoc)
-	 * @see java.util.AbstractCollection#toString()
-	 */
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();

@@ -195,7 +195,7 @@ default (true | false) #IMPLIED
 <!ELEMENT redirect ((echo? | action? | include?)*, parameter?)>
 <!ATTLIST redirect
 contentType CDATA #IMPLIED
-translet CDATA #REQUIRED
+target CDATA #REQUIRED
 excludeNullParameters CDATA #IMPLIED
 default (true | false) #IMPLIED
 >

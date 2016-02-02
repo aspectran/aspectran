@@ -32,7 +32,8 @@ public abstract class AbstractImportHandler implements ImportHandler {
 	
 	public AbstractImportHandler() {
 	}
-	
+
+	@Override
 	public void pending(Importable importable) {
 		if(pendingList == null)
 			pendingList = new ArrayList<Importable>();
@@ -56,9 +57,11 @@ public abstract class AbstractImportHandler implements ImportHandler {
 			}
 		}
 	}
-	
+
+	@Override
 	abstract public void handle(Importable importable) throws Exception;
-	
+
+	@Override
 	public List<Importable> getPendingList() {
 		return pendingList;
 	}

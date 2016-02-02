@@ -15,6 +15,11 @@
  */
 package com.aspectran.core.service;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.loader.ActivityContextLoader;
@@ -32,11 +37,6 @@ import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 import com.aspectran.scheduler.service.QuartzSchedulerService;
 import com.aspectran.scheduler.service.SchedulerService;
-
-import java.io.File;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 
 /**
  * The Class AbstractAspectranService.
@@ -86,6 +86,7 @@ public abstract class AbstractAspectranService implements AspectranService {
 		return rootContext;
 	}
 
+	@Override
 	public AspectranClassLoader getAspectranClassLoader() {
 		return aspectranClassLoader;
 	}
@@ -94,6 +95,7 @@ public abstract class AbstractAspectranService implements AspectranService {
 		this.aspectranClassLoader = aspectranClassLoader;
 	}
 
+	@Override
 	public ApplicationAdapter getApplicationAdapter() {
 		return applicationAdapter;
 	}
@@ -102,10 +104,12 @@ public abstract class AbstractAspectranService implements AspectranService {
 		this.applicationAdapter = applicationAdapter;
 	}
 
+	@Override
 	public ActivityContext getActivityContext() {
 		return activityContext;
 	}
-	
+
+	@Override
 	public boolean isHardReload() {
 		return hardReload;
 	}

@@ -50,9 +50,7 @@ public class IncludeAction extends AbstractAction implements Executable {
 		this.includeActionRule = includeActionRule;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.process.action.Executable#execute(com.aspectran.core.activity.Activity)
-	 */
+	@Override
 	public Object execute(Activity activity) throws Exception {
 		try {
 			RequestAdapter request = activity.getRequestAdapter();
@@ -87,38 +85,27 @@ public class IncludeAction extends AbstractAction implements Executable {
 		return includeActionRule;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.process.action.AbstractAction#getActionId()
-	 */
+	@Override
 	public String getActionId() {
 		return includeActionRule.getActionId();
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.process.action.Executable#isHidden()
-	 */
+
+	@Override
 	public boolean isHidden() {
 		return includeActionRule.isHidden();
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.process.action.Executable#getActionType()
-	 */
+
+	@Override
 	public ActionType getActionType() {
 		return ActionType.INCLUDE;
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.process.action.Executable#getActionRule()
-	 */
+
+	@Override
 	@SuppressWarnings("unchecked")
 	public <T> T getActionRule() {
 		return (T)includeActionRule;
 	}
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();

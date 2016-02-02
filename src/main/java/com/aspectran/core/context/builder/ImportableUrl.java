@@ -54,6 +54,7 @@ public class ImportableUrl extends Importable {
 	 * 
 	 * @return the input stream
 	 */
+	@Override
 	public InputStream getInputStream() throws IOException {
 		URL url = new URL(urlString);
 		URLConnection conn = url.openConnection();
@@ -63,9 +64,6 @@ public class ImportableUrl extends Importable {
 		return inputStream;
 	}
 	
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();

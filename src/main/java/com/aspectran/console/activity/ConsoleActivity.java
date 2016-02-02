@@ -49,10 +49,8 @@ public class ConsoleActivity extends CoreActivity implements Activity {
 	public ConsoleActivity(ActivityContext context) {
 		super(context);
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.CoreActivity#adapting(com.aspectran.core.activity.Translet)
-	 */
+
+	@Override
 	protected void adapting(Translet translet) {
 		RequestAdapter requestAdapter = new ConsoleRequestAdapter(this);
 		setRequestAdapter(requestAdapter);
@@ -61,16 +59,12 @@ public class ConsoleActivity extends CoreActivity implements Activity {
 		setResponseAdapter(responseAdapter);
 	}
 
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.AbstractActivity#getSessionAdapter()
-	 */
+	@Override
 	public synchronized SessionAdapter getSessionAdapter() {
 		throw new UnsupportedOperationException();
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.CoreActivity#request(com.aspectran.core.activity.Translet)
-	 */
+
+	@Override
 	protected void request(Translet translet) {
         ValueMap valueMap = parseDeclaredParameter();
         if(valueMap != null)
@@ -142,10 +136,8 @@ public class ConsoleActivity extends CoreActivity implements Activity {
 
 		return null;
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.CoreActivity#newActivity()
-	 */
+
+	@Override
 	@SuppressWarnings("unchecked")
 	public <T extends Activity> T newActivity() {
 		ConsoleActivity consoleActivity = new ConsoleActivity(getActivityContext());

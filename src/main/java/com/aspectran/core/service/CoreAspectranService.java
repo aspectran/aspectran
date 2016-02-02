@@ -35,7 +35,8 @@ public class CoreAspectranService extends AbstractAspectranService {
 	private AspectranServiceControllerListener aspectranServiceControllerListener;
 	
 	private boolean started;
-	
+
+	@Override
 	public synchronized ActivityContext startup() throws AspectranServiceException {
 		loadActivityContext();
 
@@ -48,7 +49,8 @@ public class CoreAspectranService extends AbstractAspectranService {
 		
 		return activityContext;
 	}
-	
+
+	@Override
 	public synchronized boolean restart() throws AspectranServiceException {
 		if(!started) {
 			log.debug("Cannot restart AspectranService, because it is currently stopped.");
@@ -69,6 +71,7 @@ public class CoreAspectranService extends AbstractAspectranService {
 		return cleanlyDestoryed;
 	}
 
+	@Override
 	public synchronized boolean reload() throws AspectranServiceException {
 		if(!started) {
 			log.debug("Cannot restart AspectranService, because it is currently stopped.");
@@ -88,26 +91,30 @@ public class CoreAspectranService extends AbstractAspectranService {
 		
 		return cleanlyDestoryed;
 	}
-	
+
+	@Override
 	public synchronized boolean refresh() throws AspectranServiceException {
 		if(isHardReload())
 			return restart();
 		else
 			return reload();
 	}
-	
+
+	@Override
 	public synchronized void pause() {
 		if(aspectranServiceControllerListener != null)
 			aspectranServiceControllerListener.paused(-1L);
 		
 		log.info("AspectranService was paused.");
 	}
-	
+
+	@Override
 	public synchronized void pause(long timeout) {
 		if(aspectranServiceControllerListener != null)
 			aspectranServiceControllerListener.paused(timeout);
 	}
-	
+
+	@Override
 	public synchronized void resume() {
 		if(aspectranServiceControllerListener != null)
 			aspectranServiceControllerListener.resumed();
@@ -115,6 +122,7 @@ public class CoreAspectranService extends AbstractAspectranService {
 		log.info("AspectranService was resumed.");
 	}
 
+	@Override
 	public synchronized boolean stop() {
 		if(!started)
 			return true;
@@ -133,7 +141,8 @@ public class CoreAspectranService extends AbstractAspectranService {
 		
 		return cleanlyDestoryed;
 	}
-	
+
+	@Override
 	public synchronized boolean dispose() {
 		boolean cleanlyDestoryed = stop();
 		

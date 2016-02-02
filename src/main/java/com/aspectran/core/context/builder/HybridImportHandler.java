@@ -55,7 +55,8 @@ public class HybridImportHandler extends AbstractImportHandler implements Import
 		this.encoding = encoding;
 		this.hybridLoading = hybridLoading;
 	}
-	
+
+	@Override
 	public void handle(Importable importable) throws Exception {
 		AssistantLocal assistantLocal = assistant.backupAssistantLocal();
 		

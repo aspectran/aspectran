@@ -42,7 +42,10 @@ public class Application {
             aspectranService = ConsoleAspectranService.newInstance(aspectranConfigFile);
 
             while(true) {
-                String command = System.console().readLine("Command> ");
+                String command = System.console().readLine("Aspectran> ");
+
+                if(command.length() == 0)
+                    continue;
 
                 if("restart".equals(command)) {
                 	System.out.println("Aspectran service has been restarted.");

@@ -50,6 +50,11 @@ public class ActivityContext {
 		this.applicationAdapter = applicationAdapter;
 	}
 
+	/**
+	 * Gets class loader.
+	 *
+	 * @return the class loader
+	 */
 	public ClassLoader getClassLoader() {
 		return applicationAdapter.getClassLoader();
 	}
@@ -172,10 +177,8 @@ public class ActivityContext {
 			templateProcessor = null;
 		}
 	}
-	
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
+
+	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("{applicationAdapter=").append(applicationAdapter);

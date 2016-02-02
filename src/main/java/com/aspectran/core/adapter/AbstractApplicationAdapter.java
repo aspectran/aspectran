@@ -134,7 +134,6 @@ public abstract class AbstractApplicationAdapter implements ApplicationAdapter {
 	 */
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		
 		sb.append("{applicationBasePath=").append(applicationBasePath);
 		sb.append(", classLoader=").append(getClassLoader());
 		sb.append(", adaptee=").append(adaptee);

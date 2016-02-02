@@ -42,17 +42,13 @@ public class GZipHttpServletResponseAdapter extends HttpServletResponseAdapter {
         response.setHeader("Content-Encoding", "gzip");
     }
 
-    /* (non-Javadoc)
-     * @see com.aspectran.core.adapter.ResponseAdapter#getOutputStream()
-     */
+    @Override
     public OutputStream getOutputStream() throws IOException {
         OutputStream os = ((HttpServletResponse)adaptee).getOutputStream();
         return  new FlushableGZIPOutputStream(os);
     }
 
-    /* (non-Javadoc)
-     * @see com.aspectran.core.adapter.ResponseAdapter#getWriter()
-     */
+    @Override
     public Writer getWriter() throws IOException {
         String characterEncoding = getCharacterEncoding();
 

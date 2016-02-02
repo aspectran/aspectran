@@ -46,10 +46,8 @@ public class EchoAction extends AbstractAction implements Executable {
 		super(echoActionRule.getActionId(), parent);
 		this.echoActionRule = echoActionRule;
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.process.action.Executable#execute(com.aspectran.core.activity.Activity)
-	 */
+
+	@Override
 	public Object execute(Activity activity) throws Exception {
 		if(echoActionRule.getAttributeItemRuleMap() == null)
 			return null;
@@ -74,38 +72,27 @@ public class EchoAction extends AbstractAction implements Executable {
 		return echoActionRule;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.process.action.AbstractAction#getActionId()
-	 */
+	@Override
 	public String getActionId() {
 		return echoActionRule.getActionId();
 	}
 
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.process.action.Executable#isHidden()
-	 */
+	@Override
 	public boolean isHidden() {
 		return echoActionRule.isHidden();
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.process.action.Executable#getActionType()
-	 */
+
+	@Override
 	public ActionType getActionType() {
 		return ActionType.ECHO;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.process.action.Executable#getActionRule()
-	 */
+	@Override
 	@SuppressWarnings("unchecked")
 	public <T> T getActionRule() {
 		return (T)echoActionRule;
 	}
 	
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();

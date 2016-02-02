@@ -50,61 +50,45 @@ public class ConsoleResponseAdapter extends AbstractResponseAdapter implements R
 		printStream = System.out;
 		characterEncoding = System.getProperty(ConsoleRequestAdapter.FILE_ENCODING_PROP_NAME);
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.adapter.ResponseAdapter#getCharacterEncoding()
-	 */
+
+	@Override
 	public String getCharacterEncoding() {
 		return characterEncoding;
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.adapter.ResponseAdapter#setCharacterEncoding(java.lang.String)
-	 */
+
+	@Override
 	public void setCharacterEncoding(String characterEncoding) {
 		this.characterEncoding = characterEncoding;
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.adapter.ResponseAdapter#getContentType()
-	 */
+
+	@Override
 	public String getContentType() {
 		return contentType;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.adapter.ResponseAdapter#setContentType(java.lang.String)
-	 */
+	@Override
 	public void setContentType(String contentType) {
 		this.contentType = contentType;
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.adapter.ResponseAdapter#getOutputStream()
-	 */
+
+	@Override
 	public OutputStream getOutputStream() throws IOException {
 		return printStream;
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.adapter.ResponseAdapter#getWriter()
-	 */
+
+	@Override
 	public Writer getWriter() throws IOException {
 		if(characterEncoding != null)
 			return new ConsolePrintWriter(printStream, characterEncoding);
 		else
 			return new ConsolePrintWriter(printStream);
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.adapter.ResponseAdapter#redirect(java.lang.String)
-	 */
+
+	@Override
 	public void redirect(String url) throws IOException {
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.adapter.ResponseAdapter#redirect(com.aspectran.core.activity.Activity, com.aspectran.core.context.rule.RedirectResponseRule)
-	 */
+
+	@Override
 	public String redirect(Activity activity, RedirectResponseRule redirectResponseRule) throws IOException {
 		return null;
 	}

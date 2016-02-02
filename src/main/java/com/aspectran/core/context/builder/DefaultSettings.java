@@ -15,13 +15,13 @@
  */
 package com.aspectran.core.context.builder;
 
+import java.util.Map;
+
 import com.aspectran.core.activity.CoreTranslet;
 import com.aspectran.core.activity.Translet;
 import com.aspectran.core.context.rule.type.DefaultSettingType;
 import com.aspectran.core.util.BooleanUtils;
 import com.aspectran.core.util.PrefixSuffixPattern;
-
-import java.util.Map;
 
 /**
  * The Class DefaultSettings
@@ -200,7 +200,8 @@ public class DefaultSettings implements Cloneable {
 		if(settings.get(DefaultSettingType.DEFAULT_TEMPLATE_ENGINE) != null)
 			defaultTemplateEngine = settings.get(DefaultSettingType.DEFAULT_TEMPLATE_ENGINE);
 	}
-	
+
+	@Override
 	public DefaultSettings clone() throws CloneNotSupportedException {
 		return (DefaultSettings)super.clone();              
 	}

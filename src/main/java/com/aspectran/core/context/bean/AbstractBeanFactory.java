@@ -213,7 +213,8 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 			}
 		}
 	}
-	
+
+	@Override
 	public synchronized void initialize(ActivityContext context) {
 		if(initialized) {
 			throw new UnsupportedOperationException("BeanFactory has already been initialized.");
@@ -246,7 +247,8 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 		
 		log.info("BeanFactory has been initialized successfully.");
 	}
-	
+
+	@Override
 	public synchronized void destroy() {
 		if(!initialized) {
 			throw new UnsupportedOperationException("BeanFactory has not yet initialized.");
