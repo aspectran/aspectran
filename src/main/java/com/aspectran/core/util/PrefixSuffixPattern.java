@@ -23,29 +23,29 @@ public class PrefixSuffixPattern {
 	
 	private String suffix;
 	
+	private boolean splited;
+	
 	public PrefixSuffixPattern() {
 	}
 	
+	public PrefixSuffixPattern(String input) {
+		split(input);
+	}
+	
 	public boolean split(String input) {
-		prefix = null;
-		suffix = null;
-
 		int startIndex = input.indexOf(PREFIX_SUFFIX_PATTERN_SEPARATOR);
 		if(startIndex == -1) {
+			prefix = null;
+			suffix = null;
+			splited = false;
 			return false;
 		}
 		
-		if(startIndex > 0)
-			prefix = input.substring(0, startIndex);
+		prefix = (startIndex > 0) ? input.substring(0, startIndex) : null;
+		suffix = (startIndex < input.length() - 1) ? input.substring(startIndex + 1) : null;
+		splited = (prefix != null || suffix != null || (input.length() == 1 && input.charAt(0) == PREFIX_SUFFIX_PATTERN_SEPARATOR));
 		
-		if(startIndex < input.length() - 1)
-			suffix = input.substring(startIndex + 1);
-		
-		return (prefix != null || suffix != null || (input.length() == 1 && input.charAt(0) == PREFIX_SUFFIX_PATTERN_SEPARATOR));
-	}
-	
-	public String join(String input) {
-		return join(prefix, input, suffix);
+		return splited;
 	}
 
 	public String getPrefix() {
@@ -64,6 +64,14 @@ public class PrefixSuffixPattern {
 		this.suffix = suffix;
 	}
 	
+	public boolean isSplited() {
+		return splited;
+	}
+
+	public String join(String input) {
+		return join(prefix, input, suffix);
+	}
+
 	public static String join(String prefix, String input, String suffix) {
 		if(prefix != null && suffix != null) {
 			return prefix + input + suffix;

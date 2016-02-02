@@ -37,7 +37,6 @@ import java.net.URLConnection;
  */
 public abstract class TransformResponse implements Response {
 	
-	/** The transform rule. */
 	protected final TransformRule transformRule;
 	
 	/**

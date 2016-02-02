@@ -36,7 +36,7 @@ public class TransformFactory {
 	public static Response createTransform(TransformRule transformRule) {
 		TransformType tranformType = transformRule.getTransformType();
 		
-		Response transform = null;
+		Response transform;
 		
 		if(tranformType == TransformType.XSL_TRANSFORM) {
 			transform = new XslTransform(transformRule);

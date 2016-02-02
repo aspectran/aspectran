@@ -164,18 +164,17 @@ public class TransletRuleRegistry {
 				Map<String, File> templateFileMap = scanner.scanFiles(scanPath);
 
 				if(templateFileMap != null && !templateFileMap.isEmpty()) {
-					PrefixSuffixPattern prefixSuffixPattern = new PrefixSuffixPattern();
-					boolean patterned = prefixSuffixPattern.split(transletRule.getName());
+					PrefixSuffixPattern prefixSuffixPattern = new PrefixSuffixPattern(transletRule.getName());
 
 					for(Map.Entry<String, File> entry : templateFileMap.entrySet()) {
-						String transletName = entry.getKey();
-						TransletRule newTransletRule = TransletRule.newDerivedTransletRule(transletRule, transletName);
+						String scannedTransletName = entry.getKey();
+						TransletRule newTransletRule = TransletRule.newDerivedTransletRule(transletRule, scannedTransletName);
 
-						if(patterned) {
-							newTransletRule.setName(prefixSuffixPattern.join(transletName));
+						if(prefixSuffixPattern.isSplited()) {
+							newTransletRule.setName(prefixSuffixPattern.join(scannedTransletName));
 						} else {
 							if(transletRule.getName() != null) {
-								newTransletRule.setName(transletRule.getName() + transletName);
+								newTransletRule.setName(transletRule.getName() + scannedTransletName);
 							}
 						}
 

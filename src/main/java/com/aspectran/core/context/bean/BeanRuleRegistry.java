@@ -104,7 +104,7 @@ public class BeanRuleRegistry {
 		String scanPath = beanRule.getScanPath();
 
 		PrefixSuffixPattern prefixSuffixPattern = new PrefixSuffixPattern();
-		boolean patterned = prefixSuffixPattern.split(beanRule.getId());
+		boolean splited = prefixSuffixPattern.split(beanRule.getId());
 		
 		if(scanPath != null) {
 			BeanClassScanner scanner = new BeanClassScanner(classLoader);
@@ -122,7 +122,7 @@ public class BeanRuleRegistry {
 					String beanId = entry.getKey();
 					Class<?> beanClass = entry.getValue();
 			
-					if(patterned) {
+					if(splited) {
 						beanRule2.setId(prefixSuffixPattern.join(beanId));
 					} else {
 						if(beanRule.getId() != null) {
@@ -148,7 +148,7 @@ public class BeanRuleRegistry {
 		} else {
 			String className = beanRule.getClassName();
 
-			if(patterned) {
+			if(splited) {
 				beanRule.setId(prefixSuffixPattern.join(className));
 			}
 			

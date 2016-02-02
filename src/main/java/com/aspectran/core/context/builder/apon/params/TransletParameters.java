@@ -24,8 +24,8 @@ public class TransletParameters extends AbstractParameters implements Parameters
 
 	public static final ParameterDefine description;
 	public static final ParameterDefine name;
+	public static final ParameterDefine scan;
 	public static final ParameterDefine mask;
-	public static final ParameterDefine path;
 	public static final ParameterDefine restVerb;
 	public static final ParameterDefine request;
 	public static final ParameterDefine contents1;
@@ -43,8 +43,8 @@ public class TransletParameters extends AbstractParameters implements Parameters
 	static {
 		description = new ParameterDefine("description", ParameterValueType.TEXT);
 		name = new ParameterDefine("name", ParameterValueType.STRING);
+		scan = new ParameterDefine("scan", ParameterValueType.STRING);
 		mask = new ParameterDefine("mask", ParameterValueType.STRING);
-		path = new ParameterDefine("path", ParameterValueType.STRING);
 		restVerb = new ParameterDefine("restVerb", ParameterValueType.STRING);
 		request = new ParameterDefine("request", RequestParameters.class);
 		contents1 = new ParameterDefine("contents", ContentsParameters.class);
@@ -60,8 +60,8 @@ public class TransletParameters extends AbstractParameters implements Parameters
 		parameterDefines = new ParameterDefine[] {
 				description,
 				name,
+				scan,
 				mask,
-				path,
 				restVerb,
 				request,
 				contents1,

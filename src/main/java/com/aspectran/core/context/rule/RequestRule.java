@@ -28,7 +28,6 @@ import com.aspectran.core.context.rule.type.RequestMethodType;
  */
 public class RequestRule {
 
-	/** The Constant CHARACTER_ENCODING_SETTING_NAME. */
 	public static final String CHARACTER_ENCODING_SETTING_NAME = "characterEncoding";
 	
 	private String characterEncoding;

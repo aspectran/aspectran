@@ -25,6 +25,8 @@ import com.aspectran.core.context.rule.DispatchResponseRule;
  */
 public interface ViewDispatcher {
 	
+	public static final String VIEW_DISPATCHER_SETTING_NAME = "viewDispatcher";
+	
 	/**
 	 * Dispaching according to a given rule, and transmits this response.
 	 *

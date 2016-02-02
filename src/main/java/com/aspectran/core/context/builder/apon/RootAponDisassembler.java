@@ -339,7 +339,7 @@ public class RootAponDisassembler {
 		String description = transletParameters.getString(TransletParameters.description);
 		String name = transletParameters.getString(TransletParameters.name);
 		String mask = transletParameters.getString(TransletParameters.mask);
-		String path = transletParameters.getString(TransletParameters.path);
+		String path = transletParameters.getString(TransletParameters.scan);
 		String restVerb = transletParameters.getString(TransletParameters.restVerb);
 		TransletRule transletRule = TransletRule.newInstance(name, mask, path, restVerb);
 		
@@ -650,14 +650,13 @@ public class RootAponDisassembler {
 	
 	public RedirectResponseRule disassembleRedirectResponseRule(Parameters redirectParameters) {
 		String contentType = redirectParameters.getString(RedirectParameters.contentType);
-		String translet = redirectParameters.getString(RedirectParameters.translet);
-		String url = redirectParameters.getString(RedirectParameters.url);
+		String target = redirectParameters.getString(RedirectParameters.target);
 		ItemHolderParameters parameterItemHolderParametersList = redirectParameters.getParameters(RedirectParameters.parameters);
 		Boolean excludeNullParameter = redirectParameters.getBoolean(RedirectParameters.excludeNullParameter);
 		List<Parameters> actionParametersList = redirectParameters.getParametersList(RedirectParameters.actions);
 		Boolean defaultResponse = redirectParameters.getBoolean(RedirectParameters.defaultResponse);
 		
-		RedirectResponseRule rrr = RedirectResponseRule.newInstance(contentType, translet, url, excludeNullParameter, defaultResponse);
+		RedirectResponseRule rrr = RedirectResponseRule.newInstance(contentType, target, excludeNullParameter, defaultResponse);
 		
 		if(parameterItemHolderParametersList != null) {
 			ItemRuleMap parameterItemRuleMap = disassembleItemRuleMap(parameterItemHolderParametersList);
