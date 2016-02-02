@@ -19,7 +19,6 @@ import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.activity.response.Response;
 import com.aspectran.core.context.rule.DispatchResponseRule;
-import com.aspectran.core.context.rule.ResponseRule;
 import com.aspectran.core.context.rule.type.ResponseType;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
@@ -98,16 +97,12 @@ public class DispatchResponse implements Response {
 	}
 	
 	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.response.Response#newDerivedResponse()
+	 * @see com.aspectran.core.activity.response.Response#replicate()
 	 */
-	public Response newDerivedResponse() {
-		if(dispatchResponseRule != null) {
-			DispatchResponseRule newDispatchResponseRule = DispatchResponseRule.newDerivedDispatchResponseRule(dispatchResponseRule);
-			Response response = new DispatchResponse(newDispatchResponseRule);
-			return response;
-		}
-		
-		return this;
+	public Response replicate() {
+		DispatchResponseRule drr = dispatchResponseRule.replicate();
+		Response response = new DispatchResponse(drr);
+		return response;
 	}
 
 	/**
@@ -119,7 +114,7 @@ public class DispatchResponse implements Response {
 		if(viewDispatcher == null) {
 			synchronized(this) {
 				if(viewDispatcher == null) {
-					String viewDispatcherName = activity.getResponseSetting(ResponseRule.VIEW_DISPATCHER_SETTING_NAME);
+					String viewDispatcherName = activity.getResponseSetting(ViewDispatcher.VIEW_DISPATCHER_SETTING_NAME);
 
 					if(viewDispatcherName == null)
 						throw new DispatchResponseException("View Dispatcher is not defined.");

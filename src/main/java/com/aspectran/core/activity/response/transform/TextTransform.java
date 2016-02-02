@@ -66,14 +66,13 @@ public class TextTransform extends TransformResponse implements Response {
 	 * @see com.aspectran.core.activity.response.Response#response(com.aspectran.core.activity.Activity)
 	 */
 	public void response(Activity activity) throws TransformResponseException {
+		ResponseAdapter responseAdapter = activity.getResponseAdapter();
+		if(responseAdapter == null)
+			return;
+
 		if(debugEnabled) {
 			log.debug("response " + transformRule);
 		}
-		
-		ResponseAdapter responseAdapter = activity.getResponseAdapter();
-		
-		if(responseAdapter == null)
-			return;
 
 		try {
 			if(contentType != null)
@@ -90,23 +89,19 @@ public class TextTransform extends TransformResponse implements Response {
 				activity.getTemplateProcessor().process(templateRule, activity, writer);
 			} else {
 				ProcessResult processResult = activity.getProcessResult();
-				
 				if(processResult != null) {
 					int chunks = 0;
-					
 					for(ContentResult contentResult : processResult) {
 						for(ActionResult actionResult : contentResult) {
 							Object resultValue = actionResult.getResultValue();
 							if(resultValue != null) {
 								if(chunks++ > 0)
 									writer.write(AspectranConstants.LINE_SEPARATOR);
-
 								writer.write(resultValue.toString());
 							}
 						}
 					}
 				}
-
 				writer.flush();
 			}
 		} catch(Exception e) {
@@ -122,18 +117,12 @@ public class TextTransform extends TransformResponse implements Response {
 	}
 	
 	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.response.Response#newDerivedResponse()
+	 * @see com.aspectran.core.activity.response.Response#replicate()
 	 */
-	public Response newDerivedResponse() {
-		TransformRule transformRule = getTransformRule();
-		
-		if(transformRule != null) {
-			TransformRule newTransformRule = TransformRule.newDerivedTransformRule(transformRule);
-			Response response = new TextTransform(newTransformRule);
-			return response;
-		}
-		
-		return this;
+	public Response replicate() {
+		TransformRule transformRule = getTransformRule().replicate();
+		Response response = new TextTransform(transformRule);
+		return response;
 	}
 
 }

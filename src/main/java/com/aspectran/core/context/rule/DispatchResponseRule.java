@@ -25,13 +25,13 @@ import com.aspectran.core.util.BooleanUtils;
  * 
  * <p>Created: 2008. 03. 22 PM 5:51:58</p>
  */
-public class DispatchResponseRule extends ActionPossessSupport implements ActionPossessable {
+public class DispatchResponseRule extends ActionPossessSupport implements ActionPossessable, Replicable<DispatchResponseRule> {
 	
 	public static final ResponseType RESPONSE_TYPE = ResponseType.DISPATCH;
 	
-	private String contentType;
-
 	private String dispatchName;
+	
+	private String contentType;
 
 	private String characterEncoding;
 	
@@ -46,15 +46,6 @@ public class DispatchResponseRule extends ActionPossessSupport implements Action
 		return contentType;
 	}
 
-	/**
-	 * Sets the content type.
-	 * 
-	 * @param contentType the new content type
-	 */
-	public void setContentType(String contentType) {
-		this.contentType = contentType;
-	}
-	
 	/**
 	 * Gets the dispatch name.
 	 *
@@ -71,6 +62,15 @@ public class DispatchResponseRule extends ActionPossessSupport implements Action
 	 */
 	public void setDispatchName(String dispatchName) {
 		this.dispatchName = dispatchName;
+	}
+	
+	/**
+	 * Sets the content type.
+	 * 
+	 * @param contentType the new content type
+	 */
+	public void setContentType(String contentType) {
+		this.contentType = contentType;
 	}
 	
 	/**
@@ -119,6 +119,13 @@ public class DispatchResponseRule extends ActionPossessSupport implements Action
 	}
 	
 	/* (non-Javadoc)
+	 * @see com.aspectran.core.context.rule.Replicable#replicate()
+	 */
+	public DispatchResponseRule replicate() {
+		return replicate(this);
+	}
+	
+	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
@@ -134,13 +141,13 @@ public class DispatchResponseRule extends ActionPossessSupport implements Action
 	 */
 	public String toString(ViewDispatcher viewDispatcher) {
 		StringBuilder sb = new StringBuilder();
-		sb.append("{contentType=").append(contentType);
-		sb.append(", dispatchName=").append(dispatchName);
-		if(viewDispatcher != null)
-			sb.append(", viewDispatcher=").append(viewDispatcher);
+		sb.append("{dispatchName=").append(dispatchName);
+		sb.append(", contentType=").append(contentType);
 		sb.append(", characterEncoding=").append(characterEncoding);
 		if(defaultResponse != null)
 			sb.append(", defaultResponse=").append(defaultResponse);
+		if(viewDispatcher != null)
+			sb.append(", viewDispatcher=").append(viewDispatcher);
 		sb.append("}");
 		
 		return sb.toString();
@@ -171,7 +178,7 @@ public class DispatchResponseRule extends ActionPossessSupport implements Action
 	 * @param dispatchResponseRule an instance of DispatchResponseRulethe
 	 * @return the dispatch response rule
 	 */
-	public static DispatchResponseRule newDerivedDispatchResponseRule(DispatchResponseRule dispatchResponseRule) {
+	public static DispatchResponseRule replicate(DispatchResponseRule dispatchResponseRule) {
 		DispatchResponseRule newDispatchResponseRule = new DispatchResponseRule();
 		newDispatchResponseRule.setDispatchName(dispatchResponseRule.getDispatchName());
 		newDispatchResponseRule.setContentType(dispatchResponseRule.getContentType());

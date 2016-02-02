@@ -29,17 +29,15 @@ import com.aspectran.core.util.BooleanUtils;
  * 
  * <p>Created: 2008. 03. 22 PM 5:51:58</p>
  */
-public class RedirectResponseRule extends ActionPossessSupport implements ActionPossessable {
+public class RedirectResponseRule extends ActionPossessSupport implements ActionPossessable, Replicable<RedirectResponseRule> {
 	
 	public static final ResponseType RESPONSE_TYPE = ResponseType.REDIRECT;
 
 	private String contentType;
 	
-	private String transletName;
+	private String target;
 	
-	private String url;
-	
-	private Token[] urlTokens;
+	private Token[] targetTokens;
 	
 	private Boolean excludeNullParameter;
 
@@ -68,45 +66,24 @@ public class RedirectResponseRule extends ActionPossessSupport implements Action
 	}
 
 	/**
-	 * Gets the translet name.
-	 *
-	 * @return the translet name
-	 */
-	public String getTransletName() {
-		return transletName;
-	}
-
-	/**
-	 * Sets the translet name.
-	 *
-	 * @param transletName the new translet name
-	 */
-	public void setTransletName(String transletName) {
-		this.transletName = transletName;
-	}
-
-	/**
-	 * Gets the url.
+	 * Gets the target name.
 	 * 
-	 * @return the url
+	 * @return the target name
 	 */
-	public String getUrl() {
-		return url;
+	public String getTarget() {
+		return target;
 	}
 
 	/**
-	 * Sets the url.
+	 * Sets the target name.
 	 * 
-	 * @param url the new url
+	 * @param target the new target name
 	 */
-	public void setUrl(String url) {
-		this.url = url;
-		this.urlTokens = null;
+	public void setTarget(String target) {
+		this.target = target;
+		this.targetTokens = null;
 		
-		if(transletName != null)
-			transletName = null;
-		
-		List<Token> tokens = Tokenizer.tokenize(url, true);
+		List<Token> tokens = Tokenizer.tokenize(target, true);
 		
 		int tokenCount = 0;
 		
@@ -116,7 +93,12 @@ public class RedirectResponseRule extends ActionPossessSupport implements Action
 		}
 		
 		if(tokenCount > 0)
-			this.urlTokens = tokens.toArray(new Token[tokens.size()]);
+			this.targetTokens = tokens.toArray(new Token[tokens.size()]);
+	}
+	
+	public void setTarget(String target, Token[] targetTokens) {
+		this.target = target;
+		this.targetTokens = targetTokens;
 	}
 
 	/**
@@ -124,8 +106,8 @@ public class RedirectResponseRule extends ActionPossessSupport implements Action
 	 * 
 	 * @return the url tokens
 	 */
-	public Token[] getUrlTokens() {
-		return urlTokens;
+	public Token[] getTargetTokens() {
+		return targetTokens;
 	}
 
 	/**
@@ -224,6 +206,13 @@ public class RedirectResponseRule extends ActionPossessSupport implements Action
 	public void setDefaultResponse(Boolean defaultResponse) {
 		this.defaultResponse = defaultResponse;
 	}
+	
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.context.rule.Replicable#replicate()
+	 */
+	public RedirectResponseRule replicate() {
+		return replicate(this);
+	}
 
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
@@ -232,8 +221,7 @@ public class RedirectResponseRule extends ActionPossessSupport implements Action
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("{contentType=").append(contentType);
-		sb.append(", translet=").append(transletName);
-		sb.append(", url=").append(url);
+		sb.append(", target=").append(target);
 		sb.append(", excludeNullParameters=").append(excludeNullParameter);
 		if(defaultResponse != null)
 			sb.append(", defaultResponse=").append(defaultResponse);
@@ -242,32 +230,40 @@ public class RedirectResponseRule extends ActionPossessSupport implements Action
 		return sb.toString();
 	}
 	
-	public static RedirectResponseRule newInstance(String contentType, String translet, String url, Boolean excludeNullParameters, Boolean defaultResponse) {
+	public static RedirectResponseRule newInstance(String contentType, String target, Boolean excludeNullParameters, Boolean defaultResponse) {
 		RedirectResponseRule rrr = new RedirectResponseRule();
 		rrr.setContentType(contentType);
-		rrr.setTransletName(translet);
 		
-		if(url != null && url.length() > 0)
-			rrr.setUrl(url);
+		if(target != null && target.length() > 0)
+			rrr.setTarget(target);
 		
 		rrr.setExcludeNullParameter(excludeNullParameters);
-		
 		rrr.setDefaultResponse(defaultResponse);
 
 		return rrr;
 	}
 	
-	public static void updateUrl(RedirectResponseRule rrr, String url) {
-		if(url != null) {
-			url = url.trim();
-			
-			if(url.length() == 0)
-				url = null;
-		}
+	public static RedirectResponseRule newInstance(String redirectName) {
+		if(redirectName == null)
+			throw new IllegalArgumentException("redirectName must not be null.");
+		
+		RedirectResponseRule rrr = new RedirectResponseRule();
+		rrr.setTarget(redirectName);
 
-		if(url != null) {
-			rrr.setUrl(url);
-		}
+		return rrr;
+	}
+	
+	public static RedirectResponseRule replicate(RedirectResponseRule redirectResponseRule) {
+		RedirectResponseRule rrr = new RedirectResponseRule();
+		rrr.setContentType(redirectResponseRule.getContentType());
+		rrr.setTarget(redirectResponseRule.getTarget(), redirectResponseRule.getTargetTokens());
+		rrr.setExcludeNullParameter(redirectResponseRule.getExcludeNullParameter());
+		rrr.setCharacterEncoding(redirectResponseRule.getCharacterEncoding());
+		rrr.setParameterItemRuleMap(redirectResponseRule.getParameterItemRuleMap());
+		rrr.setDefaultResponse(redirectResponseRule.getDefaultResponse());
+		rrr.setActionList(redirectResponseRule.getActionList());
+
+		return rrr;
 	}
 	
 }

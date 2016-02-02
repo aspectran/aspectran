@@ -24,7 +24,7 @@ import com.aspectran.core.util.BooleanUtils;
  * 
  * <p>Created: 2008. 03. 22 PM 5:51:58</p>
  */
-public class ForwardResponseRule extends ActionPossessSupport implements ActionPossessable {
+public class ForwardResponseRule extends ActionPossessSupport implements ActionPossessable, Replicable<ForwardResponseRule> {
 	
 	public static final ResponseType RESPONSE_TYPE = ResponseType.FORWARD;
 
@@ -130,6 +130,13 @@ public class ForwardResponseRule extends ActionPossessSupport implements ActionP
 	}
 
 	/* (non-Javadoc)
+	 * @see com.aspectran.core.context.rule.Replicable#replicate()
+	 */
+	public ForwardResponseRule replicate() {
+		return replicate(this);
+	}
+	
+	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
@@ -161,6 +168,27 @@ public class ForwardResponseRule extends ActionPossessSupport implements ActionP
 		frr.setTransletName(transletName);
 		frr.setDefaultResponse(defaultResponse);
 
+		return frr;
+	}
+	
+	public static ForwardResponseRule newInstance(String transletName) {
+		if(transletName == null)
+			throw new IllegalArgumentException("transletName must not be null.");
+		
+		ForwardResponseRule frr = new ForwardResponseRule();
+		frr.setTransletName(transletName);
+
+		return frr;
+	}
+	
+	public static ForwardResponseRule replicate(ForwardResponseRule forwardResponseRule) {
+		ForwardResponseRule frr = new ForwardResponseRule();
+		frr.setContentType(forwardResponseRule.getContentType());
+		frr.setTransletName(forwardResponseRule.getTransletName());
+		frr.setAttributeItemRuleMap(forwardResponseRule.getAttributeItemRuleMap());
+		frr.setDefaultResponse(forwardResponseRule.getDefaultResponse());
+		frr.setActionList(forwardResponseRule.getActionList());
+		
 		return frr;
 	}
 	

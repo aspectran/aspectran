@@ -91,14 +91,13 @@ public class XslTransform extends TransformResponse implements Response {
 	 * @see com.aspectran.core.activity.response.Response#response(com.aspectran.core.activity.Activity)
 	 */
 	public void response(Activity activity) throws TransformResponseException {
+		ResponseAdapter responseAdapter = activity.getResponseAdapter();
+		if(responseAdapter == null)
+			return;
+
 		if(debugEnabled) {
 			log.debug("response " + transformRule);
 		}
-
-		ResponseAdapter responseAdapter = activity.getResponseAdapter();
-		
-		if(responseAdapter == null)
-			return;
 
 		try {
 			loadTemplate(activity.getApplicationAdapter());
@@ -141,18 +140,12 @@ public class XslTransform extends TransformResponse implements Response {
 	}
 	
 	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.response.Response#newDerivedResponse()
+	 * @see com.aspectran.core.activity.response.Response#replicate()
 	 */
-	public Response newDerivedResponse() {
-		TransformRule transformRule = getTransformRule();
-		
-		if(transformRule != null) {
-			TransformRule newTransformRule = TransformRule.newDerivedTransformRule(transformRule);
-			Response response = new XslTransform(newTransformRule);
-			return response;
-		}
-
-		return this;
+	public Response replicate() {
+		TransformRule transformRule = getTransformRule().replicate();
+		Response response = new XslTransform(transformRule);
+		return response;
 	}
 	
 	private void loadTemplate(ApplicationAdapter applicationAdapter) throws TransformerConfigurationException, IOException {

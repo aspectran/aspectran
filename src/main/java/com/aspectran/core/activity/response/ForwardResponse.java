@@ -55,7 +55,6 @@ public class ForwardResponse implements Response {
 	 */
 	public void response(Activity activity) {
 		RequestAdapter requestAdapter = activity.getRequestAdapter();
-		
 		if(requestAdapter == null)
 			return;
 
@@ -98,10 +97,12 @@ public class ForwardResponse implements Response {
 	}
 	
 	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.response.Response#newDerivedResponse()
+	 * @see com.aspectran.core.activity.response.Response#replicate()
 	 */
-	public Response newDerivedResponse() {
-		return this;
+	public Response replicate() {
+		ForwardResponseRule frr = forwardResponseRule.replicate();
+		Response response = new ForwardResponse(frr);
+		return response;
 	}
 
 	/**

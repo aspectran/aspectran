@@ -50,7 +50,6 @@ public class RedirectResponse implements Response {
 	 */
 	public void response(Activity activity) throws ResponseException {
 		ResponseAdapter responseAdapter = activity.getResponseAdapter();
-		
 		if(responseAdapter == null)
 			return;
 		
@@ -95,10 +94,12 @@ public class RedirectResponse implements Response {
 	}
 
 	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.response.Response#newDerivedResponse()
+	 * @see com.aspectran.core.activity.response.Response#replicate()
 	 */
-	public Response newDerivedResponse() {
-		return this;
+	public Response replicate() {
+		RedirectResponseRule rrr = redirectResponseRule.replicate();
+		Response response = new RedirectResponse(rrr);
+		return response;
 	}
 	
 	/**

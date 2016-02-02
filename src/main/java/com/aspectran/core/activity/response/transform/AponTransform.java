@@ -60,13 +60,15 @@ public class AponTransform extends TransformResponse implements Response {
 	 * @see com.aspectran.core.activity.response.Response#response(com.aspectran.core.activity.Activity)
 	 */
 	public void response(Activity activity) throws TransformResponseException {
+		ResponseAdapter responseAdapter = activity.getResponseAdapter();
+		if(responseAdapter == null)
+			return;
+
 		if(debugEnabled) {
 			log.debug("response " + transformRule);
 		}
 		
 		try {
-			ResponseAdapter responseAdapter = activity.getResponseAdapter();
-			
 			String contentType = transformRule.getContentType();
 			String outputEncoding = transformRule.getCharacterEncoding();
 
@@ -104,10 +106,12 @@ public class AponTransform extends TransformResponse implements Response {
 	}
 	
 	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.response.Response#newDerivedResponse()
+	 * @see com.aspectran.core.activity.response.Response#replicate()
 	 */
-	public Response newDerivedResponse() {
-		return this;
+	public Response replicate() {
+		TransformRule transformRule = getTransformRule().replicate();
+		Response response = new AponTransform(transformRule);
+		return response;
 	}
 	
 }

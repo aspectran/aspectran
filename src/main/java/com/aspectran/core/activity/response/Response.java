@@ -17,6 +17,7 @@ package com.aspectran.core.activity.response;
 
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.process.ActionList;
+import com.aspectran.core.context.rule.Replicable;
 import com.aspectran.core.context.rule.type.ResponseType;
 
 /**
@@ -24,7 +25,7 @@ import com.aspectran.core.context.rule.type.ResponseType;
  * 
  * <p>Created: 2008. 03. 23 PM 12:52:04</p>
  */
-public interface Response {
+public interface Response extends Replicable<Response> {
 	
 	/**
 	 * Response.
@@ -57,10 +58,10 @@ public interface Response {
 	public ActionList getActionList();
 
 	/**
-	 * Create a new derived response.
+	 * Replicate this response.
 	 *
 	 * @return the new response
 	 */
-	public Response newDerivedResponse();
+	public Response replicate();
 	
 }
