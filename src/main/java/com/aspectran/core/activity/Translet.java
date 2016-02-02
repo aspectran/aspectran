@@ -160,6 +160,13 @@ public abstract interface Translet {
 	 * @param redirectResponseRule the redirect response rule
 	 */
 	public void redirect(RedirectResponseRule redirectResponseRule);
+
+	/**
+	 * Redirect to other resource.
+	 *
+	 * @param target the target resource
+	 */
+	public void redirect(String target);
 	
 	/**
 	 * Forward according to a given rule.
@@ -167,6 +174,13 @@ public abstract interface Translet {
 	 * @param forwardResponseRule the forward response rule
 	 */
 	public void forward(ForwardResponseRule forwardResponseRule);
+	
+	/**
+	 * Immediately forwarding.
+	 *
+	 * @param transletName the translet name of the target to be forwarded
+	 */
+	public void forward(String transletName);
 	
 	/**
 	 * Returns whether the exception was thrown.
