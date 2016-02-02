@@ -26,7 +26,7 @@ import com.aspectran.core.util.BooleanUtils;
  * 
  * <p>Created: 2008. 03. 22 PM 5:51:58</p>
  */
-public class TransformRule extends ActionPossessSupport implements ActionPossessable {
+public class TransformRule extends ActionPossessSupport implements ActionPossessable, Replicable<TransformRule> {
 	
 	public static final ResponseType RESPONSE_TYPE = ResponseType.TRANSFORM;
 
@@ -154,6 +154,13 @@ public class TransformRule extends ActionPossessSupport implements ActionPossess
 	public void setPretty(Boolean pretty) {
 		this.pretty = pretty;
 	}
+	
+	/* (non-Javadoc)
+	 * @see com.aspectran.core.context.rule.Replicable#replicate()
+	 */
+	public TransformRule replicate() {
+		return replicate(this);
+	}
 
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
@@ -196,7 +203,7 @@ public class TransformRule extends ActionPossessSupport implements ActionPossess
 		return tr;
 	}
 	
-	public static TransformRule newDerivedTransformRule(TransformRule transformRule) {
+	public static TransformRule replicate(TransformRule transformRule) {
 		TransformRule newTransformRule = new TransformRule();
 		newTransformRule.setTransformType(transformRule.getTransformType());
 		newTransformRule.setContentType(transformRule.getContentType());
@@ -208,8 +215,7 @@ public class TransformRule extends ActionPossessSupport implements ActionPossess
 		
 		TemplateRule templateRule = transformRule.getTemplateRule();
 		if(templateRule != null) {
-			templateRule = TemplateRule.newDerivedBuiltinTemplateRule(templateRule);
-			newTransformRule.setTemplateRule(templateRule);
+			newTransformRule.setTemplateRule(templateRule.replicate());
 		}
 		
 		return newTransformRule;

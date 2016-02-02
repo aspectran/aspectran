@@ -32,19 +32,17 @@ import java.nio.charset.IllegalCharsetNameException;
  * 
  * <p>Created: 2008. 03. 22 PM 5:48:09</p>
  */
-public class ResponseRule implements ResponseRuleApplicable {
+public class ResponseRule implements ResponseRuleApplicable, Replicable<ResponseRule> {
 
 	public static final String CHARACTER_ENCODING_SETTING_NAME = "characterEncoding";
 
-	public static final String VIEW_DISPATCHER_SETTING_NAME = "viewDispatcher";
-	
 	private String name;
 	
 	private String characterEncoding;
 	
-	private AspectAdviceRuleRegistry aspectAdviceRuleRegistry;
-	
 	private Response response;
+	
+	private AspectAdviceRuleRegistry aspectAdviceRuleRegistry;
 	
 	/**
 	 * Instantiates a new ResponseRule.
@@ -179,6 +177,10 @@ public class ResponseRule implements ResponseRuleApplicable {
 		responseRule.setResponse(response);
 		return responseRule;
 	}
+	
+	public ResponseRule replicate() {
+		return replicate(this);
+	}
 
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
@@ -205,14 +207,14 @@ public class ResponseRule implements ResponseRuleApplicable {
 		return responseRule;
 	}
 
-	public static ResponseRule newDerivedResponseRule(ResponseRule responseRule) {
+	public static ResponseRule replicate(ResponseRule responseRule) {
 		ResponseRule newResponseRule = new ResponseRule();
 		newResponseRule.setName(responseRule.getName());
 		newResponseRule.setCharacterEncoding(responseRule.getCharacterEncoding());
 		
 		Response response = responseRule.getResponse();
 		if(response != null) {
-			Response newResponse = response.newDerivedResponse();
+			Response newResponse = response.replicate();
 			newResponseRule.setResponse(newResponse);
 		}
 		

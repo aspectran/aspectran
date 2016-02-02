@@ -530,7 +530,7 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 
 		if(transletRule.getResponseRule() != null) {
 			ResponseRule responseRule = transletRule.getResponseRule();
-			ResponseRule rr = newDerivedResponseRule(responseRule, newDispatchName);
+			ResponseRule rr = replicate(responseRule, newDispatchName);
 			newTransletRule.setResponseRule(rr);
 		}
 		
@@ -538,7 +538,7 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 			List<ResponseRule> responseRuleList = transletRule.getResponseRuleList();
 			List<ResponseRule> newResponseRuleList = new ArrayList<ResponseRule>(responseRuleList.size());
 			for(ResponseRule responseRule : responseRuleList) {
-				ResponseRule rr = newDerivedResponseRule(responseRule, newDispatchName);
+				ResponseRule rr = replicate(responseRule, newDispatchName);
 				newResponseRuleList.add(rr);
 			}
 			newTransletRule.setResponseRuleList(newResponseRuleList);
@@ -547,24 +547,26 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 		return newTransletRule;
 	}
 	
-	private static ResponseRule newDerivedResponseRule(ResponseRule responseRule, String newDispatchName) {
-		ResponseRule rr = ResponseRule.newDerivedResponseRule(responseRule);
+	private static ResponseRule replicate(ResponseRule responseRule, String newDispatchName) {
+		ResponseRule rr = responseRule.replicate();
 		if(rr.getResponse() != null) {
+			// assign dispatch name if the dispatch respone exists.
 			if(rr.getResponse() instanceof DispatchResponse) {
 				DispatchResponse dispatchResponse = (DispatchResponse)rr.getResponse();
 				DispatchResponseRule dispatchResponseRule = dispatchResponse.getDispatchResponseRule();
 				String dispatchName = dispatchResponseRule.getDispatchName();
 				
-				PrefixSuffixPattern prefixSuffixPattern = new PrefixSuffixPattern();
-				boolean patterned = prefixSuffixPattern.split(dispatchName);
-				if(patterned) {
+				PrefixSuffixPattern prefixSuffixPattern = new PrefixSuffixPattern(dispatchName);
+
+				if(prefixSuffixPattern.isSplited()) {
 					dispatchResponseRule.setDispatchName(prefixSuffixPattern.join(newDispatchName));
 				} else {
 					if(dispatchName != null) {
 						dispatchResponseRule.setDispatchName(dispatchName + newDispatchName);
+					} else {
+						dispatchResponseRule.setDispatchName(newDispatchName);
 					}
 				}
-				dispatchResponseRule.setDispatchName(newDispatchName);
 			}
 		}
 		return rr;

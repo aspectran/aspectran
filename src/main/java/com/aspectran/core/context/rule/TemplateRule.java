@@ -37,7 +37,7 @@ import java.util.List;
  * 
  * <p>Created: 2008. 03. 22 PM 5:51:58</p>
  */
-public class TemplateRule {
+public class TemplateRule implements Replicable<TemplateRule> {
 
 	public static final String DEFAULT_TEMPLATE_ENGINE_NAME = "token";
 	
@@ -178,16 +178,15 @@ public class TemplateRule {
 	}
 
 	public void setContent(String content) {
-		setContent(content, true);
+		this.content = content;
+		this.contentTokens = parseContentTokens(content);
 	}
 
-	public void setContent(String content, boolean parse) {
+	private void setContent(String content, Token[] contentTokens) {
 		this.content = content;
-		if(parse) {
-			this.contentTokens = parseContentTokens(content);
-		}
+		this.contentTokens = contentTokens;
 	}
-	
+
 	public Token[] getContentTokens() {
 		return this.contentTokens;
 	}
@@ -372,6 +371,13 @@ public class TemplateRule {
 	}
 
 	/* (non-Javadoc)
+	 * @see com.aspectran.core.context.rule.Replicable#replicate()
+	 */
+	public TemplateRule replicate() {
+		return replicate(this);
+	}
+	
+	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
@@ -440,19 +446,19 @@ public class TemplateRule {
 		return tr;
 	}
 
-	public static TemplateRule newDerivedBuiltinTemplateRule(TemplateRule templateRule) {
+	public static TemplateRule replicate(TemplateRule templateRule) {
 		TemplateRule tr = new TemplateRule(templateRule.getEngine());
+		tr.setId(templateRule.getId());
 		tr.setName(templateRule.getName());
 		tr.setFile(templateRule.getFile());
 		tr.setResource(templateRule.getResource());
 		tr.setUrl(templateRule.getUrl());
-		tr.setContent(templateRule.getContent(), false);
-		tr.setContentTokens(templateRule.getContentTokens());
 		tr.setEncoding(templateRule.getEncoding());
+		tr.setContent(templateRule.getContent(), templateRule.getContentTokens());
 		tr.setNoCache(templateRule.getNoCache());
-		tr.setBuiltin(true);
+		tr.setBuiltin(templateRule.isBuiltin());
 
 		return tr;
 	}
-
+	
 }
