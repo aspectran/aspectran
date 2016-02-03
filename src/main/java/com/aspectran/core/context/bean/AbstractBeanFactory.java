@@ -108,7 +108,7 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 			}
 
 			invokeAwareMethods(bean);
-			performAnnotation(beanRule, bean);
+			processAnnotation(beanRule, bean, activity);
 
 			if(propertyItemRuleMap != null) {
 				if(expressor == null) {
@@ -131,14 +131,16 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 						beanRule.setInitMethodRequiresTranslet(Boolean.TRUE);
 					} catch(NoSuchMethodException e) {
 						if(log.isDebugEnabled()) {
-							log.debug("Cannot find a method that requires a argument translet. So in the future will continue to call a method with no argument translet. beanActionRule " + beanRule);
+							log.debug("Cannot find a method that requires a argument translet. So in the future will " +
+									"continue to call a method with no argument translet. beanRule " + beanRule);
 						}
 						
 						beanRule.setInitMethodRequiresTranslet(Boolean.FALSE);
 						BeanAction.invokeMethod(activity, bean, initMethodName, null, null, false);
 					}
 				} else {
-					BeanAction.invokeMethod(activity, bean, initMethodName, null, null, beanRule.getInitMethodRequiresTranslet().booleanValue());
+					boolean requiresTranslet = beanRule.getInitMethodRequiresTranslet().booleanValue();
+					BeanAction.invokeMethod(activity, bean, initMethodName, null, null, requiresTranslet);
 				}
 			}
 
@@ -199,8 +201,8 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 		return bean;
 	}
 	
-	private void performAnnotation(BeanRule beanRule, final Object bean) {
-		//TODO
+	private void processAnnotation(BeanRule beanRule, Object bean, Activity activity) {
+		BeanAnnotationProcessor.process(beanRule, bean, activity);
 	}
 	
 	private void invokeAwareMethods(final Object bean) {

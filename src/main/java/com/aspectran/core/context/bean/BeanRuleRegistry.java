@@ -32,7 +32,6 @@ import com.aspectran.core.context.bean.scan.BeanClassScanner;
 import com.aspectran.core.context.loader.AspectranClassLoader;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.BeanRuleMap;
-import com.aspectran.core.context.rule.TransletRuleMap;
 import com.aspectran.core.context.translet.TransletRuleRegistry;
 import com.aspectran.core.util.PrefixSuffixPattern;
 import com.aspectran.core.util.logging.Log;
@@ -198,8 +197,7 @@ public class BeanRuleRegistry {
 
 	private void parseAnnotation(BeanRule beanRule) {
 		if(transletRuleRegistry != null) {
-			TransletRuleMap transletRuleMap = TransletAnnotationParser.parse(beanRule);
-			transletRuleRegistry.addTransletRule(transletRuleMap);
+			AnnotatedTransletParser.parse(beanRule, transletRuleRegistry.getTransletRuleMap());
 		}
 	}
 

@@ -28,7 +28,7 @@ public class RequiredTypeBeanNotFoundException extends BeanException {
 	/**
 	 * Instantiates a new BeanNotFoundException.
 	 *
-	 * @param beanId the bean id
+	 * @param requiredType the required type
 	 */
 	public RequiredTypeBeanNotFoundException(Class<?> requiredType) {
 		super("No matching bean of type [" + requiredType + "] found.");

@@ -32,11 +32,9 @@ import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.TransletRuleMap;
 import com.aspectran.core.context.rule.type.RequestMethodType;
 import com.aspectran.core.context.rule.type.TokenType;
-import com.aspectran.core.context.translet.scan.TransletClassScanner;
 import com.aspectran.core.context.translet.scan.TransletFileScanner;
 import com.aspectran.core.context.variable.ParameterMap;
 import com.aspectran.core.util.PrefixSuffixPattern;
-import com.aspectran.core.util.ResourceUtils;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 import com.aspectran.core.util.wildcard.WildcardPattern;
@@ -136,55 +134,32 @@ public class TransletRuleRegistry {
 		String scanPath = transletRule.getScanPath();
 
 		if(scanPath != null) {
-			if(scanPath.startsWith(ResourceUtils.CLASSPATH_URL_PREFIX)) {
-				TransletClassScanner scanner = new TransletClassScanner(applicationAdapter.getClassLoader());
-				if(transletRule.getFilterParameters() != null)
-					scanner.setFilterParameters(transletRule.getFilterParameters());
+			TransletFileScanner scanner = new TransletFileScanner(applicationAdapter.getApplicationBasePath(), applicationAdapter.getClassLoader());
+			if(transletRule.getFilterParameters() != null)
+				scanner.setFilterParameters(transletRule.getFilterParameters());
+			if(transletRule.getMaskPattern() != null)
+				scanner.setTransletNameMaskPattern(transletRule.getMaskPattern());
+			else
+				scanner.setTransletNameMaskPattern(scanPath);
 
-				Map<String, Class<?>> transletClassMap = scanner.scanClasses(scanPath);
+			Map<String, File> templateFileMap = scanner.scanFiles(scanPath);
 
-				if(transletClassMap != null && !transletClassMap.isEmpty()) {
-					for(Map.Entry<String, Class<?>> entry : transletClassMap.entrySet()) {
-						String className = entry.getKey();
-						Class<?> targetClass = entry.getValue();
+			if(templateFileMap != null && !templateFileMap.isEmpty()) {
+				PrefixSuffixPattern prefixSuffixPattern = new PrefixSuffixPattern(transletRule.getName());
 
-						String transletName = null;
+				for(Map.Entry<String, File> entry : templateFileMap.entrySet()) {
+					String scannedTransletName = entry.getKey();
+					TransletRule newTransletRule = TransletRule.replicate(transletRule, scannedTransletName);
 
-						//TODO
-
-						TransletRule newTransletRule = TransletRule.replicate(transletRule, transletName);
-						putTransletRule(newTransletRule);
-
-					}
-				}
-			} else {
-				TransletFileScanner scanner = new TransletFileScanner(applicationAdapter.getApplicationBasePath(), applicationAdapter.getClassLoader());
-				if(transletRule.getFilterParameters() != null)
-					scanner.setFilterParameters(transletRule.getFilterParameters());
-				if(transletRule.getMaskPattern() != null)
-					scanner.setTransletNameMaskPattern(transletRule.getMaskPattern());
-				else
-					scanner.setTransletNameMaskPattern(scanPath);
-
-				Map<String, File> templateFileMap = scanner.scanFiles(scanPath);
-
-				if(templateFileMap != null && !templateFileMap.isEmpty()) {
-					PrefixSuffixPattern prefixSuffixPattern = new PrefixSuffixPattern(transletRule.getName());
-
-					for(Map.Entry<String, File> entry : templateFileMap.entrySet()) {
-						String scannedTransletName = entry.getKey();
-						TransletRule newTransletRule = TransletRule.replicate(transletRule, scannedTransletName);
-
-						if(prefixSuffixPattern.isSplited()) {
-							newTransletRule.setName(prefixSuffixPattern.join(scannedTransletName));
-						} else {
-							if(transletRule.getName() != null) {
-								newTransletRule.setName(transletRule.getName() + scannedTransletName);
-							}
+					if(prefixSuffixPattern.isSplited()) {
+						newTransletRule.setName(prefixSuffixPattern.join(scannedTransletName));
+					} else {
+						if(transletRule.getName() != null) {
+							newTransletRule.setName(transletRule.getName() + scannedTransletName);
 						}
-
-						putTransletRule(newTransletRule);
 					}
+
+					putTransletRule(newTransletRule);
 				}
 			}
 		} else {

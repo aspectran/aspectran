@@ -20,16 +20,17 @@ import com.aspectran.core.context.rule.TransletRuleMap;
 import com.aspectran.core.util.StringUtils;
 
 /**
- * The Class BeanAnnotationParser.
+ * The Class AnnotatedTransletParser.
  */
-public abstract class BeanAnnotationParser {
+public abstract class AnnotatedTransletParser {
 
-	public static void parse(BeanRule beanRule) {
+	public static void parse(BeanRule beanRule, TransletRuleMap transletRuleMap) {
 		Class<?> targetClass = beanRule.getBeanClass();
+		if(!targetClass.isAnnotationPresent(Translets.class))
+			return;
+
 		Translets transletsAnno = targetClass.getAnnotation(Translets.class);
 		String transletNamePrefix = StringUtils.emptyToNull(transletsAnno.name());
-		
-		TransletRuleMap transletRuleMap = new TransletRuleMap();
 		
 		for(Method method : targetClass.getMethods()) {
 			if(method.isAnnotationPresent(Translet.class)) {
