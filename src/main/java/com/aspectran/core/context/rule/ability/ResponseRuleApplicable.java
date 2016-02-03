@@ -25,9 +25,17 @@ import com.aspectran.core.context.rule.TransformRule;
  * The Interface ResponseRuleApplicable.
  */
 public interface ResponseRuleApplicable {
+	
+	/**
+	 * Apply the dispatch response rule  to the response rule.
+	 *
+	 * @param dispatchResponseRule the dispatch response rule
+	 * @return the response
+	 */
+	public Response applyResponseRule(DispatchResponseRule dispatchResponseRule);
 
 	/**
-	 * Apply response rule.
+	 * Apply the tranform response rule  to the response rule.
 	 *
 	 * @param transformRule the transform rule
 	 * @return the response
@@ -35,27 +43,19 @@ public interface ResponseRuleApplicable {
 	public Response applyResponseRule(TransformRule transformRule);
 	
 	/**
-	 * Apply response rule.
-	 *
-	 * @param dispatchResponseRule the dispatch response rule
-	 * @return the response
-	 */
-	public Response applyResponseRule(DispatchResponseRule dispatchResponseRule);
-	
-	/**
-	 * Apply response rule.
-	 *
-	 * @param redirectResponseRule the redirect response rule
-	 * @return the response
-	 */
-	public Response applyResponseRule(RedirectResponseRule redirectResponseRule);
-	
-	/**
-	 * Apply response rule.
+	 * Apply the forward response rule  to the response rule.
 	 *
 	 * @param forwardResponseRule the forward response rule
 	 * @return the response
 	 */
 	public Response applyResponseRule(ForwardResponseRule forwardResponseRule);
+	
+	/**
+	 * Apply the redirect response rule  to the response rule.
+	 *
+	 * @param redirectResponseRule the redirect response rule
+	 * @return the response
+	 */
+	public Response applyResponseRule(RedirectResponseRule redirectResponseRule);
 	
 }

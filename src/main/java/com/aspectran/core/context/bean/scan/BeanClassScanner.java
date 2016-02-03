@@ -16,6 +16,7 @@
 package com.aspectran.core.context.bean.scan;
 
 import java.io.IOException;
+import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -113,8 +114,10 @@ public class BeanClassScanner extends ClassScanner {
 	}
 
 	@Override
-	protected void putClass(Map<String, Class<?>> scannedClasses, String resourceName, Class<?> scannedClass) {
-		if(scannedClass.isInterface())
+	protected void putClass(String resourceName, Class<?> scannedClass, Map<String, Class<?>> scannedClasses) {
+		if(scannedClass.isInterface() ||
+				Modifier.isAbstract(scannedClass.getModifiers()) ||
+				!Modifier.isPublic(scannedClass.getModifiers()))
 			return;
 
 		String className = scannedClass.getName();
@@ -153,7 +156,7 @@ public class BeanClassScanner extends ClassScanner {
 			}
 		}
 		
-		super.putClass(scannedClasses, beanId, scannedClass);
+		super.putClass(beanId, scannedClass, scannedClasses);
 		
 		if(log.isTraceEnabled())
 			log.trace("scanned bean class {beanId: " + beanId + ", className: " + className + "}");

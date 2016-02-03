@@ -29,7 +29,7 @@ public class DispatchResponseRule extends ActionPossessSupport implements Action
 	
 	public static final ResponseType RESPONSE_TYPE = ResponseType.DISPATCH;
 	
-	private String dispatchName;
+	private String name;
 	
 	private String contentType;
 
@@ -51,8 +51,8 @@ public class DispatchResponseRule extends ActionPossessSupport implements Action
 	 *
 	 * @return the dispatch name
 	 */
-	public String getDispatchName() {
-		return dispatchName;
+	public String getName() {
+		return name;
 	}
 
 	/**
@@ -60,8 +60,8 @@ public class DispatchResponseRule extends ActionPossessSupport implements Action
 	 *
 	 * @param dispatchName the new dispatch name
 	 */
-	public void setDispatchName(String dispatchName) {
-		this.dispatchName = dispatchName;
+	public void setName(String name) {
+		this.name = name;
 	}
 	
 	/**
@@ -141,7 +141,7 @@ public class DispatchResponseRule extends ActionPossessSupport implements Action
 	 */
 	public String toString(ViewDispatcher viewDispatcher) {
 		StringBuilder sb = new StringBuilder();
-		sb.append("{dispatchName=").append(dispatchName);
+		sb.append("{dispatchName=").append(name);
 		sb.append(", contentType=").append(contentType);
 		sb.append(", characterEncoding=").append(characterEncoding);
 		if(defaultResponse != null)
@@ -164,12 +164,23 @@ public class DispatchResponseRule extends ActionPossessSupport implements Action
 	 */
 	public static DispatchResponseRule newInstance(String dispatchName, String contentType, String characterEncoding, Boolean defaultResponse) {
 		DispatchResponseRule drr = new DispatchResponseRule();
-		drr.setDispatchName(dispatchName);
+		drr.setName(dispatchName);
 		drr.setContentType(contentType);
 		drr.setCharacterEncoding(characterEncoding);
 		drr.setDefaultResponse(defaultResponse);
 
 		return drr;
+	}
+	
+	/**
+	 * Returns a new instance of DispatchResponseRule.
+	 *
+	 * @param dispatchName the dispatch name
+	 * @param characterEncoding the character encoding
+	 * @return the dispatch response rule
+	 */
+	public static DispatchResponseRule newInstance(String dispatchName, String characterEncoding) {
+		return newInstance(dispatchName, null, characterEncoding, null);
 	}
 
 	/**
@@ -180,7 +191,7 @@ public class DispatchResponseRule extends ActionPossessSupport implements Action
 	 */
 	public static DispatchResponseRule replicate(DispatchResponseRule dispatchResponseRule) {
 		DispatchResponseRule newDispatchResponseRule = new DispatchResponseRule();
-		newDispatchResponseRule.setDispatchName(dispatchResponseRule.getDispatchName());
+		newDispatchResponseRule.setName(dispatchResponseRule.getName());
 		newDispatchResponseRule.setContentType(dispatchResponseRule.getContentType());
 		newDispatchResponseRule.setCharacterEncoding(dispatchResponseRule.getCharacterEncoding());
 		newDispatchResponseRule.setDefaultResponse(dispatchResponseRule.getDefaultResponse());

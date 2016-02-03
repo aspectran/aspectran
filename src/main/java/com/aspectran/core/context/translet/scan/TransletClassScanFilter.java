@@ -15,6 +15,11 @@
  */
 package com.aspectran.core.context.translet.scan;
 
+/**
+ * The Interface TransletClassScanFilter.
+ * 
+ * @since 2.0.0
+ */
 public interface TransletClassScanFilter {
 	
 	public boolean filter(String className, String resourceName, Class<?> scannedClass);

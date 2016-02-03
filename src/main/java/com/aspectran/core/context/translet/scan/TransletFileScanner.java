@@ -28,6 +28,11 @@ import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 import com.aspectran.core.util.wildcard.WildcardPattern;
 
+/**
+ * The Class TransletFileScanner.
+ * 
+ * @since 2.0.0
+ */
 public class TransletFileScanner extends FileScanner {
 
 	private final Log log = LogFactory.getLog(TransletFileScanner.class);

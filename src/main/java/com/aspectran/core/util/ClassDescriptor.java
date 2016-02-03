@@ -29,6 +29,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.aspectran.core.context.AspectranRuntimeException;
+
 /**
  * This class represents a cached set of class definition information that
  * allows for easy mapping between property names and getter/setter methods.
@@ -122,7 +124,7 @@ public class ClassDescriptor {
 			Method method = methods[i];
 			String name = method.getName();
 			if(name.startsWith("set") && name.length() > 3) {
-				if (method.getParameterTypes().length == 1) {
+				if(method.getParameterTypes().length == 1) {
 					name = dropCase(name);
 					addSetterConflict(conflictingSetters, name, method);
 				}
@@ -142,7 +144,7 @@ public class ClassDescriptor {
 
 	private void resolveSetterConflicts(Map<String, List<Method>> conflictingSetters) {
 		for(Iterator<String> propNames = conflictingSetters.keySet().iterator(); propNames.hasNext();) {
-			String propName = (String)propNames.next();
+			String propName = propNames.next();
 			List<Method> setters = conflictingSetters.get(propName);
 			Method firstMethod = setters.get(0);
 			if(setters.size() == 1) {
@@ -150,7 +152,7 @@ public class ClassDescriptor {
 			} else {
 				Class<?> expectedType = getTypes.get(propName);
 				if(expectedType == null) {
-					throw new RuntimeException("Illegal overloaded setter method with ambiguous type for property "
+					throw new AspectranRuntimeException("Illegal overloaded setter method with ambiguous type for property "
 							+ propName + " in class " + firstMethod.getDeclaringClass()
 							+ ".  This breaks the JavaBeans "
 							+ "specification and can cause unpredicatble results.");
@@ -165,7 +167,7 @@ public class ClassDescriptor {
 						}
 					}
 					if(setter == null) {
-						throw new RuntimeException(
+						throw new AspectranRuntimeException(
 								"Illegal overloaded setter method with ambiguous type for property " + propName
 										+ " in class " + firstMethod.getDeclaringClass()
 										+ ".  This breaks the JavaBeans "

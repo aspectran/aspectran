@@ -504,8 +504,8 @@ public class RootAponAssembler {
 	public Parameters assembleDispatchParameters(DispatchResponseRule dispatchResponseRule) {
 		DispatchParameters dispatchParameters = new DispatchParameters();
 
-		if(dispatchResponseRule.getDispatchName() != null)
-			dispatchParameters.putValue(DispatchParameters.name, dispatchResponseRule.getDispatchName().toString());
+		if(dispatchResponseRule.getName() != null)
+			dispatchParameters.putValue(DispatchParameters.name, dispatchResponseRule.getName().toString());
 
 		if(dispatchResponseRule.getContentType() != null)
 			dispatchParameters.putValue(DispatchParameters.contentType, dispatchResponseRule.getContentType().toString());

@@ -341,6 +341,10 @@ public class RootAponDisassembler {
 		String mask = transletParameters.getString(TransletParameters.mask);
 		String path = transletParameters.getString(TransletParameters.scan);
 		String restVerb = transletParameters.getString(TransletParameters.restVerb);
+		
+		if(name == null)
+			throw new IllegalArgumentException("Parameter name must not be null.");
+		
 		TransletRule transletRule = TransletRule.newInstance(name, mask, path, restVerb);
 		
 		if(description != null)
@@ -511,7 +515,7 @@ public class RootAponDisassembler {
 		Boolean hidden = actionParameters.getBoolean(ActionParameters.hidden);
 		
 		if(!assistant.isNullableActionId() && StringUtils.isEmpty(id))
-			throw new IllegalArgumentException("The <echo>, <action>, <include> element requires a id attribute.");
+			throw new IllegalArgumentException("Parameter id must not null. nullableActionId setting is true.");
 		
 		if(!StringUtils.isEmpty(methodName)) {
 			BeanActionRule beanActionRule = BeanActionRule.newInstance(id, beanId, methodName, hidden);
@@ -689,6 +693,9 @@ public class RootAponDisassembler {
 		Boolean defaultResponse = forwardParameters.getBoolean(ForwardParameters.defaultResponse);
 		
 		translet = assistant.applyTransletNamePattern(translet);
+		
+		if(translet == null)
+			throw new IllegalArgumentException("Parameter translet must not be null.");
 		
 		ForwardResponseRule rrr = ForwardResponseRule.newInstance(contentType, translet, defaultResponse);
 		

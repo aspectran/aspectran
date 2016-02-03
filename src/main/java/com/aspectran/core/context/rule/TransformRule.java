@@ -202,7 +202,7 @@ public class TransformRule extends ActionPossessSupport implements ActionPossess
 		
 		return tr;
 	}
-	
+
 	public static TransformRule replicate(TransformRule transformRule) {
 		TransformRule newTransformRule = new TransformRule();
 		newTransformRule.setTransformType(transformRule.getTransformType());

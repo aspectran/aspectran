@@ -85,10 +85,7 @@ public class ResponseRule implements ResponseRuleApplicable, Replicable<Response
 	}
 
 	public ResponseType getResponseType() {
-		if(response == null)
-			return null;
-		
-		return response.getResponseType();
+		return (response == null) ? null : response.getResponseType();
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -99,30 +96,36 @@ public class ResponseRule implements ResponseRuleApplicable, Replicable<Response
 	/**
 	 * Sets the default response rule.
 	 * 
-	 * @param tr the new default response rule
+	 * @param drr the new default response rule
+	 * @return the dispatch response
+	 */
+	public Response applyResponseRule(DispatchResponseRule drr) {
+		Response response = new DispatchResponse(drr);
+		this.response = response;
+		return response;
+	}
+	
+	/**
+	 * Sets the default response rule.
 	 * 
+	 * @param tr the new default response rule
 	 * @return the transform response
 	 */
 	public Response applyResponseRule(TransformRule tr) {
 		Response response = TransformFactory.createTransform(tr);
-		
 		this.response = response;
-		
 		return response;
 	}
 
 	/**
 	 * Sets the default response rule.
 	 * 
-	 * @param drr the new default response rule
-	 * 
-	 * @return the dispatch response
+	 * @param frr the new default response rule
+	 * @return the forward response
 	 */
-	public Response applyResponseRule(DispatchResponseRule drr) {
-		Response response = new DispatchResponse(drr);
-		
+	public Response applyResponseRule(ForwardResponseRule frr) {
+		Response response = new ForwardResponse(frr);
 		this.response = response;
-		
 		return response;
 	}
 	
@@ -130,29 +133,11 @@ public class ResponseRule implements ResponseRuleApplicable, Replicable<Response
 	 * Sets the default response rule.
 	 * 
 	 * @param rrr the new default response rule
-	 * 
 	 * @return the redirect response
 	 */
 	public Response applyResponseRule(RedirectResponseRule rrr) {
 		Response response = new RedirectResponse(rrr);
-
 		this.response = response;
-		
-		return response;
-	}
-	
-	/**
-	 * Sets the default response rule.
-	 * 
-	 * @param frr the new default response rule
-	 * 
-	 * @return the forward response
-	 */
-	public Response applyResponseRule(ForwardResponseRule frr) {
-		Response response = new ForwardResponse(frr);
-
-		this.response = response;
-		
 		return response;
 	}
 	
@@ -206,7 +191,31 @@ public class ResponseRule implements ResponseRuleApplicable, Replicable<Response
 		
 		return responseRule;
 	}
+	
+	public static ResponseRule newInstance(DispatchResponseRule drr) {
+		ResponseRule responseRule = new ResponseRule();
+		responseRule.applyResponseRule(drr);
+		return responseRule;
+	}
 
+	public static ResponseRule newInstance(TransformRule tr) {
+		ResponseRule responseRule = new ResponseRule();
+		responseRule.applyResponseRule(tr);
+		return responseRule;
+	}
+	
+	public static ResponseRule newInstance(ForwardResponseRule frr) {
+		ResponseRule responseRule = new ResponseRule();
+		responseRule.applyResponseRule(frr);
+		return responseRule;
+	}
+	
+	public static ResponseRule newInstance(RedirectResponseRule rrr) {
+		ResponseRule responseRule = new ResponseRule();
+		responseRule.applyResponseRule(rrr);
+		return responseRule;
+	}
+	
 	public static ResponseRule replicate(ResponseRule responseRule) {
 		ResponseRule newResponseRule = new ResponseRule();
 		newResponseRule.setName(responseRule.getName());

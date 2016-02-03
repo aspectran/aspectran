@@ -16,7 +16,13 @@
 package com.aspectran.core.context.bean;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import com.aspectran.core.context.bean.ablility.DisposableBean;
 import com.aspectran.core.context.bean.ablility.FactoryBean;
@@ -26,6 +32,8 @@ import com.aspectran.core.context.bean.scan.BeanClassScanner;
 import com.aspectran.core.context.loader.AspectranClassLoader;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.BeanRuleMap;
+import com.aspectran.core.context.rule.TransletRuleMap;
+import com.aspectran.core.context.translet.TransletRuleRegistry;
 import com.aspectran.core.util.PrefixSuffixPattern;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
@@ -43,11 +51,11 @@ public class BeanRuleRegistry {
 	
 	private final BeanRuleMap beanRuleMap = new BeanRuleMap();
 
-	private final Map<Class<?>, BeanRule> classBeanRuleMap = new HashMap<Class<?>, BeanRule>();
-
-	private final Map<Class<?>, BeanRule> interfaceBeanRuleMap = new HashMap<Class<?>, BeanRule>();
+	private final Map<Class<?>, List<BeanRule>> typeBeanRuleMap = new HashMap<Class<?>, List<BeanRule>>();
 
 	private final Set<Class<?>> ignoredDependencyInterfaces = new HashSet<Class<?>>();
+	
+	private TransletRuleRegistry transletRuleRegistry;
 
 	public BeanRuleRegistry() {
 		this(AspectranClassLoader.getDefaultClassLoader());
@@ -61,16 +69,25 @@ public class BeanRuleRegistry {
 		ignoreDependencyInterface(InitializableBean.class);
 		ignoreDependencyInterface(InitializableTransletBean.class);
 	}
+	
+	public TransletRuleRegistry getTransletRuleRegistry() {
+		return transletRuleRegistry;
+	}
+
+	public void setTransletRuleRegistry(TransletRuleRegistry transletRuleRegistry) {
+		this.transletRuleRegistry = transletRuleRegistry;
+	}
 
 	public BeanRule getBeanRule(String beanId) {
 		return beanRuleMap.get(beanId);
 	}
 	
-	public BeanRule getBeanRule(Class<?> requiredType) {
-		if(requiredType.isInterface())
-			return interfaceBeanRuleMap.get(requiredType);
-
-		return classBeanRuleMap.get(requiredType);
+	public BeanRule[] getBeanRule(Class<?> requiredType) {
+		List<BeanRule> list = typeBeanRuleMap.get(requiredType);
+		if(list.isEmpty())
+			return null;
+		
+		return list.toArray(new BeanRule[list.size()]);
 	}
 	
 	public boolean contains(String beanId) {
@@ -78,10 +95,7 @@ public class BeanRuleRegistry {
 	}
 	
 	public boolean contains(Class<?> requiredType) {
-		if(requiredType.isInterface())
-			return interfaceBeanRuleMap.containsKey(requiredType);
-
-		return classBeanRuleMap.containsKey(requiredType);
+		return typeBeanRuleMap.containsKey(requiredType);
 	}
 
 	public Collection<BeanRule> getBeanRules() {
@@ -136,10 +150,8 @@ public class BeanRuleRegistry {
 					BeanRule.checkAccessibleMethod(beanRule2);
 					beanRuleMap.putBeanRule(beanRule2);
 
-					addClassBeanRule(beanRule2);
-
-					if(log.isTraceEnabled())
-						log.trace("add BeanRule " + beanRule2);
+					putBeanRule(beanRule2);
+					parseAnnotation(beanRule);
 				}
 			}
 			
@@ -156,24 +168,38 @@ public class BeanRuleRegistry {
 			beanRule.setBeanClass(beanClass);
 			BeanRule.checkFactoryBeanImplement(beanRule);
 			BeanRule.checkAccessibleMethod(beanRule);
-			beanRuleMap.putBeanRule(beanRule);
-
-			addClassBeanRule(beanRule);
-
-			if(log.isTraceEnabled())
-				log.trace("add BeanRule " + beanRule);
+			
+			putBeanRule(beanRule);
+			parseAnnotation(beanRule);
 		}
 	}
 
-	private void addClassBeanRule(BeanRule beanRule) {
+	private void putBeanRule(BeanRule beanRule) {
 		Class<?> beanClass = beanRule.getBeanClass();
-
-		classBeanRuleMap.put(beanClass, beanRule);
-
+		putBeanRule(beanClass, beanRule);
 		for(Class<?> ifc : beanClass.getInterfaces()) {
 			if(!ignoredDependencyInterfaces.contains(ifc)) {
-				interfaceBeanRuleMap.put(ifc, beanRule);
+				putBeanRule(ifc, beanRule);
 			}
+		}
+
+		if(log.isTraceEnabled())
+			log.trace("add BeanRule " + beanRule);
+	}
+	
+	private void putBeanRule(Class<?> type, BeanRule beanRule) {
+		List<BeanRule> list = typeBeanRuleMap.get(type);
+		if(list == null) {
+			list = new ArrayList<BeanRule>();
+			typeBeanRuleMap.put(type, list);
+		}
+		list.add(beanRule);
+	}
+
+	private void parseAnnotation(BeanRule beanRule) {
+		if(transletRuleRegistry != null) {
+			TransletRuleMap transletRuleMap = TransletAnnotationParser.parse(beanRule);
+			transletRuleRegistry.addTransletRule(transletRuleMap);
 		}
 	}
 
@@ -183,8 +209,7 @@ public class BeanRuleRegistry {
 
 	public void clear() {
 		beanRuleMap.clear();
-		classBeanRuleMap.clear();
-		interfaceBeanRuleMap.clear();
+		typeBeanRuleMap.clear();
 	}
 	
 }

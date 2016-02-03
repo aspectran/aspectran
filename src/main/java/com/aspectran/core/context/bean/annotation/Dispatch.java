@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.core.context.translet.annotation;
+package com.aspectran.core.context.bean.annotation;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -24,10 +24,10 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface Translet {
+public @interface Dispatch {
 
-	String name() default "";
+	String name();
 
-	String restVerb() default "";
+	String characterEncoding() default "";
 	
 }

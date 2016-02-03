@@ -27,7 +27,7 @@ import com.aspectran.core.util.ClassUtils;
 import com.aspectran.core.util.MethodUtils;
 
 /**
- * The Class ScopedContextBeanRegistry.
+ * The Class ContextBeanRegistry.
  * 
  * <p>Created: 2009. 03. 09 PM 23:48:09</p>
  */
@@ -57,12 +57,15 @@ public class ContextBeanRegistry extends AbstractBeanFactory implements BeanRegi
 
 	@Override
 	public <T> T getBean(Class<T> requiredType) {
-		BeanRule beanRule = beanRuleRegistry.getBeanRule(requiredType);
+		BeanRule[] beanRules = beanRuleRegistry.getBeanRule(requiredType);
 		
-		if(beanRule == null)
-			throw new BeanNotFoundException(requiredType.getName());
+		if(beanRules == null || beanRules.length == 0)
+			throw new RequiredTypeBeanNotFoundException(requiredType);
 		
-		return getBean(beanRule);
+		if(beanRules.length > 1)
+			throw new UniqueBeanNotFoundException(requiredType, beanRules);
+		
+		return getBean(beanRules[0]);
 	}
 
 	@Override
@@ -72,9 +75,8 @@ public class ContextBeanRegistry extends AbstractBeanFactory implements BeanRegi
 		if(beanRule == null)
 			throw new BeanNotFoundException(id);
 
-		if(!ClassUtils.isAssignable(beanRule.getBeanClass(), requiredType)) {
+		if(!ClassUtils.isAssignable(beanRule.getBeanClass(), requiredType))
 			throw new BeanNotOfRequiredTypeException(beanRule, requiredType);
-		}
 		
 		return getBean(beanRule);
 	}

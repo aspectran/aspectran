@@ -19,6 +19,8 @@ import com.aspectran.core.context.bean.BeanException;
 
 /**
  * The Class TransletScanFailedException.
+ * 
+ * @since 2.0.0
  */
 public class TransletScanFailedException extends BeanException {
 

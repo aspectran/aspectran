@@ -18,7 +18,7 @@ package com.aspectran.core.context.builder;
 import java.util.List;
 
 /**
- * This exception will be thrown when Cannot resolve reference to bean.
+ * This exception will be thrown when cannot resolve reference to bean.
  * 
  * <p>Created: 2008. 01. 07 AM 3:35:55</p>
  */

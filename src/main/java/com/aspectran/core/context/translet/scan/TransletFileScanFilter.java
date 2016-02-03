@@ -17,6 +17,11 @@ package com.aspectran.core.context.translet.scan;
 
 import java.io.File;
 
+/**
+ * The Interface TransletFileScanFilter.
+ * 
+ * @since 2.0.0
+ */
 public interface TransletFileScanFilter {
 	
 	public boolean filter(String transletName, File templateFile);

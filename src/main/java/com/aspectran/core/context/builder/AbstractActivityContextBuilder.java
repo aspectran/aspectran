@@ -48,6 +48,8 @@ import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
 /**
+ * The Class AbstractActivityContextBuilder.
+ * 
  * <p>Created: 2008. 06. 14 PM 8:53:29</p>
  */
 public abstract class AbstractActivityContextBuilder extends ContextBuilderAssistant {
@@ -58,6 +60,13 @@ public abstract class AbstractActivityContextBuilder extends ContextBuilderAssis
 		super(applicationAdapter);
 	}
 	
+	/**
+	 * Returns a new instance of ActivityContext.
+	 *
+	 * @param applicationAdapter the application adapter
+	 * @return the activity context
+	 * @throws BeanReferenceException will be thrown when cannot resolve reference to bean
+	 */
 	protected ActivityContext makeActivityContext(ApplicationAdapter applicationAdapter) throws BeanReferenceException {
 		AspectRuleRegistry aspectRuleRegistry = getAspectRuleRegistry();
 		BeanRuleRegistry beanRuleRegistry = getBeanRuleRegistry();
@@ -90,6 +99,13 @@ public abstract class AbstractActivityContextBuilder extends ContextBuilderAssis
 		return context;
 	}
 	
+	/**
+	 * Initialize the aspect rule registry.
+	 *
+	 * @param aspectRuleRegistry the aspect rule registry
+	 * @param beanRuleRegistry the bean rule registry
+	 * @param transletRuleRegistry the translet rule registry
+	 */
 	protected void initAspectRuleRegistry(AspectRuleRegistry aspectRuleRegistry, BeanRuleRegistry beanRuleRegistry, TransletRuleRegistry transletRuleRegistry) {
 		AspectAdviceRulePostRegister sessionScopeAspectAdviceRulePostRegister = new AspectAdviceRulePostRegister();
 		

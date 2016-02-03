@@ -72,7 +72,7 @@ public class PebbleViewDispatcher implements ViewDispatcher {
 	 */
 	public void dispatch(Activity activity, DispatchResponseRule dispatchResponseRule) throws ViewDispatchException {
 		try {
-			String dispatchName = dispatchResponseRule.getDispatchName();
+			String dispatchName = dispatchResponseRule.getName();
 			if(dispatchName == null) {
 				log.warn("No specified dispatch name " + dispatchResponseRule.toString(this));
 				return;

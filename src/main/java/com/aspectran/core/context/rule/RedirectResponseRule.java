@@ -268,7 +268,7 @@ public class RedirectResponseRule extends ActionPossessSupport implements Action
 	
 	public static RedirectResponseRule newInstance(String redirectName) {
 		if(redirectName == null)
-			throw new IllegalArgumentException("redirectName must not be null.");
+			throw new IllegalArgumentException("redirectName must not be null");
 		
 		RedirectResponseRule rrr = new RedirectResponseRule();
 		rrr.setTarget(redirectName);

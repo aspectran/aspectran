@@ -161,7 +161,7 @@ public class ForwardResponseRule extends ActionPossessSupport implements ActionP
 	 */
 	public static ForwardResponseRule newInstance(String contentType, String transletName, Boolean defaultResponse) {
 		if(transletName == null)
-			throw new IllegalArgumentException("The <forward> element requires a translet attribute.");
+			throw new IllegalArgumentException("transletName must not be null");
 		
 		ForwardResponseRule frr = new ForwardResponseRule();
 		frr.setContentType(contentType);
@@ -173,7 +173,7 @@ public class ForwardResponseRule extends ActionPossessSupport implements ActionP
 	
 	public static ForwardResponseRule newInstance(String transletName) {
 		if(transletName == null)
-			throw new IllegalArgumentException("transletName must not be null.");
+			throw new IllegalArgumentException("transletName must not be null");
 		
 		ForwardResponseRule frr = new ForwardResponseRule();
 		frr.setTransletName(transletName);

@@ -83,6 +83,7 @@ public class ContextBuilderAssistant {
 		
 		transletRuleRegistry = new TransletRuleRegistry(applicationAdapter);
 		transletRuleRegistry.setAssistantLocal(assistantLocal);
+		beanRuleRegistry.setTransletRuleRegistry(transletRuleRegistry);
 		
 		templateRuleRegistry = new TemplateRuleRegistry();
 		templateRuleRegistry.setAssistantLocal(assistantLocal);
@@ -115,44 +116,20 @@ public class ContextBuilderAssistant {
 		this.hybridLoading = hybridLoading;
 	}
 	
-	/**
-	 * Push object.
-	 * 
-	 * @param object the item
-	 */
 	public void pushObject(Object object) {
 		objectStack.push(object);
 	}
 	
-	/**
-	 * Pop object.
-	 *
-	 * @param <T> the generic type
-	 * @return the object
-	 */
 	@SuppressWarnings("unchecked")
 	public <T> T popObject() {
 		return (T)objectStack.pop();
 	}
 	
-	/**
-	 * Peek object.
-	 *
-	 * @param <T> the generic type
-	 * @return the object
-	 */
 	@SuppressWarnings("unchecked")
 	public <T> T peekObject() {
 		return (T)objectStack.peek();
 	}
 	
-	/**
-	 * Peek object.
-	 *
-	 * @param <T> the generic type
-	 * @param n the n
-	 * @return the object
-	 */
 	@SuppressWarnings("unchecked")
 	public <T> T peekObject(int n) {
 		return (T)objectStack.peek(n);

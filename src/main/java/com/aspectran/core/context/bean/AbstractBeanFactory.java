@@ -108,6 +108,7 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 			}
 
 			invokeAwareMethods(bean);
+			performAnnotation(beanRule, bean);
 
 			if(propertyItemRuleMap != null) {
 				if(expressor == null) {
@@ -157,8 +158,6 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 				}
 			}
 
-			//TODO beanRule.getBeanClass().isAnnotationPresent(Autowired.class);
-			
 			return bean;
 		} catch(Exception e) {
 			throw new BeanCreationException(beanRule, e);
@@ -198,6 +197,10 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 		}
 		
 		return bean;
+	}
+	
+	private void performAnnotation(BeanRule beanRule, final Object bean) {
+		//TODO
 	}
 	
 	private void invokeAwareMethods(final Object bean) {

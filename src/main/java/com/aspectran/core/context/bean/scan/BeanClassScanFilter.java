@@ -15,6 +15,9 @@
  */
 package com.aspectran.core.context.bean.scan;
 
+/**
+ * The Interface BeanClassScanFilter.
+ */
 public interface BeanClassScanFilter {
 	
 	public String filter(String beanId, String resourceName, Class<?> scannedClass);

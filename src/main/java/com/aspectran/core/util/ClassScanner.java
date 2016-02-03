@@ -52,6 +52,13 @@ public class ClassScanner {
 		return classLoader;
 	}
 
+	/**
+	 * Find all the classes that match the class name pattern.
+	 *
+	 * @param classNamePattern the class name pattern
+	 * @return a Map for scanned classes
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	public Map<String, Class<?>> scanClasses(String classNamePattern) throws IOException {
 		Map<String, Class<?>> scannedClasses = new LinkedHashMap<String, Class<?>>();
 		
@@ -60,6 +67,13 @@ public class ClassScanner {
 		return scannedClasses;
 	}
 
+	/**
+	 * Find all the classes that match the class name pattern.
+	 *
+	 * @param classNamePattern the class name pattern
+	 * @param scannedClasses a Map for scanned classes
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	public void scanClasses(String classNamePattern, Map<String, Class<?>> scannedClasses) throws IOException {
 		classNamePattern = classNamePattern.replace(ClassUtils.PACKAGE_SEPARATOR_CHAR, ResourceUtils.RESOURCE_NAME_SPEPARATOR_CHAR);
 
@@ -100,7 +114,7 @@ public class ClassScanner {
 	 * @param basePackageName     the base package name
 	 * @param relativePackageName the relative package name
 	 * @param matcher             the matcher
-	 * @param scannedClasses      the scanned classes
+	 * @param scannedClasses      a Map for scanned classes
 	 */
 	private void scanClasses(final String targetPath, final String basePackageName, final String relativePackageName, final WildcardMatcher matcher, final Map<String, Class<?>> scannedClasses) {
 		final File target = new File(targetPath);
@@ -130,7 +144,7 @@ public class ClassScanner {
 					if(matcher.matches(relativePath)) {
 						String resourceName = targetPath + fileName;
 						Class<?> classType = loadClass(className);
-						putClass(scannedClasses, resourceName, classType);
+						putClass(resourceName, classType, scannedClasses);
 					}
 				}
 				return false;
@@ -190,7 +204,7 @@ public class ClassScanner {
 						String resourceName = jarFileUrl + ResourceUtils.JAR_URL_SEPARATOR + entryName;
 						String className = entryNamePrefix + entryNameSuffix;
 						Class<?> classType = loadClass(className);
-						putClass(scannedClasses, resourceName, classType);
+						putClass(resourceName, classType, scannedClasses);
 					}
 				}
 			}
@@ -204,7 +218,14 @@ public class ClassScanner {
 		}
 	}
 
-	protected void putClass(Map<String, Class<?>> scannedClasses, String resourceName, Class<?> scannedClass) {
+	/**
+	 * Puts a Class to the Map for scanned classes.
+	 *
+	 * @param resourceName the resource name
+	 * @param scannedClass the scanned class
+	 * @param scannedClasses a Map for scanned classes
+	 */
+	protected void putClass(String resourceName, Class<?> scannedClass, Map<String, Class<?>> scannedClasses) {
 		scannedClasses.put(resourceName, scannedClass);
 	}
 	

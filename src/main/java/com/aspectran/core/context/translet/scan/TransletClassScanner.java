@@ -16,9 +16,11 @@
 package com.aspectran.core.context.translet.scan;
 
 import java.io.IOException;
+import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.aspectran.core.context.bean.annotation.Translets;
 import com.aspectran.core.context.builder.apon.params.FilterParameters;
 import com.aspectran.core.util.ClassScanner;
 import com.aspectran.core.util.ClassUtils;
@@ -27,6 +29,11 @@ import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 import com.aspectran.core.util.wildcard.WildcardPattern;
 
+/**
+ * The Class TransletClassScanner.
+ * 
+ * @since 2.0.0
+ */
 public class TransletClassScanner extends ClassScanner {
 
 	private final Log log = LogFactory.getLog(TransletClassScanner.class);
@@ -98,10 +105,13 @@ public class TransletClassScanner extends ClassScanner {
 	}
 
 	@Override
-	protected void putClass(Map<String, Class<?>> scannedClasses, String resourceName, Class<?> scannedClass) {
-		if(scannedClass.isInterface())
+	protected void putClass(String resourceName, Class<?> scannedClass, Map<String, Class<?>> scannedClasses) {
+		if(scannedClass.isInterface() ||
+				Modifier.isAbstract(scannedClass.getModifiers()) ||
+				!Modifier.isPublic(scannedClass.getModifiers()) ||
+				!scannedClass.isAnnotationPresent(Translets.class))
 			return;
-
+		
 		String className = scannedClass.getName();
 
 		if(transletClassScanFilter != null) {
@@ -128,7 +138,7 @@ public class TransletClassScanner extends ClassScanner {
 			}
 		}
 		
-		super.putClass(scannedClasses, className, scannedClass);
+		super.putClass(className, scannedClass, scannedClasses);
 		
 		if(log.isTraceEnabled())
 			log.trace("scanned translet class [" + className + "]");

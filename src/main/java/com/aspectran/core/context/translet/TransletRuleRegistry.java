@@ -32,7 +32,6 @@ import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.TransletRuleMap;
 import com.aspectran.core.context.rule.type.RequestMethodType;
 import com.aspectran.core.context.rule.type.TokenType;
-import com.aspectran.core.context.translet.annotation.Translets;
 import com.aspectran.core.context.translet.scan.TransletClassScanner;
 import com.aspectran.core.context.translet.scan.TransletFileScanner;
 import com.aspectran.core.context.variable.ParameterMap;
@@ -123,6 +122,10 @@ public class TransletRuleRegistry {
 		restfulTransletRuleMap.clear();
 	}
 	
+	public void addTransletRule(TransletRuleMap transletRuleMap) {
+		this.transletRuleMap.putAll(transletRuleMap);
+	}
+	
 	public void addTransletRule(TransletRule transletRule) throws CloneNotSupportedException {
 		DefaultSettings defaultSettings = assistantLocal.getDefaultSettings();
 		if(defaultSettings != null) {
@@ -143,17 +146,15 @@ public class TransletRuleRegistry {
 				if(transletClassMap != null && !transletClassMap.isEmpty()) {
 					for(Map.Entry<String, Class<?>> entry : transletClassMap.entrySet()) {
 						String className = entry.getKey();
-						Class<?> transletsClass = entry.getValue();
+						Class<?> targetClass = entry.getValue();
 
-						if(transletsClass.isAnnotationPresent(Translets.class)) {
-							String transletName = null;
+						String transletName = null;
 
-							//TODO
+						//TODO
 
-							TransletRule newTransletRule = TransletRule.replicate(transletRule, transletName);
-							putTransletRule(newTransletRule);
+						TransletRule newTransletRule = TransletRule.replicate(transletRule, transletName);
+						putTransletRule(newTransletRule);
 
-						}
 					}
 				}
 			} else {
@@ -228,13 +229,13 @@ public class TransletRuleRegistry {
 			for(ResponseRule responseRule : responseRuleList) {
 				String responseName = responseRule.getName();
 				
-				if(responseName == null || responseName.length() == 0) {
+				if(responseName == null || responseName.isEmpty()) {
 					if(defaultResponseRule != null) {
 						log.warn("ignore duplicated default response rule " + defaultResponseRule + " of transletRule " + transletRule);
 					}
 					defaultResponseRule = responseRule;
 				} else {
-					TransletRule subTransletRule = TransletRule.newSubTransletRule(transletRule, responseRule);
+					TransletRule subTransletRule = TransletRule.replicate(transletRule, responseRule);
 					subTransletRule.determineResponseRule();
 					subTransletRule.setName(applyTransletNamePattern(subTransletRule.getName()));
 					transletRuleMap.putTransletRule(subTransletRule);
