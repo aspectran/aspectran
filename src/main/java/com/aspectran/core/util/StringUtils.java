@@ -21,15 +21,13 @@ import java.util.Locale;
 import java.util.StringTokenizer;
 
 /**
- * Miscellaneous {@link String} utility methods.
+ * Static utility methods pertaining to {@code String} or {@code CharSequence} instances.
  * 
  * @author Juho Jeong
  */
 public class StringUtils {
 
-	/**
-	 * 빈 문자열("").
-	 */
+	/** The empty {@link String} */
 	public static final String EMPTY = "";
 
 	public static boolean hasLength(CharSequence str) {
@@ -180,26 +178,34 @@ public class StringUtils {
 	}
 
 	/**
-	 * null 문자열이면 "" 문자열을 돌려준다.
-	 * ""문자열 이외의 문자열 바꾸려면 decode 함수 참조
-	 * 
-	 * @param string 대상 문자열
-	 * 
-	 * @return String
-	 */
-	public static String nullCheck(String string) {
-		return string == null ? EMPTY : string;
-	}
-
-	/**
-	 * 주어진 문자열의 값이 null 또는 ""인지를 반환한다.
-	 * 
-	 * @param string the string
-	 * 
-	 * @return true, if checks if is empty
+	 * Returns {@code true} if the given string is null or is the empty string.
+	 *
+	 * @param string a string reference to check
+	 * @return {@code true} if the string is null or is the empty string
 	 */
 	public static boolean isEmpty(String string) {
 		return (string == null || string.length() == 0);
+	}
+	
+	/**
+	 * Returns the given string if it is non-null; the empty string otherwise.
+	 *
+	 * @param string the string to test and possibly return
+	 * @return {@code string} itself if it is non-null; {@code ""} if it is null
+	 */
+	public static String nullToEmpty(String string) {
+	  return (string == null) ? EMPTY : string;
+	}
+
+
+	/**
+	 * Returns the given string if it is nonempty; {@code null} otherwise.
+	 *
+	 * @param string the string to test and possibly return
+	 * @return {@code string} itself if it is nonempty; {@code null} if it is empty or null
+	 */
+	public static String emptyToNull(String string) {
+		return (string == null || string.length() == 0) ? null : string;
 	}
 
 	/**
