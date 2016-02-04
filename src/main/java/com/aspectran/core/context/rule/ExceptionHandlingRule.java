@@ -40,23 +40,17 @@ public class ExceptionHandlingRule implements ActionRuleApplicable, Iterable<Res
 	
 	private String description;
 
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.context.rule.ability.ActionRuleApplicable#applyActionRule(com.aspectran.core.context.rule.EchoActionRule)
-	 */
+	@Override
 	public void applyActionRule(EchoActionRule echoActionRule) {
 		action = new EchoAction(echoActionRule, null);
 	}
 
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.context.rule.ability.ActionRuleApplicable#applyActionRule(com.aspectran.core.context.rule.BeanActionRule)
-	 */
+	@Override
 	public void applyActionRule(BeanActionRule beanActionRule) {
 		action = new BeanAction(beanActionRule, null);
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.context.rule.ability.ActionRuleApplicable#applyActionRule(com.aspectran.core.context.rule.IncludeActionRule)
-	 */
+
+	@Override
 	public void applyActionRule(IncludeActionRule includeActionRule) {
 		throw new UnsupportedOperationException("There is nothing that can be apply to IncludeActionRule. The aspecet-advice is not support include-action.");
 	}
@@ -164,10 +158,8 @@ public class ExceptionHandlingRule implements ActionRuleApplicable, Iterable<Res
 		
 		return getMatchedDepth(exceptionType, exceptionClass.getSuperclass(), depth + 1);
 	}
-	
-	/* (non-Javadoc)
-	 * @see java.lang.Iterable#iterator()
-	 */
+
+	@Override
 	public Iterator<ResponseByContentTypeRule> iterator() {
 		return responseByContentTypeRuleMap.values().iterator();
 	}

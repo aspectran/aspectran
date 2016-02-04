@@ -87,13 +87,14 @@ important (true | false) #IMPLIED
 class CDATA #IMPLIED
 >
 
-<!ELEMENT features (class?, scope?, factoryBean?, factoryMethod?, initMethod?, destroyMethod?, lazyInit?, important?)>
+<!ELEMENT features (class?, scope?, offerBean?, offerMethod?, initMethod?, factoryMethod?, destroyMethod?, lazyInit?, important?)>
 
 <!ELEMENT class (#PCDATA)>
 <!ELEMENT scope (#PCDATA)>
-<!ELEMENT factoryBean (#PCDATA)>
-<!ELEMENT factoryMethod (#PCDATA)>
+<!ELEMENT offerBean (#PCDATA)>
+<!ELEMENT offerMethod (#PCDATA)>
 <!ELEMENT initMethod (#PCDATA)>
+<!ELEMENT factoryMethod (#PCDATA)>
 <!ELEMENT destroyMethod (#PCDATA)>
 <!ELEMENT lazyInit (#PCDATA)>
 <!ELEMENT important (#PCDATA)>

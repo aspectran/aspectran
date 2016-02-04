@@ -15,6 +15,12 @@
  */
 package com.aspectran.core.context.builder.xml;
 
+import java.io.InputStream;
+import java.util.Iterator;
+import java.util.Map;
+
+import org.w3c.dom.Node;
+
 import com.aspectran.core.context.builder.ContextBuilderAssistant;
 import com.aspectran.core.context.builder.ImportHandler;
 import com.aspectran.core.context.builder.Importable;
@@ -24,11 +30,6 @@ import com.aspectran.core.util.apon.GenericParameters;
 import com.aspectran.core.util.apon.Parameters;
 import com.aspectran.core.util.xml.Nodelet;
 import com.aspectran.core.util.xml.NodeletParser;
-import org.w3c.dom.Node;
-
-import java.io.InputStream;
-import java.util.Iterator;
-import java.util.Map;
 
 /**
  * The Class AspectranNodeParser.
@@ -175,7 +176,10 @@ public class AspectranNodeParser {
 			}
 		});
 	}
-	
+
+	/**
+	 * Adds the aspect rule nodelets.
+	 */
 	private void addAspectRuleNodelets() {
 		parser.addNodelet("/aspectran", new AspectNodeletAdder(assistant));
 		

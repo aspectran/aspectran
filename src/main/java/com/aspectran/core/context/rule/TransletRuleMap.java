@@ -26,13 +26,12 @@ import java.util.LinkedHashMap;
 public class TransletRuleMap extends LinkedHashMap<String, TransletRule> implements Iterable<TransletRule> {
 
 	/** @serial */
-	static final long serialVersionUID = -6355555002181276839L;
+	private static final long serialVersionUID = -6355555002181276839L;
 
 	/**
 	 * Adds the translet rule.
 	 * 
 	 * @param transletRule the translet rule
-	 * 
 	 * @return the translet rule
 	 */
 	public TransletRule putTransletRule(TransletRule transletRule) {
@@ -46,10 +45,8 @@ public class TransletRuleMap extends LinkedHashMap<String, TransletRule> impleme
 		
 		return super.put(key, transletRule);
 	}
-	
-	/* (non-Javadoc)
-	 * @see java.lang.Iterable#iterator()
-	 */
+
+	@Override
 	public Iterator<TransletRule> iterator() {
 		return this.values().iterator();
 	}

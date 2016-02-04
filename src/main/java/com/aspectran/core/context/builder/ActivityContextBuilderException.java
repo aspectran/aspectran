@@ -25,7 +25,7 @@ import com.aspectran.core.context.ActivityContextException;
 public class ActivityContextBuilderException extends ActivityContextException {
 	
 	/** @serial */
-	static final long serialVersionUID = 5702282474852901391L;
+	private static final long serialVersionUID = 5702282474852901391L;
 
 	/**
 	 * Simple constructor.

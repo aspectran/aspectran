@@ -15,6 +15,10 @@
  */
 package com.aspectran.core.context.builder.xml;
 
+import java.util.Map;
+
+import org.w3c.dom.Node;
+
 import com.aspectran.core.context.builder.ContextBuilderAssistant;
 import com.aspectran.core.context.rule.TemplateRule;
 import com.aspectran.core.util.BooleanUtils;
@@ -22,9 +26,6 @@ import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.xml.Nodelet;
 import com.aspectran.core.util.xml.NodeletAdder;
 import com.aspectran.core.util.xml.NodeletParser;
-import org.w3c.dom.Node;
-
-import java.util.Map;
 
 /**
  * The Class TemplateNodeletAdder.
@@ -44,9 +45,7 @@ public class TemplateNodeletAdder implements NodeletAdder {
 		this.assistant = assistant;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.util.xml.NodeletAdder#process(java.lang.String, com.aspectran.core.util.xml.NodeletParser)
-	 */
+	@Override
 	public void process(String xpath, NodeletParser parser) {
 		parser.addNodelet(xpath, "/template", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {

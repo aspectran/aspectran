@@ -30,8 +30,8 @@ import com.aspectran.core.util.xml.NodeletParser;
 /**
  * The Class AspectAdviceRuleNodeletAdder.
  *
- * @author Juho Jeong
  * @since 2013. 8. 11.
+ * @author Juho Jeong
  */
 public class AspectExceptionRaisedNodeletAdder implements NodeletAdder {
 	
@@ -46,9 +46,7 @@ public class AspectExceptionRaisedNodeletAdder implements NodeletAdder {
 		this.assistant = assistant;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.util.xml.NodeletAdder#process(java.lang.String, com.aspectran.core.util.xml.NodeletParser)
-	 */
+	@Override
 	public void process(String xpath, NodeletParser parser) {
 		parser.addNodelet(xpath, new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {

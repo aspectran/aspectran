@@ -35,7 +35,7 @@ public class AponImportHandler extends AbstractImportHandler implements ImportHa
 		this.assistant = assistant;
 		this.encoding = encoding;
 		
-		rootAponDisassembler = new RootAponDisassembler(assistant);
+		this.rootAponDisassembler = new RootAponDisassembler(assistant);
 	}
 
 	@Override

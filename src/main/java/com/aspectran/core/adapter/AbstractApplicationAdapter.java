@@ -50,32 +50,24 @@ public abstract class AbstractApplicationAdapter implements ApplicationAdapter {
 		this.aspectranService = aspectranService;
 		this.adaptee = adaptee;
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.adapter.ApplicationAdapter#getAdaptee()
-	 */
+
+	@Override
 	@SuppressWarnings("unchecked")
 	public <T> T getAdaptee() {
 		return (T)adaptee;
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.adapter.ApplicationAdapter#getApplicationScope()
-	 */
+
+	@Override
 	public ApplicationScope getApplicationScope() {
 		return scope;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.adapter.ApplicationAdapter#getAspectranServiceController()
-	 */
+	@Override
 	public AspectranServiceController getAspectranServiceController() {
 		return aspectranService;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.adapter.ApplicationAdapter#getClassLoader()
-	 */
+	@Override
 	public ClassLoader getClassLoader() {
 		if(aspectranService.getAspectranClassLoader() != null)
 			return aspectranService.getAspectranClassLoader();
@@ -83,9 +75,7 @@ public abstract class AbstractApplicationAdapter implements ApplicationAdapter {
 		return AspectranClassLoader.getDefaultClassLoader();
 	}
 
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.adapter.ApplicationAdapter#getApplicationBasePath()
-	 */
+	@Override
 	public String getApplicationBasePath() {
 		return applicationBasePath;
 	}
@@ -99,17 +89,13 @@ public abstract class AbstractApplicationAdapter implements ApplicationAdapter {
 		this.applicationBasePath = applicationBasePath;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.adapter.ApplicationAdapter#toRealPath(java.lang.String)
-	 */
+	@Override
 	public String toRealPath(String filePath) throws IOException {
 		File file = toRealPathAsFile(filePath);
 		return file.getCanonicalPath();
 	}
 
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.adapter.ApplicationAdapter#toRealPathAsFile(java.lang.String)
-	 */
+	@Override
 	public File toRealPathAsFile(String filePath) {
 		File file;
 		
@@ -127,11 +113,8 @@ public abstract class AbstractApplicationAdapter implements ApplicationAdapter {
 		
 		return file;
 	}
-	
-	
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
+
+	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("{applicationBasePath=").append(applicationBasePath);

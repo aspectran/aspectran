@@ -37,10 +37,8 @@ public class AspectRuleMap extends LinkedHashMap<String, AspectRule> implements 
 	public AspectRule putAspectRule(AspectRule aspectRule) {
 		return put(aspectRule.getId(), aspectRule);
 	}
-	
-	/* (non-Javadoc)
-	 * @see java.lang.Iterable#iterator()
-	 */
+
+	@Override
 	public Iterator<AspectRule> iterator() {
 		return this.values().iterator();
 	}

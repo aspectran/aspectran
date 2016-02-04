@@ -58,7 +58,7 @@ public class DispatchResponseRule extends ActionPossessSupport implements Action
 	/**
 	 * Sets the dispatch name.
 	 *
-	 * @param dispatchName the new dispatch name
+	 * @param name the new dispatch name
 	 */
 	public void setName(String name) {
 		this.name = name;
@@ -117,17 +117,12 @@ public class DispatchResponseRule extends ActionPossessSupport implements Action
 	public void setDefaultResponse(Boolean defaultResponse) {
 		this.defaultResponse = defaultResponse;
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.context.rule.Replicable#replicate()
-	 */
+
+	@Override
 	public DispatchResponseRule replicate() {
 		return replicate(this);
 	}
 	
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
 	@Override
 	public String toString() {
 		return toString(null);

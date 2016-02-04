@@ -154,17 +154,12 @@ public class TransformRule extends ActionPossessSupport implements ActionPossess
 	public void setPretty(Boolean pretty) {
 		this.pretty = pretty;
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.context.rule.Replicable#replicate()
-	 */
+
+	@Override
 	public TransformRule replicate() {
 		return replicate(this);
 	}
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();

@@ -71,10 +71,8 @@ public class WebActivity extends CoreActivity implements Activity {
 		this.request = request;
 		this.response = response;
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.CoreActivity#adapting(com.aspectran.core.activity.Translet)
-	 */
+
+	@Override
 	protected void adapting(Translet translet) {
 		RequestAdapter requestAdapter = new HttpServletRequestAdapter(request);
 		setRequestAdapter(requestAdapter);
@@ -89,9 +87,7 @@ public class WebActivity extends CoreActivity implements Activity {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.AbstractActivity#getSessionAdapter()
-	 */
+	@Override
 	public synchronized SessionAdapter getSessionAdapter() {
 		if(super.getSessionAdapter() == null) {
 			SessionAdapter sessionAdapter = new HttpSessionAdapter(request.getSession(), getActivityContext());
@@ -99,10 +95,8 @@ public class WebActivity extends CoreActivity implements Activity {
 		}
 		return super.getSessionAdapter();
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.CoreActivity#request(com.aspectran.core.activity.Translet)
-	 */
+
+	@Override
 	protected void request(Translet translet) {
 		String method = request.getMethod();
 		RequestMethodType requestMethod = getRequestRule().getRequestMethod();
@@ -202,9 +196,6 @@ public class WebActivity extends CoreActivity implements Activity {
 		return null;
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.CoreActivity#newActivity()
-	 */
 	@SuppressWarnings("unchecked")
 	public <T extends Activity> T newActivity() {
 		WebActivity webActivity = new WebActivity(getActivityContext(), request, response);

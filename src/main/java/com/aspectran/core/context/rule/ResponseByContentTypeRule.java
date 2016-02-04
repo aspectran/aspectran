@@ -79,13 +79,7 @@ public class ResponseByContentTypeRule implements ResponseRuleApplicable {
 		this.defaultResponse = response;
 	}
 
-	/**
-	 * Adds the response rule.
-	 * 
-	 * @param transformRule the tr
-	 * 
-	 * @return the transform response
-	 */
+	@Override
 	public Response applyResponseRule(TransformRule transformRule) {
 		Response response = TransformFactory.createTransform(transformRule);
 		
@@ -101,13 +95,7 @@ public class ResponseByContentTypeRule implements ResponseRuleApplicable {
 		return response;
 	}
 
-	/**
-	 * Adds the response rule.
-	 * 
-	 * @param dispatchResponseRule the drr
-	 * 
-	 * @return the dispatch response
-	 */
+	@Override
 	public Response applyResponseRule(DispatchResponseRule dispatchResponseRule) {
 		Response response = new DispatchResponse(dispatchResponseRule);
 		
@@ -122,14 +110,8 @@ public class ResponseByContentTypeRule implements ResponseRuleApplicable {
 		
 		return response;
 	}
-	
-	/**
-	 * Adds the response rule.
-	 * 
-	 * @param redirectResponseRule the rrr
-	 * 
-	 * @return the redirect response
-	 */
+
+	@Override
 	public Response applyResponseRule(RedirectResponseRule redirectResponseRule) {
 		Response response = new RedirectResponse(redirectResponseRule);
 
@@ -144,14 +126,8 @@ public class ResponseByContentTypeRule implements ResponseRuleApplicable {
 		
 		return response;
 	}
-	
-	/**
-	 * Adds the response rule.
-	 * 
-	 * @param forwardResponseRule the frr
-	 * 
-	 * @return the forward response
-	 */
+
+	@Override
 	public Response applyResponseRule(ForwardResponseRule forwardResponseRule) {
 		Response response = new ForwardResponse(forwardResponseRule);
 

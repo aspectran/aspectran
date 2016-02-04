@@ -49,9 +49,7 @@ public class AspectNodeletAdder implements NodeletAdder {
 		this.assistant = assistant;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.util.xml.NodeletAdder#process(java.lang.String, com.aspectran.core.util.xml.NodeletParser)
-	 */
+	@Override
 	public void process(String xpath, NodeletParser parser) {
 		parser.addNodelet(xpath, "/aspect", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {

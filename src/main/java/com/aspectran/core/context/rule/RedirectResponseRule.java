@@ -229,17 +229,12 @@ public class RedirectResponseRule extends ActionPossessSupport implements Action
 	public void setDefaultResponse(Boolean defaultResponse) {
 		this.defaultResponse = defaultResponse;
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.context.rule.Replicable#replicate()
-	 */
+
+	@Override
 	public RedirectResponseRule replicate() {
 		return replicate(this);
 	}
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();

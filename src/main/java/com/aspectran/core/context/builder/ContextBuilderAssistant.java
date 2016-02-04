@@ -232,7 +232,6 @@ public class ContextBuilderAssistant {
 	 * Gets the alias type.
 	 * 
 	 * @param alias the alias
-	 * 
 	 * @return the alias type
 	 */
 	public String getAliasType(String alias) {
@@ -243,7 +242,6 @@ public class ContextBuilderAssistant {
 	 * Returns the resolve alias type.
 	 * 
 	 * @param alias the alias
-	 * 
 	 * @return the string
 	 */
 	public String resolveAliasType(String alias) {
@@ -266,7 +264,6 @@ public class ContextBuilderAssistant {
 	 * Returns the trnaslet name of the prefix and suffix are combined.
 	 * 
 	 * @param transletName the translet name
-	 * 
 	 * @return the string
 	 */
 	public String applyTransletNamePattern(String transletName) {

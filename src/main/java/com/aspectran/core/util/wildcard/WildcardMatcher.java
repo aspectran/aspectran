@@ -183,12 +183,6 @@ public class WildcardMatcher {
 		return matches(pattern, input, null);
 	}
 	
-	/**
-	 * @param pattern
-	 * @param input
-	 * @param separatorFlags
-	 * @return
-	 */
 	private static boolean matches(WildcardPattern pattern, CharSequence input, int[] separatorFlags) {
 		char[] tokens = pattern.getTokens();
 		int[] types = pattern.getTypes();

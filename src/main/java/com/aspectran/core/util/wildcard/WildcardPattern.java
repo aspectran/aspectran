@@ -177,9 +177,7 @@ public class WildcardPattern {
 		return WildcardMasker.mask(this, nakedString);
 	}
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
+	@Override
 	public String toString() {
 		return patternString;
 	}

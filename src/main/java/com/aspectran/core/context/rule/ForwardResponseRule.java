@@ -129,16 +129,11 @@ public class ForwardResponseRule extends ActionPossessSupport implements ActionP
 		this.defaultResponse = defaultResponse;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.context.rule.Replicable#replicate()
-	 */
+	@Override
 	public ForwardResponseRule replicate() {
 		return replicate(this);
 	}
 	
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();

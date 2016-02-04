@@ -34,8 +34,8 @@ import com.aspectran.core.util.xml.NodeletParser;
 /**
  * The Class ActionNodeletAdder.
  *
- * @author Juho Jeong
  * @since 2011. 1. 9.
+ * @author Juho Jeong
  */
 public class ActionRuleNodeletAdder implements NodeletAdder {
 	
@@ -50,9 +50,7 @@ public class ActionRuleNodeletAdder implements NodeletAdder {
 		this.assistant = assistant;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.util.xml.NodeletAdder#process(java.lang.String, com.aspectran.core.util.xml.NodeletParser)
-	 */
+	@Override
 	public void process(String xpath, NodeletParser parser) {
 		parser.addNodelet(xpath, "/echo", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
@@ -182,4 +180,5 @@ public class ActionRuleNodeletAdder implements NodeletAdder {
 			}
 		});
 	}
+
 }

@@ -47,7 +47,7 @@ public class AspectRule {
 	
 	private ExceptionHandlingRule exceptionHandlingRule;
 	
-	private boolean BeanRelevanted;
+	private boolean beanRelevanted;
 	
 	private String description;
 	
@@ -153,11 +153,11 @@ public class AspectRule {
 	}
 
 	public boolean isBeanRelevanted() {
-		return BeanRelevanted;
+		return beanRelevanted;
 	}
 
 	public void setBeanRelevanted(boolean beanRelevanted) {
-		this.BeanRelevanted = beanRelevanted;
+		this.beanRelevanted = beanRelevanted;
 	}
 
 	/**
@@ -178,9 +178,6 @@ public class AspectRule {
 		this.description = description;
 	}
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
@@ -195,7 +192,7 @@ public class AspectRule {
 			sb.append(", aspectJobAdviceRuleList=").append(aspectJobAdviceRuleList);
 		}
 		sb.append(", exceptionHandlingRule=").append(exceptionHandlingRule);
-		sb.append(", onlyTransletRelevanted=").append(BeanRelevanted);
+		sb.append(", onlyTransletRelevanted=").append(beanRelevanted);
 		sb.append("}");
 		
 		return sb.toString();

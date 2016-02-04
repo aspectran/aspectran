@@ -42,32 +42,24 @@ public class WebApplicationAdapter extends AbstractApplicationAdapter implements
 		super.setApplicationBasePath(servletContext.getRealPath("/"));
 	}
 
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.adapter.ApplicationAdapter#getAttribute(java.lang.String)
-	 */
+	@Override
 	@SuppressWarnings("unchecked")
 	public <T> T getAttribute(String name) {
 		return (T)((ServletContext)adaptee).getAttribute(name);
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.adapter.ApplicationAdapter#setAttribute(java.lang.String, java.lang.Object)
-	 */
+
+	@Override
 	public void setAttribute(String name, Object o) {
 		((ServletContext)adaptee).setAttribute(name, o);
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.adapter.ApplicationAdapter#getAttributeNames()
-	 */
+
+	@Override
 	@SuppressWarnings("unchecked")
 	public Enumeration<String> getAttributeNames() {
 		return ((ServletContext)adaptee).getAttributeNames();
 	}
 
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.adapter.ApplicationAdapter#removeAttribute(java.lang.String)
-	 */
+	@Override
 	public void removeAttribute(String name) {
 		((ServletContext)adaptee).removeAttribute(name);
 	}

@@ -38,9 +38,7 @@ public class TemplateRuleMap extends LinkedHashMap<String, TemplateRule> impleme
 		return put(templateRule.getId(), templateRule);
 	}
 
-	/* (non-Javadoc)
-	 * @see java.lang.Iterable#iterator()
-	 */
+	@Override
 	public Iterator<TemplateRule> iterator() {
 		return this.values().iterator();
 	}

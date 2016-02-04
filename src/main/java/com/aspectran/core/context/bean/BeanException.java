@@ -25,7 +25,7 @@ import com.aspectran.core.context.AspectranRuntimeException;
 public class BeanException extends AspectranRuntimeException {
 	
 	/** @serial */
-	static final long serialVersionUID = 2598750999734896601L;
+	private static final long serialVersionUID = 2598750999734896601L;
 
 	/**
 	 * Creates a new BeanException without detail message.

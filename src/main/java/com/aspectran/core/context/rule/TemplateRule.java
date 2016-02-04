@@ -15,12 +15,6 @@
  */
 package com.aspectran.core.context.rule;
 
-import com.aspectran.core.adapter.ApplicationAdapter;
-import com.aspectran.core.context.expr.token.Token;
-import com.aspectran.core.context.expr.token.Tokenizer;
-import com.aspectran.core.context.rule.type.TokenType;
-import com.aspectran.core.util.BooleanUtils;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileReader;
@@ -31,6 +25,12 @@ import java.io.Reader;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.List;
+
+import com.aspectran.core.adapter.ApplicationAdapter;
+import com.aspectran.core.context.expr.token.Token;
+import com.aspectran.core.context.expr.token.Tokenizer;
+import com.aspectran.core.context.rule.type.TokenType;
+import com.aspectran.core.util.BooleanUtils;
 
 /**
  * The Class TemplateRule.
@@ -370,16 +370,11 @@ public class TemplateRule implements Replicable<TemplateRule> {
 		return sb.toString();
 	}
 
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.context.rule.Replicable#replicate()
-	 */
+	@Override
 	public TemplateRule replicate() {
 		return replicate(this);
 	}
 	
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();

@@ -53,56 +53,44 @@ public class HttpSessionAdapter extends AbstractSessionAdapter implements Sessio
 			newHttpSessionScope(false);
 		}
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.adapter.AbstractSessionAdapter#getId()
-	 */
+
+	@Override
 	public String getId() {
 		checkSessionState();
 		
 		return ((HttpSession)adaptee).getId();
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.adapter.AbstractSessionAdapter#getCreationTime()
-	 */
+
+	@Override
 	public long getCreationTime() {
 		checkSessionState();
 		
 		return ((HttpSession)adaptee).getCreationTime();
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.adapter.AbstractSessionAdapter#getLastAccessedTime()
-	 */
+
+	@Override
 	public long getLastAccessedTime() {
 		checkSessionState();
 		
 		return ((HttpSession)adaptee).getLastAccessedTime();
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.adapter.AbstractSessionAdapter#getMaxInactiveInterval()
-	 */
+
+	@Override
 	public int getMaxInactiveInterval() {
 		checkSessionState();
 		
 		return ((HttpSession)adaptee).getMaxInactiveInterval();
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.adapter.SessionAdapter#getAttributeNames()
-	 */
+
+	@Override
 	@SuppressWarnings("unchecked")
 	public Enumeration<String> getAttributeNames() {
 		checkSessionState();
 		
 		return ((HttpSession)adaptee).getAttributeNames();
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.adapter.SessionAdapter#getAttribute(java.lang.String)
-	 */
+
+	@Override
 	@SuppressWarnings("unchecked")
 	public <T> T getAttribute(String name) {
 		checkSessionState();
@@ -110,18 +98,14 @@ public class HttpSessionAdapter extends AbstractSessionAdapter implements Sessio
 		return (T)((HttpSession)adaptee).getAttribute(name);
 	}
 
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.adapter.SessionAdapter#setAttribute(java.lang.String, java.lang.Object)
-	 */
+	@Override
 	public void setAttribute(String name, Object value) {
 		checkSessionState();
 		
 		((HttpSession)adaptee).setAttribute(name, value);
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.adapter.SessionAdapter#invalidate()
-	 */
+
+	@Override
 	public void invalidate() {
 		checkSessionState();
 		
@@ -133,10 +117,8 @@ public class HttpSessionAdapter extends AbstractSessionAdapter implements Sessio
 			throw new IllegalStateException("Session has been expired or not yet initialized.");
 		}
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.adapter.SessionAdapter#getSessionScope()
-	 */
+
+	@Override
 	public SessionScope getSessionScope() {
 		if(scope == null) {
 			synchronized(this) {

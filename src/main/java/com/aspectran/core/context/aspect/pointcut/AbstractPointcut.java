@@ -46,7 +46,7 @@ public abstract class AbstractPointcut {
 			this.existsBeanMethodNamePattern = false;
 		}
 	}
-	
+
 	public List<PointcutPatternRule> getPointcutPatternRuleList() {
 		return pointcutPatternRuleList;
 	}
@@ -110,8 +110,8 @@ public abstract class AbstractPointcut {
 			return false;
 		
 		return exists(pointcutPatternRule, transletName, beanId, beanMethodName);
-	}	
-	
+	}
+
 	public boolean exists(String transletName) {
 		return exists(transletName, null, null);
 	}

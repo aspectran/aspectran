@@ -30,12 +30,12 @@
  */
 package com.aspectran.core.context.bean.proxy;
 
-import com.aspectran.core.context.bean.BeanInstantiationException;
+import com.aspectran.core.context.bean.BeanException;
 
 /**
  * Exception thrown when instantiation of a proxy bean failed.
  */
-public class ProxyBeanInstantiationException extends BeanInstantiationException {
+public class ProxyBeanInstantiationException extends BeanException {
 
 	/** @serial */
 	private static final long serialVersionUID = -3560168431550039638L;
@@ -45,15 +45,6 @@ public class ProxyBeanInstantiationException extends BeanInstantiationException 
 	/**
 	 * Create a new ProxyBeanInstantiationException.
 	 *
-	 * @param msg the detail message
-	 * @param cause the root cause
-	 */
-	public ProxyBeanInstantiationException(String msg, Throwable cause) {
-		super(msg, cause);
-	}
-
-	/**
-	 * Create a new ProxyBeanInstantiationException.
 	 * @param beanClass the offending bean class
 	 * @param cause the root cause
 	 */
@@ -63,15 +54,18 @@ public class ProxyBeanInstantiationException extends BeanInstantiationException 
 
 	/**
 	 * Create a new ProxyBeanInstantiationException.
+	 *
 	 * @param beanClass the offending bean class
 	 * @param msg the detail message
 	 */
 	public ProxyBeanInstantiationException(Class<?> beanClass, String msg) {
-		this(beanClass, msg, null);
+		super("Could not instantiate proxy bean class [" + beanClass.getName() + "]: " + msg);
+		this.beanClass = beanClass;
 	}
 
 	/**
 	 * Create a new ProxyBeanInstantiationException.
+	 *
 	 * @param beanClass the offending bean class
 	 * @param msg the detail message
 	 * @param cause the root cause

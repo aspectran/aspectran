@@ -267,23 +267,17 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 		return explicitContent;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.context.rule.ability.ActionRuleApplicable#applyActionRule(com.aspectran.core.context.rule.EchoActionRule)
-	 */
+	@Override
 	public void applyActionRule(EchoActionRule echoActionRule) {
 		touchActionList().applyActionRule(echoActionRule);
 	}
 
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.context.rule.ability.ActionRuleApplicable#applyActionRule(com.aspectran.core.context.rule.BeanActionRule)
-	 */
+	@Override
 	public void applyActionRule(BeanActionRule beanActionRule) {
 		touchActionList().applyActionRule(beanActionRule);
 	}
 
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.context.rule.ability.ActionRuleApplicable#applyActionRule(com.aspectran.core.context.rule.IncludeActionRule)
-	 */
+	@Override
 	public void applyActionRule(IncludeActionRule includeActionRule) {
 		touchActionList().applyActionRule(includeActionRule);
 	}
@@ -334,61 +328,44 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 		implicitResponse = false;
 	}
 
-	public Response applyResponseRule(TransformRule tr) {
+	@Override
+	public Response applyResponseRule(TransformRule transformRule) {
 		if(responseRule == null)
 			responseRule = new ResponseRule();
 		
 		implicitResponse = true;
 
-		return responseRule.applyResponseRule(tr);
+		return responseRule.applyResponseRule(transformRule);
 	}
-	
-	/**
-	 * Adds the response rule.
-	 * 
-	 * @param drr the drr
-	 * 
-	 * @return the dispatch response
-	 */
-	public Response applyResponseRule(DispatchResponseRule drr) {
+
+	@Override
+	public Response applyResponseRule(DispatchResponseRule dispatchResponseRule) {
 		if(responseRule == null)
 			responseRule = new ResponseRule();
 
 		implicitResponse = true;
 
-		return responseRule.applyResponseRule(drr);
+		return responseRule.applyResponseRule(dispatchResponseRule);
 	}
-	
-	/**
-	 * Adds the response rule.
-	 * 
-	 * @param rrr the rrr
-	 * 
-	 * @return the redirect response
-	 */
-	public Response applyResponseRule(RedirectResponseRule rrr) {
+
+	@Override
+	public Response applyResponseRule(RedirectResponseRule redirectResponseRule) {
 		if(responseRule == null)
 			responseRule = new ResponseRule();
 		
 		implicitResponse = true;
 		
-		return responseRule.applyResponseRule(rrr);
+		return responseRule.applyResponseRule(redirectResponseRule);
 	}
-	
-	/**
-	 * Adds the response rule.
-	 * 
-	 * @param frr the frr
-	 * 
-	 * @return the forward response
-	 */
-	public Response applyResponseRule(ForwardResponseRule frr) {
+
+	@Override
+	public Response applyResponseRule(ForwardResponseRule forwardResponseRule) {
 		if(responseRule == null)
 			responseRule = new ResponseRule();
 		
 		implicitResponse = true;
 
-		return responseRule.applyResponseRule(frr);
+		return responseRule.applyResponseRule(forwardResponseRule);
 	}
 	
 	private void addActionList(ActionList actionList) {
@@ -480,9 +457,6 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 		this.description = description;
 	}
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();

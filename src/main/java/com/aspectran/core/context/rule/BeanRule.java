@@ -509,9 +509,6 @@ public class BeanRule implements Replicable<BeanRule> {
 		return replicate(this);
 	}
 	
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
@@ -519,13 +516,13 @@ public class BeanRule implements Replicable<BeanRule> {
 		if(!offered) {
 			sb.append(", class=").append(className);
 			sb.append(", scope=").append(scopeType);
-			sb.append(", factoryMethod=").append(offerMethodName);
 			sb.append(", initMethod=").append(initMethodName);
+			sb.append(", factoryMethod=").append(offerMethodName);
 			sb.append(", destroyMethod=").append(destroyMethodName);
 			sb.append(", lazyInit=").append(lazyInit);
 			sb.append(", important=").append(important);
 			sb.append(", proxied=").append(proxied);
-			sb.append(", scanned=").append(replicated);
+			sb.append(", replicated=").append(replicated);
 			if (constructorArgumentItemRuleMap != null) {
 				sb.append(", constructorArguments=[");
 				int sbLength = sb.length();
@@ -550,10 +547,14 @@ public class BeanRule implements Replicable<BeanRule> {
 			}
 		} else {
 			sb.append(", scope=").append(scopeType);
-			sb.append(", factoryBean=").append(offerBeanId);
+			sb.append(", offerBean=").append(offerBeanId);
+			sb.append(", offerMethod=").append(offerMethodName);
+			sb.append(", initMethod=").append(initMethodName);
 			sb.append(", factoryMethod=").append(offerMethodName);
+			sb.append(", destroyMethod=").append(destroyMethodName);
 			sb.append(", lazyInit=").append(lazyInit);
 			sb.append(", important=").append(important);
+			sb.append(", proxied=").append(proxied);
 		}
 		sb.append("}");
 		

@@ -25,7 +25,7 @@ import java.util.List;
 public class BeanReferenceException extends ActivityContextBuilderException {
 	
 	/** @serial */
-	static final long serialVersionUID = -244633940486989865L;
+	private static final long serialVersionUID = -244633940486989865L;
 	
 	private BeanReferenceInspector beanReferenceInspector;
 

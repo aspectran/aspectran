@@ -53,10 +53,8 @@ public class HttpSessionScope extends SessionScope implements HttpSessionBinding
 		this.sessionAdapter = sessionAdapter;
 		this.advisor = advisor;
 	}
-	
-	/* (non-Javadoc)
-	 * @see javax.servlet.http.HttpSessionBindingListener#valueBound(javax.servlet.http.HttpSessionBindingEvent)
-	 */
+
+	@Override
 	public void valueBound(HttpSessionBindingEvent event) {
 		if(log.isDebugEnabled())
 			log.debug("New HttpSessionScope bound in session " + sessionAdapter);
@@ -65,9 +63,7 @@ public class HttpSessionScope extends SessionScope implements HttpSessionBinding
 			advisor.executeBeforeAdvice();
 	}
 
-	/* (non-Javadoc)
-	 * @see javax.servlet.http.HttpSessionBindingListener#valueUnbound(javax.servlet.http.HttpSessionBindingEvent)
-	 */
+	@Override
 	public void valueUnbound(HttpSessionBindingEvent event) {
 		sessionAdapter.release();
 

@@ -15,6 +15,9 @@
  */
 package com.aspectran.core.context.rule;
 
+import java.nio.charset.Charset;
+import java.nio.charset.IllegalCharsetNameException;
+
 import com.aspectran.core.activity.response.ForwardResponse;
 import com.aspectran.core.activity.response.RedirectResponse;
 import com.aspectran.core.activity.response.Response;
@@ -23,9 +26,6 @@ import com.aspectran.core.activity.response.transform.TransformFactory;
 import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
 import com.aspectran.core.context.rule.ability.ResponseRuleApplicable;
 import com.aspectran.core.context.rule.type.ResponseType;
-
-import java.nio.charset.Charset;
-import java.nio.charset.IllegalCharsetNameException;
 
 /**
  * The Class ResponseRule.
@@ -92,51 +92,31 @@ public class ResponseRule implements ResponseRuleApplicable, Replicable<Response
 	public <T> T getRespondent() {
 		return (T)response;
 	}
-	
-	/**
-	 * Sets the default response rule.
-	 * 
-	 * @param drr the new default response rule
-	 * @return the dispatch response
-	 */
-	public Response applyResponseRule(DispatchResponseRule drr) {
-		Response response = new DispatchResponse(drr);
-		this.response = response;
-		return response;
-	}
-	
-	/**
-	 * Sets the default response rule.
-	 * 
-	 * @param tr the new default response rule
-	 * @return the transform response
-	 */
-	public Response applyResponseRule(TransformRule tr) {
-		Response response = TransformFactory.createTransform(tr);
+
+	@Override
+	public Response applyResponseRule(DispatchResponseRule dispatchResponseRule) {
+		Response response = new DispatchResponse(dispatchResponseRule);
 		this.response = response;
 		return response;
 	}
 
-	/**
-	 * Sets the default response rule.
-	 * 
-	 * @param frr the new default response rule
-	 * @return the forward response
-	 */
-	public Response applyResponseRule(ForwardResponseRule frr) {
-		Response response = new ForwardResponse(frr);
+	@Override
+	public Response applyResponseRule(TransformRule transformRule) {
+		Response response = TransformFactory.createTransform(transformRule);
 		this.response = response;
 		return response;
 	}
-	
-	/**
-	 * Sets the default response rule.
-	 * 
-	 * @param rrr the new default response rule
-	 * @return the redirect response
-	 */
-	public Response applyResponseRule(RedirectResponseRule rrr) {
-		Response response = new RedirectResponse(rrr);
+
+	@Override
+	public Response applyResponseRule(ForwardResponseRule forwardResponseRule) {
+		Response response = new ForwardResponse(forwardResponseRule);
+		this.response = response;
+		return response;
+	}
+
+	@Override
+	public Response applyResponseRule(RedirectResponseRule redirectResponseRule) {
+		Response response = new RedirectResponse(redirectResponseRule);
 		this.response = response;
 		return response;
 	}
@@ -167,9 +147,6 @@ public class ResponseRule implements ResponseRuleApplicable, Replicable<Response
 		return replicate(this);
 	}
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();

@@ -32,10 +32,8 @@ public abstract class AbstractResponseAdapter implements ResponseAdapter {
 	public AbstractResponseAdapter(Object adaptee) {
 		this.adaptee = adaptee;
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.adapter.ResponseAdapter#getAdaptee()
-	 */
+
+	@Override
 	@SuppressWarnings("unchecked")
 	public <T> T getAdaptee() {
 		return (T)adaptee;

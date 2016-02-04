@@ -56,11 +56,10 @@ public class AspectranDtdResolver implements EntityResolver {
 	 * 
 	 * @param publicId Unused but required by EntityResolver interface
 	 * @param systemId The DTD that is being requested
-	 * 
 	 * @return The InputSource for the DTD
-	 * 
 	 * @throws SAXException If anything goes wrong
 	 */
+	@Override
 	public InputSource resolveEntity(String publicId, String systemId) throws SAXException {
 		if(validating) {
 			try {

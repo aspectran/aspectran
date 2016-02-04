@@ -28,10 +28,6 @@ import java.util.zip.GZIPOutputStream;
  */
 public class FlushableGZIPOutputStream extends GZIPOutputStream {
 
-    public FlushableGZIPOutputStream(OutputStream os) throws IOException {
-        super(os);
-    }
-
     /**
      * It is used to reserve one byte of real data so that it can be used when
      * flushing the stream.
@@ -44,6 +40,10 @@ public class FlushableGZIPOutputStream extends GZIPOutputStream {
      * operation.
      */
     private boolean flagReenableCompression = false;
+
+    public FlushableGZIPOutputStream(OutputStream os) throws IOException {
+        super(os);
+    }
 
     @Override
     public void write(byte[] bytes) throws IOException {
@@ -66,7 +66,7 @@ public class FlushableGZIPOutputStream extends GZIPOutputStream {
     @Override
     public synchronized void write(int i) throws IOException {
         flushLastByte();
-        rememberLastByte((byte) i);
+        rememberLastByte((byte)i);
     }
 
     @Override

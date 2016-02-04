@@ -65,9 +65,6 @@ public class AspectJobAdviceRule {
 		this.disabled = disabled;
 	}
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();

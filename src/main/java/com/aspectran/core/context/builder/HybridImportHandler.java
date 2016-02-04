@@ -141,7 +141,7 @@ public class HybridImportHandler extends AbstractImportHandler implements Import
 			
 			aponFile.setLastModified(importableFile.getLastModified());
 		} catch(Exception e) {
-			log.error("Cannot save file " +  aponFile + " to APON Format.", e);
+			log.error("Cannot save file " +  aponFile + " as APON Format.", e);
 		}
 	}
 	

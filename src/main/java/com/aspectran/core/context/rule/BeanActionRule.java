@@ -124,47 +124,35 @@ public class BeanActionRule implements ArgumentPossessable, PropertyPossessable 
 		this.hidden = hidden;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.context.rule.ability.PropertyPossessable#getPropertyItemRuleMap()
-	 */
+	@Override
 	public ItemRuleMap getPropertyItemRuleMap() {
 		return propertyItemRuleMap;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.context.rule.ability.PropertyPossessable#setPropertyItemRuleMap(com.aspectran.core.context.rule.ItemRuleMap)
-	 */
+	@Override
 	public void setPropertyItemRuleMap(ItemRuleMap propertyItemRuleMap) {
 		this.propertyItemRuleMap = propertyItemRuleMap;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.context.rule.ability.PropertyPossessable#addPropertyItemRule(com.aspectran.core.context.rule.ItemRule)
-	 */
+	@Override
 	public void addPropertyItemRule(ItemRule propertyItemRule) {
 		if(propertyItemRuleMap == null) 
 			propertyItemRuleMap = new ItemRuleMap();
 		
 		propertyItemRuleMap.putItemRule(propertyItemRule);
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.context.rule.ability.ArgumentPossessable#getArgumentItemRuleMap()
-	 */
+
+	@Override
 	public ItemRuleMap getArgumentItemRuleMap() {
 		return argumentItemRuleMap;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.context.rule.ability.ArgumentPossessable#setArgumentItemRuleMap(com.aspectran.core.context.rule.ItemRuleMap)
-	 */
+	@Override
 	public void setArgumentItemRuleMap(ItemRuleMap argumentItemRuleMap) {
 		this.argumentItemRuleMap = argumentItemRuleMap;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.context.rule.ability.ArgumentPossessable#addArgumentItemRule(com.aspectran.core.context.rule.ItemRule)
-	 */
+	@Override
 	public void addArgumentItemRule(ItemRule argumentItemRule) {
 		if(argumentItemRuleMap == null) 
 			argumentItemRuleMap = new ItemRuleMap();
@@ -208,9 +196,6 @@ public class BeanActionRule implements ArgumentPossessable, PropertyPossessable 
 		this.aspectAdviceRuleRegistry = aspectAdviceRuleRegistry;
 	}
 	
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();

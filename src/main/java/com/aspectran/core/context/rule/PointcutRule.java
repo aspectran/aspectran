@@ -123,9 +123,6 @@ public class PointcutRule {
 		this.cronTriggerParameters = cronTriggerParameters;
 	}
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();

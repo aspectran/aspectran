@@ -359,6 +359,9 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 	}
 
 	private static Object newInstance(Class<?> beanClass, Class<?>[] argTypes, Object[] args) throws BeanInstantiationException {
+		if(beanClass.isInterface())
+			throw new BeanInstantiationException(beanClass, "Specified class is an interface");
+
 		Constructor<?> constructorToUse;
 
 		try {
@@ -368,7 +371,7 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 				constructorToUse = beanClass.getDeclaredConstructor(argTypes);
 			}
 		} catch(NoSuchMethodException e) {
-			throw new BeanInstantiationException(beanClass, "No default constructor found.", e);
+			throw new BeanInstantiationException(beanClass, "No default constructor found", e);
 		}
 
 		Object obj = newInstance(constructorToUse, args);

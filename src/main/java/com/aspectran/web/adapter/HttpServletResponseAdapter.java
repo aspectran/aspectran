@@ -57,59 +57,43 @@ public class HttpServletResponseAdapter extends AbstractResponseAdapter implemen
 	public HttpServletResponseAdapter(HttpServletResponse response) {
 		super(response);
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.adapter.ResponseAdapter#getCharacterEncoding()
-	 */
+
+	@Override
 	public String getCharacterEncoding() {
 		return ((HttpServletResponse)adaptee).getCharacterEncoding();
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.adapter.ResponseAdapter#setCharacterEncoding(java.lang.String)
-	 */
+
+	@Override
 	public void setCharacterEncoding(String characterEncoding) throws UnsupportedEncodingException {
 		((HttpServletResponse)adaptee).setCharacterEncoding(characterEncoding);
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.adapter.ResponseAdapter#getContentType()
-	 */
+
+	@Override
 	public String getContentType() {
 		return ((HttpServletResponse)adaptee).getContentType();
 	}
 
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.adapter.ResponseAdapter#setContentType(java.lang.String)
-	 */
+	@Override
 	public void setContentType(String contentType) {
 		((HttpServletResponse)adaptee).setContentType(contentType);
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.adapter.ResponseAdapter#getOutputStream()
-	 */
+
+	@Override
 	public OutputStream getOutputStream() throws IOException {
 		return ((HttpServletResponse)adaptee).getOutputStream();
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.adapter.ResponseAdapter#getWriter()
-	 */
+
+	@Override
 	public Writer getWriter() throws IOException {
 		return ((HttpServletResponse)adaptee).getWriter();
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.adapter.ResponseAdapter#redirect(java.lang.String)
-	 */
+
+	@Override
 	public void redirect(String url) throws IOException {
 		((HttpServletResponse)adaptee).sendRedirect(url);
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.adapter.ResponseAdapter#redirect(com.aspectran.core.activity.Activity, com.aspectran.core.context.rule.RedirectResponseRule)
-	 */
+
+	@Override
 	public String redirect(Activity activity, RedirectResponseRule redirectResponseRule) throws IOException {
 		String characterEncoding = ((HttpServletResponse)adaptee).getCharacterEncoding();
 		String target = null;

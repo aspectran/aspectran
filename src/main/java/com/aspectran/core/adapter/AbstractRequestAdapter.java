@@ -34,18 +34,14 @@ public abstract class AbstractRequestAdapter extends AbstractRequest implements 
 	public AbstractRequestAdapter(Object adaptee) {
 		this.adaptee = adaptee;
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.adapter.RequestAdapter#getAdaptee()
-	 */
+
+	@Override
 	@SuppressWarnings("unchecked")
 	public <T> T getAdaptee() {
 		return (T)adaptee;
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.adapter.RequestAdapter#setAdaptee(java.lang.Object)
-	 */
+
+	@Override
 	public void setAdaptee(Object adaptee) {
 		this.adaptee = adaptee; 
 	}

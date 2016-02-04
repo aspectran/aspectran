@@ -26,7 +26,7 @@ import java.util.LinkedHashMap;
 public class ItemRuleMap extends LinkedHashMap<String, ItemRule> implements Iterable<ItemRule> {
 
 	/** @serial */
-	static final long serialVersionUID = 192817512158305803L;
+	private static final long serialVersionUID = 192817512158305803L;
 
 	/**
 	 * Adds a value rule.
@@ -38,10 +38,8 @@ public class ItemRuleMap extends LinkedHashMap<String, ItemRule> implements Iter
 	public ItemRule putItemRule(ItemRule itemRule) {
 		return put(itemRule.getName(), itemRule);
 	}
-	
-	/* (non-Javadoc)
-	 * @see java.lang.Iterable#iterator()
-	 */
+
+	@Override
 	public Iterator<ItemRule> iterator() {
 		return this.values().iterator();
 	}

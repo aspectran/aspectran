@@ -34,45 +34,30 @@ public abstract class AbstractSessionAdapter implements SessionAdapter {
 	public AbstractSessionAdapter(Object adaptee) {
 		this.adaptee = adaptee;
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.adapter.SessionAdapter#getAdaptee()
-	 */
+
+	@Override
 	@SuppressWarnings("unchecked")
 	public <T> T getAdaptee() {
 		return (T)adaptee;
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.adapter.SessionAdapter#getId()
-	 */
+
+	@Override
 	abstract public String getId();
 
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.adapter.SessionAdapter#getCreationTime()
-	 */
+	@Override
 	abstract public long getCreationTime();
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.adapter.SessionAdapter#getLastAccessedTime()
-	 */
+
+	@Override
 	abstract public long getLastAccessedTime();
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.adapter.SessionAdapter#getMaxInactiveInterval()
-	 */
+
+	@Override
 	abstract public int getMaxInactiveInterval();
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.adapter.SessionAdapter#release()
-	 */
+
+	@Override
 	public void release() {
 		adaptee = null;
 	}
 	
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
 	@Override
 	public String toString() {
 		if(adaptee == null) {
