@@ -71,7 +71,7 @@ public class TokenExpression implements TokenExpressor {
 		} else	if(tokenType == TokenType.ATTRIBUTE) {
 			value = getAttribute(token);
 		} else	if(tokenType == TokenType.REFERENCE_BEAN) {
-			value = referenceBean(token);
+			value = getBean(token);
 		}
 		
 		return value;
@@ -307,18 +307,18 @@ public class TokenExpression implements TokenExpressor {
 
 		if(object != null) {
 			if(token.getGetterName() != null)
-				object = invokeObjectProperty(object, token.getGetterName());
+				object = getObjectProperty(object, token.getGetterName());
 		}
 		
 		return object;
 	}
 	
-	protected Object referenceBean(Token token) {
+	protected Object getBean(Token token) {
 		Object value = beanRegistry.getBean(token.getName());
 		
 		if(value != null) {
 			if(token.getGetterName() != null)
-				value = invokeBeanProperty(value, token.getGetterName());
+				value = getBeanProperty(value, token.getGetterName());
 		}
 		
 		if(value == null)
@@ -334,7 +334,7 @@ public class TokenExpression implements TokenExpressor {
 	 * @param propertyName the property name
 	 * @return the object
 	 */
-	protected Object invokeBeanProperty(Object object, String propertyName) {
+	protected Object getBeanProperty(Object object, String propertyName) {
 		Object value = null;
 		
 		try {
@@ -346,7 +346,7 @@ public class TokenExpression implements TokenExpressor {
 		return value;
 	}
 	
-	protected Object invokeObjectProperty(Object object, String propertyName) {
+	protected Object getObjectProperty(final Object object, String propertyName) {
 		Object value = null;
 		
 		try {
@@ -354,15 +354,14 @@ public class TokenExpression implements TokenExpressor {
 				StringTokenizer parser = new StringTokenizer(propertyName, ".");
 				value = object;
 				while(parser.hasMoreTokens()) {
-					value = getProperty(value, parser.nextToken());
-
+					value = invokeProperty(value, parser.nextToken());
 					if(value == null) {
 						break;
 					}
 				}
 				return value;
 			} else {
-				value = getProperty(object, propertyName);
+				value = invokeProperty(object, propertyName);
 			}
 		} catch(InvocationTargetException e) {
 			// ignore
@@ -371,11 +370,11 @@ public class TokenExpression implements TokenExpressor {
 		return value;
 	}
 	
-	private Object getProperty(Object object, String name) throws InvocationTargetException {
+	private Object invokeProperty(final Object object, String name) throws InvocationTargetException {
 		try {
 			Object value = null;
 			if(name.indexOf("[") > -1) {
-				value = getIndexedProperty(object, name);
+				value = invokeIndexedProperty(object, name);
 			} else {
 				if(object instanceof Map<?, ?>) {
 					value = ((Map<?, ?>)object).get(name);
@@ -397,7 +396,7 @@ public class TokenExpression implements TokenExpressor {
 		}
 	}
 	
-	private Object getIndexedProperty(Object object, String indexedName) throws InvocationTargetException {
+	private Object invokeIndexedProperty(final Object object, String indexedName) throws InvocationTargetException {
 		try {
 			String name = indexedName.substring(0, indexedName.indexOf("["));
 			int i = Integer.parseInt(indexedName.substring(indexedName.indexOf("[") + 1, indexedName.indexOf("]")));
@@ -406,7 +405,7 @@ public class TokenExpression implements TokenExpressor {
 			if(StringUtils.isEmpty(name)) {
 				list = object;
 			} else {
-				list = getProperty(object, name);
+				list = invokeProperty(object, name);
 			}
 
 			Object value = null;
@@ -452,7 +451,7 @@ public class TokenExpression implements TokenExpressor {
 	 * @return the list
 	 */
 	@SuppressWarnings("unchecked")
-	protected static <T> List<T> cast(List<?> list){
+	protected static <T> List<T> cast(List<?> list) {
         return (List<T>)list;
 	}
 	
@@ -464,7 +463,7 @@ public class TokenExpression implements TokenExpressor {
 	 * @return the sets the
 	 */
 	@SuppressWarnings("unchecked")
-	protected static <T> Set<T> cast(Set<?> set){
+	protected static <T> Set<T> cast(Set<?> set) {
 		return (Set<T>)set;
 	}
 	

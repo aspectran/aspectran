@@ -61,14 +61,28 @@ public class BeanNodeletAdder implements NodeletAdder {
 				String mask = attributes.get("mask");
 				String scope = attributes.get("scope");
 				Boolean singleton = BooleanUtils.toNullableBooleanObject(attributes.get("singleton"));
-				String factoryBean = attributes.get("factoryBean");
+				String offerBean = attributes.get("offerBean");
+				String offerMethod = attributes.get("offerMethod");
+				String initMethod = attributes.get("initMethod");
 				String factoryMethod = attributes.get("factoryMethod");
-				String initMethodName = attributes.get("initMethod");
-				String destroyMethodName = attributes.get("destroyMethod");
+				String destroyMethod = attributes.get("destroyMethod");
 				Boolean lazyInit = BooleanUtils.toNullableBooleanObject(attributes.get("lazyInit"));
 				Boolean important = BooleanUtils.toNullableBooleanObject(attributes.get("important"));
 
-				BeanRule beanRule = BeanRule.newInstance(id, className, scan, mask, scope, singleton, factoryBean, factoryMethod, initMethodName, destroyMethodName, lazyInit, important);
+				BeanRule beanRule;
+
+				if(className == null && scan == null && offerBean != null) {
+					if(id == null)
+						throw new IllegalArgumentException("The <bean> element requires an id attribute.");
+
+					beanRule = BeanRule.newOfferedBeanInstance(id, scope, singleton, offerBean, offerMethod, initMethod, factoryMethod, destroyMethod, lazyInit, important);
+				} else {
+					if(className == null && scan == null)
+						throw new IllegalArgumentException("The <bean> element requires a class attribute.");
+
+					beanRule = BeanRule.newInstance(id, className, scan, mask, scope, singleton, initMethod, factoryMethod, destroyMethod, lazyInit, important);
+				}
+				
 				assistant.pushObject(beanRule);					
 			}
 		});
@@ -127,7 +141,7 @@ public class BeanNodeletAdder implements NodeletAdder {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
 				if(StringUtils.hasText(text)) {
 					BeanRule beanRule = assistant.peekObject();
-					beanRule.setFactoryBeanId(text.trim());
+					beanRule.setOfferBeanId(text.trim());
 				}
 			}
 		});

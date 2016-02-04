@@ -29,9 +29,10 @@ public class BeanParameters extends AbstractParameters implements Parameters {
 	public static final ParameterDefine mask;
 	public static final ParameterDefine scope;
 	public static final ParameterDefine singleton;
-	public static final ParameterDefine factoryBean;
-	public static final ParameterDefine factoryMethod;
+	public static final ParameterDefine offerBean;
+	public static final ParameterDefine offerMethod;
 	public static final ParameterDefine initMethod;
+	public static final ParameterDefine factoryMethod;
 	public static final ParameterDefine destroyMethod;
 	public static final ParameterDefine lazyInit;
 	public static final ParameterDefine important;
@@ -49,9 +50,10 @@ public class BeanParameters extends AbstractParameters implements Parameters {
 		mask = new ParameterDefine("mask", ParameterValueType.STRING);
 		scope = new ParameterDefine("scope", ParameterValueType.STRING);
 		singleton = new ParameterDefine("singleton", ParameterValueType.BOOLEAN);
-		factoryBean = new ParameterDefine("factoryBean", ParameterValueType.STRING);
-		factoryMethod = new ParameterDefine("factoryMethod", ParameterValueType.STRING);
+		offerBean = new ParameterDefine("offerBean", ParameterValueType.STRING);
+		offerMethod = new ParameterDefine("offerMethod", ParameterValueType.STRING);
 		initMethod = new ParameterDefine("initMethod", ParameterValueType.STRING);
+		factoryMethod = new ParameterDefine("factoryMethod", ParameterValueType.STRING);
 		destroyMethod = new ParameterDefine("destroyMethod", ParameterValueType.STRING);
 		lazyInit = new ParameterDefine("lazyInit", ParameterValueType.BOOLEAN);
 		important = new ParameterDefine("important", ParameterValueType.BOOLEAN);
@@ -67,9 +69,10 @@ public class BeanParameters extends AbstractParameters implements Parameters {
 				mask,
 				scope,
 				singleton,
-				factoryBean,
-				factoryMethod,
+				offerBean,
+				offerMethod,
 				initMethod,
+				factoryMethod,
 				destroyMethod,
 				lazyInit,
 				important,

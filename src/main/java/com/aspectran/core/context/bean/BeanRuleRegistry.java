@@ -15,7 +15,6 @@
  */
 package com.aspectran.core.context.bean;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -38,7 +37,7 @@ import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
 /**
- * The type Bean rule registry.
+ * The Class BeanRuleRegistry.
  *
  * @since 2.0.0
  */
@@ -109,11 +108,9 @@ public class BeanRuleRegistry {
 	 * Adds the bean rule.
 	 *
 	 * @param beanRule the bean rule
-	 * @throws CloneNotSupportedException the clone not supported exception
 	 * @throws ClassNotFoundException the class not found exception
-	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
-	public void addBeanRule(BeanRule beanRule) throws CloneNotSupportedException, ClassNotFoundException, IOException {
+	public void addBeanRule(BeanRule beanRule) throws ClassNotFoundException {
 		String scanPath = beanRule.getScanPath();
 
 		PrefixSuffixPattern prefixSuffixPattern = new PrefixSuffixPattern();
@@ -130,7 +127,7 @@ public class BeanRuleRegistry {
 			
 			if(beanClassMap != null && !beanClassMap.isEmpty()) {
 				for(Map.Entry<String, Class<?>> entry : beanClassMap.entrySet()) {
-					BeanRule beanRule2 = beanRule.clone();
+					BeanRule beanRule2 = beanRule.replicate();
 					
 					String beanId = entry.getKey();
 					Class<?> beanClass = entry.getValue();
@@ -144,10 +141,7 @@ public class BeanRuleRegistry {
 					}
 
 					beanRule2.setBeanClass(beanClass);
-					beanRule2.setScanned(true);
-					BeanRule.checkFactoryBeanImplement(beanRule2);
 					BeanRule.checkAccessibleMethod(beanRule2);
-					beanRuleMap.putBeanRule(beanRule2);
 
 					putBeanRule(beanRule2);
 					parseAnnotation(beanRule);
@@ -165,7 +159,6 @@ public class BeanRuleRegistry {
 			
 			Class<?> beanClass = classLoader.loadClass(className);
 			beanRule.setBeanClass(beanClass);
-			BeanRule.checkFactoryBeanImplement(beanRule);
 			BeanRule.checkAccessibleMethod(beanRule);
 			
 			putBeanRule(beanRule);
@@ -174,8 +167,12 @@ public class BeanRuleRegistry {
 	}
 
 	private void putBeanRule(BeanRule beanRule) {
+		if(beanRule.getId() != null)
+			beanRuleMap.putBeanRule(beanRule);
+		
 		Class<?> beanClass = beanRule.getBeanClass();
 		putBeanRule(beanClass, beanRule);
+		
 		for(Class<?> ifc : beanClass.getInterfaces()) {
 			if(!ignoredDependencyInterfaces.contains(ifc)) {
 				putBeanRule(ifc, beanRule);

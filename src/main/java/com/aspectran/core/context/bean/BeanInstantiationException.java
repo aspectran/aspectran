@@ -36,7 +36,7 @@ package com.aspectran.core.context.bean;
 public class BeanInstantiationException extends BeanException {
 
 	/** @serial */
-	static final long serialVersionUID = -2906926519983962457L;
+	private static final long serialVersionUID = 387409430536237392L;
 	
 	private Class<?> beanClass;
 
@@ -56,15 +56,6 @@ public class BeanInstantiationException extends BeanException {
 	 */
 	public BeanInstantiationException(Class<?> beanClass, Throwable cause) {
 		this(beanClass, cause.getMessage(), cause);
-	}
-	
-	/**
-	 * Create a new BeanInstantiationException.
-	 * @param beanClass the offending bean class
-	 * @param msg the detail message
-	 */
-	public BeanInstantiationException(Class<?> beanClass, String msg) {
-		this(beanClass, msg, null);
 	}
 
 	/**

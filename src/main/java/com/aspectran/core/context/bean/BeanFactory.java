@@ -20,9 +20,9 @@ import com.aspectran.core.context.ActivityContext;
 /**
  * The Interface BeanFactory.
  *
- * @author Juho Jeong
- * 
  * <p>Created: 2012. 11. 9. AM 11:36:47</p>
+ * 
+ * @author Juho Jeong
  */
 public interface BeanFactory {
 	

@@ -289,7 +289,6 @@ public class RootAponDisassembler {
 			aspectRule.setExceptionHandlingRule(exceptionHandlingRule);
 		}
 
-		
 		assistant.addAspectRule(aspectRule);
 	}
 
@@ -301,9 +300,10 @@ public class RootAponDisassembler {
 		String mask = beanParameters.getString(BeanParameters.mask);
 		String scope = beanParameters.getString(BeanParameters.scope);
 		Boolean singleton = beanParameters.getBoolean(BeanParameters.singleton);
-		String factoryBean = beanParameters.getString(BeanParameters.factoryBean);
-		String factoryMethod = beanParameters.getString(BeanParameters.factoryMethod);
+		String offerBean = beanParameters.getString(BeanParameters.offerBean);
+		String offerMethod = beanParameters.getString(BeanParameters.offerMethod);
 		String initMethod = beanParameters.getString(BeanParameters.initMethod);
+		String factoryMethod = beanParameters.getString(BeanParameters.factoryMethod);
 		String destroyMethod = beanParameters.getString(BeanParameters.destroyMethod);
 		Boolean lazyInit = beanParameters.getBoolean(BeanParameters.lazyInit);
 		Boolean important = beanParameters.getBoolean(BeanParameters.important);
@@ -311,7 +311,19 @@ public class RootAponDisassembler {
 		ItemHolderParameters propertyItemHolderParameters = beanParameters.getParameters(BeanParameters.properties);
 		Parameters filterParameters = beanParameters.getParameters(BeanParameters.filter);
 		
-		BeanRule beanRule = BeanRule.newInstance(id, className, scan, mask, scope, singleton, factoryBean, factoryMethod, initMethod, destroyMethod, lazyInit, important);
+		BeanRule beanRule;
+
+		if(className == null && scan == null && offerBean != null) {
+			if(id == null)
+				throw new IllegalArgumentException("The <bean> element requires an id attribute.");
+
+			beanRule = BeanRule.newOfferedBeanInstance(id, scope, singleton, offerBean, offerMethod, initMethod, factoryMethod, destroyMethod, lazyInit, important);
+		} else {
+			if(className == null && scan == null)
+				throw new IllegalArgumentException("The <bean> element requires a class attribute.");
+
+			beanRule = BeanRule.newInstance(id, className, scan, mask, scope, singleton, initMethod, factoryMethod, destroyMethod, lazyInit, important);
+		}
 
 		if(description != null)
 			beanRule.setDescription(description);

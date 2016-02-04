@@ -18,12 +18,12 @@ package com.aspectran.core.context.bean;
 import com.aspectran.core.context.rule.BeanRule;
 
 /**
- * The Class UniqueBeanNotFoundException.
+ * The Class NoUniqueBeanException.
  */
-public class UniqueBeanNotFoundException extends BeanException {
+public class NoUniqueBeanException extends BeanException {
 
 	/** @serial */
-	private static final long serialVersionUID = -3813788046614948634L;
+	private static final long serialVersionUID = 8350428939010030065L;
 	
 	private Class<?> requiredType;
 	
@@ -34,7 +34,7 @@ public class UniqueBeanNotFoundException extends BeanException {
 	 *
 	 * @param name the bean name
 	 */
-	public UniqueBeanNotFoundException(Class<?> requiredType, BeanRule[] beanRules) {
+	public NoUniqueBeanException(Class<?> requiredType, BeanRule[] beanRules) {
 		super("No unique bean of type [" + requiredType + "] is defined: expected single matching bean but found " + beanRules.length + ": " + beanRules);
 		this.requiredType = requiredType;
 		this.beanRules = beanRules;

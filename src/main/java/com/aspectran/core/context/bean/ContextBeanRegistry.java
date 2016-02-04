@@ -63,7 +63,7 @@ public class ContextBeanRegistry extends AbstractBeanFactory implements BeanRegi
 			throw new RequiredTypeBeanNotFoundException(requiredType);
 		
 		if(beanRules.length > 1)
-			throw new UniqueBeanNotFoundException(requiredType, beanRules);
+			throw new NoUniqueBeanException(requiredType, beanRules);
 		
 		return getBean(beanRules[0]);
 	}
@@ -164,15 +164,15 @@ public class ContextBeanRegistry extends AbstractBeanFactory implements BeanRegi
 
 	@Override
 	protected Object createBean(BeanRule beanRule) {
-		if(beanRule.isFactoryBeanReferenced()) {
-			String factoryBeanId = beanRule.getFactoryBeanId();
-			String factoryMethodName = beanRule.getFactoryMethodName();
+		if(beanRule.isOffered()) {
+			String offerBeanId = beanRule.getOfferBeanId();
+			String offerMethodName = beanRule.getOfferMethodName();
 
 			try {
-				Object bean = getBean(factoryBeanId);
-				return MethodUtils.invokeMethod(bean, factoryMethodName);
+				Object bean = getBean(offerBeanId);
+				return MethodUtils.invokeMethod(bean, offerMethodName);
 			} catch(Exception e) {
-				throw new BeanCreationException(beanRule, "An exception occurred during the execution of a factory method from the referenced factory bean.", e);
+				throw new BeanCreationException(beanRule, "An exception occurred during the execution of a offer method from the referenced offer bean.", e);
 			}
 		} else {
 			Object bean = super.createBean(beanRule);

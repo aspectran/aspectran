@@ -15,6 +15,9 @@
  */
 package com.aspectran.core.context.builder.apon;
 
+import java.util.List;
+import java.util.Map;
+
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.activity.process.ContentList;
 import com.aspectran.core.activity.process.action.Executable;
@@ -58,10 +61,8 @@ import com.aspectran.core.context.builder.apon.params.TransletParameters;
 import com.aspectran.core.context.rule.AspectAdviceRule;
 import com.aspectran.core.context.rule.AspectJobAdviceRule;
 import com.aspectran.core.context.rule.AspectRule;
-import com.aspectran.core.context.rule.AspectRuleMap;
 import com.aspectran.core.context.rule.BeanActionRule;
 import com.aspectran.core.context.rule.BeanRule;
-import com.aspectran.core.context.rule.BeanRuleMap;
 import com.aspectran.core.context.rule.DispatchResponseRule;
 import com.aspectran.core.context.rule.EchoActionRule;
 import com.aspectran.core.context.rule.ExceptionHandlingRule;
@@ -76,10 +77,8 @@ import com.aspectran.core.context.rule.ResponseByContentTypeRule;
 import com.aspectran.core.context.rule.ResponseRule;
 import com.aspectran.core.context.rule.SettingsAdviceRule;
 import com.aspectran.core.context.rule.TemplateRule;
-import com.aspectran.core.context.rule.TemplateRuleMap;
 import com.aspectran.core.context.rule.TransformRule;
 import com.aspectran.core.context.rule.TransletRule;
-import com.aspectran.core.context.rule.TransletRuleMap;
 import com.aspectran.core.context.rule.type.ActionType;
 import com.aspectran.core.context.rule.type.AspectAdviceType;
 import com.aspectran.core.context.rule.type.ImportType;
@@ -89,9 +88,6 @@ import com.aspectran.core.context.rule.type.ScopeType;
 import com.aspectran.core.util.apon.GenericParameters;
 import com.aspectran.core.util.apon.ParameterDefine;
 import com.aspectran.core.util.apon.Parameters;
-
-import java.util.List;
-import java.util.Map;
 
 /**
  * The Class RootAponAssembler.
@@ -144,26 +140,22 @@ public class RootAponAssembler {
 			}
 		}
 
-		AspectRuleMap aspectRuleMap = assistant.getAspectRuleMap();
-		for(AspectRule aspectRule : aspectRuleMap) {
+		for(AspectRule aspectRule : assistant.getAspectRules()) {
 			Parameters p = assembleAspectParameters(aspectRule);
 			aspectranParameters.putValue(AspectranParameters.aspects, p);
 		}
 
-		BeanRuleMap beanRuleMap = assistant.getBeanRuleMap();
-		for(BeanRule beanRule : beanRuleMap) {
+		for(BeanRule beanRule : assistant.getBeanRules()) {
 			Parameters p = assembleBeanParameters(beanRule);
 			aspectranParameters.putValue(AspectranParameters.beans, p);
 		}
 		
-		TransletRuleMap transletRuleMap = assistant.getTransletRuleMap();
-		for(TransletRule transletRule : transletRuleMap) {
+		for(TransletRule transletRule : assistant.getTransletRules()) {
 			Parameters p = assembleTransletParameters(transletRule);
 			aspectranParameters.putValue(AspectranParameters.translets, p);
 		}
 		
-		TemplateRuleMap templateRuleMap = assistant.getTemplateRuleMap();
-		for(TemplateRule templateRule : templateRuleMap) {
+		for(TemplateRule templateRule : assistant.getTemplateRules()) {
 			Parameters p = assembleTemplateParameters(templateRule);
 			aspectranParameters.putValue(AspectranParameters.templates, p);
 		}
@@ -296,15 +288,17 @@ public class RootAponAssembler {
 			beanParameters.putValue(BeanParameters.description, beanRule.getDescription());
 		}
 		beanParameters.putValue(BeanParameters.id, beanRule.getId());
-		beanParameters.putValue(BeanParameters.mask, beanRule.getMaskPattern());
 		beanParameters.putValue(BeanParameters.className, beanRule.getClassName());
+		beanParameters.putValue(BeanParameters.scan, beanRule.getScanPath());
+		beanParameters.putValue(BeanParameters.mask, beanRule.getMaskPattern());
 		if(beanRule.getSingleton() == Boolean.TRUE && beanRule.getScopeType() == ScopeType.SINGLETON)
 			beanParameters.putValue(BeanParameters.singleton, beanRule.getSingleton());
 		else
 			beanParameters.putValue(BeanParameters.scope, beanRule.getScopeType().toString());
-		beanParameters.putValue(BeanParameters.factoryBean, beanRule.getFactoryBeanId());
-		beanParameters.putValue(BeanParameters.factoryMethod, beanRule.getFactoryMethodName());
+		beanParameters.putValue(BeanParameters.offerBean, beanRule.getOfferBeanId());
+		beanParameters.putValue(BeanParameters.offerMethod, beanRule.getOfferMethodName());
 		beanParameters.putValue(BeanParameters.initMethod, beanRule.getInitMethodName());
+		beanParameters.putValue(BeanParameters.factoryMethod, beanRule.getFactoryMethodName());
 		beanParameters.putValue(BeanParameters.destroyMethod, beanRule.getDestroyMethodName());
 		beanParameters.putValue(BeanParameters.lazyInit, beanRule.getLazyInit());
 		beanParameters.putValue(BeanParameters.important, beanRule.getImportant());

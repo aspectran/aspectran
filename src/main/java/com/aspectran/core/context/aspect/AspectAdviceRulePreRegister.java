@@ -77,7 +77,7 @@ public class AspectAdviceRulePreRegister extends AspectAdviceRuleRegister {
 	
 	public void register(BeanRuleRegistry beanRuleRegistry) {
 		for(BeanRule beanRule : beanRuleRegistry.getBeanRules()) {
-			if(!beanRule.isFactoryBeanReferenced()) {
+			if(!beanRule.isOffered()) {
 				determineProxyBean(beanRule);
 			}
 		}

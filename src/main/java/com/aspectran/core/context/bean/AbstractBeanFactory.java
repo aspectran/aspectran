@@ -72,8 +72,56 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 		Activity activity = context.getCurrentActivity();
 		return createBean(beanRule, activity);
 	}
-
+	
 	private Object createBean(BeanRule beanRule, Activity activity) {
+		if(beanRule.isOffered())
+			return createOfferedBean(beanRule, activity);
+		else
+			return createNormalBean(beanRule, activity);
+	}
+
+	private Object createOfferedBean(BeanRule beanRule, Activity activity) {
+		String offerBeanId = beanRule.getOfferBeanId();
+		String offerMethodName = beanRule.getOfferMethodName();
+		Object bean;
+		
+		try {
+			bean = activity.getBean(offerBeanId);
+			
+			if(offerMethodName != null)
+				bean = MethodUtils.invokeMethod(bean, offerMethodName);
+		} catch(Exception e) {
+			throw new BeanCreationException(beanRule, "An exception occurred during the execution of a offer method from the referenced offer bean.", e);
+		}
+
+		try {
+			ItemRuleMap propertyItemRuleMap = beanRule.getPropertyItemRuleMap();
+
+			if(propertyItemRuleMap != null) {
+				ItemTokenExpressor expressor = new ItemTokenExpression(activity);
+				ValueMap valueMap = expressor.express(propertyItemRuleMap);
+				
+				for(Map.Entry<String, Object> entry : valueMap.entrySet()) {
+					MethodUtils.invokeSetter(bean, entry.getKey(), entry.getValue());
+				}
+			}
+			
+			if(beanRule.getInitMethodName() != null) {
+				invokeInitMethod(beanRule, bean, activity);
+			}
+			
+			if(beanRule.getFactoryMethodName() != null) {
+				bean = invokeFactoryMethod(beanRule, bean);
+			}
+			
+			return bean;
+
+		} catch(Exception e) {
+			throw new BeanCreationException(beanRule, e);
+		}
+	}
+	
+	private Object createNormalBean(BeanRule beanRule, Activity activity) {
 		try {
 			Object bean;
 			
@@ -83,12 +131,11 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 			
 			if(constructorArgumentItemRuleMap != null) {
 				expressor = new ItemTokenExpression(activity);
-				
 				ValueMap valueMap = expressor.express(constructorArgumentItemRuleMap);
 	
 				int parameterSize = constructorArgumentItemRuleMap.size();
 				Object[] args = new Object[parameterSize];
-				Class<?>[] argTypes = new Class<?>[args.length];
+				Class<?>[] argTypes = new Class<?>[parameterSize];
 				
 				Iterator<ItemRule> iter = constructorArgumentItemRuleMap.iterator();
 				int i = 0;
@@ -122,42 +169,16 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 				}
 			}
 			
-			String initMethodName = beanRule.getInitMethodName();
-			
-			if(initMethodName != null) {
-				if(beanRule.getInitMethodRequiresTranslet() == null) {
-					try {
-						BeanAction.invokeMethod(activity, bean, initMethodName, null, null, true);
-						beanRule.setInitMethodRequiresTranslet(Boolean.TRUE);
-					} catch(NoSuchMethodException e) {
-						if(log.isDebugEnabled()) {
-							log.debug("Cannot find a method that requires a argument translet. So in the future will " +
-									"continue to call a method with no argument translet. beanRule " + beanRule);
-						}
-						
-						beanRule.setInitMethodRequiresTranslet(Boolean.FALSE);
-						BeanAction.invokeMethod(activity, bean, initMethodName, null, null, false);
-					}
-				} else {
-					boolean requiresTranslet = beanRule.getInitMethodRequiresTranslet().booleanValue();
-					BeanAction.invokeMethod(activity, bean, initMethodName, null, null, requiresTranslet);
-				}
+			if(beanRule.getInitMethodName() != null) {
+				invokeInitMethod(beanRule, bean, activity);
 			}
 
 			if(beanRule.isFactoryBeanImplmented()) {
-				FactoryBean<?> factory = (FactoryBean<?>)bean;
-
-				try {
-					bean = factory.getObject();
-				} catch(Exception ex) {
-					throw new BeanCreationException(beanRule, "FactoryBean threw exception on object creation", ex);
-				}
-
-				if(bean == null) {
-					throw new FactoryBeanNotInitializedException(beanRule,
-									"FactoryBean returned null object: " +
-									"probably not fully initialized (maybe due to circular bean reference)");
-				}
+				bean = invokeObjectFromFactoryBean(beanRule, bean);
+			}
+			
+			if(beanRule.getFactoryMethodName() != null) {
+				bean = invokeFactoryMethod(beanRule, bean);
 			}
 
 			return bean;
@@ -201,7 +222,7 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 		return bean;
 	}
 	
-	private void processAnnotation(BeanRule beanRule, Object bean, Activity activity) {
+	private void processAnnotation(BeanRule beanRule, final Object bean, Activity activity) {
 		BeanAnnotationProcessor.process(beanRule, bean, activity);
 	}
 	
@@ -219,6 +240,58 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 		}
 	}
 
+	private void invokeInitMethod(BeanRule beanRule, final Object bean, Activity activity)
+			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+		String initMethodName = beanRule.getInitMethodName();
+		
+		if(beanRule.getInitMethodRequiresTranslet() == null) {
+			try {
+				BeanAction.invokeMethod(activity, bean, initMethodName, null, null, true);
+				beanRule.setInitMethodRequiresTranslet(Boolean.TRUE);
+			} catch(NoSuchMethodException e) {
+				if(log.isDebugEnabled()) {
+					log.debug("Cannot find a method that requires a translet argument. So in the future will " +
+							"continue to call a method with no translet argument. beanRule " + beanRule);
+				}
+				
+				beanRule.setInitMethodRequiresTranslet(Boolean.FALSE);
+				BeanAction.invokeMethod(activity, bean, initMethodName, null, null, false);
+			}
+		} else {
+			boolean requiresTranslet = beanRule.getInitMethodRequiresTranslet().booleanValue();
+			BeanAction.invokeMethod(activity, bean, initMethodName, null, null, requiresTranslet);
+		}
+	}
+	
+	private Object invokeFactoryMethod(BeanRule beanRule, final Object bean) {
+		String factoryMethodName = beanRule.getFactoryMethodName();
+
+		try {
+			return MethodUtils.invokeMethod(bean, factoryMethodName);
+		} catch(Exception e) {
+			throw new BeanCreationException(beanRule, "An exception occurred during the execution of a factory method in the bean object.", e);
+		}
+	}
+	
+	private Object invokeObjectFromFactoryBean(BeanRule beanRule, final Object bean) {
+		FactoryBean<?> factory = (FactoryBean<?>)bean;
+		Object factoryObject = null;
+		
+		try {
+			factoryObject = factory.getObject();
+		} catch(Exception e) {
+			throw new BeanCreationException(beanRule, "FactoryBean threw exception on object creation", e);
+		}
+
+		if(factoryObject == null) {
+			throw new FactoryBeanNotInitializedException(beanRule,
+							"FactoryBean returned null object: " +
+							"probably not fully initialized (maybe due to circular bean reference)");
+		}
+		
+		return factoryObject;
+	}
+	
 	@Override
 	public synchronized void initialize(ActivityContext context) {
 		if(initialized) {

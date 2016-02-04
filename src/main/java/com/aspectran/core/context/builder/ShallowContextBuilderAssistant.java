@@ -15,16 +15,14 @@
  */
 package com.aspectran.core.context.builder;
 
-import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 import com.aspectran.core.context.rule.AspectRule;
-import com.aspectran.core.context.rule.AspectRuleMap;
 import com.aspectran.core.context.rule.BeanRule;
-import com.aspectran.core.context.rule.BeanRuleMap;
 import com.aspectran.core.context.rule.TemplateRule;
-import com.aspectran.core.context.rule.TemplateRuleMap;
 import com.aspectran.core.context.rule.TransletRule;
-import com.aspectran.core.context.rule.TransletRuleMap;
 
 /**
  * The Class ShallowContextBuilderAssistant.
@@ -33,13 +31,13 @@ import com.aspectran.core.context.rule.TransletRuleMap;
  */
 public class ShallowContextBuilderAssistant extends ContextBuilderAssistant {
 
-	private final AspectRuleMap aspectRuleMap = new AspectRuleMap();
+	private final List<AspectRule> aspectRules = new ArrayList<AspectRule>();
 	
-	private final BeanRuleMap beanRuleMap = new BeanRuleMap();
+	private final List<BeanRule> beanRules = new ArrayList<BeanRule>();
 
-	private final TemplateRuleMap templateRuleMap = new TemplateRuleMap();
+	private final List<TemplateRule> templateRules = new ArrayList<TemplateRule>();
 
-	private final TransletRuleMap transletRuleMap = new TransletRuleMap();
+	private final List<TransletRule> transletRules = new ArrayList<TransletRule>();
 	
 	public ShallowContextBuilderAssistant() {
 		setImportHandler(new ShallowImportHandler());
@@ -62,42 +60,42 @@ public class ShallowContextBuilderAssistant extends ContextBuilderAssistant {
 
 	@Override
 	public void addAspectRule(AspectRule aspectRule) {
-		aspectRuleMap.put(Integer.toString(aspectRuleMap.size()), aspectRule);
+		aspectRules.add(aspectRule);
 	}
 
 	@Override
-	public void addBeanRule(BeanRule beanRule) throws CloneNotSupportedException, ClassNotFoundException, IOException {
-		beanRuleMap.put(Integer.toString(beanRuleMap.size()), beanRule);
+	public void addBeanRule(BeanRule beanRule) {
+		beanRules.add(beanRule);
 	}
 
 	@Override
-	public void addTransletRule(TransletRule transletRule) throws CloneNotSupportedException {
-		transletRuleMap.put(Integer.toString(transletRuleMap.size()), transletRule);
+	public void addTransletRule(TransletRule transletRule) {
+		transletRules.add(transletRule);
 	}
 
 	@Override
 	public void addTemplateRule(TemplateRule templateRule) {
-		templateRuleMap.put(Integer.toString(templateRuleMap.size()), templateRule);
+		templateRules.add(templateRule);
 	}
 
 	@Override
-	public AspectRuleMap getAspectRuleMap() {
-		return aspectRuleMap;
+	public Collection<AspectRule> getAspectRules() {
+		return aspectRules;
 	}
 
 	@Override
-	public BeanRuleMap getBeanRuleMap() {
-		return beanRuleMap;
+	public Collection<BeanRule> getBeanRules() {
+		return beanRules;
 	}
 
 	@Override
-	public TemplateRuleMap getTemplateRuleMap() {
-		return templateRuleMap;
+	public Collection<TemplateRule> getTemplateRules() {
+		return templateRules;
 	}
 
 	@Override
-	public TransletRuleMap getTransletRuleMap() {
-		return transletRuleMap;
+	public Collection<TransletRule> getTransletRules() {
+		return transletRules;
 	}
 
 }

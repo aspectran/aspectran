@@ -185,7 +185,6 @@ public class BeanUtils {
 			Object value = object;
 			while(parser.hasMoreTokens()) {
 				value = getProperty(value, parser.nextToken());
-
 				if(value == null) {
 					break;
 				}

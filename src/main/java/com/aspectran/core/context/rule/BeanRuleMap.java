@@ -15,7 +15,10 @@
  */
 package com.aspectran.core.context.rule;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.Set;
 
 /**
  * The Class BeanRuleMap.
@@ -25,10 +28,11 @@ import java.util.*;
 public class BeanRuleMap extends LinkedHashMap<String, BeanRule> implements Iterable<BeanRule> {
 
 	/** @serial */
-	static final long serialVersionUID = 6582559285464575704L;
+	private static final long serialVersionUID = -8336735454266805234L;
 
 	private Set<String> importantBeanIdSet = new HashSet<String>();
 
+	@Override
 	public BeanRule put(String beanId, BeanRule beanRule) {
 		if(importantBeanIdSet.contains(beanId))
 			return null;
@@ -49,11 +53,15 @@ public class BeanRuleMap extends LinkedHashMap<String, BeanRule> implements Iter
 		return put(beanRule.getId(), beanRule);
 	}
 	
-	/* (non-Javadoc)
-	 * @see java.lang.Iterable#iterator()
-	 */
+	@Override
 	public Iterator<BeanRule> iterator() {
 		return this.values().iterator();
+	}
+	
+	@Override
+	public void clear() {
+		super.clear();
+		importantBeanIdSet.clear();
 	}
 
 }

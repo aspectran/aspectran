@@ -53,6 +53,8 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 	
 	private String maskPattern;
 	
+	private Parameters filterParameters;
+	
 	private RequestRule requestRule;
 	
 	private ContentList contentList;
@@ -73,8 +75,6 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 	private Class<? extends CoreTranslet> transletImplementClass;
 
 	private AspectAdviceRuleRegistry aspectAdviceRuleRegistry;
-	
-	private Parameters filterParameters;
 
 	private String description;
 	
@@ -156,20 +156,58 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 		this.nameTokens = nameTokens;
 	}
 	
+	/**
+	 * Gets the scan path.
+	 *
+	 * @return the scan path
+	 */
 	public String getScanPath() {
 		return scanPath;
 	}
 	
+	/**
+	 * Sets the scan path.
+	 *
+	 * @param scanPath the new scan path
+	 */
 	public void setScanPath(String scanPath) {
 		this.scanPath = scanPath;
 	}
 
+	/**
+	 * Gets the mask pattern.
+	 *
+	 * @return the mask pattern
+	 */
 	public String getMaskPattern() {
 		return maskPattern;
 	}
 
+	/**
+	 * Sets the mask pattern.
+	 *
+	 * @param maskPattern the new mask pattern
+	 */
 	public void setMaskPattern(String maskPattern) {
 		this.maskPattern = maskPattern;
+	}
+
+	/**
+	 * Gets the filter parameters.
+	 *
+	 * @return the filter parameters
+	 */
+	public Parameters getFilterParameters() {
+		return filterParameters;
+	}
+
+	/**
+	 * Sets the filter parameters.
+	 *
+	 * @param filterParameters the new filter parameters
+	 */
+	public void setFilterParameters(Parameters filterParameters) {
+		this.filterParameters = filterParameters;
 	}
 
 	/**
@@ -424,14 +462,6 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 		this.aspectAdviceRuleRegistry = aspectAdviceRuleRegistry;
 	}
 	
-	public Parameters getFilterParameters() {
-		return filterParameters;
-	}
-
-	public void setFilterParameters(Parameters filterParameters) {
-		this.filterParameters = filterParameters;
-	}
-	
 	/**
 	 * Gets the description.
 	 *
@@ -510,41 +540,43 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 	}
 	
 	public static TransletRule replicate(TransletRule transletRule, ResponseRule responseRule) {
-		TransletRule newTransletRule = new TransletRule();
-		newTransletRule.setName(transletRule.getName());
-		newTransletRule.setRestVerb(transletRule.getRestVerb());
-		newTransletRule.setRequestRule(transletRule.getRequestRule());
-		newTransletRule.setResponseRule(responseRule);
-		newTransletRule.setExceptionHandlingRule(transletRule.getExceptionHandlingRule());
-		newTransletRule.setTransletInterfaceClass(transletRule.getTransletInterfaceClass());
-		newTransletRule.setTransletImplementClass(transletRule.getTransletImplementClass());
+		TransletRule tr = new TransletRule();
+		tr.setName(transletRule.getName());
+		tr.setRestVerb(transletRule.getRestVerb());
+		tr.setRequestRule(transletRule.getRequestRule());
+		tr.setResponseRule(responseRule);
+		tr.setExceptionHandlingRule(transletRule.getExceptionHandlingRule());
+		tr.setTransletInterfaceClass(transletRule.getTransletInterfaceClass());
+		tr.setTransletImplementClass(transletRule.getTransletImplementClass());
+		tr.setDescription(transletRule.getDescription());
 		
 		if(responseRule.getResponse() != null) {
 			if(responseRule.getResponse().getActionList() != null) {
 				ContentList contentList = transletRule.getContentList();
 				if(contentList != null) {
 					contentList = (ContentList)contentList.clone();
-					newTransletRule.setContentList(contentList);
+					tr.setContentList(contentList);
 				}
 			}
 		}
 		
-		return newTransletRule;
+		return tr;
 	}
 	
 	public static TransletRule replicate(TransletRule transletRule, String newDispatchName) {
-		TransletRule newTransletRule = new TransletRule();
-		newTransletRule.setName(transletRule.getName());
-		newTransletRule.setRestVerb(transletRule.getRestVerb());
-		newTransletRule.setRequestRule(transletRule.getRequestRule());
-		newTransletRule.setExceptionHandlingRule(transletRule.getExceptionHandlingRule());
-		newTransletRule.setTransletInterfaceClass(transletRule.getTransletInterfaceClass());
-		newTransletRule.setTransletImplementClass(transletRule.getTransletImplementClass());
+		TransletRule tr = new TransletRule();
+		tr.setName(transletRule.getName());
+		tr.setRestVerb(transletRule.getRestVerb());
+		tr.setRequestRule(transletRule.getRequestRule());
+		tr.setExceptionHandlingRule(transletRule.getExceptionHandlingRule());
+		tr.setTransletInterfaceClass(transletRule.getTransletInterfaceClass());
+		tr.setTransletImplementClass(transletRule.getTransletImplementClass());
+		tr.setDescription(transletRule.getDescription());
 
 		if(transletRule.getResponseRule() != null) {
 			ResponseRule responseRule = transletRule.getResponseRule();
 			ResponseRule rr = replicate(responseRule, newDispatchName);
-			newTransletRule.setResponseRule(rr);
+			tr.setResponseRule(rr);
 		}
 		
 		if(transletRule.getResponseRuleList() != null) {
@@ -554,10 +586,10 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 				ResponseRule rr = replicate(responseRule, newDispatchName);
 				newResponseRuleList.add(rr);
 			}
-			newTransletRule.setResponseRuleList(newResponseRuleList);
+			tr.setResponseRuleList(newResponseRuleList);
 		}
 		
-		return newTransletRule;
+		return tr;
 	}
 	
 	private static ResponseRule replicate(ResponseRule responseRule, String newDispatchName) {

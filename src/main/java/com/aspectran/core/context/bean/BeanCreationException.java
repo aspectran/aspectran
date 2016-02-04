@@ -23,7 +23,7 @@ import com.aspectran.core.context.rule.BeanRule;
 public class BeanCreationException extends BeanRuleException {
 
 	/** @serial */
-	private static final long serialVersionUID = 8126208342749350818L;
+	private static final long serialVersionUID = -4711272699122321571L;
 
 	/**
 	 * Instantiates a new BeanCreationException.
@@ -31,7 +31,7 @@ public class BeanCreationException extends BeanRuleException {
 	 * @param beanRule the bean rule
 	 */
 	public BeanCreationException(BeanRule beanRule) {
-		this(beanRule, "Cannot create a bean");
+		super(beanRule, "Cannot create a bean");
 	}
 
 	/**
@@ -51,7 +51,7 @@ public class BeanCreationException extends BeanRuleException {
 	 * @param cause the root cause
 	 */
 	public BeanCreationException(BeanRule beanRule, Throwable cause) {
-		this(beanRule, "Cannot create a bean", cause);
+		super(beanRule, "Cannot create a bean", cause);
 	}
 
 	/**

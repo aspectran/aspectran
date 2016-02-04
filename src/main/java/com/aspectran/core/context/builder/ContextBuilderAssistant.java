@@ -15,27 +15,24 @@
  */
 package com.aspectran.core.context.builder;
 
+import java.io.IOException;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+
 import com.aspectran.core.activity.CoreTranslet;
 import com.aspectran.core.activity.Translet;
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.aspect.AspectRuleRegistry;
 import com.aspectran.core.context.bean.BeanRuleRegistry;
 import com.aspectran.core.context.rule.AspectRule;
-import com.aspectran.core.context.rule.AspectRuleMap;
 import com.aspectran.core.context.rule.BeanRule;
-import com.aspectran.core.context.rule.BeanRuleMap;
 import com.aspectran.core.context.rule.TemplateRule;
-import com.aspectran.core.context.rule.TemplateRuleMap;
 import com.aspectran.core.context.rule.TransletRule;
-import com.aspectran.core.context.rule.TransletRuleMap;
 import com.aspectran.core.context.rule.type.DefaultSettingType;
 import com.aspectran.core.context.template.TemplateRuleRegistry;
 import com.aspectran.core.context.translet.TransletRuleRegistry;
 import com.aspectran.core.util.ArrayStack;
-
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * The Class ContextBuilderAssistant
@@ -423,39 +420,39 @@ public class ContextBuilderAssistant {
 	}
 
 	/**
-	 * Gets aspect rule map.
+	 * Gets aspect rules.
 	 *
-	 * @return the aspect rule map
+	 * @return the aspect rules
 	 */
-	public AspectRuleMap getAspectRuleMap() {
-		return aspectRuleRegistry.getAspectRuleMap();
+	public Collection<AspectRule> getAspectRules() {
+		return aspectRuleRegistry.getAspectRuleMap().values();
 	}
 
 	/**
-	 * Gets bean rule map.
+	 * Gets bean rules.
 	 *
-	 * @return the bean rule map
+	 * @return the bean rules
 	 */
-	public BeanRuleMap getBeanRuleMap() {
-		return beanRuleRegistry.getBeanRuleMap();
+	public Collection<BeanRule> getBeanRules() {
+		return beanRuleRegistry.getBeanRuleMap().values();
 	}
 
 	/**
-	 * Gets template rule map.
+	 * Gets template rules.
 	 *
-	 * @return the template rule map
+	 * @return the template rules
 	 */
-	public TemplateRuleMap getTemplateRuleMap() {
-		return templateRuleRegistry.getTemplateRuleMap();
+	public Collection<TemplateRule> getTemplateRules() {
+		return templateRuleRegistry.getTemplateRuleMap().values();
 	}
 
 	/**
-	 * Gets translet rule map.
+	 * Gets translet rules.
 	 *
-	 * @return the translet rule map
+	 * @return the translet rules
 	 */
-	public TransletRuleMap getTransletRuleMap() {
-		return transletRuleRegistry.getTransletRuleMap();
+	public Collection<TransletRule> getTransletRules() {
+		return transletRuleRegistry.getTransletRuleMap().values();
 	}
 
 	public String putBeanReference(String beanId, Object rule) {
