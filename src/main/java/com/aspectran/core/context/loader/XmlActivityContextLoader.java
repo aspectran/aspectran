@@ -28,7 +28,8 @@ public class XmlActivityContextLoader extends AbstractActivityContextLoader {
 	
 	public XmlActivityContextLoader() {
 	}
-	
+
+	@Override
 	public ActivityContext load(String rootContext) throws ActivityContextBuilderException {
 		log.info("Build ActivityContext: " + rootContext);
 		long startTime = System.currentTimeMillis();

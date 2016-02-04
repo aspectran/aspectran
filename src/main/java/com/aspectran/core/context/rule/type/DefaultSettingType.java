@@ -23,37 +23,26 @@ import java.util.Map;
  */
 public final class DefaultSettingType extends Type {
 	
-	/** The Constant TRANSLET_NAME_PATTERN. */
 	public static final DefaultSettingType TRANSLET_NAME_PATTERN;
 	
-	/** The Constant TRANSLET_NAME_PREFIX. */
 	public static final DefaultSettingType TRANSLET_NAME_PREFIX;
 	
-	/** The Constant TRANSLET_NAME_SUFFIX. */
 	public static final DefaultSettingType TRANSLET_NAME_SUFFIX;
 	
-	/** The Constant TRANSLET_INTERFACE. */
 	public static final DefaultSettingType TRANSLET_INTERFACE_CLASS;
 	
-	/** The Constant TRANSLET_CLASS. */
 	public static final DefaultSettingType TRANSLET_IMPLEMENT_CLASS;
 	
-	/** The Constant NULLABLE_CONTENT_ID. */
 	public static final DefaultSettingType NULLABLE_CONTENT_ID;
 	
-	/** The Constant NULLABLE_ACTION_ID. */
 	public static final DefaultSettingType NULLABLE_ACTION_ID;
 	
-	/** The Constant BEAN_PROXIFIER. */
 	public static final DefaultSettingType BEAN_PROXIFIER;
 	
-	/** The Constant POINTCUT_PATTERN_VERIFIABLE. */
 	public static final DefaultSettingType POINTCUT_PATTERN_VERIFIABLE;
 	
-	/** The Constant DEFAULT_TEMPLATE_ENGINE. */
 	public static final DefaultSettingType DEFAULT_TEMPLATE_ENGINE;
 
-	/** The Constant types. */
 	private static final Map<String, DefaultSettingType> types;
 	
 	static {

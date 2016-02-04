@@ -334,7 +334,8 @@ public class AspectranClassLoader extends ClassLoader {
 		
 		return resources.toArray(new URL[resources.size()]);
 	}
-	
+
+	@Override
 	public Enumeration<URL> getResources(String name) throws IOException {
 		ClassLoader parentClassLoader = root.getParent();
 		Enumeration<URL> parentResources = null;
@@ -344,7 +345,8 @@ public class AspectranClassLoader extends ClassLoader {
 		
 		return ResourceManager.getResources(getAspectranClassLoaders(root), name, parentResources);
 	}
-	
+
+	@Override
 	public synchronized Class<?> loadClass(String name) throws ClassNotFoundException {
 	    // First check if the class is already loaded
 		Class<?> c = findLoadedClass(name);
@@ -376,7 +378,8 @@ public class AspectranClassLoader extends ClassLoader {
 
 	    return c;		
     }
-	
+
+	@Override
 	public URL getResource(String name) {
 		URL url = super.getResource(name);
 
@@ -431,7 +434,8 @@ public class AspectranClassLoader extends ClassLoader {
 	public Iterator<AspectranClassLoader> getAllAspectranClassLoaders() {
 		return getAspectranClassLoaders(root);
 	}
-	
+
+	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("{id=").append(id);
@@ -456,11 +460,13 @@ public class AspectranClassLoader extends ClassLoader {
 			private Iterator<AspectranClassLoader> children = root.getChildren().iterator();
 			private AspectranClassLoader firstChild;
 			private AspectranClassLoader current;
-			
+
+			@Override
 			public boolean hasNext() {
 				return (next != null);
 			}
-			
+
+			@Override
 			public AspectranClassLoader next() {
 				if(next == null)
 					throw new NoSuchElementException();
@@ -490,7 +496,8 @@ public class AspectranClassLoader extends ClassLoader {
 
 				return current;
 			}
-			
+
+			@Override
 			public void remove() {
 				throw new UnsupportedOperationException("remove");
 			}

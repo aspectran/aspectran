@@ -25,11 +25,13 @@ public abstract class AbstractActivityContextLoader implements ActivityContextLo
 	
 	public AbstractActivityContextLoader() {
 	}
-	
+
+	@Override
 	public ApplicationAdapter getApplicationAdapter() {
 		return applicationAdapter;
 	}
 
+	@Override
 	public void setApplicationAdapter(ApplicationAdapter applicationAdapter) {
 		this.applicationAdapter = applicationAdapter;
 	}
@@ -38,6 +40,7 @@ public abstract class AbstractActivityContextLoader implements ActivityContextLo
 		return hybridLoading;
 	}
 
+	@Override
 	public void setHybridLoading(boolean hybridLoading) {
 		this.hybridLoading = hybridLoading;
 	}

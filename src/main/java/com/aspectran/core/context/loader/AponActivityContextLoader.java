@@ -34,7 +34,8 @@ public class AponActivityContextLoader extends AbstractActivityContextLoader {
 	public AponActivityContextLoader(String encoding) {
 		this.encoding = encoding;
 	}
-	
+
+	@Override
 	public ActivityContext load(String rootContext) throws ActivityContextBuilderException {
 		log.info("Build ActivityContext: " + rootContext);
 		long startTime = System.currentTimeMillis();

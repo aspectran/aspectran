@@ -83,9 +83,6 @@ public class ActionResult {
 		this.resultValue = resultValue;
 	}
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();

@@ -109,21 +109,18 @@ public class CoreActivity extends AbstractActivity implements Activity {
 		this.context = context;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.Activity#ready(java.lang.String)
-	 */
+	@Override
 	public void ready(String transletName) {
 		ready(transletName, (ProcessResult)null);
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.Activity#ready(java.lang.String, java.lang.String)
-	 */
+
+	@Override
 	public void ready(String transletName, String restVerb) {
 		this.requestMethod = RequestMethodType.valueOf(restVerb);
 		ready(transletName, (ProcessResult)null);
 	}
 
+	@Override
 	public void ready(String transletName, RequestMethodType requestMethod) {
 		this.requestMethod = requestMethod;
 		ready(transletName, (ProcessResult)null);
@@ -206,9 +203,7 @@ public class CoreActivity extends AbstractActivity implements Activity {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.Activity#perform()
-	 */
+	@Override
 	public void perform() {
 		adapting(translet);
 
@@ -216,22 +211,18 @@ public class CoreActivity extends AbstractActivity implements Activity {
 
 		run1st();
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.Activity#performWithoutResponse()
-	 */
+
+	@Override
 	public void performWithoutResponse() {
 		withoutResponse = true;
 
 		perform();
 	}
-	
+
 	protected void adapting(Translet translet) {
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.Activity#finish()
-	 */
+
+	@Override
 	public void finish() {
 		context.removeCurrentActivity();
 	}
@@ -513,18 +504,18 @@ public class CoreActivity extends AbstractActivity implements Activity {
 		
 		return translet.getProcessResult();
 	}
-	
+
+	@Override
 	public ProcessResult getProcessResult() {
 		return translet.getProcessResult();
 	}
-	
+
+	@Override
 	public Object getProcessResult(String actionId) {
 		return translet.getProcessResult().getResultValue(actionId);
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.Activity#getResponse()
-	 */
+
+	@Override
 	public Response getResponse() {
 		if(responseRule == null)
 			return null;
@@ -541,10 +532,8 @@ public class CoreActivity extends AbstractActivity implements Activity {
 		if(forwardTransletName != null)
 			forward();
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.Activity#response(com.aspectran.core.activity.response.Response)
-	 */
+
+	@Override
 	public void response(Response response) {
 		response.response(this);
 		
@@ -569,10 +558,8 @@ public class CoreActivity extends AbstractActivity implements Activity {
 		ready(forwardTransletName, processResult);
 		perform();
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.Activity#responseByContentType(java.util.List)
-	 */
+
+	@Override
 	public void responseByContentType(List<ExceptionHandlingRule> exceptionHandlingRuleList) {
 		for(ExceptionHandlingRule exceptionHandlingRule : exceptionHandlingRuleList) {
 			responseByContentType(exceptionHandlingRule);
@@ -619,10 +606,8 @@ public class CoreActivity extends AbstractActivity implements Activity {
 			}
 		}
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.Activity#getForwardTransletName()
-	 */
+
+	@Override
 	public String getForwardTransletName() {
 		return forwardTransletName;
 	}
@@ -677,19 +662,15 @@ public class CoreActivity extends AbstractActivity implements Activity {
 			throw new ActionExecutionException("Failed to execute action " + action, e);
 		}
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.Activity#execute(java.util.List)
-	 */
+
+	@Override
 	public void execute(List<AspectAdviceRule> aspectAdviceRuleList) {
 		for(AspectAdviceRule aspectAdviceRule : aspectAdviceRuleList) {
 			execute(aspectAdviceRule, false);
 		}
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.Activity#forceExecute(java.util.List)
-	 */
+
+	@Override
 	public void forceExecute(List<AspectAdviceRule> aspectAdviceRuleList) {
 		for(AspectAdviceRule aspectAdviceRule : aspectAdviceRuleList) {
 			execute(aspectAdviceRule, true);
@@ -732,47 +713,35 @@ public class CoreActivity extends AbstractActivity implements Activity {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.Activity#isExceptionRaised()
-	 */
+	@Override
 	public boolean isExceptionRaised() {
 		return (raisedException != null);
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.Activity#getRaisedException()
-	 */
+
+	@Override
 	public Exception getRaisedException() {
 		return raisedException;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.Activity#setRaisedException(java.lang.Exception)
-	 */
+	@Override
 	public void setRaisedException(Exception raisedException) {
 		if(this.raisedException == null) {
 			log.error("original raised exception: ", raisedException);
 			this.raisedException = raisedException;
 		}
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.Activity#activityEnd()
-	 */
+
+	@Override
 	public void activityEnd() {
 		activityEnded = true;
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.Activity#isActivityEnded()
-	 */
+
+	@Override
 	public boolean isActivityEnded() {
 		return activityEnded;
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.Activity#newActivity()
-	 */
+
+	@Override
 	@SuppressWarnings("unchecked")
 	public <T extends Activity> T newActivity() {
 		Activity activity = new CoreActivity(getActivityContext());
@@ -785,26 +754,18 @@ public class CoreActivity extends AbstractActivity implements Activity {
 	protected void newTranslet() {
 		translet = newTranslet(this);
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.Activity#getTranslet()
-	 */
+
+	@Override
 	public Translet getTranslet() {
 		return translet;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.CoreActivity#getTransletName()
-	 */
+	@Override
 	public String getTransletName() {
 		return transletName;
 	}
-	
-	/**
-	 * Gets the rest verb.
-	 *
-	 * @return the rest verb
-	 */
+
+	@Override
 	public RequestMethodType getRestVerb() {
 		return transletRule.getRestVerb();
 	}
@@ -836,23 +797,17 @@ public class CoreActivity extends AbstractActivity implements Activity {
 		return responseRule;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.Activity#getTransletSetting(java.lang.String)
-	 */
+	@Override
 	public <T> T getTransletSetting(String settingName) {
 		return getSetting(transletAspectAdviceRuleRegistry, settingName);
 	}
 
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.Activity#getRequestSetting(java.lang.String)
-	 */
+	@Override
 	public <T> T getRequestSetting(String settingName) {
 		return getSetting(requestAspectAdviceRuleRegistry, settingName);
 	}
 
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.Activity#getResponseSetting(java.lang.String)
-	 */
+	@Override
 	public <T> T getResponseSetting(String settingName) {
 		return getSetting(responseAspectAdviceRuleRegistry, settingName);
 	}
@@ -864,44 +819,37 @@ public class CoreActivity extends AbstractActivity implements Activity {
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.CoreActivity#getActivityContext()
-	 */
+	@Override
 	public ActivityContext getActivityContext() {
 		return context;
 	}
 
+	@Override
 	public BeanRegistry getBeanRegistry() {
 		return context.getBeanRegistry();
 	}
 
+	@Override
 	public TemplateProcessor getTemplateProcessor() {
 		return context.getTemplateProcessor();
 	}
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.Activity#getBean(java.lang.String)
-	 */
+
+	@Override
 	public <T> T getBean(String id) {
 		return context.getBeanRegistry().getBean(id);
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.Activity#getBean(java.lang.Class)
-	 */
+
+	@Override
 	public <T> T getBean(Class<T> classType) {
 		return context.getBeanRegistry().getBean(classType);
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.Activity#getBean(java.lang.String, java.lang.Class)
-	 */
+
+	@Override
 	public <T> T getBean(String id, Class<T> classType) {
 		return context.getBeanRegistry().getBean(id, classType);
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.Activity#registerAspectRule(com.aspectran.core.context.rule.AspectRule)
-	 */
+
+	@Override
 	public void registerAspectRule(AspectRule aspectRule) {
 		if(debugEnabled)
 			log.debug("register AspectRule " + aspectRule);
@@ -945,10 +893,8 @@ public class CoreActivity extends AbstractActivity implements Activity {
 			}
 		}
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.Activity#getAspectAdviceBean(java.lang.String)
-	 */
+
+	@Override
 	public <T> T getAspectAdviceBean(String aspectId) {
 		return translet.getAspectAdviceBean(aspectId);
 	}

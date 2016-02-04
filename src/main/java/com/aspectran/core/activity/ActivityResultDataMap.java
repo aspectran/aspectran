@@ -36,6 +36,7 @@ public class ActivityResultDataMap extends HashMap<String, Object> {
 		this.requestAdapter = activity.getRequestAdapter();
 	}
 
+	@Override
 	public Object get(Object key) {
 		String name = key.toString();
 		Object value = super.get(key);

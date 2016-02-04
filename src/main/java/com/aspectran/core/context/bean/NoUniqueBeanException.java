@@ -32,7 +32,8 @@ public class NoUniqueBeanException extends BeanException {
 	/**
 	 * Instantiates a new BeanNotFoundException.
 	 *
-	 * @param name the bean name
+	 * @param requiredType the required type
+	 * @param beanRules the bean rules
 	 */
 	public NoUniqueBeanException(Class<?> requiredType, BeanRule[] beanRules) {
 		super("No unique bean of type [" + requiredType + "] is defined: expected single matching bean but found " + beanRules.length + ": " + beanRules);

@@ -273,6 +273,14 @@ public interface Translet {
 	public <T> T getSessionAdaptee();
 
 	/**
+	 * Gets the application adaptee.
+	 *
+	 * @param <T> the generic type
+	 * @return the application adaptee
+	 */
+	public <T> T getApplicationAdaptee();
+
+	/**
 	 * Return an instance.
 	 *
 	 * @param <T> the generic type

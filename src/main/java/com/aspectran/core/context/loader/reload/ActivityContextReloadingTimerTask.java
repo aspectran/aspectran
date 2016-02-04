@@ -57,6 +57,7 @@ public class ActivityContextReloadingTimerTask extends TimerTask {
 			this.resources = null;
 	}
 	
+	@Override
 	public void run() {
 		if(resources == null || modified)
 			return;

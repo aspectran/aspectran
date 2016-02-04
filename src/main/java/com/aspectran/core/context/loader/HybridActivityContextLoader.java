@@ -37,7 +37,8 @@ public class HybridActivityContextLoader extends AbstractActivityContextLoader {
 	public HybridActivityContextLoader(String encoding) {
 		this.encoding = (encoding == null) ? DEFAULT_ENCODING : encoding;
 	}
-	
+
+	@Override
 	public ActivityContext load(String rootContext) throws ActivityContextBuilderException {
 		log.info("Build ActivityContext: " + rootContext);
 		long startTime = System.currentTimeMillis();
