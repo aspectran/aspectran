@@ -71,28 +71,34 @@ public class QuartzSchedulerService implements SchedulerService {
 	public QuartzSchedulerService(ActivityContext context) {
 		this.context = context;
 	}
-	
+
+	@Override
 	public int getStartDelaySeconds() {
 		return startDelaySeconds;
 	}
 
+	@Override
 	public void setStartDelaySeconds(int startDelaySeconds) {
 		this.startDelaySeconds = startDelaySeconds;
 	}
 
+	@Override
 	public boolean isWaitOnShutdown() {
 		return waitOnShutdown;
 	}
 
+	@Override
 	public void setWaitOnShutdown(boolean waitOnShutdown) {
 		this.waitOnShutdown = waitOnShutdown;
 	}
 
+	@Override
 	public void startup(int delaySeconds) throws SchedulerServiceException {
 		this.startDelaySeconds = delaySeconds;
 		startup();
 	}
-	
+
+	@Override
 	public void startup() throws SchedulerServiceException {
 		AspectRuleMap aspectRuleMap = context.getAspectRuleRegistry().getAspectRuleMap();
 		
@@ -147,12 +153,14 @@ public class QuartzSchedulerService implements SchedulerService {
 			throw new SchedulerServiceException("QuartzSchedulerService startup failed.", e);
 		}
 	}
-	
+
+	@Override
 	public void shutdown(boolean waitForJobsToComplete) throws SchedulerServiceException {
 		this.waitOnShutdown = waitForJobsToComplete;
-		shutdown(waitOnShutdown);
+		shutdown();
 	}
-	
+
+	@Override
 	public void shutdown() throws SchedulerServiceException {
 		try {
 			for(Scheduler scheduler : startedSchedulerList) {
@@ -166,13 +174,15 @@ public class QuartzSchedulerService implements SchedulerService {
 			throw new SchedulerServiceException("SchedulerService shutdown failed.", e);
 		}
 	}
-	
+
+	@Override
 	public void refresh(ActivityContext context) throws SchedulerServiceException {
 		this.context = context;
 		shutdown();
 		startup();
 	}
-	
+
+	@Override
 	public void pause(String aspectId) throws SchedulerServiceException {
 		try {
 			Scheduler scheduler = getScheduler(aspectId);
@@ -184,7 +194,8 @@ public class QuartzSchedulerService implements SchedulerService {
 			throw new SchedulerServiceException("SchedulerService pause failed.", e);
 		}
 	}
-	
+
+	@Override
 	public void resume(String aspectId) throws SchedulerServiceException {
 		try {
 			Scheduler scheduler = getScheduler(aspectId);

@@ -15,6 +15,8 @@
  */
 package com.aspectran.scheduler.service;
 
+import com.aspectran.core.context.ActivityContext;
+
 /**
  * The Interface SchedulerService.
  */
@@ -35,9 +37,11 @@ public interface SchedulerService {
 	public void shutdown() throws SchedulerServiceException;
 	
 	public void shutdown(boolean waitForJobsToComplete) throws SchedulerServiceException;
-	
+
+	public void refresh(ActivityContext context) throws SchedulerServiceException;
+
 	public void pause(String schedulerId) throws SchedulerServiceException;
-	
+
 	public void resume(String schedulerId) throws SchedulerServiceException;
-	
+
 }
