@@ -79,7 +79,7 @@ public class RequestMethodNotAllowedException extends RequestException {
 	 * @param requestMethod the request method
 	 */
 	public RequestMethodNotAllowedException(RequestMethodType requestMethod) {
-		this(requestMethod, "Request method '" + requestMethod + "' not allowed");
+		this(requestMethod, "Request method '" + requestMethod + "' not allowed.");
 	}
 	
 	/**

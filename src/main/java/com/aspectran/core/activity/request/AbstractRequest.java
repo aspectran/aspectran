@@ -37,7 +37,6 @@ public abstract class AbstractRequest {
 
 	protected Locale locale;
 
-	/** The max length exceeded. */
 	protected boolean maxLengthExceeded;
 	
 	public RequestMethodType getRequestMethod() {
