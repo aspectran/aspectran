@@ -34,7 +34,6 @@ public abstract class BeanAnnotationProcessor {
 
 		Constructor c;
 
-		
 	}
 
 	private static Constructor<?> getMatchConstructor(Class<?> clazz, Object[] args) {

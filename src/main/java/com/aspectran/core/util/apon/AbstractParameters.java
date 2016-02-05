@@ -136,7 +136,7 @@ public abstract class AbstractParameters implements Parameters {
 	public void putValue(String name, Object value) {
 		Parameter p = getParameter(name);
 		if(p == null) {
-			p = newParameterValue(name, ParameterValueType.determineParameterValueType(value));
+			p = newParameterValue(name, ParameterValueType.determineType(value));
 		}
 		p.putValue(value);
 	}

@@ -15,71 +15,42 @@
  */
 package com.aspectran.core.context.rule.type;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
- * The Class JoinpointScopeType.
+ * The enum JoinpointScopeType.
  */
-public final class JoinpointScopeType extends Type {
+public enum JoinpointScopeType {
 
-	/** @since 1.5.0 */
-	public static final JoinpointScopeType SESSION;
-	
-	public static final JoinpointScopeType TRANSLET;
-	
-	public static final JoinpointScopeType REQUEST;
-	
-	public static final JoinpointScopeType RESPONSE;
+	SESSION("session"),
+	TRANSLET("translet"),
+	REQUEST("request"),
+	RESPONSE("response"),
+	CONTENT("content"),
+	BEAN("bean");
 
-	public static final JoinpointScopeType CONTENT;
-	
-	public static final JoinpointScopeType BEAN;
-	
-	private static final Map<String, JoinpointScopeType> types;
-	
-	static {
-		SESSION = new JoinpointScopeType("session");
-		TRANSLET = new JoinpointScopeType("translet");
-		REQUEST = new JoinpointScopeType("request");
-		RESPONSE = new JoinpointScopeType("response");
-		CONTENT = new JoinpointScopeType("content");
-		BEAN = new JoinpointScopeType("bean");
+	private final String alias;
 
-		types = new HashMap<String, JoinpointScopeType>();
-		types.put(SESSION.toString(), SESSION);
-		types.put(TRANSLET.toString(), TRANSLET);
-		types.put(REQUEST.toString(), REQUEST);
-		types.put(RESPONSE.toString(), RESPONSE);
-		types.put(CONTENT.toString(), CONTENT);
-		types.put(BEAN.toString(), BEAN);
+	private JoinpointScopeType(String alias) {
+		this.alias = alias;
 	}
 
-	private JoinpointScopeType(String type) {
-		super(type);
+	@Override
+	public String toString() {
+		return this.alias;
 	}
 
 	/**
 	 * Returns a <code>JoinpointScopeType</code> with a value represented by the specified String.
-	 * 
-	 * @param type the type
-	 * 
-	 * @return the content type
-	 */
-	public static JoinpointScopeType valueOf(String type) {
-		if(type == null)
-			return null;
-		
-		return types.get(type);
-	}
-	
-	/**
-	 * Returns an array containing the constants of this type, in the order they are declared.
 	 *
-	 * @return the string[]
+	 * @param alias the specified String
+	 * @return the import type
 	 */
-	public static String[] values() {
-		return types.keySet().toArray(new String[types.size()]);
+	public static JoinpointScopeType lookup(String alias) {
+		for(JoinpointScopeType type : values()) {
+			if(type.alias.equals(alias))
+				return type;
+		}
+		return null;
 	}
 
+	
 }

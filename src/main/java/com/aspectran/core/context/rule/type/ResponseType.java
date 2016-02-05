@@ -15,69 +15,41 @@
  */
 package com.aspectran.core.context.rule.type;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
- * The Class ResponseType.
+ * The enum ResponseType.
  * 
  * <p>Created: 2008. 05. 02 AM 16:21:38</p>
  */
-public final class ResponseType extends Type {
+public enum ResponseType {
 
-	public static final ResponseType TRANSFORM;
+	TRANSFORM("transform"),
+	DISPATCH("dispatch"),
+	REDIRECT("redirect"),
+	FORWARD("forward");
 
-	public static final ResponseType DISPATCH;
-	
-	public static final ResponseType REDIRECT;
+	private final String alias;
 
-	public static final ResponseType FORWARD;
-	
-	private static final Map<String, ResponseType> types;
-	
-	static {
-		TRANSFORM = new ResponseType("transform");
-		DISPATCH = new ResponseType("dispatch");
-		REDIRECT = new ResponseType("redirect");
-		FORWARD = new ResponseType("forward");
-
-		types = new HashMap<String, ResponseType>();
-		types.put(TRANSFORM.toString(), TRANSFORM);
-		types.put(DISPATCH.toString(), DISPATCH);
-		types.put(REDIRECT.toString(), REDIRECT);
-		types.put(FORWARD.toString(), FORWARD);
+	private ResponseType(String alias) {
+		this.alias = alias;
 	}
 
-	/**
-	 * Instantiates a new ResponseType.
-	 * 
-	 * @param type the type
-	 */
-	private ResponseType(String type) {
-		super(type);
+	@Override
+	public String toString() {
+		return this.alias;
 	}
 
 	/**
 	 * Returns a <code>ResponseType</code> with a value represented by the specified String.
-	 * 
-	 * @param type the type
-	 * 
+	 *
+	 * @param alias the specified String
 	 * @return the response type
 	 */
-	public static ResponseType valueOf(String type) {
-		if(type == null)
-			return null;
-		
-		return types.get(type);
-	}
-	
-	/**
-	 * Returns an array containing the constants of this type, in the order they are declared.
-	 *
-	 * @return the string[]
-	 */
-	public static String[] values() {
-		return types.keySet().toArray(new String[types.size()]);
+	public static ResponseType lookup(String alias) {
+		for(ResponseType type : values()) {
+			if(type.alias.equals(alias))
+				return type;
+		}
+		return null;
 	}
 
 }

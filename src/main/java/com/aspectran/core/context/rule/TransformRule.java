@@ -176,10 +176,10 @@ public class TransformRule extends ActionPossessSupport implements ActionPossess
 	}
 	
 	public static TransformRule newInstance(String type, String contentType, String templateId, String characterEncoding, Boolean defaultResponse, Boolean pretty) {
-		TransformType transformType = TransformType.valueOf(type);
+		TransformType transformType = TransformType.lookup(type);
 
 		if(transformType == null && contentType != null) {
-			transformType = TransformType.valueOf(ContentType.valueOf(contentType));
+			transformType = TransformType.lookup(ContentType.lookup(contentType));
 		}
 		
 		if(transformType == null)

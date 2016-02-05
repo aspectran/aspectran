@@ -43,7 +43,7 @@ public class GenericParameters extends AbstractParameters implements Parameters 
 		Parameter p = parameterValueMap.get(name);
 		
 		if(p == null && isAddable())
-			p = newParameterValue(name, ParameterValueType.determineParameterValueType(value));
+			p = newParameterValue(name, ParameterValueType.determineType(value));
 		
 		if(p == null)
 			throw new UnknownParameterException(name, this);

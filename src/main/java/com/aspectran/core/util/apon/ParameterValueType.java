@@ -15,82 +15,49 @@
  */
 package com.aspectran.core.util.apon;
 
-import com.aspectran.core.context.rule.type.Type;
-
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * Defines the type of the parameter value.
  * 
  * <p>Created: 2008. 03. 29 PM 3:47:00</p>
  */
-public final class ParameterValueType extends Type {
+public enum ParameterValueType {
 
-	public static final ParameterValueType STRING;
+	STRING("string"),
+	TEXT("text"),
+	INT("int"),
+	LONG("long"),
+	FLOAT("float"),
+	DOUBLE("double"),
+	BOOLEAN("boolean"),
+	VARIABLE("variable"),
+	PARAMETERS("parameters");
 
-	public static final ParameterValueType TEXT;
+	private final String alias;
 
-	public static final ParameterValueType INT;
-	
-	public static final ParameterValueType LONG;
-	
-	public static final ParameterValueType FLOAT;
-	
-	public static final ParameterValueType DOUBLE;
-	
-	public static final ParameterValueType BOOLEAN;
-	
-	public static final ParameterValueType VARIABLE;
-	
-	protected static final ParameterValueType PARAMETERS;
-	
-	private static final Map<String, ParameterValueType> types;
-	
-	static {
-		STRING = new ParameterValueType("string");
-		TEXT = new ParameterValueType("text");
-		INT = new ParameterValueType("int");
-		LONG = new ParameterValueType("long");
-		FLOAT = new ParameterValueType("float");
-		DOUBLE = new ParameterValueType("double");
-		BOOLEAN = new ParameterValueType("boolean");
-		VARIABLE = new ParameterValueType("variable");
-		PARAMETERS = new ParameterValueType("parameters");
-
-		types = new HashMap<String, ParameterValueType>();
-		types.put(STRING.toString(), STRING);
-		types.put(TEXT.toString(), TEXT);
-		types.put(INT.toString(), INT);
-		types.put(LONG.toString(), LONG);
-		types.put(FLOAT.toString(), FLOAT);
-		types.put(DOUBLE.toString(), DOUBLE);
-		types.put(BOOLEAN.toString(), BOOLEAN);
-		types.put(VARIABLE.toString(), VARIABLE);
-		types.put(PARAMETERS.toString(), PARAMETERS);
+	private ParameterValueType(String alias) {
+		this.alias = alias;
 	}
 
-	/**
-	 * Instantiates a new ParameterValueType.
-	 *
-	 * @param type the type
-	 */
-	private ParameterValueType(String type) {
-		super(type);
+	@Override
+	public String toString() {
+		return this.alias;
 	}
 
 	/**
 	 * Returns a <code>ParameterValueType</code> with a value represented by the specified String.
-	 * 
-	 * @param type the type
-	 * 
-	 * @return the item type
+	 *
+	 * @param alias the specified String
+	 * @return the parameter value type
 	 */
-	public static ParameterValueType valueOf(String type) {
-		return types.get(type);
+	public static ParameterValueType lookup(String alias) {
+		for(ParameterValueType type : values()) {
+			if(type.alias.equals(alias))
+				return type;
+		}
+		return null;
 	}
 
-	public static ParameterValueType valueOfHint(String name) {
+	public static ParameterValueType lookupByHint(String name) {
 		int hintStartIndex = name.indexOf(AponFormat.ROUND_BRACKET_OPEN);
 		
 		if(hintStartIndex > 0) {
@@ -98,14 +65,14 @@ public final class ParameterValueType extends Type {
 			
 			if(hintEndIndex > hintStartIndex) {
 				String typeHint = name.substring(hintStartIndex + 1, hintEndIndex);
-				return valueOf(typeHint);
+				return lookup(typeHint);
 			}
 		}
 
 		return null;
 	}
 	
-	public static String stripValueTypeHint(String name) {
+	public static String stripHintedValueType(String name) {
 		int hintStartIndex = name.indexOf(AponFormat.ROUND_BRACKET_OPEN);
 		
 		if(hintStartIndex > 0)
@@ -114,31 +81,31 @@ public final class ParameterValueType extends Type {
 		return name;
 	}
 
-	public static ParameterValueType determineParameterValueType(Object value) {
-		ParameterValueType parameterValueType;
+	public static ParameterValueType determineType(Object value) {
+		ParameterValueType type;
 
 		if(value instanceof String) {
 			if(value.toString().indexOf(AponFormat.NEXT_LINE_CHAR) == -1)
-				parameterValueType = ParameterValueType.STRING;
+				type = ParameterValueType.STRING;
 			else
-				parameterValueType = ParameterValueType.TEXT;
+				type = ParameterValueType.TEXT;
 		} else if(value instanceof Integer) {
-			parameterValueType = ParameterValueType.INT;
+			type = ParameterValueType.INT;
 		} else if(value instanceof Long) {
-			parameterValueType = ParameterValueType.LONG;
+			type = ParameterValueType.LONG;
 		} else if(value instanceof Float) {
-			parameterValueType = ParameterValueType.FLOAT;
+			type = ParameterValueType.FLOAT;
 		} else if(value instanceof Double) {
-			parameterValueType = ParameterValueType.DOUBLE;
+			type = ParameterValueType.DOUBLE;
 		} else if(value instanceof Boolean) {
-			parameterValueType = ParameterValueType.BOOLEAN;
+			type = ParameterValueType.BOOLEAN;
 		} else if(value instanceof Parameters) {
-			parameterValueType = ParameterValueType.PARAMETERS;
+			type = ParameterValueType.PARAMETERS;
 		} else {
-			parameterValueType = ParameterValueType.STRING;
+			type = ParameterValueType.STRING;
 		}
 
-		return parameterValueType;
+		return type;
 	}
 	
 }

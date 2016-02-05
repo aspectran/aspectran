@@ -327,8 +327,8 @@ public class RootAponAssembler {
 		transletParameters.putValue(TransletParameters.scan, transletRule.getScanPath());
 		transletParameters.putValue(TransletParameters.mask, transletRule.getMaskPattern());
 		
-		if(transletRule.getRestVerb() != null)
-			transletParameters.putValue(TransletParameters.restVerb, transletRule.getRestVerb().toString());
+		if(transletRule.getRequestMethods() != null)
+			transletParameters.putValue(TransletParameters.method, transletRule.getRequestMethods().toString());
 
 		RequestRule requestRule = transletRule.getRequestRule();
 		if(requestRule != null) {

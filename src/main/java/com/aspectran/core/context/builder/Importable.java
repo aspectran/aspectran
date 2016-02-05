@@ -15,14 +15,14 @@
  */
 package com.aspectran.core.context.builder;
 
-import com.aspectran.core.context.rule.type.ImportFileType;
-import com.aspectran.core.context.rule.type.ImportType;
-import com.aspectran.core.util.StringUtils;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+
+import com.aspectran.core.context.rule.type.ImportFileType;
+import com.aspectran.core.context.rule.type.ImportType;
+import com.aspectran.core.util.StringUtils;
 
 /**
  * The Class Importable.
@@ -80,7 +80,7 @@ public abstract class Importable {
 	}
 	
 	public static Importable newInstance(ContextBuilderAssistant assistant, String file, String resource, String url, String fileType) {
-		ImportFileType importFileType = ImportFileType.valueOf(fileType);
+		ImportFileType importFileType = ImportFileType.lookup(fileType);
 		Importable importable;
 		
 		if(StringUtils.hasText(file)) {

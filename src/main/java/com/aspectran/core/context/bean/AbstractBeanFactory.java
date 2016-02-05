@@ -25,7 +25,10 @@ import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.VoidActivity;
 import com.aspectran.core.activity.process.action.BeanAction;
 import com.aspectran.core.context.ActivityContext;
+import com.aspectran.core.context.bean.ablility.DisposableBean;
 import com.aspectran.core.context.bean.ablility.FactoryBean;
+import com.aspectran.core.context.bean.ablility.InitializableBean;
+import com.aspectran.core.context.bean.ablility.InitializableTransletBean;
 import com.aspectran.core.context.bean.aware.ActivityContextAware;
 import com.aspectran.core.context.bean.aware.ApplicationAdapterAware;
 import com.aspectran.core.context.bean.aware.Aware;
@@ -111,7 +114,7 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 			}
 			
 			if(beanRule.getFactoryMethodName() != null) {
-				bean = invokeFactoryMethod(beanRule, bean);
+				bean = invokeFactoryMethod(beanRule, bean, activity);
 			}
 			
 			return bean;
@@ -168,17 +171,17 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 					MethodUtils.invokeSetter(bean, entry.getKey(), entry.getValue());
 				}
 			}
-			
-			if(beanRule.getInitMethodName() != null) {
+
+			if(beanRule.isInitializableBean() || beanRule.isInitializableTransletBean()) {
+				initializeBean(beanRule, bean, activity);
+			} else if(beanRule.getInitMethodName() != null) {
 				invokeInitMethod(beanRule, bean, activity);
 			}
 
-			if(beanRule.isFactoryBeanImplmented()) {
+			if(beanRule.isFactoryBean()) {
 				bean = invokeObjectFromFactoryBean(beanRule, bean);
-			}
-			
-			if(beanRule.getFactoryMethodName() != null) {
-				bean = invokeFactoryMethod(beanRule, bean);
+			} else if(beanRule.getFactoryMethodName() != null) {
+				bean = invokeFactoryMethod(beanRule, bean, activity);
 			}
 
 			return bean;
@@ -240,36 +243,36 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 		}
 	}
 
-	private void invokeInitMethod(BeanRule beanRule, final Object bean, Activity activity)
-			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
-		String initMethodName = beanRule.getInitMethodName();
-		
-		if(beanRule.getInitMethodRequiresTranslet() == null) {
-			try {
-				BeanAction.invokeMethod(activity, bean, initMethodName, null, null, true);
-				beanRule.setInitMethodRequiresTranslet(Boolean.TRUE);
-			} catch(NoSuchMethodException e) {
-				if(log.isDebugEnabled()) {
-					log.debug("Cannot find a method that requires a translet argument. So in the future will " +
-							"continue to call a method with no translet argument. beanRule " + beanRule);
-				}
-				
-				beanRule.setInitMethodRequiresTranslet(Boolean.FALSE);
-				BeanAction.invokeMethod(activity, bean, initMethodName, null, null, false);
+	private void initializeBean(BeanRule beanRule, final Object bean, Activity activity) {
+		try {
+			if(beanRule.isInitializableBean()) {
+				((InitializableBean)bean).initialize();
 			}
-		} else {
-			boolean requiresTranslet = beanRule.getInitMethodRequiresTranslet().booleanValue();
+			if(beanRule.isInitializableTransletBean()) {
+				((InitializableTransletBean)bean).initialize(activity.getTranslet());
+			}
+		} catch(Exception e) {
+			throw new BeanCreationException(beanRule, "An exception occurred during initialization of the bean", e);
+		}
+	}
+
+	private void invokeInitMethod(BeanRule beanRule, final Object bean, Activity activity) {
+		try {
+			String initMethodName = beanRule.getInitMethodName();
+			boolean requiresTranslet = beanRule.isInitMethodRequiresTranslet();
 			BeanAction.invokeMethod(activity, bean, initMethodName, null, null, requiresTranslet);
+		} catch(Exception e) {
+				throw new BeanCreationException(beanRule, "An exception occurred during the execution of an initialization method of the bean", e);
 		}
 	}
 	
-	private Object invokeFactoryMethod(BeanRule beanRule, final Object bean) {
-		String factoryMethodName = beanRule.getFactoryMethodName();
-
+	private Object invokeFactoryMethod(BeanRule beanRule, final Object bean, Activity activity) {
 		try {
-			return MethodUtils.invokeMethod(bean, factoryMethodName);
+			String factoryMethodName = beanRule.getFactoryMethodName();
+			boolean requiresTranslet = beanRule.isFactoryMethodRequiresTranslet();
+			return BeanAction.invokeMethod(activity, bean, factoryMethodName, null, null, requiresTranslet);
 		} catch(Exception e) {
-			throw new BeanCreationException(beanRule, "An exception occurred during the execution of a factory method in the bean object.", e);
+			throw new BeanCreationException(beanRule, "An exception occurred during the execution of a factory method of the bean", e);
 		}
 	}
 	
@@ -337,16 +340,22 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 
 			if(scopeType == ScopeType.SINGLETON) {
 				if(beanRule.isRegistered()) {
-					String destroyMethodName = beanRule.getDestroyMethodName();
-					
-					if(destroyMethodName != null) {
+					if(beanRule.isDisposableBean()) {
 						try {
+							Object bean = beanRule.getBean();
+							((DisposableBean)bean).destroy();
+						} catch(Exception e) {
+							throw new BeanDestroyFailedException(beanRule);
+						}
+					} else if(beanRule.getDestroyMethodName() != null) {
+						try {
+							String destroyMethodName = beanRule.getDestroyMethodName();
 							MethodUtils.invokeExactMethod(beanRule.getBean(), destroyMethodName, null);
 						} catch(Exception e) {
 							throw new BeanDestroyFailedException(beanRule);
 						}
 					}
-					
+
 					beanRule.setBean(null);
 					beanRule.setRegistered(false);
 				}

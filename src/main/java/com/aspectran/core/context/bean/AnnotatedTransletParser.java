@@ -21,7 +21,7 @@ import com.aspectran.core.context.bean.annotation.Dispatch;
 import com.aspectran.core.context.bean.annotation.Forward;
 import com.aspectran.core.context.bean.annotation.Redirect;
 import com.aspectran.core.context.bean.annotation.Transform;
-import com.aspectran.core.context.bean.annotation.Translet;
+import com.aspectran.core.context.bean.annotation.Request;
 import com.aspectran.core.context.bean.annotation.Translets;
 import com.aspectran.core.context.rule.BeanActionRule;
 import com.aspectran.core.context.rule.BeanRule;
@@ -32,6 +32,7 @@ import com.aspectran.core.context.rule.ResponseRule;
 import com.aspectran.core.context.rule.TransformRule;
 import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.TransletRuleMap;
+import com.aspectran.core.context.rule.type.RequestMethodType;
 import com.aspectran.core.util.StringUtils;
 
 /**
@@ -45,18 +46,18 @@ public abstract class AnnotatedTransletParser {
 			return;
 
 		Translets transletsAnno = targetClass.getAnnotation(Translets.class);
-		String transletNamePrefix = StringUtils.emptyToNull(transletsAnno.name());
+		String namespace = StringUtils.emptyToNull(transletsAnno.namespace());
 		
 		for(Method method : targetClass.getMethods()) {
-			if(method.isAnnotationPresent(Translet.class)) {
-				Translet transletAnno = method.getAnnotation(Translet.class);
-				String transletName = StringUtils.emptyToNull(transletAnno.name());
-				String restVerb = StringUtils.emptyToNull(transletAnno.restVerb());
+			if(method.isAnnotationPresent(Request.class)) {
+				Request requestAnno = method.getAnnotation(Request.class);
+				String transletName = StringUtils.emptyToNull(requestAnno.translet());
+				RequestMethodType[] requestMethods = requestAnno.method();
 				
-				if(transletNamePrefix != null && transletName != null)
-					transletName = transletNamePrefix + transletName;
+				if(namespace != null && transletName != null)
+					transletName = namespace + transletName;
 				
-				TransletRule transletRule = TransletRule.newInstance(transletName, restVerb);
+				TransletRule transletRule = TransletRule.newInstance(transletName, requestMethods);
 				
 				if(method.isAnnotationPresent(Dispatch.class)) {
 					Dispatch dispatchAnno = method.getAnnotation(Dispatch.class);

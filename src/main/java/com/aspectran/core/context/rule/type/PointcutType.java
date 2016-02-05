@@ -15,61 +15,39 @@
  */
 package com.aspectran.core.context.rule.type;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * The Class PointcutType.
  */
-public final class PointcutType extends Type {
+public enum PointcutType {
 
-	public static final PointcutType WILDCARD;
+	WILDCARD("wildcard"),
+	REGEXP("regexp"),
+	SIMPLE_TRIGGER("simpleTrigger"),
+	CRON_TRIGGER("cronTrigger");
 
-	public static final PointcutType REGEXP;
-	
-	public static final PointcutType SIMPLE_TRIGGER; // for scheduler
+	private final String alias;
 
-	public static final PointcutType CRON_TRIGGER; // for scheduler
-	
-	private static final Map<String, PointcutType> types;
-	
-	static {
-		WILDCARD = new PointcutType("wildcard");
-		REGEXP = new PointcutType("regexp");
-		SIMPLE_TRIGGER = new PointcutType("simpleTrigger");
-		CRON_TRIGGER = new PointcutType("cronTrigger");
-
-		types = new HashMap<String, PointcutType>();
-		types.put(WILDCARD.toString(), WILDCARD);
-		types.put(REGEXP.toString(), REGEXP);
-		types.put(SIMPLE_TRIGGER.toString(), SIMPLE_TRIGGER);
-		types.put(CRON_TRIGGER.toString(), CRON_TRIGGER);
+	private PointcutType(String alias) {
+		this.alias = alias;
 	}
 
-	private PointcutType(String type) {
-		super(type);
+	@Override
+	public String toString() {
+		return this.alias;
 	}
 
 	/**
 	 * Returns a <code>PointcutType</code> with a value represented by the specified String.
-	 * 
-	 * @param type the type
-	 * 
-	 * @return the content type
-	 */
-	public static PointcutType valueOf(String type) {
-		if(type == null)
-			return null;
-		
-		return types.get(type);
-	}
-	/**
-	 * Returns an array containing the constants of this type, in the order they are declared.
 	 *
-	 * @return the string[]
+	 * @param alias the specified String
+	 * @return the pointcut type
 	 */
-	public static String[] values() {
-		return types.keySet().toArray(new String[types.size()]);
+	public static PointcutType lookup(String alias) {
+		for(PointcutType type : values()) {
+			if(type.alias.equals(alias))
+				return type;
+		}
+		return null;
 	}
 
 }

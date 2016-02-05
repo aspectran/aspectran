@@ -65,7 +65,7 @@ public class CoreTranslet implements Translet {
 
 	@Override
 	public RequestMethodType getRestVerb() {
-		return activity.getRestVerb();
+		return activity.getRequestMethod();
 	}
 
 	@Override

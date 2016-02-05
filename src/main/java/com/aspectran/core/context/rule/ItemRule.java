@@ -451,8 +451,8 @@ public class ItemRule {
 	public static ItemRule newInstance(String type, String name, String value, String valueType, String defaultValue, Boolean tokenize) {
 		ItemRule itemRule = new ItemRule();
 		
-		ItemType itemType = ItemType.valueOf(type);
-		
+		ItemType itemType = ItemType.lookup(type);
+
 		if(type != null && itemType == null)
 			throw new IllegalArgumentException("No item type registered for '" + type + "'.");
 		
@@ -470,7 +470,7 @@ public class ItemRule {
 		if(value != null)
 			itemRule.setValue(value);
 		
-		ItemValueType itemValueType = ItemValueType.valueOf(valueType);
+		ItemValueType itemValueType = ItemValueType.lookup(valueType);
 		
 		if(valueType != null && itemValueType == null)
 			throw new IllegalArgumentException("No item value type registered for '" + valueType + "'.");

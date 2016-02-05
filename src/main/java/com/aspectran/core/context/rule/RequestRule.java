@@ -163,14 +163,13 @@ public class RequestRule {
 		RequestMethodType requestMethodType = null;
 		
 		if(requestMethod != null) {
-			requestMethodType = RequestMethodType.valueOf(requestMethod);
-			
+			requestMethodType = RequestMethodType.lookup(requestMethod);
 			if(requestMethodType == null)
 				throw new IllegalArgumentException("No request method type registered for '" + requestMethod + "'.");
 		}
 		
 		if(characterEncoding != null && !Charset.isSupported(characterEncoding))
-			throw new IllegalCharsetNameException("Given charset name is illegal. '" + characterEncoding + "'");
+			throw new IllegalCharsetNameException("Given charset name is illegal. '" + characterEncoding + "'.");
 		
 		RequestRule requestRule = new RequestRule();
 		requestRule.setRequestMethod(requestMethodType);

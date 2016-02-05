@@ -22,8 +22,6 @@ package com.aspectran.core.context.bean.ablility;
  */
 public interface DisposableBean {
 
-	public static final String DESTROY_METHOD_NAME = "destroy";
-
 	/**
 	 * A Dispose implementation that calls the destroy() method.
 	 *

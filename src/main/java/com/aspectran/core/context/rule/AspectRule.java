@@ -202,8 +202,7 @@ public class AspectRule {
 		AspectTargetType aspectTargetType = null;
 		
 		if(useFor != null) {
-			aspectTargetType = AspectTargetType.valueOf(useFor);
-			
+			aspectTargetType = AspectTargetType.lookup(useFor);
 			if(aspectTargetType == null)
 				throw new IllegalArgumentException("No aspect target type registered for '" + useFor + "'.");
 		} else {
@@ -221,8 +220,7 @@ public class AspectRule {
 		JoinpointScopeType joinpointScope = null;
 		
 		if(scope != null) {
-			joinpointScope = JoinpointScopeType.valueOf(scope);
-			
+			joinpointScope = JoinpointScopeType.lookup(scope);
 			if(joinpointScope == null)
 				throw new IllegalArgumentException("No joinpoint scope type registered for '" + scope + "'.");
 		} else {

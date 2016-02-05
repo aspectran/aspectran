@@ -15,74 +15,43 @@
  */
 package com.aspectran.core.context.rule.type;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
- * The Class ItemType.
+ * The enum ItemType.
  * 
  * <p>Created: 2008. 03. 29 PM 3:47:00</p>
  */
-public final class ItemType extends Type {
-	
-	public static final ItemType SINGULAR;
+public enum ItemType {
 
-	public static final ItemType ARRAY;
-	
-	public static final ItemType LIST;
-	
-	public static final ItemType MAP;
+	SINGULAR("singular"),
+	ARRAY("array"),
+	LIST("list"),
+	MAP("map"),
+	SET("set"),
+	PROPERTIES("properties");
 
-	public static final ItemType SET;
-	
-	public static final ItemType PROPERTIES;
-	
-	private static final Map<String, ItemType> types;
-	
-	static {
-		SINGULAR = new ItemType("singular");
-		ARRAY = new ItemType("array");
-		LIST = new ItemType("list");
-		MAP = new ItemType("map");
-		SET = new ItemType("set");
-		PROPERTIES = new ItemType("properties");
+	private final String alias;
 
-		types = new HashMap<String, ItemType>();
-		types.put(SINGULAR.toString(), SINGULAR);
-		types.put(ARRAY.toString(), ARRAY);
-		types.put(LIST.toString(), LIST);
-		types.put(MAP.toString(), MAP);
-		types.put(SET.toString(), SET);
-		types.put(PROPERTIES.toString(), PROPERTIES);
+	private ItemType(String alias) {
+		this.alias = alias;
 	}
 
-	/**
-	 * Instantiates a new ItemType.
-	 * 
-	 * @param type the type
-	 */
-	private ItemType(String type) {
-		super(type);
+	@Override
+	public String toString() {
+		return this.alias;
 	}
 
 	/**
 	 * Returns a <code>ItemType</code> with a value represented by the specified String.
-	 * 
-	 * @param type the type
-	 * 
-	 * @return the item type
-	 */
-	public static ItemType valueOf(String type) {
-		return types.get(type);
-	}
-	
-	/**
-	 * Returns an array containing the constants of this type, in the order they are declared.
 	 *
-	 * @return the string[]
+	 * @param alias the specified String
+	 * @return the import type
 	 */
-	public static String[] values() {
-		return types.keySet().toArray(new String[types.size()]);
+	public static ItemType lookup(String alias) {
+		for(ItemType type : values()) {
+			if(type.alias.equals(alias))
+				return type;
+		}
+		return null;
 	}
 
 }

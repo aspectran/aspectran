@@ -15,6 +15,10 @@
  */
 package com.aspectran.core.context.builder.apon;
 
+import java.io.IOException;
+import java.util.Iterator;
+import java.util.List;
+
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.activity.process.ContentList;
 import com.aspectran.core.context.builder.ContextBuilderAssistant;
@@ -74,10 +78,6 @@ import com.aspectran.core.context.rule.type.DefaultSettingType;
 import com.aspectran.core.context.rule.type.TokenType;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.apon.Parameters;
-
-import java.io.IOException;
-import java.util.Iterator;
-import java.util.List;
 
 /**
  * The Class RootAponDisassembler.
@@ -162,12 +162,10 @@ public class RootAponDisassembler {
 			String name = iter.next();
 			
 			DefaultSettingType settingType = null;
-			
 			if(name != null) {
-				settingType = DefaultSettingType.valueOf(name);
-				
+				settingType = DefaultSettingType.lookup(name);
 				if(settingType == null)
-					throw new IllegalArgumentException("Unknown default setting name '" + name + "'");
+					throw new IllegalArgumentException("Unknown default setting name '" + name + "'.");
 			}
 			
 			assistant.putSetting(settingType, defaultSettingsParameters.getString(name));
@@ -352,7 +350,7 @@ public class RootAponDisassembler {
 		String name = transletParameters.getString(TransletParameters.name);
 		String mask = transletParameters.getString(TransletParameters.mask);
 		String path = transletParameters.getString(TransletParameters.scan);
-		String restVerb = transletParameters.getString(TransletParameters.restVerb);
+		String restVerb = transletParameters.getString(TransletParameters.method);
 		
 		if(name == null)
 			throw new IllegalArgumentException("Parameter name must not be null.");

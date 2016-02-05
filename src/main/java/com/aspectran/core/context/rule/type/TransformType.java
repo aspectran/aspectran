@@ -15,78 +15,51 @@
  */
 package com.aspectran.core.context.rule.type;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
- * The Class TransformType.
+ * The enum TransformType.
  * 
  * <p>Created: 2008. 04. 25 AM 16:47:38</p>
  */
-public final class TransformType extends Type {
+public enum TransformType {
 
-	/** The "transform/xml" transform type. */
-	public static final TransformType XML_TRANSFORM;
+	XML_TRANSFORM("transform/xml"),
+	XSL_TRANSFORM("transform/xsl"),
+	TEXT_TRANSFORM("transform/text"),
+	JSON_TRANSFORM("transform/json"),
+	APON_TRANSFORM("transform/apon");
 
-	/** The "transform/xsl" transform type. */
-	public static final TransformType XSL_TRANSFORM;
+	private final String alias;
 
-	/** The "transform/text" transform type. */
-	public static final TransformType TEXT_TRANSFORM;
-	
-	/** The "transform/json" transform type. */
-	public static final TransformType JSON_TRANSFORM;
-
-	/** The "transform/apon" transform type. */
-	public static final TransformType APON_TRANSFORM;
-	
-	private static final Map<String, TransformType> types;
-	
-	static {
-		XML_TRANSFORM = new TransformType("transform/xml");
-		XSL_TRANSFORM = new TransformType("transform/xsl");
-		TEXT_TRANSFORM = new TransformType("transform/text");
-		JSON_TRANSFORM = new TransformType("transform/json");
-		APON_TRANSFORM = new TransformType("transform/apon");
-
-		types = new HashMap<String, TransformType>();
-		types.put(XML_TRANSFORM.toString(), XML_TRANSFORM);
-		types.put(XSL_TRANSFORM.toString(), XSL_TRANSFORM);
-		types.put(TEXT_TRANSFORM.toString(), TEXT_TRANSFORM);
-		types.put(JSON_TRANSFORM.toString(), JSON_TRANSFORM);
-		types.put(APON_TRANSFORM.toString(), APON_TRANSFORM);
+	private TransformType(String alias) {
+		this.alias = alias;
 	}
 
-	/**
-	 * Instantiates a new TransformType.
-	 * 
-	 * @param type the type
-	 */
-	private TransformType(String type) {
-		super(type);
+	@Override
+	public String toString() {
+		return this.alias;
 	}
 
 	/**
 	 * Returns a <code>TransformType</code> with a value represented by the specified String.
-	 * 
-	 * @param type the type
-	 * 
+	 *
+	 * @param alias the specified String
 	 * @return the transform type
 	 */
-	public static TransformType valueOf(String type) {
-		if(type == null)
-			return null;
-		
-		return types.get(type);
+	public static TransformType lookup(String alias) {
+		for(TransformType type : TransformType.class.getEnumConstants()) {
+			if(type.alias.equals(alias))
+				return type;
+		}
+		return null;
 	}
-	
+
 	/**
 	 * Returns a <code>TransformType</code> with a value corresponding to the specified ContentType.
 	 *
 	 * @param contentType the content type
 	 * @return the transform type
 	 */
-	public static TransformType valueOf(ContentType contentType) {
+	public static TransformType lookup(ContentType contentType) {
 		if(contentType == ContentType.TEXT_PLAIN)
 			return TEXT_TRANSFORM;
 		else if(contentType == ContentType.TEXT_XML)
@@ -97,15 +70,6 @@ public final class TransformType extends Type {
 			return APON_TRANSFORM;
 		
 		return null;
-	}
-
-	/**
-	 * Returns an array containing the constants of this type, in the order they are declared.
-	 *
-	 * @return the string[]
-	 */
-	public static String[] values() {
-		return types.keySet().toArray(new String[types.size()]);
 	}
 
 }

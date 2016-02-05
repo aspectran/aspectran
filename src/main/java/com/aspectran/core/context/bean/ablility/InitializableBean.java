@@ -22,8 +22,6 @@ package com.aspectran.core.context.bean.ablility;
  */
 public interface InitializableBean {
 
-	public static final String INITIALIZE_METHOD_NAME = "initialize";
-	
 	/**
 	 * Invoke on initialization after it has set all bean properties supplied.
 	 *

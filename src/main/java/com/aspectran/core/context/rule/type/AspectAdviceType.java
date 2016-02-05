@@ -15,9 +15,6 @@
  */
 package com.aspectran.core.context.rule.type;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * Types of advice include "around," "before" and "after" advice.
  * <pre>
@@ -30,64 +27,38 @@ import java.util.Map;
  * 
  * @author Juho Jeong
  */
-public final class AspectAdviceType extends Type {
+public enum AspectAdviceType {
 
-	public static final AspectAdviceType SETTINGS;
+	SETTINGS("settings"),
+	BEFORE("before"),
+	AFTER("after"),
+	AROUND("around"),
+	FINALLY("finally"),
+	JOB("job");
 
-	public static final AspectAdviceType BEFORE;
-	
-	public static final AspectAdviceType AFTER;
-	
-	public static final AspectAdviceType AROUND;
-	
-	public static final AspectAdviceType FINALLY;
-	
-	public static final AspectAdviceType JOB;
-	
-	private static final Map<String, AspectAdviceType> types;
-	
-	static {
-		SETTINGS = new AspectAdviceType("settings");
-		BEFORE = new AspectAdviceType("before");
-		AFTER = new AspectAdviceType("after");
-		AROUND = new AspectAdviceType("around");
-		FINALLY = new AspectAdviceType("finally");
-		JOB = new AspectAdviceType("job");
+	private final String alias;
 
-		types = new HashMap<String, AspectAdviceType>();
-		types.put(SETTINGS.toString(), SETTINGS);
-		types.put(BEFORE.toString(), BEFORE);
-		types.put(AFTER.toString(), AFTER);
-		types.put(AROUND.toString(), AROUND);
-		types.put(FINALLY.toString(), FINALLY);
-		types.put(JOB.toString(), JOB);
+	private AspectAdviceType(String alias) {
+		this.alias = alias;
 	}
 
-	private AspectAdviceType(String type) {
-		super(type);
+	@Override
+	public String toString() {
+		return this.alias;
 	}
 
 	/**
-	 * Returns a <code>AdviceType</code> with a value represented by the specified String.
-	 * 
-	 * @param type the type
-	 * 
-	 * @return the content type
-	 */
-	public static AspectAdviceType valueOf(String type) {
-		if(type == null)
-			return null;
-		
-		return types.get(type);
-	}
-	
-	/**
-	 * Returns an array containing the constants of this type, in the order they are declared.
+	 * Returns a <code>AspectAdviceType</code> with a value represented by the specified String.
 	 *
-	 * @return the string[]
+	 * @param alias the specified String
+	 * @return the aspect advice type
 	 */
-	public static String[] values() {
-		return types.keySet().toArray(new String[types.size()]);
+	public static AspectAdviceType lookup(String alias) {
+		for(AspectAdviceType type : values()) {
+			if(type.alias.equals(alias))
+				return type;
+		}
+		return null;
 	}
-	
+
 }

@@ -115,8 +115,8 @@ public class CoreActivity extends AbstractActivity implements Activity {
 	}
 
 	@Override
-	public void ready(String transletName, String restVerb) {
-		this.requestMethod = RequestMethodType.valueOf(restVerb);
+	public void ready(String transletName, String requestMethod) {
+		this.requestMethod = RequestMethodType.lookup(requestMethod);
 		ready(transletName, (ProcessResult)null);
 	}
 
@@ -130,10 +130,9 @@ public class CoreActivity extends AbstractActivity implements Activity {
 		TransletRule transletRule = context.getTransletRuleRegistry().getTransletRule(transletName);
 		
 		// for RESTful
-		if(transletRule == null) {
+		if(requestMethod != null && transletRule == null) {
 			ParameterMap pathVariableMap = new ParameterMap(); 
 			transletRule = context.getTransletRuleRegistry().getTransletRule(transletName, requestMethod, pathVariableMap);
-			
 			if(transletRule != null)
 				this.pathVariableMap = pathVariableMap;
 		}
@@ -766,8 +765,8 @@ public class CoreActivity extends AbstractActivity implements Activity {
 	}
 
 	@Override
-	public RequestMethodType getRestVerb() {
-		return transletRule.getRestVerb();
+	public RequestMethodType getRequestMethod() {
+		return requestMethod;
 	}
 
 	/**

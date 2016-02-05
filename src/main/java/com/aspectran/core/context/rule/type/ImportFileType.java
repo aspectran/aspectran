@@ -15,61 +15,39 @@
  */
 package com.aspectran.core.context.rule.type;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * Resource Import File Type
  * 
  * <p>Created: 2015. 02. 22 AM 4:52:38</p>
  */
-public final class ImportFileType extends Type {
+public enum ImportFileType {
 
-	public static final ImportFileType XML;
+	XML("xml"),
+	APON("apon");
 
-	public static final ImportFileType APON;
+	private final String alias;
 
-	private static final Map<String, ImportFileType> types;
-	
-	static {
-		XML = new ImportFileType("xml");
-		APON = new ImportFileType("apon");
+	private ImportFileType(String alias) {
+		this.alias = alias;
+	}
 
-		types = new HashMap<String, ImportFileType>();
-		types.put(XML.toString(), XML);
-		types.put(APON.toString(), APON);
+	@Override
+	public String toString() {
+		return this.alias;
 	}
 
 	/**
-	 * Instantiates a resource import type.
-	 * 
-	 * @param type the type
-	 */
-	private ImportFileType(String type) {
-		super(type);
-	}
-
-	/**
-	 * Returns a <code>ResourceImportType</code> with a value represented by the specified String.
-	 * 
-	 * @param type the type
-	 * 
-	 * @return the transform type
-	 */
-	public static ImportFileType valueOf(String type) {
-		if(type == null)
-			return null;
-		
-		return types.get(type);
-	}
-	
-	/**
-	 * Returns an array containing the constants of this type, in the order they are declared.
+	 * Returns a <code>ImportFileType</code> with a value represented by the specified String.
 	 *
-	 * @return the string[]
+	 * @param alias the specified String
+	 * @return the import file type
 	 */
-	public static String[] values() {
-		return types.keySet().toArray(new String[types.size()]);
+	public static ImportFileType lookup(String alias) {
+		for(ImportFileType type : values()) {
+			if(type.alias.equals(alias))
+				return type;
+		}
+		return null;
 	}
-	
+
 }

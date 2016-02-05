@@ -21,13 +21,15 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import com.aspectran.core.context.rule.type.RequestMethodType;
+
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface Translet {
+public @interface Request {
 
-	String name() default "";
+	String translet() default "";
 
-	String restVerb() default "";
-	
+	RequestMethodType[] method() default {};
+
 }

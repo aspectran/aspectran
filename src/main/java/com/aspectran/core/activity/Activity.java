@@ -103,7 +103,7 @@ public interface Activity {
 	
 	public String getTransletName();
 
-	public RequestMethodType getRestVerb();
+	public RequestMethodType getRequestMethod();
 	
 	public ApplicationAdapter getApplicationAdapter();
 

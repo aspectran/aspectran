@@ -81,7 +81,7 @@ public abstract class AbstractActivityContextBuilder extends ContextBuilderAssis
 		initAspectRuleRegistry(aspectRuleRegistry, beanRuleRegistry, transletRuleRegistry);
 		context.setAspectRuleRegistry(aspectRuleRegistry);
 
-		BeanProxifierType beanProxifierType = BeanProxifierType.valueOf((String)getSetting(DefaultSettingType.BEAN_PROXIFIER));
+		BeanProxifierType beanProxifierType = BeanProxifierType.lookup((String)getSetting(DefaultSettingType.BEAN_PROXIFIER));
 		BeanRegistry beanRegistry = new ContextBeanRegistry(beanRuleRegistry, beanProxifierType);
 		context.setBeanRegistry(beanRegistry);
 		

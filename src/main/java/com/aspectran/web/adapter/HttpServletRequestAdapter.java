@@ -43,7 +43,7 @@ public class HttpServletRequestAdapter extends AbstractRequestAdapter implements
 	public HttpServletRequestAdapter(HttpServletRequest request) {
 		super(request);
 		
-		setRequestMethod(RequestMethodType.valueOf(request.getMethod()));
+		setRequestMethod(RequestMethodType.lookup(request.getMethod()));
 	}
 
 	@Override

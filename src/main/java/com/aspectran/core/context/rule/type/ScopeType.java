@@ -15,70 +15,42 @@
  */
 package com.aspectran.core.context.rule.type;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
- * The Class ScopeType.
+ * The enum ScopeType.
  * 
  * <p>Created: 2008. 12. 22 PM 2:48:00</p>
  */
-public final class ScopeType extends Type {
-	
-	public static final ScopeType SINGLETON;
-	
-	public static final ScopeType PROTOTYPE;
-	
-	public static final ScopeType REQUEST;
-	
-	public static final ScopeType SESSION;
+public enum ScopeType {
 
-	public static final ScopeType APPLICATION;
-	
-	private static final Map<String, ScopeType> types;
-	
-	static {
-		SINGLETON = new ScopeType("singleton");
-		PROTOTYPE = new ScopeType("prototype");
-		REQUEST = new ScopeType("request");
-		SESSION = new ScopeType("session");
-		APPLICATION = new ScopeType("application");
+	SINGLETON("singleton"),
+	PROTOTYPE("prototype"),
+	REQUEST("request"),
+	SESSION("session"),
+	APPLICATION("application");
 
-		types = new HashMap<String, ScopeType>();
-		types.put(SINGLETON.toString(), SINGLETON);
-		types.put(PROTOTYPE.toString(), PROTOTYPE);
-		types.put(REQUEST.toString(), REQUEST);
-		types.put(SESSION.toString(), SESSION);
-		types.put(APPLICATION.toString(), APPLICATION);
+	private final String alias;
+
+	private ScopeType(String alias) {
+		this.alias = alias;
 	}
 
-	/**
-	 * Instantiates a new ScopeType.
-	 * 
-	 * @param type the type
-	 */
-	private ScopeType(String type) {
-		super(type);
+	@Override
+	public String toString() {
+		return this.alias;
 	}
 
 	/**
 	 * Returns a <code>ScopeType</code> with a value represented by the specified String.
-	 * 
-	 * @param type the type
-	 * 
+	 *
+	 * @param alias the specified String
 	 * @return the scope type
 	 */
-	public static ScopeType valueOf(String type) {
-		return types.get(type);
-	}
-	
-	/**
-	 * Returns an array containing the constants of this type, in the order they are declared.
-	 *
-	 * @return the string[]
-	 */
-	public static String[] values() {
-		return types.keySet().toArray(new String[types.size()]);
+	public static ScopeType lookup(String alias) {
+		for(ScopeType type : values()) {
+			if(type.alias.equals(alias))
+				return type;
+		}
+		return null;
 	}
 
 }

@@ -15,65 +15,40 @@
  */
 package com.aspectran.core.context.rule.type;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
- * The Class ImportType.
+ * The enum ImportType.
  * 
  * <p>Created: 2008. 04. 25 AM 16:47:38</p>
  */
-public final class ImportType extends Type {
+public enum ImportType {
 
-	public static final ImportType RESOURCE;
+	FILE("file"),
+	RESOURCE("resource"),
+	URL("url");
 
-	public static final ImportType FILE;
+	private final String alias;
 
-	public static final ImportType URL;
-	
-	private static final Map<String, ImportType> types;
-	
-	static {
-		RESOURCE = new ImportType("resource");
-		FILE = new ImportType("file");
-		URL = new ImportType("url");
+	private ImportType(String alias) {
+		this.alias = alias;
+	}
 
-		types = new HashMap<String, ImportType>();
-		types.put(RESOURCE.toString(), RESOURCE);
-		types.put(FILE.toString(), FILE);
-		types.put(URL.toString(), URL);
+	@Override
+	public String toString() {
+		return this.alias;
 	}
 
 	/**
-	 * Instantiates a resource import type.
-	 * 
-	 * @param type the type
-	 */
-	private ImportType(String type) {
-		super(type);
-	}
-
-	/**
-	 * Returns a <code>ResourceImportType</code> with a value represented by the specified String.
-	 * 
-	 * @param type the type
-	 * 
-	 * @return the transform type
-	 */
-	public static ImportType valueOf(String type) {
-		if(type == null)
-			return null;
-		
-		return types.get(type);
-	}
-	
-	/**
-	 * Returns an array containing the constants of this type, in the order they are declared.
+	 * Returns a <code>ImportType</code> with a value represented by the specified String.
 	 *
-	 * @return the string[]
+	 * @param alias the specified String
+	 * @return the import type
 	 */
-	public static String[] values() {
-		return types.keySet().toArray(new String[types.size()]);
+	public static ImportType lookup(String alias) {
+		for(ImportType type : values()) {
+			if(type.alias.equals(alias))
+				return type;
+		}
+		return null;
 	}
-	
+
 }

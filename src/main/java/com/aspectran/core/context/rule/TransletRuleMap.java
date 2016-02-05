@@ -35,15 +35,7 @@ public class TransletRuleMap extends LinkedHashMap<String, TransletRule> impleme
 	 * @return the translet rule
 	 */
 	public TransletRule putTransletRule(TransletRule transletRule) {
-		String key;
-		
-		if(transletRule.getRestVerb() != null) {
-			key = TransletRule.makeRestfulTransletName(transletRule.getName(), transletRule.getRestVerb());
-		} else {
-			key = transletRule.getName();
-		}
-		
-		return super.put(key, transletRule);
+		return put(transletRule.getName(), transletRule);
 	}
 
 	@Override

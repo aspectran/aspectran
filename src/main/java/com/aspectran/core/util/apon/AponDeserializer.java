@@ -145,9 +145,9 @@ public class AponDeserializer extends AponFormat implements Closeable {
 					if(!addable)
 						throw new InvalidParameterException(lineNumber, line, trim, "Only acceptable pre-defined parameters. Undefined parameter name: " + name);
 
-					parameterValueType = ParameterValueType.valueOfHint(name);
+					parameterValueType = ParameterValueType.lookupByHint(name);
 					if(parameterValueType != null) {
-						name = ParameterValueType.stripValueTypeHint(name);
+						name = ParameterValueType.stripHintedValueType(name);
 						parameterValue = parameterValueMap.get(name);
 						if(parameterValue != null)
 							parameterValueType = parameterValue.getParameterValueType();

@@ -122,14 +122,12 @@ public class BeanNodeletAdder implements NodeletAdder {
 		parser.addNodelet(xpath, "/bean/features/scope", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
 				if(StringUtils.hasText(text)) {
-					ScopeType scopeType = ScopeType.valueOf(text.trim());
-					
+					ScopeType scopeType = ScopeType.lookup(text.trim());
 					if(scopeType == null)
 						throw new IllegalArgumentException("No scope-type registered for scope '" + text + "'.");
 					
 					BeanRule beanRule = assistant.peekObject();
 					beanRule.setScopeType(scopeType);
-					
 					if(scopeType == ScopeType.SINGLETON)
 						beanRule.setSingleton(Boolean.TRUE);
 				}

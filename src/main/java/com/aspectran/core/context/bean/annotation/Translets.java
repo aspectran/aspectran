@@ -26,6 +26,6 @@ import java.lang.annotation.Target;
 @Documented
 public @interface Translets {
 
-	String name() default "";
+	String namespace() default "";
 
 }

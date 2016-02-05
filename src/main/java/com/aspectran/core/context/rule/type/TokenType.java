@@ -15,66 +15,41 @@
  */
 package com.aspectran.core.context.rule.type;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
- * The Class TokenType.
+ * The enum TokenType.
  * 
  * <p>Created: 2008. 03. 29 AM 1:21:48</p>
  */
-public final class TokenType extends Type {
-	
-	public static final TokenType TEXT;
-	
-	public static final TokenType PARAMETER;
+public enum TokenType {
 
-	public static final TokenType ATTRIBUTE;
+	TEXT("text"),
+	PARAMETER("parameter"),
+	ATTRIBUTE("attribute"),
+	REFERENCE_BEAN("reference-bean");
 
-	public static final TokenType REFERENCE_BEAN;
-	
-	private static final Map<String, TokenType> types;
-	
-	static {
-		TEXT = new TokenType("text");
-		PARAMETER = new TokenType("parameter");
-		ATTRIBUTE = new TokenType("attribute");
-		REFERENCE_BEAN = new TokenType("reference-bean");
+	private final String alias;
 
-		types = new HashMap<String, TokenType>();
-		types.put(TEXT.toString(), TEXT);
-		types.put(PARAMETER.toString(), PARAMETER);
-		types.put(ATTRIBUTE.toString(), ATTRIBUTE);
-		types.put(REFERENCE_BEAN.toString(), REFERENCE_BEAN);
+	private TokenType(String alias) {
+		this.alias = alias;
 	}
 
-	/**
-	 * Instantiates a new TokenType.
-	 * 
-	 * @param type the type
-	 */
-	private TokenType(String type) {
-		super(type);
+	@Override
+	public String toString() {
+		return this.alias;
 	}
 
 	/**
 	 * Returns a <code>TokenType</code> with a value represented by the specified String.
-	 * 
-	 * @param type the type
-	 * 
+	 *
+	 * @param alias the specified String
 	 * @return the token type
 	 */
-	public static TokenType valueOf(String type) {
-		return types.get(type);
-	}
-	
-	/**
-	 * Returns an array containing the constants of this type, in the order they are declared.
-	 *
-	 * @return the string[]
-	 */
-	public static String[] values() {
-		return types.keySet().toArray(new String[types.size()]);
+	public static TokenType lookup(String alias) {
+		for(TokenType type : values()) {
+			if(type.alias.equals(alias))
+				return type;
+		}
+		return null;
 	}
 
 }

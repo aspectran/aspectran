@@ -43,7 +43,7 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 
 	private String name;
 
-	private RequestMethodType restVerb;
+	private RequestMethodType[] requestMethods;
 	
 	private WildcardPattern namePattern;
 	
@@ -103,21 +103,21 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 	}
 
 	/**
-	 * Gets the restful verb.
+	 * Gets the request method.
 	 *
-	 * @return the restful verb
+	 * @return the request method
 	 */
-	public RequestMethodType getRestVerb() {
-		return restVerb;
+	public RequestMethodType[] getRequestMethods() {
+		return requestMethods;
 	}
 
 	/**
-	 * Sets the rest verb.
+	 * Sets the request method.
 	 *
-	 * @param restVerb the new rest verb
+	 * @param requestMethods the request method
 	 */
-	public void setRestVerb(RequestMethodType restVerb) {
-		this.restVerb = restVerb;
+	public void setRequestMethods(RequestMethodType[] requestMethods) {
+		this.requestMethods = requestMethods;
 	}
 
 	/**
@@ -430,7 +430,7 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 
 	public AspectAdviceRuleRegistry getAspectAdviceRuleRegistry(boolean clone) throws CloneNotSupportedException {
 		if(clone && aspectAdviceRuleRegistry != null)
-			return (AspectAdviceRuleRegistry)aspectAdviceRuleRegistry.clone();
+			return aspectAdviceRuleRegistry.clone();
 		
 		return aspectAdviceRuleRegistry;
 	}
@@ -461,9 +461,15 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("{name=").append(name);
-		if(restVerb != null) {
-			sb.append(", restVerb=").append(restVerb);
-			sb.append(", namePattern=").append(namePattern);
+		if(requestMethods != null) {
+			sb.append(", requestMethods=[");
+			for(int i = 0; i < requestMethods.length; i++) {
+				if(i > 0)
+					sb.append(", ");
+				sb.append(requestMethods[i]);
+			}
+			sb.append(requestMethods);
+			sb.append("], namePattern=").append(namePattern);
 		}
 		sb.append(", requestRule=").append(requestRule);
 		sb.append(", responseRule=").append(responseRule);
@@ -484,39 +490,45 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 		return sb.toString();
 	}
 	
-	public static TransletRule newInstance(String name, String scan, String mask, String restVerb) {
+	public static TransletRule newInstance(String name, String scan, String mask, String method) {
 		if(name == null)
-			throw new IllegalArgumentException("name must not be null");
+			throw new IllegalArgumentException("Translet name must not be null.");
 
-		RequestMethodType requestMethod = null;
-		
-		if(restVerb != null) {
-			requestMethod = RequestMethodType.valueOf(restVerb);
-			
-			if(requestMethod == null)
-				throw new IllegalArgumentException("No REST Verb type registered for '" + restVerb + "'.");
+		RequestMethodType[] requestMethods = null;
+		if(method != null) {
+			requestMethods = RequestMethodType.parse(method);
+			if(requestMethods == null)
+				throw new IllegalArgumentException("No request method type registered for '" + method + "'.");
 		}
 
+		return newInstance(name, scan, mask, requestMethods);
+	}
+
+	public static TransletRule newInstance(String name, String scan, String mask, RequestMethodType[] requestMethods) {
 		TransletRule transletRule = new TransletRule();
 		transletRule.setName(name);
-		if(requestMethod != null) {
-			transletRule.setRestVerb(requestMethod);
+		if(requestMethods != null && requestMethods.length > 0) {
+			transletRule.setRequestMethods(requestMethods);
 		} else {
 			transletRule.setScanPath(scan);
 			transletRule.setMaskPattern(mask);
 		}
-		
+
 		return transletRule;
 	}
 	
-	public static TransletRule newInstance(String name, String restVerb) {
-		return newInstance(name, null, null, restVerb);
+	public static TransletRule newInstance(String name, String method) {
+		return newInstance(name, null, null, method);
 	}
-	
+
+	public static TransletRule newInstance(String name, RequestMethodType[] requestMethods) {
+		return newInstance(name, null, null, requestMethods);
+	}
+
 	public static TransletRule replicate(TransletRule transletRule, ResponseRule responseRule) {
 		TransletRule tr = new TransletRule();
 		tr.setName(transletRule.getName());
-		tr.setRestVerb(transletRule.getRestVerb());
+		tr.setRequestMethods(transletRule.getRequestMethods());
 		tr.setRequestRule(transletRule.getRequestRule());
 		tr.setResponseRule(responseRule);
 		tr.setExceptionHandlingRule(transletRule.getExceptionHandlingRule());
@@ -540,7 +552,7 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 	public static TransletRule replicate(TransletRule transletRule, String newDispatchName) {
 		TransletRule tr = new TransletRule();
 		tr.setName(transletRule.getName());
-		tr.setRestVerb(transletRule.getRestVerb());
+		tr.setRequestMethods(transletRule.getRequestMethods());
 		tr.setRequestRule(transletRule.getRequestRule());
 		tr.setExceptionHandlingRule(transletRule.getExceptionHandlingRule());
 		tr.setTransletInterfaceClass(transletRule.getTransletInterfaceClass());
@@ -621,8 +633,17 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 		}
 	}
 	
-	public static String makeRestfulTransletName(String transletName, RequestMethodType restVerb) {
-		return restVerb + " " + transletName;
+	public static String makeRestfulTransletName(String transletName, RequestMethodType requestMethod) {
+		return requestMethod + " " + transletName;
+	}
+
+	public static String makeRestfulTransletName(String transletName, RequestMethodType[] requestMethods) {
+		StringBuilder sb = new StringBuilder(transletName + (requestMethods.length * 7));
+		for(RequestMethodType type : requestMethods) {
+			sb.append(type).append(" ");
+		}
+		sb.append(transletName);
+		return sb.toString();
 	}
 
 }
