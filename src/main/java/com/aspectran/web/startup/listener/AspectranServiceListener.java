@@ -30,7 +30,7 @@ public class AspectranServiceListener implements ServletContextListener {
 
 	private static final Log log = LogFactory.getLog(AspectranServiceListener.class);
 
-	public static final String ASPECTRAN_SERVICE_ATTRIBUTE =  AspectranServiceListener.class.getName() + ".ASPECTRAN_SERVICE";
+	public static final String ASPECTRAN_SERVICE_ATTRIBUTE = AspectranServiceListener.class.getName() + ".ASPECTRAN_SERVICE";
 	
 	private AspectranService aspectranService;
 
@@ -58,14 +58,11 @@ public class AspectranServiceListener implements ServletContextListener {
 	@Override
 	public void contextDestroyed(ServletContextEvent event) {
 		if(aspectranService != null) {
-			boolean cleanlyDestoryed = aspectranService.dispose();
-			
-			if(cleanlyDestoryed)
-				log.info("Successfully destroyed AspectranServiceListener.");
-			else
-				log.error("AspectranServiceListener was not destroyed cleanly.");
-	
 			log.info("Do not terminate the server while the all scoped bean destroying.");
+
+			aspectranService.destroy();
+
+			log.info("Successfully destroyed AspectranServiceListener: " + this);
 		}
 	}
 	

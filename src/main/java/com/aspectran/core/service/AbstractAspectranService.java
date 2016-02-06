@@ -211,7 +211,6 @@ public abstract class AbstractAspectranService implements AspectranService {
 
 			if(hardReload) {
 				aspectranClassLoader = CoreAspectranService.newAspectranClassLoader(this.resourceLocations);
-				//activityContextLoader.setAspectranClassLoader(aspectranClassLoader);
 			} else {
 				aspectranClassLoader.reload();
 			}

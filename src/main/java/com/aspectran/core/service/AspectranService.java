@@ -34,6 +34,13 @@ public interface AspectranService extends AspectranServiceController {
 	
 	public boolean isHardReload();
 	
-	public boolean dispose();
+	public void destroy();
+
+	/**
+	 * Returns whether this BeanFactory is currently active.
+	 *
+	 * @return whether the BeanFactory is still active
+	 */
+	public boolean isActive();
 
 }

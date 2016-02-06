@@ -37,11 +37,4 @@ public interface BeanFactory {
 	 */
 	public void destroy();
 
-	/**
-	 * Returns whether this BeanFactory is currently active.
-	 *
-	 * @return whether the BeanFactory is still active
-     */
-	public boolean isActive();
-
 }

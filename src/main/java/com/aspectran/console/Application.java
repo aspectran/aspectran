@@ -48,19 +48,19 @@ public class Application {
                     continue;
 
                 if("restart".equals(command)) {
-                	System.out.println("Aspectran service has been restarted.");
+                	System.out.println("Restarting the Aspectran Service...");
                     aspectranService.restart();
                 } else if("reload".equals(command)) {
-                	System.out.println("Aspectran service has been reloaded.");
+                	System.out.println("Reloading the Aspectran Service...");
                 	aspectranService.reload();
                 } else if("refresh".equals(command)) {
-                	System.out.println("Aspectran service has been refreshed.");
+                	System.out.println("Refreshing the Aspectran service...");
                 	aspectranService.refresh();
                 } else if("pause".equals(command)) {
-                	System.out.println("Aspectran service has been paused.");
+                	System.out.println("Pause the Aspectran Service...");
                     aspectranService.pause();
                 } else if("resume".equals(command)) {
-                	System.out.println("Aspectran service has been resumed.");
+                	System.out.println("Resume the Aspectran Service...");
                     aspectranService.resume();
                 } else if("quit".equals(command)) {
                     break;
@@ -78,7 +78,7 @@ public class Application {
             if(aspectranService != null) {
                 System.out.println("Do not terminate the server while the all scoped bean destroying.");
 
-                aspectranService.dispose();
+                aspectranService.destroy();
             }
         }
 

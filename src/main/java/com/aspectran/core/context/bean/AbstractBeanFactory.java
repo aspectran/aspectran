@@ -68,15 +68,6 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 	/** Flag that indicates whether this context is currently active */
 	private final AtomicBoolean active = new AtomicBoolean();
 
-	/** Flag that indicates whether this context has been closed already */
-	private final AtomicBoolean closed = new AtomicBoolean();
-
-	/** Synchronization monitor for the "refresh" and "destroy" */
-	private final Object startupShutdownMonitor = new Object();
-
-	/** Reference to the JVM shutdown hook, if registered */
-	private Thread shutdownHook;
-
 	public AbstractBeanFactory(BeanRuleRegistry beanRuleRegistry, BeanProxifierType beanProxifierType) {
 		this.beanRuleRegistry = beanRuleRegistry;
 		this.beanProxifierType = (beanProxifierType == null ? BeanProxifierType.JAVASSIST : beanProxifierType);
@@ -306,79 +297,27 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 		return factoryObject;
 	}
 
-
-	@Override
-	public boolean isActive() {
-		return this.active.get();
-	}
-	
 	@Override
 	public synchronized void initialize(ActivityContext context) {
-		if(this.active.get()) {
+		if(this.active.compareAndSet(false, true)) {
+			this.context = context;
+
+			instantiateSingletons();
+
+			log.info("BeanFactory has been initialized successfully.");
+		} else {
 			log.warn("BeanFactory has already been initialized.");
-			return;
-		}
-
-		this.context = context;
-
-		instantiateSingletons();
-		registerShutdownHook();
-
-		this.closed.set(false);
-		this.active.set(true);
-
-		log.info("BeanFactory has been initialized successfully.");
-	}
-
-	/**
-	 * Register a shutdown hook with the JVM runtime, closing this context
-	 * on JVM shutdown unless it has already been closed at that time.
-	 */
-	public void registerShutdownHook() {
-		if (this.shutdownHook == null) {
-			// No shutdown hook registered yet.
-			this.shutdownHook = new Thread() {
-				@Override
-				public void run() {
-					synchronized(startupShutdownMonitor) {
-						doDestroy();
-					}
-				}
-			};
-			Runtime.getRuntime().addShutdownHook(this.shutdownHook);
 		}
 	}
 
 	@Override
 	public void destroy() {
-		synchronized(this.startupShutdownMonitor) {
-			if(!this.active.get()) {
-				log.warn("BeanFactory has been destroyed already.");
-				return;
-			}
-
-			doDestroy();
-
-			// If we registered a JVM shutdown hook, we don't need it anymore now:
-			// We've already explicitly closed the context.
-			if(this.shutdownHook != null) {
-				try {
-					Runtime.getRuntime().removeShutdownHook(this.shutdownHook);
-				} catch(IllegalStateException ex) {
-					// ignore - VM is already shutting down
-				}
-			}
-		}
-	}
-
-	/**
-	 * Actually performs destroys the singletons in the bean factory.
-	 * Called by both {@code destroy()} and a JVM shutdown hook, if any.
-	 */
-	private void doDestroy() {
-		if(this.active.get() && this.closed.compareAndSet(false, true)) {
+		if(this.active.compareAndSet(true, false)) {
 			destroySingletons();
-			this.active.set(false);
+
+			log.info("BeanFactory has been destroyed successfully.");
+		} else {
+			log.warn("BeanFactory has been destroyed already.");
 		}
 	}
 
