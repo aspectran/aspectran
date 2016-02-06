@@ -18,13 +18,10 @@ package com.aspectran.core.context.bean;
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.context.bean.scope.RequestScope;
 import com.aspectran.core.context.bean.scope.Scope;
-import com.aspectran.core.context.bean.scope.ScopedBean;
-import com.aspectran.core.context.bean.scope.ScopedBeanMap;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.type.BeanProxifierType;
 import com.aspectran.core.context.rule.type.ScopeType;
 import com.aspectran.core.util.ClassUtils;
-import com.aspectran.core.util.MethodUtils;
 
 /**
  * The Class ContextBeanRegistry.
@@ -115,7 +112,6 @@ public class ContextBeanRegistry extends AbstractBeanFactory implements BeanRegi
 	private Object getRequestScopeBean(BeanRule beanRule) {
 		synchronized(requestScopeLock) {
 			Scope scope = getRequestScope();
-			
 			if(scope == null)
 				throw new UnsupportedBeanScopeException(ScopeType.REQUEST, beanRule);
 			
@@ -125,7 +121,6 @@ public class ContextBeanRegistry extends AbstractBeanFactory implements BeanRegi
 	
 	private Object getSessionScopeBean(BeanRule beanRule) {
 		Scope scope = getSessionScope();
-
 		if(scope == null)
 			throw new UnsupportedBeanScopeException(ScopeType.SESSION, beanRule);
 		
@@ -136,7 +131,6 @@ public class ContextBeanRegistry extends AbstractBeanFactory implements BeanRegi
 
 	private Object getApplicationScopeBean(BeanRule beanRule) {
 		Scope scope = getApplicationScope();
-
 		if(scope == null)
 			throw new UnsupportedBeanScopeException(ScopeType.APPLICATION, beanRule);
 
@@ -146,53 +140,16 @@ public class ContextBeanRegistry extends AbstractBeanFactory implements BeanRegi
 	}
 	
 	private Object getScopedBean(Scope scope, BeanRule beanRule) {
-		ScopedBeanMap scopedBeanMap = scope.getScopedBeanMap();
-		ScopedBean scopeBean = scopedBeanMap.get(beanRule.getId());
-			
-		if(scopeBean != null)
-			return scopeBean.getBean();
-
-		Object bean = createBean(beanRule);
-		
-		scopeBean = new ScopedBean(beanRule);
-		scopeBean.setBean(bean);
-		
-		scopedBeanMap.putScopeBean(scopeBean);
-		
-		return bean;
-	}
-
-	@Override
-	protected Object createBean(BeanRule beanRule) {
-		if(beanRule.isOffered()) {
-			String offerBeanId = beanRule.getOfferBeanId();
-			String offerMethodName = beanRule.getOfferMethodName();
-
-			try {
-				Object bean = getBean(offerBeanId);
-				return MethodUtils.invokeMethod(bean, offerMethodName);
-			} catch(Exception e) {
-				throw new BeanCreationException(beanRule, "An exception occurred during the execution of a offer method from the referenced offer bean.", e);
-			}
-		} else {
-			Object bean = super.createBean(beanRule);
-			String factoryMethodName = beanRule.getFactoryMethodName();
-
-			if(factoryMethodName != null) {
-				try {
-					return MethodUtils.invokeMethod(bean, factoryMethodName);
-				} catch(Exception e) {
-					throw new BeanCreationException(beanRule, "An exception occurred during the execution of a factory method in the bean object.", e);
-				}
-			}
-
-			return bean;
+		Object bean = scope.getBean(beanRule);
+		if(bean == null) {
+			bean = createBean(beanRule);
+			scope.putBean(beanRule, bean);
 		}
+		return bean;
 	}
 
 	private Scope getRequestScope() {
 		Activity activity = context.getCurrentActivity();
-		
 		if(activity == null)
 			return null;
 		
@@ -208,7 +165,6 @@ public class ContextBeanRegistry extends AbstractBeanFactory implements BeanRegi
 
 	private Scope getSessionScope() {
 		Activity activity = context.getCurrentActivity();
-
 		if(activity == null || activity.getSessionAdapter() == null)
 			return null;
 

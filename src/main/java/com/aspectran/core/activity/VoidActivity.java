@@ -36,7 +36,7 @@ public final class VoidActivity extends CoreActivity implements Activity {
 	/**
 	 * Instantiates a new void activity.
 	 *
-	 * @param context the context
+	 * @param context the activity context
 	 */
 	public VoidActivity(ActivityContext context) {
 		super(context);

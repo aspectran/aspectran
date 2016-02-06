@@ -207,7 +207,7 @@ public abstract class AbstractAspectranService implements AspectranService {
 	public synchronized ActivityContext reloadActivityContext() throws AspectranServiceException {
 		try {
 			if(activityContextLoader == null)
-				throw new IllegalArgumentException("activityContextLoader must not be null");
+				throw new IllegalArgumentException("activityContextLoader must not be null.");
 
 			if(hardReload) {
 				aspectranClassLoader = CoreAspectranService.newAspectranClassLoader(this.resourceLocations);
@@ -294,7 +294,7 @@ public abstract class AbstractAspectranService implements AspectranService {
 				String path = resourceLocations[i].substring(ResourceUtils.CLASSPATH_URL_PREFIX.length());
 				URL url = AspectranClassLoader.getDefaultClassLoader().getResource(path);
 				if(url == null)
-					throw new InvalidResourceException("class path resource [" + resourceLocations[i] + "] cannot be resolved to URL because it does not exist");
+					throw new InvalidResourceException("Class path resource [" + resourceLocations[i] + "] cannot be resolved to URL because it does not exist");
 				resourceLocations[i] = url.getFile();
 			} else if(resourceLocations[i].startsWith(ResourceUtils.FILE_URL_PREFIX)) {
 				try {
@@ -353,7 +353,7 @@ public abstract class AbstractAspectranService implements AspectranService {
 				}
 			}
 		} catch(IOException e) {
-			throw new InvalidResourceException("invalid resource location: " + resourceLocation, e);
+			throw new InvalidResourceException("Invalid resource location: " + resourceLocation, e);
 		}
 		
 		return resourceLocations;

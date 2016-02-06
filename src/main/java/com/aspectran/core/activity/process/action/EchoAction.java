@@ -58,7 +58,7 @@ public class EchoAction extends AbstractAction implements Executable {
 			
 			return valueMap;
 		} catch(Exception e) {
-			log.error("action execution error: echoActionRule " + echoActionRule + " Cause: " + e.toString());
+			log.error("Action execution error: echoActionRule " + echoActionRule + " Cause: " + e.toString());
 			throw e;
 		}
 	}

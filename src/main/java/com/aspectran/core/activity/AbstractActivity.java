@@ -61,7 +61,6 @@ public abstract class AbstractActivity {
 		return applicationAdapter;
 	}
 
-
 	/**
 	 * Gets the session adapter.
 	 *

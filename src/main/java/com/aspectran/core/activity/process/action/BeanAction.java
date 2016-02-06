@@ -129,7 +129,7 @@ public class BeanAction extends AbstractAction implements Executable {
 
 			return result;
 		} catch(Exception e) {
-			log.error("action execution error: beanActionRule " + beanActionRule + " Cause: " + e.toString());
+			log.error("Action execution error: beanActionRule " + beanActionRule + " Cause: " + e.toString());
 			throw e;
 		}
 	}

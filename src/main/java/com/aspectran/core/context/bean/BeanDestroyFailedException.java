@@ -38,7 +38,7 @@ public class BeanDestroyFailedException extends BeanRuleException {
 	 * Create a new BeanDestroyFailedException.
 	 *
 	 * @param beanRule the bean rule
-	 * @param msg The detail message
+	 * @param msg the detail message
 	 */
 	public BeanDestroyFailedException(BeanRule beanRule, String msg) {
 		super(beanRule, msg);

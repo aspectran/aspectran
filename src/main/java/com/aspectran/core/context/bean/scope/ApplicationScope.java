@@ -28,11 +28,4 @@ public class ApplicationScope extends AbstractScope implements Scope {
 	
 	private final Log log = LogFactory.getLog(ApplicationScope.class);
 
-	public void destroy() {
-		if(log.isDebugEnabled())
-			log.debug("destroy application-scoped beans " + scopedBeanMap);
-		
-		super.destroy();
-	}
-	
 }

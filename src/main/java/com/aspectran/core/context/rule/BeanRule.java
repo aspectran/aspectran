@@ -76,11 +76,7 @@ public class BeanRule implements Replicable<BeanRule> {
 
 	private Boolean important;
 
-	private boolean replicated;
-
 	private String description;
-
-	private Object bean;
 
 	private boolean factoryBean;
 
@@ -90,10 +86,14 @@ public class BeanRule implements Replicable<BeanRule> {
 
 	private boolean initializableTransletBean;
 
-	private boolean registered;
-	
+	private boolean replicated;
+
 	private boolean proxied;
-	
+
+	private Object bean; // only for singleton
+
+	private boolean registered;
+
 	/**
 	 * Returns the bean id.
 	 *

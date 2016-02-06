@@ -15,8 +15,6 @@
  */
 package com.aspectran.core.activity.request.parameter;
 
-import com.aspectran.core.util.FileUtils;
-
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -24,6 +22,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+
+import com.aspectran.core.util.FileUtils;
 
 /**
  * The Class FileParameter.
@@ -219,7 +219,6 @@ public class FileParameter {
 	 */
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		
 		sb.append("{file=").append(file);
 		sb.append(", contentType=").append(contentType);
 		sb.append(", refused=").append(refused);

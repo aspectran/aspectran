@@ -27,7 +27,21 @@ import com.aspectran.core.context.ActivityContext;
 public interface BeanFactory {
 	
 	public void initialize(ActivityContext context);
-	
+
+	/**
+	 * Destroy all singleton beans in this factory.
+	 * To be called on shutdown of a factory.
+	 * <p>
+	 * Any exception that arises during destruction should be caught
+	 * and logged instead of propagated to the caller of this method.
+	 */
 	public void destroy();
+
+	/**
+	 * Returns whether this BeanFactory is currently active.
+	 *
+	 * @return whether the BeanFactory is still active
+     */
+	public boolean isActive();
 
 }

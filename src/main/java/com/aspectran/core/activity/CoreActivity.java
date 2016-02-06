@@ -238,19 +238,16 @@ public class CoreActivity extends AbstractActivity implements Activity {
 				// execute Before Advice Action for Translet Joinpoint
 				if(transletAspectAdviceRuleRegistry != null) {
 					List<AspectAdviceRule> beforeAdviceRuleList = transletAspectAdviceRuleRegistry.getBeforeAdviceRuleList();
-
 					if(beforeAdviceRuleList != null)
 						execute(beforeAdviceRuleList);
 				}
 				
-				if(!activityEnded) {
+				if(!activityEnded)
 					run2nd();
-				}
-				
+
 				// execute After Advice Action for Translet Joinpoint
 				if(transletAspectAdviceRuleRegistry != null) {
 					List<AspectAdviceRule> afterAdviceRuleList = transletAspectAdviceRuleRegistry.getAfterAdviceRuleList();
-					
 					if(afterAdviceRuleList != null)
 						execute(afterAdviceRuleList);
 				}
@@ -258,33 +255,30 @@ public class CoreActivity extends AbstractActivity implements Activity {
 			} finally {
 				if(transletAspectAdviceRuleRegistry != null) {
 					List<AspectAdviceRule> finallyAdviceRuleList = transletAspectAdviceRuleRegistry.getFinallyAdviceRuleList();
-					
 					if(finallyAdviceRuleList != null)
 						forceExecute(finallyAdviceRuleList);
+				}
+
+				if(getRequestScope() != null) {
+					getRequestScope().destroy();
 				}
 			}
 		} catch(Exception e) {
 			setRaisedException(e);
 			
 			ExceptionHandlingRule exceptionHandlingRule = transletRule.getExceptionHandlingRule();
-			
 			if(exceptionHandlingRule != null) {
 				responseByContentType(exceptionHandlingRule);
-				
-				if(activityEnded) {
+				if(activityEnded)
 					return;
-				}
 			}
 			
 			if(transletAspectAdviceRuleRegistry != null) {
 				List<ExceptionHandlingRule> exceptionHandlingRuleList = transletAspectAdviceRuleRegistry.getExceptionHandlingRuleList();
-				
 				if(exceptionHandlingRuleList != null) {
 					responseByContentType(exceptionHandlingRuleList);
-					
-					if(activityEnded) {
+					if(activityEnded)
 						return;
-					}
 				}
 			}
 			
@@ -550,7 +544,7 @@ public class CoreActivity extends AbstractActivity implements Activity {
 	 */
 	private void forward() {
 		if(debugEnabled) {
-			log.debug("forwarding to Translet [" + forwardTransletName + "]");
+			log.debug("Forwarding to Translet [" + forwardTransletName + "]");
 		}
 		
 		ProcessResult processResult = translet.getProcessResult();
@@ -562,7 +556,6 @@ public class CoreActivity extends AbstractActivity implements Activity {
 	public void responseByContentType(List<ExceptionHandlingRule> exceptionHandlingRuleList) {
 		for(ExceptionHandlingRule exceptionHandlingRule : exceptionHandlingRuleList) {
 			responseByContentType(exceptionHandlingRule);
-			
 			if(activityEnded)
 				return;
 		}
@@ -570,9 +563,8 @@ public class CoreActivity extends AbstractActivity implements Activity {
 
 	private void responseByContentType(ExceptionHandlingRule exceptionHandlingRule) {
 		ResponseByContentTypeRule rbctr = exceptionHandlingRule.getResponseByContentTypeRule(getRaisedException());
-		
 		if(rbctr != null) {
-			log.info("raised exception: " + getRaisedException());
+			log.info("Raised exception: " + getRaisedException());
 			responseByContentType(rbctr);
 		}
 	}
@@ -597,10 +589,9 @@ public class CoreActivity extends AbstractActivity implements Activity {
 			
 			if(responseRule.getResponse() != null) {
 				ActionList actionList = responseRule.getResponse().getActionList();
-				
-				if(actionList != null)
+				if(actionList != null) {
 					execute(actionList);
-
+				}
 				response();
 			}
 		}

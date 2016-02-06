@@ -28,14 +28,4 @@ public class SessionScope extends AbstractScope implements Scope {
 
 	private final Log log = LogFactory.getLog(SessionScope.class);
 	
-	public SessionScope() {
-	}
-	
-	public void destroy() {
-		if(log.isDebugEnabled())
-			log.debug("destroy session-scoped beans " + scopedBeanMap);
-		
-		super.destroy();
-	}
-	
 }

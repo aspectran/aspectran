@@ -15,6 +15,9 @@
  */
 package com.aspectran.core.context.template;
 
+import java.io.StringWriter;
+import java.io.Writer;
+
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.expr.TokenExpression;
@@ -25,8 +28,6 @@ import com.aspectran.core.context.template.engine.TemplateEngine;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
-import java.io.*;
-
 /**
  * The Class ContextTemplateProcessor.
  *
@@ -34,17 +35,15 @@ import java.io.*;
  */
 public class ContextTemplateProcessor implements TemplateProcessor {
 
-    /** The log. */
     private final Log log = LogFactory.getLog(ContextTemplateProcessor.class);
 
-    /** The context. */
     protected ActivityContext context;
 
-    /** The template rule registry. */
     protected final TemplateRuleRegistry templateRuleRegistry;
 
-    /** The initialized. */
-    private boolean initialized;
+    private boolean active;
+
+    private boolean closed;
 
     /**
      * Instantiates a new context template processor.
@@ -159,13 +158,15 @@ public class ContextTemplateProcessor implements TemplateProcessor {
      * @see com.aspectran.core.context.template.TemplateProcessor#initialize(com.aspectran.core.context.ActivityContext)
      */
     public synchronized void initialize(ActivityContext context) {
-        if(initialized) {
-            throw new UnsupportedOperationException("TemplateProcessor has already been initialized.");
+        if(this.active) {
+            log.warn("TemplateProcessor has already been initialized.");
+            return;
         }
 
         this.context = context;
 
-        initialized = true;
+        this.closed = false;
+        this.active = true;
 
         log.info("TemplateProcessor has been initialized successfully.");
     }
@@ -174,14 +175,13 @@ public class ContextTemplateProcessor implements TemplateProcessor {
      * @see com.aspectran.core.context.template.TemplateProcessor#destroy()
      */
     public synchronized void destroy() {
-        if(!initialized) {
-            throw new UnsupportedOperationException("TemplateProcessor has not yet initialized.");
+        if(this.active && !this.closed) {
+            templateRuleRegistry.clear();
+            this.closed = true;
+            this.active = false;
+
+            log.info("TemplateProcessor has been destroyed successfully.");
         }
-
-        templateRuleRegistry.clear();
-        initialized = false;
-
-        log.info("TemplateProcessor has been destroyed successfully.");
     }
 
 }

@@ -108,14 +108,12 @@ public class BeanRuleRegistry {
 	 * Adds the bean rule.
 	 *
 	 * @param beanRule the bean rule
-	 * @throws ClassNotFoundException the class not found exception
+	 * @throws ClassNotFoundException thrown when the bean class is not found.
 	 */
 	public void addBeanRule(BeanRule beanRule) throws ClassNotFoundException {
+		PrefixSuffixPattern prefixSuffixPattern = PrefixSuffixPattern.parse(beanRule.getId());
 		String scanPath = beanRule.getScanPath();
 
-		PrefixSuffixPattern prefixSuffixPattern = new PrefixSuffixPattern();
-		boolean splited = prefixSuffixPattern.split(beanRule.getId());
-		
 		if(scanPath != null) {
 			BeanClassScanner scanner = new BeanClassScanner(classLoader);
 			if(beanRule.getFilterParameters() != null)
@@ -132,7 +130,7 @@ public class BeanRuleRegistry {
 					String beanId = entry.getKey();
 					Class<?> beanClass = entry.getValue();
 			
-					if(splited) {
+					if(prefixSuffixPattern != null) {
 						beanRule2.setId(prefixSuffixPattern.join(beanId));
 					} else {
 						if(beanRule.getId() != null) {
@@ -141,32 +139,28 @@ public class BeanRuleRegistry {
 					}
 
 					beanRule2.setBeanClass(beanClass);
-					BeanRule.checkAccessibleMethod(beanRule2);
-
 					putBeanRule(beanRule2);
-					parseAnnotation(beanRule);
 				}
 			}
 			
 			if(log.isDebugEnabled())
-				log.debug("scanned class files: " + (beanClassMap == null ? 0 : beanClassMap.size()));
+				log.debug("Scanned class files: " + (beanClassMap == null ? 0 : beanClassMap.size()));
 		} else {
 			String className = beanRule.getClassName();
 
-			if(splited) {
+			if(prefixSuffixPattern != null) {
 				beanRule.setId(prefixSuffixPattern.join(className));
 			}
 			
 			Class<?> beanClass = classLoader.loadClass(className);
 			beanRule.setBeanClass(beanClass);
-			BeanRule.checkAccessibleMethod(beanRule);
-			
 			putBeanRule(beanRule);
-			parseAnnotation(beanRule);
 		}
 	}
 
 	private void putBeanRule(BeanRule beanRule) {
+		BeanRule.checkAccessibleMethod(beanRule);
+
 		if(beanRule.getId() != null)
 			beanRuleMap.putBeanRule(beanRule);
 		
@@ -181,6 +175,8 @@ public class BeanRuleRegistry {
 
 		if(log.isTraceEnabled())
 			log.trace("add BeanRule " + beanRule);
+
+		parseAnnotation(beanRule);
 	}
 	
 	private void putBeanRule(Class<?> type, BeanRule beanRule) {

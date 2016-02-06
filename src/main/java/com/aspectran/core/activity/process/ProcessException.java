@@ -25,7 +25,7 @@ import com.aspectran.core.activity.ActivityException;
 public class ProcessException extends ActivityException {
 	
 	/** @serial */
-	static final long serialVersionUID = 7290974002627109441L;
+	private static final long serialVersionUID = 7290974002627109441L;
 
 	/**
 	 * Simple constructor.

@@ -33,17 +33,16 @@ public class PrefixSuffixPattern {
 	}
 	
 	public boolean split(String input) {
-		int startIndex = input.indexOf(PREFIX_SUFFIX_PATTERN_SEPARATOR);
-		if(startIndex == -1) {
+		int start = (input != null) ? input.indexOf(PREFIX_SUFFIX_PATTERN_SEPARATOR) : -1;
+		if(start == -1) {
 			prefix = null;
 			suffix = null;
 			splited = false;
-			return false;
+		} else {
+			prefix = (start > 0) ? input.substring(0, start) : null;
+			suffix = (start < input.length() - 1) ? input.substring(start + 1) : null;
+			splited = (prefix != null || suffix != null || (input.length() == 1 && input.charAt(0) == PREFIX_SUFFIX_PATTERN_SEPARATOR));
 		}
-		
-		prefix = (startIndex > 0) ? input.substring(0, startIndex) : null;
-		suffix = (startIndex < input.length() - 1) ? input.substring(startIndex + 1) : null;
-		splited = (prefix != null || suffix != null || (input.length() == 1 && input.charAt(0) == PREFIX_SUFFIX_PATTERN_SEPARATOR));
 		
 		return splited;
 	}
@@ -82,6 +81,15 @@ public class PrefixSuffixPattern {
 		} else {
 			return input;
 		}
+	}
+
+	public static PrefixSuffixPattern parse(String input) {
+		if(input != null && !input.isEmpty()) {
+			PrefixSuffixPattern pattern = new PrefixSuffixPattern(input);
+			if(pattern.isSplited())
+				return pattern;
+		}
+		return null;
 	}
 	
 }

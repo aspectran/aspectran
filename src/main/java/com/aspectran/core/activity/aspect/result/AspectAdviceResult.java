@@ -98,7 +98,7 @@ public class AspectAdviceResult implements Cloneable {
 		else if(aspectAdviceType == AspectAdviceType.FINALLY)
 			getFinallyAdviceResult(aspectId);
 		else
-			throw new UnsupportedOperationException("unknown aspect advice type.");
+			throw new UnsupportedOperationException("Unknown aspect advice type.");
 		
 		return null;
 	}
@@ -111,7 +111,7 @@ public class AspectAdviceResult implements Cloneable {
 		else if(aspectAdviceRule.getAspectAdviceType() == AspectAdviceType.FINALLY)
 			putFinallyAdviceResult(aspectAdviceRule.getAspectId(), adviceActionResult);
 		else
-			throw new UnsupportedOperationException("unknown aspect advice type.");
+			throw new UnsupportedOperationException("Unknown aspect advice type.");
 	}
 	
 }

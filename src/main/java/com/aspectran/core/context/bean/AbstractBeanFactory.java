@@ -20,6 +20,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.VoidActivity;
@@ -64,8 +65,18 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 
 	protected ActivityContext context;
 
-	private boolean initialized;
-	
+	/** Flag that indicates whether this context is currently active */
+	private final AtomicBoolean active = new AtomicBoolean();
+
+	/** Flag that indicates whether this context has been closed already */
+	private final AtomicBoolean closed = new AtomicBoolean();
+
+	/** Synchronization monitor for the "refresh" and "destroy" */
+	private final Object startupShutdownMonitor = new Object();
+
+	/** Reference to the JVM shutdown hook, if registered */
+	private Thread shutdownHook;
+
 	public AbstractBeanFactory(BeanRuleRegistry beanRuleRegistry, BeanProxifierType beanProxifierType) {
 		this.beanRuleRegistry = beanRuleRegistry;
 		this.beanProxifierType = (beanProxifierType == null ? BeanProxifierType.JAVASSIST : beanProxifierType);
@@ -196,12 +207,12 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 		if(beanRule.isProxied()) {
 			if(beanProxifierType == BeanProxifierType.JAVASSIST) {
 				if(log.isTraceEnabled())
-					log.trace("JavassistDynamicBeanProxy " + beanRule);
+					log.trace("javassist proxy " + beanRule);
 				
 				bean = JavassistDynamicBeanProxy.newInstance(context, beanRule, argTypes, args);
 			} else if(beanProxifierType == BeanProxifierType.CGLIB) {
 				if(log.isTraceEnabled())
-					log.trace("CglibDynamicBeanProxy " + beanRule);
+					log.trace("cglib proxy " + beanRule);
 				
 				bean = CglibDynamicBeanProxy.newInstance(context, beanRule, argTypes, args);
 			} else {
@@ -211,7 +222,7 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 					bean = newInstance(beanRule.getBeanClass());
 				
 				if(log.isTraceEnabled())
-					log.trace("JdkDynamicBeanProxy " + beanRule);
+					log.trace("jdk proxy " + beanRule);
 				
 				bean = JdkDynamicBeanProxy.newInstance(context, beanRule, bean);
 			}
@@ -226,7 +237,7 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 	}
 	
 	private void processAnnotation(BeanRule beanRule, final Object bean, Activity activity) {
-		BeanAnnotationProcessor.process(beanRule, bean, activity);
+		//BeanAnnotationProcessor.process(beanRule, bean, activity);
 	}
 	
 	private void invokeAwareMethods(final Object bean) {
@@ -262,7 +273,7 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 			boolean requiresTranslet = beanRule.isInitMethodRequiresTranslet();
 			BeanAction.invokeMethod(activity, bean, initMethodName, null, null, requiresTranslet);
 		} catch(Exception e) {
-				throw new BeanCreationException(beanRule, "An exception occurred during the execution of an initialization method of the bean", e);
+			throw new BeanCreationException(beanRule, "An exception occurred during the execution of an initialization method of the bean", e);
 		}
 	}
 	
@@ -294,15 +305,87 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 		
 		return factoryObject;
 	}
+
+
+	@Override
+	public boolean isActive() {
+		return this.active.get();
+	}
 	
 	@Override
 	public synchronized void initialize(ActivityContext context) {
-		if(initialized) {
-			throw new UnsupportedOperationException("BeanFactory has already been initialized.");
+		if(this.active.get()) {
+			log.warn("BeanFactory has already been initialized.");
+			return;
 		}
 
 		this.context = context;
 
+		instantiateSingletons();
+		registerShutdownHook();
+
+		this.closed.set(false);
+		this.active.set(true);
+
+		log.info("BeanFactory has been initialized successfully.");
+	}
+
+	/**
+	 * Register a shutdown hook with the JVM runtime, closing this context
+	 * on JVM shutdown unless it has already been closed at that time.
+	 */
+	public void registerShutdownHook() {
+		if (this.shutdownHook == null) {
+			// No shutdown hook registered yet.
+			this.shutdownHook = new Thread() {
+				@Override
+				public void run() {
+					synchronized(startupShutdownMonitor) {
+						doDestroy();
+					}
+				}
+			};
+			Runtime.getRuntime().addShutdownHook(this.shutdownHook);
+		}
+	}
+
+	@Override
+	public void destroy() {
+		synchronized(this.startupShutdownMonitor) {
+			if(!this.active.get()) {
+				log.warn("BeanFactory has been destroyed already.");
+				return;
+			}
+
+			doDestroy();
+
+			// If we registered a JVM shutdown hook, we don't need it anymore now:
+			// We've already explicitly closed the context.
+			if(this.shutdownHook != null) {
+				try {
+					Runtime.getRuntime().removeShutdownHook(this.shutdownHook);
+				} catch(IllegalStateException ex) {
+					// ignore - VM is already shutting down
+				}
+			}
+		}
+	}
+
+	/**
+	 * Actually performs destroys the singletons in the bean factory.
+	 * Called by both {@code destroy()} and a JVM shutdown hook, if any.
+	 */
+	private void doDestroy() {
+		if(this.active.get() && this.closed.compareAndSet(false, true)) {
+			destroySingletons();
+			this.active.set(false);
+		}
+	}
+
+	/**
+	 * Instantiate all singletons(non-lazy-init).
+	 */
+	private void instantiateSingletons() {
 		Activity activity = new VoidActivity(context);
 		context.setCurrentActivity(activity);
 
@@ -323,48 +406,44 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 		} finally {
 			context.removeCurrentActivity();
 		}
-
-		initialized = true;
-		
-		log.info("BeanFactory has been initialized successfully.");
 	}
 
-	@Override
-	public synchronized void destroy() {
-		if(!initialized) {
-			throw new UnsupportedOperationException("BeanFactory has not yet initialized.");
+	/**
+	 * Destroy all cached singletons.
+	 */
+	private void destroySingletons() {
+		if(log.isDebugEnabled()) {
+			log.debug("Destroying singletons in " + this);
 		}
+
+		int failedDestroyes = 0;
 
 		for(BeanRule beanRule : beanRuleRegistry.getBeanRules()) {
 			ScopeType scopeType = beanRule.getScopeType();
 
-			if(scopeType == ScopeType.SINGLETON) {
-				if(beanRule.isRegistered()) {
+			if(beanRule.isRegistered() && scopeType == ScopeType.SINGLETON) {
+				try {
 					if(beanRule.isDisposableBean()) {
-						try {
-							Object bean = beanRule.getBean();
-							((DisposableBean)bean).destroy();
-						} catch(Exception e) {
-							throw new BeanDestroyFailedException(beanRule);
-						}
+						Object bean = beanRule.getBean();
+						((DisposableBean) bean).destroy();
 					} else if(beanRule.getDestroyMethodName() != null) {
-						try {
-							String destroyMethodName = beanRule.getDestroyMethodName();
-							MethodUtils.invokeExactMethod(beanRule.getBean(), destroyMethodName, null);
-						} catch(Exception e) {
-							throw new BeanDestroyFailedException(beanRule);
-						}
+						String destroyMethodName = beanRule.getDestroyMethodName();
+						MethodUtils.invokeExactMethod(beanRule.getBean(), destroyMethodName, null);
 					}
-
-					beanRule.setBean(null);
-					beanRule.setRegistered(false);
+				} catch(Exception e) {
+					failedDestroyes++;
+					log.error("Cannot destroy a bean " + beanRule, e);
 				}
+
+				beanRule.setBean(null);
+				beanRule.setRegistered(false);
 			}
 		}
-		
-		initialized = false;
-		
-		log.info("BeanFactory has been destroyed successfully.");
+
+		if(failedDestroyes > 0)
+			log.warn("Singletons has not been destroyed cleanly. Failure Count: " + failedDestroyes);
+		else
+			log.info("Singletons has been destroyed successfully.");
 	}
 
 	private static Object newInstance(Class<?> beanClass, Class<?>[] argTypes, Object[] args) throws BeanInstantiationException {

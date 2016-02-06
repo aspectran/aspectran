@@ -25,7 +25,7 @@ import com.aspectran.core.context.AspectranRuntimeException;
 public class ActivityException extends AspectranRuntimeException {
 	
 	/** @serial */
-	static final long serialVersionUID = -4400747654771758521L;
+	private static final long serialVersionUID = -4400747654771758521L;
 
 	/**
 	 * Instantiates a new ActivityException.

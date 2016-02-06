@@ -34,7 +34,7 @@ public class CoreAspectranService extends AbstractAspectranService {
 	
 	private AspectranServiceControllerListener aspectranServiceControllerListener;
 	
-	private boolean started;
+	private boolean active;
 
 	@Override
 	public synchronized ActivityContext startup() throws AspectranServiceException {
@@ -45,14 +45,14 @@ public class CoreAspectranService extends AbstractAspectranService {
 		if(aspectranServiceControllerListener != null)
 			aspectranServiceControllerListener.started();
 
-		started = true;
+		this.active = true;
 		
 		return activityContext;
 	}
 
 	@Override
 	public synchronized boolean restart() throws AspectranServiceException {
-		if(!started) {
+		if(!this.active) {
 			log.debug("Cannot restart AspectranService, because it is currently stopped.");
 			return true;
 		}
@@ -60,8 +60,8 @@ public class CoreAspectranService extends AbstractAspectranService {
 		boolean cleanlyDestoryed = dispose();
 		
 		reloadActivityContext();
-		
-		started = true;
+
+		this.active = true;
 		
 		log.info("AspectranService was restarted.");
 
@@ -73,7 +73,7 @@ public class CoreAspectranService extends AbstractAspectranService {
 
 	@Override
 	public synchronized boolean reload() throws AspectranServiceException {
-		if(!started) {
+		if(!this.active) {
 			log.debug("Cannot restart AspectranService, because it is currently stopped.");
 			return true;
 		}
@@ -81,8 +81,8 @@ public class CoreAspectranService extends AbstractAspectranService {
 		boolean cleanlyDestoryed = stop();
 		
 		reloadActivityContext();
-		
-		started = true;
+
+		this.active = true;
 		
 		log.info("AspectranService was reloaded.");
 		
@@ -124,42 +124,35 @@ public class CoreAspectranService extends AbstractAspectranService {
 
 	@Override
 	public synchronized boolean stop() {
-		if(!started)
+		if(!this.active)
 			return true;
 
 		if(aspectranServiceControllerListener != null)
 			aspectranServiceControllerListener.paused(DEFAULT_PAUSE_TIMEOUT);
-		
+
 		boolean cleanlyDestoryed = destroyActivityContext();
 			
 		log.info("AspectranService was stopped.");
 
 		if(aspectranServiceControllerListener != null)
 			aspectranServiceControllerListener.stopped();
-		
-		started = false;
+
+		this.active = false;
 		
 		return cleanlyDestoryed;
 	}
 
 	@Override
 	public synchronized boolean dispose() {
-		boolean cleanlyDestoryed = stop();
-		
 		ApplicationAdapter applicationAdapter = getApplicationAdapter();
-		
 		if(applicationAdapter != null) {
-			try {
-				Scope scope = getApplicationAdapter().getApplicationScope();
-		
-				if(scope != null)
-					scope.destroy();
-			} catch(Exception e) {
-				cleanlyDestoryed = false;
-				log.error("ApplicationAdapter Scope has not been destroyed cleanly.", e);
-			}
+			Scope scope = getApplicationAdapter().getApplicationScope();
+			if(scope != null)
+				scope.destroy();
 		}
-		
+
+		boolean cleanlyDestoryed = stop();
+
 		log.info("AspectranService has been shut down successfully.");
 
 		return cleanlyDestoryed;

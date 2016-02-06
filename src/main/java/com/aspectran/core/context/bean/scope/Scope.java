@@ -15,6 +15,8 @@
  */
 package com.aspectran.core.context.bean.scope;
 
+import com.aspectran.core.context.rule.BeanRule;
+
 /**
  * The Interface Scope.
  *
@@ -23,10 +25,13 @@ package com.aspectran.core.context.bean.scope;
  */
 public interface Scope {
 	
-	public ScopedBeanMap getScopedBeanMap();
+	public Object getBean(BeanRule beanRule);
 
-	public void setScopedBeanMap(ScopedBeanMap scopedBeanMap);
-	
+	public void putBean(BeanRule beanRule, Object bean);
+
+	/**
+	 * Destroy all scoped beans in the scope.
+	 */
 	public void destroy();
 	
 }

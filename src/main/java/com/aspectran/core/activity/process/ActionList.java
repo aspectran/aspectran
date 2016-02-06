@@ -119,10 +119,8 @@ public class ActionList extends ArrayList<Executable> implements ActionRuleAppli
 		sb.append('[');
 		for(int i = 0; i < size(); i++) {
 			Executable action = get(i);
-
 			if(i > 0)
 				sb.append(", ");
-
 			sb.append(action.getActionId());
 		}
 		sb.append(']');

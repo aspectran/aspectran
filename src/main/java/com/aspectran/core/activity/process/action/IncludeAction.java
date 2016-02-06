@@ -71,7 +71,7 @@ public class IncludeAction extends AbstractAction implements Executable {
 			return newActivity.getProcessResult();
 			
 		} catch(Exception e) {
-			log.error("action execution error: includeActionRule " + includeActionRule + " Cause: " + e.toString());
+			log.error("Action execution error: includeActionRule " + includeActionRule + " Cause: " + e.toString());
 			throw e;
 		}
 	}
