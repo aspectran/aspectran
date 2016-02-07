@@ -144,8 +144,8 @@ public class AspectranClassLoader extends ClassLoader {
 		
 		AspectranClassLoader child = new AspectranClassLoader(resourceLocation, this);
 		
-		if(log.isDebugEnabled())
-			log.debug("Create a new child AspectranClassLoader " + child);
+		if(log.isTraceEnabled())
+			log.trace("Create a new child AspectranClassLoader " + child);
 		
 		return child;
 	}

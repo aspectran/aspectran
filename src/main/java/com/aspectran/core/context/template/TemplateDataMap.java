@@ -18,12 +18,12 @@ package com.aspectran.core.context.template;
 import java.util.Locale;
 
 import com.aspectran.core.activity.Activity;
-import com.aspectran.core.activity.ActivityResultDataMap;
+import com.aspectran.core.activity.ActivityDataMap;
 
 /**
  * The Class TemplateDataMap.
  */
-public class TemplateDataMap extends ActivityResultDataMap {
+public class TemplateDataMap extends ActivityDataMap {
 
 	/** @serial */
 	private static final long serialVersionUID = -1414688689441309354L;

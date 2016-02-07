@@ -95,15 +95,5 @@ public class QuartzJobRequestAdapter extends AbstractRequestAdapter implements R
 	public void removeAttribute(String name) {
 		attributeMap.remove(name);
 	}
-
-	@Override
-	public Map<String, Object> getParameterMap() {
-		return null;
-	}
-
-	@Override
-	public Map<String, Object> getAttributeMap() {
-		return attributeMap;
-	}
 	
 }

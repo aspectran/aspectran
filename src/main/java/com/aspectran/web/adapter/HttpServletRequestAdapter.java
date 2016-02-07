@@ -17,9 +17,7 @@ package com.aspectran.web.adapter;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.Locale;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -97,38 +95,6 @@ public class HttpServletRequestAdapter extends AbstractRequestAdapter implements
 	@Override
 	public void removeAttribute(String name) {
 		((HttpServletRequest)adaptee).removeAttribute(name);
-	}
-
-	@Override
-	public Map<String, Object> getParameterMap() {
-		Map<String, Object> params = new HashMap<String, Object>();
-		Enumeration<String> enm = getParameterNames();
-		
-	    while(enm.hasMoreElements()) {
-	        String name = enm.nextElement();
-	        String[] values = getParameterValues(name);
-			if(values != null && values.length == 1) {
-				params.put(name, values[0]);
-			} else {
-				params.put(name, values);
-			}
-	    }
-	    
-	    return params;
-	}
-
-	@Override
-	public Map<String, Object> getAttributeMap() {
-		Map<String, Object> attrs = new HashMap<String, Object>();
-		Enumeration<String> enm = getAttributeNames();
-
-		while(enm.hasMoreElements()) {
-			String name = enm.nextElement();
-			Object value = getAttribute(name);
-			attrs.put(name, value);
-		}
-
-		return attrs;
 	}
 
 	@Override

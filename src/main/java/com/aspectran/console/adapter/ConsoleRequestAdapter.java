@@ -60,7 +60,6 @@ public class ConsoleRequestAdapter extends AbstractRequestAdapter implements Req
 	@Override
 	public String getParameter(String name) {
 		Object value = parameterMap.get(name);
-
 		if(value == null)
 			return null;
 
@@ -101,16 +100,6 @@ public class ConsoleRequestAdapter extends AbstractRequestAdapter implements Req
 	@Override
 	public void removeAttribute(String name) {
 		attributeMap.remove(name);
-	}
-
-	@Override
-	public Map<String, Object> getParameterMap() {
-		return parameterMap;
-	}
-
-	@Override
-	public Map<String, Object> getAttributeMap() {
-		return attributeMap;
 	}
 
 }

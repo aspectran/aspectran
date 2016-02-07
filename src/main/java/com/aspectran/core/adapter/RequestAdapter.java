@@ -193,6 +193,14 @@ public interface RequestAdapter {
 	public Map<String, Object> getParameterMap();
 
 	/**
+	 * Fills all parameters to the specified map.
+	 *
+	 * @param parameterMap the parameter map
+	 * @since 2.0.0
+	 */
+	public void fillPrameterMap(Map<String, Object> parameterMap);
+	
+	/**
 	 * Return a mutable Map of the request attributes,
 	 * with attribute names as map keys and attribute value as map value.
 	 *
@@ -202,6 +210,14 @@ public interface RequestAdapter {
 	 */
 	public Map<String, Object> getAttributeMap();
 
+	/**
+	 * Fills all attributes to the specified map.
+	 *
+	 * @param attributeMap the attribute map
+	 * @since 2.0.0
+	 */
+	public void fillAttributeMap(Map<String, Object> attributeMap);
+	
 	/**
 	 * Returns whether request header has exceed the maximum length.
 	 *
