@@ -17,12 +17,14 @@ package com.aspectran.core.activity;
 
 import java.util.HashMap;
 
+import com.aspectran.core.activity.process.result.ActionResult;
+import com.aspectran.core.activity.process.result.ContentResult;
 import com.aspectran.core.adapter.RequestAdapter;
 
 /**
  * The Class ActivityResultDataMap.
  */
-public class ActivityResultDataMap extends HashMap<String, Object> {
+public class ActivityDataMap extends HashMap<String, Object> {
 
 	/** @serial */
 	private static final long serialVersionUID = -4557424414862800204L;
@@ -31,16 +33,51 @@ public class ActivityResultDataMap extends HashMap<String, Object> {
 
 	protected RequestAdapter requestAdapter;
 
-	public ActivityResultDataMap(Activity activity) {
-		this.activity = activity;
-		this.requestAdapter = activity.getRequestAdapter();
+	/**
+	 * Instantiates a new activity data map.
+	 *
+	 * @param activity the activity
+	 */
+	public ActivityDataMap(Activity activity) {
+		this(activity, false);
 	}
 
+	/**
+	 * Instantiates a new activity data map.
+	 *
+	 * @param activity the activity
+	 * @param prefill whether data pre-fill.
+	 */
+	public ActivityDataMap(Activity activity, boolean prefill) {
+		this.activity = activity;
+		this.requestAdapter = activity.getRequestAdapter();
+		
+		if(prefill)
+			prefillData();
+	}
+	
+	private void prefillData() {
+		requestAdapter.fillPrameterMap(this);
+		requestAdapter.fillAttributeMap(this);
+		
+		if(activity.getProcessResult() != null) {
+			for(ContentResult cr : activity.getProcessResult()) {
+				for(ActionResult ar : cr) {
+					if(ar.getActionId() != null) {
+						put(ar.getActionId(), ar.getResultValue());
+					}
+				}
+			}
+		}
+	}
+	
 	@Override
 	public Object get(Object key) {
+		if(key == null)
+			return null;
+		
 		String name = key.toString();
 		Object value = super.get(key);
-
 		if(value != null)
 			return value;
 
@@ -54,14 +91,12 @@ public class ActivityResultDataMap extends HashMap<String, Object> {
 		}
 
 		value = requestAdapter.getAttribute(name);
-
 		if(value != null) {
 			put(name, value);
 			return value;
 		}
 
 		value = requestAdapter.getParameter(name);
-
 		if(value != null) {
 			put(name, value);
 			return value;

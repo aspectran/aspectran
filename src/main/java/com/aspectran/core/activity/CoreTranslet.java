@@ -47,7 +47,7 @@ public class CoreTranslet implements Translet {
 	
 	private AspectAdviceResult aspectAdviceResult;
 
-	private ActivityResultDataMap activityResultDataMap;
+	private ActivityDataMap activityDataMap;
 	
 	/**
 	 * Instantiates a new CoreTranslet.
@@ -143,12 +143,12 @@ public class CoreTranslet implements Translet {
 	}
 
 	@Override
-	public ActivityResultDataMap getActivityResultDataMap() {
-		if(activityResultDataMap == null) {
-			activityResultDataMap = new ActivityResultDataMap(activity);
+	public ActivityDataMap getActivityDataMap() {
+		if(activityDataMap == null) {
+			activityDataMap = new ActivityDataMap(activity);
 		}
 
-		return activityResultDataMap;
+		return activityDataMap;
 	}
 
 	@Override

@@ -133,7 +133,7 @@ public interface Translet {
 	 *
 	 * @return the activity result data map
 	 */
-	public ActivityResultDataMap getActivityResultDataMap();
+	public ActivityDataMap getActivityDataMap();
 
 	/**
 	 * Respond immediately, and the remaining jobs will be canceled.
