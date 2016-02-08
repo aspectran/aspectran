@@ -41,7 +41,6 @@ public class MultipartRequestWrapper extends HttpServletRequestWrapper {
 	 * Instantiates a new MultipartRequestWrapper.
 	 *
 	 * @param parser the handler
-	 *
 	 * @throws MultipartRequestException the multipart request exception
 	 */
 	public MultipartRequestWrapper(MultipartFormDataParser parser) {
@@ -49,33 +48,21 @@ public class MultipartRequestWrapper extends HttpServletRequestWrapper {
 		this.parser = parser;
 	}
 
-	/* (non-Javadoc)
-	 * @see javax.servlet.ServletRequestWrapper#getParameterNames()
-	 */
 	@Override
 	public Enumeration<String> getParameterNames() {
 		return parser.getParameterNames();
 	}
 	
-	/* (non-Javadoc)
-	 * @see javax.servlet.ServletRequestWrapper#getParameter(java.lang.String)
-	 */
 	@Override
 	public String getParameter(String name) {
 		return parser.getParameter(name);
 	}
 
-	/* (non-Javadoc)
-	 * @see javax.servlet.ServletRequestWrapper#getParameterValues(java.lang.String)
-	 */
 	@Override
 	public String[] getParameterValues(String name) {
 		return parser.getParameterValues(name);
 	}
 
-	/* (non-Javadoc)
-	 * @see javax.servlet.ServletRequestWrapper#getParameterMap()
-	 */
 	@Override
 	public Map<String, String[]> getParameterMap() {
 		Map<String, String[]> map = new HashMap<String, String[]>();
@@ -102,7 +89,6 @@ public class MultipartRequestWrapper extends HttpServletRequestWrapper {
 	 * Gets the file parameter.
 	 *
 	 * @param name the name of the file parameter
-	 *
 	 * @return the file parameter
 	 */
 	public FileParameter getFileParameter(String name) {
@@ -113,7 +99,6 @@ public class MultipartRequestWrapper extends HttpServletRequestWrapper {
 	 * Gets the file parameters.
 	 *
 	 * @param name the name of the file parameter
-	 *
 	 * @return the file parameters
 	 */
 	public FileParameter[] getFileParameters(String name) {

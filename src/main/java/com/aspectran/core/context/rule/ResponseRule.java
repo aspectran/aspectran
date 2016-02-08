@@ -125,9 +125,9 @@ public class ResponseRule implements ResponseRuleApplicable, Replicable<Response
 		return aspectAdviceRuleRegistry;
 	}
 
-	public AspectAdviceRuleRegistry getAspectAdviceRuleRegistry(boolean clone) throws CloneNotSupportedException {
-		if(clone && aspectAdviceRuleRegistry != null)
-			return (AspectAdviceRuleRegistry)aspectAdviceRuleRegistry.clone();
+	public AspectAdviceRuleRegistry getAspectAdviceRuleRegistry(boolean replicate) {
+		if(replicate && aspectAdviceRuleRegistry != null)
+			return aspectAdviceRuleRegistry.replicate();
 		
 		return aspectAdviceRuleRegistry;
 	}
@@ -160,7 +160,7 @@ public class ResponseRule implements ResponseRuleApplicable, Replicable<Response
 	
 	public static ResponseRule newInstance(String name, String characterEncoding) {
 		if(characterEncoding != null && !Charset.isSupported(characterEncoding))
-			throw new IllegalCharsetNameException("Given charset name is illegal. '" + characterEncoding + "'");
+			throw new IllegalCharsetNameException("Given charset name is illegal. charsetName: " + characterEncoding);
 		
 		ResponseRule responseRule = new ResponseRule();
 		responseRule.setName(name);

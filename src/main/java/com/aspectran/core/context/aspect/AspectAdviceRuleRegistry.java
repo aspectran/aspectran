@@ -22,13 +22,14 @@ import java.util.Map;
 
 import com.aspectran.core.context.rule.AspectAdviceRule;
 import com.aspectran.core.context.rule.ExceptionHandlingRule;
+import com.aspectran.core.context.rule.Replicable;
 import com.aspectran.core.context.rule.SettingsAdviceRule;
 import com.aspectran.core.context.rule.type.AspectAdviceType;
 
 /**
  * The Class AspectAdviceRuleRegistry.
  */
-public class AspectAdviceRuleRegistry implements Cloneable {
+public class AspectAdviceRuleRegistry implements Replicable<AspectAdviceRuleRegistry> {
 
 	private Map<String, Object> settings;
 	
@@ -141,39 +142,36 @@ public class AspectAdviceRuleRegistry implements Cloneable {
 	}
 
 	@Override
-	public AspectAdviceRuleRegistry clone() throws CloneNotSupportedException {
+	public AspectAdviceRuleRegistry replicate() {
 		// deep copy
-		AspectAdviceRuleRegistry newAspectAdviceRuleRegistry = (AspectAdviceRuleRegistry)super.clone();
-		
+		AspectAdviceRuleRegistry aarr = new AspectAdviceRuleRegistry();
+		aarr.setAspectRuleCount(aarr.getAspectRuleCount());
+
 		if(settings != null) {
 			Map<String, Object> newSettings = new HashMap<String, Object>(settings);
-			newAspectAdviceRuleRegistry.setSettings(newSettings);
+			aarr.setSettings(newSettings);
 		}
 		if(beforeAdviceRuleList != null) {
-			List<AspectAdviceRule> newBeforeAdviceRuleList = new ArrayList<AspectAdviceRule>(beforeAdviceRuleList);
-			newAspectAdviceRuleRegistry.setBeforeAdviceRuleList(newBeforeAdviceRuleList);
+			aarr.setBeforeAdviceRuleList(new ArrayList<AspectAdviceRule>(beforeAdviceRuleList));
 		}
 		if(afterAdviceRuleList != null) {
-			List<AspectAdviceRule> newAfterAdviceRuleList = new ArrayList<AspectAdviceRule>(afterAdviceRuleList);
-			newAspectAdviceRuleRegistry.setAfterAdviceRuleList(newAfterAdviceRuleList);
+			aarr.setAfterAdviceRuleList(new ArrayList<AspectAdviceRule>(afterAdviceRuleList));
 		}
 		if(finallyAdviceRuleList != null) {
-			List<AspectAdviceRule> newFinallyAdviceRuleList = new ArrayList<AspectAdviceRule>(finallyAdviceRuleList);
-			newAspectAdviceRuleRegistry.setFinallyAdviceRuleList(newFinallyAdviceRuleList);
+			aarr.setFinallyAdviceRuleList(new ArrayList<AspectAdviceRule>(finallyAdviceRuleList));
 		}
 		if(exceptionHandlingRuleList != null) {
-			List<ExceptionHandlingRule> newExceptionHandlingRuleList = new ArrayList<ExceptionHandlingRule>(exceptionHandlingRuleList);
-			newAspectAdviceRuleRegistry.setExceptionHandlingRuleList(newExceptionHandlingRuleList);
+			aarr.setExceptionHandlingRuleList(new ArrayList<ExceptionHandlingRule>(exceptionHandlingRuleList));
 		}
 		
-		return newAspectAdviceRuleRegistry;
+		return aarr;
 	}
 
 	public int getAspectRuleCount() {
 		return aspectRuleCount;
 	}
 
-	public void setAspectRuleCount(int aspectRuleCount) {
+	final void setAspectRuleCount(int aspectRuleCount) {
 		this.aspectRuleCount = aspectRuleCount;
 	}
 	

@@ -40,7 +40,7 @@ public class XmlImportHandler extends AbstractImportHandler implements ImportHan
 		handle();
 		
 		// First default setting is held after configuration loading is completed.
-		if(assistantLocal.getCloneCount() > 0) {
+		if(assistantLocal.getReplicatedCount() > 0) {
 			assistant.restoreAssistantLocal(assistantLocal);
 		}
 	}

@@ -288,7 +288,6 @@ public class MultipartFormDataParser {
 	 * Gets the string.
 	 * 
 	 * @param fileItem the file item
-	 * 
 	 * @return the string
 	 */
 	private String getString(FileItem fileItem) {
@@ -424,19 +423,22 @@ public class MultipartFormDataParser {
 	 */
 	private RequestContext createRequestContext(final HttpServletRequest req) {
 		return new RequestContext() {
+			@Override
 			public String getCharacterEncoding() {
 				return req.getCharacterEncoding();
 			}
 
+			@Override
 			public String getContentType() {
 				return req.getContentType();
 			}
 
-			@Deprecated
+			@Override
 			public int getContentLength() {
 				return req.getContentLength();
 			}
 
+			@Override
 			public InputStream getInputStream() throws IOException {
 				return req.getInputStream();
 			}

@@ -144,8 +144,13 @@ public class CoreTranslet implements Translet {
 
 	@Override
 	public ActivityDataMap getActivityDataMap() {
+		return getActivityDataMap(false);
+	}
+
+	@Override
+	public ActivityDataMap getActivityDataMap(boolean prefill) {
 		if(activityDataMap == null) {
-			activityDataMap = new ActivityDataMap(activity);
+			activityDataMap = new ActivityDataMap(activity, prefill);
 		}
 
 		return activityDataMap;

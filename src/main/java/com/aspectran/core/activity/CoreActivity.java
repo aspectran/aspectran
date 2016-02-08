@@ -198,7 +198,7 @@ public class CoreActivity extends AbstractActivity implements Activity {
 			if(characterEncoding != null)
 				getResponseAdapter().setCharacterEncoding(characterEncoding);
 		} catch(UnsupportedEncodingException e) {
-			throw new ActivityException(e);
+			throw new ActivityException("Failed to determine character encoding.", e);
 		}
 	}
 

@@ -428,9 +428,9 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 		return aspectAdviceRuleRegistry;
 	}
 
-	public AspectAdviceRuleRegistry getAspectAdviceRuleRegistry(boolean clone) throws CloneNotSupportedException {
-		if(clone && aspectAdviceRuleRegistry != null)
-			return aspectAdviceRuleRegistry.clone();
+	public AspectAdviceRuleRegistry getAspectAdviceRuleRegistry(boolean replicate) throws CloneNotSupportedException {
+		if(replicate && aspectAdviceRuleRegistry != null)
+			return aspectAdviceRuleRegistry.replicate();
 		
 		return aspectAdviceRuleRegistry;
 	}

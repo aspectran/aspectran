@@ -145,7 +145,7 @@ public class WebActivity extends CoreActivity implements Activity {
 
 			String multipartRequestWrapperResolver = getRequestSetting(MULTIPART_REQUEST_WRAPPER_RESOLVER);
 			if(multipartRequestWrapperResolver == null) {
-				throw new MultipartRequestException("'multipartRequestWrapperResolver' was not specified.");
+				throw new MultipartRequestException("The settings name 'multipartRequestWrapperResolver' has not been specified in the default request rule.");
 			}
 
 			MultipartRequestWrapperResolver resolver = getBean(multipartRequestWrapperResolver);

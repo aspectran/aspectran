@@ -293,12 +293,11 @@ public class ContextBuilderAssistant {
 	 * Backup assistant local.
 	 *
 	 * @return the assistant local
-	 * @throws CloneNotSupportedException the clone not supported exception
 	 */
-	public AssistantLocal backupAssistantLocal() throws CloneNotSupportedException {
+	public AssistantLocal backupAssistantLocal() {
 		AssistantLocal oldAssistantLocal = assistantLocal;
 
-		setAssistantLocal(assistantLocal.clone());
+		setAssistantLocal(assistantLocal.replicate());
 		
 		return oldAssistantLocal;
 	}

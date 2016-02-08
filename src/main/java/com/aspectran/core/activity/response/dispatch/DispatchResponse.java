@@ -47,9 +47,7 @@ public class DispatchResponse implements Response {
 		this.dispatchResponseRule = dispatchResponseRule;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.response.Response#response(com.aspectran.core.activity.Activity)
-	 */
+	@Override
 	public void response(Activity activity) {
 		try {
 			if(debugEnabled) {
@@ -75,30 +73,22 @@ public class DispatchResponse implements Response {
 		return dispatchResponseRule;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.response.Response#getContentType()
-	 */
+	@Override
 	public String getContentType() {
 		return dispatchResponseRule.getContentType();
 	}
 
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.response.Response#getResponseType()
-	 */
+	@Override
 	public ResponseType getResponseType() {
 		return DispatchResponseRule.RESPONSE_TYPE;
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.response.Response#getActionList()
-	 */
+
+	@Override
 	public ActionList getActionList() {
 		return dispatchResponseRule.getActionList();
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.response.Response#replicate()
-	 */
+
+	@Override
 	public Response replicate() {
 		DispatchResponseRule drr = dispatchResponseRule.replicate();
 		Response response = new DispatchResponse(drr);
@@ -106,7 +96,7 @@ public class DispatchResponse implements Response {
 	}
 
 	/**
-	 * Determine view dispatcher.
+	 * Determine the view dispatcher.
 	 *
 	 * @param activity the current Activity
 	 */
@@ -115,9 +105,8 @@ public class DispatchResponse implements Response {
 			synchronized(this) {
 				if(viewDispatcher == null) {
 					String viewDispatcherName = activity.getResponseSetting(ViewDispatcher.VIEW_DISPATCHER_SETTING_NAME);
-
 					if(viewDispatcherName == null)
-						throw new DispatchResponseException("View Dispatcher is not defined.");
+						throw new DispatchResponseException("The settings name '" + ViewDispatcher.VIEW_DISPATCHER_SETTING_NAME + "' has not been specified in the default response rule.");
 					
 					viewDispatcher = activity.getBean(viewDispatcherName);
 					

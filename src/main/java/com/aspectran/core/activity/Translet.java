@@ -121,7 +121,8 @@ public interface Translet {
 	public ProcessResult touchProcessResult();
 
 	/**
-	 * Returns the ProcessResult. If not yet instantiated then create a new one.
+	 * Returns the ProcessResult.
+	 * If not yet instantiated then create a new one.
 	 *
 	 * @param contentName the content name
 	 * @return the process result
@@ -129,11 +130,19 @@ public interface Translet {
 	public ProcessResult touchProcessResult(String contentName);
 
 	/**
-	 * Gets activity result data map.
+	 * Gets activity data map.
 	 *
-	 * @return the activity result data map
+	 * @return the activity data map
 	 */
 	public ActivityDataMap getActivityDataMap();
+
+	/**
+	 * Gets activity data map.
+	 *
+	 * @param prefill whether data pre-fill.
+	 * @return the activity data map
+	 */
+	public ActivityDataMap getActivityDataMap(boolean prefill);
 
 	/**
 	 * Respond immediately, and the remaining jobs will be canceled.

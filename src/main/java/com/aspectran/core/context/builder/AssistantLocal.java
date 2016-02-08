@@ -15,24 +15,27 @@
  */
 package com.aspectran.core.context.builder;
 
+import com.aspectran.core.context.rule.Replicable;
+
 /**
  * The Class AssistantLocal.
  * 
  * <p>Created: 2015. 10. 2</p>
  */
-public class AssistantLocal implements Cloneable {
+public class AssistantLocal implements Replicable<AssistantLocal> {
 
 	private String description;
 	
 	private DefaultSettings defaultSettings;
 	
-	private int cloneCount;
+	private final int replicatedCount;
 	
 	public AssistantLocal() {
+		this(0);
 	}
 
 	private AssistantLocal(int cloneCount) {
-		this.cloneCount = cloneCount;
+		this.replicatedCount = cloneCount;
 	}
 	
 	public String getDescription() {
@@ -58,20 +61,21 @@ public class AssistantLocal implements Cloneable {
 		this.defaultSettings = defaultSettings;
 	}
 	
-	public int getCloneCount() {
-		return cloneCount;
+	public int getReplicatedCount() {
+		return replicatedCount;
 	}
 
-	public AssistantLocal clone() throws CloneNotSupportedException {
-		AssistantLocal assistantLocal = new AssistantLocal(cloneCount + 1);
-		DefaultSettings defaultSettings = assistantLocal.getDefaultSettings();
+	@Override
+	public AssistantLocal replicate() {
+		AssistantLocal al = new AssistantLocal(replicatedCount + 1);
+		al.setDescription(al.getDescription());
+		DefaultSettings ds = al.getDefaultSettings();
 		
-		if(defaultSettings != null) {
-			defaultSettings = defaultSettings.clone();
-			assistantLocal.setDefaultSettings(defaultSettings);
+		if(ds != null) {
+			al.setDefaultSettings(new DefaultSettings(ds));
 		}
 		
-		return assistantLocal;              
+		return al;
 	}
 	
 }

@@ -81,7 +81,6 @@ public class MultipartFileParameter extends FileParameter {
 	 * Return an InputStream to read the contents of the file from.
 	 * 
 	 * @return the contents of the file as stream, or an empty stream if empty
-	 * 
 	 * @throws IOException in case of access errors (if the temporary store fails)
 	 */
 	public InputStream getInputStream() throws IOException {
@@ -168,7 +167,6 @@ public class MultipartFileParameter extends FileParameter {
 	 * Returns the canonical name of the given file.
 	 * 
 	 * @param fileName the given file
-	 * 
 	 * @return the canonical name of the given file
 	 */
 	private String getCanonicalName(String fileName) {

@@ -68,9 +68,7 @@ public class FreeMarkerViewDispatcher implements ViewDispatcher {
 		this.templateNameSuffix = templateNameSuffix;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.response.dispatch.ViewDispatcher#dispatch(com.aspectran.core.activity.AspectranActivity, com.aspectran.base.rule.DispatchResponseRule)
-	 */
+	@Override
 	public void dispatch(Activity activity, DispatchResponseRule dispatchResponseRule) throws ViewDispatchException {
 		try {
 			String dispatchName = dispatchResponseRule.getName();

@@ -28,7 +28,7 @@ import com.aspectran.core.util.PrefixSuffixPattern;
  * 
  * <p>Created: 2008. 03. 22 PM 5:48:09</p>
  */
-public class DefaultSettings implements Cloneable {
+public class DefaultSettings {
 	
 	private String transletNamePattern;
 	
@@ -53,6 +53,20 @@ public class DefaultSettings implements Cloneable {
 	private String defaultTemplateEngine;
 
 	public DefaultSettings() {
+	}
+
+	public DefaultSettings(DefaultSettings ds) {
+		this.transletNamePattern = ds.getTransletNamePattern();
+		this.transletNamePrefix = ds.getTransletNamePrefix();
+		this.transletNameSuffix = ds.getTransletNameSuffix();
+		this.transletInterfaceClassName = ds.getTransletInterfaceClassName();
+		this.transletInterfaceClass = ds.getTransletInterfaceClass();
+		this.transletImplementClassName = ds.getTransletImplementClassName();
+		this.transletImplementClass = ds.getTransletImplementClass();
+		this.nullableActionId = ds.getNullableActionId();
+		this.beanProxifier = ds.getBeanProxifier();
+		this.pointcutPatternVerifiable = ds.getPointcutPatternVerifiable();
+		this.defaultTemplateEngine = ds.getDefaultTemplateEngine();
 	}
 	
 	public String getTransletNamePattern() {
@@ -201,9 +215,4 @@ public class DefaultSettings implements Cloneable {
 			defaultTemplateEngine = settings.get(DefaultSettingType.DEFAULT_TEMPLATE_ENGINE);
 	}
 
-	@Override
-	public DefaultSettings clone() throws CloneNotSupportedException {
-		return (DefaultSettings)super.clone();              
-	}
-	
 }
