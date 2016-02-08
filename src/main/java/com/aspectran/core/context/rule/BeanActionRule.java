@@ -26,17 +26,17 @@ import com.aspectran.core.util.BooleanUtils;
  * <p>Created: 2008. 03. 22 PM 5:50:35</p>
  */
 public class BeanActionRule implements ArgumentPossessable, PropertyPossessable {
-	
+
 	protected String actionId;
-	
+
 	protected String beanId;
-	
+
 	protected String methodName;
 
 	protected ItemRuleMap propertyItemRuleMap;
-	
+
 	protected ItemRuleMap argumentItemRuleMap;
-	
+
 	protected Boolean hidden;
 	
 	private AspectAdviceRule aspectAdviceRule;
@@ -96,7 +96,7 @@ public class BeanActionRule implements ArgumentPossessable, PropertyPossessable 
 	public void setMethodName(String methodName) {
 		this.methodName = methodName;
 	}
-	
+
 	/**
 	 * Returns whether to hide result of the action.
 	 *

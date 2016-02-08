@@ -490,8 +490,8 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 		return sb.toString();
 	}
 	
-	public static TransletRule newInstance(String name, String scan, String mask, String method) {
-		if(name == null)
+	public static TransletRule newInstance(String name, String scanPath, String maskPattern, String method) {
+		if(name == null && scanPath == null)
 			throw new IllegalArgumentException("Translet name must not be null.");
 
 		RequestMethodType[] requestMethods = null;
@@ -501,17 +501,17 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 				throw new IllegalArgumentException("No request method type registered for '" + method + "'.");
 		}
 
-		return newInstance(name, scan, mask, requestMethods);
+		return newInstance(name, scanPath, maskPattern, requestMethods);
 	}
 
-	public static TransletRule newInstance(String name, String scan, String mask, RequestMethodType[] requestMethods) {
+	public static TransletRule newInstance(String name, String scanPath, String maskPattern, RequestMethodType[] requestMethods) {
 		TransletRule transletRule = new TransletRule();
 		transletRule.setName(name);
 		if(requestMethods != null && requestMethods.length > 0) {
 			transletRule.setRequestMethods(requestMethods);
 		} else {
-			transletRule.setScanPath(scan);
-			transletRule.setMaskPattern(mask);
+			transletRule.setScanPath(scanPath);
+			transletRule.setMaskPattern(maskPattern);
 		}
 
 		return transletRule;

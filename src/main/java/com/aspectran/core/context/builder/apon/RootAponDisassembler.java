@@ -313,12 +313,12 @@ public class RootAponDisassembler {
 
 		if(className == null && scan == null && offerBean != null) {
 			if(id == null)
-				throw new IllegalArgumentException("The <bean> element requires an id attribute.");
+				throw new IllegalArgumentException("Bean id must not be null.");
 
 			beanRule = BeanRule.newOfferedBeanInstance(id, scope, singleton, offerBean, offerMethod, initMethod, factoryMethod, destroyMethod, lazyInit, important);
 		} else {
 			if(className == null && scan == null)
-				throw new IllegalArgumentException("The <bean> element requires a class attribute.");
+				throw new IllegalArgumentException("Bean class must not be null.");
 
 			beanRule = BeanRule.newInstance(id, className, scan, mask, scope, singleton, initMethod, factoryMethod, destroyMethod, lazyInit, important);
 		}
@@ -348,14 +348,14 @@ public class RootAponDisassembler {
 	public void disassembleTransletRule(Parameters transletParameters) throws CloneNotSupportedException {
 		String description = transletParameters.getString(TransletParameters.description);
 		String name = transletParameters.getString(TransletParameters.name);
+		String scan = transletParameters.getString(TransletParameters.scan);
 		String mask = transletParameters.getString(TransletParameters.mask);
-		String path = transletParameters.getString(TransletParameters.scan);
-		String restVerb = transletParameters.getString(TransletParameters.method);
+		String method = transletParameters.getString(TransletParameters.method);
 		
-		if(name == null)
-			throw new IllegalArgumentException("Parameter name must not be null.");
+		if(name == null && scan == null)
+			throw new IllegalArgumentException("Translet name must not be null.");
 		
-		TransletRule transletRule = TransletRule.newInstance(name, mask, path, restVerb);
+		TransletRule transletRule = TransletRule.newInstance(name, mask, scan, method);
 		
 		if(description != null)
 			transletRule.setDescription(description);

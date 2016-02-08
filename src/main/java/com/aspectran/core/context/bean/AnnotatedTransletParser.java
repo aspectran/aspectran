@@ -22,7 +22,7 @@ import com.aspectran.core.context.bean.annotation.Forward;
 import com.aspectran.core.context.bean.annotation.Redirect;
 import com.aspectran.core.context.bean.annotation.Transform;
 import com.aspectran.core.context.bean.annotation.Request;
-import com.aspectran.core.context.bean.annotation.Translets;
+import com.aspectran.core.context.bean.annotation.Configuration;
 import com.aspectran.core.context.rule.BeanActionRule;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.DispatchResponseRule;
@@ -42,11 +42,11 @@ public abstract class AnnotatedTransletParser {
 
 	public static void parse(BeanRule beanRule, TransletRuleMap transletRuleMap) {
 		Class<?> targetClass = beanRule.getBeanClass();
-		if(!targetClass.isAnnotationPresent(Translets.class))
+		if(!targetClass.isAnnotationPresent(Configuration.class))
 			return;
 
-		Translets transletsAnno = targetClass.getAnnotation(Translets.class);
-		String namespace = StringUtils.emptyToNull(transletsAnno.namespace());
+		Configuration configAnno = targetClass.getAnnotation(Configuration.class);
+		String namespace = StringUtils.emptyToNull(configAnno.namespace());
 		
 		for(Method method : targetClass.getMethods()) {
 			if(method.isAnnotationPresent(Request.class)) {

@@ -24,6 +24,7 @@ public enum ActionType {
 
 	ECHO("echo"),
 	BEAN("bean"),
+	METHOD("method"),
 	INCLUDE("include");
 
 	private final String alias;

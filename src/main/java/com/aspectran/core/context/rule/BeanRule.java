@@ -645,7 +645,7 @@ public class BeanRule implements Replicable<BeanRule> {
 
 	public static BeanRule newInstance(String id, String className, String scanPath, String maskPattern, String scope, Boolean singleton, String initMethodName, String factoryMethodName, String destroyMethodName, Boolean lazyInit, Boolean important) {
 		if(className == null && scanPath == null)
-			throw new IllegalArgumentException("className must not be null.");
+			throw new IllegalArgumentException("Bean class must not be null.");
 
 		ScopeType scopeType = ScopeType.lookup(scope);
 

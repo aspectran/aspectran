@@ -13,15 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.core.context.translet.scan;
+package com.aspectran.core.context.bean.annotation;
 
-/**
- * The Interface TransletClassScanFilter.
- * 
- * @since 2.0.0
- */
-public interface TransletClassScanFilter {
-	
-	public boolean filter(String className, String resourceName, Class<?> scannedClass);
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+public @interface Configuration {
+
+	String namespace() default "";
 
 }

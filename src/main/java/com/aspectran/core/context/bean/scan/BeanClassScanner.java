@@ -96,70 +96,66 @@ public class BeanClassScanner extends ClassScanner {
 	}
 
 	@Override
-	public Map<String, Class<?>> scanClasses(String classNamePattern) {
-		try {
-			return super.scanClasses(classNamePattern);
-		} catch(IOException e) {
-			throw new BeanClassScanFailedException("Failed to scan bean class. classNamePattern: " + classNamePattern, e);
-		}
+	public void scan(String classNamePattern, SaveHandler saveHandler) throws IOException {
+		super.scan(classNamePattern, new InnerSaveHandler(saveHandler));
 	}
 
-	@Override
-	public void scanClasses(String classNamePattern, Map<String, Class<?>> scannedClasses) throws IOException {
-		try {
-			super.scanClasses(classNamePattern, scannedClasses);
-		} catch(IOException e) {
-			throw new BeanClassScanFailedException("Failed to scan bean class. classNamePattern: " + classNamePattern, e);
-		}
-	}
+	private class InnerSaveHandler implements SaveHandler {
 
-	@Override
-	protected void putClass(String resourceName, Class<?> scannedClass, Map<String, Class<?>> scannedClasses) {
-		if(scannedClass.isInterface() ||
-				Modifier.isAbstract(scannedClass.getModifiers()) ||
-				!Modifier.isPublic(scannedClass.getModifiers()))
-			return;
+		private SaveHandler saveHandler;
 
-		String className = scannedClass.getName();
-		String beanId = className;
-
-		if(beanIdMaskPattern != null) {
-			String maskedBeanId = beanIdMaskPattern.mask(beanId);
-			if(maskedBeanId != null) {
-				beanId = maskedBeanId;
-			} else {
-				log.warn("Unmatched pattern can not be masking. beanId: " + beanId + " (maskPattern: " + beanIdMaskPattern + ")");
-			}
+		public InnerSaveHandler(SaveHandler saveHandler) {
+			this.saveHandler = saveHandler;
 		}
 
-		if(beanClassScanFilter != null) {
-			beanId = beanClassScanFilter.filter(beanId, resourceName, scannedClass);
-			if(beanId == null) {
+		@Override
+		public void save(String resourceName, Class<?> scannedClass) {
+			if(scannedClass.isInterface() ||
+					Modifier.isAbstract(scannedClass.getModifiers()) ||
+					!Modifier.isPublic(scannedClass.getModifiers()))
 				return;
-			}
-		}
 
-		if(filterParameters != null) {
-			String[] excludePatterns = filterParameters.getStringArray(FilterParameters.exclude);
-			
-			if(excludePatterns != null) {
-				for(String excludePattern : excludePatterns) {
-					WildcardPattern pattern = excludePatternCache.get(excludePattern);
-					if(pattern == null) {
-						pattern = new WildcardPattern(excludePattern, ClassUtils.PACKAGE_SEPARATOR_CHAR);
-						excludePatternCache.put(excludePattern, pattern);
-					}
-					if(pattern.matches(className)) {
-						return;
+			String className = scannedClass.getName();
+			String beanId = className;
+
+			if(beanIdMaskPattern != null) {
+				String maskedBeanId = beanIdMaskPattern.mask(beanId);
+				if(maskedBeanId != null) {
+					beanId = maskedBeanId;
+				} else {
+					log.warn("Unmatched pattern can not be masking. beanId: " + beanId + " (maskPattern: " + beanIdMaskPattern + ")");
+				}
+			}
+
+			if(beanClassScanFilter != null) {
+				beanId = beanClassScanFilter.filter(beanId, resourceName, scannedClass);
+				if(beanId == null) {
+					return;
+				}
+			}
+
+			if(filterParameters != null) {
+				String[] excludePatterns = filterParameters.getStringArray(FilterParameters.exclude);
+
+				if(excludePatterns != null) {
+					for(String excludePattern : excludePatterns) {
+						WildcardPattern pattern = excludePatternCache.get(excludePattern);
+						if(pattern == null) {
+							pattern = new WildcardPattern(excludePattern, ClassUtils.PACKAGE_SEPARATOR_CHAR);
+							excludePatternCache.put(excludePattern, pattern);
+						}
+						if(pattern.matches(className)) {
+							return;
+						}
 					}
 				}
 			}
+
+			saveHandler.save(beanId, scannedClass);
+
+			if(log.isTraceEnabled())
+				log.trace("scanned bean class {beanId: " + beanId + ", className: " + className + "}");
 		}
-		
-		super.putClass(beanId, scannedClass, scannedClasses);
-		
-		if(log.isTraceEnabled())
-			log.trace("scanned bean class {beanId: " + beanId + ", className: " + className + "}");
 	}
 
 }

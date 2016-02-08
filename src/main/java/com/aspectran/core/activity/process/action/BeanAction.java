@@ -65,10 +65,11 @@ public class BeanAction extends AbstractAction implements Executable {
 	 */
 	public BeanAction(BeanActionRule beanActionRule, ActionList parent) {
 		super(beanActionRule.getActionId(), parent);
+
 		this.beanActionRule = beanActionRule;
 		this.beanId = beanActionRule.getBeanId();
 		this.methodName = beanActionRule.getMethodName();
-		
+
 		if(beanActionRule.getPropertyItemRuleMap() != null && !beanActionRule.getPropertyItemRuleMap().isEmpty())
 			this.propertyItemRuleMap = beanActionRule.getPropertyItemRuleMap();
 		else
@@ -78,7 +79,7 @@ public class BeanAction extends AbstractAction implements Executable {
 			this.argumentItemRuleMap = beanActionRule.getArgumentItemRuleMap();
 		else
 			this.argumentItemRuleMap = null;
-		
+
 		if(beanActionRule.getAspectAdviceRule() != null)
 			this.aspectAdviceRule = beanActionRule.getAspectAdviceRule();
 		else
@@ -133,7 +134,7 @@ public class BeanAction extends AbstractAction implements Executable {
 			throw e;
 		}
 	}
-	
+
 	public static Object invokeMethod(Activity activity, Object bean, String methodName, ItemRuleMap argumentItemRuleMap, ItemTokenExpressor expressor, boolean needTranslet) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
 		Class<?>[] argsTypes = null;
 		Object[] argsObjects = null;

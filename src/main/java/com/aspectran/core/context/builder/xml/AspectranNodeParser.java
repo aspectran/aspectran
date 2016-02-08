@@ -66,7 +66,7 @@ public class AspectranNodeParser {
 
 		addSettingsNodelets();
 		addTypeAliasNodelets();
-		addAspectRuleNodelets();
+		addAspectNodelets();
 		addBeanNodelets();
 		addTemplateNodelets();
 		addTransletNodelets();
@@ -178,7 +178,7 @@ public class AspectranNodeParser {
 	/**
 	 * Adds the aspect rule nodelets.
 	 */
-	private void addAspectRuleNodelets() {
+	private void addAspectNodelets() {
 		parser.addNodelet("/aspectran", new AspectNodeletAdder(assistant));
 		
 	}

@@ -60,7 +60,7 @@ public class AspectAdviceNodeletAdder implements NodeletAdder {
 				assistant.pushObject(aar);
 			}
 		});
-		parser.addNodelet(xpath, new ActionRuleNodeletAdder(assistant));
+		parser.addNodelet(xpath, new ActionNodeletAdder(assistant));
 		parser.addNodelet(xpath, "/end()", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
 				AspectAdviceRule aar = assistant.popObject();

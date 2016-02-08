@@ -19,7 +19,6 @@ import java.io.File;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import com.aspectran.core.adapter.ApplicationAdapter;
@@ -36,6 +35,7 @@ import com.aspectran.core.context.rule.type.RequestMethodType;
 import com.aspectran.core.context.rule.type.TokenType;
 import com.aspectran.core.context.translet.scan.TransletFileScanner;
 import com.aspectran.core.context.variable.ParameterMap;
+import com.aspectran.core.util.FileScanner;
 import com.aspectran.core.util.PrefixSuffixPattern;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
@@ -126,7 +126,7 @@ public class TransletRuleRegistry {
 	//	this.transletRuleMap.putAll(transletRuleMap);
 	//}
 	
-	public void addTransletRule(TransletRule transletRule) throws CloneNotSupportedException {
+	public void addTransletRule(final TransletRule transletRule) throws CloneNotSupportedException {
 		DefaultSettings defaultSettings = assistantLocal.getDefaultSettings();
 		if(defaultSettings != null) {
 			transletRule.setTransletInterfaceClass(defaultSettings.getTransletInterfaceClass());
@@ -144,13 +144,12 @@ public class TransletRuleRegistry {
 			else
 				scanner.setTransletNameMaskPattern(scanPath);
 
-			Map<String, File> templateFileMap = scanner.scanFiles(scanPath);
+			final PrefixSuffixPattern prefixSuffixPattern = new PrefixSuffixPattern(transletRule.getName());
 
-			if(templateFileMap != null && !templateFileMap.isEmpty()) {
-				PrefixSuffixPattern prefixSuffixPattern = new PrefixSuffixPattern(transletRule.getName());
-
-				for(Map.Entry<String, File> entry : templateFileMap.entrySet()) {
-					String scannedTransletName = entry.getKey();
+			scanner.scan(scanPath, new FileScanner.SaveHandler() {
+				@Override
+				public void save(String filePath, File scannedFile) {
+					String scannedTransletName = filePath;
 					TransletRule newTransletRule = TransletRule.replicate(transletRule, scannedTransletName);
 
 					if(prefixSuffixPattern.isSplited()) {
@@ -162,8 +161,9 @@ public class TransletRuleRegistry {
 					}
 
 					parseTransletRule(newTransletRule);
+
 				}
-			}
+			});
 		} else {
 			parseTransletRule(transletRule);
 		}

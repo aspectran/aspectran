@@ -59,11 +59,9 @@ public class ClassScanner {
 	 * @return a Map for scanned classes
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
-	public Map<String, Class<?>> scanClasses(String classNamePattern) throws IOException {
-		Map<String, Class<?>> scannedClasses = new LinkedHashMap<String, Class<?>>();
-		
-		scanClasses(classNamePattern, scannedClasses);
-		
+	public Map<String, Class<?>> scan(String classNamePattern) throws IOException {
+		final Map<String, Class<?>> scannedClasses = new LinkedHashMap<String, Class<?>>();
+		scan(classNamePattern, scannedClasses);
 		return scannedClasses;
 	}
 
@@ -71,10 +69,26 @@ public class ClassScanner {
 	 * Find all the classes that match the class name pattern.
 	 *
 	 * @param classNamePattern the class name pattern
-	 * @param scannedClasses a Map for scanned classes
+	 * @param scannedClasses the Map for scanned classes
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
-	public void scanClasses(String classNamePattern, Map<String, Class<?>> scannedClasses) throws IOException {
+	public void scan(String classNamePattern, final Map<String, Class<?>> scannedClasses) throws IOException {
+		scan(classNamePattern, new SaveHandler() {
+				public void save(String resourceName, Class<?> scannedClass) {
+					scannedClasses.put(resourceName, scannedClass);
+				}
+			}
+		);
+	}
+
+	/**
+	 * Find all the classes that match the class name pattern.
+	 *
+	 * @param classNamePattern the class name pattern
+	 * @param saveHandler the save handler
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
+	public void scan(String classNamePattern, SaveHandler saveHandler) throws IOException {
 		classNamePattern = classNamePattern.replace(ClassUtils.PACKAGE_SEPARATOR_CHAR, ResourceUtils.RESOURCE_NAME_SPEPARATOR_CHAR);
 
 		String basePackageName = determineBasePackageName(classNamePattern);
@@ -100,9 +114,9 @@ public class ClassScanner {
 				log.debug("class scanning: " + classNamePattern + " at " + resource.getFile());
 			
 			if(isJarResource(resource)) {
-				scanClassesFromJarResource(resource, matcher, scannedClasses);
+				scanFromJarResource(resource, matcher, saveHandler);
 			} else {
-				scanClasses(resource.getFile(), basePackageName, null,  matcher, scannedClasses);
+				scan(resource.getFile(), basePackageName, null,  matcher, saveHandler);
 			}
 		}
 	}
@@ -110,13 +124,13 @@ public class ClassScanner {
 	/**
 	 * Recursive method used to find all classes in a given directory and subdirs.
 	 *
-	 * @param targetPath          the target path
-	 * @param basePackageName     the base package name
+	 * @param targetPath the target path
+	 * @param basePackageName the base package name
 	 * @param relativePackageName the relative package name
-	 * @param matcher             the matcher
-	 * @param scannedClasses      a Map for scanned classes
+	 * @param matcher the matcher
+	 * @param saveHandler the save handler
 	 */
-	private void scanClasses(final String targetPath, final String basePackageName, final String relativePackageName, final WildcardMatcher matcher, final Map<String, Class<?>> scannedClasses) {
+	private void scan(final String targetPath, final String basePackageName, final String relativePackageName, final WildcardMatcher matcher, final SaveHandler saveHandler) {
 		final File target = new File(targetPath);
 		if(!target.exists())
 			return;
@@ -132,7 +146,7 @@ public class ClassScanner {
 						relativePackageName2 = relativePackageName + fileName + ResourceUtils.RESOURCE_NAME_SPEPARATOR;
 							
 					String basePath2 = targetPath + fileName + ResourceUtils.RESOURCE_NAME_SPEPARATOR;
-					scanClasses(basePath2, basePackageName, relativePackageName2, matcher, scannedClasses);
+					scan(basePath2, basePackageName, relativePackageName2, matcher, saveHandler);
 				} else if(fileName.endsWith(ClassUtils.CLASS_FILE_SUFFIX)) {
 					String className;
 					if(relativePackageName != null)
@@ -144,7 +158,7 @@ public class ClassScanner {
 					if(matcher.matches(relativePath)) {
 						String resourceName = targetPath + fileName;
 						Class<?> classType = loadClass(className);
-						putClass(resourceName, classType, scannedClasses);
+						saveHandler.save(resourceName, classType);
 					}
 				}
 				return false;
@@ -152,7 +166,7 @@ public class ClassScanner {
 		});
 	}
 
-	protected void scanClassesFromJarResource(URL resource, WildcardMatcher matcher, Map<String, Class<?>> scannedClasses) throws IOException {
+	protected void scanFromJarResource(URL resource, WildcardMatcher matcher, SaveHandler saveHandler) throws IOException {
 		URLConnection conn = resource.openConnection();
 		JarFile jarFile = null;
 		String jarFileUrl = null;
@@ -204,7 +218,7 @@ public class ClassScanner {
 						String resourceName = jarFileUrl + ResourceUtils.JAR_URL_SEPARATOR + entryName;
 						String className = entryNamePrefix + entryNameSuffix;
 						Class<?> classType = loadClass(className);
-						putClass(resourceName, classType, scannedClasses);
+						saveHandler.save(resourceName, classType);
 					}
 				}
 			}
@@ -218,17 +232,6 @@ public class ClassScanner {
 		}
 	}
 
-	/**
-	 * Puts a Class to the Map for scanned classes.
-	 *
-	 * @param resourceName the resource name
-	 * @param scannedClass the scanned class
-	 * @param scannedClasses a Map for scanned classes
-	 */
-	protected void putClass(String resourceName, Class<?> scannedClass, Map<String, Class<?>> scannedClasses) {
-		scannedClasses.put(resourceName, scannedClass);
-	}
-	
 	private JarFile getJarFile(String jarFileUrl) throws IOException {
 		if(jarFileUrl.startsWith(ResourceUtils.FILE_URL_PREFIX)) {
 			try {
@@ -277,6 +280,10 @@ public class ClassScanner {
 		} catch (ClassNotFoundException e) {
 			throw new RuntimeException("class loading failed. class name: " + className, e);
 		}
+	}
+
+	public interface SaveHandler {
+		public void save(String resourceName, Class<?> scannedClass);
 	}
 
 }

@@ -16,14 +16,8 @@
 package com.aspectran.core.context.rule;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
 import java.net.URL;
-import java.net.URLConnection;
 import java.util.List;
 
 import com.aspectran.core.adapter.ApplicationAdapter;
@@ -31,6 +25,7 @@ import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.expr.token.Tokenizer;
 import com.aspectran.core.context.rule.type.TokenType;
 import com.aspectran.core.util.BooleanUtils;
+import com.aspectran.core.util.ResourceUtils;
 
 /**
  * The Class TemplateRule.
@@ -251,15 +246,11 @@ public class TemplateRule implements Replicable<TemplateRule> {
 		if(this.file != null) {
 			File file = applicationAdapter.toRealPathAsFile(this.file);
 			long lastModifiedTime = file.lastModified();
-
 			if(lastModifiedTime > this.lastModifiedTime) {
 				synchronized(this) {
 					lastModifiedTime = file.lastModified();
-
 					if(lastModifiedTime > this.lastModifiedTime) {
-						Reader reader = getTemplateSourceAsReader(file, this.encoding);
-						String template = readTempateSource(reader);
-						reader.close();
+						String template = ResourceUtils.read(file, this.encoding);
 						setTemplateSource(template);
 						this.lastModifiedTime = lastModifiedTime;
 					}
@@ -270,10 +261,8 @@ public class TemplateRule implements Replicable<TemplateRule> {
 				synchronized(this) {
 					if(!this.loaded) {
 						ClassLoader classLoader = applicationAdapter.getClassLoader();
-						File file = new File(classLoader.getResource(this.resource).getFile());
-						Reader reader = getTemplateSourceAsReader(file, this.encoding);
-						String template = readTempateSource(reader);
-						reader.close();
+						URL url = classLoader.getResource(this.resource);
+						String template = ResourceUtils.read(url, this.encoding);
 						setTemplateSource(template);
 						this.loaded = true;
 					}
@@ -283,9 +272,8 @@ public class TemplateRule implements Replicable<TemplateRule> {
 			if(!this.loaded) {
 				synchronized(this) {
 					if(!this.loaded) {
-						Reader reader = getTemplateSourceAsReader(new URL(this.url), this.encoding);
-						String template = readTempateSource(reader);
-						reader.close();
+						URL url = new URL(this.url);
+						String template = ResourceUtils.read(url, this.encoding);
 						setTemplateSource(template);
 						this.loaded = true;
 					}
@@ -296,78 +284,18 @@ public class TemplateRule implements Replicable<TemplateRule> {
 
 	private String loadTemplateSource(ApplicationAdapter applicationAdapter) throws IOException {
 		String templateSource = null;
-
 		if(this.file != null) {
 			File file = applicationAdapter.toRealPathAsFile(this.file);
-			Reader reader = getTemplateSourceAsReader(file, this.encoding);
-			templateSource = readTempateSource(reader);
-			reader.close();
+			templateSource = ResourceUtils.read(file, this.encoding);
 		} else if(this.resource != null) {
 			ClassLoader classLoader = applicationAdapter.getClassLoader();
-			File file = new File(classLoader.getResource(this.resource).getFile());
-			Reader reader = getTemplateSourceAsReader(file, this.encoding);
-			templateSource = readTempateSource(reader);
-			reader.close();
+			URL url = classLoader.getResource(this.resource);
+			templateSource = ResourceUtils.read(url, this.encoding);
 		} else if(this.url != null) {
-			Reader reader = getTemplateSourceAsReader(new URL(this.url), this.encoding);
-			templateSource = readTempateSource(reader);
-			reader.close();
+			URL url = new URL(this.url);
+			templateSource = ResourceUtils.read(url, this.encoding);
 		}
-
 		return templateSource;
-	}
-
-	/**
-	 * Gets the template source as reader.
-	 *
-	 * @param file the file
-	 * @param encoding the encoding
-	 * @return the template as reader
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 */
-	private Reader getTemplateSourceAsReader(File file, String encoding) throws IOException {
-		Reader reader;
-
-		if(encoding != null) {
-			InputStream inputStream = new FileInputStream(file);
-			reader = new InputStreamReader(inputStream, encoding);
-		} else
-			reader = new FileReader(file);
-
-		return reader;
-	}
-
-	/**
-	 * Gets the template source as reader.
-	 *
-	 * @param url the url
-	 * @param encoding the encoding
-	 * @return the template as reader
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 */
-	private Reader getTemplateSourceAsReader(URL url, String encoding) throws IOException {
-		URLConnection conn = url.openConnection();
-		InputStream inputStream = conn.getInputStream();
-		Reader reader;
-
-		if(encoding != null)
-			reader = new InputStreamReader(inputStream, encoding);
-		else
-			reader = new InputStreamReader(inputStream);
-
-		return reader;
-	}
-
-	private String readTempateSource(Reader reader) throws IOException {
-		final char[] buffer = new char[1024];
-		StringBuilder sb = new StringBuilder();
-		int len;
-
-		while((len = reader.read(buffer)) != -1) {
-			sb.append(buffer, 0, len);
-		}
-
-		return sb.toString();
 	}
 
 	@Override

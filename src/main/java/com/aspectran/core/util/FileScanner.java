@@ -43,7 +43,22 @@ public class FileScanner {
 		this.applicationBasePath = applicationBasePath;
 	}
 
-	public Map<String, File> scanFiles(String filePathPattern) {
+	public Map<String, File> scan(String filePathPattern) {
+		final Map<String, File> scannedFiles = new LinkedHashMap<String, File>();
+		scan(filePathPattern, scannedFiles);
+		return scannedFiles;
+	}
+
+	public void scan(String filePathPattern, final Map<String, File> scannedFiles) {
+		scan(filePathPattern, new SaveHandler() {
+			@Override
+			public void save(String filePath, File scannedFile) {
+				scannedFiles.put(filePath, scannedFile);
+			}
+		});
+	}
+
+	public void scan(String filePathPattern, SaveHandler saveHandler) {
 		WildcardPattern pattern = WildcardPattern.compile(filePathPattern, FILE_SEPARATOR);
 		WildcardMatcher matcher = new WildcardMatcher(pattern);
 		matcher.separate(filePathPattern);
@@ -67,37 +82,34 @@ public class FileScanner {
 		
 		String basePath = sb.toString();
 		
-		return scanFiles(basePath, matcher);
+		scan(basePath, matcher, saveHandler);
 	}
 	
-	public Map<String, File> scanFiles(String basePath, String filePathPattern) {
-		Map<String, File> scannedFiles = new LinkedHashMap<String, File>();
-		
-		scanFiles(basePath, filePathPattern, scannedFiles);
-		
+	public Map<String, File> scan(String basePath, String filePathPattern) {
+		final Map<String, File> scannedFiles = new LinkedHashMap<String, File>();
+		scan(basePath, filePathPattern, scannedFiles);
 		return scannedFiles;
 	}
 	
-	public void scanFiles(String basePath, String filePathPattern, Map<String, File> scannedFiles) {
+	public void scan(String basePath, String filePathPattern, final Map<String, File> scannedFiles) {
+		scan(basePath, filePathPattern, new SaveHandler() {
+			@Override
+			public void save(String filePath, File scannedFile) {
+				scannedFiles.put(filePath, scannedFile);
+			}
+		});
+	}
+
+	public void scan(String basePath, String filePathPattern, SaveHandler saveHandler) {
 		WildcardPattern pattern = WildcardPattern.compile(filePathPattern, FILE_SEPARATOR);
 		WildcardMatcher matcher = new WildcardMatcher(pattern);
-		
 		if(basePath.charAt(basePath.length() - 1) == FILE_SEPARATOR) {
 			basePath = basePath.substring(0, basePath.length() - 1);
 		}
-		
-		scanFiles(basePath, matcher, scannedFiles);
+		scan(basePath, matcher, saveHandler);
 	}
-	
-	private Map<String, File> scanFiles(String basePath, WildcardMatcher matcher) {
-		Map<String, File> scannedFiles = new LinkedHashMap<String, File>();
-		
-		scanFiles(basePath, matcher, scannedFiles);
-		
-		return scannedFiles;
-	}
-	
-	private void scanFiles(final String targetPath, final WildcardMatcher matcher, final Map<String, File> scannedFiles) {
+
+	protected void scan(final String targetPath, final WildcardMatcher matcher, final SaveHandler saveHandler) {
 		final File target;
 		if(applicationBasePath != null)
 			target = new File(applicationBasePath, targetPath);
@@ -112,10 +124,10 @@ public class FileScanner {
 				String filePath = targetPath + FILE_SEPARATOR + file.getName();
 
 				if(file.isDirectory()) {
-					scanFiles(filePath, matcher, scannedFiles);
+					scan(filePath, matcher, saveHandler);
 				} else {
 					if(matcher.matches(filePath)) {
-						putFile(scannedFiles, filePath, target);
+						saveHandler.save(filePath, file);
 					}
 				}
 				return false;
@@ -123,8 +135,9 @@ public class FileScanner {
 		});
 	}
 	
-	protected void putFile(Map<String, File> scannedFiles, String filePath, File scannedFile) {
-		scannedFiles.put(filePath, scannedFile);
+	public interface SaveHandler {
+		public void save(String filePath, File scannedFile);
 	}
-	
+
+
 }

@@ -104,9 +104,9 @@ public abstract class AbstractPointcut {
 	 * @return true, if successful
 	 */
 	protected boolean matches(PointcutPatternRule pointcutPatternRule, String transletName, String beanId, String beanMethodName) {
-		if(transletName == null && pointcutPatternRule.getTransletNamePattern() != null ||
-				beanId == null && pointcutPatternRule.getBeanIdPattern() != null ||
-				beanMethodName == null && pointcutPatternRule.getBeanMethodNamePattern() != null)
+		if((transletName == null && pointcutPatternRule.getTransletNamePattern() != null) ||
+				(beanId == null && pointcutPatternRule.getBeanIdPattern() != null) ||
+				(beanMethodName == null && pointcutPatternRule.getBeanMethodNamePattern() != null))
 			return false;
 		
 		return exists(pointcutPatternRule, transletName, beanId, beanMethodName);

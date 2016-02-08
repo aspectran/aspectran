@@ -71,7 +71,7 @@ public class ResponseInnerNodeletAdder implements NodeletAdder {
 				assistant.pushObject(actionList);
 			}
 		});
-		parser.addNodelet(xpath, "/transform", new ActionRuleNodeletAdder(assistant));
+		parser.addNodelet(xpath, "/transform", new ActionNodeletAdder(assistant));
 		parser.addNodelet(xpath, "/transform/template", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
 				String engine = attributes.get("engine");
@@ -122,7 +122,7 @@ public class ResponseInnerNodeletAdder implements NodeletAdder {
 				assistant.pushObject(actionList);
 			}
 		});
-		parser.addNodelet(xpath, "/dispatch", new ActionRuleNodeletAdder(assistant));
+		parser.addNodelet(xpath, "/dispatch", new ActionNodeletAdder(assistant));
 		parser.addNodelet(xpath, "/dispatch/end()", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
 				ActionList actionList = assistant.popObject();
@@ -149,7 +149,7 @@ public class ResponseInnerNodeletAdder implements NodeletAdder {
 				assistant.pushObject(actionList);
 			}
 		});
-		parser.addNodelet(xpath, "/redirect", new ActionRuleNodeletAdder(assistant));
+		parser.addNodelet(xpath, "/redirect", new ActionNodeletAdder(assistant));
 		parser.addNodelet(xpath, "/redirect/parameter", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
 				ItemRuleMap irm = new ItemRuleMap();
@@ -208,7 +208,7 @@ public class ResponseInnerNodeletAdder implements NodeletAdder {
 				assistant.pushObject(actionList);
 			}
 		});
-		parser.addNodelet(xpath, "/forward", new ActionRuleNodeletAdder(assistant));
+		parser.addNodelet(xpath, "/forward", new ActionNodeletAdder(assistant));
 		parser.addNodelet(xpath, "/forward/parameter", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
 				ItemRuleMap irm = new ItemRuleMap();

@@ -60,7 +60,7 @@ public class TransletNodeletAdder implements NodeletAdder {
 				String mask = attributes.get("mask");
 				String method = attributes.get("method");
 				
-				if(name == null)
+				if(name == null && scan == null)
 					throw new IllegalArgumentException("The <translet> element requires a name attribute.");
 				
 				TransletRule transletRule = TransletRule.newInstance(name, scan, mask, method);
@@ -75,7 +75,7 @@ public class TransletNodeletAdder implements NodeletAdder {
 				}
 			}
 		});
-		parser.addNodelet(xpath, "/translet", new ActionRuleNodeletAdder(assistant));
+		parser.addNodelet(xpath, "/translet", new ActionNodeletAdder(assistant));
 		parser.addNodelet(xpath, "/translet", new ResponseInnerNodeletAdder(assistant));
 		parser.addNodelet(xpath, "/translet/request", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
@@ -129,7 +129,7 @@ public class TransletNodeletAdder implements NodeletAdder {
 				assistant.pushObject(actionList);
 			}
 		});
-		parser.addNodelet(xpath, "/translet/contents/content", new ActionRuleNodeletAdder(assistant));
+		parser.addNodelet(xpath, "/translet/contents/content", new ActionNodeletAdder(assistant));
 		parser.addNodelet(xpath, "/translet/contents/content/end()", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
 				ActionList actionList = assistant.popObject();
@@ -165,7 +165,7 @@ public class TransletNodeletAdder implements NodeletAdder {
 				assistant.pushObject(actionList);
 			}
 		});
-		parser.addNodelet(xpath, "/translet/content", new ActionRuleNodeletAdder(assistant));
+		parser.addNodelet(xpath, "/translet/content", new ActionNodeletAdder(assistant));
 		parser.addNodelet(xpath, "/translet/content/end()", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
 				ActionList actionList = assistant.popObject();
