@@ -27,17 +27,19 @@ import com.aspectran.core.util.BooleanUtils;
  */
 public class BeanActionRule implements ArgumentPossessable, PropertyPossessable {
 
-	protected String actionId;
+	private String actionId;
 
-	protected String beanId;
+	private String beanId;
 
-	protected String methodName;
+	private Class<?> beanClass;
 
-	protected ItemRuleMap propertyItemRuleMap;
+	private String methodName;
 
-	protected ItemRuleMap argumentItemRuleMap;
+	private ItemRuleMap propertyItemRuleMap;
 
-	protected Boolean hidden;
+	private ItemRuleMap argumentItemRuleMap;
+
+	private Boolean hidden;
 	
 	private AspectAdviceRule aspectAdviceRule;
 	
@@ -77,6 +79,14 @@ public class BeanActionRule implements ArgumentPossessable, PropertyPossessable 
 	 */
 	public void setBeanId(String beanId) {
 		this.beanId = beanId;
+	}
+
+	public Class<?> getBeanClass() {
+		return beanClass;
+	}
+
+	public void setBeanClass(Class<?> beanClass) {
+		this.beanClass = beanClass;
 	}
 
 	/**

@@ -33,6 +33,8 @@ public class AspectAdviceRule implements ActionRuleApplicable {
 	
 	private final String adviceBeanId;
 	
+	private final Class<?> adviceBeanClass;
+
 	private final AspectAdviceType aspectAdviceType;
 	
 	private Executable action;
@@ -40,6 +42,7 @@ public class AspectAdviceRule implements ActionRuleApplicable {
 	public AspectAdviceRule(AspectRule aspectRule, AspectAdviceType aspectAdviceType) {
 		this.aspectRule = aspectRule;
 		this.adviceBeanId = aspectRule.getAdviceBeanId();
+		this.adviceBeanClass = aspectRule.getAdviceBeanClass();
 		this.aspectAdviceType = aspectAdviceType;
 	}
 	
@@ -53,6 +56,10 @@ public class AspectAdviceRule implements ActionRuleApplicable {
 
 	public String getAdviceBeanId() {
 		return adviceBeanId;
+	}
+
+	public Class<?> getAdviceBeanClass() {
+		return adviceBeanClass;
 	}
 
 	public AspectAdviceType getAspectAdviceType() {

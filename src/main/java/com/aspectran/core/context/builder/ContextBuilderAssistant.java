@@ -27,6 +27,7 @@ import com.aspectran.core.context.aspect.AspectRuleRegistry;
 import com.aspectran.core.context.bean.BeanRuleRegistry;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.BeanRule;
+import com.aspectran.core.context.rule.PointcutPatternRule;
 import com.aspectran.core.context.rule.TemplateRule;
 import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.type.DefaultSettingType;
@@ -337,6 +338,19 @@ public class ContextBuilderAssistant {
 			return true;
 		
 		return defaultSettings.isPointcutPatternVerifiable();
+	}
+
+	public Class<?> extractBeanClass(String beanId) {
+		if(beanId != null && beanId.startsWith(PointcutPatternRule.POINTCUT_CLASS_NAME_PREFIX)) {
+			String className = beanId.substring(PointcutPatternRule.POINTCUT_CLASS_NAME_PREFIX.length());
+			try {
+				Class<?> actionClass = classLoader.loadClass(className);
+				return actionClass;
+			} catch(ClassNotFoundException e) {
+				throw new IllegalArgumentException("Unknown action class: " + className, e);
+			}
+		}
+		return null;
 	}
 
 	/**

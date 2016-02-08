@@ -144,6 +144,16 @@ public class ItemNodeletAdder implements NodeletAdder {
 				String attribute = attributes.get("attribute");
 				String property = attributes.get("property"); // bean's property
 
+//TODO bean="class:"
+//if(!StringUtils.isEmpty(beanId)) {
+//	Class<?> beanClass = assistant.extractBeanClass(beanId);
+//	if(beanClass != null) {
+//		beanActionRule.setBeanClass(beanClass);
+//	} else {
+//		assistant.putBeanReference(beanId, beanActionRule);
+//	}
+//}
+
 				ItemRule itemRule = assistant.peekObject();
 				ItemRule.updateReference(itemRule, beanId, parameter, attribute, property);
 			}

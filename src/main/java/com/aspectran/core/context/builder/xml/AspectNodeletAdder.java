@@ -163,8 +163,15 @@ public class AspectNodeletAdder implements NodeletAdder {
 				if(!StringUtils.isEmpty(beanId)) {
 					AspectRule aspectRule = assistant.peekObject();
 					aspectRule.setAdviceBeanId(beanId);
-					
-					assistant.putBeanReference(beanId, aspectRule);
+
+					if(beanId != null) {
+						Class<?> adviceBeanClass = assistant.extractBeanClass(beanId);
+						if(adviceBeanClass != null) {
+							aspectRule.setAdviceBeanClass(adviceBeanClass);
+						} else {
+							assistant.putBeanReference(beanId, aspectRule);
+						}
+					}
 				}
 			}
 		});

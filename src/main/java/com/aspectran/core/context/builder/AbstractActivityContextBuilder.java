@@ -159,9 +159,17 @@ public abstract class AbstractActivityContextBuilder extends ContextBuilderAssis
 								else
 									log.warn(msg);
 							}
-							if(ppr.getBeanMethodNamePattern() != null && ppr.getMatchedBeanMethodCount() == 0) {
+							if(ppr.getClassNamePattern() != null && ppr.getMatchedClassCount() == 0) {
 								offendingPointcutPatterns++;
-								String msg = "Incorrect pointcut pattern of bean's method name \"" + ppr.getBeanMethodNamePattern() + "\" : aspectRule " + aspectRule;
+								String msg = "Incorrect pointcut pattern of class name \"" + ppr.getClassNamePattern() + "\" : aspectRule " + aspectRule;
+								if(pointcutPatternVerifiable)
+									log.error(msg);
+								else
+									log.warn(msg);
+							}
+							if(ppr.getMethodNamePattern() != null && ppr.getMatchedMethodCount() == 0) {
+								offendingPointcutPatterns++;
+								String msg = "Incorrect pointcut pattern of bean's method name \"" + ppr.getMethodNamePattern() + "\" : aspectRule " + aspectRule;
 								if(pointcutPatternVerifiable)
 									log.error(msg);
 								else

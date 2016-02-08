@@ -26,12 +26,14 @@ import com.aspectran.core.context.rule.type.PointcutType;
  */
 public class PointcutPatternRule {
 	
-	private static final char POINTCUT_BEAN_ID_DELIMITER = '@';
+	private static final char POINTCUT_BEAN_CLASS_DELIMITER = '@';
 	
 	private static final char POINTCUT_METHOD_NAME_DELIMITER = '^';
 
 	private static final char JOINPOINT_SCOPE_DELIMITER = '$';
 	
+	public static final String POINTCUT_CLASS_NAME_PREFIX = "class:";
+
 	private PointcutType pointcutType;
 	
 	private String patternString;
@@ -40,14 +42,18 @@ public class PointcutPatternRule {
 	
 	private String beanIdPattern;
 
-	private String beanMethodNamePattern;
+	private String classNamePattern;
+
+	private String methodNamePattern;
 	
 	private int matchedTransletCount;
 	
 	private int matchedBeanCount;
-	
-	private int matchedBeanMethodCount;
-	
+
+	private int matchedClassCount;
+
+	private int matchedMethodCount;
+
 	private List<PointcutPatternRule> excludePointcutPatternRuleList;
 	
 	public PointcutPatternRule() {
@@ -85,12 +91,20 @@ public class PointcutPatternRule {
 		this.beanIdPattern = beanIdPattern;
 	}
 
-	public String getBeanMethodNamePattern() {
-		return beanMethodNamePattern;
+	public String getClassNamePattern() {
+		return classNamePattern;
 	}
 
-	public void setBeanMethodNamePattern(String beanMethodNamePattern) {
-		this.beanMethodNamePattern = beanMethodNamePattern;
+	public void setClassNamePattern(String classNamePattern) {
+		this.classNamePattern = classNamePattern;
+	}
+
+	public String getMethodNamePattern() {
+		return methodNamePattern;
+	}
+
+	public void setMethodNamePattern(String methodNamePattern) {
+		this.methodNamePattern = methodNamePattern;
 	}
 	
 	public List<PointcutPatternRule> getExcludePointcutPatternRuleList() {
@@ -124,12 +138,20 @@ public class PointcutPatternRule {
 		matchedBeanCount++;
 	}
 
-	public int getMatchedBeanMethodCount() {
-		return matchedBeanMethodCount;
+	public int getMatchedClassCount() {
+		return matchedClassCount;
 	}
 
-	public void increaseMatchedBeanMethodCount() {
-		matchedBeanMethodCount++;
+	public void increaseMatchedClassCount() {
+		matchedClassCount++;
+	}
+
+	public int getMatchedMethodCount() {
+		return matchedMethodCount;
+	}
+
+	public void increaseMatchedMethodCount() {
+		matchedMethodCount++;
 	}
 
 	@Override
@@ -137,21 +159,25 @@ public class PointcutPatternRule {
 		StringBuilder sb = new StringBuilder();
 		sb.append("{translet=").append(transletNamePattern);
 		sb.append(", bean=").append(beanIdPattern);
-		sb.append(", method=").append(beanMethodNamePattern);
+		sb.append(", class=").append(classNamePattern);
+		sb.append(", method=").append(methodNamePattern);
 		sb.append("}");
 		
 		return sb.toString();
 	}
 	
-	public static String combinePatternString(String transletName, String beanId, String beanMethodName) {
+	public static String combinePatternString(String transletName, String beanId, String className, String beanMethodName) {
 		StringBuilder sb = new StringBuilder();
 		
 		if(transletName != null)
 			sb.append(transletName);
 		
 		if(beanId != null) {
-			sb.append(POINTCUT_BEAN_ID_DELIMITER);
+			sb.append(POINTCUT_BEAN_CLASS_DELIMITER);
 			sb.append(beanId);
+		} else if(className != null) {
+			sb.append(POINTCUT_CLASS_NAME_PREFIX);
+			sb.append(className);
 		}
 		
 		if(beanMethodName != null) {
@@ -162,7 +188,7 @@ public class PointcutPatternRule {
 		return sb.toString();
 	}
 	
-	public static String combinePatternString(JoinpointScopeType joinpointScope, String transletName, String beanId, String methodName) {
+	public static String combinePatternString(JoinpointScopeType joinpointScope, String transletName, String beanId, String className, String methodName) {
 		StringBuilder sb = new StringBuilder();
 		
 		if(joinpointScope != null) {
@@ -174,8 +200,11 @@ public class PointcutPatternRule {
 			sb.append(transletName);
 		
 		if(beanId != null) {
-			sb.append(POINTCUT_BEAN_ID_DELIMITER);
+			sb.append(POINTCUT_BEAN_CLASS_DELIMITER);
 			sb.append(beanId);
+		} else if(className != null) {
+			sb.append(POINTCUT_CLASS_NAME_PREFIX);
+			sb.append(className);
 		}
 		
 		if(methodName != null) {
@@ -187,14 +216,14 @@ public class PointcutPatternRule {
 	}
 	
 	public static PointcutPatternRule parsePatternString(String patternString) {
-		PointcutPatternRule pointcutPatternRule = new PointcutPatternRule();
-		pointcutPatternRule.setPatternString(patternString);
+		PointcutPatternRule ppr = new PointcutPatternRule();
+		ppr.setPatternString(patternString);
 		
 		String transletNamePattern = null;
 		String beanIdPattern = null;
-		String beanMethodNamePattern = null;
+		String methodNamePattern = null;
 
-		int actionDelimiterIndex = patternString.indexOf(POINTCUT_BEAN_ID_DELIMITER);
+		int actionDelimiterIndex = patternString.indexOf(POINTCUT_BEAN_CLASS_DELIMITER);
 		
 		if(actionDelimiterIndex == -1)
 			transletNamePattern = patternString;
@@ -209,37 +238,53 @@ public class PointcutPatternRule {
 			int beanMethodDelimiterIndex = beanIdPattern.indexOf(POINTCUT_METHOD_NAME_DELIMITER);
 			
 			if(beanMethodDelimiterIndex == 0) {
-				beanMethodNamePattern = beanIdPattern.substring(1);
+				methodNamePattern = beanIdPattern.substring(1);
 				beanIdPattern = null;
 			} else if(beanMethodDelimiterIndex > 0) {
-				beanMethodNamePattern = beanIdPattern.substring(beanMethodDelimiterIndex + 1);
+				methodNamePattern = beanIdPattern.substring(beanMethodDelimiterIndex + 1);
 				beanIdPattern = beanIdPattern.substring(0, beanMethodDelimiterIndex);
 			}
 		}
 		
 		if(transletNamePattern != null)
-			pointcutPatternRule.setTransletNamePattern(transletNamePattern);
+			ppr.setTransletNamePattern(transletNamePattern);
 		
-		if(beanIdPattern != null)
-			pointcutPatternRule.setBeanIdPattern(beanIdPattern);
+		if(beanIdPattern != null) {
+			if(beanIdPattern.startsWith(POINTCUT_CLASS_NAME_PREFIX)) {
+				String className = beanIdPattern.substring(POINTCUT_CLASS_NAME_PREFIX.length());
+				if(className.length() > 0) {
+					ppr.setClassNamePattern(className);
+				}
+			} else {
+				ppr.setBeanIdPattern(beanIdPattern);
+			}
+		}
 
-		if(beanMethodNamePattern != null)
-			pointcutPatternRule.setBeanMethodNamePattern(beanMethodNamePattern);
+		if(methodNamePattern != null)
+			ppr.setMethodNamePattern(methodNamePattern);
 		
-		return pointcutPatternRule;
+		return ppr;
 	}
 	
 	public static PointcutPatternRule newInstance(String translet, String bean, String method) {
-		PointcutPatternRule pointcutPatternRule = new PointcutPatternRule();
+		PointcutPatternRule ppr = new PointcutPatternRule();
 
 		if(translet != null && translet.length() > 0)						
-			pointcutPatternRule.setTransletNamePattern(translet);
-		if(bean != null && bean.length() > 0)
-			pointcutPatternRule.setBeanIdPattern(bean);
+			ppr.setTransletNamePattern(translet);
+		if(bean != null && bean.length() > 0) {
+			if(bean.startsWith(POINTCUT_CLASS_NAME_PREFIX)) {
+				String className = bean.substring(POINTCUT_CLASS_NAME_PREFIX.length());
+				if(className.length() > 0) {
+					ppr.setClassNamePattern(className);
+				}
+			} else {
+				ppr.setBeanIdPattern(bean);
+			}
+		}
 		if(method != null && method.length() > 0)
-			pointcutPatternRule.setBeanMethodNamePattern(method);
+			ppr.setMethodNamePattern(method);
 		
-		return pointcutPatternRule;
+		return ppr;
 	}
 	
 }

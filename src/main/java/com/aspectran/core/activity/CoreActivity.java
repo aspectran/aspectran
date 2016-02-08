@@ -678,8 +678,12 @@ public class CoreActivity extends AbstractActivity implements Activity {
 			if(action.getActionType() == ActionType.BEAN && aspectAdviceRule.getAdviceBeanId() != null) {
 				Object adviceBean = translet.getAspectAdviceBean(aspectAdviceRule.getAspectId());
 				
-				if(adviceBean == null)
-					adviceBean = getBean(aspectAdviceRule.getAdviceBeanId());
+				if(adviceBean == null) {
+					if(aspectAdviceRule.getAdviceBeanClass() != null)
+						adviceBean = getBean(aspectAdviceRule.getAdviceBeanClass());
+					else
+						adviceBean = getBean(aspectAdviceRule.getAdviceBeanId());
+				}
 				
 				translet.putAspectAdviceBean(aspectAdviceRule.getAspectId(), adviceBean);
 			}

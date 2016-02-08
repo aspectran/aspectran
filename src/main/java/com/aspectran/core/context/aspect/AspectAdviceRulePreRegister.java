@@ -15,21 +15,24 @@
  */
 package com.aspectran.core.context.aspect;
 
+import java.util.List;
+
 import com.aspectran.core.activity.process.ContentList;
 import com.aspectran.core.context.AspectranConstants;
 import com.aspectran.core.context.aspect.pointcut.Pointcut;
 import com.aspectran.core.context.bean.BeanRuleRegistry;
-import com.aspectran.core.context.rule.*;
+import com.aspectran.core.context.rule.AspectRule;
+import com.aspectran.core.context.rule.BeanRule;
+import com.aspectran.core.context.rule.PointcutPatternRule;
+import com.aspectran.core.context.rule.RequestRule;
+import com.aspectran.core.context.rule.ResponseRule;
+import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.type.AspectTargetType;
 import com.aspectran.core.context.rule.type.JoinpointScopeType;
-import com.aspectran.core.context.rule.type.PointcutType;
 import com.aspectran.core.context.translet.TransletRuleRegistry;
 import com.aspectran.core.util.ClassDescriptor;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
-import com.aspectran.core.util.wildcard.WildcardPattern;
-
-import java.util.List;
 
 /**
  * The Class AspectAdviceRulePreRegister.
@@ -62,7 +65,7 @@ public class AspectAdviceRulePreRegister extends AspectAdviceRuleRegister {
 						boolean beanRelevanted = false;
 						
 						for(PointcutPatternRule ppr : pointcutPatternRuleList) {
-							if(ppr.getBeanIdPattern() != null || ppr.getBeanMethodNamePattern() != null) {
+							if(ppr.getBeanIdPattern() != null || ppr.getMethodNamePattern() != null) {
 								beanRelevanted = true;
 								break;
 							}
@@ -100,7 +103,7 @@ public class AspectAdviceRulePreRegister extends AspectAdviceRuleRegister {
 						break;
 					}
 				} else {
-					if(pointcut == null || existsMatchedBean(pointcut, beanRule.getId())) {
+					if(pointcut == null || existsMatchedBean(pointcut, beanRule.getId(), beanRule.getClassName())) {
 						beanRule.setProxied(true);
 	
 						if(log.isTraceEnabled())
@@ -240,12 +243,12 @@ public class AspectAdviceRulePreRegister extends AspectAdviceRuleRegister {
 		return matched;
 	}
 	
-	private boolean existsMatchedBean(Pointcut pointcut, String beanId) {
+	private boolean existsMatchedBean(Pointcut pointcut, String beanId, String className) {
 		List<PointcutPatternRule> pointcutPatternRuleList = pointcut.getPointcutPatternRuleList();
 		
 		if(pointcutPatternRuleList != null) {
 			for(PointcutPatternRule ppr : pointcutPatternRuleList) {
-				if(existsBean(pointcut, ppr, beanId, null)) {
+				if(existsBean(pointcut, ppr, beanId, className, null)) {
 					return true;
 				}
 			}
@@ -261,10 +264,11 @@ public class AspectAdviceRulePreRegister extends AspectAdviceRuleRegister {
 			ClassDescriptor cd = ClassDescriptor.getInstance(beanRule.getBeanClass());
 			
 			String beanId = beanRule.getId();
-			String[] beanMethodNames = cd.getDistinctMethodNames();
+			String className = beanRule.getClassName();
+			String[] methodNames = cd.getDistinctMethodNames();
 
 			for(PointcutPatternRule ppr : pointcutPatternRuleList) {
-				if(existsBean(pointcut, ppr, beanId, beanMethodNames)) {
+				if(existsBean(pointcut, ppr, beanId, className, methodNames)) {
 					return true;
 				}
 			}
@@ -273,7 +277,7 @@ public class AspectAdviceRulePreRegister extends AspectAdviceRuleRegister {
 		return false;
 	}
 	
-	private boolean existsBean(Pointcut pointcut, PointcutPatternRule pointcutPatternRule, String beanId, String[] beanMethodNames) {
+	private boolean existsBean(Pointcut pointcut, PointcutPatternRule pointcutPatternRule, String beanId, String className, String[] methodNames) {
 		boolean matched = true;
 		
 		if(beanId != null && pointcutPatternRule.getBeanIdPattern() != null) {
@@ -282,40 +286,19 @@ public class AspectAdviceRulePreRegister extends AspectAdviceRuleRegister {
 				pointcutPatternRule.increaseMatchedBeanCount();
 		}
 		
-		if(beanMethodNames != null) {
-			if(matched && pointcutPatternRule.getBeanMethodNamePattern() != null) {
-				if(pointcutPatternRule.getPointcutType() == PointcutType.WILDCARD) {
-					boolean hasWildcards = WildcardPattern.hasWildcards(pointcutPatternRule.getBeanMethodNamePattern());
-					
-					if(hasWildcards) {
-						matched = false;
-						for(String beanMethodName : beanMethodNames) {
-							boolean matched2 = pointcut.patternMatches(pointcutPatternRule.getBeanMethodNamePattern(), beanMethodName);
-							if(matched2) {
-								matched = true;
-								pointcutPatternRule.increaseMatchedBeanMethodCount();
-							}
-						}
-					} else {
-						matched = false;
-						for(String beanMethodName : beanMethodNames) {
-							boolean matched2 = pointcut.patternMatches(pointcutPatternRule.getBeanMethodNamePattern(), beanMethodName);
-							if(matched2) {
-								matched = true;
-								pointcutPatternRule.increaseMatchedBeanMethodCount();
-								break;
-							}
-						}
-					}
-				} else {
-					matched = false;
-					for(String beanMethodName : beanMethodNames) {
-						boolean matched2 = pointcut.patternMatches(pointcutPatternRule.getBeanMethodNamePattern(), beanMethodName);
-						if(matched2) {
-							matched = true;
-							pointcutPatternRule.increaseMatchedBeanMethodCount();
-						}
-					}
+		if(matched && className != null && pointcutPatternRule.getClassNamePattern() != null) {
+			matched = pointcut.patternMatches(pointcutPatternRule.getClassNamePattern(), className, AspectranConstants.ID_SEPARATOR);
+			if(matched)
+				pointcutPatternRule.increaseMatchedClassCount();
+		}
+
+		if(matched && methodNames != null && pointcutPatternRule.getMethodNamePattern() != null) {
+			matched = false;
+			for(String methodName : methodNames) {
+				boolean matched2 = pointcut.patternMatches(pointcutPatternRule.getMethodNamePattern(), methodName);
+				if(matched2) {
+					matched = true;
+					pointcutPatternRule.increaseMatchedMethodCount();
 				}
 			}
 		}

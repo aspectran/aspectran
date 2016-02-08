@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.util.zip.GZIPOutputStream;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -45,7 +46,7 @@ public class GZipHttpServletResponseAdapter extends HttpServletResponseAdapter {
     @Override
     public OutputStream getOutputStream() throws IOException {
         OutputStream os = ((HttpServletResponse)adaptee).getOutputStream();
-        return  new FlushableGZIPOutputStream(os);
+        return new GZIPOutputStream(os, true);
     }
 
     @Override

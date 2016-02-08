@@ -538,8 +538,14 @@ public class RootAponDisassembler {
 				beanActionRule.setPropertyItemRuleMap(propertyItemRuleMap);
 			}
 			actionRuleApplicable.applyActionRule(beanActionRule);
+
 			if(!StringUtils.isEmpty(beanId)) {
-				assistant.putBeanReference(beanId, beanActionRule);
+				Class<?> beanClass = assistant.extractBeanClass(beanId);
+				if(beanClass != null) {
+					beanActionRule.setBeanClass(beanClass);
+				} else {
+					assistant.putBeanReference(beanId, beanActionRule);
+				}
 			}
 		} else if(echoItemHolderParameters != null) {
 			EchoActionRule echoActionRule = EchoActionRule.newInstance(id, hidden);

@@ -90,8 +90,19 @@ public class ActionNodeletAdder implements NodeletAdder {
 
 				if(!assistant.isNullableActionId() && StringUtils.isEmpty(id))
 					throw new IllegalArgumentException("The <action> element requires a id attribute.");
-				
+
 				BeanActionRule beanActionRule = BeanActionRule.newInstance(id, beanId, methodName, hidden);
+
+				//AspectAdviceRule may not have the bean id.
+				if(!StringUtils.isEmpty(beanId)) {
+					Class<?> beanClass = assistant.extractBeanClass(beanId);
+					if(beanClass != null) {
+						beanActionRule.setBeanClass(beanClass);
+					} else {
+						assistant.putBeanReference(beanId, beanActionRule);
+					}
+				}
+
 				assistant.pushObject(beanActionRule);
 			}
 		});
@@ -134,10 +145,6 @@ public class ActionNodeletAdder implements NodeletAdder {
 				BeanActionRule beanActionRule = assistant.popObject();
 				ActionRuleApplicable applicable = assistant.peekObject();
 				applicable.applyActionRule(beanActionRule);
-
-				//AspectAdviceRule may not have the bean id.
-				if(!StringUtils.isEmpty(beanActionRule.getBeanId()))
-					assistant.putBeanReference(beanActionRule.getBeanId(), beanActionRule);
 			}
 		});
 		parser.addNodelet(xpath, "/include", new Nodelet() {

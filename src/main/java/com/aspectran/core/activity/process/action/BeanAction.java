@@ -47,6 +47,8 @@ public class BeanAction extends AbstractAction implements Executable {
 	
 	private final String beanId;
 
+	private final Class<?> beanClass;
+
 	private final String methodName;
 	
 	private final ItemRuleMap propertyItemRuleMap;
@@ -68,6 +70,7 @@ public class BeanAction extends AbstractAction implements Executable {
 
 		this.beanActionRule = beanActionRule;
 		this.beanId = beanActionRule.getBeanId();
+		this.beanClass = beanActionRule.getBeanClass();
 		this.methodName = beanActionRule.getMethodName();
 
 		if(beanActionRule.getPropertyItemRuleMap() != null && !beanActionRule.getPropertyItemRuleMap().isEmpty())
@@ -90,8 +93,9 @@ public class BeanAction extends AbstractAction implements Executable {
 	public Object execute(Activity activity) throws Exception {
 		try {
 			Object bean = null;
-			
-			if(beanId != null)
+			if(beanClass != null)
+				bean = activity.getBean(beanClass);
+			else if(beanId != null)
 				bean = activity.getBean(beanId);
 			else if(aspectAdviceRule != null)
 				bean = activity.getAspectAdviceBean(aspectAdviceRule.getAspectId());
