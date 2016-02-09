@@ -19,7 +19,12 @@ import com.aspectran.core.context.rule.type.TokenType;
 
 /**
  * The Class Token.
- * 
+ *
+ * ${name:value}
+ * @{name^getter:defaultValue}
+ * #{beanId^getter}
+ * #{class:name^getter}
+ *
  * <p>Created: 2008. 03. 27 PM 10:20:06</p>
  */
 public class Token {
@@ -28,7 +33,7 @@ public class Token {
 
 	public static final char ATTRIBUTE_SYMBOL = '@';
 
-	public static final char REFERENCE_BEAN_SYMBOL = '#';
+	public static final char BEAN_SYMBOL = '#';
 	
 	public static final char START_BRACKET = '{';
 
@@ -115,9 +120,6 @@ public class Token {
 		this.getterName = getterNameOfBean;
 	}
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
 	@Override
 	public String toString() {
 		if(type == TokenType.TEXT)
@@ -128,8 +130,8 @@ public class Token {
 			sb.append(PARAMETER_SYMBOL);
 		else if(type == TokenType.ATTRIBUTE)
 			sb.append(ATTRIBUTE_SYMBOL);
-		else if(type == TokenType.REFERENCE_BEAN)
-			sb.append(REFERENCE_BEAN_SYMBOL);
+		else if(type == TokenType.BEAN)
+			sb.append(BEAN_SYMBOL);
 		sb.append(START_BRACKET);
 		if(name != null)
 			sb.append(name);
@@ -155,7 +157,7 @@ public class Token {
 	public static boolean isTokenSymbol(char c) {
 		return (c == PARAMETER_SYMBOL ||
 					c == ATTRIBUTE_SYMBOL ||
-					c == REFERENCE_BEAN_SYMBOL);
+					c == BEAN_SYMBOL);
 	}
 	
 	/**
@@ -169,8 +171,8 @@ public class Token {
 
 		if(symbol == Token.ATTRIBUTE_SYMBOL)
 			type = TokenType.ATTRIBUTE;
-		else if(symbol == Token.REFERENCE_BEAN_SYMBOL)
-			type = TokenType.REFERENCE_BEAN;
+		else if(symbol == Token.BEAN_SYMBOL)
+			type = TokenType.BEAN;
 		else
 			type = TokenType.PARAMETER;
 		

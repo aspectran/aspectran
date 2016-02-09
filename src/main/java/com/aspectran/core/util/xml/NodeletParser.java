@@ -63,7 +63,7 @@ public class NodeletParser {
 	private boolean validating;
 
 	private EntityResolver entityResolver;
-	
+
 	/**
 	 * Registers a nodelet for the specified XPath. Current XPaths supported
 	 * are:
@@ -248,7 +248,7 @@ public class NodeletParser {
 		NamedNodeMap attributeNodes = node.getAttributes();
 		
 		if(attributeNodes == null)
-			return NodeletParser.EMPTY_ATTRIBUTES;
+			return EMPTY_ATTRIBUTES;
 
 		Map<String, String> attributes = new HashMap<String, String>();
 
@@ -293,7 +293,7 @@ public class NodeletParser {
 			}
 		}
 		
-		return sb == null ? null : sb.toString();
+		return (sb == null) ? null : sb.toString();
 	}
 
 	/**
@@ -319,14 +319,17 @@ public class NodeletParser {
 		DocumentBuilder builder = factory.newDocumentBuilder();
 		builder.setEntityResolver(entityResolver);
 		builder.setErrorHandler(new ErrorHandler() {
+			@Override
 			public void error(SAXParseException exception) throws SAXException {
 				throw exception;
 			}
 
+			@Override
 			public void fatalError(SAXParseException exception) throws SAXException {
 				throw exception;
 			}
 
+			@Override
 			public void warning(SAXParseException exception) throws SAXException {
 			}
 		});
@@ -357,14 +360,17 @@ public class NodeletParser {
 		DocumentBuilder builder = factory.newDocumentBuilder();
 		builder.setEntityResolver(entityResolver);
 		builder.setErrorHandler(new ErrorHandler() {
+			@Override
 			public void error(SAXParseException exception) throws SAXException {
 				throw exception;
 			}
 
+			@Override
 			public void fatalError(SAXParseException exception) throws SAXException {
 				throw exception;
 			}
 
+			@Override
 			public void warning(SAXParseException exception) throws SAXException {
 			}
 		});
@@ -409,6 +415,7 @@ public class NodeletParser {
 			nodeList.remove(nodeList.size() - 1);
 		}
 
+		@Override
 		public String toString() {
 			StringBuilder sb = new StringBuilder(128);
 

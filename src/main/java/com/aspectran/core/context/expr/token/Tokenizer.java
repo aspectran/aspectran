@@ -46,7 +46,6 @@ public class Tokenizer {
 	 * 
 	 * @param input the pattern string
 	 * @param trimStringToken the trim string token
-	 * 
 	 * @return the token list
 	 */
 	public static List<Token> tokenize(CharSequence input, boolean trimStringToken) {
@@ -152,7 +151,6 @@ public class Tokenizer {
 	 * @param symbol the symbol
 	 * @param tokenNameBuffer the token name buffer
 	 * @param defTextBuffer the def value buffer
-	 * 
 	 * @return the token
 	 */
 	private static Token makeToken(char symbol, StringBuilder tokenNameBuffer, StringBuilder defTextBuffer) {
@@ -166,7 +164,7 @@ public class Tokenizer {
 			name = tokenNameBuffer.toString();
 			
 			if(symbol == Token.ATTRIBUTE_SYMBOL ||
-					symbol == Token.REFERENCE_BEAN_SYMBOL) {
+					symbol == Token.BEAN_SYMBOL) {
 				int offset = name.indexOf(Token.BEAN_PROPERTY_SEPARATOR);
 				
 				if(offset > 0) {
@@ -208,7 +206,6 @@ public class Tokenizer {
 	 * @param sb the sb
 	 * @param end the end
 	 * @param trim the trim
-	 * 
 	 * @return the string
 	 */
 	private static String trimBuffer(StringBuilder sb, int end, boolean trim) {
@@ -262,7 +259,6 @@ public class Tokenizer {
 	 * Optimize tokens.
 	 * 
 	 * @param tokens the tokens
-	 * 
 	 * @return the token[]
 	 */
 	public static Token[] optimize(Token[] tokens) {
@@ -304,7 +300,6 @@ public class Tokenizer {
 	 * Trim leading whitespace.
 	 * 
 	 * @param string the string
-	 * 
 	 * @return the string
 	 */
 	private static String trimLeadingWhitespace(String string) {
@@ -333,7 +328,6 @@ public class Tokenizer {
 	 * Trim tailing whitespace.
 	 * 
 	 * @param string the string
-	 * 
 	 * @return the string
 	 */
 	private static String trimTailingWhitespace(String string) {

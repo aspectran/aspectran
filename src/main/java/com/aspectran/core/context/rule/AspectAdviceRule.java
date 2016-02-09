@@ -66,24 +66,18 @@ public class AspectAdviceRule implements ActionRuleApplicable {
 		return aspectAdviceType;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.context.rule.ability.ActionRuleApplicable#applyActionRule(com.aspectran.core.context.rule.EchoActionRule)
-	 */
+	@Override
 	public void applyActionRule(EchoActionRule echoActionRule) {
 		action = new EchoAction(echoActionRule, null);
 	}
 
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.context.rule.ability.ActionRuleApplicable#applyActionRule(com.aspectran.core.context.rule.BeanActionRule)
-	 */
+	@Override
 	public void applyActionRule(BeanActionRule beanActionRule) {
 		beanActionRule.setAspectAdviceRule(this);
 		action = new BeanAction(beanActionRule, null);
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.context.rule.ability.ActionRuleApplicable#applyActionRule(com.aspectran.core.context.rule.IncludeActionRule)
-	 */
+
+	@Override
 	public void applyActionRule(IncludeActionRule includeActionRule) {
 		throw new UnsupportedOperationException("There is nothing that can be apply to IncludeActionRule. The aspecet-advice is not support include-action.");
 	}
@@ -99,9 +93,6 @@ public class AspectAdviceRule implements ActionRuleApplicable {
 		return action.getActionType();
 	}
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();

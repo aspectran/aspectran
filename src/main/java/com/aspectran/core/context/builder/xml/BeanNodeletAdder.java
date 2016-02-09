@@ -53,17 +53,17 @@ public class BeanNodeletAdder implements NodeletAdder {
 	public void process(String xpath, NodeletParser parser) {
 		parser.addNodelet(xpath, "/bean", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
-				String id = attributes.get("id");
-				String className = assistant.resolveAliasType(attributes.get("class"));
+				String id = StringUtils.emptyToNull(attributes.get("id"));
+				String className = StringUtils.emptyToNull(assistant.resolveAliasType(attributes.get("class")));
 				String scan = attributes.get("scan");
 				String mask = attributes.get("mask");
 				String scope = attributes.get("scope");
 				Boolean singleton = BooleanUtils.toNullableBooleanObject(attributes.get("singleton"));
-				String offerBean = attributes.get("offerBean");
-				String offerMethod = attributes.get("offerMethod");
-				String initMethod = attributes.get("initMethod");
-				String factoryMethod = attributes.get("factoryMethod");
-				String destroyMethod = attributes.get("destroyMethod");
+				String offerBean = StringUtils.emptyToNull(attributes.get("offerBean"));
+				String offerMethod = StringUtils.emptyToNull(attributes.get("offerMethod"));
+				String initMethod = StringUtils.emptyToNull(attributes.get("initMethod"));
+				String factoryMethod = StringUtils.emptyToNull(attributes.get("factoryMethod"));
+				String destroyMethod = StringUtils.emptyToNull(attributes.get("destroyMethod"));
 				Boolean lazyInit = BooleanUtils.toNullableBooleanObject(attributes.get("lazyInit"));
 				Boolean important = BooleanUtils.toNullableBooleanObject(attributes.get("important"));
 
@@ -74,6 +74,16 @@ public class BeanNodeletAdder implements NodeletAdder {
 						throw new IllegalArgumentException("The <bean> element requires an id attribute.");
 
 					beanRule = BeanRule.newOfferedBeanInstance(id, scope, singleton, offerBean, offerMethod, initMethod, factoryMethod, destroyMethod, lazyInit, important);
+
+					if(offerBean != null) {
+						Class<?> offerBeanClass = assistant.resolveBeanClass(offerBean);
+						if(offerBeanClass != null) {
+							beanRule.setOfferBeanClass(offerBeanClass);
+							assistant.putBeanReference(offerBeanClass, beanRule);
+						} else {
+							assistant.putBeanReference(offerBean, beanRule);
+						}
+					}
 				} else {
 					if(className == null && scan == null)
 						throw new IllegalArgumentException("The <bean> element requires a class attribute.");
@@ -133,7 +143,7 @@ public class BeanNodeletAdder implements NodeletAdder {
 				}
 			}
 		});
-		parser.addNodelet(xpath, "/bean/features/factoryBean", new Nodelet() {
+		parser.addNodelet(xpath, "/bean/features/offerBean", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
 				if(StringUtils.hasText(text)) {
 					BeanRule beanRule = assistant.peekObject();
@@ -141,11 +151,11 @@ public class BeanNodeletAdder implements NodeletAdder {
 				}
 			}
 		});
-		parser.addNodelet(xpath, "/bean/features/factoryMethod", new Nodelet() {
+		parser.addNodelet(xpath, "/bean/features/offerMethod", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
 				if(StringUtils.hasText(text)) {
 					BeanRule beanRule = assistant.peekObject();
-					beanRule.setFactoryMethodName(text.trim());
+					beanRule.setOfferMethodName(text.trim());
 				}
 			}
 		});
@@ -154,6 +164,14 @@ public class BeanNodeletAdder implements NodeletAdder {
 				if(StringUtils.hasText(text)) {
 					BeanRule beanRule = assistant.peekObject();
 					beanRule.setInitMethodName(text.trim());
+				}
+			}
+		});
+		parser.addNodelet(xpath, "/bean/features/factoryMethod", new Nodelet() {
+			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
+				if(StringUtils.hasText(text)) {
+					BeanRule beanRule = assistant.peekObject();
+					beanRule.setFactoryMethodName(text.trim());
 				}
 			}
 		});

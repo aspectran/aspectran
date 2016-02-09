@@ -292,17 +292,17 @@ public class RootAponDisassembler {
 
 	public void disassembleBeanRule(Parameters beanParameters) throws ClassNotFoundException, IOException, CloneNotSupportedException {
 		String description = beanParameters.getString(BeanParameters.description);
-		String id = beanParameters.getString(BeanParameters.id);
-		String className = assistant.resolveAliasType(beanParameters.getString(BeanParameters.className));
+		String id = StringUtils.emptyToNull(beanParameters.getString(BeanParameters.id));
+		String className = StringUtils.emptyToNull(assistant.resolveAliasType(beanParameters.getString(BeanParameters.className)));
 		String scan = beanParameters.getString(BeanParameters.scan);
 		String mask = beanParameters.getString(BeanParameters.mask);
 		String scope = beanParameters.getString(BeanParameters.scope);
 		Boolean singleton = beanParameters.getBoolean(BeanParameters.singleton);
-		String offerBean = beanParameters.getString(BeanParameters.offerBean);
-		String offerMethod = beanParameters.getString(BeanParameters.offerMethod);
-		String initMethod = beanParameters.getString(BeanParameters.initMethod);
-		String factoryMethod = beanParameters.getString(BeanParameters.factoryMethod);
-		String destroyMethod = beanParameters.getString(BeanParameters.destroyMethod);
+		String offerBean = StringUtils.emptyToNull(beanParameters.getString(BeanParameters.offerBean));
+		String offerMethod = StringUtils.emptyToNull(beanParameters.getString(BeanParameters.offerMethod));
+		String initMethod = StringUtils.emptyToNull(beanParameters.getString(BeanParameters.initMethod));
+		String factoryMethod = StringUtils.emptyToNull(beanParameters.getString(BeanParameters.factoryMethod));
+		String destroyMethod = StringUtils.emptyToNull(beanParameters.getString(BeanParameters.destroyMethod));
 		Boolean lazyInit = beanParameters.getBoolean(BeanParameters.lazyInit);
 		Boolean important = beanParameters.getBoolean(BeanParameters.important);
 		ConstructorParameters constructorParameters = beanParameters.getParameters(BeanParameters.constructor);
@@ -316,6 +316,16 @@ public class RootAponDisassembler {
 				throw new IllegalArgumentException("Bean id must not be null.");
 
 			beanRule = BeanRule.newOfferedBeanInstance(id, scope, singleton, offerBean, offerMethod, initMethod, factoryMethod, destroyMethod, lazyInit, important);
+
+			if(offerBean != null) {
+				Class<?> offerBeanClass = assistant.resolveBeanClass(offerBean);
+				if(offerBeanClass != null) {
+					beanRule.setOfferBeanClass(offerBeanClass);
+					assistant.putBeanReference(offerBeanClass, beanRule);
+				} else {
+					assistant.putBeanReference(offerBean, beanRule);
+				}
+			}
 		} else {
 			if(className == null && scan == null)
 				throw new IllegalArgumentException("Bean class must not be null.");
@@ -514,9 +524,9 @@ public class RootAponDisassembler {
 	}
 	
 	public void disassembleActionRule(Parameters actionParameters, ActionRuleApplicable actionRuleApplicable) {
-		String id = actionParameters.getString(ActionParameters.id);
-		String beanId = actionParameters.getString(ActionParameters.beanId);
-		String methodName = actionParameters.getString(ActionParameters.methodName);
+		String id = StringUtils.emptyToNull(actionParameters.getString(ActionParameters.id));
+		String beanId = StringUtils.emptyToNull(actionParameters.getString(ActionParameters.beanId));
+		String methodName = StringUtils.emptyToNull(actionParameters.getString(ActionParameters.methodName));
 		ItemHolderParameters argumentItemHolderParameters = actionParameters.getParameters(ActionParameters.arguments);
 		ItemHolderParameters propertyItemHolderParameters = actionParameters.getParameters(ActionParameters.properties);
 		String include = actionParameters.getString(ActionParameters.include);
@@ -524,10 +534,10 @@ public class RootAponDisassembler {
 		ItemHolderParameters echoItemHolderParameters = actionParameters.getParameters(ActionParameters.echo);
 		Boolean hidden = actionParameters.getBoolean(ActionParameters.hidden);
 		
-		if(!assistant.isNullableActionId() && StringUtils.isEmpty(id))
-			throw new IllegalArgumentException("Parameter id must not null. nullableActionId setting is true.");
+		if(!assistant.isNullableActionId() && id == null)
+			throw new IllegalArgumentException("Action id must not be null. nullableActionId setting is true.");
 		
-		if(!StringUtils.isEmpty(methodName)) {
+		if(methodName != null) {
 			BeanActionRule beanActionRule = BeanActionRule.newInstance(id, beanId, methodName, hidden);
 			if(argumentItemHolderParameters != null) {
 				ItemRuleMap argumentItemRuleMap = disassembleItemRuleMap(argumentItemHolderParameters);
@@ -539,10 +549,11 @@ public class RootAponDisassembler {
 			}
 			actionRuleApplicable.applyActionRule(beanActionRule);
 
-			if(!StringUtils.isEmpty(beanId)) {
-				Class<?> beanClass = assistant.extractBeanClass(beanId);
+			if(beanId != null) {
+				Class<?> beanClass = assistant.resolveBeanClass(beanId);
 				if(beanClass != null) {
 					beanActionRule.setBeanClass(beanClass);
+					assistant.putBeanReference(beanClass, beanActionRule);
 				} else {
 					assistant.putBeanReference(beanId, beanActionRule);
 				}
@@ -742,7 +753,7 @@ public class RootAponDisassembler {
 				if(iter != null) {
 					while(iter.hasNext()) {
 						for(Token token : iter.next()) {
-							if(token.getType() == TokenType.REFERENCE_BEAN) {
+							if(token.getType() == TokenType.BEAN) {
 								assistant.putBeanReference(token.getName(), itemRule);
 							}
 						}

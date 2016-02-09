@@ -139,14 +139,14 @@ public class ItemNodeletAdder implements NodeletAdder {
 		});
 		parser.addNodelet(xpath, "/item/reference", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
-				String beanId = attributes.get("bean");
-				String parameter = attributes.get("parameter");
-				String attribute = attributes.get("attribute");
-				String property = attributes.get("property"); // bean's property
+				String beanId = StringUtils.emptyToNull(attributes.get("bean"));
+				String parameter = StringUtils.emptyToNull(attributes.get("parameter"));
+				String attribute = StringUtils.emptyToNull(attributes.get("attribute"));
+				String property = StringUtils.emptyToNull(attributes.get("property")); // bean's property
 
 //TODO bean="class:"
 //if(!StringUtils.isEmpty(beanId)) {
-//	Class<?> beanClass = assistant.extractBeanClass(beanId);
+//	Class<?> beanClass = assistant.resolveBeanClass(beanId);
 //	if(beanClass != null) {
 //		beanActionRule.setBeanClass(beanClass);
 //	} else {
@@ -169,7 +169,7 @@ public class ItemNodeletAdder implements NodeletAdder {
 				if(iter != null) {
 					while(iter.hasNext()) {
 						for(Token token : iter.next()) {
-							if(token.getType() == TokenType.REFERENCE_BEAN) {
+							if(token.getType() == TokenType.BEAN) {
 								assistant.putBeanReference(token.getName(), itemRule);
 							}
 						}

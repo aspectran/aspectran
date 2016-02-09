@@ -54,6 +54,8 @@ public class BeanRule implements Replicable<BeanRule> {
 
 	private String offerBeanId;
 	
+	private Class<?> offerBeanClass;
+
 	private String offerMethodName;
 
 	private boolean offered;
@@ -246,7 +248,7 @@ public class BeanRule implements Replicable<BeanRule> {
 	/**
 	 * Gets the offer bean id.
 	 *
-	 * @return the factory bean id
+	 * @return the offer bean id
 	 */
 	public String getOfferBeanId() {
 		return offerBeanId;
@@ -255,10 +257,28 @@ public class BeanRule implements Replicable<BeanRule> {
 	/**
 	 * Sets the offer bean id.
 	 *
-	 * @param offerBeanId the new factory bean id
+	 * @param offerBeanId the new offer bean id
 	 */
 	public void setOfferBeanId(String offerBeanId) {
 		this.offerBeanId = offerBeanId;
+	}
+
+	/**
+	 * Gets offer bean class.
+	 *
+	 * @return the offer bean class
+	 */
+	public Class<?> getOfferBeanClass() {
+		return offerBeanClass;
+	}
+
+	/**
+	 * Sets offer bean class.
+	 *
+	 * @param offerBeanClass the offer bean class
+	 */
+	public void setOfferBeanClass(Class<?> offerBeanClass) {
+		this.offerBeanClass = offerBeanClass;
 	}
 
 	/**

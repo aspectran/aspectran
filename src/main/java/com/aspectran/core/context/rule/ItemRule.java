@@ -512,21 +512,24 @@ public class ItemRule {
 	 * @return the token[]
 	 */
 	public static Token[] makeReferenceTokens(String beanId, String parameter, String attribute, String property) {
-		Token[] tokens = new Token[1];
+		Token token;
 		
-		if(!StringUtils.isEmpty(beanId)) {
-			tokens[0] = new Token(TokenType.REFERENCE_BEAN, beanId);
+		if(beanId != null) {
+			token = new Token(TokenType.BEAN, beanId);
 			
-			if(!StringUtils.isEmpty(property))
-				tokens[0].setGetterName(property);
-		} else if(!StringUtils.isEmpty(parameter))
-			tokens[0] = new Token(TokenType.PARAMETER, parameter);
-		else if(!StringUtils.isEmpty(attribute))
-			tokens[0] = new Token(TokenType.ATTRIBUTE, attribute);
+			if(property != null)
+				token.setGetterName(property);
+		} else if(parameter != null)
+			token = new Token(TokenType.PARAMETER, parameter);
+		else if(attribute != null)
+			token = new Token(TokenType.ATTRIBUTE, attribute);
 		else
-			tokens[0] = null;
-		
-		return tokens;
+			token = null;
+
+		if(token == null)
+			return null;
+
+		return new Token[] { token };
 	}
 	
 	/**
@@ -726,10 +729,10 @@ public class ItemRule {
 		ItemRule itemRule = ItemRule.newInstance(type, name, null, valueType, defaultValue, tokenize);
 		
 		if(referenceParameters != null) {
-			String bean = referenceParameters.getString(ReferenceParameters.bean);
-			String parameter = referenceParameters.getString(ReferenceParameters.parameter);
-			String attribute = referenceParameters.getString(ReferenceParameters.attribute);
-			String property = referenceParameters.getString(ReferenceParameters.property);
+			String bean = StringUtils.emptyToNull(referenceParameters.getString(ReferenceParameters.bean));
+			String parameter = StringUtils.emptyToNull(referenceParameters.getString(ReferenceParameters.parameter));
+			String attribute = StringUtils.emptyToNull(referenceParameters.getString(ReferenceParameters.attribute));
+			String property = StringUtils.emptyToNull(referenceParameters.getString(ReferenceParameters.property));
 			
 			updateReference(itemRule, bean, parameter, attribute, property);
 		} else {

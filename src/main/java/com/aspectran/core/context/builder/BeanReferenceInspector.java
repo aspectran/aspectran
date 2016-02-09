@@ -34,32 +34,31 @@ public class BeanReferenceInspector {
 
 	private final Log log = LogFactory.getLog(BeanReferenceInspector.class);
 	
-	private Map<String, Set<Object>> relationMap = new LinkedHashMap<String, Set<Object>>();
+	private Map<Object, Set<Object>> relationMap = new LinkedHashMap<Object, Set<Object>>();
 	
 	public BeanReferenceInspector() {
 	}
 	
-	public void putRelation(String beanId, Object rule) {
-		Set<Object> ruleSet = relationMap.get(beanId);
+	public void putRelation(Object beanIdOrClass, Object someRule) {
+		Set<Object> ruleSet = relationMap.get(beanIdOrClass);
 		
 		if(ruleSet == null) {
 			ruleSet = new LinkedHashSet<Object>();
-			ruleSet.add(rule);
-			relationMap.put(beanId,  ruleSet);
+			ruleSet.add(someRule);
+			relationMap.put(beanIdOrClass, ruleSet);
 		} else {
-			ruleSet.add(rule);
+			ruleSet.add(someRule);
 		}
 	}
 	
 	public void inspect(BeanRuleRegistry beanRuleRegistry) throws BeanReferenceException {
-		List<String> unknownBeanIdList = new ArrayList<String>();
+		List<Object> unknownBeanIdList = new ArrayList<Object>();
 		
-		for(Map.Entry<String, Set<Object>> entry : relationMap.entrySet()) {
-			String beanId = entry.getKey();
+		for(Map.Entry<Object, Set<Object>> entry : relationMap.entrySet()) {
+			Object beanIdOrClass = entry.getKey();
 
-			if(!beanRuleRegistry.contains(beanId)) {
-				unknownBeanIdList.add(beanId);
-				
+			if(!beanRuleRegistry.contains(beanIdOrClass)) {
+				unknownBeanIdList.add(beanIdOrClass);
 				Set<Object> set = entry.getValue();
 				
 				for(Object o : set) {
@@ -79,14 +78,14 @@ public class BeanReferenceInspector {
 						ruleName = "rule";
 					}
 					
-					log.error("Cannot resolve reference to bean '" + beanId + "' on " + ruleName + " " + o);
+					log.error("Cannot resolve reference to bean '" + beanIdOrClass.toString() + "' on " + ruleName + " " + o);
 				}
 			}
 		}
 		
 		if(!unknownBeanIdList.isEmpty()) {
-			for(String beanId : unknownBeanIdList) {
-				relationMap.remove(beanId);
+			for(Object beanIdOrClass : unknownBeanIdList) {
+				relationMap.remove(beanIdOrClass);
 			}
 			
 			BeanReferenceException bre = new BeanReferenceException(unknownBeanIdList);
@@ -96,7 +95,7 @@ public class BeanReferenceInspector {
 		}
 	}
 	
-	public Map<String, Set<Object>> getRelationMap() {
+	public Map<Object, Set<Object>> getRelationMap() {
 		return relationMap;
 	}
 	

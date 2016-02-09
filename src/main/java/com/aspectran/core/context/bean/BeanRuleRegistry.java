@@ -89,7 +89,17 @@ public class BeanRuleRegistry {
 		
 		return list.toArray(new BeanRule[list.size()]);
 	}
-	
+
+	public boolean contains(Object beanIdOrClass) {
+		if(beanIdOrClass == null)
+			return false;
+
+		if(beanIdOrClass instanceof Class<?>)
+			return contains((Class<?>)beanIdOrClass);
+		else
+			return contains(beanIdOrClass.toString());
+	}
+
 	public boolean contains(String beanId) {
 		return beanRuleMap.containsKey(beanId);
 	}

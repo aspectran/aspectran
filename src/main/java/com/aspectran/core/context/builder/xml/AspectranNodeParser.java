@@ -37,11 +37,11 @@ import com.aspectran.core.util.xml.NodeletParser;
  * <p>Created: 2008. 06. 14 AM 4:39:24</p>
  */
 public class AspectranNodeParser {
-	
-	private final NodeletParser parser = new NodeletParser();
 
 	private final ContextBuilderAssistant assistant;
-	
+
+	private final NodeletParser parser;
+
 	/**
 	 * Instantiates a new AspectranNodeParser.
 	 * 
@@ -54,15 +54,17 @@ public class AspectranNodeParser {
 	/**
 	 * Instantiates a new AspectranNodeParser.
 	 *
-	 * @param assistant the assistant
-	 * @param validating the validating
+	 * @param assistant the context builder assistant
+	 * @param validating true if the parser produced will validate documents
+	 *                   as they are parsed; false otherwise.
 	 */
 	public AspectranNodeParser(ContextBuilderAssistant assistant, boolean validating) {
 		this.assistant = assistant;
 		assistant.clearObjectStack();
 
-		parser.setValidating(validating);
-		parser.setEntityResolver(new AspectranDtdResolver(validating));
+		this.parser = new NodeletParser();
+		this.parser.setValidating(validating);
+		this.parser.setEntityResolver(new AspectranDtdResolver(validating));
 
 		addSettingsNodelets();
 		addTypeAliasNodelets();

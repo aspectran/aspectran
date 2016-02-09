@@ -41,7 +41,7 @@ public class BeanReferenceException extends ActivityContextBuilderException {
 	 *
 	 * @param unknownBeanIdList the unknown bean id list
 	 */
-	public BeanReferenceException(List<String> unknownBeanIdList) {
+	public BeanReferenceException(List<Object> unknownBeanIdList) {
 		super(getMessage(unknownBeanIdList));
 	}
 	
@@ -69,7 +69,7 @@ public class BeanReferenceException extends ActivityContextBuilderException {
 	 * @param unknownBeanIdList the unknown bean id list
 	 * @return the message
 	 */
-	private static String getMessage(List<String> unknownBeanIdList) {
+	private static String getMessage(List<Object> unknownBeanIdList) {
 		StringBuilder sb = new StringBuilder();
 		sb.append("Cannot resolve reference to bean [");
 		

@@ -70,7 +70,7 @@ public class TokenExpression implements TokenExpressor {
 			value = getParameter(token.getName(), token.getDefaultValue());
 		} else	if(tokenType == TokenType.ATTRIBUTE) {
 			value = getAttribute(token);
-		} else	if(tokenType == TokenType.REFERENCE_BEAN) {
+		} else	if(tokenType == TokenType.BEAN) {
 			value = getBean(token);
 		}
 		

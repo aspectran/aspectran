@@ -247,7 +247,6 @@ public class ContextBuilderAssistant {
 	 */
 	public String resolveAliasType(String alias) {
 		String type = getAliasType(alias);
-
 		if(type == null)
 			return alias;
 
@@ -340,7 +339,7 @@ public class ContextBuilderAssistant {
 		return defaultSettings.isPointcutPatternVerifiable();
 	}
 
-	public Class<?> extractBeanClass(String beanId) {
+	public Class<?> resolveBeanClass(String beanId) {
 		if(beanId != null && beanId.startsWith(PointcutPatternRule.POINTCUT_CLASS_NAME_PREFIX)) {
 			String className = beanId.substring(PointcutPatternRule.POINTCUT_CLASS_NAME_PREFIX.length());
 			try {
@@ -465,12 +464,10 @@ public class ContextBuilderAssistant {
 		return transletRuleRegistry.getTransletRuleMap().values();
 	}
 
-	public String putBeanReference(String beanId, Object rule) {
-		if(beanRuleRegistry != null && !beanRuleRegistry.contains(beanId)) {
-			beanReferenceInspector.putRelation(beanId, rule);
+	public void putBeanReference(Object beanIdOrClass, Object someRule) {
+		if(beanRuleRegistry != null && !beanRuleRegistry.contains(beanIdOrClass)) {
+			beanReferenceInspector.putRelation(beanIdOrClass, someRule);
 		}
-		
-		return beanId;
 	}
 	
 	public BeanReferenceInspector getBeanReferenceInspector() {

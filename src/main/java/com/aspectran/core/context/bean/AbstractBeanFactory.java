@@ -87,11 +87,15 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 
 	private Object createOfferedBean(BeanRule beanRule, Activity activity) {
 		String offerBeanId = beanRule.getOfferBeanId();
+		Class<?> offerBeanClass = beanRule.getOfferBeanClass();
 		String offerMethodName = beanRule.getOfferMethodName();
 		Object bean;
 		
 		try {
-			bean = activity.getBean(offerBeanId);
+			if(offerBeanClass != null)
+				bean = activity.getBean(offerBeanClass);
+			else
+				bean = activity.getBean(offerBeanId);
 			
 			if(offerMethodName != null)
 				bean = MethodUtils.invokeMethod(bean, offerMethodName);
