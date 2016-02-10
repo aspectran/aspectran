@@ -113,5 +113,10 @@ public class ForwardResponse implements Response {
 	public ForwardResponseRule getForwardResponseRule() {
 		return forwardResponseRule;
 	}
-	
+
+	@Override
+	public String toString() {
+		return forwardResponseRule.toString();
+	}
+
 }

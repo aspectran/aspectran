@@ -26,6 +26,12 @@ import com.aspectran.core.context.rule.type.PointcutType;
  */
 public class PointcutFactory {
 
+	/**
+	 * Create pointcut object.
+	 *
+	 * @param pointcutRule the pointcut rule
+	 * @return the pointcut
+	 */
 	public static Pointcut createPointcut(PointcutRule pointcutRule) {
 		if(pointcutRule.getPointcutType() == PointcutType.REGEXP) {
 			return createRegexpPointcut(pointcutRule.getPointcutPatternRuleList());
@@ -33,11 +39,23 @@ public class PointcutFactory {
 			return createWildcardPointcut(pointcutRule.getPointcutPatternRuleList());
 		}
 	}
-	
+
+	/**
+	 * Create wildcard pointcut object.
+	 *
+	 * @param pointcutPatternRuleList the pointcut pattern rule list
+	 * @return the pointcut
+	 */
 	private static Pointcut createWildcardPointcut(List<PointcutPatternRule> pointcutPatternRuleList) {
 		return new WildcardPointcut(pointcutPatternRuleList);
 	}
-	
+
+	/**
+	 * Create regexp pointcut object.
+	 *
+	 * @param pointcutPatternRuleList the pointcut pattern rule list
+	 * @return the pointcut
+	 */
 	private static Pointcut createRegexpPointcut(List<PointcutPatternRule> pointcutPatternRuleList) {
 		return new RegexpPointcut(pointcutPatternRuleList);
 	}

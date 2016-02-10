@@ -238,9 +238,11 @@ public class RedirectResponseRule extends ActionPossessSupport implements Action
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("{contentType=").append(contentType);
-		sb.append(", target=").append(target);
-		sb.append(", excludeNullParameters=").append(excludeNullParameter);
+		sb.append("{target=").append(target);
+		if(contentType != null)
+			sb.append(", contentType=").append(contentType);
+		if(excludeNullParameter != null)
+			sb.append(", excludeNullParameters=").append(excludeNullParameter);
 		if(defaultResponse != null)
 			sb.append(", defaultResponse=").append(defaultResponse);
 		sb.append("}");

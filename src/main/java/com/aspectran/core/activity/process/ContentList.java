@@ -93,8 +93,11 @@ public class ContentList extends ArrayList<ActionList> {
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("{name=").append(name);
-		sb.append(", omittable=").append(omittable);
+		sb.append("{");
+		if(name != null)
+			sb.append(", name=").append(name);
+		if(omittable != null)
+			sb.append(", omittable=").append(omittable);
 		sb.append(", contents=");
 		sb.append('[');
 		for(int i = 0; i < size(); i++) {
@@ -105,7 +108,10 @@ public class ContentList extends ArrayList<ActionList> {
 		}
 		sb.append(']');
 		sb.append('}');
-		
+
+		if(sb.charAt(1) == ',')
+			sb.delete(1, 3);
+
 		return sb.toString();
 	}
 	

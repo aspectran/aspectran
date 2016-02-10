@@ -482,7 +482,7 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 		if(aspectAdviceRuleRegistry != null)
 			sb.append(", aspectAdviceRuleRegistry=").append(aspectAdviceRuleRegistry);
 		if(explicitContent)
-		sb.append(", explicitContent=").append(explicitContent);
+			sb.append(", explicitContent=").append(explicitContent);
 		if(implicitResponse)
 			sb.append(", implicitResponse=").append(implicitResponse);
 		sb.append("}");

@@ -26,16 +26,16 @@ import com.aspectran.core.context.rule.PointcutPatternRule;
 /**
  * The Class RegexpPointcut.
  */
-public class RegexpPointcut extends AbstractPointcut implements Pointcut {
+public class RegexpPointcut extends AbstractPointcut {
 	
-	private Map<String, Pattern> regexpPatternCache = new WeakHashMap<String, Pattern>();
+	private final Map<String, Pattern> regexpPatternCache = new WeakHashMap<String, Pattern>();
 
 	public RegexpPointcut(List<PointcutPatternRule> pointcutPatternRuleList) {
 		super(pointcutPatternRuleList);
 	}
 
 	@Override
-	public boolean patternMatches(String regex, String input) {
+	public boolean patternMatches(String regex, String compareString) {
 		Pattern pattern = regexpPatternCache.get(regex);
 			
 		if(pattern == null) {
@@ -43,14 +43,14 @@ public class RegexpPointcut extends AbstractPointcut implements Pointcut {
 			regexpPatternCache.put(regex, pattern);
 		}
 
-		Matcher matcher = pattern.matcher(input);
+		Matcher matcher = pattern.matcher(compareString);
 
 		return matcher.matches();
 	}
 
 	@Override
-	public boolean patternMatches(String regex, String str, char separator) {
-		return patternMatches(regex, str);
+	public boolean patternMatches(String regex, String compareString, char separator) {
+		return patternMatches(regex, compareString);
 	}
 
 }

@@ -15,7 +15,6 @@
  */
 package com.aspectran.core.context.aspect.pointcut;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.aspectran.core.context.AspectranConstants;
@@ -24,7 +23,7 @@ import com.aspectran.core.context.rule.PointcutPatternRule;
 /**
  * The Class AbstractPointcut.
  */
-public abstract class AbstractPointcut {
+public abstract class AbstractPointcut implements Pointcut {
 	
 	protected final List<PointcutPatternRule> pointcutPatternRuleList;
 	
@@ -51,15 +50,6 @@ public abstract class AbstractPointcut {
 		return pointcutPatternRuleList;
 	}
 
-	public void addPointcutPatternRule(List<PointcutPatternRule> pointcutPatternList) {
-		if(pointcutPatternList == null) {
-			pointcutPatternList = new ArrayList<PointcutPatternRule>(pointcutPatternList);
-			return;
-		}
-
-		pointcutPatternList.addAll(pointcutPatternList);
-	}
-	
 	public boolean isExistsBeanMethodNamePattern() {
 		return existsBeanMethodNamePattern;
 	}

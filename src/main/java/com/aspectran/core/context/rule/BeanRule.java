@@ -36,6 +36,10 @@ import com.aspectran.core.util.apon.Parameters;
  */
 public class BeanRule implements Replicable<BeanRule> {
 
+	public static final String CLASS_DIRECTIVE = "class";
+
+	public static final String CLASS_DIRECTIVE_PREFIX = "class:";
+
 	private String id;
 
 	private String className;
@@ -758,10 +762,10 @@ public class BeanRule implements Replicable<BeanRule> {
 
 		if(initMethodName != null) {
 			if(beanRule.isInitializableBean())
-				throw new BeanRuleException(beanRule, "Bean initialization method  is duplicated. Already implemented the InitializableBean");
+				throw new BeanRuleException(beanRule, "Bean initialization method is duplicated. Already implemented the InitializableBean");
 
 			if(beanRule.isInitializableTransletBean())
-				throw new BeanRuleException(beanRule, "Bean initialization method  is duplicated. Already implemented the InitializableTransletBean");
+				throw new BeanRuleException(beanRule, "Bean initialization method is duplicated. Already implemented the InitializableTransletBean");
 
 			Method m1 = MethodUtils.getAccessibleMethod(beanClass, initMethodName, null);
 			Method m2 = MethodUtils.getAccessibleMethod(beanClass, initMethodName, parameterTypes);

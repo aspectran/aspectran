@@ -27,7 +27,6 @@ import com.aspectran.core.context.aspect.AspectRuleRegistry;
 import com.aspectran.core.context.bean.BeanRuleRegistry;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.BeanRule;
-import com.aspectran.core.context.rule.PointcutPatternRule;
 import com.aspectran.core.context.rule.TemplateRule;
 import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.type.DefaultSettingType;
@@ -340,16 +339,24 @@ public class ContextBuilderAssistant {
 	}
 
 	public Class<?> resolveBeanClass(String beanId) {
-		if(beanId != null && beanId.startsWith(PointcutPatternRule.POINTCUT_CLASS_NAME_PREFIX)) {
-			String className = beanId.substring(PointcutPatternRule.POINTCUT_CLASS_NAME_PREFIX.length());
+		if(beanId != null && beanId.startsWith(BeanRule.CLASS_DIRECTIVE_PREFIX)) {
+			String className = beanId.substring(BeanRule.CLASS_DIRECTIVE_PREFIX.length());
 			try {
-				Class<?> actionClass = classLoader.loadClass(className);
-				return actionClass;
+				Class<?> beanClass = classLoader.loadClass(className);
+				return beanClass;
 			} catch(ClassNotFoundException e) {
-				throw new IllegalArgumentException("Unknown action class: " + className, e);
+				throw new IllegalArgumentException("Failed to load class: " + className, e);
 			}
 		}
 		return null;
+	}
+
+	public Class<?> loadClass(String className) {
+		try {
+			return classLoader.loadClass(className);
+		} catch(ClassNotFoundException e) {
+			throw new IllegalArgumentException("Failed to load class: " + className, e);
+		}
 	}
 
 	/**

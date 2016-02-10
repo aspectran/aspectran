@@ -116,5 +116,10 @@ public class DispatchResponse implements Response {
 			}
 		}
 	}
-	
+
+	@Override
+	public String toString() {
+		return dispatchResponseRule.toString();
+	}
+
 }

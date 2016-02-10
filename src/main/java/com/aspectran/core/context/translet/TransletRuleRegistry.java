@@ -308,9 +308,9 @@ public class TransletRuleRegistry {
 					String value = requestTransletRuleName.substring(beginIndex, endIndex);
 					if(value.length() > 0) {
 						pathVariableMap.put(prevToken.getName(), value);
-					} else if(prevToken.getDefaultValue() != null) {
+					} else if(prevToken.getValue() != null) {
 						// If the last token ends with a "/" can be given a default value.
-						pathVariableMap.put(prevToken.getName(), prevToken.getDefaultValue());
+						pathVariableMap.put(prevToken.getName(), prevToken.getValue());
 					}
 					
 					beginIndex += value.length();
@@ -328,9 +328,9 @@ public class TransletRuleRegistry {
 			String value = requestTransletRuleName.substring(beginIndex);
 			if(value.length() > 0) {
 				pathVariableMap.put(lastToken.getName(), value);
-			} else if(lastToken.getDefaultValue() != null) {
+			} else if(lastToken.getValue() != null) {
 				// If the last token ends with a "/" can be given a default value.
-				pathVariableMap.put(lastToken.getName(), lastToken.getDefaultValue());
+				pathVariableMap.put(lastToken.getName(), lastToken.getValue());
 			}
 		}
 		

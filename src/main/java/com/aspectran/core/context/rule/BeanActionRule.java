@@ -209,10 +209,13 @@ public class BeanActionRule implements ArgumentPossessable, PropertyPossessable 
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("{id=").append(actionId);
+		sb.append("{");
+		if(actionId != null)
+			sb.append(", id=").append(actionId);
 		sb.append(", bean=").append(beanId);
 		sb.append(", method=").append(methodName);
-		sb.append(", hidden=").append(hidden);
+		if(hidden != null)
+			sb.append(", hidden=").append(hidden);
 		if(propertyItemRuleMap != null) {
 			sb.append(", properties=[");
 			int sbLength = sb.length();
@@ -235,7 +238,10 @@ public class BeanActionRule implements ArgumentPossessable, PropertyPossessable 
 			sb.append("]");
 		}
 		sb.append("}");
-		
+
+		if(sb.charAt(1) == ',')
+			sb.delete(1, 3);
+
 		return sb.toString();
 	}
 	

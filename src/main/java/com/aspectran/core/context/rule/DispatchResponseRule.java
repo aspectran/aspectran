@@ -137,8 +137,10 @@ public class DispatchResponseRule extends ActionPossessSupport implements Action
 	public String toString(ViewDispatcher viewDispatcher) {
 		StringBuilder sb = new StringBuilder();
 		sb.append("{dispatchName=").append(name);
-		sb.append(", contentType=").append(contentType);
-		sb.append(", characterEncoding=").append(characterEncoding);
+		if(contentType != null)
+			sb.append(", contentType=").append(contentType);
+		if(characterEncoding != null)
+			sb.append(", characterEncoding=").append(characterEncoding);
 		if(defaultResponse != null)
 			sb.append(", defaultResponse=").append(defaultResponse);
 		if(viewDispatcher != null)

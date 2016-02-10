@@ -101,8 +101,8 @@ public class ConsoleActivity extends CoreActivity implements Activity {
 					for(Token token : tokens) {
 						if(token.getType() == TokenType.PARAMETER) {
 							System.out.printf("  $%s: ", token.getName());
-							if(token.getDefaultValue() != null) {
-								System.out.printf("(%s)", token.getDefaultValue());
+							if(token.getValue() != null) {
+								System.out.printf("(%s)", token.getValue());
 							}
 							String input = System.console().readLine();
 							if(input != null && input.length() > 0) {

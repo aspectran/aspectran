@@ -26,11 +26,11 @@ import com.aspectran.core.util.wildcard.WildcardPattern;
 /**
  * The Class WildcardPointcut.
  */
-public class WildcardPointcut extends AbstractPointcut implements Pointcut {
+public class WildcardPointcut extends AbstractPointcut {
 
 	private static final String OR_MATCH_DELIMITER = "|";
 	
-	private Map<String, WildcardPattern> wildcardPatternCache = new WeakHashMap<String, WildcardPattern>();
+	private final Map<String, WildcardPattern> wildcardPatternCache = new WeakHashMap<String, WildcardPattern>();
 	
 	public WildcardPointcut(List<PointcutPatternRule> pointcutPatternRuleList) {
 		super(pointcutPatternRuleList);
@@ -72,7 +72,7 @@ public class WildcardPointcut extends AbstractPointcut implements Pointcut {
 		}
 	}
 	
-	public boolean wildcardPatternMatches(String pattern, String compareString) {
+	protected boolean wildcardPatternMatches(String pattern, String compareString) {
 		if(!WildcardPattern.hasWildcards(pattern)) {
 			return pattern.equals(compareString);
 		}
@@ -86,8 +86,8 @@ public class WildcardPointcut extends AbstractPointcut implements Pointcut {
 		
 		return wildcardPattern.matches(compareString);
 	}
-	
-	public boolean wildcardPatternMatches(String pattern, String compareString, char separator) {
+
+	protected boolean wildcardPatternMatches(String pattern, String compareString, char separator) {
 		String patternId = pattern + separator;
 		
 		WildcardPattern wildcardPattern = wildcardPatternCache.get(patternId);

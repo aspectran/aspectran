@@ -87,9 +87,7 @@ public class XslTransform extends TransformResponse implements Response {
 		this.templateRule = transformRule.getTemplateRule();
 	}
 
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.response.Response#response(com.aspectran.core.activity.Activity)
-	 */
+	@Override
 	public void response(Activity activity) throws TransformResponseException {
 		ResponseAdapter responseAdapter = activity.getResponseAdapter();
 		if(responseAdapter == null)
@@ -132,16 +130,12 @@ public class XslTransform extends TransformResponse implements Response {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.response.Response#getActionList()
-	 */
+	@Override
 	public ActionList getActionList() {
 		return transformRule.getActionList();
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.response.Response#replicate()
-	 */
+
+	@Override
 	public Response replicate() {
 		TransformRule transformRule = getTransformRule().replicate();
 		Response response = new XslTransform(transformRule);
@@ -157,19 +151,18 @@ public class XslTransform extends TransformResponse implements Response {
 		if(templateFile != null) {
 			if(noCache) {
 				File file = applicationAdapter.toRealPathAsFile(templateFile);
-				templates = createTemplates(file);
+				this.templates = createTemplates(file);
 				determineOutoutStyle();
 			} else {
 				File file = applicationAdapter.toRealPathAsFile(templateFile);
 				long lastModifiedTime = file.lastModified();
-				
-				if(lastModifiedTime > templateLastModifiedTime) {
+				if(lastModifiedTime > this.templateLastModifiedTime) {
 					synchronized(this) {
 						lastModifiedTime = file.lastModified();
-						if(lastModifiedTime > templateLastModifiedTime) {
-							templates = createTemplates(file);
+						if(lastModifiedTime > this.templateLastModifiedTime) {
+							this.templates = createTemplates(file);
 							determineOutoutStyle();
-							templateLastModifiedTime = lastModifiedTime;
+							this.templateLastModifiedTime = lastModifiedTime;
 						}
 					}
 				}
@@ -178,39 +171,39 @@ public class XslTransform extends TransformResponse implements Response {
 			if(noCache) {
 				ClassLoader classLoader = applicationAdapter.getClassLoader();
 				File file = new File(classLoader.getResource(templateResource).getFile());
-				templates = createTemplates(file);
+				this.templates = createTemplates(file);
 				determineOutoutStyle();
 			} else {
-				if(!templateLoaded) {
+				if(!this.templateLoaded) {
 					synchronized(this) {
-						if(!templateLoaded) {
+						if(!this.templateLoaded) {
 							ClassLoader classLoader = applicationAdapter.getClassLoader();
 							File file = new File(classLoader.getResource(templateResource).getFile());
-							templates = createTemplates(file);
+							this.templates = createTemplates(file);
 							determineOutoutStyle();
-							templateLoaded = true;
+							this.templateLoaded = true;
 						}
 					}
 				}
 			}
 		} else if(templateUrl != null) {
 			if(noCache) {
-				templates = createTemplates(new URL(templateUrl));
+				this.templates = createTemplates(new URL(templateUrl));
 				determineOutoutStyle();
 			} else {
-				if(!templateLoaded) {
+				if(!this.templateLoaded) {
 					synchronized(this) {
-						if(!templateLoaded) {
-							templates = createTemplates(new URL(templateUrl));
+						if(!this.templateLoaded) {
+							this.templates = createTemplates(new URL(templateUrl));
 							determineOutoutStyle();
-							templateLoaded = true;
+							this.templateLoaded = true;
 						}
 					}
 				}
 			}
 		}
 		
-		if(templates == null)
+		if(this.templates == null)
 			throw new TransformerConfigurationException("Template file is null.");
 	}
 

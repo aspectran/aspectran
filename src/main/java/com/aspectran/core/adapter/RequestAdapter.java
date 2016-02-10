@@ -80,7 +80,8 @@ public interface RequestAdapter {
 	 * Sets parameter.
 	 *
 	 * @param name the parameter name
-	 * @param value the parameter value
+	 * @param value a <code>String</code> representing the
+	 *			single value of the parameter
 	 */
 	public void setParameter(String name, String value);
 
@@ -88,7 +89,8 @@ public interface RequestAdapter {
 	 * Gets the parameter values.
 	 *
 	 * @param name the name
-	 * @return the parameter values
+	 * @return an array of <code>String</code> objects
+	 *			containing the parameter's values
 	 */
 	public String[] getParameterValues(String name);
 	

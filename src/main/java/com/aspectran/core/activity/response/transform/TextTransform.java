@@ -62,9 +62,7 @@ public class TextTransform extends TransformResponse implements Response {
 		this.outputEncoding = transformRule.getCharacterEncoding();
 	}
 
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.response.Response#response(com.aspectran.core.activity.Activity)
-	 */
+	@Override
 	public void response(Activity activity) throws TransformResponseException {
 		ResponseAdapter responseAdapter = activity.getResponseAdapter();
 		if(responseAdapter == null)
@@ -108,17 +106,13 @@ public class TextTransform extends TransformResponse implements Response {
 			throw new TransformResponseException(transformRule, e);
 		}
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.response.Response#getActionList()
-	 */
+
+	@Override
 	public ActionList getActionList() {
 		return transformRule.getActionList();
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.response.Response#replicate()
-	 */
+
+	@Override
 	public Response replicate() {
 		TransformRule transformRule = getTransformRule().replicate();
 		Response response = new TextTransform(transformRule);

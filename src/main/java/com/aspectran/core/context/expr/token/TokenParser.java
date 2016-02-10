@@ -32,12 +32,11 @@ public class TokenParser {
 	public static Token[] parse(String value, boolean trimStringToken) {
 		if(value == null)
 			return null;
-		
-		List<Token> tokenList = Tokenizer.tokenize(value, trimStringToken);
 
 		Token[] tokens = null;
+		List<Token> tokenList = Tokenizer.tokenize(value, trimStringToken);
 
-		if(tokenList.size() > 0) {
+		if(!tokenList.isEmpty()) {
 			tokens = tokenList.toArray(new Token[tokenList.size()]);
 			
 			if(!trimStringToken) {
@@ -48,8 +47,6 @@ public class TokenParser {
 				 */
 				tokens = Tokenizer.optimize(tokens);
 			}
-		} else {
-			tokens = null;
 		}
 		
 		return tokens;
@@ -58,63 +55,46 @@ public class TokenParser {
 	public static List<Token[]> parseAsList(String value) {
 		if(value == null)
 			return null;
-		
-		List<Token> tokenList = Tokenizer.tokenize(value, true);
-		
-		List<Token[]> tokensList = null;
-		
-		for(int i = tokenList.size() - 1; i >= 0; i--) {
-			Token t = tokenList.get(i);
 
-			if(t.getType() == TokenType.TEXT && t.getDefaultValue() != null) {
-				// remove empty token
-				if(t.getDefaultValue().trim().length() == 0)
-					tokenList.remove(i);
-			}
-		}
-		
-		if(tokenList.size() > 0) {
+		List<Token> tokenList = Tokenizer.tokenize(value, true);
+		List<Token[]> tokensList = null;
+
+		if(!tokenList.isEmpty()) {
 			tokensList = new ArrayList<Token[]>();
-			
-			for(int i = 0; i < tokensList.size(); i++) {
-				Token[] ts = new Token[1];
-				ts[0] = tokenList.get(i);
-				tokensList.add(ts);
+			for(Token t : tokenList) {
+				if(t.getType() == TokenType.TEXT) {
+					// except empty token
+					if(StringUtils.hasText(t.getValue())) {
+						tokensList.add(new Token[] {t});
+					}
+				} else {
+					tokensList.add(new Token[] {t});
+				}
 			}
 		}
 		
-		return tokensList;
+		return (tokensList == null || tokensList.isEmpty()) ? null : tokensList;
 	}
 	
 	public static Map<String, Token[]> parseAsMap(String value) {
 		if(value == null)
 			return null;
-		
+
 		List<Token> tokenList = Tokenizer.tokenize(value, true);
-		
 		Map<String, Token[]> tokensMap = null;
-		
-		for(int i = tokenList.size() - 1; i >= 0; i--) {
-			Token t = tokenList.get(i);
 
-			if(t.getType() == TokenType.TEXT ||
-					t.getName() == null || t.getName().length() == 0 ||
-					t.getDefaultValue() == null || t.getDefaultValue().length() == 0) {
-				tokenList.remove(i);
-			}
-		}
-
-		if(tokenList.size() > 0) {
+		if(!tokenList.isEmpty()) {
 			tokensMap = new LinkedHashMap<String, Token[]>();
-			
 			for(Token t : tokenList) {
-				Token[] ts = new Token[1];
-				ts[0] = t;
-				tokensMap.put(t.getName(), ts);
+				if(t.getType() != TokenType.TEXT) {
+					if(StringUtils.hasLength(t.getName()) && StringUtils.hasLength(t.getValue())) {
+						tokensMap.put(t.getName(), new Token[] {t});
+					}
+				}
 			}
 		}
-		
-		return tokensMap;
+
+		return (tokensMap == null || tokensMap.isEmpty()) ? null : tokensMap;
 	}
 
 

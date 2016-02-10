@@ -46,7 +46,7 @@ public class ActivityDataMap extends HashMap<String, Object> {
 	 * Instantiates a new activity data map.
 	 *
 	 * @param activity the activity
-	 * @param prefill whether data pre-fill.
+	 * @param prefill whether the data pre-fill
 	 */
 	public ActivityDataMap(Activity activity, boolean prefill) {
 		this.activity = activity;
@@ -57,8 +57,10 @@ public class ActivityDataMap extends HashMap<String, Object> {
 	}
 	
 	private void prefillData() {
-		requestAdapter.fillPrameterMap(this);
-		requestAdapter.fillAttributeMap(this);
+		if(requestAdapter != null) {
+			requestAdapter.fillPrameterMap(this);
+			requestAdapter.fillAttributeMap(this);
+		}
 		
 		if(activity.getProcessResult() != null) {
 			for(ContentResult cr : activity.getProcessResult()) {
@@ -73,36 +75,53 @@ public class ActivityDataMap extends HashMap<String, Object> {
 	
 	@Override
 	public Object get(Object key) {
-		if(key == null)
-			return null;
-		
-		String name = key.toString();
 		Object value = super.get(key);
 		if(value != null)
 			return value;
 
-		if(activity.getProcessResult() != null) {
-			value = activity.getProcessResult().getResultValue(name);
+		if(key != null) {
+			String name = key.toString();
 
+			value = getActionResultWithoutCache(name);
+			if(value != null) {
+				put(name, value);
+				return value;
+			}
+
+			value = getAttributeWithoutCache(name);
+			if(value != null) {
+				put(name, value);
+				return value;
+			}
+
+			value = getParameterWithoutCache(name);
 			if(value != null) {
 				put(name, value);
 				return value;
 			}
 		}
 
-		value = requestAdapter.getAttribute(name);
-		if(value != null) {
-			put(name, value);
-			return value;
-		}
-
-		value = requestAdapter.getParameter(name);
-		if(value != null) {
-			put(name, value);
-			return value;
-		}
-
 		return null;
+	}
+
+	public Object getParameterWithoutCache(String name) {
+		if(requestAdapter != null) {
+			return requestAdapter.getParameter(name);
+		}
+		return null;
+	}
+
+	public Object getAttributeWithoutCache(String name) {
+		if(requestAdapter != null) {
+			return requestAdapter.getAttribute(name);
+		}
+		return null;
+	}
+
+	public Object getActionResultWithoutCache(String name) {
+		if(activity.getProcessResult() == null)
+			return null;
+		return activity.getProcessResult().getResultValue(name);
 	}
 
 }

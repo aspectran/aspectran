@@ -137,8 +137,9 @@ public class ForwardResponseRule extends ActionPossessSupport implements ActionP
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("{contentType=").append(contentType);
-		sb.append(", translet=").append(transletName);
+		sb.append("{translet=").append(transletName);
+		if(contentType != null)
+			sb.append(", contentType=").append(contentType);
 		if(defaultResponse != null)
 			sb.append(", defaultResponse=").append(defaultResponse);
 		sb.append("}");
@@ -156,7 +157,7 @@ public class ForwardResponseRule extends ActionPossessSupport implements ActionP
 	 */
 	public static ForwardResponseRule newInstance(String contentType, String transletName, Boolean defaultResponse) {
 		if(transletName == null)
-			throw new IllegalArgumentException("transletName must not be null");
+			throw new IllegalArgumentException("transletName must not be null.");
 		
 		ForwardResponseRule frr = new ForwardResponseRule();
 		frr.setContentType(contentType);
@@ -168,7 +169,7 @@ public class ForwardResponseRule extends ActionPossessSupport implements ActionP
 	
 	public static ForwardResponseRule newInstance(String transletName) {
 		if(transletName == null)
-			throw new IllegalArgumentException("transletName must not be null");
+			throw new IllegalArgumentException("transletName must not be null.");
 		
 		ForwardResponseRule frr = new ForwardResponseRule();
 		frr.setTransletName(transletName);

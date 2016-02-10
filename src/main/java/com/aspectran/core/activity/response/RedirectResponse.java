@@ -110,5 +110,10 @@ public class RedirectResponse implements Response {
 	public RedirectResponseRule getRedirectResponseRule() {
 		return redirectResponseRule;
 	}
-	
+
+	@Override
+	public String toString() {
+		return redirectResponseRule.toString();
+	}
+
 }

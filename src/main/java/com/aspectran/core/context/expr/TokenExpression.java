@@ -65,9 +65,9 @@ public class TokenExpression implements TokenExpressor {
 		Object value = null;
 
 		if(tokenType == TokenType.TEXT) {
-			value = token.getDefaultValue();
+			value = token.getValue();
 		} else	if(tokenType == TokenType.PARAMETER) {
-			value = getParameter(token.getName(), token.getDefaultValue());
+			value = getParameter(token.getName(), token.getValue());
 		} else	if(tokenType == TokenType.ATTRIBUTE) {
 			value = getAttribute(token);
 		} else	if(tokenType == TokenType.BEAN) {
@@ -269,7 +269,8 @@ public class TokenExpression implements TokenExpressor {
 	 * 
 	 * @param name the parameter name
 	 * @param defaultValue the default value
-	 * @return the value of parameter
+	 * @return a <code>String</code> representing the
+	 *			single value of the parameter
 	 */
 	protected String getParameter(String name, String defaultValue) {
 		String value = null;
@@ -282,7 +283,14 @@ public class TokenExpression implements TokenExpressor {
 		
 		return value;
 	}
-	
+
+	/**
+	 * Get parameter values.
+	 *
+	 * @param name the name
+	 * @return an array of <code>String</code> objects
+	 *			containing the parameter's values
+	 */
 	protected String[] getParameterValues(String name) {
 		if(requestAdapter == null)
 			return null;
@@ -305,25 +313,23 @@ public class TokenExpression implements TokenExpressor {
 		if(object == null && requestAdapter != null)
 			object = requestAdapter.getAttribute(token.getName());
 
-		if(object != null) {
-			if(token.getGetterName() != null)
-				object = getObjectProperty(object, token.getGetterName());
-		}
-		
+		if(object != null && token.getGetterName() != null)
+			object = getObjectProperty(object, token.getGetterName());
+
 		return object;
 	}
 	
 	protected Object getBean(Token token) {
-		Object value = beanRegistry.getBean(token.getName());
+		Object value;
+
+		if(token.getBeanClass() != null)
+			value = beanRegistry.getBean(token.getBeanClass());
+		else
+			value = beanRegistry.getBean(token.getName());
 		
-		if(value != null) {
-			if(token.getGetterName() != null)
-				value = getBeanProperty(value, token.getGetterName());
-		}
-		
-		if(value == null)
-			return token.getDefaultValue();
-		
+		if(value != null && token.getGetterName() != null)
+			value = getBeanProperty(value, token.getGetterName());
+
 		return value;
 	}
 

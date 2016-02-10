@@ -40,9 +40,9 @@ public interface Pointcut {
 	
 	public boolean exists(String transletName, String beanId, String className, String methodName);
 
-	public boolean patternMatches(String pattern, String str);
+	public boolean patternMatches(String pattern, String compareString);
 	
-	public boolean patternMatches(String pattern, String str, char separator);
+	public boolean patternMatches(String pattern, String compareString, char separator);
 
 	public void clear();
 	

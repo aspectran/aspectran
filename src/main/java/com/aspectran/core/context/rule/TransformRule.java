@@ -165,9 +165,12 @@ public class TransformRule extends ActionPossessSupport implements ActionPossess
 		StringBuilder sb = new StringBuilder();
 		sb.append("{transformType=").append(transformType);
 		sb.append(", contentType=").append(contentType);
-		sb.append(", templateId=").append(templateId);
-		sb.append(", templateRule=").append(templateRule);
-		sb.append(", characterEncoding=").append(characterEncoding);
+		if(templateId != null)
+			sb.append(", templateId=").append(templateId);
+		if(templateRule != null)
+			sb.append(", templateRule=").append(templateRule);
+		if(characterEncoding != null)
+			sb.append(", characterEncoding=").append(characterEncoding);
 		if(defaultResponse != null)
 			sb.append(", defaultResponse=").append(defaultResponse);
 		sb.append("}");

@@ -48,13 +48,13 @@ public abstract class AbstractDynamicBeanProxy {
 
 	private static final boolean traceEnabled = log.isTraceEnabled();
 
-	protected ActivityContext context;
-	
-	protected BeanRule beanRule;
+	private final ActivityContext context;
 
-	private AspectRuleRegistry aspectRuleRegistry;
+	private final BeanRule beanRule;
+
+	private final AspectRuleRegistry aspectRuleRegistry;
 	
-	private Map<String, RelevantAspectRuleHolder> relevantAspectRuleHolderCache = new ConcurrentHashMap<String, RelevantAspectRuleHolder>();
+	private final Map<String, RelevantAspectRuleHolder> relevantAspectRuleHolderCache = new ConcurrentHashMap<String, RelevantAspectRuleHolder>();
 	
 	protected AbstractDynamicBeanProxy(ActivityContext context, BeanRule beanRule) {
 		this.context = context;
@@ -137,26 +137,26 @@ public abstract class AbstractDynamicBeanProxy {
 	}
 	
 	protected AspectAdviceRuleRegistry retrieveAspectAdviceRuleRegistry(Activity activity, String transletName, String beanId, String className, String methodName) throws Throwable {
-		RelevantAspectRuleHolder relevantAspectRuleHolder = getRelevantAspectRuleHolder(transletName, beanId, className, methodName);
+		RelevantAspectRuleHolder holder = getRelevantAspectRuleHolder(transletName, beanId, className, methodName);
 		
-		if(relevantAspectRuleHolder.getActivityAspectRuleList() != null) {
-			for(AspectRule aspectRule : relevantAspectRuleHolder.getActivityAspectRuleList()) {
+		if(holder.getActivityAspectRuleList() != null) {
+			for(AspectRule aspectRule : holder.getActivityAspectRuleList()) {
 				activity.registerAspectRule(aspectRule);
 			}
 		}
 		
-		return relevantAspectRuleHolder.getAspectAdviceRuleRegistry();
+		return holder.getAspectAdviceRuleRegistry();
 	}
 	
 	private RelevantAspectRuleHolder getRelevantAspectRuleHolder(String transletName, String beanId, String className, String beanMethodName) {
 		String patternString = PointcutPatternRule.combinePatternString(transletName, beanId, className, beanMethodName);
-		RelevantAspectRuleHolder relevantAspectRuleHolder;
+		RelevantAspectRuleHolder holder;
 		
 		synchronized(relevantAspectRuleHolderCache) {
 			// Check the cache first
-			relevantAspectRuleHolder = relevantAspectRuleHolderCache.get(patternString);
+			holder = relevantAspectRuleHolderCache.get(patternString);
 
-			if(relevantAspectRuleHolder == null) {
+			if(holder == null) {
 				AspectRuleMap aspectRuleMap = aspectRuleRegistry.getAspectRuleMap();
 				AspectAdviceRulePostRegister aspectAdviceRulePostRegister = new AspectAdviceRulePostRegister();
 				List<AspectRule> activityAspectRuleList = new ArrayList<AspectRule>();
@@ -178,23 +178,23 @@ public abstract class AbstractDynamicBeanProxy {
 				
 				AspectAdviceRuleRegistry aspectAdviceRuleRegistry = aspectAdviceRulePostRegister.getAspectAdviceRuleRegistry();
 				
-				relevantAspectRuleHolder = new RelevantAspectRuleHolder();
+				holder = new RelevantAspectRuleHolder();
 				
 				if(aspectAdviceRuleRegistry != null && aspectAdviceRuleRegistry.getAspectRuleCount() > 0)
-					relevantAspectRuleHolder.setAspectAdviceRuleRegistry(aspectAdviceRuleRegistry);
+					holder.setAspectAdviceRuleRegistry(aspectAdviceRuleRegistry);
 				
 				if(!activityAspectRuleList.isEmpty())
-					relevantAspectRuleHolder.setActivityAspectRuleList(activityAspectRuleList);
+					holder.setActivityAspectRuleList(activityAspectRuleList);
 				
-				relevantAspectRuleHolderCache.put(patternString, relevantAspectRuleHolder);
+				relevantAspectRuleHolderCache.put(patternString, holder);
 				
 				if(debugEnabled) {
-					log.debug("relevantAspectRuleHolderCache " + patternString + " " + relevantAspectRuleHolder);
+					log.debug("relevantAspectRuleHolderCache " + patternString + " " + holder);
 				}
 			}
 		}
 		
-		return relevantAspectRuleHolder;
+		return holder;
 	}
 
 }

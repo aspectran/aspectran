@@ -141,8 +141,11 @@ public class RequestRule {
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("{method=").append(requestMethod);
-		sb.append(", characterEncoding=").append(characterEncoding);
+		sb.append("{");
+		if(requestMethod != null)
+			sb.append(", method=").append(requestMethod);
+		if(characterEncoding != null)
+			sb.append(", characterEncoding=").append(characterEncoding);
 		if(attributeItemRuleMap != null) {
 			sb.append(", attributes=[");
 			int sbLength = sb.length();
@@ -153,8 +156,13 @@ public class RequestRule {
 			}
 			sb.append("]");
 		}
+		if(aspectAdviceRuleRegistry != null)
+			sb.append(", aspectAdviceRuleRegistry=").append(aspectAdviceRuleRegistry);
 		sb.append("}");
-		
+
+		if(sb.charAt(1) == ',')
+			sb.delete(1, 3);
+
 		return sb.toString();
 	}
 	

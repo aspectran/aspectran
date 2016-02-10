@@ -112,10 +112,14 @@ public class ActionList extends ArrayList<Executable> implements ActionRuleAppli
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("{name=").append(name);
-		sb.append(", hidden=").append(hidden);
-		sb.append(", omittable=").append(omittable);
-		sb.append(", executables=");
+		sb.append("{");
+		if(name != null)
+			sb.append(", name=").append(name);
+		if(hidden != null)
+			sb.append(", hidden=").append(hidden);
+		if(omittable != null)
+			sb.append(", omittable=").append(omittable);
+		sb.append(", actions=");
 		sb.append('[');
 		for(int i = 0; i < size(); i++) {
 			Executable action = get(i);
@@ -125,6 +129,9 @@ public class ActionList extends ArrayList<Executable> implements ActionRuleAppli
 		}
 		sb.append(']');
 		sb.append("}");
+
+		if(sb.charAt(1) == ',')
+			sb.delete(1, 3);
 
 		return sb.toString();
 	}

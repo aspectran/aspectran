@@ -18,7 +18,6 @@ package com.aspectran.core.context.rule;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.aspectran.core.context.rule.type.JoinpointScopeType;
 import com.aspectran.core.context.rule.type.PointcutType;
 
 /**
@@ -30,10 +29,8 @@ public class PointcutPatternRule {
 	
 	private static final char POINTCUT_METHOD_NAME_DELIMITER = '^';
 
-	private static final char JOINPOINT_SCOPE_DELIMITER = '$';
+	//private static final char JOINPOINT_SCOPE_DELIMITER = '$';
 	
-	public static final String POINTCUT_CLASS_NAME_PREFIX = "class:";
-
 	private PointcutType pointcutType;
 	
 	private String patternString;
@@ -166,28 +163,30 @@ public class PointcutPatternRule {
 		return sb.toString();
 	}
 	
-	public static String combinePatternString(String transletName, String beanId, String className, String beanMethodName) {
+	public static String combinePatternString(String transletName, String beanId, String className, String methodName) {
 		StringBuilder sb = new StringBuilder();
 		
 		if(transletName != null)
 			sb.append(transletName);
-		
+
 		if(beanId != null) {
 			sb.append(POINTCUT_BEAN_CLASS_DELIMITER);
 			sb.append(beanId);
 		} else if(className != null) {
-			sb.append(POINTCUT_CLASS_NAME_PREFIX);
+			sb.append(POINTCUT_BEAN_CLASS_DELIMITER);
+			sb.append(BeanRule.CLASS_DIRECTIVE_PREFIX);
 			sb.append(className);
 		}
-		
-		if(beanMethodName != null) {
+
+		if(methodName != null) {
 			sb.append(POINTCUT_METHOD_NAME_DELIMITER);
-			sb.append(beanMethodName);
+			sb.append(methodName);
 		}
 		
 		return sb.toString();
 	}
-	
+
+	/*
 	public static String combinePatternString(JoinpointScopeType joinpointScope, String transletName, String beanId, String className, String methodName) {
 		StringBuilder sb = new StringBuilder();
 		
@@ -198,15 +197,16 @@ public class PointcutPatternRule {
 		
 		if(transletName != null)
 			sb.append(transletName);
-		
+
 		if(beanId != null) {
 			sb.append(POINTCUT_BEAN_CLASS_DELIMITER);
 			sb.append(beanId);
 		} else if(className != null) {
-			sb.append(POINTCUT_CLASS_NAME_PREFIX);
+			sb.append(POINTCUT_BEAN_CLASS_DELIMITER);
+			sb.append(BeanRule.CLASS_DIRECTIVE_PREFIX);
 			sb.append(className);
 		}
-		
+
 		if(methodName != null) {
 			sb.append(POINTCUT_METHOD_NAME_DELIMITER);
 			sb.append(methodName);
@@ -214,6 +214,7 @@ public class PointcutPatternRule {
 		
 		return sb.toString();
 	}
+	*/
 	
 	public static PointcutPatternRule parsePatternString(String patternString) {
 		PointcutPatternRule ppr = new PointcutPatternRule();
@@ -250,8 +251,8 @@ public class PointcutPatternRule {
 			ppr.setTransletNamePattern(transletNamePattern);
 		
 		if(beanIdPattern != null) {
-			if(beanIdPattern.startsWith(POINTCUT_CLASS_NAME_PREFIX)) {
-				String className = beanIdPattern.substring(POINTCUT_CLASS_NAME_PREFIX.length());
+			if(beanIdPattern.startsWith(BeanRule.CLASS_DIRECTIVE_PREFIX)) {
+				String className = beanIdPattern.substring(BeanRule.CLASS_DIRECTIVE_PREFIX.length());
 				if(className.length() > 0) {
 					ppr.setClassNamePattern(className);
 				}
@@ -272,8 +273,8 @@ public class PointcutPatternRule {
 		if(translet != null && translet.length() > 0)						
 			ppr.setTransletNamePattern(translet);
 		if(bean != null && bean.length() > 0) {
-			if(bean.startsWith(POINTCUT_CLASS_NAME_PREFIX)) {
-				String className = bean.substring(POINTCUT_CLASS_NAME_PREFIX.length());
+			if(bean.startsWith(BeanRule.CLASS_DIRECTIVE_PREFIX)) {
+				String className = bean.substring(BeanRule.CLASS_DIRECTIVE_PREFIX.length());
 				if(className.length() > 0) {
 					ppr.setClassNamePattern(className);
 				}

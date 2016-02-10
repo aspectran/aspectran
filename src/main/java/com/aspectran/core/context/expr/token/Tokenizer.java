@@ -94,7 +94,7 @@ public class Tokenizer {
 				stringBuffer.append(c);
 
 				if(status == AT_TOKEN_NAME) {
-					if(c == Token.DEFAULT_VALUE_SEPARATOR) {
+					if(c == Token.VALUE_SEPARATOR) {
 						status = AT_TOKEN_DEFVAL;
 						break;
 					}
@@ -160,12 +160,12 @@ public class Tokenizer {
 		String getterName = null;
 
 		if(tokenNameBuffer.length() > 0) {
-			type = Token.tokenTypeOfSymbol(symbol);
+			type = Token.resolveTypeAsSymbol(symbol);
 			name = tokenNameBuffer.toString();
 			
 			if(symbol == Token.ATTRIBUTE_SYMBOL ||
 					symbol == Token.BEAN_SYMBOL) {
-				int offset = name.indexOf(Token.BEAN_PROPERTY_SEPARATOR);
+				int offset = name.indexOf(Token.PROPERTY_SEPARATOR);
 				
 				if(offset > 0) {
 					String attrName = name.substring(0, offset);
@@ -190,7 +190,7 @@ public class Tokenizer {
 		}
 
 		Token token = new Token(type, name);
-		token.setDefaultValue(defaultValue);
+		token.setValue(defaultValue);
 		token.setGetterName(getterName);
 
 		return token;
@@ -270,13 +270,13 @@ public class Tokenizer {
 		
 		if(tokens.length == 1) {
 			if(tokens[0].getType() == TokenType.TEXT)
-				firstDefaultText = tokens[0].getDefaultValue();
+				firstDefaultText = tokens[0].getValue();
 		} else if(tokens.length > 1) {
 			if(tokens[0].getType() == TokenType.TEXT)
-				firstDefaultText = tokens[0].getDefaultValue();
+				firstDefaultText = tokens[0].getValue();
 
 			if(tokens[tokens.length - 1].getType() == TokenType.TEXT)
-				lastDefaultText = tokens[tokens.length - 1].getDefaultValue();
+				lastDefaultText = tokens[tokens.length - 1].getValue();
 		}
 
 		if(firstDefaultText != null) {

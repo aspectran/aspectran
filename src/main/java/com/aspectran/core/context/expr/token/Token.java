@@ -15,15 +15,23 @@
  */
 package com.aspectran.core.context.expr.token;
 
+import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.type.TokenType;
 
 /**
  * The Class Token.
  *
- * ${name:value}
- * @{name^getter:defaultValue}
- * #{beanId^getter}
- * #{class:name^getter}
+ *<ul>
+ *  <li>${parameterName}
+ *  <li>${parameterName:defaultValue}
+ *  <li>{@literal @}{attributeName}
+ *  <li>{@literal @}{attributeName:defaultValue}
+ *  <li>{@literal @}{attributeName^getterName:defaultValue}
+ *  <li>#{beanId}
+ *  <li>#{beanId^getterName}
+ *  <li>#{class:className}
+ *  <li>#{class:className^getterName}
+ *</ul>
  *
  * <p>Created: 2008. 03. 27 PM 10:20:06</p>
  */
@@ -39,120 +47,158 @@ public class Token {
 
 	public static final char END_BRACKET = '}';
 
-	public static final char DEFAULT_VALUE_SEPARATOR = ':';
+	public static final char VALUE_SEPARATOR = ':';
 	
-	public static final char BEAN_PROPERTY_SEPARATOR = '^';
+	public static final char PROPERTY_SEPARATOR = '^';
 	
 	private TokenType type;
 
 	private String name;
 	
-	private String defaultValue;
+	private String value;
 	
 	private String getterName;
+
+	private Class<?> beanClass;
 	
 	/**
 	 * Instantiates a new Token.
 	 *
-	 * @param type the type
-	 * @param nameOrDefaultValue the name or default value
+	 * @param type the token type
+	 * @param nameOrValue token's name or value of this token
 	 */
-	public Token(TokenType type, String nameOrDefaultValue) {
+	public Token(TokenType type, String nameOrValue) {
 		this.type = type;
 
 		if(type == TokenType.TEXT)
-			this.defaultValue = nameOrDefaultValue;
+			this.value = nameOrValue;
 		else
-			this.name = nameOrDefaultValue;
+			this.name = nameOrValue;
 	}
 	
 	/**
-	 * Gets the type.
+	 * Gets the token type.
 	 * 
-	 * @return the type
+	 * @return the token type
 	 */
 	public TokenType getType() {
 		return type;
 	}
 
 	/**
-	 * Gets the name.
+	 * Gets the token name.
 	 * 
-	 * @return the name
+	 * @return the token name
 	 */
 	public String getName() {
 		return name;
 	}
 
 	/**
-	 * Gets the default value.
+	 * Returns the token's default value or bean's class name.
+	 * If the token's type is Bean and token's name is "class" then token's value is class name of the Bean. Others that is default value.
 	 * 
-	 * @return the default value
+	 * @return the default value or bean's class name
 	 */
-	public String getDefaultValue() {
-		return defaultValue;
+	public String getValue() {
+		return value;
 	}
 
 	/**
-	 * Sets the default value.
+	 * Sets the token's default value or bean's class name.
 	 *
-	 * @param defaultValue the new default value
+	 * @param value the default value or bean's class name
 	 */
-	public void setDefaultValue(String defaultValue) {
-		this.defaultValue = defaultValue;
+	public void setValue(String value) {
+		this.value = value;
 	}
 	
 	/**
-	 * Gets the getter name of bean.
+	 * Gets the getter name of the bean.
 	 * 
-	 * @return the getter name of bean
+	 * @return the getter name of the bean
 	 */
 	public String getGetterName() {
 		return getterName;
 	}
 
 	/**
-	 * Sets the getter name of bean.
+	 * Sets the getter name of the bean.
 	 * 
-	 * @param getterNameOfBean the new getter name of bean
+	 * @param getterNameOfBean the new getter name of the bean
 	 */
 	public void setGetterName(String getterNameOfBean) {
 		this.getterName = getterNameOfBean;
 	}
 
+	public Class<?> getBeanClass() {
+		return beanClass;
+	}
+
+	public void setBeanClass(Class<?> beanClass) {
+		this.beanClass = beanClass;
+	}
+
 	@Override
 	public String toString() {
-		if(type == TokenType.TEXT)
-			return defaultValue;
-		
-		StringBuilder sb = new StringBuilder();
-		if(type == TokenType.PARAMETER)
-			sb.append(PARAMETER_SYMBOL);
-		else if(type == TokenType.ATTRIBUTE)
-			sb.append(ATTRIBUTE_SYMBOL);
-		else if(type == TokenType.BEAN)
-			sb.append(BEAN_SYMBOL);
-		sb.append(START_BRACKET);
-		if(name != null)
-			sb.append(name);
-		if(getterName != null) {
-			sb.append(BEAN_PROPERTY_SEPARATOR);
-			sb.append(getterName);
+		if(type == TokenType.TEXT) {
+			return value;
 		}
-		if(defaultValue != null) {
-			sb.append(DEFAULT_VALUE_SEPARATOR);
-			sb.append(defaultValue);
-		}
-		sb.append(END_BRACKET);
 
-		return sb.toString();
+		if(type == TokenType.PARAMETER) {
+			StringBuilder sb = new StringBuilder();
+			sb.append(PARAMETER_SYMBOL);
+			sb.append(START_BRACKET);
+			if(name != null) sb.append(name);
+			if(value != null) {
+				sb.append(VALUE_SEPARATOR);
+				sb.append(value);
+			}
+			sb.append(END_BRACKET);
+			return sb.toString();
+		} else if(type == TokenType.ATTRIBUTE) {
+			StringBuilder sb = new StringBuilder();
+			sb.append(ATTRIBUTE_SYMBOL);
+			sb.append(START_BRACKET);
+			if(name != null)
+				sb.append(name);
+			if(getterName != null) {
+				sb.append(PROPERTY_SEPARATOR);
+				sb.append(getterName);
+			}
+			if(value != null) {
+				sb.append(VALUE_SEPARATOR);
+				sb.append(value);
+			}
+			sb.append(END_BRACKET);
+			return sb.toString();
+		} else if(type == TokenType.BEAN) {
+			StringBuilder sb = new StringBuilder();
+			sb.append(BEAN_SYMBOL);
+			sb.append(START_BRACKET);
+			if(beanClass != null) {
+				sb.append(BeanRule.CLASS_DIRECTIVE);
+				sb.append(VALUE_SEPARATOR);
+				sb.append(value);
+			} else if(name != null) {
+				sb.append(name);
+			}
+			if(getterName != null) {
+				sb.append(PROPERTY_SEPARATOR);
+				sb.append(getterName);
+			}
+			sb.append(END_BRACKET);
+			return sb.toString();
+		}
+
+		return "Invalid Token: " + this;
 	}
 	
 	/**
-	 * Checks if is token symbol.
+	 * Returns whether a specified character is the token symbol.
 	 * 
-	 * @param c the character
-	 * @return true, if is token symbol
+	 * @param c a character
+	 * @return true, if a specified character is one of the token symbols
 	 */
 	public static boolean isTokenSymbol(char c) {
 		return (c == PARAMETER_SYMBOL ||
@@ -161,12 +207,12 @@ public class Token {
 	}
 	
 	/**
-	 * Token type of symbol.
+	 * Returns the token type for the specified character.
 	 * 
-	 * @param symbol the symbol
+	 * @param symbol the token symbol character
 	 * @return the token type
 	 */
-	public static TokenType tokenTypeOfSymbol(char symbol) {
+	public static TokenType resolveTypeAsSymbol(char symbol) {
 		TokenType type;
 
 		if(symbol == Token.ATTRIBUTE_SYMBOL)

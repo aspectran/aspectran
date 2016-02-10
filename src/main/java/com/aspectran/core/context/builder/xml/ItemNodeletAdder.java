@@ -22,6 +22,7 @@ import org.w3c.dom.Node;
 
 import com.aspectran.core.context.builder.ContextBuilderAssistant;
 import com.aspectran.core.context.expr.token.Token;
+import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.type.ItemType;
@@ -104,7 +105,8 @@ public class ItemNodeletAdder implements NodeletAdder {
 					ItemRule.updateReference(itemRule, beanId, parameter, attribute, property);
 				} else {
 					assistant.popObject(); //discard
-					Token[] tokens = ItemRule.makeReferenceTokens(beanId, parameter, attribute, property);
+					Token t = ItemRule.makeReferenceTokens(beanId, parameter, attribute, property);
+					Token[] tokens = new Token[] { t };
 					assistant.pushObject(tokens);
 				}
 			}
@@ -144,16 +146,6 @@ public class ItemNodeletAdder implements NodeletAdder {
 				String attribute = StringUtils.emptyToNull(attributes.get("attribute"));
 				String property = StringUtils.emptyToNull(attributes.get("property")); // bean's property
 
-//TODO bean="class:"
-//if(!StringUtils.isEmpty(beanId)) {
-//	Class<?> beanClass = assistant.resolveBeanClass(beanId);
-//	if(beanClass != null) {
-//		beanActionRule.setBeanClass(beanClass);
-//	} else {
-//		assistant.putBeanReference(beanId, beanActionRule);
-//	}
-//}
-
 				ItemRule itemRule = assistant.peekObject();
 				ItemRule.updateReference(itemRule, beanId, parameter, attribute, property);
 			}
@@ -168,9 +160,15 @@ public class ItemNodeletAdder implements NodeletAdder {
 				
 				if(iter != null) {
 					while(iter.hasNext()) {
-						for(Token token : iter.next()) {
-							if(token.getType() == TokenType.BEAN) {
-								assistant.putBeanReference(token.getName(), itemRule);
+						for(Token t : iter.next()) {
+							if(t.getType() == TokenType.BEAN && t.getName() != null) {
+								if(t.getName().equals(BeanRule.CLASS_DIRECTIVE)) {
+									Class<?> beanClass = assistant.loadClass(t.getValue());
+									t.setBeanClass(beanClass);
+									assistant.putBeanReference(beanClass, itemRule);
+								} else {
+									assistant.putBeanReference(t.getName(), itemRule);
+								}
 							}
 						}
 					}

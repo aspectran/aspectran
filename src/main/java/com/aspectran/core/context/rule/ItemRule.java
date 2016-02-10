@@ -496,10 +496,9 @@ public class ItemRule {
 	 * @param property the bean's property
 	 */
 	public static void updateReference(ItemRule itemRule, String beanId, String parameter, String attribute, String property) {
-		Token[] tokens = makeReferenceTokens(beanId, parameter, attribute, property);
-		
-		if(tokens[0] != null)
-			itemRule.setValue(tokens);
+		Token token = makeReferenceTokens(beanId, parameter, attribute, property);
+		if(token != null)
+			itemRule.setValue(new Token[] { token });
 	}
 	
 	/**
@@ -509,9 +508,9 @@ public class ItemRule {
 	 * @param parameter the parameter
 	 * @param attribute the attribute
 	 * @param property the property
-	 * @return the token[]
+	 * @return the token
 	 */
-	public static Token[] makeReferenceTokens(String beanId, String parameter, String attribute, String property) {
+	public static Token makeReferenceTokens(String beanId, String parameter, String attribute, String property) {
 		Token token;
 		
 		if(beanId != null) {
@@ -526,10 +525,7 @@ public class ItemRule {
 		else
 			token = null;
 
-		if(token == null)
-			return null;
-
-		return new Token[] { token };
+		return token;
 	}
 	
 	/**

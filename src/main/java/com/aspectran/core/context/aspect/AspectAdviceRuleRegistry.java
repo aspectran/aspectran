@@ -143,7 +143,6 @@ public class AspectAdviceRuleRegistry implements Replicable<AspectAdviceRuleRegi
 
 	@Override
 	public AspectAdviceRuleRegistry replicate() {
-		// deep copy
 		AspectAdviceRuleRegistry aarr = new AspectAdviceRuleRegistry();
 		aarr.setAspectRuleCount(aarr.getAspectRuleCount());
 
@@ -181,7 +180,7 @@ public class AspectAdviceRuleRegistry implements Replicable<AspectAdviceRuleRegi
 	
 	@Override
 	public String toString() {
-		StringBuilder sb = new StringBuilder();
+		StringBuilder sb = new StringBuilder(94);
 		sb.append("{settings=").append(settings != null ? settings.size() : 0);
 		sb.append(", beforeAdvices=").append(beforeAdviceRuleList != null ? beforeAdviceRuleList.size() : 0);
 		sb.append(", afterAdvices=").append(afterAdviceRuleList != null ? afterAdviceRuleList.size() : 0);

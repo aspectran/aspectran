@@ -307,10 +307,10 @@ public class TemplateRule implements Replicable<TemplateRule> {
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("{");
-		if(!builtin) {
-			sb.append("id=").append(id).append(", ");
-		}
-		sb.append("engine=").append(engine);
+		if(!builtin)
+			sb.append(", id=").append(id);
+		if(engine != null)
+			sb.append(", engine=").append(engine);
 		if(file != null) {
 			sb.append(", file=").append(file);
 		} else if(resource != null) {
@@ -334,9 +334,14 @@ public class TemplateRule implements Replicable<TemplateRule> {
 			}
 			sb.append("]");
 		}
-		sb.append(", encoding=").append(encoding);
-		sb.append(", noCache=").append(noCache);
+		if(encoding != null)
+			sb.append(", encoding=").append(encoding);
+		if(noCache != null)
+			sb.append(", noCache=").append(noCache);
 		sb.append("}");
+
+		if(sb.charAt(1) == ',')
+			sb.delete(1, 3);
 
 		return sb.toString();
 	}
