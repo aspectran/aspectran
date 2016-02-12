@@ -417,18 +417,20 @@ public class AponDeserializer extends AponFormat {
 	 * @throws IOException An I/O error occurs.
 	 */
 	public static <T extends Parameters> T deserialize(File file, String encoding, T parameters) throws IOException {
-		AponDeserializer deserializer;
+		AponDeserializer deserializer = null;
 		
-		if(encoding == null) {
-			deserializer = new AponDeserializer(new FileReader(file));
-		} else {
-			deserializer = new AponDeserializer(new InputStreamReader(new FileInputStream(file), encoding));
+		try {
+			if(encoding == null) {
+				deserializer = new AponDeserializer(new FileReader(file));
+			} else {
+				deserializer = new AponDeserializer(new InputStreamReader(new FileInputStream(file), encoding));
+			}
+			
+			return deserializer.read(parameters);
+		} finally {
+			if(deserializer != null)
+				deserializer.close();
 		}
-		
-		T p = deserializer.read(parameters);
-		deserializer.close();
-
-		return p;
 	}
 	
 	/**
@@ -441,7 +443,6 @@ public class AponDeserializer extends AponFormat {
 	public static Parameters deserialize(Reader reader) throws IOException {
 		AponDeserializer deserializer = new AponDeserializer(reader);
 		Parameters p = deserializer.read();
-		deserializer.close();
 		
 		return p;
 	}
@@ -458,7 +459,6 @@ public class AponDeserializer extends AponFormat {
 	public static <T extends Parameters> T deserialize(Reader reader, T parameters) throws IOException {
 		AponDeserializer deserializer = new AponDeserializer(reader);
 		deserializer.read(parameters);
-		deserializer.close();
 		
 		return parameters;
 	}
