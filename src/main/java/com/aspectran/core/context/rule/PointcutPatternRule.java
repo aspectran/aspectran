@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.aspectran.core.context.rule.type.PointcutType;
+import com.aspectran.core.util.ToStringBuilder;
 
 /**
  * The Class PointcutPatternRule.
@@ -153,14 +154,12 @@ public class PointcutPatternRule {
 
 	@Override
 	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		sb.append("{translet=").append(transletNamePattern);
-		sb.append(", bean=").append(beanIdPattern);
-		sb.append(", class=").append(classNamePattern);
-		sb.append(", method=").append(methodNamePattern);
-		sb.append("}");
-		
-		return sb.toString();
+		ToStringBuilder tsb = new ToStringBuilder();
+		tsb.append("translet", transletNamePattern);
+		tsb.append("bean", beanIdPattern);
+		tsb.append("class", classNamePattern);
+		tsb.append("method", methodNamePattern);
+		return tsb.toString();
 	}
 	
 	public static String combinePatternString(String transletName, String beanId, String className, String methodName) {

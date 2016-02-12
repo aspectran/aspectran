@@ -18,6 +18,7 @@ package com.aspectran.core.context.rule;
 import com.aspectran.core.context.rule.ability.ActionPossessable;
 import com.aspectran.core.context.rule.type.ResponseType;
 import com.aspectran.core.util.BooleanUtils;
+import com.aspectran.core.util.ToStringBuilder;
 
 /**
  * The Class ForwardResponseRule.
@@ -136,15 +137,11 @@ public class ForwardResponseRule extends ActionPossessSupport implements ActionP
 	
 	@Override
 	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		sb.append("{translet=").append(transletName);
-		if(contentType != null)
-			sb.append(", contentType=").append(contentType);
-		if(defaultResponse != null)
-			sb.append(", defaultResponse=").append(defaultResponse);
-		sb.append("}");
-		
-		return sb.toString();
+		ToStringBuilder tsb = new ToStringBuilder();
+		tsb.append("translet", transletName);
+		tsb.append("contentType", contentType);
+		tsb.append("defaultResponse", defaultResponse);
+		return tsb.toString();
 	}
 	
 	/**

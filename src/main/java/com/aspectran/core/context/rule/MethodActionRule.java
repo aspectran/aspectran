@@ -18,15 +18,18 @@ package com.aspectran.core.context.rule;
 import java.lang.reflect.Method;
 
 import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
+import com.aspectran.core.util.ToStringBuilder;
 
 /**
- * The Class BeanActionRule.
+ * The Class MethodActionRule.
  * 
- * <p>Created: 2008. 03. 22 PM 5:50:35</p>
+ * <p>Created: 2016. 2. 10.</p>
+ * 
+ * @since 2.0.0
  */
 public class MethodActionRule {
 
-	private Class<?> actionClass;
+	private Class<?> beanClass;
 
 	private Method method;
 
@@ -34,12 +37,12 @@ public class MethodActionRule {
 	
 	private AspectAdviceRuleRegistry aspectAdviceRuleRegistry;
 
-	public Class<?> getActionClass() {
-		return actionClass;
+	public Class<?> getBeanClass() {
+		return beanClass;
 	}
 
-	public void setActionClass(Class<?> actionClass) {
-		this.actionClass = actionClass;
+	public void setBeanClass(Class<?> beanClass) {
+		this.beanClass = beanClass;
 	}
 
 	public Method getMethod() {
@@ -88,12 +91,12 @@ public class MethodActionRule {
 	
 	@Override
 	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		sb.append("{class=").append(actionClass);
-		sb.append(", method=").append(method.getName());
-		sb.append("}");
-		
-		return sb.toString();
+		ToStringBuilder tsb = new ToStringBuilder();
+		tsb.append("class", beanClass);
+		tsb.append("method", method);
+		tsb.append("aspectAdviceRule", aspectAdviceRule);
+		tsb.append("aspectAdviceRuleRegistry", aspectAdviceRuleRegistry);
+		return tsb.toString();
 	}
 
 	/**
@@ -105,7 +108,7 @@ public class MethodActionRule {
 	 */
 	public static MethodActionRule newInstance(Class<?> actionClass, Method method) {
 		MethodActionRule methodActionRule = new MethodActionRule();
-		methodActionRule.setActionClass(actionClass);
+		methodActionRule.setBeanClass(actionClass);
 		methodActionRule.setMethod(method);
 
 		return methodActionRule;

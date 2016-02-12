@@ -18,6 +18,8 @@ package com.aspectran.core.util.apon;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.aspectran.core.util.ToStringBuilder;
+
 public class ParameterValue implements Parameter {
 
 	private Parameters container;
@@ -86,6 +88,7 @@ public class ParameterValue implements Parameter {
 			this.bracketed = true;
 	}
 	
+	@Override
 	public Parameters getContainer() {
 		return container;
 	}
@@ -94,10 +97,12 @@ public class ParameterValue implements Parameter {
 		this.container = container;
 	}
 
+	@Override
 	public String getName() {
 		return name;
 	}
 
+	@Override
 	public String getQualifiedName() {
 		if(container == null)
 			return name;
@@ -110,18 +115,22 @@ public class ParameterValue implements Parameter {
 		return name;
 	}
 
+	@Override
 	public ParameterValueType getParameterValueType() {
 		return parameterValueType;
 	}
 
+	@Override
 	public void setParameterValueType(ParameterValueType parameterValueType) {
 		this.parameterValueType = parameterValueType;
 	}
 
+	@Override
 	public boolean isArray() {
 		return array;
 	}
 
+	@Override
 	public boolean isBracketed() {
 		return bracketed;
 	}
@@ -134,10 +143,12 @@ public class ParameterValue implements Parameter {
 		return predefined;
 	}
 
+	@Override
 	public boolean isAssigned() {
 		return assigned;
 	}
 
+	@Override
 	public int getArraySize() {
 		if(list == null)
 			return 0;
@@ -145,6 +156,7 @@ public class ParameterValue implements Parameter {
 		return list.size();
 	}
 	
+	@Override
 	public void putValue(Object value) {
 		if(!predefined) {
 			if(parameterValueType == ParameterValueType.STRING) {
@@ -175,6 +187,7 @@ public class ParameterValue implements Parameter {
 		}
 	}
 	
+	@Override
 	public void clearValue() {
 		value = null;
 		list = null;
@@ -190,6 +203,7 @@ public class ParameterValue implements Parameter {
 		list.add(value);
 	}
 
+	@Override
 	public Object getValue() {
 		if(array)
 			return list;
@@ -197,6 +211,7 @@ public class ParameterValue implements Parameter {
 			return value;
 	}
 
+	@Override
 	public List<?> getValueList() {
 		if(!predefined && value != null && list == null && parameterValueType == ParameterValueType.VARIABLE) {
 			List<Object> list = new ArrayList<Object>();
@@ -207,6 +222,7 @@ public class ParameterValue implements Parameter {
 		return list;
 	}
 	
+	@Override
 	public Object[] getValues() {
 		if(list == null)
 			return null;
@@ -214,6 +230,7 @@ public class ParameterValue implements Parameter {
 		return list.toArray(new Object[list.size()]);
 	}
 
+	@Override
 	public String getValueAsString() {
 		if(value == null)
 			return null;
@@ -221,6 +238,7 @@ public class ParameterValue implements Parameter {
 		return value.toString();
 	}
 	
+	@Override
 	public String[] getValueAsStringArray() {
 		if(array) {
 			if(list == null)
@@ -241,6 +259,7 @@ public class ParameterValue implements Parameter {
 		}
 	}
 	
+	@Override
 	@SuppressWarnings("unchecked")
 	public List<String> getValueAsStringList() {
 		if(list == null)
@@ -259,6 +278,7 @@ public class ParameterValue implements Parameter {
 		return list2;
 	}
 
+	@Override
 	public Integer getValueAsInt() {
 		checkParameterValueType(ParameterValueType.INT);
 
@@ -268,6 +288,7 @@ public class ParameterValue implements Parameter {
 		return (Integer)value;
 	}
 	
+	@Override
 	public Integer[] getValueAsIntArray() {
 		List<Integer> intList = getValueAsIntList();
 		
@@ -277,6 +298,7 @@ public class ParameterValue implements Parameter {
 		return (Integer[])intList.toArray(new Integer[intList.size()]);
 	}
 
+	@Override
 	@SuppressWarnings("unchecked")
 	public List<Integer> getValueAsIntList() {
 		checkParameterValueType(ParameterValueType.INT);
@@ -284,6 +306,7 @@ public class ParameterValue implements Parameter {
 		return (List<Integer>)getValueList();
 	}
 	
+	@Override
 	public Long getValueAsLong() {
 		checkParameterValueType(ParameterValueType.LONG);
 		
@@ -293,6 +316,7 @@ public class ParameterValue implements Parameter {
 		return (Long)value;
 	}
 	
+	@Override
 	public Long[] getValueAsLongArray() {
 		List<Long> longList = getValueAsLongList();
 
@@ -302,6 +326,7 @@ public class ParameterValue implements Parameter {
 		return (Long[])longList.toArray(new Long[longList.size()]);
 	}
 
+	@Override
 	@SuppressWarnings("unchecked")
 	public List<Long> getValueAsLongList() {
 		checkParameterValueType(ParameterValueType.LONG);
@@ -309,6 +334,7 @@ public class ParameterValue implements Parameter {
 		return (List<Long>)getValueList();
 	}
 	
+	@Override
 	public Float getValueAsFloat() {
 		checkParameterValueType(ParameterValueType.FLOAT);
 
@@ -318,6 +344,7 @@ public class ParameterValue implements Parameter {
 		return (Float)value;
 	}
 	
+	@Override
 	public Float[] getValueAsFloatArray() {
 		List<Float> floatList = getValueAsFloatList();
 
@@ -327,6 +354,7 @@ public class ParameterValue implements Parameter {
 		return (Float[])floatList.toArray(new Float[floatList.size()]);
 	}
 
+	@Override
 	@SuppressWarnings("unchecked")
 	public List<Float> getValueAsFloatList() {
 		checkParameterValueType(ParameterValueType.FLOAT);
@@ -334,6 +362,7 @@ public class ParameterValue implements Parameter {
 		return (List<Float>)getValueList();
 	}
 	
+	@Override
 	public Double getValueAsDouble() {
 		checkParameterValueType(ParameterValueType.DOUBLE);
 		
@@ -343,6 +372,7 @@ public class ParameterValue implements Parameter {
 		return (Double)value;
 	}
 	
+	@Override
 	public Double[] getValueAsDoubleArray() {
 		List<Double> doubleList = getValueAsDoubleList();
 		
@@ -352,6 +382,7 @@ public class ParameterValue implements Parameter {
 		return (Double[])doubleList.toArray(new Double[doubleList.size()]);
 	}
 	
+	@Override
 	@SuppressWarnings("unchecked")
 	public List<Double> getValueAsDoubleList() {
 		checkParameterValueType(ParameterValueType.DOUBLE);
@@ -359,11 +390,13 @@ public class ParameterValue implements Parameter {
 		return (List<Double>)getValueList();
 	}
 
+	@Override
 	public Boolean getValueAsBoolean() {
 		checkParameterValueType(ParameterValueType.BOOLEAN);
 		return (Boolean)value;
 	}
 
+	@Override
 	public Boolean[] getValueAsBooleanArray() {
 		List<Boolean> booleanList = getValueAsBooleanList();
 		
@@ -373,6 +406,7 @@ public class ParameterValue implements Parameter {
 		return (Boolean[])booleanList.toArray(new Boolean[booleanList.size()]);
 	}
 	
+	@Override
 	@SuppressWarnings("unchecked")
 	public List<Boolean> getValueAsBooleanList() {
 		checkParameterValueType(ParameterValueType.BOOLEAN);
@@ -380,12 +414,14 @@ public class ParameterValue implements Parameter {
 		return (List<Boolean>)getValueList();
 	}
 	
+	@Override
 	public Parameters getValueAsParameters() {
 		checkParameterValueType(ParameterValueType.PARAMETERS);
 		
 		return (Parameters)value;
 	}
 
+	@Override
 	public Parameters[] getValueAsParametersArray() {
 		List<Parameters> parametersList = getValueAsParametersList();
 		
@@ -395,6 +431,7 @@ public class ParameterValue implements Parameter {
 		return parametersList.toArray(new Parameters[parametersList.size()]);
 	}
 
+	@Override
 	@SuppressWarnings("unchecked")
 	public List<Parameters> getValueAsParametersList() {
 		if(parameterValueType != ParameterValueType.PARAMETERS)
@@ -403,6 +440,7 @@ public class ParameterValue implements Parameter {
 		return (List<Parameters>)getValueList();
 	}
 
+	@Override
 	public Parameters newParameters(Parameter prototype) {
 		if(parameterValueType == ParameterValueType.VARIABLE) {
 			parameterValueType = ParameterValueType.PARAMETERS;
@@ -428,24 +466,19 @@ public class ParameterValue implements Parameter {
 			throw new IncompatibleParameterValueTypeException(this, parameterValueType);
 	}
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
 	@Override
 	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		sb.append("{name=").append(name);
-		sb.append(", parameterValueType=").append(parameterValueType);
+		ToStringBuilder tsb = new ToStringBuilder();
+		tsb.append("name", name);
+		tsb.append("parameterValueType", parameterValueType);
 		if(parameterValueType == ParameterValueType.PARAMETERS)
-			sb.append(", parametersClass=").append(parametersClass.getName());
-		sb.append(", array=").append(array);
-		sb.append(", bracketed=").append(bracketed);
+			tsb.append("parametersClass", parametersClass);
+		tsb.append("array", array);
+		tsb.append("bracketed", bracketed);
 		if(array)
-			sb.append(", arraySize=").append(getArraySize());
-		sb.append(", qualifiedName=").append(getQualifiedName());
-		sb.append("}");
-		
-		return sb.toString();
+			tsb.append("arraySize", getArraySize());
+		tsb.append("qualifiedName", getQualifiedName());
+		return tsb.toString();
 	}
 
 }

@@ -15,6 +15,8 @@
  */
 package com.aspectran.core.activity.process.result;
 
+import com.aspectran.core.util.ToStringBuilder;
+
 /**
  * The Class ActionResult.
  * 
@@ -85,12 +87,10 @@ public class ActionResult {
 
 	@Override
 	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		sb.append("{actionId=").append(actionId);
-		sb.append(", resultValue=").append(resultValue);
-		sb.append("}");
-
-		return sb.toString();
+		ToStringBuilder tsb = new ToStringBuilder();
+		tsb.append("actionId", actionId);
+		tsb.append("resultValue", resultValue);
+		return tsb.toString();
 	}
 
 }

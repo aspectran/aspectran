@@ -20,6 +20,7 @@ import java.nio.charset.IllegalCharsetNameException;
 
 import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
 import com.aspectran.core.context.rule.type.RequestMethodType;
+import com.aspectran.core.util.ToStringBuilder;
 
 /**
  * The Class RequestRule.
@@ -140,30 +141,12 @@ public class RequestRule {
 
 	@Override
 	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		sb.append("{");
-		if(requestMethod != null)
-			sb.append(", method=").append(requestMethod);
-		if(characterEncoding != null)
-			sb.append(", characterEncoding=").append(characterEncoding);
-		if(attributeItemRuleMap != null) {
-			sb.append(", attributes=[");
-			int sbLength = sb.length();
-			for(String name : attributeItemRuleMap.keySet()) {
-				if(sb.length() > sbLength)
-					sb.append(", ");
-				sb.append(name);
-			}
-			sb.append("]");
-		}
-		if(aspectAdviceRuleRegistry != null)
-			sb.append(", aspectAdviceRuleRegistry=").append(aspectAdviceRuleRegistry);
-		sb.append("}");
-
-		if(sb.charAt(1) == ',')
-			sb.delete(1, 3);
-
-		return sb.toString();
+		ToStringBuilder tsb = new ToStringBuilder();
+		tsb.append("method", requestMethod);
+		tsb.append("characterEncoding", characterEncoding);
+		tsb.append("attributes", attributeItemRuleMap);
+		tsb.append("aspectAdviceRuleRegistry", aspectAdviceRuleRegistry);
+		return tsb.toString();
 	}
 	
 	public static RequestRule newInstance(String requestMethod, String characterEncoding) {

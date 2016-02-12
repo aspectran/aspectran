@@ -27,6 +27,7 @@ import com.aspectran.core.context.bean.ablility.InitializableTransletBean;
 import com.aspectran.core.context.rule.type.ScopeType;
 import com.aspectran.core.util.BooleanUtils;
 import com.aspectran.core.util.MethodUtils;
+import com.aspectran.core.util.ToStringBuilder;
 import com.aspectran.core.util.apon.Parameters;
 
 /**
@@ -599,72 +600,38 @@ public class BeanRule implements Replicable<BeanRule> {
 	
 	@Override
 	public String toString() {
-		StringBuilder sb = new StringBuilder(128);
-		sb.append("{id=").append(id);
+		ToStringBuilder tsb = new ToStringBuilder();
+		tsb.append("id", id);
 		if(!offered) {
-			sb.append(", class=").append(className);
-			sb.append(", scope=").append(scopeType);
-			if(initMethodName != null)
-				sb.append(", initMethod=").append(initMethodName);
-			if(initMethodName != null)
-				sb.append(", factoryMethod=").append(factoryMethodName);
-			if(destroyMethodName != null)
-				sb.append(", destroyMethod=").append(destroyMethodName);
-			if(factoryBean)
-				sb.append(", factoryBean=").append(factoryBean);
-			if(initializableBean)
-				sb.append(", initializableBean=").append(initializableBean);
-			if(initializableTransletBean)
-				sb.append(", initializableBean=").append(initializableTransletBean);
-			if(disposableBean)
-				sb.append(", disposableBean=").append(disposableBean);
-			if(lazyInit != null)
-				sb.append(", lazyInit=").append(lazyInit);
-			if(important != null)
-				sb.append(", important=").append(important);
-			sb.append(", proxied=").append(proxied);
-			sb.append(", replicated=").append(replicated);
-			if(constructorArgumentItemRuleMap != null) {
-				sb.append(", constructorArguments=[");
-				int sbLength = sb.length();
-				for (String name : constructorArgumentItemRuleMap.keySet()) {
-					if (sb.length() > sbLength)
-						sb.append(", ");
-
-					sb.append(name);
-				}
-				sb.append("]");
-			}
-			if(propertyItemRuleMap != null) {
-				sb.append(", properties=[");
-				int sbLength = sb.length();
-				for (String name : propertyItemRuleMap.keySet()) {
-					if (sb.length() > sbLength)
-						sb.append(", ");
-
-					sb.append(name);
-				}
-				sb.append("]");
-			}
+			tsb.append("class", className);
+			tsb.append("scope", scopeType);
+			tsb.append("initMethod", initMethodName);
+			tsb.append("factoryMethod", factoryMethodName);
+			tsb.append("destroyMethod", destroyMethodName);
+			tsb.append("factoryBean", factoryBean);
+			tsb.append("initializableBean", initializableBean);
+			tsb.append("initializableTransletBean", initializableTransletBean);
+			tsb.append("disposableBean", disposableBean);
+			tsb.append("lazyInit", lazyInit);
+			tsb.append("important", important);
+			tsb.append("proxied", proxied);
+			tsb.append("replicated", replicated);
+			if(constructorArgumentItemRuleMap != null)
+				tsb.append("constructorArguments", constructorArgumentItemRuleMap.keySet());
+			if(propertyItemRuleMap != null)
+				tsb.append("properties", propertyItemRuleMap.keySet());
 		} else {
-			sb.append(", scope=").append(scopeType);
-			sb.append(", offerBean=").append(offerBeanId);
-			sb.append(", offerMethod=").append(offerMethodName);
-			if(initMethodName != null)
-				sb.append(", initMethod=").append(initMethodName);
-			if(factoryMethodName != null)
-				sb.append(", factoryMethod=").append(factoryMethodName);
-			if(destroyMethodName != null)
-				sb.append(", destroyMethod=").append(destroyMethodName);
-			if(lazyInit != null)
-				sb.append(", lazyInit=").append(lazyInit);
-			if(important != null)
-				sb.append(", important=").append(important);
-			sb.append(", proxied=").append(proxied);
+			tsb.append("scope", scopeType);
+			tsb.append("offerBean", offerBeanId);
+			tsb.append("offerMethod", offerMethodName);
+			tsb.append("initMethod", initMethodName);
+			tsb.append("factoryMethod", factoryMethodName);
+			tsb.append("destroyMethod", destroyMethodName);
+			tsb.append("lazyInit", lazyInit);
+			tsb.append("important", important);
+			tsb.append("proxied", proxied);
 		}
-		sb.append("}");
-		
-		return sb.toString();
+		return tsb.toString();
 	}
 
 	public static BeanRule newInstance(String id, String className, String scanPath, String maskPattern, String scope, Boolean singleton, String initMethodName, String factoryMethodName, String destroyMethodName, Boolean lazyInit, Boolean important) {

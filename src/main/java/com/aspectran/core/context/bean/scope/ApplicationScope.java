@@ -15,8 +15,7 @@
  */
 package com.aspectran.core.context.bean.scope;
 
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.core.context.rule.type.ScopeType;
 
 /**
  * The Class ApplicationScope.
@@ -26,6 +25,8 @@ import com.aspectran.core.util.logging.LogFactory;
  */
 public class ApplicationScope extends AbstractScope implements Scope {
 	
-	private final Log log = LogFactory.getLog(ApplicationScope.class);
-
+	public ApplicationScope() {
+		super(ScopeType.APPLICATION);
+	}
+	
 }

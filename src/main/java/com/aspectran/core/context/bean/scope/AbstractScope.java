@@ -20,6 +20,7 @@ import java.util.Map;
 
 import com.aspectran.core.context.bean.ablility.DisposableBean;
 import com.aspectran.core.context.rule.BeanRule;
+import com.aspectran.core.context.rule.type.ScopeType;
 import com.aspectran.core.util.MethodUtils;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
@@ -35,6 +36,12 @@ public class AbstractScope implements Scope {
 	private final Log log = LogFactory.getLog(AbstractScope.class);
 
 	protected final Map<BeanRule, Object> scopedBeanMap = new HashMap<BeanRule, Object>();
+	
+	private final ScopeType scopeType;
+	
+	public AbstractScope(ScopeType scopeType) {
+		this.scopeType = scopeType;
+	}
 
 	@Override
 	public Object getBean(BeanRule beanRule) {
@@ -72,7 +79,7 @@ public class AbstractScope implements Scope {
 					MethodUtils.invokeExactMethod(bean, destroyMethodName, null);
 				}
 			} catch(Exception e) {
-				log.error("Cannot destroy a bean " + beanRule, e);
+				log.error("Cannot destroy " + scopeType + " scoped bean " + beanRule, e);
 			}
 		}
 	}

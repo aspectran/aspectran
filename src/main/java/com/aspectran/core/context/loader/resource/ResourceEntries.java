@@ -62,6 +62,7 @@ public class ResourceEntries extends LinkedHashMap<String, URL> {
 		put(resourceName, url);
 	}
 	
+	@Override
 	public URL put(String resourceName, URL url) {
 		if(resourceName.indexOf('\\') != -1)
 			resourceName = resourceName.replace('\\', ResourceUtils.RESOURCE_NAME_SPEPARATOR_CHAR);

@@ -16,6 +16,9 @@
 package com.aspectran.core.activity.process.result;
 
 import java.util.ArrayList;
+import java.util.List;
+
+import com.aspectran.core.util.ToStringBuilder;
 
 /**
  * The Class ContentResult.
@@ -81,26 +84,10 @@ public class ContentResult extends ArrayList<ActionResult> {
 
 	@Override
 	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		sb.append("{name=").append(name);
-		sb.append(", actionResults=");
-		if(!isEmpty()) {
-			sb.append('[');
-			String name;
-			int offset;
-			for(int i = 0; i < size(); i++) {
-				ActionResult actionResult = get(i);
-				if(i > 0)
-					sb.append(", ");
-				name = actionResult.toString();
-				offset = name.lastIndexOf('.') + 1;
-				sb.append(name.substring(offset));
-			}
-			sb.append(']');
-		}
-		sb.append("}");
-		
-		return sb.toString();
+		ToStringBuilder tsb = new ToStringBuilder();
+		tsb.append("name", name);
+		tsb.append("actionResults", (List<?>)this);
+		return tsb.toString();
 	}
 
 }

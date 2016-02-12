@@ -31,6 +31,7 @@ import com.aspectran.core.context.rule.ability.ActionRuleApplicable;
 import com.aspectran.core.context.rule.ability.ResponseRuleApplicable;
 import com.aspectran.core.context.rule.type.RequestMethodType;
 import com.aspectran.core.util.PrefixSuffixPattern;
+import com.aspectran.core.util.ToStringBuilder;
 import com.aspectran.core.util.apon.Parameters;
 import com.aspectran.core.util.wildcard.WildcardPattern;
 
@@ -459,35 +460,19 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 
 	@Override
 	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		sb.append("{name=").append(name);
-		if(requestMethods != null) {
-			sb.append(", requestMethods=[");
-			for(int i = 0; i < requestMethods.length; i++) {
-				if(i > 0)
-					sb.append(", ");
-				sb.append(requestMethods[i]);
-			}
-			sb.append(requestMethods);
-			sb.append("], namePattern=").append(namePattern);
-		}
-		sb.append(", requestRule=").append(requestRule);
-		sb.append(", responseRule=").append(responseRule);
-		if(exceptionHandlingRule != null)
-			sb.append(", exceptionHandlingRule=").append(exceptionHandlingRule);
-		if(transletInterfaceClass != null)
-			sb.append(", transletInterfaceClass=").append(transletInterfaceClass);
-		if(transletImplementClass != null)
-			sb.append(", transletImplementClass=").append(transletImplementClass);
-		if(aspectAdviceRuleRegistry != null)
-			sb.append(", aspectAdviceRuleRegistry=").append(aspectAdviceRuleRegistry);
-		if(explicitContent)
-			sb.append(", explicitContent=").append(explicitContent);
-		if(implicitResponse)
-			sb.append(", implicitResponse=").append(implicitResponse);
-		sb.append("}");
-		
-		return sb.toString();
+		ToStringBuilder tsb = new ToStringBuilder();
+		tsb.append("name", name);
+		tsb.append("requestMethods", requestMethods);
+		tsb.append("namePattern", namePattern);
+		tsb.append("requestRule", requestRule);
+		tsb.append("responseRule", responseRule);
+		tsb.append("exceptionHandlingRule", exceptionHandlingRule);
+		tsb.append("transletInterfaceClass", transletInterfaceClass);
+		tsb.append("transletImplementClass", transletImplementClass);
+		tsb.append("aspectAdviceRuleRegistry", aspectAdviceRuleRegistry);
+		tsb.append("explicitContent", explicitContent);
+		tsb.append("implicitResponse", implicitResponse);
+		return tsb.toString();
 	}
 	
 	public static TransletRule newInstance(String name, String scanPath, String maskPattern, String method) {

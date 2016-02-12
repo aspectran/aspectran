@@ -22,8 +22,11 @@ import java.net.URLConnection;
 
 import com.aspectran.core.context.rule.type.ImportFileType;
 import com.aspectran.core.context.rule.type.ImportType;
+import com.aspectran.core.util.ToStringBuilder;
 
 /**
+ * The Class ImportableUrl.
+ * 
  * <p>Created: 2008. 04. 24 AM 11:23:36</p>
  * 
  * @author Juho Jeong
@@ -45,15 +48,11 @@ public class ImportableUrl extends Importable {
 		this.urlString = urlString;
 	}
 	
+	@Override
 	public String getDistinguishedName() {
 		return urlString;
 	}
 
-	/**
-	 * Gets the input stream.
-	 * 
-	 * @return the input stream
-	 */
 	@Override
 	public InputStream getInputStream() throws IOException {
 		URL url = new URL(urlString);
@@ -66,12 +65,10 @@ public class ImportableUrl extends Importable {
 	
 	@Override
 	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		sb.append("{importType=").append(getImportType());
-		sb.append(", url=").append(urlString);
-		sb.append("}");
-		
-		return sb.toString();
+		ToStringBuilder tsb = new ToStringBuilder();
+		tsb.append("importType", getImportType());
+		tsb.append("url", urlString);
+		return tsb.toString();
 	}
 	
 }

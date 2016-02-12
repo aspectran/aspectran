@@ -19,6 +19,7 @@ import com.aspectran.core.activity.response.dispatch.ViewDispatcher;
 import com.aspectran.core.context.rule.ability.ActionPossessable;
 import com.aspectran.core.context.rule.type.ResponseType;
 import com.aspectran.core.util.BooleanUtils;
+import com.aspectran.core.util.ToStringBuilder;
 
 /**
  * The Class DispatchResponseRule.
@@ -135,19 +136,13 @@ public class DispatchResponseRule extends ActionPossessSupport implements Action
 	 * @return a string representation of <code>DispatchResponseRule</code>.
 	 */
 	public String toString(ViewDispatcher viewDispatcher) {
-		StringBuilder sb = new StringBuilder();
-		sb.append("{dispatchName=").append(name);
-		if(contentType != null)
-			sb.append(", contentType=").append(contentType);
-		if(characterEncoding != null)
-			sb.append(", characterEncoding=").append(characterEncoding);
-		if(defaultResponse != null)
-			sb.append(", defaultResponse=").append(defaultResponse);
-		if(viewDispatcher != null)
-			sb.append(", viewDispatcher=").append(viewDispatcher);
-		sb.append("}");
-		
-		return sb.toString();
+		ToStringBuilder tsb = new ToStringBuilder();
+		tsb.append("name", name);
+		tsb.append("contentType", contentType);
+		tsb.append("characterEncoding", characterEncoding);
+		tsb.append("defaultResponse", defaultResponse);
+		tsb.append("viewDispatcher", viewDispatcher);
+		return tsb.toString();
 	}
 
 	/**

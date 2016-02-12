@@ -26,6 +26,7 @@ import com.aspectran.core.context.rule.EchoActionRule;
 import com.aspectran.core.context.rule.IncludeActionRule;
 import com.aspectran.core.context.rule.ability.ActionRuleApplicable;
 import com.aspectran.core.util.BooleanUtils;
+import com.aspectran.core.util.ToStringBuilder;
 
 /**
  * Then Class ActionList.
@@ -111,29 +112,12 @@ public class ActionList extends ArrayList<Executable> implements ActionRuleAppli
 
 	@Override
 	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		sb.append("{");
-		if(name != null)
-			sb.append(", name=").append(name);
-		if(hidden != null)
-			sb.append(", hidden=").append(hidden);
-		if(omittable != null)
-			sb.append(", omittable=").append(omittable);
-		sb.append(", actions=");
-		sb.append('[');
-		for(int i = 0; i < size(); i++) {
-			Executable action = get(i);
-			if(i > 0)
-				sb.append(", ");
-			sb.append(action.getActionId());
-		}
-		sb.append(']');
-		sb.append("}");
-
-		if(sb.charAt(1) == ',')
-			sb.delete(1, 3);
-
-		return sb.toString();
+		ToStringBuilder tsb = new ToStringBuilder();
+		tsb.append("name", name);
+		tsb.append("hidden", hidden);
+		tsb.append("omittable", omittable);
+		tsb.append("actions", this);
+		return tsb.toString();
 	}
 	
 	public static ActionList newInstance(String name, Boolean omittable, Boolean hidden) {

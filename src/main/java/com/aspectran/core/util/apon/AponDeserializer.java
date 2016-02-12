@@ -16,7 +16,6 @@
 package com.aspectran.core.util.apon;
 
 import java.io.BufferedReader;
-import java.io.Closeable;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileReader;
@@ -29,7 +28,7 @@ import java.util.Map;
 /**
  * Converts an APON formatted string into a Parameters object.
  */
-public class AponDeserializer extends AponFormat implements Closeable {
+public class AponDeserializer extends AponFormat {
 
 	private BufferedReader reader;
 	
@@ -331,9 +330,6 @@ public class AponDeserializer extends AponFormat implements Closeable {
 		return s;
 	}
 	
-	/* (non-Javadoc)
-	 * @see java.io.Closeable#close()
-	 */
 	public void close() throws IOException {
 		if(reader != null)
 			reader.close();

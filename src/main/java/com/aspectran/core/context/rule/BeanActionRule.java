@@ -19,6 +19,7 @@ import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
 import com.aspectran.core.context.rule.ability.ArgumentPossessable;
 import com.aspectran.core.context.rule.ability.PropertyPossessable;
 import com.aspectran.core.util.BooleanUtils;
+import com.aspectran.core.util.ToStringBuilder;
 
 /**
  * The Class BeanActionRule.
@@ -208,41 +209,18 @@ public class BeanActionRule implements ArgumentPossessable, PropertyPossessable 
 	
 	@Override
 	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		sb.append("{");
-		if(actionId != null)
-			sb.append(", id=").append(actionId);
-		sb.append(", bean=").append(beanId);
-		sb.append(", method=").append(methodName);
-		if(hidden != null)
-			sb.append(", hidden=").append(hidden);
-		if(propertyItemRuleMap != null) {
-			sb.append(", properties=[");
-			int sbLength = sb.length();
-			for(String name : propertyItemRuleMap.keySet()) {
-				if(sb.length() > sbLength)
-					sb.append(", ");
-				
-				sb.append(name);
-			}
-			sb.append("]");
-		}
-		if(argumentItemRuleMap != null) {
-			sb.append(", arguments=[");
-			int sbLength = sb.length();
-			for(String name : argumentItemRuleMap.keySet()) {
-				if(sb.length() > sbLength)
-					sb.append(", ");
-				sb.append(name);
-			}
-			sb.append("]");
-		}
-		sb.append("}");
-
-		if(sb.charAt(1) == ',')
-			sb.delete(1, 3);
-
-		return sb.toString();
+		ToStringBuilder tsb = new ToStringBuilder();
+		tsb.append("id", actionId);
+		tsb.append("bean", beanId);
+		tsb.append("method", methodName);
+		tsb.append("hidden", hidden);
+		if(propertyItemRuleMap != null)
+			tsb.append("properties", propertyItemRuleMap.keySet());
+		if(argumentItemRuleMap != null)
+			tsb.append("arguments", argumentItemRuleMap.keySet());
+		tsb.append("aspectAdviceRule", aspectAdviceRule);
+		tsb.append("aspectAdviceRuleRegistry", aspectAdviceRuleRegistry);
+		return tsb.toString();
 	}
 	
 	/**

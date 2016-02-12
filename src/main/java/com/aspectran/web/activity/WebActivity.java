@@ -196,6 +196,7 @@ public class WebActivity extends CoreActivity implements Activity {
 		return null;
 	}
 	
+	@Override
 	@SuppressWarnings("unchecked")
 	public <T extends Activity> T newActivity() {
 		WebActivity webActivity = new WebActivity(getActivityContext(), request, response);

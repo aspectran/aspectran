@@ -16,6 +16,7 @@
 package com.aspectran.core.context.rule;
 
 import com.aspectran.core.util.BooleanUtils;
+import com.aspectran.core.util.ToStringBuilder;
 
 /**
  * The Class IncludeActionRule.
@@ -127,23 +128,12 @@ public class IncludeActionRule {
 	
 	@Override
 	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		sb.append("{id=").append(actionId);
-		sb.append(", transletName=").append(transletName);
-		if(attributeItemRuleMap != null) {
-			sb.append(", attributes=[");
-			int sbLength = sb.length();
-			for(String name : attributeItemRuleMap.keySet()) {
-				if(sb.length() > sbLength)
-					sb.append(", ");
-				
-				sb.append(name);
-			}
-			sb.append("]");
-		}
-		sb.append("}");
-		
-		return sb.toString();
+		ToStringBuilder tsb = new ToStringBuilder();
+		tsb.append("id", actionId);
+		tsb.append("translet", transletName);
+		if(attributeItemRuleMap != null)
+			tsb.append("attributes", attributeItemRuleMap.keySet());
+		return tsb.toString();
 	}
 	
 	/**

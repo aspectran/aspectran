@@ -20,6 +20,7 @@ import com.aspectran.core.context.rule.type.ContentType;
 import com.aspectran.core.context.rule.type.ResponseType;
 import com.aspectran.core.context.rule.type.TransformType;
 import com.aspectran.core.util.BooleanUtils;
+import com.aspectran.core.util.ToStringBuilder;
 
 /**
  * The Class TransformRule.
@@ -162,20 +163,14 @@ public class TransformRule extends ActionPossessSupport implements ActionPossess
 
 	@Override
 	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		sb.append("{transformType=").append(transformType);
-		sb.append(", contentType=").append(contentType);
-		if(templateId != null)
-			sb.append(", templateId=").append(templateId);
-		if(templateRule != null)
-			sb.append(", templateRule=").append(templateRule);
-		if(characterEncoding != null)
-			sb.append(", characterEncoding=").append(characterEncoding);
-		if(defaultResponse != null)
-			sb.append(", defaultResponse=").append(defaultResponse);
-		sb.append("}");
-		
-		return sb.toString();
+		ToStringBuilder tsb = new ToStringBuilder();
+		tsb.append("transformType", transformType);
+		tsb.append("contentType", contentType);
+		tsb.append("templateId", templateId);
+		tsb.append("templateRule", templateRule);
+		tsb.append("characterEncoding", characterEncoding);
+		tsb.append("defaultResponse", defaultResponse);
+		return tsb.toString();
 	}
 	
 	public static TransformRule newInstance(String type, String contentType, String templateId, String characterEncoding, Boolean defaultResponse, Boolean pretty) {

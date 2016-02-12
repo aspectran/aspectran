@@ -22,6 +22,7 @@ import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.context.rule.MethodActionRule;
 import com.aspectran.core.context.rule.type.ActionType;
+import com.aspectran.core.util.ToStringBuilder;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
@@ -54,7 +55,7 @@ public class MethodAction extends AbstractAction implements Executable {
 		super(null, parent);
 
 		this.methodActionRule = methodActionRule;
-		this.actionClass = methodActionRule.getActionClass();
+		this.actionClass = methodActionRule.getBeanClass();
 		this.method = methodActionRule.getMethod();
 	}
 
@@ -137,12 +138,10 @@ public class MethodAction extends AbstractAction implements Executable {
 
 	@Override
 	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		sb.append("{actionType=").append(getActionType());
-		sb.append(", methodActionRule=").append(methodActionRule.toString());
-		sb.append("}");
-
-		return sb.toString();
+		ToStringBuilder tsb = new ToStringBuilder();
+		tsb.append("actionType", getActionType());
+		tsb.append("methodActionRule", methodActionRule);
+		return tsb.toString();
 	}
 	
 }

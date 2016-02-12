@@ -375,7 +375,7 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 					}
 				} catch(Exception e) {
 					failedDestroyes++;
-					log.error("Cannot destroy a bean " + beanRule, e);
+					log.error("Cannot destroy singleton bean " + beanRule, e);
 				}
 
 				beanRule.setBean(null);

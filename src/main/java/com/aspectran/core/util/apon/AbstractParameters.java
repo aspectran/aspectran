@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.aspectran.core.util.BooleanUtils;
+import com.aspectran.core.util.ToStringBuilder;
 
 public abstract class AbstractParameters implements Parameters {
 
@@ -557,17 +558,16 @@ public abstract class AbstractParameters implements Parameters {
 
 	@Override
 	public String describe(boolean details) {
-		StringBuilder sb = new StringBuilder();
-		sb.append("{qualifiedName=").append(getQualifiedName());
-		if(details)
-			sb.append(", parameters=").append(parameterValueMap);
-		else
-			sb.append(", parameters=").append(parameterValueMap.keySet());
-		if(getParent() != null)
-			sb.append(", parent=").append(getParent());
-		sb.append("}");
-
-		return sb.toString();
+		ToStringBuilder tsb = new ToStringBuilder();
+		if(details) {
+			tsb.append("qualifiedName", getQualifiedName());
+			tsb.append("parameters", parameterValueMap);
+			tsb.append("parent", getParent());
+		} else {
+			tsb.append(parameterValueMap);
+			
+		}
+		return tsb.toString();
 	}
 
 	@Override

@@ -115,6 +115,7 @@ public class ResourceManager {
 				return (next != null);
 			}
 			
+			@Override
 			public synchronized boolean hasMoreElements() {
 				if(!nomore) {
 					if(inherited != null && inherited.hasMoreElements())
@@ -185,6 +186,7 @@ public class ResourceManager {
 				}
 			}
 			
+			@Override
 			public synchronized boolean hasMoreElements() {
 				if(entry != null)
 					return true;
@@ -199,6 +201,7 @@ public class ResourceManager {
 				return hasNext();
 			}
 
+			@Override
 			public synchronized URL nextElement() {
 				if(entry == null) {
 					if(!nomore) {

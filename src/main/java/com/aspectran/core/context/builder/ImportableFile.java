@@ -22,8 +22,11 @@ import java.io.InputStream;
 
 import com.aspectran.core.context.rule.type.ImportFileType;
 import com.aspectran.core.context.rule.type.ImportType;
+import com.aspectran.core.util.ToStringBuilder;
 
 /**
+ * The Class ImportableFile.
+ * 
  * <p>Created: 2008. 04. 24 AM 11:23:36</p>
  * 
  * @author Juho Jeong
@@ -75,16 +78,13 @@ public class ImportableFile extends Importable {
 		return file;
 	}
 	
+	@Override
 	public long getLastModified() {
 		File file = getFile();
 		return file.lastModified();
 	}
 	
-	/**
-	 * Gets the input stream.
-	 * 
-	 * @return the input stream
-	 */
+	@Override
 	public InputStream getInputStream() throws IOException {
 		File file = getFile();
 		
@@ -101,14 +101,11 @@ public class ImportableFile extends Importable {
 	
 	@Override
 	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		sb.append("{importType=").append(getImportType());
-		if(basePath != null)
-			sb.append(", basePath=").append(basePath);
-		sb.append(", filePath=").append(filePath);
-		sb.append("}");
-		
-		return sb.toString();
+		ToStringBuilder tsb = new ToStringBuilder();
+		tsb.append("importType", getImportType());
+		tsb.append("basePath", basePath);
+		tsb.append("filePath", filePath);
+		return tsb.toString();
 	}
 	
 }

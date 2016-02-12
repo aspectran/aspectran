@@ -22,6 +22,7 @@ import com.aspectran.core.context.expr.ItemTokenExpressor;
 import com.aspectran.core.context.rule.EchoActionRule;
 import com.aspectran.core.context.rule.type.ActionType;
 import com.aspectran.core.context.variable.ValueMap;
+import com.aspectran.core.util.ToStringBuilder;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
@@ -95,12 +96,10 @@ public class EchoAction extends AbstractAction implements Executable {
 	
 	@Override
 	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		sb.append("{actionType=").append(getActionType());
-		sb.append(", echoActionRule=").append(echoActionRule.toString());
-		sb.append("}");
-		
-		return sb.toString();
+		ToStringBuilder tsb = new ToStringBuilder();
+		tsb.append("actionType", getActionType());
+		tsb.append("echoActionRule", echoActionRule);
+		return tsb.toString();
 	}
 
 }

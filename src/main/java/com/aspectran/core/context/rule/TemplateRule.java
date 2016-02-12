@@ -23,9 +23,9 @@ import java.util.List;
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.expr.token.Tokenizer;
-import com.aspectran.core.context.rule.type.TokenType;
 import com.aspectran.core.util.BooleanUtils;
 import com.aspectran.core.util.ResourceUtils;
+import com.aspectran.core.util.ToStringBuilder;
 
 /**
  * The Class TemplateRule.
@@ -305,45 +305,24 @@ public class TemplateRule implements Replicable<TemplateRule> {
 	
 	@Override
 	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		sb.append("{");
+		ToStringBuilder tsb = new ToStringBuilder();
 		if(!builtin)
-			sb.append(", id=").append(id);
-		if(engine != null)
-			sb.append(", engine=").append(engine);
+			tsb.append("id", id);
+		tsb.append("engine", engine);
 		if(file != null) {
-			sb.append(", file=").append(file);
+			tsb.append("file", file);
 		} else if(resource != null) {
-			sb.append(", resource=").append(resource);
+			tsb.append("resource", resource);
 		} else if(url != null) {
-			sb.append(", url=").append(url);
+			tsb.append("url", url);
 		} else if(name != null) {
-			sb.append(", name=").append(name);
+			tsb.append("name", name);
 		} else {
-			sb.append(", contentLength=").append(content == null ? 0 : content.length());
+			tsb.appendSize("contentLength", content);
 		}
-		if(contentTokens != null) {
-			sb.append(", contentTokenNames=[");
-			int i = 0;
-			for(Token t : contentTokens) {
-				if(t.getType() != TokenType.TEXT) {
-					if(i++ > 0)
-						sb.append(", ");
-					sb.append(t.getName());
-				}
-			}
-			sb.append("]");
-		}
-		if(encoding != null)
-			sb.append(", encoding=").append(encoding);
-		if(noCache != null)
-			sb.append(", noCache=").append(noCache);
-		sb.append("}");
-
-		if(sb.charAt(1) == ',')
-			sb.delete(1, 3);
-
-		return sb.toString();
+		tsb.append("encoding", encoding);
+		tsb.append("noCache", noCache);
+		return tsb.toString();
 	}
 
 	public static TemplateRule newInstance(String id, String engine, String name, String file, String resource, String url, String content, String encoding, Boolean noCache) {

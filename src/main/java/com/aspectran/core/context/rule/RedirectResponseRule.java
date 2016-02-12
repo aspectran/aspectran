@@ -24,6 +24,7 @@ import com.aspectran.core.context.rule.ability.ActionPossessable;
 import com.aspectran.core.context.rule.type.ResponseType;
 import com.aspectran.core.context.rule.type.TokenType;
 import com.aspectran.core.util.BooleanUtils;
+import com.aspectran.core.util.ToStringBuilder;
 
 /**
  * The Class RedirectResponseRule.
@@ -237,17 +238,12 @@ public class RedirectResponseRule extends ActionPossessSupport implements Action
 
 	@Override
 	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		sb.append("{target=").append(target);
-		if(contentType != null)
-			sb.append(", contentType=").append(contentType);
-		if(excludeNullParameter != null)
-			sb.append(", excludeNullParameters=").append(excludeNullParameter);
-		if(defaultResponse != null)
-			sb.append(", defaultResponse=").append(defaultResponse);
-		sb.append("}");
-		
-		return sb.toString();
+		ToStringBuilder tsb = new ToStringBuilder();
+		tsb.append("target", target);
+		tsb.append("contentType", contentType);
+		tsb.append("excludeNullParameter", excludeNullParameter);
+		tsb.append("defaultResponse", defaultResponse);
+		return tsb.toString();
 	}
 	
 	public static RedirectResponseRule newInstance(String contentType, String target, Boolean excludeNullParameters, Boolean defaultResponse) {

@@ -25,6 +25,7 @@ import com.aspectran.core.context.rule.ExceptionHandlingRule;
 import com.aspectran.core.context.rule.Replicable;
 import com.aspectran.core.context.rule.SettingsAdviceRule;
 import com.aspectran.core.context.rule.type.AspectAdviceType;
+import com.aspectran.core.util.ToStringBuilder;
 
 /**
  * The Class AspectAdviceRuleRegistry.
@@ -180,15 +181,13 @@ public class AspectAdviceRuleRegistry implements Replicable<AspectAdviceRuleRegi
 	
 	@Override
 	public String toString() {
-		StringBuilder sb = new StringBuilder(94);
-		sb.append("{settings=").append(settings != null ? settings.size() : 0);
-		sb.append(", beforeAdvices=").append(beforeAdviceRuleList != null ? beforeAdviceRuleList.size() : 0);
-		sb.append(", afterAdvices=").append(afterAdviceRuleList != null ? afterAdviceRuleList.size() : 0);
-		sb.append(", finallyAdvices=").append(finallyAdviceRuleList != null ? finallyAdviceRuleList.size() : 0);
-		sb.append(", exceptionHandlingRules=").append(exceptionHandlingRuleList != null ? exceptionHandlingRuleList.size() : 0);
-		sb.append("}");
-		
-		return sb.toString();
+		ToStringBuilder tsb = new ToStringBuilder(94);
+		tsb.appendSize("settings", settings);
+		tsb.append("beforeAdvices", beforeAdviceRuleList);
+		tsb.append("afterAdvices", afterAdviceRuleList);
+		tsb.append("finallyAdvices", finallyAdviceRuleList);
+		tsb.append("exceptionHandlingRules", exceptionHandlingRuleList);
+		return tsb.toString();
 	}
 	
 }

@@ -21,6 +21,7 @@ import java.util.List;
 import com.aspectran.core.context.aspect.pointcut.Pointcut;
 import com.aspectran.core.context.rule.type.AspectTargetType;
 import com.aspectran.core.context.rule.type.JoinpointScopeType;
+import com.aspectran.core.util.ToStringBuilder;
 
 /**
  * The Class AspectRule.
@@ -190,22 +191,20 @@ public class AspectRule {
 
 	@Override
 	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		sb.append("{id=").append(id);
-		sb.append(", for=").append(aspectTargetType);
-		sb.append(", joinpointScope=").append(joinpointScope);
-		sb.append(", pointcutRule=").append(pointcutRule);
+		ToStringBuilder tsb = new ToStringBuilder();
+		tsb.append("id", id);
+		tsb.append("for", aspectTargetType);
+		tsb.append("joinpointScope", joinpointScope);
+		tsb.append("pointcutRule", pointcutRule);
 		if(aspectTargetType == AspectTargetType.TRANSLET) {
-			sb.append(", settingsAdviceRule=").append(settingsAdviceRule);
-			sb.append(", aspectAdviceRuleList=").append(aspectAdviceRuleList);
+			tsb.append("settingsAdviceRule", settingsAdviceRule);
+			tsb.append("aspectAdviceRuleList", aspectAdviceRuleList);
 		} else if(aspectTargetType == AspectTargetType.SCHEDULER) {
-			sb.append(", aspectJobAdviceRuleList=").append(aspectJobAdviceRuleList);
+			tsb.append("aspectJobAdviceRuleList", aspectJobAdviceRuleList);
 		}
-		sb.append(", exceptionHandlingRule=").append(exceptionHandlingRule);
-		sb.append(", onlyTransletRelevanted=").append(beanRelevanted);
-		sb.append("}");
-		
-		return sb.toString();
+		tsb.append("exceptionHandlingRule", exceptionHandlingRule);
+		tsb.append("beanRelevanted", beanRelevanted);
+		return tsb.toString();
 	}
 	
 	public static AspectRule newInstance(String id, String useFor) {

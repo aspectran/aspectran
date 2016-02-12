@@ -21,6 +21,7 @@ import com.aspectran.core.activity.process.action.Executable;
 import com.aspectran.core.context.rule.ability.ActionRuleApplicable;
 import com.aspectran.core.context.rule.type.ActionType;
 import com.aspectran.core.context.rule.type.AspectAdviceType;
+import com.aspectran.core.util.ToStringBuilder;
 
 /**
  * The Class AspectAdviceRule.
@@ -95,13 +96,12 @@ public class AspectAdviceRule implements ActionRuleApplicable {
 
 	@Override
 	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		sb.append("{aspectId=").append(aspectRule != null ? aspectRule.getId() : null);
-		sb.append(", aspectAdviceType=").append(aspectAdviceType);
-		sb.append(", action=").append(action);
-		sb.append("}");
-		
-		return sb.toString();
+		ToStringBuilder tsb = new ToStringBuilder();
+		if(aspectRule != null)
+			tsb.append("aspectId", aspectRule.getId());
+		tsb.append("aspectAdviceType", aspectAdviceType);
+		tsb.append("action", action);
+		return tsb.toString();
 	}
 	
 	public static AspectAdviceRule newInstance(AspectRule aspectRule, AspectAdviceType aspectAdviceType) {

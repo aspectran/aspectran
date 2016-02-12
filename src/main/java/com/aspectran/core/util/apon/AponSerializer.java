@@ -340,16 +340,11 @@ public class AponSerializer extends AponFormat implements Flushable {
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see java.io.Flushable#flush()
-	 */
+	@Override
 	public void flush() throws IOException {
 		writer.flush();
 	}
 	
-	/* (non-Javadoc)
-	 * @see java.io.Closeable#close()
-	 */
 	public void close() throws IOException {
 		if(writer != null)
 			writer.close();

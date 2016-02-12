@@ -15,6 +15,8 @@
  */
 package com.aspectran.core.util.apon;
 
+import com.aspectran.core.util.ToStringBuilder;
+
 public class ParameterDefine {
 
 	private final String name;
@@ -95,19 +97,14 @@ public class ParameterDefine {
 		return parameterValue;
 	}
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
 	@Override
 	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		sb.append("{name=").append(name);
-		sb.append(", parameterValueType=").append(parameterValueType);
-		sb.append(", parameterClass=").append(parametersClass);
-		sb.append(", array=").append(array);
-		sb.append("}");
-		
-		return sb.toString();
+		ToStringBuilder tsb = new ToStringBuilder();
+		tsb.append("name", name);
+		tsb.append("parameterValueType", parameterValueType);
+		tsb.append("parametersClass", parametersClass);
+		tsb.append("array", array);
+		return tsb.toString();
 	}
 
 }

@@ -111,18 +111,22 @@ public class ConsoleAspectranService extends CoreAspectranService {
 
 	private static void addAspectranServiceControllerListener(final ConsoleAspectranService aspectranService) {
 		aspectranService.setAspectranServiceControllerListener(new AspectranServiceControllerListener() {
+			@Override
 			public void started() {
 				aspectranService.pauseTimeout = 0;
 			}
 			
+			@Override
 			public void restarted() {
 				started();
 			}
 			
+			@Override
 			public void reloaded() {
 				started();
 			}
 			
+			@Override
 			public void paused(long timeout) {
 				if(timeout <= 0)
 					timeout = 315360000000L; //86400000 * 365 * 10 = 10 Years;
@@ -130,10 +134,12 @@ public class ConsoleAspectranService extends CoreAspectranService {
 				aspectranService.pauseTimeout = System.currentTimeMillis() + timeout;
 			}
 			
+			@Override
 			public void resumed() {
 				aspectranService.pauseTimeout = 0;
 			}
 			
+			@Override
 			public void stopped() {
 				paused(-1L);
 			}

@@ -26,6 +26,7 @@ import com.aspectran.core.activity.response.transform.TransformFactory;
 import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
 import com.aspectran.core.context.rule.ability.ResponseRuleApplicable;
 import com.aspectran.core.context.rule.type.ResponseType;
+import com.aspectran.core.util.ToStringBuilder;
 
 /**
  * The Class ResponseRule.
@@ -149,20 +150,11 @@ public class ResponseRule implements ResponseRuleApplicable, Replicable<Response
 
 	@Override
 	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		sb.append("{");
-		if(name != null)
-			sb.append(", name=").append(name);
-		if(characterEncoding != null)
-			sb.append(", characterEncoding=").append(characterEncoding);
-		if(response != null)
-			sb.append(", response=").append(response);
-		sb.append("}");
-
-		if(sb.charAt(1) == ',')
-			sb.delete(1, 3);
-
-		return sb.toString();
+		ToStringBuilder tsb = new ToStringBuilder();
+		tsb.append("name", name);
+		tsb.append("characterEncoding", characterEncoding);
+		tsb.append("response", response);
+		return tsb.toString();
 	}
 	
 	public static ResponseRule newInstance(String name, String characterEncoding) {

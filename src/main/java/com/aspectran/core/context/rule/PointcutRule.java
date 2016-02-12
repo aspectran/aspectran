@@ -23,6 +23,7 @@ import com.aspectran.core.context.builder.apon.params.TargetParameters;
 import com.aspectran.core.context.rule.type.AspectTargetType;
 import com.aspectran.core.context.rule.type.PointcutType;
 import com.aspectran.core.util.StringUtils;
+import com.aspectran.core.util.ToStringBuilder;
 import com.aspectran.core.util.apon.Parameters;
 
 /**
@@ -125,14 +126,12 @@ public class PointcutRule {
 
 	@Override
 	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		sb.append("{pointcutType=").append(pointcutType);
-		//sb.append(", targetParametersList=").append(targetParametersList);
-		//sb.append(", simpleTriggerParameters=").append(simpleTriggerParameters);
-		//sb.append(", cronTriggerParameters=").append(cronTriggerParameters);
-		sb.append("}");
-		
-		return sb.toString();
+		ToStringBuilder tsb = new ToStringBuilder();
+		tsb.append("pointcutType", pointcutType);
+		tsb.append("pointcutPatternRule", pointcutPatternRuleList);
+		tsb.append("simpleTriggerParameters", simpleTriggerParameters);
+		tsb.append("cronTriggerParameters", cronTriggerParameters);
+		return tsb.toString();
 	}
 	
 	public static PointcutRule newInstance(AspectRule aspectRule, String type, String text) {
