@@ -22,8 +22,7 @@ import java.io.Writer;
 
 import com.aspectran.console.activity.ConsoleActivity;
 import com.aspectran.core.activity.Activity;
-import com.aspectran.core.adapter.AbstractResponseAdapter;
-import com.aspectran.core.adapter.ResponseAdapter;
+import com.aspectran.core.adapter.CommonResponseAdapter;
 import com.aspectran.core.context.rule.RedirectResponseRule;
 
 /**
@@ -32,14 +31,10 @@ import com.aspectran.core.context.rule.RedirectResponseRule;
  * @author Juho Jeong
  * @since 2016. 1. 18.
  */
-public class ConsoleResponseAdapter extends AbstractResponseAdapter implements ResponseAdapter {
+public class ConsoleResponseAdapter extends CommonResponseAdapter {
 
 	private PrintStream printStream;
 	
-	private String characterEncoding;
-	
-	private String contentType;
-
 	/**
 	 * Instantiates a new ConsoleResponseAdapter.
 	 *
@@ -48,48 +43,28 @@ public class ConsoleResponseAdapter extends AbstractResponseAdapter implements R
 	public ConsoleResponseAdapter(ConsoleActivity activity) {
 		super(activity);
 		printStream = System.out;
-		characterEncoding = System.getProperty(ConsoleRequestAdapter.FILE_ENCODING_PROP_NAME);
+		setCharacterEncoding(System.getProperty("file.encoding"));
 	}
 
 	@Override
-	public String getCharacterEncoding() {
-		return characterEncoding;
-	}
-
-	@Override
-	public void setCharacterEncoding(String characterEncoding) {
-		this.characterEncoding = characterEncoding;
-	}
-
-	@Override
-	public String getContentType() {
-		return contentType;
-	}
-
-	@Override
-	public void setContentType(String contentType) {
-		this.contentType = contentType;
-	}
-
-	@Override
-	public OutputStream getOutputStream() throws IOException {
+	public OutputStream getOutputStream() {
 		return printStream;
 	}
 
 	@Override
 	public Writer getWriter() throws IOException {
-		if(characterEncoding != null)
-			return new ConsolePrintWriter(printStream, characterEncoding);
+		if(getCharacterEncoding() != null)
+			return new ConsolePrintWriter(printStream, getCharacterEncoding());
 		else
 			return new ConsolePrintWriter(printStream);
 	}
 
 	@Override
-	public void redirect(String url) throws IOException {
+	public void redirect(String target) {
 	}
 
 	@Override
-	public String redirect(Activity activity, RedirectResponseRule redirectResponseRule) throws IOException {
+	public String redirect(RedirectResponseRule redirectResponseRule, Activity activity) {
 		return null;
 	}
 

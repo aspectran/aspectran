@@ -38,12 +38,10 @@ import com.aspectran.core.context.rule.type.ResponseType;
  * The Class CoreTranslet.
  */
 public class CoreTranslet implements Translet {
-	
-	protected final Activity activity;
-	
-	protected Map<String, Object> declaredAttributeMap;
-	
-	protected ProcessResult processResult;
+
+	private final Activity activity;
+
+	private ProcessResult processResult;
 	
 	private AspectAdviceResult aspectAdviceResult;
 
@@ -64,47 +62,63 @@ public class CoreTranslet implements Translet {
 	}
 
 	@Override
-	public RequestMethodType getRestVerb() {
+	public RequestMethodType getRequestMethod() {
 		return activity.getRequestMethod();
 	}
 
+
 	@Override
-	public Map<String, Object> getDeclaredAttributeMap() {
-		return declaredAttributeMap;
+	public ApplicationAdapter getApplicationAdapter() {
+		return activity.getActivityContext().getApplicationAdapter();
 	}
 
 	@Override
-	public void setDeclaredAttributeMap(Map<String, Object> declaredAttributeMap) {
-		this.declaredAttributeMap = declaredAttributeMap;
+	public SessionAdapter getSessionAdapter() {
+		return activity.getSessionAdapter();
 	}
 
 	@Override
-	public <T> T getAttribute(String name) {
-		if(getRequestAdapter() != null) {
-			return getRequestAdapter().getAttribute(name);
-		}
-		
-		return null;
+	public RequestAdapter getRequestAdapter() {
+		return activity.getRequestAdapter();
 	}
 
 	@Override
-	public <T> T getAttribute(String name, T defaultValue) {
-		T value = null;
-		
-		if(getRequestAdapter() != null) {
-			value = getRequestAdapter().getAttribute(name);
-		}
-		
-		if(value == null)
-			return defaultValue;
-		
-		return value;
+	public ResponseAdapter getResponseAdapter() {
+		return activity.getResponseAdapter();
 	}
 
 	@Override
-	public void setAttribute(String name, Object value) {
+	public <T> T getRequestAdaptee() {
 		if(getRequestAdapter() != null)
-			getRequestAdapter().setAttribute(name, value);
+			return getRequestAdapter().getAdaptee();
+		else
+			return null;
+	}
+
+	@Override
+	public <T> T getResponseAdaptee() {
+		if(getResponseAdapter() != null)
+			return getResponseAdapter().getAdaptee();
+		else
+			return null;
+	}
+
+	@Override
+	public <T> T getSessionAdaptee() {
+		if(getSessionAdapter() != null)
+			return getSessionAdapter().getAdaptee();
+		else
+			return null;
+	}
+
+	@Override
+	public <T> T getApplicationAdaptee() {
+		ApplicationAdapter applicationAdapter = activity.getActivityContext().getApplicationAdapter();
+
+		if(applicationAdapter != null)
+			return applicationAdapter.getAdaptee();
+		else
+			return null;
 	}
 
 	@Override
@@ -244,60 +258,6 @@ public class CoreTranslet implements Translet {
 	@Override
 	public Exception getRaisedException() {
 		return activity.getRaisedException();
-	}
-
-	@Override
-	public ApplicationAdapter getApplicationAdapter() {
-		return activity.getActivityContext().getApplicationAdapter();
-	}
-
-	@Override
-	public SessionAdapter getSessionAdapter() {
-		return activity.getSessionAdapter();
-	}
-
-	@Override
-	public RequestAdapter getRequestAdapter() {
-		return activity.getRequestAdapter();
-	}
-
-	@Override
-	public ResponseAdapter getResponseAdapter() {
-		return activity.getResponseAdapter();
-	}
-
-	@Override
-	public <T> T getRequestAdaptee() {
-		if(getRequestAdapter() != null)
-			return getRequestAdapter().getAdaptee();
-		else
-			return null;
-	}
-
-	@Override
-	public <T> T getResponseAdaptee() {
-		if(getResponseAdapter() != null)
-			return getResponseAdapter().getAdaptee();
-		else
-			return null;
-	}
-
-	@Override
-	public <T> T getSessionAdaptee() {
-		if(getSessionAdapter() != null)
-			return getSessionAdapter().getAdaptee();
-		else
-			return null;
-	}
-
-	@Override
-	public <T> T getApplicationAdaptee() {
-		ApplicationAdapter applicationAdapter = activity.getActivityContext().getApplicationAdapter();
-		
-		if(applicationAdapter != null)
-			return applicationAdapter.getAdaptee();
-		else
-			return null;
 	}
 
 	@Override

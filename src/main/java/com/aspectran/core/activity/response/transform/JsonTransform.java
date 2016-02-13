@@ -24,6 +24,7 @@ import com.aspectran.core.activity.process.result.ProcessResult;
 import com.aspectran.core.activity.response.Response;
 import com.aspectran.core.activity.response.transform.json.ContentsJsonSerializer;
 import com.aspectran.core.adapter.ResponseAdapter;
+import com.aspectran.core.context.rule.ResponseRule;
 import com.aspectran.core.context.rule.TransformRule;
 import com.aspectran.core.util.json.JsonSerializer;
 import com.aspectran.core.util.logging.Log;
@@ -36,13 +37,17 @@ import com.aspectran.core.util.logging.LogFactory;
  */
 public class JsonTransform extends TransformResponse implements Response {
 	
-	private final Log log = LogFactory.getLog(JsonTransform.class);
+	private static final Log log = LogFactory.getLog(JsonTransform.class);
 	
-	private final boolean traceEnabled = log.isTraceEnabled();
+	private static final boolean traceEnabled = log.isTraceEnabled();
 	
-	private final boolean debugEnabled = log.isDebugEnabled();
-	
-	private boolean pretty;
+	private static final boolean debugEnabled = log.isDebugEnabled();
+
+	private final String characterEncoding;
+
+	private final String contentType;
+
+	private final boolean pretty;
 	
 	/**
 	 * Instantiates a new JsonTransform.
@@ -51,7 +56,9 @@ public class JsonTransform extends TransformResponse implements Response {
 	 */
 	public JsonTransform(TransformRule transformRule) {
 		super(transformRule);
-		
+
+		this.characterEncoding = transformRule.getCharacterEncoding();
+		this.contentType = transformRule.getContentType();
 		this.pretty = transformRule.isPretty();
 	}
 
@@ -66,14 +73,16 @@ public class JsonTransform extends TransformResponse implements Response {
 		}
 		
 		try {
-			String contentType = transformRule.getContentType();
-			String outputEncoding = transformRule.getCharacterEncoding();
-
 			if(contentType != null)
 				responseAdapter.setContentType(contentType);
 
-			if(outputEncoding != null)
-				responseAdapter.setCharacterEncoding(outputEncoding);
+			if(characterEncoding != null) {
+				responseAdapter.setCharacterEncoding(characterEncoding);
+			} else {
+				String characterEncoding = activity.getResponseSetting(ResponseRule.CHARACTER_ENCODING_SETTING_NAME);
+				if(characterEncoding != null)
+					responseAdapter.setCharacterEncoding(characterEncoding);
+			}
 			
 			Writer writer = responseAdapter.getWriter();
 			ProcessResult processResult = activity.getProcessResult();

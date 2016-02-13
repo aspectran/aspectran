@@ -20,14 +20,12 @@ import java.util.Map;
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.CoreActivity;
 import com.aspectran.core.activity.Translet;
-import com.aspectran.core.activity.request.RequestException;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.context.expr.ItemTokenExpression;
-import com.aspectran.core.context.expr.ItemTokenExpressor;
+import com.aspectran.core.context.expr.ItemExpression;
+import com.aspectran.core.context.expr.ItemExpressor;
 import com.aspectran.core.context.rule.RequestRule;
-import com.aspectran.core.context.variable.ValueMap;
 
 /**
  * The Class JobActivity.
@@ -45,36 +43,25 @@ public class JobActivity extends CoreActivity implements Activity {
 
 	@Override
 	protected void request(Translet translet) {
-		try {
-	        ValueMap valueMap = parseParameter();
-	        
-	        if(valueMap != null)
-	        	translet.setDeclaredAttributeMap(valueMap);
-        
-		} catch(Exception e) {
-			throw new RequestException(e);
-		}
+		parseDeclaredAttributes();
 	}
 	
 	/**
-	 * Parses the parameter.
+	 * Parses the declared parameter.
 	 */
-	private ValueMap parseParameter() {
+	private void parseDeclaredAttributes() {
 		RequestRule requestRule = getRequestRule();
 		
 		if(requestRule.getAttributeItemRuleMap() != null) {
-			ItemTokenExpressor expressor = new ItemTokenExpression(this);
-			ValueMap valueMap = expressor.express(requestRule.getAttributeItemRuleMap());
+			ItemExpressor expressor = new ItemExpression(this);
+			Map<String, Object> valueMap = expressor.express(requestRule.getAttributeItemRuleMap());
 
-			if(valueMap != null && valueMap.size() > 0) {
-				for(Map.Entry<String, Object> entry : valueMap.entrySet())
+			if(valueMap != null && !valueMap.isEmpty()) {
+				for(Map.Entry<String, Object> entry : valueMap.entrySet()) {
 					getRequestAdapter().setAttribute(entry.getKey(), entry.getValue());
-				
-				return valueMap;
+				}
 			}
 		}
-		
-		return null;
 	}
 
 	@Override

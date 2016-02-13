@@ -77,7 +77,7 @@ public interface RequestAdapter {
 	public String getParameter(String name);
 
 	/**
-	 * Sets parameter.
+	 * Sets the parameter.
 	 *
 	 * @param name the parameter name
 	 * @param value a <code>String</code> representing the
@@ -149,7 +149,7 @@ public interface RequestAdapter {
 	public FileParameter[] removeFileParameter(String name);
 	
 	/**
-	 * Returns the value of the named attribute as an <code>Object</code>, or <code>null</code> if no attribute of the given name exists.
+	 * Returns the value of the named attribute as a given type, or <code>null</code> if no attribute of the given name exists.
 	 *
 	 * @param <T> the generic type
 	 * @param name a String specifying the name of the attribute
@@ -189,7 +189,6 @@ public interface RequestAdapter {
 	 * If the parameter value type is the String array then map value will be of type String array.
 	 *
 	 * @return the parameter map
-	 *
 	 * @since 1.4.0
 	 */
 	public Map<String, Object> getParameterMap();
@@ -207,7 +206,6 @@ public interface RequestAdapter {
 	 * with attribute names as map keys and attribute value as map value.
 	 *
 	 * @return the attribute map
-	 *
 	 * @since 2.0.0
 	 */
 	public Map<String, Object> getAttributeMap();

@@ -17,6 +17,7 @@ package com.aspectran.core.context.expr.token;
 
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.type.TokenType;
+import com.aspectran.core.util.ToStringBuilder;
 
 /**
  * The Class Token.
@@ -139,13 +140,10 @@ public class Token {
 		this.beanClass = beanClass;
 	}
 
-	@Override
-	public String toString() {
+	public String stringify() {
 		if(type == TokenType.TEXT) {
 			return value;
-		}
-
-		if(type == TokenType.PARAMETER) {
+		} else if(type == TokenType.PARAMETER) {
 			StringBuilder sb = new StringBuilder();
 			sb.append(PARAMETER_SYMBOL);
 			sb.append(START_BRACKET);
@@ -189,9 +187,20 @@ public class Token {
 			}
 			sb.append(END_BRACKET);
 			return sb.toString();
+		} else {
+			throw new UnknownTokenTypeException(this);
 		}
+	}
 
-		return "Invalid Token: " + this;
+	@Override
+	public String toString() {
+		ToStringBuilder tsb = new ToStringBuilder();
+		tsb.append("type", type);
+		tsb.append("name", name);
+		tsb.append("value", value);
+		tsb.append("getterName", getterName);
+		tsb.append("beanClass", beanClass);
+		return tsb.toString();
 	}
 	
 	/**

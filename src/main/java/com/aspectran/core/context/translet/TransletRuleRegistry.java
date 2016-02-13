@@ -21,6 +21,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.aspectran.core.activity.PathVariableMap;
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.AspectranConstants;
 import com.aspectran.core.context.builder.AssistantLocal;
@@ -34,7 +35,6 @@ import com.aspectran.core.context.rule.TransletRuleMap;
 import com.aspectran.core.context.rule.type.RequestMethodType;
 import com.aspectran.core.context.rule.type.TokenType;
 import com.aspectran.core.context.translet.scan.TransletFileScanner;
-import com.aspectran.core.context.variable.ParameterMap;
 import com.aspectran.core.util.FileScanner;
 import com.aspectran.core.util.PrefixSuffixPattern;
 import com.aspectran.core.util.logging.Log;
@@ -89,23 +89,27 @@ public class TransletRuleRegistry {
 		return transletRuleMap.get(transletName);
 	}
 	
-	public TransletRule getTransletRule(String transletName, RequestMethodType requestMethod, ParameterMap pathVariableMap) {
+	public PathVariableMap getPathVariableMap(String transletName, RequestMethodType requestMethod) {
 		if(restfulTransletRuleSet.isEmpty())
 			return null;
 
 		TransletRule transletRule = findRestfulTransletRule(transletName, requestMethod);
+		PathVariableMap pathVariableMap = null;
 
-		if(transletRule != null)
+		if(transletRule != null) {
+			pathVariableMap = new PathVariableMap(transletRule);
 			preparsePathVariableMap(transletName, transletRule.getNameTokens(), pathVariableMap);
+		}
 
-		return transletRule;
+		return pathVariableMap;
 	}
 
 	private TransletRule findRestfulTransletRule(String transletName, RequestMethodType requestMethod) {
 		for(TransletRule transletRule : restfulTransletRuleSet) {
 			WildcardPattern namePattern = transletRule.getNamePattern();
 			if(namePattern.matches(transletName)) {
-				if(requestMethod.containsTo(transletRule.getRequestMethods()))
+				if(transletRule.getRequestMethods() == null ||
+						requestMethod.containsTo(transletRule.getRequestMethods()))
 					return transletRule;
 			}
 		}
@@ -215,7 +219,6 @@ public class TransletRuleRegistry {
 		if(transletRule.getRequestMethods() != null) {
 			String key = TransletRule.makeRestfulTransletName(transletName, transletRule.getRequestMethods());
 			transletRuleMap.put(key, transletRule);
-
 			putRestfulTransletRule(transletRule);
 		} else {
 			transletRuleMap.putTransletRule(transletRule);
@@ -233,10 +236,10 @@ public class TransletRuleRegistry {
 
 		StringBuilder sb = new StringBuilder(transletName.length());
 		for(Token token : nameTokens) {
-			if(token.getType() == TokenType.PARAMETER) {
+			if(token.getType() == TokenType.PARAMETER || token.getType() == TokenType.ATTRIBUTE) {
 				sb.append(WildcardPattern.STAR_CHAR);
 			} else {
-				sb.append(token.toString());
+				sb.append(token.stringify());
 			}
 		}
 
@@ -281,7 +284,7 @@ public class TransletRuleRegistry {
 		return sb.toString();
 	}
 
-	private boolean preparsePathVariableMap(String requestTransletRuleName, Token[] nameTokens, ParameterMap pathVariableMap) {
+	private boolean preparsePathVariableMap(String requestTransletRuleName, Token[] nameTokens, PathVariableMap pathVariableMap) {
 		/*
 			/example/customers/123-567/approval
 			/example/customers/
@@ -296,29 +299,31 @@ public class TransletRuleRegistry {
 		Token lastToken = null;
 		
 		for(Token token : nameTokens) {
-			if(token.getType() != TokenType.PARAMETER) {
-				String term = token.toString();
+			TokenType type = token.getType();
+
+			if(type == TokenType.PARAMETER || type == TokenType.ATTRIBUTE) {
+				lastToken = token;
+			} else {
+				String term = token.stringify();
 
 				endIndex = requestTransletRuleName.indexOf(term, beginIndex);
-				
+
 				if(endIndex == -1)
 					return false;
-				
+
 				if(endIndex > beginIndex) {
 					String value = requestTransletRuleName.substring(beginIndex, endIndex);
 					if(value.length() > 0) {
-						pathVariableMap.put(prevToken.getName(), value);
+						pathVariableMap.put(prevToken, value);
 					} else if(prevToken.getValue() != null) {
 						// If the last token ends with a "/" can be given a default value.
-						pathVariableMap.put(prevToken.getName(), prevToken.getValue());
+						pathVariableMap.put(prevToken, prevToken.getValue());
 					}
-					
+
 					beginIndex += value.length();
 				}
-				
+
 				beginIndex += term.length();
-			} else if(token.getType() == TokenType.PARAMETER) {
-				lastToken = token;
 			}
 			
 			prevToken = token;
@@ -327,10 +332,10 @@ public class TransletRuleRegistry {
 		if(lastToken != null && prevToken == lastToken) {
 			String value = requestTransletRuleName.substring(beginIndex);
 			if(value.length() > 0) {
-				pathVariableMap.put(lastToken.getName(), value);
+				pathVariableMap.put(lastToken, value);
 			} else if(lastToken.getValue() != null) {
 				// If the last token ends with a "/" can be given a default value.
-				pathVariableMap.put(lastToken.getName(), lastToken.getValue());
+				pathVariableMap.put(lastToken, lastToken.getValue());
 			}
 		}
 		

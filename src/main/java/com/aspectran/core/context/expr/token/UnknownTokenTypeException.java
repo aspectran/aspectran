@@ -13,34 +13,37 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.core.context.variable;
+package com.aspectran.core.context.expr.token;
 
-import java.util.Map;
+import com.aspectran.core.context.AspectranRuntimeException;
 
 /**
- * The Class AttributeMap.
- * 
- * <p>Created: 2008. 06. 11 PM 8:55:13</p>
+ * The Class UnknownTokenTypeException.
  */
-public class AttributeMap extends ValueMap {
+public class UnknownTokenTypeException extends AspectranRuntimeException {
 
 	/** @serial */
-	static final long serialVersionUID = -5350170143494113143L;
+	private static final long serialVersionUID = 932777610655109895L;
+
+	private Token token;
 
 	/**
-	 * Instantiates a AttributeMap.
-	 */
-	public AttributeMap() {
-		super();
-	}
-	
-	/**
-	 * Instantiates a new AttributeMap.
+	 * Instantiates a new Unknown token type exception.
 	 *
-	 * @param map the map
+	 * @param token the token
 	 */
-	public AttributeMap(Map<String, Object> map) {
-		super(map);
+	public UnknownTokenTypeException(Token token) {
+		super("Unknown token type " + token);
+		this.token = token;
 	}
-	
+
+	/**
+	 * Gets the token.
+	 *
+	 * @return the token
+	 */
+	public Token getToken() {
+		return this.token;
+	}
+
 }

@@ -104,18 +104,18 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 	}
 
 	/**
-	 * Gets the request method.
+	 * Gets the request methods.
 	 *
-	 * @return the request method
+	 * @return the request methods
 	 */
 	public RequestMethodType[] getRequestMethods() {
 		return requestMethods;
 	}
 
 	/**
-	 * Sets the request method.
+	 * Sets the request methods.
 	 *
-	 * @param requestMethods the request method
+	 * @param requestMethods the request methods
 	 */
 	public void setRequestMethods(RequestMethodType[] requestMethods) {
 		this.requestMethods = requestMethods;
@@ -623,7 +623,7 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 	}
 
 	public static String makeRestfulTransletName(String transletName, RequestMethodType[] requestMethods) {
-		StringBuilder sb = new StringBuilder(transletName + (requestMethods.length * 7));
+		StringBuilder sb = new StringBuilder(transletName + (requestMethods.length * 7) + 1);
 		for(RequestMethodType type : requestMethods) {
 			sb.append(type).append(" ");
 		}

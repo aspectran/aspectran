@@ -15,14 +15,8 @@
  */
 package com.aspectran.console.adapter;
 
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
-
 import com.aspectran.console.activity.ConsoleActivity;
-import com.aspectran.core.adapter.AbstractRequestAdapter;
-import com.aspectran.core.adapter.RequestAdapter;
+import com.aspectran.core.adapter.CommonRequestAdapter;
 
 /**
  * The Class ConsoleRequestAdapter.
@@ -30,13 +24,7 @@ import com.aspectran.core.adapter.RequestAdapter;
  * @author Juho Jeong
  * @since 2016. 1. 18.
  */
-public class ConsoleRequestAdapter extends AbstractRequestAdapter implements RequestAdapter {
-
-	protected static final String FILE_ENCODING_PROP_NAME = "file.encoding";
-	
-	private Map<String, Object> parameterMap = new HashMap<String, Object>();
-
-	private Map<String, Object> attributeMap = new HashMap<String, Object>();
+public class ConsoleRequestAdapter extends CommonRequestAdapter {
 
 	/**
 	 * Instantiates a new ConsoleRequestAdapter.
@@ -45,61 +33,7 @@ public class ConsoleRequestAdapter extends AbstractRequestAdapter implements Req
 	 */
 	public ConsoleRequestAdapter(ConsoleActivity activity) {
 		super(activity);
-	}
-
-	@Override
-	public String getCharacterEncoding() {
-		return System.getProperty(FILE_ENCODING_PROP_NAME);
-	}
-
-	@Override
-	public void setCharacterEncoding(String characterEncoding) {
-		System.setProperty(FILE_ENCODING_PROP_NAME, characterEncoding);
-	}
-
-	@Override
-	public String getParameter(String name) {
-		Object value = parameterMap.get(name);
-		if(value == null)
-			return null;
-
-		return value.toString();
-	}
-
-	@Override
-	public void setParameter(String name, String value) {
-		parameterMap.put(name, value);
-	}
-
-	@Override
-	public String[] getParameterValues(String name) {
-		return null;
-	}
-
-	@Override
-	public Enumeration<String> getParameterNames() {
-		return Collections.enumeration(parameterMap.keySet());
-	}
-
-	@Override
-	@SuppressWarnings("unchecked")
-	public <T> T getAttribute(String name) {
-		return (T)attributeMap.get(name);
-	}
-
-	@Override
-	public void setAttribute(String name, Object o) {
-		attributeMap.put(name, o);
-	}
-
-	@Override
-	public Enumeration<String> getAttributeNames() {
-		return Collections.enumeration(attributeMap.keySet());
-	}
-
-	@Override
-	public void removeAttribute(String name) {
-		attributeMap.remove(name);
+		setCharacterEncoding(System.getProperty("file.encoding"));
 	}
 
 }

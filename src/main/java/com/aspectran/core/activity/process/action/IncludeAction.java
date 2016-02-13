@@ -20,11 +20,10 @@ import java.util.Map;
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.adapter.RequestAdapter;
-import com.aspectran.core.context.expr.ItemTokenExpression;
-import com.aspectran.core.context.expr.ItemTokenExpressor;
+import com.aspectran.core.context.expr.ItemExpression;
+import com.aspectran.core.context.expr.ItemExpressor;
 import com.aspectran.core.context.rule.IncludeActionRule;
 import com.aspectran.core.context.rule.type.ActionType;
-import com.aspectran.core.context.variable.ValueMap;
 import com.aspectran.core.util.ToStringBuilder;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
@@ -57,8 +56,8 @@ public class IncludeAction extends AbstractAction implements Executable {
 			RequestAdapter request = activity.getRequestAdapter();
 			
 			if(includeActionRule.getAttributeItemRuleMap() != null) {
-				ItemTokenExpressor expressor = new ItemTokenExpression(activity);
-				ValueMap valueMap = expressor.express(includeActionRule.getAttributeItemRuleMap());
+				ItemExpressor expressor = new ItemExpression(activity);
+				Map<String, Object> valueMap = expressor.express(includeActionRule.getAttributeItemRuleMap());
 
 				for(Map.Entry<String, Object> entry : valueMap.entrySet())
 					request.setAttribute(entry.getKey(), entry.getValue());

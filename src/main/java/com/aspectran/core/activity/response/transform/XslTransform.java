@@ -59,11 +59,11 @@ public class XslTransform extends TransformResponse implements Response {
 	
 	public static final String OUTPUT_METHOD_TEXT = "text";
 	
-	private final Log log = LogFactory.getLog(XslTransform.class);
+	private static final Log log = LogFactory.getLog(XslTransform.class);
 	
-	private boolean traceEnabled = log.isTraceEnabled();
+	private static boolean traceEnabled = log.isTraceEnabled();
 	
-	private boolean debugEnabled = log.isDebugEnabled();
+	private static boolean debugEnabled = log.isDebugEnabled();
 	
 	private final TemplateRule templateRule;
 	

@@ -37,9 +37,9 @@ import com.aspectran.core.context.rule.type.RequestMethodType;
 public interface Translet {
 
 	/**
-	 * Returns the path of translet.
+	 * Returns the name of the translet.
 	 *
-	 * @return the translet path
+	 * @return the translet name
 	 */
 	public String getTransletName();
 
@@ -48,48 +48,67 @@ public interface Translet {
 	 *
 	 * @return the REST verb
 	 */
-	public RequestMethodType getRestVerb();
+	public RequestMethodType getRequestMethod();
 
 	/**
-	 * Gets the declared attribute map.
+	 * Gets the application adapter.
 	 *
-	 * @return the declared attribute map
+	 * @return the application adapter
 	 */
-	public Map<String, Object> getDeclaredAttributeMap();
+	public ApplicationAdapter getApplicationAdapter();
 
 	/**
-	 * Sets the declared attribute map.
+	 * Gets the session adapter.
 	 *
-	 * @param declaredAttributeMap the declared attribute map
+	 * @return the session adapter
 	 */
-	public void setDeclaredAttributeMap(Map<String, Object> declaredAttributeMap);
+	public SessionAdapter getSessionAdapter();
 
 	/**
-	 * Get a named attribute and convert it into the given type.
+	 * Gets the request adapter.
+	 *
+	 * @return the request adapter
+	 */
+	public RequestAdapter getRequestAdapter();
+
+	/**
+	 * Gets the response adapter.
+	 *
+	 * @return the response adapter
+	 */
+	public ResponseAdapter getResponseAdapter();
+
+	/**
+	 * Gets the request adaptee.
 	 *
 	 * @param <T> the generic type
-	 * @param name the name of the attribute
-	 * @return return named value converted to type T or null if non existing.
+	 * @return the request adaptee
 	 */
-	public <T> T getAttribute(String name);
+	public <T> T getRequestAdaptee();
 
 	/**
-	 * Get a named attribute and convert it into the given type.
+	 * Gets the response adaptee.
 	 *
 	 * @param <T> the generic type
-	 * @param name the name of the attribute
-	 * @param defaultValue the default value to use if the named attribute does not exist. the default value is also used to define the type to convert the value to.
-	 * @return return named value converted to type T or the default value if non existing.
+	 * @return the response adaptee
 	 */
-	public <T> T getAttribute(String name, T defaultValue);
+	public <T> T getResponseAdaptee();
 
 	/**
-	 * Sets the attribute.
+	 * Gets the session adaptee.
 	 *
-	 * @param name the attribute name
-	 * @param value the attribute value
+	 * @param <T> the generic type
+	 * @return the session adaptee
 	 */
-	public void setAttribute(String name, Object value);
+	public <T> T getSessionAdaptee();
+
+	/**
+	 * Gets the application adaptee.
+	 *
+	 * @param <T> the generic type
+	 * @return the application adaptee
+	 */
+	public <T> T getApplicationAdaptee();
 
 	/**
 	 * Gets the process result.
@@ -188,7 +207,7 @@ public interface Translet {
 	/**
 	 * Redirect.
 	 *
-	 * @param target the target
+	 * @param target the redirect target
 	 * @param parameters the parameters
 	 */
 	public void redirect(String target, Map<String, String> parameters);
@@ -228,66 +247,6 @@ public interface Translet {
 	 * @return the raised exception
 	 */
 	public Exception getRaisedException();
-
-	/**
-	 * Gets the application adapter.
-	 *
-	 * @return the application adapter
-	 */
-	public ApplicationAdapter getApplicationAdapter();
-
-	/**
-	 * Gets the session adapter.
-	 *
-	 * @return the session adapter
-	 */
-	public SessionAdapter getSessionAdapter();
-
-	/**
-	 * Gets the request adapter.
-	 *
-	 * @return the request adapter
-	 */
-	public RequestAdapter getRequestAdapter();
-
-	/**
-	 * Gets the response adapter.
-	 *
-	 * @return the response adapter
-	 */
-	public ResponseAdapter getResponseAdapter();
-
-	/**
-	 * Gets the request adaptee.
-	 *
-	 * @param <T> the generic type
-	 * @return the request adaptee
-	 */
-	public <T> T getRequestAdaptee();
-
-	/**
-	 * Gets the response adaptee.
-	 *
-	 * @param <T> the generic type
-	 * @return the response adaptee
-	 */
-	public <T> T getResponseAdaptee();
-
-	/**
-	 * Gets the session adaptee.
-	 *
-	 * @param <T> the generic type
-	 * @return the session adaptee
-	 */
-	public <T> T getSessionAdaptee();
-
-	/**
-	 * Gets the application adaptee.
-	 *
-	 * @param <T> the generic type
-	 * @return the application adaptee
-	 */
-	public <T> T getApplicationAdaptee();
 
 	/**
 	 * Return an instance.

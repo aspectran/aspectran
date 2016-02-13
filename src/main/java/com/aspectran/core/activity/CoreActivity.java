@@ -17,7 +17,6 @@ package com.aspectran.core.activity;
 
 import java.io.UnsupportedEncodingException;
 import java.util.List;
-import java.util.Map;
 
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.activity.process.ContentList;
@@ -49,7 +48,6 @@ import com.aspectran.core.context.rule.type.RequestMethodType;
 import com.aspectran.core.context.rule.type.ResponseType;
 import com.aspectran.core.context.template.TemplateProcessor;
 import com.aspectran.core.context.translet.TransletNotFoundException;
-import com.aspectran.core.context.variable.ParameterMap;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
@@ -82,7 +80,7 @@ public class CoreActivity extends AbstractActivity implements Activity {
 
 	private RequestMethodType requestMethod;
 	
-	private ParameterMap pathVariableMap;
+	private PathVariableMap pathVariableMap;
 	
 	private Translet translet;
 	
@@ -131,10 +129,11 @@ public class CoreActivity extends AbstractActivity implements Activity {
 		
 		// for RESTful
 		if(requestMethod != null && transletRule == null) {
-			ParameterMap pathVariableMap = new ParameterMap(); 
-			transletRule = context.getTransletRuleRegistry().getTransletRule(transletName, requestMethod, pathVariableMap);
-			if(transletRule != null)
+			PathVariableMap pathVariableMap = context.getTransletRuleRegistry().getPathVariableMap(transletName, requestMethod);
+			if(pathVariableMap != null) {
 				this.pathVariableMap = pathVariableMap;
+				transletRule = pathVariableMap.getTransletRule();
+			}
 		}
 
 		if(transletRule == null) {
@@ -189,14 +188,14 @@ public class CoreActivity extends AbstractActivity implements Activity {
 			if(characterEncoding != null)
 				getRequestAdapter().setCharacterEncoding(characterEncoding);
 
-			// for response
-			characterEncoding = responseRule.getCharacterEncoding();
-
-			if(characterEncoding == null)
-				characterEncoding = (String)getResponseSetting(ResponseRule.CHARACTER_ENCODING_SETTING_NAME);
-
-			if(characterEncoding != null)
-				getResponseAdapter().setCharacterEncoding(characterEncoding);
+//			// for response
+//			characterEncoding = responseRule.getCharacterEncoding();
+//
+//			if(characterEncoding == null)
+//				characterEncoding = (String)getResponseSetting(ResponseRule.CHARACTER_ENCODING_SETTING_NAME);
+//
+//			if(characterEncoding != null)
+//				getResponseAdapter().setCharacterEncoding(characterEncoding);
 		} catch(UnsupportedEncodingException e) {
 			throw new ActivityException("Failed to determine character encoding.", e);
 		}
@@ -227,10 +226,8 @@ public class CoreActivity extends AbstractActivity implements Activity {
 	}
 	
 	private void run1st() {
-		if(pathVariableMap != null && !pathVariableMap.isEmpty()) {
-			for(Map.Entry<String, String> entry : pathVariableMap.entrySet()) {
-				translet.setAttribute(entry.getKey(), entry.getValue());
-			}
+		if(pathVariableMap != null) {
+			pathVariableMap.apply(translet);
 		}
 		
 		try {

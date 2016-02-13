@@ -58,12 +58,11 @@ public class RedirectResponse implements Response {
 		}
 		
 		try {
-			String outputEncoding = redirectResponseRule.getCharacterEncoding();
-
-			if(outputEncoding != null)
-				responseAdapter.setCharacterEncoding(outputEncoding);
+			String characterEncoding = redirectResponseRule.getCharacterEncoding();
+			if(characterEncoding != null)
+				responseAdapter.setCharacterEncoding(characterEncoding);
 			
-			responseAdapter.redirect(activity, redirectResponseRule);
+			responseAdapter.redirect(redirectResponseRule, activity);
 		} catch(Exception e) {
 			throw new ResponseException("Redirect response error: " + redirectResponseRule, e);
 		}

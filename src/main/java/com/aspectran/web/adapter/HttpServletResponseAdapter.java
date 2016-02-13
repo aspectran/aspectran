@@ -27,13 +27,9 @@ import javax.servlet.http.HttpServletResponse;
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.adapter.AbstractResponseAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
-import com.aspectran.core.context.expr.ItemTokenExpression;
-import com.aspectran.core.context.expr.ItemTokenExpressor;
-import com.aspectran.core.context.expr.TokenExpression;
-import com.aspectran.core.context.expr.TokenExpressor;
-import com.aspectran.core.context.expr.token.Token;
+import com.aspectran.core.context.expr.ItemExpression;
+import com.aspectran.core.context.expr.ItemExpressor;
 import com.aspectran.core.context.rule.RedirectResponseRule;
-import com.aspectran.core.context.variable.ValueMap;
 
 /**
  * The Class HttpServletResponseAdapter.
@@ -89,24 +85,15 @@ public class HttpServletResponseAdapter extends AbstractResponseAdapter implemen
 	}
 
 	@Override
-	public void redirect(String url) throws IOException {
-		((HttpServletResponse)adaptee).sendRedirect(url);
+	public void redirect(String target) throws IOException {
+		((HttpServletResponse)adaptee).sendRedirect(target);
 	}
 
 	@Override
-	public String redirect(Activity activity, RedirectResponseRule redirectResponseRule) throws IOException {
+	public String redirect(RedirectResponseRule redirectResponseRule, Activity activity) throws IOException {
 		String characterEncoding = ((HttpServletResponse)adaptee).getCharacterEncoding();
-		String target = null;
+		String target = redirectResponseRule.getTarget(activity);
 		int questionPos = -1;
-		
-		Token[] targetTokens = redirectResponseRule.getTargetTokens();
-
-		if(targetTokens != null && targetTokens.length > 0) {
-			TokenExpressor expressor = new TokenExpression(activity);
-			target = expressor.expressAsString(targetTokens);
-		} else {
-			target = redirectResponseRule.getTarget();
-		}
 
 		StringBuilder sb = new StringBuilder(256);
 
@@ -116,8 +103,8 @@ public class HttpServletResponseAdapter extends AbstractResponseAdapter implemen
 		}
 		
 		if(redirectResponseRule.getParameterItemRuleMap() != null) {
-			ItemTokenExpressor expressor = new ItemTokenExpression(activity);
-			ValueMap valueMap = expressor.express(redirectResponseRule.getParameterItemRuleMap());
+			ItemExpressor expressor = new ItemExpression(activity);
+			Map<String, Object> valueMap = expressor.express(redirectResponseRule.getParameterItemRuleMap());
 
 			if(valueMap != null && valueMap.size() > 0) {
 				if(questionPos == -1)

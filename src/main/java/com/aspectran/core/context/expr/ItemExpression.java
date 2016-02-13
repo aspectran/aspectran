@@ -32,7 +32,6 @@ import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.type.ItemType;
 import com.aspectran.core.context.rule.type.ItemValueType;
-import com.aspectran.core.context.variable.ValueMap;
 import com.aspectran.core.util.apon.GenericParameters;
 import com.aspectran.core.util.apon.Parameters;
 
@@ -41,28 +40,26 @@ import com.aspectran.core.util.apon.Parameters;
  *
  * @since 2008. 06. 19
  */
-public class ItemTokenExpression extends TokenExpression implements ItemTokenExpressor {
+public class ItemExpression extends TokenExpression implements ItemExpressor {
 
 	/**
 	 * Instantiates a new ItemTokenExpression.
 	 *
 	 * @param activity the current Activity
 	 */
-	public ItemTokenExpression(Activity activity) {
+	public ItemExpression(Activity activity) {
 		super(activity);
 	}
 	
 	@Override
-	public ValueMap express(ItemRuleMap itemRuleMap) {
-		ValueMap valueMap = new ValueMap();
-		
+	public Map<String, Object> express(ItemRuleMap itemRuleMap) {
+		Map<String, Object> valueMap = new LinkedHashMap<String, Object>();
 		express(itemRuleMap, valueMap);
-		
 		return valueMap;
 	}
 
 	@Override
-	public void express(ItemRuleMap itemRuleMap, ValueMap valueMap) {
+	public void express(ItemRuleMap itemRuleMap, Map<String, Object> valueMap) {
 		for(ItemRule ir : itemRuleMap) {
 			ItemType itemType = ir.getType();
 			ItemValueType valueType = ir.getValueType();

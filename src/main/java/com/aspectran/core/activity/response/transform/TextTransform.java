@@ -25,6 +25,7 @@ import com.aspectran.core.activity.process.result.ProcessResult;
 import com.aspectran.core.activity.response.Response;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.context.AspectranConstants;
+import com.aspectran.core.context.rule.ResponseRule;
 import com.aspectran.core.context.rule.TemplateRule;
 import com.aspectran.core.context.rule.TransformRule;
 import com.aspectran.core.util.logging.Log;
@@ -37,18 +38,18 @@ import com.aspectran.core.util.logging.LogFactory;
  */
 public class TextTransform extends TransformResponse implements Response {
 
-	private final Log log = LogFactory.getLog(TextTransform.class);
+	private static final Log log = LogFactory.getLog(TextTransform.class);
 
-	private final boolean debugEnabled = log.isDebugEnabled();
+	private static final boolean debugEnabled = log.isDebugEnabled();
 
 	private final String templateId;
 
 	private final TemplateRule templateRule;
 
+	private final String characterEncoding;
+
 	private final String contentType;
 	
-	private final String outputEncoding;
-
 	/**
 	 * Instantiates a new TextTransform.
 	 * 
@@ -56,10 +57,11 @@ public class TextTransform extends TransformResponse implements Response {
 	 */
 	public TextTransform(TransformRule transformRule) {
 		super(transformRule);
+
 		this.templateId = transformRule.getTemplateId();
 		this.templateRule = transformRule.getTemplateRule();
+		this.characterEncoding = transformRule.getCharacterEncoding();
 		this.contentType = transformRule.getContentType();
-		this.outputEncoding = transformRule.getCharacterEncoding();
 	}
 
 	@Override
@@ -73,11 +75,17 @@ public class TextTransform extends TransformResponse implements Response {
 		}
 
 		try {
-			if(contentType != null)
+			if(contentType != null) {
 				responseAdapter.setContentType(contentType);
+			}
 
-			if(outputEncoding != null)
-				responseAdapter.setCharacterEncoding(outputEncoding);
+			if(characterEncoding != null) {
+				responseAdapter.setCharacterEncoding(characterEncoding);
+			} else {
+				String characterEncoding = activity.getResponseSetting(ResponseRule.CHARACTER_ENCODING_SETTING_NAME);
+				if(characterEncoding != null)
+					responseAdapter.setCharacterEncoding(characterEncoding);
+			}
 
 			Writer writer = responseAdapter.getWriter();
 

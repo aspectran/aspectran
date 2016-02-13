@@ -121,7 +121,7 @@ noCache (true | false) #IMPLIED
 name CDATA #REQUIRED
 scan CDATA #IMPLIED
 mask CDATA #IMPLIED
-method (GET | POST | PUT | PATCH | DELETE | HEAD | OPTIONS | TRACE | CONNECT) #IMPLIED
+method (ALL | GET | POST | PUT | PATCH | DELETE | HEAD | OPTIONS | TRACE | CONNECT) #IMPLIED
 >
 
 <!ELEMENT request (attribute?)>

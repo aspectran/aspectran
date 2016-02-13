@@ -87,19 +87,19 @@ public interface ResponseAdapter {
 	/**
 	 * Redirects a client to a new URL.
 	 *
-	 * @param url the redirect location URL
+	 * @param target the redirect target
 	 * @throws IOException If an input or output exception occurs
 	 */
-	public void redirect(String url) throws IOException;
+	public void redirect(String target) throws IOException;
 	
 	/**
 	 * Redirects a client to a new URL.
 	 *
-	 * @param activity the current Activity
 	 * @param redirectResponseRule the redirect response rule
-	 * @return the string
+	 * @param activity the current Activity
+	 * @return the redirect target
 	 * @throws IOException If an input or output exception occurs
 	 */
-	public String redirect(Activity activity, RedirectResponseRule redirectResponseRule) throws IOException;
+	public String redirect(RedirectResponseRule redirectResponseRule, Activity activity) throws IOException;
 	
 }

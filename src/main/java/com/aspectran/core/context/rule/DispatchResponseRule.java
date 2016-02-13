@@ -15,9 +15,17 @@
  */
 package com.aspectran.core.context.rule;
 
+import java.util.List;
+
+import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.response.dispatch.ViewDispatcher;
+import com.aspectran.core.context.expr.TokenExpression;
+import com.aspectran.core.context.expr.TokenExpressor;
+import com.aspectran.core.context.expr.token.Token;
+import com.aspectran.core.context.expr.token.Tokenizer;
 import com.aspectran.core.context.rule.ability.ActionPossessable;
 import com.aspectran.core.context.rule.type.ResponseType;
+import com.aspectran.core.context.rule.type.TokenType;
 import com.aspectran.core.util.BooleanUtils;
 import com.aspectran.core.util.ToStringBuilder;
 
@@ -31,6 +39,8 @@ public class DispatchResponseRule extends ActionPossessSupport implements Action
 	public static final ResponseType RESPONSE_TYPE = ResponseType.DISPATCH;
 	
 	private String name;
+
+	private Token[] nameTokens;
 	
 	private String contentType;
 
@@ -57,14 +67,56 @@ public class DispatchResponseRule extends ActionPossessSupport implements Action
 	}
 
 	/**
+	 * Gets the dispatch name.
+	 *
+	 * @param activity the activity
+	 * @return the dispatch name
+	 */
+	public String getName(Activity activity) {
+		if(nameTokens != null && nameTokens.length > 0) {
+			TokenExpressor expressor = new TokenExpression(activity);
+			return expressor.expressAsString(nameTokens);
+		} else {
+			return name;
+		}
+	}
+
+	/**
 	 * Sets the dispatch name.
 	 *
 	 * @param name the new dispatch name
 	 */
 	public void setName(String name) {
 		this.name = name;
+
+		List<Token> tokens = Tokenizer.tokenize(name, true);
+		int tokenCount = 0;
+
+		for(Token t : tokens) {
+			if(t.getType() != TokenType.TEXT)
+				tokenCount++;
+		}
+
+		if(tokenCount > 0)
+			this.nameTokens = tokens.toArray(new Token[tokens.size()]);
+		else
+			this.nameTokens = null;
 	}
-	
+
+	public void setName(String name, Token[] nameTokens) {
+		this.name = name;
+		this.nameTokens = nameTokens;
+	}
+
+	/**
+	 * Gets the tokens of the dispatch name.
+	 *
+	 * @return the tokens of the dispatch name
+	 */
+	public Token[] getNameTokens() {
+		return nameTokens;
+	}
+
 	/**
 	 * Sets the content type.
 	 * 
@@ -126,18 +178,20 @@ public class DispatchResponseRule extends ActionPossessSupport implements Action
 	
 	@Override
 	public String toString() {
-		return toString(null);
+		return toString(null, null);
 	}
 
 	/**
 	 * Returns a string representation of <code>DispatchResponseRule</code> with used <code>Dispatcher</code>.
 	 *
 	 * @param viewDispatcher the view dispatcher
+	 * @param dispatchName the new dispatch name
 	 * @return a string representation of <code>DispatchResponseRule</code>.
 	 */
-	public String toString(ViewDispatcher viewDispatcher) {
+	public String toString(ViewDispatcher viewDispatcher, String dispatchName) {
 		ToStringBuilder tsb = new ToStringBuilder();
-		tsb.append("name", name);
+		tsb.appendForce("name", name);
+		tsb.append("dispatchName", dispatchName);
 		tsb.append("contentType", contentType);
 		tsb.append("characterEncoding", characterEncoding);
 		tsb.append("defaultResponse", defaultResponse);
@@ -182,14 +236,14 @@ public class DispatchResponseRule extends ActionPossessSupport implements Action
 	 * @return the dispatch response rule
 	 */
 	public static DispatchResponseRule replicate(DispatchResponseRule dispatchResponseRule) {
-		DispatchResponseRule newDispatchResponseRule = new DispatchResponseRule();
-		newDispatchResponseRule.setName(dispatchResponseRule.getName());
-		newDispatchResponseRule.setContentType(dispatchResponseRule.getContentType());
-		newDispatchResponseRule.setCharacterEncoding(dispatchResponseRule.getCharacterEncoding());
-		newDispatchResponseRule.setDefaultResponse(dispatchResponseRule.getDefaultResponse());
-		newDispatchResponseRule.setActionList(dispatchResponseRule.getActionList());
+		DispatchResponseRule drr = new DispatchResponseRule();
+		drr.setName(dispatchResponseRule.getName(), dispatchResponseRule.getNameTokens());
+		drr.setContentType(dispatchResponseRule.getContentType());
+		drr.setCharacterEncoding(dispatchResponseRule.getCharacterEncoding());
+		drr.setDefaultResponse(dispatchResponseRule.getDefaultResponse());
+		drr.setActionList(dispatchResponseRule.getActionList());
 		
-		return newDispatchResponseRule;
+		return drr;
 	}
 
 }

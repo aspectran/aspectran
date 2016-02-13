@@ -24,6 +24,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 import com.aspectran.core.util.FileUtils;
+import com.aspectran.core.util.ToStringBuilder;
 
 /**
  * The Class FileParameter.
@@ -33,8 +34,6 @@ import com.aspectran.core.util.FileUtils;
 public class FileParameter {
 	
 	private File file;
-	
-	private String contentType;
 	
 	private boolean refused;
 	
@@ -79,7 +78,7 @@ public class FileParameter {
 	 * @return the content type of the file
 	 */
 	public String getContentType() {
-		return contentType;
+		return null;
 	}
 
 	/**
@@ -218,14 +217,11 @@ public class FileParameter {
 	 * @see java.lang.Object#toString()
 	 */
 	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		sb.append("{file=").append(file);
-		sb.append(", contentType=").append(contentType);
-		sb.append(", refused=").append(refused);
-		sb.append(", savedFile=").append(savedFile);
-		sb.append("}");
-		
-		return sb.toString();
+		ToStringBuilder tsb = new ToStringBuilder();
+		tsb.append("file", file);
+		tsb.append("savedFile", savedFile);
+		tsb.append("refused", refused);
+		return tsb.toString();
 	}
 
 }

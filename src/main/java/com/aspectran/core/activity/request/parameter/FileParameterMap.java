@@ -29,7 +29,6 @@ public class FileParameterMap extends LinkedHashMap<String, FileParameter[]> {
 
 	public FileParameter getFileParameter(String name) {
 		FileParameter[] fileParameters = get(name);
-		
 		if(fileParameters == null || fileParameters.length == 0)
 			return null;
 		
@@ -44,7 +43,7 @@ public class FileParameterMap extends LinkedHashMap<String, FileParameter[]> {
 		put(name, new FileParameter[] { fileParameter });
 	}
 	
-	public void putFileParameters(String name, FileParameter[] fileParameters) {
+	public void putFileParameter(String name, FileParameter[] fileParameters) {
 		put(name, fileParameters);
 	}
 

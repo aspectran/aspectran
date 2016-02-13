@@ -18,6 +18,9 @@ package com.aspectran.core.context.rule;
 import java.util.List;
 import java.util.Map;
 
+import com.aspectran.core.activity.Activity;
+import com.aspectran.core.context.expr.TokenExpression;
+import com.aspectran.core.context.expr.TokenExpressor;
 import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.expr.token.Tokenizer;
 import com.aspectran.core.context.rule.ability.ActionPossessable;
@@ -68,12 +71,27 @@ public class RedirectResponseRule extends ActionPossessSupport implements Action
 	}
 
 	/**
-	 * Gets the target name.
+	 * Gets the redirect target.
 	 * 
-	 * @return the target name
+	 * @return the redirect target
 	 */
 	public String getTarget() {
 		return target;
+	}
+
+	/**
+	 * Gets the redirect target.
+	 *
+	 * @param activity the activity
+	 * @return the redirect target
+	 */
+	public String getTarget(Activity activity) {
+		if(targetTokens != null && targetTokens.length > 0) {
+			TokenExpressor expressor = new TokenExpression(activity);
+			return expressor.expressAsString(targetTokens);
+		} else {
+			return target;
+		}
 	}
 
 	/**
@@ -83,10 +101,8 @@ public class RedirectResponseRule extends ActionPossessSupport implements Action
 	 */
 	public void setTarget(String target) {
 		this.target = target;
-		this.targetTokens = null;
-		
+
 		List<Token> tokens = Tokenizer.tokenize(target, true);
-		
 		int tokenCount = 0;
 		
 		for(Token t : tokens) {
@@ -96,6 +112,8 @@ public class RedirectResponseRule extends ActionPossessSupport implements Action
 		
 		if(tokenCount > 0)
 			this.targetTokens = tokens.toArray(new Token[tokens.size()]);
+		else
+			this.targetTokens = null;
 	}
 	
 	public void setTarget(String target, Token[] targetTokens) {
@@ -104,9 +122,9 @@ public class RedirectResponseRule extends ActionPossessSupport implements Action
 	}
 
 	/**
-	 * Gets the url tokens.
+	 * Gets the tokens of the redirect target.
 	 * 
-	 * @return the url tokens
+	 * @return the tokens of the redirect target
 	 */
 	public Token[] getTargetTokens() {
 		return targetTokens;
@@ -239,7 +257,7 @@ public class RedirectResponseRule extends ActionPossessSupport implements Action
 	@Override
 	public String toString() {
 		ToStringBuilder tsb = new ToStringBuilder();
-		tsb.append("target", target);
+		tsb.appendForce("target", target);
 		tsb.append("contentType", contentType);
 		tsb.append("excludeNullParameter", excludeNullParameter);
 		tsb.append("defaultResponse", defaultResponse);

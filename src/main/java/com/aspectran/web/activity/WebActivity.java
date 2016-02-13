@@ -16,6 +16,7 @@
 package com.aspectran.web.activity;
 
 import java.util.Enumeration;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -28,13 +29,13 @@ import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.context.expr.ItemTokenExpression;
-import com.aspectran.core.context.expr.ItemTokenExpressor;
+import com.aspectran.core.context.expr.ItemExpression;
+import com.aspectran.core.context.expr.ItemExpressor;
 import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
+import com.aspectran.core.context.rule.ResponseRule;
 import com.aspectran.core.context.rule.type.ItemValueType;
 import com.aspectran.core.context.rule.type.RequestMethodType;
-import com.aspectran.core.context.variable.ValueMap;
 import com.aspectran.web.activity.request.multipart.MultipartRequestException;
 import com.aspectran.web.activity.request.multipart.MultipartRequestWrapper;
 import com.aspectran.web.activity.request.multipart.MultipartRequestWrapperResolver;
@@ -51,7 +52,7 @@ import com.aspectran.web.adapter.HttpSessionAdapter;
 public class WebActivity extends CoreActivity implements Activity {
 
 	private static final String MULTIPART_REQUEST_WRAPPER_RESOLVER = "multipartRequestWrapperResolver";
-	
+
 	private HttpServletRequest request;
 	
 	private HttpServletResponse response;
@@ -77,8 +78,9 @@ public class WebActivity extends CoreActivity implements Activity {
 		RequestAdapter requestAdapter = new HttpServletRequestAdapter(request);
 		setRequestAdapter(requestAdapter);
 
+		String contentEncoding = getResponseSetting(ResponseRule.CONTENT_ENCODING_SETTING_NAME);
 		String acceptEncoding = request.getHeader("Accept-Encoding");
-		if(acceptEncoding != null && acceptEncoding.indexOf("gzip") > -1) {
+		if(contentEncoding != null && acceptEncoding != null && acceptEncoding.indexOf(contentEncoding) > -1) {
 			ResponseAdapter responseAdapter = new GZipHttpServletResponseAdapter(response);
 			setResponseAdapter(responseAdapter);
 		} else {
@@ -123,10 +125,7 @@ public class WebActivity extends CoreActivity implements Activity {
 			requestAdapter.setMaxLengthExceeded(requestWrapper.isMaxLengthExceeded());
 		}
 
-        ValueMap valueMap = parseDeclaredParameter(requestWrapper);
-        
-        if(valueMap != null)
-        	translet.setDeclaredAttributeMap(valueMap);
+        parseDeclaredAttributes(requestWrapper);
 	}
 	
 	/**
@@ -163,14 +162,13 @@ public class WebActivity extends CoreActivity implements Activity {
 	 * Parses the parameter.
 	 *
 	 * @param requestWrapper the multipart request wrapper
-	 * @return the value map
 	 */
-	private ValueMap parseDeclaredParameter(MultipartRequestWrapper requestWrapper) {
+	private void parseDeclaredAttributes(MultipartRequestWrapper requestWrapper) {
 		ItemRuleMap attributeItemRuleMap = getRequestRule().getAttributeItemRuleMap();
 		
 		if(attributeItemRuleMap != null) {
-			ItemTokenExpressor expressor = new ItemTokenExpression(this);
-			ValueMap valueMap = expressor.express(attributeItemRuleMap);
+			ItemExpressor expressor = new ItemExpression(this);
+			Map<String, Object> valueMap = expressor.express(attributeItemRuleMap);
 
 			for(ItemRule itemRule : attributeItemRuleMap.values()) {
 				String name = itemRule.getName();
@@ -188,12 +186,7 @@ public class WebActivity extends CoreActivity implements Activity {
 					}
 				}
 			}
-
-			if(!valueMap.isEmpty())
-				return valueMap;
 		}
-
-		return null;
 	}
 	
 	@Override

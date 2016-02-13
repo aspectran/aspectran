@@ -37,14 +37,13 @@ import com.aspectran.core.context.bean.aware.ClassLoaderAware;
 import com.aspectran.core.context.bean.proxy.CglibDynamicBeanProxy;
 import com.aspectran.core.context.bean.proxy.JavassistDynamicBeanProxy;
 import com.aspectran.core.context.bean.proxy.JdkDynamicBeanProxy;
-import com.aspectran.core.context.expr.ItemTokenExpression;
-import com.aspectran.core.context.expr.ItemTokenExpressor;
+import com.aspectran.core.context.expr.ItemExpression;
+import com.aspectran.core.context.expr.ItemExpressor;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.type.BeanProxifierType;
 import com.aspectran.core.context.rule.type.ScopeType;
-import com.aspectran.core.context.variable.ValueMap;
 import com.aspectran.core.util.ClassUtils;
 import com.aspectran.core.util.MethodUtils;
 import com.aspectran.core.util.logging.Log;
@@ -107,8 +106,8 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 			ItemRuleMap propertyItemRuleMap = beanRule.getPropertyItemRuleMap();
 
 			if(propertyItemRuleMap != null) {
-				ItemTokenExpressor expressor = new ItemTokenExpression(activity);
-				ValueMap valueMap = expressor.express(propertyItemRuleMap);
+				ItemExpressor expressor = new ItemExpression(activity);
+				Map<String, Object> valueMap = expressor.express(propertyItemRuleMap);
 				
 				for(Map.Entry<String, Object> entry : valueMap.entrySet()) {
 					MethodUtils.invokeSetter(bean, entry.getKey(), entry.getValue());
@@ -136,11 +135,11 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 			
 			ItemRuleMap constructorArgumentItemRuleMap = beanRule.getConstructorArgumentItemRuleMap();
 			ItemRuleMap propertyItemRuleMap = beanRule.getPropertyItemRuleMap();
-			ItemTokenExpressor expressor = null;
+			ItemExpressor expressor = null;
 			
 			if(constructorArgumentItemRuleMap != null) {
-				expressor = new ItemTokenExpression(activity);
-				ValueMap valueMap = expressor.express(constructorArgumentItemRuleMap);
+				expressor = new ItemExpression(activity);
+				Map<String, Object> valueMap = expressor.express(constructorArgumentItemRuleMap);
 	
 				int parameterSize = constructorArgumentItemRuleMap.size();
 				Object[] args = new Object[parameterSize];
@@ -168,10 +167,10 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 
 			if(propertyItemRuleMap != null) {
 				if(expressor == null) {
-					expressor = new ItemTokenExpression(activity);
+					expressor = new ItemExpression(activity);
 				}
-				
-				ValueMap valueMap = expressor.express(propertyItemRuleMap);
+
+				Map<String, Object> valueMap = expressor.express(propertyItemRuleMap);
 				
 				for(Map.Entry<String, Object> entry : valueMap.entrySet()) {
 					MethodUtils.invokeSetter(bean, entry.getKey(), entry.getValue());

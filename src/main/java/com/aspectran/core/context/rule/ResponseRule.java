@@ -37,6 +37,8 @@ public class ResponseRule implements ResponseRuleApplicable, Replicable<Response
 
 	public static final String CHARACTER_ENCODING_SETTING_NAME = "characterEncoding";
 
+	public static final String CONTENT_ENCODING_SETTING_NAME = "contentEncoding";
+
 	private String name;
 	
 	private String characterEncoding;

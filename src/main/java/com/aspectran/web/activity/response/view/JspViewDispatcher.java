@@ -67,13 +67,13 @@ public class JspViewDispatcher implements ViewDispatcher {
 
 	@Override
 	public void dispatch(Activity activity, DispatchResponseRule dispatchResponseRule) throws ViewDispatchException {
+		String dispatchName = null;
+
 		try {
-			String dispatchName = dispatchResponseRule.getName();
-			if(dispatchName == null) {
-				log.warn("No specified dispatch name " + dispatchResponseRule.toString(this));
-				return;
-			}
-			
+			dispatchName = dispatchResponseRule.getName(activity);
+			if(dispatchName == null)
+				throw new IllegalArgumentException("No specified dispatch name.");
+
 			if(templateNamePrefix != null && templateNameSuffix != null) {
 				dispatchName = templateNamePrefix + dispatchName + templateNameSuffix;
 			} else if(templateNamePrefix != null) {
@@ -86,16 +86,15 @@ public class JspViewDispatcher implements ViewDispatcher {
 			ResponseAdapter responseAdapter = activity.getResponseAdapter();
 
 			String contentType = dispatchResponseRule.getContentType();
-			String outputEncoding = dispatchResponseRule.getCharacterEncoding();
+			String characterEncoding = dispatchResponseRule.getCharacterEncoding();
 
 			if(contentType != null)
 				responseAdapter.setContentType(contentType);
 
-			if(outputEncoding != null) {
-				responseAdapter.setCharacterEncoding(outputEncoding);
+			if(characterEncoding != null) {
+				responseAdapter.setCharacterEncoding(characterEncoding);
 			} else {
-				String characterEncoding = activity.getResponseSetting(ResponseRule.CHARACTER_ENCODING_SETTING_NAME);
-				
+				characterEncoding = activity.getResponseSetting(ResponseRule.CHARACTER_ENCODING_SETTING_NAME);
 				if(characterEncoding != null)
 					responseAdapter.setCharacterEncoding(characterEncoding);
 			}
@@ -115,7 +114,7 @@ public class JspViewDispatcher implements ViewDispatcher {
 				log.debug("dispatch to a JSP [" + dispatchName + "]");
 
 		} catch(Exception e) {
-			throw new ViewDispatchException("Failed to dispatch to JSP " + dispatchResponseRule.toString(this), e);
+			throw new ViewDispatchException("Failed to dispatch to JSP " + dispatchResponseRule.toString(this, dispatchName), e);
 		}
 	}
 

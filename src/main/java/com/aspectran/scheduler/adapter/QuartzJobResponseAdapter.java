@@ -23,8 +23,7 @@ import java.io.Writer;
 import org.quartz.JobDetail;
 
 import com.aspectran.core.activity.Activity;
-import com.aspectran.core.adapter.AbstractResponseAdapter;
-import com.aspectran.core.adapter.ResponseAdapter;
+import com.aspectran.core.adapter.CommonResponseAdapter;
 import com.aspectran.core.context.rule.RedirectResponseRule;
 import com.aspectran.core.context.rule.type.ContentType;
 
@@ -33,36 +32,14 @@ import com.aspectran.core.context.rule.type.ContentType;
  * 
  * @since 2013. 11. 20.
  */
-public class QuartzJobResponseAdapter extends AbstractResponseAdapter implements ResponseAdapter {
+public class QuartzJobResponseAdapter extends CommonResponseAdapter {
 
-	private String characterEncoding;
-	
 	private JobDetail jobDetail;
 	
 	public QuartzJobResponseAdapter(JobDetail jobDetail) {
 		super(null);
-		
 		this.jobDetail = jobDetail;
-	}
-
-	@Override
-	public String getCharacterEncoding() {
-		return characterEncoding;
-	}
-
-	@Override
-	public void setCharacterEncoding(String characterEncoding) {
-		this.characterEncoding = characterEncoding;
-	}
-
-	@Override
-	public String getContentType() {
-		return ContentType.TEXT_PLAIN.toString();
-	}
-
-	@Override
-	public void setContentType(String contentType) {
-		// only text/plain
+		setContentType(ContentType.TEXT_PLAIN.toString());
 	}
 
 	@Override
@@ -86,11 +63,11 @@ public class QuartzJobResponseAdapter extends AbstractResponseAdapter implements
 	}
 
 	@Override
-	public void redirect(String requestUri) throws IOException {
+	public void redirect(String target) throws IOException {
 	}
 
 	@Override
-	public String redirect(Activity activity, RedirectResponseRule redirectResponseRule) throws IOException {
+	public String redirect(RedirectResponseRule redirectResponseRule, Activity activity) {
 		throw new UnsupportedOperationException("redirect");
 	}
 

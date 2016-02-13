@@ -133,7 +133,7 @@ public class TokenParser {
 		StringBuilder sb = new StringBuilder();
 
 		for(Token t : tokens) {
-			sb.append(t.toString());
+			sb.append(t.stringify());
 		}
 
 		return sb.toString();

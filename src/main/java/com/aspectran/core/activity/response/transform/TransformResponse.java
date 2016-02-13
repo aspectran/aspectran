@@ -48,16 +48,12 @@ public abstract class TransformResponse implements Response {
 		this.transformRule = transformRule;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.response.Response#getResponseType()
-	 */
+	@Override
 	public ResponseType getResponseType() {
 		return TransformRule.RESPONSE_TYPE;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.response.Response#getContentType()
-	 */
+	@Override
 	public String getContentType() {
 		return transformRule.getContentType();
 	}

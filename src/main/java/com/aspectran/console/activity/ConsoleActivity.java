@@ -15,6 +15,8 @@
  */
 package com.aspectran.console.activity;
 
+import java.util.Map;
+
 import com.aspectran.console.adapter.ConsoleRequestAdapter;
 import com.aspectran.console.adapter.ConsoleResponseAdapter;
 import com.aspectran.core.activity.Activity;
@@ -24,14 +26,13 @@ import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.context.expr.ItemTokenExpression;
-import com.aspectran.core.context.expr.ItemTokenExpressor;
+import com.aspectran.core.context.expr.ItemExpression;
+import com.aspectran.core.context.expr.ItemExpressor;
 import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.expr.token.TokenParser;
 import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.type.TokenType;
-import com.aspectran.core.context.variable.ValueMap;
 
 /**
  * The Class ConsoleActivity.
@@ -66,17 +67,13 @@ public class ConsoleActivity extends CoreActivity implements Activity {
 
 	@Override
 	protected void request(Translet translet) {
-        ValueMap valueMap = parseDeclaredParameter();
-        if(valueMap != null)
-        	translet.setDeclaredAttributeMap(valueMap);
+        parseDeclaredAttributes();
 	}
 	
 	/**
-	 * Parses the parameter.
-	 *
-	 * @return the value map
+	 * Parses the declared parameter.
 	 */
-	private ValueMap parseDeclaredParameter() {
+	private void parseDeclaredAttributes() {
 		ItemRuleMap attributeItemRuleMap = getRequestRule().getAttributeItemRuleMap();
 
 		if(attributeItemRuleMap != null) {
@@ -119,8 +116,8 @@ public class ConsoleActivity extends CoreActivity implements Activity {
 				}
 			}
 
-			ItemTokenExpressor expressor = new ItemTokenExpression(this);
-			ValueMap valueMap = expressor.express(attributeItemRuleMap);
+			ItemExpressor expressor = new ItemExpression(this);
+			Map<String, Object> valueMap = expressor.express(attributeItemRuleMap);
 
 			for(ItemRule itemRule : attributeItemRuleMap.values()) {
 				String name = itemRule.getName();
@@ -129,12 +126,7 @@ public class ConsoleActivity extends CoreActivity implements Activity {
 					getRequestAdapter().setAttribute(name, value);
 				}
 			}
-
-			if(valueMap.size() > 0)
-				return valueMap;
 		}
-
-		return null;
 	}
 
 	@Override

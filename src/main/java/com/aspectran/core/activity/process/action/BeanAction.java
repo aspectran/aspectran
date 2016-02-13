@@ -21,14 +21,13 @@ import java.util.Map;
 
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.process.ActionList;
-import com.aspectran.core.context.expr.ItemTokenExpression;
-import com.aspectran.core.context.expr.ItemTokenExpressor;
+import com.aspectran.core.context.expr.ItemExpression;
+import com.aspectran.core.context.expr.ItemExpressor;
 import com.aspectran.core.context.rule.AspectAdviceRule;
 import com.aspectran.core.context.rule.BeanActionRule;
 import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.type.ActionType;
-import com.aspectran.core.context.variable.ValueMap;
 import com.aspectran.core.util.BeanUtils;
 import com.aspectran.core.util.MethodUtils;
 import com.aspectran.core.util.ToStringBuilder;
@@ -101,13 +100,13 @@ public class BeanAction extends AbstractAction implements Executable {
 			else if(aspectAdviceRule != null)
 				bean = activity.getAspectAdviceBean(aspectAdviceRule.getAspectId());
 
-			ItemTokenExpressor expressor = null;
+			ItemExpressor expressor = null;
 			
 			if(propertyItemRuleMap != null || argumentItemRuleMap != null)
-				expressor = new ItemTokenExpression(activity);
+				expressor = new ItemExpression(activity);
 			
 			if(propertyItemRuleMap != null) {
-				ValueMap valueMap = expressor.express(propertyItemRuleMap);
+				Map<String, Object> valueMap = expressor.express(propertyItemRuleMap);
 				
 				// set properties for ActionBean
 				for(Map.Entry<String, Object> entry : valueMap.entrySet()) {
@@ -140,12 +139,12 @@ public class BeanAction extends AbstractAction implements Executable {
 		}
 	}
 
-	public static Object invokeMethod(Activity activity, Object bean, String methodName, ItemRuleMap argumentItemRuleMap, ItemTokenExpressor expressor, boolean needTranslet) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+	public static Object invokeMethod(Activity activity, Object bean, String methodName, ItemRuleMap argumentItemRuleMap, ItemExpressor expressor, boolean needTranslet) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
 		Class<?>[] argsTypes = null;
 		Object[] argsObjects = null;
 		
 		if(argumentItemRuleMap != null) {
-			ValueMap valueMap = expressor.express(argumentItemRuleMap);
+			Map<String, Object> valueMap = expressor.express(argumentItemRuleMap);
 
 			int argIndex;
 			

@@ -17,10 +17,13 @@ package com.aspectran.core.activity.request;
 
 import java.util.Collections;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 import com.aspectran.core.activity.request.parameter.FileParameter;
 import com.aspectran.core.activity.request.parameter.FileParameterMap;
+import com.aspectran.core.activity.request.parameter.ParameterMap;
 import com.aspectran.core.context.rule.type.RequestMethodType;
 
 /**
@@ -31,20 +34,90 @@ import com.aspectran.core.context.rule.type.RequestMethodType;
  */
 public abstract class AbstractRequest {
 
-	protected RequestMethodType requestMethod;
-	
-	protected FileParameterMap fileParameterMap;
+	private RequestMethodType requestMethod;
 
-	protected Locale locale;
+	private ParameterMap parameterMap;
 
-	protected boolean maxLengthExceeded;
-	
+	private FileParameterMap fileParameterMap;
+
+	private Locale locale;
+
+	private boolean maxLengthExceeded;
+
+	public AbstractRequest() {
+	}
+
+	public AbstractRequest(Map<String, String[]> parameterMap) {
+		if(parameterMap != null && !parameterMap.isEmpty()) {
+			this.parameterMap = new ParameterMap(parameterMap);
+		}
+	}
+
 	public RequestMethodType getRequestMethod() {
 		return requestMethod;
 	}
 
 	protected void setRequestMethod(RequestMethodType requestMethod) {
 		this.requestMethod = requestMethod;
+	}
+
+	public String getParameter(String name) {
+		if(parameterMap == null)
+			return null;
+
+		return parameterMap.getParameter(name);
+	}
+
+	public void setParameter(String name, String value) {
+		String[] values = new String[] { value };
+		touchParameterMap().put(name, values);
+	}
+
+	public String[] getParameterValues(String name) {
+		if(parameterMap == null)
+			return null;
+
+		return parameterMap.getParameterValues(name);
+	}
+
+	public void setParameter(String name, String[] values) {
+		touchParameterMap().put(name, values);
+	}
+
+	private ParameterMap touchParameterMap() {
+		if(this.parameterMap == null) {
+			this.parameterMap = new ParameterMap();
+		}
+
+		return this.parameterMap;
+	}
+
+	public Map<String, Object> getParameterMap() {
+		Map<String, Object> params = new HashMap<String, Object>();
+		fillPrameterMap(params);
+		return params;
+	}
+
+	public Enumeration<String> getParameterNames() {
+		if(parameterMap == null)
+			return null;
+
+		return parameterMap.getParameterNames();
+	}
+
+	public void fillPrameterMap(Map<String, Object> params) {
+		if(this.parameterMap == null)
+			return;
+
+		for(Map.Entry<String, String[]> entry : this.parameterMap.entrySet()) {
+			String name = entry.getKey();
+			String[] values = entry.getValue();
+			if(values.length == 1) {
+				params.put(name, values[0]);
+			} else {
+				params.put(name, values);
+			}
+		}
 	}
 
 	public FileParameter getFileParameter(String name) {
@@ -66,7 +139,7 @@ public abstract class AbstractRequest {
 	}
 	
 	public void setFileParameter(String name, FileParameter[] fileParameters) {
-		touchFileParameterMap().putFileParameters(name, fileParameters);
+		touchFileParameterMap().putFileParameter(name, fileParameters);
 	}
 	
 	public Enumeration<String> getFileParameterNames() {
@@ -85,21 +158,12 @@ public abstract class AbstractRequest {
 		return fileParameterMap.remove(name);
 	}
 	
-	protected FileParameterMap touchFileParameterMap() {
+	private FileParameterMap touchFileParameterMap() {
 		if(fileParameterMap == null) {
 			fileParameterMap = new FileParameterMap();
 		}
 		
 		return fileParameterMap;
-	}
-
-	/**
-	 * Returns whether request header has exceed the maximum length.
-	 *
-	 * @return true, if is max length exceeded
-	 */
-	public boolean isMaxLengthExceeded() {
-		return maxLengthExceeded;
 	}
 
 	/**
@@ -112,14 +176,20 @@ public abstract class AbstractRequest {
 	}
 
 	public Locale getLocale() {
-		if(locale == null)
-			return Locale.getDefault();
-
 		return locale;
 	}
 
 	public void setLocale(Locale locale) {
 		this.locale = locale;
+	}
+
+	/**
+	 * Returns whether request header has exceed the maximum length.
+	 *
+	 * @return true, if is max length exceeded
+	 */
+	public boolean isMaxLengthExceeded() {
+		return maxLengthExceeded;
 	}
 
 }

@@ -29,13 +29,25 @@ import com.aspectran.core.activity.request.AbstractRequest;
 public abstract class AbstractRequestAdapter extends AbstractRequest implements RequestAdapter {
 
 	protected Object adaptee;
-	
+
 	/**
 	 * Instantiates a new AbstractRequestAdapter.
 	 *
 	 * @param adaptee the adaptee
 	 */
 	public AbstractRequestAdapter(Object adaptee) {
+		super();
+		this.adaptee = adaptee;
+	}
+
+	/**
+	 * Instantiates a new AbstractRequestAdapter.
+	 *
+	 * @param adaptee the adaptee
+	 * @param parameterMap the params
+	 */
+	public AbstractRequestAdapter(Object adaptee, Map<String, String[]> parameterMap) {
+		super(parameterMap);
 		this.adaptee = adaptee;
 	}
 
@@ -49,32 +61,7 @@ public abstract class AbstractRequestAdapter extends AbstractRequest implements 
 	public void setAdaptee(Object adaptee) {
 		this.adaptee = adaptee; 
 	}
-	
-	@Override
-	public Map<String, Object> getParameterMap() {
-		Map<String, Object> params = new HashMap<String, Object>();
-		fillPrameterMap(params);
-		return params;
-	}
-	
-	@Override
-	public void fillPrameterMap(Map<String, Object> parameterMap) {
-		if(parameterMap == null)
-			return;
-		
-		Enumeration<String> enm = getParameterNames();
-		
-	    while(enm.hasMoreElements()) {
-	        String name = enm.nextElement();
-	        String[] values = getParameterValues(name);
-			if(values != null && values.length == 1) {
-				parameterMap.put(name, values[0]);
-			} else {
-				parameterMap.put(name, values);
-			}
-	    }
-	}
-	
+
 	@Override
 	public Map<String, Object> getAttributeMap() {
 		Map<String, Object> params = new HashMap<String, Object>();

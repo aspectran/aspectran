@@ -13,26 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.core.context.variable;
+package com.aspectran.core.context.expr;
 
 import java.util.Map;
 
+import com.aspectran.core.context.rule.ItemRuleMap;
+
 /**
- * The Class ArgumentMap.
- * 
- * <p>Created: 2009. 01. 04 PM 3:3:13</p>
+ * The Interface ItemTokenExpressor.
+ *
+ * @since 2010. 5. 6
  */
-public class ArgumentMap extends ValueMap {
-
-	/** @serial */
-	static final long serialVersionUID = -503271909609702666L;
-
-	public ArgumentMap() {
-		super();
-	}
+public interface ItemExpressor {
 	
-	public ArgumentMap(Map<String, Object> map) {
-		super(map);
-	}
+	/**
+	 * Expression processing for Item Rule.
+	 * 
+	 * @param itemRuleMap the item rule map
+	 * @return the value map
+	 */
+	public Map<String, Object> express(ItemRuleMap itemRuleMap);
+	
+	/**
+	 * Expression processing for Item Rule.
+	 * 
+	 * @param itemRuleMap the item rule map
+	 * @param valueMap the value map
+	 */
+	public void express(ItemRuleMap itemRuleMap, Map<String, Object> valueMap);
 	
 }

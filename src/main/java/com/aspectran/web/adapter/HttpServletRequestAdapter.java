@@ -39,8 +39,7 @@ public class HttpServletRequestAdapter extends AbstractRequestAdapter implements
 	 * @param request the HTTP request
 	 */
 	public HttpServletRequestAdapter(HttpServletRequest request) {
-		super(request);
-		
+		super(request, request.getParameterMap());
 		setRequestMethod(RequestMethodType.lookup(request.getMethod()));
 	}
 
@@ -52,27 +51,6 @@ public class HttpServletRequestAdapter extends AbstractRequestAdapter implements
 	@Override
 	public void setCharacterEncoding(String characterEncoding) throws UnsupportedEncodingException {
 		((HttpServletRequest)adaptee).setCharacterEncoding(characterEncoding);
-	}
-
-	@Override
-	public String getParameter(String name) {
-		return ((HttpServletRequest)adaptee).getParameter(name);
-	}
-
-	@Override
-	public void setParameter(String name, String value) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public String[] getParameterValues(String name) {
-		return ((HttpServletRequest)adaptee).getParameterValues(name);
-	}
-
-	@Override
-	@SuppressWarnings("unchecked")
-	public Enumeration<String> getParameterNames() {
-		return ((HttpServletRequest)adaptee).getParameterNames();
 	}
 
 	@Override
@@ -99,8 +77,8 @@ public class HttpServletRequestAdapter extends AbstractRequestAdapter implements
 
 	@Override
 	public Locale getLocale() {
-		if(super.locale != null)
-			return super.locale;
+		if(super.getLocale() != null)
+			return super.getLocale();
 
 		return ((HttpServletRequest)adaptee).getLocale();
 	}

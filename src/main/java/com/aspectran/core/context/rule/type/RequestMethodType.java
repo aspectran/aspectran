@@ -24,6 +24,7 @@ import java.util.StringTokenizer;
  */
 public enum RequestMethodType {
 
+	ALL,
 	GET,
 	POST,
 	PUT,
@@ -33,16 +34,15 @@ public enum RequestMethodType {
 	OPTIONS,
 	TRACE;
 
-	private static final int MAX_COUNT = 8;
+	private static final int MAX_COUNT = 9;
 
 	public boolean containsTo(RequestMethodType[] types) {
 		for(RequestMethodType type : types) {
-			if(equals(type))
+			if(equals(type) || ALL.equals(type))
 				return true;
 		}
 		return false;
 	}
-
 
 	/**
 	 * Returns a <code>RequestMethodType</code> with a value represented by the specified String.
@@ -64,9 +64,13 @@ public enum RequestMethodType {
 			if(!token.isEmpty()) {
 				RequestMethodType type = lookup(token);
 				int ord = type.ordinal();
-				if(types[ord] != null) {
-					types[ord] = type;
-					count++;
+				if(ord == 0) {
+					return new RequestMethodType[] { ALL };
+				} else {
+					if(types[ord] != null) {
+						types[ord] = type;
+						count++;
+					}
 				}
 			}
 		}
@@ -77,7 +81,7 @@ public enum RequestMethodType {
 		RequestMethodType[] orderedTypes = new RequestMethodType[count];
 		int seq = 0;
 
-		for(int i = 0; i < MAX_COUNT; i++) {
+		for(int i = 1; i < MAX_COUNT; i++) {
 			if(types[i] != null) {
 				orderedTypes[seq++] = types[i];
 			}
