@@ -22,7 +22,6 @@ import java.io.Writer;
 
 import org.quartz.JobDetail;
 
-import com.aspectran.core.activity.Activity;
 import com.aspectran.core.adapter.CommonResponseAdapter;
 import com.aspectran.core.context.rule.RedirectResponseRule;
 import com.aspectran.core.context.rule.type.ContentType;
@@ -67,7 +66,7 @@ public class QuartzJobResponseAdapter extends CommonResponseAdapter {
 	}
 
 	@Override
-	public String redirect(RedirectResponseRule redirectResponseRule, Activity activity) {
+	public String redirect(RedirectResponseRule redirectResponseRule) {
 		throw new UnsupportedOperationException("redirect");
 	}
 

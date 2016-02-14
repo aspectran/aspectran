@@ -217,7 +217,7 @@ public class CoreTranslet implements Translet {
 	@Override
 	public void redirect(String target, Map<String, String> parameters) {
 		RedirectResponseRule rrr = new RedirectResponseRule();
-		rrr.setTarget(target);
+		rrr.setTarget(target, null);
 		rrr.setParameterMap(parameters);
 		redirect(rrr);
 	}

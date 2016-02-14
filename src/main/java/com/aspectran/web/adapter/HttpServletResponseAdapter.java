@@ -45,13 +45,16 @@ public class HttpServletResponseAdapter extends AbstractResponseAdapter implemen
 
 	private static final char EQUAL_CHAR = '=';
 
+	private final Activity activity;
+
 	/**
 	 * Instantiates a new HttpServletResponseAdapter.
 	 *
 	 * @param response the HTTP response
 	 */
-	public HttpServletResponseAdapter(HttpServletResponse response) {
+	public HttpServletResponseAdapter(HttpServletResponse response, Activity activity) {
 		super(response);
+		this.activity = activity;
 	}
 
 	@Override
@@ -90,7 +93,7 @@ public class HttpServletResponseAdapter extends AbstractResponseAdapter implemen
 	}
 
 	@Override
-	public String redirect(RedirectResponseRule redirectResponseRule, Activity activity) throws IOException {
+	public String redirect(RedirectResponseRule redirectResponseRule) throws IOException {
 		String characterEncoding = ((HttpServletResponse)adaptee).getCharacterEncoding();
 		String target = redirectResponseRule.getTarget(activity);
 		int questionPos = -1;

@@ -81,10 +81,10 @@ public class WebActivity extends CoreActivity implements Activity {
 		String contentEncoding = getResponseSetting(ResponseRule.CONTENT_ENCODING_SETTING_NAME);
 		String acceptEncoding = request.getHeader("Accept-Encoding");
 		if(contentEncoding != null && acceptEncoding != null && acceptEncoding.indexOf(contentEncoding) > -1) {
-			ResponseAdapter responseAdapter = new GZipHttpServletResponseAdapter(response);
+			ResponseAdapter responseAdapter = new GZipHttpServletResponseAdapter(response, this);
 			setResponseAdapter(responseAdapter);
 		} else {
-			ResponseAdapter responseAdapter = new HttpServletResponseAdapter(response);
+			ResponseAdapter responseAdapter = new HttpServletResponseAdapter(response, this);
 			setResponseAdapter(responseAdapter);
 		}
 	}

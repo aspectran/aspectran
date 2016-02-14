@@ -21,7 +21,6 @@ import java.io.PrintStream;
 import java.io.Writer;
 
 import com.aspectran.console.activity.ConsoleActivity;
-import com.aspectran.core.activity.Activity;
 import com.aspectran.core.adapter.CommonResponseAdapter;
 import com.aspectran.core.context.rule.RedirectResponseRule;
 
@@ -64,7 +63,7 @@ public class ConsoleResponseAdapter extends CommonResponseAdapter {
 	}
 
 	@Override
-	public String redirect(RedirectResponseRule redirectResponseRule, Activity activity) {
+	public String redirect(RedirectResponseRule redirectResponseRule) {
 		return null;
 	}
 

@@ -62,7 +62,7 @@ public class RedirectResponse implements Response {
 			if(characterEncoding != null)
 				responseAdapter.setCharacterEncoding(characterEncoding);
 			
-			responseAdapter.redirect(redirectResponseRule, activity);
+			responseAdapter.redirect(redirectResponseRule);
 		} catch(Exception e) {
 			throw new ResponseException("Redirect response error: " + redirectResponseRule, e);
 		}

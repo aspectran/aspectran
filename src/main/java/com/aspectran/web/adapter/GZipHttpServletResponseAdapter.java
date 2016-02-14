@@ -23,6 +23,8 @@ import java.util.zip.GZIPOutputStream;
 
 import javax.servlet.http.HttpServletResponse;
 
+import com.aspectran.core.activity.Activity;
+
 /**
  * The Class GZipHttpServletResponseAdapter.
  *
@@ -38,8 +40,8 @@ public class GZipHttpServletResponseAdapter extends HttpServletResponseAdapter {
      *
      * @param response the HTTP response
      */
-    public GZipHttpServletResponseAdapter(HttpServletResponse response) {
-        super(response);
+    public GZipHttpServletResponseAdapter(HttpServletResponse response, Activity activity) {
+        super(response, activity);
         response.setHeader("Content-Encoding", "gzip");
     }
 

@@ -20,7 +20,6 @@ import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 
-import com.aspectran.core.activity.Activity;
 import com.aspectran.core.context.rule.RedirectResponseRule;
 
 /**
@@ -96,10 +95,9 @@ public interface ResponseAdapter {
 	 * Redirects a client to a new URL.
 	 *
 	 * @param redirectResponseRule the redirect response rule
-	 * @param activity the current Activity
 	 * @return the redirect target
 	 * @throws IOException If an input or output exception occurs
 	 */
-	public String redirect(RedirectResponseRule redirectResponseRule, Activity activity) throws IOException;
+	public String redirect(RedirectResponseRule redirectResponseRule) throws IOException;
 	
 }
