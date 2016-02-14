@@ -54,11 +54,17 @@ public class JobActivityRunJob implements Job {
 	private void runActivity(ActivityContext context, String transletName, JobDetail jobDetail) throws ActivityException {
 		RequestAdapter requestAdapter = new QuartzJobRequestAdapter(jobDetail);
 		ResponseAdapter responseAdapter = new QuartzJobResponseAdapter(jobDetail);
-		
-		Activity activity = new JobActivity(context, requestAdapter, responseAdapter);
-		activity.ready(transletName);
-		activity.perform();
-		activity.finish();
+
+		Activity activity = null;
+
+		try {
+			activity = new JobActivity(context, requestAdapter, responseAdapter);
+			activity.ready(transletName);
+			activity.perform();
+		} finally {
+			if(activity != null)
+				activity.finish();
+		}
 	}
 	
 }

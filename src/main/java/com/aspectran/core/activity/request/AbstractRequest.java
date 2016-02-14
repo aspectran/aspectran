@@ -69,8 +69,7 @@ public abstract class AbstractRequest {
 	}
 
 	public void setParameter(String name, String value) {
-		String[] values = new String[] { value };
-		touchParameterMap().put(name, values);
+		touchParameterMap().setParameter(name, value);
 	}
 
 	public String[] getParameterValues(String name) {
@@ -127,7 +126,7 @@ public abstract class AbstractRequest {
 		return fileParameterMap.getFileParameter(name);
 	}
 	
-	public FileParameter[] getFileParameterValues(String name) {
+	public FileParameter[] getFileParameters(String name) {
 		if(fileParameterMap == null)
 			return null;
 		
@@ -135,11 +134,11 @@ public abstract class AbstractRequest {
 	}
 
 	public void setFileParameter(String name, FileParameter fileParameter) {
-		touchFileParameterMap().putFileParameter(name, fileParameter);
+		touchFileParameterMap().setFileParameter(name, fileParameter);
 	}
 	
 	public void setFileParameter(String name, FileParameter[] fileParameters) {
-		touchFileParameterMap().putFileParameter(name, fileParameters);
+		touchFileParameterMap().setFileParameter(name, fileParameters);
 	}
 	
 	public Enumeration<String> getFileParameterNames() {

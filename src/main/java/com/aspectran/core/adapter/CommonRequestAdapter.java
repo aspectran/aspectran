@@ -28,7 +28,7 @@ import com.aspectran.core.activity.request.CommonRequest;
 */
 public abstract class CommonRequestAdapter extends CommonRequest implements RequestAdapter {
 
-	protected Object adaptee;
+	protected final Object adaptee;
 
 	/**
 	 * Instantiates a new CommonRequestAdapter.
@@ -58,17 +58,13 @@ public abstract class CommonRequestAdapter extends CommonRequest implements Requ
 	}
 
 	@Override
-	public void setAdaptee(Object adaptee) {
-		this.adaptee = adaptee; 
-	}
-
-	@Override
 	public Map<String, Object> getAttributeMap() {
 		Map<String, Object> params = new HashMap<String, Object>();
 		fillAttributeMap(params);
 		return params;
 	}
-	
+
+	@Override
 	public void fillAttributeMap(Map<String, Object> attributeMap) {
 		if(attributeMap == null)
 			return;

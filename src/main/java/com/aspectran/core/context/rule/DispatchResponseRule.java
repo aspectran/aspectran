@@ -190,6 +190,7 @@ public class DispatchResponseRule extends ActionPossessSupport implements Action
 	 */
 	public String toString(ViewDispatcher viewDispatcher, String dispatchName) {
 		ToStringBuilder tsb = new ToStringBuilder();
+		tsb.appendForce("responseType", RESPONSE_TYPE);
 		tsb.appendForce("name", name);
 		tsb.append("dispatchName", dispatchName);
 		tsb.append("contentType", contentType);

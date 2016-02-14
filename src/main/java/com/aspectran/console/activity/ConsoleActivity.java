@@ -22,7 +22,6 @@ import com.aspectran.console.adapter.ConsoleResponseAdapter;
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.AdaptingException;
 import com.aspectran.core.activity.CoreActivity;
-import com.aspectran.core.activity.Translet;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
@@ -72,7 +71,7 @@ public class ConsoleActivity extends CoreActivity implements Activity {
 	}
 
 	@Override
-	protected void request(Translet translet) {
+	protected void request() {
         parseDeclaredAttributes();
 	}
 	

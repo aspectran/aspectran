@@ -61,16 +61,20 @@ public class ConsoleAspectranService extends CoreAspectranService {
 				pauseTimeout = 0L;
 			}
 		}
-		
+
+		Activity activity = null;
+
 		try {
-			Activity activity = new ConsoleActivity(activityContext);
+			activity = new ConsoleActivity(activityContext);
 			activity.ready(command);
 			activity.perform();
-			activity.finish();
 		} catch(TransletNotFoundException e) {
 			System.out.println("Translet is not found.");
 		} catch(Exception e) {
 			e.printStackTrace();
+		} finally {
+			if(activity != null)
+				activity.finish();
 		}
 	}
 

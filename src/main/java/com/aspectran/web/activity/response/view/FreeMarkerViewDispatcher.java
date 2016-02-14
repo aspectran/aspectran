@@ -20,10 +20,10 @@ import com.aspectran.core.activity.response.dispatch.ViewDispatchException;
 import com.aspectran.core.activity.response.dispatch.ViewDispatcher;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.context.rule.DispatchResponseRule;
-import com.aspectran.core.context.rule.ResponseRule;
 import com.aspectran.core.context.template.TemplateDataMap;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
+
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 
@@ -96,7 +96,7 @@ public class FreeMarkerViewDispatcher implements ViewDispatcher {
 			if(characterEncoding != null) {
 				responseAdapter.setCharacterEncoding(characterEncoding);
 			} else {
-				characterEncoding = activity.getResponseSetting(ResponseRule.CHARACTER_ENCODING_SETTING_NAME);
+				characterEncoding = activity.determineResponseCharacterEncoding();
 				if(characterEncoding != null)
 					responseAdapter.setCharacterEncoding(characterEncoding);
 			}

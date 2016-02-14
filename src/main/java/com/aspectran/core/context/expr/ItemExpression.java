@@ -63,24 +63,25 @@ public class ItemExpression extends TokenExpression implements ItemExpressor {
 		for(ItemRule ir : itemRuleMap) {
 			ItemType itemType = ir.getType();
 			ItemValueType valueType = ir.getValueType();
+			String name = ir.getName();
 			Object value = null;
 			
 			if(itemType == ItemType.SINGULAR) {
 				Token[] tokens = ir.getTokens();
-				value = express(ir.getName(), tokens, valueType);
+				value = express(name, tokens, valueType);
 			} else if(itemType == ItemType.ARRAY) {
-				value = expressAsArray(ir.getName(), ir.getTokensList(), valueType);
+				value = expressAsArray(name, ir.getTokensList(), valueType);
 			} else if(itemType == ItemType.LIST) {
-				value = expressAsList(ir.getName(), ir.getTokensList(), valueType);
+				value = expressAsList(name, ir.getTokensList(), valueType);
 			} else if(itemType == ItemType.SET) {
-				value = expressAsSet(ir.getName(), ir.getTokensList(), valueType);
+				value = expressAsSet(name, ir.getTokensList(), valueType);
 			} else if(itemType == ItemType.MAP) {
-				value = expressAsMap(ir.getName(), ir.getTokensMap(), valueType);
+				value = expressAsMap(name, ir.getTokensMap(), valueType);
 			} else if(itemType == ItemType.PROPERTIES) {
-				value = expressAsProperties(ir.getName(), ir.getTokensMap(), valueType);
+				value = expressAsProperties(name, ir.getTokensMap(), valueType);
 			}
 			
-			valueMap.put(ir.getName(), value);
+			valueMap.put(name, value);
 		}
 	}
 	

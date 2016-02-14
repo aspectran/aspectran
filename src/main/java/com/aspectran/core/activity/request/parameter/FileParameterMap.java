@@ -39,11 +39,11 @@ public class FileParameterMap extends LinkedHashMap<String, FileParameter[]> {
 		return get(name);
 	}
 	
-	public void putFileParameter(String name, FileParameter fileParameter) {
+	public void setFileParameter(String name, FileParameter fileParameter) {
 		put(name, new FileParameter[] { fileParameter });
 	}
 	
-	public void putFileParameter(String name, FileParameter[] fileParameters) {
+	public void setFileParameter(String name, FileParameter[] fileParameters) {
 		put(name, fileParameters);
 	}
 

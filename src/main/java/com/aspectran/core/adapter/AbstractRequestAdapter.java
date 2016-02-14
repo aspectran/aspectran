@@ -28,7 +28,7 @@ import com.aspectran.core.activity.request.AbstractRequest;
 */
 public abstract class AbstractRequestAdapter extends AbstractRequest implements RequestAdapter {
 
-	protected Object adaptee;
+	protected final Object adaptee;
 
 	/**
 	 * Instantiates a new AbstractRequestAdapter.
@@ -55,11 +55,6 @@ public abstract class AbstractRequestAdapter extends AbstractRequest implements 
 	@SuppressWarnings("unchecked")
 	public <T> T getAdaptee() {
 		return (T)adaptee;
-	}
-
-	@Override
-	public void setAdaptee(Object adaptee) {
-		this.adaptee = adaptee;
 	}
 
 	@Override

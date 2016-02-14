@@ -23,6 +23,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.aspectran.core.activity.Activity;
+import com.aspectran.core.activity.request.RequestMethodNotAllowedException;
 import com.aspectran.core.context.loader.config.AspectranConfig;
 import com.aspectran.core.context.loader.config.AspectranContextConfig;
 import com.aspectran.core.context.translet.TransletNotFoundException;
@@ -121,6 +122,11 @@ public class WebAspectranService extends CoreAspectranService {
 				response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 				log.error(e.getMessage(), e2);
 			}
+		} catch(RequestMethodNotAllowedException e) {
+			if(log.isDebugEnabled()) {
+				log.debug(e.getMessage());
+			}
+			response.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
 		} catch(Exception e) {
 			log.error("WebActivity service failed.", e);
 			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);

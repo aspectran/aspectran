@@ -257,6 +257,7 @@ public class RedirectResponseRule extends ActionPossessSupport implements Action
 	@Override
 	public String toString() {
 		ToStringBuilder tsb = new ToStringBuilder();
+		tsb.appendForce("responseType", RESPONSE_TYPE);
 		tsb.appendForce("target", target);
 		tsb.append("contentType", contentType);
 		tsb.append("excludeNullParameter", excludeNullParameter);

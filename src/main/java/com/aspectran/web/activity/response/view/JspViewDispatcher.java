@@ -28,7 +28,6 @@ import com.aspectran.core.activity.response.dispatch.ViewDispatcher;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.context.rule.DispatchResponseRule;
-import com.aspectran.core.context.rule.ResponseRule;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
@@ -94,7 +93,7 @@ public class JspViewDispatcher implements ViewDispatcher {
 			if(characterEncoding != null) {
 				responseAdapter.setCharacterEncoding(characterEncoding);
 			} else {
-				characterEncoding = activity.getResponseSetting(ResponseRule.CHARACTER_ENCODING_SETTING_NAME);
+				characterEncoding = activity.determineResponseCharacterEncoding();
 				if(characterEncoding != null)
 					responseAdapter.setCharacterEncoding(characterEncoding);
 			}

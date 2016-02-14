@@ -51,7 +51,7 @@ public final class SessionScopeActivity extends CoreActivity implements Activity
 	}
 
 	@Override
-	protected void request(Translet translet) {
+	protected void request() {
 	}
 
 	@Override

@@ -79,12 +79,7 @@ public class TransletRuleRegistry {
 	public boolean contains(String transletName) {
 		return transletRuleMap.containsKey(transletName);
 	}
-	
-	//public boolean contains(String transletName, RequestMethodType requestMethod) {
-	//	String restfulTransletName = TransletRule.makeRestfulTransletName(transletName, requestMethod);
-	//	return restfulTransletRuleMap.containsKey(restfulTransletName);
-	//}
-	
+
 	public TransletRule getTransletRule(String transletName) {
 		return transletRuleMap.get(transletName);
 	}
@@ -125,10 +120,6 @@ public class TransletRuleRegistry {
 		transletRuleMap.clear();
 		restfulTransletRuleSet.clear();
 	}
-	
-	//public void addTransletRule(TransletRuleMap transletRuleMap) {
-	//	this.transletRuleMap.putAll(transletRuleMap);
-	//}
 	
 	public void addTransletRule(final TransletRule transletRule) throws CloneNotSupportedException {
 		DefaultSettings defaultSettings = assistantLocal.getDefaultSettings();

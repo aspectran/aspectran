@@ -26,6 +26,7 @@ import com.aspectran.core.activity.process.result.ActionResult;
 import com.aspectran.core.activity.process.result.ContentResult;
 import com.aspectran.core.activity.process.result.ProcessResult;
 import com.aspectran.core.activity.request.RequestException;
+import com.aspectran.core.activity.request.RequestMethodNotAllowedException;
 import com.aspectran.core.activity.response.ForwardResponse;
 import com.aspectran.core.activity.response.Response;
 import com.aspectran.core.activity.response.ResponseException;
@@ -127,7 +128,7 @@ public class CoreActivity extends AbstractActivity implements Activity {
 
 			// for RESTful
 			PathVariableMap pathVariableMap = null;
-			if(requestMethod != null && transletRule == null) {
+			if(transletRule == null && requestMethod != null) {
 				pathVariableMap = context.getTransletRuleRegistry().getPathVariableMap(transletName, requestMethod);
 				if(pathVariableMap != null) {
 					transletRule = pathVariableMap.getTransletRule();
@@ -173,6 +174,8 @@ public class CoreActivity extends AbstractActivity implements Activity {
 			if(pathVariableMap != null) {
 				pathVariableMap.apply(translet);
 			}
+		} catch(TransletNotFoundException e) {
+			throw e;
 		} catch(Exception e) {
 			throw new ActivityException("Failed to ready for Web Activity.", e);
 		}
@@ -189,7 +192,7 @@ public class CoreActivity extends AbstractActivity implements Activity {
 	@Override
 	public void performWithoutResponse() {
 		withoutResponse = true;
-		perform();
+		run1st();
 	}
 
 	@Override
@@ -232,6 +235,8 @@ public class CoreActivity extends AbstractActivity implements Activity {
 					getRequestScope().destroy();
 				}
 			}
+		} catch(RequestMethodNotAllowedException e) {
+			throw e;
 		} catch(Exception e) {
 			setRaisedException(e);
 			
@@ -299,6 +304,8 @@ public class CoreActivity extends AbstractActivity implements Activity {
 					}
 				}
 			}
+		} catch(RequestMethodNotAllowedException e) {
+			throw e;
 		} catch(Exception e) {
 			setRaisedException(e);
 			
@@ -456,11 +463,7 @@ public class CoreActivity extends AbstractActivity implements Activity {
 		return characterEncoding;
 	}
 
-	private void request() {
-		request(translet);
-	}
-	
-	protected void request(Translet translet) {
+	protected void request() {
 	}
 	
 	private ProcessResult process() {

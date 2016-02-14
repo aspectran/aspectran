@@ -58,18 +58,20 @@ public enum RequestMethodType {
 		RequestMethodType[] types = new RequestMethodType[MAX_COUNT];
 		int count = 0;
 
-		StringTokenizer st = new StringTokenizer(value, ",");
+		StringTokenizer st = new StringTokenizer(value, ", ");
 		while(st.hasMoreTokens()) {
-			String token = st.nextToken().trim();
+			String token = st.nextToken();
 			if(!token.isEmpty()) {
 				RequestMethodType type = lookup(token);
-				int ord = type.ordinal();
-				if(ord == 0) {
-					return new RequestMethodType[] { ALL };
-				} else {
-					if(types[ord] != null) {
-						types[ord] = type;
-						count++;
+				if(type != null) {
+					int ord = type.ordinal();
+					if(ord == 0) {
+						return new RequestMethodType[] { ALL };
+					} else {
+						if(types[ord] == null) {
+							types[ord] = type;
+							count++;
+						}
 					}
 				}
 			}
@@ -79,9 +81,8 @@ public enum RequestMethodType {
 			return null;
 
 		RequestMethodType[] orderedTypes = new RequestMethodType[count];
-		int seq = 0;
 
-		for(int i = 1; i < MAX_COUNT; i++) {
+		for(int i = 1, seq = 0; i < MAX_COUNT; i++) {
 			if(types[i] != null) {
 				orderedTypes[seq++] = types[i];
 			}

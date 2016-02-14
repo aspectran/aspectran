@@ -15,7 +15,8 @@
  */
 package com.aspectran.web.activity;
 
-import java.util.Enumeration;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -24,8 +25,8 @@ import javax.servlet.http.HttpServletResponse;
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.AdaptingException;
 import com.aspectran.core.activity.CoreActivity;
-import com.aspectran.core.activity.Translet;
 import com.aspectran.core.activity.request.RequestMethodNotAllowedException;
+import com.aspectran.core.activity.request.parameter.FileParameter;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
@@ -35,11 +36,11 @@ import com.aspectran.core.context.expr.ItemExpressor;
 import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.ResponseRule;
+import com.aspectran.core.context.rule.type.ItemType;
 import com.aspectran.core.context.rule.type.ItemValueType;
 import com.aspectran.core.context.rule.type.RequestMethodType;
+import com.aspectran.web.activity.request.multipart.MultipartFormDataParser;
 import com.aspectran.web.activity.request.multipart.MultipartRequestException;
-import com.aspectran.web.activity.request.multipart.MultipartRequestWrapper;
-import com.aspectran.web.activity.request.multipart.MultipartRequestWrapperResolver;
 import com.aspectran.web.adapter.GZipHttpServletResponseAdapter;
 import com.aspectran.web.adapter.HttpServletRequestAdapter;
 import com.aspectran.web.adapter.HttpServletResponseAdapter;
@@ -52,13 +53,11 @@ import com.aspectran.web.adapter.HttpSessionAdapter;
  */
 public class WebActivity extends CoreActivity implements Activity {
 
-	private static final String MULTIPART_REQUEST_WRAPPER_RESOLVER = "multipartRequestWrapperResolver";
+	private static final String MULTIPART_FORM_DATA_PARSER_SETTING_NAME = "multipartFormDataParser";
 
 	private HttpServletRequest request;
 	
 	private HttpServletResponse response;
-	
-	private MultipartRequestWrapper requestWrapper;
 	
 	/**
 	 * Instantiates a new WebActivity.
@@ -105,7 +104,7 @@ public class WebActivity extends CoreActivity implements Activity {
 	}
 
 	@Override
-	protected void request(Translet translet) {
+	protected void request() {
 		String method = request.getMethod();
 		RequestMethodType requestMethod = getRequestRule().getRequestMethod();
 		
@@ -113,33 +112,11 @@ public class WebActivity extends CoreActivity implements Activity {
 			throw new RequestMethodNotAllowedException(requestMethod);
 		}
 
-		requestWrapper = getMultipartRequestWrapper();
-    	
-		if(requestWrapper != null) {
-			request = requestWrapper;
-
-			RequestAdapter requestAdapter = getRequestAdapter();
-			requestAdapter.setAdaptee(requestWrapper);
-			
-			Enumeration<String> names = requestWrapper.getFileParameterNames();
-			while(names.hasMoreElements()) {
-				String name = names.nextElement();
-				requestAdapter.setFileParameter(name, requestWrapper.getFileParameters(name));
-			}
-			
-			requestAdapter.setMaxLengthExceeded(requestWrapper.isMaxLengthExceeded());
-		}
-
-        parseDeclaredAttributes(requestWrapper);
+		parseMultipartFormData();
+        parseDeclaredAttributes();
 	}
 	
-	/**
-	 * Gets the multipart request wrapper.
-	 *
-	 * @return the multipart request wrapper
-	 * @throws MultipartRequestException the multipart request exception
-	 */
-	private MultipartRequestWrapper getMultipartRequestWrapper() {
+	private void parseMultipartFormData() {
 		String method = request.getMethod();
 		String contentType = request.getContentType();
 		
@@ -147,53 +124,82 @@ public class WebActivity extends CoreActivity implements Activity {
 				&& contentType != null
 				&& contentType.startsWith("multipart/form-data")) {
 
-			String multipartRequestWrapperResolver = getRequestSetting(MULTIPART_REQUEST_WRAPPER_RESOLVER);
-			if(multipartRequestWrapperResolver == null) {
-				throw new MultipartRequestException("The settings name 'multipartRequestWrapperResolver' has not been specified in the default request rule.");
+			String multipartFormDataParser = getRequestSetting(MULTIPART_FORM_DATA_PARSER_SETTING_NAME);
+			if(multipartFormDataParser == null) {
+				throw new MultipartRequestException("The settings name 'multipartFormDataParser' has not been specified in the default request rule.");
 			}
 
-			MultipartRequestWrapperResolver resolver = getBean(multipartRequestWrapperResolver);
-			if(resolver == null) {
-				throw new MultipartRequestException("No bean named 'multipartRequestWrapperResolver' is defined.");
+			MultipartFormDataParser parser = getBean(multipartFormDataParser);
+			if(parser == null) {
+				throw new MultipartRequestException("No bean named '" + multipartFormDataParser + "' is defined.");
 			}
-				
-			return resolver.getMultipartRequestWrapper(getTranslet());
+
+			parser.parse(getRequestAdapter());
         }
-        
-        return null;
 	}
 	
 	/**
-	 * Parses the declared parameters.
-	 *
-	 * @param requestWrapper the multipart request wrapper
+	 * Parses the declared attributes.
 	 */
-	private void parseDeclaredAttributes(MultipartRequestWrapper requestWrapper) {
+	private void parseDeclaredAttributes() {
 		ItemRuleMap attributeItemRuleMap = getRequestRule().getAttributeItemRuleMap();
-		
 		if(attributeItemRuleMap != null) {
 			ItemExpressor expressor = new ItemExpression(this);
 			Map<String, Object> valueMap = expressor.express(attributeItemRuleMap);
-
 			for(ItemRule itemRule : attributeItemRuleMap.values()) {
 				String name = itemRule.getName();
-				
-				if(requestWrapper != null) {
-					if(itemRule.getValueType() == ItemValueType.MULTIPART_FILE) {
-						Object value = requestWrapper.getFileParameter(name, itemRule);
-						valueMap.put(name, value);
-						request.setAttribute(name, value);
+				if(itemRule.getValueType() == ItemValueType.MULTIPART_FILE) {
+					Object value = getFileParameter(itemRule);
+					if(value != null) {
+						getRequestAdapter().setAttribute(name, value);
 					}
 				} else {
 					Object value = valueMap.get(name);
 					if(value != null) {
-						request.setAttribute(name, value);
+						getRequestAdapter().setAttribute(name, value);
 					}
 				}
 			}
 		}
 	}
-	
+
+	/**
+	 * Returns the file parameter for the given parameter name.
+	 *
+	 * @param itemRule the item rule
+	 * @return the file parameter object
+	 */
+	private Object getFileParameter(ItemRule itemRule) {
+		String name = itemRule.getName();
+		if(itemRule.getType() == ItemType.ARRAY) {
+			return getRequestAdapter().getFileParameters(name);
+		} else if(itemRule.getType() == ItemType.LIST) {
+			FileParameter[] arr = getRequestAdapter().getFileParameters(name);
+			if(arr != null && arr.length > 0) {
+				List<FileParameter> list = new ArrayList<FileParameter>(arr.length);
+				for(FileParameter fp : arr) {
+					list.add(fp);
+				}
+				return list;
+			}
+		} else if(itemRule.getType() == ItemType.SET) {
+			FileParameter[] arr = getRequestAdapter().getFileParameters(name);
+			if(arr != null && arr.length > 0) {
+				List<FileParameter> list = new ArrayList<FileParameter>(arr.length);
+				for(FileParameter fp : arr) {
+					list.add(fp);
+				}
+				return list;
+			}
+		} else {
+			FileParameter[] arr = getRequestAdapter().getFileParameters(name);
+			if(arr != null && arr.length > 0) {
+				return arr[0];
+			}
+		}
+		return null;
+	}
+
 	@Override
 	@SuppressWarnings("unchecked")
 	public <T extends Activity> T newActivity() {

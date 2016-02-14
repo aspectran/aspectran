@@ -19,7 +19,6 @@ import java.util.Map;
 
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.CoreActivity;
-import com.aspectran.core.activity.Translet;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.context.ActivityContext;
@@ -42,7 +41,7 @@ public class JobActivity extends CoreActivity implements Activity {
 	}
 
 	@Override
-	protected void request(Translet translet) {
+	protected void request() {
 		parseDeclaredAttributes();
 	}
 	

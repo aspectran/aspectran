@@ -40,13 +40,6 @@ public interface RequestAdapter {
 	public <T> T getAdaptee();
 
 	/**
-	 * Sets the adaptee.
-	 *
-	 * @param adaptee the new adaptee
-	 */
-	public void setAdaptee(Object adaptee);
-
-	/**
 	 * Gets the request method.
 	 *
 	 * @return the request method
@@ -77,6 +70,22 @@ public interface RequestAdapter {
 	public String getParameter(String name);
 
 	/**
+	 * Gets the parameter values.
+	 *
+	 * @param name the name
+	 * @return an array of <code>String</code> objects
+	 *			containing the parameter's values
+	 */
+	public String[] getParameterValues(String name);
+
+	/**
+	 * Gets the parameter names.
+	 *
+	 * @return the parameter names
+	 */
+	public Enumeration<String> getParameterNames();
+
+	/**
 	 * Sets the parameter.
 	 *
 	 * @param name the parameter name
@@ -86,20 +95,13 @@ public interface RequestAdapter {
 	public void setParameter(String name, String value);
 
 	/**
-	 * Gets the parameter values.
+	 * Sets the parameter.
 	 *
-	 * @param name the name
-	 * @return an array of <code>String</code> objects
-	 *			containing the parameter's values
+	 * @param name the parameter name
+	 * @param values a <code>String</code> representing the
+	 *			single value of the parameter
 	 */
-	public String[] getParameterValues(String name);
-	
-	/**
-	 * Gets the parameter names.
-	 *
-	 * @return the parameter names
-	 */
-	public Enumeration<String> getParameterNames();
+	public void setParameter(String name, String[] values);
 
 	/**
 	 * Gets the file parameter.
@@ -110,12 +112,19 @@ public interface RequestAdapter {
 	public FileParameter getFileParameter(String name);
 	
 	/**
-	 * Gets the file parameter values.
+	 * Gets the file parameters.
 	 *
 	 * @param name the parameter name
 	 * @return the file parameter values
 	 */
-	public FileParameter[] getFileParameterValues(String name);
+	public FileParameter[] getFileParameters(String name);
+
+	/**
+	 * Gets the file parameter names.
+	 *
+	 * @return the parameter names
+	 */
+	public Enumeration<String> getFileParameterNames();
 
 	/**
 	 * Sets the file parameter.
@@ -132,14 +141,7 @@ public interface RequestAdapter {
 	 * @param fileParameters the file parameters
 	 */
 	public void setFileParameter(String name, FileParameter[] fileParameters);
-	
-	/**
-	 * Gets the file parameter names.
-	 *
-	 * @return the parameter names
-	 */
-	public Enumeration<String> getFileParameterNames();
-	
+
 	/**
 	 * Removes the file parameter.
 	 *

@@ -55,7 +55,6 @@ public class ConsoleApplicationAdapter extends AbstractApplicationAdapter implem
 	public <T> T getAttribute(String name) {
 		return (T)attributes.get(name);
 	}
-	
 
 	@Override
 	public void setAttribute(String name, Object o) {

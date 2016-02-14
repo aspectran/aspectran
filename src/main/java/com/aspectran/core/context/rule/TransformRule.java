@@ -164,6 +164,7 @@ public class TransformRule extends ActionPossessSupport implements ActionPossess
 	@Override
 	public String toString() {
 		ToStringBuilder tsb = new ToStringBuilder();
+		tsb.appendForce("responseType", RESPONSE_TYPE);
 		tsb.append("transformType", transformType);
 		tsb.append("contentType", contentType);
 		tsb.append("templateId", templateId);

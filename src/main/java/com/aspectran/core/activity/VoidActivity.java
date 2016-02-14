@@ -48,7 +48,7 @@ public final class VoidActivity extends CoreActivity implements Activity {
 	}
 
 	@Override
-	protected void request(Translet translet) {
+	protected void request() {
 	}
 
 	@Override

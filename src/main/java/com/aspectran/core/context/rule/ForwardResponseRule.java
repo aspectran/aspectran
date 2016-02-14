@@ -138,6 +138,7 @@ public class ForwardResponseRule extends ActionPossessSupport implements ActionP
 	@Override
 	public String toString() {
 		ToStringBuilder tsb = new ToStringBuilder();
+		tsb.appendForce("responseType", RESPONSE_TYPE);
 		tsb.append("translet", transletName);
 		tsb.append("contentType", contentType);
 		tsb.append("defaultResponse", defaultResponse);

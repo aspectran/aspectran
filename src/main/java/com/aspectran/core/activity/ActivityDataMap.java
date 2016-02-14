@@ -106,7 +106,13 @@ public class ActivityDataMap extends HashMap<String, Object> {
 
 	public Object getParameterWithoutCache(String name) {
 		if(requestAdapter != null) {
-			return requestAdapter.getParameter(name);
+			String[] values = requestAdapter.getParameterValues(name);
+			if(values != null) {
+				if(values.length == 1)
+					return values[0];
+				else
+					return values;
+			}
 		}
 		return null;
 	}
