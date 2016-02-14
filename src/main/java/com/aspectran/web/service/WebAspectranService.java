@@ -15,6 +15,13 @@
  */
 package com.aspectran.web.service;
 
+import java.io.IOException;
+
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.context.loader.config.AspectranConfig;
 import com.aspectran.core.context.loader.config.AspectranContextConfig;
@@ -29,12 +36,6 @@ import com.aspectran.web.activity.WebActivity;
 import com.aspectran.web.adapter.WebApplicationAdapter;
 import com.aspectran.web.startup.listener.AspectranServiceListener;
 import com.aspectran.web.startup.servlet.WebActivityServlet;
-
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 
 /**
  * The Class WebAspectranService.
@@ -94,19 +95,20 @@ public class WebAspectranService extends CoreAspectranService {
 
 		if(pauseTimeout > 0L) {
 			if(pauseTimeout >= System.currentTimeMillis()) {
-				log.info("aspectran service is paused, did not respond to the request uri: " + requestUri);
+				log.info("AspectranService is paused, did not respond to the request uri: " + requestUri);
 				response.sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
 				return;
 			} else {
 				pauseTimeout = 0L;
 			}
 		}
-		
+
+		Activity activity = null;
+
 		try {
-			Activity activity = new WebActivity(activityContext, request, response);
+			activity = new WebActivity(activityContext, request, response);
 			activity.ready(requestUri, request.getMethod());
 			activity.perform();
-			activity.finish();
 		} catch(TransletNotFoundException e) {
 			if(log.isTraceEnabled()) {
 				log.trace("translet is not found: " + requestUri);
@@ -122,6 +124,10 @@ public class WebAspectranService extends CoreAspectranService {
 		} catch(Exception e) {
 			log.error("WebActivity service failed.", e);
 			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+		} finally {
+			if(activity != null) {
+				activity.finish();
+			}
 		}
 	}
 	
@@ -152,7 +158,10 @@ public class WebAspectranService extends CoreAspectranService {
 		aspectranService.setDefaultServletHttpRequestHandler(servletContext, defaultServletName);
 		
 		servletContext.setAttribute(AspectranServiceListener.ASPECTRAN_SERVICE_ATTRIBUTE, aspectranService);
-		log.debug("AspectranServiceListener attribute in ServletContext was created. " + AspectranServiceListener.ASPECTRAN_SERVICE_ATTRIBUTE + ": " + aspectranService);
+
+		if(log.isDebugEnabled()) {
+			log.debug("AspectranServiceListener attribute in ServletContext was created. " + AspectranServiceListener.ASPECTRAN_SERVICE_ATTRIBUTE + ": " + aspectranService);
+		}
 		
 		return aspectranService;
 	}
@@ -222,29 +231,35 @@ public class WebAspectranService extends CoreAspectranService {
 	
 	private static void addAspectranServiceControllerListener(final WebAspectranService aspectranService) {
 		aspectranService.setAspectranServiceControllerListener(new AspectranServiceControllerListener() {
+			@Override
 			public void started() {
 				aspectranService.pauseTimeout = 0;
 			}
-			
+
+			@Override
 			public void restarted() {
 				started();
 			}
-			
+
+			@Override
 			public void reloaded() {
 				started();
 			}
-			
+
+			@Override
 			public void paused(long timeout) {
 				if(timeout <= 0)
 					timeout = 315360000000L; //86400000 * 365 * 10 = 10 Years;
 				
 				aspectranService.pauseTimeout = System.currentTimeMillis() + timeout;
 			}
-			
+
+			@Override
 			public void resumed() {
 				aspectranService.pauseTimeout = 0;
 			}
-			
+
+			@Override
 			public void stopped() {
 				paused(-1L);
 			}

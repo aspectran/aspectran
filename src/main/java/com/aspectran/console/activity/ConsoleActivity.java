@@ -20,6 +20,7 @@ import java.util.Map;
 import com.aspectran.console.adapter.ConsoleRequestAdapter;
 import com.aspectran.console.adapter.ConsoleResponseAdapter;
 import com.aspectran.core.activity.Activity;
+import com.aspectran.core.activity.AdaptingException;
 import com.aspectran.core.activity.CoreActivity;
 import com.aspectran.core.activity.Translet;
 import com.aspectran.core.adapter.RequestAdapter;
@@ -52,12 +53,17 @@ public class ConsoleActivity extends CoreActivity implements Activity {
 	}
 
 	@Override
-	protected void adapting(Translet translet) {
-		RequestAdapter requestAdapter = new ConsoleRequestAdapter(this);
-		setRequestAdapter(requestAdapter);
+	protected void adapting() throws AdaptingException {
+		try {
+			RequestAdapter requestAdapter = new ConsoleRequestAdapter(this);
+			requestAdapter.setCharacterEncoding(determineRequestCharacterEncoding());
+			setRequestAdapter(requestAdapter);
 
-		ResponseAdapter responseAdapter = new ConsoleResponseAdapter(this);
-		setResponseAdapter(responseAdapter);
+			ResponseAdapter responseAdapter = new ConsoleResponseAdapter(this);
+			setResponseAdapter(responseAdapter);
+		} catch(Exception e) {
+			throw new AdaptingException("Failed to adapting for Console Activity.", e);
+		}
 	}
 
 	@Override
@@ -71,7 +77,7 @@ public class ConsoleActivity extends CoreActivity implements Activity {
 	}
 	
 	/**
-	 * Parses the declared parameter.
+	 * Parses the declared parameters.
 	 */
 	private void parseDeclaredAttributes() {
 		ItemRuleMap attributeItemRuleMap = getRequestRule().getAttributeItemRuleMap();

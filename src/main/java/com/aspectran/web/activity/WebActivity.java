@@ -22,6 +22,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.aspectran.core.activity.Activity;
+import com.aspectran.core.activity.AdaptingException;
 import com.aspectran.core.activity.CoreActivity;
 import com.aspectran.core.activity.Translet;
 import com.aspectran.core.activity.request.RequestMethodNotAllowedException;
@@ -74,18 +75,23 @@ public class WebActivity extends CoreActivity implements Activity {
 	}
 
 	@Override
-	protected void adapting(Translet translet) {
-		RequestAdapter requestAdapter = new HttpServletRequestAdapter(request);
-		setRequestAdapter(requestAdapter);
+	protected void adapting() throws AdaptingException {
+		try {
+			RequestAdapter requestAdapter = new HttpServletRequestAdapter(request);
+			requestAdapter.setCharacterEncoding(determineRequestCharacterEncoding());
+			setRequestAdapter(requestAdapter);
 
-		String contentEncoding = getResponseSetting(ResponseRule.CONTENT_ENCODING_SETTING_NAME);
-		String acceptEncoding = request.getHeader("Accept-Encoding");
-		if(contentEncoding != null && acceptEncoding != null && acceptEncoding.indexOf(contentEncoding) > -1) {
-			ResponseAdapter responseAdapter = new GZipHttpServletResponseAdapter(response, this);
-			setResponseAdapter(responseAdapter);
-		} else {
-			ResponseAdapter responseAdapter = new HttpServletResponseAdapter(response, this);
-			setResponseAdapter(responseAdapter);
+			String contentEncoding = getResponseSetting(ResponseRule.CONTENT_ENCODING_SETTING_NAME);
+			String acceptEncoding = request.getHeader("Accept-Encoding");
+			if(contentEncoding != null && acceptEncoding != null && acceptEncoding.indexOf(contentEncoding) > -1) {
+				ResponseAdapter responseAdapter = new GZipHttpServletResponseAdapter(response, this);
+				setResponseAdapter(responseAdapter);
+			} else {
+				ResponseAdapter responseAdapter = new HttpServletResponseAdapter(response, this);
+				setResponseAdapter(responseAdapter);
+			}
+		} catch(Exception e) {
+			throw new AdaptingException("Failed to adapting for Web Activity.", e);
 		}
 	}
 
@@ -116,10 +122,9 @@ public class WebActivity extends CoreActivity implements Activity {
 			requestAdapter.setAdaptee(requestWrapper);
 			
 			Enumeration<String> names = requestWrapper.getFileParameterNames();
-			
 			while(names.hasMoreElements()) {
 				String name = names.nextElement();
-				getRequestAdapter().setFileParameter(name, requestWrapper.getFileParameters(name));
+				requestAdapter.setFileParameter(name, requestWrapper.getFileParameters(name));
 			}
 			
 			requestAdapter.setMaxLengthExceeded(requestWrapper.isMaxLengthExceeded());
@@ -149,7 +154,7 @@ public class WebActivity extends CoreActivity implements Activity {
 
 			MultipartRequestWrapperResolver resolver = getBean(multipartRequestWrapperResolver);
 			if(resolver == null) {
-				throw new MultipartRequestException("No bean named 'multipartRequestWrapperResolver' is defined");
+				throw new MultipartRequestException("No bean named 'multipartRequestWrapperResolver' is defined.");
 			}
 				
 			return resolver.getMultipartRequestWrapper(getTranslet());
@@ -159,7 +164,7 @@ public class WebActivity extends CoreActivity implements Activity {
 	}
 	
 	/**
-	 * Parses the parameter.
+	 * Parses the declared parameters.
 	 *
 	 * @param requestWrapper the multipart request wrapper
 	 */

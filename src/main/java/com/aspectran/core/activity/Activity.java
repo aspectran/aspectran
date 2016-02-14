@@ -55,6 +55,20 @@ public interface Activity {
 	public void performWithoutResponse();
 
 	public void finish();
+
+	/**
+	 * Determine request character encoding.
+	 *
+	 * @return the request character encoding
+	 */
+	public String determineRequestCharacterEncoding();
+
+	/**
+	 * Determine response character encoding.
+	 *
+	 * @return the response character encoding
+	 */
+	public String determineResponseCharacterEncoding();
 	
 	public void execute(List<AspectAdviceRule> aspectAdviceRuleList);
 	

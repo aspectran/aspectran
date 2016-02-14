@@ -47,7 +47,7 @@ public class JobActivity extends CoreActivity implements Activity {
 	}
 	
 	/**
-	 * Parses the declared parameter.
+	 * Parses the declared parameters.
 	 */
 	private void parseDeclaredAttributes() {
 		RequestRule requestRule = getRequestRule();

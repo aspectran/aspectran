@@ -38,7 +38,7 @@ public interface RequestAdapter {
 	 * @return the Adaptee object
 	 */
 	public <T> T getAdaptee();
-	
+
 	/**
 	 * Sets the adaptee.
 	 *

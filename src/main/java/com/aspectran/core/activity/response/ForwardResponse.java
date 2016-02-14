@@ -68,19 +68,14 @@ public class ForwardResponse implements Response {
 			for(Map.Entry<String, Object> entry : valueMap.entrySet())
 				requestAdapter.setAttribute(entry.getKey(), entry.getValue());
 		}
-		
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.response.Responsible#getResponseType()
-	 */
+	@Override
 	public ResponseType getResponseType() {
 		return ForwardResponseRule.RESPONSE_TYPE;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.response.Responsible#getContentType()
-	 */
+	@Override
 	public String getContentType() {
 		if(forwardResponseRule == null)
 			return null;
@@ -88,16 +83,12 @@ public class ForwardResponse implements Response {
 		return forwardResponseRule.getContentType();
 	}
 
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.response.Responsible#getActionList()
-	 */
+	@Override
 	public ActionList getActionList() {
 		return forwardResponseRule.getActionList();
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.response.Response#replicate()
-	 */
+
+	@Override
 	public Response replicate() {
 		ForwardResponseRule frr = forwardResponseRule.replicate();
 		Response response = new ForwardResponse(frr);

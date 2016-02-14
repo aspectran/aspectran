@@ -31,7 +31,6 @@ import com.aspectran.core.activity.response.Response;
 import com.aspectran.core.activity.response.transform.xml.ContentsInputSource;
 import com.aspectran.core.activity.response.transform.xml.ContentsXMLReader;
 import com.aspectran.core.adapter.ResponseAdapter;
-import com.aspectran.core.context.rule.ResponseRule;
 import com.aspectran.core.context.rule.TransformRule;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
@@ -105,11 +104,11 @@ public class XmlTransform extends TransformResponse implements Response {
 			if(pretty)
 				transformer.setOutputProperty(OutputKeys.INDENT, OUTPUT_INDENT_YES);
 
-			if(characterEncoding != null) {
-				responseAdapter.setCharacterEncoding(characterEncoding);
-				transformer.setOutputProperty(OutputKeys.ENCODING, characterEncoding);
+			if(this.characterEncoding != null) {
+				responseAdapter.setCharacterEncoding(this.characterEncoding);
+				transformer.setOutputProperty(OutputKeys.ENCODING, this.characterEncoding);
 			} else {
-				String characterEncoding = activity.getResponseSetting(ResponseRule.CHARACTER_ENCODING_SETTING_NAME);
+				String characterEncoding = activity.determineResponseCharacterEncoding();
 				if(characterEncoding != null) {
 					responseAdapter.setCharacterEncoding(characterEncoding);
 					transformer.setOutputProperty(OutputKeys.ENCODING, characterEncoding);

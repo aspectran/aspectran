@@ -25,7 +25,6 @@ import com.aspectran.core.activity.process.result.ProcessResult;
 import com.aspectran.core.activity.response.Response;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.context.AspectranConstants;
-import com.aspectran.core.context.rule.ResponseRule;
 import com.aspectran.core.context.rule.TemplateRule;
 import com.aspectran.core.context.rule.TransformRule;
 import com.aspectran.core.util.logging.Log;
@@ -79,10 +78,10 @@ public class TextTransform extends TransformResponse implements Response {
 				responseAdapter.setContentType(contentType);
 			}
 
-			if(characterEncoding != null) {
-				responseAdapter.setCharacterEncoding(characterEncoding);
+			if(this.characterEncoding != null) {
+				responseAdapter.setCharacterEncoding(this.characterEncoding);
 			} else {
-				String characterEncoding = activity.getResponseSetting(ResponseRule.CHARACTER_ENCODING_SETTING_NAME);
+				String characterEncoding = activity.determineResponseCharacterEncoding();
 				if(characterEncoding != null)
 					responseAdapter.setCharacterEncoding(characterEncoding);
 			}

@@ -36,6 +36,8 @@ public class RedirectResponse implements Response {
 
 	private final RedirectResponseRule redirectResponseRule;
 
+	private final String characterEncoding;
+
 	/**
 	 * Instantiates a new RedirectResponse.
 	 * 
@@ -43,6 +45,7 @@ public class RedirectResponse implements Response {
 	 */
 	public RedirectResponse(RedirectResponseRule redirectResponseRule) {
 		this.redirectResponseRule = redirectResponseRule;
+		this.characterEncoding = redirectResponseRule.getCharacterEncoding();
 	}
 
 	/* (non-Javadoc)
@@ -58,9 +61,13 @@ public class RedirectResponse implements Response {
 		}
 		
 		try {
-			String characterEncoding = redirectResponseRule.getCharacterEncoding();
-			if(characterEncoding != null)
-				responseAdapter.setCharacterEncoding(characterEncoding);
+			if(this.characterEncoding != null) {
+				responseAdapter.setCharacterEncoding(this.characterEncoding);
+			} else {
+				String characterEncoding = activity.determineResponseCharacterEncoding();
+				if(characterEncoding != null)
+					responseAdapter.setCharacterEncoding(characterEncoding);
+			}
 			
 			responseAdapter.redirect(redirectResponseRule);
 		} catch(Exception e) {

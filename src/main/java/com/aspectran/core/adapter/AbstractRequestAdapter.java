@@ -59,7 +59,7 @@ public abstract class AbstractRequestAdapter extends AbstractRequest implements 
 
 	@Override
 	public void setAdaptee(Object adaptee) {
-		this.adaptee = adaptee; 
+		this.adaptee = adaptee;
 	}
 
 	@Override
