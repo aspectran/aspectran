@@ -23,6 +23,8 @@ import com.aspectran.core.activity.process.result.ProcessResult;
  * The Class ContentsInputSource.
  * 
  * <p>Created: 2008. 05. 26 PM 2:03:25</p>
+ *
+ * @author Juho Jeong
  */
 public class ContentsInputSource extends InputSource {
 

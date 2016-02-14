@@ -96,14 +96,19 @@ public class AspectAdviceRule implements ActionRuleApplicable {
 
 	@Override
 	public String toString() {
+		return toString(false);
+	}
+
+	public String toString(boolean preventRecursive) {
 		ToStringBuilder tsb = new ToStringBuilder();
 		if(aspectRule != null)
 			tsb.append("aspectId", aspectRule.getId());
 		tsb.append("aspectAdviceType", aspectAdviceType);
-		tsb.append("action", action);
+		if(!preventRecursive)
+			tsb.append("action", action);
 		return tsb.toString();
 	}
-	
+
 	public static AspectAdviceRule newInstance(AspectRule aspectRule, AspectAdviceType aspectAdviceType) {
 		AspectAdviceRule aspectAdviceRule = new AspectAdviceRule(aspectRule, aspectAdviceType);
 

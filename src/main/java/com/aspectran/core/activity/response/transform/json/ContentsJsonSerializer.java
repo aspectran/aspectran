@@ -29,6 +29,8 @@ import com.aspectran.core.util.json.JsonSerializer;
  * Converts a ProcessResult object to a JSON formatted string.
  * 
  * <p>Created: 2008. 06. 12 PM 8:20:54</p>
+ *
+ * @author Juho Jeong
  */
 public class ContentsJsonSerializer extends JsonSerializer {
 

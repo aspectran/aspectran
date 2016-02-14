@@ -218,7 +218,8 @@ public class BeanActionRule implements ArgumentPossessable, PropertyPossessable 
 			tsb.append("properties", propertyItemRuleMap.keySet());
 		if(argumentItemRuleMap != null)
 			tsb.append("arguments", argumentItemRuleMap.keySet());
-		tsb.append("aspectAdviceRule", aspectAdviceRule);
+		if(aspectAdviceRule != null)
+			tsb.append("aspectAdviceRule", aspectAdviceRule.toString(true));
 		tsb.append("aspectAdviceRuleRegistry", aspectAdviceRuleRegistry);
 		return tsb.toString();
 	}

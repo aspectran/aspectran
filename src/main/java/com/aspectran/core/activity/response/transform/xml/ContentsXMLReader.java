@@ -46,6 +46,8 @@ import com.aspectran.core.util.apon.Parameters;
  * Converts a ProcessResult object to a XML string.
  * 
  * <p>Created: 2008. 05. 26 PM 2:03:15</p>
+ *
+ * @author Juho Jeong
  */
 public class ContentsXMLReader implements XMLReader {
 
@@ -284,10 +286,9 @@ public class ContentsXMLReader implements XMLReader {
 	 * @throws InvocationTargetException the invocation target exception
 	 */
 	private void parse(Object object) throws IOException, SAXException, InvocationTargetException {
-		if(object == null)
+		if(object == null) {
 			return;
-
-		if(object instanceof ProcessResult) {
+		} else if(object instanceof ProcessResult) {
 			parse((ProcessResult)object);
 		} else if(object instanceof String ||
 					object instanceof Number ||
@@ -299,31 +300,32 @@ public class ContentsXMLReader implements XMLReader {
 			for(Parameter p: params.values()) {
 				String name = p.getName();
 				Object value = p.getValue();
+				checkCircularReference(object, value);
 
 				handler.startElement(StringUtils.EMPTY, name, name, NULL_ATTRS);
 				parse(value);
 				handler.endElement(StringUtils.EMPTY, name, name);
 			}
 		} else if(object instanceof Map<?, ?>) {
-			@SuppressWarnings("unchecked")
-			Map<String, Object> map = (Map<String, Object>)object;
-
-			for(Map.Entry<String, Object> entry : map.entrySet()) {
-				String name = entry.getKey();
+			for(Map.Entry<Object, Object> entry : ((Map<Object, Object>)object).entrySet()) {
+				String name = entry.getKey().toString();
 				Object value = entry.getValue();
+				checkCircularReference(object, value);
 
 				handler.startElement(StringUtils.EMPTY, name, name, NULL_ATTRS);
 				parse(value);
 				handler.endElement(StringUtils.EMPTY, name, name);
 			}
 		} else if(object instanceof Collection<?>) {
-			@SuppressWarnings("unchecked")
-			Iterator<Object> list = ((Collection<Object>)object).iterator();
 			handler.startElement(StringUtils.EMPTY, ROWS_TAG, ROWS_TAG, NULL_ATTRS);
 
+			Iterator<Object> list = ((Collection<Object>)object).iterator();
 			while(list.hasNext()) {
+				Object value = list.next();
+				checkCircularReference(object, value);
+
 				handler.startElement(StringUtils.EMPTY, ROW_TAG, ROW_TAG, NULL_ATTRS);
-				parse(list.next());
+				parse(value);
 				handler.endElement(StringUtils.EMPTY, ROW_TAG, ROW_TAG);
 			}
 
@@ -333,26 +335,33 @@ public class ContentsXMLReader implements XMLReader {
 
 			int len = Array.getLength(object);
 			for(int i = 0; i < len; i++) {
+				Object value = Array.get(object, i);
+				checkCircularReference(object, value);
+
 				handler.startElement(StringUtils.EMPTY, ROW_TAG, ROW_TAG, NULL_ATTRS);
-				parse(Array.get(object, i));
+				parse(value);
 				handler.endElement(StringUtils.EMPTY, ROW_TAG, ROW_TAG);
 			}
 
 			handler.endElement(StringUtils.EMPTY, ROWS_TAG, ROWS_TAG);
 		} else {
 			String[] readableProperyNames = BeanUtils.getReadablePropertyNames(object);
-
 			if(readableProperyNames != null && readableProperyNames.length > 0) {
 				for(String name : readableProperyNames) {
 					Object value = BeanUtils.getObject(object, name);
-					
-					if(!object.equals(value)) {
-						handler.startElement(StringUtils.EMPTY, name, name, NULL_ATTRS);
-						parse(value);
-						handler.endElement(StringUtils.EMPTY, name, name);
-					}
+					checkCircularReference(object, value);
+
+					handler.startElement(StringUtils.EMPTY, name, name, NULL_ATTRS);
+					parse(value);
+					handler.endElement(StringUtils.EMPTY, name, name);
 				}
 			}
+		}
+	}
+
+	private void checkCircularReference(Object wrapper, Object member) {
+		if(wrapper.equals(member)) {
+			throw new IllegalArgumentException("XML Serialization Failure: A circular reference was detected while converting a member object [" + member + "] in [" + wrapper + "]");
 		}
 	}
 

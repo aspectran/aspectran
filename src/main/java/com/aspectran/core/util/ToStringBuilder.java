@@ -19,6 +19,9 @@ import java.lang.reflect.Array;
 import java.util.Collection;
 import java.util.Map;
 
+import com.aspectran.core.context.expr.token.Token;
+import com.aspectran.core.util.apon.Parameters;
+
 /**
  * This class enables a good and consistent toString() to be built for any class or object.
  * 
@@ -123,32 +126,37 @@ public class ToStringBuilder {
 	}
 	
 	private void append(Object object) {
-//		if(object instanceof Map<?, ?>) {
-//			append((Map<?, ?>)object);
-//		} else if(object instanceof Collection<?>) {
-//			append((Collection<?>)object);
-//		} else if(object instanceof Token[]) {
-//			for(Token t : (Token[])object) {
-//				this.sb.append(t.stringify());
-//			}
-//		} else if(object instanceof Parameters) {
-//			this.sb.append(((Parameters)object).describe(false));
-//		} else if(object instanceof ToStringBuilder) {
-//			this.sb.append(((ToStringBuilder)object).getStringBuilder());
-//		} else if(object instanceof CharSequence) {
-//			this.sb.append(((CharSequence)object));
-//		} else if(object != null && object.getClass().isArray()) {
-//			this.sb.append("[");
-//			int len = Array.getLength(object);
-//			for(int i = 0; i < len; i++) {
-//				if(i > 0)
-//					addpendComma();
-//				append(Array.get(object, i));
-//			}
-//			this.sb.append("]");
-//		} else {
-//			this.sb.append(object);
-//		}
+		if(object == null) {
+			this.sb.append(object);
+		} else if(object instanceof Map<?, ?>) {
+			append((Map<?, ?>)object);
+		} else if(object instanceof Collection<?>) {
+			append((Collection<?>)object);
+		} else if(object instanceof Token[]) {
+			for(Token t : (Token[])object) {
+				this.sb.append(t.stringify());
+			}
+		} else if(object instanceof Parameters) {
+			this.sb.append(((Parameters)object).describe(false));
+		} else if(object instanceof ToStringBuilder) {
+			this.sb.append(((ToStringBuilder)object).getStringBuilder());
+		} else if(object instanceof CharSequence) {
+			this.sb.append(((CharSequence)object));
+		} else if(object.getClass().isArray()) {
+			this.sb.append("[");
+			int len = Array.getLength(object);
+			for(int i = 0; i < len; i++) {
+				Object value = Array.get(object, i);
+				checkCircularReference(object, value);
+				if(i > 0) {
+					addpendComma();
+				}
+				append(value);
+			}
+			this.sb.append("]");
+		} else {
+			this.sb.append(object);
+		}
 	}
 	
 	public void appendName(Object name) {
@@ -169,6 +177,12 @@ public class ToStringBuilder {
 	public String toString() {
 		this.sb.append("}");
 		return this.sb.toString();
+	}
+
+	private void checkCircularReference(Object wrapper, Object member) {
+		if(wrapper.equals(member)) {
+			throw new IllegalArgumentException("Serialization Failure: A circular reference was detected while converting a member object [" + member + "] in [" + wrapper + "]");
+		}
 	}
 
 }

@@ -15,13 +15,6 @@
  */
 package com.aspectran.core.activity.response.transform.apon;
 
-import com.aspectran.core.activity.process.result.ActionResult;
-import com.aspectran.core.activity.process.result.ContentResult;
-import com.aspectran.core.activity.process.result.ProcessResult;
-import com.aspectran.core.util.BeanUtils;
-import com.aspectran.core.util.apon.GenericParameters;
-import com.aspectran.core.util.apon.Parameters;
-
 import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
@@ -29,10 +22,19 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.Map;
 
+import com.aspectran.core.activity.process.result.ActionResult;
+import com.aspectran.core.activity.process.result.ContentResult;
+import com.aspectran.core.activity.process.result.ProcessResult;
+import com.aspectran.core.util.BeanUtils;
+import com.aspectran.core.util.apon.GenericParameters;
+import com.aspectran.core.util.apon.Parameters;
+
 /**
  * Converts a ProcessResult object to a APON object.
  * 
  * <p>Created: 2015. 03. 16 PM 11:14:29</p>
+ *
+ * @author Juho Jeong
  */
 public class ContentsAponAssembler {
 	
@@ -43,7 +45,6 @@ public class ContentsAponAssembler {
 
 		if(processResult.size() == 1) {
 			ContentResult contentResult = processResult.get(0);
-			
 			if(contentResult.getName() == null && contentResult.size() == 1) {
 				ActionResult actionResult = contentResult.get(0);
 				Object resultValue = actionResult.getResultValue();
@@ -64,7 +65,6 @@ public class ContentsAponAssembler {
 		
 		Parameters container = new GenericParameters();
 		Iterator<ContentResult> iter = processResult.iterator();
-
 		while(iter.hasNext()) {
 			ContentResult contentResult = iter.next();
 			assemble(contentResult, container);
@@ -85,36 +85,40 @@ public class ContentsAponAssembler {
 		}
 
 		Iterator<ActionResult> iter = contentResult.iterator();
-
 		while(iter.hasNext()) {
 			ActionResult actionResult = iter.next();
+			String actionId = actionResult.getActionId();
 			
-			if(actionResult.getActionId() != null) {
+			if(actionId != null) {
 				Object resultValue = actionResult.getResultValue();
-				putValue(container, actionResult.getActionId(), resultValue);
+				putValue(container, actionId, resultValue);
 			}
 		}
 	}
 	
 	private static void putValue(Parameters container, String name, Object value) throws InvocationTargetException {
-		if(value == null)
-			return;
-		
-		if(value instanceof Collection<?>) {
-			@SuppressWarnings("unchecked")
-			Iterator<Object> iter = ((Collection<Object>)value).iterator();
-		
-			while(iter.hasNext()) {
-				container.putValue(name, assemble(iter.next()));
-			}
-		} else if(value.getClass().isArray()) {
-			int len = Array.getLength(value);
+		if(value != null) {
+			if(value instanceof Collection<?>) {
+				Iterator<Object> iter = ((Collection<Object>)value).iterator();
 
-			for(int i = 0; i < len; i++) {
-				container.putValue(name, assemble(Array.get(value, i)));
+				while(iter.hasNext()) {
+					Object o = iter.next();
+					if(o != null) {
+						container.putValue(name, assemble(o));
+					}
+				}
+			} else if(value.getClass().isArray()) {
+				int len = Array.getLength(value);
+
+				for(int i = 0; i < len; i++) {
+					Object o = Array.get(value, i);
+					if(o != null) {
+						container.putValue(name, assemble(o));
+					}
+				}
+			} else {
+				container.putValue(name, assemble(value));
 			}
-		} else {
-			container.putValue(name, assemble(value));
 		}
 	}
 	
@@ -126,17 +130,13 @@ public class ContentsAponAssembler {
 				object instanceof Date) {
 			return object;
 		} else if(object instanceof Map<?, ?>) {
-			@SuppressWarnings("unchecked")
-			Map<String, Object> map = (Map<String, Object>)object;
 			Parameters p = new GenericParameters();
-			
-			for(Map.Entry<String, Object> entry : map.entrySet()) {
-				String name = entry.getKey();
-				Object value = assemble(entry.getValue());
-				
-				p.putValue(name, value);
+			for(Map.Entry<Object, Object> entry : ((Map<Object, Object>)object).entrySet()) {
+				String name = entry.getKey().toString();
+				Object value = entry.getValue();
+				checkCircularReference(object, value);
+				p.putValue(name, assemble(value));
 			}
-			
 			return p;
 		} else if(object instanceof Collection<?>) {
 			return object.toString();
@@ -144,25 +144,24 @@ public class ContentsAponAssembler {
 			return object.toString();
 		} else {
 			String[] readablePropertyNames = BeanUtils.getReadablePropertyNames(object);
-	
 			if(readablePropertyNames != null && readablePropertyNames.length > 0) {
 				Parameters p = new GenericParameters();
-				
 				for(String name : readablePropertyNames) {
 					Object value = BeanUtils.getObject(object, name);
-					
-	
-					if(object == value || object.equals(value))
-						continue;
-					
-					p.putValue(name, value);
+					checkCircularReference(object, value);
+					p.putValue(name, assemble(value));
 				}
-				
 				return p;
 			} else {
 				return object.toString();
 			}
 		}
 	}
-	
+
+	private static void checkCircularReference(Object wrapper, Object member) {
+		if(wrapper.equals(member)) {
+			throw new IllegalArgumentException("APON Serialization Failure: A circular reference was detected while converting a member object [" + member + "] in [" + wrapper + "]");
+		}
+	}
+
 }
