@@ -99,6 +99,7 @@ public class ContentsAponAssembler {
 	private static void putValue(Parameters container, String name, Object value) throws InvocationTargetException {
 		if(value != null) {
 			if(value instanceof Collection<?>) {
+				@SuppressWarnings("unchecked")
 				Iterator<Object> iter = ((Collection<Object>)value).iterator();
 
 				while(iter.hasNext()) {
@@ -122,6 +123,7 @@ public class ContentsAponAssembler {
 		}
 	}
 	
+	@SuppressWarnings("unchecked")
 	private static Object assemble(Object object) throws InvocationTargetException {
 		if(object instanceof Parameters ||
 				object instanceof String ||

@@ -64,6 +64,7 @@ public abstract class AbstractRequestAdapter extends AbstractRequest implements 
 		return params;
 	}
 	
+	@Override
 	public void fillAttributeMap(Map<String, Object> attributeMap) {
 		if(attributeMap == null)
 			return;

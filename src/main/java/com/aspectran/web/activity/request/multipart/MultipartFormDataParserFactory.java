@@ -119,6 +119,11 @@ public class MultipartFormDataParserFactory {
 		this.deniedFileExtensions = deniedFileExtensions;
 	}
 
+	/**
+	 * Creates a new MultipartFormDataParser object.
+	 *
+	 * @return the multipart form data parser
+	 */
 	public MultipartFormDataParser createMultipartFormDataParser() {
 		MultipartFormDataParser parser = new MultipartFormDataParser();
 

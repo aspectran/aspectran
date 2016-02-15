@@ -285,6 +285,7 @@ public class ContentsXMLReader implements XMLReader {
 	 * @throws SAXException the SAX exception
 	 * @throws InvocationTargetException the invocation target exception
 	 */
+	@SuppressWarnings("unchecked")
 	private void parse(Object object) throws IOException, SAXException, InvocationTargetException {
 		if(object == null) {
 			return;

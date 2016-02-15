@@ -128,6 +128,7 @@ public class JsonSerializer implements Flushable {
 		} else if(object instanceof Map<?, ?>) {
 			openCurlyBracket();
 
+			@SuppressWarnings("unchecked")
 			Iterator<Map.Entry<Object, Object>> iter = ((Map<Object, Object>)object).entrySet().iterator();
 			while(iter.hasNext()) {
 				Map.Entry<Object, Object> entry = iter.next();
@@ -144,6 +145,7 @@ public class JsonSerializer implements Flushable {
 
 			closeCurlyBracket();
 		} else if(object instanceof Collection<?>) {
+			@SuppressWarnings("unchecked")
 			Iterator<Object> iter = ((Collection<Object>)object).iterator();
 
 			openSquareBracket();

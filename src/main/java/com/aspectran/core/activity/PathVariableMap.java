@@ -29,7 +29,9 @@ import com.aspectran.core.context.rule.type.TokenType;
  */
 public class PathVariableMap extends HashMap<Token, String> {
 
-    private final TransletRule transletRule;
+	private static final long serialVersionUID = -3327966082696522044L;
+
+	private final TransletRule transletRule;
 
     public PathVariableMap(TransletRule transletRule) {
         super(transletRule.getNameTokens().length);

@@ -22,10 +22,10 @@ import com.aspectran.core.context.bean.ablility.FactoryBean;
  *
  * @since 2.0.0
  */
-public class MultipartFormDataParserFactoryBean extends MultipartFormDataParserFactory implements FactoryBean {
+public class MultipartFormDataParserFactoryBean extends MultipartFormDataParserFactory implements FactoryBean<MultipartFormDataParser> {
 
 	@Override
-	public Object getObject() throws Exception {
+	public MultipartFormDataParser getObject() throws Exception {
 		return createMultipartFormDataParser();
 	}
 

@@ -38,6 +38,7 @@ public class HttpServletRequestAdapter extends AbstractRequestAdapter implements
 	 *
 	 * @param request the HTTP request
 	 */
+	@SuppressWarnings("unchecked")
 	public HttpServletRequestAdapter(HttpServletRequest request) {
 		super(request, request.getParameterMap());
 		setRequestMethod(RequestMethodType.lookup(request.getMethod()));
