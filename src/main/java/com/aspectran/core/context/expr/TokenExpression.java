@@ -29,6 +29,7 @@ import java.util.Set;
 import java.util.StringTokenizer;
 
 import com.aspectran.core.activity.Activity;
+import com.aspectran.core.activity.request.parameter.FileParameter;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.context.bean.BeanRegistry;
 import com.aspectran.core.context.expr.token.Token;
@@ -126,7 +127,7 @@ public class TokenExpression implements TokenExpressor {
 	@Override
 	public Object express(String parameterName, Token[] tokens) {
 		if(tokens == null || tokens.length == 0)
-			return getParameter(parameterName, null);
+			return getParameter(parameterName);
 		
 		Object value = express(tokens);
 		
@@ -179,7 +180,7 @@ public class TokenExpression implements TokenExpressor {
 	@Override
 	public Map<String, Object> expressAsMap(String parameterName, Map<String, Token[]> tokensMap) {
 		if(tokensMap == null || tokensMap.isEmpty()) {
-			String value = getParameter(parameterName, null);
+			String value = getParameter(parameterName);
 			
 			if(value == null)
 				return null;
@@ -202,7 +203,7 @@ public class TokenExpression implements TokenExpressor {
 	@Override
 	public Properties expressAsProperties(String parameterName, Properties tokensProp) {
 		if(tokensProp == null || tokensProp.isEmpty()) {
-			String value = getParameter(parameterName, null);
+			String value = getParameter(parameterName);
 
 			if(value == null)
 				return null;
@@ -272,16 +273,27 @@ public class TokenExpression implements TokenExpressor {
 	 * @return a <code>String</code> representing the
 	 *			single value of the parameter
 	 */
-	protected String getParameter(String name, String defaultValue) {
-		String value = null;
+	private String getParameter(String name, String defaultValue) {
+		String value = getParameter(name);
 		
-		if(requestAdapter != null && name != null)
-			value = requestAdapter.getParameter(name);
+		if(value != null)
+			return value;
 		
-		if(value == null)
-			return defaultValue;
-		
-		return value;
+		return defaultValue;
+	}
+
+	/**
+	 * Gets the parameter.
+	 *
+	 * @param name the parameter name
+	 * @return a <code>String</code> representing the
+	 *			single value of the parameter
+	 */
+	protected String getParameter(String name) {
+		if(requestAdapter != null)
+			return requestAdapter.getParameter(name);
+
+		return null;
 	}
 
 	/**
@@ -292,12 +304,40 @@ public class TokenExpression implements TokenExpressor {
 	 *			containing the parameter's values
 	 */
 	protected String[] getParameterValues(String name) {
-		if(requestAdapter == null)
-			return null;
+		if(requestAdapter != null)
+			return requestAdapter.getParameterValues(name);
 
-		return requestAdapter.getParameterValues(name);
+		return null;
 	}
 	
+	/**
+	 * Gets the parameter.
+	 *
+	 * @param name the parameter name
+	 * @return a <code>FileParameter</code> representing the
+	 *			single value of the parameter
+	 */
+	protected FileParameter getFileParameter(String name) {
+		if(requestAdapter != null)
+			return requestAdapter.getFileParameter(name);
+
+		return null;
+	}
+
+	/**
+	 * Gets the file parameters.
+	 *
+	 * @param name the file parameter name
+	 * @return an array of <code>FileParameter</code> objects
+	 *			containing the parameter's values
+	 */
+	protected FileParameter[] getFileParameterValues(String name) {
+		if(requestAdapter != null)
+			return requestAdapter.getFileParameterValues(name);
+
+		return null;
+	}
+
 	/**
 	 * Gets the attribute object from request attributes or action results.
 	 *
@@ -318,7 +358,13 @@ public class TokenExpression implements TokenExpressor {
 
 		return object;
 	}
-	
+
+	/**
+	 * Return the bean instance that matches the given token.
+	 *
+	 * @param token the token
+	 * @return an instance of the bean
+	 */
 	protected Object getBean(Token token) {
 		Object value;
 
@@ -334,7 +380,7 @@ public class TokenExpression implements TokenExpressor {
 	}
 
 	/**
-	 * Invoke bean property.
+	 * Invoke bean's property.
 	 * 
 	 * @param object the object
 	 * @param propertyName the property name
@@ -351,7 +397,14 @@ public class TokenExpression implements TokenExpressor {
 		
 		return value;
 	}
-	
+
+	/**
+	 * Invoke object's property.
+	 *
+	 * @param object the object
+	 * @param propertyName the property name
+	 * @return the object property
+	 */
 	protected Object getObjectProperty(final Object object, String propertyName) {
 		Object value = null;
 		
@@ -472,5 +525,5 @@ public class TokenExpression implements TokenExpressor {
 	protected static <T> Set<T> cast(Set<?> set) {
 		return (Set<T>)set;
 	}
-	
+
 }

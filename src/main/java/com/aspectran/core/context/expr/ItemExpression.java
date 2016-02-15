@@ -190,7 +190,7 @@ public class ItemExpression extends TokenExpression implements ItemExpressor {
 	 */
 	private Map<String, Object> expressAsMap(String parameterName, Map<String, Token[]> tokensMap, ItemValueType valueType) {
 		if(tokensMap == null || tokensMap.isEmpty()) {
-			Object value = getParameter(parameterName, null);
+			Object value = getParameter(parameterName, valueType);
 			
 			if(value == null)
 				return null;
@@ -227,7 +227,7 @@ public class ItemExpression extends TokenExpression implements ItemExpressor {
 	 */
 	private Properties expressAsProperties(String parameterName, Map<String, Token[]> tokensMap, ItemValueType valueType) {
 		if(tokensMap == null || tokensMap.isEmpty()) {
-			Object value = getParameter(parameterName, null);
+			Object value = getParameter(parameterName, valueType);
 
 			if(value == null)
 				return null;
@@ -253,7 +253,23 @@ public class ItemExpression extends TokenExpression implements ItemExpressor {
 		
 		return prop;
 	}
-	
+
+	private Object getParameter(String name, ItemValueType valueType) {
+		if(valueType == ItemValueType.MULTIPART_FILE || valueType == ItemValueType.FILE) {
+			return super.getFileParameter(name);
+		} else {
+			return super.getParameter(name);
+		}
+	}
+
+	private Object[] getParameterValues(String name, ItemValueType valueType) {
+		if(valueType == ItemValueType.MULTIPART_FILE || valueType == ItemValueType.FILE) {
+			return super.getFileParameterValues(name);
+		} else {
+			return super.getParameterValues(name);
+		}
+	}
+
 	/**
 	 * Gets the parameter values.
 	 *
@@ -262,16 +278,16 @@ public class ItemExpression extends TokenExpression implements ItemExpressor {
 	 * @return the parameter values
 	 */
 	private List<Object> getParameterAsList(String name, ItemValueType valueType) {
-		String[] values = getParameterValues(name);
-		
+		Object[] values = getParameterValues(name, valueType);
+
 		if(values == null)
 			return null;
 		
 		List<Object> valueList = new ArrayList<Object>(values.length);
 		
-		for(String value : values) {
+		for(Object value : values) {
 			if(value != null && valueType != null)
-				valueList.add(valuelize((Object)value, valueType));
+				valueList.add(valuelize(value, valueType));
 			else
 				valueList.add(value);
 		}
@@ -287,16 +303,16 @@ public class ItemExpression extends TokenExpression implements ItemExpressor {
 	 * @return the parameter values
 	 */
 	private Set<Object> getParameterAsSet(String name, ItemValueType valueType) {
-		String[] values = getParameterValues(name);
-		
+		Object[] values = getParameterValues(name, valueType);
+
 		if(values == null)
 			return null;
 
 		Set<Object> valueSet = new LinkedHashSet<Object>(values.length);
 		
-		for(String value : values) {
+		for(Object value : values) {
 			if(value != null && valueType != null)
-				valueSet.add(valuelize((Object)value, valueType));
+				valueSet.add(valuelize(value, valueType));
 			else
 				valueSet.add(value);
 		}
@@ -306,48 +322,26 @@ public class ItemExpression extends TokenExpression implements ItemExpressor {
 	
 	private Object valuelize(Object value, ItemValueType valueType) {
 		if(valueType == ItemValueType.STRING) {
-			if(value instanceof String)
-				return value;
-			else
-				return value.toString();
+			return (value instanceof String) ? value : value.toString();
 		} else if(valueType == ItemValueType.INT) {
-			if(value instanceof Integer)
-				return value;
-			else
-				return Integer.valueOf(value.toString());
+			return (value instanceof Integer) ? value : Integer.valueOf(value.toString());
 		} else if(valueType == ItemValueType.LONG) {
-			if(value instanceof Long)
-				return value;
-			else
-				return Long.valueOf(value.toString());
+			return (value instanceof Long) ? value : Long.valueOf(value.toString());
 		} else if(valueType == ItemValueType.FLOAT) {
-			if(value instanceof Float)
-				return value;
-			else
-				return Float.valueOf(value.toString());
+			return (value instanceof Float) ? value : Float.valueOf(value.toString());
 		} else if(valueType == ItemValueType.DOUBLE) {
-			if(value instanceof Double)
-				return value;
-			else
-				return Double.valueOf(value.toString());
+			return (value instanceof Double) ? value : Double.valueOf(value.toString());
 		} else if(valueType == ItemValueType.BOOLEAN) {
-			if(value instanceof Boolean)
-				return value;
-			else
-				return Boolean.valueOf(value.toString());
+			return (value instanceof Boolean) ? value : Boolean.valueOf(value.toString());
 		} else if(valueType == ItemValueType.PARAMETERS) {
-			String text = value.toString();
-			value = new GenericParameters(text);
+			return new GenericParameters(value.toString());
 		} else if(valueType == ItemValueType.FILE) {
-			String filePath = value.toString();
-			value = new File(filePath);
+			return (value instanceof FileParameter) ? value : new File(value.toString());
 		} else if(valueType == ItemValueType.MULTIPART_FILE) {
-			String filePath = value.toString();
-			File file = new File(filePath);
-			value = new FileParameter(file);
+			return (value instanceof FileParameter) ? value : new FileParameter(new File(value.toString()));
+		} else {
+			return value;
 		}
-		
-		return value;
 	}
 
 }

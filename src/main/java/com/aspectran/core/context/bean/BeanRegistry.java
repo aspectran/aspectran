@@ -34,7 +34,6 @@ public interface BeanRegistry extends BeanFactory {
 	
 	/**
 	 * Return the bean instance that matches the given object type.
-	 * The class name and bean id must be the same.
 	 *
 	 * @param <T> the generic type
 	 * @param classType type the bean must match; can be an interface or superclass. null is disallowed.

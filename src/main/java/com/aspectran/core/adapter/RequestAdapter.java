@@ -112,12 +112,12 @@ public interface RequestAdapter {
 	public FileParameter getFileParameter(String name);
 	
 	/**
-	 * Gets the file parameters.
+	 * Gets the file parameter values.
 	 *
 	 * @param name the parameter name
 	 * @return the file parameter values
 	 */
-	public FileParameter[] getFileParameters(String name);
+	public FileParameter[] getFileParameterValues(String name);
 
 	/**
 	 * Gets the file parameter names.

@@ -126,7 +126,7 @@ public abstract class AbstractRequest {
 		return fileParameterMap.getFileParameter(name);
 	}
 	
-	public FileParameter[] getFileParameters(String name) {
+	public FileParameter[] getFileParameterValues(String name) {
 		if(fileParameterMap == null)
 			return null;
 		

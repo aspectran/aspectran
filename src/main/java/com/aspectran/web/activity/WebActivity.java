@@ -15,8 +15,6 @@
  */
 package com.aspectran.web.activity;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -26,7 +24,6 @@ import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.AdaptingException;
 import com.aspectran.core.activity.CoreActivity;
 import com.aspectran.core.activity.request.RequestMethodNotAllowedException;
-import com.aspectran.core.activity.request.parameter.FileParameter;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
@@ -36,8 +33,6 @@ import com.aspectran.core.context.expr.ItemExpressor;
 import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.ResponseRule;
-import com.aspectran.core.context.rule.type.ItemType;
-import com.aspectran.core.context.rule.type.ItemValueType;
 import com.aspectran.core.context.rule.type.RequestMethodType;
 import com.aspectran.web.activity.request.multipart.MultipartFormDataParser;
 import com.aspectran.web.activity.request.multipart.MultipartRequestException;
@@ -148,56 +143,12 @@ public class WebActivity extends CoreActivity implements Activity {
 			Map<String, Object> valueMap = expressor.express(attributeItemRuleMap);
 			for(ItemRule itemRule : attributeItemRuleMap.values()) {
 				String name = itemRule.getName();
-				if(itemRule.getValueType() == ItemValueType.MULTIPART_FILE) {
-					Object value = getFileParameter(itemRule);
-					if(value != null) {
-						getRequestAdapter().setAttribute(name, value);
-					}
-				} else {
-					Object value = valueMap.get(name);
-					if(value != null) {
-						getRequestAdapter().setAttribute(name, value);
-					}
+				Object value = valueMap.get(name);
+				if(value != null) {
+					getRequestAdapter().setAttribute(name, value);
 				}
 			}
 		}
-	}
-
-	/**
-	 * Returns the file parameter for the given parameter name.
-	 *
-	 * @param itemRule the item rule
-	 * @return the file parameter object
-	 */
-	private Object getFileParameter(ItemRule itemRule) {
-		String name = itemRule.getName();
-		if(itemRule.getType() == ItemType.ARRAY) {
-			return getRequestAdapter().getFileParameters(name);
-		} else if(itemRule.getType() == ItemType.LIST) {
-			FileParameter[] arr = getRequestAdapter().getFileParameters(name);
-			if(arr != null && arr.length > 0) {
-				List<FileParameter> list = new ArrayList<FileParameter>(arr.length);
-				for(FileParameter fp : arr) {
-					list.add(fp);
-				}
-				return list;
-			}
-		} else if(itemRule.getType() == ItemType.SET) {
-			FileParameter[] arr = getRequestAdapter().getFileParameters(name);
-			if(arr != null && arr.length > 0) {
-				List<FileParameter> list = new ArrayList<FileParameter>(arr.length);
-				for(FileParameter fp : arr) {
-					list.add(fp);
-				}
-				return list;
-			}
-		} else {
-			FileParameter[] arr = getRequestAdapter().getFileParameters(name);
-			if(arr != null && arr.length > 0) {
-				return arr[0];
-			}
-		}
-		return null;
 	}
 
 	@Override
