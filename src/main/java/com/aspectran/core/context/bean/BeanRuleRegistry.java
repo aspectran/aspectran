@@ -201,7 +201,7 @@ public class BeanRuleRegistry {
 
 	private void parseAnnotation(BeanRule beanRule) {
 		if(transletRuleRegistry != null) {
-			AnnotatedTransletParser.parse(beanRule, transletRuleRegistry.getTransletRuleMap());
+			AnnotatedConfigParser.parse(beanRule, transletRuleRegistry.getTransletRuleMap());
 		}
 	}
 

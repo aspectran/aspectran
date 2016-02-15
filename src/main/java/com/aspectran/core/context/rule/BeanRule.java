@@ -24,6 +24,7 @@ import com.aspectran.core.context.bean.ablility.DisposableBean;
 import com.aspectran.core.context.bean.ablility.FactoryBean;
 import com.aspectran.core.context.bean.ablility.InitializableBean;
 import com.aspectran.core.context.bean.ablility.InitializableTransletBean;
+import com.aspectran.core.context.rule.ability.Replicable;
 import com.aspectran.core.context.rule.type.ScopeType;
 import com.aspectran.core.util.BooleanUtils;
 import com.aspectran.core.util.MethodUtils;

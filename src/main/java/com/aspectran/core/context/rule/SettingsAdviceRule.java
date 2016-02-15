@@ -21,6 +21,7 @@ import java.util.Set;
 
 import com.aspectran.core.context.rule.type.AspectAdviceType;
 import com.aspectran.core.util.StringUtils;
+import com.aspectran.core.util.ToStringBuilder;
 import com.aspectran.core.util.apon.GenericParameters;
 import com.aspectran.core.util.apon.Parameters;
 
@@ -96,6 +97,15 @@ public class SettingsAdviceRule {
 		}
 
 		return sar;
+	}
+
+	@Override
+	public String toString() {
+		ToStringBuilder tsb = new ToStringBuilder();
+		tsb.append("aspectId", aspectId);
+		tsb.append("aspectAdviceType", aspectAdviceType);
+		tsb.append("settings", settings);
+		return tsb.toString();
 	}
 
 }

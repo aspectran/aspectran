@@ -15,7 +15,7 @@
  */
 package com.aspectran.core.context.builder;
 
-import com.aspectran.core.context.rule.Replicable;
+import com.aspectran.core.context.rule.ability.Replicable;
 
 /**
  * The Class AssistantLocal.

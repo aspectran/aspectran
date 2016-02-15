@@ -22,8 +22,8 @@ import java.util.Map;
 
 import com.aspectran.core.context.rule.AspectAdviceRule;
 import com.aspectran.core.context.rule.ExceptionHandlingRule;
-import com.aspectran.core.context.rule.Replicable;
 import com.aspectran.core.context.rule.SettingsAdviceRule;
+import com.aspectran.core.context.rule.ability.Replicable;
 import com.aspectran.core.context.rule.type.AspectAdviceType;
 import com.aspectran.core.util.ToStringBuilder;
 

@@ -15,7 +15,7 @@
  */
 package com.aspectran.core.adapter;
 
-import java.util.Enumeration;
+import com.aspectran.core.util.ToStringBuilder;
 
 /**
  * The Abstract Class for session object adapter.
@@ -64,20 +64,13 @@ public abstract class AbstractSessionAdapter implements SessionAdapter {
 			return super.toString();
 		}
 		
-		StringBuilder sb = new StringBuilder();
-		sb.append("{id=").append(getId());
-		sb.append(", creationTime=").append(getCreationTime());
-		sb.append(", lastAccessedTime=").append(getLastAccessedTime());
-		sb.append(", maxInactiveInterval=").append(getMaxInactiveInterval());
-		sb.append(", attributeNames=[");
-		for(Enumeration<String> en = getAttributeNames(); en.hasMoreElements(); ) {
-			sb.append(en.nextElement());
-			if(en.hasMoreElements())
-				sb.append(",");
-		}
-		sb.append("]}");
-		
-		return sb.toString();
+		ToStringBuilder tsb = new ToStringBuilder();
+		tsb.append("id", getId());
+		tsb.append("creationTime", getCreationTime());
+		tsb.append("lastAccessedTime", getLastAccessedTime());
+		tsb.append("maxInactiveInterval", getMaxInactiveInterval());
+		tsb.append("attributeNames", getAttributeNames());
+		return tsb.toString();
 	}
 	
 }

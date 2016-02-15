@@ -23,6 +23,7 @@ import java.util.List;
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.expr.token.Tokenizer;
+import com.aspectran.core.context.rule.ability.Replicable;
 import com.aspectran.core.util.BooleanUtils;
 import com.aspectran.core.util.ResourceUtils;
 import com.aspectran.core.util.ToStringBuilder;

@@ -24,6 +24,7 @@ import com.aspectran.core.context.loader.AspectranClassLoader;
 import com.aspectran.core.service.AspectranService;
 import com.aspectran.core.service.AspectranServiceController;
 import com.aspectran.core.util.ResourceUtils;
+import com.aspectran.core.util.ToStringBuilder;
 
 /**
  * The Class AbstractApplicationAdapter.
@@ -116,13 +117,11 @@ public abstract class AbstractApplicationAdapter implements ApplicationAdapter {
 
 	@Override
 	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		sb.append("{applicationBasePath=").append(applicationBasePath);
-		sb.append(", classLoader=").append(getClassLoader());
-		sb.append(", adaptee=").append(adaptee);
-		sb.append("}");
-		
-		return sb.toString();
+		ToStringBuilder tsb = new ToStringBuilder();
+		tsb.append("applicationBasePath", applicationBasePath);
+		tsb.append("classLoader", getClassLoader());
+		tsb.append("adaptee", adaptee);
+		return tsb.toString();
 	}
 	
 }

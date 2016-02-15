@@ -16,6 +16,7 @@
 package com.aspectran.core.context.rule;
 
 import com.aspectran.core.context.rule.ability.ActionPossessable;
+import com.aspectran.core.context.rule.ability.Replicable;
 import com.aspectran.core.context.rule.type.ContentType;
 import com.aspectran.core.context.rule.type.ResponseType;
 import com.aspectran.core.context.rule.type.TransformType;

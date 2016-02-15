@@ -17,6 +17,7 @@ package com.aspectran.core.util;
 
 import java.lang.reflect.Array;
 import java.util.Collection;
+import java.util.Enumeration;
 import java.util.Map;
 
 import com.aspectran.core.context.expr.token.Token;
@@ -124,6 +125,16 @@ public class ToStringBuilder {
 			this.sb.append("]");
 		}
 	}
+
+	public void append(Enumeration<?> en) {
+		if(en != null) {
+			while(en.hasMoreElements()) {
+				append(en.nextElement());
+				if(en.hasMoreElements())
+					addpendComma();
+			}
+		}
+	}
 	
 	private void append(Object object) {
 		if(object == null) {
@@ -136,6 +147,8 @@ public class ToStringBuilder {
 			for(Token t : (Token[])object) {
 				this.sb.append(t.stringify());
 			}
+		} else if(object instanceof Enumeration<?>) {
+			append((Enumeration<?>)object);
 		} else if(object instanceof Parameters) {
 			this.sb.append(((Parameters)object).describe(false));
 		} else if(object instanceof ToStringBuilder) {
