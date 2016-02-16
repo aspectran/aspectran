@@ -15,11 +15,8 @@
  */
 package com.aspectran.core.context.rule;
 
-import java.lang.reflect.Method;
 import java.util.List;
 
-import com.aspectran.core.activity.Translet;
-import com.aspectran.core.context.bean.BeanRuleException;
 import com.aspectran.core.context.bean.ablility.DisposableBean;
 import com.aspectran.core.context.bean.ablility.FactoryBean;
 import com.aspectran.core.context.bean.ablility.InitializableBean;
@@ -27,7 +24,6 @@ import com.aspectran.core.context.bean.ablility.InitializableTransletBean;
 import com.aspectran.core.context.rule.ability.Replicable;
 import com.aspectran.core.context.rule.type.ScopeType;
 import com.aspectran.core.util.BooleanUtils;
-import com.aspectran.core.util.MethodUtils;
 import com.aspectran.core.util.ToStringBuilder;
 import com.aspectran.core.util.apon.Parameters;
 
@@ -309,7 +305,7 @@ public class BeanRule implements Replicable<BeanRule> {
 		return offered;
 	}
 
-	public void setOfferd(boolean offered) {
+	public void setOffered(boolean offered) {
 		this.offered = offered;
 	}
 
@@ -635,7 +631,18 @@ public class BeanRule implements Replicable<BeanRule> {
 		return tsb.toString();
 	}
 
-	public static BeanRule newInstance(String id, String className, String scanPath, String maskPattern, String scope, Boolean singleton, String initMethodName, String factoryMethodName, String destroyMethodName, Boolean lazyInit, Boolean important) {
+	public static BeanRule newInstance(
+			String id,
+			String className,
+			String scanPath,
+			String maskPattern,
+			String scope,
+			Boolean singleton,
+			String initMethodName,
+			String factoryMethodName,
+			String destroyMethodName,
+			Boolean lazyInit,
+			Boolean important) {
 		if(className == null && scanPath == null)
 			throw new IllegalArgumentException("Bean class must not be null.");
 
@@ -666,7 +673,17 @@ public class BeanRule implements Replicable<BeanRule> {
 		return beanRule;
 	}
 	
-	public static BeanRule newOfferedBeanInstance(String id, String scope, Boolean singleton, String offerBeanId, String offerMethodName, String initMethodName, String factoryMethodName, String destroyMethodName, Boolean lazyInit, Boolean important) {
+	public static BeanRule newOfferedBeanInstance(
+			String id,
+			String scope,
+			Boolean singleton,
+			String offerBeanId,
+			String offerMethodName,
+//			String initMethodName,
+//			String factoryMethodName,
+//			String destroyMethodName,
+			Boolean lazyInit,
+			Boolean important) {
 		if(id == null)
 			throw new IllegalArgumentException("Bean id must not be null.");
 		
@@ -684,10 +701,10 @@ public class BeanRule implements Replicable<BeanRule> {
 		beanRule.setSingleton(singleton);
 		beanRule.setOfferBeanId(offerBeanId);
 		beanRule.setOfferMethodName(offerMethodName);
-		beanRule.setOfferd(true);
-		beanRule.setInitMethodName(initMethodName);
-		beanRule.setFactoryMethodName(factoryMethodName);
-		beanRule.setDestroyMethodName(destroyMethodName);
+		beanRule.setOffered(true);
+//		beanRule.setInitMethodName(initMethodName);
+//		beanRule.setFactoryMethodName(factoryMethodName);
+//		beanRule.setDestroyMethodName(destroyMethodName);
 		beanRule.setLazyInit(lazyInit);
 		beanRule.setImportant(important);
 		
@@ -704,7 +721,7 @@ public class BeanRule implements Replicable<BeanRule> {
 		br.setSingleton(beanRule.getSingleton());
 		br.setOfferBeanId(beanRule.getOfferBeanId());
 		br.setOfferMethodName(beanRule.getOfferMethodName());
-		br.setOfferd(beanRule.isOffered());
+		br.setOffered(beanRule.isOffered());
 		br.setInitMethodName(beanRule.getInitMethodName());
 		br.setInitMethodRequiresTranslet(beanRule.isInitMethodRequiresTranslet());
 		br.setFactoryMethodName(beanRule.getFactoryMethodName());
@@ -718,55 +735,6 @@ public class BeanRule implements Replicable<BeanRule> {
 		br.setReplicated(true);
 		
 		return br;
-	}
-
-	public static void checkAccessibleMethod(BeanRule beanRule) {
-		Class<?> beanClass = beanRule.getBeanClass();
-		String initMethodName = beanRule.getInitMethodName();
-		String factoryMethodName = beanRule.getFactoryMethodName();
-		String destroyMethodName = beanRule.getDestroyMethodName();
-
-		Class<?>[] parameterTypes = { Translet.class };
-
-		if(initMethodName != null) {
-			if(beanRule.isInitializableBean())
-				throw new BeanRuleException("Bean initialization method is duplicated. Already implemented the InitializableBean", beanRule);
-
-			if(beanRule.isInitializableTransletBean())
-				throw new BeanRuleException("Bean initialization method is duplicated. Already implemented the InitializableTransletBean", beanRule);
-
-			Method m1 = MethodUtils.getAccessibleMethod(beanClass, initMethodName, null);
-			Method m2 = MethodUtils.getAccessibleMethod(beanClass, initMethodName, parameterTypes);
-
-			if(m1 == null && m2 == null)
-				throw new IllegalArgumentException("No such initialization method '" + initMethodName + "() on bean class: " + beanClass);
-
-			if(m2 != null)
-				beanRule.setInitMethodRequiresTranslet(true);
-		}
-
-		if(factoryMethodName != null) {
-			if(beanRule.isFactoryBean())
-				throw new BeanRuleException("Bean factory method  is duplicated. Already implemented the FactoryBean", beanRule);
-
-			Method m1 = MethodUtils.getAccessibleMethod(beanClass, factoryMethodName, null);
-			Method m2 = MethodUtils.getAccessibleMethod(beanClass, factoryMethodName, parameterTypes);
-
-			if(m1 == null && m2 == null)
-				throw new IllegalArgumentException("No such factory method '" + factoryMethodName + "() on bean class: " + beanClass);
-
-			if(m2 != null)
-				beanRule.setFactoryMethodRequiresTranslet(true);
-		}
-
-		if(destroyMethodName != null) {
-			if(beanRule.isDisposableBean())
-				throw new BeanRuleException("Bean destroy method  is duplicated. Already implemented the DisposableBean", beanRule);
-
-			Method m1 = MethodUtils.getAccessibleMethod(beanClass, destroyMethodName, null);
-			if(m1 == null)
-				throw new IllegalArgumentException("No such destroy method '" + destroyMethodName + "() on bean class: " + beanClass);
-		}
 	}
 
 	public static void updateConstructorArgument(BeanRule beanRule, String text) {

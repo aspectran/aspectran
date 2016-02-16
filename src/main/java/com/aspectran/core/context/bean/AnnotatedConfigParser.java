@@ -90,6 +90,20 @@ public abstract class AnnotatedConfigParser {
 	}
 
 	private static void parseBean(Class<?> beanClass, Method method, String namespace) {
+		Bean beanAnno = method.getAnnotation(Bean.class);
+		String beanId = StringUtils.emptyToNull(beanAnno.id());
+		String initMethodName = StringUtils.emptyToNull(beanAnno.initMethod());
+		String factoryMethodName = StringUtils.emptyToNull(beanAnno.factoryMethod());
+		String destroyMethodName = StringUtils.emptyToNull(beanAnno.destroyMethod());
+
+		BeanRule beanRule = new BeanRule();
+		beanRule.setId(beanId);
+		beanRule.setBeanClass(beanClass);
+		beanRule.setInitMethodName(initMethodName);
+		beanRule.setFactoryMethodName(factoryMethodName);
+		beanRule.setDestroyMethodName(destroyMethodName);
+
+		BeanRuleRegistry.checkAccessibleMethod(beanRule);
 
 	}
 

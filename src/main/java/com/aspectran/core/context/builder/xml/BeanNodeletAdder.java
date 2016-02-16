@@ -73,7 +73,8 @@ public class BeanNodeletAdder implements NodeletAdder {
 					if(id == null)
 						throw new IllegalArgumentException("The <bean> element requires an id attribute.");
 
-					beanRule = BeanRule.newOfferedBeanInstance(id, scope, singleton, offerBean, offerMethod, initMethod, factoryMethod, destroyMethod, lazyInit, important);
+					//beanRule = BeanRule.newOfferedBeanInstance(id, scope, singleton, offerBean, offerMethod, initMethod, factoryMethod, destroyMethod, lazyInit, important);
+					beanRule = BeanRule.newOfferedBeanInstance(id, scope, singleton, offerBean, offerMethod, lazyInit, important);
 
 					if(offerBean != null) {
 						Class<?> offerBeanClass = assistant.resolveBeanClass(offerBean);
