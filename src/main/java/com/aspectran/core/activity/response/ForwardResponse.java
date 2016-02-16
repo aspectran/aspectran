@@ -49,9 +49,7 @@ public class ForwardResponse implements Response {
 		this.forwardResponseRule = forwardResponseRule;
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.response.Response#response(com.aspectran.core.activity.Activity)
-	 */
+	@Override
 	public void response(Activity activity) {
 		RequestAdapter requestAdapter = activity.getRequestAdapter();
 		if(requestAdapter == null)

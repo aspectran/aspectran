@@ -16,6 +16,7 @@
 package com.aspectran.core.activity.process;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import com.aspectran.core.activity.process.action.BeanAction;
 import com.aspectran.core.activity.process.action.EchoAction;
@@ -116,7 +117,7 @@ public class ActionList extends ArrayList<Executable> implements ActionRuleAppli
 		tsb.append("name", name);
 		tsb.append("hidden", hidden);
 		tsb.append("omittable", omittable);
-		tsb.append("actions", this);
+		tsb.append("actions", (List<Executable>)this);
 		return tsb.toString();
 	}
 	

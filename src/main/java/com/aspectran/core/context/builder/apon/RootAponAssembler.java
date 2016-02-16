@@ -83,6 +83,7 @@ import com.aspectran.core.context.rule.type.ActionType;
 import com.aspectran.core.context.rule.type.AspectAdviceType;
 import com.aspectran.core.context.rule.type.ImportType;
 import com.aspectran.core.context.rule.type.ItemType;
+import com.aspectran.core.context.rule.type.RequestMethodType;
 import com.aspectran.core.context.rule.type.ResponseType;
 import com.aspectran.core.context.rule.type.ScopeType;
 import com.aspectran.core.util.apon.GenericParameters;
@@ -121,15 +122,15 @@ public class RootAponAssembler {
 			if(defaultSettings.getTransletNamePattern() != null) {
 				settingParameters.putValue(DefaultSettingsParameters.transletNamePattern, defaultSettings.getTransletNamePattern());
 			} else {
-				settingParameters.putValue(DefaultSettingsParameters.transletNamePrefix, defaultSettings.getTransletNamePrefix());
-				settingParameters.putValue(DefaultSettingsParameters.transletNameSuffix, defaultSettings.getTransletNameSuffix());
+				settingParameters.putValueNonNull(DefaultSettingsParameters.transletNamePrefix, defaultSettings.getTransletNamePrefix());
+				settingParameters.putValueNonNull(DefaultSettingsParameters.transletNameSuffix, defaultSettings.getTransletNameSuffix());
 			}
-			settingParameters.putValue(DefaultSettingsParameters.transletInterfaceClass, defaultSettings.getTransletInterfaceClassName());
-			settingParameters.putValue(DefaultSettingsParameters.transletImplementClass, defaultSettings.getTransletImplementClassName());
-			settingParameters.putValue(DefaultSettingsParameters.nullableActionId, defaultSettings.getNullableActionId());
-			settingParameters.putValue(DefaultSettingsParameters.beanProxifier, defaultSettings.getBeanProxifier());
-			settingParameters.putValue(DefaultSettingsParameters.pointcutPatternVerifiable, defaultSettings.getPointcutPatternVerifiable());
-			settingParameters.putValue(DefaultSettingsParameters.defaultTemplateEngine, defaultSettings.getDefaultTemplateEngine());
+			settingParameters.putValueNonNull(DefaultSettingsParameters.transletInterfaceClass, defaultSettings.getTransletInterfaceClassName());
+			settingParameters.putValueNonNull(DefaultSettingsParameters.transletImplementClass, defaultSettings.getTransletImplementationClassName());
+			settingParameters.putValueNonNull(DefaultSettingsParameters.nullableActionId, defaultSettings.getNullableActionId());
+			settingParameters.putValueNonNull(DefaultSettingsParameters.beanProxifier, defaultSettings.getBeanProxifier());
+			settingParameters.putValueNonNull(DefaultSettingsParameters.pointcutPatternVerifiable, defaultSettings.getPointcutPatternVerifiable());
+			settingParameters.putValueNonNull(DefaultSettingsParameters.defaultTemplateEngine, defaultSettings.getDefaultTemplateEngine());
 		}
 		
 		Map<String, String> typeAliases = assistant.getTypeAliases();
@@ -172,14 +173,12 @@ public class RootAponAssembler {
 	
 	public Parameters assembleAspectParameters(AspectRule aspectRule) {
 		Parameters aspectParameters = new AspectParameters();
-		if(aspectRule.getDescription() != null) {
-			aspectParameters.putValue(AspectParameters.description, aspectRule.getDescription());
-		}
-		aspectParameters.putValue(AspectParameters.id, aspectRule.getId());
-		aspectParameters.putValue(AspectParameters.useFor, aspectRule.getAspectTargetType());
+		aspectParameters.putValueNonNull(AspectParameters.description, aspectRule.getDescription());
+		aspectParameters.putValueNonNull(AspectParameters.id, aspectRule.getId());
+		aspectParameters.putValueNonNull(AspectParameters.useFor, aspectRule.getAspectTargetType());
 		
 		Parameters joinpointParameters = aspectParameters.newParameters(AspectParameters.jointpoint);
-		joinpointParameters.putValue(JoinpointParameters.scope, aspectRule.getJoinpointScope());
+		joinpointParameters.putValueNonNull(JoinpointParameters.scope, aspectRule.getJoinpointScope());
 		
 		PointcutRule pointcutRule = aspectRule.getPointcutRule();
 		if(pointcutRule != null) {
@@ -190,8 +189,8 @@ public class RootAponAssembler {
 					pointcutParameters.putValue(PointcutParameters.targets, targetParameters);
 				}
 			}
-			pointcutParameters.putValue(PointcutParameters.simpleTrigger, pointcutRule.getSimpleTriggerParameters());
-			pointcutParameters.putValue(PointcutParameters.cronTrigger, pointcutRule.getCronTriggerParameters());
+			pointcutParameters.putValueNonNull(PointcutParameters.simpleTrigger, pointcutRule.getSimpleTriggerParameters());
+			pointcutParameters.putValueNonNull(PointcutParameters.cronTrigger, pointcutRule.getCronTriggerParameters());
 		}
 		
 		SettingsAdviceRule settingsAdviceRule = aspectRule.getSettingsAdviceRule();
@@ -274,7 +273,7 @@ public class RootAponAssembler {
 			for(AspectJobAdviceRule aspectJobAdviceRule : aspectJobAdviceRuleList) {
 				Parameters jobParameters = new JobParameters();
 				jobParameters.putValue(JobParameters.translet, aspectJobAdviceRule.getJobTransletName());
-				jobParameters.putValue(JobParameters.disabled, aspectJobAdviceRule.getDisabled());
+				jobParameters.putValueNonNull(JobParameters.disabled, aspectJobAdviceRule.getDisabled());
 				adviceParameters.putValue(AdviceParameters.jobs, jobParameters);
 			}
 		}
@@ -284,25 +283,23 @@ public class RootAponAssembler {
 
 	public Parameters assembleBeanParameters(BeanRule beanRule) {
 		Parameters beanParameters = new BeanParameters();
-		if(beanRule.getDescription() != null) {
-			beanParameters.putValue(BeanParameters.description, beanRule.getDescription());
-		}
-		beanParameters.putValue(BeanParameters.id, beanRule.getId());
-		beanParameters.putValue(BeanParameters.className, beanRule.getClassName());
-		beanParameters.putValue(BeanParameters.scan, beanRule.getScanPath());
-		beanParameters.putValue(BeanParameters.mask, beanRule.getMaskPattern());
+		beanParameters.putValueNonNull(BeanParameters.description, beanRule.getDescription());
+		beanParameters.putValueNonNull(BeanParameters.id, beanRule.getId());
+		beanParameters.putValueNonNull(BeanParameters.className, beanRule.getClassName());
+		beanParameters.putValueNonNull(BeanParameters.scan, beanRule.getScanPath());
+		beanParameters.putValueNonNull(BeanParameters.mask, beanRule.getMaskPattern());
 		if(beanRule.getSingleton() == Boolean.TRUE && beanRule.getScopeType() == ScopeType.SINGLETON)
 			beanParameters.putValue(BeanParameters.singleton, beanRule.getSingleton());
-		else
+		else if(beanRule.getScopeType() != null)
 			beanParameters.putValue(BeanParameters.scope, beanRule.getScopeType().toString());
-		beanParameters.putValue(BeanParameters.offerBean, beanRule.getOfferBeanId());
-		beanParameters.putValue(BeanParameters.offerMethod, beanRule.getOfferMethodName());
-		beanParameters.putValue(BeanParameters.initMethod, beanRule.getInitMethodName());
-		beanParameters.putValue(BeanParameters.factoryMethod, beanRule.getFactoryMethodName());
-		beanParameters.putValue(BeanParameters.destroyMethod, beanRule.getDestroyMethodName());
-		beanParameters.putValue(BeanParameters.lazyInit, beanRule.getLazyInit());
-		beanParameters.putValue(BeanParameters.important, beanRule.getImportant());
-		beanParameters.putValue(BeanParameters.filter, beanRule.getFilterParameters());
+		beanParameters.putValueNonNull(BeanParameters.offerBean, beanRule.getOfferBeanId());
+		beanParameters.putValueNonNull(BeanParameters.offerMethod, beanRule.getOfferMethodName());
+		beanParameters.putValueNonNull(BeanParameters.initMethod, beanRule.getInitMethodName());
+		beanParameters.putValueNonNull(BeanParameters.factoryMethod, beanRule.getFactoryMethodName());
+		beanParameters.putValueNonNull(BeanParameters.destroyMethod, beanRule.getDestroyMethodName());
+		beanParameters.putValueNonNull(BeanParameters.lazyInit, beanRule.getLazyInit());
+		beanParameters.putValueNonNull(BeanParameters.important, beanRule.getImportant());
+		beanParameters.putValueNonNull(BeanParameters.filter, beanRule.getFilterParameters());
 		
 		ItemRuleMap constructorArgumentItemRuleMap = beanRule.getConstructorArgumentItemRuleMap();
 		if(constructorArgumentItemRuleMap != null) {
@@ -320,21 +317,19 @@ public class RootAponAssembler {
 	
 	public Parameters assembleTransletParameters(TransletRule transletRule) {
 		Parameters transletParameters = new TransletParameters();
-		if(transletRule.getDescription() != null) {
-			transletParameters.putValue(TransletParameters.description, transletRule.getDescription());
-		}
-		transletParameters.putValue(TransletParameters.name, transletRule.getName());
-		transletParameters.putValue(TransletParameters.scan, transletRule.getScanPath());
-		transletParameters.putValue(TransletParameters.mask, transletRule.getMaskPattern());
+		transletParameters.putValueNonNull(TransletParameters.description, transletRule.getDescription());
+		transletParameters.putValueNonNull(TransletParameters.name, transletRule.getName());
+		transletParameters.putValueNonNull(TransletParameters.scan, transletRule.getScanPath());
+		transletParameters.putValueNonNull(TransletParameters.mask, transletRule.getMaskPattern());
 		
 		if(transletRule.getRequestMethods() != null)
-			transletParameters.putValue(TransletParameters.method, transletRule.getRequestMethods().toString());
+			transletParameters.putValue(TransletParameters.method, RequestMethodType.stringify(transletRule.getRequestMethods()));
 
 		RequestRule requestRule = transletRule.getRequestRule();
 		if(requestRule != null) {
 			RequestParameters requestParameters = transletParameters.newParameters(TransletParameters.request);
-			requestParameters.putValue(RequestParameters.requestMethod, requestRule.getRequestMethod());
-			requestParameters.putValue(RequestParameters.characterEncoding, requestRule.getCharacterEncoding());
+			requestParameters.putValueNonNull(RequestParameters.requestMethod, requestRule.getRequestMethod());
+			requestParameters.putValueNonNull(RequestParameters.characterEncoding, requestRule.getCharacterEncoding());
 			
 			ItemRuleMap attributeItemRuleMap = requestRule.getAttributeItemRuleMap();
 			if(attributeItemRuleMap != null) {
@@ -399,7 +394,6 @@ public class RootAponAssembler {
 			for(ResponseByContentTypeRule rbctr : exceptionHandlingRuleMap) {
 				transletParameters.putValue(TransletParameters.exception, assembleResponseByContentTypeParameters(rbctr));
 			}
-
 		}
 		
 		return transletParameters;
@@ -414,11 +408,10 @@ public class RootAponAssembler {
 			importParameters.putValue(ImportParameters.resource, imp.getDistinguishedName());
 		} else if(imp.getImportType() == ImportType.URL) {
 			importParameters.putValue(ImportParameters.url, imp.getDistinguishedName());
-			importParameters.putValue(ImportParameters.fileType, imp.getImportFileType());
+			importParameters.putValueNonNull(ImportParameters.fileType, imp.getImportFileType());
 		}
 		
 		return importParameters;
-		
 	}
 	
 	public Parameters assembleResponseByContentTypeParameters(ResponseByContentTypeRule responseByContentTypeRule) {
@@ -447,9 +440,8 @@ public class RootAponAssembler {
 	
 	public Parameters assembleResponseParameters(ResponseRule responseRule) {
 		ResponseParameters responseParameters = new ResponseParameters();
-		
-		responseParameters.putValue(ResponseParameters.name, responseRule.getName());
-		responseParameters.putValue(ResponseParameters.characterEncoding, responseRule.getCharacterEncoding());
+		responseParameters.putValueNonNull(ResponseParameters.name, responseRule.getName());
+		responseParameters.putValueNonNull(ResponseParameters.characterEncoding, responseRule.getCharacterEncoding());
 		
 		if(responseRule.getResponseType() == ResponseType.TRANSFORM) {
 			TransformResponse transformResponse = responseRule.getRespondent();
@@ -477,12 +469,10 @@ public class RootAponAssembler {
 		if(transformRule.getContentType() != null)
 			transformParameters.putValue(TransformParameters.contentType, transformRule.getContentType().toString());
 		
-		if(transformRule.getTemplateId() != null)
-			transformParameters.putValue(TransformParameters.template, transformRule.getTemplateId());
-
-		transformParameters.putValue(TransformParameters.characterEncoding, transformRule.getCharacterEncoding());
-		transformParameters.putValue(TransformParameters.defaultResponse, transformRule.getDefaultResponse());
-		transformParameters.putValue(TransformParameters.pretty, transformRule.getPretty());
+		transformParameters.putValueNonNull(TransformParameters.template, transformRule.getTemplateId());
+		transformParameters.putValueNonNull(TransformParameters.characterEncoding, transformRule.getCharacterEncoding());
+		transformParameters.putValueNonNull(TransformParameters.defaultResponse, transformRule.getDefaultResponse());
+		transformParameters.putValueNonNull(TransformParameters.pretty, transformRule.getPretty());
 
 		if(transformRule.getTemplateRule() != null)
 			transformParameters.putValue(TransformParameters.builtinTemplate, assembleTemplateParameters(transformRule.getTemplateRule()));
@@ -497,32 +487,24 @@ public class RootAponAssembler {
 	
 	public Parameters assembleDispatchParameters(DispatchResponseRule dispatchResponseRule) {
 		DispatchParameters dispatchParameters = new DispatchParameters();
-
-		if(dispatchResponseRule.getName() != null)
-			dispatchParameters.putValue(DispatchParameters.name, dispatchResponseRule.getName().toString());
-
-		if(dispatchResponseRule.getContentType() != null)
-			dispatchParameters.putValue(DispatchParameters.contentType, dispatchResponseRule.getContentType().toString());
-		
-		dispatchParameters.putValue(DispatchParameters.characterEncoding, dispatchResponseRule.getCharacterEncoding());
+		dispatchParameters.putValueNonNull(DispatchParameters.name, dispatchResponseRule.getName());
+		dispatchParameters.putValueNonNull(DispatchParameters.contentType, dispatchResponseRule.getContentType());
+		dispatchParameters.putValueNonNull(DispatchParameters.characterEncoding, dispatchResponseRule.getCharacterEncoding());
+		dispatchParameters.putValueNonNull(DispatchParameters.defaultResponse, dispatchResponseRule.getDefaultResponse());
 		
 		ActionList actionList = dispatchResponseRule.getActionList();
 		if(actionList != null) {
 			assembleActionList(actionList, dispatchParameters, DispatchParameters.actions);
 		}
 		
-		dispatchParameters.putValue(DispatchParameters.defaultResponse, dispatchResponseRule.getDefaultResponse());
-		
 		return dispatchParameters;
 	}
 	
 	public Parameters assembleForwardParameters(ForwardResponseRule forwardResponseRule) {
 		ForwardParameters forwardParameters = new ForwardParameters();
-		
-		if(forwardResponseRule.getContentType() != null)
-			forwardParameters.putValue(ForwardParameters.contentType, forwardResponseRule.getContentType().toString());
-		
-		forwardParameters.putValue(ForwardParameters.translet, forwardResponseRule.getTransletName());
+		forwardParameters.putValueNonNull(ForwardParameters.contentType, forwardResponseRule.getContentType());
+		forwardParameters.putValueNonNull(ForwardParameters.translet, forwardResponseRule.getTransletName());
+		forwardParameters.putValueNonNull(ForwardParameters.defaultResponse, forwardResponseRule.getDefaultResponse());
 		
 		ItemRuleMap attributeItemRuleMap = forwardResponseRule.getAttributeItemRuleMap();
 		if(attributeItemRuleMap != null) {
@@ -534,52 +516,40 @@ public class RootAponAssembler {
 			assembleActionList(actionList, forwardParameters, ForwardParameters.actions);
 		}
 		
-		forwardParameters.putValue(ForwardParameters.defaultResponse, forwardResponseRule.getDefaultResponse());
-		
 		return forwardParameters;
 	}
 	
 	public Parameters assembleRedirectParameters(RedirectResponseRule redirectResponseRule) {
 		RedirectParameters redirectParameters = new RedirectParameters();
-
-		if(redirectResponseRule.getContentType() != null)
-			redirectParameters.putValue(RedirectParameters.contentType, redirectResponseRule.getContentType());
-		
-		redirectParameters.putValue(RedirectParameters.target, redirectResponseRule.getTarget());
+		redirectParameters.putValueNonNull(RedirectParameters.contentType, redirectResponseRule.getContentType());
+		redirectParameters.putValueNonNull(RedirectParameters.target, redirectResponseRule.getTarget());
+		redirectParameters.putValueNonNull(RedirectParameters.excludeNullParameter, redirectResponseRule.getExcludeNullParameter());
+		redirectParameters.putValueNonNull(RedirectParameters.defaultResponse, redirectResponseRule.getDefaultResponse());
 		
 		ItemRuleMap parameterItemRuleMap = redirectResponseRule.getParameterItemRuleMap();
 		if(parameterItemRuleMap != null) {
 			redirectParameters.putValue(RedirectParameters.parameters, assembleItemHolderParameters(parameterItemRuleMap));
 		}
 
-		redirectParameters.putValue(RedirectParameters.excludeNullParameter, redirectResponseRule.getExcludeNullParameter());
-
 		ActionList actionList = redirectResponseRule.getActionList();
 		if(actionList != null) {
 			assembleActionList(actionList, redirectParameters, RedirectParameters.actions);
 		}
-		
-		redirectParameters.putValue(RedirectParameters.defaultResponse, redirectResponseRule.getDefaultResponse());
 		
 		return redirectParameters;
 	}
 	
 	public Parameters assembleTemplateParameters(TemplateRule templateRule) {
 		TemplateParameters templateParameters = new TemplateParameters();
-
-		if(templateRule.getId() != null)
-			templateParameters.putValue(TemplateParameters.id, templateRule.getId());
-
-		if(templateRule.getEngine() != null)
-			templateParameters.putValue(TemplateParameters.engine, templateRule.getEngine());
-
-		templateParameters.putValue(TemplateParameters.name, templateRule.getName());
-		templateParameters.putValue(TemplateParameters.file, templateRule.getFile());
-		templateParameters.putValue(TemplateParameters.resource, templateRule.getResource());
-		templateParameters.putValue(TemplateParameters.url, templateRule.getUrl());
-		templateParameters.putValue(TemplateParameters.content, templateRule.getContent());
-		templateParameters.putValue(TemplateParameters.encoding, templateRule.getEncoding());
-		templateParameters.putValue(TemplateParameters.noCache, templateRule.getNoCache());
+		templateParameters.putValueNonNull(TemplateParameters.id, templateRule.getId());
+		templateParameters.putValueNonNull(TemplateParameters.engine, templateRule.getEngine());
+		templateParameters.putValueNonNull(TemplateParameters.name, templateRule.getName());
+		templateParameters.putValueNonNull(TemplateParameters.file, templateRule.getFile());
+		templateParameters.putValueNonNull(TemplateParameters.resource, templateRule.getResource());
+		templateParameters.putValueNonNull(TemplateParameters.url, templateRule.getUrl());
+		templateParameters.putValueNonNull(TemplateParameters.content, templateRule.getContent());
+		templateParameters.putValueNonNull(TemplateParameters.encoding, templateRule.getEncoding());
+		templateParameters.putValueNonNull(TemplateParameters.noCache, templateRule.getNoCache());
 		
 		return templateParameters;
 	}
@@ -601,9 +571,10 @@ public class RootAponAssembler {
 	
 	public Parameters assembleActionParameters(BeanActionRule beanActionRule) {
 		ActionParameters actionParameters = new ActionParameters();
-		actionParameters.putValue(ActionParameters.id, beanActionRule.getActionId());
-		actionParameters.putValue(ActionParameters.beanId, beanActionRule.getBeanId());
-		actionParameters.putValue(ActionParameters.methodName, beanActionRule.getMethodName());
+		actionParameters.putValueNonNull(ActionParameters.id, beanActionRule.getActionId());
+		actionParameters.putValueNonNull(ActionParameters.beanId, beanActionRule.getBeanId());
+		actionParameters.putValueNonNull(ActionParameters.methodName, beanActionRule.getMethodName());
+		actionParameters.putValueNonNull(ActionParameters.hidden, beanActionRule.getHidden());
 		
 		ItemRuleMap propertyItemRuleMap = beanActionRule.getPropertyItemRuleMap();
 		if(propertyItemRuleMap != null) {
@@ -615,36 +586,32 @@ public class RootAponAssembler {
 			actionParameters.putValue(ActionParameters.arguments, assembleItemHolderParameters(argumentItemRuleMap));
 		}
 		
-		actionParameters.putValue(ActionParameters.hidden, beanActionRule.getHidden());
-		
 		return actionParameters;
 	}
 	
 	public Parameters assembleActionParameters(EchoActionRule echoActionRule) {
 		ActionParameters actionParameters = new ActionParameters();
-		actionParameters.putValue(ActionParameters.id, echoActionRule.getActionId());
+		actionParameters.putValueNonNull(ActionParameters.id, echoActionRule.getActionId());
+		actionParameters.putValueNonNull(ActionParameters.hidden, echoActionRule.getHidden());
 		
 		ItemRuleMap attributeItemRuleMap = echoActionRule.getAttributeItemRuleMap();
 		if(attributeItemRuleMap != null) {
 			actionParameters.putValue(ActionParameters.echo, assembleItemHolderParameters(attributeItemRuleMap));
 		}
 		
-		actionParameters.putValue(ActionParameters.hidden, echoActionRule.getHidden());
-		
 		return actionParameters;
 	}
 	
 	public Parameters assembleActionParameters(IncludeActionRule includeActionRule) {
 		ActionParameters actionParameters = new ActionParameters();
-		actionParameters.putValue(ActionParameters.id, includeActionRule.getActionId());
-		actionParameters.putValue(ActionParameters.include, includeActionRule.getTransletName());
+		actionParameters.putValueNonNull(ActionParameters.id, includeActionRule.getActionId());
+		actionParameters.putValueNonNull(ActionParameters.include, includeActionRule.getTransletName());
+		actionParameters.putValueNonNull(ActionParameters.hidden, includeActionRule.getHidden());
 		
 		ItemRuleMap attributeItemRuleMap = includeActionRule.getAttributeItemRuleMap();
 		if(attributeItemRuleMap != null) {
 			actionParameters.putValue(ActionParameters.attributes, assembleItemHolderParameters(attributeItemRuleMap));
 		}
-		
-		actionParameters.putValue(ActionParameters.hidden, includeActionRule.getHidden());
 		
 		return actionParameters;
 	}
@@ -665,23 +632,12 @@ public class RootAponAssembler {
 			itemParameters.putValue(ItemParameters.name, itemRule.getName());
 		if(itemRule.getValueType() != null)
 			itemParameters.putValue(ItemParameters.valueType, itemRule.getValueType().toString());
-		if(itemRule.getDefaultValue() != null)
-			itemParameters.putValue(ItemParameters.defaultValue, itemRule.getDefaultValue().toString());
-		if(itemRule.getTokenize() != null)
-			itemParameters.putValue(ItemParameters.tokenize, itemRule.getTokenize());
-
-		/*
-		if(itemRule.getValueType() == ItemValueType.PARAMETERS) {
-			Parameter p = itemParameters.getParameter(ItemParameters.value);
-			p.setParameterValueType(ParameterValueType.TEXT);
-		}
-		*/
+		
+		itemParameters.putValueNonNull(ItemParameters.defaultValue, itemRule.getDefaultValue());
+		itemParameters.putValueNonNull(ItemParameters.tokenize, itemRule.getTokenize());
 		
 		if(itemRule.getType() == ItemType.SINGULAR) {
-			String value = itemRule.getValue();
-			if(value != null) {
-				itemParameters.putValue(ItemParameters.value, value);
-			}
+			itemParameters.putValueNonNull(ItemParameters.value, itemRule.getValue());
 		} else if(itemRule.getType() == ItemType.ARRAY || itemRule.getType() == ItemType.LIST || itemRule.getType() == ItemType.SET) {
 			List<String> valueList = itemRule.getValueList();
 			if(valueList != null) {

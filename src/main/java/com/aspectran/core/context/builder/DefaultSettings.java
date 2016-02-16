@@ -40,9 +40,9 @@ public class DefaultSettings {
 	
 	private Class<Translet> transletInterfaceClass;
 	
-	private String transletImplementClassName;
+	private String transletImplementationClassName;
 	
-	private Class<CoreTranslet> transletImplementClass;
+	private Class<CoreTranslet> transletImplementationClass;
 	
 	private Boolean nullableActionId;
 	
@@ -61,8 +61,8 @@ public class DefaultSettings {
 		this.transletNameSuffix = ds.getTransletNameSuffix();
 		this.transletInterfaceClassName = ds.getTransletInterfaceClassName();
 		this.transletInterfaceClass = ds.getTransletInterfaceClass();
-		this.transletImplementClassName = ds.getTransletImplementClassName();
-		this.transletImplementClass = ds.getTransletImplementClass();
+		this.transletImplementationClassName = ds.getTransletImplementationClassName();
+		this.transletImplementationClass = ds.getTransletImplementationClass();
 		this.nullableActionId = ds.getNullableActionId();
 		this.beanProxifier = ds.getBeanProxifier();
 		this.pointcutPatternVerifiable = ds.getPointcutPatternVerifiable();
@@ -130,20 +130,20 @@ public class DefaultSettings {
 		this.transletInterfaceClass = transletInterfaceClass;
 	}
 
-	public String getTransletImplementClassName() {
-		return transletImplementClassName;
+	public String getTransletImplementationClassName() {
+		return transletImplementationClassName;
 	}
 
-	public void setTransletImplementClassName(String transletImplementClassName) {
-		this.transletImplementClassName = transletImplementClassName;
+	public void setTransletImplementationClassName(String transletImplementationClassName) {
+		this.transletImplementationClassName = transletImplementationClassName;
 	}
 
-	public Class<CoreTranslet> getTransletImplementClass() {
-		return transletImplementClass;
+	public Class<CoreTranslet> getTransletImplementationClass() {
+		return transletImplementationClass;
 	}
 
-	public void setTransletImplementClass(Class<CoreTranslet> transletImplementClass) {
-		this.transletImplementClass = transletImplementClass;
+	public void setTransletImplementationClass(Class<CoreTranslet> transletImplementationClass) {
+		this.transletImplementationClass = transletImplementationClass;
 	}
 
 	public boolean isNullableActionId() {
@@ -199,8 +199,8 @@ public class DefaultSettings {
 		if(settings.get(DefaultSettingType.TRANSLET_INTERFACE_CLASS) != null)
 			setTransletInterfaceClassName(settings.get(DefaultSettingType.TRANSLET_INTERFACE_CLASS));
 		
-		if(settings.get(DefaultSettingType.TRANSLET_IMPLEMENT_CLASS) != null)
-			setTransletImplementClassName(settings.get(DefaultSettingType.TRANSLET_IMPLEMENT_CLASS));
+		if(settings.get(DefaultSettingType.TRANSLET_IMPLEMENTATION_CLASS) != null)
+			setTransletImplementationClassName(settings.get(DefaultSettingType.TRANSLET_IMPLEMENTATION_CLASS));
 
 		if(settings.get(DefaultSettingType.NULLABLE_ACTION_ID) != null)
 			nullableActionId = (settings.get(DefaultSettingType.NULLABLE_ACTION_ID) == null || Boolean.parseBoolean(settings.get(DefaultSettingType.NULLABLE_ACTION_ID)));

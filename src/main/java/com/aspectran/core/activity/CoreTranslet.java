@@ -333,8 +333,8 @@ public class CoreTranslet implements Translet {
 	}
 
 	@Override
-	public Class<? extends CoreTranslet> getTransletImplementClass() {
-		return activity.getTransletImplementClass();
+	public Class<? extends CoreTranslet> getTransletImplementationClass() {
+		return activity.getTransletImplementationClass();
 	}
 	
 }

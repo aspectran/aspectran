@@ -201,10 +201,9 @@ public class XslTransform extends TransformResponse implements Response {
 					}
 				}
 			}
+		} else {
+			throw new IllegalArgumentException("No specified template " + templateRule);
 		}
-		
-		if(this.templates == null)
-			throw new TransformerConfigurationException("Template file is null.");
 	}
 
 	private void determineOutoutStyle() {

@@ -139,7 +139,7 @@ public abstract class AbstractActivity {
 	 *
 	 * @return the translet implement class
 	 */
-	public Class<? extends CoreTranslet> getTransletImplementClass() {
+	public Class<? extends CoreTranslet> getTransletImplementationClass() {
 		return transletImplementClass;
 	}
 
@@ -148,7 +148,7 @@ public abstract class AbstractActivity {
 	 *
 	 * @param transletImplementClass the new translet implement class
 	 */
-	protected void setTransletImplementClass(Class<? extends CoreTranslet> transletImplementClass) {
+	protected void setTransletImplementationClass(Class<? extends CoreTranslet> transletImplementClass) {
 		this.transletImplementClass = transletImplementClass;
 	}
 	

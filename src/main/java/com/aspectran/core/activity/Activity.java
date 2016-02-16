@@ -40,20 +40,57 @@ import com.aspectran.core.context.template.TemplateProcessor;
  */
 public interface Activity {
 
+	/**
+	 * Return the interface class for {@code Translet}.
+	 *
+	 * @return the translet interface class
+	 */
 	public Class<? extends Translet> getTransletInterfaceClass();
 	
-	public Class<? extends CoreTranslet> getTransletImplementClass();
+	/**
+	 * Return the implementation class for {@code Translet}.
+	 *
+	 * @return the translet implementation class
+	 */
+	public Class<? extends CoreTranslet> getTransletImplementationClass();
 
+	/**
+	 * Preparation for the activity.
+	 *
+	 * @param transletName the translet name
+	 */
 	public void ready(String transletName);
 	
-	public void ready(String transletName, String restVerb);
+	/**
+	 * Preparation for the activity.
+	 *
+	 * @param transletName the translet name
+	 * @param requestMethod the request method
+	 */
+	public void ready(String transletName, String requestMethod);
 
+	/**
+	 * Preparation for the activity.
+	 *
+	 * @param transletName the translet name
+	 * @param requestMethod the request method
+	 */
 	public void ready(String transletName, RequestMethodType requestMethod);
 	
+	/**
+	 * Perform activity.
+	 */
 	public void perform();
 	
+	/**
+	 * Perform activity without reponse.
+	 */
 	public void performWithoutResponse();
 
+	/**
+	 * Finish the activity.
+	 * It must be called before exiting activities.
+	 */
 	public void finish();
 
 	/**
@@ -70,12 +107,33 @@ public interface Activity {
 	 */
 	public String determineResponseCharacterEncoding();
 	
+	/**
+	 * Execute the aspect advices.
+	 *
+	 * @param aspectAdviceRuleList the aspect advice rule list
+	 */
 	public void execute(List<AspectAdviceRule> aspectAdviceRuleList);
 	
+	/**
+	 * Forced to Execute the aspect advices.
+	 *
+	 * @param aspectAdviceRuleList the aspect advice rule list
+	 */
 	public void forceExecute(List<AspectAdviceRule> aspectAdviceRuleList);
 	
+	/**
+	 * Returns the process result.
+	 *
+	 * @return the process result
+	 */
 	public ProcessResult getProcessResult();
 	
+	/**
+	 * Returns a action result  from the process result.
+	 *
+	 * @param actionId the specified action id
+	 * @return the action result
+	 */
 	public Object getProcessResult(String actionId);
 	
 	/**

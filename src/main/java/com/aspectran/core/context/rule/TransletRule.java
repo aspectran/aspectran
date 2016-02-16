@@ -73,7 +73,7 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 	
 	private Class<? extends Translet> transletInterfaceClass;
 	
-	private Class<? extends CoreTranslet> transletImplementClass;
+	private Class<? extends CoreTranslet> transletImplementationClass;
 
 	private AspectAdviceRuleRegistry aspectAdviceRuleRegistry;
 
@@ -417,12 +417,12 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 		this.transletInterfaceClass = transletInterfaceClass;
 	}
 
-	public Class<? extends CoreTranslet> getTransletImplementClass() {
-		return transletImplementClass;
+	public Class<? extends CoreTranslet> getTransletImplementationClass() {
+		return transletImplementationClass;
 	}
 
-	public void setTransletImplementClass(Class<? extends CoreTranslet> transletImplementClass) {
-		this.transletImplementClass = transletImplementClass;
+	public void setTransletImplementationClass(Class<? extends CoreTranslet> transletImplementationClass) {
+		this.transletImplementationClass = transletImplementationClass;
 	}
 
 	public AspectAdviceRuleRegistry getAspectAdviceRuleRegistry() {
@@ -468,7 +468,7 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 		tsb.append("responseRule", responseRule);
 		tsb.append("exceptionHandlingRule", exceptionHandlingRule);
 		tsb.append("transletInterfaceClass", transletInterfaceClass);
-		tsb.append("transletImplementClass", transletImplementClass);
+		tsb.append("transletImplementClass", transletImplementationClass);
 		tsb.append("aspectAdviceRuleRegistry", aspectAdviceRuleRegistry);
 		tsb.append("explicitContent", explicitContent);
 		tsb.append("implicitResponse", implicitResponse);
@@ -518,7 +518,7 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 		tr.setResponseRule(responseRule);
 		tr.setExceptionHandlingRule(transletRule.getExceptionHandlingRule());
 		tr.setTransletInterfaceClass(transletRule.getTransletInterfaceClass());
-		tr.setTransletImplementClass(transletRule.getTransletImplementClass());
+		tr.setTransletImplementationClass(transletRule.getTransletImplementationClass());
 		tr.setDescription(transletRule.getDescription());
 		
 		if(responseRule.getResponse() != null) {
@@ -541,7 +541,7 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 		tr.setRequestRule(transletRule.getRequestRule());
 		tr.setExceptionHandlingRule(transletRule.getExceptionHandlingRule());
 		tr.setTransletInterfaceClass(transletRule.getTransletInterfaceClass());
-		tr.setTransletImplementClass(transletRule.getTransletImplementClass());
+		tr.setTransletImplementationClass(transletRule.getTransletImplementationClass());
 		tr.setDescription(transletRule.getDescription());
 
 		if(transletRule.getResponseRule() != null) {

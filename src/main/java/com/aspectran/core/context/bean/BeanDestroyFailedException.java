@@ -31,17 +31,17 @@ public class BeanDestroyFailedException extends BeanRuleException {
 	 * @param beanRule the bean rule
 	 */
 	public BeanDestroyFailedException(BeanRule beanRule) {
-		this(beanRule, "Cannot destroy a bean ");
+		this("Cannot destroy a bean", beanRule);
 	}
 
 	/**
 	 * Create a new BeanDestroyFailedException.
 	 *
-	 * @param beanRule the bean rule
 	 * @param msg the detail message
+	 * @param beanRule the bean rule
 	 */
-	public BeanDestroyFailedException(BeanRule beanRule, String msg) {
-		super(beanRule, msg);
+	public BeanDestroyFailedException(String msg, BeanRule beanRule) {
+		super(msg, beanRule);
 	}
 
 	/**
@@ -51,18 +51,18 @@ public class BeanDestroyFailedException extends BeanRuleException {
 	 * @param cause the root cause
 	 */
 	public BeanDestroyFailedException(BeanRule beanRule, Throwable cause) {
-		this(beanRule, "Cannot destroy a bean", cause);
+		this("Cannot destroy a bean", beanRule, cause);
 	}
 
 	/**
 	 * Create a new BeanDestroyFailedException.
 	 *
+	 * @param msg the detail message
 	 * @param beanRule the bean rule
-	 * @param msg The detail message
 	 * @param cause the root cause
 	 */
-	public BeanDestroyFailedException(BeanRule beanRule, String msg, Throwable cause) {
-		super(beanRule, msg, cause);
+	public BeanDestroyFailedException(String msg, BeanRule beanRule, Throwable cause) {
+		super(msg, beanRule, cause);
 	}
 
 }

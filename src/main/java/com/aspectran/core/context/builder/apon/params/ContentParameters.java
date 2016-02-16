@@ -22,26 +22,23 @@ import com.aspectran.core.util.apon.Parameters;
 
 public class ContentParameters extends AbstractParameters implements Parameters {
 
-	public static final ParameterDefine id;
 	public static final ParameterDefine name;
-	public static final ParameterDefine omittable;
 	public static final ParameterDefine hidden;
+	public static final ParameterDefine omittable;
 	public static final ParameterDefine actions;
 	
 	private static final ParameterDefine[] parameterDefines;
 	
 	static {
-		id = new ParameterDefine("id", ParameterValueType.STRING);
 		name = new ParameterDefine("name", ParameterValueType.STRING);
-		omittable = new ParameterDefine("omittable", ParameterValueType.BOOLEAN);
 		hidden = new ParameterDefine("hidden", ParameterValueType.BOOLEAN);
+		omittable = new ParameterDefine("omittable", ParameterValueType.BOOLEAN);
 		actions = new ParameterDefine("action", ActionParameters.class, true, true);
 		
 		parameterDefines = new ParameterDefine[] {
-				id,
 				name,
-				omittable,
 				hidden,
+				omittable,
 				actions
 		};
 	}

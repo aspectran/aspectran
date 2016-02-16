@@ -31,17 +31,17 @@ public class BeanCreationException extends BeanRuleException {
 	 * @param beanRule the bean rule
 	 */
 	public BeanCreationException(BeanRule beanRule) {
-		super(beanRule, "Cannot create a bean");
+		super("Cannot create a bean", beanRule);
 	}
 
 	/**
 	 * Instantiates a new BeanCreationException.
 	 *
-	 * @param beanRule the bean rule
 	 * @param msg The detail message
+	 * @param beanRule the bean rule
 	 */
-	public BeanCreationException(BeanRule beanRule, String msg) {
-		super(beanRule, msg);
+	public BeanCreationException(String msg, BeanRule beanRule) {
+		super(msg, beanRule);
 	}
 
 	/**
@@ -51,18 +51,18 @@ public class BeanCreationException extends BeanRuleException {
 	 * @param cause the root cause
 	 */
 	public BeanCreationException(BeanRule beanRule, Throwable cause) {
-		super(beanRule, "Cannot create a bean", cause);
+		super("Cannot create a bean", beanRule, cause);
 	}
 
 	/**
 	 * Instantiates a new BeanCreationException.
 	 *
+	 * @param msg the detail message
 	 * @param beanRule the bean rule
-	 * @param msg The detail message
 	 * @param cause the root cause
 	 */
-	public BeanCreationException(BeanRule beanRule, String msg, Throwable cause) {
-		super(beanRule, msg, cause);
+	public BeanCreationException(String msg, BeanRule beanRule, Throwable cause) {
+		super(msg, beanRule, cause);
 	}
 
 }

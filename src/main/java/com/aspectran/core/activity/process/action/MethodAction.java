@@ -29,7 +29,7 @@ import com.aspectran.core.util.logging.LogFactory;
 /**
  * The Class MethodAction.
  * 
- * <p>Created: 2016. 2. 9</p>
+ * <p>Created: 2016. 2. 9.</p>
  *
  * @since 2.0.0
  */

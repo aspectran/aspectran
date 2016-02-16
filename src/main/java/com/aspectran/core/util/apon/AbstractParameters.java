@@ -146,7 +146,21 @@ public abstract class AbstractParameters implements Parameters {
 	public void putValue(ParameterDefine parameterDefine, Object value) {
 		putValue(parameterDefine.getName(), value);
 	}
+	
+	@Override
+	public void putValueNonNull(String name, Object value) {
+		if(value != null) {
+			putValue(name, value);
+		}
+	}
 
+	@Override
+	public void putValueNonNull(ParameterDefine parameterDefine, Object value) {
+		if(value != null) {
+			putValue(parameterDefine.getName(), value);
+		}
+	}
+	
 	@Override
 	public String getString(String name) {
 		Parameter p = getParameter(name);

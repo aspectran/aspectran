@@ -41,7 +41,7 @@ public class DefaultSettingsParameters extends AbstractParameters implements Par
 		transletNamePrefix = new ParameterDefine(DefaultSettingType.TRANSLET_NAME_PREFIX.toString(), ParameterValueType.STRING);
 		transletNameSuffix = new ParameterDefine(DefaultSettingType.TRANSLET_NAME_SUFFIX.toString(), ParameterValueType.STRING);
 		transletInterfaceClass = new ParameterDefine(DefaultSettingType.TRANSLET_INTERFACE_CLASS.toString(), ParameterValueType.STRING);
-		transletImplementClass = new ParameterDefine(DefaultSettingType.TRANSLET_IMPLEMENT_CLASS.toString(), ParameterValueType.STRING);
+		transletImplementClass = new ParameterDefine(DefaultSettingType.TRANSLET_IMPLEMENTATION_CLASS.toString(), ParameterValueType.STRING);
 		nullableContentId = new ParameterDefine(DefaultSettingType.NULLABLE_CONTENT_ID.toString(), ParameterValueType.BOOLEAN);
 		nullableActionId = new ParameterDefine(DefaultSettingType.NULLABLE_ACTION_ID.toString(), ParameterValueType.BOOLEAN);
 		beanProxifier = new ParameterDefine(DefaultSettingType.BEAN_PROXIFIER.toString(), ParameterValueType.STRING);

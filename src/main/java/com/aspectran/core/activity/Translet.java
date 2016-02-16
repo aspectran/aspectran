@@ -205,7 +205,7 @@ public interface Translet {
 	public void redirect(String target, boolean immediately);
 
 	/**
-	 * Redirect.
+	 * Redirect to the other target resouce.
 	 *
 	 * @param target the redirect target
 	 * @param parameters the parameters
@@ -220,17 +220,17 @@ public interface Translet {
 	public void forward(ForwardResponseRule forwardResponseRule);
 
 	/**
-	 * Immediately forwarding.
+	 * Forward to specified translet immediately.
 	 *
 	 * @param transletName the translet name of the target to be forwarded
 	 */
 	public void forward(String transletName);
 
 	/**
-	 * Forward.
+	 * Forward to specified translet.
 	 *
 	 * @param transletName the translet name
-	 * @param immediately the immediately
+	 * @param immediately whether forwarding immediately
 	 */
 	public void forward(String transletName, boolean immediately);
 
@@ -242,14 +242,14 @@ public interface Translet {
 	public boolean isExceptionRaised();
 
 	/**
-	 * Returns the raised exception.
+	 * Returns the raised exception instance.
 	 *
-	 * @return the raised exception
+	 * @return the raised exception instance
 	 */
 	public Exception getRaisedException();
 
 	/**
-	 * Return an instance.
+	 * Return the bean instance that matches the given id.
 	 *
 	 * @param <T> the generic type
 	 * @param id the id of the bean to retrieve
@@ -269,8 +269,8 @@ public interface Translet {
 	public <T> T getBean(Class<T> classType);
 
 	/**
-	 * Return an instance.
-	 * If the bean is not of the required type then throw a BeanNotOfRequiredTypeException.
+	 * Return the bean instance that matches the given id and object type.
+	 * If the bean is not of the required type then throw a {@code BeanNotOfRequiredTypeException}.
 	 *
 	 * @param <T> the generic type
 	 * @param id the id of the bean to retrieve
@@ -333,17 +333,17 @@ public interface Translet {
 	public void putAdviceResult(AspectAdviceRule aspectAdviceRule, Object adviceActionResult);
 
 	/**
-	 * Gets the translet interface class.
+	 * Return the interface class for {@code Translet}.
 	 *
 	 * @return the translet interface class
 	 */
 	public Class<? extends Translet> getTransletInterfaceClass();
 
 	/**
-	 * Gets the translet implement class.
+	 * Return the implementation class for {@code Translet}.
 	 *
-	 * @return the translet implement class
+	 * @return the translet implementation class
 	 */
-	public Class<? extends CoreTranslet> getTransletImplementClass();
+	public Class<? extends CoreTranslet> getTransletImplementationClass();
 
 }

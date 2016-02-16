@@ -41,24 +41,24 @@ public class TransformFactory {
 		if(tranformType == TransformType.XSL_TRANSFORM) {
 			transform = new XslTransform(transformRule);
 		} else if(tranformType == TransformType.XML_TRANSFORM) {
-			if(transformRule.getContentType() == null)
+			if(transformRule.getContentType() == null) {
 				transformRule.setContentType(ContentType.TEXT_XML.toString());
-
+			}
 			transform = new XmlTransform(transformRule);
 		} else if(tranformType == TransformType.TEXT_TRANSFORM) {
 			transform = new TextTransform(transformRule);
 		} else if(tranformType == TransformType.JSON_TRANSFORM) {
-			if(transformRule.getContentType() == null)
+			if(transformRule.getContentType() == null) {
 				transformRule.setContentType(ContentType.TEXT_PLAIN.toString());
-			
+			}
 			transform = new JsonTransform(transformRule);
 		} else if(tranformType == TransformType.APON_TRANSFORM) {
-			if(transformRule.getContentType() == null)
+			if(transformRule.getContentType() == null) {
 				transformRule.setContentType(ContentType.TEXT_PLAIN.toString());
-			
+			}
 			transform = new AponTransform(transformRule);
 		} else {
-			throw new TransformResponseException(transformRule, "Unknown transform type");
+			throw new TransformResponseException(transformRule, "Unknown transform type.");
 		}
 		
 		return transform;

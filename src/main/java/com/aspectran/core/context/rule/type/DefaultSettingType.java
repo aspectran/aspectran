@@ -24,7 +24,7 @@ public enum DefaultSettingType {
 	TRANSLET_NAME_PREFIX("transletNamePrefix"),
 	TRANSLET_NAME_SUFFIX("transletNameSuffix"),
 	TRANSLET_INTERFACE_CLASS("transletInterfaceClass"),
-	TRANSLET_IMPLEMENT_CLASS("transletImplementClass"),
+	TRANSLET_IMPLEMENTATION_CLASS("transletImplementationClass"),
 	NULLABLE_CONTENT_ID("nullableContentId"),
 	NULLABLE_ACTION_ID("nullableActionId"),
 	BEAN_PROXIFIER("beanProxifier"),

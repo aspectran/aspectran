@@ -730,10 +730,10 @@ public class BeanRule implements Replicable<BeanRule> {
 
 		if(initMethodName != null) {
 			if(beanRule.isInitializableBean())
-				throw new BeanRuleException(beanRule, "Bean initialization method is duplicated. Already implemented the InitializableBean");
+				throw new BeanRuleException("Bean initialization method is duplicated. Already implemented the InitializableBean", beanRule);
 
 			if(beanRule.isInitializableTransletBean())
-				throw new BeanRuleException(beanRule, "Bean initialization method is duplicated. Already implemented the InitializableTransletBean");
+				throw new BeanRuleException("Bean initialization method is duplicated. Already implemented the InitializableTransletBean", beanRule);
 
 			Method m1 = MethodUtils.getAccessibleMethod(beanClass, initMethodName, null);
 			Method m2 = MethodUtils.getAccessibleMethod(beanClass, initMethodName, parameterTypes);
@@ -747,7 +747,7 @@ public class BeanRule implements Replicable<BeanRule> {
 
 		if(factoryMethodName != null) {
 			if(beanRule.isFactoryBean())
-				throw new BeanRuleException(beanRule, "Bean factory method  is duplicated. Already implemented the FactoryBean");
+				throw new BeanRuleException("Bean factory method  is duplicated. Already implemented the FactoryBean", beanRule);
 
 			Method m1 = MethodUtils.getAccessibleMethod(beanClass, factoryMethodName, null);
 			Method m2 = MethodUtils.getAccessibleMethod(beanClass, factoryMethodName, parameterTypes);
@@ -761,7 +761,7 @@ public class BeanRule implements Replicable<BeanRule> {
 
 		if(destroyMethodName != null) {
 			if(beanRule.isDisposableBean())
-				throw new BeanRuleException(beanRule, "Bean destroy method  is duplicated. Already implemented the DisposableBean");
+				throw new BeanRuleException("Bean destroy method  is duplicated. Already implemented the DisposableBean", beanRule);
 
 			Method m1 = MethodUtils.getAccessibleMethod(beanClass, destroyMethodName, null);
 			if(m1 == null)
@@ -772,12 +772,10 @@ public class BeanRule implements Replicable<BeanRule> {
 	public static void updateConstructorArgument(BeanRule beanRule, String text) {
 		if(!beanRule.isOffered()) {
 			List<Parameters> argumentParametersList = ItemRule.toItemParametersList(text);
-
 			if(argumentParametersList == null)
 				return;
 
 			ItemRuleMap constructorArgumentItemRuleMap = ItemRule.toItemRuleMap(argumentParametersList);
-
 			if(constructorArgumentItemRuleMap == null)
 				return;
 
@@ -788,12 +786,10 @@ public class BeanRule implements Replicable<BeanRule> {
 	public static void updateProperty(BeanRule beanRule, String text) {
 		if(!beanRule.isOffered()) {
 			List<Parameters> propertyParametersList = ItemRule.toItemParametersList(text);
-
 			if(propertyParametersList == null)
 				return;
 
 			ItemRuleMap propertyItemRuleMap = ItemRule.toItemRuleMap(propertyParametersList);
-
 			if(propertyItemRuleMap == null)
 				return;
 

@@ -45,11 +45,11 @@ public class BeanNotOfRequiredTypeException extends BeanRuleException {
 	/**
 	 * Create a new BeanNotOfRequiredTypeException.
 	 *
-	 * @param beanRule the bean rule
 	 * @param requiredType the required type
+	 * @param beanRule the bean rule
 	 */
-	public BeanNotOfRequiredTypeException(BeanRule beanRule, Class<?> requiredType) {
-		super(beanRule, "Bean named '" + beanRule.getId() + "' must be of type [" + requiredType.getName() + "]");
+	public BeanNotOfRequiredTypeException(Class<?> requiredType, BeanRule beanRule) {
+		super("Bean named '" + beanRule.getId() + "' must be of type [" + requiredType.getName() + "]", beanRule);
 		this.requiredType = requiredType;
 	}
 

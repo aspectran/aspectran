@@ -33,7 +33,7 @@ public class UnsupportedBeanScopeException extends BeanRuleException {
 	 * @param beanRule the bean rule
 	 */
 	public UnsupportedBeanScopeException(ScopeType scopeType, BeanRule beanRule) {
-		super(beanRule, "The " + scopeType + " scope is not available. beanRule");
+		super("The " + scopeType + " scope is not available. beanRule", beanRule);
 	}
 
 }

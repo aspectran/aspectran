@@ -73,87 +73,61 @@ public class ContentsXMLReader implements XMLReader {
 	public ContentsXMLReader() {
 	}
 
-	/* (non-Javadoc)
-	 * @see org.xml.sax.XMLReader#setContentHandler(org.xml.sax.ContentHandler)
-	 */
+	@Override
 	public void setContentHandler(ContentHandler handler) {
 		this.handler = handler;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.xml.sax.XMLReader#getContentHandler()
-	 */
+	@Override
 	public ContentHandler getContentHandler() {
 		return handler;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.xml.sax.XMLReader#setErrorHandler(org.xml.sax.ErrorHandler)
-	 */
+	@Override
 	public void setErrorHandler(ErrorHandler errorhandler) {
 	}
 
-	/* (non-Javadoc)
-	 * @see org.xml.sax.XMLReader#getErrorHandler()
-	 */
+	@Override
 	public ErrorHandler getErrorHandler() {
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.xml.sax.XMLReader#parse(java.lang.String)
-	 */
+	@Override
 	public void parse(String s) throws IOException, SAXException {
 	}
 
-	/* (non-Javadoc)
-	 * @see org.xml.sax.XMLReader#getDTDHandler()
-	 */
+	@Override
 	public DTDHandler getDTDHandler() {
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.xml.sax.XMLReader#getEntityResolver()
-	 */
+	@Override
 	public EntityResolver getEntityResolver() {
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.xml.sax.XMLReader#setEntityResolver(org.xml.sax.EntityResolver)
-	 */
+	@Override
 	public void setEntityResolver(EntityResolver entityresolver) {
 	}
 
-	/* (non-Javadoc)
-	 * @see org.xml.sax.XMLReader#setDTDHandler(org.xml.sax.DTDHandler)
-	 */
+	@Override
 	public void setDTDHandler(DTDHandler dtdhandler) {
 	}
 
-	/* (non-Javadoc)
-	 * @see org.xml.sax.XMLReader#getProperty(java.lang.String)
-	 */
+	@Override
 	public Object getProperty(String name) {
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.xml.sax.XMLReader#setProperty(java.lang.String, java.lang.Object)
-	 */
+	@Override
 	public void setProperty(String s, Object obj) {
 	}
 
-	/* (non-Javadoc)
-	 * @see org.xml.sax.XMLReader#setFeature(java.lang.String, boolean)
-	 */
+	@Override
 	public void setFeature(String s, boolean flag) {
 	}
 
-	/* (non-Javadoc)
-	 * @see org.xml.sax.XMLReader#getFeature(java.lang.String)
-	 */
+	@Override
 	public boolean getFeature(String name) {
 		return false;
 	}
@@ -162,7 +136,6 @@ public class ContentsXMLReader implements XMLReader {
 	 * Output a string.
 	 * 
 	 * @param s the input string
-	 * 
 	 * @throws SAXException the SAX exception
 	 */
 	protected void outputString(String s) throws SAXException {
@@ -173,16 +146,13 @@ public class ContentsXMLReader implements XMLReader {
 	 * Output a ignorable whitespace string.
 	 * 
 	 * @param s the whitespace string
-	 * 
 	 * @throws SAXException the SAX exception
 	 */
 	protected void outputIgnorableWhitespace(String s) throws SAXException {
 		handler.characters(s.toCharArray(), 0, s.length());
 	}
 
-	/* (non-Javadoc)
-	 * @see org.xml.sax.XMLReader#parse(org.xml.sax.InputSource)
-	 */
+	@Override
 	public void parse(InputSource is) throws IOException, SAXException {
 		if(handler == null)
 			throw new SAXException("No XML ContentHandler");
@@ -230,7 +200,6 @@ public class ContentsXMLReader implements XMLReader {
 	 * Parses the result of processing.
 	 * 
 	 * @param processResult the content results list
-	 * 
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 * @throws SAXException the SAX exception
 	 * @throws InvocationTargetException the invocation target exception

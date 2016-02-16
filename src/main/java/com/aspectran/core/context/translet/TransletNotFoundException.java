@@ -28,25 +28,19 @@ public class TransletNotFoundException extends TransletException {
 	private String transletName;
 	
 	/**
-	 * Simple constructor.
-	 */
-	public TransletNotFoundException() {
-	}
-
-	/**
 	 * Constructor to create exception with a message.
-	 * 
-	 * @param transletName A message to associate with the exception
+	 *
+	 * @param transletName the translet name
 	 */
 	public TransletNotFoundException(String transletName) {
-		super("translet is not found: " + transletName);
+		super("Translet is not found: " + transletName);
 		this.transletName = transletName;
 	}
 
 	/**
 	 * Constructor to create exception to wrap another exception.
 	 * 
-	 * @param cause The real cause of the exception
+	 * @param cause the real cause of the exception
 	 */
 	public TransletNotFoundException(Throwable cause) {
 		super(cause);
@@ -55,12 +49,12 @@ public class TransletNotFoundException extends TransletException {
 	/**
 	 * Constructor to create exception to wrap another exception and pass a
 	 * message.
-	 * 
-	 * @param transletName The message
+	 *
+	 * @param transletName the translet name
 	 * @param cause The real cause of the exception
 	 */
 	public TransletNotFoundException(String transletName, Throwable cause) {
-		super("translet is not found: " + transletName, cause);
+		super("Translet is not found: " + transletName, cause);
 		this.transletName = transletName;
 	}
 	

@@ -91,4 +91,17 @@ public enum RequestMethodType {
 		return orderedTypes;
 	}
 
+	public static String stringify(RequestMethodType[] types) {
+		if(types == null || types.length == 0)
+			return null;
+		
+		StringBuilder sb = new StringBuilder(types.length * 7);
+		for(int i = 0; i < types.length; i++) {
+			if(i > 0)
+				sb.append(",");
+			sb.append(types[i]);
+		}
+		return sb.toString();
+	}
+
 }

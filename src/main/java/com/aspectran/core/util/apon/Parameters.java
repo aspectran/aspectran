@@ -48,6 +48,10 @@ public interface Parameters {
 	
 	public void putValue(ParameterDefine parameterDefine, Object value);
 	
+	public void putValueNonNull(String name, Object value);
+
+	public void putValueNonNull(ParameterDefine parameterDefine, Object value);
+	
 	public String getString(String name);
 
 	public String getString(String name, String defaultValue);

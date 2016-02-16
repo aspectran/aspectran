@@ -121,11 +121,11 @@ public class TransletRuleRegistry {
 		restfulTransletRuleSet.clear();
 	}
 	
-	public void addTransletRule(final TransletRule transletRule) throws CloneNotSupportedException {
+	public void addTransletRule(final TransletRule transletRule) {
 		DefaultSettings defaultSettings = assistantLocal.getDefaultSettings();
 		if(defaultSettings != null) {
 			transletRule.setTransletInterfaceClass(defaultSettings.getTransletInterfaceClass());
-			transletRule.setTransletImplementClass(defaultSettings.getTransletImplementClass());
+			transletRule.setTransletImplementationClass(defaultSettings.getTransletImplementationClass());
 		}
 
 		String scanPath = transletRule.getScanPath();
@@ -156,7 +156,6 @@ public class TransletRuleRegistry {
 					}
 
 					parseTransletRule(newTransletRule);
-
 				}
 			});
 		} else {
@@ -217,7 +216,6 @@ public class TransletRuleRegistry {
 
 		if(log.isTraceEnabled())
 			log.trace("add TransletRule " + transletRule);
-
 	}
 
 	private void putRestfulTransletRule(TransletRule transletRule) {

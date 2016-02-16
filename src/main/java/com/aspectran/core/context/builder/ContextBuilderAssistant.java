@@ -203,9 +203,9 @@ public class ContextBuilderAssistant {
 			Class<?> transletInterfaceClass = classLoader.loadClass(defaultSettings.getTransletInterfaceClassName());
 			defaultSettings.setTransletInterfaceClass((Class<Translet>)transletInterfaceClass);
 		}
-		if(defaultSettings.getTransletImplementClassName() != null) {
-			Class<?> transletImplementClass = classLoader.loadClass(defaultSettings.getTransletImplementClassName());
-			defaultSettings.setTransletImplementClass((Class<CoreTranslet>)transletImplementClass);
+		if(defaultSettings.getTransletImplementationClassName() != null) {
+			Class<?> transletImplementationClass = classLoader.loadClass(defaultSettings.getTransletImplementationClassName());
+			defaultSettings.setTransletImplementationClass((Class<CoreTranslet>)transletImplementationClass);
 		}
 	}
 	

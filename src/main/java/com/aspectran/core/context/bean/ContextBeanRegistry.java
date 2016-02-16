@@ -73,7 +73,7 @@ public class ContextBeanRegistry extends AbstractBeanFactory implements BeanRegi
 			throw new BeanNotFoundException(id);
 
 		if(!ClassUtils.isAssignable(beanRule.getBeanClass(), requiredType))
-			throw new BeanNotOfRequiredTypeException(beanRule, requiredType);
+			throw new BeanNotOfRequiredTypeException(requiredType, beanRule);
 		
 		return getBean(beanRule);
 	}

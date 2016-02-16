@@ -80,9 +80,7 @@ public abstract class TransformResponse implements Response {
 	 * Gets the template as stream.
 	 * 
 	 * @param file the file
-	 * 
 	 * @return the template as stream
-	 * 
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	protected InputStream getTemplateAsStream(File file) throws IOException {
@@ -93,9 +91,7 @@ public abstract class TransformResponse implements Response {
 	 * Gets the template as stream.
 	 * 
 	 * @param url the url
-	 * 
 	 * @return the template as stream
-	 * 
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	protected InputStream getTemplateAsStream(URL url) throws IOException {

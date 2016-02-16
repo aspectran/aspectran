@@ -30,10 +30,10 @@ public class BeanRuleException extends BeanException {
 	/**
 	 * Instantiates a new BeanRuleException.
 	 *
+	 * @param msg the detail message
 	 * @param beanRule the bean rule
-	 * @param msg The detail message
 	 */
-	public BeanRuleException(BeanRule beanRule, String msg) {
+	public BeanRuleException(String msg, BeanRule beanRule) {
 		super(msg + " " + beanRule);
 		this.beanRule = beanRule;
 	}
@@ -45,7 +45,7 @@ public class BeanRuleException extends BeanException {
 	 * @param msg the detail message
 	 * @param cause the root cause
 	 */
-	public BeanRuleException(BeanRule beanRule, String msg, Throwable cause) {
+	public BeanRuleException(String msg, BeanRule beanRule, Throwable cause) {
 		super(msg + " " + beanRule, cause);
 		this.beanRule = beanRule;
 	}

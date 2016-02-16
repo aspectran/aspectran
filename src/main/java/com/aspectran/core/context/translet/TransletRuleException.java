@@ -30,10 +30,10 @@ public class TransletRuleException extends TransletException {
 	/**
 	 * Instantiates a new TransletRuleException.
 	 *
+	 * @param msg the detail message
 	 * @param transletRule the translet rule
-	 * @param msg The detail message
 	 */
-	public TransletRuleException(TransletRule transletRule, String msg) {
+	public TransletRuleException(String msg, TransletRule transletRule) {
 		super(msg + " " + transletRule);
 		this.transletRule = transletRule;
 	}
@@ -41,11 +41,11 @@ public class TransletRuleException extends TransletException {
 	/**
 	 * Instantiates a new TransletRuleException.
 	 *
+	 * @param msg the detail message
 	 * @param transletRule the translet rule
-	 * @param msg The detail message
 	 * @param cause the root cause
 	 */
-	public TransletRuleException(TransletRule transletRule, String msg, Throwable cause) {
+	public TransletRuleException(String msg, TransletRule transletRule, Throwable cause) {
 		super(msg + " " + transletRule, cause);
 		this.transletRule = transletRule;
 	}
@@ -53,7 +53,7 @@ public class TransletRuleException extends TransletException {
 	/**
 	 * Gets translet rule.
 	 *
-	 * @return the bean rule
+	 * @return the translet rule
 	 */
 	public TransletRule getTransletRule() {
 		return transletRule;

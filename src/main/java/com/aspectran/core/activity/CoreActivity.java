@@ -146,8 +146,8 @@ public class CoreActivity extends AbstractActivity implements Activity {
 			if(transletRule.getTransletInterfaceClass() != null)
 				setTransletInterfaceClass(transletRule.getTransletInterfaceClass());
 
-			if(transletRule.getTransletImplementClass() != null)
-				setTransletImplementClass(transletRule.getTransletImplementClass());
+			if(transletRule.getTransletImplementationClass() != null)
+				setTransletImplementationClass(transletRule.getTransletImplementationClass());
 
 			newTranslet();
 
@@ -694,9 +694,9 @@ public class CoreActivity extends AbstractActivity implements Activity {
 			setRaisedException(e);
 			
 			if(!force) {
-				throw new ActionExecutionException("Failed to execute advice action " + aspectAdviceRule, e);
+				throw new ActionExecutionException("Failed to execute the advice action " + aspectAdviceRule, e);
 			} else {
-				log.error("Failed to execute advice action " + aspectAdviceRule, e);
+				log.error("Failed to execute the advice action " + aspectAdviceRule, e);
 			}
 		}
 	}
@@ -714,7 +714,7 @@ public class CoreActivity extends AbstractActivity implements Activity {
 	@Override
 	public void setRaisedException(Exception raisedException) {
 		if(this.raisedException == null) {
-			log.error("original raised exception: ", raisedException);
+			log.error("Original raised exception: ", raisedException);
 			this.raisedException = raisedException;
 		}
 	}
@@ -737,7 +737,7 @@ public class CoreActivity extends AbstractActivity implements Activity {
 	}
 	
 	/**
-	 * Create a new translet.
+	 * Create a new {@code Translet}.
 	 */
 	protected void newTranslet() {
 		translet = newTranslet(this);

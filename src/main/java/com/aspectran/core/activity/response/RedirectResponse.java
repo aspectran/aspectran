@@ -48,9 +48,7 @@ public class RedirectResponse implements Response {
 		this.characterEncoding = redirectResponseRule.getCharacterEncoding();
 	}
 
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.response.Response#response(com.aspectran.core.activity.Activity)
-	 */
+	@Override
 	public void response(Activity activity) throws ResponseException {
 		ResponseAdapter responseAdapter = activity.getResponseAdapter();
 		if(responseAdapter == null)
@@ -71,20 +69,16 @@ public class RedirectResponse implements Response {
 			
 			responseAdapter.redirect(redirectResponseRule);
 		} catch(Exception e) {
-			throw new ResponseException("Redirect response error: " + redirectResponseRule, e);
+			throw new ResponseException("Failed to redirect " + redirectResponseRule, e);
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.response.Responsible#getResponseType()
-	 */
+	@Override
 	public ResponseType getResponseType() {
 		return RedirectResponseRule.RESPONSE_TYPE;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.response.Responsible#getContentType()
-	 */
+	@Override
 	public String getContentType() {
 		if(redirectResponseRule == null)
 			return null;
@@ -92,16 +86,12 @@ public class RedirectResponse implements Response {
 		return redirectResponseRule.getContentType();
 	}
 
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.response.Responsible#getActionList()
-	 */
+	@Override
 	public ActionList getActionList() {
 		return redirectResponseRule.getActionList();
 	}
 
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.response.Response#replicate()
-	 */
+	@Override
 	public Response replicate() {
 		RedirectResponseRule rrr = redirectResponseRule.replicate();
 		Response response = new RedirectResponse(rrr);

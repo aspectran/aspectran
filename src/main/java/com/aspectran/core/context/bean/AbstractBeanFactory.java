@@ -99,7 +99,7 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 			if(offerMethodName != null)
 				bean = MethodUtils.invokeMethod(bean, offerMethodName);
 		} catch(Exception e) {
-			throw new BeanCreationException(beanRule, "An exception occurred during the execution of a offer method from the referenced offer bean.", e);
+			throw new BeanCreationException("An exception occurred during the execution of a offer method from the referenced offer bean", beanRule, e);
 		}
 
 		try {
@@ -257,7 +257,7 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 				((InitializableTransletBean)bean).initialize(activity.getTranslet());
 			}
 		} catch(Exception e) {
-			throw new BeanCreationException(beanRule, "An exception occurred during initialization of the bean", e);
+			throw new BeanCreationException("An exception occurred during initialization of the bean", beanRule, e);
 		}
 	}
 
@@ -267,7 +267,7 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 			boolean requiresTranslet = beanRule.isInitMethodRequiresTranslet();
 			BeanAction.invokeMethod(activity, bean, initMethodName, null, null, requiresTranslet);
 		} catch(Exception e) {
-			throw new BeanCreationException(beanRule, "An exception occurred during the execution of an initialization method of the bean", e);
+			throw new BeanCreationException("An exception occurred during the execution of an initialization method of the bean", beanRule, e);
 		}
 	}
 	
@@ -277,7 +277,7 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 			boolean requiresTranslet = beanRule.isFactoryMethodRequiresTranslet();
 			return BeanAction.invokeMethod(activity, bean, factoryMethodName, null, null, requiresTranslet);
 		} catch(Exception e) {
-			throw new BeanCreationException(beanRule, "An exception occurred during the execution of a factory method of the bean", e);
+			throw new BeanCreationException("An exception occurred during the execution of a factory method of the bean", beanRule, e);
 		}
 	}
 	
@@ -288,13 +288,14 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 		try {
 			factoryObject = factory.getObject();
 		} catch(Exception e) {
-			throw new BeanCreationException(beanRule, "FactoryBean threw exception on object creation", e);
+			throw new BeanCreationException("FactoryBean threw exception on object creation", beanRule, e);
 		}
 
 		if(factoryObject == null) {
-			throw new FactoryBeanNotInitializedException(beanRule,
+			throw new FactoryBeanNotInitializedException(
 							"FactoryBean returned null object: " +
-							"probably not fully initialized (maybe due to circular bean reference)");
+							"probably not fully initialized (maybe due to circular bean reference)",
+							beanRule);
 		}
 		
 		return factoryObject;
