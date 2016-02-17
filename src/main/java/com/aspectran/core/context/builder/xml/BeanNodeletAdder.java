@@ -72,9 +72,11 @@ public class BeanNodeletAdder implements NodeletAdder {
 				if(className == null && scan == null && offerBean != null) {
 					if(id == null)
 						throw new IllegalArgumentException("The <bean> element requires an id attribute.");
+					
+					if(offerMethod == null)
+						throw new IllegalArgumentException("The <bean> element requires an offerMethod attribute.");
 
-					//beanRule = BeanRule.newOfferedBeanInstance(id, scope, singleton, offerBean, offerMethod, initMethod, factoryMethod, destroyMethod, lazyInit, important);
-					beanRule = BeanRule.newOfferedBeanInstance(id, scope, singleton, offerBean, offerMethod, lazyInit, important);
+					beanRule = BeanRule.newOfferedBeanInstance(id, scope, singleton, offerBean, offerMethod, initMethod, factoryMethod, destroyMethod, lazyInit, important);
 
 					if(offerBean != null) {
 						Class<?> offerBeanClass = assistant.resolveBeanClass(offerBean);

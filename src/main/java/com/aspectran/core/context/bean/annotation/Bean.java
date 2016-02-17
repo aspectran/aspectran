@@ -33,8 +33,8 @@ public @interface Bean {
 
     String initMethod() default "";
 
-    String factoryMethod() default "";
-
     String destroyMethod() default "";
+
+    String factoryMethod() default "";
 
 }

@@ -414,6 +414,7 @@ public class ContextBuilderAssistant {
 	 * @return the bean rule registry
 	 */
 	public BeanRuleRegistry getBeanRuleRegistry() {
+		beanRuleRegistry.postProcess();
 		return beanRuleRegistry;
 	}
 

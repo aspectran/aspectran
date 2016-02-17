@@ -87,7 +87,6 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 	private Object createOfferedBean(BeanRule beanRule, Activity activity) {
 		String offerBeanId = beanRule.getOfferBeanId();
 		Class<?> offerBeanClass = beanRule.getOfferBeanClass();
-		String offerMethodName = beanRule.getOfferMethodName();
 		Object bean;
 		
 		try {
@@ -96,8 +95,7 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 			else
 				bean = activity.getBean(offerBeanId);
 			
-			if(offerMethodName != null)
-				bean = MethodUtils.invokeMethod(bean, offerMethodName);
+			bean = invokeOfferMethod(beanRule, bean, activity);
 		} catch(Exception e) {
 			throw new BeanCreationException("An exception occurred during the execution of a offer method from the referenced offer bean", beanRule, e);
 		}
@@ -261,6 +259,16 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 		}
 	}
 
+	private Object invokeOfferMethod(BeanRule beanRule, final Object bean, Activity activity) {
+		try {
+			String offerMethodName = beanRule.getOfferMethodName();
+			boolean requiresTranslet = beanRule.isOfferMethodRequiresTranslet();
+			return BeanAction.invokeMethod(activity, bean, offerMethodName, null, null, requiresTranslet);
+		} catch(Exception e) {
+			throw new BeanCreationException("An exception occurred during the execution of an offer method of the bean", beanRule, e);
+		}
+	}
+	
 	private void invokeInitMethod(BeanRule beanRule, final Object bean, Activity activity) {
 		try {
 			String initMethodName = beanRule.getInitMethodName();

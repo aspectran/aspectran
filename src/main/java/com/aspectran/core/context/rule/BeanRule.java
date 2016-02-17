@@ -60,7 +60,11 @@ public class BeanRule implements Replicable<BeanRule> {
 
 	private String offerMethodName;
 
+	private boolean offerMethodRequiresTranslet;
+
 	private boolean offered;
+	
+	private Class<?> targetBeanClass;
 
 	private String factoryMethodName;
 
@@ -147,6 +151,8 @@ public class BeanRule implements Replicable<BeanRule> {
 	 * Sets the bean class.
 	 *
 	 * @param beanClass the new bean class
+	 * @throws SecurityException 
+	 * @throws NoSuchMethodException 
 	 */
 	public void setBeanClass(Class<?> beanClass) {
 		this.beanClass = beanClass;
@@ -301,6 +307,14 @@ public class BeanRule implements Replicable<BeanRule> {
 		this.offerMethodName = offerMethodName;
 	}
 	
+	public boolean isOfferMethodRequiresTranslet() {
+		return offerMethodRequiresTranslet;
+	}
+
+	public void setOfferMethodRequiresTranslet(boolean offerMethodRequiresTranslet) {
+		this.offerMethodRequiresTranslet = offerMethodRequiresTranslet;
+	}
+
 	public boolean isOffered() {
 		return offered;
 	}
@@ -318,6 +332,14 @@ public class BeanRule implements Replicable<BeanRule> {
 		return factoryMethodName;
 	}
 	
+	public Class<?> getTargetBeanClass() {
+		return targetBeanClass;
+	}
+
+	public void setTargetBeanClass(Class<?> factoryBeanClass) {
+		this.targetBeanClass = factoryBeanClass;
+	}
+
 	/**
 	 * Sets the factory method name.
 	 *
@@ -679,9 +701,9 @@ public class BeanRule implements Replicable<BeanRule> {
 			Boolean singleton,
 			String offerBeanId,
 			String offerMethodName,
-//			String initMethodName,
-//			String factoryMethodName,
-//			String destroyMethodName,
+			String initMethodName,
+			String factoryMethodName,
+			String destroyMethodName,
 			Boolean lazyInit,
 			Boolean important) {
 		if(id == null)
@@ -702,9 +724,9 @@ public class BeanRule implements Replicable<BeanRule> {
 		beanRule.setOfferBeanId(offerBeanId);
 		beanRule.setOfferMethodName(offerMethodName);
 		beanRule.setOffered(true);
-//		beanRule.setInitMethodName(initMethodName);
-//		beanRule.setFactoryMethodName(factoryMethodName);
-//		beanRule.setDestroyMethodName(destroyMethodName);
+		beanRule.setInitMethodName(initMethodName);
+		beanRule.setFactoryMethodName(factoryMethodName);
+		beanRule.setDestroyMethodName(destroyMethodName);
 		beanRule.setLazyInit(lazyInit);
 		beanRule.setImportant(important);
 		
@@ -721,6 +743,7 @@ public class BeanRule implements Replicable<BeanRule> {
 		br.setSingleton(beanRule.getSingleton());
 		br.setOfferBeanId(beanRule.getOfferBeanId());
 		br.setOfferMethodName(beanRule.getOfferMethodName());
+		br.setOfferMethodRequiresTranslet(beanRule.isOfferMethodRequiresTranslet());
 		br.setOffered(beanRule.isOffered());
 		br.setInitMethodName(beanRule.getInitMethodName());
 		br.setInitMethodRequiresTranslet(beanRule.isInitMethodRequiresTranslet());

@@ -877,10 +877,9 @@ public class MethodUtils {
 			}
 
 			method = clazz.getMethod(methodName, parameterTypes);
-
 			makeAccessible(method); // Default access superclass workaround
-			
 			cacheMethod(md, method);
+
 			return method;
 		} catch(NoSuchMethodException e) { /* SWALLOW */ }
 

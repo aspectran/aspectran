@@ -93,17 +93,17 @@ public abstract class AnnotatedConfigParser {
 		Bean beanAnno = method.getAnnotation(Bean.class);
 		String beanId = StringUtils.emptyToNull(beanAnno.id());
 		String initMethodName = StringUtils.emptyToNull(beanAnno.initMethod());
-		String factoryMethodName = StringUtils.emptyToNull(beanAnno.factoryMethod());
 		String destroyMethodName = StringUtils.emptyToNull(beanAnno.destroyMethod());
+		String factoryMethodName = StringUtils.emptyToNull(beanAnno.factoryMethod());
 
 		BeanRule beanRule = new BeanRule();
 		beanRule.setId(beanId);
 		beanRule.setBeanClass(beanClass);
 		beanRule.setInitMethodName(initMethodName);
-		beanRule.setFactoryMethodName(factoryMethodName);
 		beanRule.setDestroyMethodName(destroyMethodName);
+		beanRule.setFactoryMethodName(factoryMethodName);
 
-		BeanRuleRegistry.checkAccessibleMethod(beanRule);
+		BeanRuleRegistry.determineBeanClass(beanRule);
 
 	}
 
