@@ -312,13 +312,10 @@ public class RootAponDisassembler {
 		BeanRule beanRule;
 
 		if(className == null && scan == null && offerBean != null) {
-			if(id == null)
-				throw new IllegalArgumentException("Bean id must not be null.");
-
 			if(offerMethod == null)
 				throw new IllegalArgumentException("Bean offerMethod must not be null.");
 			
-			beanRule = BeanRule.newOfferedBeanInstance(id, scope, singleton, offerBean, offerMethod, initMethod, factoryMethod, destroyMethod, lazyInit, important);
+			beanRule = BeanRule.newOfferedBeanInstance(id, offerBean, offerMethod, initMethod, destroyMethod, factoryMethod, scope, singleton, lazyInit, important);
 
 			if(offerBean != null) {
 				Class<?> offerBeanClass = assistant.resolveBeanClass(offerBean);
@@ -333,7 +330,7 @@ public class RootAponDisassembler {
 			if(className == null && scan == null)
 				throw new IllegalArgumentException("Bean class must not be null.");
 
-			beanRule = BeanRule.newInstance(id, className, scan, mask, scope, singleton, initMethod, factoryMethod, destroyMethod, lazyInit, important);
+			beanRule = BeanRule.newInstance(id, className, scan, mask, initMethod, destroyMethod, factoryMethod, scope, singleton, lazyInit, important);
 		}
 
 		if(description != null)

@@ -55,28 +55,25 @@ public class BeanNodeletAdder implements NodeletAdder {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
 				String id = StringUtils.emptyToNull(attributes.get("id"));
 				String className = StringUtils.emptyToNull(assistant.resolveAliasType(attributes.get("class")));
+				String offerBean = StringUtils.emptyToNull(attributes.get("offerBean"));
+				String offerMethod = StringUtils.emptyToNull(attributes.get("offerMethod"));
 				String scan = attributes.get("scan");
 				String mask = attributes.get("mask");
 				String scope = attributes.get("scope");
 				Boolean singleton = BooleanUtils.toNullableBooleanObject(attributes.get("singleton"));
-				String offerBean = StringUtils.emptyToNull(attributes.get("offerBean"));
-				String offerMethod = StringUtils.emptyToNull(attributes.get("offerMethod"));
 				String initMethod = StringUtils.emptyToNull(attributes.get("initMethod"));
-				String factoryMethod = StringUtils.emptyToNull(attributes.get("factoryMethod"));
 				String destroyMethod = StringUtils.emptyToNull(attributes.get("destroyMethod"));
+				String factoryMethod = StringUtils.emptyToNull(attributes.get("factoryMethod"));
 				Boolean lazyInit = BooleanUtils.toNullableBooleanObject(attributes.get("lazyInit"));
 				Boolean important = BooleanUtils.toNullableBooleanObject(attributes.get("important"));
 
 				BeanRule beanRule;
 
 				if(className == null && scan == null && offerBean != null) {
-					if(id == null)
-						throw new IllegalArgumentException("The <bean> element requires an id attribute.");
-					
 					if(offerMethod == null)
 						throw new IllegalArgumentException("The <bean> element requires an offerMethod attribute.");
 
-					beanRule = BeanRule.newOfferedBeanInstance(id, scope, singleton, offerBean, offerMethod, initMethod, factoryMethod, destroyMethod, lazyInit, important);
+					beanRule = BeanRule.newOfferedBeanInstance(id, offerBean, offerMethod, initMethod, factoryMethod, destroyMethod, scope, singleton, lazyInit, important);
 
 					if(offerBean != null) {
 						Class<?> offerBeanClass = assistant.resolveBeanClass(offerBean);
@@ -91,7 +88,7 @@ public class BeanNodeletAdder implements NodeletAdder {
 					if(className == null && scan == null)
 						throw new IllegalArgumentException("The <bean> element requires a class attribute.");
 
-					beanRule = BeanRule.newInstance(id, className, scan, mask, scope, singleton, initMethod, factoryMethod, destroyMethod, lazyInit, important);
+					beanRule = BeanRule.newInstance(id, className, scan, mask, initMethod, factoryMethod, destroyMethod, scope, singleton, lazyInit, important);
 				}
 				
 				assistant.pushObject(beanRule);					

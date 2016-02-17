@@ -30,6 +30,7 @@ import com.aspectran.core.context.bean.ablility.DisposableBean;
 import com.aspectran.core.context.bean.ablility.FactoryBean;
 import com.aspectran.core.context.bean.ablility.InitializableBean;
 import com.aspectran.core.context.bean.ablility.InitializableTransletBean;
+import com.aspectran.core.context.bean.annotation.Configuration;
 import com.aspectran.core.context.bean.aware.ActivityContextAware;
 import com.aspectran.core.context.bean.aware.ApplicationAdapterAware;
 import com.aspectran.core.context.bean.aware.Aware;
@@ -90,11 +91,16 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 		Object bean;
 		
 		try {
-			if(offerBeanClass != null)
-				bean = activity.getBean(offerBeanClass);
-			else
+			if(offerBeanClass != null) {
+				if(offerBeanClass.isAnnotationPresent(Configuration.class)) {
+					//TODO bean = activity.getConfigBean(offerBeanClass);
+					bean = activity.getBean(offerBeanClass);
+				} else {
+					bean = activity.getBean(offerBeanClass);
+				}
+			} else {
 				bean = activity.getBean(offerBeanId);
-			
+			}
 			bean = invokeOfferMethod(beanRule, bean, activity);
 		} catch(Exception e) {
 			throw new BeanCreationException("An exception occurred during the execution of a offer method from the referenced offer bean", beanRule, e);
@@ -399,7 +405,7 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 
 	private static Object newInstance(Class<?> beanClass, Class<?>[] argTypes, Object[] args) throws BeanInstantiationException {
 		if(beanClass.isInterface())
-			throw new BeanInstantiationException(beanClass, "Specified class is an interface");
+			throw new BeanInstantiationException("Specified class is an interface", beanClass);
 
 		Constructor<?> constructorToUse;
 
@@ -410,12 +416,10 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 				constructorToUse = beanClass.getDeclaredConstructor(argTypes);
 			}
 		} catch(NoSuchMethodException e) {
-			throw new BeanInstantiationException(beanClass, "No default constructor found", e);
+			throw new BeanInstantiationException("No default constructor found", beanClass, e);
 		}
 
-		Object obj = newInstance(constructorToUse, args);
-
-		return obj;
+		return newInstance(constructorToUse, args);
 	}
 
 	private static Object newInstance(Class<?> beanClass) throws BeanInstantiationException {
@@ -431,13 +435,13 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 	
 			return ctor.newInstance(args);
 		} catch(InstantiationException ex) {
-			throw new BeanInstantiationException(ctor.getDeclaringClass(), "Is it an abstract class?", ex);
+			throw new BeanInstantiationException("Is it an abstract class?", ctor.getDeclaringClass(), ex);
 		} catch(IllegalAccessException ex) {
-			throw new BeanInstantiationException(ctor.getDeclaringClass(), "Has the class definition changed? Is the constructor accessible?", ex);
+			throw new BeanInstantiationException("Has the class definition changed? Is the constructor accessible?", ctor.getDeclaringClass(), ex);
 		} catch(IllegalArgumentException ex) {
-			throw new BeanInstantiationException(ctor.getDeclaringClass(), "Illegal arguments for constructor", ex);
+			throw new BeanInstantiationException("Illegal arguments for constructor", ctor.getDeclaringClass(), ex);
 		} catch(InvocationTargetException ex) {
-			throw new BeanInstantiationException(ctor.getDeclaringClass(), "Constructor threw exception", ex.getTargetException());
+			throw new BeanInstantiationException("Constructor threw exception", ctor.getDeclaringClass(), ex.getTargetException());
 		}
 	}
 

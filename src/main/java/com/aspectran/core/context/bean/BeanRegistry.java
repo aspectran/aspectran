@@ -53,5 +53,7 @@ public interface BeanRegistry extends BeanFactory {
 	 * @since 1.3.1
 	 */
 	public <T> T getBean(String id, Class<T> requiredType);
-	
+
+	public <T> T getConfigBean(Class<T> requiredType);
+
 }

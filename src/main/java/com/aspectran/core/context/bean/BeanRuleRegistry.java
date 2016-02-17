@@ -56,6 +56,8 @@ public class BeanRuleRegistry {
 
 	private final Map<Class<?>, Set<BeanRule>> typeBeanRuleMap = new HashMap<Class<?>, Set<BeanRule>>();
 
+	private final Map<Class<?>, BeanRule> configBeanRuleMap = new HashMap<Class<?>, BeanRule>();
+
 	private final Set<Class<?>> ignoredDependencyInterfaces = new HashSet<Class<?>>();
 
 	private final Set<BeanRule> postProcessBeanRuleMap = new HashSet<BeanRule>();
@@ -93,6 +95,10 @@ public class BeanRuleRegistry {
 			return null;
 		
 		return list.toArray(new BeanRule[list.size()]);
+	}
+
+	public BeanRule getConfigBeanRule(Class<?> requiredType) {
+		return configBeanRuleMap.get(requiredType);
 	}
 
 	public boolean contains(Object beanIdOrClass) {
@@ -142,36 +148,30 @@ public class BeanRuleRegistry {
 				scanner.scan(scanPath, new ClassScanner.SaveHandler() {
 					@Override
 					public void save(String resourceName, Class<?> scannedClass) {
-						if(scannedClass.isAnnotationPresent(Configuration.class)) {
-
+						BeanRule beanRule2 = beanRule.replicate();
+						if(prefixSuffixPattern != null) {
+							beanRule2.setId(prefixSuffixPattern.join(resourceName));
 						} else {
-							BeanRule beanRule2 = beanRule.replicate();
-
-							if(prefixSuffixPattern != null) {
-								beanRule2.setId(prefixSuffixPattern.join(resourceName));
-							} else {
-								if(beanRule.getId() != null) {
-									beanRule2.setId(beanRule.getId() + resourceName);
-								}
+							if(beanRule.getId() != null) {
+								beanRule2.setId(beanRule.getId() + resourceName);
 							}
-
-							beanRule2.setBeanClass(scannedClass);
-							putBeanRule(beanRule2);
 						}
+						beanRule2.setBeanClass(scannedClass);
+						putBeanRule(beanRule2);
 					}
 				});
 			} catch(IOException e) {
 				throw new BeanClassScanFailedException("Failed to scan bean class. scanPath: " + scanPath, e);
 			}
 		} else {
-			String className = beanRule.getClassName();
-
-			if(prefixSuffixPattern != null) {
-				beanRule.setId(prefixSuffixPattern.join(className));
+			if(!beanRule.isOffered()) {
+				String className = beanRule.getClassName();
+				if(prefixSuffixPattern != null) {
+					beanRule.setId(prefixSuffixPattern.join(className));
+				}
+				Class<?> beanClass = classLoader.loadClass(className);
+				beanRule.setBeanClass(beanClass);
 			}
-			
-			Class<?> beanClass = classLoader.loadClass(className);
-			beanRule.setBeanClass(beanClass);
 			putBeanRule(beanRule);
 		}
 	}
@@ -209,11 +209,16 @@ public class BeanRuleRegistry {
 			beanRuleMap.putBeanRule(beanRule);
 
 		if(beanClass != null && !beanRule.isOffered()) {
-			putBeanRule(beanClass, beanRule);
-
-			for(Class<?> ifc : beanClass.getInterfaces()) {
-				if(!ignoredDependencyInterfaces.contains(ifc)) {
-					putBeanRule(ifc, beanRule);
+			if(beanClass.isAnnotationPresent(Configuration.class)) {
+				// bean rule for configuration
+				putConfigBeanRule(beanClass, beanRule);
+				parseAnnotatedConfig(beanClass, beanRule);
+			} else {
+				putBeanRule(beanClass, beanRule);
+				for(Class<?> ifc : beanClass.getInterfaces()) {
+					if(!ignoredDependencyInterfaces.contains(ifc)) {
+						putBeanRule(ifc, beanRule);
+					}
 				}
 			}
 		}
@@ -231,10 +236,12 @@ public class BeanRuleRegistry {
 		list.add(beanRule);
 	}
 
-	private void parseAnnotation(BeanRule beanRule) {
-		if(transletRuleRegistry != null) {
-			AnnotatedConfigParser.parse(beanRule, transletRuleRegistry.getTransletRuleMap());
-		}
+	private void putConfigBeanRule(Class<?> type, BeanRule beanRule) {
+		configBeanRuleMap.put(type, beanRule);
+	}
+
+	private void parseAnnotatedConfig(Class<?> beanClass, BeanRule beanRule) {
+		AnnotatedConfigParser.parse(beanRule, transletRuleRegistry.getTransletRuleMap());
 	}
 	
 	public void postProcess() {

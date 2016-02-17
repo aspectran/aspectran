@@ -73,11 +73,11 @@ public class PrefixSuffixPattern {
 
 	public static String join(String prefix, String input, String suffix) {
 		if(prefix != null && suffix != null) {
-			return prefix + input + suffix;
+			return prefix + StringUtils.nullToEmpty(input) + suffix;
 		} else if(prefix != null) {
-			return prefix + input;
+			return prefix + StringUtils.nullToEmpty(input);
 		} else if(suffix != null) {
-			return input + suffix;
+			return StringUtils.nullToEmpty(input) + suffix;
 		} else {
 			return input;
 		}

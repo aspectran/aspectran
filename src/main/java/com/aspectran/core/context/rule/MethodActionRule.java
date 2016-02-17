@@ -29,7 +29,7 @@ import com.aspectran.core.util.ToStringBuilder;
  */
 public class MethodActionRule {
 
-	private Class<?> beanClass;
+	private Class<?> configBeanClass;
 
 	private Method method;
 
@@ -37,12 +37,12 @@ public class MethodActionRule {
 	
 	private AspectAdviceRuleRegistry aspectAdviceRuleRegistry;
 
-	public Class<?> getBeanClass() {
-		return beanClass;
+	public Class<?> getConfigBeanClass() {
+		return configBeanClass;
 	}
 
-	public void setBeanClass(Class<?> beanClass) {
-		this.beanClass = beanClass;
+	public void setConfigBeanClass(Class<?> configBeanClass) {
+		this.configBeanClass = configBeanClass;
 	}
 
 	public Method getMethod() {
@@ -92,7 +92,7 @@ public class MethodActionRule {
 	@Override
 	public String toString() {
 		ToStringBuilder tsb = new ToStringBuilder();
-		tsb.append("class", beanClass);
+		tsb.append("class", configBeanClass);
 		tsb.append("method", method);
 		tsb.append("aspectAdviceRule", aspectAdviceRule);
 		tsb.append("aspectAdviceRuleRegistry", aspectAdviceRuleRegistry);
@@ -108,7 +108,7 @@ public class MethodActionRule {
 	 */
 	public static MethodActionRule newInstance(Class<?> actionClass, Method method) {
 		MethodActionRule methodActionRule = new MethodActionRule();
-		methodActionRule.setBeanClass(actionClass);
+		methodActionRule.setConfigBeanClass(actionClass);
 		methodActionRule.setMethod(method);
 
 		return methodActionRule;

@@ -658,11 +658,11 @@ public class BeanRule implements Replicable<BeanRule> {
 			String className,
 			String scanPath,
 			String maskPattern,
+			String initMethodName,
+			String destroyMethodName,
+			String factoryMethodName,
 			String scope,
 			Boolean singleton,
-			String initMethodName,
-			String factoryMethodName,
-			String destroyMethodName,
 			Boolean lazyInit,
 			Boolean important) {
 		if(className == null && scanPath == null)
@@ -697,18 +697,15 @@ public class BeanRule implements Replicable<BeanRule> {
 	
 	public static BeanRule newOfferedBeanInstance(
 			String id,
-			String scope,
-			Boolean singleton,
 			String offerBeanId,
 			String offerMethodName,
 			String initMethodName,
-			String factoryMethodName,
 			String destroyMethodName,
+			String factoryMethodName,
+			String scope,
+			Boolean singleton,
 			Boolean lazyInit,
 			Boolean important) {
-		if(id == null)
-			throw new IllegalArgumentException("Bean id must not be null.");
-		
 		ScopeType scopeType = ScopeType.lookup(scope);
 		
 		if(scope != null && scopeType == null)

@@ -55,7 +55,7 @@ public class MethodAction extends AbstractAction implements Executable {
 		super(null, parent);
 
 		this.methodActionRule = methodActionRule;
-		this.actionClass = methodActionRule.getBeanClass();
+		this.actionClass = methodActionRule.getConfigBeanClass();
 		this.method = methodActionRule.getMethod();
 	}
 

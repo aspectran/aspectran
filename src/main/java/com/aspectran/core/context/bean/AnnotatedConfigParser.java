@@ -27,10 +27,10 @@ import com.aspectran.core.context.bean.annotation.Forward;
 import com.aspectran.core.context.bean.annotation.Redirect;
 import com.aspectran.core.context.bean.annotation.Request;
 import com.aspectran.core.context.bean.annotation.Transform;
-import com.aspectran.core.context.rule.BeanActionRule;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.DispatchResponseRule;
 import com.aspectran.core.context.rule.ForwardResponseRule;
+import com.aspectran.core.context.rule.MethodActionRule;
 import com.aspectran.core.context.rule.RedirectResponseRule;
 import com.aspectran.core.context.rule.ResponseRule;
 import com.aspectran.core.context.rule.TransformRule;
@@ -98,7 +98,10 @@ public abstract class AnnotatedConfigParser {
 
 		BeanRule beanRule = new BeanRule();
 		beanRule.setId(beanId);
-		beanRule.setBeanClass(beanClass);
+		beanRule.setOfferBeanId("class:" + beanClass.getName());
+		beanRule.setOfferBeanClass(beanClass);
+		beanRule.setOffered(true);
+		beanRule.setOfferMethodName(method.getName());
 		beanRule.setInitMethodName(initMethodName);
 		beanRule.setDestroyMethodName(destroyMethodName);
 		beanRule.setFactoryMethodName(factoryMethodName);
@@ -144,10 +147,10 @@ public abstract class AnnotatedConfigParser {
 			transletRule.setResponseRule(ResponseRule.newInstance(rrr));
 		}
 
-		BeanActionRule beanActionRule = new BeanActionRule();
-		beanActionRule.setBeanClass(beanClass);
-		beanActionRule.setMethodName(method.getName());
-		transletRule.applyActionRule(beanActionRule);
+		MethodActionRule beanActionRule = new MethodActionRule();
+		beanActionRule.setConfigBeanClass(beanClass);
+		beanActionRule.setMethod(method);
+		//transletRule.applyActionRule(beanActionRule);
 
 		//transletRuleMap.putTransletRule(transletRule);
 	}

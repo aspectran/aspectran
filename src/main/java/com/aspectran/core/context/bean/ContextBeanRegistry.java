@@ -77,7 +77,17 @@ public class ContextBeanRegistry extends AbstractBeanFactory implements BeanRegi
 		
 		return getBean(beanRule);
 	}
-	
+
+	@Override
+	public <T> T getConfigBean(Class<T> requiredType) {
+		BeanRule beanRule = beanRuleRegistry.getConfigBeanRule(requiredType);
+
+		if(beanRule == null)
+			throw new RequiredTypeBeanNotFoundException(requiredType);
+
+		return getBean(beanRule);
+	}
+
 	@SuppressWarnings("unchecked")
 	private <T> T getBean(BeanRule beanRule) {
 		if(beanRule.getScopeType() == ScopeType.PROTOTYPE) {
