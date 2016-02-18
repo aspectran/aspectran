@@ -19,6 +19,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
+import com.aspectran.core.activity.Translet;
 import com.aspectran.core.context.bean.annotation.Autowired;
 import com.aspectran.core.context.bean.annotation.Bean;
 import com.aspectran.core.context.bean.annotation.Configuration;
@@ -151,6 +152,12 @@ public abstract class AnnotatedConfigParser {
 		MethodActionRule methodActionRule = new MethodActionRule();
 		methodActionRule.setConfigBeanClass(beanClass);
 		methodActionRule.setMethod(method);
+
+		Class<?>[] paramTypes = method.getParameterTypes();
+		if(paramTypes.length == 1 && paramTypes[0].isAssignableFrom(Translet.class)) {
+			methodActionRule.setRequiresTranslet(true);
+		}
+
 		
 		//transletRule.applyActionRule(beanActionRule);
 

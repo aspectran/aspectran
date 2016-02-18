@@ -33,6 +33,8 @@ public class MethodActionRule {
 
 	private Method method;
 
+	private boolean requiresTranslet;
+
 	private AspectAdviceRule aspectAdviceRule;
 	
 	private AspectAdviceRuleRegistry aspectAdviceRuleRegistry;
@@ -51,6 +53,14 @@ public class MethodActionRule {
 
 	public void setMethod(Method method) {
 		this.method = method;
+	}
+
+	public boolean isRequiresTranslet() {
+		return requiresTranslet;
+	}
+
+	public void setRequiresTranslet(boolean requiresTranslet) {
+		this.requiresTranslet = requiresTranslet;
 	}
 
 	/**

@@ -33,7 +33,7 @@ import com.aspectran.core.util.logging.LogFactory;
  * 
  * <p>Created: 2008. 06. 05 PM 9:22:05</p>
  */
-public class IncludeAction extends AbstractAction implements Executable {
+public class IncludeAction extends AbstractAction {
 	
 	private static final Log log = LogFactory.getLog(IncludeAction.class);
 
@@ -46,7 +46,7 @@ public class IncludeAction extends AbstractAction implements Executable {
 	 * @param parent the parent
 	 */
 	public IncludeAction(IncludeActionRule includeActionRule, ActionList parent) {
-		super(includeActionRule.getActionId(), parent);
+		super(parent);
 		this.includeActionRule = includeActionRule;
 	}
 

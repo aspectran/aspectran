@@ -22,17 +22,16 @@ import com.aspectran.core.activity.process.ActionList;
  * 
  * <p>Created: 2008. 03. 22 PM 5:50:35</p>
  */
-public abstract class AbstractAction {
+public abstract class AbstractAction implements Executable {
 
 	protected final ActionList parent;
 	
 	/**
 	 * Instantiates a new AbstractAction.
 	 *
-	 * @param actionId the action id
 	 * @param parent the parent
 	 */
-	public AbstractAction(String actionId, ActionList parent) {
+	public AbstractAction(ActionList parent) {
 		this.parent = parent;
 	}
 	

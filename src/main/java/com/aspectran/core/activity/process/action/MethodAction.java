@@ -33,7 +33,7 @@ import com.aspectran.core.util.logging.LogFactory;
  *
  * @since 2.0.0
  */
-public class MethodAction extends AbstractAction implements Executable {
+public class MethodAction extends AbstractAction {
 
 	private static final Log log = LogFactory.getLog(MethodAction.class);
 
@@ -43,57 +43,39 @@ public class MethodAction extends AbstractAction implements Executable {
 
 	private final Method method;
 
-	private Boolean needTranslet;
+	private final boolean requiresTranslet;
 
 	/**
-	 * Instantiates a new BeanAction.
+	 * Instantiates a new MethodAction.
 	 *
 	 * @param methodActionRule the method action rule
 	 * @param parent the parent
 	 */
 	public MethodAction(MethodActionRule methodActionRule, ActionList parent) {
-		super(null, parent);
+		super(parent);
 
 		this.methodActionRule = methodActionRule;
 		this.configBeanClass = methodActionRule.getConfigBeanClass();
 		this.method = methodActionRule.getMethod();
+		this.requiresTranslet = methodActionRule.isRequiresTranslet();
 	}
 
 	@Override
 	public Object execute(Activity activity) throws Exception {
 		try {
 			Object bean = activity.getConfigBean(configBeanClass);
-
-			Object result;
-
-			if(needTranslet == null) {
-				try {
-					result = invokeMethod(activity, bean, this.method, true);
-					needTranslet = Boolean.TRUE;
-				} catch(NoSuchMethodException e) {
-					if(log.isDebugEnabled()) {
-						log.debug("Cannot find a method that requires a argument translet. So in the future will continue to call a method with no argument translet. methodActionRule " + methodActionRule);
-					}
-					
-					needTranslet = Boolean.FALSE;
-					result = invokeMethod(activity, bean, this.method, false);
-				}
-			} else {
-				result = invokeMethod(activity, bean, this.method, needTranslet.booleanValue());
-			}
-
-			return result;
+			return invokeMethod(activity, bean, this.method);
 		} catch(Exception e) {
 			log.error("Action execution error: methodActionRule " + methodActionRule + " Cause: " + e.toString());
 			throw e;
 		}
 	}
 
-	public static Object invokeMethod(Activity activity, Object bean, Method method, boolean needTranslet)
+	public Object invokeMethod(Activity activity, Object bean, Method method)
 			throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
 		Object[] args;
 		
-		if(needTranslet) {
+		if(requiresTranslet) {
 			args = new Object[] { activity.getTranslet() };
 		} else {
 			args = new Object[0];

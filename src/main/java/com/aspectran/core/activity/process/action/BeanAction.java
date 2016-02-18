@@ -40,7 +40,7 @@ import com.aspectran.core.util.logging.LogFactory;
  * 
  * <p>Created: 2008. 03. 22 PM 5:50:35</p>
  */
-public class BeanAction extends AbstractAction implements Executable {
+public class BeanAction extends AbstractAction {
 
 	private static final Log log = LogFactory.getLog(BeanAction.class);
 
@@ -67,7 +67,7 @@ public class BeanAction extends AbstractAction implements Executable {
 	 * @param parent the parent
 	 */
 	public BeanAction(BeanActionRule beanActionRule, ActionList parent) {
-		super(beanActionRule.getActionId(), parent);
+		super(parent);
 
 		this.beanActionRule = beanActionRule;
 		this.beanId = beanActionRule.getBeanId();
