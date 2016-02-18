@@ -18,7 +18,9 @@ package com.aspectran.core.context.builder;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import com.aspectran.core.activity.CoreTranslet;
 import com.aspectran.core.activity.Translet;
@@ -414,7 +416,6 @@ public class ContextBuilderAssistant {
 	 * @return the bean rule registry
 	 */
 	public BeanRuleRegistry getBeanRuleRegistry() {
-		beanRuleRegistry.postProcess();
 		return beanRuleRegistry;
 	}
 
@@ -437,7 +438,7 @@ public class ContextBuilderAssistant {
 	}
 
 	/**
-	 * Gets aspect rules.
+	 * Gets all aspect rules.
 	 *
 	 * @return the aspect rules
 	 */
@@ -446,16 +447,22 @@ public class ContextBuilderAssistant {
 	}
 
 	/**
-	 * Gets bean rules.
+	 * Gets all bean rules.
 	 *
 	 * @return the bean rules
 	 */
 	public Collection<BeanRule> getBeanRules() {
-		return beanRuleRegistry.getBeanRuleMap().values();
+		Set<BeanRule> beanRuleSet = new HashSet<BeanRule>();
+		beanRuleSet.addAll(beanRuleRegistry.getIdBasedBeanRuleMap().values());
+		for(Set<BeanRule> brs : beanRuleRegistry.getTypeBasedBeanRuleMap().values()) {
+			beanRuleSet.addAll(brs);
+		}
+		beanRuleSet.addAll(beanRuleRegistry.getConfigBeanRuleMap().values());
+		return beanRuleSet;
 	}
 
 	/**
-	 * Gets template rules.
+	 * Gets all template rules.
 	 *
 	 * @return the template rules
 	 */
@@ -464,7 +471,7 @@ public class ContextBuilderAssistant {
 	}
 
 	/**
-	 * Gets translet rules.
+	 * Gets all translet rules.
 	 *
 	 * @return the translet rules
 	 */

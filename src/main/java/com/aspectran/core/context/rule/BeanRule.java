@@ -15,6 +15,7 @@
  */
 package com.aspectran.core.context.rule;
 
+import java.lang.reflect.Method;
 import java.util.List;
 
 import com.aspectran.core.context.bean.ablility.DisposableBean;
@@ -60,6 +61,8 @@ public class BeanRule implements Replicable<BeanRule> {
 
 	private String offerMethodName;
 
+	private Method offerMethod;
+	
 	private boolean offerMethodRequiresTranslet;
 
 	private boolean offered;
@@ -68,14 +71,20 @@ public class BeanRule implements Replicable<BeanRule> {
 
 	private String factoryMethodName;
 
+	private Method factoryMethod;
+	
 	private boolean factoryMethodRequiresTranslet;
 
 	private String initMethodName;
+	
+	private Method initMethod;
 	
 	private boolean initMethodRequiresTranslet;
 	
 	private String destroyMethodName;
 
+	private Method destroyMethod;
+	
 	private ItemRuleMap constructorArgumentItemRuleMap;
 	
 	private ItemRuleMap propertyItemRuleMap;
@@ -307,6 +316,14 @@ public class BeanRule implements Replicable<BeanRule> {
 		this.offerMethodName = offerMethodName;
 	}
 	
+	public Method getOfferMethod() {
+		return offerMethod;
+	}
+
+	public void setOfferMethod(Method offerMethod) {
+		this.offerMethod = offerMethod;
+	}
+
 	public boolean isOfferMethodRequiresTranslet() {
 		return offerMethodRequiresTranslet;
 	}
@@ -339,6 +356,12 @@ public class BeanRule implements Replicable<BeanRule> {
 	public void setTargetBeanClass(Class<?> factoryBeanClass) {
 		this.targetBeanClass = factoryBeanClass;
 	}
+	
+	public String getTargetBeanClassName() {
+		if(targetBeanClass != null)
+			return targetBeanClass.getName();
+		return className;
+	}
 
 	/**
 	 * Sets the factory method name.
@@ -347,6 +370,14 @@ public class BeanRule implements Replicable<BeanRule> {
 	 */
 	public void setFactoryMethodName(String factoryMethodName) {
 		this.factoryMethodName = factoryMethodName;
+	}
+
+	public Method getFactoryMethod() {
+		return factoryMethod;
+	}
+
+	public void setFactoryMethod(Method factoryMethod) {
+		this.factoryMethod = factoryMethod;
 	}
 
 	public boolean isFactoryMethodRequiresTranslet() {
@@ -375,6 +406,14 @@ public class BeanRule implements Replicable<BeanRule> {
 		this.initMethodName = initMethodName;
 	}
 	
+	public Method getInitMethod() {
+		return initMethod;
+	}
+
+	public void setInitMethod(Method initMethod) {
+		this.initMethod = initMethod;
+	}
+
 	/**
 	 * Returns whether or not the initialization method requiring Translet argument.
 	 *
@@ -409,6 +448,14 @@ public class BeanRule implements Replicable<BeanRule> {
 	 */
 	public void setDestroyMethodName(String destroyMethodName) {
 		this.destroyMethodName = destroyMethodName;
+	}
+
+	public Method getDestroyMethod() {
+		return destroyMethod;
+	}
+
+	public void setDestroyMethod(Method destroyMethod) {
+		this.destroyMethod = destroyMethod;
 	}
 
 	/**
@@ -687,8 +734,8 @@ public class BeanRule implements Replicable<BeanRule> {
 		beanRule.setScopeType(scopeType);
 		beanRule.setSingleton(singleton);
 		beanRule.setInitMethodName(initMethodName);
-		beanRule.setFactoryMethodName(factoryMethodName);
 		beanRule.setDestroyMethodName(destroyMethodName);
+		beanRule.setFactoryMethodName(factoryMethodName);
 		beanRule.setLazyInit(lazyInit);
 		beanRule.setImportant(important);
 
@@ -722,8 +769,8 @@ public class BeanRule implements Replicable<BeanRule> {
 		beanRule.setOfferMethodName(offerMethodName);
 		beanRule.setOffered(true);
 		beanRule.setInitMethodName(initMethodName);
-		beanRule.setFactoryMethodName(factoryMethodName);
 		beanRule.setDestroyMethodName(destroyMethodName);
+		beanRule.setFactoryMethodName(factoryMethodName);
 		beanRule.setLazyInit(lazyInit);
 		beanRule.setImportant(important);
 		
@@ -740,12 +787,8 @@ public class BeanRule implements Replicable<BeanRule> {
 		br.setSingleton(beanRule.getSingleton());
 		br.setOfferBeanId(beanRule.getOfferBeanId());
 		br.setOfferMethodName(beanRule.getOfferMethodName());
-		br.setOfferMethodRequiresTranslet(beanRule.isOfferMethodRequiresTranslet());
-		br.setOffered(beanRule.isOffered());
 		br.setInitMethodName(beanRule.getInitMethodName());
-		br.setInitMethodRequiresTranslet(beanRule.isInitMethodRequiresTranslet());
 		br.setFactoryMethodName(beanRule.getFactoryMethodName());
-		br.setFactoryMethodRequiresTranslet(beanRule.isFactoryMethodRequiresTranslet());
 		br.setDestroyMethodName(beanRule.getDestroyMethodName());
 		br.setConstructorArgumentItemRuleMap(beanRule.getConstructorArgumentItemRuleMap());
 		br.setPropertyItemRuleMap(beanRule.getPropertyItemRuleMap());

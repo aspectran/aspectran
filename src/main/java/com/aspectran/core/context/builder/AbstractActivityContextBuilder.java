@@ -26,7 +26,6 @@ import com.aspectran.core.context.aspect.AspectRuleRegistry;
 import com.aspectran.core.context.aspect.InvalidPointcutPatternException;
 import com.aspectran.core.context.aspect.pointcut.Pointcut;
 import com.aspectran.core.context.aspect.pointcut.PointcutFactory;
-import com.aspectran.core.context.bean.BeanRegistry;
 import com.aspectran.core.context.bean.BeanRuleRegistry;
 import com.aspectran.core.context.bean.ContextBeanRegistry;
 import com.aspectran.core.context.rule.AspectRule;
@@ -69,7 +68,10 @@ public abstract class AbstractActivityContextBuilder extends ContextBuilderAssis
 	 */
 	protected ActivityContext makeActivityContext(ApplicationAdapter applicationAdapter) throws BeanReferenceException {
 		AspectRuleRegistry aspectRuleRegistry = getAspectRuleRegistry();
+
 		BeanRuleRegistry beanRuleRegistry = getBeanRuleRegistry();
+		beanRuleRegistry.postProcess();
+
 		TransletRuleRegistry transletRuleRegistry = getTransletRuleRegistry();
 		TemplateRuleRegistry templateRuleRegistry = getTemplateRuleRegistry();
 
@@ -82,15 +84,15 @@ public abstract class AbstractActivityContextBuilder extends ContextBuilderAssis
 		context.setAspectRuleRegistry(aspectRuleRegistry);
 
 		BeanProxifierType beanProxifierType = BeanProxifierType.lookup((String)getSetting(DefaultSettingType.BEAN_PROXIFIER));
-		BeanRegistry beanRegistry = new ContextBeanRegistry(beanRuleRegistry, beanProxifierType);
-		context.setBeanRegistry(beanRegistry);
+		ContextBeanRegistry contextBeanRegistry = new ContextBeanRegistry(beanRuleRegistry, beanProxifierType);
+		context.setContextBeanRegistry(contextBeanRegistry);
 		
 		context.setTransletRuleRegistry(transletRuleRegistry);
 		
 		TemplateProcessor templateProcessor = new ContextTemplateProcessor(templateRuleRegistry);
 		context.setTemplateProcessor(templateProcessor);
 		
-		beanRegistry.initialize(context);
+		contextBeanRegistry.initialize(context);
 		templateProcessor.initialize(context);
 		
 		ClassDescriptor.clearCache();

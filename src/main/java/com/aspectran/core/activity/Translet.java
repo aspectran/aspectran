@@ -281,6 +281,17 @@ public interface Translet {
 	public <T> T getBean(String id, Class<T> requiredType);
 
 	/**
+	 * Return the bean instance that matches the given object type.
+	 * If the bean is not of the required type then throw a {@code BeanNotOfRequiredTypeException}.
+	 *
+	 * @param <T> the generic type
+	 * @param requiredType type the bean must match; can be an interface or superclass. null is disallowed.
+	 * @return an instance of the bean
+	 * @since 2.0.0
+	 */
+	public <T> T getConfigBean(Class<T> requiredType);
+	
+	/**
 	 * Gets the aspect advice bean.
 	 *
 	 * @param <T> the generic type

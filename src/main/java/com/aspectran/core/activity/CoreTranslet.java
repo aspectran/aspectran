@@ -276,6 +276,11 @@ public class CoreTranslet implements Translet {
 	}
 
 	@Override
+	public <T> T getConfigBean(Class<T> classType) {
+		return activity.getConfigBean(classType);
+	}
+
+	@Override
 	@SuppressWarnings("unchecked")
 	public <T> T getAspectAdviceBean(String aspectId) {
 		if(aspectAdviceResult == null)

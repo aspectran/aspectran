@@ -18,7 +18,7 @@ package com.aspectran.core.context;
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.aspect.AspectRuleRegistry;
-import com.aspectran.core.context.bean.BeanRegistry;
+import com.aspectran.core.context.bean.ContextBeanRegistry;
 import com.aspectran.core.context.template.TemplateProcessor;
 import com.aspectran.core.context.translet.TransletRuleRegistry;
 
@@ -35,7 +35,7 @@ public class ActivityContext {
 	
 	private AspectRuleRegistry aspectRuleRegistry;
 	
-	private BeanRegistry beanRegistry;
+	private ContextBeanRegistry contextBeanRegistry;
 
 	private TransletRuleRegistry transletRuleRegistry;
 	
@@ -77,21 +77,21 @@ public class ActivityContext {
 	}
 
 	/**
-	 * Gets the bean registry.
+	 * Gets the context bean registry.
 	 *
-	 * @return the bean registry
+	 * @return the context bean registry
 	 */
-	public BeanRegistry getBeanRegistry() {
-		return beanRegistry;
+	public ContextBeanRegistry getContextBeanRegistry() {
+		return contextBeanRegistry;
 	}
 
 	/**
-	 * Sets the bean registry.
+	 * Sets the context bean registry.
 	 *
-	 * @param beanRegistry the new bean registry
+	 * @param contextBeanRegistry the new context bean registry
 	 */
-	public void setBeanRegistry(BeanRegistry beanRegistry) {
-		this.beanRegistry = beanRegistry;
+	public void setContextBeanRegistry(ContextBeanRegistry contextBeanRegistry) {
+		this.contextBeanRegistry = contextBeanRegistry;
 	}
 
 	/**
@@ -164,9 +164,9 @@ public class ActivityContext {
 			aspectRuleRegistry.clear();
 			aspectRuleRegistry = null;
 		}
-		if(beanRegistry != null) {
-			beanRegistry.destroy();
-			beanRegistry = null;
+		if(contextBeanRegistry != null) {
+			contextBeanRegistry.destroy();
+			contextBeanRegistry = null;
 		}
 		if(transletRuleRegistry != null) {
 			transletRuleRegistry.clear();
@@ -183,7 +183,7 @@ public class ActivityContext {
 		StringBuilder sb = new StringBuilder();
 		sb.append("{applicationAdapter=").append(applicationAdapter);
 		sb.append(", aspectRuleRegistry=").append(aspectRuleRegistry);
-		sb.append(", beanRegistry=").append(beanRegistry);
+		sb.append(", beanRegistry=").append(contextBeanRegistry);
 		sb.append(", transletRuleRegistry=").append(transletRuleRegistry);
 		sb.append(", templateProcessor=").append(templateProcessor);
 		sb.append("}");

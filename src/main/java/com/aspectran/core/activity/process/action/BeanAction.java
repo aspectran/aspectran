@@ -16,6 +16,7 @@
 package com.aspectran.core.activity.process.action;
 
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -139,24 +140,26 @@ public class BeanAction extends AbstractAction implements Executable {
 		}
 	}
 
-	public static Object invokeMethod(Activity activity, Object bean, String methodName, ItemRuleMap argumentItemRuleMap, ItemExpressor expressor, boolean needTranslet) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+	public static Object invokeMethod(Activity activity, Object bean, String methodName, ItemRuleMap argumentItemRuleMap, ItemExpressor expressor, boolean needTranslet)
+			throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
 		Class<?>[] argsTypes = null;
 		Object[] argsObjects = null;
 		
 		if(argumentItemRuleMap != null) {
 			Map<String, Object> valueMap = expressor.express(argumentItemRuleMap);
 
+			int argSize = argumentItemRuleMap.size();
 			int argIndex;
 			
 			if(needTranslet) {
 				argIndex = 1;
-				argsTypes = new Class<?>[argumentItemRuleMap.size() + argIndex];
+				argsTypes = new Class<?>[argSize + argIndex];
 				argsObjects = new Object[argsTypes.length];
 				argsTypes[0] = activity.getTransletInterfaceClass();
 				argsObjects[0] = activity.getTranslet();
 			} else {
 				argIndex = 0;
-				argsTypes = new Class<?>[argumentItemRuleMap.size()];
+				argsTypes = new Class<?>[argSize];
 				argsObjects = new Object[argsTypes.length];
 			}
 			
@@ -171,16 +174,46 @@ public class BeanAction extends AbstractAction implements Executable {
 				
 				argIndex++;
 			}
-		} else {
-			if(needTranslet) {
-				argsTypes = new Class<?>[] { activity.getTransletInterfaceClass() };
-				argsObjects = new Object[] { activity.getTranslet() };
-			}
+		} else if(needTranslet) {
+			argsTypes = new Class<?>[] { activity.getTransletInterfaceClass() };
+			argsObjects = new Object[] { activity.getTranslet() };
 		}
 		
-		Object result = MethodUtils.invokeMethod(bean, methodName, argsObjects, argsTypes);
+		return MethodUtils.invokeMethod(bean, methodName, argsObjects, argsTypes);
+	}
+	
+	public static Object invokeMethod(Activity activity, Object bean, Method method, ItemRuleMap argumentItemRuleMap, ItemExpressor expressor, boolean needTranslet)
+			throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+		Object[] argsObjects = null;
 		
-		return result;
+		if(argumentItemRuleMap != null) {
+			Map<String, Object> valueMap = expressor.express(argumentItemRuleMap);
+			
+			int argSize = argumentItemRuleMap.size();
+			int argIndex;
+			
+			if(needTranslet) {
+				argIndex = 1;
+				argsObjects = new Object[argSize + argIndex];
+				argsObjects[0] = activity.getTranslet();
+			} else {
+				argIndex = 0;
+				argsObjects = new Object[argSize];
+			}
+			
+			Iterator<ItemRule> iter = argumentItemRuleMap.iterator();
+			
+			while(iter.hasNext()) {
+				ItemRule ir = iter.next();
+				Object o = valueMap.get(ir.getName());
+				argsObjects[argIndex] = o;
+				argIndex++;
+			}
+		} else if(needTranslet) {
+			argsObjects = new Object[] { activity.getTranslet() };
+		}
+		
+		return method.invoke(bean, argsObjects);
 	}
 	
 	/**

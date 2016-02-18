@@ -60,4 +60,5 @@ public class CglibDynamicBeanProxy extends AbstractDynamicBeanProxy implements M
 		}
 		return proxy;
 	}
+	
 }

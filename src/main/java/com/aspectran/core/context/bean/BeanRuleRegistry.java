@@ -17,7 +17,6 @@ package com.aspectran.core.context.bean;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -52,9 +51,9 @@ public class BeanRuleRegistry {
 
 	private final ClassLoader classLoader;
 	
-	private final BeanRuleMap beanRuleMap = new BeanRuleMap();
+	private final BeanRuleMap idBasedBeanRuleMap = new BeanRuleMap();
 
-	private final Map<Class<?>, Set<BeanRule>> typeBeanRuleMap = new HashMap<Class<?>, Set<BeanRule>>();
+	private final Map<Class<?>, Set<BeanRule>> typeBasedBeanRuleMap = new HashMap<Class<?>, Set<BeanRule>>();
 
 	private final Map<Class<?>, BeanRule> configBeanRuleMap = new HashMap<Class<?>, BeanRule>();
 
@@ -86,11 +85,11 @@ public class BeanRuleRegistry {
 	}
 
 	public BeanRule getBeanRule(String beanId) {
-		return beanRuleMap.get(beanId);
+		return idBasedBeanRuleMap.get(beanId);
 	}
 	
 	public BeanRule[] getBeanRule(Class<?> requiredType) {
-		Set<BeanRule> list = typeBeanRuleMap.get(requiredType);
+		Set<BeanRule> list = typeBasedBeanRuleMap.get(requiredType);
 		if(list.isEmpty())
 			return null;
 		
@@ -112,19 +111,23 @@ public class BeanRuleRegistry {
 	}
 
 	public boolean contains(String beanId) {
-		return beanRuleMap.containsKey(beanId);
+		return idBasedBeanRuleMap.containsKey(beanId);
 	}
 	
 	public boolean contains(Class<?> requiredType) {
-		return typeBeanRuleMap.containsKey(requiredType);
+		return typeBasedBeanRuleMap.containsKey(requiredType);
 	}
 
-	public Collection<BeanRule> getBeanRules() {
-		return beanRuleMap.values();
+	public BeanRuleMap getIdBasedBeanRuleMap() {
+		return idBasedBeanRuleMap;
 	}
 
-	public BeanRuleMap getBeanRuleMap() {
-		return beanRuleMap;
+	public Map<Class<?>, Set<BeanRule>> getTypeBasedBeanRuleMap() {
+		return typeBasedBeanRuleMap;
+	}
+
+	public Map<Class<?>, BeanRule> getConfigBeanRuleMap() {
+		return configBeanRuleMap;
 	}
 
 	/**
@@ -181,7 +184,7 @@ public class BeanRuleRegistry {
 		
 		if(beanRule.isOffered()) {
 			if(beanRule.getOfferBeanClass() == null) {
-				BeanRule offerBeanRule = beanRuleMap.get(beanRule.getOfferBeanId());
+				BeanRule offerBeanRule = idBasedBeanRuleMap.get(beanRule.getOfferBeanId());
 				if(offerBeanRule != null) {
 					offerBeanClass = resolveOfferBeanClass(offerBeanRule);
 				}
@@ -206,7 +209,7 @@ public class BeanRuleRegistry {
 		}
 
 		if(beanRule.getId() != null)
-			beanRuleMap.putBeanRule(beanRule);
+			idBasedBeanRuleMap.putBeanRule(beanRule);
 
 		if(beanClass != null && !beanRule.isOffered()) {
 			if(beanClass.isAnnotationPresent(Configuration.class)) {
@@ -228,10 +231,10 @@ public class BeanRuleRegistry {
 	}
 	
 	private void putBeanRule(Class<?> type, BeanRule beanRule) {
-		Set<BeanRule> list = typeBeanRuleMap.get(type);
+		Set<BeanRule> list = typeBasedBeanRuleMap.get(type);
 		if(list == null) {
 			list = new HashSet<BeanRule>();
-			typeBeanRuleMap.put(type, list);
+			typeBasedBeanRuleMap.put(type, list);
 		}
 		list.add(beanRule);
 	}
@@ -251,21 +254,18 @@ public class BeanRuleRegistry {
 		for(BeanRule beanRule : postProcessBeanRuleMap) {
 			if(beanRule.isOffered() && beanRule.getTargetBeanClass() == null) {
 				Class<?> offerBeanClass = resolveOfferBeanClass(beanRule);
-				Class<?> targetBeanClass = determineOfferMethodTargetBeanClass(offerBeanClass, beanRule.getOfferMethodName(), beanRule);
+				Class<?> targetBeanClass = determineOfferMethodTargetBeanClass(offerBeanClass, beanRule);
 				
-				String initMethodName = beanRule.getInitMethodName();
-				if(initMethodName != null) {
-					checkInitMethod(targetBeanClass, initMethodName, beanRule);
+				if(beanRule.getInitMethodName() != null) {
+					checkInitMethod(targetBeanClass, beanRule);
 				}
 
-				String destroyMethodName = beanRule.getDestroyMethodName();
-				if(destroyMethodName != null) {
-					checkDestroyMethod(targetBeanClass, destroyMethodName, beanRule);
+				if(beanRule.getDestroyMethodName() != null) {
+					checkDestroyMethod(targetBeanClass, beanRule);
 				}
 
-				String factoryMethodName = beanRule.getFactoryMethodName();
-				if(factoryMethodName != null) {
-					targetBeanClass = determineFactoryMethodTargetBeanClass(targetBeanClass, factoryMethodName, beanRule);
+				if(beanRule.getFactoryMethodName() != null) {
+					targetBeanClass = determineFactoryMethodTargetBeanClass(targetBeanClass, beanRule);
 				}
 				
 				putBeanRule(targetBeanClass, beanRule);
@@ -286,8 +286,9 @@ public class BeanRuleRegistry {
 	}
 
 	public void clear() {
-		beanRuleMap.clear();
-		typeBeanRuleMap.clear();
+		idBasedBeanRuleMap.clear();
+		typeBasedBeanRuleMap.clear();
+		configBeanRuleMap.clear();
 	}
 
 	public static Class<?> determineBeanClass(BeanRule beanRule) {
@@ -296,10 +297,10 @@ public class BeanRuleRegistry {
 		if(beanRule.isOffered()) {
 			targetBeanClass = beanRule.getOfferBeanClass();
 			if(targetBeanClass == null) {
-				// will be post processing
+				// (will be post processing)
 				return null;
 			}
-			targetBeanClass = determineOfferMethodTargetBeanClass(targetBeanClass, beanRule.getOfferMethodName(), beanRule);
+			targetBeanClass = determineOfferMethodTargetBeanClass(targetBeanClass, beanRule);
 		} else {
 			targetBeanClass = beanRule.getBeanClass();
 		}
@@ -307,30 +308,27 @@ public class BeanRuleRegistry {
 		if(targetBeanClass == null)
 			throw new BeanRuleException("Invalid BeanRule", beanRule);
 
-		String initMethodName = beanRule.getInitMethodName();
-		if(initMethodName != null) {
-			checkInitMethod(targetBeanClass, initMethodName, beanRule);
+		if(beanRule.getInitMethodName() != null) {
+			checkInitMethod(targetBeanClass, beanRule);
 		}
 
-		String destroyMethodName = beanRule.getDestroyMethodName();
-		if(destroyMethodName != null) {
-			checkDestroyMethod(targetBeanClass, destroyMethodName, beanRule);
+		if(beanRule.getDestroyMethodName() != null) {
+			checkDestroyMethod(targetBeanClass, beanRule);
 		}
 
 		if(beanRule.isFactoryBean()) {
 			targetBeanClass = determineTargetBeanClassForFactoryBean(targetBeanClass, beanRule);
-		} else {
-			String factoryMethodName = beanRule.getFactoryMethodName();
-			if(factoryMethodName != null) {
-				targetBeanClass = determineFactoryMethodTargetBeanClass(targetBeanClass, factoryMethodName, beanRule);
-			}
+		} else if(beanRule.getFactoryMethodName() != null) {
+			targetBeanClass = determineFactoryMethodTargetBeanClass(targetBeanClass, beanRule);
 		}
 
 		return targetBeanClass;
 	}
 
-	private static Class<?> determineOfferMethodTargetBeanClass(Class<?> beanClass, String offerMethodName, BeanRule beanRule) {
+	private static Class<?> determineOfferMethodTargetBeanClass(Class<?> beanClass, BeanRule beanRule) {
+		String offerMethodName = beanRule.getOfferMethodName();
 		Class<?>[] parameterTypes = { Translet.class };
+		
 		Method m1 = MethodUtils.getAccessibleMethod(beanClass, offerMethodName, null);
 		Method m2 = MethodUtils.getAccessibleMethod(beanClass, offerMethodName, parameterTypes);
 
@@ -340,9 +338,11 @@ public class BeanRuleRegistry {
 		Class<?> targetBeanClass;
 		
 		if(m2 != null) {
+			beanRule.setOfferMethod(m2);
 			beanRule.setOfferMethodRequiresTranslet(true);
 			targetBeanClass = m2.getReturnType();
 		} else {
+			beanRule.setOfferMethod(m1);
 			targetBeanClass = m1.getReturnType();
 		}
 		
@@ -362,11 +362,13 @@ public class BeanRuleRegistry {
 		}
 	}
 	
-	private static Class<?> determineFactoryMethodTargetBeanClass(Class<?> beanClass, String factoryMethodName, BeanRule beanRule) {
+	private static Class<?> determineFactoryMethodTargetBeanClass(Class<?> beanClass, BeanRule beanRule) {
 		if(beanRule.isFactoryBean())
 			throw new BeanRuleException("Bean factory method is duplicated. Already implemented the FactoryBean", beanRule);
 		
+		String factoryMethodName = beanRule.getFactoryMethodName();
 		Class<?>[] parameterTypes = { Translet.class };
+
 		Method m1 = MethodUtils.getAccessibleMethod(beanClass, factoryMethodName, null);
 		Method m2 = MethodUtils.getAccessibleMethod(beanClass, factoryMethodName, parameterTypes);
 
@@ -376,9 +378,11 @@ public class BeanRuleRegistry {
 		Class<?> targetBeanClass;
 		
 		if(m2 != null) {
+			beanRule.setFactoryMethod(m2);
 			beanRule.setFactoryMethodRequiresTranslet(true);
 			targetBeanClass = m2.getReturnType();
 		} else {
+			beanRule.setFactoryMethod(m1);
 			targetBeanClass = m1.getReturnType();
 		}
 		
@@ -387,14 +391,16 @@ public class BeanRuleRegistry {
 		return targetBeanClass;
 	}
 
-	private static void checkInitMethod(Class<?> beanClass, String initMethodName, BeanRule beanRule) {
+	private static void checkInitMethod(Class<?> beanClass, BeanRule beanRule) {
 		if(beanRule.isInitializableBean())
 			throw new BeanRuleException("Bean initialization method is duplicated. Already implemented the InitializableBean", beanRule);
 
 		if(beanRule.isInitializableTransletBean())
 			throw new BeanRuleException("Bean initialization method is duplicated. Already implemented the InitializableTransletBean", beanRule);
 
+		String initMethodName = beanRule.getInitMethodName();
 		Class<?>[] parameterTypes = { Translet.class };
+		
 		Method m1 = MethodUtils.getAccessibleMethod(beanClass, initMethodName, null);
 		Method m2 = MethodUtils.getAccessibleMethod(beanClass, initMethodName, parameterTypes);
 
@@ -402,18 +408,24 @@ public class BeanRuleRegistry {
 			throw new IllegalArgumentException("No such initialization method " + initMethodName + "() on bean class: " + beanClass);
 
 		if(m2 != null) {
+			beanRule.setInitMethod(m2);
 			beanRule.setInitMethodRequiresTranslet(true);
+		} else {
+			beanRule.setInitMethod(m2);
 		}
 	}
 	
-	private static void checkDestroyMethod(Class<?> beanClass, String destroyMethodName, BeanRule beanRule) {
+	private static void checkDestroyMethod(Class<?> beanClass, BeanRule beanRule) {
 		if(beanRule.isDisposableBean())
 			throw new BeanRuleException("Bean destroy method  is duplicated. Already implemented the DisposableBean", beanRule);
 
+		String destroyMethodName = beanRule.getDestroyMethodName();
 		Method m = MethodUtils.getAccessibleMethod(beanClass, destroyMethodName, null);
 		
 		if(m == null)
 			throw new IllegalArgumentException("No such destroy method " + destroyMethodName + "() on bean class: " + beanClass);
+		
+		beanRule.setDestroyMethod(m);
 	}
 
 }

@@ -119,7 +119,7 @@ public class QuartzSchedulerService implements SchedulerService {
 					String schedulerFactoryBeanId = aspectRule.getAdviceBeanId();
 					PointcutRule pointcutRule = aspectRule.getPointcutRule();
 					
-					SchedulerFactory schedulerFactory = (SchedulerFactory)context.getBeanRegistry().getBean(schedulerFactoryBeanId);
+					SchedulerFactory schedulerFactory = (SchedulerFactory)context.getContextBeanRegistry().getBean(schedulerFactoryBeanId);
 					Scheduler scheduler = schedulerFactory.getScheduler();
 					JobDetail[] jobDetails = buildJobDetails(aspectRule.getAspectJobAdviceRuleList());
 					

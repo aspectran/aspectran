@@ -20,6 +20,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.aspectran.core.activity.Activity;
@@ -93,8 +94,7 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 		try {
 			if(offerBeanClass != null) {
 				if(offerBeanClass.isAnnotationPresent(Configuration.class)) {
-					//TODO bean = activity.getConfigBean(offerBeanClass);
-					bean = activity.getBean(offerBeanClass);
+					bean = activity.getConfigBean(offerBeanClass);
 				} else {
 					bean = activity.getBean(offerBeanClass);
 				}
@@ -103,7 +103,9 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 			}
 			bean = invokeOfferMethod(beanRule, bean, activity);
 		} catch(Exception e) {
-			throw new BeanCreationException("An exception occurred during the execution of a offer method from the referenced offer bean", beanRule, e);
+			throw new BeanCreationException(
+					"An exception occurred during the execution of a offer method from the referenced offer bean",
+					beanRule, e);
 		}
 
 		try {
@@ -347,21 +349,31 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 		context.setCurrentActivity(activity);
 
 		try {
-			for(BeanRule beanRule : beanRuleRegistry.getBeanRules()) {
-				if(!beanRule.isRegistered()) {
-					ScopeType scope = beanRule.getScopeType();
-
-					if(scope == ScopeType.SINGLETON) {
-						if(!beanRule.isRegistered() && !beanRule.isLazyInit()) {
-							Object bean = createBean(beanRule, activity);
-							beanRule.setBean(bean);
-							beanRule.setRegistered(true);
-						}
-					}
+			for(BeanRule beanRule : beanRuleRegistry.getIdBasedBeanRuleMap().values()) {
+				instantiateSingleton(beanRule, activity);
+			}
+			for(Set<BeanRule> beanRuleSet : beanRuleRegistry.getTypeBasedBeanRuleMap().values()) {
+				for(BeanRule beanRule : beanRuleSet) {
+					instantiateSingleton(beanRule, activity);
 				}
+			}
+			for(BeanRule beanRule : beanRuleRegistry.getConfigBeanRuleMap().values()) {
+				instantiateSingleton(beanRule, activity);
 			}
 		} finally {
 			context.removeCurrentActivity();
+		}
+	}
+	
+	private void instantiateSingleton(BeanRule beanRule, Activity activity) {
+		if(!beanRule.isRegistered()) {
+			if(beanRule.getScopeType() == ScopeType.SINGLETON) {
+				if(!beanRule.isRegistered() && !beanRule.isLazyInit()) {
+					Object bean = createBean(beanRule, activity);
+					beanRule.setBean(bean);
+					beanRule.setRegistered(true);
+				}
+			}
 		}
 	}
 
@@ -375,26 +387,16 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 
 		int failedDestroyes = 0;
 
-		for(BeanRule beanRule : beanRuleRegistry.getBeanRules()) {
-			ScopeType scopeType = beanRule.getScopeType();
-
-			if(beanRule.isRegistered() && scopeType == ScopeType.SINGLETON) {
-				try {
-					if(beanRule.isDisposableBean()) {
-						Object bean = beanRule.getBean();
-						((DisposableBean) bean).destroy();
-					} else if(beanRule.getDestroyMethodName() != null) {
-						String destroyMethodName = beanRule.getDestroyMethodName();
-						MethodUtils.invokeExactMethod(beanRule.getBean(), destroyMethodName, null);
-					}
-				} catch(Exception e) {
-					failedDestroyes++;
-					log.error("Cannot destroy singleton bean " + beanRule, e);
-				}
-
-				beanRule.setBean(null);
-				beanRule.setRegistered(false);
+		for(BeanRule beanRule : beanRuleRegistry.getIdBasedBeanRuleMap().values()) {
+			failedDestroyes += destroySingleton(beanRule);
+		}
+		for(Set<BeanRule> beanRuleSet : beanRuleRegistry.getTypeBasedBeanRuleMap().values()) {
+			for(BeanRule beanRule : beanRuleSet) {
+				failedDestroyes += destroySingleton(beanRule);
 			}
+		}
+		for(BeanRule beanRule : beanRuleRegistry.getConfigBeanRuleMap().values()) {
+			failedDestroyes += destroySingleton(beanRule);
 		}
 
 		if(failedDestroyes > 0)
@@ -403,6 +405,28 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 			log.info("Singletons has been destroyed successfully.");
 	}
 
+	private int destroySingleton(BeanRule beanRule) {
+		int failed = 0;
+		if(beanRule.isRegistered() && beanRule.getScopeType() == ScopeType.SINGLETON) {
+			try {
+				if(beanRule.isDisposableBean()) {
+					Object bean = beanRule.getBean();
+					((DisposableBean) bean).destroy();
+				} else if(beanRule.getDestroyMethodName() != null) {
+					String destroyMethodName = beanRule.getDestroyMethodName();
+					MethodUtils.invokeExactMethod(beanRule.getBean(), destroyMethodName, null);
+				}
+			} catch(Exception e) {
+				failed++;
+				log.error("Cannot destroy singleton bean " + beanRule, e);
+			}
+
+			beanRule.setBean(null);
+			beanRule.setRegistered(false);
+		}
+		return failed;
+	}
+	
 	private static Object newInstance(Class<?> beanClass, Class<?>[] argTypes, Object[] args) throws BeanInstantiationException {
 		if(beanClass.isInterface())
 			throw new BeanInstantiationException("Specified class is an interface", beanClass);
@@ -411,7 +435,6 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 
 		try {
 			constructorToUse = getMatchConstructor(beanClass, args);
-
 			if(constructorToUse == null) {
 				constructorToUse = beanClass.getDeclaredConstructor(argTypes);
 			}

@@ -67,7 +67,7 @@ public abstract class AbstractDynamicBeanProxy {
 		
 		String transletName = activity.getTransletName();
 		String beanId = beanRule.getId();
-		String className = beanRule.getClassName();
+		String className = beanRule.getTargetBeanClassName();
 		String methodName = method.getName();
 		
 		AspectAdviceRuleRegistry aspectAdviceRuleRegistry = retrieveAspectAdviceRuleRegistry(activity, transletName, beanId, className, methodName);

@@ -189,11 +189,48 @@ public interface Activity {
 	
 	public TemplateProcessor getTemplateProcessor();
 
+	/**
+	 * Return the bean instance that matches the given id.
+	 *
+	 * @param <T> the generic type
+	 * @param id the id of the bean to retrieve
+	 * @return an instance of the bean
+	 */
 	public <T> T getBean(String id);
 	
-	public <T> T getBean(Class<T> classType);
+	/**
+	 * Return the bean instance that matches the given object type.
+	 * The class name and bean id must be the same.
+	 *
+	 * @param <T> the generic type
+	 * @param classType type the bean must match; can be an interface or superclass. null is disallowed.
+	 * @return an instance of the bean
+	 * @since 1.3.1
+	 */
+	public <T> T getBean(Class<T> requiredType);
 
-	public <T> T getBean(String id, Class<T> classType);
+	/**
+	 * Return the bean instance that matches the given id and object type.
+	 * If the bean is not of the required type then throw a {@code BeanNotOfRequiredTypeException}.
+	 *
+	 * @param <T> the generic type
+	 * @param id the id of the bean to retrieve
+	 * @param requiredType type the bean must match; can be an interface or superclass. null is disallowed.
+	 * @return an instance of the bean
+	 * @since 1.3.1
+	 */
+	public <T> T getBean(String id, Class<T> requiredType);
+
+	/**
+	 * Return the bean instance that matches the given object type.
+	 * If the bean is not of the required type then throw a {@code BeanNotOfRequiredTypeException}.
+	 *
+	 * @param <T> the generic type
+	 * @param requiredType type the bean must match; can be an interface or superclass. null is disallowed.
+	 * @return an instance of the bean
+	 * @since 2.0.0
+	 */
+	public <T> T getConfigBean(Class<T> requiredType);
 
 	public <T> T getTransletSetting(String settingName);
 	

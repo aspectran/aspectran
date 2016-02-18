@@ -79,7 +79,7 @@ public class AspectAdviceRulePreRegister extends AspectAdviceRuleRegister {
 	}
 	
 	public void register(BeanRuleRegistry beanRuleRegistry) {
-		for(BeanRule beanRule : beanRuleRegistry.getBeanRules()) {
+		for(BeanRule beanRule : beanRuleRegistry.getIdBasedBeanRuleMap()) {
 			if(!beanRule.isOffered()) {
 				determineProxyBean(beanRule);
 			}
@@ -103,7 +103,7 @@ public class AspectAdviceRulePreRegister extends AspectAdviceRuleRegister {
 						break;
 					}
 				} else {
-					if(pointcut == null || existsMatchedBean(pointcut, beanRule.getId(), beanRule.getClassName())) {
+					if(pointcut == null || existsMatchedBean(pointcut, beanRule.getId(), beanRule.getTargetBeanClassName())) {
 						beanRule.setProxied(true);
 	
 						if(log.isTraceEnabled())
@@ -264,7 +264,7 @@ public class AspectAdviceRulePreRegister extends AspectAdviceRuleRegister {
 			ClassDescriptor cd = ClassDescriptor.getInstance(beanRule.getBeanClass());
 			
 			String beanId = beanRule.getId();
-			String className = beanRule.getClassName();
+			String className = beanRule.getTargetBeanClassName();
 			String[] methodNames = cd.getDistinctMethodNames();
 
 			for(PointcutPatternRule ppr : pointcutPatternRuleList) {

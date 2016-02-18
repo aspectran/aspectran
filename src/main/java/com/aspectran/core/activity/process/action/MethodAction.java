@@ -39,7 +39,7 @@ public class MethodAction extends AbstractAction implements Executable {
 
 	private final MethodActionRule methodActionRule;
 
-	private final Class<?> actionClass;
+	private final Class<?> configBeanClass;
 
 	private final Method method;
 
@@ -55,14 +55,14 @@ public class MethodAction extends AbstractAction implements Executable {
 		super(null, parent);
 
 		this.methodActionRule = methodActionRule;
-		this.actionClass = methodActionRule.getConfigBeanClass();
+		this.configBeanClass = methodActionRule.getConfigBeanClass();
 		this.method = methodActionRule.getMethod();
 	}
 
 	@Override
 	public Object execute(Activity activity) throws Exception {
 		try {
-			Object bean = activity.getBean(actionClass);
+			Object bean = activity.getConfigBean(configBeanClass);
 
 			Object result;
 
@@ -89,7 +89,8 @@ public class MethodAction extends AbstractAction implements Executable {
 		}
 	}
 
-	public static Object invokeMethod(Activity activity, Object bean, Method method, boolean needTranslet) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+	public static Object invokeMethod(Activity activity, Object bean, Method method, boolean needTranslet)
+			throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
 		Object[] args;
 		
 		if(needTranslet) {

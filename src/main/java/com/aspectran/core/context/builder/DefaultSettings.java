@@ -203,13 +203,15 @@ public class DefaultSettings {
 			setTransletImplementationClassName(settings.get(DefaultSettingType.TRANSLET_IMPLEMENTATION_CLASS));
 
 		if(settings.get(DefaultSettingType.NULLABLE_ACTION_ID) != null)
-			nullableActionId = (settings.get(DefaultSettingType.NULLABLE_ACTION_ID) == null || Boolean.parseBoolean(settings.get(DefaultSettingType.NULLABLE_ACTION_ID)));
+			nullableActionId = (settings.get(DefaultSettingType.NULLABLE_ACTION_ID) == null ||
+								Boolean.parseBoolean(settings.get(DefaultSettingType.NULLABLE_ACTION_ID)));
 		
 		if(settings.get(DefaultSettingType.BEAN_PROXIFIER) != null)
 			beanProxifier = settings.get(DefaultSettingType.BEAN_PROXIFIER);
 
 		if(settings.get(DefaultSettingType.POINTCUT_PATTERN_VERIFIABLE) != null)
-			pointcutPatternVerifiable = (settings.get(DefaultSettingType.POINTCUT_PATTERN_VERIFIABLE) == null || Boolean.parseBoolean(settings.get(DefaultSettingType.POINTCUT_PATTERN_VERIFIABLE)));
+			pointcutPatternVerifiable = (settings.get(DefaultSettingType.POINTCUT_PATTERN_VERIFIABLE) == null ||
+										Boolean.parseBoolean(settings.get(DefaultSettingType.POINTCUT_PATTERN_VERIFIABLE)));
 
 		if(settings.get(DefaultSettingType.DEFAULT_TEMPLATE_ENGINE) != null)
 			defaultTemplateEngine = settings.get(DefaultSettingType.DEFAULT_TEMPLATE_ENGINE);

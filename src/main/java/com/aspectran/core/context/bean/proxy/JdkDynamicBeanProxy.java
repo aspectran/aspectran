@@ -45,4 +45,5 @@ public class JdkDynamicBeanProxy extends AbstractDynamicBeanProxy implements Inv
 		JdkDynamicBeanProxy proxy = new JdkDynamicBeanProxy(context, beanRule, bean);
 		return Proxy.newProxyInstance(beanRule.getBeanClass().getClassLoader(), beanRule.getBeanClass().getInterfaces(), proxy);
 	}
+	
 }

@@ -814,7 +814,7 @@ public class CoreActivity extends AbstractActivity implements Activity {
 
 	@Override
 	public BeanRegistry getBeanRegistry() {
-		return context.getBeanRegistry();
+		return context.getContextBeanRegistry();
 	}
 
 	@Override
@@ -824,17 +824,22 @@ public class CoreActivity extends AbstractActivity implements Activity {
 
 	@Override
 	public <T> T getBean(String id) {
-		return context.getBeanRegistry().getBean(id);
+		return context.getContextBeanRegistry().getBean(id);
 	}
 
 	@Override
 	public <T> T getBean(Class<T> classType) {
-		return context.getBeanRegistry().getBean(classType);
+		return context.getContextBeanRegistry().getBean(classType);
 	}
 
 	@Override
 	public <T> T getBean(String id, Class<T> classType) {
-		return context.getBeanRegistry().getBean(id, classType);
+		return context.getContextBeanRegistry().getBean(id, classType);
+	}
+
+	@Override
+	public <T> T getConfigBean(Class<T> classType) {
+		return context.getContextBeanRegistry().getConfigBean(classType);
 	}
 
 	@Override

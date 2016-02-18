@@ -98,10 +98,11 @@ public abstract class AnnotatedConfigParser {
 
 		BeanRule beanRule = new BeanRule();
 		beanRule.setId(beanId);
-		beanRule.setOfferBeanId("class:" + beanClass.getName());
+		beanRule.setOfferBeanId(BeanRule.CLASS_DIRECTIVE_PREFIX + beanClass.getName());
 		beanRule.setOfferBeanClass(beanClass);
-		beanRule.setOffered(true);
 		beanRule.setOfferMethodName(method.getName());
+		beanRule.setOfferMethod(method);;
+		beanRule.setOffered(true);
 		beanRule.setInitMethodName(initMethodName);
 		beanRule.setDestroyMethodName(destroyMethodName);
 		beanRule.setFactoryMethodName(factoryMethodName);
@@ -147,9 +148,10 @@ public abstract class AnnotatedConfigParser {
 			transletRule.setResponseRule(ResponseRule.newInstance(rrr));
 		}
 
-		MethodActionRule beanActionRule = new MethodActionRule();
-		beanActionRule.setConfigBeanClass(beanClass);
-		beanActionRule.setMethod(method);
+		MethodActionRule methodActionRule = new MethodActionRule();
+		methodActionRule.setConfigBeanClass(beanClass);
+		methodActionRule.setMethod(method);
+		
 		//transletRule.applyActionRule(beanActionRule);
 
 		//transletRuleMap.putTransletRule(transletRule);

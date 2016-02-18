@@ -32,8 +32,8 @@ public class BeanParameters extends AbstractParameters implements Parameters {
 	public static final ParameterDefine offerBean;
 	public static final ParameterDefine offerMethod;
 	public static final ParameterDefine initMethod;
-	public static final ParameterDefine factoryMethod;
 	public static final ParameterDefine destroyMethod;
+	public static final ParameterDefine factoryMethod;
 	public static final ParameterDefine lazyInit;
 	public static final ParameterDefine important;
 	public static final ParameterDefine constructor;
@@ -53,8 +53,8 @@ public class BeanParameters extends AbstractParameters implements Parameters {
 		offerBean = new ParameterDefine("offerBean", ParameterValueType.STRING);
 		offerMethod = new ParameterDefine("offerMethod", ParameterValueType.STRING);
 		initMethod = new ParameterDefine("initMethod", ParameterValueType.STRING);
-		factoryMethod = new ParameterDefine("factoryMethod", ParameterValueType.STRING);
 		destroyMethod = new ParameterDefine("destroyMethod", ParameterValueType.STRING);
+		factoryMethod = new ParameterDefine("factoryMethod", ParameterValueType.STRING);
 		lazyInit = new ParameterDefine("lazyInit", ParameterValueType.BOOLEAN);
 		important = new ParameterDefine("important", ParameterValueType.BOOLEAN);
 		constructor = new ParameterDefine("constructor", ConstructorParameters.class);
@@ -72,8 +72,8 @@ public class BeanParameters extends AbstractParameters implements Parameters {
 				offerBean,
 				offerMethod,
 				initMethod,
-				factoryMethod,
 				destroyMethod,
+				factoryMethod,
 				lazyInit,
 				important,
 				constructor,
