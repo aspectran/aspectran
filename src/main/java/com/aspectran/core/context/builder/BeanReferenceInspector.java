@@ -56,7 +56,8 @@ public class BeanReferenceInspector {
 		
 		for(Map.Entry<Object, Set<Object>> entry : relationMap.entrySet()) {
 			Object beanIdOrClass = entry.getKey();
-
+			BeanRule beanRule = beanRuleRegistry.getBeanRule(beanIdOrClass);
+			
 			if(!beanRuleRegistry.contains(beanIdOrClass)) {
 				unknownBeanIdList.add(beanIdOrClass);
 				Set<Object> set = entry.getValue();
@@ -79,6 +80,14 @@ public class BeanReferenceInspector {
 					}
 					
 					log.error("Cannot resolve reference to bean '" + beanIdOrClass.toString() + "' on " + ruleName + " " + o);
+				}
+			} else {
+				Set<Object> set = entry.getValue();
+				
+				for(Object o : set) {
+					if(o instanceof BeanActionRule) {
+						BeanActionRule.checkActionParameter((BeanActionRule)o, beanRule);
+					}
 				}
 			}
 		}

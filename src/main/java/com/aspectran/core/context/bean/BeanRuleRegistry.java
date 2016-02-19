@@ -84,6 +84,25 @@ public class BeanRuleRegistry {
 		this.transletRuleRegistry = transletRuleRegistry;
 	}
 
+	public BeanRule getBeanRule(Object beanIdOrClass) {
+		if(beanIdOrClass == null)
+			return null;
+
+		if(beanIdOrClass instanceof Class<?>) {
+			BeanRule[] beanRules = getBeanRule((Class<?>)beanIdOrClass);
+
+			if(beanRules == null)
+				return null;
+			
+			if(beanRules.length > 1)
+				throw new NoUniqueBeanException((Class<?>)beanIdOrClass, beanRules);
+			
+			return beanRules[0];
+		} else {
+			return getBeanRule(beanIdOrClass.toString());
+		}
+	}
+	
 	public BeanRule getBeanRule(String beanId) {
 		return idBasedBeanRuleMap.get(beanId);
 	}

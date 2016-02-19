@@ -15,10 +15,14 @@
  */
 package com.aspectran.core.context.rule;
 
+import java.lang.reflect.Method;
+
+import com.aspectran.core.activity.Translet;
 import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
 import com.aspectran.core.context.rule.ability.ArgumentPossessable;
 import com.aspectran.core.context.rule.ability.PropertyPossessable;
 import com.aspectran.core.util.BooleanUtils;
+import com.aspectran.core.util.MethodUtils;
 import com.aspectran.core.util.ToStringBuilder;
 
 /**
@@ -35,6 +39,10 @@ public class BeanActionRule implements ArgumentPossessable, PropertyPossessable 
 	private Class<?> beanClass;
 
 	private String methodName;
+
+	private Method method;
+	
+	private boolean requiresTranslet;
 
 	private ItemRuleMap propertyItemRuleMap;
 
@@ -106,6 +114,22 @@ public class BeanActionRule implements ArgumentPossessable, PropertyPossessable 
 	 */
 	public void setMethodName(String methodName) {
 		this.methodName = methodName;
+	}
+
+	public boolean isRequiresTranslet() {
+		return requiresTranslet;
+	}
+
+	public void setRequiresTranslet(boolean requiresTranslet) {
+		this.requiresTranslet = requiresTranslet;
+	}
+
+	public Method getMethod() {
+		return method;
+	}
+
+	public void setMethod(Method method) {
+		this.method = method;
 	}
 
 	/**
@@ -241,6 +265,29 @@ public class BeanActionRule implements ArgumentPossessable, PropertyPossessable 
 		beanActionRule.setHidden(hidden);
 
 		return beanActionRule;
+	}
+	
+	public static void checkActionParameter(BeanActionRule beanActionRule, BeanRule beanRule) {
+		Class<?> beanClass;
+		if(beanRule.getTargetBeanClass() != null)
+			beanClass = beanRule.getTargetBeanClass();
+		else
+			beanClass = beanRule.getBeanClass();
+		
+		String methodName = beanActionRule.getMethodName();
+		Class<?>[] parameterTypes = { Translet.class };
+		
+		Method m1 = MethodUtils.getAccessibleMethod(beanClass, methodName, null);
+		Method m2 = MethodUtils.getAccessibleMethod(beanClass, methodName, parameterTypes);
+
+		if(m2 != null) {
+			beanActionRule.setMethod(m2);
+			beanActionRule.setRequiresTranslet(true);
+		} else {
+			beanActionRule.setMethod(m1);
+		}
+		
+		//@TODO
 	}
 	
 }
