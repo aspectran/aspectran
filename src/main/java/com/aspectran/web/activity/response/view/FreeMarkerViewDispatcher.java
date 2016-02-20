@@ -114,4 +114,9 @@ public class FreeMarkerViewDispatcher implements ViewDispatcher {
 		}
 	}
 
+	@Override
+	public boolean isSingleton() {
+		return true;
+	}
+
 }

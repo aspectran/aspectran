@@ -23,6 +23,7 @@ import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
+import com.aspectran.core.context.bean.BeanRegistrySupport;
 import com.aspectran.core.context.rule.AspectAdviceRule;
 import com.aspectran.core.context.rule.ForwardResponseRule;
 import com.aspectran.core.context.rule.RedirectResponseRule;
@@ -34,7 +35,7 @@ import com.aspectran.core.context.rule.type.RequestMethodType;
  *
  * <p>Created: 2008. 7. 5. AM 12:35:44</p>
  */
-public interface Translet {
+public interface Translet extends BeanRegistrySupport {
 
 	/**
 	 * Returns the name of the translet.
@@ -248,49 +249,6 @@ public interface Translet {
 	 */
 	public Exception getRaisedException();
 
-	/**
-	 * Return the bean instance that matches the given id.
-	 *
-	 * @param <T> the generic type
-	 * @param id the id of the bean to retrieve
-	 * @return an instance of the bean
-	 */
-	public <T> T getBean(String id);
-
-	/**
-	 * Return the bean instance that matches the given object type.
-	 * The class name and bean id must be the same.
-	 *
-	 * @param <T> the generic type
-	 * @param classType type the bean must match; can be an interface or superclass. null is disallowed.
-	 * @return an instance of the bean
-	 * @since 1.3.1
-	 */
-	public <T> T getBean(Class<T> classType);
-
-	/**
-	 * Return the bean instance that matches the given id and object type.
-	 * If the bean is not of the required type then throw a {@code BeanNotOfRequiredTypeException}.
-	 *
-	 * @param <T> the generic type
-	 * @param id the id of the bean to retrieve
-	 * @param requiredType type the bean must match; can be an interface or superclass. null is disallowed.
-	 * @return an instance of the bean
-	 * @since 1.3.1
-	 */
-	public <T> T getBean(String id, Class<T> requiredType);
-
-	/**
-	 * Return the bean instance that matches the given object type.
-	 * If the bean is not of the required type then throw a {@code BeanNotOfRequiredTypeException}.
-	 *
-	 * @param <T> the generic type
-	 * @param requiredType type the bean must match; can be an interface or superclass. null is disallowed.
-	 * @return an instance of the bean
-	 * @since 2.0.0
-	 */
-	public <T> T getConfigBean(Class<T> requiredType);
-	
 	/**
 	 * Gets the aspect advice bean.
 	 *

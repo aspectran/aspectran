@@ -250,7 +250,7 @@ public abstract class ClassUtils {
 	 * @return the user-defined class
 	 */
 	public static Class<?> getUserClass(Class<?> clazz) {
-		return (clazz != null && clazz.getName().indexOf(CGLIB_CLASS_SEPARATOR) != -1 ? clazz.getSuperclass() : clazz);
+		return (clazz != null && clazz.getName().contains(CGLIB_CLASS_SEPARATOR) ? clazz.getSuperclass() : clazz);
 	}
 
 	/**
@@ -484,15 +484,14 @@ public abstract class ClassUtils {
 	public static int getMethodCountForName(Class<?> clazz, String methodName) {
 		int count = 0;
 		Method[] declaredMethods = clazz.getDeclaredMethods();
-		for(int i = 0; i < declaredMethods.length; i++) {
-			Method method = declaredMethods[i];
+		for(Method method : declaredMethods) {
 			if(methodName.equals(method.getName())) {
 				count++;
 			}
 		}
 		Class<?>[] ifcs = clazz.getInterfaces();
-		for(int i = 0; i < ifcs.length; i++) {
-			count += getMethodCountForName(ifcs[i], methodName);
+		for(Class<?> ifc : ifcs) {
+			count += getMethodCountForName(ifc, methodName);
 		}
 		if(clazz.getSuperclass() != null) {
 			count += getMethodCountForName(clazz.getSuperclass(), methodName);
@@ -509,15 +508,14 @@ public abstract class ClassUtils {
 	 */
 	public static boolean hasAtLeastOneMethodWithName(Class<?> clazz, String methodName) {
 		Method[] declaredMethods = clazz.getDeclaredMethods();
-		for(int i = 0; i < declaredMethods.length; i++) {
-			Method method = declaredMethods[i];
+		for(Method method : declaredMethods) {
 			if(method.getName().equals(methodName)) {
 				return true;
 			}
 		}
 		Class<?>[] ifcs = clazz.getInterfaces();
-		for(int i = 0; i < ifcs.length; i++) {
-			if(hasAtLeastOneMethodWithName(ifcs[i], methodName)) {
+		for(Class<?> ifc : ifcs) {
+			if(hasAtLeastOneMethodWithName(ifc, methodName)) {
 				return true;
 			}
 		}
@@ -563,6 +561,7 @@ public abstract class ClassUtils {
 				return method;
 			}
 		} catch(NoSuchMethodException ex) {
+			//ignore
 		}
 		return null;
 	}
@@ -870,7 +869,7 @@ public abstract class ClassUtils {
 			}
 			clazz = clazz.getSuperclass();
 		}
-		return (Class<?>[])interfaces.toArray(new Class[interfaces.size()]);
+		return interfaces.toArray(new Class[interfaces.size()]);
 	}
 
 	/**

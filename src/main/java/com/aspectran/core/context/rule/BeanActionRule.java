@@ -20,7 +20,9 @@ import java.lang.reflect.Method;
 import com.aspectran.core.activity.Translet;
 import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
 import com.aspectran.core.context.rule.ability.ArgumentPossessable;
+import com.aspectran.core.context.rule.ability.BeanReferenceInspectable;
 import com.aspectran.core.context.rule.ability.PropertyPossessable;
+import com.aspectran.core.context.rule.type.BeanReferrerType;
 import com.aspectran.core.util.BooleanUtils;
 import com.aspectran.core.util.MethodUtils;
 import com.aspectran.core.util.ToStringBuilder;
@@ -30,7 +32,11 @@ import com.aspectran.core.util.ToStringBuilder;
  * 
  * <p>Created: 2008. 03. 22 PM 5:50:35</p>
  */
-public class BeanActionRule implements ArgumentPossessable, PropertyPossessable {
+public class BeanActionRule implements ArgumentPossessable, PropertyPossessable, BeanReferenceInspectable {
+
+	public static Class<?>[] TRANSLET_ACTION_PARAMETER_TYPES = { Translet.class };
+
+	private static final BeanReferrerType BEAN_REFERABLE_RULE_TYPE = BeanReferrerType.BEAN_ACTION_RULE;
 
 	private String actionId;
 
@@ -230,6 +236,11 @@ public class BeanActionRule implements ArgumentPossessable, PropertyPossessable 
 	public void setAspectAdviceRuleRegistry(AspectAdviceRuleRegistry aspectAdviceRuleRegistry) {
 		this.aspectAdviceRuleRegistry = aspectAdviceRuleRegistry;
 	}
+
+	@Override
+	public BeanReferrerType getBeanReferrerType() {
+		return BEAN_REFERABLE_RULE_TYPE;
+	}
 	
 	@Override
 	public String toString() {
@@ -267,18 +278,12 @@ public class BeanActionRule implements ArgumentPossessable, PropertyPossessable 
 		return beanActionRule;
 	}
 	
-	public static void checkActionParameter(BeanActionRule beanActionRule, BeanRule beanRule) {
-		Class<?> beanClass;
-		if(beanRule.getTargetBeanClass() != null)
-			beanClass = beanRule.getTargetBeanClass();
-		else
-			beanClass = beanRule.getBeanClass();
-		
+	public static void checkTransletActionParameter(BeanActionRule beanActionRule, BeanRule beanRule) {
+		Class<?> beanClass = beanRule.getTargetBeanClass();
 		String methodName = beanActionRule.getMethodName();
-		Class<?>[] parameterTypes = { Translet.class };
-		
+
 		Method m1 = MethodUtils.getAccessibleMethod(beanClass, methodName, null);
-		Method m2 = MethodUtils.getAccessibleMethod(beanClass, methodName, parameterTypes);
+		Method m2 = MethodUtils.getAccessibleMethod(beanClass, methodName, TRANSLET_ACTION_PARAMETER_TYPES);
 
 		if(m2 != null) {
 			beanActionRule.setMethod(m2);
@@ -286,8 +291,6 @@ public class BeanActionRule implements ArgumentPossessable, PropertyPossessable 
 		} else {
 			beanActionRule.setMethod(m1);
 		}
-		
-		//@TODO
 	}
 	
 }

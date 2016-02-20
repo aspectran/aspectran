@@ -22,7 +22,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import com.aspectran.core.activity.Translet;
 import com.aspectran.core.context.bean.ablility.DisposableBean;
 import com.aspectran.core.context.bean.ablility.FactoryBean;
 import com.aspectran.core.context.bean.ablility.InitializableBean;
@@ -31,6 +30,7 @@ import com.aspectran.core.context.bean.annotation.Configuration;
 import com.aspectran.core.context.bean.scan.BeanClassScanFailedException;
 import com.aspectran.core.context.bean.scan.BeanClassScanner;
 import com.aspectran.core.context.loader.AspectranClassLoader;
+import com.aspectran.core.context.rule.BeanActionRule;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.BeanRuleMap;
 import com.aspectran.core.context.translet.TransletRuleRegistry;
@@ -84,27 +84,27 @@ public class BeanRuleRegistry {
 		this.transletRuleRegistry = transletRuleRegistry;
 	}
 
-	public BeanRule getBeanRule(Object beanIdOrClass) {
-		if(beanIdOrClass == null)
+	public BeanRule getBeanRule(Object idOrRequiredType) {
+		if(idOrRequiredType == null)
 			return null;
 
-		if(beanIdOrClass instanceof Class<?>) {
-			BeanRule[] beanRules = getBeanRule((Class<?>)beanIdOrClass);
+		if(idOrRequiredType instanceof Class<?>) {
+			BeanRule[] beanRules = getBeanRule((Class<?>)idOrRequiredType);
 
 			if(beanRules == null)
 				return null;
 			
 			if(beanRules.length > 1)
-				throw new NoUniqueBeanException((Class<?>)beanIdOrClass, beanRules);
+				throw new NoUniqueBeanException((Class<?>)idOrRequiredType, beanRules);
 			
 			return beanRules[0];
 		} else {
-			return getBeanRule(beanIdOrClass.toString());
+			return getBeanRule(idOrRequiredType.toString());
 		}
 	}
 	
-	public BeanRule getBeanRule(String beanId) {
-		return idBasedBeanRuleMap.get(beanId);
+	public BeanRule getBeanRule(String id) {
+		return idBasedBeanRuleMap.get(id);
 	}
 	
 	public BeanRule[] getBeanRule(Class<?> requiredType) {
@@ -119,18 +119,18 @@ public class BeanRuleRegistry {
 		return configBeanRuleMap.get(requiredType);
 	}
 
-	public boolean contains(Object beanIdOrClass) {
-		if(beanIdOrClass == null)
+	public boolean contains(Object idOrRequiredType) {
+		if(idOrRequiredType == null)
 			return false;
 
-		if(beanIdOrClass instanceof Class<?>)
-			return contains((Class<?>)beanIdOrClass);
+		if(idOrRequiredType instanceof Class<?>)
+			return contains((Class<?>)idOrRequiredType);
 		else
-			return contains(beanIdOrClass.toString());
+			return contains(idOrRequiredType.toString());
 	}
 
-	public boolean contains(String beanId) {
-		return idBasedBeanRuleMap.containsKey(beanId);
+	public boolean contains(String id) {
+		return idBasedBeanRuleMap.containsKey(id);
 	}
 	
 	public boolean contains(Class<?> requiredType) {
@@ -210,12 +210,10 @@ public class BeanRuleRegistry {
 			} else {
 				offerBeanClass = beanRule.getOfferBeanClass();
 			}
-		} else {
-			offerBeanClass = beanRule.getBeanClass();
 		}
 
 		if(offerBeanClass == null)
-			throw new BeanRuleException("Cannot resolve offer bean of ", beanRule);
+			throw new BeanRuleException("Invalid BeanRule: Cannot resolve offer bean of ", beanRule);
 		
 		return offerBeanClass;
 	}
@@ -249,17 +247,17 @@ public class BeanRuleRegistry {
 			log.trace("add BeanRule " + beanRule);
 	}
 	
-	private void putBeanRule(Class<?> type, BeanRule beanRule) {
-		Set<BeanRule> list = typeBasedBeanRuleMap.get(type);
+	private void putBeanRule(Class<?> beanClass, BeanRule beanRule) {
+		Set<BeanRule> list = typeBasedBeanRuleMap.get(beanClass);
 		if(list == null) {
 			list = new HashSet<BeanRule>();
-			typeBasedBeanRuleMap.put(type, list);
+			typeBasedBeanRuleMap.put(beanClass, list);
 		}
 		list.add(beanRule);
 	}
 
-	private void putConfigBeanRule(Class<?> type, BeanRule beanRule) {
-		configBeanRuleMap.put(type, beanRule);
+	private void putConfigBeanRule(Class<?> beanClass, BeanRule beanRule) {
+		configBeanRuleMap.put(beanClass, beanRule);
 	}
 
 	private void parseAnnotatedConfig(Class<?> beanClass, BeanRule beanRule) {
@@ -271,7 +269,7 @@ public class BeanRuleRegistry {
 			return;
 		
 		for(BeanRule beanRule : postProcessBeanRuleMap) {
-			if(beanRule.isOffered() && beanRule.getTargetBeanClass() == null) {
+			if(beanRule.isOffered()) {
 				Class<?> offerBeanClass = resolveOfferBeanClass(beanRule);
 				Class<?> targetBeanClass = determineOfferMethodTargetBeanClass(offerBeanClass, beanRule);
 				
@@ -346,10 +344,9 @@ public class BeanRuleRegistry {
 
 	private static Class<?> determineOfferMethodTargetBeanClass(Class<?> beanClass, BeanRule beanRule) {
 		String offerMethodName = beanRule.getOfferMethodName();
-		Class<?>[] parameterTypes = { Translet.class };
-		
+
 		Method m1 = MethodUtils.getAccessibleMethod(beanClass, offerMethodName, null);
-		Method m2 = MethodUtils.getAccessibleMethod(beanClass, offerMethodName, parameterTypes);
+		Method m2 = MethodUtils.getAccessibleMethod(beanClass, offerMethodName, BeanActionRule.TRANSLET_ACTION_PARAMETER_TYPES);
 
 		if(m1 == null && m2 == null)
 			throw new IllegalArgumentException("No such offer method " + offerMethodName + "() on bean class: " + beanClass);
@@ -364,9 +361,9 @@ public class BeanRuleRegistry {
 			beanRule.setOfferMethod(m1);
 			targetBeanClass = m1.getReturnType();
 		}
-		
+
 		beanRule.setTargetBeanClass(targetBeanClass);
-		
+
 		return targetBeanClass;
 	}
 
@@ -386,10 +383,9 @@ public class BeanRuleRegistry {
 			throw new BeanRuleException("Bean factory method is duplicated. Already implemented the FactoryBean", beanRule);
 		
 		String factoryMethodName = beanRule.getFactoryMethodName();
-		Class<?>[] parameterTypes = { Translet.class };
 
 		Method m1 = MethodUtils.getAccessibleMethod(beanClass, factoryMethodName, null);
-		Method m2 = MethodUtils.getAccessibleMethod(beanClass, factoryMethodName, parameterTypes);
+		Method m2 = MethodUtils.getAccessibleMethod(beanClass, factoryMethodName, BeanActionRule.TRANSLET_ACTION_PARAMETER_TYPES);
 
 		if(m1 == null && m2 == null)
 			throw new IllegalArgumentException("No such factory method " + factoryMethodName + "() on bean class: " + beanClass);
@@ -418,10 +414,9 @@ public class BeanRuleRegistry {
 			throw new BeanRuleException("Bean initialization method is duplicated. Already implemented the InitializableTransletBean", beanRule);
 
 		String initMethodName = beanRule.getInitMethodName();
-		Class<?>[] parameterTypes = { Translet.class };
-		
+
 		Method m1 = MethodUtils.getAccessibleMethod(beanClass, initMethodName, null);
-		Method m2 = MethodUtils.getAccessibleMethod(beanClass, initMethodName, parameterTypes);
+		Method m2 = MethodUtils.getAccessibleMethod(beanClass, initMethodName, BeanActionRule.TRANSLET_ACTION_PARAMETER_TYPES);
 
 		if(m1 == null && m2 == null)
 			throw new IllegalArgumentException("No such initialization method " + initMethodName + "() on bean class: " + beanClass);

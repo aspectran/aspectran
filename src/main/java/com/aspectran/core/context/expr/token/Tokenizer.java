@@ -191,7 +191,7 @@ public class Tokenizer {
 
 		Token token = new Token(type, name);
 		token.setValue(defaultValue);
-		token.setGetterName(getterName);
+		token.setPropertyName(getterName);
 
 		return token;
 	}

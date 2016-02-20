@@ -41,7 +41,7 @@ public class BooleanUtils {
 		if(bool == null)
 			return defaultValue;
 		
-		return bool.booleanValue();
+		return bool;
 	}
 
 }

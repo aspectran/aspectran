@@ -17,7 +17,6 @@ package com.aspectran.core.activity.process.action;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Iterator;
 import java.util.Map;
 
 import com.aspectran.core.activity.Activity;
@@ -50,15 +49,15 @@ public class BeanAction extends AbstractAction {
 
 	private final Class<?> beanClass;
 
-	private final String methodName;
+	private final Method method;
+
+	private final boolean requiresTranslet;
 	
 	private final ItemRuleMap propertyItemRuleMap;
 	
 	private final ItemRuleMap argumentItemRuleMap;
 	
 	private final AspectAdviceRule aspectAdviceRule;
-	
-	private Boolean needTranslet;
 	
 	/**
 	 * Instantiates a new BeanAction.
@@ -72,7 +71,8 @@ public class BeanAction extends AbstractAction {
 		this.beanActionRule = beanActionRule;
 		this.beanId = beanActionRule.getBeanId();
 		this.beanClass = beanActionRule.getBeanClass();
-		this.methodName = beanActionRule.getMethodName();
+		this.method = beanActionRule.getMethod();
+		this.requiresTranslet = beanActionRule.isRequiresTranslet();
 
 		if(beanActionRule.getPropertyItemRuleMap() != null && !beanActionRule.getPropertyItemRuleMap().isEmpty())
 			this.propertyItemRuleMap = beanActionRule.getPropertyItemRuleMap();
@@ -114,33 +114,46 @@ public class BeanAction extends AbstractAction {
 					BeanUtils.setObject(bean, entry.getKey(), entry.getValue());
 				}
 			}
-			
-			Object result;
 
-			if(needTranslet == null) {
-				try {
-					result = invokeMethod(activity, bean, methodName, argumentItemRuleMap, expressor, true);
-					needTranslet = Boolean.TRUE;
-				} catch(NoSuchMethodException e) {
-					if(log.isDebugEnabled()) {
-						log.debug("Cannot find a method that requires a argument translet. So in the future will continue to call a method with no argument translet. beanActionRule " + beanActionRule);
-					}
-					
-					needTranslet = Boolean.FALSE;
-					result = invokeMethod(activity, bean, methodName, argumentItemRuleMap, expressor, false);
-				}
-			} else {
-				result = invokeMethod(activity, bean, methodName, argumentItemRuleMap, expressor, needTranslet.booleanValue());
-			}
-
-			return result;
+			return invokeMethod(activity, bean, method, argumentItemRuleMap, expressor, requiresTranslet);
 		} catch(Exception e) {
 			log.error("Action execution error: beanActionRule " + beanActionRule + " Cause: " + e.toString());
 			throw e;
 		}
 	}
 
-	public static Object invokeMethod(Activity activity, Object bean, String methodName, ItemRuleMap argumentItemRuleMap, ItemExpressor expressor, boolean needTranslet)
+	public static Object invokeMethod(Activity activity, Object bean, Method method, ItemRuleMap argumentItemRuleMap, ItemExpressor expressor, boolean requiresTranslet)
+			throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+		Object[] argsObjects = null;
+
+		if(argumentItemRuleMap != null) {
+			Map<String, Object> valueMap = expressor.express(argumentItemRuleMap);
+
+			int argSize = argumentItemRuleMap.size();
+			int argIndex;
+
+			if(requiresTranslet) {
+				argIndex = 1;
+				argsObjects = new Object[argSize + argIndex];
+				argsObjects[0] = activity.getTranslet();
+			} else {
+				argIndex = 0;
+				argsObjects = new Object[argSize];
+			}
+
+			for(ItemRule ir : argumentItemRuleMap) {
+				Object o = valueMap.get(ir.getName());
+				argsObjects[argIndex] = o;
+				argIndex++;
+			}
+		} else if(requiresTranslet) {
+			argsObjects = new Object[] { activity.getTranslet() };
+		}
+
+		return method.invoke(bean, argsObjects);
+	}
+
+	public static Object invokeMethod(Activity activity, Object bean, String methodName, ItemRuleMap argumentItemRuleMap, ItemExpressor expressor, boolean requiresTranslet)
 			throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
 		Class<?>[] argsTypes = null;
 		Object[] argsObjects = null;
@@ -151,7 +164,7 @@ public class BeanAction extends AbstractAction {
 			int argSize = argumentItemRuleMap.size();
 			int argIndex;
 			
-			if(needTranslet) {
+			if(requiresTranslet) {
 				argIndex = 1;
 				argsTypes = new Class<?>[argSize + argIndex];
 				argsObjects = new Object[argsTypes.length];
@@ -162,58 +175,21 @@ public class BeanAction extends AbstractAction {
 				argsTypes = new Class<?>[argSize];
 				argsObjects = new Object[argsTypes.length];
 			}
-			
-			Iterator<ItemRule> iter = argumentItemRuleMap.iterator();
-			
-			while(iter.hasNext()) {
-				ItemRule ir = iter.next();
+
+			for(ItemRule ir : argumentItemRuleMap) {
 				Object o = valueMap.get(ir.getName());
 
 				argsTypes[argIndex] = ItemRule.getClassOfValue(ir, o);
 				argsObjects[argIndex] = o;
-				
+
 				argIndex++;
 			}
-		} else if(needTranslet) {
+		} else if(requiresTranslet) {
 			argsTypes = new Class<?>[] { activity.getTransletInterfaceClass() };
 			argsObjects = new Object[] { activity.getTranslet() };
 		}
 		
 		return MethodUtils.invokeMethod(bean, methodName, argsObjects, argsTypes);
-	}
-	
-	public static Object invokeMethod(Activity activity, Object bean, Method method, ItemRuleMap argumentItemRuleMap, ItemExpressor expressor, boolean needTranslet)
-			throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
-		Object[] argsObjects = null;
-		
-		if(argumentItemRuleMap != null) {
-			Map<String, Object> valueMap = expressor.express(argumentItemRuleMap);
-			
-			int argSize = argumentItemRuleMap.size();
-			int argIndex;
-			
-			if(needTranslet) {
-				argIndex = 1;
-				argsObjects = new Object[argSize + argIndex];
-				argsObjects[0] = activity.getTranslet();
-			} else {
-				argIndex = 0;
-				argsObjects = new Object[argSize];
-			}
-			
-			Iterator<ItemRule> iter = argumentItemRuleMap.iterator();
-			
-			while(iter.hasNext()) {
-				ItemRule ir = iter.next();
-				Object o = valueMap.get(ir.getName());
-				argsObjects[argIndex] = o;
-				argIndex++;
-			}
-		} else if(needTranslet) {
-			argsObjects = new Object[] { activity.getTranslet() };
-		}
-		
-		return method.invoke(bean, argsObjects);
 	}
 	
 	/**

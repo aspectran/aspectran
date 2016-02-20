@@ -16,7 +16,9 @@
 package com.aspectran.core.context.rule;
 
 import com.aspectran.core.context.rule.ability.ActionPossessable;
+import com.aspectran.core.context.rule.ability.BeanReferenceInspectable;
 import com.aspectran.core.context.rule.ability.Replicable;
+import com.aspectran.core.context.rule.type.BeanReferrerType;
 import com.aspectran.core.context.rule.type.ContentType;
 import com.aspectran.core.context.rule.type.ResponseType;
 import com.aspectran.core.context.rule.type.TransformType;
@@ -28,9 +30,11 @@ import com.aspectran.core.util.ToStringBuilder;
  * 
  * <p>Created: 2008. 03. 22 PM 5:51:58</p>
  */
-public class TransformRule extends ActionPossessSupport implements ActionPossessable, Replicable<TransformRule> {
+public class TransformRule extends ActionPossessSupport implements ActionPossessable, Replicable<TransformRule>, BeanReferenceInspectable {
 	
 	public static final ResponseType RESPONSE_TYPE = ResponseType.TRANSFORM;
+
+	private static final BeanReferrerType BEAN_REFERABLE_RULE_TYPE = BeanReferrerType.TRANSFORM_RULE;
 
 	private TransformType transformType;
 
@@ -160,6 +164,11 @@ public class TransformRule extends ActionPossessSupport implements ActionPossess
 	@Override
 	public TransformRule replicate() {
 		return replicate(this);
+	}
+
+	@Override
+	public BeanReferrerType getBeanReferrerType() {
+		return BEAN_REFERABLE_RULE_TYPE;
 	}
 
 	@Override

@@ -16,7 +16,6 @@
 package com.aspectran.core.context.builder.xml;
 
 import java.io.InputStream;
-import java.util.Iterator;
 import java.util.Map;
 
 import org.w3c.dom.Node;
@@ -89,7 +88,6 @@ public class AspectranNodeParser {
 		} finally {
 			if(inputStream != null) {
 				inputStream.close();
-				inputStream = null;
 			}
 		}
 	}
@@ -109,18 +107,14 @@ public class AspectranNodeParser {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
 				if(StringUtils.hasText(text)) {
 					Parameters parameters = new GenericParameters(text);
-					Iterator<String> iter = parameters.getParameterNameSet().iterator();
-					
-					while(iter.hasNext()) {
-						String name = iter.next();
-						
+					for(String name : parameters.getParameterNameSet()) {
 						DefaultSettingType settingType = null;
 						if(name != null) {
 							settingType = DefaultSettingType.lookup(name);
 							if(settingType == null)
 								throw new IllegalArgumentException("Unknown setting name '" + name + "'.");
 						}
-						
+
 						assistant.putSetting(settingType, parameters.getString(name));
 					}
 				}
@@ -158,10 +152,7 @@ public class AspectranNodeParser {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
 				if(StringUtils.hasLength(text)) {
 					Parameters parameters = new GenericParameters(text);
-					Iterator<String> iter = parameters.getParameterNameSet().iterator();
-					
-					while(iter.hasNext()) {
-						String alias = iter.next();
+					for(String alias : parameters.getParameterNameSet()) {
 						assistant.addTypeAlias(alias, parameters.getString(alias));
 					}
 				}

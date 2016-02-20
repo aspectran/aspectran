@@ -19,14 +19,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.aspectran.core.context.aspect.pointcut.Pointcut;
+import com.aspectran.core.context.rule.ability.BeanReferenceInspectable;
 import com.aspectran.core.context.rule.type.AspectTargetType;
+import com.aspectran.core.context.rule.type.BeanReferrerType;
 import com.aspectran.core.context.rule.type.JoinpointScopeType;
 import com.aspectran.core.util.ToStringBuilder;
 
 /**
  * The Class AspectRule.
  */
-public class AspectRule {
+public class AspectRule implements BeanReferenceInspectable {
+
+	private static final BeanReferrerType BEAN_REFERABLE_RULE_TYPE = BeanReferrerType.ASPECT_RULE;
 
 	private String id;
 
@@ -187,6 +191,11 @@ public class AspectRule {
 	 */
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	@Override
+	public BeanReferrerType getBeanReferrerType() {
+		return BEAN_REFERABLE_RULE_TYPE;
 	}
 
 	@Override

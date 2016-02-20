@@ -44,12 +44,13 @@ public class CglibDynamicBeanProxy extends AbstractDynamicBeanProxy implements M
 				return methodProxy.invokeSuper(proxy, args);
 			}
 		};
-		
+
 		return dynamicInvoke(proxy, method, args, proxyMethodInvoker);
 	}
-	
-	public static Object newInstance(ActivityContext context, BeanRule beanRule, Class<?>[] constructorArgTypes, Object[] constructorArgs) {
+
+	public static Object newInstance(ActivityContext context, BeanRule beanRule, Object[] constructorArgs, Class<?>[] constructorArgTypes) {
 		Enhancer enhancer = new Enhancer();
+		enhancer.setClassLoader(context.getClassLoader());
 		enhancer.setSuperclass(beanRule.getBeanClass());
 		enhancer.setCallback(new CglibDynamicBeanProxy(context, beanRule));
 		Object proxy;
@@ -60,5 +61,15 @@ public class CglibDynamicBeanProxy extends AbstractDynamicBeanProxy implements M
 		}
 		return proxy;
 	}
-	
+
+	public static Object newInstance(ActivityContext context, BeanRule beanRule, Object bean) {
+		Enhancer enhancer = new Enhancer();
+		enhancer.setClassLoader(context.getClassLoader());
+		enhancer.setCallback(new CglibDynamicBeanProxy(context, beanRule));
+		Object proxy;
+			proxy = enhancer.create();
+		return proxy;
+
+	}
+
 }

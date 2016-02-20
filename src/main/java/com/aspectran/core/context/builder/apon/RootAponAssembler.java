@@ -369,7 +369,7 @@ public class RootAponAssembler {
 			}
 		} else {
 			ResponseRule responseRule = transletRule.getResponseRule();
-			if(responseRule != null && !transletRule.isImplicitResponse()) {
+			if(!transletRule.isImplicitResponse()) {
 				transletParameters.putValue(TransletParameters.responses, assembleResponseParameters(responseRule));
 			} else {
 				Response response = responseRule.getResponse();
@@ -467,7 +467,7 @@ public class RootAponAssembler {
 			transformParameters.putValue(TransformParameters.type, transformRule.getTransformType().toString());
 
 		if(transformRule.getContentType() != null)
-			transformParameters.putValue(TransformParameters.contentType, transformRule.getContentType().toString());
+			transformParameters.putValue(TransformParameters.contentType, transformRule.getContentType());
 		
 		transformParameters.putValueNonNull(TransformParameters.template, transformRule.getTemplateId());
 		transformParameters.putValueNonNull(TransformParameters.characterEncoding, transformRule.getCharacterEncoding());
@@ -638,14 +638,14 @@ public class RootAponAssembler {
 		
 		if(itemRule.getType() == ItemType.SINGULAR) {
 			itemParameters.putValueNonNull(ItemParameters.value, itemRule.getValue());
-		} else if(itemRule.getType() == ItemType.ARRAY || itemRule.getType() == ItemType.LIST || itemRule.getType() == ItemType.SET) {
+		} else if(itemRule.isListableType()) {
 			List<String> valueList = itemRule.getValueList();
 			if(valueList != null) {
 				for(String value : valueList) {
 					itemParameters.putValue(ItemParameters.value, value);
 				}
 			}
-		} else if(itemRule.getType() == ItemType.MAP || itemRule.getType() == ItemType.PROPERTIES) {
+		} else if(itemRule.isMappableType()) {
 			Map<String, String> valueMap = itemRule.getValueMap();
 			if(valueMap != null) {
 				Parameters para = itemParameters.newParameters(ItemParameters.value);

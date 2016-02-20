@@ -138,7 +138,9 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 	private Object createNormalBean(BeanRule beanRule, Activity activity) {
 		try {
 			Object bean;
-			
+			Object[] args;
+			Class<?>[] argTypes;
+
 			ItemRuleMap constructorArgumentItemRuleMap = beanRule.getConstructorArgumentItemRuleMap();
 			ItemRuleMap propertyItemRuleMap = beanRule.getPropertyItemRuleMap();
 			ItemExpressor expressor = null;
@@ -148,8 +150,8 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 				Map<String, Object> valueMap = expressor.express(constructorArgumentItemRuleMap);
 	
 				int parameterSize = constructorArgumentItemRuleMap.size();
-				Object[] args = new Object[parameterSize];
-				Class<?>[] argTypes = new Class<?>[parameterSize];
+				args = new Object[parameterSize];
+				argTypes = new Class<?>[parameterSize];
 				
 				Iterator<ItemRule> iter = constructorArgumentItemRuleMap.iterator();
 				int i = 0;
@@ -162,11 +164,12 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 					
 					i++;
 				}
-				
-				bean = instantiateBean(beanRule, argTypes, args);
 			} else {
-				bean = instantiateBean(beanRule, null, null);
+				args = null;
+				argTypes = null;
 			}
+
+			bean = instantiateBean(beanRule, args, argTypes);
 
 			invokeAwareMethods(bean);
 			processAnnotation(beanRule, bean, activity);
@@ -191,8 +194,16 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 
 			if(beanRule.isFactoryBean()) {
 				bean = invokeObjectFromFactoryBean(beanRule, bean);
+				if(beanRule.isProxied()) {
+					//TODO
+					bean = createDynamicBeanProxy(beanRule, args, argTypes);
+				}
 			} else if(beanRule.getFactoryMethodName() != null) {
 				bean = invokeFactoryMethod(beanRule, bean, activity);
+				if(beanRule.isProxied()) {
+					//TODO
+					bean = createDynamicBeanProxy(beanRule, args, argTypes);
+				}
 			}
 
 			return bean;
@@ -201,38 +212,46 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 		}
 	}
 
-	private Object instantiateBean(BeanRule beanRule, Class<?>[] argTypes, Object[] args) {
+	private Object instantiateBean(BeanRule beanRule, Object[] args, Class<?>[] argTypes) {
 		Object bean;
 		
-		if(beanRule.isProxied()) {
-			if(beanProxifierType == BeanProxifierType.JAVASSIST) {
-				if(log.isTraceEnabled())
-					log.trace("javassist proxy " + beanRule);
-				
-				bean = JavassistDynamicBeanProxy.newInstance(context, beanRule, argTypes, args);
-			} else if(beanProxifierType == BeanProxifierType.CGLIB) {
-				if(log.isTraceEnabled())
-					log.trace("cglib proxy " + beanRule);
-				
-				bean = CglibDynamicBeanProxy.newInstance(context, beanRule, argTypes, args);
-			} else {
-				if(argTypes != null && args != null)
-					bean = newInstance(beanRule.getBeanClass(), argTypes, args);
-				else
-					bean = newInstance(beanRule.getBeanClass());
-				
-				if(log.isTraceEnabled())
-					log.trace("jdk proxy " + beanRule);
-				
-				bean = JdkDynamicBeanProxy.newInstance(context, beanRule, bean);
-			}
+		if(beanRule.isProxied() && !beanRule.isFactoryBean() && beanRule.getFactoryMethod() == null) {
+			bean = createDynamicBeanProxy(beanRule, args, argTypes);
 		} else {
 			if(argTypes != null && args != null)
-				bean = newInstance(beanRule.getBeanClass(), argTypes, args);
+				bean = newInstance(beanRule.getBeanClass(), args, argTypes);
 			else
 				bean = newInstance(beanRule.getBeanClass());
 		}
 		
+		return bean;
+	}
+
+	private Object createDynamicBeanProxy(BeanRule beanRule, Object[] args, Class<?>[] argTypes) {
+		Object bean;
+
+		if(beanProxifierType == BeanProxifierType.JAVASSIST) {
+			if(log.isTraceEnabled())
+				log.trace("javassist proxy " + beanRule);
+
+			bean = JavassistDynamicBeanProxy.newInstance(context, beanRule, args, argTypes);
+		} else if(beanProxifierType == BeanProxifierType.CGLIB) {
+			if(log.isTraceEnabled())
+				log.trace("cglib proxy " + beanRule);
+
+			bean = CglibDynamicBeanProxy.newInstance(context, beanRule, args, argTypes);
+		} else {
+			if(argTypes != null && args != null)
+				bean = newInstance(beanRule.getBeanClass(), args, argTypes);
+			else
+				bean = newInstance(beanRule.getBeanClass());
+
+			if(log.isTraceEnabled())
+				log.trace("jdk proxy " + beanRule);
+
+			bean = JdkDynamicBeanProxy.newInstance(context, beanRule, bean);
+		}
+
 		return bean;
 	}
 	
@@ -427,7 +446,7 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 		return failed;
 	}
 	
-	private static Object newInstance(Class<?> beanClass, Class<?>[] argTypes, Object[] args) throws BeanInstantiationException {
+	private static Object newInstance(Class<?> beanClass, Object[] args, Class<?>[] argTypes) throws BeanInstantiationException {
 		if(beanClass.isInterface())
 			throw new BeanInstantiationException("Specified class is an interface", beanClass);
 
@@ -446,7 +465,7 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 	}
 
 	private static Object newInstance(Class<?> beanClass) throws BeanInstantiationException {
-		return newInstance(beanClass, MethodUtils.EMPTY_CLASS_PARAMETERS, MethodUtils.EMPTY_OBJECT_ARRAY);
+		return newInstance(beanClass, MethodUtils.EMPTY_OBJECT_ARRAY, MethodUtils.EMPTY_CLASS_PARAMETERS);
 	}
 
 	private static Object newInstance(Constructor<?> ctor, Object[] args) throws BeanInstantiationException {

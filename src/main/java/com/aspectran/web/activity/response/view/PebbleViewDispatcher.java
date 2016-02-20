@@ -112,4 +112,9 @@ public class PebbleViewDispatcher implements ViewDispatcher {
 		}
 	}
 
+	@Override
+	public boolean isSingleton() {
+		return true;
+	}
+
 }

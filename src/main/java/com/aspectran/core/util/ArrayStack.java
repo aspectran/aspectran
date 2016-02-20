@@ -60,8 +60,8 @@ public class ArrayStack extends ArrayList<Object> {
 	/**
 	 * Constructs a new empty <code>ArrayStack</code> with an initial size.
 	 * 
-	 * @param initialSize  the initial size to use
-	 * @throws IllegalArgumentException  if the specified initial size is negative
+	 * @param initialSize the initial size to use
+	 * @throws IllegalArgumentException if the specified initial size is negative
 	 */
 	public ArrayStack(int initialSize) {
 		super(initialSize);

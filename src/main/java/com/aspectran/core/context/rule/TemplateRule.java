@@ -23,7 +23,9 @@ import java.util.List;
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.expr.token.Tokenizer;
+import com.aspectran.core.context.rule.ability.BeanReferenceInspectable;
 import com.aspectran.core.context.rule.ability.Replicable;
+import com.aspectran.core.context.rule.type.BeanReferrerType;
 import com.aspectran.core.util.BooleanUtils;
 import com.aspectran.core.util.ResourceUtils;
 import com.aspectran.core.util.ToStringBuilder;
@@ -33,10 +35,12 @@ import com.aspectran.core.util.ToStringBuilder;
  * 
  * <p>Created: 2008. 03. 22 PM 5:51:58</p>
  */
-public class TemplateRule implements Replicable<TemplateRule> {
+public class TemplateRule implements Replicable<TemplateRule>, BeanReferenceInspectable {
 
 	public static final String DEFAULT_TEMPLATE_ENGINE_NAME = "token";
-	
+
+	private static final BeanReferrerType BEAN_REFERABLE_RULE_TYPE = BeanReferrerType.TRANSFORM_RULE;
+
 	private String id;
 
 	private String engine;
@@ -46,7 +50,7 @@ public class TemplateRule implements Replicable<TemplateRule> {
 	private String file;
 
 	private String resource;
-	
+
 	private String url;
 
 	private String encoding;
@@ -303,7 +307,12 @@ public class TemplateRule implements Replicable<TemplateRule> {
 	public TemplateRule replicate() {
 		return replicate(this);
 	}
-	
+
+	@Override
+	public BeanReferrerType getBeanReferrerType() {
+		return BEAN_REFERABLE_RULE_TYPE;
+	}
+
 	@Override
 	public String toString() {
 		ToStringBuilder tsb = new ToStringBuilder();

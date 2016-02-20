@@ -24,7 +24,9 @@ import com.aspectran.core.context.expr.TokenExpressor;
 import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.expr.token.Tokenizer;
 import com.aspectran.core.context.rule.ability.ActionPossessable;
+import com.aspectran.core.context.rule.ability.BeanReferenceInspectable;
 import com.aspectran.core.context.rule.ability.Replicable;
+import com.aspectran.core.context.rule.type.BeanReferrerType;
 import com.aspectran.core.context.rule.type.ResponseType;
 import com.aspectran.core.context.rule.type.TokenType;
 import com.aspectran.core.util.BooleanUtils;
@@ -35,9 +37,11 @@ import com.aspectran.core.util.ToStringBuilder;
  * 
  * <p>Created: 2008. 03. 22 PM 5:51:58</p>
  */
-public class RedirectResponseRule extends ActionPossessSupport implements ActionPossessable, Replicable<RedirectResponseRule> {
+public class RedirectResponseRule extends ActionPossessSupport implements ActionPossessable, Replicable<RedirectResponseRule>, BeanReferenceInspectable {
 	
 	public static final ResponseType RESPONSE_TYPE = ResponseType.REDIRECT;
+
+	private static final BeanReferrerType BEAN_REFERABLE_RULE_TYPE = BeanReferrerType.BEAN_ACTION_RULE;
 
 	private String contentType;
 	
@@ -253,6 +257,11 @@ public class RedirectResponseRule extends ActionPossessSupport implements Action
 	@Override
 	public RedirectResponseRule replicate() {
 		return replicate(this);
+	}
+
+	@Override
+	public BeanReferrerType getBeanReferrerType() {
+		return BEAN_REFERABLE_RULE_TYPE;
 	}
 
 	@Override

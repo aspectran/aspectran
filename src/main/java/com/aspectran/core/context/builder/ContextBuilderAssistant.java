@@ -31,6 +31,7 @@ import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.TemplateRule;
 import com.aspectran.core.context.rule.TransletRule;
+import com.aspectran.core.context.rule.ability.BeanReferenceInspectable;
 import com.aspectran.core.context.rule.type.DefaultSettingType;
 import com.aspectran.core.context.template.TemplateRuleRegistry;
 import com.aspectran.core.context.translet.TransletRuleRegistry;
@@ -479,10 +480,8 @@ public class ContextBuilderAssistant {
 		return transletRuleRegistry.getTransletRuleMap().values();
 	}
 
-	public void putBeanReference(Object beanIdOrClass, Object someRule) {
-		if(beanRuleRegistry != null && !beanRuleRegistry.contains(beanIdOrClass)) {
-			beanReferenceInspector.putRelation(beanIdOrClass, someRule);
-		}
+	public void putBeanReference(Object beanIdOrClass, BeanReferenceInspectable someRule) {
+		beanReferenceInspector.putRelation(beanIdOrClass, someRule);
 	}
 	
 	public BeanReferenceInspector getBeanReferenceInspector() {

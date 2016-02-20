@@ -179,7 +179,7 @@ public class ResourceUtils {
 		String protocol = url.getProtocol();
 		return (URL_PROTOCOL_JAR.equals(protocol) || URL_PROTOCOL_ZIP.equals(protocol)
 				|| URL_PROTOCOL_VFSZIP.equals(protocol) || URL_PROTOCOL_WSJAR.equals(protocol)
-				|| (URL_PROTOCOL_CODE_SOURCE.equals(protocol) && url.getPath().indexOf(JAR_URL_SEPARATOR) != -1));
+				|| (URL_PROTOCOL_CODE_SOURCE.equals(protocol) && url.getPath().contains(JAR_URL_SEPARATOR)));
 	}
 	
 	public static URL extractJarFileURL(URL jarUrl) throws MalformedURLException {
@@ -262,8 +262,7 @@ public class ResourceUtils {
 			stream = AccessController.doPrivileged(
 					new PrivilegedExceptionAction<InputStream>() {
 						public InputStream run() throws IOException {
-							InputStream is = new FileInputStream(file);
-							return is;
+							return new FileInputStream(file);
 						}
 					}
 			);

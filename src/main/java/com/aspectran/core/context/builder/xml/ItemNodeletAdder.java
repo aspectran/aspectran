@@ -65,10 +65,6 @@ public class ItemNodeletAdder implements NodeletAdder {
 				if(StringUtils.hasText(text))
 					value = text;
 
-				// auto-naming if did not specify the name of the item
-				//if(StringUtils.isEmpty(name))
-				//	name = getItemNameBaseOnCount(type);
-				
 				ItemRule itemRule = ItemRule.newInstance(type, name, value, valueType, defaultValue, tokenize);
 
 				assistant.pushObject(itemRule);
@@ -83,7 +79,7 @@ public class ItemNodeletAdder implements NodeletAdder {
 				
 				ItemRule itemRule = assistant.peekObject();
 				
-				Token[] tokens = ItemRule.parseValue(itemRule, name, text);
+				Token[] tokens = ItemRule.parseValue(itemRule, text);
 
 				if(tokens != null) {
 					assistant.pushObject(name);
@@ -93,19 +89,18 @@ public class ItemNodeletAdder implements NodeletAdder {
 		});
 		parser.addNodelet(xpath, "/item/value/reference", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
-				String beanId = attributes.get("bean");
+				String bean= attributes.get("bean");
 				String parameter = attributes.get("parameter");
 				String attribute = attributes.get("attribute");
-				String property = attributes.get("property"); // bean's property
+				String property = attributes.get("property"); // property for bean or attribute object
 
 				Object object = assistant.peekObject();
 				
 				if(object instanceof ItemRule) {
-					ItemRule itemRule = (ItemRule)object;
-					ItemRule.updateReference(itemRule, beanId, parameter, attribute, property);
+					ItemRule.updateReference((ItemRule)object, bean, parameter, attribute, property);
 				} else {
-					assistant.popObject(); //discard
-					Token t = ItemRule.makeReferenceTokens(beanId, parameter, attribute, property);
+					assistant.popObject(); // discard tokens
+					Token t = ItemRule.makeReferenceToken(bean, parameter, attribute, property);
 					Token[] tokens = new Token[] { t };
 					assistant.pushObject(tokens);
 				}
@@ -115,10 +110,9 @@ public class ItemNodeletAdder implements NodeletAdder {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
 				Object object = assistant.peekObject();
 				
-				if(object instanceof ItemRule) {
-					//pass
-				} else {
-					assistant.popObject(); //discard
+				if(object instanceof Token[]) {
+					// replace tokens to null
+					assistant.popObject();
 					assistant.pushObject(null);
 				}
 			}
@@ -127,9 +121,7 @@ public class ItemNodeletAdder implements NodeletAdder {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
 				Object object = assistant.peekObject();
 				
-				if(object instanceof ItemRule) {
-					//pass
-				} else {
+				if(object instanceof Token[]) {
 					Token[] tokens = assistant.popObject();
 					String name = assistant.popObject();
 					ItemRule itemRule = assistant.peekObject();
@@ -165,9 +157,9 @@ public class ItemNodeletAdder implements NodeletAdder {
 								if(t.getName().equals(BeanRule.CLASS_DIRECTIVE)) {
 									Class<?> beanClass = assistant.loadClass(t.getValue());
 									t.setBeanClass(beanClass);
-									assistant.putBeanReference(beanClass, itemRule);
+									assistant.putBeanReference(beanClass, t);
 								} else {
-									assistant.putBeanReference(t.getName(), itemRule);
+									assistant.putBeanReference(t.getName(), t);
 								}
 							}
 						}

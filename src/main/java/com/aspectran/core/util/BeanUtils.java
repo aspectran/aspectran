@@ -40,7 +40,7 @@ public class BeanUtils {
 	 * @return The properties
 	 */
 	public static String[] getReadablePropertyNames(Object object) {
-		return getClassDescriptor(object.getClass()).getReadablePropertyNames();
+		return getBeanDescriptor(object.getClass()).getReadablePropertyNames();
 	}
 
 	/**
@@ -50,7 +50,7 @@ public class BeanUtils {
 	 * @return The properties
 	 */
 	public static String[] getWriteablePropertyNames(Object object) {
-		return getClassDescriptor(object.getClass()).getWriteablePropertyNames();
+		return getBeanDescriptor(object.getClass()).getWriteablePropertyNames();
 	}
 
 	/**
@@ -80,10 +80,10 @@ public class BeanUtils {
 				StringTokenizer parser = new StringTokenizer(name, ".");
 				while(parser.hasMoreTokens()) {
 					name = parser.nextToken();
-					type = getClassDescriptor(type).getSetterType(name);
+					type = getBeanDescriptor(type).getSetterType(name);
 				}
 			} else {
-				type = getClassDescriptor(type).getSetterType(name);
+				type = getBeanDescriptor(type).getSetterType(name);
 			}
 		}
 
@@ -116,10 +116,10 @@ public class BeanUtils {
 				StringTokenizer parser = new StringTokenizer(name, ".");
 				while(parser.hasMoreTokens()) {
 					name = parser.nextToken();
-					type = getClassDescriptor(type).getGetterType(name);
+					type = getBeanDescriptor(type).getGetterType(name);
 				}
 			} else {
-				type = getClassDescriptor(type).getGetterType(name);
+				type = getBeanDescriptor(type).getGetterType(name);
 			}
 		}
 
@@ -134,15 +134,15 @@ public class BeanUtils {
 	 * @return The type of the property
 	 * @throws NoSuchMethodException the no such method exception
 	 */
-	private static Class<?> getClassPropertyTypeForGetter(Class<?> type, String name) throws NoSuchMethodException {
+	public static Class<?> getClassPropertyTypeForGetter(Class<?> type, String name) throws NoSuchMethodException {
 		if(name.indexOf('.') > -1) {
 			StringTokenizer parser = new StringTokenizer(name, ".");
 			while(parser.hasMoreTokens()) {
 				name = parser.nextToken();
-				type = getClassDescriptor(type).getGetterType(name);
+				type = getBeanDescriptor(type).getGetterType(name);
 			}
 		} else {
-			type = getClassDescriptor(type).getGetterType(name);
+			type = getBeanDescriptor(type).getGetterType(name);
 		}
 
 		return type;
@@ -157,15 +157,15 @@ public class BeanUtils {
 	 * @return The type of the property
 	 * @throws NoSuchMethodException the no such method exception
 	 */
-	private static Class<?> getClassPropertyTypeForSetter(Class<?> type, String name) throws NoSuchMethodException {
+	public static Class<?> getClassPropertyTypeForSetter(Class<?> type, String name) throws NoSuchMethodException {
 		if(name.indexOf('.') > -1) {
 			StringTokenizer parser = new StringTokenizer(name, ".");
 			while(parser.hasMoreTokens()) {
 				name = parser.nextToken();
-				type = getClassDescriptor(type).getSetterType(name);
+				type = getBeanDescriptor(type).getSetterType(name);
 			}
 		} else {
-			type = getClassDescriptor(type).getSetterType(name);
+			type = getBeanDescriptor(type).getSetterType(name);
 		}
 
 		return type;
@@ -251,19 +251,19 @@ public class BeanUtils {
 		boolean hasProperty = false;
 		
 		if(object instanceof Map<?, ?>) {
-			hasProperty = true; // ((Map) object).containsKey(propertyName);
+			hasProperty = true; // ((Map)object).containsKey(propertyName);
 		} else {
 			if(propertyName.indexOf('.') > -1) {
 				StringTokenizer parser = new StringTokenizer(propertyName, ".");
 				Class<?> type = object.getClass();
-				
+
 				while(parser.hasMoreTokens()) {
 					propertyName = parser.nextToken();
-					type = getClassDescriptor(type).getGetterType(propertyName);
-					hasProperty = getClassDescriptor(type).hasWritableProperty(propertyName);
+					type = getBeanDescriptor(type).getGetterType(propertyName);
+					hasProperty = getBeanDescriptor(type).hasWritableProperty(propertyName);
 				}
 			} else {
-				hasProperty = getClassDescriptor(object.getClass()).hasWritableProperty(propertyName);
+				hasProperty = getBeanDescriptor(object.getClass()).hasWritableProperty(propertyName);
 			}
 		}
 		
@@ -282,7 +282,7 @@ public class BeanUtils {
 		boolean hasProperty = false;
 		
 		if(object instanceof Map<?, ?>) {
-			hasProperty = true; // ((Map) object).containsKey(propertyName);
+			hasProperty = true; // ((Map)object).containsKey(propertyName);
 		} else {
 			if(propertyName.indexOf('.') > -1) {
 				StringTokenizer parser = new StringTokenizer(propertyName, ".");
@@ -290,11 +290,11 @@ public class BeanUtils {
 				
 				while(parser.hasMoreTokens()) {
 					propertyName = parser.nextToken();
-					type = getClassDescriptor(type).getGetterType(propertyName);
-					hasProperty = getClassDescriptor(type).hasReadableProperty(propertyName);
+					type = getBeanDescriptor(type).getGetterType(propertyName);
+					hasProperty = getBeanDescriptor(type).hasReadableProperty(propertyName);
 				}
 			} else {
-				hasProperty = getClassDescriptor(object.getClass()).hasReadableProperty(propertyName);
+				hasProperty = getBeanDescriptor(object.getClass()).hasReadableProperty(propertyName);
 			}
 		}
 		
@@ -303,11 +303,9 @@ public class BeanUtils {
 
 	@SuppressWarnings("unused")
 	private static Object getProperty(Object object, String name) throws InvocationTargetException {
-		ClassDescriptor classCache = getClassDescriptor(object.getClass());
-		
 		try {
-			Object value = null;
-			if(name.indexOf("[") > -1) {
+			Object value;
+			if(name.contains("[")) {
 				value = getIndexedProperty(object, name);
 			} else {
 				if(object instanceof Map<?, ?>) {
@@ -317,15 +315,16 @@ public class BeanUtils {
 						value = getProperty(((Map<?, ?>)object).get(key), name.substring(index + 1));
 					} else {
 						value = ((Map<?, ?>)object).get(name);
-					}					
+					}
 				} else {
 					int index = name.indexOf('.');
 					if(index > -1) {
 						String newName = name.substring(0, index);
 						value = getProperty(getObject(object, newName), name.substring(index + 1));
 					} else {
-						Method method = classCache.getGetter(name);
-						
+						BeanDescriptor cd = getBeanDescriptor(object.getClass());
+						Method method = cd.getGetter(name);
+
 						if(method == null) {
 							throw new NoSuchMethodException("No GET method for property " + name + " on instance of " + object.getClass().getName());
 						}
@@ -350,12 +349,9 @@ public class BeanUtils {
 		}
 	}
 
-	@SuppressWarnings("unused")
 	private static void setProperty(Object object, String name, Object value) throws InvocationTargetException {
-		ClassDescriptor classCache = getClassDescriptor(object.getClass());
-		
 		try {
-			if(name.indexOf("[") > -1) {
+			if(name.contains("[")) {
 				setIndexedProperty(object, name, value);
 			} else {
 				if(object instanceof Map<?, ?>) {
@@ -363,15 +359,15 @@ public class BeanUtils {
 					Map<String, Object> map = (Map<String, Object>)object;
 					map.put(name, value);
 				} else {
-					Method method = classCache.getSetter(name);
-					
+					BeanDescriptor cd = getBeanDescriptor(object.getClass());
+					Method method = cd.getSetter(name);
+
 					if(method == null) {
 						throw new NoSuchMethodException("No SET method for property " + name + " on instance of " + object.getClass().getName());
 					}
 					
-					Object[] params = new Object[1];
-					params[0] = value;
-					
+					Object[] params = new Object[] { value };
+
 					try {
 						method.invoke(object, params);
 					} catch(Throwable t) {
@@ -388,6 +384,7 @@ public class BeanUtils {
 					return;
 				}
 			} catch(Throwable tt) {
+				//ignore
 			}
 			
 			if(object == null) {
@@ -401,7 +398,7 @@ public class BeanUtils {
 	public static Object getIndexedProperty(Object object, String indexedName) throws InvocationTargetException {
 		try {
 			String name = indexedName.substring(0, indexedName.indexOf("["));
-			int i = Integer.parseInt(indexedName.substring(indexedName.indexOf("[") + 1, indexedName.indexOf("]")));
+			int index = Integer.parseInt(indexedName.substring(indexedName.indexOf("[") + 1, indexedName.indexOf("]")));
 			Object list = null;
 
 			if(name.length() > 0) {
@@ -413,25 +410,25 @@ public class BeanUtils {
 			Object value = null;
 
 			if(list instanceof List<?>) {
-				value = ((List<?>)list).get(i);
+				value = ((List<?>)list).get(index);
 			} else if(list instanceof Object[]) {
-				value = ((Object[])list)[i];
+				value = ((Object[])list)[index];
 			} else if(list instanceof char[]) {
-				value = new Character(((char[])list)[i]);
+				value = ((char[])list)[index];
 			} else if(list instanceof boolean[]) {
-				value = new Boolean(((boolean[])list)[i]);
+				value = ((boolean[])list)[index];
 			} else if(list instanceof byte[]) {
-				value = new Byte(((byte[])list)[i]);
+				value = ((byte[])list)[index];
 			} else if(list instanceof double[]) {
-				value = new Double(((double[])list)[i]);
+				value = ((double[])list)[index];
 			} else if(list instanceof float[]) {
-				value = new Float(((float[])list)[i]);
+				value = ((float[]) list)[index];
 			} else if(list instanceof int[]) {
-				value = new Integer(((int[])list)[i]);
+				value = ((int[])list)[index];
 			} else if(list instanceof long[]) {
-				value = new Long(((long[])list)[i]);
+				value = ((long[])list)[index];
 			} else if(list instanceof short[]) {
-				value = new Short(((short[])list)[i]);
+				value = ((short[])list)[index];
 			} else {
 				throw new IllegalArgumentException("The '" + name + "' property of the " + object.getClass().getName() + " class is not a List or Array.");
 			}
@@ -493,31 +490,31 @@ public class BeanUtils {
 	public static void setIndexedProperty(Object object, String indexedName, Object value) throws InvocationTargetException {
 		try {
 			String name = indexedName.substring(0, indexedName.indexOf("["));
-			int i = Integer.parseInt(indexedName.substring(indexedName.indexOf("[") + 1, indexedName.indexOf("]")));
+			int index = Integer.parseInt(indexedName.substring(indexedName.indexOf("[") + 1, indexedName.indexOf("]")));
 			Object list = getProperty(object, name);
 
 			if(list instanceof List<?>) {
 				@SuppressWarnings("unchecked")
 				List<Object> l = (List<Object>)list;
-				l.set(i, value);
+				l.set(index, value);
 			} else if(list instanceof Object[]) {
-				((Object[])list)[i] = value;
+				((Object[])list)[index] = value;
 			} else if(list instanceof char[]) {
-				((char[])list)[i] = ((Character)value).charValue();
+				((char[])list)[index] = (Character)value;
 			} else if(list instanceof boolean[]) {
-				((boolean[])list)[i] = ((Boolean)value).booleanValue();
+				((boolean[])list)[index] = (Boolean)value;
 			} else if(list instanceof byte[]) {
-				((byte[])list)[i] = ((Byte)value).byteValue();
+				((byte[])list)[index] = (Byte)value;
 			} else if(list instanceof double[]) {
-				((double[])list)[i] = ((Double)value).doubleValue();
+				((double[])list)[index] = (Double)value;
 			} else if(list instanceof float[]) {
-				((float[])list)[i] = ((Float)value).floatValue();
+				((float[])list)[index] = (Float)value;
 			} else if(list instanceof int[]) {
-				((int[])list)[i] = ((Integer)value).intValue();
+				((int[])list)[index] = (Integer)value;
 			} else if(list instanceof long[]) {
-				((long[])list)[i] = ((Long)value).longValue();
+				((long[])list)[index] = (Long)value;
 			} else if(list instanceof short[]) {
-				((short[])list)[i] = ((Short)value).shortValue();
+				((short[])list)[index] = (Short)value;
 			} else {
 				throw new IllegalArgumentException("The '" + name + "' property of the " + object.getClass().getName() + " class is not a List or Array.");
 			}
@@ -549,13 +546,13 @@ public class BeanUtils {
 	}
 	
 	/**
-	 * Gets an instance of ClassDescriptor for the specified class.
+	 * Gets an instance of BeanDescriptor for the specified class.
 	 * 
 	 * @param clazz The class for which to lookup the ClassDescriptor cache.
 	 * @return The ClassDescriptor cache for the class
 	 */
-	private static ClassDescriptor getClassDescriptor(Class<?> clazz) {
-		return ClassDescriptor.getInstance(clazz);
+	private static BeanDescriptor getBeanDescriptor(Class<?> clazz) {
+		return BeanDescriptor.getInstance(clazz);
 	}
 
 }

@@ -37,7 +37,7 @@ import com.aspectran.core.util.ToStringBuilder;
 public class ActionList extends ArrayList<Executable> implements ActionRuleApplicable {
 	
 	/** @serial */
-	static final long serialVersionUID = 4636431127789162551L;
+	private static final long serialVersionUID = 4636431127789162551L;
 
 	private String name;
 	

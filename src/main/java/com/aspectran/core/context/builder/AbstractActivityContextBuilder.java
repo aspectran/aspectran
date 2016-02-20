@@ -40,7 +40,7 @@ import com.aspectran.core.context.template.ContextTemplateProcessor;
 import com.aspectran.core.context.template.TemplateProcessor;
 import com.aspectran.core.context.template.TemplateRuleRegistry;
 import com.aspectran.core.context.translet.TransletRuleRegistry;
-import com.aspectran.core.util.ClassDescriptor;
+import com.aspectran.core.util.BeanDescriptor;
 import com.aspectran.core.util.MethodUtils;
 import com.aspectran.core.util.ResourceUtils;
 import com.aspectran.core.util.logging.Log;
@@ -95,7 +95,7 @@ public abstract class AbstractActivityContextBuilder extends ContextBuilderAssis
 		contextBeanRegistry.initialize(context);
 		templateProcessor.initialize(context);
 		
-		ClassDescriptor.clearCache();
+		BeanDescriptor.clearCache();
 		MethodUtils.clearCache();
 		
 		return context;

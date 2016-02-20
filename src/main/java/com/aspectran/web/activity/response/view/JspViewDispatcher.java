@@ -139,4 +139,9 @@ public class JspViewDispatcher implements ViewDispatcher {
 		}
 	}
 
+	@Override
+	public boolean isSingleton() {
+		return true;
+	}
+
 }

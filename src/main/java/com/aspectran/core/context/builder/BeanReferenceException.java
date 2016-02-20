@@ -46,7 +46,7 @@ public class BeanReferenceException extends ActivityContextBuilderException {
 	}
 	
 	/**
-	 * Gets the bean reference inspector.
+	 * Returns a bean reference inspector.
 	 *
 	 * @return the bean reference inspector
 	 */

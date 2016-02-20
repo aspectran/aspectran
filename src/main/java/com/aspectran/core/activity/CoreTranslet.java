@@ -261,26 +261,6 @@ public class CoreTranslet implements Translet {
 	}
 
 	@Override
-	public <T> T getBean(String id) {
-		return activity.getBean(id);
-	}
-
-	@Override
-	public <T> T getBean(Class<T> classType) {
-		return activity.getBean(classType);
-	}
-
-	@Override
-	public <T> T getBean(String id, Class<T> classType) {
-		return activity.getBean(id, classType);
-	}
-
-	@Override
-	public <T> T getConfigBean(Class<T> classType) {
-		return activity.getConfigBean(classType);
-	}
-
-	@Override
 	@SuppressWarnings("unchecked")
 	public <T> T getAspectAdviceBean(String aspectId) {
 		if(aspectAdviceResult == null)
@@ -340,6 +320,41 @@ public class CoreTranslet implements Translet {
 	@Override
 	public Class<? extends CoreTranslet> getTransletImplementationClass() {
 		return activity.getTransletImplementationClass();
+	}
+
+	@Override
+	public <T> T getBean(String id) {
+		return activity.getBean(id);
+	}
+
+	@Override
+	public <T> T getBean(Class<T> requiredType) {
+		return activity.getBean(requiredType);
+	}
+
+	@Override
+	public <T> T getBean(String id, Class<T> requiredType) {
+		return activity.getBean(id, requiredType);
+	}
+
+	@Override
+	public <T> T getBean(Class<T> requiredType, String id) {
+		return activity.getBean(requiredType, id);
+	}
+
+	@Override
+	public <T> T getConfigBean(Class<T> classType) {
+		return activity.getConfigBean(classType);
+	}
+
+	@Override
+	public boolean containsBean(String id) {
+		return activity.containsBean(id);
+	}
+
+	@Override
+	public boolean containsBean(Class<?> requiredType) {
+		return activity.containsBean(requiredType);
 	}
 	
 }

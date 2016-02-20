@@ -177,7 +177,7 @@ public class CoreActivity extends AbstractActivity implements Activity {
 		} catch(TransletNotFoundException e) {
 			throw e;
 		} catch(Exception e) {
-			throw new ActivityException("Failed to ready for Web Activity.", e);
+			throw new ActivityException("Failed to ready for Activity.", e);
 		}
 	}
 
@@ -702,6 +702,56 @@ public class CoreActivity extends AbstractActivity implements Activity {
 	}
 
 	@Override
+	public void registerAspectRule(AspectRule aspectRule) {
+		if(debugEnabled)
+			log.debug("register AspectRule " + aspectRule);
+
+		JoinpointScopeType joinpointScope = aspectRule.getJoinpointScope();
+
+		/*
+		 * before-advice is excluded because it is already processed.
+		 */
+		if(joinpointScope == JoinpointScopeType.TRANSLET || getCurrentJoinpointScope() == joinpointScope) {
+			if(JoinpointScopeType.TRANSLET == joinpointScope) {
+				if(transletAspectAdviceRuleRegistry == null) {
+					transletAspectAdviceRuleRegistry = new AspectAdviceRuleRegistry();
+				}
+				AspectAdviceRuleRegister.register(transletAspectAdviceRuleRegistry, aspectRule, AspectAdviceType.BEFORE);
+			} else if(JoinpointScopeType.REQUEST == joinpointScope) {
+				if(requestAspectAdviceRuleRegistry == null) {
+					requestAspectAdviceRuleRegistry = new AspectAdviceRuleRegistry();
+				}
+				AspectAdviceRuleRegister.register(requestAspectAdviceRuleRegistry, aspectRule, AspectAdviceType.BEFORE);
+			} else if(JoinpointScopeType.RESPONSE == joinpointScope) {
+				if(responseAspectAdviceRuleRegistry == null) {
+					responseAspectAdviceRuleRegistry = new AspectAdviceRuleRegistry();
+				}
+				AspectAdviceRuleRegister.register(responseAspectAdviceRuleRegistry, aspectRule, AspectAdviceType.BEFORE);
+			} else if(JoinpointScopeType.CONTENT == joinpointScope) {
+				if(contentAspectAdviceRuleRegistry == null) {
+					contentAspectAdviceRuleRegistry = new AspectAdviceRuleRegistry();
+				}
+				AspectAdviceRuleRegister.register(contentAspectAdviceRuleRegistry, aspectRule, AspectAdviceType.BEFORE);
+			}
+
+			List<AspectAdviceRule> aspectAdviceRuleList = aspectRule.getAspectAdviceRuleList();
+
+			if(aspectAdviceRuleList != null) {
+				for(AspectAdviceRule aspectAdviceRule : aspectAdviceRuleList) {
+					if(aspectAdviceRule.getAspectAdviceType() == AspectAdviceType.BEFORE) {
+						execute(aspectAdviceRule, false);
+					}
+				}
+			}
+		}
+	}
+
+	@Override
+	public <T> T getAspectAdviceBean(String aspectId) {
+		return translet.getAspectAdviceBean(aspectId);
+	}
+
+	@Override
 	public boolean isExceptionRaised() {
 		return (raisedException != null);
 	}
@@ -828,13 +878,18 @@ public class CoreActivity extends AbstractActivity implements Activity {
 	}
 
 	@Override
-	public <T> T getBean(Class<T> classType) {
-		return context.getContextBeanRegistry().getBean(classType);
+	public <T> T getBean(Class<T> requiredType) {
+		return context.getContextBeanRegistry().getBean(requiredType);
 	}
 
 	@Override
-	public <T> T getBean(String id, Class<T> classType) {
-		return context.getContextBeanRegistry().getBean(id, classType);
+	public <T> T getBean(String id, Class<T> requiredType) {
+		return context.getContextBeanRegistry().getBean(id, requiredType);
+	}
+
+	@Override
+	public <T> T getBean(Class<T> requiredType, String id) {
+		return context.getContextBeanRegistry().getBean(requiredType, id);
 	}
 
 	@Override
@@ -843,53 +898,13 @@ public class CoreActivity extends AbstractActivity implements Activity {
 	}
 
 	@Override
-	public void registerAspectRule(AspectRule aspectRule) {
-		if(debugEnabled)
-			log.debug("register AspectRule " + aspectRule);
-		
-		JoinpointScopeType joinpointScope = aspectRule.getJoinpointScope();
-		
-		/*
-		 * before-advice is excluded because it is already processed.
-		 */
-		if(joinpointScope == JoinpointScopeType.TRANSLET || getCurrentJoinpointScope() == joinpointScope) {
-			if(JoinpointScopeType.TRANSLET == joinpointScope) {
-				if(transletAspectAdviceRuleRegistry == null) {
-					transletAspectAdviceRuleRegistry = new AspectAdviceRuleRegistry();
-				}
-				AspectAdviceRuleRegister.register(transletAspectAdviceRuleRegistry, aspectRule, AspectAdviceType.BEFORE);
-			} else if(JoinpointScopeType.REQUEST == joinpointScope) {
-				if(requestAspectAdviceRuleRegistry == null) {
-					requestAspectAdviceRuleRegistry = new AspectAdviceRuleRegistry();
-				}
-				AspectAdviceRuleRegister.register(requestAspectAdviceRuleRegistry, aspectRule, AspectAdviceType.BEFORE);
-			} else if(JoinpointScopeType.RESPONSE == joinpointScope) {
-				if(responseAspectAdviceRuleRegistry == null) {
-					responseAspectAdviceRuleRegistry = new AspectAdviceRuleRegistry();
-				}
-				AspectAdviceRuleRegister.register(responseAspectAdviceRuleRegistry, aspectRule, AspectAdviceType.BEFORE);
-			} else if(JoinpointScopeType.CONTENT == joinpointScope) {
-				if(contentAspectAdviceRuleRegistry == null) {
-					contentAspectAdviceRuleRegistry = new AspectAdviceRuleRegistry();
-				}
-				AspectAdviceRuleRegister.register(contentAspectAdviceRuleRegistry, aspectRule, AspectAdviceType.BEFORE);
-			}
-			
-			List<AspectAdviceRule> aspectAdviceRuleList = aspectRule.getAspectAdviceRuleList();
-			
-			if(aspectAdviceRuleList != null) {
-				for(AspectAdviceRule aspectAdviceRule : aspectAdviceRuleList) {
-					if(aspectAdviceRule.getAspectAdviceType() == AspectAdviceType.BEFORE) {
-						execute(aspectAdviceRule, false);
-					}
-				}
-			}
-		}
+	public boolean containsBean(String id) {
+		return context.getContextBeanRegistry().containsBean(id);
 	}
 
 	@Override
-	public <T> T getAspectAdviceBean(String aspectId) {
-		return translet.getAspectAdviceBean(aspectId);
+	public boolean containsBean(Class<?> requiredType) {
+		return context.getContextBeanRegistry().containsBean(requiredType);
 	}
-	
+
 }

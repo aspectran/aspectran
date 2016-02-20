@@ -250,14 +250,15 @@ public class FileUtils {
 
 	/**
 	 * 파일을 옮긴다.
-	 * 
+	 *
 	 * @param f1 파일1
 	 * @param f2 파일2
-	 * 
+	 * @return code>true</code> if and only if the renaming succeeded;
+	 *         <code>false</code> otherwise
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
-	public static void move(File f1, File f2) throws IOException {
-		f1.renameTo(f2);
+	public static boolean move(File f1, File f2) throws IOException {
+		return f1.renameTo(f2);
 	}
 
 	/**
@@ -269,8 +270,8 @@ public class FileUtils {
 	public static void deleteAllFile(File dir) {
 		String[] files = dir.list();
 
-		for(int i = 0; i < files.length; i++) {
-			File delFile = new File(dir, files[i]);
+		for(String file : files) {
+			File delFile = new File(dir, file);
 
 			if(delFile.isDirectory()) {
 				deleteAllFile(delFile);
@@ -494,7 +495,7 @@ public class FileUtils {
 	 * @return String 새로운 파일명
 	 */
 	public static String obtainUniqueSafetyFileName(String path, String fileName) {
-		String time = new Long(System.currentTimeMillis()).toString();
+		String time = Long.toString(System.currentTimeMillis());
 		String ext = getFileExtension(fileName);
 		String separator = "_";
 
@@ -532,7 +533,7 @@ public class FileUtils {
 			if(ext.length() == 0)
 				return true;
 			
-			StringTokenizer st = new StringTokenizer(allowedFileExtensions, FILE_EXTENSIONS_SEPARATORS);
+			StringTokenizer st = new StringTokenizer(deniedFileExtensions, FILE_EXTENSIONS_SEPARATORS);
 			
 			while(st.hasMoreTokens()) {
 				String ext2 = st.nextToken();
@@ -622,9 +623,6 @@ public class FileUtils {
 			this.fullType = fullType;
 		}
 
-		/* (non-Javadoc)
-		 * @see java.lang.Object#toString()
-		 */
 		@Override
 		public String toString() {
 			return type;
@@ -677,4 +675,5 @@ public class FileUtils {
 			return types.values().toArray(new SizeUnit[types.size()]);
 		}
 	}
+
 }

@@ -948,49 +948,49 @@ public class MethodUtils {
 		if(val instanceof Boolean[]) {
 			boolean[] arr = new boolean[len];
 			for(int i = 0; i < len; i++) {
-				arr[i] = ((Boolean)Array.get(val, i)).booleanValue();
+				arr[i] = (Boolean)Array.get(val, i);
 			}
 			return arr;
 		} else if(val instanceof Byte[]) {
 			byte[] arr = new byte[len];
 			for(int i = 0; i < len; i++) {
-				arr[i] = ((Byte)Array.get(val, i)).byteValue();
+				arr[i] = (Byte)Array.get(val, i);
 			}
 			return arr;
 		} else if(val instanceof Character[]) {
 			char[] arr = new char[len];
 			for(int i = 0; i < len; i++) {
-				arr[i] = ((Character)Array.get(val, i)).charValue();
+				arr[i] = (Character)Array.get(val, i);
 			}
 			return arr;
 		} else if(val instanceof Short[]) {
 			short[] arr = new short[len];
 			for(int i = 0; i < len; i++) {
-				arr[i] = ((Short)Array.get(val, i)).shortValue();
+				arr[i] = (Short)Array.get(val, i);
 			}
 			return arr;
 		} else if(val instanceof Integer[]) {
 			int[] arr = new int[len];
 			for(int i = 0; i < len; i++) {
-				arr[i] = ((Integer)Array.get(val, i)).intValue();
+				arr[i] = (Integer)Array.get(val, i);
 			}
 			return arr;
 		} else if(val instanceof Long[]) {
 			long[] arr = new long[len];
 			for(int i = 0; i < len; i++) {
-				arr[i] = ((Long)Array.get(val, i)).longValue();
+				arr[i] = (Long)Array.get(val, i);
 			}
 			return arr;
 		} else if(val instanceof Float[]) {
 			float[] arr = new float[len];
 			for(int i = 0; i < len; i++) {
-				arr[i] = ((Float)Array.get(val, i)).floatValue();
+				arr[i] = (Float)Array.get(val, i);
 			}
 			return arr;
 		} else if(val instanceof Double[]) {
 			double[] arr = new double[len];
 			for(int i = 0; i < len; i++) {
-				arr[i] = ((Double)Array.get(val, i)).doubleValue();
+				arr[i] = (Double)Array.get(val, i);
 			}
 			return arr;
 		}

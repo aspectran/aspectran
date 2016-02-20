@@ -15,9 +15,13 @@
  */
 package com.aspectran.core.activity.response.dispatch;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.activity.response.Response;
+import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.DispatchResponseRule;
 import com.aspectran.core.context.rule.type.ResponseType;
 import com.aspectran.core.util.logging.Log;
@@ -34,9 +38,9 @@ public class DispatchResponse implements Response {
 
 	private final boolean debugEnabled = log.isDebugEnabled();
 
+	private final static Map<String, ViewDispatcher> viewDispatcherCache = new HashMap<String, ViewDispatcher>();
+
 	private final DispatchResponseRule dispatchResponseRule;
-	
-	private ViewDispatcher viewDispatcher;
 
 	/**
 	 * Instantiates a new DispatchResponse with specified DispatchResponseRule.
@@ -54,11 +58,8 @@ public class DispatchResponse implements Response {
 				log.debug("response " + dispatchResponseRule);
 			}
 
-			determineViewDispatcher(activity);
-			
-			if(viewDispatcher != null) {
-				viewDispatcher.dispatch(activity, dispatchResponseRule);
-			}
+			ViewDispatcher viewDispatcher = getViewDispatcher(activity);
+			viewDispatcher.dispatch(activity, dispatchResponseRule);
 		} catch(Exception e) {
 			throw new DispatchResponseException(dispatchResponseRule, e);
 		}
@@ -100,21 +101,38 @@ public class DispatchResponse implements Response {
 	 *
 	 * @param activity the current Activity
 	 */
-	private void determineViewDispatcher(Activity activity) {
-		if(viewDispatcher == null) {
-			synchronized(this) {
-				if(viewDispatcher == null) {
-					String viewDispatcherName = activity.getResponseSetting(ViewDispatcher.VIEW_DISPATCHER_SETTING_NAME);
-					if(viewDispatcherName == null)
-						throw new DispatchResponseException("The settings name '" + ViewDispatcher.VIEW_DISPATCHER_SETTING_NAME + "' has not been specified in the default response rule.");
-					
+	private ViewDispatcher getViewDispatcher(Activity activity) throws ClassNotFoundException {
+		String viewDispatcherName = activity.getResponseSetting(ViewDispatcher.VIEW_DISPATCHER_SETTING_NAME);
+
+		if(viewDispatcherName == null)
+			throw new DispatchResponseException("The settings name '" + ViewDispatcher.VIEW_DISPATCHER_SETTING_NAME + "' has not been specified in the default response rule.");
+
+		ViewDispatcher viewDispatcher;
+
+		synchronized(viewDispatcherCache)  {
+			viewDispatcher = viewDispatcherCache.get(viewDispatcherName);
+			if(viewDispatcher == null) {
+				if(viewDispatcherName.startsWith(BeanRule.CLASS_DIRECTIVE_PREFIX)) {
+					String viewDispatcherClassName = viewDispatcherName.substring(BeanRule.CLASS_DIRECTIVE_PREFIX.length());
+					Class<?> viewDispatcherClass = activity.getActivityContext().getClassLoader().loadClass(viewDispatcherClassName);
+					viewDispatcher = (ViewDispatcher)activity.getBean(viewDispatcherClass);
+				} else {
 					viewDispatcher = activity.getBean(viewDispatcherName);
-					
-					if(viewDispatcher == null)
-						throw new DispatchResponseException("No bean named '" + viewDispatcherName + "' is defined.");
+				}
+
+				if(viewDispatcher == null)
+					throw new DispatchResponseException("No bean named '" + viewDispatcherName + "' is defined.");
+
+				if(viewDispatcher.isSingleton()) {
+					viewDispatcherCache.put(viewDispatcherName, viewDispatcher);
+
+					if(log.isDebugEnabled())
+						log.debug("Cached a View Dispatcher " + viewDispatcher);
 				}
 			}
 		}
+
+		return viewDispatcher;
 	}
 
 	@Override

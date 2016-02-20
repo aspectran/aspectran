@@ -155,19 +155,15 @@ public class RootAponDisassembler {
 	public void disassembleDefaultSettings(Parameters defaultSettingsParameters) throws ClassNotFoundException {
 		if(defaultSettingsParameters == null)
 			return;
-		
-		Iterator<String> iter = defaultSettingsParameters.getParameterNameSet().iterator();
-		
-		while(iter.hasNext()) {
-			String name = iter.next();
-			
+
+		for(String name : defaultSettingsParameters.getParameterNameSet()) {
 			DefaultSettingType settingType = null;
 			if(name != null) {
 				settingType = DefaultSettingType.lookup(name);
 				if(settingType == null)
 					throw new IllegalArgumentException("Unknown default setting name '" + name + "'.");
 			}
-			
+
 			assistant.putSetting(settingType, defaultSettingsParameters.getString(name));
 		}
 		
@@ -177,11 +173,8 @@ public class RootAponDisassembler {
 	public void disassembleTypeAlias(Parameters parameters) {
 		if(parameters == null)
 			return;
-		
-		Iterator<String> iter = parameters.getParameterNameSet().iterator();
-		
-		while(iter.hasNext()) {
-			String alias = iter.next();
+
+		for(String alias : parameters.getParameterNameSet()) {
 			assistant.addTypeAlias(alias, parameters.getString(alias));
 		}
 	}
@@ -258,7 +251,10 @@ public class RootAponDisassembler {
 					Boolean disabled = jobParameters.getBoolean(JobParameters.disabled);
 					
 					translet = assistant.applyTransletNamePattern(translet);
-					
+
+					if(translet == null)
+						throw new IllegalArgumentException("Job translet must not be null.");
+
 					AspectJobAdviceRule ajar = AspectJobAdviceRule.newInstance(aspectRule, translet, disabled);
 					aspectRule.addAspectJobAdviceRule(ajar);
 				}
@@ -317,14 +313,12 @@ public class RootAponDisassembler {
 			
 			beanRule = BeanRule.newOfferedBeanInstance(id, offerBean, offerMethod, initMethod, destroyMethod, factoryMethod, scope, singleton, lazyInit, important);
 
-			if(offerBean != null) {
-				Class<?> offerBeanClass = assistant.resolveBeanClass(offerBean);
-				if(offerBeanClass != null) {
-					beanRule.setOfferBeanClass(offerBeanClass);
-					assistant.putBeanReference(offerBeanClass, beanRule);
-				} else {
-					assistant.putBeanReference(offerBean, beanRule);
-				}
+			Class<?> offerBeanClass = assistant.resolveBeanClass(offerBean);
+			if(offerBeanClass != null) {
+				beanRule.setOfferBeanClass(offerBeanClass);
+				assistant.putBeanReference(offerBeanClass, beanRule);
+			} else {
+				assistant.putBeanReference(offerBean, beanRule);
 			}
 		} else {
 			if(className == null && scan == null)
@@ -386,7 +380,7 @@ public class RootAponDisassembler {
 		if(contentParametersList != null && !contentParametersList.isEmpty()) {
 			ContentList contentList = transletRule.touchContentList();
 			for(Parameters contentParamters : contentParametersList) {
-				ActionList actionList = disassembleActionList(contentParamters, contentList);
+				ActionList actionList = disassembleActionList(contentParamters);
 				contentList.addActionList(actionList);
 			}
 		}
@@ -498,7 +492,7 @@ public class RootAponDisassembler {
 		
 		if(contentParametersList != null) {
 			for(Parameters contentParamters : contentParametersList) {
-				ActionList actionList = disassembleActionList(contentParamters, contentList);
+				ActionList actionList = disassembleActionList(contentParamters);
 				contentList.addActionList(actionList);
 			}
 		}
@@ -506,7 +500,7 @@ public class RootAponDisassembler {
 		return contentList;
 	}
 	
-	public ActionList disassembleActionList(Parameters contentParameters, ContentList contentList) {
+	public ActionList disassembleActionList(Parameters contentParameters) {
 		String name = contentParameters.getString(ContentParameters.name);
 		Boolean omittable = contentParameters.getBoolean(ContentParameters.omittable);
 		Boolean hidden = contentParameters.getBoolean(ContentParameters.hidden);

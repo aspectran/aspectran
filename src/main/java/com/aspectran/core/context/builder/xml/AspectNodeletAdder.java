@@ -53,9 +53,12 @@ public class AspectNodeletAdder implements NodeletAdder {
 	public void process(String xpath, NodeletParser parser) {
 		parser.addNodelet(xpath, "/aspect", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
-				String id = attributes.get("id");
-				String useFor = attributes.get("for");
-				
+				String id = StringUtils.emptyToNull(attributes.get("id"));
+				String useFor = StringUtils.emptyToNull(attributes.get("for"));
+
+				if(id == null)
+					throw new IllegalArgumentException("The <aspect> element requires an id attribute.");
+
 				AspectRule aspectRule = AspectRule.newInstance(id, useFor);
 				
 				assistant.pushObject(aspectRule);
@@ -71,7 +74,7 @@ public class AspectNodeletAdder implements NodeletAdder {
 		});
 		parser.addNodelet(xpath, "/aspect/joinpoint", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
-				String scope = attributes.get("scope");
+				String scope = StringUtils.emptyToNull(attributes.get("scope"));
 
 				AspectRule aspectRule = assistant.peekObject();
 				AspectRule.updateJoinpointScope(aspectRule, scope);
@@ -79,7 +82,7 @@ public class AspectNodeletAdder implements NodeletAdder {
 		});
 		parser.addNodelet(xpath, "/aspect/joinpoint/pointcut", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
-				String type = attributes.get("type");
+				String type = StringUtils.emptyToNull(attributes.get("type"));
 				
 				AspectRule aspectRule = assistant.peekObject();
 				PointcutRule pointcutRule = PointcutRule.newInstance(aspectRule, type, text);
@@ -140,7 +143,7 @@ public class AspectNodeletAdder implements NodeletAdder {
 		});
 		parser.addNodelet(xpath, "/aspect/settings/setting", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
-				String name = attributes.get("name");
+				String name = StringUtils.emptyToNull(attributes.get("name"));
 				String value = attributes.get("value");
 				
 				if(name != null) {
@@ -158,20 +161,18 @@ public class AspectNodeletAdder implements NodeletAdder {
 		});	
 		parser.addNodelet(xpath, "/aspect/advice", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
-				String beanId = attributes.get("bean");
+				String beanId = StringUtils.emptyToNull(attributes.get("bean"));
 				
-				if(!StringUtils.isEmpty(beanId)) {
+				if(beanId != null) {
 					AspectRule aspectRule = assistant.peekObject();
 					aspectRule.setAdviceBeanId(beanId);
 
-					if(beanId != null) {
-						Class<?> adviceBeanClass = assistant.resolveBeanClass(beanId);
-						if(adviceBeanClass != null) {
-							aspectRule.setAdviceBeanClass(adviceBeanClass);
-							assistant.putBeanReference(adviceBeanClass, aspectRule);
-						} else {
-							assistant.putBeanReference(beanId, aspectRule);
-						}
+					Class<?> adviceBeanClass = assistant.resolveBeanClass(beanId);
+					if(adviceBeanClass != null) {
+						aspectRule.setAdviceBeanClass(adviceBeanClass);
+						assistant.putBeanReference(adviceBeanClass, aspectRule);
+					} else {
+						assistant.putBeanReference(beanId, aspectRule);
 					}
 				}
 			}
@@ -183,12 +184,15 @@ public class AspectNodeletAdder implements NodeletAdder {
 		parser.addNodelet(xpath, "/aspect/exceptionRaised", new AspectExceptionRaisedNodeletAdder(assistant));
 		parser.addNodelet(xpath, "/aspect/advice/job", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
-				String transletName = attributes.get("translet");
+				String transletName = StringUtils.emptyToNull(attributes.get("translet"));
 				Boolean disabled = BooleanUtils.toNullableBooleanObject(attributes.get("disabled"));
 
 				transletName = assistant.applyTransletNamePattern(transletName);
 				AspectRule ar = assistant.peekObject();
-				
+
+				if(transletName == null)
+					throw new IllegalArgumentException("The <job> element requires a translet attribute.");
+
 				AspectJobAdviceRule ajar = AspectJobAdviceRule.newInstance(ar, transletName, disabled);
 				ar.addAspectJobAdviceRule(ajar);
 			}

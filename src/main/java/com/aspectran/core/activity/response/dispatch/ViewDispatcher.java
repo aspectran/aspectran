@@ -28,11 +28,18 @@ public interface ViewDispatcher {
 	public static final String VIEW_DISPATCHER_SETTING_NAME = "viewDispatcher";
 	
 	/**
-	 * Dispaching according to a given rule, and transmits this response.
+	 * Dispatch to other resources as the given rule.
 	 *
 	 * @param activity the current activity
 	 * @param dispatchResponseRule the dispatch response rule
 	 */
 	public void dispatch(Activity activity, DispatchResponseRule dispatchResponseRule) throws ViewDispatchException;
+
+	/**
+	 * Return whether this view dispatcher corresponds to a singleton instance.
+	 *
+	 * @return whether this view dispatcher corresponds to a singleton instance
+     */
+	public boolean isSingleton();
 	
 }

@@ -16,6 +16,8 @@
 package com.aspectran.core.context.expr.token;
 
 import com.aspectran.core.context.rule.BeanRule;
+import com.aspectran.core.context.rule.ability.BeanReferenceInspectable;
+import com.aspectran.core.context.rule.type.BeanReferrerType;
 import com.aspectran.core.context.rule.type.TokenType;
 import com.aspectran.core.util.ToStringBuilder;
 
@@ -27,17 +29,19 @@ import com.aspectran.core.util.ToStringBuilder;
  *  <li>${parameterName:defaultValue}
  *  <li>{@literal @}{attributeName}
  *  <li>{@literal @}{attributeName:defaultValue}
- *  <li>{@literal @}{attributeName^getterName:defaultValue}
+ *  <li>{@literal @}{attributeName^propertyName:defaultValue}
  *  <li>#{beanId}
- *  <li>#{beanId^getterName}
+ *  <li>#{beanId^propertyName}
  *  <li>#{class:className}
- *  <li>#{class:className^getterName}
+ *  <li>#{class:className^propertyName}
  *</ul>
  *
  * <p>Created: 2008. 03. 27 PM 10:20:06</p>
  */
-public class Token {
-	
+public class Token implements BeanReferenceInspectable {
+
+	private static final BeanReferrerType BEAN_REFERABLE_RULE_TYPE = BeanReferrerType.TOKEN;
+
 	public static final char PARAMETER_SYMBOL = '$';
 
 	public static final char ATTRIBUTE_SYMBOL = '@';
@@ -58,7 +62,7 @@ public class Token {
 	
 	private String value;
 	
-	private String getterName;
+	private String propertyName;
 
 	private Class<?> beanClass;
 	
@@ -115,21 +119,21 @@ public class Token {
 	}
 	
 	/**
-	 * Gets the getter name of the bean.
+	 * Gets the name of the property whose value is to be retrieved.
 	 * 
-	 * @return the getter name of the bean
+	 * @return the name of the property whose value is to be retrieved
 	 */
-	public String getGetterName() {
-		return getterName;
+	public String getPropertyName() {
+		return propertyName;
 	}
 
 	/**
-	 * Sets the getter name of the bean.
+	 * Sets the name of the property whose value is to be retrieved.
 	 * 
-	 * @param getterNameOfBean the new getter name of the bean
+	 * @param propertyName the name of the property whose value is to be retrieved
 	 */
-	public void setGetterName(String getterNameOfBean) {
-		this.getterName = getterNameOfBean;
+	public void setPropertyName(String propertyName) {
+		this.propertyName = propertyName;
 	}
 
 	public Class<?> getBeanClass() {
@@ -138,6 +142,11 @@ public class Token {
 
 	public void setBeanClass(Class<?> beanClass) {
 		this.beanClass = beanClass;
+	}
+
+	@Override
+	public BeanReferrerType getBeanReferrerType() {
+		return BEAN_REFERABLE_RULE_TYPE;
 	}
 
 	public String stringify() {
@@ -160,9 +169,9 @@ public class Token {
 			sb.append(START_BRACKET);
 			if(name != null)
 				sb.append(name);
-			if(getterName != null) {
+			if(propertyName != null) {
 				sb.append(PROPERTY_SEPARATOR);
-				sb.append(getterName);
+				sb.append(propertyName);
 			}
 			if(value != null) {
 				sb.append(VALUE_SEPARATOR);
@@ -181,9 +190,9 @@ public class Token {
 			} else if(name != null) {
 				sb.append(name);
 			}
-			if(getterName != null) {
+			if(propertyName != null) {
 				sb.append(PROPERTY_SEPARATOR);
-				sb.append(getterName);
+				sb.append(propertyName);
 			}
 			sb.append(END_BRACKET);
 			return sb.toString();
@@ -198,8 +207,8 @@ public class Token {
 		tsb.append("type", type);
 		tsb.append("name", name);
 		tsb.append("value", value);
-		tsb.append("getterName", getterName);
 		tsb.append("beanClass", beanClass);
+		tsb.append("propertyName", propertyName);
 		return tsb.toString();
 	}
 	

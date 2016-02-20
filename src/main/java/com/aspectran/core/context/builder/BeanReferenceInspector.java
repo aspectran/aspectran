@@ -23,7 +23,11 @@ import java.util.Map;
 import java.util.Set;
 
 import com.aspectran.core.context.bean.BeanRuleRegistry;
-import com.aspectran.core.context.rule.*;
+import com.aspectran.core.context.expr.token.Token;
+import com.aspectran.core.context.rule.BeanActionRule;
+import com.aspectran.core.context.rule.BeanRule;
+import com.aspectran.core.context.rule.ability.BeanReferenceInspectable;
+import com.aspectran.core.context.rule.type.BeanReferrerType;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
@@ -34,16 +38,16 @@ public class BeanReferenceInspector {
 
 	private final Log log = LogFactory.getLog(BeanReferenceInspector.class);
 	
-	private Map<Object, Set<Object>> relationMap = new LinkedHashMap<Object, Set<Object>>();
+	private final Map<Object, Set<BeanReferenceInspectable>> relationMap = new LinkedHashMap<Object, Set<BeanReferenceInspectable>>();
 	
 	public BeanReferenceInspector() {
 	}
 	
-	public void putRelation(Object beanIdOrClass, Object someRule) {
-		Set<Object> ruleSet = relationMap.get(beanIdOrClass);
+	public void putRelation(Object beanIdOrClass, BeanReferenceInspectable someRule) {
+		Set<BeanReferenceInspectable> ruleSet = relationMap.get(beanIdOrClass);
 		
 		if(ruleSet == null) {
-			ruleSet = new LinkedHashSet<Object>();
+			ruleSet = new LinkedHashSet<BeanReferenceInspectable>();
 			ruleSet.add(someRule);
 			relationMap.put(beanIdOrClass, ruleSet);
 		} else {
@@ -54,39 +58,39 @@ public class BeanReferenceInspector {
 	public void inspect(BeanRuleRegistry beanRuleRegistry) throws BeanReferenceException {
 		List<Object> unknownBeanIdList = new ArrayList<Object>();
 		
-		for(Map.Entry<Object, Set<Object>> entry : relationMap.entrySet()) {
+		for(Map.Entry<Object, Set<BeanReferenceInspectable>> entry : relationMap.entrySet()) {
 			Object beanIdOrClass = entry.getKey();
+			Set<BeanReferenceInspectable> set = entry.getValue();
+
 			BeanRule beanRule = beanRuleRegistry.getBeanRule(beanIdOrClass);
 			
-			if(!beanRuleRegistry.contains(beanIdOrClass)) {
+			if(beanRule == null) {
 				unknownBeanIdList.add(beanIdOrClass);
-				Set<Object> set = entry.getValue();
-				
-				for(Object o : set) {
-					String ruleName;
-					
-					if(o instanceof BeanActionRule) {
-						ruleName = "beanActionRule";
-					} else if(o instanceof ItemRule) {
-						ruleName = "itemRule";
-					} else if(o instanceof TransformRule) {
-						ruleName = "transformRule";
-					} else if(o instanceof RedirectResponseRule) {
-						ruleName = "redirectResponseRule";
-					} else if(o instanceof TemplateRule) {
-						ruleName = "templateRule";
-					} else {
-						ruleName = "rule";
-					}
-					
-					log.error("Cannot resolve reference to bean '" + beanIdOrClass.toString() + "' on " + ruleName + " " + o);
+
+				for(BeanReferenceInspectable o : set) {
+					log.error("Cannot resolve reference to bean '" + beanIdOrClass.toString() + "' on " + o.getBeanReferrerType() + " " + o);
 				}
 			} else {
-				Set<Object> set = entry.getValue();
-				
-				for(Object o : set) {
-					if(o instanceof BeanActionRule) {
-						BeanActionRule.checkActionParameter((BeanActionRule)o, beanRule);
+				for(BeanReferenceInspectable o : set) {
+					if(o.getBeanReferrerType() == BeanReferrerType.BEAN_ACTION_RULE) {
+						BeanActionRule.checkTransletActionParameter((BeanActionRule)o, beanRule);
+					} else if(o.getBeanReferrerType() == BeanReferrerType.TOKEN) {
+						Token token = (Token)o;
+						String propertyName = token.getPropertyName();
+						Class<?> beanClass = beanRule.getTargetBeanClass();
+//						BeanDescriptor bd = BeanDescriptor.getInstance(beanClass).getGetter(propertyName);
+//
+//
+//								for(Token token : iter.next()) {
+//									if(token.getType() == TokenType.BEAN) {
+//										String getterName = token.getPropertyName();
+//										//BeanDescriptor.getInstance()
+//
+//										//BeanUtils.getClassPropertyTypeForGetter(token.getBeanClass(), getterName);
+//									}
+//								}
+//							}
+//						}
 					}
 				}
 			}
@@ -104,7 +108,7 @@ public class BeanReferenceInspector {
 		}
 	}
 	
-	public Map<Object, Set<Object>> getRelationMap() {
+	public Map<Object, Set<BeanReferenceInspectable>> getRelationMap() {
 		return relationMap;
 	}
 	

@@ -22,7 +22,9 @@ import com.aspectran.core.context.bean.ablility.DisposableBean;
 import com.aspectran.core.context.bean.ablility.FactoryBean;
 import com.aspectran.core.context.bean.ablility.InitializableBean;
 import com.aspectran.core.context.bean.ablility.InitializableTransletBean;
+import com.aspectran.core.context.rule.ability.BeanReferenceInspectable;
 import com.aspectran.core.context.rule.ability.Replicable;
+import com.aspectran.core.context.rule.type.BeanReferrerType;
 import com.aspectran.core.context.rule.type.ScopeType;
 import com.aspectran.core.util.BooleanUtils;
 import com.aspectran.core.util.ToStringBuilder;
@@ -33,11 +35,13 @@ import com.aspectran.core.util.apon.Parameters;
  * 
  * <p>Created: 2009. 03. 09 PM 23:48:09</p>
  */
-public class BeanRule implements Replicable<BeanRule> {
+public class BeanRule implements Replicable<BeanRule>, BeanReferenceInspectable {
 
 	public static final String CLASS_DIRECTIVE = "class";
 
 	public static final String CLASS_DIRECTIVE_PREFIX = "class:";
+
+	private static final BeanReferrerType BEAN_REFERABLE_RULE_TYPE = BeanReferrerType.BEAN_RULE;
 
 	private String id;
 
@@ -161,7 +165,6 @@ public class BeanRule implements Replicable<BeanRule> {
 	 *
 	 * @param beanClass the new bean class
 	 * @throws SecurityException 
-	 * @throws NoSuchMethodException 
 	 */
 	public void setBeanClass(Class<?> beanClass) {
 		this.beanClass = beanClass;
@@ -350,11 +353,13 @@ public class BeanRule implements Replicable<BeanRule> {
 	}
 	
 	public Class<?> getTargetBeanClass() {
-		return targetBeanClass;
+		if(targetBeanClass != null)
+			return targetBeanClass;
+		return beanClass;
 	}
 
-	public void setTargetBeanClass(Class<?> factoryBeanClass) {
-		this.targetBeanClass = factoryBeanClass;
+	public void setTargetBeanClass(Class<?> targetBeanClass) {
+		this.targetBeanClass = targetBeanClass;
 	}
 	
 	public String getTargetBeanClassName() {
@@ -663,6 +668,11 @@ public class BeanRule implements Replicable<BeanRule> {
 	public BeanRule replicate() {
 		return replicate(this);
 	}
+
+	@Override
+	public BeanReferrerType getBeanReferrerType() {
+		return BEAN_REFERABLE_RULE_TYPE;
+	}
 	
 	@Override
 	public String toString() {
@@ -788,8 +798,8 @@ public class BeanRule implements Replicable<BeanRule> {
 		br.setOfferBeanId(beanRule.getOfferBeanId());
 		br.setOfferMethodName(beanRule.getOfferMethodName());
 		br.setInitMethodName(beanRule.getInitMethodName());
-		br.setFactoryMethodName(beanRule.getFactoryMethodName());
 		br.setDestroyMethodName(beanRule.getDestroyMethodName());
+		br.setFactoryMethodName(beanRule.getFactoryMethodName());
 		br.setConstructorArgumentItemRuleMap(beanRule.getConstructorArgumentItemRuleMap());
 		br.setPropertyItemRuleMap(beanRule.getPropertyItemRuleMap());
 		br.setLazyInit(beanRule.getLazyInit());

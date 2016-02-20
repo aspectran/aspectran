@@ -16,6 +16,7 @@
 package com.aspectran.core.context.aspect;
 
 import java.util.List;
+import java.util.Set;
 
 import com.aspectran.core.activity.process.ContentList;
 import com.aspectran.core.context.AspectranConstants;
@@ -30,7 +31,7 @@ import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.type.AspectTargetType;
 import com.aspectran.core.context.rule.type.JoinpointScopeType;
 import com.aspectran.core.context.translet.TransletRuleRegistry;
-import com.aspectran.core.util.ClassDescriptor;
+import com.aspectran.core.util.BeanDescriptor;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
@@ -82,6 +83,13 @@ public class AspectAdviceRulePreRegister extends AspectAdviceRuleRegister {
 		for(BeanRule beanRule : beanRuleRegistry.getIdBasedBeanRuleMap()) {
 			if(!beanRule.isOffered()) {
 				determineProxyBean(beanRule);
+			}
+		}
+		for(Set<BeanRule> set : beanRuleRegistry.getTypeBasedBeanRuleMap().values()) {
+			for(BeanRule beanRule : set) {
+				if(!beanRule.isOffered()) {
+					determineProxyBean(beanRule);
+				}
 			}
 		}
 	}
@@ -261,7 +269,7 @@ public class AspectAdviceRulePreRegister extends AspectAdviceRuleRegister {
 		List<PointcutPatternRule> pointcutPatternRuleList = pointcut.getPointcutPatternRuleList();
 		
 		if(pointcutPatternRuleList != null) {
-			ClassDescriptor cd = ClassDescriptor.getInstance(beanRule.getBeanClass());
+			BeanDescriptor cd = BeanDescriptor.getInstance(beanRule.getTargetBeanClass());
 			
 			String beanId = beanRule.getId();
 			String className = beanRule.getTargetBeanClassName();

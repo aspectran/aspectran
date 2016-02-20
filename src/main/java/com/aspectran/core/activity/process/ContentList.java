@@ -30,7 +30,7 @@ import com.aspectran.core.util.ToStringBuilder;
 public class ContentList extends ArrayList<ActionList> {
 	
 	/** @serial */
-	static final long serialVersionUID = 2567969961069441527L;
+	private static final long serialVersionUID = 2567969961069441527L;
 	
 	private String name;
 	

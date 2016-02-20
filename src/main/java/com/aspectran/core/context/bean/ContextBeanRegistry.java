@@ -72,10 +72,18 @@ public class ContextBeanRegistry extends AbstractBeanFactory implements BeanRegi
 		if(beanRule == null)
 			throw new BeanNotFoundException(id);
 
-		if(!ClassUtils.isAssignable(beanRule.getBeanClass(), requiredType))
+		if(!ClassUtils.isAssignable(beanRule.getTargetBeanClass(), requiredType))
 			throw new BeanNotOfRequiredTypeException(requiredType, beanRule);
 		
 		return getBean(beanRule);
+	}
+
+	@Override
+	public <T> T getBean(Class<T> requiredType, String id) {
+		if(requiredType != null)
+			return getBean(requiredType);
+		else
+			return getBean(id);
 	}
 
 	@Override
@@ -86,6 +94,16 @@ public class ContextBeanRegistry extends AbstractBeanFactory implements BeanRegi
 			throw new RequiredTypeBeanNotFoundException(requiredType);
 
 		return getBean(beanRule);
+	}
+
+	@Override
+	public boolean containsBean(String id) {
+		return beanRuleRegistry.contains(id);
+	}
+
+	@Override
+	public boolean containsBean(Class<?> requiredType) {
+		return beanRuleRegistry.contains(requiredType);
 	}
 
 	@SuppressWarnings("unchecked")

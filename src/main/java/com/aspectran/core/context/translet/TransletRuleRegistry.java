@@ -265,7 +265,8 @@ public class TransletRuleRegistry {
 		if(defaultSettings.getTransletNamePrefix() != null)
 			sb.append(defaultSettings.getTransletNamePrefix());
 
-		sb.append(transletName);
+		if(transletName != null)
+			sb.append(transletName);
 		
 		if(defaultSettings.getTransletNameSuffix() != null)
 			sb.append(defaultSettings.getTransletNameSuffix());
