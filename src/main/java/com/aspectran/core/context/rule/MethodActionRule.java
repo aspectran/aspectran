@@ -17,6 +17,7 @@ package com.aspectran.core.context.rule;
 
 import java.lang.reflect.Method;
 
+import com.aspectran.core.activity.Translet;
 import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
 import com.aspectran.core.util.ToStringBuilder;
 
@@ -53,6 +54,15 @@ public class MethodActionRule {
 
 	public void setMethod(Method method) {
 		this.method = method;
+
+		Class<?>[] paramTypes = method.getParameterTypes();
+		this.requiresTranslet = (paramTypes.length == 1 && paramTypes[0].isAssignableFrom(Translet.class));
+	}
+
+	public String getMethodName() {
+		if(method != null)
+			return method.getName();
+		return null;
 	}
 
 	public boolean isRequiresTranslet() {
@@ -123,5 +133,5 @@ public class MethodActionRule {
 
 		return methodActionRule;
 	}
-	
+
 }

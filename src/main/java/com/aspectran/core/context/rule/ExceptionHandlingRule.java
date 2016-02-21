@@ -22,6 +22,7 @@ import java.util.Map;
 import com.aspectran.core.activity.process.action.BeanAction;
 import com.aspectran.core.activity.process.action.EchoAction;
 import com.aspectran.core.activity.process.action.Executable;
+import com.aspectran.core.activity.process.action.MethodAction;
 import com.aspectran.core.context.rule.ability.ActionRuleApplicable;
 import com.aspectran.core.context.rule.type.ActionType;
 
@@ -48,6 +49,11 @@ public class ExceptionHandlingRule implements ActionRuleApplicable, Iterable<Res
 	@Override
 	public void applyActionRule(BeanActionRule beanActionRule) {
 		action = new BeanAction(beanActionRule, null);
+	}
+
+	@Override
+	public void applyActionRule(MethodActionRule methodActionRule) {
+		action = new MethodAction(methodActionRule, null);
 	}
 
 	@Override

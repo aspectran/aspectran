@@ -66,7 +66,6 @@ public class CoreTranslet implements Translet {
 		return activity.getRequestMethod();
 	}
 
-
 	@Override
 	public ApplicationAdapter getApplicationAdapter() {
 		return activity.getActivityContext().getApplicationAdapter();

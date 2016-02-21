@@ -33,6 +33,7 @@ import com.aspectran.core.context.loader.AspectranClassLoader;
 import com.aspectran.core.context.rule.BeanActionRule;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.BeanRuleMap;
+import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.translet.TransletRuleRegistry;
 import com.aspectran.core.util.ClassScanner;
 import com.aspectran.core.util.MethodUtils;
@@ -150,7 +151,7 @@ public class BeanRuleRegistry {
 	}
 
 	/**
-	 * Adds the bean rule.
+	 * Adds bean rule.
 	 *
 	 * @param beanRule the bean rule
 	 * @throws ClassNotFoundException thrown when the bean class is not found.
@@ -198,53 +199,34 @@ public class BeanRuleRegistry {
 		}
 	}
 
-	private Class<?> resolveOfferBeanClass(BeanRule beanRule) {
-		Class<?> offerBeanClass = null;
-		
-		if(beanRule.isOffered()) {
-			if(beanRule.getOfferBeanClass() == null) {
-				BeanRule offerBeanRule = idBasedBeanRuleMap.get(beanRule.getOfferBeanId());
-				if(offerBeanRule != null) {
-					offerBeanClass = resolveOfferBeanClass(offerBeanRule);
-				}
-			} else {
-				offerBeanClass = beanRule.getOfferBeanClass();
-			}
-		}
-
-		if(offerBeanClass == null)
-			throw new BeanRuleException("Invalid BeanRule: Cannot resolve offer bean of ", beanRule);
-		
-		return offerBeanClass;
-	}
-	
 	private void putBeanRule(BeanRule beanRule) {
-		Class<?> beanClass = determineBeanClass(beanRule);
+		Class<?> targetBeanClass = determineBeanClass(beanRule);
 
-		if(beanClass == null) {
+		if(targetBeanClass == null) {
 			postProcessBeanRuleMap.add(beanRule);
-		}
+		} else {
+			if(beanRule.getId() != null)
+				idBasedBeanRuleMap.putBeanRule(beanRule);
 
-		if(beanRule.getId() != null)
-			idBasedBeanRuleMap.putBeanRule(beanRule);
-
-		if(beanClass != null && !beanRule.isOffered()) {
-			if(beanClass.isAnnotationPresent(Configuration.class)) {
-				// bean rule for configuration
-				putConfigBeanRule(beanClass, beanRule);
-				parseAnnotatedConfig(beanClass, beanRule);
-			} else {
-				putBeanRule(beanClass, beanRule);
-				for(Class<?> ifc : beanClass.getInterfaces()) {
-					if(!ignoredDependencyInterfaces.contains(ifc)) {
-						putBeanRule(ifc, beanRule);
+			if(targetBeanClass != null && !beanRule.isOffered()) {
+				if(targetBeanClass.isAnnotationPresent(Configuration.class)) {
+					// bean rule for configuration
+					putConfigBeanRule(beanRule);
+				} else {
+					putBeanRule(targetBeanClass, beanRule);
+					for(Class<?> ifc : targetBeanClass.getInterfaces()) {
+						if(!ignoredDependencyInterfaces.contains(ifc)) {
+							putBeanRule(ifc, beanRule);
+						}
 					}
 				}
-			}
-		}
 
-		if(log.isTraceEnabled())
-			log.trace("add BeanRule " + beanRule);
+				parseAnnotatedConfig(beanRule);
+			}
+
+			if(log.isTraceEnabled())
+				log.trace("add BeanRule " + beanRule);
+		}
 	}
 	
 	private void putBeanRule(Class<?> beanClass, BeanRule beanRule) {
@@ -256,12 +238,26 @@ public class BeanRuleRegistry {
 		list.add(beanRule);
 	}
 
-	private void putConfigBeanRule(Class<?> beanClass, BeanRule beanRule) {
-		configBeanRuleMap.put(beanClass, beanRule);
+	private void putConfigBeanRule(BeanRule beanRule) {
+		configBeanRuleMap.put(beanRule.getBeanClass(), beanRule);
 	}
 
-	private void parseAnnotatedConfig(Class<?> beanClass, BeanRule beanRule) {
-		AnnotatedConfigParser.parse(beanRule, transletRuleRegistry.getTransletRuleMap());
+	private void parseAnnotatedConfig(BeanRule beanRule) {
+		AnnotatedConfigRelater relater = new AnnotatedConfigRelater() {
+			@Override
+			public void relay(Class<?> targetBeanClass, BeanRule beanRule) {
+				putBeanRule(targetBeanClass, beanRule);
+			}
+
+			@Override
+			public void relay(TransletRule transletRule) {
+				if(transletRuleRegistry != null) {
+					transletRuleRegistry.addTransletRule(transletRule);
+				}
+			}
+		};
+
+		AnnotatedConfigParser.parse(beanRule, relater);
 	}
 	
 	public void postProcess() {
@@ -269,6 +265,9 @@ public class BeanRuleRegistry {
 			return;
 		
 		for(BeanRule beanRule : postProcessBeanRuleMap) {
+			if(beanRule.getId() != null)
+				idBasedBeanRuleMap.putBeanRule(beanRule);
+
 			if(beanRule.isOffered()) {
 				Class<?> offerBeanClass = resolveOfferBeanClass(beanRule);
 				Class<?> targetBeanClass = determineOfferMethodTargetBeanClass(offerBeanClass, beanRule);
@@ -296,6 +295,33 @@ public class BeanRuleRegistry {
 		}
 		
 		postProcessBeanRuleMap.clear();
+	}
+
+	private Class<?> resolveOfferBeanClass(BeanRule beanRule) {
+		BeanRule offerBeanRule;
+
+		if(beanRule.getOfferBeanClass() == null) {
+			offerBeanRule = getBeanRule(beanRule.getOfferBeanId());
+
+			if(offerBeanRule == null)
+				throw new BeanNotFoundException(beanRule.getOfferBeanId());
+		} else {
+			BeanRule[] beanRules = getBeanRule(beanRule.getOfferBeanClass());
+
+			if(beanRules == null || beanRules.length == 0)
+				throw new RequiredTypeBeanNotFoundException(beanRule.getOfferBeanClass());
+
+			if(beanRules.length > 1)
+				throw new NoUniqueBeanException(beanRule.getOfferBeanClass(), beanRules);
+
+			offerBeanRule = beanRules[0];
+		}
+
+		//TODO 제공빈은 다른 제공빈을 호출할 수 없습니다
+		if(offerBeanRule.isOffered())
+			throw new BeanRuleException("Invalid BeanRule: An Offer Bean can not call another Offer Bean. caller:", beanRule);
+
+		return offerBeanRule.getTargetBeanClass();
 	}
 
 	public void ignoreDependencyInterface(Class<?> ifc) {
@@ -345,7 +371,7 @@ public class BeanRuleRegistry {
 	private static Class<?> determineOfferMethodTargetBeanClass(Class<?> beanClass, BeanRule beanRule) {
 		String offerMethodName = beanRule.getOfferMethodName();
 
-		Method m1 = MethodUtils.getAccessibleMethod(beanClass, offerMethodName, null);
+		Method m1 = MethodUtils.getAccessibleMethod(beanClass, offerMethodName);
 		Method m2 = MethodUtils.getAccessibleMethod(beanClass, offerMethodName, BeanActionRule.TRANSLET_ACTION_PARAMETER_TYPES);
 
 		if(m1 == null && m2 == null)
@@ -369,7 +395,7 @@ public class BeanRuleRegistry {
 
 	private static Class<?> determineTargetBeanClassForFactoryBean(Class<?> beanClass, BeanRule beanRule) {
 		try {
-			Method m = MethodUtils.getAccessibleMethod(beanClass, FactoryBean.FACTORY_METHOD_NAME, null);
+			Method m = MethodUtils.getAccessibleMethod(beanClass, FactoryBean.FACTORY_METHOD_NAME);
 			Class<?> targetBeanClass = m.getReturnType();
 			beanRule.setTargetBeanClass(targetBeanClass);
 			return targetBeanClass;
@@ -378,13 +404,13 @@ public class BeanRuleRegistry {
 		}
 	}
 	
-	private static Class<?> determineFactoryMethodTargetBeanClass(Class<?> beanClass, BeanRule beanRule) {
+	protected static Class<?> determineFactoryMethodTargetBeanClass(Class<?> beanClass, BeanRule beanRule) {
 		if(beanRule.isFactoryBean())
 			throw new BeanRuleException("Bean factory method is duplicated. Already implemented the FactoryBean", beanRule);
 		
 		String factoryMethodName = beanRule.getFactoryMethodName();
 
-		Method m1 = MethodUtils.getAccessibleMethod(beanClass, factoryMethodName, null);
+		Method m1 = MethodUtils.getAccessibleMethod(beanClass, factoryMethodName);
 		Method m2 = MethodUtils.getAccessibleMethod(beanClass, factoryMethodName, BeanActionRule.TRANSLET_ACTION_PARAMETER_TYPES);
 
 		if(m1 == null && m2 == null)
@@ -406,7 +432,7 @@ public class BeanRuleRegistry {
 		return targetBeanClass;
 	}
 
-	private static void checkInitMethod(Class<?> beanClass, BeanRule beanRule) {
+	protected static void checkInitMethod(Class<?> beanClass, BeanRule beanRule) {
 		if(beanRule.isInitializableBean())
 			throw new BeanRuleException("Bean initialization method is duplicated. Already implemented the InitializableBean", beanRule);
 
@@ -415,7 +441,7 @@ public class BeanRuleRegistry {
 
 		String initMethodName = beanRule.getInitMethodName();
 
-		Method m1 = MethodUtils.getAccessibleMethod(beanClass, initMethodName, null);
+		Method m1 = MethodUtils.getAccessibleMethod(beanClass, initMethodName);
 		Method m2 = MethodUtils.getAccessibleMethod(beanClass, initMethodName, BeanActionRule.TRANSLET_ACTION_PARAMETER_TYPES);
 
 		if(m1 == null && m2 == null)
@@ -425,16 +451,16 @@ public class BeanRuleRegistry {
 			beanRule.setInitMethod(m2);
 			beanRule.setInitMethodRequiresTranslet(true);
 		} else {
-			beanRule.setInitMethod(m2);
+			beanRule.setInitMethod(m1);
 		}
 	}
-	
-	private static void checkDestroyMethod(Class<?> beanClass, BeanRule beanRule) {
+
+	protected static void checkDestroyMethod(Class<?> beanClass, BeanRule beanRule) {
 		if(beanRule.isDisposableBean())
 			throw new BeanRuleException("Bean destroy method  is duplicated. Already implemented the DisposableBean", beanRule);
 
 		String destroyMethodName = beanRule.getDestroyMethodName();
-		Method m = MethodUtils.getAccessibleMethod(beanClass, destroyMethodName, null);
+		Method m = MethodUtils.getAccessibleMethod(beanClass, destroyMethodName);
 		
 		if(m == null)
 			throw new IllegalArgumentException("No such destroy method " + destroyMethodName + "() on bean class: " + beanClass);

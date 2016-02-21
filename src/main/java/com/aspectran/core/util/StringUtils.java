@@ -258,9 +258,9 @@ public class StringUtils {
 
 		int loop = (search.length <= replace.length) ? search.length : replace.length;
 		int start = 0;
-		int end = 0;
-		int searchLen = 0;
-		int replaceLen = 0;
+		int end;
+		int searchLen;
+		int replaceLen;
 
 		for(int i = 0; i < loop; i++) {
 			if(search[i] == null || replace[i] == null)

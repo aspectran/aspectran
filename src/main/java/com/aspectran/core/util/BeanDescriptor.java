@@ -52,11 +52,11 @@ public class BeanDescriptor {
 
 	private Map<String, Method> readMethods = new HashMap<String, Method>();
 
-	private Map<String, Class<?>> getTypes = new HashMap<String, Class<?>>();
+	private Map<String, Class<?>> readTypes = new HashMap<String, Class<?>>();
 
 	private Map<String, Method> writeMethods = new HashMap<String, Method>();
 
-	private Map<String, Class<?>> setTypes = new HashMap<String, Class<?>>();
+	private Map<String, Class<?>> writeType = new HashMap<String, Class<?>>();
 
 	private BeanDescriptor(Class<?> clazz) {
 		this.className = clazz.getName();
@@ -96,7 +96,7 @@ public class BeanDescriptor {
 	
 	private void addGetMethod(String name, Method method) {
 		readMethods.put(name, method);
-		getTypes.put(name, method.getReturnType());
+		readTypes.put(name, method.getReturnType());
 	}
 	
 	private void addWriteMethods(Method[] methods) {
@@ -129,7 +129,7 @@ public class BeanDescriptor {
 			if(setters.size() == 1) {
 				addWriteMethod(propName, firstMethod);
 			} else {
-				Class<?> expectedType = getTypes.get(propName);
+				Class<?> expectedType = readTypes.get(propName);
 				if(expectedType == null) {
 					throw new AspectranRuntimeException("Illegal overloaded setter method with ambiguous type for property " + propName + " in class " + firstMethod.getDeclaringClass() + ".  This breaks the JavaBeans " + "specification and can cause unpredicatble results.");
 				} else {
@@ -153,7 +153,7 @@ public class BeanDescriptor {
 
 	private void addWriteMethod(String name, Method method) {
 		writeMethods.put(name, method);
-		setTypes.put(name, method.getParameterTypes()[0]);
+		writeType.put(name, method.getParameterTypes()[0]);
 	}
 	
 	/**
@@ -181,8 +181,8 @@ public class BeanDescriptor {
 			currentClass = currentClass.getSuperclass();
 		}
 	
-		Collection<?> methods = uniqueMethods.values();
-	
+		Collection<Method> methods = uniqueMethods.values();
+
 		return methods.toArray(new Method[methods.size()]);
 	}
 	
@@ -214,7 +214,7 @@ public class BeanDescriptor {
 		sb.append(method.getName());
 		Class<?>[] parameters = method.getParameterTypes();
 
-		for (int i = 0; i < parameters.length; i++) {
+		for(int i = 0; i < parameters.length; i++) {
 			if (i == 0) {
 				sb.append(':');
 			} else {
@@ -232,7 +232,7 @@ public class BeanDescriptor {
 			if (null != securityManager) {
 				securityManager.checkPermission(new ReflectPermission("suppressAccessChecks"));
 			}
-		} catch (SecurityException e) {
+		} catch(SecurityException e) {
 			return false;
 		}
 		return true;
@@ -257,7 +257,7 @@ public class BeanDescriptor {
 	/**
 	 * Gets the setter for a property as a Method object.
 	 *
-	 * @param propertyName - the property
+	 * @param propertyName the name of the property
 	 * @return The Method
 	 * @throws NoSuchMethodException the no such method exception
 	 */
@@ -272,7 +272,7 @@ public class BeanDescriptor {
 	/**
 	 * Gets the getter for a property as a Method object.
 	 *
-	 * @param propertyName - the property
+	 * @param propertyName the name of the property
 	 * @return The Method
 	 * @throws NoSuchMethodException the no such method exception
 	 */
@@ -287,12 +287,12 @@ public class BeanDescriptor {
 	/**
 	 * Gets the type for a property setter.
 	 *
-	 * @param propertyName - the name of the property
+	 * @param propertyName the name of the property
 	 * @return The Class of the propery setter
 	 * @throws NoSuchMethodException the no such method exception
 	 */
 	public Class<?> getSetterType(String propertyName) throws NoSuchMethodException {
-		Class<?> clazz = setTypes.get(propertyName);
+		Class<?> clazz = writeType.get(propertyName);
 		if(clazz == null) {
 			throw new NoSuchMethodException("There is no WRITEABLE property named '" + propertyName + "' in class '" + className + "'");
 		}
@@ -302,12 +302,12 @@ public class BeanDescriptor {
 	/**
 	 * Gets the type for a property getter.
 	 *
-	 * @param propertyName - the name of the property
+	 * @param propertyName the name of the property
 	 * @return The Class of the propery getter
 	 * @throws NoSuchMethodException the no such method exception
 	 */
 	public Class<?> getGetterType(String propertyName) throws NoSuchMethodException {
-		Class<?> clazz = getTypes.get(propertyName);
+		Class<?> clazz = readTypes.get(propertyName);
 		if(clazz == null) {
 			throw new NoSuchMethodException("There is no READABLE property named '" + propertyName + "' in class '" + className + "'");
 		}
@@ -335,8 +335,8 @@ public class BeanDescriptor {
 	/**
 	 * Check to see if a class has a writeable property by name
 	 * 
-	 * @param propertyName - the name of the property to check
-	 * @return True if the object has a writeable property by the name
+	 * @param propertyName the name of the property to check
+	 * @return true if the object has a writeable property by the name
 	 */
 	public boolean hasWritableProperty(String propertyName) {
 		return writeMethods.keySet().contains(propertyName);
@@ -345,8 +345,8 @@ public class BeanDescriptor {
 	/**
 	 * Check to see if a class has a readable property by name
 	 * 
-	 * @param propertyName - the name of the property to check
-	 * @return True if the object has a readable property by the name
+	 * @param propertyName the name of the property to check
+	 * @return true if the object has a readable property by the name
 	 */
 	public boolean hasReadableProperty(String propertyName) {
 		return readMethods.keySet().contains(propertyName);
@@ -379,8 +379,11 @@ public class BeanDescriptor {
 		}
 	}
 
-	public static void setCacheEnabled(boolean cacheEnabled) {
-		BeanDescriptor.cacheEnabled = cacheEnabled;
+	public static synchronized void setCacheEnabled(boolean cacheEnabling) {
+		cacheEnabled = cacheEnabling;
+		if(!cacheEnabled) {
+			clearCache();
+		}
 	}
 	
     /**

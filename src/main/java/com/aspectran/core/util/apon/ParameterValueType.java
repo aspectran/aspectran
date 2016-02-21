@@ -44,7 +44,7 @@ public enum ParameterValueType {
 	}
 
 	/**
-	 * Returns a <code>ParameterValueType</code> with a value represented by the specified String.
+	 * Returns a ParameterValueType with a value represented by the specified String.
 	 *
 	 * @param alias the specified String
 	 * @return the parameter value type

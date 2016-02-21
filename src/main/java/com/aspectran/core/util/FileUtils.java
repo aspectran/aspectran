@@ -236,9 +236,9 @@ public class FileUtils {
 
 		File f3, f4;
 
-		for(int i = 0; i < files.length; i++) {
-			f3 = new File(f1.toString(), files[i]);
-			f4 = new File(f2.toString(), files[i]);
+		for(String file : files) {
+			f3 = new File(f1.toString(), file);
+			f4 = new File(f2.toString(), file);
 
 			if(f3.isDirectory()) {
 				f4.mkdir();

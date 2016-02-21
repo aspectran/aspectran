@@ -254,7 +254,6 @@ public class MethodUtils {
 				paramTypes = EMPTY_CLASS_PARAMETERS;
 			} else {
 				paramTypes = new Class[arguments];
-
 				for(int i = 0; i < arguments; i++) {
 					if(args[i] != null)
 						paramTypes[i] = args[i].getClass();
@@ -301,9 +300,8 @@ public class MethodUtils {
 
 		Method method = getMatchingAccessibleMethod(object.getClass(), methodName, paramTypes);
 
-		if(method == null) {
+		if(method == null)
 			throw new NoSuchMethodException("No such accessible method: " + methodName + "() on object: " + object.getClass().getName());
-		}
 
 		return invokeMethod(object, method, args, paramTypes);
 	}
@@ -362,7 +360,6 @@ public class MethodUtils {
 				paramTypes = EMPTY_CLASS_PARAMETERS;
 			} else {
 				paramTypes = new Class[arguments];
-
 				for(int i = 0; i < arguments; i++) {
 					if(args[i] != null)
 						paramTypes[i] = args[i].getClass();
@@ -645,22 +642,37 @@ public class MethodUtils {
 		return false;
 	}
 
-//	/**
-//	 * <p>Return an accessible method (that is, one that can be invoked via
-//	 * reflection) with given name and a single parameter.  If no such method
-//	 * can be found, return <code>null</code>.
-//	 * Basically, a convenience wrapper that constructs a <code>Class</code>
-//	 * array for you.</p>
-//	 *
-//	 * @param clazz get method from this class
-//	 * @param methodName get method with this name
-//	 * @param parameterType taking this type of parameter
-//	 * @return The accessible method
-//	 */
-//	public static Method getAccessibleMethod(Class<?> clazz, String methodName, Class<?> parameterType) {
-//		Class<?>[] paramTypes = { parameterType };
-//		return getAccessibleMethod(clazz, methodName, paramTypes);
-//	}
+	/**
+	 * <p>Return an accessible method (that is, one that can be invoked via
+	 * reflection) with given name and a single parameter.  If no such method
+	 * can be found, return <code>null</code>.
+	 * Basically, a convenience wrapper that constructs a <code>Class</code>
+	 * array for you.</p>
+	 *
+	 * @param clazz get method from this class
+	 * @param methodName get method with this name
+	 * @return The accessible method
+	 */
+	public static Method getAccessibleMethod(Class<?> clazz, String methodName) {
+		return getAccessibleMethod(clazz, methodName, EMPTY_CLASS_PARAMETERS);
+	}
+
+	/**
+	 * <p>Return an accessible method (that is, one that can be invoked via
+	 * reflection) with given name and a single parameter.  If no such method
+	 * can be found, return <code>null</code>.
+	 * Basically, a convenience wrapper that constructs a <code>Class</code>
+	 * array for you.</p>
+	 *
+	 * @param clazz get method from this class
+	 * @param methodName get method with this name
+	 * @param paramType taking this type of parameter
+	 * @return The accessible method
+	 */
+	public static Method getAccessibleMethod(Class<?> clazz, String methodName, Class<?> paramType) {
+		Class<?>[] paramTypes = { paramType };
+		return getAccessibleMethod(clazz, methodName, paramTypes);
+	}
 
 	/**
 	 * <p>Return an accessible method (that is, one that can be invoked via
@@ -811,15 +823,15 @@ public class MethodUtils {
 			// Check the implemented interfaces of the parent class
 			Class<?>[] interfaces = clazz.getInterfaces();
 
-			for(int i = 0; i < interfaces.length; i++) {
+			for(Class<?> anInterface : interfaces) {
 				// Is this interface public?
-				if(!Modifier.isPublic(interfaces[i].getModifiers())) {
+				if(!Modifier.isPublic(anInterface.getModifiers())) {
 					continue;
 				}
 
 				// Does the method exist on this interface?
 				try {
-					method = interfaces[i].getDeclaredMethod(methodName, paramTypes);
+					method = anInterface.getDeclaredMethod(methodName, paramTypes);
 				} catch(NoSuchMethodException e) {
 					/* Swallow, if no method is found after the loop then this
 					 * method returns null.
@@ -830,7 +842,7 @@ public class MethodUtils {
 				}
 
 				// Recursively check our parent interfaces
-				method = getAccessibleMethodFromInterfaceNest(interfaces[i], methodName, paramTypes);
+				method = getAccessibleMethodFromInterfaceNest(anInterface, methodName, paramTypes);
 				if(method != null) {
 					return method;
 				}
@@ -888,12 +900,12 @@ public class MethodUtils {
 		Method bestMatch = null;
 		Method[] methods = clazz.getMethods();
 		float bestMatchWeight = Float.MAX_VALUE;
-		float myWeight = Float.MAX_VALUE;
+		float myWeight;
 
-		for(int i = 0, size = methods.length; i < size; i++) {
-			if(methods[i].getName().equals(methodName)) {
+		for(Method method1 : methods) {
+			if(method1.getName().equals(methodName)) {
 				// compare parameters
-				Class<?>[] methodsParams = methods[i].getParameterTypes();
+				Class<?>[] methodsParams = method1.getParameterTypes();
 				int methodParamSize = methodsParams.length;
 				if(methodParamSize == paramSize) {
 					boolean match = true;
@@ -906,7 +918,7 @@ public class MethodUtils {
 
 					if(match) {
 						// get accessible version of method
-						Method method = getAccessibleMethod(methods[i]);
+						Method method = getAccessibleMethod(method1);
 						if(method != null) {
 							makeAccessible(method); // Default access superclass workaround
 							myWeight = ClassUtils.getTypeDifferenceWeight(method.getParameterTypes(), paramTypes);
@@ -1032,11 +1044,11 @@ public class MethodUtils {
      * Set whether methods should be cached for greater performance or not,
      * default is <code>true</code>.
      *
-     * @param cacheMethods <code>true</code> if methods should be
+     * @param cacheEnabling <code>true</code> if methods should be
      * cached for greater performance, otherwise <code>false</code>
      */
-    public static synchronized void setCacheMethods(final boolean cacheMethods) {
-    	cacheEnabled = cacheMethods;
+    public static synchronized void setCacheEnabled(final boolean cacheEnabling) {
+    	cacheEnabled = cacheEnabling;
         if(!cacheEnabled) {
             clearCache();
         }

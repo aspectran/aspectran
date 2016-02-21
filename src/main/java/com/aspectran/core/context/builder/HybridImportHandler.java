@@ -74,7 +74,8 @@ public class HybridImportHandler extends AbstractImportHandler implements Import
 				File aponFile = makeAponFile((ImportableFile)importable);
 
 				if(importable.getLastModified() == aponFile.lastModified()) {
-					log.info("Rapid Aspectran Context Configuration Loading: " + aponFile);
+					log.info("Rapid loading for Aspectran Context Configuration: " + aponFile);
+
 					hybridon = true;
 
 					Parameters rootParameters = AponDeserializer.deserialize(aponFile, encoding, new RootParameters());
@@ -148,9 +149,8 @@ public class HybridImportHandler extends AbstractImportHandler implements Import
 	private File makeAponFile(ImportableFile importableFile) {
 		String basePath = importableFile.getBasePath();
 		String filePath = importableFile.getFilePath() + "." + ImportFileType.APON.toString();
-		File file = new File(basePath, filePath);
-		
-		return file;
+
+		return new File(basePath, filePath);
 	}
 
 }

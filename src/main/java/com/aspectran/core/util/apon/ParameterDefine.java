@@ -42,11 +42,7 @@ public class ParameterDefine {
 		this.parameterValueType = parameterValueType;
 		this.parametersClass = null;
 		this.array = array;
-		
-		if(this.array && parameterValueType == ParameterValueType.PARAMETERS)
-			this.noBracket = noBracket;
-		else
-			this.noBracket = false;
+		this.noBracket = array && parameterValueType == ParameterValueType.PARAMETERS && noBracket;
 	}
 
 	public ParameterDefine(String name, Class<? extends AbstractParameters> parametersClass) {
@@ -62,11 +58,7 @@ public class ParameterDefine {
 		this.parameterValueType = ParameterValueType.PARAMETERS;
 		this.parametersClass = parametersClass;
 		this.array = array;
-		
-		if(this.array && parameterValueType == ParameterValueType.PARAMETERS)
-			this.noBracket = noBracket;
-		else
-			this.noBracket = false;
+		this.noBracket = array && noBracket;
 	}
 	
 	public String getName() {

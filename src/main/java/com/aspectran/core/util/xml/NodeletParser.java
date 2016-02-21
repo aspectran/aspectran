@@ -173,7 +173,7 @@ public class NodeletParser {
 			String elementName = node.getNodeName();
 			path.add(elementName);
 			processNodelet(node, path.toString());
-			processNodelet(node, "//" + elementName.toString());
+			processNodelet(node, "//" + elementName);
 			/*
 			// Attribute
 			NamedNodeMap attributes = node.getAttributes();
@@ -419,9 +419,9 @@ public class NodeletParser {
 		public String toString() {
 			StringBuilder sb = new StringBuilder(128);
 
-			for(int i = 0; i < nodeList.size(); i++) {
+			for(String name : nodeList) {
 				sb.append("/");
-				sb.append(nodeList.get(i));
+				sb.append(name);
 			}
 
 			return sb.toString();

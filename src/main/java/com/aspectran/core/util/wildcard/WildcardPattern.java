@@ -192,11 +192,11 @@ public class WildcardPattern {
 	
 	public static boolean hasWildcards(String str) {
 		char[] ca = str.toCharArray();
-		
-		for(int i = 0; i < ca.length; i++) {
-			if(ca[i] == STAR_CHAR ||
-					ca[i] == QUESTION_CHAR ||
-					ca[i] == PLUS_CHAR)
+
+		for(char c : ca) {
+			if(c == STAR_CHAR ||
+					c == QUESTION_CHAR ||
+					c == PLUS_CHAR)
 				return true;
 		}
 		

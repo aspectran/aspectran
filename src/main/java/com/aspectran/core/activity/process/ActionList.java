@@ -22,9 +22,11 @@ import com.aspectran.core.activity.process.action.BeanAction;
 import com.aspectran.core.activity.process.action.EchoAction;
 import com.aspectran.core.activity.process.action.Executable;
 import com.aspectran.core.activity.process.action.IncludeAction;
+import com.aspectran.core.activity.process.action.MethodAction;
 import com.aspectran.core.context.rule.BeanActionRule;
 import com.aspectran.core.context.rule.EchoActionRule;
 import com.aspectran.core.context.rule.IncludeActionRule;
+import com.aspectran.core.context.rule.MethodActionRule;
 import com.aspectran.core.context.rule.ability.ActionRuleApplicable;
 import com.aspectran.core.util.BooleanUtils;
 import com.aspectran.core.util.ToStringBuilder;
@@ -103,6 +105,12 @@ public class ActionList extends ArrayList<Executable> implements ActionRuleAppli
 	public void applyActionRule(BeanActionRule beanActionRule) {
 		BeanAction beanAction = new BeanAction(beanActionRule, this);
 		add(beanAction);
+	}
+
+	@Override
+	public void applyActionRule(MethodActionRule methodActionRule) {
+		MethodAction methodAction = new MethodAction(methodActionRule, this);
+		add(methodAction);
 	}
 
 	@Override

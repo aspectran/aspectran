@@ -24,7 +24,7 @@ import com.aspectran.core.context.rule.type.AspectAdviceType;
 /**
  * The Class AspectAdviceResult.
  */
-public class AspectAdviceResult implements Cloneable {
+public class AspectAdviceResult {
 	
 	private Map<String, Object> aspectAdviceBeanMap;
 

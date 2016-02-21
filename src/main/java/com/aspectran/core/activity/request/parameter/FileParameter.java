@@ -32,8 +32,10 @@ import com.aspectran.core.util.ToStringBuilder;
  * <p>Created: 2008. 04. 11 PM 4:19:40</p>
  */
 public class FileParameter {
-	
-	private File file;
+
+	private static final int DEFAULT_BUFFER_SIZE = 1024 * 4;
+
+	private final File file;
 	
 	private boolean refused;
 	
@@ -43,6 +45,7 @@ public class FileParameter {
 	 * Instantiates a new FileParameter.
 	 */
 	protected FileParameter() {
+		this.file = null;
 	}
 	
 	/**
@@ -53,7 +56,11 @@ public class FileParameter {
 	public FileParameter(File file) {
 		this.file = file;
 	}
-	
+
+	public File getFile() {
+		return file;
+	}
+
 	/**
 	 * Gets the actual name of the file uploaded.
 	 * 
@@ -84,9 +91,9 @@ public class FileParameter {
 	/**
 	 * Gets the input stream of the file.
 	 * 
-	 * @return the input stream of the file
-	 * 
-	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @return An {@link java.io.OutputStream OutputStream} that can be used
+	 *         for storing the contensts of the file.
+	 * @throws IOException if an error occurs.
 	 */
 	public InputStream getInputStream() throws IOException {
 		return new FileInputStream(file);
@@ -94,7 +101,7 @@ public class FileParameter {
 
 	/**
 	 * Gets the bytes.
-	 * JVM이 다루는 Heap 메모리보다 큰 배열을 사용할 수는 없습니다.
+	 * Can not use a large array of memory than the JVM Heap deal.
 	 *
 	 * @return the bytes
 	 * @throws IOException Signals that an I/O exception has occurred.
@@ -103,11 +110,24 @@ public class FileParameter {
 		InputStream input = getInputStream();
 		ByteArrayOutputStream output = new ByteArrayOutputStream();
 		
-		final byte[] buffer = new byte[256 * 1024];
+		final byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
 		int len;
 
-		while((len = input.read(buffer)) != -1) {
-			output.write(buffer, 0, len);
+		try {
+			while((len = input.read(buffer)) != -1) {
+				output.write(buffer, 0, len);
+			}
+		} finally {
+			try {
+				output.close();
+			} catch(IOException e) {
+				// ignore
+			}
+			try {
+				input.close();
+			} catch(IOException e) {
+				// ignore
+			}
 		}
 
 		input.close();
@@ -136,10 +156,10 @@ public class FileParameter {
 	
 	/**
 	 * Save the uploaded file to the given destination file.
-	 * 이미 동일한 파일명을 가진 파일이 존재할 경우 다른 유일한 파일명으로 저장한다.
+	 * If the file already exists in directory the save with a different name.
 	 *
 	 * @param destFile the destination file
-	 * @return saved file
+	 * @return a saved file
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public File saveAs(File destFile) throws IOException {
@@ -150,8 +170,8 @@ public class FileParameter {
 	 * Save the uploaded file to the given destination file.
 	 *
 	 * @param dest the destination file
-	 * @param overwrite 이미 파일이 존재할 경우 덮어 쓸지 여부
-	 * @return 저장된 파일
+	 * @param overwrite Whether overwritten if the file already exists
+	 * @return a saved file
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public File saveAs(File dest, boolean overwrite) throws IOException {
@@ -167,17 +187,26 @@ public class FileParameter {
 		InputStream input = getInputStream();
 		OutputStream output = new FileOutputStream(dest);
 
-		final byte[] buffer = new byte[256 * 1024];
+		final byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
 		int len;
 
-		while((len = input.read(buffer)) != -1) {
-			output.write(buffer, 0, len);
+		try {
+			while((len = input.read(buffer)) != -1) {
+				output.write(buffer, 0, len);
+			}
+		} finally {
+			try {
+				output.close();
+			} catch(IOException e) {
+				// ignore
+			}
+			try {
+				input.close();
+			} catch(IOException e) {
+				// ignore
+			}
 		}
 
-		output.flush();
-		output.close();
-		input.close();
-		
 		savedFile = dest;
 		
 		return dest;
@@ -188,14 +217,14 @@ public class FileParameter {
 	}
 
 	/**
-	 * Delete.
+	 * Delete a file.
 	 */
 	public void delete() {
 		file.delete();
 	}
 	
 	/**
-	 * Rollback.
+	 * Delete a saved file.
 	 */
 	public void rollback() {
 		if(savedFile != null)
@@ -205,17 +234,13 @@ public class FileParameter {
 	public void release() {
 		if(file != null) {
 			file.setWritable(true);
-			file = null;
 		}
 		if(savedFile != null) {
 			savedFile.setWritable(true);
-			savedFile = null;
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
+	@Override
 	public String toString() {
 		ToStringBuilder tsb = new ToStringBuilder();
 		tsb.append("file", file);

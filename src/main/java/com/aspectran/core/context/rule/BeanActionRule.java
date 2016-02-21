@@ -34,7 +34,7 @@ import com.aspectran.core.util.ToStringBuilder;
  */
 public class BeanActionRule implements ArgumentPossessable, PropertyPossessable, BeanReferenceInspectable {
 
-	public static Class<?>[] TRANSLET_ACTION_PARAMETER_TYPES = { Translet.class };
+	public static final Class<?>[] TRANSLET_ACTION_PARAMETER_TYPES = { Translet.class };
 
 	private static final BeanReferrerType BEAN_REFERABLE_RULE_TYPE = BeanReferrerType.BEAN_ACTION_RULE;
 
@@ -282,7 +282,7 @@ public class BeanActionRule implements ArgumentPossessable, PropertyPossessable,
 		Class<?> beanClass = beanRule.getTargetBeanClass();
 		String methodName = beanActionRule.getMethodName();
 
-		Method m1 = MethodUtils.getAccessibleMethod(beanClass, methodName, null);
+		Method m1 = MethodUtils.getAccessibleMethod(beanClass, methodName);
 		Method m2 = MethodUtils.getAccessibleMethod(beanClass, methodName, TRANSLET_ACTION_PARAMETER_TYPES);
 
 		if(m2 != null) {

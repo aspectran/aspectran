@@ -19,7 +19,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
-import com.aspectran.core.activity.Translet;
+import com.aspectran.core.context.AspectranConstants;
 import com.aspectran.core.context.bean.annotation.Autowired;
 import com.aspectran.core.context.bean.annotation.Bean;
 import com.aspectran.core.context.bean.annotation.Configuration;
@@ -36,7 +36,6 @@ import com.aspectran.core.context.rule.RedirectResponseRule;
 import com.aspectran.core.context.rule.ResponseRule;
 import com.aspectran.core.context.rule.TransformRule;
 import com.aspectran.core.context.rule.TransletRule;
-import com.aspectran.core.context.rule.TransletRuleMap;
 import com.aspectran.core.context.rule.type.RequestMethodType;
 import com.aspectran.core.util.ClassUtils;
 import com.aspectran.core.util.StringUtils;
@@ -51,7 +50,7 @@ import com.aspectran.core.util.StringUtils;
  */
 public abstract class AnnotatedConfigParser {
 
-	public static void parse(BeanRule beanRule, TransletRuleMap transletRuleMap) {
+	public static void parse(BeanRule beanRule, AnnotatedConfigRelater relater) {
 		Class<?> beanClass = beanRule.getBeanClass();
 
 		Configuration configAnno = beanClass.getAnnotation(Configuration.class);
@@ -60,9 +59,9 @@ public abstract class AnnotatedConfigParser {
 		for(Method method : beanClass.getMethods()) {
 			if(configAnno != null) {
 				if(method.isAnnotationPresent(Bean.class)) {
-					parseBean(beanClass, method, namespace);
+					parseBean(beanClass, method, namespace, relater);
 				} else if(method.isAnnotationPresent(Request.class)) {
-					parseTranslet(beanClass, method, namespace);
+					parseTranslet(beanClass, method, namespace, relater);
 				} else if(method.isAnnotationPresent(Autowired.class)) {
 					parseAutowire(beanClass, method, namespace);
 				}
@@ -90,9 +89,9 @@ public abstract class AnnotatedConfigParser {
 
 	}
 
-	private static void parseBean(Class<?> beanClass, Method method, String namespace) {
+	private static void parseBean(Class<?> beanClass, Method method, String namespace, AnnotatedConfigRelater relater) {
 		Bean beanAnno = method.getAnnotation(Bean.class);
-		String beanId = StringUtils.emptyToNull(beanAnno.id());
+		String beanId = applyNamespaceForBean(namespace, StringUtils.emptyToNull(beanAnno.id()));
 		String initMethodName = StringUtils.emptyToNull(beanAnno.initMethod());
 		String destroyMethodName = StringUtils.emptyToNull(beanAnno.destroyMethod());
 		String factoryMethodName = StringUtils.emptyToNull(beanAnno.factoryMethod());
@@ -102,19 +101,19 @@ public abstract class AnnotatedConfigParser {
 		beanRule.setOfferBeanId(BeanRule.CLASS_DIRECTIVE_PREFIX + beanClass.getName());
 		beanRule.setOfferBeanClass(beanClass);
 		beanRule.setOfferMethodName(method.getName());
-		beanRule.setOfferMethod(method);;
+		beanRule.setOfferMethod(method);
 		beanRule.setOffered(true);
 		beanRule.setInitMethodName(initMethodName);
 		beanRule.setDestroyMethodName(destroyMethodName);
 		beanRule.setFactoryMethodName(factoryMethodName);
 
-		BeanRuleRegistry.determineBeanClass(beanRule);
-
+		Class<?> targetBeanClass = BeanRuleRegistry.determineBeanClass(beanRule);
+		relater.relay(targetBeanClass, beanRule);
 	}
 
-	private static void parseTranslet(Class<?> beanClass, Method method, String namespace) {
+	private static void parseTranslet(Class<?> beanClass, Method method, String namespace, AnnotatedConfigRelater relater) {
 		Request requestAnno = method.getAnnotation(Request.class);
-		String transletName = StringUtils.emptyToNull(requestAnno.translet());
+		String transletName = applyNamespaceForTranslet(namespace, StringUtils.emptyToNull(requestAnno.translet()));
 		RequestMethodType[] requestMethods = requestAnno.method();
 
 		if(namespace != null && transletName != null)
@@ -153,15 +152,26 @@ public abstract class AnnotatedConfigParser {
 		methodActionRule.setConfigBeanClass(beanClass);
 		methodActionRule.setMethod(method);
 
-		Class<?>[] paramTypes = method.getParameterTypes();
-		if(paramTypes.length == 1 && paramTypes[0].isAssignableFrom(Translet.class)) {
-			methodActionRule.setRequiresTranslet(true);
-		}
+		transletRule.applyActionRule(methodActionRule);
+		relater.relay(transletRule);
+	}
 
-		
-		//transletRule.applyActionRule(beanActionRule);
+	private static String applyNamespaceForBean(String namespace, String name) {
+		if(namespace != null && name != null)
+			return namespace + AspectranConstants.ID_SEPARATOR + name;
+		else if(namespace != null)
+			return namespace;
+		else
+			return name;
+	}
 
-		//transletRuleMap.putTransletRule(transletRule);
+	private static String applyNamespaceForTranslet(String namespace, String name) {
+		if(namespace != null && name != null)
+			return namespace + AspectranConstants.TRANSLET_NAME_SEPARATOR + name;
+		else if(namespace != null)
+			return namespace;
+		else
+			return name;
 	}
 
 	private static Constructor<?> getMatchConstructor(Class<?> clazz, Object[] args) {

@@ -134,7 +134,8 @@ public abstract class AbstractDynamicBeanProxy {
 		}
 	}
 	
-	protected AspectAdviceRuleRegistry retrieveAspectAdviceRuleRegistry(Activity activity, String transletName, String beanId, String className, String methodName) throws Throwable {
+	protected AspectAdviceRuleRegistry retrieveAspectAdviceRuleRegistry(
+			Activity activity, String transletName, String beanId, String className, String methodName) throws Throwable {
 		RelevantAspectRuleHolder holder = getRelevantAspectRuleHolder(transletName, beanId, className, methodName);
 		
 		if(holder.getActivityAspectRuleList() != null) {
@@ -146,7 +147,8 @@ public abstract class AbstractDynamicBeanProxy {
 		return holder.getAspectAdviceRuleRegistry();
 	}
 	
-	private RelevantAspectRuleHolder getRelevantAspectRuleHolder(String transletName, String beanId, String className, String methodName) {
+	private RelevantAspectRuleHolder getRelevantAspectRuleHolder(
+			String transletName, String beanId, String className, String methodName) {
 		String patternString = PointcutPatternRule.combinePatternString(transletName, beanId, className, methodName);
 		RelevantAspectRuleHolder holder;
 		

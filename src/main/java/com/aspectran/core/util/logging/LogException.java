@@ -22,10 +22,8 @@ import com.aspectran.core.context.AspectranRuntimeException;
  */
 public class LogException extends AspectranRuntimeException {
 
-	/**
-	 * @serial
-	 */
-	static final long serialVersionUID = 1007835506486086212L;
+	/** @serial */
+	private static final long serialVersionUID = 1007835506486086212L;
 
 	public LogException() {
 		super();

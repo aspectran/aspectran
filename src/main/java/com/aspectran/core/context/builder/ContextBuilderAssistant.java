@@ -36,6 +36,8 @@ import com.aspectran.core.context.rule.type.DefaultSettingType;
 import com.aspectran.core.context.template.TemplateRuleRegistry;
 import com.aspectran.core.context.translet.TransletRuleRegistry;
 import com.aspectran.core.util.ArrayStack;
+import com.aspectran.core.util.BeanDescriptor;
+import com.aspectran.core.util.MethodUtils;
 
 /**
  * The Class ContextBuilderAssistant
@@ -87,6 +89,9 @@ public class ContextBuilderAssistant {
 		
 		templateRuleRegistry = new TemplateRuleRegistry();
 		templateRuleRegistry.setAssistantLocal(assistantLocal);
+
+		BeanDescriptor.clearCache();
+		MethodUtils.clearCache();
 	}
 	
 	protected ContextBuilderAssistant() {
@@ -320,11 +325,8 @@ public class ContextBuilderAssistant {
 	 */
 	public boolean isNullableActionId() {
 		DefaultSettings defaultSettings = assistantLocal.getDefaultSettings();
-		
-		if(defaultSettings == null)
-			return true;
+		return defaultSettings == null || defaultSettings.isNullableActionId();
 
-		return defaultSettings.isNullableActionId();
 	}
 
 	/**
@@ -334,19 +336,14 @@ public class ContextBuilderAssistant {
 	 */
 	public boolean isPointcutPatternVerifiable() {
 		DefaultSettings defaultSettings = assistantLocal.getDefaultSettings();
-		
-		if(defaultSettings == null)
-			return true;
-		
-		return defaultSettings.isPointcutPatternVerifiable();
+		return defaultSettings == null || defaultSettings.isPointcutPatternVerifiable();
 	}
 
 	public Class<?> resolveBeanClass(String beanId) {
 		if(beanId != null && beanId.startsWith(BeanRule.CLASS_DIRECTIVE_PREFIX)) {
 			String className = beanId.substring(BeanRule.CLASS_DIRECTIVE_PREFIX.length());
 			try {
-				Class<?> beanClass = classLoader.loadClass(className);
-				return beanClass;
+				return classLoader.loadClass(className);
 			} catch(ClassNotFoundException e) {
 				throw new IllegalArgumentException("Failed to load class: " + className, e);
 			}

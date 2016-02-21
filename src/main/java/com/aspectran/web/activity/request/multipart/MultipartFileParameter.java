@@ -48,6 +48,10 @@ public class MultipartFileParameter extends FileParameter {
 		this.fileSize = fileItem.getSize();
 	}
 
+	public File getFile() {
+		throw new UnsupportedOperationException("multipart encoded file");
+	}
+
 	/**
 	 * Gets the content type of the data being uploaded. This is never null, and
 	 * defaults to "content/unknown" when the mime type of the data couldn't be
@@ -55,6 +59,7 @@ public class MultipartFileParameter extends FileParameter {
 	 *  
 	 * @return the content type
 	 */
+	@Override
 	public String getContentType() {
 		return fileItem.getContentType();
 	}
@@ -64,6 +69,7 @@ public class MultipartFileParameter extends FileParameter {
 	 * 
 	 * @return the file name
 	 */
+	@Override
 	public String getFileName() {
 		return getCanonicalName(fileItem.getName());
 	}
@@ -73,6 +79,7 @@ public class MultipartFileParameter extends FileParameter {
 	 * 
 	 * @return the file size
 	 */
+	@Override
 	public long getFileSize() {
 		return this.fileSize;
 	}
@@ -83,6 +90,7 @@ public class MultipartFileParameter extends FileParameter {
 	 * @return the contents of the file as stream, or an empty stream if empty
 	 * @throws IOException in case of access errors (if the temporary store fails)
 	 */
+	@Override
 	public InputStream getInputStream() throws IOException {
 		if(!isAvailable())
 			throw new IllegalStateException("File has been moved - cannot be read again.");
@@ -97,6 +105,7 @@ public class MultipartFileParameter extends FileParameter {
 	 * 
 	 * @return the byte array
 	 */
+	@Override
 	public byte[] getBytes() {
 		if(!isAvailable())
 			throw new IllegalStateException("File has been moved - cannot be read again.");
@@ -114,6 +123,7 @@ public class MultipartFileParameter extends FileParameter {
 	 * @return a saved file
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
+	@Override
 	public File saveAs(File dest, boolean overwrite) throws IOException {
 		if(!isAvailable())
 			throw new IllegalStateException("File has been moved - cannot be read again.");
@@ -149,10 +159,12 @@ public class MultipartFileParameter extends FileParameter {
 	/**
 	 * Delete a file item.
 	 */
+	@Override
 	public void delete() {
 		fileItem.delete();
 	}
 
+	@Override
 	public void release() {
 		if(fileItem != null) {
 			fileItem = null;

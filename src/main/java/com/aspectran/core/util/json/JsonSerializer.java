@@ -427,7 +427,7 @@ public class JsonSerializer implements Flushable {
 			default:
 				if(c < ' ' || (c >= '\u0080' && c < '\u00a0') || (c >= '\u2000' && c < '\u2100')) {
 					t = "000" + Integer.toHexString(c);
-					sb.append("\\u" + t.substring(t.length() - 4));
+					sb.append("\\u").append(t.substring(t.length() - 4));
 				} else {
 					sb.append(c);
 				}

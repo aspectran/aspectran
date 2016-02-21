@@ -196,16 +196,16 @@ public class WildcardMatcher {
 		int tindex = 0;
 		int cindex = 0;
 		
-		int trange1 = 0;
-		int trange2 = 0;
-		int ttemp = 0;
+		int trange1;
+		int trange2;
+		int ttemp;
 		
-		int crange1 = 0;
-		int crange2 = 0;
-		int ctemp = 0;
+		int crange1;
+		int crange2;
+		int ctemp;
 		
-		int scnt1 = 0;
-		int scnt2 = 0;
+		int scnt1;
+		int scnt2;
 		
 		while(tindex < tlength && cindex < clength) {
 			if(types[tindex] == WildcardPattern.LITERAL_TYPE) {

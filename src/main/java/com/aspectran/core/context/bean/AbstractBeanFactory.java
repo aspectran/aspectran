@@ -379,14 +379,12 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 	}
 	
 	private void instantiateSingleton(BeanRule beanRule, Activity activity) {
-		if(!beanRule.isRegistered()) {
-			if(beanRule.getScopeType() == ScopeType.SINGLETON) {
-				if(!beanRule.isRegistered() && !beanRule.isLazyInit()) {
-					Object bean = createBean(beanRule, activity);
-					beanRule.setBean(bean);
-					beanRule.setRegistered(true);
-				}
-			}
+		if(beanRule.getScopeType() == ScopeType.SINGLETON &&
+				!beanRule.isRegistered() &&
+				!beanRule.isLazyInit()) {
+			Object bean = createBean(beanRule, activity);
+			beanRule.setBean(bean);
+			beanRule.setRegistered(true);
 		}
 	}
 
@@ -419,7 +417,7 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 	}
 
 	private int destroySingleton(BeanRule beanRule) {
-		int failed = 0;
+		int failedCount = 0;
 		if(beanRule.isRegistered() && beanRule.getScopeType() == ScopeType.SINGLETON) {
 			try {
 				if(beanRule.isDisposableBean()) {
@@ -430,14 +428,14 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 					destroyMethod.invoke(beanRule.getBean(), MethodUtils.EMPTY_OBJECT_ARRAY);
 				}
 			} catch(Exception e) {
-				failed++;
+				failedCount++;
 				log.error("Cannot destroy singleton bean " + beanRule, e);
 			}
 
 			beanRule.setBean(null);
 			beanRule.setRegistered(false);
 		}
-		return failed;
+		return failedCount;
 	}
 	
 	private static Object newInstance(Class<?> beanClass, Object[] args, Class<?>[] argTypes) throws BeanInstantiationException {
@@ -486,7 +484,7 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 
 		Constructor<?> constructorToUse = null;
 		float bestMatchWeight = Float.MAX_VALUE;
-		float matchWeight = Float.MAX_VALUE;
+		float matchWeight;
 		
 		for(Constructor<?> candidate : candidates) {
 			matchWeight = ClassUtils.getTypeDifferenceWeight(candidate.getParameterTypes(), args);

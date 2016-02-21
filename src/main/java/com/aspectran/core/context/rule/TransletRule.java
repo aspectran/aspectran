@@ -279,6 +279,11 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 	}
 
 	@Override
+	public void applyActionRule(MethodActionRule methodActionRule) {
+		touchActionList().applyActionRule(methodActionRule);
+	}
+
+	@Override
 	public void applyActionRule(IncludeActionRule includeActionRule) {
 		touchActionList().applyActionRule(includeActionRule);
 	}

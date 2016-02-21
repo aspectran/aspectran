@@ -452,7 +452,7 @@ public class ParameterValue implements Parameter {
 		}
 
 		try {
-			Parameters p = (Parameters)parametersClass.newInstance();
+			Parameters p = parametersClass.newInstance();
 			p.setPrototype(prototype);
 			putValue(p);
 			return p;
