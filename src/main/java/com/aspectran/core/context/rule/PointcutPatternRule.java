@@ -163,8 +163,18 @@ public class PointcutPatternRule {
 	}
 	
 	public static String combinePatternString(String transletName, String beanId, String className, String methodName) {
-		StringBuilder sb = new StringBuilder();
-		
+		int len = 0;
+		if(transletName != null)
+			len += transletName.length();
+		if(beanId != null)
+			len += beanId.length() + 1;
+		else if(className != null)
+			len += className.length() + 7;
+		if(methodName != null)
+			len += methodName.length() + 1;
+
+		StringBuilder sb = new StringBuilder(len);
+
 		if(transletName != null)
 			sb.append(transletName);
 

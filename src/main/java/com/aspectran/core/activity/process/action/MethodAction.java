@@ -22,6 +22,7 @@ import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.context.rule.MethodActionRule;
 import com.aspectran.core.context.rule.type.ActionType;
+import com.aspectran.core.util.MethodUtils;
 import com.aspectran.core.util.ToStringBuilder;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
@@ -78,7 +79,7 @@ public class MethodAction extends AbstractAction {
 		if(requiresTranslet) {
 			args = new Object[] { activity.getTranslet() };
 		} else {
-			args = new Object[0];
+			args = MethodUtils.EMPTY_OBJECT_ARRAY;
 		}
 
 		return method.invoke(bean, args);

@@ -291,7 +291,7 @@ public class AspectranClassLoader extends ClassLoader {
 			}
 		}
 		
-		if(kickoutList.size() > 0)
+		if(!kickoutList.isEmpty())
 			self.kickout(kickoutList);
 		
 		if(firstborn != null) {

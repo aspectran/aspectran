@@ -65,9 +65,9 @@ public class TemplateRule implements Replicable<TemplateRule>, BeanReferenceInsp
 
 	private String templateSource;
 
-	private long lastModifiedTime;
+	private volatile long lastModifiedTime;
 
-	private boolean loaded;
+	private volatile boolean loaded;
 
 	public TemplateRule() {
 	}

@@ -748,7 +748,7 @@ public class RootAponDisassembler {
 					while(iter.hasNext()) {
 						for(Token token : iter.next()) {
 							if(token.getType() == TokenType.BEAN) {
-								assistant.putBeanReference(token.getName(), itemRule);
+								assistant.putBeanReference(token.getName(), token);
 							}
 						}
 					}

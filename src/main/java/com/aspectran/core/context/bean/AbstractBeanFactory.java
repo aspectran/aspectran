@@ -17,6 +17,7 @@ package com.aspectran.core.context.bean;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Iterator;
 import java.util.Map;
@@ -194,16 +195,8 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 
 			if(beanRule.isFactoryBean()) {
 				bean = invokeObjectFromFactoryBean(beanRule, bean);
-				if(beanRule.isProxied()) {
-					//TODO
-					bean = createDynamicBeanProxy(beanRule, args, argTypes);
-				}
 			} else if(beanRule.getFactoryMethodName() != null) {
 				bean = invokeFactoryMethod(beanRule, bean, activity);
-				if(beanRule.isProxied()) {
-					//TODO
-					bean = createDynamicBeanProxy(beanRule, args, argTypes);
-				}
 			}
 
 			return bean;
@@ -215,13 +208,14 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 	private Object instantiateBean(BeanRule beanRule, Object[] args, Class<?>[] argTypes) {
 		Object bean;
 		
-		if(beanRule.isProxied() && !beanRule.isFactoryBean() && beanRule.getFactoryMethod() == null) {
+		if(beanRule.isProxied()) {
 			bean = createDynamicBeanProxy(beanRule, args, argTypes);
 		} else {
-			if(argTypes != null && args != null)
+			if(args != null && argTypes != null) {
 				bean = newInstance(beanRule.getBeanClass(), args, argTypes);
-			else
+			} else {
 				bean = newInstance(beanRule.getBeanClass());
+			}
 		}
 		
 		return bean;
@@ -232,12 +226,12 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 
 		if(beanProxifierType == BeanProxifierType.JAVASSIST) {
 			if(log.isTraceEnabled())
-				log.trace("javassist proxy " + beanRule);
+				log.trace("create a javassist proxy bean " + beanRule);
 
 			bean = JavassistDynamicBeanProxy.newInstance(context, beanRule, args, argTypes);
 		} else if(beanProxifierType == BeanProxifierType.CGLIB) {
 			if(log.isTraceEnabled())
-				log.trace("cglib proxy " + beanRule);
+				log.trace("create a cglib proxy bean " + beanRule);
 
 			bean = CglibDynamicBeanProxy.newInstance(context, beanRule, args, argTypes);
 		} else {
@@ -247,7 +241,7 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 				bean = newInstance(beanRule.getBeanClass());
 
 			if(log.isTraceEnabled())
-				log.trace("jdk proxy " + beanRule);
+				log.trace("create a jdk proxy bean " + beanRule);
 
 			bean = JdkDynamicBeanProxy.newInstance(context, beanRule, bean);
 		}
@@ -288,9 +282,9 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 
 	private Object invokeOfferMethod(BeanRule beanRule, final Object bean, Activity activity) {
 		try {
-			String offerMethodName = beanRule.getOfferMethodName();
+			Method offerMethod = beanRule.getOfferMethod();
 			boolean requiresTranslet = beanRule.isOfferMethodRequiresTranslet();
-			return BeanAction.invokeMethod(activity, bean, offerMethodName, null, null, requiresTranslet);
+			return BeanAction.invokeMethod(activity, bean, offerMethod, null, null, requiresTranslet);
 		} catch(Exception e) {
 			throw new BeanCreationException("An exception occurred during the execution of an offer method of the bean", beanRule, e);
 		}
@@ -298,9 +292,9 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 	
 	private void invokeInitMethod(BeanRule beanRule, final Object bean, Activity activity) {
 		try {
-			String initMethodName = beanRule.getInitMethodName();
+			Method initMethod = beanRule.getInitMethod();
 			boolean requiresTranslet = beanRule.isInitMethodRequiresTranslet();
-			BeanAction.invokeMethod(activity, bean, initMethodName, null, null, requiresTranslet);
+			BeanAction.invokeMethod(activity, bean, initMethod, null, null, requiresTranslet);
 		} catch(Exception e) {
 			throw new BeanCreationException("An exception occurred during the execution of an initialization method of the bean", beanRule, e);
 		}
@@ -308,9 +302,9 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 	
 	private Object invokeFactoryMethod(BeanRule beanRule, final Object bean, Activity activity) {
 		try {
-			String factoryMethodName = beanRule.getFactoryMethodName();
+			Method factoryMethod = beanRule.getFactoryMethod();
 			boolean requiresTranslet = beanRule.isFactoryMethodRequiresTranslet();
-			return BeanAction.invokeMethod(activity, bean, factoryMethodName, null, null, requiresTranslet);
+			return BeanAction.invokeMethod(activity, bean, factoryMethod, null, null, requiresTranslet);
 		} catch(Exception e) {
 			throw new BeanCreationException("An exception occurred during the execution of a factory method of the bean", beanRule, e);
 		}
@@ -430,10 +424,10 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 			try {
 				if(beanRule.isDisposableBean()) {
 					Object bean = beanRule.getBean();
-					((DisposableBean) bean).destroy();
-				} else if(beanRule.getDestroyMethodName() != null) {
-					String destroyMethodName = beanRule.getDestroyMethodName();
-					MethodUtils.invokeExactMethod(beanRule.getBean(), destroyMethodName, null);
+					((DisposableBean)bean).destroy();
+				} else if(beanRule.getDestroyMethod() != null) {
+					Method destroyMethod = beanRule.getDestroyMethod();
+					destroyMethod.invoke(beanRule.getBean(), MethodUtils.EMPTY_OBJECT_ARRAY);
 				}
 			} catch(Exception e) {
 				failed++;

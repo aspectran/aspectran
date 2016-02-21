@@ -35,7 +35,7 @@ public class HttpSessionAdapter extends AbstractSessionAdapter implements Sessio
 	
 	public static final String SESSION_SCOPE_ATTRIBUTE = HttpSessionScope.class.getName();
 	
-	private SessionScope scope;
+	private volatile SessionScope scope;
 	
 	private ActivityContext context;
 	
@@ -122,7 +122,7 @@ public class HttpSessionAdapter extends AbstractSessionAdapter implements Sessio
 	public SessionScope getSessionScope() {
 		if(scope == null) {
 			synchronized(this) {
-				scope = (SessionScope)getAttribute(SESSION_SCOPE_ATTRIBUTE);
+				scope = getAttribute(SESSION_SCOPE_ATTRIBUTE);
 				
 				if(scope == null) {
 					newHttpSessionScope(true);

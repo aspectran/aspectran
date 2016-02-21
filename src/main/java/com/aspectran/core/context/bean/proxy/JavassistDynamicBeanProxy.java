@@ -68,23 +68,4 @@ public class JavassistDynamicBeanProxy extends AbstractDynamicBeanProxy implemen
 		}
 	}
 
-//	/**
-//	 * Creates a proxy class of bean and returns an instance of that class.
-//	 *
-//	 * @param context the activity context
-//	 * @param beanRule the bean rule
-//	 * @param constructorArgTypes the parameter types for a constructor
-//	 * @param constructorArgs the arguments passed to a constructor
-//	 * @return a new proxy bean object
-//	 */
-//	public static Object newInstance(ActivityContext context, BeanRule beanRule, Object bean) {
-//		try {
-//			ProxyFactory proxyFactory = new ProxyFactory();
-//			MethodHandler methodHandler = new JavassistDynamicBeanProxy(context, beanRule);
-//			return proxyFactory.create(constructorArgTypes, constructorArgs, methodHandler);
-//		} catch(Exception e) {
-//			throw new ProxyBeanInstantiationException(beanRule.getBeanClass(), e);
-//		}
-//	}
-
 }

@@ -48,14 +48,14 @@ public abstract class AbstractDynamicBeanProxy {
 
 	private static final boolean traceEnabled = log.isTraceEnabled();
 
+	private static final Map<String, RelevantAspectRuleHolder> relevantAspectRuleHolderCache = new ConcurrentHashMap<String, RelevantAspectRuleHolder>();
+
 	private final ActivityContext context;
 
 	private final BeanRule beanRule;
 
 	private final AspectRuleRegistry aspectRuleRegistry;
-	
-	private final Map<String, RelevantAspectRuleHolder> relevantAspectRuleHolderCache = new ConcurrentHashMap<String, RelevantAspectRuleHolder>();
-	
+
 	protected AbstractDynamicBeanProxy(ActivityContext context, BeanRule beanRule) {
 		this.context = context;
 		this.aspectRuleRegistry = context.getAspectRuleRegistry();
@@ -123,10 +123,8 @@ public abstract class AbstractDynamicBeanProxy {
 			activity.setRaisedException(e);
 			
 			List<ExceptionHandlingRule> exceptionHandlingRuleList = aspectAdviceRuleRegistry.getExceptionHandlingRuleList();
-			
 			if(exceptionHandlingRuleList != null) {
 				activity.responseByContentType(exceptionHandlingRuleList);
-				
 				if(activity.isActivityEnded()) {
 					return null;
 				}
@@ -148,8 +146,8 @@ public abstract class AbstractDynamicBeanProxy {
 		return holder.getAspectAdviceRuleRegistry();
 	}
 	
-	private RelevantAspectRuleHolder getRelevantAspectRuleHolder(String transletName, String beanId, String className, String beanMethodName) {
-		String patternString = PointcutPatternRule.combinePatternString(transletName, beanId, className, beanMethodName);
+	private RelevantAspectRuleHolder getRelevantAspectRuleHolder(String transletName, String beanId, String className, String methodName) {
+		String patternString = PointcutPatternRule.combinePatternString(transletName, beanId, className, methodName);
 		RelevantAspectRuleHolder holder;
 		
 		synchronized(relevantAspectRuleHolderCache) {
@@ -158,7 +156,7 @@ public abstract class AbstractDynamicBeanProxy {
 
 			if(holder == null) {
 				AspectRuleMap aspectRuleMap = aspectRuleRegistry.getAspectRuleMap();
-				AspectAdviceRulePostRegister aspectAdviceRulePostRegister = new AspectAdviceRulePostRegister();
+				AspectAdviceRulePostRegister postRegister = new AspectAdviceRulePostRegister();
 				List<AspectRule> activityAspectRuleList = new ArrayList<AspectRule>();
 				
 				for(AspectRule aspectRule : aspectRuleMap.values()) {
@@ -166,9 +164,9 @@ public abstract class AbstractDynamicBeanProxy {
 					if(aspectTargetType == AspectTargetType.TRANSLET && aspectRule.isBeanRelevanted()) {
 						Pointcut pointcut = aspectRule.getPointcut();
 
-						if(pointcut == null || pointcut.matches(transletName, beanId, className, beanMethodName)) {
+						if(pointcut == null || pointcut.matches(transletName, beanId, className, methodName)) {
 							if(aspectRule.getJoinpointScope() == JoinpointScopeType.BEAN) {
-								aspectAdviceRulePostRegister.register(aspectRule);
+								postRegister.register(aspectRule);
 							} else {
 								activityAspectRuleList.add(aspectRule);
 							}
@@ -176,7 +174,7 @@ public abstract class AbstractDynamicBeanProxy {
 					}
 				}
 				
-				AspectAdviceRuleRegistry aspectAdviceRuleRegistry = aspectAdviceRulePostRegister.getAspectAdviceRuleRegistry();
+				AspectAdviceRuleRegistry aspectAdviceRuleRegistry = postRegister.getAspectAdviceRuleRegistry();
 				
 				holder = new RelevantAspectRuleHolder();
 				

@@ -67,15 +67,15 @@ public class XslTransform extends TransformResponse implements Response {
 	
 	private final TemplateRule templateRule;
 	
-	private long templateLastModifiedTime;
-	
 	private Templates templates;
 	
 	private String contentType;
 	
 	private String outputEncoding;
-	
-	private boolean templateLoaded;
+
+	private volatile long templateLastModifiedTime;
+
+	private volatile boolean templateLoaded;
 
 	/**
 	 * Instantiates a new XslTransform.

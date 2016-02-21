@@ -646,6 +646,10 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceInspectable 
 		this.proxied = proxied;
 	}
 
+	public boolean isProxiable() {
+		return (!offered && !factoryBean && factoryMethod == null);
+	}
+
 	/**
 	 * Gets the description.
 	 *

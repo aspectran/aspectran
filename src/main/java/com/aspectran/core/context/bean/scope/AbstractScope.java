@@ -15,6 +15,7 @@
  */
 package com.aspectran.core.context.bean.scope;
 
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -75,8 +76,8 @@ public class AbstractScope implements Scope {
 				if(beanRule.isDisposableBean()) {
 					((DisposableBean)bean).destroy();
 				} else if(beanRule.getDestroyMethodName() != null) {
-					String destroyMethodName = beanRule.getDestroyMethodName();
-					MethodUtils.invokeExactMethod(bean, destroyMethodName, null);
+					Method destroyMethod = beanRule.getDestroyMethod();
+					destroyMethod.invoke(bean, MethodUtils.EMPTY_OBJECT_ARRAY);
 				}
 			} catch(Exception e) {
 				log.error("Cannot destroy " + scopeType + " scoped bean " + beanRule, e);

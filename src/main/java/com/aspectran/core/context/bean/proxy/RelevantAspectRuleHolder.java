@@ -19,6 +19,7 @@ import java.util.List;
 
 import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
 import com.aspectran.core.context.rule.AspectRule;
+import com.aspectran.core.util.ToStringBuilder;
 
 /**
  * The Class RelevantAspectRuleHolder.
@@ -43,8 +44,7 @@ public class RelevantAspectRuleHolder {
 	 *
 	 * @param aspectAdviceRuleRegistry the new aspect advice rule registry
 	 */
-	public void setAspectAdviceRuleRegistry(
-			AspectAdviceRuleRegistry aspectAdviceRuleRegistry) {
+	public void setAspectAdviceRuleRegistry(AspectAdviceRuleRegistry aspectAdviceRuleRegistry) {
 		this.aspectAdviceRuleRegistry = aspectAdviceRuleRegistry;
 	}
 
@@ -68,12 +68,10 @@ public class RelevantAspectRuleHolder {
 	
 	@Override
 	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		sb.append("{aspectAdviceRuleRegistry=").append(aspectAdviceRuleRegistry);
-		sb.append(", activityAspectRuleList=").append(activityAspectRuleList);
-		sb.append("}");
-		
-		return sb.toString();
+		ToStringBuilder tsb = new ToStringBuilder();
+		tsb.append("aspectAdviceRuleRegistry", aspectAdviceRuleRegistry);
+		tsb.append("activityAspectRuleList", activityAspectRuleList);
+		return tsb.toString();
 	}
 	
 }
