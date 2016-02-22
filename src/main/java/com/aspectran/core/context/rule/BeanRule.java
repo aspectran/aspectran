@@ -15,7 +15,9 @@
  */
 package com.aspectran.core.context.rule;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.aspectran.core.context.bean.ablility.DisposableBean;
@@ -110,6 +112,10 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceInspectable 
 	private boolean replicated;
 
 	private boolean proxied;
+
+	private List<Field> annotationFieldList;
+
+	private List<Method> annotationMethodList;
 
 	private Object bean; // only for singleton
 
@@ -539,24 +545,6 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceInspectable 
 	}
 	
 	/**
-	 * Gets the bean.
-	 *
-	 * @return the bean
-	 */
-	public Object getBean() {
-		return bean;
-	}
-
-	/**
-	 * Sets the bean.
-	 *
-	 * @param bean the new bean
-	 */
-	public void setBean(Object bean) {
-		this.bean = bean;
-	}
-
-	/**
 	 * Returns whether bean implements FactoryBean.
 	 *
 	 * @return the boolean
@@ -590,24 +578,6 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceInspectable 
 	 */
 	public boolean isInitializableTransletBean() {
 		return initializableTransletBean;
-	}
-
-	/**
-	 * Returns whether bean is registered.
-	 *
-	 * @return true, if bean is registered
-	 */
-	public boolean isRegistered() {
-		return registered;
-	}
-
-	/**
-	 * Sets whether bean is registered.
-	 *
-	 * @param registered the new registered
-	 */
-	public void setRegistered(boolean registered) {
-		this.registered = registered;
 	}
 
 	/**
@@ -648,6 +618,64 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceInspectable 
 
 	public boolean isProxiable() {
 		return (!offered && !factoryBean && factoryMethod == null);
+	}
+
+	public List<Field> getAnnotationFieldList() {
+		return annotationFieldList;
+	}
+
+	public void addAnnotationField(Field field) {
+		if(annotationFieldList == null) {
+			annotationFieldList = new ArrayList<Field>();
+		}
+		annotationFieldList.add(field);
+	}
+
+	public List<Method> getAnnotationMethodList() {
+		return annotationMethodList;
+	}
+
+	public void addAnnotationMethod(Method method) {
+		if(annotationMethodList == null) {
+			annotationMethodList = new ArrayList<Method>();
+		}
+		annotationMethodList.add(method);
+	}
+
+	/**
+	 * Gets the bean.
+	 *
+	 * @return the bean
+	 */
+	public Object getBean() {
+		return bean;
+	}
+
+	/**
+	 * Sets the bean.
+	 *
+	 * @param bean the new bean
+	 */
+	public void setBean(Object bean) {
+		this.bean = bean;
+	}
+
+	/**
+	 * Returns whether bean is registered.
+	 *
+	 * @return true, if bean is registered
+	 */
+	public boolean isRegistered() {
+		return registered;
+	}
+
+	/**
+	 * Sets whether bean is registered.
+	 *
+	 * @param registered the new registered
+	 */
+	public void setRegistered(boolean registered) {
+		this.registered = registered;
 	}
 
 	/**

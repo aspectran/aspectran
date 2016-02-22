@@ -312,7 +312,7 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 	
 	private Object invokeObjectFromFactoryBean(BeanRule beanRule, final Object bean) {
 		FactoryBean<?> factory = (FactoryBean<?>)bean;
-		Object factoryObject = null;
+		Object factoryObject;
 		
 		try {
 			factoryObject = factory.getObject();

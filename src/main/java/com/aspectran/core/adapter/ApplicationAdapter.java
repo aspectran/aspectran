@@ -111,7 +111,8 @@ public interface ApplicationAdapter {
 	 * 
 	 * @param filePath the specified file path
 	 * @return the real file path
+	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
-	public File toRealPathAsFile(String filePath);
+	public File toRealPathAsFile(String filePath) throws IOException;
 
 }

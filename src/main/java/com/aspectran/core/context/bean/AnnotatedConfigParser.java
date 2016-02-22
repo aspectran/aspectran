@@ -18,6 +18,10 @@ package com.aspectran.core.context.bean;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.StringTokenizer;
 
 import com.aspectran.core.context.AspectranConstants;
 import com.aspectran.core.context.bean.annotation.Autowired;
@@ -54,44 +58,54 @@ public abstract class AnnotatedConfigParser {
 		Class<?> beanClass = beanRule.getBeanClass();
 
 		Configuration configAnno = beanClass.getAnnotation(Configuration.class);
-		String[] namePrefixes = splitNamespace(configAnno.namespace());
+		String[] nameArray = splitNamespace(configAnno.namespace());
 
 		for(Method method : beanClass.getMethods()) {
 			if(configAnno != null) {
 				if(method.isAnnotationPresent(Bean.class)) {
-					parseBean(namePrefixes, beanClass, method, relater);
+					parseBean(nameArray, beanClass, method, relater);
 				} else if(method.isAnnotationPresent(Request.class)) {
-					parseTranslet(namePrefixes, beanClass, method, relater);
+					parseTranslet(nameArray, beanClass, method, relater);
 				} else if(method.isAnnotationPresent(Autowired.class)) {
-					parseAutowire(beanClass, method);
+					parseAutowire(method, beanRule);
 				}
 			} else {
 				if(method.isAnnotationPresent(Autowired.class)) {
-					parseAutowire(beanClass, method);
+					parseAutowire(method, beanRule);
 				}
 			}
 		}
 
 		for(Field field : beanClass.getFields()) {
 			if(field.isAnnotationPresent(Autowired.class)) {
-				parseAutowire(beanClass, field);
+				parseAutowire(field, beanRule);
 			}
 		}
 	}
 
-	private static void parseAutowire(Class<?> beanClass, Field field) {
-		Autowired autowiredAnno = beanClass.getAnnotation(Autowired.class);
+	private static void parseAutowire(Field field, BeanRule beanRule) {
+		Autowired autowiredAnno = field.getAnnotation(Autowired.class);
 		boolean required = autowiredAnno.required();
 
+        //TODO
+
+        beanRule.addAnnotationField(field);
 	}
 
-	private static void parseAutowire(Class<?> beanClass, Method method) {
+	private static void parseAutowire(Method method, BeanRule beanRule) {
+        Autowired autowiredAnno = method.getAnnotation(Autowired.class);
+        boolean required = autowiredAnno.required();
 
+        Class<?>[] paramTypes = method.getParameterTypes();
+
+        //TODO
+
+        beanRule.addAnnotationMethod(method);
 	}
 
-	private static void parseBean(String[] namePrefixes, Class<?> beanClass, Method method, AnnotatedConfigRelater relater) {
+	private static void parseBean(String[] nameArray, Class<?> beanClass, Method method, AnnotatedConfigRelater relater) {
 		Bean beanAnno = method.getAnnotation(Bean.class);
-		String beanId = applyNamespaceForBean(namePrefixes, StringUtils.emptyToNull(beanAnno.id()));
+		String beanId = applyNamespaceForBean(nameArray, StringUtils.emptyToNull(beanAnno.id()));
 		String initMethodName = StringUtils.emptyToNull(beanAnno.initMethod());
 		String destroyMethodName = StringUtils.emptyToNull(beanAnno.destroyMethod());
 		String factoryMethodName = StringUtils.emptyToNull(beanAnno.factoryMethod());
@@ -111,9 +125,9 @@ public abstract class AnnotatedConfigParser {
 		relater.relay(targetBeanClass, beanRule);
 	}
 
-	private static void parseTranslet(String[] namePrefixes, Class<?> beanClass, Method method, AnnotatedConfigRelater relater) {
+	private static void parseTranslet(String[] nameArray, Class<?> beanClass, Method method, AnnotatedConfigRelater relater) {
 		Request requestAnno = method.getAnnotation(Request.class);
-		String transletName = applyNamespaceForTranslet(namePrefixes, StringUtils.emptyToNull(requestAnno.translet()));
+		String transletName = applyNamespaceForTranslet(nameArray, StringUtils.emptyToNull(requestAnno.translet()));
 		RequestMethodType[] requestMethods = requestAnno.method();
 
 		TransletRule transletRule = TransletRule.newInstance(transletName, requestMethods);
@@ -154,30 +168,48 @@ public abstract class AnnotatedConfigParser {
 	}
 
 	private static String[] splitNamespace(String namespace) {
-		if(StringUtils.isEmpty(namespace))
-			return null;
-		
-		return StringUtils.tokenize(namespace, AspectranConstants.ID_SEPARATOR);
+		if(StringUtils.isEmpty(namespace)) {
+            return new String[1];
+        }
+
+        int cnt = StringUtils.search(namespace, AspectranConstants.ID_SEPARATOR_CHAR);
+        if(cnt == 0) {
+            String[] arr = new String[2];
+            arr[1] = namespace;
+            return arr;
+        }
+
+        StringTokenizer st = new StringTokenizer(namespace, AspectranConstants.ID_SEPARATOR);
+        List<String> list = new ArrayList<String>();
+        while(st.hasMoreTokens()) {
+            list.add(st.nextToken());
+        }
+        list.add(null);
+        Collections.reverse(list);
+
+        return list.toArray(new String[list.size()]);
 	}
 	
-	private static String applyNamespaceForBean(String[] namePrefixes, String name) {
-//		if(namespace != null && name != null)
-//			return namespace + AspectranConstants.ID_SEPARATOR_CHAR + name;
-//		else if(namespace != null)
-//			return namespace;
-//		else
-//			return name;
-		return null;
+	private static String applyNamespaceForBean(String[] nameArray, String name) {
+        nameArray[0] = name;
+        StringBuilder sb = new StringBuilder();
+        for(int i = nameArray.length - 1; i >= 0; i--) {
+            sb.append(nameArray[i]);
+            if(i > 0)
+                sb.append(AspectranConstants.ID_SEPARATOR_CHAR);
+        }
+        return sb.toString();
 	}
 
-	private static String applyNamespaceForTranslet(String[] namePrefixes, String name) {
-//		if(namespace != null && name != null)
-//			return namespace + AspectranConstants.TRANSLET_NAME_SEPARATOR_CHAR + name;
-//		else if(namespace != null)
-//			return namespace;
-//		else
-//			return name;
-		return null;
+	private static String applyNamespaceForTranslet(String[] nameArray, String name) {
+        nameArray[0] = name;
+        StringBuilder sb = new StringBuilder();
+        for(int i = nameArray.length - 1; i >= 0; i--) {
+            sb.append(nameArray[i]);
+            if(i > 0)
+                sb.append(AspectranConstants.TRANSLET_NAME_SEPARATOR_CHAR);
+        }
+        return sb.toString();
 	}
 
 	private static Constructor<?> getMatchConstructor(Class<?> clazz, Object[] args) {

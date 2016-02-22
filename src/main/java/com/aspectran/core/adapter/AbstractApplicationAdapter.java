@@ -18,6 +18,7 @@ package com.aspectran.core.adapter;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
+import java.net.URL;
 
 import com.aspectran.core.context.bean.scope.ApplicationScope;
 import com.aspectran.core.context.loader.AspectranClassLoader;
@@ -97,14 +98,17 @@ public abstract class AbstractApplicationAdapter implements ApplicationAdapter {
 	}
 
 	@Override
-	public File toRealPathAsFile(String filePath) {
+	public File toRealPathAsFile(String filePath) throws IOException {
 		File file;
 		
 		if(filePath.startsWith(ResourceUtils.FILE_URL_PREFIX)) {
 			URI uri = URI.create(filePath);
 			file = new File(uri);
 		} else if(filePath.startsWith(ResourceUtils.CLASSPATH_URL_PREFIX)) {
-			file = new File(getClassLoader().getResource(filePath).getFile());
+			URL url = getClassLoader().getResource(filePath);
+			if(url == null)
+				throw new IOException("Could not find the resource with the given name: " + filePath);
+			file = new File(url.getFile());
 		} else {
 			if(applicationBasePath != null)
 				file = new File(applicationBasePath, filePath);

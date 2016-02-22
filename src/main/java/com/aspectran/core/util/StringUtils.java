@@ -467,8 +467,8 @@ public class StringUtils {
 	 * 대상문자열(str)에서 지정문자열(keyw)이 검색된 횟수를,
 	 * 지정문자열이 없으면 0 을 반환한다.
 	 * 
-	 * @param string 대상문자열
-	 * @param keyw 검색할 문자열
+	 * @param chars 대상문자열
+	 * @param c 검색할 문자열
 	 * 
 	 * @return 지정문자열이 검색되었으면 검색된 횟수를, 검색되지 않았으면 0 을 반환한다.
 	 */
@@ -485,9 +485,9 @@ public class StringUtils {
 	/**
 	 * 대상문자열(str)에서 지정문자열(keyw)이 검색된 횟수를,
 	 * 지정문자열이 없으면 0 을 반환한다.
-	 * 
-	 * @param string 대상문자열
-	 * @param keyw 검색할 문자열
+	 *
+	 * @param chars 대상문자열
+	 * @param c 검색할 문자열
 	 * 
 	 * @return 지정문자열이 검색되었으면 검색된 횟수를, 검색되지 않았으면 0 을 반환한다.
 	 */
