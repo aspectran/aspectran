@@ -22,11 +22,17 @@ package com.aspectran.core.context;
  */
 public interface AspectranConstants {
 
-	public static final char TRANSLET_NAME_SEPARATOR = '/';
-
-	public static final char TRANSLET_NAME_EXTENSION_SEPARATOR = '.';
+	public static final String TRANSLET_NAME_SEPARATOR = "/";
 	
-	public static final char ID_SEPARATOR = '.';
+	public static final char TRANSLET_NAME_SEPARATOR_CHAR = '/';
+
+	public static final String TRANSLET_NAME_EXTENSION_SEPARATOR = ".";
+	
+	public static final char TRANSLET_NAME_EXTENSION_SEPARATOR_CHAR = '.';
+	
+	public static final String ID_SEPARATOR = ".";
+	
+	public static final char ID_SEPARATOR_CHAR = '.';
 	
 	public static final String LINE_SEPARATOR = "\n";
 

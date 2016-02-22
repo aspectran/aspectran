@@ -245,7 +245,7 @@ public class AspectAdviceRulePreRegister extends AspectAdviceRuleRegister {
 		boolean matched = true;
 		
 		if(pointcutPatternRule.getTransletNamePattern() != null) {
-			matched = pointcut.patternMatches(pointcutPatternRule.getTransletNamePattern(), transletName, AspectranConstants.TRANSLET_NAME_SEPARATOR);
+			matched = pointcut.patternMatches(pointcutPatternRule.getTransletNamePattern(), transletName, AspectranConstants.TRANSLET_NAME_SEPARATOR_CHAR);
 		}
 		
 		return matched;
@@ -289,13 +289,13 @@ public class AspectAdviceRulePreRegister extends AspectAdviceRuleRegister {
 		boolean matched = true;
 		
 		if(beanId != null && pointcutPatternRule.getBeanIdPattern() != null) {
-			matched = pointcut.patternMatches(pointcutPatternRule.getBeanIdPattern(), beanId, AspectranConstants.ID_SEPARATOR);
+			matched = pointcut.patternMatches(pointcutPatternRule.getBeanIdPattern(), beanId, AspectranConstants.ID_SEPARATOR_CHAR);
 			if(matched)
 				pointcutPatternRule.increaseMatchedBeanCount();
 		}
 		
 		if(matched && className != null && pointcutPatternRule.getClassNamePattern() != null) {
-			matched = pointcut.patternMatches(pointcutPatternRule.getClassNamePattern(), className, AspectranConstants.ID_SEPARATOR);
+			matched = pointcut.patternMatches(pointcutPatternRule.getClassNamePattern(), className, AspectranConstants.ID_SEPARATOR_CHAR);
 			if(matched)
 				pointcutPatternRule.increaseMatchedClassCount();
 		}

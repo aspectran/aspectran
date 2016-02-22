@@ -82,7 +82,7 @@ public class BeanClassScanner extends ClassScanner {
 	}
 
 	public void setBeanIdMaskPattern(String beanIdMaskPattern) {
-		this.beanIdMaskPattern = new WildcardPattern(beanIdMaskPattern, AspectranConstants.ID_SEPARATOR);
+		this.beanIdMaskPattern = new WildcardPattern(beanIdMaskPattern, AspectranConstants.ID_SEPARATOR_CHAR);
 	}
 	
 	public void setBeanClassScanFilter(String classScanFilterClassName) {

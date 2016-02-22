@@ -54,44 +54,44 @@ public abstract class AnnotatedConfigParser {
 		Class<?> beanClass = beanRule.getBeanClass();
 
 		Configuration configAnno = beanClass.getAnnotation(Configuration.class);
-		String namespace = (configAnno != null) ? StringUtils.emptyToNull(configAnno.namespace()) : null;
+		String[] namePrefixes = splitNamespace(configAnno.namespace());
 
 		for(Method method : beanClass.getMethods()) {
 			if(configAnno != null) {
 				if(method.isAnnotationPresent(Bean.class)) {
-					parseBean(beanClass, method, namespace, relater);
+					parseBean(namePrefixes, beanClass, method, relater);
 				} else if(method.isAnnotationPresent(Request.class)) {
-					parseTranslet(beanClass, method, namespace, relater);
+					parseTranslet(namePrefixes, beanClass, method, relater);
 				} else if(method.isAnnotationPresent(Autowired.class)) {
-					parseAutowire(beanClass, method, namespace);
+					parseAutowire(beanClass, method);
 				}
 			} else {
 				if(method.isAnnotationPresent(Autowired.class)) {
-					parseAutowire(beanClass, method, namespace);
+					parseAutowire(beanClass, method);
 				}
 			}
 		}
 
 		for(Field field : beanClass.getFields()) {
 			if(field.isAnnotationPresent(Autowired.class)) {
-				parseAutowire(beanClass, field, namespace);
+				parseAutowire(beanClass, field);
 			}
 		}
 	}
 
-	private static void parseAutowire(Class<?> beanClass, Field field, String namespace) {
+	private static void parseAutowire(Class<?> beanClass, Field field) {
 		Autowired autowiredAnno = beanClass.getAnnotation(Autowired.class);
 		boolean required = autowiredAnno.required();
 
 	}
 
-	private static void parseAutowire(Class<?> beanClass, Method method, String namespace) {
+	private static void parseAutowire(Class<?> beanClass, Method method) {
 
 	}
 
-	private static void parseBean(Class<?> beanClass, Method method, String namespace, AnnotatedConfigRelater relater) {
+	private static void parseBean(String[] namePrefixes, Class<?> beanClass, Method method, AnnotatedConfigRelater relater) {
 		Bean beanAnno = method.getAnnotation(Bean.class);
-		String beanId = applyNamespaceForBean(namespace, StringUtils.emptyToNull(beanAnno.id()));
+		String beanId = applyNamespaceForBean(namePrefixes, StringUtils.emptyToNull(beanAnno.id()));
 		String initMethodName = StringUtils.emptyToNull(beanAnno.initMethod());
 		String destroyMethodName = StringUtils.emptyToNull(beanAnno.destroyMethod());
 		String factoryMethodName = StringUtils.emptyToNull(beanAnno.factoryMethod());
@@ -111,13 +111,10 @@ public abstract class AnnotatedConfigParser {
 		relater.relay(targetBeanClass, beanRule);
 	}
 
-	private static void parseTranslet(Class<?> beanClass, Method method, String namespace, AnnotatedConfigRelater relater) {
+	private static void parseTranslet(String[] namePrefixes, Class<?> beanClass, Method method, AnnotatedConfigRelater relater) {
 		Request requestAnno = method.getAnnotation(Request.class);
-		String transletName = applyNamespaceForTranslet(namespace, StringUtils.emptyToNull(requestAnno.translet()));
+		String transletName = applyNamespaceForTranslet(namePrefixes, StringUtils.emptyToNull(requestAnno.translet()));
 		RequestMethodType[] requestMethods = requestAnno.method();
-
-		if(namespace != null && transletName != null)
-			transletName = namespace + transletName;
 
 		TransletRule transletRule = TransletRule.newInstance(transletName, requestMethods);
 
@@ -156,22 +153,31 @@ public abstract class AnnotatedConfigParser {
 		relater.relay(transletRule);
 	}
 
-	private static String applyNamespaceForBean(String namespace, String name) {
-		if(namespace != null && name != null)
-			return namespace + AspectranConstants.ID_SEPARATOR + name;
-		else if(namespace != null)
-			return namespace;
-		else
-			return name;
+	private static String[] splitNamespace(String namespace) {
+		if(StringUtils.isEmpty(namespace))
+			return null;
+		
+		return StringUtils.tokenize(namespace, AspectranConstants.ID_SEPARATOR);
+	}
+	
+	private static String applyNamespaceForBean(String[] namePrefixes, String name) {
+//		if(namespace != null && name != null)
+//			return namespace + AspectranConstants.ID_SEPARATOR_CHAR + name;
+//		else if(namespace != null)
+//			return namespace;
+//		else
+//			return name;
+		return null;
 	}
 
-	private static String applyNamespaceForTranslet(String namespace, String name) {
-		if(namespace != null && name != null)
-			return namespace + AspectranConstants.TRANSLET_NAME_SEPARATOR + name;
-		else if(namespace != null)
-			return namespace;
-		else
-			return name;
+	private static String applyNamespaceForTranslet(String[] namePrefixes, String name) {
+//		if(namespace != null && name != null)
+//			return namespace + AspectranConstants.TRANSLET_NAME_SEPARATOR_CHAR + name;
+//		else if(namespace != null)
+//			return namespace;
+//		else
+//			return name;
+		return null;
 	}
 
 	private static Constructor<?> getMatchConstructor(Class<?> clazz, Object[] args) {

@@ -301,7 +301,6 @@ public class BeanUtils {
 		return hasProperty;
 	}
 
-	@SuppressWarnings("unused")
 	private static Object getProperty(Object object, String name) throws InvocationTargetException {
 		try {
 			Object value;

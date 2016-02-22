@@ -353,6 +353,73 @@ public class StringUtils {
 
 		return arr1;
 	}
+	
+
+	/**
+	 * 대상문자열(str)에서 구분문자열(delim)을 기준으로 문자열을 분리하여
+	 * 각 분리된 문자열을 배열에 할당하여 반환한다.
+	 * 
+	 * @param string 분리 대상 문자열
+	 * @param delim 구분 문자열
+	 * 
+	 * @return 분리된 문자열을 순서대로 배열에 격납하여 반환한다.
+	 */
+	public static String[] split(String string, char delim) {
+		if(isEmpty(string))
+			return new String[0];
+
+		int cnt = search(string, delim);
+		String[] item = new String[cnt + 1];
+
+		if(cnt == 0) {
+			item[0] = string;
+			return item;
+		}
+
+		int idx = 0;
+		int pos1 = 0;
+		int pos2 = string.indexOf(delim);
+
+		while(pos2 >= 0) {
+			item[idx++] = (pos1 > pos2 - 1) ? EMPTY : string.substring(pos1, pos2);
+
+			pos1 = pos2 + 1;
+			pos2 = string.indexOf(delim, pos1);
+		}
+
+		if(pos1 < string.length())
+			item[idx] = string.substring(pos1);
+
+		if(item[cnt] == null)
+			item[cnt] = EMPTY;
+
+		return item;
+	}
+
+	/**
+	 * 대상 문자열(str)에서 구분 문자열(delim)을 기준으로 문자열을 분리하여
+	 * 각 분리된 문자열을 배열에 할당하여 반환한다.
+	 * size를 지정하면 ""문자열이  나머지 문자열 전체를 가지는 최대 size개 원소의 배열을 반환합니다.
+	 * 
+	 * @param string 분리 대상 문자열
+	 * @param delim 구분 문자열
+	 * @param size 결과 배열의 크기
+	 * 
+	 * @return 분리된 문자열을 순서대로 배열에 격납하여 반환한다.
+	 */
+	public static String[] split(String string, char delim, int size) {
+		String[] arr1 = new String[size];
+		String[] arr2 = split(string, delim);
+
+		for(int i = 0; i < arr1.length; i++) {
+			if(i < arr2.length)
+				arr1[i] = arr2[i];
+			else
+				arr1[i] = EMPTY;
+		}
+
+		return arr1;
+	}
 
 	/**
 	 * 대상문자열(str)에서 지정문자열(keyw)이 검색된 횟수를,
@@ -382,7 +449,7 @@ public class StringUtils {
 
 		return cnt;
 	}
-
+	
 	/**
 	 * 대상문자열(str)에서 대소문자 구분없이 지정문자열(keyw)이 검색된 횟수를,
 	 * 지정문자열이 없으면 0 을 반환한다.
@@ -396,6 +463,45 @@ public class StringUtils {
 		return search(string.toLowerCase(), keyw.toLowerCase());
 	}
 
+	/**
+	 * 대상문자열(str)에서 지정문자열(keyw)이 검색된 횟수를,
+	 * 지정문자열이 없으면 0 을 반환한다.
+	 * 
+	 * @param string 대상문자열
+	 * @param keyw 검색할 문자열
+	 * 
+	 * @return 지정문자열이 검색되었으면 검색된 횟수를, 검색되지 않았으면 0 을 반환한다.
+	 */
+	public static int search(CharSequence chars, char c) {
+		int count = 0;
+		for(int i = 0; i < chars.length(); i++) {
+			if(chars.charAt(i) == c) {
+				count++;
+			}
+		}
+		return count;
+	}
+	
+	/**
+	 * 대상문자열(str)에서 지정문자열(keyw)이 검색된 횟수를,
+	 * 지정문자열이 없으면 0 을 반환한다.
+	 * 
+	 * @param string 대상문자열
+	 * @param keyw 검색할 문자열
+	 * 
+	 * @return 지정문자열이 검색되었으면 검색된 횟수를, 검색되지 않았으면 0 을 반환한다.
+	 */
+	public static int searchIgnoreCase(CharSequence chars, char c) {
+		int count = 0;
+		char cl = Character.toLowerCase(c);
+		for(int i = 0; i < chars.length(); i++) {
+			if(Character.toLowerCase(chars.charAt(i)) == cl) {
+				count++;
+			}
+		}
+		return count;
+	}
+	
 	/**
 	 * 주어진 <code>delimiters</code>에 의해 분리된 문자열 배열을 반환한다.
 	 * 

@@ -153,13 +153,14 @@ public class ItemNodeletAdder implements NodeletAdder {
 				if(iter != null) {
 					while(iter.hasNext()) {
 						for(Token t : iter.next()) {
-							if(t.getType() == TokenType.BEAN && t.getName() != null) {
-								if(t.getName().equals(BeanRule.CLASS_DIRECTIVE)) {
+							String name = t.getName();
+							if(t.getType() == TokenType.BEAN && name != null) {
+								if(name.equals(BeanRule.CLASS_DIRECTIVE)) {
 									Class<?> beanClass = assistant.loadClass(t.getValue());
 									t.setBeanClass(beanClass);
 									assistant.putBeanReference(beanClass, t);
 								} else {
-									assistant.putBeanReference(t.getName(), t);
+									assistant.putBeanReference(name, t);
 								}
 							}
 						}

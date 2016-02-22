@@ -233,7 +233,7 @@ public class TransletRuleRegistry {
 		}
 
 		String wildTransletName = sb.toString();
-		WildcardPattern namePattern = WildcardPattern.compile(wildTransletName, AspectranConstants.TRANSLET_NAME_SEPARATOR);
+		WildcardPattern namePattern = WildcardPattern.compile(wildTransletName, AspectranConstants.TRANSLET_NAME_SEPARATOR_CHAR);
 
 		transletRule.setNamePattern(namePattern);
 		transletRule.setNameTokens(nameTokens);
@@ -253,7 +253,7 @@ public class TransletRuleRegistry {
 		if(defaultSettings == null)
 			return transletName;
 
-		if(transletName != null && transletName.length() > 0 && transletName.charAt(0) == AspectranConstants.TRANSLET_NAME_SEPARATOR)
+		if(transletName != null && transletName.length() > 0 && transletName.charAt(0) == AspectranConstants.TRANSLET_NAME_SEPARATOR_CHAR)
 			return transletName;
 
 		if(defaultSettings.getTransletNamePrefix() == null && 

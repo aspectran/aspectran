@@ -23,7 +23,6 @@ import java.util.Map;
 import java.util.Set;
 
 import com.aspectran.core.context.bean.BeanRuleRegistry;
-import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.rule.BeanActionRule;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.ability.BeanReferenceInspectable;
@@ -74,23 +73,6 @@ public class BeanReferenceInspector {
 				for(BeanReferenceInspectable o : set) {
 					if(o.getBeanReferrerType() == BeanReferrerType.BEAN_ACTION_RULE) {
 						BeanActionRule.checkTransletActionParameter((BeanActionRule)o, beanRule);
-					} else if(o.getBeanReferrerType() == BeanReferrerType.TOKEN) {
-						Token token = (Token)o;
-						String propertyName = token.getPropertyName();
-						Class<?> beanClass = beanRule.getTargetBeanClass();
-//						BeanDescriptor bd = BeanDescriptor.getInstance(beanClass).getGetter(propertyName);
-//
-//
-//								for(Token token : iter.next()) {
-//									if(token.getType() == TokenType.BEAN) {
-//										String getterName = token.getPropertyName();
-//										//BeanDescriptor.getInstance()
-//
-//										//BeanUtils.getClassPropertyTypeForGetter(token.getBeanClass(), getterName);
-//									}
-//								}
-//							}
-//						}
 					}
 				}
 			}

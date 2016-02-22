@@ -137,15 +137,15 @@ public abstract class AbstractPointcut implements Pointcut {
 		boolean matched = true;
 		
 		if(transletName != null && pointcutPatternRule.getTransletNamePattern() != null) {
-			matched = patternMatches(pointcutPatternRule.getTransletNamePattern(), transletName, AspectranConstants.TRANSLET_NAME_SEPARATOR);
+			matched = patternMatches(pointcutPatternRule.getTransletNamePattern(), transletName, AspectranConstants.TRANSLET_NAME_SEPARATOR_CHAR);
 		}
 		
 		if(matched && beanId != null && pointcutPatternRule.getBeanIdPattern() != null) {
-			matched = patternMatches(pointcutPatternRule.getBeanIdPattern(), beanId, AspectranConstants.ID_SEPARATOR);
+			matched = patternMatches(pointcutPatternRule.getBeanIdPattern(), beanId, AspectranConstants.ID_SEPARATOR_CHAR);
 		}
 		
 		if(matched && className != null && pointcutPatternRule.getClassNamePattern() != null) {
-			matched = patternMatches(pointcutPatternRule.getClassNamePattern(), className, AspectranConstants.ID_SEPARATOR);
+			matched = patternMatches(pointcutPatternRule.getClassNamePattern(), className, AspectranConstants.ID_SEPARATOR_CHAR);
 		}
 
 		if(matched && methodName != null && pointcutPatternRule.getMethodNamePattern() != null) {

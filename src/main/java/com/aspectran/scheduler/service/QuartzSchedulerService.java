@@ -279,7 +279,7 @@ public class QuartzSchedulerService implements SchedulerService {
 		if(aspectJobAdviceRule.isDisabled())
 			return null;
 		
-		String jobName = index + (AspectranConstants.TRANSLET_NAME_SEPARATOR + aspectJobAdviceRule.getJobTransletName());
+		String jobName = index + (AspectranConstants.TRANSLET_NAME_SEPARATOR_CHAR + aspectJobAdviceRule.getJobTransletName());
 		String jobGroup = aspectJobAdviceRule.getAspectId();
 		
 		JobDataMap jobDataMap = new JobDataMap();

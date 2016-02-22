@@ -599,10 +599,10 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 		if(responseName != null && responseName.length() > 0) {
 			String transletName = transletRule.getName();
 
-			if(responseName.charAt(0) == AspectranConstants.TRANSLET_NAME_EXTENSION_SEPARATOR) {
+			if(responseName.charAt(0) == AspectranConstants.TRANSLET_NAME_EXTENSION_SEPARATOR_CHAR) {
 				transletName += responseName;
 			} else {
-				transletName += AspectranConstants.TRANSLET_NAME_SEPARATOR + responseName;
+				transletName += AspectranConstants.TRANSLET_NAME_SEPARATOR_CHAR + responseName;
 			}
 			
 			transletRule.setName(transletName);

@@ -90,7 +90,7 @@ public class TransletFileScanner extends FileScanner {
 	}
 
 	public void setTransletNameMaskPattern(String transletNameMaskPattern) {
-		this.transletNameMaskPattern = new WildcardPattern(transletNameMaskPattern, AspectranConstants.TRANSLET_NAME_SEPARATOR);
+		this.transletNameMaskPattern = new WildcardPattern(transletNameMaskPattern, AspectranConstants.TRANSLET_NAME_SEPARATOR_CHAR);
 	}
 	
 	public void setTemplateFileScanFilter(String templateFileScanFilterClassName) {
