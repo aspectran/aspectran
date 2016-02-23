@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.aspectran.core.context.bean.BeanRuleAnalyzer;
 import com.aspectran.core.context.bean.BeanRuleRegistry;
 import com.aspectran.core.context.rule.BeanActionRule;
 import com.aspectran.core.context.rule.BeanRule;
@@ -72,7 +73,7 @@ public class BeanReferenceInspector {
 			} else {
 				for(BeanReferenceInspectable o : set) {
 					if(o.getBeanReferrerType() == BeanReferrerType.BEAN_ACTION_RULE) {
-						BeanActionRule.checkTransletActionParameter((BeanActionRule)o, beanRule);
+						BeanRuleAnalyzer.checkTransletActionParameter((BeanActionRule)o, beanRule);
 					}
 				}
 			}

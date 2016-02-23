@@ -49,10 +49,6 @@ public class BeanAction extends AbstractAction {
 
 	private final Class<?> beanClass;
 
-	private final Method method;
-
-	private final boolean requiresTranslet;
-	
 	private final ItemRuleMap propertyItemRuleMap;
 	
 	private final ItemRuleMap argumentItemRuleMap;
@@ -71,8 +67,6 @@ public class BeanAction extends AbstractAction {
 		this.beanActionRule = beanActionRule;
 		this.beanId = beanActionRule.getBeanId();
 		this.beanClass = beanActionRule.getBeanClass();
-		this.method = beanActionRule.getMethod();
-		this.requiresTranslet = beanActionRule.isRequiresTranslet();
 
 		if(beanActionRule.getPropertyItemRuleMap() != null && !beanActionRule.getPropertyItemRuleMap().isEmpty())
 			this.propertyItemRuleMap = beanActionRule.getPropertyItemRuleMap();
@@ -115,7 +109,7 @@ public class BeanAction extends AbstractAction {
 				}
 			}
 
-			return invokeMethod(activity, bean, method, argumentItemRuleMap, expressor, requiresTranslet);
+			return invokeMethod(activity, bean, beanActionRule.getMethod(), argumentItemRuleMap, expressor, beanActionRule.isRequiresTranslet());
 		} catch(Exception e) {
 			log.error("Action execution error: beanActionRule " + beanActionRule + " Cause: " + e.toString());
 			throw e;

@@ -48,6 +48,15 @@ public class CglibDynamicBeanProxy extends AbstractDynamicBeanProxy implements M
 		return dynamicInvoke(proxy, method, args, proxyMethodInvoker);
 	}
 
+	/**
+	 * Creates a proxy class of bean and returns an instance of that class.
+	 *
+	 * @param context the activity context
+	 * @param beanRule the bean rule
+	 * @param constructorArgs the arguments passed to a constructor
+	 * @param constructorArgTypes the parameter types for a constructor
+	 * @return a new proxy bean object
+	 */
 	public static Object newInstance(ActivityContext context, BeanRule beanRule, Object[] constructorArgs, Class<?>[] constructorArgTypes) {
 		Enhancer enhancer = new Enhancer();
 		enhancer.setClassLoader(context.getClassLoader());

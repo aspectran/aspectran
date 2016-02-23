@@ -37,7 +37,7 @@ public class MethodUtils {
      * configurable per webapp would mean having a map keyed by context classloader
      * which may introduce memory-leak problems.
      */
-    private static boolean cacheEnabled = true;
+    private static volatile boolean cacheEnabled = true;
 
 	/** An empty class array */
 	public static final Class<?>[] EMPTY_CLASS_PARAMETERS = new Class[0];

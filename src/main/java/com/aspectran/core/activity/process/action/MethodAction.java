@@ -42,10 +42,6 @@ public class MethodAction extends AbstractAction {
 
 	private final Class<?> configBeanClass;
 
-	private final Method method;
-
-	private final boolean requiresTranslet;
-
 	/**
 	 * Instantiates a new MethodAction.
 	 *
@@ -57,15 +53,13 @@ public class MethodAction extends AbstractAction {
 
 		this.methodActionRule = methodActionRule;
 		this.configBeanClass = methodActionRule.getConfigBeanClass();
-		this.method = methodActionRule.getMethod();
-		this.requiresTranslet = methodActionRule.isRequiresTranslet();
 	}
 
 	@Override
 	public Object execute(Activity activity) throws Exception {
 		try {
 			Object bean = activity.getConfigBean(configBeanClass);
-			return invokeMethod(activity, bean, this.method);
+			return invokeMethod(activity, bean, methodActionRule.getMethod());
 		} catch(Exception e) {
 			log.error("Action execution error: methodActionRule " + methodActionRule + " Cause: " + e.toString());
 			throw e;
@@ -76,7 +70,7 @@ public class MethodAction extends AbstractAction {
 			throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
 		Object[] args;
 		
-		if(requiresTranslet) {
+		if(methodActionRule.isRequiresTranslet()) {
 			args = new Object[] { activity.getTranslet() };
 		} else {
 			args = MethodUtils.EMPTY_OBJECT_ARRAY;

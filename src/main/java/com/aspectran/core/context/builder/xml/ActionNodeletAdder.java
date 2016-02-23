@@ -84,23 +84,23 @@ public class ActionNodeletAdder implements NodeletAdder {
 		parser.addNodelet(xpath, "/action", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
 				String id = StringUtils.emptyToNull(attributes.get("id"));
-				String beanId = StringUtils.emptyToNull(attributes.get("bean"));
+				String beanIdOrClass = StringUtils.emptyToNull(attributes.get("bean"));
 				String methodName = StringUtils.emptyToNull(attributes.get("method"));
 				Boolean hidden = BooleanUtils.toNullableBooleanObject(attributes.get("hidden"));
 
 				if(!assistant.isNullableActionId() && id == null)
 					throw new IllegalArgumentException("The <action> element requires a id attribute.");
 
-				BeanActionRule beanActionRule = BeanActionRule.newInstance(id, beanId, methodName, hidden);
+				BeanActionRule beanActionRule = BeanActionRule.newInstance(id, beanIdOrClass, methodName, hidden);
 
-				//AspectAdviceRule may not have the bean id.
-				if(beanId != null) {
-					Class<?> beanClass = assistant.resolveBeanClass(beanId);
+				//AspectAdviceRule may not have a bean id.
+				if(beanIdOrClass != null) {
+					Class<?> beanClass = assistant.resolveBeanClass(beanIdOrClass);
 					if(beanClass != null) {
 						beanActionRule.setBeanClass(beanClass);
 						assistant.putBeanReference(beanClass, beanActionRule);
 					} else {
-						assistant.putBeanReference(beanId, beanActionRule);
+						assistant.putBeanReference(beanIdOrClass, beanActionRule);
 					}
 				}
 

@@ -17,14 +17,12 @@ package com.aspectran.core.context.rule;
 
 import java.lang.reflect.Method;
 
-import com.aspectran.core.activity.Translet;
 import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
 import com.aspectran.core.context.rule.ability.ArgumentPossessable;
 import com.aspectran.core.context.rule.ability.BeanReferenceInspectable;
 import com.aspectran.core.context.rule.ability.PropertyPossessable;
 import com.aspectran.core.context.rule.type.BeanReferrerType;
 import com.aspectran.core.util.BooleanUtils;
-import com.aspectran.core.util.MethodUtils;
 import com.aspectran.core.util.ToStringBuilder;
 
 /**
@@ -33,8 +31,6 @@ import com.aspectran.core.util.ToStringBuilder;
  * <p>Created: 2008. 03. 22 PM 5:50:35</p>
  */
 public class BeanActionRule implements ArgumentPossessable, PropertyPossessable, BeanReferenceInspectable {
-
-	public static final Class<?>[] TRANSLET_ACTION_PARAMETER_TYPES = { Translet.class };
 
 	private static final BeanReferrerType BEAN_REFERABLE_RULE_TYPE = BeanReferrerType.BEAN_ACTION_RULE;
 
@@ -276,21 +272,6 @@ public class BeanActionRule implements ArgumentPossessable, PropertyPossessable,
 		beanActionRule.setHidden(hidden);
 
 		return beanActionRule;
-	}
-	
-	public static void checkTransletActionParameter(BeanActionRule beanActionRule, BeanRule beanRule) {
-		Class<?> beanClass = beanRule.getTargetBeanClass();
-		String methodName = beanActionRule.getMethodName();
-
-		Method m1 = MethodUtils.getAccessibleMethod(beanClass, methodName);
-		Method m2 = MethodUtils.getAccessibleMethod(beanClass, methodName, TRANSLET_ACTION_PARAMETER_TYPES);
-
-		if(m2 != null) {
-			beanActionRule.setMethod(m2);
-			beanActionRule.setRequiresTranslet(true);
-		} else {
-			beanActionRule.setMethod(m1);
-		}
 	}
 	
 }

@@ -30,7 +30,7 @@ import javassist.util.proxy.ProxyFactory;
  * @since 1.1.0
  */
 public class JavassistDynamicBeanProxy extends AbstractDynamicBeanProxy implements MethodHandler  {
-
+	
 	protected JavassistDynamicBeanProxy(ActivityContext context, BeanRule beanRule) {
 		super(context, beanRule);
 	}
@@ -53,8 +53,8 @@ public class JavassistDynamicBeanProxy extends AbstractDynamicBeanProxy implemen
 	 *
 	 * @param context the activity context
 	 * @param beanRule the bean rule
-	 * @param constructorArgTypes the parameter types for a constructor
 	 * @param constructorArgs the arguments passed to a constructor
+	 * @param constructorArgTypes the parameter types for a constructor
 	 * @return a new proxy bean object
 	 */
 	public static Object newInstance(ActivityContext context, BeanRule beanRule, Object[] constructorArgs, Class<?>[] constructorArgTypes) {

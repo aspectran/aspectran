@@ -113,9 +113,9 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceInspectable 
 
 	private boolean proxied;
 
-	private List<Field> annotationFieldList;
+	private List<Field> autowiredFieldList;
 
-	private List<Method> annotationMethodList;
+	private List<Method> autowiredMethodList;
 
 	private Object bean; // only for singleton
 
@@ -620,26 +620,26 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceInspectable 
 		return (!offered && !factoryBean && factoryMethod == null);
 	}
 
-	public List<Field> getAnnotationFieldList() {
-		return annotationFieldList;
+	public List<Field> getAutowiredFieldList() {
+		return autowiredFieldList;
 	}
 
-	public void addAnnotationField(Field field) {
-		if(annotationFieldList == null) {
-			annotationFieldList = new ArrayList<Field>();
+	public void addAutowiredField(Field field) {
+		if(autowiredFieldList == null) {
+			autowiredFieldList = new ArrayList<Field>();
 		}
-		annotationFieldList.add(field);
+		autowiredFieldList.add(field);
 	}
 
-	public List<Method> getAnnotationMethodList() {
-		return annotationMethodList;
+	public List<Method> getAutowiredMethodList() {
+		return autowiredMethodList;
 	}
 
-	public void addAnnotationMethod(Method method) {
-		if(annotationMethodList == null) {
-			annotationMethodList = new ArrayList<Method>();
+	public void addAutowiredMethod(Method method) {
+		if(autowiredMethodList == null) {
+			autowiredMethodList = new ArrayList<Method>();
 		}
-		annotationMethodList.add(method);
+		autowiredMethodList.add(method);
 	}
 
 	/**

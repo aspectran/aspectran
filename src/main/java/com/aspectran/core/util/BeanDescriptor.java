@@ -38,7 +38,7 @@ public class BeanDescriptor {
 
 	private static final Map<Class<?>, BeanDescriptor> cache = new ConcurrentHashMap<Class<?>, BeanDescriptor>();
 	
-	private static boolean cacheEnabled = true;
+	private static volatile boolean cacheEnabled = true;
 	
 	private static final String[] EMPTY_STRING_ARRAY = new String[0];
 

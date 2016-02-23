@@ -58,7 +58,7 @@ public abstract class AnnotatedConfigParser {
 		Class<?> beanClass = beanRule.getBeanClass();
 
 		Configuration configAnno = beanClass.getAnnotation(Configuration.class);
-		String[] nameArray = splitNamespace(configAnno.namespace());
+		String[] nameArray = (configAnno != null) ? splitNamespace(configAnno.namespace()) : null;
 
 		for(Method method : beanClass.getMethods()) {
 			if(configAnno != null) {
@@ -84,12 +84,7 @@ public abstract class AnnotatedConfigParser {
 	}
 
 	private static void parseAutowire(Field field, BeanRule beanRule) {
-		Autowired autowiredAnno = field.getAnnotation(Autowired.class);
-		boolean required = autowiredAnno.required();
-
-        //TODO
-
-        beanRule.addAnnotationField(field);
+        beanRule.addAutowiredField(field);
 	}
 
 	private static void parseAutowire(Method method, BeanRule beanRule) {
@@ -100,7 +95,7 @@ public abstract class AnnotatedConfigParser {
 
         //TODO
 
-        beanRule.addAnnotationMethod(method);
+        beanRule.addAutowiredMethod(method);
 	}
 
 	private static void parseBean(String[] nameArray, Class<?> beanClass, Method method, AnnotatedConfigRelater relater) {
@@ -121,7 +116,7 @@ public abstract class AnnotatedConfigParser {
 		beanRule.setDestroyMethodName(destroyMethodName);
 		beanRule.setFactoryMethodName(factoryMethodName);
 
-		Class<?> targetBeanClass = BeanRuleRegistry.determineBeanClass(beanRule);
+		Class<?> targetBeanClass = BeanRuleAnalyzer.determineBeanClass(beanRule);
 		relater.relay(targetBeanClass, beanRule);
 	}
 
