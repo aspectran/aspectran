@@ -42,7 +42,7 @@ import com.aspectran.core.util.xml.NodeletParser;
  */
 public class ResponseInnerNodeletAdder implements NodeletAdder {
 	
-	protected ContextBuilderAssistant assistant;
+	protected final ContextBuilderAssistant assistant;
 	
 	/**
 	 * Instantiates a new ResponseInnerNodeletAdder.

@@ -68,7 +68,7 @@ public class BeanRuleAnalyzer {
 		Method m2 = MethodUtils.getAccessibleMethod(beanClass, offerMethodName, TRANSLET_ACTION_PARAMETER_TYPES);
 
 		if(m1 == null && m2 == null)
-			throw new IllegalArgumentException("No such offer method " + offerMethodName + "() on bean class: " + beanClass);
+			throw new IllegalArgumentException("No such offer method " + offerMethodName + "() on bean class: " + beanClass.getName());
 
 		Class<?> targetBeanClass;
 		
@@ -107,7 +107,7 @@ public class BeanRuleAnalyzer {
 		Method m2 = MethodUtils.getAccessibleMethod(beanClass, factoryMethodName, TRANSLET_ACTION_PARAMETER_TYPES);
 
 		if(m1 == null && m2 == null)
-			throw new IllegalArgumentException("No such factory method " + factoryMethodName + "() on bean class: " + beanClass);
+			throw new IllegalArgumentException("No such factory method " + factoryMethodName + "() on bean class: " + beanClass.getName());
 
 		Class<?> targetBeanClass;
 		
@@ -138,7 +138,7 @@ public class BeanRuleAnalyzer {
 		Method m2 = MethodUtils.getAccessibleMethod(beanClass, initMethodName, TRANSLET_ACTION_PARAMETER_TYPES);
 
 		if(m1 == null && m2 == null)
-			throw new IllegalArgumentException("No such initialization method " + initMethodName + "() on bean class: " + beanClass);
+			throw new IllegalArgumentException("No such initialization method " + initMethodName + "() on bean class: " + beanClass.getName());
 
 		if(m2 != null) {
 			beanRule.setInitMethod(m2);
@@ -156,7 +156,7 @@ public class BeanRuleAnalyzer {
 		Method m = MethodUtils.getAccessibleMethod(beanClass, destroyMethodName);
 		
 		if(m == null)
-			throw new IllegalArgumentException("No such destroy method " + destroyMethodName + "() on bean class: " + beanClass);
+			throw new IllegalArgumentException("No such destroy method " + destroyMethodName + "() on bean class: " + beanClass.getName());
 		
 		beanRule.setDestroyMethod(m);
 	}
@@ -169,7 +169,7 @@ public class BeanRuleAnalyzer {
 		Method m2 = MethodUtils.getAccessibleMethod(beanClass, methodName, TRANSLET_ACTION_PARAMETER_TYPES);
 
 		if(m1 == null && m2 == null)
-			throw new IllegalArgumentException("No such action method " + methodName + "() on bean class: " + beanClass);
+			throw new IllegalArgumentException("No such action method " + methodName + "() on bean class: " + beanClass.getName());
 		
 		if(m2 != null) {
 			beanActionRule.setMethod(m2);

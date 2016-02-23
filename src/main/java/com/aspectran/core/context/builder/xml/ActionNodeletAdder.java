@@ -39,7 +39,7 @@ import com.aspectran.core.util.xml.NodeletParser;
  */
 public class ActionNodeletAdder implements NodeletAdder {
 	
-	protected ContextBuilderAssistant assistant;
+	protected final ContextBuilderAssistant assistant;
 	
 	/**
 	 * Instantiates a new ActionRuleNodeletAdder.
@@ -58,7 +58,7 @@ public class ActionNodeletAdder implements NodeletAdder {
 				Boolean hidden = BooleanUtils.toNullableBooleanObject(attributes.get("hidden"));
 
 				if(!assistant.isNullableActionId() && id == null)
-					throw new IllegalArgumentException("The <echo> element requires a id attribute.");
+					throw new IllegalArgumentException("The <echo> element requires an id attribute.");
 				
 				EchoActionRule echoActionRule = EchoActionRule.newInstance(id, hidden);
 				assistant.pushObject(echoActionRule);
@@ -89,11 +89,11 @@ public class ActionNodeletAdder implements NodeletAdder {
 				Boolean hidden = BooleanUtils.toNullableBooleanObject(attributes.get("hidden"));
 
 				if(!assistant.isNullableActionId() && id == null)
-					throw new IllegalArgumentException("The <action> element requires a id attribute.");
+					throw new IllegalArgumentException("The <action> element requires an id attribute.");
 
 				BeanActionRule beanActionRule = BeanActionRule.newInstance(id, beanIdOrClass, methodName, hidden);
 
-				//AspectAdviceRule may not have a bean id.
+				// AspectAdviceRule may not have a bean id.
 				if(beanIdOrClass != null) {
 					Class<?> beanClass = assistant.resolveBeanClass(beanIdOrClass);
 					if(beanClass != null) {
@@ -157,7 +157,7 @@ public class ActionNodeletAdder implements NodeletAdder {
 				transletName = assistant.applyTransletNamePattern(transletName);
 				
 				if(!assistant.isNullableActionId() && id == null)
-					throw new IllegalArgumentException("The <include> element requires a id attribute.");
+					throw new IllegalArgumentException("The <include> element requires an id attribute.");
 				
 				IncludeActionRule includeActionRule = IncludeActionRule.newInstance(id, transletName, hidden);
 				assistant.pushObject(includeActionRule);

@@ -65,8 +65,16 @@ public class BeanAction extends AbstractAction {
 		super(parent);
 
 		this.beanActionRule = beanActionRule;
-		this.beanId = beanActionRule.getBeanId();
-		this.beanClass = beanActionRule.getBeanClass();
+
+		if(beanActionRule.getBeanId() != null || beanActionRule.getBeanClass() != null) {
+			this.beanId = beanActionRule.getBeanId();
+			this.beanClass = beanActionRule.getBeanClass();
+			this.aspectAdviceRule = null;
+		} else {
+			this.beanId = null;
+			this.beanClass = null;
+			this.aspectAdviceRule = beanActionRule.getAspectAdviceRule();
+		}
 
 		if(beanActionRule.getPropertyItemRuleMap() != null && !beanActionRule.getPropertyItemRuleMap().isEmpty())
 			this.propertyItemRuleMap = beanActionRule.getPropertyItemRuleMap();
@@ -77,23 +85,27 @@ public class BeanAction extends AbstractAction {
 			this.argumentItemRuleMap = beanActionRule.getArgumentItemRuleMap();
 		else
 			this.argumentItemRuleMap = null;
-
-		if(beanActionRule.getAspectAdviceRule() != null)
-			this.aspectAdviceRule = beanActionRule.getAspectAdviceRule();
-		else
-			this.aspectAdviceRule = null;
 	}
 
 	@Override
 	public Object execute(Activity activity) throws Exception {
 		try {
+			if(beanActionRule.getMethod() == null)
+				throw new ActionExecutionException("Invalid BeanActionRule: No such action method " + beanActionRule);
+
 			Object bean = null;
-			if(beanClass != null)
-				bean = activity.getBean(beanClass);
-			else if(beanId != null)
-				bean = activity.getBean(beanId);
-			else if(aspectAdviceRule != null)
+
+			if(aspectAdviceRule != null) {
 				bean = activity.getAspectAdviceBean(aspectAdviceRule.getAspectId());
+			} else {
+				if(beanClass != null)
+					bean = activity.getBean(beanClass);
+				else if(beanId != null)
+					bean = activity.getBean(beanId);
+			}
+
+			if(bean == null)
+				throw new ActionExecutionException("Invalid BeanActionRule: No such bean " + beanActionRule);
 
 			ItemExpressor expressor = null;
 			

@@ -18,7 +18,6 @@ package com.aspectran.core.context.rule;
 import com.aspectran.core.activity.process.action.BeanAction;
 import com.aspectran.core.activity.process.action.EchoAction;
 import com.aspectran.core.activity.process.action.Executable;
-import com.aspectran.core.activity.process.action.MethodAction;
 import com.aspectran.core.context.rule.ability.ActionRuleApplicable;
 import com.aspectran.core.context.rule.type.ActionType;
 import com.aspectran.core.context.rule.type.AspectAdviceType;
@@ -81,13 +80,14 @@ public class AspectAdviceRule implements ActionRuleApplicable {
 
 	@Override
 	public void applyActionRule(MethodActionRule methodActionRule) {
-		methodActionRule.setAspectAdviceRule(this);
-		action = new MethodAction(methodActionRule, null);
+		throw new UnsupportedOperationException(
+				"Cannot apply Method Action Rule to Aspect Advice Rule. AspecetAdvice is not support MethodAction.");
 	}
 
 	@Override
 	public void applyActionRule(IncludeActionRule includeActionRule) {
-		throw new UnsupportedOperationException("There is nothing that can be apply to IncludeActionRule. The aspecet-advice is not support include-action.");
+		throw new UnsupportedOperationException(
+				"Cannot apply Include Action Rule to Aspect Advice Rule. AspecetAdvice is not support IncludeAction.");
 	}
 	
 	public Executable getExecutableAction() {
@@ -120,6 +120,25 @@ public class AspectAdviceRule implements ActionRuleApplicable {
 		AspectAdviceRule aspectAdviceRule = new AspectAdviceRule(aspectRule, aspectAdviceType);
 
 		return aspectAdviceRule;
+	}
+
+	public static BeanActionRule updateBeanActionClass(AspectAdviceRule aspectAdviceRule) {
+		if(aspectAdviceRule.getAdviceBeanId() != null) {
+			if(aspectAdviceRule.getActionType() == ActionType.BEAN) {
+				BeanAction beanAction = (BeanAction)aspectAdviceRule.getExecutableAction();
+				BeanActionRule beanActionRule = beanAction.getBeanActionRule();
+				if(beanActionRule.getBeanId() == null) {
+					String beanIdOrClass = aspectAdviceRule.getAdviceBeanId();
+					Class<?> beanClass = aspectAdviceRule.getAdviceBeanClass();
+
+					beanActionRule.setBeanId(beanIdOrClass);
+					beanActionRule.setBeanClass(beanClass);
+
+					return beanActionRule;
+				}
+			}
+		}
+		return null;
 	}
 	
 }

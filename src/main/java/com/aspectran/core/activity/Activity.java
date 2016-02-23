@@ -198,7 +198,7 @@ public interface Activity extends BeanRegistrySupport {
 	
 	public void registerAspectRule(AspectRule aspectRule);
 	
-	public <T> T  getAspectAdviceBean(String aspectId);
+	public <T> T getAspectAdviceBean(String aspectId);
 	
 	public Scope getRequestScope();
 

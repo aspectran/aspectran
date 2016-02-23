@@ -38,7 +38,7 @@ import com.aspectran.core.util.xml.NodeletParser;
  */
 public class AspectNodeletAdder implements NodeletAdder {
 	
-	protected ContextBuilderAssistant assistant;
+	protected final ContextBuilderAssistant assistant;
 	
 	/**
 	 * Instantiates a new AspectNodeletAdder.
@@ -161,18 +161,18 @@ public class AspectNodeletAdder implements NodeletAdder {
 		});	
 		parser.addNodelet(xpath, "/aspect/advice", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
-				String beanId = StringUtils.emptyToNull(attributes.get("bean"));
+				String beanIdOrClass = StringUtils.emptyToNull(attributes.get("bean"));
 				
-				if(beanId != null) {
+				if(beanIdOrClass != null) {
 					AspectRule aspectRule = assistant.peekObject();
-					aspectRule.setAdviceBeanId(beanId);
+					aspectRule.setAdviceBeanId(beanIdOrClass);
 
-					Class<?> adviceBeanClass = assistant.resolveBeanClass(beanId);
+					Class<?> adviceBeanClass = assistant.resolveBeanClass(beanIdOrClass);
 					if(adviceBeanClass != null) {
 						aspectRule.setAdviceBeanClass(adviceBeanClass);
 						assistant.putBeanReference(adviceBeanClass, aspectRule);
 					} else {
-						assistant.putBeanReference(beanId, aspectRule);
+						assistant.putBeanReference(beanIdOrClass, aspectRule);
 					}
 				}
 			}

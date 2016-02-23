@@ -80,10 +80,22 @@ public class ContextBeanRegistry extends AbstractBeanFactory implements BeanRegi
 
 	@Override
 	public <T> T getBean(Class<T> requiredType, String id) {
-		if(requiredType != null)
-			return getBean(requiredType);
-		else
-			return getBean(id);
+		BeanRule[] beanRules = beanRuleRegistry.getBeanRule(requiredType);
+
+		if(beanRules == null)
+			throw new RequiredTypeBeanNotFoundException(requiredType);
+
+		if(beanRules.length == 1) {
+			return getBean(beanRules[0]);
+		} else if(id != null) {
+			for(BeanRule beanRule : beanRules) {
+				if(id.equals(beanRule.getId())) {
+					return getBean(beanRule);
+				}
+			}
+		}
+
+		throw new NoUniqueBeanException(requiredType, beanRules);
 	}
 
 	@Override

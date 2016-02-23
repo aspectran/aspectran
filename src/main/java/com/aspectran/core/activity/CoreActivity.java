@@ -671,15 +671,14 @@ public class CoreActivity extends AbstractActivity implements Activity {
 			
 			if(action.getActionType() == ActionType.BEAN && aspectAdviceRule.getAdviceBeanId() != null) {
 				Object adviceBean = translet.getAspectAdviceBean(aspectAdviceRule.getAspectId());
-				
 				if(adviceBean == null) {
-					if(aspectAdviceRule.getAdviceBeanClass() != null)
+					if(aspectAdviceRule.getAdviceBeanClass() != null) {
 						adviceBean = getBean(aspectAdviceRule.getAdviceBeanClass());
-					else
+					} else {
 						adviceBean = getBean(aspectAdviceRule.getAdviceBeanId());
+					}
+					translet.putAspectAdviceBean(aspectAdviceRule.getAspectId(), adviceBean);
 				}
-				
-				translet.putAspectAdviceBean(aspectAdviceRule.getAspectId(), adviceBean);
 			}
 			
 			Object adviceActionResult = action.execute(this);
@@ -688,8 +687,9 @@ public class CoreActivity extends AbstractActivity implements Activity {
 				translet.putAdviceResult(aspectAdviceRule, adviceActionResult);
 			}
 			
-			if(traceEnabled)
+			if(traceEnabled) {
 				log.trace("adviceActionResult " + adviceActionResult);
+			}
 		} catch(Exception e) {
 			setRaisedException(e);
 			

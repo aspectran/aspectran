@@ -22,6 +22,7 @@ import org.w3c.dom.Node;
 import com.aspectran.core.context.builder.ContextBuilderAssistant;
 import com.aspectran.core.context.rule.AspectAdviceRule;
 import com.aspectran.core.context.rule.AspectRule;
+import com.aspectran.core.context.rule.BeanActionRule;
 import com.aspectran.core.context.rule.type.AspectAdviceType;
 import com.aspectran.core.util.xml.Nodelet;
 import com.aspectran.core.util.xml.NodeletAdder;
@@ -35,7 +36,7 @@ import com.aspectran.core.util.xml.NodeletParser;
  */
 public class AspectAdviceNodeletAdder implements NodeletAdder {
 	
-	protected ContextBuilderAssistant assistant;
+	protected final ContextBuilderAssistant assistant;
 	
 	private AspectAdviceType aspectAdviceType;
 	
@@ -55,7 +56,6 @@ public class AspectAdviceNodeletAdder implements NodeletAdder {
 		parser.addNodelet(xpath, new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
 				AspectRule aspectRule = assistant.peekObject();
-				
 				AspectAdviceRule aar = AspectAdviceRule.newInstance(aspectRule, aspectAdviceType);
 				assistant.pushObject(aar);
 			}
@@ -63,9 +63,20 @@ public class AspectAdviceNodeletAdder implements NodeletAdder {
 		parser.addNodelet(xpath, new ActionNodeletAdder(assistant));
 		parser.addNodelet(xpath, "/end()", new Nodelet() {
 			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
-				AspectAdviceRule aar = assistant.popObject();
+				AspectAdviceRule aspectAdviceRule = assistant.popObject();
 				AspectRule aspectRule = assistant.peekObject();
-				aspectRule.addAspectAdviceRule(aar);
+				aspectRule.addAspectAdviceRule(aspectAdviceRule);
+
+				if(aspectAdviceRule.getAdviceBeanId() != null) {
+					BeanActionRule updatedBeanActionRule = AspectAdviceRule.updateBeanActionClass(aspectAdviceRule);
+					if(updatedBeanActionRule != null) {
+						if(aspectAdviceRule.getAdviceBeanClass() != null) {
+							assistant.putBeanReference(aspectAdviceRule.getAdviceBeanClass(), updatedBeanActionRule);
+						} else {
+							assistant.putBeanReference(aspectAdviceRule.getAdviceBeanId(), updatedBeanActionRule);
+						}
+					}
+				}
 			}
 		});
 	}

@@ -40,7 +40,7 @@ import com.aspectran.core.util.xml.NodeletParser;
  */
 public class ItemNodeletAdder implements NodeletAdder {
 	
-	protected ContextBuilderAssistant assistant;
+	protected final ContextBuilderAssistant assistant;
 	
 	/**
 	 * Instantiates a new ItemNodeletAdder.

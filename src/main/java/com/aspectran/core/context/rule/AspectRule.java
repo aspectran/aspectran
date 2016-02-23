@@ -130,11 +130,11 @@ public class AspectRule implements BeanReferenceInspectable {
 		this.aspectAdviceRuleList = aspectAdviceRuleList;
 	}
 	
-	public void addAspectAdviceRule(AspectAdviceRule aar) {
+	public void addAspectAdviceRule(AspectAdviceRule aspectAdviceRule) {
 		if(aspectAdviceRuleList == null)
 			aspectAdviceRuleList = new ArrayList<AspectAdviceRule>();
 		
-		aspectAdviceRuleList.add(aar);
+		aspectAdviceRuleList.add(aspectAdviceRule);
 	}
 
 	public List<AspectJobAdviceRule> getAspectJobAdviceRuleList() {
@@ -145,11 +145,11 @@ public class AspectRule implements BeanReferenceInspectable {
 		this.aspectJobAdviceRuleList = aspectJobAdviceRuleList;
 	}
 	
-	public void addAspectJobAdviceRule(AspectJobAdviceRule atar) {
+	public void addAspectJobAdviceRule(AspectJobAdviceRule aspectJobAdviceRule) {
 		if(aspectJobAdviceRuleList == null)
 			aspectJobAdviceRuleList = new ArrayList<AspectJobAdviceRule>();
 		
-		aspectJobAdviceRuleList.add(atar);
+		aspectJobAdviceRuleList.add(aspectJobAdviceRule);
 	}
 
 	public ExceptionHandlingRule getExceptionHandlingRule() {
@@ -235,7 +235,7 @@ public class AspectRule implements BeanReferenceInspectable {
 	}
 	
 	public static void updateJoinpointScope(AspectRule aspectRule, String scope) {
-		JoinpointScopeType joinpointScope = null;
+		JoinpointScopeType joinpointScope;
 		
 		if(scope != null) {
 			joinpointScope = JoinpointScopeType.lookup(scope);

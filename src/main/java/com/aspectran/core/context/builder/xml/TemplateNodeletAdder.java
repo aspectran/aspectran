@@ -34,7 +34,7 @@ import com.aspectran.core.util.xml.NodeletParser;
  */
 public class TemplateNodeletAdder implements NodeletAdder {
 
-	protected ContextBuilderAssistant assistant;
+	protected final ContextBuilderAssistant assistant;
 
 	/**
 	 * Instantiates a new TemplateNodeletAdder.

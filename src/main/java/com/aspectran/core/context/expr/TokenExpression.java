@@ -366,7 +366,12 @@ public class TokenExpression implements TokenExpressor {
 	 * @return an instance of the bean
 	 */
 	protected Object getBean(Token token) {
-		Object value = beanRegistry.getBean(token.getBeanClass(), token.getName());
+		Object value;
+
+		if(token.getBeanClass() != null)
+			value = beanRegistry.getBean(token.getBeanClass());
+		else
+			value = beanRegistry.getBean(token.getName());
 
 		if(value != null && token.getPropertyName() != null)
 			value = getBeanProperty(value, token.getPropertyName());
@@ -382,12 +387,13 @@ public class TokenExpression implements TokenExpressor {
 	 * @return the object
 	 */
 	protected Object getBeanProperty(final Object object, String propertyName) {
-		Object value = null;
+		Object value;
 
 		try {
 			value = BeanUtils.getObject(object, propertyName);
 		} catch(InvocationTargetException e) {
 			// ignore
+			value = null;
 		}
 
 		return value;
