@@ -15,10 +15,12 @@
  */
 package com.aspectran.core.context.template;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 import com.aspectran.core.context.builder.AssistantLocal;
 import com.aspectran.core.context.builder.DefaultSettings;
 import com.aspectran.core.context.rule.TemplateRule;
-import com.aspectran.core.context.rule.TemplateRuleMap;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
@@ -31,7 +33,7 @@ public class TemplateRuleRegistry {
 
     private final Log log = LogFactory.getLog(TemplateRuleRegistry.class);
 
-    private final TemplateRuleMap templateRuleMap = new TemplateRuleMap();
+    private final Map<String, TemplateRule> templateRuleMap = new LinkedHashMap<String, TemplateRule>();
 
     private AssistantLocal assistantLocal;
     
@@ -46,7 +48,7 @@ public class TemplateRuleRegistry {
 		this.assistantLocal = assistantLocal;
 	}
 
-	public TemplateRuleMap getTemplateRuleMap() {
+	public Map<String, TemplateRule> getTemplateRuleMap() {
         return templateRuleMap;
     }
 
@@ -66,7 +68,7 @@ public class TemplateRuleRegistry {
             }
         }
     	
-        templateRuleMap.putTemplateRule(templateRule);
+        templateRuleMap.put(templateRule.getId(), templateRule);
 
         if(log.isTraceEnabled())
             log.trace("add TemplateRule " + templateRule);

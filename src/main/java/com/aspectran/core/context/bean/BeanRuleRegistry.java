@@ -16,8 +16,8 @@
 package com.aspectran.core.context.bean;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -30,7 +30,6 @@ import com.aspectran.core.context.bean.scan.BeanClassScanFailedException;
 import com.aspectran.core.context.bean.scan.BeanClassScanner;
 import com.aspectran.core.context.loader.AspectranClassLoader;
 import com.aspectran.core.context.rule.BeanRule;
-import com.aspectran.core.context.rule.BeanRuleMap;
 import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.translet.TransletRuleRegistry;
 import com.aspectran.core.util.ClassScanner;
@@ -49,18 +48,22 @@ public class BeanRuleRegistry {
 
 	private final ClassLoader classLoader;
 	
-	private final BeanRuleMap idBasedBeanRuleMap = new BeanRuleMap();
+	private final Map<String, BeanRule> idBasedBeanRuleMap = new LinkedHashMap<String, BeanRule>();
 
-	private final Map<Class<?>, Set<BeanRule>> typeBasedBeanRuleMap = new HashMap<Class<?>, Set<BeanRule>>();
+	private final Map<Class<?>, Set<BeanRule>> typeBasedBeanRuleMap = new LinkedHashMap<Class<?>, Set<BeanRule>>();
 
-	private final Map<Class<?>, BeanRule> configBeanRuleMap = new HashMap<Class<?>, BeanRule>();
+	private final Map<Class<?>, BeanRule> configBeanRuleMap = new LinkedHashMap<Class<?>, BeanRule>();
 
 	private final Set<Class<?>> ignoredDependencyInterfaces = new HashSet<Class<?>>();
 
 	private final Set<BeanRule> postProcessBeanRuleMap = new HashSet<BeanRule>();
 
 	private TransletRuleRegistry transletRuleRegistry;
+	
+	private Set<String> importantBeanIdSet = new HashSet<String>();
 
+	private Set<Class<?>> importantBeanTypeSet = new HashSet<Class<?>>();
+	
 	public BeanRuleRegistry() {
 		this(AspectranClassLoader.getDefaultClassLoader());
 	}
@@ -81,7 +84,7 @@ public class BeanRuleRegistry {
 	public void setTransletRuleRegistry(TransletRuleRegistry transletRuleRegistry) {
 		this.transletRuleRegistry = transletRuleRegistry;
 	}
-
+	
 	public BeanRule getBeanRule(Object idOrRequiredType) {
 		if(idOrRequiredType == null)
 			return null;
@@ -134,8 +137,8 @@ public class BeanRuleRegistry {
 	public boolean contains(Class<?> requiredType) {
 		return typeBasedBeanRuleMap.containsKey(requiredType);
 	}
-
-	public BeanRuleMap getIdBasedBeanRuleMap() {
+	
+	public Map<String, BeanRule> getIdBasedBeanRuleMap() {
 		return idBasedBeanRuleMap;
 	}
 
@@ -203,7 +206,7 @@ public class BeanRuleRegistry {
 			postProcessBeanRuleMap.add(beanRule);
 		} else {
 			if(beanRule.getId() != null)
-				idBasedBeanRuleMap.putBeanRule(beanRule);
+				putBeanRule(beanRule.getId(), beanRule);
 
 			if(targetBeanClass != null && !beanRule.isOffered()) {
 				if(targetBeanClass.isAnnotationPresent(Configuration.class)) {
@@ -217,8 +220,6 @@ public class BeanRuleRegistry {
 						}
 					}
 				}
-
-				parseAnnotatedConfig(beanRule);
 			}
 
 			if(log.isTraceEnabled())
@@ -226,7 +227,23 @@ public class BeanRuleRegistry {
 		}
 	}
 	
+	private void putBeanRule(String beanId, BeanRule beanRule) {
+		if(importantBeanIdSet.contains(beanId))
+			throw new BeanRuleException("Already exists named bean", beanRule);
+
+		if(beanRule.isImportant())
+			importantBeanIdSet.add(beanRule.getId());
+		
+		idBasedBeanRuleMap.put(beanId, beanRule);
+	}
+	
 	private void putBeanRule(Class<?> beanClass, BeanRule beanRule) {
+		if(importantBeanTypeSet.contains(beanClass))
+			throw new BeanRuleException("Already exists named bean", beanRule);
+
+		if(beanRule.isImportant())
+			importantBeanTypeSet.add(beanClass);
+
 		Set<BeanRule> list = typeBasedBeanRuleMap.get(beanClass);
 		if(list == null) {
 			list = new HashSet<BeanRule>();
@@ -239,7 +256,7 @@ public class BeanRuleRegistry {
 		configBeanRuleMap.put(beanRule.getBeanClass(), beanRule);
 	}
 
-	private void parseAnnotatedConfig(BeanRule beanRule) {
+	private void parseAnnotatedConfig() {
 		AnnotatedConfigRelater relater = new AnnotatedConfigRelater() {
 			@Override
 			public void relay(Class<?> targetBeanClass, BeanRule beanRule) {
@@ -254,7 +271,8 @@ public class BeanRuleRegistry {
 			}
 		};
 
-		AnnotatedConfigParser.parse(beanRule, relater);
+		AnnotatedConfigParser parser = new AnnotatedConfigParser(this, relater);
+		parser.parse();
 	}
 	
 	public void postProcess() {
@@ -263,7 +281,7 @@ public class BeanRuleRegistry {
 		
 		for(BeanRule beanRule : postProcessBeanRuleMap) {
 			if(beanRule.getId() != null)
-				idBasedBeanRuleMap.putBeanRule(beanRule);
+				putBeanRule(beanRule.getId(), beanRule);
 
 			if(beanRule.isOffered()) {
 				Class<?> offerBeanClass = resolveOfferBeanClass(beanRule);
@@ -292,6 +310,8 @@ public class BeanRuleRegistry {
 		}
 		
 		postProcessBeanRuleMap.clear();
+		
+		parseAnnotatedConfig();
 	}
 
 	private Class<?> resolveOfferBeanClass(BeanRule beanRule) {

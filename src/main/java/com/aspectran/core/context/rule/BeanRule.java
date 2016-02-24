@@ -15,7 +15,6 @@
  */
 package com.aspectran.core.context.rule;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
@@ -113,9 +112,7 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceInspectable 
 
 	private boolean proxied;
 
-	private List<Field> autowiredFieldList;
-
-	private List<Method> autowiredMethodList;
+	private List<AutowireRule> autowireTargetList;
 
 	private Object bean; // only for singleton
 
@@ -620,26 +617,15 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceInspectable 
 		return (!offered && !factoryBean && factoryMethod == null);
 	}
 
-	public List<Field> getAutowiredFieldList() {
-		return autowiredFieldList;
+	public List<AutowireRule> getAutowireTargetList() {
+		return autowireTargetList;
 	}
 
-	public void addAutowiredField(Field field) {
-		if(autowiredFieldList == null) {
-			autowiredFieldList = new ArrayList<Field>();
+	public void addAutowireTarget(AutowireRule autowireRule) {
+		if(autowireTargetList == null) {
+			autowireTargetList = new ArrayList<AutowireRule>();
 		}
-		autowiredFieldList.add(field);
-	}
-
-	public List<Method> getAutowiredMethodList() {
-		return autowiredMethodList;
-	}
-
-	public void addAutowiredMethod(Method method) {
-		if(autowiredMethodList == null) {
-			autowiredMethodList = new ArrayList<Method>();
-		}
-		autowiredMethodList.add(method);
+		autowireTargetList.add(autowireRule);
 	}
 
 	/**

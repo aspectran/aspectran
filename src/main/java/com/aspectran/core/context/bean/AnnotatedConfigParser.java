@@ -15,12 +15,13 @@
  */
 package com.aspectran.core.context.bean;
 
-import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.StringTokenizer;
 
 import com.aspectran.core.context.AspectranConstants;
@@ -29,9 +30,11 @@ import com.aspectran.core.context.bean.annotation.Bean;
 import com.aspectran.core.context.bean.annotation.Configuration;
 import com.aspectran.core.context.bean.annotation.Dispatch;
 import com.aspectran.core.context.bean.annotation.Forward;
+import com.aspectran.core.context.bean.annotation.Qualifier;
 import com.aspectran.core.context.bean.annotation.Redirect;
 import com.aspectran.core.context.bean.annotation.Request;
 import com.aspectran.core.context.bean.annotation.Transform;
+import com.aspectran.core.context.rule.AutowireRule;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.DispatchResponseRule;
 import com.aspectran.core.context.rule.ForwardResponseRule;
@@ -41,7 +44,6 @@ import com.aspectran.core.context.rule.ResponseRule;
 import com.aspectran.core.context.rule.TransformRule;
 import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.type.RequestMethodType;
-import com.aspectran.core.util.ClassUtils;
 import com.aspectran.core.util.StringUtils;
 
 /**
@@ -52,53 +54,132 @@ import com.aspectran.core.util.StringUtils;
  * @since 2.0.0
  * @author Juho Jeong
  */
-public abstract class AnnotatedConfigParser {
+public class AnnotatedConfigParser {
 
-	public static void parse(BeanRule beanRule, AnnotatedConfigRelater relater) {
+	private final BeanRuleRegistry beanRuleRegistry;
+	
+	private final AnnotatedConfigRelater relater;
+	
+	private final Map<String, BeanRule> idBasedBeanRuleMap;
+
+	private final Map<Class<?>, Set<BeanRule>> typeBasedBeanRuleMap;
+
+	private final Map<Class<?>, BeanRule> configBeanRuleMap;
+
+	
+	public AnnotatedConfigParser(BeanRuleRegistry beanRuleRegistry, AnnotatedConfigRelater relater) {
+		this.beanRuleRegistry = beanRuleRegistry;
+		this.relater = relater;
+		
+		this.idBasedBeanRuleMap = beanRuleRegistry.getIdBasedBeanRuleMap();
+		this.typeBasedBeanRuleMap = beanRuleRegistry.getTypeBasedBeanRuleMap();
+		this.configBeanRuleMap = beanRuleRegistry.getConfigBeanRuleMap();
+	}
+	
+	public void parse() {
+		for(BeanRule beanRule : configBeanRuleMap.values()) {
+			if(!beanRule.isOffered()) {
+				parseConfigBean(beanRule);
+			}
+		}
+		for(BeanRule beanRule : idBasedBeanRuleMap.values()) {
+			if(!beanRule.isOffered()) {
+				parseFieldAutowire(beanRule);
+				//parseMethodAutowire(beanRule);
+			}
+		}
+		for(Set<BeanRule> set : typeBasedBeanRuleMap.values()) {
+			for(BeanRule beanRule : set) {
+				if(!beanRule.isOffered()) {
+					parseFieldAutowire(beanRule);
+					//parseMethodAutowire(beanRule);
+				}
+			}
+		}
+	}
+	
+	private void parseConfigBean(BeanRule beanRule) {
 		Class<?> beanClass = beanRule.getBeanClass();
-
 		Configuration configAnno = beanClass.getAnnotation(Configuration.class);
-		String[] nameArray = (configAnno != null) ? splitNamespace(configAnno.namespace()) : null;
 
-		for(Method method : beanClass.getMethods()) {
-			if(configAnno != null) {
+		if(configAnno != null) {
+			String[] nameArray = (configAnno != null) ? splitNamespace(configAnno.namespace()) : null;
+
+			for(Method method : beanClass.getMethods()) {
 				if(method.isAnnotationPresent(Bean.class)) {
-					parseBean(nameArray, beanClass, method, relater);
+					parseBean(beanClass, method, nameArray);
 				} else if(method.isAnnotationPresent(Request.class)) {
-					parseTranslet(nameArray, beanClass, method, relater);
-				} else if(method.isAnnotationPresent(Autowired.class)) {
-					parseAutowire(method, beanRule);
-				}
-			} else {
-				if(method.isAnnotationPresent(Autowired.class)) {
-					parseAutowire(method, beanRule);
+					parseTranslet(beanClass, method, nameArray);
 				}
 			}
 		}
+	}
 
-		for(Field field : beanClass.getFields()) {
-			if(field.isAnnotationPresent(Autowired.class)) {
-				parseAutowire(field, beanRule);
+	private void parseFieldAutowire(BeanRule beanRule) {
+		Class<?> beanClass = beanRule.getBeanClass();
+		
+		while(beanClass != null) {
+			for(Field field : beanClass.getDeclaredFields()) {
+				if(field.isAnnotationPresent(Autowired.class)) {
+					Autowired autowiredAnno = field.getAnnotation(Autowired.class);
+					boolean required = autowiredAnno.required();
+					Qualifier qualifierAnno = field.getAnnotation(Qualifier.class);
+					String qualifier = (qualifierAnno != null) ? StringUtils.emptyToNull(qualifierAnno.value()) : null;
+
+					Class<?> type = field.getType();
+					String name = (qualifier != null) ? qualifier : field.getName();
+					checkExistence(type, name, required);
+					
+					AutowireRule autowireRule = new AutowireRule();
+					autowireRule.setTarget(field);
+					autowireRule.setQualifier(qualifier);
+					autowireRule.setRequired(required);
+					
+					beanRule.addAutowireTarget(autowireRule);
+				}
 			}
+			
+			beanClass = beanClass.getSuperclass();
 		}
 	}
 
-	private static void parseAutowire(Field field, BeanRule beanRule) {
-        beanRule.addAutowiredField(field);
-	}
+//	private void parseMethodAutowire(BeanRule beanRule) {
+//		Class<?> beanClass = beanRule.getBeanClass();
+//		
+//		while(beanClass != null) {
+//			for(Method method : beanClass.getDeclaredMethods()) {
+//				if(method.isAnnotationPresent(Autowired.class)) {
+//			        Autowired autowiredAnno = method.getAnnotation(Autowired.class);
+//			        boolean required = autowiredAnno.required();
+//			        Qualifier qualifierAnno = method.getAnnotation(Qualifier.class);
+//			        String qualifier = (qualifierAnno != null) ? StringUtils.emptyToNull(qualifierAnno.value()) : null;
+//
+//			        for(Parameter param : method.getParameters()) {
+//						Qualifier paramQualifierAnno = param.getAnnotation(Qualifier.class);
+//						String paramQualifier;
+//						if(paramQualifierAnno != null) {
+//							paramQualifier = StringUtils.emptyToNull(paramQualifierAnno.value());
+//						} else {
+//							paramQualifier = qualifier;
+//						}
+//
+//						Class<?> type = param.getType();
+//			        	String name = (paramQualifier != null) ? paramQualifier : param.getName();
+//			        	checkExistence(type, name, required);
+//			        }
+//			        
+//					AutowireRule autowireRule = new AutowireRule();
+//					autowireRule.setTarget(method);
+//					autowireRule.setQualifier(qualifier);
+//					autowireRule.setRequired(required);
+//				}
+//			}
+//			
+//			beanClass = beanClass.getSuperclass();
+//		}
+//	}
 
-	private static void parseAutowire(Method method, BeanRule beanRule) {
-        Autowired autowiredAnno = method.getAnnotation(Autowired.class);
-        boolean required = autowiredAnno.required();
-
-        Class<?>[] paramTypes = method.getParameterTypes();
-
-        //TODO
-
-        beanRule.addAutowiredMethod(method);
-	}
-
-	private static void parseBean(String[] nameArray, Class<?> beanClass, Method method, AnnotatedConfigRelater relater) {
+	private void parseBean(Class<?> beanClass, Method method, String[] nameArray) {
 		Bean beanAnno = method.getAnnotation(Bean.class);
 		String beanId = applyNamespaceForBean(nameArray, StringUtils.emptyToNull(beanAnno.id()));
 		String initMethodName = StringUtils.emptyToNull(beanAnno.initMethod());
@@ -120,7 +201,7 @@ public abstract class AnnotatedConfigParser {
 		relater.relay(targetBeanClass, beanRule);
 	}
 
-	private static void parseTranslet(String[] nameArray, Class<?> beanClass, Method method, AnnotatedConfigRelater relater) {
+	private void parseTranslet(Class<?> beanClass, Method method, String[] nameArray) {
 		Request requestAnno = method.getAnnotation(Request.class);
 		String transletName = applyNamespaceForTranslet(nameArray, StringUtils.emptyToNull(requestAnno.translet()));
 		RequestMethodType[] requestMethods = requestAnno.method();
@@ -162,7 +243,7 @@ public abstract class AnnotatedConfigParser {
 		relater.relay(transletRule);
 	}
 
-	private static String[] splitNamespace(String namespace) {
+	private String[] splitNamespace(String namespace) {
 		if(StringUtils.isEmpty(namespace)) {
             return new String[1];
         }
@@ -185,7 +266,7 @@ public abstract class AnnotatedConfigParser {
         return list.toArray(new String[list.size()]);
 	}
 	
-	private static String applyNamespaceForBean(String[] nameArray, String name) {
+	private String applyNamespaceForBean(String[] nameArray, String name) {
         nameArray[0] = name;
         StringBuilder sb = new StringBuilder();
         for(int i = nameArray.length - 1; i >= 0; i--) {
@@ -196,7 +277,7 @@ public abstract class AnnotatedConfigParser {
         return sb.toString();
 	}
 
-	private static String applyNamespaceForTranslet(String[] nameArray, String name) {
+	private String applyNamespaceForTranslet(String[] nameArray, String name) {
         nameArray[0] = name;
         StringBuilder sb = new StringBuilder();
         for(int i = nameArray.length - 1; i >= 0; i--) {
@@ -206,25 +287,51 @@ public abstract class AnnotatedConfigParser {
         }
         return sb.toString();
 	}
+	
+	public boolean checkExistence(Class<?> requiredType, String beanId, boolean required) {
+		BeanRule[] beanRules = beanRuleRegistry.getBeanRule(requiredType);
 
-	private static Constructor<?> getMatchConstructor(Class<?> clazz, Object[] args) {
-		Constructor<?>[] candidates = clazz.getDeclaredConstructors();
-		Constructor<?> constructorToUse = null;
-		float bestMatchWeight = Float.MAX_VALUE;
-		float matchWeight = Float.MAX_VALUE;
+		if(beanRules == null || beanRules.length == 0) {
+			if(required)
+				throw new RequiredTypeBeanNotFoundException(requiredType);
+			else
+				return false;
+		}
 
-		for(Constructor<?> candidate : candidates) {
-			if(candidate.isAnnotationPresent(Autowired.class)) {
-				matchWeight = ClassUtils.getTypeDifferenceWeight(candidate.getParameterTypes(), args);
-
-				if(matchWeight < bestMatchWeight) {
-					constructorToUse = candidate;
-					bestMatchWeight = matchWeight;
+		if(beanRules.length == 1)
+			return true;
+		
+		if(beanId != null) {
+			for(BeanRule beanRule : beanRules) {
+				if(beanId.equals(beanRule.getId())) {
+					return true;
 				}
 			}
 		}
-
-		return constructorToUse;
+		if(required)
+			throw new NoUniqueBeanException(requiredType, beanRules);
+		else
+			return false;
 	}
+
+//	private static Constructor<?> getMatchConstructor(Class<?> clazz, Object[] args) {
+//		Constructor<?>[] candidates = clazz.getDeclaredConstructors();
+//		Constructor<?> constructorToUse = null;
+//		float bestMatchWeight = Float.MAX_VALUE;
+//		float matchWeight = Float.MAX_VALUE;
+//
+//		for(Constructor<?> candidate : candidates) {
+//			if(candidate.isAnnotationPresent(Autowired.class)) {
+//				matchWeight = ClassUtils.getTypeDifferenceWeight(candidate.getParameterTypes(), args);
+//
+//				if(matchWeight < bestMatchWeight) {
+//					constructorToUse = candidate;
+//					bestMatchWeight = matchWeight;
+//				}
+//			}
+//		}
+//
+//		return constructorToUse;
+//	}
 	
 }

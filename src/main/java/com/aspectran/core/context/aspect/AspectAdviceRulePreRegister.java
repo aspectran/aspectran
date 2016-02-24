@@ -80,7 +80,7 @@ public class AspectAdviceRulePreRegister extends AspectAdviceRuleRegister {
 	}
 	
 	public void register(BeanRuleRegistry beanRuleRegistry) {
-		for(BeanRule beanRule : beanRuleRegistry.getIdBasedBeanRuleMap()) {
+		for(BeanRule beanRule : beanRuleRegistry.getIdBasedBeanRuleMap().values()) {
 			if(beanRule.isProxiable()) {
 				determineProxyBean(beanRule);
 			}

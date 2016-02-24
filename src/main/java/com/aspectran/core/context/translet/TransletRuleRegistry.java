@@ -18,7 +18,9 @@ package com.aspectran.core.context.translet;
 import java.io.File;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import com.aspectran.core.activity.PathVariableMap;
@@ -31,7 +33,6 @@ import com.aspectran.core.context.expr.token.Tokenizer;
 import com.aspectran.core.context.rule.RequestRule;
 import com.aspectran.core.context.rule.ResponseRule;
 import com.aspectran.core.context.rule.TransletRule;
-import com.aspectran.core.context.rule.TransletRuleMap;
 import com.aspectran.core.context.rule.type.RequestMethodType;
 import com.aspectran.core.context.rule.type.TokenType;
 import com.aspectran.core.context.translet.scan.TransletFileScanner;
@@ -50,7 +51,7 @@ public class TransletRuleRegistry {
 
 	private final ApplicationAdapter applicationAdapter;
 	
-	private final TransletRuleMap transletRuleMap = new TransletRuleMap();
+	private final Map<String, TransletRule> transletRuleMap = new LinkedHashMap<String, TransletRule>();
 	
 	private final Set<TransletRule> restfulTransletRuleSet = new HashSet<TransletRule>();
 	
@@ -68,7 +69,7 @@ public class TransletRuleRegistry {
 		this.assistantLocal = assistantLocal;
 	}
 
-	public TransletRuleMap getTransletRuleMap() {
+	public Map<String, TransletRule> getTransletRuleMap() {
 		return transletRuleMap;
 	}
 
@@ -211,7 +212,7 @@ public class TransletRuleRegistry {
 			transletRuleMap.put(key, transletRule);
 			putRestfulTransletRule(transletRule);
 		} else {
-			transletRuleMap.putTransletRule(transletRule);
+			transletRuleMap.put(transletRule.getName(), transletRule);
 		}
 
 		if(log.isTraceEnabled())
