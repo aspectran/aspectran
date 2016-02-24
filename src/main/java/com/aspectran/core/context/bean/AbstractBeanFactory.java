@@ -20,6 +20,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -42,6 +43,7 @@ import com.aspectran.core.context.bean.proxy.JavassistDynamicBeanProxy;
 import com.aspectran.core.context.bean.proxy.JdkDynamicBeanProxy;
 import com.aspectran.core.context.expr.ItemExpression;
 import com.aspectran.core.context.expr.ItemExpressor;
+import com.aspectran.core.context.rule.AutowireRule;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
@@ -173,7 +175,7 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 			bean = instantiateBean(beanRule, args, argTypes);
 
 			invokeAwareMethods(bean);
-			processAnnotation(beanRule, bean, activity);
+			autowiring(beanRule, bean, activity);
 
 			if(propertyItemRuleMap != null) {
 				if(expressor == null) {
@@ -249,8 +251,15 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 		return bean;
 	}
 	
-	private void processAnnotation(BeanRule beanRule, final Object bean, Activity activity) {
+	private void autowiring(BeanRule beanRule, final Object bean, Activity activity) {
 		//BeanAnnotationProcessor.process(beanRule, bean, activity);
+		List<AutowireRule> autowireTargetList = beanRule.getAutowireTargetList();
+
+		if(autowireTargetList != null) {
+			for(AutowireRule autowireRule : autowireTargetList) {
+
+			}
+		}
 	}
 	
 	private void invokeAwareMethods(final Object bean) {

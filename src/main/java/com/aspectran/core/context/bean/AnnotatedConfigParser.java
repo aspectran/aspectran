@@ -103,7 +103,7 @@ public class AnnotatedConfigParser {
 		Configuration configAnno = beanClass.getAnnotation(Configuration.class);
 
 		if(configAnno != null) {
-			String[] nameArray = (configAnno != null) ? splitNamespace(configAnno.namespace()) : null;
+			String[] nameArray = splitNamespace(configAnno.namespace());
 
 			for(Method method : beanClass.getMethods()) {
 				if(method.isAnnotationPresent(Bean.class)) {

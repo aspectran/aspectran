@@ -77,10 +77,6 @@ public class BeanRuleRegistry {
 		ignoreDependencyInterface(InitializableTransletBean.class);
 	}
 	
-	public TransletRuleRegistry getTransletRuleRegistry() {
-		return transletRuleRegistry;
-	}
-
 	public void setTransletRuleRegistry(TransletRuleRegistry transletRuleRegistry) {
 		this.transletRuleRegistry = transletRuleRegistry;
 	}
@@ -310,7 +306,9 @@ public class BeanRuleRegistry {
 		}
 		
 		postProcessBeanRuleMap.clear();
-		
+		importantBeanIdSet.clear();
+		importantBeanTypeSet.clear();
+
 		parseAnnotatedConfig();
 	}
 
