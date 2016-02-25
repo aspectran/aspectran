@@ -752,12 +752,15 @@ public class MethodUtils {
             }
         }
 
+//TODO
+        
+        
         // If the class is public, we are done
         if(Modifier.isPublic(clazz.getModifiers())) {
-            if(!sameClass && !Modifier.isPublic(method.getDeclaringClass().getModifiers())) {
-                makeAccessible(method); // Default access superclass workaround
+            if(!sameClass) {
+                ReflectionUtils.makeAccessible(method); // Default access superclass workaround
             }
-            return (method);
+            return method;
         }
 
         String methodName = method.getName();
@@ -889,7 +892,7 @@ public class MethodUtils {
 			}
 
 			method = clazz.getMethod(methodName, paramTypes);
-			makeAccessible(method); // Default access superclass workaround
+			ReflectionUtils.makeAccessible(method); // Default access superclass workaround
 			cacheMethod(md, method);
 
 			return method;
@@ -920,7 +923,7 @@ public class MethodUtils {
 						// get accessible version of method
 						Method method = getAccessibleMethod(method1);
 						if(method != null) {
-							makeAccessible(method); // Default access superclass workaround
+							ReflectionUtils.makeAccessible(method); // Default access superclass workaround
 							myWeight = ClassUtils.getTypeDifferenceWeight(method.getParameterTypes(), paramTypes);
 							if(myWeight < bestMatchWeight) {
 								bestMatch = method;
@@ -937,21 +940,6 @@ public class MethodUtils {
 		}
 		
 		return bestMatch;
-	}
-
-	/**
-	 * Make the given method accessible, explicitly setting it accessible if
-	 * necessary. The {@code setAccessible(true)} method is only called
-	 * when actually necessary, to avoid unnecessary conflicts with a JVM
-	 * SecurityManager (if active).
-	 * @param method the method to make accessible
-	 * @see java.lang.reflect.Method#setAccessible
-	 */
-	public static void makeAccessible(Method method) {
-		if((!Modifier.isPublic(method.getModifiers()) ||
-				!Modifier.isPublic(method.getDeclaringClass().getModifiers())) && !method.isAccessible()) {
-			method.setAccessible(true);
-		}
 	}
 
 	private static Object toPrimitiveArray(Object val) {

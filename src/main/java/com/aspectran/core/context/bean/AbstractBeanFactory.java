@@ -16,6 +16,7 @@
 package com.aspectran.core.context.bean;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -47,10 +48,12 @@ import com.aspectran.core.context.rule.AutowireRule;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
+import com.aspectran.core.context.rule.type.AutowireTargetType;
 import com.aspectran.core.context.rule.type.BeanProxifierType;
 import com.aspectran.core.context.rule.type.ScopeType;
 import com.aspectran.core.util.ClassUtils;
 import com.aspectran.core.util.MethodUtils;
+import com.aspectran.core.util.ReflectionUtils;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
@@ -257,7 +260,13 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 
 		if(autowireTargetList != null) {
 			for(AutowireRule autowireRule : autowireTargetList) {
-
+				if(autowireRule.getTargetType() == AutowireTargetType.FIELD) {
+					Field field = autowireRule.getTarget();
+					Object value = activity.getBean(field.getType(), field.getName());
+					ReflectionUtils.setField(field, bean, value);
+				} else if(autowireRule.getTargetType() == AutowireTargetType.METHOD) {
+					
+				}
 			}
 		}
 	}
