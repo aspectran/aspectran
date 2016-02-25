@@ -195,12 +195,7 @@ public class BeanDescriptor {
 				// overridden a method
 				if(!uniqueMethods.containsKey(signature)) {
 					if(canAccessPrivateMethods()) {
-						try {
-							currentMethod.setAccessible(true);
-						} catch(Exception e) {
-							// Ignored. This is only a final precaution,
-							// nothing we can do.
-						}
+						ReflectionUtils.makeAccessible(currentMethod);
 					}
 
 					uniqueMethods.put(signature, currentMethod);
@@ -229,7 +224,7 @@ public class BeanDescriptor {
 	private static boolean canAccessPrivateMethods() {
 		try {
 			SecurityManager securityManager = System.getSecurityManager();
-			if (null != securityManager) {
+			if(null != securityManager) {
 				securityManager.checkPermission(new ReflectPermission("suppressAccessChecks"));
 			}
 		} catch(SecurityException e) {

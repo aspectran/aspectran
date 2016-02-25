@@ -1,6 +1,22 @@
+/**
+ * Copyright 2008-2016 Juho Jeong
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.aspectran.core.util;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
@@ -28,8 +44,28 @@ public class ReflectionUtils {
 			field.set(target, value);
 			if(accessibled)
 				field.setAccessible(false);
-		} catch(IllegalAccessException ex) {
-			throw new IllegalStateException("Could not access field: " + ex.getMessage());
+		} catch(IllegalAccessException e) {
+			throw new IllegalStateException("Could not access field: " + e.getMessage());
+		}
+	}
+
+	/**
+	 * Invoke the specified {@link Method} against the supplied target object with the
+	 * supplied arguments. The target object can be {@code null} when invoking a
+	 * static {@link Method}.
+	 *
+	 * @param method the method to invoke
+	 * @param target the target object to invoke the method on
+	 * @param args the invocation arguments (may be {@code null})
+	 * @return the invocation result, if any
+	 */
+	public static Object invokeMethod(Method method, Object target, Object... args) {
+		try {
+			return method.invoke(target, args);
+		} catch(InvocationTargetException e) {
+			throw new IllegalStateException("Could not access method: " + e.getMessage());
+		} catch(IllegalAccessException e) {
+			throw new IllegalStateException("Could not access method: " + e.getMessage());
 		}
 	}
 	

@@ -120,139 +120,160 @@ public class AnnotatedConfigParser {
 
 	private void parseFieldAutowire(BeanRule beanRule) {
 		Class<?> beanClass = beanRule.getBeanClass();
-		
-		while(beanClass != null) {
-			for(Field field : beanClass.getDeclaredFields()) {
-				if(field.isAnnotationPresent(Autowired.class)) {
-					Autowired autowiredAnno = field.getAnnotation(Autowired.class);
-					boolean required = autowiredAnno.required();
-					Qualifier qualifierAnno = field.getAnnotation(Qualifier.class);
-					String qualifier = (qualifierAnno != null) ? StringUtils.emptyToNull(qualifierAnno.value()) : null;
 
-					Class<?> type = field.getType();
-					String name = (qualifier != null) ? qualifier : field.getName();
-					checkExistence(type, name, required);
-					
-					AutowireRule autowireRule = new AutowireRule();
-					autowireRule.setTarget(field);
-					autowireRule.setQualifier(qualifier);
-					autowireRule.setRequired(required);
-					
-					beanRule.addAutowireTarget(autowireRule);
+		try {
+			while(beanClass != null) {
+				for(Field field : beanClass.getDeclaredFields()) {
+					if(field.isAnnotationPresent(Autowired.class)) {
+						Autowired autowiredAnno = field.getAnnotation(Autowired.class);
+						boolean required = autowiredAnno.required();
+						Qualifier qualifierAnno = field.getAnnotation(Qualifier.class);
+						String qualifier = (qualifierAnno != null) ? StringUtils.emptyToNull(qualifierAnno.value()) : null;
+
+						Class<?> type = field.getType();
+						String name = (qualifier != null) ? qualifier : field.getName();
+						checkExistence(type, name, required);
+
+						AutowireRule autowireRule = new AutowireRule();
+						autowireRule.setTarget(field);
+						autowireRule.setTypes(type);
+						autowireRule.setQualifiers(qualifier);
+						autowireRule.setRequired(required);
+
+						beanRule.addAutowireTarget(autowireRule);
+					}
 				}
+
+				beanClass = beanClass.getSuperclass();
 			}
-			
-			beanClass = beanClass.getSuperclass();
+		} catch(Throwable ex) {
+			throw new IllegalStateException("Failed to introspect annotations on " + beanClass, ex);
 		}
 	}
 
 	private void parseMethodAutowire(BeanRule beanRule) {
 		Class<?> beanClass = beanRule.getBeanClass();
-		
-		while(beanClass != null) {
-			for(Method method : beanClass.getDeclaredMethods()) {
-				if(method.isAnnotationPresent(Autowired.class)) {
-			        Autowired autowiredAnno = method.getAnnotation(Autowired.class);
-			        boolean required = autowiredAnno.required();
-			        Qualifier qualifierAnno = method.getAnnotation(Qualifier.class);
-			        String qualifier = (qualifierAnno != null) ? StringUtils.emptyToNull(qualifierAnno.value()) : null;
 
-			        for(Parameter param : method.getParameters()) {
-						Qualifier paramQualifierAnno = param.getAnnotation(Qualifier.class);
-						String paramQualifier;
-						if(paramQualifierAnno != null) {
-							paramQualifier = StringUtils.emptyToNull(paramQualifierAnno.value());
-						} else {
-							paramQualifier = qualifier;
+		try {
+			while(beanClass != null) {
+				for(Method method : beanClass.getDeclaredMethods()) {
+					if(method.isAnnotationPresent(Autowired.class)) {
+						Autowired autowiredAnno = method.getAnnotation(Autowired.class);
+						boolean required = autowiredAnno.required();
+						Qualifier qualifierAnno = method.getAnnotation(Qualifier.class);
+						String qualifier = (qualifierAnno != null) ? StringUtils.emptyToNull(qualifierAnno.value()) : null;
+
+						Parameter[] params = method.getParameters();
+						Class<?>[] paramTypes = new Class<?>[params.length];
+						String[] paramQualifiers = new String[params.length];
+						for(int i = 0; i < params.length; i++) {
+							Qualifier paramQualifierAnno = params[i].getAnnotation(Qualifier.class);
+							String paramQualifier;
+							if(paramQualifierAnno != null) {
+								paramQualifier = StringUtils.emptyToNull(paramQualifierAnno.value());
+							} else {
+								paramQualifier = qualifier;
+							}
+
+							paramTypes[i] = params[i].getType();
+							paramQualifiers[i] = (paramQualifier != null) ? paramQualifier : params[i].getName();
+							checkExistence(paramTypes[i], paramQualifiers[i], required);
 						}
 
-						Class<?> type = param.getType();
-			        	String name = (paramQualifier != null) ? paramQualifier : param.getName();
-			        	checkExistence(type, name, required);
-			        }
-			        
-					AutowireRule autowireRule = new AutowireRule();
-					autowireRule.setTarget(method);
-					autowireRule.setQualifier(qualifier);
-					autowireRule.setRequired(required);
-				} else if(method.isAnnotationPresent(Initialize.class)) {
-					if(!beanRule.isInitializableBean() && !beanRule.isInitializableTransletBean() && beanRule.getInitMethod() != null) {
-						beanRule.setInitMethod(method);
-						beanRule.setInitMethodRequiresTranslet(MethodActionRule.isRequiresTranslet(method));
-					}
-				} else if(method.isAnnotationPresent(Destroy.class)) {
-					if(!beanRule.isDisposableBean() && beanRule.getDestroyMethod() != null) {
-						beanRule.setDestroyMethod(method);
+						AutowireRule autowireRule = new AutowireRule();
+						autowireRule.setTarget(method);
+						autowireRule.setTypes(paramTypes);
+						autowireRule.setQualifiers(paramQualifiers);
+						autowireRule.setRequired(required);
+					} else if(method.isAnnotationPresent(Initialize.class)) {
+						if(!beanRule.isInitializableBean() && !beanRule.isInitializableTransletBean() && beanRule.getInitMethod() != null) {
+							beanRule.setInitMethod(method);
+							beanRule.setInitMethodRequiresTranslet(MethodActionRule.isRequiresTranslet(method));
+						}
+					} else if(method.isAnnotationPresent(Destroy.class)) {
+						if(!beanRule.isDisposableBean() && beanRule.getDestroyMethod() != null) {
+							beanRule.setDestroyMethod(method);
+						}
 					}
 				}
+
+				beanClass = beanClass.getSuperclass();
 			}
-			
-			beanClass = beanClass.getSuperclass();
+		} catch(Throwable ex) {
+			throw new IllegalStateException("Failed to introspect annotations on " + beanClass, ex);
 		}
 	}
 
 	private void parseBean(Class<?> beanClass, Method method, String[] nameArray) {
-		Bean beanAnno = method.getAnnotation(Bean.class);
-		String beanId = applyNamespaceForBean(nameArray, StringUtils.emptyToNull(beanAnno.id()));
-		String initMethodName = StringUtils.emptyToNull(beanAnno.initMethod());
-		String destroyMethodName = StringUtils.emptyToNull(beanAnno.destroyMethod());
-		String factoryMethodName = StringUtils.emptyToNull(beanAnno.factoryMethod());
+		try {
+			Bean beanAnno = method.getAnnotation(Bean.class);
+			String beanId = applyNamespaceForBean(nameArray, StringUtils.emptyToNull(beanAnno.id()));
+			String initMethodName = StringUtils.emptyToNull(beanAnno.initMethod());
+			String destroyMethodName = StringUtils.emptyToNull(beanAnno.destroyMethod());
+			String factoryMethodName = StringUtils.emptyToNull(beanAnno.factoryMethod());
 
-		BeanRule beanRule = new BeanRule();
-		beanRule.setId(beanId);
-		beanRule.setOfferBeanId(BeanRule.CLASS_DIRECTIVE_PREFIX + beanClass.getName());
-		beanRule.setOfferBeanClass(beanClass);
-		beanRule.setOfferMethodName(method.getName());
-		beanRule.setOfferMethod(method);
-		beanRule.setOffered(true);
-		beanRule.setInitMethodName(initMethodName);
-		beanRule.setDestroyMethodName(destroyMethodName);
-		beanRule.setFactoryMethodName(factoryMethodName);
+			BeanRule beanRule = new BeanRule();
+			beanRule.setId(beanId);
+			beanRule.setOfferBeanId(BeanRule.CLASS_DIRECTIVE_PREFIX + beanClass.getName());
+			beanRule.setOfferBeanClass(beanClass);
+			beanRule.setOfferMethodName(method.getName());
+			beanRule.setOfferMethod(method);
+			beanRule.setOffered(true);
+			beanRule.setInitMethodName(initMethodName);
+			beanRule.setDestroyMethodName(destroyMethodName);
+			beanRule.setFactoryMethodName(factoryMethodName);
 
-		Class<?> targetBeanClass = BeanRuleAnalyzer.determineBeanClass(beanRule);
-		relater.relay(targetBeanClass, beanRule);
+			Class<?> targetBeanClass = BeanRuleAnalyzer.determineBeanClass(beanRule);
+			relater.relay(targetBeanClass, beanRule);
+		} catch(Throwable ex) {
+			throw new IllegalStateException("Failed to introspect annotations on " + beanClass, ex);
+		}
 	}
 
 	private void parseTranslet(Class<?> beanClass, Method method, String[] nameArray) {
-		Request requestAnno = method.getAnnotation(Request.class);
-		String transletName = applyNamespaceForTranslet(nameArray, StringUtils.emptyToNull(requestAnno.translet()));
-		RequestMethodType[] requestMethods = requestAnno.method();
+		try {
+			Request requestAnno = method.getAnnotation(Request.class);
+			String transletName = applyNamespaceForTranslet(nameArray, StringUtils.emptyToNull(requestAnno.translet()));
+			RequestMethodType[] requestMethods = requestAnno.method();
 
-		TransletRule transletRule = TransletRule.newInstance(transletName, requestMethods);
+			TransletRule transletRule = TransletRule.newInstance(transletName, requestMethods);
 
-		if(method.isAnnotationPresent(Dispatch.class)) {
-			Dispatch dispatchAnno = method.getAnnotation(Dispatch.class);
-			String dispatchName = StringUtils.emptyToNull(dispatchAnno.name());
-			String characterEncoding = StringUtils.emptyToNull(dispatchAnno.characterEncoding());
-			DispatchResponseRule drr = DispatchResponseRule.newInstance(dispatchName, characterEncoding);
-			transletRule.setResponseRule(ResponseRule.newInstance(drr));
-		} else if(method.isAnnotationPresent(Transform.class)) {
-			Transform transformAnno = method.getAnnotation(Transform.class);
-			String transformType = StringUtils.emptyToNull(transformAnno.transformType());
-			String contentType = StringUtils.emptyToNull(transformAnno.contentType());
-			String templateId = StringUtils.emptyToNull(transformAnno.templateId());
-			String characterEncoding = StringUtils.emptyToNull(transformAnno.characterEncoding());
-			boolean pretty = transformAnno.pretty();
-			TransformRule tr = TransformRule.newInstance(transformType, contentType, templateId, characterEncoding, null, pretty);
-			transletRule.setResponseRule(ResponseRule.newInstance(tr));
-		} else if(method.isAnnotationPresent(Forward.class)) {
-			Forward forwardAnno = method.getAnnotation(Forward.class);
-			String translet = StringUtils.emptyToNull(forwardAnno.translet());
-			ForwardResponseRule frr = ForwardResponseRule.newInstance(translet);
-			transletRule.setResponseRule(ResponseRule.newInstance(frr));
-		} else if(method.isAnnotationPresent(Redirect.class)) {
-			Redirect redirectAnno = method.getAnnotation(Redirect.class);
-			String target = StringUtils.emptyToNull(redirectAnno.target());
-			RedirectResponseRule rrr = RedirectResponseRule.newInstance(target);
-			transletRule.setResponseRule(ResponseRule.newInstance(rrr));
+			if(method.isAnnotationPresent(Dispatch.class)) {
+				Dispatch dispatchAnno = method.getAnnotation(Dispatch.class);
+				String dispatchName = StringUtils.emptyToNull(dispatchAnno.name());
+				String characterEncoding = StringUtils.emptyToNull(dispatchAnno.characterEncoding());
+				DispatchResponseRule drr = DispatchResponseRule.newInstance(dispatchName, characterEncoding);
+				transletRule.setResponseRule(ResponseRule.newInstance(drr));
+			} else if(method.isAnnotationPresent(Transform.class)) {
+				Transform transformAnno = method.getAnnotation(Transform.class);
+				String transformType = StringUtils.emptyToNull(transformAnno.transformType());
+				String contentType = StringUtils.emptyToNull(transformAnno.contentType());
+				String templateId = StringUtils.emptyToNull(transformAnno.templateId());
+				String characterEncoding = StringUtils.emptyToNull(transformAnno.characterEncoding());
+				boolean pretty = transformAnno.pretty();
+				TransformRule tr = TransformRule.newInstance(transformType, contentType, templateId, characterEncoding, null, pretty);
+				transletRule.setResponseRule(ResponseRule.newInstance(tr));
+			} else if(method.isAnnotationPresent(Forward.class)) {
+				Forward forwardAnno = method.getAnnotation(Forward.class);
+				String translet = StringUtils.emptyToNull(forwardAnno.translet());
+				ForwardResponseRule frr = ForwardResponseRule.newInstance(translet);
+				transletRule.setResponseRule(ResponseRule.newInstance(frr));
+			} else if(method.isAnnotationPresent(Redirect.class)) {
+				Redirect redirectAnno = method.getAnnotation(Redirect.class);
+				String target = StringUtils.emptyToNull(redirectAnno.target());
+				RedirectResponseRule rrr = RedirectResponseRule.newInstance(target);
+				transletRule.setResponseRule(ResponseRule.newInstance(rrr));
+			}
+
+			MethodActionRule methodActionRule = new MethodActionRule();
+			methodActionRule.setConfigBeanClass(beanClass);
+			methodActionRule.setMethod(method);
+
+			transletRule.applyActionRule(methodActionRule);
+			relater.relay(transletRule);
+		} catch(Throwable ex) {
+			throw new IllegalStateException("Failed to introspect annotations on " + beanClass, ex);
 		}
-
-		MethodActionRule methodActionRule = new MethodActionRule();
-		methodActionRule.setConfigBeanClass(beanClass);
-		methodActionRule.setMethod(method);
-
-		transletRule.applyActionRule(methodActionRule);
-		relater.relay(transletRule);
 	}
 
 	private String[] splitNamespace(String namespace) {

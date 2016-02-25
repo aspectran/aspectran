@@ -32,8 +32,10 @@ public class AutowireRule {
 	private AutowireTargetType targetType;
 	
 	private Object target;
-	
-	private String qualifier;
+
+	private Class<?>[] types;
+
+	private String[] qualifiers;
 	
 	private boolean required;
 
@@ -59,13 +61,21 @@ public class AutowireRule {
 		this.target = method;
 		this.targetType = AutowireTargetType.METHOD;
 	}
-	
-	public String getQualifier() {
-		return qualifier;
+
+	public Class<?>[] getTypes() {
+		return types;
 	}
 
-	public void setQualifier(String qualifier) {
-		this.qualifier = qualifier;
+	public void setTypes(Class<?>... types) {
+		this.types = types;
+	}
+
+	public String[] getQualifiers() {
+		return qualifiers;
+	}
+
+	public void setQualifiers(String... qualifiers) {
+		this.qualifiers = qualifiers;
 	}
 
 	public boolean isRequired() {

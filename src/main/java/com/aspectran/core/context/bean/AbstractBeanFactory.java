@@ -254,24 +254,30 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 		return bean;
 	}
 	
-	private void autowiring(BeanRule beanRule, final Object bean, Activity activity) {
-		//BeanAnnotationProcessor.process(beanRule, bean, activity);
+	private void autowiring(BeanRule beanRule, Object bean, Activity activity) {
 		List<AutowireRule> autowireTargetList = beanRule.getAutowireTargetList();
 
 		if(autowireTargetList != null) {
 			for(AutowireRule autowireRule : autowireTargetList) {
 				if(autowireRule.getTargetType() == AutowireTargetType.FIELD) {
+					Object value = activity.getBean(autowireRule.getTypes()[0], autowireRule.getQualifiers()[0]);
 					Field field = autowireRule.getTarget();
-					Object value = activity.getBean(field.getType(), field.getName());
 					ReflectionUtils.setField(field, bean, value);
 				} else if(autowireRule.getTargetType() == AutowireTargetType.METHOD) {
-					
+					Class<?>[] types = autowireRule.getTypes();
+					String[] qualifiers = autowireRule.getQualifiers();
+					Object[] values = new Object[types.length];
+					for(int i = 0; i < types.length; i++) {
+						values[i] = activity.getBean(types[i], qualifiers[i]);
+					}
+					Method method = autowireRule.getTarget();
+					ReflectionUtils.invokeMethod(method, bean, values);
 				}
 			}
 		}
 	}
 	
-	private void invokeAwareMethods(final Object bean) {
+	private void invokeAwareMethods(Object bean) {
 		if(bean instanceof Aware) {
 			if(bean instanceof ActivityContextAware) {
 				((ActivityContextAware)bean).setActivityContext(context);
@@ -285,7 +291,7 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 		}
 	}
 
-	private void initializeBean(BeanRule beanRule, final Object bean, Activity activity) {
+	private void initializeBean(BeanRule beanRule, Object bean, Activity activity) {
 		try {
 			if(beanRule.isInitializableBean()) {
 				((InitializableBean)bean).initialize();
@@ -298,7 +304,7 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 		}
 	}
 
-	private Object invokeOfferMethod(BeanRule beanRule, final Object bean, Activity activity) {
+	private Object invokeOfferMethod(BeanRule beanRule, Object bean, Activity activity) {
 		try {
 			Method offerMethod = beanRule.getOfferMethod();
 			boolean requiresTranslet = beanRule.isOfferMethodRequiresTranslet();
@@ -308,7 +314,7 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 		}
 	}
 	
-	private void invokeInitMethod(BeanRule beanRule, final Object bean, Activity activity) {
+	private void invokeInitMethod(BeanRule beanRule, Object bean, Activity activity) {
 		try {
 			Method initMethod = beanRule.getInitMethod();
 			boolean requiresTranslet = beanRule.isInitMethodRequiresTranslet();
@@ -318,7 +324,7 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 		}
 	}
 	
-	private Object invokeFactoryMethod(BeanRule beanRule, final Object bean, Activity activity) {
+	private Object invokeFactoryMethod(BeanRule beanRule, Object bean, Activity activity) {
 		try {
 			Method factoryMethod = beanRule.getFactoryMethod();
 			boolean requiresTranslet = beanRule.isFactoryMethodRequiresTranslet();
@@ -328,7 +334,7 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 		}
 	}
 	
-	private Object invokeObjectFromFactoryBean(BeanRule beanRule, final Object bean) {
+	private Object invokeObjectFromFactoryBean(BeanRule beanRule, Object bean) {
 		FactoryBean<?> factory = (FactoryBean<?>)bean;
 		Object factoryObject;
 		

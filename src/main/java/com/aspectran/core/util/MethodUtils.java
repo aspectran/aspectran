@@ -742,9 +742,10 @@ public class MethodUtils {
             return null;
         }
 
-        boolean sameClass = true;
+        boolean sameClass;
         if(clazz == null) {
-            clazz = method.getDeclaringClass();
+			sameClass = true;
+			clazz = method.getDeclaringClass();
         } else {
             sameClass = clazz.equals(method.getDeclaringClass());
             if(!method.getDeclaringClass().isAssignableFrom(clazz)) {
@@ -752,9 +753,6 @@ public class MethodUtils {
             }
         }
 
-//TODO
-        
-        
         // If the class is public, we are done
         if(Modifier.isPublic(clazz.getModifiers())) {
             if(!sameClass) {
