@@ -16,6 +16,9 @@
 package com.aspectran.core.context.rule;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+
+import com.aspectran.core.context.rule.type.AutowireTargetType;
 
 /**
  * The Class AutowireRule.
@@ -26,20 +29,37 @@ import java.lang.reflect.Field;
  */
 public class AutowireRule {
 
-	private Field target;
+	private AutowireTargetType targetType;
+	
+	private Object target;
 	
 	private String qualifier;
 	
 	private boolean required;
 
-	public Field getTarget() {
-		return target;
+	public AutowireTargetType getTargetType() {
+		return targetType;
+	}
+
+	public void setTargetType(AutowireTargetType targetType) {
+		this.targetType = targetType;
+	}
+
+	@SuppressWarnings("unchecked")
+	public <T> T getTarget() {
+		return (T)target;
 	}
 
 	public void setTarget(Field field) {
 		this.target = field;
+		this.targetType = AutowireTargetType.FIELD;
 	}
 
+	public void setTarget(Method method) {
+		this.target = method;
+		this.targetType = AutowireTargetType.METHOD;
+	}
+	
 	public String getQualifier() {
 		return qualifier;
 	}

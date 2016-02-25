@@ -123,7 +123,7 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 				}
 			}
 			
-			if(beanRule.getInitMethodName() != null) {
+			if(beanRule.getInitMethod() != null) {
 				invokeInitMethod(beanRule, bean, activity);
 			}
 			
@@ -191,7 +191,7 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 
 			if(beanRule.isInitializableBean() || beanRule.isInitializableTransletBean()) {
 				initializeBean(beanRule, bean, activity);
-			} else if(beanRule.getInitMethodName() != null) {
+			} else if(beanRule.getInitMethod() != null) {
 				invokeInitMethod(beanRule, bean, activity);
 			}
 

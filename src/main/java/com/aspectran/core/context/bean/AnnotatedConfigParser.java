@@ -17,6 +17,7 @@ package com.aspectran.core.context.bean;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -28,8 +29,10 @@ import com.aspectran.core.context.AspectranConstants;
 import com.aspectran.core.context.bean.annotation.Autowired;
 import com.aspectran.core.context.bean.annotation.Bean;
 import com.aspectran.core.context.bean.annotation.Configuration;
+import com.aspectran.core.context.bean.annotation.Destroy;
 import com.aspectran.core.context.bean.annotation.Dispatch;
 import com.aspectran.core.context.bean.annotation.Forward;
+import com.aspectran.core.context.bean.annotation.Initialize;
 import com.aspectran.core.context.bean.annotation.Qualifier;
 import com.aspectran.core.context.bean.annotation.Redirect;
 import com.aspectran.core.context.bean.annotation.Request;
@@ -85,14 +88,14 @@ public class AnnotatedConfigParser {
 		for(BeanRule beanRule : idBasedBeanRuleMap.values()) {
 			if(!beanRule.isOffered()) {
 				parseFieldAutowire(beanRule);
-				//parseMethodAutowire(beanRule);
+				parseMethodAutowire(beanRule);
 			}
 		}
 		for(Set<BeanRule> set : typeBasedBeanRuleMap.values()) {
 			for(BeanRule beanRule : set) {
 				if(!beanRule.isOffered()) {
 					parseFieldAutowire(beanRule);
-					//parseMethodAutowire(beanRule);
+					parseMethodAutowire(beanRule);
 				}
 			}
 		}
@@ -143,41 +146,50 @@ public class AnnotatedConfigParser {
 		}
 	}
 
-//	private void parseMethodAutowire(BeanRule beanRule) {
-//		Class<?> beanClass = beanRule.getBeanClass();
-//		
-//		while(beanClass != null) {
-//			for(Method method : beanClass.getDeclaredMethods()) {
-//				if(method.isAnnotationPresent(Autowired.class)) {
-//			        Autowired autowiredAnno = method.getAnnotation(Autowired.class);
-//			        boolean required = autowiredAnno.required();
-//			        Qualifier qualifierAnno = method.getAnnotation(Qualifier.class);
-//			        String qualifier = (qualifierAnno != null) ? StringUtils.emptyToNull(qualifierAnno.value()) : null;
-//
-//			        for(Parameter param : method.getParameters()) {
-//						Qualifier paramQualifierAnno = param.getAnnotation(Qualifier.class);
-//						String paramQualifier;
-//						if(paramQualifierAnno != null) {
-//							paramQualifier = StringUtils.emptyToNull(paramQualifierAnno.value());
-//						} else {
-//							paramQualifier = qualifier;
-//						}
-//
-//						Class<?> type = param.getType();
-//			        	String name = (paramQualifier != null) ? paramQualifier : param.getName();
-//			        	checkExistence(type, name, required);
-//			        }
-//			        
-//					AutowireRule autowireRule = new AutowireRule();
-//					autowireRule.setTarget(method);
-//					autowireRule.setQualifier(qualifier);
-//					autowireRule.setRequired(required);
-//				}
-//			}
-//			
-//			beanClass = beanClass.getSuperclass();
-//		}
-//	}
+	private void parseMethodAutowire(BeanRule beanRule) {
+		Class<?> beanClass = beanRule.getBeanClass();
+		
+		while(beanClass != null) {
+			for(Method method : beanClass.getDeclaredMethods()) {
+				if(method.isAnnotationPresent(Autowired.class)) {
+			        Autowired autowiredAnno = method.getAnnotation(Autowired.class);
+			        boolean required = autowiredAnno.required();
+			        Qualifier qualifierAnno = method.getAnnotation(Qualifier.class);
+			        String qualifier = (qualifierAnno != null) ? StringUtils.emptyToNull(qualifierAnno.value()) : null;
+
+			        for(Parameter param : method.getParameters()) {
+						Qualifier paramQualifierAnno = param.getAnnotation(Qualifier.class);
+						String paramQualifier;
+						if(paramQualifierAnno != null) {
+							paramQualifier = StringUtils.emptyToNull(paramQualifierAnno.value());
+						} else {
+							paramQualifier = qualifier;
+						}
+
+						Class<?> type = param.getType();
+			        	String name = (paramQualifier != null) ? paramQualifier : param.getName();
+			        	checkExistence(type, name, required);
+			        }
+			        
+					AutowireRule autowireRule = new AutowireRule();
+					autowireRule.setTarget(method);
+					autowireRule.setQualifier(qualifier);
+					autowireRule.setRequired(required);
+				} else if(method.isAnnotationPresent(Initialize.class)) {
+					if(!beanRule.isInitializableBean() && !beanRule.isInitializableTransletBean() && beanRule.getInitMethod() != null) {
+						beanRule.setInitMethod(method);
+						beanRule.setInitMethodRequiresTranslet(MethodActionRule.isRequiresTranslet(method));
+					}
+				} else if(method.isAnnotationPresent(Destroy.class)) {
+					if(!beanRule.isDisposableBean() && beanRule.getDestroyMethod() != null) {
+						beanRule.setDestroyMethod(method);
+					}
+				}
+			}
+			
+			beanClass = beanClass.getSuperclass();
+		}
+	}
 
 	private void parseBean(Class<?> beanClass, Method method, String[] nameArray) {
 		Bean beanAnno = method.getAnnotation(Bean.class);

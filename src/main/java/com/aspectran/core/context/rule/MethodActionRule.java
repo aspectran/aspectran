@@ -54,9 +54,7 @@ public class MethodActionRule {
 
 	public void setMethod(Method method) {
 		this.method = method;
-
-		Class<?>[] paramTypes = method.getParameterTypes();
-		this.requiresTranslet = (paramTypes.length == 1 && paramTypes[0].isAssignableFrom(Translet.class));
+		this.requiresTranslet = isRequiresTranslet(method);
 	}
 
 	public String getMethodName() {
@@ -132,6 +130,11 @@ public class MethodActionRule {
 		methodActionRule.setMethod(method);
 
 		return methodActionRule;
+	}
+	
+	public static boolean isRequiresTranslet(Method method) {
+		Class<?>[] paramTypes = method.getParameterTypes();
+		return (paramTypes.length == 1 && paramTypes[0].isAssignableFrom(Translet.class));
 	}
 
 }

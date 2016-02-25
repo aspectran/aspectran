@@ -38,7 +38,6 @@ public class HttpServletRequestAdapter extends AbstractRequestAdapter implements
 	 *
 	 * @param request the HTTP request
 	 */
-	@SuppressWarnings("unchecked")
 	public HttpServletRequestAdapter(HttpServletRequest request) {
 		super(request, request.getParameterMap());
 		setRequestMethod(RequestMethodType.lookup(request.getMethod()));
@@ -66,7 +65,6 @@ public class HttpServletRequestAdapter extends AbstractRequestAdapter implements
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
 	public Enumeration<String> getAttributeNames() {
 		return ((HttpServletRequest)adaptee).getAttributeNames();
 	}

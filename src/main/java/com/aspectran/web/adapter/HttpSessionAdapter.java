@@ -83,7 +83,6 @@ public class HttpSessionAdapter extends AbstractSessionAdapter implements Sessio
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
 	public Enumeration<String> getAttributeNames() {
 		checkSessionState();
 		

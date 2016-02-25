@@ -54,7 +54,6 @@ public class WebApplicationAdapter extends AbstractApplicationAdapter implements
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
 	public Enumeration<String> getAttributeNames() {
 		return ((ServletContext)adaptee).getAttributeNames();
 	}
