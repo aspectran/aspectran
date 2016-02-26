@@ -740,6 +740,7 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceInspectable 
 			Boolean singleton,
 			Boolean lazyInit,
 			Boolean important) {
+		
 		if(className == null && scanPath == null)
 			throw new IllegalArgumentException("Bean class must not be null.");
 
@@ -749,7 +750,7 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceInspectable 
 			throw new IllegalArgumentException("No scope type registered for '" + scope + "'.");
 
 		if(scopeType == null)
-			scopeType = (singleton == Boolean.TRUE) ? ScopeType.SINGLETON : ScopeType.PROTOTYPE;
+			scopeType = (singleton == null || singleton == Boolean.TRUE) ? ScopeType.SINGLETON : ScopeType.PROTOTYPE;
 
 		BeanRule beanRule = new BeanRule();
 		beanRule.setId(id);
@@ -781,13 +782,14 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceInspectable 
 			Boolean singleton,
 			Boolean lazyInit,
 			Boolean important) {
+		
 		ScopeType scopeType = ScopeType.lookup(scope);
 		
 		if(scope != null && scopeType == null)
 			throw new IllegalArgumentException("No scope type registered for '" + scope + "'.");
 		
 		if(scopeType == null)
-			scopeType = (singleton == Boolean.TRUE) ? ScopeType.SINGLETON : ScopeType.PROTOTYPE;
+			scopeType = (singleton == null || singleton == Boolean.TRUE) ? ScopeType.SINGLETON : ScopeType.PROTOTYPE;
 		
 		BeanRule beanRule = new BeanRule();
 		beanRule.setId(id);
