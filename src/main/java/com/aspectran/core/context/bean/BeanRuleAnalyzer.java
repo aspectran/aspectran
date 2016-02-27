@@ -16,11 +16,14 @@
 package com.aspectran.core.context.bean;
 
 import java.lang.reflect.Method;
+import java.util.Locale;
 
 import com.aspectran.core.activity.Translet;
 import com.aspectran.core.context.bean.ablility.FactoryBean;
 import com.aspectran.core.context.rule.BeanActionRule;
 import com.aspectran.core.context.rule.BeanRule;
+import com.aspectran.core.context.rule.ItemRule;
+import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.util.MethodUtils;
 
 public class BeanRuleAnalyzer {
@@ -68,7 +71,7 @@ public class BeanRuleAnalyzer {
 		Method m2 = MethodUtils.getAccessibleMethod(beanClass, offerMethodName, TRANSLET_ACTION_PARAMETER_TYPES);
 
 		if(m1 == null && m2 == null)
-			throw new IllegalArgumentException("No such offer method " + offerMethodName + "() on bean class: " + beanClass.getName());
+			throw new BeanRuleException("No such offer method " + offerMethodName + "() on bean class: " + beanClass.getName(), beanRule);
 
 		Class<?> targetBeanClass;
 		
@@ -107,7 +110,7 @@ public class BeanRuleAnalyzer {
 		Method m2 = MethodUtils.getAccessibleMethod(beanClass, factoryMethodName, TRANSLET_ACTION_PARAMETER_TYPES);
 
 		if(m1 == null && m2 == null)
-			throw new IllegalArgumentException("No such factory method " + factoryMethodName + "() on bean class: " + beanClass.getName());
+			throw new BeanRuleException("No such factory method " + factoryMethodName + "() on bean class: " + beanClass.getName(), beanRule);
 
 		Class<?> targetBeanClass;
 		
@@ -138,7 +141,7 @@ public class BeanRuleAnalyzer {
 		Method m2 = MethodUtils.getAccessibleMethod(beanClass, initMethodName, TRANSLET_ACTION_PARAMETER_TYPES);
 
 		if(m1 == null && m2 == null)
-			throw new IllegalArgumentException("No such initialization method " + initMethodName + "() on bean class: " + beanClass.getName());
+			throw new BeanRuleException("No such initialization method " + initMethodName + "() on bean class: " + beanClass.getName(), beanRule);
 
 		if(m2 != null) {
 			beanRule.setInitMethod(m2);
@@ -156,7 +159,7 @@ public class BeanRuleAnalyzer {
 		Method m = MethodUtils.getAccessibleMethod(beanClass, destroyMethodName);
 		
 		if(m == null)
-			throw new IllegalArgumentException("No such destroy method " + destroyMethodName + "() on bean class: " + beanClass.getName());
+			throw new BeanRuleException("No such destroy method " + destroyMethodName + "() on bean class: " + beanClass.getName(), beanRule);
 		
 		beanRule.setDestroyMethod(m);
 	}
@@ -169,7 +172,7 @@ public class BeanRuleAnalyzer {
 		Method m2 = MethodUtils.getAccessibleMethod(beanClass, methodName, TRANSLET_ACTION_PARAMETER_TYPES);
 
 		if(m1 == null && m2 == null)
-			throw new IllegalArgumentException("No such action method " + methodName + "() on bean class: " + beanClass.getName());
+			throw new BeanRuleException("No such action method " + methodName + "() on bean class: " + beanClass.getName(), beanRule);
 		
 		if(m2 != null) {
 			beanActionRule.setMethod(m2);
@@ -177,6 +180,30 @@ public class BeanRuleAnalyzer {
 		} else {
 			beanActionRule.setMethod(m1);
 		}
+	}
+
+	public static void checkRequiredProperty(BeanRule beanRule, Method method) {
+		ItemRuleMap propertyItemRuleMap = beanRule.getPropertyItemRuleMap();
+		String propertyName = dropCase(method.getName());
+
+		if(propertyItemRuleMap != null) {
+			for(ItemRule itemRule : propertyItemRuleMap) {
+				if(propertyItemRuleMap.containsKey(itemRule.getName()))
+					return;
+			}
+		}
+
+		throw new BeanRuleException("Property '" + propertyName + "' is required for bean ", beanRule);
+	}
+
+	private static String dropCase(String name) {
+		if(name.startsWith("set")) {
+			name = name.substring(3);
+		}
+		if(name.length() == 1 || (name.length() > 1 && !Character.isUpperCase(name.charAt(1)))) {
+			name = name.substring(0, 1).toLowerCase(Locale.US) + name.substring(1);
+		}
+		return name;
 	}
 	
 }

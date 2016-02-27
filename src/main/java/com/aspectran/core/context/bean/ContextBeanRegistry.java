@@ -110,12 +110,12 @@ public class ContextBeanRegistry extends AbstractBeanFactory implements BeanRegi
 
 	@Override
 	public boolean containsBean(String id) {
-		return beanRuleRegistry.contains(id);
+		return beanRuleRegistry.containsBeanRule(id);
 	}
 
 	@Override
 	public boolean containsBean(Class<?> requiredType) {
-		return beanRuleRegistry.contains(requiredType);
+		return beanRuleRegistry.containsBeanRule(requiredType);
 	}
 
 	@SuppressWarnings("unchecked")

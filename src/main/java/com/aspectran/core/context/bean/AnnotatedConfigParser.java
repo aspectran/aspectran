@@ -36,6 +36,7 @@ import com.aspectran.core.context.bean.annotation.Initialize;
 import com.aspectran.core.context.bean.annotation.Qualifier;
 import com.aspectran.core.context.bean.annotation.Redirect;
 import com.aspectran.core.context.bean.annotation.Request;
+import com.aspectran.core.context.bean.annotation.Required;
 import com.aspectran.core.context.bean.annotation.Transform;
 import com.aspectran.core.context.rule.AutowireRule;
 import com.aspectran.core.context.rule.BeanRule;
@@ -48,6 +49,8 @@ import com.aspectran.core.context.rule.TransformRule;
 import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.type.RequestMethodType;
 import com.aspectran.core.util.StringUtils;
+import com.aspectran.core.util.logging.Log;
+import com.aspectran.core.util.logging.LogFactory;
 
 /**
  * The Class AnnotatedConfigParser.
@@ -58,6 +61,8 @@ import com.aspectran.core.util.StringUtils;
  * @author Juho Jeong
  */
 public class AnnotatedConfigParser {
+
+	private final Log log = LogFactory.getLog(AnnotatedConfigParser.class);
 
 	private final BeanRuleRegistry beanRuleRegistry;
 	
@@ -80,17 +85,28 @@ public class AnnotatedConfigParser {
 	}
 	
 	public void parse() {
+		if(log.isDebugEnabled())
+			log.debug("Parse the config bean rules: " + configBeanRuleMap.size());
+
 		for(BeanRule beanRule : configBeanRuleMap.values()) {
 			if(!beanRule.isOffered()) {
 				parseConfigBean(beanRule);
 			}
 		}
+
+		if(log.isDebugEnabled())
+			log.debug("Parse the id based bean rules: " + idBasedBeanRuleMap.size());
+
 		for(BeanRule beanRule : idBasedBeanRuleMap.values()) {
 			if(!beanRule.isOffered()) {
 				parseFieldAutowire(beanRule);
 				parseMethodAutowire(beanRule);
 			}
 		}
+
+		if(log.isDebugEnabled())
+			log.debug("Parse the type based bean rules: " + typeBasedBeanRuleMap.size());
+
 		for(Set<BeanRule> set : typeBasedBeanRuleMap.values()) {
 			for(BeanRule beanRule : set) {
 				if(!beanRule.isOffered()) {
@@ -110,9 +126,9 @@ public class AnnotatedConfigParser {
 
 			for(Method method : beanClass.getMethods()) {
 				if(method.isAnnotationPresent(Bean.class)) {
-					parseBean(beanClass, method, nameArray);
+					parseBeanRule(beanClass, method, nameArray);
 				} else if(method.isAnnotationPresent(Request.class)) {
-					parseTranslet(beanClass, method, nameArray);
+					parseTransletRule(beanClass, method, nameArray);
 				}
 			}
 		}
@@ -185,6 +201,9 @@ public class AnnotatedConfigParser {
 						autowireRule.setTypes(paramTypes);
 						autowireRule.setQualifiers(paramQualifiers);
 						autowireRule.setRequired(required);
+						beanRule.addAutowireTarget(autowireRule);
+					} else if(method.isAnnotationPresent(Required.class)) {
+						BeanRuleAnalyzer.checkRequiredProperty(beanRule, method);
 					} else if(method.isAnnotationPresent(Initialize.class)) {
 						if(!beanRule.isInitializableBean() && !beanRule.isInitializableTransletBean() && beanRule.getInitMethod() != null) {
 							beanRule.setInitMethod(method);
@@ -204,7 +223,7 @@ public class AnnotatedConfigParser {
 		}
 	}
 
-	private void parseBean(Class<?> beanClass, Method method, String[] nameArray) {
+	private void parseBeanRule(Class<?> beanClass, Method method, String[] nameArray) {
 		try {
 			Bean beanAnno = method.getAnnotation(Bean.class);
 			String beanId = applyNamespaceForBean(nameArray, StringUtils.emptyToNull(beanAnno.id()));
@@ -230,11 +249,12 @@ public class AnnotatedConfigParser {
 		}
 	}
 
-	private void parseTranslet(Class<?> beanClass, Method method, String[] nameArray) {
+	private void parseTransletRule(Class<?> beanClass, Method method, String[] nameArray) {
 		try {
 			Request requestAnno = method.getAnnotation(Request.class);
 			String transletName = applyNamespaceForTranslet(nameArray, StringUtils.emptyToNull(requestAnno.translet()));
 			RequestMethodType[] requestMethods = requestAnno.method();
+			String actionId = applyNamespaceForTranslet(nameArray, StringUtils.emptyToNull(requestAnno.actionId()));
 
 			TransletRule transletRule = TransletRule.newInstance(transletName, requestMethods);
 
@@ -266,6 +286,7 @@ public class AnnotatedConfigParser {
 			}
 
 			MethodActionRule methodActionRule = new MethodActionRule();
+			methodActionRule.setActionId(actionId);
 			methodActionRule.setConfigBeanClass(beanClass);
 			methodActionRule.setMethod(method);
 

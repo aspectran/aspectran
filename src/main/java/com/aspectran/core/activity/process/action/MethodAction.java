@@ -95,7 +95,7 @@ public class MethodAction extends AbstractAction {
 
 	@Override
 	public String getActionId() {
-		return null;
+		return methodActionRule.getActionId();
 	}
 
 	@Override

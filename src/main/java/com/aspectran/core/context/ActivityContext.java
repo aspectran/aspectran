@@ -21,6 +21,7 @@ import com.aspectran.core.context.aspect.AspectRuleRegistry;
 import com.aspectran.core.context.bean.ContextBeanRegistry;
 import com.aspectran.core.context.template.TemplateProcessor;
 import com.aspectran.core.context.translet.TransletRuleRegistry;
+import com.aspectran.core.util.ToStringBuilder;
 
 /**
  * The Class ActivityContext.
@@ -180,15 +181,13 @@ public class ActivityContext {
 
 	@Override
 	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		sb.append("{applicationAdapter=").append(applicationAdapter);
-		sb.append(", aspectRuleRegistry=").append(aspectRuleRegistry);
-		sb.append(", beanRegistry=").append(contextBeanRegistry);
-		sb.append(", transletRuleRegistry=").append(transletRuleRegistry);
-		sb.append(", templateProcessor=").append(templateProcessor);
-		sb.append("}");
-		
-		return sb.toString();
+		ToStringBuilder tsb = new ToStringBuilder();
+		tsb.append("applicationAdapter", applicationAdapter);
+		tsb.append("aspectRuleRegistry", aspectRuleRegistry);
+		tsb.append("beanRegistry", contextBeanRegistry);
+		tsb.append("transletRuleRegistry", transletRuleRegistry);
+		tsb.append("templateProcessor", templateProcessor);
+		return tsb.toString();
 	}
 	
 }

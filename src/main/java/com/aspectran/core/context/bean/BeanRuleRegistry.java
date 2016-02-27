@@ -83,7 +83,7 @@ public class BeanRuleRegistry {
 	
 	public BeanRule getBeanRule(Object idOrRequiredType) {
 		if(idOrRequiredType == null)
-			return null;
+			throw new IllegalArgumentException("'idOrRequiredType' must be not null.");
 
 		if(idOrRequiredType instanceof Class<?>) {
 			BeanRule[] beanRules = getBeanRule((Class<?>)idOrRequiredType);
@@ -116,21 +116,21 @@ public class BeanRuleRegistry {
 		return configBeanRuleMap.get(requiredType);
 	}
 
-	public boolean contains(Object idOrRequiredType) {
+	public boolean containsBeanRule(Object idOrRequiredType) {
 		if(idOrRequiredType == null)
-			return false;
+			throw new IllegalArgumentException("'idOrRequiredType' must be not null.");
 
 		if(idOrRequiredType instanceof Class<?>)
-			return contains((Class<?>)idOrRequiredType);
+			return containsBeanRule((Class<?>)idOrRequiredType);
 		else
-			return contains(idOrRequiredType.toString());
+			return containsBeanRule(idOrRequiredType.toString());
 	}
 
-	public boolean contains(String id) {
+	public boolean containsBeanRule(String id) {
 		return idBasedBeanRuleMap.containsKey(id);
 	}
 	
-	public boolean contains(Class<?> requiredType) {
+	public boolean containsBeanRule(Class<?> requiredType) {
 		return typeBasedBeanRuleMap.containsKey(requiredType);
 	}
 	
@@ -204,7 +204,7 @@ public class BeanRuleRegistry {
 			if(beanRule.getId() != null)
 				putBeanRule(beanRule.getId(), beanRule);
 
-			if(targetBeanClass != null && !beanRule.isOffered()) {
+			if(!beanRule.isOffered()) {
 				if(targetBeanClass.isAnnotationPresent(Configuration.class)) {
 					// bean rule for configuration
 					putConfigBeanRule(beanRule);
@@ -225,7 +225,7 @@ public class BeanRuleRegistry {
 	
 	private void putBeanRule(String beanId, BeanRule beanRule) {
 		if(importantBeanIdSet.contains(beanId))
-			throw new BeanRuleException("Already exists named bean", beanRule);
+			throw new BeanRuleException("Already exists the id based named bean", beanRule);
 
 		if(beanRule.isImportant())
 			importantBeanIdSet.add(beanRule.getId());
@@ -235,7 +235,7 @@ public class BeanRuleRegistry {
 	
 	private void putBeanRule(Class<?> beanClass, BeanRule beanRule) {
 		if(importantBeanTypeSet.contains(beanClass))
-			throw new BeanRuleException("Already exists named bean", beanRule);
+			throw new BeanRuleException("Already exists the type based named bean", beanRule);
 
 		if(beanRule.isImportant())
 			importantBeanTypeSet.add(beanClass);
@@ -256,7 +256,15 @@ public class BeanRuleRegistry {
 		AnnotatedConfigRelater relater = new AnnotatedConfigRelater() {
 			@Override
 			public void relay(Class<?> targetBeanClass, BeanRule beanRule) {
+				if(beanRule.getId() != null) {
+					putBeanRule(beanRule.getId(), beanRule);
+				}
 				putBeanRule(targetBeanClass, beanRule);
+				for(Class<?> ifc : targetBeanClass.getInterfaces()) {
+					if(!ignoredDependencyInterfaces.contains(ifc)) {
+						putBeanRule(ifc, beanRule);
+					}
+				}
 			}
 
 			@Override
@@ -272,40 +280,40 @@ public class BeanRuleRegistry {
 	}
 	
 	public void postProcess() {
-		if(postProcessBeanRuleMap.isEmpty())
-			return;
-		
-		for(BeanRule beanRule : postProcessBeanRuleMap) {
-			if(beanRule.getId() != null)
-				putBeanRule(beanRule.getId(), beanRule);
+		if(!postProcessBeanRuleMap.isEmpty()) {
+			for(BeanRule beanRule : postProcessBeanRuleMap) {
+				if(beanRule.getId() != null)
+					putBeanRule(beanRule.getId(), beanRule);
 
-			if(beanRule.isOffered()) {
-				Class<?> offerBeanClass = resolveOfferBeanClass(beanRule);
-				Class<?> targetBeanClass = BeanRuleAnalyzer.determineOfferMethodTargetBeanClass(offerBeanClass, beanRule);
-				
-				if(beanRule.getInitMethodName() != null) {
-					BeanRuleAnalyzer.checkInitMethod(targetBeanClass, beanRule);
-				}
+				if(beanRule.isOffered()) {
+					Class<?> offerBeanClass = resolveOfferBeanClass(beanRule);
+					Class<?> targetBeanClass = BeanRuleAnalyzer.determineOfferMethodTargetBeanClass(offerBeanClass, beanRule);
 
-				if(beanRule.getDestroyMethodName() != null) {
-					BeanRuleAnalyzer.checkDestroyMethod(targetBeanClass, beanRule);
-				}
+					if(beanRule.getInitMethodName() != null) {
+						BeanRuleAnalyzer.checkInitMethod(targetBeanClass, beanRule);
+					}
 
-				if(beanRule.getFactoryMethodName() != null) {
-					targetBeanClass = BeanRuleAnalyzer.determineFactoryMethodTargetBeanClass(targetBeanClass, beanRule);
-				}
-				
-				putBeanRule(targetBeanClass, beanRule);
+					if(beanRule.getDestroyMethodName() != null) {
+						BeanRuleAnalyzer.checkDestroyMethod(targetBeanClass, beanRule);
+					}
 
-				for(Class<?> ifc : targetBeanClass.getInterfaces()) {
-					if(!ignoredDependencyInterfaces.contains(ifc)) {
-						putBeanRule(ifc, beanRule);
+					if(beanRule.getFactoryMethodName() != null) {
+						targetBeanClass = BeanRuleAnalyzer.determineFactoryMethodTargetBeanClass(targetBeanClass, beanRule);
+					}
+
+					putBeanRule(targetBeanClass, beanRule);
+
+					for(Class<?> ifc : targetBeanClass.getInterfaces()) {
+						if(!ignoredDependencyInterfaces.contains(ifc)) {
+							putBeanRule(ifc, beanRule);
+						}
 					}
 				}
 			}
+
+			postProcessBeanRuleMap.clear();
 		}
-		
-		postProcessBeanRuleMap.clear();
+
 		importantBeanIdSet.clear();
 		importantBeanTypeSet.clear();
 

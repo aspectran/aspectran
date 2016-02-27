@@ -131,7 +131,7 @@ public abstract class AbstractPointcut implements Pointcut {
 	 * @param beanId the bean or action id
 	 * @param className the class name
 	 * @param methodName the bean method name
-	 * @return true, if successful
+	 * @return true, if exists matched
 	 */
 	protected boolean exists(PointcutPatternRule pointcutPatternRule, String transletName, String beanId, String className, String methodName) {
 		boolean matched = true;

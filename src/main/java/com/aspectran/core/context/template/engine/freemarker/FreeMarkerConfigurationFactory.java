@@ -15,6 +15,13 @@
  */
 package com.aspectran.core.context.template.engine.freemarker;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.bean.aware.ApplicationAdapterAware;
 import com.aspectran.core.context.template.engine.freemarker.directive.CustomTrimDirective;
@@ -25,6 +32,7 @@ import com.aspectran.core.util.ResourceUtils;
 import com.aspectran.core.util.apon.Parameters;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
+
 import freemarker.cache.ClassTemplateLoader;
 import freemarker.cache.FileTemplateLoader;
 import freemarker.cache.MultiTemplateLoader;
@@ -32,13 +40,6 @@ import freemarker.cache.TemplateLoader;
 import freemarker.template.Configuration;
 import freemarker.template.SimpleHash;
 import freemarker.template.TemplateException;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
 
 /**
  * Factory that configures a FreeMarker Configuration.

@@ -80,6 +80,11 @@ public class AspectAdviceRulePreRegister extends AspectAdviceRuleRegister {
 	}
 	
 	public void register(BeanRuleRegistry beanRuleRegistry) {
+		for(BeanRule beanRule : beanRuleRegistry.getConfigBeanRuleMap().values()) {
+			if(beanRule.isProxiable()) {
+				determineProxyBean(beanRule);
+			}
+		}
 		for(BeanRule beanRule : beanRuleRegistry.getIdBasedBeanRuleMap().values()) {
 			if(beanRule.isProxiable()) {
 				determineProxyBean(beanRule);
@@ -290,14 +295,16 @@ public class AspectAdviceRulePreRegister extends AspectAdviceRuleRegister {
 		
 		if(beanId != null && pointcutPatternRule.getBeanIdPattern() != null) {
 			matched = pointcut.patternMatches(pointcutPatternRule.getBeanIdPattern(), beanId, AspectranConstants.ID_SEPARATOR_CHAR);
-			if(matched)
+			if(matched) {
 				pointcutPatternRule.increaseMatchedBeanCount();
+			}
 		}
 		
 		if(matched && className != null && pointcutPatternRule.getClassNamePattern() != null) {
 			matched = pointcut.patternMatches(pointcutPatternRule.getClassNamePattern(), className, AspectranConstants.ID_SEPARATOR_CHAR);
-			if(matched)
+			if(matched) {
 				pointcutPatternRule.increaseMatchedClassCount();
+			}
 		}
 
 		if(matched && methodNames != null && pointcutPatternRule.getMethodNamePattern() != null) {

@@ -78,26 +78,25 @@ public abstract class AbstractActivityContextBuilder extends ContextBuilderAssis
 		BeanReferenceInspector beanReferenceInspector = getBeanReferenceInspector();
 		beanReferenceInspector.inspect(beanRuleRegistry);
 		
-		ActivityContext context = new ActivityContext(applicationAdapter);
-
 		initAspectRuleRegistry(aspectRuleRegistry, beanRuleRegistry, transletRuleRegistry);
-		context.setAspectRuleRegistry(aspectRuleRegistry);
 
 		BeanProxifierType beanProxifierType = BeanProxifierType.lookup((String)getSetting(DefaultSettingType.BEAN_PROXIFIER));
 		ContextBeanRegistry contextBeanRegistry = new ContextBeanRegistry(beanRuleRegistry, beanProxifierType);
-		context.setContextBeanRegistry(contextBeanRegistry);
-		
-		context.setTransletRuleRegistry(transletRuleRegistry);
-		
+
 		TemplateProcessor templateProcessor = new ContextTemplateProcessor(templateRuleRegistry);
-		context.setTemplateProcessor(templateProcessor);
-		
-		contextBeanRegistry.initialize(context);
-		templateProcessor.initialize(context);
-		
+
 		BeanDescriptor.clearCache();
 		MethodUtils.clearCache();
-		
+
+		ActivityContext context = new ActivityContext(applicationAdapter);
+		context.setAspectRuleRegistry(aspectRuleRegistry);
+		context.setContextBeanRegistry(contextBeanRegistry);
+		context.setTransletRuleRegistry(transletRuleRegistry);
+		context.setTemplateProcessor(templateProcessor);
+
+		contextBeanRegistry.initialize(context);
+		templateProcessor.initialize(context);
+
 		return context;
 	}
 	

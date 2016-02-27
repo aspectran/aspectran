@@ -281,6 +281,7 @@ public class PointcutPatternRule {
 
 		if(translet != null && translet.length() > 0)						
 			ppr.setTransletNamePattern(translet);
+
 		if(bean != null && bean.length() > 0) {
 			if(bean.startsWith(BeanRule.CLASS_DIRECTIVE_PREFIX)) {
 				String className = bean.substring(BeanRule.CLASS_DIRECTIVE_PREFIX.length());
@@ -291,6 +292,7 @@ public class PointcutPatternRule {
 				ppr.setBeanIdPattern(bean);
 			}
 		}
+
 		if(method != null && method.length() > 0)
 			ppr.setMethodNamePattern(method);
 		

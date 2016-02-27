@@ -67,7 +67,7 @@ public class WildcardPointcut extends AbstractPointcut {
 				if(wildcardPatternMatches(patternToken, compareString, separator))
 					return true;
 			}
-			
+
 			return false;
 		}
 	}
@@ -78,7 +78,7 @@ public class WildcardPointcut extends AbstractPointcut {
 		}
 		
 		WildcardPattern wildcardPattern = wildcardPatternCache.get(pattern);
-			
+
 		if(wildcardPattern == null) {
 			wildcardPattern = new WildcardPattern(pattern);
 			wildcardPatternCache.put(pattern, wildcardPattern);
@@ -89,9 +89,9 @@ public class WildcardPointcut extends AbstractPointcut {
 
 	protected boolean wildcardPatternMatches(String pattern, String compareString, char separator) {
 		String patternId = pattern + separator;
-		
+
 		WildcardPattern wildcardPattern = wildcardPatternCache.get(patternId);
-		
+
 		if(wildcardPattern == null) {
 			wildcardPattern = new WildcardPattern(pattern, separator);
 			wildcardPatternCache.put(patternId, wildcardPattern);

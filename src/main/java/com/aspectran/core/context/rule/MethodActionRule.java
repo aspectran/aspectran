@@ -30,6 +30,8 @@ import com.aspectran.core.util.ToStringBuilder;
  */
 public class MethodActionRule {
 
+	private String actionId;
+
 	private Class<?> configBeanClass;
 
 	private Method method;
@@ -39,6 +41,14 @@ public class MethodActionRule {
 	private AspectAdviceRule aspectAdviceRule;
 	
 	private AspectAdviceRuleRegistry aspectAdviceRuleRegistry;
+
+	public String getActionId() {
+		return actionId;
+	}
+
+	public void setActionId(String actionId) {
+		this.actionId = actionId;
+	}
 
 	public Class<?> getConfigBeanClass() {
 		return configBeanClass;
