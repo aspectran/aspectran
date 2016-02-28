@@ -28,7 +28,7 @@ public class Application {
 	private static final String DEFAULT_ASPECTRAN_CONFIG_FILE = "aspectran-config.apon";
 
     public static void main(String[] args) {
-        String aspectranConfigFile = null;
+        String aspectranConfigFile;
 
         if(args.length > 0)
             aspectranConfigFile = args[0];

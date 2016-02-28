@@ -33,13 +33,13 @@ public class TransformResponseFactory {
 		TransformType type = transformRule.getTransformType();
 		Response res = null;
 		
-		if(type == TransformType.XML_TRANSFORM) {
+		if(type == TransformType.XML) {
 			res = new XmlTransform(transformRule);
-		} else if(type == TransformType.XSL_TRANSFORM) {
+		} else if(type == TransformType.XSL) {
 			res = new XmlTransform(transformRule);
-		} else if(type == TransformType.JSON_TRANSFORM) {
+		} else if(type == TransformType.JSON) {
 			res = new JsonTransform(transformRule);
-		} else if(type == TransformType.TEXT_TRANSFORM) {
+		} else if(type == TransformType.TEXT) {
 			res = new TextTransform(transformRule);
 		} else {
 			throw new ResponseNotFoundException("TransformResponse is not found. transformRule " + transformRule);

@@ -16,6 +16,7 @@
 package com.aspectran.web.service;
 
 import java.io.IOException;
+import java.net.URLDecoder;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
@@ -26,6 +27,7 @@ import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.request.RequestMethodNotAllowedException;
 import com.aspectran.core.context.loader.config.AspectranConfig;
 import com.aspectran.core.context.loader.config.AspectranContextConfig;
+import com.aspectran.core.context.loader.config.AspectranWebConfig;
 import com.aspectran.core.context.translet.TransletNotFoundException;
 import com.aspectran.core.service.AspectranServiceControllerListener;
 import com.aspectran.core.service.AspectranServiceException;
@@ -50,7 +52,9 @@ public class WebAspectranService extends CoreAspectranService {
 	public static final String ASPECTRAN_DEFAULT_SERVLET_NAME_PARAM = "aspectran:defaultServletName";
 	
 	private static final String DEFAULT_ROOT_CONTEXT = "/WEB-INF/aspectran/config/aspectran-config.xml";
-	
+
+	private String urlDecoding;
+
 	private DefaultServletHttpRequestHandler defaultServletHttpRequestHandler;
 	
 	protected long pauseTimeout;
@@ -81,6 +85,11 @@ public class WebAspectranService extends CoreAspectranService {
 			contextParameters.putValue(AspectranContextConfig.root, DEFAULT_ROOT_CONTEXT);
 		}
 
+		Parameters webParameters = aspectranConfig.getParameters(AspectranConfig.web);
+		if(webParameters != null) {
+			this.urlDecoding = webParameters.getString(AspectranWebConfig.urlDecoding);
+		}
+
 		initialize(aspectranConfig);
 	}
 	
@@ -93,6 +102,14 @@ public class WebAspectranService extends CoreAspectranService {
 	 */
 	public void service(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		String requestUri = request.getRequestURI();
+
+		if(urlDecoding != null) {
+			requestUri = URLDecoder.decode(requestUri, urlDecoding);
+		}
+
+		if(log.isDebugEnabled()) {
+			log.debug("Request URI: " + requestUri);
+		}
 
 		if(pauseTimeout > 0L) {
 			if(pauseTimeout >= System.currentTimeMillis()) {

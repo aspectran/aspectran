@@ -32,6 +32,4 @@ public @interface Request {
 
 	RequestMethodType[] method() default {};
 
-	String actionId() default "";
-
 }

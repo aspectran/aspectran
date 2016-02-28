@@ -26,6 +26,7 @@ import java.util.Set;
 import java.util.StringTokenizer;
 
 import com.aspectran.core.context.AspectranConstants;
+import com.aspectran.core.context.bean.annotation.Action;
 import com.aspectran.core.context.bean.annotation.Autowired;
 import com.aspectran.core.context.bean.annotation.Bean;
 import com.aspectran.core.context.bean.annotation.Configuration;
@@ -48,6 +49,7 @@ import com.aspectran.core.context.rule.ResponseRule;
 import com.aspectran.core.context.rule.TransformRule;
 import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.type.RequestMethodType;
+import com.aspectran.core.context.rule.type.TransformType;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
@@ -254,7 +256,14 @@ public class AnnotatedConfigParser {
 			Request requestAnno = method.getAnnotation(Request.class);
 			String transletName = applyNamespaceForTranslet(nameArray, StringUtils.emptyToNull(requestAnno.translet()));
 			RequestMethodType[] requestMethods = requestAnno.method();
-			String actionId = applyNamespaceForTranslet(nameArray, StringUtils.emptyToNull(requestAnno.actionId()));
+
+			String actionId;
+			Action actionAnno = method.getAnnotation(Action.class);
+			if(actionAnno != null) {
+				actionId = applyNamespaceForTranslet(nameArray, StringUtils.emptyToNull(actionAnno.id()));
+			} else {
+				actionId = null;
+			}
 
 			TransletRule transletRule = TransletRule.newInstance(transletName, requestMethods);
 
@@ -266,7 +275,7 @@ public class AnnotatedConfigParser {
 				transletRule.setResponseRule(ResponseRule.newInstance(drr));
 			} else if(method.isAnnotationPresent(Transform.class)) {
 				Transform transformAnno = method.getAnnotation(Transform.class);
-				String transformType = StringUtils.emptyToNull(transformAnno.transformType());
+				TransformType transformType = transformAnno.transformType();
 				String contentType = StringUtils.emptyToNull(transformAnno.contentType());
 				String templateId = StringUtils.emptyToNull(transformAnno.templateId());
 				String characterEncoding = StringUtils.emptyToNull(transformAnno.characterEncoding());

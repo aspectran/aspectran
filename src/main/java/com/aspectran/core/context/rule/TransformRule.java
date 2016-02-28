@@ -71,11 +71,11 @@ public class TransformRule extends ActionPossessSupport implements ActionPossess
 		this.transformType = transformType;
 		
 		if(contentType == null) {
-			if(transformType == TransformType.TEXT_TRANSFORM)
+			if(transformType == TransformType.TEXT)
 				contentType = ContentType.TEXT_PLAIN.toString();
-			else if(transformType == TransformType.JSON_TRANSFORM)
+			else if(transformType == TransformType.JSON)
 				contentType = ContentType.TEXT_JSON.toString();
-			else if(transformType == TransformType.XML_TRANSFORM)
+			else if(transformType == TransformType.XML)
 				contentType = ContentType.TEXT_XML.toString();
 		}
 	}
@@ -204,6 +204,27 @@ public class TransformRule extends ActionPossessSupport implements ActionPossess
 		tr.setDefaultResponse(defaultResponse);
 		tr.setPretty(pretty);
 		
+		return tr;
+	}
+
+	public static TransformRule newInstance(TransformType transformType, String contentType, String templateId, String characterEncoding, Boolean defaultResponse, Boolean pretty) {
+		if(transformType == null && contentType != null) {
+			transformType = TransformType.lookup(ContentType.lookup(contentType));
+		}
+
+		if(transformType == null)
+			throw new IllegalArgumentException("Transform Type is not specified.");
+
+		TransformRule tr = new TransformRule();
+		tr.setTransformType(transformType);
+		if(contentType != null) {
+			tr.setContentType(contentType);
+		}
+		tr.setTemplateId(templateId);
+		tr.setCharacterEncoding(characterEncoding);
+		tr.setDefaultResponse(defaultResponse);
+		tr.setPretty(pretty);
+
 		return tr;
 	}
 

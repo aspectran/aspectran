@@ -86,17 +86,14 @@ public class XmlTransform extends TransformResponse implements Response {
 		}
 
 		try {
-			if(contentType != null) {
-				responseAdapter.setContentType(contentType);
-			}
-
 			Writer output = responseAdapter.getWriter();
 			ProcessResult processResult = activity.getProcessResult();
 
 			TransformerFactory transformerFactory = TransformerFactory.newInstance();
 			
-			if(pretty)
+			if(pretty) {
 				transformerFactory.setAttribute(INDENT_NUMBER_KEY, INDENT_NUMBER_VAL);
+			}
 
 			Transformer transformer = transformerFactory.newTransformer();
 			transformer.setOutputProperty(OutputKeys.METHOD, OUTPUT_METHOD_XML);
@@ -113,6 +110,10 @@ public class XmlTransform extends TransformResponse implements Response {
 					responseAdapter.setCharacterEncoding(characterEncoding);
 					transformer.setOutputProperty(OutputKeys.ENCODING, characterEncoding);
 				}
+			}
+
+			if(contentType != null) {
+				responseAdapter.setContentType(contentType);
 			}
 
 			ContentsXMLReader xreader = new ContentsXMLReader();

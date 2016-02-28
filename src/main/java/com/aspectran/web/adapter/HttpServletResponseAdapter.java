@@ -114,7 +114,7 @@ public class HttpServletResponseAdapter extends AbstractResponseAdapter implemen
 					sb.append(QUESTION_CHAR);
 
 				String name = null;
-				Object value = null;
+				Object value;
 				
 				for(Map.Entry<String, Object> entry : valueMap.entrySet()) {
 					if(name != null)

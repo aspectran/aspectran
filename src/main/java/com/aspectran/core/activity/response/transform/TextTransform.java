@@ -74,16 +74,16 @@ public class TextTransform extends TransformResponse implements Response {
 		}
 
 		try {
-			if(contentType != null) {
-				responseAdapter.setContentType(contentType);
-			}
-
 			if(this.characterEncoding != null) {
 				responseAdapter.setCharacterEncoding(this.characterEncoding);
 			} else {
 				String characterEncoding = activity.determineResponseCharacterEncoding();
 				if(characterEncoding != null)
 					responseAdapter.setCharacterEncoding(characterEncoding);
+			}
+
+			if(contentType != null) {
+				responseAdapter.setContentType(contentType);
 			}
 
 			Writer writer = responseAdapter.getWriter();

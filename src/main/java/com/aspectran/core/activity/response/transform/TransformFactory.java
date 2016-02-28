@@ -38,21 +38,21 @@ public class TransformFactory {
 		
 		Response transform;
 		
-		if(tranformType == TransformType.XSL_TRANSFORM) {
+		if(tranformType == TransformType.XSL) {
 			transform = new XslTransform(transformRule);
-		} else if(tranformType == TransformType.XML_TRANSFORM) {
+		} else if(tranformType == TransformType.XML) {
 			if(transformRule.getContentType() == null) {
 				transformRule.setContentType(ContentType.TEXT_XML.toString());
 			}
 			transform = new XmlTransform(transformRule);
-		} else if(tranformType == TransformType.TEXT_TRANSFORM) {
+		} else if(tranformType == TransformType.TEXT) {
 			transform = new TextTransform(transformRule);
-		} else if(tranformType == TransformType.JSON_TRANSFORM) {
+		} else if(tranformType == TransformType.JSON) {
 			if(transformRule.getContentType() == null) {
 				transformRule.setContentType(ContentType.TEXT_PLAIN.toString());
 			}
 			transform = new JsonTransform(transformRule);
-		} else if(tranformType == TransformType.APON_TRANSFORM) {
+		} else if(tranformType == TransformType.APON) {
 			if(transformRule.getContentType() == null) {
 				transformRule.setContentType(ContentType.TEXT_PLAIN.toString());
 			}

@@ -22,11 +22,11 @@ package com.aspectran.core.context.rule.type;
  */
 public enum TransformType {
 
-	XML_TRANSFORM("transform/xml"),
-	XSL_TRANSFORM("transform/xsl"),
-	TEXT_TRANSFORM("transform/text"),
-	JSON_TRANSFORM("transform/json"),
-	APON_TRANSFORM("transform/apon");
+	XML("transform/xml"),
+	XSL("transform/xsl"),
+	TEXT("transform/text"),
+	JSON("transform/json"),
+	APON("transform/apon");
 
 	private final String alias;
 
@@ -61,13 +61,13 @@ public enum TransformType {
 	 */
 	public static TransformType lookup(ContentType contentType) {
 		if(contentType == ContentType.TEXT_PLAIN)
-			return TEXT_TRANSFORM;
+			return TEXT;
 		else if(contentType == ContentType.TEXT_XML)
-			return XML_TRANSFORM;
+			return XML;
 		else if(contentType == ContentType.TEXT_JSON)
-			return JSON_TRANSFORM;
+			return JSON;
 		else if(contentType == ContentType.TEXT_APON)
-			return APON_TRANSFORM;
+			return APON;
 		
 		return null;
 	}

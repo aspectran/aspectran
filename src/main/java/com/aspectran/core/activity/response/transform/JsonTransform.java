@@ -72,9 +72,6 @@ public class JsonTransform extends TransformResponse implements Response {
 		}
 		
 		try {
-			if(contentType != null)
-				responseAdapter.setContentType(contentType);
-
 			if(this.characterEncoding != null) {
 				responseAdapter.setCharacterEncoding(this.characterEncoding);
 			} else {
@@ -82,7 +79,11 @@ public class JsonTransform extends TransformResponse implements Response {
 				if(characterEncoding != null)
 					responseAdapter.setCharacterEncoding(characterEncoding);
 			}
-			
+
+			if(contentType != null) {
+				responseAdapter.setContentType(contentType);
+			}
+
 			Writer writer = responseAdapter.getWriter();
 			ProcessResult processResult = activity.getProcessResult();
 

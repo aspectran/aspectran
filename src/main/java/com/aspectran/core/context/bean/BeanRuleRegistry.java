@@ -83,7 +83,7 @@ public class BeanRuleRegistry {
 	
 	public BeanRule getBeanRule(Object idOrRequiredType) {
 		if(idOrRequiredType == null)
-			throw new IllegalArgumentException("'idOrRequiredType' must be not null.");
+			throw new IllegalArgumentException("'idOrRequiredType' must not be null.");
 
 		if(idOrRequiredType instanceof Class<?>) {
 			BeanRule[] beanRules = getBeanRule((Class<?>)idOrRequiredType);
@@ -118,7 +118,7 @@ public class BeanRuleRegistry {
 
 	public boolean containsBeanRule(Object idOrRequiredType) {
 		if(idOrRequiredType == null)
-			throw new IllegalArgumentException("'idOrRequiredType' must be not null.");
+			throw new IllegalArgumentException("'idOrRequiredType' must not be null.");
 
 		if(idOrRequiredType instanceof Class<?>)
 			return containsBeanRule((Class<?>)idOrRequiredType);

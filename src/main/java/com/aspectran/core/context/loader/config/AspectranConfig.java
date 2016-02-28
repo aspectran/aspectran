@@ -23,16 +23,19 @@ public class AspectranConfig extends AbstractParameters implements Parameters {
 
 	public static final ParameterDefine context;
 	public static final ParameterDefine scheduler;
-	
+	public static final ParameterDefine web;
+
 	private static final ParameterDefine[] parameterDefines;
 	
 	static {
 		context = new ParameterDefine("context", AspectranContextConfig.class);
 		scheduler = new ParameterDefine("scheduler", AspectranSchedulerConfig.class);
+		web = new ParameterDefine("web", AspectranWebConfig.class);
 
 		parameterDefines = new ParameterDefine[] {
 				context,
-				scheduler
+				scheduler,
+				web
 		};
 	}
 	

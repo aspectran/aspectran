@@ -107,38 +107,66 @@ public class CoreActivity extends AbstractActivity implements Activity {
 
 	@Override
 	public void ready(String transletName) {
-		ready(transletName, (ProcessResult)null);
+		this.transletName = transletName;
+		this.requestMethod = null;
+
+		TransletRule transletRule = context.getTransletRuleRegistry().getTransletRule(transletName);
+
+		if(transletRule == null) {
+			throw new TransletNotFoundException(transletName);
+		}
+
+		ready(transletRule, null);
 	}
 
 	@Override
 	public void ready(String transletName, String requestMethod) {
-		this.requestMethod = RequestMethodType.lookup(requestMethod);
-		ready(transletName, (ProcessResult)null);
+		RequestMethodType requestMethodType = RequestMethodType.lookup(requestMethod);
+		ready(transletName, requestMethodType);
 	}
 
 	@Override
 	public void ready(String transletName, RequestMethodType requestMethod) {
+		this.transletName = transletName;
 		this.requestMethod = requestMethod;
-		ready(transletName, (ProcessResult)null);
+
+		TransletRule transletRule = context.getTransletRuleRegistry().getTransletRule(transletName);
+
+		// for RESTful
+		PathVariableMap pathVariableMap = null;
+		if(transletRule == null && requestMethod != null) {
+			pathVariableMap = context.getTransletRuleRegistry().getPathVariableMap(transletName, requestMethod);
+			if(pathVariableMap != null) {
+				transletRule = pathVariableMap.getTransletRule();
+			}
+		}
+
+		if(transletRule == null) {
+			throw new TransletNotFoundException(transletName);
+		}
+
+		ready(transletRule, null);
+
+		if(pathVariableMap != null) {
+			pathVariableMap.apply(translet);
+		}
 	}
 
 	private void ready(String transletName, ProcessResult processResult) {
+		this.transletName = transletName;
+		this.requestMethod = null;
+
+		TransletRule transletRule = context.getTransletRuleRegistry().getTransletRule(transletName);
+
+		if(transletRule == null) {
+			throw new TransletNotFoundException(transletName);
+		}
+
+		ready(transletRule, processResult);
+	}
+
+	private void ready(TransletRule transletRule, ProcessResult processResult) {
 		try {
-			TransletRule transletRule = context.getTransletRuleRegistry().getTransletRule(transletName);
-
-			// for RESTful
-			PathVariableMap pathVariableMap = null;
-			if(transletRule == null && requestMethod != null) {
-				pathVariableMap = context.getTransletRuleRegistry().getPathVariableMap(transletName, requestMethod);
-				if(pathVariableMap != null) {
-					transletRule = pathVariableMap.getTransletRule();
-				}
-			}
-
-			if(transletRule == null) {
-				throw new TransletNotFoundException(transletName);
-			}
-
 			if(debugEnabled) {
 				log.debug("translet " + transletRule);
 			}
@@ -155,7 +183,6 @@ public class CoreActivity extends AbstractActivity implements Activity {
 				translet.setProcessResult(processResult);
 			}
 
-			this.transletName = transletName;
 			this.transletRule = transletRule;
 			this.requestRule = transletRule.getRequestRule();
 			this.responseRule = transletRule.getResponseRule();
@@ -163,6 +190,7 @@ public class CoreActivity extends AbstractActivity implements Activity {
 			this.transletAspectAdviceRuleRegistry = transletRule.getAspectAdviceRuleRegistry(true);
 			this.requestAspectAdviceRuleRegistry = requestRule.getAspectAdviceRuleRegistry(true);
 			this.responseAspectAdviceRuleRegistry = responseRule.getAspectAdviceRuleRegistry(true);
+
 			if(transletRule.getContentList() != null) {
 				this.contentAspectAdviceRuleRegistry = transletRule.getContentList().getAspectAdviceRuleRegistry(true);
 			}
@@ -171,11 +199,6 @@ public class CoreActivity extends AbstractActivity implements Activity {
 
 			adapting();
 
-			if(pathVariableMap != null) {
-				pathVariableMap.apply(translet);
-			}
-		} catch(TransletNotFoundException e) {
-			throw e;
 		} catch(Exception e) {
 			throw new ActivityException("Failed to ready for Activity.", e);
 		}
@@ -538,11 +561,10 @@ public class CoreActivity extends AbstractActivity implements Activity {
 	 */
 	private void forward() {
 		if(debugEnabled) {
-			log.debug("Forwarding to Translet [" + forwardTransletName + "]");
+			log.debug("Forwarding to the translet [" + forwardTransletName + "]");
 		}
 		
-		ProcessResult processResult = translet.getProcessResult();
-		ready(forwardTransletName, processResult);
+		ready(forwardTransletName, translet.getProcessResult());
 		perform();
 	}
 

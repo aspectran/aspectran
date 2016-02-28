@@ -21,21 +21,11 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import com.aspectran.core.context.rule.type.TransformType;
-
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface Transform {
+public @interface Action {
 
-	TransformType transformType();
-
-	String contentType() default "";
-	
-	String templateId() default "";
-	
-	String characterEncoding() default "";
-	
-	boolean pretty() default false;
+	String id() default "";
 
 }
