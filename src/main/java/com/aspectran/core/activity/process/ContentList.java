@@ -16,7 +16,6 @@
 package com.aspectran.core.activity.process;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
 import com.aspectran.core.util.BooleanUtils;
@@ -97,7 +96,7 @@ public class ContentList extends ArrayList<ActionList> {
 		ToStringBuilder tsb = new ToStringBuilder();
 		tsb.append("name", name);
 		tsb.append("omittable", omittable);
-		tsb.append("contents", (List<ActionList>)this);
+		tsb.append("contents", this);
 		return tsb.toString();
 	}
 	

@@ -22,15 +22,14 @@ import com.aspectran.core.util.apon.Parameters;
 
 public class AspectranWebConfig extends AbstractParameters implements Parameters {
 
-	public static final ParameterDefine urlDecoding;
+	public static final ParameterDefine uriDecoding;
 
 	private final static ParameterDefine[] parameterDefines;
 
 	static {
-		urlDecoding = new ParameterDefine("urlDecoding", ParameterValueType.STRING);
+		uriDecoding = new ParameterDefine("uriDecoding", ParameterValueType.STRING);
 
-		parameterDefines = new ParameterDefine[] {
-				urlDecoding
+		parameterDefines = new ParameterDefine[] {uriDecoding
 		};
 	}
 

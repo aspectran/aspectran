@@ -34,34 +34,34 @@ public interface Response extends Replicable<Response> {
 	 * 
 	 * @throws ResponseException the response exception
 	 */
-	public void response(Activity activity) throws ResponseException;
+	void response(Activity activity) throws ResponseException;
 	
 	/**
 	 * Gets the response type.
 	 * 
 	 * @return the response type
 	 */
-	public ResponseType getResponseType();
+	ResponseType getResponseType();
 
 	/**
 	 * Gets the content type.
 	 * 
 	 * @return the content type
 	 */
-	public String getContentType();
+	String getContentType();
 	
 	/**
 	 * Gets the action list.
 	 *
 	 * @return the action list
 	 */
-	public ActionList getActionList();
+	ActionList getActionList();
 
 	/**
 	 * Replicate this response.
 	 *
 	 * @return the new response
 	 */
-	public Response replicate();
+	Response replicate();
 	
 }

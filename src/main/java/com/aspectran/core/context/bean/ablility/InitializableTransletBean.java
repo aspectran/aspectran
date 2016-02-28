@@ -30,6 +30,6 @@ public interface InitializableTransletBean {
 	 * @param translet the translet
 	 * @throws Exception the exception
 	 */
-	public void initialize(Translet translet) throws Exception;
+	void initialize(Translet translet) throws Exception;
 
 }

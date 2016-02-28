@@ -25,6 +25,6 @@ package com.aspectran.core.context.rule.ability;
  */
 public interface Replicable<T> {
 	
-	public T replicate();
+	T replicate();
 
 }

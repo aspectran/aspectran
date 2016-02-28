@@ -26,7 +26,7 @@ import com.aspectran.core.context.ActivityContext;
  */
 public interface BeanFactory {
 	
-	public void initialize(ActivityContext context);
+	void initialize(ActivityContext context);
 
 	/**
 	 * Destroy all singleton beans in this factory.
@@ -35,6 +35,6 @@ public interface BeanFactory {
 	 * Any exception that arises during destruction should be caught
 	 * and logged instead of propagated to the caller of this method.
 	 */
-	public void destroy();
+	void destroy();
 
 }

@@ -26,6 +26,6 @@ public interface ProxyMethodInvoker {
 	 * @return the object
 	 * @throws Throwable the throwable
 	 */
-	public Object invoke() throws Throwable;
+	Object invoke() throws Throwable;
 	
 }

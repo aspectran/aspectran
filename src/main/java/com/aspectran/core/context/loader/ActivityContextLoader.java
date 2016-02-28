@@ -21,12 +21,12 @@ import com.aspectran.core.context.builder.ActivityContextBuilderException;
 
 public interface ActivityContextLoader {
 
-	public ApplicationAdapter getApplicationAdapter();
+	ApplicationAdapter getApplicationAdapter();
 	
-	public void setApplicationAdapter(ApplicationAdapter applicationAdapter);
+	void setApplicationAdapter(ApplicationAdapter applicationAdapter);
 
-	public void setHybridLoading(boolean hybridLoading);
+	void setHybridLoading(boolean hybridLoading);
 	
-	public ActivityContext load(String rootContext) throws ActivityContextBuilderException;
+	ActivityContext load(String rootContext) throws ActivityContextBuilderException;
 	
 }

@@ -37,21 +37,21 @@ public interface RequestAdapter {
 	 * @param <T> the generic type
 	 * @return the Adaptee object
 	 */
-	public <T> T getAdaptee();
+	<T> T getAdaptee();
 
 	/**
 	 * Gets the request method.
 	 *
 	 * @return the request method
 	 */
-	public RequestMethodType getRequestMethod();
+	RequestMethodType getRequestMethod();
 
 	/**
 	 * Gets the character encoding.
 	 * 
 	 * @return the character encoding
 	 */
-	public String getCharacterEncoding();
+	String getCharacterEncoding();
 	
 	/**
 	 * Sets the character encoding.
@@ -59,7 +59,7 @@ public interface RequestAdapter {
 	 * @param characterEncoding the new character encoding
 	 * @throws UnsupportedEncodingException the unsupported encoding exception
 	 */
-	public void setCharacterEncoding(String characterEncoding) throws UnsupportedEncodingException;
+	void setCharacterEncoding(String characterEncoding) throws UnsupportedEncodingException;
 	
 	/**
 	 * Gets the parameter.
@@ -67,7 +67,7 @@ public interface RequestAdapter {
 	 * @param name the parameter name
 	 * @return the parameter value
 	 */
-	public String getParameter(String name);
+	String getParameter(String name);
 
 	/**
 	 * Gets the parameter values.
@@ -76,14 +76,14 @@ public interface RequestAdapter {
 	 * @return an array of <code>String</code> objects
 	 *			containing the parameter's values
 	 */
-	public String[] getParameterValues(String name);
+	String[] getParameterValues(String name);
 
 	/**
 	 * Gets the parameter names.
 	 *
 	 * @return the parameter names
 	 */
-	public Enumeration<String> getParameterNames();
+	Enumeration<String> getParameterNames();
 
 	/**
 	 * Sets the parameter.
@@ -92,7 +92,7 @@ public interface RequestAdapter {
 	 * @param value a <code>String</code> representing the
 	 *			single value of the parameter
 	 */
-	public void setParameter(String name, String value);
+	void setParameter(String name, String value);
 
 	/**
 	 * Sets the parameter.
@@ -101,7 +101,7 @@ public interface RequestAdapter {
 	 * @param values a <code>String</code> representing the
 	 *			single value of the parameter
 	 */
-	public void setParameter(String name, String[] values);
+	void setParameter(String name, String[] values);
 
 	/**
 	 * Gets the file parameter.
@@ -109,7 +109,7 @@ public interface RequestAdapter {
 	 * @param name the parameter name
 	 * @return the file parameter
 	 */
-	public FileParameter getFileParameter(String name);
+	FileParameter getFileParameter(String name);
 	
 	/**
 	 * Gets the file parameter values.
@@ -117,14 +117,14 @@ public interface RequestAdapter {
 	 * @param name the parameter name
 	 * @return the file parameter values
 	 */
-	public FileParameter[] getFileParameterValues(String name);
+	FileParameter[] getFileParameterValues(String name);
 
 	/**
 	 * Gets the file parameter names.
 	 *
 	 * @return the parameter names
 	 */
-	public Enumeration<String> getFileParameterNames();
+	Enumeration<String> getFileParameterNames();
 
 	/**
 	 * Sets the file parameter.
@@ -132,7 +132,7 @@ public interface RequestAdapter {
 	 * @param name the parameter name
 	 * @param fileParameter the file parameter
 	 */
-	public void setFileParameter(String name, FileParameter fileParameter);
+	void setFileParameter(String name, FileParameter fileParameter);
 
 	/**
 	 * Sets the file parameter.
@@ -140,7 +140,7 @@ public interface RequestAdapter {
 	 * @param name the parameter name
 	 * @param fileParameters the file parameters
 	 */
-	public void setFileParameter(String name, FileParameter[] fileParameters);
+	void setFileParameter(String name, FileParameter[] fileParameters);
 
 	/**
 	 * Removes the file parameter.
@@ -148,7 +148,7 @@ public interface RequestAdapter {
 	 * @param name the file parameter name
 	 * @return the file parameter[]
 	 */
-	public FileParameter[] removeFileParameter(String name);
+	FileParameter[] removeFileParameter(String name);
 	
 	/**
 	 * Returns the value of the named attribute as a given type, or <code>null</code> if no attribute of the given name exists.
@@ -157,7 +157,7 @@ public interface RequestAdapter {
 	 * @param name a String specifying the name of the attribute
 	 * @return an Object containing the value of the attribute, or null if the attribute does not exist
 	 */
-	public <T> T getAttribute(String name);
+	<T> T getAttribute(String name);
 	
 	/**
 	 * Stores an attribute in this request.
@@ -165,7 +165,7 @@ public interface RequestAdapter {
 	 * @param name specifying the name of the attribute
 	 * @param value the Object to be stored
 	 */
-	public void setAttribute(String name, Object value);
+	void setAttribute(String name, Object value);
 	
 	/**
 	 * Returns an <code>Enumeration</code> containing the
@@ -175,14 +175,14 @@ public interface RequestAdapter {
 	 *
 	 * @return the attribute names
 	 */
-	public Enumeration<String> getAttributeNames();
+	Enumeration<String> getAttributeNames();
 	
 	/**
 	 * Removes an attribute from this request.
 	 *
 	 * @param name a String specifying the name of the attribute to remove
 	 */
-	public void removeAttribute(String name);
+	void removeAttribute(String name);
 
 	/**
 	 * Return a mutable Map of the request parameters,
@@ -193,7 +193,7 @@ public interface RequestAdapter {
 	 * @return the parameter map
 	 * @since 1.4.0
 	 */
-	public Map<String, Object> getParameterMap();
+	Map<String, Object> getParameterMap();
 
 	/**
 	 * Fills all parameters to the specified map.
@@ -201,7 +201,7 @@ public interface RequestAdapter {
 	 * @param parameterMap the parameter map
 	 * @since 2.0.0
 	 */
-	public void fillPrameterMap(Map<String, Object> parameterMap);
+	void fillPrameterMap(Map<String, Object> parameterMap);
 	
 	/**
 	 * Return a mutable Map of the request attributes,
@@ -210,7 +210,7 @@ public interface RequestAdapter {
 	 * @return the attribute map
 	 * @since 2.0.0
 	 */
-	public Map<String, Object> getAttributeMap();
+	Map<String, Object> getAttributeMap();
 
 	/**
 	 * Fills all attributes to the specified map.
@@ -218,26 +218,26 @@ public interface RequestAdapter {
 	 * @param attributeMap the attribute map
 	 * @since 2.0.0
 	 */
-	public void fillAttributeMap(Map<String, Object> attributeMap);
+	void fillAttributeMap(Map<String, Object> attributeMap);
 	
 	/**
 	 * Returns whether request header has exceed the maximum length.
 	 *
 	 * @return true, if is max length exceeded
 	 */
-	public boolean isMaxLengthExceeded();
+	boolean isMaxLengthExceeded();
 
 	/**
 	 * Sets whether request header has exceed the maximum length.
 	 *
 	 * @param maxLengthExceeded the new max length exceeded
 	 */
-	public void setMaxLengthExceeded(boolean maxLengthExceeded);
+	void setMaxLengthExceeded(boolean maxLengthExceeded);
 
 	/**
 	 * Returns the preferred <code>Locale</code>.
 	 * @return a Locale
      */
-	public Locale getLocale();
+	Locale getLocale();
 
 }

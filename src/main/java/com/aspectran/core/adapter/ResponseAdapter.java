@@ -36,14 +36,14 @@ public interface ResponseAdapter {
 	 * @param <T> the generic type
 	 * @return the Adaptee object
 	 */
-	public <T> T getAdaptee();
+	<T> T getAdaptee();
 	
 	/**
 	 * Gets the character encoding.
 	 *
 	 * @return the character encoding
 	 */
-	public String getCharacterEncoding();
+	String getCharacterEncoding();
 	
 	/**
 	 * Sets the character encoding.
@@ -51,21 +51,21 @@ public interface ResponseAdapter {
 	 * @param characterEncoding the new character encoding
 	 * @throws UnsupportedEncodingException the unsupported encoding exception
 	 */
-	public void setCharacterEncoding(String characterEncoding) throws UnsupportedEncodingException;
+	void setCharacterEncoding(String characterEncoding) throws UnsupportedEncodingException;
 	
 	/**
 	 * Gets the content type.
 	 *
 	 * @return the content type
 	 */
-	public abstract String getContentType();
+	abstract String getContentType();
 
 	/**
 	 * Sets the content type.
 	 *
 	 * @param contentType the new content type
 	 */
-	public abstract void setContentType(String contentType);
+	abstract void setContentType(String contentType);
 
 	/**
 	 * Gets the output stream.
@@ -73,7 +73,7 @@ public interface ResponseAdapter {
 	 * @return the output stream
 	 * @throws IOException If an input or output exception occurs
 	 */
-	public OutputStream getOutputStream() throws IOException;
+	OutputStream getOutputStream() throws IOException;
 	
 	/**
 	 * Gets the writer.
@@ -81,7 +81,7 @@ public interface ResponseAdapter {
 	 * @return the writer
 	 * @throws IOException If an input or output exception occurs
 	 */
-	public Writer getWriter() throws IOException;
+	Writer getWriter() throws IOException;
 	
 	/**
 	 * Redirects a client to a new URL.
@@ -89,7 +89,7 @@ public interface ResponseAdapter {
 	 * @param target the redirect target
 	 * @throws IOException If an input or output exception occurs
 	 */
-	public void redirect(String target) throws IOException;
+	void redirect(String target) throws IOException;
 	
 	/**
 	 * Redirects a client to a new URL.
@@ -98,6 +98,6 @@ public interface ResponseAdapter {
 	 * @return the redirect target
 	 * @throws IOException If an input or output exception occurs
 	 */
-	public String redirect(RedirectResponseRule redirectResponseRule) throws IOException;
+	String redirect(RedirectResponseRule redirectResponseRule) throws IOException;
 	
 }

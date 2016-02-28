@@ -15,16 +15,11 @@
  */
 package com.aspectran.core.context.builder.xml;
 
-import java.util.Map;
-
-import org.w3c.dom.Node;
-
 import com.aspectran.core.context.builder.ContextBuilderAssistant;
 import com.aspectran.core.context.rule.AspectAdviceRule;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.BeanActionRule;
 import com.aspectran.core.context.rule.type.AspectAdviceType;
-import com.aspectran.core.util.xml.Nodelet;
 import com.aspectran.core.util.xml.NodeletAdder;
 import com.aspectran.core.util.xml.NodeletParser;
 
@@ -53,32 +48,28 @@ public class AspectAdviceNodeletAdder implements NodeletAdder {
 
 	@Override
 	public void process(String xpath, NodeletParser parser) {
-		parser.addNodelet(xpath, new Nodelet() {
-			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
-				AspectRule aspectRule = assistant.peekObject();
-				AspectAdviceRule aar = AspectAdviceRule.newInstance(aspectRule, aspectAdviceType);
-				assistant.pushObject(aar);
-			}
-		});
+		parser.addNodelet(xpath, (node, attributes, text) -> {
+            AspectRule aspectRule = assistant.peekObject();
+            AspectAdviceRule aar = AspectAdviceRule.newInstance(aspectRule, aspectAdviceType);
+            assistant.pushObject(aar);
+        });
 		parser.addNodelet(xpath, new ActionNodeletAdder(assistant));
-		parser.addNodelet(xpath, "/end()", new Nodelet() {
-			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
-				AspectAdviceRule aspectAdviceRule = assistant.popObject();
-				AspectRule aspectRule = assistant.peekObject();
-				aspectRule.addAspectAdviceRule(aspectAdviceRule);
+		parser.addNodelet(xpath, "/end()", (node, attributes, text) -> {
+            AspectAdviceRule aspectAdviceRule = assistant.popObject();
+            AspectRule aspectRule = assistant.peekObject();
+            aspectRule.addAspectAdviceRule(aspectAdviceRule);
 
-				if(aspectAdviceRule.getAdviceBeanId() != null) {
-					BeanActionRule updatedBeanActionRule = AspectAdviceRule.updateBeanActionClass(aspectAdviceRule);
-					if(updatedBeanActionRule != null) {
-						if(aspectAdviceRule.getAdviceBeanClass() != null) {
-							assistant.putBeanReference(aspectAdviceRule.getAdviceBeanClass(), updatedBeanActionRule);
-						} else {
-							assistant.putBeanReference(aspectAdviceRule.getAdviceBeanId(), updatedBeanActionRule);
-						}
-					}
-				}
-			}
-		});
+            if(aspectAdviceRule.getAdviceBeanId() != null) {
+                BeanActionRule updatedBeanActionRule = AspectAdviceRule.updateBeanActionClass(aspectAdviceRule);
+                if(updatedBeanActionRule != null) {
+                    if(aspectAdviceRule.getAdviceBeanClass() != null) {
+                        assistant.putBeanReference(aspectAdviceRule.getAdviceBeanClass(), updatedBeanActionRule);
+                    } else {
+                        assistant.putBeanReference(aspectAdviceRule.getAdviceBeanId(), updatedBeanActionRule);
+                    }
+                }
+            }
+        });
 	}
 
 }

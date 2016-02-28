@@ -19,163 +19,162 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-
 public interface Parameters {
 	
-	public Map<String, ParameterValue> getParameterValueMap();
+	Map<String, ParameterValue> getParameterValueMap();
 
-	public void setPrototype(Parameter parent);
+	void setPrototype(Parameter parent);
 
-	public Parameter getPrototype();
+	Parameter getPrototype();
 	
-	public String getQualifiedName();
+	String getQualifiedName();
 	
-	public Parameter getParent();
+	Parameter getParent();
 	
-	public String[] getParameterNames();
+	String[] getParameterNames();
 	
-	public Set<String> getParameterNameSet();
+	Set<String> getParameterNameSet();
 	
-	public Parameter getParameter(String name);
+	Parameter getParameter(String name);
 	
-	public Parameter getParameter(ParameterDefine parameterDefine);
+	Parameter getParameter(ParameterDefine parameterDefine);
 	
-	public Object getValue(String name);
+	Object getValue(String name);
 
-	public Object getValue(ParameterDefine parameterDefine);
+	Object getValue(ParameterDefine parameterDefine);
 	
-	public void putValue(String name, Object value);
+	void putValue(String name, Object value);
 	
-	public void putValue(ParameterDefine parameterDefine, Object value);
+	void putValue(ParameterDefine parameterDefine, Object value);
 	
-	public void putValueNonNull(String name, Object value);
+	void putValueNonNull(String name, Object value);
 
-	public void putValueNonNull(ParameterDefine parameterDefine, Object value);
+	void putValueNonNull(ParameterDefine parameterDefine, Object value);
 	
-	public String getString(String name);
+	String getString(String name);
 
-	public String getString(String name, String defaultValue);
+	String getString(String name, String defaultValue);
 
-	public String[] getStringArray(String name);
+	String[] getStringArray(String name);
 
-	public String getString(ParameterDefine parameterDefine);
+	String getString(ParameterDefine parameterDefine);
 	
-	public String getString(ParameterDefine parameterDefine, String defaultValue);
+	String getString(ParameterDefine parameterDefine, String defaultValue);
 	
-	public String[] getStringArray(ParameterDefine parameterDefine);
+	String[] getStringArray(ParameterDefine parameterDefine);
 	
-	public List<String> getStringList(String name);
+	List<String> getStringList(String name);
 
-	public List<String> getStringList(ParameterDefine parameterDefine);
+	List<String> getStringList(ParameterDefine parameterDefine);
 	
-	public Integer getInt(String name);
+	Integer getInt(String name);
 	
-	public int getInt(String name, int defaultValue);
+	int getInt(String name, int defaultValue);
 	
-	public Integer[] getIntArray(String name);
+	Integer[] getIntArray(String name);
 	
-	public Integer getInt(ParameterDefine parameterDefine);
+	Integer getInt(ParameterDefine parameterDefine);
 	
-	public int getInt(ParameterDefine parameterDefine, int defaultValue);
+	int getInt(ParameterDefine parameterDefine, int defaultValue);
 	
-	public Integer[] getIntArray(ParameterDefine parameterDefine);
+	Integer[] getIntArray(ParameterDefine parameterDefine);
 	
-	public List<Integer> getIntList(String name);
+	List<Integer> getIntList(String name);
 	
-	public List<Integer> getIntList(ParameterDefine parameterDefine);
+	List<Integer> getIntList(ParameterDefine parameterDefine);
 	
-	public Long getLong(String name);
+	Long getLong(String name);
 	
-	public long getLong(String name, long defaultValue);
+	long getLong(String name, long defaultValue);
 	
-	public Long[] getLongArray(String name);
+	Long[] getLongArray(String name);
 	
-	public Long getLong(ParameterDefine parameterDefine);
+	Long getLong(ParameterDefine parameterDefine);
 	
-	public long getLong(ParameterDefine parameterDefine, long defaultValue);
+	long getLong(ParameterDefine parameterDefine, long defaultValue);
 	
-	public Long[] getLongArray(ParameterDefine parameterDefine);
+	Long[] getLongArray(ParameterDefine parameterDefine);
 	
-	public List<Long> getLongList(String name);
+	List<Long> getLongList(String name);
 	
-	public List<Long> getLongList(ParameterDefine parameterDefine);
+	List<Long> getLongList(ParameterDefine parameterDefine);
 
-	public Float getFloat(String name);
+	Float getFloat(String name);
 	
-	public float getFloat(String name, float defaultValue);
+	float getFloat(String name, float defaultValue);
 	
-	public Float[] getFloatArray(String name);
+	Float[] getFloatArray(String name);
 	
-	public Float getFloat(ParameterDefine parameterDefine);
+	Float getFloat(ParameterDefine parameterDefine);
 	
-	public float getFloat(ParameterDefine parameterDefine, float defaultValue);
+	float getFloat(ParameterDefine parameterDefine, float defaultValue);
 	
-	public Float[] getFloatArray(ParameterDefine parameterDefine);
+	Float[] getFloatArray(ParameterDefine parameterDefine);
 	
-	public List<Float> getFloatList(String name);
+	List<Float> getFloatList(String name);
 	
-	public List<Float> getFloatList(ParameterDefine parameterDefine);
+	List<Float> getFloatList(ParameterDefine parameterDefine);
 
-	public Double getDouble(String name);
+	Double getDouble(String name);
 	
-	public double getDouble(String name, double defaultValue);
+	double getDouble(String name, double defaultValue);
 	
-	public Double[] getDoubleArray(String name);
+	Double[] getDoubleArray(String name);
 
-	public Double getDouble(ParameterDefine parameterDefine);
+	Double getDouble(ParameterDefine parameterDefine);
 	
-	public double getDouble(ParameterDefine parameterDefine, double defaultValue);
+	double getDouble(ParameterDefine parameterDefine, double defaultValue);
 	
-	public Double[] getDoubleArray(ParameterDefine parameterDefine);
+	Double[] getDoubleArray(ParameterDefine parameterDefine);
 	
-	public List<Double> getDoubleList(String name);
+	List<Double> getDoubleList(String name);
 	
-	public List<Double> getDoubleList(ParameterDefine parameterDefine);
+	List<Double> getDoubleList(ParameterDefine parameterDefine);
 
-	public Boolean getBoolean(String name);
+	Boolean getBoolean(String name);
 	
-	public boolean getBoolean(String name, boolean defaultValue);
+	boolean getBoolean(String name, boolean defaultValue);
 
-	public Boolean[] getBooleanArray(String name);
+	Boolean[] getBooleanArray(String name);
 
-	public Boolean getBoolean(ParameterDefine parameterDefine);
+	Boolean getBoolean(ParameterDefine parameterDefine);
 	
-	public boolean getBoolean(ParameterDefine parameterDefine, boolean defaultValue);
+	boolean getBoolean(ParameterDefine parameterDefine, boolean defaultValue);
 	
-	public Boolean[] getBooleanArray(ParameterDefine parameterDefine);
+	Boolean[] getBooleanArray(ParameterDefine parameterDefine);
 	
-	public List<Boolean> getBooleanList(String name);
+	List<Boolean> getBooleanList(String name);
 	
-	public List<Boolean> getBooleanList(ParameterDefine parameterDefine);
+	List<Boolean> getBooleanList(ParameterDefine parameterDefine);
 
-	public <T extends Parameters> T getParameters(String name);
+	<T extends Parameters> T getParameters(String name);
 
-	public <T extends Parameters> T[] getParametersArray(String name);
+	<T extends Parameters> T[] getParametersArray(String name);
 	
-	public <T extends Parameters> T getParameters(ParameterDefine parameterDefine);
+	<T extends Parameters> T getParameters(ParameterDefine parameterDefine);
 	
-	public <T extends Parameters> T[] getParametersArray(ParameterDefine parameterDefine);
+	<T extends Parameters> T[] getParametersArray(ParameterDefine parameterDefine);
 	
-	public <T extends Parameters> List<T> getParametersList(String name);
+	<T extends Parameters> List<T> getParametersList(String name);
 	
-	public <T extends Parameters> List<T> getParametersList(ParameterDefine parameterDefine);
+	<T extends Parameters> List<T> getParametersList(ParameterDefine parameterDefine);
 	
-	public ParameterValue newParameterValue(String name, ParameterValueType parameterValueType);
+	ParameterValue newParameterValue(String name, ParameterValueType parameterValueType);
 	
-	public ParameterValue newParameterValue(String name, ParameterValueType parameterValueType, boolean array);
+	ParameterValue newParameterValue(String name, ParameterValueType parameterValueType, boolean array);
 	
-	public <T extends Parameters> T newParameters(String name);
+	<T extends Parameters> T newParameters(String name);
 	
-	public <T extends Parameters> T newParameters(ParameterDefine parameterDefine);
+	<T extends Parameters> T newParameters(ParameterDefine parameterDefine);
 	
-	public <T extends Parameters> T touchParameters(String name);
+	<T extends Parameters> T touchParameters(String name);
 	
-	public <T extends Parameters> T touchParameters(ParameterDefine parameterDefine);
+	<T extends Parameters> T touchParameters(ParameterDefine parameterDefine);
 	
-	public boolean isAddable();
+	boolean isAddable();
 	
-	public String describe();
+	String describe();
 
-	public String describe(boolean details);
+	String describe(boolean details);
 	
 }

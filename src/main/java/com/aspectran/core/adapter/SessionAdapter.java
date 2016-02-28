@@ -33,14 +33,14 @@ public interface SessionAdapter {
 	 * @param <T> the generic type
 	 * @return the Adaptee object
 	 */
-	public <T> T getAdaptee();
+	<T> T getAdaptee();
 	
 	/**
 	 * Gets the session scope.
 	 *
 	 * @return the session scope
 	 */	
-	public SessionScope getSessionScope();
+	SessionScope getSessionScope();
 	
 	/**
 	 * Returns a string containing the unique identifier assigned to this session.
@@ -49,7 +49,7 @@ public interface SessionAdapter {
 	 * @return a string specifying the identifier assigned to this session
 	 * @since 1.5.0
 	 */
-	public String getId();
+	String getId();
 	
 	/**
 	 * Returns the time when this session was created, measured in milliseconds since midnight January 1, 1970 GMT.
@@ -57,7 +57,7 @@ public interface SessionAdapter {
 	 * @return a long specifying when this session was created, expressed in milliseconds since 1/1/1970 GMT
 	 * @since 1.5.0
 	 */
-	public long getCreationTime();
+	long getCreationTime();
 	
 	/**
 	 * Returns the last time the client sent a request associated with this session,
@@ -71,7 +71,7 @@ public interface SessionAdapter {
 	 * 			expressed in milliseconds since 1/1/1970 GMT
 	 * @since 1.5.0
 	 */
-	public long getLastAccessedTime();
+	long getLastAccessedTime();
 	
 	/**
 	 * Returns the maximum time interval, in seconds, that the servlet container will keep
@@ -83,7 +83,7 @@ public interface SessionAdapter {
 	 * @return an integer specifying the number of seconds this session remains open between client requests
 	 * @since 1.5.0
 	 */
-	public int getMaxInactiveInterval();
+	int getMaxInactiveInterval();
 	
 	/**
 	 * Returns an Enumeration of String objects containing the names of all the objects bound to this session.
@@ -91,7 +91,7 @@ public interface SessionAdapter {
 	 * @return an Enumeration of String objects specifying the names of all the objects bound to this session
 	 * @since 1.5.0
 	 */
-	public Enumeration<String> getAttributeNames();
+	Enumeration<String> getAttributeNames();
 	
 	/**
 	 * Gets the attribute.
@@ -100,7 +100,7 @@ public interface SessionAdapter {
 	 * @param name the name
 	 * @return the attribute
 	 */
-	public <T> T getAttribute(String name);
+	<T> T getAttribute(String name);
 
 	/**
 	 * Sets the attribute.
@@ -108,16 +108,16 @@ public interface SessionAdapter {
 	 * @param name the name
 	 * @param value the value
 	 */
-	public void setAttribute(String name, Object value);
+	void setAttribute(String name, Object value);
 	
 	/**
 	 * Invalidates this session then unbinds any objects bound to it.
 	 */
-	public void invalidate();
+	void invalidate();
 	
 	/**
 	 * No longer use the adaptee object.
 	 */
-	public void release();
+	void release();
 	
 }

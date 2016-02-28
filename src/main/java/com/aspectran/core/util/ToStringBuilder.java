@@ -102,9 +102,7 @@ public class ToStringBuilder {
 				Object key = entry.getKey();
 				Object value = entry.getValue();
 				if(value != null) {
-					if(this.sb.length() > len)
-						addpendComma();
-					appendName(key);
+					appendName(key, len);
 					append(value);
 				}
 			}
@@ -177,6 +175,12 @@ public class ToStringBuilder {
 		this.sb.append(name).append("=");
 	}
 	
+	private void appendName(Object name, int len) {
+		if(this.sb.length() > len)
+			addpendComma();
+		this.sb.append(name).append("=");
+	}
+
 	private void addpendComma() {
 		this.sb.append(", ");
 	}

@@ -433,11 +433,6 @@ public class CoreActivity extends AbstractActivity implements Activity {
 						execute(afterAdviceRuleList);
 					}
 				}
-
-				if(activityEnded) {
-					return;
-				}
-
 			} finally {
 				if(responseAspectAdviceRuleRegistry != null) {
 					List<AspectAdviceRule> finallyAdviceRuleList = responseAspectAdviceRuleRegistry.getFinallyAdviceRuleList();
@@ -494,7 +489,7 @@ public class CoreActivity extends AbstractActivity implements Activity {
 		ContentList contentList = transletRule.getContentList();
 
 		if(contentList != null) {
-			ProcessResult processResult = null;
+			ProcessResult processResult;
 			
 			for(ActionList actionList : contentList) {
 				if(!actionList.isHidden()) {
@@ -595,8 +590,7 @@ public class CoreActivity extends AbstractActivity implements Activity {
 
 		if(response != null && response.getContentType() != null) {
 			Response response2 = responseByContentTypeRule.getResponse(response.getContentType());
-			ResponseRule urgentResponseRule = responseRule.newUrgentResponseRule(response2);
-			responseRule = urgentResponseRule;
+			responseRule = responseRule.newUrgentResponseRule(response2);
 			
 			log.info("response by content-type: " + responseRule);
 
@@ -634,7 +628,7 @@ public class CoreActivity extends AbstractActivity implements Activity {
 	 * @throws ActivityException the activity exception
 	 */
 	protected void execute(ActionList actionList) {
-		ContentResult contentResult = null;
+		ContentResult contentResult;
 		
 		for(Executable action : actionList) {
 			contentResult = new ContentResult(translet.getProcessResult());

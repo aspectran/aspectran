@@ -19,7 +19,6 @@ import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.Map;
 
 import com.aspectran.core.activity.process.result.ActionResult;
@@ -64,9 +63,7 @@ public class ContentsAponAssembler {
 		}
 		
 		Parameters container = new GenericParameters();
-		Iterator<ContentResult> iter = processResult.iterator();
-		while(iter.hasNext()) {
-			ContentResult contentResult = iter.next();
+		for(ContentResult contentResult : processResult) {
 			assemble(contentResult, container);
 		}
 	
@@ -84,11 +81,8 @@ public class ContentsAponAssembler {
 			container = p;
 		}
 
-		Iterator<ActionResult> iter = contentResult.iterator();
-		while(iter.hasNext()) {
-			ActionResult actionResult = iter.next();
+		for(ActionResult actionResult : contentResult) {
 			String actionId = actionResult.getActionId();
-			
 			if(actionId != null) {
 				Object resultValue = actionResult.getResultValue();
 				putValue(container, actionId, resultValue);
@@ -99,11 +93,7 @@ public class ContentsAponAssembler {
 	private static void putValue(Parameters container, String name, Object value) throws InvocationTargetException {
 		if(value != null) {
 			if(value instanceof Collection<?>) {
-				@SuppressWarnings("unchecked")
-				Iterator<Object> iter = ((Collection<Object>)value).iterator();
-
-				while(iter.hasNext()) {
-					Object o = iter.next();
+				for(Object o : ((Collection<?>)value)) {
 					if(o != null) {
 						container.putValue(name, assemble(o));
 					}

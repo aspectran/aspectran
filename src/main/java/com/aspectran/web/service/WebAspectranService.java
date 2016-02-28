@@ -45,7 +45,7 @@ import com.aspectran.web.startup.servlet.WebActivityServlet;
  */
 public class WebAspectranService extends CoreAspectranService {
 	
-	private static final Log log = LogFactory.getLog(CoreAspectranService.class);
+	private static final Log log = LogFactory.getLog(WebAspectranService.class);
 	
 	public static final String ASPECTRAN_CONFIG_PARAM = "aspectran:config";
 
@@ -53,7 +53,7 @@ public class WebAspectranService extends CoreAspectranService {
 	
 	private static final String DEFAULT_ROOT_CONTEXT = "/WEB-INF/aspectran/config/aspectran-config.xml";
 
-	private String urlDecoding;
+	private String uriDecoding;
 
 	private DefaultServletHttpRequestHandler defaultServletHttpRequestHandler;
 	
@@ -87,7 +87,7 @@ public class WebAspectranService extends CoreAspectranService {
 
 		Parameters webParameters = aspectranConfig.getParameters(AspectranConfig.web);
 		if(webParameters != null) {
-			this.urlDecoding = webParameters.getString(AspectranWebConfig.urlDecoding);
+			this.uriDecoding = webParameters.getString(AspectranWebConfig.uriDecoding);
 		}
 
 		initialize(aspectranConfig);
@@ -103,8 +103,8 @@ public class WebAspectranService extends CoreAspectranService {
 	public void service(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		String requestUri = request.getRequestURI();
 
-		if(urlDecoding != null) {
-			requestUri = URLDecoder.decode(requestUri, urlDecoding);
+		if(uriDecoding != null) {
+			requestUri = URLDecoder.decode(requestUri, uriDecoding);
 		}
 
 		if(log.isDebugEnabled()) {

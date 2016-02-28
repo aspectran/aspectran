@@ -34,6 +34,7 @@ import com.aspectran.core.context.loader.resource.LocalResourceManager;
 import com.aspectran.core.context.loader.resource.ResourceManager;
 import com.aspectran.core.util.ClassUtils;
 import com.aspectran.core.util.ResourceUtils;
+import com.aspectran.core.util.ToStringBuilder;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
@@ -208,13 +209,8 @@ public class AspectranClassLoader extends ClassLoader {
 	}
 	
 	private boolean isExcluded(String className) {
-		if(isExcludePackage(className))
-			return true;
-		
-		if(isExcludeClass(className))
-			return true;
-		
-		return false;
+		return isExcludePackage(className) || isExcludeClass(className);
+
 	}
 	
 	private boolean isExcludePackage(String className) {
@@ -324,7 +320,7 @@ public class AspectranClassLoader extends ClassLoader {
 		Enumeration<URL> res = ResourceManager.getResources(getAspectranClassLoaders(root));
 		List<URL> resources = new LinkedList<URL>();
 		
-		URL url = null;
+		URL url;
 		
 		while(res.hasMoreElements()) {
 			url = res.nextElement();
@@ -417,7 +413,7 @@ public class AspectranClassLoader extends ClassLoader {
 	        ByteArrayOutputStream output = new ByteArrayOutputStream();
 	
 			byte[] buffer = new byte[8192];
-			int len = 0;
+			int len;
 
 			while((len = input.read(buffer)) >= 0) {
 				output.write(buffer, 0, len);
@@ -437,21 +433,19 @@ public class AspectranClassLoader extends ClassLoader {
 
 	@Override
 	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		sb.append("{id=").append(id);
+		ToStringBuilder tsb = new ToStringBuilder();
+		tsb.append("id", id);
 		if(getParent() instanceof AspectranClassLoader)
-			sb.append(", parent=").append(((AspectranClassLoader)getParent()).getId());
+			tsb.append("parent", ((AspectranClassLoader)getParent()).getId());
 		else
-			sb.append(", parent=").append(getParent().getClass().getName());
-		sb.append(", root=").append(this == root);
-		sb.append(", firstborn=").append(firstborn);
-		sb.append(", resourceLocation=").append(resourceLocation);
-		sb.append(", numberOfResource=").append(resourceManager.getResourceEntriesSize());
-		sb.append(", numberOfChildren=").append(children.size());
-		sb.append(", reloadCount=").append(reloadCount);
-		sb.append("}");
-		
-		return sb.toString();
+			tsb.append("parent", getParent().getClass().getName());
+		tsb.append("root", this == root);
+		tsb.append("firstborn", firstborn);
+		tsb.append("resourceLocation", resourceLocation);
+		tsb.append("numberOfResource", resourceManager.getResourceEntriesSize());
+		tsb.appendSize("numberOfChildren", children);
+		tsb.append("reloadCount", reloadCount);
+		return tsb.toString();
 	}
 	
 	public static Iterator<AspectranClassLoader> getAspectranClassLoaders(final AspectranClassLoader root) {
@@ -510,6 +504,7 @@ public class AspectranClassLoader extends ClassLoader {
 		try {
 			cl = Thread.currentThread().getContextClassLoader();
 		} catch(Throwable ex) {
+			// ignore
 		}
 
 		if(cl == null) {
@@ -530,9 +525,8 @@ public class AspectranClassLoader extends ClassLoader {
 	}
 	
 	public static String classNameToResourceName(String className) {
-		String resourceName = className.replace(ClassUtils.PACKAGE_SEPARATOR_CHAR, ResourceUtils.RESOURCE_NAME_SPEPARATOR_CHAR) + 
+		return className.replace(ClassUtils.PACKAGE_SEPARATOR_CHAR, ResourceUtils.RESOURCE_NAME_SPEPARATOR_CHAR) +
 				ClassUtils.CLASS_FILE_SUFFIX;
-		return resourceName;
 	}
 	
 	public static String packageNameToResourceName(String packageName) {

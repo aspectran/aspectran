@@ -37,13 +37,10 @@ public class CglibDynamicBeanProxy extends AbstractDynamicBeanProxy implements M
 
 	@Override
 	public Object intercept(final Object proxy, final Method method, final Object[] args, final MethodProxy methodProxy) throws Throwable {
-		ProxyMethodInvoker proxyMethodInvoker = new ProxyMethodInvoker() {
-			@Override
-			public Object invoke() throws Throwable {
-				// execute the original method.
-				return methodProxy.invokeSuper(proxy, args);
-			}
-		};
+		ProxyMethodInvoker proxyMethodInvoker = () -> {
+            // execute the original method.
+            return methodProxy.invokeSuper(proxy, args);
+        };
 
 		return dynamicInvoke(proxy, method, args, proxyMethodInvoker);
 	}

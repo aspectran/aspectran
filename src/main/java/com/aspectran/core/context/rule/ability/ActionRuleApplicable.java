@@ -33,27 +33,27 @@ public interface ActionRuleApplicable {
 	 * 
 	 * @param echoActionRule the echo action rule
 	 */
-	public void applyActionRule(EchoActionRule echoActionRule);
+	void applyActionRule(EchoActionRule echoActionRule);
 	
 	/**
 	 * Adds the bean action.
 	 *
 	 * @param beanActionRule the bean action rule
 	 */
-	public void applyActionRule(BeanActionRule beanActionRule);
+	void applyActionRule(BeanActionRule beanActionRule);
 
 	/**
 	 * Adds the method action.
 	 *
 	 * @param methodActionRule the bean action rule
 	 */
-	public void applyActionRule(MethodActionRule methodActionRule);
+	void applyActionRule(MethodActionRule methodActionRule);
 
 	/**
 	 * Adds the process-call action.
 	 * 
 	 * @param includeActionRule the process call action rule
 	 */
-	public void applyActionRule(IncludeActionRule includeActionRule);
+	void applyActionRule(IncludeActionRule includeActionRule);
 
 }

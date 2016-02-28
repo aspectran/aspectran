@@ -37,7 +37,7 @@ public interface TokenExpressor {
 	 * @param token the token
 	 * @return the object
 	 */
-	public Object express(Token token);
+	Object express(Token token);
 	
 	/**
 	 * Express as String.
@@ -45,9 +45,9 @@ public interface TokenExpressor {
 	 * @param tokens the tokens
 	 * @return the string
 	 */
-	public Object express(Token[] tokens);
+	Object express(Token[] tokens);
 
-	public void express(Token[] tokens, Writer writer) throws IOException;
+	void express(Token[] tokens, Writer writer) throws IOException;
 
 	/**
 	 * Express as String.
@@ -55,7 +55,7 @@ public interface TokenExpressor {
 	 * @param tokens the tokens
 	 * @return the string
 	 */
-	public String expressAsString(Token[] tokens);
+	String expressAsString(Token[] tokens);
 
 	/**
 	 * Express as String.
@@ -64,7 +64,7 @@ public interface TokenExpressor {
 	 * @param tokens the tokens
 	 * @return the string
 	 */
-	public Object express(String parameterName, Token[] tokens);
+	Object express(String parameterName, Token[] tokens);
 
 	/**
 	 * Express as String.
@@ -73,7 +73,7 @@ public interface TokenExpressor {
 	 * @param tokens the tokens
 	 * @return the string
 	 */
-	public String expressAsString(String parameterName, Token[] tokens);
+	String expressAsString(String parameterName, Token[] tokens);
 
 	/**
 	 * Express as List.
@@ -82,7 +82,7 @@ public interface TokenExpressor {
 	 * @param tokensList the tokens
 	 * @return the object[]
 	 */
-	public List<Object> expressAsList(String parameterName, List<Token[]> tokensList);
+	List<Object> expressAsList(String parameterName, List<Token[]> tokensList);
 
 	/**
 	 * Express as Set.
@@ -91,7 +91,7 @@ public interface TokenExpressor {
 	 * @param tokensSet the tokens set
 	 * @return the object[]
 	 */
-	public Set<Object> expressAsSet(String parameterName, Set<Token[]> tokensSet);
+	Set<Object> expressAsSet(String parameterName, Set<Token[]> tokensSet);
 	
 	/**
 	 * Express as Map.
@@ -100,7 +100,7 @@ public interface TokenExpressor {
 	 * @param tokensMap the tokens map
 	 * @return the map
 	 */
-	public Map<String, Object> expressAsMap(String parameterName, Map<String, Token[]> tokensMap);
+	Map<String, Object> expressAsMap(String parameterName, Map<String, Token[]> tokensMap);
 	
 	/**
 	 * Express as Properties.
@@ -109,6 +109,6 @@ public interface TokenExpressor {
 	 * @param tokensProp the tokens prop
 	 * @return the Properties
 	 */
-	public Properties expressAsProperties(String parameterName, Properties tokensProp);
+	Properties expressAsProperties(String parameterName, Properties tokensProp);
 	
 }

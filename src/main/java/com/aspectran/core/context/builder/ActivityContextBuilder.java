@@ -24,8 +24,8 @@ import com.aspectran.core.context.ActivityContext;
  */
 public interface ActivityContextBuilder {
 	
-	public void setHybridLoading(boolean hybridLoading);
+	void setHybridLoading(boolean hybridLoading);
 	
-	public ActivityContext build(String rootContext) throws ActivityContextBuilderException;
+	ActivityContext build(String rootContext) throws ActivityContextBuilderException;
 	
 }

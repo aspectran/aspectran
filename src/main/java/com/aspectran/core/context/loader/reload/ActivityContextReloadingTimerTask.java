@@ -23,7 +23,6 @@ import java.util.Map;
 import java.util.TimerTask;
 
 import com.aspectran.core.context.AspectranRuntimeException;
-import com.aspectran.core.context.loader.AspectranClassLoader;
 import com.aspectran.core.service.AspectranService;
 import com.aspectran.core.service.AspectranServiceException;
 import com.aspectran.core.util.logging.Log;
@@ -36,9 +35,7 @@ public class ActivityContextReloadingTimerTask extends TimerTask {
 	private final boolean debugEnabled = log.isDebugEnabled();
 
 	private final AspectranService aspectranService;
-	
-	private final AspectranClassLoader aspectranClassLoader;
-	
+
 	private final URL[] resources;
 	
 	private Map<String, Long> modifyTimeMap = new HashMap<String, Long>();
@@ -49,10 +46,9 @@ public class ActivityContextReloadingTimerTask extends TimerTask {
 	
 	public ActivityContextReloadingTimerTask(AspectranService aspectranService) {
 		this.aspectranService = aspectranService;
-		this.aspectranClassLoader = aspectranService.getAspectranClassLoader();
-		
-		if(aspectranClassLoader != null)
-			this.resources = aspectranClassLoader.extractResources();
+
+		if(aspectranService.getAspectranClassLoader() != null)
+			this.resources = aspectranService.getAspectranClassLoader().extractResources();
 		else
 			this.resources = null;
 	}
@@ -75,7 +71,7 @@ public class ActivityContextReloadingTimerTask extends TimerTask {
 					Long modifiedTime2 = modifyTimeMap.get(filePath);
 					
 					if(modifiedTime2 != null) {
-						if(modifiedTime != modifiedTime2.longValue()) {
+						if(modifiedTime != modifiedTime2) {
 							modified = true;
 							
 							if(debugEnabled) {

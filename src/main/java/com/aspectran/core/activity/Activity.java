@@ -46,21 +46,21 @@ public interface Activity extends BeanRegistrySupport {
 	 *
 	 * @return the translet interface class
 	 */
-	public Class<? extends Translet> getTransletInterfaceClass();
+	Class<? extends Translet> getTransletInterfaceClass();
 	
 	/**
 	 * Return the implementation class for {@code Translet}.
 	 *
 	 * @return the translet implementation class
 	 */
-	public Class<? extends CoreTranslet> getTransletImplementationClass();
+	Class<? extends CoreTranslet> getTransletImplementationClass();
 
 	/**
 	 * Preparation for the activity.
 	 *
 	 * @param transletName the translet name
 	 */
-	public void ready(String transletName);
+	void ready(String transletName);
 	
 	/**
 	 * Preparation for the activity.
@@ -68,7 +68,7 @@ public interface Activity extends BeanRegistrySupport {
 	 * @param transletName the translet name
 	 * @param requestMethod the request method
 	 */
-	public void ready(String transletName, String requestMethod);
+	void ready(String transletName, String requestMethod);
 
 	/**
 	 * Preparation for the activity.
@@ -76,58 +76,58 @@ public interface Activity extends BeanRegistrySupport {
 	 * @param transletName the translet name
 	 * @param requestMethod the request method
 	 */
-	public void ready(String transletName, RequestMethodType requestMethod);
+	void ready(String transletName, RequestMethodType requestMethod);
 	
 	/**
 	 * Perform activity.
 	 */
-	public void perform();
+	void perform();
 	
 	/**
 	 * Perform activity without reponse.
 	 */
-	public void performWithoutResponse();
+	void performWithoutResponse();
 
 	/**
 	 * Finish the activity.
 	 * It must be called before exiting activities.
 	 */
-	public void finish();
+	void finish();
 
 	/**
 	 * Determine request character encoding.
 	 *
 	 * @return the request character encoding
 	 */
-	public String determineRequestCharacterEncoding();
+	String determineRequestCharacterEncoding();
 
 	/**
 	 * Determine response character encoding.
 	 *
 	 * @return the response character encoding
 	 */
-	public String determineResponseCharacterEncoding();
+	String determineResponseCharacterEncoding();
 	
 	/**
 	 * Execute the aspect advices.
 	 *
 	 * @param aspectAdviceRuleList the aspect advice rule list
 	 */
-	public void execute(List<AspectAdviceRule> aspectAdviceRuleList);
+	void execute(List<AspectAdviceRule> aspectAdviceRuleList);
 	
 	/**
 	 * Forced to Execute the aspect advices.
 	 *
 	 * @param aspectAdviceRuleList the aspect advice rule list
 	 */
-	public void forceExecute(List<AspectAdviceRule> aspectAdviceRuleList);
+	void forceExecute(List<AspectAdviceRule> aspectAdviceRuleList);
 	
 	/**
 	 * Returns the process result.
 	 *
 	 * @return the process result
 	 */
-	public ProcessResult getProcessResult();
+	ProcessResult getProcessResult();
 	
 	/**
 	 * Returns a action result  from the process result.
@@ -135,75 +135,75 @@ public interface Activity extends BeanRegistrySupport {
 	 * @param actionId the specified action id
 	 * @return the action result
 	 */
-	public Object getProcessResult(String actionId);
+	Object getProcessResult(String actionId);
 	
 	/**
 	 * Returns the forwarding destination translet name.
 	 *
 	 * @return the forwarding destination translet name
 	 */
-	public String getForwardTransletName();
+	String getForwardTransletName();
 	
 	/**
 	 * Returns whether the current activity is completed or terminated.
 	 * 
 	 * @return true, if the current activity is completed or terminated
 	 */
-	public boolean isActivityEnded();
+	boolean isActivityEnded();
 
 	/**
 	 * Stop the activity and responds immediately.
 	 */
-	public void activityEnd();
+	void activityEnd();
 	
-	public void response(Response response);
+	void response(Response response);
 	
-	public void responseByContentType(List<ExceptionHandlingRule> exceptionHandlingRuleList);
+	void responseByContentType(List<ExceptionHandlingRule> exceptionHandlingRuleList);
 
-	public Response getResponse();
+	Response getResponse();
 
-	public boolean isExceptionRaised();
+	boolean isExceptionRaised();
 
-	public Exception getRaisedException();
+	Exception getRaisedException();
 
-	public void setRaisedException(Exception raisedException);
+	void setRaisedException(Exception raisedException);
 
-	public ActivityContext getActivityContext();
+	ActivityContext getActivityContext();
 
-	public <T extends Activity> T newActivity();
+	<T extends Activity> T newActivity();
 
-	public Translet getTranslet();
+	Translet getTranslet();
 	
-	public String getTransletName();
+	String getTransletName();
 
-	public RequestMethodType getRequestMethod();
+	RequestMethodType getRequestMethod();
 	
-	public ApplicationAdapter getApplicationAdapter();
+	ApplicationAdapter getApplicationAdapter();
 
-	public SessionAdapter getSessionAdapter();
+	SessionAdapter getSessionAdapter();
 	
-	public RequestAdapter getRequestAdapter();
+	RequestAdapter getRequestAdapter();
 	
-	public ResponseAdapter getResponseAdapter();
+	ResponseAdapter getResponseAdapter();
 
-	public BeanRegistry getBeanRegistry();
+	BeanRegistry getBeanRegistry();
 	
-	public TemplateProcessor getTemplateProcessor();
+	TemplateProcessor getTemplateProcessor();
 
-	public <T> T getTransletSetting(String settingName);
+	<T> T getTransletSetting(String settingName);
 	
-	public <T> T getRequestSetting(String settingName);
+	<T> T getRequestSetting(String settingName);
 	
-	public <T> T getResponseSetting(String settingName);
+	<T> T getResponseSetting(String settingName);
 	
-	public void registerAspectRule(AspectRule aspectRule);
+	void registerAspectRule(AspectRule aspectRule);
 	
-	public <T> T getAspectAdviceBean(String aspectId);
+	<T> T getAspectAdviceBean(String aspectId);
 	
-	public Scope getRequestScope();
+	Scope getRequestScope();
 
-	public void setRequestScope(Scope requestScope);
+	void setRequestScope(Scope requestScope);
 
-	public JoinpointScopeType getCurrentJoinpointScope();
+	JoinpointScopeType getCurrentJoinpointScope();
 
 }

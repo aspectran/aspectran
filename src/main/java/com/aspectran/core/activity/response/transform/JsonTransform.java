@@ -111,8 +111,7 @@ public class JsonTransform extends TransformResponse implements Response {
 	@Override
 	public Response replicate() {
 		TransformRule transformRule = getTransformRule().replicate();
-		Response response = new JsonTransform(transformRule);
-		return response;
+		return new JsonTransform(transformRule);
 	}
 
 }

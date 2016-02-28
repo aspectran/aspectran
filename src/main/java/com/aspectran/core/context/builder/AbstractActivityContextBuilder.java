@@ -85,6 +85,7 @@ public abstract class AbstractActivityContextBuilder extends ContextBuilderAssis
 
 		TemplateProcessor templateProcessor = new ContextTemplateProcessor(templateRuleRegistry);
 
+		clearTypeAliases();
 		BeanDescriptor.clearCache();
 		MethodUtils.clearCache();
 
@@ -203,7 +204,7 @@ public abstract class AbstractActivityContextBuilder extends ContextBuilderAssis
 	}
 	
 	protected Importable makeImportable(String rootContext, ImportFileType importFileType) {
-		Importable importable = null;
+		Importable importable;
 
 		if(rootContext.startsWith(ResourceUtils.CLASSPATH_URL_PREFIX)) {
 			String resource = rootContext.substring(ResourceUtils.CLASSPATH_URL_PREFIX.length());

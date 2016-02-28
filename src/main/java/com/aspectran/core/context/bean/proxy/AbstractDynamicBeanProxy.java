@@ -28,7 +28,6 @@ import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
 import com.aspectran.core.context.aspect.AspectRuleRegistry;
 import com.aspectran.core.context.aspect.pointcut.Pointcut;
 import com.aspectran.core.context.rule.AspectRule;
-import com.aspectran.core.context.rule.AspectRuleMap;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.ExceptionHandlingRule;
 import com.aspectran.core.context.rule.PointcutPatternRule;
@@ -157,7 +156,7 @@ public abstract class AbstractDynamicBeanProxy {
 			holder = relevantAspectRuleHolderCache.get(patternString);
 
 			if(holder == null) {
-				AspectRuleMap aspectRuleMap = aspectRuleRegistry.getAspectRuleMap();
+				Map<String, AspectRule> aspectRuleMap = aspectRuleRegistry.getAspectRuleMap();
 				AspectAdviceRulePostRegister postRegister = new AspectAdviceRulePostRegister();
 				List<AspectRule> activityAspectRuleList = new ArrayList<AspectRule>();
 				

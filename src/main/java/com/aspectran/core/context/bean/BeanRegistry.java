@@ -30,7 +30,7 @@ public interface BeanRegistry {
 	 * @param id the id of the bean to retrieve
 	 * @return an instance of the bean
 	 */
-	public <T> T getBean(String id);
+	<T> T getBean(String id);
 	
 	/**
 	 * Return an instance of the bean that matches the given object type.
@@ -40,7 +40,7 @@ public interface BeanRegistry {
 	 * @return an instance of the bean
 	 * @since 1.3.1
 	 */
-	public <T> T getBean(Class<T> requiredType);
+	<T> T getBean(Class<T> requiredType);
 
 	/**
 	 * Return an instance of the bean that matches the given id.
@@ -52,7 +52,7 @@ public interface BeanRegistry {
 	 * @return an instance of the bean
 	 * @since 1.3.1
 	 */
-	public <T> T getBean(String id, Class<T> requiredType);
+	<T> T getBean(String id, Class<T> requiredType);
 
 	/**
 	 * Return an instance of the bean that matches the given object type.
@@ -64,7 +64,7 @@ public interface BeanRegistry {
 	 * @return an instance of the bean
 	 * @since 2.0.0
 	 */
-	public <T> T getBean(Class<T> requiredType, String id);
+	<T> T getBean(Class<T> requiredType, String id);
 
 	/**
 	 * Return the bean instance that matches the specified object type.
@@ -75,7 +75,7 @@ public interface BeanRegistry {
 	 * @return an instance of the bean
 	 * @since 2.0.0
 	 */
-	public <T> T getConfigBean(Class<T> requiredType);
+	<T> T getConfigBean(Class<T> requiredType);
 
 	/**
 	 * Return whether a bean with the specified id is present.
@@ -83,7 +83,7 @@ public interface BeanRegistry {
 	 * @param id the id of the bean to query
 	 * @return whether a bean with the specified id is present
 	 */
-	public boolean containsBean(String id);
+	boolean containsBean(String id);
 
 	/**
 	 * Return whether a bean with the specified object type is present.
@@ -91,6 +91,6 @@ public interface BeanRegistry {
 	 * @param requiredType the object type of the bean to query
 	 * @return whether a bean with the specified type is present
 	 */
-	public boolean containsBean(Class<?> requiredType);
+	boolean containsBean(Class<?> requiredType);
 
 }

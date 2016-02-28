@@ -25,13 +25,13 @@ import com.aspectran.core.context.rule.BeanRule;
  */
 public interface Scope {
 	
-	public Object getBean(BeanRule beanRule);
+	Object getBean(BeanRule beanRule);
 
-	public void putBean(BeanRule beanRule, Object bean);
+	void putBean(BeanRule beanRule, Object bean);
 
 	/**
 	 * Destroy all scoped beans in the scope.
 	 */
-	public void destroy();
+	void destroy();
 	
 }

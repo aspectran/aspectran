@@ -24,6 +24,6 @@ package com.aspectran.core.context.bean.aware;
  */
 public interface ClassLoaderAware extends Aware {
 
-	public void setClassLoader(ClassLoader classLoader);
+	void setClassLoader(ClassLoader classLoader);
 
 }

@@ -15,11 +15,11 @@
  */
 package com.aspectran.core.context.template;
 
+import java.io.Writer;
+
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.rule.TemplateRule;
-
-import java.io.Writer;
 
 /**
  * The Interface TemplateProcessor.
@@ -33,19 +33,19 @@ public interface TemplateProcessor {
 	 *
 	 * @param context the activity context
 	 */
-	public void initialize(ActivityContext context);
+	void initialize(ActivityContext context);
 
 	/**
 	 * Destroy TemplateProcessor.
 	 */
-	public void destroy();
+	void destroy();
 
 	/**
 	 * Gets the template rule registry.
 	 *
 	 * @return the template rule registry
 	 */
-	public TemplateRuleRegistry getTemplateRuleRegistry();
+	TemplateRuleRegistry getTemplateRuleRegistry();
 
 	/**
 	 * Template processing with specified template ID.
@@ -53,7 +53,7 @@ public interface TemplateProcessor {
 	 * @param templateId the template id
 	 * @return the string
 	 */
-	public String process(String templateId);
+	String process(String templateId);
 
 	/**
 	 * Template processing with specified TemplateRule by its ID.
@@ -62,7 +62,7 @@ public interface TemplateProcessor {
 	 * @param templateId the template id
 	 * @param writer the writer
 	 */
-	public void process(String templateId, Writer writer);
+	void process(String templateId, Writer writer);
 
 	/**
 	 * Template processing with specified TemplateRule.
@@ -70,7 +70,7 @@ public interface TemplateProcessor {
 	 * @param templateRule the template rule
 	 * @return the string
 	 */
-	public String process(TemplateRule templateRule);
+	String process(TemplateRule templateRule);
 
 	/**
 	 * Template processing with specified TemplateRule.
@@ -79,7 +79,7 @@ public interface TemplateProcessor {
 	 * @param templateRule the template rule
 	 * @param writer the {@link Writer} where the output of the template will go. {@link Writer#close()} is not called.
 	 */
-	public void process(TemplateRule templateRule, Writer writer);
+	void process(TemplateRule templateRule, Writer writer);
 
 	/**
 	 * Template processing with specified TemplateRule by its ID.
@@ -89,7 +89,7 @@ public interface TemplateProcessor {
 	 * @param activity the activity
 	 * @param writer the {@link Writer} where the output of the template will go. {@link Writer#close()} is not called.
 	 */
-	public void process(String templateId, Activity activity, Writer writer);
+	void process(String templateId, Activity activity, Writer writer);
 
 	/**
 	 * Template processing with specified TemplateRule.
@@ -99,6 +99,6 @@ public interface TemplateProcessor {
 	 * @param activity the activity
 	 * @param writer the {@link Writer} where the output of the template will go. {@link Writer#close()} is not called.
 	 */
-	public void process(TemplateRule templateRule, Activity activity, Writer writer);
+	void process(TemplateRule templateRule, Activity activity, Writer writer);
 
 }

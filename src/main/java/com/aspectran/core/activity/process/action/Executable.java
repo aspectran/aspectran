@@ -31,7 +31,7 @@ public interface Executable {
 	 * 
 	 * @return the id
 	 */
-	public String getActionId();
+	String getActionId();
 
 	/**
 	 * Execute this action.
@@ -41,28 +41,28 @@ public interface Executable {
 	 * @throws Exception the exception
 	 * @throws ActionExecutionException the action execution exception
 	 */
-	public Object execute(Activity activity) throws Exception;
+	Object execute(Activity activity) throws Exception;
 	
 	/**
 	 * Checks if is hidden action.
 	 * 
 	 * @return true, if is hidden action
 	 */
-	public boolean isHidden();
+	boolean isHidden();
 	
 	/**
 	 * Gets the action list.
 	 * 
 	 * @return the action list
 	 */
-	public ActionList getParent();
+	ActionList getParent();
 	
 	/**
 	 * Gets the Action Type.
 	 *
 	 * @return the Action Type
 	 */
-	public ActionType getActionType();
+	ActionType getActionType();
 	
 	/**
 	 * Gets the action rule.
@@ -70,6 +70,6 @@ public interface Executable {
 	 * @param <T> the generic type
 	 * @return the action rule
 	 */
-	public <T> T getActionRule();
+	<T> T getActionRule();
 	
 }

@@ -41,7 +41,7 @@ public abstract class AbstractImportHandler implements ImportHandler {
 		pendingList.add(importable);
 		
 		if(log.isDebugEnabled())
-			log.debug("import pending " + importable);
+			log.debug("Import pending " + importable);
 	}
 	
 	protected void handle() throws Exception {
@@ -51,7 +51,7 @@ public abstract class AbstractImportHandler implements ImportHandler {
 			
 			for(Importable importable : pendedList) {
 				if(log.isDebugEnabled())
-					log.debug("import " + importable);
+					log.debug("Import " + importable);
 				
 				handle(importable);
 			}

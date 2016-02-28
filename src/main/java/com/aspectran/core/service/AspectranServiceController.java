@@ -28,7 +28,7 @@ public interface AspectranServiceController {
 	 * @return the activity context
 	 * @throws AspectranServiceException the aspectran service exception
 	 */
-	public ActivityContext startup() throws AspectranServiceException;
+	ActivityContext startup() throws AspectranServiceException;
 
 	/**
 	 * Restarts a Aspectran Service.
@@ -36,7 +36,7 @@ public interface AspectranServiceController {
 	 * @return returns whether or not the AcivityContext has been destroyed cleanly.
 	 * @throws AspectranServiceException the aspectran service exception
 	 */
-	public void restart() throws AspectranServiceException;
+	void restart() throws AspectranServiceException;
 	
 	/**
 	 * Reloads a Aspectran Configurations without restarting.
@@ -44,7 +44,7 @@ public interface AspectranServiceController {
 	 * @return returns whether or not the AcivityContext has been destroyed cleanly.
 	 * @throws AspectranServiceException the aspectran service exception
 	 */
-	public void reload() throws AspectranServiceException;
+	void reload() throws AspectranServiceException;
 	
 	/**
 	 * Refresh a Aspectran Service.
@@ -52,14 +52,14 @@ public interface AspectranServiceController {
 	 * @return returns whether or not the AcivityContext has been destroyed cleanly.
 	 * @throws AspectranServiceException the aspectran service exception
 	 */
-	public void refresh() throws AspectranServiceException;
+	void refresh() throws AspectranServiceException;
 	
 	/**
 	 * Suspends a service's operation.
 	 *
 	 * @throws AspectranServiceException the aspectran service exception
 	 */
-	public void pause() throws AspectranServiceException;
+	void pause() throws AspectranServiceException;
 	
 	/**
 	 * Suspends a service's operation.
@@ -67,20 +67,20 @@ public interface AspectranServiceController {
 	 * @param timeout - the maximum time to wait in milliseconds.
 	 * @throws AspectranServiceException the aspectran service exception
 	 */
-	public void pause(long timeout) throws AspectranServiceException;
+	void pause(long timeout) throws AspectranServiceException;
 	
 	/**
 	 * Continues a service after it has been paused.
 	 *
 	 * @throws AspectranServiceException the aspectran service exception
 	 */
-	public void resume() throws AspectranServiceException;
+	void resume() throws AspectranServiceException;
 	
 	/**
 	 * Destroys this service and any services that are dependent on this service.
 	 *
 	 * @throws AspectranServiceException the aspectran service exception
 	 */
-	public void destroy() throws AspectranServiceException;
+	void destroy() throws AspectranServiceException;
 	
 }

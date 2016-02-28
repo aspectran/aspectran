@@ -30,7 +30,7 @@ public class AponActivityContextLoader extends AbstractActivityContextLoader {
 
 	public AponActivityContextLoader() {
 	}
-	
+
 	public AponActivityContextLoader(String encoding) {
 		this.encoding = encoding;
 	}

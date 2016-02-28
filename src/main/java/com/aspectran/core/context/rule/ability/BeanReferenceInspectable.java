@@ -26,6 +26,6 @@ import com.aspectran.core.context.rule.type.BeanReferrerType;
  */
 public interface BeanReferenceInspectable {
 
-    public BeanReferrerType getBeanReferrerType();
+    BeanReferrerType getBeanReferrerType();
 
 }

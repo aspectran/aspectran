@@ -140,8 +140,7 @@ public class XslTransform extends TransformResponse implements Response {
 	@Override
 	public Response replicate() {
 		TransformRule transformRule = getTransformRule().replicate();
-		Response response = new XslTransform(transformRule);
-		return response;
+		return new XslTransform(transformRule);
 	}
 	
 	private void loadTemplate(ApplicationAdapter applicationAdapter) throws TransformerConfigurationException, IOException {
@@ -172,16 +171,14 @@ public class XslTransform extends TransformResponse implements Response {
 		} else if(templateResource != null) {
 			if(noCache) {
 				ClassLoader classLoader = applicationAdapter.getClassLoader();
-				File file = new File(classLoader.getResource(templateResource).getFile());
-				this.templates = createTemplates(file);
+				this.templates = createTemplates(classLoader.getResource(templateResource));
 				determineOutoutStyle();
 			} else {
 				if(!this.templateLoaded) {
 					synchronized(this) {
 						if(!this.templateLoaded) {
 							ClassLoader classLoader = applicationAdapter.getClassLoader();
-							File file = new File(classLoader.getResource(templateResource).getFile());
-							this.templates = createTemplates(file);
+							this.templates = createTemplates(classLoader.getResource(templateResource));
 							determineOutoutStyle();
 							this.templateLoaded = true;
 						}
@@ -210,7 +207,7 @@ public class XslTransform extends TransformResponse implements Response {
 
 	private void determineOutoutStyle() {
     	contentType = transformRule.getContentType();
-		outputEncoding = getOutputEncoding(templates);;
+		outputEncoding = getOutputEncoding(templates);
 		
 		if(contentType == null)
 			contentType = getContentType(templates);
@@ -221,21 +218,18 @@ public class XslTransform extends TransformResponse implements Response {
 	
     private Templates createTemplates(File templateFile) throws TransformerConfigurationException {
     	Source source = new StreamSource(templateFile);
-    	Templates templates = createTemplates(source);
-		return templates;
+		return createTemplates(source);
     }
     
     private Templates createTemplates(URL url) throws TransformerConfigurationException, IOException {
     	Source source = new StreamSource(getTemplateAsStream(url));
-    	Templates templates = createTemplates(source);
-		return templates;
+		return createTemplates(source);
     }
 
     private Templates createTemplates(Source source) throws TransformerConfigurationException {
     	TransformerFactory transFactory = TransformerFactory.newInstance();
     	transFactory.setAttribute("generate-translet", Boolean.TRUE);
-    	Templates templates = transFactory.newTemplates(source);
-    	return templates;
+		return transFactory.newTemplates(source);
     }
 
     private String getContentType(Templates templates) {
@@ -257,9 +251,7 @@ public class XslTransform extends TransformResponse implements Response {
     
     private String getOutputEncoding(Templates templates) {
     	Properties outputProperties = templates.getOutputProperties();
-    	String outputEncoding = outputProperties.getProperty(OutputKeys.ENCODING);
-    	
-    	return outputEncoding;
+		return outputProperties.getProperty(OutputKeys.ENCODING);
     }
 
 }

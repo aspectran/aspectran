@@ -22,7 +22,6 @@ import com.aspectran.core.activity.Translet;
 import com.aspectran.core.context.bean.ablility.FactoryBean;
 import com.aspectran.core.context.rule.BeanActionRule;
 import com.aspectran.core.context.rule.BeanRule;
-import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.util.MethodUtils;
 
@@ -187,10 +186,8 @@ public class BeanRuleAnalyzer {
 		String propertyName = dropCase(method.getName());
 
 		if(propertyItemRuleMap != null) {
-			for(ItemRule itemRule : propertyItemRuleMap) {
-				if(propertyItemRuleMap.containsKey(itemRule.getName()))
-					return;
-			}
+			if(propertyItemRuleMap.containsKey(propertyName))
+				return;
 		}
 
 		throw new BeanRuleException("Property '" + propertyName + "' is required for bean ", beanRule);

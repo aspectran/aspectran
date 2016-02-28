@@ -618,7 +618,7 @@ public class RootAponAssembler {
 
 	public Parameters assembleItemHolderParameters(ItemRuleMap itemRuleMap) {
 		ItemHolderParameters itemHolderParameters = new ItemHolderParameters();
-		for(ItemRule itemRule : itemRuleMap) {
+		for(ItemRule itemRule : itemRuleMap.values()) {
 			itemHolderParameters.putValue(ItemHolderParameters.item, assembleItemParameters(itemRule));
 		}
 		return itemHolderParameters;

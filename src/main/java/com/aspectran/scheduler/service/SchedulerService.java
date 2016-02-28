@@ -22,26 +22,26 @@ import com.aspectran.core.context.ActivityContext;
  */
 public interface SchedulerService {
 
-	public int getStartDelaySeconds();
+	int getStartDelaySeconds();
 	
-	public void setStartDelaySeconds(int startDelaySeconds);
+	void setStartDelaySeconds(int startDelaySeconds);
 	
-	public boolean isWaitOnShutdown();
+	boolean isWaitOnShutdown();
 	
-	public void setWaitOnShutdown(boolean waitOnShutdown);
+	void setWaitOnShutdown(boolean waitOnShutdown);
 	
-	public void startup() throws SchedulerServiceException;
+	void startup() throws SchedulerServiceException;
 	
-	public void startup(int delaySeconds) throws SchedulerServiceException;
+	void startup(int delaySeconds) throws SchedulerServiceException;
 	
-	public void shutdown() throws SchedulerServiceException;
+	void shutdown() throws SchedulerServiceException;
 	
-	public void shutdown(boolean waitForJobsToComplete) throws SchedulerServiceException;
+	void shutdown(boolean waitForJobsToComplete) throws SchedulerServiceException;
 
-	public void refresh(ActivityContext context) throws SchedulerServiceException;
+	void refresh(ActivityContext context) throws SchedulerServiceException;
 
-	public void pause(String schedulerId) throws SchedulerServiceException;
+	void pause(String schedulerId) throws SchedulerServiceException;
 
-	public void resume(String schedulerId) throws SchedulerServiceException;
+	void resume(String schedulerId) throws SchedulerServiceException;
 
 }

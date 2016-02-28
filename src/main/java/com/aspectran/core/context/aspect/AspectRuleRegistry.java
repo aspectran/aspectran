@@ -15,12 +15,13 @@
  */
 package com.aspectran.core.context.aspect;
 
+import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 import com.aspectran.core.context.rule.AspectRule;
-import com.aspectran.core.context.rule.AspectRuleMap;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
-
-import java.util.Collection;
 
 /**
  * The Class AspectRuleRegistry.
@@ -29,14 +30,14 @@ public class AspectRuleRegistry {
 
 	private final Log log = LogFactory.getLog(AspectRuleRegistry.class);
 
-	private final AspectRuleMap aspectRuleMap = new AspectRuleMap();
+	private final Map<String, AspectRule> aspectRuleMap = new LinkedHashMap<String, AspectRule>();
 	
 	private AspectAdviceRuleRegistry sessionAspectAdviceRuleRegistry;
 	
 	public AspectRuleRegistry() {
 	}
 	
-	public AspectRuleMap getAspectRuleMap() {
+	public Map<String, AspectRule> getAspectRuleMap() {
 		return aspectRuleMap;
 	}
 
@@ -49,7 +50,7 @@ public class AspectRuleRegistry {
 	}
 
 	public void addAspectRule(AspectRule aspectRule) {
-		aspectRuleMap.putAspectRule(aspectRule);
+		aspectRuleMap.put(aspectRule.getId(), aspectRule);
 		
 		if(log.isTraceEnabled())
 			log.trace("add AspectRule " + aspectRule);

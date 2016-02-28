@@ -113,8 +113,7 @@ public class AponTransform extends TransformResponse implements Response {
 	@Override
 	public Response replicate() {
 		TransformRule transformRule = getTransformRule().replicate();
-		Response response = new AponTransform(transformRule);
-		return response;
+		return new AponTransform(transformRule);
 	}
 	
 }

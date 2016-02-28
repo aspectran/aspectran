@@ -93,10 +93,8 @@ public class ImportableFile extends Importable {
 		}
 		
 		setLastModified(file.lastModified());
-		
-		InputStream inputStream = new FileInputStream(file);
-		
-		return inputStream;
+
+		return new FileInputStream(file);
 	}
 	
 	@Override

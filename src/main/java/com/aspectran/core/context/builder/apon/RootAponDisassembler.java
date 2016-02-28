@@ -758,7 +758,7 @@ public class RootAponDisassembler {
 		ItemRuleMap itemRuleMap = ItemRule.toItemRuleMap(itemParametersList);
 			
 		if(itemRuleMap != null) {
-			for(ItemRule itemRule : itemRuleMap) {
+			for(ItemRule itemRule : itemRuleMap.values()) {
 				Iterator<Token[]> iter = ItemRule.tokenIterator(itemRule);
 				
 				if(iter != null) {

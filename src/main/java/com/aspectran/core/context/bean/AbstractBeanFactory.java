@@ -20,7 +20,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -159,15 +158,11 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 				args = new Object[parameterSize];
 				argTypes = new Class<?>[parameterSize];
 				
-				Iterator<ItemRule> iter = constructorArgumentItemRuleMap.iterator();
 				int i = 0;
-				
-				while(iter.hasNext()) {
-					ItemRule ir = iter.next();
-					Object o = valueMap.get(ir.getName());
+				for(String name : constructorArgumentItemRuleMap.keySet()) {
+					Object o = valueMap.get(name);
 					args[i] = o;
 					argTypes[i] = o.getClass();
-					
 					i++;
 				}
 			} else {

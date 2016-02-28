@@ -40,17 +40,15 @@ public class HybridActivityContextBuilder extends AbstractActivityContextBuilder
 	public ActivityContext build(String rootContext) throws ActivityContextBuilderException {
 		try {
 			if(rootContext == null)
-				throw new IllegalArgumentException("rootContext must not be null.");
+				throw new IllegalArgumentException("'rootContext' must not be null.");
 
 			ImportHandler importHandler = new HybridImportHandler(this, encoding, isHybridLoading());
 			setImportHandler(importHandler);
 			
 			Importable importable = makeImportable(rootContext);
 			importHandler.handle(importable);
-			
-			ActivityContext aspectranContext = makeActivityContext(getApplicationAdapter());
 
-			return aspectranContext;
+			return makeActivityContext(getApplicationAdapter());
 		} catch(Exception e) {
 			throw new ActivityContextBuilderException("Failed to build a Hybrid Activity Context: " + rootContext, e);
 		}

@@ -27,6 +27,6 @@ public interface DisposableBean {
 	 *
 	 * @throws Exception the exception
 	 */
-	public void destroy() throws Exception;
+	void destroy() throws Exception;
 
 }

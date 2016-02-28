@@ -20,8 +20,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.bean.scope.Scope;
-import com.aspectran.core.context.loader.AspectranClassLoader;
-import com.aspectran.core.context.loader.resource.InvalidResourceException;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
@@ -264,22 +262,4 @@ public class CoreAspectranService extends AbstractAspectranService {
 		return this.active.get();
 	}
 
-	public static AspectranClassLoader newAspectranClassLoader(String[] resourceLocations) throws InvalidResourceException {
-		String[] excludePackageNames = new String[] {
-				"com.aspectran.core",
-				"com.aspectran.scheduler",
-				"com.aspectran.web",
-				"com.aspectran.console"
-			};
-
-		AspectranClassLoader acl = new AspectranClassLoader();
-		acl.excludePackage(excludePackageNames);
-		
-		if(resourceLocations != null && resourceLocations.length > 0) {
-			acl.setResourceLocations(resourceLocations);
-		}
-		
-		return acl;
-	}
-	
 }

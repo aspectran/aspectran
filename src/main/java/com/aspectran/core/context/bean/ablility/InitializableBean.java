@@ -27,6 +27,6 @@ public interface InitializableBean {
 	 *
 	 * @throws Exception the exception
 	 */
-	public void initialize() throws Exception;
+	void initialize() throws Exception;
 
 }

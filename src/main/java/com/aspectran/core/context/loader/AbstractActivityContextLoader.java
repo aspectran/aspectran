@@ -23,9 +23,6 @@ public abstract class AbstractActivityContextLoader implements ActivityContextLo
 	
 	private boolean hybridLoading;
 	
-	public AbstractActivityContextLoader() {
-	}
-
 	@Override
 	public ApplicationAdapter getApplicationAdapter() {
 		return applicationAdapter;

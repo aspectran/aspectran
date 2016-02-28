@@ -31,20 +31,20 @@ public interface ArgumentPossessable {
 	 *
 	 * @return the argument item rule map
 	 */
-	public ItemRuleMap getArgumentItemRuleMap();
+	ItemRuleMap getArgumentItemRuleMap();
 	
 	/**
 	 * Sets the argument item rule map.
 	 *
 	 * @param argumentItemRuleMap the new argument item rule map
 	 */
-	public void setArgumentItemRuleMap(ItemRuleMap argumentItemRuleMap);
+	void setArgumentItemRuleMap(ItemRuleMap argumentItemRuleMap);
 
 	/**
 	 * Adds the item rule for argument.
 	 *
 	 * @param argumentItemRule the argument item rule
 	 */
-	public void addArgumentItemRule(ItemRule argumentItemRule);
+	void addArgumentItemRule(ItemRule argumentItemRule);
 
 }

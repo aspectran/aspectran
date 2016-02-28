@@ -128,7 +128,7 @@ public abstract class AbstractAspectranService implements AspectranService {
 			if(aspectranContextAutoReloadingConfig != null) {
 				String reloadMethod = aspectranContextAutoReloadingConfig.getString(AspectranContextAutoReloadingConfig.reloadMethod);
 				int observationInterval = aspectranContextAutoReloadingConfig.getInt(AspectranContextAutoReloadingConfig.observationInterval, -1);
-				boolean autoReloadingStartup = aspectranContextAutoReloadingConfig.getBoolean(AspectranContextAutoReloadingConfig.startup, true);
+				boolean autoReloadingStartup = aspectranContextAutoReloadingConfig.getBoolean(AspectranContextAutoReloadingConfig.startup, false);
 				this.hardReload = "hard".equals(reloadMethod);
 				this.autoReloadingStartup = autoReloadingStartup;
 				this.observationInterval = observationInterval;
@@ -140,7 +140,8 @@ public abstract class AbstractAspectranService implements AspectranService {
 			if(autoReloadingStartup) {
 				if(observationInterval == -1) {
 					observationInterval = 10;
-					log.info("'" + aspectranContextAutoReloadingConfig.getQualifiedName() + "' is not specified, defaulting to 10 seconds.");
+					String contextAutoReloadingParamName = AspectranConfig.context.getName() + "." + AspectranContextConfig.autoReloading.getName();
+					log.info("'" + contextAutoReloadingParamName + "' is not specified, defaulting to 10 seconds.");
 				}
 			}
 
@@ -149,7 +150,7 @@ public abstract class AbstractAspectranService implements AspectranService {
 			this.resourceLocations = checkResourceLocations(getApplicationBasePath(), null, resourceLocations);
 			this.aspectranSchedulerConfig = aspectranConfig.getParameters(AspectranConfig.scheduler);
 			
-			aspectranClassLoader = CoreAspectranService.newAspectranClassLoader(this.resourceLocations);
+			aspectranClassLoader = newAspectranClassLoader(this.resourceLocations);
 			
 			String encoding = aspectranContextConfig.getString(AspectranContextConfig.encoding);
 			boolean hybridLoading = aspectranContextConfig.getBoolean(AspectranContextConfig.hybridLoading, false);
@@ -210,7 +211,7 @@ public abstract class AbstractAspectranService implements AspectranService {
 				throw new IllegalArgumentException("activityContextLoader must not be null.");
 
 			if(hardReload) {
-				aspectranClassLoader = CoreAspectranService.newAspectranClassLoader(this.resourceLocations);
+				aspectranClassLoader = newAspectranClassLoader(this.resourceLocations);
 			} else {
 				aspectranClassLoader.reload();
 			}
@@ -283,8 +284,26 @@ public abstract class AbstractAspectranService implements AspectranService {
 		
 		reloadingTimer = null;
 	}
+
+	public AspectranClassLoader newAspectranClassLoader(String[] resourceLocations) throws InvalidResourceException {
+		String[] excludePackageNames = new String[] {
+				"com.aspectran.core",
+				"com.aspectran.scheduler",
+				"com.aspectran.web",
+				"com.aspectran.console"
+		};
+
+		AspectranClassLoader acl = new AspectranClassLoader();
+		acl.excludePackage(excludePackageNames);
+
+		if(resourceLocations != null && resourceLocations.length > 0) {
+			acl.setResourceLocations(resourceLocations);
+		}
+
+		return acl;
+	}
 	
-	private static String[] checkResourceLocations(String applicationBasePath, String rootResourceLocation, String[] resourceLocations) throws InvalidResourceException {
+	private String[] checkResourceLocations(String applicationBasePath, String rootResourceLocation, String[] resourceLocations) throws InvalidResourceException {
 		if(resourceLocations == null)
 			return null;
 		

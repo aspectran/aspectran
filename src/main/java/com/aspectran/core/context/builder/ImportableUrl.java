@@ -58,9 +58,8 @@ public class ImportableUrl extends Importable {
 		URL url = new URL(urlString);
 		URLConnection conn = url.openConnection();
 		setLastModified(conn.getLastModified());
-		InputStream inputStream = conn.getInputStream();
 
-		return inputStream;
+		return conn.getInputStream();
 	}
 	
 	@Override

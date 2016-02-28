@@ -42,42 +42,42 @@ public interface Translet extends BeanRegistrySupport {
 	 *
 	 * @return the translet name
 	 */
-	public String getTransletName();
+	String getTransletName();
 
 	/**
 	 * Gets the REST verb.
 	 *
 	 * @return the REST verb
 	 */
-	public RequestMethodType getRequestMethod();
+	RequestMethodType getRequestMethod();
 
 	/**
 	 * Gets the application adapter.
 	 *
 	 * @return the application adapter
 	 */
-	public ApplicationAdapter getApplicationAdapter();
+	ApplicationAdapter getApplicationAdapter();
 
 	/**
 	 * Gets the session adapter.
 	 *
 	 * @return the session adapter
 	 */
-	public SessionAdapter getSessionAdapter();
+	SessionAdapter getSessionAdapter();
 
 	/**
 	 * Gets the request adapter.
 	 *
 	 * @return the request adapter
 	 */
-	public RequestAdapter getRequestAdapter();
+	RequestAdapter getRequestAdapter();
 
 	/**
 	 * Gets the response adapter.
 	 *
 	 * @return the response adapter
 	 */
-	public ResponseAdapter getResponseAdapter();
+	ResponseAdapter getResponseAdapter();
 
 	/**
 	 * Gets the request adaptee.
@@ -85,7 +85,7 @@ public interface Translet extends BeanRegistrySupport {
 	 * @param <T> the generic type
 	 * @return the request adaptee
 	 */
-	public <T> T getRequestAdaptee();
+	<T> T getRequestAdaptee();
 
 	/**
 	 * Gets the response adaptee.
@@ -93,7 +93,7 @@ public interface Translet extends BeanRegistrySupport {
 	 * @param <T> the generic type
 	 * @return the response adaptee
 	 */
-	public <T> T getResponseAdaptee();
+	<T> T getResponseAdaptee();
 
 	/**
 	 * Gets the session adaptee.
@@ -101,7 +101,7 @@ public interface Translet extends BeanRegistrySupport {
 	 * @param <T> the generic type
 	 * @return the session adaptee
 	 */
-	public <T> T getSessionAdaptee();
+	<T> T getSessionAdaptee();
 
 	/**
 	 * Gets the application adaptee.
@@ -109,14 +109,14 @@ public interface Translet extends BeanRegistrySupport {
 	 * @param <T> the generic type
 	 * @return the application adaptee
 	 */
-	public <T> T getApplicationAdaptee();
+	<T> T getApplicationAdaptee();
 
 	/**
 	 * Gets the process result.
 	 *
 	 * @return the process result
 	 */
-	public ProcessResult getProcessResult();
+	ProcessResult getProcessResult();
 
 	/**
 	 * Gets the action result value by specified action id.
@@ -124,21 +124,21 @@ public interface Translet extends BeanRegistrySupport {
 	 * @param actionId the specified action id
 	 * @return the action result vlaue
 	 */
-	public Object getProcessResult(String actionId);
+	Object getProcessResult(String actionId);
 
 	/**
 	 * Sets the process result.
 	 *
 	 * @param processResult the new process result
 	 */
-	public void setProcessResult(ProcessResult processResult);
+	void setProcessResult(ProcessResult processResult);
 
 	/**
 	 * Returns the ProcessResult. If not yet instantiated then create a new one.
 	 *
 	 * @return the process result
 	 */
-	public ProcessResult touchProcessResult();
+	ProcessResult touchProcessResult();
 
 	/**
 	 * Returns the ProcessResult.
@@ -147,14 +147,14 @@ public interface Translet extends BeanRegistrySupport {
 	 * @param contentName the content name
 	 * @return the process result
 	 */
-	public ProcessResult touchProcessResult(String contentName);
+	ProcessResult touchProcessResult(String contentName);
 
 	/**
 	 * Gets activity data map.
 	 *
 	 * @return the activity data map
 	 */
-	public ActivityDataMap getActivityDataMap();
+	ActivityDataMap getActivityDataMap();
 
 	/**
 	 * Gets activity data map.
@@ -162,40 +162,40 @@ public interface Translet extends BeanRegistrySupport {
 	 * @param prefill whether data pre-fill.
 	 * @return the activity data map
 	 */
-	public ActivityDataMap getActivityDataMap(boolean prefill);
+	ActivityDataMap getActivityDataMap(boolean prefill);
 
 	/**
 	 * Respond immediately, and the remaining jobs will be canceled.
 	 */
-	public void response();
+	void response();
 
 	/**
 	 * Respond immediately, and the remaining jobs will be canceled.
 	 *
 	 * @param response the response
 	 */
-	public void response(Response response);
+	void response(Response response);
 
 	/**
 	 * Transformation according to a given rule, and transmits this response.
 	 *
 	 * @param transformRule the transformation rule
 	 */
-	public void transform(TransformRule transformRule);
+	void transform(TransformRule transformRule);
 
 	/**
 	 * Redirect according to a given rule.
 	 *
 	 * @param redirectResponseRule the redirect response rule
 	 */
-	public void redirect(RedirectResponseRule redirectResponseRule);
+	void redirect(RedirectResponseRule redirectResponseRule);
 
 	/**
 	 * Redirect to other resource.
 	 *
 	 * @param target the target resource
 	 */
-	public void redirect(String target);
+	void redirect(String target);
 
 	/**
 	 * Redirect.
@@ -203,7 +203,7 @@ public interface Translet extends BeanRegistrySupport {
 	 * @param target the target
 	 * @param immediately the immediately
 	 */
-	public void redirect(String target, boolean immediately);
+	void redirect(String target, boolean immediately);
 
 	/**
 	 * Redirect to the other target resouce.
@@ -211,21 +211,21 @@ public interface Translet extends BeanRegistrySupport {
 	 * @param target the redirect target
 	 * @param parameters the parameters
 	 */
-	public void redirect(String target, Map<String, String> parameters);
+	void redirect(String target, Map<String, String> parameters);
 
 	/**
 	 * Forward according to a given rule.
 	 *
 	 * @param forwardResponseRule the forward response rule
 	 */
-	public void forward(ForwardResponseRule forwardResponseRule);
+	void forward(ForwardResponseRule forwardResponseRule);
 
 	/**
 	 * Forward to specified translet immediately.
 	 *
 	 * @param transletName the translet name of the target to be forwarded
 	 */
-	public void forward(String transletName);
+	void forward(String transletName);
 
 	/**
 	 * Forward to specified translet.
@@ -233,21 +233,21 @@ public interface Translet extends BeanRegistrySupport {
 	 * @param transletName the translet name
 	 * @param immediately whether forwarding immediately
 	 */
-	public void forward(String transletName, boolean immediately);
+	void forward(String transletName, boolean immediately);
 
 	/**
 	 * Returns whether the exception was thrown.
 	 *
 	 * @return true, if is exception raised
 	 */
-	public boolean isExceptionRaised();
+	boolean isExceptionRaised();
 
 	/**
 	 * Returns the raised exception instance.
 	 *
 	 * @return the raised exception instance
 	 */
-	public Exception getRaisedException();
+	Exception getRaisedException();
 
 	/**
 	 * Gets the aspect advice bean.
@@ -256,7 +256,7 @@ public interface Translet extends BeanRegistrySupport {
 	 * @param aspectId the aspect id
 	 * @return the aspect advice bean
 	 */
-	public <T> T getAspectAdviceBean(String aspectId);
+	<T> T getAspectAdviceBean(String aspectId);
 
 	/**
 	 * Put aspect advice bean.
@@ -264,7 +264,7 @@ public interface Translet extends BeanRegistrySupport {
 	 * @param aspectId the aspect id
 	 * @param adviceBean the advice bean
 	 */
-	public void putAspectAdviceBean(String aspectId, Object adviceBean);
+	void putAspectAdviceBean(String aspectId, Object adviceBean);
 
 	/**
 	 * Gets the before advice result.
@@ -273,7 +273,7 @@ public interface Translet extends BeanRegistrySupport {
 	 * @param aspectId the aspect id
 	 * @return the before advice result
 	 */
-	public <T> T getBeforeAdviceResult(String aspectId);
+	<T> T getBeforeAdviceResult(String aspectId);
 
 	/**
 	 * Gets the after advice result.
@@ -282,7 +282,7 @@ public interface Translet extends BeanRegistrySupport {
 	 * @param aspectId the aspect id
 	 * @return the after advice result
 	 */
-	public <T> T getAfterAdviceResult(String aspectId);
+	<T> T getAfterAdviceResult(String aspectId);
 
 	/**
 	 * Gets the finally advice result.
@@ -291,7 +291,7 @@ public interface Translet extends BeanRegistrySupport {
 	 * @param aspectId the aspect id
 	 * @return the finally advice result
 	 */
-	public <T> T getFinallyAdviceResult(String aspectId);
+	<T> T getFinallyAdviceResult(String aspectId);
 
 	/**
 	 * Put advice result.
@@ -299,20 +299,20 @@ public interface Translet extends BeanRegistrySupport {
 	 * @param aspectAdviceRule the aspect advice rule
 	 * @param adviceActionResult the advice action result
 	 */
-	public void putAdviceResult(AspectAdviceRule aspectAdviceRule, Object adviceActionResult);
+	void putAdviceResult(AspectAdviceRule aspectAdviceRule, Object adviceActionResult);
 
 	/**
 	 * Return the interface class for {@code Translet}.
 	 *
 	 * @return the translet interface class
 	 */
-	public Class<? extends Translet> getTransletInterfaceClass();
+	Class<? extends Translet> getTransletInterfaceClass();
 
 	/**
 	 * Return the implementation class for {@code Translet}.
 	 *
 	 * @return the translet implementation class
 	 */
-	public Class<? extends CoreTranslet> getTransletImplementationClass();
+	Class<? extends CoreTranslet> getTransletImplementationClass();
 
 }

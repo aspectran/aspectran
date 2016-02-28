@@ -41,31 +41,38 @@ public class Application {
         try {
             aspectranService = ConsoleAspectranService.newInstance(aspectranConfigFile);
 
+            loop:
             while(true) {
                 String command = System.console().readLine("Aspectran> ");
 
-                if(command.length() == 0)
+                if(command.isEmpty())
                     continue;
 
-                if("restart".equals(command)) {
-                	System.out.println("Restarting the Aspectran Service...");
-                    aspectranService.restart();
-                } else if("reload".equals(command)) {
-                	System.out.println("Reloading the Aspectran Service...");
-                	aspectranService.reload();
-                } else if("refresh".equals(command)) {
-                	System.out.println("Refreshing the Aspectran service...");
-                	aspectranService.refresh();
-                } else if("pause".equals(command)) {
-                	System.out.println("Pause the Aspectran Service...");
-                    aspectranService.pause();
-                } else if("resume".equals(command)) {
-                	System.out.println("Resume the Aspectran Service...");
-                    aspectranService.resume();
-                } else if("quit".equals(command)) {
-                    break;
-                } else {
-                    aspectranService.service(command);
+                switch(command) {
+                    case "restart":
+                        System.out.println("Restarting the Aspectran Service...");
+                        aspectranService.restart();
+                        break;
+                    case "reload":
+                        System.out.println("Reloading the Aspectran Service...");
+                        aspectranService.reload();
+                        break;
+                    case "refresh":
+                        System.out.println("Refreshing the Aspectran service...");
+                        aspectranService.refresh();
+                        break;
+                    case "pause":
+                        System.out.println("Pause the Aspectran Service...");
+                        aspectranService.pause();
+                        break;
+                    case "resume":
+                        System.out.println("Resume the Aspectran Service...");
+                        aspectranService.resume();
+                        break;
+                    case "quit":
+                        break loop;
+                    default:
+                        aspectranService.service(command);
                 }
 
                 System.out.println();

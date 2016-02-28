@@ -30,13 +30,13 @@ public interface ActionPossessable {
 	 *
 	 * @return the action list
 	 */
-	public ActionList getActionList();
+	ActionList getActionList();
 	
 	/**
 	 * Sets the action list.
 	 *
 	 * @param actionList the new action list
 	 */
-	public void setActionList(ActionList actionList);
+	void setActionList(ActionList actionList);
 
 }

@@ -15,15 +15,10 @@
  */
 package com.aspectran.core.context.builder.xml;
 
-import java.util.Map;
-
-import org.w3c.dom.Node;
-
 import com.aspectran.core.context.builder.ContextBuilderAssistant;
 import com.aspectran.core.context.rule.TemplateRule;
 import com.aspectran.core.util.BooleanUtils;
 import com.aspectran.core.util.StringUtils;
-import com.aspectran.core.util.xml.Nodelet;
 import com.aspectran.core.util.xml.NodeletAdder;
 import com.aspectran.core.util.xml.NodeletParser;
 
@@ -47,26 +42,24 @@ public class TemplateNodeletAdder implements NodeletAdder {
 
 	@Override
 	public void process(String xpath, NodeletParser parser) {
-		parser.addNodelet(xpath, "/template", new Nodelet() {
-			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
-				String id = attributes.get("id");
-				String engine = attributes.get("engine");
-				String name = attributes.get("name");
-				String file = attributes.get("file");
-				String resource = attributes.get("resource");
-				String url = attributes.get("url");
-				String encoding = attributes.get("encoding");
-				Boolean noCache = BooleanUtils.toNullableBooleanObject(attributes.get("noCache"));
+		parser.addNodelet(xpath, "/template", (node, attributes, text) -> {
+            String id = attributes.get("id");
+            String engine = attributes.get("engine");
+            String name = attributes.get("name");
+            String file = attributes.get("file");
+            String resource = attributes.get("resource");
+            String url = attributes.get("url");
+            String encoding = attributes.get("encoding");
+            Boolean noCache = BooleanUtils.toNullableBooleanObject(attributes.get("noCache"));
 
-				TemplateRule templateRule = TemplateRule.newInstance(id, engine, name, file, resource, url, text, encoding, noCache);
+            TemplateRule templateRule = TemplateRule.newInstance(id, engine, name, file, resource, url, text, encoding, noCache);
 
-				if(!StringUtils.isEmpty(engine)) {
-					assistant.putBeanReference(engine, templateRule);
-				}
+            if(!StringUtils.isEmpty(engine)) {
+                assistant.putBeanReference(engine, templateRule);
+            }
 
-				assistant.addTemplateRule(templateRule);
-			}
-		});
+            assistant.addTemplateRule(templateRule);
+        });
 	}
 
 }

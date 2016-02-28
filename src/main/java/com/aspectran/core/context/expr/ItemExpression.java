@@ -60,7 +60,7 @@ public class ItemExpression extends TokenExpression implements ItemExpressor {
 
 	@Override
 	public void express(ItemRuleMap itemRuleMap, Map<String, Object> valueMap) {
-		for(ItemRule ir : itemRuleMap) {
+		for(ItemRule ir : itemRuleMap.values()) {
 			ItemType itemType = ir.getType();
 			ItemValueType valueType = ir.getValueType();
 			String name = ir.getName();

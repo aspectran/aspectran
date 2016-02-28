@@ -15,7 +15,6 @@
  */
 package com.aspectran.core.context.rule;
 
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 
 /**
@@ -23,7 +22,7 @@ import java.util.LinkedHashMap;
  * 
  * <p>Created: 2008. 03. 29 PM 5:00:20</p>
  */
-public class ItemRuleMap extends LinkedHashMap<String, ItemRule> implements Iterable<ItemRule> {
+public class ItemRuleMap extends LinkedHashMap<String, ItemRule> {
 
 	/** @serial */
 	private static final long serialVersionUID = 192817512158305803L;
@@ -39,9 +38,4 @@ public class ItemRuleMap extends LinkedHashMap<String, ItemRule> implements Iter
 		return put(itemRule.getName(), itemRule);
 	}
 
-	@Override
-	public Iterator<ItemRule> iterator() {
-		return this.values().iterator();
-	}
-	
 }

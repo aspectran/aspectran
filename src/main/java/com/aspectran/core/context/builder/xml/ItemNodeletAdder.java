@@ -16,9 +16,6 @@
 package com.aspectran.core.context.builder.xml;
 
 import java.util.Iterator;
-import java.util.Map;
-
-import org.w3c.dom.Node;
 
 import com.aspectran.core.context.builder.ContextBuilderAssistant;
 import com.aspectran.core.context.expr.token.Token;
@@ -29,7 +26,6 @@ import com.aspectran.core.context.rule.type.ItemType;
 import com.aspectran.core.context.rule.type.TokenType;
 import com.aspectran.core.util.BooleanUtils;
 import com.aspectran.core.util.StringUtils;
-import com.aspectran.core.util.xml.Nodelet;
 import com.aspectran.core.util.xml.NodeletAdder;
 import com.aspectran.core.util.xml.NodeletParser;
 
@@ -53,121 +49,106 @@ public class ItemNodeletAdder implements NodeletAdder {
 
 	@Override
 	public void process(final String xpath, NodeletParser parser) {
-		parser.addNodelet(xpath, "/item", new Nodelet() {
-			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
-				String type = attributes.get("type");
-				String name = attributes.get("name");
-				String value = attributes.get("value");
-				String valueType = attributes.get("valueType");
-				String defaultValue = attributes.get("defaultValue");
-				Boolean tokenize = BooleanUtils.toNullableBooleanObject(attributes.get("tokenize"));
+		parser.addNodelet(xpath, "/item", (node, attributes, text) -> {
+            String type = attributes.get("type");
+            String name = attributes.get("name");
+            String value = attributes.get("value");
+            String valueType = attributes.get("valueType");
+            String defaultValue = attributes.get("defaultValue");
+            Boolean tokenize = BooleanUtils.toNullableBooleanObject(attributes.get("tokenize"));
 
-				if(StringUtils.hasText(text))
-					value = text;
+            if(StringUtils.hasText(text))
+                value = text;
 
-				ItemRule itemRule = ItemRule.newInstance(type, name, value, valueType, defaultValue, tokenize);
+            ItemRule itemRule = ItemRule.newInstance(type, name, value, valueType, defaultValue, tokenize);
 
-				assistant.pushObject(itemRule);
-				
-				if(itemRule.getType() != ItemType.SINGULAR)
-					ItemRule.beginValueCollection(itemRule);
-			}
-		});
-		parser.addNodelet(xpath, "/item/value", new Nodelet() {
-			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
-				String name = attributes.get("name");
-				
-				ItemRule itemRule = assistant.peekObject();
-				
-				Token[] tokens = ItemRule.parseValue(itemRule, text);
+            assistant.pushObject(itemRule);
 
-				if(tokens != null) {
-					assistant.pushObject(name);
-					assistant.pushObject(tokens);
-				}
-			}
-		});
-		parser.addNodelet(xpath, "/item/value/reference", new Nodelet() {
-			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
-				String bean= attributes.get("bean");
-				String parameter = attributes.get("parameter");
-				String attribute = attributes.get("attribute");
-				String property = attributes.get("property"); // property for bean or attribute object
+            if(itemRule.getType() != ItemType.SINGULAR)
+                ItemRule.beginValueCollection(itemRule);
+        });
+		parser.addNodelet(xpath, "/item/value", (node, attributes, text) -> {
+            String name = attributes.get("name");
 
-				Object object = assistant.peekObject();
-				
-				if(object instanceof ItemRule) {
-					ItemRule.updateReference((ItemRule)object, bean, parameter, attribute, property);
-				} else {
-					assistant.popObject(); // discard tokens
-					Token t = ItemRule.makeReferenceToken(bean, parameter, attribute, property);
-					Token[] tokens = new Token[] { t };
-					assistant.pushObject(tokens);
-				}
-			}
-		});
-		parser.addNodelet(xpath, "/item/value/null", new Nodelet() {
-			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
-				Object object = assistant.peekObject();
-				
-				if(object instanceof Token[]) {
-					// replace tokens to null
-					assistant.popObject();
-					assistant.pushObject(null);
-				}
-			}
-		});
-		parser.addNodelet(xpath, "/item/value/end()", new Nodelet() {
-			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
-				Object object = assistant.peekObject();
-				
-				if(object instanceof Token[]) {
-					Token[] tokens = assistant.popObject();
-					String name = assistant.popObject();
-					ItemRule itemRule = assistant.peekObject();
+            ItemRule itemRule = assistant.peekObject();
 
-					if(itemRule.getType() != ItemType.SINGULAR)
-						ItemRule.flushValueCollection(itemRule, name, tokens);
-				}
-			}
-		});
-		parser.addNodelet(xpath, "/item/reference", new Nodelet() {
-			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
-				String beanId = StringUtils.emptyToNull(attributes.get("bean"));
-				String parameter = StringUtils.emptyToNull(attributes.get("parameter"));
-				String attribute = StringUtils.emptyToNull(attributes.get("attribute"));
-				String property = StringUtils.emptyToNull(attributes.get("property")); // bean's property
+            Token[] tokens = ItemRule.parseValue(itemRule, text);
+            if(tokens != null) {
+                assistant.pushObject(name);
+                assistant.pushObject(tokens);
+            }
+        });
+		parser.addNodelet(xpath, "/item/value/reference", (node, attributes, text) -> {
+            String bean= attributes.get("bean");
+            String parameter = attributes.get("parameter");
+            String attribute = attributes.get("attribute");
+            String property = attributes.get("property"); // property for bean or attribute object
 
-				ItemRule itemRule = assistant.peekObject();
-				ItemRule.updateReference(itemRule, beanId, parameter, attribute, property);
-			}
-		});
-		parser.addNodelet(xpath, "/item/end()", new Nodelet() {
-			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
-				ItemRule itemRule = assistant.popObject();
-				ItemRuleMap itemRuleMap = assistant.peekObject();
+            Object object = assistant.peekObject();
 
-				ItemRule.addItemRule(itemRule, itemRuleMap);
-				Iterator<Token[]> iter = ItemRule.tokenIterator(itemRule);
-				
-				if(iter != null) {
-					while(iter.hasNext()) {
-						for(Token t : iter.next()) {
-							String name = t.getName();
-							if(t.getType() == TokenType.BEAN && name != null) {
-								if(name.equals(BeanRule.CLASS_DIRECTIVE)) {
-									Class<?> beanClass = assistant.loadClass(t.getValue());
-									t.setBeanClass(beanClass);
-									assistant.putBeanReference(beanClass, t);
-								} else {
-									assistant.putBeanReference(name, t);
-								}
-							}
-						}
-					}
-				}
-			}
-		});
+            if(object instanceof ItemRule) {
+                ItemRule.updateReference((ItemRule)object, bean, parameter, attribute, property);
+            } else {
+                assistant.popObject(); // discard tokens
+                Token t = ItemRule.makeReferenceToken(bean, parameter, attribute, property);
+                Token[] tokens = new Token[] { t };
+                assistant.pushObject(tokens);
+            }
+        });
+		parser.addNodelet(xpath, "/item/value/null", (node, attributes, text) -> {
+            Object object = assistant.peekObject();
+
+            if(object instanceof Token[]) {
+                // replace tokens to null
+                assistant.popObject();
+                assistant.pushObject(null);
+            }
+        });
+		parser.addNodelet(xpath, "/item/value/end()", (node, attributes, text) -> {
+            Object object = assistant.peekObject();
+
+            if(object instanceof Token[]) {
+                Token[] tokens = assistant.popObject();
+                String name = assistant.popObject();
+                ItemRule itemRule = assistant.peekObject();
+
+                if(itemRule.getType() != ItemType.SINGULAR)
+                    ItemRule.flushValueCollection(itemRule, name, tokens);
+            }
+        });
+		parser.addNodelet(xpath, "/item/reference", (node, attributes, text) -> {
+            String beanId = StringUtils.emptyToNull(attributes.get("bean"));
+            String parameter = StringUtils.emptyToNull(attributes.get("parameter"));
+            String attribute = StringUtils.emptyToNull(attributes.get("attribute"));
+            String property = StringUtils.emptyToNull(attributes.get("property")); // bean's property
+
+            ItemRule itemRule = assistant.peekObject();
+            ItemRule.updateReference(itemRule, beanId, parameter, attribute, property);
+        });
+		parser.addNodelet(xpath, "/item/end()", (node, attributes, text) -> {
+            ItemRule itemRule = assistant.popObject();
+            ItemRuleMap itemRuleMap = assistant.peekObject();
+
+            ItemRule.addItemRule(itemRule, itemRuleMap);
+            Iterator<Token[]> iter = ItemRule.tokenIterator(itemRule);
+
+            if(iter != null) {
+                while(iter.hasNext()) {
+                    for(Token t : iter.next()) {
+                        String name = t.getName();
+                        if(t.getType() == TokenType.BEAN && name != null) {
+                            if(name.equals(BeanRule.CLASS_DIRECTIVE)) {
+                                Class<?> beanClass = assistant.loadClass(t.getValue());
+                                t.setBeanClass(beanClass);
+                                assistant.putBeanReference(beanClass, t);
+                            } else {
+                                assistant.putBeanReference(name, t);
+                            }
+                        }
+                    }
+                }
+            }
+        });
 	}
 
 }

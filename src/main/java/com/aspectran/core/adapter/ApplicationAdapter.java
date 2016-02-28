@@ -36,14 +36,14 @@ public interface ApplicationAdapter {
 	 * @param <T> the generic type
 	 * @return the Adaptee object
 	 */
-	public <T> T getAdaptee();
+	<T> T getAdaptee();
 
 	/**
 	 * Gets the application scope.
 	 *
 	 * @return the scope
 	 */
-	public ApplicationScope getApplicationScope();
+	ApplicationScope getApplicationScope();
 	
 	/**
 	 * Gets the attribute.
@@ -52,7 +52,7 @@ public interface ApplicationAdapter {
 	 * @param name the name
 	 * @return the attribute
 	 */
-	public <T> T getAttribute(String name);
+	<T> T getAttribute(String name);
 
 	/**
 	 * Sets the attribute.
@@ -60,42 +60,42 @@ public interface ApplicationAdapter {
 	 * @param name the name
 	 * @param value the value
 	 */
-	public void setAttribute(String name, Object value);
+	void setAttribute(String name, Object value);
 	
 	/**
 	 * Gets the attribute names.
 	 *
 	 * @return the attribute names
 	 */
-	public Enumeration<String> getAttributeNames();
+	Enumeration<String> getAttributeNames();
 	
 	/**
 	 * Removes the attribute.
 	 *
 	 * @param name the name
 	 */
-	public void removeAttribute(String name);
+	void removeAttribute(String name);
 	
 	/**
 	 * Gets the aspectran service controller.
 	 *
 	 * @return the aspectran service controller
 	 */
-	public AspectranServiceController getAspectranServiceController();
+	AspectranServiceController getAspectranServiceController();
 
 	/**
 	 * Gets the class loader.
 	 *
 	 * @return the class loader
 	 */
-	public ClassLoader getClassLoader();
+	ClassLoader getClassLoader();
 	
 	/**
 	 * Return the base path that the current application is mapped to.
 	 *
 	 * @return the application base path
 	 */
-	public String getApplicationBasePath();
+	String getApplicationBasePath();
 	
 	/**
 	 * Returns to convert the given file path with the real file path.
@@ -104,7 +104,7 @@ public interface ApplicationAdapter {
 	 * @return the real file path
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
-	public String toRealPath(String filePath) throws IOException;
+	String toRealPath(String filePath) throws IOException;
 	
 	/**
 	 * Returns to convert the given file path with the real file path.
@@ -113,6 +113,6 @@ public interface ApplicationAdapter {
 	 * @return the real file path
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
-	public File toRealPathAsFile(String filePath) throws IOException;
+	File toRealPathAsFile(String filePath) throws IOException;
 
 }

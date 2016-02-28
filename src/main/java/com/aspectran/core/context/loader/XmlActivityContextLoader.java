@@ -26,9 +26,6 @@ public class XmlActivityContextLoader extends AbstractActivityContextLoader {
 
 	private final Log log = LogFactory.getLog(XmlActivityContextLoader.class);
 	
-	public XmlActivityContextLoader() {
-	}
-
 	@Override
 	public ActivityContext load(String rootContext) throws ActivityContextBuilderException {
 		log.info("Build ActivityContext: " + rootContext);

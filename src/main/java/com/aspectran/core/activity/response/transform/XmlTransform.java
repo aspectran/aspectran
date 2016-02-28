@@ -48,7 +48,7 @@ public class XmlTransform extends TransformResponse implements Response {
 
 	public static final String INDENT_NUMBER_KEY = "indent-number";
 
-	public static final Integer INDENT_NUMBER_VAL = new Integer(1);
+	public static final Integer INDENT_NUMBER_VAL = 1;
 
 	private static final Log log = LogFactory.getLog(XmlTransform.class);
 
@@ -139,8 +139,7 @@ public class XmlTransform extends TransformResponse implements Response {
 	@Override
 	public Response replicate() {
 		TransformRule transformRule = getTransformRule().replicate();
-		Response response = new XmlTransform(transformRule);
-		return response;
+		return new XmlTransform(transformRule);
 	}
 
 }

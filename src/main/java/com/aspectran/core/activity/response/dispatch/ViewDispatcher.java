@@ -25,7 +25,7 @@ import com.aspectran.core.context.rule.DispatchResponseRule;
  */
 public interface ViewDispatcher {
 	
-	public static final String VIEW_DISPATCHER_SETTING_NAME = "viewDispatcher";
+	String VIEW_DISPATCHER_SETTING_NAME = "viewDispatcher";
 	
 	/**
 	 * Dispatch to other resources as the given rule.
@@ -33,13 +33,13 @@ public interface ViewDispatcher {
 	 * @param activity the current activity
 	 * @param dispatchResponseRule the dispatch response rule
 	 */
-	public void dispatch(Activity activity, DispatchResponseRule dispatchResponseRule) throws ViewDispatchException;
+	void dispatch(Activity activity, DispatchResponseRule dispatchResponseRule) throws ViewDispatchException;
 
 	/**
 	 * Return whether this view dispatcher corresponds to a singleton instance.
 	 *
 	 * @return whether this view dispatcher corresponds to a singleton instance
      */
-	public boolean isSingleton();
+	boolean isSingleton();
 	
 }

@@ -63,7 +63,6 @@ public abstract class AbstractSessionAdapter implements SessionAdapter {
 		if(adaptee == null) {
 			return super.toString();
 		}
-		
 		ToStringBuilder tsb = new ToStringBuilder();
 		tsb.append("id", getId());
 		tsb.append("creationTime", getCreationTime());

@@ -33,6 +33,6 @@ public interface FactoryBean<T> {
 	 * @return an instance of the bean (can be null)
 	 * @throws Exception in case of creation errors
 	 */
-	public T getObject() throws Exception;
+	T getObject() throws Exception;
 
 }

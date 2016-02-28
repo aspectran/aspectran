@@ -147,7 +147,7 @@ public class BeanAction extends AbstractAction {
 				argsObjects = new Object[argSize];
 			}
 
-			for(ItemRule ir : argumentItemRuleMap) {
+			for(ItemRule ir : argumentItemRuleMap.values()) {
 				Object o = valueMap.get(ir.getName());
 				argsObjects[argIndex] = o;
 				argIndex++;
@@ -182,12 +182,10 @@ public class BeanAction extends AbstractAction {
 				argsObjects = new Object[argsTypes.length];
 			}
 
-			for(ItemRule ir : argumentItemRuleMap) {
+			for(ItemRule ir : argumentItemRuleMap.values()) {
 				Object o = valueMap.get(ir.getName());
-
 				argsTypes[argIndex] = ItemRule.getClassOfValue(ir, o);
 				argsObjects[argIndex] = o;
-
 				argIndex++;
 			}
 		} else if(requiresTranslet) {

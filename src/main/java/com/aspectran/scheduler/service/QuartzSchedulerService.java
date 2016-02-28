@@ -39,7 +39,6 @@ import com.aspectran.core.context.builder.apon.params.CronTriggerParameters;
 import com.aspectran.core.context.builder.apon.params.SimpleTriggerParameters;
 import com.aspectran.core.context.rule.AspectJobAdviceRule;
 import com.aspectran.core.context.rule.AspectRule;
-import com.aspectran.core.context.rule.AspectRuleMap;
 import com.aspectran.core.context.rule.PointcutRule;
 import com.aspectran.core.context.rule.type.AspectTargetType;
 import com.aspectran.core.context.rule.type.PointcutType;
@@ -100,7 +99,7 @@ public class QuartzSchedulerService implements SchedulerService {
 
 	@Override
 	public void startup() throws SchedulerServiceException {
-		AspectRuleMap aspectRuleMap = context.getAspectRuleRegistry().getAspectRuleMap();
+		Map<String, AspectRule> aspectRuleMap = context.getAspectRuleRegistry().getAspectRuleMap();
 		
 		if(aspectRuleMap == null)
 			return;
@@ -112,7 +111,7 @@ public class QuartzSchedulerService implements SchedulerService {
 				startDate = new Date(startDate.getTime() + (startDelaySeconds * 1000L));
 			}
 			
-			for(AspectRule aspectRule : aspectRuleMap) {
+			for(AspectRule aspectRule : aspectRuleMap.values()) {
 				AspectTargetType aspectTargetType = aspectRule.getAspectTargetType();
 				
 				if(aspectTargetType == AspectTargetType.SCHEDULER) {

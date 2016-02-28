@@ -19,76 +19,76 @@ import java.util.List;
 
 public interface Parameter {
 
-	public Parameters getContainer();
+	Parameters getContainer();
 	
-	public String getName();
+	String getName();
 
-	public String getQualifiedName();
+	String getQualifiedName();
 
-	public ParameterValueType getParameterValueType();
+	ParameterValueType getParameterValueType();
 	
-	public void setParameterValueType(ParameterValueType parameterValueType);
+	void setParameterValueType(ParameterValueType parameterValueType);
 
-	public boolean isArray();
+	boolean isArray();
 	
-	public boolean isBracketed();
+	boolean isBracketed();
 	
-	public boolean isAssigned();
+	boolean isAssigned();
 
-	public int getArraySize();
+	int getArraySize();
 	
-	public Object getValue();
+	Object getValue();
 	
-	public void putValue(Object value);
+	void putValue(Object value);
 	
-	public void clearValue();
+	void clearValue();
 	
-	public Object[] getValues();
+	Object[] getValues();
 
-	public List<?> getValueList();
+	List<?> getValueList();
 
-	public String getValueAsString();
+	String getValueAsString();
 	
-	public String[] getValueAsStringArray();
+	String[] getValueAsStringArray();
 
-	public List<String> getValueAsStringList();
+	List<String> getValueAsStringList();
 	
-	public Integer getValueAsInt();
+	Integer getValueAsInt();
 
-	public Integer[] getValueAsIntArray();
+	Integer[] getValueAsIntArray();
 
-	public List<Integer> getValueAsIntList();
+	List<Integer> getValueAsIntList();
 
-	public Long getValueAsLong();
+	Long getValueAsLong();
 	
-	public Long[] getValueAsLongArray();
+	Long[] getValueAsLongArray();
 
-	public List<Long> getValueAsLongList();
+	List<Long> getValueAsLongList();
 
-	public Float getValueAsFloat();
+	Float getValueAsFloat();
 	
-	public Float[] getValueAsFloatArray();
+	Float[] getValueAsFloatArray();
 
-	public List<Float> getValueAsFloatList();
+	List<Float> getValueAsFloatList();
 
-	public Double getValueAsDouble();
+	Double getValueAsDouble();
 
-	public Double[] getValueAsDoubleArray();
+	Double[] getValueAsDoubleArray();
 	
-	public List<Double> getValueAsDoubleList();
+	List<Double> getValueAsDoubleList();
 	
-	public Boolean getValueAsBoolean();
+	Boolean getValueAsBoolean();
 
-	public Boolean[] getValueAsBooleanArray();
+	Boolean[] getValueAsBooleanArray();
 	
-	public List<Boolean> getValueAsBooleanList();
+	List<Boolean> getValueAsBooleanList();
 	
-	public Parameters getValueAsParameters();
+	Parameters getValueAsParameters();
 
-	public Parameters[] getValueAsParametersArray();
+	Parameters[] getValueAsParametersArray();
 
-	public List<Parameters> getValueAsParametersList();
+	List<Parameters> getValueAsParametersList();
 	
-	public Parameters newParameters(Parameter prototype);
+	Parameters newParameters(Parameter prototype);
 
 }

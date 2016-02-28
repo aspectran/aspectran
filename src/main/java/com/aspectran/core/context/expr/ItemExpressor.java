@@ -32,7 +32,7 @@ public interface ItemExpressor {
 	 * @param itemRuleMap the item rule map
 	 * @return the value map
 	 */
-	public Map<String, Object> express(ItemRuleMap itemRuleMap);
+	Map<String, Object> express(ItemRuleMap itemRuleMap);
 	
 	/**
 	 * Expression processing for Item Rule.
@@ -40,6 +40,6 @@ public interface ItemExpressor {
 	 * @param itemRuleMap the item rule map
 	 * @param valueMap the value map
 	 */
-	public void express(ItemRuleMap itemRuleMap, Map<String, Object> valueMap);
+	void express(ItemRuleMap itemRuleMap, Map<String, Object> valueMap);
 	
 }
