@@ -108,11 +108,8 @@ public class SpecificIPAllowedWebActivityServlet extends WebActivityServlet impl
 		}
 		
 		String ipAddressClass = ipAddress.substring(0, offset + 1) + '*';
-		
-		if(allowedAddresses.contains(ipAddressClass) || allowedAddresses.contains(ipAddress))
-			return true;
-		
-		return false;
+
+		return allowedAddresses.contains(ipAddressClass) || allowedAddresses.contains(ipAddress);
 	}
 	
 }

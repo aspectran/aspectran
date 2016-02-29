@@ -64,13 +64,12 @@ public class QuartzJobOutputStream extends OutputStream {
 	@Override
 	public void flush() {
 		if(buffer.length() > 0) {
-			StringBuilder sb = new StringBuilder(128);
-			sb.append("results of job [");
-			sb.append(jobDetail.getJobDataMap().get(QuartzSchedulerService.TRANSLET_NAME_DATA_KEY)).append("]");
-			sb.append(AspectranConstants.LINE_SEPARATOR);
-			sb.append(buffer);
+			String msg = "results of job [" +
+					jobDetail.getJobDataMap().get(QuartzSchedulerService.TRANSLET_NAME_DATA_KEY) + "]" +
+					AspectranConstants.LINE_SEPARATOR +
+					buffer;
 
-			log.info(sb.toString());
+			log.info(msg);
 
 			buffer.setLength(0);
 		}

@@ -164,7 +164,7 @@ public class MultipartFormDataParser {
 			Map<String, List<FileItem>> fileItemListMap;
 
 			try {
-				RequestContext requestContext = createRequestContext((HttpServletRequest)requestAdapter.getAdaptee());
+				RequestContext requestContext = createRequestContext(requestAdapter.getAdaptee());
 				fileItemListMap = upload.parseParameterMap(requestContext);
 			} catch(SizeLimitExceededException e) {
 				log.warn("Max length exceeded. multipart.maxRequestSize: " + maxRequestSize);

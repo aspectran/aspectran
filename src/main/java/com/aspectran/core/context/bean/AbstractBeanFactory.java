@@ -27,7 +27,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.VoidActivity;
-import com.aspectran.core.activity.process.action.BeanAction;
+import com.aspectran.core.activity.process.action.MethodAction;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.bean.ablility.DisposableBean;
 import com.aspectran.core.context.bean.ablility.FactoryBean;
@@ -45,12 +45,10 @@ import com.aspectran.core.context.expr.ItemExpression;
 import com.aspectran.core.context.expr.ItemExpressor;
 import com.aspectran.core.context.rule.AutowireRule;
 import com.aspectran.core.context.rule.BeanRule;
-import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.type.AutowireTargetType;
 import com.aspectran.core.context.rule.type.BeanProxifierType;
 import com.aspectran.core.context.rule.type.ScopeType;
-import com.aspectran.core.util.ClassUtils;
 import com.aspectran.core.util.MethodUtils;
 import com.aspectran.core.util.ReflectionUtils;
 import com.aspectran.core.util.logging.Log;
@@ -303,7 +301,7 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 		try {
 			Method offerMethod = beanRule.getOfferMethod();
 			boolean requiresTranslet = beanRule.isOfferMethodRequiresTranslet();
-			return BeanAction.invokeMethod(activity, bean, offerMethod, null, null, requiresTranslet);
+			return MethodAction.invokeMethod(activity, bean, offerMethod, requiresTranslet);
 		} catch(Exception e) {
 			throw new BeanCreationException("An exception occurred during the execution of an offer method of the bean", beanRule, e);
 		}
@@ -313,7 +311,7 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 		try {
 			Method initMethod = beanRule.getInitMethod();
 			boolean requiresTranslet = beanRule.isInitMethodRequiresTranslet();
-			BeanAction.invokeMethod(activity, bean, initMethod, null, null, requiresTranslet);
+			MethodAction.invokeMethod(activity, bean, initMethod, requiresTranslet);
 		} catch(Exception e) {
 			throw new BeanCreationException("An exception occurred during the execution of an initialization method of the bean", beanRule, e);
 		}
@@ -323,7 +321,7 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 		try {
 			Method factoryMethod = beanRule.getFactoryMethod();
 			boolean requiresTranslet = beanRule.isFactoryMethodRequiresTranslet();
-			return BeanAction.invokeMethod(activity, bean, factoryMethod, null, null, requiresTranslet);
+			return MethodAction.invokeMethod(activity, bean, factoryMethod, requiresTranslet);
 		} catch(Exception e) {
 			throw new BeanCreationException("An exception occurred during the execution of a factory method of the bean", beanRule, e);
 		}
@@ -506,7 +504,7 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 		float matchWeight;
 		
 		for(Constructor<?> candidate : candidates) {
-			matchWeight = ClassUtils.getTypeDifferenceWeight(candidate.getParameterTypes(), args);
+			matchWeight = ReflectionUtils.getTypeDifferenceWeight(candidate.getParameterTypes(), args);
 			
 			if(matchWeight < bestMatchWeight) {
 				constructorToUse = candidate;

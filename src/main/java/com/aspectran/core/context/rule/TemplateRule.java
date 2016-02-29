@@ -19,6 +19,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
+import java.util.Objects;
 
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.expr.token.Token;
@@ -91,19 +92,15 @@ public class TemplateRule implements Replicable<TemplateRule>, BeanReferenceInsp
 	}
 
 	public void setEngine(String engine) {
-    	if(engine != null && (engine.length() == 0 || engine.equals(TemplateRule.DEFAULT_TEMPLATE_ENGINE_NAME))) {
+    	if(engine == null || engine.isEmpty() || engine.equals(TemplateRule.DEFAULT_TEMPLATE_ENGINE_NAME)) {
     		this.engine = null;
     		this.contentTokens = null;
-    		return;
-    	}
-    	
-		if(this.engine != engine) {
-			if(this.content != null) {
+    	} else {
+			if(this.content != null && !Objects.equals(this.engine, engine)) {
 				this.contentTokens = parseContentTokens(this.content);
 			}
+			this.engine = engine;
 		}
-		
-		this.engine = engine;
 	}
 
 	public String getName() {
@@ -167,10 +164,7 @@ public class TemplateRule implements Replicable<TemplateRule>, BeanReferenceInsp
 	}
 
 	public boolean isUseExternalSource() {
-		if(name != null && file == null && resource == null && url == null)
-			return true;
-
-		return false;
+		return (name != null && file == null && resource == null && url == null);
 	}
 
 	public String getContent() {

@@ -102,7 +102,8 @@ public class ItemExpression extends TokenExpression implements ItemExpressor {
 	 * @param valueType the value type
 	 * @return the object[]
 	 */
-	private Object expressAsArray(String parameterName, List<Token[]> tokensList, ItemValueType valueType) {
+	@SuppressWarnings("all")
+	private Object[] expressAsArray(String parameterName, List<Token[]> tokensList, ItemValueType valueType) {
 		List<Object> list = expressAsList(parameterName, tokensList, valueType);
 		
 		if(valueType == ItemValueType.STRING) {
@@ -248,7 +249,8 @@ public class ItemExpression extends TokenExpression implements ItemExpressor {
 			if(value != null && valueType != null)
 				value = valuelize(value, valueType);
 
-			prop.put(entry.getKey(), value);
+			if(value != null)
+				prop.put(entry.getKey(), value);
 		}
 		
 		return prop;

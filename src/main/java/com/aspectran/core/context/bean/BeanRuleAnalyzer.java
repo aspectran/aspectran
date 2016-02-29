@@ -66,21 +66,22 @@ public class BeanRuleAnalyzer {
 	public static Class<?> determineOfferMethodTargetBeanClass(Class<?> beanClass, BeanRule beanRule) {
 		String offerMethodName = beanRule.getOfferMethodName();
 
-		Method m1 = MethodUtils.getAccessibleMethod(beanClass, offerMethodName);
-		Method m2 = MethodUtils.getAccessibleMethod(beanClass, offerMethodName, TRANSLET_ACTION_PARAMETER_TYPES);
-
-		if(m1 == null && m2 == null)
-			throw new BeanRuleException("No such offer method " + offerMethodName + "() on bean class: " + beanClass.getName(), beanRule);
-
 		Class<?> targetBeanClass;
-		
-		if(m2 != null) {
-			beanRule.setOfferMethod(m2);
-			beanRule.setOfferMethodRequiresTranslet(true);
-			targetBeanClass = m2.getReturnType();
-		} else {
+
+		Method m1 = MethodUtils.getAccessibleMethod(beanClass, offerMethodName, TRANSLET_ACTION_PARAMETER_TYPES);
+
+		if(m1 != null) {
 			beanRule.setOfferMethod(m1);
+			beanRule.setOfferMethodRequiresTranslet(true);
 			targetBeanClass = m1.getReturnType();
+		} else {
+			Method m2 = MethodUtils.getAccessibleMethod(beanClass, offerMethodName);
+
+			if(m2 == null)
+				throw new BeanRuleException("No such offer method " + offerMethodName + "() on bean class: " + beanClass.getName(), beanRule);
+
+			beanRule.setOfferMethod(m2);
+			targetBeanClass = m2.getReturnType();
 		}
 
 		beanRule.setTargetBeanClass(targetBeanClass);
@@ -105,21 +106,22 @@ public class BeanRuleAnalyzer {
 		
 		String factoryMethodName = beanRule.getFactoryMethodName();
 
-		Method m1 = MethodUtils.getAccessibleMethod(beanClass, factoryMethodName);
-		Method m2 = MethodUtils.getAccessibleMethod(beanClass, factoryMethodName, TRANSLET_ACTION_PARAMETER_TYPES);
-
-		if(m1 == null && m2 == null)
-			throw new BeanRuleException("No such factory method " + factoryMethodName + "() on bean class: " + beanClass.getName(), beanRule);
-
 		Class<?> targetBeanClass;
-		
-		if(m2 != null) {
-			beanRule.setFactoryMethod(m2);
-			beanRule.setFactoryMethodRequiresTranslet(true);
-			targetBeanClass = m2.getReturnType();
-		} else {
+
+		Method m1 = MethodUtils.getAccessibleMethod(beanClass, factoryMethodName, TRANSLET_ACTION_PARAMETER_TYPES);
+
+		if(m1 != null) {
 			beanRule.setFactoryMethod(m1);
+			beanRule.setFactoryMethodRequiresTranslet(true);
 			targetBeanClass = m1.getReturnType();
+		} else {
+			Method m2 = MethodUtils.getAccessibleMethod(beanClass, factoryMethodName);
+
+			if(m2 == null)
+				throw new BeanRuleException("No such factory method " + factoryMethodName + "() on bean class: " + beanClass.getName(), beanRule);
+
+			beanRule.setFactoryMethod(m2);
+			targetBeanClass = m2.getReturnType();
 		}
 		
 		beanRule.setTargetBeanClass(targetBeanClass);
@@ -136,17 +138,18 @@ public class BeanRuleAnalyzer {
 
 		String initMethodName = beanRule.getInitMethodName();
 
-		Method m1 = MethodUtils.getAccessibleMethod(beanClass, initMethodName);
-		Method m2 = MethodUtils.getAccessibleMethod(beanClass, initMethodName, TRANSLET_ACTION_PARAMETER_TYPES);
+		Method m1 = MethodUtils.getAccessibleMethod(beanClass, initMethodName, TRANSLET_ACTION_PARAMETER_TYPES);
 
-		if(m1 == null && m2 == null)
-			throw new BeanRuleException("No such initialization method " + initMethodName + "() on bean class: " + beanClass.getName(), beanRule);
-
-		if(m2 != null) {
-			beanRule.setInitMethod(m2);
+		if(m1 != null) {
+			beanRule.setInitMethod(m1);
 			beanRule.setInitMethodRequiresTranslet(true);
 		} else {
-			beanRule.setInitMethod(m1);
+			Method m2 = MethodUtils.getAccessibleMethod(beanClass, initMethodName);
+
+			if(m2 == null)
+				throw new BeanRuleException("No such initialization method " + initMethodName + "() on bean class: " + beanClass.getName(), beanRule);
+
+			beanRule.setInitMethod(m2);
 		}
 	}
 
@@ -164,20 +167,23 @@ public class BeanRuleAnalyzer {
 	}
 	
 	public static void checkTransletActionParameter(BeanActionRule beanActionRule, BeanRule beanRule) {
-		Class<?> beanClass = beanRule.getTargetBeanClass();
-		String methodName = beanActionRule.getMethodName();
+		if(beanActionRule.getArgumentItemRuleMap() == null) {
+			Class<?> beanClass = beanRule.getTargetBeanClass();
+			String methodName = beanActionRule.getMethodName();
 
-		Method m1 = MethodUtils.getAccessibleMethod(beanClass, methodName);
-		Method m2 = MethodUtils.getAccessibleMethod(beanClass, methodName, TRANSLET_ACTION_PARAMETER_TYPES);
+			Method m1 = MethodUtils.getAccessibleMethod(beanClass, methodName, TRANSLET_ACTION_PARAMETER_TYPES);
 
-		if(m1 == null && m2 == null)
-			throw new BeanRuleException("No such action method " + methodName + "() on bean class: " + beanClass.getName(), beanRule);
-		
-		if(m2 != null) {
-			beanActionRule.setMethod(m2);
-			beanActionRule.setRequiresTranslet(true);
-		} else {
-			beanActionRule.setMethod(m1);
+			if(m1 != null) {
+				beanActionRule.setMethod(m1);
+				beanActionRule.setRequiresTranslet(true);
+			} else {
+				Method m2 = MethodUtils.getAccessibleMethod(beanClass, methodName);
+
+				if(m2 == null)
+					throw new BeanRuleException("No such action method " + methodName + "() on bean class: " + beanClass.getName(), beanRule);
+
+				beanActionRule.setMethod(m2);
+			}
 		}
 	}
 

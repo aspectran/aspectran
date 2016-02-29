@@ -111,7 +111,7 @@ public class DefaultServletHttpRequestHandler {
 			RequestDispatcher rd = servletContext.getNamedDispatcher(defaultServletName);
 			
 			if(rd == null)
-				throw new IllegalStateException("A RequestDispatcher could not be located for the default servlet '" + defaultServletName + "'");
+				throw new IllegalStateException("A RequestDispatcher could not be located for the default servlet '" + defaultServletName + "'.");
 			
 			rd.forward(request, response);
 			

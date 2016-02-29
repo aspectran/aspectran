@@ -21,7 +21,7 @@ import com.aspectran.core.context.bean.scope.Scope;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.type.BeanProxifierType;
 import com.aspectran.core.context.rule.type.ScopeType;
-import com.aspectran.core.util.ClassUtils;
+import com.aspectran.core.util.ReflectionUtils;
 
 /**
  * The Class ContextBeanRegistry.
@@ -72,7 +72,7 @@ public class ContextBeanRegistry extends AbstractBeanFactory implements BeanRegi
 		if(beanRule == null)
 			throw new BeanNotFoundException(id);
 
-		if(!ClassUtils.isAssignable(beanRule.getTargetBeanClass(), requiredType))
+		if(!ReflectionUtils.isAssignable(beanRule.getTargetBeanClass(), requiredType))
 			throw new BeanNotOfRequiredTypeException(requiredType, beanRule);
 		
 		return getBean(beanRule);

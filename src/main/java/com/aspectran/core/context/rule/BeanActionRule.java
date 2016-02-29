@@ -46,9 +46,9 @@ public class BeanActionRule implements ArgumentPossessable, PropertyPossessable,
 	
 	private boolean requiresTranslet;
 
-	private ItemRuleMap propertyItemRuleMap;
-
 	private ItemRuleMap argumentItemRuleMap;
+
+	private ItemRuleMap propertyItemRuleMap;
 
 	private Boolean hidden;
 	
@@ -162,6 +162,24 @@ public class BeanActionRule implements ArgumentPossessable, PropertyPossessable,
 	}
 
 	@Override
+	public ItemRuleMap getArgumentItemRuleMap() {
+		return argumentItemRuleMap;
+	}
+
+	@Override
+	public void setArgumentItemRuleMap(ItemRuleMap argumentItemRuleMap) {
+		this.argumentItemRuleMap = argumentItemRuleMap;
+	}
+
+	@Override
+	public void addArgumentItemRule(ItemRule argumentItemRule) {
+		if(argumentItemRuleMap == null)
+			argumentItemRuleMap = new ItemRuleMap();
+
+		argumentItemRuleMap.putItemRule(argumentItemRule);
+	}
+
+	@Override
 	public ItemRuleMap getPropertyItemRuleMap() {
 		return propertyItemRuleMap;
 	}
@@ -177,24 +195,6 @@ public class BeanActionRule implements ArgumentPossessable, PropertyPossessable,
 			propertyItemRuleMap = new ItemRuleMap();
 		
 		propertyItemRuleMap.putItemRule(propertyItemRule);
-	}
-
-	@Override
-	public ItemRuleMap getArgumentItemRuleMap() {
-		return argumentItemRuleMap;
-	}
-
-	@Override
-	public void setArgumentItemRuleMap(ItemRuleMap argumentItemRuleMap) {
-		this.argumentItemRuleMap = argumentItemRuleMap;
-	}
-
-	@Override
-	public void addArgumentItemRule(ItemRule argumentItemRule) {
-		if(argumentItemRuleMap == null) 
-			argumentItemRuleMap = new ItemRuleMap();
-		
-		argumentItemRuleMap.putItemRule(argumentItemRule);
 	}
 
 	/**
@@ -245,10 +245,10 @@ public class BeanActionRule implements ArgumentPossessable, PropertyPossessable,
 		tsb.append("bean", beanId);
 		tsb.append("method", methodName);
 		tsb.append("hidden", hidden);
-		if(propertyItemRuleMap != null)
-			tsb.append("properties", propertyItemRuleMap.keySet());
 		if(argumentItemRuleMap != null)
 			tsb.append("arguments", argumentItemRuleMap.keySet());
+		if(propertyItemRuleMap != null)
+			tsb.append("properties", propertyItemRuleMap.keySet());
 		if(aspectAdviceRule != null)
 			tsb.append("aspectAdviceRule", aspectAdviceRule.toString(true));
 		tsb.append("aspectAdviceRuleRegistry", aspectAdviceRuleRegistry);

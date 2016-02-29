@@ -80,9 +80,8 @@ public class JsonTransform extends TransformResponse implements Response {
 					responseAdapter.setCharacterEncoding(characterEncoding);
 			}
 
-			if(contentType != null) {
+			if(contentType != null)
 				responseAdapter.setContentType(contentType);
-			}
 
 			Writer writer = responseAdapter.getWriter();
 			ProcessResult processResult = activity.getProcessResult();

@@ -406,10 +406,7 @@ public class ItemRule {
 			}
 		}
 		
-		if(value != null)
-			return value.getClass();
-		
-		return Object.class;
+		return (value != null) ? value.getClass() : Object.class;
 	}
 	
 	/**

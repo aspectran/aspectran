@@ -100,13 +100,11 @@ public class XslTransform extends TransformResponse implements Response {
 		try {
 			loadTemplate(activity.getApplicationAdapter());
 			
-			if(outputEncoding != null) {
+			if(outputEncoding != null)
 				responseAdapter.setCharacterEncoding(outputEncoding);
-			}
 
-			if(contentType != null) {
+			if(contentType != null)
 				responseAdapter.setContentType(contentType);
-			}
 
 			Writer output = responseAdapter.getWriter();
 			ProcessResult processResult = activity.getProcessResult();

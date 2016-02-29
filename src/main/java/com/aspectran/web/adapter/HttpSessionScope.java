@@ -42,7 +42,7 @@ public class HttpSessionScope extends SessionScope implements HttpSessionBinding
 	 */
 	public HttpSessionScope() {
 	}
-	
+
 	/**
 	 * Instantiates a new HttpSessionScope.
 	 *

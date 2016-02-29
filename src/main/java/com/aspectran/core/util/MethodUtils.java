@@ -17,7 +17,6 @@ package com.aspectran.core.util;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
-import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -622,9 +621,9 @@ public class MethodUtils {
 		Class<?>[] methodsParams = method.getParameterTypes();
 		if(hasPrimitiveArray(methodsParams)) {
 			for(int i = 0; i < methodsParams.length; i++) {
-				if(ClassUtils.isPrimitiveArray(methodsParams[i])) {
-					if(ClassUtils.isPrimitiveWrapperArray(paramTypes[i])) {
-						args[i] = toPrimitiveArray(args[i]);
+				if(ReflectionUtils.isPrimitiveArray(methodsParams[i])) {
+					if(ReflectionUtils.isPrimitiveWrapperArray(paramTypes[i])) {
+						args[i] = ReflectionUtils.toPrimitiveArray(args[i]);
 					}
 				}
 			}
@@ -635,7 +634,7 @@ public class MethodUtils {
 
 	private static boolean hasPrimitiveArray(Class<?>[] paramTypes) {
 		for(int i = 0; i < paramTypes.length; i++) {
-			if(ClassUtils.isPrimitiveArray(paramTypes[i]))
+			if(ReflectionUtils.isPrimitiveArray(paramTypes[i]))
 				return true;
 		}
 
@@ -903,30 +902,25 @@ public class MethodUtils {
 		float bestMatchWeight = Float.MAX_VALUE;
 		float myWeight;
 
-		for(Method method1 : methods) {
-			if(method1.getName().equals(methodName)) {
+		for(Method method : methods) {
+			if(method.getName().equals(methodName)) {
 				// compare parameters
-				Class<?>[] methodsParams = method1.getParameterTypes();
+				Class<?>[] methodsParams = method.getParameterTypes();
 				int methodParamSize = methodsParams.length;
 				if(methodParamSize == paramSize) {
-					boolean match = true;
+					boolean paramMatch = true;
 					for(int n = 0; n < methodParamSize; n++) {
-						if(!ClassUtils.isAssignable(methodsParams[n], paramTypes[n])) {
-							match = false;
+						if(!ReflectionUtils.isAssignable(methodsParams[n], paramTypes[n])) {
+							paramMatch = false;
 							break;
 						}
 					}
 
-					if(match) {
-						// get accessible version of method
-						Method method = getAccessibleMethod(method1);
-						if(method != null) {
-							ReflectionUtils.makeAccessible(method); // Default access superclass workaround
-							myWeight = ClassUtils.getTypeDifferenceWeight(method.getParameterTypes(), paramTypes);
-							if(myWeight < bestMatchWeight) {
-								bestMatch = method;
-								bestMatchWeight = myWeight;
-							}
+					if(paramMatch) {
+						myWeight = ReflectionUtils.getTypeDifferenceWeight(method.getParameterTypes(), paramTypes);
+						if(myWeight < bestMatchWeight) {
+							bestMatch = method;
+							bestMatchWeight = myWeight;
 						}
 					}
 				}
@@ -938,62 +932,6 @@ public class MethodUtils {
 		}
 		
 		return bestMatch;
-	}
-
-	private static Object toPrimitiveArray(Object val) {
-		int len = Array.getLength(val);
-		
-		if(val instanceof Boolean[]) {
-			boolean[] arr = new boolean[len];
-			for(int i = 0; i < len; i++) {
-				arr[i] = (Boolean)Array.get(val, i);
-			}
-			return arr;
-		} else if(val instanceof Byte[]) {
-			byte[] arr = new byte[len];
-			for(int i = 0; i < len; i++) {
-				arr[i] = (Byte)Array.get(val, i);
-			}
-			return arr;
-		} else if(val instanceof Character[]) {
-			char[] arr = new char[len];
-			for(int i = 0; i < len; i++) {
-				arr[i] = (Character)Array.get(val, i);
-			}
-			return arr;
-		} else if(val instanceof Short[]) {
-			short[] arr = new short[len];
-			for(int i = 0; i < len; i++) {
-				arr[i] = (Short)Array.get(val, i);
-			}
-			return arr;
-		} else if(val instanceof Integer[]) {
-			int[] arr = new int[len];
-			for(int i = 0; i < len; i++) {
-				arr[i] = (Integer)Array.get(val, i);
-			}
-			return arr;
-		} else if(val instanceof Long[]) {
-			long[] arr = new long[len];
-			for(int i = 0; i < len; i++) {
-				arr[i] = (Long)Array.get(val, i);
-			}
-			return arr;
-		} else if(val instanceof Float[]) {
-			float[] arr = new float[len];
-			for(int i = 0; i < len; i++) {
-				arr[i] = (Float)Array.get(val, i);
-			}
-			return arr;
-		} else if(val instanceof Double[]) {
-			double[] arr = new double[len];
-			for(int i = 0; i < len; i++) {
-				arr[i] = (Double)Array.get(val, i);
-			}
-			return arr;
-		}
-		
-		return null;
 	}
 
     /**

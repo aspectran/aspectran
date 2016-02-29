@@ -86,35 +86,35 @@ public class XmlTransform extends TransformResponse implements Response {
 		}
 
 		try {
+			String characterEncoding;
+			if(this.characterEncoding != null) {
+				characterEncoding = this.characterEncoding;
+			} else {
+				characterEncoding = activity.determineResponseCharacterEncoding();
+			}
+
+			if(characterEncoding != null)
+				responseAdapter.setCharacterEncoding(characterEncoding);
+
+			if(contentType != null)
+				responseAdapter.setContentType(contentType);
+
 			Writer output = responseAdapter.getWriter();
 			ProcessResult processResult = activity.getProcessResult();
 
 			TransformerFactory transformerFactory = TransformerFactory.newInstance();
-			
-			if(pretty) {
+
+			if(pretty)
 				transformerFactory.setAttribute(INDENT_NUMBER_KEY, INDENT_NUMBER_VAL);
-			}
 
 			Transformer transformer = transformerFactory.newTransformer();
 			transformer.setOutputProperty(OutputKeys.METHOD, OUTPUT_METHOD_XML);
 
+			if(characterEncoding != null)
+				transformer.setOutputProperty(OutputKeys.ENCODING, characterEncoding);
+
 			if(pretty)
 				transformer.setOutputProperty(OutputKeys.INDENT, OUTPUT_INDENT_YES);
-
-			if(this.characterEncoding != null) {
-				responseAdapter.setCharacterEncoding(this.characterEncoding);
-				transformer.setOutputProperty(OutputKeys.ENCODING, this.characterEncoding);
-			} else {
-				String characterEncoding = activity.determineResponseCharacterEncoding();
-				if(characterEncoding != null) {
-					responseAdapter.setCharacterEncoding(characterEncoding);
-					transformer.setOutputProperty(OutputKeys.ENCODING, characterEncoding);
-				}
-			}
-
-			if(contentType != null) {
-				responseAdapter.setContentType(contentType);
-			}
 
 			ContentsXMLReader xreader = new ContentsXMLReader();
 			ContentsInputSource isource = new ContentsInputSource(processResult);

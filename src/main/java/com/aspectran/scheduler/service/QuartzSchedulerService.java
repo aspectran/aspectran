@@ -118,7 +118,7 @@ public class QuartzSchedulerService implements SchedulerService {
 					String schedulerFactoryBeanId = aspectRule.getAdviceBeanId();
 					PointcutRule pointcutRule = aspectRule.getPointcutRule();
 					
-					SchedulerFactory schedulerFactory = (SchedulerFactory)context.getContextBeanRegistry().getBean(schedulerFactoryBeanId);
+					SchedulerFactory schedulerFactory = context.getContextBeanRegistry().getBean(schedulerFactoryBeanId);
 					Scheduler scheduler = schedulerFactory.getScheduler();
 					JobDetail[] jobDetails = buildJobDetails(aspectRule.getAspectJobAdviceRuleList());
 					
@@ -264,7 +264,7 @@ public class QuartzSchedulerService implements SchedulerService {
 		List<JobDetail> jobDetailList = new ArrayList<JobDetail>();
 		
 		for(int i = 0; i < aspectJobAdviceRuleList.size(); i++) {
-			AspectJobAdviceRule aspectJobAdviceRule = (AspectJobAdviceRule)aspectJobAdviceRuleList.get(i);
+			AspectJobAdviceRule aspectJobAdviceRule = aspectJobAdviceRuleList.get(i);
 			JobDetail jobDetail = buildJobDetail(aspectJobAdviceRule, i);
 			
 			if(jobDetail != null)
@@ -284,13 +284,11 @@ public class QuartzSchedulerService implements SchedulerService {
 		JobDataMap jobDataMap = new JobDataMap();
 		jobDataMap.put(ASPECTRAN_CONTEXT_DATA_KEY, context);
 		jobDataMap.put(TRANSLET_NAME_DATA_KEY, aspectJobAdviceRule.getJobTransletName());
-		
-		JobDetail jobDetail = JobBuilder.newJob(JobActivityRunJob.class)
+
+		return JobBuilder.newJob(JobActivityRunJob.class)
 				.withIdentity(jobName, jobGroup)
 				.setJobData(jobDataMap)
 				.build();
-		
-		return jobDetail;
 	}
 	
 }
