@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import com.aspectran.core.context.builder.importer.ShallowImportHandler;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.TemplateRule;

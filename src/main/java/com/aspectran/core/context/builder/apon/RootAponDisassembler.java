@@ -22,8 +22,8 @@ import java.util.List;
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.activity.process.ContentList;
 import com.aspectran.core.context.builder.ContextBuilderAssistant;
-import com.aspectran.core.context.builder.ImportHandler;
-import com.aspectran.core.context.builder.Importable;
+import com.aspectran.core.context.builder.importer.ImportHandler;
+import com.aspectran.core.context.builder.importer.Importer;
 import com.aspectran.core.context.builder.apon.params.ActionParameters;
 import com.aspectran.core.context.builder.apon.params.AdviceActionParameters;
 import com.aspectran.core.context.builder.apon.params.AdviceParameters;
@@ -140,16 +140,19 @@ public class RootAponDisassembler {
 	}
 	
 	public void disassembleImport(Parameters importParameters) throws Exception {
-		String resource = importParameters.getString(ImportParameters.resource);
 		String file = importParameters.getString(ImportParameters.file);
+		String resource = importParameters.getString(ImportParameters.resource);
 		String url = importParameters.getString(ImportParameters.url);
 		String fileType = importParameters.getString(ImportParameters.fileType);
-		
-		Importable importable = Importable.newInstance(assistant, resource, file, url, fileType);
 
 		ImportHandler importHandler = assistant.getImportHandler();
-		if(importHandler != null)
-			importHandler.pending(importable);
+		if(importHandler != null) {
+			Importer importer = assistant.newImporter(file, resource, url, fileType);
+			if(importer == null) {
+				throw new IllegalArgumentException("The 'import' element requires either a file or a resource or a url attribute.");
+			}
+			importHandler.pending(importer);
+		}
 	}
 	
 	public void disassembleDefaultSettings(Parameters defaultSettingsParameters) throws ClassNotFoundException {
@@ -267,7 +270,7 @@ public class RootAponDisassembler {
 		
 		Parameters exceptionRaisedParameters = aspectParameters.getParameters(AspectParameters.exceptionRaised);
 		if(exceptionRaisedParameters != null) {
-			ExceptionHandlingRule exceptionHandlingRule = new ExceptionHandlingRule();
+			ExceptionHandlingRule exceptionHandlingRule = ExceptionHandlingRule.newInstance(aspectRule);
 	
 			exceptionHandlingRule.setDescription(exceptionRaisedParameters.getString(ExceptionRaisedParameters.description));
 

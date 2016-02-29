@@ -38,7 +38,7 @@ import com.aspectran.core.util.logging.LogFactory;
 /**
  * The Class AspectAdviceRulePreRegister.
  */
-public class AspectAdviceRulePreRegister extends AspectAdviceRuleRegister {
+public class AspectAdviceRulePreRegister {
 	
 	private final Log log = LogFactory.getLog(AspectAdviceRulePreRegister.class);
 	
@@ -66,7 +66,7 @@ public class AspectAdviceRulePreRegister extends AspectAdviceRuleRegister {
 						boolean beanRelevanted = false;
 						
 						for(PointcutPatternRule ppr : pointcutPatternRuleList) {
-							if(ppr.getBeanIdPattern() != null || ppr.getMethodNamePattern() != null) {
+							if(ppr.getBeanIdPattern() != null || ppr.getClassNamePattern() != null || ppr.getMethodNamePattern() != null) {
 								beanRelevanted = true;
 								break;
 							}
@@ -131,7 +131,9 @@ public class AspectAdviceRulePreRegister extends AspectAdviceRuleRegister {
 	
 	public void register(TransletRuleRegistry transletRuleRegistry) {
 		for(TransletRule transletRule : transletRuleRegistry.getTransletRules()) {
-			register(transletRule);
+			if(transletRule.getNameTokens() == null) {
+				register(transletRule);
+			}
 		}
 	}
 	
@@ -144,94 +146,43 @@ public class AspectAdviceRulePreRegister extends AspectAdviceRuleRegister {
 				Pointcut pointcut = aspectRule.getPointcut();
 
 				if(!aspectRule.isBeanRelevanted() && joinpointScope != JoinpointScopeType.SESSION) {
-					if(joinpointScope == JoinpointScopeType.REQUEST) {
-						if(pointcut == null || pointcut.matches(transletRule.getName())) {
+					if(pointcut == null || pointcut.matches(transletRule.getName())) {
+						if(joinpointScope == JoinpointScopeType.REQUEST) {
 							RequestRule requestRule = transletRule.getRequestRule();
 							
 							if(log.isTraceEnabled())
 								log.trace("apply aspectRule " + aspectRule + " to transletRule " + transletRule + " requestRule " + requestRule);
-							
-							register(requestRule, aspectRule);
-						}
-					} else if(joinpointScope == JoinpointScopeType.CONTENT) {
-						if(pointcut == null || pointcut.matches(transletRule.getName())) {
+
+							AspectAdviceRuleRegister.register(requestRule, aspectRule);
+						} else if(joinpointScope == JoinpointScopeType.CONTENT) {
 							ContentList contentList = transletRule.touchContentList();
 	
 							if(log.isTraceEnabled())
 								log.trace("apply aspectRule " + aspectRule + " to transletRule " + transletRule + " contentList " + contentList);
-							
-							register(contentList, aspectRule);
-						}
-					} else if(joinpointScope == JoinpointScopeType.RESPONSE) {
-						if(pointcut == null || pointcut.matches(transletRule.getName())) {
+
+							AspectAdviceRuleRegister.register(contentList, aspectRule);
+						} else if(joinpointScope == JoinpointScopeType.RESPONSE) {
 							ResponseRule responseRule = transletRule.getResponseRule();
 							
 							if(log.isTraceEnabled())
 								log.trace("apply aspectRule " + aspectRule + " to transletRule " + transletRule + " responseRule " + responseRule);
-							
-							register(responseRule, aspectRule);
-						}
-					} else {
-						//translet scope
-						if(pointcut == null || pointcut.matches(transletRule.getName())) {
+
+							AspectAdviceRuleRegister.register(responseRule, aspectRule);
+						} else {
+							//translet scope
 							if(log.isTraceEnabled())
 								log.trace("apply aspectRule " + aspectRule + " to transletRule " + transletRule);
-							
-							register(transletRule, aspectRule);
+
+							AspectAdviceRuleRegister.register(transletRule, aspectRule);
 						}
 					}
 				}
 				
-				if(pointcut != null) {
-					countMatchedTranslet(pointcut, transletRule.getName());
-				}
+				//if(pointcut != null) {
+				//	countMatchedTranslet(pointcut, transletRule.getName());
+				//}
 			}
 		}
-	}
-
-	protected void register(TransletRule transletRule, AspectRule aspectRule) {
-		AspectAdviceRuleRegistry aspectAdviceRuleRegistry = transletRule.getAspectAdviceRuleRegistry();
-		
-		if(aspectAdviceRuleRegistry == null) {
-			aspectAdviceRuleRegistry = new AspectAdviceRuleRegistry();
-			transletRule.setAspectAdviceRuleRegistry(aspectAdviceRuleRegistry);
-		}
-		
-		register(aspectAdviceRuleRegistry, aspectRule);
-	}
-	
-	protected void register(RequestRule requestRule, AspectRule aspectRule) {
-		AspectAdviceRuleRegistry aspectAdviceRuleRegistry = requestRule.getAspectAdviceRuleRegistry();
-		
-		if(aspectAdviceRuleRegistry == null) {
-			aspectAdviceRuleRegistry = new AspectAdviceRuleRegistry();
-			requestRule.setAspectAdviceRuleRegistry(aspectAdviceRuleRegistry);
-		}
-		
-		register(aspectAdviceRuleRegistry, aspectRule);
-	}
-	
-	protected void register(ContentList contentList, AspectRule aspectRule) {
-		AspectAdviceRuleRegistry aspectAdviceRuleRegistry = contentList.getAspectAdviceRuleRegistry();
-		
-		if(aspectAdviceRuleRegistry == null) {
-			aspectAdviceRuleRegistry = new AspectAdviceRuleRegistry();
-			contentList.setAspectAdviceRuleRegistry(aspectAdviceRuleRegistry);
-		}
-		
-		if(aspectRule != null)
-			register(aspectAdviceRuleRegistry, aspectRule);
-	}
-	
-	protected void register(ResponseRule responseRule, AspectRule aspectRule) {
-		AspectAdviceRuleRegistry aspectAdviceRuleRegistry = responseRule.getAspectAdviceRuleRegistry();
-		
-		if(aspectAdviceRuleRegistry == null) {
-			aspectAdviceRuleRegistry = new AspectAdviceRuleRegistry();
-			responseRule.setAspectAdviceRuleRegistry(aspectAdviceRuleRegistry);
-		}
-		
-		register(aspectAdviceRuleRegistry, aspectRule);
 	}
 
 	private void countMatchedTranslet(Pointcut pointcut, String transletName) {

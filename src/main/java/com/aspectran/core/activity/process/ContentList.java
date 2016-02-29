@@ -80,17 +80,17 @@ public class ContentList extends ArrayList<ActionList> {
 		return aspectAdviceRuleRegistry;
 	}
 
-	public AspectAdviceRuleRegistry getAspectAdviceRuleRegistry(boolean replicate) {
-		if(replicate && aspectAdviceRuleRegistry != null)
-			return aspectAdviceRuleRegistry.replicate();
-		
-		return aspectAdviceRuleRegistry;
-	}
-
 	public void setAspectAdviceRuleRegistry(AspectAdviceRuleRegistry aspectAdviceRuleRegistry) {
 		this.aspectAdviceRuleRegistry = aspectAdviceRuleRegistry;
 	}
-	
+
+	public AspectAdviceRuleRegistry replicateAspectAdviceRuleRegistry() {
+		if(aspectAdviceRuleRegistry == null)
+			return null;
+
+		return aspectAdviceRuleRegistry.replicate();
+	}
+
 	@Override
 	public String toString() {
 		ToStringBuilder tsb = new ToStringBuilder();

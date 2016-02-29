@@ -164,8 +164,8 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 					i++;
 				}
 			} else {
-				args = null;
-				argTypes = null;
+				args = MethodUtils.EMPTY_OBJECT_ARRAY;
+				argTypes = MethodUtils.EMPTY_CLASS_PARAMETERS;
 			}
 
 			bean = instantiateBean(beanRule, args, argTypes);

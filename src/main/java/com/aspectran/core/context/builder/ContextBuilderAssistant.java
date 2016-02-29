@@ -27,17 +27,24 @@ import com.aspectran.core.activity.Translet;
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.aspect.AspectRuleRegistry;
 import com.aspectran.core.context.bean.BeanRuleRegistry;
+import com.aspectran.core.context.builder.importer.FileImporter;
+import com.aspectran.core.context.builder.importer.ImportHandler;
+import com.aspectran.core.context.builder.importer.Importer;
+import com.aspectran.core.context.builder.importer.ResourceImporter;
+import com.aspectran.core.context.builder.importer.UrlImporter;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.TemplateRule;
 import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.ability.BeanReferenceInspectable;
 import com.aspectran.core.context.rule.type.DefaultSettingType;
+import com.aspectran.core.context.rule.type.ImportFileType;
 import com.aspectran.core.context.template.TemplateRuleRegistry;
 import com.aspectran.core.context.translet.TransletRuleRegistry;
 import com.aspectran.core.util.ArrayStack;
 import com.aspectran.core.util.BeanDescriptor;
 import com.aspectran.core.util.MethodUtils;
+import com.aspectran.core.util.StringUtils;
 
 /**
  * The Class ContextBuilderAssistant
@@ -492,5 +499,20 @@ public class ContextBuilderAssistant {
 	public void setImportHandler(ImportHandler importHandler) {
 		this.importHandler = importHandler;
 	}
-	
+
+	public Importer newImporter(String file, String resource, String url, String fileType) {
+		ImportFileType importFileType = ImportFileType.lookup(fileType);
+		Importer importer = null;
+
+		if(StringUtils.hasText(file)) {
+			importer = new FileImporter(getApplicationBasePath(), file, importFileType);
+		} else if(StringUtils.hasText(resource)) {
+			importer = new ResourceImporter(getClassLoader(), resource, importFileType);
+		} else if(StringUtils.hasText(url)) {
+			importer = new UrlImporter(url, importFileType);
+		}
+
+		return importer;
+	}
+
 }

@@ -30,43 +30,43 @@ import com.aspectran.core.util.apon.Parameters;
  */
 public class SettingsAdviceRule {
 
-	private String aspectId;
-	
-	private AspectAdviceType aspectAdviceType;
+	private final AspectRule aspectRule;
 
-	private Map<String, String> settings;
+	private final AspectAdviceType aspectAdviceType = AspectAdviceType.SETTINGS;
 
-	public String getAspectId() {
-		return aspectId;
+	private Map<String, Object> settings;
+
+	public SettingsAdviceRule(AspectRule aspectRule) {
+		this.aspectRule = aspectRule;
 	}
 
-	public void setAspectId(String aspectId) {
-		this.aspectId = aspectId;
+	public String getAspectId() {
+		return aspectRule.getId();
+	}
+
+	public AspectRule getAspectRule() {
+		return aspectRule;
 	}
 
 	public AspectAdviceType getAspectAdviceType() {
 		return aspectAdviceType;
 	}
 
-	public void setAspectAdviceType(AspectAdviceType aspectAdviceType) {
-		this.aspectAdviceType = aspectAdviceType;
-	}
-
-	public Map<String, String> getSettings() {
+	public Map<String, Object> getSettings() {
 		return settings;
 	}
 
-	public void setSettings(Map<String, String> settings) {
+	public void setSettings(Map<String, Object> settings) {
 		this.settings = settings;
 	}
 
-	public String getSetting(String name) {
-		return settings.get(name);
+	public <T> T getSetting(String name) {
+		return (T)settings.get(name);
 	}
 
-	public void putSetting(String name, String value) {
+	public void putSetting(String name, Object value) {
 		if(settings == null) {
-			settings = new HashMap<String, String>();
+			settings = new HashMap<String, Object>();
 		}
 		
 		settings.put(name, value);
@@ -82,10 +82,8 @@ public class SettingsAdviceRule {
 	}
 
 	public static SettingsAdviceRule newInstance(AspectRule aspectRule, Parameters settingsParameters) {
-		SettingsAdviceRule sar = new SettingsAdviceRule();
-		sar.setAspectId(aspectRule.getId());
-		sar.setAspectAdviceType(AspectAdviceType.SETTINGS);
-	
+		SettingsAdviceRule sar = new SettingsAdviceRule(aspectRule);
+
 		if(settingsParameters != null) {
 			Set<String> parametersNames = settingsParameters.getParameterNameSet();
 			
@@ -102,7 +100,8 @@ public class SettingsAdviceRule {
 	@Override
 	public String toString() {
 		ToStringBuilder tsb = new ToStringBuilder();
-		tsb.append("aspectId", aspectId);
+		if(aspectRule != null)
+			tsb.append("aspectId", aspectRule.getId());
 		tsb.append("aspectAdviceType", aspectAdviceType);
 		tsb.append("settings", settings);
 		return tsb.toString();

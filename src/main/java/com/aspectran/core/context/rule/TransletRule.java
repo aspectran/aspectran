@@ -49,7 +49,7 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 	private WildcardPattern namePattern;
 	
 	private Token[] nameTokens;
-	
+
 	private String scanPath;
 	
 	private String maskPattern;
@@ -78,7 +78,7 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 	private AspectAdviceRuleRegistry aspectAdviceRuleRegistry;
 
 	private String description;
-	
+
 	/**
 	 * Instantiates a new TransletRule.
 	 */
@@ -156,7 +156,7 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 	public void setNameTokens(Token[] nameTokens) {
 		this.nameTokens = nameTokens;
 	}
-	
+
 	/**
 	 * Gets the scan path.
 	 *
@@ -434,17 +434,17 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 		return aspectAdviceRuleRegistry;
 	}
 
-	public AspectAdviceRuleRegistry getAspectAdviceRuleRegistry(boolean replicate) {
-		if(replicate && aspectAdviceRuleRegistry != null)
-			return aspectAdviceRuleRegistry.replicate();
-		
-		return aspectAdviceRuleRegistry;
-	}
-
 	public void setAspectAdviceRuleRegistry(AspectAdviceRuleRegistry aspectAdviceRuleRegistry) {
 		this.aspectAdviceRuleRegistry = aspectAdviceRuleRegistry;
 	}
-	
+
+	public AspectAdviceRuleRegistry replicateAspectAdviceRuleRegistry() {
+		if(aspectAdviceRuleRegistry == null)
+			return null;
+
+		return aspectAdviceRuleRegistry.replicate();
+	}
+
 	/**
 	 * Gets the description.
 	 *

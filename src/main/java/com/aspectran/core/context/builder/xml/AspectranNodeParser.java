@@ -21,8 +21,8 @@ import java.util.Map;
 import org.w3c.dom.Node;
 
 import com.aspectran.core.context.builder.ContextBuilderAssistant;
-import com.aspectran.core.context.builder.ImportHandler;
-import com.aspectran.core.context.builder.Importable;
+import com.aspectran.core.context.builder.importer.ImportHandler;
+import com.aspectran.core.context.builder.importer.Importer;
 import com.aspectran.core.context.rule.type.DefaultSettingType;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.apon.GenericParameters;
@@ -196,12 +196,14 @@ public class AspectranNodeParser {
 				String url = attributes.get("url");
 				String fileType = attributes.get("fileType");
 
-				Importable importable = Importable.newInstance(assistant, file, resource, url, fileType);
-				
 				ImportHandler importHandler = assistant.getImportHandler();
-				
-				if(importHandler != null)
-					importHandler.pending(importable);
+				if(importHandler != null) {
+					Importer importer = assistant.newImporter(file, resource, url, fileType);
+					if(importer == null) {
+						throw new IllegalArgumentException("The <import> element requires either a file or a resource or a url attribute.");
+					}
+					importHandler.pending(importer);
+				}
 			}
 		});
 	}

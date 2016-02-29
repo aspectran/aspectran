@@ -17,10 +17,14 @@ package com.aspectran.core.context.aspect;
 
 import java.util.List;
 
+import com.aspectran.core.activity.process.ContentList;
 import com.aspectran.core.context.rule.AspectAdviceRule;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.ExceptionHandlingRule;
+import com.aspectran.core.context.rule.RequestRule;
+import com.aspectran.core.context.rule.ResponseRule;
 import com.aspectran.core.context.rule.SettingsAdviceRule;
+import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.type.AspectAdviceType;
 
 /**
@@ -53,6 +57,51 @@ public class AspectAdviceRuleRegister {
 		}
 		
 		aspectAdviceRuleRegistry.increaseAspectRuleCount();
+	}
+
+	public static void register(TransletRule transletRule, AspectRule aspectRule) {
+		AspectAdviceRuleRegistry aspectAdviceRuleRegistry = transletRule.getAspectAdviceRuleRegistry();
+
+		if(aspectAdviceRuleRegistry == null) {
+			aspectAdviceRuleRegistry = new AspectAdviceRuleRegistry();
+			transletRule.setAspectAdviceRuleRegistry(aspectAdviceRuleRegistry);
+		}
+
+		register(aspectAdviceRuleRegistry, aspectRule);
+	}
+
+	public static void register(RequestRule requestRule, AspectRule aspectRule) {
+		AspectAdviceRuleRegistry aspectAdviceRuleRegistry = requestRule.getAspectAdviceRuleRegistry();
+
+		if(aspectAdviceRuleRegistry == null) {
+			aspectAdviceRuleRegistry = new AspectAdviceRuleRegistry();
+			requestRule.setAspectAdviceRuleRegistry(aspectAdviceRuleRegistry);
+		}
+
+		register(aspectAdviceRuleRegistry, aspectRule);
+	}
+
+	public static void register(ContentList contentList, AspectRule aspectRule) {
+		AspectAdviceRuleRegistry aspectAdviceRuleRegistry = contentList.getAspectAdviceRuleRegistry();
+
+		if(aspectAdviceRuleRegistry == null) {
+			aspectAdviceRuleRegistry = new AspectAdviceRuleRegistry();
+			contentList.setAspectAdviceRuleRegistry(aspectAdviceRuleRegistry);
+		}
+
+		if(aspectRule != null)
+			register(aspectAdviceRuleRegistry, aspectRule);
+	}
+
+	public static void register(ResponseRule responseRule, AspectRule aspectRule) {
+		AspectAdviceRuleRegistry aspectAdviceRuleRegistry = responseRule.getAspectAdviceRuleRegistry();
+
+		if(aspectAdviceRuleRegistry == null) {
+			aspectAdviceRuleRegistry = new AspectAdviceRuleRegistry();
+			responseRule.setAspectAdviceRuleRegistry(aspectAdviceRuleRegistry);
+		}
+
+		register(aspectAdviceRuleRegistry, aspectRule);
 	}
 	
 }

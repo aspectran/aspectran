@@ -20,16 +20,16 @@ package com.aspectran.core.service;
  */
 public interface AspectranServiceControllerListener {
 	
-	public void started();
+	void started();
 	
-	public void restarted();
+	void restarted();
 
-	public void reloaded();
+	void reloaded();
 	
-	public void paused(long timeout);
+	void paused(long timeout);
 	
-	public void resumed();
+	void resumed();
 
-	public void stopped();
+	void stopped();
 
 }

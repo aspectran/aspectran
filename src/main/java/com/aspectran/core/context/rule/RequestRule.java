@@ -118,25 +118,19 @@ public class RequestRule {
 	}
 
 	/**
-	 * Gets the aspect advice rule registry.
-	 *
-	 * @param replicate the clone
-	 * @return the aspect advice rule registry
-	 */
-	public AspectAdviceRuleRegistry getAspectAdviceRuleRegistry(boolean replicate) {
-		if(replicate && aspectAdviceRuleRegistry != null)
-			return aspectAdviceRuleRegistry.replicate();
-		
-		return aspectAdviceRuleRegistry;
-	}
-	
-	/**
 	 * Sets the aspect advice rule registry.
 	 *
 	 * @param aspectAdviceRuleRegistry the new aspect advice rule registry
 	 */
 	public void setAspectAdviceRuleRegistry(AspectAdviceRuleRegistry aspectAdviceRuleRegistry) {
 		this.aspectAdviceRuleRegistry = aspectAdviceRuleRegistry;
+	}
+
+	public AspectAdviceRuleRegistry replicateAspectAdviceRuleRegistry() {
+		if(aspectAdviceRuleRegistry == null)
+			return null;
+
+		return aspectAdviceRuleRegistry.replicate();
 	}
 
 	@Override

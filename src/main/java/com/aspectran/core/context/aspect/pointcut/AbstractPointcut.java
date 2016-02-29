@@ -46,23 +46,29 @@ public abstract class AbstractPointcut implements Pointcut {
 		}
 	}
 
+	@Override
 	public List<PointcutPatternRule> getPointcutPatternRuleList() {
 		return pointcutPatternRuleList;
 	}
 
+	@Override
 	public boolean isExistsBeanMethodNamePattern() {
 		return existsBeanMethodNamePattern;
 	}
 
+	@Override
 	public boolean matches(String transletName) {
-		return matches(transletName, null, null);
+		return matches(transletName, null, null, null);
 	}
 
+	@Override
 	public boolean matches(String transletName, String beanId, String className) {
 		return matches(transletName, beanId, className, null);
 	}
-	
+
+	@Override
 	public boolean matches(String transletName, String beanId, String className, String methodName) {
+		//System.out.println("pointcutPatternRuleList: " + pointcutPatternRuleList);
 		if(pointcutPatternRuleList != null) {
 			for(PointcutPatternRule ppr : pointcutPatternRuleList) {
 				if(matches(ppr, transletName, beanId, className, methodName)) {
@@ -94,23 +100,37 @@ public abstract class AbstractPointcut implements Pointcut {
 	 * @return true, if successful
 	 */
 	protected boolean matches(PointcutPatternRule pointcutPatternRule, String transletName, String beanId, String className, String methodName) {
+		System.out.println("<------------------------------------");
+		System.out.println("transletName: " + transletName);
+		System.out.println("beanId: " + beanId);
+		System.out.println("className: " + className);
+		System.out.println("methodName: " + methodName);
+		System.out.println("pointcutPatternRule.getTransletNamePattern(): " + pointcutPatternRule.getTransletNamePattern());
+		System.out.println("pointcutPatternRule.getBeanIdPattern(): " + pointcutPatternRule.getBeanIdPattern());
+		System.out.println("pointcutPatternRule.getClassNamePattern(): " + pointcutPatternRule.getClassNamePattern());
+		System.out.println("pointcutPatternRule.getMethodNamePattern(): " + pointcutPatternRule.getMethodNamePattern());
+		System.out.println("------------------------------------>");
 		if((transletName == null && pointcutPatternRule.getTransletNamePattern() != null) ||
 				(beanId == null && pointcutPatternRule.getBeanIdPattern() != null) ||
 				(className == null && pointcutPatternRule.getClassNamePattern() != null) ||
-				(methodName == null && pointcutPatternRule.getMethodNamePattern() != null))
+				(methodName == null && pointcutPatternRule.getMethodNamePattern() != null)) {
+			System.out.println("> " + false);
 			return false;
-		
+		}
 		return exists(pointcutPatternRule, transletName, beanId, className, methodName);
 	}
 
+	@Override
 	public boolean exists(String transletName) {
 		return exists(transletName, null, null, null);
 	}
-	
+
+	@Override
 	public boolean exists(String transletName, String beanId, String className) {
 		return exists(transletName, beanId, className, null);
 	}
-	
+
+	@Override
 	public boolean exists(String transletName, String beanId, String className, String methodName) {
 		if(pointcutPatternRuleList != null) {
 			for(PointcutPatternRule ppr : pointcutPatternRuleList) {
@@ -154,12 +174,5 @@ public abstract class AbstractPointcut implements Pointcut {
 		
 		return matched;
 	}
-	
-	abstract public boolean patternMatches(String pattern, String str);
-	
-	abstract public boolean patternMatches(String pattern, String str, char separator);
 
-	public void clear() {
-	}
-	
 }

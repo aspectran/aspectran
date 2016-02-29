@@ -53,4 +53,9 @@ public class RegexpPointcut extends AbstractPointcut {
 		return patternMatches(regex, compareString);
 	}
 
+	@Override
+	public void clear() {
+		regexpPatternCache.clear();
+	}
+
 }

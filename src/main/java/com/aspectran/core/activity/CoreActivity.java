@@ -15,6 +15,7 @@
  */
 package com.aspectran.core.activity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.aspectran.core.activity.process.ActionList;
@@ -31,8 +32,10 @@ import com.aspectran.core.activity.response.ForwardResponse;
 import com.aspectran.core.activity.response.Response;
 import com.aspectran.core.activity.response.ResponseException;
 import com.aspectran.core.context.ActivityContext;
+import com.aspectran.core.context.aspect.AspectAdviceRulePostRegister;
 import com.aspectran.core.context.aspect.AspectAdviceRuleRegister;
 import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
+import com.aspectran.core.context.aspect.pointcut.Pointcut;
 import com.aspectran.core.context.bean.BeanRegistry;
 import com.aspectran.core.context.rule.AspectAdviceRule;
 import com.aspectran.core.context.rule.AspectRule;
@@ -43,11 +46,13 @@ import com.aspectran.core.context.rule.ResponseRule;
 import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.type.ActionType;
 import com.aspectran.core.context.rule.type.AspectAdviceType;
+import com.aspectran.core.context.rule.type.AspectTargetType;
 import com.aspectran.core.context.rule.type.JoinpointScopeType;
 import com.aspectran.core.context.rule.type.RequestMethodType;
 import com.aspectran.core.context.rule.type.ResponseType;
 import com.aspectran.core.context.template.TemplateProcessor;
 import com.aspectran.core.context.translet.TransletNotFoundException;
+import com.aspectran.core.context.translet.TransletRuleRegistry;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
@@ -130,20 +135,19 @@ public class CoreActivity extends AbstractActivity implements Activity {
 		this.transletName = transletName;
 		this.requestMethod = requestMethod;
 
-		TransletRule transletRule = context.getTransletRuleRegistry().getTransletRule(transletName);
+		TransletRuleRegistry transletRuleRegistry = context.getTransletRuleRegistry();
+		TransletRule transletRule = transletRuleRegistry.getTransletRule(transletName);
 
 		// for RESTful
-		PathVariableMap pathVariableMap = null;
-		if(transletRule == null && requestMethod != null) {
-			pathVariableMap = context.getTransletRuleRegistry().getPathVariableMap(transletName, requestMethod);
-			if(pathVariableMap != null) {
-				transletRule = pathVariableMap.getTransletRule();
-			}
+		if(transletRule == null) {
+			transletRule = transletRuleRegistry.getRestfulTransletRule(transletName, requestMethod);
 		}
 
 		if(transletRule == null) {
 			throw new TransletNotFoundException(transletName);
 		}
+
+		PathVariableMap pathVariableMap = transletRuleRegistry.getPathVariableMap(transletRule, transletName);
 
 		ready(transletRule, null);
 
@@ -187,13 +191,7 @@ public class CoreActivity extends AbstractActivity implements Activity {
 			this.requestRule = transletRule.getRequestRule();
 			this.responseRule = transletRule.getResponseRule();
 
-			this.transletAspectAdviceRuleRegistry = transletRule.getAspectAdviceRuleRegistry(true);
-			this.requestAspectAdviceRuleRegistry = requestRule.getAspectAdviceRuleRegistry(true);
-			this.responseAspectAdviceRuleRegistry = responseRule.getAspectAdviceRuleRegistry(true);
-
-			if(transletRule.getContentList() != null) {
-				this.contentAspectAdviceRuleRegistry = transletRule.getContentList().getAspectAdviceRuleRegistry(true);
-			}
+			readyAspectAdviceRule();
 
 			context.setCurrentActivity(this);
 
@@ -714,6 +712,55 @@ public class CoreActivity extends AbstractActivity implements Activity {
 			} else {
 				log.error("Failed to execute the advice action " + aspectAdviceRule, e);
 			}
+		}
+	}
+
+	private void readyAspectAdviceRule() {
+		if(transletRule.getNameTokens() == null) {
+			this.transletAspectAdviceRuleRegistry = transletRule.replicateAspectAdviceRuleRegistry();
+			this.requestAspectAdviceRuleRegistry = requestRule.replicateAspectAdviceRuleRegistry();
+			this.responseAspectAdviceRuleRegistry = responseRule.replicateAspectAdviceRuleRegistry();
+			if(transletRule.getContentList() != null) {
+				this.contentAspectAdviceRuleRegistry = transletRule.getContentList().replicateAspectAdviceRuleRegistry();
+			}
+		} else {
+			AspectAdviceRulePostRegister transletAARPostRegister = new AspectAdviceRulePostRegister();
+			AspectAdviceRulePostRegister requestAARPostRegister = new AspectAdviceRulePostRegister();
+			AspectAdviceRulePostRegister contentAARPostRegister = new AspectAdviceRulePostRegister();
+			AspectAdviceRulePostRegister responseAARPostRegister = new AspectAdviceRulePostRegister();
+
+			List<AspectRule> activityAspectRuleList = new ArrayList<AspectRule>();
+
+			for(AspectRule aspectRule : context.getAspectRuleRegistry().getAspectRuleMap().values()) {
+				AspectTargetType aspectTargetType = aspectRule.getAspectTargetType();
+
+				if(aspectTargetType == AspectTargetType.TRANSLET) {
+					JoinpointScopeType joinpointScope = aspectRule.getJoinpointScope();
+
+					if(!aspectRule.isBeanRelevanted() && joinpointScope != JoinpointScopeType.SESSION) {
+						Pointcut pointcut = aspectRule.getPointcut();
+						if(pointcut == null || pointcut.matches(transletRule.getName())) {
+							if(debugEnabled)
+								log.debug("register AspectRule " + aspectRule);
+
+							if(joinpointScope == JoinpointScopeType.REQUEST) {
+								requestAARPostRegister.register(aspectRule);
+							} else if(joinpointScope == JoinpointScopeType.CONTENT) {
+								contentAARPostRegister.register(aspectRule);
+							} else if(joinpointScope == JoinpointScopeType.RESPONSE) {
+								responseAARPostRegister.register(aspectRule);
+							} else {
+								transletAARPostRegister.register(aspectRule);
+							}
+						}
+					}
+				}
+			}
+
+			this.transletAspectAdviceRuleRegistry = transletAARPostRegister.getAspectAdviceRuleRegistry();
+			this.requestAspectAdviceRuleRegistry = requestAARPostRegister.getAspectAdviceRuleRegistry();
+			this.contentAspectAdviceRuleRegistry = contentAARPostRegister.getAspectAdviceRuleRegistry();
+			this.responseAspectAdviceRuleRegistry = responseAARPostRegister.getAspectAdviceRuleRegistry();
 		}
 	}
 

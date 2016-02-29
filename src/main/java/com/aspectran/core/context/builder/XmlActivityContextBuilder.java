@@ -17,6 +17,9 @@ package com.aspectran.core.context.builder;
 
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.ActivityContext;
+import com.aspectran.core.context.builder.importer.ImportHandler;
+import com.aspectran.core.context.builder.importer.Importer;
+import com.aspectran.core.context.builder.importer.XmlImportHandler;
 import com.aspectran.core.context.rule.type.ImportFileType;
 
 /**
@@ -34,13 +37,13 @@ public class XmlActivityContextBuilder extends AbstractActivityContextBuilder im
 	public ActivityContext build(String rootContext) throws ActivityContextBuilderException {
 		try {
 			if(rootContext == null)
-				throw new IllegalArgumentException("'rootContext' must not be null");
+				throw new IllegalArgumentException("'rootContext' must not be null.");
 			
 			ImportHandler importHandler = new XmlImportHandler(this);
 			setImportHandler(importHandler);
 			
-			Importable importable = makeImportable(rootContext, ImportFileType.XML);
-			importHandler.handle(importable);
+			Importer importer = resolveImporter(rootContext, ImportFileType.XML);
+			importHandler.handle(importer);
 
 			return makeActivityContext(getApplicationAdapter());
 		} catch(Exception e) {

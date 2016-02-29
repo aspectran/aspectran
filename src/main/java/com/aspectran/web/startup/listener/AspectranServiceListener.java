@@ -61,6 +61,7 @@ public class AspectranServiceListener implements ServletContextListener {
 			log.info("Do not terminate the server while the all scoped bean destroying.");
 
 			aspectranService.destroy();
+			aspectranService = null;
 
 			log.info("Successfully destroyed AspectranServiceListener: " + this);
 		}

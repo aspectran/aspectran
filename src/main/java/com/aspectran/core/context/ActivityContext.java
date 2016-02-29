@@ -30,7 +30,7 @@ import com.aspectran.core.util.ToStringBuilder;
  */
 public class ActivityContext {
 	
-	private static ThreadLocal<Activity> currentActivityHolder = new ThreadLocal<Activity>();
+	private final ThreadLocal<Activity> currentActivityHolder = new ThreadLocal<Activity>();
 
 	private final ApplicationAdapter applicationAdapter;
 	
@@ -161,6 +161,14 @@ public class ActivityContext {
 	 * Destroy the aspectran context. 
 	 */
 	public void destroy() {
+		if(templateProcessor != null) {
+			templateProcessor.destroy();
+			templateProcessor = null;
+		}
+		if(transletRuleRegistry != null) {
+			transletRuleRegistry.clear();
+			transletRuleRegistry = null;
+		}
 		if(aspectRuleRegistry != null) {
 			aspectRuleRegistry.clear();
 			aspectRuleRegistry = null;
@@ -168,14 +176,6 @@ public class ActivityContext {
 		if(contextBeanRegistry != null) {
 			contextBeanRegistry.destroy();
 			contextBeanRegistry = null;
-		}
-		if(transletRuleRegistry != null) {
-			transletRuleRegistry.clear();
-			transletRuleRegistry = null;
-		}
-		if(templateProcessor != null) {
-			templateProcessor.destroy();
-			templateProcessor = null;
 		}
 	}
 

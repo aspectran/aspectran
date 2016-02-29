@@ -30,7 +30,7 @@ import com.aspectran.core.activity.response.transform.TransformResponse;
 import com.aspectran.core.context.builder.AssistantLocal;
 import com.aspectran.core.context.builder.ContextBuilderAssistant;
 import com.aspectran.core.context.builder.DefaultSettings;
-import com.aspectran.core.context.builder.Importable;
+import com.aspectran.core.context.builder.importer.Importer;
 import com.aspectran.core.context.builder.apon.params.ActionParameters;
 import com.aspectran.core.context.builder.apon.params.AdviceActionParameters;
 import com.aspectran.core.context.builder.apon.params.AdviceParameters;
@@ -81,7 +81,7 @@ import com.aspectran.core.context.rule.TransformRule;
 import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.type.ActionType;
 import com.aspectran.core.context.rule.type.AspectAdviceType;
-import com.aspectran.core.context.rule.type.ImportType;
+import com.aspectran.core.context.rule.type.ImporterType;
 import com.aspectran.core.context.rule.type.ItemType;
 import com.aspectran.core.context.rule.type.RequestMethodType;
 import com.aspectran.core.context.rule.type.ResponseType;
@@ -161,9 +161,9 @@ public class RootAponAssembler {
 			aspectranParameters.putValue(AspectranParameters.templates, p);
 		}
 
-		List<Importable> pendingList = assistant.getImportHandler().getPendingList();
+		List<Importer> pendingList = assistant.getImportHandler().getPendingList();
 		if(pendingList != null) {
-			for(Importable imp : pendingList) {
+			for(Importer imp : pendingList) {
 				aspectranParameters.putValue(AspectranParameters.imports, assembleImportParameters(imp));
 			}
 		}
@@ -195,10 +195,10 @@ public class RootAponAssembler {
 		
 		SettingsAdviceRule settingsAdviceRule = aspectRule.getSettingsAdviceRule();
 		if(settingsAdviceRule != null) {
-			Map<String, String> settings = settingsAdviceRule.getSettings();
+			Map<String, Object> settings = settingsAdviceRule.getSettings();
 			if(settings != null) {
 				GenericParameters settingsParameters = aspectParameters.newParameters(AspectParameters.settings);
-				for(Map.Entry<String, String> entry : settings.entrySet()) {
+				for(Map.Entry<String, Object> entry : settings.entrySet()) {
 					settingsParameters.putValue(entry.getKey(), entry.getValue());
 				}
 			}
@@ -399,14 +399,14 @@ public class RootAponAssembler {
 		return transletParameters;
 	}
 	
-	public Parameters assembleImportParameters(Importable imp) {
+	public Parameters assembleImportParameters(Importer imp) {
 		Parameters importParameters = new ImportParameters();
 		
-		if(imp.getImportType() == ImportType.FILE) {
+		if(imp.getImporterType() == ImporterType.FILE) {
 			importParameters.putValue(ImportParameters.file, imp.getDistinguishedName());
-		} else if(imp.getImportType() == ImportType.RESOURCE) {
+		} else if(imp.getImporterType() == ImporterType.RESOURCE) {
 			importParameters.putValue(ImportParameters.resource, imp.getDistinguishedName());
-		} else if(imp.getImportType() == ImportType.URL) {
+		} else if(imp.getImporterType() == ImporterType.URL) {
 			importParameters.putValue(ImportParameters.url, imp.getDistinguishedName());
 			importParameters.putValueNonNull(ImportParameters.fileType, imp.getImportFileType());
 		}

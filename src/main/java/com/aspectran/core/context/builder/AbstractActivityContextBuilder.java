@@ -28,6 +28,9 @@ import com.aspectran.core.context.aspect.pointcut.Pointcut;
 import com.aspectran.core.context.aspect.pointcut.PointcutFactory;
 import com.aspectran.core.context.bean.BeanRuleRegistry;
 import com.aspectran.core.context.bean.ContextBeanRegistry;
+import com.aspectran.core.context.builder.importer.Importer;
+import com.aspectran.core.context.builder.importer.FileImporter;
+import com.aspectran.core.context.builder.importer.ResourceImporter;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.PointcutPatternRule;
 import com.aspectran.core.context.rule.PointcutRule;
@@ -145,17 +148,19 @@ public abstract class AbstractActivityContextBuilder extends ContextBuilderAssis
 					
 					if(pointcutPatternRuleList != null) {
 						for(PointcutPatternRule ppr : pointcutPatternRuleList) {
+							/*
 							if(ppr.getTransletNamePattern() != null && ppr.getMatchedTransletCount() == 0) {
 								offendingPointcutPatterns++;
-								String msg = "Incorrect pointcut pattern of translet name \"" + ppr.getTransletNamePattern() + "\" : aspectRule " + aspectRule;
+								String msg = "Incorrect pointcut pattern of translet name '" + ppr.getTransletNamePattern() + "' : aspectRule " + aspectRule;
 								if(pointcutPatternVerifiable)
 									log.error(msg);
 								else
 									log.warn(msg);
 							}
+							*/
 							if(ppr.getBeanIdPattern() != null && ppr.getMatchedBeanCount() == 0) {
 								offendingPointcutPatterns++;
-								String msg = "Incorrect pointcut pattern of bean id \"" + ppr.getBeanIdPattern() + "\" : aspectRule " + aspectRule;
+								String msg = "Incorrect pointcut pattern of bean id '" + ppr.getBeanIdPattern() + "' : aspectRule " + aspectRule;
 								if(pointcutPatternVerifiable)
 									log.error(msg);
 								else
@@ -163,7 +168,7 @@ public abstract class AbstractActivityContextBuilder extends ContextBuilderAssis
 							}
 							if(ppr.getClassNamePattern() != null && ppr.getMatchedClassCount() == 0) {
 								offendingPointcutPatterns++;
-								String msg = "Incorrect pointcut pattern of class name \"" + ppr.getClassNamePattern() + "\" : aspectRule " + aspectRule;
+								String msg = "Incorrect pointcut pattern of class name '" + ppr.getClassNamePattern() + "' : aspectRule " + aspectRule;
 								if(pointcutPatternVerifiable)
 									log.error(msg);
 								else
@@ -171,7 +176,7 @@ public abstract class AbstractActivityContextBuilder extends ContextBuilderAssis
 							}
 							if(ppr.getMethodNamePattern() != null && ppr.getMatchedMethodCount() == 0) {
 								offendingPointcutPatterns++;
-								String msg = "Incorrect pointcut pattern of bean's method name \"" + ppr.getMethodNamePattern() + "\" : aspectRule " + aspectRule;
+								String msg = "Incorrect pointcut pattern of bean's method name '" + ppr.getMethodNamePattern() + "' : aspectRule " + aspectRule;
 								if(pointcutPatternVerifiable)
 									log.error(msg);
 								else
@@ -198,25 +203,25 @@ public abstract class AbstractActivityContextBuilder extends ContextBuilderAssis
 			aspectRuleRegistry.setSessionAspectAdviceRuleRegistry(sessionScopeAspectAdviceRuleRegistry);
 	}
 	
-	protected Importable makeImportable(String rootContext) {
+	protected Importer resolveImporter(String rootContext) {
 		ImportFileType importFileType = rootContext.toLowerCase().endsWith(".apon") ? ImportFileType.APON : ImportFileType.XML;
-		return makeImportable(rootContext, importFileType);
+		return resolveImporter(rootContext, importFileType);
 	}
 	
-	protected Importable makeImportable(String rootContext, ImportFileType importFileType) {
-		Importable importable;
+	protected Importer resolveImporter(String rootContext, ImportFileType importFileType) {
+		Importer importer;
 
 		if(rootContext.startsWith(ResourceUtils.CLASSPATH_URL_PREFIX)) {
 			String resource = rootContext.substring(ResourceUtils.CLASSPATH_URL_PREFIX.length());
-			importable = new ImportableResource(getClassLoader(), resource, importFileType);
+			importer = new ResourceImporter(getClassLoader(), resource, importFileType);
 		} else if(rootContext.startsWith(ResourceUtils.FILE_URL_PREFIX)) {
 			String filePath = rootContext.substring(ResourceUtils.FILE_URL_PREFIX.length());
-			importable = new ImportableFile(filePath, importFileType);
+			importer = new FileImporter(filePath, importFileType);
 		} else {
-			importable = new ImportableFile(getApplicationBasePath(), rootContext, importFileType);
+			importer = new FileImporter(getApplicationBasePath(), rootContext, importFileType);
 		}
 		
-		return importable;
+		return importer;
 	}
 	
 }

@@ -33,6 +33,8 @@ import com.aspectran.core.context.rule.type.ActionType;
  */
 public class ExceptionHandlingRule implements ActionRuleApplicable, Iterable<ResponseByContentTypeRule> {
 
+	private final AspectRule aspectRule;
+
 	private Executable action;
 	
 	private ResponseByContentTypeRule defaultResponseByContentTypeRule;
@@ -40,6 +42,25 @@ public class ExceptionHandlingRule implements ActionRuleApplicable, Iterable<Res
 	private Map<String, ResponseByContentTypeRule> responseByContentTypeRuleMap = new LinkedHashMap<String, ResponseByContentTypeRule>();
 	
 	private String description;
+
+	public ExceptionHandlingRule() {
+		this.aspectRule = null;
+	}
+
+	public ExceptionHandlingRule(AspectRule aspectRule) {
+		this.aspectRule = aspectRule;
+	}
+
+	public String getAspectId() {
+		if(aspectRule == null)
+			throw new UnsupportedOperationException();
+
+		return aspectRule.getId();
+	}
+
+	public AspectRule getAspectRule() {
+		return aspectRule;
+	}
 
 	@Override
 	public void applyActionRule(EchoActionRule echoActionRule) {
@@ -186,6 +207,10 @@ public class ExceptionHandlingRule implements ActionRuleApplicable, Iterable<Res
 	 */
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	public static ExceptionHandlingRule newInstance(AspectRule aspectRule) {
+		return new ExceptionHandlingRule(aspectRule);
 	}
 
 }

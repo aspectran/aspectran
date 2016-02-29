@@ -20,15 +20,15 @@ import com.aspectran.core.context.rule.AspectRule;
 /**
  * The Class AspectAdviceRulePostRegister.
  */
-public class AspectAdviceRulePostRegister extends AspectAdviceRuleRegister {
+public class AspectAdviceRulePostRegister {
 	
 	private AspectAdviceRuleRegistry aspectAdviceRuleRegistry;
 	
 	public AspectAdviceRuleRegistry register(AspectRule aspectRule) {
 		if(aspectAdviceRuleRegistry == null)
 			aspectAdviceRuleRegistry = new AspectAdviceRuleRegistry();
-		
-		register(aspectAdviceRuleRegistry, aspectRule);
+
+		AspectAdviceRuleRegister.register(aspectAdviceRuleRegistry, aspectRule);
 		
 		return aspectAdviceRuleRegistry;
 	}

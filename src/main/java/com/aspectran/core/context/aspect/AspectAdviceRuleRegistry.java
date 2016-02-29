@@ -33,33 +33,59 @@ import com.aspectran.core.util.ToStringBuilder;
 public class AspectAdviceRuleRegistry implements Replicable<AspectAdviceRuleRegistry> {
 
 	private Map<String, Object> settings;
-	
+
+	private List<SettingsAdviceRule> settingsAdviceRuleList;
+
 	private List<AspectAdviceRule> beforeAdviceRuleList;
-	
+
 	private List<AspectAdviceRule> afterAdviceRuleList;
-	
+
 	private List<AspectAdviceRule> finallyAdviceRuleList;
-	
+
 	private List<ExceptionHandlingRule> exceptionHandlingRuleList;
-	
+
 	private int aspectRuleCount;
 
-	protected Map<String, Object> getSettings() {
-		return settings;
+	@SuppressWarnings("unchecked")
+	public <T> T getSetting(String settingName) {
+		if(settings == null)
+			return null;
+
+		return (T)settings.get(settingName);
 	}
 
 	protected void setSettings(Map<String, Object> settings) {
 		this.settings = settings;
 	}
 
-	@SuppressWarnings("unchecked")
-	public <T> T getSetting(String settingName) {
-		if(settings == null)
-			return null;
-		
-		return (T)settings.get(settingName);
+	protected void addSettings(Map<String, Object> settings) {
+		if(settings != null) {
+			if(this.settings == null) {
+				this.settings = new HashMap<String, Object>();
+			}
+			this.settings.putAll(settings);
+		}
 	}
-	
+
+	protected List<SettingsAdviceRule> getSettingsAdviceRuleList() {
+		return settingsAdviceRuleList;
+	}
+
+	protected void setSettingsAdviceRuleList(List<SettingsAdviceRule> settingsAdviceRuleList) {
+		this.settingsAdviceRuleList = settingsAdviceRuleList;
+
+		for(SettingsAdviceRule settingsAdviceRule : settingsAdviceRuleList) {
+			addSettings(settingsAdviceRule.getSettings());
+
+			if(settingsAdviceRule.getSettings() != null) {
+				if(settings == null) {
+					settings = new HashMap<String, Object>();
+				}
+				settings.putAll(settingsAdviceRule.getSettings());
+			}
+		}
+	}
+
 	public List<AspectAdviceRule> getBeforeAdviceRuleList() {
 		return beforeAdviceRuleList;
 	}
@@ -85,35 +111,40 @@ public class AspectAdviceRuleRegistry implements Replicable<AspectAdviceRuleRegi
 	}
 
 	public void addAspectAdviceRule(SettingsAdviceRule settingsAdviceRule) {
-		if(settingsAdviceRule.getSettings() != null) {
-			if(settings == null)
-				settings = new HashMap<String, Object>();
+		if(settingsAdviceRuleList == null)
+			settingsAdviceRuleList = new ArrayList<SettingsAdviceRule>();
 
+		settingsAdviceRuleList.add(settingsAdviceRule);
+
+		if(settingsAdviceRule.getSettings() != null) {
+			if(settings == null) {
+				settings = new HashMap<String, Object>();
+			}
 			settings.putAll(settingsAdviceRule.getSettings());
 		}
 	}
-	
+
 	public void addBeforeAdviceRule(AspectAdviceRule aspectAdviceRule) {
 		if(beforeAdviceRuleList == null)
 			beforeAdviceRuleList = new ArrayList<AspectAdviceRule>();
-		
+
 		beforeAdviceRuleList.add(aspectAdviceRule);
 	}
-		
+
 	public void addAfterAdviceRule(AspectAdviceRule aspectAdviceRule) {
 		if(afterAdviceRuleList == null)
 			afterAdviceRuleList = new ArrayList<AspectAdviceRule>();
-		
+
 		afterAdviceRuleList.add(0, aspectAdviceRule);
 	}
-	
+
 	public void addFinallyAdviceRule(AspectAdviceRule aspectAdviceRule) {
 		if(finallyAdviceRuleList == null)
 			finallyAdviceRuleList = new ArrayList<AspectAdviceRule>();
-		
+
 		finallyAdviceRuleList.add(0, aspectAdviceRule);
 	}
-	
+
 	public void addAspectAdviceRule(AspectAdviceRule aspectAdviceRule) {
 		if(aspectAdviceRule.getAspectAdviceType() == AspectAdviceType.BEFORE) {
 			addBeforeAdviceRule(aspectAdviceRule);
@@ -126,7 +157,7 @@ public class AspectAdviceRuleRegistry implements Replicable<AspectAdviceRuleRegi
 			addAfterAdviceRule(aspectAdviceRule);
 		}
 	}
-	
+
 	public List<ExceptionHandlingRule> getExceptionHandlingRuleList() {
 		return exceptionHandlingRuleList;
 	}
@@ -134,22 +165,25 @@ public class AspectAdviceRuleRegistry implements Replicable<AspectAdviceRuleRegi
 	public void setExceptionHandlingRuleList(List<ExceptionHandlingRule> exceptionHandlingRuleList) {
 		this.exceptionHandlingRuleList = exceptionHandlingRuleList;
 	}
-	
+
 	public void addExceptionHandlingRule(ExceptionHandlingRule exceptionHandlingRule) {
 		if(exceptionHandlingRuleList == null)
 			exceptionHandlingRuleList = new ArrayList<ExceptionHandlingRule>();
-		
+
 		exceptionHandlingRuleList.add(0, exceptionHandlingRule);
 	}
 
 	@Override
 	public AspectAdviceRuleRegistry replicate() {
 		AspectAdviceRuleRegistry aarr = new AspectAdviceRuleRegistry();
-		aarr.setAspectRuleCount(aarr.getAspectRuleCount());
+		aarr.setAspectRuleCount(getAspectRuleCount());
 
 		if(settings != null) {
 			Map<String, Object> newSettings = new HashMap<String, Object>(settings);
 			aarr.setSettings(newSettings);
+		}
+		if(settingsAdviceRuleList != null) {
+			aarr.setSettingsAdviceRuleList(new ArrayList<SettingsAdviceRule>(settingsAdviceRuleList));
 		}
 		if(beforeAdviceRuleList != null) {
 			aarr.setBeforeAdviceRuleList(new ArrayList<AspectAdviceRule>(beforeAdviceRuleList));

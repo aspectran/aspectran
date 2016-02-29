@@ -17,6 +17,9 @@ package com.aspectran.core.context.builder;
 
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.ActivityContext;
+import com.aspectran.core.context.builder.importer.AponImportHandler;
+import com.aspectran.core.context.builder.importer.ImportHandler;
+import com.aspectran.core.context.builder.importer.Importer;
 import com.aspectran.core.context.rule.type.ImportFileType;
 
 /**
@@ -41,13 +44,13 @@ public class AponActivityContextBuilder extends AbstractActivityContextBuilder i
 	public ActivityContext build(String rootContext) throws ActivityContextBuilderException {
 		try {
 			if(rootContext == null)
-				throw new IllegalArgumentException("rootContext must not be null.");
+				throw new IllegalArgumentException("'rootContext' must not be null.");
 
 			ImportHandler importHandler = new AponImportHandler(this, encoding);
 			setImportHandler(importHandler);
 			
-			Importable importable = makeImportable(rootContext, ImportFileType.APON);
-			importHandler.handle(importable);
+			Importer importer = resolveImporter(rootContext, ImportFileType.APON);
+			importHandler.handle(importer);
 
 			return makeActivityContext(getApplicationAdapter());
 		} catch(Exception e) {

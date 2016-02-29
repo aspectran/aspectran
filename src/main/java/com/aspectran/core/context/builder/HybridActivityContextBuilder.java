@@ -17,6 +17,9 @@ package com.aspectran.core.context.builder;
 
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.ActivityContext;
+import com.aspectran.core.context.builder.importer.HybridImportHandler;
+import com.aspectran.core.context.builder.importer.ImportHandler;
+import com.aspectran.core.context.builder.importer.Importer;
 
 /**
  * The Class HybridActivityContextBuilder.
@@ -45,8 +48,8 @@ public class HybridActivityContextBuilder extends AbstractActivityContextBuilder
 			ImportHandler importHandler = new HybridImportHandler(this, encoding, isHybridLoading());
 			setImportHandler(importHandler);
 			
-			Importable importable = makeImportable(rootContext);
-			importHandler.handle(importable);
+			Importer importer = resolveImporter(rootContext);
+			importHandler.handle(importer);
 
 			return makeActivityContext(getApplicationAdapter());
 		} catch(Exception e) {

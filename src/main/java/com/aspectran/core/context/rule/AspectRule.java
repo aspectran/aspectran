@@ -159,13 +159,6 @@ public class AspectRule implements BeanReferenceInspectable {
 	public void setExceptionHandlingRule(ExceptionHandlingRule exceptionHandlingRule) {
 		this.exceptionHandlingRule = exceptionHandlingRule;
 	}
-	
-	public void addExceptionHandlingRule(ResponseByContentTypeRule responseByContentTypeRule) {
-		if(exceptionHandlingRule == null)
-			exceptionHandlingRule = new ExceptionHandlingRule();
-		
-		exceptionHandlingRule.putResponseByContentTypeRule(responseByContentTypeRule);
-	}
 
 	public boolean isBeanRelevanted() {
 		return beanRelevanted;

@@ -18,9 +18,15 @@ package com.aspectran.core.context.bean.proxy;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.util.List;
 
+import com.aspectran.core.activity.Activity;
 import com.aspectran.core.context.ActivityContext;
+import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
 import com.aspectran.core.context.rule.BeanRule;
+import com.aspectran.core.context.rule.ExceptionHandlingRule;
+import com.aspectran.core.util.logging.Log;
+import com.aspectran.core.util.logging.LogFactory;
 
 /**
  * The Class JdkDynamicBeanProxy.
@@ -29,16 +35,87 @@ import com.aspectran.core.context.rule.BeanRule;
  */
 public class JdkDynamicBeanProxy extends AbstractDynamicBeanProxy implements InvocationHandler {
 
+	private final Log log = LogFactory.getLog(JdkDynamicBeanProxy.class);
+
+	private final ActivityContext context;
+
+	private final BeanRule beanRule;
+
 	private final Object bean;
 	
 	protected JdkDynamicBeanProxy(ActivityContext context, BeanRule beanRule, Object bean) {
-		super(context, beanRule);
+		super(context.getAspectRuleRegistry());
+
+		this.context = context;
+		this.beanRule = beanRule;
 		this.bean = bean;
 	}
 
 	@Override
 	public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-		return dynamicInvoke(bean, method, args, null);
+		Activity activity = context.getCurrentActivity();
+
+		String transletName = activity.getTransletName();
+		String beanId = beanRule.getId();
+		String className = beanRule.getClassName();
+		String methodName = method.getName();
+
+		AspectAdviceRuleRegistry aarr = retrieveAspectAdviceRuleRegistry(activity, transletName, beanId, className, methodName);
+
+		if(aarr == null) {
+			return method.invoke(bean, args);
+		}
+
+		try {
+			try {
+				if(log.isTraceEnabled()) {
+					StringBuilder sb = new StringBuilder();
+					sb.append("begin method ").append(methodName).append("(");
+					for(int i = 0; i < args.length; i++) {
+						if(i > 0)
+							sb.append(", ");
+						sb.append(args[i].toString());
+					}
+					sb.append(")");
+					log.trace(sb.toString());
+				}
+
+				if(aarr.getBeforeAdviceRuleList() != null)
+					activity.execute(aarr.getBeforeAdviceRuleList());
+
+				Object result;
+
+				if(!activity.isActivityEnded()) {
+					result = method.invoke(bean, args);
+				} else {
+					result = null;
+				}
+
+				if(aarr.getAfterAdviceRuleList() != null)
+					activity.execute(aarr.getAfterAdviceRuleList());
+
+				return result;
+			} finally {
+				if(aarr.getFinallyAdviceRuleList() != null)
+					activity.forceExecute(aarr.getFinallyAdviceRuleList());
+
+				if(log.isTraceEnabled()) {
+					log.trace("end method " + methodName);
+				}
+			}
+		} catch(Exception e) {
+			activity.setRaisedException(e);
+
+			List<ExceptionHandlingRule> exceptionHandlingRuleList = aarr.getExceptionHandlingRuleList();
+			if(exceptionHandlingRuleList != null) {
+				activity.responseByContentType(exceptionHandlingRuleList);
+				if(activity.isActivityEnded()) {
+					return null;
+				}
+			}
+
+			throw e;
+		}
 	}
 	
 	public static Object newInstance(ActivityContext context, BeanRule beanRule, Object bean) {
