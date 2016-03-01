@@ -157,14 +157,14 @@ public class TransletRuleRegistry {
                     }
                 }
 
-                parseTransletRule(newTransletRule);
+                dissectTransletRule(newTransletRule);
             });
 		} else {
-			parseTransletRule(transletRule);
+			dissectTransletRule(transletRule);
 		}
 	}
 	
-	private void parseTransletRule(TransletRule transletRule) {
+	private void dissectTransletRule(TransletRule transletRule) {
 		if(transletRule.getRequestRule() == null) {
 			RequestRule requestRule = new RequestRule();
 			transletRule.setRequestRule(requestRule);
@@ -173,15 +173,10 @@ public class TransletRuleRegistry {
 		List<ResponseRule> responseRuleList = transletRule.getResponseRuleList();
 		
 		if(responseRuleList == null || responseRuleList.isEmpty()) {
-			putTransletRule(transletRule);
+			saveTransletRule(transletRule);
 		} else if(responseRuleList.size() == 1) {
-			ResponseRule responseRule = responseRuleList.get(0);
-			transletRule.setResponseRule(responseRule);
-			String responseName = responseRule.getName();
-			if(responseName != null && !responseName.isEmpty()) {
-				transletRule.setName(transletRule.getName() + responseName);
-			}
-			putTransletRule(transletRule);
+			transletRule.setResponseRule(responseRuleList.get(0));
+			saveTransletRule(transletRule);
 		} else {
 			ResponseRule defaultResponseRule = null;
 			
@@ -190,33 +185,33 @@ public class TransletRuleRegistry {
 				
 				if(responseName == null || responseName.isEmpty()) {
 					if(defaultResponseRule != null) {
-						log.warn("ignore duplicated default response rule " + defaultResponseRule + " of transletRule " + transletRule);
+						log.warn("Ignore duplicated default response rule " + defaultResponseRule + " of transletRule " + transletRule);
 					}
 					defaultResponseRule = responseRule;
 				} else {
-					TransletRule subTransletRule = TransletRule.replicate(transletRule, responseRule);
-					subTransletRule.setName(transletRule.getName() + responseName);
-					putTransletRule(subTransletRule);
+					TransletRule subTransletRule = transletRule.replicate();
+					subTransletRule.setResponseRule(responseRule);
+					saveTransletRule(subTransletRule);
 				}
 			}
 			
 			if(defaultResponseRule != null) {
 				transletRule.setResponseRule(defaultResponseRule);
-				putTransletRule(transletRule);
+				saveTransletRule(transletRule);
 			}
 		}
 	}
 
-	private void putTransletRule(TransletRule transletRule) {
-		String transletName = applyTransletNamePattern(transletRule.getName());
-
+	private void saveTransletRule(TransletRule transletRule) {
 		transletRule.determineResponseRule();
+
+		String transletName = applyTransletNamePattern(transletRule.getName());
 		transletRule.setName(transletName);
 
 		if(transletRule.getRequestMethods() != null) {
 			String key = TransletRule.makeRestfulTransletName(transletName, transletRule.getRequestMethods());
 			transletRuleMap.put(key, transletRule);
-			putRestfulTransletRule(transletRule);
+			saveRestfulTransletRule(transletRule);
 		} else {
 			transletRuleMap.put(transletRule.getName(), transletRule);
 		}
@@ -225,7 +220,7 @@ public class TransletRuleRegistry {
 			log.trace("add TransletRule " + transletRule);
 	}
 
-	private void putRestfulTransletRule(TransletRule transletRule) {
+	private void saveRestfulTransletRule(TransletRule transletRule) {
 		String transletName = transletRule.getName();
 		List<Token> tokenList = Tokenizer.tokenize(transletName, false);
 		Token[] nameTokens = tokenList.toArray(new Token[tokenList.size()]);

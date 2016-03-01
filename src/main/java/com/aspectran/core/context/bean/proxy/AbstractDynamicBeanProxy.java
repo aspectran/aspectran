@@ -76,7 +76,7 @@ public abstract class AbstractDynamicBeanProxy {
 					cache.put(patternString, holder);
 
 					if(log.isDebugEnabled()) {
-						log.debug("cache relevantAspectRuleHolder " + patternString + " " + holder);
+						log.debug("cache relevantAspectRuleHolder [" + patternString + "] " + holder);
 					}
 				}
 			}

@@ -26,10 +26,6 @@ public interface AspectranConstants {
 	
 	char TRANSLET_NAME_SEPARATOR_CHAR = '/';
 
-	String TRANSLET_NAME_EXTENSION_SEPARATOR = ".";
-	
-	char TRANSLET_NAME_EXTENSION_SEPARATOR_CHAR = '.';
-	
 	String ID_SEPARATOR = ".";
 	
 	char ID_SEPARATOR_CHAR = '.';

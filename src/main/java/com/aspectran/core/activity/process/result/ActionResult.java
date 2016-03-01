@@ -32,6 +32,8 @@ public class ActionResult {
 
 	private Object resultValue;
 
+	private boolean hidden;
+
 	public ActionResult(ContentResult parent) {
 		this.parent = parent;
 		
@@ -85,11 +87,20 @@ public class ActionResult {
 		this.resultValue = resultValue;
 	}
 
+	public boolean isHidden() {
+		return hidden;
+	}
+
+	public void setHidden(boolean hidden) {
+		this.hidden = hidden;
+	}
+
 	@Override
 	public String toString() {
 		ToStringBuilder tsb = new ToStringBuilder();
 		tsb.append("actionId", actionId);
 		tsb.append("resultValue", resultValue);
+		tsb.append("hidden", hidden);
 		return tsb.toString();
 	}
 

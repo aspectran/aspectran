@@ -36,6 +36,10 @@ public class ProcessResult extends ArrayList<ContentResult> {
 	public ProcessResult() {
 	}
 	
+	public ProcessResult(int initialCapacity) {
+		super(initialCapacity);
+	}
+
 	public String getName() {
 		return name;
 	}

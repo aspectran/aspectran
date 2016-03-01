@@ -50,6 +50,7 @@ public class ActionList extends ArrayList<Executable> implements ActionRuleAppli
 	 * Instantiates a new ActionList.
 	 */
 	public ActionList() {
+		super(5);
 	}
 	
 	public String getName() {
@@ -92,6 +93,19 @@ public class ActionList extends ArrayList<Executable> implements ActionRuleAppli
 
 	public void setOmittable(Boolean omittable) {
 		this.omittable = omittable;
+	}
+
+	public int getVisibleCount() {
+		int count = 0;
+		for(Executable action : this) {
+			if(!action.isHidden())
+				count++;
+		}
+		return count;
+	}
+
+	public boolean isNeedWrapping() {
+		return getVisibleCount() < 2;
 	}
 
 	@Override

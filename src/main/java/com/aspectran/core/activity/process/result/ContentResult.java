@@ -16,7 +16,6 @@
 package com.aspectran.core.activity.process.result;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import com.aspectran.core.util.ToStringBuilder;
 
@@ -36,7 +35,8 @@ public class ContentResult extends ArrayList<ActionResult> {
 	
 	private boolean omittable;
 
-	public ContentResult(ProcessResult parent) {
+	public ContentResult(ProcessResult parent, int initialCapacity) {
+		super(initialCapacity);
 		this.parent = parent;
 		
 		if(parent != null) {
@@ -86,7 +86,7 @@ public class ContentResult extends ArrayList<ActionResult> {
 	public String toString() {
 		ToStringBuilder tsb = new ToStringBuilder();
 		tsb.append("name", name);
-		tsb.append("actionResults", (List<?>)this);
+		tsb.append("values", this);
 		return tsb.toString();
 	}
 

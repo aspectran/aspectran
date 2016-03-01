@@ -176,7 +176,7 @@ public class BeanRuleRegistry {
 							}
 						}
 						beanRule2.setBeanClass(scannedClass);
-						putBeanRule(beanRule2);
+						dissectBeanRule(beanRule2);
 					}
 				});
 			} catch(IOException e) {
@@ -191,28 +191,28 @@ public class BeanRuleRegistry {
 				Class<?> beanClass = classLoader.loadClass(className);
 				beanRule.setBeanClass(beanClass);
 			}
-			putBeanRule(beanRule);
+			dissectBeanRule(beanRule);
 		}
 	}
 
-	private void putBeanRule(BeanRule beanRule) {
+	private void dissectBeanRule(BeanRule beanRule) {
 		Class<?> targetBeanClass = BeanRuleAnalyzer.determineBeanClass(beanRule);
 
 		if(targetBeanClass == null) {
 			postProcessBeanRuleMap.add(beanRule);
 		} else {
 			if(beanRule.getId() != null)
-				putBeanRule(beanRule.getId(), beanRule);
+				saveBeanRule(beanRule.getId(), beanRule);
 
 			if(!beanRule.isOffered()) {
 				if(targetBeanClass.isAnnotationPresent(Configuration.class)) {
 					// bean rule for configuration
-					putConfigBeanRule(beanRule);
+					saveConfigBeanRule(beanRule);
 				} else {
-					putBeanRule(targetBeanClass, beanRule);
+					saveBeanRule(targetBeanClass, beanRule);
 					for(Class<?> ifc : targetBeanClass.getInterfaces()) {
 						if(!ignoredDependencyInterfaces.contains(ifc)) {
-							putBeanRule(ifc, beanRule);
+							saveBeanRule(ifc, beanRule);
 						}
 					}
 				}
@@ -223,7 +223,7 @@ public class BeanRuleRegistry {
 		}
 	}
 	
-	private void putBeanRule(String beanId, BeanRule beanRule) {
+	private void saveBeanRule(String beanId, BeanRule beanRule) {
 		if(importantBeanIdSet.contains(beanId))
 			throw new BeanRuleException("Already exists the id based named bean", beanRule);
 
@@ -233,7 +233,7 @@ public class BeanRuleRegistry {
 		idBasedBeanRuleMap.put(beanId, beanRule);
 	}
 	
-	private void putBeanRule(Class<?> beanClass, BeanRule beanRule) {
+	private void saveBeanRule(Class<?> beanClass, BeanRule beanRule) {
 		if(importantBeanTypeSet.contains(beanClass))
 			throw new BeanRuleException("Already exists the type based named bean", beanRule);
 
@@ -248,7 +248,7 @@ public class BeanRuleRegistry {
 		list.add(beanRule);
 	}
 
-	private void putConfigBeanRule(BeanRule beanRule) {
+	private void saveConfigBeanRule(BeanRule beanRule) {
 		configBeanRuleMap.put(beanRule.getBeanClass(), beanRule);
 	}
 
@@ -257,12 +257,12 @@ public class BeanRuleRegistry {
 			@Override
 			public void relay(Class<?> targetBeanClass, BeanRule beanRule) {
 				if(beanRule.getId() != null) {
-					putBeanRule(beanRule.getId(), beanRule);
+					saveBeanRule(beanRule.getId(), beanRule);
 				}
-				putBeanRule(targetBeanClass, beanRule);
+				saveBeanRule(targetBeanClass, beanRule);
 				for(Class<?> ifc : targetBeanClass.getInterfaces()) {
 					if(!ignoredDependencyInterfaces.contains(ifc)) {
-						putBeanRule(ifc, beanRule);
+						saveBeanRule(ifc, beanRule);
 					}
 				}
 			}
@@ -283,7 +283,7 @@ public class BeanRuleRegistry {
 		if(!postProcessBeanRuleMap.isEmpty()) {
 			for(BeanRule beanRule : postProcessBeanRuleMap) {
 				if(beanRule.getId() != null)
-					putBeanRule(beanRule.getId(), beanRule);
+					saveBeanRule(beanRule.getId(), beanRule);
 
 				if(beanRule.isOffered()) {
 					Class<?> offerBeanClass = resolveOfferBeanClass(beanRule);
@@ -301,11 +301,11 @@ public class BeanRuleRegistry {
 						targetBeanClass = BeanRuleAnalyzer.determineFactoryMethodTargetBeanClass(targetBeanClass, beanRule);
 					}
 
-					putBeanRule(targetBeanClass, beanRule);
+					saveBeanRule(targetBeanClass, beanRule);
 
 					for(Class<?> ifc : targetBeanClass.getInterfaces()) {
 						if(!ignoredDependencyInterfaces.contains(ifc)) {
-							putBeanRule(ifc, beanRule);
+							saveBeanRule(ifc, beanRule);
 						}
 					}
 				}

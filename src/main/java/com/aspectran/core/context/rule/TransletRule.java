@@ -24,10 +24,10 @@ import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.activity.process.ContentList;
 import com.aspectran.core.activity.response.Response;
 import com.aspectran.core.activity.response.dispatch.DispatchResponse;
-import com.aspectran.core.context.AspectranConstants;
 import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
 import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.rule.ability.ActionRuleApplicable;
+import com.aspectran.core.context.rule.ability.Replicable;
 import com.aspectran.core.context.rule.ability.ResponseRuleApplicable;
 import com.aspectran.core.context.rule.type.RequestMethodType;
 import com.aspectran.core.util.PrefixSuffixPattern;
@@ -40,7 +40,7 @@ import com.aspectran.core.util.wildcard.WildcardPattern;
  *
  * <p>Created: 2008. 03. 22 PM 5:48:09</p>
  */
-public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicable {
+public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicable, Replicable<TransletRule> {
 
 	private String name;
 
@@ -63,12 +63,12 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 	private boolean explicitContent;
 
 	private ResponseRule responseRule;
-	
+
+	private boolean implicitResponse;
+
 	/** The response rule list is that each new sub Translet. */
 	private List<ResponseRule> responseRuleList;
 	
-	private boolean implicitResponse;
-
 	private ExceptionHandlingRule exceptionHandlingRule;
 	
 	private Class<? extends Translet> transletInterfaceClass;
@@ -245,27 +245,26 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 	 */
 	public void setContentList(ContentList contentList) {
 		this.contentList = contentList;
-		
-		if(contentList != null)
-			explicitContent = true;
+		this.explicitContent = (contentList != null);
 	}
 
-	public ContentList touchContentList(boolean explicitContent) {
-		this.explicitContent = explicitContent;
-		return touchContentList();
-	}
-	
-	public synchronized ContentList touchContentList() {
+	public ContentList touchContentList() {
 		if(contentList == null) {
 			contentList = new ContentList();
-			contentList.setOmittable(Boolean.TRUE);
+			if(!explicitContent) {
+				contentList.setOmittable(Boolean.TRUE);
+			}
 		}
-		
 		return contentList;
 	}
 
 	public boolean isExplicitContent() {
 		return explicitContent;
+	}
+
+	private void setContentList(ContentList contentList, boolean explicitContent) {
+		this.contentList = contentList;
+		this.explicitContent = explicitContent;
 	}
 
 	@Override
@@ -294,7 +293,7 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 		if(contentList.size() == 1) {
 			return contentList.get(0);
 		} else {
-			return contentList.newActionList(true);
+			return contentList.newActionList(!explicitContent);
 		}
 	}
 	
@@ -314,7 +313,7 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 	 */
 	public void setResponseRule(ResponseRule responseRule) {
 		this.responseRule = responseRule;
-		implicitResponse = false;
+		this.implicitResponse = false;
 	}
 	
 	public List<ResponseRule> getResponseRuleList() {
@@ -323,7 +322,7 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 
 	public void setResponseRuleList(List<ResponseRule> responseRuleList) {
 		this.responseRuleList = responseRuleList;
-		implicitResponse = false;
+		this.implicitResponse = false;
 	}
 	
 	public void addResponseRule(ResponseRule responseRule) {
@@ -332,6 +331,10 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 		
 		responseRuleList.add(responseRule);
 		implicitResponse = false;
+	}
+
+	public boolean isImplicitResponse() {
+		return implicitResponse;
 	}
 
 	@Override
@@ -375,11 +378,10 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 	}
 	
 	private void addActionList(ActionList actionList) {
-		if(actionList == null)
-			return;
-		
-		touchContentList();		
-		contentList.add(actionList);
+		if(actionList != null) {
+			touchContentList();
+			contentList.add(actionList);
+		}
 	}
 	
 	public void determineResponseRule() {
@@ -389,14 +391,13 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 			if(responseRule.getResponse() != null) {
 				addActionList(responseRule.getResponse().getActionList());
 			}
-			assembleTransletName(this, responseRule);
+
+			String responseName = responseRule.getName();
+			if(responseName != null && !responseName.isEmpty()) {
+				setName(name + responseName);
+			}
 		}
-
 		setResponseRuleList(null);
-	}
-
-	public boolean isImplicitResponse() {
-		return implicitResponse;
 	}
 
 	public ExceptionHandlingRule getExceptionHandlingRule() {
@@ -464,6 +465,11 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 	}
 
 	@Override
+	public TransletRule replicate() {
+		return replicate(this);
+	}
+
+	@Override
 	public String toString() {
 		ToStringBuilder tsb = new ToStringBuilder();
 		tsb.append("name", name);
@@ -515,27 +521,21 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 		return newInstance(name, null, null, requestMethods);
 	}
 
-	public static TransletRule replicate(TransletRule transletRule, ResponseRule responseRule) {
+	public static TransletRule replicate(TransletRule transletRule) {
 		TransletRule tr = new TransletRule();
 		tr.setName(transletRule.getName());
 		tr.setRequestMethods(transletRule.getRequestMethods());
 		tr.setRequestRule(transletRule.getRequestRule());
-		tr.setResponseRule(responseRule);
 		tr.setExceptionHandlingRule(transletRule.getExceptionHandlingRule());
 		tr.setTransletInterfaceClass(transletRule.getTransletInterfaceClass());
 		tr.setTransletImplementationClass(transletRule.getTransletImplementationClass());
 		tr.setDescription(transletRule.getDescription());
-		
-		if(responseRule.getResponse() != null) {
-			if(responseRule.getResponse().getActionList() != null) {
-				ContentList contentList = transletRule.getContentList();
-				if(contentList != null) {
-					contentList = (ContentList)contentList.clone();
-					tr.setContentList(contentList);
-				}
-			}
+
+		if(transletRule.getContentList() != null) {
+			ContentList contentList = transletRule.getContentList().replicate();
+			tr.setContentList(contentList, transletRule.isExplicitContent());
 		}
-		
+
 		return tr;
 	}
 	
@@ -591,40 +591,6 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 			}
 		}
 		return rr;
-	}
-	
-	protected static void assembleTransletName(TransletRule transletRule, ResponseRule responseRule) {
-		String responseName = responseRule.getName();
-		
-		if(responseName != null && responseName.length() > 0) {
-			String transletName = transletRule.getName();
-
-			if(responseName.charAt(0) == AspectranConstants.TRANSLET_NAME_EXTENSION_SEPARATOR_CHAR) {
-				transletName += responseName;
-			} else {
-				transletName += AspectranConstants.TRANSLET_NAME_SEPARATOR_CHAR + responseName;
-			}
-			
-			transletRule.setName(transletName);
-		}
-	}
-	
-	protected static void disassembleTransletName(TransletRule transletRule, ResponseRule responseRule) {
-		String responseName = responseRule.getName();
-
-		if(responseName != null && responseName.length() > 0) {
-			String transletName = transletRule.getName();
-		
-			if(transletName.endsWith(responseName)) {
-				transletName = transletName.substring(0, transletName.length() - responseName.length());
-			}
-			
-			transletRule.setName(transletName);
-		}
-	}
-	
-	public static String makeRestfulTransletName(String transletName, RequestMethodType requestMethod) {
-		return requestMethod + " " + transletName;
 	}
 
 	public static String makeRestfulTransletName(String transletName, RequestMethodType[] requestMethods) {

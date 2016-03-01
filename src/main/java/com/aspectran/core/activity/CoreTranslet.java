@@ -145,9 +145,14 @@ public class CoreTranslet implements Translet {
 
 	@Override
 	public ProcessResult touchProcessResult(String contentsName) {
+		return touchProcessResult(contentsName, 3);
+	}
+
+	@Override
+	public ProcessResult touchProcessResult(String contentsName, int initialCapacity) {
 		if(processResult == null) {
-			processResult = new ProcessResult();
-			
+			processResult = new ProcessResult(initialCapacity);
+
 			if(contentsName != null)
 				processResult.setName(contentsName);
 		}

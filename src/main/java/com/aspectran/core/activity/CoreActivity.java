@@ -481,19 +481,17 @@ public class CoreActivity extends AbstractActivity implements Activity {
 	protected void request() {
 	}
 	
-	private ProcessResult process() {
-		// execute action on contents area
+	private void process() {
 		ContentList contentList = transletRule.getContentList();
 
 		if(contentList != null) {
-			ProcessResult processResult;
+			ProcessResult processResult = translet.touchProcessResult(contentList.getName(), contentList.size());
 
-			for(ActionList actionList : contentList) {
-				if(!actionList.isHidden()) {
-					processResult = translet.touchProcessResult(contentList.getName());
-					if(contentList.isOmittable())
-						processResult.setOmittable(true);
-					break;
+			if(transletRule.isExplicitContent()) {
+				processResult.setOmittable(contentList.isOmittable());
+			} else {
+				if(contentList.getVisibleCount() < 2) {
+					processResult.setOmittable(true);
 				}
 			}
 
@@ -503,8 +501,6 @@ public class CoreActivity extends AbstractActivity implements Activity {
 					break;
 			}
 		}
-		
-		return translet.getProcessResult();
 	}
 
 	@Override
@@ -589,7 +585,7 @@ public class CoreActivity extends AbstractActivity implements Activity {
 			Response response2 = responseByContentTypeRule.getResponse(response.getContentType());
 			responseRule = responseRule.newUrgentResponseRule(response2);
 			
-			log.info("response by content-type: " + responseRule);
+			log.info("Response by Content-Type: " + responseRule);
 
 			// Clear process results. No reflection to ProcessResult.
 			translet.setProcessResult(null);
@@ -625,18 +621,22 @@ public class CoreActivity extends AbstractActivity implements Activity {
 	 * @throws ActivityException the activity exception
 	 */
 	protected void execute(ActionList actionList) {
-		ContentResult contentResult;
+		ContentResult contentResult = null;
 
-		System.out.println("===translet.getProcessResult(): " + translet.getProcessResult());
-		System.out.println("===actionList.isOmittable(): " + actionList.isOmittable());
+		if(translet.getProcessResult() != null) {
+			contentResult = new ContentResult(translet.getProcessResult(), actionList.size());
+			contentResult.setName(actionList.getName());
+			if(transletRule.isExplicitContent()) {
+				contentResult.setOmittable(actionList.isOmittable());
+			} else {
+				if(actionList.getVisibleCount() < 2) {
+					contentResult.setOmittable(true);
+				}
+			}
+		}
 
 		for(Executable action : actionList) {
-			contentResult = new ContentResult(translet.getProcessResult());
-			contentResult.setName(actionList.getName());
-			contentResult.setOmittable(actionList.isOmittable());
-
 			execute(action, contentResult);
-			
 			if(activityEnded)
 				break;
 		}
@@ -649,10 +649,11 @@ public class CoreActivity extends AbstractActivity implements Activity {
 		try {
 			Object resultValue = action.execute(this);
 		
-			if(contentResult != null && !action.isHidden() && resultValue != ActionResult.NO_RESULT) {
+			if(contentResult != null && resultValue != ActionResult.NO_RESULT) {
 				ActionResult actionResult = new ActionResult(contentResult);
 				actionResult.setActionId(action.getActionId());
 				actionResult.setResultValue(resultValue);
+				actionResult.setHidden(action.isHidden());
 			}
 			
 			if(traceEnabled)

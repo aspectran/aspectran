@@ -16,8 +16,10 @@
 package com.aspectran.core.activity.process;
 
 import java.util.ArrayList;
+import java.util.Collection;
 
 import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
+import com.aspectran.core.context.rule.ability.Replicable;
 import com.aspectran.core.util.BooleanUtils;
 import com.aspectran.core.util.ToStringBuilder;
 
@@ -26,7 +28,7 @@ import com.aspectran.core.util.ToStringBuilder;
  * 
  * <p>Created: 2008. 03. 22 PM 5:47:57</p>
  */
-public class ContentList extends ArrayList<ActionList> {
+public class ContentList extends ArrayList<ActionList> implements Replicable<ContentList> {
 	
 	/** @serial */
 	private static final long serialVersionUID = 2567969961069441527L;
@@ -36,6 +38,14 @@ public class ContentList extends ArrayList<ActionList> {
 	private Boolean omittable;
 	
 	private AspectAdviceRuleRegistry aspectAdviceRuleRegistry;
+
+	public ContentList() {
+		super(3);
+	}
+
+	protected ContentList(Collection<ActionList> c) {
+		super(c);
+	}
 
 	public String getName() {
 		return name;
@@ -63,7 +73,9 @@ public class ContentList extends ArrayList<ActionList> {
 	 * @param actionList the action list
 	 */
 	public void addActionList(ActionList actionList) {
-		add(actionList);
+		if(actionList != null) {
+			add(actionList);
+		}
 	}
 
 	public ActionList newActionList(boolean omittable) {
@@ -75,7 +87,16 @@ public class ContentList extends ArrayList<ActionList> {
 		
 		return actionList;
 	}
-	
+
+	public int getVisibleCount() {
+		int count = 0;
+		for(ActionList actionList : this) {
+			if(!actionList.isHidden())
+				count++;
+		}
+		return count;
+	}
+
 	public AspectAdviceRuleRegistry getAspectAdviceRuleRegistry() {
 		return aspectAdviceRuleRegistry;
 	}
@@ -89,6 +110,14 @@ public class ContentList extends ArrayList<ActionList> {
 			return null;
 
 		return aspectAdviceRuleRegistry.replicate();
+	}
+
+	@Override
+	public ContentList replicate() {
+		ContentList contentList = new ContentList(this);
+		contentList.setName(name);
+		contentList.setOmittable(omittable);
+		return contentList;
 	}
 
 	@Override
@@ -107,5 +136,5 @@ public class ContentList extends ArrayList<ActionList> {
 		
 		return contentList;
 	}
-	
+
 }

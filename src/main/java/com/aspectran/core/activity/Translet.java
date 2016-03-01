@@ -141,13 +141,23 @@ public interface Translet extends BeanRegistrySupport {
 	ProcessResult touchProcessResult();
 
 	/**
-	 * Returns the ProcessResult.
+	 * Returns the process result.
 	 * If not yet instantiated then create a new one.
 	 *
-	 * @param contentName the content name
+	 * @param contentsName the content name
 	 * @return the process result
 	 */
-	ProcessResult touchProcessResult(String contentName);
+	ProcessResult touchProcessResult(String contentsName);
+
+	/**
+	 * Returns the process result.
+	 * If not yet instantiated then create a new one.
+	 *
+	 * @param contentsName the content name
+	 * @param initialCapacity the initial capacity of the process result
+	 * @return the process result
+	 */
+	ProcessResult touchProcessResult(String contentsName, int initialCapacity);
 
 	/**
 	 * Gets activity data map.
