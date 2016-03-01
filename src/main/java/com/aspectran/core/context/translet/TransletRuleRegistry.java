@@ -84,28 +84,26 @@ public class TransletRuleRegistry {
 	}
 	
 	public PathVariableMap getPathVariableMap(TransletRule transletRule, String requestTransletName) {
-		if(transletRule != null && transletRule.getNameTokens() != null) {
-			PathVariableMap pathVariableMap = new PathVariableMap(transletRule);
-			preparsePathVariableMap(requestTransletName, transletRule.getNameTokens(), pathVariableMap);
-			return pathVariableMap;
-		} else {
+		Token[] nameTokens = transletRule.getNameTokens();
+		if(nameTokens == null || nameTokens.length == 1 && nameTokens[0].getType() == TokenType.TEXT)
 			return null;
-		}
+
+		return PathVariableMap.newInstance(nameTokens, requestTransletName);
 	}
 
-	public TransletRule getRestfulTransletRule(String transletName, RequestMethodType requestMethod) {
+	public TransletRule getRestfulTransletRule(String requestTransletName, RequestMethodType requestMethod) {
 		if(restfulTransletRuleSet.isEmpty())
 			return null;
 
 		for(TransletRule transletRule : restfulTransletRuleSet) {
 			WildcardPattern namePattern = transletRule.getNamePattern();
 			if(namePattern != null) {
-				if(namePattern.matches(transletName)) {
+				if(namePattern.matches(requestTransletName)) {
 					if(transletRule.getRequestMethods() == null || requestMethod.containsTo(transletRule.getRequestMethods()))
 						return transletRule;
 				}
 			} else {
-				if(transletName.equals(transletRule.getName())) {
+				if(requestTransletName.equals(transletRule.getName())) {
 					if(transletRule.getRequestMethods() == null || requestMethod.containsTo(transletRule.getRequestMethods()))
 						return transletRule;
 				}
@@ -177,7 +175,12 @@ public class TransletRuleRegistry {
 		if(responseRuleList == null || responseRuleList.isEmpty()) {
 			putTransletRule(transletRule);
 		} else if(responseRuleList.size() == 1) {
-			transletRule.setResponseRule(responseRuleList.get(0));
+			ResponseRule responseRule = responseRuleList.get(0);
+			transletRule.setResponseRule(responseRule);
+			String responseName = responseRule.getName();
+			if(responseName != null && !responseName.isEmpty()) {
+				transletRule.setName(transletRule.getName() + responseName);
+			}
 			putTransletRule(transletRule);
 		} else {
 			ResponseRule defaultResponseRule = null;
@@ -192,6 +195,7 @@ public class TransletRuleRegistry {
 					defaultResponseRule = responseRule;
 				} else {
 					TransletRule subTransletRule = TransletRule.replicate(transletRule, responseRule);
+					subTransletRule.setName(transletRule.getName() + responseName);
 					putTransletRule(subTransletRule);
 				}
 			}
@@ -280,64 +284,6 @@ public class TransletRuleRegistry {
 			sb.append(defaultSettings.getTransletNameSuffix());
 		
 		return sb.toString();
-	}
-
-	private boolean preparsePathVariableMap(String requestTransletRuleName, Token[] nameTokens, PathVariableMap pathVariableMap) {
-		/*
-			/example/customers/123-567/approval
-			/example/customers/
-			${id1}
-			-
-			${id2}
-			/approval
-		*/
-		int beginIndex = 0;
-		int endIndex = 0;
-		Token prevToken = null;
-		Token lastToken = null;
-		
-		for(Token token : nameTokens) {
-			TokenType type = token.getType();
-
-			if(type == TokenType.PARAMETER || type == TokenType.ATTRIBUTE) {
-				lastToken = token;
-			} else {
-				String term = token.stringify();
-
-				endIndex = requestTransletRuleName.indexOf(term, beginIndex);
-
-				if(endIndex == -1)
-					return false;
-
-				if(endIndex > beginIndex) {
-					String value = requestTransletRuleName.substring(beginIndex, endIndex);
-					if(value.length() > 0) {
-						pathVariableMap.put(prevToken, value);
-					} else if(prevToken.getValue() != null) {
-						// If the last token ends with a "/" can be given a default value.
-						pathVariableMap.put(prevToken, prevToken.getValue());
-					}
-
-					beginIndex += value.length();
-				}
-
-				beginIndex += term.length();
-			}
-			
-			prevToken = token;
-		}
-		
-		if(lastToken != null && prevToken == lastToken) {
-			String value = requestTransletRuleName.substring(beginIndex);
-			if(value.length() > 0) {
-				pathVariableMap.put(lastToken, value);
-			} else if(lastToken.getValue() != null) {
-				// If the last token ends with a "/" can be given a default value.
-				pathVariableMap.put(lastToken, lastToken.getValue());
-			}
-		}
-		
-		return true;
 	}
 
 }

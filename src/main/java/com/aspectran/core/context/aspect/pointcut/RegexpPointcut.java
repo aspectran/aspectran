@@ -28,7 +28,7 @@ import com.aspectran.core.context.rule.PointcutPatternRule;
  */
 public class RegexpPointcut extends AbstractPointcut {
 	
-	private final Map<String, Pattern> regexpPatternCache = new WeakHashMap<String, Pattern>();
+	private volatile Map<String, Pattern> regexpPatternCache = new WeakHashMap<String, Pattern>();
 
 	public RegexpPointcut(List<PointcutPatternRule> pointcutPatternRuleList) {
 		super(pointcutPatternRuleList);
@@ -37,10 +37,15 @@ public class RegexpPointcut extends AbstractPointcut {
 	@Override
 	public boolean patternMatches(String regex, String compareString) {
 		Pattern pattern = regexpPatternCache.get(regex);
-			
+
 		if(pattern == null) {
-			pattern = Pattern.compile(regex);
-			regexpPatternCache.put(regex, pattern);
+			synchronized(regexpPatternCache) {
+				pattern = regexpPatternCache.get(regex);
+				if(pattern == null) {
+					pattern = Pattern.compile(regex);
+					regexpPatternCache.put(regex, pattern);
+				}
+			}
 		}
 
 		Matcher matcher = pattern.matcher(compareString);

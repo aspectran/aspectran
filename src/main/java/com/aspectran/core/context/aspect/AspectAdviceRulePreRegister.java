@@ -169,7 +169,7 @@ public class AspectAdviceRulePreRegister {
 
 							AspectAdviceRuleRegister.register(responseRule, aspectRule);
 						} else {
-							//translet scope
+							// translet scope
 							if(log.isTraceEnabled())
 								log.trace("apply aspectRule " + aspectRule + " to transletRule " + transletRule);
 

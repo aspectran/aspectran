@@ -15,7 +15,7 @@
  */
 package com.aspectran.core.context.rule;
 
-import com.aspectran.core.context.rule.ability.ActionPossessable;
+import com.aspectran.core.context.rule.ability.ActionPossessSupport;
 import com.aspectran.core.context.rule.ability.Replicable;
 import com.aspectran.core.context.rule.type.ResponseType;
 import com.aspectran.core.util.BooleanUtils;
@@ -26,7 +26,7 @@ import com.aspectran.core.util.ToStringBuilder;
  * 
  * <p>Created: 2008. 03. 22 PM 5:51:58</p>
  */
-public class ForwardResponseRule extends ActionPossessSupport implements ActionPossessable, Replicable<ForwardResponseRule> {
+public class ForwardResponseRule extends ActionPossessSupport implements Replicable<ForwardResponseRule> {
 	
 	public static final ResponseType RESPONSE_TYPE = ResponseType.FORWARD;
 

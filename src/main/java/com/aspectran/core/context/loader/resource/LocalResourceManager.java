@@ -16,7 +16,6 @@
 package com.aspectran.core.context.loader.resource;
 
 import java.io.File;
-import java.io.FileFilter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -29,6 +28,8 @@ import com.aspectran.core.context.loader.AspectranClassLoader;
 import com.aspectran.core.util.ResourceUtils;
 
 /**
+ * The Class LocalResourceManager.
+ *
  * <p>Created: 2014. 12. 18 PM 5:51:13</p>	
  */
 public class LocalResourceManager extends ResourceManager {
@@ -89,30 +90,28 @@ public class LocalResourceManager extends ResourceManager {
 		}
 	}
 	
-	private void findResource(File target, final List<File> jarFileList) {
-		target.listFiles(new FileFilter() {
-			public boolean accept(File file) {
-				String filePath = file.getAbsolutePath();
-				
-				String resourceName = filePath.substring(resourceLocationSubLen);
+	private void findResource(File target, List<File> jarFileList) {
+		target.listFiles(file -> {
+            String filePath = file.getAbsolutePath();
 
-				try {
-					resourceEntries.putResource(resourceName, file);
-				} catch(InvalidResourceException e) {
-					throw new AspectranRuntimeException(e);
-				}
+            String resourceName = filePath.substring(resourceLocationSubLen);
 
-				if(file.isDirectory()) {
-					findResource(file, jarFileList);
-				} else if(file.isFile()) {
-					if(filePath.endsWith(ResourceUtils.JAR_FILE_SUFFIX)) {
-						jarFileList.add(file);
-					}
-				}
-				
-				return false;
-			}
-		});
+            try {
+                resourceEntries.putResource(resourceName, file);
+            } catch(InvalidResourceException e) {
+                throw new AspectranRuntimeException(e);
+            }
+
+            if(file.isDirectory()) {
+                findResource(file, jarFileList);
+            } else if(file.isFile()) {
+                if(filePath.endsWith(ResourceUtils.JAR_FILE_SUFFIX)) {
+                    jarFileList.add(file);
+                }
+            }
+
+            return false;
+        });
 	}
 	
 	private void findResourceFromJAR(File target) throws InvalidResourceException, IOException {

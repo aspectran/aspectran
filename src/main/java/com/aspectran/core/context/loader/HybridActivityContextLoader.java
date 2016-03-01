@@ -16,6 +16,7 @@
 package com.aspectran.core.context.loader;
 
 import com.aspectran.core.context.ActivityContext;
+import com.aspectran.core.context.AspectranConstants;
 import com.aspectran.core.context.builder.ActivityContextBuilder;
 import com.aspectran.core.context.builder.ActivityContextBuilderException;
 import com.aspectran.core.context.builder.HybridActivityContextBuilder;
@@ -26,8 +27,6 @@ public class HybridActivityContextLoader extends AbstractActivityContextLoader {
 
 	private final Log log = LogFactory.getLog(HybridActivityContextLoader.class);
 	
-	private static final String DEFAULT_ENCODING = "utf-8";
-	
 	private String encoding;
 
 	public HybridActivityContextLoader() {
@@ -35,7 +34,7 @@ public class HybridActivityContextLoader extends AbstractActivityContextLoader {
 	}
 	
 	public HybridActivityContextLoader(String encoding) {
-		this.encoding = (encoding == null) ? DEFAULT_ENCODING : encoding;
+		this.encoding = (encoding == null) ? AspectranConstants.DEFAULT_ENCODING : encoding;
 	}
 
 	@Override

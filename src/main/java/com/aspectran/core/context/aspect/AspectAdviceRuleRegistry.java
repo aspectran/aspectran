@@ -76,13 +76,6 @@ public class AspectAdviceRuleRegistry implements Replicable<AspectAdviceRuleRegi
 
 		for(SettingsAdviceRule settingsAdviceRule : settingsAdviceRuleList) {
 			addSettings(settingsAdviceRule.getSettings());
-
-			if(settingsAdviceRule.getSettings() != null) {
-				if(settings == null) {
-					settings = new HashMap<String, Object>();
-				}
-				settings.putAll(settingsAdviceRule.getSettings());
-			}
 		}
 	}
 
@@ -116,12 +109,7 @@ public class AspectAdviceRuleRegistry implements Replicable<AspectAdviceRuleRegi
 
 		settingsAdviceRuleList.add(settingsAdviceRule);
 
-		if(settingsAdviceRule.getSettings() != null) {
-			if(settings == null) {
-				settings = new HashMap<String, Object>();
-			}
-			settings.putAll(settingsAdviceRule.getSettings());
-		}
+		addSettings(settingsAdviceRule.getSettings());
 	}
 
 	public void addBeforeAdviceRule(AspectAdviceRule aspectAdviceRule) {
@@ -176,7 +164,7 @@ public class AspectAdviceRuleRegistry implements Replicable<AspectAdviceRuleRegi
 	@Override
 	public AspectAdviceRuleRegistry replicate() {
 		AspectAdviceRuleRegistry aarr = new AspectAdviceRuleRegistry();
-		aarr.setAspectRuleCount(getAspectRuleCount());
+		aarr.setAspectRuleCount(aspectRuleCount);
 
 		if(settings != null) {
 			Map<String, Object> newSettings = new HashMap<String, Object>(settings);

@@ -169,7 +169,7 @@ public class DefaultSettings {
 	public boolean isPointcutPatternVerifiable() {
 		return BooleanUtils.toBoolean(pointcutPatternVerifiable, true);
 	}
-	
+
 	public Boolean getPointcutPatternVerifiable() {
 		return pointcutPatternVerifiable;
 	}

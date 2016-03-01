@@ -60,6 +60,7 @@ public class SettingsAdviceRule {
 		this.settings = settings;
 	}
 
+	@SuppressWarnings("unchecked")
 	public <T> T getSetting(String name) {
 		return (T)settings.get(name);
 	}

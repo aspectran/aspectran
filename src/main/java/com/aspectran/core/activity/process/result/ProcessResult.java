@@ -17,6 +17,8 @@ package com.aspectran.core.activity.process.result;
 
 import java.util.ArrayList;
 
+import com.aspectran.core.util.ToStringBuilder;
+
 /**
  * The Class ProcessResult.
  * 
@@ -25,7 +27,7 @@ import java.util.ArrayList;
 public class ProcessResult extends ArrayList<ContentResult> {
 
 	/** @serial */
-	static final long serialVersionUID = 4734650376929217378L;
+	private static final long serialVersionUID = 4734650376929217378L;
 
 	private String name;
 	
@@ -77,6 +79,15 @@ public class ProcessResult extends ArrayList<ContentResult> {
 			return actionResult.getResultValue();
 		
 		return null;
+	}
+
+	public String describe() {
+		ToStringBuilder tsb = new ToStringBuilder();
+		tsb.append("name", name);
+		tsb.append("omittable", omittable);
+		tsb.appendSize("size", this);
+		tsb.append("values", this);
+		return tsb.toString();
 	}
 	
 }

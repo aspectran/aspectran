@@ -18,7 +18,7 @@ package com.aspectran.core.context.bean.proxy;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.WeakHashMap;
 
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.context.aspect.AspectAdviceRulePostRegister;
@@ -39,7 +39,7 @@ public abstract class AbstractDynamicBeanProxy {
 
 	private final Log log = LogFactory.getLog(AbstractDynamicBeanProxy.class);
 
-	private static final Map<String, RelevantAspectRuleHolder> relevantAspectRuleHolderCache = new ConcurrentHashMap<String, RelevantAspectRuleHolder>();
+	private static volatile Map<String, RelevantAspectRuleHolder> cache = new WeakHashMap<String, RelevantAspectRuleHolder>();
 
 	private final AspectRuleRegistry aspectRuleRegistry;
 
@@ -62,51 +62,59 @@ public abstract class AbstractDynamicBeanProxy {
 	
 	private RelevantAspectRuleHolder getRelevantAspectRuleHolder(
 			String transletName, String beanId, String className, String methodName) {
+
 		String patternString = PointcutPatternRule.combinePatternString(transletName, beanId, className, methodName);
-		RelevantAspectRuleHolder holder;
-		
-		synchronized(relevantAspectRuleHolderCache) {
-			// Check the cache first
-			holder = relevantAspectRuleHolderCache.get(patternString);
 
-			if(holder == null) {
-				Map<String, AspectRule> aspectRuleMap = aspectRuleRegistry.getAspectRuleMap();
-				AspectAdviceRulePostRegister postRegister = new AspectAdviceRulePostRegister();
-				List<AspectRule> activityAspectRuleList = new ArrayList<AspectRule>();
-				
-				for(AspectRule aspectRule : aspectRuleMap.values()) {
-					AspectTargetType aspectTargetType = aspectRule.getAspectTargetType();
-					if(aspectTargetType == AspectTargetType.TRANSLET && aspectRule.isBeanRelevanted()) {
-						Pointcut pointcut = aspectRule.getPointcut();
+		// Check the cache first
+		RelevantAspectRuleHolder holder = cache.get(patternString);
 
-						if(pointcut == null || pointcut.matches(transletName, beanId, className, methodName)) {
-							if(aspectRule.getJoinpointScope() == JoinpointScopeType.BEAN) {
-								postRegister.register(aspectRule);
-							} else {
-								activityAspectRuleList.add(aspectRule);
-							}
-						}
+		if(holder == null) {
+			synchronized(cache) {
+				holder = cache.get(patternString);
+				if(holder == null) {
+					holder = createRelevantAspectRuleHolder(transletName, beanId, className, methodName);
+					cache.put(patternString, holder);
+
+					if(log.isDebugEnabled()) {
+						log.debug("cache relevantAspectRuleHolder " + patternString + " " + holder);
 					}
-				}
-				
-				AspectAdviceRuleRegistry aspectAdviceRuleRegistry = postRegister.getAspectAdviceRuleRegistry();
-				
-				holder = new RelevantAspectRuleHolder();
-				
-				if(aspectAdviceRuleRegistry != null && aspectAdviceRuleRegistry.getAspectRuleCount() > 0)
-					holder.setAspectAdviceRuleRegistry(aspectAdviceRuleRegistry);
-				
-				if(!activityAspectRuleList.isEmpty())
-					holder.setActivityAspectRuleList(activityAspectRuleList);
-				
-				relevantAspectRuleHolderCache.put(patternString, holder);
-				
-				if(log.isDebugEnabled()) {
-					log.debug("relevantAspectRuleHolderCache " + patternString + " " + holder);
 				}
 			}
 		}
 		
+		return holder;
+	}
+
+	private RelevantAspectRuleHolder createRelevantAspectRuleHolder(String transletName, String beanId, String className, String methodName) {
+		Map<String, AspectRule> aspectRuleMap = aspectRuleRegistry.getAspectRuleMap();
+		AspectAdviceRulePostRegister postRegister = new AspectAdviceRulePostRegister();
+		List<AspectRule> activityAspectRuleList = new ArrayList<AspectRule>();
+
+		for(AspectRule aspectRule : aspectRuleMap.values()) {
+			AspectTargetType aspectTargetType = aspectRule.getAspectTargetType();
+			if(aspectTargetType == AspectTargetType.TRANSLET && aspectRule.isBeanRelevanted()) {
+				Pointcut pointcut = aspectRule.getPointcut();
+
+				if(pointcut == null || pointcut.matches(transletName, beanId, className, methodName)) {
+					if(aspectRule.getJoinpointScope() == JoinpointScopeType.BEAN) {
+						postRegister.register(aspectRule);
+					} else {
+						activityAspectRuleList.add(aspectRule);
+					}
+				}
+			}
+		}
+
+		AspectAdviceRuleRegistry aspectAdviceRuleRegistry = postRegister.getAspectAdviceRuleRegistry();
+
+		RelevantAspectRuleHolder holder = new RelevantAspectRuleHolder();
+
+		if(aspectAdviceRuleRegistry != null && aspectAdviceRuleRegistry.getAspectRuleCount() > 0)
+			holder.setAspectAdviceRuleRegistry(aspectAdviceRuleRegistry);
+
+		if(!activityAspectRuleList.isEmpty())
+			holder.setActivityAspectRuleList(activityAspectRuleList);
+
 		return holder;
 	}
 

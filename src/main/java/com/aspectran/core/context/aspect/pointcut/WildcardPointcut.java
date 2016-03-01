@@ -30,7 +30,7 @@ public class WildcardPointcut extends AbstractPointcut {
 
 	private static final String OR_MATCH_DELIMITER = "|";
 	
-	private final Map<String, WildcardPattern> wildcardPatternCache = new WeakHashMap<String, WildcardPattern>();
+	private volatile Map<String, WildcardPattern> wildcardPatternCache = new WeakHashMap<String, WildcardPattern>();
 	
 	public WildcardPointcut(List<PointcutPatternRule> pointcutPatternRuleList) {
 		super(pointcutPatternRuleList);
@@ -72,29 +72,38 @@ public class WildcardPointcut extends AbstractPointcut {
 		}
 	}
 	
-	protected boolean wildcardPatternMatches(String pattern, String compareString) {
+	private boolean wildcardPatternMatches(String pattern, String compareString) {
 		if(!WildcardPattern.hasWildcards(pattern)) {
 			return pattern.equals(compareString);
 		}
-		
+
 		WildcardPattern wildcardPattern = wildcardPatternCache.get(pattern);
 
 		if(wildcardPattern == null) {
-			wildcardPattern = new WildcardPattern(pattern);
-			wildcardPatternCache.put(pattern, wildcardPattern);
+			synchronized(wildcardPatternCache) {
+				wildcardPattern = wildcardPatternCache.get(pattern);
+				if(wildcardPattern == null) {
+					wildcardPattern = new WildcardPattern(pattern);
+					wildcardPatternCache.put(pattern, wildcardPattern);
+				}
+			}
 		}
-		
+
 		return wildcardPattern.matches(compareString);
 	}
 
-	protected boolean wildcardPatternMatches(String pattern, String compareString, char separator) {
-		String patternId = pattern + separator;
-
-		WildcardPattern wildcardPattern = wildcardPatternCache.get(patternId);
+	private boolean wildcardPatternMatches(String pattern, String compareString, char separator) {
+		String patternKey = pattern + separator;
+		WildcardPattern wildcardPattern = wildcardPatternCache.get(patternKey);
 
 		if(wildcardPattern == null) {
-			wildcardPattern = new WildcardPattern(pattern, separator);
-			wildcardPatternCache.put(patternId, wildcardPattern);
+			synchronized(wildcardPatternCache) {
+				wildcardPattern = wildcardPatternCache.get(patternKey);
+				if(wildcardPattern == null) {
+					wildcardPattern = new WildcardPattern(pattern, separator);
+					wildcardPatternCache.put(patternKey, wildcardPattern);
+				}
+			}
 		}
 		
 		return wildcardPattern.matches(compareString);

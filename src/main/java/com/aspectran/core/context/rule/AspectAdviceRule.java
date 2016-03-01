@@ -117,9 +117,7 @@ public class AspectAdviceRule implements ActionRuleApplicable {
 	}
 
 	public static AspectAdviceRule newInstance(AspectRule aspectRule, AspectAdviceType aspectAdviceType) {
-		AspectAdviceRule aspectAdviceRule = new AspectAdviceRule(aspectRule, aspectAdviceType);
-
-		return aspectAdviceRule;
+		return new AspectAdviceRule(aspectRule, aspectAdviceType);
 	}
 
 	public static BeanActionRule updateBeanActionClass(AspectAdviceRule aspectAdviceRule) {

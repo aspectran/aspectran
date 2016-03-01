@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.io.Writer;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -236,10 +237,7 @@ public class TokenExpression implements TokenExpressor {
 			return null;
 		
 		List<String> valueList = new ArrayList<String>(values.length);
-		
-		for(int i = 0; i < values.length; i++) {
-			valueList.add(values[i]);
-		}
+		Collections.addAll(valueList, values);
 		
 		return valueList;
 	}
@@ -257,10 +255,7 @@ public class TokenExpression implements TokenExpressor {
 			return null;
 
 		Set<String> valueSet = new LinkedHashSet<String>(values.length);
-		
-		for(int i = 0; i < values.length; i++) {
-			valueSet.add(values[i]);
-		}
+		Collections.addAll(valueSet, values);
 		
 		return valueSet;
 	}

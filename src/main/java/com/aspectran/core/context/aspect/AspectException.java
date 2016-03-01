@@ -35,7 +35,7 @@ public class AspectException extends AspectranRuntimeException {
 	/**
 	 * Constructs a AspectException with the specified detail message.
 	 * 
-	 * @param msg A message to associate with the exception
+	 * @param msg a message to associate with the exception
 	 */
 	public AspectException(String msg) {
 		super(msg);
@@ -44,7 +44,7 @@ public class AspectException extends AspectranRuntimeException {
 	/**
 	 * Constructor to create exception to wrap another exception.
 	 * 
-	 * @param cause The real cause of the exception
+	 * @param cause the real cause of the exception
 	 */
 	public AspectException(Throwable cause) {
 		super(cause);
@@ -53,8 +53,8 @@ public class AspectException extends AspectranRuntimeException {
 	/**
 	 * Constructs a AspectException with the specified error message and also the specified root cause exception.
 	 *
-	 * @param msg The detail message
-	 * @param cause The real cause of the exception
+	 * @param msg the detail message
+	 * @param cause the real cause of the exception
 	 */
 	public AspectException(String msg, Throwable cause) {
 		super(msg, cause);

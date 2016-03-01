@@ -15,7 +15,6 @@
  */
 package com.aspectran.core.activity;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.aspectran.core.activity.process.ActionList;
@@ -488,7 +487,7 @@ public class CoreActivity extends AbstractActivity implements Activity {
 
 		if(contentList != null) {
 			ProcessResult processResult;
-			
+
 			for(ActionList actionList : contentList) {
 				if(!actionList.isHidden()) {
 					processResult = translet.touchProcessResult(contentList.getName());
@@ -497,7 +496,7 @@ public class CoreActivity extends AbstractActivity implements Activity {
 					break;
 				}
 			}
-			
+
 			for(ActionList actionList : contentList) {
 				execute(actionList);
 				if(activityEnded)
@@ -620,14 +619,17 @@ public class CoreActivity extends AbstractActivity implements Activity {
 	}
 	
 	/**
-	 * Execute the actions.
+	 * Executes the actions.
 	 *
 	 * @param actionList the action list
 	 * @throws ActivityException the activity exception
 	 */
 	protected void execute(ActionList actionList) {
 		ContentResult contentResult;
-		
+
+		System.out.println("===translet.getProcessResult(): " + translet.getProcessResult());
+		System.out.println("===actionList.isOmittable(): " + actionList.isOmittable());
+
 		for(Executable action : actionList) {
 			contentResult = new ContentResult(translet.getProcessResult());
 			contentResult.setName(actionList.getName());
@@ -728,8 +730,6 @@ public class CoreActivity extends AbstractActivity implements Activity {
 			AspectAdviceRulePostRegister requestAARPostRegister = new AspectAdviceRulePostRegister();
 			AspectAdviceRulePostRegister contentAARPostRegister = new AspectAdviceRulePostRegister();
 			AspectAdviceRulePostRegister responseAARPostRegister = new AspectAdviceRulePostRegister();
-
-			List<AspectRule> activityAspectRuleList = new ArrayList<AspectRule>();
 
 			for(AspectRule aspectRule : context.getAspectRuleRegistry().getAspectRuleMap().values()) {
 				AspectTargetType aspectTargetType = aspectRule.getAspectTargetType();

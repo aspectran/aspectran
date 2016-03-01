@@ -68,7 +68,6 @@ public abstract class AbstractPointcut implements Pointcut {
 
 	@Override
 	public boolean matches(String transletName, String beanId, String className, String methodName) {
-		//System.out.println("pointcutPatternRuleList: " + pointcutPatternRuleList);
 		if(pointcutPatternRuleList != null) {
 			for(PointcutPatternRule ppr : pointcutPatternRuleList) {
 				if(matches(ppr, transletName, beanId, className, methodName)) {
@@ -89,35 +88,26 @@ public abstract class AbstractPointcut implements Pointcut {
 		
 		return false;
 	}
-	
+
 	/**
 	 * 비교 항목의 값이 null이면 참으로 간주함.
 	 *
 	 * @param pointcutPatternRule the pointcut pattern
 	 * @param transletName the translet name
-	 * @param beanId the bean or action id
-	 * @param methodName the bean method name
-	 * @return true, if successful
+	 * @param beanId the bean id
+	 * @param className the class name
+	 * @param methodName the bean's method name
+	 * @return true, if exists matched
 	 */
 	protected boolean matches(PointcutPatternRule pointcutPatternRule, String transletName, String beanId, String className, String methodName) {
-		System.out.println("<------------------------------------");
-		System.out.println("transletName: " + transletName);
-		System.out.println("beanId: " + beanId);
-		System.out.println("className: " + className);
-		System.out.println("methodName: " + methodName);
-		System.out.println("pointcutPatternRule.getTransletNamePattern(): " + pointcutPatternRule.getTransletNamePattern());
-		System.out.println("pointcutPatternRule.getBeanIdPattern(): " + pointcutPatternRule.getBeanIdPattern());
-		System.out.println("pointcutPatternRule.getClassNamePattern(): " + pointcutPatternRule.getClassNamePattern());
-		System.out.println("pointcutPatternRule.getMethodNamePattern(): " + pointcutPatternRule.getMethodNamePattern());
-		System.out.println("------------------------------------>");
 		if((transletName == null && pointcutPatternRule.getTransletNamePattern() != null) ||
 				(beanId == null && pointcutPatternRule.getBeanIdPattern() != null) ||
 				(className == null && pointcutPatternRule.getClassNamePattern() != null) ||
 				(methodName == null && pointcutPatternRule.getMethodNamePattern() != null)) {
-			System.out.println("> " + false);
 			return false;
+		} else {
+			return exists(pointcutPatternRule, transletName, beanId, className, methodName);
 		}
-		return exists(pointcutPatternRule, transletName, beanId, className, methodName);
 	}
 
 	@Override

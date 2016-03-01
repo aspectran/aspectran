@@ -15,7 +15,7 @@
  */
 package com.aspectran.core.util;
 
-import static junit.framework.Assert.assertTrue;
+import static junit.framework.TestCase.assertTrue;
 import static junit.framework.TestCase.assertNotNull;
 
 import java.lang.reflect.Method;

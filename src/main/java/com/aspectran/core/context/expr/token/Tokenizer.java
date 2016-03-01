@@ -17,6 +17,7 @@ package com.aspectran.core.context.expr.token;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import com.aspectran.core.context.rule.type.TokenType;
 
@@ -154,7 +155,7 @@ public class Tokenizer {
 	 * @return the token
 	 */
 	private static Token makeToken(char symbol, StringBuilder tokenNameBuffer, StringBuilder defTextBuffer) {
-		TokenType type = null;
+		TokenType type;
 		String name = null;
 		String defaultValue = null;
 		String getterName = null;
@@ -230,7 +231,7 @@ public class Tokenizer {
 		}
 
 		if(leadingLF && start == 0)
-			return new Character(LF).toString();
+			return String.valueOf(LF);
 		
 		// tailing whitespace
 		for(int i = end - 1; i > start; i--) {
@@ -263,7 +264,7 @@ public class Tokenizer {
 	 */
 	public static Token[] optimize(Token[] tokens) {
 		if(tokens == null)
-			return tokens;
+			return null;
 		
 		String firstDefaultText = null;
 		String lastDefaultText = null;
@@ -282,14 +283,14 @@ public class Tokenizer {
 		if(firstDefaultText != null) {
 			String text = trimLeadingWhitespace(firstDefaultText);
 			
-			if(firstDefaultText != text)
+			if(!Objects.equals(firstDefaultText, text))
 				tokens[0] = new Token(TokenType.TEXT, text);
 		}
 		
 		if(lastDefaultText != null) {
 			String text = trimTailingWhitespace(lastDefaultText);
 
-			if(lastDefaultText != text)
+			if(!Objects.equals(lastDefaultText, text))
 				tokens[tokens.length - 1] = new Token(TokenType.TEXT, text);
 		}
 		

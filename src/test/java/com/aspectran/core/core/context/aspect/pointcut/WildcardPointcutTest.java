@@ -34,19 +34,19 @@ public class WildcardPointcutTest {
     @Test
     public void wildcardPointcutTest() {
         // "/translet@class:hello.Simplest^hello*World*"
-        PointcutPatternRule ppr1 = PointcutPatternRule.newInstance("/translet", "class:hello.Simplest", "hello*World*");
+        PointcutPatternRule ppr1 = PointcutPatternRule.newInstance("/translet", "class:hel*.Sim*", "hello*World*");
 
         // "/ga-annotated-config/*@class:hello.SimplestAction"
-        PointcutPatternRule ppr2 = PointcutPatternRule.newInstance("/ga-annotated-config/*", "class:hello.SimplestAction", null);
+        PointcutPatternRule ppr2 = PointcutPatternRule.newInstance("/ga-annotated-config/*", "class:*.SimplestAction", null);
 
         List<PointcutPatternRule> pprList = new ArrayList<>();
-        //pprList.add(ppr1);
+        pprList.add(ppr1);
         pprList.add(ppr2);
 
         Pointcut wildcardPointcut = new WildcardPointcut(pprList);
-        boolean result = wildcardPointcut.matches("/ga-annotated-config/translet", null, "hello.SimplestAction", "hello World!");
 
-        assertTrue(result);
+        assertTrue(wildcardPointcut.matches("/ga-annotated-config/translet", null, "hello.SimplestAction", "hello World!"));
+        assertTrue(wildcardPointcut.matches("/translet", null, "hello.Simplest", "hello World!"));
     }
 
 }

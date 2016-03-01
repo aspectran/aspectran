@@ -13,29 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.core.context;
+package com.aspectran.core.context.rule.ability;
+
+import com.aspectran.core.activity.process.ActionList;
 
 /**
- * The Class AspectranConstants.
- * 
- * <p>Created: 2008. 04. 01 PM 10:25:35</p>
+ * The Class ActionPossessSupport.
  */
-public interface AspectranConstants {
+public abstract class ActionPossessSupport implements ActionPossessable {
+	
+	private ActionList actionList;
+	
+	@Override
+	public ActionList getActionList() {
+		return actionList;
+	}
 
-	String TRANSLET_NAME_SEPARATOR = "/";
-	
-	char TRANSLET_NAME_SEPARATOR_CHAR = '/';
-
-	String TRANSLET_NAME_EXTENSION_SEPARATOR = ".";
-	
-	char TRANSLET_NAME_EXTENSION_SEPARATOR_CHAR = '.';
-	
-	String ID_SEPARATOR = ".";
-	
-	char ID_SEPARATOR_CHAR = '.';
-	
-	String LINE_SEPARATOR = "\n";
-
-	String DEFAULT_ENCODING = "UTF-8";
+	@Override
+	public void setActionList(ActionList actionList) {
+		this.actionList = actionList;
+	}
 
 }

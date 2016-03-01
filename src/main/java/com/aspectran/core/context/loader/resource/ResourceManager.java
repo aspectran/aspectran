@@ -15,14 +15,14 @@
  */
 package com.aspectran.core.context.loader.resource;
 
-import com.aspectran.core.context.loader.AspectranClassLoader;
-import com.aspectran.core.util.ResourceUtils;
-
 import java.net.URL;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.NoSuchElementException;
+
+import com.aspectran.core.context.loader.AspectranClassLoader;
+import com.aspectran.core.util.ResourceUtils;
 
 /**
  * The Class ResourceManager.
@@ -59,7 +59,7 @@ public class ResourceManager {
 						values = owners.next().getResourceManager().getResourceEntries().values().iterator();
 					}
 					
-					while(values.hasNext()) {
+					if(values.hasNext()) {
 						next = values.next();
 						return true;
 					}
@@ -68,13 +68,12 @@ public class ResourceManager {
 				}
 			}
 			
+			@Override
 			public synchronized boolean hasMoreElements() {
-				if(next != null)
-					return true;
-				
-				return hasNext();
+				return next != null || hasNext();
 			}
 
+			@Override
 			public synchronized URL nextElement() {
 				if(next == null) {
 					if(!hasNext())
@@ -112,7 +111,7 @@ public class ResourceManager {
 					next = owners.next().getResourceManager().getResource(filterName);
 				} while(next == null);
 				
-				return (next != null);
+				return true;
 			}
 			
 			@Override
@@ -124,12 +123,10 @@ public class ResourceManager {
 						nomore = true;
 				}
 
-				if(next == null)
-					return hasNext();
-				else
-					return true;
+				return next != null || hasNext();
 			}
 
+			@Override
 			public synchronized URL nextElement() {
 				if(!nomore) {
 					if(inherited != null && inherited.hasMoreElements())

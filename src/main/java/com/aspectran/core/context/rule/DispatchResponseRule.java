@@ -23,7 +23,7 @@ import com.aspectran.core.context.expr.TokenExpression;
 import com.aspectran.core.context.expr.TokenExpressor;
 import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.expr.token.Tokenizer;
-import com.aspectran.core.context.rule.ability.ActionPossessable;
+import com.aspectran.core.context.rule.ability.ActionPossessSupport;
 import com.aspectran.core.context.rule.ability.Replicable;
 import com.aspectran.core.context.rule.type.ResponseType;
 import com.aspectran.core.context.rule.type.TokenType;
@@ -35,7 +35,7 @@ import com.aspectran.core.util.ToStringBuilder;
  * 
  * <p>Created: 2008. 03. 22 PM 5:51:58</p>
  */
-public class DispatchResponseRule extends ActionPossessSupport implements ActionPossessable, Replicable<DispatchResponseRule> {
+public class DispatchResponseRule extends ActionPossessSupport implements Replicable<DispatchResponseRule> {
 	
 	public static final ResponseType RESPONSE_TYPE = ResponseType.DISPATCH;
 	
