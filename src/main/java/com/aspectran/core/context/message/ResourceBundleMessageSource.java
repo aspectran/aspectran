@@ -128,6 +128,6 @@ public class ResourceBundleMessageSource extends AbstractMessageSource {
                 return super.newBundle(baseName, locale, format, loader, reload);
             }
         }
-
     }
+
 }

@@ -167,7 +167,7 @@ public class AspectranClassLoader extends ClassLoader {
 			excludePackageNames = new HashSet<String>();
 		}
 
-		excludePackageNames.add(packageName + ClassUtils.PACKAGE_SEPARATOR);
+		excludePackageNames.add(packageName + ClassUtils.PACKAGE_SEPARATOR_CHAR);
 	}
 	
 	/**
@@ -520,19 +520,19 @@ public class AspectranClassLoader extends ClassLoader {
 	
 	public static String resourceNameToClassName(String resourceName) {
 		String className = resourceName.substring(0, resourceName.length() - ClassUtils.CLASS_FILE_SUFFIX.length());
-		className = className.replace(ResourceUtils.RESOURCE_NAME_SPEPARATOR_CHAR, ClassUtils.PACKAGE_SEPARATOR_CHAR);
+		className = className.replace(ResourceUtils.PATH_SPEPARATOR_CHAR, ClassUtils.PACKAGE_SEPARATOR_CHAR);
 		return className;
 	}
 	
 	public static String classNameToResourceName(String className) {
-		return className.replace(ClassUtils.PACKAGE_SEPARATOR_CHAR, ResourceUtils.RESOURCE_NAME_SPEPARATOR_CHAR) +
+		return className.replace(ClassUtils.PACKAGE_SEPARATOR_CHAR, ResourceUtils.PATH_SPEPARATOR_CHAR) +
 				ClassUtils.CLASS_FILE_SUFFIX;
 	}
 	
 	public static String packageNameToResourceName(String packageName) {
-		String resourceName = packageName.replace(ClassUtils.PACKAGE_SEPARATOR_CHAR, ResourceUtils.RESOURCE_NAME_SPEPARATOR_CHAR);
+		String resourceName = packageName.replace(ClassUtils.PACKAGE_SEPARATOR_CHAR, ResourceUtils.PATH_SPEPARATOR_CHAR);
 		
-		if(resourceName.endsWith(ResourceUtils.RESOURCE_NAME_SPEPARATOR))
+		if(resourceName.endsWith(ResourceUtils.PATH_SPEPARATOR))
 			resourceName = resourceName.substring(0, resourceName.length() - 1);
 		
 		return resourceName;

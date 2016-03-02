@@ -328,8 +328,8 @@ public abstract class AbstractAspectranService implements AspectranService {
 			if(resourceLocations[i].indexOf('\\') != -1)
 				resourceLocations[i] = resourceLocations[i].replace('\\', '/');
 			
-			if(resourceLocations[i].endsWith(ResourceUtils.RESOURCE_NAME_SPEPARATOR))
-				resourceLocations[i] = resourceLocations[i].substring(0, resourceLocations[i].length() - ResourceUtils.RESOURCE_NAME_SPEPARATOR.length());
+			if(resourceLocations[i].endsWith(ResourceUtils.PATH_SPEPARATOR))
+				resourceLocations[i] = resourceLocations[i].substring(0, resourceLocations[i].length() - ResourceUtils.PATH_SPEPARATOR.length());
 		}
 		
 		String resourceLocation = null;

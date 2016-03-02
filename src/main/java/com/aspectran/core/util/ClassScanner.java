@@ -16,7 +16,6 @@
 package com.aspectran.core.util;
 
 import java.io.File;
-import java.io.FileFilter;
 import java.io.IOException;
 import java.net.JarURLConnection;
 import java.net.URISyntaxException;
@@ -73,12 +72,9 @@ public class ClassScanner {
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public void scan(String classNamePattern, final Map<String, Class<?>> scannedClasses) throws IOException {
-		scan(classNamePattern, new SaveHandler() {
-				public void save(String resourceName, Class<?> scannedClass) {
-					scannedClasses.put(resourceName, scannedClass);
-				}
-			}
-		);
+		scan(classNamePattern, (resourceName, scannedClass) -> {
+            scannedClasses.put(resourceName, scannedClass);
+        });
 	}
 
 	/**
@@ -89,23 +85,26 @@ public class ClassScanner {
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public void scan(String classNamePattern, SaveHandler saveHandler) throws IOException {
-		classNamePattern = classNamePattern.replace(ClassUtils.PACKAGE_SEPARATOR_CHAR, ResourceUtils.RESOURCE_NAME_SPEPARATOR_CHAR);
+		if(classNamePattern == null)
+			throw new IllegalArgumentException("Class name pattern must not be null.");
+
+		classNamePattern = classNamePattern.replace(ClassUtils.PACKAGE_SEPARATOR_CHAR, ResourceUtils.PATH_SPEPARATOR_CHAR);
 
 		String basePackageName = determineBasePackageName(classNamePattern);
 
 		String subPattern;
-		if(classNamePattern.length() > basePackageName.length())
+		if(basePackageName != null && classNamePattern.length() > basePackageName.length())
 			subPattern = classNamePattern.substring(basePackageName.length());
 		else
 			subPattern = StringUtils.EMPTY;
 		
-		WildcardPattern pattern = WildcardPattern.compile(subPattern, ResourceUtils.RESOURCE_NAME_SPEPARATOR_CHAR);
+		WildcardPattern pattern = WildcardPattern.compile(subPattern, ResourceUtils.PATH_SPEPARATOR_CHAR);
 		WildcardMatcher matcher = new WildcardMatcher(pattern);
 		
 		Enumeration<URL> resources = classLoader.getResources(basePackageName);
 		
-		if(basePackageName != null && !basePackageName.endsWith(ResourceUtils.RESOURCE_NAME_SPEPARATOR))
-			basePackageName += ResourceUtils.RESOURCE_NAME_SPEPARATOR;
+		if(basePackageName != null && !basePackageName.endsWith(ResourceUtils.PATH_SPEPARATOR))
+			basePackageName += ResourceUtils.PATH_SPEPARATOR;
 		
 		while(resources.hasMoreElements()) {
 			URL resource = resources.nextElement();
@@ -135,42 +134,40 @@ public class ClassScanner {
 		if(!target.exists())
 			return;
 
-		target.listFiles(new FileFilter() {
-			public boolean accept(File file) {
-				String fileName = file.getName();
-				if(file.isDirectory()) {
-					String relativePackageName2;
-					if(relativePackageName == null)
-						relativePackageName2 = fileName + ResourceUtils.RESOURCE_NAME_SPEPARATOR;
-					else
-						relativePackageName2 = relativePackageName + fileName + ResourceUtils.RESOURCE_NAME_SPEPARATOR;
-							
-					String basePath2 = targetPath + fileName + ResourceUtils.RESOURCE_NAME_SPEPARATOR;
-					scan(basePath2, basePackageName, relativePackageName2, matcher, saveHandler);
-				} else if(fileName.endsWith(ClassUtils.CLASS_FILE_SUFFIX)) {
-					String className;
-					if(relativePackageName != null)
-						className = basePackageName + relativePackageName + fileName.substring(0, fileName.length() - ClassUtils.CLASS_FILE_SUFFIX.length());
-					else
-						className = basePackageName + fileName.substring(0, fileName.length() - ClassUtils.CLASS_FILE_SUFFIX.length());
-					String relativePath = className.substring(basePackageName.length(), className.length());
+		target.listFiles(file -> {
+            String fileName = file.getName();
+            if(file.isDirectory()) {
+                String relativePackageName2;
+                if(relativePackageName == null)
+                    relativePackageName2 = fileName + ResourceUtils.PATH_SPEPARATOR;
+                else
+                    relativePackageName2 = relativePackageName + fileName + ResourceUtils.PATH_SPEPARATOR;
 
-					if(matcher.matches(relativePath)) {
-						String resourceName = targetPath + fileName;
-						Class<?> classType = loadClass(className);
-						saveHandler.save(resourceName, classType);
-					}
-				}
-				return false;
-			}
-		});
+                String basePath2 = targetPath + fileName + ResourceUtils.PATH_SPEPARATOR;
+                scan(basePath2, basePackageName, relativePackageName2, matcher, saveHandler);
+            } else if(fileName.endsWith(ClassUtils.CLASS_FILE_SUFFIX)) {
+                String className;
+                if(relativePackageName != null)
+                    className = basePackageName + relativePackageName + fileName.substring(0, fileName.length() - ClassUtils.CLASS_FILE_SUFFIX.length());
+                else
+                    className = basePackageName + fileName.substring(0, fileName.length() - ClassUtils.CLASS_FILE_SUFFIX.length());
+                String relativePath = className.substring(basePackageName.length(), className.length());
+
+                if(matcher.matches(relativePath)) {
+                    String resourceName = targetPath + fileName;
+                    Class<?> classType = loadClass(className);
+                    saveHandler.save(resourceName, classType);
+                }
+            }
+            return false;
+        });
 	}
 
 	protected void scanFromJarResource(URL resource, WildcardMatcher matcher, SaveHandler saveHandler) throws IOException {
 		URLConnection conn = resource.openConnection();
-		JarFile jarFile = null;
-		String jarFileUrl = null;
-		String entryNamePrefix = null;
+		JarFile jarFile;
+		String jarFileUrl;
+		String entryNamePrefix;
 		boolean newJarFile = false;
 
 		if(conn instanceof JarURLConnection) {
@@ -202,10 +199,10 @@ public class ClassScanner {
 		
 		try {
 			//Looking for matching resources in jar file [" + jarFileUrl + "]"
-			if(!entryNamePrefix.endsWith(ResourceUtils.RESOURCE_NAME_SPEPARATOR)) {
+			if(!entryNamePrefix.endsWith(ResourceUtils.PATH_SPEPARATOR)) {
 				// Root entry path must end with slash to allow for proper matching.
 				// The Sun JRE does not return a slash here, but BEA JRockit does.
-				entryNamePrefix = entryNamePrefix + ResourceUtils.RESOURCE_NAME_SPEPARATOR;
+				entryNamePrefix = entryNamePrefix + ResourceUtils.PATH_SPEPARATOR;
 			}
 			
 			for(Enumeration<JarEntry> entries = jarFile.entries(); entries.hasMoreElements();) {
@@ -251,7 +248,7 @@ public class ClassScanner {
 	}
 
 	private String determineBasePackageName(String classNamePattern) {
-		WildcardPattern pattern = new WildcardPattern(classNamePattern, ResourceUtils.RESOURCE_NAME_SPEPARATOR_CHAR);
+		WildcardPattern pattern = new WildcardPattern(classNamePattern, ResourceUtils.PATH_SPEPARATOR_CHAR);
 		WildcardMatcher matcher = new WildcardMatcher(pattern);
 
 		boolean matched = matcher.matches(classNamePattern);
@@ -266,15 +263,15 @@ public class ClassScanner {
 			if(WildcardPattern.hasWildcards(str))
 				break;
 
-			sb.append(str).append(ResourceUtils.RESOURCE_NAME_SPEPARATOR_CHAR);
+			sb.append(str).append(ResourceUtils.PATH_SPEPARATOR_CHAR);
 		}
 		
 		return sb.toString();
 	}
 	
 	private Class<?> loadClass(String className) {
-		className = className.replace(ResourceUtils.RESOURCE_NAME_SPEPARATOR_CHAR, ClassUtils.PACKAGE_SEPARATOR_CHAR);
-		
+		className = className.replace(ResourceUtils.PATH_SPEPARATOR_CHAR, ClassUtils.PACKAGE_SEPARATOR_CHAR);
+
 		try {
 			return classLoader.loadClass(className);
 		} catch (ClassNotFoundException e) {
@@ -283,7 +280,7 @@ public class ClassScanner {
 	}
 
 	public interface SaveHandler {
-		public void save(String resourceName, Class<?> scannedClass);
+		void save(String resourceName, Class<?> scannedClass);
 	}
 
 }

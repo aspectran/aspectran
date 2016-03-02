@@ -78,7 +78,6 @@ public class Tokenizer {
 				}
 				
 				break;
-
 			case AT_SYMBOL:
 				stringBuffer.append(c);
 
@@ -88,6 +87,7 @@ public class Tokenizer {
 				}
 
 				status = AT_STRING;
+
 				break;
 
 			case AT_TOKEN_NAME:
@@ -287,7 +287,7 @@ public class Tokenizer {
 				tokens[0] = new Token(TokenType.TEXT, text);
 		}
 		
-		if(lastDefaultText != null) {
+		if(lastDefaultText != null && !lastDefaultText.isEmpty()) {
 			String text = trimTailingWhitespace(lastDefaultText);
 
 			if(!Objects.equals(lastDefaultText, text))
@@ -332,9 +332,6 @@ public class Tokenizer {
 	 * @return the string
 	 */
 	private static String trimTailingWhitespace(String string) {
-		if(string.length() == 0)
-			return string;
-
 		int end = 0;
 		char c;
 		

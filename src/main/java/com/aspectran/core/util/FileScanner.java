@@ -16,7 +16,6 @@
 package com.aspectran.core.util;
 
 import java.io.File;
-import java.io.FileFilter;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -50,15 +49,15 @@ public class FileScanner {
 	}
 
 	public void scan(String filePathPattern, final Map<String, File> scannedFiles) {
-		scan(filePathPattern, new SaveHandler() {
-			@Override
-			public void save(String filePath, File scannedFile) {
-				scannedFiles.put(filePath, scannedFile);
-			}
-		});
+		scan(filePathPattern, (filePath, scannedFile) -> {
+            scannedFiles.put(filePath, scannedFile);
+        });
 	}
 
 	public void scan(String filePathPattern, SaveHandler saveHandler) {
+		if(filePathPattern == null)
+			throw new IllegalArgumentException("File path pattern must not be null.");
+
 		WildcardPattern pattern = WildcardPattern.compile(filePathPattern, FILE_SEPARATOR);
 		WildcardMatcher matcher = new WildcardMatcher(pattern);
 		matcher.separate(filePathPattern);
@@ -92,12 +91,9 @@ public class FileScanner {
 	}
 	
 	public void scan(String basePath, String filePathPattern, final Map<String, File> scannedFiles) {
-		scan(basePath, filePathPattern, new SaveHandler() {
-			@Override
-			public void save(String filePath, File scannedFile) {
-				scannedFiles.put(filePath, scannedFile);
-			}
-		});
+		scan(basePath, filePathPattern, (filePath, scannedFile) -> {
+            scannedFiles.put(filePath, scannedFile);
+        });
 	}
 
 	public void scan(String basePath, String filePathPattern, SaveHandler saveHandler) {
@@ -119,25 +115,22 @@ public class FileScanner {
 		if(!target.exists())
 			return;
 
-		target.listFiles(new FileFilter() {
-			public boolean accept(File file) {
-				String filePath = targetPath + FILE_SEPARATOR + file.getName();
+		target.listFiles(file -> {
+            String filePath = targetPath + FILE_SEPARATOR + file.getName();
 
-				if(file.isDirectory()) {
-					scan(filePath, matcher, saveHandler);
-				} else {
-					if(matcher.matches(filePath)) {
-						saveHandler.save(filePath, file);
-					}
-				}
-				return false;
-			}
-		});
+            if(file.isDirectory()) {
+                scan(filePath, matcher, saveHandler);
+            } else {
+                if(matcher.matches(filePath)) {
+                    saveHandler.save(filePath, file);
+                }
+            }
+            return false;
+        });
 	}
 	
 	public interface SaveHandler {
-		public void save(String filePath, File scannedFile);
+		void save(String filePath, File scannedFile);
 	}
-
 
 }

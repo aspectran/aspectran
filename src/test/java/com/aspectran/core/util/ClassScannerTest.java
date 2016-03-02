@@ -56,7 +56,7 @@ public class ClassScannerTest {
 	
 	public void scanClasses(String classNamePattern, Map<String, Class<?>> scannedClasses) {
 		try {
-			classNamePattern = classNamePattern.replace(ClassUtils.PACKAGE_SEPARATOR_CHAR, ResourceUtils.RESOURCE_NAME_SPEPARATOR_CHAR);
+			classNamePattern = classNamePattern.replace(ClassUtils.PACKAGE_SEPARATOR_CHAR, ResourceUtils.PATH_SPEPARATOR_CHAR);
 			//System.out.println("classNamePattern: " + classNamePattern);
 	
 			String basePackageName = determineBasePackageName(classNamePattern);
@@ -71,13 +71,13 @@ public class ClassScannerTest {
 			
 			//System.out.println("subPattern: " + subPattern);
 	
-			WildcardPattern pattern = WildcardPattern.compile(subPattern, ResourceUtils.RESOURCE_NAME_SPEPARATOR_CHAR);
+			WildcardPattern pattern = WildcardPattern.compile(subPattern, ResourceUtils.PATH_SPEPARATOR_CHAR);
 			WildcardMatcher matcher = new WildcardMatcher(pattern);
 			
 			Enumeration<URL> resources = classLoader.getResources(basePackageName);
 			
-			if(basePackageName != null && !basePackageName.endsWith(ResourceUtils.RESOURCE_NAME_SPEPARATOR))
-				basePackageName += ResourceUtils.RESOURCE_NAME_SPEPARATOR;
+			if(basePackageName != null && !basePackageName.endsWith(ResourceUtils.PATH_SPEPARATOR))
+				basePackageName += ResourceUtils.PATH_SPEPARATOR;
 			
 			while(resources.hasMoreElements()) {
 				URL resource = resources.nextElement();
@@ -118,11 +118,11 @@ public class ClassScannerTest {
 				if(file.isDirectory()) {
 					String relativePackageName2;
 					if(relativePackageName == null)
-						relativePackageName2 = file.getName() + ResourceUtils.RESOURCE_NAME_SPEPARATOR;
+						relativePackageName2 = file.getName() + ResourceUtils.PATH_SPEPARATOR;
 					else
-						relativePackageName2 = relativePackageName + file.getName() + ResourceUtils.RESOURCE_NAME_SPEPARATOR;
+						relativePackageName2 = relativePackageName + file.getName() + ResourceUtils.PATH_SPEPARATOR;
 							
-					String basePath2 = targetPath + file.getName() + ResourceUtils.RESOURCE_NAME_SPEPARATOR;
+					String basePath2 = targetPath + file.getName() + ResourceUtils.PATH_SPEPARATOR;
 					//System.out.println("-relativePackageName2: " + relativePackageName2);
 					scanClasses(basePath2, basePackageName, relativePackageName2, matcher, scannedClasses);
 				} else if(file.getName().endsWith(ClassUtils.CLASS_FILE_SUFFIX)) {
@@ -186,10 +186,10 @@ public class ClassScannerTest {
 		
 		try {
 			//Looking for matching resources in jar file [" + jarFileUrl + "]"
-			if(!entryNamePrefix.endsWith(ResourceUtils.RESOURCE_NAME_SPEPARATOR)) {
+			if(!entryNamePrefix.endsWith(ResourceUtils.PATH_SPEPARATOR)) {
 				// Root entry path must end with slash to allow for proper matching.
 				// The Sun JRE does not return a slash here, but BEA JRockit does.
-				entryNamePrefix = entryNamePrefix + ResourceUtils.RESOURCE_NAME_SPEPARATOR;
+				entryNamePrefix = entryNamePrefix + ResourceUtils.PATH_SPEPARATOR;
 			}
 			
 			for(Enumeration<JarEntry> entries = jarFile.entries(); entries.hasMoreElements();) {
@@ -244,7 +244,7 @@ public class ClassScannerTest {
 	}
 
 	private String determineBasePackageName(String classNamePattern) {
-		WildcardPattern pattern = new WildcardPattern(classNamePattern, ResourceUtils.RESOURCE_NAME_SPEPARATOR_CHAR);
+		WildcardPattern pattern = new WildcardPattern(classNamePattern, ResourceUtils.PATH_SPEPARATOR_CHAR);
 		WildcardMatcher matcher = new WildcardMatcher(pattern);
 
 		boolean matched = matcher.matches(classNamePattern);
@@ -260,18 +260,18 @@ public class ClassScannerTest {
 			if(WildcardPattern.hasWildcards(str))
 				break;
 
-			sb.append(str).append(ResourceUtils.RESOURCE_NAME_SPEPARATOR_CHAR);
+			sb.append(str).append(ResourceUtils.PATH_SPEPARATOR_CHAR);
 		}
 
 		return sb.toString();
 	}
 
 	private String composeBeanId(String relativePath) {
-		return relativePath.replace(ResourceUtils.RESOURCE_NAME_SPEPARATOR_CHAR, ClassUtils.PACKAGE_SEPARATOR_CHAR);
+		return relativePath.replace(ResourceUtils.PATH_SPEPARATOR_CHAR, ClassUtils.PACKAGE_SEPARATOR_CHAR);
 	}
 	
 	private Class<?> loadClass(String className) {
-		className = className.replace(ResourceUtils.RESOURCE_NAME_SPEPARATOR_CHAR, ClassUtils.PACKAGE_SEPARATOR_CHAR);
+		className = className.replace(ResourceUtils.PATH_SPEPARATOR_CHAR, ClassUtils.PACKAGE_SEPARATOR_CHAR);
 		
 		try {
 			return classLoader.loadClass(className);

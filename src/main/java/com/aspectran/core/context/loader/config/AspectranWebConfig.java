@@ -29,7 +29,8 @@ public class AspectranWebConfig extends AbstractParameters implements Parameters
 	static {
 		uriDecoding = new ParameterDefine("uriDecoding", ParameterValueType.STRING);
 
-		parameterDefines = new ParameterDefine[] {uriDecoding
+		parameterDefines = new ParameterDefine[] {
+				uriDecoding
 		};
 	}
 

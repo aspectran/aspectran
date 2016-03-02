@@ -621,8 +621,8 @@ public class MethodUtils {
 		Class<?>[] methodsParams = method.getParameterTypes();
 		if(hasPrimitiveArray(methodsParams)) {
 			for(int i = 0; i < methodsParams.length; i++) {
-				if(ReflectionUtils.isPrimitiveArray(methodsParams[i])) {
-					if(ReflectionUtils.isPrimitiveWrapperArray(paramTypes[i])) {
+				if(ClassUtils.isPrimitiveArray(methodsParams[i])) {
+					if(ClassUtils.isPrimitiveWrapperArray(paramTypes[i])) {
 						args[i] = ReflectionUtils.toPrimitiveArray(args[i]);
 					}
 				}
@@ -634,7 +634,7 @@ public class MethodUtils {
 
 	private static boolean hasPrimitiveArray(Class<?>[] paramTypes) {
 		for(int i = 0; i < paramTypes.length; i++) {
-			if(ReflectionUtils.isPrimitiveArray(paramTypes[i]))
+			if(ClassUtils.isPrimitiveArray(paramTypes[i]))
 				return true;
 		}
 
@@ -910,7 +910,7 @@ public class MethodUtils {
 				if(methodParamSize == paramSize) {
 					boolean paramMatch = true;
 					for(int n = 0; n < methodParamSize; n++) {
-						if(!ReflectionUtils.isAssignable(methodsParams[n], paramTypes[n])) {
+						if(!ClassUtils.isAssignable(methodsParams[n], paramTypes[n])) {
 							paramMatch = false;
 							break;
 						}

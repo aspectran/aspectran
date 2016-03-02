@@ -40,7 +40,7 @@ public class MethodUtilsTest {
     public void isAssignable() {
         Class<?> paramTypes1 = Integer[].class;
         Class<?> paramTypes2 = int[].class;
-        boolean result = ReflectionUtils.isAssignable(paramTypes1, paramTypes2);
+        boolean result = ClassUtils.isAssignable(paramTypes1, paramTypes2);
         assertTrue(result);
     }
 

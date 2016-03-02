@@ -25,8 +25,8 @@ import com.aspectran.core.context.rule.TransletRule;
  */
 public interface AnnotatedConfigRelater {
 
-    public void relay(Class<?> targetBeanClass, BeanRule beanRule);
+    void relay(Class<?> targetBeanClass, BeanRule beanRule);
 
-    public void relay(TransletRule transletRule);
+    void relay(TransletRule transletRule);
 
 }
