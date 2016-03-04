@@ -185,6 +185,7 @@ public class AspectAdviceRulePreRegister {
 		}
 	}
 
+	@SuppressWarnings("unused")
 	private void countMatchedTranslet(Pointcut pointcut, String transletName) {
 		List<PointcutPatternRule> pointcutPatternRuleList = pointcut.getPointcutPatternRuleList();
 		
