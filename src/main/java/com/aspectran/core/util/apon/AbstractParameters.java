@@ -548,7 +548,7 @@ public abstract class AbstractParameters implements Parameters {
 	@Override
 	@SuppressWarnings("unchecked")
 	public <T extends Parameters> T touchParameters(String name) {
-		Parameters parameters = (T)getParameters(name);
+		Parameters parameters = getParameters(name);
 		if(parameters == null) {
 			parameters = newParameters(name);
 		}

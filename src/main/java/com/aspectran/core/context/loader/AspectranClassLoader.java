@@ -34,6 +34,7 @@ import com.aspectran.core.context.loader.resource.LocalResourceManager;
 import com.aspectran.core.context.loader.resource.ResourceManager;
 import com.aspectran.core.util.ClassUtils;
 import com.aspectran.core.util.ResourceUtils;
+import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.ToStringBuilder;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
@@ -532,7 +533,7 @@ public class AspectranClassLoader extends ClassLoader {
 	public static String packageNameToResourceName(String packageName) {
 		String resourceName = packageName.replace(ClassUtils.PACKAGE_SEPARATOR_CHAR, ResourceUtils.PATH_SPEPARATOR_CHAR);
 		
-		if(resourceName.endsWith(ResourceUtils.PATH_SPEPARATOR))
+		if(StringUtils.endsWith(resourceName, ResourceUtils.PATH_SPEPARATOR_CHAR))
 			resourceName = resourceName.substring(0, resourceName.length() - 1);
 		
 		return resourceName;

@@ -511,7 +511,7 @@ public class FileUtils {
 	 * @return true, if is valid file extention
 	 */
 	public static boolean isValidFileExtension(String fileName, String allowedFileExtensions, String deniedFileExtensions) {
-		String ext = FileUtils.getFileExtension(fileName);
+		String ext = getFileExtension(fileName);
 		
 		if(allowedFileExtensions != null && allowedFileExtensions.length() > 0) {
 			if(ext.length() == 0)

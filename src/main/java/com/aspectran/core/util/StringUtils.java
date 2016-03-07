@@ -213,28 +213,12 @@ public class StringUtils {
 		return (string.charAt(0) == prefix);
 	}
 	
-	public static boolean endsWith(String string, char tail) {
+	public static boolean endsWith(String string, char suffix) {
 		if(string == null || string.isEmpty())
 			return false;
-		return (string.charAt(string.length() - 1) == tail);
+		return (string.charAt(string.length() - 1) == suffix);
 	}
-	
-	public static String prefixIfAbsence(String string, char prefix) {
-		if(string == null || string.isEmpty())
-			return String.valueOf(prefix);
-		if(string.charAt(0) != prefix)
-			return string + prefix;
-		return string;
-	}
-	
-	public static String suffixIfAbsence(String string, char sufix) {
-		if(string == null || string.isEmpty())
-			return String.valueOf(sufix);
-		if(string.charAt(string.length() - 1) != sufix)
-			return string + sufix;
-		return string;
-	}
-	
+
 	/**
 	 * 발견한 모든 검색 문자열을 치환 문자열로 교체한다.
 	 * 

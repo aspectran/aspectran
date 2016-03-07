@@ -482,7 +482,8 @@ public class JsonSerializer implements Flushable {
 		try {
 			Writer writer = new StringWriter();
 			
-			JsonSerializer serializer = new JsonSerializer(writer, prettyPrint, indentString);
+			JsonSerializer serializer;
+			serializer = new JsonSerializer(writer, prettyPrint, indentString);
 			serializer.write(object);
 			serializer.close();
 			

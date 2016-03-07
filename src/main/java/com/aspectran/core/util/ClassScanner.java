@@ -103,8 +103,8 @@ public class ClassScanner {
 		
 		Enumeration<URL> resources = classLoader.getResources(basePackageName);
 		
-		if(basePackageName != null && !basePackageName.endsWith(ResourceUtils.PATH_SPEPARATOR))
-			basePackageName += ResourceUtils.PATH_SPEPARATOR;
+		if(basePackageName != null && !StringUtils.endsWith(basePackageName, ResourceUtils.PATH_SPEPARATOR_CHAR))
+			basePackageName += ResourceUtils.PATH_SPEPARATOR_CHAR;
 		
 		while(resources.hasMoreElements()) {
 			URL resource = resources.nextElement();

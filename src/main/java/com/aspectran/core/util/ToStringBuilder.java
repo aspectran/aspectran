@@ -56,7 +56,7 @@ public class ToStringBuilder {
 	public void append(String name, boolean value) {
 		if(value) {
 			appendName(name);
-			this.sb.append(Boolean.toString(value));
+			this.sb.append(Boolean.toString(true));
 		}
 	}
 	
@@ -114,7 +114,7 @@ public class ToStringBuilder {
 		if(list != null) {
 			this.sb.append("[");
 			int len = this.sb.length();
-			for(Object o : ((Collection<?>)list)) {
+			for(Object o : list) {
 				if(this.sb.length() > len)
 					addpendComma();
 				append(o);
@@ -135,7 +135,7 @@ public class ToStringBuilder {
 	
 	private void append(Object object) {
 		if(object == null) {
-			this.sb.append(object);
+			this.sb.append((Object)null);
 		} else if(object instanceof Map<?, ?>) {
 			append((Map<?, ?>)object);
 		} else if(object instanceof Collection<?>) {

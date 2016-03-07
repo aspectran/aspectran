@@ -315,7 +315,7 @@ public class AponDeserializer extends AponFormat {
 			}
 		}
 
-		throw new InvalidParameterException(lineNumber, line, trim, "The end of the text line was reached with no closing round bracket found.");
+		throw new InvalidParameterException(lineNumber, "", trim, "The end of the text line was reached with no closing round bracket found.");
 	}
 	
 	private String unescape(String value, int lineNumber, String line, String trim) {

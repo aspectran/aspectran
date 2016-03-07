@@ -23,6 +23,7 @@ import java.util.NoSuchElementException;
 
 import com.aspectran.core.context.loader.AspectranClassLoader;
 import com.aspectran.core.util.ResourceUtils;
+import com.aspectran.core.util.StringUtils;
 
 /**
  * The Class ResourceManager.
@@ -93,7 +94,7 @@ public class ResourceManager {
 	}
 	
 	public static Enumeration<URL> getResources(final Iterator<AspectranClassLoader> owners, String name, final Enumeration<URL> inherited) {
-		if(name.endsWith(ResourceUtils.PATH_SPEPARATOR))
+		if(StringUtils.endsWith(name, ResourceUtils.PATH_SPEPARATOR_CHAR))
 			name = name.substring(0, name.length() - 1);
 		
 		final String filterName = name;
@@ -151,7 +152,7 @@ public class ResourceManager {
 	}
 
 	public static Enumeration<URL> searchResources(final Iterator<AspectranClassLoader> owners, String name, final Enumeration<URL> inherited) {
-		if(name.endsWith(ResourceUtils.PATH_SPEPARATOR))
+		if(StringUtils.endsWith(name, ResourceUtils.PATH_SPEPARATOR_CHAR))
 			name = name.substring(0, name.length() - 1);
 
 		final String filterName = name;

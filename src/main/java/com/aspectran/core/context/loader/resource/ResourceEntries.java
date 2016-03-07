@@ -22,6 +22,7 @@ import java.util.LinkedHashMap;
 import java.util.jar.JarEntry;
 
 import com.aspectran.core.util.ResourceUtils;
+import com.aspectran.core.util.StringUtils;
 
 
 /**
@@ -67,7 +68,7 @@ public class ResourceEntries extends LinkedHashMap<String, URL> {
 		if(resourceName.indexOf('\\') != -1)
 			resourceName = resourceName.replace('\\', ResourceUtils.PATH_SPEPARATOR_CHAR);
 		
-		if(resourceName.endsWith(ResourceUtils.PATH_SPEPARATOR))
+		if(StringUtils.endsWith(resourceName, ResourceUtils.PATH_SPEPARATOR_CHAR))
 			resourceName = resourceName.substring(0, resourceName.length() - 1);
 		
 		return super.put(resourceName, url);

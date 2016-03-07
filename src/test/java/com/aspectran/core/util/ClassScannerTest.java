@@ -96,12 +96,15 @@ public class ClassScannerTest {
 			throw new BeanClassScanFailedException("bean-class scanning failed.", e);
 		}
 	}
-	
+
 	/**
 	 * Recursive method used to find all classes in a given directory and subdirs.
 	 *
-	 * @param directory   The base directory
-	 * @param packageName The package name for classes found inside the base directory
+	 * @param targetPath the target path
+	 * @param basePackageName the base package name
+	 * @param relativePackageName the relative package name
+	 * @param matcher the matcher
+	 * @param scannedClasses the scanned classes
 	 * @return The classes
 	 * @throws ClassNotFoundException
 	 */

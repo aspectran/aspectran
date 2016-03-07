@@ -23,7 +23,7 @@ package com.aspectran.core.context;
 public interface AspectranConstants {
 
 	String TRANSLET_NAME_SEPARATOR = "/";
-	
+
 	char TRANSLET_NAME_SEPARATOR_CHAR = '/';
 
 	String ID_SEPARATOR = ".";

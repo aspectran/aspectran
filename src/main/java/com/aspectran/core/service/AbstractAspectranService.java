@@ -32,6 +32,7 @@ import com.aspectran.core.context.loader.config.AspectranSchedulerConfig;
 import com.aspectran.core.context.loader.reload.ActivityContextReloadingTimer;
 import com.aspectran.core.context.loader.resource.InvalidResourceException;
 import com.aspectran.core.util.ResourceUtils;
+import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.apon.Parameters;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
@@ -328,8 +329,8 @@ public abstract class AbstractAspectranService implements AspectranService {
 			if(resourceLocations[i].indexOf('\\') != -1)
 				resourceLocations[i] = resourceLocations[i].replace('\\', '/');
 			
-			if(resourceLocations[i].endsWith(ResourceUtils.PATH_SPEPARATOR))
-				resourceLocations[i] = resourceLocations[i].substring(0, resourceLocations[i].length() - ResourceUtils.PATH_SPEPARATOR.length());
+			if(StringUtils.endsWith(resourceLocations[i], ResourceUtils.PATH_SPEPARATOR_CHAR))
+				resourceLocations[i] = resourceLocations[i].substring(0, resourceLocations[i].length() - 1);
 		}
 		
 		String resourceLocation = null;

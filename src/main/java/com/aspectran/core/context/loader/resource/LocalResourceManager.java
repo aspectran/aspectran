@@ -52,7 +52,7 @@ public class LocalResourceManager extends ResourceManager {
 			
 			if(!file.isDirectory() &&
 					(file.isFile() && !resourceLocation.endsWith(ResourceUtils.JAR_FILE_SUFFIX))) {
-				throw new InvalidResourceException("invalid resource directory or jar file: " + file.getAbsolutePath());
+				throw new InvalidResourceException("Invalid resource directory or jar file: " + file.getAbsolutePath());
 			}
 
 			findResource(file);
@@ -86,7 +86,7 @@ public class LocalResourceManager extends ResourceManager {
 				findResourceFromJAR(file);
 			}
 		} catch(Exception e) {
-			throw new InvalidResourceException("faild to find resource from [" + resourceLocation + "]", e);
+			throw new InvalidResourceException("Faild to find resource from [" + resourceLocation + "]", e);
 		}
 	}
 	
