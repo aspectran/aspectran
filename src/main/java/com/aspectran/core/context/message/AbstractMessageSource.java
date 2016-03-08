@@ -15,38 +15,21 @@
  */
 package com.aspectran.core.context.message;
 
-import com.aspectran.core.context.bean.aware.ClassLoaderAware;
-
 /**
  * <p>Created: 2016. 2. 8.</p>
  */
-public class AbstractMessageSource implements ClassLoaderAware {
+public class AbstractMessageSource implements HierarchicalMessageSource {
 
-    private final String defaultEncoding;
+    private MessageSource parentMessageSource;
 
-    private ClassLoader classLoader;
-
-    /**
-     * Instantiates a new Resource bundle message source.
-     *
-     * @param classLoader the <code>ClassLoader</code> to use to load the bundle
-     * @param defaultEncoding the default charset
-     */
-    public AbstractMessageSource(String defaultEncoding) {
-        this.defaultEncoding = defaultEncoding;
-    }
-
-    public ClassLoader getClassLoader() {
-        return classLoader;
-    }
-    
     @Override
-    public void setClassLoader(ClassLoader classLoader) {
-		this.classLoader = classLoader;
-	}
+    public void setParentMessageSource(MessageSource parent) {
+        this.parentMessageSource = parent;
+    }
 
-	public String getDefaultEncoding() {
-        return defaultEncoding;
+    @Override
+    public MessageSource getParentMessageSource() {
+        return this.parentMessageSource;
     }
 
 }

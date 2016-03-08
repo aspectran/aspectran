@@ -29,18 +29,36 @@ import java.util.MissingResourceException;
 import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
 
+import com.aspectran.core.context.bean.aware.ClassLoaderAware;
+import com.aspectran.core.context.loader.AspectranClassLoader;
+
 /**
  * <p>Created: 2016. 2. 8.</p>
  */
-public class ResourceBundleMessageSource extends AbstractMessageSource {
+public class ResourceBundleMessageSource extends AbstractMessageSource implements ClassLoaderAware {
 
-    /**
-     * Instantiates a new Resource bundle message source.
-     *
-     * @param defaultEncoding the default charset
-     */
-    public ResourceBundleMessageSource(String defaultEncoding) {
-        super(defaultEncoding);
+    private String defaultEncoding = "ISO-8859-1";
+
+    private ClassLoader classLoader;
+
+    public String getDefaultEncoding() {
+        return defaultEncoding;
+    }
+
+    public void setDefaultEncoding(String defaultEncoding) {
+        this.defaultEncoding = defaultEncoding;
+    }
+
+    public ClassLoader getClassLoader() {
+        if(classLoader == null) {
+            return AspectranClassLoader.getDefaultClassLoader();
+        }
+        return classLoader;
+    }
+
+    @Override
+    public void setClassLoader(ClassLoader classLoader) {
+        this.classLoader = classLoader;
     }
 
     /**
@@ -110,12 +128,8 @@ public class ResourceBundleMessageSource extends AbstractMessageSource {
                     throw (IOException) ex.getException();
                 }
                 if(stream != null) {
-                    String encoding = getDefaultEncoding();
-                    if(encoding == null) {
-                        encoding = "ISO-8859-1";
-                    }
                     try {
-                        return loadBundle(new InputStreamReader(stream, encoding));
+                        return loadBundle(new InputStreamReader(stream, defaultEncoding));
                     } finally {
                         stream.close();
                     }

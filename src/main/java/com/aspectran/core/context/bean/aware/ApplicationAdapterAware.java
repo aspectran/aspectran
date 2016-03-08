@@ -24,7 +24,7 @@ import com.aspectran.core.adapter.ApplicationAdapter;
  *
  * @since 2.0.0
  */
-public abstract interface ApplicationAdapterAware extends Aware {
+public interface ApplicationAdapterAware extends Aware {
 
 	void setApplicationAdapter(ApplicationAdapter applicationAdapter);
 

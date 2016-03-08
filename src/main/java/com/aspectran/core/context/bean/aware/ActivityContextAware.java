@@ -24,7 +24,7 @@ import com.aspectran.core.context.ActivityContext;
  *
  * @since 2.0.0
  */
-public abstract interface ActivityContextAware extends Aware {
+public interface ActivityContextAware extends Aware {
 
 	void setActivityContext(ActivityContext context);
 

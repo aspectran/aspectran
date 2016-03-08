@@ -72,7 +72,7 @@ public abstract class Assert {
 
 	public static void doesNotContain(String textToSearch, String substring, String message) {
 		if(StringUtils.hasLength(textToSearch) && StringUtils.hasLength(substring)
-				&& textToSearch.indexOf(substring) != -1) {
+				&& textToSearch.contains(substring)) {
 			throw new IllegalArgumentException(message);
 		}
 	}
@@ -94,8 +94,8 @@ public abstract class Assert {
 
 	public static void noNullElements(Object[] array, String message) {
 		if(array != null) {
-			for(int i = 0; i < array.length; i++) {
-				if(array[i] == null) {
+			for(Object obj : array) {
+				if(obj == null) {
 					throw new IllegalArgumentException(message);
 				}
 			}

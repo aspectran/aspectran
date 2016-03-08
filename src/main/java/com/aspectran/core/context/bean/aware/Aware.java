@@ -22,6 +22,6 @@ package com.aspectran.core.context.bean.aware;
  *
  * @since 2.0.0
  */
-public abstract interface Aware {
+public interface Aware {
 
 }
