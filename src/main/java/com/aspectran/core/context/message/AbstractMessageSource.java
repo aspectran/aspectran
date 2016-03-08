@@ -15,14 +15,16 @@
  */
 package com.aspectran.core.context.message;
 
+import com.aspectran.core.context.bean.aware.ClassLoaderAware;
+
 /**
  * <p>Created: 2016. 2. 8.</p>
  */
-public class AbstractMessageSource {
-
-    private final ClassLoader classLoader;
+public class AbstractMessageSource implements ClassLoaderAware {
 
     private final String defaultEncoding;
+
+    private ClassLoader classLoader;
 
     /**
      * Instantiates a new Resource bundle message source.
@@ -30,16 +32,20 @@ public class AbstractMessageSource {
      * @param classLoader the <code>ClassLoader</code> to use to load the bundle
      * @param defaultEncoding the default charset
      */
-    public AbstractMessageSource(ClassLoader classLoader, String defaultEncoding) {
-        this.classLoader = classLoader;
+    public AbstractMessageSource(String defaultEncoding) {
         this.defaultEncoding = defaultEncoding;
     }
 
     public ClassLoader getClassLoader() {
         return classLoader;
     }
+    
+    @Override
+    public void setClassLoader(ClassLoader classLoader) {
+		this.classLoader = classLoader;
+	}
 
-    public String getDefaultEncoding() {
+	public String getDefaultEncoding() {
         return defaultEncoding;
     }
 

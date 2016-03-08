@@ -37,11 +37,10 @@ public class ResourceBundleMessageSource extends AbstractMessageSource {
     /**
      * Instantiates a new Resource bundle message source.
      *
-     * @param classLoader the <code>ClassLoader</code> to use to load the bundle
      * @param defaultEncoding the default charset
      */
-    public ResourceBundleMessageSource(ClassLoader classLoader, String defaultEncoding) {
-        super(classLoader, defaultEncoding);
+    public ResourceBundleMessageSource(String defaultEncoding) {
+        super(defaultEncoding);
     }
 
     /**
