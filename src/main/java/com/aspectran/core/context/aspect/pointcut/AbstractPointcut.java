@@ -17,7 +17,7 @@ package com.aspectran.core.context.aspect.pointcut;
 
 import java.util.List;
 
-import com.aspectran.core.context.AspectranConstants;
+import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.rule.PointcutPatternRule;
 
 /**
@@ -147,15 +147,15 @@ public abstract class AbstractPointcut implements Pointcut {
 		boolean matched = true;
 		
 		if(transletName != null && pointcutPatternRule.getTransletNamePattern() != null) {
-			matched = patternMatches(pointcutPatternRule.getTransletNamePattern(), transletName, AspectranConstants.TRANSLET_NAME_SEPARATOR_CHAR);
+			matched = patternMatches(pointcutPatternRule.getTransletNamePattern(), transletName, ActivityContext.TRANSLET_NAME_SEPARATOR_CHAR);
 		}
 		
 		if(matched && beanId != null && pointcutPatternRule.getBeanIdPattern() != null) {
-			matched = patternMatches(pointcutPatternRule.getBeanIdPattern(), beanId, AspectranConstants.ID_SEPARATOR_CHAR);
+			matched = patternMatches(pointcutPatternRule.getBeanIdPattern(), beanId, ActivityContext.ID_SEPARATOR_CHAR);
 		}
 		
 		if(matched && className != null && pointcutPatternRule.getClassNamePattern() != null) {
-			matched = patternMatches(pointcutPatternRule.getClassNamePattern(), className, AspectranConstants.ID_SEPARATOR_CHAR);
+			matched = patternMatches(pointcutPatternRule.getClassNamePattern(), className, ActivityContext.ID_SEPARATOR_CHAR);
 		}
 
 		if(matched && methodName != null && pointcutPatternRule.getMethodNamePattern() != null) {

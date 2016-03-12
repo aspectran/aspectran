@@ -24,7 +24,7 @@ import com.aspectran.core.activity.process.result.ContentResult;
 import com.aspectran.core.activity.process.result.ProcessResult;
 import com.aspectran.core.activity.response.Response;
 import com.aspectran.core.adapter.ResponseAdapter;
-import com.aspectran.core.context.AspectranConstants;
+import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.rule.TemplateRule;
 import com.aspectran.core.context.rule.TransformRule;
 import com.aspectran.core.util.logging.Log;
@@ -100,7 +100,7 @@ public class TextTransform extends TransformResponse implements Response {
 							Object resultValue = actionResult.getResultValue();
 							if(resultValue != null) {
 								if(chunks++ > 0)
-									writer.write(AspectranConstants.LINE_SEPARATOR);
+									writer.write(ActivityContext.LINE_SEPARATOR);
 								writer.write(resultValue.toString());
 							}
 						}

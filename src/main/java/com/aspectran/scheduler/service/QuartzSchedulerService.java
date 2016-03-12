@@ -34,7 +34,6 @@ import org.quartz.TriggerBuilder;
 import org.quartz.impl.matchers.GroupMatcher;
 
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.context.AspectranConstants;
 import com.aspectran.core.context.builder.apon.params.CronTriggerParameters;
 import com.aspectran.core.context.builder.apon.params.SimpleTriggerParameters;
 import com.aspectran.core.context.rule.AspectJobAdviceRule;
@@ -278,7 +277,7 @@ public class QuartzSchedulerService implements SchedulerService {
 		if(aspectJobAdviceRule.isDisabled())
 			return null;
 		
-		String jobName = index + (AspectranConstants.TRANSLET_NAME_SEPARATOR_CHAR + aspectJobAdviceRule.getJobTransletName());
+		String jobName = index + (ActivityContext.TRANSLET_NAME_SEPARATOR_CHAR + aspectJobAdviceRule.getJobTransletName());
 		String jobGroup = aspectJobAdviceRule.getAspectId();
 		
 		JobDataMap jobDataMap = new JobDataMap();

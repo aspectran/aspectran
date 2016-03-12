@@ -19,6 +19,7 @@ import java.util.List;
 
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.ActivityContext;
+import com.aspectran.core.context.AspectranActivityContext;
 import com.aspectran.core.context.aspect.AspectAdviceRulePostRegister;
 import com.aspectran.core.context.aspect.AspectAdviceRulePreRegister;
 import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
@@ -28,8 +29,8 @@ import com.aspectran.core.context.aspect.pointcut.Pointcut;
 import com.aspectran.core.context.aspect.pointcut.PointcutFactory;
 import com.aspectran.core.context.bean.BeanRuleRegistry;
 import com.aspectran.core.context.bean.ContextBeanRegistry;
-import com.aspectran.core.context.builder.importer.Importer;
 import com.aspectran.core.context.builder.importer.FileImporter;
+import com.aspectran.core.context.builder.importer.Importer;
 import com.aspectran.core.context.builder.importer.ResourceImporter;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.PointcutPatternRule;
@@ -92,14 +93,12 @@ public abstract class AbstractActivityContextBuilder extends ContextBuilderAssis
 		BeanDescriptor.clearCache();
 		MethodUtils.clearCache();
 
-		ActivityContext context = new ActivityContext(applicationAdapter);
+		AspectranActivityContext context = new AspectranActivityContext(applicationAdapter);
 		context.setAspectRuleRegistry(aspectRuleRegistry);
 		context.setContextBeanRegistry(contextBeanRegistry);
 		context.setTransletRuleRegistry(transletRuleRegistry);
 		context.setTemplateProcessor(templateProcessor);
-
-		contextBeanRegistry.initialize(context);
-		templateProcessor.initialize(context);
+		context.initialize();
 
 		return context;
 	}
@@ -202,7 +201,7 @@ public abstract class AbstractActivityContextBuilder extends ContextBuilderAssis
 		if(sessionScopeAspectAdviceRuleRegistry != null)
 			aspectRuleRegistry.setSessionAspectAdviceRuleRegistry(sessionScopeAspectAdviceRuleRegistry);
 	}
-	
+
 	protected Importer resolveImporter(String rootContext) {
 		ImportFileType importFileType = rootContext.toLowerCase().endsWith(".apon") ? ImportFileType.APON : ImportFileType.XML;
 		return resolveImporter(rootContext, importFileType);

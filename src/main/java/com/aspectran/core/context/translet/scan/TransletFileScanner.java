@@ -19,7 +19,7 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.aspectran.core.context.AspectranConstants;
+import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.builder.apon.params.FilterParameters;
 import com.aspectran.core.util.ClassUtils;
 import com.aspectran.core.util.FileScanner;
@@ -90,7 +90,7 @@ public class TransletFileScanner extends FileScanner {
 	}
 
 	public void setTransletNameMaskPattern(String transletNameMaskPattern) {
-		this.transletNameMaskPattern = new WildcardPattern(transletNameMaskPattern, AspectranConstants.TRANSLET_NAME_SEPARATOR_CHAR);
+		this.transletNameMaskPattern = new WildcardPattern(transletNameMaskPattern, ActivityContext.TRANSLET_NAME_SEPARATOR_CHAR);
 	}
 	
 	public void setTemplateFileScanFilter(String templateFileScanFilterClassName) {

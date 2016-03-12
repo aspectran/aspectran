@@ -209,7 +209,7 @@ public abstract class AbstractAspectranService implements AspectranService {
 	public synchronized ActivityContext reloadActivityContext() throws AspectranServiceException {
 		try {
 			if(activityContextLoader == null)
-				throw new IllegalArgumentException("activityContextLoader must not be null.");
+				throw new IllegalArgumentException("'activityContextLoader' must not be null.");
 
 			if(hardReload) {
 				aspectranClassLoader = newAspectranClassLoader(this.resourceLocations);

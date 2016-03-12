@@ -25,7 +25,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
 
-import com.aspectran.core.context.AspectranConstants;
+import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.bean.annotation.Action;
 import com.aspectran.core.context.bean.annotation.Autowired;
 import com.aspectran.core.context.bean.annotation.Bean;
@@ -311,14 +311,14 @@ public class AnnotatedConfigParser {
             return new String[1];
         }
 
-        int cnt = StringUtils.search(namespace, AspectranConstants.ID_SEPARATOR_CHAR);
+        int cnt = StringUtils.search(namespace, ActivityContext.ID_SEPARATOR_CHAR);
         if(cnt == 0) {
             String[] arr = new String[2];
             arr[1] = namespace;
             return arr;
         }
 
-        StringTokenizer st = new StringTokenizer(namespace, AspectranConstants.ID_SEPARATOR);
+        StringTokenizer st = new StringTokenizer(namespace, ActivityContext.ID_SEPARATOR);
         List<String> list = new ArrayList<String>();
         while(st.hasMoreTokens()) {
             list.add(st.nextToken());
@@ -335,7 +335,7 @@ public class AnnotatedConfigParser {
         for(int i = nameArray.length - 1; i >= 0; i--) {
             sb.append(nameArray[i]);
             if(i > 0)
-                sb.append(AspectranConstants.ID_SEPARATOR_CHAR);
+                sb.append(ActivityContext.ID_SEPARATOR_CHAR);
         }
         return sb.toString();
 	}
@@ -346,7 +346,7 @@ public class AnnotatedConfigParser {
         for(int i = nameArray.length - 1; i >= 0; i--) {
             sb.append(nameArray[i]);
             if(i > 0)
-                sb.append(AspectranConstants.TRANSLET_NAME_SEPARATOR_CHAR);
+                sb.append(ActivityContext.TRANSLET_NAME_SEPARATOR_CHAR);
         }
         return sb.toString();
 	}

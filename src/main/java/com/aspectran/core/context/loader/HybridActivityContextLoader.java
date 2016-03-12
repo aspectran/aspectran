@@ -16,7 +16,6 @@
 package com.aspectran.core.context.loader;
 
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.context.AspectranConstants;
 import com.aspectran.core.context.builder.ActivityContextBuilder;
 import com.aspectran.core.context.builder.ActivityContextBuilderException;
 import com.aspectran.core.context.builder.HybridActivityContextBuilder;
@@ -34,7 +33,7 @@ public class HybridActivityContextLoader extends AbstractActivityContextLoader {
 	}
 	
 	public HybridActivityContextLoader(String encoding) {
-		this.encoding = (encoding == null) ? AspectranConstants.DEFAULT_ENCODING : encoding;
+		this.encoding = (encoding == null) ? ActivityContext.DEFAULT_ENCODING : encoding;
 	}
 
 	@Override

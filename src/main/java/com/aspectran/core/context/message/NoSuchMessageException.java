@@ -20,6 +20,8 @@ import java.util.Locale;
 import com.aspectran.core.context.AspectranRuntimeException;
 
 /**
+ * Exception thrown when a message can't be resolved.
+ *
  * <p>Created: 2016. 2. 8.</p>
  */
 public class NoSuchMessageException extends AspectranRuntimeException {

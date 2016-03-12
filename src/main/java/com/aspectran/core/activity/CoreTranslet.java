@@ -15,6 +15,7 @@
  */
 package com.aspectran.core.activity;
 
+import java.util.Locale;
 import java.util.Map;
 
 import com.aspectran.core.activity.aspect.result.AspectAdviceResult;
@@ -27,6 +28,7 @@ import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
+import com.aspectran.core.context.message.NoSuchMessageException;
 import com.aspectran.core.context.rule.AspectAdviceRule;
 import com.aspectran.core.context.rule.ForwardResponseRule;
 import com.aspectran.core.context.rule.RedirectResponseRule;
@@ -326,6 +328,10 @@ public class CoreTranslet implements Translet {
 		return activity.getTransletImplementationClass();
 	}
 
+	//---------------------------------------------------------------------
+	// Implementation of BeanRegistry interface
+	//---------------------------------------------------------------------
+
 	@Override
 	public <T> T getBean(String id) {
 		return activity.getBean(id);
@@ -360,5 +366,19 @@ public class CoreTranslet implements Translet {
 	public boolean containsBean(Class<?> requiredType) {
 		return activity.containsBean(requiredType);
 	}
-	
+
+	//---------------------------------------------------------------------
+	// Implementation of MessageSource interface
+	//---------------------------------------------------------------------
+
+	@Override
+	public String getMessage(String code, Object args[], String defaultMessage, Locale locale) {
+		return activity.getActivityContext().getMessageSource().getMessage(code, args, defaultMessage, locale);
+	}
+
+	@Override
+	public String getMessage(String code, Object args[], Locale locale) throws NoSuchMessageException {
+		return activity.getActivityContext().getMessageSource().getMessage(code, args, locale);
+	}
+
 }

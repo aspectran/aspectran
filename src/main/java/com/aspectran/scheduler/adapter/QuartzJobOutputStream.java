@@ -20,7 +20,7 @@ import java.io.OutputStream;
 
 import org.quartz.JobDetail;
 
-import com.aspectran.core.context.AspectranConstants;
+import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 import com.aspectran.scheduler.service.QuartzSchedulerService;
@@ -66,7 +66,7 @@ public class QuartzJobOutputStream extends OutputStream {
 		if(buffer.length() > 0) {
 			String msg = "results of job [" +
 					jobDetail.getJobDataMap().get(QuartzSchedulerService.TRANSLET_NAME_DATA_KEY) + "]" +
-					AspectranConstants.LINE_SEPARATOR +
+					ActivityContext.LINE_SEPARATOR +
 					buffer;
 
 			log.info(msg);

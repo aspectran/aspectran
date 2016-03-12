@@ -19,175 +19,97 @@ import com.aspectran.core.activity.Activity;
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.aspect.AspectRuleRegistry;
 import com.aspectran.core.context.bean.ContextBeanRegistry;
+import com.aspectran.core.context.message.MessageSource;
 import com.aspectran.core.context.template.TemplateProcessor;
 import com.aspectran.core.context.translet.TransletRuleRegistry;
-import com.aspectran.core.util.ToStringBuilder;
 
 /**
  * The Class ActivityContext.
  * 
  * <p>Created: 2008. 06. 09 PM 2:12:40</p>
  */
-public class ActivityContext {
-	
-	private final ThreadLocal<Activity> currentActivityHolder = new ThreadLocal<Activity>();
+public interface ActivityContext extends MessageSource {
 
-	private final ApplicationAdapter applicationAdapter;
-	
-	private AspectRuleRegistry aspectRuleRegistry;
-	
-	private ContextBeanRegistry contextBeanRegistry;
+	String TRANSLET_NAME_SEPARATOR = "/";
 
-	private TransletRuleRegistry transletRuleRegistry;
-	
-	private TemplateProcessor templateProcessor;
-	
-	/**
-	 * Instantiates a new ActivityContext.
-	 *
-	 * @param applicationAdapter the application adapter
-	 */
-	public ActivityContext(ApplicationAdapter applicationAdapter) {
-		this.applicationAdapter = applicationAdapter;
-	}
+	char TRANSLET_NAME_SEPARATOR_CHAR = '/';
+
+	String ID_SEPARATOR = ".";
+
+	char ID_SEPARATOR_CHAR = '.';
+
+	String LINE_SEPARATOR = "\n";
+
+	String DEFAULT_ENCODING = "UTF-8";
+
+	String MESSAGE_SOURCE_BEAN_ID = "messageSource";
 
 	/**
 	 * Gets class loader.
 	 *
 	 * @return the class loader
 	 */
-	public ClassLoader getClassLoader() {
-		return applicationAdapter.getClassLoader();
-	}
+	ClassLoader getClassLoader();
 	
 	/**
 	 * Gets the application adapter.
 	 *
 	 * @return the application adapter
 	 */
-	public ApplicationAdapter getApplicationAdapter() {
-		return applicationAdapter;
-	}
+	ApplicationAdapter getApplicationAdapter();
 
-	public AspectRuleRegistry getAspectRuleRegistry() {
-		return aspectRuleRegistry;
-	}
-
-	public void setAspectRuleRegistry(AspectRuleRegistry aspectRuleRegistry) {
-		this.aspectRuleRegistry = aspectRuleRegistry;
-	}
+	AspectRuleRegistry getAspectRuleRegistry();
 
 	/**
 	 * Gets the context bean registry.
 	 *
 	 * @return the context bean registry
 	 */
-	public ContextBeanRegistry getContextBeanRegistry() {
-		return contextBeanRegistry;
-	}
-
-	/**
-	 * Sets the context bean registry.
-	 *
-	 * @param contextBeanRegistry the new context bean registry
-	 */
-	public void setContextBeanRegistry(ContextBeanRegistry contextBeanRegistry) {
-		this.contextBeanRegistry = contextBeanRegistry;
-	}
+	ContextBeanRegistry getContextBeanRegistry();
 
 	/**
 	 * Gets the translet rule registry.
 	 *
 	 * @return the translet rule registry
 	 */
-	public TransletRuleRegistry getTransletRuleRegistry() {
-		return transletRuleRegistry;
-	}
+	TransletRuleRegistry getTransletRuleRegistry();
 
-	/**
-	 * Sets the translet rule registry.
-	 *
-	 * @param transletRuleRegistry the new translet rule registry
-	 */
-	public void setTransletRuleRegistry(TransletRuleRegistry transletRuleRegistry) {
-		this.transletRuleRegistry = transletRuleRegistry;
-	}
-	
 	/**
 	 * Gets the template processor.
 	 *
 	 * @return the template processor
 	 */
-	public TemplateProcessor getTemplateProcessor() {
-		return templateProcessor;
-	}
+	TemplateProcessor getTemplateProcessor();
 
 	/**
-	 * Sets the template processor.
+	 * Gets the message source.
 	 *
-	 * @param templateProcessor the new template processor
+	 * @return the message source
 	 */
-	public void setTemplateProcessor(TemplateProcessor templateProcessor) {
-		this.templateProcessor = templateProcessor;
-	}
+	MessageSource getMessageSource();
 
 	/**
 	 * Gets the current activity.
 	 *
 	 * @return the current activity
 	 */
-	public Activity getCurrentActivity() {
-		return currentActivityHolder.get();
-	}
+	Activity getCurrentActivity();
 	
 	/**
 	 * Sets the current activity.
 	 *
 	 * @param activity the new current activity
 	 */
-	public void setCurrentActivity(Activity activity) {
-		if(currentActivityHolder.get() == null)
-			currentActivityHolder.set(activity);
-	}
+	void setCurrentActivity(Activity activity);
 	
 	/**
 	 * Removes the current activity.
 	 */
-	public void removeCurrentActivity() {
-		currentActivityHolder.remove();
-	}
+	void removeCurrentActivity();
 	
 	/**
 	 * Destroy the aspectran context. 
 	 */
-	public void destroy() {
-		if(templateProcessor != null) {
-			templateProcessor.destroy();
-			templateProcessor = null;
-		}
-		if(transletRuleRegistry != null) {
-			transletRuleRegistry.clear();
-			transletRuleRegistry = null;
-		}
-		if(aspectRuleRegistry != null) {
-			aspectRuleRegistry.clear();
-			aspectRuleRegistry = null;
-		}
-		if(contextBeanRegistry != null) {
-			contextBeanRegistry.destroy();
-			contextBeanRegistry = null;
-		}
-	}
+	public void destroy();
 
-	@Override
-	public String toString() {
-		ToStringBuilder tsb = new ToStringBuilder();
-		tsb.append("applicationAdapter", applicationAdapter);
-		tsb.append("aspectRuleRegistry", aspectRuleRegistry);
-		tsb.append("beanRegistry", contextBeanRegistry);
-		tsb.append("transletRuleRegistry", transletRuleRegistry);
-		tsb.append("templateProcessor", templateProcessor);
-		return tsb.toString();
-	}
-	
 }

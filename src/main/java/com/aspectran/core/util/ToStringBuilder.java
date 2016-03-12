@@ -33,11 +33,22 @@ public class ToStringBuilder {
 	private StringBuilder sb;
 	
 	public ToStringBuilder() {
-		this(32);
+		this(null);
 	}
 	
+	public ToStringBuilder(String name) {
+		this(name, 32);
+	}
+
 	public ToStringBuilder(int capacity) {
+		this(null, capacity);
+	}
+
+	public ToStringBuilder(String name, int capacity) {
 		this.sb = new StringBuilder(capacity);
+		if(name != null) {
+			this.sb.append(name).append(" ");
+		}
 		this.sb.append("{");
 	}
 

@@ -27,6 +27,7 @@ public interface MessageSource {
 
     /**
      * Try to resolve the message. Return default message if no message was found.
+     *
      * @param code the code to lookup up, such as 'calculator.noRateSet'. Users of
      * this class are encouraged to base message names on the relevant fully
      * qualified class name, thus avoiding conflict and ensuring maximum clarity.
@@ -43,6 +44,7 @@ public interface MessageSource {
 
     /**
      * Try to resolve the message. Treat as an error if the message can't be found.
+     *
      * @param code the code to lookup up, such as 'calculator.noRateSet'
      * @param args Array of arguments that will be filled in for params within
      * the message (params look like "{0}", "{1,date}", "{2,time}" within a message),

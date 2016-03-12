@@ -27,6 +27,7 @@ import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.bean.BeanRegistry;
 import com.aspectran.core.context.bean.BeanRegistrySupport;
 import com.aspectran.core.context.bean.scope.Scope;
+import com.aspectran.core.context.message.MessageSource;
 import com.aspectran.core.context.rule.AspectAdviceRule;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.ExceptionHandlingRule;

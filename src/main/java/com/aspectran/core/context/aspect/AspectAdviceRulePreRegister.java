@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Set;
 
 import com.aspectran.core.activity.process.ContentList;
-import com.aspectran.core.context.AspectranConstants;
+import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.aspect.pointcut.Pointcut;
 import com.aspectran.core.context.bean.BeanRuleRegistry;
 import com.aspectran.core.context.rule.AspectRule;
@@ -202,7 +202,7 @@ public class AspectAdviceRulePreRegister {
 		boolean matched = true;
 		
 		if(pointcutPatternRule.getTransletNamePattern() != null) {
-			matched = pointcut.patternMatches(pointcutPatternRule.getTransletNamePattern(), transletName, AspectranConstants.TRANSLET_NAME_SEPARATOR_CHAR);
+			matched = pointcut.patternMatches(pointcutPatternRule.getTransletNamePattern(), transletName, ActivityContext.TRANSLET_NAME_SEPARATOR_CHAR);
 		}
 		
 		return matched;
@@ -246,14 +246,14 @@ public class AspectAdviceRulePreRegister {
 		boolean matched = true;
 		
 		if(beanId != null && pointcutPatternRule.getBeanIdPattern() != null) {
-			matched = pointcut.patternMatches(pointcutPatternRule.getBeanIdPattern(), beanId, AspectranConstants.ID_SEPARATOR_CHAR);
+			matched = pointcut.patternMatches(pointcutPatternRule.getBeanIdPattern(), beanId, ActivityContext.ID_SEPARATOR_CHAR);
 			if(matched) {
 				pointcutPatternRule.increaseMatchedBeanCount();
 			}
 		}
 		
 		if(matched && className != null && pointcutPatternRule.getClassNamePattern() != null) {
-			matched = pointcut.patternMatches(pointcutPatternRule.getClassNamePattern(), className, AspectranConstants.ID_SEPARATOR_CHAR);
+			matched = pointcut.patternMatches(pointcutPatternRule.getClassNamePattern(), className, ActivityContext.ID_SEPARATOR_CHAR);
 			if(matched) {
 				pointcutPatternRule.increaseMatchedClassCount();
 			}

@@ -58,7 +58,7 @@ public class AspectranClassLoader extends ClassLoader {
 
 	private final boolean firstborn;
 	
-	private int reloadCount;
+	private int reloadedCount;
 	
 	private Set<String> excludeClassNames;
 	
@@ -269,7 +269,7 @@ public class AspectranClassLoader extends ClassLoader {
 	}
 	
 	private void reload(AspectranClassLoader self) throws InvalidResourceException {
-		self.increaseReloadCount();
+		self.increaseReloadedCount();
 		
 		if(log.isDebugEnabled())
 			log.debug("Reload AspectranClassLoader " + self);
@@ -296,8 +296,8 @@ public class AspectranClassLoader extends ClassLoader {
 		}
 	}
 	
-	private void increaseReloadCount() {
-		reloadCount++;
+	private void increaseReloadedCount() {
+		reloadedCount++;
 	}
 	
 	private void kickout(AspectranClassLoader child) {
@@ -445,7 +445,7 @@ public class AspectranClassLoader extends ClassLoader {
 		tsb.append("resourceLocation", resourceLocation);
 		tsb.append("numberOfResource", resourceManager.getResourceEntriesSize());
 		tsb.appendSize("numberOfChildren", children);
-		tsb.append("reloadCount", reloadCount);
+		tsb.append("reloadedCount", reloadedCount);
 		return tsb.toString();
 	}
 	

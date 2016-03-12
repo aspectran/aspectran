@@ -24,6 +24,7 @@ import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.context.bean.BeanRegistrySupport;
+import com.aspectran.core.context.message.MessageSource;
 import com.aspectran.core.context.rule.AspectAdviceRule;
 import com.aspectran.core.context.rule.ForwardResponseRule;
 import com.aspectran.core.context.rule.RedirectResponseRule;
@@ -35,7 +36,7 @@ import com.aspectran.core.context.rule.type.RequestMethodType;
  *
  * <p>Created: 2008. 7. 5. AM 12:35:44</p>
  */
-public interface Translet extends BeanRegistrySupport {
+public interface Translet extends BeanRegistrySupport, MessageSource {
 
 	/**
 	 * Returns the name of the translet.

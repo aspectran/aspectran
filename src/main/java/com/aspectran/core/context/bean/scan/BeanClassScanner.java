@@ -20,7 +20,7 @@ import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.aspectran.core.context.AspectranConstants;
+import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.builder.apon.params.FilterParameters;
 import com.aspectran.core.util.ClassScanner;
 import com.aspectran.core.util.ClassUtils;
@@ -82,7 +82,7 @@ public class BeanClassScanner extends ClassScanner {
 	}
 
 	public void setBeanIdMaskPattern(String beanIdMaskPattern) {
-		this.beanIdMaskPattern = new WildcardPattern(beanIdMaskPattern, AspectranConstants.ID_SEPARATOR_CHAR);
+		this.beanIdMaskPattern = new WildcardPattern(beanIdMaskPattern, ActivityContext.ID_SEPARATOR_CHAR);
 	}
 	
 	public void setBeanClassScanFilter(String classScanFilterClassName) {
