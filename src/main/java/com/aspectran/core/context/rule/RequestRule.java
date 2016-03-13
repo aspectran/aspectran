@@ -31,6 +31,10 @@ public class RequestRule {
 
 	public static final String CHARACTER_ENCODING_SETTING_NAME = "characterEncoding";
 	
+	public static final String LOCALE_RESOLVER_SETTING_NAME = "localeResolver";
+
+	public static final String LOCALE_CHANGE_INTERCEPTOR_SETTING_NAME = "localeChangeInterceptor";
+
 	private String characterEncoding;
 	
 	private RequestMethodType requestMethod;

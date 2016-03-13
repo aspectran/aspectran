@@ -30,8 +30,11 @@ import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.expr.ItemExpression;
 import com.aspectran.core.context.expr.ItemExpressor;
+import com.aspectran.core.context.locale.LocaleChangeInterceptor;
+import com.aspectran.core.context.locale.LocaleResolver;
 import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
+import com.aspectran.core.context.rule.RequestRule;
 import com.aspectran.core.context.rule.ResponseRule;
 import com.aspectran.core.context.rule.type.RequestMethodType;
 import com.aspectran.web.activity.request.multipart.MultipartFormDataParser;
@@ -75,6 +78,21 @@ public class WebActivity extends CoreActivity implements Activity {
 			requestAdapter.setCharacterEncoding(determineRequestCharacterEncoding());
 			setRequestAdapter(requestAdapter);
 
+			String localeResolverId = getRequestSetting(RequestRule.LOCALE_RESOLVER_SETTING_NAME);
+			String localeChangeInterceptorId = getRequestSetting(RequestRule.LOCALE_CHANGE_INTERCEPTOR_SETTING_NAME);
+			LocaleResolver localeResolver = null;
+			if(localeResolverId != null) {
+				localeResolver = getBean(localeResolverId, LocaleResolver.class);
+				if(localeChangeInterceptorId != null) {
+					localeResolver.determineLocale(getTranslet());
+					localeResolver.determineTimeZone(getTranslet());
+				}
+			}
+			if(localeChangeInterceptorId != null) {
+				LocaleChangeInterceptor localeChangeInterceptor = getBean(localeChangeInterceptorId, LocaleChangeInterceptor.class);
+				localeChangeInterceptor.handle(getTranslet(), localeResolver);
+			}
+
 			String contentEncoding = getResponseSetting(ResponseRule.CONTENT_ENCODING_SETTING_NAME);
 			String acceptEncoding = request.getHeader("Accept-Encoding");
 			if(contentEncoding != null && acceptEncoding != null && acceptEncoding.contains(contentEncoding)) {
@@ -92,7 +110,7 @@ public class WebActivity extends CoreActivity implements Activity {
 	@Override
 	public synchronized SessionAdapter getSessionAdapter() {
 		if(super.getSessionAdapter() == null) {
-			SessionAdapter sessionAdapter = new HttpSessionAdapter(request.getSession(), getActivityContext());
+			SessionAdapter sessionAdapter = new HttpSessionAdapter(request, getActivityContext());
 			super.setSessionAdapter(sessionAdapter);
 		}
 		return super.getSessionAdapter();

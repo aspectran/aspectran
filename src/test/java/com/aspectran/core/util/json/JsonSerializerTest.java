@@ -27,7 +27,7 @@ public class JsonSerializerTest {
 	public static void main(String argv[]) {
 		try {
 			Map<String, Object> map = new LinkedHashMap<String, Object>();
-			map.put("message", "Start Testing Now!");
+			map.put("locale", "Start Testing Now!");
 			map.put("one", 1);
 			map.put("two", 2);
 			map.put("three", 3);

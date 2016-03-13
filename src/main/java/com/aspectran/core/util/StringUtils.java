@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.StringTokenizer;
+import java.util.TimeZone;
 
 /**
  * Static utility methods pertaining to {@code String} or {@code CharSequence} instances.
@@ -548,28 +549,94 @@ public class StringUtils {
 		return tokens.toArray(new String[tokens.size()]);
 	}
 
-	public static Locale deduceLocale(String input) {
-		if(input == null)
-			return null;
-		Locale locale = Locale.getDefault();
-		if(input.length() > 0 && input.charAt(0) == '"')
-			input = input.substring(1, input.length() -1);
-		StringTokenizer st = new StringTokenizer(input, ",_ ");
-		String lang = "";
-		String country = "";
-		if(st.hasMoreTokens()) {
-			lang = st.nextToken();
+	/**
+	 * Parse the given {@code localeString} value into a {@link Locale}.
+	 * <p>This is the inverse operation of {@link Locale#toString Locale's toString}.
+	 *
+	 * @param localeString the locale {@code String}, following {@code Locale's}
+	 * {@code toString()} format ("en", "en_UK", etc);
+	 * also accepts spaces as separators, as an alternative to underscores
+	 * @return a corresponding {@code Locale} instance
+	 * @throws IllegalArgumentException in case of an invalid locale specification
+	 */
+	public static Locale parseLocaleString(String localeString) {
+		String[] parts = tokenize(localeString, "_ ", false);
+		String language = (parts.length > 0 ? parts[0] : "");
+		String country = (parts.length > 1 ? parts[1] : "");
+		validateLocalePart(language);
+		validateLocalePart(country);
+		String variant = "";
+		if(parts.length > 2) {
+			// There is definitely a variant, and it is everything after the country
+			// code sans the separator between the country code and the variant.
+			int endIndexOfCountryCode = localeString.indexOf(country, language.length()) + country.length();
+			// Strip off any leading '_' and whitespace, what's left is the variant.
+			variant = trimLeadingWhitespace(localeString.substring(endIndexOfCountryCode));
+			if(variant.startsWith("_")) {
+				variant = trimLeadingCharacter(variant, '_');
+			}
 		}
-		if(st.hasMoreTokens()) {
-			country = st.nextToken();
-		}
-		if(!st.hasMoreTokens()) {
-			locale = new Locale(lang, country);
-		}
-		else {
-			locale = new Locale(lang, country, st.nextToken());
-		}
-		return locale;
+		return (language.length() > 0 ? new Locale(language, country, variant) : null);
 	}
+
+	private static void validateLocalePart(String localePart) {
+		for(int i = 0; i < localePart.length(); i++) {
+			char ch = localePart.charAt(i);
+			if(ch != '_' && ch != ' ' && !Character.isLetterOrDigit(ch)) {
+				throw new IllegalArgumentException(
+						"Locale part \"" + localePart + "\" contains invalid characters");
+			}
+		}
+	}
+
+	/**
+	 * Determine the RFC 3066 compliant language tag,
+	 * as used for the HTTP "Accept-Language" header.
+	 * @param locale the Locale to transform to a language tag
+	 * @return the RFC 3066 compliant language tag as {@code String}
+	 */
+	public static String toLanguageTag(Locale locale) {
+		return locale.getLanguage() + (hasText(locale.getCountry()) ? "-" + locale.getCountry() : "");
+	}
+
+	/**
+	 * Parse the given {@code timeZoneString} value into a {@link TimeZone}.
+	 * @param timeZoneString the time zone {@code String}, following {@link TimeZone#getTimeZone(String)}
+	 * but throwing {@link IllegalArgumentException} in case of an invalid time zone specification
+	 * @return a corresponding {@link TimeZone} instance
+	 * @throws IllegalArgumentException in case of an invalid time zone specification
+	 */
+	public static TimeZone parseTimeZoneString(String timeZoneString) {
+		TimeZone timeZone = TimeZone.getTimeZone(timeZoneString);
+		if("GMT".equals(timeZone.getID()) && !timeZoneString.startsWith("GMT")) {
+			// We don't want that GMT fallback...
+			throw new IllegalArgumentException("Invalid time zone specification '" + timeZoneString + "'");
+		}
+		return timeZone;
+	}
+
+//	public static Locale deduceLocale(String input) {
+//		if(input == null)
+//			return null;
+//		Locale locale;
+//		if(input.length() > 0 && input.charAt(0) == '"')
+//			input = input.substring(1, input.length() -1);
+//		StringTokenizer st = new StringTokenizer(input, ",_ ");
+//		String lang = "";
+//		String country = "";
+//		if(st.hasMoreTokens()) {
+//			lang = st.nextToken();
+//		}
+//		if(st.hasMoreTokens()) {
+//			country = st.nextToken();
+//		}
+//		if(!st.hasMoreTokens()) {
+//			locale = new Locale(lang, country);
+//		}
+//		else {
+//			locale = new Locale(lang, country, st.nextToken());
+//		}
+//		return locale;
+//	}
 
 }

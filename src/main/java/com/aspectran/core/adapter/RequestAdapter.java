@@ -19,6 +19,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.Enumeration;
 import java.util.Locale;
 import java.util.Map;
+import java.util.TimeZone;
 
 import com.aspectran.core.activity.request.parameter.FileParameter;
 import com.aspectran.core.context.rule.type.RequestMethodType;
@@ -236,8 +237,30 @@ public interface RequestAdapter {
 
 	/**
 	 * Returns the preferred <code>Locale</code>.
+	 *
 	 * @return a Locale
      */
 	Locale getLocale();
+
+	/**
+	 * Sets the preferred <code>Locale</code>.
+	 *
+	 * @param locale a Locale
+	 */
+	void setLocale(Locale locale);
+
+	/**
+	 * Returns the preferred <code>TimeZone</code>.
+	 *
+	 * @return a TimeZone
+	 */
+	TimeZone getTimeZone();
+
+	/**
+	 * Sets the preferred <code>TimeZone</code>.
+	 *
+	 * @param timeZone a TimeZone
+	 */
+	void setTimeZone(TimeZone timeZone);
 
 }

@@ -201,7 +201,7 @@ public class ResourceBundleMessageSource extends AbstractMessageSource implement
     @Override
     protected String resolveCodeWithoutArguments(String code, Locale locale) {
         String result = null;
-        for (int i = 0; result == null && i < this.basenames.length; i++) {
+        for(int i = 0; result == null && i < this.basenames.length; i++) {
             ResourceBundle bundle = getResourceBundle(this.basenames[i], locale);
             if(bundle != null) {
                 result = getStringOrNull(bundle, code);
@@ -217,7 +217,7 @@ public class ResourceBundleMessageSource extends AbstractMessageSource implement
     @Override
     protected MessageFormat resolveCode(String code, Locale locale) {
         MessageFormat messageFormat = null;
-        for (int i = 0; messageFormat == null && i < this.basenames.length; i++) {
+        for(int i = 0; messageFormat == null && i < this.basenames.length; i++) {
             ResourceBundle bundle = getResourceBundle(this.basenames[i], locale);
             if(bundle != null) {
                 messageFormat = getMessageFormat(bundle, code, locale);

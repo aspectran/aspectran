@@ -210,8 +210,7 @@ public class AspectranActivityContext implements ActivityContext {
 			}
 		} else {
 			// Use empty MessageSource to be able to accept getMessage calls.
-			DelegatingMessageSource dms = new DelegatingMessageSource();
-			messageSource = dms;
+			messageSource = new DelegatingMessageSource();
 			//contextBeanRegistry.registerSingleton(MESSAGE_SOURCE_BEAN_ID, messageSource);
 			if(log.isDebugEnabled()) {
 				log.debug("Unable to locate MessageSource with name '" + MESSAGE_SOURCE_BEAN_ID +

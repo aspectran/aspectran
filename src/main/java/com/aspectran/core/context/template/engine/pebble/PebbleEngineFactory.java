@@ -15,6 +15,12 @@
  */
 package com.aspectran.core.context.template.engine.pebble;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.bean.aware.ApplicationAdapterAware;
 import com.aspectran.core.util.ResourceUtils;
@@ -22,13 +28,11 @@ import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 import com.mitchellbosecke.pebble.PebbleEngine;
-import com.mitchellbosecke.pebble.loader.*;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
+import com.mitchellbosecke.pebble.loader.ClasspathLoader;
+import com.mitchellbosecke.pebble.loader.DelegatingLoader;
+import com.mitchellbosecke.pebble.loader.FileLoader;
+import com.mitchellbosecke.pebble.loader.Loader;
+import com.mitchellbosecke.pebble.loader.StringLoader;
 
 /**
  * Factory that configures a Pebble Engine Configuration.
@@ -55,7 +59,7 @@ public class PebbleEngineFactory implements ApplicationAdapterAware {
     }
 
     public void setDefaultLocale(String defaultLocale) {
-        this.defaultLocale = StringUtils.deduceLocale(defaultLocale);
+        this.defaultLocale = StringUtils.parseLocaleString(defaultLocale);
     }
 
     public void setStrictVariables(boolean strictVariables) {

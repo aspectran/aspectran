@@ -20,6 +20,7 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.TimeZone;
 
 import com.aspectran.core.activity.request.parameter.FileParameter;
 import com.aspectran.core.activity.request.parameter.FileParameterMap;
@@ -41,6 +42,8 @@ public abstract class AbstractRequest {
 	private FileParameterMap fileParameterMap;
 
 	private Locale locale;
+
+	private TimeZone timeZone;
 
 	private boolean maxLengthExceeded;
 
@@ -174,14 +177,6 @@ public abstract class AbstractRequest {
 		this.maxLengthExceeded = maxLengthExceeded;
 	}
 
-	public Locale getLocale() {
-		return locale;
-	}
-
-	public void setLocale(Locale locale) {
-		this.locale = locale;
-	}
-
 	/**
 	 * Returns whether request header has exceed the maximum length.
 	 *
@@ -189,6 +184,27 @@ public abstract class AbstractRequest {
 	 */
 	public boolean isMaxLengthExceeded() {
 		return maxLengthExceeded;
+	}
+
+	public Locale getLocale() {
+		return locale;
+	}
+
+	/**
+	 * Sets locale.
+	 *
+	 * @param locale the locale
+	 */
+	public void setLocale(Locale locale) {
+		this.locale = locale;
+	}
+
+	public TimeZone getTimeZone() {
+		return timeZone;
+	}
+
+	public void setTimeZone(TimeZone timeZone) {
+		this.timeZone = timeZone;
 	}
 
 }
