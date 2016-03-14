@@ -25,9 +25,7 @@ import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.bean.BeanRegistry;
-import com.aspectran.core.context.bean.BeanRegistrySupport;
 import com.aspectran.core.context.bean.scope.Scope;
-import com.aspectran.core.context.message.MessageSource;
 import com.aspectran.core.context.rule.AspectAdviceRule;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.ExceptionHandlingRule;
@@ -40,7 +38,7 @@ import com.aspectran.core.context.template.TemplateProcessor;
  * 
  * <p>Created: 2008. 03. 22 PM 5:48:09</p>
  */
-public interface Activity extends BeanRegistrySupport {
+public interface Activity extends BeanRegistry {
 
 	/**
 	 * Return the interface class for {@code Translet}.

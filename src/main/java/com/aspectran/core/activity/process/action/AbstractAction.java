@@ -35,20 +35,12 @@ public abstract class AbstractAction implements Executable {
 		this.parent = parent;
 	}
 	
-	/**
-	 * Gets the parent.
-	 *
-	 * @return the parent
-	 */
+	@Override
 	public ActionList getParent() {
 		return parent;
 	}
 	
-	/**
-	 * Gets the action id.
-	 *
-	 * @return the action id
-	 */
+	@Override
 	public abstract String getActionId();
 
 }

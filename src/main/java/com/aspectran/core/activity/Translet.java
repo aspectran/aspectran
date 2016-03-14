@@ -23,7 +23,7 @@ import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
-import com.aspectran.core.context.bean.BeanRegistrySupport;
+import com.aspectran.core.context.bean.BeanRegistry;
 import com.aspectran.core.context.message.MessageSource;
 import com.aspectran.core.context.message.NoSuchMessageException;
 import com.aspectran.core.context.rule.AspectAdviceRule;
@@ -37,7 +37,7 @@ import com.aspectran.core.context.rule.type.RequestMethodType;
  *
  * <p>Created: 2008. 7. 5. AM 12:35:44</p>
  */
-public interface Translet extends BeanRegistrySupport, MessageSource {
+public interface Translet extends BeanRegistry, MessageSource {
 
 	/**
 	 * Returns the name of the translet.

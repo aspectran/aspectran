@@ -115,7 +115,6 @@ public abstract class AbstractActivity {
 		this.responseAdapter = responseAdapter;
 	}
 
-	
 	/**
 	 * Gets the translet interface class.
 	 *
