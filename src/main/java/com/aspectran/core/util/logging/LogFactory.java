@@ -31,42 +31,12 @@ public final class LogFactory {
   private static Constructor<? extends Log> logConstructor;
 
   static {
-    tryImplementation(new Runnable() {
-      @Override
-      public void run() {
-        useSlf4jLogging();
-      }
-    });
-    tryImplementation(new Runnable() {
-      @Override
-      public void run() {
-        useCommonsLogging();
-      }
-    });
-    tryImplementation(new Runnable() {
-      @Override
-      public void run() {
-        useLog4J2Logging();
-      }
-    });
-    tryImplementation(new Runnable() {
-      @Override
-      public void run() {
-        useLog4JLogging();
-      }
-    });
-    tryImplementation(new Runnable() {
-      @Override
-      public void run() {
-        useJdkLogging();
-      }
-    });
-    tryImplementation(new Runnable() {
-      @Override
-      public void run() {
-        useNoLogging();
-      }
-    });
+    tryImplementation(LogFactory::useSlf4jLogging);
+    tryImplementation(LogFactory::useCommonsLogging);
+    tryImplementation(LogFactory::useLog4J2Logging);
+    tryImplementation(LogFactory::useLog4JLogging);
+    tryImplementation(LogFactory::useJdkLogging);
+    tryImplementation(LogFactory::useNoLogging);
   }
 
   private LogFactory() {
@@ -79,7 +49,7 @@ public final class LogFactory {
 
   public static Log getLog(String logger) {
     try {
-      return logConstructor.newInstance(new Object[] { logger });
+      return logConstructor.newInstance(logger);
     } catch (Throwable t) {
       throw new RuntimeException("Error creating logger for logger " + logger + ".  Cause: " + t, t);
     }
@@ -129,8 +99,8 @@ public final class LogFactory {
 
   private static void setImplementation(Class<? extends Log> implClass) {
     try {
-      Constructor<? extends Log> candidate = implClass.getConstructor(new Class[] { String.class });
-      Log log = candidate.newInstance(new Object[] { LogFactory.class.getName() });
+      Constructor<? extends Log> candidate = implClass.getConstructor(String.class);
+      Log log = candidate.newInstance(LogFactory.class.getName());
       if (log.isDebugEnabled()) {
         log.debug("Logging initialized using '" + implClass + "' adapter.");
       }

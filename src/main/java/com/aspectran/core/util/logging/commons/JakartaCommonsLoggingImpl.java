@@ -15,13 +15,13 @@
  */
 package com.aspectran.core.util.logging.commons;
 
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * @author Clinton Begin
  */
-public class JakartaCommonsLoggingImpl implements Log {
+public class JakartaCommonsLoggingImpl implements com.aspectran.core.util.logging.Log {
 
   private Log log;
 
