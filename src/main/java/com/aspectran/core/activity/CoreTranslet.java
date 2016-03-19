@@ -15,11 +15,13 @@
  */
 package com.aspectran.core.activity;
 
+import java.util.Enumeration;
 import java.util.Locale;
 import java.util.Map;
 
 import com.aspectran.core.activity.aspect.result.AspectAdviceResult;
 import com.aspectran.core.activity.process.result.ProcessResult;
+import com.aspectran.core.activity.request.parameter.FileParameter;
 import com.aspectran.core.activity.response.ForwardResponse;
 import com.aspectran.core.activity.response.RedirectResponse;
 import com.aspectran.core.activity.response.Response;
@@ -90,36 +92,23 @@ public class CoreTranslet implements Translet {
 
 	@Override
 	public <T> T getRequestAdaptee() {
-		if(getRequestAdapter() != null)
-			return getRequestAdapter().getAdaptee();
-		else
-			return null;
+		return getRequestAdapter().getAdaptee();
 	}
 
 	@Override
 	public <T> T getResponseAdaptee() {
-		if(getResponseAdapter() != null)
-			return getResponseAdapter().getAdaptee();
-		else
-			return null;
+		return getResponseAdapter().getAdaptee();
 	}
 
 	@Override
 	public <T> T getSessionAdaptee() {
-		if(getSessionAdapter() != null)
-			return getSessionAdapter().getAdaptee();
-		else
-			return null;
+		SessionAdapter sessionAdapter = getSessionAdapter();
+		return (sessionAdapter != null) ? sessionAdapter.getAdaptee() : null;
 	}
 
 	@Override
 	public <T> T getApplicationAdaptee() {
-		ApplicationAdapter applicationAdapter = activity.getActivityContext().getApplicationAdapter();
-
-		if(applicationAdapter != null)
-			return applicationAdapter.getAdaptee();
-		else
-			return null;
+		return activity.getActivityContext().getApplicationAdapter().getAdaptee();
 	}
 
 	@Override
@@ -129,10 +118,7 @@ public class CoreTranslet implements Translet {
 
 	@Override
 	public Object getProcessResult(String actionId) {
-		if(processResult == null)
-			return null;
-
-		return processResult.getResultValue(actionId);
+		return (processResult != null) ? processResult.getResultValue(actionId) : null;
 	}
 
 	@Override
@@ -154,11 +140,9 @@ public class CoreTranslet implements Translet {
 	public ProcessResult touchProcessResult(String contentsName, int initialCapacity) {
 		if(processResult == null) {
 			processResult = new ProcessResult(initialCapacity);
-
 			if(contentsName != null)
 				processResult.setName(contentsName);
 		}
-
 		return processResult;
 	}
 
@@ -172,8 +156,102 @@ public class CoreTranslet implements Translet {
 		if(activityDataMap == null) {
 			activityDataMap = new ActivityDataMap(activity, prefill);
 		}
-
 		return activityDataMap;
+	}
+
+	@Override
+	public String getParameter(String name) {
+		return getRequestAdapter().getParameter(name);
+	}
+
+	@Override
+	public String[] getParameterValues(String name) {
+		return getRequestAdapter().getParameterValues(name);
+	}
+
+	@Override
+	public Enumeration<String> getParameterNames() {
+		return getRequestAdapter().getParameterNames();
+	}
+
+	@Override
+	public void setParameter(String name, String value) {
+		getRequestAdapter().setParameter(name, value);
+	}
+
+	@Override
+	public void setParameter(String name, String[] values) {
+		getRequestAdapter().setParameter(name, values);
+	}
+
+	@Override
+	public FileParameter getFileParameter(String name) {
+		return getRequestAdapter().getFileParameter(name);
+	}
+
+	@Override
+	public FileParameter[] getFileParameterValues(String name) {
+		return getRequestAdapter().getFileParameterValues(name);
+	}
+
+	@Override
+	public Enumeration<String> getFileParameterNames() {
+		return getRequestAdapter().getFileParameterNames();
+	}
+
+	@Override
+	public void setFileParameter(String name, FileParameter fileParameter) {
+		getRequestAdapter().setFileParameter(name, fileParameter);
+	}
+
+	@Override
+	public void setFileParameter(String name, FileParameter[] fileParameters) {
+		getRequestAdapter().setFileParameter(name, fileParameters);
+	}
+
+	@Override
+	public FileParameter[] removeFileParameter(String name) {
+		return getRequestAdapter().removeFileParameter(name);
+	}
+
+	@Override
+	public <T> T getAttribute(String name) {
+		return getRequestAdapter().getAttribute(name);
+	}
+
+	@Override
+	public void setAttribute(String name, Object value) {
+		getRequestAdapter().setAttribute(name, value);
+	}
+
+	@Override
+	public Enumeration<String> getAttributeNames() {
+		return getRequestAdapter().getAttributeNames();
+	}
+
+	@Override
+	public void removeAttribute(String name) {
+		getRequestAdapter().removeAttribute(name);
+	}
+
+	@Override
+	public Map<String, Object> getParameterMap() {
+		return getRequestAdapter().getParameterMap();
+	}
+
+	@Override
+	public void fillPrameterMap(Map<String, Object> parameterMap) {
+		getRequestAdapter().fillPrameterMap(parameterMap);
+	}
+
+	@Override
+	public Map<String, Object> getAttributeMap() {
+		return getRequestAdapter().getAttributeMap();
+	}
+
+	@Override
+	public void fillAttributeMap(Map<String, Object> attributeMap) {
+		getRequestAdapter().fillAttributeMap(attributeMap);
 	}
 
 	@Override
@@ -215,7 +293,6 @@ public class CoreTranslet implements Translet {
 				return;
 			}
 		}
-
 		RedirectResponseRule rrr = RedirectResponseRule.newInstance(target);
 		redirect(rrr);
 	}
@@ -251,7 +328,6 @@ public class CoreTranslet implements Translet {
 				return;
 			}
 		}
-
 		ForwardResponseRule frr = ForwardResponseRule.newInstance(transletName);
 		forward(frr);
 	}
@@ -269,52 +345,40 @@ public class CoreTranslet implements Translet {
 	@Override
 	@SuppressWarnings("unchecked")
 	public <T> T getAspectAdviceBean(String aspectId) {
-		if(aspectAdviceResult == null)
-			return null;
-		
-		return (T)aspectAdviceResult.getAspectAdviceBean(aspectId);
+		return (aspectAdviceResult != null) ? (T)aspectAdviceResult.getAspectAdviceBean(aspectId) : null;
 	}
 
 	@Override
 	public void putAspectAdviceBean(String aspectId, Object adviceBean) {
-		if(aspectAdviceResult == null)
+		if(aspectAdviceResult == null) {
 			aspectAdviceResult = new AspectAdviceResult();
-		
+		}
 		aspectAdviceResult.putAspectAdviceBean(aspectId, adviceBean);
 	}
 
 	@Override
 	@SuppressWarnings("unchecked")
 	public <T> T getBeforeAdviceResult(String aspectId) {
-		if(aspectAdviceResult == null)
-			return null;
-		
-		return (T)aspectAdviceResult.getBeforeAdviceResult(aspectId);
+		return (aspectAdviceResult != null) ? (T)aspectAdviceResult.getBeforeAdviceResult(aspectId) : null;
 	}
 
 	@Override
 	@SuppressWarnings("unchecked")
 	public <T> T getAfterAdviceResult(String aspectId) {
-		if(aspectAdviceResult == null)
-			return null;
-
-		return (T)aspectAdviceResult.getAfterAdviceResult(aspectId);
+		return (aspectAdviceResult != null) ? (T)aspectAdviceResult.getAfterAdviceResult(aspectId) : null;
 	}
 
 	@Override
 	@SuppressWarnings("unchecked")
 	public <T> T getFinallyAdviceResult(String aspectId) {
-		if(aspectAdviceResult == null)
-			return null;
-
-		return (T)aspectAdviceResult.getFinallyAdviceResult(aspectId);
+		return (aspectAdviceResult != null) ? (T)aspectAdviceResult.getFinallyAdviceResult(aspectId) : null;
 	}
 
 	@Override
 	public void putAdviceResult(AspectAdviceRule aspectAdviceRule, Object adviceActionResult) {
-		if(aspectAdviceResult == null)
+		if(aspectAdviceResult == null) {
 			aspectAdviceResult = new AspectAdviceResult();
-		
+		}
 		aspectAdviceResult.putAdviceResult(aspectAdviceRule, adviceActionResult);
 	}
 

@@ -58,14 +58,14 @@ public interface ResponseAdapter {
 	 *
 	 * @return the content type
 	 */
-	abstract String getContentType();
+	String getContentType();
 
 	/**
 	 * Sets the content type.
 	 *
 	 * @param contentType the new content type
 	 */
-	abstract void setContentType(String contentType);
+	void setContentType(String contentType);
 
 	/**
 	 * Gets the output stream.

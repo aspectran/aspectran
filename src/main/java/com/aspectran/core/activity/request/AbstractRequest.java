@@ -191,7 +191,7 @@ public abstract class AbstractRequest {
 	}
 
 	/**
-	 * Sets locale.
+	 * Sets the locale.
 	 *
 	 * @param locale the locale
 	 */
@@ -199,10 +199,20 @@ public abstract class AbstractRequest {
 		this.locale = locale;
 	}
 
+	/**
+	 * Gets the time zone.
+	 *
+	 * @return the time zone
+	 */
 	public TimeZone getTimeZone() {
 		return timeZone;
 	}
 
+	/**
+	 * Sets the time zone.
+	 *
+	 * @param timeZone the time zone
+	 */
 	public void setTimeZone(TimeZone timeZone) {
 		this.timeZone = timeZone;
 	}

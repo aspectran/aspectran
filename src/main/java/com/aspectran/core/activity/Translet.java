@@ -15,9 +15,11 @@
  */
 package com.aspectran.core.activity;
 
+import java.util.Enumeration;
 import java.util.Map;
 
 import com.aspectran.core.activity.process.result.ProcessResult;
+import com.aspectran.core.activity.request.parameter.FileParameter;
 import com.aspectran.core.activity.response.Response;
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.adapter.RequestAdapter;
@@ -175,6 +177,165 @@ public interface Translet extends BeanRegistry, MessageSource {
 	 * @return the activity data map
 	 */
 	ActivityDataMap getActivityDataMap(boolean prefill);
+
+	/**
+	 * Gets the parameter.
+	 *
+	 * @param name the parameter name
+	 * @return the parameter value
+	 */
+	String getParameter(String name);
+
+	/**
+	 * Gets the parameter values.
+	 *
+	 * @param name the name
+	 * @return an array of <code>String</code> objects
+	 *			containing the parameter's values
+	 */
+	String[] getParameterValues(String name);
+
+	/**
+	 * Gets the parameter names.
+	 *
+	 * @return the parameter names
+	 */
+	Enumeration<String> getParameterNames();
+
+	/**
+	 * Sets the parameter.
+	 *
+	 * @param name the parameter name
+	 * @param value a <code>String</code> representing the
+	 *			single value of the parameter
+	 */
+	void setParameter(String name, String value);
+
+	/**
+	 * Sets the parameter.
+	 *
+	 * @param name the parameter name
+	 * @param values a <code>String</code> representing the
+	 *			single value of the parameter
+	 */
+	void setParameter(String name, String[] values);
+
+	/**
+	 * Gets the file parameter.
+	 *
+	 * @param name the parameter name
+	 * @return the file parameter
+	 */
+	FileParameter getFileParameter(String name);
+
+	/**
+	 * Gets the file parameter values.
+	 *
+	 * @param name the parameter name
+	 * @return the file parameter values
+	 */
+	FileParameter[] getFileParameterValues(String name);
+
+	/**
+	 * Gets the file parameter names.
+	 *
+	 * @return the parameter names
+	 */
+	Enumeration<String> getFileParameterNames();
+
+	/**
+	 * Sets the file parameter.
+	 *
+	 * @param name the parameter name
+	 * @param fileParameter the file parameter
+	 */
+	void setFileParameter(String name, FileParameter fileParameter);
+
+	/**
+	 * Sets the file parameter.
+	 *
+	 * @param name the parameter name
+	 * @param fileParameters the file parameters
+	 */
+	void setFileParameter(String name, FileParameter[] fileParameters);
+
+	/**
+	 * Removes the file parameter.
+	 *
+	 * @param name the file parameter name
+	 * @return the file parameter[]
+	 */
+	FileParameter[] removeFileParameter(String name);
+
+	/**
+	 * Returns the value of the named attribute as a given type, or <code>null</code> if no attribute of the given name exists.
+	 *
+	 * @param <T> the generic type
+	 * @param name a String specifying the name of the attribute
+	 * @return an Object containing the value of the attribute, or null if the attribute does not exist
+	 */
+	<T> T getAttribute(String name);
+
+	/**
+	 * Stores an attribute in this request.
+	 *
+	 * @param name specifying the name of the attribute
+	 * @param value the Object to be stored
+	 */
+	void setAttribute(String name, Object value);
+
+	/**
+	 * Returns an <code>Enumeration</code> containing the
+	 * names of the attributes available to this request.
+	 * This method returns an empty <code>Enumeration</code>
+	 * if the request has no attributes available to it.
+	 *
+	 * @return the attribute names
+	 */
+	Enumeration<String> getAttributeNames();
+
+	/**
+	 * Removes an attribute from this request.
+	 *
+	 * @param name a String specifying the name of the attribute to remove
+	 */
+	void removeAttribute(String name);
+
+	/**
+	 * Return a mutable Map of the request parameters,
+	 * with parameter names as map keys and parameter values as map values.
+	 * If the parameter value type is the String then map value will be of type String.
+	 * If the parameter value type is the String array then map value will be of type String array.
+	 *
+	 * @return the parameter map
+	 * @since 1.4.0
+	 */
+	Map<String, Object> getParameterMap();
+
+	/**
+	 * Fills all parameters to the specified map.
+	 *
+	 * @param parameterMap the parameter map
+	 * @since 2.0.0
+	 */
+	void fillPrameterMap(Map<String, Object> parameterMap);
+
+	/**
+	 * Return a mutable Map of the request attributes,
+	 * with attribute names as map keys and attribute value as map value.
+	 *
+	 * @return the attribute map
+	 * @since 2.0.0
+	 */
+	Map<String, Object> getAttributeMap();
+
+	/**
+	 * Fills all attributes to the specified map.
+	 *
+	 * @param attributeMap the attribute map
+	 * @since 2.0.0
+	 */
+	void fillAttributeMap(Map<String, Object> attributeMap);
 
 	/**
 	 * Respond immediately, and the remaining jobs will be canceled.

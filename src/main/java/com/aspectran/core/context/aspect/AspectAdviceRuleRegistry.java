@@ -193,7 +193,7 @@ public class AspectAdviceRuleRegistry implements Replicable<AspectAdviceRuleRegi
 		return aspectRuleCount;
 	}
 
-	final void setAspectRuleCount(int aspectRuleCount) {
+	private void setAspectRuleCount(int aspectRuleCount) {
 		this.aspectRuleCount = aspectRuleCount;
 	}
 	

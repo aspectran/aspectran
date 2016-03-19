@@ -34,7 +34,7 @@ import com.aspectran.core.context.bean.scope.SessionScope;
  */
 public class HttpSessionAdapter extends AbstractSessionAdapter implements SessionAdapter {
 	
-	public static final String SESSION_SCOPE_ATTRIBUTE_NAME = HttpSessionScope.class.getName() + ".SESSION_SCOPE";
+	private static final String SESSION_SCOPE_ATTRIBUTE_NAME = HttpSessionScope.class.getName() + ".SESSION_SCOPE";
 	
 	private volatile SessionScope scope;
 	

@@ -1,0 +1,13 @@
+# global logging configuration
+log4j.rootLogger=DEBUG, stdout
+
+# aspectran logging configuration
+log4j.logger.com.aspectran=DEBUG
+
+# quartz logging configuration
+log4j.logger.org.quartz=INFO
+
+# console output
+log4j.appender.stdout=org.apache.log4j.ConsoleAppender
+log4j.appender.stdout.layout=org.apache.log4j.PatternLayout
+log4j.appender.stdout.layout.ConversionPattern=%-5p %d{yyyy-MM-dd HH:mm:ss,SSS} %m ~%C^%M:%L%n

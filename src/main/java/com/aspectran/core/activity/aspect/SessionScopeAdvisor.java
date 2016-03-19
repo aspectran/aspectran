@@ -47,21 +47,16 @@ public class SessionScopeAdvisor {
 			if(aspectAdviceRuleRegistry.getAfterAdviceRuleList() != null)
 				activity.forceExecute(aspectAdviceRuleRegistry.getAfterAdviceRuleList());
 		}
-		
 	}
 	
 	public static SessionScopeAdvisor newInstance(ActivityContext context, SessionAdapter sessionAdapter) {
 		AspectRuleRegistry aspectRuleRegistry = context.getAspectRuleRegistry();
-		AspectAdviceRuleRegistry aspectAdviceRuleRegistry = aspectRuleRegistry.getSessionAspectAdviceRuleRegistry();
-		
-		SessionScopeAdvisor advisor = null;
-		
-		if(aspectAdviceRuleRegistry != null) {
-			SessionScopeActivity activity = new SessionScopeActivity(context, sessionAdapter);
-			advisor = new SessionScopeAdvisor(activity, aspectAdviceRuleRegistry);
-		}
-		
-		return advisor;
+		AspectAdviceRuleRegistry aarr = aspectRuleRegistry.getSessionAspectAdviceRuleRegistry();
+		if(aarr == null)
+			return null;
+
+		SessionScopeActivity activity = new SessionScopeActivity(context, sessionAdapter);
+		return new SessionScopeAdvisor(activity, aarr);
 	}
 	
 }
