@@ -1,17 +1,17 @@
 /**
- *    Copyright 2009-2015 the original author or authors.
+ * Copyright 2008-2016 Juho Jeong
  *
- *    Licensed under the Apache License, Version 2.0 (the "License");
- *    you may not use this file except in compliance with the License.
- *    You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *    Unless required by applicable law or agreed to in writing, software
- *    distributed under the License is distributed on an "AS IS" BASIS,
- *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *    See the License for the specific language governing permissions and
- *    limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package com.aspectran.core.activity.response;
 
@@ -19,7 +19,6 @@ import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.context.rule.RedirectResponseRule;
-import com.aspectran.core.context.rule.TemplateRule;
 import com.aspectran.core.context.rule.type.ResponseType;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
@@ -27,7 +26,7 @@ import com.aspectran.core.util.logging.LogFactory;
 /**
  * The Class RedirectResponse.
  * 
- * <p>Created: 2008. 03. 22 오후 5:51:58</p>
+ * <p>Created: 2008. 03. 22 PM 5:51:58</p>
  */
 public class RedirectResponse implements Response {
 	
@@ -37,6 +36,8 @@ public class RedirectResponse implements Response {
 
 	private final RedirectResponseRule redirectResponseRule;
 
+	private final String characterEncoding;
+
 	/**
 	 * Instantiates a new RedirectResponse.
 	 * 
@@ -44,14 +45,12 @@ public class RedirectResponse implements Response {
 	 */
 	public RedirectResponse(RedirectResponseRule redirectResponseRule) {
 		this.redirectResponseRule = redirectResponseRule;
+		this.characterEncoding = redirectResponseRule.getCharacterEncoding();
 	}
 
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.response.Responsible#response(com.aspectran.core.activity.CoreActivity)
-	 */
+	@Override
 	public void response(Activity activity) throws ResponseException {
 		ResponseAdapter responseAdapter = activity.getResponseAdapter();
-		
 		if(responseAdapter == null)
 			return;
 		
@@ -60,27 +59,26 @@ public class RedirectResponse implements Response {
 		}
 		
 		try {
-			String outputEncoding = redirectResponseRule.getCharacterEncoding();
-
-			if(outputEncoding != null)
-				responseAdapter.setCharacterEncoding(outputEncoding);
+			if(this.characterEncoding != null) {
+				responseAdapter.setCharacterEncoding(this.characterEncoding);
+			} else {
+				String characterEncoding = activity.determineResponseCharacterEncoding();
+				if(characterEncoding != null)
+					responseAdapter.setCharacterEncoding(characterEncoding);
+			}
 			
-			responseAdapter.redirect(activity, redirectResponseRule);
+			responseAdapter.redirect(redirectResponseRule);
 		} catch(Exception e) {
-			throw new ResponseException("Redirect response error: " + redirectResponseRule, e);
+			throw new ResponseException("Failed to redirect " + redirectResponseRule, e);
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.response.Responsible#getResponseType()
-	 */
+	@Override
 	public ResponseType getResponseType() {
 		return RedirectResponseRule.RESPONSE_TYPE;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.response.Responsible#getContentType()
-	 */
+	@Override
 	public String getContentType() {
 		if(redirectResponseRule == null)
 			return null;
@@ -88,25 +86,15 @@ public class RedirectResponse implements Response {
 		return redirectResponseRule.getContentType();
 	}
 
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.response.Responsible#getActionList()
-	 */
+	@Override
 	public ActionList getActionList() {
 		return redirectResponseRule.getActionList();
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.response.Response#getTemplateRule()
-	 */
-	public TemplateRule getTemplateRule() {
-		return null;
-	}
 
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.response.Response#newDerivedResponse()
-	 */
-	public Response newDerivedResponse() {
-		return this;
+	@Override
+	public Response replicate() {
+		RedirectResponseRule rrr = redirectResponseRule.replicate();
+		return new RedirectResponse(rrr);
 	}
 	
 	/**
@@ -117,5 +105,10 @@ public class RedirectResponse implements Response {
 	public RedirectResponseRule getRedirectResponseRule() {
 		return redirectResponseRule;
 	}
-	
+
+	@Override
+	public String toString() {
+		return redirectResponseRule.toString();
+	}
+
 }

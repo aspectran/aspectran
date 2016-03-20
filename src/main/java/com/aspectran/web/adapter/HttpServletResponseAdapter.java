@@ -1,17 +1,17 @@
 /**
- *    Copyright 2009-2015 the original author or authors.
+ * Copyright 2008-2016 Juho Jeong
  *
- *    Licensed under the Apache License, Version 2.0 (the "License");
- *    you may not use this file except in compliance with the License.
- *    You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *    Unless required by applicable law or agreed to in writing, software
- *    distributed under the License is distributed on an "AS IS" BASIS,
- *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *    See the License for the specific language governing permissions and
- *    limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package com.aspectran.web.adapter;
 
@@ -25,21 +25,17 @@ import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
 
 import com.aspectran.core.activity.Activity;
-import com.aspectran.core.activity.variable.ValueMap;
-import com.aspectran.core.activity.variable.token.ItemTokenExpression;
-import com.aspectran.core.activity.variable.token.ItemTokenExpressor;
-import com.aspectran.core.activity.variable.token.Token;
-import com.aspectran.core.activity.variable.token.TokenExpression;
-import com.aspectran.core.activity.variable.token.TokenExpressor;
 import com.aspectran.core.adapter.AbstractResponseAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
+import com.aspectran.core.context.expr.ItemExpression;
+import com.aspectran.core.context.expr.ItemExpressor;
 import com.aspectran.core.context.rule.RedirectResponseRule;
 
 /**
  * The Class HttpServletResponseAdapter.
  * 
- * @author Juho Jeong
  * @since 2011. 3. 13.
+ * @author Juho Jeong
  */
 public class HttpServletResponseAdapter extends AbstractResponseAdapter implements ResponseAdapter {
 
@@ -49,100 +45,76 @@ public class HttpServletResponseAdapter extends AbstractResponseAdapter implemen
 
 	private static final char EQUAL_CHAR = '=';
 
+	private final Activity activity;
+
 	/**
 	 * Instantiates a new HttpServletResponseAdapter.
 	 *
 	 * @param response the HTTP response
 	 */
-	public HttpServletResponseAdapter(HttpServletResponse response) {
+	public HttpServletResponseAdapter(HttpServletResponse response, Activity activity) {
 		super(response);
+		this.activity = activity;
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.adapter.ResponseAdapter#getCharacterEncoding()
-	 */
+
+	@Override
 	public String getCharacterEncoding() {
 		return ((HttpServletResponse)adaptee).getCharacterEncoding();
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.adapter.ResponseAdapter#setCharacterEncoding(java.lang.String)
-	 */
+
+	@Override
 	public void setCharacterEncoding(String characterEncoding) throws UnsupportedEncodingException {
 		((HttpServletResponse)adaptee).setCharacterEncoding(characterEncoding);
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.adapter.ResponseAdapter#getContentType()
-	 */
+
+	@Override
 	public String getContentType() {
 		return ((HttpServletResponse)adaptee).getContentType();
 	}
 
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.adapter.ResponseAdapter#setContentType(java.lang.String)
-	 */
+	@Override
 	public void setContentType(String contentType) {
 		((HttpServletResponse)adaptee).setContentType(contentType);
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.adapter.ResponseAdapter#getOutputStream()
-	 */
+
+	@Override
 	public OutputStream getOutputStream() throws IOException {
 		return ((HttpServletResponse)adaptee).getOutputStream();
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.adapter.ResponseAdapter#getWriter()
-	 */
+
+	@Override
 	public Writer getWriter() throws IOException {
 		return ((HttpServletResponse)adaptee).getWriter();
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.adapter.ResponseAdapter#redirect(java.lang.String)
-	 */
-	public void redirect(String url) throws IOException {
-		((HttpServletResponse)adaptee).sendRedirect(url);
-	}
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.adapter.ResponseAdapter#redirect(com.aspectran.core.activity.Activity, com.aspectran.core.context.rule.RedirectResponseRule)
-	 */
-	public String redirect(Activity activity, RedirectResponseRule redirectResponseRule) throws IOException {
-		String characterEncoding = ((HttpServletResponse)adaptee).getCharacterEncoding();
-		String url = null;
-		int questionPos = -1;
-		
-		Token[] urlTokens = redirectResponseRule.getUrlTokens();
 
-		if(urlTokens != null && urlTokens.length > 0) {
-			TokenExpressor expressor = new TokenExpression(activity);
-			url = expressor.expressAsString(urlTokens);
-		} else {
-			url = redirectResponseRule.getUrl();
-		}
+	@Override
+	public void redirect(String target) throws IOException {
+		((HttpServletResponse)adaptee).sendRedirect(target);
+	}
+
+	@Override
+	public String redirect(RedirectResponseRule redirectResponseRule) throws IOException {
+		String characterEncoding = ((HttpServletResponse)adaptee).getCharacterEncoding();
+		String target = redirectResponseRule.getTarget(activity);
+		int questionPos = -1;
 
 		StringBuilder sb = new StringBuilder(256);
 
-		if(url != null) {
-			sb.append(url);
-			questionPos = url.indexOf(QUESTION_CHAR);
-		} else if(redirectResponseRule.getTransletName() != null) {
-			sb.append(redirectResponseRule.getTransletName());
+		if(target != null) {
+			sb.append(target);
+			questionPos = target.indexOf(QUESTION_CHAR);
 		}
 		
 		if(redirectResponseRule.getParameterItemRuleMap() != null) {
-			ItemTokenExpressor expressor = new ItemTokenExpression(activity);
-			ValueMap valueMap = expressor.express(redirectResponseRule.getParameterItemRuleMap());
+			ItemExpressor expressor = new ItemExpression(activity);
+			Map<String, Object> valueMap = expressor.express(redirectResponseRule.getParameterItemRuleMap());
 
 			if(valueMap != null && valueMap.size() > 0) {
 				if(questionPos == -1)
 					sb.append(QUESTION_CHAR);
 
 				String name = null;
-				Object value = null;
+				Object value;
 				
 				for(Map.Entry<String, Object> entry : valueMap.entrySet()) {
 					if(name != null)
@@ -163,10 +135,10 @@ public class HttpServletResponseAdapter extends AbstractResponseAdapter implemen
 			}
 		}
 
-		url = sb.toString();
-		redirect(url);
+		target = sb.toString();
+		redirect(target);
 		
-		return url;
+		return target;
 	}
 
 }

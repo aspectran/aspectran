@@ -1,22 +1,21 @@
 /**
- *    Copyright 2009-2015 the original author or authors.
+ * Copyright 2008-2016 Juho Jeong
  *
- *    Licensed under the Apache License, Version 2.0 (the "License");
- *    you may not use this file except in compliance with the License.
- *    You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *    Unless required by applicable law or agreed to in writing, software
- *    distributed under the License is distributed on an "AS IS" BASIS,
- *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *    See the License for the specific language governing permissions and
- *    limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package com.aspectran.core.util;
 
 import java.io.File;
-import java.io.FileFilter;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -43,7 +42,22 @@ public class FileScanner {
 		this.applicationBasePath = applicationBasePath;
 	}
 
-	public Map<String, File> scanFiles(String filePathPattern) {
+	public Map<String, File> scan(String filePathPattern) {
+		final Map<String, File> scannedFiles = new LinkedHashMap<String, File>();
+		scan(filePathPattern, scannedFiles);
+		return scannedFiles;
+	}
+
+	public void scan(String filePathPattern, final Map<String, File> scannedFiles) {
+		scan(filePathPattern, (filePath, scannedFile) -> {
+            scannedFiles.put(filePath, scannedFile);
+        });
+	}
+
+	public void scan(String filePathPattern, SaveHandler saveHandler) {
+		if(filePathPattern == null)
+			throw new IllegalArgumentException("File path pattern must not be null.");
+
 		WildcardPattern pattern = WildcardPattern.compile(filePathPattern, FILE_SEPARATOR);
 		WildcardMatcher matcher = new WildcardMatcher(pattern);
 		matcher.separate(filePathPattern);
@@ -67,37 +81,31 @@ public class FileScanner {
 		
 		String basePath = sb.toString();
 		
-		return scanFiles(basePath, matcher);
+		scan(basePath, matcher, saveHandler);
 	}
 	
-	public Map<String, File> scanFiles(String basePath, String filePathPattern) {
-		Map<String, File> scannedFiles = new LinkedHashMap<String, File>();
-		
-		scanFiles(basePath, filePathPattern, scannedFiles);
-		
+	public Map<String, File> scan(String basePath, String filePathPattern) {
+		final Map<String, File> scannedFiles = new LinkedHashMap<String, File>();
+		scan(basePath, filePathPattern, scannedFiles);
 		return scannedFiles;
 	}
 	
-	public void scanFiles(String basePath, String filePathPattern, Map<String, File> scannedFiles) {
+	public void scan(String basePath, String filePathPattern, final Map<String, File> scannedFiles) {
+		scan(basePath, filePathPattern, (filePath, scannedFile) -> {
+            scannedFiles.put(filePath, scannedFile);
+        });
+	}
+
+	public void scan(String basePath, String filePathPattern, SaveHandler saveHandler) {
 		WildcardPattern pattern = WildcardPattern.compile(filePathPattern, FILE_SEPARATOR);
 		WildcardMatcher matcher = new WildcardMatcher(pattern);
-		
 		if(basePath.charAt(basePath.length() - 1) == FILE_SEPARATOR) {
 			basePath = basePath.substring(0, basePath.length() - 1);
 		}
-		
-		scanFiles(basePath, matcher, scannedFiles);
+		scan(basePath, matcher, saveHandler);
 	}
-	
-	private Map<String, File> scanFiles(String basePath, WildcardMatcher matcher) {
-		Map<String, File> scannedFiles = new LinkedHashMap<String, File>();
-		
-		scanFiles(basePath, matcher, scannedFiles);
-		
-		return scannedFiles;
-	}
-	
-	private void scanFiles(final String targetPath, final WildcardMatcher matcher, final Map<String, File> scannedFiles) {
+
+	protected void scan(final String targetPath, final WildcardMatcher matcher, final SaveHandler saveHandler) {
 		final File target;
 		if(applicationBasePath != null)
 			target = new File(applicationBasePath, targetPath);
@@ -107,24 +115,22 @@ public class FileScanner {
 		if(!target.exists())
 			return;
 
-		target.listFiles(new FileFilter() {
-			public boolean accept(File file) {
-				String filePath = targetPath + FILE_SEPARATOR + file.getName();
+		target.listFiles(file -> {
+            String filePath = targetPath + FILE_SEPARATOR + file.getName();
 
-				if(file.isDirectory()) {
-					scanFiles(filePath, matcher, scannedFiles);
-				} else {
-					if(matcher.matches(filePath)) {
-						putFile(scannedFiles, filePath, target);
-					}
-				}
-				return false;
-			}
-		});
+            if(file.isDirectory()) {
+                scan(filePath, matcher, saveHandler);
+            } else {
+                if(matcher.matches(filePath)) {
+                    saveHandler.save(filePath, file);
+                }
+            }
+            return false;
+        });
 	}
 	
-	protected void putFile(Map<String, File> scannedFiles, String filePath, File scannedFile) {
-		scannedFiles.put(filePath, scannedFile);
+	public interface SaveHandler {
+		void save(String filePath, File scannedFile);
 	}
-	
+
 }

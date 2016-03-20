@@ -1,17 +1,17 @@
 /**
- *    Copyright 2009-2015 the original author or authors.
+ * Copyright 2008-2016 Juho Jeong
  *
- *    Licensed under the Apache License, Version 2.0 (the "License");
- *    you may not use this file except in compliance with the License.
- *    You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *    Unless required by applicable law or agreed to in writing, software
- *    distributed under the License is distributed on an "AS IS" BASIS,
- *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *    See the License for the specific language governing permissions and
- *    limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package com.aspectran.core.util.xml;
 
@@ -63,7 +63,7 @@ public class NodeletParser {
 	private boolean validating;
 
 	private EntityResolver entityResolver;
-	
+
 	/**
 	 * Registers a nodelet for the specified XPath. Current XPaths supported
 	 * are:
@@ -146,7 +146,7 @@ public class NodeletParser {
 			Document doc = createDocument(inputStream);
 			parse(doc.getLastChild());
 		} catch(Exception e) {
-			throw new NodeletException("Error parsing XML", e);
+			throw new NodeletException("Error parsing XML.", e);
 		}
 	}
 
@@ -173,7 +173,7 @@ public class NodeletParser {
 			String elementName = node.getNodeName();
 			path.add(elementName);
 			processNodelet(node, path.toString());
-			processNodelet(node, "//" + elementName.toString());
+			processNodelet(node, "//" + elementName);
 			/*
 			// Attribute
 			NamedNodeMap attributes = node.getAttributes();
@@ -248,7 +248,7 @@ public class NodeletParser {
 		NamedNodeMap attributeNodes = node.getAttributes();
 		
 		if(attributeNodes == null)
-			return NodeletParser.EMPTY_ATTRIBUTES;
+			return EMPTY_ATTRIBUTES;
 
 		Map<String, String> attributes = new HashMap<String, String>();
 
@@ -293,11 +293,18 @@ public class NodeletParser {
 			}
 		}
 		
-		return sb == null ? null : sb.toString();
+		return (sb == null) ? null : sb.toString();
 	}
-	
+
 	/**
 	 * Creates a JAXP Document from a reader.
+	 *
+	 * @param reader the reader
+	 * @return the document
+	 * @throws ParserConfigurationException the parser configuration exception
+	 * @throws FactoryConfigurationError the factory configuration error
+	 * @throws SAXException the sax exception
+	 * @throws IOException the io exception
 	 */
 	private Document createDocument(Reader reader) throws ParserConfigurationException, FactoryConfigurationError,
 			SAXException, IOException {
@@ -312,14 +319,17 @@ public class NodeletParser {
 		DocumentBuilder builder = factory.newDocumentBuilder();
 		builder.setEntityResolver(entityResolver);
 		builder.setErrorHandler(new ErrorHandler() {
+			@Override
 			public void error(SAXParseException exception) throws SAXException {
 				throw exception;
 			}
 
+			@Override
 			public void fatalError(SAXParseException exception) throws SAXException {
 				throw exception;
 			}
 
+			@Override
 			public void warning(SAXParseException exception) throws SAXException {
 			}
 		});
@@ -329,6 +339,13 @@ public class NodeletParser {
 
 	/**
 	 * Creates a JAXP Document from an InputStream.
+	 *
+	 * @param inputStream the input stream
+	 * @return the document
+	 * @throws ParserConfigurationException the parser configuration exception
+	 * @throws FactoryConfigurationError the factory configuration error
+	 * @throws SAXException the sax exception
+	 * @throws IOException the io exception
 	 */
 	private Document createDocument(InputStream inputStream) throws ParserConfigurationException,
 			FactoryConfigurationError, SAXException, IOException {
@@ -343,14 +360,17 @@ public class NodeletParser {
 		DocumentBuilder builder = factory.newDocumentBuilder();
 		builder.setEntityResolver(entityResolver);
 		builder.setErrorHandler(new ErrorHandler() {
+			@Override
 			public void error(SAXParseException exception) throws SAXException {
 				throw exception;
 			}
 
+			@Override
 			public void fatalError(SAXParseException exception) throws SAXException {
 				throw exception;
 			}
 
+			@Override
 			public void warning(SAXParseException exception) throws SAXException {
 			}
 		});
@@ -395,12 +415,13 @@ public class NodeletParser {
 			nodeList.remove(nodeList.size() - 1);
 		}
 
+		@Override
 		public String toString() {
 			StringBuilder sb = new StringBuilder(128);
 
-			for(int i = 0; i < nodeList.size(); i++) {
+			for(String name : nodeList) {
 				sb.append("/");
-				sb.append(nodeList.get(i));
+				sb.append(name);
 			}
 
 			return sb.toString();

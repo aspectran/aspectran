@@ -1,31 +1,31 @@
 /**
- *    Copyright 2009-2015 the original author or authors.
+ * Copyright 2008-2016 Juho Jeong
  *
- *    Licensed under the Apache License, Version 2.0 (the "License");
- *    you may not use this file except in compliance with the License.
- *    You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *    Unless required by applicable law or agreed to in writing, software
- *    distributed under the License is distributed on an "AS IS" BASIS,
- *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *    See the License for the specific language governing permissions and
- *    limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package com.aspectran.core.activity.response;
 
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.process.ActionList;
-import com.aspectran.core.context.rule.TemplateRule;
+import com.aspectran.core.context.rule.ability.Replicable;
 import com.aspectran.core.context.rule.type.ResponseType;
 
 /**
  * The Interface Response.
  * 
- * <p>Created: 2008. 03. 23 오후 12:52:04</p>
+ * <p>Created: 2008. 03. 23 PM 12:52:04</p>
  */
-public interface Response {
+public interface Response extends Replicable<Response> {
 	
 	/**
 	 * Response.
@@ -34,41 +34,34 @@ public interface Response {
 	 * 
 	 * @throws ResponseException the response exception
 	 */
-	public void response(Activity activity) throws ResponseException;
+	void response(Activity activity) throws ResponseException;
 	
 	/**
 	 * Gets the response type.
 	 * 
 	 * @return the response type
 	 */
-	public ResponseType getResponseType();
+	ResponseType getResponseType();
 
 	/**
 	 * Gets the content type.
 	 * 
 	 * @return the content type
 	 */
-	public String getContentType();
+	String getContentType();
 	
 	/**
 	 * Gets the action list.
 	 *
 	 * @return the action list
 	 */
-	public ActionList getActionList();
-	
+	ActionList getActionList();
+
 	/**
-	 * Gets the template rule.
+	 * Replicate this response.
 	 *
-	 * @return the template rule
+	 * @return the new response
 	 */
-	public TemplateRule getTemplateRule();
-	
-	/**
-	 * New derived response.
-	 *
-	 * @return the response
-	 */
-	public Response newDerivedResponse();
+	Response replicate();
 	
 }

@@ -1,17 +1,17 @@
 /**
- *    Copyright 2009-2015 the original author or authors.
+ * Copyright 2008-2016 Juho Jeong
  *
- *    Licensed under the Apache License, Version 2.0 (the "License");
- *    you may not use this file except in compliance with the License.
- *    You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *    Unless required by applicable law or agreed to in writing, software
- *    distributed under the License is distributed on an "AS IS" BASIS,
- *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *    See the License for the specific language governing permissions and
- *    limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 /*
  * Copyright 2008-2015 the original author or authors.
@@ -32,10 +32,10 @@ package com.aspectran.core.context.loader.resource;
 
 import com.aspectran.core.context.ActivityContextException;
 
-
 /**
- * 
- * <p>Created: 2008. 01. 07 오전 3:35:55</p>
+ * The Class InvalidResourceException.
+ *
+ * <p>Created: 2008. 01. 07 AM 3:35:55</p>
  * 
  * @author Juho Jeong
  * 
@@ -54,8 +54,7 @@ public class InvalidResourceException extends ActivityContextException {
 	/**
 	 * Constructor to create exception with a message
 	 * 
-	 * @param msg
-	 *            A message to associate with the exception
+	 * @param msg a message to associate with the exception
 	 */
 	public InvalidResourceException(String msg) {
 		super(msg);
@@ -64,8 +63,7 @@ public class InvalidResourceException extends ActivityContextException {
 	/**
 	 * Constructor to create exception to wrap another exception
 	 * 
-	 * @param cause
-	 *            The real cause of the exception
+	 * @param cause the real cause of the exception
 	 */
 	public InvalidResourceException(Throwable cause) {
 		super(cause);
@@ -75,10 +73,8 @@ public class InvalidResourceException extends ActivityContextException {
 	 * Constructor to create exception to wrap another exception and pass a
 	 * message
 	 * 
-	 * @param msg
-	 *            The message
-	 * @param cause
-	 *            The real cause of the exception
+	 * @param msg the message
+	 * @param cause the real cause of the exception
 	 */
 	public InvalidResourceException(String msg, Throwable cause) {
 		super(msg, cause);

@@ -1,21 +1,21 @@
 /**
- *    Copyright 2009-2015 the original author or authors.
+ * Copyright 2008-2016 Juho Jeong
  *
- *    Licensed under the Apache License, Version 2.0 (the "License");
- *    you may not use this file except in compliance with the License.
- *    You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *    Unless required by applicable law or agreed to in writing, software
- *    distributed under the License is distributed on an "AS IS" BASIS,
- *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *    See the License for the specific language governing permissions and
- *    limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package com.aspectran.core.adapter;
 
-import java.util.Enumeration;
+import com.aspectran.core.util.ToStringBuilder;
 
 /**
  * The Abstract Class for session object adapter.
@@ -24,7 +24,6 @@ import java.util.Enumeration;
  */
 public abstract class AbstractSessionAdapter implements SessionAdapter {
 	
-	/** The adaptee. */
 	protected Object adaptee;
 	
 	/**
@@ -35,61 +34,42 @@ public abstract class AbstractSessionAdapter implements SessionAdapter {
 	public AbstractSessionAdapter(Object adaptee) {
 		this.adaptee = adaptee;
 	}
-	
+
+	@Override
 	@SuppressWarnings("unchecked")
 	public <T> T getAdaptee() {
 		return (T)adaptee;
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.adapter.SessionAdapter#getId()
-	 */
+
+	@Override
 	abstract public String getId();
 
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.adapter.SessionAdapter#getCreationTime()
-	 */
+	@Override
 	abstract public long getCreationTime();
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.adapter.SessionAdapter#getLastAccessedTime()
-	 */
+
+	@Override
 	abstract public long getLastAccessedTime();
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.adapter.SessionAdapter#getMaxInactiveInterval()
-	 */
+
+	@Override
 	abstract public int getMaxInactiveInterval();
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.adapter.SessionAdapter#release()
-	 */
+
+	@Override
 	public void release() {
 		adaptee = null;
 	}
 	
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
 	@Override
 	public String toString() {
 		if(adaptee == null) {
-			return "Session has been expired.";
+			return super.toString();
 		}
-		StringBuilder sb = new StringBuilder();
-		sb.append("{id=").append(getId());
-		sb.append(", creationTime=").append(getCreationTime());
-		sb.append(", lastAccessedTime=").append(getLastAccessedTime());
-		sb.append(", maxInactiveInterval=").append(getMaxInactiveInterval());
-		sb.append(", attributeNames=[");
-		for(Enumeration<String> en = getAttributeNames(); en.hasMoreElements(); ) {
-			sb.append(en.nextElement());
-			if(en.hasMoreElements())
-				sb.append(",");
-		}
-		sb.append("]}");
-		
-		return sb.toString();
+		ToStringBuilder tsb = new ToStringBuilder();
+		tsb.append("id", getId());
+		tsb.append("creationTime", getCreationTime());
+		tsb.append("lastAccessedTime", getLastAccessedTime());
+		tsb.append("maxInactiveInterval", getMaxInactiveInterval());
+		tsb.append("attributeNames", getAttributeNames());
+		return tsb.toString();
 	}
 	
 }

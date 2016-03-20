@@ -1,17 +1,17 @@
 /**
- *    Copyright 2009-2015 the original author or authors.
+ * Copyright 2008-2016 Juho Jeong
  *
- *    Licensed under the Apache License, Version 2.0 (the "License");
- *    you may not use this file except in compliance with the License.
- *    You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *    Unless required by applicable law or agreed to in writing, software
- *    distributed under the License is distributed on an "AS IS" BASIS,
- *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *    See the License for the specific language governing permissions and
- *    limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 /*
  * Copyright 2008-2015 the original author or authors.
@@ -31,6 +31,7 @@
 package com.aspectran.core.util;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -41,7 +42,9 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.Properties;
+import java.security.AccessController;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
 
 /**
  * A class to simplify access to ResourceUtils through the classloader.
@@ -72,9 +75,9 @@ public class ResourceUtils {
 
 	public static final String JAR_URL_SEPARATOR = "!/";
 	
-	public static final String RESOURCE_NAME_SPEPARATOR = "/";
+	public static final String PATH_SPEPARATOR = "/";
 
-	public static final char RESOURCE_NAME_SPEPARATOR_CHAR = '/';
+	public static final char PATH_SPEPARATOR_CHAR = '/';
 	
 	public static boolean isUrl(String resourceLocation) {
 		if(resourceLocation == null) {
@@ -176,7 +179,7 @@ public class ResourceUtils {
 		String protocol = url.getProtocol();
 		return (URL_PROTOCOL_JAR.equals(protocol) || URL_PROTOCOL_ZIP.equals(protocol)
 				|| URL_PROTOCOL_VFSZIP.equals(protocol) || URL_PROTOCOL_WSJAR.equals(protocol)
-				|| (URL_PROTOCOL_CODE_SOURCE.equals(protocol) && url.getPath().indexOf(JAR_URL_SEPARATOR) != -1));
+				|| (URL_PROTOCOL_CODE_SOURCE.equals(protocol) && url.getPath().contains(JAR_URL_SEPARATOR)));
 	}
 	
 	public static URL extractJarFileURL(URL jarUrl) throws MalformedURLException {
@@ -189,8 +192,8 @@ public class ResourceUtils {
 			} catch(MalformedURLException ex) {
 				// Probably no protocol in original jar URL, like "jar:C:/mypath/myjar.jar".
 				// This usually indicates that the jar file resides in the file system.
-				if(!jarFile.startsWith(RESOURCE_NAME_SPEPARATOR)) {
-					jarFile = RESOURCE_NAME_SPEPARATOR + jarFile;
+				if(!jarFile.startsWith(PATH_SPEPARATOR)) {
+					jarFile = PATH_SPEPARATOR + jarFile;
 				}
 				return new URL(FILE_URL_PREFIX + jarFile);
 			}
@@ -246,101 +249,131 @@ public class ResourceUtils {
 	}
 
 	/**
-	 * Returns a resource on the classpath as a Properties object.
+	 * Returns a Reader for reading the specified file.
 	 *
-	 * @param resource The resource to find
-	 * @param classLoader the class loader
-	 * @return The resource
-	 * @throws IOException If the resource cannot be found or read
+	 * @param file the file
+	 * @param encoding the encoding
+	 * @return the reader instance
+	 * @throws IOException if an error occurred when reading resources using any I/O operations
 	 */
-	public static Properties getResourceAsProperties(String resource, ClassLoader classLoader) throws IOException {
-		Properties props = new Properties();
-		InputStream in = null;
-		String propfile = resource;
-		in = getResourceAsStream(propfile, classLoader);
-		props.load(in);
-		in.close();
-		return props;
+	public static Reader getReader(final File file, String encoding) throws IOException {
+		InputStream stream = null;
+		try {
+			stream = AccessController.doPrivileged(
+					new PrivilegedExceptionAction<InputStream>() {
+						public InputStream run() throws IOException {
+							return new FileInputStream(file);
+						}
+					}
+			);
+		} catch(PrivilegedActionException e) {
+			throw (IOException)e.getException();
+		}
+
+		Reader reader;
+		if(encoding != null) {
+			reader = new InputStreamReader(stream, encoding);
+		} else
+			reader = new InputStreamReader(stream);
+
+		return reader;
 	}
 
 	/**
-	 * Returns a resource on the classpath as a Reader object.
+	 * Returns a Reader for reading the specified url.
 	 *
-	 * @param resource The resource to find
-	 * @param classLoader the class loader
-	 * @return The resource
-	 * @throws IOException If the resource cannot be found or read
+	 * @param url the url
+	 * @param encoding the encoding
+	 * @return the reader instance
+	 * @throws IOException if an error occurred when reading resources using any I/O operations
 	 */
-	public static Reader getResourceAsReader(String resource, ClassLoader classLoader) throws IOException {
-		return new InputStreamReader(getResourceAsStream(resource, classLoader));
+	public static Reader getReader(final URL url, String encoding) throws IOException {
+		InputStream stream = null;
+		try {
+			stream = AccessController.doPrivileged(
+					new PrivilegedExceptionAction<InputStream>() {
+						public InputStream run() throws IOException {
+							InputStream is = null;
+							if(url != null) {
+								URLConnection connection = url.openConnection();
+								if(connection != null) {
+									// Disable caches to get fresh data for reloading.
+									connection.setUseCaches(false);
+									is = connection.getInputStream();
+								}
+							}
+							return is;
+						}
+					}
+			);
+		} catch(PrivilegedActionException e) {
+			throw (IOException)e.getException();
+		}
+
+		Reader reader;
+		if(encoding != null)
+			reader = new InputStreamReader(stream, encoding);
+		else
+			reader = new InputStreamReader(stream);
+
+		return reader;
 	}
 
 	/**
-	 * Returns a resource on the classpath as a File object.
+	 * Returns a string from the specified file.
 	 *
-	 * @param resource  the resource to find
-	 * @param classLoader the class loader
-	 * @return The resource
-	 * @throws IOException If the resource cannot be found or read
+	 * @param file the file
+	 * @param encoding the encoding
+	 * @return the reader instance
+	 * @throws IOException if an error occurred when reading resources using any I/O operations
 	 */
-	public static File getResourceAsFile(String resource, ClassLoader classLoader) throws IOException {
-		return new File(getResourceURL(resource, classLoader).getFile());
+	public static String read(File file, String encoding) throws IOException {
+		Reader reader = getReader(file, encoding);
+		String source = null;
+		try {
+			source = read(reader);
+		} finally {
+			reader.close();
+		}
+		return source;
 	}
 
 	/**
-	 * Gets a URL as an input stream.
+	 * Returns a string from the specified url.
 	 *
-	 * @param urlString  the URL to get
-	 * @return An input stream with the data from the URL
-	 * @throws IOException If the resource cannot be found or read
+	 * @param url the url
+	 * @param encoding the encoding
+	 * @return the string
+	 * @throws IOException if an error occurred when reading resources using any I/O operations
 	 */
-	public static InputStream getUrlAsStream(String urlString) throws IOException {
-		URL url = new URL(urlString);
-		URLConnection conn = url.openConnection();
-		return conn.getInputStream();
+	public static String read(URL url, String encoding) throws IOException {
+		Reader reader = getReader(url, encoding);
+		String source = null;
+		try {
+			source = read(reader);
+		} finally {
+			reader.close();
+		}
+		return source;
 	}
 
 	/**
-	 * Gets a URL as a Reader
-	 * 
-	 * @param urlString  the URL to get
-	 * @return A Reader with the data from the URL
-	 * @throws IOException If the resource cannot be found or read
+	 * Returns a string from the specified Reader object.
+	 *
+	 * @param reader the reader
+	 * @return the string
+	 * @throws IOException if an error occurred when reading resources using any I/O operations
 	 */
-	public static Reader getUrlAsReader(String urlString) throws IOException {
-		return new InputStreamReader(getUrlAsStream(urlString));
+	public static String read(Reader reader) throws IOException {
+		final char[] buffer = new char[1024];
+		StringBuilder sb = new StringBuilder();
+		int len;
+
+		while((len = reader.read(buffer)) != -1) {
+			sb.append(buffer, 0, len);
+		}
+
+		return sb.toString();
 	}
 
-	/**
-	 * Gets a URL as a Properties object
-	 * 
-	 * @param urlString  the URL to get
-	 * @return A Properties object with the data from the URL
-	 * @throws IOException If the resource cannot be found or read
-	 */
-	public static Properties getUrlAsProperties(String urlString) throws IOException {
-		Properties props = new Properties();
-		InputStream in = null;
-		String propfile = urlString;
-		in = getUrlAsStream(propfile);
-		props.load(in);
-		in.close();
-		return props;
-	}
-	
-	/**
-	 * Gets the class loader.
-	 *
-	 * @param clazz the clazz
-	 * @return the class loader
-	 */
-	public static ClassLoader getClassLoader(Class<?> clazz) {
-		ClassLoader cl = clazz.getClassLoader();
-		
-		if(cl == null)
-			cl = ClassLoader.getSystemClassLoader();
-		
-		return cl;
-	}
-	
 }

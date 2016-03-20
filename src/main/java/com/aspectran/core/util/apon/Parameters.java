@@ -1,17 +1,17 @@
 /**
- *    Copyright 2009-2015 the original author or authors.
+ * Copyright 2008-2016 Juho Jeong
  *
- *    Licensed under the Apache License, Version 2.0 (the "License");
- *    you may not use this file except in compliance with the License.
- *    You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *    Unless required by applicable law or agreed to in writing, software
- *    distributed under the License is distributed on an "AS IS" BASIS,
- *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *    See the License for the specific language governing permissions and
- *    limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package com.aspectran.core.util.apon;
 
@@ -19,157 +19,162 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-
 public interface Parameters {
 	
-	public Map<String, ParameterValue> getParameterValueMap();
+	Map<String, ParameterValue> getParameterValueMap();
 
-	public void setPrototype(Parameter parent);
+	void setPrototype(Parameter parent);
 
-	public Parameter getPrototype();
+	Parameter getPrototype();
 	
-	public String getQualifiedName();
+	String getQualifiedName();
 	
-	public Parameter getParent();
+	Parameter getParent();
 	
-	public String[] getParameterNames();
+	String[] getParameterNames();
 	
-	public Set<String> getParameterNameSet();
+	Set<String> getParameterNameSet();
 	
-	public Parameter getParameter(String name);
+	Parameter getParameter(String name);
 	
-	public Parameter getParameter(ParameterDefine parameterDefine);
+	Parameter getParameter(ParameterDefine parameterDefine);
 	
-	public Object getValue(String name);
+	Object getValue(String name);
 
-	public Object getValue(ParameterDefine parameterDefine);
+	Object getValue(ParameterDefine parameterDefine);
 	
-	public void putValue(String name, Object value);
+	void putValue(String name, Object value);
 	
-	public void putValue(ParameterDefine parameterDefine, Object value);
+	void putValue(ParameterDefine parameterDefine, Object value);
 	
-	public String getString(String name);
+	void putValueNonNull(String name, Object value);
 
-	public String getString(String name, String defaultValue);
+	void putValueNonNull(ParameterDefine parameterDefine, Object value);
+	
+	String getString(String name);
 
-	public String[] getStringArray(String name);
+	String getString(String name, String defaultValue);
 
-	public String getString(ParameterDefine parameterDefine);
-	
-	public String getString(ParameterDefine parameterDefine, String defaultValue);
-	
-	public String[] getStringArray(ParameterDefine parameterDefine);
-	
-	public List<String> getStringList(String name);
+	String[] getStringArray(String name);
 
-	public List<String> getStringList(ParameterDefine parameterDefine);
+	String getString(ParameterDefine parameterDefine);
 	
-	public Integer getInt(String name);
+	String getString(ParameterDefine parameterDefine, String defaultValue);
 	
-	public int getInt(String name, int defaultValue);
+	String[] getStringArray(ParameterDefine parameterDefine);
 	
-	public Integer[] getIntArray(String name);
-	
-	public Integer getInt(ParameterDefine parameterDefine);
-	
-	public int getInt(ParameterDefine parameterDefine, int defaultValue);
-	
-	public Integer[] getIntArray(ParameterDefine parameterDefine);
-	
-	public List<Integer> getIntList(String name);
-	
-	public List<Integer> getIntList(ParameterDefine parameterDefine);
-	
-	public Long getLong(String name);
-	
-	public long getLong(String name, long defaultValue);
-	
-	public Long[] getLongArray(String name);
-	
-	public Long getLong(ParameterDefine parameterDefine);
-	
-	public long getLong(ParameterDefine parameterDefine, long defaultValue);
-	
-	public Long[] getLongArray(ParameterDefine parameterDefine);
-	
-	public List<Long> getLongList(String name);
-	
-	public List<Long> getLongList(ParameterDefine parameterDefine);
+	List<String> getStringList(String name);
 
-	public Float getFloat(String name);
+	List<String> getStringList(ParameterDefine parameterDefine);
 	
-	public float getFloat(String name, float defaultValue);
+	Integer getInt(String name);
 	
-	public Float[] getFloatArray(String name);
+	int getInt(String name, int defaultValue);
 	
-	public Float getFloat(ParameterDefine parameterDefine);
+	Integer[] getIntArray(String name);
 	
-	public float getFloat(ParameterDefine parameterDefine, float defaultValue);
+	Integer getInt(ParameterDefine parameterDefine);
 	
-	public Float[] getFloatArray(ParameterDefine parameterDefine);
+	int getInt(ParameterDefine parameterDefine, int defaultValue);
 	
-	public List<Float> getFloatList(String name);
+	Integer[] getIntArray(ParameterDefine parameterDefine);
 	
-	public List<Float> getFloatList(ParameterDefine parameterDefine);
+	List<Integer> getIntList(String name);
+	
+	List<Integer> getIntList(ParameterDefine parameterDefine);
+	
+	Long getLong(String name);
+	
+	long getLong(String name, long defaultValue);
+	
+	Long[] getLongArray(String name);
+	
+	Long getLong(ParameterDefine parameterDefine);
+	
+	long getLong(ParameterDefine parameterDefine, long defaultValue);
+	
+	Long[] getLongArray(ParameterDefine parameterDefine);
+	
+	List<Long> getLongList(String name);
+	
+	List<Long> getLongList(ParameterDefine parameterDefine);
 
-	public Double getDouble(String name);
+	Float getFloat(String name);
 	
-	public double getDouble(String name, double defaultValue);
+	float getFloat(String name, float defaultValue);
 	
-	public Double[] getDoubleArray(String name);
+	Float[] getFloatArray(String name);
+	
+	Float getFloat(ParameterDefine parameterDefine);
+	
+	float getFloat(ParameterDefine parameterDefine, float defaultValue);
+	
+	Float[] getFloatArray(ParameterDefine parameterDefine);
+	
+	List<Float> getFloatList(String name);
+	
+	List<Float> getFloatList(ParameterDefine parameterDefine);
 
-	public Double getDouble(ParameterDefine parameterDefine);
+	Double getDouble(String name);
 	
-	public double getDouble(ParameterDefine parameterDefine, double defaultValue);
+	double getDouble(String name, double defaultValue);
 	
-	public Double[] getDoubleArray(ParameterDefine parameterDefine);
-	
-	public List<Double> getDoubleList(String name);
-	
-	public List<Double> getDoubleList(ParameterDefine parameterDefine);
+	Double[] getDoubleArray(String name);
 
-	public Boolean getBoolean(String name);
+	Double getDouble(ParameterDefine parameterDefine);
 	
-	public boolean getBoolean(String name, boolean defaultValue);
+	double getDouble(ParameterDefine parameterDefine, double defaultValue);
+	
+	Double[] getDoubleArray(ParameterDefine parameterDefine);
+	
+	List<Double> getDoubleList(String name);
+	
+	List<Double> getDoubleList(ParameterDefine parameterDefine);
 
-	public Boolean[] getBooleanArray(String name);
+	Boolean getBoolean(String name);
+	
+	boolean getBoolean(String name, boolean defaultValue);
 
-	public Boolean getBoolean(ParameterDefine parameterDefine);
-	
-	public boolean getBoolean(ParameterDefine parameterDefine, boolean defaultValue);
-	
-	public Boolean[] getBooleanArray(ParameterDefine parameterDefine);
-	
-	public List<Boolean> getBooleanList(String name);
-	
-	public List<Boolean> getBooleanList(ParameterDefine parameterDefine);
+	Boolean[] getBooleanArray(String name);
 
-	public <T extends Parameters> T getParameters(String name);
+	Boolean getBoolean(ParameterDefine parameterDefine);
+	
+	boolean getBoolean(ParameterDefine parameterDefine, boolean defaultValue);
+	
+	Boolean[] getBooleanArray(ParameterDefine parameterDefine);
+	
+	List<Boolean> getBooleanList(String name);
+	
+	List<Boolean> getBooleanList(ParameterDefine parameterDefine);
 
-	public <T extends Parameters> T[] getParametersArray(String name);
+	<T extends Parameters> T getParameters(String name);
+
+	<T extends Parameters> T[] getParametersArray(String name);
 	
-	public <T extends Parameters> T getParameters(ParameterDefine parameterDefine);
+	<T extends Parameters> T getParameters(ParameterDefine parameterDefine);
 	
-	public <T extends Parameters> T[] getParametersArray(ParameterDefine parameterDefine);
+	<T extends Parameters> T[] getParametersArray(ParameterDefine parameterDefine);
 	
-	public <T extends Parameters> List<T> getParametersList(String name);
+	<T extends Parameters> List<T> getParametersList(String name);
 	
-	public <T extends Parameters> List<T> getParametersList(ParameterDefine parameterDefine);
+	<T extends Parameters> List<T> getParametersList(ParameterDefine parameterDefine);
 	
-	public ParameterValue newParameterValue(String name, ParameterValueType parameterValueType);
+	ParameterValue newParameterValue(String name, ParameterValueType parameterValueType);
 	
-	public ParameterValue newParameterValue(String name, ParameterValueType parameterValueType, boolean array);
+	ParameterValue newParameterValue(String name, ParameterValueType parameterValueType, boolean array);
 	
-	public <T extends Parameters> T newParameters(String name);
+	<T extends Parameters> T newParameters(String name);
 	
-	public <T extends Parameters> T newParameters(ParameterDefine parameterDefine);
+	<T extends Parameters> T newParameters(ParameterDefine parameterDefine);
 	
-	public <T extends Parameters> T touchParameters(String name);
+	<T extends Parameters> T touchParameters(String name);
 	
-	public <T extends Parameters> T touchParameters(ParameterDefine parameterDefine);
+	<T extends Parameters> T touchParameters(ParameterDefine parameterDefine);
 	
-	public boolean isAddable();
+	boolean isAddable();
 	
-	public String describe();
+	String describe();
+
+	String describe(boolean details);
 	
 }

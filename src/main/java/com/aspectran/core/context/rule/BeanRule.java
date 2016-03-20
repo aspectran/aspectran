@@ -1,79 +1,123 @@
 /**
- *    Copyright 2009-2015 the original author or authors.
+ * Copyright 2008-2016 Juho Jeong
  *
- *    Licensed under the Apache License, Version 2.0 (the "License");
- *    you may not use this file except in compliance with the License.
- *    You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *    Unless required by applicable law or agreed to in writing, software
- *    distributed under the License is distributed on an "AS IS" BASIS,
- *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *    See the License for the specific language governing permissions and
- *    limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package com.aspectran.core.context.rule;
 
+import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.aspectran.core.context.bean.ablility.DisposableBean;
+import com.aspectran.core.context.bean.ablility.FactoryBean;
 import com.aspectran.core.context.bean.ablility.InitializableBean;
 import com.aspectran.core.context.bean.ablility.InitializableTransletBean;
+import com.aspectran.core.context.rule.ability.BeanReferenceInspectable;
+import com.aspectran.core.context.rule.ability.Replicable;
+import com.aspectran.core.context.rule.type.BeanReferrerType;
 import com.aspectran.core.context.rule.type.ScopeType;
 import com.aspectran.core.util.BooleanUtils;
-import com.aspectran.core.util.MethodUtils;
+import com.aspectran.core.util.ToStringBuilder;
 import com.aspectran.core.util.apon.Parameters;
 
 /**
  * The Class BeanRule.
  * 
- * <p>Created: 2009. 03. 09 오후 23:48:09</p>
+ * <p>Created: 2009. 03. 09 PM 23:48:09</p>
  */
-public class BeanRule implements Cloneable {
+public class BeanRule implements Replicable<BeanRule>, BeanReferenceInspectable {
 
-	protected String id;
+	public static final String CLASS_DIRECTIVE = "class";
 
-	protected String className;
+	public static final String CLASS_DIRECTIVE_PREFIX = "class:";
 
-	protected Class<?> beanClass;
+	private static final BeanReferrerType BEAN_REFERABLE_RULE_TYPE = BeanReferrerType.BEAN_RULE;
 
-	protected String maskPattern;
+	private String id;
+
+	private String className;
+
+	private Class<?> beanClass;
+
+	private String scanPath;
 	
-	protected ScopeType scopeType;
-
-	protected Boolean singleton;
-
-	protected String factoryMethodName;
-	
-	protected String initMethodName;
-	
-	private Boolean initMethodRequiresTranslet;
-	
-	protected String destroyMethodName;
-
-	protected Boolean lazyInit;
-
-	protected Boolean important;
-
-	protected ItemRuleMap constructorArgumentItemRuleMap;
-	
-	protected ItemRuleMap propertyItemRuleMap;
-	
-	private Object bean;
-	
-	private boolean registered;
-	
-	private boolean overrided;
-
-	private boolean scanned;
-	
-	private boolean proxied;
+	private String maskPattern;
 	
 	private Parameters filterParameters;
+
+	private ScopeType scopeType;
+
+	private Boolean singleton;
+
+	private String offerBeanId;
 	
+	private Class<?> offerBeanClass;
+
+	private String offerMethodName;
+
+	private Method offerMethod;
+	
+	private boolean offerMethodRequiresTranslet;
+
+	private boolean offered;
+	
+	private Class<?> targetBeanClass;
+
+	private String factoryMethodName;
+
+	private Method factoryMethod;
+	
+	private boolean factoryMethodRequiresTranslet;
+
+	private String initMethodName;
+	
+	private Method initMethod;
+	
+	private boolean initMethodRequiresTranslet;
+	
+	private String destroyMethodName;
+
+	private Method destroyMethod;
+	
+	private ItemRuleMap constructorArgumentItemRuleMap;
+	
+	private ItemRuleMap propertyItemRuleMap;
+
+	private Boolean lazyInit;
+
+	private Boolean important;
+
 	private String description;
-	
+
+	private boolean factoryBean;
+
+	private boolean disposableBean;
+
+	private boolean initializableBean;
+
+	private boolean initializableTransletBean;
+
+	private boolean replicated;
+
+	private boolean proxied;
+
+	private List<AutowireRule> autowireTargetList;
+
+	private Object bean; // only for singleton
+
+	private boolean registered;
+
 	/**
 	 * Returns the bean id.
 	 *
@@ -123,9 +167,33 @@ public class BeanRule implements Cloneable {
 	 * Sets the bean class.
 	 *
 	 * @param beanClass the new bean class
+	 * @throws SecurityException 
 	 */
 	public void setBeanClass(Class<?> beanClass) {
 		this.beanClass = beanClass;
+		this.className = beanClass.getName();
+		this.factoryBean = FactoryBean.class.isAssignableFrom(beanClass);
+		this.disposableBean = DisposableBean.class.isAssignableFrom(beanClass);
+		this.initializableBean = InitializableBean.class.isAssignableFrom(beanClass);
+		this.initializableTransletBean = InitializableTransletBean.class.isAssignableFrom(beanClass);
+	}
+
+	/**
+	 * Gets the scan path.
+	 *
+	 * @return the scan path
+	 */
+	public String getScanPath() {
+		return scanPath;
+	}
+
+	/**
+	 * Sets the scan path.
+	 *
+	 * @param scanPath the new scan path
+	 */
+	public void setScanPath(String scanPath) {
+		this.scanPath = scanPath;
 	}
 
 	/**
@@ -135,6 +203,24 @@ public class BeanRule implements Cloneable {
 	 */
 	public String getMaskPattern() {
 		return maskPattern;
+	}
+
+	/**
+	 * Gets the filter parameters.
+	 *
+	 * @return the filter parameters
+	 */
+	public Parameters getFilterParameters() {
+		return filterParameters;
+	}
+
+	/**
+	 * Sets the filter parameters.
+	 *
+	 * @param filterParameters the new filter parameters
+	 */
+	public void setFilterParameters(Parameters filterParameters) {
+		this.filterParameters = filterParameters;
 	}
 
 	/**
@@ -183,12 +269,106 @@ public class BeanRule implements Cloneable {
 	}
 
 	/**
+	 * Gets the offer bean id.
+	 *
+	 * @return the offer bean id
+	 */
+	public String getOfferBeanId() {
+		return offerBeanId;
+	}
+
+	/**
+	 * Sets the offer bean id.
+	 *
+	 * @param offerBeanId the new offer bean id
+	 */
+	public void setOfferBeanId(String offerBeanId) {
+		this.offerBeanId = offerBeanId;
+	}
+
+	/**
+	 * Gets offer bean class.
+	 *
+	 * @return the offer bean class
+	 */
+	public Class<?> getOfferBeanClass() {
+		return offerBeanClass;
+	}
+
+	/**
+	 * Sets offer bean class.
+	 *
+	 * @param offerBeanClass the offer bean class
+	 */
+	public void setOfferBeanClass(Class<?> offerBeanClass) {
+		this.offerBeanClass = offerBeanClass;
+	}
+
+	/**
+	 * Gets the offer bean's offer method name.
+	 *
+	 * @return the factory method
+	 */
+	public String getOfferMethodName() {
+		return offerMethodName;
+	}
+
+	/**
+	 * Sets the offer bean's method name.
+	 *
+	 * @param offerMethodName the new offer method name
+	 */
+	public void setOfferMethodName(String offerMethodName) {
+		this.offerMethodName = offerMethodName;
+	}
+	
+	public Method getOfferMethod() {
+		return offerMethod;
+	}
+
+	public void setOfferMethod(Method offerMethod) {
+		this.offerMethod = offerMethod;
+	}
+
+	public boolean isOfferMethodRequiresTranslet() {
+		return offerMethodRequiresTranslet;
+	}
+
+	public void setOfferMethodRequiresTranslet(boolean offerMethodRequiresTranslet) {
+		this.offerMethodRequiresTranslet = offerMethodRequiresTranslet;
+	}
+
+	public boolean isOffered() {
+		return offered;
+	}
+
+	public void setOffered(boolean offered) {
+		this.offered = offered;
+	}
+
+	/**
 	 * Gets the factory method name.
 	 *
 	 * @return the factory method
 	 */
 	public String getFactoryMethodName() {
 		return factoryMethodName;
+	}
+	
+	public Class<?> getTargetBeanClass() {
+		if(targetBeanClass != null)
+			return targetBeanClass;
+		return beanClass;
+	}
+
+	public void setTargetBeanClass(Class<?> targetBeanClass) {
+		this.targetBeanClass = targetBeanClass;
+	}
+	
+	public String getTargetBeanClassName() {
+		if(targetBeanClass != null)
+			return targetBeanClass.getName();
+		return className;
 	}
 
 	/**
@@ -198,6 +378,22 @@ public class BeanRule implements Cloneable {
 	 */
 	public void setFactoryMethodName(String factoryMethodName) {
 		this.factoryMethodName = factoryMethodName;
+	}
+
+	public Method getFactoryMethod() {
+		return factoryMethod;
+	}
+
+	public void setFactoryMethod(Method factoryMethod) {
+		this.factoryMethod = factoryMethod;
+	}
+
+	public boolean isFactoryMethodRequiresTranslet() {
+		return factoryMethodRequiresTranslet;
+	}
+
+	public void setFactoryMethodRequiresTranslet(boolean factoryMethodRequiresTranslet) {
+		this.factoryMethodRequiresTranslet = factoryMethodRequiresTranslet;
 	}
 
 	/**
@@ -218,12 +414,20 @@ public class BeanRule implements Cloneable {
 		this.initMethodName = initMethodName;
 	}
 	
+	public Method getInitMethod() {
+		return initMethod;
+	}
+
+	public void setInitMethod(Method initMethod) {
+		this.initMethod = initMethod;
+	}
+
 	/**
 	 * Returns whether or not the initialization method requiring Translet argument.
 	 *
 	 * @return whether or not the initialization method requiring Translet argument
 	 */
-	public Boolean getInitMethodRequiresTranslet() {
+	public boolean isInitMethodRequiresTranslet() {
 		return initMethodRequiresTranslet;
 	}
 
@@ -232,7 +436,7 @@ public class BeanRule implements Cloneable {
 	 *
 	 * @param initMethodRequiresTranslet whether or not the initialization method requiring Translet argument
 	 */
-	public void setInitMethodRequiresTranslet(Boolean initMethodRequiresTranslet) {
+	public void setInitMethodRequiresTranslet(boolean initMethodRequiresTranslet) {
 		this.initMethodRequiresTranslet = initMethodRequiresTranslet;
 	}
 
@@ -252,6 +456,14 @@ public class BeanRule implements Cloneable {
 	 */
 	public void setDestroyMethodName(String destroyMethodName) {
 		this.destroyMethodName = destroyMethodName;
+	}
+
+	public Method getDestroyMethod() {
+		return destroyMethod;
+	}
+
+	public void setDestroyMethod(Method destroyMethod) {
+		this.destroyMethod = destroyMethod;
 	}
 
 	/**
@@ -330,6 +542,93 @@ public class BeanRule implements Cloneable {
 	}
 	
 	/**
+	 * Returns whether bean implements FactoryBean.
+	 *
+	 * @return the boolean
+	 */
+	public boolean isFactoryBean() {
+		return factoryBean;
+	}
+
+	/**
+	 * Returns whether bean implements DisposableBean.
+	 *
+	 * @return the boolean
+	 */
+	public boolean isDisposableBean() {
+		return disposableBean;
+	}
+
+	/**
+	 * Returns whether bean implements InitializableBean.
+	 *
+	 * @return the boolean
+	 */
+	public boolean isInitializableBean() {
+		return initializableBean;
+	}
+
+	/**
+	 * Returns whether bean implements InitializableTransletBean.
+	 *
+	 * @return the boolean
+	 */
+	public boolean isInitializableTransletBean() {
+		return initializableTransletBean;
+	}
+
+	/**
+	 * Returns whether bean is replicated.
+	 *
+	 * @return true, if is replicated
+	 */
+	public boolean isReplicated() {
+		return replicated;
+	}
+
+	/**
+	 * Sets whether bean is replicated.
+	 *
+	 * @param replicated true, if is replicated
+	 */
+	public void setReplicated(boolean replicated) {
+		this.replicated = replicated;
+	}
+
+	/**
+	 * Returns whether bean is proxied.
+	 *
+	 * @return the boolean
+	 */
+	public boolean isProxied() {
+		return proxied;
+	}
+
+	/**
+	 * Sets whether bean is proxied.
+	 *
+	 * @param proxied true, if is proxied
+	 */
+	public void setProxied(boolean proxied) {
+		this.proxied = proxied;
+	}
+
+	public boolean isProxiable() {
+		return (!offered && !factoryBean && factoryMethod == null);
+	}
+
+	public List<AutowireRule> getAutowireTargetList() {
+		return autowireTargetList;
+	}
+
+	public void addAutowireTarget(AutowireRule autowireRule) {
+		if(autowireTargetList == null) {
+			autowireTargetList = new ArrayList<AutowireRule>();
+		}
+		autowireTargetList.add(autowireRule);
+	}
+
+	/**
 	 * Gets the bean.
 	 *
 	 * @return the bean
@@ -348,16 +647,16 @@ public class BeanRule implements Cloneable {
 	}
 
 	/**
-	 * Checks if is registered.
+	 * Returns whether bean is registered.
 	 *
-	 * @return true, if is registered
+	 * @return true, if bean is registered
 	 */
 	public boolean isRegistered() {
 		return registered;
 	}
 
 	/**
-	 * Sets the registered.
+	 * Sets whether bean is registered.
 	 *
 	 * @param registered the new registered
 	 */
@@ -365,53 +664,6 @@ public class BeanRule implements Cloneable {
 		this.registered = registered;
 	}
 
-	/**
-	 * Returns <code>true</code> if the bean definition was overridden.
-	 *
-	 * @return true, if is overrided
-	 */
-	public boolean isOverrided() {
-		return overrided;
-	}
-	
-	public void setOverrided(boolean overrided) {
-		this.overrided = overrided;
-	}
-
-	/**
-	 * Returns <code>true</code> if the bean is auto-scanned.
-	 *
-	 * @return true, if is scanned
-	 */
-	public boolean isScanned() {
-		return scanned;
-	}
-
-	public void setScanned(boolean scanned) {
-		this.scanned = scanned;
-	}
-	
-	public boolean isProxied() {
-		return proxied;
-	}
-
-	public void setProxied(boolean proxied) {
-		this.proxied = proxied;
-	}
-
-	public Parameters getFilterParameters() {
-		return filterParameters;
-	}
-
-	public void setFilterParameters(Parameters filterParameters) {
-		this.filterParameters = filterParameters;
-	}
-
-	public BeanRule clone() throws CloneNotSupportedException {
-		// shallow copy
-		return (BeanRule)super.clone();              
-	}
-	
 	/**
 	 * Gets the description.
 	 *
@@ -429,148 +681,181 @@ public class BeanRule implements Cloneable {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
+	
 	@Override
-	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		sb.append("{id=").append(id);
-		sb.append(", class=").append(className);
-		sb.append(", scope=").append(scopeType);
-		sb.append(", factoryMethod=").append(factoryMethodName);
-		sb.append(", initMethod=").append(initMethodName);
-		sb.append(", destroyMethod=").append(destroyMethodName);
-		sb.append(", lazyInit=").append(lazyInit);
-		sb.append(", important=").append(important);
-		sb.append(", proxied=").append(proxied);
-		sb.append(", scanned=").append(scanned);
-		if(constructorArgumentItemRuleMap != null) {
-			sb.append(", constructorArguments=[");
-			int sbLength = sb.length();
-			for(String name : constructorArgumentItemRuleMap.keySet()) {
-				if(sb.length() > sbLength)
-					sb.append(", ");
-				
-				sb.append(name);
-			}
-			sb.append("]");
-		}
-		if(propertyItemRuleMap != null) {
-			sb.append(", properties=[");
-			int sbLength = sb.length();
-			for(String name : propertyItemRuleMap.keySet()) {
-				if(sb.length() > sbLength)
-					sb.append(", ");
-				
-				sb.append(name);
-			}
-			sb.append("]");
-		}
-		sb.append("}");
-		
-		return sb.toString();
+	public BeanRule replicate() {
+		return replicate(this);
+	}
+
+	@Override
+	public BeanReferrerType getBeanReferrerType() {
+		return BEAN_REFERABLE_RULE_TYPE;
 	}
 	
-	public static BeanRule newInstance(String id, String maskPattern, String className, String scope, Boolean singleton, String factoryMethod, String initMethodName, String destroyMethodName, Boolean lazyInit, Boolean important) {
-		if(id == null)
-			throw new IllegalArgumentException("The <bean> element requires a id attribute.");
+	@Override
+	public String toString() {
+		ToStringBuilder tsb = new ToStringBuilder();
+		tsb.append("id", id);
+		if(!offered) {
+			tsb.append("class", className);
+			tsb.append("scope", scopeType);
+			tsb.append("initMethod", initMethodName);
+			tsb.append("factoryMethod", factoryMethodName);
+			tsb.append("destroyMethod", destroyMethodName);
+			tsb.append("factoryBean", factoryBean);
+			tsb.append("initializableBean", initializableBean);
+			tsb.append("initializableTransletBean", initializableTransletBean);
+			tsb.append("disposableBean", disposableBean);
+			tsb.append("lazyInit", lazyInit);
+			tsb.append("important", important);
+			tsb.append("proxied", proxied);
+			tsb.append("replicated", replicated);
+			if(constructorArgumentItemRuleMap != null)
+				tsb.append("constructorArguments", constructorArgumentItemRuleMap.keySet());
+			if(propertyItemRuleMap != null)
+				tsb.append("properties", propertyItemRuleMap.keySet());
+		} else {
+			tsb.append("scope", scopeType);
+			tsb.append("offerBean", offerBeanId);
+			tsb.append("offerMethod", offerMethodName);
+			tsb.append("initMethod", initMethodName);
+			tsb.append("factoryMethod", factoryMethodName);
+			tsb.append("destroyMethod", destroyMethodName);
+			tsb.append("lazyInit", lazyInit);
+			tsb.append("important", important);
+			tsb.append("proxied", proxied);
+		}
+		return tsb.toString();
+	}
 
-		if(className == null)
-			throw new IllegalArgumentException("The <bean> element requires a class attribute.");
+	public static BeanRule newInstance(
+			String id,
+			String className,
+			String scanPath,
+			String maskPattern,
+			String initMethodName,
+			String destroyMethodName,
+			String factoryMethodName,
+			String scope,
+			Boolean singleton,
+			Boolean lazyInit,
+			Boolean important) {
+		
+		if(className == null && scanPath == null)
+			throw new IllegalArgumentException("Bean class must not be null.");
 
-		ScopeType scopeType = ScopeType.valueOf(scope);
+		ScopeType scopeType = ScopeType.lookup(scope);
+
+		if(scope != null && scopeType == null)
+			throw new IllegalArgumentException("No scope type registered for '" + scope + "'.");
+
+		if(scopeType == null)
+			scopeType = (singleton == null || singleton == Boolean.TRUE) ? ScopeType.SINGLETON : ScopeType.PROTOTYPE;
+
+		BeanRule beanRule = new BeanRule();
+		beanRule.setId(id);
+		if(scanPath == null) {
+			beanRule.setClassName(className);
+		} else {
+			beanRule.setScanPath(scanPath);
+			beanRule.setMaskPattern(maskPattern);
+		}
+		beanRule.setScopeType(scopeType);
+		beanRule.setSingleton(singleton);
+		beanRule.setInitMethodName(initMethodName);
+		beanRule.setDestroyMethodName(destroyMethodName);
+		beanRule.setFactoryMethodName(factoryMethodName);
+		beanRule.setLazyInit(lazyInit);
+		beanRule.setImportant(important);
+
+		return beanRule;
+	}
+	
+	public static BeanRule newOfferedBeanInstance(
+			String id,
+			String offerBeanId,
+			String offerMethodName,
+			String initMethodName,
+			String destroyMethodName,
+			String factoryMethodName,
+			String scope,
+			Boolean singleton,
+			Boolean lazyInit,
+			Boolean important) {
+		
+		ScopeType scopeType = ScopeType.lookup(scope);
 		
 		if(scope != null && scopeType == null)
-			throw new IllegalArgumentException("No scope-type registered for scope '" + scope + "'.");
+			throw new IllegalArgumentException("No scope type registered for '" + scope + "'.");
 		
 		if(scopeType == null)
-			scopeType = (singleton == Boolean.TRUE) ? ScopeType.SINGLETON : ScopeType.PROTOTYPE;
+			scopeType = (singleton == null || singleton == Boolean.TRUE) ? ScopeType.SINGLETON : ScopeType.PROTOTYPE;
 		
 		BeanRule beanRule = new BeanRule();
 		beanRule.setId(id);
-		beanRule.setMaskPattern(maskPattern);
-		beanRule.setClassName(className);
 		beanRule.setScopeType(scopeType);
 		beanRule.setSingleton(singleton);
-		beanRule.setFactoryMethodName(factoryMethod);
+		beanRule.setOfferBeanId(offerBeanId);
+		beanRule.setOfferMethodName(offerMethodName);
+		beanRule.setOffered(true);
 		beanRule.setInitMethodName(initMethodName);
 		beanRule.setDestroyMethodName(destroyMethodName);
+		beanRule.setFactoryMethodName(factoryMethodName);
 		beanRule.setLazyInit(lazyInit);
 		beanRule.setImportant(important);
 		
 		return beanRule;
 	}
-/*
-	public static String combineBeanIdPattern(String beanIdPrefix, String beanIdSuffix) {
-		if(beanIdPrefix == null && beanIdSuffix != null) {
-			return BEAN_ID_PATTERN_DELIMITER + beanIdSuffix;
-		} else if(beanIdPrefix != null && beanIdSuffix == null) {
-			return beanIdPrefix + BEAN_ID_PATTERN_DELIMITER;
-		} else {
-			return BEAN_ID_PATTERN_DELIMITER;
+	
+	public static BeanRule replicate(BeanRule beanRule) {
+		BeanRule br = new BeanRule();
+		br.setId(beanRule.getId());
+		if(beanRule.getScanPath() == null) {
+			br.setBeanClass(beanRule.getBeanClass());
 		}
-	}
-*/
-
-	public static void checkAccessibleMethod(BeanRule beanRule) {
-		Class<?> beanClass = beanRule.getBeanClass();
-		String initMethodName = beanRule.getInitMethodName();
-		String destroyMethodName = beanRule.getDestroyMethodName();
+		br.setScopeType(beanRule.getScopeType());
+		br.setSingleton(beanRule.getSingleton());
+		br.setOfferBeanId(beanRule.getOfferBeanId());
+		br.setOfferMethodName(beanRule.getOfferMethodName());
+		br.setInitMethodName(beanRule.getInitMethodName());
+		br.setDestroyMethodName(beanRule.getDestroyMethodName());
+		br.setFactoryMethodName(beanRule.getFactoryMethodName());
+		br.setConstructorArgumentItemRuleMap(beanRule.getConstructorArgumentItemRuleMap());
+		br.setPropertyItemRuleMap(beanRule.getPropertyItemRuleMap());
+		br.setLazyInit(beanRule.getLazyInit());
+		br.setImportant(beanRule.getImportant());
+		br.setDescription(beanRule.getDescription());
+		br.setReplicated(true);
 		
-		if(initMethodName == null) {
-			if(InitializableTransletBean.class.isAssignableFrom(beanClass)) {
-				initMethodName = InitializableBean.INITIALIZE_METHOD_NAME;
-				beanRule.setInitMethodName(initMethodName);
-				beanRule.setInitMethodRequiresTranslet(Boolean.TRUE);
-			} else if(InitializableBean.class.isAssignableFrom(beanClass)) {
-				initMethodName = InitializableBean.INITIALIZE_METHOD_NAME;
-				beanRule.setInitMethodName(initMethodName);
-			}
-		} else {
-			if(MethodUtils.getAccessibleMethod(beanClass, initMethodName, null) == null) {
-				throw new IllegalArgumentException("No such initialization method '" + initMethodName + "() on bean class: " + beanClass);
-			}
-		}
-		
-		if(destroyMethodName == null) {
-			if(DisposableBean.class.isAssignableFrom(beanClass)) {
-				beanRule.setDestroyMethodName(DisposableBean.DESTROY_METHOD_NAME);
-			}
-		} else {
-			if(MethodUtils.getAccessibleMethod(beanClass, destroyMethodName, null) == null) {
-				throw new IllegalArgumentException("No such destroy method '" + destroyMethodName + "() on bean class: " + beanClass);
-			}
-		}
+		return br;
 	}
 
 	public static void updateConstructorArgument(BeanRule beanRule, String text) {
-		List<Parameters> argumentParametersList = ItemRule.toItemParametersList(text);
-		
-		if(argumentParametersList == null)
-			return;
-		
-		ItemRuleMap constructorArgumentItemRuleMap = ItemRule.toItemRuleMap(argumentParametersList);
-		
-		if(constructorArgumentItemRuleMap == null)
-			return;
-		
-		beanRule.setConstructorArgumentItemRuleMap(constructorArgumentItemRuleMap);
+		if(!beanRule.isOffered()) {
+			List<Parameters> argumentParametersList = ItemRule.toItemParametersList(text);
+			if(argumentParametersList == null)
+				return;
+
+			ItemRuleMap constructorArgumentItemRuleMap = ItemRule.toItemRuleMap(argumentParametersList);
+			if(constructorArgumentItemRuleMap == null)
+				return;
+
+			beanRule.setConstructorArgumentItemRuleMap(constructorArgumentItemRuleMap);
+		}
 	}
 	
 	public static void updateProperty(BeanRule beanRule, String text) {
-		List<Parameters> propertyParametersList = ItemRule.toItemParametersList(text);
-		
-		if(propertyParametersList == null)
-			return;
-		
-		ItemRuleMap propertyItemRuleMap = ItemRule.toItemRuleMap(propertyParametersList);
-		
-		if(propertyItemRuleMap == null)
-			return;
-		
-		beanRule.setPropertyItemRuleMap(propertyItemRuleMap);
+		if(!beanRule.isOffered()) {
+			List<Parameters> propertyParametersList = ItemRule.toItemParametersList(text);
+			if(propertyParametersList == null)
+				return;
+
+			ItemRuleMap propertyItemRuleMap = ItemRule.toItemRuleMap(propertyParametersList);
+			if(propertyItemRuleMap == null)
+				return;
+
+			beanRule.setPropertyItemRuleMap(propertyItemRuleMap);
+		}
 	}
 
 }

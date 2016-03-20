@@ -1,17 +1,17 @@
 /**
- *    Copyright 2009-2015 the original author or authors.
+ * Copyright 2008-2016 Juho Jeong
  *
- *    Licensed under the Apache License, Version 2.0 (the "License");
- *    you may not use this file except in compliance with the License.
- *    You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *    Unless required by applicable law or agreed to in writing, software
- *    distributed under the License is distributed on an "AS IS" BASIS,
- *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *    See the License for the specific language governing permissions and
- *    limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package com.aspectran.core.util.logging;
 
@@ -31,42 +31,12 @@ public final class LogFactory {
   private static Constructor<? extends Log> logConstructor;
 
   static {
-    tryImplementation(new Runnable() {
-      @Override
-      public void run() {
-        useSlf4jLogging();
-      }
-    });
-    tryImplementation(new Runnable() {
-      @Override
-      public void run() {
-        useCommonsLogging();
-      }
-    });
-    tryImplementation(new Runnable() {
-      @Override
-      public void run() {
-        useLog4J2Logging();
-      }
-    });
-    tryImplementation(new Runnable() {
-      @Override
-      public void run() {
-        useLog4JLogging();
-      }
-    });
-    tryImplementation(new Runnable() {
-      @Override
-      public void run() {
-        useJdkLogging();
-      }
-    });
-    tryImplementation(new Runnable() {
-      @Override
-      public void run() {
-        useNoLogging();
-      }
-    });
+    tryImplementation(LogFactory::useSlf4jLogging);
+    tryImplementation(LogFactory::useCommonsLogging);
+    tryImplementation(LogFactory::useLog4J2Logging);
+    tryImplementation(LogFactory::useLog4JLogging);
+    tryImplementation(LogFactory::useJdkLogging);
+    tryImplementation(LogFactory::useNoLogging);
   }
 
   private LogFactory() {
@@ -79,7 +49,7 @@ public final class LogFactory {
 
   public static Log getLog(String logger) {
     try {
-      return logConstructor.newInstance(new Object[] { logger });
+      return logConstructor.newInstance(logger);
     } catch (Throwable t) {
       throw new RuntimeException("Error creating logger for logger " + logger + ".  Cause: " + t, t);
     }
@@ -129,8 +99,8 @@ public final class LogFactory {
 
   private static void setImplementation(Class<? extends Log> implClass) {
     try {
-      Constructor<? extends Log> candidate = implClass.getConstructor(new Class[] { String.class });
-      Log log = candidate.newInstance(new Object[] { LogFactory.class.getName() });
+      Constructor<? extends Log> candidate = implClass.getConstructor(String.class);
+      Log log = candidate.newInstance(LogFactory.class.getName());
       if (log.isDebugEnabled()) {
         log.debug("Logging initialized using '" + implClass + "' adapter.");
       }

@@ -1,23 +1,22 @@
 /**
- *    Copyright 2009-2015 the original author or authors.
+ * Copyright 2008-2016 Juho Jeong
  *
- *    Licensed under the Apache License, Version 2.0 (the "License");
- *    you may not use this file except in compliance with the License.
- *    You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *    Unless required by applicable law or agreed to in writing, software
- *    distributed under the License is distributed on an "AS IS" BASIS,
- *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *    See the License for the specific language governing permissions and
- *    limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package com.aspectran.core.activity;
 
 import java.util.List;
 
-import com.aspectran.core.activity.request.RequestException;
 import com.aspectran.core.activity.response.Response;
 import com.aspectran.core.activity.response.ResponseException;
 import com.aspectran.core.adapter.RequestAdapter;
@@ -29,26 +28,34 @@ import com.aspectran.core.context.rule.ExceptionHandlingRule;
 import com.aspectran.core.context.rule.type.JoinpointScopeType;
 
 /**
- * The Class SessionScopeActivity
- * 
+ * The Class SessionScopeActivity.
+ *
  * @since 1.5.0
  */
 public final class SessionScopeActivity extends CoreActivity implements Activity {
 
+	/**
+	 * Instantiates a new session scope activity.
+	 *
+	 * @param context the context
+	 * @param sessionAdapter the session adapter
+	 */
 	public SessionScopeActivity(ActivityContext context, SessionAdapter sessionAdapter) {
 		super(context);
 		setSessionAdapter(sessionAdapter);
 		newTranslet();
 	}
 
-	public void ready(String transletName) throws ActivityException {
-	}
-	
-	protected void request(Translet translet) throws RequestException {
-	}
-	
-	@SuppressWarnings("unchecked")
 	@Override
+	public void ready(String transletName) {
+	}
+
+	@Override
+	protected void request() {
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
 	public <T extends Activity> T newActivity() {
 		SessionScopeActivity activity = new SessionScopeActivity(getActivityContext(), getSessionAdapter());
 		return (T)activity;
@@ -113,7 +120,8 @@ public final class SessionScopeActivity extends CoreActivity implements Activity
 	public void setRequestScope(Scope requestScope) {
 		throw new UnsupportedOperationException();
 	}
-	
+
+	@Override
 	public JoinpointScopeType getCurrentJoinpointScope() {
 		return JoinpointScopeType.SESSION;
 	}

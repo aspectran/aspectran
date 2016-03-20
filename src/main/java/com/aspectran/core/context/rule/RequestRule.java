@@ -1,17 +1,17 @@
 /**
- *    Copyright 2009-2015 the original author or authors.
+ * Copyright 2008-2016 Juho Jeong
  *
- *    Licensed under the Apache License, Version 2.0 (the "License");
- *    you may not use this file except in compliance with the License.
- *    You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *    Unless required by applicable law or agreed to in writing, software
- *    distributed under the License is distributed on an "AS IS" BASIS,
- *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *    See the License for the specific language governing permissions and
- *    limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package com.aspectran.core.context.rule;
 
@@ -20,17 +20,21 @@ import java.nio.charset.IllegalCharsetNameException;
 
 import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
 import com.aspectran.core.context.rule.type.RequestMethodType;
+import com.aspectran.core.util.ToStringBuilder;
 
 /**
  * The Class RequestRule.
  * 
- * <p>Created: 2008. 03. 22 오후 5:48:09</p>
+ * <p>Created: 2008. 03. 22 PM 5:48:09</p>
  */
 public class RequestRule {
 
-	/** The Constant CHARACTER_ENCODING_SETTING_NAME. */
 	public static final String CHARACTER_ENCODING_SETTING_NAME = "characterEncoding";
 	
+	public static final String LOCALE_RESOLVER_SETTING_NAME = "localeResolver";
+
+	public static final String LOCALE_CHANGE_INTERCEPTOR_SETTING_NAME = "localeChangeInterceptor";
+
 	private String characterEncoding;
 	
 	private RequestMethodType requestMethod;
@@ -118,20 +122,6 @@ public class RequestRule {
 	}
 
 	/**
-	 * Gets the aspect advice rule registry.
-	 *
-	 * @param clone the clone
-	 * @return the aspect advice rule registry
-	 * @throws CloneNotSupportedException the clone not supported exception
-	 */
-	public AspectAdviceRuleRegistry getAspectAdviceRuleRegistry(boolean clone) throws CloneNotSupportedException {
-		if(clone && aspectAdviceRuleRegistry != null)
-			return (AspectAdviceRuleRegistry)aspectAdviceRuleRegistry.clone();
-		
-		return aspectAdviceRuleRegistry;
-	}
-	
-	/**
 	 * Sets the aspect advice rule registry.
 	 *
 	 * @param aspectAdviceRuleRegistry the new aspect advice rule registry
@@ -140,41 +130,34 @@ public class RequestRule {
 		this.aspectAdviceRuleRegistry = aspectAdviceRuleRegistry;
 	}
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
+	public AspectAdviceRuleRegistry replicateAspectAdviceRuleRegistry() {
+		if(aspectAdviceRuleRegistry == null)
+			return null;
+
+		return aspectAdviceRuleRegistry.replicate();
+	}
+
 	@Override
 	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		sb.append("{method=").append(requestMethod);
-		sb.append(", characterEncoding=").append(characterEncoding);
-		if(attributeItemRuleMap != null) {
-			sb.append(", attributes=[");
-			int sbLength = sb.length();
-			for(String name : attributeItemRuleMap.keySet()) {
-				if(sb.length() > sbLength)
-					sb.append(", ");
-				sb.append(name);
-			}
-			sb.append("]");
-		}
-		sb.append("}");
-		
-		return sb.toString();
+		ToStringBuilder tsb = new ToStringBuilder();
+		tsb.append("method", requestMethod);
+		tsb.append("characterEncoding", characterEncoding);
+		tsb.append("attributes", attributeItemRuleMap);
+		tsb.append("aspectAdviceRuleRegistry", aspectAdviceRuleRegistry);
+		return tsb.toString();
 	}
 	
 	public static RequestRule newInstance(String requestMethod, String characterEncoding) {
 		RequestMethodType requestMethodType = null;
 		
 		if(requestMethod != null) {
-			requestMethodType = RequestMethodType.valueOf(requestMethod);
-			
+			requestMethodType = RequestMethodType.lookup(requestMethod);
 			if(requestMethodType == null)
-				throw new IllegalArgumentException("Unknown request method type '" + requestMethod + "'");
+				throw new IllegalArgumentException("No request method type registered for '" + requestMethod + "'.");
 		}
 		
 		if(characterEncoding != null && !Charset.isSupported(characterEncoding))
-			throw new IllegalCharsetNameException("Given charset name is illegal. '" + characterEncoding + "'");
+			throw new IllegalCharsetNameException("Given charset name is illegal. charsetName: " + characterEncoding);
 		
 		RequestRule requestRule = new RequestRule();
 		requestRule.setRequestMethod(requestMethodType);

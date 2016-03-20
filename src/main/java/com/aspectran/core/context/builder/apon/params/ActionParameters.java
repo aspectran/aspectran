@@ -1,17 +1,17 @@
 /**
- *    Copyright 2009-2015 the original author or authors.
+ * Copyright 2008-2016 Juho Jeong
  *
- *    Licensed under the Apache License, Version 2.0 (the "License");
- *    you may not use this file except in compliance with the License.
- *    You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *    Unless required by applicable law or agreed to in writing, software
- *    distributed under the License is distributed on an "AS IS" BASIS,
- *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *    See the License for the specific language governing permissions and
- *    limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package com.aspectran.core.context.builder.apon.params;
 
@@ -26,6 +26,8 @@ public class ActionParameters extends AbstractParameters implements Parameters {
 	
 	public static final ParameterDefine beanId;
 	public static final ParameterDefine methodName;
+	public static final ParameterDefine hidden;
+
 	public static final ParameterDefine arguments;
 	public static final ParameterDefine properties;
 	
@@ -34,7 +36,6 @@ public class ActionParameters extends AbstractParameters implements Parameters {
 
 	public static final ParameterDefine echo;
 	
-	public static final ParameterDefine hidden;
 	
 	private static final ParameterDefine[] parameterDefines;
 
@@ -42,23 +43,23 @@ public class ActionParameters extends AbstractParameters implements Parameters {
 		id = new ParameterDefine("id", ParameterValueType.STRING);
 		beanId = new ParameterDefine("bean", ParameterValueType.STRING);
 		methodName = new ParameterDefine("method", ParameterValueType.STRING);
+		hidden = new ParameterDefine("hidden", ParameterValueType.BOOLEAN);
 		arguments = new ParameterDefine("argument", ItemHolderParameters.class);
 		properties = new ParameterDefine("property", ItemHolderParameters.class);
 		include = new ParameterDefine("include", ParameterValueType.STRING);
 		attributes = new ParameterDefine("attribute", ItemHolderParameters.class);
 		echo = new ParameterDefine("echo", ItemHolderParameters.class);
-		hidden = new ParameterDefine("hidden", ParameterValueType.BOOLEAN);
 		
 		parameterDefines = new ParameterDefine[] {
 				id,
 				beanId,
 				methodName,
+				hidden,
 				arguments,
 				properties,
 				include,
 				attributes,
-				echo,
-				hidden
+				echo
 		};
 	}
 	

@@ -1,99 +1,57 @@
 /**
- *    Copyright 2009-2015 the original author or authors.
+ * Copyright 2008-2016 Juho Jeong
  *
- *    Licensed under the Apache License, Version 2.0 (the "License");
- *    you may not use this file except in compliance with the License.
- *    You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *    Unless required by applicable law or agreed to in writing, software
- *    distributed under the License is distributed on an "AS IS" BASIS,
- *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *    See the License for the specific language governing permissions and
- *    limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package com.aspectran.core.context.rule.type;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
- * 주로 응답기(Responser)가 생성하는 응답문서의 Content-Type을 지정하기 위해 사용된다.
- * <p>
- * 지정 가능한 Content-Type의 종류:
- * <dl>
- * <dt>text/plain</dt><dd>TEXT 문서</dd>
- * <dt>text/html</dt><dd>HTML 문서</dd>
- * <dt>text/xml</dt><dd>XML 문서</dd>
- * </dl>
+ * The enum ContentType.
  * 
- * <p>Created: 2008. 03. 26 오전 12:58:38</p>
+ * <p>Created: 2008. 03. 26 AM 12:58:38</p>
  */
-public final class ContentType extends Type {
+public enum ContentType {
 
-	/** The "text/plain" content type. */
-	public static final ContentType TEXT_PLAIN;
+	TEXT_PLAIN("text/plain"),
+	TEXT_XML("text/xml"),
+	TEXT_JSON("application/json"),
+	TEXT_APON("text/apon"),
+	TEXT_HTML("text/html");
 
-	/** The "text/xml" content type. */
-	public static final ContentType TEXT_XML;
-	
-	/** The "text/json" content type. */
-	public static final ContentType TEXT_JSON;
-	
-	/** The "text/apon" content type. */
-	public static final ContentType TEXT_APON;
-	
-	/** The "text/html" content type. */
-	public static final ContentType TEXT_HTML;
-	
-	private static final Map<String, ContentType> types;
-	
-	static {
-		TEXT_PLAIN = new ContentType("text/plain");
-		TEXT_XML = new ContentType("text/xml");
-		TEXT_JSON = new ContentType("application/json");
-		TEXT_APON = new ContentType("text/apon");
-		TEXT_HTML = new ContentType("text/html");
+	private final String alias;
 
-		types = new HashMap<String, ContentType>();
-		types.put(TEXT_PLAIN.toString(), TEXT_PLAIN);
-		types.put(TEXT_XML.toString(), TEXT_XML);
-		types.put(TEXT_JSON.toString(), TEXT_JSON);
-		types.put(TEXT_APON.toString(), TEXT_APON);
-		types.put(TEXT_HTML.toString(), TEXT_HTML);
+	private ContentType(String alias) {
+		this.alias = alias;
 	}
 
-	/**
-	 * Instantiates a new ContentType.
-	 * 
-	 * @param type the type
-	 */
-	private ContentType(String type) {
-		super(type);
+	@Override
+	public String toString() {
+		return this.alias;
 	}
 
 	/**
 	 * Returns a <code>ContentType</code> with a value represented by the specified String.
-	 * 
-	 * @param type the type
-	 * 
+	 *
+	 * @param alias the specified String
 	 * @return the content type
 	 */
-	public static ContentType valueOf(String type) {
-		if(type == null)
-			return null;
-		
-		return types.get(type);
-	}
-	
-	/**
-	 * Returns an array containing the constants of this type, in the order they are declared.
-	 *
-	 * @return the string[]
-	 */
-	public static String[] values() {
-		return types.keySet().toArray(new String[types.size()]);
+	public static ContentType lookup(String alias) {
+		for(ContentType type : values()) {
+			if(type.alias.equals(alias))
+				return type;
+		}
+		return null;
 	}
 
+	
 }

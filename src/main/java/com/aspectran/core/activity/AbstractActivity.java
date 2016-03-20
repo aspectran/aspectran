@@ -1,17 +1,17 @@
 /**
- *    Copyright 2009-2015 the original author or authors.
+ * Copyright 2008-2016 Juho Jeong
  *
- *    Licensed under the Apache License, Version 2.0 (the "License");
- *    you may not use this file except in compliance with the License.
- *    You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *    Unless required by applicable law or agreed to in writing, software
- *    distributed under the License is distributed on an "AS IS" BASIS,
- *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *    See the License for the specific language governing permissions and
- *    limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package com.aspectran.core.activity;
 
@@ -21,6 +21,7 @@ import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
+import com.aspectran.core.context.bean.scope.RequestScope;
 import com.aspectran.core.context.bean.scope.Scope;
 import com.aspectran.core.context.rule.type.JoinpointScopeType;
 import com.aspectran.core.context.translet.TransletInstantiationException;
@@ -28,7 +29,7 @@ import com.aspectran.core.context.translet.TransletInstantiationException;
 /**
  * The Class AbstractActivity.
  * 
- * <p>Created: 2008. 03. 22 오후 5:48:09</p>
+ * <p>Created: 2008. 03. 22 PM 5:48:09</p>
  */
 public abstract class AbstractActivity {
 
@@ -60,7 +61,6 @@ public abstract class AbstractActivity {
 	public ApplicationAdapter getApplicationAdapter() {
 		return applicationAdapter;
 	}
-
 
 	/**
 	 * Gets the session adapter.
@@ -116,7 +116,6 @@ public abstract class AbstractActivity {
 		this.responseAdapter = responseAdapter;
 	}
 
-	
 	/**
 	 * Gets the translet interface class.
 	 *
@@ -140,7 +139,7 @@ public abstract class AbstractActivity {
 	 *
 	 * @return the translet implement class
 	 */
-	public Class<? extends CoreTranslet> getTransletImplementClass() {
+	public Class<? extends CoreTranslet> getTransletImplementationClass() {
 		return transletImplementClass;
 	}
 
@@ -149,7 +148,7 @@ public abstract class AbstractActivity {
 	 *
 	 * @param transletImplementClass the new translet implement class
 	 */
-	protected void setTransletImplementClass(Class<? extends CoreTranslet> transletImplementClass) {
+	protected void setTransletImplementationClass(Class<? extends CoreTranslet> transletImplementClass) {
 		this.transletImplementClass = transletImplementClass;
 	}
 	
@@ -184,7 +183,10 @@ public abstract class AbstractActivity {
 	 *
 	 * @return the request scope
 	 */
-	public Scope getRequestScope() {
+	public synchronized Scope getRequestScope() {
+		if(requestScope == null) {
+			requestScope = new RequestScope();
+		}
 		return requestScope;
 	}
 

@@ -1,17 +1,17 @@
 /**
- *    Copyright 2009-2015 the original author or authors.
+ * Copyright 2008-2016 Juho Jeong
  *
- *    Licensed under the Apache License, Version 2.0 (the "License");
- *    you may not use this file except in compliance with the License.
- *    You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *    Unless required by applicable law or agreed to in writing, software
- *    distributed under the License is distributed on an "AS IS" BASIS,
- *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *    See the License for the specific language governing permissions and
- *    limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package com.aspectran.core.context.loader.resource;
 
@@ -23,10 +23,12 @@ import java.util.NoSuchElementException;
 
 import com.aspectran.core.context.loader.AspectranClassLoader;
 import com.aspectran.core.util.ResourceUtils;
-
+import com.aspectran.core.util.StringUtils;
 
 /**
- * <p>Created: 2014. 12. 18 오후 5:51:13</p>	
+ * The Class ResourceManager.
+ *
+ * <p>Created: 2014. 12. 18 PM 5:51:13</p>	
  */
 public class ResourceManager {
 	
@@ -58,7 +60,7 @@ public class ResourceManager {
 						values = owners.next().getResourceManager().getResourceEntries().values().iterator();
 					}
 					
-					while(values.hasNext()) {
+					if(values.hasNext()) {
 						next = values.next();
 						return true;
 					}
@@ -67,13 +69,12 @@ public class ResourceManager {
 				}
 			}
 			
+			@Override
 			public synchronized boolean hasMoreElements() {
-				if(next != null)
-					return true;
-				
-				return hasNext();
+				return next != null || hasNext();
 			}
 
+			@Override
 			public synchronized URL nextElement() {
 				if(next == null) {
 					if(!hasNext())
@@ -93,13 +94,8 @@ public class ResourceManager {
 	}
 	
 	public static Enumeration<URL> getResources(final Iterator<AspectranClassLoader> owners, String name, final Enumeration<URL> inherited) {
-		if(name.endsWith(ResourceUtils.RESOURCE_NAME_SPEPARATOR))
+		if(StringUtils.endsWith(name, ResourceUtils.PATH_SPEPARATOR_CHAR))
 			name = name.substring(0, name.length() - 1);
-		
-		//System.out.println("-find resource from parent: " + name);
-		//System.out.println("--parent results: " + inherited);
-		
-		//System.out.println("find resource from self: " + name);
 		
 		final String filterName = name;
 		
@@ -116,9 +112,10 @@ public class ResourceManager {
 					next = owners.next().getResourceManager().getResource(filterName);
 				} while(next == null);
 				
-				return (next != null);
+				return true;
 			}
 			
+			@Override
 			public synchronized boolean hasMoreElements() {
 				if(!nomore) {
 					if(inherited != null && inherited.hasMoreElements())
@@ -127,12 +124,10 @@ public class ResourceManager {
 						nomore = true;
 				}
 
-				if(next == null)
-					return hasNext();
-				else
-					return true;
+				return next != null || hasNext();
 			}
 
+			@Override
 			public synchronized URL nextElement() {
 				if(!nomore) {
 					if(inherited != null && inherited.hasMoreElements())
@@ -147,8 +142,6 @@ public class ResourceManager {
 				current = next;
 				next = null;
 				
-				//System.out.println("--self results: " + current);
-
 				return current;
 			}
 		};
@@ -159,17 +152,8 @@ public class ResourceManager {
 	}
 
 	public static Enumeration<URL> searchResources(final Iterator<AspectranClassLoader> owners, String name, final Enumeration<URL> inherited) {
-		if(name.endsWith(ResourceUtils.RESOURCE_NAME_SPEPARATOR))
+		if(StringUtils.endsWith(name, ResourceUtils.PATH_SPEPARATOR_CHAR))
 			name = name.substring(0, name.length() - 1);
-		
-//		System.out.println("find resource from parent: " + name);
-//		System.out.println("parent results: " + inherited);
-//		
-//		while(inherited.hasMoreElements()) {
-//			System.out.println("p: " + inherited.nextElement().toString());
-//		}
-//		
-//		System.out.println("find resource from self: " + name);
 
 		final String filterName = name;
 		
@@ -189,9 +173,7 @@ public class ResourceManager {
 					
 					while(current.hasNext()) {
 						Map.Entry<String, URL> entry2 = current.next();
-						//System.out.println("current: " + entry2.getKey());
-						
-						//if(entry2.getKey().startsWith(filterName)) {
+
 						if(entry2.getKey().equals(filterName)) {
 							entry = entry2;
 							return true;
@@ -202,6 +184,7 @@ public class ResourceManager {
 				}
 			}
 			
+			@Override
 			public synchronized boolean hasMoreElements() {
 				if(entry != null)
 					return true;
@@ -216,6 +199,7 @@ public class ResourceManager {
 				return hasNext();
 			}
 
+			@Override
 			public synchronized URL nextElement() {
 				if(entry == null) {
 					if(!nomore) {
@@ -238,45 +222,8 @@ public class ResourceManager {
 	public int getResourceEntriesSize() {
 		return resourceEntries.size();
 	}
-//
-//	public Class<?> loadClass(String name) throws ResourceNotFoundException {
-//		synchronized(classCache) {
-//			Class<?> c = classCache.get(name);
-//			
-//			if(c == null) {
-//				URL url = resourceEntries.get(name);
-//				
-//				if(url == null) {
-//					throw new ResourceNotFoundException(name);
-//				}
-//				
-//				c = loadClass(url);
-//				classCache.put(name, c);
-//			}
-//			
-//			return c;
-//		}
-//	}
-	
-//	protected Class<?> loadClass(URL url) {
-//		URLConnection connection = url.openConnection();
-//		InputStream input = connection.getInputStream();
-//		ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-//		int data = input.read();
-//		
-//		while(data != -1) {
-//			buffer.write(data);
-//			data = input.read();
-//		}
-//		
-//		input.close();
-//		
-//		byte[] classData = buffer.toByteArray();
-//		
-//		return owner.defineClass("reflection.MyObject", classData, 0, classData.length);
-//	}
-	
-	public void reset() {
+
+	public void reset() throws InvalidResourceException {
 		release();
 	}
 	

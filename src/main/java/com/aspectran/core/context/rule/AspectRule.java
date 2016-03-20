@@ -1,17 +1,17 @@
 /**
- *    Copyright 2009-2015 the original author or authors.
+ * Copyright 2008-2016 Juho Jeong
  *
- *    Licensed under the Apache License, Version 2.0 (the "License");
- *    you may not use this file except in compliance with the License.
- *    You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *    Unless required by applicable law or agreed to in writing, software
- *    distributed under the License is distributed on an "AS IS" BASIS,
- *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *    See the License for the specific language governing permissions and
- *    limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package com.aspectran.core.context.rule;
 
@@ -19,13 +19,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.aspectran.core.context.aspect.pointcut.Pointcut;
+import com.aspectran.core.context.rule.ability.BeanReferenceInspectable;
 import com.aspectran.core.context.rule.type.AspectTargetType;
+import com.aspectran.core.context.rule.type.BeanReferrerType;
 import com.aspectran.core.context.rule.type.JoinpointScopeType;
+import com.aspectran.core.util.ToStringBuilder;
 
 /**
  * The Class AspectRule.
  */
-public class AspectRule {
+public class AspectRule implements BeanReferenceInspectable {
+
+	private static final BeanReferrerType BEAN_REFERABLE_RULE_TYPE = BeanReferrerType.ASPECT_RULE;
 
 	private String id;
 
@@ -38,6 +43,8 @@ public class AspectRule {
 	private Pointcut pointcut;
 	
 	private String adviceBeanId;
+
+	private Class<?> adviceBeanClass;
 	
 	private SettingsAdviceRule settingsAdviceRule;
 	
@@ -47,7 +54,7 @@ public class AspectRule {
 	
 	private ExceptionHandlingRule exceptionHandlingRule;
 	
-	private boolean BeanRelevanted;
+	private boolean beanRelevanted;
 	
 	private String description;
 	
@@ -99,6 +106,14 @@ public class AspectRule {
 		this.adviceBeanId = adviceBeanId;
 	}
 
+	public Class<?> getAdviceBeanClass() {
+		return adviceBeanClass;
+	}
+
+	public void setAdviceBeanClass(Class<?> adviceBeanClass) {
+		this.adviceBeanClass = adviceBeanClass;
+	}
+
 	public SettingsAdviceRule getSettingsAdviceRule() {
 		return settingsAdviceRule;
 	}
@@ -115,11 +130,11 @@ public class AspectRule {
 		this.aspectAdviceRuleList = aspectAdviceRuleList;
 	}
 	
-	public void addAspectAdviceRule(AspectAdviceRule aar) {
+	public void addAspectAdviceRule(AspectAdviceRule aspectAdviceRule) {
 		if(aspectAdviceRuleList == null)
 			aspectAdviceRuleList = new ArrayList<AspectAdviceRule>();
 		
-		aspectAdviceRuleList.add(aar);
+		aspectAdviceRuleList.add(aspectAdviceRule);
 	}
 
 	public List<AspectJobAdviceRule> getAspectJobAdviceRuleList() {
@@ -130,11 +145,11 @@ public class AspectRule {
 		this.aspectJobAdviceRuleList = aspectJobAdviceRuleList;
 	}
 	
-	public void addAspectJobAdviceRule(AspectJobAdviceRule atar) {
+	public void addAspectJobAdviceRule(AspectJobAdviceRule aspectJobAdviceRule) {
 		if(aspectJobAdviceRuleList == null)
 			aspectJobAdviceRuleList = new ArrayList<AspectJobAdviceRule>();
 		
-		aspectJobAdviceRuleList.add(atar);
+		aspectJobAdviceRuleList.add(aspectJobAdviceRule);
 	}
 
 	public ExceptionHandlingRule getExceptionHandlingRule() {
@@ -144,20 +159,13 @@ public class AspectRule {
 	public void setExceptionHandlingRule(ExceptionHandlingRule exceptionHandlingRule) {
 		this.exceptionHandlingRule = exceptionHandlingRule;
 	}
-	
-	public void addExceptionHandlingRule(ResponseByContentTypeRule responseByContentTypeRule) {
-		if(exceptionHandlingRule == null)
-			exceptionHandlingRule = new ExceptionHandlingRule();
-		
-		exceptionHandlingRule.putResponseByContentTypeRule(responseByContentTypeRule);
-	}
 
 	public boolean isBeanRelevanted() {
-		return BeanRelevanted;
+		return beanRelevanted;
 	}
 
 	public void setBeanRelevanted(boolean beanRelevanted) {
-		this.BeanRelevanted = beanRelevanted;
+		this.beanRelevanted = beanRelevanted;
 	}
 
 	/**
@@ -178,37 +186,36 @@ public class AspectRule {
 		this.description = description;
 	}
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
+	@Override
+	public BeanReferrerType getBeanReferrerType() {
+		return BEAN_REFERABLE_RULE_TYPE;
+	}
+
 	@Override
 	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		sb.append("{id=").append(id);
-		sb.append(", for=").append(aspectTargetType);
-		sb.append(", joinpointScope=").append(joinpointScope);
-		sb.append(", pointcutRule=").append(pointcutRule);
+		ToStringBuilder tsb = new ToStringBuilder();
+		tsb.append("id", id);
+		tsb.append("for", aspectTargetType);
+		tsb.append("joinpointScope", joinpointScope);
+		tsb.append("pointcutRule", pointcutRule);
 		if(aspectTargetType == AspectTargetType.TRANSLET) {
-			sb.append(", settingsAdviceRule=").append(settingsAdviceRule);
-			sb.append(", aspectAdviceRuleList=").append(aspectAdviceRuleList);
+			tsb.append("settingsAdviceRule", settingsAdviceRule);
+			tsb.append("aspectAdviceRuleList", aspectAdviceRuleList);
 		} else if(aspectTargetType == AspectTargetType.SCHEDULER) {
-			sb.append(", aspectJobAdviceRuleList=").append(aspectJobAdviceRuleList);
+			tsb.append("aspectJobAdviceRuleList", aspectJobAdviceRuleList);
 		}
-		sb.append(", exceptionHandlingRule=").append(exceptionHandlingRule);
-		sb.append(", onlyTransletRelevanted=").append(BeanRelevanted);
-		sb.append("}");
-		
-		return sb.toString();
+		tsb.append("exceptionHandlingRule", exceptionHandlingRule);
+		tsb.append("beanRelevanted", beanRelevanted);
+		return tsb.toString();
 	}
 	
 	public static AspectRule newInstance(String id, String useFor) {
 		AspectTargetType aspectTargetType = null;
 		
 		if(useFor != null) {
-			aspectTargetType = AspectTargetType.valueOf(useFor);
-			
+			aspectTargetType = AspectTargetType.lookup(useFor);
 			if(aspectTargetType == null)
-				throw new IllegalArgumentException("Unknown aspect target '" + useFor + "'");
+				throw new IllegalArgumentException("No aspect target type registered for '" + useFor + "'.");
 		} else {
 			aspectTargetType = AspectTargetType.TRANSLET;
 		}
@@ -221,13 +228,12 @@ public class AspectRule {
 	}
 	
 	public static void updateJoinpointScope(AspectRule aspectRule, String scope) {
-		JoinpointScopeType joinpointScope = null;
+		JoinpointScopeType joinpointScope;
 		
 		if(scope != null) {
-			joinpointScope = JoinpointScopeType.valueOf(scope);
-			
+			joinpointScope = JoinpointScopeType.lookup(scope);
 			if(joinpointScope == null)
-				throw new IllegalArgumentException("Unknown joinpoint scope '" + scope + "'");
+				throw new IllegalArgumentException("No joinpoint scope type registered for '" + scope + "'.");
 		} else {
 			joinpointScope = JoinpointScopeType.TRANSLET;
 		}

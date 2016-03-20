@@ -1,47 +1,54 @@
 /**
- *    Copyright 2009-2015 the original author or authors.
+ * Copyright 2008-2016 Juho Jeong
  *
- *    Licensed under the Apache License, Version 2.0 (the "License");
- *    you may not use this file except in compliance with the License.
- *    You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *    Unless required by applicable law or agreed to in writing, software
- *    distributed under the License is distributed on an "AS IS" BASIS,
- *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *    See the License for the specific language governing permissions and
- *    limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package com.aspectran.core.activity.process.result;
 
-import com.aspectran.core.activity.process.ActionIdQualifier;
+import com.aspectran.core.util.ToStringBuilder;
 
 /**
  * The Class ActionResult.
  * 
- * <p>Created: 2008. 03. 23 오후 12:01:24</p>
+ * <p>Created: 2008. 03. 23 PM 12:01:24</p>
  */
 public class ActionResult {
 	
 	public static final Object NO_RESULT = new Object();
-	
+
+	private final ContentResult parent;
+
 	private String actionId;
 
 	private Object resultValue;
-	
-	private ContentResult parent;
+
+	private boolean hidden;
+
+	public ActionResult(ContentResult parent) {
+		this.parent = parent;
+		
+		if(parent != null) {
+			this.parent.addActionResult(this);
+		}
+	}
 
 	/**
-	 * Gets the content id.
-	 * 
-	 * @return the content id
+	 * Gets the parent.
+	 *
+	 * @return the parent
 	 */
-	public String getContentId() {
-		if(parent != null)
-			return parent.getContentId();
-		
-		return null;
+	public ContentResult getParent() {
+		return parent;
 	}
 
 	/**
@@ -80,57 +87,21 @@ public class ActionResult {
 		this.resultValue = resultValue;
 	}
 
-	/**
-	 * Gets the parent.
-	 * 
-	 * @return the parent
-	 */
-	public ContentResult getParent() {
-		return parent;
+	public boolean isHidden() {
+		return hidden;
 	}
 
-	/**
-	 * Sets the parent.
-	 * 
-	 * @param parent the new parent
-	 */
-	protected void setParent(ContentResult parent) {
-		this.parent = parent;
+	public void setHidden(boolean hidden) {
+		this.hidden = hidden;
 	}
 
-	/**
-	 * Gets the action path.
-	 * 
-	 * @return the action path
-	 */
-	public String getQuialifiedActionId() {
-		return ActionIdQualifier.concat(getContentId(), actionId);
-	}
-
-	/**
-	 * Gets the action path.
-	 * 
-	 * @param parentFullActionId the parent action path
-	 * 
-	 * @return the action path
-	 */
-	public String getQuialifiedActionId(String parentFullActionId) {
-		return ActionIdQualifier.concat(parentFullActionId, getContentId(), actionId);
-	}
-
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
 	@Override
 	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		sb.append("{contentId=").append(getContentId());
-		sb.append(", actionId=").append(actionId);
-		sb.append(", quialifiedActionId=").append(getQuialifiedActionId());
-		sb.append(", resultValue=").append(resultValue);
-		sb.append("}");
-
-		return sb.toString();
+		ToStringBuilder tsb = new ToStringBuilder();
+		tsb.append("actionId", actionId);
+		tsb.append("resultValue", resultValue);
+		tsb.append("hidden", hidden);
+		return tsb.toString();
 	}
 
 }

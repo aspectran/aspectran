@@ -1,34 +1,34 @@
 /**
- *    Copyright 2009-2015 the original author or authors.
+ * Copyright 2008-2016 Juho Jeong
  *
- *    Licensed under the Apache License, Version 2.0 (the "License");
- *    you may not use this file except in compliance with the License.
- *    You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *    Unless required by applicable law or agreed to in writing, software
- *    distributed under the License is distributed on an "AS IS" BASIS,
- *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *    See the License for the specific language governing permissions and
- *    limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package com.aspectran.core.util;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.StringTokenizer;
+import java.util.TimeZone;
 
 /**
- * Miscellaneous {@link String} utility methods.
+ * Static utility methods pertaining to {@code String} or {@code CharSequence} instances.
  * 
  * @author Juho Jeong
  */
 public class StringUtils {
 
-	/**
-	 * 빈 문자열("").
-	 */
+	/** The empty {@link String} */
 	public static final String EMPTY = "";
 
 	public static boolean hasLength(CharSequence str) {
@@ -77,7 +77,7 @@ public class StringUtils {
 		if(!hasLength(str)) {
 			return str;
 		}
-		StringBuffer buf = new StringBuffer(str);
+		StringBuilder buf = new StringBuilder(str);
 		while(buf.length() > 0 && Character.isWhitespace(buf.charAt(0))) {
 			buf.deleteCharAt(0);
 		}
@@ -91,7 +91,7 @@ public class StringUtils {
 		if(!hasLength(str)) {
 			return str;
 		}
-		StringBuffer buf = new StringBuffer(str);
+		StringBuilder buf = new StringBuilder(str);
 		int index = 0;
 		while(buf.length() > index) {
 			if(Character.isWhitespace(buf.charAt(index))) {
@@ -107,7 +107,7 @@ public class StringUtils {
 		if(!hasLength(str)) {
 			return str;
 		}
-		StringBuffer buf = new StringBuffer(str);
+		StringBuilder buf = new StringBuilder(str);
 		while(buf.length() > 0 && Character.isWhitespace(buf.charAt(0))) {
 			buf.deleteCharAt(0);
 		}
@@ -118,7 +118,7 @@ public class StringUtils {
 		if(!hasLength(str)) {
 			return str;
 		}
-		StringBuffer buf = new StringBuffer(str);
+		StringBuilder buf = new StringBuilder(str);
 		while(buf.length() > 0 && Character.isWhitespace(buf.charAt(buf.length() - 1))) {
 			buf.deleteCharAt(buf.length() - 1);
 		}
@@ -129,7 +129,7 @@ public class StringUtils {
 		if(!hasLength(str)) {
 			return str;
 		}
-		StringBuffer buf = new StringBuffer(str);
+		StringBuilder buf = new StringBuilder(str);
 		while(buf.length() > 0 && buf.charAt(0) == leadingCharacter) {
 			buf.deleteCharAt(0);
 		}
@@ -140,7 +140,7 @@ public class StringUtils {
 		if(!hasLength(str)) {
 			return str;
 		}
-		StringBuffer buf = new StringBuffer(str);
+		StringBuilder buf = new StringBuilder(str);
 		while(buf.length() > 0 && buf.charAt(buf.length() - 1) == trailingCharacter) {
 			buf.deleteCharAt(buf.length() - 1);
 		}
@@ -179,26 +179,45 @@ public class StringUtils {
 	}
 
 	/**
-	 * null 문자열이면 "" 문자열을 돌려준다.
-	 * ""문자열 이외의 문자열 바꾸려면 decode 함수 참조
-	 * 
-	 * @param string 대상 문자열
-	 * 
-	 * @return String
-	 */
-	public static String nullCheck(String string) {
-		return string == null ? EMPTY : string;
-	}
-
-	/**
-	 * 주어진 문자열의 값이 null 또는 ""인지를 반환한다.
-	 * 
-	 * @param string the string
-	 * 
-	 * @return true, if checks if is empty
+	 * Returns {@code true} if the given string is null or is the empty string.
+	 *
+	 * @param string a string reference to check
+	 * @return {@code true} if the string is null or is the empty string
 	 */
 	public static boolean isEmpty(String string) {
 		return (string == null || string.length() == 0);
+	}
+	
+	/**
+	 * Returns the given string if it is non-null; the empty string otherwise.
+	 *
+	 * @param string the string to test and possibly return
+	 * @return {@code string} itself if it is non-null; {@code ""} if it is null
+	 */
+	public static String nullToEmpty(String string) {
+	  return (string == null) ? EMPTY : string;
+	}
+
+	/**
+	 * Returns the given string if it is nonempty; {@code null} otherwise.
+	 *
+	 * @param string the string to test and possibly return
+	 * @return {@code string} itself if it is nonempty; {@code null} if it is empty or null
+	 */
+	public static String emptyToNull(String string) {
+		return (string == null || string.length() == 0) ? null : string;
+	}
+
+	public static boolean startsWith(String string, char prefix) {
+		if(string == null || string.isEmpty())
+			return false;
+		return (string.charAt(0) == prefix);
+	}
+	
+	public static boolean endsWith(String string, char suffix) {
+		if(string == null || string.isEmpty())
+			return false;
+		return (string.charAt(string.length() - 1) == suffix);
 	}
 
 	/**
@@ -251,9 +270,9 @@ public class StringUtils {
 
 		int loop = (search.length <= replace.length) ? search.length : replace.length;
 		int start = 0;
-		int end = 0;
-		int searchLen = 0;
-		int replaceLen = 0;
+		int end;
+		int searchLen;
+		int replaceLen;
 
 		for(int i = 0; i < loop; i++) {
 			if(search[i] == null || replace[i] == null)
@@ -346,6 +365,73 @@ public class StringUtils {
 
 		return arr1;
 	}
+	
+
+	/**
+	 * 대상문자열(str)에서 구분문자열(delim)을 기준으로 문자열을 분리하여
+	 * 각 분리된 문자열을 배열에 할당하여 반환한다.
+	 * 
+	 * @param string 분리 대상 문자열
+	 * @param delim 구분 문자열
+	 * 
+	 * @return 분리된 문자열을 순서대로 배열에 격납하여 반환한다.
+	 */
+	public static String[] split(String string, char delim) {
+		if(isEmpty(string))
+			return new String[0];
+
+		int cnt = search(string, delim);
+		String[] item = new String[cnt + 1];
+
+		if(cnt == 0) {
+			item[0] = string;
+			return item;
+		}
+
+		int idx = 0;
+		int pos1 = 0;
+		int pos2 = string.indexOf(delim);
+
+		while(pos2 >= 0) {
+			item[idx++] = (pos1 > pos2 - 1) ? EMPTY : string.substring(pos1, pos2);
+
+			pos1 = pos2 + 1;
+			pos2 = string.indexOf(delim, pos1);
+		}
+
+		if(pos1 < string.length())
+			item[idx] = string.substring(pos1);
+
+		if(item[cnt] == null)
+			item[cnt] = EMPTY;
+
+		return item;
+	}
+
+	/**
+	 * 대상 문자열(str)에서 구분 문자열(delim)을 기준으로 문자열을 분리하여
+	 * 각 분리된 문자열을 배열에 할당하여 반환한다.
+	 * size를 지정하면 ""문자열이  나머지 문자열 전체를 가지는 최대 size개 원소의 배열을 반환합니다.
+	 * 
+	 * @param string 분리 대상 문자열
+	 * @param delim 구분 문자열
+	 * @param size 결과 배열의 크기
+	 * 
+	 * @return 분리된 문자열을 순서대로 배열에 격납하여 반환한다.
+	 */
+	public static String[] split(String string, char delim, int size) {
+		String[] arr1 = new String[size];
+		String[] arr2 = split(string, delim);
+
+		for(int i = 0; i < arr1.length; i++) {
+			if(i < arr2.length)
+				arr1[i] = arr2[i];
+			else
+				arr1[i] = EMPTY;
+		}
+
+		return arr1;
+	}
 
 	/**
 	 * 대상문자열(str)에서 지정문자열(keyw)이 검색된 횟수를,
@@ -375,7 +461,7 @@ public class StringUtils {
 
 		return cnt;
 	}
-
+	
 	/**
 	 * 대상문자열(str)에서 대소문자 구분없이 지정문자열(keyw)이 검색된 횟수를,
 	 * 지정문자열이 없으면 0 을 반환한다.
@@ -389,6 +475,45 @@ public class StringUtils {
 		return search(string.toLowerCase(), keyw.toLowerCase());
 	}
 
+	/**
+	 * 대상문자열(str)에서 지정문자열(keyw)이 검색된 횟수를,
+	 * 지정문자열이 없으면 0 을 반환한다.
+	 * 
+	 * @param chars 대상문자열
+	 * @param c 검색할 문자열
+	 * 
+	 * @return 지정문자열이 검색되었으면 검색된 횟수를, 검색되지 않았으면 0 을 반환한다.
+	 */
+	public static int search(CharSequence chars, char c) {
+		int count = 0;
+		for(int i = 0; i < chars.length(); i++) {
+			if(chars.charAt(i) == c) {
+				count++;
+			}
+		}
+		return count;
+	}
+	
+	/**
+	 * 대상문자열(str)에서 지정문자열(keyw)이 검색된 횟수를,
+	 * 지정문자열이 없으면 0 을 반환한다.
+	 *
+	 * @param chars 대상문자열
+	 * @param c 검색할 문자열
+	 * 
+	 * @return 지정문자열이 검색되었으면 검색된 횟수를, 검색되지 않았으면 0 을 반환한다.
+	 */
+	public static int searchIgnoreCase(CharSequence chars, char c) {
+		int count = 0;
+		char cl = Character.toLowerCase(c);
+		for(int i = 0; i < chars.length(); i++) {
+			if(Character.toLowerCase(chars.charAt(i)) == cl) {
+				count++;
+			}
+		}
+		return count;
+	}
+	
 	/**
 	 * 주어진 <code>delimiters</code>에 의해 분리된 문자열 배열을 반환한다.
 	 * 
@@ -423,5 +548,95 @@ public class StringUtils {
 
 		return tokens.toArray(new String[tokens.size()]);
 	}
-	
+
+	/**
+	 * Parse the given {@code localeString} value into a {@link Locale}.
+	 * <p>This is the inverse operation of {@link Locale#toString Locale's toString}.
+	 *
+	 * @param localeString the locale {@code String}, following {@code Locale's}
+	 * {@code toString()} format ("en", "en_UK", etc);
+	 * also accepts spaces as separators, as an alternative to underscores
+	 * @return a corresponding {@code Locale} instance
+	 * @throws IllegalArgumentException in case of an invalid locale specification
+	 */
+	public static Locale parseLocaleString(String localeString) {
+		String[] parts = tokenize(localeString, "_ ", false);
+		String language = (parts.length > 0 ? parts[0] : "");
+		String country = (parts.length > 1 ? parts[1] : "");
+		validateLocalePart(language);
+		validateLocalePart(country);
+		String variant = "";
+		if(parts.length > 2) {
+			// There is definitely a variant, and it is everything after the country
+			// code sans the separator between the country code and the variant.
+			int endIndexOfCountryCode = localeString.indexOf(country, language.length()) + country.length();
+			// Strip off any leading '_' and whitespace, what's left is the variant.
+			variant = trimLeadingWhitespace(localeString.substring(endIndexOfCountryCode));
+			if(variant.startsWith("_")) {
+				variant = trimLeadingCharacter(variant, '_');
+			}
+		}
+		return (language.length() > 0 ? new Locale(language, country, variant) : null);
+	}
+
+	private static void validateLocalePart(String localePart) {
+		for(int i = 0; i < localePart.length(); i++) {
+			char ch = localePart.charAt(i);
+			if(ch != '_' && ch != ' ' && !Character.isLetterOrDigit(ch)) {
+				throw new IllegalArgumentException(
+						"Locale part \"" + localePart + "\" contains invalid characters");
+			}
+		}
+	}
+
+	/**
+	 * Determine the RFC 3066 compliant language tag,
+	 * as used for the HTTP "Accept-Language" header.
+	 * @param locale the Locale to transform to a language tag
+	 * @return the RFC 3066 compliant language tag as {@code String}
+	 */
+	public static String toLanguageTag(Locale locale) {
+		return locale.getLanguage() + (hasText(locale.getCountry()) ? "-" + locale.getCountry() : "");
+	}
+
+	/**
+	 * Parse the given {@code timeZoneString} value into a {@link TimeZone}.
+	 * @param timeZoneString the time zone {@code String}, following {@link TimeZone#getTimeZone(String)}
+	 * but throwing {@link IllegalArgumentException} in case of an invalid time zone specification
+	 * @return a corresponding {@link TimeZone} instance
+	 * @throws IllegalArgumentException in case of an invalid time zone specification
+	 */
+	public static TimeZone parseTimeZoneString(String timeZoneString) {
+		TimeZone timeZone = TimeZone.getTimeZone(timeZoneString);
+		if("GMT".equals(timeZone.getID()) && !timeZoneString.startsWith("GMT")) {
+			// We don't want that GMT fallback...
+			throw new IllegalArgumentException("Invalid time zone specification '" + timeZoneString + "'");
+		}
+		return timeZone;
+	}
+
+//	public static Locale deduceLocale(String input) {
+//		if(input == null)
+//			return null;
+//		Locale locale;
+//		if(input.length() > 0 && input.charAt(0) == '"')
+//			input = input.substring(1, input.length() -1);
+//		StringTokenizer st = new StringTokenizer(input, ",_ ");
+//		String lang = "";
+//		String country = "";
+//		if(st.hasMoreTokens()) {
+//			lang = st.nextToken();
+//		}
+//		if(st.hasMoreTokens()) {
+//			country = st.nextToken();
+//		}
+//		if(!st.hasMoreTokens()) {
+//			locale = new Locale(lang, country);
+//		}
+//		else {
+//			locale = new Locale(lang, country, st.nextToken());
+//		}
+//		return locale;
+//	}
+
 }

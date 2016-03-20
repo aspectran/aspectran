@@ -1,130 +1,107 @@
 /**
- *    Copyright 2009-2015 the original author or authors.
+ * Copyright 2008-2016 Juho Jeong
  *
- *    Licensed under the Apache License, Version 2.0 (the "License");
- *    you may not use this file except in compliance with the License.
- *    You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *    Unless required by applicable law or agreed to in writing, software
- *    distributed under the License is distributed on an "AS IS" BASIS,
- *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *    See the License for the specific language governing permissions and
- *    limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package com.aspectran.core.context.rule.type;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.StringTokenizer;
 
 /**
  * The Class RequestMethodType.
  * 
- * <p>Created: 2008. 03. 26 오전 12:58:38</p>
+ * <p>Created: 2008. 03. 26 AM 12:58:38</p>
  */
-public final class RequestMethodType extends Type {
-	
-	/** The "get" request method type. */
-	public static final RequestMethodType GET;
+public enum RequestMethodType {
 
-	/** The "post" request method type. */
-	public static final RequestMethodType POST;
+	ALL,
+	GET,
+	POST,
+	PUT,
+	PATCH,
+	DELETE,
+	HEAD,
+	OPTIONS,
+	TRACE;
 
-	/**
-	 * The Constant PUT.
-	 * @since 1.2.0
-	 */
-	public static final RequestMethodType PUT;
+	private static final int MAX_COUNT = 9;
 
-	/**
-	 * The Constant PATCH.
-	 * @since 1.2.0
-	 */
-	public static final RequestMethodType PATCH;
-	
-	/**
-	 * The Constant DELETE.
-	 * @since 1.2.0
-	 */
-	public static final RequestMethodType DELETE;
-	
-	/**
-	 * The Constant HEAD.
-	 * @since 1.2.0
-	 */
-	public static final RequestMethodType HEAD;
-
-	/**
-	 * The Constant OPTIONS.
-	 * @since 1.2.0
-	 */
-	public static final RequestMethodType OPTIONS;
-	
-	/**
-	 * The Constant TRACE.
-	 * @since 1.2.0
-	 */
-	public static final RequestMethodType TRACE;
-	
-	/**
-	 * The Constant CONNECT.
-	 * @since 1.2.0
-	 */
-	public static final RequestMethodType CONNECT;
-	
-	private static final Map<String, RequestMethodType> types;
-	
-	static {
-		GET = new RequestMethodType("GET");
-		POST = new RequestMethodType("POST");
-		PUT = new RequestMethodType("PUT");
-		PATCH = new RequestMethodType("PATCH");
-		DELETE = new RequestMethodType("DELETE");
-		HEAD = new RequestMethodType("HEAD");
-		OPTIONS = new RequestMethodType("OPTIONS");
-		TRACE = new RequestMethodType("TRACE");
-		CONNECT = new RequestMethodType("CONNECT");
-
-		types = new HashMap<String, RequestMethodType>();
-		types.put(GET.toString(), GET);
-		types.put(POST.toString(), POST);
-		types.put(PUT.toString(), PUT);
-		types.put(PATCH.toString(), PATCH);
-		types.put(DELETE.toString(), DELETE);
-		types.put(HEAD.toString(), HEAD);
-		types.put(OPTIONS.toString(), OPTIONS);
-		types.put(TRACE.toString(), TRACE);
-		types.put(CONNECT.toString(), CONNECT);
-	}
-
-	/**
-	 * Instantiates a new RequestMethodType.
-	 * 
-	 * @param type the type
-	 */
-	private RequestMethodType(String type) {
-		super(type);
+	public boolean containsTo(RequestMethodType[] types) {
+		for(RequestMethodType type : types) {
+			if(equals(type) || ALL.equals(type))
+				return true;
+		}
+		return false;
 	}
 
 	/**
 	 * Returns a <code>RequestMethodType</code> with a value represented by the specified String.
-	 * 
-	 * @param type the type
-	 * 
-	 * @return the request method type
-	 */
-	public static RequestMethodType valueOf(String type) {
-		return types.get(type.toUpperCase());
-	}
-	
-	/**
-	 * Returns an array containing the constants of this type, in the order they are declared.
 	 *
-	 * @return the string[]
+	 * @param alias the specified String
+	 * @return the pointcut type
 	 */
-	public static String[] values() {
-		return types.keySet().toArray(new String[types.size()]);
+	public static RequestMethodType lookup(String alias) {
+		return valueOf(RequestMethodType.class, alias.toUpperCase());
 	}
-	
+
+	public static RequestMethodType[] parse(String value) {
+		RequestMethodType[] types = new RequestMethodType[MAX_COUNT];
+		int count = 0;
+
+		StringTokenizer st = new StringTokenizer(value, ", ");
+		while(st.hasMoreTokens()) {
+			String token = st.nextToken();
+			if(!token.isEmpty()) {
+				RequestMethodType type = lookup(token);
+				if(type != null) {
+					int ord = type.ordinal();
+					if(ord == 0) {
+						return new RequestMethodType[] { ALL };
+					} else {
+						if(types[ord] == null) {
+							types[ord] = type;
+							count++;
+						}
+					}
+				}
+			}
+		}
+
+		if(count == 0)
+			return null;
+
+		RequestMethodType[] orderedTypes = new RequestMethodType[count];
+
+		for(int i = 1, seq = 0; i < MAX_COUNT; i++) {
+			if(types[i] != null) {
+				orderedTypes[seq++] = types[i];
+			}
+		}
+
+		return orderedTypes;
+	}
+
+	public static String stringify(RequestMethodType[] types) {
+		if(types == null || types.length == 0)
+			return null;
+		
+		StringBuilder sb = new StringBuilder(types.length * 7);
+		for(int i = 0; i < types.length; i++) {
+			if(i > 0)
+				sb.append(",");
+			sb.append(types[i]);
+		}
+		return sb.toString();
+	}
+
 }

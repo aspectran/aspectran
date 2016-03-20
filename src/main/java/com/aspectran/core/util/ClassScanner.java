@@ -1,22 +1,21 @@
 /**
- *    Copyright 2009-2015 the original author or authors.
+ * Copyright 2008-2016 Juho Jeong
  *
- *    Licensed under the Apache License, Version 2.0 (the "License");
- *    you may not use this file except in compliance with the License.
- *    You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *    Unless required by applicable law or agreed to in writing, software
- *    distributed under the License is distributed on an "AS IS" BASIS,
- *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *    See the License for the specific language governing permissions and
- *    limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package com.aspectran.core.util;
 
 import java.io.File;
-import java.io.FileFilter;
 import java.io.IOException;
 import java.net.JarURLConnection;
 import java.net.URISyntaxException;
@@ -52,96 +51,123 @@ public class ClassScanner {
 		return classLoader;
 	}
 
-	public Map<String, Class<?>> scanClasses(String classNamePattern) throws IOException {
-		Map<String, Class<?>> scannedClasses = new LinkedHashMap<String, Class<?>>();
-		
-		scanClasses(classNamePattern, scannedClasses);
-		
+	/**
+	 * Find all the classes that match the class name pattern.
+	 *
+	 * @param classNamePattern the class name pattern
+	 * @return a Map for scanned classes
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
+	public Map<String, Class<?>> scan(String classNamePattern) throws IOException {
+		final Map<String, Class<?>> scannedClasses = new LinkedHashMap<String, Class<?>>();
+		scan(classNamePattern, scannedClasses);
 		return scannedClasses;
 	}
-	
-	public void scanClasses(String classNamePattern, Map<String, Class<?>> scannedClasses) throws IOException {
-		classNamePattern = classNamePattern.replace(ClassUtils.PACKAGE_SEPARATOR_CHAR, ResourceUtils.RESOURCE_NAME_SPEPARATOR_CHAR);
+
+	/**
+	 * Find all the classes that match the class name pattern.
+	 *
+	 * @param classNamePattern the class name pattern
+	 * @param scannedClasses the Map for scanned classes
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
+	public void scan(String classNamePattern, final Map<String, Class<?>> scannedClasses) throws IOException {
+		scan(classNamePattern, (resourceName, scannedClass) -> {
+            scannedClasses.put(resourceName, scannedClass);
+        });
+	}
+
+	/**
+	 * Find all the classes that match the class name pattern.
+	 *
+	 * @param classNamePattern the class name pattern
+	 * @param saveHandler the save handler
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
+	public void scan(String classNamePattern, SaveHandler saveHandler) throws IOException {
+		if(classNamePattern == null)
+			throw new IllegalArgumentException("Class name pattern must not be null.");
+
+		classNamePattern = classNamePattern.replace(ClassUtils.PACKAGE_SEPARATOR_CHAR, ResourceUtils.PATH_SPEPARATOR_CHAR);
 
 		String basePackageName = determineBasePackageName(classNamePattern);
 
 		String subPattern;
-		if(classNamePattern.length() > basePackageName.length())
+		if(basePackageName != null && classNamePattern.length() > basePackageName.length())
 			subPattern = classNamePattern.substring(basePackageName.length());
 		else
 			subPattern = StringUtils.EMPTY;
 		
-		WildcardPattern pattern = WildcardPattern.compile(subPattern, ResourceUtils.RESOURCE_NAME_SPEPARATOR_CHAR);
+		WildcardPattern pattern = WildcardPattern.compile(subPattern, ResourceUtils.PATH_SPEPARATOR_CHAR);
 		WildcardMatcher matcher = new WildcardMatcher(pattern);
 		
 		Enumeration<URL> resources = classLoader.getResources(basePackageName);
 		
-		if(basePackageName != null && !basePackageName.endsWith(ResourceUtils.RESOURCE_NAME_SPEPARATOR))
-			basePackageName += ResourceUtils.RESOURCE_NAME_SPEPARATOR;
+		if(basePackageName != null && !StringUtils.endsWith(basePackageName, ResourceUtils.PATH_SPEPARATOR_CHAR))
+			basePackageName += ResourceUtils.PATH_SPEPARATOR_CHAR;
 		
 		while(resources.hasMoreElements()) {
 			URL resource = resources.nextElement();
 			
 			if(log.isDebugEnabled())
-				log.debug("bean scanning: " + classNamePattern + " at " + resource.getFile());
+				log.debug("class scanning: " + classNamePattern + " at " + resource.getFile());
 			
 			if(isJarResource(resource)) {
-				scanClassesFromJarResource(resource, matcher, scannedClasses);
+				scanFromJarResource(resource, matcher, saveHandler);
 			} else {
-				scanClasses(resource.getFile(), basePackageName, null,  matcher, scannedClasses);
+				scan(resource.getFile(), basePackageName, null,  matcher, saveHandler);
 			}
 		}
 	}
-	
+
 	/**
 	 * Recursive method used to find all classes in a given directory and subdirs.
 	 *
-	 * @param directory   The base directory
-	 * @param packageName The package name for classes found inside the base directory
-	 * @return The classes
-	 * @throws ClassNotFoundException
+	 * @param targetPath the target path
+	 * @param basePackageName the base package name
+	 * @param relativePackageName the relative package name
+	 * @param matcher the matcher
+	 * @param saveHandler the save handler
 	 */
-	private void scanClasses(final String targetPath, final String basePackageName, final String relativePackageName, final WildcardMatcher matcher, final Map<String, Class<?>> scannedClasses) {
+	private void scan(final String targetPath, final String basePackageName, final String relativePackageName, final WildcardMatcher matcher, final SaveHandler saveHandler) {
 		final File target = new File(targetPath);
 		if(!target.exists())
 			return;
 
-		target.listFiles(new FileFilter() {
-			public boolean accept(File file) {
-				String fileName = file.getName();
-				if(file.isDirectory()) {
-					String relativePackageName2;
-					if(relativePackageName == null)
-						relativePackageName2 = fileName + ResourceUtils.RESOURCE_NAME_SPEPARATOR;
-					else
-						relativePackageName2 = relativePackageName + fileName + ResourceUtils.RESOURCE_NAME_SPEPARATOR;
-							
-					String basePath2 = targetPath + fileName + ResourceUtils.RESOURCE_NAME_SPEPARATOR;
-					scanClasses(basePath2, basePackageName, relativePackageName2, matcher, scannedClasses);
-				} else if(fileName.endsWith(ClassUtils.CLASS_FILE_SUFFIX)) {
-					String className;
-					if(relativePackageName != null)
-						className = basePackageName + relativePackageName + fileName.substring(0, fileName.length() - ClassUtils.CLASS_FILE_SUFFIX.length());
-					else
-						className = basePackageName + fileName.substring(0, fileName.length() - ClassUtils.CLASS_FILE_SUFFIX.length());
-					String relativePath = className.substring(basePackageName.length(), className.length());
+		target.listFiles(file -> {
+            String fileName = file.getName();
+            if(file.isDirectory()) {
+                String relativePackageName2;
+                if(relativePackageName == null)
+                    relativePackageName2 = fileName + ResourceUtils.PATH_SPEPARATOR;
+                else
+                    relativePackageName2 = relativePackageName + fileName + ResourceUtils.PATH_SPEPARATOR;
 
-					if(matcher.matches(relativePath)) {
-						String resourceName = targetPath + fileName;
-						Class<?> classType = loadClass(className);
-						putClass(scannedClasses, resourceName, classType);
-					}
-				}
-				return false;
-			}
-		});
+                String basePath2 = targetPath + fileName + ResourceUtils.PATH_SPEPARATOR;
+                scan(basePath2, basePackageName, relativePackageName2, matcher, saveHandler);
+            } else if(fileName.endsWith(ClassUtils.CLASS_FILE_SUFFIX)) {
+                String className;
+                if(relativePackageName != null)
+                    className = basePackageName + relativePackageName + fileName.substring(0, fileName.length() - ClassUtils.CLASS_FILE_SUFFIX.length());
+                else
+                    className = basePackageName + fileName.substring(0, fileName.length() - ClassUtils.CLASS_FILE_SUFFIX.length());
+                String relativePath = className.substring(basePackageName.length(), className.length());
+
+                if(matcher.matches(relativePath)) {
+                    String resourceName = targetPath + fileName;
+                    Class<?> classType = loadClass(className);
+                    saveHandler.save(resourceName, classType);
+                }
+            }
+            return false;
+        });
 	}
 
-	protected void scanClassesFromJarResource(URL resource, WildcardMatcher matcher, Map<String, Class<?>> scannedClasses) throws IOException {
+	protected void scanFromJarResource(URL resource, WildcardMatcher matcher, SaveHandler saveHandler) throws IOException {
 		URLConnection conn = resource.openConnection();
-		JarFile jarFile = null;
-		String jarFileUrl = null;
-		String entryNamePrefix = null;
+		JarFile jarFile;
+		String jarFileUrl;
+		String entryNamePrefix;
 		boolean newJarFile = false;
 
 		if(conn instanceof JarURLConnection) {
@@ -173,10 +199,10 @@ public class ClassScanner {
 		
 		try {
 			//Looking for matching resources in jar file [" + jarFileUrl + "]"
-			if(!entryNamePrefix.endsWith(ResourceUtils.RESOURCE_NAME_SPEPARATOR)) {
+			if(!entryNamePrefix.endsWith(ResourceUtils.PATH_SPEPARATOR)) {
 				// Root entry path must end with slash to allow for proper matching.
 				// The Sun JRE does not return a slash here, but BEA JRockit does.
-				entryNamePrefix = entryNamePrefix + ResourceUtils.RESOURCE_NAME_SPEPARATOR;
+				entryNamePrefix = entryNamePrefix + ResourceUtils.PATH_SPEPARATOR;
 			}
 			
 			for(Enumeration<JarEntry> entries = jarFile.entries(); entries.hasMoreElements();) {
@@ -189,7 +215,7 @@ public class ClassScanner {
 						String resourceName = jarFileUrl + ResourceUtils.JAR_URL_SEPARATOR + entryName;
 						String className = entryNamePrefix + entryNameSuffix;
 						Class<?> classType = loadClass(className);
-						putClass(scannedClasses, resourceName, classType);
+						saveHandler.save(resourceName, classType);
 					}
 				}
 			}
@@ -203,10 +229,6 @@ public class ClassScanner {
 		}
 	}
 
-	protected void putClass(Map<String, Class<?>> scannedClasses, String resourceName, Class<?> scannedClass) {
-		scannedClasses.put(resourceName, scannedClass);
-	}
-	
 	private JarFile getJarFile(String jarFileUrl) throws IOException {
 		if(jarFileUrl.startsWith(ResourceUtils.FILE_URL_PREFIX)) {
 			try {
@@ -226,7 +248,7 @@ public class ClassScanner {
 	}
 
 	private String determineBasePackageName(String classNamePattern) {
-		WildcardPattern pattern = new WildcardPattern(classNamePattern, ResourceUtils.RESOURCE_NAME_SPEPARATOR_CHAR);
+		WildcardPattern pattern = new WildcardPattern(classNamePattern, ResourceUtils.PATH_SPEPARATOR_CHAR);
 		WildcardMatcher matcher = new WildcardMatcher(pattern);
 
 		boolean matched = matcher.matches(classNamePattern);
@@ -241,20 +263,24 @@ public class ClassScanner {
 			if(WildcardPattern.hasWildcards(str))
 				break;
 
-			sb.append(str).append(ResourceUtils.RESOURCE_NAME_SPEPARATOR_CHAR);
+			sb.append(str).append(ResourceUtils.PATH_SPEPARATOR_CHAR);
 		}
 		
 		return sb.toString();
 	}
 	
 	private Class<?> loadClass(String className) {
-		className = className.replace(ResourceUtils.RESOURCE_NAME_SPEPARATOR_CHAR, ClassUtils.PACKAGE_SEPARATOR_CHAR);
-		
+		className = className.replace(ResourceUtils.PATH_SPEPARATOR_CHAR, ClassUtils.PACKAGE_SEPARATOR_CHAR);
+
 		try {
 			return classLoader.loadClass(className);
 		} catch (ClassNotFoundException e) {
 			throw new RuntimeException("class loading failed. class name: " + className, e);
 		}
+	}
+
+	public interface SaveHandler {
+		void save(String resourceName, Class<?> scannedClass);
 	}
 
 }

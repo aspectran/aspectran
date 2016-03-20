@@ -1,17 +1,17 @@
 /**
- *    Copyright 2009-2015 the original author or authors.
+ * Copyright 2008-2016 Juho Jeong
  *
- *    Licensed under the Apache License, Version 2.0 (the "License");
- *    you may not use this file except in compliance with the License.
- *    You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *    Unless required by applicable law or agreed to in writing, software
- *    distributed under the License is distributed on an "AS IS" BASIS,
- *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *    See the License for the specific language governing permissions and
- *    limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package com.aspectran.core.context.builder.apon;
 
@@ -21,10 +21,9 @@ import java.util.List;
 
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.activity.process.ContentList;
-import com.aspectran.core.activity.variable.token.Token;
 import com.aspectran.core.context.builder.ContextBuilderAssistant;
-import com.aspectran.core.context.builder.ImportHandler;
-import com.aspectran.core.context.builder.Importable;
+import com.aspectran.core.context.builder.importer.ImportHandler;
+import com.aspectran.core.context.builder.importer.Importer;
 import com.aspectran.core.context.builder.apon.params.ActionParameters;
 import com.aspectran.core.context.builder.apon.params.AdviceActionParameters;
 import com.aspectran.core.context.builder.apon.params.AdviceParameters;
@@ -50,6 +49,7 @@ import com.aspectran.core.context.builder.apon.params.RootParameters;
 import com.aspectran.core.context.builder.apon.params.TemplateParameters;
 import com.aspectran.core.context.builder.apon.params.TransformParameters;
 import com.aspectran.core.context.builder.apon.params.TransletParameters;
+import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.rule.AspectAdviceRule;
 import com.aspectran.core.context.rule.AspectJobAdviceRule;
 import com.aspectran.core.context.rule.AspectRule;
@@ -80,9 +80,9 @@ import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.apon.Parameters;
 
 /**
- * RootAponDisassembler.
+ * The Class RootAponDisassembler.
  * 
- * <p>Created: 2015. 01. 27 오후 10:36:29</p>
+ * <p>Created: 2015. 01. 27 PM 10:36:29</p>
  */
 public class RootAponDisassembler {
 	
@@ -140,36 +140,33 @@ public class RootAponDisassembler {
 	}
 	
 	public void disassembleImport(Parameters importParameters) throws Exception {
-		String resource = importParameters.getString(ImportParameters.resource);
 		String file = importParameters.getString(ImportParameters.file);
+		String resource = importParameters.getString(ImportParameters.resource);
 		String url = importParameters.getString(ImportParameters.url);
 		String fileType = importParameters.getString(ImportParameters.fileType);
-		
-		Importable importable = Importable.newInstance(assistant, resource, file, url, fileType);
 
 		ImportHandler importHandler = assistant.getImportHandler();
-		if(importHandler != null)
-			importHandler.pending(importable);
+		if(importHandler != null) {
+			Importer importer = assistant.newImporter(file, resource, url, fileType);
+			if(importer == null) {
+				throw new IllegalArgumentException("The 'import' element requires either a file or a resource or a url attribute.");
+			}
+			importHandler.pending(importer);
+		}
 	}
 	
 	public void disassembleDefaultSettings(Parameters defaultSettingsParameters) throws ClassNotFoundException {
 		if(defaultSettingsParameters == null)
 			return;
-		
-		Iterator<String> iter = defaultSettingsParameters.getParameterNameSet().iterator();
-		
-		while(iter.hasNext()) {
-			String name = iter.next();
-			
+
+		for(String name : defaultSettingsParameters.getParameterNameSet()) {
 			DefaultSettingType settingType = null;
-			
 			if(name != null) {
-				settingType = DefaultSettingType.valueOf(name);
-				
+				settingType = DefaultSettingType.lookup(name);
 				if(settingType == null)
-					throw new IllegalArgumentException("Unknown default setting name '" + name + "'");
+					throw new IllegalArgumentException("Unknown default setting name '" + name + "'.");
 			}
-			
+
 			assistant.putSetting(settingType, defaultSettingsParameters.getString(name));
 		}
 		
@@ -179,11 +176,8 @@ public class RootAponDisassembler {
 	public void disassembleTypeAlias(Parameters parameters) {
 		if(parameters == null)
 			return;
-		
-		Iterator<String> iter = parameters.getParameterNameSet().iterator();
-		
-		while(iter.hasNext()) {
-			String alias = iter.next();
+
+		for(String alias : parameters.getParameterNameSet()) {
 			assistant.addTypeAlias(alias, parameters.getString(alias));
 		}
 	}
@@ -227,6 +221,7 @@ public class RootAponDisassembler {
 				AspectAdviceRule aspectAdviceRule = AspectAdviceRule.newInstance(aspectRule, AspectAdviceType.BEFORE);
 				disassembleActionRule(actionParameters, aspectAdviceRule);
 				aspectRule.addAspectAdviceRule(aspectAdviceRule);
+				updateBeanActionClass(aspectAdviceRule);
 			}
 			
 			Parameters afterAdviceParameters = adviceParameters.getParameters(AdviceParameters.afterAdvice);
@@ -235,6 +230,7 @@ public class RootAponDisassembler {
 				AspectAdviceRule aspectAdviceRule = AspectAdviceRule.newInstance(aspectRule, AspectAdviceType.AFTER);
 				disassembleActionRule(actionParameters, aspectAdviceRule);
 				aspectRule.addAspectAdviceRule(aspectAdviceRule);
+				updateBeanActionClass(aspectAdviceRule);
 			}
 		
 			Parameters aroundAdviceParameters = adviceParameters.getParameters(AdviceParameters.aroundAdvice);
@@ -243,6 +239,7 @@ public class RootAponDisassembler {
 				AspectAdviceRule aspectAdviceRule = AspectAdviceRule.newInstance(aspectRule, AspectAdviceType.AROUND);
 				disassembleActionRule(actionParameters, aspectAdviceRule);
 				aspectRule.addAspectAdviceRule(aspectAdviceRule);
+				updateBeanActionClass(aspectAdviceRule);
 			}
 		
 			Parameters finallyAdviceParameters = adviceParameters.getParameters(AdviceParameters.finallyAdvice);
@@ -251,6 +248,7 @@ public class RootAponDisassembler {
 				AspectAdviceRule aspectAdviceRule = AspectAdviceRule.newInstance(aspectRule, AspectAdviceType.AROUND);
 				disassembleActionRule(actionParameters, aspectAdviceRule);
 				aspectRule.addAspectAdviceRule(aspectAdviceRule);
+				updateBeanActionClass(aspectAdviceRule);
 			}
 		
 			List<Parameters> jobParametersList = adviceParameters.getParametersList(AdviceParameters.jobs);
@@ -260,7 +258,10 @@ public class RootAponDisassembler {
 					Boolean disabled = jobParameters.getBoolean(JobParameters.disabled);
 					
 					translet = assistant.applyTransletNamePattern(translet);
-					
+
+					if(translet == null)
+						throw new IllegalArgumentException("Job translet must not be null.");
+
 					AspectJobAdviceRule ajar = AspectJobAdviceRule.newInstance(aspectRule, translet, disabled);
 					aspectRule.addAspectJobAdviceRule(ajar);
 				}
@@ -269,7 +270,7 @@ public class RootAponDisassembler {
 		
 		Parameters exceptionRaisedParameters = aspectParameters.getParameters(AspectParameters.exceptionRaised);
 		if(exceptionRaisedParameters != null) {
-			ExceptionHandlingRule exceptionHandlingRule = new ExceptionHandlingRule();
+			ExceptionHandlingRule exceptionHandlingRule = ExceptionHandlingRule.newInstance(aspectRule);
 	
 			exceptionHandlingRule.setDescription(exceptionRaisedParameters.getString(ExceptionRaisedParameters.description));
 
@@ -289,27 +290,62 @@ public class RootAponDisassembler {
 			aspectRule.setExceptionHandlingRule(exceptionHandlingRule);
 		}
 
-		
 		assistant.addAspectRule(aspectRule);
+	}
+
+	private void updateBeanActionClass(AspectAdviceRule aspectAdviceRule) {
+		if(aspectAdviceRule.getAdviceBeanId() != null) {
+			BeanActionRule updatedBeanActionRule = AspectAdviceRule.updateBeanActionClass(aspectAdviceRule);
+			if(updatedBeanActionRule != null) {
+				if(aspectAdviceRule.getAdviceBeanClass() != null) {
+					assistant.putBeanReference(aspectAdviceRule.getAdviceBeanClass(), updatedBeanActionRule);
+				} else {
+					assistant.putBeanReference(aspectAdviceRule.getAdviceBeanId(), updatedBeanActionRule);
+				}
+			}
+		}
 	}
 
 	public void disassembleBeanRule(Parameters beanParameters) throws ClassNotFoundException, IOException, CloneNotSupportedException {
 		String description = beanParameters.getString(BeanParameters.description);
-		String id = beanParameters.getString(BeanParameters.id);
+		String id = StringUtils.emptyToNull(beanParameters.getString(BeanParameters.id));
+		String className = StringUtils.emptyToNull(assistant.resolveAliasType(beanParameters.getString(BeanParameters.className)));
+		String scan = beanParameters.getString(BeanParameters.scan);
 		String mask = beanParameters.getString(BeanParameters.mask);
-		String className = assistant.resolveAliasType(beanParameters.getString(BeanParameters.className));
 		String scope = beanParameters.getString(BeanParameters.scope);
 		Boolean singleton = beanParameters.getBoolean(BeanParameters.singleton);
-		String factoryMethod = beanParameters.getString(BeanParameters.factoryMethod);
-		String initMethod = beanParameters.getString(BeanParameters.initMethod);
-		String destroyMethod = beanParameters.getString(BeanParameters.destroyMethod);
+		String offerBean = StringUtils.emptyToNull(beanParameters.getString(BeanParameters.offerBean));
+		String offerMethod = StringUtils.emptyToNull(beanParameters.getString(BeanParameters.offerMethod));
+		String initMethod = StringUtils.emptyToNull(beanParameters.getString(BeanParameters.initMethod));
+		String factoryMethod = StringUtils.emptyToNull(beanParameters.getString(BeanParameters.factoryMethod));
+		String destroyMethod = StringUtils.emptyToNull(beanParameters.getString(BeanParameters.destroyMethod));
 		Boolean lazyInit = beanParameters.getBoolean(BeanParameters.lazyInit);
 		Boolean important = beanParameters.getBoolean(BeanParameters.important);
 		ConstructorParameters constructorParameters = beanParameters.getParameters(BeanParameters.constructor);
 		ItemHolderParameters propertyItemHolderParameters = beanParameters.getParameters(BeanParameters.properties);
 		Parameters filterParameters = beanParameters.getParameters(BeanParameters.filter);
 		
-		BeanRule beanRule = BeanRule.newInstance(id, mask, className, scope, singleton, factoryMethod, initMethod, destroyMethod, lazyInit, important);
+		BeanRule beanRule;
+
+		if(className == null && scan == null && offerBean != null) {
+			if(offerMethod == null)
+				throw new IllegalArgumentException("Bean offerMethod must not be null.");
+			
+			beanRule = BeanRule.newOfferedBeanInstance(id, offerBean, offerMethod, initMethod, destroyMethod, factoryMethod, scope, singleton, lazyInit, important);
+
+			Class<?> offerBeanClass = assistant.resolveBeanClass(offerBean);
+			if(offerBeanClass != null) {
+				beanRule.setOfferBeanClass(offerBeanClass);
+				assistant.putBeanReference(offerBeanClass, beanRule);
+			} else {
+				assistant.putBeanReference(offerBean, beanRule);
+			}
+		} else {
+			if(className == null && scan == null)
+				throw new IllegalArgumentException("Bean class must not be null.");
+
+			beanRule = BeanRule.newInstance(id, className, scan, mask, initMethod, destroyMethod, factoryMethod, scope, singleton, lazyInit, important);
+		}
 
 		if(description != null)
 			beanRule.setDescription(description);
@@ -336,10 +372,14 @@ public class RootAponDisassembler {
 	public void disassembleTransletRule(Parameters transletParameters) throws CloneNotSupportedException {
 		String description = transletParameters.getString(TransletParameters.description);
 		String name = transletParameters.getString(TransletParameters.name);
+		String scan = transletParameters.getString(TransletParameters.scan);
 		String mask = transletParameters.getString(TransletParameters.mask);
-		String path = transletParameters.getString(TransletParameters.path);
-		String restVerb = transletParameters.getString(TransletParameters.restVerb);
-		TransletRule transletRule = TransletRule.newInstance(name, mask, path, restVerb);
+		String method = transletParameters.getString(TransletParameters.method);
+		
+		if(name == null && scan == null)
+			throw new IllegalArgumentException("Translet name must not be null.");
+		
+		TransletRule transletRule = TransletRule.newInstance(name, mask, scan, method);
 		
 		if(description != null)
 			transletRule.setDescription(description);
@@ -360,7 +400,7 @@ public class RootAponDisassembler {
 		if(contentParametersList != null && !contentParametersList.isEmpty()) {
 			ContentList contentList = transletRule.touchContentList();
 			for(Parameters contentParamters : contentParametersList) {
-				ActionList actionList = disassembleActionList(contentParamters, contentList);
+				ActionList actionList = disassembleActionList(contentParamters);
 				contentList.addActionList(actionList);
 			}
 		}
@@ -472,7 +512,7 @@ public class RootAponDisassembler {
 		
 		if(contentParametersList != null) {
 			for(Parameters contentParamters : contentParametersList) {
-				ActionList actionList = disassembleActionList(contentParamters, contentList);
+				ActionList actionList = disassembleActionList(contentParamters);
 				contentList.addActionList(actionList);
 			}
 		}
@@ -480,17 +520,13 @@ public class RootAponDisassembler {
 		return contentList;
 	}
 	
-	public ActionList disassembleActionList(Parameters contentParameters, ContentList contentList) {
-		String id = contentParameters.getString(ContentParameters.id);
+	public ActionList disassembleActionList(Parameters contentParameters) {
 		String name = contentParameters.getString(ContentParameters.name);
 		Boolean omittable = contentParameters.getBoolean(ContentParameters.omittable);
 		Boolean hidden = contentParameters.getBoolean(ContentParameters.hidden);
 		List<Parameters> actionParametersList = contentParameters.getParametersList(ContentParameters.actions);
 		
-		if(!assistant.isNullableContentId() && StringUtils.isEmpty(id))
-			throw new IllegalArgumentException("The <content> element requires a id attribute.");
-		
-		ActionList actionList = ActionList.newInstance(id, name, omittable, hidden, contentList);
+		ActionList actionList = ActionList.newInstance(name, omittable, hidden);
 
 		if(actionParametersList != null && !actionParametersList.isEmpty()) {
 			for(Parameters actionParameters : actionParametersList) {
@@ -502,9 +538,9 @@ public class RootAponDisassembler {
 	}
 	
 	public void disassembleActionRule(Parameters actionParameters, ActionRuleApplicable actionRuleApplicable) {
-		String id = actionParameters.getString(ActionParameters.id);
-		String beanId = actionParameters.getString(ActionParameters.beanId);
-		String methodName = actionParameters.getString(ActionParameters.methodName);
+		String id = StringUtils.emptyToNull(actionParameters.getString(ActionParameters.id));
+		String beanId = StringUtils.emptyToNull(actionParameters.getString(ActionParameters.beanId));
+		String methodName = StringUtils.emptyToNull(actionParameters.getString(ActionParameters.methodName));
 		ItemHolderParameters argumentItemHolderParameters = actionParameters.getParameters(ActionParameters.arguments);
 		ItemHolderParameters propertyItemHolderParameters = actionParameters.getParameters(ActionParameters.properties);
 		String include = actionParameters.getString(ActionParameters.include);
@@ -512,10 +548,10 @@ public class RootAponDisassembler {
 		ItemHolderParameters echoItemHolderParameters = actionParameters.getParameters(ActionParameters.echo);
 		Boolean hidden = actionParameters.getBoolean(ActionParameters.hidden);
 		
-		if(!assistant.isNullableActionId() && StringUtils.isEmpty(id))
-			throw new IllegalArgumentException("The <echo>, <action>, <include> element requires a id attribute.");
+		if(!assistant.isNullableActionId() && id == null)
+			throw new IllegalArgumentException("Action id must not be null. nullableActionId setting is true.");
 		
-		if(!StringUtils.isEmpty(methodName)) {
+		if(methodName != null) {
 			BeanActionRule beanActionRule = BeanActionRule.newInstance(id, beanId, methodName, hidden);
 			if(argumentItemHolderParameters != null) {
 				ItemRuleMap argumentItemRuleMap = disassembleItemRuleMap(argumentItemHolderParameters);
@@ -526,8 +562,15 @@ public class RootAponDisassembler {
 				beanActionRule.setPropertyItemRuleMap(propertyItemRuleMap);
 			}
 			actionRuleApplicable.applyActionRule(beanActionRule);
-			if(!StringUtils.isEmpty(beanId)) {
-				assistant.putBeanReference(beanId, beanActionRule);
+
+			if(beanId != null) {
+				Class<?> beanClass = assistant.resolveBeanClass(beanId);
+				if(beanClass != null) {
+					beanActionRule.setBeanClass(beanClass);
+					assistant.putBeanReference(beanClass, beanActionRule);
+				} else {
+					assistant.putBeanReference(beanId, beanActionRule);
+				}
 			}
 		} else if(echoItemHolderParameters != null) {
 			EchoActionRule echoActionRule = EchoActionRule.newInstance(id, hidden);
@@ -583,13 +626,14 @@ public class RootAponDisassembler {
 	public TransformRule disassembleTransformRule(Parameters transformParameters) {
 		String transformType = transformParameters.getString(TransformParameters.type);
 		String contentType = transformParameters.getString(TransformParameters.contentType);
+		String templateId = transformParameters.getString(TransformParameters.template);
 		String characterEncoding = transformParameters.getString(TransformParameters.characterEncoding);
-		Parameters templateParameters = transformParameters.getParameters(TransformParameters.template);
 		List<Parameters> actionParametersList = transformParameters.getParametersList(TransformParameters.actions);
 		Boolean defaultResponse = transformParameters.getBoolean(TransformParameters.defaultResponse);
 		Boolean pretty = transformParameters.getBoolean(TransformParameters.pretty);
-		
-		TransformRule tr = TransformRule.newInstance(transformType, contentType, characterEncoding, defaultResponse, pretty);
+		Parameters templateParameters = transformParameters.getParameters(TransformParameters.builtinTemplate);
+
+		TransformRule tr = TransformRule.newInstance(transformType, contentType, templateId, characterEncoding, defaultResponse, pretty);
 		
 		if(actionParametersList != null && !actionParametersList.isEmpty()) {
 			ActionList actionList = new ActionList();
@@ -600,13 +644,15 @@ public class RootAponDisassembler {
 		}
 		
 		if(templateParameters != null) {
+			String engine = templateParameters.getString(TemplateParameters.engine);
+			String name = templateParameters.getString(TemplateParameters.name);
 			String file = templateParameters.getString(TemplateParameters.file);
 			String resource = templateParameters.getString(TemplateParameters.resource);
 			String url = templateParameters.getString(TemplateParameters.url);
 			String content = templateParameters.getString(TemplateParameters.content);
 			String encoding = templateParameters.getString(TemplateParameters.encoding);
 			Boolean noCache = templateParameters.getBoolean(TemplateParameters.noCache);
-			TemplateRule templateRule = TemplateRule.newInstance(file, resource, url, content, encoding, noCache);
+			TemplateRule templateRule = TemplateRule.newInstanceForBuiltin(engine, name, file, resource, url, content, encoding, noCache);
 			tr.setTemplateRule(templateRule);
 		}
 		
@@ -621,13 +667,13 @@ public class RootAponDisassembler {
 	}
 	
 	public DispatchResponseRule disassembleDispatchResponseRule(Parameters dispatchParameters) {
+		String name = dispatchParameters.getString(DispatchParameters.name);
 		String contentType = dispatchParameters.getString(DispatchParameters.contentType);
 		String characterEncoding = dispatchParameters.getString(DispatchParameters.characterEncoding);
-		Parameters templateParameters = dispatchParameters.getParameters(DispatchParameters.template);
 		List<Parameters> actionParametersList = dispatchParameters.getParametersList(DispatchParameters.actions);
 		Boolean defaultResponse = dispatchParameters.getBoolean(DispatchParameters.defaultResponse);
 		
-		DispatchResponseRule drr = DispatchResponseRule.newInstance(contentType, characterEncoding, defaultResponse);
+		DispatchResponseRule drr = DispatchResponseRule.newInstance(name, contentType, characterEncoding, defaultResponse);
 		
 		if(actionParametersList != null && !actionParametersList.isEmpty()) {
 			ActionList actionList = new ActionList();
@@ -635,14 +681,6 @@ public class RootAponDisassembler {
 				disassembleActionRule(actionParameters, actionList);
 			}
 			drr.setActionList(actionList);
-		}
-	
-		if(templateParameters != null) {
-			String file = templateParameters.getString(TemplateParameters.file);
-			String encoding = templateParameters.getString(TemplateParameters.encoding);
-			Boolean noCache = templateParameters.getBoolean(TemplateParameters.noCache);
-			TemplateRule templateRule = TemplateRule.newInstance(file, null, null, null, encoding, noCache);
-			drr.setTemplateRule(templateRule);
 		}
 		
 		return drr;
@@ -657,14 +695,13 @@ public class RootAponDisassembler {
 	
 	public RedirectResponseRule disassembleRedirectResponseRule(Parameters redirectParameters) {
 		String contentType = redirectParameters.getString(RedirectParameters.contentType);
-		String translet = redirectParameters.getString(RedirectParameters.translet);
-		String url = redirectParameters.getString(RedirectParameters.url);
+		String target = redirectParameters.getString(RedirectParameters.target);
 		ItemHolderParameters parameterItemHolderParametersList = redirectParameters.getParameters(RedirectParameters.parameters);
 		Boolean excludeNullParameter = redirectParameters.getBoolean(RedirectParameters.excludeNullParameter);
 		List<Parameters> actionParametersList = redirectParameters.getParametersList(RedirectParameters.actions);
 		Boolean defaultResponse = redirectParameters.getBoolean(RedirectParameters.defaultResponse);
 		
-		RedirectResponseRule rrr = RedirectResponseRule.newInstance(contentType, translet, url, excludeNullParameter, defaultResponse);
+		RedirectResponseRule rrr = RedirectResponseRule.newInstance(contentType, target, excludeNullParameter, defaultResponse);
 		
 		if(parameterItemHolderParametersList != null) {
 			ItemRuleMap parameterItemRuleMap = disassembleItemRuleMap(parameterItemHolderParametersList);
@@ -698,6 +735,9 @@ public class RootAponDisassembler {
 		
 		translet = assistant.applyTransletNamePattern(translet);
 		
+		if(translet == null)
+			throw new IllegalArgumentException("Parameter translet must not be null.");
+		
 		ForwardResponseRule rrr = ForwardResponseRule.newInstance(contentType, translet, defaultResponse);
 		
 		if(attributeItemHolderParametersList != null) {
@@ -721,14 +761,14 @@ public class RootAponDisassembler {
 		ItemRuleMap itemRuleMap = ItemRule.toItemRuleMap(itemParametersList);
 			
 		if(itemRuleMap != null) {
-			for(ItemRule itemRule : itemRuleMap) {
+			for(ItemRule itemRule : itemRuleMap.values()) {
 				Iterator<Token[]> iter = ItemRule.tokenIterator(itemRule);
 				
 				if(iter != null) {
 					while(iter.hasNext()) {
 						for(Token token : iter.next()) {
-							if(token.getType() == TokenType.REFERENCE_BEAN) {
-								assistant.putBeanReference(token.getName(), itemRule);
+							if(token.getType() == TokenType.BEAN) {
+								assistant.putBeanReference(token.getName(), token);
 							}
 						}
 					}

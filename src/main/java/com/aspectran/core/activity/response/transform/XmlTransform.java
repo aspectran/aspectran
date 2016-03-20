@@ -1,17 +1,17 @@
 /**
- *    Copyright 2009-2015 the original author or authors.
+ * Copyright 2008-2016 Juho Jeong
  *
- *    Licensed under the Apache License, Version 2.0 (the "License");
- *    you may not use this file except in compliance with the License.
- *    You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *    Unless required by applicable law or agreed to in writing, software
- *    distributed under the License is distributed on an "AS IS" BASIS,
- *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *    See the License for the specific language governing permissions and
- *    limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package com.aspectran.core.activity.response.transform;
 
@@ -31,7 +31,6 @@ import com.aspectran.core.activity.response.Response;
 import com.aspectran.core.activity.response.transform.xml.ContentsInputSource;
 import com.aspectran.core.activity.response.transform.xml.ContentsXMLReader;
 import com.aspectran.core.adapter.ResponseAdapter;
-import com.aspectran.core.context.rule.TemplateRule;
 import com.aspectran.core.context.rule.TransformRule;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
@@ -39,7 +38,7 @@ import com.aspectran.core.util.logging.LogFactory;
 /**
  * The Class XmlTransform.
  * 
- * Created: 2008. 03. 22 오후 5:51:58
+ * Created: 2008. 03. 22 PM 5:51:58
  */
 public class XmlTransform extends TransformResponse implements Response {
 
@@ -49,15 +48,19 @@ public class XmlTransform extends TransformResponse implements Response {
 
 	public static final String INDENT_NUMBER_KEY = "indent-number";
 
-	public static final Integer INDENT_NUMBER_VAL = new Integer(1);
+	public static final Integer INDENT_NUMBER_VAL = 1;
 
-	private final Log log = LogFactory.getLog(XmlTransform.class);
+	private static final Log log = LogFactory.getLog(XmlTransform.class);
 
-	private final boolean traceEnabled = log.isTraceEnabled();
+	private static final boolean traceEnabled = log.isTraceEnabled();
 
-	private final boolean debugEnabled = log.isDebugEnabled();
-	
-	private boolean pretty;
+	private static final boolean debugEnabled = log.isDebugEnabled();
+
+	private final String characterEncoding;
+
+	private final String contentType;
+
+	private final boolean pretty;
 
 	/**
 	 * Instantiates a new XmlTransform.
@@ -66,85 +69,77 @@ public class XmlTransform extends TransformResponse implements Response {
 	 */
 	public XmlTransform(TransformRule transformRule) {
 		super(transformRule);
-		
+
+		this.characterEncoding = transformRule.getCharacterEncoding();
+		this.contentType = transformRule.getContentType();
 		this.pretty = transformRule.isPretty();
 	}
 
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.response.Responsible#response(com.aspectran.core.activity.CoreActivity)
-	 */
+	@Override
 	public void response(Activity activity) throws TransformResponseException {
+		ResponseAdapter responseAdapter = activity.getResponseAdapter();
+		if(responseAdapter == null)
+			return;
+
 		if(debugEnabled) {
 			log.debug("response " + transformRule);
 		}
 
-		ResponseAdapter responseAdapter = activity.getResponseAdapter();
-		
-		if(responseAdapter == null)
-			return;
-		
 		try {
-			String contentType = transformRule.getContentType();
-			String outputEncoding = transformRule.getCharacterEncoding();
+			String characterEncoding;
+			if(this.characterEncoding != null) {
+				characterEncoding = this.characterEncoding;
+			} else {
+				characterEncoding = activity.determineResponseCharacterEncoding();
+			}
+
+			if(characterEncoding != null)
+				responseAdapter.setCharacterEncoding(characterEncoding);
 
 			if(contentType != null)
 				responseAdapter.setContentType(contentType);
 
-			if(outputEncoding != null)
-				responseAdapter.setCharacterEncoding(outputEncoding);
-			
 			Writer output = responseAdapter.getWriter();
 			ProcessResult processResult = activity.getProcessResult();
 
-			String encoding = transformRule.getCharacterEncoding();
-			
 			TransformerFactory transformerFactory = TransformerFactory.newInstance();
-			
+
 			if(pretty)
 				transformerFactory.setAttribute(INDENT_NUMBER_KEY, INDENT_NUMBER_VAL);
 
 			Transformer transformer = transformerFactory.newTransformer();
 			transformer.setOutputProperty(OutputKeys.METHOD, OUTPUT_METHOD_XML);
 
+			if(characterEncoding != null)
+				transformer.setOutputProperty(OutputKeys.ENCODING, characterEncoding);
+
 			if(pretty)
 				transformer.setOutputProperty(OutputKeys.INDENT, OUTPUT_INDENT_YES);
-			
-			if(encoding != null)
-				transformer.setOutputProperty(OutputKeys.ENCODING, encoding);
-			
+
 			ContentsXMLReader xreader = new ContentsXMLReader();
 			ContentsInputSource isource = new ContentsInputSource(processResult);
 			transformer.transform(new SAXSource(xreader, isource), new StreamResult(output));
-			
+
 			if(traceEnabled) {
 				StringWriter stringWriter = new StringWriter();
 				transformer.transform(new SAXSource(xreader, isource), new StreamResult(stringWriter));
+				stringWriter.close(); // forward compatibility
 				log.trace(stringWriter.toString());
 			}
 		} catch(Exception e) {
 			throw new TransformResponseException(transformRule, e);
 		}
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.response.Responsible#getActionList()
-	 */
+
+	@Override
 	public ActionList getActionList() {
 		return transformRule.getActionList();
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.response.Response#getTemplateRule()
-	 */
-	public TemplateRule getTemplateRule() {
-		return null;
-	}
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.response.Response#newDerivedResponse()
-	 */
-	public Response newDerivedResponse() {
-		return this;
+
+	@Override
+	public Response replicate() {
+		TransformRule transformRule = getTransformRule().replicate();
+		return new XmlTransform(transformRule);
 	}
 
 }

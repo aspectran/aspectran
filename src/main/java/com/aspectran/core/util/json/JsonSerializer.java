@@ -1,21 +1,20 @@
 /**
- *    Copyright 2009-2015 the original author or authors.
+ * Copyright 2008-2016 Juho Jeong
  *
- *    Licensed under the Apache License, Version 2.0 (the "License");
- *    you may not use this file except in compliance with the License.
- *    You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *    Unless required by applicable law or agreed to in writing, software
- *    distributed under the License is distributed on an "AS IS" BASIS,
- *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *    See the License for the specific language governing permissions and
- *    limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package com.aspectran.core.util.json;
 
-import java.io.Closeable;
 import java.io.Flushable;
 import java.io.IOException;
 import java.io.StringWriter;
@@ -38,11 +37,11 @@ import com.aspectran.core.util.apon.Parameters;
  * Pretty-printing is disabled by default.
  * The default indentation string is a tab character.
  * 
- * <p>Created: 2008. 06. 12 오후 8:20:54</p>
+ * <p>Created: 2008. 06. 12 PM 8:20:54</p>
  * 
  * @author Juho Jeong
  */
-public class JsonSerializer implements Closeable, Flushable {
+public class JsonSerializer implements Flushable {
 
 	private Writer writer;
 
@@ -99,30 +98,27 @@ public class JsonSerializer implements Closeable, Flushable {
 	 * @throws InvocationTargetException the invocation target exception
 	 */
 	public void write(Object object) throws IOException, InvocationTargetException {
-		if(object instanceof String ||
+		if(object == null) {
+			writeNull();
+		} else if(object instanceof String ||
 					object instanceof Boolean ||
 					object instanceof Date) {
 			writeString(object.toString());
 		} else if(object instanceof Number) {
 			writeNumber((Number)object);
 		} else if(object instanceof Parameters) {
+			openCurlyBracket();
+
 			Map<String, ParameterValue> params = ((Parameters)object).getParameterValueMap();
 			Iterator<ParameterValue> iter = params.values().iterator();
-			
-			openCurlyBracket();
-			
 			while(iter.hasNext()) {
 				Parameter p = iter.next();
 				String name = p.getName();
 				Object value = p.getValue();
-				
+				checkCircularReference(object, value);
+
 				writeName(name);
-
-				if(value == null)
-					writeNull();
-				else
-					write(value);
-
+				write(value);
 				if(iter.hasNext()) {
 					writeComma();
 				}
@@ -130,23 +126,18 @@ public class JsonSerializer implements Closeable, Flushable {
 			
 			closeCurlyBracket();
 		} else if(object instanceof Map<?, ?>) {
-			@SuppressWarnings("unchecked")
-			Map<String, Object> map = (Map<String, Object>)object;
-			Iterator<String> iter = map.keySet().iterator();
-
 			openCurlyBracket();
 
+			@SuppressWarnings("unchecked")
+			Iterator<Map.Entry<Object, Object>> iter = ((Map<Object, Object>)object).entrySet().iterator();
 			while(iter.hasNext()) {
-				String name = iter.next();
-				Object value = map.get(name);
-				
+				Map.Entry<Object, Object> entry = iter.next();
+				String name = entry.getKey().toString();
+				Object value = entry.getValue();
+				checkCircularReference(object, value);
+
 				writeName(name);
-
-				if(value == null)
-					writeNull();
-				else
-					write(map.get(name));
-
+				write(value);
 				if(iter.hasNext()) {
 					writeComma();
 				}
@@ -160,8 +151,10 @@ public class JsonSerializer implements Closeable, Flushable {
 			openSquareBracket();
 
 			while(iter.hasNext()) {
-				write(iter.next());
+				Object value = iter.next();
+				checkCircularReference(object, value);
 
+				write(value);
 				if(iter.hasNext()) {
 					writeComma();
 				}
@@ -173,34 +166,27 @@ public class JsonSerializer implements Closeable, Flushable {
 
 			int len = Array.getLength(object);
 			for(int i = 0; i < len; i++) {
+				Object value = Array.get(object, i);
+				checkCircularReference(object, value);
+
 				if(i > 0) {
 					writeComma();
 				}
-
-				write(Array.get(object, i));
+				write(value);
 			}
 
 			closeSquareBracket();
 		} else {
 			String[] readablePropertyNames = BeanUtils.getReadablePropertyNames(object);
-
 			if(readablePropertyNames != null && readablePropertyNames.length > 0) {
 				openCurlyBracket();
 
 				for(int i = 0; i < readablePropertyNames.length; i++) {
 					Object value = BeanUtils.getObject(object, readablePropertyNames[i]);
-
-					if(object == value || object.equals(value))
-						continue;
+					checkCircularReference(object, value);
 
 					writeName(readablePropertyNames[i]);
-
-					if(value == null) {
-						writeNull();
-					} else {
-						write(value);
-					}
-
+					write(value);
 					if(i < (readablePropertyNames.length - 1)) {
 						writeComma();
 					}
@@ -210,6 +196,12 @@ public class JsonSerializer implements Closeable, Flushable {
 			} else {
 				writeString(object.toString());
 			}
+		}
+	}
+
+	private void checkCircularReference(Object wrapper, Object member) {
+		if(wrapper.equals(member)) {
+			throw new IllegalArgumentException("JSON Serialization Failure: A circular reference was detected while converting a member object [" + member + "] in [" + wrapper + "]");
 		}
 	}
 
@@ -368,16 +360,11 @@ public class JsonSerializer implements Closeable, Flushable {
 		writer.write("]");
 	}
 
-	/* (non-Javadoc)
-	 * @see java.io.Flushable#flush()
-	 */
+	@Override
 	public void flush() throws IOException {
 		writer.flush();
 	}
 
-	/* (non-Javadoc)
-	 * @see java.io.Closeable#close()
-	 */
 	public void close() throws IOException {
 		if(writer != null)
 			writer.close();
@@ -440,7 +427,7 @@ public class JsonSerializer implements Closeable, Flushable {
 			default:
 				if(c < ' ' || (c >= '\u0080' && c < '\u00a0') || (c >= '\u2000' && c < '\u2100')) {
 					t = "000" + Integer.toHexString(c);
-					sb.append("\\u" + t.substring(t.length() - 4));
+					sb.append("\\u").append(t.substring(t.length() - 4));
 				} else {
 					sb.append(c);
 				}
@@ -495,7 +482,8 @@ public class JsonSerializer implements Closeable, Flushable {
 		try {
 			Writer writer = new StringWriter();
 			
-			JsonSerializer serializer = new JsonSerializer(writer, prettyPrint, indentString);
+			JsonSerializer serializer;
+			serializer = new JsonSerializer(writer, prettyPrint, indentString);
 			serializer.write(object);
 			serializer.close();
 			

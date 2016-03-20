@@ -1,17 +1,17 @@
 /**
- *    Copyright 2009-2015 the original author or authors.
+ * Copyright 2008-2016 Juho Jeong
  *
- *    Licensed under the Apache License, Version 2.0 (the "License");
- *    you may not use this file except in compliance with the License.
- *    You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *    Unless required by applicable law or agreed to in writing, software
- *    distributed under the License is distributed on an "AS IS" BASIS,
- *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *    See the License for the specific language governing permissions and
- *    limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package com.aspectran.core.context.rule;
 
@@ -21,53 +21,58 @@ import java.util.Set;
 
 import com.aspectran.core.context.rule.type.AspectAdviceType;
 import com.aspectran.core.util.StringUtils;
+import com.aspectran.core.util.ToStringBuilder;
 import com.aspectran.core.util.apon.GenericParameters;
 import com.aspectran.core.util.apon.Parameters;
 
+/**
+ * The Class SettingsAdviceRule.
+ */
 public class SettingsAdviceRule {
 
-	private String aspectId;
-	
-	private AspectAdviceType aspectAdviceType;
+	private final AspectRule aspectRule;
 
-	private Map<String, String> settings;
+	private final AspectAdviceType aspectAdviceType = AspectAdviceType.SETTINGS;
 
-	public String getAspectId() {
-		return aspectId;
+	private Map<String, Object> settings;
+
+	public SettingsAdviceRule(AspectRule aspectRule) {
+		this.aspectRule = aspectRule;
 	}
 
-	public void setAspectId(String aspectId) {
-		this.aspectId = aspectId;
+	public String getAspectId() {
+		return aspectRule.getId();
+	}
+
+	public AspectRule getAspectRule() {
+		return aspectRule;
 	}
 
 	public AspectAdviceType getAspectAdviceType() {
 		return aspectAdviceType;
 	}
 
-	public void setAspectAdviceType(AspectAdviceType aspectAdviceType) {
-		this.aspectAdviceType = aspectAdviceType;
-	}
-
-	public Map<String, String> getSettings() {
+	public Map<String, Object> getSettings() {
 		return settings;
 	}
 
-	public void setSettings(Map<String, String> settings) {
+	public void setSettings(Map<String, Object> settings) {
 		this.settings = settings;
 	}
-	
-	public String getSetting(String name) {
-		return settings.get(name);
+
+	@SuppressWarnings("unchecked")
+	public <T> T getSetting(String name) {
+		return (T)settings.get(name);
 	}
-	
-	public void putSetting(String name, String value) {
+
+	public void putSetting(String name, Object value) {
 		if(settings == null) {
-			settings = new HashMap<String, String>();
+			settings = new HashMap<String, Object>();
 		}
 		
 		settings.put(name, value);
 	}
-	
+
 	public static SettingsAdviceRule newInstance(AspectRule aspectRule, String text) {
 		if(StringUtils.hasText(text)) {
 			Parameters settingsParameters = new GenericParameters(text);
@@ -76,12 +81,10 @@ public class SettingsAdviceRule {
 			return newInstance(aspectRule, (Parameters)null);
 		}
 	}
-	
+
 	public static SettingsAdviceRule newInstance(AspectRule aspectRule, Parameters settingsParameters) {
-		SettingsAdviceRule sar = new SettingsAdviceRule();
-		sar.setAspectId(aspectRule.getId());
-		sar.setAspectAdviceType(AspectAdviceType.SETTINGS);
-	
+		SettingsAdviceRule sar = new SettingsAdviceRule(aspectRule);
+
 		if(settingsParameters != null) {
 			Set<String> parametersNames = settingsParameters.getParameterNameSet();
 			
@@ -93,6 +96,16 @@ public class SettingsAdviceRule {
 		}
 
 		return sar;
+	}
+
+	@Override
+	public String toString() {
+		ToStringBuilder tsb = new ToStringBuilder();
+		if(aspectRule != null)
+			tsb.append("aspectId", aspectRule.getId());
+		tsb.append("aspectAdviceType", aspectAdviceType);
+		tsb.append("settings", settings);
+		return tsb.toString();
 	}
 
 }

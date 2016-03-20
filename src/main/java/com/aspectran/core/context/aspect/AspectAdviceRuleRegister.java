@@ -1,26 +1,30 @@
 /**
- *    Copyright 2009-2015 the original author or authors.
+ * Copyright 2008-2016 Juho Jeong
  *
- *    Licensed under the Apache License, Version 2.0 (the "License");
- *    you may not use this file except in compliance with the License.
- *    You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *    Unless required by applicable law or agreed to in writing, software
- *    distributed under the License is distributed on an "AS IS" BASIS,
- *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *    See the License for the specific language governing permissions and
- *    limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package com.aspectran.core.context.aspect;
 
 import java.util.List;
 
+import com.aspectran.core.activity.process.ContentList;
 import com.aspectran.core.context.rule.AspectAdviceRule;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.ExceptionHandlingRule;
+import com.aspectran.core.context.rule.RequestRule;
+import com.aspectran.core.context.rule.ResponseRule;
 import com.aspectran.core.context.rule.SettingsAdviceRule;
+import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.type.AspectAdviceType;
 
 /**
@@ -53,6 +57,51 @@ public class AspectAdviceRuleRegister {
 		}
 		
 		aspectAdviceRuleRegistry.increaseAspectRuleCount();
+	}
+
+	public static void register(TransletRule transletRule, AspectRule aspectRule) {
+		AspectAdviceRuleRegistry aspectAdviceRuleRegistry = transletRule.getAspectAdviceRuleRegistry();
+
+		if(aspectAdviceRuleRegistry == null) {
+			aspectAdviceRuleRegistry = new AspectAdviceRuleRegistry();
+			transletRule.setAspectAdviceRuleRegistry(aspectAdviceRuleRegistry);
+		}
+
+		register(aspectAdviceRuleRegistry, aspectRule);
+	}
+
+	public static void register(RequestRule requestRule, AspectRule aspectRule) {
+		AspectAdviceRuleRegistry aspectAdviceRuleRegistry = requestRule.getAspectAdviceRuleRegistry();
+
+		if(aspectAdviceRuleRegistry == null) {
+			aspectAdviceRuleRegistry = new AspectAdviceRuleRegistry();
+			requestRule.setAspectAdviceRuleRegistry(aspectAdviceRuleRegistry);
+		}
+
+		register(aspectAdviceRuleRegistry, aspectRule);
+	}
+
+	public static void register(ContentList contentList, AspectRule aspectRule) {
+		AspectAdviceRuleRegistry aspectAdviceRuleRegistry = contentList.getAspectAdviceRuleRegistry();
+
+		if(aspectAdviceRuleRegistry == null) {
+			aspectAdviceRuleRegistry = new AspectAdviceRuleRegistry();
+			contentList.setAspectAdviceRuleRegistry(aspectAdviceRuleRegistry);
+		}
+
+		if(aspectRule != null)
+			register(aspectAdviceRuleRegistry, aspectRule);
+	}
+
+	public static void register(ResponseRule responseRule, AspectRule aspectRule) {
+		AspectAdviceRuleRegistry aspectAdviceRuleRegistry = responseRule.getAspectAdviceRuleRegistry();
+
+		if(aspectAdviceRuleRegistry == null) {
+			aspectAdviceRuleRegistry = new AspectAdviceRuleRegistry();
+			responseRule.setAspectAdviceRuleRegistry(aspectAdviceRuleRegistry);
+		}
+
+		register(aspectAdviceRuleRegistry, aspectRule);
 	}
 	
 }

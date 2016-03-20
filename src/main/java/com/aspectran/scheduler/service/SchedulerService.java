@@ -1,43 +1,47 @@
 /**
- *    Copyright 2009-2015 the original author or authors.
+ * Copyright 2008-2016 Juho Jeong
  *
- *    Licensed under the Apache License, Version 2.0 (the "License");
- *    you may not use this file except in compliance with the License.
- *    You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *    Unless required by applicable law or agreed to in writing, software
- *    distributed under the License is distributed on an "AS IS" BASIS,
- *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *    See the License for the specific language governing permissions and
- *    limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package com.aspectran.scheduler.service;
+
+import com.aspectran.core.context.ActivityContext;
 
 /**
  * The Interface SchedulerService.
  */
 public interface SchedulerService {
 
-	public int getStartDelaySeconds();
+	int getStartDelaySeconds();
 	
-	public void setStartDelaySeconds(int startDelaySeconds);
+	void setStartDelaySeconds(int startDelaySeconds);
 	
-	public boolean isWaitOnShutdown();
+	boolean isWaitOnShutdown();
 	
-	public void setWaitOnShutdown(boolean waitOnShutdown);
+	void setWaitOnShutdown(boolean waitOnShutdown);
 	
-	public void startup() throws Exception;
+	void startup() throws SchedulerServiceException;
 	
-	public void startup(int delaySeconds) throws Exception;
+	void startup(int delaySeconds) throws SchedulerServiceException;
 	
-	public void shutdown() throws Exception;
+	void shutdown() throws SchedulerServiceException;
 	
-	public void shutdown(boolean waitForJobsToComplete) throws Exception;
-	
-	public void pause(String schedulerId) throws Exception;
-	
-	public void resume(String schedulerId) throws Exception;
-	
+	void shutdown(boolean waitForJobsToComplete) throws SchedulerServiceException;
+
+	void refresh(ActivityContext context) throws SchedulerServiceException;
+
+	void pause(String schedulerId) throws SchedulerServiceException;
+
+	void resume(String schedulerId) throws SchedulerServiceException;
+
 }

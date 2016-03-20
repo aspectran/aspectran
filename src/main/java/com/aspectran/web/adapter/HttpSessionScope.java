@@ -1,17 +1,17 @@
 /**
- *    Copyright 2009-2015 the original author or authors.
+ * Copyright 2008-2016 Juho Jeong
  *
- *    Licensed under the Apache License, Version 2.0 (the "License");
- *    you may not use this file except in compliance with the License.
- *    You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *    Unless required by applicable law or agreed to in writing, software
- *    distributed under the License is distributed on an "AS IS" BASIS,
- *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *    See the License for the specific language governing permissions and
- *    limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package com.aspectran.web.adapter;
 
@@ -26,10 +26,12 @@ import com.aspectran.core.util.logging.LogFactory;
 
 /**
  * The Class HttpSessionScope.
+ *
+ * @author Juho Jeong
  */
 public class HttpSessionScope extends SessionScope implements HttpSessionBindingListener {
 
-	private static final Log log = LogFactory.getLog(HttpSessionScope.class);
+	private final Log log = LogFactory.getLog(getClass());
 	
 	private SessionAdapter sessionAdapter;
 	
@@ -40,7 +42,7 @@ public class HttpSessionScope extends SessionScope implements HttpSessionBinding
 	 */
 	public HttpSessionScope() {
 	}
-	
+
 	/**
 	 * Instantiates a new HttpSessionScope.
 	 *
@@ -51,10 +53,8 @@ public class HttpSessionScope extends SessionScope implements HttpSessionBinding
 		this.sessionAdapter = sessionAdapter;
 		this.advisor = advisor;
 	}
-	
-	/* (non-Javadoc)
-	 * @see javax.servlet.http.HttpSessionBindingListener#valueBound(javax.servlet.http.HttpSessionBindingEvent)
-	 */
+
+	@Override
 	public void valueBound(HttpSessionBindingEvent event) {
 		if(log.isDebugEnabled())
 			log.debug("New HttpSessionScope bound in session " + sessionAdapter);
@@ -63,9 +63,7 @@ public class HttpSessionScope extends SessionScope implements HttpSessionBinding
 			advisor.executeBeforeAdvice();
 	}
 
-	/* (non-Javadoc)
-	 * @see javax.servlet.http.HttpSessionBindingListener#valueUnbound(javax.servlet.http.HttpSessionBindingEvent)
-	 */
+	@Override
 	public void valueUnbound(HttpSessionBindingEvent event) {
 		sessionAdapter.release();
 

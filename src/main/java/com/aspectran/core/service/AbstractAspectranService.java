@@ -1,17 +1,17 @@
 /**
- *    Copyright 2009-2015 the original author or authors.
+ * Copyright 2008-2016 Juho Jeong
  *
- *    Licensed under the Apache License, Version 2.0 (the "License");
- *    you may not use this file except in compliance with the License.
- *    You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *    Unless required by applicable law or agreed to in writing, software
- *    distributed under the License is distributed on an "AS IS" BASIS,
- *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *    See the License for the specific language governing permissions and
- *    limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package com.aspectran.core.service;
 
@@ -22,7 +22,6 @@ import java.net.URL;
 
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.context.ActivityContextException;
 import com.aspectran.core.context.loader.ActivityContextLoader;
 import com.aspectran.core.context.loader.AspectranClassLoader;
 import com.aspectran.core.context.loader.HybridActivityContextLoader;
@@ -33,12 +32,16 @@ import com.aspectran.core.context.loader.config.AspectranSchedulerConfig;
 import com.aspectran.core.context.loader.reload.ActivityContextReloadingTimer;
 import com.aspectran.core.context.loader.resource.InvalidResourceException;
 import com.aspectran.core.util.ResourceUtils;
+import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.apon.Parameters;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
-import com.aspectran.scheduler.service.SchedulerService;
 import com.aspectran.scheduler.service.QuartzSchedulerService;
+import com.aspectran.scheduler.service.SchedulerService;
 
+/**
+ * The Class AbstractAspectranService.
+ */
 public abstract class AbstractAspectranService implements AspectranService {
 
 	protected static final Log log = LogFactory.getLog(AbstractAspectranService.class);
@@ -84,6 +87,7 @@ public abstract class AbstractAspectranService implements AspectranService {
 		return rootContext;
 	}
 
+	@Override
 	public AspectranClassLoader getAspectranClassLoader() {
 		return aspectranClassLoader;
 	}
@@ -92,6 +96,7 @@ public abstract class AbstractAspectranService implements AspectranService {
 		this.aspectranClassLoader = aspectranClassLoader;
 	}
 
+	@Override
 	public ApplicationAdapter getApplicationAdapter() {
 		return applicationAdapter;
 	}
@@ -100,20 +105,21 @@ public abstract class AbstractAspectranService implements AspectranService {
 		this.applicationAdapter = applicationAdapter;
 	}
 
+	@Override
 	public ActivityContext getActivityContext() {
 		return activityContext;
 	}
-	
+
+	@Override
 	public boolean isHardReload() {
 		return hardReload;
 	}
 
-	protected synchronized void initialize(AspectranConfig aspectranConfig) throws ActivityContextException {
+	protected synchronized void initialize(AspectranConfig aspectranConfig) throws AspectranServiceException {
 		if(activityContext != null)
-			throw new ActivityContextException("Already loaded the AspectranContext. Destroy the old AspectranContext before loading.");
-		
+			throw new AspectranServiceException("Already loaded the AspectranContext. Destroy the old AspectranContext before loading.");
+
 		log.info("Initializing AspectranService...");
-		
 
 		try {
 			this.aspectranConfig = aspectranConfig;
@@ -123,7 +129,7 @@ public abstract class AbstractAspectranService implements AspectranService {
 			if(aspectranContextAutoReloadingConfig != null) {
 				String reloadMethod = aspectranContextAutoReloadingConfig.getString(AspectranContextAutoReloadingConfig.reloadMethod);
 				int observationInterval = aspectranContextAutoReloadingConfig.getInt(AspectranContextAutoReloadingConfig.observationInterval, -1);
-				boolean autoReloadingStartup = aspectranContextAutoReloadingConfig.getBoolean(AspectranContextAutoReloadingConfig.startup, true);
+				boolean autoReloadingStartup = aspectranContextAutoReloadingConfig.getBoolean(AspectranContextAutoReloadingConfig.startup, false);
 				this.hardReload = "hard".equals(reloadMethod);
 				this.autoReloadingStartup = autoReloadingStartup;
 				this.observationInterval = observationInterval;
@@ -135,7 +141,8 @@ public abstract class AbstractAspectranService implements AspectranService {
 			if(autoReloadingStartup) {
 				if(observationInterval == -1) {
 					observationInterval = 10;
-					log.info("'" + aspectranContextAutoReloadingConfig.getQualifiedName() + "' is not specified, defaulting to 10 seconds.");
+					String contextAutoReloadingParamName = AspectranConfig.context.getName() + "." + AspectranContextConfig.autoReloading.getName();
+					log.info("'" + contextAutoReloadingParamName + "' is not specified, defaulting to 10 seconds.");
 				}
 			}
 
@@ -144,7 +151,7 @@ public abstract class AbstractAspectranService implements AspectranService {
 			this.resourceLocations = checkResourceLocations(getApplicationBasePath(), null, resourceLocations);
 			this.aspectranSchedulerConfig = aspectranConfig.getParameters(AspectranConfig.scheduler);
 			
-			aspectranClassLoader = CoreAspectranService.newAspectranClassLoader(this.resourceLocations);
+			aspectranClassLoader = newAspectranClassLoader(this.resourceLocations);
 			
 			String encoding = aspectranContextConfig.getString(AspectranContextConfig.encoding);
 			boolean hybridLoading = aspectranContextConfig.getBoolean(AspectranContextConfig.hybridLoading, false);
@@ -153,15 +160,16 @@ public abstract class AbstractAspectranService implements AspectranService {
 			activityContextLoader.setApplicationAdapter(applicationAdapter);
 			activityContextLoader.setHybridLoading(hybridLoading);
 		} catch(Exception e) {
-			throw new AspectranServiceException("Failed to initialize AspectranService " + aspectranConfig, e);
+			throw new AspectranServiceException("Failed to initialize the AspectranService " + aspectranConfig, e);
 		}
 	}
 	
-	protected synchronized ActivityContext loadActivityContext() throws ActivityContextException {
+	protected synchronized ActivityContext loadActivityContext() throws AspectranServiceException {
 		if(activityContext != null)
-			throw new ActivityContextException("Already loaded the AspectranContext. Destroy the old AspectranContext before loading.");
+			throw new AspectranServiceException("Already loaded the AspectranContext. Destroy the old AspectranContext before loading.");
 		
-		log.info("Loading ActivityContext...");
+		if(log.isDebugEnabled())
+			log.debug("Loading ActivityContext...");
 		
 		try {
 			activityContext = activityContextLoader.load(rootContext);
@@ -188,9 +196,9 @@ public abstract class AbstractAspectranService implements AspectranService {
 			try {
 				activityContext.destroy();
 				activityContext = null;
-				log.info("Successfully destroyed AspectranContext.");
+				log.info("Successfully destroyed the AspectranContext.");
 			} catch(Exception e) {
-				log.error("Failed to destroy AspectranContext " + activityContext, e);
+				log.error("Failed to destroy the AspectranContext " + activityContext, e);
 				cleanlyDestoryed = false;
 			}
 		}
@@ -198,14 +206,13 @@ public abstract class AbstractAspectranService implements AspectranService {
 		return cleanlyDestoryed;
 	}
 
-	public synchronized ActivityContext reloadActivityContext() {
+	public synchronized ActivityContext reloadActivityContext() throws AspectranServiceException {
 		try {
 			if(activityContextLoader == null)
-				throw new IllegalArgumentException("activityContextLoader must not be null");
+				throw new IllegalArgumentException("'activityContextLoader' must not be null.");
 
 			if(hardReload) {
-				aspectranClassLoader = CoreAspectranService.newAspectranClassLoader(this.resourceLocations);
-				//activityContextLoader.setAspectranClassLoader(aspectranClassLoader);
+				aspectranClassLoader = newAspectranClassLoader(this.resourceLocations);
 			} else {
 				aspectranClassLoader.reload();
 			}
@@ -216,7 +223,7 @@ public abstract class AbstractAspectranService implements AspectranService {
 	
 			startReloadingTimer();
 		} catch(Exception e) {
-			throw new AspectranServiceException("Failed to reload the Aspectran's ActivityContext.", e);
+			throw new AspectranServiceException("Failed to reload the ActivityContext.", e);
 		}
 
 		return activityContext;
@@ -226,13 +233,15 @@ public abstract class AbstractAspectranService implements AspectranService {
 		if(this.aspectranSchedulerConfig == null)
 			return;
 		
-		log.info("Starting the SchedulerService " + this.aspectranSchedulerConfig.describe());
-		
 		boolean startup = this.aspectranSchedulerConfig.getBoolean(AspectranSchedulerConfig.startup);
 		int startDelaySeconds = this.aspectranSchedulerConfig.getInt(AspectranSchedulerConfig.startDelaySeconds.getName(), -1);
 		boolean waitOnShutdown = this.aspectranSchedulerConfig.getBoolean(AspectranSchedulerConfig.waitOnShutdown);
-		
+
 		if(startup) {
+			if(log.isDebugEnabled()) {
+				log.debug("Starting the SchedulerService " + this.aspectranSchedulerConfig.describe(true));
+			}
+
 			SchedulerService schedulerService = new QuartzSchedulerService(activityContext);
 			
 			if(waitOnShutdown)
@@ -253,9 +262,9 @@ public abstract class AbstractAspectranService implements AspectranService {
 			try {
 				schedulerService.shutdown();
 				schedulerService = null;
-				log.info("Aspectran's SchedulerService has not been shutdown successfully.");
+				log.info("SchedulerService has been shutdown successfully.");
 			} catch(Exception e) {
-				log.error("Aspectran's SchedulerService has not been shutdown cleanly.", e);
+				log.error("SchedulerService did not shutdown cleanly.", e);
 				return false;
 			}
 		}
@@ -276,9 +285,26 @@ public abstract class AbstractAspectranService implements AspectranService {
 		
 		reloadingTimer = null;
 	}
-	
 
-	private static String[] checkResourceLocations(String applicationBasePath, String rootResourceLocation, String[] resourceLocations) throws IOException {
+	public AspectranClassLoader newAspectranClassLoader(String[] resourceLocations) throws InvalidResourceException {
+		String[] excludePackageNames = new String[] {
+				"com.aspectran.core",
+				"com.aspectran.scheduler",
+				"com.aspectran.web",
+				"com.aspectran.console"
+		};
+
+		AspectranClassLoader acl = new AspectranClassLoader();
+		acl.excludePackage(excludePackageNames);
+
+		if(resourceLocations != null && resourceLocations.length > 0) {
+			acl.setResourceLocations(resourceLocations);
+		}
+
+		return acl;
+	}
+	
+	private String[] checkResourceLocations(String applicationBasePath, String rootResourceLocation, String[] resourceLocations) throws InvalidResourceException {
 		if(resourceLocations == null)
 			return null;
 		
@@ -287,7 +313,7 @@ public abstract class AbstractAspectranService implements AspectranService {
 				String path = resourceLocations[i].substring(ResourceUtils.CLASSPATH_URL_PREFIX.length());
 				URL url = AspectranClassLoader.getDefaultClassLoader().getResource(path);
 				if(url == null)
-					throw new InvalidResourceException("class path resource [" + resourceLocations[i] + "] cannot be resolved to URL because it does not exist");
+					throw new InvalidResourceException("Class path resource [" + resourceLocations[i] + "] cannot be resolved to URL because it does not exist");
 				resourceLocations[i] = url.getFile();
 			} else if(resourceLocations[i].startsWith(ResourceUtils.FILE_URL_PREFIX)) {
 				try {
@@ -303,8 +329,8 @@ public abstract class AbstractAspectranService implements AspectranService {
 			if(resourceLocations[i].indexOf('\\') != -1)
 				resourceLocations[i] = resourceLocations[i].replace('\\', '/');
 			
-			if(resourceLocations[i].endsWith(ResourceUtils.RESOURCE_NAME_SPEPARATOR))
-				resourceLocations[i] = resourceLocations[i].substring(0, resourceLocations[i].length() - ResourceUtils.RESOURCE_NAME_SPEPARATOR.length());
+			if(StringUtils.endsWith(resourceLocations[i], ResourceUtils.PATH_SPEPARATOR_CHAR))
+				resourceLocations[i] = resourceLocations[i].substring(0, resourceLocations[i].length() - 1);
 		}
 		
 		String resourceLocation = null;
@@ -346,7 +372,7 @@ public abstract class AbstractAspectranService implements AspectranService {
 				}
 			}
 		} catch(IOException e) {
-			throw new InvalidResourceException("invalid resource location: " + resourceLocation, e);
+			throw new InvalidResourceException("Invalid resource location: " + resourceLocation, e);
 		}
 		
 		return resourceLocations;

@@ -1,17 +1,17 @@
 /**
- *    Copyright 2009-2015 the original author or authors.
+ * Copyright 2008-2016 Juho Jeong
  *
- *    Licensed under the Apache License, Version 2.0 (the "License");
- *    you may not use this file except in compliance with the License.
- *    You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *    Unless required by applicable law or agreed to in writing, software
- *    distributed under the License is distributed on an "AS IS" BASIS,
- *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *    See the License for the specific language governing permissions and
- *    limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package com.aspectran.core.activity;
 
@@ -29,23 +29,30 @@ import com.aspectran.core.context.rule.type.JoinpointScopeType;
 /**
  * The Class VoidActivity
  * 
- * <p>Created: 2008. 04. 28 오전 12:48:48</p>
+ * <p>Created: 2008. 04. 28 AM 12:48:48</p>
  */
 public final class VoidActivity extends CoreActivity implements Activity {
 	
+	/**
+	 * Instantiates a new void activity.
+	 *
+	 * @param context the activity context
+	 */
 	public VoidActivity(ActivityContext context) {
 		super(context);
 		newTranslet();
 	}
-	
+
+	@Override
 	public void ready(String transletName) {
 	}
-	
-	protected void request(Translet translet) {
-	}
-	
-	@SuppressWarnings("unchecked")
+
 	@Override
+	protected void request() {
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
 	public <T extends Activity> T newActivity() {
 		VoidActivity activity = new VoidActivity(getActivityContext());
 		return (T)activity;
@@ -85,7 +92,7 @@ public final class VoidActivity extends CoreActivity implements Activity {
 	public void finish() {
 		throw new UnsupportedOperationException();
 	}
-	
+
 	@Override
 	public String getForwardTransletName() {
 		throw new UnsupportedOperationException();
@@ -115,7 +122,8 @@ public final class VoidActivity extends CoreActivity implements Activity {
 	public void setRequestScope(Scope requestScope) {
 		throw new UnsupportedOperationException();
 	}
-	
+
+	@Override
 	public JoinpointScopeType getCurrentJoinpointScope() {
 		return null;
 	}

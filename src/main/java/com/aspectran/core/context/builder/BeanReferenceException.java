@@ -1,31 +1,31 @@
 /**
- *    Copyright 2009-2015 the original author or authors.
+ * Copyright 2008-2016 Juho Jeong
  *
- *    Licensed under the Apache License, Version 2.0 (the "License");
- *    you may not use this file except in compliance with the License.
- *    You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *    Unless required by applicable law or agreed to in writing, software
- *    distributed under the License is distributed on an "AS IS" BASIS,
- *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *    See the License for the specific language governing permissions and
- *    limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package com.aspectran.core.context.builder;
 
 import java.util.List;
 
 /**
- * This exception will be thrown when a translet request is failed.
+ * This exception will be thrown when cannot resolve reference to bean.
  * 
- * <p>Created: 2008. 01. 07 오전 3:35:55</p>
+ * <p>Created: 2008. 01. 07 AM 3:35:55</p>
  */
 public class BeanReferenceException extends ActivityContextBuilderException {
 	
 	/** @serial */
-	static final long serialVersionUID = -244633940486989865L;
+	private static final long serialVersionUID = -244633940486989865L;
 	
 	private BeanReferenceInspector beanReferenceInspector;
 
@@ -41,12 +41,12 @@ public class BeanReferenceException extends ActivityContextBuilderException {
 	 *
 	 * @param unknownBeanIdList the unknown bean id list
 	 */
-	public BeanReferenceException(List<String> unknownBeanIdList) {
+	public BeanReferenceException(List<Object> unknownBeanIdList) {
 		super(getMessage(unknownBeanIdList));
 	}
 	
 	/**
-	 * Gets the bean reference inspector.
+	 * Returns a bean reference inspector.
 	 *
 	 * @return the bean reference inspector
 	 */
@@ -69,9 +69,9 @@ public class BeanReferenceException extends ActivityContextBuilderException {
 	 * @param unknownBeanIdList the unknown bean id list
 	 * @return the message
 	 */
-	private static String getMessage(List<String> unknownBeanIdList) {
+	private static String getMessage(List<Object> unknownBeanIdList) {
 		StringBuilder sb = new StringBuilder();
-		sb.append("Cannot resolve reference to bean. unknown bean id [");
+		sb.append("Cannot resolve reference to bean [");
 		
 		for(int i = 0; i < unknownBeanIdList.size(); i++) {
 			if(i > 0)

@@ -1,17 +1,17 @@
 /**
- *    Copyright 2009-2015 the original author or authors.
+ * Copyright 2008-2016 Juho Jeong
  *
- *    Licensed under the Apache License, Version 2.0 (the "License");
- *    you may not use this file except in compliance with the License.
- *    You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *    Unless required by applicable law or agreed to in writing, software
- *    distributed under the License is distributed on an "AS IS" BASIS,
- *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *    See the License for the specific language governing permissions and
- *    limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 /*
  * Copyright 2008-2015 the original author or authors.
@@ -36,45 +36,40 @@ package com.aspectran.core.context.bean;
 public class BeanInstantiationException extends BeanException {
 
 	/** @serial */
-	static final long serialVersionUID = -2906926519983962457L;
+	private static final long serialVersionUID = 387409430536237392L;
 	
 	private Class<?> beanClass;
 
 	/**
 	 * Create a new BeanInstantiationException.
-	 * @param msg the detail message
-	 * @param cause the root cause
-	 */
-	public BeanInstantiationException(String msg, Throwable cause) {
-		super(msg, cause);
-	}
-
-	/**
-	 * Create a new BeanInstantiationException.
+	 *
 	 * @param beanClass the offending bean class
 	 * @param cause the root cause
 	 */
 	public BeanInstantiationException(Class<?> beanClass, Throwable cause) {
-		this(beanClass, cause.getMessage(), cause);
-	}
-	
-	/**
-	 * Create a new BeanInstantiationException.
-	 * @param beanClass the offending bean class
-	 * @param msg the detail message
-	 */
-	public BeanInstantiationException(Class<?> beanClass, String msg) {
-		this(beanClass, msg, null);
+		this(cause.getMessage(), beanClass, cause);
 	}
 
 	/**
 	 * Create a new BeanInstantiationException.
-	 * @param beanClass the offending bean class
+	 *
 	 * @param msg the detail message
+	 * @param beanClass the offending bean class
 	 * @param cause the root cause
 	 */
-	public BeanInstantiationException(Class<?> beanClass, String msg, Throwable cause) {
+	public BeanInstantiationException(String msg, Class<?> beanClass, Throwable cause) {
 		super("Could not instantiate bean class [" + beanClass.getName() + "]: " + msg, cause);
+		this.beanClass = beanClass;
+	}
+
+	/**
+	 * Create a new BeanInstantiationException.
+	 *
+	 * @param msg the detail message
+	 * @param beanClass the offending bean class
+	 */
+	public BeanInstantiationException(String msg, Class<?> beanClass) {
+		super("Could not instantiate bean class [" + beanClass.getName() + "]: " + msg);
 		this.beanClass = beanClass;
 	}
 

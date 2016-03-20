@@ -1,40 +1,51 @@
 /**
- *    Copyright 2009-2015 the original author or authors.
+ * Copyright 2008-2016 Juho Jeong
  *
- *    Licensed under the Apache License, Version 2.0 (the "License");
- *    you may not use this file except in compliance with the License.
- *    You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *    Unless required by applicable law or agreed to in writing, software
- *    distributed under the License is distributed on an "AS IS" BASIS,
- *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *    See the License for the specific language governing permissions and
- *    limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package com.aspectran.core.activity.process;
 
 import java.util.ArrayList;
+import java.util.Collection;
 
 import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
+import com.aspectran.core.context.rule.ability.Replicable;
 import com.aspectran.core.util.BooleanUtils;
+import com.aspectran.core.util.ToStringBuilder;
 
 /**
  * The Class ContentList.
  * 
- * <p>Created: 2008. 03. 22 오후 5:47:57</p>
+ * <p>Created: 2008. 03. 22 PM 5:47:57</p>
  */
-public class ContentList extends ArrayList<ActionList> {
+public class ContentList extends ArrayList<ActionList> implements Replicable<ContentList> {
 	
 	/** @serial */
-	static final long serialVersionUID = 2567969961069441527L;
+	private static final long serialVersionUID = 2567969961069441527L;
 	
 	private String name;
 	
 	private Boolean omittable;
 	
 	private AspectAdviceRuleRegistry aspectAdviceRuleRegistry;
+
+	public ContentList() {
+		super(3);
+	}
+
+	protected ContentList(Collection<ActionList> c) {
+		super(c);
+	}
 
 	public String getName() {
 		return name;
@@ -62,11 +73,13 @@ public class ContentList extends ArrayList<ActionList> {
 	 * @param actionList the action list
 	 */
 	public void addActionList(ActionList actionList) {
-		add(actionList);
+		if(actionList != null) {
+			add(actionList);
+		}
 	}
 
 	public ActionList newActionList(boolean omittable) {
-		ActionList actionList = new ActionList(this);
+		ActionList actionList = new ActionList();
 		if(omittable)
 			actionList.setOmittable(Boolean.TRUE);
 		
@@ -74,42 +87,46 @@ public class ContentList extends ArrayList<ActionList> {
 		
 		return actionList;
 	}
-	
-	public AspectAdviceRuleRegistry getAspectAdviceRuleRegistry() {
-		return aspectAdviceRuleRegistry;
+
+	public int getVisibleCount() {
+		int count = 0;
+		for(ActionList actionList : this) {
+			if(!actionList.isHidden())
+				count++;
+		}
+		return count;
 	}
 
-	public AspectAdviceRuleRegistry getAspectAdviceRuleRegistry(boolean clone) throws CloneNotSupportedException {
-		if(clone && aspectAdviceRuleRegistry != null)
-			return aspectAdviceRuleRegistry.clone();
-		
+	public AspectAdviceRuleRegistry getAspectAdviceRuleRegistry() {
 		return aspectAdviceRuleRegistry;
 	}
 
 	public void setAspectAdviceRuleRegistry(AspectAdviceRuleRegistry aspectAdviceRuleRegistry) {
 		this.aspectAdviceRuleRegistry = aspectAdviceRuleRegistry;
 	}
-	
-	/* (non-Javadoc)
-	 * @see java.util.AbstractCollection#toString()
-	 */
+
+	public AspectAdviceRuleRegistry replicateAspectAdviceRuleRegistry() {
+		if(aspectAdviceRuleRegistry == null)
+			return null;
+
+		return aspectAdviceRuleRegistry.replicate();
+	}
+
+	@Override
+	public ContentList replicate() {
+		ContentList contentList = new ContentList(this);
+		contentList.setName(name);
+		contentList.setOmittable(omittable);
+		return contentList;
+	}
+
 	@Override
 	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		sb.append("{name=").append(name);
-		sb.append(", omittable=").append(omittable);
-		sb.append(", contents=");
-		sb.append('[');
-		for(int i = 0; i < size(); i++) {
-			ActionList content = get(i);
-			if(i > 0)
-				sb.append(", ");
-			sb.append(content.toString());
-		}
-		sb.append(']');
-		sb.append('}');
-		
-		return sb.toString();
+		ToStringBuilder tsb = new ToStringBuilder();
+		tsb.append("name", name);
+		tsb.append("omittable", omittable);
+		tsb.append("contents", this);
+		return tsb.toString();
 	}
 	
 	public static ContentList newInstance(String name, Boolean omittable) {
@@ -119,5 +136,5 @@ public class ContentList extends ArrayList<ActionList> {
 		
 		return contentList;
 	}
-	
+
 }

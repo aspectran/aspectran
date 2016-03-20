@@ -1,43 +1,56 @@
 /**
- *    Copyright 2009-2015 the original author or authors.
+ * Copyright 2008-2016 Juho Jeong
  *
- *    Licensed under the Apache License, Version 2.0 (the "License");
- *    you may not use this file except in compliance with the License.
- *    You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *    Unless required by applicable law or agreed to in writing, software
- *    distributed under the License is distributed on an "AS IS" BASIS,
- *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *    See the License for the specific language governing permissions and
- *    limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package com.aspectran.core.context.rule;
 
+import java.lang.reflect.Method;
+
 import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
 import com.aspectran.core.context.rule.ability.ArgumentPossessable;
+import com.aspectran.core.context.rule.ability.BeanReferenceInspectable;
 import com.aspectran.core.context.rule.ability.PropertyPossessable;
+import com.aspectran.core.context.rule.type.BeanReferrerType;
 import com.aspectran.core.util.BooleanUtils;
+import com.aspectran.core.util.ToStringBuilder;
 
 /**
  * The Class BeanActionRule.
  * 
- * <p>Created: 2008. 03. 22 오후 5:50:35</p>
+ * <p>Created: 2008. 03. 22 PM 5:50:35</p>
  */
-public class BeanActionRule implements ArgumentPossessable, PropertyPossessable {
-	
-	protected String actionId;
-	
-	protected String beanId;
-	
-	protected String methodName;
+public class BeanActionRule implements ArgumentPossessable, PropertyPossessable, BeanReferenceInspectable {
 
-	protected ItemRuleMap propertyItemRuleMap;
+	private static final BeanReferrerType BEAN_REFERABLE_RULE_TYPE = BeanReferrerType.BEAN_ACTION_RULE;
+
+	private String actionId;
+
+	private String beanId;
+
+	private Class<?> beanClass;
+
+	private String methodName;
+
+	private Method method;
 	
-	protected ItemRuleMap argumentItemRuleMap;
-	
-	protected Boolean hidden;
+	private boolean requiresTranslet;
+
+	private ItemRuleMap argumentItemRuleMap;
+
+	private ItemRuleMap propertyItemRuleMap;
+
+	private Boolean hidden;
 	
 	private AspectAdviceRule aspectAdviceRule;
 	
@@ -60,13 +73,31 @@ public class BeanActionRule implements ArgumentPossessable, PropertyPossessable 
 	public void setActionId(String actionId) {
 		this.actionId = actionId;
 	}
-	
+
+	/**
+	 * Gets bean id.
+	 *
+	 * @return the bean id
+	 */
 	public String getBeanId() {
 		return beanId;
 	}
 
+	/**
+	 * Sets bean id.
+	 *
+	 * @param beanId the bean id
+	 */
 	public void setBeanId(String beanId) {
 		this.beanId = beanId;
+	}
+
+	public Class<?> getBeanClass() {
+		return beanClass;
+	}
+
+	public void setBeanClass(Class<?> beanClass) {
+		this.beanClass = beanClass;
 	}
 
 	/**
@@ -86,7 +117,23 @@ public class BeanActionRule implements ArgumentPossessable, PropertyPossessable 
 	public void setMethodName(String methodName) {
 		this.methodName = methodName;
 	}
-	
+
+	public boolean isRequiresTranslet() {
+		return requiresTranslet;
+	}
+
+	public void setRequiresTranslet(boolean requiresTranslet) {
+		this.requiresTranslet = requiresTranslet;
+	}
+
+	public Method getMethod() {
+		return method;
+	}
+
+	public void setMethod(Method method) {
+		this.method = method;
+	}
+
 	/**
 	 * Returns whether to hide result of the action.
 	 *
@@ -114,52 +161,40 @@ public class BeanActionRule implements ArgumentPossessable, PropertyPossessable 
 		this.hidden = hidden;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.context.rule.ability.PropertyPossessable#getPropertyItemRuleMap()
-	 */
+	@Override
+	public ItemRuleMap getArgumentItemRuleMap() {
+		return argumentItemRuleMap;
+	}
+
+	@Override
+	public void setArgumentItemRuleMap(ItemRuleMap argumentItemRuleMap) {
+		this.argumentItemRuleMap = argumentItemRuleMap;
+	}
+
+	@Override
+	public void addArgumentItemRule(ItemRule argumentItemRule) {
+		if(argumentItemRuleMap == null)
+			argumentItemRuleMap = new ItemRuleMap();
+
+		argumentItemRuleMap.putItemRule(argumentItemRule);
+	}
+
+	@Override
 	public ItemRuleMap getPropertyItemRuleMap() {
 		return propertyItemRuleMap;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.context.rule.ability.PropertyPossessable#setPropertyItemRuleMap(com.aspectran.core.context.rule.ItemRuleMap)
-	 */
+	@Override
 	public void setPropertyItemRuleMap(ItemRuleMap propertyItemRuleMap) {
 		this.propertyItemRuleMap = propertyItemRuleMap;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.context.rule.ability.PropertyPossessable#addPropertyItemRule(com.aspectran.core.context.rule.ItemRule)
-	 */
+	@Override
 	public void addPropertyItemRule(ItemRule propertyItemRule) {
 		if(propertyItemRuleMap == null) 
 			propertyItemRuleMap = new ItemRuleMap();
 		
 		propertyItemRuleMap.putItemRule(propertyItemRule);
-	}
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.context.rule.ability.ArgumentPossessable#getArgumentItemRuleMap()
-	 */
-	public ItemRuleMap getArgumentItemRuleMap() {
-		return argumentItemRuleMap;
-	}
-
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.context.rule.ability.ArgumentPossessable#setArgumentItemRuleMap(com.aspectran.core.context.rule.ItemRuleMap)
-	 */
-	public void setArgumentItemRuleMap(ItemRuleMap argumentItemRuleMap) {
-		this.argumentItemRuleMap = argumentItemRuleMap;
-	}
-
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.context.rule.ability.ArgumentPossessable#addArgumentItemRule(com.aspectran.core.context.rule.ItemRule)
-	 */
-	public void addArgumentItemRule(ItemRule argumentItemRule) {
-		if(argumentItemRuleMap == null) 
-			argumentItemRuleMap = new ItemRuleMap();
-		
-		argumentItemRuleMap.putItemRule(argumentItemRule);
 	}
 
 	/**
@@ -197,41 +232,27 @@ public class BeanActionRule implements ArgumentPossessable, PropertyPossessable 
 	public void setAspectAdviceRuleRegistry(AspectAdviceRuleRegistry aspectAdviceRuleRegistry) {
 		this.aspectAdviceRuleRegistry = aspectAdviceRuleRegistry;
 	}
+
+	@Override
+	public BeanReferrerType getBeanReferrerType() {
+		return BEAN_REFERABLE_RULE_TYPE;
+	}
 	
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
 	@Override
 	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		sb.append("{id=").append(actionId);
-		sb.append(", bean=").append(beanId);
-		sb.append(", method=").append(methodName);
-		sb.append(", hidden=").append(hidden);
-		if(propertyItemRuleMap != null) {
-			sb.append(", properties=[");
-			int sbLength = sb.length();
-			for(String name : propertyItemRuleMap.keySet()) {
-				if(sb.length() > sbLength)
-					sb.append(", ");
-				
-				sb.append(name);
-			}
-			sb.append("]");
-		}
-		if(argumentItemRuleMap != null) {
-			sb.append(", arguments=[");
-			int sbLength = sb.length();
-			for(String name : argumentItemRuleMap.keySet()) {
-				if(sb.length() > sbLength)
-					sb.append(", ");
-				sb.append(name);
-			}
-			sb.append("]");
-		}
-		sb.append("}");
-		
-		return sb.toString();
+		ToStringBuilder tsb = new ToStringBuilder();
+		tsb.append("id", actionId);
+		tsb.append("bean", beanId);
+		tsb.append("method", methodName);
+		tsb.append("hidden", hidden);
+		if(argumentItemRuleMap != null)
+			tsb.append("arguments", argumentItemRuleMap.keySet());
+		if(propertyItemRuleMap != null)
+			tsb.append("properties", propertyItemRuleMap.keySet());
+		if(aspectAdviceRule != null)
+			tsb.append("aspectAdviceRule", aspectAdviceRule.toString(true));
+		tsb.append("aspectAdviceRuleRegistry", aspectAdviceRuleRegistry);
+		return tsb.toString();
 	}
 	
 	/**

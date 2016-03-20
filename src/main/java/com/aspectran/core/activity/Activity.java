@@ -1,17 +1,17 @@
 /**
- *    Copyright 2009-2015 the original author or authors.
+ * Copyright 2008-2016 Juho Jeong
  *
- *    Licensed under the Apache License, Version 2.0 (the "License");
- *    you may not use this file except in compliance with the License.
- *    You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *    Unless required by applicable law or agreed to in writing, software
- *    distributed under the License is distributed on an "AS IS" BASIS,
- *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *    See the License for the specific language governing permissions and
- *    limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package com.aspectran.core.activity;
 
@@ -31,105 +31,178 @@ import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.ExceptionHandlingRule;
 import com.aspectran.core.context.rule.type.JoinpointScopeType;
 import com.aspectran.core.context.rule.type.RequestMethodType;
+import com.aspectran.core.context.template.TemplateProcessor;
 
 /**
  * The Interface Activity.
  * 
- * <p>Created: 2008. 03. 22 오후 5:48:09</p>
+ * <p>Created: 2008. 03. 22 PM 5:48:09</p>
  */
-public interface Activity {
+public interface Activity extends BeanRegistry {
 
-	public Class<? extends Translet> getTransletInterfaceClass();
+	/**
+	 * Return the interface class for {@code Translet}.
+	 *
+	 * @return the translet interface class
+	 */
+	Class<? extends Translet> getTransletInterfaceClass();
 	
-	public Class<? extends CoreTranslet> getTransletImplementClass();
+	/**
+	 * Return the implementation class for {@code Translet}.
+	 *
+	 * @return the translet implementation class
+	 */
+	Class<? extends CoreTranslet> getTransletImplementationClass();
 
-	public void ready(String transletName);
+	/**
+	 * Preparation for the activity.
+	 *
+	 * @param transletName the translet name
+	 */
+	void ready(String transletName);
 	
-	public void ready(String transletName, String restVerb);
-	
-	public void perform();
-	
-	public void performWithoutResponse();
+	/**
+	 * Preparation for the activity.
+	 *
+	 * @param transletName the translet name
+	 * @param requestMethod the request method
+	 */
+	void ready(String transletName, String requestMethod);
 
-	public void finish();
+	/**
+	 * Preparation for the activity.
+	 *
+	 * @param transletName the translet name
+	 * @param requestMethod the request method
+	 */
+	void ready(String transletName, RequestMethodType requestMethod);
 	
-	public void execute(List<AspectAdviceRule> aspectAdviceRuleList);
+	/**
+	 * Perform activity.
+	 */
+	void perform();
 	
-	public void forceExecute(List<AspectAdviceRule> aspectAdviceRuleList);
+	/**
+	 * Perform activity without reponse.
+	 */
+	void performWithoutResponse();
+
+	/**
+	 * Finish the activity.
+	 * It must be called before exiting activities.
+	 */
+	void finish();
+
+	/**
+	 * Determine request character encoding.
+	 *
+	 * @return the request character encoding
+	 */
+	String determineRequestCharacterEncoding();
+
+	/**
+	 * Determine response character encoding.
+	 *
+	 * @return the response character encoding
+	 */
+	String determineResponseCharacterEncoding();
 	
-	public ProcessResult getProcessResult();
+	/**
+	 * Execute the aspect advices.
+	 *
+	 * @param aspectAdviceRuleList the aspect advice rule list
+	 */
+	void execute(List<AspectAdviceRule> aspectAdviceRuleList);
+	
+	/**
+	 * Forced to Execute the aspect advices.
+	 *
+	 * @param aspectAdviceRuleList the aspect advice rule list
+	 */
+	void forceExecute(List<AspectAdviceRule> aspectAdviceRuleList);
+	
+	/**
+	 * Returns the process result.
+	 *
+	 * @return the process result
+	 */
+	ProcessResult getProcessResult();
+	
+	/**
+	 * Returns a action result  from the process result.
+	 *
+	 * @param actionId the specified action id
+	 * @return the action result
+	 */
+	Object getProcessResult(String actionId);
 	
 	/**
 	 * Returns the forwarding destination translet name.
 	 *
 	 * @return the forwarding destination translet name
 	 */
-	public String getForwardTransletName();
+	String getForwardTransletName();
 	
 	/**
 	 * Returns whether the current activity is completed or terminated.
 	 * 
 	 * @return true, if the current activity is completed or terminated
 	 */
-	public boolean isActivityEnded();
+	boolean isActivityEnded();
 
 	/**
 	 * Stop the activity and responds immediately.
 	 */
-	public void activityEnd();
+	void activityEnd();
 	
-	public void response(Response response);
+	void response(Response response);
 	
-	public void responseByContentType(List<ExceptionHandlingRule> exceptionHandlingRuleList);
+	void responseByContentType(List<ExceptionHandlingRule> exceptionHandlingRuleList);
 
-	public Response getResponse();
+	Response getResponse();
 
-	public boolean isExceptionRaised();
+	boolean isExceptionRaised();
 
-	public Exception getRaisedException();
+	Exception getRaisedException();
 
-	public void setRaisedException(Exception raisedException);
+	void setRaisedException(Exception raisedException);
 
-	public ActivityContext getActivityContext();
+	ActivityContext getActivityContext();
 
-	public <T extends Activity> T newActivity();
+	<T extends Activity> T newActivity();
 
-	public Translet getTranslet();
+	Translet getTranslet();
 	
-	public String getTransletName();
+	String getTransletName();
 
-	public RequestMethodType getRestVerb();
+	RequestMethodType getRequestMethod();
 	
-	public ApplicationAdapter getApplicationAdapter();
+	ApplicationAdapter getApplicationAdapter();
 
-	public SessionAdapter getSessionAdapter();
+	SessionAdapter getSessionAdapter();
 	
-	public RequestAdapter getRequestAdapter();
+	RequestAdapter getRequestAdapter();
 	
-	public ResponseAdapter getResponseAdapter();
+	ResponseAdapter getResponseAdapter();
 
-	public BeanRegistry getBeanRegistry();
+	BeanRegistry getBeanRegistry();
 	
-	public <T> T getBean(String id);
-	
-	public <T> T getBean(Class<T> classType);
+	TemplateProcessor getTemplateProcessor();
 
-	public <T> T getBean(String id, Class<T> classType);
+	<T> T getTransletSetting(String settingName);
+	
+	<T> T getRequestSetting(String settingName);
+	
+	<T> T getResponseSetting(String settingName);
+	
+	void registerAspectRule(AspectRule aspectRule);
+	
+	<T> T getAspectAdviceBean(String aspectId);
+	
+	Scope getRequestScope();
 
-	public <T> T getTransletSetting(String settingName);
-	
-	public <T> T getRequestSetting(String settingName);
-	
-	public <T> T getResponseSetting(String settingName);
-	
-	public void registerAspectRule(AspectRule aspectRule);
-	
-	public <T> T  getAspectAdviceBean(String aspectId);
-	
-	public Scope getRequestScope();
+	void setRequestScope(Scope requestScope);
 
-	public void setRequestScope(Scope requestScope);
-
-	public JoinpointScopeType getCurrentJoinpointScope();
+	JoinpointScopeType getCurrentJoinpointScope();
 
 }

@@ -1,17 +1,17 @@
 /**
- *    Copyright 2009-2015 the original author or authors.
+ * Copyright 2008-2016 Juho Jeong
  *
- *    Licensed under the Apache License, Version 2.0 (the "License");
- *    you may not use this file except in compliance with the License.
- *    You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *    Unless required by applicable law or agreed to in writing, software
- *    distributed under the License is distributed on an "AS IS" BASIS,
- *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *    See the License for the specific language governing permissions and
- *    limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package com.aspectran.core.activity.response;
 
@@ -19,12 +19,10 @@ import java.util.Map;
 
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.process.ActionList;
-import com.aspectran.core.activity.variable.ValueMap;
-import com.aspectran.core.activity.variable.token.ItemTokenExpression;
-import com.aspectran.core.activity.variable.token.ItemTokenExpressor;
 import com.aspectran.core.adapter.RequestAdapter;
+import com.aspectran.core.context.expr.ItemExpression;
+import com.aspectran.core.context.expr.ItemExpressor;
 import com.aspectran.core.context.rule.ForwardResponseRule;
-import com.aspectran.core.context.rule.TemplateRule;
 import com.aspectran.core.context.rule.type.ResponseType;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
@@ -32,7 +30,7 @@ import com.aspectran.core.util.logging.LogFactory;
 /**
  * The Class ForwardResponse.
  * 
- * <p>Created: 2008. 03. 22 오후 5:51:58</p>
+ * <p>Created: 2008. 03. 22 PM 5:51:58</p>
  */
 public class ForwardResponse implements Response {
 
@@ -51,12 +49,9 @@ public class ForwardResponse implements Response {
 		this.forwardResponseRule = forwardResponseRule;
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.response.Responsible#response(com.aspectran.core.activity.CoreActivity)
-	 */
+	@Override
 	public void response(Activity activity) {
 		RequestAdapter requestAdapter = activity.getRequestAdapter();
-		
 		if(requestAdapter == null)
 			return;
 
@@ -65,25 +60,20 @@ public class ForwardResponse implements Response {
 		}
 
 		if(forwardResponseRule.getAttributeItemRuleMap() != null) {
-			ItemTokenExpressor expressor = new ItemTokenExpression(activity);
-			ValueMap valueMap = expressor.express(forwardResponseRule.getAttributeItemRuleMap());
+			ItemExpressor expressor = new ItemExpression(activity);
+			Map<String, Object> valueMap = expressor.express(forwardResponseRule.getAttributeItemRuleMap());
 
 			for(Map.Entry<String, Object> entry : valueMap.entrySet())
 				requestAdapter.setAttribute(entry.getKey(), entry.getValue());
 		}
-		
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.response.Responsible#getResponseType()
-	 */
+	@Override
 	public ResponseType getResponseType() {
 		return ForwardResponseRule.RESPONSE_TYPE;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.response.Responsible#getContentType()
-	 */
+	@Override
 	public String getContentType() {
 		if(forwardResponseRule == null)
 			return null;
@@ -91,25 +81,15 @@ public class ForwardResponse implements Response {
 		return forwardResponseRule.getContentType();
 	}
 
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.response.Responsible#getActionList()
-	 */
+	@Override
 	public ActionList getActionList() {
 		return forwardResponseRule.getActionList();
 	}
 
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.response.Response#getTemplateRule()
-	 */
-	public TemplateRule getTemplateRule() {
-		return null;
-	}
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.response.Response#newDerivedResponse()
-	 */
-	public Response newDerivedResponse() {
-		return this;
+	@Override
+	public Response replicate() {
+		ForwardResponseRule frr = forwardResponseRule.replicate();
+		return new ForwardResponse(frr);
 	}
 
 	/**
@@ -120,5 +100,10 @@ public class ForwardResponse implements Response {
 	public ForwardResponseRule getForwardResponseRule() {
 		return forwardResponseRule;
 	}
-	
+
+	@Override
+	public String toString() {
+		return forwardResponseRule.toString();
+	}
+
 }

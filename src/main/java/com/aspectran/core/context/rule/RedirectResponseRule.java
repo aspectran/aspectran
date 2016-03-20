@@ -1,45 +1,53 @@
 /**
- *    Copyright 2009-2015 the original author or authors.
+ * Copyright 2008-2016 Juho Jeong
  *
- *    Licensed under the Apache License, Version 2.0 (the "License");
- *    you may not use this file except in compliance with the License.
- *    You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *    Unless required by applicable law or agreed to in writing, software
- *    distributed under the License is distributed on an "AS IS" BASIS,
- *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *    See the License for the specific language governing permissions and
- *    limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package com.aspectran.core.context.rule;
 
 import java.util.List;
+import java.util.Map;
 
-import com.aspectran.core.activity.variable.token.Token;
-import com.aspectran.core.activity.variable.token.Tokenizer;
-import com.aspectran.core.context.rule.ability.ActionPossessable;
+import com.aspectran.core.activity.Activity;
+import com.aspectran.core.context.expr.TokenExpression;
+import com.aspectran.core.context.expr.TokenExpressor;
+import com.aspectran.core.context.expr.token.Token;
+import com.aspectran.core.context.expr.token.Tokenizer;
+import com.aspectran.core.context.rule.ability.ActionPossessSupport;
+import com.aspectran.core.context.rule.ability.BeanReferenceInspectable;
+import com.aspectran.core.context.rule.ability.Replicable;
+import com.aspectran.core.context.rule.type.BeanReferrerType;
 import com.aspectran.core.context.rule.type.ResponseType;
 import com.aspectran.core.context.rule.type.TokenType;
 import com.aspectran.core.util.BooleanUtils;
+import com.aspectran.core.util.ToStringBuilder;
 
 /**
  * The Class RedirectResponseRule.
  * 
- * <p>Created: 2008. 03. 22 오후 5:51:58</p>
+ * <p>Created: 2008. 03. 22 PM 5:51:58</p>
  */
-public class RedirectResponseRule extends ActionPossessSupport implements ActionPossessable {
+public class RedirectResponseRule extends ActionPossessSupport implements Replicable<RedirectResponseRule>, BeanReferenceInspectable {
 	
 	public static final ResponseType RESPONSE_TYPE = ResponseType.REDIRECT;
 
+	private static final BeanReferrerType BEAN_REFERABLE_RULE_TYPE = BeanReferrerType.BEAN_ACTION_RULE;
+
 	private String contentType;
 	
-	private String transletName;
+	private String target;
 	
-	private String url;
-	
-	private Token[] urlTokens;
+	private Token[] targetTokens;
 	
 	private Boolean excludeNullParameter;
 
@@ -68,46 +76,38 @@ public class RedirectResponseRule extends ActionPossessSupport implements Action
 	}
 
 	/**
-	 * Gets the translet name.
-	 *
-	 * @return the translet name
-	 */
-	public String getTransletName() {
-		return transletName;
-	}
-
-	/**
-	 * Sets the translet name.
-	 *
-	 * @param transletName the new translet name
-	 */
-	public void setTransletName(String transletName) {
-		this.transletName = transletName;
-	}
-
-	/**
-	 * Gets the url.
+	 * Gets the redirect target.
 	 * 
-	 * @return the url
+	 * @return the redirect target
 	 */
-	public String getUrl() {
-		return url;
+	public String getTarget() {
+		return target;
 	}
 
 	/**
-	 * Sets the url.
-	 * 
-	 * @param url the new url
+	 * Gets the redirect target.
+	 *
+	 * @param activity the activity
+	 * @return the redirect target
 	 */
-	public void setUrl(String url) {
-		this.url = url;
-		this.urlTokens = null;
-		
-		if(transletName != null)
-			transletName = null;
-		
-		List<Token> tokens = Tokenizer.tokenize(url, true);
-		
+	public String getTarget(Activity activity) {
+		if(targetTokens != null && targetTokens.length > 0) {
+			TokenExpressor expressor = new TokenExpression(activity);
+			return expressor.expressAsString(targetTokens);
+		} else {
+			return target;
+		}
+	}
+
+	/**
+	 * Sets the target name.
+	 * 
+	 * @param target the new target name
+	 */
+	public void setTarget(String target) {
+		this.target = target;
+
+		List<Token> tokens = Tokenizer.tokenize(target, true);
 		int tokenCount = 0;
 		
 		for(Token t : tokens) {
@@ -116,16 +116,23 @@ public class RedirectResponseRule extends ActionPossessSupport implements Action
 		}
 		
 		if(tokenCount > 0)
-			this.urlTokens = tokens.toArray(new Token[tokens.size()]);
+			this.targetTokens = tokens.toArray(new Token[tokens.size()]);
+		else
+			this.targetTokens = null;
+	}
+	
+	public void setTarget(String target, Token[] targetTokens) {
+		this.target = target;
+		this.targetTokens = targetTokens;
 	}
 
 	/**
-	 * Gets the url tokens.
+	 * Gets the tokens of the redirect target.
 	 * 
-	 * @return the url tokens
+	 * @return the tokens of the redirect target
 	 */
-	public Token[] getUrlTokens() {
-		return urlTokens;
+	public Token[] getTargetTokens() {
+		return targetTokens;
 	}
 
 	/**
@@ -197,7 +204,29 @@ public class RedirectResponseRule extends ActionPossessSupport implements Action
 		
 		parameterItemRuleMap.putItemRule(parameterItemRule);
 	}
-	
+
+	/**
+	 * Sets the parameter map.
+	 *
+	 * @param parameterMap the parameter map
+	 */
+	public void setParameterMap(Map<String, String> parameterMap) {
+		if(parameterMap == null) {
+			this.parameterItemRuleMap = null;
+			return;
+		}
+
+		ItemRuleMap params = new ItemRuleMap();
+		for(Map.Entry<String, String> entry : parameterMap.entrySet()) {
+			ItemRule ir = new ItemRule();
+			ir.setName(entry.getKey());
+			ir.setValue(entry.getValue());
+			ir.setTokenize(Boolean.FALSE);
+		}
+
+		this.parameterItemRuleMap = params;
+	}
+
 	/**
 	 * Returns whether the default response.
 	 *
@@ -225,49 +254,61 @@ public class RedirectResponseRule extends ActionPossessSupport implements Action
 		this.defaultResponse = defaultResponse;
 	}
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
+	@Override
+	public RedirectResponseRule replicate() {
+		return replicate(this);
+	}
+
+	@Override
+	public BeanReferrerType getBeanReferrerType() {
+		return BEAN_REFERABLE_RULE_TYPE;
+	}
+
 	@Override
 	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		sb.append("{contentType=").append(contentType);
-		sb.append(", translet=").append(transletName);
-		sb.append(", url=").append(url);
-		sb.append(", excludeNullParameters=").append(excludeNullParameter);
-		if(defaultResponse != null)
-			sb.append(", defaultResponse=").append(defaultResponse);
-		sb.append("}");
-		
-		return sb.toString();
+		ToStringBuilder tsb = new ToStringBuilder();
+		tsb.appendForce("responseType", RESPONSE_TYPE);
+		tsb.appendForce("target", target);
+		tsb.append("contentType", contentType);
+		tsb.append("excludeNullParameter", excludeNullParameter);
+		tsb.append("defaultResponse", defaultResponse);
+		return tsb.toString();
 	}
 	
-	public static RedirectResponseRule newInstance(String contentType, String translet, String url, Boolean excludeNullParameters, Boolean defaultResponse) {
+	public static RedirectResponseRule newInstance(String contentType, String target, Boolean excludeNullParameters, Boolean defaultResponse) {
 		RedirectResponseRule rrr = new RedirectResponseRule();
 		rrr.setContentType(contentType);
-		rrr.setTransletName(translet);
 		
-		if(url != null && url.length() > 0)
-			rrr.setUrl(url);
+		if(target != null && target.length() > 0)
+			rrr.setTarget(target);
 		
 		rrr.setExcludeNullParameter(excludeNullParameters);
-		
 		rrr.setDefaultResponse(defaultResponse);
 
 		return rrr;
 	}
 	
-	public static void updateUrl(RedirectResponseRule rrr, String url) {
-		if(url != null) {
-			url = url.trim();
-			
-			if(url.length() == 0)
-				url = null;
-		}
+	public static RedirectResponseRule newInstance(String redirectName) {
+		if(redirectName == null)
+			throw new IllegalArgumentException("redirectName must not be null");
+		
+		RedirectResponseRule rrr = new RedirectResponseRule();
+		rrr.setTarget(redirectName);
 
-		if(url != null) {
-			rrr.setUrl(url);
-		}
+		return rrr;
+	}
+	
+	public static RedirectResponseRule replicate(RedirectResponseRule redirectResponseRule) {
+		RedirectResponseRule rrr = new RedirectResponseRule();
+		rrr.setContentType(redirectResponseRule.getContentType());
+		rrr.setTarget(redirectResponseRule.getTarget(), redirectResponseRule.getTargetTokens());
+		rrr.setExcludeNullParameter(redirectResponseRule.getExcludeNullParameter());
+		rrr.setCharacterEncoding(redirectResponseRule.getCharacterEncoding());
+		rrr.setParameterItemRuleMap(redirectResponseRule.getParameterItemRuleMap());
+		rrr.setDefaultResponse(redirectResponseRule.getDefaultResponse());
+		rrr.setActionList(redirectResponseRule.getActionList());
+
+		return rrr;
 	}
 	
 }

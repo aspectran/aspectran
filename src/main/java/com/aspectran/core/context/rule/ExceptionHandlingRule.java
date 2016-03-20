@@ -1,17 +1,17 @@
 /**
- *    Copyright 2009-2015 the original author or authors.
+ * Copyright 2008-2016 Juho Jeong
  *
- *    Licensed under the Apache License, Version 2.0 (the "License");
- *    you may not use this file except in compliance with the License.
- *    You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *    Unless required by applicable law or agreed to in writing, software
- *    distributed under the License is distributed on an "AS IS" BASIS,
- *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *    See the License for the specific language governing permissions and
- *    limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package com.aspectran.core.context.rule;
 
@@ -22,15 +22,18 @@ import java.util.Map;
 import com.aspectran.core.activity.process.action.BeanAction;
 import com.aspectran.core.activity.process.action.EchoAction;
 import com.aspectran.core.activity.process.action.Executable;
+import com.aspectran.core.activity.process.action.MethodAction;
 import com.aspectran.core.context.rule.ability.ActionRuleApplicable;
 import com.aspectran.core.context.rule.type.ActionType;
 
 /**
  * The Class ExceptionHandlingRule.
  * 
- * <p>Created: 2009. 03. 09 오후 23:48:09</p>
+ * <p>Created: 2009. 03. 09 PM 23:48:09</p>
  */
 public class ExceptionHandlingRule implements ActionRuleApplicable, Iterable<ResponseByContentTypeRule> {
+
+	private final AspectRule aspectRule;
 
 	private Executable action;
 	
@@ -40,23 +43,41 @@ public class ExceptionHandlingRule implements ActionRuleApplicable, Iterable<Res
 	
 	private String description;
 
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.context.rule.ability.ActionRuleApplicable#applyActionRule(com.aspectran.core.context.rule.EchoActionRule)
-	 */
+	public ExceptionHandlingRule() {
+		this.aspectRule = null;
+	}
+
+	public ExceptionHandlingRule(AspectRule aspectRule) {
+		this.aspectRule = aspectRule;
+	}
+
+	public String getAspectId() {
+		if(aspectRule == null)
+			throw new UnsupportedOperationException();
+
+		return aspectRule.getId();
+	}
+
+	public AspectRule getAspectRule() {
+		return aspectRule;
+	}
+
+	@Override
 	public void applyActionRule(EchoActionRule echoActionRule) {
 		action = new EchoAction(echoActionRule, null);
 	}
 
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.context.rule.ability.ActionRuleApplicable#applyActionRule(com.aspectran.core.context.rule.BeanActionRule)
-	 */
+	@Override
 	public void applyActionRule(BeanActionRule beanActionRule) {
 		action = new BeanAction(beanActionRule, null);
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.context.rule.ability.ActionRuleApplicable#applyActionRule(com.aspectran.core.context.rule.IncludeActionRule)
-	 */
+
+	@Override
+	public void applyActionRule(MethodActionRule methodActionRule) {
+		action = new MethodAction(methodActionRule, null);
+	}
+
+	@Override
 	public void applyActionRule(IncludeActionRule includeActionRule) {
 		throw new UnsupportedOperationException("There is nothing that can be apply to IncludeActionRule. The aspecet-advice is not support include-action.");
 	}
@@ -164,10 +185,8 @@ public class ExceptionHandlingRule implements ActionRuleApplicable, Iterable<Res
 		
 		return getMatchedDepth(exceptionType, exceptionClass.getSuperclass(), depth + 1);
 	}
-	
-	/* (non-Javadoc)
-	 * @see java.lang.Iterable#iterator()
-	 */
+
+	@Override
 	public Iterator<ResponseByContentTypeRule> iterator() {
 		return responseByContentTypeRuleMap.values().iterator();
 	}
@@ -188,6 +207,10 @@ public class ExceptionHandlingRule implements ActionRuleApplicable, Iterable<Res
 	 */
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	public static ExceptionHandlingRule newInstance(AspectRule aspectRule) {
+		return new ExceptionHandlingRule(aspectRule);
 	}
 
 }

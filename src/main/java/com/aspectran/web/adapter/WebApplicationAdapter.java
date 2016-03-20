@@ -1,17 +1,17 @@
 /**
- *    Copyright 2009-2015 the original author or authors.
+ * Copyright 2008-2016 Juho Jeong
  *
- *    Licensed under the Apache License, Version 2.0 (the "License");
- *    you may not use this file except in compliance with the License.
- *    You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *    Unless required by applicable law or agreed to in writing, software
- *    distributed under the License is distributed on an "AS IS" BASIS,
- *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *    See the License for the specific language governing permissions and
- *    limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package com.aspectran.web.adapter;
 
@@ -26,8 +26,8 @@ import com.aspectran.core.service.AspectranService;
 /**
  * The Class WebApplicationAdapter.
  * 
- * @author Juho Jeong
  * @since 2011. 3. 13.
+ * @author Juho Jeong
  */
 public class WebApplicationAdapter extends AbstractApplicationAdapter implements ApplicationAdapter {
 	
@@ -42,32 +42,23 @@ public class WebApplicationAdapter extends AbstractApplicationAdapter implements
 		super.setApplicationBasePath(servletContext.getRealPath("/"));
 	}
 
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.adapter.ApplicationAdapter#getAttribute(java.lang.String)
-	 */
+	@Override
 	@SuppressWarnings("unchecked")
 	public <T> T getAttribute(String name) {
 		return (T)((ServletContext)adaptee).getAttribute(name);
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.adapter.ApplicationAdapter#setAttribute(java.lang.String, java.lang.Object)
-	 */
+
+	@Override
 	public void setAttribute(String name, Object o) {
 		((ServletContext)adaptee).setAttribute(name, o);
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.adapter.ApplicationAdapter#getAttributeNames()
-	 */
-	@SuppressWarnings("unchecked")
+
+	@Override
 	public Enumeration<String> getAttributeNames() {
 		return ((ServletContext)adaptee).getAttributeNames();
 	}
 
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.adapter.ApplicationAdapter#removeAttribute(java.lang.String)
-	 */
+	@Override
 	public void removeAttribute(String name) {
 		((ServletContext)adaptee).removeAttribute(name);
 	}

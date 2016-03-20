@@ -1,17 +1,17 @@
 /**
- *    Copyright 2009-2015 the original author or authors.
+ * Copyright 2008-2016 Juho Jeong
  *
- *    Licensed under the Apache License, Version 2.0 (the "License");
- *    you may not use this file except in compliance with the License.
- *    You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *    Unless required by applicable law or agreed to in writing, software
- *    distributed under the License is distributed on an "AS IS" BASIS,
- *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *    See the License for the specific language governing permissions and
- *    limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package com.aspectran.scheduler.service;
 
@@ -34,12 +34,10 @@ import org.quartz.TriggerBuilder;
 import org.quartz.impl.matchers.GroupMatcher;
 
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.context.AspectranConstant;
 import com.aspectran.core.context.builder.apon.params.CronTriggerParameters;
 import com.aspectran.core.context.builder.apon.params.SimpleTriggerParameters;
 import com.aspectran.core.context.rule.AspectJobAdviceRule;
 import com.aspectran.core.context.rule.AspectRule;
-import com.aspectran.core.context.rule.AspectRuleMap;
 import com.aspectran.core.context.rule.PointcutRule;
 import com.aspectran.core.context.rule.type.AspectTargetType;
 import com.aspectran.core.context.rule.type.PointcutType;
@@ -71,30 +69,36 @@ public class QuartzSchedulerService implements SchedulerService {
 	public QuartzSchedulerService(ActivityContext context) {
 		this.context = context;
 	}
-	
+
+	@Override
 	public int getStartDelaySeconds() {
 		return startDelaySeconds;
 	}
 
+	@Override
 	public void setStartDelaySeconds(int startDelaySeconds) {
 		this.startDelaySeconds = startDelaySeconds;
 	}
 
+	@Override
 	public boolean isWaitOnShutdown() {
 		return waitOnShutdown;
 	}
 
+	@Override
 	public void setWaitOnShutdown(boolean waitOnShutdown) {
 		this.waitOnShutdown = waitOnShutdown;
 	}
 
-	public void startup(int delaySeconds) throws SchedulerException {
+	@Override
+	public void startup(int delaySeconds) throws SchedulerServiceException {
 		this.startDelaySeconds = delaySeconds;
 		startup();
 	}
-	
-	public void startup() throws SchedulerException {
-		AspectRuleMap aspectRuleMap = context.getAspectRuleRegistry().getAspectRuleMap();
+
+	@Override
+	public void startup() throws SchedulerServiceException {
+		Map<String, AspectRule> aspectRuleMap = context.getAspectRuleRegistry().getAspectRuleMap();
 		
 		if(aspectRuleMap == null)
 			return;
@@ -106,14 +110,14 @@ public class QuartzSchedulerService implements SchedulerService {
 				startDate = new Date(startDate.getTime() + (startDelaySeconds * 1000L));
 			}
 			
-			for(AspectRule aspectRule : aspectRuleMap) {
+			for(AspectRule aspectRule : aspectRuleMap.values()) {
 				AspectTargetType aspectTargetType = aspectRule.getAspectTargetType();
 				
 				if(aspectTargetType == AspectTargetType.SCHEDULER) {
 					String schedulerFactoryBeanId = aspectRule.getAdviceBeanId();
 					PointcutRule pointcutRule = aspectRule.getPointcutRule();
 					
-					SchedulerFactory schedulerFactory = (SchedulerFactory)context.getContextBeanRegistry().getBean(schedulerFactoryBeanId);
+					SchedulerFactory schedulerFactory = context.getContextBeanRegistry().getBean(schedulerFactoryBeanId);
 					Scheduler scheduler = schedulerFactory.getScheduler();
 					JobDetail[] jobDetails = buildJobDetails(aspectRule.getAspectJobAdviceRuleList());
 					
@@ -141,45 +145,64 @@ public class QuartzSchedulerService implements SchedulerService {
 					eachAspectSchedulerMap.put(aspectRule.getId(), scheduler);
 				}
 			}
+
+			log.info("SchedulerService was started successfully.");
 		} catch(Exception e) {
-			throw new SchedulerException("QuartzSchedulerService startup failed.", e);
+			throw new SchedulerServiceException("QuartzSchedulerService startup failed.", e);
 		}
 	}
-	
-	public void shutdown(boolean waitForJobsToComplete) throws SchedulerException {
+
+	@Override
+	public void shutdown(boolean waitForJobsToComplete) throws SchedulerServiceException {
 		this.waitOnShutdown = waitForJobsToComplete;
-		shutdown(waitOnShutdown);
+		shutdown();
 	}
-	
-	public void shutdown() throws SchedulerException {
-		for(Scheduler scheduler : startedSchedulerList) {
-			if(!scheduler.isShutdown()) {
-				//log.info("Now try to stop scheduler '" + scheduler.getSchedulerName() + "' with waitForJobsToComplete=" + waitOnShutdown);
-				log.info("Shutingdown Quartz scheduler '" + scheduler.getSchedulerName() + "' with waitForJobsToComplete=" + waitOnShutdown);
-				scheduler.shutdown(waitOnShutdown);
+
+	@Override
+	public void shutdown() throws SchedulerServiceException {
+		try {
+			for(Scheduler scheduler : startedSchedulerList) {
+				if(!scheduler.isShutdown()) {
+					//log.info("Now try to stop scheduler '" + scheduler.getSchedulerName() + "' with waitForJobsToComplete=" + waitOnShutdown);
+					log.info("Shutingdown Quartz scheduler '" + scheduler.getSchedulerName() + "' with waitForJobsToComplete=" + waitOnShutdown);
+					scheduler.shutdown(waitOnShutdown);
+				}
 			}
+		} catch(Exception e) {
+			throw new SchedulerServiceException("SchedulerService shutdown failed.", e);
 		}
 	}
-	
-	public void refresh(ActivityContext context) throws SchedulerException {
+
+	@Override
+	public void refresh(ActivityContext context) throws SchedulerServiceException {
 		this.context = context;
 		shutdown();
 		startup();
 	}
-	
-	public void pause(String aspectId) throws SchedulerException {
-		Scheduler scheduler = getScheduler(aspectId);
-		
-		if(scheduler != null && scheduler.isStarted()) {
-			scheduler.pauseJobs(GroupMatcher.jobGroupEquals(aspectId));
+
+	@Override
+	public void pause(String aspectId) throws SchedulerServiceException {
+		try {
+			Scheduler scheduler = getScheduler(aspectId);
+
+			if(scheduler != null && scheduler.isStarted()) {
+				scheduler.pauseJobs(GroupMatcher.jobGroupEquals(aspectId));
+			}
+		} catch(Exception e) {
+			throw new SchedulerServiceException("SchedulerService pause failed.", e);
 		}
 	}
-	
-	public void resume(String aspectId) throws SchedulerException {
-		Scheduler scheduler = getScheduler(aspectId);
-		
-		if(scheduler != null && scheduler.isStarted()) {
-			scheduler.resumeJobs(GroupMatcher.jobGroupEquals(aspectId));
+
+	@Override
+	public void resume(String aspectId) throws SchedulerServiceException {
+		try {
+			Scheduler scheduler = getScheduler(aspectId);
+
+			if(scheduler != null && scheduler.isStarted()) {
+				scheduler.resumeJobs(GroupMatcher.jobGroupEquals(aspectId));
+			}
+		} catch(Exception e) {
+			throw new SchedulerServiceException("SchedulerService resume failed.", e);
 		}
 	}
 
@@ -240,7 +263,7 @@ public class QuartzSchedulerService implements SchedulerService {
 		List<JobDetail> jobDetailList = new ArrayList<JobDetail>();
 		
 		for(int i = 0; i < aspectJobAdviceRuleList.size(); i++) {
-			AspectJobAdviceRule aspectJobAdviceRule = (AspectJobAdviceRule)aspectJobAdviceRuleList.get(i);
+			AspectJobAdviceRule aspectJobAdviceRule = aspectJobAdviceRuleList.get(i);
 			JobDetail jobDetail = buildJobDetail(aspectJobAdviceRule, i);
 			
 			if(jobDetail != null)
@@ -254,19 +277,17 @@ public class QuartzSchedulerService implements SchedulerService {
 		if(aspectJobAdviceRule.isDisabled())
 			return null;
 		
-		String jobName = index + (AspectranConstant.TRANSLET_NAME_SEPARATOR + aspectJobAdviceRule.getJobTransletName());
+		String jobName = index + (ActivityContext.TRANSLET_NAME_SEPARATOR_CHAR + aspectJobAdviceRule.getJobTransletName());
 		String jobGroup = aspectJobAdviceRule.getAspectId();
 		
 		JobDataMap jobDataMap = new JobDataMap();
 		jobDataMap.put(ASPECTRAN_CONTEXT_DATA_KEY, context);
 		jobDataMap.put(TRANSLET_NAME_DATA_KEY, aspectJobAdviceRule.getJobTransletName());
-		
-		JobDetail jobDetail = JobBuilder.newJob(JobActivityRunJob.class)
+
+		return JobBuilder.newJob(JobActivityRunJob.class)
 				.withIdentity(jobName, jobGroup)
 				.setJobData(jobDataMap)
 				.build();
-		
-		return jobDetail;
 	}
 	
 }

@@ -1,17 +1,17 @@
 /**
- *    Copyright 2009-2015 the original author or authors.
+ * Copyright 2008-2016 Juho Jeong
  *
- *    Licensed under the Apache License, Version 2.0 (the "License");
- *    you may not use this file except in compliance with the License.
- *    You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *    Unless required by applicable law or agreed to in writing, software
- *    distributed under the License is distributed on an "AS IS" BASIS,
- *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *    See the License for the specific language governing permissions and
- *    limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package com.aspectran.web.startup.servlet;
 
@@ -51,9 +51,6 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 		super();
 	}
 
-	/* (non-Javadoc)
-	 * @see javax.servlet.GenericServlet#init()
-	 */
 	@Override
 	public void init() throws ServletException {
 		log.info("Initializing WebActivityServlet...");
@@ -64,7 +61,7 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 			WebAspectranService rootAspectranService = (WebAspectranService)servletContext.getAttribute(AspectranServiceListener.ASPECTRAN_SERVICE_ATTRIBUTE);
 
 			if(rootAspectranService == null) {
-				log.info("Running AspectranService in standalone mode inside a servlet.");
+				log.info("Running AspectranService in console mode inside a servlet.");
 
 				aspectranService = WebAspectranService.newInstance(this);
 				
@@ -79,30 +76,21 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see javax.servlet.http.HttpServlet#service(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
-	 */
 	@Override
 	public void service(HttpServletRequest req, HttpServletResponse res) throws IOException {
 		aspectranService.service(req, res);
 	}
 
-	/* (non-Javadoc)
-	 * @see javax.servlet.GenericServlet#destroy()
-	 */
 	@Override
 	public void destroy() {
 		super.destroy();
 
 		if(standalone) {
-			boolean cleanlyDestoryed = aspectranService.dispose();
-			
-			if(cleanlyDestoryed)
-				log.info("Successfully destroyed WebActivityServlet: " + this.getServletName());
-			else
-				log.error("WebActivityServlet were not destroyed cleanly: " + this.getServletName());
-	
 			log.info("Do not terminate the server while the all scoped bean destroying.");
+
+			aspectranService.destroy();
+
+			log.info("Successfully destroyed WebActivityServlet: " + this.getServletName());
 		}
 	}
 	

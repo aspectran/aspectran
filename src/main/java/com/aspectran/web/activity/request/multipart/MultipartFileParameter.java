@@ -1,17 +1,17 @@
 /**
- *    Copyright 2009-2015 the original author or authors.
+ * Copyright 2008-2016 Juho Jeong
  *
- *    Licensed under the Apache License, Version 2.0 (the "License");
- *    you may not use this file except in compliance with the License.
- *    You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *    Unless required by applicable law or agreed to in writing, software
- *    distributed under the License is distributed on an "AS IS" BASIS,
- *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *    See the License for the specific language governing permissions and
- *    limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package com.aspectran.web.activity.request.multipart;
 
@@ -30,7 +30,7 @@ import com.aspectran.core.util.FileUtils;
 /**
  * MultipartItem implementation for Jakarta Commons FileUpload.
  * 
- * <p>Created: 2008. 04. 11 오후 8:55:25</p>
+ * <p>Created: 2008. 04. 11 PM 8:55:25</p>
  */
 public class MultipartFileParameter extends FileParameter {
 
@@ -48,6 +48,10 @@ public class MultipartFileParameter extends FileParameter {
 		this.fileSize = fileItem.getSize();
 	}
 
+	public File getFile() {
+		throw new UnsupportedOperationException("multipart encoded file");
+	}
+
 	/**
 	 * Gets the content type of the data being uploaded. This is never null, and
 	 * defaults to "content/unknown" when the mime type of the data couldn't be
@@ -55,6 +59,7 @@ public class MultipartFileParameter extends FileParameter {
 	 *  
 	 * @return the content type
 	 */
+	@Override
 	public String getContentType() {
 		return fileItem.getContentType();
 	}
@@ -64,6 +69,7 @@ public class MultipartFileParameter extends FileParameter {
 	 * 
 	 * @return the file name
 	 */
+	@Override
 	public String getFileName() {
 		return getCanonicalName(fileItem.getName());
 	}
@@ -73,6 +79,7 @@ public class MultipartFileParameter extends FileParameter {
 	 * 
 	 * @return the file size
 	 */
+	@Override
 	public long getFileSize() {
 		return this.fileSize;
 	}
@@ -81,9 +88,9 @@ public class MultipartFileParameter extends FileParameter {
 	 * Return an InputStream to read the contents of the file from.
 	 * 
 	 * @return the contents of the file as stream, or an empty stream if empty
-	 * 
 	 * @throws IOException in case of access errors (if the temporary store fails)
 	 */
+	@Override
 	public InputStream getInputStream() throws IOException {
 		if(!isAvailable())
 			throw new IllegalStateException("File has been moved - cannot be read again.");
@@ -98,6 +105,7 @@ public class MultipartFileParameter extends FileParameter {
 	 * 
 	 * @return the byte array
 	 */
+	@Override
 	public byte[] getBytes() {
 		if(!isAvailable())
 			throw new IllegalStateException("File has been moved - cannot be read again.");
@@ -111,10 +119,11 @@ public class MultipartFileParameter extends FileParameter {
 	 * Save the uploaded file to the given destination file.
 	 *
 	 * @param dest the destination file
-	 * @param overwrite 이미 파일이 존재할 경우 덮어 쓸지 여부
+	 * @param overwrite whether to overwrite if the file already exists
 	 * @return a saved file
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
+	@Override
 	public File saveAs(File dest, boolean overwrite) throws IOException {
 		if(!isAvailable())
 			throw new IllegalStateException("File has been moved - cannot be read again.");
@@ -150,10 +159,12 @@ public class MultipartFileParameter extends FileParameter {
 	/**
 	 * Delete a file item.
 	 */
+	@Override
 	public void delete() {
 		fileItem.delete();
 	}
 
+	@Override
 	public void release() {
 		if(fileItem != null) {
 			fileItem = null;
@@ -168,7 +179,6 @@ public class MultipartFileParameter extends FileParameter {
 	 * Returns the canonical name of the given file.
 	 * 
 	 * @param fileName the given file
-	 * 
 	 * @return the canonical name of the given file
 	 */
 	private String getCanonicalName(String fileName) {
@@ -203,4 +213,5 @@ public class MultipartFileParameter extends FileParameter {
 		// Check whether current file size is different than original one.
 		return (this.fileItem.getSize() == this.fileSize);
 	}
+
 }

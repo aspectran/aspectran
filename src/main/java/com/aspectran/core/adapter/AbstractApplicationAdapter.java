@@ -1,29 +1,31 @@
 /**
- *    Copyright 2009-2015 the original author or authors.
+ * Copyright 2008-2016 Juho Jeong
  *
- *    Licensed under the Apache License, Version 2.0 (the "License");
- *    you may not use this file except in compliance with the License.
- *    You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *    Unless required by applicable law or agreed to in writing, software
- *    distributed under the License is distributed on an "AS IS" BASIS,
- *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *    See the License for the specific language governing permissions and
- *    limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package com.aspectran.core.adapter;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
+import java.net.URL;
 
 import com.aspectran.core.context.bean.scope.ApplicationScope;
 import com.aspectran.core.context.loader.AspectranClassLoader;
 import com.aspectran.core.service.AspectranService;
 import com.aspectran.core.service.AspectranServiceController;
 import com.aspectran.core.util.ResourceUtils;
+import com.aspectran.core.util.ToStringBuilder;
 
 /**
  * The Class AbstractApplicationAdapter.
@@ -50,32 +52,24 @@ public abstract class AbstractApplicationAdapter implements ApplicationAdapter {
 		this.aspectranService = aspectranService;
 		this.adaptee = adaptee;
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.adapter.ApplicationAdapter#getAdaptee()
-	 */
+
+	@Override
 	@SuppressWarnings("unchecked")
 	public <T> T getAdaptee() {
 		return (T)adaptee;
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.adapter.ApplicationAdapter#getApplicationScope()
-	 */
+
+	@Override
 	public ApplicationScope getApplicationScope() {
 		return scope;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.adapter.ApplicationAdapter#getAspectranServiceController()
-	 */
+	@Override
 	public AspectranServiceController getAspectranServiceController() {
 		return aspectranService;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.adapter.ApplicationAdapter#getClassLoader()
-	 */
+	@Override
 	public ClassLoader getClassLoader() {
 		if(aspectranService.getAspectranClassLoader() != null)
 			return aspectranService.getAspectranClassLoader();
@@ -83,9 +77,7 @@ public abstract class AbstractApplicationAdapter implements ApplicationAdapter {
 		return AspectranClassLoader.getDefaultClassLoader();
 	}
 
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.adapter.ApplicationAdapter#getApplicationBasePath()
-	 */
+	@Override
 	public String getApplicationBasePath() {
 		return applicationBasePath;
 	}
@@ -99,33 +91,24 @@ public abstract class AbstractApplicationAdapter implements ApplicationAdapter {
 		this.applicationBasePath = applicationBasePath;
 	}
 
-	/**
-	 * Returns to convert the given file path with the real file path.
-	 *
-	 * @param filePath the file path
-	 * @return the file
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 */
+	@Override
 	public String toRealPath(String filePath) throws IOException {
 		File file = toRealPathAsFile(filePath);
 		return file.getCanonicalPath();
 	}
 
-	/**
-	 * Returns to convert the given file path with the real file path.
-	 * 
-	 * @param filePath the file path
-	 * 
-	 * @return the file
-	 */
-	public File toRealPathAsFile(String filePath) {
+	@Override
+	public File toRealPathAsFile(String filePath) throws IOException {
 		File file;
 		
 		if(filePath.startsWith(ResourceUtils.FILE_URL_PREFIX)) {
 			URI uri = URI.create(filePath);
 			file = new File(uri);
 		} else if(filePath.startsWith(ResourceUtils.CLASSPATH_URL_PREFIX)) {
-			file = new File(getClassLoader().getResource(filePath).getFile());
+			URL url = getClassLoader().getResource(filePath);
+			if(url == null)
+				throw new IOException("Could not find the resource with the given name: " + filePath);
+			file = new File(url.getFile());
 		} else {
 			if(applicationBasePath != null)
 				file = new File(applicationBasePath, filePath);
@@ -135,20 +118,14 @@ public abstract class AbstractApplicationAdapter implements ApplicationAdapter {
 		
 		return file;
 	}
-	
-	
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
+
+	@Override
 	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		
-		sb.append("{applicationBasePath=").append(applicationBasePath);
-		sb.append(", classLoader=").append(getClassLoader());
-		sb.append(", adaptee=").append(adaptee);
-		sb.append("}");
-		
-		return sb.toString();
+		ToStringBuilder tsb = new ToStringBuilder();
+		tsb.append("applicationBasePath", applicationBasePath);
+		tsb.append("classLoader", getClassLoader());
+		tsb.append("adaptee", adaptee);
+		return tsb.toString();
 	}
 	
 }

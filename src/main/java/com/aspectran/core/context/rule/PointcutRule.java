@@ -1,17 +1,17 @@
 /**
- *    Copyright 2009-2015 the original author or authors.
+ * Copyright 2008-2016 Juho Jeong
  *
- *    Licensed under the Apache License, Version 2.0 (the "License");
- *    you may not use this file except in compliance with the License.
- *    You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *    Unless required by applicable law or agreed to in writing, software
- *    distributed under the License is distributed on an "AS IS" BASIS,
- *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *    See the License for the specific language governing permissions and
- *    limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package com.aspectran.core.context.rule;
 
@@ -23,8 +23,12 @@ import com.aspectran.core.context.builder.apon.params.TargetParameters;
 import com.aspectran.core.context.rule.type.AspectTargetType;
 import com.aspectran.core.context.rule.type.PointcutType;
 import com.aspectran.core.util.StringUtils;
+import com.aspectran.core.util.ToStringBuilder;
 import com.aspectran.core.util.apon.Parameters;
 
+/**
+ * The Class PointcutRule.
+ */
 public class PointcutRule {
 	
 	private final PointcutType pointcutType;
@@ -120,19 +124,14 @@ public class PointcutRule {
 		this.cronTriggerParameters = cronTriggerParameters;
 	}
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
 	@Override
 	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		sb.append("{pointcutType=").append(pointcutType);
-		//sb.append(", targetParametersList=").append(targetParametersList);
-		//sb.append(", simpleTriggerParameters=").append(simpleTriggerParameters);
-		//sb.append(", cronTriggerParameters=").append(cronTriggerParameters);
-		sb.append("}");
-		
-		return sb.toString();
+		ToStringBuilder tsb = new ToStringBuilder();
+		tsb.append("pointcutType", pointcutType);
+		tsb.append("pointcutPatternRule", pointcutPatternRuleList);
+		tsb.append("simpleTriggerParameters", simpleTriggerParameters);
+		tsb.append("cronTriggerParameters", cronTriggerParameters);
+		return tsb.toString();
 	}
 	
 	public static PointcutRule newInstance(AspectRule aspectRule, String type, String text) {
@@ -164,7 +163,7 @@ public class PointcutRule {
 			}
 			
 			if(pointcutType == null) {
-				pointcutType = PointcutType.valueOf(type);
+				pointcutType = PointcutType.lookup(type);
 				
 				if(pointcutType != PointcutType.SIMPLE_TRIGGER && pointcutType != PointcutType.CRON_TRIGGER)
 					throw new IllegalArgumentException("Unknown pointcut-type '" + type + "'. Scheduler's pointcut-type must be 'simpleTrigger' or 'cronTrigger'.");
@@ -191,7 +190,7 @@ public class PointcutRule {
 					type = pointcutParameters.getString(PointcutParameters.type);
 				
 				if(type != null) {
-					pointcutType = PointcutType.valueOf(type);
+					pointcutType = PointcutType.lookup(type);
 					if(pointcutType == null)
 						throw new IllegalArgumentException("Unknown pointcut-type '" + type + "'. Translet's pointcut-type must be 'wildcard' or 'regexp'.");
 				}

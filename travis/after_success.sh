@@ -25,6 +25,9 @@ if [ "$aspectran_repo" == "https://github.com/aspectran/aspectran.git" ] && [ "$
   if [ $VER == "16" ]; then
     mvn clean deploy -q --settings ./travis/deploy-settings.xml
     echo -e "Successfully deployed SNAPSHOT artifacts to Sonatype under Travis job ${TRAVIS_JOB_NUMBER}"
+  elif [ $VER == "17" ]; then
+    mvn clean test jacoco:report coveralls:report -q
+    echo -e "Successfully ran coveralls under Travis job ${TRAVIS_JOB_NUMBER}"
   fi
 else
   echo "Travis build skipped"

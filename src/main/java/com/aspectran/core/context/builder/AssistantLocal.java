@@ -1,38 +1,41 @@
 /**
- *    Copyright 2009-2015 the original author or authors.
+ * Copyright 2008-2016 Juho Jeong
  *
- *    Licensed under the Apache License, Version 2.0 (the "License");
- *    you may not use this file except in compliance with the License.
- *    You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *    Unless required by applicable law or agreed to in writing, software
- *    distributed under the License is distributed on an "AS IS" BASIS,
- *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *    See the License for the specific language governing permissions and
- *    limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package com.aspectran.core.context.builder;
+
+import com.aspectran.core.context.rule.ability.Replicable;
 
 /**
  * The Class AssistantLocal.
  * 
  * <p>Created: 2015. 10. 2</p>
  */
-public class AssistantLocal implements Cloneable {
+public class AssistantLocal implements Replicable<AssistantLocal> {
 
 	private String description;
 	
 	private DefaultSettings defaultSettings;
 	
-	private int cloneCount;
+	private final int replicatedCount;
 	
 	public AssistantLocal() {
+		this(0);
 	}
 
 	private AssistantLocal(int cloneCount) {
-		this.cloneCount = cloneCount;
+		this.replicatedCount = cloneCount;
 	}
 	
 	public String getDescription() {
@@ -58,20 +61,21 @@ public class AssistantLocal implements Cloneable {
 		this.defaultSettings = defaultSettings;
 	}
 	
-	public int getCloneCount() {
-		return cloneCount;
+	public int getReplicatedCount() {
+		return replicatedCount;
 	}
 
-	public AssistantLocal clone() throws CloneNotSupportedException {
-		AssistantLocal assistantLocal = new AssistantLocal(cloneCount + 1);
-		DefaultSettings defaultSettings = assistantLocal.getDefaultSettings();
+	@Override
+	public AssistantLocal replicate() {
+		AssistantLocal al = new AssistantLocal(replicatedCount + 1);
+		al.setDescription(al.getDescription());
+		DefaultSettings ds = al.getDefaultSettings();
 		
-		if(defaultSettings != null) {
-			defaultSettings = defaultSettings.clone();
-			assistantLocal.setDefaultSettings(defaultSettings);
+		if(ds != null) {
+			al.setDefaultSettings(new DefaultSettings(ds));
 		}
 		
-		return assistantLocal;              
+		return al;
 	}
 	
 }

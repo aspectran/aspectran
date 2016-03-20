@@ -1,17 +1,17 @@
 /**
- *    Copyright 2009-2015 the original author or authors.
+ * Copyright 2008-2016 Juho Jeong
  *
- *    Licensed under the Apache License, Version 2.0 (the "License");
- *    you may not use this file except in compliance with the License.
- *    You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *    Unless required by applicable law or agreed to in writing, software
- *    distributed under the License is distributed on an "AS IS" BASIS,
- *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *    See the License for the specific language governing permissions and
- *    limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package com.aspectran.core.activity.response.transform;
 
@@ -24,7 +24,6 @@ import com.aspectran.core.activity.process.result.ProcessResult;
 import com.aspectran.core.activity.response.Response;
 import com.aspectran.core.activity.response.transform.json.ContentsJsonSerializer;
 import com.aspectran.core.adapter.ResponseAdapter;
-import com.aspectran.core.context.rule.TemplateRule;
 import com.aspectran.core.context.rule.TransformRule;
 import com.aspectran.core.util.json.JsonSerializer;
 import com.aspectran.core.util.logging.Log;
@@ -33,17 +32,21 @@ import com.aspectran.core.util.logging.LogFactory;
 /**
  * The Class JsonTransform.
  * 
- * Created: 2008. 03. 22 오후 5:51:58
+ * Created: 2008. 03. 22 PM 5:51:58
  */
 public class JsonTransform extends TransformResponse implements Response {
 	
-	private final Log log = LogFactory.getLog(JsonTransform.class);
+	private static final Log log = LogFactory.getLog(JsonTransform.class);
 	
-	private final boolean traceEnabled = log.isTraceEnabled();
+	private static final boolean traceEnabled = log.isTraceEnabled();
 	
-	private final boolean debugEnabled = log.isDebugEnabled();
-	
-	private boolean pretty;
+	private static final boolean debugEnabled = log.isDebugEnabled();
+
+	private final String characterEncoding;
+
+	private final String contentType;
+
+	private final boolean pretty;
 	
 	/**
 	 * Instantiates a new JsonTransform.
@@ -52,68 +55,62 @@ public class JsonTransform extends TransformResponse implements Response {
 	 */
 	public JsonTransform(TransformRule transformRule) {
 		super(transformRule);
-		
+
+		this.characterEncoding = transformRule.getCharacterEncoding();
+		this.contentType = transformRule.getContentType();
 		this.pretty = transformRule.isPretty();
 	}
 
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.response.Responsible#response(com.aspectran.core.activity.CoreActivity)
-	 */
+	@Override
 	public void response(Activity activity) throws TransformResponseException {
+		ResponseAdapter responseAdapter = activity.getResponseAdapter();
+		if(responseAdapter == null)
+			return;
+
 		if(debugEnabled) {
 			log.debug("response " + transformRule);
 		}
 		
 		try {
-			ResponseAdapter responseAdapter = activity.getResponseAdapter();
-			
-			String contentType = transformRule.getContentType();
-			String outputEncoding = transformRule.getCharacterEncoding();
+			if(this.characterEncoding != null) {
+				responseAdapter.setCharacterEncoding(this.characterEncoding);
+			} else {
+				String characterEncoding = activity.determineResponseCharacterEncoding();
+				if(characterEncoding != null)
+					responseAdapter.setCharacterEncoding(characterEncoding);
+			}
 
 			if(contentType != null)
 				responseAdapter.setContentType(contentType);
 
-			if(outputEncoding != null)
-				responseAdapter.setCharacterEncoding(outputEncoding);
-			
-			Writer output = responseAdapter.getWriter();
+			Writer writer = responseAdapter.getWriter();
 			ProcessResult processResult = activity.getProcessResult();
 
-			JsonSerializer serializer = new ContentsJsonSerializer(output, pretty);
+			JsonSerializer serializer = new ContentsJsonSerializer(writer, pretty);
 			serializer.write(processResult);
-			serializer.close();
-			
+			serializer.flush();
+
 			if(traceEnabled) {
 				Writer stringWriter = new StringWriter();
 				JsonSerializer serializer2 = new ContentsJsonSerializer(stringWriter, true);
 				serializer2.write(processResult);
-				serializer2.close();
+				stringWriter.close(); // forward compatibility
 				log.trace(stringWriter.toString());
 			}
 		} catch(Exception e) {
 			throw new TransformResponseException(transformRule, e);
 		}
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.response.Responsible#getActionList()
-	 */
+
+	@Override
 	public ActionList getActionList() {
 		return transformRule.getActionList();
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.response.Response#getTemplateRule()
-	 */
-	public TemplateRule getTemplateRule() {
-		return null;
-	}
 
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.response.Response#newDerivedResponse()
-	 */
-	public Response newDerivedResponse() {
-		return this;
+	@Override
+	public Response replicate() {
+		TransformRule transformRule = getTransformRule().replicate();
+		return new JsonTransform(transformRule);
 	}
 
 }

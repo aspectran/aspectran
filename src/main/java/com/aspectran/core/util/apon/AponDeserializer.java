@@ -1,22 +1,21 @@
 /**
- *    Copyright 2009-2015 the original author or authors.
+ * Copyright 2008-2016 Juho Jeong
  *
- *    Licensed under the Apache License, Version 2.0 (the "License");
- *    you may not use this file except in compliance with the License.
- *    You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *    Unless required by applicable law or agreed to in writing, software
- *    distributed under the License is distributed on an "AS IS" BASIS,
- *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *    See the License for the specific language governing permissions and
- *    limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package com.aspectran.core.util.apon;
 
 import java.io.BufferedReader;
-import java.io.Closeable;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileReader;
@@ -29,7 +28,7 @@ import java.util.Map;
 /**
  * Converts an APON formatted string into a Parameters object.
  */
-public class AponDeserializer extends AponFormat implements Closeable {
+public class AponDeserializer extends AponFormat {
 
 	private BufferedReader reader;
 	
@@ -145,9 +144,9 @@ public class AponDeserializer extends AponFormat implements Closeable {
 					if(!addable)
 						throw new InvalidParameterException(lineNumber, line, trim, "Only acceptable pre-defined parameters. Undefined parameter name: " + name);
 
-					parameterValueType = ParameterValueType.valueOfHint(name);
+					parameterValueType = ParameterValueType.lookupByHint(name);
 					if(parameterValueType != null) {
-						name = ParameterValueType.stripValueTypeHint(name);
+						name = ParameterValueType.stripHintedValueType(name);
 						parameterValue = parameterValueMap.get(name);
 						if(parameterValue != null)
 							parameterValueType = parameterValue.getParameterValueType();
@@ -316,7 +315,7 @@ public class AponDeserializer extends AponFormat implements Closeable {
 			}
 		}
 
-		throw new InvalidParameterException(lineNumber, line, trim, "The end of the text line was reached with no closing round bracket found.");
+		throw new InvalidParameterException(lineNumber, "", trim, "The end of the text line was reached with no closing round bracket found.");
 	}
 	
 	private String unescape(String value, int lineNumber, String line, String trim) {
@@ -331,9 +330,6 @@ public class AponDeserializer extends AponFormat implements Closeable {
 		return s;
 	}
 	
-	/* (non-Javadoc)
-	 * @see java.io.Closeable#close()
-	 */
 	public void close() throws IOException {
 		if(reader != null)
 			reader.close();
@@ -421,18 +417,20 @@ public class AponDeserializer extends AponFormat implements Closeable {
 	 * @throws IOException An I/O error occurs.
 	 */
 	public static <T extends Parameters> T deserialize(File file, String encoding, T parameters) throws IOException {
-		AponDeserializer deserializer;
+		AponDeserializer deserializer = null;
 		
-		if(encoding == null) {
-			deserializer = new AponDeserializer(new FileReader(file));
-		} else {
-			deserializer = new AponDeserializer(new InputStreamReader(new FileInputStream(file), encoding));
+		try {
+			if(encoding == null) {
+				deserializer = new AponDeserializer(new FileReader(file));
+			} else {
+				deserializer = new AponDeserializer(new InputStreamReader(new FileInputStream(file), encoding));
+			}
+			
+			return deserializer.read(parameters);
+		} finally {
+			if(deserializer != null)
+				deserializer.close();
 		}
-		
-		T p = deserializer.read(parameters);
-		deserializer.close();
-
-		return p;
 	}
 	
 	/**
@@ -445,7 +443,6 @@ public class AponDeserializer extends AponFormat implements Closeable {
 	public static Parameters deserialize(Reader reader) throws IOException {
 		AponDeserializer deserializer = new AponDeserializer(reader);
 		Parameters p = deserializer.read();
-		deserializer.close();
 		
 		return p;
 	}
@@ -462,7 +459,6 @@ public class AponDeserializer extends AponFormat implements Closeable {
 	public static <T extends Parameters> T deserialize(Reader reader, T parameters) throws IOException {
 		AponDeserializer deserializer = new AponDeserializer(reader);
 		deserializer.read(parameters);
-		deserializer.close();
 		
 		return parameters;
 	}

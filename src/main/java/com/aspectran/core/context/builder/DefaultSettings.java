@@ -1,17 +1,17 @@
 /**
- *    Copyright 2009-2015 the original author or authors.
+ * Copyright 2008-2016 Juho Jeong
  *
- *    Licensed under the Apache License, Version 2.0 (the "License");
- *    you may not use this file except in compliance with the License.
- *    You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *    Unless required by applicable law or agreed to in writing, software
- *    distributed under the License is distributed on an "AS IS" BASIS,
- *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *    See the License for the specific language governing permissions and
- *    limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package com.aspectran.core.context.builder;
 
@@ -26,9 +26,9 @@ import com.aspectran.core.util.PrefixSuffixPattern;
 /**
  * The Class DefaultSettings
  * 
- * <p>Created: 2008. 03. 22 오후 5:48:09</p>
+ * <p>Created: 2008. 03. 22 PM 5:48:09</p>
  */
-public class DefaultSettings implements Cloneable {
+public class DefaultSettings {
 	
 	private String transletNamePattern;
 	
@@ -40,19 +40,33 @@ public class DefaultSettings implements Cloneable {
 	
 	private Class<Translet> transletInterfaceClass;
 	
-	private String transletImplementClassName;
+	private String transletImplementationClassName;
 	
-	private Class<CoreTranslet> transletImplementClass;
-	
-	private Boolean nullableContentId;
+	private Class<CoreTranslet> transletImplementationClass;
 	
 	private Boolean nullableActionId;
 	
 	private String beanProxifier;
 
 	private Boolean pointcutPatternVerifiable;
-	
+
+	private String defaultTemplateEngine;
+
 	public DefaultSettings() {
+	}
+
+	public DefaultSettings(DefaultSettings ds) {
+		this.transletNamePattern = ds.getTransletNamePattern();
+		this.transletNamePrefix = ds.getTransletNamePrefix();
+		this.transletNameSuffix = ds.getTransletNameSuffix();
+		this.transletInterfaceClassName = ds.getTransletInterfaceClassName();
+		this.transletInterfaceClass = ds.getTransletInterfaceClass();
+		this.transletImplementationClassName = ds.getTransletImplementationClassName();
+		this.transletImplementationClass = ds.getTransletImplementationClass();
+		this.nullableActionId = ds.getNullableActionId();
+		this.beanProxifier = ds.getBeanProxifier();
+		this.pointcutPatternVerifiable = ds.getPointcutPatternVerifiable();
+		this.defaultTemplateEngine = ds.getDefaultTemplateEngine();
 	}
 	
 	public String getTransletNamePattern() {
@@ -116,32 +130,20 @@ public class DefaultSettings implements Cloneable {
 		this.transletInterfaceClass = transletInterfaceClass;
 	}
 
-	public String getTransletImplementClassName() {
-		return transletImplementClassName;
+	public String getTransletImplementationClassName() {
+		return transletImplementationClassName;
 	}
 
-	public void setTransletImplementClassName(String transletImplementClassName) {
-		this.transletImplementClassName = transletImplementClassName;
+	public void setTransletImplementationClassName(String transletImplementationClassName) {
+		this.transletImplementationClassName = transletImplementationClassName;
 	}
 
-	public Class<CoreTranslet> getTransletImplementClass() {
-		return transletImplementClass;
+	public Class<CoreTranslet> getTransletImplementationClass() {
+		return transletImplementationClass;
 	}
 
-	public void setTransletImplementClass(Class<CoreTranslet> transletImplementClass) {
-		this.transletImplementClass = transletImplementClass;
-	}
-
-	public boolean isNullableContentId() {
-		return BooleanUtils.toBoolean(nullableContentId, true);
-	}
-
-	public Boolean getNullableContentId() {
-		return nullableContentId;
-	}
-
-	public void setNullableContentId(boolean nullableContentId) {
-		this.nullableContentId = nullableContentId;
+	public void setTransletImplementationClass(Class<CoreTranslet> transletImplementationClass) {
+		this.transletImplementationClass = transletImplementationClass;
 	}
 
 	public boolean isNullableActionId() {
@@ -167,13 +169,21 @@ public class DefaultSettings implements Cloneable {
 	public boolean isPointcutPatternVerifiable() {
 		return BooleanUtils.toBoolean(pointcutPatternVerifiable, true);
 	}
-	
+
 	public Boolean getPointcutPatternVerifiable() {
 		return pointcutPatternVerifiable;
 	}
 
 	public void setPointcutPatternVerifiable(boolean pointcutPatternVerifiable) {
 		this.pointcutPatternVerifiable = pointcutPatternVerifiable;
+	}
+
+	public String getDefaultTemplateEngine() {
+		return defaultTemplateEngine;
+	}
+
+	public void setDefaultTemplateEngine(String defaultTemplateEngine) {
+		this.defaultTemplateEngine = defaultTemplateEngine;
 	}
 
 	public void apply(Map<DefaultSettingType, String> settings) throws ClassNotFoundException {
@@ -189,24 +199,22 @@ public class DefaultSettings implements Cloneable {
 		if(settings.get(DefaultSettingType.TRANSLET_INTERFACE_CLASS) != null)
 			setTransletInterfaceClassName(settings.get(DefaultSettingType.TRANSLET_INTERFACE_CLASS));
 		
-		if(settings.get(DefaultSettingType.TRANSLET_IMPLEMENT_CLASS) != null)
-			setTransletImplementClassName(settings.get(DefaultSettingType.TRANSLET_IMPLEMENT_CLASS));
+		if(settings.get(DefaultSettingType.TRANSLET_IMPLEMENTATION_CLASS) != null)
+			setTransletImplementationClassName(settings.get(DefaultSettingType.TRANSLET_IMPLEMENTATION_CLASS));
 
-		if(settings.get(DefaultSettingType.NULLABLE_CONTENT_ID) != null)
-			nullableContentId = (settings.get(DefaultSettingType.NULLABLE_CONTENT_ID) == null || Boolean.parseBoolean(settings.get(DefaultSettingType.NULLABLE_CONTENT_ID)));
-		
 		if(settings.get(DefaultSettingType.NULLABLE_ACTION_ID) != null)
-			nullableActionId = (settings.get(DefaultSettingType.NULLABLE_ACTION_ID) == null || Boolean.parseBoolean(settings.get(DefaultSettingType.NULLABLE_ACTION_ID)));
+			nullableActionId = (settings.get(DefaultSettingType.NULLABLE_ACTION_ID) == null ||
+								Boolean.parseBoolean(settings.get(DefaultSettingType.NULLABLE_ACTION_ID)));
 		
 		if(settings.get(DefaultSettingType.BEAN_PROXIFIER) != null)
 			beanProxifier = settings.get(DefaultSettingType.BEAN_PROXIFIER);
 
 		if(settings.get(DefaultSettingType.POINTCUT_PATTERN_VERIFIABLE) != null)
-			pointcutPatternVerifiable = (settings.get(DefaultSettingType.POINTCUT_PATTERN_VERIFIABLE) == null || Boolean.parseBoolean(settings.get(DefaultSettingType.POINTCUT_PATTERN_VERIFIABLE)));
+			pointcutPatternVerifiable = (settings.get(DefaultSettingType.POINTCUT_PATTERN_VERIFIABLE) == null ||
+										Boolean.parseBoolean(settings.get(DefaultSettingType.POINTCUT_PATTERN_VERIFIABLE)));
+
+		if(settings.get(DefaultSettingType.DEFAULT_TEMPLATE_ENGINE) != null)
+			defaultTemplateEngine = settings.get(DefaultSettingType.DEFAULT_TEMPLATE_ENGINE);
 	}
-	
-	public DefaultSettings clone() throws CloneNotSupportedException {
-		return (DefaultSettings)super.clone();              
-	}
-	
+
 }

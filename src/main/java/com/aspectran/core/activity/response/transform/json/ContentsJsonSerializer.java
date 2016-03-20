@@ -1,17 +1,17 @@
 /**
- *    Copyright 2009-2015 the original author or authors.
+ * Copyright 2008-2016 Juho Jeong
  *
- *    Licensed under the Apache License, Version 2.0 (the "License");
- *    you may not use this file except in compliance with the License.
- *    You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *    Unless required by applicable law or agreed to in writing, software
- *    distributed under the License is distributed on an "AS IS" BASIS,
- *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *    See the License for the specific language governing permissions and
- *    limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package com.aspectran.core.activity.response.transform.json;
 
@@ -28,7 +28,9 @@ import com.aspectran.core.util.json.JsonSerializer;
 /**
  * Converts a ProcessResult object to a JSON formatted string.
  * 
- * <p>Created: 2008. 06. 12 오후 8:20:54</p>
+ * <p>Created: 2008. 06. 12 PM 8:20:54</p>
+ *
+ * @author Juho Jeong
  */
 public class ContentsJsonSerializer extends JsonSerializer {
 
@@ -51,9 +53,7 @@ public class ContentsJsonSerializer extends JsonSerializer {
 		super(writer, prettyPrint);
 	}
 
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.util.json.JsonSerializer#write(java.lang.Object)
-	 */
+	@Override
 	public void write(Object object) throws IOException, InvocationTargetException {
 		if(object instanceof ProcessResult) {
 			write((ProcessResult)object);
@@ -106,9 +106,9 @@ public class ContentsJsonSerializer extends JsonSerializer {
 			return;
 		}
 			
-		if(contentResult.getContentId() != null) {
+		if(contentResult.getName() != null) {
 			openCurlyBracket();
-			writeName(contentResult.getContentId());
+			writeName(contentResult.getName());
 		}
 
 		if(contentResult.size() == 1) {
@@ -145,7 +145,7 @@ public class ContentsJsonSerializer extends JsonSerializer {
 			closeCurlyBracket();
 		}
 		
-		if(contentResult.getContentId() != null) {
+		if(contentResult.getName() != null) {
 			closeCurlyBracket();
 		}
 	}

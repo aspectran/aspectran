@@ -1,17 +1,17 @@
 /**
- *    Copyright 2009-2015 the original author or authors.
+ * Copyright 2008-2016 Juho Jeong
  *
- *    Licensed under the Apache License, Version 2.0 (the "License");
- *    you may not use this file except in compliance with the License.
- *    You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *    Unless required by applicable law or agreed to in writing, software
- *    distributed under the License is distributed on an "AS IS" BASIS,
- *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *    See the License for the specific language governing permissions and
- *    limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package com.aspectran.core.context.builder.xml;
 
@@ -28,19 +28,19 @@ import org.xml.sax.SAXException;
 /**
  * Offline entity resolver for the Aspectran DTDs
  * 
- * <p>Created: 2008. 06. 14 오전 4:48:34</p>
+ * <p>Created: 2008. 06. 14 AM 4:48:34</p>
  */
 public class AspectranDtdResolver implements EntityResolver {
 
-	private static final String ASPECTRAN_DTD = "/com/aspectran/core/context/builder/xml/dtd/aspectran-1.0.dtd";
+	private static final String ASPECTRAN_DTD = "/com/aspectran/core/context/builder/xml/dtd/aspectran-2.0.dtd";
 
 	private static final Map<String, String> doctypeMap = new HashMap<String, String>();
 
 	private final boolean validating;
 	
 	static {
-		doctypeMap.put("-//aspectran.com//DTD Aspectran 1.0//EN".toUpperCase(), ASPECTRAN_DTD);
-		doctypeMap.put("aspectran-1.0.dtd".toUpperCase(), ASPECTRAN_DTD);
+		doctypeMap.put("-//ASPECTRAN//DTD Aspectran Configuration 2.0//EN".toUpperCase(), ASPECTRAN_DTD);
+		doctypeMap.put("aspectran-2.0.dtd".toUpperCase(), ASPECTRAN_DTD);
 	}
 
 	public AspectranDtdResolver() {
@@ -56,11 +56,10 @@ public class AspectranDtdResolver implements EntityResolver {
 	 * 
 	 * @param publicId Unused but required by EntityResolver interface
 	 * @param systemId The DTD that is being requested
-	 * 
 	 * @return The InputSource for the DTD
-	 * 
 	 * @throws SAXException If anything goes wrong
 	 */
+	@Override
 	public InputSource resolveEntity(String publicId, String systemId) throws SAXException {
 		if(validating) {
 			try {
@@ -103,4 +102,5 @@ public class AspectranDtdResolver implements EntityResolver {
 		
 		return source;
 	}
+
 }

@@ -1,46 +1,48 @@
 /**
- *    Copyright 2009-2015 the original author or authors.
+ * Copyright 2008-2016 Juho Jeong
  *
- *    Licensed under the Apache License, Version 2.0 (the "License");
- *    you may not use this file except in compliance with the License.
- *    You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *    Unless required by applicable law or agreed to in writing, software
- *    distributed under the License is distributed on an "AS IS" BASIS,
- *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *    See the License for the specific language governing permissions and
- *    limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package com.aspectran.web.activity;
 
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import com.aspectran.core.activity.Activity;
+import com.aspectran.core.activity.AdaptingException;
 import com.aspectran.core.activity.CoreActivity;
-import com.aspectran.core.activity.Translet;
 import com.aspectran.core.activity.request.RequestMethodNotAllowedException;
-import com.aspectran.core.activity.variable.ValueMap;
-import com.aspectran.core.activity.variable.token.ItemTokenExpression;
-import com.aspectran.core.activity.variable.token.ItemTokenExpressor;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.context.ActivityContext;
+import com.aspectran.core.context.expr.ItemExpression;
+import com.aspectran.core.context.expr.ItemExpressor;
+import com.aspectran.core.context.locale.LocaleChangeInterceptor;
+import com.aspectran.core.context.locale.LocaleResolver;
 import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.RequestRule;
-import com.aspectran.core.context.rule.type.ItemValueType;
+import com.aspectran.core.context.rule.ResponseRule;
 import com.aspectran.core.context.rule.type.RequestMethodType;
+import com.aspectran.web.activity.request.multipart.MultipartFormDataParser;
 import com.aspectran.web.activity.request.multipart.MultipartRequestException;
-import com.aspectran.web.activity.request.multipart.MultipartRequestWrapper;
-import com.aspectran.web.activity.request.multipart.MultipartRequestWrapperResolver;
+import com.aspectran.web.adapter.GZipHttpServletResponseAdapter;
 import com.aspectran.web.adapter.HttpServletRequestAdapter;
 import com.aspectran.web.adapter.HttpServletResponseAdapter;
 import com.aspectran.web.adapter.HttpSessionAdapter;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.Enumeration;
 
 /**
  * The Class WebActivity.
@@ -49,19 +51,11 @@ import java.util.Enumeration;
  */
 public class WebActivity extends CoreActivity implements Activity {
 
-	private static final String MULTIPART_REQUEST_WRAPPER_RESOLVER = "multipartRequestWrapperResolver";
-	
-	/** The request rule. */
-	private RequestRule requestRule;
-	
-	/** The request. */
+	private static final String MULTIPART_FORM_DATA_PARSER_SETTING_NAME = "multipartFormDataParser";
+
 	private HttpServletRequest request;
 	
-	/** The response. */
 	private HttpServletResponse response;
-	
-	/** The multipart request wrapper. */
-	private MultipartRequestWrapper requestWrapper;
 	
 	/**
 	 * Instantiates a new WebActivity.
@@ -76,73 +70,66 @@ public class WebActivity extends CoreActivity implements Activity {
 		this.request = request;
 		this.response = response;
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.CoreActivity#adapting(com.aspectran.core.activity.Translet)
-	 */
-	protected void adapting(Translet translet) {
-		requestRule = getRequestRule();
-		
-		RequestAdapter requestAdapter = new HttpServletRequestAdapter(request);
-		setRequestAdapter(requestAdapter);
 
-		ResponseAdapter responseAdapter = new HttpServletResponseAdapter(response);
-		setResponseAdapter(responseAdapter);
+	@Override
+	protected void adapting() throws AdaptingException {
+		try {
+			RequestAdapter requestAdapter = new HttpServletRequestAdapter(request);
+			requestAdapter.setCharacterEncoding(determineRequestCharacterEncoding());
+			setRequestAdapter(requestAdapter);
+
+			String localeResolverId = getRequestSetting(RequestRule.LOCALE_RESOLVER_SETTING_NAME);
+			String localeChangeInterceptorId = getRequestSetting(RequestRule.LOCALE_CHANGE_INTERCEPTOR_SETTING_NAME);
+			LocaleResolver localeResolver = null;
+			if(localeResolverId != null) {
+				localeResolver = getBean(localeResolverId, LocaleResolver.class);
+				if(localeChangeInterceptorId != null) {
+					localeResolver.determineLocale(getTranslet());
+					localeResolver.determineTimeZone(getTranslet());
+				}
+			}
+			if(localeChangeInterceptorId != null) {
+				LocaleChangeInterceptor localeChangeInterceptor = getBean(localeChangeInterceptorId, LocaleChangeInterceptor.class);
+				localeChangeInterceptor.handle(getTranslet(), localeResolver);
+			}
+
+			String contentEncoding = getResponseSetting(ResponseRule.CONTENT_ENCODING_SETTING_NAME);
+			String acceptEncoding = request.getHeader("Accept-Encoding");
+			if(contentEncoding != null && acceptEncoding != null && acceptEncoding.contains(contentEncoding)) {
+				ResponseAdapter responseAdapter = new GZipHttpServletResponseAdapter(response, this);
+				setResponseAdapter(responseAdapter);
+			} else {
+				ResponseAdapter responseAdapter = new HttpServletResponseAdapter(response, this);
+				setResponseAdapter(responseAdapter);
+			}
+		} catch(Exception e) {
+			throw new AdaptingException("Failed to adapting for Web Activity.", e);
+		}
 	}
 
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.AbstractActivity#getSessionAdapter()
-	 */
+	@Override
 	public synchronized SessionAdapter getSessionAdapter() {
 		if(super.getSessionAdapter() == null) {
-			SessionAdapter sessionAdapter = new HttpSessionAdapter(request.getSession(), getActivityContext());
+			SessionAdapter sessionAdapter = new HttpSessionAdapter(request, getActivityContext());
 			super.setSessionAdapter(sessionAdapter);
 		}
 		return super.getSessionAdapter();
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.CoreActivity#request(com.aspectran.core.activity.Translet)
-	 */
-	protected void request(Translet translet) {
+
+	@Override
+	protected void request() {
 		String method = request.getMethod();
-		RequestMethodType requestMethod = requestRule.getRequestMethod();
+		RequestMethodType requestMethod = getRequestRule().getRequestMethod();
 		
 		if(requestMethod != null && !requestMethod.toString().equals(method)) {
 			throw new RequestMethodNotAllowedException(requestMethod);
 		}
 
-		requestWrapper = getMultipartRequestWrapper();
-    	
-		if(requestWrapper != null) {
-			request = requestWrapper;
-
-			RequestAdapter requestAdapter = getRequestAdapter();
-			requestAdapter.setAdaptee(requestWrapper);
-			
-			Enumeration<String> names = requestWrapper.getFileParameterNames();
-			
-			while(names.hasMoreElements()) {
-				String name = names.nextElement();
-				getRequestAdapter().setFileParameter(name, requestWrapper.getFileParameters(name));
-			}
-			
-			requestAdapter.setMaxLengthExceeded(requestWrapper.isMaxLengthExceeded());
-		}
-
-        ValueMap valueMap = parseDeclaredParameter(requestWrapper);
-        
-        if(valueMap != null)
-        	translet.setDeclaredAttributeMap(valueMap);
+		parseMultipartFormData();
+        parseDeclaredAttributes();
 	}
 	
-	/**
-	 * Gets the multipart request wrapper.
-	 *
-	 * @return the multipart request wrapper
-	 * @throws MultipartRequestException the multipart request exception
-	 */
-	private MultipartRequestWrapper getMultipartRequestWrapper() {
+	private void parseMultipartFormData() {
 		String method = request.getMethod();
 		String contentType = request.getContentType();
 		
@@ -150,83 +137,39 @@ public class WebActivity extends CoreActivity implements Activity {
 				&& contentType != null
 				&& contentType.startsWith("multipart/form-data")) {
 
-			String multipartRequestWrapperResolver = getRequestSetting(MULTIPART_REQUEST_WRAPPER_RESOLVER);
-			if(multipartRequestWrapperResolver == null) {
-				throw new MultipartRequestException("'multipartRequestWrapperResolver' was not specified.");
+			String multipartFormDataParser = getRequestSetting(MULTIPART_FORM_DATA_PARSER_SETTING_NAME);
+			if(multipartFormDataParser == null) {
+				throw new MultipartRequestException("The settings name 'multipartFormDataParser' has not been specified in the default request rule.");
 			}
 
-			MultipartRequestWrapperResolver resolver = getBean(multipartRequestWrapperResolver);
-			if(resolver == null) {
-				throw new MultipartRequestException("No bean named 'multipartRequestWrapperResolver' is defined");
+			MultipartFormDataParser parser = getBean(multipartFormDataParser);
+			if(parser == null) {
+				throw new MultipartRequestException("No bean named '" + multipartFormDataParser + "' is defined.");
 			}
-				
-			return resolver.getMultipartRequestWrapper(getTranslet());
+
+			parser.parse(getRequestAdapter());
         }
-        
-        return null;
 	}
 	
 	/**
-	 * Parses the parameter.
-	 *
-	 * @param requestWrapper the request wrapper
-	 * @return the value map
+	 * Parses the declared attributes.
 	 */
-	private ValueMap parseDeclaredParameter(MultipartRequestWrapper requestWrapper) {
-		ItemRuleMap attributeItemRuleMap = requestRule.getAttributeItemRuleMap();
-		
+	private void parseDeclaredAttributes() {
+		ItemRuleMap attributeItemRuleMap = getRequestRule().getAttributeItemRuleMap();
 		if(attributeItemRuleMap != null) {
-			ItemTokenExpressor expressor = new ItemTokenExpression(this);
-			ValueMap valueMap = expressor.express(attributeItemRuleMap);
-
+			ItemExpressor expressor = new ItemExpression(this);
+			Map<String, Object> valueMap = expressor.express(attributeItemRuleMap);
 			for(ItemRule itemRule : attributeItemRuleMap.values()) {
 				String name = itemRule.getName();
-				
-				if(requestWrapper != null) {
-					if(itemRule.getValueType() == ItemValueType.MULTIPART_FILE) {
-						Object value = requestWrapper.getFileParameter(name, itemRule);
-						valueMap.put(name, value);
-						request.setAttribute(name, value);
-					}
-				} else {
-					Object value = valueMap.get(name);
-					if(value != null) {
-						request.setAttribute(name, value);
-					}
-				}
-			}
-
-			if(valueMap.size() > 0)
-				return valueMap;
-		}
-		
-		/*
-		if(debugEnabled) {
-			if(requestAdapter.isMaxLengthExceeded()) {
-				logger.debug("Max length exceeded. multipart.maxRequestSize: " + multipartMaxRequestSize);
-			}
-
-			for(FileItemRule fir : fileItemRuleMap) {
-				if(fir.getUnityType() == FileItemUnityType.ARRAY) {
-					FileParameter[] fileItems = fileItemMap.getFileItems(fir.getName());
-					
-					for(int i = 0; i < fileItems.length; i++) {
-						logger.debug("fileItem[" + i + "] name=" + fir.getName() + " " + fileItems[i]);
-					}
-				} else {
-					FileParameter f = fileItemMap.getFileItem(fir.getName());
-					logger.debug("fileItem name=" + fir.getName() + " " + f);
+				Object value = valueMap.get(name);
+				if(value != null) {
+					getRequestAdapter().setAttribute(name, value);
 				}
 			}
 		}
-		*/
-		
-		return null;
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.activity.CoreActivity#newActivity()
-	 */
+
+	@Override
 	@SuppressWarnings("unchecked")
 	public <T extends Activity> T newActivity() {
 		WebActivity webActivity = new WebActivity(getActivityContext(), request, response);

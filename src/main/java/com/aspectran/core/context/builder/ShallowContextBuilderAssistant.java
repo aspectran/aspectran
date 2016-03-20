@@ -1,78 +1,102 @@
 /**
- *    Copyright 2009-2015 the original author or authors.
+ * Copyright 2008-2016 Juho Jeong
  *
- *    Licensed under the Apache License, Version 2.0 (the "License");
- *    you may not use this file except in compliance with the License.
- *    You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *    Unless required by applicable law or agreed to in writing, software
- *    distributed under the License is distributed on an "AS IS" BASIS,
- *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *    See the License for the specific language governing permissions and
- *    limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package com.aspectran.core.context.builder;
 
-import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
+import com.aspectran.core.context.builder.importer.ShallowImportHandler;
+import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.BeanRule;
+import com.aspectran.core.context.rule.TemplateRule;
 import com.aspectran.core.context.rule.TransletRule;
 
 /**
  * The Class ShallowContextBuilderAssistant.
  * 
- * <p>Created: 2008. 04. 01 오후 10:25:35</p>
+ * <p>Created: 2008. 04. 01 PM 10:25:35</p>
  */
 public class ShallowContextBuilderAssistant extends ContextBuilderAssistant {
 
-	/**
-	 * Instantiates a new ShallowContextBuilderAssistant.
-	 */
+	private final List<AspectRule> aspectRules = new ArrayList<AspectRule>();
+	
+	private final List<BeanRule> beanRules = new ArrayList<BeanRule>();
+
+	private final List<TemplateRule> templateRules = new ArrayList<TemplateRule>();
+
+	private final List<TransletRule> transletRules = new ArrayList<TransletRule>();
+	
 	public ShallowContextBuilderAssistant() {
 		setImportHandler(new ShallowImportHandler());
 	}
 
-	/**
-	 * Returns the resolve alias type.
-	 * 
-	 * @param alias the alias
-	 * 
-	 * @return the string
-	 */
+	@Override
 	public String resolveAliasType(String alias) {
 		return alias;
 	}
-	
-	/**
-	 * Returns the trnaslet name of the prefix and suffix are combined.
-	 * 
-	 * @param transletName the translet name
-	 * 
-	 * @return the string
-	 */
+
+	@Override
 	public String applyTransletNamePattern(String transletName) {
 		return transletName;
 	}
-	
-	/**
-	 * Adds the bean rule.
-	 *
-	 * @param beanRule the bean rule
-	 * @throws CloneNotSupportedException the clone not supported exception
-	 * @throws ClassNotFoundException the class not found exception
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 */
-	public void addBeanRule(BeanRule beanRule) throws CloneNotSupportedException, ClassNotFoundException, IOException {
-		beanRuleMap.put(Integer.toString(beanRuleMap.size()), beanRule);
+
+	@Override
+	public void applyTransletInterface(DefaultSettings defaultSettings) throws ClassNotFoundException {
+		//ignore
 	}
 
-	/* (non-Javadoc)
-	 * @see com.aspectran.core.context.builder.ContextBuilderAssistant#addTransletRule(com.aspectran.core.context.rule.TransletRule)
-	 */
-	public void addTransletRule(TransletRule transletRule) throws CloneNotSupportedException {
-		transletRuleMap.addShallowTransletRule(transletRule);
+	@Override
+	public void addAspectRule(AspectRule aspectRule) {
+		aspectRules.add(aspectRule);
 	}
-	
+
+	@Override
+	public void addBeanRule(BeanRule beanRule) {
+		beanRules.add(beanRule);
+	}
+
+	@Override
+	public void addTransletRule(TransletRule transletRule) {
+		transletRules.add(transletRule);
+	}
+
+	@Override
+	public void addTemplateRule(TemplateRule templateRule) {
+		templateRules.add(templateRule);
+	}
+
+	@Override
+	public Collection<AspectRule> getAspectRules() {
+		return aspectRules;
+	}
+
+	@Override
+	public Collection<BeanRule> getBeanRules() {
+		return beanRules;
+	}
+
+	@Override
+	public Collection<TemplateRule> getTemplateRules() {
+		return templateRules;
+	}
+
+	@Override
+	public Collection<TransletRule> getTransletRules() {
+		return transletRules;
+	}
+
 }

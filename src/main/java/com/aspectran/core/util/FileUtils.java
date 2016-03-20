@@ -1,17 +1,17 @@
 /**
- *    Copyright 2009-2015 the original author or authors.
+ * Copyright 2008-2016 Juho Jeong
  *
- *    Licensed under the Apache License, Version 2.0 (the "License");
- *    you may not use this file except in compliance with the License.
- *    You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *    Unless required by applicable law or agreed to in writing, software
- *    distributed under the License is distributed on an "AS IS" BASIS,
- *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *    See the License for the specific language governing permissions and
- *    limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package com.aspectran.core.util;
 
@@ -236,9 +236,9 @@ public class FileUtils {
 
 		File f3, f4;
 
-		for(int i = 0; i < files.length; i++) {
-			f3 = new File(f1.toString(), files[i]);
-			f4 = new File(f2.toString(), files[i]);
+		for(String file : files) {
+			f3 = new File(f1.toString(), file);
+			f4 = new File(f2.toString(), file);
 
 			if(f3.isDirectory()) {
 				f4.mkdir();
@@ -250,14 +250,15 @@ public class FileUtils {
 
 	/**
 	 * 파일을 옮긴다.
-	 * 
+	 *
 	 * @param f1 파일1
 	 * @param f2 파일2
-	 * 
+	 * @return code>true</code> if and only if the renaming succeeded;
+	 *         <code>false</code> otherwise
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
-	public static void move(File f1, File f2) throws IOException {
-		f1.renameTo(f2);
+	public static boolean move(File f1, File f2) throws IOException {
+		return f1.renameTo(f2);
 	}
 
 	/**
@@ -269,8 +270,8 @@ public class FileUtils {
 	public static void deleteAllFile(File dir) {
 		String[] files = dir.list();
 
-		for(int i = 0; i < files.length; i++) {
-			File delFile = new File(dir, files[i]);
+		for(String file : files) {
+			File delFile = new File(dir, file);
 
 			if(delFile.isDirectory()) {
 				deleteAllFile(delFile);
@@ -494,7 +495,7 @@ public class FileUtils {
 	 * @return String 새로운 파일명
 	 */
 	public static String obtainUniqueSafetyFileName(String path, String fileName) {
-		String time = new Long(System.currentTimeMillis()).toString();
+		String time = Long.toString(System.currentTimeMillis());
 		String ext = getFileExtension(fileName);
 		String separator = "_";
 
@@ -510,7 +511,7 @@ public class FileUtils {
 	 * @return true, if is valid file extention
 	 */
 	public static boolean isValidFileExtension(String fileName, String allowedFileExtensions, String deniedFileExtensions) {
-		String ext = FileUtils.getFileExtension(fileName);
+		String ext = getFileExtension(fileName);
 		
 		if(allowedFileExtensions != null && allowedFileExtensions.length() > 0) {
 			if(ext.length() == 0)
@@ -532,7 +533,7 @@ public class FileUtils {
 			if(ext.length() == 0)
 				return true;
 			
-			StringTokenizer st = new StringTokenizer(allowedFileExtensions, FILE_EXTENSIONS_SEPARATORS);
+			StringTokenizer st = new StringTokenizer(deniedFileExtensions, FILE_EXTENSIONS_SEPARATORS);
 			
 			while(st.hasMoreTokens()) {
 				String ext2 = st.nextToken();
@@ -550,7 +551,7 @@ public class FileUtils {
 	/**
 	 * Size unit of computer file.
 	 * 
-	 * <p>Created: 2008. 04. 16 오후 6:42:23</p>
+	 * <p>Created: 2008. 04. 16 PM 6:42:23</p>
 	 * 
 	 * @author Juho Jeong
 	 */
@@ -622,9 +623,6 @@ public class FileUtils {
 			this.fullType = fullType;
 		}
 
-		/* (non-Javadoc)
-		 * @see java.lang.Object#toString()
-		 */
 		@Override
 		public String toString() {
 			return type;
@@ -677,4 +675,5 @@ public class FileUtils {
 			return types.values().toArray(new SizeUnit[types.size()]);
 		}
 	}
+
 }

@@ -1,26 +1,25 @@
 /**
- *    Copyright 2009-2015 the original author or authors.
+ * Copyright 2008-2016 Juho Jeong
  *
- *    Licensed under the Apache License, Version 2.0 (the "License");
- *    you may not use this file except in compliance with the License.
- *    You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *    Unless required by applicable law or agreed to in writing, software
- *    distributed under the License is distributed on an "AS IS" BASIS,
- *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *    See the License for the specific language governing permissions and
- *    limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package com.aspectran.web.activity.request.multipart;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,89 +33,51 @@ import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 
 import com.aspectran.core.activity.request.parameter.FileParameter;
+import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.util.FileUtils;
+import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
-import com.aspectran.web.activity.request.multipart.MultipartFileParameter;
-import com.aspectran.web.activity.request.multipart.MultipartFormDataParser;
-import com.aspectran.web.activity.request.multipart.MultipartRequestException;
 
 /**
- * Multi-part form data request handler.
+ * Multi-part form data parser.
  */
 public class MultipartFormDataParser {
 	
 	private static final Log log = LogFactory.getLog(MultipartFormDataParser.class);
 
+	/** The constant DEFAULT_MAX_REQUEST_SIZE. */
 	public static final long DEFAULT_MAX_REQUEST_SIZE = 250 * 1024 * 1024;
 
+	/** The constant DEFAULT_SIZE_THRESHOLD. */
 	public static final int DEFAULT_SIZE_THRESHOLD = 256 * 1024;
-
-	private String characterEncoding;
 
 	private String temporaryFilePath;
 	
 	private long maxRequestSize = DEFAULT_MAX_REQUEST_SIZE;
 
-	private final HttpServletRequest request;
-
-	private final Map<String, List<String>> parsedParameterListMap;
-
-	private final Map<String, List<FileParameter>> parsedFileParameterListMap;
-
-	private boolean maxLengthExceeded;
-	
-	private boolean parsed;
-	
 	private String allowedFileExtensions;
 
 	private String deniedFileExtensions;
-	
+
 	/**
 	 * Instantiates a new MultipartFormDataParser.
-	 * 
-	 * @param request the HTTP request
 	 */
-	public MultipartFormDataParser(HttpServletRequest request) {
-		this.request = request;
-		this.characterEncoding = request.getCharacterEncoding();
-		
-		this.parsedParameterListMap = new HashMap<String, List<String>>();
-		this.parsedFileParameterListMap = new HashMap<String, List<FileParameter>>();
-	}
-
-	/**
-	 * Gets the HTTP request.
-	 * 
-	 * @return the HTTP request
-	 */
-	public HttpServletRequest getRequest() {
-		return request;
-	}
-
-	public String getCharacterEncoding() {
-		return characterEncoding;
-	}
-
-	public void setCharacterEncoding(String characterEncoding) {
-		this.characterEncoding = characterEncoding;
+	public MultipartFormDataParser() {
 	}
 
 	/**
 	 * Returns directory path used for temporary files.
-	 * 
+	 *
 	 * @return the directory path used for temporary files
 	 */
 	public String getTemporaryFilePath() {
-		if(temporaryFilePath == null)
-			return System.getProperty("java.io.tmpdir");
-
 		return temporaryFilePath;
 	}
 
 	/**
 	 * Sets the directory path used to temporarily files.
-	 * 
+	 *
 	 * @param temporaryFilePath the directory path used for temporary files
 	 */
 	public void setTemporaryFilePath(String temporaryFilePath) {
@@ -125,7 +86,7 @@ public class MultipartFormDataParser {
 
 	/**
 	 * Returns the maximum length of HTTP GET Request
-	 * 
+	 *
 	 * @return the max request size
 	 */
 	public long getMaxRequestSize() {
@@ -134,71 +95,84 @@ public class MultipartFormDataParser {
 
 	/**
 	 * Sets the maximum length of HTTP GET Request
-	 * 
+	 *
 	 * @param maxSize the maximum length of HTTP GET Request
 	 */
 	public void setMaxRequestSize(long maxSize) {
 		this.maxRequestSize = maxSize;
 	}
 
+	/**
+	 * Gets allowed file extensions.
+	 *
+	 * @return the allowed file extensions
+	 */
 	public String getAllowedFileExtensions() {
 		return allowedFileExtensions;
 	}
 
+	/**
+	 * Sets allowed file extensions.
+	 *
+	 * @param allowedFileExtensions the allowed file extensions
+	 */
 	public void setAllowedFileExtensions(String allowedFileExtensions) {
 		this.allowedFileExtensions = allowedFileExtensions;
 	}
 
+	/**
+	 * Gets denied file extensions.
+	 *
+	 * @return the denied file extensions
+	 */
 	public String getDeniedFileExtensions() {
 		return deniedFileExtensions;
 	}
 
+	/**
+	 * Sets denied file extensions.
+	 *
+	 * @param deniedFileExtensions the denied file extensions
+	 */
 	public void setDeniedFileExtensions(String deniedFileExtensions) {
 		this.deniedFileExtensions = deniedFileExtensions;
 	}
 
 	/**
 	 * Parse the given servlet request, resolving its multipart elements.
-	 * 
+	 *
+	 * @param requestAdapter the request adapter
 	 * @throws MultipartRequestException if multipart resolution failed
 	 */
-	public void parse() {
-		if(parsed)
-			return;
-		
-		DiskFileItemFactory factory = new DiskFileItemFactory();
-		
-		factory.setSizeThreshold(DEFAULT_SIZE_THRESHOLD);
-
-		if(getTemporaryFilePath() != null) {
-			File repository = new File(temporaryFilePath);
-			
-			if(!repository.exists() && !repository.mkdirs()) {
-				throw new IllegalArgumentException("Given temporaryFilePath [" + temporaryFilePath + "] could not be created.");
-			}
-			
-			factory.setRepository(repository);
-		}
-
+	public void parse(RequestAdapter requestAdapter) {
 		try {
+			DiskFileItemFactory factory = new DiskFileItemFactory();
+			factory.setSizeThreshold(DEFAULT_SIZE_THRESHOLD);
+
+			if(temporaryFilePath != null) {
+				File repository = new File(temporaryFilePath);
+				if(!repository.exists() && !repository.mkdirs()) {
+					throw new IllegalArgumentException("Given temporaryFilePath [" + temporaryFilePath + "] could not be created.");
+				}
+				factory.setRepository(repository);
+			}
+
 			ServletFileUpload upload = new ServletFileUpload(factory);
 			upload.setSizeMax(maxRequestSize);
-			upload.setHeaderEncoding(request.getCharacterEncoding());
+			upload.setHeaderEncoding(requestAdapter.getCharacterEncoding());
 
 			Map<String, List<FileItem>> fileItemListMap;
 
 			try {
-				RequestContext requestContext = createRequestContext(request);
+				RequestContext requestContext = createRequestContext(requestAdapter.getAdaptee());
 				fileItemListMap = upload.parseParameterMap(requestContext);
 			} catch(SizeLimitExceededException e) {
 				log.warn("Max length exceeded. multipart.maxRequestSize: " + maxRequestSize);
-				maxLengthExceeded = true;
+				requestAdapter.setMaxLengthExceeded(true);
 				return;
 			}
 
-			parseMultipart(fileItemListMap);
-			
-			parsed = true;
+			parseMultipart(fileItemListMap, requestAdapter);
 		} catch(Exception e) {
 			throw new MultipartRequestException("Could not parse multipart servlet request.", e);
 		}
@@ -206,196 +180,117 @@ public class MultipartFormDataParser {
 
 	/**
 	 * Parse form fields and file item.
-	 * 
-	 * @param fileItemList the items
+	 *
+	 * @param fileItemListMap the file item list map
+	 * @param requestAdapter the request adapter
+	 * @throws UnsupportedEncodingException the unsupported encoding exception
 	 */
-	private void parseMultipart(Map<String, List<FileItem>> fileItemListMap) {
+	private void parseMultipart(Map<String, List<FileItem>> fileItemListMap, RequestAdapter requestAdapter) throws UnsupportedEncodingException {
+		String characterEncoding = requestAdapter.getCharacterEncoding();
+		Map<String, List<String>> parameterListMap = new HashMap<String, List<String>>();
+		Map<String, List<FileParameter>> fileParameterListMap = new HashMap<String, List<FileParameter>>();
+
 		for(Map.Entry<String, List<FileItem>> entry : fileItemListMap.entrySet()) {
 			String fieldName = entry.getKey();
 			List<FileItem> fileItemList = entry.getValue();
 
-			if(fileItemList != null && fileItemList.size() > 0) {
+			if(fileItemList != null && !fileItemList.isEmpty()) {
 				for(FileItem fileItem : fileItemList) {
 					if(fileItem.isFormField()) {
-						List<String> parameterList = parsedParameterListMap.get(fieldName);
-						
-						if(parameterList == null) {
-							parameterList = new ArrayList<String>(fileItemList.size());
-							parsedParameterListMap.put(fieldName, parameterList);
-						}
-						
-						parameterList.add(getString(fileItem));
+						String value = getString(fileItem, characterEncoding);
+						putParameter(fieldName, value, parameterListMap);
 					} else {
+						String fileName = fileItem.getName();
+
 						// Skip file uploads that don't have a file name - meaning that
 						// no file was selected.
-						if(fileItem.getName() == null || fileItem.getName().trim().length() == 0)
+						if(fileName == null || StringUtils.isEmpty(fileName))
 							continue;
 						
-						boolean valid = FileUtils.isValidFileExtension(fileItem.getName(), allowedFileExtensions, deniedFileExtensions);
-						
+						boolean valid = FileUtils.isValidFileExtension(fileName, allowedFileExtensions, deniedFileExtensions);
 						if(!valid)
 							continue;
-						
-						List<FileParameter> fileParameterList = parsedFileParameterListMap.get(fieldName);
-						
-						if(fileParameterList == null) {
-							fileParameterList = new ArrayList<FileParameter>(fileItemListMap.size());
-							parsedFileParameterListMap.put(fieldName, fileParameterList);
-						}
-						
+
 						FileParameter fileParameter = new MultipartFileParameter(fileItem);
-						fileParameterList.add(fileParameter);
+						putFileParameter(fieldName, fileParameter, fileParameterListMap);
+
+
+						requestAdapter.setFileParameter(fieldName, fileParameter);
 					}
 				}
 			}
 		}
-	}
-	
-	/**
-	 * Gets the string.
-	 * 
-	 * @param fileItem the file item
-	 * 
-	 * @return the string
-	 */
-	private String getString(FileItem fileItem) {
-		String value = null;
 
-		if(characterEncoding != null) {
-			try {
-				value = fileItem.getString(characterEncoding);
-			} catch(Exception e) {
-				value = null;
+		if(!parameterListMap.isEmpty()) {
+			for(Map.Entry<String, List<String>> entry : parameterListMap.entrySet()) {
+				String name = entry.getKey();
+				List<String> list = entry.getValue();
+				String[] values = list.toArray(new String[list.size()]);
+				requestAdapter.setParameter(name, values);
 			}
 		}
 
-		if(value == null)
-			value = fileItem.getString();
-
-		return value;
-	}
-
-	/**
-	 * Returns whether request header has exceed the maximum length
-	 * 
-	 * @return true, if is max length exceeded
-	 */
-	public boolean isMaxLengthExceeded() {
-		return maxLengthExceeded;
-	}
-
-	/**
-	 * Gets the parameter names.
-	 * 
-	 * @return the parameter names
-	 */
-	public Enumeration<String> getParameterNames() {
-		return Collections.enumeration(parsedParameterListMap.keySet());
-	}
-
-	/**
-	 * 파라메터 값을 반환한다.
-	 * 
-	 * @param name the parameter name
-	 * 
-	 * @return String 파라메터 값
-	 */
-	public String getParameter(String name) {
-		List<String> items = parsedParameterListMap.get(name);
-
-		if(items == null || items.size() == 0)
-			return null;
-
-		return items.get(0);
-	}
-
-	/**
-	 * 파라메터 값을 반환한다.
-	 * 
-	 * @param name 파라메터명
-	 * 
-	 * @return String[] 파라메터 값
-	 */
-	public String[] getParameterValues(String name) {
-		List<String> items = parsedParameterListMap.get(name);
-
-		if(items == null || items.size() == 0)
-			return null;
-
-		return items.toArray(new String[items.size()]);
-	}
-
-	public List<String> getParameterList(String name) {
-		return parsedParameterListMap.get(name);
+		if(!fileParameterListMap.isEmpty()) {
+			for(Map.Entry<String, List<FileParameter>> entry : fileParameterListMap.entrySet()) {
+				String name = entry.getKey();
+				List<FileParameter> list = entry.getValue();
+				FileParameter[] values = list.toArray(new FileParameter[list.size()]);
+				requestAdapter.setFileParameter(name, values);
+			}
+		}
 	}
 	
-	/**
-	 * Gets the multipart file item names.
-	 * 
-	 * @return the multipart file item names
-	 */
-	public Enumeration<String> getFileParameterNames() {
-		return Collections.enumeration(parsedFileParameterListMap.keySet());
+	private String getString(FileItem fileItem, String characterEncoding) throws UnsupportedEncodingException {
+		if(characterEncoding != null) {
+			return fileItem.getString(characterEncoding);
+		} else {
+			return fileItem.getString();
+		}
 	}
 
-	/**
-	 * Gets the multipart file item.
-	 * 
-	 * @param name the name of the multipart file item
-	 * 
-	 * @return the multipart item
-	 */
-	public FileParameter getFileParameter(String name) {
-		List<FileParameter> list = parsedFileParameterListMap.get(name);
-
-		if(list == null || list.size() == 0)
-			return null;
-
-		return list.get(0);
+	private void putParameter(String fieldName, String value, Map<String, List<String>> parameterListMap) {
+		List<String> list = parameterListMap.get(fieldName);
+		if(list == null) {
+			list = new ArrayList<String>();
+			parameterListMap.put(fieldName, list);
+		}
+		list.add(value);
 	}
 
-	/**
-	 * Gets the multipart items.
-	 * 
-	 * @param name the name
-	 * 
-	 * @return the multipart file items
-	 */
-	public FileParameter[] getFileParameters(String name) {
-		List<FileParameter> list = parsedFileParameterListMap.get(name);
-		
-		if(list == null)
-			return null;
-		
-		return list.toArray(new MultipartFileParameter[list.size()]);
+	private void putFileParameter(String fieldName, FileParameter fileParameter, Map<String, List<FileParameter>> parameterListMap) {
+		List<FileParameter> list = parameterListMap.get(fieldName);
+		if(list == null) {
+			list = new ArrayList<FileParameter>();
+			parameterListMap.put(fieldName, list);
+		}
+		list.add(fileParameter);
 	}
 
-	public List<FileParameter> getFileParameterList(String name) {
-		return parsedFileParameterListMap.get(name);
-	}
-	
 	/**
 	 * Creates a RequestContext needed by Jakarta Commons Upload.
 	 * 
 	 * @param req the request.
-	 * 
 	 * @return a new request context.
 	 */
 	private RequestContext createRequestContext(final HttpServletRequest req) {
 		return new RequestContext() {
+			@Override
 			public String getCharacterEncoding() {
 				return req.getCharacterEncoding();
 			}
 
+			@Override
 			public String getContentType() {
 				return req.getContentType();
 			}
 
+			@Override
 			@Deprecated
 			public int getContentLength() {
 				return req.getContentLength();
 			}
 
+			@Override
 			public InputStream getInputStream() throws IOException {
 				return req.getInputStream();
 			}

@@ -1,17 +1,17 @@
 /**
- *    Copyright 2009-2015 the original author or authors.
+ * Copyright 2008-2016 Juho Jeong
  *
- *    Licensed under the Apache License, Version 2.0 (the "License");
- *    you may not use this file except in compliance with the License.
- *    You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *    Unless required by applicable law or agreed to in writing, software
- *    distributed under the License is distributed on an "AS IS" BASIS,
- *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *    See the License for the specific language governing permissions and
- *    limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package com.aspectran.core.util.wildcard;
 
@@ -183,12 +183,6 @@ public class WildcardMatcher {
 		return matches(pattern, input, null);
 	}
 	
-	/**
-	 * @param pattern
-	 * @param input
-	 * @param separatorFlags
-	 * @return
-	 */
 	private static boolean matches(WildcardPattern pattern, CharSequence input, int[] separatorFlags) {
 		char[] tokens = pattern.getTokens();
 		int[] types = pattern.getTypes();
@@ -202,16 +196,16 @@ public class WildcardMatcher {
 		int tindex = 0;
 		int cindex = 0;
 		
-		int trange1 = 0;
-		int trange2 = 0;
-		int ttemp = 0;
+		int trange1;
+		int trange2;
+		int ttemp;
 		
-		int crange1 = 0;
-		int crange2 = 0;
-		int ctemp = 0;
+		int crange1;
+		int crange2;
+		int ctemp;
 		
-		int scnt1 = 0;
-		int scnt2 = 0;
+		int scnt1;
+		int scnt2;
 		
 		while(tindex < tlength && cindex < clength) {
 			if(types[tindex] == WildcardPattern.LITERAL_TYPE) {

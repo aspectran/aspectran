@@ -1,23 +1,22 @@
 /**
- *    Copyright 2009-2015 the original author or authors.
+ * Copyright 2008-2016 Juho Jeong
  *
- *    Licensed under the Apache License, Version 2.0 (the "License");
- *    you may not use this file except in compliance with the License.
- *    You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *    Unless required by applicable law or agreed to in writing, software
- *    distributed under the License is distributed on an "AS IS" BASIS,
- *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *    See the License for the specific language governing permissions and
- *    limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package com.aspectran.core.util.logging.slf4j;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.Marker;
 import org.slf4j.spi.LocationAwareLogger;
 
 import com.aspectran.core.util.logging.Log;
@@ -32,22 +31,7 @@ public class Slf4jImpl implements Log {
 
   public Slf4jImpl(String clazz) {
     Logger logger = LoggerFactory.getLogger(clazz);
-
-    if (logger instanceof LocationAwareLogger) {
-      try {
-        // check for slf4j >= 1.6 method signature
-        logger.getClass().getMethod("log", Marker.class, String.class, int.class, String.class, Object[].class, Throwable.class);
-        log = new Slf4jLocationAwareLoggerImpl((LocationAwareLogger) logger);
-        return;
-      } catch (SecurityException e) {
-        // fail-back to Slf4jLoggerImpl
-      } catch (NoSuchMethodException e) {
-        // fail-back to Slf4jLoggerImpl
-      }
-    }
-
-    // Logger is not LocationAwareLogger or slf4j version < 1.6
-    log = new Slf4jLoggerImpl(logger);
+    log = new Slf4jLocationAwareLoggerImpl((LocationAwareLogger) logger);
   }
 
   @Override

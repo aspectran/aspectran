@@ -1,27 +1,28 @@
 /**
- *    Copyright 2009-2015 the original author or authors.
+ * Copyright 2008-2016 Juho Jeong
  *
- *    Licensed under the Apache License, Version 2.0 (the "License");
- *    you may not use this file except in compliance with the License.
- *    You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *    Unless required by applicable law or agreed to in writing, software
- *    distributed under the License is distributed on an "AS IS" BASIS,
- *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *    See the License for the specific language governing permissions and
- *    limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package com.aspectran.core.context.rule;
 
 import com.aspectran.core.context.rule.type.AspectAdviceType;
 import com.aspectran.core.util.BooleanUtils;
+import com.aspectran.core.util.ToStringBuilder;
 
 /**
  * The Class AspectJobAdviceRule.
  * 
- * <p>Created: 2008. 04. 01 오후 11:19:28</p>
+ * <p>Created: 2008. 04. 01 PM 11:19:28</p>
  */
 public class AspectJobAdviceRule {
 
@@ -65,19 +66,14 @@ public class AspectJobAdviceRule {
 		this.disabled = disabled;
 	}
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
 	@Override
 	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		sb.append("{aspectId=").append(aspectId);
-		sb.append(", aspectAdviceType=").append(aspectAdviceType);
-		sb.append(", jobTransletName=").append(jobTransletName);
-		sb.append(", disabled=").append(disabled);
-		sb.append("}");
-		
-		return sb.toString();
+		ToStringBuilder tsb = new ToStringBuilder();
+		tsb.append("aspectId", aspectId);
+		tsb.append("aspectAdviceType", aspectAdviceType);
+		tsb.append("jobTransletName", jobTransletName);
+		tsb.append("disabled", disabled);
+		return tsb.toString();
 	}
 	
 	public static AspectJobAdviceRule newInstance(AspectRule aspectRule, String transletName, Boolean disabled) {

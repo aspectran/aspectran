@@ -1,43 +1,51 @@
 /**
- *    Copyright 2009-2015 the original author or authors.
+ * Copyright 2008-2016 Juho Jeong
  *
- *    Licensed under the Apache License, Version 2.0 (the "License");
- *    you may not use this file except in compliance with the License.
- *    You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *    Unless required by applicable law or agreed to in writing, software
- *    distributed under the License is distributed on an "AS IS" BASIS,
- *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *    See the License for the specific language governing permissions and
- *    limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package com.aspectran.core.context.rule;
 
-import com.aspectran.core.context.rule.ability.ActionPossessable;
+import com.aspectran.core.context.rule.ability.ActionPossessSupport;
+import com.aspectran.core.context.rule.ability.BeanReferenceInspectable;
+import com.aspectran.core.context.rule.ability.Replicable;
+import com.aspectran.core.context.rule.type.BeanReferrerType;
 import com.aspectran.core.context.rule.type.ContentType;
 import com.aspectran.core.context.rule.type.ResponseType;
 import com.aspectran.core.context.rule.type.TransformType;
 import com.aspectran.core.util.BooleanUtils;
+import com.aspectran.core.util.ToStringBuilder;
 
 /**
  * The Class TransformRule.
  * 
- * <p>Created: 2008. 03. 22 오후 5:51:58</p>
+ * <p>Created: 2008. 03. 22 PM 5:51:58</p>
  */
-public class TransformRule extends ActionPossessSupport implements ActionPossessable {
+public class TransformRule extends ActionPossessSupport implements Replicable<TransformRule>, BeanReferenceInspectable {
 	
 	public static final ResponseType RESPONSE_TYPE = ResponseType.TRANSFORM;
 
-	protected TransformType transformType;
+	private static final BeanReferrerType BEAN_REFERABLE_RULE_TYPE = BeanReferrerType.TRANSFORM_RULE;
 
-	protected String contentType;
+	private TransformType transformType;
+
+	private String contentType;
 	
-	protected String characterEncoding;
-	
+	private String templateId;
+
 	private TemplateRule templateRule;
-	
+
+	private String characterEncoding;
+
 	private Boolean defaultResponse;
 	
 	private Boolean pretty;
@@ -63,11 +71,11 @@ public class TransformRule extends ActionPossessSupport implements ActionPossess
 		this.transformType = transformType;
 		
 		if(contentType == null) {
-			if(transformType == TransformType.TEXT_TRANSFORM)
+			if(transformType == TransformType.TEXT)
 				contentType = ContentType.TEXT_PLAIN.toString();
-			else if(transformType == TransformType.JSON_TRANSFORM)
+			else if(transformType == TransformType.JSON)
 				contentType = ContentType.TEXT_JSON.toString();
-			else if(transformType == TransformType.XML_TRANSFORM)
+			else if(transformType == TransformType.XML)
 				contentType = ContentType.TEXT_XML.toString();
 		}
 	}
@@ -115,8 +123,18 @@ public class TransformRule extends ActionPossessSupport implements ActionPossess
 	public void setTemplateRule(TemplateRule templateRule) {
 		this.templateRule = templateRule;
 
-		if(templateRule.getEncoding() != null && characterEncoding == null)
-			characterEncoding = templateRule.getEncoding();
+		if(templateRule != null) {
+			if(templateRule.getEncoding() != null && this.characterEncoding == null)
+				this.characterEncoding = templateRule.getEncoding();
+		}
+	}
+
+	public String getTemplateId() {
+		return templateId;
+	}
+
+	public void setTemplateId(String templateId) {
+		this.templateId = templateId;
 	}
 
 	public Boolean getDefaultResponse() {
@@ -143,47 +161,78 @@ public class TransformRule extends ActionPossessSupport implements ActionPossess
 		this.pretty = pretty;
 	}
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
+	@Override
+	public TransformRule replicate() {
+		return replicate(this);
+	}
+
+	@Override
+	public BeanReferrerType getBeanReferrerType() {
+		return BEAN_REFERABLE_RULE_TYPE;
+	}
+
 	@Override
 	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		sb.append("{transformType=").append(transformType);
-		sb.append(", contentType=").append(contentType);
-		sb.append(", characterEncoding=").append(characterEncoding);
-		sb.append(", templateRule=").append(templateRule);
-		if(defaultResponse != null)
-			sb.append(", defaultResponse=").append(defaultResponse);
-		sb.append("}");
-		
-		return sb.toString();
+		ToStringBuilder tsb = new ToStringBuilder();
+		tsb.appendForce("responseType", RESPONSE_TYPE);
+		tsb.append("transformType", transformType);
+		tsb.append("contentType", contentType);
+		tsb.append("templateId", templateId);
+		tsb.append("templateRule", templateRule);
+		tsb.append("characterEncoding", characterEncoding);
+		tsb.append("defaultResponse", defaultResponse);
+		return tsb.toString();
 	}
 	
-	public static TransformRule newInstance(String type, String contentType, String characterEncoding, Boolean defaultResponse, Boolean pretty) {
-		TransformType transformType = TransformType.valueOf(type);
+	public static TransformRule newInstance(String type, String contentType, String templateId, String characterEncoding, Boolean defaultResponse, Boolean pretty) {
+		TransformType transformType = TransformType.lookup(type);
 
 		if(transformType == null && contentType != null) {
-			transformType = TransformType.valueOf(ContentType.valueOf(contentType));
+			transformType = TransformType.lookup(ContentType.lookup(contentType));
 		}
 		
 		if(transformType == null)
-			throw new IllegalArgumentException("Unknown transform-type '" + type + "'.");
+			throw new IllegalArgumentException("No transform type registered for '" + type + "'.");
 
 		TransformRule tr = new TransformRule();
-		tr.setContentType(contentType);
 		tr.setTransformType(transformType);
+		if(contentType != null) {
+			tr.setContentType(contentType);
+		}
+		tr.setTemplateId(templateId);
 		tr.setCharacterEncoding(characterEncoding);
 		tr.setDefaultResponse(defaultResponse);
 		tr.setPretty(pretty);
 		
 		return tr;
 	}
-	
-	public static TransformRule newDerivedTransformRule(TransformRule transformRule) {
+
+	public static TransformRule newInstance(TransformType transformType, String contentType, String templateId, String characterEncoding, Boolean defaultResponse, Boolean pretty) {
+		if(transformType == null && contentType != null) {
+			transformType = TransformType.lookup(ContentType.lookup(contentType));
+		}
+
+		if(transformType == null)
+			throw new IllegalArgumentException("Transform Type is not specified.");
+
+		TransformRule tr = new TransformRule();
+		tr.setTransformType(transformType);
+		if(contentType != null) {
+			tr.setContentType(contentType);
+		}
+		tr.setTemplateId(templateId);
+		tr.setCharacterEncoding(characterEncoding);
+		tr.setDefaultResponse(defaultResponse);
+		tr.setPretty(pretty);
+
+		return tr;
+	}
+
+	public static TransformRule replicate(TransformRule transformRule) {
 		TransformRule newTransformRule = new TransformRule();
-		newTransformRule.setContentType(transformRule.getContentType());
 		newTransformRule.setTransformType(transformRule.getTransformType());
+		newTransformRule.setContentType(transformRule.getContentType());
+		newTransformRule.setTemplateId(transformRule.getTemplateId());
 		newTransformRule.setCharacterEncoding(transformRule.getCharacterEncoding());
 		newTransformRule.setDefaultResponse(transformRule.getDefaultResponse());
 		newTransformRule.setPretty(transformRule.getPretty());
@@ -191,8 +240,7 @@ public class TransformRule extends ActionPossessSupport implements ActionPossess
 		
 		TemplateRule templateRule = transformRule.getTemplateRule();
 		if(templateRule != null) {
-			templateRule = TemplateRule.newDerivedTemplateRule(templateRule);
-			newTransformRule.setTemplateRule(templateRule);
+			newTransformRule.setTemplateRule(templateRule.replicate());
 		}
 		
 		return newTransformRule;

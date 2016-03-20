@@ -1,17 +1,17 @@
 /**
- *    Copyright 2009-2015 the original author or authors.
+ * Copyright 2008-2016 Juho Jeong
  *
- *    Licensed under the Apache License, Version 2.0 (the "License");
- *    you may not use this file except in compliance with the License.
- *    You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *    Unless required by applicable law or agreed to in writing, software
- *    distributed under the License is distributed on an "AS IS" BASIS,
- *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *    See the License for the specific language governing permissions and
- *    limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package com.aspectran.core.adapter;
 
@@ -36,14 +36,14 @@ public interface ApplicationAdapter {
 	 * @param <T> the generic type
 	 * @return the Adaptee object
 	 */
-	public <T> T getAdaptee();
+	<T> T getAdaptee();
 
 	/**
-	 * Gets the scope.
+	 * Gets the application scope.
 	 *
 	 * @return the scope
 	 */
-	public ApplicationScope getApplicationScope();
+	ApplicationScope getApplicationScope();
 	
 	/**
 	 * Gets the attribute.
@@ -52,7 +52,7 @@ public interface ApplicationAdapter {
 	 * @param name the name
 	 * @return the attribute
 	 */
-	public <T> T getAttribute(String name);
+	<T> T getAttribute(String name);
 
 	/**
 	 * Sets the attribute.
@@ -60,25 +60,59 @@ public interface ApplicationAdapter {
 	 * @param name the name
 	 * @param value the value
 	 */
-	public void setAttribute(String name, Object value);
-	
-	public Enumeration<String> getAttributeNames();
-	
-	public void removeAttribute(String name);
-	
-	public AspectranServiceController getAspectranServiceController();
-
-	public ClassLoader getClassLoader();
+	void setAttribute(String name, Object value);
 	
 	/**
-	 * Return the base path that the current web application is mapped to.
+	 * Gets the attribute names.
+	 *
+	 * @return the attribute names
+	 */
+	Enumeration<String> getAttributeNames();
+	
+	/**
+	 * Removes the attribute.
+	 *
+	 * @param name the name
+	 */
+	void removeAttribute(String name);
+	
+	/**
+	 * Gets the aspectran service controller.
+	 *
+	 * @return the aspectran service controller
+	 */
+	AspectranServiceController getAspectranServiceController();
+
+	/**
+	 * Gets the class loader.
+	 *
+	 * @return the class loader
+	 */
+	ClassLoader getClassLoader();
+	
+	/**
+	 * Return the base path that the current application is mapped to.
 	 *
 	 * @return the application base path
 	 */
-	public String getApplicationBasePath();
+	String getApplicationBasePath();
 	
-	public String toRealPath(String filePath) throws IOException;
+	/**
+	 * Returns to convert the given file path with the real file path.
+	 *
+	 * @param filePath the specified file path
+	 * @return the real file path
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
+	String toRealPath(String filePath) throws IOException;
 	
-	public File toRealPathAsFile(String filePath);
+	/**
+	 * Returns to convert the given file path with the real file path.
+	 * 
+	 * @param filePath the specified file path
+	 * @return the real file path
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
+	File toRealPathAsFile(String filePath) throws IOException;
 
 }
