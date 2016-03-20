@@ -215,6 +215,7 @@ public class WebAspectranService extends CoreAspectranService {
 	 * @param servlet the servlet
 	 * @param rootAspectranService the root aspectran service
 	 * @return the web aspectran service
+	 * @throws AspectranServiceException the aspectran service exception
 	 */
 	public static WebAspectranService newInstance(WebActivityServlet servlet, WebAspectranService rootAspectranService) throws AspectranServiceException {
 		ServletContext servletContext = servlet.getServletContext();
