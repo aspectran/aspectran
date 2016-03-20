@@ -136,8 +136,12 @@ public class ContextBeanRegistry extends AbstractBeanFactory implements BeanRegi
 			if(beanRule.isRegistered())
 				return beanRule.getBean();
 
-			stamp = singletonScopeLock.tryConvertToWriteLock(stamp);
-			if(stamp == 0L) {
+			long tryStamp = singletonScopeLock.tryConvertToWriteLock(stamp);
+
+			if(tryStamp != 0L) {
+				stamp = tryStamp;
+			} else {
+				singletonScopeLock.unlockRead(stamp);
 				stamp = singletonScopeLock.writeLock();
 			}
 
@@ -184,9 +188,12 @@ public class ContextBeanRegistry extends AbstractBeanFactory implements BeanRegi
 			Object bean = scope.getBean(beanRule);
 
 			if(bean == null) {
-				stamp = lock.tryConvertToWriteLock(stamp);
+				long tryStamp = lock.tryConvertToWriteLock(stamp);
 
-				if(stamp == 0L) {
+				if(tryStamp != 0L) {
+					stamp = tryStamp;
+				} else {
+					lock.unlockRead(stamp);
 					stamp = lock.writeLock();
 				}
 
