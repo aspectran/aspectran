@@ -23,8 +23,6 @@ import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.ExceptionHandlingRule;
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
 
 import javassist.util.proxy.MethodHandler;
 import javassist.util.proxy.ProxyFactory;
@@ -36,8 +34,6 @@ import javassist.util.proxy.ProxyFactory;
  * @since 1.1.0
  */
 public class JavassistDynamicBeanProxy extends AbstractDynamicBeanProxy implements MethodHandler  {
-
-	private final Log log = LogFactory.getLog(JavassistDynamicBeanProxy.class);
 
 	private final ActivityContext context;
 

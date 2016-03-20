@@ -25,8 +25,6 @@ import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.ExceptionHandlingRule;
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
 
 /**
  * The Class JdkDynamicBeanProxy.
@@ -34,8 +32,6 @@ import com.aspectran.core.util.logging.LogFactory;
  * @author Juho Jeong
  */
 public class JdkDynamicBeanProxy extends AbstractDynamicBeanProxy implements InvocationHandler {
-
-	private final Log log = LogFactory.getLog(JdkDynamicBeanProxy.class);
 
 	private final ActivityContext context;
 

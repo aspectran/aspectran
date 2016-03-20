@@ -21,6 +21,7 @@ import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
+import com.aspectran.core.context.bean.scope.RequestScope;
 import com.aspectran.core.context.bean.scope.Scope;
 import com.aspectran.core.context.rule.type.JoinpointScopeType;
 import com.aspectran.core.context.translet.TransletInstantiationException;
@@ -182,7 +183,10 @@ public abstract class AbstractActivity {
 	 *
 	 * @return the request scope
 	 */
-	public Scope getRequestScope() {
+	public synchronized Scope getRequestScope() {
+		if(requestScope == null) {
+			requestScope = new RequestScope();
+		}
 		return requestScope;
 	}
 

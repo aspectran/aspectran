@@ -61,7 +61,7 @@ import com.aspectran.core.util.logging.LogFactory;
  */
 public abstract class AbstractBeanFactory implements BeanFactory {
 	
-	private final Log log = LogFactory.getLog(AbstractBeanFactory.class);
+	protected final Log log = LogFactory.getLog(getClass());
 	
 	protected final BeanRuleRegistry beanRuleRegistry;
 

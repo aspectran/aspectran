@@ -351,7 +351,7 @@ public class AnnotatedConfigParser {
         return sb.toString();
 	}
 	
-	public boolean checkExistence(Class<?> requiredType, String beanId, boolean required) {
+	private boolean checkExistence(Class<?> requiredType, String beanId, boolean required) {
 		BeanRule[] beanRules = beanRuleRegistry.getBeanRule(requiredType);
 
 		if(beanRules == null || beanRules.length == 0) {

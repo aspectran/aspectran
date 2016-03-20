@@ -15,8 +15,9 @@
  */
 package com.aspectran.core.context.bean;
 
+import java.util.concurrent.locks.StampedLock;
+
 import com.aspectran.core.activity.Activity;
-import com.aspectran.core.context.bean.scope.RequestScope;
 import com.aspectran.core.context.bean.scope.Scope;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.type.BeanProxifierType;
@@ -29,14 +30,8 @@ import com.aspectran.core.context.rule.type.ScopeType;
  */
 public class ContextBeanRegistry extends AbstractBeanFactory implements BeanRegistry {
 
-	private final Object singletonScopeLock = new Object();
+	private final StampedLock singletonScopeLock = new StampedLock();
 
-	private final Object requestScopeLock = new Object();
-	
-	private final Object sessionScopeLock = new Object();
-	
-	private final Object applicationScopeLock = new Object();
-	
 	public ContextBeanRegistry(BeanRuleRegistry beanRuleRegistry, BeanProxifierType beanProxifierType) {
 		super(beanRuleRegistry, beanProxifierType);
 	}
@@ -135,9 +130,16 @@ public class ContextBeanRegistry extends AbstractBeanFactory implements BeanRegi
 	}
 	
 	private Object getSingletonScopeBean(BeanRule beanRule) {
-		synchronized(singletonScopeLock) {
+		long stamp = singletonScopeLock.readLock();
+
+		try {
 			if(beanRule.isRegistered())
 				return beanRule.getBean();
+
+			stamp = singletonScopeLock.tryConvertToWriteLock(stamp);
+			if(stamp == 0L) {
+				stamp = singletonScopeLock.writeLock();
+			}
 
 			Object bean = createBean(beanRule);
 
@@ -145,27 +147,25 @@ public class ContextBeanRegistry extends AbstractBeanFactory implements BeanRegi
 			beanRule.setRegistered(true);
 
 			return bean;
+		} finally {
+			singletonScopeLock.unlock(stamp);
 		}
 	}
 
 	private Object getRequestScopeBean(BeanRule beanRule) {
-		synchronized(requestScopeLock) {
-			Scope scope = getRequestScope();
-			if(scope == null)
-				throw new UnsupportedBeanScopeException(ScopeType.REQUEST, beanRule);
-			
-			return getScopedBean(scope, beanRule);
-		}
+		Scope scope = getRequestScope();
+		if(scope == null)
+			throw new UnsupportedBeanScopeException(ScopeType.REQUEST, beanRule);
+
+		return getScopedBean(scope, beanRule);
 	}
 	
 	private Object getSessionScopeBean(BeanRule beanRule) {
 		Scope scope = getSessionScope();
 		if(scope == null)
 			throw new UnsupportedBeanScopeException(ScopeType.SESSION, beanRule);
-		
-		synchronized(sessionScopeLock) {
-			return getScopedBean(scope, beanRule);
-		}
+
+		return getScopedBean(scope, beanRule);
 	}
 
 	private Object getApplicationScopeBean(BeanRule beanRule) {
@@ -173,33 +173,39 @@ public class ContextBeanRegistry extends AbstractBeanFactory implements BeanRegi
 		if(scope == null)
 			throw new UnsupportedBeanScopeException(ScopeType.APPLICATION, beanRule);
 
-		synchronized(applicationScopeLock) {
-			return getScopedBean(scope, beanRule);
-		}
+		return getScopedBean(scope, beanRule);
 	}
 	
 	private Object getScopedBean(Scope scope, BeanRule beanRule) {
-		Object bean = scope.getBean(beanRule);
-		if(bean == null) {
-			bean = createBean(beanRule);
-			scope.putBean(beanRule, bean);
+		StampedLock lock = scope.getScopeStampedLock();
+		long stamp = lock.readLock();
+
+		try {
+			Object bean = scope.getBean(beanRule);
+
+			if(bean == null) {
+				stamp = lock.tryConvertToWriteLock(stamp);
+
+				if(stamp == 0L) {
+					stamp = lock.writeLock();
+				}
+
+				bean = createBean(beanRule);
+				scope.putBean(beanRule, bean);
+			}
+
+			return bean;
+		} finally {
+			lock.unlock(stamp);
 		}
-		return bean;
 	}
 
 	private Scope getRequestScope() {
 		Activity activity = context.getCurrentActivity();
 		if(activity == null)
 			return null;
-		
-		Scope requestScope = activity.getRequestScope();
-		
-		if(requestScope == null) {
-			requestScope = new RequestScope();
-			activity.setRequestScope(requestScope);
-		}
-		
-		return requestScope;
+
+		return activity.getRequestScope();
 	}
 
 	private Scope getSessionScope() {

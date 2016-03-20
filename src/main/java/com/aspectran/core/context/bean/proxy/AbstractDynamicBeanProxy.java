@@ -37,7 +37,7 @@ import com.aspectran.core.util.logging.LogFactory;
  */
 public abstract class AbstractDynamicBeanProxy {
 
-	private final Log log = LogFactory.getLog(AbstractDynamicBeanProxy.class);
+	protected final Log log = LogFactory.getLog(getClass());
 
 	private static volatile Map<String, RelevantAspectRuleHolder> cache = new WeakHashMap<String, RelevantAspectRuleHolder>();
 

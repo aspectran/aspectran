@@ -15,6 +15,8 @@
  */
 package com.aspectran.core.context.bean.scope;
 
+import java.util.concurrent.locks.StampedLock;
+
 import com.aspectran.core.context.rule.BeanRule;
 
 /**
@@ -24,7 +26,9 @@ import com.aspectran.core.context.rule.BeanRule;
  * @since 2011. 3. 12.
  */
 public interface Scope {
-	
+
+	StampedLock getScopeStampedLock();
+
 	Object getBean(BeanRule beanRule);
 
 	void putBean(BeanRule beanRule, Object bean);

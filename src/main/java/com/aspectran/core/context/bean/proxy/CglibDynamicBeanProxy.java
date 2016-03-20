@@ -23,8 +23,6 @@ import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.ExceptionHandlingRule;
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
 
 import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.MethodInterceptor;
@@ -36,8 +34,6 @@ import net.sf.cglib.proxy.MethodProxy;
  * @author Juho Jeong
  */
 public class CglibDynamicBeanProxy extends AbstractDynamicBeanProxy implements MethodInterceptor {
-
-	private final Log log = LogFactory.getLog(CglibDynamicBeanProxy.class);
 
 	private final ActivityContext context;
 
