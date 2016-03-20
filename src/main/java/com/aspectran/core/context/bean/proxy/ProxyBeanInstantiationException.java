@@ -77,6 +77,8 @@ public class ProxyBeanInstantiationException extends BeanException {
 
 	/**
 	 * Return the offending bean class.
+	 *
+	 * @return the bean class
 	 */
 	public Class<?> getBeanClass() {
 		return beanClass;

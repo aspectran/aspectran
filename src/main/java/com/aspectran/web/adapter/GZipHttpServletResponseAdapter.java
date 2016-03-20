@@ -39,6 +39,7 @@ public class GZipHttpServletResponseAdapter extends HttpServletResponseAdapter {
      * Instantiates a new GZipHttpServletResponseAdapter.
      *
      * @param response the HTTP response
+     * @param activity the activity
      */
     public GZipHttpServletResponseAdapter(HttpServletResponse response, Activity activity) {
         super(response, activity);

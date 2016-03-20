@@ -33,7 +33,6 @@ public interface AspectranServiceController {
 	/**
 	 * Restarts a Aspectran Service.
 	 *
-	 * @return returns whether or not the AcivityContext has been destroyed cleanly.
 	 * @throws AspectranServiceException the aspectran service exception
 	 */
 	void restart() throws AspectranServiceException;
@@ -41,7 +40,6 @@ public interface AspectranServiceController {
 	/**
 	 * Reloads a Aspectran Configurations without restarting.
 	 *
-	 * @return returns whether or not the AcivityContext has been destroyed cleanly.
 	 * @throws AspectranServiceException the aspectran service exception
 	 */
 	void reload() throws AspectranServiceException;
@@ -49,7 +47,6 @@ public interface AspectranServiceController {
 	/**
 	 * Refresh a Aspectran Service.
 	 *
-	 * @return returns whether or not the AcivityContext has been destroyed cleanly.
 	 * @throws AspectranServiceException the aspectran service exception
 	 */
 	void refresh() throws AspectranServiceException;

@@ -167,7 +167,6 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceInspectable 
 	 * Sets the bean class.
 	 *
 	 * @param beanClass the new bean class
-	 * @throws SecurityException 
 	 */
 	public void setBeanClass(Class<?> beanClass) {
 		this.beanClass = beanClass;

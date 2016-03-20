@@ -64,6 +64,7 @@ public class MessageSourceSupport {
      * flag to "true". Else, only message texts with actual arguments
      * are supposed to be written with MessageFormat escaping.
      *
+     * @param alwaysUseMessageFormat whether always use message format
      * @see java.text.MessageFormat
      */
     public void setAlwaysUseMessageFormat(boolean alwaysUseMessageFormat) {
@@ -73,6 +74,8 @@ public class MessageSourceSupport {
     /**
      * Return whether to always apply the MessageFormat rules, parsing even
      * messages without arguments.
+     *
+     * @return whether always use message format
      */
     protected boolean isAlwaysUseMessageFormat() {
         return this.alwaysUseMessageFormat;
@@ -87,11 +90,10 @@ public class MessageSourceSupport {
      * this method to plug in custom processing of default messages.
      *
      * @param defaultMessage the passed-in default message String
-     * @param args array of arguments that will be filled in for params within
-     * the message, or {@code null} if none.
+     * @param args array of arguments that will be filled in for params within the message, or {@code null} if none.
      * @param locale the Locale used for formatting
      * @return the rendered default message (with resolved arguments)
-     * @see #formatMessage(String, Object[], java.util.Locale)
+     * @see #formatMessage(String, Object[], java.util.Locale) #formatMessage(String, Object[], java.util.Locale)
      */
     protected String renderDefaultMessage(String defaultMessage, Object[] args, Locale locale) {
         return formatMessage(defaultMessage, args, locale);
@@ -103,8 +105,7 @@ public class MessageSourceSupport {
      * any argument placeholders found in them.
      *
      * @param msg the message to format
-     * @param args array of arguments that will be filled in for params within
-     * the message, or {@code null} if none
+     * @param args array of arguments that will be filled in for params within the message, or {@code null} if none
      * @param locale the Locale used for formatting
      * @return the formatted message (with resolved arguments)
      */
@@ -146,6 +147,7 @@ public class MessageSourceSupport {
 
     /**
      * Create a MessageFormat for the given message and Locale.
+     *
      * @param msg the message to create a MessageFormat for
      * @param locale the Locale to create a MessageFormat for
      * @return the MessageFormat instance
@@ -158,6 +160,7 @@ public class MessageSourceSupport {
      * Template method for resolving argument objects.
      * <p>The default implementation simply returns the given argument array as-is.
      * Can be overridden in subclasses in order to resolve special argument types.
+     *
      * @param args the original argument array
      * @param locale the Locale to resolve against
      * @return the resolved argument array

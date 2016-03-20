@@ -253,7 +253,7 @@ public class FileUtils {
 	 *
 	 * @param f1 파일1
 	 * @param f2 파일2
-	 * @return code>true</code> if and only if the renaming succeeded;
+	 * @return <code>true</code> if and only if the renaming succeeded;
 	 *         <code>false</code> otherwise
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */

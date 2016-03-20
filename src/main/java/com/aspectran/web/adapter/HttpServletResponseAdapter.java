@@ -51,6 +51,7 @@ public class HttpServletResponseAdapter extends AbstractResponseAdapter implemen
 	 * Instantiates a new HttpServletResponseAdapter.
 	 *
 	 * @param response the HTTP response
+	 * @param activity the activity
 	 */
 	public HttpServletResponseAdapter(HttpServletResponse response, Activity activity) {
 		super(response);

@@ -59,6 +59,8 @@ public abstract class AbstractMessageSource extends MessageSourceSupport impleme
     /**
      * Specify locale-independent common messages, with the message code as key
      * and the full message String (may contain argument placeholders) as value.
+     *
+     * @param commonMessages the common messages
      */
     public void setCommonMessages(Properties commonMessages) {
         this.commonMessages = commonMessages;
@@ -66,6 +68,8 @@ public abstract class AbstractMessageSource extends MessageSourceSupport impleme
 
     /**
      * Return a Properties object defining locale-independent common messages, if any.
+     *
+     * @return the common messages
      */
     protected Properties getCommonMessages() {
         return this.commonMessages;
@@ -86,7 +90,8 @@ public abstract class AbstractMessageSource extends MessageSourceSupport impleme
      * In general, it is recommended to just use "useCodeAsDefaultMessage" during
      * development and not rely on it in production in the first place, though.
      *
-     * @see #getMessage(String, Object[], Locale)
+     * @param useCodeAsDefaultMessage whether use code as default message
+     * @see #getMessage(String, Object[], Locale) #getMessage(String, Object[], Locale)
      */
     public void setUseCodeAsDefaultMessage(boolean useCodeAsDefaultMessage) {
         this.useCodeAsDefaultMessage = useCodeAsDefaultMessage;
@@ -99,7 +104,8 @@ public abstract class AbstractMessageSource extends MessageSourceSupport impleme
      * <p>Alternatively, consider overriding the {@link #getDefaultMessage}
      * method to return a custom fallback message for an unresolvable code.
      *
-     * @see #getDefaultMessage(String)
+     * @return whether use code as default message
+     * @see #getDefaultMessage(String) #getDefaultMessage(String)
      */
     protected boolean isUseCodeAsDefaultMessage() {
         return this.useCodeAsDefaultMessage;
@@ -139,13 +145,12 @@ public abstract class AbstractMessageSource extends MessageSourceSupport impleme
      * the code as default message. Invoked by {@code getMessage} methods.
      *
      * @param code the code to lookup up, such as 'calculator.noRateSet'
-     * @param args array of arguments that will be filled in for params
-     * within the message
+     * @param args array of arguments that will be filled in for params within the message
      * @param locale the Locale in which to do the lookup
      * @return the resolved message, or {@code null} if not found
-     * @see #getMessage(String, Object[], String, Locale)
-     * @see #getMessage(String, Object[], Locale)
-     * @see #setUseCodeAsDefaultMessage
+     * @see #getMessage(String, Object[], String, Locale) #getMessage(String, Object[], String, Locale)
+     * @see #getMessage(String, Object[], Locale) #getMessage(String, Object[], Locale)
+     * @see #setUseCodeAsDefaultMessage #setUseCodeAsDefaultMessage
      */
     protected String getMessageInternal(String code, Object[] args, Locale locale) {
         if(code == null) {
@@ -192,11 +197,10 @@ public abstract class AbstractMessageSource extends MessageSourceSupport impleme
      * Try to retrieve the given message from the parent MessageSource, if any.
      *
      * @param code the code to lookup up, such as 'calculator.noRateSet'
-     * @param args array of arguments that will be filled in for params
-     * within the message
+     * @param args array of arguments that will be filled in for params within the message
      * @param locale the Locale in which to do the lookup
      * @return the resolved message, or {@code null} if not found
-     * @see #getParentMessageSource()
+     * @see #getParentMessageSource() #getParentMessageSource()
      */
     protected String getMessageFromParent(String code, Object[] args, Locale locale) {
         MessageSource parent = getParentMessageSource();
@@ -220,10 +224,9 @@ public abstract class AbstractMessageSource extends MessageSourceSupport impleme
      * or return no fallback else. In case of no fallback, the caller will usually
      * receive a NoSuchMessageException from {@code getMessage}.
      *
-     * @param code the message code that we couldn't resolve
-     * and that we didn't receive an explicit default message for
+     * @param code the message code that we couldn't resolve and that we didn't receive an explicit default message for
      * @return the default message to use, or {@code null} if none
-     * @see #setUseCodeAsDefaultMessage
+     * @see #setUseCodeAsDefaultMessage #setUseCodeAsDefaultMessage
      */
     protected String getDefaultMessage(String code) {
         if(isUseCodeAsDefaultMessage()) {
@@ -244,10 +247,9 @@ public abstract class AbstractMessageSource extends MessageSourceSupport impleme
      * it is advisable to circumvent MessageFormat for messages without arguments.
      *
      * @param code the code of the message to resolve
-     * @param locale the Locale to resolve the code for
-     * (subclasses are encouraged to support internationalization)
+     * @param locale the Locale to resolve the code for (subclasses are encouraged to support internationalization)
      * @return the message String, or {@code null} if not found
-     * @see #resolveCode
+     * @see #resolveCode #resolveCode
      * @see java.text.MessageFormat
      */
     protected String resolveCodeWithoutArguments(String code, Locale locale) {
@@ -269,10 +271,9 @@ public abstract class AbstractMessageSource extends MessageSourceSupport impleme
      * See the {@link #resolveCodeWithoutArguments} javadoc for details.
      *
      * @param code the code of the message to resolve
-     * @param locale the Locale to resolve the code for
-     * (subclasses are encouraged to support internationalization)
+     * @param locale the Locale to resolve the code for (subclasses are encouraged to support internationalization)
      * @return the MessageFormat for the message, or {@code null} if not found
-     * @see #resolveCodeWithoutArguments(String, java.util.Locale)
+     * @see #resolveCodeWithoutArguments(String, java.util.Locale) #resolveCodeWithoutArguments(String, java.util.Locale)
      */
     protected abstract MessageFormat resolveCode(String code, Locale locale);
 

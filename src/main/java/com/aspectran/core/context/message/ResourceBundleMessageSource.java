@@ -93,6 +93,8 @@ public class ResourceBundleMessageSource extends AbstractMessageSource implement
     /**
      * Set the default charset to use for parsing resource bundle files.
      * <p>Default is the {@code java.util.ResourceBundle} default encoding: ISO-8859-1.
+     *
+     * @param defaultEncoding the default encoding
      */
     public void setDefaultEncoding(String defaultEncoding) {
         this.defaultEncoding = defaultEncoding;
@@ -107,6 +109,8 @@ public class ResourceBundleMessageSource extends AbstractMessageSource implement
      * {@code java.util.ResourceBundle}. However, this is often not desirable
      * in an application server environment, where the system Locale is not relevant
      * to the application at all: Set this flag to "false" in such a scenario.
+     *
+     * @param fallbackToSystemLocale whether fallback to system locale
      */
     public void setFallbackToSystemLocale(boolean fallbackToSystemLocale) {
         this.fallbackToSystemLocale = fallbackToSystemLocale;
@@ -126,6 +130,8 @@ public class ResourceBundleMessageSource extends AbstractMessageSource implement
      * <li><b>Note that depending on your ClassLoader, expiration might not work reliably
      * since the ClassLoader may hold on to a cached version of the bundle file.</b>
      * </ul>
+     *
+     * @param cacheSeconds the cache seconds
      */
     public void setCacheSeconds(int cacheSeconds) {
         this.cacheMillis = (cacheSeconds * 1000);
@@ -156,8 +162,9 @@ public class ResourceBundleMessageSource extends AbstractMessageSource implement
      * This means that "test.theme" is effectively equivalent to "test/theme",
      * just like it is for programmatic {@code java.util.ResourceBundle} usage.
      *
-     * @see #setBasenames
-     * @see java.util.ResourceBundle#getBundle(String)
+     * @param basename the basename
+     * @see #setBasenames #setBasenames
+     * @see java.util.ResourceBundle#getBundle(String) java.util.ResourceBundle#getBundle(String)
      */
     public void setBasename(String basename) {
         setBasenames(basename);
@@ -177,8 +184,9 @@ public class ResourceBundleMessageSource extends AbstractMessageSource implement
      * This means that "test.theme" is effectively equivalent to "test/theme",
      * just like it is for programmatic {@code java.util.ResourceBundle} usage.
      *
-     * @see #setBasename
-     * @see java.util.ResourceBundle#getBundle(String)
+     * @param basenames the basenames
+     * @see #setBasename #setBasename
+     * @see java.util.ResourceBundle#getBundle(String) java.util.ResourceBundle#getBundle(String)
      */
     public void setBasenames(String... basenames) {
         if(basenames != null) {
@@ -232,8 +240,7 @@ public class ResourceBundleMessageSource extends AbstractMessageSource implement
      *
      * @param basename the basename of the ResourceBundle
      * @param locale the Locale to find the ResourceBundle for
-     * @return the resulting ResourceBundle, or {@code null} if none
-     * found for the given basename and Locale
+     * @return the resulting ResourceBundle, or {@code null} if none found for the given basename and Locale
      */
     protected ResourceBundle getResourceBundle(String basename, Locale locale) {
         if(this.cacheMillis >= 0) {
@@ -276,7 +283,7 @@ public class ResourceBundleMessageSource extends AbstractMessageSource implement
      * @param locale the Locale to look for
      * @return the corresponding ResourceBundle
      * @throws MissingResourceException if no matching bundle could be found
-     * @see java.util.ResourceBundle#getBundle(String, Locale, ClassLoader)
+     * @see java.util.ResourceBundle#getBundle(String, Locale, ClassLoader) java.util.ResourceBundle#getBundle(String, Locale, ClassLoader)
      */
     protected ResourceBundle doGetBundle(String basename, Locale locale) throws MissingResourceException {
         return ResourceBundle.getBundle(basename, locale, getClassLoader(), new MessageSourceControl());
@@ -289,7 +296,7 @@ public class ResourceBundleMessageSource extends AbstractMessageSource implement
      * @param reader the reader for the target resource
      * @return the fully loaded bundle
      * @throws IOException in case of I/O failure
-     * @see PropertyResourceBundle#PropertyResourceBundle(Reader)
+     * @see PropertyResourceBundle#PropertyResourceBundle(Reader) PropertyResourceBundle#PropertyResourceBundle(Reader)
      */
     protected ResourceBundle loadBundle(Reader reader) throws IOException {
         return new PropertyResourceBundle(reader);
@@ -302,8 +309,7 @@ public class ResourceBundleMessageSource extends AbstractMessageSource implement
      * @param bundle the ResourceBundle to work on
      * @param code the message code to retrieve
      * @param locale the Locale to use to build the MessageFormat
-     * @return the resulting MessageFormat, or {@code null} if no message
-     * defined for the given code
+     * @return the resulting MessageFormat, or {@code null} if no message defined for the given code
      * @throws MissingResourceException if thrown by the ResourceBundle
      */
     protected MessageFormat getMessageFormat(ResourceBundle bundle, String code, Locale locale)
@@ -348,8 +354,8 @@ public class ResourceBundleMessageSource extends AbstractMessageSource implement
      * @param bundle the ResourceBundle to perform the lookup in
      * @param key the key to look up
      * @return the associated value, or {@code null} if none
-     * @see ResourceBundle#getString(String)
-     * @see ResourceBundle#containsKey(String)
+     * @see ResourceBundle#getString(String) ResourceBundle#getString(String)
+     * @see ResourceBundle#containsKey(String) ResourceBundle#containsKey(String)
      */
     protected String getStringOrNull(ResourceBundle bundle, String key) {
         if(bundle.containsKey(key)) {
@@ -363,9 +369,6 @@ public class ResourceBundleMessageSource extends AbstractMessageSource implement
         return null;
     }
 
-    /**
-     * Show the configuration of this MessageSource.
-     */
     @Override
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder(getClass().getName());
