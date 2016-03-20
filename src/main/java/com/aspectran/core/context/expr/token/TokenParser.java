@@ -102,6 +102,7 @@ public class TokenParser {
 	 * Convert the given string into tokens.
 	 *
 	 * @param text the text
+	 * @param tokenize whether tokenize
 	 * @return the token[]
 	 */
 	public static Token[] makeTokens(String text, boolean tokenize) {

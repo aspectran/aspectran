@@ -75,7 +75,8 @@ public class FreeMarkerConfigurationFactory implements ApplicationAdapterAware {
      * Set properties that contain well-known FreeMarker keys which will be
      * passed to FreeMarker's {@code Configuration.setSettings} method.
      *
-     * @see freemarker.template.Configuration#setSettings
+     * @param settings the settings
+     * @see freemarker.template.Configuration#setSettings freemarker.template.Configuration#setSettings
      */
     public void setFreemarkerSettings(Properties settings) {
         this.freemarkerSettings = settings;
@@ -85,7 +86,8 @@ public class FreeMarkerConfigurationFactory implements ApplicationAdapterAware {
      * Set a Map that contains well-known FreeMarker objects which will be passed
      * to FreeMarker's {@code Configuration.setAllSharedVariables()} method.
      *
-     * @see freemarker.template.Configuration#setAllSharedVariables
+     * @param variables the variables
+     * @see freemarker.template.Configuration#setAllSharedVariables freemarker.template.Configuration#setAllSharedVariables
      */
     public void setFreemarkerVariables(Map<String, Object> variables) {
         this.freemarkerVariables = variables;
@@ -97,7 +99,8 @@ public class FreeMarkerConfigurationFactory implements ApplicationAdapterAware {
      * <p>Used for template rendering unless there is an explicit encoding specified
      * for the rendering process (for example, on Spring's FreeMarkerView).
      *
-     * @see freemarker.template.Configuration#setDefaultEncoding
+     * @param defaultEncoding the default encoding
+     * @see freemarker.template.Configuration#setDefaultEncoding freemarker.template.Configuration#setDefaultEncoding
      */
     public void setDefaultEncoding(String defaultEncoding) {
         this.defaultEncoding = defaultEncoding;
@@ -173,7 +176,7 @@ public class FreeMarkerConfigurationFactory implements ApplicationAdapterAware {
         }
     }
 
-	/**
+    /**
      * Prepare the FreeMarker Configuration and return it.
      *
      * @return the FreeMarker Configuration object
@@ -278,6 +281,7 @@ public class FreeMarkerConfigurationFactory implements ApplicationAdapterAware {
      *
      * @param templateLoaderPath the path to load templates from
      * @return an appropriate TemplateLoader
+     * @throws IOException the io exception
      * @see freemarker.cache.FileTemplateLoader
      */
     protected TemplateLoader getTemplateLoaderForPath(String templateLoaderPath) throws IOException {

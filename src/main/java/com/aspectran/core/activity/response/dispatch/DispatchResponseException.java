@@ -69,7 +69,6 @@ public class DispatchResponseException extends ResponseException {
 	 * Constructor to create exception to wrap another exception and pass a message.
 	 *
 	 * @param dispatchResponseRule the dispatch response rule
-	 * @param msg the detail message
 	 * @param cause the real cause of the exception
 	 */
 	public DispatchResponseException(DispatchResponseRule dispatchResponseRule, Throwable cause) {

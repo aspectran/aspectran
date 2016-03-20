@@ -83,6 +83,8 @@ public class ConsoleAspectranService extends CoreAspectranService {
 	 *
 	 * @param aspectranConfigFile the aspectran config file
 	 * @return the web aspectran service
+	 * @throws AspectranServiceException the aspectran service exception
+	 * @throws IOException the io exception
 	 */
 	public static ConsoleAspectranService newInstance(String aspectranConfigFile) throws AspectranServiceException, IOException {
 		AspectranConfig aspectranConfig = new AspectranConfig();

@@ -34,7 +34,7 @@ public class FreeMarkerConfigurationFactoryBean extends FreeMarkerConfigurationF
      * Initialize FreeMarkerConfigurationFactory's Configuration
      * if not overridden by a preconfigured FreeMarker Configuation.
      *
-     * @throws Exception
+     * @throws Exception Exceptions occurring when you configure FreeMarker
      */
     @Override
     public void initialize() throws Exception {

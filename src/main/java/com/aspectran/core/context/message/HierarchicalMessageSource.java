@@ -35,6 +35,8 @@ public interface HierarchicalMessageSource extends MessageSource {
 
     /**
      * Return the parent of this MessageSource, or {@code null} if none.
+     *
+     * @return the parent message source
      */
     MessageSource getParentMessageSource();
 
