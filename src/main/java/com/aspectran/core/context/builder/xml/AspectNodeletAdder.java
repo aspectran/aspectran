@@ -147,13 +147,7 @@ public class AspectNodeletAdder implements NodeletAdder {
                 AspectRule aspectRule = assistant.peekObject();
                 aspectRule.setAdviceBeanId(beanIdOrClass);
 
-                Class<?> adviceBeanClass = assistant.resolveBeanClass(beanIdOrClass);
-                if(adviceBeanClass != null) {
-                    aspectRule.setAdviceBeanClass(adviceBeanClass);
-                    assistant.putBeanReference(adviceBeanClass, aspectRule);
-                } else {
-                    assistant.putBeanReference(beanIdOrClass, aspectRule);
-                }
+                assistant.resolveBeanClass(beanIdOrClass, aspectRule);
             }
         });
 		parser.addNodelet(xpath, "/aspect/advice/before", new AspectAdviceNodeletAdder(assistant, AspectAdviceType.BEFORE));

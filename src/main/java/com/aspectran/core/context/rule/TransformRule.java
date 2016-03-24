@@ -172,6 +172,11 @@ public class TransformRule extends ActionPossessSupport implements Replicable<Tr
 	}
 
 	@Override
+	public void setResolvedBeanClass(Class<?> beanClass) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
 	public String toString() {
 		ToStringBuilder tsb = new ToStringBuilder();
 		tsb.appendForce("responseType", RESPONSE_TYPE);

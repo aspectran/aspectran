@@ -24,6 +24,7 @@ import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.TemplateRule;
 import com.aspectran.core.context.rule.TransletRule;
+import com.aspectran.core.context.rule.ability.BeanReferenceInspectable;
 
 /**
  * The Class ShallowContextBuilderAssistant.
@@ -56,7 +57,7 @@ public class ShallowContextBuilderAssistant extends ContextBuilderAssistant {
 
 	@Override
 	public void applyTransletInterface(DefaultSettings defaultSettings) throws ClassNotFoundException {
-		//ignore
+		// shallow
 	}
 
 	@Override
@@ -97,6 +98,11 @@ public class ShallowContextBuilderAssistant extends ContextBuilderAssistant {
 	@Override
 	public Collection<TransletRule> getTransletRules() {
 		return transletRules;
+	}
+	
+	@Override
+	public void resolveBeanClass(String beanId, BeanReferenceInspectable inspectable) {
+		// shallow
 	}
 
 }

@@ -75,13 +75,7 @@ public class BeanNodeletAdder implements NodeletAdder {
                 beanRule = BeanRule.newOfferedBeanInstance(id, offerBean, offerMethod, initMethod, factoryMethod, destroyMethod, scope, singleton, lazyInit, important);
 
                 if(offerBean != null) {
-                    Class<?> offerBeanClass = assistant.resolveBeanClass(offerBean);
-                    if(offerBeanClass != null) {
-                        beanRule.setOfferBeanClass(offerBeanClass);
-                        assistant.putBeanReference(offerBeanClass, beanRule);
-                    } else {
-                        assistant.putBeanReference(offerBean, beanRule);
-                    }
+                    assistant.resolveBeanClass(offerBean, beanRule);
                 }
             } else {
                 if(className == null && scan == null)

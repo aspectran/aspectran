@@ -41,7 +41,7 @@ public class RedirectResponseRule extends ActionPossessSupport implements Replic
 	
 	public static final ResponseType RESPONSE_TYPE = ResponseType.REDIRECT;
 
-	private static final BeanReferrerType BEAN_REFERABLE_RULE_TYPE = BeanReferrerType.BEAN_ACTION_RULE;
+	private static final BeanReferrerType BEAN_REFERABLE_RULE_TYPE = BeanReferrerType.REDIRECT_RESPONSE_RULE;
 
 	private String contentType;
 	
@@ -262,6 +262,11 @@ public class RedirectResponseRule extends ActionPossessSupport implements Replic
 	@Override
 	public BeanReferrerType getBeanReferrerType() {
 		return BEAN_REFERABLE_RULE_TYPE;
+	}
+
+	@Override
+	public void setResolvedBeanClass(Class<?> beanClass) {
+		throw new UnsupportedOperationException();
 	}
 
 	@Override

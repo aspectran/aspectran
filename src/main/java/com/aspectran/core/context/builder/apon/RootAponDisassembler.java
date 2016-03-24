@@ -333,13 +333,7 @@ public class RootAponDisassembler {
 			
 			beanRule = BeanRule.newOfferedBeanInstance(id, offerBean, offerMethod, initMethod, destroyMethod, factoryMethod, scope, singleton, lazyInit, important);
 
-			Class<?> offerBeanClass = assistant.resolveBeanClass(offerBean);
-			if(offerBeanClass != null) {
-				beanRule.setOfferBeanClass(offerBeanClass);
-				assistant.putBeanReference(offerBeanClass, beanRule);
-			} else {
-				assistant.putBeanReference(offerBean, beanRule);
-			}
+			assistant.resolveBeanClass(offerBean, beanRule);
 		} else {
 			if(className == null && scan == null)
 				throw new IllegalArgumentException("Bean class must not be null.");
@@ -562,15 +556,8 @@ public class RootAponDisassembler {
 				beanActionRule.setPropertyItemRuleMap(propertyItemRuleMap);
 			}
 			actionRuleApplicable.applyActionRule(beanActionRule);
-
 			if(beanId != null) {
-				Class<?> beanClass = assistant.resolveBeanClass(beanId);
-				if(beanClass != null) {
-					beanActionRule.setBeanClass(beanClass);
-					assistant.putBeanReference(beanClass, beanActionRule);
-				} else {
-					assistant.putBeanReference(beanId, beanActionRule);
-				}
+				assistant.resolveBeanClass(beanId, beanActionRule);
 			}
 		} else if(echoItemHolderParameters != null) {
 			EchoActionRule echoActionRule = EchoActionRule.newInstance(id, hidden);

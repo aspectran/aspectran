@@ -37,6 +37,7 @@ import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.TemplateRule;
 import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.ability.BeanReferenceInspectable;
+import com.aspectran.core.context.rule.type.BeanReferrerType;
 import com.aspectran.core.context.rule.type.DefaultSettingType;
 import com.aspectran.core.context.rule.type.ImportFileType;
 import com.aspectran.core.context.template.TemplateRuleRegistry;
@@ -346,7 +347,29 @@ public class ContextBuilderAssistant {
 		return defaultSettings == null || defaultSettings.isPointcutPatternVerifiable();
 	}
 
-	public Class<?> resolveBeanClass(String beanId) {
+	/**
+	 * Resolve bean class.
+	 *
+	 * @param beanId the bean id
+	 * @param inspectable the inspectable
+	 */
+	public void resolveBeanClass(String beanId, BeanReferenceInspectable inspectable) {
+		Class<?> beanClass = resolveBeanClass(beanId);
+		
+        if(beanClass != null) {
+        	if(inspectable.getBeanReferrerType() == BeanReferrerType.ASPECT_RULE ||
+        			inspectable.getBeanReferrerType() == BeanReferrerType.BEAN_ACTION_RULE ||
+        			inspectable.getBeanReferrerType() == BeanReferrerType.BEAN_RULE ||
+        			inspectable.getBeanReferrerType() == BeanReferrerType.TOKEN) {
+        		inspectable.setResolvedBeanClass(beanClass);
+        	}
+            putBeanReference(beanClass, inspectable);
+        } else {
+            putBeanReference(beanId, inspectable);
+        }
+	}
+	
+	private Class<?> resolveBeanClass(String beanId) {
 		if(beanId != null && beanId.startsWith(BeanRule.CLASS_DIRECTIVE_PREFIX)) {
 			String className = beanId.substring(BeanRule.CLASS_DIRECTIVE_PREFIX.length());
 			try {
