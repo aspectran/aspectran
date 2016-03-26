@@ -16,8 +16,12 @@
 package com.aspectran.core.context.loader;
 
 import com.aspectran.core.adapter.ApplicationAdapter;
+import com.aspectran.core.util.logging.Log;
+import com.aspectran.core.util.logging.LogFactory;
 
 abstract class AbstractActivityContextLoader implements ActivityContextLoader {
+
+	protected final Log log = LogFactory.getLog(getClass());
 
 	protected ApplicationAdapter applicationAdapter;
 	

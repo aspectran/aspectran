@@ -22,7 +22,6 @@ import javax.servlet.http.HttpSession;
 
 import com.aspectran.core.activity.aspect.SessionScopeAdvisor;
 import com.aspectran.core.adapter.AbstractSessionAdapter;
-import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.bean.scope.SessionScope;
 
@@ -32,7 +31,7 @@ import com.aspectran.core.context.bean.scope.SessionScope;
  * @since 2011. 3. 13.
  * @author Juho Jeong
  */
-public class HttpSessionAdapter extends AbstractSessionAdapter implements SessionAdapter {
+public class HttpSessionAdapter extends AbstractSessionAdapter {
 	
 	private static final String SESSION_SCOPE_ATTRIBUTE_NAME = HttpSessionScope.class.getName() + ".SESSION_SCOPE";
 	

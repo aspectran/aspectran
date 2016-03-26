@@ -26,7 +26,7 @@ import com.aspectran.core.util.logging.LogFactory;
  */
 abstract class AbstractImportHandler implements ImportHandler {
 	
-	private final Log log = LogFactory.getLog(AbstractImportHandler.class);
+	protected final Log log = LogFactory.getLog(getClass());
 	
 	private List<Importer> pendingList;
 	

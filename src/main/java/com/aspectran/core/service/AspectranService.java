@@ -37,9 +37,9 @@ public interface AspectranService extends AspectranServiceController {
 	void destroy();
 
 	/**
-	 * Returns whether this BeanFactory is currently active.
+	 * Returns whether this AspectranService is currently active.
 	 *
-	 * @return whether the BeanFactory is still active
+	 * @return whether the AspectranService is still active
 	 */
 	boolean isActive();
 

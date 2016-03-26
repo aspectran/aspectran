@@ -19,16 +19,13 @@ import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.builder.ActivityContextBuilder;
 import com.aspectran.core.context.builder.ActivityContextBuilderException;
 import com.aspectran.core.context.builder.XmlActivityContextBuilder;
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
 
 public class XmlActivityContextLoader extends AbstractActivityContextLoader {
 
-	private final Log log = LogFactory.getLog(XmlActivityContextLoader.class);
-	
 	@Override
 	public ActivityContext load(String rootContext) throws ActivityContextBuilderException {
 		log.info("Build ActivityContext: " + rootContext);
+
 		long startTime = System.currentTimeMillis();
 
 		ActivityContextBuilder builder = new XmlActivityContextBuilder(applicationAdapter);
@@ -36,6 +33,7 @@ public class XmlActivityContextLoader extends AbstractActivityContextLoader {
 		ActivityContext activityContext = builder.build(rootContext);
 		
 		long elapsedTime = System.currentTimeMillis() - startTime;
+
 		log.info("ActivityContext build completed in " + elapsedTime + " ms.");
 		
 		return activityContext;

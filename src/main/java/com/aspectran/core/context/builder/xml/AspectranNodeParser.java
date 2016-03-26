@@ -15,10 +15,8 @@
  */
 package com.aspectran.core.context.builder.xml;
 
+import java.io.IOException;
 import java.io.InputStream;
-import java.util.Map;
-
-import org.w3c.dom.Node;
 
 import com.aspectran.core.context.builder.ContextBuilderAssistant;
 import com.aspectran.core.context.builder.importer.ImportHandler;
@@ -27,7 +25,6 @@ import com.aspectran.core.context.rule.type.DefaultSettingType;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.apon.GenericParameters;
 import com.aspectran.core.util.apon.Parameters;
-import com.aspectran.core.util.xml.Nodelet;
 import com.aspectran.core.util.xml.NodeletParser;
 
 /**
@@ -87,7 +84,11 @@ public class AspectranNodeParser {
 			throw new Exception("Error parsing aspectran configuration.", e);
 		} finally {
 			if(inputStream != null) {
-				inputStream.close();
+				try {
+					inputStream.close();
+				} catch(IOException e) {
+					// ignore
+				}
 			}
 		}
 	}
@@ -189,21 +190,19 @@ public class AspectranNodeParser {
 	 * Adds the import nodelets.
 	 */
 	private void addImportNodelets() {
-		parser.addNodelet("/aspectran/import", new Nodelet() {
-			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
-				String file = attributes.get("file");
-				String resource = attributes.get("resource");
-				String url = attributes.get("url");
-				String fileType = attributes.get("fileType");
+		parser.addNodelet("/aspectran/import", (node, attributes, text) -> {
+			String file = attributes.get("file");
+			String resource = attributes.get("resource");
+			String url = attributes.get("url");
+			String fileType = attributes.get("fileType");
 
-				ImportHandler importHandler = assistant.getImportHandler();
-				if(importHandler != null) {
-					Importer importer = assistant.newImporter(file, resource, url, fileType);
-					if(importer == null) {
-						throw new IllegalArgumentException("The <import> element requires either a file or a resource or a url attribute.");
-					}
-					importHandler.pending(importer);
+			ImportHandler importHandler = assistant.getImportHandler();
+			if(importHandler != null) {
+				Importer importer = assistant.newImporter(file, resource, url, fileType);
+				if(importer == null) {
+					throw new IllegalArgumentException("The <import> element requires either a file or a resource or a url attribute.");
 				}
+				importHandler.pending(importer);
 			}
 		});
 	}

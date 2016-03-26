@@ -20,7 +20,6 @@ import java.util.Enumeration;
 import javax.servlet.ServletContext;
 
 import com.aspectran.core.adapter.AbstractApplicationAdapter;
-import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.service.AspectranService;
 
 /**
@@ -29,7 +28,7 @@ import com.aspectran.core.service.AspectranService;
  * @since 2011. 3. 13.
  * @author Juho Jeong
  */
-public class WebApplicationAdapter extends AbstractApplicationAdapter implements ApplicationAdapter {
+public class WebApplicationAdapter extends AbstractApplicationAdapter {
 	
 	/**
 	 * Instantiates a new WebApplicationAdapter.

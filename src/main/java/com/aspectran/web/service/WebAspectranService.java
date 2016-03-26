@@ -46,20 +46,20 @@ import com.aspectran.web.startup.servlet.WebActivityServlet;
 public class WebAspectranService extends CoreAspectranService {
 	
 	private static final Log log = LogFactory.getLog(WebAspectranService.class);
-	
-	public static final String ASPECTRAN_CONFIG_PARAM = "aspectran:config";
 
-	public static final String ASPECTRAN_DEFAULT_SERVLET_NAME_PARAM = "aspectran:defaultServletName";
+	private static final String ASPECTRAN_CONFIG_PARAM = "aspectran:config";
+
+	private static final String ASPECTRAN_DEFAULT_SERVLET_NAME_PARAM = "aspectran:defaultServletName";
 	
 	private static final String DEFAULT_ROOT_CONTEXT = "/WEB-INF/aspectran/config/aspectran-config.xml";
 
 	private String uriDecoding;
 
 	private DefaultServletHttpRequestHandler defaultServletHttpRequestHandler;
-	
-	protected long pauseTimeout;
-	
-	public WebAspectranService(ServletContext servletContext) {
+
+	private long pauseTimeout;
+
+	private WebAspectranService(ServletContext servletContext) {
 		WebApplicationAdapter waa = new WebApplicationAdapter(this, servletContext);
 		setApplicationAdapter(waa);
 	}
@@ -124,7 +124,7 @@ public class WebAspectranService extends CoreAspectranService {
 		Activity activity = null;
 
 		try {
-			activity = new WebActivity(activityContext, request, response);
+			activity = new WebActivity(getActivityContext(), request, response);
 			activity.ready(requestUri, request.getMethod());
 			activity.perform();
 		} catch(TransletNotFoundException e) {
@@ -153,14 +153,14 @@ public class WebAspectranService extends CoreAspectranService {
 			}
 		}
 	}
-	
+
 	/**
 	 * Sets the default servlet http request handler.
 	 *
 	 * @param servletContext the servlet context
 	 * @param defaultServletName the default servlet name
 	 */
-	public void setDefaultServletHttpRequestHandler(ServletContext servletContext, String defaultServletName) {
+	private void setDefaultServletHttpRequestHandler(ServletContext servletContext, String defaultServletName) {
 		defaultServletHttpRequestHandler = new DefaultServletHttpRequestHandler(servletContext);
 		if(defaultServletName != null)
 			defaultServletHttpRequestHandler.setDefaultServletName(defaultServletName);

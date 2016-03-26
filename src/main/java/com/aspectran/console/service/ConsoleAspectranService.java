@@ -40,9 +40,9 @@ public class ConsoleAspectranService extends CoreAspectranService {
 
 	private static final String DEFAULT_ROOT_CONTEXT = "config/aspectran-config.xml";
 
-	protected long pauseTimeout;
+	private long pauseTimeout;
 
-	public ConsoleAspectranService() {
+	private ConsoleAspectranService() {
 		ConsoleApplicationAdapter caa = new ConsoleApplicationAdapter(this);
 		setApplicationAdapter(caa);
 	}
@@ -65,7 +65,7 @@ public class ConsoleAspectranService extends CoreAspectranService {
 		Activity activity = null;
 
 		try {
-			activity = new ConsoleActivity(activityContext);
+			activity = new ConsoleActivity(getActivityContext());
 			activity.ready(command);
 			activity.perform();
 		} catch(TransletNotFoundException e) {

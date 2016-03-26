@@ -42,7 +42,7 @@ import com.aspectran.scheduler.service.SchedulerService;
 /**
  * The Class AbstractAspectranService.
  */
-public abstract class AbstractAspectranService implements AspectranService {
+abstract class AbstractAspectranService implements AspectranService {
 
 	protected static final Log log = LogFactory.getLog(AbstractAspectranService.class);
 
@@ -65,35 +65,16 @@ public abstract class AbstractAspectranService implements AspectranService {
 	private boolean autoReloadingStartup;
 	
 	private int observationInterval;
-	
-	protected ActivityContext activityContext;
+
+	private ActivityContext activityContext;
 
 	private SchedulerService schedulerService;
 	
 	private ActivityContextReloadingTimer reloadingTimer;
 	
-	public Parameters getAspectranConfig() {
-		return aspectranConfig;
-	}
-
-	public String getApplicationBasePath() {
-		if(applicationAdapter == null)
-			return null;
-
-		return applicationAdapter.getApplicationBasePath();
-	}
-
-	public String getRootContext() {
-		return rootContext;
-	}
-
 	@Override
 	public AspectranClassLoader getAspectranClassLoader() {
 		return aspectranClassLoader;
-	}
-
-	protected void setAspectranClassLoader(AspectranClassLoader aspectranClassLoader) {
-		this.aspectranClassLoader = aspectranClassLoader;
 	}
 
 	@Override
@@ -113,6 +94,18 @@ public abstract class AbstractAspectranService implements AspectranService {
 	@Override
 	public boolean isHardReload() {
 		return hardReload;
+	}
+
+	public String getRootContext() {
+		return rootContext;
+	}
+
+	public Parameters getAspectranConfig() {
+		return aspectranConfig;
+	}
+
+	private String getApplicationBasePath() {
+		return (applicationAdapter != null) ? applicationAdapter.getApplicationBasePath() : null;
 	}
 
 	protected synchronized void initialize(AspectranConfig aspectranConfig) throws AspectranServiceException {
@@ -164,7 +157,7 @@ public abstract class AbstractAspectranService implements AspectranService {
 		}
 	}
 	
-	protected synchronized ActivityContext loadActivityContext() throws AspectranServiceException {
+	synchronized ActivityContext loadActivityContext() throws AspectranServiceException {
 		if(activityContext != null)
 			throw new AspectranServiceException("Already loaded the AspectranContext. Destroy the old AspectranContext before loading.");
 		
@@ -184,7 +177,7 @@ public abstract class AbstractAspectranService implements AspectranService {
 		}
 	}
 	
-	protected synchronized boolean destroyActivityContext() {
+	synchronized boolean destroyActivityContext() {
 		stopReloadingTimer();
 		
 		boolean cleanlyDestoryed = true;
@@ -206,7 +199,7 @@ public abstract class AbstractAspectranService implements AspectranService {
 		return cleanlyDestoryed;
 	}
 
-	public synchronized ActivityContext reloadActivityContext() throws AspectranServiceException {
+	synchronized ActivityContext reloadActivityContext() throws AspectranServiceException {
 		try {
 			if(activityContextLoader == null)
 				throw new IllegalArgumentException("'activityContextLoader' must not be null.");
@@ -286,7 +279,7 @@ public abstract class AbstractAspectranService implements AspectranService {
 		reloadingTimer = null;
 	}
 
-	public AspectranClassLoader newAspectranClassLoader(String[] resourceLocations) throws InvalidResourceException {
+	private AspectranClassLoader newAspectranClassLoader(String[] resourceLocations) throws InvalidResourceException {
 		String[] excludePackageNames = new String[] {
 				"com.aspectran.core",
 				"com.aspectran.scheduler",
