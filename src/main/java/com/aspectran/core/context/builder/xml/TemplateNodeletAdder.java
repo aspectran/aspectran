@@ -27,7 +27,7 @@ import com.aspectran.core.util.xml.NodeletParser;
  * 
  * <p>Created: 2016. 01. 09</p>
  */
-public class TemplateNodeletAdder implements NodeletAdder {
+class TemplateNodeletAdder implements NodeletAdder {
 
 	protected final ContextBuilderAssistant assistant;
 
@@ -36,7 +36,7 @@ public class TemplateNodeletAdder implements NodeletAdder {
 	 *
 	 * @param assistant the assistant
 	 */
-	public TemplateNodeletAdder(ContextBuilderAssistant assistant) {
+	TemplateNodeletAdder(ContextBuilderAssistant assistant) {
 		this.assistant = assistant;
 	}
 

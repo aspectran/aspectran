@@ -32,7 +32,7 @@ import com.aspectran.core.util.xml.NodeletParser;
  * @since 2011. 1. 9.
  * @author Juho Jeong
  */
-public class ActionNodeletAdder implements NodeletAdder {
+class ActionNodeletAdder implements NodeletAdder {
 	
 	protected final ContextBuilderAssistant assistant;
 	
@@ -41,7 +41,7 @@ public class ActionNodeletAdder implements NodeletAdder {
 	 *
 	 * @param assistant the ContextBuilderAssistant
 	 */
-	public ActionNodeletAdder(ContextBuilderAssistant assistant) {
+	ActionNodeletAdder(ContextBuilderAssistant assistant) {
 		this.assistant = assistant;
 	}
 

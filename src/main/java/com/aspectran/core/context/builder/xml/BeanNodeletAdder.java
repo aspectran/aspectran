@@ -36,7 +36,7 @@ import com.aspectran.core.util.xml.NodeletParser;
  * 
  * <p>Created: 2008. 06. 14 AM 6:56:29</p>
  */
-public class BeanNodeletAdder implements NodeletAdder {
+class BeanNodeletAdder implements NodeletAdder {
 	
 	protected final ContextBuilderAssistant assistant;
 	
@@ -45,7 +45,7 @@ public class BeanNodeletAdder implements NodeletAdder {
 	 *
 	 * @param assistant the assistant for Context Builder
 	 */
-	public BeanNodeletAdder(ContextBuilderAssistant assistant) {
+	BeanNodeletAdder(ContextBuilderAssistant assistant) {
 		this.assistant = assistant;
 	}
 
@@ -61,8 +61,8 @@ public class BeanNodeletAdder implements NodeletAdder {
             String scope = attributes.get("scope");
             Boolean singleton = BooleanUtils.toNullableBooleanObject(attributes.get("singleton"));
             String initMethod = StringUtils.emptyToNull(attributes.get("initMethod"));
-            String destroyMethod = StringUtils.emptyToNull(attributes.get("destroyMethod"));
-            String factoryMethod = StringUtils.emptyToNull(attributes.get("factoryMethod"));
+			String factoryMethod = StringUtils.emptyToNull(attributes.get("factoryMethod"));
+			String destroyMethod = StringUtils.emptyToNull(attributes.get("destroyMethod"));
             Boolean lazyInit = BooleanUtils.toNullableBooleanObject(attributes.get("lazyInit"));
             Boolean important = BooleanUtils.toNullableBooleanObject(attributes.get("important"));
 

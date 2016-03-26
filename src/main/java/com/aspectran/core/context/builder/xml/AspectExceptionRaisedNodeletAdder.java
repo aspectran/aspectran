@@ -28,7 +28,7 @@ import com.aspectran.core.util.xml.NodeletParser;
  * @since 2013. 8. 11.
  * @author Juho Jeong
  */
-public class AspectExceptionRaisedNodeletAdder implements NodeletAdder {
+class AspectExceptionRaisedNodeletAdder implements NodeletAdder {
 	
 	protected final ContextBuilderAssistant assistant;
 	
@@ -37,7 +37,7 @@ public class AspectExceptionRaisedNodeletAdder implements NodeletAdder {
 	 *
 	 * @param assistant the assistant for Context Builder
 	 */
-	public AspectExceptionRaisedNodeletAdder(ContextBuilderAssistant assistant) {
+	AspectExceptionRaisedNodeletAdder(ContextBuilderAssistant assistant) {
 		this.assistant = assistant;
 	}
 

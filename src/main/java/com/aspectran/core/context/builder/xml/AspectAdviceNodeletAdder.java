@@ -29,7 +29,7 @@ import com.aspectran.core.util.xml.NodeletParser;
  * @since 2013. 8. 11.
  * @author Juho Jeong
  */
-public class AspectAdviceNodeletAdder implements NodeletAdder {
+class AspectAdviceNodeletAdder implements NodeletAdder {
 	
 	protected final ContextBuilderAssistant assistant;
 	
@@ -41,7 +41,7 @@ public class AspectAdviceNodeletAdder implements NodeletAdder {
 	 * @param assistant the assistant for Context Builder
 	 * @param aspectAdviceType the aspect advice type
 	 */
-	public AspectAdviceNodeletAdder(ContextBuilderAssistant assistant, AspectAdviceType aspectAdviceType) {
+	AspectAdviceNodeletAdder(ContextBuilderAssistant assistant, AspectAdviceType aspectAdviceType) {
 		this.assistant = assistant;
 		this.aspectAdviceType = aspectAdviceType;
 	}

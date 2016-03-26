@@ -24,13 +24,13 @@ import com.aspectran.core.util.logging.LogFactory;
 /**
  * The Class AbstractImportHandler.
  */
-public abstract class AbstractImportHandler implements ImportHandler {
+abstract class AbstractImportHandler implements ImportHandler {
 	
 	private final Log log = LogFactory.getLog(AbstractImportHandler.class);
 	
 	private List<Importer> pendingList;
 	
-	public AbstractImportHandler() {
+	AbstractImportHandler() {
 	}
 
 	@Override
