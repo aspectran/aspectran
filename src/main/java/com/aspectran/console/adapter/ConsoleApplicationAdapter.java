@@ -18,7 +18,6 @@ package com.aspectran.console.adapter;
 import java.io.File;
 
 import com.aspectran.core.adapter.CommonApplicationAdapter;
-import com.aspectran.core.service.AspectranService;
 
 /**
  * The Class ConsoleApplicationAdapter.
@@ -30,11 +29,9 @@ public class ConsoleApplicationAdapter extends CommonApplicationAdapter {
 	
 	/**
 	 * Instantiates a new ConsoleApplicationAdapter.
-	 *
-	 * @param aspectranService the aspectran service
 	 */
-	public ConsoleApplicationAdapter(AspectranService aspectranService) {
-		super(aspectranService, null);
+	public ConsoleApplicationAdapter() {
+		super(null);
 		
 		String applicationBasePath = System.getProperty("com.aspectran.console.workingDir");
 		if(applicationBasePath == null)

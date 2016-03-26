@@ -24,11 +24,11 @@ import com.aspectran.core.context.loader.AspectranClassLoader;
  */
 public interface AspectranService extends AspectranServiceController {
 
-	AspectranClassLoader getAspectranClassLoader();
-	
 	ApplicationAdapter getApplicationAdapter();
 	
 	ActivityContext getActivityContext();
+
+	AspectranClassLoader getAspectranClassLoader();
 
 	void setAspectranServiceControllerListener(AspectranServiceControllerListener aspectranServiceControllerListener);
 	

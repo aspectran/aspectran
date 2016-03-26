@@ -114,11 +114,6 @@ public class AspectRule implements BeanReferenceInspectable {
 		this.adviceBeanClass = adviceBeanClass;
 	}
 
-	@Override
-	public void setResolvedBeanClass(Class<?> adviceBeanClass) {
-		this.adviceBeanClass = adviceBeanClass;
-	}
-	
 	public SettingsAdviceRule getSettingsAdviceRule() {
 		return settingsAdviceRule;
 	}
@@ -136,9 +131,12 @@ public class AspectRule implements BeanReferenceInspectable {
 	}
 	
 	public void addAspectAdviceRule(AspectAdviceRule aspectAdviceRule) {
-		if(aspectAdviceRuleList == null)
+		AspectAdviceRule.updateBeanActionClass(aspectAdviceRule);
+
+		if(aspectAdviceRuleList == null) {
 			aspectAdviceRuleList = new ArrayList<AspectAdviceRule>();
-		
+		}
+
 		aspectAdviceRuleList.add(aspectAdviceRule);
 	}
 

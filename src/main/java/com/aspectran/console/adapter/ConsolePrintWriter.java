@@ -26,13 +26,13 @@ import java.io.UnsupportedEncodingException;
  * @author Juho Jeong
  * @since 2016. 1. 22.
  */
-public class ConsolePrintWriter extends PrintWriter {
+class ConsolePrintWriter extends PrintWriter {
 
-	public ConsolePrintWriter(OutputStream out) {
+	ConsolePrintWriter(OutputStream out) {
 		super(out, true);
 	}
 
-	public ConsolePrintWriter(OutputStream out, String characterEncoding) throws UnsupportedEncodingException {
+	ConsolePrintWriter(OutputStream out, String characterEncoding) throws UnsupportedEncodingException {
 		super(new OutputStreamWriter(out, characterEncoding), true);
 	}
 	

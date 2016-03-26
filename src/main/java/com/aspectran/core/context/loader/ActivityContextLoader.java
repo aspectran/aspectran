@@ -18,15 +18,28 @@ package com.aspectran.core.context.loader;
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.builder.ActivityContextBuilderException;
+import com.aspectran.core.context.loader.resource.InvalidResourceException;
 
 public interface ActivityContextLoader {
 
 	ApplicationAdapter getApplicationAdapter();
-	
-	void setApplicationAdapter(ApplicationAdapter applicationAdapter);
+
+	boolean isHybridLoading();
 
 	void setHybridLoading(boolean hybridLoading);
+
+	String[] getResourceLocations();
+
+	String[] setResourceLocations(String[] resourceLocations) throws InvalidResourceException;
+
+	AspectranClassLoader getAspectranClassLoader();
+
+	AspectranClassLoader newAspectranClassLoader(String[] resourceLocations) throws InvalidResourceException;
+
+	AspectranClassLoader newAspectranClassLoader() throws InvalidResourceException;
+
+	ActivityContext load(String rootContext) throws ActivityContextBuilderException, InvalidResourceException;
 	
-	ActivityContext load(String rootContext) throws ActivityContextBuilderException;
-	
+	ActivityContext reload(boolean hardReload) throws ActivityContextBuilderException, InvalidResourceException;
+
 }

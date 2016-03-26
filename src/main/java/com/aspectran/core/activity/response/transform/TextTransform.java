@@ -35,7 +35,7 @@ import com.aspectran.core.util.logging.LogFactory;
  * 
  * <p>Created: 2008. 03. 22 PM 5:51:58</p>
  */
-public class TextTransform extends TransformResponse implements Response {
+public class TextTransform extends TransformResponse {
 
 	private static final Log log = LogFactory.getLog(TextTransform.class);
 

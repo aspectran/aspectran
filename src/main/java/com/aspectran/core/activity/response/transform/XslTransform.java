@@ -51,13 +51,13 @@ import com.aspectran.core.util.logging.LogFactory;
  * 
  * Created: 2008. 03. 22 PM 5:51:58
  */
-public class XslTransform extends TransformResponse implements Response {
+class XslTransform extends TransformResponse {
 	
-	public static final String OUTPUT_METHOD_XML = "xml";
+	private static final String OUTPUT_METHOD_XML = "xml";
 
-	public static final String OUTPUT_METHOD_HTML = "html";
+	private static final String OUTPUT_METHOD_HTML = "html";
 	
-	public static final String OUTPUT_METHOD_TEXT = "text";
+	private static final String OUTPUT_METHOD_TEXT = "text";
 	
 	private static final Log log = LogFactory.getLog(XslTransform.class);
 	
@@ -82,7 +82,7 @@ public class XslTransform extends TransformResponse implements Response {
 	 * 
 	 * @param transformRule the transform rule
 	 */
-	protected XslTransform(TransformRule transformRule) {
+	XslTransform(TransformRule transformRule) {
 		super(transformRule);
 		this.templateRule = transformRule.getTemplateRule();
 	}

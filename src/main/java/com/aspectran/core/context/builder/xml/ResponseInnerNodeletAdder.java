@@ -82,7 +82,7 @@ class ResponseInnerNodeletAdder implements NodeletAdder {
             if(templateRule.getContentTokens() != null) {
                 for(Token token : templateRule.getContentTokens()) {
                     if(token.getType() == TokenType.BEAN) {
-                        assistant.putBeanReference(token.getName(), transformRule);
+						assistant.resolveBeanClass(token);
                     }
                 }
             }
@@ -162,7 +162,7 @@ class ResponseInnerNodeletAdder implements NodeletAdder {
             if(rrr.getTargetTokens() != null) {
                 for(Token token : rrr.getTargetTokens()) {
                     if(token.getType() == TokenType.BEAN) {
-                        assistant.putBeanReference(token.getName(), rrr);
+						assistant.resolveBeanClass(token);
                     }
                 }
             }

@@ -145,11 +145,6 @@ public class Token implements BeanReferenceInspectable {
 	}
 
 	@Override
-	public void setResolvedBeanClass(Class<?> beanClass) {
-		this.beanClass = beanClass;
-	}
-	
-	@Override
 	public BeanReferrerType getBeanReferrerType() {
 		return BEAN_REFERABLE_RULE_TYPE;
 	}

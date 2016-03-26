@@ -31,7 +31,7 @@ public enum ItemType {
 
 	private final String alias;
 
-	private ItemType(String alias) {
+	ItemType(String alias) {
 		this.alias = alias;
 	}
 

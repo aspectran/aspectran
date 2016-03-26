@@ -19,9 +19,8 @@ import com.aspectran.core.util.apon.AbstractParameters;
 import com.aspectran.core.util.apon.GenericParameters;
 import com.aspectran.core.util.apon.ParameterDefine;
 import com.aspectran.core.util.apon.ParameterValueType;
-import com.aspectran.core.util.apon.Parameters;
 
-public class AspectParameters extends AbstractParameters implements Parameters {
+public class AspectParameters extends AbstractParameters {
 
 	public static final ParameterDefine description;
 	public static final ParameterDefine id;

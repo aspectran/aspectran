@@ -15,11 +15,6 @@
  */
 package com.aspectran.core.service;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.loader.ActivityContextLoader;
@@ -30,9 +25,6 @@ import com.aspectran.core.context.loader.config.AspectranContextAutoReloadingCon
 import com.aspectran.core.context.loader.config.AspectranContextConfig;
 import com.aspectran.core.context.loader.config.AspectranSchedulerConfig;
 import com.aspectran.core.context.loader.reload.ActivityContextReloadingTimer;
-import com.aspectran.core.context.loader.resource.InvalidResourceException;
-import com.aspectran.core.util.ResourceUtils;
-import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.apon.Parameters;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
@@ -44,22 +36,18 @@ import com.aspectran.scheduler.service.SchedulerService;
  */
 abstract class AbstractAspectranService implements AspectranService {
 
-	protected static final Log log = LogFactory.getLog(AbstractAspectranService.class);
+	protected final Log log = LogFactory.getLog(getClass());
+
+	private final ApplicationAdapter applicationAdapter;
 
 	private Parameters aspectranConfig;
 	
 	private Parameters aspectranSchedulerConfig;
-	
-	private AspectranClassLoader aspectranClassLoader;
-	
-	private ApplicationAdapter applicationAdapter;
-	
+
 	private ActivityContextLoader activityContextLoader;
 	
 	private String rootContext;
 
-	private String[] resourceLocations;
-	
 	private boolean hardReload;
 
 	private boolean autoReloadingStartup;
@@ -71,24 +59,30 @@ abstract class AbstractAspectranService implements AspectranService {
 	private SchedulerService schedulerService;
 	
 	private ActivityContextReloadingTimer reloadingTimer;
-	
-	@Override
-	public AspectranClassLoader getAspectranClassLoader() {
-		return aspectranClassLoader;
+
+	AbstractAspectranService(ApplicationAdapter applicationAdapter) {
+		if(applicationAdapter == null)
+			throw new IllegalArgumentException("'applicationAdapter' must not be null.");
+
+		this.applicationAdapter = applicationAdapter;
 	}
 
 	@Override
 	public ApplicationAdapter getApplicationAdapter() {
 		return applicationAdapter;
 	}
-	
-	protected void setApplicationAdapter(ApplicationAdapter applicationAdapter) {
-		this.applicationAdapter = applicationAdapter;
-	}
 
 	@Override
 	public ActivityContext getActivityContext() {
 		return activityContext;
+	}
+
+	@Override
+	public AspectranClassLoader getAspectranClassLoader() {
+		if(activityContextLoader == null)
+			throw new UnsupportedOperationException("ActivityContextLoader is not initialized. Call initialize() method first");
+
+		return activityContextLoader.getAspectranClassLoader();
 	}
 
 	@Override
@@ -102,10 +96,6 @@ abstract class AbstractAspectranService implements AspectranService {
 
 	public Parameters getAspectranConfig() {
 		return aspectranConfig;
-	}
-
-	private String getApplicationBasePath() {
-		return (applicationAdapter != null) ? applicationAdapter.getApplicationBasePath() : null;
 	}
 
 	protected synchronized void initialize(AspectranConfig aspectranConfig) throws AspectranServiceException {
@@ -128,6 +118,17 @@ abstract class AbstractAspectranService implements AspectranService {
 				this.observationInterval = observationInterval;
 			}
 
+			this.rootContext = aspectranContextConfig.getString(AspectranContextConfig.root);
+			this.aspectranSchedulerConfig = aspectranConfig.getParameters(AspectranConfig.scheduler);
+			
+			String encoding = aspectranContextConfig.getString(AspectranContextConfig.encoding);
+			boolean hybridLoading = aspectranContextConfig.getBoolean(AspectranContextConfig.hybridLoading, false);
+			String[] resourceLocations = aspectranContextConfig.getStringArray(AspectranContextConfig.resources);
+
+			activityContextLoader = new HybridActivityContextLoader(applicationAdapter, encoding);
+			activityContextLoader.setHybridLoading(hybridLoading);
+			resourceLocations = activityContextLoader.setResourceLocations(resourceLocations);
+
 			if(autoReloadingStartup && (resourceLocations == null || resourceLocations.length == 0))
 				autoReloadingStartup = false;
 
@@ -138,26 +139,15 @@ abstract class AbstractAspectranService implements AspectranService {
 					log.info("'" + contextAutoReloadingParamName + "' is not specified, defaulting to 10 seconds.");
 				}
 			}
-
-			this.rootContext = aspectranContextConfig.getString(AspectranContextConfig.root);
-			String[] resourceLocations = aspectranContextConfig.getStringArray(AspectranContextConfig.resources);
-			this.resourceLocations = checkResourceLocations(getApplicationBasePath(), null, resourceLocations);
-			this.aspectranSchedulerConfig = aspectranConfig.getParameters(AspectranConfig.scheduler);
-			
-			aspectranClassLoader = newAspectranClassLoader(this.resourceLocations);
-			
-			String encoding = aspectranContextConfig.getString(AspectranContextConfig.encoding);
-			boolean hybridLoading = aspectranContextConfig.getBoolean(AspectranContextConfig.hybridLoading, false);
-			
-			activityContextLoader = new HybridActivityContextLoader(encoding);
-			activityContextLoader.setApplicationAdapter(applicationAdapter);
-			activityContextLoader.setHybridLoading(hybridLoading);
 		} catch(Exception e) {
 			throw new AspectranServiceException("Failed to initialize the AspectranService " + aspectranConfig, e);
 		}
 	}
 	
 	synchronized ActivityContext loadActivityContext() throws AspectranServiceException {
+		if(activityContextLoader == null)
+			throw new UnsupportedOperationException("ActivityContextLoader is not initialized. Call initialize() method first");
+
 		if(activityContext != null)
 			throw new AspectranServiceException("Already loaded the AspectranContext. Destroy the old AspectranContext before loading.");
 		
@@ -200,17 +190,11 @@ abstract class AbstractAspectranService implements AspectranService {
 	}
 
 	synchronized ActivityContext reloadActivityContext() throws AspectranServiceException {
-		try {
-			if(activityContextLoader == null)
-				throw new IllegalArgumentException("'activityContextLoader' must not be null.");
+		if(activityContextLoader == null)
+			throw new UnsupportedOperationException("ActivityContextLoader is not initialized. Call initialize() method first");
 
-			if(hardReload) {
-				aspectranClassLoader = newAspectranClassLoader(this.resourceLocations);
-			} else {
-				aspectranClassLoader.reload();
-			}
-			
-			activityContext = activityContextLoader.load(rootContext);
+		try {
+			activityContext = activityContextLoader.reload(hardReload);
 			
 			startupSchedulerService();
 	
@@ -267,8 +251,11 @@ abstract class AbstractAspectranService implements AspectranService {
 	
 	private void startReloadingTimer() {
 		if(autoReloadingStartup) {
-			reloadingTimer = new ActivityContextReloadingTimer(this);
-			reloadingTimer.start(observationInterval);
+			AspectranClassLoader aspectranClassLoader = activityContextLoader.getAspectranClassLoader();
+			if(aspectranClassLoader != null) {
+				reloadingTimer = new ActivityContextReloadingTimer(this, aspectranClassLoader.extractResources());
+				reloadingTimer.start(observationInterval);
+			}
 		}
 	}
 	
@@ -279,96 +266,4 @@ abstract class AbstractAspectranService implements AspectranService {
 		reloadingTimer = null;
 	}
 
-	private AspectranClassLoader newAspectranClassLoader(String[] resourceLocations) throws InvalidResourceException {
-		String[] excludePackageNames = new String[] {
-				"com.aspectran.core",
-				"com.aspectran.scheduler",
-				"com.aspectran.web",
-				"com.aspectran.console"
-		};
-
-		AspectranClassLoader acl = new AspectranClassLoader();
-		acl.excludePackage(excludePackageNames);
-
-		if(resourceLocations != null && resourceLocations.length > 0) {
-			acl.setResourceLocations(resourceLocations);
-		}
-
-		return acl;
-	}
-	
-	private String[] checkResourceLocations(String applicationBasePath, String rootResourceLocation, String[] resourceLocations) throws InvalidResourceException {
-		if(resourceLocations == null)
-			return null;
-		
-		for(int i = 0; i < resourceLocations.length; i++) {
-			if(resourceLocations[i].startsWith(ResourceUtils.CLASSPATH_URL_PREFIX)) {
-				String path = resourceLocations[i].substring(ResourceUtils.CLASSPATH_URL_PREFIX.length());
-				URL url = AspectranClassLoader.getDefaultClassLoader().getResource(path);
-				if(url == null)
-					throw new InvalidResourceException("Class path resource [" + resourceLocations[i] + "] cannot be resolved to URL because it does not exist");
-				resourceLocations[i] = url.getFile();
-			} else if(resourceLocations[i].startsWith(ResourceUtils.FILE_URL_PREFIX)) {
-				try {
-					URL url = new URL(resourceLocations[i]);
-					resourceLocations[i] = url.getFile();
-				} catch (MalformedURLException e) {
-					throw new InvalidResourceException("Resource location [" + resourceLocations[i] + "] is neither a URL not a well-formed file path");
-				}
-			} else {
-				resourceLocations[i] = applicationBasePath + resourceLocations[i];
-			}
-			
-			if(resourceLocations[i].indexOf('\\') != -1)
-				resourceLocations[i] = resourceLocations[i].replace('\\', '/');
-			
-			if(StringUtils.endsWith(resourceLocations[i], ResourceUtils.PATH_SPEPARATOR_CHAR))
-				resourceLocations[i] = resourceLocations[i].substring(0, resourceLocations[i].length() - 1);
-		}
-		
-		String resourceLocation = null;
-		
-		try {
-			if(rootResourceLocation != null) {
-				resourceLocation = rootResourceLocation;
-				
-				File f1 = new File(rootResourceLocation);
-				String l1 = f1.getCanonicalPath();
-				
-				for(int i = 0; i < resourceLocations.length - 1; i++) {
-					File f2 = new File(resourceLocations[i]);
-					String l2 = f2.getCanonicalPath();
-					
-					if(l1.equals(l2)) {
-						resourceLocations[i] = null;
-					}
-				}
-			}
-			
-			for(int i = 0; i < resourceLocations.length - 1; i++) {
-				if(resourceLocations[i] != null) {
-					resourceLocation = resourceLocations[i];
-					File f1 = new File(resourceLocations[i]);
-					String l1 = f1.getCanonicalPath();
-
-					for(int j = i + 1; j < resourceLocations.length; j++) {
-						if(resourceLocations[j] != null) {
-							resourceLocation = resourceLocations[j];
-							File f2 = new File(resourceLocations[j]);
-							String l2 = f2.getCanonicalPath();
-	
-							if(l1.equals(l2)) {
-								resourceLocations[j] = null;
-							}
-						}
-					}
-				}
-			}
-		} catch(IOException e) {
-			throw new InvalidResourceException("Invalid resource location: " + resourceLocation, e);
-		}
-		
-		return resourceLocations;
-	}
-	
 }

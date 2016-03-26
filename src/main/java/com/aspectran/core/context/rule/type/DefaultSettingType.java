@@ -33,7 +33,7 @@ public enum DefaultSettingType {
 
 	private final String alias;
 
-	private DefaultSettingType(String alias) {
+	DefaultSettingType(String alias) {
 		this.alias = alias;
 	}
 

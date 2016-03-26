@@ -30,7 +30,7 @@ public enum ScopeType {
 
 	private final String alias;
 
-	private ScopeType(String alias) {
+	ScopeType(String alias) {
 		this.alias = alias;
 	}
 

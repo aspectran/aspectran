@@ -48,11 +48,18 @@ public enum RequestMethodType {
 	 * Returns a <code>RequestMethodType</code> with a value represented by the specified String.
 	 *
 	 * @param alias the specified String
-	 * @return the pointcut type
+	 * @return the request method type
 	 */
 	public static RequestMethodType lookup(String alias) {
-		return valueOf(RequestMethodType.class, alias.toUpperCase());
+		if(alias != null) {
+			for(RequestMethodType type : values()) {
+				if(type.name().equals(alias.toUpperCase()))
+					return type;
+			}
+		}
+		return null;
 	}
+
 
 	public static RequestMethodType[] parse(String value) {
 		RequestMethodType[] types = new RequestMethodType[MAX_COUNT];

@@ -29,7 +29,7 @@ public enum AutowireTargetType {
 
 	private final String alias;
 
-	private AutowireTargetType(String alias) {
+	AutowireTargetType(String alias) {
 		this.alias = alias;
 	}
 

@@ -28,6 +28,4 @@ public interface BeanReferenceInspectable {
 
     BeanReferrerType getBeanReferrerType();
     
-    void setResolvedBeanClass(Class<?> beanClass);
-
 }

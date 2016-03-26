@@ -34,16 +34,16 @@ import com.aspectran.core.util.logging.LogFactory;
 /**
  * The Class BeanReferenceInspector.
  */
-public class BeanReferenceInspector {
+class BeanReferenceInspector {
 
 	private final Log log = LogFactory.getLog(BeanReferenceInspector.class);
 	
 	private final Map<Object, Set<BeanReferenceInspectable>> relationMap = new LinkedHashMap<Object, Set<BeanReferenceInspectable>>();
 	
-	public BeanReferenceInspector() {
+	BeanReferenceInspector() {
 	}
 	
-	public void putRelation(Object beanIdOrClass, BeanReferenceInspectable someRule) {
+	void putRelation(Object beanIdOrClass, BeanReferenceInspectable someRule) {
 		Set<BeanReferenceInspectable> ruleSet = relationMap.get(beanIdOrClass);
 		
 		if(ruleSet == null) {
@@ -55,7 +55,7 @@ public class BeanReferenceInspector {
 		}
 	}
 	
-	public void inspect(BeanRuleRegistry beanRuleRegistry) throws BeanReferenceException {
+	void inspect(BeanRuleRegistry beanRuleRegistry) throws BeanReferenceException {
 		List<Object> unknownBeanIdList = new ArrayList<Object>();
 		
 		for(Map.Entry<Object, Set<BeanReferenceInspectable>> entry : relationMap.entrySet()) {
@@ -94,7 +94,7 @@ public class BeanReferenceInspector {
 		}
 	}
 	
-	public Map<Object, Set<BeanReferenceInspectable>> getRelationMap() {
+	Map<Object, Set<BeanReferenceInspectable>> getRelationMap() {
 		return relationMap;
 	}
 	

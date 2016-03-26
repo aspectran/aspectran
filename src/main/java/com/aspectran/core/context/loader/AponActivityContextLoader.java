@@ -15,29 +15,42 @@
  */
 package com.aspectran.core.context.loader;
 
+import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.builder.ActivityContextBuilder;
 import com.aspectran.core.context.builder.ActivityContextBuilderException;
 import com.aspectran.core.context.builder.AponActivityContextBuilder;
+import com.aspectran.core.context.loader.resource.InvalidResourceException;
 
 public class AponActivityContextLoader extends AbstractActivityContextLoader {
 
-	private String encoding;
+	private final String encoding;
 
-	public AponActivityContextLoader() {
+	private String rootContext;
+
+	public AponActivityContextLoader(ApplicationAdapter applicationAdapter) {
+		this(applicationAdapter, null);
 	}
 
-	public AponActivityContextLoader(String encoding) {
-		this.encoding = encoding;
+	public AponActivityContextLoader(ApplicationAdapter applicationAdapter, String encoding) {
+		super(applicationAdapter);
+		this.encoding = (encoding == null) ? ActivityContext.DEFAULT_ENCODING : encoding;
 	}
+
 
 	@Override
-	public ActivityContext load(String rootContext) throws ActivityContextBuilderException {
+	public ActivityContext load(String rootContext) throws ActivityContextBuilderException, InvalidResourceException {
+		this.rootContext = rootContext;
+
+		if(getAspectranClassLoader() == null) {
+			newAspectranClassLoader();
+		}
+
 		log.info("Build ActivityContext: " + rootContext);
 
 		long startTime = System.currentTimeMillis();
 
-		ActivityContextBuilder builder = new AponActivityContextBuilder(applicationAdapter, encoding);
+		ActivityContextBuilder builder = new AponActivityContextBuilder(getApplicationAdapter(), encoding);
 		ActivityContext activityContext = builder.build(rootContext);
 		
 		long elapsedTime = System.currentTimeMillis() - startTime;
@@ -45,6 +58,15 @@ public class AponActivityContextLoader extends AbstractActivityContextLoader {
 		log.info("ActivityContext build completed in " + elapsedTime +" ms.");
 		
 		return activityContext;
+	}
+
+	@Override
+	public ActivityContext reload(boolean hardReload) throws ActivityContextBuilderException, InvalidResourceException {
+		if(hardReload) {
+			newAspectranClassLoader();
+		}
+
+		return load(rootContext);
 	}
 	
 }

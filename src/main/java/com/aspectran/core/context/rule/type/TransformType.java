@@ -30,7 +30,7 @@ public enum TransformType {
 
 	private final String alias;
 
-	private TransformType(String alias) {
+	TransformType(String alias) {
 		this.alias = alias;
 	}
 
@@ -46,7 +46,7 @@ public enum TransformType {
 	 * @return the transform type
 	 */
 	public static TransformType lookup(String alias) {
-		for(TransformType type : TransformType.class.getEnumConstants()) {
+		for(TransformType type : values()) {
 			if(type.alias.equals(alias))
 				return type;
 		}

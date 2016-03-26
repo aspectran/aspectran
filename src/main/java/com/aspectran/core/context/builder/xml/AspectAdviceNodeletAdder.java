@@ -18,7 +18,6 @@ package com.aspectran.core.context.builder.xml;
 import com.aspectran.core.context.builder.ContextBuilderAssistant;
 import com.aspectran.core.context.rule.AspectAdviceRule;
 import com.aspectran.core.context.rule.AspectRule;
-import com.aspectran.core.context.rule.BeanActionRule;
 import com.aspectran.core.context.rule.type.AspectAdviceType;
 import com.aspectran.core.util.xml.NodeletAdder;
 import com.aspectran.core.util.xml.NodeletParser;
@@ -58,17 +57,6 @@ class AspectAdviceNodeletAdder implements NodeletAdder {
             AspectAdviceRule aspectAdviceRule = assistant.popObject();
             AspectRule aspectRule = assistant.peekObject();
             aspectRule.addAspectAdviceRule(aspectAdviceRule);
-
-            if(aspectAdviceRule.getAdviceBeanId() != null) {
-                BeanActionRule updatedBeanActionRule = AspectAdviceRule.updateBeanActionClass(aspectAdviceRule);
-                if(updatedBeanActionRule != null) {
-                    if(aspectAdviceRule.getAdviceBeanClass() != null) {
-                        assistant.putBeanReference(aspectAdviceRule.getAdviceBeanClass(), updatedBeanActionRule);
-                    } else {
-                        assistant.putBeanReference(aspectAdviceRule.getAdviceBeanId(), updatedBeanActionRule);
-                    }
-                }
-            }
         });
 	}
 

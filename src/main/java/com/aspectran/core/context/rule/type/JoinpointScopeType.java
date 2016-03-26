@@ -29,7 +29,7 @@ public enum JoinpointScopeType {
 
 	private final String alias;
 
-	private JoinpointScopeType(String alias) {
+	JoinpointScopeType(String alias) {
 		this.alias = alias;
 	}
 

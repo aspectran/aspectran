@@ -25,14 +25,12 @@ public enum BeanReferrerType {
 	ASPECT_RULE("aspectRule"),
 	BEAN_ACTION_RULE("beanActionRule"),
 	BEAN_RULE("beanRule"),
-	TEMPLATE_RULE("templateRule"),
 	TOKEN("token"),
-	TRANSFORM_RULE("transformRule"),
-	REDIRECT_RESPONSE_RULE("redirectResponseRule");
+	TEMPLATE_RULE("template");
 
 	private final String alias;
 
-	private BeanReferrerType(String alias) {
+	BeanReferrerType(String alias) {
 		this.alias = alias;
 	}
 

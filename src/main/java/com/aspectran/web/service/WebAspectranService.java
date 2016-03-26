@@ -60,10 +60,9 @@ public class WebAspectranService extends CoreAspectranService {
 	private long pauseTimeout;
 
 	private WebAspectranService(ServletContext servletContext) {
-		WebApplicationAdapter waa = new WebApplicationAdapter(this, servletContext);
-		setApplicationAdapter(waa);
+		super(new WebApplicationAdapter(servletContext));
 	}
-	
+
 	private void initialize(String aspectranConfigParam) throws AspectranServiceException {
 		AspectranConfig aspectranConfig;
 		
@@ -107,13 +106,13 @@ public class WebAspectranService extends CoreAspectranService {
 			requestUri = URLDecoder.decode(requestUri, uriDecoding);
 		}
 
-		if(log.isDebugEnabled()) {
-			log.debug("Request URI: " + requestUri);
+		if(super.log.isDebugEnabled()) {
+			super.log.debug("Request URI: " + requestUri);
 		}
 
 		if(pauseTimeout > 0L) {
 			if(pauseTimeout >= System.currentTimeMillis()) {
-				log.info("AspectranService is paused, did not respond to the request uri: " + requestUri);
+				super.log.info("AspectranService is paused, did not respond to the request uri: " + requestUri);
 				response.sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
 				return;
 			} else {
@@ -128,8 +127,8 @@ public class WebAspectranService extends CoreAspectranService {
 			activity.ready(requestUri, request.getMethod());
 			activity.perform();
 		} catch(TransletNotFoundException e) {
-			if(log.isTraceEnabled()) {
-				log.trace("translet is not found: " + requestUri);
+			if(super.log.isTraceEnabled()) {
+				super.log.trace("translet is not found: " + requestUri);
 			}
 			try {
 				if(!defaultServletHttpRequestHandler.handle(request, response)) {
@@ -137,15 +136,15 @@ public class WebAspectranService extends CoreAspectranService {
 				}
 			} catch(Exception e2) {
 				response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-				log.error(e.getMessage(), e2);
+				super.log.error(e.getMessage(), e2);
 			}
 		} catch(RequestMethodNotAllowedException e) {
-			if(log.isDebugEnabled()) {
-				log.debug(e.getMessage());
+			if(super.log.isDebugEnabled()) {
+				super.log.debug(e.getMessage());
 			}
 			response.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
 		} catch(Exception e) {
-			log.error("WebActivity service failed.", e);
+			super.log.error("WebActivity service failed.", e);
 			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 		} finally {
 			if(activity != null) {
@@ -238,7 +237,7 @@ public class WebAspectranService extends CoreAspectranService {
 	 * Returns a new instance of WebAspectranService.
 	 *
 	 * @param servletContext the servlet context
-	 * @param aspectranConfigParam the aspectran config param
+	 * @param aspectranConfigParam the parameter for aspectran configuration
 	 * @return the web aspectran service
 	 * @throws AspectranServiceException the aspectran service exception
 	 */
@@ -246,14 +245,14 @@ public class WebAspectranService extends CoreAspectranService {
 		WebAspectranService aspectranService = new WebAspectranService(servletContext);
 		aspectranService.initialize(aspectranConfigParam);
 		
-		addAspectranServiceControllerListener(aspectranService);
+		setAspectranServiceControllerListener(aspectranService);
 		
 		aspectranService.startup();
 		
 		return aspectranService;
 	}
 	
-	private static void addAspectranServiceControllerListener(final WebAspectranService aspectranService) {
+	private static void setAspectranServiceControllerListener(final WebAspectranService aspectranService) {
 		aspectranService.setAspectranServiceControllerListener(new AspectranServiceControllerListener() {
 			@Override
 			public void started() {

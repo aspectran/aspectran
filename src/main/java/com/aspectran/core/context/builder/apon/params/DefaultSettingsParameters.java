@@ -19,9 +19,8 @@ import com.aspectran.core.context.rule.type.DefaultSettingType;
 import com.aspectran.core.util.apon.AbstractParameters;
 import com.aspectran.core.util.apon.ParameterDefine;
 import com.aspectran.core.util.apon.ParameterValueType;
-import com.aspectran.core.util.apon.Parameters;
 
-public class DefaultSettingsParameters extends AbstractParameters implements Parameters {
+public class DefaultSettingsParameters extends AbstractParameters {
 
 	public static final ParameterDefine transletNamePattern;
 	public static final ParameterDefine transletNamePrefix;

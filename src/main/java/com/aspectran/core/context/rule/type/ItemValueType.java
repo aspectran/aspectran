@@ -36,7 +36,7 @@ public enum ItemValueType {
 
 	private final Class<?> classType;
 
-	private ItemValueType(String alias, Class<?> classType) {
+	ItemValueType(String alias, Class<?> classType) {
 		this.alias = alias;
 		this.classType = classType;
 	}

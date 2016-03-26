@@ -15,10 +15,11 @@
  */
 package com.aspectran.core.context.loader.reload;
 
+import java.net.URL;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import com.aspectran.core.service.AspectranService;
+import com.aspectran.core.service.AspectranServiceController;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
@@ -26,14 +27,17 @@ public class ActivityContextReloadingTimer {
 	
 	private final Log log = LogFactory.getLog(ActivityContextReloadingTimer.class);
 
-	private AspectranService aspectranService;
+	private final AspectranServiceController aspectranServiceController;
+
+	private final URL[] resources;
 	
 	private Timer timer;
 	
 	private TimerTask timerTask;
 	
-	public ActivityContextReloadingTimer(AspectranService aspectranService) {
-		this.aspectranService = aspectranService;
+	public ActivityContextReloadingTimer(AspectranServiceController aspectranServiceController, URL[] resources) {
+		this.aspectranServiceController = aspectranServiceController;
+		this.resources = resources;
 		
 		init();
 	}
@@ -47,7 +51,7 @@ public class ActivityContextReloadingTimer {
 		
 		log.debug("Starting ActivityContextRefreshTimer...");
 		
-		timerTask = new ActivityContextReloadingTimerTask(aspectranService);
+		timerTask = new ActivityContextReloadingTimerTask(aspectranServiceController, resources);
 		
 		timer = new Timer();
 		timer.schedule(timerTask, 0, observationInterval * 1000L);

@@ -43,8 +43,7 @@ public class ConsoleAspectranService extends CoreAspectranService {
 	private long pauseTimeout;
 
 	private ConsoleAspectranService() {
-		ConsoleApplicationAdapter caa = new ConsoleApplicationAdapter(this);
-		setApplicationAdapter(caa);
+		super(new ConsoleApplicationAdapter());
 	}
 	
 	/**
@@ -108,14 +107,14 @@ public class ConsoleAspectranService extends CoreAspectranService {
 		ConsoleAspectranService aspectranService = new ConsoleAspectranService();
 		aspectranService.initialize(aspectranConfig);
 		
-		addAspectranServiceControllerListener(aspectranService);
+		setAspectranServiceControllerListener(aspectranService);
 		
 		aspectranService.startup();
 		
 		return aspectranService;
 	}
 
-	private static void addAspectranServiceControllerListener(final ConsoleAspectranService aspectranService) {
+	private static void setAspectranServiceControllerListener(final ConsoleAspectranService aspectranService) {
 		aspectranService.setAspectranServiceControllerListener(new AspectranServiceControllerListener() {
 			@Override
 			public void started() {

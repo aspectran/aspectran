@@ -19,6 +19,7 @@ import java.util.Locale;
 
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.adapter.ApplicationAdapter;
+import com.aspectran.core.adapter.RegulatedApplicationAdapter;
 import com.aspectran.core.context.aspect.AspectRuleRegistry;
 import com.aspectran.core.context.bean.ContextBeanRegistry;
 import com.aspectran.core.context.message.DelegatingMessageSource;
@@ -54,12 +55,12 @@ public class AspectranActivityContext implements ActivityContext {
 	private MessageSource messageSource;
 
 	/**
-	 * Instantiates a new ActivityContext.
+	 * Instantiates a new AspectranActivityContext.
 	 *
 	 * @param applicationAdapter the application adapter
 	 */
 	public AspectranActivityContext(ApplicationAdapter applicationAdapter) {
-		this.applicationAdapter = applicationAdapter;
+		this.applicationAdapter = new RegulatedApplicationAdapter(applicationAdapter);
 	}
 
 	@Override

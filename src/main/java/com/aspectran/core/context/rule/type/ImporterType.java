@@ -28,7 +28,7 @@ public enum ImporterType {
 
 	private final String alias;
 
-	private ImporterType(String alias) {
+	ImporterType(String alias) {
 		this.alias = alias;
 	}
 

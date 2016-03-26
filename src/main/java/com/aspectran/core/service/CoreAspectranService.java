@@ -19,16 +19,12 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.bean.scope.Scope;
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
 
 /**
  * The Class CoreAspectranService.
  */
 public class CoreAspectranService extends AbstractAspectranService {
 
-	private static final Log log = LogFactory.getLog(CoreAspectranService.class);
-	
 	private static final long DEFAULT_PAUSE_TIMEOUT = 321L;
 	
 	private AspectranServiceControllerListener aspectranServiceControllerListener;
@@ -44,6 +40,11 @@ public class CoreAspectranService extends AbstractAspectranService {
 
 	/** Reference to the JVM shutdown hook, if registered */
 	private Thread shutdownHook;
+
+	public CoreAspectranService(ApplicationAdapter applicationAdapter) {
+		super(applicationAdapter);
+		applicationAdapter.setAspectranServiceController(this);
+	}
 
 	public void setAspectranServiceControllerListener(AspectranServiceControllerListener aspectranServiceControllerListener) {
 		this.aspectranServiceControllerListener = aspectranServiceControllerListener;

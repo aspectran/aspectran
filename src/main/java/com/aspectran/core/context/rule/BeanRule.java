@@ -303,11 +303,6 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceInspectable 
 		this.offerBeanClass = offerBeanClass;
 	}
 
-	@Override
-	public void setResolvedBeanClass(Class<?> offerBeanClass) {
-		this.offerBeanClass = offerBeanClass;
-	}
-	
 	/**
 	 * Gets the offer bean's offer method name.
 	 *

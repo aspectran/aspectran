@@ -20,25 +20,22 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.aspectran.core.service.AspectranService;
-
 /**
  * The Class CommonResponseAdapter.
  * 
  * @since 2016. 3. 26.
  */
-public abstract class CommonApplicationAdapter extends AbstractApplicationAdapter {
+public class CommonApplicationAdapter extends AbstractApplicationAdapter {
 
 	private Map<String, Object> attributes = new HashMap<String, Object>();
 
 	/**
 	 * Instantiates a new AbstractApplicationAdapter.
 	 *
-	 * @param aspectranService the aspectran service
 	 * @param adaptee the adaptee
 	 */
-	public CommonApplicationAdapter(AspectranService aspectranService, Object adaptee) {
-		super(aspectranService, adaptee);
+	public CommonApplicationAdapter(Object adaptee) {
+		super(adaptee);
 	}
 
 	@Override

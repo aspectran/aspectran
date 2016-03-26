@@ -70,7 +70,7 @@ public class HybridImportHandler extends AbstractImportHandler {
 			rootAponDisassembler.disassembleAspectran(rootParameters);
 		} else {
 			if(hybridLoading && importer.getImporterType() == ImporterType.FILE) {
-				File aponFile = makeAponFile((FileImporter) importer);
+				File aponFile = makeAponFile((FileImporter)importer);
 
 				if(importer.getLastModified() == aponFile.lastModified()) {
 					log.info("Rapid loading for Aspectran Context Configuration: " + aponFile);

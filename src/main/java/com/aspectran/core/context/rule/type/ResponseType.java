@@ -29,7 +29,7 @@ public enum ResponseType {
 
 	private final String alias;
 
-	private ResponseType(String alias) {
+	ResponseType(String alias) {
 		this.alias = alias;
 	}
 

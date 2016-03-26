@@ -95,10 +95,7 @@ public class AspectAdviceRule implements ActionRuleApplicable {
 	}
 	
 	public ActionType getActionType() {
-		if(action == null)
-			return null;
-		
-		return action.getActionType();
+		return (action != null) ? action.getActionType() : null;
 	}
 
 	@Override
@@ -120,23 +117,16 @@ public class AspectAdviceRule implements ActionRuleApplicable {
 		return new AspectAdviceRule(aspectRule, aspectAdviceType);
 	}
 
-	public static BeanActionRule updateBeanActionClass(AspectAdviceRule aspectAdviceRule) {
-		if(aspectAdviceRule.getAdviceBeanId() != null) {
-			if(aspectAdviceRule.getActionType() == ActionType.BEAN) {
-				BeanAction beanAction = (BeanAction)aspectAdviceRule.getExecutableAction();
-				BeanActionRule beanActionRule = beanAction.getBeanActionRule();
-				if(beanActionRule.getBeanId() == null) {
-					String beanIdOrClass = aspectAdviceRule.getAdviceBeanId();
-					Class<?> beanClass = aspectAdviceRule.getAdviceBeanClass();
-
-					beanActionRule.setBeanId(beanIdOrClass);
-					beanActionRule.setBeanClass(beanClass);
-
-					return beanActionRule;
-				}
+	public static void updateBeanActionClass(AspectAdviceRule aspectAdviceRule) {
+		if(aspectAdviceRule.getAdviceBeanId() != null && aspectAdviceRule.getActionType() == ActionType.BEAN) {
+			BeanAction beanAction = (BeanAction)aspectAdviceRule.getExecutableAction();
+			BeanActionRule beanActionRule = beanAction.getBeanActionRule();
+			if(beanActionRule.getBeanId() == null) {
+				// already resolved bean class at aspect rule
+				beanActionRule.setBeanId(aspectAdviceRule.getAdviceBeanId());
+				beanActionRule.setBeanClass(aspectAdviceRule.getAdviceBeanClass());
 			}
 		}
-		return null;
 	}
 	
 }

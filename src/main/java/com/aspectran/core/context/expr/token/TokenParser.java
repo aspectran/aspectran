@@ -39,7 +39,7 @@ public class TokenParser {
 		if(!tokenList.isEmpty()) {
 			tokens = tokenList.toArray(new Token[tokenList.size()]);
 			
-			if(!trimStringToken) {
+			if(trimStringToken) {
 				/**
 				 * If you did not trim the string type token,
 				 * first token string is left trim

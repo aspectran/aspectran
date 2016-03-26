@@ -212,7 +212,7 @@ public class RootAponDisassembler {
 			String adviceBeanId = adviceParameters.getString(AdviceParameters.bean);
 			if(!StringUtils.isEmpty(adviceBeanId)) {
 				aspectRule.setAdviceBeanId(adviceBeanId);
-				assistant.putBeanReference(adviceBeanId, aspectRule);
+				assistant.resolveBeanClass(adviceBeanId, aspectRule);
 			}
 			
 			Parameters beforeAdviceParameters = adviceParameters.getParameters(AdviceParameters.beforeAdvice);
@@ -221,7 +221,6 @@ public class RootAponDisassembler {
 				AspectAdviceRule aspectAdviceRule = AspectAdviceRule.newInstance(aspectRule, AspectAdviceType.BEFORE);
 				disassembleActionRule(actionParameters, aspectAdviceRule);
 				aspectRule.addAspectAdviceRule(aspectAdviceRule);
-				updateBeanActionClass(aspectAdviceRule);
 			}
 			
 			Parameters afterAdviceParameters = adviceParameters.getParameters(AdviceParameters.afterAdvice);
@@ -230,7 +229,6 @@ public class RootAponDisassembler {
 				AspectAdviceRule aspectAdviceRule = AspectAdviceRule.newInstance(aspectRule, AspectAdviceType.AFTER);
 				disassembleActionRule(actionParameters, aspectAdviceRule);
 				aspectRule.addAspectAdviceRule(aspectAdviceRule);
-				updateBeanActionClass(aspectAdviceRule);
 			}
 		
 			Parameters aroundAdviceParameters = adviceParameters.getParameters(AdviceParameters.aroundAdvice);
@@ -239,7 +237,6 @@ public class RootAponDisassembler {
 				AspectAdviceRule aspectAdviceRule = AspectAdviceRule.newInstance(aspectRule, AspectAdviceType.AROUND);
 				disassembleActionRule(actionParameters, aspectAdviceRule);
 				aspectRule.addAspectAdviceRule(aspectAdviceRule);
-				updateBeanActionClass(aspectAdviceRule);
 			}
 		
 			Parameters finallyAdviceParameters = adviceParameters.getParameters(AdviceParameters.finallyAdvice);
@@ -248,7 +245,6 @@ public class RootAponDisassembler {
 				AspectAdviceRule aspectAdviceRule = AspectAdviceRule.newInstance(aspectRule, AspectAdviceType.AROUND);
 				disassembleActionRule(actionParameters, aspectAdviceRule);
 				aspectRule.addAspectAdviceRule(aspectAdviceRule);
-				updateBeanActionClass(aspectAdviceRule);
 			}
 		
 			List<Parameters> jobParametersList = adviceParameters.getParametersList(AdviceParameters.jobs);
@@ -258,7 +254,6 @@ public class RootAponDisassembler {
 					Boolean disabled = jobParameters.getBoolean(JobParameters.disabled);
 					
 					translet = assistant.applyTransletNamePattern(translet);
-
 					if(translet == null)
 						throw new IllegalArgumentException("Job translet must not be null.");
 
@@ -291,19 +286,6 @@ public class RootAponDisassembler {
 		}
 
 		assistant.addAspectRule(aspectRule);
-	}
-
-	private void updateBeanActionClass(AspectAdviceRule aspectAdviceRule) {
-		if(aspectAdviceRule.getAdviceBeanId() != null) {
-			BeanActionRule updatedBeanActionRule = AspectAdviceRule.updateBeanActionClass(aspectAdviceRule);
-			if(updatedBeanActionRule != null) {
-				if(aspectAdviceRule.getAdviceBeanClass() != null) {
-					assistant.putBeanReference(aspectAdviceRule.getAdviceBeanClass(), updatedBeanActionRule);
-				} else {
-					assistant.putBeanReference(aspectAdviceRule.getAdviceBeanId(), updatedBeanActionRule);
-				}
-			}
-		}
 	}
 
 	private void disassembleBeanRule(Parameters beanParameters) throws ClassNotFoundException, IOException, CloneNotSupportedException {
@@ -755,7 +737,7 @@ public class RootAponDisassembler {
 					while(iter.hasNext()) {
 						for(Token token : iter.next()) {
 							if(token.getType() == TokenType.BEAN) {
-								assistant.putBeanReference(token.getName(), token);
+								assistant.resolveBeanClass(token);
 							}
 						}
 					}
