@@ -32,7 +32,7 @@ import com.aspectran.core.util.xml.NodeletParser;
  * @since 2011. 1. 9.
  * @author Juho Jeong
  */
-public class ActionNodeletAdder implements NodeletAdder {
+class ActionNodeletAdder implements NodeletAdder {
 	
 	protected final ContextBuilderAssistant assistant;
 	
@@ -41,7 +41,7 @@ public class ActionNodeletAdder implements NodeletAdder {
 	 *
 	 * @param assistant the ContextBuilderAssistant
 	 */
-	public ActionNodeletAdder(ContextBuilderAssistant assistant) {
+	ActionNodeletAdder(ContextBuilderAssistant assistant) {
 		this.assistant = assistant;
 	}
 
@@ -85,13 +85,7 @@ public class ActionNodeletAdder implements NodeletAdder {
 
             // AspectAdviceRule may not have a bean id.
             if(beanIdOrClass != null) {
-                Class<?> beanClass = assistant.resolveBeanClass(beanIdOrClass);
-                if(beanClass != null) {
-                    beanActionRule.setBeanClass(beanClass);
-                    assistant.putBeanReference(beanClass, beanActionRule);
-                } else {
-                    assistant.putBeanReference(beanIdOrClass, beanActionRule);
-                }
+                assistant.resolveBeanClass(beanIdOrClass, beanActionRule);
             }
 
             assistant.pushObject(beanActionRule);

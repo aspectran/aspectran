@@ -34,7 +34,7 @@ import com.aspectran.core.util.xml.NodeletParser;
  * 
  * <p>Created: 2008. 06. 14 AM 6:56:29</p>
  */
-public class ItemNodeletAdder implements NodeletAdder {
+class ItemNodeletAdder implements NodeletAdder {
 	
 	protected final ContextBuilderAssistant assistant;
 	
@@ -43,7 +43,7 @@ public class ItemNodeletAdder implements NodeletAdder {
 	 *
 	 * @param assistant the assistant for Context Builder
 	 */
-	public ItemNodeletAdder(ContextBuilderAssistant assistant) {
+    ItemNodeletAdder(ContextBuilderAssistant assistant) {
 		this.assistant = assistant;
 	}
 

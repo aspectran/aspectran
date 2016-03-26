@@ -100,6 +100,11 @@ public class BeanActionRule implements ArgumentPossessable, PropertyPossessable,
 		this.beanClass = beanClass;
 	}
 
+	@Override
+	public void setResolvedBeanClass(Class<?> beanClass) {
+		this.beanClass = beanClass;
+	}
+	
 	/**
 	 * Gets the action method name.
 	 * 

@@ -29,7 +29,7 @@ import com.aspectran.core.context.rule.type.ImporterType;
  * 
  * @author Juho Jeong
  */
-public abstract class AbstractImporter implements Importer {
+abstract class AbstractImporter implements Importer {
 
 	private ImporterType importerType;
 
@@ -37,7 +37,7 @@ public abstract class AbstractImporter implements Importer {
 
 	private long lastModified;
 
-	public AbstractImporter(ImporterType importerType) {
+	AbstractImporter(ImporterType importerType) {
 		this.importerType = importerType;
 	}
 

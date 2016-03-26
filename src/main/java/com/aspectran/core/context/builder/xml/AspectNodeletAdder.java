@@ -31,7 +31,7 @@ import com.aspectran.core.util.xml.NodeletParser;
  * 
  * <p>Created: 2008. 06. 14 AM 6:56:29</p>
  */
-public class AspectNodeletAdder implements NodeletAdder {
+class AspectNodeletAdder implements NodeletAdder {
 	
 	protected final ContextBuilderAssistant assistant;
 	
@@ -40,7 +40,7 @@ public class AspectNodeletAdder implements NodeletAdder {
 	 *
 	 * @param assistant the assistant
 	 */
-	public AspectNodeletAdder(ContextBuilderAssistant assistant) {
+	AspectNodeletAdder(ContextBuilderAssistant assistant) {
 		this.assistant = assistant;
 	}
 
@@ -147,13 +147,7 @@ public class AspectNodeletAdder implements NodeletAdder {
                 AspectRule aspectRule = assistant.peekObject();
                 aspectRule.setAdviceBeanId(beanIdOrClass);
 
-                Class<?> adviceBeanClass = assistant.resolveBeanClass(beanIdOrClass);
-                if(adviceBeanClass != null) {
-                    aspectRule.setAdviceBeanClass(adviceBeanClass);
-                    assistant.putBeanReference(adviceBeanClass, aspectRule);
-                } else {
-                    assistant.putBeanReference(beanIdOrClass, aspectRule);
-                }
+                assistant.resolveBeanClass(beanIdOrClass, aspectRule);
             }
         });
 		parser.addNodelet(xpath, "/aspect/advice/before", new AspectAdviceNodeletAdder(assistant, AspectAdviceType.BEFORE));

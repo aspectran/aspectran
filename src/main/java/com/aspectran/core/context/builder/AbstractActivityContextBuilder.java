@@ -55,11 +55,11 @@ import com.aspectran.core.util.logging.LogFactory;
  * 
  * <p>Created: 2008. 06. 14 PM 8:53:29</p>
  */
-public abstract class AbstractActivityContextBuilder extends ContextBuilderAssistant {
+abstract class AbstractActivityContextBuilder extends ContextBuilderAssistant {
 	
 	private final Log log = LogFactory.getLog(AbstractActivityContextBuilder.class);
 	
-	public AbstractActivityContextBuilder(ApplicationAdapter applicationAdapter) {
+	AbstractActivityContextBuilder(ApplicationAdapter applicationAdapter) {
 		super(applicationAdapter);
 	}
 	

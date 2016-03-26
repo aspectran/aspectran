@@ -30,7 +30,7 @@ import org.xml.sax.SAXException;
  * 
  * <p>Created: 2008. 06. 14 AM 4:48:34</p>
  */
-public class AspectranDtdResolver implements EntityResolver {
+class AspectranDtdResolver implements EntityResolver {
 
 	private static final String ASPECTRAN_DTD = "/com/aspectran/core/context/builder/xml/dtd/aspectran-2.0.dtd";
 
@@ -43,11 +43,11 @@ public class AspectranDtdResolver implements EntityResolver {
 		doctypeMap.put("aspectran-2.0.dtd".toUpperCase(), ASPECTRAN_DTD);
 	}
 
-	public AspectranDtdResolver() {
+	AspectranDtdResolver() {
 		this(true);
 	}
 	
-	public AspectranDtdResolver(boolean validating) {
+	AspectranDtdResolver(boolean validating) {
 		this.validating = validating;
 	}
 	

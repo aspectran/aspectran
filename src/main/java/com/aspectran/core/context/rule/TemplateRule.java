@@ -308,6 +308,11 @@ public class TemplateRule implements Replicable<TemplateRule>, BeanReferenceInsp
 	}
 
 	@Override
+	public void setResolvedBeanClass(Class<?> beanClass) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
 	public String toString() {
 		ToStringBuilder tsb = new ToStringBuilder();
 		if(!builtin)
