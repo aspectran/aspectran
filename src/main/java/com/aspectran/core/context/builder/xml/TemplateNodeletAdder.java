@@ -43,18 +43,21 @@ class TemplateNodeletAdder implements NodeletAdder {
 	@Override
 	public void process(String xpath, NodeletParser parser) {
 		parser.addNodelet(xpath, "/template", (node, attributes, text) -> {
-            String id = attributes.get("id");
-            String engine = attributes.get("engine");
-            String name = attributes.get("name");
-            String file = attributes.get("file");
-            String resource = attributes.get("resource");
-            String url = attributes.get("url");
+            String id = StringUtils.emptyToNull(attributes.get("id"));
+            String engine = StringUtils.emptyToNull(attributes.get("engine"));
+            String name = StringUtils.emptyToNull(attributes.get("name"));
+            String file = StringUtils.emptyToNull(attributes.get("file"));
+            String resource = StringUtils.emptyToNull(attributes.get("resource"));
+            String url = StringUtils.emptyToNull(attributes.get("url"));
             String encoding = attributes.get("encoding");
             Boolean noCache = BooleanUtils.toNullableBooleanObject(attributes.get("noCache"));
 
-            TemplateRule templateRule = TemplateRule.newInstance(id, engine, name, file, resource, url, text, encoding, noCache);
+			if(id == null)
+				throw new IllegalArgumentException("The <template> element requires an id attribute.");
 
-            if(!StringUtils.isEmpty(engine)) {
+			TemplateRule templateRule = TemplateRule.newInstance(id, engine, name, file, resource, url, text, encoding, noCache);
+
+            if(engine != null) {
                 assistant.putBeanReference(engine, templateRule);
             }
 

@@ -19,7 +19,6 @@ import java.util.Iterator;
 
 import com.aspectran.core.context.builder.ContextBuilderAssistant;
 import com.aspectran.core.context.expr.token.Token;
-import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.type.ItemType;
@@ -134,16 +133,9 @@ class ItemNodeletAdder implements NodeletAdder {
 
             if(iter != null) {
                 while(iter.hasNext()) {
-                    for(Token t : iter.next()) {
-                        String name = t.getName();
-                        if(t.getType() == TokenType.BEAN && name != null) {
-                            if(name.equals(BeanRule.CLASS_DIRECTIVE)) {
-                                Class<?> beanClass = assistant.loadClass(t.getValue());
-                                t.setBeanClass(beanClass);
-                                assistant.putBeanReference(beanClass, t);
-                            } else {
-                                assistant.putBeanReference(name, t);
-                            }
+                    for(Token token : iter.next()) {
+                        if(token.getType() == TokenType.BEAN) {
+                            assistant.resolveBeanClass(token);
                         }
                     }
                 }

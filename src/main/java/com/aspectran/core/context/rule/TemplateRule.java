@@ -38,9 +38,9 @@ import com.aspectran.core.util.ToStringBuilder;
  */
 public class TemplateRule implements Replicable<TemplateRule>, BeanReferenceInspectable {
 
-	public static final String DEFAULT_TEMPLATE_ENGINE_NAME = "token";
+	private static final String DEFAULT_TEMPLATE_ENGINE_NAME = "token";
 
-	private static final BeanReferrerType BEAN_REFERABLE_RULE_TYPE = BeanReferrerType.TRANSFORM_RULE;
+	private static final BeanReferrerType BEAN_REFERABLE_RULE_TYPE = BeanReferrerType.TEMPLATE_RULE;
 
 	private String id;
 
@@ -74,7 +74,7 @@ public class TemplateRule implements Replicable<TemplateRule>, BeanReferenceInsp
 	}
 
 	public TemplateRule(String engine) {
-		if(engine != null && engine.length() > 0 && !engine.equals(TemplateRule.DEFAULT_TEMPLATE_ENGINE_NAME)) {
+		if(engine != null && !engine.isEmpty() && !engine.equals(DEFAULT_TEMPLATE_ENGINE_NAME)) {
 			this.engine = engine;
 		}
 	}
@@ -92,7 +92,7 @@ public class TemplateRule implements Replicable<TemplateRule>, BeanReferenceInsp
 	}
 
 	public void setEngine(String engine) {
-    	if(engine == null || engine.isEmpty() || engine.equals(TemplateRule.DEFAULT_TEMPLATE_ENGINE_NAME)) {
+    	if(engine == null || engine.isEmpty() || engine.equals(DEFAULT_TEMPLATE_ENGINE_NAME)) {
     		this.engine = null;
     		this.contentTokens = null;
     	} else {
@@ -208,7 +208,7 @@ public class TemplateRule implements Replicable<TemplateRule>, BeanReferenceInsp
 	}
 
 	private Token[] parseContentTokens(String content) {
-		if(this.engine != null || content == null || content.length() == 0)
+		if(this.engine != null || content == null || content.isEmpty())
 			return null;
 
 		List<Token> tokenList = Tokenizer.tokenize(content, false);
@@ -305,11 +305,6 @@ public class TemplateRule implements Replicable<TemplateRule>, BeanReferenceInsp
 	@Override
 	public BeanReferrerType getBeanReferrerType() {
 		return BEAN_REFERABLE_RULE_TYPE;
-	}
-
-	@Override
-	public void setResolvedBeanClass(Class<?> beanClass) {
-		throw new UnsupportedOperationException();
 	}
 
 	@Override

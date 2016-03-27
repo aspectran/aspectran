@@ -33,15 +33,11 @@ import com.aspectran.core.context.rule.type.ImporterType;
 import com.aspectran.core.util.apon.AponDeserializer;
 import com.aspectran.core.util.apon.AponSerializer;
 import com.aspectran.core.util.apon.Parameters;
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
 
 /**
  * The Class HybridImportHandler.
  */
 public class HybridImportHandler extends AbstractImportHandler {
-	
-	private static final Log log = LogFactory.getLog(HybridImportHandler.class);
 	
 	private final ContextBuilderAssistant assistant;
 	
@@ -74,7 +70,7 @@ public class HybridImportHandler extends AbstractImportHandler {
 			rootAponDisassembler.disassembleAspectran(rootParameters);
 		} else {
 			if(hybridLoading && importer.getImporterType() == ImporterType.FILE) {
-				File aponFile = makeAponFile((FileImporter) importer);
+				File aponFile = makeAponFile((FileImporter)importer);
 
 				if(importer.getLastModified() == aponFile.lastModified()) {
 					log.info("Rapid loading for Aspectran Context Configuration: " + aponFile);

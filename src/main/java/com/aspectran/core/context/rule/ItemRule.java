@@ -46,10 +46,10 @@ import com.aspectran.core.util.apon.Parameters;
 public class ItemRule {
 
 	/**  suffix for array-type item: "[]". */
-	public static final String ARRAY_SUFFIX = "[]";
+	private static final String ARRAY_SUFFIX = "[]";
 	
 	/**  suffix for map-type item: "{}". */
-	public static final String MAP_SUFFIX = "{}";
+	private static final String MAP_SUFFIX = "{}";
 
 	private ItemType type;
 	
@@ -364,9 +364,9 @@ public class ItemRule {
 		tsb.append("valueType", valueType);
 		if(type == ItemType.SINGULAR) {
 			tsb.append("value", tokens);
-		} else if(type == ItemType.ARRAY || type == ItemType.LIST || type == ItemType.SET) {
+		} else if(isListableType()) {
 			tsb.append("value", tokensList);
-		} else if(type == ItemType.MAP || type == ItemType.PROPERTIES) {
+		} else if(isMappableType()) {
 			tsb.append("value", tokensMap);
 		}
 		tsb.append("tokenize", tokenize);

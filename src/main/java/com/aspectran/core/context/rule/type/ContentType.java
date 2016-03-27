@@ -30,7 +30,7 @@ public enum ContentType {
 
 	private final String alias;
 
-	private ContentType(String alias) {
+	ContentType(String alias) {
 		this.alias = alias;
 	}
 
@@ -53,5 +53,4 @@ public enum ContentType {
 		return null;
 	}
 
-	
 }

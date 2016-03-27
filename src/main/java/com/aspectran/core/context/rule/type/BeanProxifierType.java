@@ -28,7 +28,7 @@ public enum BeanProxifierType {
 
 	private final String alias;
 
-	private BeanProxifierType(String alias) {
+	BeanProxifierType(String alias) {
 		this.alias = alias;
 	}
 

@@ -15,7 +15,6 @@
  */
 package com.aspectran.core.context.builder;
 
-import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -32,12 +31,13 @@ import com.aspectran.core.context.builder.importer.ImportHandler;
 import com.aspectran.core.context.builder.importer.Importer;
 import com.aspectran.core.context.builder.importer.ResourceImporter;
 import com.aspectran.core.context.builder.importer.UrlImporter;
+import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.rule.AspectRule;
+import com.aspectran.core.context.rule.BeanActionRule;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.TemplateRule;
 import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.ability.BeanReferenceInspectable;
-import com.aspectran.core.context.rule.type.BeanReferrerType;
 import com.aspectran.core.context.rule.type.DefaultSettingType;
 import com.aspectran.core.context.rule.type.ImportFileType;
 import com.aspectran.core.context.template.TemplateRuleRegistry;
@@ -348,45 +348,97 @@ public class ContextBuilderAssistant {
 	}
 
 	/**
-	 * Resolve bean class.
+	 * Resolve bean class for aspect rule.
 	 *
 	 * @param beanId the bean id
-	 * @param inspectable the inspectable
+	 * @param aspectRule the aspect rule
 	 */
-	public void resolveBeanClass(String beanId, BeanReferenceInspectable inspectable) {
+	public void resolveBeanClass(String beanId, AspectRule aspectRule) {
 		Class<?> beanClass = resolveBeanClass(beanId);
-		
         if(beanClass != null) {
-        	if(inspectable.getBeanReferrerType() == BeanReferrerType.ASPECT_RULE ||
-        			inspectable.getBeanReferrerType() == BeanReferrerType.BEAN_ACTION_RULE ||
-        			inspectable.getBeanReferrerType() == BeanReferrerType.BEAN_RULE ||
-        			inspectable.getBeanReferrerType() == BeanReferrerType.TOKEN) {
-        		inspectable.setResolvedBeanClass(beanClass);
-        	}
-            putBeanReference(beanClass, inspectable);
+			aspectRule.setAdviceBeanClass(beanClass);
+            putBeanReference(beanClass, aspectRule);
         } else {
-            putBeanReference(beanId, inspectable);
+            putBeanReference(beanId, aspectRule);
         }
 	}
-	
+
+	/**
+	 * Resolve bean class for bean action rule.
+	 *
+	 * @param beanId the bean id
+	 * @param beanActionRule the aspect rule
+	 */
+	public void resolveBeanClass(String beanId, BeanActionRule beanActionRule) {
+		Class<?> beanClass = resolveBeanClass(beanId);
+        if(beanClass != null) {
+			beanActionRule.setBeanClass(beanClass);
+            putBeanReference(beanClass, beanActionRule);
+        } else {
+            putBeanReference(beanId, beanActionRule);
+        }
+	}
+
+	/**
+	 * Resolve bean class for bean rule.
+	 *
+	 * @param beanId the bean id
+	 * @param beanRule the aspect rule
+	 */
+	public void resolveBeanClass(String beanId, BeanRule beanRule) {
+		Class<?> beanClass = resolveBeanClass(beanId);
+        if(beanClass != null) {
+			beanRule.setOfferBeanClass(beanClass);
+            putBeanReference(beanClass, beanRule);
+        } else {
+            putBeanReference(beanId, beanRule);
+        }
+	}
+
+	/**
+	 * Resolve bean class for token.
+	 *
+	 * @param token the token
+	 */
+	public void resolveBeanClass(Token token) {
+		String name = token.getName();
+		if(name != null) {
+			if(name.equals(BeanRule.CLASS_DIRECTIVE)) {
+				Class<?> beanClass = loadClass(token.getValue());
+				token.setBeanClass(beanClass);
+				putBeanReference(beanClass, token);
+			} else {
+				putBeanReference(name, token);
+			}
+		}
+	}
+
 	private Class<?> resolveBeanClass(String beanId) {
 		if(beanId != null && beanId.startsWith(BeanRule.CLASS_DIRECTIVE_PREFIX)) {
 			String className = beanId.substring(BeanRule.CLASS_DIRECTIVE_PREFIX.length());
-			try {
-				return classLoader.loadClass(className);
-			} catch(ClassNotFoundException e) {
-				throw new IllegalArgumentException("Failed to load class: " + className, e);
-			}
+			return loadClass(className);
 		}
 		return null;
 	}
 
-	public Class<?> loadClass(String className) {
+	private Class<?> loadClass(String className) {
 		try {
 			return classLoader.loadClass(className);
 		} catch(ClassNotFoundException e) {
 			throw new IllegalArgumentException("Failed to load class: " + className, e);
 		}
+	}
+
+	public void putBeanReference(String beanId, BeanReferenceInspectable someRule) {
+		beanReferenceInspector.putRelation(beanId, someRule);
+	}
+
+	public void putBeanReference(Class<?> beanClass, BeanReferenceInspectable someRule) {
+		beanReferenceInspector.putRelation(beanClass, someRule);
+	}
+
+	public BeanReferenceInspector getBeanReferenceInspector() {
+		return beanReferenceInspector;
 	}
 
 	/**
@@ -402,11 +454,9 @@ public class ContextBuilderAssistant {
 	 * Adds the bean rule.
 	 *
 	 * @param beanRule the bean rule
-	 * @throws CloneNotSupportedException the clone not supported exception
 	 * @throws ClassNotFoundException the class not found exception
-	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
-	public void addBeanRule(BeanRule beanRule) throws CloneNotSupportedException, ClassNotFoundException, IOException {
+	public void addBeanRule(BeanRule beanRule) throws ClassNotFoundException {
 		beanRuleRegistry.addBeanRule(beanRule);
 	}
 
@@ -414,9 +464,8 @@ public class ContextBuilderAssistant {
 	 * Add translet rule.
 	 *
 	 * @param transletRule the translet rule
-	 * @throws CloneNotSupportedException the clone not supported exception
 	 */
-	public void addTransletRule(TransletRule transletRule) throws CloneNotSupportedException {
+	public void addTransletRule(TransletRule transletRule) {
 		transletRuleRegistry.addTransletRule(transletRule);
 	}
 
@@ -505,14 +554,6 @@ public class ContextBuilderAssistant {
 	 */
 	public Collection<TransletRule> getTransletRules() {
 		return transletRuleRegistry.getTransletRuleMap().values();
-	}
-
-	public void putBeanReference(Object beanIdOrClass, BeanReferenceInspectable someRule) {
-		beanReferenceInspector.putRelation(beanIdOrClass, someRule);
-	}
-	
-	public BeanReferenceInspector getBeanReferenceInspector() {
-		return beanReferenceInspector;
 	}
 
 	public ImportHandler getImportHandler() {

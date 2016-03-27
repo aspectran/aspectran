@@ -24,9 +24,7 @@ import com.aspectran.core.context.expr.TokenExpressor;
 import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.expr.token.Tokenizer;
 import com.aspectran.core.context.rule.ability.ActionPossessSupport;
-import com.aspectran.core.context.rule.ability.BeanReferenceInspectable;
 import com.aspectran.core.context.rule.ability.Replicable;
-import com.aspectran.core.context.rule.type.BeanReferrerType;
 import com.aspectran.core.context.rule.type.ResponseType;
 import com.aspectran.core.context.rule.type.TokenType;
 import com.aspectran.core.util.BooleanUtils;
@@ -37,11 +35,9 @@ import com.aspectran.core.util.ToStringBuilder;
  * 
  * <p>Created: 2008. 03. 22 PM 5:51:58</p>
  */
-public class RedirectResponseRule extends ActionPossessSupport implements Replicable<RedirectResponseRule>, BeanReferenceInspectable {
+public class RedirectResponseRule extends ActionPossessSupport implements Replicable<RedirectResponseRule> {
 	
 	public static final ResponseType RESPONSE_TYPE = ResponseType.REDIRECT;
-
-	private static final BeanReferrerType BEAN_REFERABLE_RULE_TYPE = BeanReferrerType.REDIRECT_RESPONSE_RULE;
 
 	private String contentType;
 	
@@ -257,16 +253,6 @@ public class RedirectResponseRule extends ActionPossessSupport implements Replic
 	@Override
 	public RedirectResponseRule replicate() {
 		return replicate(this);
-	}
-
-	@Override
-	public BeanReferrerType getBeanReferrerType() {
-		return BEAN_REFERABLE_RULE_TYPE;
-	}
-
-	@Override
-	public void setResolvedBeanClass(Class<?> beanClass) {
-		throw new UnsupportedOperationException();
 	}
 
 	@Override

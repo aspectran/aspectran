@@ -23,7 +23,7 @@ import java.util.Map;
 import java.util.TimerTask;
 
 import com.aspectran.core.context.AspectranRuntimeException;
-import com.aspectran.core.service.AspectranService;
+import com.aspectran.core.service.AspectranServiceController;
 import com.aspectran.core.service.AspectranServiceException;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
@@ -34,7 +34,7 @@ public class ActivityContextReloadingTimerTask extends TimerTask {
 	
 	private final boolean debugEnabled = log.isDebugEnabled();
 
-	private final AspectranService aspectranService;
+	private final AspectranServiceController aspectranServiceController;
 
 	private final URL[] resources;
 	
@@ -44,13 +44,9 @@ public class ActivityContextReloadingTimerTask extends TimerTask {
 	
 	private int cycle;
 	
-	public ActivityContextReloadingTimerTask(AspectranService aspectranService) {
-		this.aspectranService = aspectranService;
-
-		if(aspectranService.getAspectranClassLoader() != null)
-			this.resources = aspectranService.getAspectranClassLoader().extractResources();
-		else
-			this.resources = null;
+	public ActivityContextReloadingTimerTask(AspectranServiceController aspectranServiceController, URL[] resources) {
+		this.aspectranServiceController = aspectranServiceController;
+		this.resources = resources;
 	}
 	
 	@Override
@@ -91,7 +87,7 @@ public class ActivityContextReloadingTimerTask extends TimerTask {
 		
 		if(modified) {
 			try {
-				aspectranService.refresh();
+				aspectranServiceController.refresh();
 			} catch(AspectranServiceException e) {
 				throw new AspectranRuntimeException(e);
 			}

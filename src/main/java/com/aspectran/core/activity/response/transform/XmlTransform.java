@@ -40,15 +40,15 @@ import com.aspectran.core.util.logging.LogFactory;
  * 
  * Created: 2008. 03. 22 PM 5:51:58
  */
-public class XmlTransform extends TransformResponse implements Response {
+public class XmlTransform extends TransformResponse {
 
-	public static final String OUTPUT_METHOD_XML = "xml";
-	
-	public static final String OUTPUT_INDENT_YES = "yes";
+	static final String OUTPUT_METHOD_XML = "xml";
 
-	public static final String INDENT_NUMBER_KEY = "indent-number";
+	static final String OUTPUT_INDENT_YES = "yes";
 
-	public static final Integer INDENT_NUMBER_VAL = 1;
+	private static final String INDENT_NUMBER_KEY = "indent-number";
+
+	private static final Integer INDENT_NUMBER_VAL = 1;
 
 	private static final Log log = LogFactory.getLog(XmlTransform.class);
 

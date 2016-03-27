@@ -57,7 +57,7 @@ import com.aspectran.core.util.logging.LogFactory;
  */
 abstract class AbstractActivityContextBuilder extends ContextBuilderAssistant {
 	
-	private final Log log = LogFactory.getLog(AbstractActivityContextBuilder.class);
+	protected final Log log = LogFactory.getLog(getClass());
 	
 	AbstractActivityContextBuilder(ApplicationAdapter applicationAdapter) {
 		super(applicationAdapter);
@@ -70,7 +70,7 @@ abstract class AbstractActivityContextBuilder extends ContextBuilderAssistant {
 	 * @return the activity context
 	 * @throws BeanReferenceException will be thrown when cannot resolve reference to bean
 	 */
-	protected ActivityContext makeActivityContext(ApplicationAdapter applicationAdapter) throws BeanReferenceException {
+	ActivityContext makeActivityContext(ApplicationAdapter applicationAdapter) throws BeanReferenceException {
 		AspectRuleRegistry aspectRuleRegistry = getAspectRuleRegistry();
 
 		BeanRuleRegistry beanRuleRegistry = getBeanRuleRegistry();
@@ -110,7 +110,7 @@ abstract class AbstractActivityContextBuilder extends ContextBuilderAssistant {
 	 * @param beanRuleRegistry the bean rule registry
 	 * @param transletRuleRegistry the translet rule registry
 	 */
-	protected void initAspectRuleRegistry(AspectRuleRegistry aspectRuleRegistry, BeanRuleRegistry beanRuleRegistry, TransletRuleRegistry transletRuleRegistry) {
+	private void initAspectRuleRegistry(AspectRuleRegistry aspectRuleRegistry, BeanRuleRegistry beanRuleRegistry, TransletRuleRegistry transletRuleRegistry) {
 		AspectAdviceRulePostRegister sessionScopeAspectAdviceRulePostRegister = new AspectAdviceRulePostRegister();
 		
 		for(AspectRule aspectRule : aspectRuleRegistry.getAspectRules()) {
@@ -202,12 +202,12 @@ abstract class AbstractActivityContextBuilder extends ContextBuilderAssistant {
 			aspectRuleRegistry.setSessionAspectAdviceRuleRegistry(sessionScopeAspectAdviceRuleRegistry);
 	}
 
-	protected Importer resolveImporter(String rootContext) {
+	Importer resolveImporter(String rootContext) {
 		ImportFileType importFileType = rootContext.toLowerCase().endsWith(".apon") ? ImportFileType.APON : ImportFileType.XML;
 		return resolveImporter(rootContext, importFileType);
 	}
 	
-	protected Importer resolveImporter(String rootContext, ImportFileType importFileType) {
+	Importer resolveImporter(String rootContext, ImportFileType importFileType) {
 		Importer importer;
 
 		if(rootContext.startsWith(ResourceUtils.CLASSPATH_URL_PREFIX)) {

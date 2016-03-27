@@ -84,12 +84,26 @@ public interface ApplicationAdapter {
 	AspectranServiceController getAspectranServiceController();
 
 	/**
+	 * Sets the aspectran service controller.
+	 *
+	 * @param aspectranServiceController the aspectran service controller
+	 */
+	void setAspectranServiceController(AspectranServiceController aspectranServiceController);
+
+	/**
 	 * Gets the class loader.
 	 *
 	 * @return the class loader
 	 */
 	ClassLoader getClassLoader();
-	
+
+	/**
+	 * Sets the class loader.
+	 *
+	 * @param classLoader the class loader
+	 */
+	void setClassLoader(ClassLoader classLoader);
+
 	/**
 	 * Return the base path that the current application is mapped to.
 	 *

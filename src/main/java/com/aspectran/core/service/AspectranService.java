@@ -24,11 +24,11 @@ import com.aspectran.core.context.loader.AspectranClassLoader;
  */
 public interface AspectranService extends AspectranServiceController {
 
-	AspectranClassLoader getAspectranClassLoader();
-	
 	ApplicationAdapter getApplicationAdapter();
 	
 	ActivityContext getActivityContext();
+
+	AspectranClassLoader getAspectranClassLoader();
 
 	void setAspectranServiceControllerListener(AspectranServiceControllerListener aspectranServiceControllerListener);
 	
@@ -37,9 +37,9 @@ public interface AspectranService extends AspectranServiceController {
 	void destroy();
 
 	/**
-	 * Returns whether this BeanFactory is currently active.
+	 * Returns whether this AspectranService is currently active.
 	 *
-	 * @return whether the BeanFactory is still active
+	 * @return whether the AspectranService is still active
 	 */
 	boolean isActive();
 

@@ -22,7 +22,6 @@ import java.util.Locale;
 import javax.servlet.http.HttpServletRequest;
 
 import com.aspectran.core.adapter.AbstractRequestAdapter;
-import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.context.rule.type.RequestMethodType;
 
 /**
@@ -31,7 +30,7 @@ import com.aspectran.core.context.rule.type.RequestMethodType;
  * @since 2011. 3. 13.
  * @author Juho Jeong
  */
-public class HttpServletRequestAdapter extends AbstractRequestAdapter implements RequestAdapter {
+public class HttpServletRequestAdapter extends AbstractRequestAdapter {
 	
 	/**
 	 * Instantiates a new HttpServletRequestAdapter.

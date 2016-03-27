@@ -35,7 +35,7 @@ import com.aspectran.core.util.logging.LogFactory;
  * 
  * Created: 2008. 03. 22 PM 5:51:58
  */
-public class AponTransform extends TransformResponse implements Response {
+public class AponTransform extends TransformResponse {
 	
 	private static final Log log = LogFactory.getLog(AponTransform.class);
 	

@@ -20,7 +20,9 @@ import java.util.Collection;
 import java.util.List;
 
 import com.aspectran.core.context.builder.importer.ShallowImportHandler;
+import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.rule.AspectRule;
+import com.aspectran.core.context.rule.BeanActionRule;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.TemplateRule;
 import com.aspectran.core.context.rule.TransletRule;
@@ -101,8 +103,34 @@ public class ShallowContextBuilderAssistant extends ContextBuilderAssistant {
 	}
 	
 	@Override
-	public void resolveBeanClass(String beanId, BeanReferenceInspectable inspectable) {
+	public void resolveBeanClass(String beanId, AspectRule aspectRule) {
 		// shallow
 	}
+
+	@Override
+	public void resolveBeanClass(String beanId, BeanActionRule beanActionRule) {
+		// shallow
+	}
+
+	@Override
+	public void resolveBeanClass(String beanId, BeanRule beanRule) {
+		// shallow
+	}
+
+	@Override
+	public void resolveBeanClass(Token token) {
+		// shallow
+	}
+
+	@Override
+	public void putBeanReference(String beanId, BeanReferenceInspectable someRule) {
+		// shallow
+	}
+
+	@Override
+	public void putBeanReference(Class<?> beanClass, BeanReferenceInspectable someRule) {
+		// shallow
+	}
+
 
 }

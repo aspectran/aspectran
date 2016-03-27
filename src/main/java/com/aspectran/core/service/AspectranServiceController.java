@@ -15,8 +15,6 @@
  */
 package com.aspectran.core.service;
 
-import com.aspectran.core.context.ActivityContext;
-
 /**
  * The Interface AspectranServiceController.
  */
@@ -25,10 +23,9 @@ public interface AspectranServiceController {
 	/**
 	 * Starts a Aspectran Service.
 	 *
-	 * @return the activity context
 	 * @throws AspectranServiceException the aspectran service exception
 	 */
-	ActivityContext startup() throws AspectranServiceException;
+	void startup() throws AspectranServiceException;
 
 	/**
 	 * Restarts a Aspectran Service.

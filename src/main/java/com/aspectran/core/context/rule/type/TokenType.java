@@ -29,7 +29,7 @@ public enum TokenType {
 
 	private final String alias;
 
-	private TokenType(String alias) {
+	TokenType(String alias) {
 		this.alias = alias;
 	}
 

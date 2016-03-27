@@ -27,7 +27,7 @@ public enum PointcutType {
 
 	private final String alias;
 
-	private PointcutType(String alias) {
+	PointcutType(String alias) {
 		this.alias = alias;
 	}
 

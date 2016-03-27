@@ -18,18 +18,13 @@ package com.aspectran.core.service;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.aspectran.core.adapter.ApplicationAdapter;
-import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.bean.scope.Scope;
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
 
 /**
  * The Class CoreAspectranService.
  */
 public class CoreAspectranService extends AbstractAspectranService {
 
-	private static final Log log = LogFactory.getLog(CoreAspectranService.class);
-	
 	private static final long DEFAULT_PAUSE_TIMEOUT = 321L;
 	
 	private AspectranServiceControllerListener aspectranServiceControllerListener;
@@ -46,12 +41,17 @@ public class CoreAspectranService extends AbstractAspectranService {
 	/** Reference to the JVM shutdown hook, if registered */
 	private Thread shutdownHook;
 
+	public CoreAspectranService(ApplicationAdapter applicationAdapter) {
+		super(applicationAdapter);
+		applicationAdapter.setAspectranServiceController(this);
+	}
+
 	public void setAspectranServiceControllerListener(AspectranServiceControllerListener aspectranServiceControllerListener) {
 		this.aspectranServiceControllerListener = aspectranServiceControllerListener;
 	}
 
 	@Override
-	public ActivityContext startup() throws AspectranServiceException {
+	public void startup() throws AspectranServiceException {
 		synchronized(this.startupShutdownMonitor) {
 			if(this.closed.get()) {
 				throw new AspectranServiceException("Cannot start AspectranService, because it was already destroyed.");
@@ -68,9 +68,8 @@ public class CoreAspectranService extends AbstractAspectranService {
 
 			log.info("AspectranService was started successfully.");
 
-			if(aspectranServiceControllerListener != null) aspectranServiceControllerListener.started();
-
-			return activityContext;
+			if(aspectranServiceControllerListener != null)
+				aspectranServiceControllerListener.started();
 		}
 	}
 

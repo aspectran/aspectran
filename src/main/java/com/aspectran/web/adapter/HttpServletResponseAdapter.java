@@ -26,7 +26,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.adapter.AbstractResponseAdapter;
-import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.context.expr.ItemExpression;
 import com.aspectran.core.context.expr.ItemExpressor;
 import com.aspectran.core.context.rule.RedirectResponseRule;
@@ -37,7 +36,7 @@ import com.aspectran.core.context.rule.RedirectResponseRule;
  * @since 2011. 3. 13.
  * @author Juho Jeong
  */
-public class HttpServletResponseAdapter extends AbstractResponseAdapter implements ResponseAdapter {
+public class HttpServletResponseAdapter extends AbstractResponseAdapter {
 
 	private static final char QUESTION_CHAR = '?';
 

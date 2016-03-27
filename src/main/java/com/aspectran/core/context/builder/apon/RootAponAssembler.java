@@ -109,7 +109,7 @@ public class RootAponAssembler {
 		return rootParameters;
 	}
 	
-	public Parameters assembleAspectran() throws Exception {
+	private Parameters assembleAspectran() throws Exception {
 		Parameters aspectranParameters = new AspectranParameters();
 		
 		AssistantLocal assistantLocal = assistant.getAssistantLocal();
@@ -171,7 +171,7 @@ public class RootAponAssembler {
 		return aspectranParameters;
 	}
 	
-	public Parameters assembleAspectParameters(AspectRule aspectRule) {
+	private Parameters assembleAspectParameters(AspectRule aspectRule) {
 		Parameters aspectParameters = new AspectParameters();
 		aspectParameters.putValueNonNull(AspectParameters.description, aspectRule.getDescription());
 		aspectParameters.putValueNonNull(AspectParameters.id, aspectRule.getId());
@@ -281,7 +281,7 @@ public class RootAponAssembler {
 		return aspectParameters;
 	}
 
-	public Parameters assembleBeanParameters(BeanRule beanRule) {
+	private Parameters assembleBeanParameters(BeanRule beanRule) {
 		Parameters beanParameters = new BeanParameters();
 		beanParameters.putValueNonNull(BeanParameters.description, beanRule.getDescription());
 		beanParameters.putValueNonNull(BeanParameters.id, beanRule.getId());
@@ -315,7 +315,7 @@ public class RootAponAssembler {
 		return beanParameters;
 	}
 	
-	public Parameters assembleTransletParameters(TransletRule transletRule) {
+	private Parameters assembleTransletParameters(TransletRule transletRule) {
 		Parameters transletParameters = new TransletParameters();
 		transletParameters.putValueNonNull(TransletParameters.description, transletRule.getDescription());
 		transletParameters.putValueNonNull(TransletParameters.name, transletRule.getName());
@@ -399,7 +399,7 @@ public class RootAponAssembler {
 		return transletParameters;
 	}
 	
-	public Parameters assembleImportParameters(Importer imp) {
+	private Parameters assembleImportParameters(Importer imp) {
 		Parameters importParameters = new ImportParameters();
 		
 		if(imp.getImporterType() == ImporterType.FILE) {
@@ -414,7 +414,7 @@ public class RootAponAssembler {
 		return importParameters;
 	}
 	
-	public Parameters assembleResponseByContentTypeParameters(ResponseByContentTypeRule responseByContentTypeRule) {
+	private Parameters assembleResponseByContentTypeParameters(ResponseByContentTypeRule responseByContentTypeRule) {
 		ResponseByContentTypeParameters rbctp = new ResponseByContentTypeParameters();
 		rbctp.putValue(ResponseByContentTypeParameters.exceptionType, responseByContentTypeRule.getExceptionType());
 		
@@ -438,7 +438,7 @@ public class RootAponAssembler {
 		return rbctp;
 	}
 	
-	public Parameters assembleResponseParameters(ResponseRule responseRule) {
+	private Parameters assembleResponseParameters(ResponseRule responseRule) {
 		ResponseParameters responseParameters = new ResponseParameters();
 		responseParameters.putValueNonNull(ResponseParameters.name, responseRule.getName());
 		responseParameters.putValueNonNull(ResponseParameters.characterEncoding, responseRule.getCharacterEncoding());
@@ -460,7 +460,7 @@ public class RootAponAssembler {
 		return responseParameters;
 	}
 	
-	public Parameters assembleTransformParameters(TransformRule transformRule) {
+	private Parameters assembleTransformParameters(TransformRule transformRule) {
 		TransformParameters transformParameters = new TransformParameters();
 
 		if(transformRule.getTransformType() != null)
@@ -485,7 +485,7 @@ public class RootAponAssembler {
 		return transformParameters;
 	}
 	
-	public Parameters assembleDispatchParameters(DispatchResponseRule dispatchResponseRule) {
+	private Parameters assembleDispatchParameters(DispatchResponseRule dispatchResponseRule) {
 		DispatchParameters dispatchParameters = new DispatchParameters();
 		dispatchParameters.putValueNonNull(DispatchParameters.name, dispatchResponseRule.getName());
 		dispatchParameters.putValueNonNull(DispatchParameters.contentType, dispatchResponseRule.getContentType());
@@ -500,7 +500,7 @@ public class RootAponAssembler {
 		return dispatchParameters;
 	}
 	
-	public Parameters assembleForwardParameters(ForwardResponseRule forwardResponseRule) {
+	private Parameters assembleForwardParameters(ForwardResponseRule forwardResponseRule) {
 		ForwardParameters forwardParameters = new ForwardParameters();
 		forwardParameters.putValueNonNull(ForwardParameters.contentType, forwardResponseRule.getContentType());
 		forwardParameters.putValueNonNull(ForwardParameters.translet, forwardResponseRule.getTransletName());
@@ -519,7 +519,7 @@ public class RootAponAssembler {
 		return forwardParameters;
 	}
 	
-	public Parameters assembleRedirectParameters(RedirectResponseRule redirectResponseRule) {
+	private Parameters assembleRedirectParameters(RedirectResponseRule redirectResponseRule) {
 		RedirectParameters redirectParameters = new RedirectParameters();
 		redirectParameters.putValueNonNull(RedirectParameters.contentType, redirectResponseRule.getContentType());
 		redirectParameters.putValueNonNull(RedirectParameters.target, redirectResponseRule.getTarget());
@@ -538,8 +538,8 @@ public class RootAponAssembler {
 		
 		return redirectParameters;
 	}
-	
-	public Parameters assembleTemplateParameters(TemplateRule templateRule) {
+
+	private Parameters assembleTemplateParameters(TemplateRule templateRule) {
 		TemplateParameters templateParameters = new TemplateParameters();
 		templateParameters.putValueNonNull(TemplateParameters.id, templateRule.getId());
 		templateParameters.putValueNonNull(TemplateParameters.engine, templateRule.getEngine());
@@ -554,7 +554,7 @@ public class RootAponAssembler {
 		return templateParameters;
 	}
 	
-	public void assembleActionList(ActionList actionList, Parameters parameters, ParameterDefine parameterDefine) {
+	private void assembleActionList(ActionList actionList, Parameters parameters, ParameterDefine parameterDefine) {
 		for(Executable action : actionList) {
 			if(action.getActionType() == ActionType.ECHO) {
 				EchoActionRule echoActionRule = action.getActionRule();
@@ -569,7 +569,7 @@ public class RootAponAssembler {
 		}
 	}
 	
-	public Parameters assembleActionParameters(BeanActionRule beanActionRule) {
+	private Parameters assembleActionParameters(BeanActionRule beanActionRule) {
 		ActionParameters actionParameters = new ActionParameters();
 		actionParameters.putValueNonNull(ActionParameters.id, beanActionRule.getActionId());
 		actionParameters.putValueNonNull(ActionParameters.beanId, beanActionRule.getBeanId());
@@ -589,7 +589,7 @@ public class RootAponAssembler {
 		return actionParameters;
 	}
 	
-	public Parameters assembleActionParameters(EchoActionRule echoActionRule) {
+	private Parameters assembleActionParameters(EchoActionRule echoActionRule) {
 		ActionParameters actionParameters = new ActionParameters();
 		actionParameters.putValueNonNull(ActionParameters.id, echoActionRule.getActionId());
 		actionParameters.putValueNonNull(ActionParameters.hidden, echoActionRule.getHidden());
@@ -602,7 +602,7 @@ public class RootAponAssembler {
 		return actionParameters;
 	}
 	
-	public Parameters assembleActionParameters(IncludeActionRule includeActionRule) {
+	private Parameters assembleActionParameters(IncludeActionRule includeActionRule) {
 		ActionParameters actionParameters = new ActionParameters();
 		actionParameters.putValueNonNull(ActionParameters.id, includeActionRule.getActionId());
 		actionParameters.putValueNonNull(ActionParameters.include, includeActionRule.getTransletName());
@@ -616,7 +616,7 @@ public class RootAponAssembler {
 		return actionParameters;
 	}
 
-	public Parameters assembleItemHolderParameters(ItemRuleMap itemRuleMap) {
+	private Parameters assembleItemHolderParameters(ItemRuleMap itemRuleMap) {
 		ItemHolderParameters itemHolderParameters = new ItemHolderParameters();
 		for(ItemRule itemRule : itemRuleMap.values()) {
 			itemHolderParameters.putValue(ItemHolderParameters.item, assembleItemParameters(itemRule));
@@ -624,7 +624,7 @@ public class RootAponAssembler {
 		return itemHolderParameters;
 	}
 	
-	public Parameters assembleItemParameters(ItemRule itemRule) {
+	private Parameters assembleItemParameters(ItemRule itemRule) {
 		ItemParameters itemParameters = new ItemParameters();
 		if(itemRule.getType() != null && itemRule.getType() != ItemType.SINGULAR)
 			itemParameters.putValue(ItemParameters.type, itemRule.getType().toString());
@@ -654,7 +654,7 @@ public class RootAponAssembler {
 				}
 			}
 		}
-		
+
 		return itemParameters;
 	}
 	

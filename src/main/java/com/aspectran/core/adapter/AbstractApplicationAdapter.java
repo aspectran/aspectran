@@ -22,7 +22,6 @@ import java.net.URL;
 
 import com.aspectran.core.context.bean.scope.ApplicationScope;
 import com.aspectran.core.context.loader.AspectranClassLoader;
-import com.aspectran.core.service.AspectranService;
 import com.aspectran.core.service.AspectranServiceController;
 import com.aspectran.core.util.ResourceUtils;
 import com.aspectran.core.util.ToStringBuilder;
@@ -34,22 +33,22 @@ import com.aspectran.core.util.ToStringBuilder;
 */
 public abstract class AbstractApplicationAdapter implements ApplicationAdapter {
 	
-	protected final AspectranService aspectranService;
-	
 	protected final Object adaptee;
 
 	protected final ApplicationScope scope = new ApplicationScope();
-	
+
+	protected ClassLoader classLoader;
+
+	protected AspectranServiceController aspectranServiceController;
+
 	protected String applicationBasePath;
 
 	/**
 	 * Instantiates a new AbstractApplicationAdapter.
 	 *
-	 * @param aspectranService the aspectran service
 	 * @param adaptee the adaptee
 	 */
-	public AbstractApplicationAdapter(AspectranService aspectranService, Object adaptee) {
-		this.aspectranService = aspectranService;
+	public AbstractApplicationAdapter(Object adaptee) {
 		this.adaptee = adaptee;
 	}
 
@@ -66,15 +65,26 @@ public abstract class AbstractApplicationAdapter implements ApplicationAdapter {
 
 	@Override
 	public AspectranServiceController getAspectranServiceController() {
-		return aspectranService;
+		return aspectranServiceController;
+	}
+
+	@Override
+	public void setAspectranServiceController(AspectranServiceController aspectranServiceController) {
+		this.aspectranServiceController = aspectranServiceController;
 	}
 
 	@Override
 	public ClassLoader getClassLoader() {
-		if(aspectranService.getAspectranClassLoader() != null)
-			return aspectranService.getAspectranClassLoader();
-		
-		return AspectranClassLoader.getDefaultClassLoader();
+		if(classLoader == null) {
+			return AspectranClassLoader.getDefaultClassLoader();
+		}
+
+		return classLoader;
+	}
+
+	@Override
+	public void setClassLoader(ClassLoader classLoader) {
+		this.classLoader = classLoader;
 	}
 
 	@Override

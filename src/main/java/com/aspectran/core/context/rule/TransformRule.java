@@ -16,9 +16,7 @@
 package com.aspectran.core.context.rule;
 
 import com.aspectran.core.context.rule.ability.ActionPossessSupport;
-import com.aspectran.core.context.rule.ability.BeanReferenceInspectable;
 import com.aspectran.core.context.rule.ability.Replicable;
-import com.aspectran.core.context.rule.type.BeanReferrerType;
 import com.aspectran.core.context.rule.type.ContentType;
 import com.aspectran.core.context.rule.type.ResponseType;
 import com.aspectran.core.context.rule.type.TransformType;
@@ -30,11 +28,9 @@ import com.aspectran.core.util.ToStringBuilder;
  * 
  * <p>Created: 2008. 03. 22 PM 5:51:58</p>
  */
-public class TransformRule extends ActionPossessSupport implements Replicable<TransformRule>, BeanReferenceInspectable {
+public class TransformRule extends ActionPossessSupport implements Replicable<TransformRule> {
 	
 	public static final ResponseType RESPONSE_TYPE = ResponseType.TRANSFORM;
-
-	private static final BeanReferrerType BEAN_REFERABLE_RULE_TYPE = BeanReferrerType.TRANSFORM_RULE;
 
 	private TransformType transformType;
 
@@ -167,23 +163,13 @@ public class TransformRule extends ActionPossessSupport implements Replicable<Tr
 	}
 
 	@Override
-	public BeanReferrerType getBeanReferrerType() {
-		return BEAN_REFERABLE_RULE_TYPE;
-	}
-
-	@Override
-	public void setResolvedBeanClass(Class<?> beanClass) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
 	public String toString() {
 		ToStringBuilder tsb = new ToStringBuilder();
 		tsb.appendForce("responseType", RESPONSE_TYPE);
 		tsb.append("transformType", transformType);
 		tsb.append("contentType", contentType);
-		tsb.append("templateId", templateId);
-		tsb.append("templateRule", templateRule);
+		tsb.append("template", templateId);
+		tsb.append("builtinTemplate", templateRule);
 		tsb.append("characterEncoding", characterEncoding);
 		tsb.append("defaultResponse", defaultResponse);
 		return tsb.toString();
@@ -234,21 +220,21 @@ public class TransformRule extends ActionPossessSupport implements Replicable<Tr
 	}
 
 	public static TransformRule replicate(TransformRule transformRule) {
-		TransformRule newTransformRule = new TransformRule();
-		newTransformRule.setTransformType(transformRule.getTransformType());
-		newTransformRule.setContentType(transformRule.getContentType());
-		newTransformRule.setTemplateId(transformRule.getTemplateId());
-		newTransformRule.setCharacterEncoding(transformRule.getCharacterEncoding());
-		newTransformRule.setDefaultResponse(transformRule.getDefaultResponse());
-		newTransformRule.setPretty(transformRule.getPretty());
-		newTransformRule.setActionList(transformRule.getActionList());
+		TransformRule tr = new TransformRule();
+		tr.setTransformType(transformRule.getTransformType());
+		tr.setContentType(transformRule.getContentType());
+		tr.setTemplateId(transformRule.getTemplateId());
+		tr.setCharacterEncoding(transformRule.getCharacterEncoding());
+		tr.setDefaultResponse(transformRule.getDefaultResponse());
+		tr.setPretty(transformRule.getPretty());
+		tr.setActionList(transformRule.getActionList());
 		
 		TemplateRule templateRule = transformRule.getTemplateRule();
 		if(templateRule != null) {
-			newTransformRule.setTemplateRule(templateRule.replicate());
+			tr.setTemplateRule(templateRule.replicate());
 		}
 		
-		return newTransformRule;
+		return tr;
 	}
 	
 }

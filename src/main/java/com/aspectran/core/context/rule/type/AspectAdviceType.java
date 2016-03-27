@@ -38,7 +38,7 @@ public enum AspectAdviceType {
 
 	private final String alias;
 
-	private AspectAdviceType(String alias) {
+	AspectAdviceType(String alias) {
 		this.alias = alias;
 	}
 

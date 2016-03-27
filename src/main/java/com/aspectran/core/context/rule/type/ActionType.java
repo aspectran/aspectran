@@ -29,7 +29,7 @@ public enum ActionType {
 
 	private final String alias;
 
-	private ActionType(String alias) {
+	ActionType(String alias) {
 		this.alias = alias;
 	}
 

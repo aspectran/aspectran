@@ -16,14 +16,8 @@
 package com.aspectran.console.adapter;
 
 import java.io.File;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
 
-import com.aspectran.core.adapter.AbstractApplicationAdapter;
-import com.aspectran.core.adapter.ApplicationAdapter;
-import com.aspectran.core.service.AspectranService;
+import com.aspectran.core.adapter.CommonApplicationAdapter;
 
 /**
  * The Class ConsoleApplicationAdapter.
@@ -31,17 +25,13 @@ import com.aspectran.core.service.AspectranService;
  * @author Juho Jeong
  * @since 2016. 1. 18.
  */
-public class ConsoleApplicationAdapter extends AbstractApplicationAdapter implements ApplicationAdapter {
-	
-	private Map<String, Object> attributes = new HashMap<String, Object>();
+public class ConsoleApplicationAdapter extends CommonApplicationAdapter {
 	
 	/**
 	 * Instantiates a new ConsoleApplicationAdapter.
-	 *
-	 * @param aspectranService the aspectran service
 	 */
-	public ConsoleApplicationAdapter(AspectranService aspectranService) {
-		super(aspectranService, null);
+	public ConsoleApplicationAdapter() {
+		super(null);
 		
 		String applicationBasePath = System.getProperty("com.aspectran.console.workingDir");
 		if(applicationBasePath == null)
@@ -50,25 +40,4 @@ public class ConsoleApplicationAdapter extends AbstractApplicationAdapter implem
 		super.setApplicationBasePath(applicationBasePath);
 	}
 
-	@Override
-	@SuppressWarnings("unchecked")
-	public <T> T getAttribute(String name) {
-		return (T)attributes.get(name);
-	}
-
-	@Override
-	public void setAttribute(String name, Object o) {
-		attributes.put(name, o);
-	}
-
-	@Override
-	public Enumeration<String> getAttributeNames() {
-		return Collections.enumeration(attributes.keySet());
-	}
-
-	@Override
-	public void removeAttribute(String name) {
-		attributes.remove(name);
-	}
-	
 }

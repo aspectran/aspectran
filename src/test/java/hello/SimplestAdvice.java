@@ -13,19 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.core.context.rule.ability;
+package hello;
 
-import com.aspectran.core.context.rule.type.BeanReferrerType;
+import com.aspectran.core.activity.Translet;
+import com.aspectran.core.util.logging.Log;
+import com.aspectran.core.util.logging.LogFactory;
 
-/**
- * The Interface BeanReferenceInspectable.
- *
- * <p>Created: 2016. 2. 20.</p>
- *
- * @since 2.0.0
- */
-public interface BeanReferenceInspectable {
+public class SimplestAdvice {
+	
+	private final Log log = LogFactory.getLog(SimplestAdvice.class);
 
-    BeanReferrerType getBeanReferrerType();
-    
+	public String wellcome(Translet translet) {
+		String msg = "Welcome to Aspectran!";
+		
+		log.info(msg);
+		
+		return msg;
+	}
+	
+	public String goodbye(Translet translet) {
+		log.info("activityDataMap " + translet.getActivityDataMap(true));
+
+		String msg = "Goodbye!";
+		
+		log.info(msg);
+		
+		return msg;
+	}
+	
 }

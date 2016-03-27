@@ -25,7 +25,7 @@ public enum AspectTargetType {
 
 	private final String alias;
 
-	private AspectTargetType(String alias) {
+	AspectTargetType(String alias) {
 		this.alias = alias;
 	}
 

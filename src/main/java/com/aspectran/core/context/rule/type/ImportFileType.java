@@ -27,7 +27,7 @@ public enum ImportFileType {
 
 	private final String alias;
 
-	private ImportFileType(String alias) {
+	ImportFileType(String alias) {
 		this.alias = alias;
 	}
 
