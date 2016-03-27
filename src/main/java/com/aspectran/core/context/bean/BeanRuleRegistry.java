@@ -32,7 +32,6 @@ import com.aspectran.core.context.loader.AspectranClassLoader;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.translet.TransletRuleRegistry;
-import com.aspectran.core.util.ClassScanner;
 import com.aspectran.core.util.PrefixSuffixPattern;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
@@ -164,20 +163,17 @@ public class BeanRuleRegistry {
 				scanner.setBeanIdMaskPattern(beanRule.getMaskPattern());
 
 			try {
-				scanner.scan(scanPath, new ClassScanner.SaveHandler() {
-					@Override
-					public void save(String resourceName, Class<?> scannedClass) {
-						BeanRule beanRule2 = beanRule.replicate();
-						if(prefixSuffixPattern != null) {
-							beanRule2.setId(prefixSuffixPattern.join(resourceName));
-						} else {
-							if(beanRule.getId() != null) {
-								beanRule2.setId(beanRule.getId() + resourceName);
-							}
+				scanner.scan(scanPath, (resourceName, scannedClass) -> {
+					BeanRule beanRule2 = beanRule.replicate();
+					if(prefixSuffixPattern != null) {
+						beanRule2.setId(prefixSuffixPattern.join(resourceName));
+					} else {
+						if(beanRule.getId() != null) {
+							beanRule2.setId(beanRule.getId() + resourceName);
 						}
-						beanRule2.setBeanClass(scannedClass);
-						dissectBeanRule(beanRule2);
 					}
+					beanRule2.setBeanClass(scannedClass);
+					dissectBeanRule(beanRule2);
 				});
 			} catch(IOException e) {
 				throw new BeanClassScanFailedException("Failed to scan bean class. scanPath: " + scanPath, e);

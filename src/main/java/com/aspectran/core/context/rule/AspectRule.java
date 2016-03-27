@@ -213,7 +213,7 @@ public class AspectRule implements BeanReferenceInspectable {
 	}
 	
 	public static AspectRule newInstance(String id, String useFor) {
-		AspectTargetType aspectTargetType = null;
+		AspectTargetType aspectTargetType;
 		
 		if(useFor != null) {
 			aspectTargetType = AspectTargetType.lookup(useFor);

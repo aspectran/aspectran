@@ -15,7 +15,6 @@
  */
 package com.aspectran.core.context.builder;
 
-import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -455,11 +454,9 @@ public class ContextBuilderAssistant {
 	 * Adds the bean rule.
 	 *
 	 * @param beanRule the bean rule
-	 * @throws CloneNotSupportedException the clone not supported exception
 	 * @throws ClassNotFoundException the class not found exception
-	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
-	public void addBeanRule(BeanRule beanRule) throws CloneNotSupportedException, ClassNotFoundException, IOException {
+	public void addBeanRule(BeanRule beanRule) throws ClassNotFoundException {
 		beanRuleRegistry.addBeanRule(beanRule);
 	}
 
@@ -467,9 +464,8 @@ public class ContextBuilderAssistant {
 	 * Add translet rule.
 	 *
 	 * @param transletRule the translet rule
-	 * @throws CloneNotSupportedException the clone not supported exception
 	 */
-	public void addTransletRule(TransletRule transletRule) throws CloneNotSupportedException {
+	public void addTransletRule(TransletRule transletRule) {
 		transletRuleRegistry.addTransletRule(transletRule);
 	}
 

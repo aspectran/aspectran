@@ -168,8 +168,8 @@ public class TransformRule extends ActionPossessSupport implements Replicable<Tr
 		tsb.appendForce("responseType", RESPONSE_TYPE);
 		tsb.append("transformType", transformType);
 		tsb.append("contentType", contentType);
-		tsb.append("templateId", templateId);
-		tsb.append("templateRule", templateRule);
+		tsb.append("template", templateId);
+		tsb.append("builtinTemplate", templateRule);
 		tsb.append("characterEncoding", characterEncoding);
 		tsb.append("defaultResponse", defaultResponse);
 		return tsb.toString();

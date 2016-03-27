@@ -74,7 +74,7 @@ public class TemplateRule implements Replicable<TemplateRule>, BeanReferenceInsp
 	}
 
 	public TemplateRule(String engine) {
-		if(engine != null && !engine.isEmpty() && !engine.equals(TemplateRule.DEFAULT_TEMPLATE_ENGINE_NAME)) {
+		if(engine != null && !engine.isEmpty() && !engine.equals(DEFAULT_TEMPLATE_ENGINE_NAME)) {
 			this.engine = engine;
 		}
 	}
@@ -92,7 +92,7 @@ public class TemplateRule implements Replicable<TemplateRule>, BeanReferenceInsp
 	}
 
 	public void setEngine(String engine) {
-    	if(engine == null || engine.isEmpty() || engine.equals(TemplateRule.DEFAULT_TEMPLATE_ENGINE_NAME)) {
+    	if(engine == null || engine.isEmpty() || engine.equals(DEFAULT_TEMPLATE_ENGINE_NAME)) {
     		this.engine = null;
     		this.contentTokens = null;
     	} else {
