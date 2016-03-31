@@ -74,7 +74,7 @@ public class CoreAspectranService extends AbstractAspectranService {
 	}
 
 	@Override
-	public synchronized void restart() throws AspectranServiceException {
+	public void restart() throws AspectranServiceException {
 		synchronized(this.startupShutdownMonitor) {
 			if(this.closed.get()) {
 				log.warn("Cannot restart AspectranService, because it was already destroyed.");
@@ -100,7 +100,7 @@ public class CoreAspectranService extends AbstractAspectranService {
 	}
 
 	@Override
-	public synchronized void reload() throws AspectranServiceException {
+	public void reload() throws AspectranServiceException {
 		synchronized(this.startupShutdownMonitor) {
 			if(this.closed.get()) {
 				log.warn("Cannot restart AspectranService, because it was already destroyed.");
@@ -127,7 +127,7 @@ public class CoreAspectranService extends AbstractAspectranService {
 	}
 
 	@Override
-	public synchronized void refresh() throws AspectranServiceException {
+	public void refresh() throws AspectranServiceException {
 		if(isHardReload())
 			restart();
 		else
@@ -135,7 +135,7 @@ public class CoreAspectranService extends AbstractAspectranService {
 	}
 
 	@Override
-	public synchronized void pause() {
+	public void pause() {
 		synchronized(this.startupShutdownMonitor) {
 			if(this.closed.get()) {
 				log.warn("Cannot restart AspectranService, because it was already destroyed.");
@@ -150,7 +150,7 @@ public class CoreAspectranService extends AbstractAspectranService {
 	}
 
 	@Override
-	public synchronized void pause(long timeout) {
+	public void pause(long timeout) {
 		synchronized(this.startupShutdownMonitor) {
 			if(this.closed.get()) {
 				log.warn("Cannot restart AspectranService, because it was already destroyed.");
@@ -163,7 +163,7 @@ public class CoreAspectranService extends AbstractAspectranService {
 	}
 
 	@Override
-	public synchronized void resume() {
+	public void resume() {
 		synchronized(this.startupShutdownMonitor) {
 			if(this.closed.get()) {
 				log.warn("Cannot restart AspectranService, because it was already destroyed.");
@@ -226,7 +226,7 @@ public class CoreAspectranService extends AbstractAspectranService {
 	 * on JVM shutdown unless it has already been closed at that time.
 	 */
 	private void registerShutdownHook() {
-		if (this.shutdownHook == null) {
+		if(this.shutdownHook == null) {
 			// No shutdown hook registered yet.
 			this.shutdownHook = new Thread() {
 				@Override
