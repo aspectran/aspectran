@@ -32,7 +32,7 @@ import com.aspectran.core.context.loader.resource.InvalidResourceException;
 /**
  * <p>Created: 2016. 3. 26.</p>
  */
-@FixMethodOrder(MethodSorters.JVM)
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class ActivityContextLoaderTest {
 
 	private ApplicationAdapter applicationAdapter;
@@ -43,7 +43,7 @@ public class ActivityContextLoaderTest {
 	}
 
 	@Test
-	public void hybridLoading() {
+	public void test1HybridLoading() {
 		try {
 			System.out.println("================ HybridActivityContextLoading ===============");
 
@@ -69,7 +69,7 @@ public class ActivityContextLoaderTest {
 	}
 
 	@Test
-	public void xmlLoading() {
+	public void test2XmlLoading() {
 		try {
 			System.out.println("================ XMLActivityContextLoading ===============");
 
@@ -91,7 +91,7 @@ public class ActivityContextLoaderTest {
 	}
 
 	@Test
-	public void aponLoading() {
+	public void test3AponLoading() {
 		try {
 			System.out.println("================ APONActivityContextLoading ===============");
 
