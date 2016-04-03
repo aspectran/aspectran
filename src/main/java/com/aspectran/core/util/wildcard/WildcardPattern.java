@@ -20,21 +20,21 @@ package com.aspectran.core.util.wildcard;
  */
 public class WildcardPattern {
 
-	protected static final char ESCAPE_CHAR = '\\';
-	protected static final char SPACE_CHAR = ' ';
+	private static final char ESCAPE_CHAR = '\\';
+	private static final char SPACE_CHAR = ' ';
 	public static final char STAR_CHAR = '*';
-	protected static final char QUESTION_CHAR = '?';
-	protected static final char PLUS_CHAR = '+';
+	private static final char QUESTION_CHAR = '?';
+	private static final char PLUS_CHAR = '+';
 	
-	protected static final int EOT_TYPE = -2;
-	protected static final int SKIP_TYPE = -1;
-	protected static final int LITERAL_TYPE = 0;
-	protected static final int STAR_TYPE = 1;
-	protected static final int STAR_STAR_TYPE = 2;
-	protected static final int QUESTION_TYPE = 3;
-	protected static final int PLUS_TYPE = 4;
-	protected static final int SEPARATOR_TYPE = 9;
-	
+	static final int LITERAL_TYPE = 1;
+	static final int STAR_TYPE = 2;
+	static final int STAR_STAR_TYPE = 3;
+	static final int QUESTION_TYPE = 4;
+	static final int PLUS_TYPE = 5;
+	private static final int SKIP_TYPE = 8;
+	static final int SEPARATOR_TYPE = 9;
+	static final int EOT_TYPE = 0;
+
 	private char separator;
 	
 	private char[] tokens;
@@ -55,7 +55,7 @@ public class WildcardPattern {
 
 	private void parse(String patternString) {
 		this.patternString = patternString;
-		
+
 		tokens = patternString.toCharArray();
 		types = new int[tokens.length];
 
@@ -119,25 +119,27 @@ public class WildcardPattern {
 			} else {
 				if(esc)
 					types[i - 1] = LITERAL_TYPE;
+				else
+					types[i] = LITERAL_TYPE;
 			}
 
 			if(tokens[i] != STAR_CHAR && star)
 				star = false;
-			
+
 			if(types[i] != SKIP_TYPE) {
 				ptype = types[i];
 				pindex = i;
 			}
 		}
 
-		for(int i = 0, j = 0; i < tokens.length; i++) {
+		for(int i = 0, s = 0; i < tokens.length; i++) {
 			if(types[i] == SKIP_TYPE) {
-				j++; 
+				s++;
 				tokens[i] = SPACE_CHAR;
 				types[i] = EOT_TYPE;
-			} else if(j > 0) {
-				tokens[i - j] = tokens[i];
-				types[i - j] = types[i];
+			} else if(s > 0) {
+				tokens[i - s] = tokens[i];
+				types[i - s] = types[i];
 				tokens[i] = SPACE_CHAR;
 				types[i] = EOT_TYPE;
 			}

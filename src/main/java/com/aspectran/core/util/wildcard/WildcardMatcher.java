@@ -186,188 +186,189 @@ public class WildcardMatcher {
 	private static boolean matches(WildcardPattern pattern, CharSequence input, int[] separatorFlags) {
 		char[] tokens = pattern.getTokens();
 		int[] types = pattern.getTypes();
-		char separator = pattern.getSeparator();
+		char sepa = pattern.getSeparator();
 		
-		int tlength = tokens.length;
-		int clength = input.length();
+		int tlen = tokens.length;
+		int clen = input.length();
 
-		int sepaCount = 0;
+		int sepaCnt = 0;
 
-		int tindex = 0;
-		int cindex = 0;
+		int tidx = 0;
+		int cidx = 0;
 		
-		int trange1;
-		int trange2;
-		int ttemp;
+		int trng1;
+		int trng2;
+		int ttmp;
 		
-		int crange1;
-		int crange2;
-		int ctemp;
+		int crng1;
+		int crng2;
+		int ctmp;
 		
 		int scnt1;
 		int scnt2;
 		
-		while(tindex < tlength && cindex < clength) {
-			if(types[tindex] == WildcardPattern.LITERAL_TYPE) {
-				if(tokens[tindex++] != input.charAt(cindex++)) {
+		while(tidx < tlen && cidx < clen) {
+			if(types[tidx] == WildcardPattern.LITERAL_TYPE) {
+				if(tokens[tidx++] != input.charAt(cidx++)) {
 					return false;
 				}
-			} else if(types[tindex] == WildcardPattern.STAR_TYPE) {
-				trange1 = tindex + 1;
-				if(trange1 < tlength) {
-					trange2 = trange1;
-					for(; trange2 < tlength; trange2++) {
-						if(types[trange2] == WildcardPattern.EOT_TYPE || types[trange2] != WildcardPattern.LITERAL_TYPE)
+			} else if(types[tidx] == WildcardPattern.STAR_TYPE) {
+				trng1 = tidx + 1;
+				if(trng1 < tlen) {
+					trng2 = trng1;
+					for(; trng2 < tlen; trng2++) {
+						if(types[trng2] == WildcardPattern.EOT_TYPE || types[trng2] != WildcardPattern.LITERAL_TYPE)
 							break;
 					}
-					if(trange1 == trange2) {
+					if(trng1 == trng2) {
 						// prefix*
-						for(; cindex < clength; cindex++) {
-							if(input.charAt(cindex) == separator)
+						for(; cidx < clen; cidx++) {
+							if(input.charAt(cidx) == sepa)
 								break;
 						}
-						tindex++;
+						tidx++;
 					} else {
 						// *suffix
-						ttemp = trange1;
+						ttmp = trng1;
 						do {
-							if(input.charAt(cindex) == separator)
+							if(input.charAt(cidx) == sepa)
 								return false;
-							if(tokens[ttemp] != input.charAt(cindex++))
-								ttemp = trange1;
+							if(tokens[ttmp] != input.charAt(cidx++))
+								ttmp = trng1;
 							else
-								ttemp++;
-						} while(ttemp < trange2 && cindex < clength);
-						if(ttemp < trange2)
+								ttmp++;
+						} while(ttmp < trng2 && cidx < clen);
+						if(ttmp < trng2)
 							return false;
-						tindex = trange2;
+						tidx = trng2;
 					}
 				} else {
-					for(; cindex < clength; cindex++) {
-						if(input.charAt(cindex) == separator)
+					for(; cidx < clen; cidx++) {
+						if(input.charAt(cidx) == sepa)
 							break;
 					}
-					tindex++;
+					tidx++;
 				}
-			} else if(types[tindex] == WildcardPattern.STAR_STAR_TYPE) {
-				if(separator > 0) {
-					trange1 = -1;
-					trange2 = -1;
-					for(ttemp = tindex + 1; ttemp < tlength; ttemp++) {
-						if(trange1 == -1) {
-							if(types[ttemp] == WildcardPattern.LITERAL_TYPE) {
-								trange1 = ttemp;
+			} else if(types[tidx] == WildcardPattern.STAR_STAR_TYPE) {
+				if(sepa > 0) {
+					trng1 = -1;
+					trng2 = -1;
+					for(ttmp = tidx + 1; ttmp < tlen; ttmp++) {
+						if(trng1 == -1) {
+							if(types[ttmp] == WildcardPattern.LITERAL_TYPE) {
+								trng1 = ttmp;
 							}
 						} else {
-							if(types[ttemp] != WildcardPattern.LITERAL_TYPE) {
-								trange2 = ttemp - 1;
+							if(types[ttmp] != WildcardPattern.LITERAL_TYPE) {
+								trng2 = ttmp - 1;
 								break;
 							}
 						}
 					}
-					if(trange1 > -1 && trange2 > -1) {
-						crange1 = cindex;
-						crange2 = cindex;
-						ttemp = trange1;
-						while(ttemp <= trange2 && crange2 < clength) {
-							if(input.charAt(crange2++) != tokens[ttemp]) {
-								ttemp = trange1;
+					if(trng1 > -1 && trng2 > -1) {
+						crng1 = cidx;
+						crng2 = cidx;
+						ttmp = trng1;
+						while(ttmp <= trng2 && crng2 < clen) {
+							if(input.charAt(crng2++) != tokens[ttmp]) {
+								ttmp = trng1;
 							} else {
-								ttemp++;
+								ttmp++;
 							}
 						}
-						if(ttemp <= trange2) {
-							tindex = trange2;
-							if(cindex > 0)
-								cindex--;
+						if(ttmp <= trng2) {
+							tidx = trng2;
+							if(cidx > 0)
+								cidx--;
 						} else {
-							if(separatorFlags != null && crange1 < crange2) {
-								for(ctemp = crange1; ctemp < crange2; ctemp++) {
-									if(input.charAt(ctemp) == separator) {
-										separatorFlags[ctemp] = ++sepaCount;
+							if(separatorFlags != null && crng1 < crng2) {
+								for(ctmp = crng1; ctmp < crng2; ctmp++) {
+									if(input.charAt(ctmp) == sepa) {
+										separatorFlags[ctmp] = ++sepaCnt;
 									}
 								}
 							}
-							cindex = crange2;
-							tindex = trange2 + 1;
+							cidx = crng2;
+							tidx = trng2 + 1;
 						}
 					} else {
-						tindex++;
-
+						tidx++;
 						scnt1 = 0;
-						for(ttemp = tindex; ttemp < tlength; ttemp++) {
-							if(types[ttemp] == WildcardPattern.SEPARATOR_TYPE) {
+						for(ttmp = tidx; ttmp < tlen; ttmp++) {
+							if(types[ttmp] == WildcardPattern.SEPARATOR_TYPE) {
 								scnt1++;
 							}
 						}
 						if(scnt1 > 0) {
-							crange1 = cindex;
-							crange2 = clength;
+							crng1 = cidx;
+							crng2 = clen;
 							scnt2 = 0;
-							while(crange2 > 0 && crange1 <= crange2--) {
-								if(input.charAt(crange2) == separator)
+							while(crng2 > 0 && crng1 <= crng2--) {
+								if(input.charAt(crng2) == sepa)
 									scnt2++;
 								if(scnt1 == scnt2)
 									break;
 							}
 							if(scnt1 == scnt2) {
-								cindex = crange2;
+								cidx = crng2;
 								if(separatorFlags != null) {
-									while(crange1 < crange2) {
-										if(input.charAt(crange1) == separator) {
-											separatorFlags[crange1] = ++sepaCount;
+									while(crng1 < crng2) {
+										if(input.charAt(crng1) == sepa) {
+											separatorFlags[crng1] = ++sepaCnt;
 										}
-										crange1++;
+										crng1++;
 									}
 								}
 							}
+						} else {
+							cidx = clen; //complete
 						}
 					}
 				} else {
-					cindex = clength; //complete
-					tindex++;
+					cidx = clen; //complete
+					tidx++;
 				}
-			} else if(types[tindex] == WildcardPattern.QUESTION_TYPE) {
-				if(tindex > tlength - 1 ||
-						types[tindex + 1] != WildcardPattern.LITERAL_TYPE ||
-						tokens[tindex + 1] != input.charAt(cindex)) {
-					if(separator > 0) {
-						if(input.charAt(cindex) != separator)
-							cindex++;
+			} else if(types[tidx] == WildcardPattern.QUESTION_TYPE) {
+				if(tidx > tlen - 1 ||
+						types[tidx + 1] != WildcardPattern.LITERAL_TYPE ||
+						tokens[tidx + 1] != input.charAt(cidx)) {
+					if(sepa > 0) {
+						if(input.charAt(cidx) != sepa)
+							cidx++;
 					} else {
-						cindex++;
+						cidx++;
 					}
 				}
-				tindex++;
-			} else if(types[tindex] == WildcardPattern.PLUS_TYPE) {
-				if(separator > 0) {
-					if(input.charAt(cindex) == separator)
+				tidx++;
+			} else if(types[tidx] == WildcardPattern.PLUS_TYPE) {
+				if(sepa > 0) {
+					if(input.charAt(cidx) == sepa)
 						return false;
 				}
-				cindex++;
-				tindex++;
-			} else if(types[tindex] == WildcardPattern.SEPARATOR_TYPE) {
-				if(tokens[tindex++] != input.charAt(cindex++)) {
+				cidx++;
+				tidx++;
+			} else if(types[tidx] == WildcardPattern.SEPARATOR_TYPE) {
+				if(tokens[tidx++] != input.charAt(cidx++)) {
 					return false;
 				}
 				if(separatorFlags != null)
-					separatorFlags[cindex - 1] = ++sepaCount;
-			} else if(types[tindex] == WildcardPattern.EOT_TYPE) {
+					separatorFlags[cidx - 1] = ++sepaCnt;
+			} else if(types[tidx] == WildcardPattern.EOT_TYPE) {
 				break;
 			} else {
-				tindex++;
+				tidx++;
 			}
 		}
 		
-		if(cindex < clength) {
+		if(cidx < clen) {
 			return false;
 		}
 
-		if(tindex < tlength) {
-			for(ttemp = tindex; ttemp < tlength; ttemp++) {
-				if(types[ttemp] == WildcardPattern.LITERAL_TYPE ||
-						types[ttemp] == WildcardPattern.PLUS_TYPE ||
-						types[ttemp] == WildcardPattern.SEPARATOR_TYPE) {
+		if(tidx < tlen) {
+			for(ttmp = tidx; ttmp < tlen; ttmp++) {
+				if(types[ttmp] == WildcardPattern.LITERAL_TYPE ||
+						types[ttmp] == WildcardPattern.PLUS_TYPE ||
+						types[ttmp] == WildcardPattern.SEPARATOR_TYPE) {
 					return false;
 				}
 			}
