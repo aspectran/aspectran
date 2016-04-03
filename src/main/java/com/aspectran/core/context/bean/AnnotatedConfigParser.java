@@ -257,12 +257,10 @@ public class AnnotatedConfigParser {
 			String transletName = applyNamespaceForTranslet(nameArray, StringUtils.emptyToNull(requestAnno.translet()));
 			RequestMethodType[] requestMethods = requestAnno.method();
 
-			String actionId;
 			Action actionAnno = method.getAnnotation(Action.class);
-			if(actionAnno != null) {
-				actionId = applyNamespaceForTranslet(nameArray, StringUtils.emptyToNull(actionAnno.id()));
-			} else {
-				actionId = null;
+			String actionId = StringUtils.emptyToNull(actionAnno.id());
+			if(actionAnno == null) {
+				actionId = method.getName();
 			}
 
 			TransletRule transletRule = TransletRule.newInstance(transletName, requestMethods);
@@ -311,6 +309,8 @@ public class AnnotatedConfigParser {
             return new String[1];
         }
 
+		namespace = namespace.replace(ActivityContext.TRANSLET_NAME_SEPARATOR_CHAR, ActivityContext.ID_SEPARATOR_CHAR);
+
         int cnt = StringUtils.search(namespace, ActivityContext.ID_SEPARATOR_CHAR);
         if(cnt == 0) {
             String[] arr = new String[2];
@@ -326,28 +326,41 @@ public class AnnotatedConfigParser {
         list.add(null);
         Collections.reverse(list);
 
-        return list.toArray(new String[list.size()]);
+		return list.toArray(new String[list.size()]);
 	}
 	
 	private String applyNamespaceForBean(String[] nameArray, String name) {
-        nameArray[0] = name;
+		if(StringUtils.startsWith(name, ActivityContext.ID_SEPARATOR_CHAR)) {
+			nameArray[0] = name.substring(1);
+		} else {
+			nameArray[0] = name;
+		}
+
         StringBuilder sb = new StringBuilder();
+
         for(int i = nameArray.length - 1; i >= 0; i--) {
             sb.append(nameArray[i]);
             if(i > 0)
                 sb.append(ActivityContext.ID_SEPARATOR_CHAR);
         }
+
         return sb.toString();
 	}
 
 	private String applyNamespaceForTranslet(String[] nameArray, String name) {
-        nameArray[0] = name;
+		if(StringUtils.startsWith(name, ActivityContext.TRANSLET_NAME_SEPARATOR_CHAR)) {
+			nameArray[0] = name.substring(1);
+		} else {
+			nameArray[0] = name;
+		}
+
         StringBuilder sb = new StringBuilder();
+
         for(int i = nameArray.length - 1; i >= 0; i--) {
-            sb.append(nameArray[i]);
-            if(i > 0)
-                sb.append(ActivityContext.TRANSLET_NAME_SEPARATOR_CHAR);
+			sb.append(ActivityContext.TRANSLET_NAME_SEPARATOR_CHAR);
+			sb.append(nameArray[i]);
         }
+
         return sb.toString();
 	}
 	

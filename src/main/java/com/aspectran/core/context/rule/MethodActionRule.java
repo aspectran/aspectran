@@ -120,7 +120,8 @@ public class MethodActionRule {
 	@Override
 	public String toString() {
 		ToStringBuilder tsb = new ToStringBuilder();
-		tsb.append("class", configBeanClass);
+		if(configBeanClass != null)
+			tsb.append("class", configBeanClass.getName());
 		tsb.append("method", method);
 		tsb.append("aspectAdviceRule", aspectAdviceRule);
 		tsb.append("aspectAdviceRuleRegistry", aspectAdviceRuleRegistry);
