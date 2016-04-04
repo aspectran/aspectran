@@ -200,7 +200,7 @@ public class AspectranNodeParser {
 			if(importHandler != null) {
 				Importer importer = assistant.newImporter(file, resource, url, fileType);
 				if(importer == null) {
-					throw new IllegalArgumentException("The <import> element requires either a file or a resource or a url attribute.");
+					throw new IllegalArgumentException("The <import> element requires either a 'file' or a 'resource' or a 'url' attribute.");
 				}
 				importHandler.pending(importer);
 			}

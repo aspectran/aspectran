@@ -53,14 +53,15 @@ public class IncludeAction extends AbstractAction {
 	@Override
 	public Object execute(Activity activity) throws Exception {
 		try {
-			RequestAdapter request = activity.getRequestAdapter();
+			RequestAdapter requestAdapter = activity.getRequestAdapter();
 			
 			if(includeActionRule.getAttributeItemRuleMap() != null) {
 				ItemExpressor expressor = new ItemExpression(activity);
 				Map<String, Object> valueMap = expressor.express(includeActionRule.getAttributeItemRuleMap());
 
-				for(Map.Entry<String, Object> entry : valueMap.entrySet())
-					request.setAttribute(entry.getKey(), entry.getValue());
+				for(Map.Entry<String, Object> entry : valueMap.entrySet()) {
+					requestAdapter.setAttribute(entry.getKey(), entry.getValue());
+				}
 			}
 			
 			Activity newActivity = activity.newActivity();

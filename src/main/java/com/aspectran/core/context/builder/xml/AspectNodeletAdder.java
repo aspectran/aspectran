@@ -51,7 +51,7 @@ class AspectNodeletAdder implements NodeletAdder {
             String useFor = StringUtils.emptyToNull(attributes.get("for"));
 
             if(id == null)
-                throw new IllegalArgumentException("The <aspect> element requires an id attribute.");
+                throw new IllegalArgumentException("The <aspect> element requires an 'id' attribute.");
 
             AspectRule aspectRule = AspectRule.newInstance(id, useFor);
 
@@ -159,11 +159,12 @@ class AspectNodeletAdder implements NodeletAdder {
             String transletName = StringUtils.emptyToNull(attributes.get("translet"));
             Boolean disabled = BooleanUtils.toNullableBooleanObject(attributes.get("disabled"));
 
-            transletName = assistant.applyTransletNamePattern(transletName);
-            AspectRule ar = assistant.peekObject();
+			if(transletName == null)
+				throw new IllegalArgumentException("The <job> element requires a translet attribute.");
 
-            if(transletName == null)
-                throw new IllegalArgumentException("The <job> element requires a translet attribute.");
+			transletName = assistant.applyTransletNamePattern(transletName);
+
+			AspectRule ar = assistant.peekObject();
 
             AspectJobAdviceRule ajar = AspectJobAdviceRule.newInstance(ar, transletName, disabled);
             ar.addAspectJobAdviceRule(ajar);

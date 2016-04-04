@@ -155,7 +155,7 @@ public class RootAponDisassembler {
 		if(importHandler != null) {
 			Importer importer = assistant.newImporter(file, resource, url, fileType);
 			if(importer == null) {
-				throw new IllegalArgumentException("The 'import' element requires either a file or a resource or a url attribute.");
+				throw new IllegalArgumentException("The 'import' element requires either a 'file' or a 'resource' or a 'url' attribute.");
 			}
 			importHandler.pending(importer);
 		}
@@ -194,7 +194,7 @@ public class RootAponDisassembler {
 		String useFor = StringUtils.emptyToNull(aspectParameters.getString(AspectParameters.useFor));
 
 		if(id == null) {
-			throw new IllegalArgumentException("The 'aspect' element requires an id attribute.");
+			throw new IllegalArgumentException("The 'aspect' element requires an 'id' attribute.");
 		}
 
 		AspectRule aspectRule = AspectRule.newInstance(id, useFor);
@@ -263,10 +263,11 @@ public class RootAponDisassembler {
 				for(Parameters jobParameters : jobParametersList) {
 					String translet = StringUtils.emptyToNull(jobParameters.getString(JobParameters.translet));
 					Boolean disabled = jobParameters.getBoolean(JobParameters.disabled);
-					
-					translet = assistant.applyTransletNamePattern(translet);
+
 					if(translet == null)
-						throw new IllegalArgumentException("Job translet must not be null.");
+						throw new IllegalArgumentException("The 'job' element requires a 'translet' attribute.");
+
+					translet = assistant.applyTransletNamePattern(translet);
 
 					AspectJobAdviceRule ajar = AspectJobAdviceRule.newInstance(aspectRule, translet, disabled);
 					aspectRule.addAspectJobAdviceRule(ajar);
@@ -322,14 +323,14 @@ public class RootAponDisassembler {
 
 		if(className == null && scan == null && offerBean != null) {
 			if(offerMethod == null)
-				throw new IllegalArgumentException("Bean offerMethod must not be null.");
-			
+				throw new IllegalArgumentException("The 'bean' element requires a 'offerMethod' attribute.");
+
 			beanRule = BeanRule.newOfferedBeanInstance(id, offerBean, offerMethod, initMethod, destroyMethod, factoryMethod, scope, singleton, lazyInit, important);
 
 			assistant.resolveBeanClass(offerBean, beanRule);
 		} else {
 			if(className == null && scan == null)
-				throw new IllegalArgumentException("Bean class must not be null.");
+				throw new IllegalArgumentException("The 'bean' element requires a 'class' attribute.");
 
 			beanRule = BeanRule.newInstance(id, className, scan, mask, initMethod, destroyMethod, factoryMethod, scope, singleton, lazyInit, important);
 		}
@@ -364,8 +365,8 @@ public class RootAponDisassembler {
 		String method = transletParameters.getString(TransletParameters.method);
 		
 		if(name == null && scan == null)
-			throw new IllegalArgumentException("Translet name must not be null.");
-		
+			throw new IllegalArgumentException("The 'translet' element requires a 'name' attribute.");
+
 		TransletRule transletRule = TransletRule.newInstance(name, mask, scan, method);
 		
 		if(description != null)
@@ -536,8 +537,9 @@ public class RootAponDisassembler {
 		Boolean hidden = actionParameters.getBoolean(ActionParameters.hidden);
 		
 		if(!assistant.isNullableActionId() && id == null)
-			throw new IllegalArgumentException("Action id must not be null. nullableActionId setting is true.");
-		
+			throw new IllegalArgumentException("The 'action' element requires an 'id' attribute. nullableActionId setting is true.");
+
+
 		if(methodName != null) {
 			BeanActionRule beanActionRule = BeanActionRule.newInstance(id, beanId, methodName, hidden);
 			if(argumentItemHolderParameters != null) {
@@ -708,16 +710,16 @@ public class RootAponDisassembler {
 
 	private ForwardResponseRule disassembleForwardResponseRule(Parameters forwardParameters) {
 		String contentType = forwardParameters.getString(ForwardParameters.contentType);
-		String translet = forwardParameters.getString(ForwardParameters.translet);
+		String translet = StringUtils.emptyToNull(forwardParameters.getString(ForwardParameters.translet));
 		ItemHolderParameters attributeItemHolderParametersList = forwardParameters.getParameters(ForwardParameters.attributes);
 		List<Parameters> actionParametersList = forwardParameters.getParametersList(ForwardParameters.actions);
 		Boolean defaultResponse = forwardParameters.getBoolean(ForwardParameters.defaultResponse);
-		
-		translet = assistant.applyTransletNamePattern(translet);
-		
+
 		if(translet == null)
-			throw new IllegalArgumentException("Parameter translet must not be null.");
-		
+			throw new IllegalArgumentException("The 'forward' element requires a 'translet' attribute.");
+
+		translet = assistant.applyTransletNamePattern(translet);
+
 		ForwardResponseRule rrr = ForwardResponseRule.newInstance(contentType, translet, defaultResponse);
 		
 		if(attributeItemHolderParametersList != null) {
@@ -771,7 +773,7 @@ public class RootAponDisassembler {
 		Boolean noCache = templateParameters.getBoolean(TemplateParameters.noCache);
 
 		if(id == null)
-			throw new IllegalArgumentException("The 'template' element requires an id attribute.");
+			throw new IllegalArgumentException("The 'template' element requires an 'id' attribute.");
 
 		TemplateRule templateRule = TemplateRule.newInstance(id, engine, name, file, resource, url, content, encoding, noCache);
 

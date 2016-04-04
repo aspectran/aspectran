@@ -252,35 +252,50 @@ public class TransletRuleRegistry {
 
 	/**
 	 * Returns the trnaslet name of the prefix and suffix are combined.
-	 * 
+	 *
 	 * @param transletName the translet name
 	 * @return the string
 	 */
 	public String applyTransletNamePattern(String transletName) {
+		return applyTransletNamePattern(transletName, false);
+	}
+
+	/**
+	 * Returns the trnaslet name of the prefix and suffix are combined.
+	 *
+	 * @param transletName the translet name
+	 * @param absolutely whether to allow absolutely name for translet
+	 * @return the string
+	 */
+	public String applyTransletNamePattern(String transletName, boolean absolutely) {
 		DefaultSettings defaultSettings = assistantLocal.getDefaultSettings();
 
 		if(defaultSettings == null)
 			return transletName;
 
 		if(StringUtils.startsWith(transletName, ActivityContext.TRANSLET_NAME_SEPARATOR_CHAR)) {
-			transletName = transletName.substring(1);
+			if(absolutely) {
+				return transletName;
+			} else {
+				transletName = transletName.substring(1);
+			}
 		}
 
-		if(defaultSettings.getTransletNamePrefix() == null && 
+		if(defaultSettings.getTransletNamePrefix() == null &&
 				defaultSettings.getTransletNameSuffix() == null)
 			return transletName;
-		
+
 		StringBuilder sb = new StringBuilder();
-		
+
 		if(defaultSettings.getTransletNamePrefix() != null)
 			sb.append(defaultSettings.getTransletNamePrefix());
 
 		if(transletName != null)
 			sb.append(transletName);
-		
+
 		if(defaultSettings.getTransletNameSuffix() != null)
 			sb.append(defaultSettings.getTransletNameSuffix());
-		
+
 		return sb.toString();
 	}
 

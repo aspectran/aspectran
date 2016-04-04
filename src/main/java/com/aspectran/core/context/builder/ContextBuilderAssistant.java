@@ -274,17 +274,17 @@ public class ContextBuilderAssistant {
 	public void clearTypeAliases() {
 		typeAliases.clear();
 	}
-	
+
 	/**
 	 * Returns the trnaslet name of the prefix and suffix are combined.
-	 * 
+	 *
 	 * @param transletName the translet name
 	 * @return the string
 	 */
 	public String applyTransletNamePattern(String transletName) {
-		return transletRuleRegistry.applyTransletNamePattern(transletName);
+		return transletRuleRegistry.applyTransletNamePattern(transletName, true);
 	}
-	
+
 	/**
 	 * Gets the assistant local.
 	 *

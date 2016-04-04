@@ -15,10 +15,6 @@
  */
 package com.aspectran.core.context.builder.xml;
 
-import java.util.Map;
-
-import org.w3c.dom.Node;
-
 import com.aspectran.core.context.builder.ContextBuilderAssistant;
 import com.aspectran.core.context.builder.apon.params.FilterParameters;
 import com.aspectran.core.context.rule.BeanRule;
@@ -27,7 +23,6 @@ import com.aspectran.core.context.rule.type.ScopeType;
 import com.aspectran.core.util.BooleanUtils;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.apon.Parameters;
-import com.aspectran.core.util.xml.Nodelet;
 import com.aspectran.core.util.xml.NodeletAdder;
 import com.aspectran.core.util.xml.NodeletParser;
 
@@ -70,7 +65,7 @@ class BeanNodeletAdder implements NodeletAdder {
 
             if(className == null && scan == null && offerBean != null) {
                 if(offerMethod == null)
-                    throw new IllegalArgumentException("The <bean> element requires an offerMethod attribute.");
+                    throw new IllegalArgumentException("The <bean> element requires an 'offerMethod' attribute.");
 
                 beanRule = BeanRule.newOfferedBeanInstance(id, offerBean, offerMethod, initMethod, factoryMethod, destroyMethod, scope, singleton, lazyInit, important);
 
@@ -79,7 +74,7 @@ class BeanNodeletAdder implements NodeletAdder {
                 }
             } else {
                 if(className == null && scan == null)
-                    throw new IllegalArgumentException("The <bean> element requires a class attribute.");
+                    throw new IllegalArgumentException("The <bean> element requires a 'class' attribute.");
 
                 beanRule = BeanRule.newInstance(id, className, scan, mask, initMethod, factoryMethod, destroyMethod, scope, singleton, lazyInit, important);
             }
@@ -133,12 +128,10 @@ class BeanNodeletAdder implements NodeletAdder {
                 beanRule.setOfferBeanId(text.trim());
             }
         });
-		parser.addNodelet(xpath, "/bean/features/offerMethod", new Nodelet() {
-			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
-				if(StringUtils.hasText(text)) {
-					BeanRule beanRule = assistant.peekObject();
-					beanRule.setOfferMethodName(text.trim());
-				}
+		parser.addNodelet(xpath, "/bean/features/offerMethod", (node, attributes, text) -> {
+			if(StringUtils.hasText(text)) {
+				BeanRule beanRule = assistant.peekObject();
+				beanRule.setOfferMethodName(text.trim());
 			}
 		});
 		parser.addNodelet(xpath, "/bean/features/initMethod", (node, attributes, text) -> {
