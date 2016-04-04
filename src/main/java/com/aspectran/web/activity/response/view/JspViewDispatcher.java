@@ -42,26 +42,28 @@ public class JspViewDispatcher implements ViewDispatcher {
 
 	private static final boolean debugEnabled = log.isDebugEnabled();
 	
-	private String templateNamePrefix;
+	private static final String DEFAULT_CONTENT_TYPE = "text/html;charset=ISO-8859-1";
+	
+	private String prefix;
 
-	private String templateNameSuffix;
+	private String suffix;
 	
 	/**
 	 * Sets the prefix for the template name.
 	 *
-	 * @param templateNamePrefix the new prefix for the template name
+	 * @param prefix the new prefix for the template name
 	 */
-	public void setTemplateNamePrefix(String templateNamePrefix) {
-		this.templateNamePrefix = templateNamePrefix;
+	public void setPrefix(String prefix) {
+		this.prefix = prefix;
 	}
 
 	/**
 	 * Sets the suffix for the template name.
 	 *
-	 * @param templateNameSuffix the new suffix for the template name
+	 * @param suffix the new suffix for the template name
 	 */
-	public void setTemplateNameSuffix(String templateNameSuffix) {
-		this.templateNameSuffix = templateNameSuffix;
+	public void setSuffix(String suffix) {
+		this.suffix = suffix;
 	}
 
 	@Override
@@ -73,12 +75,12 @@ public class JspViewDispatcher implements ViewDispatcher {
 			if(dispatchName == null)
 				throw new IllegalArgumentException("No specified dispatch name.");
 
-			if(templateNamePrefix != null && templateNameSuffix != null) {
-				dispatchName = templateNamePrefix + dispatchName + templateNameSuffix;
-			} else if(templateNamePrefix != null) {
-				dispatchName = templateNamePrefix + dispatchName;
-			} else if(templateNameSuffix != null) {
-				dispatchName = dispatchName + templateNameSuffix;
+			if(prefix != null && suffix != null) {
+				dispatchName = prefix + dispatchName + suffix;
+			} else if(prefix != null) {
+				dispatchName = prefix + dispatchName;
+			} else if(suffix != null) {
+				dispatchName = dispatchName + suffix;
 			}
 			
 			RequestAdapter requestAdapter = activity.getRequestAdapter();
@@ -87,8 +89,11 @@ public class JspViewDispatcher implements ViewDispatcher {
 			String contentType = dispatchResponseRule.getContentType();
 			String characterEncoding = dispatchResponseRule.getCharacterEncoding();
 
-			if(contentType != null)
+			if(contentType != null) {
 				responseAdapter.setContentType(contentType);
+			} else {
+				responseAdapter.setContentType(DEFAULT_CONTENT_TYPE);
+			}
 
 			if(characterEncoding != null) {
 				responseAdapter.setCharacterEncoding(characterEncoding);
@@ -108,7 +113,7 @@ public class JspViewDispatcher implements ViewDispatcher {
 			
 			RequestDispatcher requestDispatcher = request.getRequestDispatcher(dispatchName);
 			requestDispatcher.forward(request, response);
-
+			
 			if(debugEnabled)
 				log.debug("dispatch to a JSP [" + dispatchName + "]");
 

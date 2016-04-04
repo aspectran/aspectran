@@ -257,10 +257,10 @@ public class AnnotatedConfigParser {
 			String transletName = applyNamespaceForTranslet(nameArray, StringUtils.emptyToNull(requestAnno.translet()));
 			RequestMethodType[] requestMethods = requestAnno.method();
 
+			String actionId = null;
 			Action actionAnno = method.getAnnotation(Action.class);
-			String actionId = StringUtils.emptyToNull(actionAnno.id());
-			if(actionAnno == null) {
-				actionId = method.getName();
+			if(actionAnno != null) {
+				actionId = StringUtils.emptyToNull(actionAnno.id());
 			}
 
 			TransletRule transletRule = TransletRule.newInstance(transletName, requestMethods);
@@ -268,8 +268,9 @@ public class AnnotatedConfigParser {
 			if(method.isAnnotationPresent(Dispatch.class)) {
 				Dispatch dispatchAnno = method.getAnnotation(Dispatch.class);
 				String dispatchName = StringUtils.emptyToNull(dispatchAnno.name());
+				String contentType = StringUtils.emptyToNull(dispatchAnno.contentType());
 				String characterEncoding = StringUtils.emptyToNull(dispatchAnno.characterEncoding());
-				DispatchResponseRule drr = DispatchResponseRule.newInstance(dispatchName, characterEncoding);
+				DispatchResponseRule drr = DispatchResponseRule.newInstance(dispatchName, contentType, characterEncoding);
 				transletRule.setResponseRule(ResponseRule.newInstance(drr));
 			} else if(method.isAnnotationPresent(Transform.class)) {
 				Transform transformAnno = method.getAnnotation(Transform.class);
@@ -306,7 +307,7 @@ public class AnnotatedConfigParser {
 
 	private String[] splitNamespace(String namespace) {
 		if(StringUtils.isEmpty(namespace)) {
-            return new String[1];
+            return null;
         }
 
 		namespace = namespace.replace(ActivityContext.TRANSLET_NAME_SEPARATOR_CHAR, ActivityContext.ID_SEPARATOR_CHAR);
@@ -330,6 +331,9 @@ public class AnnotatedConfigParser {
 	}
 	
 	private String applyNamespaceForBean(String[] nameArray, String name) {
+		if(nameArray == null)
+			return name;
+		
 		if(StringUtils.startsWith(name, ActivityContext.ID_SEPARATOR_CHAR)) {
 			nameArray[0] = name.substring(1);
 		} else {
@@ -348,6 +352,9 @@ public class AnnotatedConfigParser {
 	}
 
 	private String applyNamespaceForTranslet(String[] nameArray, String name) {
+		if(nameArray == null)
+			return name;
+
 		if(StringUtils.startsWith(name, ActivityContext.TRANSLET_NAME_SEPARATOR_CHAR)) {
 			nameArray[0] = name.substring(1);
 		} else {
