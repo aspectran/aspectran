@@ -36,6 +36,7 @@ import com.aspectran.core.context.rule.type.RequestMethodType;
 import com.aspectran.core.context.rule.type.TokenType;
 import com.aspectran.core.context.translet.scan.TransletFileScanner;
 import com.aspectran.core.util.PrefixSuffixPattern;
+import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 import com.aspectran.core.util.wildcard.WildcardPattern;
@@ -206,6 +207,7 @@ public class TransletRuleRegistry {
 		transletRule.determineResponseRule();
 
 		String transletName = applyTransletNamePattern(transletRule.getName());
+
 		transletRule.setName(transletName);
 
 		if(transletRule.getRequestMethods() != null) {
@@ -213,7 +215,7 @@ public class TransletRuleRegistry {
 			transletRuleMap.put(key, transletRule);
 			saveRestfulTransletRule(transletRule);
 		} else {
-			transletRuleMap.put(transletRule.getName(), transletRule);
+			transletRuleMap.put(transletName, transletRule);
 		}
 
 		if(log.isTraceEnabled())
@@ -250,34 +252,50 @@ public class TransletRuleRegistry {
 
 	/**
 	 * Returns the trnaslet name of the prefix and suffix are combined.
-	 * 
+	 *
 	 * @param transletName the translet name
 	 * @return the string
 	 */
 	public String applyTransletNamePattern(String transletName) {
+		return applyTransletNamePattern(transletName, false);
+	}
+
+	/**
+	 * Returns the trnaslet name of the prefix and suffix are combined.
+	 *
+	 * @param transletName the translet name
+	 * @param absolutely whether to allow absolutely name for translet
+	 * @return the string
+	 */
+	public String applyTransletNamePattern(String transletName, boolean absolutely) {
 		DefaultSettings defaultSettings = assistantLocal.getDefaultSettings();
-		
+
 		if(defaultSettings == null)
 			return transletName;
 
-		if(transletName != null && transletName.length() > 0 && transletName.charAt(0) == ActivityContext.TRANSLET_NAME_SEPARATOR_CHAR)
-			return transletName;
+		if(StringUtils.startsWith(transletName, ActivityContext.TRANSLET_NAME_SEPARATOR_CHAR)) {
+			if(absolutely) {
+				return transletName;
+			} else {
+				transletName = transletName.substring(1);
+			}
+		}
 
-		if(defaultSettings.getTransletNamePrefix() == null && 
+		if(defaultSettings.getTransletNamePrefix() == null &&
 				defaultSettings.getTransletNameSuffix() == null)
 			return transletName;
-		
+
 		StringBuilder sb = new StringBuilder();
-		
+
 		if(defaultSettings.getTransletNamePrefix() != null)
 			sb.append(defaultSettings.getTransletNamePrefix());
 
 		if(transletName != null)
 			sb.append(transletName);
-		
+
 		if(defaultSettings.getTransletNameSuffix() != null)
 			sb.append(defaultSettings.getTransletNameSuffix());
-		
+
 		return sb.toString();
 	}
 

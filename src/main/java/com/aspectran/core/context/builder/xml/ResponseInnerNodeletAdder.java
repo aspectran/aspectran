@@ -151,7 +151,7 @@ class ResponseInnerNodeletAdder implements NodeletAdder {
             RedirectResponseRule rrr = assistant.popObject();
 
             if(rrr.getTarget() == null)
-                throw new IllegalArgumentException("The <redirect> element requires a target attribute.");
+                throw new IllegalArgumentException("The <redirect> element requires a 'target' attribute.");
 
             if(!actionList.isEmpty())
                 rrr.setActionList(actionList);
@@ -172,10 +172,10 @@ class ResponseInnerNodeletAdder implements NodeletAdder {
             String transletName = attributes.get("translet");
             Boolean defaultResponse = BooleanUtils.toNullableBooleanObject(attributes.get("defaultResponse"));
 
-            transletName = assistant.applyTransletNamePattern(transletName);
+			if(transletName == null)
+				throw new IllegalArgumentException("The <forward> element requires a 'translet' attribute.");
 
-            if(transletName == null)
-                throw new IllegalArgumentException("The <forward> element requires a translet attribute.");
+			transletName = assistant.applyTransletNamePattern(transletName);
 
             ForwardResponseRule frr = ForwardResponseRule.newInstance(contentType, transletName, defaultResponse);
             assistant.pushObject(frr);

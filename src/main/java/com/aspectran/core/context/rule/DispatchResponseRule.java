@@ -227,8 +227,8 @@ public class DispatchResponseRule extends ActionPossessSupport implements Replic
 	 * @param characterEncoding the character encoding
 	 * @return the dispatch response rule
 	 */
-	public static DispatchResponseRule newInstance(String dispatchName, String characterEncoding) {
-		return newInstance(dispatchName, null, characterEncoding, null);
+	public static DispatchResponseRule newInstance(String dispatchName, String contentType, String characterEncoding) {
+		return newInstance(dispatchName, contentType, characterEncoding, null);
 	}
 
 	/**

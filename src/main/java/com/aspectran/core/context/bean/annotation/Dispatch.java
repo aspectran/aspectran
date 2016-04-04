@@ -28,6 +28,8 @@ public @interface Dispatch {
 
 	String name();
 
+	String contentType() default "";
+	
 	String characterEncoding() default "";
 	
 }

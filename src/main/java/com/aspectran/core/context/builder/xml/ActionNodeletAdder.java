@@ -123,10 +123,13 @@ class ActionNodeletAdder implements NodeletAdder {
         });
 		parser.addNodelet(xpath, "/include", (node, attributes, text) -> {
             String id = StringUtils.emptyToNull(attributes.get("id"));
-            String transletName = attributes.get("translet");
+            String transletName = StringUtils.emptyToNull(attributes.get("translet"));
             Boolean hidden = BooleanUtils.toNullableBooleanObject(attributes.get("hidden"));
 
-            transletName = assistant.applyTransletNamePattern(transletName);
+			if(transletName == null)
+				throw new IllegalArgumentException("The <include> element requires a translet attribute.");
+
+			transletName = assistant.applyTransletNamePattern(transletName);
 
             if(!assistant.isNullableActionId() && id == null)
                 throw new IllegalArgumentException("The <include> element requires an id attribute.");

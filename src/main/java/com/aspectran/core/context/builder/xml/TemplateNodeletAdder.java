@@ -53,7 +53,7 @@ class TemplateNodeletAdder implements NodeletAdder {
             Boolean noCache = BooleanUtils.toNullableBooleanObject(attributes.get("noCache"));
 
 			if(id == null)
-				throw new IllegalArgumentException("The <template> element requires an id attribute.");
+				throw new IllegalArgumentException("The <template> element requires an 'id' attribute.");
 
 			TemplateRule templateRule = TemplateRule.newInstance(id, engine, name, file, resource, url, text, encoding, noCache);
 
