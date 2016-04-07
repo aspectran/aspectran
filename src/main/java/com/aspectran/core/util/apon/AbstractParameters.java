@@ -52,9 +52,9 @@ public abstract class AbstractParameters implements Parameters {
 		
 		if(text != null) {
 			try {
-				AponDeserializer reader = new AponDeserializer(text);
-				reader.read(this);
-				reader.close();
+				AponReader aponReader = new AponReader(text);
+				aponReader.read(this);
+				aponReader.close();
 			} catch(IOException e) {
 				throw new AponReadFailedException(e);
 			}
@@ -586,7 +586,7 @@ public abstract class AbstractParameters implements Parameters {
 
 	@Override
 	public String toString() {
-		return AponSerializer.serialize(this);
+		return AponWriter.stringify(this);
 	}
 	
 }

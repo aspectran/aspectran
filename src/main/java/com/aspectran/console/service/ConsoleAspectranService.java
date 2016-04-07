@@ -27,7 +27,7 @@ import com.aspectran.core.context.translet.TransletNotFoundException;
 import com.aspectran.core.service.AspectranServiceControllerListener;
 import com.aspectran.core.service.AspectranServiceException;
 import com.aspectran.core.service.CoreAspectranService;
-import com.aspectran.core.util.apon.AponDeserializer;
+import com.aspectran.core.util.apon.AponReader;
 import com.aspectran.core.util.apon.Parameters;
 
 /**
@@ -89,7 +89,7 @@ public class ConsoleAspectranService extends CoreAspectranService {
 		AspectranConfig aspectranConfig = new AspectranConfig();
 
 		if(aspectranConfigFile != null && aspectranConfigFile.length() > 0) {
-			AponDeserializer.deserialize(new File(aspectranConfigFile), aspectranConfig);
+			AponReader.parse(new File(aspectranConfigFile), aspectranConfig);
 		}
 
 		Parameters contextParameters = aspectranConfig.getParameters(AspectranConfig.context);
