@@ -30,8 +30,8 @@ import com.aspectran.core.context.builder.apon.params.RootParameters;
 import com.aspectran.core.context.builder.xml.AspectranNodeParser;
 import com.aspectran.core.context.rule.type.ImportFileType;
 import com.aspectran.core.context.rule.type.ImporterType;
-import com.aspectran.core.util.apon.AponDeserializer;
-import com.aspectran.core.util.apon.AponSerializer;
+import com.aspectran.core.util.apon.AponReader;
+import com.aspectran.core.util.apon.AponWriter;
 import com.aspectran.core.util.apon.Parameters;
 
 /**
@@ -62,7 +62,7 @@ public class HybridImportHandler extends AbstractImportHandler {
 		boolean hybridon = false;
 		
 		if(importer.getImportFileType() == ImportFileType.APON) {
-			Parameters rootParameters = AponDeserializer.deserialize(importer.getReader(encoding), new RootParameters());
+			Parameters rootParameters = AponReader.parse(importer.getReader(encoding), new RootParameters());
 			
 			if(rootAponDisassembler == null)
 				rootAponDisassembler = new RootAponDisassembler(assistant);
@@ -77,7 +77,7 @@ public class HybridImportHandler extends AbstractImportHandler {
 
 					hybridon = true;
 
-					Parameters rootParameters = AponDeserializer.deserialize(aponFile, encoding, new RootParameters());
+					Parameters rootParameters = AponReader.parse(aponFile, encoding, new RootParameters());
 					
 					if(rootAponDisassembler == null) {
 						rootAponDisassembler = new RootAponDisassembler(assistant);
@@ -116,13 +116,13 @@ public class HybridImportHandler extends AbstractImportHandler {
 		try {
 			aponFile = makeAponFile(fileImporter);
 			
-			AponSerializer writer;
+			AponWriter aponWriter;
 			
 			if(encoding != null) {
 				OutputStream outputStream = new FileOutputStream(aponFile);
-				writer = new AponSerializer(new OutputStreamWriter(outputStream, encoding));
+				aponWriter = new AponWriter(new OutputStreamWriter(outputStream, encoding));
 			} else {
-				writer = new AponSerializer(new FileWriter(aponFile));
+				aponWriter = new AponWriter(new FileWriter(aponFile));
 			}
 			
 			try {
@@ -133,10 +133,10 @@ public class HybridImportHandler extends AbstractImportHandler {
 				RootAponAssembler assembler = new RootAponAssembler(assistant);
 				Parameters rootParameters = assembler.assembleRoot();
 				
-				writer.comment(aponFile.getAbsolutePath());
-				writer.write(rootParameters);
+				aponWriter.comment(aponFile.getAbsolutePath());
+				aponWriter.write(rootParameters);
 			} finally {
-				writer.close();
+				aponWriter.close();
 			}
 			
 			aponFile.setLastModified(fileImporter.getLastModified());
