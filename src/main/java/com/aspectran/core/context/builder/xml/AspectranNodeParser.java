@@ -125,7 +125,6 @@ public class AspectranNodeParser {
 
             if(name != null) {
                 settingType = DefaultSettingType.lookup(name);
-
                 if(settingType == null)
                     throw new IllegalArgumentException("Unknown setting name '" + name + "'");
             }

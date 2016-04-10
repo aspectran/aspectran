@@ -34,8 +34,8 @@ public class AssistantLocal implements Replicable<AssistantLocal> {
 		this(0);
 	}
 
-	private AssistantLocal(int cloneCount) {
-		this.replicatedCount = cloneCount;
+	private AssistantLocal(int replicatedCount) {
+		this.replicatedCount = replicatedCount;
 	}
 	
 	public String getDescription() {
@@ -68,13 +68,11 @@ public class AssistantLocal implements Replicable<AssistantLocal> {
 	@Override
 	public AssistantLocal replicate() {
 		AssistantLocal al = new AssistantLocal(replicatedCount + 1);
-		al.setDescription(al.getDescription());
-		DefaultSettings ds = al.getDefaultSettings();
-		
+		al.setDescription(getDescription());
+		DefaultSettings ds = getDefaultSettings();
 		if(ds != null) {
 			al.setDefaultSettings(new DefaultSettings(ds));
 		}
-		
 		return al;
 	}
 	

@@ -86,11 +86,12 @@ public class AponWriter extends AponFormat implements Flushable {
 	 * @throws IOException An I/O error occurs.
 	 */
 	public void write(Parameters parameters) throws IOException {
-		Map<String, ParameterValue> parameterValueMap = parameters.getParameterValueMap();
-		
-		for(Parameter pv : parameterValueMap.values()) {
-			if(pv.isAssigned()) {
-				write(pv);
+		if(parameters != null) {
+			Map<String, ParameterValue> parameterValueMap = parameters.getParameterValueMap();
+			for(Parameter pv : parameterValueMap.values()) {
+				if(pv.isAssigned()) {
+					write(pv);
+				}
 			}
 		}
 	}

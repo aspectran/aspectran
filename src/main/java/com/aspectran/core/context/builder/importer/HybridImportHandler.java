@@ -18,6 +18,7 @@ package com.aspectran.core.context.builder.importer;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 
@@ -58,7 +59,7 @@ public class HybridImportHandler extends AbstractImportHandler {
 	@Override
 	public void handle(Importer importer) throws Exception {
 		AssistantLocal assistantLocal = assistant.backupAssistantLocal();
-		
+
 		boolean hybridon = false;
 		
 		if(importer.getImportFileType() == ImportFileType.APON) {
@@ -136,7 +137,11 @@ public class HybridImportHandler extends AbstractImportHandler {
 				aponWriter.comment(aponFile.getAbsolutePath());
 				aponWriter.write(rootParameters);
 			} finally {
-				aponWriter.close();
+				try {
+					aponWriter.close();
+				} catch(IOException e) {
+					// ignore
+				}
 			}
 			
 			aponFile.setLastModified(fileImporter.getLastModified());
