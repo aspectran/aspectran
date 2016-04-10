@@ -7,9 +7,11 @@
 
 ![aspectran](http://www.aspectran.com/images/header_aspectran.png)
 
-*Aspectran* 은 방대한 개념으로 포장되어 있지 않습니다.  
-*Aspectran* 은 생소한 개념을 창조하지 않습니다.  
-*Aspectran* 의 직관적인 몇 가지의 개념으로 명확하고 신뢰할 수 있는 결과물을 만들 수 있습니다.  
+Aspectran은 엔터프라이즈급 자바 웹 응용 프로그램을 구축하기 위한 가볍고 확장 가능한 프레임워크입니다.
+
+*Aspectran 은 방대한 개념으로 포장되어 있지 않습니다.*  
+*Aspectran 은 생소한 개념을 창조하지 않습니다.*  
+*Aspectran 의 직관적인 몇 가지의 개념으로 명확하고 신뢰할 수 있는 결과물을 만들 수 있습니다.*  
 
 ## 주요 기능
 2008년 봄부터 개발을 시작한 이후로 7년이라는 시간이 지났습니다.
