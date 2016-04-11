@@ -219,11 +219,12 @@ public class DispatchResponseRule extends ActionPossessSupport implements Replic
 
 		return drr;
 	}
-	
+
 	/**
 	 * Returns a new instance of DispatchResponseRule.
 	 *
 	 * @param dispatchName the dispatch name
+	 * @param contentType the content type
 	 * @param characterEncoding the character encoding
 	 * @return the dispatch response rule
 	 */
