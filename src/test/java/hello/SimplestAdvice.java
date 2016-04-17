@@ -23,7 +23,7 @@ public class SimplestAdvice {
 	
 	private final Log log = LogFactory.getLog(SimplestAdvice.class);
 
-	public String wellcome(Translet translet) {
+	public String welcome(Translet translet) {
 		String msg = "Welcome to Aspectran!";
 		
 		log.info(msg);

@@ -82,7 +82,7 @@ public class ConsoleActivity extends CoreActivity implements Activity {
 		ItemRuleMap attributeItemRuleMap = getRequestRule().getAttributeItemRuleMap();
 
 		if(attributeItemRuleMap != null) {
-			System.out.println("Required Attributtes:");
+			System.out.println("Required attributes:");
 
 			for(ItemRule itemRule : attributeItemRuleMap.values()) {
 				Token[] tokens = itemRule.getTokens();

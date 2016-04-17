@@ -181,7 +181,7 @@
 	<aspect id="simplestAdviceAspect">
 		<description>
 			simplestAction Bean의 helloWorld 메쏘드를 실행하는 Translet이 발견되면,
-			해당 Translet의 실행 전에는 simplestAdvice Bean의 wellcome 메쏘드를 실행하고,
+			해당 Translet의 실행 전에는 simplestAdvice Bean의 welcome 메쏘드를 실행하고,
 			해당 Translet의 실행 후에는 simplestAdvice Bean의 goodbye 메쏘드를 실행합니다.
 		</description>
 		<joinpoint scope="translet">
@@ -193,7 +193,7 @@
 		</joinpoint>
 		<advice bean="simplestAdvice">
 			<before>
-				<action method="wellcome"/>
+				<action method="welcome"/>
 			</before>
 			<after>
 				<action method="goodbye"/>
