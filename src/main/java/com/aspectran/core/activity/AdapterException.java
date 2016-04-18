@@ -18,11 +18,11 @@ package com.aspectran.core.activity;
 import com.aspectran.core.context.AspectranCheckedException;
 
 /**
- * The Class AdaptingException.
+ * The Class AdapterException.
  * 
  * <p>Created: 2016. 2. 14.</p>
  */
-public class AdaptingException extends AspectranCheckedException {
+public class AdapterException extends AspectranCheckedException {
 
 	/** @serial */
 	private static final long serialVersionUID = -4222246026009174749L;
@@ -30,7 +30,7 @@ public class AdaptingException extends AspectranCheckedException {
 	/**
 	 * Simple constructor.
 	 */
-	public AdaptingException() {
+	public AdapterException() {
 		super();
 	}
 
@@ -39,7 +39,7 @@ public class AdaptingException extends AspectranCheckedException {
 	 *
 	 * @param msg a message to associate with the exception
 	 */
-	public AdaptingException(String msg) {
+	public AdapterException(String msg) {
 		super(msg);
 	}
 
@@ -48,7 +48,7 @@ public class AdaptingException extends AspectranCheckedException {
 	 *
 	 * @param cause the real cause of the exception
 	 */
-	public AdaptingException(Throwable cause) {
+	public AdapterException(Throwable cause) {
 		super(cause);
 	}
 
@@ -58,7 +58,7 @@ public class AdaptingException extends AspectranCheckedException {
 	 * @param msg the detail message
 	 * @param cause the real cause of the exception
 	 */
-	public AdaptingException(String msg, Throwable cause) {
+	public AdapterException(String msg, Throwable cause) {
 		super(msg, cause);
 	}
 

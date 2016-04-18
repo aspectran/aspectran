@@ -194,14 +194,14 @@ public class CoreActivity extends AbstractActivity implements Activity {
 
 			context.setCurrentActivity(this);
 
-			adapting();
+			adapt();
 
 		} catch(Exception e) {
 			throw new ActivityException("Failed to ready for Activity.", e);
 		}
 	}
 
-	protected void adapting() throws AdaptingException {
+	protected void adapt() throws AdapterException {
 	}
 
 	@Override

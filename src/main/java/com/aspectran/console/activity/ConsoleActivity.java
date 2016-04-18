@@ -20,7 +20,7 @@ import java.util.Map;
 import com.aspectran.console.adapter.ConsoleRequestAdapter;
 import com.aspectran.console.adapter.ConsoleResponseAdapter;
 import com.aspectran.core.activity.Activity;
-import com.aspectran.core.activity.AdaptingException;
+import com.aspectran.core.activity.AdapterException;
 import com.aspectran.core.activity.CoreActivity;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
@@ -52,7 +52,7 @@ public class ConsoleActivity extends CoreActivity implements Activity {
 	}
 
 	@Override
-	protected void adapting() throws AdaptingException {
+	protected void adapt() throws AdapterException {
 		try {
 			RequestAdapter requestAdapter = new ConsoleRequestAdapter(this);
 			requestAdapter.setCharacterEncoding(determineRequestCharacterEncoding());
@@ -61,7 +61,7 @@ public class ConsoleActivity extends CoreActivity implements Activity {
 			ResponseAdapter responseAdapter = new ConsoleResponseAdapter(this);
 			setResponseAdapter(responseAdapter);
 		} catch(Exception e) {
-			throw new AdaptingException("Failed to adapting for Console Activity.", e);
+			throw new AdapterException("Failed to adapt for Console Activity.", e);
 		}
 	}
 

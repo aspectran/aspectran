@@ -21,7 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.aspectran.core.activity.Activity;
-import com.aspectran.core.activity.AdaptingException;
+import com.aspectran.core.activity.AdapterException;
 import com.aspectran.core.activity.CoreActivity;
 import com.aspectran.core.activity.request.RequestMethodNotAllowedException;
 import com.aspectran.core.adapter.RequestAdapter;
@@ -72,7 +72,7 @@ public class WebActivity extends CoreActivity implements Activity {
 	}
 
 	@Override
-	protected void adapting() throws AdaptingException {
+	protected void adapt() throws AdapterException {
 		try {
 			RequestAdapter requestAdapter = new HttpServletRequestAdapter(request);
 			requestAdapter.setCharacterEncoding(determineRequestCharacterEncoding());
@@ -103,7 +103,7 @@ public class WebActivity extends CoreActivity implements Activity {
 				setResponseAdapter(responseAdapter);
 			}
 		} catch(Exception e) {
-			throw new AdaptingException("Failed to adapting for Web Activity.", e);
+			throw new AdapterException("Failed to adapt Web Activity.", e);
 		}
 	}
 
