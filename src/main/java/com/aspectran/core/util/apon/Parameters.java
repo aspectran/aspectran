@@ -34,7 +34,11 @@ public interface Parameters {
 	String[] getParameterNames();
 	
 	Set<String> getParameterNameSet();
-	
+
+	boolean hasParameter(String name);
+
+	boolean hasParameter(ParameterDefine parameterDefine);
+
 	Parameter getParameter(String name);
 	
 	Parameter getParameter(ParameterDefine parameterDefine);

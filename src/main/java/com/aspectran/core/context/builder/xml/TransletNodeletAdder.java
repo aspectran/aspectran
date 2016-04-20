@@ -137,21 +137,17 @@ class TransletNodeletAdder implements NodeletAdder {
             Boolean omittable = BooleanUtils.toNullableBooleanObject(attributes.get("omittable"));
             Boolean hidden = BooleanUtils.toNullableBooleanObject(attributes.get("hidden"));
 
-            ContentList contentList = ContentList.newInstance(name, Boolean.TRUE);
             ActionList actionList = ActionList.newInstance(name, omittable, hidden);
-
-            assistant.pushObject(contentList);
             assistant.pushObject(actionList);
         });
 		parser.addNodelet(xpath, "/translet/content", new ActionNodeletAdder(assistant));
 		parser.addNodelet(xpath, "/translet/content/end()", (node, attributes, text) -> {
             ActionList actionList = assistant.popObject();
-            ContentList contentList = assistant.popObject();
 
             if(!actionList.isEmpty()) {
                 TransletRule transletRule = assistant.peekObject();
-                contentList.addActionList(actionList);
-                transletRule.setContentList(contentList);
+				ContentList contentList = transletRule.touchContentList();
+				contentList.addActionList(actionList);
             }
         });
 		parser.addNodelet(xpath, "/translet/response", (node, attributes, text) -> {

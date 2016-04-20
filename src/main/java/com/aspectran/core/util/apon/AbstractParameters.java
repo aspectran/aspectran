@@ -33,7 +33,7 @@ public abstract class AbstractParameters implements Parameters {
 	private final boolean addable;
 	
 	protected AbstractParameters(ParameterDefine[] parameterDefines) {
-		this.parameterValueMap = new LinkedHashMap<String, ParameterValue>();
+		this.parameterValueMap = new LinkedHashMap<>();
 		
 		if(parameterDefines != null) {
 			for(ParameterDefine pd : parameterDefines) {
@@ -93,10 +93,6 @@ public abstract class AbstractParameters implements Parameters {
 		return parameterValueMap;
 	}
 	
-	public void addParameterValue(ParameterValue parameterValue) {
-		parameterValueMap.put(parameterValue.getName(), parameterValue);
-	}
-
 	@Override
 	public String[] getParameterNames() {
 		return parameterValueMap.keySet().toArray(new String[parameterValueMap.size()]);
@@ -105,6 +101,17 @@ public abstract class AbstractParameters implements Parameters {
 	@Override
 	public Set<String> getParameterNameSet() {
 		return parameterValueMap.keySet();
+	}
+
+	@Override
+	public boolean hasParameter(String name) {
+		Parameter p = parameterValueMap.get(name);
+		return (p != null);
+	}
+
+	@Override
+	public boolean hasParameter(ParameterDefine parameterDefine) {
+		return hasParameter(parameterDefine.getName());
 	}
 
 	@Override

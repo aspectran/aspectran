@@ -259,7 +259,7 @@ public class RootAponDisassembler {
 			}
 		
 			List<Parameters> jobParametersList = adviceParameters.getParametersList(AdviceParameters.jobs);
-			if(jobParametersList != null && !jobParametersList.isEmpty()) {
+			if(jobParametersList != null) {
 				for(Parameters jobParameters : jobParametersList) {
 					String translet = StringUtils.emptyToNull(jobParameters.getString(JobParameters.translet));
 					Boolean disabled = jobParameters.getBoolean(JobParameters.disabled);
@@ -287,7 +287,7 @@ public class RootAponDisassembler {
 			}
 	
 			List<Parameters> rrtrParametersList = exceptionRaisedParameters.getParametersList(ExceptionRaisedParameters.responseByContentTypes);
-			if(rrtrParametersList != null && !rrtrParametersList.isEmpty()) {
+			if(rrtrParametersList != null) {
 				for(Parameters rrtrParameters : rrtrParametersList) {
 					ResponseByContentTypeRule rrtr = disassembleResponseByContentTypeRule(rrtrParameters);
 					exceptionHandlingRule.putResponseByContentTypeRule(rrtr);
@@ -323,7 +323,7 @@ public class RootAponDisassembler {
 
 		if(className == null && scan == null && offerBean != null) {
 			if(offerMethod == null)
-				throw new IllegalArgumentException("The 'bean' element requires a 'offerMethod' attribute.");
+				throw new IllegalArgumentException("The 'bean' element requires an 'offerMethod' attribute.");
 
 			beanRule = BeanRule.newOfferedBeanInstance(id, offerBean, offerMethod, initMethod, destroyMethod, factoryMethod, scope, singleton, lazyInit, important);
 
@@ -404,7 +404,7 @@ public class RootAponDisassembler {
 		Parameters exceptionParameters = transletParameters.getParameters(TransletParameters.exception);
 		if(exceptionParameters != null) {
 			List<Parameters> rbctParametersList = exceptionParameters.getParametersList(ExceptionParameters.responseByContentTypes);
-			if(rbctParametersList != null && !rbctParametersList.isEmpty()) {
+			if(rbctParametersList != null) {
 				for(Parameters rbctParameters : rbctParametersList) {
 					ResponseByContentTypeRule rbctr = disassembleResponseByContentTypeRule(rbctParameters);
 					ExceptionHandlingRule exceptionHandlingRule = transletRule.touchExceptionHandlingRule();
@@ -497,7 +497,7 @@ public class RootAponDisassembler {
 		List<Parameters> contentParametersList = contentsParameters.getParametersList(ContentsParameters.contents);
 		
 		ContentList contentList = ContentList.newInstance(name, omittable);
-		
+
 		if(contentParametersList != null) {
 			for(Parameters contentParamters : contentParametersList) {
 				ActionList actionList = disassembleActionList(contentParamters);
@@ -516,18 +516,18 @@ public class RootAponDisassembler {
 		
 		ActionList actionList = ActionList.newInstance(name, omittable, hidden);
 
-		if(actionParametersList != null && !actionParametersList.isEmpty()) {
+		if(actionParametersList != null) {
 			for(Parameters actionParameters : actionParametersList) {
 				disassembleActionRule(actionParameters, actionList);
 			}
 		}
-		
+
 		return actionList;
 	}
 	
 	private void disassembleActionRule(Parameters actionParameters, ActionRuleApplicable actionRuleApplicable) {
 		String id = StringUtils.emptyToNull(actionParameters.getString(ActionParameters.id));
-		String beanId = StringUtils.emptyToNull(actionParameters.getString(ActionParameters.beanId));
+		String beanIdOrClass = StringUtils.emptyToNull(actionParameters.getString(ActionParameters.bean));
 		String methodName = StringUtils.emptyToNull(actionParameters.getString(ActionParameters.methodName));
 		ItemHolderParameters argumentItemHolderParameters = actionParameters.getParameters(ActionParameters.arguments);
 		ItemHolderParameters propertyItemHolderParameters = actionParameters.getParameters(ActionParameters.properties);
@@ -540,7 +540,7 @@ public class RootAponDisassembler {
 			throw new IllegalArgumentException("The 'action' element requires an 'id' attribute. The 'nullableActionId' setting is true.");
 
 		if(methodName != null) {
-			BeanActionRule beanActionRule = BeanActionRule.newInstance(id, beanId, methodName, hidden);
+			BeanActionRule beanActionRule = BeanActionRule.newInstance(id, beanIdOrClass, methodName, hidden);
 			if(argumentItemHolderParameters != null) {
 				ItemRuleMap argumentItemRuleMap = disassembleItemRuleMap(argumentItemHolderParameters);
 				beanActionRule.setArgumentItemRuleMap(argumentItemRuleMap);
@@ -550,8 +550,8 @@ public class RootAponDisassembler {
 				beanActionRule.setPropertyItemRuleMap(propertyItemRuleMap);
 			}
 			actionRuleApplicable.applyActionRule(beanActionRule);
-			if(beanId != null) {
-				assistant.resolveBeanClass(beanId, beanActionRule);
+			if(beanIdOrClass != null) {
+				assistant.resolveBeanClass(beanIdOrClass, beanActionRule);
 			}
 		} else if(echoItemHolderParameters != null) {
 			EchoActionRule echoActionRule = EchoActionRule.newInstance(id, hidden);

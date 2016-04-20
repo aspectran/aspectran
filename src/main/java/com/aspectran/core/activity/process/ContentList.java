@@ -133,7 +133,6 @@ public class ContentList extends ArrayList<ActionList> implements Replicable<Con
 		ContentList contentList = new ContentList();
 		contentList.setName(name);
 		contentList.setOmittable(omittable);
-		
 		return contentList;
 	}
 

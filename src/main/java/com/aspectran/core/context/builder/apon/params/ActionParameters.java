@@ -23,7 +23,7 @@ public class ActionParameters extends AbstractParameters {
 
 	public static final ParameterDefine id;
 	
-	public static final ParameterDefine beanId;
+	public static final ParameterDefine bean;
 	public static final ParameterDefine methodName;
 	public static final ParameterDefine hidden;
 
@@ -40,7 +40,7 @@ public class ActionParameters extends AbstractParameters {
 
 	static {
 		id = new ParameterDefine("id", ParameterValueType.STRING);
-		beanId = new ParameterDefine("bean", ParameterValueType.STRING);
+		bean = new ParameterDefine("bean", ParameterValueType.STRING);
 		methodName = new ParameterDefine("method", ParameterValueType.STRING);
 		hidden = new ParameterDefine("hidden", ParameterValueType.BOOLEAN);
 		arguments = new ParameterDefine("argument", ItemHolderParameters.class);
@@ -51,7 +51,7 @@ public class ActionParameters extends AbstractParameters {
 		
 		parameterDefines = new ParameterDefine[] {
 				id,
-				beanId,
+				bean,
 				methodName,
 				hidden,
 				arguments,

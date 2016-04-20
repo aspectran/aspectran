@@ -52,7 +52,7 @@ class ActionNodeletAdder implements NodeletAdder {
             Boolean hidden = BooleanUtils.toNullableBooleanObject(attributes.get("hidden"));
 
             if(!assistant.isNullableActionId() && id == null)
-                throw new IllegalArgumentException("The <echo> element requires an id attribute.");
+                throw new IllegalArgumentException("The <echo> element requires an 'id' attribute.");
 
             EchoActionRule echoActionRule = EchoActionRule.newInstance(id, hidden);
             assistant.pushObject(echoActionRule);
@@ -79,7 +79,7 @@ class ActionNodeletAdder implements NodeletAdder {
             Boolean hidden = BooleanUtils.toNullableBooleanObject(attributes.get("hidden"));
 
             if(!assistant.isNullableActionId() && id == null)
-                throw new IllegalArgumentException("The <action> element requires an id attribute.");
+                throw new IllegalArgumentException("The <action> element requires an 'id' attribute.");
 
             BeanActionRule beanActionRule = BeanActionRule.newInstance(id, beanIdOrClass, methodName, hidden);
 

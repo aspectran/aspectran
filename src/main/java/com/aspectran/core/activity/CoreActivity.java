@@ -634,10 +634,8 @@ public class CoreActivity extends AbstractActivity implements Activity {
 			contentResult.setName(actionList.getName());
 			if(transletRule.isExplicitContent()) {
 				contentResult.setOmittable(actionList.isOmittable());
-			} else {
-				if(actionList.getVisibleCount() < 2) {
-					contentResult.setOmittable(true);
-				}
+			} else if(actionList.getName() == null && actionList.getVisibleCount() < 2) {
+				contentResult.setOmittable(true);
 			}
 		}
 

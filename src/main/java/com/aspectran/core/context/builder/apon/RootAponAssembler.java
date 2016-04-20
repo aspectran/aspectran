@@ -342,6 +342,8 @@ public class RootAponAssembler {
 			if(contentList != null) {
 				if(!contentList.isOmittable()) {
 					Parameters contentsParameters = transletParameters.newParameters(TransletParameters.contents1);
+					contentsParameters.putValueNonNull(ContentsParameters.name, contentList.getName());
+					contentsParameters.putValueNonNull(ContentsParameters.omittable, contentList.getOmittable());
 					for(ActionList actionList : contentList) {
 						Parameters contentParameters = contentsParameters.newParameters(ContentsParameters.contents);
 						assembleActionList(actionList, contentParameters, ContentParameters.actions);
@@ -555,6 +557,11 @@ public class RootAponAssembler {
 	}
 	
 	private void assembleActionList(ActionList actionList, Parameters parameters, ParameterDefine parameterDefine) {
+		if(parameters.hasParameter(ContentParameters.name))
+			parameters.putValueNonNull(ContentParameters.name, actionList.getName());
+		if(parameters.hasParameter(ContentParameters.omittable))
+			parameters.putValueNonNull(ContentParameters.omittable, actionList.getOmittable());
+
 		for(Executable action : actionList) {
 			if(action.getActionType() == ActionType.ECHO) {
 				EchoActionRule echoActionRule = action.getActionRule();
@@ -572,7 +579,7 @@ public class RootAponAssembler {
 	private Parameters assembleActionParameters(BeanActionRule beanActionRule) {
 		ActionParameters actionParameters = new ActionParameters();
 		actionParameters.putValueNonNull(ActionParameters.id, beanActionRule.getActionId());
-		actionParameters.putValueNonNull(ActionParameters.beanId, beanActionRule.getBeanId());
+		actionParameters.putValueNonNull(ActionParameters.bean, beanActionRule.getBeanId());
 		actionParameters.putValueNonNull(ActionParameters.methodName, beanActionRule.getMethodName());
 		actionParameters.putValueNonNull(ActionParameters.hidden, beanActionRule.getHidden());
 		
