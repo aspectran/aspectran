@@ -47,7 +47,7 @@ public final class SessionScopeActivity extends CoreActivity implements Activity
 	}
 
 	@Override
-	public void ready(String transletName) {
+	public void prepare(String transletName) {
 	}
 
 	@Override

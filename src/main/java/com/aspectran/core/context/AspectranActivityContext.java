@@ -159,8 +159,7 @@ public class AspectranActivityContext implements ActivityContext {
 
 	@Override
 	public void setCurrentActivity(Activity activity) {
-		if(currentActivityHolder.get() == null)
-			currentActivityHolder.set(activity);
+		currentActivityHolder.set(activity);
 	}
 
 	@Override

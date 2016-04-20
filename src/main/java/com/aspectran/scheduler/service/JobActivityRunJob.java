@@ -59,7 +59,7 @@ public class JobActivityRunJob implements Job {
 
 		try {
 			activity = new JobActivity(context, requestAdapter, responseAdapter);
-			activity.ready(transletName);
+			activity.prepare(transletName);
 			activity.perform();
 		} finally {
 			if(activity != null)

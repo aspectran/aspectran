@@ -52,6 +52,8 @@ public class IncludeAction extends AbstractAction {
 
 	@Override
 	public Object execute(Activity activity) throws Exception {
+		Activity newActivity = null;
+		
 		try {
 			RequestAdapter requestAdapter = activity.getRequestAdapter();
 			
@@ -64,16 +66,19 @@ public class IncludeAction extends AbstractAction {
 				}
 			}
 			
-			Activity newActivity = activity.newActivity();
-			newActivity.ready(includeActionRule.getTransletName());
+			newActivity = activity.newActivity();
+			newActivity.prepare(includeActionRule.getTransletName());
 			newActivity.performWithoutResponse();
-			newActivity.finish();
 			
 			return newActivity.getProcessResult();
 			
 		} catch(Exception e) {
 			log.error("Action execution error: includeActionRule " + includeActionRule + " Cause: " + e.toString());
 			throw e;
+		} finally {
+			if(newActivity != null) {
+				newActivity.finish();
+			}
 		}
 	}
 

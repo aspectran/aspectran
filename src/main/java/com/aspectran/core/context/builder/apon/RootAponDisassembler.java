@@ -537,8 +537,7 @@ public class RootAponDisassembler {
 		Boolean hidden = actionParameters.getBoolean(ActionParameters.hidden);
 		
 		if(!assistant.isNullableActionId() && id == null)
-			throw new IllegalArgumentException("The 'action' element requires an 'id' attribute. nullableActionId setting is true.");
-
+			throw new IllegalArgumentException("The 'action' element requires an 'id' attribute. The 'nullableActionId' setting is true.");
 
 		if(methodName != null) {
 			BeanActionRule beanActionRule = BeanActionRule.newInstance(id, beanId, methodName, hidden);
@@ -560,6 +559,7 @@ public class RootAponDisassembler {
 			echoActionRule.setAttributeItemRuleMap(attributeItemRuleMap);
 			actionRuleApplicable.applyActionRule(echoActionRule);
 		} else if(include != null) {
+			include = assistant.applyTransletNamePattern(include);
 			IncludeActionRule includeActionRule = IncludeActionRule.newInstance(id, include, hidden);
 			if(attributeItemHolderParameters != null) {
 				ItemRuleMap attributeItemRuleMap = disassembleItemRuleMap(attributeItemHolderParameters);

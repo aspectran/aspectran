@@ -65,7 +65,7 @@ public class ConsoleAspectranService extends CoreAspectranService {
 
 		try {
 			activity = new ConsoleActivity(getActivityContext());
-			activity.ready(command);
+			activity.prepare(command);
 			activity.perform();
 		} catch(TransletNotFoundException e) {
 			System.out.println("Translet is not found.");

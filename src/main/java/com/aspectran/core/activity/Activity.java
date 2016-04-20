@@ -59,7 +59,7 @@ public interface Activity extends BeanRegistry {
 	 *
 	 * @param transletName the translet name
 	 */
-	void ready(String transletName);
+	void prepare(String transletName);
 	
 	/**
 	 * Preparation for the activity.
@@ -67,7 +67,7 @@ public interface Activity extends BeanRegistry {
 	 * @param transletName the translet name
 	 * @param requestMethod the request method
 	 */
-	void ready(String transletName, String requestMethod);
+	void prepare(String transletName, String requestMethod);
 
 	/**
 	 * Preparation for the activity.
@@ -75,7 +75,7 @@ public interface Activity extends BeanRegistry {
 	 * @param transletName the translet name
 	 * @param requestMethod the request method
 	 */
-	void ready(String transletName, RequestMethodType requestMethod);
+	void prepare(String transletName, RequestMethodType requestMethod);
 	
 	/**
 	 * Perform activity.
@@ -137,7 +137,7 @@ public interface Activity extends BeanRegistry {
 	Object getProcessResult(String actionId);
 	
 	/**
-	 * Returns the forwarding destination translet name.
+	 * Returns the translet name will be forwarded.
 	 *
 	 * @return the forwarding destination translet name
 	 */

@@ -276,7 +276,7 @@ public class ContextBuilderAssistant {
 	}
 
 	/**
-	 * Returns the trnaslet name of the prefix and suffix are combined.
+	 * Returns the translet name of the prefix and suffix are combined.
 	 *
 	 * @param transletName the translet name
 	 * @return the string

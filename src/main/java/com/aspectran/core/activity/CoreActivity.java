@@ -69,6 +69,8 @@ public class CoreActivity extends AbstractActivity implements Activity {
 	private static final boolean traceEnabled = log.isTraceEnabled();
 
 	private final ActivityContext context;
+	
+	private Activity outerActivity;
 
 	private TransletRule transletRule;
 	
@@ -110,7 +112,7 @@ public class CoreActivity extends AbstractActivity implements Activity {
 	}
 
 	@Override
-	public void ready(String transletName) {
+	public void prepare(String transletName) {
 		this.transletName = transletName;
 		this.requestMethod = null;
 
@@ -120,17 +122,17 @@ public class CoreActivity extends AbstractActivity implements Activity {
 			throw new TransletNotFoundException(transletName);
 		}
 
-		ready(transletRule, null);
+		prepare(transletRule, null);
 	}
 
 	@Override
-	public void ready(String transletName, String requestMethod) {
+	public void prepare(String transletName, String requestMethod) {
 		RequestMethodType requestMethodType = RequestMethodType.lookup(requestMethod);
-		ready(transletName, requestMethodType);
+		prepare(transletName, requestMethodType);
 	}
 
 	@Override
-	public void ready(String transletName, RequestMethodType requestMethod) {
+	public void prepare(String transletName, RequestMethodType requestMethod) {
 		this.transletName = transletName;
 		this.requestMethod = requestMethod;
 
@@ -148,14 +150,14 @@ public class CoreActivity extends AbstractActivity implements Activity {
 
 		PathVariableMap pathVariableMap = transletRuleRegistry.getPathVariableMap(transletRule, transletName);
 
-		ready(transletRule, null);
+		prepare(transletRule, null);
 
 		if(pathVariableMap != null) {
 			pathVariableMap.apply(translet);
 		}
 	}
 
-	private void ready(String transletName, ProcessResult processResult) {
+	private void prepare(String transletName, ProcessResult processResult) {
 		this.transletName = transletName;
 		this.requestMethod = null;
 
@@ -165,10 +167,10 @@ public class CoreActivity extends AbstractActivity implements Activity {
 			throw new TransletNotFoundException(transletName);
 		}
 
-		ready(transletRule, processResult);
+		prepare(transletRule, processResult);
 	}
 
-	private void ready(TransletRule transletRule, ProcessResult processResult) {
+	private void prepare(TransletRule transletRule, ProcessResult processResult) {
 		try {
 			if(debugEnabled) {
 				log.debug("translet " + transletRule);
@@ -186,18 +188,17 @@ public class CoreActivity extends AbstractActivity implements Activity {
 				translet.setProcessResult(processResult);
 			}
 
-			this.transletRule = transletRule;
-			this.requestRule = transletRule.getRequestRule();
-			this.responseRule = transletRule.getResponseRule();
+			prepareRule(transletRule);
 
-			readyAspectAdviceRule();
-
-			context.setCurrentActivity(this);
-
-			adapt();
-
+			if(forwardTransletName == null) {
+				outerActivity = context.getCurrentActivity();
+				context.setCurrentActivity(this);
+				adapt();
+			} else {
+				forwardTransletName = null;
+			}
 		} catch(Exception e) {
-			throw new ActivityException("Failed to ready for Activity.", e);
+			throw new ActivityException("Failed to prepare for Activity.", e);
 		}
 	}
 
@@ -217,7 +218,11 @@ public class CoreActivity extends AbstractActivity implements Activity {
 
 	@Override
 	public void finish() {
-		context.removeCurrentActivity();
+		if(outerActivity != null) {
+			context.setCurrentActivity(outerActivity);
+		} else {
+			context.removeCurrentActivity();
+		}
 	}
 	
 	private void run1st() {
@@ -278,7 +283,7 @@ public class CoreActivity extends AbstractActivity implements Activity {
 				}
 			}
 			
-			throw new ActivityException("Failed to run activity.", e);
+			throw new ActivityException("Failed to perform activity.", e);
 		} finally {
 			if(getRequestScope() != null) {
 				getRequestScope().destroy();
@@ -537,8 +542,7 @@ public class CoreActivity extends AbstractActivity implements Activity {
 		
 		if(response.getResponseType() == ResponseType.FORWARD) {
 			ForwardResponse forwardResponse = (ForwardResponse)response;
-			String forwardTransletName = forwardResponse.getForwardResponseRule().getTransletName();
-			setForwardTransletName(forwardTransletName);
+			this.forwardTransletName = forwardResponse.getForwardResponseRule().getTransletName();
 		}
 		
 		activityEnd();
@@ -549,10 +553,12 @@ public class CoreActivity extends AbstractActivity implements Activity {
 	 */
 	private void forward() {
 		if(debugEnabled) {
-			log.debug("Forwarding to the translet [" + forwardTransletName + "]");
+			log.debug("Forward to translet " + forwardTransletName);
 		}
 		
-		ready(forwardTransletName, translet.getProcessResult());
+		activityEnded = false;
+		
+		prepare(forwardTransletName, translet.getProcessResult());
 		perform();
 	}
 
@@ -605,14 +611,14 @@ public class CoreActivity extends AbstractActivity implements Activity {
 		return forwardTransletName;
 	}
 
-	/**
-	 * Specify the forwarding destination translet name.
-	 *
-	 * @param forwardTransletName the new forwarding destination translet name
-	 */
-	protected void setForwardTransletName(String forwardTransletName) {
-		this.forwardTransletName = forwardTransletName;
-	}
+//	/**
+//	 * Specify the forwarding destination translet name.
+//	 *
+//	 * @param forwardTransletName the new forwarding destination translet name
+//	 */
+//	protected void setForwardTransletName(String forwardTransletName) {
+//		this.forwardTransletName = forwardTransletName;
+//	}
 	
 	/**
 	 * Executes the actions.
@@ -718,7 +724,11 @@ public class CoreActivity extends AbstractActivity implements Activity {
 		}
 	}
 
-	private void readyAspectAdviceRule() {
+	private void prepareRule(TransletRule transletRule) {
+		this.transletRule = transletRule;
+		this.requestRule = transletRule.getRequestRule();
+		this.responseRule = transletRule.getResponseRule();
+		
 		if(transletRule.getNameTokens() == null) {
 			this.transletAspectAdviceRuleRegistry = transletRule.replicateAspectAdviceRuleRegistry();
 			this.requestAspectAdviceRuleRegistry = requestRule.replicateAspectAdviceRuleRegistry();

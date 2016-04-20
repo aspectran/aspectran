@@ -124,7 +124,7 @@ public class WebAspectranService extends CoreAspectranService {
 
 		try {
 			activity = new WebActivity(getActivityContext(), request, response);
-			activity.ready(requestUri, request.getMethod());
+			activity.prepare(requestUri, request.getMethod());
 			activity.perform();
 		} catch(TransletNotFoundException e) {
 			if(super.log.isTraceEnabled()) {

@@ -58,6 +58,11 @@ public interface ActivityContext extends MessageSource {
 	 */
 	ApplicationAdapter getApplicationAdapter();
 
+	/**
+	 * Gets the aspect rule registry.
+	 *
+	 * @return the aspect rule registry
+	 */
 	AspectRuleRegistry getAspectRuleRegistry();
 
 	/**
