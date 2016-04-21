@@ -529,7 +529,6 @@ public class MethodUtils {
 	 * via passing in wrapping classes. So, for example, a <code>Boolean</code> class
 	 * would match a <code>boolean</code> primitive.</p>
 	 *
-	 *
 	 * @param objectClass invoke static method on this class
 	 * @param methodName get method with this name
 	 * @param args use these arguments - treat null as empty array
@@ -633,8 +632,8 @@ public class MethodUtils {
 	}
 
 	private static boolean hasPrimitiveArray(Class<?>[] paramTypes) {
-		for(int i = 0; i < paramTypes.length; i++) {
-			if(ClassUtils.isPrimitiveArray(paramTypes[i]))
+		for (Class<?> paramType : paramTypes) {
+			if (ClassUtils.isPrimitiveArray(paramType))
 				return true;
 		}
 

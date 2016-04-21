@@ -55,7 +55,7 @@ public class ContentsXMLReader implements XMLReader {
 
 	private static final String CONTENT_TAG = "content";
 
-	private static final String RESULT_TAG = "result";
+	//private static final String RESULT_TAG = "result";
 
 	private static final String ROWS_TAG = "rows";
 
@@ -189,9 +189,7 @@ public class ContentsXMLReader implements XMLReader {
 			handler.endDocument();
 		} catch(InvocationTargetException e) {
 			throw new SAXException("Cannot parse process-result. Cause: " + e.toString());
-		} catch(IOException e) {
-			throw e;
-		} catch(SAXException e) {
+		} catch(IOException | SAXException e) {
 			throw e;
 		}
 	}
@@ -224,15 +222,15 @@ public class ContentsXMLReader implements XMLReader {
 				} else {
 					if(actionId != null)
 						handler.startElement(StringUtils.EMPTY, actionId, actionId, NULL_ATTRS);
-					else
-						handler.startElement(StringUtils.EMPTY, RESULT_TAG, RESULT_TAG, NULL_ATTRS);
+					//else
+					//	handler.startElement(StringUtils.EMPTY, RESULT_TAG, RESULT_TAG, NULL_ATTRS);
 
 					parse(resultValue);
 
 					if(actionId != null)
 						handler.endElement(StringUtils.EMPTY, actionId, actionId);
-					else
-						handler.endElement(StringUtils.EMPTY, RESULT_TAG, RESULT_TAG);
+					//else
+					//	handler.endElement(StringUtils.EMPTY, RESULT_TAG, RESULT_TAG);
 				}
 			}
 
@@ -249,7 +247,6 @@ public class ContentsXMLReader implements XMLReader {
 	 * Parses the object.
 	 * 
 	 * @param object the object
-	 * 
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 * @throws SAXException the SAX exception
 	 * @throws InvocationTargetException the invocation target exception
@@ -289,9 +286,7 @@ public class ContentsXMLReader implements XMLReader {
 		} else if(object instanceof Collection<?>) {
 			handler.startElement(StringUtils.EMPTY, ROWS_TAG, ROWS_TAG, NULL_ATTRS);
 
-			Iterator<Object> list = ((Collection<Object>)object).iterator();
-			while(list.hasNext()) {
-				Object value = list.next();
+			for(Object value : ((Collection<Object>) object)) {
 				checkCircularReference(object, value);
 
 				handler.startElement(StringUtils.EMPTY, ROW_TAG, ROW_TAG, NULL_ATTRS);

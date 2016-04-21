@@ -56,7 +56,7 @@ public class EchoAction extends AbstractAction {
 			ItemExpressor expressor = new ItemExpression(activity);
 			return expressor.express(echoActionRule.getAttributeItemRuleMap());
 		} catch(Exception e) {
-			log.error("Action execution error: echoActionRule " + echoActionRule + " Cause: " + e.toString());
+			log.error("Failed to execute action: echoActionRule " + echoActionRule + " Cause: " + e.toString());
 			throw e;
 		}
 	}

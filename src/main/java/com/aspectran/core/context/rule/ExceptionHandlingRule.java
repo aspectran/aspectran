@@ -39,7 +39,7 @@ public class ExceptionHandlingRule implements ActionRuleApplicable, Iterable<Res
 	
 	private ResponseByContentTypeRule defaultResponseByContentTypeRule;
 	
-	private Map<String, ResponseByContentTypeRule> responseByContentTypeRuleMap = new LinkedHashMap<String, ResponseByContentTypeRule>();
+	private Map<String, ResponseByContentTypeRule> responseByContentTypeRuleMap = new LinkedHashMap<>();
 	
 	private String description;
 
@@ -131,26 +131,24 @@ public class ExceptionHandlingRule implements ActionRuleApplicable, Iterable<Res
 	}
 	
 	/**
-	 * Gets the response by content type rule.
+	 * Gets the rule for the response by content type as specified exception.
 	 *
-	 * @param ex the ex
-	 * @return the response by content type rule
+	 * @param ex the exception
+	 * @return the rule for the response by content type
 	 */
 	public ResponseByContentTypeRule getResponseByContentTypeRule(Exception ex) {
 		ResponseByContentTypeRule responseByContentTypeRule = null;
 		int deepest = Integer.MAX_VALUE;
-		
-		for(Iterator<ResponseByContentTypeRule> iter = iterator(); iter.hasNext();) {
-			ResponseByContentTypeRule rbctr = iter.next();
-			
+
+		for(ResponseByContentTypeRule rbctr : responseByContentTypeRuleMap.values()) {
 			int depth = getMatchedDepth(rbctr.getExceptionType(), ex);
-			
+
 			if(depth >= 0 && depth < deepest) {
 				deepest = depth;
 				responseByContentTypeRule = rbctr;
 			}
 		}
-		
+
 		if(responseByContentTypeRule == null)
 			return this.defaultResponseByContentTypeRule;
 		
@@ -161,10 +159,15 @@ public class ExceptionHandlingRule implements ActionRuleApplicable, Iterable<Res
 	 * Gets the matched depth.
 	 *
 	 * @param exceptionType the exception type
-	 * @param ex the ex
+	 * @param ex the throwable exception
 	 * @return the matched depth
 	 */
-	private int getMatchedDepth(String exceptionType, Exception ex) {
+	private int getMatchedDepth(String exceptionType, Throwable ex) {
+		Throwable t = ex.getCause();
+		if(t != null) {
+			return getMatchedDepth(exceptionType, t);
+		}
+
 		return getMatchedDepth(exceptionType, ex.getClass(), 0);
 	}
 
@@ -177,7 +180,7 @@ public class ExceptionHandlingRule implements ActionRuleApplicable, Iterable<Res
 	 * @return the matched depth
 	 */
 	private int getMatchedDepth(String exceptionType, Class<?> exceptionClass, int depth) {
-		if(exceptionClass.getName().indexOf(exceptionType) != -1)
+		if(exceptionClass.getName().contains(exceptionType))
 			return depth;
 
 		if(exceptionClass.equals(Throwable.class))
