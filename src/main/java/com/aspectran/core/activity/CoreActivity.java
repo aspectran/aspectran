@@ -60,7 +60,7 @@ import com.aspectran.core.util.logging.LogFactory;
  * 
  * <p>Created: 2008. 03. 22 PM 5:48:09</p>
  */
-public class CoreActivity extends AbstractActivity implements Activity {
+public class CoreActivity extends AbstractActivity {
 
 	private static final Log log = LogFactory.getLog(CoreActivity.class);
 	
@@ -362,7 +362,6 @@ public class CoreActivity extends AbstractActivity implements Activity {
 					// execute Before Advice Action for Content Joinpoint
 					if(contentAspectAdviceRuleRegistry != null) {
 						List<AspectAdviceRule> beforeAdviceRuleList = contentAspectAdviceRuleRegistry.getBeforeAdviceRuleList();
-
 						if(beforeAdviceRuleList != null)
 							execute(beforeAdviceRuleList);
 					}
@@ -374,7 +373,6 @@ public class CoreActivity extends AbstractActivity implements Activity {
 					// execute After Advice Action for Content Joinpoint
 					if(contentAspectAdviceRuleRegistry != null) {
 						List<AspectAdviceRule> afterAdviceRuleList = contentAspectAdviceRuleRegistry.getAfterAdviceRuleList();
-						
 						if(afterAdviceRuleList != null)
 							execute(afterAdviceRuleList);
 					}
@@ -579,11 +577,6 @@ public class CoreActivity extends AbstractActivity implements Activity {
 		}
 	}
 
-	/**
-	 * Response by content type.
-	 *
-	 * @param responseByContentTypeRule the response by content type rule
-	 */
 	private void responseByContentType(ResponseByContentTypeRule responseByContentTypeRule) {
 		Response response = getResponse();
 
@@ -595,6 +588,7 @@ public class CoreActivity extends AbstractActivity implements Activity {
 
 			// Clear process results. No reflection to ProcessResult.
 			translet.setProcessResult(null);
+			translet.touchProcessResult(null, 0).setOmittable(true);
 			
 			if(responseRule.getResponse() != null) {
 				ActionList actionList = responseRule.getResponse().getActionList();
@@ -611,21 +605,6 @@ public class CoreActivity extends AbstractActivity implements Activity {
 		return forwardTransletName;
 	}
 
-//	/**
-//	 * Specify the forwarding destination translet name.
-//	 *
-//	 * @param forwardTransletName the new forwarding destination translet name
-//	 */
-//	protected void setForwardTransletName(String forwardTransletName) {
-//		this.forwardTransletName = forwardTransletName;
-//	}
-	
-	/**
-	 * Executes the actions.
-	 *
-	 * @param actionList the action list
-	 * @throws ActivityException the activity exception
-	 */
 	protected void execute(ActionList actionList) {
 		ContentResult contentResult = null;
 
@@ -880,29 +859,14 @@ public class CoreActivity extends AbstractActivity implements Activity {
 		return requestMethod;
 	}
 
-	/**
-	 * Gets the translet rule.
-	 *
-	 * @return the translet rule
-	 */
 	protected TransletRule getTransletRule() {
 		return transletRule;
 	}
 
-	/**
-	 * Gets the request rule.
-	 *
-	 * @return the request rule
-	 */
 	protected RequestRule getRequestRule() {
 		return requestRule;
 	}
 
-	/**
-	 * Gets the response rule.
-	 *
-	 * @return the response rule
-	 */
 	protected ResponseRule getResponseRule() {
 		return responseRule;
 	}

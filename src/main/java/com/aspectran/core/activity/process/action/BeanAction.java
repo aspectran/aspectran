@@ -144,7 +144,7 @@ public class BeanAction extends AbstractAction {
 				return result;
 			}
 		} catch(Exception e) {
-			log.error("Action execution error: beanActionRule " + beanActionRule + " Cause: " + e.toString());
+			log.error("Failed to execute action: beanActionRule " + beanActionRule);
 			throw e;
 		}
 	}

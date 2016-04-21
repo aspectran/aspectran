@@ -94,7 +94,7 @@ public class ConsoleActivity extends CoreActivity implements Activity {
 				System.out.println();
 			}
 
-			System.out.println("Input Parameters:");
+			System.out.println("Input parameters:");
 
 			for(ItemRule itemRule : attributeItemRuleMap.values()) {
 				Token[] tokens = itemRule.getTokens();

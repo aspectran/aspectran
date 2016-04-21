@@ -73,7 +73,7 @@ public class IncludeAction extends AbstractAction {
 			return newActivity.getProcessResult();
 			
 		} catch(Exception e) {
-			log.error("Action execution error: includeActionRule " + includeActionRule + " Cause: " + e.toString());
+			log.error("Failed to execute action: includeActionRule " + includeActionRule + " Cause: " + e.toString());
 			throw e;
 		} finally {
 			if(newActivity != null) {

@@ -31,7 +31,7 @@ import com.aspectran.core.context.translet.TransletInstantiationException;
  * 
  * <p>Created: 2008. 03. 22 PM 5:48:09</p>
  */
-public abstract class AbstractActivity {
+public abstract class AbstractActivity implements Activity {
 
 	private ApplicationAdapter applicationAdapter;
 
