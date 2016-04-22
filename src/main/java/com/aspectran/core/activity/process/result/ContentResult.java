@@ -40,7 +40,7 @@ public class ContentResult extends ArrayList<ActionResult> {
 		this.parent = parent;
 		
 		if(parent != null) {
-			this.parent.addContentResult(this);
+			parent.addContentResult(this);
 		}
 	}
 

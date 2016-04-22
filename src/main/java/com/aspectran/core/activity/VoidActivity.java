@@ -31,7 +31,7 @@ import com.aspectran.core.context.rule.type.JoinpointScopeType;
  * 
  * <p>Created: 2008. 04. 28 AM 12:48:48</p>
  */
-public final class VoidActivity extends CoreActivity implements Activity {
+public final class VoidActivity extends CoreActivity {
 	
 	/**
 	 * Instantiates a new void activity.

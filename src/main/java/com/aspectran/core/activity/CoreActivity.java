@@ -70,8 +70,6 @@ public class CoreActivity extends AbstractActivity {
 
 	private final ActivityContext context;
 	
-	private Activity outerActivity;
-
 	private TransletRule transletRule;
 	
 	private RequestRule requestRule;
@@ -88,6 +86,8 @@ public class CoreActivity extends AbstractActivity {
 	
 	private Translet translet;
 	
+	private Activity outerActivity;
+
 	/** Whether the current activity is completed or interrupted. */
 	private boolean activityEnded;
 

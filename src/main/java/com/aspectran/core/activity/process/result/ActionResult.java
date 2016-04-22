@@ -38,7 +38,7 @@ public class ActionResult {
 		this.parent = parent;
 		
 		if(parent != null) {
-			this.parent.addActionResult(this);
+			parent.addActionResult(this);
 		}
 	}
 
