@@ -20,26 +20,14 @@ import java.util.Map;
 import com.aspectran.core.context.rule.ItemRuleMap;
 
 /**
- * The Interface ItemTokenExpressor.
+ * Evaluates expression for the Item Rule.
  *
  * @since 2010. 5. 6
  */
-public interface ItemExpressor {
+public interface ItemEvaluator {
 	
-	/**
-	 * Expression processing for Item Rule.
-	 * 
-	 * @param itemRuleMap the item rule map
-	 * @return the value map
-	 */
-	Map<String, Object> express(ItemRuleMap itemRuleMap);
+	Map<String, Object> evaluate(ItemRuleMap itemRuleMap);
 	
-	/**
-	 * Expression processing for Item Rule.
-	 * 
-	 * @param itemRuleMap the item rule map
-	 * @param valueMap the value map
-	 */
-	void express(ItemRuleMap itemRuleMap, Map<String, Object> valueMap);
+	void evaluate(ItemRuleMap itemRuleMap, Map<String, Object> valueMap);
 	
 }

@@ -18,7 +18,7 @@ package com.aspectran.core.activity.process.action;
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.context.expr.ItemExpression;
-import com.aspectran.core.context.expr.ItemExpressor;
+import com.aspectran.core.context.expr.ItemEvaluator;
 import com.aspectran.core.context.rule.EchoActionRule;
 import com.aspectran.core.context.rule.type.ActionType;
 import com.aspectran.core.util.ToStringBuilder;
@@ -53,8 +53,8 @@ public class EchoAction extends AbstractAction {
 			return null;
 		
 		try {
-			ItemExpressor expressor = new ItemExpression(activity);
-			return expressor.express(echoActionRule.getAttributeItemRuleMap());
+			ItemEvaluator evaluator = new ItemExpression(activity);
+			return evaluator.evaluate(echoActionRule.getAttributeItemRuleMap());
 		} catch(Exception e) {
 			log.error("Failed to execute action: echoActionRule " + echoActionRule + " Cause: " + e.toString());
 			throw e;

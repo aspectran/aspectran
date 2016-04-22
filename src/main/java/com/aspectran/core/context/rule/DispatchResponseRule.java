@@ -19,8 +19,8 @@ import java.util.List;
 
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.response.dispatch.ViewDispatcher;
+import com.aspectran.core.context.expr.TokenEvaluator;
 import com.aspectran.core.context.expr.TokenExpression;
-import com.aspectran.core.context.expr.TokenExpressor;
 import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.expr.token.Tokenizer;
 import com.aspectran.core.context.rule.ability.ActionPossessSupport;
@@ -75,8 +75,8 @@ public class DispatchResponseRule extends ActionPossessSupport implements Replic
 	 */
 	public String getName(Activity activity) {
 		if(nameTokens != null && nameTokens.length > 0) {
-			TokenExpressor expressor = new TokenExpression(activity);
-			return expressor.expressAsString(nameTokens);
+			TokenEvaluator evaluator = new TokenExpression(activity);
+			return evaluator.evaluateAsString(nameTokens);
 		} else {
 			return name;
 		}

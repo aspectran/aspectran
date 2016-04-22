@@ -21,27 +21,27 @@ import com.aspectran.core.util.apon.ParameterValueType;
 
 public class DispatchParameters extends AbstractParameters {
 
+	public static final ParameterDefine actions;
 	public static final ParameterDefine name;
 	public static final ParameterDefine contentType;
 	public static final ParameterDefine characterEncoding;
 	public static final ParameterDefine defaultResponse;
-	public static final ParameterDefine actions;
-	
+
 	private static final ParameterDefine[] parameterDefines;
 	
 	static {
+		actions = new ParameterDefine("action", ActionParameters.class, true, true);
 		name = new ParameterDefine("name", ParameterValueType.STRING);
 		contentType = new ParameterDefine("contentType", ParameterValueType.STRING);
 		characterEncoding = new ParameterDefine("characterEncoding", ParameterValueType.STRING);
 		defaultResponse = new ParameterDefine("defaultResponse", ParameterValueType.BOOLEAN);
-		actions = new ParameterDefine("action", ActionParameters.class, true, true);
-		
+
 		parameterDefines = new ParameterDefine[] {
+				actions,
 				name,
 				contentType,
 				characterEncoding,
-				defaultResponse,
-				actions
+				defaultResponse
 		};
 	}
 	

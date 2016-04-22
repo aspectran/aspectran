@@ -21,7 +21,7 @@ import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.context.expr.ItemExpression;
-import com.aspectran.core.context.expr.ItemExpressor;
+import com.aspectran.core.context.expr.ItemEvaluator;
 import com.aspectran.core.context.rule.IncludeActionRule;
 import com.aspectran.core.context.rule.type.ActionType;
 import com.aspectran.core.util.ToStringBuilder;
@@ -58,8 +58,8 @@ public class IncludeAction extends AbstractAction {
 			RequestAdapter requestAdapter = activity.getRequestAdapter();
 			
 			if(includeActionRule.getAttributeItemRuleMap() != null) {
-				ItemExpressor expressor = new ItemExpression(activity);
-				Map<String, Object> valueMap = expressor.express(includeActionRule.getAttributeItemRuleMap());
+				ItemEvaluator evaluator = new ItemExpression(activity);
+				Map<String, Object> valueMap = evaluator.evaluate(includeActionRule.getAttributeItemRuleMap());
 
 				for(Map.Entry<String, Object> entry : valueMap.entrySet()) {
 					requestAdapter.setAttribute(entry.getKey(), entry.getValue());

@@ -249,9 +249,14 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 	}
 
 	public ContentList touchContentList() {
+		return touchContentList(false, true);
+	}
+
+	public ContentList touchContentList(boolean explicitContent, boolean omittable) {
 		if(contentList == null) {
 			contentList = new ContentList();
-			if(!explicitContent) {
+			this.explicitContent = explicitContent;
+			if(omittable) {
 				contentList.setOmittable(Boolean.TRUE);
 			}
 		}

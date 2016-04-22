@@ -41,7 +41,7 @@ import com.aspectran.core.util.BeanUtils;
  * 
  * <p>Created: 2008. 03. 29 AM 12:59:16</p>
  */
-public class TokenExpression implements TokenExpressor {
+public class TokenExpression implements TokenEvaluator {
 	
 	protected final Activity activity;
 	
@@ -62,7 +62,7 @@ public class TokenExpression implements TokenExpressor {
 	}
 
 	@Override
-	public Object express(Token token) {
+	public Object evaluate(Token token) {
 		TokenType tokenType = token.getType();
 		Object value = null;
 
@@ -80,7 +80,7 @@ public class TokenExpression implements TokenExpressor {
 	}
 
 	@Override
-	public Object express(Token[] tokens) {
+	public Object evaluate(Token[] tokens) {
 		if(tokens == null || tokens.length == 0)
 			return null;
 
@@ -88,7 +88,7 @@ public class TokenExpression implements TokenExpressor {
 			StringBuilder sb = new StringBuilder();
 			
 			for(Token t : tokens) {
-				Object value = express(t);
+				Object value = evaluate(t);
 				
 				if(value != null)
 					sb.append(value.toString());
@@ -96,17 +96,17 @@ public class TokenExpression implements TokenExpressor {
 			
 			return sb.toString();
 		} else {
-			return express(tokens[0]);
+			return evaluate(tokens[0]);
 		}
 	}
 
 	@Override
-	public void express(Token[] tokens, Writer writer) throws IOException {
+	public void evaluate(Token[] tokens, Writer writer) throws IOException {
 		if(tokens == null || tokens.length == 0)
 			return;
 
 		for(Token t : tokens) {
-			Object value = express(t);
+			Object value = evaluate(t);
 
 			if(value != null)
 				writer.write(value.toString());
@@ -116,8 +116,8 @@ public class TokenExpression implements TokenExpressor {
 	}
 
 	@Override
-	public String expressAsString(Token[] tokens) {
-		Object value = express(tokens);
+	public String evaluateAsString(Token[] tokens) {
+		Object value = evaluate(tokens);
 		
 		if(value == null)
 			return null;
@@ -126,11 +126,11 @@ public class TokenExpression implements TokenExpressor {
 	}
 
 	@Override
-	public Object express(String parameterName, Token[] tokens) {
+	public Object evaluate(String parameterName, Token[] tokens) {
 		if(tokens == null || tokens.length == 0)
 			return getParameter(parameterName);
 		
-		Object value = express(tokens);
+		Object value = evaluate(tokens);
 		
 		if(value == null)
 			return null;
@@ -139,8 +139,8 @@ public class TokenExpression implements TokenExpressor {
 	}
 
 	@Override
-	public String expressAsString(String parameterName, Token[] tokens) {
-		Object value = express(parameterName, tokens);
+	public String evaluateAsString(String parameterName, Token[] tokens) {
+		Object value = evaluate(parameterName, tokens);
 		
 		if(value == null)
 			return null;
@@ -149,14 +149,14 @@ public class TokenExpression implements TokenExpressor {
 	}
 
 	@Override
-	public List<Object> expressAsList(String parameterName, List<Token[]> tokensList) {
+	public List<Object> evaluateAsList(String parameterName, List<Token[]> tokensList) {
 		if(tokensList == null || tokensList.isEmpty())
 			return cast(getParameterAsList(parameterName));
 		
-		List<Object> valueList = new ArrayList<Object>(tokensList.size());
+		List<Object> valueList = new ArrayList<>(tokensList.size());
 
 		for(Token[] tokens : tokensList) {
-			Object value = express(parameterName, tokens);
+			Object value = evaluate(parameterName, tokens);
 			valueList.add(value);
 		}
 		
@@ -164,14 +164,14 @@ public class TokenExpression implements TokenExpressor {
 	}
 
 	@Override
-	public Set<Object> expressAsSet(String parameterName, Set<Token[]> tokensSet) {
+	public Set<Object> evaluateAsSet(String parameterName, Set<Token[]> tokensSet) {
 		if(tokensSet == null || tokensSet.isEmpty())
 			return cast(getParameterAsSet(parameterName));
 		
-		Set<Object> valueSet = new HashSet<Object>(tokensSet.size());
+		Set<Object> valueSet = new HashSet<>(tokensSet.size());
 
 		for(Token[] tokens : tokensSet) {
-			Object value = express(parameterName, tokens);
+			Object value = evaluate(parameterName, tokens);
 			valueSet.add(value);
 		}
 		
@@ -179,22 +179,22 @@ public class TokenExpression implements TokenExpressor {
 	}
 
 	@Override
-	public Map<String, Object> expressAsMap(String parameterName, Map<String, Token[]> tokensMap) {
+	public Map<String, Object> evaluateAsMap(String parameterName, Map<String, Token[]> tokensMap) {
 		if(tokensMap == null || tokensMap.isEmpty()) {
 			String value = getParameter(parameterName);
 			
 			if(value == null)
 				return null;
 			
-			Map<String, Object> valueMap = new LinkedHashMap<String, Object>();
+			Map<String, Object> valueMap = new LinkedHashMap<>();
 			valueMap.put(parameterName, value);
 			return valueMap;
 		}
 		
-		Map<String, Object> valueMap = new LinkedHashMap<String, Object>();
+		Map<String, Object> valueMap = new LinkedHashMap<>();
 		
 		for(Map.Entry<String, Token[]> entry : tokensMap.entrySet()) {
-			Object value = express(entry.getKey(), entry.getValue());
+			Object value = evaluate(entry.getKey(), entry.getValue());
 			valueMap.put(entry.getKey(), value);
 		}
 		
@@ -202,7 +202,7 @@ public class TokenExpression implements TokenExpressor {
 	}
 
 	@Override
-	public Properties expressAsProperties(String parameterName, Properties tokensProp) {
+	public Properties evaluateAsProperties(String parameterName, Properties tokensProp) {
 		if(tokensProp == null || tokensProp.isEmpty()) {
 			String value = getParameter(parameterName);
 
@@ -217,7 +217,7 @@ public class TokenExpression implements TokenExpressor {
 		Properties prop = new Properties();
 
 		for(Map.Entry<Object, Object> entry : tokensProp.entrySet()) {
-			Object value = express(entry.getKey().toString(), (Token[])entry.getValue());
+			Object value = evaluate(entry.getKey().toString(), (Token[])entry.getValue());
 			prop.put(entry.getKey(), value);
 		}
 		
@@ -236,7 +236,7 @@ public class TokenExpression implements TokenExpressor {
 		if(values == null)
 			return null;
 		
-		List<String> valueList = new ArrayList<String>(values.length);
+		List<String> valueList = new ArrayList<>(values.length);
 		Collections.addAll(valueList, values);
 		
 		return valueList;
@@ -254,7 +254,7 @@ public class TokenExpression implements TokenExpressor {
 		if(values == null)
 			return null;
 
-		Set<String> valueSet = new LinkedHashSet<String>(values.length);
+		Set<String> valueSet = new LinkedHashSet<>(values.length);
 		Collections.addAll(valueSet, values);
 		
 		return valueSet;
@@ -394,110 +394,6 @@ public class TokenExpression implements TokenExpressor {
 		return value;
 	}
 
-//	/**
-//	 * Invoke object's property.
-//	 *
-//	 * @param object the object
-//	 * @param propertyName the property name
-//	 * @return the object property
-//	 */
-//	protected Object getObjectProperty(final Object object, String propertyName) {
-//		Object value = null;
-//
-//		try {
-//			if(propertyName.indexOf('.') > -1) {
-//				StringTokenizer parser = new StringTokenizer(propertyName, ".");
-//				value = object;
-//				while(parser.hasMoreTokens()) {
-//					value = invokeMethod(value, parser.nextToken());
-//					if(value == null) {
-//						break;
-//					}
-//				}
-//				return value;
-//			} else {
-//				value = invokeMethod(object, propertyName);
-//			}
-//		} catch(InvocationTargetException e) {
-//			// ignore
-//		}
-//
-//		return value;
-//	}
-//
-//	private Object invokeMethod(final Object object, String name) throws InvocationTargetException {
-//		try {
-//			Object value = null;
-//			if(name.indexOf("[") > -1) {
-//				value = invokeIndexedMethod(object, name);
-//			} else {
-//				if(object instanceof Map<?, ?>) {
-//					value = ((Map<?, ?>)object).get(name);
-//				} else {
-//					value = MethodUtils.invokeMethod(object, name);
-//				}
-//			}
-//			return value;
-//		} catch(InvocationTargetException e) {
-//			throw e;
-//		} catch(Throwable t) {
-//			if(object == null) {
-//				throw new InvocationTargetException(t, "Could not get property '" + name
-//						+ "' from null reference. Cause: " + t.toString());
-//			} else {
-//				throw new InvocationTargetException(t, "Could not get property '" + name + "' from "
-//						+ object.getClass().getName() + ". Cause: " + t.toString());
-//			}
-//		}
-//	}
-//
-//	private Object invokeIndexedMethod(final Object object, String indexedName) throws InvocationTargetException {
-//		try {
-//			String name = indexedName.substring(0, indexedName.indexOf("["));
-//			int index = Integer.parseInt(indexedName.substring(indexedName.indexOf("[") + 1, indexedName.indexOf("]")));
-//			Object list = null;
-//
-//			if(StringUtils.isEmpty(name)) {
-//				list = object;
-//			} else {
-//				list = invokeMethod(object, name);
-//			}
-//
-//			Object value = null;
-//
-//			if(list instanceof List<?>) {
-//				value = ((List<?>)list).get(index);
-//			} else if(list instanceof Object[]) {
-//				value = ((Object[])list)[index];
-//			} else if(list instanceof char[]) {
-//				value = new Character(((char[])list)[index]);
-//			} else if(list instanceof boolean[]) {
-//				value = Boolean.valueOf(((boolean[])list)[index]);
-//			} else if(list instanceof byte[]) {
-//				value = new Byte(((byte[])list)[index]);
-//			} else if(list instanceof double[]) {
-//				value = new Double(((double[])list)[index]);
-//			} else if(list instanceof float[]) {
-//				value = new Float(((float[])list)[index]);
-//			} else if(list instanceof int[]) {
-//				value = new Integer(((int[])list)[index]);
-//			} else if(list instanceof long[]) {
-//				value = new Long(((long[])list)[index]);
-//			} else if(list instanceof short[]) {
-//				value = new Short(((short[])list)[index]);
-//			} else {
-//				throw new IllegalArgumentException("The '" + name + "' property of the " + object.getClass().getName()
-//						+ " class is not a List or Array.");
-//			}
-//
-//			return value;
-//		} catch(InvocationTargetException e) {
-//			throw e;
-//		} catch(Exception e) {
-//			throw new InvocationTargetException(e, "Error getting ordinal list from JavaBean. Cause: " + e);
-//		}
-//	}
-	
 	/**
 	 * This method will cast List&lt;"?"&gt; to List&lt;T&gt; assuming ? is castable to T.
 	 *

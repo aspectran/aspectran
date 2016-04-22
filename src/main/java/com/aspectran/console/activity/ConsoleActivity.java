@@ -27,7 +27,7 @@ import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.expr.ItemExpression;
-import com.aspectran.core.context.expr.ItemExpressor;
+import com.aspectran.core.context.expr.ItemEvaluator;
 import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.expr.token.TokenParser;
 import com.aspectran.core.context.rule.ItemRule;
@@ -121,8 +121,8 @@ public class ConsoleActivity extends CoreActivity implements Activity {
 				}
 			}
 
-			ItemExpressor expressor = new ItemExpression(this);
-			Map<String, Object> valueMap = expressor.express(attributeItemRuleMap);
+			ItemEvaluator evaluator = new ItemExpression(this);
+			Map<String, Object> valueMap = evaluator.evaluate(attributeItemRuleMap);
 
 			for(ItemRule itemRule : attributeItemRuleMap.values()) {
 				String name = itemRule.getName();

@@ -146,7 +146,7 @@ class TransletNodeletAdder implements NodeletAdder {
 
             if(!actionList.isEmpty()) {
                 TransletRule transletRule = assistant.peekObject();
-				ContentList contentList = transletRule.touchContentList();
+				ContentList contentList = transletRule.touchContentList(true, true);
 				contentList.addActionList(actionList);
             }
         });

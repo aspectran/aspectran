@@ -21,7 +21,7 @@ import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.context.expr.ItemExpression;
-import com.aspectran.core.context.expr.ItemExpressor;
+import com.aspectran.core.context.expr.ItemEvaluator;
 import com.aspectran.core.context.rule.ForwardResponseRule;
 import com.aspectran.core.context.rule.type.ResponseType;
 import com.aspectran.core.util.logging.Log;
@@ -60,8 +60,8 @@ public class ForwardResponse implements Response {
 		}
 
 		if(forwardResponseRule.getAttributeItemRuleMap() != null) {
-			ItemExpressor expressor = new ItemExpression(activity);
-			Map<String, Object> valueMap = expressor.express(forwardResponseRule.getAttributeItemRuleMap());
+			ItemEvaluator evaluator = new ItemExpression(activity);
+			Map<String, Object> valueMap = evaluator.evaluate(forwardResponseRule.getAttributeItemRuleMap());
 
 			for(Map.Entry<String, Object> entry : valueMap.entrySet())
 				requestAdapter.setAttribute(entry.getKey(), entry.getValue());

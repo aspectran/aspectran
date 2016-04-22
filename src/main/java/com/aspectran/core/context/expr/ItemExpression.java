@@ -36,14 +36,14 @@ import com.aspectran.core.util.apon.GenericParameters;
 import com.aspectran.core.util.apon.Parameters;
 
 /**
- * The Class ItemTokenExpression.
+ * The Class ItemExpression.
  *
  * @since 2008. 06. 19
  */
-public class ItemExpression extends TokenExpression implements ItemExpressor {
+public class ItemExpression extends TokenExpression implements ItemEvaluator {
 
 	/**
-	 * Instantiates a new ItemTokenExpression.
+	 * Instantiates a new ItemExpression.
 	 *
 	 * @param activity the current Activity
 	 */
@@ -52,14 +52,14 @@ public class ItemExpression extends TokenExpression implements ItemExpressor {
 	}
 	
 	@Override
-	public Map<String, Object> express(ItemRuleMap itemRuleMap) {
-		Map<String, Object> valueMap = new LinkedHashMap<String, Object>();
-		express(itemRuleMap, valueMap);
+	public Map<String, Object> evaluate(ItemRuleMap itemRuleMap) {
+		Map<String, Object> valueMap = new LinkedHashMap<>();
+		evaluate(itemRuleMap, valueMap);
 		return valueMap;
 	}
 
 	@Override
-	public void express(ItemRuleMap itemRuleMap, Map<String, Object> valueMap) {
+	public void evaluate(ItemRuleMap itemRuleMap, Map<String, Object> valueMap) {
 		for(ItemRule ir : itemRuleMap.values()) {
 			ItemType itemType = ir.getType();
 			ItemValueType valueType = ir.getValueType();
@@ -68,25 +68,25 @@ public class ItemExpression extends TokenExpression implements ItemExpressor {
 			
 			if(itemType == ItemType.SINGULAR) {
 				Token[] tokens = ir.getTokens();
-				value = express(name, tokens, valueType);
+				value = evaluate(name, tokens, valueType);
 			} else if(itemType == ItemType.ARRAY) {
-				value = expressAsArray(name, ir.getTokensList(), valueType);
+				value = evaluateAsArray(name, ir.getTokensList(), valueType);
 			} else if(itemType == ItemType.LIST) {
-				value = expressAsList(name, ir.getTokensList(), valueType);
+				value = evaluateAsList(name, ir.getTokensList(), valueType);
 			} else if(itemType == ItemType.SET) {
-				value = expressAsSet(name, ir.getTokensList(), valueType);
+				value = evaluateAsSet(name, ir.getTokensList(), valueType);
 			} else if(itemType == ItemType.MAP) {
-				value = expressAsMap(name, ir.getTokensMap(), valueType);
+				value = evaluateAsMap(name, ir.getTokensMap(), valueType);
 			} else if(itemType == ItemType.PROPERTIES) {
-				value = expressAsProperties(name, ir.getTokensMap(), valueType);
+				value = evaluateAsProperties(name, ir.getTokensMap(), valueType);
 			}
 			
 			valueMap.put(name, value);
 		}
 	}
 	
-	private Object express(String parameterName, Token[] tokens, ItemValueType valueType) {
-		Object value = express(parameterName, tokens);
+	private Object evaluate(String parameterName, Token[] tokens, ItemValueType valueType) {
+		Object value = evaluate(parameterName, tokens);
 		
 		if(value == null || valueType == null)
 			return value;
@@ -94,17 +94,9 @@ public class ItemExpression extends TokenExpression implements ItemExpressor {
 		return valuelize(value, valueType);
 	}
 	
-	/**
-	 * Express as Array.
-	 *
-	 * @param parameterName the parameter name
-	 * @param tokensList the tokens
-	 * @param valueType the value type
-	 * @return the object[]
-	 */
 	@SuppressWarnings("all")
-	private Object[] expressAsArray(String parameterName, List<Token[]> tokensList, ItemValueType valueType) {
-		List<Object> list = expressAsList(parameterName, tokensList, valueType);
+	private Object[] evaluateAsArray(String parameterName, List<Token[]> tokensList, ItemValueType valueType) {
+		List<Object> list = evaluateAsList(parameterName, tokensList, valueType);
 		
 		if(valueType == ItemValueType.STRING) {
 			return list.toArray(new String[list.size()]);
@@ -129,22 +121,14 @@ public class ItemExpression extends TokenExpression implements ItemExpressor {
 		}
 	}
 	
-	/**
-	 * Express as List.
-	 *
-	 * @param parameterName the parameter name
-	 * @param tokensList the tokens
-	 * @param valueType the value type
-	 * @return the object[]
-	 */
-	private List<Object> expressAsList(String parameterName, List<Token[]> tokensList, ItemValueType valueType) {
+	private List<Object> evaluateAsList(String parameterName, List<Token[]> tokensList, ItemValueType valueType) {
 		if(tokensList == null || tokensList.isEmpty())
 			return getParameterAsList(parameterName, valueType);
 		
-		List<Object> valueList = new ArrayList<Object>(tokensList.size());
+		List<Object> valueList = new ArrayList<>(tokensList.size());
 		
 		for(Token[] tokens : tokensList) {
-			Object value = express(parameterName, tokens);
+			Object value = evaluate(parameterName, tokens);
 			
 			if(value != null && valueType != null)
 				value = valuelize(value, valueType);
@@ -155,22 +139,14 @@ public class ItemExpression extends TokenExpression implements ItemExpressor {
 		return valueList;
 	}
 
-	/**
-	 * Express as Set.
-	 *
-	 * @param parameterName the parameter name
-	 * @param tokensList the tokens
-	 * @param valueType the value type
-	 * @return the object[]
-	 */
-	private Set<Object> expressAsSet(String parameterName, List<Token[]> tokensList, ItemValueType valueType) {
+	private Set<Object> evaluateAsSet(String parameterName, List<Token[]> tokensList, ItemValueType valueType) {
 		if(tokensList == null || tokensList.isEmpty())
 			return getParameterAsSet(parameterName, valueType);
 		
-		Set<Object> valueSet = new HashSet<Object>(tokensList.size());
+		Set<Object> valueSet = new HashSet<>(tokensList.size());
 
 		for(Token[] tokens : tokensList) {
-			Object value = express(parameterName, tokens);
+			Object value = evaluate(parameterName, tokens);
 			
 			if(value != null && valueType != null)
 				value = valuelize(value, valueType);
@@ -181,15 +157,7 @@ public class ItemExpression extends TokenExpression implements ItemExpressor {
 		return valueSet;
 	}
 	
-	/**
-	 * Express as Map.
-	 *
-	 * @param parameterName the parameter name
-	 * @param tokensMap the tokens map
-	 * @param valueType the value type
-	 * @return the map< string, object>
-	 */
-	private Map<String, Object> expressAsMap(String parameterName, Map<String, Token[]> tokensMap, ItemValueType valueType) {
+	private Map<String, Object> evaluateAsMap(String parameterName, Map<String, Token[]> tokensMap, ItemValueType valueType) {
 		if(tokensMap == null || tokensMap.isEmpty()) {
 			Object value = getParameter(parameterName, valueType);
 			
@@ -199,15 +167,15 @@ public class ItemExpression extends TokenExpression implements ItemExpressor {
 			if(valueType != null)
 				value = valuelize(value, valueType);
 			
-			Map<String, Object> valueMap = new LinkedHashMap<String, Object>();
+			Map<String, Object> valueMap = new LinkedHashMap<>();
 			valueMap.put(parameterName, value);
 			return valueMap;
 		}
 		
-		Map<String, Object> valueMap = new LinkedHashMap<String, Object>();
-		
+		Map<String, Object> valueMap = new LinkedHashMap<>();
+
 		for(Map.Entry<String, Token[]> entry : tokensMap.entrySet()) {
-			Object value = express(entry.getKey(), entry.getValue());
+			Object value = evaluate(entry.getKey(), entry.getValue());
 
 			if(value != null && valueType != null)
 				value = valuelize(value, valueType);
@@ -218,15 +186,7 @@ public class ItemExpression extends TokenExpression implements ItemExpressor {
 		return valueMap;
 	}
 	
-	/**
-	 * Express as Properties.
-	 *
-	 * @param parameterName the parameter name
-	 * @param tokensMap the tokens map
-	 * @param valueType the value type
-	 * @return the Properties
-	 */
-	private Properties expressAsProperties(String parameterName, Map<String, Token[]> tokensMap, ItemValueType valueType) {
+	private Properties evaluateAsProperties(String parameterName, Map<String, Token[]> tokensMap, ItemValueType valueType) {
 		if(tokensMap == null || tokensMap.isEmpty()) {
 			Object value = getParameter(parameterName, valueType);
 
@@ -244,7 +204,7 @@ public class ItemExpression extends TokenExpression implements ItemExpressor {
 		Properties prop = new Properties();
 
 		for(Map.Entry<String, Token[]> entry : tokensMap.entrySet()) {
-			Object value = express(entry.getKey(), entry.getValue());
+			Object value = evaluate(entry.getKey(), entry.getValue());
 
 			if(value != null && valueType != null)
 				value = valuelize(value, valueType);
@@ -272,20 +232,13 @@ public class ItemExpression extends TokenExpression implements ItemExpressor {
 		}
 	}
 
-	/**
-	 * Gets the parameter values.
-	 *
-	 * @param name the name
-	 * @param valueType the value type
-	 * @return the parameter values
-	 */
 	private List<Object> getParameterAsList(String name, ItemValueType valueType) {
 		Object[] values = getParameterValues(name, valueType);
 
 		if(values == null)
 			return null;
 		
-		List<Object> valueList = new ArrayList<Object>(values.length);
+		List<Object> valueList = new ArrayList<>(values.length);
 		
 		for(Object value : values) {
 			if(value != null && valueType != null)
@@ -297,20 +250,13 @@ public class ItemExpression extends TokenExpression implements ItemExpressor {
 		return valueList;
 	}
 	
-	/**
-	 * Gets the parameter values.
-	 *
-	 * @param name the name
-	 * @param valueType the value type
-	 * @return the parameter values
-	 */
 	private Set<Object> getParameterAsSet(String name, ItemValueType valueType) {
 		Object[] values = getParameterValues(name, valueType);
 
 		if(values == null)
 			return null;
 
-		Set<Object> valueSet = new LinkedHashSet<Object>(values.length);
+		Set<Object> valueSet = new LinkedHashSet<>(values.length);
 		
 		for(Object value : values) {
 			if(value != null && valueType != null)

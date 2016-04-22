@@ -19,8 +19,8 @@ import java.util.List;
 import java.util.Map;
 
 import com.aspectran.core.activity.Activity;
+import com.aspectran.core.context.expr.TokenEvaluator;
 import com.aspectran.core.context.expr.TokenExpression;
-import com.aspectran.core.context.expr.TokenExpressor;
 import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.expr.token.Tokenizer;
 import com.aspectran.core.context.rule.ability.ActionPossessSupport;
@@ -88,8 +88,8 @@ public class RedirectResponseRule extends ActionPossessSupport implements Replic
 	 */
 	public String getTarget(Activity activity) {
 		if(targetTokens != null && targetTokens.length > 0) {
-			TokenExpressor expressor = new TokenExpression(activity);
-			return expressor.expressAsString(targetTokens);
+			TokenEvaluator evaluator = new TokenExpression(activity);
+			return evaluator.evaluateAsString(targetTokens);
 		} else {
 			return target;
 		}
