@@ -25,7 +25,6 @@ import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.bean.scope.Scope;
 import com.aspectran.core.context.rule.ExceptionHandlingRule;
-import com.aspectran.core.context.rule.type.JoinpointScopeType;
 
 /**
  * The Class SessionScopeActivity.
@@ -119,11 +118,6 @@ public final class SessionScopeActivity extends CoreActivity {
 	@Override
 	public void setRequestScope(Scope requestScope) {
 		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public JoinpointScopeType getCurrentJoinpointScope() {
-		return JoinpointScopeType.SESSION;
 	}
 
 }

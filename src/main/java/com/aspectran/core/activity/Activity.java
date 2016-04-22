@@ -29,7 +29,6 @@ import com.aspectran.core.context.bean.scope.Scope;
 import com.aspectran.core.context.rule.AspectAdviceRule;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.ExceptionHandlingRule;
-import com.aspectran.core.context.rule.type.JoinpointScopeType;
 import com.aspectran.core.context.rule.type.RequestMethodType;
 import com.aspectran.core.context.template.TemplateProcessor;
 
@@ -94,14 +93,14 @@ public interface Activity extends BeanRegistry {
 	void finish();
 
 	/**
-	 * Determine request character encoding.
+	 * Determine the request character encoding.
 	 *
 	 * @return the request character encoding
 	 */
 	String determineRequestCharacterEncoding();
 
 	/**
-	 * Determine response character encoding.
+	 * Determine the response character encoding.
 	 *
 	 * @return the response character encoding
 	 */
@@ -202,7 +201,5 @@ public interface Activity extends BeanRegistry {
 	Scope getRequestScope();
 
 	void setRequestScope(Scope requestScope);
-
-	JoinpointScopeType getCurrentJoinpointScope();
 
 }

@@ -24,7 +24,6 @@ import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.bean.scope.Scope;
 import com.aspectran.core.context.rule.ExceptionHandlingRule;
-import com.aspectran.core.context.rule.type.JoinpointScopeType;
 
 /**
  * The Class VoidActivity
@@ -121,11 +120,6 @@ public final class VoidActivity extends CoreActivity {
 	@Override
 	public void setRequestScope(Scope requestScope) {
 		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public JoinpointScopeType getCurrentJoinpointScope() {
-		return null;
 	}
 
 }

@@ -61,11 +61,6 @@ public class ActionList extends ArrayList<Executable> implements ActionRuleAppli
 		this.name = name;
 	}
 
-	/**
-	 * Checks if is hidden.
-	 * 
-	 * @return true, if is hidden
-	 */
 	public boolean isHidden() {
 		return BooleanUtils.toBoolean(hidden);
 	}
@@ -74,11 +69,6 @@ public class ActionList extends ArrayList<Executable> implements ActionRuleAppli
 		return hidden;
 	}
 
-	/**
-	 * Sets the hidden.
-	 * 
-	 * @param hidden the new hidden
-	 */
 	public void setHidden(Boolean hidden) {
 		this.hidden = hidden;
 	}
