@@ -22,7 +22,7 @@ import com.aspectran.core.activity.process.result.ContentResult;
 import com.aspectran.core.adapter.RequestAdapter;
 
 /**
- * The Class ActivityResultDataMap.
+ * The Class ActivityDataMap.
  */
 public class ActivityDataMap extends HashMap<String, Object> {
 

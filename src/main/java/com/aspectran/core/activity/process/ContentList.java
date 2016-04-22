@@ -67,11 +67,6 @@ public class ContentList extends ArrayList<ActionList> implements Replicable<Con
 		this.omittable = omittable;
 	}
 	
-	/**
-	 * Adds the action list.
-	 * 
-	 * @param actionList the action list
-	 */
 	public void addActionList(ActionList actionList) {
 		if(actionList != null) {
 			add(actionList);

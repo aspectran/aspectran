@@ -38,9 +38,9 @@ public class PathVariableMap extends HashMap<Token, String> {
         for(Map.Entry<Token, String> entry : entrySet()) {
             Token token = entry.getKey();
             if(token.getType() == TokenType.PARAMETER) {
-                translet.getRequestAdapter().setParameter(token.getName(), entry.getValue());
+                translet.setParameter(token.getName(), entry.getValue());
             } else if(token.getType() == TokenType.ATTRIBUTE) {
-                translet.getRequestAdapter().setAttribute(token.getName(), entry.getValue());
+                translet.setAttribute(token.getName(), entry.getValue());
             }
         }
     }

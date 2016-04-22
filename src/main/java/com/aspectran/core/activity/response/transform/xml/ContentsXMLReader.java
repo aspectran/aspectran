@@ -20,7 +20,6 @@ import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.Map;
 
 import org.xml.sax.Attributes;
@@ -54,8 +53,6 @@ public class ContentsXMLReader implements XMLReader {
 	private static final String CONTENTS_TAG = "contents";
 
 	private static final String CONTENT_TAG = "content";
-
-	//private static final String RESULT_TAG = "result";
 
 	private static final String ROWS_TAG = "rows";
 
@@ -222,15 +219,11 @@ public class ContentsXMLReader implements XMLReader {
 				} else {
 					if(actionId != null)
 						handler.startElement(StringUtils.EMPTY, actionId, actionId, NULL_ATTRS);
-					//else
-					//	handler.startElement(StringUtils.EMPTY, RESULT_TAG, RESULT_TAG, NULL_ATTRS);
 
 					parse(resultValue);
 
 					if(actionId != null)
 						handler.endElement(StringUtils.EMPTY, actionId, actionId);
-					//else
-					//	handler.endElement(StringUtils.EMPTY, RESULT_TAG, RESULT_TAG);
 				}
 			}
 

@@ -21,10 +21,14 @@ import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
+import com.aspectran.core.context.ActivityContext;
+import com.aspectran.core.context.aspect.AspectRuleRegistry;
+import com.aspectran.core.context.bean.BeanRegistry;
 import com.aspectran.core.context.bean.scope.RequestScope;
 import com.aspectran.core.context.bean.scope.Scope;
-import com.aspectran.core.context.rule.type.JoinpointScopeType;
+import com.aspectran.core.context.template.TemplateProcessor;
 import com.aspectran.core.context.translet.TransletInstantiationException;
+import com.aspectran.core.context.translet.TransletRuleRegistry;
 
 /**
  * The Class AbstractActivity.
@@ -33,24 +37,22 @@ import com.aspectran.core.context.translet.TransletInstantiationException;
  */
 public abstract class AbstractActivity implements Activity {
 
-	private ApplicationAdapter applicationAdapter;
-
+	private final ActivityContext context;
+	
 	private SessionAdapter sessionAdapter;
 	
 	private RequestAdapter requestAdapter;
 
 	private ResponseAdapter responseAdapter;
 	
-	private Scope requestScope;
-	
-	private JoinpointScopeType currentJoinpointScope = JoinpointScopeType.TRANSLET;
-	
 	private Class<? extends Translet> transletInterfaceClass;
 	
 	private Class<? extends CoreTranslet> transletImplementClass;
 
-	protected AbstractActivity(ApplicationAdapter applicationAdapter) {
-		this.applicationAdapter = applicationAdapter;
+	private Scope requestScope;
+	
+	protected AbstractActivity(ActivityContext context) {
+		this.context = context;
 	}
 	
 	/**
@@ -59,7 +61,7 @@ public abstract class AbstractActivity implements Activity {
 	 * @return the application adapter
 	 */
 	public ApplicationAdapter getApplicationAdapter() {
-		return applicationAdapter;
+		return context.getApplicationAdapter();
 	}
 
 	/**
@@ -199,22 +201,74 @@ public abstract class AbstractActivity implements Activity {
 		this.requestScope = requestScope;
 	}
 
-	/**
-	 * Gets the current joinpoint scope.
-	 *
-	 * @return the current joinpoint scope
-	 */
-	public JoinpointScopeType getCurrentJoinpointScope() {
-		return currentJoinpointScope;
+	protected AspectRuleRegistry getAspectRuleRegistry() {
+		return context.getAspectRuleRegistry();
 	}
 
-	/**
-	 * Sets the current joinpoint scope.
-	 *
-	 * @param joinpointScope the new current joinpoint scope
-	 */
-	protected void setCurrentJoinpointScope(JoinpointScopeType joinpointScope) {
-		this.currentJoinpointScope = joinpointScope;
+	protected TransletRuleRegistry getTransletRuleRegistry() {
+		return context.getTransletRuleRegistry();
+	}
+	
+	protected Activity getCurrentActivity() {
+		return context.getCurrentActivity();
+	}
+	
+	protected void setCurrentActivity(Activity activity) {
+		context.setCurrentActivity(activity);
+	}
+	
+	protected void removeCurrentActivity() {
+		context.removeCurrentActivity();
+	}
+	
+	@Override
+	public ActivityContext getActivityContext() {
+		return context;
+	}
+	
+	@Override
+	public BeanRegistry getBeanRegistry() {
+		return context.getContextBeanRegistry();
+	}
+
+	@Override
+	public TemplateProcessor getTemplateProcessor() {
+		return context.getTemplateProcessor();
+	}
+
+	@Override
+	public <T> T getBean(String id) {
+		return context.getContextBeanRegistry().getBean(id);
+	}
+
+	@Override
+	public <T> T getBean(Class<T> requiredType) {
+		return context.getContextBeanRegistry().getBean(requiredType);
+	}
+
+	@Override
+	public <T> T getBean(String id, Class<T> requiredType) {
+		return context.getContextBeanRegistry().getBean(id, requiredType);
+	}
+
+	@Override
+	public <T> T getBean(Class<T> requiredType, String id) {
+		return context.getContextBeanRegistry().getBean(requiredType, id);
+	}
+
+	@Override
+	public <T> T getConfigBean(Class<T> classType) {
+		return context.getContextBeanRegistry().getConfigBean(classType);
+	}
+
+	@Override
+	public boolean containsBean(String id) {
+		return context.getContextBeanRegistry().containsBean(id);
+	}
+
+	@Override
+	public boolean containsBean(Class<?> requiredType) {
+		return context.getContextBeanRegistry().containsBean(requiredType);
 	}
 	
 }

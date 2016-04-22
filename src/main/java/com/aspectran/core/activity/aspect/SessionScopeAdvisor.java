@@ -15,38 +15,40 @@
  */
 package com.aspectran.core.activity.aspect;
 
+import java.util.List;
+
 import com.aspectran.core.activity.SessionScopeActivity;
 import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
 import com.aspectran.core.context.aspect.AspectRuleRegistry;
+import com.aspectran.core.context.rule.AspectAdviceRule;
 
 /**
- * The Class SessionScope.
+ * The Class SessionScopeAdvisor.
  */
 public class SessionScopeAdvisor {
 
-	private SessionScopeActivity activity;
+	private final SessionScopeActivity activity;
 	
-	private AspectAdviceRuleRegistry aspectAdviceRuleRegistry;
+	private final List<AspectAdviceRule> beforeAdviceRuleList;
+	
+	private final List<AspectAdviceRule> afterAdviceRuleList;
 	
 	public SessionScopeAdvisor(SessionScopeActivity activity, AspectAdviceRuleRegistry aspectAdviceRuleRegistry) {
 		this.activity = activity;
-		this.aspectAdviceRuleRegistry = aspectAdviceRuleRegistry;
+		this.beforeAdviceRuleList = aspectAdviceRuleRegistry.getBeforeAdviceRuleList();
+		this.afterAdviceRuleList = aspectAdviceRuleRegistry.getAfterAdviceRuleList();
 	}
 	
 	public void executeBeforeAdvice() {
-		if(activity != null) {
-			if(aspectAdviceRuleRegistry.getBeforeAdviceRuleList() != null)
-				activity.execute(aspectAdviceRuleRegistry.getBeforeAdviceRuleList());
-		}
+		if(beforeAdviceRuleList != null)
+			activity.execute(beforeAdviceRuleList);
 	}
 	
 	public void executeAfterAdvice() {
-		if(activity != null) {
-			if(aspectAdviceRuleRegistry.getAfterAdviceRuleList() != null)
-				activity.forceExecute(aspectAdviceRuleRegistry.getAfterAdviceRuleList());
-		}
+		if(afterAdviceRuleList != null)
+			activity.forceExecute(afterAdviceRuleList);
 	}
 	
 	public static SessionScopeAdvisor newInstance(ActivityContext context, SessionAdapter sessionAdapter) {
