@@ -21,27 +21,27 @@ import com.aspectran.core.util.apon.ParameterValueType;
 
 public class ForwardParameters extends AbstractParameters {
 
+	public static final ParameterDefine actions;
 	public static final ParameterDefine contentType;
 	public static final ParameterDefine translet;
 	public static final ParameterDefine defaultResponse;
 	public static final ParameterDefine attributes;
-	public static final ParameterDefine actions;
-	
+
 	private static final ParameterDefine[] parameterDefines;
 	
 	static {
+		actions = new ParameterDefine("action", ActionParameters.class, true, true);
 		contentType = new ParameterDefine("contentType", ParameterValueType.STRING);
 		translet = new ParameterDefine("translet", ParameterValueType.STRING);
 		defaultResponse = new ParameterDefine("defaultResponse", ParameterValueType.BOOLEAN);
 		attributes = new ParameterDefine("attribute", ItemHolderParameters.class);
-		actions = new ParameterDefine("action", ActionParameters.class, true, true);
-		
+
 		parameterDefines = new ParameterDefine[] {
+				actions,
 				contentType,
 				translet,
 				defaultResponse,
-				attributes,
-				actions
+				attributes
 		};
 	}
 	

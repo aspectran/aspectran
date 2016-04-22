@@ -613,7 +613,7 @@ public class RootAponDisassembler {
 		List<Parameters> actionParametersList = transformParameters.getParametersList(TransformParameters.actions);
 		Boolean defaultResponse = transformParameters.getBoolean(TransformParameters.defaultResponse);
 		Boolean pretty = transformParameters.getBoolean(TransformParameters.pretty);
-		Parameters templateParameters = transformParameters.getParameters(TransformParameters.builtinTemplate);
+		Parameters templateParameters = transformParameters.getParameters(TransformParameters.builtin);
 
 		TransformRule tr = TransformRule.newInstance(transformType, contentType, templateId, characterEncoding, defaultResponse, pretty);
 		

@@ -27,7 +27,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.adapter.AbstractResponseAdapter;
 import com.aspectran.core.context.expr.ItemExpression;
-import com.aspectran.core.context.expr.ItemExpressor;
+import com.aspectran.core.context.expr.ItemEvaluator;
 import com.aspectran.core.context.rule.RedirectResponseRule;
 
 /**
@@ -106,8 +106,8 @@ public class HttpServletResponseAdapter extends AbstractResponseAdapter {
 		}
 		
 		if(redirectResponseRule.getParameterItemRuleMap() != null) {
-			ItemExpressor expressor = new ItemExpression(activity);
-			Map<String, Object> valueMap = expressor.express(redirectResponseRule.getParameterItemRuleMap());
+			ItemEvaluator evaluator = new ItemExpression(activity);
+			Map<String, Object> valueMap = evaluator.evaluate(redirectResponseRule.getParameterItemRuleMap());
 
 			if(valueMap != null && valueMap.size() > 0) {
 				if(questionPos == -1)

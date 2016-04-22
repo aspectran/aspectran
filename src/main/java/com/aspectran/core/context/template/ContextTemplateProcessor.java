@@ -20,8 +20,8 @@ import java.io.Writer;
 
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.context.ActivityContext;
+import com.aspectran.core.context.expr.TokenEvaluator;
 import com.aspectran.core.context.expr.TokenExpression;
-import com.aspectran.core.context.expr.TokenExpressor;
 import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.rule.TemplateRule;
 import com.aspectran.core.context.template.engine.TemplateEngine;
@@ -131,8 +131,8 @@ public class ContextTemplateProcessor implements TemplateProcessor {
                 Token[] contentTokens = templateRule.getContentTokens(activity.getApplicationAdapter());
 
                 if(contentTokens != null) {
-                    TokenExpressor expressor = new TokenExpression(activity);
-                    expressor.express(contentTokens, writer);
+                    TokenEvaluator evaluator = new TokenExpression(activity);
+                    evaluator.evaluate(contentTokens, writer);
                 }
             }
         } catch(Exception e) {

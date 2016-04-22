@@ -22,7 +22,7 @@ import java.util.Map;
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.context.expr.ItemExpression;
-import com.aspectran.core.context.expr.ItemExpressor;
+import com.aspectran.core.context.expr.ItemEvaluator;
 import com.aspectran.core.context.rule.AspectAdviceRule;
 import com.aspectran.core.context.rule.BeanActionRule;
 import com.aspectran.core.context.rule.ItemRule;
@@ -99,13 +99,13 @@ public class BeanAction extends AbstractAction {
 			if(bean == null)
 				throw new ActionExecutionException("Invalid BeanActionRule: No such bean " + beanActionRule);
 
-			ItemExpressor expressor = null;
+			ItemEvaluator evaluator = null;
 			
 			if(propertyItemRuleMap != null || argumentItemRuleMap != null)
-				expressor = new ItemExpression(activity);
+				evaluator = new ItemExpression(activity);
 			
 			if(propertyItemRuleMap != null) {
-				Map<String, Object> valueMap = expressor.express(propertyItemRuleMap);
+				Map<String, Object> valueMap = evaluator.evaluate(propertyItemRuleMap);
 				
 				// set properties for ActionBean
 				for(Map.Entry<String, Object> entry : valueMap.entrySet()) {
@@ -120,7 +120,7 @@ public class BeanAction extends AbstractAction {
 				if(argumentItemRuleMap == null) {
 					return MethodAction.invokeMethod(activity, bean, method, requiresTranslet);
 				} else {
-					Object[] args = makeArugments(activity, argumentItemRuleMap, expressor, requiresTranslet);
+					Object[] args = makeArugments(activity, argumentItemRuleMap, evaluator, requiresTranslet);
 					return method.invoke(bean, args);
 				}
 			} else {
@@ -129,16 +129,16 @@ public class BeanAction extends AbstractAction {
 
 				if(needTranslet == null) {
 					try {
-						result = invokeMethod(activity, bean, methodName, argumentItemRuleMap, expressor, true);
+						result = invokeMethod(activity, bean, methodName, argumentItemRuleMap, evaluator, true);
 						needTranslet = Boolean.TRUE;
 					} catch(NoSuchMethodException e) {
 						log.info("Cannot find a method that requires a argument translet. So in the future will continue to call a method with no argument translet. beanActionRule " + beanActionRule);
 
 						needTranslet = Boolean.FALSE;
-						result = invokeMethod(activity, bean, methodName, argumentItemRuleMap, expressor, false);
+						result = invokeMethod(activity, bean, methodName, argumentItemRuleMap, evaluator, false);
 					}
 				} else {
-					result = invokeMethod(activity, bean, methodName, argumentItemRuleMap, expressor, needTranslet);
+					result = invokeMethod(activity, bean, methodName, argumentItemRuleMap, evaluator, needTranslet);
 				}
 
 				return result;
@@ -149,14 +149,14 @@ public class BeanAction extends AbstractAction {
 		}
 	}
 
-	private static Object[] makeArugments(Activity activity, ItemRuleMap argumentItemRuleMap, ItemExpressor expressor, boolean requiresTranslet) {
+	private static Object[] makeArugments(Activity activity, ItemRuleMap argumentItemRuleMap, ItemEvaluator evaluator, boolean requiresTranslet) {
 		Object[] args = null;
 
 		if(argumentItemRuleMap != null) {
-			if(expressor == null)
-				expressor = new ItemExpression(activity);
+			if(evaluator == null)
+				evaluator = new ItemExpression(activity);
 
-			Map<String, Object> valueMap = expressor.express(argumentItemRuleMap);
+			Map<String, Object> valueMap = evaluator.evaluate(argumentItemRuleMap);
 
 			int size = argumentItemRuleMap.size();
 			int index;
@@ -182,16 +182,16 @@ public class BeanAction extends AbstractAction {
 		return args;
 	}
 
-	private static Object invokeMethod(Activity activity, Object bean, String methodName, ItemRuleMap argumentItemRuleMap, ItemExpressor expressor, boolean requiresTranslet)
+	private static Object invokeMethod(Activity activity, Object bean, String methodName, ItemRuleMap argumentItemRuleMap, ItemEvaluator evaluator, boolean requiresTranslet)
 		throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
 		Class<?>[] argsTypes = null;
 		Object[] argsObjects = null;
 
 		if(argumentItemRuleMap != null) {
-			if(expressor == null)
-				expressor = new ItemExpression(activity);
+			if(evaluator == null)
+				evaluator = new ItemExpression(activity);
 
-			Map<String, Object> valueMap = expressor.express(argumentItemRuleMap);
+			Map<String, Object> valueMap = evaluator.evaluate(argumentItemRuleMap);
 
 			int argSize = argumentItemRuleMap.size();
 			int argIndex;

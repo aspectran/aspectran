@@ -346,11 +346,17 @@ public class RootAponAssembler {
 					contentsParameters.putValueNonNull(ContentsParameters.omittable, contentList.getOmittable());
 					for(ActionList actionList : contentList) {
 						Parameters contentParameters = contentsParameters.newParameters(ContentsParameters.contents);
+						contentParameters.putValueNonNull(ContentParameters.name, actionList.getName());
+						contentParameters.putValueNonNull(ContentParameters.omittable, actionList.getOmittable());
+						contentParameters.putValueNonNull(ContentParameters.hidden, actionList.getHidden());
 						assembleActionList(actionList, contentParameters, ContentParameters.actions);
 					}
 				} else {
 					for(ActionList actionList : contentList) {
 						Parameters contentParameters = transletParameters.newParameters(TransletParameters.contents2);
+						contentParameters.putValueNonNull(ContentParameters.name, actionList.getName());
+						contentParameters.putValueNonNull(ContentParameters.omittable, actionList.getOmittable());
+						contentParameters.putValueNonNull(ContentParameters.hidden, actionList.getHidden());
 						assembleActionList(actionList, contentParameters, ContentParameters.actions);
 					}
 				}
@@ -477,7 +483,7 @@ public class RootAponAssembler {
 		transformParameters.putValueNonNull(TransformParameters.pretty, transformRule.getPretty());
 
 		if(transformRule.getTemplateRule() != null)
-			transformParameters.putValue(TransformParameters.builtinTemplate, assembleTemplateParameters(transformRule.getTemplateRule()));
+			transformParameters.putValue(TransformParameters.builtin, assembleTemplateParameters(transformRule.getTemplateRule()));
 
 		ActionList actionList = transformRule.getActionList();
 		if(actionList != null) {
@@ -557,11 +563,6 @@ public class RootAponAssembler {
 	}
 	
 	private void assembleActionList(ActionList actionList, Parameters parameters, ParameterDefine parameterDefine) {
-		if(parameters.hasParameter(ContentParameters.name))
-			parameters.putValueNonNull(ContentParameters.name, actionList.getName());
-		if(parameters.hasParameter(ContentParameters.omittable))
-			parameters.putValueNonNull(ContentParameters.omittable, actionList.getOmittable());
-
 		for(Executable action : actionList) {
 			if(action.getActionType() == ActionType.ECHO) {
 				EchoActionRule echoActionRule = action.getActionRule();

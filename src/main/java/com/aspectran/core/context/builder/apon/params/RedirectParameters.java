@@ -21,30 +21,30 @@ import com.aspectran.core.util.apon.ParameterValueType;
 
 public class RedirectParameters extends AbstractParameters {
 
+	public static final ParameterDefine actions;
 	public static final ParameterDefine contentType;
 	public static final ParameterDefine target;
 	public static final ParameterDefine excludeNullParameter;
 	public static final ParameterDefine defaultResponse;
 	public static final ParameterDefine parameters;
-	public static final ParameterDefine actions;
-	
+
 	private static final ParameterDefine[] parameterDefines;
 	
 	static {
+		actions = new ParameterDefine("action", ActionParameters.class, true, true);
 		contentType = new ParameterDefine("contentType", ParameterValueType.STRING);
 		target = new ParameterDefine("target", ParameterValueType.STRING);
 		excludeNullParameter = new ParameterDefine("excludeNullParameter", ParameterValueType.BOOLEAN);
 		defaultResponse = new ParameterDefine("defaultResponse", ParameterValueType.BOOLEAN);
 		parameters = new ParameterDefine("parameter", ItemHolderParameters.class);
-		actions = new ParameterDefine("action", ActionParameters.class, true, true);
-		
+
 		parameterDefines = new ParameterDefine[] {
+				actions,
 				contentType,
 				target,
 				excludeNullParameter,
 				defaultResponse,
-				parameters,
-				actions
+				parameters
 		};
 	}
 	

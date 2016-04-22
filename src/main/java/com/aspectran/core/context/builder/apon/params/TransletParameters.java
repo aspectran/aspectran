@@ -29,13 +29,13 @@ public class TransletParameters extends AbstractParameters {
 	public static final ParameterDefine request;
 	public static final ParameterDefine contents1;
 	public static final ParameterDefine contents2;
-	public static final ParameterDefine responses;
-	public static final ParameterDefine exception;
 	public static final ParameterDefine actions;
+	public static final ParameterDefine responses;
 	public static final ParameterDefine transform;
 	public static final ParameterDefine dispatch;
 	public static final ParameterDefine redirect;
 	public static final ParameterDefine forward;
+	public static final ParameterDefine exception;
 
 	private static final ParameterDefine[] parameterDefines;
 	
@@ -48,14 +48,14 @@ public class TransletParameters extends AbstractParameters {
 		request = new ParameterDefine("request", RequestParameters.class);
 		contents1 = new ParameterDefine("contents", ContentsParameters.class);
 		contents2 = new ParameterDefine("content", ContentParameters.class, true, true);
-		responses = new ParameterDefine("response", ResponseParameters.class, true, true);
-		exception = new ParameterDefine("exception", ExceptionParameters.class, true, true);
 		actions = new ParameterDefine("action", ActionParameters.class, true, true);
+		responses = new ParameterDefine("response", ResponseParameters.class, true, true);
 		transform = new ParameterDefine("transform", TransformParameters.class);
 		dispatch = new ParameterDefine("dispatch", DispatchParameters.class);
 		redirect = new ParameterDefine("redirect", RedirectParameters.class);
 		forward = new ParameterDefine("forward", ForwardParameters.class);
-		
+		exception = new ParameterDefine("exception", ExceptionParameters.class, true, true);
+
 		parameterDefines = new ParameterDefine[] {
 				description,
 				name,
@@ -65,14 +65,14 @@ public class TransletParameters extends AbstractParameters {
 				request,
 				contents1,
 				contents2,
-				responses,
-				exception,
 				actions,
+				responses,
 				transform,
 				dispatch,
 				redirect,
-				forward
-			};
+				forward,
+				exception
+		};
 	}
 	
 	public TransletParameters() {
