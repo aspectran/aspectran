@@ -24,7 +24,7 @@ import com.aspectran.core.context.rule.ItemRuleMap;
  *
  * @since 2010. 5. 6
  */
-public interface ItemEvaluator {
+public interface ItemTokenEvaluator {
 	
 	Map<String, Object> evaluate(ItemRuleMap itemRuleMap);
 	

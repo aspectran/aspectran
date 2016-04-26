@@ -36,18 +36,18 @@ import com.aspectran.core.util.apon.GenericParameters;
 import com.aspectran.core.util.apon.Parameters;
 
 /**
- * The Class ItemExpression.
+ * The Class ItemTokenExpression.
  *
  * @since 2008. 06. 19
  */
-public class ItemExpression extends TokenExpression implements ItemEvaluator {
+public class ItemTokenExpression extends TokenExpression implements ItemTokenEvaluator {
 
 	/**
-	 * Instantiates a new ItemExpression.
+	 * Instantiates a new ItemTokenExpression.
 	 *
 	 * @param activity the current Activity
 	 */
-	public ItemExpression(Activity activity) {
+	public ItemTokenExpression(Activity activity) {
 		super(activity);
 	}
 	

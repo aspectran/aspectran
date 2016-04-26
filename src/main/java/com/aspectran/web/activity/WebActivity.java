@@ -28,8 +28,8 @@ import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.context.expr.ItemExpression;
-import com.aspectran.core.context.expr.ItemEvaluator;
+import com.aspectran.core.context.expr.ItemTokenEvaluator;
+import com.aspectran.core.context.expr.ItemTokenExpression;
 import com.aspectran.core.context.locale.LocaleChangeInterceptor;
 import com.aspectran.core.context.locale.LocaleResolver;
 import com.aspectran.core.context.rule.ItemRule;
@@ -157,7 +157,7 @@ public class WebActivity extends CoreActivity implements Activity {
 	private void parseDeclaredAttributes() {
 		ItemRuleMap attributeItemRuleMap = getRequestRule().getAttributeItemRuleMap();
 		if(attributeItemRuleMap != null) {
-			ItemEvaluator evaluator = new ItemExpression(this);
+			ItemTokenEvaluator evaluator = new ItemTokenExpression(this);
 			Map<String, Object> valueMap = evaluator.evaluate(attributeItemRuleMap);
 			for(ItemRule itemRule : attributeItemRuleMap.values()) {
 				String name = itemRule.getName();
