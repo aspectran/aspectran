@@ -30,8 +30,6 @@ public class AspectranServiceListener implements ServletContextListener {
 
 	private static final Log log = LogFactory.getLog(AspectranServiceListener.class);
 
-	public static final String ASPECTRAN_SERVICE_ATTRIBUTE = AspectranServiceListener.class.getName() + ".ASPECTRAN_SERVICE";
-	
 	private AspectranService aspectranService;
 
 	/**

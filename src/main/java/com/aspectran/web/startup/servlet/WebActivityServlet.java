@@ -28,7 +28,6 @@ import javax.servlet.http.HttpServletResponse;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 import com.aspectran.web.service.WebAspectranService;
-import com.aspectran.web.startup.listener.AspectranServiceListener;
 
 /**
  * The Class WebActivityServlet.
@@ -57,19 +56,21 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 
 		try {
 			ServletContext servletContext = getServletContext();
-			
-			WebAspectranService rootAspectranService = (WebAspectranService)servletContext.getAttribute(AspectranServiceListener.ASPECTRAN_SERVICE_ATTRIBUTE);
+			Object attr = servletContext.getAttribute(WebAspectranService.ROOT_WEB_ASPECTRAN_SERVICE_ATTRIBUTE);
 
-			if(rootAspectranService == null) {
-				log.info("Running AspectranService in console mode inside a servlet.");
+			if(attr != null) {
+				if(!(attr instanceof WebAspectranService)) {
+					throw new IllegalStateException("Context attribute is not of type WebAspectranService: " + attr);
+				}
+				
+				WebAspectranService rootAspectranService = (WebAspectranService)attr;
+				aspectranService = WebAspectranService.newInstance(this, rootAspectranService);
+				standalone = (rootAspectranService != aspectranService);
+			} else {
+				log.info("Running AspectranService in standalone mode inside a servlet.");
 
 				aspectranService = WebAspectranService.newInstance(this);
-				
 				standalone = true;
-			} else {
-				aspectranService = WebAspectranService.newInstance(this, rootAspectranService);
-				
-				standalone = (rootAspectranService != aspectranService);
 			}
 		} catch(Exception e) {
 			throw new UnavailableException(e.getMessage());

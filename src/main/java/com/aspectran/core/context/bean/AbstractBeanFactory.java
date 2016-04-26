@@ -41,8 +41,8 @@ import com.aspectran.core.context.bean.aware.ClassLoaderAware;
 import com.aspectran.core.context.bean.proxy.CglibDynamicBeanProxy;
 import com.aspectran.core.context.bean.proxy.JavassistDynamicBeanProxy;
 import com.aspectran.core.context.bean.proxy.JdkDynamicBeanProxy;
-import com.aspectran.core.context.expr.ItemExpression;
-import com.aspectran.core.context.expr.ItemEvaluator;
+import com.aspectran.core.context.expr.ItemTokenEvaluator;
+import com.aspectran.core.context.expr.ItemTokenExpression;
 import com.aspectran.core.context.rule.AutowireRule;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
@@ -115,7 +115,7 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 			ItemRuleMap propertyItemRuleMap = beanRule.getPropertyItemRuleMap();
 
 			if(propertyItemRuleMap != null) {
-				ItemEvaluator evaluator = new ItemExpression(activity);
+				ItemTokenEvaluator evaluator = new ItemTokenExpression(activity);
 				Map<String, Object> valueMap = evaluator.evaluate(propertyItemRuleMap);
 				
 				for(Map.Entry<String, Object> entry : valueMap.entrySet()) {
@@ -146,10 +146,10 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 
 			ItemRuleMap constructorArgumentItemRuleMap = beanRule.getConstructorArgumentItemRuleMap();
 			ItemRuleMap propertyItemRuleMap = beanRule.getPropertyItemRuleMap();
-			ItemEvaluator evaluator = null;
+			ItemTokenEvaluator evaluator = null;
 			
 			if(constructorArgumentItemRuleMap != null) {
-				evaluator = new ItemExpression(activity);
+				evaluator = new ItemTokenExpression(activity);
 				Map<String, Object> valueMap = evaluator.evaluate(constructorArgumentItemRuleMap);
 	
 				int parameterSize = constructorArgumentItemRuleMap.size();
@@ -175,7 +175,7 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 
 			if(propertyItemRuleMap != null) {
 				if(evaluator == null) {
-					evaluator = new ItemExpression(activity);
+					evaluator = new ItemTokenExpression(activity);
 				}
 
 				Map<String, Object> valueMap = evaluator.evaluate(propertyItemRuleMap);

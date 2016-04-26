@@ -21,28 +21,28 @@ package com.aspectran.core.service;
 public interface AspectranServiceController {
 	
 	/**
-	 * Starts a Aspectran Service.
+	 * Starts an Aspectran Service.
 	 *
 	 * @throws AspectranServiceException the aspectran service exception
 	 */
 	void startup() throws AspectranServiceException;
 
 	/**
-	 * Restarts a Aspectran Service.
+	 * Restarts an Aspectran Service.
 	 *
 	 * @throws AspectranServiceException the aspectran service exception
 	 */
 	void restart() throws AspectranServiceException;
 	
 	/**
-	 * Reloads a Aspectran Configurations without restarting.
+	 * Reloads an Aspectran Configurations without restarting.
 	 *
 	 * @throws AspectranServiceException the aspectran service exception
 	 */
 	void reload() throws AspectranServiceException;
 	
 	/**
-	 * Refresh a Aspectran Service.
+	 * Refresh an Aspectran Service.
 	 *
 	 * @throws AspectranServiceException the aspectran service exception
 	 */
