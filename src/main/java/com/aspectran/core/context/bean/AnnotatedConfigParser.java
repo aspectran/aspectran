@@ -34,6 +34,7 @@ import com.aspectran.core.context.bean.annotation.Destroy;
 import com.aspectran.core.context.bean.annotation.Dispatch;
 import com.aspectran.core.context.bean.annotation.Forward;
 import com.aspectran.core.context.bean.annotation.Initialize;
+import com.aspectran.core.context.bean.annotation.Profile;
 import com.aspectran.core.context.bean.annotation.Qualifier;
 import com.aspectran.core.context.bean.annotation.Redirect;
 import com.aspectran.core.context.bean.annotation.Request;
@@ -76,7 +77,8 @@ public class AnnotatedConfigParser {
 
 	private final Map<Class<?>, BeanRule> configBeanRuleMap;
 
-	
+	private String[] activeProfiles;
+
 	public AnnotatedConfigParser(BeanRuleRegistry beanRuleRegistry, AnnotatedConfigRelater relater) {
 		this.beanRuleRegistry = beanRuleRegistry;
 		this.relater = relater;
@@ -86,6 +88,10 @@ public class AnnotatedConfigParser {
 		this.configBeanRuleMap = beanRuleRegistry.getConfigBeanRuleMap();
 	}
 	
+	public void setActiveProfiles(String[] activeProfiles) {
+		this.activeProfiles = activeProfiles;
+	}
+
 	public void parse() {
 		if(log.isDebugEnabled())
 			log.debug("Parsed bean rules for configuring: " + configBeanRuleMap.size());
@@ -124,9 +130,18 @@ public class AnnotatedConfigParser {
 		Configuration configAnno = beanClass.getAnnotation(Configuration.class);
 
 		if(configAnno != null) {
+			Profile profileAnno = beanClass.getAnnotation(Profile.class);
+			if(!StringUtils.acceptsProfiles(activeProfiles, profileAnno.value()))
+				return;
+
 			String[] nameArray = splitNamespace(configAnno.namespace());
 
 			for(Method method : beanClass.getMethods()) {
+				if(method.isAnnotationPresent(Profile.class)) {
+					profileAnno = method.getAnnotation(Profile.class);
+					if(!StringUtils.acceptsProfiles(activeProfiles, profileAnno.value()))
+						return;
+				}
 				if(method.isAnnotationPresent(Bean.class)) {
 					parseBeanRule(beanClass, method, nameArray);
 				} else if(method.isAnnotationPresent(Request.class)) {

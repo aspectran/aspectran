@@ -113,6 +113,13 @@ public interface ActivityContext extends MessageSource {
 	void removeCurrentActivity();
 	
 	/**
+	 * Gets the active profiles.
+	 *
+	 * @return the active profiles
+	 */
+	String[] getActiveProfiles();
+	
+	/**
 	 * Destroy the aspectran context. 
 	 */
 	public void destroy();

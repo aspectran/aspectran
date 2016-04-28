@@ -19,34 +19,34 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.aspectran.core.activity.request.CommonRequest;
+import com.aspectran.core.activity.request.AbstractGenericRequest;
 
 /**
- * The Class CommonRequestAdapter.
+ * The Class GenericRequestAdapter.
   *
  * @since 2016. 2. 13.
 */
-public abstract class CommonRequestAdapter extends CommonRequest implements RequestAdapter {
+public abstract class GenericRequestAdapter extends AbstractGenericRequest implements RequestAdapter {
 
 	protected final Object adaptee;
 
 	/**
-	 * Instantiates a new CommonRequestAdapter.
+	 * Instantiates a new GenericRequestAdapter.
 	 *
 	 * @param adaptee the adaptee
 	 */
-	public CommonRequestAdapter(Object adaptee) {
+	public GenericRequestAdapter(Object adaptee) {
 		super();
 		this.adaptee = adaptee;
 	}
 
 	/**
-	 * Instantiates a new CommonRequestAdapter.
+	 * Instantiates a new GenericRequestAdapter.
 	 *
 	 * @param adaptee the adaptee
 	 * @param parameterMap the params
 	 */
-	public CommonRequestAdapter(Object adaptee, Map<String, String[]> parameterMap) {
+	public GenericRequestAdapter(Object adaptee, Map<String, String[]> parameterMap) {
 		super(parameterMap);
 		this.adaptee = adaptee;
 	}
@@ -59,9 +59,9 @@ public abstract class CommonRequestAdapter extends CommonRequest implements Requ
 
 	@Override
 	public Map<String, Object> getAttributeMap() {
-		Map<String, Object> params = new HashMap<String, Object>();
-		fillAttributeMap(params);
-		return params;
+		Map<String, Object> attributeMap = new HashMap<>();
+		fillAttributeMap(attributeMap);
+		return attributeMap;
 	}
 
 	@Override

@@ -32,7 +32,7 @@ import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
 /**
- * The Class ActivityContext.
+ * The Class AspectranActivityContext.
  * 
  * <p>Created: 2008. 06. 09 PM 2:12:40</p>
  */
@@ -53,6 +53,8 @@ public class AspectranActivityContext implements ActivityContext {
 	private TemplateProcessor templateProcessor;
 
 	private MessageSource messageSource;
+	
+	private String[] activeProfiles;
 
 	/**
 	 * Instantiates a new AspectranActivityContext.
@@ -165,6 +167,15 @@ public class AspectranActivityContext implements ActivityContext {
 	@Override
 	public void removeCurrentActivity() {
 		currentActivityHolder.remove();
+	}
+
+	@Override
+	public String[] getActiveProfiles() {
+		return activeProfiles;
+	}
+
+	public void setActiveProfiles(String[] activeProfiles) {
+		this.activeProfiles = activeProfiles;
 	}
 
 	public void initialize() {

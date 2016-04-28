@@ -21,7 +21,7 @@ import java.io.PrintStream;
 import java.io.Writer;
 
 import com.aspectran.console.activity.ConsoleActivity;
-import com.aspectran.core.adapter.CommonResponseAdapter;
+import com.aspectran.core.adapter.GenericResponseAdapter;
 import com.aspectran.core.context.rule.RedirectResponseRule;
 
 /**
@@ -30,7 +30,7 @@ import com.aspectran.core.context.rule.RedirectResponseRule;
  * @author Juho Jeong
  * @since 2016. 1. 18.
  */
-public class ConsoleResponseAdapter extends CommonResponseAdapter {
+public class ConsoleResponseAdapter extends GenericResponseAdapter {
 
 	private PrintStream printStream;
 	

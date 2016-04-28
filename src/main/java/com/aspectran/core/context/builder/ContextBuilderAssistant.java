@@ -64,25 +64,26 @@ public class ContextBuilderAssistant {
 	
 	private AssistantLocal assistantLocal = new AssistantLocal();
 	
-	private Map<String, String> typeAliases = new HashMap<String, String>();
+	private Map<String, String> typeAliases = new HashMap<>();
 	
-	private Map<DefaultSettingType, String> settings = new HashMap<DefaultSettingType, String>();
+	private Map<DefaultSettingType, String> settings = new HashMap<>();
 	
 	private BeanReferenceInspector beanReferenceInspector = new BeanReferenceInspector();
 	
-	private final AspectRuleRegistry aspectRuleRegistry;
+	private AspectRuleRegistry aspectRuleRegistry;
 	
-	private final BeanRuleRegistry beanRuleRegistry;
+	private BeanRuleRegistry beanRuleRegistry;
 
-	private final TemplateRuleRegistry templateRuleRegistry;
+	private TemplateRuleRegistry templateRuleRegistry;
 
-	private final TransletRuleRegistry transletRuleRegistry;
+	private TransletRuleRegistry transletRuleRegistry;
 	
 	private ImportHandler importHandler;
 	
-	private boolean hybridLoading;
+	public ContextBuilderAssistant() {
+	}
 	
-	public ContextBuilderAssistant(ApplicationAdapter applicationAdapter) {
+	public void readyAssist(ApplicationAdapter applicationAdapter) {
 		this.applicationAdapter = applicationAdapter;
 		this.applicationBasePath = applicationAdapter.getApplicationBasePath();
 		this.classLoader = applicationAdapter.getClassLoader();
@@ -102,13 +103,6 @@ public class ContextBuilderAssistant {
 		MethodUtils.clearCache();
 	}
 	
-	protected ContextBuilderAssistant() {
-		this.aspectRuleRegistry = null;
-		this.beanRuleRegistry = null;
-		this.transletRuleRegistry = null;
-		this.templateRuleRegistry = null;
-	}
-	
 	public ApplicationAdapter getApplicationAdapter() {
 		return applicationAdapter;
 	}
@@ -119,14 +113,6 @@ public class ContextBuilderAssistant {
 	
 	public ClassLoader getClassLoader() {
 		return classLoader;
-	}
-
-	public boolean isHybridLoading() {
-		return hybridLoading;
-	}
-
-	public void setHybridLoading(boolean hybridLoading) {
-		this.hybridLoading = hybridLoading;
 	}
 	
 	public void pushObject(Object object) {

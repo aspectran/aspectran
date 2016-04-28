@@ -27,7 +27,7 @@ import com.aspectran.core.context.rule.type.ImportFileType;
  * 
  * <p>Created: 2015. 01. 27 PM 10:36:29</p>
  */
-public class AponActivityContextBuilder extends AbstractActivityContextBuilder implements ActivityContextBuilder {
+public class AponActivityContextBuilder extends AbstractActivityContextBuilder {
 	
 	private final String encoding;
 	
@@ -46,7 +46,10 @@ public class AponActivityContextBuilder extends AbstractActivityContextBuilder i
 			if(rootContext == null)
 				throw new IllegalArgumentException("'rootContext' must not be null.");
 
+			readyAssist(getApplicationAdapter());
+
 			ImportHandler importHandler = new AponImportHandler(this, encoding);
+			importHandler.setActiveProfiles(getActiveProfiles());
 			setImportHandler(importHandler);
 			
 			Importer importer = resolveImporter(rootContext, ImportFileType.APON);

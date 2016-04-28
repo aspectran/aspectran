@@ -34,19 +34,13 @@ abstract class AbstractImporter implements Importer {
 	private ImporterType importerType;
 
 	private ImportFileType importFileType;
+	
+	private String profile;
 
 	private long lastModified;
 
 	AbstractImporter(ImporterType importerType) {
 		this.importerType = importerType;
-	}
-
-	public long getLastModified() {
-		return lastModified;
-	}
-
-	public void setLastModified(long lastModified) {
-		this.lastModified = lastModified;
 	}
 
 	public ImporterType getImporterType() {
@@ -59,6 +53,22 @@ abstract class AbstractImporter implements Importer {
 
 	public void setImportFileType(ImportFileType importFileType) {
 		this.importFileType = importFileType;
+	}
+
+	public String getProfile() {
+		return profile;
+	}
+
+	public void setProfile(String profile) {
+		this.profile = profile;
+	}
+
+	public long getLastModified() {
+		return lastModified;
+	}
+
+	public void setLastModified(long lastModified) {
+		this.lastModified = lastModified;
 	}
 
 	public Reader getReader() throws IOException {

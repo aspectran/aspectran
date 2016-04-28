@@ -18,6 +18,10 @@ package com.aspectran.core.context.builder.importer;
 import java.util.List;
 
 public interface ImportHandler {
+	
+	String[] getActiveProfiles();
+
+	void setActiveProfiles(String[] activeProfiles);
 
 	void pending(Importer importer);
 	

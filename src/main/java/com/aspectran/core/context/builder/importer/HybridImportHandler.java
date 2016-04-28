@@ -44,16 +44,16 @@ public class HybridImportHandler extends AbstractImportHandler {
 	
 	private final String encoding;
 	
-	private final boolean hybridLoading;
+	private final boolean hybridLoad;
 	
 	private AspectranNodeParser aspectranNodeParser;
 	
 	private RootAponDisassembler rootAponDisassembler;
 	
-	public HybridImportHandler(ContextBuilderAssistant assistant, String encoding, boolean hybridLoading) {
+	public HybridImportHandler(ContextBuilderAssistant assistant, String encoding, boolean hybridLoad) {
 		this.assistant = assistant;
 		this.encoding = encoding;
-		this.hybridLoading = hybridLoading;
+		this.hybridLoad = hybridLoad;
 	}
 
 	@Override
@@ -70,7 +70,7 @@ public class HybridImportHandler extends AbstractImportHandler {
 			
 			rootAponDisassembler.disassembleAspectran(rootParameters);
 		} else {
-			if(hybridLoading && importer.getImporterType() == ImporterType.FILE) {
+			if(hybridLoad && importer.getImporterType() == ImporterType.FILE) {
 				File aponFile = makeAponFile((FileImporter)importer);
 
 				if(importer.getLastModified() == aponFile.lastModified()) {
@@ -95,14 +95,14 @@ public class HybridImportHandler extends AbstractImportHandler {
 			}
 		}
 		
-		handle();
+		super.handle();
 
 		// First default setting is held after configuration loading is completed.
 		if(assistantLocal.getReplicatedCount() > 0) {
 			assistant.restoreAssistantLocal(assistantLocal);
 		}
 		
-		if(!hybridon && hybridLoading) {
+		if(!hybridon && hybridLoad) {
 			if(importer.getImporterType() == ImporterType.FILE && importer.getImportFileType() == ImportFileType.XML) {
 				saveAsAponFormat((FileImporter)importer);
 			}

@@ -614,29 +614,33 @@ public class StringUtils {
 		}
 		return timeZone;
 	}
+	
+	public static boolean acceptsProfiles(String[] activeProfiles, String... profiles) {
+		if(profiles == null || profiles.length == 0)
+			return true;
 
-//	public static Locale deduceLocale(String input) {
-//		if(input == null)
-//			return null;
-//		Locale locale;
-//		if(input.length() > 0 && input.charAt(0) == '"')
-//			input = input.substring(1, input.length() -1);
-//		StringTokenizer st = new StringTokenizer(input, ",_ ");
-//		String lang = "";
-//		String country = "";
-//		if(st.hasMoreTokens()) {
-//			lang = st.nextToken();
-//		}
-//		if(st.hasMoreTokens()) {
-//			country = st.nextToken();
-//		}
-//		if(!st.hasMoreTokens()) {
-//			locale = new Locale(lang, country);
-//		}
-//		else {
-//			locale = new Locale(lang, country, st.nextToken());
-//		}
-//		return locale;
-//	}
+		if(activeProfiles == null || activeProfiles.length == 0)
+			return false;
+		
+		for(String profile : profiles) {
+			String p = trimAllWhitespace(profile);
+			if(!p.isEmpty()) {
+				if(p.charAt(0) != '!') {
+					for(String activeProfile : activeProfiles) {
+						if(p == activeProfile)
+							return true;
+					}
+				} else {
+					String p2 = p.substring(1);
+					for(String activeProfile : activeProfiles) {
+						if(p2 == activeProfile)
+							return false;
+					}
+				}
+			}
+		}
+		
+		return false;
+	}
 
 }

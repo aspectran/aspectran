@@ -13,27 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.console.adapter;
+package com.aspectran.core.context.bean.annotation;
 
-import com.aspectran.console.activity.ConsoleActivity;
-import com.aspectran.core.adapter.GenericRequestAdapter;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-/**
- * The Class ConsoleRequestAdapter.
- * 
- * @author Juho Jeong
- * @since 2016. 1. 18.
- */
-public class ConsoleRequestAdapter extends GenericRequestAdapter {
+@Target({ElementType.TYPE, ElementType.METHOD})
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+public @interface Profile {
 
-	/**
-	 * Instantiates a new ConsoleRequestAdapter.
-	 *
-	 * @param activity the console activity
-	 */
-	public ConsoleRequestAdapter(ConsoleActivity activity) {
-		super(activity);
-		setCharacterEncoding(System.getProperty("file.encoding"));
-	}
+	String[] value();
 
 }

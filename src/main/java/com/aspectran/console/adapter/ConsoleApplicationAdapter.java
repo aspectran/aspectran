@@ -17,7 +17,7 @@ package com.aspectran.console.adapter;
 
 import java.io.File;
 
-import com.aspectran.core.adapter.CommonApplicationAdapter;
+import com.aspectran.core.adapter.GenericApplicationAdapter;
 
 /**
  * The Class ConsoleApplicationAdapter.
@@ -25,7 +25,7 @@ import com.aspectran.core.adapter.CommonApplicationAdapter;
  * @author Juho Jeong
  * @since 2016. 1. 18.
  */
-public class ConsoleApplicationAdapter extends CommonApplicationAdapter {
+public class ConsoleApplicationAdapter extends GenericApplicationAdapter {
 	
 	/**
 	 * Instantiates a new ConsoleApplicationAdapter.

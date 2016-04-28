@@ -47,22 +47,24 @@ public class BeanRuleRegistry {
 
 	private final ClassLoader classLoader;
 	
-	private final Map<String, BeanRule> idBasedBeanRuleMap = new LinkedHashMap<String, BeanRule>();
+	private final Map<String, BeanRule> idBasedBeanRuleMap = new LinkedHashMap<>();
 
-	private final Map<Class<?>, Set<BeanRule>> typeBasedBeanRuleMap = new LinkedHashMap<Class<?>, Set<BeanRule>>();
+	private final Map<Class<?>, Set<BeanRule>> typeBasedBeanRuleMap = new LinkedHashMap<>();
 
-	private final Map<Class<?>, BeanRule> configBeanRuleMap = new LinkedHashMap<Class<?>, BeanRule>();
+	private final Map<Class<?>, BeanRule> configBeanRuleMap = new LinkedHashMap<>();
 
-	private final Set<Class<?>> ignoredDependencyInterfaces = new HashSet<Class<?>>();
+	private final Set<Class<?>> ignoredDependencyInterfaces = new HashSet<>();
 
-	private final Set<BeanRule> postProcessBeanRuleMap = new HashSet<BeanRule>();
+	private final Set<BeanRule> postProcessBeanRuleMap = new HashSet<>();
 
 	private TransletRuleRegistry transletRuleRegistry;
 	
-	private Set<String> importantBeanIdSet = new HashSet<String>();
+	private Set<String> importantBeanIdSet = new HashSet<>();
 
-	private Set<Class<?>> importantBeanTypeSet = new HashSet<Class<?>>();
-	
+	private Set<Class<?>> importantBeanTypeSet = new HashSet<>();
+
+	private String[] activeProfiles;
+
 	public BeanRuleRegistry() {
 		this(AspectranClassLoader.getDefaultClassLoader());
 	}
@@ -76,6 +78,10 @@ public class BeanRuleRegistry {
 		ignoreDependencyInterface(InitializableTransletBean.class);
 	}
 	
+	public void setActiveProfiles(String[] activeProfiles) {
+		this.activeProfiles = activeProfiles;
+	}
+
 	public void setTransletRuleRegistry(TransletRuleRegistry transletRuleRegistry) {
 		this.transletRuleRegistry = transletRuleRegistry;
 	}
@@ -272,6 +278,7 @@ public class BeanRuleRegistry {
 		};
 
 		AnnotatedConfigParser parser = new AnnotatedConfigParser(this, relater);
+		parser.setActiveProfiles(activeProfiles);
 		parser.parse();
 	}
 	

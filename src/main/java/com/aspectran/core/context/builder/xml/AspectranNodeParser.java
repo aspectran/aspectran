@@ -194,6 +194,7 @@ public class AspectranNodeParser {
 			String resource = attributes.get("resource");
 			String url = attributes.get("url");
 			String fileType = attributes.get("fileType");
+			String profile = attributes.get("profile");
 
 			ImportHandler importHandler = assistant.getImportHandler();
 			if(importHandler != null) {
@@ -201,6 +202,7 @@ public class AspectranNodeParser {
 				if(importer == null) {
 					throw new IllegalArgumentException("The <import> element requires either a 'file' or a 'resource' or a 'url' attribute.");
 				}
+				importer.setProfile(profile);
 				importHandler.pending(importer);
 			}
 		});
