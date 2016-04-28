@@ -24,16 +24,42 @@ import com.aspectran.core.context.loader.AspectranClassLoader;
  */
 public interface AspectranService extends AspectranServiceController {
 
+	/**
+	 * Gets the application adapter.
+	 *
+	 * @return the application adapter
+	 */
 	ApplicationAdapter getApplicationAdapter();
 	
+	/**
+	 * Gets the activity context.
+	 *
+	 * @return the activity context
+	 */
 	ActivityContext getActivityContext();
 
+	/**
+	 * Gets the aspectran class loader.
+	 *
+	 * @return the aspectran class loader
+	 */
 	AspectranClassLoader getAspectranClassLoader();
 
+	/**
+	 * Sets the aspectran service controller listener.
+	 *
+	 * @param aspectranServiceControllerListener the new aspectran service controller listener
+	 */
 	void setAspectranServiceControllerListener(AspectranServiceControllerListener aspectranServiceControllerListener);
 	
+	/**
+	 * Returns whether hard-reloading.
+	 *
+	 * @return true, if is hard reload
+	 */
 	boolean isHardReload();
 	
+	@Override
 	void destroy();
 
 	/**

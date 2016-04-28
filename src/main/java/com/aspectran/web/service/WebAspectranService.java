@@ -20,15 +20,18 @@ import java.net.URLDecoder;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.request.RequestMethodNotAllowedException;
+import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.loader.config.AspectranConfig;
 import com.aspectran.core.context.loader.config.AspectranContextConfig;
 import com.aspectran.core.context.loader.config.AspectranWebConfig;
 import com.aspectran.core.context.translet.TransletNotFoundException;
+import com.aspectran.core.service.AspectranService;
 import com.aspectran.core.service.AspectranServiceControllerListener;
 import com.aspectran.core.service.AspectranServiceException;
 import com.aspectran.core.service.CoreAspectranService;
@@ -37,7 +40,6 @@ import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 import com.aspectran.web.activity.WebActivity;
 import com.aspectran.web.adapter.WebApplicationAdapter;
-import com.aspectran.web.startup.listener.AspectranServiceListener;
 import com.aspectran.web.startup.servlet.WebActivityServlet;
 
 /**
@@ -47,6 +49,10 @@ public class WebAspectranService extends CoreAspectranService {
 	
 	private static final Log log = LogFactory.getLog(WebAspectranService.class);
 
+	public static final String ROOT_WEB_ASPECTRAN_SERVICE_ATTRIBUTE = WebAspectranService.class.getName() + ".ROOT";
+	
+	public static final String STANDALONE_WEB_ASPECTRAN_SERVICE_ATTRIBUTE_PREFIX = WebAspectranService.class.getName() + ".STANDALONE:";
+	
 	private static final String ASPECTRAN_CONFIG_PARAM = "aspectran:config";
 
 	private static final String ASPECTRAN_DEFAULT_SERVLET_NAME_PARAM = "aspectran:defaultServletName";
@@ -179,15 +185,15 @@ public class WebAspectranService extends CoreAspectranService {
 		String defaultServletName = servletContext.getInitParameter(ASPECTRAN_DEFAULT_SERVLET_NAME_PARAM);
 		aspectranService.setDefaultServletHttpRequestHandler(servletContext, defaultServletName);
 		
-		servletContext.setAttribute(AspectranServiceListener.ASPECTRAN_SERVICE_ATTRIBUTE, aspectranService);
+		servletContext.setAttribute(ROOT_WEB_ASPECTRAN_SERVICE_ATTRIBUTE, aspectranService);
 
 		if(log.isDebugEnabled()) {
-			log.debug("AspectranServiceListener attribute in ServletContext was created. " + AspectranServiceListener.ASPECTRAN_SERVICE_ATTRIBUTE + ": " + aspectranService);
+			log.debug("WebAspectranService attribute in ServletContext was created. " + ROOT_WEB_ASPECTRAN_SERVICE_ATTRIBUTE + ": " + aspectranService);
 		}
 		
 		return aspectranService;
 	}
-
+	
 	/**
 	 * Returns a new instance of WebAspectranService.
 	 *
@@ -204,7 +210,14 @@ public class WebAspectranService extends CoreAspectranService {
 		
 		String defaultServletName = servletConfig.getInitParameter(ASPECTRAN_DEFAULT_SERVLET_NAME_PARAM);
 		aspectranService.setDefaultServletHttpRequestHandler(servletContext, defaultServletName);
+
+		String attrName = STANDALONE_WEB_ASPECTRAN_SERVICE_ATTRIBUTE_PREFIX + servlet.getServletName();
+		servletContext.setAttribute(attrName, aspectranService);
 		
+		if(log.isDebugEnabled()) {
+			log.debug("WebAspectranService attribute in ServletContext was created. " + attrName + ": " + aspectranService);
+		}
+
 		return aspectranService;
 	}
 
@@ -227,6 +240,8 @@ public class WebAspectranService extends CoreAspectranService {
 			WebAspectranService aspectranService = newInstance(servletContext, aspectranConfigParam);
 			aspectranService.setDefaultServletHttpRequestHandler(servletContext, defaultServletName);
 
+			servletContext.setAttribute(STANDALONE_WEB_ASPECTRAN_SERVICE_ATTRIBUTE_PREFIX + servlet.getServletName(), aspectranService);
+			
 			return aspectranService;
 		} else {
 			return rootAspectranService;
@@ -289,4 +304,52 @@ public class WebAspectranService extends CoreAspectranService {
 		});
 	}
 
+	/**
+	 * Find the root ActivityContext for this web application.
+	 *
+	 * @param servletContext ServletContext to find the web application context for
+	 * @return the ActivityContext for this web app
+	 */
+	public static ActivityContext getActivityContext(ServletContext servletContext) {
+		ActivityContext activityContext = getActivityContext(servletContext, ROOT_WEB_ASPECTRAN_SERVICE_ATTRIBUTE);
+		if(activityContext == null) {
+			throw new IllegalStateException("No root WebAspectranService found: no AspectranServiceListener registered?");
+		}
+		return activityContext;
+	}
+	
+	/**
+	 * Find the standalone ActivityContext for this web application.
+	 *
+	 * @param servlet the servlet
+	 * @return the ActivityContext for this web app
+	 */
+	public static ActivityContext getActivityContext(HttpServlet servlet) {
+		ServletContext servletContext = servlet.getServletContext();
+		String attrName = STANDALONE_WEB_ASPECTRAN_SERVICE_ATTRIBUTE_PREFIX + servlet.getServletName();
+		ActivityContext activityContext = getActivityContext(servletContext, attrName);
+		if(activityContext == null) {
+			return getActivityContext(servletContext);
+		}
+		return activityContext;
+	}
+	
+	/**
+	 * Find the ActivityContext for this web application.
+	 *
+	 * @param servletContext ServletContext to find the web application context for
+	 * @param attrName the name of the ServletContext attribute to look for
+	 * @return the ActivityContext for this web app
+	 */
+	private static ActivityContext getActivityContext(ServletContext servletContext, String attrName) {
+		Object attr = servletContext.getAttribute(attrName);
+		if(attr == null) {
+			return null;
+		}
+		if(!(attr instanceof WebAspectranService)) {
+			throw new IllegalStateException("Context attribute is not of type WebAspectranService: " + attr);
+		}
+		return ((AspectranService)attr).getActivityContext();
+	}
+	
 }

@@ -46,10 +46,12 @@ public class MethodUtilsTest {
 
     private class SampleAction {
 
-        public void primitiveArray(int[] intArray) {
+        @SuppressWarnings("unused")
+		public void primitiveArray(int[] intArray) {
         }
 
-        public String countTo10(Translet translet) {
+        @SuppressWarnings("unused")
+		public String countTo10(Translet translet) {
             StringBuilder sb = new StringBuilder();
 
             for(int i = 1; i <= 10; i++) {

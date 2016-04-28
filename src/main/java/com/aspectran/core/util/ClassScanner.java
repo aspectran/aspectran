@@ -110,7 +110,7 @@ public class ClassScanner {
 			URL resource = resources.nextElement();
 			
 			if(log.isDebugEnabled())
-				log.debug("class scanning: " + classNamePattern + " at " + resource.getFile());
+				log.debug("Class scanning: " + classNamePattern + " at " + resource.getFile());
 			
 			if(isJarResource(resource)) {
 				scanFromJarResource(resource, matcher, saveHandler);
