@@ -140,7 +140,7 @@ public class AnnotatedConfigParser {
 				if(method.isAnnotationPresent(Profile.class)) {
 					profileAnno = method.getAnnotation(Profile.class);
 					if(!StringUtils.acceptsProfiles(activeProfiles, profileAnno.value()))
-						return;
+						continue;
 				}
 				if(method.isAnnotationPresent(Bean.class)) {
 					parseBeanRule(beanClass, method, nameArray);
@@ -335,7 +335,7 @@ public class AnnotatedConfigParser {
         }
 
         StringTokenizer st = new StringTokenizer(namespace, ActivityContext.ID_SEPARATOR);
-        List<String> list = new ArrayList<String>();
+        List<String> list = new ArrayList<>();
         while(st.hasMoreTokens()) {
             list.add(st.nextToken());
         }

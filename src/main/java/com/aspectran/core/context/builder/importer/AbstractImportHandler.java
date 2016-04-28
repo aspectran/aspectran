@@ -52,7 +52,7 @@ abstract class AbstractImportHandler implements ImportHandler {
 			return;
 		
 		if(pendingList == null)
-			pendingList = new ArrayList<Importer>();
+			pendingList = new ArrayList<>();
 		
 		pendingList.add(importer);
 		

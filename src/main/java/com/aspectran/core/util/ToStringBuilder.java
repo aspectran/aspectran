@@ -151,10 +151,6 @@ public class ToStringBuilder {
 			append((Map<?, ?>)object);
 		} else if(object instanceof Collection<?>) {
 			append((Collection<?>)object);
-//		} else if(object instanceof Token[]) {
-//			for(Token t : (Token[])object) {
-//				this.sb.append(t.stringify());
-//			}
 		} else if(object instanceof Enumeration<?>) {
 			append((Enumeration<?>)object);
 		} else if(object instanceof Parameters) {

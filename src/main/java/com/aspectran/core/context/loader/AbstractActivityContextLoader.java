@@ -24,6 +24,7 @@ import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.loader.resource.InvalidResourceException;
 import com.aspectran.core.util.ResourceUtils;
 import com.aspectran.core.util.StringUtils;
+import com.aspectran.core.util.ToStringBuilder;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
@@ -173,8 +174,8 @@ abstract class AbstractActivityContextLoader implements ActivityContextLoader {
 	public void setActiveProfiles(String... activeProfiles) {
 		this.activeProfiles = activeProfiles;
 		
-		if(log.isDebugEnabled()) {
-			log.debug("Activating profiles: " + activeProfiles);
+		if(activeProfiles != null && activeProfiles.length > 0) {
+			log.info("Activating profiles [" + String.join(", ", activeProfiles) + "]");
 		}
 	}
 
