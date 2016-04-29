@@ -24,7 +24,6 @@ import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.loader.resource.InvalidResourceException;
 import com.aspectran.core.util.ResourceUtils;
 import com.aspectran.core.util.StringUtils;
-import com.aspectran.core.util.ToStringBuilder;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 

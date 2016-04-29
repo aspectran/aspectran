@@ -549,10 +549,10 @@ public class RootAponDisassembler {
 				ItemRuleMap propertyItemRuleMap = disassembleItemRuleMap(propertyItemHolderParameters);
 				beanActionRule.setPropertyItemRuleMap(propertyItemRuleMap);
 			}
-			actionRuleApplicable.applyActionRule(beanActionRule);
 			if(beanIdOrClass != null) {
 				assistant.resolveBeanClass(beanIdOrClass, beanActionRule);
 			}
+			actionRuleApplicable.applyActionRule(beanActionRule);
 		} else if(echoItemHolderParameters != null) {
 			EchoActionRule echoActionRule = EchoActionRule.newInstance(id, hidden);
 			ItemRuleMap attributeItemRuleMap = disassembleItemRuleMap(echoItemHolderParameters);
