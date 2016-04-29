@@ -26,7 +26,7 @@ import com.aspectran.core.context.loader.config.AspectranContextConfig;
 import com.aspectran.core.context.translet.TransletNotFoundException;
 import com.aspectran.core.service.AspectranServiceControllerListener;
 import com.aspectran.core.service.AspectranServiceException;
-import com.aspectran.core.service.CoreAspectranService;
+import com.aspectran.core.service.GenericAspectranService;
 import com.aspectran.core.util.apon.AponReader;
 import com.aspectran.core.util.apon.Parameters;
 
@@ -36,7 +36,7 @@ import com.aspectran.core.util.apon.Parameters;
  * @since 2016. 1. 18.
  * @author Juho Jeong
  */
-public class ConsoleAspectranService extends CoreAspectranService {
+public class ConsoleAspectranService extends GenericAspectranService {
 
 	private static final String DEFAULT_ROOT_CONTEXT = "config/aspectran-config.xml";
 

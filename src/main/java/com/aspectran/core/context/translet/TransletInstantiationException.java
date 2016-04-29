@@ -30,7 +30,7 @@
  */
 package com.aspectran.core.context.translet;
 
-import com.aspectran.core.activity.CoreTranslet;
+import com.aspectran.core.activity.GenericTranslet;
 import com.aspectran.core.activity.Translet;
 
 /**
@@ -43,7 +43,7 @@ public class TransletInstantiationException extends TransletException {
 	
 	private Class<? extends Translet> transletInterfaceClass;
 
-	private Class<? extends CoreTranslet> transletInstanceClass;
+	private Class<? extends GenericTranslet> transletInstanceClass;
 	
 	/**
 	 * Create a new TransletInstantiationException.
@@ -51,7 +51,7 @@ public class TransletInstantiationException extends TransletException {
 	 * @param transletInterfaceClass the translet interface class
 	 * @param transletInstanceClass the translet instance class
 	 */
-	public TransletInstantiationException(Class<? extends Translet> transletInterfaceClass, Class<? extends CoreTranslet> transletInstanceClass) {
+	public TransletInstantiationException(Class<? extends Translet> transletInterfaceClass, Class<? extends GenericTranslet> transletInstanceClass) {
 		super("Could not instantiate translet class [" + transletInstanceClass.getName() + "] interface [" + transletInterfaceClass.getName() + "]");
 		this.transletInterfaceClass = transletInterfaceClass;
 		this.transletInstanceClass = transletInstanceClass;
@@ -64,7 +64,7 @@ public class TransletInstantiationException extends TransletException {
 	 * @param transletInstanceClass the translet instance class
 	 * @param cause the root cause
 	 */
-	public TransletInstantiationException(Class<? extends Translet> transletInterfaceClass, Class<? extends CoreTranslet> transletInstanceClass, Throwable cause) {
+	public TransletInstantiationException(Class<? extends Translet> transletInterfaceClass, Class<? extends GenericTranslet> transletInstanceClass, Throwable cause) {
 		super("Could not instantiate translet class [" + transletInstanceClass.getName() + "] interface [" + transletInterfaceClass.getName() + "]", cause);
 		this.transletInterfaceClass = transletInterfaceClass;
 		this.transletInstanceClass = transletInstanceClass;
@@ -76,7 +76,7 @@ public class TransletInstantiationException extends TransletException {
 	 * @param transletInstanceClass the translet instance class
 	 * @param cause the root cause
 	 */
-	public TransletInstantiationException(Class<? extends CoreTranslet> transletInstanceClass, Throwable cause) {
+	public TransletInstantiationException(Class<? extends GenericTranslet> transletInstanceClass, Throwable cause) {
 		super("Could not instantiate translet class [" + transletInstanceClass.getName() + "]", cause);
 		this.transletInstanceClass = transletInstanceClass;
 	}

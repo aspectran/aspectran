@@ -17,7 +17,7 @@ package com.aspectran.core.context.builder;
 
 import java.util.Map;
 
-import com.aspectran.core.activity.CoreTranslet;
+import com.aspectran.core.activity.GenericTranslet;
 import com.aspectran.core.activity.Translet;
 import com.aspectran.core.context.rule.type.DefaultSettingType;
 import com.aspectran.core.util.BooleanUtils;
@@ -42,7 +42,7 @@ public class DefaultSettings {
 	
 	private String transletImplementationClassName;
 	
-	private Class<CoreTranslet> transletImplementationClass;
+	private Class<GenericTranslet> transletImplementationClass;
 	
 	private Boolean nullableActionId;
 	
@@ -138,11 +138,11 @@ public class DefaultSettings {
 		this.transletImplementationClassName = transletImplementationClassName;
 	}
 
-	public Class<CoreTranslet> getTransletImplementationClass() {
+	public Class<GenericTranslet> getTransletImplementationClass() {
 		return transletImplementationClass;
 	}
 
-	public void setTransletImplementationClass(Class<CoreTranslet> transletImplementationClass) {
+	public void setTransletImplementationClass(Class<GenericTranslet> transletImplementationClass) {
 		this.transletImplementationClass = transletImplementationClass;
 	}
 

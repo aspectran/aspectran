@@ -21,7 +21,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import com.aspectran.core.activity.CoreTranslet;
+import com.aspectran.core.activity.GenericTranslet;
 import com.aspectran.core.activity.Translet;
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.aspect.AspectRuleRegistry;
@@ -207,7 +207,7 @@ public class ContextBuilderAssistant {
 		}
 		if(defaultSettings.getTransletImplementationClassName() != null) {
 			Class<?> transletImplementationClass = classLoader.loadClass(defaultSettings.getTransletImplementationClassName());
-			defaultSettings.setTransletImplementationClass((Class<CoreTranslet>)transletImplementationClass);
+			defaultSettings.setTransletImplementationClass((Class<GenericTranslet>)transletImplementationClass);
 		}
 	}
 	

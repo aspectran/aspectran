@@ -486,7 +486,7 @@ public interface Translet extends BeanRegistry, MessageSource {
 	 *
 	 * @return the translet implementation class
 	 */
-	Class<? extends CoreTranslet> getTransletImplementationClass();
+	Class<? extends GenericTranslet> getTransletImplementationClass();
 
 	/**
 	 * Try to resolve the message. Return default message if no message was found.

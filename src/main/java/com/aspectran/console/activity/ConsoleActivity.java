@@ -21,7 +21,7 @@ import com.aspectran.console.adapter.ConsoleRequestAdapter;
 import com.aspectran.console.adapter.ConsoleResponseAdapter;
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.AdapterException;
-import com.aspectran.core.activity.CoreActivity;
+import com.aspectran.core.activity.GenericActivity;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
@@ -40,7 +40,7 @@ import com.aspectran.core.context.rule.type.TokenType;
  * @author Juho Jeong
  * @since 2016. 1. 18.
  */
-public class ConsoleActivity extends CoreActivity implements Activity {
+public class ConsoleActivity extends GenericActivity implements Activity {
 
 	/**
 	 * Instantiates a new ConsoleActivity.
