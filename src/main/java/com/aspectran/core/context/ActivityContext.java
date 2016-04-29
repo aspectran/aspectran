@@ -120,6 +120,15 @@ public interface ActivityContext extends MessageSource {
 	String[] getActiveProfiles();
 	
 	/**
+	 * Return whether the given profile is active.
+	 * If active profiles are empty whether the profile should be active by default.
+	 *
+	 * @param profiles the profiles
+	 * @return true if profile is active, otherwise false
+	 */
+	boolean isProfileActive(String... profiles);
+	
+	/**
 	 * Destroy the aspectran context. 
 	 */
 	public void destroy();

@@ -489,6 +489,15 @@ public interface Translet extends BeanRegistry, MessageSource {
 	Class<? extends GenericTranslet> getTransletImplementationClass();
 
 	/**
+	 * Return whether the given profile is active.
+	 * If active profiles are empty whether the profile should be active by default.
+	 *
+	 * @param profiles the profiles
+	 * @return true if profile is active, otherwise false
+	 */
+	boolean isProfileActive(String... profiles);
+
+	/**
 	 * Try to resolve the message. Return default message if no message was found.
 	 *
 	 * @param code the code to lookup up, such as 'calculator.noRateSet'. Users of

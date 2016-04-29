@@ -51,6 +51,7 @@ public class HybridActivityContextLoader extends AbstractActivityContextLoader {
 
 		ActivityContextBuilder builder = new HybridActivityContextBuilder(getApplicationAdapter(), encoding);
 		builder.setHybridLoad(isHybridLoad());
+		builder.setActiveProfiles(getActiveProfiles());
 		ActivityContext activityContext = builder.build(rootContext);
 		
 		long elapsedTime = System.currentTimeMillis() - startTime;

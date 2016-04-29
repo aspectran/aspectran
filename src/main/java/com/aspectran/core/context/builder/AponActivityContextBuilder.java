@@ -46,7 +46,7 @@ public class AponActivityContextBuilder extends AbstractActivityContextBuilder {
 			if(rootContext == null)
 				throw new IllegalArgumentException("'rootContext' must not be null.");
 
-			readyAssist(getApplicationAdapter());
+			readyAssist(getApplicationAdapter(), getActiveProfiles());
 
 			ImportHandler importHandler = new AponImportHandler(this, encoding);
 			importHandler.setActiveProfiles(getActiveProfiles());

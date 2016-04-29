@@ -392,6 +392,11 @@ public class GenericTranslet implements Translet {
 		return activity.getTransletImplementationClass();
 	}
 
+	@Override
+	public boolean isProfileActive(String... profiles) {
+		return activity.getActivityContext().isProfileActive(profiles);
+	}
+
 	//---------------------------------------------------------------------
 	// Implementation of BeanRegistry interface
 	//---------------------------------------------------------------------

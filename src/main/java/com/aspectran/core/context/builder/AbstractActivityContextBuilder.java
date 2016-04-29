@@ -47,8 +47,8 @@ import com.aspectran.core.context.translet.TransletRuleRegistry;
 import com.aspectran.core.util.BeanDescriptor;
 import com.aspectran.core.util.MethodUtils;
 import com.aspectran.core.util.ResourceUtils;
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.core.util.StringUtils;
+import com.aspectran.core.util.SystemUtils;
 
 /**
  * The Class AbstractActivityContextBuilder.
@@ -57,7 +57,7 @@ import com.aspectran.core.util.logging.LogFactory;
  */
 abstract class AbstractActivityContextBuilder extends ContextBuilderAssistant implements ActivityContextBuilder {
 	
-	protected final Log log = LogFactory.getLog(getClass());
+	private static final String ACTIVE_PROFILES_PROPERTY_NAME = "aspectran.profiles.active";
 	
 	private ApplicationAdapter applicationAdapter;
 	
@@ -82,6 +82,15 @@ abstract class AbstractActivityContextBuilder extends ContextBuilderAssistant im
 	}
 	
 	public String[] getActiveProfiles() {
+		if(activeProfiles == null) {
+			String profilesProp = SystemUtils.getProperty(ACTIVE_PROFILES_PROPERTY_NAME);
+			if(profilesProp != null) {
+				String[] profiles = StringUtils.tokenize(StringUtils.trimAllWhitespace(profilesProp), ",");
+				if(profiles != null && profiles.length > 0) {
+					activeProfiles = profiles;
+				}
+			}
+		}
 		return activeProfiles;
 	}
 

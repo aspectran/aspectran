@@ -46,6 +46,8 @@ import com.aspectran.core.util.ArrayStack;
 import com.aspectran.core.util.BeanDescriptor;
 import com.aspectran.core.util.MethodUtils;
 import com.aspectran.core.util.StringUtils;
+import com.aspectran.core.util.logging.Log;
+import com.aspectran.core.util.logging.LogFactory;
 
 /**
  * The Class ContextBuilderAssistant
@@ -54,6 +56,8 @@ import com.aspectran.core.util.StringUtils;
  */
 public class ContextBuilderAssistant {
 
+	protected final Log log = LogFactory.getLog(getClass());
+	
 	private ApplicationAdapter applicationAdapter;
 	
 	private String applicationBasePath;
@@ -83,7 +87,11 @@ public class ContextBuilderAssistant {
 	public ContextBuilderAssistant() {
 	}
 	
-	public void readyAssist(ApplicationAdapter applicationAdapter) {
+	public void readyAssist(ApplicationAdapter applicationAdapter, String[] activeProfiles) {
+		if(activeProfiles != null && activeProfiles.length > 0) {
+			log.info("Activating profiles [" + String.join(", ", activeProfiles) + "]");
+		}
+		
 		this.applicationAdapter = applicationAdapter;
 		this.applicationBasePath = applicationAdapter.getApplicationBasePath();
 		this.classLoader = applicationAdapter.getClassLoader();
@@ -91,6 +99,7 @@ public class ContextBuilderAssistant {
 		aspectRuleRegistry = new AspectRuleRegistry();
 		
 		beanRuleRegistry = new BeanRuleRegistry(classLoader);
+		beanRuleRegistry.setActiveProfiles(activeProfiles);
 		
 		transletRuleRegistry = new TransletRuleRegistry(applicationAdapter);
 		transletRuleRegistry.setAssistantLocal(assistantLocal);
@@ -550,7 +559,7 @@ public class ContextBuilderAssistant {
 		this.importHandler = importHandler;
 	}
 
-	public Importer newImporter(String file, String resource, String url, String fileType) {
+	public Importer newImporter(String file, String resource, String url, String fileType, String profiles) {
 		ImportFileType importFileType = ImportFileType.lookup(fileType);
 		Importer importer = null;
 
@@ -560,6 +569,13 @@ public class ContextBuilderAssistant {
 			importer = new ResourceImporter(getClassLoader(), resource, importFileType);
 		} else if(StringUtils.hasText(url)) {
 			importer = new UrlImporter(url, importFileType);
+		}
+		
+		if(profiles != null && !profiles.isEmpty()) {
+			String[] arr = StringUtils.tokenize(StringUtils.trimAllWhitespace(profiles), ",");
+			if(arr.length > 0) {
+				importer.setProfiles(arr);
+			}
 		}
 
 		return importer;

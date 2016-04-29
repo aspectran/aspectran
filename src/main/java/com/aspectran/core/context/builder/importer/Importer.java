@@ -37,10 +37,10 @@ public interface Importer {
 
 	void setImportFileType(ImportFileType importFileType);
 
-	public String getProfile();
+	String[] getProfiles();
 
-	public void setProfile(String profile);
-
+	void setProfiles(String[] profiles);
+	
 	long getLastModified();
 
 	void setLastModified(long lastModified);

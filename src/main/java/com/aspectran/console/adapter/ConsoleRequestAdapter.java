@@ -17,6 +17,7 @@ package com.aspectran.console.adapter;
 
 import com.aspectran.console.activity.ConsoleActivity;
 import com.aspectran.core.adapter.GenericRequestAdapter;
+import com.aspectran.core.util.SystemUtils;
 
 /**
  * The Class ConsoleRequestAdapter.
@@ -33,7 +34,7 @@ public class ConsoleRequestAdapter extends GenericRequestAdapter {
 	 */
 	public ConsoleRequestAdapter(ConsoleActivity activity) {
 		super(activity);
-		setCharacterEncoding(System.getProperty("file.encoding"));
+		setCharacterEncoding(SystemUtils.getProperty("file.encoding"));
 	}
 
 }

@@ -172,10 +172,6 @@ abstract class AbstractActivityContextLoader implements ActivityContextLoader {
 	@Override
 	public void setActiveProfiles(String... activeProfiles) {
 		this.activeProfiles = activeProfiles;
-		
-		if(activeProfiles != null && activeProfiles.length > 0) {
-			log.info("Activating profiles [" + String.join(", ", activeProfiles) + "]");
-		}
 	}
 
 }

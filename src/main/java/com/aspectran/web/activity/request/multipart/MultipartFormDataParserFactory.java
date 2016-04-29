@@ -16,6 +16,7 @@
 package com.aspectran.web.activity.request.multipart;
 
 import com.aspectran.core.util.FileUtils;
+import com.aspectran.core.util.SystemUtils;
 
 /**
  * The Class MultipartFormDataParserFactory.
@@ -133,7 +134,7 @@ public class MultipartFormDataParserFactory {
 		if(temporaryFilePath != null)
 			parser.setTemporaryFilePath(temporaryFilePath);
 		else
-			parser.setTemporaryFilePath(System.getProperty("java.io.tmpdir"));
+			parser.setTemporaryFilePath(SystemUtils.getProperty("java.io.tmpdir"));
 
 		parser.setAllowedFileExtensions(allowedFileExtensions);
 		parser.setDeniedFileExtensions(deniedFileExtensions);

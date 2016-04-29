@@ -44,6 +44,7 @@ public class XmlActivityContextLoader extends AbstractActivityContextLoader {
 
 		ActivityContextBuilder builder = new XmlActivityContextBuilder(getApplicationAdapter());
 		builder.setHybridLoad(isHybridLoad());
+		builder.setActiveProfiles(getActiveProfiles());
 		ActivityContext activityContext = builder.build(rootContext);
 		
 		long elapsedTime = System.currentTimeMillis() - startTime;

@@ -48,7 +48,7 @@ abstract class AbstractImportHandler implements ImportHandler {
 
 	@Override
 	public void pending(Importer importer) {
-		if(!StringUtils.acceptsProfiles(getActiveProfiles(), importer.getProfile()))
+		if(!StringUtils.acceptsProfiles(getActiveProfiles(), importer.getProfiles()))
 			return;
 		
 		if(pendingList == null)
