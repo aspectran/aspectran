@@ -614,33 +614,5 @@ public class StringUtils {
 		}
 		return timeZone;
 	}
-	
-	public static boolean acceptsProfiles(String[] activeProfiles, String... profiles) {
-		if(profiles == null || profiles.length == 0)
-			return true;
-
-		if(activeProfiles == null || activeProfiles.length == 0)
-			return false;
-		
-		for(String profile : profiles) {
-			String p = trimAllWhitespace(profile);
-			if(!p.isEmpty()) {
-				if(p.charAt(0) != '!') {
-					for(String activeProfile : activeProfiles) {
-						if(p == activeProfile)
-							return true;
-					}
-				} else {
-					String p2 = p.substring(1);
-					for(String activeProfile : activeProfiles) {
-						if(p2 == activeProfile)
-							return false;
-					}
-				}
-			}
-		}
-		
-		return false;
-	}
 
 }

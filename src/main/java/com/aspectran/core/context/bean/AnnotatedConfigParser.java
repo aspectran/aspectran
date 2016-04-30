@@ -51,6 +51,7 @@ import com.aspectran.core.context.rule.TransformRule;
 import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.type.RequestMethodType;
 import com.aspectran.core.context.rule.type.TransformType;
+import com.aspectran.core.util.ProfilesUtils;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
@@ -131,7 +132,7 @@ public class AnnotatedConfigParser {
 
 		if(configAnno != null) {
 			Profile profileAnno = beanClass.getAnnotation(Profile.class);
-			if(!StringUtils.acceptsProfiles(activeProfiles, profileAnno.value()))
+			if(!ProfilesUtils.acceptsProfiles(activeProfiles, profileAnno.value()))
 				return;
 
 			String[] nameArray = splitNamespace(configAnno.namespace());
@@ -139,7 +140,7 @@ public class AnnotatedConfigParser {
 			for(Method method : beanClass.getMethods()) {
 				if(method.isAnnotationPresent(Profile.class)) {
 					profileAnno = method.getAnnotation(Profile.class);
-					if(!StringUtils.acceptsProfiles(activeProfiles, profileAnno.value()))
+					if(!ProfilesUtils.acceptsProfiles(activeProfiles, profileAnno.value()))
 						continue;
 				}
 				if(method.isAnnotationPresent(Bean.class)) {

@@ -25,6 +25,7 @@ import com.aspectran.core.context.loader.config.AspectranContextAutoReloadConfig
 import com.aspectran.core.context.loader.config.AspectranContextConfig;
 import com.aspectran.core.context.loader.config.AspectranSchedulerConfig;
 import com.aspectran.core.context.loader.reload.ActivityContextReloadingTimer;
+import com.aspectran.core.util.ProfilesUtils;
 import com.aspectran.core.util.apon.Parameters;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
@@ -124,7 +125,7 @@ abstract class AbstractAspectranService implements AspectranService {
 			String encoding = aspectranContextConfig.getString(AspectranContextConfig.encoding);
 			boolean hybridLoad = aspectranContextConfig.getBoolean(AspectranContextConfig.hybridLoad, false);
 			String[] resourceLocations = aspectranContextConfig.getStringArray(AspectranContextConfig.resources);
-			String[] activeProfiles = aspectranContextConfig.getStringArray(AspectranContextConfig.activeProfiles);
+			String[] activeProfiles = ProfilesUtils.validateProfiles(aspectranContextConfig.getStringArray(AspectranContextConfig.activeProfiles));
 
 			activityContextLoader = new HybridActivityContextLoader(applicationAdapter, encoding);
 			activityContextLoader.setHybridLoad(hybridLoad);

@@ -42,10 +42,7 @@ import com.aspectran.core.context.rule.type.DefaultSettingType;
 import com.aspectran.core.context.rule.type.ImportFileType;
 import com.aspectran.core.context.template.TemplateRuleRegistry;
 import com.aspectran.core.context.translet.TransletRuleRegistry;
-import com.aspectran.core.util.ArrayStack;
-import com.aspectran.core.util.BeanDescriptor;
-import com.aspectran.core.util.MethodUtils;
-import com.aspectran.core.util.StringUtils;
+import com.aspectran.core.util.*;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
@@ -89,7 +86,7 @@ public class ContextBuilderAssistant {
 	
 	public void readyAssist(ApplicationAdapter applicationAdapter, String[] activeProfiles) {
 		if(activeProfiles != null && activeProfiles.length > 0) {
-			log.info("Activating profiles [" + String.join(", ", activeProfiles) + "]");
+			log.info("Activating profiles [" + ProfilesUtils.join(activeProfiles) + "]");
 		}
 		
 		this.applicationAdapter = applicationAdapter;
@@ -572,8 +569,8 @@ public class ContextBuilderAssistant {
 		}
 		
 		if(profiles != null && !profiles.isEmpty()) {
-			String[] arr = StringUtils.tokenize(StringUtils.trimAllWhitespace(profiles), ",");
-			if(arr.length > 0) {
+			String[] arr = ProfilesUtils.split(profiles);
+			if(arr != null) {
 				importer.setProfiles(arr);
 			}
 		}

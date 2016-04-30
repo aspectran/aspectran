@@ -86,6 +86,7 @@ import com.aspectran.core.context.rule.type.ItemType;
 import com.aspectran.core.context.rule.type.RequestMethodType;
 import com.aspectran.core.context.rule.type.ResponseType;
 import com.aspectran.core.context.rule.type.ScopeType;
+import com.aspectran.core.util.ProfilesUtils;
 import com.aspectran.core.util.apon.GenericParameters;
 import com.aspectran.core.util.apon.ParameterDefine;
 import com.aspectran.core.util.apon.Parameters;
@@ -407,16 +408,20 @@ public class RootAponAssembler {
 		return transletParameters;
 	}
 	
-	private Parameters assembleImportParameters(Importer imp) {
+	private Parameters assembleImportParameters(Importer importer) {
 		Parameters importParameters = new ImportParameters();
-		
-		if(imp.getImporterType() == ImporterType.FILE) {
-			importParameters.putValue(ImportParameters.file, imp.getDistinguishedName());
-		} else if(imp.getImporterType() == ImporterType.RESOURCE) {
-			importParameters.putValue(ImportParameters.resource, imp.getDistinguishedName());
-		} else if(imp.getImporterType() == ImporterType.URL) {
-			importParameters.putValue(ImportParameters.url, imp.getDistinguishedName());
-			importParameters.putValueNonNull(ImportParameters.fileType, imp.getImportFileType());
+
+		if(importer.getImporterType() == ImporterType.FILE) {
+			importParameters.putValue(ImportParameters.file, importer.getDistinguishedName());
+		} else if(importer.getImporterType() == ImporterType.RESOURCE) {
+			importParameters.putValue(ImportParameters.resource, importer.getDistinguishedName());
+		} else if(importer.getImporterType() == ImporterType.URL) {
+			importParameters.putValue(ImportParameters.url, importer.getDistinguishedName());
+			importParameters.putValueNonNull(ImportParameters.fileType, importer.getImportFileType());
+		}
+
+		if(importer.getProfiles() != null) {
+			importParameters.putValue(ImportParameters.profile, ProfilesUtils.join(importer.getProfiles()));
 		}
 		
 		return importParameters;

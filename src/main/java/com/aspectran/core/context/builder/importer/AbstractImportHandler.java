@@ -18,7 +18,7 @@ package com.aspectran.core.context.builder.importer;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.aspectran.core.util.StringUtils;
+import com.aspectran.core.util.ProfilesUtils;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
@@ -48,9 +48,6 @@ abstract class AbstractImportHandler implements ImportHandler {
 
 	@Override
 	public void pending(Importer importer) {
-		if(!StringUtils.acceptsProfiles(getActiveProfiles(), importer.getProfiles()))
-			return;
-		
 		if(pendingList == null)
 			pendingList = new ArrayList<>();
 		
@@ -66,10 +63,12 @@ abstract class AbstractImportHandler implements ImportHandler {
 			pendingList = null;
 			
 			for(Importer importer : pendedList) {
-				if(log.isDebugEnabled())
-					log.debug("Import " + importer);
-				
-				handle(importer);
+				if(ProfilesUtils.acceptsProfiles(getActiveProfiles(), importer.getProfiles())) {
+					if(log.isDebugEnabled()) {
+						log.debug("Import " + importer);
+					}
+					handle(importer);
+				}
 			}
 		}
 	}

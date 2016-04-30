@@ -44,11 +44,7 @@ import com.aspectran.core.context.template.ContextTemplateProcessor;
 import com.aspectran.core.context.template.TemplateProcessor;
 import com.aspectran.core.context.template.TemplateRuleRegistry;
 import com.aspectran.core.context.translet.TransletRuleRegistry;
-import com.aspectran.core.util.BeanDescriptor;
-import com.aspectran.core.util.MethodUtils;
-import com.aspectran.core.util.ResourceUtils;
-import com.aspectran.core.util.StringUtils;
-import com.aspectran.core.util.SystemUtils;
+import com.aspectran.core.util.*;
 
 /**
  * The Class AbstractActivityContextBuilder.
@@ -56,8 +52,6 @@ import com.aspectran.core.util.SystemUtils;
  * <p>Created: 2008. 06. 14 PM 8:53:29</p>
  */
 abstract class AbstractActivityContextBuilder extends ContextBuilderAssistant implements ActivityContextBuilder {
-	
-	private static final String ACTIVE_PROFILES_PROPERTY_NAME = "aspectran.profiles.active";
 	
 	private ApplicationAdapter applicationAdapter;
 	
@@ -83,13 +77,7 @@ abstract class AbstractActivityContextBuilder extends ContextBuilderAssistant im
 	
 	public String[] getActiveProfiles() {
 		if(activeProfiles == null) {
-			String profilesProp = SystemUtils.getProperty(ACTIVE_PROFILES_PROPERTY_NAME);
-			if(profilesProp != null) {
-				String[] profiles = StringUtils.tokenize(StringUtils.trimAllWhitespace(profilesProp), ",");
-				if(profiles != null && profiles.length > 0) {
-					activeProfiles = profiles;
-				}
-			}
+			activeProfiles = ProfilesUtils.getActiveProfilesFromSystem();
 		}
 		return activeProfiles;
 	}

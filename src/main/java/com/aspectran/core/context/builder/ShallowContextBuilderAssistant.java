@@ -137,5 +137,4 @@ public class ShallowContextBuilderAssistant extends ContextBuilderAssistant {
 		// shallow
 	}
 
-
 }

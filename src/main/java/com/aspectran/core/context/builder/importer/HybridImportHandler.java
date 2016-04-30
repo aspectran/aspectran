@@ -104,6 +104,7 @@ public class HybridImportHandler extends AbstractImportHandler {
 		
 		if(!hybridon && hybridLoad) {
 			if(importer.getImporterType() == ImporterType.FILE && importer.getImportFileType() == ImportFileType.XML) {
+				importer.setProfiles(null);
 				saveAsAponFormat((FileImporter)importer);
 			}
 		}

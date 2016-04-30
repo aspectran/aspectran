@@ -27,7 +27,7 @@ import com.aspectran.core.context.message.MessageSource;
 import com.aspectran.core.context.message.NoSuchMessageException;
 import com.aspectran.core.context.template.TemplateProcessor;
 import com.aspectran.core.context.translet.TransletRuleRegistry;
-import com.aspectran.core.util.StringUtils;
+import com.aspectran.core.util.ProfilesUtils;
 import com.aspectran.core.util.ToStringBuilder;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
@@ -181,7 +181,7 @@ public class AspectranActivityContext implements ActivityContext {
 
 	@Override
 	public boolean isProfileActive(String... profiles) {
-		return StringUtils.acceptsProfiles(activeProfiles, profiles);
+		return ProfilesUtils.acceptsProfiles(activeProfiles, profiles);
 	}
 	
 	public void initialize() {
