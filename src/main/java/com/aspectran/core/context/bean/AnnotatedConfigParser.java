@@ -121,15 +121,17 @@ public class AnnotatedConfigParser {
 		Configuration configAnno = beanClass.getAnnotation(Configuration.class);
 
 		if(configAnno != null) {
-			Profile profileAnno = beanClass.getAnnotation(Profile.class);
-			if(!ProfilesUtils.acceptsProfiles(activeProfiles, profileAnno.value()))
-				return;
+			if(beanClass.isAnnotationPresent(Profile.class)) {
+				Profile profileAnno = beanClass.getAnnotation(Profile.class);
+				if(!ProfilesUtils.acceptsProfiles(activeProfiles, profileAnno.value()))
+					return;
+			}
 
 			String[] nameArray = splitNamespace(configAnno.namespace());
 
 			for(Method method : beanClass.getMethods()) {
 				if(method.isAnnotationPresent(Profile.class)) {
-					profileAnno = method.getAnnotation(Profile.class);
+					Profile profileAnno = method.getAnnotation(Profile.class);
 					if(!ProfilesUtils.acceptsProfiles(activeProfiles, profileAnno.value()))
 						continue;
 				}
