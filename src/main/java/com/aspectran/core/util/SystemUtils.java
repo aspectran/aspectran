@@ -33,7 +33,7 @@ public class SystemUtils {
 		} catch(AccessControlException ex) {
 			log.info(String.format(
 				"Caught AccessControlException when accessing system property [%s]; its value will be returned [null]. Reason: %s",
-				new Object[] { name, ex.getMessage() }));
+					name, ex.getMessage()));
 		}
 		return null;
 	}

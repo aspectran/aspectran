@@ -49,7 +49,7 @@ import com.aspectran.web.adapter.HttpSessionAdapter;
  *
  * @since 2008. 04. 28
  */
-public class WebActivity extends GenericActivity implements Activity {
+public class WebActivity extends GenericActivity {
 
 	private static final String MULTIPART_FORM_DATA_PARSER_SETTING_NAME = "multipartFormDataParser";
 

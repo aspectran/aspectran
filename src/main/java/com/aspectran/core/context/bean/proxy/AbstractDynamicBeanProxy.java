@@ -39,7 +39,7 @@ public abstract class AbstractDynamicBeanProxy {
 
 	protected final Log log = LogFactory.getLog(getClass());
 
-	private static volatile Map<String, RelevantAspectRuleHolder> cache = new WeakHashMap<String, RelevantAspectRuleHolder>();
+	private static final Map<String, RelevantAspectRuleHolder> cache = new WeakHashMap<>();
 
 	private final AspectRuleRegistry aspectRuleRegistry;
 
@@ -88,7 +88,7 @@ public abstract class AbstractDynamicBeanProxy {
 	private RelevantAspectRuleHolder createRelevantAspectRuleHolder(String transletName, String beanId, String className, String methodName) {
 		Map<String, AspectRule> aspectRuleMap = aspectRuleRegistry.getAspectRuleMap();
 		AspectAdviceRulePostRegister postRegister = new AspectAdviceRulePostRegister();
-		List<AspectRule> activityAspectRuleList = new ArrayList<AspectRule>();
+		List<AspectRule> activityAspectRuleList = new ArrayList<>();
 
 		for(AspectRule aspectRule : aspectRuleMap.values()) {
 			AspectTargetType aspectTargetType = aspectRule.getAspectTargetType();

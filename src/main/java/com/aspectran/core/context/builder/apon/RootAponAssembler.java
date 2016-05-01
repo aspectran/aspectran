@@ -164,8 +164,8 @@ public class RootAponAssembler {
 
 		List<Importer> pendingList = assistant.getImportHandler().getPendingList();
 		if(pendingList != null) {
-			for(Importer imp : pendingList) {
-				aspectranParameters.putValue(AspectranParameters.imports, assembleImportParameters(imp));
+			for(Importer importer : pendingList) {
+				aspectranParameters.putValue(AspectranParameters.imports, assembleImportParameters(importer));
 			}
 		}
 

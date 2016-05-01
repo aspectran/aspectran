@@ -493,7 +493,7 @@ public interface Translet extends BeanRegistry, MessageSource {
 	 * If active profiles are empty whether the profile should be active by default.
 	 *
 	 * @param profiles the profiles
-	 * @return true if profile is active, otherwise false
+	 * @return {@code true} if profile is active, otherwise {@code false}
 	 */
 	boolean isProfileActive(String... profiles);
 

@@ -26,20 +26,9 @@ import java.util.Set;
 import java.util.StringTokenizer;
 
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.context.bean.annotation.Action;
-import com.aspectran.core.context.bean.annotation.Autowired;
-import com.aspectran.core.context.bean.annotation.Bean;
-import com.aspectran.core.context.bean.annotation.Configuration;
-import com.aspectran.core.context.bean.annotation.Destroy;
-import com.aspectran.core.context.bean.annotation.Dispatch;
-import com.aspectran.core.context.bean.annotation.Forward;
-import com.aspectran.core.context.bean.annotation.Initialize;
-import com.aspectran.core.context.bean.annotation.Profile;
-import com.aspectran.core.context.bean.annotation.Qualifier;
-import com.aspectran.core.context.bean.annotation.Redirect;
-import com.aspectran.core.context.bean.annotation.Request;
-import com.aspectran.core.context.bean.annotation.Required;
-import com.aspectran.core.context.bean.annotation.Transform;
+import com.aspectran.core.context.bean.annotation.*;
+import com.aspectran.core.context.expr.token.Token;
+import com.aspectran.core.context.expr.token.TokenParser;
 import com.aspectran.core.context.rule.AutowireRule;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.DispatchResponseRule;
@@ -49,6 +38,7 @@ import com.aspectran.core.context.rule.RedirectResponseRule;
 import com.aspectran.core.context.rule.ResponseRule;
 import com.aspectran.core.context.rule.TransformRule;
 import com.aspectran.core.context.rule.TransletRule;
+import com.aspectran.core.context.rule.type.AutowireTargetType;
 import com.aspectran.core.context.rule.type.RequestMethodType;
 import com.aspectran.core.context.rule.type.TransformType;
 import com.aspectran.core.util.ProfilesUtils;
@@ -169,12 +159,29 @@ public class AnnotatedConfigParser {
 						checkExistence(type, name, required);
 
 						AutowireRule autowireRule = new AutowireRule();
+						autowireRule.setTargetType(AutowireTargetType.FIELD);
 						autowireRule.setTarget(field);
 						autowireRule.setTypes(type);
 						autowireRule.setQualifiers(qualifier);
 						autowireRule.setRequired(required);
 
 						beanRule.addAutowireTarget(autowireRule);
+					} else if(field.isAnnotationPresent(Value.class)) {
+						Value valueAnno = field.getAnnotation(Value.class);
+						String value = (valueAnno != null) ? StringUtils.emptyToNull(valueAnno.value()) : null;
+
+						if(value != null) {
+							Token[] tokens = TokenParser.parse(value);
+
+							if(tokens != null && tokens.length > 0) {
+								AutowireRule autowireRule = new AutowireRule();
+								autowireRule.setTargetType(AutowireTargetType.VALUE);
+								autowireRule.setTarget(field);
+								autowireRule.setToken(tokens[0]);
+
+								beanRule.addAutowireTarget(autowireRule);
+							}
+						}
 					}
 				}
 
@@ -215,6 +222,7 @@ public class AnnotatedConfigParser {
 						}
 
 						AutowireRule autowireRule = new AutowireRule();
+						autowireRule.setTargetType(AutowireTargetType.METHOD);
 						autowireRule.setTarget(method);
 						autowireRule.setTypes(paramTypes);
 						autowireRule.setQualifiers(paramQualifiers);

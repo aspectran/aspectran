@@ -41,7 +41,7 @@ public class AspectranActivityContext implements ActivityContext {
 
 	private final Log log = LogFactory.getLog(AspectranActivityContext.class);
 
-	private final ThreadLocal<Activity> currentActivityHolder = new ThreadLocal<Activity>();
+	private final ThreadLocal<Activity> currentActivityHolder = new ThreadLocal<>();
 
 	private final ApplicationAdapter applicationAdapter;
 

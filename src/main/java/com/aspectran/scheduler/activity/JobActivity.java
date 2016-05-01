@@ -31,7 +31,7 @@ import com.aspectran.core.context.rule.RequestRule;
  * 
  * <p>Created: 2013. 11. 18 PM 3:40:48</p>
  */
-public class JobActivity extends GenericActivity implements Activity {
+public class JobActivity extends GenericActivity {
 
 	public JobActivity(ActivityContext context, RequestAdapter requestAdapter, ResponseAdapter responseAdapter) {
 		super(context);

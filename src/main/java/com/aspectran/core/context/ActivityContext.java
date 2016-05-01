@@ -131,6 +131,6 @@ public interface ActivityContext extends MessageSource {
 	/**
 	 * Destroy the aspectran context. 
 	 */
-	public void destroy();
+	void destroy();
 
 }

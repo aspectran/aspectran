@@ -73,7 +73,7 @@ public class LocalResourceManager extends ResourceManager {
 	private void findResource(File file) throws InvalidResourceException {
 		try {
 			if(file.isDirectory()) {
-				List<File> jarFileList = new ArrayList<File>();
+				List<File> jarFileList = new ArrayList<>();
 				
 				findResource(file, jarFileList);
 				
@@ -125,8 +125,13 @@ public class LocalResourceManager extends ResourceManager {
 				resourceEntries.putResource(target, entry);
 			}
 		} finally {
-			if(jarFile != null)
-				jarFile.close();
+			if(jarFile != null) {
+				try {
+					jarFile.close();
+				} catch(IOException e) {
+					// ignore
+				}
+			}
 		}
 	}
 

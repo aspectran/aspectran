@@ -18,6 +18,7 @@ package com.aspectran.core.context.rule;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
+import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.rule.type.AutowireTargetType;
 
 /**
@@ -36,7 +37,9 @@ public class AutowireRule {
 	private Class<?>[] types;
 
 	private String[] qualifiers;
-	
+
+	private Token token;
+
 	private boolean required;
 
 	public AutowireTargetType getTargetType() {
@@ -54,12 +57,10 @@ public class AutowireRule {
 
 	public void setTarget(Field field) {
 		this.target = field;
-		this.targetType = AutowireTargetType.FIELD;
 	}
 
 	public void setTarget(Method method) {
 		this.target = method;
-		this.targetType = AutowireTargetType.METHOD;
 	}
 
 	public Class<?>[] getTypes() {
@@ -76,6 +77,14 @@ public class AutowireRule {
 
 	public void setQualifiers(String... qualifiers) {
 		this.qualifiers = qualifiers;
+	}
+
+	public Token getToken() {
+		return token;
+	}
+
+	public void setToken(Token token) {
+		this.token = token;
 	}
 
 	public boolean isRequired() {

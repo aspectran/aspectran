@@ -30,7 +30,7 @@ public class AspectRuleRegistry {
 
 	private final Log log = LogFactory.getLog(AspectRuleRegistry.class);
 
-	private final Map<String, AspectRule> aspectRuleMap = new LinkedHashMap<String, AspectRule>();
+	private final Map<String, AspectRule> aspectRuleMap = new LinkedHashMap<>();
 	
 	private AspectAdviceRuleRegistry sessionAspectAdviceRuleRegistry;
 	
