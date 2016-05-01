@@ -51,7 +51,7 @@ public interface Activity extends BeanRegistry {
 	 *
 	 * @return the translet implementation class
 	 */
-	Class<? extends CoreTranslet> getTransletImplementationClass();
+	Class<? extends GenericTranslet> getTransletImplementationClass();
 
 	/**
 	 * Preparation for the activity.

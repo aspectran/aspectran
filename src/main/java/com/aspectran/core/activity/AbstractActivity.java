@@ -47,7 +47,7 @@ public abstract class AbstractActivity implements Activity {
 	
 	private Class<? extends Translet> transletInterfaceClass;
 	
-	private Class<? extends CoreTranslet> transletImplementClass;
+	private Class<? extends GenericTranslet> transletImplementClass;
 
 	private Scope requestScope;
 	
@@ -141,7 +141,7 @@ public abstract class AbstractActivity implements Activity {
 	 *
 	 * @return the translet implement class
 	 */
-	public Class<? extends CoreTranslet> getTransletImplementationClass() {
+	public Class<? extends GenericTranslet> getTransletImplementationClass() {
 		return transletImplementClass;
 	}
 
@@ -150,7 +150,7 @@ public abstract class AbstractActivity implements Activity {
 	 *
 	 * @param transletImplementClass the new translet implement class
 	 */
-	protected void setTransletImplementationClass(Class<? extends CoreTranslet> transletImplementClass) {
+	protected void setTransletImplementationClass(Class<? extends GenericTranslet> transletImplementClass) {
 		this.transletImplementClass = transletImplementClass;
 	}
 	
@@ -165,8 +165,8 @@ public abstract class AbstractActivity implements Activity {
 			this.transletInterfaceClass = Translet.class;
 		
 		if(this.transletImplementClass == null) {
-			this.transletImplementClass = CoreTranslet.class;
-			return new CoreTranslet(activity);
+			this.transletImplementClass = GenericTranslet.class;
+			return new GenericTranslet(activity);
 		}
 		
 		//create a custom translet instance

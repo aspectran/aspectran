@@ -22,7 +22,7 @@ import java.io.Writer;
 
 import org.quartz.JobDetail;
 
-import com.aspectran.core.adapter.CommonResponseAdapter;
+import com.aspectran.core.adapter.GenericResponseAdapter;
 import com.aspectran.core.context.rule.RedirectResponseRule;
 import com.aspectran.core.context.rule.type.ContentType;
 
@@ -31,7 +31,7 @@ import com.aspectran.core.context.rule.type.ContentType;
  * 
  * @since 2013. 11. 20.
  */
-public class QuartzJobResponseAdapter extends CommonResponseAdapter {
+public class QuartzJobResponseAdapter extends GenericResponseAdapter {
 
 	private JobDetail jobDetail;
 	

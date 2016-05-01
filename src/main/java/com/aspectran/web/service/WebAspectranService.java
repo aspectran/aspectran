@@ -34,7 +34,7 @@ import com.aspectran.core.context.translet.TransletNotFoundException;
 import com.aspectran.core.service.AspectranService;
 import com.aspectran.core.service.AspectranServiceControllerListener;
 import com.aspectran.core.service.AspectranServiceException;
-import com.aspectran.core.service.CoreAspectranService;
+import com.aspectran.core.service.GenericAspectranService;
 import com.aspectran.core.util.apon.Parameters;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
@@ -45,7 +45,7 @@ import com.aspectran.web.startup.servlet.WebActivityServlet;
 /**
  * The Class WebAspectranService.
  */
-public class WebAspectranService extends CoreAspectranService {
+public class WebAspectranService extends GenericAspectranService {
 	
 	private static final Log log = LogFactory.getLog(WebAspectranService.class);
 

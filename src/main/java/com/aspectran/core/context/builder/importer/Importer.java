@@ -31,15 +31,19 @@ import com.aspectran.core.context.rule.type.ImporterType;
  */
 public interface Importer {
 	
-	long getLastModified();
-
-	void setLastModified(long lastModified);
-
 	ImporterType getImporterType();
 
 	ImportFileType getImportFileType();
 
 	void setImportFileType(ImportFileType importFileType);
+
+	String[] getProfiles();
+
+	void setProfiles(String[] profiles);
+	
+	long getLastModified();
+
+	void setLastModified(long lastModified);
 
 	String getDistinguishedName();
 	

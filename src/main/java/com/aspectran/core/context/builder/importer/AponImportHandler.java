@@ -48,7 +48,7 @@ public class AponImportHandler extends AbstractImportHandler {
 		
 		rootAponDisassembler.disassembleRoot(rootParameters);
 
-		handle();
+		super.handle();
 
 		// First default setting is held after configuration loading is completed.
 		if(assistantLocal.getReplicatedCount() > 0) {

@@ -23,7 +23,7 @@ import com.aspectran.core.context.rule.TransletRule;
  *
  * <p>Created: 2016. 2. 21.</p>
  */
-public interface AnnotatedConfigRelater {
+interface AnnotatedConfigRelater {
 
     void relay(Class<?> targetBeanClass, BeanRule beanRule);
 

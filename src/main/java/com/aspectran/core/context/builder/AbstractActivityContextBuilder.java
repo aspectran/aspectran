@@ -44,25 +44,48 @@ import com.aspectran.core.context.template.ContextTemplateProcessor;
 import com.aspectran.core.context.template.TemplateProcessor;
 import com.aspectran.core.context.template.TemplateRuleRegistry;
 import com.aspectran.core.context.translet.TransletRuleRegistry;
-import com.aspectran.core.util.BeanDescriptor;
-import com.aspectran.core.util.MethodUtils;
-import com.aspectran.core.util.ResourceUtils;
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.core.util.*;
 
 /**
  * The Class AbstractActivityContextBuilder.
  * 
  * <p>Created: 2008. 06. 14 PM 8:53:29</p>
  */
-abstract class AbstractActivityContextBuilder extends ContextBuilderAssistant {
+abstract class AbstractActivityContextBuilder extends ContextBuilderAssistant implements ActivityContextBuilder {
 	
-	protected final Log log = LogFactory.getLog(getClass());
+	private ApplicationAdapter applicationAdapter;
+	
+	private boolean hybridLoad;
+	
+	private String[] activeProfiles;
 	
 	AbstractActivityContextBuilder(ApplicationAdapter applicationAdapter) {
-		super(applicationAdapter);
+		this.applicationAdapter = applicationAdapter;
+	}
+
+	public ApplicationAdapter getApplicationAdapter() {
+		return applicationAdapter;
+	}
+
+	public boolean isHybridLoad() {
+		return hybridLoad;
+	}
+
+	public void setHybridLoad(boolean hybridLoad) {
+		this.hybridLoad = hybridLoad;
 	}
 	
+	public String[] getActiveProfiles() {
+		if(activeProfiles == null) {
+			activeProfiles = ProfilesUtils.getActiveProfilesFromSystem();
+		}
+		return activeProfiles;
+	}
+
+	public void setActiveProfiles(String[] activeProfiles) {
+		this.activeProfiles = activeProfiles;
+	}
+
 	/**
 	 * Returns a new instance of ActivityContext.
 	 *
@@ -98,6 +121,7 @@ abstract class AbstractActivityContextBuilder extends ContextBuilderAssistant {
 		context.setContextBeanRegistry(contextBeanRegistry);
 		context.setTransletRuleRegistry(transletRuleRegistry);
 		context.setTemplateProcessor(templateProcessor);
+		context.setActiveProfiles(getActiveProfiles());
 		context.initialize();
 
 		return context;

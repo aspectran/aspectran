@@ -21,8 +21,9 @@ import java.io.PrintStream;
 import java.io.Writer;
 
 import com.aspectran.console.activity.ConsoleActivity;
-import com.aspectran.core.adapter.CommonResponseAdapter;
+import com.aspectran.core.adapter.GenericResponseAdapter;
 import com.aspectran.core.context.rule.RedirectResponseRule;
+import com.aspectran.core.util.SystemUtils;
 
 /**
  * The Class ConsoleResponseAdapter.
@@ -30,7 +31,7 @@ import com.aspectran.core.context.rule.RedirectResponseRule;
  * @author Juho Jeong
  * @since 2016. 1. 18.
  */
-public class ConsoleResponseAdapter extends CommonResponseAdapter {
+public class ConsoleResponseAdapter extends GenericResponseAdapter {
 
 	private PrintStream printStream;
 	
@@ -42,7 +43,7 @@ public class ConsoleResponseAdapter extends CommonResponseAdapter {
 	public ConsoleResponseAdapter(ConsoleActivity activity) {
 		super(activity);
 		printStream = System.out;
-		setCharacterEncoding(System.getProperty("file.encoding"));
+		setCharacterEncoding(SystemUtils.getProperty("file.encoding"));
 	}
 
 	@Override

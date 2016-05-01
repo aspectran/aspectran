@@ -17,7 +17,8 @@ package com.aspectran.console.adapter;
 
 import java.io.File;
 
-import com.aspectran.core.adapter.CommonApplicationAdapter;
+import com.aspectran.core.adapter.GenericApplicationAdapter;
+import com.aspectran.core.util.SystemUtils;
 
 /**
  * The Class ConsoleApplicationAdapter.
@@ -25,7 +26,9 @@ import com.aspectran.core.adapter.CommonApplicationAdapter;
  * @author Juho Jeong
  * @since 2016. 1. 18.
  */
-public class ConsoleApplicationAdapter extends CommonApplicationAdapter {
+public class ConsoleApplicationAdapter extends GenericApplicationAdapter {
+	
+	private static final String WORKING_DIR_PROPERTY_NAME = "com.aspectran.console.workingDir";
 	
 	/**
 	 * Instantiates a new ConsoleApplicationAdapter.
@@ -33,7 +36,7 @@ public class ConsoleApplicationAdapter extends CommonApplicationAdapter {
 	public ConsoleApplicationAdapter() {
 		super(null);
 		
-		String applicationBasePath = System.getProperty("com.aspectran.console.workingDir");
+		String applicationBasePath = SystemUtils.getProperty(WORKING_DIR_PROPERTY_NAME);
 		if(applicationBasePath == null)
 			applicationBasePath = new File(".").getAbsolutePath();
 		

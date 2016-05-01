@@ -26,7 +26,7 @@ import com.aspectran.core.context.builder.importer.Importer;
  * 
  * <p>Created: 2015. 01. 27 PM 10:36:29</p>
  */
-public class HybridActivityContextBuilder extends AbstractActivityContextBuilder implements ActivityContextBuilder {
+public class HybridActivityContextBuilder extends AbstractActivityContextBuilder {
 	
 	private final String encoding;
 	
@@ -45,7 +45,10 @@ public class HybridActivityContextBuilder extends AbstractActivityContextBuilder
 			if(rootContext == null)
 				throw new IllegalArgumentException("'rootContext' must not be null.");
 
-			ImportHandler importHandler = new HybridImportHandler(this, encoding, isHybridLoading());
+			readyAssist(getApplicationAdapter(), getActiveProfiles());
+			
+			ImportHandler importHandler = new HybridImportHandler(this, encoding, isHybridLoad());
+			importHandler.setActiveProfiles(getActiveProfiles());
 			setImportHandler(importHandler);
 			
 			Importer importer = resolveImporter(rootContext);

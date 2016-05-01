@@ -24,20 +24,24 @@ public interface ActivityContextLoader {
 
 	ApplicationAdapter getApplicationAdapter();
 
-	boolean isHybridLoading();
-
-	void setHybridLoading(boolean hybridLoading);
-
-	String[] getResourceLocations();
-
-	String[] setResourceLocations(String[] resourceLocations) throws InvalidResourceException;
-
 	AspectranClassLoader getAspectranClassLoader();
 
 	AspectranClassLoader newAspectranClassLoader(String[] resourceLocations) throws InvalidResourceException;
 
 	AspectranClassLoader newAspectranClassLoader() throws InvalidResourceException;
 
+	String[] getResourceLocations();
+
+	String[] setResourceLocations(String[] resourceLocations) throws InvalidResourceException;
+
+	boolean isHybridLoad();
+
+	void setHybridLoad(boolean hybridLoad);
+
+	String[] getActiveProfiles();
+
+	void setActiveProfiles(String... activeProfiles);
+	
 	ActivityContext load(String rootContext) throws ActivityContextBuilderException, InvalidResourceException;
 	
 	ActivityContext reload(boolean hardReload) throws ActivityContextBuilderException, InvalidResourceException;

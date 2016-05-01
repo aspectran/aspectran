@@ -319,7 +319,7 @@ public class AspectranClassLoader extends ClassLoader {
 	
 	public URL[] extractResources() {
 		Enumeration<URL> res = ResourceManager.getResources(getAspectranClassLoaders(root));
-		List<URL> resources = new LinkedList<URL>();
+		List<URL> resources = new LinkedList<>();
 		
 		URL url;
 		

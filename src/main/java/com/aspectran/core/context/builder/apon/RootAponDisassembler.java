@@ -150,10 +150,11 @@ public class RootAponDisassembler {
 		String resource = importParameters.getString(ImportParameters.resource);
 		String url = importParameters.getString(ImportParameters.url);
 		String fileType = importParameters.getString(ImportParameters.fileType);
+		String profile = importParameters.getString(ImportParameters.profile);
 
 		ImportHandler importHandler = assistant.getImportHandler();
 		if(importHandler != null) {
-			Importer importer = assistant.newImporter(file, resource, url, fileType);
+			Importer importer = assistant.newImporter(file, resource, url, fileType, profile);
 			if(importer == null) {
 				throw new IllegalArgumentException("The 'import' element requires either a 'file' or a 'resource' or a 'url' attribute.");
 			}
@@ -549,10 +550,10 @@ public class RootAponDisassembler {
 				ItemRuleMap propertyItemRuleMap = disassembleItemRuleMap(propertyItemHolderParameters);
 				beanActionRule.setPropertyItemRuleMap(propertyItemRuleMap);
 			}
-			actionRuleApplicable.applyActionRule(beanActionRule);
 			if(beanIdOrClass != null) {
 				assistant.resolveBeanClass(beanIdOrClass, beanActionRule);
 			}
+			actionRuleApplicable.applyActionRule(beanActionRule);
 		} else if(echoItemHolderParameters != null) {
 			EchoActionRule echoActionRule = EchoActionRule.newInstance(id, hidden);
 			ItemRuleMap attributeItemRuleMap = disassembleItemRuleMap(echoItemHolderParameters);

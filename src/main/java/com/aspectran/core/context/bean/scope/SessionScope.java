@@ -23,7 +23,7 @@ import com.aspectran.core.context.rule.type.ScopeType;
  * @author Juho Jeong
  * @since 2011. 3. 12.
  */
-public class SessionScope extends AbstractScope implements Scope {
+public class SessionScope extends AbstractScope {
 
 	public SessionScope() {
 		super(ScopeType.SESSION);

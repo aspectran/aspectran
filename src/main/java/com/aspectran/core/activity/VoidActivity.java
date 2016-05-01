@@ -30,7 +30,7 @@ import com.aspectran.core.context.rule.ExceptionHandlingRule;
  * 
  * <p>Created: 2008. 04. 28 AM 12:48:48</p>
  */
-public final class VoidActivity extends CoreActivity {
+public final class VoidActivity extends GenericActivity {
 	
 	/**
 	 * Instantiates a new void activity.

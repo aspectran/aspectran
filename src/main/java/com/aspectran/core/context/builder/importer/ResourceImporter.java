@@ -71,6 +71,7 @@ public class ResourceImporter extends AbstractImporter {
 		ToStringBuilder tsb = new ToStringBuilder();
 		tsb.append("importerType", getImporterType());
 		tsb.append("resource", resource);
+		tsb.append("profile", getProfiles());
 		return tsb.toString();
 	}
 
