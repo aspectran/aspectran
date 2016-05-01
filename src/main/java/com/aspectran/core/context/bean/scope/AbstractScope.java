@@ -39,7 +39,7 @@ public class AbstractScope implements Scope {
 
 	private StampedLock scopeLock = new StampedLock();
 
-	protected final Map<BeanRule, Object> scopedBeanMap = new HashMap<BeanRule, Object>();
+	protected final Map<BeanRule, Object> scopedBeanMap = new HashMap<>();
 	
 	private final ScopeType scopeType;
 	

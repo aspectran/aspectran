@@ -21,7 +21,7 @@ import com.aspectran.console.adapter.ConsoleRequestAdapter;
 import com.aspectran.console.adapter.ConsoleResponseAdapter;
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.AdapterException;
-import com.aspectran.core.activity.CoreActivity;
+import com.aspectran.core.activity.GenericActivity;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
@@ -40,7 +40,7 @@ import com.aspectran.core.context.rule.type.TokenType;
  * @author Juho Jeong
  * @since 2016. 1. 18.
  */
-public class ConsoleActivity extends CoreActivity implements Activity {
+public class ConsoleActivity extends GenericActivity {
 
 	/**
 	 * Instantiates a new ConsoleActivity.
@@ -82,7 +82,7 @@ public class ConsoleActivity extends CoreActivity implements Activity {
 		ItemRuleMap attributeItemRuleMap = getRequestRule().getAttributeItemRuleMap();
 
 		if(attributeItemRuleMap != null) {
-			System.out.println("Required attributes:");
+			System.out.println("Required Attributes:");
 
 			for(ItemRule itemRule : attributeItemRuleMap.values()) {
 				Token[] tokens = itemRule.getTokens();
@@ -94,7 +94,7 @@ public class ConsoleActivity extends CoreActivity implements Activity {
 				System.out.println();
 			}
 
-			System.out.println("Input parameters:");
+			System.out.println("Input Parameters:");
 
 			for(ItemRule itemRule : attributeItemRuleMap.values()) {
 				Token[] tokens = itemRule.getTokens();

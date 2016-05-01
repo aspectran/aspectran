@@ -18,7 +18,7 @@ package com.aspectran.scheduler.activity;
 import java.util.Map;
 
 import com.aspectran.core.activity.Activity;
-import com.aspectran.core.activity.CoreActivity;
+import com.aspectran.core.activity.GenericActivity;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.context.ActivityContext;
@@ -31,7 +31,7 @@ import com.aspectran.core.context.rule.RequestRule;
  * 
  * <p>Created: 2013. 11. 18 PM 3:40:48</p>
  */
-public class JobActivity extends CoreActivity implements Activity {
+public class JobActivity extends GenericActivity {
 
 	public JobActivity(ActivityContext context, RequestAdapter requestAdapter, ResponseAdapter responseAdapter) {
 		super(context);

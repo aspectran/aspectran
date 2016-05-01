@@ -216,6 +216,8 @@
   file CDATA #IMPLIED
   resource CDATA #IMPLIED
   url CDATA #IMPLIED
+  fileType (xml | apon) #IMPLIED
+  profile CDATA #IMPLIED
 >
 
 <!ELEMENT attribute (#PCDATA | item)*>

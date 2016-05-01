@@ -103,6 +103,8 @@ public class FileImporter extends AbstractImporter {
 		tsb.append("importerType", getImporterType());
 		tsb.append("basePath", basePath);
 		tsb.append("filePath", filePath);
+		tsb.append("fileType", getImportFileType());
+		tsb.append("profile", getProfiles());
 		return tsb.toString();
 	}
 	

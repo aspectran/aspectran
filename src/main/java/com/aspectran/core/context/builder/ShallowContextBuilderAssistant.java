@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.builder.importer.ShallowImportHandler;
 import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.rule.AspectRule;
@@ -47,6 +48,10 @@ public class ShallowContextBuilderAssistant extends ContextBuilderAssistant {
 		setImportHandler(new ShallowImportHandler());
 	}
 
+	public void readyAssist(ApplicationAdapter applicationAdapter) {
+		// shallow
+	}
+	
 	@Override
 	public String resolveAliasType(String alias) {
 		return alias;
@@ -131,6 +136,5 @@ public class ShallowContextBuilderAssistant extends ContextBuilderAssistant {
 	public void putBeanReference(Class<?> beanClass, BeanReferenceInspectable someRule) {
 		// shallow
 	}
-
 
 }

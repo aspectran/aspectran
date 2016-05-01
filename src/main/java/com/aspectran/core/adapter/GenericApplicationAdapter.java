@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.core.activity.request;
+package com.aspectran.core.adapter;
 
 import java.util.Collections;
 import java.util.Enumeration;
@@ -21,47 +21,49 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * The Class AbstractCommonRequest.
+ * The Class GenericApplicationAdapter.
  * 
- * @since 2016. 2. 13.
+ * @since 2016. 3. 26.
  */
-public class CommonRequest extends AbstractRequest {
+public class GenericApplicationAdapter extends AbstractApplicationAdapter {
 
-	private String characterEncoding;
+	private Map<String, Object> attributes = new HashMap<String, Object>();
 
-	private Map<String, Object> attributeMap = new HashMap<String, Object>();
-
-	public CommonRequest() {
-		super();
-	}
-
-	public CommonRequest(Map<String, String[]> parameterMap) {
-		super(parameterMap);
-	}
-
-	public String getCharacterEncoding() {
-		return characterEncoding;
-	}
-
-	public void setCharacterEncoding(String characterEncoding) {
-		this.characterEncoding = characterEncoding;
-	}
-
-	@SuppressWarnings("unchecked")
-	public <T> T getAttribute(String name) {
-		return (T)attributeMap.get(name);
-	}
-
-	public void setAttribute(String name, Object o) {
-		attributeMap.put(name, o);
-	}
-
-	public Enumeration<String> getAttributeNames() {
-		return Collections.enumeration(attributeMap.keySet());
-	}
-
-	public void removeAttribute(String name) {
-		attributeMap.remove(name);
+	/**
+	 * Instantiates a new GenericApplicationAdapter.
+	 */
+	public GenericApplicationAdapter() {
+		super(null);
 	}
 	
+	/**
+	 * Instantiates a new GenericApplicationAdapter.
+	 *
+	 * @param adaptee the adaptee
+	 */
+	public GenericApplicationAdapter(Object adaptee) {
+		super(adaptee);
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public <T> T getAttribute(String name) {
+		return (T)attributes.get(name);
+	}
+
+	@Override
+	public void setAttribute(String name, Object o) {
+		attributes.put(name, o);
+	}
+
+	@Override
+	public Enumeration<String> getAttributeNames() {
+		return Collections.enumeration(attributes.keySet());
+	}
+
+	@Override
+	public void removeAttribute(String name) {
+		attributes.remove(name);
+	}
+
 }

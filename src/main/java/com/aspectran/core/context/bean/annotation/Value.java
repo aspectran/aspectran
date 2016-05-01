@@ -13,20 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.core.context.builder.importer;
+package com.aspectran.core.context.bean.annotation;
 
-import java.util.List;
+import java.lang.annotation.*;
 
-public interface ImportHandler {
-	
-	String[] getActiveProfiles();
+@Target({ElementType.FIELD})
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+public @interface Value {
 
-	void setActiveProfiles(String[] activeProfiles);
+	String value() default "";
 
-	void pending(Importer importer);
-	
-	void handle(Importer importer) throws Exception;
-	
-	List<Importer> getPendingList();
-	
 }

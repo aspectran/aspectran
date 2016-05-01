@@ -25,6 +25,7 @@ import com.aspectran.core.context.loader.config.AspectranContextAutoReloadConfig
 import com.aspectran.core.context.loader.config.AspectranContextConfig;
 import com.aspectran.core.context.loader.config.AspectranSchedulerConfig;
 import com.aspectran.core.context.loader.reload.ActivityContextReloadingTimer;
+import com.aspectran.core.util.ProfilesUtils;
 import com.aspectran.core.util.apon.Parameters;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
@@ -122,11 +123,13 @@ abstract class AbstractAspectranService implements AspectranService {
 			this.aspectranSchedulerConfig = aspectranConfig.getParameters(AspectranConfig.scheduler);
 			
 			String encoding = aspectranContextConfig.getString(AspectranContextConfig.encoding);
-			boolean hybridLoading = aspectranContextConfig.getBoolean(AspectranContextConfig.hybridLoad, false);
+			boolean hybridLoad = aspectranContextConfig.getBoolean(AspectranContextConfig.hybridLoad, false);
 			String[] resourceLocations = aspectranContextConfig.getStringArray(AspectranContextConfig.resources);
+			String[] activeProfiles = ProfilesUtils.validateProfiles(aspectranContextConfig.getStringArray(AspectranContextConfig.activeProfiles));
 
 			activityContextLoader = new HybridActivityContextLoader(applicationAdapter, encoding);
-			activityContextLoader.setHybridLoading(hybridLoading);
+			activityContextLoader.setHybridLoad(hybridLoad);
+			activityContextLoader.setActiveProfiles(activeProfiles);
 			resourceLocations = activityContextLoader.setResourceLocations(resourceLocations);
 
 			if(autoReloadingStartup && (resourceLocations == null || resourceLocations.length == 0))
@@ -146,7 +149,7 @@ abstract class AbstractAspectranService implements AspectranService {
 	
 	synchronized ActivityContext loadActivityContext() throws AspectranServiceException {
 		if(activityContextLoader == null)
-			throw new UnsupportedOperationException("ActivityContextLoader is not initialized. Call initialize() method first");
+			throw new UnsupportedOperationException("ActivityContextLoader is not initialized. Call initialize() method first.");
 
 		if(activityContext != null)
 			throw new AspectranServiceException("Already loaded the AspectranContext. Destroy the old AspectranContext before loading.");
@@ -191,7 +194,7 @@ abstract class AbstractAspectranService implements AspectranService {
 
 	synchronized ActivityContext reloadActivityContext() throws AspectranServiceException {
 		if(activityContextLoader == null)
-			throw new UnsupportedOperationException("ActivityContextLoader is not initialized. Call initialize() method first");
+			throw new UnsupportedOperationException("ActivityContextLoader is not initialized. Call initialize() method first.");
 
 		try {
 			activityContext = activityContextLoader.reload(hardReload);

@@ -18,6 +18,7 @@ package com.aspectran.core.context.builder.importer;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.aspectran.core.util.ProfilesUtils;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
@@ -28,15 +29,27 @@ abstract class AbstractImportHandler implements ImportHandler {
 	
 	protected final Log log = LogFactory.getLog(getClass());
 	
+	private String[] activeProfiles;
+	
 	private List<Importer> pendingList;
 	
 	AbstractImportHandler() {
 	}
 
 	@Override
+	public String[] getActiveProfiles() {
+		return activeProfiles;
+	}
+
+	@Override
+	public void setActiveProfiles(String[] activeProfiles) {
+		this.activeProfiles = activeProfiles;
+	}
+
+	@Override
 	public void pending(Importer importer) {
 		if(pendingList == null)
-			pendingList = new ArrayList<Importer>();
+			pendingList = new ArrayList<>();
 		
 		pendingList.add(importer);
 		
@@ -50,10 +63,12 @@ abstract class AbstractImportHandler implements ImportHandler {
 			pendingList = null;
 			
 			for(Importer importer : pendedList) {
-				if(log.isDebugEnabled())
-					log.debug("Import " + importer);
-				
-				handle(importer);
+				if(ProfilesUtils.acceptsProfiles(getActiveProfiles(), importer.getProfiles())) {
+					if(log.isDebugEnabled()) {
+						log.debug("Import " + importer);
+					}
+					handle(importer);
+				}
 			}
 		}
 	}

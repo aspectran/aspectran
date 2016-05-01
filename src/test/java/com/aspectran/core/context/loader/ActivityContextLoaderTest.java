@@ -25,7 +25,7 @@ import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
 import com.aspectran.core.adapter.ApplicationAdapter;
-import com.aspectran.core.adapter.CommonApplicationAdapter;
+import com.aspectran.core.adapter.GenericApplicationAdapter;
 import com.aspectran.core.context.builder.ActivityContextBuilderException;
 import com.aspectran.core.context.loader.resource.InvalidResourceException;
 
@@ -39,7 +39,7 @@ public class ActivityContextLoaderTest {
 
 	@Before
 	public void ready() {
-		applicationAdapter = new CommonApplicationAdapter(null);
+		applicationAdapter = new GenericApplicationAdapter();
 	}
 
 	@Test
@@ -48,7 +48,8 @@ public class ActivityContextLoaderTest {
 			System.out.println("================ HybridActivityContextLoading ===============");
 
 			ActivityContextLoader activityContextLoader = new HybridActivityContextLoader(applicationAdapter, "utf-8");
-			activityContextLoader.setHybridLoading(true);
+			activityContextLoader.setHybridLoad(true);
+			activityContextLoader.setActiveProfiles("dev", "local");
 
 			ClassLoader classLoader = activityContextLoader.newAspectranClassLoader();
 

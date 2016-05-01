@@ -25,7 +25,8 @@ package com.aspectran.core.context.rule.type;
 public enum AutowireTargetType {
 
 	FIELD("field"),
-	METHOD("method");
+	METHOD("method"),
+	VALUE("value");
 
 	private final String alias;
 

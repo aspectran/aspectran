@@ -39,7 +39,7 @@ public class XmlImportHandler extends AbstractImportHandler {
 		
 		aspectranNodeParser.parse(importer.getInputStream());
 		
-		handle();
+		super.handle();
 		
 		// First default setting is held after configuration loading is completed.
 		if(assistantLocal.getReplicatedCount() > 0) {

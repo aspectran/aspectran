@@ -24,7 +24,7 @@ package com.aspectran.core.context.bean.ablility;
  */
 public interface FactoryBean<T> {
 
-	public static final String FACTORY_METHOD_NAME = "getObject";
+	String FACTORY_METHOD_NAME = "getObject";
 	
 	/**
 	 * Return an instance (possibly shared or independent) of the object managed by this factory.

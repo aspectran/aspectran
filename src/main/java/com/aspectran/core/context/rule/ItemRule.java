@@ -201,7 +201,7 @@ public class ItemRule {
 		if(tokensList == null)
 			return null;
 		
-		List<String> list = new ArrayList<String>();
+		List<String> list = new ArrayList<>();
 		
 		if(tokensList.isEmpty())
 			return list;
@@ -226,7 +226,7 @@ public class ItemRule {
 		if(tokensMap == null)
 			return null;
 		
-		Map<String, String> map = new LinkedHashMap<String, String>();
+		Map<String, String> map = new LinkedHashMap<>();
 		
 		if(tokensMap.size() == 0)
 			return map;
@@ -559,11 +559,13 @@ public class ItemRule {
 	 */
 	public static void beginValueCollection(ItemRule itemRule) {
 		if(itemRule.isListableType()) {
-			List<Token[]> tokensList = new ArrayList<Token[]>();
+			List<Token[]> tokensList = new ArrayList<>();
 			itemRule.setValue(tokensList);
-		} else if(itemRule.isMappableType()) {
-			Map<String, Token[]> tokensMap = new LinkedHashMap<String, Token[]>();
-			itemRule.setValue(tokensMap);
+		} else {
+			if (itemRule.isMappableType()) {
+				Map<String, Token[]> tokensMap = new LinkedHashMap<>();
+				itemRule.setValue(tokensMap);
+			}
 		}
 	}
 	

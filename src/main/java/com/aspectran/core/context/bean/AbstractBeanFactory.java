@@ -43,6 +43,9 @@ import com.aspectran.core.context.bean.proxy.JavassistDynamicBeanProxy;
 import com.aspectran.core.context.bean.proxy.JdkDynamicBeanProxy;
 import com.aspectran.core.context.expr.ItemTokenEvaluator;
 import com.aspectran.core.context.expr.ItemTokenExpression;
+import com.aspectran.core.context.expr.TokenEvaluator;
+import com.aspectran.core.context.expr.TokenExpression;
+import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.rule.AutowireRule;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
@@ -253,18 +256,30 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 		if(autowireTargetList != null) {
 			for(AutowireRule autowireRule : autowireTargetList) {
 				if(autowireRule.getTargetType() == AutowireTargetType.FIELD) {
-					Object value = activity.getBean(autowireRule.getTypes()[0], autowireRule.getQualifiers()[0]);
 					Field field = autowireRule.getTarget();
+
+					Object value = activity.getBean(autowireRule.getTypes()[0], autowireRule.getQualifiers()[0]);
+
 					ReflectionUtils.setField(field, bean, value);
 				} else if(autowireRule.getTargetType() == AutowireTargetType.METHOD) {
+					Method method = autowireRule.getTarget();
+
 					Class<?>[] types = autowireRule.getTypes();
 					String[] qualifiers = autowireRule.getQualifiers();
 					Object[] values = new Object[types.length];
 					for(int i = 0; i < types.length; i++) {
 						values[i] = activity.getBean(types[i], qualifiers[i]);
 					}
-					Method method = autowireRule.getTarget();
+
 					ReflectionUtils.invokeMethod(method, bean, values);
+				} else if(autowireRule.getTargetType() == AutowireTargetType.VALUE) {
+					Field field = autowireRule.getTarget();
+
+					Token token = autowireRule.getToken();
+					TokenEvaluator evaluator = new TokenExpression(activity);
+					Object value = evaluator.evaluate(token);
+
+					ReflectionUtils.setField(field, bean, value);
 				}
 			}
 		}

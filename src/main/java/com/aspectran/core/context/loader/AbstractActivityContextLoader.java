@@ -33,11 +33,13 @@ abstract class AbstractActivityContextLoader implements ActivityContextLoader {
 
 	private final ApplicationAdapter applicationAdapter;
 
+	private AspectranClassLoader aspectranClassLoader;
+
 	private String[] resourceLocations;
 
-	private boolean hybridLoading;
-
-	private AspectranClassLoader aspectranClassLoader;
+	private boolean hybridLoad;
+	
+	private String[] activeProfiles;
 
 	AbstractActivityContextLoader(ApplicationAdapter applicationAdapter) {
 		this.applicationAdapter = applicationAdapter;
@@ -46,27 +48,6 @@ abstract class AbstractActivityContextLoader implements ActivityContextLoader {
 	@Override
 	public ApplicationAdapter getApplicationAdapter() {
 		return applicationAdapter;
-	}
-
-	@Override
-	public boolean isHybridLoading() {
-		return hybridLoading;
-	}
-
-	@Override
-	public void setHybridLoading(boolean hybridLoading) {
-		this.hybridLoading = hybridLoading;
-	}
-
-	@Override
-	public String[] getResourceLocations() {
-		return resourceLocations;
-	}
-
-	@Override
-	public String[] setResourceLocations(String[] resourceLocations) throws InvalidResourceException {
-		this.resourceLocations = checkResourceLocations(resourceLocations);
-		return this.resourceLocations;
 	}
 
 	@Override
@@ -102,6 +83,17 @@ abstract class AbstractActivityContextLoader implements ActivityContextLoader {
 		return acl;
 	}
 
+	@Override
+	public String[] getResourceLocations() {
+		return resourceLocations;
+	}
+
+	@Override
+	public String[] setResourceLocations(String[] resourceLocations) throws InvalidResourceException {
+		this.resourceLocations = checkResourceLocations(resourceLocations);
+		return this.resourceLocations;
+	}
+
 	private String[] checkResourceLocations(String[] resourceLocations) throws InvalidResourceException {
 		if(resourceLocations == null)
 			return null;
@@ -111,14 +103,14 @@ abstract class AbstractActivityContextLoader implements ActivityContextLoader {
 				String path = resourceLocations[i].substring(ResourceUtils.CLASSPATH_URL_PREFIX.length());
 				URL url = AspectranClassLoader.getDefaultClassLoader().getResource(path);
 				if(url == null)
-					throw new InvalidResourceException("Class path resource [" + resourceLocations[i] + "] cannot be resolved to URL because it does not exist");
+					throw new InvalidResourceException("Class path resource [" + resourceLocations[i] + "] cannot be resolved to URL because it does not exist.");
 				resourceLocations[i] = url.getFile();
 			} else if(resourceLocations[i].startsWith(ResourceUtils.FILE_URL_PREFIX)) {
 				try {
 					URL url = new URL(resourceLocations[i]);
 					resourceLocations[i] = url.getFile();
 				} catch (MalformedURLException e) {
-					throw new InvalidResourceException("Resource location [" + resourceLocations[i] + "] is neither a URL not a well-formed file path");
+					throw new InvalidResourceException("Resource location [" + resourceLocations[i] + "] is neither a URL not a well-formed file path.");
 				}
 			} else {
 				if(applicationAdapter.getApplicationBasePath() != null) {
@@ -136,22 +128,6 @@ abstract class AbstractActivityContextLoader implements ActivityContextLoader {
 		String resourceLocation = null;
 
 		try {
-//			if(rootResourceLocation != null) {
-//				resourceLocation = rootResourceLocation;
-//
-//				File f1 = new File(rootResourceLocation);
-//				String l1 = f1.getCanonicalPath();
-//
-//				for(int i = 0; i < resourceLocations.length - 1; i++) {
-//					File f2 = new File(resourceLocations[i]);
-//					String l2 = f2.getCanonicalPath();
-//
-//					if(l1.equals(l2)) {
-//						resourceLocations[i] = null;
-//					}
-//				}
-//			}
-
 			for(int i = 0; i < resourceLocations.length - 1; i++) {
 				if(resourceLocations[i] != null) {
 					resourceLocation = resourceLocations[i];
@@ -176,6 +152,26 @@ abstract class AbstractActivityContextLoader implements ActivityContextLoader {
 		}
 
 		return resourceLocations;
+	}
+
+	@Override
+	public boolean isHybridLoad() {
+		return hybridLoad;
+	}
+
+	@Override
+	public void setHybridLoad(boolean hybridLoad) {
+		this.hybridLoad = hybridLoad;
+	}
+
+	@Override
+	public String[] getActiveProfiles() {
+		return activeProfiles;
+	}
+
+	@Override
+	public void setActiveProfiles(String... activeProfiles) {
+		this.activeProfiles = activeProfiles;
 	}
 
 }

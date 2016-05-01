@@ -51,6 +51,7 @@ public class AponActivityContextLoader extends AbstractActivityContextLoader {
 		long startTime = System.currentTimeMillis();
 
 		ActivityContextBuilder builder = new AponActivityContextBuilder(getApplicationAdapter(), encoding);
+		builder.setActiveProfiles(getActiveProfiles());
 		ActivityContext activityContext = builder.build(rootContext);
 		
 		long elapsedTime = System.currentTimeMillis() - startTime;

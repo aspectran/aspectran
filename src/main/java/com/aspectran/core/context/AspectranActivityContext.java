@@ -27,12 +27,13 @@ import com.aspectran.core.context.message.MessageSource;
 import com.aspectran.core.context.message.NoSuchMessageException;
 import com.aspectran.core.context.template.TemplateProcessor;
 import com.aspectran.core.context.translet.TransletRuleRegistry;
+import com.aspectran.core.util.ProfilesUtils;
 import com.aspectran.core.util.ToStringBuilder;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
 /**
- * The Class ActivityContext.
+ * The Class AspectranActivityContext.
  * 
  * <p>Created: 2008. 06. 09 PM 2:12:40</p>
  */
@@ -40,7 +41,7 @@ public class AspectranActivityContext implements ActivityContext {
 
 	private final Log log = LogFactory.getLog(AspectranActivityContext.class);
 
-	private final ThreadLocal<Activity> currentActivityHolder = new ThreadLocal<Activity>();
+	private final ThreadLocal<Activity> currentActivityHolder = new ThreadLocal<>();
 
 	private final ApplicationAdapter applicationAdapter;
 
@@ -53,6 +54,8 @@ public class AspectranActivityContext implements ActivityContext {
 	private TemplateProcessor templateProcessor;
 
 	private MessageSource messageSource;
+	
+	private String[] activeProfiles;
 
 	/**
 	 * Instantiates a new AspectranActivityContext.
@@ -167,6 +170,20 @@ public class AspectranActivityContext implements ActivityContext {
 		currentActivityHolder.remove();
 	}
 
+	@Override
+	public String[] getActiveProfiles() {
+		return activeProfiles;
+	}
+
+	public void setActiveProfiles(String[] activeProfiles) {
+		this.activeProfiles = activeProfiles;
+	}
+
+	@Override
+	public boolean isProfileActive(String... profiles) {
+		return ProfilesUtils.acceptsProfiles(activeProfiles, profiles);
+	}
+	
 	public void initialize() {
 		if(contextBeanRegistry != null)
 			contextBeanRegistry.initialize(this);

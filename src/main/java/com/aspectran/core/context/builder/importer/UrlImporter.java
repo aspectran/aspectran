@@ -67,6 +67,7 @@ public class UrlImporter extends AbstractImporter {
 		ToStringBuilder tsb = new ToStringBuilder();
 		tsb.append("importerType", getImporterType());
 		tsb.append("url", urlString);
+		tsb.append("profile", getProfiles());
 		return tsb.toString();
 	}
 	

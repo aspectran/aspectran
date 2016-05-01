@@ -27,7 +27,7 @@ import com.aspectran.core.context.rule.type.ImportFileType;
  * 
  * <p>Created: 2008. 06. 14 PM 8:53:29</p>
  */
-public class XmlActivityContextBuilder extends AbstractActivityContextBuilder implements ActivityContextBuilder {
+public class XmlActivityContextBuilder extends AbstractActivityContextBuilder {
 	
 	public XmlActivityContextBuilder(ApplicationAdapter applicationAdapter) {
 		super(applicationAdapter);
@@ -38,8 +38,11 @@ public class XmlActivityContextBuilder extends AbstractActivityContextBuilder im
 		try {
 			if(rootContext == null)
 				throw new IllegalArgumentException("'rootContext' must not be null.");
-			
+
+			readyAssist(getApplicationAdapter(), getActiveProfiles());
+
 			ImportHandler importHandler = new XmlImportHandler(this);
+			importHandler.setActiveProfiles(getActiveProfiles());
 			setImportHandler(importHandler);
 			
 			Importer importer = resolveImporter(rootContext, ImportFileType.XML);

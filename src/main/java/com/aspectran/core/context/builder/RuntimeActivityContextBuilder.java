@@ -23,7 +23,7 @@ import com.aspectran.core.context.ActivityContext;
  * 
  * <p>Created: 2008. 06. 14 PM 8:53:29</p>
  */
-public class RuntimeActivityContextBuilder extends AbstractActivityContextBuilder implements ActivityContextBuilder {
+public class RuntimeActivityContextBuilder extends AbstractActivityContextBuilder {
 	
 	public RuntimeActivityContextBuilder(ApplicationAdapter applicationAdapter) {
 		super(applicationAdapter);

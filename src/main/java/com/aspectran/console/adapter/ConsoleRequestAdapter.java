@@ -16,7 +16,8 @@
 package com.aspectran.console.adapter;
 
 import com.aspectran.console.activity.ConsoleActivity;
-import com.aspectran.core.adapter.CommonRequestAdapter;
+import com.aspectran.core.adapter.GenericRequestAdapter;
+import com.aspectran.core.util.SystemUtils;
 
 /**
  * The Class ConsoleRequestAdapter.
@@ -24,7 +25,7 @@ import com.aspectran.core.adapter.CommonRequestAdapter;
  * @author Juho Jeong
  * @since 2016. 1. 18.
  */
-public class ConsoleRequestAdapter extends CommonRequestAdapter {
+public class ConsoleRequestAdapter extends GenericRequestAdapter {
 
 	/**
 	 * Instantiates a new ConsoleRequestAdapter.
@@ -33,7 +34,7 @@ public class ConsoleRequestAdapter extends CommonRequestAdapter {
 	 */
 	public ConsoleRequestAdapter(ConsoleActivity activity) {
 		super(activity);
-		setCharacterEncoding(System.getProperty("file.encoding"));
+		setCharacterEncoding(SystemUtils.getProperty("file.encoding"));
 	}
 
 }

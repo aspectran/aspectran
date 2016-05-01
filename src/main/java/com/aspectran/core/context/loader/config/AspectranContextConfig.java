@@ -27,6 +27,7 @@ public class AspectranContextConfig extends AbstractParameters implements Parame
 	public static final ParameterDefine resources;
 	public static final ParameterDefine hybridLoad;
 	public static final ParameterDefine autoReload;
+	public static final ParameterDefine activeProfiles;
 	
 	private final static ParameterDefine[] parameterDefines;
 	
@@ -36,13 +37,15 @@ public class AspectranContextConfig extends AbstractParameters implements Parame
 		resources = new ParameterDefine("resources", ParameterValueType.STRING, true);
 		hybridLoad = new ParameterDefine("hybridLoad", ParameterValueType.BOOLEAN);
 		autoReload = new ParameterDefine("autoReload", AspectranContextAutoReloadConfig.class);
+		activeProfiles = new ParameterDefine("activeProfiles", ParameterValueType.STRING, true);
 		
 		parameterDefines = new ParameterDefine[] {
 				root,
 				encoding,
 				resources,
 				hybridLoad,
-				autoReload
+				autoReload,
+				activeProfiles
 		};
 	}
 	

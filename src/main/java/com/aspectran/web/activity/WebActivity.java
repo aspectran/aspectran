@@ -22,7 +22,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.AdapterException;
-import com.aspectran.core.activity.CoreActivity;
+import com.aspectran.core.activity.GenericActivity;
 import com.aspectran.core.activity.request.RequestMethodNotAllowedException;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
@@ -49,7 +49,7 @@ import com.aspectran.web.adapter.HttpSessionAdapter;
  *
  * @since 2008. 04. 28
  */
-public class WebActivity extends CoreActivity implements Activity {
+public class WebActivity extends GenericActivity {
 
 	private static final String MULTIPART_FORM_DATA_PARSER_SETTING_NAME = "multipartFormDataParser";
 
