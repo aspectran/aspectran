@@ -19,25 +19,28 @@ import com.aspectran.core.util.apon.AbstractParameters;
 import com.aspectran.core.util.apon.ParameterDefine;
 import com.aspectran.core.util.apon.ParameterValueType;
 
-public class AspectranWebConfig extends AbstractParameters {
+public class AspectranContextProfilesConfig extends AbstractParameters {
 
-	public static final ParameterDefine uriDecoding;
-
+	public static final ParameterDefine activeProfiles;
+	public static final ParameterDefine defaultProfiles;
+	
 	private final static ParameterDefine[] parameterDefines;
-
+	
 	static {
-		uriDecoding = new ParameterDefine("uriDecoding", ParameterValueType.STRING);
-
+		activeProfiles = new ParameterDefine("activeProfiles", ParameterValueType.STRING, true);
+		defaultProfiles = new ParameterDefine("defaultProfiles", ParameterValueType.STRING, true);
+		
 		parameterDefines = new ParameterDefine[] {
-				uriDecoding
+				activeProfiles,
+				defaultProfiles
 		};
 	}
-
-	public AspectranWebConfig() {
+	
+	public AspectranContextProfilesConfig() {
 		super(parameterDefines);
 	}
-
-	public AspectranWebConfig(String text) {
+	
+	public AspectranContextProfilesConfig(String text) {
 		super(parameterDefines, text);
 	}
 	

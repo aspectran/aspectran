@@ -21,6 +21,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import com.aspectran.core.adapter.ApplicationAdapter;
+import com.aspectran.core.context.builder.env.Environment;
 import com.aspectran.core.context.loader.resource.InvalidResourceException;
 import com.aspectran.core.util.ResourceUtils;
 import com.aspectran.core.util.StringUtils;
@@ -39,8 +40,8 @@ abstract class AbstractActivityContextLoader implements ActivityContextLoader {
 
 	private boolean hybridLoad;
 	
-	private String[] activeProfiles;
-
+	private Environment environment;
+	
 	AbstractActivityContextLoader(ApplicationAdapter applicationAdapter) {
 		this.applicationAdapter = applicationAdapter;
 	}
@@ -163,15 +164,15 @@ abstract class AbstractActivityContextLoader implements ActivityContextLoader {
 	public void setHybridLoad(boolean hybridLoad) {
 		this.hybridLoad = hybridLoad;
 	}
-
+	
 	@Override
-	public String[] getActiveProfiles() {
-		return activeProfiles;
+	public Environment getEnvironment() {
+		return environment;
 	}
 
 	@Override
-	public void setActiveProfiles(String... activeProfiles) {
-		this.activeProfiles = activeProfiles;
+	public void setEnvironment(Environment environment) {
+		this.environment = environment;
 	}
 
 }

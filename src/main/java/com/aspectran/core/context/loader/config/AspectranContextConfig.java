@@ -18,16 +18,15 @@ package com.aspectran.core.context.loader.config;
 import com.aspectran.core.util.apon.AbstractParameters;
 import com.aspectran.core.util.apon.ParameterDefine;
 import com.aspectran.core.util.apon.ParameterValueType;
-import com.aspectran.core.util.apon.Parameters;
 
-public class AspectranContextConfig extends AbstractParameters implements Parameters {
+public class AspectranContextConfig extends AbstractParameters {
 
 	public static final ParameterDefine root;
 	public static final ParameterDefine encoding;
 	public static final ParameterDefine resources;
 	public static final ParameterDefine hybridLoad;
 	public static final ParameterDefine autoReload;
-	public static final ParameterDefine activeProfiles;
+	public static final ParameterDefine profiles;
 	
 	private final static ParameterDefine[] parameterDefines;
 	
@@ -37,7 +36,7 @@ public class AspectranContextConfig extends AbstractParameters implements Parame
 		resources = new ParameterDefine("resources", ParameterValueType.STRING, true);
 		hybridLoad = new ParameterDefine("hybridLoad", ParameterValueType.BOOLEAN);
 		autoReload = new ParameterDefine("autoReload", AspectranContextAutoReloadConfig.class);
-		activeProfiles = new ParameterDefine("activeProfiles", ParameterValueType.STRING, true);
+		profiles = new ParameterDefine("profiles", AspectranContextProfilesConfig.class);
 		
 		parameterDefines = new ParameterDefine[] {
 				root,
@@ -45,7 +44,7 @@ public class AspectranContextConfig extends AbstractParameters implements Parame
 				resources,
 				hybridLoad,
 				autoReload,
-				activeProfiles
+				profiles
 		};
 	}
 	

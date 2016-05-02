@@ -18,6 +18,7 @@ package com.aspectran.core.context.loader;
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.builder.ActivityContextBuilderException;
+import com.aspectran.core.context.builder.env.Environment;
 import com.aspectran.core.context.loader.resource.InvalidResourceException;
 
 public interface ActivityContextLoader {
@@ -38,9 +39,9 @@ public interface ActivityContextLoader {
 
 	void setHybridLoad(boolean hybridLoad);
 
-	String[] getActiveProfiles();
+	Environment getEnvironment();
 
-	void setActiveProfiles(String... activeProfiles);
+	void setEnvironment(Environment environment);
 	
 	ActivityContext load(String rootContext) throws ActivityContextBuilderException, InvalidResourceException;
 	

@@ -17,12 +17,15 @@ package com.aspectran.core.service;
 
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.ActivityContext;
+import com.aspectran.core.context.builder.env.BuildEnvironment;
+import com.aspectran.core.context.builder.env.Environment;
 import com.aspectran.core.context.loader.ActivityContextLoader;
 import com.aspectran.core.context.loader.AspectranClassLoader;
 import com.aspectran.core.context.loader.HybridActivityContextLoader;
 import com.aspectran.core.context.loader.config.AspectranConfig;
 import com.aspectran.core.context.loader.config.AspectranContextAutoReloadConfig;
 import com.aspectran.core.context.loader.config.AspectranContextConfig;
+import com.aspectran.core.context.loader.config.AspectranContextProfilesConfig;
 import com.aspectran.core.context.loader.config.AspectranSchedulerConfig;
 import com.aspectran.core.context.loader.reload.ActivityContextReloadingTimer;
 import com.aspectran.core.util.ProfilesUtils;
@@ -81,7 +84,7 @@ abstract class AbstractAspectranService implements AspectranService {
 	@Override
 	public AspectranClassLoader getAspectranClassLoader() {
 		if(activityContextLoader == null)
-			throw new UnsupportedOperationException("ActivityContextLoader is not initialized. Call initialize() method first");
+			throw new UnsupportedOperationException("ActivityContextLoader is not initialized. Call initialize() method first.");
 
 		return activityContextLoader.getAspectranClassLoader();
 	}
@@ -125,11 +128,18 @@ abstract class AbstractAspectranService implements AspectranService {
 			String encoding = aspectranContextConfig.getString(AspectranContextConfig.encoding);
 			boolean hybridLoad = aspectranContextConfig.getBoolean(AspectranContextConfig.hybridLoad, false);
 			String[] resourceLocations = aspectranContextConfig.getStringArray(AspectranContextConfig.resources);
-			String[] activeProfiles = ProfilesUtils.validateProfiles(aspectranContextConfig.getStringArray(AspectranContextConfig.activeProfiles));
+			String[] activeProfiles = aspectranContextConfig.getStringArray(AspectranContextProfilesConfig.activeProfiles);
+			String[] defaultProfiles = aspectranContextConfig.getStringArray(AspectranContextProfilesConfig.defaultProfiles);
 
+			BuildEnvironment environment = new BuildEnvironment();
+			if(activeProfiles != null)
+				environment.setActiveProfiles(activeProfiles);
+			if(defaultProfiles != null)
+				environment.setDefaultProfiles(defaultProfiles);
+			
 			activityContextLoader = new HybridActivityContextLoader(applicationAdapter, encoding);
 			activityContextLoader.setHybridLoad(hybridLoad);
-			activityContextLoader.setActiveProfiles(activeProfiles);
+			activityContextLoader.setEnvironment(environment);
 			resourceLocations = activityContextLoader.setResourceLocations(resourceLocations);
 
 			if(autoReloadingStartup && (resourceLocations == null || resourceLocations.length == 0))

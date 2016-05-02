@@ -18,9 +18,8 @@ package com.aspectran.core.context.loader.config;
 import com.aspectran.core.util.apon.AbstractParameters;
 import com.aspectran.core.util.apon.ParameterDefine;
 import com.aspectran.core.util.apon.ParameterValueType;
-import com.aspectran.core.util.apon.Parameters;
 
-public class AspectranContextAutoReloadConfig extends AbstractParameters implements Parameters {
+public class AspectranContextAutoReloadConfig extends AbstractParameters {
 
 	public static final ParameterDefine reloadMethod;
 	public static final ParameterDefine observationInterval;
