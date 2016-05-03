@@ -28,6 +28,11 @@ public class HybridActivityContextLoader extends AbstractActivityContextLoader {
 
 	private String rootContext;
 
+	public HybridActivityContextLoader() {
+		super();
+		this.encoding = ActivityContext.DEFAULT_ENCODING;
+	}
+	
 	public HybridActivityContextLoader(ApplicationAdapter applicationAdapter) {
 		this(applicationAdapter, null);
 	}

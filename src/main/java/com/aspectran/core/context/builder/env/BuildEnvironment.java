@@ -3,11 +3,15 @@ package com.aspectran.core.context.builder.env;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import com.aspectran.core.adapter.ApplicationAdapter;
+import com.aspectran.core.adapter.RegulatedApplicationAdapter;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.SystemUtils;
 
 public class BuildEnvironment implements Environment {
 
+	private ApplicationAdapter applicationAdapter;
+	
 	private static final String ACTIVE_PROFILES_PROPERTY_NAME = "aspectran.profiles.active";
 	
 	private static final String DEFAULT_PROFILES_PROPERTY_NAME = "aspectran.profiles.default";
@@ -15,6 +19,20 @@ public class BuildEnvironment implements Environment {
 	private final Set<String> activeProfiles = new LinkedHashSet<>();
 
 	private final Set<String> defaultProfiles = new LinkedHashSet<>();
+
+	public BuildEnvironment(ApplicationAdapter applicationAdapter) {
+		this.applicationAdapter = new RegulatedApplicationAdapter(applicationAdapter);
+	}
+	
+	@Override
+	public ApplicationAdapter getApplicationAdapter() {
+		return applicationAdapter;
+	}
+
+	@Override
+	public void setApplicationAdapter(ApplicationAdapter applicationAdapter) {
+		this.applicationAdapter = applicationAdapter;
+	}
 
 	@Override
 	public String[] getActiveProfiles() {

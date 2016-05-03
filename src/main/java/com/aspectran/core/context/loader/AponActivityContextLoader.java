@@ -28,6 +28,11 @@ public class AponActivityContextLoader extends AbstractActivityContextLoader {
 
 	private String rootContext;
 
+	public AponActivityContextLoader() {
+		super();
+		this.encoding = ActivityContext.DEFAULT_ENCODING;
+	}
+	
 	public AponActivityContextLoader(ApplicationAdapter applicationAdapter) {
 		this(applicationAdapter, null);
 	}

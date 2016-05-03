@@ -39,7 +39,7 @@ public class XmlActivityContextBuilder extends AbstractActivityContextBuilder {
 			if(rootContext == null)
 				throw new IllegalArgumentException("'rootContext' must not be null.");
 
-			readyAssist(getApplicationAdapter(), getActiveProfiles());
+			readyAssist(getBuildEnvironment());
 
 			ImportHandler importHandler = new XmlImportHandler(this);
 			importHandler.setActiveProfiles(getActiveProfiles());
@@ -48,7 +48,7 @@ public class XmlActivityContextBuilder extends AbstractActivityContextBuilder {
 			Importer importer = resolveImporter(rootContext, ImportFileType.XML);
 			importHandler.handle(importer);
 
-			return makeActivityContext(getApplicationAdapter());
+			return makeActivityContext();
 		} catch(Exception e) {
 			throw new ActivityContextBuilderException("Failed to build a XML Activity Context: " + rootContext, e);
 		}

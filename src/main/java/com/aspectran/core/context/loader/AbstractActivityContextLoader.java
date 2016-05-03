@@ -21,6 +21,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import com.aspectran.core.adapter.ApplicationAdapter;
+import com.aspectran.core.adapter.GenericApplicationAdapter;
 import com.aspectran.core.context.builder.env.Environment;
 import com.aspectran.core.context.loader.resource.InvalidResourceException;
 import com.aspectran.core.util.ResourceUtils;
@@ -39,9 +40,13 @@ abstract class AbstractActivityContextLoader implements ActivityContextLoader {
 	private String[] resourceLocations;
 
 	private boolean hybridLoad;
-	
+
 	private Environment environment;
-	
+
+	AbstractActivityContextLoader() {
+		this.applicationAdapter = new GenericApplicationAdapter();
+	}
+
 	AbstractActivityContextLoader(ApplicationAdapter applicationAdapter) {
 		this.applicationAdapter = applicationAdapter;
 	}

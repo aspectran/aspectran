@@ -18,6 +18,7 @@ package com.aspectran.core.context.builder;
 import java.util.List;
 
 import com.aspectran.core.adapter.ApplicationAdapter;
+import com.aspectran.core.adapter.RegulatedApplicationAdapter;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.AspectranActivityContext;
 import com.aspectran.core.context.aspect.AspectAdviceRulePostRegister;
@@ -29,6 +30,7 @@ import com.aspectran.core.context.aspect.pointcut.Pointcut;
 import com.aspectran.core.context.aspect.pointcut.PointcutFactory;
 import com.aspectran.core.context.bean.BeanRuleRegistry;
 import com.aspectran.core.context.bean.ContextBeanRegistry;
+import com.aspectran.core.context.builder.env.BuildEnvironment;
 import com.aspectran.core.context.builder.importer.FileImporter;
 import com.aspectran.core.context.builder.importer.Importer;
 import com.aspectran.core.context.builder.importer.ResourceImporter;
@@ -44,7 +46,9 @@ import com.aspectran.core.context.template.ContextTemplateProcessor;
 import com.aspectran.core.context.template.TemplateProcessor;
 import com.aspectran.core.context.template.TemplateRuleRegistry;
 import com.aspectran.core.context.translet.TransletRuleRegistry;
-import com.aspectran.core.util.*;
+import com.aspectran.core.util.BeanDescriptor;
+import com.aspectran.core.util.MethodUtils;
+import com.aspectran.core.util.ResourceUtils;
 
 /**
  * The Class AbstractActivityContextBuilder.
@@ -52,48 +56,46 @@ import com.aspectran.core.util.*;
  * <p>Created: 2008. 06. 14 PM 8:53:29</p>
  */
 abstract class AbstractActivityContextBuilder extends ContextBuilderAssistant implements ActivityContextBuilder {
-	
-	private ApplicationAdapter applicationAdapter;
+
+	private final BuildEnvironment environment;
 	
 	private boolean hybridLoad;
 	
-	private String[] activeProfiles;
-	
 	AbstractActivityContextBuilder(ApplicationAdapter applicationAdapter) {
-		this.applicationAdapter = applicationAdapter;
+		environment = new BuildEnvironment(applicationAdapter);
+		environment.setApplicationAdapter(new RegulatedApplicationAdapter(applicationAdapter));
 	}
 
-	public ApplicationAdapter getApplicationAdapter() {
-		return applicationAdapter;
+	public BuildEnvironment getBuildEnvironment() {
+		return environment;
+	}
+
+	@Override
+	public void setActiveProfiles(String[] activeProfiles) {
+		environment.setActiveProfiles(activeProfiles);
+	}
+	
+	@Override
+	public void setDefaultProfiles(String[] defaultProfiles) {
+		environment.setDefaultProfiles(defaultProfiles);
 	}
 
 	public boolean isHybridLoad() {
 		return hybridLoad;
 	}
 
+	@Override
 	public void setHybridLoad(boolean hybridLoad) {
 		this.hybridLoad = hybridLoad;
 	}
 	
-	public String[] getActiveProfiles() {
-		if(activeProfiles == null) {
-			activeProfiles = ProfilesUtils.getActiveProfilesFromSystem();
-		}
-		return activeProfiles;
-	}
-
-	public void setActiveProfiles(String[] activeProfiles) {
-		this.activeProfiles = activeProfiles;
-	}
-
 	/**
 	 * Returns a new instance of ActivityContext.
 	 *
-	 * @param applicationAdapter the application adapter
 	 * @return the activity context
 	 * @throws BeanReferenceException will be thrown when cannot resolve reference to bean
 	 */
-	ActivityContext makeActivityContext(ApplicationAdapter applicationAdapter) throws BeanReferenceException {
+	ActivityContext makeActivityContext() throws BeanReferenceException {
 		AspectRuleRegistry aspectRuleRegistry = getAspectRuleRegistry();
 
 		BeanRuleRegistry beanRuleRegistry = getBeanRuleRegistry();
@@ -116,12 +118,11 @@ abstract class AbstractActivityContextBuilder extends ContextBuilderAssistant im
 		BeanDescriptor.clearCache();
 		MethodUtils.clearCache();
 
-		AspectranActivityContext context = new AspectranActivityContext(applicationAdapter);
+		AspectranActivityContext context = new AspectranActivityContext(environment);
 		context.setAspectRuleRegistry(aspectRuleRegistry);
 		context.setContextBeanRegistry(contextBeanRegistry);
 		context.setTransletRuleRegistry(transletRuleRegistry);
 		context.setTemplateProcessor(templateProcessor);
-		context.setActiveProfiles(getActiveProfiles());
 		context.initialize();
 
 		return context;

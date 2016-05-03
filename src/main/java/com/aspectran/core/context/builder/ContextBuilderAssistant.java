@@ -26,6 +26,7 @@ import com.aspectran.core.activity.Translet;
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.aspect.AspectRuleRegistry;
 import com.aspectran.core.context.bean.BeanRuleRegistry;
+import com.aspectran.core.context.builder.env.BuildEnvironment;
 import com.aspectran.core.context.builder.importer.FileImporter;
 import com.aspectran.core.context.builder.importer.ImportHandler;
 import com.aspectran.core.context.builder.importer.Importer;
@@ -42,7 +43,11 @@ import com.aspectran.core.context.rule.type.DefaultSettingType;
 import com.aspectran.core.context.rule.type.ImportFileType;
 import com.aspectran.core.context.template.TemplateRuleRegistry;
 import com.aspectran.core.context.translet.TransletRuleRegistry;
-import com.aspectran.core.util.*;
+import com.aspectran.core.util.ArrayStack;
+import com.aspectran.core.util.BeanDescriptor;
+import com.aspectran.core.util.MethodUtils;
+import com.aspectran.core.util.ProfilesUtils;
+import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
@@ -84,12 +89,12 @@ public class ContextBuilderAssistant {
 	public ContextBuilderAssistant() {
 	}
 	
-	public void readyAssist(ApplicationAdapter applicationAdapter, String[] activeProfiles) {
+	public void readyAssist(BuildEnvironment environment) {
 		if(activeProfiles != null && activeProfiles.length > 0) {
 			log.info("Activating profiles [" + ProfilesUtils.join(activeProfiles) + "]");
 		}
 		
-		this.applicationAdapter = applicationAdapter;
+		this.applicationAdapter = environment.getApplicationAdapter();
 		this.applicationBasePath = applicationAdapter.getApplicationBasePath();
 		this.classLoader = applicationAdapter.getClassLoader();
 		

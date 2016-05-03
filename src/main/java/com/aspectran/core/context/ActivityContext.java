@@ -19,6 +19,7 @@ import com.aspectran.core.activity.Activity;
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.aspect.AspectRuleRegistry;
 import com.aspectran.core.context.bean.ContextBeanRegistry;
+import com.aspectran.core.context.builder.env.Environment;
 import com.aspectran.core.context.message.MessageSource;
 import com.aspectran.core.context.template.TemplateProcessor;
 import com.aspectran.core.context.translet.TransletRuleRegistry;
@@ -43,6 +44,13 @@ public interface ActivityContext extends MessageSource {
 	String DEFAULT_ENCODING = "UTF-8";
 
 	String MESSAGE_SOURCE_BEAN_ID = "messageSource";
+
+	/**
+	 * Gets the environment.
+	 *
+	 * @return the environment
+	 */
+	Environment getEnvironment();
 
 	/**
 	 * Gets class loader.
@@ -111,22 +119,6 @@ public interface ActivityContext extends MessageSource {
 	 * Removes the current activity.
 	 */
 	void removeCurrentActivity();
-	
-	/**
-	 * Gets the active profiles.
-	 *
-	 * @return the active profiles
-	 */
-	String[] getActiveProfiles();
-	
-	/**
-	 * Return whether the given profile is active.
-	 * If active profiles are empty whether the profile should be active by default.
-	 *
-	 * @param profiles the profiles
-	 * @return true if profile is active, otherwise false
-	 */
-	boolean isProfileActive(String... profiles);
 	
 	/**
 	 * Destroy the aspectran context. 

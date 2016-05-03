@@ -26,6 +26,10 @@ public class XmlActivityContextLoader extends AbstractActivityContextLoader {
 
 	private String rootContext;
 
+	public XmlActivityContextLoader() {
+		super();
+	}
+
 	public XmlActivityContextLoader(ApplicationAdapter applicationAdapter) {
 		super(applicationAdapter);
 	}
