@@ -12,7 +12,7 @@
 
 <!ELEMENT aspectran (
   description?,
-  (settings? | typeAliases* | aspect* | bean* | template* | translet* | import*)*
+  (settings? | envrironment* | typeAliases* | aspect* | bean* | template* | translet* | import*)*
 )>
 
 <!ELEMENT description (#PCDATA)>
@@ -22,6 +22,11 @@
 <!ATTLIST setting
   name CDATA #REQUIRED
   value CDATA #IMPLIED
+>
+
+<!ELEMENT envrironment (#PCDATA | property)*>
+<!ATTLIST envrironment
+  profile CDATA #IMPLIED
 >
 
 <!ELEMENT typeAliases (typeAlias*)>

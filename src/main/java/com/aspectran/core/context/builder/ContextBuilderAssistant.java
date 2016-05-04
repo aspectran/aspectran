@@ -26,7 +26,7 @@ import com.aspectran.core.activity.Translet;
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.aspect.AspectRuleRegistry;
 import com.aspectran.core.context.bean.BeanRuleRegistry;
-import com.aspectran.core.context.builder.env.BuildEnvironment;
+import com.aspectran.core.context.builder.env.Environment;
 import com.aspectran.core.context.builder.importer.FileImporter;
 import com.aspectran.core.context.builder.importer.ImportHandler;
 import com.aspectran.core.context.builder.importer.Importer;
@@ -89,19 +89,14 @@ public class ContextBuilderAssistant {
 	public ContextBuilderAssistant() {
 	}
 	
-	public void readyAssist(BuildEnvironment environment) {
-		if(activeProfiles != null && activeProfiles.length > 0) {
-			log.info("Activating profiles [" + ProfilesUtils.join(activeProfiles) + "]");
-		}
-		
+	public void readyAssist(Environment environment) {
 		this.applicationAdapter = environment.getApplicationAdapter();
 		this.applicationBasePath = applicationAdapter.getApplicationBasePath();
 		this.classLoader = applicationAdapter.getClassLoader();
 		
 		aspectRuleRegistry = new AspectRuleRegistry();
 		
-		beanRuleRegistry = new BeanRuleRegistry(classLoader);
-		beanRuleRegistry.setActiveProfiles(activeProfiles);
+		beanRuleRegistry = new BeanRuleRegistry(environment);
 		
 		transletRuleRegistry = new TransletRuleRegistry(applicationAdapter);
 		transletRuleRegistry.setAssistantLocal(assistantLocal);

@@ -28,7 +28,7 @@ import com.aspectran.core.context.bean.ablility.InitializableTransletBean;
 import com.aspectran.core.context.bean.annotation.Configuration;
 import com.aspectran.core.context.bean.scan.BeanClassScanFailedException;
 import com.aspectran.core.context.bean.scan.BeanClassScanner;
-import com.aspectran.core.context.loader.AspectranClassLoader;
+import com.aspectran.core.context.loader.resource.AspectranClassLoader;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.translet.TransletRuleRegistry;

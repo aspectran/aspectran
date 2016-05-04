@@ -17,12 +17,14 @@ package com.aspectran.core.context.builder.importer;
 
 import java.util.List;
 
+import com.aspectran.core.context.builder.env.Environment;
+
 public interface ImportHandler {
+
+	Environment getEnvironment();
+
+	void setEnvironment(Environment environment);
 	
-	String[] getActiveProfiles();
-
-	void setActiveProfiles(String[] activeProfiles);
-
 	void pending(Importer importer);
 	
 	void handle(Importer importer) throws Exception;

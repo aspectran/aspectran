@@ -32,7 +32,7 @@ public class RuntimeActivityContextBuilder extends AbstractActivityContextBuilde
 	@Override
 	public ActivityContext build(String contextConfigLocation) throws ActivityContextBuilderException {
 		try {
-			readyAssist(getBuildEnvironment());
+			readyAssist(getEnvironment());
 			
 			return makeActivityContext();
 		} catch(Exception e) {

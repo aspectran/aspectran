@@ -31,6 +31,7 @@ import com.aspectran.core.context.aspect.pointcut.PointcutFactory;
 import com.aspectran.core.context.bean.BeanRuleRegistry;
 import com.aspectran.core.context.bean.ContextBeanRegistry;
 import com.aspectran.core.context.builder.env.BuildEnvironment;
+import com.aspectran.core.context.builder.env.Environment;
 import com.aspectran.core.context.builder.importer.FileImporter;
 import com.aspectran.core.context.builder.importer.Importer;
 import com.aspectran.core.context.builder.importer.ResourceImporter;
@@ -62,21 +63,24 @@ abstract class AbstractActivityContextBuilder extends ContextBuilderAssistant im
 	private boolean hybridLoad;
 	
 	AbstractActivityContextBuilder(ApplicationAdapter applicationAdapter) {
-		environment = new BuildEnvironment(applicationAdapter);
-		environment.setApplicationAdapter(new RegulatedApplicationAdapter(applicationAdapter));
+		environment = new BuildEnvironment(new RegulatedApplicationAdapter(applicationAdapter));
 	}
 
-	public BuildEnvironment getBuildEnvironment() {
+	public Environment getEnvironment() {
 		return environment;
 	}
 
 	@Override
-	public void setActiveProfiles(String[] activeProfiles) {
+	public void setActiveProfiles(String... activeProfiles) {
+		log.info("Activating profiles [" + Environment.joinProfiles(activeProfiles) + "]");
+		
 		environment.setActiveProfiles(activeProfiles);
 	}
 	
 	@Override
-	public void setDefaultProfiles(String[] defaultProfiles) {
+	public void setDefaultProfiles(String... defaultProfiles) {
+		log.info("Default profiles [" + Environment.joinProfiles(defaultProfiles) + "]");
+
 		environment.setDefaultProfiles(defaultProfiles);
 	}
 

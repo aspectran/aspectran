@@ -29,7 +29,7 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 import com.aspectran.core.context.bean.scan.BeanClassScanFailedException;
-import com.aspectran.core.context.loader.AspectranClassLoader;
+import com.aspectran.core.context.loader.resource.AspectranClassLoader;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 import com.aspectran.core.util.wildcard.WildcardMatcher;

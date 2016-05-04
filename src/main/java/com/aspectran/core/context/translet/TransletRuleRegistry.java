@@ -50,9 +50,9 @@ public class TransletRuleRegistry {
 
 	private final ApplicationAdapter applicationAdapter;
 	
-	private final Map<String, TransletRule> transletRuleMap = new LinkedHashMap<String, TransletRule>();
+	private final Map<String, TransletRule> transletRuleMap = new LinkedHashMap<>();
 	
-	private final Set<TransletRule> restfulTransletRuleSet = new HashSet<TransletRule>();
+	private final Set<TransletRule> restfulTransletRuleSet = new HashSet<>();
 	
 	private AssistantLocal assistantLocal;
 	

@@ -15,7 +15,7 @@
  */
 package com.aspectran.core.context.loader;
 
-import com.aspectran.core.adapter.ApplicationAdapter;
+import com.aspectran.core.adapter.GenericApplicationAdapter;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.builder.ActivityContextBuilder;
 import com.aspectran.core.context.builder.ActivityContextBuilderException;
@@ -29,22 +29,20 @@ public class HybridActivityContextLoader extends AbstractActivityContextLoader {
 	private String rootContext;
 
 	public HybridActivityContextLoader() {
-		super();
 		this.encoding = ActivityContext.DEFAULT_ENCODING;
 	}
 	
-	public HybridActivityContextLoader(ApplicationAdapter applicationAdapter) {
-		this(applicationAdapter, null);
-	}
-	
-	public HybridActivityContextLoader(ApplicationAdapter applicationAdapter, String encoding) {
-		super(applicationAdapter);
+	public HybridActivityContextLoader(String encoding) {
 		this.encoding = (encoding == null) ? ActivityContext.DEFAULT_ENCODING : encoding;
 	}
 
 	@Override
 	public ActivityContext load(String rootContext) throws ActivityContextBuilderException, InvalidResourceException {
 		this.rootContext = rootContext;
+
+		if(getApplicationAdapter() == null) {
+			setApplicationAdapter(new GenericApplicationAdapter());
+		}
 
 		if(getAspectranClassLoader() == null) {
 			newAspectranClassLoader();
@@ -55,8 +53,10 @@ public class HybridActivityContextLoader extends AbstractActivityContextLoader {
 		long startTime = System.currentTimeMillis();
 
 		ActivityContextBuilder builder = new HybridActivityContextBuilder(getApplicationAdapter(), encoding);
-		builder.setHybridLoad(isHybridLoad());
 		builder.setActiveProfiles(getActiveProfiles());
+		builder.setDefaultProfiles(getDefaultProfiles());
+		builder.setHybridLoad(isHybridLoad());
+		
 		ActivityContext activityContext = builder.build(rootContext);
 		
 		long elapsedTime = System.currentTimeMillis() - startTime;

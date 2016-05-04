@@ -15,6 +15,7 @@
  */
 package com.aspectran.core.context.builder.importer;
 
+import com.aspectran.core.context.builder.AponActivityContextBuilder;
 import com.aspectran.core.context.builder.AssistantLocal;
 import com.aspectran.core.context.builder.ContextBuilderAssistant;
 import com.aspectran.core.context.builder.apon.RootAponDisassembler;
@@ -33,11 +34,11 @@ public class AponImportHandler extends AbstractImportHandler {
 	
 	private RootAponDisassembler rootAponDisassembler;
 	
-	public AponImportHandler(ContextBuilderAssistant assistant, String encoding) {
-		this.assistant = assistant;
+	public AponImportHandler(AponActivityContextBuilder builder, String encoding) {
+		this.assistant = builder;
 		this.encoding = encoding;
-		
 		this.rootAponDisassembler = new RootAponDisassembler(assistant);
+		setEnvironment(builder.getEnvironment());
 	}
 
 	@Override

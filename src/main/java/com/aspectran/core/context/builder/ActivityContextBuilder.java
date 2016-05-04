@@ -24,9 +24,9 @@ import com.aspectran.core.context.ActivityContext;
  */
 public interface ActivityContextBuilder {
 	
-	void setActiveProfiles(String[] activeProfiles);
+	void setActiveProfiles(String... activeProfiles);
 	
-	void setDefaultProfiles(String[] defaultProfiles);
+	void setDefaultProfiles(String... defaultProfiles);
 	
 	void setHybridLoad(boolean hybridLoad);
 	

@@ -17,10 +17,7 @@ package com.aspectran.core.service;
 
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.context.builder.env.BuildEnvironment;
-import com.aspectran.core.context.builder.env.Environment;
 import com.aspectran.core.context.loader.ActivityContextLoader;
-import com.aspectran.core.context.loader.AspectranClassLoader;
 import com.aspectran.core.context.loader.HybridActivityContextLoader;
 import com.aspectran.core.context.loader.config.AspectranConfig;
 import com.aspectran.core.context.loader.config.AspectranContextAutoReloadConfig;
@@ -28,7 +25,7 @@ import com.aspectran.core.context.loader.config.AspectranContextConfig;
 import com.aspectran.core.context.loader.config.AspectranContextProfilesConfig;
 import com.aspectran.core.context.loader.config.AspectranSchedulerConfig;
 import com.aspectran.core.context.loader.reload.ActivityContextReloadingTimer;
-import com.aspectran.core.util.ProfilesUtils;
+import com.aspectran.core.context.loader.resource.AspectranClassLoader;
 import com.aspectran.core.util.apon.Parameters;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
@@ -130,17 +127,15 @@ abstract class AbstractAspectranService implements AspectranService {
 			String[] resourceLocations = aspectranContextConfig.getStringArray(AspectranContextConfig.resources);
 			String[] activeProfiles = aspectranContextConfig.getStringArray(AspectranContextProfilesConfig.activeProfiles);
 			String[] defaultProfiles = aspectranContextConfig.getStringArray(AspectranContextProfilesConfig.defaultProfiles);
-
-			BuildEnvironment environment = new BuildEnvironment();
-			if(activeProfiles != null)
-				environment.setActiveProfiles(activeProfiles);
-			if(defaultProfiles != null)
-				environment.setDefaultProfiles(defaultProfiles);
 			
-			activityContextLoader = new HybridActivityContextLoader(applicationAdapter, encoding);
+			resourceLocations = AspectranClassLoader.checkResourceLocations(resourceLocations, applicationAdapter.getApplicationBasePath());
+
+			activityContextLoader = new HybridActivityContextLoader(encoding);
+			activityContextLoader.setApplicationAdapter(applicationAdapter);
+			activityContextLoader.setResourceLocations(resourceLocations);
+			activityContextLoader.setActiveProfiles(activeProfiles);
+			activityContextLoader.setDefaultProfiles(defaultProfiles);
 			activityContextLoader.setHybridLoad(hybridLoad);
-			activityContextLoader.setEnvironment(environment);
-			resourceLocations = activityContextLoader.setResourceLocations(resourceLocations);
 
 			if(autoReloadingStartup && (resourceLocations == null || resourceLocations.length == 0))
 				autoReloadingStartup = false;

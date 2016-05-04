@@ -6,8 +6,6 @@ public interface Environment {
 
 	ApplicationAdapter getApplicationAdapter();
 
-	void setApplicationAdapter(ApplicationAdapter applicationAdapter);
-	
 	String[] getActiveProfiles();
 
 	String[] getDefaultProfiles();

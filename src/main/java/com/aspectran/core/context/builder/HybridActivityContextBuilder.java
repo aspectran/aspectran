@@ -17,7 +17,6 @@ package com.aspectran.core.context.builder;
 
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.context.builder.env.Environment;
 import com.aspectran.core.context.builder.importer.HybridImportHandler;
 import com.aspectran.core.context.builder.importer.ImportHandler;
 import com.aspectran.core.context.builder.importer.Importer;
@@ -46,16 +45,16 @@ public class HybridActivityContextBuilder extends AbstractActivityContextBuilder
 			if(rootContext == null)
 				throw new IllegalArgumentException("'rootContext' must not be null.");
 
-			readyAssist(getBuildEnvironment());
+			readyAssist(getEnvironment());
 			
 			ImportHandler importHandler = new HybridImportHandler(this, encoding, isHybridLoad());
-			importHandler.setActiveProfiles(environment);
+			importHandler.setEnvironment(getEnvironment());
 			setImportHandler(importHandler);
 			
 			Importer importer = resolveImporter(rootContext);
 			importHandler.handle(importer);
 
-			return makeActivityContext(getApplicationAdapter());
+			return makeActivityContext();
 		} catch(Exception e) {
 			throw new ActivityContextBuilderException("Failed to build a Hybrid Activity Context: " + rootContext, e);
 		}

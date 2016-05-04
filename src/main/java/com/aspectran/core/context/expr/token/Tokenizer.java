@@ -78,6 +78,7 @@ public class Tokenizer {
 				}
 				
 				break;
+			
 			case AT_SYMBOL:
 				stringBuffer.append(c);
 
@@ -111,7 +112,7 @@ public class Tokenizer {
 						}
 
 						// save token name and default value
-						Token token = makeToken(symbol, tokenNameBuffer, defTextBuffer);
+						Token token = createToken(symbol, tokenNameBuffer, defTextBuffer);
 						tokens.add(token);
 
 						status = AT_STRING;
@@ -147,14 +148,14 @@ public class Tokenizer {
 	}
 	
 	/**
-	 * Make a token.
+	 * Create a token.
 	 * 
 	 * @param symbol the symbol
 	 * @param tokenNameBuffer the token name buffer
 	 * @param defTextBuffer the def value buffer
 	 * @return the token
 	 */
-	private static Token makeToken(char symbol, StringBuilder tokenNameBuffer, StringBuilder defTextBuffer) {
+	private static Token createToken(char symbol, StringBuilder tokenNameBuffer, StringBuilder defTextBuffer) {
 		TokenType type;
 		String name = null;
 		String defaultValue = null;

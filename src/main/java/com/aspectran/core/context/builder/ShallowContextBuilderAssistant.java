@@ -36,13 +36,13 @@ import com.aspectran.core.context.rule.ability.BeanReferenceInspectable;
  */
 public class ShallowContextBuilderAssistant extends ContextBuilderAssistant {
 
-	private final List<AspectRule> aspectRules = new ArrayList<AspectRule>();
+	private final List<AspectRule> aspectRules = new ArrayList<>();
 	
-	private final List<BeanRule> beanRules = new ArrayList<BeanRule>();
+	private final List<BeanRule> beanRules = new ArrayList<>();
 
-	private final List<TemplateRule> templateRules = new ArrayList<TemplateRule>();
+	private final List<TemplateRule> templateRules = new ArrayList<>();
 
-	private final List<TransletRule> transletRules = new ArrayList<TransletRule>();
+	private final List<TransletRule> transletRules = new ArrayList<>();
 	
 	public ShallowContextBuilderAssistant() {
 		setImportHandler(new ShallowImportHandler());

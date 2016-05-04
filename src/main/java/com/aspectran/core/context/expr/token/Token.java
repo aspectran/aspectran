@@ -48,6 +48,8 @@ public class Token implements BeanReferenceInspectable {
 
 	public static final char BEAN_SYMBOL = '#';
 	
+	public static final char PROPERTY_SYMBOL = '%';
+	
 	public static final char START_BRACKET = '{';
 
 	public static final char END_BRACKET = '}';
@@ -193,6 +195,17 @@ public class Token implements BeanReferenceInspectable {
 			if(propertyName != null) {
 				sb.append(PROPERTY_SEPARATOR);
 				sb.append(propertyName);
+			}
+			sb.append(END_BRACKET);
+			return sb.toString();
+		} else if(type == TokenType.PROPERTY) {
+			StringBuilder sb = new StringBuilder();
+			sb.append(PROPERTY_SYMBOL);
+			sb.append(START_BRACKET);
+			if(name != null) sb.append(name);
+			if(value != null) {
+				sb.append(VALUE_SEPARATOR);
+				sb.append(value);
 			}
 			sb.append(END_BRACKET);
 			return sb.toString();

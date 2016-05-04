@@ -24,7 +24,6 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 import com.aspectran.core.context.AspectranRuntimeException;
-import com.aspectran.core.context.loader.AspectranClassLoader;
 import com.aspectran.core.util.ResourceUtils;
 
 /**

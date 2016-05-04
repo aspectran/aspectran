@@ -15,7 +15,7 @@
  */
 package com.aspectran.core.context.loader;
 
-import com.aspectran.core.adapter.ApplicationAdapter;
+import com.aspectran.core.adapter.GenericApplicationAdapter;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.builder.ActivityContextBuilder;
 import com.aspectran.core.context.builder.ActivityContextBuilderException;
@@ -29,24 +29,21 @@ public class AponActivityContextLoader extends AbstractActivityContextLoader {
 	private String rootContext;
 
 	public AponActivityContextLoader() {
-		super();
 		this.encoding = ActivityContext.DEFAULT_ENCODING;
 	}
 	
-	public AponActivityContextLoader(ApplicationAdapter applicationAdapter) {
-		this(applicationAdapter, null);
-	}
-
-	public AponActivityContextLoader(ApplicationAdapter applicationAdapter, String encoding) {
-		super(applicationAdapter);
+	public AponActivityContextLoader(String encoding) {
 		this.encoding = (encoding == null) ? ActivityContext.DEFAULT_ENCODING : encoding;
 	}
-
 
 	@Override
 	public ActivityContext load(String rootContext) throws ActivityContextBuilderException, InvalidResourceException {
 		this.rootContext = rootContext;
 
+		if(getApplicationAdapter() == null) {
+			setApplicationAdapter(new GenericApplicationAdapter());
+		}
+		
 		if(getAspectranClassLoader() == null) {
 			newAspectranClassLoader();
 		}
@@ -57,6 +54,8 @@ public class AponActivityContextLoader extends AbstractActivityContextLoader {
 
 		ActivityContextBuilder builder = new AponActivityContextBuilder(getApplicationAdapter(), encoding);
 		builder.setActiveProfiles(getActiveProfiles());
+		builder.setDefaultProfiles(getDefaultProfiles());
+		
 		ActivityContext activityContext = builder.build(rootContext);
 		
 		long elapsedTime = System.currentTimeMillis() - startTime;

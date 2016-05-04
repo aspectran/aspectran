@@ -18,7 +18,7 @@ package com.aspectran.core.context.builder.importer;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.aspectran.core.util.ProfilesUtils;
+import com.aspectran.core.context.builder.env.Environment;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
@@ -29,21 +29,18 @@ abstract class AbstractImportHandler implements ImportHandler {
 	
 	protected final Log log = LogFactory.getLog(getClass());
 	
-	private String[] activeProfiles;
+	private Environment environment;
 	
 	private List<Importer> pendingList;
 	
-	AbstractImportHandler() {
+	@Override
+	public Environment getEnvironment() {
+		return environment;
 	}
 
 	@Override
-	public String[] getActiveProfiles() {
-		return activeProfiles;
-	}
-
-	@Override
-	public void setActiveProfiles(String[] activeProfiles) {
-		this.activeProfiles = activeProfiles;
+	public void setEnvironment(Environment environment) {
+		this.environment = environment;
 	}
 
 	@Override
@@ -62,8 +59,17 @@ abstract class AbstractImportHandler implements ImportHandler {
 			List<Importer> pendedList = pendingList;
 			pendingList = null;
 			
-			for(Importer importer : pendedList) {
-				if(ProfilesUtils.acceptsProfiles(getActiveProfiles(), importer.getProfiles())) {
+			if(environment != null) {
+				for(Importer importer : pendedList) {
+					if(environment.acceptsProfiles(importer.getProfiles())) {
+						if(log.isDebugEnabled()) {
+							log.debug("Import " + importer);
+						}
+						handle(importer);
+					}
+				}
+			} else {
+				for(Importer importer : pendedList) {
 					if(log.isDebugEnabled()) {
 						log.debug("Import " + importer);
 					}

@@ -33,7 +33,7 @@ public class TemplateRuleRegistry {
 
     private final Log log = LogFactory.getLog(TemplateRuleRegistry.class);
 
-    private final Map<String, TemplateRule> templateRuleMap = new LinkedHashMap<String, TemplateRule>();
+    private final Map<String, TemplateRule> templateRuleMap = new LinkedHashMap<>();
 
     private AssistantLocal assistantLocal;
     
@@ -61,7 +61,7 @@ public class TemplateRuleRegistry {
     }
 
     public void addTemplateRule(TemplateRule templateRule) {
-        if(templateRule.getEngine() == null) {
+        if(templateRule.getEngine() == null && assistantLocal != null) {
             DefaultSettings defaultSettings = assistantLocal.getDefaultSettings();
             if(defaultSettings != null && defaultSettings.getDefaultTemplateEngine() != null) {
             	templateRule.setEngine(defaultSettings.getDefaultTemplateEngine());

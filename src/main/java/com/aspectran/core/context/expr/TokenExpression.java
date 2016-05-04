@@ -334,7 +334,7 @@ public class TokenExpression implements TokenEvaluator {
 	}
 
 	/**
-	 * Gets the attribute object from request attributes or action results.
+	 * Returns the value of the named attribute as an Object from the request attributes or action results.
 	 *
 	 * @param token the token
 	 * @return the object
@@ -355,7 +355,7 @@ public class TokenExpression implements TokenEvaluator {
 	}
 
 	/**
-	 * Return the bean instance that matches the given token.
+	 * Returns the bean instance that matches the given token.
 	 *
 	 * @param token the token
 	 * @return an instance of the bean

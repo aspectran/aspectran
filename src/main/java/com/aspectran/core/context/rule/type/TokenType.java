@@ -25,7 +25,8 @@ public enum TokenType {
 	TEXT("text"),
 	PARAMETER("parameter"),
 	ATTRIBUTE("attribute"),
-	BEAN("bean");
+	BEAN("bean"),
+	PROPERTY("property");
 
 	private final String alias;
 

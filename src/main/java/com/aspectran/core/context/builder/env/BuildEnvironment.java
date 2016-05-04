@@ -30,11 +30,6 @@ public class BuildEnvironment implements Environment {
 	}
 
 	@Override
-	public void setApplicationAdapter(ApplicationAdapter applicationAdapter) {
-		this.applicationAdapter = applicationAdapter;
-	}
-
-	@Override
 	public String[] getActiveProfiles() {
 		return activeProfiles.toArray(new String[activeProfiles.size()]);
 	}
