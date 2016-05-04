@@ -48,7 +48,6 @@ public class HybridActivityContextBuilder extends AbstractActivityContextBuilder
 			readyAssist(getEnvironment());
 			
 			ImportHandler importHandler = new HybridImportHandler(this, encoding, isHybridLoad());
-			importHandler.setEnvironment(getEnvironment());
 			setImportHandler(importHandler);
 			
 			Importer importer = resolveImporter(rootContext);

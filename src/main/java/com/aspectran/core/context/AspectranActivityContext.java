@@ -60,11 +60,16 @@ public class AspectranActivityContext implements ActivityContext {
 	/**
 	 * Instantiates a new AspectranActivityContext.
 	 *
-	 * @param applicationAdapter the application adapter
+	 * @param environment the environment
 	 */
 	public AspectranActivityContext(BuildEnvironment environment) {
 		this.environment = environment;
 		this.applicationAdapter = environment.getApplicationAdapter();
+	}
+
+	@Override
+	public Environment getEnvironment() {
+		return environment;
 	}
 
 	@Override
@@ -160,11 +165,6 @@ public class AspectranActivityContext implements ActivityContext {
 	@Override
 	public void removeCurrentActivity() {
 		currentActivityHolder.remove();
-	}
-
-	@Override
-	public Environment getEnvironment() {
-		return environment;
 	}
 
 	public void initialize() {

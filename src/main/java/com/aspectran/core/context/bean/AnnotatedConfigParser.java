@@ -26,7 +26,22 @@ import java.util.Set;
 import java.util.StringTokenizer;
 
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.context.bean.annotation.*;
+import com.aspectran.core.context.bean.annotation.Action;
+import com.aspectran.core.context.bean.annotation.Autowired;
+import com.aspectran.core.context.bean.annotation.Bean;
+import com.aspectran.core.context.bean.annotation.Configuration;
+import com.aspectran.core.context.bean.annotation.Destroy;
+import com.aspectran.core.context.bean.annotation.Dispatch;
+import com.aspectran.core.context.bean.annotation.Forward;
+import com.aspectran.core.context.bean.annotation.Initialize;
+import com.aspectran.core.context.bean.annotation.Profile;
+import com.aspectran.core.context.bean.annotation.Qualifier;
+import com.aspectran.core.context.bean.annotation.Redirect;
+import com.aspectran.core.context.bean.annotation.Request;
+import com.aspectran.core.context.bean.annotation.Required;
+import com.aspectran.core.context.bean.annotation.Transform;
+import com.aspectran.core.context.bean.annotation.Value;
+import com.aspectran.core.context.builder.env.Environment;
 import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.expr.token.TokenParser;
 import com.aspectran.core.context.rule.AutowireRule;
@@ -41,7 +56,6 @@ import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.type.AutowireTargetType;
 import com.aspectran.core.context.rule.type.RequestMethodType;
 import com.aspectran.core.context.rule.type.TransformType;
-import com.aspectran.core.util.ProfilesUtils;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
@@ -59,30 +73,27 @@ public class AnnotatedConfigParser {
 	private final Log log = LogFactory.getLog(AnnotatedConfigParser.class);
 
 	private final BeanRuleRegistry beanRuleRegistry;
-	
+
 	private final AnnotatedConfigRelater relater;
-	
+
+	private final Environment environment;
+
 	private final Map<String, BeanRule> idBasedBeanRuleMap;
 
 	private final Map<Class<?>, Set<BeanRule>> typeBasedBeanRuleMap;
 
 	private final Map<Class<?>, BeanRule> configBeanRuleMap;
 
-	private String[] activeProfiles;
-
 	public AnnotatedConfigParser(BeanRuleRegistry beanRuleRegistry, AnnotatedConfigRelater relater) {
 		this.beanRuleRegistry = beanRuleRegistry;
 		this.relater = relater;
-		
+		this.environment = beanRuleRegistry.getEnvironment();
+
 		this.idBasedBeanRuleMap = beanRuleRegistry.getIdBasedBeanRuleMap();
 		this.typeBasedBeanRuleMap = beanRuleRegistry.getTypeBasedBeanRuleMap();
 		this.configBeanRuleMap = beanRuleRegistry.getConfigBeanRuleMap();
 	}
 	
-	public void setActiveProfiles(String[] activeProfiles) {
-		this.activeProfiles = activeProfiles;
-	}
-
 	public void parse() {
 		if(log.isDebugEnabled())
 			log.debug("Parsed bean rules for configuring: " + configBeanRuleMap.size());
@@ -123,7 +134,7 @@ public class AnnotatedConfigParser {
 		if(configAnno != null) {
 			if(beanClass.isAnnotationPresent(Profile.class)) {
 				Profile profileAnno = beanClass.getAnnotation(Profile.class);
-				if(!ProfilesUtils.acceptsProfiles(activeProfiles, profileAnno.value()))
+				if(!environment.acceptsProfiles(profileAnno.value()))
 					return;
 			}
 
@@ -132,7 +143,7 @@ public class AnnotatedConfigParser {
 			for(Method method : beanClass.getMethods()) {
 				if(method.isAnnotationPresent(Profile.class)) {
 					Profile profileAnno = method.getAnnotation(Profile.class);
-					if(!ProfilesUtils.acceptsProfiles(activeProfiles, profileAnno.value()))
+					if(!environment.acceptsProfiles(profileAnno.value()))
 						continue;
 				}
 				if(method.isAnnotationPresent(Bean.class)) {

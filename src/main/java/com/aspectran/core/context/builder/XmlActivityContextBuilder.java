@@ -42,7 +42,6 @@ public class XmlActivityContextBuilder extends AbstractActivityContextBuilder {
 			readyAssist(getEnvironment());
 
 			ImportHandler importHandler = new XmlImportHandler(this);
-			importHandler.setEnvironment(getEnvironment());
 			setImportHandler(importHandler);
 			
 			Importer importer = resolveImporter(rootContext, ImportFileType.XML);

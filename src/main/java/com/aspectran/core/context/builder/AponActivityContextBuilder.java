@@ -49,7 +49,6 @@ public class AponActivityContextBuilder extends AbstractActivityContextBuilder {
 			readyAssist(getEnvironment());
 
 			ImportHandler importHandler = new AponImportHandler(this, encoding);
-			importHandler.setEnvironment(getEnvironment());
 			setImportHandler(importHandler);
 			
 			Importer importer = resolveImporter(rootContext, ImportFileType.APON);

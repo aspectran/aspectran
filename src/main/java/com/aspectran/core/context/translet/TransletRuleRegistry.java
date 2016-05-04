@@ -23,10 +23,10 @@ import java.util.Map;
 import java.util.Set;
 
 import com.aspectran.core.activity.PathVariableMap;
-import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.builder.AssistantLocal;
 import com.aspectran.core.context.builder.DefaultSettings;
+import com.aspectran.core.context.builder.env.Environment;
 import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.expr.token.Tokenizer;
 import com.aspectran.core.context.rule.RequestRule;
@@ -48,16 +48,19 @@ public class TransletRuleRegistry {
 	
 	private final Log log = LogFactory.getLog(TransletRuleRegistry.class);
 
-	private final ApplicationAdapter applicationAdapter;
-	
 	private final Map<String, TransletRule> transletRuleMap = new LinkedHashMap<>();
 	
 	private final Set<TransletRule> restfulTransletRuleSet = new HashSet<>();
-	
+
+	private final String applicationBasePath;
+
+	private final ClassLoader classLoader;
+
 	private AssistantLocal assistantLocal;
 	
-	public TransletRuleRegistry(ApplicationAdapter applicationAdapter) {
-		this.applicationAdapter = applicationAdapter;
+	public TransletRuleRegistry(Environment environment) {
+		this.applicationBasePath = environment.getApplicationAdapter().getApplicationBasePath();
+		this.classLoader = environment.getApplicationAdapter().getClassLoader();
 	}
 	
 	public AssistantLocal getAssistantLocal() {
@@ -134,7 +137,7 @@ public class TransletRuleRegistry {
 		String scanPath = transletRule.getScanPath();
 
 		if(scanPath != null) {
-			TransletFileScanner scanner = new TransletFileScanner(applicationAdapter.getApplicationBasePath(), applicationAdapter.getClassLoader());
+			TransletFileScanner scanner = new TransletFileScanner(applicationBasePath, classLoader);
 
 			if(transletRule.getFilterParameters() != null) {
 				scanner.setFilterParameters(transletRule.getFilterParameters());

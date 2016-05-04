@@ -32,15 +32,14 @@ abstract class AbstractImportHandler implements ImportHandler {
 	private Environment environment;
 	
 	private List<Importer> pendingList;
-	
-	@Override
-	public Environment getEnvironment() {
-		return environment;
+
+	AbstractImportHandler(Environment environment) {
+		this.environment = environment;
 	}
 
 	@Override
-	public void setEnvironment(Environment environment) {
-		this.environment = environment;
+	public Environment getEnvironment() {
+		return environment;
 	}
 
 	@Override

@@ -24,8 +24,6 @@ import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
-import com.aspectran.core.adapter.ApplicationAdapter;
-import com.aspectran.core.adapter.GenericApplicationAdapter;
 import com.aspectran.core.context.builder.ActivityContextBuilderException;
 import com.aspectran.core.context.loader.resource.InvalidResourceException;
 
@@ -35,11 +33,8 @@ import com.aspectran.core.context.loader.resource.InvalidResourceException;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class ActivityContextLoaderTest {
 
-	private ApplicationAdapter applicationAdapter;
-
 	@Before
 	public void ready() {
-		applicationAdapter = new GenericApplicationAdapter();
 	}
 
 	@Test
@@ -47,7 +42,7 @@ public class ActivityContextLoaderTest {
 		try {
 			System.out.println("================ HybridActivityContextLoading ===============");
 
-			ActivityContextLoader activityContextLoader = new HybridActivityContextLoader(applicationAdapter, "utf-8");
+			ActivityContextLoader activityContextLoader = new HybridActivityContextLoader();
 			activityContextLoader.setHybridLoad(true);
 			activityContextLoader.setActiveProfiles("dev", "local");
 
@@ -74,7 +69,7 @@ public class ActivityContextLoaderTest {
 		try {
 			System.out.println("================ XMLActivityContextLoading ===============");
 
-			ActivityContextLoader activityContextLoader = new XmlActivityContextLoader(applicationAdapter);
+			ActivityContextLoader activityContextLoader = new XmlActivityContextLoader();
 			ClassLoader classLoader = activityContextLoader.newAspectranClassLoader();
 
 			File file = getResource(classLoader, "config/test-config.xml");
@@ -96,7 +91,7 @@ public class ActivityContextLoaderTest {
 		try {
 			System.out.println("================ APONActivityContextLoading ===============");
 
-			ActivityContextLoader activityContextLoader = new AponActivityContextLoader(applicationAdapter, "utf-8");
+			ActivityContextLoader activityContextLoader = new AponActivityContextLoader();
 			ClassLoader classLoader = activityContextLoader.newAspectranClassLoader();
 
 			File file = getResource(classLoader, "config/test-config.xml.apon");

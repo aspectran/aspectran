@@ -495,7 +495,7 @@ public interface Translet extends BeanRegistry, MessageSource {
 	 * @param profiles the profiles
 	 * @return {@code true} if profile is active, otherwise {@code false}
 	 */
-	boolean isProfileActive(String... profiles);
+	boolean acceptsProfiles(String... profiles);
 
 	/**
 	 * Try to resolve the message. Return default message if no message was found.

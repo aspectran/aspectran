@@ -28,7 +28,7 @@ import com.aspectran.core.context.bean.ablility.InitializableTransletBean;
 import com.aspectran.core.context.bean.annotation.Configuration;
 import com.aspectran.core.context.bean.scan.BeanClassScanFailedException;
 import com.aspectran.core.context.bean.scan.BeanClassScanner;
-import com.aspectran.core.context.loader.resource.AspectranClassLoader;
+import com.aspectran.core.context.builder.env.Environment;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.translet.TransletRuleRegistry;
@@ -44,6 +44,8 @@ import com.aspectran.core.util.logging.LogFactory;
 public class BeanRuleRegistry {
 	
 	private final Log log = LogFactory.getLog(BeanRuleRegistry.class);
+
+	private final Environment environment;
 
 	private final ClassLoader classLoader;
 	
@@ -63,23 +65,18 @@ public class BeanRuleRegistry {
 
 	private Set<Class<?>> importantBeanTypeSet = new HashSet<>();
 
-	private String[] activeProfiles;
-
-	public BeanRuleRegistry() {
-		this(AspectranClassLoader.getDefaultClassLoader());
-	}
-	
-	public BeanRuleRegistry(ClassLoader classLoader) {
-		this.classLoader = classLoader;
+	public BeanRuleRegistry(Environment environment) {
+		this.environment = environment;
+		this.classLoader = environment.getApplicationAdapter().getClassLoader();
 
 		ignoreDependencyInterface(DisposableBean.class);
 		ignoreDependencyInterface(FactoryBean.class);
 		ignoreDependencyInterface(InitializableBean.class);
 		ignoreDependencyInterface(InitializableTransletBean.class);
 	}
-	
-	public void setActiveProfiles(String[] activeProfiles) {
-		this.activeProfiles = activeProfiles;
+
+	public Environment getEnvironment() {
+		return environment;
 	}
 
 	public void setTransletRuleRegistry(TransletRuleRegistry transletRuleRegistry) {
@@ -278,7 +275,6 @@ public class BeanRuleRegistry {
 		};
 
 		AnnotatedConfigParser parser = new AnnotatedConfigParser(this, relater);
-		parser.setActiveProfiles(activeProfiles);
 		parser.parse();
 	}
 	

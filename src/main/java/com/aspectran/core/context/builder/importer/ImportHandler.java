@@ -23,8 +23,6 @@ public interface ImportHandler {
 
 	Environment getEnvironment();
 
-	void setEnvironment(Environment environment);
-	
 	void pending(Importer importer);
 	
 	void handle(Importer importer) throws Exception;

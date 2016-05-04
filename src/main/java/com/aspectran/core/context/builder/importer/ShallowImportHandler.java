@@ -24,6 +24,7 @@ package com.aspectran.core.context.builder.importer;
 public class ShallowImportHandler extends AbstractImportHandler {
 	
 	public ShallowImportHandler() {
+		super(null);
 	}
 
 	@Override
