@@ -106,7 +106,7 @@ public class ContextTemplateProcessor implements TemplateProcessor {
             String engineBeanId = templateRule.getEngine();
 
             if(engineBeanId != null) {
-                TemplateEngine engine = context.getContextBeanRegistry().getBean(engineBeanId);
+                TemplateEngine engine = context.getBeanRegistry().getBean(engineBeanId);
 
                 if(engine == null)
                     throw new IllegalArgumentException("No template engine bean registered for '" + engineBeanId + "'.");

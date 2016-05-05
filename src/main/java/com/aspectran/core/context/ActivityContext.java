@@ -18,8 +18,8 @@ package com.aspectran.core.context;
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.aspect.AspectRuleRegistry;
-import com.aspectran.core.context.bean.ContextBeanRegistry;
-import com.aspectran.core.context.builder.env.Environment;
+import com.aspectran.core.context.bean.BeanRegistry;
+import com.aspectran.core.context.env.ContextEnvironment;
 import com.aspectran.core.context.message.MessageSource;
 import com.aspectran.core.context.template.TemplateProcessor;
 import com.aspectran.core.context.translet.TransletRuleRegistry;
@@ -46,11 +46,11 @@ public interface ActivityContext extends MessageSource {
 	String MESSAGE_SOURCE_BEAN_ID = "messageSource";
 
 	/**
-	 * Gets the environment.
+	 * Gets the context environment.
 	 *
-	 * @return the environment
+	 * @return the context environment
 	 */
-	Environment getEnvironment();
+	ContextEnvironment getContextEnvironment();
 
 	/**
 	 * Gets class loader.
@@ -74,11 +74,11 @@ public interface ActivityContext extends MessageSource {
 	AspectRuleRegistry getAspectRuleRegistry();
 
 	/**
-	 * Gets the context bean registry.
+	 * Gets the bean registry.
 	 *
-	 * @return the context bean registry
+	 * @return the bean registry
 	 */
-	ContextBeanRegistry getContextBeanRegistry();
+	BeanRegistry getBeanRegistry();
 
 	/**
 	 * Gets the translet rule registry.

@@ -20,9 +20,9 @@ import java.util.Locale;
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.aspect.AspectRuleRegistry;
+import com.aspectran.core.context.bean.BeanRegistry;
 import com.aspectran.core.context.bean.ContextBeanRegistry;
-import com.aspectran.core.context.builder.env.BuildEnvironment;
-import com.aspectran.core.context.builder.env.Environment;
+import com.aspectran.core.context.env.ContextEnvironment;
 import com.aspectran.core.context.message.DelegatingMessageSource;
 import com.aspectran.core.context.message.MessageSource;
 import com.aspectran.core.context.message.NoSuchMessageException;
@@ -43,7 +43,7 @@ public class AspectranActivityContext implements ActivityContext {
 
 	private final ThreadLocal<Activity> currentActivityHolder = new ThreadLocal<>();
 
-	private final Environment environment;
+	private final ContextEnvironment contextEnvironment;
 	
 	private final ApplicationAdapter applicationAdapter;
 	
@@ -60,16 +60,16 @@ public class AspectranActivityContext implements ActivityContext {
 	/**
 	 * Instantiates a new AspectranActivityContext.
 	 *
-	 * @param environment the environment
+	 * @param applicationAdapter the application adapter
 	 */
-	public AspectranActivityContext(BuildEnvironment environment) {
-		this.environment = environment;
-		this.applicationAdapter = environment.getApplicationAdapter();
+	public AspectranActivityContext(ApplicationAdapter applicationAdapter) {
+		this.applicationAdapter = applicationAdapter;
+		this.contextEnvironment = new ContextEnvironment(this);
 	}
 
 	@Override
-	public Environment getEnvironment() {
-		return environment;
+	public ContextEnvironment getContextEnvironment() {
+		return contextEnvironment;
 	}
 
 	@Override
@@ -92,7 +92,7 @@ public class AspectranActivityContext implements ActivityContext {
 	}
 
 	@Override
-	public ContextBeanRegistry getContextBeanRegistry() {
+	public BeanRegistry getBeanRegistry() {
 		return contextBeanRegistry;
 	}
 
@@ -222,8 +222,8 @@ public class AspectranActivityContext implements ActivityContext {
 	@Override
 	public String toString() {
 		ToStringBuilder tsb = new ToStringBuilder();
-		tsb.append("activeProfiles", environment.getActiveProfiles());
-		tsb.append("defaultProfiles", environment.getDefaultProfiles());
+		tsb.append("activeProfiles", contextEnvironment.getActiveProfiles());
+		tsb.append("defaultProfiles", contextEnvironment.getDefaultProfiles());
 		tsb.append("applicationAdapter", applicationAdapter);
 		tsb.append("aspectRuleRegistry", aspectRuleRegistry);
 		tsb.append("beanRegistry", contextBeanRegistry);

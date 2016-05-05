@@ -17,7 +17,7 @@ package com.aspectran.core.context.builder.importer;
 
 import java.util.List;
 
-import com.aspectran.core.context.builder.env.Environment;
+import com.aspectran.core.context.env.Environment;
 
 public interface ImportHandler {
 

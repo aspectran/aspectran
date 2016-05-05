@@ -30,11 +30,11 @@ import com.aspectran.core.context.aspect.pointcut.Pointcut;
 import com.aspectran.core.context.aspect.pointcut.PointcutFactory;
 import com.aspectran.core.context.bean.BeanRuleRegistry;
 import com.aspectran.core.context.bean.ContextBeanRegistry;
-import com.aspectran.core.context.builder.env.BuildEnvironment;
-import com.aspectran.core.context.builder.env.Environment;
 import com.aspectran.core.context.builder.importer.FileImporter;
 import com.aspectran.core.context.builder.importer.Importer;
 import com.aspectran.core.context.builder.importer.ResourceImporter;
+import com.aspectran.core.context.env.ContextEnvironment;
+import com.aspectran.core.context.env.Environment;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.PointcutPatternRule;
 import com.aspectran.core.context.rule.PointcutRule;
@@ -57,31 +57,34 @@ import com.aspectran.core.util.ResourceUtils;
  * <p>Created: 2008. 06. 14 PM 8:53:29</p>
  */
 abstract class AbstractActivityContextBuilder extends ContextBuilderAssistant implements ActivityContextBuilder {
+	
+	private final AspectranActivityContext activityContext;
 
-	private final BuildEnvironment environment;
+	private final ContextEnvironment contextEnvironment;
 	
 	private boolean hybridLoad;
 	
 	AbstractActivityContextBuilder(ApplicationAdapter applicationAdapter) {
-		environment = new BuildEnvironment(new RegulatedApplicationAdapter(applicationAdapter));
+		this.activityContext = new AspectranActivityContext(new RegulatedApplicationAdapter(applicationAdapter));
+		this.contextEnvironment = activityContext.getContextEnvironment();
 	}
 
 	public Environment getEnvironment() {
-		return environment;
+		return contextEnvironment;
 	}
 
 	@Override
 	public void setActiveProfiles(String... activeProfiles) {
 		log.info("Activating profiles [" + Environment.joinProfiles(activeProfiles) + "]");
 		
-		environment.setActiveProfiles(activeProfiles);
+		contextEnvironment.setActiveProfiles(activeProfiles);
 	}
 	
 	@Override
 	public void setDefaultProfiles(String... defaultProfiles) {
 		log.info("Default profiles [" + Environment.joinProfiles(defaultProfiles) + "]");
 
-		environment.setDefaultProfiles(defaultProfiles);
+		contextEnvironment.setDefaultProfiles(defaultProfiles);
 	}
 
 	public boolean isHybridLoad() {
@@ -122,14 +125,13 @@ abstract class AbstractActivityContextBuilder extends ContextBuilderAssistant im
 		BeanDescriptor.clearCache();
 		MethodUtils.clearCache();
 
-		AspectranActivityContext context = new AspectranActivityContext(environment);
-		context.setAspectRuleRegistry(aspectRuleRegistry);
-		context.setContextBeanRegistry(contextBeanRegistry);
-		context.setTransletRuleRegistry(transletRuleRegistry);
-		context.setTemplateProcessor(templateProcessor);
-		context.initialize();
+		activityContext.setAspectRuleRegistry(aspectRuleRegistry);
+		activityContext.setContextBeanRegistry(contextBeanRegistry);
+		activityContext.setTransletRuleRegistry(transletRuleRegistry);
+		activityContext.setTemplateProcessor(templateProcessor);
+		activityContext.initialize();
 
-		return context;
+		return activityContext;
 	}
 	
 	/**

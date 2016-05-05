@@ -41,7 +41,7 @@ import com.aspectran.core.context.bean.annotation.Request;
 import com.aspectran.core.context.bean.annotation.Required;
 import com.aspectran.core.context.bean.annotation.Transform;
 import com.aspectran.core.context.bean.annotation.Value;
-import com.aspectran.core.context.builder.env.Environment;
+import com.aspectran.core.context.env.Environment;
 import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.expr.token.TokenParser;
 import com.aspectran.core.context.rule.AutowireRule;

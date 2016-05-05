@@ -18,7 +18,7 @@ package com.aspectran.core.context.builder.importer;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.aspectran.core.context.builder.env.Environment;
+import com.aspectran.core.context.env.Environment;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 

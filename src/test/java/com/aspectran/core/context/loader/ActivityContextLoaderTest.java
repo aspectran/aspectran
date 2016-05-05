@@ -110,7 +110,6 @@ public class ActivityContextLoaderTest {
 
 	@After
 	public void finish() {
-
 	}
 
 	private File getResource(ClassLoader classLoader, String resouceName) {

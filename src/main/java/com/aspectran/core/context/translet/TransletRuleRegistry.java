@@ -26,7 +26,7 @@ import com.aspectran.core.activity.PathVariableMap;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.builder.AssistantLocal;
 import com.aspectran.core.context.builder.DefaultSettings;
-import com.aspectran.core.context.builder.env.Environment;
+import com.aspectran.core.context.env.Environment;
 import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.expr.token.Tokenizer;
 import com.aspectran.core.context.rule.RequestRule;
