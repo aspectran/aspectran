@@ -46,7 +46,7 @@ public abstract class AbstractEnvironment implements Environment {
 	}
 
 	public void setActiveProfiles(String profiles) {
-		setActiveProfiles(StringUtils.tokenize(profiles, ","));
+		setActiveProfiles(StringUtils.splitCommaDelimitedString(profiles));
 	}
 	
 	public void setActiveProfiles(String[] profiles) {
@@ -67,7 +67,7 @@ public abstract class AbstractEnvironment implements Environment {
 	}
 	
 	public void addActiveProfile(String profile) {
-		String[] profiles = StringUtils.tokenize(profile, ",");
+		String[] profiles = StringUtils.splitCommaDelimitedString(profile);
 		doGetActiveProfiles();
 		if(profiles.length > 0) {
 			synchronized(activeProfiles) {
@@ -93,7 +93,7 @@ public abstract class AbstractEnvironment implements Environment {
 	}
 
 	public void setDefaultProfiles(String profiles) {
-		setDefaultProfiles(StringUtils.tokenize(profiles, ","));
+		setDefaultProfiles(StringUtils.splitCommaDelimitedString(profiles));
 	}
 
 	public void setDefaultProfiles(String[] profiles) {
@@ -110,7 +110,7 @@ public abstract class AbstractEnvironment implements Environment {
 	}
 	
 	public void addDefaultProfile(String profile) {
-		String[] profiles = StringUtils.tokenize(profile, ",");
+		String[] profiles = StringUtils.splitCommaDelimitedString(profile);
 		doGetDefaultProfiles();
 		if(profiles.length > 0) {
 			synchronized(defaultProfiles) {
@@ -159,7 +159,7 @@ public abstract class AbstractEnvironment implements Environment {
 	private String[] getProfilesFromSystemProperty(String propName) {
 		String profilesProp = SystemUtils.getProperty(propName);
 		if(profilesProp != null) {
-			String[] profiles = StringUtils.tokenize(StringUtils.trimAllWhitespace(profilesProp), ",");
+			String[] profiles = StringUtils.splitCommaDelimitedString(profilesProp);
 			if(profiles != null && profiles.length > 0) {
 				return profiles;
 			}

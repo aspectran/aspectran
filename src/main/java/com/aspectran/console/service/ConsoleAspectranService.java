@@ -122,12 +122,7 @@ public class ConsoleAspectranService extends GenericAspectranService {
 			}
 			
 			@Override
-			public void restarted() {
-				started();
-			}
-			
-			@Override
-			public void reloaded() {
+			public void restarted(boolean hardReload) {
 				started();
 			}
 			

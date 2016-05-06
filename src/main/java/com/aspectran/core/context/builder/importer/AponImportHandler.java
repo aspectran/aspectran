@@ -35,7 +35,7 @@ public class AponImportHandler extends AbstractImportHandler {
 	private RootAponDisassembler rootAponDisassembler;
 	
 	public AponImportHandler(AponActivityContextBuilder builder, String encoding) {
-		super(builder.getEnvironment());
+		super(builder.getContextEnvironment());
 
 		this.assistant = builder;
 		this.encoding = encoding;

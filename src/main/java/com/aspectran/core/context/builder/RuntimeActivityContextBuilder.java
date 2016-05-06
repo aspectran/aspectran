@@ -27,7 +27,6 @@ public class RuntimeActivityContextBuilder extends AbstractActivityContextBuilde
 	
 	public RuntimeActivityContextBuilder(ApplicationAdapter applicationAdapter) {
 		super(applicationAdapter);
-		readyAssist(getEnvironment());
 	}
 
 	@Override

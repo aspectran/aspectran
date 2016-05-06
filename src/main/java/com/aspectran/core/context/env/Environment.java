@@ -27,8 +27,4 @@ public interface Environment {
 
 	boolean acceptsProfiles(String... profiles);	
 
-	static String joinProfiles(String[] profiles) {
-		return String.join(",", profiles);
-	}	
-
 }

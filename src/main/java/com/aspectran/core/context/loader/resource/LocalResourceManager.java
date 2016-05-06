@@ -39,6 +39,14 @@ public class LocalResourceManager extends ResourceManager {
 	
 	private final AspectranClassLoader owner;
 	
+	public LocalResourceManager(AspectranClassLoader owner) {
+		super();
+		
+		this.owner = owner;
+		this.resourceLocation = null;
+		this.resourceLocationSubLen = 0;
+	}
+	
 	public LocalResourceManager(String resourceLocation, AspectranClassLoader owner) throws InvalidResourceException {
 		super();
 		
@@ -53,7 +61,7 @@ public class LocalResourceManager extends ResourceManager {
 					(file.isFile() && !resourceLocation.endsWith(ResourceUtils.JAR_FILE_SUFFIX))) {
 				throw new InvalidResourceException("Invalid resource directory or jar file: " + file.getAbsolutePath());
 			}
-
+			
 			findResource(file);
 		} else {
 			this.resourceLocation = null;

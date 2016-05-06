@@ -52,7 +52,7 @@ public class HybridImportHandler extends AbstractImportHandler {
 	private RootAponDisassembler rootAponDisassembler;
 	
 	public HybridImportHandler(HybridActivityContextBuilder builder, String encoding, boolean hybridLoad) {
-		super(builder.getEnvironment());
+		super(builder.getContextEnvironment());
 
 		this.assistant = builder;
 		this.encoding = encoding;
@@ -136,7 +136,7 @@ public class HybridImportHandler extends AbstractImportHandler {
 				parser.parse(fileImporter.getInputStream());
 				
 				RootAponAssembler assembler = new RootAponAssembler(assistant);
-				Parameters rootParameters = assembler.assembleRoot();
+				Parameters rootParameters = assembler.assembleRootParameters();
 				
 				aponWriter.comment(aponFile.getAbsolutePath());
 				aponWriter.write(rootParameters);

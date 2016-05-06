@@ -25,15 +25,9 @@ public interface ActivityContextLoader {
 
 	ApplicationAdapter getApplicationAdapter();
 	
-	void setApplicationAdapter(ApplicationAdapter applicationAdapter);
-
 	AspectranClassLoader getAspectranClassLoader();
-
-	AspectranClassLoader newAspectranClassLoader() throws InvalidResourceException;
-
-	String[] getResourceLocations();
-
-	void setResourceLocations(String[] resourceLocations);
+	
+	void setResourceLocations(String[] resourceLocations) throws InvalidResourceException;
 
 	String[] getActiveProfiles();
 

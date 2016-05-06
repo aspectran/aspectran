@@ -47,6 +47,14 @@ public class ContextEnvironment extends AbstractEnvironment {
 		this.propertyItemRuleMap = propertyItemRuleMap;
 	}
 	
+	public void addPropertyItemRuleMap(ItemRuleMap propertyItemRuleMap) {
+		if(this.propertyItemRuleMap == null) {
+			setPropertyItemRuleMap(propertyItemRuleMap);
+		} else {
+			this.propertyItemRuleMap.putAll(propertyItemRuleMap);
+		}
+	}
+	
 	public <T> T getProperty(String name) {
 		ItemRule itemRule = propertyItemRuleMap.get(name);
 		if(itemRule == null)

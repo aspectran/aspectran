@@ -38,11 +38,6 @@ abstract class AbstractImportHandler implements ImportHandler {
 	}
 
 	@Override
-	public Environment getEnvironment() {
-		return environment;
-	}
-
-	@Override
 	public void pending(Importer importer) {
 		if(pendingList == null)
 			pendingList = new ArrayList<>();

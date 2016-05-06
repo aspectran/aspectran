@@ -109,6 +109,7 @@ abstract class AbstractAspectranService implements AspectranService {
 			this.aspectranConfig = aspectranConfig;
 			Parameters aspectranContextConfig = aspectranConfig.getParameters(AspectranConfig.context);
 			Parameters aspectranContextAutoReloadConfig = aspectranContextConfig.getParameters(AspectranContextConfig.autoReload);
+			Parameters aspectranContextProfilesConfig = aspectranContextConfig.getParameters(AspectranContextConfig.profiles);
 
 			if(aspectranContextAutoReloadConfig != null) {
 				String reloadMethod = aspectranContextAutoReloadConfig.getString(AspectranContextAutoReloadConfig.reloadMethod);
@@ -125,13 +126,18 @@ abstract class AbstractAspectranService implements AspectranService {
 			String encoding = aspectranContextConfig.getString(AspectranContextConfig.encoding);
 			boolean hybridLoad = aspectranContextConfig.getBoolean(AspectranContextConfig.hybridLoad, false);
 			String[] resourceLocations = aspectranContextConfig.getStringArray(AspectranContextConfig.resources);
-			String[] activeProfiles = aspectranContextConfig.getStringArray(AspectranContextProfilesConfig.activeProfiles);
-			String[] defaultProfiles = aspectranContextConfig.getStringArray(AspectranContextProfilesConfig.defaultProfiles);
+
+			String[] activeProfiles = null;
+			String[] defaultProfiles = null;
+			
+			if(aspectranContextProfilesConfig != null) {
+				activeProfiles = aspectranContextProfilesConfig.getStringArray(AspectranContextProfilesConfig.activeProfiles);
+				defaultProfiles = aspectranContextProfilesConfig.getStringArray(AspectranContextProfilesConfig.defaultProfiles);
+			}
 			
 			resourceLocations = AspectranClassLoader.checkResourceLocations(resourceLocations, applicationAdapter.getApplicationBasePath());
 
-			activityContextLoader = new HybridActivityContextLoader(encoding);
-			activityContextLoader.setApplicationAdapter(applicationAdapter);
+			activityContextLoader = new HybridActivityContextLoader(applicationAdapter, encoding);
 			activityContextLoader.setResourceLocations(resourceLocations);
 			activityContextLoader.setActiveProfiles(activeProfiles);
 			activityContextLoader.setDefaultProfiles(defaultProfiles);
@@ -148,7 +154,7 @@ abstract class AbstractAspectranService implements AspectranService {
 				}
 			}
 		} catch(Exception e) {
-			throw new AspectranServiceException("Failed to initialize the AspectranService " + aspectranConfig, e);
+			throw new AspectranServiceException("Failed to initialize AspectranService " + aspectranConfig, e);
 		}
 	}
 	
@@ -171,7 +177,7 @@ abstract class AbstractAspectranService implements AspectranService {
 			return activityContext;
 			
 		} catch(Exception e) {
-			throw new AspectranServiceException("Failed to load the ActivityContext.", e);
+			throw new AspectranServiceException("Failed to load ActivityContext.", e);
 		}
 	}
 	
@@ -187,9 +193,9 @@ abstract class AbstractAspectranService implements AspectranService {
 			try {
 				activityContext.destroy();
 				activityContext = null;
-				log.info("Successfully destroyed the AspectranContext.");
+				log.info("Successfully destroyed AspectranContext.");
 			} catch(Exception e) {
-				log.error("Failed to destroy the AspectranContext " + activityContext, e);
+				log.error("Failed to destroy AspectranContext " + activityContext, e);
 				cleanlyDestoryed = false;
 			}
 		}
@@ -208,7 +214,7 @@ abstract class AbstractAspectranService implements AspectranService {
 	
 			startReloadingTimer();
 		} catch(Exception e) {
-			throw new AspectranServiceException("Failed to reload the ActivityContext.", e);
+			throw new AspectranServiceException("Failed to reload ActivityContext.", e);
 		}
 
 		return activityContext;

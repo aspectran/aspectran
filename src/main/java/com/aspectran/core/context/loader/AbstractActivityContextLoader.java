@@ -24,12 +24,10 @@ import com.aspectran.core.util.logging.LogFactory;
 abstract class AbstractActivityContextLoader implements ActivityContextLoader {
 
 	protected final Log log = LogFactory.getLog(getClass());
-
-	private ApplicationAdapter applicationAdapter;
+	
+	private final ApplicationAdapter applicationAdapter;
 
 	private AspectranClassLoader aspectranClassLoader;
-
-	private String[] resourceLocations;
 
 	private String[] activeProfiles;
 
@@ -37,13 +35,15 @@ abstract class AbstractActivityContextLoader implements ActivityContextLoader {
 
 	private boolean hybridLoad;
 
+	AbstractActivityContextLoader(ApplicationAdapter applicationAdapter) {
+		this.applicationAdapter = applicationAdapter;
+		
+		newAspectranClassLoader();
+	}
+	
 	@Override
 	public ApplicationAdapter getApplicationAdapter() {
 		return applicationAdapter;
-	}
-
-	public void setApplicationAdapter(ApplicationAdapter applicationAdapter) {
-		this.applicationAdapter = applicationAdapter;
 	}
 
 	@Override
@@ -52,38 +52,8 @@ abstract class AbstractActivityContextLoader implements ActivityContextLoader {
 	}
 
 	@Override
-	public AspectranClassLoader newAspectranClassLoader() throws InvalidResourceException {
-		String[] excludePackageNames = new String[] {
-				"com.aspectran.core",
-				"com.aspectran.scheduler",
-				"com.aspectran.web",
-				"com.aspectran.console"
-		};
-
-		AspectranClassLoader acl = new AspectranClassLoader();
-		acl.excludePackage(excludePackageNames);
-
-		if(resourceLocations != null && resourceLocations.length > 0) {
-			acl.setResourceLocations(resourceLocations);
-		}
-
-		this.aspectranClassLoader = acl;
-		
-		if(applicationAdapter != null) {
-			applicationAdapter.setClassLoader(acl);
-		}
-
-		return acl;
-	}
-
-	@Override
-	public String[] getResourceLocations() {
-		return resourceLocations;
-	}
-
-	@Override
-	public void setResourceLocations(String[] resourceLocations) {
-		this.resourceLocations = resourceLocations;
+	public void setResourceLocations(String[] resourceLocations) throws InvalidResourceException {
+		aspectranClassLoader.setResourceLocations(resourceLocations);
 	}
 
 	@Override
@@ -114,6 +84,23 @@ abstract class AbstractActivityContextLoader implements ActivityContextLoader {
 	@Override
 	public void setHybridLoad(boolean hybridLoad) {
 		this.hybridLoad = hybridLoad;
+	}
+
+	protected AspectranClassLoader newAspectranClassLoader() {
+		String[] excludePackageNames = new String[] {
+				"com.aspectran.core",
+				"com.aspectran.scheduler",
+				"com.aspectran.web",
+				"com.aspectran.console"
+		};
+
+		AspectranClassLoader acl = new AspectranClassLoader();
+		acl.excludePackage(excludePackageNames);
+
+		this.aspectranClassLoader = acl;
+		this.applicationAdapter.setClassLoader(acl);
+		
+		return acl;
 	}
 	
 }

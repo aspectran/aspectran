@@ -15,7 +15,6 @@
  */
 package com.aspectran.core.context.builder.importer;
 
-
 /**
  * The Class ShallowImportHandler.
  * 
@@ -29,6 +28,7 @@ public class ShallowImportHandler extends AbstractImportHandler {
 
 	@Override
 	public void handle(Importer importer) throws Exception {
+		// shallow
 	}
-
+	
 }

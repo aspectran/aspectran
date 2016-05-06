@@ -17,11 +17,10 @@ package com.aspectran.core.context.builder.importer;
 
 import java.util.List;
 
-import com.aspectran.core.context.env.Environment;
-
+/**
+ * The Interface ImportHandler.
+ */
 public interface ImportHandler {
-
-	Environment getEnvironment();
 
 	void pending(Importer importer);
 	

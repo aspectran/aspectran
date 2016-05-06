@@ -53,7 +53,7 @@ public class AspectranClassLoader extends ClassLoader {
 	
 	private final ResourceManager resourceManager;
 	
-	private final List<AspectranClassLoader> children = new LinkedList<AspectranClassLoader>();
+	private final List<AspectranClassLoader> children = new LinkedList<>();
 
 	private final boolean firstborn;
 	
@@ -63,12 +63,21 @@ public class AspectranClassLoader extends ClassLoader {
 	
 	private Set<String> excludePackageNames;
 	
-	public AspectranClassLoader() throws InvalidResourceException {
+	public AspectranClassLoader() {
 		this(getDefaultClassLoader());
 	}
 	
-	public AspectranClassLoader(ClassLoader parent) throws InvalidResourceException {
-		this((String)null, parent);
+	public AspectranClassLoader(ClassLoader parent) {
+		super(parent);
+		
+		this.id = 1000;
+		this.root = this;
+		this.firstborn = true;
+		this.resourceLocation = null;
+		this.resourceManager = new LocalResourceManager(this);
+		
+		if(log.isDebugEnabled())
+			log.debug("Create a root AspectranClassLoader " + this);
 	}
 	
 	public AspectranClassLoader(String resourceLocation) throws InvalidResourceException {
@@ -116,7 +125,7 @@ public class AspectranClassLoader extends ClassLoader {
 	
 	public void setResourceLocation(String resourceLocation) throws InvalidResourceException {
 		synchronized(children) {
-			if(children.size() > 0) {
+			if(!children.isEmpty()) {
 				children.clear();
 			}
 			
@@ -126,7 +135,7 @@ public class AspectranClassLoader extends ClassLoader {
 	
 	public void setResourceLocations(String[] resourceLocations) throws InvalidResourceException {
 		synchronized(children) {
-			if(children.size() > 0) {
+			if(!children.isEmpty()) {
 				children.clear();
 			}
 			

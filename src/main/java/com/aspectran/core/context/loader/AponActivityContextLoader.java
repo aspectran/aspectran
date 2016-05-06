@@ -15,6 +15,7 @@
  */
 package com.aspectran.core.context.loader;
 
+import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.adapter.GenericApplicationAdapter;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.builder.ActivityContextBuilder;
@@ -29,24 +30,22 @@ public class AponActivityContextLoader extends AbstractActivityContextLoader {
 	private String rootContext;
 
 	public AponActivityContextLoader() {
+		this(new GenericApplicationAdapter());
+	}
+	
+	public AponActivityContextLoader(ApplicationAdapter applicationAdapter) {
+		super(applicationAdapter);
 		this.encoding = ActivityContext.DEFAULT_ENCODING;
 	}
 	
-	public AponActivityContextLoader(String encoding) {
+	public AponActivityContextLoader(ApplicationAdapter applicationAdapter, String encoding) {
+		super(applicationAdapter);
 		this.encoding = (encoding == null) ? ActivityContext.DEFAULT_ENCODING : encoding;
 	}
 
 	@Override
 	public ActivityContext load(String rootContext) throws ActivityContextBuilderException, InvalidResourceException {
 		this.rootContext = rootContext;
-
-		if(getApplicationAdapter() == null) {
-			setApplicationAdapter(new GenericApplicationAdapter());
-		}
-		
-		if(getAspectranClassLoader() == null) {
-			newAspectranClassLoader();
-		}
 
 		log.info("Build ActivityContext: " + rootContext);
 

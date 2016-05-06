@@ -13,34 +13,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.core.context.loader.config;
+package com.aspectran.core.context.builder.apon.params;
 
 import com.aspectran.core.util.apon.AbstractParameters;
 import com.aspectran.core.util.apon.ParameterDefine;
 import com.aspectran.core.util.apon.ParameterValueType;
 
-public class AspectranContextProfilesConfig extends AbstractParameters {
+public class EnvironmentParameters extends AbstractParameters {
 
-	public static final ParameterDefine activeProfiles;
-	public static final ParameterDefine defaultProfiles;
+	public static final ParameterDefine profile;
 	
-	private final static ParameterDefine[] parameterDefines;
+	public static final ParameterDefine properties;
+	
+	private static final ParameterDefine[] parameterDefines;
 	
 	static {
-		activeProfiles = new ParameterDefine("active", ParameterValueType.STRING, true);
-		defaultProfiles = new ParameterDefine("default", ParameterValueType.STRING, true);
+		profile = new ParameterDefine("profile", ParameterValueType.STRING);
+		properties = new ParameterDefine("property", ItemHolderParameters.class);
 		
 		parameterDefines = new ParameterDefine[] {
-				activeProfiles,
-				defaultProfiles
+				profile,
+				properties
 		};
 	}
 	
-	public AspectranContextProfilesConfig() {
+	public EnvironmentParameters() {
 		super(parameterDefines);
 	}
 	
-	public AspectranContextProfilesConfig(String text) {
+	public EnvironmentParameters(String text) {
 		super(parameterDefines, text);
 	}
 	

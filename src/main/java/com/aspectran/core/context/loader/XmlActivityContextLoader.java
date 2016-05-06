@@ -15,6 +15,7 @@
  */
 package com.aspectran.core.context.loader;
 
+import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.adapter.GenericApplicationAdapter;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.builder.ActivityContextBuilder;
@@ -27,19 +28,16 @@ public class XmlActivityContextLoader extends AbstractActivityContextLoader {
 	private String rootContext;
 
 	public XmlActivityContextLoader() {
+		super(new GenericApplicationAdapter());
+	}
+	
+	public XmlActivityContextLoader(ApplicationAdapter applicationAdapter) {
+		super(applicationAdapter);
 	}
 
 	@Override
 	public ActivityContext load(String rootContext) throws ActivityContextBuilderException, InvalidResourceException {
 		this.rootContext = rootContext;
-
-		if(getApplicationAdapter() == null) {
-			setApplicationAdapter(new GenericApplicationAdapter());
-		}
-
-		if(getAspectranClassLoader() == null) {
-			newAspectranClassLoader();
-		}
 
 		log.info("Build ActivityContext: " + rootContext);
 

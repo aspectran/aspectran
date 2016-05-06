@@ -34,8 +34,8 @@ import com.aspectran.core.context.builder.importer.FileImporter;
 import com.aspectran.core.context.builder.importer.Importer;
 import com.aspectran.core.context.builder.importer.ResourceImporter;
 import com.aspectran.core.context.env.ContextEnvironment;
-import com.aspectran.core.context.env.Environment;
 import com.aspectran.core.context.rule.AspectRule;
+import com.aspectran.core.context.rule.EnvironmentRule;
 import com.aspectran.core.context.rule.PointcutPatternRule;
 import com.aspectran.core.context.rule.PointcutRule;
 import com.aspectran.core.context.rule.type.AspectTargetType;
@@ -50,6 +50,7 @@ import com.aspectran.core.context.translet.TransletRuleRegistry;
 import com.aspectran.core.util.BeanDescriptor;
 import com.aspectran.core.util.MethodUtils;
 import com.aspectran.core.util.ResourceUtils;
+import com.aspectran.core.util.StringUtils;
 
 /**
  * The Class AbstractActivityContextBuilder.
@@ -65,24 +66,30 @@ abstract class AbstractActivityContextBuilder extends ContextBuilderAssistant im
 	private boolean hybridLoad;
 	
 	AbstractActivityContextBuilder(ApplicationAdapter applicationAdapter) {
-		this.activityContext = new AspectranActivityContext(new RegulatedApplicationAdapter(applicationAdapter));
-		this.contextEnvironment = activityContext.getContextEnvironment();
+		activityContext = new AspectranActivityContext(new RegulatedApplicationAdapter(applicationAdapter));
+		contextEnvironment = activityContext.getContextEnvironment();
+		
+		readyAssist(contextEnvironment);
 	}
 
-	public Environment getEnvironment() {
+	public ContextEnvironment getContextEnvironment() {
 		return contextEnvironment;
 	}
-
+	
 	@Override
 	public void setActiveProfiles(String... activeProfiles) {
-		log.info("Activating profiles [" + Environment.joinProfiles(activeProfiles) + "]");
+		if(activeProfiles != null) {
+			log.info("Activating profiles [" + StringUtils.joinCommaDelimitedList(activeProfiles) + "]");
+		}
 		
 		contextEnvironment.setActiveProfiles(activeProfiles);
 	}
 	
 	@Override
 	public void setDefaultProfiles(String... defaultProfiles) {
-		log.info("Default profiles [" + Environment.joinProfiles(defaultProfiles) + "]");
+		if(defaultProfiles != null) {
+			log.info("Default profiles [" + StringUtils.joinCommaDelimitedList(defaultProfiles) + "]");
+		}
 
 		contextEnvironment.setDefaultProfiles(defaultProfiles);
 	}
@@ -103,6 +110,8 @@ abstract class AbstractActivityContextBuilder extends ContextBuilderAssistant im
 	 * @throws BeanReferenceException will be thrown when cannot resolve reference to bean
 	 */
 	ActivityContext makeActivityContext() throws BeanReferenceException {
+		initContextEnvironment();
+		
 		AspectRuleRegistry aspectRuleRegistry = getAspectRuleRegistry();
 
 		BeanRuleRegistry beanRuleRegistry = getBeanRuleRegistry();
@@ -132,6 +141,19 @@ abstract class AbstractActivityContextBuilder extends ContextBuilderAssistant im
 		activityContext.initialize();
 
 		return activityContext;
+	}
+	
+	private void initContextEnvironment() {
+		for(EnvironmentRule environmentRule : getEnvironmentRules()) {
+			String[] profiles = StringUtils.splitCommaDelimitedString(environmentRule.getProfile());
+			if(environmentRule.getProfile() != null) {
+				if(contextEnvironment.acceptsProfiles(profiles)) {
+					if(environmentRule.getPropertyItemRuleMap() != null) {
+						contextEnvironment.addPropertyItemRuleMap(environmentRule.getPropertyItemRuleMap());
+					}
+				}
+			}
+		}
 	}
 	
 	/**

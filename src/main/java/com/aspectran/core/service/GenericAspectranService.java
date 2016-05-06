@@ -66,7 +66,7 @@ public class GenericAspectranService extends AbstractAspectranService {
 			this.closed.set(false);
 			this.active.set(true);
 
-			log.info("AspectranService was started successfully.");
+			log.info("AspectranService has been started successfully.");
 
 			if(aspectranServiceControllerListener != null)
 				aspectranServiceControllerListener.started();
@@ -92,46 +92,11 @@ public class GenericAspectranService extends AbstractAspectranService {
 			this.closed.set(false);
 			this.active.set(true);
 
-			log.info("AspectranService was restarted.");
+			log.info("AspectranService has been restarted.");
 
 			if(aspectranServiceControllerListener != null)
-				aspectranServiceControllerListener.restarted();
+				aspectranServiceControllerListener.restarted(isHardReload());
 		}
-	}
-
-	@Override
-	public void reload() throws AspectranServiceException {
-		synchronized(this.startupShutdownMonitor) {
-			if(this.closed.get()) {
-				log.warn("Cannot restart AspectranService, because it was already destroyed.");
-				return;
-			}
-			if(!this.active.get()) {
-				log.debug("Cannot restart AspectranService, because it is currently stopped.");
-				return;
-			}
-
-			if(aspectranServiceControllerListener != null)
-				aspectranServiceControllerListener.paused(DEFAULT_PAUSE_TIMEOUT);
-
-			reloadActivityContext();
-
-			if(aspectranServiceControllerListener != null)
-				aspectranServiceControllerListener.resumed();
-
-			log.info("AspectranService was reloaded.");
-
-			if(aspectranServiceControllerListener != null)
-				aspectranServiceControllerListener.reloaded();
-		}
-	}
-
-	@Override
-	public void refresh() throws AspectranServiceException {
-		if(isHardReload())
-			restart();
-		else
-			reload();
 	}
 
 	@Override
@@ -145,7 +110,7 @@ public class GenericAspectranService extends AbstractAspectranService {
 			if(aspectranServiceControllerListener != null)
 				aspectranServiceControllerListener.paused(-1L);
 
-			log.info("AspectranService was paused.");
+			log.info("AspectranService has been paused.");
 		}
 	}
 
@@ -166,14 +131,14 @@ public class GenericAspectranService extends AbstractAspectranService {
 	public void resume() {
 		synchronized(this.startupShutdownMonitor) {
 			if(this.closed.get()) {
-				log.warn("Cannot restart AspectranService, because it was already destroyed.");
+				log.warn("Cannot resume AspectranService, because it was already destroyed.");
 				return;
 			}
 
 			if(aspectranServiceControllerListener != null)
 				aspectranServiceControllerListener.resumed();
 
-			log.info("AspectranService was resumed.");
+			log.info("AspectranService has been resumed.");
 		}
 	}
 
@@ -186,7 +151,7 @@ public class GenericAspectranService extends AbstractAspectranService {
 
 		this.active.set(false);
 
-		log.info("AspectranService was stopped.");
+		log.info("AspectranService has been stopped.");
 
 		if(aspectranServiceControllerListener != null)
 			aspectranServiceControllerListener.stopped();

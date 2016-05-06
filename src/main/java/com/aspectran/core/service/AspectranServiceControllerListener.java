@@ -22,10 +22,8 @@ public interface AspectranServiceControllerListener {
 	
 	void started();
 	
-	void restarted();
+	void restarted(boolean hardReload);
 
-	void reloaded();
-	
 	void paused(long timeout);
 	
 	void resumed();

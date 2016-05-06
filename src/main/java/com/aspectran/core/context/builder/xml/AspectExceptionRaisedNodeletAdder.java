@@ -26,7 +26,6 @@ import com.aspectran.core.util.xml.NodeletParser;
  * The Class AspectAdviceRuleNodeletAdder.
  *
  * @since 2013. 8. 11.
- * @author Juho Jeong
  */
 class AspectExceptionRaisedNodeletAdder implements NodeletAdder {
 	

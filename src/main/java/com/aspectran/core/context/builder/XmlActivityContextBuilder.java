@@ -39,8 +39,6 @@ public class XmlActivityContextBuilder extends AbstractActivityContextBuilder {
 			if(rootContext == null)
 				throw new IllegalArgumentException("'rootContext' must not be null.");
 
-			readyAssist(getEnvironment());
-
 			ImportHandler importHandler = new XmlImportHandler(this);
 			setImportHandler(importHandler);
 			
