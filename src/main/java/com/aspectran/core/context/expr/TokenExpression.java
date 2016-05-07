@@ -390,7 +390,7 @@ public class TokenExpression implements TokenEvaluator {
 	 */
 	protected Object getProperty(Token token) {
 		Object value = activity.getActivityContext().getContextEnvironment().getProperty(token.getName());
-		
+
 		if(value != null && token.getPropertyName() != null)
 			value = getBeanProperty(value, token.getPropertyName());
 

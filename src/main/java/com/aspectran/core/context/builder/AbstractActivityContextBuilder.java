@@ -145,12 +145,10 @@ abstract class AbstractActivityContextBuilder extends ContextBuilderAssistant im
 	
 	private void initContextEnvironment() {
 		for(EnvironmentRule environmentRule : getEnvironmentRules()) {
-			String[] profiles = StringUtils.splitCommaDelimitedString(environmentRule.getProfile());
-			if(environmentRule.getProfile() != null) {
+			if(environmentRule.getPropertyItemRuleMap() != null) {
+				String[] profiles = StringUtils.splitCommaDelimitedString(environmentRule.getProfile());
 				if(contextEnvironment.acceptsProfiles(profiles)) {
-					if(environmentRule.getPropertyItemRuleMap() != null) {
-						contextEnvironment.addPropertyItemRuleMap(environmentRule.getPropertyItemRuleMap());
-					}
+					contextEnvironment.addPropertyItemRuleMap(environmentRule.getPropertyItemRuleMap());
 				}
 			}
 		}

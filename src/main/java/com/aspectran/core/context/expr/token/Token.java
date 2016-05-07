@@ -234,7 +234,8 @@ public class Token implements BeanReferenceInspectable {
 	public static boolean isTokenSymbol(char c) {
 		return (c == PARAMETER_SYMBOL ||
 					c == ATTRIBUTE_SYMBOL ||
-					c == BEAN_SYMBOL);
+					c == BEAN_SYMBOL ||
+					c == PROPERTY_SYMBOL);
 	}
 	
 	/**
@@ -250,6 +251,8 @@ public class Token implements BeanReferenceInspectable {
 			type = TokenType.ATTRIBUTE;
 		else if(symbol == Token.BEAN_SYMBOL)
 			type = TokenType.BEAN;
+		else if(symbol == Token.PROPERTY_SYMBOL)
+			type = TokenType.PROPERTY;
 		else
 			type = TokenType.PARAMETER;
 		

@@ -21,6 +21,7 @@ import java.io.InputStream;
 import com.aspectran.core.context.builder.ContextBuilderAssistant;
 import com.aspectran.core.context.builder.importer.ImportHandler;
 import com.aspectran.core.context.builder.importer.Importer;
+import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.EnvironmentRule;
 import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
@@ -153,27 +154,32 @@ public class AspectranNodeParser {
 	private void addEnvironmentNodelets() {
 		parser.addNodelet("/aspectran/environment", (node, attributes, text) -> {
 			String profile = attributes.get("profile");
-			ItemRuleMap propertyItemRuleMap = null;
-			
-			if(StringUtils.hasLength(text)) {
-				propertyItemRuleMap = ItemRule.toItemRuleMap(text);
-			}
-			
-			EnvironmentRule environmentRule = EnvironmentRule.newInstance(profile, propertyItemRuleMap); 
+
+			EnvironmentRule environmentRule = EnvironmentRule.newInstance(profile, null);
 			assistant.pushObject(environmentRule);
-			
+        });
+		parser.addNodelet("/aspectran/environment/property", (node, attributes, text) -> {
+			EnvironmentRule environmentRule = assistant.peekObject();
+
+			if(StringUtils.hasLength(text)) {
+				ItemRuleMap propertyItemRuleMap = ItemRule.toItemRuleMap(text);
+				environmentRule.setPropertyItemRuleMap(propertyItemRuleMap);
+			}
+
 			ItemRuleMap irm = new ItemRuleMap();
 			assistant.pushObject(irm);
         });
-		parser.addNodelet("/aspectran/environment", new ItemNodeletAdder(assistant));
-		parser.addNodelet("/aspectran/environment/end()", (node, attributes, text) -> {
+		parser.addNodelet("/aspectran/environment/property", new ItemNodeletAdder(assistant));
+		parser.addNodelet("/aspectran/environment/property/end()", (node, attributes, text) -> {
 			ItemRuleMap irm = assistant.popObject();
-			EnvironmentRule environmentRule = assistant.popObject();
-			
+
 			if(!irm.isEmpty()) {
+				EnvironmentRule environmentRule = assistant.peekObject();
 				environmentRule.setPropertyItemRuleMap(irm);
 			}
-			
+		});
+		parser.addNodelet("/aspectran/environment/end()", (node, attributes, text) -> {
+			EnvironmentRule environmentRule = assistant.popObject();
 			assistant.addEnvironmentRule(environmentRule);
         });
 	}

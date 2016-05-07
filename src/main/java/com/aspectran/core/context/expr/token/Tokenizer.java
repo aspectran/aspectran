@@ -50,7 +50,7 @@ public class Tokenizer {
 	 * @return the token list
 	 */
 	public static List<Token> tokenize(CharSequence input, boolean trimStringToken) {
-		List<Token> tokens = new ArrayList<Token>();
+		List<Token> tokens = new ArrayList<>();
 
 		int patternLength = input.length();
 

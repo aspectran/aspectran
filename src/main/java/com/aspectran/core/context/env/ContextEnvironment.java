@@ -49,17 +49,21 @@ public class ContextEnvironment extends AbstractEnvironment {
 	
 	public void addPropertyItemRuleMap(ItemRuleMap propertyItemRuleMap) {
 		if(this.propertyItemRuleMap == null) {
-			setPropertyItemRuleMap(propertyItemRuleMap);
+			this.propertyItemRuleMap = propertyItemRuleMap;
 		} else {
 			this.propertyItemRuleMap.putAll(propertyItemRuleMap);
 		}
 	}
 	
 	public <T> T getProperty(String name) {
+		if(propertyItemRuleMap == null) {
+			return null;
+		}
+
 		ItemRule itemRule = propertyItemRuleMap.get(name);
 		if(itemRule == null)
 			return null;
-		
+
 		Activity activity = context.getCurrentActivity();
 		if(activity == null)
 			activity = new VoidActivity(context);
