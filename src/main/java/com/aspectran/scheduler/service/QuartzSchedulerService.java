@@ -284,7 +284,7 @@ public class QuartzSchedulerService implements SchedulerService {
 		jobDataMap.put(ASPECTRAN_CONTEXT_DATA_KEY, context);
 		jobDataMap.put(TRANSLET_NAME_DATA_KEY, aspectJobAdviceRule.getJobTransletName());
 
-		return JobBuilder.newJob(JobActivityRunJob.class)
+		return JobBuilder.newJob(ActivityLauncherJob.class)
 				.withIdentity(jobName, jobGroup)
 				.setJobData(jobDataMap)
 				.build();
