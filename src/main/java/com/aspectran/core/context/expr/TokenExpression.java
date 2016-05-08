@@ -30,8 +30,6 @@ import java.util.Set;
 
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.request.parameter.FileParameter;
-import com.aspectran.core.adapter.RequestAdapter;
-import com.aspectran.core.context.bean.BeanRegistry;
 import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.rule.type.TokenType;
 import com.aspectran.core.util.BeanUtils;
@@ -45,20 +43,8 @@ public class TokenExpression implements TokenEvaluator {
 	
 	protected final Activity activity;
 	
-	protected final RequestAdapter requestAdapter;
-	
-	protected final BeanRegistry beanRegistry;
-	
 	public TokenExpression(Activity activity) {
 		this.activity = activity;
-		
-		if(activity != null) {
-			this.requestAdapter = activity.getRequestAdapter();
-			this.beanRegistry = activity.getBeanRegistry();
-		} else {
-			this.requestAdapter = null;
-			this.beanRegistry = null;
-		}
 	}
 
 	@Override
@@ -68,12 +54,14 @@ public class TokenExpression implements TokenEvaluator {
 
 		if(tokenType == TokenType.TEXT) {
 			value = token.getValue();
-		} else	if(tokenType == TokenType.PARAMETER) {
+		} else if(tokenType == TokenType.PARAMETER) {
 			value = getParameter(token.getName(), token.getValue());
-		} else	if(tokenType == TokenType.ATTRIBUTE) {
+		} else if(tokenType == TokenType.ATTRIBUTE) {
 			value = getAttribute(token);
-		} else	if(tokenType == TokenType.BEAN) {
+		} else if(tokenType == TokenType.BEAN) {
 			value = getBean(token);
+		} else if(tokenType == TokenType.PROPERTY) {
+			value = getProperty(token);
 		}
 		
 		return value;
@@ -285,8 +273,8 @@ public class TokenExpression implements TokenEvaluator {
 	 *			single value of the parameter
 	 */
 	protected String getParameter(String name) {
-		if(requestAdapter != null)
-			return requestAdapter.getParameter(name);
+		if(activity.getRequestAdapter() != null)
+			return activity.getRequestAdapter().getParameter(name);
 
 		return null;
 	}
@@ -299,8 +287,8 @@ public class TokenExpression implements TokenEvaluator {
 	 *			containing the parameter's values
 	 */
 	protected String[] getParameterValues(String name) {
-		if(requestAdapter != null)
-			return requestAdapter.getParameterValues(name);
+		if(activity.getRequestAdapter() != null)
+			return activity.getRequestAdapter().getParameterValues(name);
 
 		return null;
 	}
@@ -313,8 +301,8 @@ public class TokenExpression implements TokenEvaluator {
 	 *			single value of the parameter
 	 */
 	protected FileParameter getFileParameter(String name) {
-		if(requestAdapter != null)
-			return requestAdapter.getFileParameter(name);
+		if(activity.getRequestAdapter() != null)
+			return activity.getRequestAdapter().getFileParameter(name);
 
 		return null;
 	}
@@ -327,14 +315,14 @@ public class TokenExpression implements TokenEvaluator {
 	 *			containing the parameter's values
 	 */
 	protected FileParameter[] getFileParameterValues(String name) {
-		if(requestAdapter != null)
-			return requestAdapter.getFileParameterValues(name);
+		if(activity.getRequestAdapter() != null)
+			return activity.getRequestAdapter().getFileParameterValues(name);
 
 		return null;
 	}
 
 	/**
-	 * Gets the attribute object from request attributes or action results.
+	 * Returns the value of the named attribute as an Object from the request attributes or action results.
 	 *
 	 * @param token the token
 	 * @return the object
@@ -345,8 +333,8 @@ public class TokenExpression implements TokenEvaluator {
 		if(activity.getProcessResult() != null)
 			object = activity.getProcessResult().getResultValue(token.getName());
 
-		if(object == null && requestAdapter != null)
-			object = requestAdapter.getAttribute(token.getName());
+		if(object == null && activity.getRequestAdapter() != null)
+			object = activity.getRequestAdapter().getAttribute(token.getName());
 
 		if(object != null && token.getPropertyName() != null)
 			object = getBeanProperty(object, token.getPropertyName());
@@ -355,7 +343,7 @@ public class TokenExpression implements TokenEvaluator {
 	}
 
 	/**
-	 * Return the bean instance that matches the given token.
+	 * Returns the bean instance that matches the given token.
 	 *
 	 * @param token the token
 	 * @return an instance of the bean
@@ -364,9 +352,9 @@ public class TokenExpression implements TokenEvaluator {
 		Object value;
 
 		if(token.getBeanClass() != null)
-			value = beanRegistry.getBean(token.getBeanClass());
+			value = activity.getBean(token.getBeanClass());
 		else
-			value = beanRegistry.getBean(token.getName());
+			value = activity.getBean(token.getName());
 
 		if(value != null && token.getPropertyName() != null)
 			value = getBeanProperty(value, token.getPropertyName());
@@ -395,6 +383,21 @@ public class TokenExpression implements TokenEvaluator {
 	}
 
 	/**
+	 * Returns the bean instance that matches the given token.
+	 *
+	 * @param token the token
+	 * @return an instance of the bean
+	 */
+	protected Object getProperty(Token token) {
+		Object value = activity.getActivityContext().getContextEnvironment().getProperty(token.getName());
+
+		if(value != null && token.getPropertyName() != null)
+			value = getBeanProperty(value, token.getPropertyName());
+
+		return value;
+	}
+	
+	/**
 	 * This method will cast List&lt;"?"&gt; to List&lt;T&gt; assuming ? is castable to T.
 	 *
 	 * @param <T> the generic type
@@ -417,5 +420,5 @@ public class TokenExpression implements TokenEvaluator {
 	protected static <T> Set<T> cast(Set<?> set) {
 		return (Set<T>)set;
 	}
-
+	
 }

@@ -18,7 +18,8 @@ package com.aspectran.core.context;
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.aspect.AspectRuleRegistry;
-import com.aspectran.core.context.bean.ContextBeanRegistry;
+import com.aspectran.core.context.bean.BeanRegistry;
+import com.aspectran.core.context.env.ContextEnvironment;
 import com.aspectran.core.context.message.MessageSource;
 import com.aspectran.core.context.template.TemplateProcessor;
 import com.aspectran.core.context.translet.TransletRuleRegistry;
@@ -45,6 +46,13 @@ public interface ActivityContext extends MessageSource {
 	String MESSAGE_SOURCE_BEAN_ID = "messageSource";
 
 	/**
+	 * Gets the context environment.
+	 *
+	 * @return the context environment
+	 */
+	ContextEnvironment getContextEnvironment();
+
+	/**
 	 * Gets class loader.
 	 *
 	 * @return the class loader
@@ -66,11 +74,11 @@ public interface ActivityContext extends MessageSource {
 	AspectRuleRegistry getAspectRuleRegistry();
 
 	/**
-	 * Gets the context bean registry.
+	 * Gets the bean registry.
 	 *
-	 * @return the context bean registry
+	 * @return the bean registry
 	 */
-	ContextBeanRegistry getContextBeanRegistry();
+	BeanRegistry getBeanRegistry();
 
 	/**
 	 * Gets the translet rule registry.
@@ -111,22 +119,6 @@ public interface ActivityContext extends MessageSource {
 	 * Removes the current activity.
 	 */
 	void removeCurrentActivity();
-	
-	/**
-	 * Gets the active profiles.
-	 *
-	 * @return the active profiles
-	 */
-	String[] getActiveProfiles();
-	
-	/**
-	 * Return whether the given profile is active.
-	 * If active profiles are empty whether the profile should be active by default.
-	 *
-	 * @param profiles the profiles
-	 * @return true if profile is active, otherwise false
-	 */
-	boolean isProfileActive(String... profiles);
 	
 	/**
 	 * Destroy the aspectran context. 

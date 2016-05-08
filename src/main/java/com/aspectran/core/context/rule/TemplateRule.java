@@ -212,7 +212,7 @@ public class TemplateRule implements Replicable<TemplateRule>, BeanReferenceInsp
 			return null;
 
 		List<Token> tokenList = Tokenizer.tokenize(content, false);
-		if(tokenList.size() > 0) {
+		if(!tokenList.isEmpty()) {
 			return tokenList.toArray(new Token[tokenList.size()]);
 		} else {
 			return new Token[0];

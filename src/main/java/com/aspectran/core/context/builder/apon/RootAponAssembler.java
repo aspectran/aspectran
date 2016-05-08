@@ -30,7 +30,6 @@ import com.aspectran.core.activity.response.transform.TransformResponse;
 import com.aspectran.core.context.builder.AssistantLocal;
 import com.aspectran.core.context.builder.ContextBuilderAssistant;
 import com.aspectran.core.context.builder.DefaultSettings;
-import com.aspectran.core.context.builder.importer.Importer;
 import com.aspectran.core.context.builder.apon.params.ActionParameters;
 import com.aspectran.core.context.builder.apon.params.AdviceActionParameters;
 import com.aspectran.core.context.builder.apon.params.AdviceParameters;
@@ -42,6 +41,7 @@ import com.aspectran.core.context.builder.apon.params.ContentParameters;
 import com.aspectran.core.context.builder.apon.params.ContentsParameters;
 import com.aspectran.core.context.builder.apon.params.DefaultSettingsParameters;
 import com.aspectran.core.context.builder.apon.params.DispatchParameters;
+import com.aspectran.core.context.builder.apon.params.EnvironmentParameters;
 import com.aspectran.core.context.builder.apon.params.ExceptionRaisedParameters;
 import com.aspectran.core.context.builder.apon.params.ForwardParameters;
 import com.aspectran.core.context.builder.apon.params.ImportParameters;
@@ -58,6 +58,7 @@ import com.aspectran.core.context.builder.apon.params.RootParameters;
 import com.aspectran.core.context.builder.apon.params.TemplateParameters;
 import com.aspectran.core.context.builder.apon.params.TransformParameters;
 import com.aspectran.core.context.builder.apon.params.TransletParameters;
+import com.aspectran.core.context.builder.importer.Importer;
 import com.aspectran.core.context.rule.AspectAdviceRule;
 import com.aspectran.core.context.rule.AspectJobAdviceRule;
 import com.aspectran.core.context.rule.AspectRule;
@@ -65,6 +66,7 @@ import com.aspectran.core.context.rule.BeanActionRule;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.DispatchResponseRule;
 import com.aspectran.core.context.rule.EchoActionRule;
+import com.aspectran.core.context.rule.EnvironmentRule;
 import com.aspectran.core.context.rule.ExceptionHandlingRule;
 import com.aspectran.core.context.rule.ForwardResponseRule;
 import com.aspectran.core.context.rule.IncludeActionRule;
@@ -86,7 +88,7 @@ import com.aspectran.core.context.rule.type.ItemType;
 import com.aspectran.core.context.rule.type.RequestMethodType;
 import com.aspectran.core.context.rule.type.ResponseType;
 import com.aspectran.core.context.rule.type.ScopeType;
-import com.aspectran.core.util.ProfilesUtils;
+import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.apon.GenericParameters;
 import com.aspectran.core.util.apon.ParameterDefine;
 import com.aspectran.core.util.apon.Parameters;
@@ -104,13 +106,13 @@ public class RootAponAssembler {
 		this.assistant = assistant;
 	}
 	
-	public Parameters assembleRoot() throws Exception {
+	public Parameters assembleRootParameters() throws Exception {
 		Parameters rootParameters = new RootParameters();
-		rootParameters.putValue(RootParameters.aspectran, assembleAspectran());
+		rootParameters.putValue(RootParameters.aspectran, assembleAspectranParameters());
 		return rootParameters;
 	}
 	
-	private Parameters assembleAspectran() throws Exception {
+	private Parameters assembleAspectranParameters() throws Exception {
 		Parameters aspectranParameters = new AspectranParameters();
 		
 		AssistantLocal assistantLocal = assistant.getAssistantLocal();
@@ -132,6 +134,14 @@ public class RootAponAssembler {
 			settingParameters.putValueNonNull(DefaultSettingsParameters.beanProxifier, defaultSettings.getBeanProxifier());
 			settingParameters.putValueNonNull(DefaultSettingsParameters.pointcutPatternVerifiable, defaultSettings.getPointcutPatternVerifiable());
 			settingParameters.putValueNonNull(DefaultSettingsParameters.defaultTemplateEngine, defaultSettings.getDefaultTemplateEngine());
+		}
+		
+		List<EnvironmentRule> environmentRules = assistant.getEnvironmentRules();
+		if(!environmentRules.isEmpty()) {
+			for(EnvironmentRule environmentRule : environmentRules) {
+				Parameters p = assembleEnvironmentParameters(environmentRule);
+				aspectranParameters.putValue(AspectranParameters.environments, p);
+			}
 		}
 		
 		Map<String, String> typeAliases = assistant.getTypeAliases();
@@ -170,6 +180,16 @@ public class RootAponAssembler {
 		}
 
 		return aspectranParameters;
+	}
+	
+	private Parameters assembleEnvironmentParameters(EnvironmentRule environmentRule) {
+		Parameters environmentParameters = new EnvironmentParameters();
+		environmentParameters.putValueNonNull(EnvironmentParameters.profile, environmentRule.getProfile());
+		if(environmentRule.getPropertyItemRuleMap() != null) {
+			Parameters itemHoderParameters = assembleItemHolderParameters(environmentRule.getPropertyItemRuleMap());
+			environmentParameters.putValue(EnvironmentParameters.properties, itemHoderParameters);
+		}
+		return environmentParameters;
 	}
 	
 	private Parameters assembleAspectParameters(AspectRule aspectRule) {
@@ -305,12 +325,14 @@ public class RootAponAssembler {
 		ItemRuleMap constructorArgumentItemRuleMap = beanRule.getConstructorArgumentItemRuleMap();
 		if(constructorArgumentItemRuleMap != null) {
 			ConstructorParameters constructorParameters = beanParameters.newParameters(BeanParameters.constructor);
-			constructorParameters.putValue(ConstructorParameters.arguments, assembleItemHolderParameters(constructorArgumentItemRuleMap));
+			Parameters itemHoderParameters = assembleItemHolderParameters(constructorArgumentItemRuleMap);
+			constructorParameters.putValue(ConstructorParameters.arguments, itemHoderParameters);
 		}
 		
 		ItemRuleMap propertyItemRuleMap = beanRule.getPropertyItemRuleMap();
 		if(propertyItemRuleMap != null) {
-			beanParameters.putValue(BeanParameters.properties, assembleItemHolderParameters(propertyItemRuleMap));
+			Parameters itemHoderParameters = assembleItemHolderParameters(propertyItemRuleMap);
+			beanParameters.putValue(BeanParameters.properties, itemHoderParameters);
 		}
 		
 		return beanParameters;
@@ -421,7 +443,8 @@ public class RootAponAssembler {
 		}
 
 		if(importer.getProfiles() != null) {
-			importParameters.putValue(ImportParameters.profile, ProfilesUtils.join(importer.getProfiles()));
+			String profiles = StringUtils.joinCommaDelimitedList(importer.getProfiles());
+			importParameters.putValue(ImportParameters.profile, profiles);
 		}
 		
 		return importParameters;
@@ -591,12 +614,14 @@ public class RootAponAssembler {
 		
 		ItemRuleMap propertyItemRuleMap = beanActionRule.getPropertyItemRuleMap();
 		if(propertyItemRuleMap != null) {
-			actionParameters.putValue(ActionParameters.properties, assembleItemHolderParameters(propertyItemRuleMap));
+			Parameters itemHoderParameters = assembleItemHolderParameters(propertyItemRuleMap);
+			actionParameters.putValue(ActionParameters.properties, itemHoderParameters);
 		}
 		
 		ItemRuleMap argumentItemRuleMap = beanActionRule.getArgumentItemRuleMap();
 		if(argumentItemRuleMap != null) {
-			actionParameters.putValue(ActionParameters.arguments, assembleItemHolderParameters(argumentItemRuleMap));
+			Parameters itemHoderParameters = assembleItemHolderParameters(argumentItemRuleMap);
+			actionParameters.putValue(ActionParameters.arguments, itemHoderParameters);
 		}
 		
 		return actionParameters;

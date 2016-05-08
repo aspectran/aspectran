@@ -16,6 +16,7 @@
 package com.aspectran.core.context.loader;
 
 import com.aspectran.core.adapter.ApplicationAdapter;
+import com.aspectran.core.adapter.GenericApplicationAdapter;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.builder.ActivityContextBuilder;
 import com.aspectran.core.context.builder.ActivityContextBuilderException;
@@ -26,6 +27,10 @@ public class XmlActivityContextLoader extends AbstractActivityContextLoader {
 
 	private String rootContext;
 
+	public XmlActivityContextLoader() {
+		super(new GenericApplicationAdapter());
+	}
+	
 	public XmlActivityContextLoader(ApplicationAdapter applicationAdapter) {
 		super(applicationAdapter);
 	}
@@ -34,17 +39,15 @@ public class XmlActivityContextLoader extends AbstractActivityContextLoader {
 	public ActivityContext load(String rootContext) throws ActivityContextBuilderException, InvalidResourceException {
 		this.rootContext = rootContext;
 
-		if(getAspectranClassLoader() == null) {
-			newAspectranClassLoader();
-		}
-
 		log.info("Build ActivityContext: " + rootContext);
 
 		long startTime = System.currentTimeMillis();
 
 		ActivityContextBuilder builder = new XmlActivityContextBuilder(getApplicationAdapter());
-		builder.setHybridLoad(isHybridLoad());
 		builder.setActiveProfiles(getActiveProfiles());
+		builder.setDefaultProfiles(getDefaultProfiles());
+		builder.setHybridLoad(isHybridLoad());
+		
 		ActivityContext activityContext = builder.build(rootContext);
 		
 		long elapsedTime = System.currentTimeMillis() - startTime;

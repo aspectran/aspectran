@@ -635,9 +635,9 @@ public class ItemRule {
 	}
 
 	/**
-	 * Convert to item rule map from parameters list.
+	 * Convert the given item parameters list into an {@code ItemRuleMap}.
 	 *
-	 * @param itemParametersList the item parameters list
+	 * @param itemParametersList the item parameters list to convert
 	 * @return the item rule map
 	 */
 	public static ItemRuleMap toItemRuleMap(List<Parameters> itemParametersList) {
@@ -662,35 +662,35 @@ public class ItemRule {
 	}
 	
 	/**
-	 * Convert then Parameters to the item rule.
+	 * Convert the given item parameters into an {@code ItemRule}.
 	 * <pre>
 	 * [
-	 * 	{
-	 * 		type: map
-	 * 		name: property1
-	 * 		value: {
-	 * 			code1: value1
-	 * 			code2: value2
-	 * 		}
-	 * 		valueType: java.lang.String
-	 * 		defaultValue: default value
-	 * 		tokenize: true
-	 * 	}
-	 * 	{
-	 * 		name: property2
-	 * 		value(int): 123
-	 * 	}
-	 * 	{
-	 * 		name: property2
-	 * 		reference: {
-	 * 			bean: a.bean
-	 * 		}
-	 * 	}
+	 *   {
+	 *     type: "map"
+	 *     name: "property1"
+	 *     value: {
+	 *       code1: "value1"
+	 *       code2: "value2"
+	 *     }
+	 *     valueType: "java.lang.String"
+	 *     defaultValue: "default value"
+	 *     tokenize: true
+	 *   }
+	 *   {
+	 *     name: "property2"
+	 *     value(int): 123
+	 *   }
+	 *   {
+	 *     name: "property2"
+	 *     reference: {
+	 *       bean: "a.bean"
+	 *     }
+	 *   }
 	 * ]
 	 * </pre>
 	 *
 	 * @param itemParameters the item parameters
-	 * @return the item rule
+	 * @return an {@code ItemRule}
 	 */
 	public static ItemRule toItemRule(Parameters itemParameters) {
 		String type = itemParameters.getString(ItemParameters.type);
@@ -744,14 +744,26 @@ public class ItemRule {
 	}
 	
 	/**
-	 * Convert to item parameters from a string.
+	 * Convert the given {@code String} into an Item {@code Parameters}.
 	 *
-	 * @param text the text
-	 * @return the list
+	 * @param text the {@code String} to convert
+	 * @return the item parameters list
 	 */
 	public static List<Parameters> toItemParametersList(String text) {
 		Parameters holder = new ItemHolderParameters(text);
 		return holder.getParametersList(ItemHolderParameters.item);
+	}
+
+	/**
+	 * Convert the given {@code String} into an {@code ItemRuleMap}.
+	 *
+	 * @param text the {@code String} to convert
+	 * @return an {@code ItemRuleMap}
+	 */
+	public static ItemRuleMap toItemRuleMap(String text) {
+		Parameters holder = new ItemHolderParameters(text);
+		List<Parameters> parametersList = holder.getParametersList(ItemHolderParameters.item);
+		return toItemRuleMap(parametersList);
 	}
 	
 }

@@ -256,7 +256,7 @@ public class BeanActionRule implements ArgumentPossessable, PropertyPossessable,
 	}
 	
 	/**
-	 * Returns a new derived instance of BeanActionRule.
+	 * Returns a new instance of BeanActionRule.
 	 *
 	 * @param id the action id
 	 * @param beanId the bean id

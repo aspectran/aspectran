@@ -18,6 +18,8 @@ package com.aspectran.core.context.builder;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -31,10 +33,12 @@ import com.aspectran.core.context.builder.importer.ImportHandler;
 import com.aspectran.core.context.builder.importer.Importer;
 import com.aspectran.core.context.builder.importer.ResourceImporter;
 import com.aspectran.core.context.builder.importer.UrlImporter;
+import com.aspectran.core.context.env.ContextEnvironment;
 import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.BeanActionRule;
 import com.aspectran.core.context.rule.BeanRule;
+import com.aspectran.core.context.rule.EnvironmentRule;
 import com.aspectran.core.context.rule.TemplateRule;
 import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.ability.BeanReferenceInspectable;
@@ -42,7 +46,10 @@ import com.aspectran.core.context.rule.type.DefaultSettingType;
 import com.aspectran.core.context.rule.type.ImportFileType;
 import com.aspectran.core.context.template.TemplateRuleRegistry;
 import com.aspectran.core.context.translet.TransletRuleRegistry;
-import com.aspectran.core.util.*;
+import com.aspectran.core.util.ArrayStack;
+import com.aspectran.core.util.BeanDescriptor;
+import com.aspectran.core.util.MethodUtils;
+import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
@@ -55,22 +62,24 @@ public class ContextBuilderAssistant {
 
 	protected final Log log = LogFactory.getLog(getClass());
 	
+	private final ArrayStack objectStack = new ArrayStack();
+	
+	private final Map<DefaultSettingType, String> settings = new HashMap<>();
+	
+	private final List<EnvironmentRule> environmentRules = new LinkedList<>();
+	
+	private final Map<String, String> typeAliases = new HashMap<>();
+	
+	private final BeanReferenceInspector beanReferenceInspector = new BeanReferenceInspector();
+	
+	private AssistantLocal assistantLocal = new AssistantLocal();
+
 	private ApplicationAdapter applicationAdapter;
 	
 	private String applicationBasePath;
 
 	private ClassLoader classLoader;
-	
-	private ArrayStack objectStack = new ArrayStack();
-	
-	private AssistantLocal assistantLocal = new AssistantLocal();
-	
-	private Map<String, String> typeAliases = new HashMap<>();
-	
-	private Map<DefaultSettingType, String> settings = new HashMap<>();
-	
-	private BeanReferenceInspector beanReferenceInspector = new BeanReferenceInspector();
-	
+
 	private AspectRuleRegistry aspectRuleRegistry;
 	
 	private BeanRuleRegistry beanRuleRegistry;
@@ -84,21 +93,16 @@ public class ContextBuilderAssistant {
 	public ContextBuilderAssistant() {
 	}
 	
-	public void readyAssist(ApplicationAdapter applicationAdapter, String[] activeProfiles) {
-		if(activeProfiles != null && activeProfiles.length > 0) {
-			log.info("Activating profiles [" + ProfilesUtils.join(activeProfiles) + "]");
-		}
-		
-		this.applicationAdapter = applicationAdapter;
+	public void readyAssist(ContextEnvironment contextEnvironment) {
+		this.applicationAdapter = contextEnvironment.getApplicationAdapter();
 		this.applicationBasePath = applicationAdapter.getApplicationBasePath();
 		this.classLoader = applicationAdapter.getClassLoader();
 		
 		aspectRuleRegistry = new AspectRuleRegistry();
 		
-		beanRuleRegistry = new BeanRuleRegistry(classLoader);
-		beanRuleRegistry.setActiveProfiles(activeProfiles);
+		beanRuleRegistry = new BeanRuleRegistry(contextEnvironment);
 		
-		transletRuleRegistry = new TransletRuleRegistry(applicationAdapter);
+		transletRuleRegistry = new TransletRuleRegistry(contextEnvironment);
 		transletRuleRegistry.setAssistantLocal(assistantLocal);
 		beanRuleRegistry.setTransletRuleRegistry(transletRuleRegistry);
 		
@@ -157,17 +161,6 @@ public class ContextBuilderAssistant {
 	}
 
 	/**
-	 * Sets the settings.
-	 *
-	 * @param settings the settings
-	 * @throws ClassNotFoundException the class not found exception
-	 */
-	public void setSettings(Map<DefaultSettingType, String> settings) throws ClassNotFoundException {
-		this.settings = settings;
-		applySettings();
-	}
-
-	/**
 	 * Put setting.
 	 *
 	 * @param settingType the setting type
@@ -215,6 +208,14 @@ public class ContextBuilderAssistant {
 			Class<?> transletImplementationClass = classLoader.loadClass(defaultSettings.getTransletImplementationClassName());
 			defaultSettings.setTransletImplementationClass((Class<GenericTranslet>)transletImplementationClass);
 		}
+	}
+	
+	public List<EnvironmentRule> getEnvironmentRules() {
+		return environmentRules;
+	}
+
+	public void addEnvironmentRule(EnvironmentRule environmentRule) {
+		environmentRules.add(environmentRule);
 	}
 	
 	/**
@@ -326,7 +327,6 @@ public class ContextBuilderAssistant {
 	public boolean isNullableActionId() {
 		DefaultSettings defaultSettings = assistantLocal.getDefaultSettings();
 		return defaultSettings == null || defaultSettings.isNullableActionId();
-
 	}
 
 	/**
@@ -556,7 +556,7 @@ public class ContextBuilderAssistant {
 		this.importHandler = importHandler;
 	}
 
-	public Importer newImporter(String file, String resource, String url, String fileType, String profiles) {
+	public Importer newImporter(String file, String resource, String url, String fileType, String profile) {
 		ImportFileType importFileType = ImportFileType.lookup(fileType);
 		Importer importer = null;
 
@@ -568,9 +568,9 @@ public class ContextBuilderAssistant {
 			importer = new UrlImporter(url, importFileType);
 		}
 		
-		if(profiles != null && !profiles.isEmpty()) {
-			String[] arr = ProfilesUtils.split(profiles);
-			if(arr != null) {
+		if(profile != null && !profile.isEmpty()) {
+			String[] arr = StringUtils.splitCommaDelimitedString(profile);
+			if(arr != null && arr.length > 0) {
 				importer.setProfiles(arr);
 			}
 		}

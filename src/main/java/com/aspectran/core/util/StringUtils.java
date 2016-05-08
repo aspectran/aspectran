@@ -23,8 +23,6 @@ import java.util.TimeZone;
 
 /**
  * Static utility methods pertaining to {@code String} or {@code CharSequence} instances.
- * 
- * @author Juho Jeong
  */
 public class StringUtils {
 
@@ -73,6 +71,13 @@ public class StringUtils {
 		return containsWhitespace((CharSequence)str);
 	}
 
+	/**
+	 * Trim leading and trailing whitespace from the given {@code String}.
+	 * 
+	 * @param str the {@code String} to check
+	 * @return the trimmed {@code String}
+	 * @see java.lang.Character#isWhitespace
+	 */
 	public static String trimWhitespace(String str) {
 		if(!hasLength(str)) {
 			return str;
@@ -87,6 +92,14 @@ public class StringUtils {
 		return buf.toString();
 	}
 
+	/**
+	 * Trim <i>all</i> whitespace from the given {@code String}:
+	 * leading, trailing, and in between characters.
+	 * 
+	 * @param str the {@code String} to check
+	 * @return the trimmed {@code String}
+	 * @see java.lang.Character#isWhitespace
+	 */
 	public static String trimAllWhitespace(String str) {
 		if(!hasLength(str)) {
 			return str;
@@ -103,6 +116,13 @@ public class StringUtils {
 		return buf.toString();
 	}
 
+	/**
+	 * Trim leading whitespace from the given {@code String}.
+	 * 
+	 * @param str the {@code String} to check
+	 * @return the trimmed {@code String}
+	 * @see java.lang.Character#isWhitespace
+	 */
 	public static String trimLeadingWhitespace(String str) {
 		if(!hasLength(str)) {
 			return str;
@@ -114,6 +134,13 @@ public class StringUtils {
 		return buf.toString();
 	}
 
+	/**
+	 * Trim trailing whitespace from the given {@code String}.
+	 * 
+	 * @param str the {@code String} to check
+	 * @return the trimmed {@code String}
+	 * @see java.lang.Character#isWhitespace
+	 */
 	public static String trimTrailingWhitespace(String str) {
 		if(!hasLength(str)) {
 			return str;
@@ -125,6 +152,13 @@ public class StringUtils {
 		return buf.toString();
 	}
 
+	/**
+	 * Trim all occurrences of the supplied leading character from the given {@code String}.
+	 * 
+	 * @param str the {@code String} to check
+	 * @param leadingCharacter the leading character to be trimmed
+	 * @return the trimmed {@code String}
+	 */
 	public static String trimLeadingCharacter(String str, char leadingCharacter) {
 		if(!hasLength(str)) {
 			return str;
@@ -136,6 +170,13 @@ public class StringUtils {
 		return buf.toString();
 	}
 
+	/**
+	 * Trim all occurrences of the supplied trailing character from the given {@code String}.
+	 * 
+	 * @param str the {@code String} to check
+	 * @param trailingCharacter the trailing character to be trimmed
+	 * @return the trimmed {@code String}
+	 */
 	public static String trimTrailingCharacter(String str, char trailingCharacter) {
 		if(!hasLength(str)) {
 			return str;
@@ -147,6 +188,14 @@ public class StringUtils {
 		return buf.toString();
 	}
 
+	/**
+	 * Test if the given {@code String} starts with the specified prefix,
+	 * ignoring upper/lower case.
+	 * 
+	 * @param str the {@code String} to check
+	 * @param prefix the prefix to look for
+	 * @see java.lang.String#startsWith
+	 */
 	public static boolean startsWithIgnoreCase(String str, String prefix) {
 		if(str == null || prefix == null) {
 			return false;
@@ -162,6 +211,14 @@ public class StringUtils {
 		return lcStr.equals(lcPrefix);
 	}
 
+	/**
+	 * Test if the given {@code String} ends with the specified suffix,
+	 * ignoring upper/lower case.
+	 * 
+	 * @param str the {@code String} to check
+	 * @param suffix the suffix to look for
+	 * @see java.lang.String#endsWith
+	 */
 	public static boolean endsWithIgnoreCase(String str, String suffix) {
 		if(str == null || suffix == null) {
 			return false;
@@ -181,73 +238,72 @@ public class StringUtils {
 	/**
 	 * Returns {@code true} if the given string is null or is the empty string.
 	 *
-	 * @param string a string reference to check
+	 * @param str a string reference to check
 	 * @return {@code true} if the string is null or is the empty string
 	 */
-	public static boolean isEmpty(String string) {
-		return (string == null || string.length() == 0);
+	public static boolean isEmpty(String str) {
+		return (str == null || str.length() == 0);
 	}
 	
 	/**
 	 * Returns the given string if it is non-null; the empty string otherwise.
 	 *
-	 * @param string the string to test and possibly return
+	 * @param str the string to test and possibly return
 	 * @return {@code string} itself if it is non-null; {@code ""} if it is null
 	 */
-	public static String nullToEmpty(String string) {
-	  return (string == null) ? EMPTY : string;
+	public static String nullToEmpty(String str) {
+	  return (str == null) ? EMPTY : str;
 	}
 
 	/**
 	 * Returns the given string if it is nonempty; {@code null} otherwise.
 	 *
-	 * @param string the string to test and possibly return
+	 * @param str the string to test and possibly return
 	 * @return {@code string} itself if it is nonempty; {@code null} if it is empty or null
 	 */
-	public static String emptyToNull(String string) {
-		return (string == null || string.length() == 0) ? null : string;
+	public static String emptyToNull(String str) {
+		return (str == null || str.length() == 0) ? null : str;
 	}
 
-	public static boolean startsWith(String string, char prefix) {
-		if(string == null || string.isEmpty())
+	public static boolean startsWith(String str, char prefix) {
+		if(str == null || str.isEmpty())
 			return false;
-		return (string.charAt(0) == prefix);
+		return (str.charAt(0) == prefix);
 	}
 	
-	public static boolean endsWith(String string, char suffix) {
-		if(string == null || string.isEmpty())
+	public static boolean endsWith(String str, char suffix) {
+		if(str == null || str.isEmpty())
 			return false;
-		return (string.charAt(string.length() - 1) == suffix);
+		return (str.charAt(str.length() - 1) == suffix);
 	}
 
 	/**
 	 * 발견한 모든 검색 문자열을 치환 문자열로 교체한다.
 	 * 
-	 * @param string 대상 문자열
+	 * @param str 대상 문자열
 	 * @param search 발견 문자열
 	 * @param replace 치환 문자열
-	 * 
 	 * @return String
 	 */
-	public static String replace(String string, String search, String replace) {
-		if(string == null || search == null || replace == null)
-			return string;
+	public static String replace(String str, String search, String replace) {
+		if(str == null || search == null || replace == null)
+			return str;
 
 		StringBuilder sb = new StringBuilder();
 
 		int searchLen = search.length();
-		int stringLen = string.length();
+		int stringLen = str.length();
 		int index = 0;
 		int oldIndex = 0;
 
-		while((index = string.indexOf(search, oldIndex)) >= 0) {
-			sb.append(string.substring(oldIndex, index));
+		while((index = str.indexOf(search, oldIndex)) >= 0) {
+			sb.append(str.substring(oldIndex, index));
 			sb.append(replace);
 			oldIndex = index + searchLen;
 		}
 
 		if(oldIndex < stringLen)
-			sb.append(string.substring(oldIndex, stringLen));
+			sb.append(str.substring(oldIndex, stringLen));
 
 		return sb.toString();
 	}
@@ -256,17 +312,16 @@ public class StringUtils {
 	 * 발견한 모든 검색 문자열을 치환 문자열로 교체합니다.
 	 * 발견 문장 배열과 치환 문자열 배열은 서로 쌍을 이루어야 합니다.
 	 * 
-	 * @param string 대상 문자열
+	 * @param str 대상 문자열
 	 * @param search 발견 문자열 배열
 	 * @param replace 치환 문자열 배열
-	 * 
 	 * @return String
 	 */
-	public static String replace(String string, String[] search, String[] replace) {
-		if(string == null || search == null || replace == null)
-			return string;
+	public static String replace(String str, String[] search, String[] replace) {
+		if(str == null || search == null || replace == null)
+			return str;
 
-		StringBuilder sb = new StringBuilder(string);
+		StringBuilder sb = new StringBuilder(str);
 
 		int loop = (search.length <= replace.length) ? search.length : replace.length;
 		int start = 0;
@@ -303,37 +358,36 @@ public class StringUtils {
 	 * 대상문자열(str)에서 구분문자열(delim)을 기준으로 문자열을 분리하여
 	 * 각 분리된 문자열을 배열에 할당하여 반환한다.
 	 * 
-	 * @param string 분리 대상 문자열
+	 * @param str 분리 대상 문자열
 	 * @param delim 구분 문자열
-	 * 
 	 * @return 분리된 문자열을 순서대로 배열에 격납하여 반환한다.
 	 */
-	public static String[] split(String string, String delim) {
-		if(isEmpty(string))
+	public static String[] split(String str, String delim) {
+		if(isEmpty(str))
 			return new String[0];
 
-		int cnt = search(string, delim);
+		int cnt = search(str, delim);
 		String[] item = new String[cnt + 1];
 
 		if(cnt == 0) {
-			item[0] = string;
+			item[0] = str;
 			return item;
 		}
 
 		int idx = 0;
 		int pos1 = 0;
-		int pos2 = string.indexOf(delim);
+		int pos2 = str.indexOf(delim);
 		int delimLen = delim.length();
 
 		while(pos2 >= 0) {
-			item[idx++] = (pos1 > pos2 - 1) ? EMPTY : string.substring(pos1, pos2);
+			item[idx++] = (pos1 > pos2 - 1) ? EMPTY : str.substring(pos1, pos2);
 
 			pos1 = pos2 + delimLen;
-			pos2 = string.indexOf(delim, pos1);
+			pos2 = str.indexOf(delim, pos1);
 		}
 
-		if(pos1 < string.length())
-			item[idx] = string.substring(pos1);
+		if(pos1 < str.length())
+			item[idx] = str.substring(pos1);
 
 		if(item[cnt] == null)
 			item[cnt] = EMPTY;
@@ -346,15 +400,14 @@ public class StringUtils {
 	 * 각 분리된 문자열을 배열에 할당하여 반환한다.
 	 * size를 지정하면 ""문자열이  나머지 문자열 전체를 가지는 최대 size개 원소의 배열을 반환합니다.
 	 * 
-	 * @param string 분리 대상 문자열
+	 * @param str 분리 대상 문자열
 	 * @param delim 구분 문자열
 	 * @param size 결과 배열의 크기
-	 * 
 	 * @return 분리된 문자열을 순서대로 배열에 격납하여 반환한다.
 	 */
-	public static String[] split(String string, String delim, int size) {
+	public static String[] split(String str, String delim, int size) {
 		String[] arr1 = new String[size];
-		String[] arr2 = split(string, delim);
+		String[] arr2 = split(str, delim);
 
 		for(int i = 0; i < arr1.length; i++) {
 			if(i < arr2.length)
@@ -371,36 +424,36 @@ public class StringUtils {
 	 * 대상문자열(str)에서 구분문자열(delim)을 기준으로 문자열을 분리하여
 	 * 각 분리된 문자열을 배열에 할당하여 반환한다.
 	 * 
-	 * @param string 분리 대상 문자열
+	 * @param str 분리 대상 문자열
 	 * @param delim 구분 문자열
 	 * 
 	 * @return 분리된 문자열을 순서대로 배열에 격납하여 반환한다.
 	 */
-	public static String[] split(String string, char delim) {
-		if(isEmpty(string))
+	public static String[] split(String str, char delim) {
+		if(isEmpty(str))
 			return new String[0];
 
-		int cnt = search(string, delim);
+		int cnt = search(str, delim);
 		String[] item = new String[cnt + 1];
 
 		if(cnt == 0) {
-			item[0] = string;
+			item[0] = str;
 			return item;
 		}
 
 		int idx = 0;
 		int pos1 = 0;
-		int pos2 = string.indexOf(delim);
+		int pos2 = str.indexOf(delim);
 
 		while(pos2 >= 0) {
-			item[idx++] = (pos1 > pos2 - 1) ? EMPTY : string.substring(pos1, pos2);
+			item[idx++] = (pos1 > pos2 - 1) ? EMPTY : str.substring(pos1, pos2);
 
 			pos1 = pos2 + 1;
-			pos2 = string.indexOf(delim, pos1);
+			pos2 = str.indexOf(delim, pos1);
 		}
 
-		if(pos1 < string.length())
-			item[idx] = string.substring(pos1);
+		if(pos1 < str.length())
+			item[idx] = str.substring(pos1);
 
 		if(item[cnt] == null)
 			item[cnt] = EMPTY;
@@ -413,15 +466,14 @@ public class StringUtils {
 	 * 각 분리된 문자열을 배열에 할당하여 반환한다.
 	 * size를 지정하면 ""문자열이  나머지 문자열 전체를 가지는 최대 size개 원소의 배열을 반환합니다.
 	 * 
-	 * @param string 분리 대상 문자열
+	 * @param str 분리 대상 문자열
 	 * @param delim 구분 문자열
 	 * @param size 결과 배열의 크기
-	 * 
 	 * @return 분리된 문자열을 순서대로 배열에 격납하여 반환한다.
 	 */
-	public static String[] split(String string, char delim, int size) {
+	public static String[] split(String str, char delim, int size) {
 		String[] arr1 = new String[size];
-		String[] arr2 = split(string, delim);
+		String[] arr2 = split(str, delim);
 
 		for(int i = 0; i < arr1.length; i++) {
 			if(i < arr2.length)
@@ -437,13 +489,12 @@ public class StringUtils {
 	 * 대상문자열(str)에서 지정문자열(keyw)이 검색된 횟수를,
 	 * 지정문자열이 없으면 0 을 반환한다.
 	 * 
-	 * @param string 대상문자열
+	 * @param str 대상문자열
 	 * @param keyw 검색할 문자열
-	 * 
 	 * @return 지정문자열이 검색되었으면 검색된 횟수를, 검색되지 않았으면 0 을 반환한다.
 	 */
-	public static int search(String string, String keyw) {
-		int strLen = string.length();
+	public static int search(String str, String keyw) {
+		int strLen = str.length();
 		int keywLen = keyw.length();
 		int pos = 0;
 		int cnt = 0;
@@ -451,7 +502,7 @@ public class StringUtils {
 		if(keywLen == 0)
 			return 0;
 
-		while((pos = string.indexOf(keyw, pos)) != -1) {
+		while((pos = str.indexOf(keyw, pos)) != -1) {
 			pos += keywLen;
 			cnt++;
 
@@ -466,13 +517,12 @@ public class StringUtils {
 	 * 대상문자열(str)에서 대소문자 구분없이 지정문자열(keyw)이 검색된 횟수를,
 	 * 지정문자열이 없으면 0 을 반환한다.
 	 * 
-	 * @param string 대상문자열
+	 * @param str 대상문자열
 	 * @param keyw 검색할 문자열
-	 * 
 	 * @return 지정문자열이 검색되었으면 검색된 횟수를, 검색되지 않았으면 0 을 반환한다.
 	 */
-	public static int searchIgnoreCase(String string, String keyw) {
-		return search(string.toLowerCase(), keyw.toLowerCase());
+	public static int searchIgnoreCase(String str, String keyw) {
+		return search(str.toLowerCase(), keyw.toLowerCase());
 	}
 
 	/**
@@ -481,7 +531,6 @@ public class StringUtils {
 	 * 
 	 * @param chars 대상문자열
 	 * @param c 검색할 문자열
-	 * 
 	 * @return 지정문자열이 검색되었으면 검색된 횟수를, 검색되지 않았으면 0 을 반환한다.
 	 */
 	public static int search(CharSequence chars, char c) {
@@ -500,7 +549,6 @@ public class StringUtils {
 	 *
 	 * @param chars 대상문자열
 	 * @param c 검색할 문자열
-	 * 
 	 * @return 지정문자열이 검색되었으면 검색된 횟수를, 검색되지 않았으면 0 을 반환한다.
 	 */
 	public static int searchIgnoreCase(CharSequence chars, char c) {
@@ -515,31 +563,29 @@ public class StringUtils {
 	}
 	
 	/**
-	 * 주어진 <code>delimiters</code>에 의해 분리된 문자열 배열을 반환한다.
+	 * Tokenize the given String into a String array via a StringTokenizer.
 	 * 
-	 * @param string the string
-	 * @param delimiters the delimiters
-	 * 
-	 * @return the string[]
+	 * @param str the String to tokenize
+	 * @param delimiters the delimiter characters
+	 * @return an array of the tokens
 	 */
-	public static String[] tokenize(String string, String delimiters) {
-		return tokenize(string, delimiters, false);
+	public static String[] tokenize(String str, String delimiters) {
+		return tokenize(str, delimiters, false);
 	}
 
 	/**
-	 * 주어진 <code>delimiters</code>에 의해 분리된 문자열 배열을 반환한다.
+	 * Tokenize the given String into a String array via a StringTokenizer.
 	 * 
-	 * @param string the string
-	 * @param delimiters the delimiters
-	 * @param trim the trim
-	 * 
-	 * @return the string[]
+	 * @param str the String to tokenize
+	 * @param delimiters the delimiter characters
+	 * @param trim trim the tokens via String's trim
+	 * @return an array of the tokens
 	 */
-	public static String[] tokenize(String string, String delimiters, boolean trim) {
-		if(string == null)
+	public static String[] tokenize(String str, String delimiters, boolean trim) {
+		if(str == null)
 			return new String[0];
 
-		StringTokenizer st = new StringTokenizer(string, delimiters);
+		StringTokenizer st = new StringTokenizer(str, delimiters);
 		List<String> tokens = new ArrayList<String>();
 
 		while(st.hasMoreTokens()) {
@@ -549,6 +595,53 @@ public class StringUtils {
 		return tokens.toArray(new String[tokens.size()]);
 	}
 
+	/**
+	 * Convert a {@code String} array into a delimited {@code String} (e.g. CSV).
+	 * <p>Useful for {@code toString()} implementations.
+	 * 
+	 * @param arr the array to display
+	 * @param delim the delimiter to use (typically a ",")
+	 * @return the delimited {@code String}
+	 */
+	public static String arrayToDelimitedString(Object[] arr, String delim) {
+		if(arr == null || arr.length == 0) {
+			return EMPTY;
+		}
+		if(arr.length == 1) {
+			return (arr[0] == null) ? EMPTY : arr[0].toString();
+		}
+		StringBuilder sb = new StringBuilder();
+		for(int i = 0; i < arr.length; i++) {
+			if(i > 0) {
+				sb.append(delim);
+			}
+			sb.append(arr[i]);
+		}
+		return sb.toString();
+	}
+	
+	/**
+	 * Convert a comma delimited list (e.g., a row from a CSV file) into an
+	 * array of strings.
+	 * 
+	 * @param str the input {@code String}
+	 * @return an array of strings, or the empty array in case of empty input
+	 */
+	public static String[] splitCommaDelimitedString(String str) {
+		return tokenize(str, ",", true);
+	}	
+	
+	/**
+	 * Convert a {@code String} array into a comma delimited {@code String}
+	 * (i.e., CSV).
+	 * 
+	 * @param arr the array to display
+	 * @return the delimited {@code String}
+	 */
+	public static String joinCommaDelimitedList(String[] arr) {
+		return arrayToDelimitedString(arr, ", ");
+	}	
+	
 	/**
 	 * Parse the given {@code localeString} value into a {@link Locale}.
 	 * <p>This is the inverse operation of {@link Locale#toString Locale's toString}.
@@ -561,11 +654,11 @@ public class StringUtils {
 	 */
 	public static Locale parseLocaleString(String localeString) {
 		String[] parts = tokenize(localeString, "_ ", false);
-		String language = (parts.length > 0 ? parts[0] : "");
-		String country = (parts.length > 1 ? parts[1] : "");
+		String language = (parts.length > 0 ? parts[0] : EMPTY);
+		String country = (parts.length > 1 ? parts[1] : EMPTY);
 		validateLocalePart(language);
 		validateLocalePart(country);
-		String variant = "";
+		String variant = EMPTY;
 		if(parts.length > 2) {
 			// There is definitely a variant, and it is everything after the country
 			// code sans the separator between the country code and the variant.
@@ -596,7 +689,7 @@ public class StringUtils {
 	 * @return the RFC 3066 compliant language tag as {@code String}
 	 */
 	public static String toLanguageTag(Locale locale) {
-		return locale.getLanguage() + (hasText(locale.getCountry()) ? "-" + locale.getCountry() : "");
+		return locale.getLanguage() + (hasText(locale.getCountry()) ? "-" + locale.getCountry() : EMPTY);
 	}
 
 	/**

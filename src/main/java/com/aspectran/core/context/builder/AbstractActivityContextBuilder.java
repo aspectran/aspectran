@@ -18,6 +18,7 @@ package com.aspectran.core.context.builder;
 import java.util.List;
 
 import com.aspectran.core.adapter.ApplicationAdapter;
+import com.aspectran.core.adapter.RegulatedApplicationAdapter;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.AspectranActivityContext;
 import com.aspectran.core.context.aspect.AspectAdviceRulePostRegister;
@@ -32,7 +33,9 @@ import com.aspectran.core.context.bean.ContextBeanRegistry;
 import com.aspectran.core.context.builder.importer.FileImporter;
 import com.aspectran.core.context.builder.importer.Importer;
 import com.aspectran.core.context.builder.importer.ResourceImporter;
+import com.aspectran.core.context.env.ContextEnvironment;
 import com.aspectran.core.context.rule.AspectRule;
+import com.aspectran.core.context.rule.EnvironmentRule;
 import com.aspectran.core.context.rule.PointcutPatternRule;
 import com.aspectran.core.context.rule.PointcutRule;
 import com.aspectran.core.context.rule.type.AspectTargetType;
@@ -44,7 +47,10 @@ import com.aspectran.core.context.template.ContextTemplateProcessor;
 import com.aspectran.core.context.template.TemplateProcessor;
 import com.aspectran.core.context.template.TemplateRuleRegistry;
 import com.aspectran.core.context.translet.TransletRuleRegistry;
-import com.aspectran.core.util.*;
+import com.aspectran.core.util.BeanDescriptor;
+import com.aspectran.core.util.MethodUtils;
+import com.aspectran.core.util.ResourceUtils;
+import com.aspectran.core.util.StringUtils;
 
 /**
  * The Class AbstractActivityContextBuilder.
@@ -53,47 +59,59 @@ import com.aspectran.core.util.*;
  */
 abstract class AbstractActivityContextBuilder extends ContextBuilderAssistant implements ActivityContextBuilder {
 	
-	private ApplicationAdapter applicationAdapter;
+	private final AspectranActivityContext activityContext;
+
+	private final ContextEnvironment contextEnvironment;
 	
 	private boolean hybridLoad;
 	
-	private String[] activeProfiles;
-	
 	AbstractActivityContextBuilder(ApplicationAdapter applicationAdapter) {
-		this.applicationAdapter = applicationAdapter;
+		activityContext = new AspectranActivityContext(new RegulatedApplicationAdapter(applicationAdapter));
+		contextEnvironment = activityContext.getContextEnvironment();
+		
+		readyAssist(contextEnvironment);
 	}
 
-	public ApplicationAdapter getApplicationAdapter() {
-		return applicationAdapter;
+	public ContextEnvironment getContextEnvironment() {
+		return contextEnvironment;
+	}
+	
+	@Override
+	public void setActiveProfiles(String... activeProfiles) {
+		if(activeProfiles != null) {
+			log.info("Activating profiles [" + StringUtils.joinCommaDelimitedList(activeProfiles) + "]");
+		}
+		
+		contextEnvironment.setActiveProfiles(activeProfiles);
+	}
+	
+	@Override
+	public void setDefaultProfiles(String... defaultProfiles) {
+		if(defaultProfiles != null) {
+			log.info("Default profiles [" + StringUtils.joinCommaDelimitedList(defaultProfiles) + "]");
+		}
+
+		contextEnvironment.setDefaultProfiles(defaultProfiles);
 	}
 
 	public boolean isHybridLoad() {
 		return hybridLoad;
 	}
 
+	@Override
 	public void setHybridLoad(boolean hybridLoad) {
 		this.hybridLoad = hybridLoad;
 	}
 	
-	public String[] getActiveProfiles() {
-		if(activeProfiles == null) {
-			activeProfiles = ProfilesUtils.getActiveProfilesFromSystem();
-		}
-		return activeProfiles;
-	}
-
-	public void setActiveProfiles(String[] activeProfiles) {
-		this.activeProfiles = activeProfiles;
-	}
-
 	/**
 	 * Returns a new instance of ActivityContext.
 	 *
-	 * @param applicationAdapter the application adapter
 	 * @return the activity context
 	 * @throws BeanReferenceException will be thrown when cannot resolve reference to bean
 	 */
-	ActivityContext makeActivityContext(ApplicationAdapter applicationAdapter) throws BeanReferenceException {
+	ActivityContext makeActivityContext() throws BeanReferenceException {
+		initContextEnvironment();
+		
 		AspectRuleRegistry aspectRuleRegistry = getAspectRuleRegistry();
 
 		BeanRuleRegistry beanRuleRegistry = getBeanRuleRegistry();
@@ -116,15 +134,24 @@ abstract class AbstractActivityContextBuilder extends ContextBuilderAssistant im
 		BeanDescriptor.clearCache();
 		MethodUtils.clearCache();
 
-		AspectranActivityContext context = new AspectranActivityContext(applicationAdapter);
-		context.setAspectRuleRegistry(aspectRuleRegistry);
-		context.setContextBeanRegistry(contextBeanRegistry);
-		context.setTransletRuleRegistry(transletRuleRegistry);
-		context.setTemplateProcessor(templateProcessor);
-		context.setActiveProfiles(getActiveProfiles());
-		context.initialize();
+		activityContext.setAspectRuleRegistry(aspectRuleRegistry);
+		activityContext.setContextBeanRegistry(contextBeanRegistry);
+		activityContext.setTransletRuleRegistry(transletRuleRegistry);
+		activityContext.setTemplateProcessor(templateProcessor);
+		activityContext.initialize();
 
-		return context;
+		return activityContext;
+	}
+	
+	private void initContextEnvironment() {
+		for(EnvironmentRule environmentRule : getEnvironmentRules()) {
+			if(environmentRule.getPropertyItemRuleMap() != null) {
+				String[] profiles = StringUtils.splitCommaDelimitedString(environmentRule.getProfile());
+				if(contextEnvironment.acceptsProfiles(profiles)) {
+					contextEnvironment.addPropertyItemRuleMap(environmentRule.getPropertyItemRuleMap());
+				}
+			}
+		}
 	}
 	
 	/**

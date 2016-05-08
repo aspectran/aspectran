@@ -13,31 +13,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.core.context.loader.config;
+package com.aspectran.core.context.builder.apon.params;
 
 import com.aspectran.core.util.apon.AbstractParameters;
 import com.aspectran.core.util.apon.ParameterDefine;
 import com.aspectran.core.util.apon.ParameterValueType;
 
-public class AspectranWebConfig extends AbstractParameters {
+public class EnvironmentParameters extends AbstractParameters {
 
-	public static final ParameterDefine uriDecoding;
-
-	private final static ParameterDefine[] parameterDefines;
-
+	public static final ParameterDefine profile;
+	
+	public static final ParameterDefine properties;
+	
+	private static final ParameterDefine[] parameterDefines;
+	
 	static {
-		uriDecoding = new ParameterDefine("uriDecoding", ParameterValueType.STRING);
-
+		profile = new ParameterDefine("profile", ParameterValueType.STRING);
+		properties = new ParameterDefine("property", ItemHolderParameters.class);
+		
 		parameterDefines = new ParameterDefine[] {
-				uriDecoding
+				profile,
+				properties
 		};
 	}
-
-	public AspectranWebConfig() {
+	
+	public EnvironmentParameters() {
 		super(parameterDefines);
 	}
-
-	public AspectranWebConfig(String text) {
+	
+	public EnvironmentParameters(String text) {
 		super(parameterDefines, text);
 	}
 	

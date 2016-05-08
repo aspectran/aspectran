@@ -13,19 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.core.context.builder.importer;
+package com.aspectran.core.context.env;
 
-import java.util.List;
+import com.aspectran.core.adapter.ApplicationAdapter;
 
-/**
- * The Interface ImportHandler.
- */
-public interface ImportHandler {
+public interface Environment {
 
-	void pending(Importer importer);
-	
-	void handle(Importer importer) throws Exception;
-	
-	List<Importer> getPendingList();
-	
+	ApplicationAdapter getApplicationAdapter();
+
+	String[] getActiveProfiles();
+
+	String[] getDefaultProfiles();
+
+	boolean acceptsProfiles(String... profiles);	
+
 }

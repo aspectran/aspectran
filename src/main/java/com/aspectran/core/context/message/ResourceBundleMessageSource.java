@@ -34,7 +34,7 @@ import java.util.ResourceBundle;
 
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.bean.aware.ClassLoaderAware;
-import com.aspectran.core.context.loader.AspectranClassLoader;
+import com.aspectran.core.context.loader.resource.AspectranClassLoader;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.ToStringBuilder;
 

@@ -24,6 +24,7 @@ public class AspectranParameters extends AbstractParameters {
 
 	public static final ParameterDefine description;
 	public static final ParameterDefine settings;
+	public static final ParameterDefine environments;
 	public static final ParameterDefine typeAlias;
 	public static final ParameterDefine aspects;
 	public static final ParameterDefine beans;
@@ -36,6 +37,7 @@ public class AspectranParameters extends AbstractParameters {
 	static {
 		description = new ParameterDefine("description", ParameterValueType.TEXT);
 		settings = new ParameterDefine("settings", DefaultSettingsParameters.class);
+		environments = new ParameterDefine("environment", EnvironmentParameters.class, true, true);
 		typeAlias = new ParameterDefine("typeAlias", GenericParameters.class);
 		aspects = new ParameterDefine("aspect", AspectParameters.class, true, true);
 		beans = new ParameterDefine("bean", BeanParameters.class, true, true);
@@ -46,6 +48,7 @@ public class AspectranParameters extends AbstractParameters {
 		parameterDefines = new ParameterDefine[] {
 				description,
 				settings,
+				environments,
 				typeAlias,
 				aspects,
 				beans,

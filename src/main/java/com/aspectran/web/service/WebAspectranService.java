@@ -188,7 +188,7 @@ public class WebAspectranService extends GenericAspectranService {
 		servletContext.setAttribute(ROOT_WEB_ASPECTRAN_SERVICE_ATTRIBUTE, aspectranService);
 
 		if(log.isDebugEnabled()) {
-			log.debug("WebAspectranService attribute in ServletContext was created. " + ROOT_WEB_ASPECTRAN_SERVICE_ATTRIBUTE + ": " + aspectranService);
+			log.debug("WebAspectranService attribute in ServletContext has been created. " + ROOT_WEB_ASPECTRAN_SERVICE_ATTRIBUTE + ": " + aspectranService);
 		}
 		
 		return aspectranService;
@@ -215,7 +215,7 @@ public class WebAspectranService extends GenericAspectranService {
 		servletContext.setAttribute(attrName, aspectranService);
 		
 		if(log.isDebugEnabled()) {
-			log.debug("WebAspectranService attribute in ServletContext was created. " + attrName + ": " + aspectranService);
+			log.debug("WebAspectranService attribute in ServletContext has been created. " + attrName + ": " + aspectranService);
 		}
 
 		return aspectranService;
@@ -275,12 +275,7 @@ public class WebAspectranService extends GenericAspectranService {
 			}
 
 			@Override
-			public void restarted() {
-				started();
-			}
-
-			@Override
-			public void reloaded() {
+			public void restarted(boolean hardReload) {
 				started();
 			}
 

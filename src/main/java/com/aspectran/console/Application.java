@@ -50,23 +50,15 @@ public class Application {
 
                 switch(command) {
                     case "restart":
-                        System.out.println("Restarting the Aspectran Service...");
+                        System.out.println("Restart the Aspectran Service.");
                         aspectranService.restart();
                         break;
-                    case "reload":
-                        System.out.println("Reloading the Aspectran Service...");
-                        aspectranService.reload();
-                        break;
-                    case "refresh":
-                        System.out.println("Refreshing the Aspectran service...");
-                        aspectranService.refresh();
-                        break;
                     case "pause":
-                        System.out.println("Pause the Aspectran Service...");
+                        System.out.println("Pause the Aspectran Service.");
                         aspectranService.pause();
                         break;
                     case "resume":
-                        System.out.println("Resume the Aspectran Service...");
+                        System.out.println("Resume the Aspectran Service.");
                         aspectranService.resume();
                         break;
                     case "quit":

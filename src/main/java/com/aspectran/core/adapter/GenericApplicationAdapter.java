@@ -27,7 +27,7 @@ import java.util.Map;
  */
 public class GenericApplicationAdapter extends AbstractApplicationAdapter {
 
-	private Map<String, Object> attributes = new HashMap<String, Object>();
+	private Map<String, Object> attributes = new HashMap<>();
 
 	/**
 	 * Instantiates a new GenericApplicationAdapter.

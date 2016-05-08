@@ -17,6 +17,7 @@ package com.aspectran.core.context.expr;
 
 import java.util.Map;
 
+import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
 
 /**
@@ -29,5 +30,7 @@ public interface ItemTokenEvaluator {
 	Map<String, Object> evaluate(ItemRuleMap itemRuleMap);
 	
 	void evaluate(ItemRuleMap itemRuleMap, Map<String, Object> valueMap);
+	
+	<T> T evaluate(ItemRule itemRule);
 	
 }

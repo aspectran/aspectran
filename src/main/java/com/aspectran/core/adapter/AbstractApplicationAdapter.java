@@ -21,7 +21,7 @@ import java.net.URI;
 import java.net.URL;
 
 import com.aspectran.core.context.bean.scope.ApplicationScope;
-import com.aspectran.core.context.loader.AspectranClassLoader;
+import com.aspectran.core.context.loader.resource.AspectranClassLoader;
 import com.aspectran.core.service.AspectranServiceController;
 import com.aspectran.core.util.ResourceUtils;
 import com.aspectran.core.util.ToStringBuilder;

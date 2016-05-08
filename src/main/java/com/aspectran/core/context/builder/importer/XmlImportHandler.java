@@ -17,6 +17,7 @@ package com.aspectran.core.context.builder.importer;
 
 import com.aspectran.core.context.builder.AssistantLocal;
 import com.aspectran.core.context.builder.ContextBuilderAssistant;
+import com.aspectran.core.context.builder.XmlActivityContextBuilder;
 import com.aspectran.core.context.builder.xml.AspectranNodeParser;
 
 /**
@@ -28,8 +29,10 @@ public class XmlImportHandler extends AbstractImportHandler {
 	
 	private AspectranNodeParser aspectranNodeParser;
 	
-	public XmlImportHandler(ContextBuilderAssistant assistant) {
-		this.assistant = assistant;
+	public XmlImportHandler(XmlActivityContextBuilder builder) {
+		super(builder.getContextEnvironment());
+
+		this.assistant = builder;
 		aspectranNodeParser = new AspectranNodeParser(assistant);
 	}
 

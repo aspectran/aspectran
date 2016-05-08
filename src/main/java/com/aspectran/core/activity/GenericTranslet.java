@@ -393,8 +393,8 @@ public class GenericTranslet implements Translet {
 	}
 
 	@Override
-	public boolean isProfileActive(String... profiles) {
-		return activity.getActivityContext().isProfileActive(profiles);
+	public boolean acceptsProfiles(String... profiles) {
+		return activity.getActivityContext().getContextEnvironment().acceptsProfiles(profiles);
 	}
 
 	//---------------------------------------------------------------------

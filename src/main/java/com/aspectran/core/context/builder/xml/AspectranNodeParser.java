@@ -21,6 +21,10 @@ import java.io.InputStream;
 import com.aspectran.core.context.builder.ContextBuilderAssistant;
 import com.aspectran.core.context.builder.importer.ImportHandler;
 import com.aspectran.core.context.builder.importer.Importer;
+import com.aspectran.core.context.rule.BeanRule;
+import com.aspectran.core.context.rule.EnvironmentRule;
+import com.aspectran.core.context.rule.ItemRule;
+import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.type.DefaultSettingType;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.apon.GenericParameters;
@@ -62,7 +66,9 @@ public class AspectranNodeParser {
 		this.parser.setValidating(validating);
 		this.parser.setEntityResolver(new AspectranDtdResolver(validating));
 
+		addDescriptionNodelets();
 		addSettingsNodelets();
+		addEnvironmentNodelets();
 		addTypeAliasNodelets();
 		addAspectNodelets();
 		addBeanNodelets();
@@ -94,14 +100,20 @@ public class AspectranNodeParser {
 	}
 
 	/**
-	 * Adds the settings nodelets.
+	 * Adds the description nodelets.
 	 */
-	private void addSettingsNodelets() {
+	private void addDescriptionNodelets() {
 		parser.addNodelet("/aspectran/description", (node, attributes, text) -> {
             if(text != null) {
                 assistant.getAssistantLocal().setDescription(text);
             }
         });
+	}
+	
+	/**
+	 * Adds the settings nodelets.
+	 */
+	private void addSettingsNodelets() {
 		parser.addNodelet("/aspectran/settings", (node, attributes, text) -> {
             if(StringUtils.hasText(text)) {
                 Parameters parameters = new GenericParameters(text);
@@ -136,6 +148,42 @@ public class AspectranNodeParser {
         });
 	}
 
+	/**
+	 * Adds the environment nodelets.
+	 */
+	private void addEnvironmentNodelets() {
+		parser.addNodelet("/aspectran/environment", (node, attributes, text) -> {
+			String profile = attributes.get("profile");
+
+			EnvironmentRule environmentRule = EnvironmentRule.newInstance(profile, null);
+			assistant.pushObject(environmentRule);
+        });
+		parser.addNodelet("/aspectran/environment/property", (node, attributes, text) -> {
+			EnvironmentRule environmentRule = assistant.peekObject();
+
+			if(StringUtils.hasLength(text)) {
+				ItemRuleMap propertyItemRuleMap = ItemRule.toItemRuleMap(text);
+				environmentRule.setPropertyItemRuleMap(propertyItemRuleMap);
+			}
+
+			ItemRuleMap irm = new ItemRuleMap();
+			assistant.pushObject(irm);
+        });
+		parser.addNodelet("/aspectran/environment/property", new ItemNodeletAdder(assistant));
+		parser.addNodelet("/aspectran/environment/property/end()", (node, attributes, text) -> {
+			ItemRuleMap irm = assistant.popObject();
+
+			if(!irm.isEmpty()) {
+				EnvironmentRule environmentRule = assistant.peekObject();
+				environmentRule.setPropertyItemRuleMap(irm);
+			}
+		});
+		parser.addNodelet("/aspectran/environment/end()", (node, attributes, text) -> {
+			EnvironmentRule environmentRule = assistant.popObject();
+			assistant.addEnvironmentRule(environmentRule);
+        });
+	}
+	
 	/**
 	 * Adds the type alias nodelets.
 	 */

@@ -54,7 +54,7 @@ public class ConsoleAspectranService extends GenericAspectranService {
 	public void service(String command) {
 		if(pauseTimeout > 0L) {
 			if(pauseTimeout >= System.currentTimeMillis()) {
-				System.out.println("Aspectran service is paused, did not respond to the command: " + command);
+				System.out.println("Aspectran service has been paused, did not respond to the command: " + command);
 				return;
 			} else {
 				pauseTimeout = 0L;
@@ -122,12 +122,7 @@ public class ConsoleAspectranService extends GenericAspectranService {
 			}
 			
 			@Override
-			public void restarted() {
-				started();
-			}
-			
-			@Override
-			public void reloaded() {
+			public void restarted(boolean hardReload) {
 				started();
 			}
 			

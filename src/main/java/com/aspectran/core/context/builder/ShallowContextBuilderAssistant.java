@@ -19,8 +19,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.builder.importer.ShallowImportHandler;
+import com.aspectran.core.context.env.ContextEnvironment;
 import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.BeanActionRule;
@@ -36,19 +36,20 @@ import com.aspectran.core.context.rule.ability.BeanReferenceInspectable;
  */
 public class ShallowContextBuilderAssistant extends ContextBuilderAssistant {
 
-	private final List<AspectRule> aspectRules = new ArrayList<AspectRule>();
+	private final List<AspectRule> aspectRules = new ArrayList<>();
 	
-	private final List<BeanRule> beanRules = new ArrayList<BeanRule>();
+	private final List<BeanRule> beanRules = new ArrayList<>();
 
-	private final List<TemplateRule> templateRules = new ArrayList<TemplateRule>();
+	private final List<TemplateRule> templateRules = new ArrayList<>();
 
-	private final List<TransletRule> transletRules = new ArrayList<TransletRule>();
+	private final List<TransletRule> transletRules = new ArrayList<>();
 	
 	public ShallowContextBuilderAssistant() {
 		setImportHandler(new ShallowImportHandler());
 	}
 
-	public void readyAssist(ApplicationAdapter applicationAdapter) {
+	@Override
+	public void readyAssist(ContextEnvironment contextEnvironment) {
 		// shallow
 	}
 	

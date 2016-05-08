@@ -76,7 +76,7 @@ public class BeanUtils {
 				type = value.getClass();
 			}
 		} else {
-			if(name.indexOf('.') > -1) {
+			if(name.contains(".")) {
 				StringTokenizer parser = new StringTokenizer(name, ".");
 				while(parser.hasMoreTokens()) {
 					name = parser.nextToken();
@@ -112,7 +112,7 @@ public class BeanUtils {
 				type = value.getClass();
 			}
 		} else {
-			if(name.indexOf('.') > -1) {
+			if(name.contains(".")) {
 				StringTokenizer parser = new StringTokenizer(name, ".");
 				while(parser.hasMoreTokens()) {
 					name = parser.nextToken();
@@ -135,7 +135,7 @@ public class BeanUtils {
 	 * @throws NoSuchMethodException the no such method exception
 	 */
 	public static Class<?> getClassPropertyTypeForGetter(Class<?> type, String name) throws NoSuchMethodException {
-		if(name.indexOf('.') > -1) {
+		if(name.contains(".")) {
 			StringTokenizer parser = new StringTokenizer(name, ".");
 			while(parser.hasMoreTokens()) {
 				name = parser.nextToken();
@@ -158,7 +158,7 @@ public class BeanUtils {
 	 * @throws NoSuchMethodException the no such method exception
 	 */
 	public static Class<?> getClassPropertyTypeForSetter(Class<?> type, String name) throws NoSuchMethodException {
-		if(name.indexOf('.') > -1) {
+		if(name.contains(".")) {
 			StringTokenizer parser = new StringTokenizer(name, ".");
 			while(parser.hasMoreTokens()) {
 				name = parser.nextToken();
@@ -180,7 +180,7 @@ public class BeanUtils {
 	 * @throws InvocationTargetException the invocation target exception
 	 */
 	public static Object getObject(Object object, String name) throws InvocationTargetException {
-		if(name.indexOf('.') > -1) {
+		if(name.contains(".")) {
 			StringTokenizer parser = new StringTokenizer(name, ".");
 			Object value = object;
 			while(parser.hasMoreTokens()) {
@@ -205,7 +205,7 @@ public class BeanUtils {
 	 * @throws NoSuchMethodException the no such method exception
 	 */
 	public static void setObject(Object object, String name, Object value) throws InvocationTargetException, NoSuchMethodException {
-		if(name.indexOf('.') > -1) {
+		if(name.contains(".")) {
 			StringTokenizer parser = new StringTokenizer(name, ".");
 			String property = parser.nextToken();
 			Object child = object;
@@ -253,7 +253,7 @@ public class BeanUtils {
 		if(object instanceof Map<?, ?>) {
 			hasProperty = true; // ((Map)object).containsKey(propertyName);
 		} else {
-			if(propertyName.indexOf('.') > -1) {
+			if(propertyName.contains(".")) {
 				StringTokenizer parser = new StringTokenizer(propertyName, ".");
 				Class<?> type = object.getClass();
 
@@ -284,7 +284,7 @@ public class BeanUtils {
 		if(object instanceof Map<?, ?>) {
 			hasProperty = true; // ((Map)object).containsKey(propertyName);
 		} else {
-			if(propertyName.indexOf('.') > -1) {
+			if(propertyName.contains(".")) {
 				StringTokenizer parser = new StringTokenizer(propertyName, ".");
 				Class<?> type = object.getClass();
 				

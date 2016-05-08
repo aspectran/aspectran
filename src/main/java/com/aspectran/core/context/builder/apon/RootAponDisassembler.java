@@ -31,6 +31,7 @@ import com.aspectran.core.context.builder.apon.params.ConstructorParameters;
 import com.aspectran.core.context.builder.apon.params.ContentParameters;
 import com.aspectran.core.context.builder.apon.params.ContentsParameters;
 import com.aspectran.core.context.builder.apon.params.DispatchParameters;
+import com.aspectran.core.context.builder.apon.params.EnvironmentParameters;
 import com.aspectran.core.context.builder.apon.params.ExceptionParameters;
 import com.aspectran.core.context.builder.apon.params.ExceptionRaisedParameters;
 import com.aspectran.core.context.builder.apon.params.ForwardParameters;
@@ -56,6 +57,7 @@ import com.aspectran.core.context.rule.BeanActionRule;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.DispatchResponseRule;
 import com.aspectran.core.context.rule.EchoActionRule;
+import com.aspectran.core.context.rule.EnvironmentRule;
 import com.aspectran.core.context.rule.ExceptionHandlingRule;
 import com.aspectran.core.context.rule.ForwardResponseRule;
 import com.aspectran.core.context.rule.IncludeActionRule;
@@ -105,6 +107,13 @@ public class RootAponDisassembler {
 		if(defaultSettingsParameters != null)
 			disassembleDefaultSettings(defaultSettingsParameters);
 
+		List<Parameters> environmentParametersList = aspectranParameters.getParametersList(AspectranParameters.environments);
+		if(environmentParametersList != null) {
+			for(Parameters environmentParameters : environmentParametersList) {
+				disassembleEnvironmentRule(environmentParameters);
+			}
+		}
+		
 		Parameters typeAliasParameters = aspectranParameters.getParameters(AspectranParameters.typeAlias);
 		if(typeAliasParameters != null)
 			disassembleTypeAlias(typeAliasParameters);
@@ -180,12 +189,24 @@ public class RootAponDisassembler {
 		assistant.applySettings();
 	}
 	
-	private void disassembleTypeAlias(Parameters parameters) {
-		if(parameters == null)
-			return;
+	private void disassembleEnvironmentRule(Parameters environmentParameters) {
+		if(environmentParameters != null) {
+			String profile = StringUtils.emptyToNull(environmentParameters.getString(EnvironmentParameters.profile));
+			ItemHolderParameters propertyItemHolderParameters = environmentParameters.getParameters(EnvironmentParameters.properties);
+			ItemRuleMap propertyItemRuleMap = null;
+			if(propertyItemHolderParameters != null)
+				propertyItemRuleMap = disassembleItemRuleMap(propertyItemHolderParameters);
 
-		for(String alias : parameters.getParameterNameSet()) {
-			assistant.addTypeAlias(alias, parameters.getString(alias));
+			EnvironmentRule environmentRule = EnvironmentRule.newInstance(profile, propertyItemRuleMap);
+			assistant.addEnvironmentRule(environmentRule);
+		}
+	}
+	
+	private void disassembleTypeAlias(Parameters parameters) {
+		if(parameters != null) {
+			for(String alias : parameters.getParameterNameSet()) {
+				assistant.addTypeAlias(alias, parameters.getString(alias));
+			}
 		}
 	}
 

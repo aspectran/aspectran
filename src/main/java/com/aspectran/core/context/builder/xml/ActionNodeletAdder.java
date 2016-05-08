@@ -30,7 +30,6 @@ import com.aspectran.core.util.xml.NodeletParser;
  * The Class ActionNodeletAdder.
  *
  * @since 2011. 1. 9.
- * @author Juho Jeong
  */
 class ActionNodeletAdder implements NodeletAdder {
 	

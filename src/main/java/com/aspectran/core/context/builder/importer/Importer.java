@@ -26,8 +26,6 @@ import com.aspectran.core.context.rule.type.ImporterType;
  * The Interface Importer.
  *
  * <p>Created: 2008. 04. 24 AM 11:23:36</p>
- * 
- * @author Juho Jeong
  */
 public interface Importer {
 	

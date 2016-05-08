@@ -24,6 +24,7 @@ import java.io.OutputStreamWriter;
 
 import com.aspectran.core.context.builder.AssistantLocal;
 import com.aspectran.core.context.builder.ContextBuilderAssistant;
+import com.aspectran.core.context.builder.HybridActivityContextBuilder;
 import com.aspectran.core.context.builder.ShallowContextBuilderAssistant;
 import com.aspectran.core.context.builder.apon.RootAponAssembler;
 import com.aspectran.core.context.builder.apon.RootAponDisassembler;
@@ -50,8 +51,10 @@ public class HybridImportHandler extends AbstractImportHandler {
 	
 	private RootAponDisassembler rootAponDisassembler;
 	
-	public HybridImportHandler(ContextBuilderAssistant assistant, String encoding, boolean hybridLoad) {
-		this.assistant = assistant;
+	public HybridImportHandler(HybridActivityContextBuilder builder, String encoding, boolean hybridLoad) {
+		super(builder.getContextEnvironment());
+
+		this.assistant = builder;
 		this.encoding = encoding;
 		this.hybridLoad = hybridLoad;
 	}
@@ -133,7 +136,7 @@ public class HybridImportHandler extends AbstractImportHandler {
 				parser.parse(fileImporter.getInputStream());
 				
 				RootAponAssembler assembler = new RootAponAssembler(assistant);
-				Parameters rootParameters = assembler.assembleRoot();
+				Parameters rootParameters = assembler.assembleRootParameters();
 				
 				aponWriter.comment(aponFile.getAbsolutePath());
 				aponWriter.write(rootParameters);

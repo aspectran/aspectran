@@ -18,14 +18,14 @@ package com.aspectran.core.service;
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.loader.ActivityContextLoader;
-import com.aspectran.core.context.loader.AspectranClassLoader;
 import com.aspectran.core.context.loader.HybridActivityContextLoader;
 import com.aspectran.core.context.loader.config.AspectranConfig;
 import com.aspectran.core.context.loader.config.AspectranContextAutoReloadConfig;
 import com.aspectran.core.context.loader.config.AspectranContextConfig;
+import com.aspectran.core.context.loader.config.AspectranContextProfilesConfig;
 import com.aspectran.core.context.loader.config.AspectranSchedulerConfig;
 import com.aspectran.core.context.loader.reload.ActivityContextReloadingTimer;
-import com.aspectran.core.util.ProfilesUtils;
+import com.aspectran.core.context.loader.resource.AspectranClassLoader;
 import com.aspectran.core.util.apon.Parameters;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
@@ -81,7 +81,7 @@ abstract class AbstractAspectranService implements AspectranService {
 	@Override
 	public AspectranClassLoader getAspectranClassLoader() {
 		if(activityContextLoader == null)
-			throw new UnsupportedOperationException("ActivityContextLoader is not initialized. Call initialize() method first");
+			throw new UnsupportedOperationException("ActivityContextLoader is not initialized. Call initialize() method first.");
 
 		return activityContextLoader.getAspectranClassLoader();
 	}
@@ -109,6 +109,7 @@ abstract class AbstractAspectranService implements AspectranService {
 			this.aspectranConfig = aspectranConfig;
 			Parameters aspectranContextConfig = aspectranConfig.getParameters(AspectranConfig.context);
 			Parameters aspectranContextAutoReloadConfig = aspectranContextConfig.getParameters(AspectranContextConfig.autoReload);
+			Parameters aspectranContextProfilesConfig = aspectranContextConfig.getParameters(AspectranContextConfig.profiles);
 
 			if(aspectranContextAutoReloadConfig != null) {
 				String reloadMethod = aspectranContextAutoReloadConfig.getString(AspectranContextAutoReloadConfig.reloadMethod);
@@ -125,12 +126,22 @@ abstract class AbstractAspectranService implements AspectranService {
 			String encoding = aspectranContextConfig.getString(AspectranContextConfig.encoding);
 			boolean hybridLoad = aspectranContextConfig.getBoolean(AspectranContextConfig.hybridLoad, false);
 			String[] resourceLocations = aspectranContextConfig.getStringArray(AspectranContextConfig.resources);
-			String[] activeProfiles = ProfilesUtils.validateProfiles(aspectranContextConfig.getStringArray(AspectranContextConfig.activeProfiles));
+
+			String[] activeProfiles = null;
+			String[] defaultProfiles = null;
+			
+			if(aspectranContextProfilesConfig != null) {
+				activeProfiles = aspectranContextProfilesConfig.getStringArray(AspectranContextProfilesConfig.activeProfiles);
+				defaultProfiles = aspectranContextProfilesConfig.getStringArray(AspectranContextProfilesConfig.defaultProfiles);
+			}
+			
+			resourceLocations = AspectranClassLoader.checkResourceLocations(resourceLocations, applicationAdapter.getApplicationBasePath());
 
 			activityContextLoader = new HybridActivityContextLoader(applicationAdapter, encoding);
-			activityContextLoader.setHybridLoad(hybridLoad);
+			activityContextLoader.setResourceLocations(resourceLocations);
 			activityContextLoader.setActiveProfiles(activeProfiles);
-			resourceLocations = activityContextLoader.setResourceLocations(resourceLocations);
+			activityContextLoader.setDefaultProfiles(defaultProfiles);
+			activityContextLoader.setHybridLoad(hybridLoad);
 
 			if(autoReloadingStartup && (resourceLocations == null || resourceLocations.length == 0))
 				autoReloadingStartup = false;
@@ -143,7 +154,7 @@ abstract class AbstractAspectranService implements AspectranService {
 				}
 			}
 		} catch(Exception e) {
-			throw new AspectranServiceException("Failed to initialize the AspectranService " + aspectranConfig, e);
+			throw new AspectranServiceException("Failed to initialize AspectranService " + aspectranConfig, e);
 		}
 	}
 	
@@ -166,7 +177,7 @@ abstract class AbstractAspectranService implements AspectranService {
 			return activityContext;
 			
 		} catch(Exception e) {
-			throw new AspectranServiceException("Failed to load the ActivityContext.", e);
+			throw new AspectranServiceException("Failed to load ActivityContext.", e);
 		}
 	}
 	
@@ -182,9 +193,9 @@ abstract class AbstractAspectranService implements AspectranService {
 			try {
 				activityContext.destroy();
 				activityContext = null;
-				log.info("Successfully destroyed the AspectranContext.");
+				log.info("Successfully destroyed AspectranContext.");
 			} catch(Exception e) {
-				log.error("Failed to destroy the AspectranContext " + activityContext, e);
+				log.error("Failed to destroy AspectranContext " + activityContext, e);
 				cleanlyDestoryed = false;
 			}
 		}
@@ -203,7 +214,7 @@ abstract class AbstractAspectranService implements AspectranService {
 	
 			startReloadingTimer();
 		} catch(Exception e) {
-			throw new AspectranServiceException("Failed to reload the ActivityContext.", e);
+			throw new AspectranServiceException("Failed to reload ActivityContext.", e);
 		}
 
 		return activityContext;

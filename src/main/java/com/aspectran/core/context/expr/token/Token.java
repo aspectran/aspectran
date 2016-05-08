@@ -48,6 +48,8 @@ public class Token implements BeanReferenceInspectable {
 
 	public static final char BEAN_SYMBOL = '#';
 	
+	public static final char PROPERTY_SYMBOL = '%';
+	
 	public static final char START_BRACKET = '{';
 
 	public static final char END_BRACKET = '}';
@@ -196,6 +198,17 @@ public class Token implements BeanReferenceInspectable {
 			}
 			sb.append(END_BRACKET);
 			return sb.toString();
+		} else if(type == TokenType.PROPERTY) {
+			StringBuilder sb = new StringBuilder();
+			sb.append(PROPERTY_SYMBOL);
+			sb.append(START_BRACKET);
+			if(name != null) sb.append(name);
+			if(value != null) {
+				sb.append(VALUE_SEPARATOR);
+				sb.append(value);
+			}
+			sb.append(END_BRACKET);
+			return sb.toString();
 		} else {
 			throw new UnknownTokenTypeException(this);
 		}
@@ -221,7 +234,8 @@ public class Token implements BeanReferenceInspectable {
 	public static boolean isTokenSymbol(char c) {
 		return (c == PARAMETER_SYMBOL ||
 					c == ATTRIBUTE_SYMBOL ||
-					c == BEAN_SYMBOL);
+					c == BEAN_SYMBOL ||
+					c == PROPERTY_SYMBOL);
 	}
 	
 	/**
@@ -237,6 +251,8 @@ public class Token implements BeanReferenceInspectable {
 			type = TokenType.ATTRIBUTE;
 		else if(symbol == Token.BEAN_SYMBOL)
 			type = TokenType.BEAN;
+		else if(symbol == Token.PROPERTY_SYMBOL)
+			type = TokenType.PROPERTY;
 		else
 			type = TokenType.PARAMETER;
 		

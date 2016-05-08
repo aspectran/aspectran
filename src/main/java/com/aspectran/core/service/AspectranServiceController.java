@@ -21,44 +21,30 @@ package com.aspectran.core.service;
 public interface AspectranServiceController {
 	
 	/**
-	 * Starts an Aspectran Service.
+	 * Start the Aspectran Service.
 	 *
 	 * @throws AspectranServiceException the aspectran service exception
 	 */
 	void startup() throws AspectranServiceException;
 
 	/**
-	 * Restarts an Aspectran Service.
+	 * Restart the Aspectran Service.
 	 *
 	 * @throws AspectranServiceException the aspectran service exception
 	 */
 	void restart() throws AspectranServiceException;
 	
 	/**
-	 * Reloads an Aspectran Configurations without restarting.
-	 *
-	 * @throws AspectranServiceException the aspectran service exception
-	 */
-	void reload() throws AspectranServiceException;
-	
-	/**
-	 * Refresh an Aspectran Service.
-	 *
-	 * @throws AspectranServiceException the aspectran service exception
-	 */
-	void refresh() throws AspectranServiceException;
-	
-	/**
-	 * Suspends a service's operation.
+	 * Pause the Aspectran service.
 	 *
 	 * @throws AspectranServiceException the aspectran service exception
 	 */
 	void pause() throws AspectranServiceException;
 	
 	/**
-	 * Suspends a service's operation.
+	 * Pause the Aspectran service for a specified period of time.
 	 *
-	 * @param timeout - the maximum time to wait in milliseconds.
+	 * @param timeout the maximum time to wait in milliseconds.
 	 * @throws AspectranServiceException the aspectran service exception
 	 */
 	void pause(long timeout) throws AspectranServiceException;

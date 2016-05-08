@@ -28,11 +28,10 @@ public class ItemRuleMap extends LinkedHashMap<String, ItemRule> {
 	private static final long serialVersionUID = 192817512158305803L;
 
 	/**
-	 * Adds a value rule.
+	 * Adds a item rule.
 	 * 
-	 * @param itemRule the value rule
-	 * 
-	 * @return the value rule
+	 * @param itemRule the item rule
+	 * @return the item rule
 	 */
 	public ItemRule putItemRule(ItemRule itemRule) {
 		return put(itemRule.getName(), itemRule);

@@ -60,29 +60,35 @@ public class ItemTokenExpression extends TokenExpression implements ItemTokenEva
 
 	@Override
 	public void evaluate(ItemRuleMap itemRuleMap, Map<String, Object> valueMap) {
-		for(ItemRule ir : itemRuleMap.values()) {
-			ItemType itemType = ir.getType();
-			ItemValueType valueType = ir.getValueType();
-			String name = ir.getName();
-			Object value = null;
-			
-			if(itemType == ItemType.SINGULAR) {
-				Token[] tokens = ir.getTokens();
-				value = evaluate(name, tokens, valueType);
-			} else if(itemType == ItemType.ARRAY) {
-				value = evaluateAsArray(name, ir.getTokensList(), valueType);
-			} else if(itemType == ItemType.LIST) {
-				value = evaluateAsList(name, ir.getTokensList(), valueType);
-			} else if(itemType == ItemType.SET) {
-				value = evaluateAsSet(name, ir.getTokensList(), valueType);
-			} else if(itemType == ItemType.MAP) {
-				value = evaluateAsMap(name, ir.getTokensMap(), valueType);
-			} else if(itemType == ItemType.PROPERTIES) {
-				value = evaluateAsProperties(name, ir.getTokensMap(), valueType);
-			}
-			
-			valueMap.put(name, value);
+		for(ItemRule itemRule : itemRuleMap.values()) {
+			valueMap.put(itemRule.getName(), evaluate(itemRule));
 		}
+	}
+	
+	@Override
+	@SuppressWarnings("unchecked")
+	public <T> T evaluate(ItemRule itemRule) {
+		ItemType itemType = itemRule.getType();
+		ItemValueType valueType = itemRule.getValueType();
+		String name = itemRule.getName();
+		Object value = null;
+		
+		if(itemType == ItemType.SINGULAR) {
+			Token[] tokens = itemRule.getTokens();
+			value = evaluate(name, tokens, valueType);
+		} else if(itemType == ItemType.ARRAY) {
+			value = evaluateAsArray(name, itemRule.getTokensList(), valueType);
+		} else if(itemType == ItemType.LIST) {
+			value = evaluateAsList(name, itemRule.getTokensList(), valueType);
+		} else if(itemType == ItemType.SET) {
+			value = evaluateAsSet(name, itemRule.getTokensList(), valueType);
+		} else if(itemType == ItemType.MAP) {
+			value = evaluateAsMap(name, itemRule.getTokensMap(), valueType);
+		} else if(itemType == ItemType.PROPERTIES) {
+			value = evaluateAsProperties(name, itemRule.getTokensMap(), valueType);
+		}
+		
+		return (T)value;
 	}
 	
 	private Object evaluate(String parameterName, Token[] tokens, ItemValueType valueType) {

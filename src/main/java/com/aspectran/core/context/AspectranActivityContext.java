@@ -19,15 +19,15 @@ import java.util.Locale;
 
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.adapter.ApplicationAdapter;
-import com.aspectran.core.adapter.RegulatedApplicationAdapter;
 import com.aspectran.core.context.aspect.AspectRuleRegistry;
+import com.aspectran.core.context.bean.BeanRegistry;
 import com.aspectran.core.context.bean.ContextBeanRegistry;
+import com.aspectran.core.context.env.ContextEnvironment;
 import com.aspectran.core.context.message.DelegatingMessageSource;
 import com.aspectran.core.context.message.MessageSource;
 import com.aspectran.core.context.message.NoSuchMessageException;
 import com.aspectran.core.context.template.TemplateProcessor;
 import com.aspectran.core.context.translet.TransletRuleRegistry;
-import com.aspectran.core.util.ProfilesUtils;
 import com.aspectran.core.util.ToStringBuilder;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
@@ -43,8 +43,10 @@ public class AspectranActivityContext implements ActivityContext {
 
 	private final ThreadLocal<Activity> currentActivityHolder = new ThreadLocal<>();
 
+	private final ContextEnvironment contextEnvironment;
+	
 	private final ApplicationAdapter applicationAdapter;
-
+	
 	private AspectRuleRegistry aspectRuleRegistry;
 
 	private ContextBeanRegistry contextBeanRegistry;
@@ -55,15 +57,19 @@ public class AspectranActivityContext implements ActivityContext {
 
 	private MessageSource messageSource;
 	
-	private String[] activeProfiles;
-
 	/**
 	 * Instantiates a new AspectranActivityContext.
 	 *
 	 * @param applicationAdapter the application adapter
 	 */
 	public AspectranActivityContext(ApplicationAdapter applicationAdapter) {
-		this.applicationAdapter = new RegulatedApplicationAdapter(applicationAdapter);
+		this.applicationAdapter = applicationAdapter;
+		this.contextEnvironment = new ContextEnvironment(this);
+	}
+
+	@Override
+	public ContextEnvironment getContextEnvironment() {
+		return contextEnvironment;
 	}
 
 	@Override
@@ -86,7 +92,7 @@ public class AspectranActivityContext implements ActivityContext {
 	}
 
 	@Override
-	public ContextBeanRegistry getContextBeanRegistry() {
+	public BeanRegistry getBeanRegistry() {
 		return contextBeanRegistry;
 	}
 
@@ -136,15 +142,6 @@ public class AspectranActivityContext implements ActivityContext {
 		return messageSource;
 	}
 
-	/**
-	 * Sets the message source.
-	 *
-	 * @param messageSource the message source
-	 */
-	public void setMessageSource(MessageSource messageSource) {
-		this.messageSource = messageSource;
-	}
-
 	@Override
 	public String getMessage(String code, Object args[], String defaultMessage, Locale locale) {
 		return getMessageSource().getMessage(code, args, defaultMessage, locale);
@@ -170,20 +167,6 @@ public class AspectranActivityContext implements ActivityContext {
 		currentActivityHolder.remove();
 	}
 
-	@Override
-	public String[] getActiveProfiles() {
-		return activeProfiles;
-	}
-
-	public void setActiveProfiles(String[] activeProfiles) {
-		this.activeProfiles = activeProfiles;
-	}
-
-	@Override
-	public boolean isProfileActive(String... profiles) {
-		return ProfilesUtils.acceptsProfiles(activeProfiles, profiles);
-	}
-	
 	public void initialize() {
 		if(contextBeanRegistry != null)
 			contextBeanRegistry.initialize(this);
@@ -239,6 +222,8 @@ public class AspectranActivityContext implements ActivityContext {
 	@Override
 	public String toString() {
 		ToStringBuilder tsb = new ToStringBuilder();
+		tsb.append("activeProfiles", contextEnvironment.getActiveProfiles());
+		tsb.append("defaultProfiles", contextEnvironment.getDefaultProfiles());
 		tsb.append("applicationAdapter", applicationAdapter);
 		tsb.append("aspectRuleRegistry", aspectRuleRegistry);
 		tsb.append("beanRegistry", contextBeanRegistry);

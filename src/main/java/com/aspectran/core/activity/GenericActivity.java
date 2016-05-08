@@ -578,7 +578,7 @@ public class GenericActivity extends AbstractActivity {
 			Response response2 = responseByContentTypeRule.getResponse(response.getContentType());
 			responseRule = responseRule.newUrgentResponseRule(response2);
 			
-			log.info("Response by Content-Type: " + responseRule);
+			log.info("Response by Content-Type " + responseRule);
 
 			// Clear process results. No reflection to ProcessResult.
 			translet.setProcessResult(null);
