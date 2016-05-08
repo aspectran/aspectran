@@ -194,6 +194,7 @@ public class StringUtils {
 	 * 
 	 * @param str the {@code String} to check
 	 * @param prefix the prefix to look for
+	 * @return {@code true} if the {@code String} starts with the prefix, case insensitive, or both {@code null}
 	 * @see java.lang.String#startsWith
 	 */
 	public static boolean startsWithIgnoreCase(String str, String prefix) {
@@ -217,6 +218,7 @@ public class StringUtils {
 	 * 
 	 * @param str the {@code String} to check
 	 * @param suffix the suffix to look for
+	 * @return {@code true} if the {@code String} ends with the suffix, case insensitive, or both {@code null}
 	 * @see java.lang.String#endsWith
 	 */
 	public static boolean endsWithIgnoreCase(String str, String suffix) {
