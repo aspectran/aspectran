@@ -185,7 +185,10 @@ public class RootAponAssembler {
 	private Parameters assembleEnvironmentParameters(EnvironmentRule environmentRule) {
 		Parameters environmentParameters = new EnvironmentParameters();
 		environmentParameters.putValueNonNull(EnvironmentParameters.profile, environmentRule.getProfile());
-		environmentParameters.putValueNonNull(EnvironmentParameters.properties, environmentRule.getPropertyItemRuleMap());
+		if(environmentRule.getPropertyItemRuleMap() != null) {
+			Parameters itemHoderParameters = assembleItemHolderParameters(environmentRule.getPropertyItemRuleMap());
+			environmentParameters.putValue(EnvironmentParameters.properties, itemHoderParameters);
+		}
 		return environmentParameters;
 	}
 	
@@ -322,12 +325,14 @@ public class RootAponAssembler {
 		ItemRuleMap constructorArgumentItemRuleMap = beanRule.getConstructorArgumentItemRuleMap();
 		if(constructorArgumentItemRuleMap != null) {
 			ConstructorParameters constructorParameters = beanParameters.newParameters(BeanParameters.constructor);
-			constructorParameters.putValue(ConstructorParameters.arguments, assembleItemHolderParameters(constructorArgumentItemRuleMap));
+			Parameters itemHoderParameters = assembleItemHolderParameters(constructorArgumentItemRuleMap);
+			constructorParameters.putValue(ConstructorParameters.arguments, itemHoderParameters);
 		}
 		
 		ItemRuleMap propertyItemRuleMap = beanRule.getPropertyItemRuleMap();
 		if(propertyItemRuleMap != null) {
-			beanParameters.putValue(BeanParameters.properties, assembleItemHolderParameters(propertyItemRuleMap));
+			Parameters itemHoderParameters = assembleItemHolderParameters(propertyItemRuleMap);
+			beanParameters.putValue(BeanParameters.properties, itemHoderParameters);
 		}
 		
 		return beanParameters;
@@ -609,12 +614,14 @@ public class RootAponAssembler {
 		
 		ItemRuleMap propertyItemRuleMap = beanActionRule.getPropertyItemRuleMap();
 		if(propertyItemRuleMap != null) {
-			actionParameters.putValue(ActionParameters.properties, assembleItemHolderParameters(propertyItemRuleMap));
+			Parameters itemHoderParameters = assembleItemHolderParameters(propertyItemRuleMap);
+			actionParameters.putValue(ActionParameters.properties, itemHoderParameters);
 		}
 		
 		ItemRuleMap argumentItemRuleMap = beanActionRule.getArgumentItemRuleMap();
 		if(argumentItemRuleMap != null) {
-			actionParameters.putValue(ActionParameters.arguments, assembleItemHolderParameters(argumentItemRuleMap));
+			Parameters itemHoderParameters = assembleItemHolderParameters(argumentItemRuleMap);
+			actionParameters.putValue(ActionParameters.arguments, itemHoderParameters);
 		}
 		
 		return actionParameters;
