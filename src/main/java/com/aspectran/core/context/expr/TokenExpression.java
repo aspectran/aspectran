@@ -386,7 +386,7 @@ public class TokenExpression implements TokenEvaluator {
 	 * Returns the bean instance that matches the given token.
 	 *
 	 * @param token the token
-	 * @return an instance of the bean
+	 * @return an environment variable
 	 */
 	protected Object getProperty(Token token) {
 		Object value = activity.getActivityContext().getContextEnvironment().getProperty(token.getName());

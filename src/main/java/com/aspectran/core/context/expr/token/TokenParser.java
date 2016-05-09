@@ -97,7 +97,6 @@ public class TokenParser {
 		return (tokensMap == null || tokensMap.isEmpty()) ? null : tokensMap;
 	}
 
-
 	/**
 	 * Convert the given string into tokens.
 	 *
@@ -108,9 +107,9 @@ public class TokenParser {
 	public static Token[] makeTokens(String text, boolean tokenize) {
 		Token[] tokens;
 
-		if(tokenize)
+		if(tokenize) {
 			tokens = TokenParser.parse(text);
-		else {
+		} else {
 			tokens = new Token[1];
 			tokens[0] = new Token(TokenType.TEXT, text);
 		}
@@ -125,16 +124,16 @@ public class TokenParser {
 	 * @return the string
 	 */
 	public static String toString(Token[] tokens) {
-		if(tokens == null)
-			return null;
-
-		if(tokens.length == 0)
+		if(tokens == null || tokens.length == 0)
 			return StringUtils.EMPTY;
 
-		StringBuilder sb = new StringBuilder();
+		if(tokens.length == 1)
+			return (tokens[0] == null) ? StringUtils.EMPTY : tokens[0].stringify();
 
+		StringBuilder sb = new StringBuilder();
 		for(Token t : tokens) {
-			sb.append(t.stringify());
+			if(t != null)
+				sb.append(t.stringify());
 		}
 
 		return sb.toString();
