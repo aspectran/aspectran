@@ -392,20 +392,20 @@ public class TokenExpression implements TokenEvaluator {
 	 */
 	protected Object getProperty(Token token) {
 		String name = token.getName();
-		Object value = null;
-		
+		Object value;
+		System.out.println("******* " + token);
+
 		if(name.startsWith(ResourceUtils.CLASSPATH_URL_PREFIX)) {
 			String resourceName = name.substring(ResourceUtils.CLASSPATH_URL_PREFIX.length());
 			try {
 				value = PropertiesLoaderUtils.loadProperties(resourceName, activity.getActivityContext().getClassLoader());
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			} catch(IOException e) {
+				throw new TokenExpressionException("Failed to load properties file for token", token,  e);
 			}
 		} else {
-			value = activity.getActivityContext().getContextEnvironment().getProperty(token.getName());	
+			value = activity.getActivityContext().getContextEnvironment().getProperty(token.getName());
 		}
-		
+
 		if(value != null && token.getPropertyName() != null)
 			value = getBeanProperty(value, token.getPropertyName());
 

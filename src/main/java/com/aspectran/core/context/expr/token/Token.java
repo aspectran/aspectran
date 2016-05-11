@@ -164,7 +164,8 @@ public class Token implements BeanReferenceInspectable {
 			StringBuilder sb = new StringBuilder();
 			sb.append(PARAMETER_SYMBOL);
 			sb.append(START_BRACKET);
-			if(name != null) sb.append(name);
+			if(name != null)
+				sb.append(name);
 			if(value != null) {
 				sb.append(VALUE_SEPARATOR);
 				sb.append(value);

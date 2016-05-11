@@ -305,7 +305,7 @@ public class Tokenizer {
 	 * @return the string
 	 */
 	private static String trimLeadingWhitespace(String string) {
-		if(string.length() == 0)
+		if(string.isEmpty())
 			return string;
 		
 		int start = 0;

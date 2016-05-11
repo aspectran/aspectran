@@ -49,6 +49,7 @@ import com.aspectran.core.context.template.TemplateRuleRegistry;
 import com.aspectran.core.context.translet.TransletRuleRegistry;
 import com.aspectran.core.util.BeanDescriptor;
 import com.aspectran.core.util.MethodUtils;
+import com.aspectran.core.util.PropertiesLoaderUtils;
 import com.aspectran.core.util.ResourceUtils;
 import com.aspectran.core.util.StringUtils;
 
@@ -133,6 +134,7 @@ abstract class AbstractActivityContextBuilder extends ContextBuilderAssistant im
 		clearTypeAliases();
 		BeanDescriptor.clearCache();
 		MethodUtils.clearCache();
+		PropertiesLoaderUtils.clearCache();
 
 		activityContext.setAspectRuleRegistry(aspectRuleRegistry);
 		activityContext.setContextBeanRegistry(contextBeanRegistry);

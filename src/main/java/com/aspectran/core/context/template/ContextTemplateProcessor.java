@@ -136,7 +136,7 @@ public class ContextTemplateProcessor implements TemplateProcessor {
                 }
             }
         } catch(Exception e) {
-            throw new TemplateProcessorException(templateRule, "Template processing failed.", e);
+            throw new TemplateProcessorException("Failed to process the template rule", templateRule, e);
         }
     }
     

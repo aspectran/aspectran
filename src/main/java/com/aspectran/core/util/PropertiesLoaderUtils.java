@@ -72,14 +72,12 @@ public class PropertiesLoaderUtils {
     	if(props != null)
     		return props;
     	
-    	
     	Enumeration<URL> urls = classLoader.getResources(resourceName);
 		props = new Properties();
 		
 		while (urls.hasMoreElements()) {
 			URL url = urls.nextElement();
 			URLConnection con = url.openConnection();
-			//ResourceUtils.useCachesIfNecessary(con);
 			InputStream is = con.getInputStream();
 			try {
 				if(resourceName.endsWith(XML_FILE_EXTENSION)) {
@@ -91,9 +89,11 @@ public class PropertiesLoaderUtils {
 				is.close();
 			}
 		}
+		
+		cacheMethod(resourceName, props);
+		
 		return props;
 		
-		//cacheMethod(resourceName, props);
     }
     
     /**

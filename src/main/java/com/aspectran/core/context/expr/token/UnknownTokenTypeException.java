@@ -15,17 +15,15 @@
  */
 package com.aspectran.core.context.expr.token;
 
-import com.aspectran.core.context.AspectranRuntimeException;
+import com.aspectran.core.context.expr.TokenExpressionException;
 
 /**
  * The Class UnknownTokenTypeException.
  */
-public class UnknownTokenTypeException extends AspectranRuntimeException {
+public class UnknownTokenTypeException extends TokenExpressionException {
 
 	/** @serial */
-	private static final long serialVersionUID = 932777610655109895L;
-
-	private Token token;
+	private static final long serialVersionUID = -5611377627628325418L;
 
 	/**
 	 * Instantiates a new Unknown token type exception.
@@ -33,17 +31,7 @@ public class UnknownTokenTypeException extends AspectranRuntimeException {
 	 * @param token the token
 	 */
 	public UnknownTokenTypeException(Token token) {
-		super("Unknown token type " + token);
-		this.token = token;
-	}
-
-	/**
-	 * Gets the token.
-	 *
-	 * @return the token
-	 */
-	public Token getToken() {
-		return this.token;
+		super("Unknown token type", token);
 	}
 
 }
