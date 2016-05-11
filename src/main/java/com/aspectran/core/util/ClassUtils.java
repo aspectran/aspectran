@@ -33,13 +33,13 @@ public abstract class ClassUtils {
 	 * Map with primitive wrapper type as key and corresponding primitive
 	 * type as value, for example: Integer.class -> int.class.
 	 */
-	private static final Map<Class<?>, Class<?>> primitiveWrapperTypeMap = new HashMap<Class<?>, Class<?>>(17);
+	private static final Map<Class<?>, Class<?>> primitiveWrapperTypeMap = new HashMap<>(17);
 
 	/**
 	 * Map with primitive type as key and corresponding wrapper type as value,
 	 * for example: int.class -> Integer.class.
 	 * */
-	private static final Map<Class<?>, Class<?>> primitiveTypeToWrapperMap  = new HashMap<Class<?>, Class<?>>(17);
+	private static final Map<Class<?>, Class<?>> primitiveTypeToWrapperMap  = new HashMap<>(17);
 
 	static {
 		primitiveWrapperTypeMap.put(Boolean.class, boolean.class);

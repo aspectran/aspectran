@@ -33,6 +33,8 @@ import com.aspectran.core.activity.request.parameter.FileParameter;
 import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.rule.type.TokenType;
 import com.aspectran.core.util.BeanUtils;
+import com.aspectran.core.util.PropertiesLoaderUtils;
+import com.aspectran.core.util.ResourceUtils;
 
 /**
  * The Class TokenExpression.
@@ -389,8 +391,21 @@ public class TokenExpression implements TokenEvaluator {
 	 * @return an environment variable
 	 */
 	protected Object getProperty(Token token) {
-		Object value = activity.getActivityContext().getContextEnvironment().getProperty(token.getName());
-
+		String name = token.getName();
+		Object value = null;
+		
+		if(name.startsWith(ResourceUtils.CLASSPATH_URL_PREFIX)) {
+			String resourceName = name.substring(ResourceUtils.CLASSPATH_URL_PREFIX.length());
+			try {
+				value = PropertiesLoaderUtils.loadProperties(resourceName, activity.getActivityContext().getClassLoader());
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		} else {
+			value = activity.getActivityContext().getContextEnvironment().getProperty(token.getName());	
+		}
+		
 		if(value != null && token.getPropertyName() != null)
 			value = getBeanProperty(value, token.getPropertyName());
 

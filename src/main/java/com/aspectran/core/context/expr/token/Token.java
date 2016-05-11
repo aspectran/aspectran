@@ -58,9 +58,9 @@ public class Token implements BeanReferenceInspectable {
 	
 	public static final char PROPERTY_SEPARATOR = '^';
 	
-	private TokenType type;
+	private final TokenType type;
 
-	private String name;
+	private final String name;
 	
 	private String value;
 	
@@ -72,15 +72,21 @@ public class Token implements BeanReferenceInspectable {
 	 * Instantiates a new Token.
 	 *
 	 * @param type the token type
-	 * @param nameOrValue token's name or value of this token
+	 * @param nameOrValue token's name or value of this token.
+	 * 		If token type is TEXT then will be a value of this token.
 	 */
 	public Token(TokenType type, String nameOrValue) {
 		this.type = type;
 
-		if(type == TokenType.TEXT)
+		if(type == TokenType.TEXT) {
+			this.name = null;
 			this.value = nameOrValue;
-		else
+		} else {
+			if(nameOrValue == null) {
+				throw new IllegalArgumentException("'nameOrValue' must not be null.");
+			}
 			this.name = nameOrValue;
+		}
 	}
 	
 	/**
