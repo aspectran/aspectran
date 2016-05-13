@@ -22,8 +22,8 @@ import com.aspectran.core.activity.GenericActivity;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.context.expr.ItemTokenEvaluator;
-import com.aspectran.core.context.expr.ItemTokenExpression;
+import com.aspectran.core.context.expr.ItemEvaluator;
+import com.aspectran.core.context.expr.ItemExpressionParser;
 import com.aspectran.core.context.rule.RequestRule;
 
 /**
@@ -52,7 +52,7 @@ public class JobActivity extends GenericActivity {
 		RequestRule requestRule = getRequestRule();
 		
 		if(requestRule.getAttributeItemRuleMap() != null) {
-			ItemTokenEvaluator evaluator = new ItemTokenExpression(this);
+			ItemEvaluator evaluator = new ItemExpressionParser(this);
 			Map<String, Object> valueMap = evaluator.evaluate(requestRule.getAttributeItemRuleMap());
 
 			if(valueMap != null && !valueMap.isEmpty()) {

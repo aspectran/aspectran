@@ -63,10 +63,10 @@ public class Token implements BeanReferenceInspectable {
 	private final String name;
 	
 	private String value;
+
+	private Object alternativeValue;
 	
 	private String propertyName;
-
-	private Class<?> beanClass;
 	
 	/**
 	 * Instantiates a new Token.
@@ -136,20 +136,30 @@ public class Token implements BeanReferenceInspectable {
 	}
 
 	/**
+	 * Gets the alternative value.
+	 *
+	 * @return the alternative value
+	 */
+	public Object getAlternativeValue() {
+		return alternativeValue;
+	}
+
+	/**
+	 * Sets the alternative value.
+	 *
+	 * @param value the new alternative value
+	 */
+	public void setAlternativeValue(Object value) {
+		this.alternativeValue = value;
+	}
+
+	/**
 	 * Sets the name of the property whose value is to be retrieved.
 	 * 
 	 * @param propertyName the name of the property whose value is to be retrieved
 	 */
 	public void setPropertyName(String propertyName) {
 		this.propertyName = propertyName;
-	}
-
-	public Class<?> getBeanClass() {
-		return beanClass;
-	}
-
-	public void setBeanClass(Class<?> beanClass) {
-		this.beanClass = beanClass;
 	}
 
 	@Override
@@ -192,7 +202,7 @@ public class Token implements BeanReferenceInspectable {
 			StringBuilder sb = new StringBuilder();
 			sb.append(BEAN_SYMBOL);
 			sb.append(START_BRACKET);
-			if(beanClass != null) {
+			if(alternativeValue != null) {
 				sb.append(BeanRule.CLASS_DIRECTIVE);
 				sb.append(VALUE_SEPARATOR);
 				sb.append(value);
@@ -217,7 +227,7 @@ public class Token implements BeanReferenceInspectable {
 			sb.append(END_BRACKET);
 			return sb.toString();
 		} else {
-			throw new UnknownTokenTypeException(this);
+			throw new InvalidTokenException("Unknown token type", this);
 		}
 	}
 
@@ -227,7 +237,7 @@ public class Token implements BeanReferenceInspectable {
 		tsb.append("type", type);
 		tsb.append("name", name);
 		tsb.append("value", value);
-		tsb.append("beanClass", beanClass);
+		tsb.append("alternativeValue", alternativeValue);
 		tsb.append("propertyName", propertyName);
 		return tsb.toString();
 	}

@@ -37,15 +37,20 @@ import com.aspectran.core.util.PropertiesLoaderUtils;
 import com.aspectran.core.util.ResourceUtils;
 
 /**
- * The Class TokenExpression.
+ * The Class TokenExpressionParser.
  * 
  * <p>Created: 2008. 03. 29 AM 12:59:16</p>
  */
-public class TokenExpression implements TokenEvaluator {
+public class TokenExpressionParser implements TokenEvaluator {
 	
 	protected final Activity activity;
 	
-	public TokenExpression(Activity activity) {
+	/**
+	 * Instantiates a new token expression parser.
+	 *
+	 * @param activity the activity
+	 */
+	public TokenExpressionParser(Activity activity) {
 		this.activity = activity;
 	}
 
@@ -353,8 +358,8 @@ public class TokenExpression implements TokenEvaluator {
 	protected Object getBean(Token token) {
 		Object value;
 
-		if(token.getBeanClass() != null)
-			value = activity.getBean(token.getBeanClass());
+		if(token.getAlternativeValue() != null)
+			value = activity.getBean((Class<?>)token.getAlternativeValue());
 		else
 			value = activity.getBean(token.getName());
 
@@ -393,14 +398,13 @@ public class TokenExpression implements TokenEvaluator {
 	protected Object getProperty(Token token) {
 		String name = token.getName();
 		Object value;
-		System.out.println("******* " + token);
 
 		if(name.startsWith(ResourceUtils.CLASSPATH_URL_PREFIX)) {
 			String resourceName = name.substring(ResourceUtils.CLASSPATH_URL_PREFIX.length());
 			try {
 				value = PropertiesLoaderUtils.loadProperties(resourceName, activity.getActivityContext().getClassLoader());
 			} catch(IOException e) {
-				throw new TokenExpressionException("Failed to load properties file for token", token,  e);
+				throw new TokenEvaluationException("Failed to load properties file for token", token,  e);
 			}
 		} else {
 			value = activity.getActivityContext().getContextEnvironment().getProperty(token.getName());

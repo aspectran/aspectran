@@ -19,8 +19,8 @@ import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.VoidActivity;
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.context.expr.ItemTokenEvaluator;
-import com.aspectran.core.context.expr.ItemTokenExpression;
+import com.aspectran.core.context.expr.ItemEvaluator;
+import com.aspectran.core.context.expr.ItemExpressionParser;
 import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
 
@@ -68,7 +68,7 @@ public class ContextEnvironment extends AbstractEnvironment {
 		if(activity == null)
 			activity = new VoidActivity(context);
 
-		ItemTokenEvaluator evaluator = new ItemTokenExpression(activity);
+		ItemEvaluator evaluator = new ItemExpressionParser(activity);
 		return evaluator.evaluate(itemRule);
 	}
 	

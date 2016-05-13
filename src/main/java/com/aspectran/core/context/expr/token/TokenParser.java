@@ -118,7 +118,7 @@ public class TokenParser {
 	}
 
 	/**
-	 * Convert to string from token array.
+	 * Convert to string from the token array.
 	 *
 	 * @param tokens the tokens
 	 * @return the string

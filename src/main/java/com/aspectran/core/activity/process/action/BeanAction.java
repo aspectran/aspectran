@@ -21,8 +21,8 @@ import java.util.Map;
 
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.process.ActionList;
-import com.aspectran.core.context.expr.ItemTokenEvaluator;
-import com.aspectran.core.context.expr.ItemTokenExpression;
+import com.aspectran.core.context.expr.ItemEvaluator;
+import com.aspectran.core.context.expr.ItemExpressionParser;
 import com.aspectran.core.context.rule.AspectAdviceRule;
 import com.aspectran.core.context.rule.BeanActionRule;
 import com.aspectran.core.context.rule.ItemRule;
@@ -99,10 +99,10 @@ public class BeanAction extends AbstractAction {
 			if(bean == null)
 				throw new ActionExecutionException("Invalid BeanActionRule: No such bean " + beanActionRule);
 
-			ItemTokenEvaluator evaluator = null;
+			ItemEvaluator evaluator = null;
 			
 			if(propertyItemRuleMap != null || argumentItemRuleMap != null)
-				evaluator = new ItemTokenExpression(activity);
+				evaluator = new ItemExpressionParser(activity);
 			
 			if(propertyItemRuleMap != null) {
 				Map<String, Object> valueMap = evaluator.evaluate(propertyItemRuleMap);
@@ -149,12 +149,12 @@ public class BeanAction extends AbstractAction {
 		}
 	}
 
-	private static Object[] makeArugments(Activity activity, ItemRuleMap argumentItemRuleMap, ItemTokenEvaluator evaluator, boolean requiresTranslet) {
+	private static Object[] makeArugments(Activity activity, ItemRuleMap argumentItemRuleMap, ItemEvaluator evaluator, boolean requiresTranslet) {
 		Object[] args = null;
 
 		if(argumentItemRuleMap != null) {
 			if(evaluator == null)
-				evaluator = new ItemTokenExpression(activity);
+				evaluator = new ItemExpressionParser(activity);
 
 			Map<String, Object> valueMap = evaluator.evaluate(argumentItemRuleMap);
 
@@ -182,14 +182,14 @@ public class BeanAction extends AbstractAction {
 		return args;
 	}
 
-	private static Object invokeMethod(Activity activity, Object bean, String methodName, ItemRuleMap argumentItemRuleMap, ItemTokenEvaluator evaluator, boolean requiresTranslet)
+	private static Object invokeMethod(Activity activity, Object bean, String methodName, ItemRuleMap argumentItemRuleMap, ItemEvaluator evaluator, boolean requiresTranslet)
 		throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
 		Class<?>[] argsTypes = null;
 		Object[] argsObjects = null;
 
 		if(argumentItemRuleMap != null) {
 			if(evaluator == null)
-				evaluator = new ItemTokenExpression(activity);
+				evaluator = new ItemExpressionParser(activity);
 
 			Map<String, Object> valueMap = evaluator.evaluate(argumentItemRuleMap);
 

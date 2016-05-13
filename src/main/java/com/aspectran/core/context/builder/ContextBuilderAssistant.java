@@ -397,7 +397,7 @@ public class ContextBuilderAssistant {
 		if(name != null) {
 			if(name.equals(BeanRule.CLASS_DIRECTIVE)) {
 				Class<?> beanClass = loadClass(token.getValue());
-				token.setBeanClass(beanClass);
+				token.setAlternativeValue(beanClass);
 				putBeanReference(beanClass, token);
 			} else {
 				putBeanReference(name, token);

@@ -15,23 +15,33 @@
  */
 package com.aspectran.core.context.expr.token;
 
-import com.aspectran.core.context.expr.TokenExpressionException;
+import com.aspectran.core.context.expr.TokenEvaluationException;
 
 /**
- * The Class UnknownTokenTypeException.
+ * The Class InvalidTokenException.
  */
-public class UnknownTokenTypeException extends TokenExpressionException {
+public class InvalidTokenException extends TokenEvaluationException {
 
 	/** @serial */
-	private static final long serialVersionUID = -5611377627628325418L;
+	private static final long serialVersionUID = -3013940354563756601L;
 
 	/**
-	 * Instantiates a new Unknown token type exception.
+	 * Instantiates a new invalid token exception.
 	 *
 	 * @param token the token
 	 */
-	public UnknownTokenTypeException(Token token) {
-		super("Unknown token type", token);
+	public InvalidTokenException(Token token) {
+		super("Invalid token", token);
 	}
 
+	/**
+	 * Instantiates a new invalid token exception.
+	 *
+	 * @param msg the detail message
+	 * @param token the token
+	 */
+	public InvalidTokenException(String msg, Token token) {
+		super(msg, token);
+	}
+	
 }
