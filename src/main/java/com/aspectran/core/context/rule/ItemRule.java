@@ -462,39 +462,38 @@ public class ItemRule {
 	 * Update reference.
 	 *
 	 * @param itemRule the item rule
-	 * @param beanId the bean id
 	 * @param parameter the parameter name
 	 * @param attribute the attribute name
-	 * @param property the bean's property
+	 * @param bean the bean id
+	 * @param property the property name
 	 */
-	public static void updateReference(ItemRule itemRule, String beanId, String parameter, String attribute, String property) {
-		Token token = makeReferenceToken(beanId, parameter, attribute, property);
-		if(token != null)
-			itemRule.setValue(new Token[] { token });
+	public static void updateReference(ItemRule itemRule, String parameter, String attribute, String bean, String property) {
+		Token token = makeReferenceToken(parameter, attribute, bean, property);
+		if(token != null) {
+			itemRule.setValue(new Token[] {token});
+		}
 	}
 	
 	/**
 	 * Returns a made reference token.
 	 *
-	 * @param beanId the bean id
 	 * @param parameter the parameter name
 	 * @param attribute the attribute name
-	 * @param property the property for bean or attribute object
+	 * @param bean the bean id
+	 * @param property the property name
 	 * @return the token
 	 */
-	public static Token makeReferenceToken(String beanId, String parameter, String attribute, String property) {
+	public static Token makeReferenceToken(String parameter, String attribute, String bean, String property) {
 		Token token;
 		
-		if(beanId != null) {
-			token = new Token(TokenType.BEAN, beanId);
-			if(property != null)
-				token.setPropertyName(property); // bean property
-		} else if(parameter != null) {
+		if(parameter != null) {
 			token = new Token(TokenType.PARAMETER, parameter);
 		} else if(attribute != null) {
 			token = new Token(TokenType.ATTRIBUTE, attribute);
-			if(property != null)
-				token.setPropertyName(property); // object property
+		} else if(bean != null) {
+			token = new Token(TokenType.BEAN, bean);
+		} else if(property != null) {
+			token = new Token(TokenType.PROPERTY, property);
 		} else {
 			token = null;
 		}
@@ -703,12 +702,12 @@ public class ItemRule {
 		ItemRule itemRule = ItemRule.newInstance(type, name, null, valueType, defaultValue, tokenize);
 		
 		if(referenceParameters != null) {
-			String bean = StringUtils.emptyToNull(referenceParameters.getString(ReferenceParameters.bean));
 			String parameter = StringUtils.emptyToNull(referenceParameters.getString(ReferenceParameters.parameter));
 			String attribute = StringUtils.emptyToNull(referenceParameters.getString(ReferenceParameters.attribute));
+			String bean = StringUtils.emptyToNull(referenceParameters.getString(ReferenceParameters.bean));
 			String property = StringUtils.emptyToNull(referenceParameters.getString(ReferenceParameters.property));
 			
-			updateReference(itemRule, bean, parameter, attribute, property);
+			updateReference(itemRule, parameter, attribute, bean, property);
 		} else {
 			if(itemRule.getType() == ItemType.SINGULAR) {
 				String value = itemParameters.getString(ItemParameters.value);

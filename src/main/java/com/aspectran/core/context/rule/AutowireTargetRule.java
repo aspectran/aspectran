@@ -28,7 +28,7 @@ import com.aspectran.core.context.rule.type.AutowireTargetType;
  * 
  * @since 2.0.0
  */
-public class AutowireRule {
+public class AutowireTargetRule {
 
 	private AutowireTargetType targetType;
 	

@@ -343,8 +343,8 @@ public class TokenExpressionParser implements TokenEvaluator {
 		if(object == null && activity.getRequestAdapter() != null)
 			object = activity.getRequestAdapter().getAttribute(token.getName());
 
-		if(object != null && token.getPropertyName() != null)
-			object = getBeanProperty(object, token.getPropertyName());
+		if(object != null && token.getGetterName() != null)
+			object = getBeanProperty(object, token.getGetterName());
 
 		return object;
 	}
@@ -363,8 +363,8 @@ public class TokenExpressionParser implements TokenEvaluator {
 		else
 			value = activity.getBean(token.getName());
 
-		if(value != null && token.getPropertyName() != null)
-			value = getBeanProperty(value, token.getPropertyName());
+		if(value != null && token.getGetterName() != null)
+			value = getBeanProperty(value, token.getGetterName());
 
 		return value;
 	}
@@ -410,8 +410,8 @@ public class TokenExpressionParser implements TokenEvaluator {
 			value = activity.getActivityContext().getContextEnvironment().getProperty(token.getName());
 		}
 
-		if(value != null && token.getPropertyName() != null)
-			value = getBeanProperty(value, token.getPropertyName());
+		if(value != null && token.getGetterName() != null)
+			value = getBeanProperty(value, token.getGetterName());
 
 		return value;
 	}

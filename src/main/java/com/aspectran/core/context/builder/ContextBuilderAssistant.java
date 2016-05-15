@@ -18,6 +18,7 @@ package com.aspectran.core.context.builder;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -39,11 +40,13 @@ import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.BeanActionRule;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.EnvironmentRule;
+import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.TemplateRule;
 import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.ability.BeanReferenceInspectable;
 import com.aspectran.core.context.rule.type.DefaultSettingType;
 import com.aspectran.core.context.rule.type.ImportFileType;
+import com.aspectran.core.context.rule.type.TokenType;
 import com.aspectran.core.context.template.TemplateRuleRegistry;
 import com.aspectran.core.context.translet.TransletRuleRegistry;
 import com.aspectran.core.util.ArrayStack;
@@ -385,6 +388,19 @@ public class ContextBuilderAssistant {
         } else {
             putBeanReference(beanId, beanRule);
         }
+	}
+
+	public void resolveBeanClass(ItemRule itemRule) {
+		Iterator<Token[]> iter = ItemRule.tokenIterator(itemRule);
+		if(iter != null) {
+			while(iter.hasNext()) {
+				for(Token token : iter.next()) {
+					if(token.getType() == TokenType.BEAN) {
+						resolveBeanClass(token);
+					}
+				}
+			}
+		}
 	}
 
 	/**

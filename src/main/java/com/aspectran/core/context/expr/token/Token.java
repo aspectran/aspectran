@@ -15,7 +15,6 @@
  */
 package com.aspectran.core.context.expr.token;
 
-import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.ability.BeanReferenceInspectable;
 import com.aspectran.core.context.rule.type.BeanReferrerType;
 import com.aspectran.core.context.rule.type.TokenType;
@@ -29,11 +28,14 @@ import com.aspectran.core.util.ToStringBuilder;
  *  <li>${parameterName:defaultValue}
  *  <li>{@literal @}{attributeName}
  *  <li>{@literal @}{attributeName:defaultValue}
- *  <li>{@literal @}{attributeName^propertyName:defaultValue}
+ *  <li>{@literal @}{attributeName^getterName:defaultValue}
  *  <li>#{beanId}
- *  <li>#{beanId^propertyName}
+ *  <li>#{beanId^getterName}
  *  <li>#{class:className}
- *  <li>#{class:className^propertyName}
+ *  <li>#{class:className^getterName}
+ *  <li>%{environmentPropertyName}
+ *  <li>%{classpath:properties^getterName}
+ *  <li>%{classpath:properties^getterName:defaultValue}
  *</ul>
  *
  * <p>Created: 2008. 03. 27 PM 10:20:06</p>
@@ -49,14 +51,14 @@ public class Token implements BeanReferenceInspectable {
 	public static final char BEAN_SYMBOL = '#';
 	
 	public static final char PROPERTY_SYMBOL = '%';
-	
+
 	public static final char START_BRACKET = '{';
 
 	public static final char END_BRACKET = '}';
 
 	public static final char VALUE_SEPARATOR = ':';
 	
-	public static final char PROPERTY_SEPARATOR = '^';
+	public static final char GETTER_SEPARATOR = '^';
 	
 	private final TokenType type;
 
@@ -66,7 +68,7 @@ public class Token implements BeanReferenceInspectable {
 
 	private Object alternativeValue;
 	
-	private String propertyName;
+	private String getterName;
 	
 	/**
 	 * Instantiates a new Token.
@@ -131,8 +133,8 @@ public class Token implements BeanReferenceInspectable {
 	 * 
 	 * @return the name of the property whose value is to be retrieved
 	 */
-	public String getPropertyName() {
-		return propertyName;
+	public String getGetterName() {
+		return getterName;
 	}
 
 	/**
@@ -156,10 +158,10 @@ public class Token implements BeanReferenceInspectable {
 	/**
 	 * Sets the name of the property whose value is to be retrieved.
 	 * 
-	 * @param propertyName the name of the property whose value is to be retrieved
+	 * @param getterName the name of the property whose value is to be retrieved
 	 */
-	public void setPropertyName(String propertyName) {
-		this.propertyName = propertyName;
+	public void setGetterName(String getterName) {
+		this.getterName = getterName;
 	}
 
 	@Override
@@ -174,8 +176,9 @@ public class Token implements BeanReferenceInspectable {
 			StringBuilder sb = new StringBuilder();
 			sb.append(PARAMETER_SYMBOL);
 			sb.append(START_BRACKET);
-			if(name != null)
+			if(name != null) {
 				sb.append(name);
+			}
 			if(value != null) {
 				sb.append(VALUE_SEPARATOR);
 				sb.append(value);
@@ -186,11 +189,12 @@ public class Token implements BeanReferenceInspectable {
 			StringBuilder sb = new StringBuilder();
 			sb.append(ATTRIBUTE_SYMBOL);
 			sb.append(START_BRACKET);
-			if(name != null)
+			if(name != null) {
 				sb.append(name);
-			if(propertyName != null) {
-				sb.append(PROPERTY_SEPARATOR);
-				sb.append(propertyName);
+			}
+			if(getterName != null) {
+				sb.append(GETTER_SEPARATOR);
+				sb.append(getterName);
 			}
 			if(value != null) {
 				sb.append(VALUE_SEPARATOR);
@@ -202,16 +206,27 @@ public class Token implements BeanReferenceInspectable {
 			StringBuilder sb = new StringBuilder();
 			sb.append(BEAN_SYMBOL);
 			sb.append(START_BRACKET);
-			if(alternativeValue != null) {
-				sb.append(BeanRule.CLASS_DIRECTIVE);
-				sb.append(VALUE_SEPARATOR);
-				sb.append(value);
-			} else if(name != null) {
+//			if(alternativeValue != null) {
+//				sb.append(BeanRule.CLASS_DIRECTIVE);
+//				sb.append(VALUE_SEPARATOR);
+//				sb.append(value);
+//			} else if(name != null) {
+//				sb.append(name);
+//			}
+//			if(getterName != null) {
+//				sb.append(GETTER_SEPARATOR);
+//				sb.append(getterName);
+//			}
+			if(name != null) {
 				sb.append(name);
 			}
-			if(propertyName != null) {
-				sb.append(PROPERTY_SEPARATOR);
-				sb.append(propertyName);
+			if(value != null) {
+				sb.append(VALUE_SEPARATOR);
+				sb.append(value);
+			}
+			if(getterName != null) {
+				sb.append(GETTER_SEPARATOR);
+				sb.append(getterName);
 			}
 			sb.append(END_BRACKET);
 			return sb.toString();
@@ -219,7 +234,9 @@ public class Token implements BeanReferenceInspectable {
 			StringBuilder sb = new StringBuilder();
 			sb.append(PROPERTY_SYMBOL);
 			sb.append(START_BRACKET);
-			if(name != null) sb.append(name);
+			if(name != null) {
+				sb.append(name);
+			}
 			if(value != null) {
 				sb.append(VALUE_SEPARATOR);
 				sb.append(value);
@@ -238,7 +255,7 @@ public class Token implements BeanReferenceInspectable {
 		tsb.append("name", name);
 		tsb.append("value", value);
 		tsb.append("alternativeValue", alternativeValue);
-		tsb.append("propertyName", propertyName);
+		tsb.append("getterName", getterName);
 		return tsb.toString();
 	}
 	

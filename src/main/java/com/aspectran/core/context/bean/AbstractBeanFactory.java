@@ -46,7 +46,7 @@ import com.aspectran.core.context.expr.ItemExpressionParser;
 import com.aspectran.core.context.expr.TokenEvaluator;
 import com.aspectran.core.context.expr.TokenExpressionParser;
 import com.aspectran.core.context.expr.token.Token;
-import com.aspectran.core.context.rule.AutowireRule;
+import com.aspectran.core.context.rule.AutowireTargetRule;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.type.AutowireTargetType;
@@ -251,31 +251,31 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 	}
 	
 	private void autowiring(BeanRule beanRule, Object bean, Activity activity) {
-		List<AutowireRule> autowireTargetList = beanRule.getAutowireTargetList();
+		List<AutowireTargetRule> autowireTargetList = beanRule.getAutowireTargetRuleList();
 
 		if(autowireTargetList != null) {
-			for(AutowireRule autowireRule : autowireTargetList) {
-				if(autowireRule.getTargetType() == AutowireTargetType.FIELD) {
-					Field field = autowireRule.getTarget();
+			for(AutowireTargetRule autowireTargetRule : autowireTargetList) {
+				if(autowireTargetRule.getTargetType() == AutowireTargetType.FIELD) {
+					Field field = autowireTargetRule.getTarget();
 
-					Object value = activity.getBean(autowireRule.getTypes()[0], autowireRule.getQualifiers()[0]);
+					Object value = activity.getBean(autowireTargetRule.getTypes()[0], autowireTargetRule.getQualifiers()[0]);
 
 					ReflectionUtils.setField(field, bean, value);
-				} else if(autowireRule.getTargetType() == AutowireTargetType.METHOD) {
-					Method method = autowireRule.getTarget();
+				} else if(autowireTargetRule.getTargetType() == AutowireTargetType.METHOD) {
+					Method method = autowireTargetRule.getTarget();
 
-					Class<?>[] types = autowireRule.getTypes();
-					String[] qualifiers = autowireRule.getQualifiers();
+					Class<?>[] types = autowireTargetRule.getTypes();
+					String[] qualifiers = autowireTargetRule.getQualifiers();
 					Object[] values = new Object[types.length];
 					for(int i = 0; i < types.length; i++) {
 						values[i] = activity.getBean(types[i], qualifiers[i]);
 					}
 
 					ReflectionUtils.invokeMethod(method, bean, values);
-				} else if(autowireRule.getTargetType() == AutowireTargetType.VALUE) {
-					Field field = autowireRule.getTarget();
+				} else if(autowireTargetRule.getTargetType() == AutowireTargetType.VALUE) {
+					Field field = autowireTargetRule.getTarget();
 
-					Token token = autowireRule.getToken();
+					Token token = autowireTargetRule.getToken();
 					TokenEvaluator evaluator = new TokenExpressionParser(activity);
 					Object value = evaluator.evaluate(token);
 

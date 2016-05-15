@@ -62,7 +62,7 @@ class BeanReferenceInspector {
 			Object beanIdOrClass = entry.getKey();
 			Set<BeanReferenceInspectable> set = entry.getValue();
 
-			BeanRule beanRule = beanRuleRegistry.getBeanRule(beanIdOrClass);
+			BeanRule beanRule = beanRuleRegistry.getBeanRules(beanIdOrClass);
 
 			if(beanRule == null && beanIdOrClass instanceof Class<?>)
 				beanRule = beanRuleRegistry.getConfigBeanRule((Class<?>)beanIdOrClass);

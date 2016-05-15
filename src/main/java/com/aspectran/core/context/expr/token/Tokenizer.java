@@ -32,7 +32,7 @@ public class Tokenizer {
 
 	private static final int AT_STRING = 1;
 
-	private static final int AT_SYMBOL = 2;
+	private static final int AT_TOKEN_SYMBOL = 2;
 
 	private static final int AT_TOKEN_NAME = 3;
 
@@ -45,14 +45,14 @@ public class Tokenizer {
 	/**
 	 * Tokenize a string and returns a list of tokens.
 	 * 
-	 * @param input the pattern string
+	 * @param input the string to tokenize
 	 * @param trimStringToken the trim string token
 	 * @return the token list
 	 */
 	public static List<Token> tokenize(CharSequence input, boolean trimStringToken) {
 		List<Token> tokens = new ArrayList<>();
 
-		int patternLength = input.length();
+		int inputLen = input.length();
 
 		int status = AT_STRING;
 		int tokenStartOffset = 0; // start position of token in the stringBuffer
@@ -63,7 +63,7 @@ public class Tokenizer {
 		StringBuilder tokenNameBuffer = new StringBuilder();
 		StringBuilder defTextBuffer = new StringBuilder();
 
-		for(int i = 0; i < patternLength; i++) {
+		for(int i = 0; i < inputLen; i++) {
 			c = input.charAt(i);
 
 			switch(status) {
@@ -72,22 +72,21 @@ public class Tokenizer {
 
 				if(Token.isTokenSymbol(c)) {
 					symbol = c;
-					status = AT_SYMBOL;
+					status = AT_TOKEN_SYMBOL;
 					// abc$ --> tokenStartOffset: 3
 					tokenStartOffset = stringBuffer.length() - 1;
 				}
 				
 				break;
 			
-			case AT_SYMBOL:
+			case AT_TOKEN_SYMBOL:
 				stringBuffer.append(c);
 
 				if(c == Token.START_BRACKET) {
 					status = AT_TOKEN_NAME;
-					break;
+				} else {
+					status = AT_STRING;
 				}
-
-				status = AT_STRING;
 
 				break;
 
@@ -150,7 +149,7 @@ public class Tokenizer {
 	/**
 	 * Create a token.
 	 * 
-	 * @param symbol the symbol
+	 * @param symbol the token symbol
 	 * @param tokenNameBuffer the token name buffer
 	 * @param defTextBuffer the def value buffer
 	 * @return the token
@@ -164,23 +163,17 @@ public class Tokenizer {
 		if(tokenNameBuffer.length() > 0) {
 			type = Token.resolveTypeAsSymbol(symbol);
 			name = tokenNameBuffer.toString();
-			
-			if(symbol == Token.ATTRIBUTE_SYMBOL ||
-					symbol == Token.BEAN_SYMBOL) {
-				int offset = name.indexOf(Token.PROPERTY_SEPARATOR);
-				
-				if(offset > 0) {
-					String attrName = name.substring(0, offset);
-					String propertyName = name.substring(offset + 1);
-					
-					if(propertyName.length() > 0) {
-						name = attrName;
-						getterName = propertyName;
-					}
-				}
-			}
-		
 			tokenNameBuffer.setLength(0);
+
+			int offset = name.indexOf(Token.GETTER_SEPARATOR);
+			if(offset > 0) {
+				String name2 = name.substring(0, offset);
+				String getterName2 = name.substring(offset + 1);
+				if(!getterName2.isEmpty()) {
+					name = name2;
+					getterName = getterName2;
+				}
+				}
 		} else {
 			// when not exists tokenName then tokenType must be TEXT type
 			type = TokenType.TEXT;
@@ -193,7 +186,7 @@ public class Tokenizer {
 
 		Token token = new Token(type, name);
 		token.setValue(defaultValue);
-		token.setPropertyName(getterName);
+		token.setGetterName(getterName);
 
 		return token;
 	}

@@ -15,7 +15,6 @@
  */
 package com.aspectran.core.context.builder.apon;
 
-import java.util.Iterator;
 import java.util.List;
 
 import com.aspectran.core.activity.process.ActionList;
@@ -49,7 +48,6 @@ import com.aspectran.core.context.builder.apon.params.TransformParameters;
 import com.aspectran.core.context.builder.apon.params.TransletParameters;
 import com.aspectran.core.context.builder.importer.ImportHandler;
 import com.aspectran.core.context.builder.importer.Importer;
-import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.rule.AspectAdviceRule;
 import com.aspectran.core.context.rule.AspectJobAdviceRule;
 import com.aspectran.core.context.rule.AspectRule;
@@ -76,7 +74,6 @@ import com.aspectran.core.context.rule.ability.ActionRuleApplicable;
 import com.aspectran.core.context.rule.ability.ResponseRuleApplicable;
 import com.aspectran.core.context.rule.type.AspectAdviceType;
 import com.aspectran.core.context.rule.type.DefaultSettingType;
-import com.aspectran.core.context.rule.type.TokenType;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.apon.Parameters;
 
@@ -766,17 +763,7 @@ public class RootAponDisassembler {
 			
 		if(itemRuleMap != null) {
 			for(ItemRule itemRule : itemRuleMap.values()) {
-				Iterator<Token[]> iter = ItemRule.tokenIterator(itemRule);
-				
-				if(iter != null) {
-					while(iter.hasNext()) {
-						for(Token token : iter.next()) {
-							if(token.getType() == TokenType.BEAN) {
-								assistant.resolveBeanClass(token);
-							}
-						}
-					}
-				}
+				assistant.resolveBeanClass(itemRule);
 			}
 		}
 		

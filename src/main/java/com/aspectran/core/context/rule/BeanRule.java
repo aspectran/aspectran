@@ -112,7 +112,11 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceInspectable 
 
 	private boolean proxied;
 
-	private List<AutowireRule> autowireTargetList;
+	private List<AutowireTargetRule> autowireTargetRuleList;
+
+	private boolean fieldAutowireParsed;
+
+	private boolean methodAutowireParsed;
 
 	private Object bean; // only for singleton
 
@@ -616,15 +620,31 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceInspectable 
 		return (!offered && !factoryBean && factoryMethod == null);
 	}
 
-	public List<AutowireRule> getAutowireTargetList() {
-		return autowireTargetList;
+	public List<AutowireTargetRule> getAutowireTargetRuleList() {
+		return autowireTargetRuleList;
 	}
 
-	public void addAutowireTarget(AutowireRule autowireRule) {
-		if(autowireTargetList == null) {
-			autowireTargetList = new ArrayList<AutowireRule>();
+	public void addAutowireTargetRule(AutowireTargetRule autowireTargetRule) {
+		if(autowireTargetRuleList == null) {
+			autowireTargetRuleList = new ArrayList<AutowireTargetRule>();
 		}
-		autowireTargetList.add(autowireRule);
+		autowireTargetRuleList.add(autowireTargetRule);
+	}
+
+	public boolean isFieldAutowireParsed() {
+		return fieldAutowireParsed;
+	}
+
+	public void setFieldAutowireParsed(boolean fieldAutowireParsed) {
+		this.fieldAutowireParsed = fieldAutowireParsed;
+	}
+
+	public boolean isMethodAutowireParsed() {
+		return methodAutowireParsed;
+	}
+
+	public void setMethodAutowireParsed(boolean methodAutowireParsed) {
+		this.methodAutowireParsed = methodAutowireParsed;
 	}
 
 	/**

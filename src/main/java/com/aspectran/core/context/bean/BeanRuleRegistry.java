@@ -83,12 +83,12 @@ public class BeanRuleRegistry {
 		this.transletRuleRegistry = transletRuleRegistry;
 	}
 	
-	public BeanRule getBeanRule(Object idOrRequiredType) {
+	public BeanRule getBeanRules(Object idOrRequiredType) {
 		if(idOrRequiredType == null)
 			throw new IllegalArgumentException("'idOrRequiredType' must not be null.");
 
 		if(idOrRequiredType instanceof Class<?>) {
-			BeanRule[] beanRules = getBeanRule((Class<?>)idOrRequiredType);
+			BeanRule[] beanRules = getBeanRules((Class<?>)idOrRequiredType);
 
 			if(beanRules == null)
 				return null;
@@ -98,15 +98,15 @@ public class BeanRuleRegistry {
 			
 			return beanRules[0];
 		} else {
-			return getBeanRule(idOrRequiredType.toString());
+			return getBeanRules(idOrRequiredType.toString());
 		}
 	}
 	
-	public BeanRule getBeanRule(String id) {
+	public BeanRule getBeanRules(String id) {
 		return idBasedBeanRuleMap.get(id);
 	}
 	
-	public BeanRule[] getBeanRule(Class<?> requiredType) {
+	public BeanRule[] getBeanRules(Class<?> requiredType) {
 		Set<BeanRule> list = typeBasedBeanRuleMap.get(requiredType);
 		if(list.isEmpty())
 			return null;
@@ -251,33 +251,6 @@ public class BeanRuleRegistry {
 		configBeanRuleMap.put(beanRule.getBeanClass(), beanRule);
 	}
 
-	private void parseAnnotatedConfig() {
-		AnnotatedConfigRelater relater = new AnnotatedConfigRelater() {
-			@Override
-			public void relay(Class<?> targetBeanClass, BeanRule beanRule) {
-				if(beanRule.getId() != null) {
-					saveBeanRule(beanRule.getId(), beanRule);
-				}
-				saveBeanRule(targetBeanClass, beanRule);
-				for(Class<?> ifc : targetBeanClass.getInterfaces()) {
-					if(!ignoredDependencyInterfaces.contains(ifc)) {
-						saveBeanRule(ifc, beanRule);
-					}
-				}
-			}
-
-			@Override
-			public void relay(TransletRule transletRule) {
-				if(transletRuleRegistry != null) {
-					transletRuleRegistry.addTransletRule(transletRule);
-				}
-			}
-		};
-
-		AnnotatedConfigParser parser = new AnnotatedConfigParser(this, relater);
-		parser.parse();
-	}
-	
 	public void postProcess() {
 		if(!postProcessBeanRuleMap.isEmpty()) {
 			for(BeanRule beanRule : postProcessBeanRuleMap) {
@@ -319,16 +292,43 @@ public class BeanRuleRegistry {
 		parseAnnotatedConfig();
 	}
 
+	private void parseAnnotatedConfig() {
+		AnnotatedConfigRelater relater = new AnnotatedConfigRelater() {
+			@Override
+			public void relay(Class<?> targetBeanClass, BeanRule beanRule) {
+				if(beanRule.getId() != null) {
+					saveBeanRule(beanRule.getId(), beanRule);
+				}
+				saveBeanRule(targetBeanClass, beanRule);
+				for(Class<?> ifc : targetBeanClass.getInterfaces()) {
+					if(!ignoredDependencyInterfaces.contains(ifc)) {
+						saveBeanRule(ifc, beanRule);
+					}
+				}
+			}
+
+			@Override
+			public void relay(TransletRule transletRule) {
+				if(transletRuleRegistry != null) {
+					transletRuleRegistry.addTransletRule(transletRule);
+				}
+			}
+		};
+
+		AnnotatedConfigParser parser = new AnnotatedConfigParser(this, relater);
+		parser.parse();
+	}
+
 	private Class<?> resolveOfferBeanClass(BeanRule beanRule) {
 		BeanRule offerBeanRule;
 
 		if(beanRule.getOfferBeanClass() == null) {
-			offerBeanRule = getBeanRule(beanRule.getOfferBeanId());
+			offerBeanRule = getBeanRules(beanRule.getOfferBeanId());
 
 			if(offerBeanRule == null)
 				throw new BeanNotFoundException(beanRule.getOfferBeanId());
 		} else {
-			BeanRule[] beanRules = getBeanRule(beanRule.getOfferBeanClass());
+			BeanRule[] beanRules = getBeanRules(beanRule.getOfferBeanClass());
 
 			if(beanRules == null || beanRules.length == 0)
 				throw new RequiredTypeBeanNotFoundException(beanRule.getOfferBeanClass());
