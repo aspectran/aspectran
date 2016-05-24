@@ -83,7 +83,7 @@ public class BeanRuleRegistry {
 		this.transletRuleRegistry = transletRuleRegistry;
 	}
 	
-	public BeanRule getBeanRules(Object idOrRequiredType) {
+	public BeanRule getBeanRule(Object idOrRequiredType) {
 		if(idOrRequiredType == null)
 			throw new IllegalArgumentException("'idOrRequiredType' must not be null.");
 
@@ -98,11 +98,11 @@ public class BeanRuleRegistry {
 			
 			return beanRules[0];
 		} else {
-			return getBeanRules(idOrRequiredType.toString());
+			return getBeanRule(idOrRequiredType.toString());
 		}
 	}
 	
-	public BeanRule getBeanRules(String id) {
+	public BeanRule getBeanRule(String id) {
 		return idBasedBeanRuleMap.get(id);
 	}
 	
@@ -323,7 +323,7 @@ public class BeanRuleRegistry {
 		BeanRule offerBeanRule;
 
 		if(beanRule.getOfferBeanClass() == null) {
-			offerBeanRule = getBeanRules(beanRule.getOfferBeanId());
+			offerBeanRule = getBeanRule(beanRule.getOfferBeanId());
 
 			if(offerBeanRule == null)
 				throw new BeanNotFoundException(beanRule.getOfferBeanId());

@@ -38,7 +38,7 @@ public class ContextBeanRegistry extends AbstractBeanFactory implements BeanRegi
 
 	@Override
 	public <T> T getBean(String id) {
-		BeanRule beanRule = beanRuleRegistry.getBeanRules(id);
+		BeanRule beanRule = beanRuleRegistry.getBeanRule(id);
 
 		if(beanRule == null)
 			throw new BeanNotFoundException(id);
@@ -61,7 +61,7 @@ public class ContextBeanRegistry extends AbstractBeanFactory implements BeanRegi
 
 	@Override
 	public <T> T getBean(String id, Class<T> requiredType) {
-		BeanRule beanRule = beanRuleRegistry.getBeanRules(id);
+		BeanRule beanRule = beanRuleRegistry.getBeanRule(id);
 
 		if(beanRule == null)
 			throw new BeanNotFoundException(id);
