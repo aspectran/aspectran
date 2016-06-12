@@ -584,10 +584,12 @@ public class ContextBuilderAssistant {
 			importer = new UrlImporter(url, importFileType);
 		}
 		
-		if(profile != null && !profile.isEmpty()) {
-			String[] arr = StringUtils.splitCommaDelimitedString(profile);
-			if(arr != null && arr.length > 0) {
-				importer.setProfiles(arr);
+		if(importer != null) {
+			if(profile != null && !profile.isEmpty()) {
+				String[] arr = StringUtils.splitCommaDelimitedString(profile);
+				if(arr != null && arr.length > 0) {
+					importer.setProfiles(arr);
+				}
 			}
 		}
 
