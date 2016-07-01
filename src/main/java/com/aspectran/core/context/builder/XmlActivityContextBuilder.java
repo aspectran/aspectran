@@ -40,7 +40,7 @@ public class XmlActivityContextBuilder extends AbstractActivityContextBuilder {
 				throw new IllegalArgumentException("'rootContext' must not be null.");
 
 			ImportHandler importHandler = new XmlImportHandler(this);
-			setImportHandler(importHandler);
+			getContextBuilderAssistant().setImportHandler(importHandler);
 			
 			Importer importer = resolveImporter(rootContext, ImportFileType.XML);
 			importHandler.handle(importer);

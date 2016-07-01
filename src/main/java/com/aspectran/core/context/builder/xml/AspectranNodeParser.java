@@ -18,7 +18,7 @@ package com.aspectran.core.context.builder.xml;
 import java.io.IOException;
 import java.io.InputStream;
 
-import com.aspectran.core.context.builder.ContextBuilderAssistant;
+import com.aspectran.core.context.builder.assistant.ContextBuilderAssistant;
 import com.aspectran.core.context.builder.importer.ImportHandler;
 import com.aspectran.core.context.builder.importer.Importer;
 import com.aspectran.core.context.rule.EnvironmentRule;

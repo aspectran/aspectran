@@ -41,6 +41,7 @@ import com.aspectran.core.context.bean.annotation.Request;
 import com.aspectran.core.context.bean.annotation.Required;
 import com.aspectran.core.context.bean.annotation.Transform;
 import com.aspectran.core.context.bean.annotation.Value;
+import com.aspectran.core.context.builder.assistant.ContextBuilderAssistant;
 import com.aspectran.core.context.env.Environment;
 import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.expr.token.TokenParser;
@@ -55,6 +56,7 @@ import com.aspectran.core.context.rule.TransformRule;
 import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.type.AutowireTargetType;
 import com.aspectran.core.context.rule.type.RequestMethodType;
+import com.aspectran.core.context.rule.type.TokenType;
 import com.aspectran.core.context.rule.type.TransformType;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.logging.Log;
@@ -72,6 +74,8 @@ public class AnnotatedConfigParser {
 
 	private final Log log = LogFactory.getLog(AnnotatedConfigParser.class);
 
+	private final ContextBuilderAssistant assistant;
+	
 	private final BeanRuleRegistry beanRuleRegistry;
 
 	private final AnnotatedConfigRelater relater;
@@ -84,10 +88,11 @@ public class AnnotatedConfigParser {
 
 	private final Map<Class<?>, BeanRule> configBeanRuleMap;
 
-	public AnnotatedConfigParser(BeanRuleRegistry beanRuleRegistry, AnnotatedConfigRelater relater) {
-		this.beanRuleRegistry = beanRuleRegistry;
+	public AnnotatedConfigParser(ContextBuilderAssistant assistant, AnnotatedConfigRelater relater) {
+		this.assistant = assistant;
+		this.beanRuleRegistry = assistant.getBeanRuleRegistry();
 		this.relater = relater;
-		this.environment = beanRuleRegistry.getEnvironment();
+		this.environment = assistant.getContextEnvironment();
 
 		this.idBasedBeanRuleMap = beanRuleRegistry.getIdBasedBeanRuleMap();
 		this.typeBasedBeanRuleMap = beanRuleRegistry.getTypeBasedBeanRuleMap();
@@ -193,10 +198,15 @@ public class AnnotatedConfigParser {
 							Token[] tokens = TokenParser.parse(value);
 
 							if(tokens != null && tokens.length > 0) {
+								Token token = tokens[0];
+								if(token.getType() == TokenType.BEAN) {
+									assistant.resolveBeanClass(token);
+								}
+								
 								AutowireTargetRule autowireTargetRule = new AutowireTargetRule();
 								autowireTargetRule.setTargetType(AutowireTargetType.VALUE);
 								autowireTargetRule.setTarget(field);
-								autowireTargetRule.setToken(tokens[0]);
+								autowireTargetRule.setToken(token);
 
 								beanRule.addAutowireTargetRule(autowireTargetRule);
 							}

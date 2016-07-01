@@ -28,7 +28,7 @@ import com.aspectran.core.context.bean.ablility.InitializableTransletBean;
 import com.aspectran.core.context.bean.annotation.Configuration;
 import com.aspectran.core.context.bean.scan.BeanClassScanFailedException;
 import com.aspectran.core.context.bean.scan.BeanClassScanner;
-import com.aspectran.core.context.env.Environment;
+import com.aspectran.core.context.builder.assistant.ContextBuilderAssistant;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.translet.TransletRuleRegistry;
@@ -44,8 +44,6 @@ import com.aspectran.core.util.logging.LogFactory;
 public class BeanRuleRegistry {
 	
 	private final Log log = LogFactory.getLog(BeanRuleRegistry.class);
-
-	private final Environment environment;
 
 	private final ClassLoader classLoader;
 	
@@ -65,18 +63,13 @@ public class BeanRuleRegistry {
 
 	private Set<Class<?>> importantBeanTypeSet = new HashSet<>();
 
-	public BeanRuleRegistry(Environment environment) {
-		this.environment = environment;
-		this.classLoader = environment.getApplicationAdapter().getClassLoader();
+	public BeanRuleRegistry(ClassLoader classLoader) {
+		this.classLoader = classLoader;
 
 		ignoreDependencyInterface(DisposableBean.class);
 		ignoreDependencyInterface(FactoryBean.class);
 		ignoreDependencyInterface(InitializableBean.class);
 		ignoreDependencyInterface(InitializableTransletBean.class);
-	}
-
-	public Environment getEnvironment() {
-		return environment;
 	}
 
 	public void setTransletRuleRegistry(TransletRuleRegistry transletRuleRegistry) {
@@ -251,7 +244,7 @@ public class BeanRuleRegistry {
 		configBeanRuleMap.put(beanRule.getBeanClass(), beanRule);
 	}
 
-	public void postProcess() {
+	public void postProcess(ContextBuilderAssistant assistant) {
 		if(!postProcessBeanRuleMap.isEmpty()) {
 			for(BeanRule beanRule : postProcessBeanRuleMap) {
 				if(beanRule.getId() != null)
@@ -289,10 +282,10 @@ public class BeanRuleRegistry {
 		importantBeanIdSet.clear();
 		importantBeanTypeSet.clear();
 
-		parseAnnotatedConfig();
+		parseAnnotatedConfig(assistant);
 	}
 
-	private void parseAnnotatedConfig() {
+	private void parseAnnotatedConfig(ContextBuilderAssistant assistant) {
 		AnnotatedConfigRelater relater = new AnnotatedConfigRelater() {
 			@Override
 			public void relay(Class<?> targetBeanClass, BeanRule beanRule) {
@@ -315,7 +308,7 @@ public class BeanRuleRegistry {
 			}
 		};
 
-		AnnotatedConfigParser parser = new AnnotatedConfigParser(this, relater);
+		AnnotatedConfigParser parser = new AnnotatedConfigParser(assistant, relater);
 		parser.parse();
 	}
 

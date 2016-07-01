@@ -15,7 +15,7 @@
  */
 package com.aspectran.core.context.builder.xml;
 
-import com.aspectran.core.context.builder.ContextBuilderAssistant;
+import com.aspectran.core.context.builder.assistant.ContextBuilderAssistant;
 import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleMap;

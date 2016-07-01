@@ -30,6 +30,9 @@ import com.aspectran.core.context.aspect.pointcut.Pointcut;
 import com.aspectran.core.context.aspect.pointcut.PointcutFactory;
 import com.aspectran.core.context.bean.BeanRuleRegistry;
 import com.aspectran.core.context.bean.ContextBeanRegistry;
+import com.aspectran.core.context.builder.assistant.BeanReferenceException;
+import com.aspectran.core.context.builder.assistant.BeanReferenceInspector;
+import com.aspectran.core.context.builder.assistant.ContextBuilderAssistant;
 import com.aspectran.core.context.builder.importer.FileImporter;
 import com.aspectran.core.context.builder.importer.Importer;
 import com.aspectran.core.context.builder.importer.ResourceImporter;
@@ -47,43 +50,51 @@ import com.aspectran.core.context.template.ContextTemplateProcessor;
 import com.aspectran.core.context.template.TemplateProcessor;
 import com.aspectran.core.context.template.TemplateRuleRegistry;
 import com.aspectran.core.context.translet.TransletRuleRegistry;
-import com.aspectran.core.util.BeanDescriptor;
-import com.aspectran.core.util.MethodUtils;
-import com.aspectran.core.util.PropertiesLoaderUtils;
 import com.aspectran.core.util.ResourceUtils;
 import com.aspectran.core.util.StringUtils;
+import com.aspectran.core.util.logging.Log;
+import com.aspectran.core.util.logging.LogFactory;
 
 /**
  * The Class AbstractActivityContextBuilder.
  * 
  * <p>Created: 2008. 06. 14 PM 8:53:29</p>
  */
-abstract class AbstractActivityContextBuilder extends ContextBuilderAssistant implements ActivityContextBuilder {
+abstract class AbstractActivityContextBuilder implements ActivityContextBuilder {
+	
+	protected final Log log = LogFactory.getLog(getClass());
 	
 	private final AspectranActivityContext activityContext;
 
-	private final ContextEnvironment contextEnvironment;
+	private final ContextEnvironment environment;
+	
+	private final ContextBuilderAssistant assistant;
 	
 	private boolean hybridLoad;
 	
 	AbstractActivityContextBuilder(ApplicationAdapter applicationAdapter) {
 		activityContext = new AspectranActivityContext(new RegulatedApplicationAdapter(applicationAdapter));
-		contextEnvironment = activityContext.getContextEnvironment();
+		environment = activityContext.getContextEnvironment();
 		
-		readyAssist(contextEnvironment);
+		assistant = new ContextBuilderAssistant(environment);
+		assistant.ready();
 	}
 
 	public ContextEnvironment getContextEnvironment() {
-		return contextEnvironment;
+		return environment;
 	}
 	
+	public ContextBuilderAssistant getContextBuilderAssistant() {
+		return assistant;
+	}
+
 	@Override
 	public void setActiveProfiles(String... activeProfiles) {
 		if(activeProfiles != null) {
 			log.info("Activating profiles [" + StringUtils.joinCommaDelimitedList(activeProfiles) + "]");
 		}
 		
-		contextEnvironment.setActiveProfiles(activeProfiles);
+		environment.setActiveProfiles(activeProfiles);
 	}
 	
 	@Override
@@ -92,7 +103,7 @@ abstract class AbstractActivityContextBuilder extends ContextBuilderAssistant im
 			log.info("Default profiles [" + StringUtils.joinCommaDelimitedList(defaultProfiles) + "]");
 		}
 
-		contextEnvironment.setDefaultProfiles(defaultProfiles);
+		environment.setDefaultProfiles(defaultProfiles);
 	}
 
 	public boolean isHybridLoad() {
@@ -113,29 +124,26 @@ abstract class AbstractActivityContextBuilder extends ContextBuilderAssistant im
 	ActivityContext makeActivityContext() throws BeanReferenceException {
 		initContextEnvironment();
 		
-		AspectRuleRegistry aspectRuleRegistry = getAspectRuleRegistry();
+		AspectRuleRegistry aspectRuleRegistry = assistant.getAspectRuleRegistry();
 
-		BeanRuleRegistry beanRuleRegistry = getBeanRuleRegistry();
-		beanRuleRegistry.postProcess();
+		BeanRuleRegistry beanRuleRegistry = assistant.getBeanRuleRegistry();
+		beanRuleRegistry.postProcess(assistant);
 
-		TransletRuleRegistry transletRuleRegistry = getTransletRuleRegistry();
-		TemplateRuleRegistry templateRuleRegistry = getTemplateRuleRegistry();
+		TransletRuleRegistry transletRuleRegistry = assistant.getTransletRuleRegistry();
+		TemplateRuleRegistry templateRuleRegistry = assistant.getTemplateRuleRegistry();
 
-		BeanReferenceInspector beanReferenceInspector = getBeanReferenceInspector();
+		BeanReferenceInspector beanReferenceInspector = assistant.getBeanReferenceInspector();
 		beanReferenceInspector.inspect(beanRuleRegistry);
 		
 		initAspectRuleRegistry(aspectRuleRegistry, beanRuleRegistry, transletRuleRegistry);
 
-		BeanProxifierType beanProxifierType = BeanProxifierType.lookup((String)getSetting(DefaultSettingType.BEAN_PROXIFIER));
+		BeanProxifierType beanProxifierType = BeanProxifierType.lookup((String)assistant.getSetting(DefaultSettingType.BEAN_PROXIFIER));
 		ContextBeanRegistry contextBeanRegistry = new ContextBeanRegistry(beanRuleRegistry, beanProxifierType);
 
 		TemplateProcessor templateProcessor = new ContextTemplateProcessor(templateRuleRegistry);
 
-		clearTypeAliases();
-		BeanDescriptor.clearCache();
-		MethodUtils.clearCache();
-		PropertiesLoaderUtils.clearCache();
-
+		assistant.release();
+		
 		activityContext.setAspectRuleRegistry(aspectRuleRegistry);
 		activityContext.setContextBeanRegistry(contextBeanRegistry);
 		activityContext.setTransletRuleRegistry(transletRuleRegistry);
@@ -146,11 +154,11 @@ abstract class AbstractActivityContextBuilder extends ContextBuilderAssistant im
 	}
 	
 	private void initContextEnvironment() {
-		for(EnvironmentRule environmentRule : getEnvironmentRules()) {
+		for(EnvironmentRule environmentRule : assistant.getEnvironmentRules()) {
 			if(environmentRule.getPropertyItemRuleMap() != null) {
 				String[] profiles = StringUtils.splitCommaDelimitedString(environmentRule.getProfile());
-				if(contextEnvironment.acceptsProfiles(profiles)) {
-					contextEnvironment.addPropertyItemRuleMap(environmentRule.getPropertyItemRuleMap());
+				if(environment.acceptsProfiles(profiles)) {
+					environment.addPropertyItemRuleMap(environmentRule.getPropertyItemRuleMap());
 				}
 			}
 		}
@@ -186,7 +194,7 @@ abstract class AbstractActivityContextBuilder extends ContextBuilderAssistant im
 		preRegister.register(transletRuleRegistry);
 		
 		// check offending pointcut pattern
-		boolean pointcutPatternVerifiable = isPointcutPatternVerifiable();
+		boolean pointcutPatternVerifiable = assistant.isPointcutPatternVerifiable();
 		int offendingPointcutPatterns = 0;
 		
 		for(AspectRule aspectRule : aspectRuleRegistry.getAspectRules()) {
@@ -265,12 +273,12 @@ abstract class AbstractActivityContextBuilder extends ContextBuilderAssistant im
 
 		if(rootContext.startsWith(ResourceUtils.CLASSPATH_URL_PREFIX)) {
 			String resource = rootContext.substring(ResourceUtils.CLASSPATH_URL_PREFIX.length());
-			importer = new ResourceImporter(getClassLoader(), resource, importFileType);
+			importer = new ResourceImporter(assistant.getClassLoader(), resource, importFileType);
 		} else if(rootContext.startsWith(ResourceUtils.FILE_URL_PREFIX)) {
 			String filePath = rootContext.substring(ResourceUtils.FILE_URL_PREFIX.length());
 			importer = new FileImporter(filePath, importFileType);
 		} else {
-			importer = new FileImporter(getApplicationBasePath(), rootContext, importFileType);
+			importer = new FileImporter(assistant.getApplicationBasePath(), rootContext, importFileType);
 		}
 		
 		return importer;

@@ -15,7 +15,7 @@
  */
 package com.aspectran.core.context.builder.xml;
 
-import com.aspectran.core.context.builder.ContextBuilderAssistant;
+import com.aspectran.core.context.builder.assistant.ContextBuilderAssistant;
 import com.aspectran.core.context.rule.BeanActionRule;
 import com.aspectran.core.context.rule.EchoActionRule;
 import com.aspectran.core.context.rule.IncludeActionRule;

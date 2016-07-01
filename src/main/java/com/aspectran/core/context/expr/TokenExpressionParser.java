@@ -390,8 +390,11 @@ public class TokenExpressionParser implements TokenEvaluator {
 	}
 
 	/**
-	 * Returns the bean instance that matches the given token.
+	 * Returns an Envirionment variable that matches the given token.
 	 *
+	 * <pre>
+	 *   %{classpath:/com/aspectran/sample.properties}
+	 * </pre>
 	 * @param token the token
 	 * @return an environment variable
 	 */

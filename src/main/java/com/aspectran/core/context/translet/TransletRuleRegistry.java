@@ -23,10 +23,10 @@ import java.util.Map;
 import java.util.Set;
 
 import com.aspectran.core.activity.PathVariableMap;
+import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.context.builder.AssistantLocal;
-import com.aspectran.core.context.builder.DefaultSettings;
-import com.aspectran.core.context.env.Environment;
+import com.aspectran.core.context.builder.assistant.AssistantLocal;
+import com.aspectran.core.context.builder.assistant.DefaultSettings;
 import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.expr.token.Tokenizer;
 import com.aspectran.core.context.rule.RequestRule;
@@ -58,9 +58,9 @@ public class TransletRuleRegistry {
 
 	private AssistantLocal assistantLocal;
 	
-	public TransletRuleRegistry(Environment environment) {
-		this.applicationBasePath = environment.getApplicationAdapter().getApplicationBasePath();
-		this.classLoader = environment.getApplicationAdapter().getClassLoader();
+	public TransletRuleRegistry(ApplicationAdapter applicationAdapter) {
+		this.applicationBasePath = applicationAdapter.getApplicationBasePath();
+		this.classLoader = applicationAdapter.getClassLoader();
 	}
 	
 	public AssistantLocal getAssistantLocal() {

@@ -18,8 +18,8 @@ package com.aspectran.core.context.template;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import com.aspectran.core.context.builder.AssistantLocal;
-import com.aspectran.core.context.builder.DefaultSettings;
+import com.aspectran.core.context.builder.assistant.AssistantLocal;
+import com.aspectran.core.context.builder.assistant.DefaultSettings;
 import com.aspectran.core.context.rule.TemplateRule;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;

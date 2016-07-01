@@ -22,13 +22,13 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 
-import com.aspectran.core.context.builder.AssistantLocal;
-import com.aspectran.core.context.builder.ContextBuilderAssistant;
-import com.aspectran.core.context.builder.HybridActivityContextBuilder;
-import com.aspectran.core.context.builder.ShallowContextBuilderAssistant;
+import com.aspectran.core.context.builder.ActivityContextBuilder;
 import com.aspectran.core.context.builder.apon.RootAponAssembler;
 import com.aspectran.core.context.builder.apon.RootAponDisassembler;
 import com.aspectran.core.context.builder.apon.params.RootParameters;
+import com.aspectran.core.context.builder.assistant.AssistantLocal;
+import com.aspectran.core.context.builder.assistant.ContextBuilderAssistant;
+import com.aspectran.core.context.builder.assistant.ShallowContextBuilderAssistant;
 import com.aspectran.core.context.builder.xml.AspectranNodeParser;
 import com.aspectran.core.context.rule.type.ImportFileType;
 import com.aspectran.core.context.rule.type.ImporterType;
@@ -51,10 +51,10 @@ public class HybridImportHandler extends AbstractImportHandler {
 	
 	private RootAponDisassembler rootAponDisassembler;
 	
-	public HybridImportHandler(HybridActivityContextBuilder builder, String encoding, boolean hybridLoad) {
+	public HybridImportHandler(ActivityContextBuilder builder, String encoding, boolean hybridLoad) {
 		super(builder.getContextEnvironment());
 
-		this.assistant = builder;
+		this.assistant = builder.getContextBuilderAssistant();
 		this.encoding = encoding;
 		this.hybridLoad = hybridLoad;
 	}
@@ -132,6 +132,8 @@ public class HybridImportHandler extends AbstractImportHandler {
 			
 			try {
 				ContextBuilderAssistant assistant = new ShallowContextBuilderAssistant();
+				assistant.ready();
+
 				AspectranNodeParser parser = new AspectranNodeParser(assistant, false);
 				parser.parse(fileImporter.getInputStream());
 				
@@ -140,6 +142,8 @@ public class HybridImportHandler extends AbstractImportHandler {
 				
 				aponWriter.comment(aponFile.getAbsolutePath());
 				aponWriter.write(rootParameters);
+				
+				assistant.release();
 			} finally {
 				try {
 					aponWriter.close();
