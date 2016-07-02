@@ -394,7 +394,9 @@ public class TokenExpressionParser implements TokenEvaluator {
 	 *
 	 * <pre>
 	 *   %{classpath:/com/aspectran/sample.properties}
+	 *   %{classpath:/com/aspectran/sample.properties^propertyName:defaultValue}
 	 * </pre>
+	 *
 	 * @param token the token
 	 * @return an environment variable
 	 */
@@ -408,7 +410,7 @@ public class TokenExpressionParser implements TokenEvaluator {
 				throw new TokenEvaluationException("Failed to load properties file for token", token,  e);
 			}
 
-			Object value = (token.getGetterName() != null) ? props.get(token.getGetterName()) : null;
+			Object value = (token.getGetterName() != null) ? props.get(token.getGetterName()) : props;
 
 			if(value == null)
 				value = token.getAlternativeValue();

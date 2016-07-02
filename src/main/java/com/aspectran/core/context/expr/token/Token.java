@@ -227,17 +227,6 @@ public class Token implements BeanReferenceInspectable {
 			StringBuilder sb = new StringBuilder();
 			sb.append(BEAN_SYMBOL);
 			sb.append(START_BRACKET);
-//			if(alternativeValue != null) {
-//				sb.append(BeanRule.CLASS_DIRECTIVE);
-//				sb.append(VALUE_SEPARATOR);
-//				sb.append(value);
-//			} else if(name != null) {
-//				sb.append(name);
-//			}
-//			if(getterName != null) {
-//				sb.append(GETTER_SEPARATOR);
-//				sb.append(getterName);
-//			}
 			if(name != null) {
 				sb.append(name);
 			}
@@ -262,6 +251,14 @@ public class Token implements BeanReferenceInspectable {
 				sb.append(VALUE_SEPARATOR);
 				sb.append(value);
 			}
+			if(getterName != null) {
+				sb.append(GETTER_SEPARATOR);
+				sb.append(getterName);
+			}
+			if(alternativeValue != null) {
+				sb.append(VALUE_SEPARATOR);
+				sb.append(alternativeValue);
+			}
 			sb.append(END_BRACKET);
 			return sb.toString();
 		} else {
@@ -274,9 +271,9 @@ public class Token implements BeanReferenceInspectable {
 		ToStringBuilder tsb = new ToStringBuilder();
 		tsb.append("type", type);
 		tsb.append("name", name);
+		tsb.append("getterName", getterName);
 		tsb.append("value", value);
 		tsb.append("alternativeValue", alternativeValue);
-		tsb.append("getterName", getterName);
 		return tsb.toString();
 	}
 	
