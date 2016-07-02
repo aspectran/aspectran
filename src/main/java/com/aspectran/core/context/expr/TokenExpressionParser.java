@@ -31,19 +31,26 @@ import java.util.Set;
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.request.parameter.FileParameter;
 import com.aspectran.core.context.expr.token.Token;
+import com.aspectran.core.context.rule.type.TokenDirectiveType;
 import com.aspectran.core.context.rule.type.TokenType;
 import com.aspectran.core.util.BeanUtils;
+import com.aspectran.core.util.PropertiesLoaderUtils;
 
 /**
- * The Class TokenExpression.
+ * The Class TokenExpressionParser.
  * 
  * <p>Created: 2008. 03. 29 AM 12:59:16</p>
  */
-public class TokenExpression implements TokenEvaluator {
-	
+public class TokenExpressionParser implements TokenEvaluator {
+
 	protected final Activity activity;
 	
-	public TokenExpression(Activity activity) {
+	/**
+	 * Instantiates a new token expression parser.
+	 *
+	 * @param activity the activity
+	 */
+	public TokenExpressionParser(Activity activity) {
 		this.activity = activity;
 	}
 
@@ -336,8 +343,8 @@ public class TokenExpression implements TokenEvaluator {
 		if(object == null && activity.getRequestAdapter() != null)
 			object = activity.getRequestAdapter().getAttribute(token.getName());
 
-		if(object != null && token.getPropertyName() != null)
-			object = getBeanProperty(object, token.getPropertyName());
+		if(object != null && token.getGetterName() != null)
+			object = getBeanProperty(object, token.getGetterName());
 
 		return object;
 	}
@@ -351,13 +358,13 @@ public class TokenExpression implements TokenEvaluator {
 	protected Object getBean(Token token) {
 		Object value;
 
-		if(token.getBeanClass() != null)
-			value = activity.getBean(token.getBeanClass());
+		if(token.getAlternativeValue() != null)
+			value = activity.getBean((Class<?>)token.getAlternativeValue());
 		else
 			value = activity.getBean(token.getName());
 
-		if(value != null && token.getPropertyName() != null)
-			value = getBeanProperty(value, token.getPropertyName());
+		if(value != null && token.getGetterName() != null)
+			value = getBeanProperty(value, token.getGetterName());
 
 		return value;
 	}
@@ -383,18 +390,44 @@ public class TokenExpression implements TokenEvaluator {
 	}
 
 	/**
-	 * Returns the bean instance that matches the given token.
+	 * Returns an Envirionment variable that matches the given token.
+	 *
+	 * <pre>
+	 *   %{classpath:/com/aspectran/sample.properties}
+	 *   %{classpath:/com/aspectran/sample.properties^propertyName:defaultValue}
+	 * </pre>
 	 *
 	 * @param token the token
-	 * @return an instance of the bean
+	 * @return an environment variable
 	 */
 	protected Object getProperty(Token token) {
-		Object value = activity.getActivityContext().getContextEnvironment().getProperty(token.getName());
+		if(token.getDirectiveType() == TokenDirectiveType.CLASSPATH) {
+			Properties props;
 
-		if(value != null && token.getPropertyName() != null)
-			value = getBeanProperty(value, token.getPropertyName());
+			try {
+				props = PropertiesLoaderUtils.loadProperties(token.getValue(), activity.getActivityContext().getClassLoader());
+			} catch(IOException e) {
+				throw new TokenEvaluationException("Failed to load properties file for token", token,  e);
+			}
 
-		return value;
+			Object value = (token.getGetterName() != null) ? props.get(token.getGetterName()) : props;
+
+			if(value == null)
+				value = token.getAlternativeValue();
+
+			return value;
+		} else {
+			Object value = activity.getActivityContext().getContextEnvironment().getProperty(token.getName());
+
+			if(value != null && token.getGetterName() != null) {
+				value = getBeanProperty(value, token.getGetterName());
+			}
+
+			if(value == null)
+				value = token.getValue();
+
+			return value;
+		}
 	}
 	
 	/**

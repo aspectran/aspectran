@@ -30,22 +30,22 @@ public class TemplateProcessorException extends TemplateRuleException {
 	/**
 	 * Instantiates a new TemplateProcessorException.
 	 *
-	 * @param templateRule the template rule
 	 * @param msg the detail message
+	 * @param templateRule the template rule
 	 */
-	public TemplateProcessorException(TemplateRule templateRule, String msg) {
-		super(templateRule, msg);
+	public TemplateProcessorException(String msg, TemplateRule templateRule) {
+		super(msg, templateRule);
 	}
 
 	/**
 	 * Instantiates a new TemplateProcessorException.
 	 *
-	 * @param templateRule the template rule
 	 * @param msg the detail message
+	 * @param templateRule the template rule
 	 * @param cause the root cause
 	 */
-	public TemplateProcessorException(TemplateRule templateRule, String msg, Throwable cause) {
-		super(templateRule, msg, cause);
+	public TemplateProcessorException(String msg, TemplateRule templateRule, Throwable cause) {
+		super(msg, templateRule, cause);
 	}
 
 }

@@ -15,8 +15,8 @@
  */
 package com.aspectran.core.context.builder.xml;
 
-import com.aspectran.core.context.builder.ContextBuilderAssistant;
 import com.aspectran.core.context.builder.apon.params.FilterParameters;
+import com.aspectran.core.context.builder.assistant.ContextBuilderAssistant;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.type.ScopeType;
@@ -69,9 +69,7 @@ class BeanNodeletAdder implements NodeletAdder {
 
                 beanRule = BeanRule.newOfferedBeanInstance(id, offerBean, offerMethod, initMethod, factoryMethod, destroyMethod, scope, singleton, lazyInit, important);
 
-                if(offerBean != null) {
-                    assistant.resolveBeanClass(offerBean, beanRule);
-                }
+				assistant.resolveBeanClass(offerBean, beanRule);
             } else {
                 if(className == null && scan == null)
                     throw new IllegalArgumentException("The <bean> element requires a 'class' attribute.");

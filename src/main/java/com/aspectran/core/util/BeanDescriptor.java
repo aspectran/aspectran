@@ -35,10 +35,10 @@ import com.aspectran.core.context.AspectranRuntimeException;
  * allows for easy mapping between property names and getter/setter methods.
  */
 public class BeanDescriptor {
-
-	private static final Map<Class<?>, BeanDescriptor> cache = new ConcurrentHashMap<Class<?>, BeanDescriptor>();
 	
 	private static volatile boolean cacheEnabled = true;
+
+	private static final Map<Class<?>, BeanDescriptor> cache = new ConcurrentHashMap<>();
 	
 	private static final String[] EMPTY_STRING_ARRAY = new String[0];
 
@@ -50,13 +50,13 @@ public class BeanDescriptor {
 
 	private String[] distinctMethodNames = EMPTY_STRING_ARRAY;
 
-	private Map<String, Method> readMethods = new HashMap<String, Method>();
+	private Map<String, Method> readMethods = new HashMap<>();
 
-	private Map<String, Class<?>> readTypes = new HashMap<String, Class<?>>();
+	private Map<String, Class<?>> readTypes = new HashMap<>();
 
-	private Map<String, Method> writeMethods = new HashMap<String, Method>();
+	private Map<String, Method> writeMethods = new HashMap<>();
 
-	private Map<String, Class<?>> writeType = new HashMap<String, Class<?>>();
+	private Map<String, Class<?>> writeType = new HashMap<>();
 
 	private BeanDescriptor(Class<?> clazz) {
 		this.className = clazz.getName();
@@ -68,7 +68,7 @@ public class BeanDescriptor {
 		readablePropertyNames = readMethods.keySet().toArray(new String[readMethods.keySet().size()]);
 		writeablePropertyNames = writeMethods.keySet().toArray(new String[writeMethods.keySet().size()]);
 		
-		Set<String> nameSet = new HashSet<String>();
+		Set<String> nameSet = new HashSet<>();
 		for(Method method : methods) {
 			nameSet.add(method.getName());
 		}
@@ -100,7 +100,7 @@ public class BeanDescriptor {
 	}
 	
 	private void addWriteMethods(Method[] methods) {
-		Map<String, List<Method>> conflictingSetters = new HashMap<String, List<Method>>();
+		Map<String, List<Method>> conflictingSetters = new HashMap<>();
 		for(Method method : methods) {
 			String name = method.getName();
 			if(name.startsWith("set") && name.length() > 3) {
@@ -165,7 +165,7 @@ public class BeanDescriptor {
 	 * @return An array containing all methods in this class
 	 */
 	private Method[] getAllMethods(Class<?> cls) {
-		Map<String, Method> uniqueMethods = new HashMap<String, Method>();
+		Map<String, Method> uniqueMethods = new HashMap<>();
 		Class<?> currentClass = cls;
 		
 		while(currentClass != null) {

@@ -16,6 +16,8 @@
 package com.aspectran.core.context.builder;
 
 import com.aspectran.core.context.ActivityContext;
+import com.aspectran.core.context.builder.assistant.ContextBuilderAssistant;
+import com.aspectran.core.context.env.ContextEnvironment;
 
 /**
  * The Interface ActivityContextBuilder.
@@ -23,6 +25,10 @@ import com.aspectran.core.context.ActivityContext;
  * <p>Created: 2008. 06. 14 PM 8:53:29</p>
  */
 public interface ActivityContextBuilder {
+	
+	ContextEnvironment getContextEnvironment();
+	
+	ContextBuilderAssistant getContextBuilderAssistant();
 	
 	void setActiveProfiles(String... activeProfiles);
 	

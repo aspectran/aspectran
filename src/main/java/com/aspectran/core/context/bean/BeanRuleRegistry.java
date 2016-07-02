@@ -28,7 +28,7 @@ import com.aspectran.core.context.bean.ablility.InitializableTransletBean;
 import com.aspectran.core.context.bean.annotation.Configuration;
 import com.aspectran.core.context.bean.scan.BeanClassScanFailedException;
 import com.aspectran.core.context.bean.scan.BeanClassScanner;
-import com.aspectran.core.context.env.Environment;
+import com.aspectran.core.context.builder.assistant.ContextBuilderAssistant;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.translet.TransletRuleRegistry;
@@ -44,8 +44,6 @@ import com.aspectran.core.util.logging.LogFactory;
 public class BeanRuleRegistry {
 	
 	private final Log log = LogFactory.getLog(BeanRuleRegistry.class);
-
-	private final Environment environment;
 
 	private final ClassLoader classLoader;
 	
@@ -65,18 +63,13 @@ public class BeanRuleRegistry {
 
 	private Set<Class<?>> importantBeanTypeSet = new HashSet<>();
 
-	public BeanRuleRegistry(Environment environment) {
-		this.environment = environment;
-		this.classLoader = environment.getApplicationAdapter().getClassLoader();
+	public BeanRuleRegistry(ClassLoader classLoader) {
+		this.classLoader = classLoader;
 
 		ignoreDependencyInterface(DisposableBean.class);
 		ignoreDependencyInterface(FactoryBean.class);
 		ignoreDependencyInterface(InitializableBean.class);
 		ignoreDependencyInterface(InitializableTransletBean.class);
-	}
-
-	public Environment getEnvironment() {
-		return environment;
 	}
 
 	public void setTransletRuleRegistry(TransletRuleRegistry transletRuleRegistry) {
@@ -88,7 +81,7 @@ public class BeanRuleRegistry {
 			throw new IllegalArgumentException("'idOrRequiredType' must not be null.");
 
 		if(idOrRequiredType instanceof Class<?>) {
-			BeanRule[] beanRules = getBeanRule((Class<?>)idOrRequiredType);
+			BeanRule[] beanRules = getBeanRules((Class<?>)idOrRequiredType);
 
 			if(beanRules == null)
 				return null;
@@ -106,7 +99,7 @@ public class BeanRuleRegistry {
 		return idBasedBeanRuleMap.get(id);
 	}
 	
-	public BeanRule[] getBeanRule(Class<?> requiredType) {
+	public BeanRule[] getBeanRules(Class<?> requiredType) {
 		Set<BeanRule> list = typeBasedBeanRuleMap.get(requiredType);
 		if(list.isEmpty())
 			return null;
@@ -251,34 +244,7 @@ public class BeanRuleRegistry {
 		configBeanRuleMap.put(beanRule.getBeanClass(), beanRule);
 	}
 
-	private void parseAnnotatedConfig() {
-		AnnotatedConfigRelater relater = new AnnotatedConfigRelater() {
-			@Override
-			public void relay(Class<?> targetBeanClass, BeanRule beanRule) {
-				if(beanRule.getId() != null) {
-					saveBeanRule(beanRule.getId(), beanRule);
-				}
-				saveBeanRule(targetBeanClass, beanRule);
-				for(Class<?> ifc : targetBeanClass.getInterfaces()) {
-					if(!ignoredDependencyInterfaces.contains(ifc)) {
-						saveBeanRule(ifc, beanRule);
-					}
-				}
-			}
-
-			@Override
-			public void relay(TransletRule transletRule) {
-				if(transletRuleRegistry != null) {
-					transletRuleRegistry.addTransletRule(transletRule);
-				}
-			}
-		};
-
-		AnnotatedConfigParser parser = new AnnotatedConfigParser(this, relater);
-		parser.parse();
-	}
-	
-	public void postProcess() {
+	public void postProcess(ContextBuilderAssistant assistant) {
 		if(!postProcessBeanRuleMap.isEmpty()) {
 			for(BeanRule beanRule : postProcessBeanRuleMap) {
 				if(beanRule.getId() != null)
@@ -316,7 +282,34 @@ public class BeanRuleRegistry {
 		importantBeanIdSet.clear();
 		importantBeanTypeSet.clear();
 
-		parseAnnotatedConfig();
+		parseAnnotatedConfig(assistant);
+	}
+
+	private void parseAnnotatedConfig(ContextBuilderAssistant assistant) {
+		AnnotatedConfigRelater relater = new AnnotatedConfigRelater() {
+			@Override
+			public void relay(Class<?> targetBeanClass, BeanRule beanRule) {
+				if(beanRule.getId() != null) {
+					saveBeanRule(beanRule.getId(), beanRule);
+				}
+				saveBeanRule(targetBeanClass, beanRule);
+				for(Class<?> ifc : targetBeanClass.getInterfaces()) {
+					if(!ignoredDependencyInterfaces.contains(ifc)) {
+						saveBeanRule(ifc, beanRule);
+					}
+				}
+			}
+
+			@Override
+			public void relay(TransletRule transletRule) {
+				if(transletRuleRegistry != null) {
+					transletRuleRegistry.addTransletRule(transletRule);
+				}
+			}
+		};
+
+		AnnotatedConfigParser parser = new AnnotatedConfigParser(assistant, relater);
+		parser.parse();
 	}
 
 	private Class<?> resolveOfferBeanClass(BeanRule beanRule) {
@@ -328,7 +321,7 @@ public class BeanRuleRegistry {
 			if(offerBeanRule == null)
 				throw new BeanNotFoundException(beanRule.getOfferBeanId());
 		} else {
-			BeanRule[] beanRules = getBeanRule(beanRule.getOfferBeanClass());
+			BeanRule[] beanRules = getBeanRules(beanRule.getOfferBeanClass());
 
 			if(beanRules == null || beanRules.length == 0)
 				throw new RequiredTypeBeanNotFoundException(beanRule.getOfferBeanClass());

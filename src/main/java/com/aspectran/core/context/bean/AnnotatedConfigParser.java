@@ -41,10 +41,11 @@ import com.aspectran.core.context.bean.annotation.Request;
 import com.aspectran.core.context.bean.annotation.Required;
 import com.aspectran.core.context.bean.annotation.Transform;
 import com.aspectran.core.context.bean.annotation.Value;
+import com.aspectran.core.context.builder.assistant.ContextBuilderAssistant;
 import com.aspectran.core.context.env.Environment;
 import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.expr.token.TokenParser;
-import com.aspectran.core.context.rule.AutowireRule;
+import com.aspectran.core.context.rule.AutowireTargetRule;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.DispatchResponseRule;
 import com.aspectran.core.context.rule.ForwardResponseRule;
@@ -55,6 +56,7 @@ import com.aspectran.core.context.rule.TransformRule;
 import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.type.AutowireTargetType;
 import com.aspectran.core.context.rule.type.RequestMethodType;
+import com.aspectran.core.context.rule.type.TokenType;
 import com.aspectran.core.context.rule.type.TransformType;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.logging.Log;
@@ -72,6 +74,8 @@ public class AnnotatedConfigParser {
 
 	private final Log log = LogFactory.getLog(AnnotatedConfigParser.class);
 
+	private final ContextBuilderAssistant assistant;
+	
 	private final BeanRuleRegistry beanRuleRegistry;
 
 	private final AnnotatedConfigRelater relater;
@@ -84,10 +88,11 @@ public class AnnotatedConfigParser {
 
 	private final Map<Class<?>, BeanRule> configBeanRuleMap;
 
-	public AnnotatedConfigParser(BeanRuleRegistry beanRuleRegistry, AnnotatedConfigRelater relater) {
-		this.beanRuleRegistry = beanRuleRegistry;
+	public AnnotatedConfigParser(ContextBuilderAssistant assistant, AnnotatedConfigRelater relater) {
+		this.assistant = assistant;
+		this.beanRuleRegistry = assistant.getBeanRuleRegistry();
 		this.relater = relater;
-		this.environment = beanRuleRegistry.getEnvironment();
+		this.environment = assistant.getContextEnvironment();
 
 		this.idBasedBeanRuleMap = beanRuleRegistry.getIdBasedBeanRuleMap();
 		this.typeBasedBeanRuleMap = beanRuleRegistry.getTypeBasedBeanRuleMap();
@@ -156,6 +161,12 @@ public class AnnotatedConfigParser {
 	}
 
 	private void parseFieldAutowire(BeanRule beanRule) {
+		if(beanRule.isFieldAutowireParsed()) {
+			return;
+		} else {
+			beanRule.setFieldAutowireParsed(true);
+		}
+
 		Class<?> beanClass = beanRule.getBeanClass();
 
 		try {
@@ -171,14 +182,14 @@ public class AnnotatedConfigParser {
 						String name = (qualifier != null) ? qualifier : field.getName();
 						checkExistence(type, name, required);
 
-						AutowireRule autowireRule = new AutowireRule();
-						autowireRule.setTargetType(AutowireTargetType.FIELD);
-						autowireRule.setTarget(field);
-						autowireRule.setTypes(type);
-						autowireRule.setQualifiers(qualifier);
-						autowireRule.setRequired(required);
+						AutowireTargetRule autowireTargetRule = new AutowireTargetRule();
+						autowireTargetRule.setTargetType(AutowireTargetType.FIELD);
+						autowireTargetRule.setTarget(field);
+						autowireTargetRule.setTypes(type);
+						autowireTargetRule.setQualifiers(qualifier);
+						autowireTargetRule.setRequired(required);
 
-						beanRule.addAutowireTarget(autowireRule);
+						beanRule.addAutowireTargetRule(autowireTargetRule);
 					} else if(field.isAnnotationPresent(Value.class)) {
 						Value valueAnno = field.getAnnotation(Value.class);
 						String value = (valueAnno != null) ? StringUtils.emptyToNull(valueAnno.value()) : null;
@@ -187,12 +198,17 @@ public class AnnotatedConfigParser {
 							Token[] tokens = TokenParser.parse(value);
 
 							if(tokens != null && tokens.length > 0) {
-								AutowireRule autowireRule = new AutowireRule();
-								autowireRule.setTargetType(AutowireTargetType.VALUE);
-								autowireRule.setTarget(field);
-								autowireRule.setToken(tokens[0]);
+								Token token = tokens[0];
+								if(token.getType() == TokenType.BEAN) {
+									assistant.resolveBeanClass(token);
+								}
+								
+								AutowireTargetRule autowireTargetRule = new AutowireTargetRule();
+								autowireTargetRule.setTargetType(AutowireTargetType.VALUE);
+								autowireTargetRule.setTarget(field);
+								autowireTargetRule.setToken(token);
 
-								beanRule.addAutowireTarget(autowireRule);
+								beanRule.addAutowireTargetRule(autowireTargetRule);
 							}
 						}
 					}
@@ -206,6 +222,12 @@ public class AnnotatedConfigParser {
 	}
 
 	private void parseMethodAutowire(BeanRule beanRule) {
+		if(beanRule.isMethodAutowireParsed()) {
+			return;
+		} else {
+			beanRule.setMethodAutowireParsed(true);
+		}
+
 		Class<?> beanClass = beanRule.getBeanClass();
 
 		try {
@@ -234,13 +256,13 @@ public class AnnotatedConfigParser {
 							checkExistence(paramTypes[i], paramQualifiers[i], required);
 						}
 
-						AutowireRule autowireRule = new AutowireRule();
-						autowireRule.setTargetType(AutowireTargetType.METHOD);
-						autowireRule.setTarget(method);
-						autowireRule.setTypes(paramTypes);
-						autowireRule.setQualifiers(paramQualifiers);
-						autowireRule.setRequired(required);
-						beanRule.addAutowireTarget(autowireRule);
+						AutowireTargetRule autowireTargetRule = new AutowireTargetRule();
+						autowireTargetRule.setTargetType(AutowireTargetType.METHOD);
+						autowireTargetRule.setTarget(method);
+						autowireTargetRule.setTypes(paramTypes);
+						autowireTargetRule.setQualifiers(paramQualifiers);
+						autowireTargetRule.setRequired(required);
+						beanRule.addAutowireTargetRule(autowireTargetRule);
 					} else if(method.isAnnotationPresent(Required.class)) {
 						BeanRuleAnalyzer.checkRequiredProperty(beanRule, method);
 					} else if(method.isAnnotationPresent(Initialize.class)) {
@@ -409,7 +431,7 @@ public class AnnotatedConfigParser {
 	}
 	
 	private boolean checkExistence(Class<?> requiredType, String beanId, boolean required) {
-		BeanRule[] beanRules = beanRuleRegistry.getBeanRule(requiredType);
+		BeanRule[] beanRules = beanRuleRegistry.getBeanRules(requiredType);
 
 		if(beanRules == null || beanRules.length == 0) {
 			if(required)

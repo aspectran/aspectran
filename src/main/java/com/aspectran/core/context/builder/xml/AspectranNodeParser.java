@@ -18,10 +18,9 @@ package com.aspectran.core.context.builder.xml;
 import java.io.IOException;
 import java.io.InputStream;
 
-import com.aspectran.core.context.builder.ContextBuilderAssistant;
+import com.aspectran.core.context.builder.assistant.ContextBuilderAssistant;
 import com.aspectran.core.context.builder.importer.ImportHandler;
 import com.aspectran.core.context.builder.importer.Importer;
-import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.EnvironmentRule;
 import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
@@ -138,7 +137,7 @@ public class AspectranNodeParser {
             if(name != null) {
                 settingType = DefaultSettingType.lookup(name);
                 if(settingType == null)
-                    throw new IllegalArgumentException("Unknown setting name '" + name + "'");
+                    throw new IllegalArgumentException("Unknown setting name '" + name + "'.");
             }
 
             assistant.putSetting(settingType, (text == null) ? value : text);

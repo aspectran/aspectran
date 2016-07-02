@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Objects;
 
 import com.aspectran.core.context.rule.type.TokenType;
+import com.aspectran.core.context.rule.type.TokenDirectiveType;
 
 /**
  * The Class Tokenizer.
@@ -32,7 +33,7 @@ public class Tokenizer {
 
 	private static final int AT_STRING = 1;
 
-	private static final int AT_SYMBOL = 2;
+	private static final int AT_TOKEN_SYMBOL = 2;
 
 	private static final int AT_TOKEN_NAME = 3;
 
@@ -42,17 +43,21 @@ public class Tokenizer {
 
 	private static final char LF = '\n';
 
+	private static final String DIRECTIVE_CLASS = "class";
+
+	private static final String DIRECTIVE_CLASSPATH = "classpath";
+
 	/**
 	 * Tokenize a string and returns a list of tokens.
 	 * 
-	 * @param input the pattern string
+	 * @param input the string to tokenize
 	 * @param trimStringToken the trim string token
 	 * @return the token list
 	 */
 	public static List<Token> tokenize(CharSequence input, boolean trimStringToken) {
 		List<Token> tokens = new ArrayList<>();
 
-		int patternLength = input.length();
+		int inputLen = input.length();
 
 		int status = AT_STRING;
 		int tokenStartOffset = 0; // start position of token in the stringBuffer
@@ -63,7 +68,7 @@ public class Tokenizer {
 		StringBuilder tokenNameBuffer = new StringBuilder();
 		StringBuilder defTextBuffer = new StringBuilder();
 
-		for(int i = 0; i < patternLength; i++) {
+		for(int i = 0; i < inputLen; i++) {
 			c = input.charAt(i);
 
 			switch(status) {
@@ -72,22 +77,21 @@ public class Tokenizer {
 
 				if(Token.isTokenSymbol(c)) {
 					symbol = c;
-					status = AT_SYMBOL;
+					status = AT_TOKEN_SYMBOL;
 					// abc$ --> tokenStartOffset: 3
 					tokenStartOffset = stringBuffer.length() - 1;
 				}
 				
 				break;
 			
-			case AT_SYMBOL:
+			case AT_TOKEN_SYMBOL:
 				stringBuffer.append(c);
 
 				if(c == Token.START_BRACKET) {
 					status = AT_TOKEN_NAME;
-					break;
+				} else {
+					status = AT_STRING;
 				}
-
-				status = AT_STRING;
 
 				break;
 
@@ -131,8 +135,9 @@ public class Tokenizer {
 					}
 
 					tokenNameBuffer.append(c);
-				} else
+				} else {
 					defTextBuffer.append(c);
+				}
 
 				break;
 			}
@@ -150,50 +155,76 @@ public class Tokenizer {
 	/**
 	 * Create a token.
 	 * 
-	 * @param symbol the symbol
+	 * @param symbol the token symbol
 	 * @param tokenNameBuffer the token name buffer
-	 * @param defTextBuffer the def value buffer
+	 * @param defTextBuffer the default value buffer
 	 * @return the token
 	 */
 	private static Token createToken(char symbol, StringBuilder tokenNameBuffer, StringBuilder defTextBuffer) {
 		TokenType type;
+		TokenDirectiveType directiveType = null;
 		String name = null;
-		String defaultValue = null;
-		String getterName = null;
+		String value = null;
+		String getter = null;
+		String alternativeValue = null;
+
+		if(defTextBuffer.length() > 0) {
+			value = defTextBuffer.toString();
+			defTextBuffer.setLength(0);
+		}
 
 		if(tokenNameBuffer.length() > 0) {
 			type = Token.resolveTypeAsSymbol(symbol);
 			name = tokenNameBuffer.toString();
-			
-			if(symbol == Token.ATTRIBUTE_SYMBOL ||
-					symbol == Token.BEAN_SYMBOL) {
-				int offset = name.indexOf(Token.PROPERTY_SEPARATOR);
-				
-				if(offset > 0) {
-					String attrName = name.substring(0, offset);
-					String propertyName = name.substring(offset + 1);
-					
-					if(propertyName.length() > 0) {
-						name = attrName;
-						getterName = propertyName;
+			tokenNameBuffer.setLength(0);
+
+			int offset = name.indexOf(Token.GETTER_SEPARATOR);
+			if(offset > -1) {
+				String name2 = name.substring(0, offset);
+				String getter2 = name.substring(offset + 1);
+				name = name2;
+				if(!getter2.isEmpty()) {
+					getter = getter2;
+				}
+			} else if(value != null) {
+				directiveType = TokenDirectiveType.lookup(name);
+				if(directiveType != null) {
+					offset = value.indexOf(Token.GETTER_SEPARATOR);
+					if(offset > -1) {
+						String value2 = value.substring(0, offset);
+						String getter2 = value.substring(offset + 1);
+						value = value2;
+						offset = getter2.indexOf(Token.VALUE_SEPARATOR);
+						if(offset > -1) {
+							String getter3 = getter2.substring(0, offset);
+							String value3 = getter2.substring(offset + 1);
+							if(!getter3.isEmpty()) {
+								getter = getter3;
+							}
+							if(!value3.isEmpty()) {
+								alternativeValue = value3;
+							}
+						} else {
+							if(!getter2.isEmpty()) {
+								getter = getter2;
+							}
+						}
 					}
 				}
 			}
-		
-			tokenNameBuffer.setLength(0);
 		} else {
 			// when not exists tokenName then tokenType must be TEXT type
 			type = TokenType.TEXT;
 		}
 		
-		if(defTextBuffer.length() > 0) {
-			defaultValue = defTextBuffer.toString();
-			defTextBuffer.setLength(0);
-		}
-
 		Token token = new Token(type, name);
-		token.setValue(defaultValue);
-		token.setPropertyName(getterName);
+		token.setValue(value);
+		token.setGetterName(getter);
+
+		if(directiveType != null) {
+			token.setDirectiveType(directiveType);
+			token.setAlternativeValue(alternativeValue);
+		}
 
 		return token;
 	}
@@ -305,7 +336,7 @@ public class Tokenizer {
 	 * @return the string
 	 */
 	private static String trimLeadingWhitespace(String string) {
-		if(string.length() == 0)
+		if(string.isEmpty())
 			return string;
 		
 		int start = 0;

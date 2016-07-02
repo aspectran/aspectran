@@ -41,12 +41,12 @@ import com.aspectran.core.context.bean.aware.ClassLoaderAware;
 import com.aspectran.core.context.bean.proxy.CglibDynamicBeanProxy;
 import com.aspectran.core.context.bean.proxy.JavassistDynamicBeanProxy;
 import com.aspectran.core.context.bean.proxy.JdkDynamicBeanProxy;
-import com.aspectran.core.context.expr.ItemTokenEvaluator;
-import com.aspectran.core.context.expr.ItemTokenExpression;
+import com.aspectran.core.context.expr.ItemEvaluator;
+import com.aspectran.core.context.expr.ItemExpressionParser;
 import com.aspectran.core.context.expr.TokenEvaluator;
-import com.aspectran.core.context.expr.TokenExpression;
+import com.aspectran.core.context.expr.TokenExpressionParser;
 import com.aspectran.core.context.expr.token.Token;
-import com.aspectran.core.context.rule.AutowireRule;
+import com.aspectran.core.context.rule.AutowireTargetRule;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.type.AutowireTargetType;
@@ -118,7 +118,7 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 			ItemRuleMap propertyItemRuleMap = beanRule.getPropertyItemRuleMap();
 
 			if(propertyItemRuleMap != null) {
-				ItemTokenEvaluator evaluator = new ItemTokenExpression(activity);
+				ItemEvaluator evaluator = new ItemExpressionParser(activity);
 				Map<String, Object> valueMap = evaluator.evaluate(propertyItemRuleMap);
 				
 				for(Map.Entry<String, Object> entry : valueMap.entrySet()) {
@@ -149,10 +149,10 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 
 			ItemRuleMap constructorArgumentItemRuleMap = beanRule.getConstructorArgumentItemRuleMap();
 			ItemRuleMap propertyItemRuleMap = beanRule.getPropertyItemRuleMap();
-			ItemTokenEvaluator evaluator = null;
+			ItemEvaluator evaluator = null;
 			
 			if(constructorArgumentItemRuleMap != null) {
-				evaluator = new ItemTokenExpression(activity);
+				evaluator = new ItemExpressionParser(activity);
 				Map<String, Object> valueMap = evaluator.evaluate(constructorArgumentItemRuleMap);
 	
 				int parameterSize = constructorArgumentItemRuleMap.size();
@@ -178,7 +178,7 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 
 			if(propertyItemRuleMap != null) {
 				if(evaluator == null) {
-					evaluator = new ItemTokenExpression(activity);
+					evaluator = new ItemExpressionParser(activity);
 				}
 
 				Map<String, Object> valueMap = evaluator.evaluate(propertyItemRuleMap);
@@ -251,32 +251,32 @@ public abstract class AbstractBeanFactory implements BeanFactory {
 	}
 	
 	private void autowiring(BeanRule beanRule, Object bean, Activity activity) {
-		List<AutowireRule> autowireTargetList = beanRule.getAutowireTargetList();
+		List<AutowireTargetRule> autowireTargetList = beanRule.getAutowireTargetRuleList();
 
 		if(autowireTargetList != null) {
-			for(AutowireRule autowireRule : autowireTargetList) {
-				if(autowireRule.getTargetType() == AutowireTargetType.FIELD) {
-					Field field = autowireRule.getTarget();
+			for(AutowireTargetRule autowireTargetRule : autowireTargetList) {
+				if(autowireTargetRule.getTargetType() == AutowireTargetType.FIELD) {
+					Field field = autowireTargetRule.getTarget();
 
-					Object value = activity.getBean(autowireRule.getTypes()[0], autowireRule.getQualifiers()[0]);
+					Object value = activity.getBean(autowireTargetRule.getTypes()[0], autowireTargetRule.getQualifiers()[0]);
 
 					ReflectionUtils.setField(field, bean, value);
-				} else if(autowireRule.getTargetType() == AutowireTargetType.METHOD) {
-					Method method = autowireRule.getTarget();
+				} else if(autowireTargetRule.getTargetType() == AutowireTargetType.METHOD) {
+					Method method = autowireTargetRule.getTarget();
 
-					Class<?>[] types = autowireRule.getTypes();
-					String[] qualifiers = autowireRule.getQualifiers();
+					Class<?>[] types = autowireTargetRule.getTypes();
+					String[] qualifiers = autowireTargetRule.getQualifiers();
 					Object[] values = new Object[types.length];
 					for(int i = 0; i < types.length; i++) {
 						values[i] = activity.getBean(types[i], qualifiers[i]);
 					}
 
 					ReflectionUtils.invokeMethod(method, bean, values);
-				} else if(autowireRule.getTargetType() == AutowireTargetType.VALUE) {
-					Field field = autowireRule.getTarget();
+				} else if(autowireTargetRule.getTargetType() == AutowireTargetType.VALUE) {
+					Field field = autowireTargetRule.getTarget();
 
-					Token token = autowireRule.getToken();
-					TokenEvaluator evaluator = new TokenExpression(activity);
+					Token token = autowireTargetRule.getToken();
+					TokenEvaluator evaluator = new TokenExpressionParser(activity);
 					Object value = evaluator.evaluate(token);
 
 					ReflectionUtils.setField(field, bean, value);

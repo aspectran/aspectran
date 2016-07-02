@@ -13,32 +13,46 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.core.context.expr.token;
+package com.aspectran.core.context.expr;
 
 import com.aspectran.core.context.AspectranRuntimeException;
+import com.aspectran.core.context.expr.token.Token;
 
 /**
- * The Class UnknownTokenTypeException.
+ * The Class TokenEvaluationException.
  */
-public class UnknownTokenTypeException extends AspectranRuntimeException {
+public class TokenEvaluationException extends AspectranRuntimeException {
 
 	/** @serial */
-	private static final long serialVersionUID = 932777610655109895L;
+	private static final long serialVersionUID = 2303202652519466514L;
 
 	private Token token;
 
 	/**
-	 * Instantiates a new Unknown token type exception.
+	 * Instantiates a new token evaluation exception.
 	 *
+	 * @param msg the detail message
 	 * @param token the token
 	 */
-	public UnknownTokenTypeException(Token token) {
-		super("Unknown token type " + token);
+	public TokenEvaluationException(String msg, Token token) {
+		super(msg + " " + token);
 		this.token = token;
 	}
 
 	/**
-	 * Gets the token.
+	 * Instantiates a new token evaluation exception.
+	 *
+	 * @param msg the detail message
+	 * @param token the token
+	 * @param cause the root cause
+	 */
+	public TokenEvaluationException(String msg, Token token, Throwable cause) {
+		super(msg + " " + token, cause);
+		this.token = token;
+	}
+
+	/**
+	 * Gets the token which is failed to evaluate expression.
 	 *
 	 * @return the token
 	 */

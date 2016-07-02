@@ -47,7 +47,7 @@ public class AponActivityContextBuilder extends AbstractActivityContextBuilder {
 				throw new IllegalArgumentException("'rootContext' must not be null.");
 
 			ImportHandler importHandler = new AponImportHandler(this, encoding);
-			setImportHandler(importHandler);
+			getContextBuilderAssistant().setImportHandler(importHandler);
 			
 			Importer importer = resolveImporter(rootContext, ImportFileType.APON);
 			importHandler.handle(importer);

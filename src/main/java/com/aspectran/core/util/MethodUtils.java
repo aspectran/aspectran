@@ -64,7 +64,7 @@ public class MethodUtils {
      * class via different classloaders will generate non-equal MethodDescriptor
      * objects and hence end up with different entries in the map.
      */
-    private static final Map<MethodDescriptor, Reference<Method>> cache = Collections.synchronizedMap(new WeakHashMap<MethodDescriptor, Reference<Method>>());
+    private static final Map<MethodDescriptor, Reference<Method>> cache = Collections.synchronizedMap(new WeakHashMap<>());
 
 	/**
 	 * Sets the value of a bean property to an Object.
@@ -711,7 +711,7 @@ public class MethodUtils {
      * @param method The method that we wish to call
      * @return The accessible method
      */
-    public static Method getAccessibleMethod(final Method method) {
+    public static Method getAccessibleMethod(Method method) {
         // Make sure we have a method to check
         if(method == null) {
             return null;
@@ -863,8 +863,7 @@ public class MethodUtils {
 	 * through methods names and return the first matching method.</p>
 	 *
 	 * <p>This method is used by
-	 * {@link
-	 * #invokeMethod(Object object,String methodName,Object[] args,Class[] paramTypes)}.
+	 * {@link #invokeMethod(Object object,String methodName,Object[] args,Class[] paramTypes)}.
 	 *
 	 * <p>This method can match primitive parameter by passing in wrapper classes.
 	 * For example, a <code>Boolean</code> will match a primitive <code>boolean</code>
@@ -941,7 +940,7 @@ public class MethodUtils {
      */
     private static Method getCachedMethod(MethodDescriptor md) {
         if(cacheEnabled) {
-            final Reference<Method> methodRef = cache.get(md);
+            Reference<Method> methodRef = cache.get(md);
             if(methodRef != null) {
                 return methodRef.get();
             }
@@ -958,7 +957,7 @@ public class MethodUtils {
     private static void cacheMethod(MethodDescriptor md, Method method) {
         if(cacheEnabled) {
             if(method != null) {
-            	cache.put(md, new WeakReference<Method>(method));
+            	cache.put(md, new WeakReference<>(method));
             }
         }
     }
@@ -970,7 +969,7 @@ public class MethodUtils {
      * @param cacheEnabling <code>true</code> if methods should be
      * cached for greater performance, otherwise <code>false</code>
      */
-    public static synchronized void setCacheEnabled(final boolean cacheEnabling) {
+    public static synchronized void setCacheEnabled(boolean cacheEnabling) {
     	cacheEnabled = cacheEnabling;
         if(!cacheEnabled) {
             clearCache();
@@ -982,7 +981,7 @@ public class MethodUtils {
      * @return the number of cached methods cleared
      */
     public static synchronized int clearCache() {
-        final int size = cache.size();
+        int size = cache.size();
         cache.clear();
         return size;
     }
@@ -1041,7 +1040,12 @@ public class MethodUtils {
 			}
 			MethodDescriptor md = (MethodDescriptor)obj;
 
-			return (exact == md.exact && methodName.equals(md.methodName) && cls.equals(md.cls) && Arrays.equals(paramTypes, md.paramTypes));
+			return (
+					exact == md.exact &&
+					methodName.equals(md.methodName) &&
+					cls.equals(md.cls) &&
+					Arrays.equals(paramTypes, md.paramTypes)
+				);
 		}
 
 		/**

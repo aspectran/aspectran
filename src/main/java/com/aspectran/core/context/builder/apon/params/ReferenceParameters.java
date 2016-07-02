@@ -21,23 +21,23 @@ import com.aspectran.core.util.apon.ParameterValueType;
 
 public class ReferenceParameters extends AbstractParameters {
 
-	public static final ParameterDefine bean;
 	public static final ParameterDefine parameter;
 	public static final ParameterDefine attribute;
+	public static final ParameterDefine bean;
 	public static final ParameterDefine property;
 	
 	private static final ParameterDefine[] parameterDefines;
 	
 	static {
-		bean = new ParameterDefine("bean", ParameterValueType.STRING);
 		parameter = new ParameterDefine("parameter", ParameterValueType.STRING);
 		attribute = new ParameterDefine("attribute", ParameterValueType.STRING);
+		bean = new ParameterDefine("bean", ParameterValueType.STRING);
 		property = new ParameterDefine("property", ParameterValueType.STRING);
 		
 		parameterDefines = new ParameterDefine[] {
-				bean,
 				parameter,
 				attribute,
+				bean,
 				property
 		};
 	}
