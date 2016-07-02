@@ -46,6 +46,7 @@ import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.ability.BeanReferenceInspectable;
 import com.aspectran.core.context.rule.type.DefaultSettingType;
 import com.aspectran.core.context.rule.type.ImportFileType;
+import com.aspectran.core.context.rule.type.TokenDirectiveType;
 import com.aspectran.core.context.rule.type.TokenType;
 import com.aspectran.core.context.template.TemplateRuleRegistry;
 import com.aspectran.core.context.translet.TransletRuleRegistry;
@@ -449,15 +450,12 @@ public class ContextBuilderAssistant {
 	 * @param token the token
 	 */
 	public void resolveBeanClass(Token token) {
-		String name = token.getName();
-		if(name != null) {
-			if(name.equals(BeanRule.CLASS_DIRECTIVE)) {
-				Class<?> beanClass = loadClass(token.getValue());
-				token.setAlternativeValue(beanClass);
-				putBeanReference(beanClass, token);
-			} else {
-				putBeanReference(name, token);
-			}
+		if(token.getDirectiveType() == TokenDirectiveType.CLASS) {
+			Class<?> beanClass = loadClass(token.getValue());
+			token.setAlternativeValue(beanClass);
+			putBeanReference(beanClass, token);
+		} else {
+			putBeanReference(token.getName(), token);
 		}
 	}
 

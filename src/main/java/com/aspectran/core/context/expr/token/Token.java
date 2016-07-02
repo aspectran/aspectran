@@ -17,6 +17,7 @@ package com.aspectran.core.context.expr.token;
 
 import com.aspectran.core.context.rule.ability.BeanReferenceInspectable;
 import com.aspectran.core.context.rule.type.BeanReferrerType;
+import com.aspectran.core.context.rule.type.TokenDirectiveType;
 import com.aspectran.core.context.rule.type.TokenType;
 import com.aspectran.core.util.ToStringBuilder;
 
@@ -62,6 +63,8 @@ public class Token implements BeanReferenceInspectable {
 	
 	private final TokenType type;
 
+	private TokenDirectiveType directiveType;
+
 	private final String name;
 	
 	private String value;
@@ -98,6 +101,24 @@ public class Token implements BeanReferenceInspectable {
 	 */
 	public TokenType getType() {
 		return type;
+	}
+
+	/**
+	 * Gets the token directive type.
+	 *
+	 * @return the token directive type
+	 */
+	public TokenDirectiveType getDirectiveType() {
+		return directiveType;
+	}
+
+	/**
+	 * Sets the token directive type.
+	 *
+	 * @param directiveType the token directive type
+	 */
+	public void setDirectiveType(TokenDirectiveType directiveType) {
+		this.directiveType = directiveType;
 	}
 
 	/**

@@ -31,10 +31,10 @@ import java.util.Set;
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.request.parameter.FileParameter;
 import com.aspectran.core.context.expr.token.Token;
+import com.aspectran.core.context.rule.type.TokenDirectiveType;
 import com.aspectran.core.context.rule.type.TokenType;
 import com.aspectran.core.util.BeanUtils;
 import com.aspectran.core.util.PropertiesLoaderUtils;
-import com.aspectran.core.util.ResourceUtils;
 
 /**
  * The Class TokenExpressionParser.
@@ -42,7 +42,7 @@ import com.aspectran.core.util.ResourceUtils;
  * <p>Created: 2008. 03. 29 AM 12:59:16</p>
  */
 public class TokenExpressionParser implements TokenEvaluator {
-	
+
 	protected final Activity activity;
 	
 	/**
@@ -399,24 +399,33 @@ public class TokenExpressionParser implements TokenEvaluator {
 	 * @return an environment variable
 	 */
 	protected Object getProperty(Token token) {
-		String name = token.getName();
-		Object value;
+		if(token.getDirectiveType() == TokenDirectiveType.CLASSPATH) {
+			Properties props;
 
-		if(name.startsWith(ResourceUtils.CLASSPATH_URL_PREFIX)) {
-			String resourceName = name.substring(ResourceUtils.CLASSPATH_URL_PREFIX.length());
 			try {
-				value = PropertiesLoaderUtils.loadProperties(resourceName, activity.getActivityContext().getClassLoader());
+				props = PropertiesLoaderUtils.loadProperties(token.getValue(), activity.getActivityContext().getClassLoader());
 			} catch(IOException e) {
 				throw new TokenEvaluationException("Failed to load properties file for token", token,  e);
 			}
+
+			Object value = (token.getGetterName() != null) ? props.get(token.getGetterName()) : null;
+
+			if(value == null)
+				value = token.getAlternativeValue();
+
+			return value;
 		} else {
-			value = activity.getActivityContext().getContextEnvironment().getProperty(token.getName());
+			Object value = activity.getActivityContext().getContextEnvironment().getProperty(token.getName());
+
+			if(value != null && token.getGetterName() != null) {
+				value = getBeanProperty(value, token.getGetterName());
+			}
+
+			if(value == null)
+				value = token.getValue();
+
+			return value;
 		}
-
-		if(value != null && token.getGetterName() != null)
-			value = getBeanProperty(value, token.getGetterName());
-
-		return value;
 	}
 	
 	/**
