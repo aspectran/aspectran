@@ -43,10 +43,6 @@ public class Tokenizer {
 
 	private static final char LF = '\n';
 
-	private static final String DIRECTIVE_CLASS = "class";
-
-	private static final String DIRECTIVE_CLASSPATH = "classpath";
-
 	/**
 	 * Tokenize a string and returns a list of tokens.
 	 * 
