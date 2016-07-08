@@ -134,7 +134,7 @@ public class WebAspectranService extends GenericAspectranService {
 			activity.perform();
 		} catch(TransletNotFoundException e) {
 			if(super.log.isTraceEnabled()) {
-				super.log.trace("translet is not found: " + requestUri);
+				super.log.trace("Translet is not found: " + requestUri);
 			}
 			try {
 				if(!defaultServletHttpRequestHandler.handle(request, response)) {

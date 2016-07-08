@@ -55,7 +55,7 @@ import com.aspectran.core.context.rule.ResponseRule;
 import com.aspectran.core.context.rule.TransformRule;
 import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.type.AutowireTargetType;
-import com.aspectran.core.context.rule.type.RequestMethodType;
+import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.context.rule.type.TokenType;
 import com.aspectran.core.context.rule.type.TransformType;
 import com.aspectran.core.util.StringUtils;
@@ -314,7 +314,7 @@ public class AnnotatedConfigParser {
 		try {
 			Request requestAnno = method.getAnnotation(Request.class);
 			String transletName = applyNamespaceForTranslet(nameArray, StringUtils.emptyToNull(requestAnno.translet()));
-			RequestMethodType[] requestMethods = requestAnno.method();
+			MethodType[] allowedMethods = requestAnno.method();
 
 			String actionId = null;
 			Action actionAnno = method.getAnnotation(Action.class);
@@ -322,7 +322,7 @@ public class AnnotatedConfigParser {
 				actionId = StringUtils.emptyToNull(actionAnno.id());
 			}
 
-			TransletRule transletRule = TransletRule.newInstance(transletName, requestMethods);
+			TransletRule transletRule = TransletRule.newInstance(transletName, allowedMethods);
 
 			if(method.isAnnotationPresent(Dispatch.class)) {
 				Dispatch dispatchAnno = method.getAnnotation(Dispatch.class);

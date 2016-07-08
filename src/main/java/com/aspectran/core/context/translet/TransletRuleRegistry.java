@@ -32,7 +32,7 @@ import com.aspectran.core.context.expr.token.Tokenizer;
 import com.aspectran.core.context.rule.RequestRule;
 import com.aspectran.core.context.rule.ResponseRule;
 import com.aspectran.core.context.rule.TransletRule;
-import com.aspectran.core.context.rule.type.RequestMethodType;
+import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.context.rule.type.TokenType;
 import com.aspectran.core.context.translet.scan.TransletFileScanner;
 import com.aspectran.core.util.PrefixSuffixPattern;
@@ -95,7 +95,7 @@ public class TransletRuleRegistry {
 		return PathVariableMap.newInstance(nameTokens, requestTransletName);
 	}
 
-	public TransletRule getRestfulTransletRule(String requestTransletName, RequestMethodType requestMethod) {
+	public TransletRule getRestfulTransletRule(String requestTransletName, MethodType requestMethod) {
 		if(restfulTransletRuleSet.isEmpty())
 			return null;
 
@@ -103,12 +103,14 @@ public class TransletRuleRegistry {
 			WildcardPattern namePattern = transletRule.getNamePattern();
 			if(namePattern != null) {
 				if(namePattern.matches(requestTransletName)) {
-					if(transletRule.getRequestMethods() == null || requestMethod.containsTo(transletRule.getRequestMethods()))
+					if(transletRule.getAllowedMethods() == null ||
+							requestMethod.containsTo(transletRule.getAllowedMethods()))
 						return transletRule;
 				}
 			} else {
 				if(requestTransletName.equals(transletRule.getName())) {
-					if(transletRule.getRequestMethods() == null || requestMethod.containsTo(transletRule.getRequestMethods()))
+					if(transletRule.getAllowedMethods() == null ||
+							requestMethod.containsTo(transletRule.getAllowedMethods()))
 						return transletRule;
 				}
 			}
@@ -213,8 +215,8 @@ public class TransletRuleRegistry {
 
 		transletRule.setName(transletName);
 
-		if(transletRule.getRequestMethods() != null) {
-			String key = TransletRule.makeRestfulTransletName(transletName, transletRule.getRequestMethods());
+		if(transletRule.getAllowedMethods() != null) {
+			String key = TransletRule.makeRestfulTransletName(transletName, transletRule.getAllowedMethods());
 			transletRuleMap.put(key, transletRule);
 			saveRestfulTransletRule(transletRule);
 		} else {
@@ -226,25 +228,25 @@ public class TransletRuleRegistry {
 	}
 
 	private void saveRestfulTransletRule(TransletRule transletRule) {
-		String transletName = transletRule.getName();
+		final String transletName = transletRule.getName();
 		List<Token> tokenList = Tokenizer.tokenize(transletName, false);
 		Token[] nameTokens = tokenList.toArray(new Token[tokenList.size()]);
 
-		StringBuilder wildsTransletName = new StringBuilder(transletName.length());
-		boolean wilds = false;
+		StringBuilder sb = new StringBuilder(transletName.length());
 
 		for(Token token : nameTokens) {
 			if(token.getType() == TokenType.PARAMETER || token.getType() == TokenType.ATTRIBUTE) {
-				wildsTransletName.append(WildcardPattern.STAR_CHAR);
-				wilds = true;
+				sb.append(WildcardPattern.STAR_CHAR);
 			} else {
 				String tokenString = token.stringify();
-				wildsTransletName.append(tokenString);
+				sb.append(tokenString);
 			}
 		}
 
-		if(wilds) {
-			WildcardPattern namePattern = WildcardPattern.compile(wildsTransletName.toString(), ActivityContext.TRANSLET_NAME_SEPARATOR_CHAR);
+		String newTransletName = sb.toString(); 
+		
+		if(WildcardPattern.hasWildcards(newTransletName)) {
+			WildcardPattern namePattern = WildcardPattern.compile(newTransletName, ActivityContext.TRANSLET_NAME_SEPARATOR_CHAR);
 
 			transletRule.setNamePattern(namePattern);
 			transletRule.setNameTokens(nameTokens);

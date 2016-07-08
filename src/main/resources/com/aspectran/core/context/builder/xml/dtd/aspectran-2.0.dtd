@@ -46,6 +46,7 @@
 <!ELEMENT joinpoint (pointcut*)>
 <!ATTLIST joinpoint
   scope (session | translet | request | response | content | bean) #IMPLIED
+  method CDATA #IMPLIED
 >
 
 <!ELEMENT pointcut (#PCDATA)>
@@ -127,7 +128,7 @@
   name CDATA #REQUIRED
   scan CDATA #IMPLIED
   mask CDATA #IMPLIED
-  method (ALL | GET | POST | PUT | PATCH | DELETE | HEAD | OPTIONS | TRACE | CONNECT) #IMPLIED
+  method CDATA #IMPLIED
 >
 
 <!ELEMENT request (attribute?)>

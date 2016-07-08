@@ -32,7 +32,7 @@ import com.aspectran.core.context.rule.AspectAdviceRule;
 import com.aspectran.core.context.rule.ForwardResponseRule;
 import com.aspectran.core.context.rule.RedirectResponseRule;
 import com.aspectran.core.context.rule.TransformRule;
-import com.aspectran.core.context.rule.type.RequestMethodType;
+import com.aspectran.core.context.rule.type.MethodType;
 
 /**
  * The Interface Translet.
@@ -49,11 +49,11 @@ public interface Translet extends BeanRegistry, MessageSource {
 	String getTransletName();
 
 	/**
-	 * Gets the REST verb.
+	 * Gets the request http method.
 	 *
-	 * @return the REST verb
+	 * @return the request method
 	 */
-	RequestMethodType getRequestMethod();
+	MethodType getRequestMethod();
 
 	/**
 	 * Gets the application adapter.

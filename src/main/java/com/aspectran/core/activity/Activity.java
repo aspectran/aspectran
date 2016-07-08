@@ -29,7 +29,7 @@ import com.aspectran.core.context.bean.scope.Scope;
 import com.aspectran.core.context.rule.AspectAdviceRule;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.ExceptionHandlingRule;
-import com.aspectran.core.context.rule.type.RequestMethodType;
+import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.context.template.TemplateProcessor;
 
 /**
@@ -74,7 +74,7 @@ public interface Activity extends BeanRegistry {
 	 * @param transletName the translet name
 	 * @param requestMethod the request method
 	 */
-	void prepare(String transletName, RequestMethodType requestMethod);
+	void prepare(String transletName, MethodType requestMethod);
 	
 	/**
 	 * Perform activity.
@@ -174,7 +174,7 @@ public interface Activity extends BeanRegistry {
 	
 	String getTransletName();
 
-	RequestMethodType getRequestMethod();
+	MethodType getRequestMethod();
 	
 	ApplicationAdapter getApplicationAdapter();
 

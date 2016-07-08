@@ -15,7 +15,7 @@
  */
 package com.aspectran.core.activity.request;
 
-import com.aspectran.core.context.rule.type.RequestMethodType;
+import com.aspectran.core.context.rule.type.MethodType;
 
 /**
  * Exception thrown when a request handler does not allow a specific request method.
@@ -25,7 +25,7 @@ public class RequestMethodNotAllowedException extends RequestException {
 	/** @serial */
 	private static final long serialVersionUID = 4068498460127610368L;
 	
-	private RequestMethodType requestMethod;
+	private MethodType requestMethod;
 
 	/**
 	 * Instantiates a new RequestMethodNotAllowedException.
@@ -68,7 +68,7 @@ public class RequestMethodNotAllowedException extends RequestException {
 	 * @param requestMethod the request method
 	 * @param msg the detail message
 	 */
-	public RequestMethodNotAllowedException(RequestMethodType requestMethod, String msg) {
+	public RequestMethodNotAllowedException(MethodType requestMethod, String msg) {
 		super(msg);
 		this.requestMethod = requestMethod;
 	}
@@ -78,16 +78,16 @@ public class RequestMethodNotAllowedException extends RequestException {
 	 *
 	 * @param requestMethod the request method
 	 */
-	public RequestMethodNotAllowedException(RequestMethodType requestMethod) {
+	public RequestMethodNotAllowedException(MethodType requestMethod) {
 		this(requestMethod, "Request method '" + requestMethod + "' not allowed.");
 	}
 	
 	/**
 	 * Gets the request method type.
 	 *
-	 * @return the RequestMethodType
+	 * @return the request method type
 	 */
-	public RequestMethodType getRequestMethod() {
+	public MethodType getRequestMethod() {
 		return requestMethod;
 	}
 	

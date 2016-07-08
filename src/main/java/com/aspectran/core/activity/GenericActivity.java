@@ -46,7 +46,7 @@ import com.aspectran.core.context.rule.type.ActionType;
 import com.aspectran.core.context.rule.type.AspectAdviceType;
 import com.aspectran.core.context.rule.type.AspectTargetType;
 import com.aspectran.core.context.rule.type.JoinpointScopeType;
-import com.aspectran.core.context.rule.type.RequestMethodType;
+import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.context.rule.type.ResponseType;
 import com.aspectran.core.context.translet.TransletNotFoundException;
 import com.aspectran.core.util.logging.Log;
@@ -77,7 +77,7 @@ public class GenericActivity extends AbstractActivity {
 
 	private boolean withoutResponse;
 
-	private RequestMethodType requestMethod;
+	private MethodType requestMethod;
 	
 	private Translet translet;
 	
@@ -123,19 +123,22 @@ public class GenericActivity extends AbstractActivity {
 
 	@Override
 	public void prepare(String transletName, String requestMethod) {
-		RequestMethodType requestMethodType = RequestMethodType.lookup(requestMethod);
-		prepare(transletName, requestMethodType);
+		prepare(transletName, MethodType.lookup(requestMethod));
 	}
 
 	@Override
-	public void prepare(String transletName, RequestMethodType requestMethod) {
+	public void prepare(String transletName, MethodType requestMethod) {
+		prepare(transletName, requestMethod, null);
+	}
+	
+	private void prepare(String transletName, MethodType requestMethod, ProcessResult processResult) {
 		this.transletName = transletName;
 		this.requestMethod = requestMethod;
 
 		TransletRule transletRule = getTransletRuleRegistry().getTransletRule(transletName);
 
 		// for RESTful
-		if(transletRule == null) {
+		if(transletRule == null && requestMethod != null) {
 			transletRule = getTransletRuleRegistry().getRestfulTransletRule(transletName, requestMethod);
 		}
 
@@ -143,6 +146,7 @@ public class GenericActivity extends AbstractActivity {
 			throw new TransletNotFoundException(transletName);
 		}
 
+		// for RESTful
 		PathVariableMap pathVariableMap = getTransletRuleRegistry().getPathVariableMap(transletRule, transletName);
 
 		prepare(transletRule, null);
@@ -150,19 +154,6 @@ public class GenericActivity extends AbstractActivity {
 		if(pathVariableMap != null) {
 			pathVariableMap.apply(translet);
 		}
-	}
-
-	private void prepare(String transletName, ProcessResult processResult) {
-		this.transletName = transletName;
-		this.requestMethod = null;
-
-		TransletRule transletRule = getTransletRuleRegistry().getTransletRule(transletName);
-
-		if(transletRule == null) {
-			throw new TransletNotFoundException(transletName);
-		}
-
-		prepare(transletRule, processResult);
 	}
 
 	private void prepare(TransletRule transletRule, ProcessResult processResult) {
@@ -550,7 +541,8 @@ public class GenericActivity extends AbstractActivity {
 		
 		activityEnded = false;
 		
-		prepare(forwardTransletName, translet.getProcessResult());
+		prepare(forwardTransletName, requestMethod, translet.getProcessResult());
+			
 		perform();
 	}
 
@@ -720,19 +712,23 @@ public class GenericActivity extends AbstractActivity {
 					JoinpointScopeType joinpointScope = aspectRule.getJoinpointScope();
 
 					if(!aspectRule.isBeanRelevanted() && joinpointScope != JoinpointScopeType.SESSION) {
-						Pointcut pointcut = aspectRule.getPointcut();
-						if(pointcut == null || pointcut.matches(transletRule.getName())) {
-							if(debugEnabled)
-								log.debug("register AspectRule " + aspectRule);
-
-							if(joinpointScope == JoinpointScopeType.REQUEST) {
-								requestAARPostRegister.register(aspectRule);
-							} else if(joinpointScope == JoinpointScopeType.CONTENT) {
-								contentAARPostRegister.register(aspectRule);
-							} else if(joinpointScope == JoinpointScopeType.RESPONSE) {
-								responseAARPostRegister.register(aspectRule);
-							} else {
-								transletAARPostRegister.register(aspectRule);
+						if(requestMethod == null ||
+								aspectRule.getAllowedMethods() == null ||
+								requestMethod.containsTo(aspectRule.getAllowedMethods())) {
+							Pointcut pointcut = aspectRule.getPointcut();
+							if(pointcut == null || pointcut.matches(transletRule.getName())) {
+								if(debugEnabled)
+									log.debug("register AspectRule " + aspectRule);
+	
+								if(joinpointScope == JoinpointScopeType.REQUEST) {
+									requestAARPostRegister.register(aspectRule);
+								} else if(joinpointScope == JoinpointScopeType.CONTENT) {
+									contentAARPostRegister.register(aspectRule);
+								} else if(joinpointScope == JoinpointScopeType.RESPONSE) {
+									responseAARPostRegister.register(aspectRule);
+								} else {
+									transletAARPostRegister.register(aspectRule);
+								}
 							}
 						}
 					}
@@ -748,15 +744,20 @@ public class GenericActivity extends AbstractActivity {
 
 	@Override
 	public void registerAspectRule(AspectRule aspectRule) {
-		if(debugEnabled)
-			log.debug("register AspectRule " + aspectRule);
-
+		if(requestMethod != null &&
+				aspectRule.getAllowedMethods() != null &&
+				!requestMethod.containsTo(aspectRule.getAllowedMethods()))
+			return;
+		
 		JoinpointScopeType joinpointScope = aspectRule.getJoinpointScope();
 
 		/*
 		 * before-advice is excluded because it is already processed.
 		 */
 		if(joinpointScope == JoinpointScopeType.TRANSLET || joinpointScope == currentJoinpointScope) {
+			if(debugEnabled)
+				log.debug("register AspectRule " + aspectRule);
+			
 			if(JoinpointScopeType.TRANSLET == joinpointScope) {
 				if(transletAspectAdviceRuleRegistry == null) {
 					transletAspectAdviceRuleRegistry = new AspectAdviceRuleRegistry();
@@ -851,7 +852,7 @@ public class GenericActivity extends AbstractActivity {
 	}
 
 	@Override
-	public RequestMethodType getRequestMethod() {
+	public MethodType getRequestMethod() {
 		return requestMethod;
 	}
 

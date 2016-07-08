@@ -85,7 +85,7 @@ import com.aspectran.core.context.rule.type.ActionType;
 import com.aspectran.core.context.rule.type.AspectAdviceType;
 import com.aspectran.core.context.rule.type.ImporterType;
 import com.aspectran.core.context.rule.type.ItemType;
-import com.aspectran.core.context.rule.type.RequestMethodType;
+import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.context.rule.type.ResponseType;
 import com.aspectran.core.context.rule.type.ScopeType;
 import com.aspectran.core.util.StringUtils;
@@ -345,13 +345,13 @@ public class RootAponAssembler {
 		transletParameters.putValueNonNull(TransletParameters.scan, transletRule.getScanPath());
 		transletParameters.putValueNonNull(TransletParameters.mask, transletRule.getMaskPattern());
 		
-		if(transletRule.getRequestMethods() != null)
-			transletParameters.putValue(TransletParameters.method, RequestMethodType.stringify(transletRule.getRequestMethods()));
+		if(transletRule.getAllowedMethods() != null)
+			transletParameters.putValue(TransletParameters.method, MethodType.stringify(transletRule.getAllowedMethods()));
 
 		RequestRule requestRule = transletRule.getRequestRule();
 		if(requestRule != null) {
 			RequestParameters requestParameters = transletParameters.newParameters(TransletParameters.request);
-			requestParameters.putValueNonNull(RequestParameters.requestMethod, requestRule.getRequestMethod());
+			requestParameters.putValueNonNull(RequestParameters.allowedMethod, requestRule.getAllowedMethod());
 			requestParameters.putValueNonNull(RequestParameters.characterEncoding, requestRule.getCharacterEncoding());
 			
 			ItemRuleMap attributeItemRuleMap = requestRule.getAttributeItemRuleMap();

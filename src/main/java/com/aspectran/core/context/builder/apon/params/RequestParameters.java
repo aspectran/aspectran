@@ -21,19 +21,19 @@ import com.aspectran.core.util.apon.ParameterValueType;
 
 public class RequestParameters extends AbstractParameters {
 
-	public static final ParameterDefine requestMethod;
+	public static final ParameterDefine allowedMethod;
 	public static final ParameterDefine characterEncoding;
 	public static final ParameterDefine attributes;
 	
 	private static final ParameterDefine[] parameterDefines;
 
 	static {
-		requestMethod = new ParameterDefine("method", ParameterValueType.STRING);
+		allowedMethod = new ParameterDefine("method", ParameterValueType.STRING);
 		characterEncoding = new ParameterDefine("characterEncoding", ParameterValueType.STRING);
 		attributes = new ParameterDefine("attribute", ItemHolderParameters.class);
 		
 		parameterDefines = new ParameterDefine[] {
-				requestMethod,
+				allowedMethod,
 				characterEncoding,
 				attributes
 		};

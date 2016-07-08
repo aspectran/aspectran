@@ -23,6 +23,7 @@ import com.aspectran.core.context.rule.ability.BeanReferenceInspectable;
 import com.aspectran.core.context.rule.type.AspectTargetType;
 import com.aspectran.core.context.rule.type.BeanReferrerType;
 import com.aspectran.core.context.rule.type.JoinpointScopeType;
+import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.util.ToStringBuilder;
 
 /**
@@ -37,6 +38,8 @@ public class AspectRule implements BeanReferenceInspectable {
 	private AspectTargetType aspectTargetType;
 	
 	private JoinpointScopeType joinpointScope;
+	
+	private MethodType[] allowedMethods;
 	
 	private PointcutRule pointcutRule;
 	
@@ -80,6 +83,14 @@ public class AspectRule implements BeanReferenceInspectable {
 
 	public void setJoinpointScope(JoinpointScopeType joinpointScope) {
 		this.joinpointScope = joinpointScope;
+	}
+
+	public MethodType[] getAllowedMethods() {
+		return allowedMethods;
+	}
+
+	public void setAllowedMethods(MethodType[] allowedMethods) {
+		this.allowedMethods = allowedMethods;
 	}
 
 	public PointcutRule getPointcutRule() {
@@ -242,6 +253,17 @@ public class AspectRule implements BeanReferenceInspectable {
 		}
 		
 		aspectRule.setJoinpointScope(joinpointScope);
+	}
+	
+	public static void updateAllowedMethods(AspectRule aspectRule, String method) {
+		MethodType[] allowedMethods = null;
+		if(method != null) {
+			allowedMethods = MethodType.parse(method);
+			if(allowedMethods == null)
+				throw new IllegalArgumentException("No request method type registered for '" + method + "'.");
+		}
+
+		aspectRule.setAllowedMethods(allowedMethods);
 	}
 	
 }

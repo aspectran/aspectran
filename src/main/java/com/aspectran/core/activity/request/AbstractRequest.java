@@ -25,7 +25,7 @@ import java.util.TimeZone;
 import com.aspectran.core.activity.request.parameter.FileParameter;
 import com.aspectran.core.activity.request.parameter.FileParameterMap;
 import com.aspectran.core.activity.request.parameter.ParameterMap;
-import com.aspectran.core.context.rule.type.RequestMethodType;
+import com.aspectran.core.context.rule.type.MethodType;
 
 /**
  * The Class AbstractRequest.
@@ -35,7 +35,7 @@ import com.aspectran.core.context.rule.type.RequestMethodType;
  */
 public abstract class AbstractRequest {
 
-	private RequestMethodType requestMethod;
+	private MethodType requestMethod;
 
 	private ParameterMap parameterMap;
 
@@ -56,11 +56,11 @@ public abstract class AbstractRequest {
 		}
 	}
 
-	public RequestMethodType getRequestMethod() {
+	public MethodType getRequestMethod() {
 		return requestMethod;
 	}
 
-	protected void setRequestMethod(RequestMethodType requestMethod) {
+	protected void setRequestMethod(MethodType requestMethod) {
 		this.requestMethod = requestMethod;
 	}
 

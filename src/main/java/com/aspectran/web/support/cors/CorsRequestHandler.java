@@ -153,6 +153,13 @@ public class CorsRequestHandler {
 		}
 	}
 
+	public String[] getAllowedOrigins() {
+		if(allowedOrigins == null)
+			return null;
+		
+		return allowedOrigins.toArray(new String[allowedOrigins.size()]);
+	}
+	
 	public void setAllowedOrigins(String[] allowedOrigins) {
 		Set<String> set = new HashSet<>();
 		if(allowedOrigins != null) {
@@ -184,6 +191,13 @@ public class CorsRequestHandler {
 		}
 	}
 
+	public String[] getAllowedMethods() {
+		if(allowedMethods == null)
+			return null;
+		
+		return allowedMethods.toArray(new String[allowedMethods.size()]);
+	}
+	
 	public void setAllowedMethods(String[] allowedMethods) {
 		Set<String> set = new HashSet<>();
 		if(allowedMethods != null) {
@@ -215,6 +229,13 @@ public class CorsRequestHandler {
 		}
 	}
 
+	public String[] getAllowedHeaders() {
+		if(allowedHeaders == null)
+			return null;
+		
+		return allowedHeaders.toArray(new String[allowedHeaders.size()]);
+	}
+	
 	public void setAllowedHeaders(String[] allowedHeaders) {
 		Set<String> set = new HashSet<>();
 		if(allowedHeaders != null) {
@@ -246,6 +267,13 @@ public class CorsRequestHandler {
 		}
 	}
 
+	public String[] getExposedHeaders() {
+		if(exposedHeaders == null)
+			return null;
+		
+		return exposedHeaders.toArray(new String[exposedHeaders.size()]);
+	}
+
 	public void setExposedHeaders(String[] exposedHeaders) {
 		Set<String> set = new HashSet<>();
 		if(exposedHeaders != null) {
@@ -261,10 +289,18 @@ public class CorsRequestHandler {
 		setExposedHeaders(headers);
 	}
 
+	public boolean getAllowCredentials() {
+		return allowCredentials;
+	}
+	
 	public void setAllowCredentials(boolean allowCredentials) {
 		this.allowCredentials = allowCredentials;
 	}
 	
+	public int getMaxAgeSeconds() {
+		return maxAgeSeconds;
+	}
+
 	public void setMaxAgeSeconds(int maxAgeSeconds) {
 		this.maxAgeSeconds = maxAgeSeconds;
 	}
@@ -277,18 +313,16 @@ public class CorsRequestHandler {
 	 */
 	public void handleActualRequest(Translet translet) throws CorsException {
 		HttpServletRequest req = translet.getRequestAdaptee();
-		String origin = req.getHeader(ORIGIN);
-		
-		if(origin == null)
-			throw CorsException.INVALID_ACTUAL_REQUEST;
-
 		HttpServletResponse res = translet.getResponseAdaptee();
+		
+		if(!isAllowedMethod(req.getMethod())) {
+			throw CorsException.UNSUPPORTED_METHOD;
+		}
+
+		String origin = req.getHeader(ORIGIN);
 
 		if(!isAllowedOrigin(origin))
 			throw CorsException.ORIGIN_DENIED;
-
-		if(!isAllowedMethod(req.getMethod()))
-			throw CorsException.UNSUPPORTED_METHOD;
 
 		if(allowCredentials) {
 			// Must be exact origin (not '*') in case of credentials
@@ -317,61 +351,53 @@ public class CorsRequestHandler {
 	public void handlePreflightRequest(Translet translet) throws CorsException {
 		HttpServletRequest req = translet.getRequestAdaptee();
 
-		if(req.getHeader(ACCESS_CONTROL_REQUEST_METHOD) == null || !"OPTIONS".equals(req.getMethod()))
+		if(!"OPTIONS".equals(req.getMethod()))
 			throw CorsException.INVALID_PREFLIGHT_REQUEST;
-
-		String origin = req.getHeader(ORIGIN);
-
-		if(origin == null)
-			throw CorsException.INVALID_ACTUAL_REQUEST;
 
 		HttpServletResponse res = translet.getResponseAdaptee();
 
-		String requestMethodHeader = req.getHeader(ACCESS_CONTROL_REQUEST_METHOD);
-
-		if(requestMethodHeader == null)
-			throw CorsException.MISSING_ACCESS_CONTROL_REQUEST_METHOD_HEADER;
-
-		String requestedMethod = requestMethodHeader.toUpperCase();
-
-		// Parse the requested author (custom) headers
+		String requestedMethod = req.getHeader(ACCESS_CONTROL_REQUEST_METHOD);
+		if(requestedMethod != null) {
+			if(!isAllowedMethod(requestedMethod))
+				throw CorsException.UNSUPPORTED_METHOD;
+		}
+		
 		String rawRequestHeadersString = req.getHeader(ACCESS_CONTROL_REQUEST_HEADERS);
-		String[] requestHeaders = StringUtils.splitCommaDelimitedString(rawRequestHeadersString);
-
-		// Now, do method check
-		if(!isAllowedMethod(requestedMethod))
-			throw CorsException.UNSUPPORTED_METHOD;
-
-		// Author request headers check
-		if(allowedHeaders != null && requestHeaders.length > 0) {
-			for(String requestHeader : requestHeaders) {
-				if(!allowedHeaders.contains(requestHeader))
-					throw CorsException.UNSUPPORTED_REQUEST_HEADER;
+		if(rawRequestHeadersString != null) {
+			String[] requestHeaders = StringUtils.splitCommaDelimitedString(rawRequestHeadersString);
+			if(allowedHeaders != null && requestHeaders.length > 0) {
+				for(String requestHeader : requestHeaders) {
+					if(!allowedHeaders.contains(requestHeader))
+						throw CorsException.UNSUPPORTED_REQUEST_HEADER;
+				}
+			}
+		}
+		
+		String origin = req.getHeader(ORIGIN);
+		if(origin != null) {
+			if(allowCredentials) {
+				// Must be exact origin (not '*') in case of credentials
+				res.addHeader("Access-Control-Allow-Origin", origin);
+				res.addHeader(ACCESS_CONTROL_ALLOW_CREDENTIALS, "true");
+				res.addHeader(VARY, "Origin");
+			} else {
+				res.addHeader(ACCESS_CONTROL_ALLOW_ORIGIN, allowedOrigins == null ? "*" : origin);
+				res.addHeader(VARY, "Origin");
 			}
 		}
 
-		// Success, append response headers
-		if(allowCredentials) {
-			// Must be exact origin (not '*') in case of credentials
-			res.addHeader("Access-Control-Allow-Origin", origin);
-			res.addHeader(ACCESS_CONTROL_ALLOW_CREDENTIALS, "true");
-			res.addHeader(VARY, "Origin");
-		} else {
-			res.addHeader(ACCESS_CONTROL_ALLOW_ORIGIN, allowedOrigins == null ? "*" : origin);
-			res.addHeader(VARY, "Origin");
+		if(maxAgeSeconds > 0) {
+			res.addHeader(ACCESS_CONTROL_MAX_AGE, Integer.toString(maxAgeSeconds));
 		}
 
-		if(maxAgeSeconds > 0)
-			res.addHeader(ACCESS_CONTROL_MAX_AGE, Integer.toString(maxAgeSeconds));
-
-		if(allowedMethodsString != null)
+		if(allowedMethodsString != null) {
 			res.addHeader(ACCESS_CONTROL_ALLOW_METHODS, allowedMethodsString);
+		}
 
-		if(allowedHeaders == null && rawRequestHeadersString != null) {
-			// Echo author headers
-			res.addHeader(ACCESS_CONTROL_ALLOW_HEADERS, rawRequestHeadersString);
-		} else if(allowedHeaders != null && !allowedHeaders.isEmpty()) {
+		if(allowedHeadersString != null) {
 			res.addHeader(ACCESS_CONTROL_ALLOW_HEADERS, allowedHeadersString);
+		} else if(rawRequestHeadersString != null) {
+			res.addHeader(ACCESS_CONTROL_ALLOW_HEADERS, rawRequestHeadersString);
 		}
 	}
 

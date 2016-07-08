@@ -223,8 +223,10 @@ public class RootAponDisassembler {
 	
 		Parameters joinpointParameters = aspectParameters.getParameters(AspectParameters.jointpoint);
 		String scope = joinpointParameters.getString(JoinpointParameters.scope);
+		String method = joinpointParameters.getString(JoinpointParameters.method);
 		AspectRule.updateJoinpointScope(aspectRule, scope);
-	
+		AspectRule.updateAllowedMethods(aspectRule, method);
+		
 		Parameters pointcutParameters = joinpointParameters.getParameters(JoinpointParameters.pointcut);
 		if(pointcutParameters != null) {
 			PointcutRule pointcutRule = PointcutRule.newInstance(aspectRule, null, pointcutParameters);
@@ -467,11 +469,11 @@ public class RootAponDisassembler {
 	}
 	
 	private RequestRule disassembleRequestRule(Parameters requestParameters) {
-		String method = requestParameters.getString(RequestParameters.requestMethod);
+		String allowedMethod = requestParameters.getString(RequestParameters.allowedMethod);
 		String characterEncoding = requestParameters.getString(RequestParameters.characterEncoding);
 		ItemHolderParameters attributeItemHolderParameters = requestParameters.getParameters(RequestParameters.attributes);
 		
-		RequestRule requestRule = RequestRule.newInstance(method, characterEncoding);
+		RequestRule requestRule = RequestRule.newInstance(allowedMethod, characterEncoding);
 	
 		if(attributeItemHolderParameters != null) {
 			ItemRuleMap attributeItemRuleMap = disassembleItemRuleMap(attributeItemHolderParameters);

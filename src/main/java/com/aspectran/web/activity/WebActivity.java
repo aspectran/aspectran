@@ -36,7 +36,7 @@ import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.RequestRule;
 import com.aspectran.core.context.rule.ResponseRule;
-import com.aspectran.core.context.rule.type.RequestMethodType;
+import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.web.activity.request.multipart.MultipartFormDataParser;
 import com.aspectran.web.activity.request.multipart.MultipartRequestException;
 import com.aspectran.web.adapter.GZipHttpServletResponseAdapter;
@@ -119,10 +119,10 @@ public class WebActivity extends GenericActivity {
 	@Override
 	protected void request() {
 		String method = request.getMethod();
-		RequestMethodType requestMethod = getRequestRule().getRequestMethod();
+		MethodType allowedMethod = getRequestRule().getAllowedMethod();
 		
-		if(requestMethod != null && !requestMethod.toString().equals(method)) {
-			throw new RequestMethodNotAllowedException(requestMethod);
+		if(allowedMethod != null && !allowedMethod.toString().equals(method)) {
+			throw new RequestMethodNotAllowedException(allowedMethod);
 		}
 
 		parseMultipartFormData();
@@ -133,7 +133,7 @@ public class WebActivity extends GenericActivity {
 		String method = request.getMethod();
 		String contentType = request.getContentType();
 		
-		if(RequestMethodType.POST.toString().equals(method)
+		if(MethodType.POST.toString().equals(method)
 				&& contentType != null
 				&& contentType.startsWith("multipart/form-data")) {
 

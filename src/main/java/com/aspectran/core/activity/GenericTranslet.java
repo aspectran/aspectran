@@ -35,7 +35,7 @@ import com.aspectran.core.context.rule.AspectAdviceRule;
 import com.aspectran.core.context.rule.ForwardResponseRule;
 import com.aspectran.core.context.rule.RedirectResponseRule;
 import com.aspectran.core.context.rule.TransformRule;
-import com.aspectran.core.context.rule.type.RequestMethodType;
+import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.context.rule.type.ResponseType;
 
 /**
@@ -66,7 +66,7 @@ public class GenericTranslet implements Translet {
 	}
 
 	@Override
-	public RequestMethodType getRequestMethod() {
+	public MethodType getRequestMethod() {
 		return activity.getRequestMethod();
 	}
 
