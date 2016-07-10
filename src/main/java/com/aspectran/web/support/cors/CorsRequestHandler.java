@@ -1,20 +1,21 @@
 /**
- *    Copyright 2009-2015 the original author or authors.
+ * Copyright 2008-2016 Juho Jeong
  *
- *    Licensed under the Apache License, Version 2.0 (the "License");
- *    you may not use this file except in compliance with the License.
- *    You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *    Unless required by applicable law or agreed to in writing, software
- *    distributed under the License is distributed on an "AS IS" BASIS,
- *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *    See the License for the specific language governing permissions and
- *    limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package com.aspectran.web.support.cors;
 
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -40,48 +41,40 @@ public class CorsRequestHandler {
 	 */
 	private static final String ORIGIN = "Origin";
 
-
 	/**
 	 * "Access-Control-Request-Method" header name.
 	 */
 	private static final String ACCESS_CONTROL_REQUEST_METHOD = "Access-Control-Request-Method";
-
 
 	/**
 	 * "Access-Control-Request-Headers" header name.
 	 */
 	private static final String ACCESS_CONTROL_REQUEST_HEADERS = "Access-Control-Request-Headers";
 
-
 	/**
 	 * "Access-Control-Allow-Origin" header name.
 	 */
 	private static final String ACCESS_CONTROL_ALLOW_ORIGIN = "Access-Control-Allow-Origin";
-
 
 	/**
 	 * "Access-Control-Allow-Methods" header name.
 	 */
 	private static final String ACCESS_CONTROL_ALLOW_METHODS = "Access-Control-Allow-Methods";
 
-
 	/**
 	 * "Access-Control-Allow-Headers" header name.
 	 */
 	private static final String ACCESS_CONTROL_ALLOW_HEADERS = "Access-Control-Allow-Headers";
-
 
 	/**
 	 * "Access-Control-Allow-Credentials" header name.
 	 */
 	private static final String ACCESS_CONTROL_ALLOW_CREDENTIALS = "Access-Control-Allow-Credentials";
 
-
 	/**
 	 * "Access-Control-Expose-Headers" header name.
 	 */
 	private static final String ACCESS_CONTROL_EXPOSE_HEADERS = "Access-Control-Expose-Headers";
-
 
 	/**
 	 * "Access-Control-Max-Age" header name.
@@ -92,6 +85,16 @@ public class CorsRequestHandler {
 	 * "Vary" header name.
 	 */
 	private static final String VARY = "Vary";
+
+	/**
+	 * ""CORS.HTTP_STATUS_CODE"" attribute name.
+	 */
+	private static final String CORS_HTTP_STATUS_CODE = "CORS.HTTP_STATUS_CODE";
+
+	/**
+	 * "CORS.MESSAGE" attribute name.
+	 */
+	private static final String CORS_MESSAGE = "CORS.MESSAGE";
 
 	/**
 	 * Origins that the CORS filter must allow. Requests from origins not
@@ -316,17 +319,22 @@ public class CorsRequestHandler {
 		HttpServletResponse res = translet.getResponseAdaptee();
 		
 		if(!isAllowedMethod(req.getMethod())) {
+			translet.setAttribute(CORS_HTTP_STATUS_CODE, CorsException.UNSUPPORTED_METHOD.getHttpStatusCode());
+			translet.setAttribute(CORS_MESSAGE, CorsException.UNSUPPORTED_METHOD.getMessage());
 			throw CorsException.UNSUPPORTED_METHOD;
 		}
 
 		String origin = req.getHeader(ORIGIN);
 
-		if(!isAllowedOrigin(origin))
+		if(!isAllowedOrigin(origin)) {
+			translet.setAttribute(CORS_HTTP_STATUS_CODE, CorsException.ORIGIN_DENIED.getHttpStatusCode());
+			translet.setAttribute(CORS_MESSAGE, CorsException.ORIGIN_DENIED.getMessage());
 			throw CorsException.ORIGIN_DENIED;
+		}
 
 		if(allowCredentials) {
 			// Must be exact origin (not '*') in case of credentials
-			res.addHeader("Access-Control-Allow-Origin", origin);
+			res.addHeader(ACCESS_CONTROL_ALLOW_ORIGIN, origin);
 			res.addHeader(ACCESS_CONTROL_ALLOW_CREDENTIALS, "true");
 			res.addHeader(VARY, "Origin");
 		} else {
@@ -348,18 +356,23 @@ public class CorsRequestHandler {
 	 * @param translet the translet
 	 * @throws CorsException if the request is invalid or denied.
 	 */
-	public void handlePreflightRequest(Translet translet) throws CorsException {
+	public void handlePreflightRequest(Translet translet) throws CorsException, IOException {
 		HttpServletRequest req = translet.getRequestAdaptee();
-
-		if(!"OPTIONS".equals(req.getMethod()))
-			throw CorsException.INVALID_PREFLIGHT_REQUEST;
-
 		HttpServletResponse res = translet.getResponseAdaptee();
+
+		if(!"OPTIONS".equals(req.getMethod())) {
+			translet.setAttribute(CORS_HTTP_STATUS_CODE, CorsException.INVALID_PREFLIGHT_REQUEST.getHttpStatusCode());
+			translet.setAttribute(CORS_MESSAGE, CorsException.INVALID_PREFLIGHT_REQUEST.getMessage());
+			throw CorsException.INVALID_PREFLIGHT_REQUEST;
+		}
 
 		String requestedMethod = req.getHeader(ACCESS_CONTROL_REQUEST_METHOD);
 		if(requestedMethod != null) {
-			if(!isAllowedMethod(requestedMethod))
+			if(!isAllowedMethod(requestedMethod)) {
+				translet.setAttribute(CORS_HTTP_STATUS_CODE, CorsException.UNSUPPORTED_METHOD.getHttpStatusCode());
+				translet.setAttribute(CORS_MESSAGE, CorsException.UNSUPPORTED_METHOD.getMessage());
 				throw CorsException.UNSUPPORTED_METHOD;
+			}
 		}
 		
 		String rawRequestHeadersString = req.getHeader(ACCESS_CONTROL_REQUEST_HEADERS);
@@ -367,8 +380,11 @@ public class CorsRequestHandler {
 			String[] requestHeaders = StringUtils.splitCommaDelimitedString(rawRequestHeadersString);
 			if(allowedHeaders != null && requestHeaders.length > 0) {
 				for(String requestHeader : requestHeaders) {
-					if(!allowedHeaders.contains(requestHeader))
+					if(!allowedHeaders.contains(requestHeader)) {
+						translet.setAttribute(CORS_HTTP_STATUS_CODE, CorsException.UNSUPPORTED_REQUEST_HEADER.getHttpStatusCode());
+						translet.setAttribute(CORS_MESSAGE, CorsException.UNSUPPORTED_REQUEST_HEADER.getMessage());
 						throw CorsException.UNSUPPORTED_REQUEST_HEADER;
+					}
 				}
 			}
 		}
@@ -377,7 +393,7 @@ public class CorsRequestHandler {
 		if(origin != null) {
 			if(allowCredentials) {
 				// Must be exact origin (not '*') in case of credentials
-				res.addHeader("Access-Control-Allow-Origin", origin);
+				res.addHeader(ACCESS_CONTROL_ALLOW_ORIGIN, origin);
 				res.addHeader(ACCESS_CONTROL_ALLOW_CREDENTIALS, "true");
 				res.addHeader(VARY, "Origin");
 			} else {
@@ -401,6 +417,17 @@ public class CorsRequestHandler {
 		}
 	}
 
+	public void sendError(Translet translet) throws CorsException, IOException {
+		Throwable t = translet.getOriginRaisedException();
+
+		if(t instanceof CorsException) {
+			CorsException corsException = (CorsException)t;
+
+			HttpServletResponse res = translet.getResponseAdaptee();
+			res.sendError(corsException.getHttpStatusCode(), corsException.getMessage());
+		}
+	}
+
 	/**
 	 * Helper method to check whether requests from the specified origin must be allowed.
 	 *
@@ -408,7 +435,7 @@ public class CorsRequestHandler {
 	 * @return {@code true} if the origin is allowed, else {@code false}.
 	 */
 	private boolean isAllowedOrigin(String origin) {
-		return allowedOrigins == null || allowedOrigins.contains(origin);
+		return (allowedOrigins == null || allowedOrigins.contains(origin));
 
 	}
 
@@ -420,7 +447,7 @@ public class CorsRequestHandler {
 	 * @return {@code true} if the method is supported, else {@code false}.
 	 */
 	private boolean isAllowedMethod(String method) {
-		return allowedMethods == null || allowedMethods.contains(method);
+		return (allowedMethods == null || allowedMethods.contains(method));
 
 	}
 	

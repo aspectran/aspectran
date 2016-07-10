@@ -64,7 +64,7 @@ class ResponseInnerNodeletAdder implements NodeletAdder {
             ActionList actionList = new ActionList();
             assistant.pushObject(actionList);
         });
-		parser.addNodelet(xpath, "/transform", new ActionNodeletAdder(assistant));
+		parser.addNodelet(xpath, "/transform", new ActionInnerNodeletAdder(assistant));
 		parser.addNodelet(xpath, "/transform/template", (node, attributes, text) -> {
             String engine = attributes.get("engine");
             String name = attributes.get("name");
@@ -109,7 +109,7 @@ class ResponseInnerNodeletAdder implements NodeletAdder {
             ActionList actionList = new ActionList();
             assistant.pushObject(actionList);
         });
-		parser.addNodelet(xpath, "/dispatch", new ActionNodeletAdder(assistant));
+		parser.addNodelet(xpath, "/dispatch", new ActionInnerNodeletAdder(assistant));
 		parser.addNodelet(xpath, "/dispatch/end()", (node, attributes, text) -> {
             ActionList actionList = assistant.popObject();
             DispatchResponseRule drr = assistant.popObject();
@@ -132,7 +132,7 @@ class ResponseInnerNodeletAdder implements NodeletAdder {
             ActionList actionList = new ActionList();
             assistant.pushObject(actionList);
         });
-		parser.addNodelet(xpath, "/redirect", new ActionNodeletAdder(assistant));
+		parser.addNodelet(xpath, "/redirect", new ActionInnerNodeletAdder(assistant));
 		parser.addNodelet(xpath, "/redirect/parameter", (node, attributes, text) -> {
             ItemRuleMap irm = new ItemRuleMap();
             assistant.pushObject(irm);
@@ -183,7 +183,7 @@ class ResponseInnerNodeletAdder implements NodeletAdder {
             ActionList actionList = new ActionList();
             assistant.pushObject(actionList);
         });
-		parser.addNodelet(xpath, "/forward", new ActionNodeletAdder(assistant));
+		parser.addNodelet(xpath, "/forward", new ActionInnerNodeletAdder(assistant));
 		parser.addNodelet(xpath, "/forward/parameter", (node, attributes, text) -> {
             ItemRuleMap irm = new ItemRuleMap();
             assistant.pushObject(irm);

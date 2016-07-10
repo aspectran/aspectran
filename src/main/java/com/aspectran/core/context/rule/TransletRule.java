@@ -69,7 +69,7 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 	/** The response rule list is that each new sub Translet. */
 	private List<ResponseRule> responseRuleList;
 	
-	private ExceptionHandlingRule exceptionHandlingRule;
+	private ExceptionRule exceptionRule;
 	
 	private Class<? extends Translet> transletInterfaceClass;
 	
@@ -405,21 +405,14 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 		setResponseRuleList(null);
 	}
 
-	public ExceptionHandlingRule getExceptionHandlingRule() {
-		return exceptionHandlingRule;
+	public ExceptionRule getExceptionRule() {
+		return exceptionRule;
 	}
 
-	public void setExceptionHandlingRule(ExceptionHandlingRule exceptionHandlingRule) {
-		this.exceptionHandlingRule = exceptionHandlingRule;
+	public void setExceptionRule(ExceptionRule exceptionRule) {
+		this.exceptionRule = exceptionRule;
 	}
 
-	public ExceptionHandlingRule touchExceptionHandlingRule() {
-		if(exceptionHandlingRule == null)
-			exceptionHandlingRule = new ExceptionHandlingRule();
-		
-		return exceptionHandlingRule;
-	}
-	
 	public Class<? extends Translet> getTransletInterfaceClass() {
 		return transletInterfaceClass;
 	}
@@ -482,7 +475,7 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 		tsb.append("namePattern", namePattern);
 		tsb.append("requestRule", requestRule);
 		tsb.append("responseRule", responseRule);
-		tsb.append("exceptionHandlingRule", exceptionHandlingRule);
+		tsb.append("exceptionRule", exceptionRule);
 		tsb.append("transletInterfaceClass", transletInterfaceClass);
 		tsb.append("transletImplementClass", transletImplementationClass);
 		tsb.append("aspectAdviceRuleRegistry", aspectAdviceRuleRegistry);
@@ -531,7 +524,7 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 		tr.setName(transletRule.getName());
 		tr.setAllowedMethods(transletRule.getAllowedMethods());
 		tr.setRequestRule(transletRule.getRequestRule());
-		tr.setExceptionHandlingRule(transletRule.getExceptionHandlingRule());
+		tr.setExceptionRule(transletRule.getExceptionRule());
 		tr.setTransletInterfaceClass(transletRule.getTransletInterfaceClass());
 		tr.setTransletImplementationClass(transletRule.getTransletImplementationClass());
 		tr.setDescription(transletRule.getDescription());
@@ -549,7 +542,7 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 		tr.setName(transletRule.getName());
 		tr.setAllowedMethods(transletRule.getAllowedMethods());
 		tr.setRequestRule(transletRule.getRequestRule());
-		tr.setExceptionHandlingRule(transletRule.getExceptionHandlingRule());
+		tr.setExceptionRule(transletRule.getExceptionRule());
 		tr.setTransletInterfaceClass(transletRule.getTransletInterfaceClass());
 		tr.setTransletImplementationClass(transletRule.getTransletImplementationClass());
 		tr.setDescription(transletRule.getDescription());

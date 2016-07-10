@@ -28,7 +28,7 @@ import com.aspectran.core.context.bean.BeanRegistry;
 import com.aspectran.core.context.bean.scope.Scope;
 import com.aspectran.core.context.rule.AspectAdviceRule;
 import com.aspectran.core.context.rule.AspectRule;
-import com.aspectran.core.context.rule.ExceptionHandlingRule;
+import com.aspectran.core.context.rule.ExceptionRule;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.context.template.TemplateProcessor;
 
@@ -156,15 +156,17 @@ public interface Activity extends BeanRegistry {
 	
 	void response(Response response);
 	
-	void responseByContentType(List<ExceptionHandlingRule> exceptionHandlingRuleList);
+	void responseByContentType(List<ExceptionRule> exceptionRuleList);
 
 	Response getResponse();
 
 	boolean isExceptionRaised();
 
-	Exception getRaisedException();
+	Throwable getRaisedException();
 
-	void setRaisedException(Exception raisedException);
+	Throwable getOriginRaisedException();
+
+	void setRaisedException(Throwable raisedException);
 
 	ActivityContext getActivityContext();
 

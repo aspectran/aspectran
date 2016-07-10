@@ -22,10 +22,9 @@ import org.w3c.dom.Node;
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.activity.process.ContentList;
 import com.aspectran.core.context.builder.assistant.ContextBuilderAssistant;
-import com.aspectran.core.context.rule.ExceptionHandlingRule;
+import com.aspectran.core.context.rule.ExceptionRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.RequestRule;
-import com.aspectran.core.context.rule.ResponseByContentTypeRule;
 import com.aspectran.core.context.rule.ResponseRule;
 import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.util.BooleanUtils;
@@ -73,7 +72,7 @@ class TransletNodeletAdder implements NodeletAdder {
 				}
 			}
 		});
-		parser.addNodelet(xpath, "/translet", new ActionNodeletAdder(assistant));
+		parser.addNodelet(xpath, "/translet", new ActionInnerNodeletAdder(assistant));
 		parser.addNodelet(xpath, "/translet", new ResponseInnerNodeletAdder(assistant));
 		parser.addNodelet(xpath, "/translet/request", (node, attributes, text) -> {
             String method = attributes.get("method");
@@ -115,7 +114,7 @@ class TransletNodeletAdder implements NodeletAdder {
             ActionList actionList = ActionList.newInstance(name, omittable, hidden);
             assistant.pushObject(actionList);
         });
-		parser.addNodelet(xpath, "/translet/contents/content", new ActionNodeletAdder(assistant));
+		parser.addNodelet(xpath, "/translet/contents/content", new ActionInnerNodeletAdder(assistant));
 		parser.addNodelet(xpath, "/translet/contents/content/end()", (node, attributes, text) -> {
             ActionList actionList = assistant.popObject();
 
@@ -140,7 +139,7 @@ class TransletNodeletAdder implements NodeletAdder {
             ActionList actionList = ActionList.newInstance(name, omittable, hidden);
             assistant.pushObject(actionList);
         });
-		parser.addNodelet(xpath, "/translet/content", new ActionNodeletAdder(assistant));
+		parser.addNodelet(xpath, "/translet/content", new ActionInnerNodeletAdder(assistant));
 		parser.addNodelet(xpath, "/translet/content/end()", (node, attributes, text) -> {
             ActionList actionList = assistant.popObject();
 
@@ -163,20 +162,16 @@ class TransletNodeletAdder implements NodeletAdder {
             TransletRule transletRule = assistant.peekObject();
             transletRule.addResponseRule(responseRule);
         });
-		parser.addNodelet(xpath, "/translet/exception/responseByContentType", (node, attributes, text) -> {
-            String exceptionType = attributes.get("exceptionType");
-
-            ResponseByContentTypeRule rbctr = ResponseByContentTypeRule.newInstance(exceptionType);
-            assistant.pushObject(rbctr);
-        });
-		parser.addNodelet(xpath, "/translet/exception/responseByContentType", new ResponseInnerNodeletAdder(assistant));
-		parser.addNodelet(xpath, "/translet/exception/responseByContentType/end()", (node, attributes, text) -> {
-            ResponseByContentTypeRule rbctr = assistant.popObject();
-            TransletRule transletRule = assistant.peekObject();
-
-            ExceptionHandlingRule exceptionHandlingRule = transletRule.touchExceptionHandlingRule();
-            exceptionHandlingRule.putResponseByContentTypeRule(rbctr);
-        });
+		parser.addNodelet(xpath, "/translet/exception", (node, attributes, text) -> {
+			ExceptionRule exceptionRule = new ExceptionRule();
+			assistant.pushObject(exceptionRule);
+		});
+		parser.addNodelet(xpath, "/translet/exception", new ExceptionInnerNodeletAdder(assistant));
+		parser.addNodelet(xpath, "/translet/exception/end()", (node, attributes, text) -> {
+			ExceptionRule exceptionRule = assistant.popObject();
+			TransletRule transletRule = assistant.peekObject();
+			transletRule.setExceptionRule(exceptionRule);
+		});
 		parser.addNodelet(xpath, "/translet/end()", (node, attributes, text) -> {
             TransletRule transletRule = assistant.popObject();
             assistant.addTransletRule(transletRule);

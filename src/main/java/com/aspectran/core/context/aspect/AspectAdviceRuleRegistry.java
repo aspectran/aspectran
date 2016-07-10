@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.aspectran.core.context.rule.AspectAdviceRule;
-import com.aspectran.core.context.rule.ExceptionHandlingRule;
+import com.aspectran.core.context.rule.ExceptionRule;
 import com.aspectran.core.context.rule.SettingsAdviceRule;
 import com.aspectran.core.context.rule.ability.Replicable;
 import com.aspectran.core.context.rule.type.AspectAdviceType;
@@ -42,7 +42,7 @@ public class AspectAdviceRuleRegistry implements Replicable<AspectAdviceRuleRegi
 
 	private List<AspectAdviceRule> finallyAdviceRuleList;
 
-	private List<ExceptionHandlingRule> exceptionHandlingRuleList;
+	private List<ExceptionRule> exceptionRuleList;
 
 	private int aspectRuleCount;
 
@@ -146,19 +146,19 @@ public class AspectAdviceRuleRegistry implements Replicable<AspectAdviceRuleRegi
 		}
 	}
 
-	public List<ExceptionHandlingRule> getExceptionHandlingRuleList() {
-		return exceptionHandlingRuleList;
+	public List<ExceptionRule> getExceptionRuleList() {
+		return exceptionRuleList;
 	}
 
-	public void setExceptionHandlingRuleList(List<ExceptionHandlingRule> exceptionHandlingRuleList) {
-		this.exceptionHandlingRuleList = exceptionHandlingRuleList;
+	public void setExceptionRuleList(List<ExceptionRule> exceptionRuleList) {
+		this.exceptionRuleList = exceptionRuleList;
 	}
 
-	public void addExceptionHandlingRule(ExceptionHandlingRule exceptionHandlingRule) {
-		if(exceptionHandlingRuleList == null)
-			exceptionHandlingRuleList = new ArrayList<>();
+	public void addExceptionRule(ExceptionRule exceptionRule) {
+		if(exceptionRuleList == null)
+			exceptionRuleList = new ArrayList<>();
 
-		exceptionHandlingRuleList.add(0, exceptionHandlingRule);
+		exceptionRuleList.add(0, exceptionRule);
 	}
 
 	@Override
@@ -182,8 +182,8 @@ public class AspectAdviceRuleRegistry implements Replicable<AspectAdviceRuleRegi
 		if(finallyAdviceRuleList != null) {
 			aarr.setFinallyAdviceRuleList(new ArrayList<>(finallyAdviceRuleList));
 		}
-		if(exceptionHandlingRuleList != null) {
-			aarr.setExceptionHandlingRuleList(new ArrayList<>(exceptionHandlingRuleList));
+		if(exceptionRuleList != null) {
+			aarr.setExceptionRuleList(new ArrayList<>(exceptionRuleList));
 		}
 		
 		return aarr;
@@ -208,7 +208,7 @@ public class AspectAdviceRuleRegistry implements Replicable<AspectAdviceRuleRegi
 		tsb.append("beforeAdvices", beforeAdviceRuleList);
 		tsb.append("afterAdvices", afterAdviceRuleList);
 		tsb.append("finallyAdvices", finallyAdviceRuleList);
-		tsb.append("exceptionHandlingRules", exceptionHandlingRuleList);
+		tsb.append("exceptionRules", exceptionRuleList);
 		return tsb.toString();
 	}
 	

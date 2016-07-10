@@ -172,14 +172,6 @@ public class BeanActionRule implements ArgumentPossessable, PropertyPossessable,
 	}
 
 	@Override
-	public void addArgumentItemRule(ItemRule argumentItemRule) {
-		if(argumentItemRuleMap == null)
-			argumentItemRuleMap = new ItemRuleMap();
-
-		argumentItemRuleMap.putItemRule(argumentItemRule);
-	}
-
-	@Override
 	public ItemRuleMap getPropertyItemRuleMap() {
 		return propertyItemRuleMap;
 	}
@@ -187,14 +179,6 @@ public class BeanActionRule implements ArgumentPossessable, PropertyPossessable,
 	@Override
 	public void setPropertyItemRuleMap(ItemRuleMap propertyItemRuleMap) {
 		this.propertyItemRuleMap = propertyItemRuleMap;
-	}
-
-	@Override
-	public void addPropertyItemRule(ItemRule propertyItemRule) {
-		if(propertyItemRuleMap == null) 
-			propertyItemRuleMap = new ItemRuleMap();
-		
-		propertyItemRuleMap.putItemRule(propertyItemRule);
 	}
 
 	/**

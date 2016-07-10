@@ -338,8 +338,13 @@ public class GenericTranslet implements Translet {
 	}
 
 	@Override
-	public Exception getRaisedException() {
+	public Throwable getRaisedException() {
 		return activity.getRaisedException();
+	}
+
+	@Override
+	public Throwable getOriginRaisedException() {
+		return activity.getOriginRaisedException();
 	}
 
 	@Override

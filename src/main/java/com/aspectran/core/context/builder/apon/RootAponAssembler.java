@@ -39,7 +39,7 @@ import com.aspectran.core.context.builder.apon.params.ContentsParameters;
 import com.aspectran.core.context.builder.apon.params.DefaultSettingsParameters;
 import com.aspectran.core.context.builder.apon.params.DispatchParameters;
 import com.aspectran.core.context.builder.apon.params.EnvironmentParameters;
-import com.aspectran.core.context.builder.apon.params.ExceptionRaisedParameters;
+import com.aspectran.core.context.builder.apon.params.ExceptionParameters;
 import com.aspectran.core.context.builder.apon.params.ForwardParameters;
 import com.aspectran.core.context.builder.apon.params.ImportParameters;
 import com.aspectran.core.context.builder.apon.params.ItemHolderParameters;
@@ -67,7 +67,7 @@ import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.DispatchResponseRule;
 import com.aspectran.core.context.rule.EchoActionRule;
 import com.aspectran.core.context.rule.EnvironmentRule;
-import com.aspectran.core.context.rule.ExceptionHandlingRule;
+import com.aspectran.core.context.rule.ExceptionRule;
 import com.aspectran.core.context.rule.ForwardResponseRule;
 import com.aspectran.core.context.rule.IncludeActionRule;
 import com.aspectran.core.context.rule.ItemRule;
@@ -270,21 +270,21 @@ public class RootAponAssembler {
 			}
 		}
 		
-		ExceptionHandlingRule exceptionHandlingRule = aspectRule.getExceptionHandlingRule();
-		if(exceptionHandlingRule != null) {
-			Parameters exceptionRaisedParameters = aspectParameters.touchParameters(AspectParameters.exceptionRaised);
-			if(exceptionHandlingRule.getDescription() != null) {
-				exceptionRaisedParameters.putValue(ExceptionRaisedParameters.description, exceptionHandlingRule.getDescription());
+		ExceptionRule exceptionRule = aspectRule.getExceptionRule();
+		if(exceptionRule != null) {
+			Parameters exceptionParameters = aspectParameters.touchParameters(AspectParameters.exception);
+			if(exceptionRule.getDescription() != null) {
+				exceptionParameters.putValue(ExceptionParameters.description, exceptionRule.getDescription());
 			}
-			if(exceptionHandlingRule.getActionType() == ActionType.ECHO) {
-				EchoActionRule echoActionRule = exceptionHandlingRule.getExecutableAction().getActionRule();
-				exceptionRaisedParameters.putValue(ExceptionRaisedParameters.action, assembleActionParameters(echoActionRule));
-			} else if(exceptionHandlingRule.getActionType() == ActionType.BEAN) {
-				BeanActionRule beanActionRule = exceptionHandlingRule.getExecutableAction().getActionRule();
-				exceptionRaisedParameters.putValue(ExceptionRaisedParameters.action, assembleActionParameters(beanActionRule));
+			if(exceptionRule.getActionType() == ActionType.ECHO) {
+				EchoActionRule echoActionRule = exceptionRule.getExecutableAction().getActionRule();
+				exceptionParameters.putValue(ExceptionParameters.action, assembleActionParameters(echoActionRule));
+			} else if(exceptionRule.getActionType() == ActionType.BEAN) {
+				BeanActionRule beanActionRule = exceptionRule.getExecutableAction().getActionRule();
+				exceptionParameters.putValue(ExceptionParameters.action, assembleActionParameters(beanActionRule));
 			}
-			for(ResponseByContentTypeRule rbctr : exceptionHandlingRule) {
-				exceptionRaisedParameters.putValue(ExceptionRaisedParameters.responseByContentTypes, assembleResponseByContentTypeParameters(rbctr));
+			for(ResponseByContentTypeRule rbctr : exceptionRule) {
+				exceptionParameters.putValue(ExceptionParameters.responseByContentTypes, assembleResponseByContentTypeParameters(rbctr));
 			}
 		}
 		
@@ -420,13 +420,24 @@ public class RootAponAssembler {
 			}
 		}
 		
-		ExceptionHandlingRule exceptionHandlingRuleMap = transletRule.getExceptionHandlingRule();
-		if(exceptionHandlingRuleMap != null) {
-			for(ResponseByContentTypeRule rbctr : exceptionHandlingRuleMap) {
-				transletParameters.putValue(TransletParameters.exception, assembleResponseByContentTypeParameters(rbctr));
+		ExceptionRule exceptionRule = transletRule.getExceptionRule();
+		if(exceptionRule != null) {
+			Parameters exceptionParameters = transletParameters.touchParameters(TransletParameters.exception);
+			if(exceptionRule.getDescription() != null) {
+				exceptionParameters.putValue(ExceptionParameters.description, exceptionRule.getDescription());
+			}
+			if(exceptionRule.getActionType() == ActionType.ECHO) {
+				EchoActionRule echoActionRule = exceptionRule.getExecutableAction().getActionRule();
+				exceptionParameters.putValue(ExceptionParameters.action, assembleActionParameters(echoActionRule));
+			} else if(exceptionRule.getActionType() == ActionType.BEAN) {
+				BeanActionRule beanActionRule = exceptionRule.getExecutableAction().getActionRule();
+				exceptionParameters.putValue(ExceptionParameters.action, assembleActionParameters(beanActionRule));
+			}
+			for(ResponseByContentTypeRule rbctr : exceptionRule) {
+				exceptionParameters.putValue(ExceptionParameters.responseByContentTypes, assembleResponseByContentTypeParameters(rbctr));
 			}
 		}
-		
+
 		return transletParameters;
 	}
 	

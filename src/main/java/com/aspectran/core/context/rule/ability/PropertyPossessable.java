@@ -15,7 +15,6 @@
  */
 package com.aspectran.core.context.rule.ability;
 
-import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
 
 /**
@@ -39,12 +38,5 @@ public interface PropertyPossessable {
 	 * @param propertyItemRuleMap the new property item rule map
 	 */
 	void setPropertyItemRuleMap(ItemRuleMap propertyItemRuleMap);
-
-	/**
-	 * Adds the parameter rule for property.
-	 *
-	 * @param propertyItemRule the property item rule
-	 */
-	void addPropertyItemRule(ItemRule propertyItemRule);
 
 }

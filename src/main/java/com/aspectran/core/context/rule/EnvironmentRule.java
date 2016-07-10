@@ -48,14 +48,6 @@ public class EnvironmentRule implements PropertyPossessable {
 	}
 
 	@Override
-	public void addPropertyItemRule(ItemRule propertyItemRule) {
-		if(propertyItemRuleMap == null) 
-			propertyItemRuleMap = new ItemRuleMap();
-		
-		propertyItemRuleMap.putItemRule(propertyItemRule);
-	}
-	
-	@Override
 	public String toString() {
 		ToStringBuilder tsb = new ToStringBuilder();
 		tsb.append("profile", profile);

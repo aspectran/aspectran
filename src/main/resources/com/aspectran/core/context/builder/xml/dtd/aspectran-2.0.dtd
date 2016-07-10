@@ -37,7 +37,7 @@
   type CDATA #REQUIRED
 >
 
-<!ELEMENT aspect (description?, joinpoint?, settings?, advice?, exceptionRaised?)>
+<!ELEMENT aspect (description?, joinpoint?, settings?, advice?, exception?)>
 <!ATTLIST aspect
   id ID #IMPLIED
   for (translet | scheduler) #IMPLIED
@@ -63,7 +63,6 @@
 <!ELEMENT after (echo | action)>
 <!ELEMENT around (echo | action)>
 <!ELEMENT finally (echo | action)>
-<!ELEMENT exceptionRaised (description?, action?, responseByContentType*)>
 
 <!ELEMENT job EMPTY>
 <!ATTLIST job

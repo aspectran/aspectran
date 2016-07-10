@@ -25,7 +25,7 @@ import com.aspectran.core.context.rule.TransformRule;
  * The Interface ResponseRuleApplicable.
  */
 public interface ResponseRuleApplicable {
-	
+
 	/**
 	 * Apply the dispatch response rule  to the response rule.
 	 *

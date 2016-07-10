@@ -37,7 +37,7 @@ import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
 import com.aspectran.core.context.aspect.pointcut.Pointcut;
 import com.aspectran.core.context.rule.AspectAdviceRule;
 import com.aspectran.core.context.rule.AspectRule;
-import com.aspectran.core.context.rule.ExceptionHandlingRule;
+import com.aspectran.core.context.rule.ExceptionRule;
 import com.aspectran.core.context.rule.RequestRule;
 import com.aspectran.core.context.rule.ResponseByContentTypeRule;
 import com.aspectran.core.context.rule.ResponseRule;
@@ -88,7 +88,7 @@ public class GenericActivity extends AbstractActivity {
 	/** Whether the current activity is completed or interrupted. */
 	private boolean activityEnded;
 
-	private Exception raisedException;
+	private Throwable raisedException;
 
 	private AspectAdviceRuleRegistry transletAspectAdviceRuleRegistry;
 	
@@ -268,18 +268,18 @@ public class GenericActivity extends AbstractActivity {
 		} catch(Exception e) {
 			setRaisedException(e);
 			
-			ExceptionHandlingRule exceptionHandlingRule = transletRule.getExceptionHandlingRule();
-			if(exceptionHandlingRule != null) {
-				responseByContentType(exceptionHandlingRule);
+			ExceptionRule exceptionRule = transletRule.getExceptionRule();
+			if(exceptionRule != null) {
+				responseByContentType(exceptionRule);
 				if(activityEnded) {
 					return;
 				}
 			}
 			
 			if(transletAspectAdviceRuleRegistry != null) {
-				List<ExceptionHandlingRule> exceptionHandlingRuleList = transletAspectAdviceRuleRegistry.getExceptionHandlingRuleList();
-				if(exceptionHandlingRuleList != null) {
-					responseByContentType(exceptionHandlingRuleList);
+				List<ExceptionRule> exceptionRuleList = transletAspectAdviceRuleRegistry.getExceptionRuleList();
+				if(exceptionRuleList != null) {
+					responseByContentType(exceptionRuleList);
 					if(activityEnded) {
 						return;
 					}
@@ -333,9 +333,9 @@ public class GenericActivity extends AbstractActivity {
 			setRaisedException(e);
 			
 			if(requestAspectAdviceRuleRegistry != null) {
-				List<ExceptionHandlingRule> exceptionHandlingRuleList = requestAspectAdviceRuleRegistry.getExceptionHandlingRuleList();
-				if(exceptionHandlingRuleList != null) {
-					responseByContentType(exceptionHandlingRuleList);
+				List<ExceptionRule> exceptionRuleList = requestAspectAdviceRuleRegistry.getExceptionRuleList();
+				if(exceptionRuleList != null) {
+					responseByContentType(exceptionRuleList);
 					if(activityEnded) {
 						return;
 					}
@@ -380,9 +380,9 @@ public class GenericActivity extends AbstractActivity {
 			setRaisedException(e);
 			
 			if(contentAspectAdviceRuleRegistry != null) {
-				List<ExceptionHandlingRule> exceptionHandlingRuleList = contentAspectAdviceRuleRegistry.getExceptionHandlingRuleList();
-				if(exceptionHandlingRuleList != null) {
-					responseByContentType(exceptionHandlingRuleList);
+				List<ExceptionRule> exceptionRuleList = contentAspectAdviceRuleRegistry.getExceptionRuleList();
+				if(exceptionRuleList != null) {
+					responseByContentType(exceptionRuleList);
 					if(activityEnded) {
 						return;
 					}
@@ -430,9 +430,9 @@ public class GenericActivity extends AbstractActivity {
 			setRaisedException(e);
 			
 			if(responseAspectAdviceRuleRegistry != null) {
-				List<ExceptionHandlingRule> exceptionHandlingRuleList = responseAspectAdviceRuleRegistry.getExceptionHandlingRuleList();
-				if(exceptionHandlingRuleList != null) {
-					responseByContentType(exceptionHandlingRuleList);
+				List<ExceptionRule> exceptionRuleList = responseAspectAdviceRuleRegistry.getExceptionRuleList();
+				if(exceptionRuleList != null) {
+					responseByContentType(exceptionRuleList);
 					if(activityEnded) {
 						return;
 					}
@@ -547,17 +547,19 @@ public class GenericActivity extends AbstractActivity {
 	}
 
 	@Override
-	public void responseByContentType(List<ExceptionHandlingRule> exceptionHandlingRuleList) {
-		for(ExceptionHandlingRule exceptionHandlingRule : exceptionHandlingRuleList) {
-			responseByContentType(exceptionHandlingRule);
+	public void responseByContentType(List<ExceptionRule> exceptionRuleList) {
+		for(ExceptionRule exceptionRule : exceptionRuleList) {
+			responseByContentType(exceptionRule);
 			if(activityEnded)
 				return;
 		}
 	}
 
-	private void responseByContentType(ExceptionHandlingRule exceptionHandlingRule) {
-		ResponseByContentTypeRule rbctr = exceptionHandlingRule.getResponseByContentTypeRule(getRaisedException());
+	private void responseByContentType(ExceptionRule exceptionRule) {
+		ResponseByContentTypeRule rbctr = exceptionRule.getResponseByContentTypeRule(getRaisedException());
 		if(rbctr != null) {
+
+
 			log.info("Raised exception: " + getRaisedException());
 			responseByContentType(rbctr);
 		}
@@ -565,9 +567,14 @@ public class GenericActivity extends AbstractActivity {
 
 	private void responseByContentType(ResponseByContentTypeRule responseByContentTypeRule) {
 		Response response = getResponse();
+		Response response2;
 
-		if(response != null && response.getContentType() != null) {
-			Response response2 = responseByContentTypeRule.getResponse(response.getContentType());
+		if(response != null && response.getContentType() != null)
+			response2 = responseByContentTypeRule.getResponse(response.getContentType());
+		else
+			response2 = responseByContentTypeRule.getDefaultResponse();
+
+		if(response2 != null) {
 			responseRule = responseRule.newUrgentResponseRule(response2);
 			
 			log.info("Response by Content-Type " + responseRule);
@@ -803,15 +810,24 @@ public class GenericActivity extends AbstractActivity {
 	}
 
 	@Override
-	public Exception getRaisedException() {
+	public Throwable getRaisedException() {
 		return raisedException;
 	}
 
 	@Override
-	public void setRaisedException(Exception raisedException) {
+	public Throwable getOriginRaisedException() {
+		Throwable t = raisedException;
+		while(t != null) {
+			t = t.getCause();
+		}
+		return t;
+	}
+
+	@Override
+	public void setRaisedException(Throwable raisedException) {
 		if(this.raisedException == null) {
 			if(debugEnabled) {
-				log.error("Original raised exception: ", raisedException);
+				log.error("Raised exception: ", raisedException);
 			}
 			this.raisedException = raisedException;
 		}

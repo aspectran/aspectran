@@ -18,6 +18,7 @@ package com.aspectran.core.context.builder.xml;
 import com.aspectran.core.context.builder.assistant.ContextBuilderAssistant;
 import com.aspectran.core.context.rule.AspectJobAdviceRule;
 import com.aspectran.core.context.rule.AspectRule;
+import com.aspectran.core.context.rule.ExceptionRule;
 import com.aspectran.core.context.rule.PointcutRule;
 import com.aspectran.core.context.rule.SettingsAdviceRule;
 import com.aspectran.core.context.rule.type.AspectAdviceType;
@@ -156,7 +157,19 @@ class AspectNodeletAdder implements NodeletAdder {
 		parser.addNodelet(xpath, "/aspect/advice/after", new AspectAdviceNodeletAdder(assistant, AspectAdviceType.AFTER));
 		parser.addNodelet(xpath, "/aspect/advice/around", new AspectAdviceNodeletAdder(assistant, AspectAdviceType.AROUND));
 		parser.addNodelet(xpath, "/aspect/advice/finally", new AspectAdviceNodeletAdder(assistant, AspectAdviceType.FINALLY));
-		parser.addNodelet(xpath, "/aspect/exceptionRaised", new AspectExceptionRaisedNodeletAdder(assistant));
+		parser.addNodelet(xpath, "/aspect/exception", (node, attributes, text) -> {
+			AspectRule aspectRule = assistant.peekObject();
+
+			ExceptionRule exceptionRule = ExceptionRule.newInstance(aspectRule);
+
+			assistant.pushObject(exceptionRule);
+		});
+		parser.addNodelet(xpath, "/aspect/exception", new ExceptionInnerNodeletAdder(assistant));
+		parser.addNodelet(xpath, "/aspect/exception/end()", (node, attributes, text) -> {
+			ExceptionRule exceptionRule = assistant.popObject();
+			AspectRule aspectRule = assistant.peekObject();
+			aspectRule.setExceptionRule(exceptionRule);
+		});
 		parser.addNodelet(xpath, "/aspect/advice/job", (node, attributes, text) -> {
             String transletName = StringUtils.emptyToNull(attributes.get("translet"));
             Boolean disabled = BooleanUtils.toNullableBooleanObject(attributes.get("disabled"));

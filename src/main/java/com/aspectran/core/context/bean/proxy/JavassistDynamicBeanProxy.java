@@ -22,7 +22,7 @@ import com.aspectran.core.activity.Activity;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
 import com.aspectran.core.context.rule.BeanRule;
-import com.aspectran.core.context.rule.ExceptionHandlingRule;
+import com.aspectran.core.context.rule.ExceptionRule;
 
 import javassist.util.proxy.MethodHandler;
 import javassist.util.proxy.ProxyFactory;
@@ -101,9 +101,9 @@ public class JavassistDynamicBeanProxy extends AbstractDynamicBeanProxy implemen
 		} catch(Exception e) {
 			activity.setRaisedException(e);
 
-			List<ExceptionHandlingRule> exceptionHandlingRuleList = aarr.getExceptionHandlingRuleList();
-			if(exceptionHandlingRuleList != null) {
-				activity.responseByContentType(exceptionHandlingRuleList);
+			List<ExceptionRule> exceptionRuleList = aarr.getExceptionRuleList();
+			if(exceptionRuleList != null) {
+				activity.responseByContentType(exceptionRuleList);
 				if(activity.isActivityEnded()) {
 					return null;
 				}

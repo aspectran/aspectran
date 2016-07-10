@@ -420,7 +420,14 @@ public interface Translet extends BeanRegistry, MessageSource {
 	 *
 	 * @return the raised exception instance
 	 */
-	Exception getRaisedException();
+	Throwable getRaisedException();
+
+	/**
+	 * Returns the origin raised exception instance.
+	 *
+	 * @return the origin raised exception instance
+	 */
+	Throwable getOriginRaisedException();
 
 	/**
 	 * Gets the aspect advice bean.

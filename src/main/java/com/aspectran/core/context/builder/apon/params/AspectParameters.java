@@ -28,7 +28,7 @@ public class AspectParameters extends AbstractParameters {
 	public static final ParameterDefine jointpoint;
 	public static final ParameterDefine settings;
 	public static final ParameterDefine advice;
-	public static final ParameterDefine exceptionRaised;
+	public static final ParameterDefine exception;
 	
 	private static final ParameterDefine[] parameterDefines;
 	
@@ -39,7 +39,7 @@ public class AspectParameters extends AbstractParameters {
 		jointpoint = new ParameterDefine("joinpoint", JoinpointParameters.class);
 		settings = new ParameterDefine("settings", GenericParameters.class);
 		advice = new ParameterDefine("advice", AdviceParameters.class);
-		exceptionRaised = new ParameterDefine("exceptionRaised", ExceptionRaisedParameters.class);
+		exception = new ParameterDefine("exception", ExceptionParameters.class);
 		
 		parameterDefines = new ParameterDefine[] {
 				description,
@@ -48,7 +48,7 @@ public class AspectParameters extends AbstractParameters {
 				jointpoint,
 				settings,
 				advice,
-				exceptionRaised
+				exception
 			};
 	}
 	

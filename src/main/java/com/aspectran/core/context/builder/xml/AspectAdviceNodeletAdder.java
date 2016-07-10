@@ -51,7 +51,7 @@ class AspectAdviceNodeletAdder implements NodeletAdder {
             AspectAdviceRule aar = AspectAdviceRule.newInstance(aspectRule, aspectAdviceType);
             assistant.pushObject(aar);
         });
-		parser.addNodelet(xpath, new ActionNodeletAdder(assistant));
+		parser.addNodelet(xpath, new ActionInnerNodeletAdder(assistant));
 		parser.addNodelet(xpath, "/end()", (node, attributes, text) -> {
             AspectAdviceRule aspectAdviceRule = assistant.popObject();
             AspectRule aspectRule = assistant.peekObject();

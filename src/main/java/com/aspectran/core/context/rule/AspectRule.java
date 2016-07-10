@@ -55,7 +55,7 @@ public class AspectRule implements BeanReferenceInspectable {
 	
 	private List<AspectJobAdviceRule> aspectJobAdviceRuleList; // for scheduling aspects
 	
-	private ExceptionHandlingRule exceptionHandlingRule;
+	private ExceptionRule exceptionRule;
 	
 	private boolean beanRelevanted;
 	
@@ -166,12 +166,12 @@ public class AspectRule implements BeanReferenceInspectable {
 		aspectJobAdviceRuleList.add(aspectJobAdviceRule);
 	}
 
-	public ExceptionHandlingRule getExceptionHandlingRule() {
-		return exceptionHandlingRule;
+	public ExceptionRule getExceptionRule() {
+		return exceptionRule;
 	}
 
-	public void setExceptionHandlingRule(ExceptionHandlingRule exceptionHandlingRule) {
-		this.exceptionHandlingRule = exceptionHandlingRule;
+	public void setExceptionRule(ExceptionRule exceptionRule) {
+		this.exceptionRule = exceptionRule;
 	}
 
 	public boolean isBeanRelevanted() {
@@ -218,7 +218,7 @@ public class AspectRule implements BeanReferenceInspectable {
 		} else if(aspectTargetType == AspectTargetType.SCHEDULER) {
 			tsb.append("aspectJobAdviceRuleList", aspectJobAdviceRuleList);
 		}
-		tsb.append("exceptionHandlingRule", exceptionHandlingRule);
+		tsb.append("exceptionRule", exceptionRule);
 		tsb.append("beanRelevanted", beanRelevanted);
 		return tsb.toString();
 	}
