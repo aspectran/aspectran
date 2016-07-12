@@ -16,17 +16,17 @@
 package com.aspectran.core.adapter;
 
 /**
- * The Class GenericResponseAdapter.
+ * The Class BasicResponseAdapter.
  * 
  * @since 2016. 2. 13.
  */
-public abstract class GenericResponseAdapter extends AbstractResponseAdapter implements ResponseAdapter {
+public abstract class BasicResponseAdapter extends AbstractResponseAdapter implements ResponseAdapter {
 
 	private String characterEncoding;
 
 	private String contentType;
 
-	public GenericResponseAdapter(Object adaptee) {
+	public BasicResponseAdapter(Object adaptee) {
 		super(adaptee);
 	}
 

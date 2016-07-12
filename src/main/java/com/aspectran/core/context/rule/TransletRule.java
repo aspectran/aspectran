@@ -18,7 +18,7 @@ package com.aspectran.core.context.rule;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.aspectran.core.activity.GenericTranslet;
+import com.aspectran.core.activity.CoreTranslet;
 import com.aspectran.core.activity.Translet;
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.activity.process.ContentList;
@@ -73,7 +73,7 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 	
 	private Class<? extends Translet> transletInterfaceClass;
 	
-	private Class<? extends GenericTranslet> transletImplementationClass;
+	private Class<? extends CoreTranslet> transletImplementationClass;
 
 	private AspectAdviceRuleRegistry aspectAdviceRuleRegistry;
 
@@ -421,11 +421,11 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 		this.transletInterfaceClass = transletInterfaceClass;
 	}
 
-	public Class<? extends GenericTranslet> getTransletImplementationClass() {
+	public Class<? extends CoreTranslet> getTransletImplementationClass() {
 		return transletImplementationClass;
 	}
 
-	public void setTransletImplementationClass(Class<? extends GenericTranslet> transletImplementationClass) {
+	public void setTransletImplementationClass(Class<? extends CoreTranslet> transletImplementationClass) {
 		this.transletImplementationClass = transletImplementationClass;
 	}
 

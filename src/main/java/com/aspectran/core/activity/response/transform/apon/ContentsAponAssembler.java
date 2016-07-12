@@ -25,7 +25,7 @@ import com.aspectran.core.activity.process.result.ActionResult;
 import com.aspectran.core.activity.process.result.ContentResult;
 import com.aspectran.core.activity.process.result.ProcessResult;
 import com.aspectran.core.util.BeanUtils;
-import com.aspectran.core.util.apon.GenericParameters;
+import com.aspectran.core.util.apon.VariableParameters;
 import com.aspectran.core.util.apon.Parameters;
 
 /**
@@ -55,14 +55,14 @@ public class ContentsAponAssembler {
 						return null;
 					}
 				} else {
-					Parameters container = new GenericParameters();
+					Parameters container = new VariableParameters();
 					putValue(container, actionResult.getActionId(), resultValue);
 					return container;
 				}
 			}
 		}
 		
-		Parameters container = new GenericParameters();
+		Parameters container = new VariableParameters();
 		for(ContentResult contentResult : processResult) {
 			assemble(contentResult, container);
 		}
@@ -76,7 +76,7 @@ public class ContentsAponAssembler {
 		}
 		
 		if(contentResult.getName() != null) {
-			Parameters p = new GenericParameters();
+			Parameters p = new VariableParameters();
 			container.putValue(contentResult.getName(), p);
 			container = p;
 		}
@@ -122,7 +122,7 @@ public class ContentsAponAssembler {
 				object instanceof Date) {
 			return object;
 		} else if(object instanceof Map<?, ?>) {
-			Parameters p = new GenericParameters();
+			Parameters p = new VariableParameters();
 			for(Map.Entry<Object, Object> entry : ((Map<Object, Object>)object).entrySet()) {
 				String name = entry.getKey().toString();
 				Object value = entry.getValue();
@@ -137,7 +137,7 @@ public class ContentsAponAssembler {
 		} else {
 			String[] readablePropertyNames = BeanUtils.getReadablePropertyNames(object);
 			if(readablePropertyNames != null && readablePropertyNames.length > 0) {
-				Parameters p = new GenericParameters();
+				Parameters p = new VariableParameters();
 				for(String name : readablePropertyNames) {
 					Object value = BeanUtils.getObject(object, name);
 					checkCircularReference(object, value);

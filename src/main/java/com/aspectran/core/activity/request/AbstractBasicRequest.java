@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.core.adapter;
+package com.aspectran.core.activity.request;
 
 import java.util.Collections;
 import java.util.Enumeration;
@@ -21,49 +21,47 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * The Class GenericApplicationAdapter.
+ * The Class AbstractBasicRequest.
  * 
- * @since 2016. 3. 26.
+ * @since 2016. 2. 13.
  */
-public class GenericApplicationAdapter extends AbstractApplicationAdapter {
+public abstract class AbstractBasicRequest extends AbstractRequest {
 
-	private Map<String, Object> attributes = new HashMap<>();
+	private String characterEncoding;
 
-	/**
-	 * Instantiates a new GenericApplicationAdapter.
-	 */
-	public GenericApplicationAdapter() {
-		super(null);
-	}
-	
-	/**
-	 * Instantiates a new GenericApplicationAdapter.
-	 *
-	 * @param adaptee the adaptee
-	 */
-	public GenericApplicationAdapter(Object adaptee) {
-		super(adaptee);
+	private Map<String, Object> attributeMap = new HashMap<>();
+
+	public AbstractBasicRequest() {
+		super();
 	}
 
-	@Override
+	public AbstractBasicRequest(Map<String, String[]> parameterMap) {
+		super(parameterMap);
+	}
+
+	public String getCharacterEncoding() {
+		return characterEncoding;
+	}
+
+	public void setCharacterEncoding(String characterEncoding) {
+		this.characterEncoding = characterEncoding;
+	}
+
 	@SuppressWarnings("unchecked")
 	public <T> T getAttribute(String name) {
-		return (T)attributes.get(name);
+		return (T)attributeMap.get(name);
 	}
 
-	@Override
 	public void setAttribute(String name, Object o) {
-		attributes.put(name, o);
+		attributeMap.put(name, o);
 	}
 
-	@Override
 	public Enumeration<String> getAttributeNames() {
-		return Collections.enumeration(attributes.keySet());
+		return Collections.enumeration(attributeMap.keySet());
 	}
 
-	@Override
 	public void removeAttribute(String name) {
-		attributes.remove(name);
+		attributeMap.remove(name);
 	}
-
+	
 }

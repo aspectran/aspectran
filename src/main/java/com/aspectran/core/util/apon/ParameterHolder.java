@@ -21,7 +21,7 @@ public class ParameterHolder {
 
 	private static final String PARAMETER_NAME = "item";
 	
-	private final GenericParameters parameters;
+	private final VariableParameters parameters;
 	
 	public ParameterHolder(String text, Class<? extends AbstractParameters> parametersClass, boolean array) {
 		ParameterDefine[] parameterDefines = new ParameterDefine[] { new ParameterDefine(PARAMETER_NAME, parametersClass, array) };
@@ -33,7 +33,7 @@ public class ParameterHolder {
 				text = PARAMETER_NAME + ": {\n" + text + "\n}";
 		}
 		
-		this.parameters = new GenericParameters(parameterDefines, text);
+		this.parameters = new VariableParameters(parameterDefines, text);
 	}
 	
 	public Parameters[] getParametersArray() {

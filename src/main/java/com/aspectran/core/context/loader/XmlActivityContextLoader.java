@@ -16,7 +16,7 @@
 package com.aspectran.core.context.loader;
 
 import com.aspectran.core.adapter.ApplicationAdapter;
-import com.aspectran.core.adapter.GenericApplicationAdapter;
+import com.aspectran.core.adapter.BasicApplicationAdapter;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.builder.ActivityContextBuilder;
 import com.aspectran.core.context.builder.ActivityContextBuilderException;
@@ -28,7 +28,7 @@ public class XmlActivityContextLoader extends AbstractActivityContextLoader {
 	private String rootContext;
 
 	public XmlActivityContextLoader() {
-		super(new GenericApplicationAdapter());
+		super(new BasicApplicationAdapter());
 	}
 	
 	public XmlActivityContextLoader(ApplicationAdapter applicationAdapter) {

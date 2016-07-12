@@ -39,9 +39,9 @@ import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.context.rule.type.ResponseType;
 
 /**
- * The Class GenericTranslet.
+ * The Class CoreTranslet.
  */
-public class GenericTranslet implements Translet {
+public class CoreTranslet implements Translet {
 
 	private final Activity activity;
 
@@ -56,7 +56,7 @@ public class GenericTranslet implements Translet {
 	 *
 	 * @param activity the current Activity
 	 */
-	protected GenericTranslet(Activity activity) {
+	protected CoreTranslet(Activity activity) {
 		this.activity = activity;
 	}
 
@@ -393,7 +393,7 @@ public class GenericTranslet implements Translet {
 	}
 
 	@Override
-	public Class<? extends GenericTranslet> getTransletImplementationClass() {
+	public Class<? extends CoreTranslet> getTransletImplementationClass() {
 		return activity.getTransletImplementationClass();
 	}
 

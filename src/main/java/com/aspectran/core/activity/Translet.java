@@ -493,7 +493,7 @@ public interface Translet extends BeanRegistry, MessageSource {
 	 *
 	 * @return the translet implementation class
 	 */
-	Class<? extends GenericTranslet> getTransletImplementationClass();
+	Class<? extends CoreTranslet> getTransletImplementationClass();
 
 	/**
 	 * Return whether the given profile is active.

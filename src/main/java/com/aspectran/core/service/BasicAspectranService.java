@@ -21,9 +21,9 @@ import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.bean.scope.Scope;
 
 /**
- * The Class GenericAspectranService.
+ * The Class BasicAspectranService.
  */
-public class GenericAspectranService extends AbstractAspectranService {
+public class BasicAspectranService extends AbstractAspectranService {
 
 	private static final long DEFAULT_PAUSE_TIMEOUT = 321L;
 	
@@ -41,7 +41,7 @@ public class GenericAspectranService extends AbstractAspectranService {
 	/** Reference to the JVM shutdown hook, if registered */
 	private Thread shutdownHook;
 
-	public GenericAspectranService(ApplicationAdapter applicationAdapter) {
+	public BasicAspectranService(ApplicationAdapter applicationAdapter) {
 		super(applicationAdapter);
 		applicationAdapter.setAspectranServiceController(this);
 	}

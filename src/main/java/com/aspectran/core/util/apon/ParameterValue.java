@@ -444,11 +444,11 @@ public class ParameterValue implements Parameter {
 	public Parameters newParameters(Parameter prototype) {
 		if(parameterValueType == ParameterValueType.VARIABLE) {
 			parameterValueType = ParameterValueType.PARAMETERS;
-			parametersClass = GenericParameters.class;
+			parametersClass = VariableParameters.class;
 		} else {
 			checkParameterValueType(ParameterValueType.PARAMETERS);
 			if(parametersClass == null)
-				parametersClass = GenericParameters.class;
+				parametersClass = VariableParameters.class;
 		}
 
 		try {

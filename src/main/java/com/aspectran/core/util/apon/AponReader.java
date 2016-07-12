@@ -61,7 +61,7 @@ public class AponReader extends AponFormat {
 	 * @throws IOException An I/O error occurs.
 	 */
 	public Parameters read() throws IOException {
-		Parameters parameters = new GenericParameters();
+		Parameters parameters = new VariableParameters();
 		return read(parameters);
 	}
 	
@@ -144,7 +144,7 @@ public class AponReader extends AponFormat {
 					if(!addable)
 						throw new InvalidParameterException(lineNumber, line, trim, "Only acceptable pre-defined parameters. Undefined parameter name: " + name);
 
-					parameterValueType = ParameterValueType.lookupByHint(name);
+					parameterValueType = ParameterValueType.resolveByHint(name);
 					if(parameterValueType != null) {
 						name = ParameterValueType.stripHintedValueType(name);
 						parameterValue = parameterValueMap.get(name);
@@ -344,7 +344,7 @@ public class AponReader extends AponFormat {
 	 * @return the parameters object
 	 */
 	public static Parameters parse(String text) {
-		Parameters parameters = new GenericParameters();
+		Parameters parameters = new VariableParameters();
 		return parse(text, parameters);
 	}
 

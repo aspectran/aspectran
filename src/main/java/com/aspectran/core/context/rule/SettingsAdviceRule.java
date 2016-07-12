@@ -22,7 +22,7 @@ import java.util.Set;
 import com.aspectran.core.context.rule.type.AspectAdviceType;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.ToStringBuilder;
-import com.aspectran.core.util.apon.GenericParameters;
+import com.aspectran.core.util.apon.VariableParameters;
 import com.aspectran.core.util.apon.Parameters;
 
 /**
@@ -75,7 +75,7 @@ public class SettingsAdviceRule {
 
 	public static SettingsAdviceRule newInstance(AspectRule aspectRule, String text) {
 		if(StringUtils.hasText(text)) {
-			Parameters settingsParameters = new GenericParameters(text);
+			Parameters settingsParameters = new VariableParameters(text);
 			return newInstance(aspectRule, settingsParameters);
 		} else {
 			return newInstance(aspectRule, (Parameters)null);

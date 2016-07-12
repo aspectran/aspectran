@@ -16,7 +16,7 @@
 package com.aspectran.core.context.loader;
 
 import com.aspectran.core.adapter.ApplicationAdapter;
-import com.aspectran.core.adapter.GenericApplicationAdapter;
+import com.aspectran.core.adapter.BasicApplicationAdapter;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.builder.ActivityContextBuilder;
 import com.aspectran.core.context.builder.ActivityContextBuilderException;
@@ -30,7 +30,7 @@ public class HybridActivityContextLoader extends AbstractActivityContextLoader {
 	private String rootContext;
 
 	public HybridActivityContextLoader() {
-		this(new GenericApplicationAdapter());
+		this(new BasicApplicationAdapter());
 	}
 	
 	public HybridActivityContextLoader(ApplicationAdapter applicationAdapter) {

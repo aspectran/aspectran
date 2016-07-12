@@ -31,7 +31,7 @@ import com.aspectran.core.context.rule.ExceptionRule;
  *
  * @since 1.5.0
  */
-public final class SessionScopeActivity extends GenericActivity {
+public final class SessionScopeActivity extends CoreActivity {
 
 	/**
 	 * Instantiates a new session scope activity.

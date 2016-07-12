@@ -32,7 +32,7 @@ import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.type.ItemType;
 import com.aspectran.core.context.rule.type.ItemValueType;
-import com.aspectran.core.util.apon.GenericParameters;
+import com.aspectran.core.util.apon.VariableParameters;
 import com.aspectran.core.util.apon.Parameters;
 
 /**
@@ -288,7 +288,7 @@ public class ItemExpressionParser extends TokenExpressionParser implements ItemE
 		} else if(valueType == ItemValueType.BOOLEAN) {
 			return (value instanceof Boolean) ? value : Boolean.valueOf(value.toString());
 		} else if(valueType == ItemValueType.PARAMETERS) {
-			return new GenericParameters(value.toString());
+			return new VariableParameters(value.toString());
 		} else if(valueType == ItemValueType.FILE) {
 			return (value instanceof FileParameter) ? value : new File(value.toString());
 		} else if(valueType == ItemValueType.MULTIPART_FILE) {

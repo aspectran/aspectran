@@ -53,13 +53,13 @@ import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
 /**
- * The Class GenericActivity.
+ * The Class CoreActivity.
  * 
  * <p>Created: 2008. 03. 22 PM 5:48:09</p>
  */
-public class GenericActivity extends AbstractActivity {
+public class CoreActivity extends AbstractActivity {
 
-	private static final Log log = LogFactory.getLog(GenericActivity.class);
+	private static final Log log = LogFactory.getLog(CoreActivity.class);
 	
 	private static final boolean debugEnabled = log.isDebugEnabled();
 
@@ -103,7 +103,7 @@ public class GenericActivity extends AbstractActivity {
 	 *
 	 * @param context the current ActivityContext
 	 */
-	public GenericActivity(ActivityContext context) {
+	public CoreActivity(ActivityContext context) {
 		super(context);
 	}
 
@@ -846,7 +846,7 @@ public class GenericActivity extends AbstractActivity {
 	@Override
 	@SuppressWarnings("unchecked")
 	public <T extends Activity> T newActivity() {
-		Activity activity = new GenericActivity(getActivityContext());
+		Activity activity = new CoreActivity(getActivityContext());
 		return (T)activity;
 	}
 	

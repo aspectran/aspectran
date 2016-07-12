@@ -16,7 +16,7 @@
 package com.aspectran.core.context.builder.apon.params;
 
 import com.aspectran.core.util.apon.AbstractParameters;
-import com.aspectran.core.util.apon.GenericParameters;
+import com.aspectran.core.util.apon.VariableParameters;
 import com.aspectran.core.util.apon.ParameterDefine;
 import com.aspectran.core.util.apon.ParameterValueType;
 
@@ -37,7 +37,7 @@ public class AspectParameters extends AbstractParameters {
 		id = new ParameterDefine("id", ParameterValueType.STRING);
 		useFor = new ParameterDefine("for", ParameterValueType.STRING);
 		jointpoint = new ParameterDefine("joinpoint", JoinpointParameters.class);
-		settings = new ParameterDefine("settings", GenericParameters.class);
+		settings = new ParameterDefine("settings", VariableParameters.class);
 		advice = new ParameterDefine("advice", AdviceParameters.class);
 		exception = new ParameterDefine("exception", ExceptionParameters.class);
 		

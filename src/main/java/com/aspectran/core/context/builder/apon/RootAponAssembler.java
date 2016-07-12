@@ -89,7 +89,7 @@ import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.context.rule.type.ResponseType;
 import com.aspectran.core.context.rule.type.ScopeType;
 import com.aspectran.core.util.StringUtils;
-import com.aspectran.core.util.apon.GenericParameters;
+import com.aspectran.core.util.apon.VariableParameters;
 import com.aspectran.core.util.apon.ParameterDefine;
 import com.aspectran.core.util.apon.Parameters;
 
@@ -146,7 +146,7 @@ public class RootAponAssembler {
 		
 		Map<String, String> typeAliases = assistant.getTypeAliases();
 		if(!typeAliases.isEmpty()) {
-			GenericParameters typeAliasParameters = aspectranParameters.newParameters(AspectranParameters.typeAlias);
+			VariableParameters typeAliasParameters = aspectranParameters.newParameters(AspectranParameters.typeAlias);
 			for(Map.Entry<String, String> entry : typeAliases.entrySet()) {
 				typeAliasParameters.putValue(entry.getKey(), entry.getValue());
 			}
@@ -218,7 +218,7 @@ public class RootAponAssembler {
 		if(settingsAdviceRule != null) {
 			Map<String, Object> settings = settingsAdviceRule.getSettings();
 			if(settings != null) {
-				GenericParameters settingsParameters = aspectParameters.newParameters(AspectParameters.settings);
+				VariableParameters settingsParameters = aspectParameters.newParameters(AspectParameters.settings);
 				for(Map.Entry<String, Object> entry : settings.entrySet()) {
 					settingsParameters.putValue(entry.getKey(), entry.getValue());
 				}
