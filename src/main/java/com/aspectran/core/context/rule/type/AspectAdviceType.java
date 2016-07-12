@@ -50,10 +50,10 @@ public enum AspectAdviceType {
 	/**
 	 * Returns a <code>AspectAdviceType</code> with a value represented by the specified String.
 	 *
-	 * @param alias the specified String
+	 * @param alias the aspect adive type as a String
 	 * @return the aspect advice type
 	 */
-	public static AspectAdviceType lookup(String alias) {
+	public static AspectAdviceType resolve(String alias) {
 		for(AspectAdviceType type : values()) {
 			if(type.alias.equals(alias))
 				return type;

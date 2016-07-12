@@ -110,7 +110,7 @@ class BeanNodeletAdder implements NodeletAdder {
         });
 		parser.addNodelet(xpath, "/bean/features/scope", (node, attributes, text) -> {
             if(StringUtils.hasText(text)) {
-                ScopeType scopeType = ScopeType.lookup(text.trim());
+                ScopeType scopeType = ScopeType.resolve(text.trim());
                 if(scopeType == null)
                     throw new IllegalArgumentException("No scope-type registered for scope '" + text + "'.");
 

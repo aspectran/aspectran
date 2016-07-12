@@ -174,7 +174,7 @@ public class RootAponDisassembler {
 		for(String name : defaultSettingsParameters.getParameterNameSet()) {
 			DefaultSettingType settingType = null;
 			if(name != null) {
-				settingType = DefaultSettingType.lookup(name);
+				settingType = DefaultSettingType.resolve(name);
 				if(settingType == null)
 					throw new IllegalArgumentException("Unknown default setting name '" + name + "'.");
 			}

@@ -39,7 +39,7 @@ public class HttpServletRequestAdapter extends AbstractRequestAdapter {
 	 */
 	public HttpServletRequestAdapter(HttpServletRequest request) {
 		super(request, request.getParameterMap());
-		setRequestMethod(MethodType.lookup(request.getMethod()));
+		setRequestMethod(MethodType.resolve(request.getMethod()));
 	}
 
 	@Override

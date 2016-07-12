@@ -763,7 +763,7 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceInspectable 
 		if(className == null && scanPath == null)
 			throw new IllegalArgumentException("Bean class must not be null.");
 
-		ScopeType scopeType = ScopeType.lookup(scope);
+		ScopeType scopeType = ScopeType.resolve(scope);
 
 		if(scope != null && scopeType == null)
 			throw new IllegalArgumentException("No scope type registered for '" + scope + "'.");
@@ -802,7 +802,7 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceInspectable 
 			Boolean lazyInit,
 			Boolean important) {
 		
-		ScopeType scopeType = ScopeType.lookup(scope);
+		ScopeType scopeType = ScopeType.resolve(scope);
 		
 		if(scope != null && scopeType == null)
 			throw new IllegalArgumentException("No scope type registered for '" + scope + "'.");

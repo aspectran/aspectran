@@ -41,10 +41,10 @@ public enum ResponseType {
 	/**
 	 * Returns a <code>ResponseType</code> with a value represented by the specified String.
 	 *
-	 * @param alias the specified String
+	 * @param alias the response type as a String
 	 * @return the response type
 	 */
-	public static ResponseType lookup(String alias) {
+	public static ResponseType resolve(String alias) {
 		for(ResponseType type : values()) {
 			if(type.alias.equals(alias))
 				return type;

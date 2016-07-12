@@ -183,7 +183,7 @@ public class Tokenizer {
 					getter = getter2;
 				}
 			} else if(value != null) {
-				directiveType = TokenDirectiveType.lookup(name);
+				directiveType = TokenDirectiveType.resolve(name);
 				if(directiveType != null) {
 					offset = value.indexOf(Token.GETTER_SEPARATOR);
 					if(offset > -1) {

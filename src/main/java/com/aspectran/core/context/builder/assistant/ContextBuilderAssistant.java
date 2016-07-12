@@ -611,7 +611,7 @@ public class ContextBuilderAssistant {
 	}
 
 	public Importer newImporter(String file, String resource, String url, String fileType, String profile) {
-		ImportFileType importFileType = ImportFileType.lookup(fileType);
+		ImportFileType importFileType = ImportFileType.resolve(fileType);
 		Importer importer = null;
 
 		if(StringUtils.hasText(file)) {

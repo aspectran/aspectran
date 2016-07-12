@@ -37,10 +37,10 @@ public enum AspectTargetType {
 	/**
 	 * Returns a <code>AspectTargetType</code> with a value represented by the specified String.
 	 *
-	 * @param alias the specified String
+	 * @param alias the aspect target type as a String
 	 * @return the aspect target type
 	 */
-	public static AspectTargetType lookup(String alias) {
+	public static AspectTargetType resolve(String alias) {
 		for(AspectTargetType type : values()) {
 			if(type.alias.equals(alias))
 				return type;

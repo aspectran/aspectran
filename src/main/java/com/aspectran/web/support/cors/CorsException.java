@@ -26,7 +26,7 @@ import com.aspectran.core.context.AspectranCheckedException;
  * recommendation</a> from 2013-01-29.
  *
  * @author Juho Jeong
- * @since 2016.07.07.
+ * @since 2.3.0
  */
 public class CorsException extends AspectranCheckedException {
 

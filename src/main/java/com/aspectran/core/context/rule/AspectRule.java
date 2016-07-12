@@ -227,7 +227,7 @@ public class AspectRule implements BeanReferenceInspectable {
 		AspectTargetType aspectTargetType;
 		
 		if(useFor != null) {
-			aspectTargetType = AspectTargetType.lookup(useFor);
+			aspectTargetType = AspectTargetType.resolve(useFor);
 			if(aspectTargetType == null)
 				throw new IllegalArgumentException("No aspect target type registered for '" + useFor + "'.");
 		} else {
@@ -245,7 +245,7 @@ public class AspectRule implements BeanReferenceInspectable {
 		JoinpointScopeType joinpointScope;
 		
 		if(scope != null) {
-			joinpointScope = JoinpointScopeType.lookup(scope);
+			joinpointScope = JoinpointScopeType.resolve(scope);
 			if(joinpointScope == null)
 				throw new IllegalArgumentException("No joinpoint scope type registered for '" + scope + "'.");
 		} else {

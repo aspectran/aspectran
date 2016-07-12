@@ -43,10 +43,10 @@ public enum ItemType {
 	/**
 	 * Returns a <code>ItemType</code> with a value represented by the specified String.
 	 *
-	 * @param alias the specified String
+	 * @param alias the item type as a String
 	 * @return the import type
 	 */
-	public static ItemType lookup(String alias) {
+	public static ItemType resolve(String alias) {
 		for(ItemType type : values()) {
 			if(type.alias.equals(alias))
 				return type;

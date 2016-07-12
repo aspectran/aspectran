@@ -42,10 +42,10 @@ public enum TransformType {
 	/**
 	 * Returns a <code>TransformType</code> with a value represented by the specified String.
 	 *
-	 * @param alias the specified String
+	 * @param alias the transform type as a String
 	 * @return the transform type
 	 */
-	public static TransformType lookup(String alias) {
+	public static TransformType resolve(String alias) {
 		for(TransformType type : values()) {
 			if(type.alias.equals(alias))
 				return type;

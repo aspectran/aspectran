@@ -123,7 +123,7 @@ public class GenericActivity extends AbstractActivity {
 
 	@Override
 	public void prepare(String transletName, String requestMethod) {
-		prepare(transletName, MethodType.lookup(requestMethod));
+		prepare(transletName, MethodType.resolve(requestMethod));
 	}
 
 	@Override

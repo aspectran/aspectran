@@ -163,7 +163,7 @@ public class PointcutRule {
 			}
 			
 			if(pointcutType == null) {
-				pointcutType = PointcutType.lookup(type);
+				pointcutType = PointcutType.resolve(type);
 				
 				if(pointcutType != PointcutType.SIMPLE_TRIGGER && pointcutType != PointcutType.CRON_TRIGGER)
 					throw new IllegalArgumentException("Unknown pointcut-type '" + type + "'. Scheduler's pointcut-type must be 'simpleTrigger' or 'cronTrigger'.");
@@ -190,7 +190,7 @@ public class PointcutRule {
 					type = pointcutParameters.getString(PointcutParameters.type);
 				
 				if(type != null) {
-					pointcutType = PointcutType.lookup(type);
+					pointcutType = PointcutType.resolve(type);
 					if(pointcutType == null)
 						throw new IllegalArgumentException("Unknown pointcut-type '" + type + "'. Translet's pointcut-type must be 'wildcard' or 'regexp'.");
 				}

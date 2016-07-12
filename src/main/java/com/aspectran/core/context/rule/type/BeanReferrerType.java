@@ -42,10 +42,10 @@ public enum BeanReferrerType {
 	/**
 	 * Returns a <code>BeanReferableRuleType</code> with a value represented by the specified String.
 	 *
-	 * @param alias the specified String
+	 * @param alias the bean referrer type as a String
 	 * @return the bean referable rule type
 	 */
-	public static BeanReferrerType lookup(String alias) {
+	public static BeanReferrerType resolve(String alias) {
 		for(BeanReferrerType type : values()) {
 			if(type.alias.equals(alias))
 				return type;

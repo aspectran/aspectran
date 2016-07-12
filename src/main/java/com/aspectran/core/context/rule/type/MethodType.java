@@ -15,6 +15,8 @@
  */
 package com.aspectran.core.context.rule.type;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.StringTokenizer;
 
 /**
@@ -66,7 +68,15 @@ public enum MethodType {
 	TRACE;
 
 	private static final int MAX_COUNT = 9;
+	
+	private static final Map<String, MethodType> mappings = new HashMap<>(MAX_COUNT);
 
+	static {
+		for(MethodType type : values()) {
+			mappings.put(type.name(), type);
+		}
+	}
+	
 	public boolean containsTo(MethodType[] types) {
 		for(MethodType type : types) {
 			if(equals(type) || ALL.equals(type))
@@ -78,17 +88,11 @@ public enum MethodType {
 	/**
 	 * Returns a <code>MethodType</code> with a value represented by the specified String.
 	 *
-	 * @param alias the specified String
+	 * @param methodType the method type as a String
 	 * @return the method type
 	 */
-	public static MethodType lookup(String alias) {
-		if(alias != null) {
-			for(MethodType type : values()) {
-				if(type.name().equals(alias.toUpperCase()))
-					return type;
-			}
-		}
-		return null;
+	public static MethodType resolve(String methodType) {
+		return (methodType != null ? mappings.get(methodType) : null);
 	}
 
 
@@ -100,7 +104,7 @@ public enum MethodType {
 		while(st.hasMoreTokens()) {
 			String token = st.nextToken();
 			if(!token.isEmpty()) {
-				MethodType type = lookup(token);
+				MethodType type = resolve(token);
 				if(type != null) {
 					int ord = type.ordinal();
 					if(ord == 0) {

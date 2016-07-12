@@ -40,10 +40,10 @@ public enum ImporterType {
 	/**
 	 * Returns a <code>ImporterType</code> with a value represented by the specified String.
 	 *
-	 * @param alias the specified String
+	 * @param alias the importer type as a String
 	 * @return the importer type
 	 */
-	public static ImporterType lookup(String alias) {
+	public static ImporterType resolve(String alias) {
 		for(ImporterType type : values()) {
 			if(type.alias.equals(alias))
 				return type;

@@ -39,10 +39,10 @@ public enum PointcutType {
 	/**
 	 * Returns a <code>PointcutType</code> with a value represented by the specified String.
 	 *
-	 * @param alias the specified String
+	 * @param alias the pointcut type as a String
 	 * @return the pointcut type
 	 */
-	public static PointcutType lookup(String alias) {
+	public static PointcutType resolve(String alias) {
 		for(PointcutType type : values()) {
 			if(type.alias.equals(alias))
 				return type;

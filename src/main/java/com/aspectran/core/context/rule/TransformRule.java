@@ -176,10 +176,10 @@ public class TransformRule extends ActionPossessSupport implements Replicable<Tr
 	}
 	
 	public static TransformRule newInstance(String type, String contentType, String templateId, String characterEncoding, Boolean defaultResponse, Boolean pretty) {
-		TransformType transformType = TransformType.lookup(type);
+		TransformType transformType = TransformType.resolve(type);
 
 		if(transformType == null && contentType != null) {
-			transformType = TransformType.lookup(ContentType.lookup(contentType));
+			transformType = TransformType.lookup(ContentType.resolve(contentType));
 		}
 		
 		if(transformType == null)
@@ -200,7 +200,7 @@ public class TransformRule extends ActionPossessSupport implements Replicable<Tr
 
 	public static TransformRule newInstance(TransformType transformType, String contentType, String templateId, String characterEncoding, Boolean defaultResponse, Boolean pretty) {
 		if(transformType == null && contentType != null) {
-			transformType = TransformType.lookup(ContentType.lookup(contentType));
+			transformType = TransformType.lookup(ContentType.resolve(contentType));
 		}
 
 		if(transformType == null)

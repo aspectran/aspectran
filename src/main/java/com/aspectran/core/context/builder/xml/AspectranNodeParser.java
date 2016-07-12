@@ -119,7 +119,7 @@ public class AspectranNodeParser {
                 for(String name : parameters.getParameterNameSet()) {
                     DefaultSettingType settingType = null;
                     if(name != null) {
-                        settingType = DefaultSettingType.lookup(name);
+                        settingType = DefaultSettingType.resolve(name);
                         if(settingType == null)
                             throw new IllegalArgumentException("Unknown setting name '" + name + "'.");
                     }
@@ -135,7 +135,7 @@ public class AspectranNodeParser {
             DefaultSettingType settingType = null;
 
             if(name != null) {
-                settingType = DefaultSettingType.lookup(name);
+                settingType = DefaultSettingType.resolve(name);
                 if(settingType == null)
                     throw new IllegalArgumentException("Unknown setting name '" + name + "'.");
             }

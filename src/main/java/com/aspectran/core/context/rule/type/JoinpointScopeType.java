@@ -41,10 +41,10 @@ public enum JoinpointScopeType {
 	/**
 	 * Returns a <code>JoinpointScopeType</code> with a value represented by the specified String.
 	 *
-	 * @param alias the specified String
+	 * @param alias the joinpoint scope type as a String
 	 * @return the import type
 	 */
-	public static JoinpointScopeType lookup(String alias) {
+	public static JoinpointScopeType resolve(String alias) {
 		for(JoinpointScopeType type : values()) {
 			if(type.alias.equals(alias))
 				return type;
