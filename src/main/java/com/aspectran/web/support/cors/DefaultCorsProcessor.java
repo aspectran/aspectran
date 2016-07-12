@@ -40,19 +40,14 @@ public class DefaultCorsProcessor extends AbstractCorsProcessor {
 	private static final Log log = LogFactory.getLog(DefaultCorsProcessor.class);
 	
 	/**
-	 * Wildcard representing <em>all</em> origins.
-	 */
-	public static final String ALL = "*";
-	
-	/**
 	 * ""CORS.HTTP_STATUS_CODE"" attribute name.
 	 */
 	private static final String CORS_HTTP_STATUS_CODE = "CORS.HTTP_STATUS_CODE";
 
 	/**
-	 * "CORS.MESSAGE" attribute name.
+	 * "CORS.HTTP_STATUS_TEXT" attribute name.
 	 */
-	private static final String CORS_MESSAGE = "CORS.MESSAGE";
+	private static final String CORS_HTTP_STATUS_TEXT = "CORS.HTTP_STATUS_TEXT";
 
 	@Override
 	public void processActualRequest(Translet translet) throws CorsException, IOException {
@@ -179,7 +174,7 @@ public class DefaultCorsProcessor extends AbstractCorsProcessor {
 		res.setStatus(ce.getHttpStatusCode());
 
 		translet.setAttribute(CORS_HTTP_STATUS_CODE, ce.getHttpStatusCode());
-		translet.setAttribute(CORS_MESSAGE, ce.getMessage());
+		translet.setAttribute(CORS_HTTP_STATUS_TEXT, ce.getMessage());
 		
 		throw ce;
 	}

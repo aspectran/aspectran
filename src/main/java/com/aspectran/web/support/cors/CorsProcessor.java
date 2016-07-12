@@ -20,23 +20,25 @@ import java.io.IOException;
 import com.aspectran.core.activity.Translet;
 
 /**
- * Handles incoming cross-origin (CORS) requests.
+ * Process an incoming cross-origin (CORS) requests.
  * Encapsulates the CORS processing logic as specified by the
  * <a href="http://www.w3.org/TR/2013/CR-cors-20130129/">W3C candidate
  * recommendation</a> from 2013-01-29.
  *
  * @author Juho Jeong
  * @since 2.3.0
+ * @see <a href="http://www.w3.org/TR/cors/">CORS W3C recommandation</a>
  */
 public interface CorsProcessor {
-	
+
 	/**
 	 * Process a simple or actual CORS request.
 	 *
 	 * @param translet the translet
 	 * @throws CorsException if the request is invalid or denied.
+	 * @throws IOException in case of I/O errors
 	 */
-	public void processActualRequest(Translet translet) throws CorsException, IOException;
+	void processActualRequest(Translet translet) throws CorsException, IOException;
 
 	/**
 	 * Process a preflight CORS request.
@@ -46,15 +48,16 @@ public interface CorsProcessor {
 	 *
 	 * @param translet the translet
 	 * @throws CorsException if the request is invalid or denied.
+	 * @throws IOException in case of I/O errors
 	 */
-	public void processPreflightRequest(Translet translet) throws CorsException, IOException;
+	void processPreflightRequest(Translet translet) throws CorsException, IOException;
 
 	/**
 	 * Sends an error response to the client using the specified status.
-	 * 
+	 *
 	 * @param translet the translet
-	 * @throws IOException If an input or output exception occurs
+	 * @throws IOException in case of I/O errors
 	 */
-	public void sendError(Translet translet) throws IOException;
-	
+	void sendError(Translet translet) throws IOException;
+
 }

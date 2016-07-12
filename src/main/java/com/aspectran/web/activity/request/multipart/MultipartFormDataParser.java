@@ -43,14 +43,14 @@ import com.aspectran.core.util.logging.LogFactory;
  * Multi-part form data parser.
  */
 public class MultipartFormDataParser {
-	
+
 	private static final Log log = LogFactory.getLog(MultipartFormDataParser.class);
 
 	/** The constant DEFAULT_MAX_REQUEST_SIZE. */
-	public static final long DEFAULT_MAX_REQUEST_SIZE = 250 * 1024 * 1024;
+	private static final long DEFAULT_MAX_REQUEST_SIZE = 250 * 1024 * 1024;
 
 	/** The constant DEFAULT_SIZE_THRESHOLD. */
-	public static final int DEFAULT_SIZE_THRESHOLD = 256 * 1024;
+	private static final int DEFAULT_SIZE_THRESHOLD = 256 * 1024;
 
 	private String temporaryFilePath;
 	
@@ -67,7 +67,7 @@ public class MultipartFormDataParser {
 	}
 
 	/**
-	 * Returns directory path used for temporary files.
+	 * Returns the directory path used for temporary files.
 	 *
 	 * @return the directory path used for temporary files
 	 */
@@ -103,7 +103,7 @@ public class MultipartFormDataParser {
 	}
 
 	/**
-	 * Gets allowed file extensions.
+	 * Gets the allowed file extensions.
 	 *
 	 * @return the allowed file extensions
 	 */
@@ -112,7 +112,7 @@ public class MultipartFormDataParser {
 	}
 
 	/**
-	 * Sets allowed file extensions.
+	 * Sets the allowed file extensions.
 	 *
 	 * @param allowedFileExtensions the allowed file extensions
 	 */
@@ -121,7 +121,7 @@ public class MultipartFormDataParser {
 	}
 
 	/**
-	 * Gets denied file extensions.
+	 * Gets the denied file extensions.
 	 *
 	 * @return the denied file extensions
 	 */
@@ -130,7 +130,7 @@ public class MultipartFormDataParser {
 	}
 
 	/**
-	 * Sets denied file extensions.
+	 * Sets the denied file extensions.
 	 *
 	 * @param deniedFileExtensions the denied file extensions
 	 */
@@ -269,7 +269,7 @@ public class MultipartFormDataParser {
 	/**
 	 * Creates a RequestContext needed by Jakarta Commons Upload.
 	 * 
-	 * @param req the request.
+	 * @param req the HTTP request.
 	 * @return a new request context.
 	 */
 	private RequestContext createRequestContext(final HttpServletRequest req) {

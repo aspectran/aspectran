@@ -125,30 +125,32 @@ public class WebActivity extends CoreActivity {
 			throw new RequestMethodNotAllowedException(allowedMethod);
 		}
 
-		parseMultipartFormData();
+		parseFormData();
         parseDeclaredAttributes();
 	}
 	
-	private void parseMultipartFormData() {
-		String method = request.getMethod();
+	private void parseFormData() {
 		String contentType = request.getContentType();
-		
-		if(MethodType.POST.toString().equals(method)
-				&& contentType != null
-				&& contentType.startsWith("multipart/form-data")) {
 
-			String multipartFormDataParser = getRequestSetting(MULTIPART_FORM_DATA_PARSER_SETTING_NAME);
-			if(multipartFormDataParser == null) {
-				throw new MultipartRequestException("The settings name 'multipartFormDataParser' has not been specified in the default request rule.");
+		if(contentType != null) {
+			String method = request.getMethod();
+
+			if("POST".equals(method) && contentType.startsWith("multipart/form-data")) {
+				String multipartFormDataParser = getRequestSetting(MULTIPART_FORM_DATA_PARSER_SETTING_NAME);
+				if(multipartFormDataParser == null) {
+					throw new MultipartRequestException("The settings name 'multipartFormDataParser' has not been specified in the default request rule.");
+				}
+
+				MultipartFormDataParser parser = getBean(multipartFormDataParser);
+				if(parser == null) {
+					throw new MultipartRequestException("No bean named '" + multipartFormDataParser + "' is defined.");
+				}
+
+				parser.parse(getRequestAdapter());
+			} else if(("PUT".equals(method) || "PATCH".equals(method)) && "application/x-www-form-urlencoded".equals(contentType)) {
+				//TODO HttpPutFormDataParser
 			}
-
-			MultipartFormDataParser parser = getBean(multipartFormDataParser);
-			if(parser == null) {
-				throw new MultipartRequestException("No bean named '" + multipartFormDataParser + "' is defined.");
-			}
-
-			parser.parse(getRequestAdapter());
-        }
+		}
 	}
 	
 	/**

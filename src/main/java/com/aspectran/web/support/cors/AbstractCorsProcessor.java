@@ -25,7 +25,7 @@ import com.aspectran.core.util.StringUtils;
 import com.aspectran.web.support.http.HttpHeaders;
 
 /**
- * Handles incoming cross-origin (CORS) requests.
+ * Process an incoming cross-origin (CORS) requests.
  * Encapsulates the CORS processing logic as specified by the
  * <a href="http://www.w3.org/TR/2013/CR-cors-20130129/">W3C candidate
  * recommendation</a> from 2013-01-29.
@@ -34,7 +34,12 @@ import com.aspectran.web.support.http.HttpHeaders;
  * @since 2.3.0
  */
 public abstract class AbstractCorsProcessor implements CorsProcessor {
-	
+
+	/**
+	 * Wildcard representing <em>all</em> origins, methods, or headers.
+	 */
+	static final String ALL = "*";
+
 	/**
 	 * Origins that the CORS filter must allow. Requests from origins not
 	 * included here must be refused with a HTTP 403 "Forbidden" response.
@@ -149,7 +154,7 @@ public abstract class AbstractCorsProcessor implements CorsProcessor {
 	
 	public void setAllowedMethods(Set<String> allowedMethods) {
 		if(allowedMethods != null && !allowedMethods.isEmpty()) {
-			boolean allowAnyMethod = allowedMethods.contains("*");
+			boolean allowAnyMethod = allowedMethods.contains(ALL);
 			if(allowAnyMethod) {
 				this.allowedMethods = null;
 				this.allowedMethodsString = null;
@@ -191,7 +196,7 @@ public abstract class AbstractCorsProcessor implements CorsProcessor {
 
 	public void setAllowedHeaders(Set<String> allowedHeaders) {
 		if(allowedHeaders != null && !allowedHeaders.isEmpty()) {
-			boolean allowAnyHeader = allowedHeaders.contains("*");
+			boolean allowAnyHeader = allowedHeaders.contains(ALL);
 			if(allowAnyHeader) {
 				this.allowedHeaders = null;
 				this.allowedHeadersString = null;
@@ -233,7 +238,7 @@ public abstract class AbstractCorsProcessor implements CorsProcessor {
 	
 	public void setExposedHeaders(Set<String> exposedHeaders) {
 		if(exposedHeaders != null && !exposedHeaders.isEmpty()) {
-			boolean allowAnyHeader = exposedHeaders.contains("*");
+			boolean allowAnyHeader = exposedHeaders.contains(ALL);
 			if(allowAnyHeader) {
 				this.exposedHeaders = null;
 				this.exposedHeadersString = null;

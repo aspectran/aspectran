@@ -394,14 +394,14 @@ public interface Translet extends BeanRegistry, MessageSource {
 	void forward(ForwardResponseRule forwardResponseRule);
 
 	/**
-	 * Forward to specified translet immediately.
+	 * Forward to the specified translet immediately.
 	 *
 	 * @param transletName the translet name of the target to be forwarded
 	 */
 	void forward(String transletName);
 
 	/**
-	 * Forward to specified translet.
+	 * Forward to the specified translet.
 	 *
 	 * @param transletName the translet name
 	 * @param immediately whether forwarding immediately

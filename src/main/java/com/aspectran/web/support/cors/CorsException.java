@@ -20,7 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.aspectran.core.context.AspectranCheckedException;
 
 /**
- * Handles incoming cross-origin (CORS) requests.
+ * Process an incoming cross-origin (CORS) requests.
  * Encapsulates the CORS processing logic as specified by the
  * <a href="http://www.w3.org/TR/2013/CR-cors-20130129/">W3C candidate
  * recommendation</a> from 2013-01-29.
