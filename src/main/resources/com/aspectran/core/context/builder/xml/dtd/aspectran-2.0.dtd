@@ -70,6 +70,13 @@
   disabled (true | false) #IMPLIED
 >
 
+<!ELEMENT exception (description?, action?, responseByContentType*)>
+
+<!ELEMENT responseByContentType (transform? | dispatch? | redirect? | forward?)*>
+<!ATTLIST responseByContentType
+  exceptionType CDATA #IMPLIED
+>
+
 <!ELEMENT bean (description?, filter?, features?, constructor?, property?)>
 <!ATTLIST bean
   id CDATA #IMPLIED
@@ -174,12 +181,6 @@
 <!ATTLIST response
   name CDATA #IMPLIED
   characterEncoding CDATA #IMPLIED
->
-<!ELEMENT exception (responseByContentType*)>
-
-<!ELEMENT responseByContentType (transform? | dispatch? | redirect? | forward?)*>
-<!ATTLIST responseByContentType
-  exceptionType CDATA #IMPLIED
 >
 
 <!ELEMENT transform ((echo? | action? | include?)*, template?)>

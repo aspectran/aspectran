@@ -47,7 +47,7 @@ import com.aspectran.web.adapter.HttpSessionAdapter;
 /**
  * The Class WebActivity.
  *
- * @since 2008. 04. 28
+ * @since 2008. 4. 28.
  */
 public class WebActivity extends CoreActivity {
 
@@ -119,42 +119,50 @@ public class WebActivity extends CoreActivity {
 	@Override
 	protected void request() {
 		String method = request.getMethod();
+		String contentType = request.getContentType();
+		
 		MethodType allowedMethod = getRequestRule().getAllowedMethod();
 		
 		if(allowedMethod != null && !allowedMethod.toString().equals(method)) {
 			throw new RequestMethodNotAllowedException(allowedMethod);
 		}
 
-		parseFormData();
+		if(contentType != null) {
+			if("POST".equals(method) && contentType.startsWith("multipart/form-data")) {
+				parseMultipartFormData();
+			} else if(("PUT".equals(method) || "PATCH".equals(method)) && "application/x-www-form-urlencoded".equals(contentType)) {
+				parseHttpPutFormContent();
+			}
+		}
+		
         parseDeclaredAttributes();
 	}
 	
-	private void parseFormData() {
-		String contentType = request.getContentType();
-
-		if(contentType != null) {
-			String method = request.getMethod();
-
-			if("POST".equals(method) && contentType.startsWith("multipart/form-data")) {
-				String multipartFormDataParser = getRequestSetting(MULTIPART_FORM_DATA_PARSER_SETTING_NAME);
-				if(multipartFormDataParser == null) {
-					throw new MultipartRequestException("The settings name 'multipartFormDataParser' has not been specified in the default request rule.");
-				}
-
-				MultipartFormDataParser parser = getBean(multipartFormDataParser);
-				if(parser == null) {
-					throw new MultipartRequestException("No bean named '" + multipartFormDataParser + "' is defined.");
-				}
-
-				parser.parse(getRequestAdapter());
-			} else if(("PUT".equals(method) || "PATCH".equals(method)) && "application/x-www-form-urlencoded".equals(contentType)) {
-				//TODO HttpPutFormDataParser
-			}
+	/**
+	 * Parse the multipart form data.
+	 */
+	private void parseMultipartFormData() {
+		String multipartFormDataParser = getRequestSetting(MULTIPART_FORM_DATA_PARSER_SETTING_NAME);
+		if(multipartFormDataParser == null) {
+			throw new MultipartRequestException("The settings name 'multipartFormDataParser' has not been specified in the default request rule.");
 		}
+
+		MultipartFormDataParser parser = getBean(multipartFormDataParser);
+		if(parser == null) {
+			throw new MultipartRequestException("No bean named '" + multipartFormDataParser + "' is defined.");
+		}
+
+		parser.parse(getRequestAdapter());
+	}
+
+	/**
+	 * Parse the HTTP PUT requests.
+	 */
+	private void parseHttpPutFormContent() {
 	}
 	
 	/**
-	 * Parses the declared attributes.
+	 * Parse the declared attributes.
 	 */
 	private void parseDeclaredAttributes() {
 		ItemRuleMap attributeItemRuleMap = getRequestRule().getAttributeItemRuleMap();
