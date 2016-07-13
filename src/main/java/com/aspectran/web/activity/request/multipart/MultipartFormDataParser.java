@@ -19,8 +19,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -251,7 +251,7 @@ public class MultipartFormDataParser {
 	private void putParameter(String fieldName, String value, Map<String, List<String>> parameterListMap) {
 		List<String> list = parameterListMap.get(fieldName);
 		if(list == null) {
-			list = new ArrayList<String>();
+			list = new LinkedList<String>();
 			parameterListMap.put(fieldName, list);
 		}
 		list.add(value);
@@ -260,7 +260,7 @@ public class MultipartFormDataParser {
 	private void putFileParameter(String fieldName, FileParameter fileParameter, Map<String, List<FileParameter>> parameterListMap) {
 		List<FileParameter> list = parameterListMap.get(fieldName);
 		if(list == null) {
-			list = new ArrayList<FileParameter>();
+			list = new LinkedList<FileParameter>();
 			parameterListMap.put(fieldName, list);
 		}
 		list.add(fileParameter);

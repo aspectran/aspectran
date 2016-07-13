@@ -85,6 +85,10 @@ public enum MethodType {
 		return false;
 	}
 
+	public boolean matches(String type) {
+		return name().equals(type);
+	}
+
 	/**
 	 * Returns a <code>MethodType</code> with a value represented by the specified String.
 	 *
@@ -94,7 +98,6 @@ public enum MethodType {
 	public static MethodType resolve(String methodType) {
 		return (methodType != null ? mappings.get(methodType) : null);
 	}
-
 
 	public static MethodType[] parse(String value) {
 		MethodType[] types = new MethodType[MAX_COUNT];

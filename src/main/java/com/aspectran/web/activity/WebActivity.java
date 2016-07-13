@@ -39,10 +39,12 @@ import com.aspectran.core.context.rule.ResponseRule;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.web.activity.request.multipart.MultipartFormDataParser;
 import com.aspectran.web.activity.request.multipart.MultipartRequestException;
+import com.aspectran.web.activity.request.parser.HttpPutFormContentParser;
 import com.aspectran.web.adapter.GZipHttpServletResponseAdapter;
 import com.aspectran.web.adapter.HttpServletRequestAdapter;
 import com.aspectran.web.adapter.HttpServletResponseAdapter;
 import com.aspectran.web.adapter.HttpSessionAdapter;
+import com.aspectran.web.support.http.HttpHeaders;
 
 /**
  * The Class WebActivity.
@@ -52,6 +54,10 @@ import com.aspectran.web.adapter.HttpSessionAdapter;
 public class WebActivity extends CoreActivity {
 
 	private static final String MULTIPART_FORM_DATA_PARSER_SETTING_NAME = "multipartFormDataParser";
+
+	public static final String MULTIPART_FORM_DATA = "multipart/form-data";
+
+	public static final String APPLICATION_FORM_URLENCODED = "application/x-www-form-urlencoded";
 
 	private HttpServletRequest request;
 	
@@ -94,7 +100,7 @@ public class WebActivity extends CoreActivity {
 			}
 
 			String contentEncoding = getResponseSetting(ResponseRule.CONTENT_ENCODING_SETTING_NAME);
-			String acceptEncoding = request.getHeader("Accept-Encoding");
+			String acceptEncoding = request.getHeader(HttpHeaders.ACCEPT_ENCODING);
 			if(contentEncoding != null && acceptEncoding != null && acceptEncoding.contains(contentEncoding)) {
 				ResponseAdapter responseAdapter = new GZipHttpServletResponseAdapter(response, this);
 				setResponseAdapter(responseAdapter);
@@ -120,17 +126,18 @@ public class WebActivity extends CoreActivity {
 	protected void request() {
 		String method = request.getMethod();
 		String contentType = request.getContentType();
-		
+
+		MethodType requestMethod = getRequestAdapter().getRequestMethod();
 		MethodType allowedMethod = getRequestRule().getAllowedMethod();
-		
-		if(allowedMethod != null && !allowedMethod.toString().equals(method)) {
+		if(allowedMethod != null && !allowedMethod.equals(requestMethod)) {
 			throw new RequestMethodNotAllowedException(allowedMethod);
 		}
 
 		if(contentType != null) {
-			if("POST".equals(method) && contentType.startsWith("multipart/form-data")) {
+			if(MethodType.POST.equals(requestMethod) && contentType.startsWith(MULTIPART_FORM_DATA)) {
 				parseMultipartFormData();
-			} else if(("PUT".equals(method) || "PATCH".equals(method)) && "application/x-www-form-urlencoded".equals(contentType)) {
+			} else if((MethodType.PUT.equals(requestMethod) || MethodType.PATCH.equals(requestMethod)) &&
+					contentType.startsWith(APPLICATION_FORM_URLENCODED)) {
 				parseHttpPutFormContent();
 			}
 		}
@@ -159,6 +166,7 @@ public class WebActivity extends CoreActivity {
 	 * Parse the HTTP PUT requests.
 	 */
 	private void parseHttpPutFormContent() {
+		HttpPutFormContentParser.parse(getRequestAdapter());
 	}
 	
 	/**
