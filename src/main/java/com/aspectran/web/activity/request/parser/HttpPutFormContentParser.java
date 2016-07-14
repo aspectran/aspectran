@@ -92,11 +92,11 @@ public class HttpPutFormContentParser {
 		return out.toString();
 	}
 
-	private static void putParameter(String fieldName, String value, Map<String, List<String>> parameterListMap) {
-		List<String> list = parameterListMap.get(fieldName);
+	private static void putParameter(String name, String value, Map<String, List<String>> parameterListMap) {
+		List<String> list = parameterListMap.get(name);
 		if(list == null) {
 			list = new LinkedList<String>();
-			parameterListMap.put(fieldName, list);
+			parameterListMap.put(name, list);
 		}
 		list.add(value);
 	}

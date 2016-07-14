@@ -124,7 +124,6 @@ public class WebActivity extends CoreActivity {
 
 	@Override
 	protected void request() {
-		String method = request.getMethod();
 		String contentType = request.getContentType();
 
 		MethodType requestMethod = getRequestAdapter().getRequestMethod();
@@ -136,7 +135,9 @@ public class WebActivity extends CoreActivity {
 		if(contentType != null) {
 			if(MethodType.POST.equals(requestMethod) && contentType.startsWith(MULTIPART_FORM_DATA)) {
 				parseMultipartFormData();
-			} else if((MethodType.PUT.equals(requestMethod) || MethodType.PATCH.equals(requestMethod)) &&
+			} else if((MethodType.PUT.equals(requestMethod) ||
+					MethodType.PATCH.equals(requestMethod) ||
+					MethodType.DELETE.equals(requestMethod)) &&
 					contentType.startsWith(APPLICATION_FORM_URLENCODED)) {
 				parseHttpPutFormContent();
 			}

@@ -85,8 +85,6 @@ public class DefaultCorsProcessor extends AbstractCorsProcessor {
 		if(getExposedHeadersString() != null) {
 			res.setHeader(HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS, getExposedHeadersString());
 		}
-		
-		res.flushBuffer();
 	}
 
 	@Override
@@ -145,8 +143,6 @@ public class DefaultCorsProcessor extends AbstractCorsProcessor {
 		if(getMaxAgeSeconds() > 0) {
 			res.addHeader(HttpHeaders.ACCESS_CONTROL_MAX_AGE, Integer.toString(getMaxAgeSeconds()));
 		}
-
-		res.flushBuffer();
 	}
 
 	@Override
@@ -167,7 +163,7 @@ public class DefaultCorsProcessor extends AbstractCorsProcessor {
 	 * 
 	 * @param translet the translet
 	 * @param ce the CORS Exception
-	 * @throws CorsException
+	 * @throws CorsException if the request is denied.
 	 */
 	protected void rejectRequest(Translet translet, CorsException ce) throws CorsException {
 		HttpServletResponse res = translet.getResponseAdaptee();
