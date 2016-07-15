@@ -59,7 +59,7 @@ public enum TransformType {
 	 * @param contentType the content type
 	 * @return the transform type
 	 */
-	public static TransformType lookup(ContentType contentType) {
+	public static TransformType resolve(ContentType contentType) {
 		if(contentType == ContentType.TEXT_PLAIN)
 			return TEXT;
 		else if(contentType == ContentType.TEXT_XML)

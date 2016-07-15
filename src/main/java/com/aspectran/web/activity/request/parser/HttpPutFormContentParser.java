@@ -28,10 +28,11 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import com.aspectran.core.adapter.RequestAdapter;
+import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.util.StringUtils;
 
 /**
- * Support for HTTP request methods like PUT/PATCH.
+ * Support for HTTP request methods like PUT/PATCH/DELETE.
  *
  * <p>The Servlet spec requires form data to be available for HTTP POST but
  * not for HTTP PUT or PATCH requests. This parser intercepts HTTP PUT and PATCH
@@ -42,7 +43,7 @@ import com.aspectran.core.util.StringUtils;
  */
 public class HttpPutFormContentParser {
 
-	private static final Charset DEFAULT_CHARSET = Charset.forName("UTF-8");
+	private static final Charset DEFAULT_CHARSET = Charset.forName(ActivityContext.DEFAULT_ENCODING);
 
 	private static final int BUFFER_SIZE = 4096;
 
