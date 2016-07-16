@@ -61,8 +61,7 @@ public class IncompatibleParameterValueTypeException extends InvalidParameterExc
 	}
 
 	/**
-	 * Constructor to create exception to wrap another exception and pass a
-	 * message.
+	 * Constructor to create exception to wrap another exception and pass a message.
 	 * 
 	 * @param msg The message
 	 * @param cause The real cause of the exception
@@ -79,7 +78,7 @@ public class IncompatibleParameterValueTypeException extends InvalidParameterExc
 			sb.append(" for the specified parameter ").append(parameterValue);
 		sb.append(".");
 		
-		return InvalidParameterException.makeMessage(lineNumber, line, trim, sb.toString());
+		return InvalidParameterException.createMessage(lineNumber, line, trim, sb.toString());
 	}
 	
 }

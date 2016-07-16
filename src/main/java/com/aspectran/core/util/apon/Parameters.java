@@ -42,21 +42,76 @@ public interface Parameters {
 	Parameter getParameter(String name);
 	
 	Parameter getParameter(ParameterDefine parameterDefine);
-	
+
+	/**
+	 * Return the value for the specified parameter,
+	 * or {@code null} if the parameter does not exist.
+	 *
+	 * @param name the parameter name
+	 * @return the value for the specified parameter, or {@code null}
+	 */
 	Object getValue(String name);
 
+	/**
+	 * Return the value for the specified parameter,
+	 * or {@code null} if the parameter does not exist.
+	 *
+	 * @param parameterDefine the parameter definition
+	 * @return the value for the specified parameter, or {@code null}
+	 */
 	Object getValue(ParameterDefine parameterDefine);
-	
+
+	/**
+	 * Put a value of the parameter corresponding to the given name.
+	 *
+	 * @param name the parameter name
+	 * @param value the value of parameter
+	 */
 	void putValue(String name, Object value);
-	
+
+	/**
+	 * Put a value of the parameter corresponding to the given parameter definition.
+	 *
+	 * @param parameterDefine the parameter definition
+	 * @param value the value of parameter
+	 */
 	void putValue(ParameterDefine parameterDefine, Object value);
-	
+
+	/**
+	 * Put a value of the parameter corresponding to the given name.
+	 * The value must not be null.
+	 *
+	 * @param name the parameter name
+	 * @param value the value of parameter
+	 */
 	void putValueNonNull(String name, Object value);
 
+	/**
+	 * Return the value for the specified parameter,
+	 * or {@code null} if the parameter does not exist.
+	 *
+	 * @param parameterDefine the parameter definition
+	 * @param value the value of parameter
+	 */
 	void putValueNonNull(ParameterDefine parameterDefine, Object value);
-	
+
+	/**
+	 * Return the value for the specified parameter,
+	 * or {@code null} if the parameter does not exist.
+	 *
+	 * @param name the parameter name
+	 * @return the value for the specified parameter, or {@code null}
+	 */
 	String getString(String name);
 
+	/**
+	 * Return the value for the specified parameter,
+	 * or default value if the parameter does not exist.
+	 *
+	 * @param name the parameter name
+	 * @param defaultValue the default value
+	 * @return the value for the specified parameter, or {@code null}
+	 */
 	String getString(String name, String defaultValue);
 
 	String[] getStringArray(String name);

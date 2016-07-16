@@ -218,7 +218,6 @@ public class AponWriter extends AponFormat implements Flushable {
 	 * Writes a comment to the character-output stream.
 	 * 
 	 * @param describe the comment to write to a character-output stream.
-	 * 
 	 * @throws IOException An I/O error occurs.
 	 */
 	public void comment(String describe) throws IOException {

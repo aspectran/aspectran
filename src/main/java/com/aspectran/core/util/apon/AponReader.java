@@ -241,7 +241,8 @@ public class AponReader extends AponFormat {
 											Double.parseDouble(value);
 											parameterValueType = ParameterValueType.DOUBLE;
 										} catch(NumberFormatException e4) {
-											throw new InvalidParameterException(lineNumber, line, trim, "Unknown value type. Strings must be enclosed between double quotation marks.");
+											throw new InvalidParameterException(lineNumber, line, trim,
+													"Unknown value type. Strings must be enclosed between double quotation marks.");
 										}
 									}
 								}
@@ -311,11 +312,13 @@ public class AponReader extends AponFormat {
 					sb.append(NEXT_LINE_CHAR);
 				sb.append(line.substring(line.indexOf(TEXT_LINE_START) + 1));
 			} else if(tlen > 0) {
-				throw new InvalidParameterException(lineNumber, line, trim, "The closing round bracket was missing or Each text line is must start with a ';' character.");
+				throw new InvalidParameterException(lineNumber, line, trim,
+						"The closing round bracket was missing or Each text line is must start with a ';' character.");
 			}
 		}
 
-		throw new InvalidParameterException(lineNumber, "", trim, "The end of the text line was reached with no closing round bracket found.");
+		throw new InvalidParameterException(lineNumber, "", trim,
+				"The end of the text line was reached with no closing round bracket found.");
 	}
 	
 	private String unescape(String value, int lineNumber, String line, String trim) {
@@ -325,7 +328,8 @@ public class AponReader extends AponFormat {
 			return value;
 		
 		if(s == null)
-			throw new InvalidParameterException(lineNumber, line, trim, "Invalid escape sequence (valid ones are  \\b  \\t  \\n  \\f  \\r  \\\"  \\\\ )");
+			throw new InvalidParameterException(lineNumber, line, trim,
+					"Invalid escape sequence (valid ones are  \\b  \\t  \\n  \\f  \\r  \\\"  \\\\ )");
 		
 		return s;
 	}

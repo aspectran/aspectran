@@ -19,36 +19,109 @@ import java.util.List;
 
 public interface Parameter {
 
+	/**
+	 * Returns the {@code Parameters} that contains the {@code Parameter}.
+	 *
+	 * @return the {@code Parameters}
+	 */
 	Parameters getContainer();
-	
+
+	/**
+	 * Gets the parameter name.
+	 *
+	 * @return the parameter name
+	 */
 	String getName();
 
+	/**
+	 * Returns the fully qualified parameter name.
+	 *
+	 * @return the qualified name
+	 */
 	String getQualifiedName();
 
+	/**
+	 * Gets the parameter value type.
+	 *
+	 * @return the parameter value type
+	 */
 	ParameterValueType getParameterValueType();
-	
+
+	/**
+	 * Sets the parameter value type.
+	 *
+	 * @param parameterValueType the parameter value type
+	 */
 	void setParameterValueType(ParameterValueType parameterValueType);
 
+	/**
+	 * Returns whether the parameter value is array.
+	 *
+	 * @return {@code true} if the parameter value is array, otherwise {@code false}
+	 */
 	boolean isArray();
 	
 	boolean isBracketed();
-	
+
+	/**
+	 * Returns whether a value was assigned to the parameter value.
+	 *
+	 * @return {@code true} if a value was assigned to the parameter value, otherwise {@code false}
+	 */
 	boolean isAssigned();
 
+	/**
+	 * Gets the size of the array if the value is an array.
+	 *
+	 * @return the size of the array
+	 */
 	int getArraySize();
-	
+
+	/**
+	 * Returns a value as an {@code Object}.
+	 *
+	 * @return an {@code Object}
+	 */
 	Object getValue();
-	
+
+	/**
+	 * Puts the parameter value.
+	 *
+	 * @param value the parameter value
+	 */
 	void putValue(Object value);
-	
+
+	/**
+	 * Clears the parameter value.
+	 */
 	void clearValue();
-	
+
+	/**
+	 * Returns a value as an {@code Object} array.
+	 *
+	 * @return an array of {@code Object}
+	 */
 	Object[] getValues();
 
+	/**
+	 * Returns a value as a {@code List}.
+	 *
+	 * @return a {@code List}
+	 */
 	List<?> getValueList();
 
+	/**
+	 * Returns a value as a {@code String}.
+	 *
+	 * @return a {@code String}
+	 */
 	String getValueAsString();
-	
+
+	/**
+	 * Returns a value as a {@code String} array.
+	 *
+	 * @return a {@code String} array
+	 */
 	String[] getValueAsStringArray();
 
 	List<String> getValueAsStringList();

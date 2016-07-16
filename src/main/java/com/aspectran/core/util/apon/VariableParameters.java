@@ -15,7 +15,9 @@
  */
 package com.aspectran.core.util.apon;
 
-public class VariableParameters extends AbstractParameters implements Parameters {
+import java.io.Serializable;
+
+public class VariableParameters extends AbstractParameters implements Parameters, Serializable {
 
 	public VariableParameters() {
 		super(null);
@@ -40,7 +42,7 @@ public class VariableParameters extends AbstractParameters implements Parameters
 	}
 	
 	private Parameter touchParameterValue(String name, Object value) {
-		Parameter p = parameterValueMap.get(name);
+		Parameter p = getParameterValueMap().get(name);
 		
 		if(p == null && isAddable())
 			p = newParameterValue(name, ParameterValueType.determineType(value));

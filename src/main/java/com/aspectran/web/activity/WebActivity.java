@@ -55,9 +55,9 @@ public class WebActivity extends CoreActivity {
 
 	private static final String MULTIPART_FORM_DATA_PARSER_SETTING_NAME = "multipartFormDataParser";
 
-	public static final String MULTIPART_FORM_DATA = "multipart/form-data";
+	private static final String MULTIPART_FORM_DATA = "multipart/form-data";
 
-	public static final String APPLICATION_FORM_URLENCODED = "application/x-www-form-urlencoded";
+	private static final String APPLICATION_FORM_URLENCODED = "application/x-www-form-urlencoded";
 
 	private HttpServletRequest request;
 	

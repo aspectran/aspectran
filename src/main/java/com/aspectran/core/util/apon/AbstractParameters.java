@@ -26,7 +26,7 @@ import com.aspectran.core.util.ToStringBuilder;
 
 public abstract class AbstractParameters implements Parameters {
 
-	protected Map<String, ParameterValue> parameterValueMap;
+	private Map<String, ParameterValue> parameterValueMap;
 	
 	private Parameter prototype;
 	
@@ -105,8 +105,7 @@ public abstract class AbstractParameters implements Parameters {
 
 	@Override
 	public boolean hasParameter(String name) {
-		Parameter p = parameterValueMap.get(name);
-		return (p != null);
+		return (parameterValueMap.get(name) != null);
 	}
 
 	@Override
@@ -117,8 +116,9 @@ public abstract class AbstractParameters implements Parameters {
 	@Override
 	public Parameter getParameter(String name) {
 		Parameter p = parameterValueMap.get(name);
-		if(!addable && p == null)
+		if(!addable && p == null) {
 			throw new UnknownParameterException(name, this);
+		}
 		return p;
 	}
 
@@ -130,9 +130,7 @@ public abstract class AbstractParameters implements Parameters {
 	@Override
 	public Object getValue(String name) {
 		Parameter p = getParameter(name);
-		if(p == null)
-			return null;
-		return p.getValue();
+		return (p != null ? p.getValue() : null);
 	}
 
 	@Override
@@ -171,17 +169,13 @@ public abstract class AbstractParameters implements Parameters {
 	@Override
 	public String getString(String name) {
 		Parameter p = getParameter(name);
-		if(p == null)
-			return null;
-		return p.getValueAsString();
+		return (p != null ? p.getValueAsString() : null);
 	}
 
 	@Override
 	public String getString(String name, String defaultValue) {
 		String s = getString(name);
-		if(s == null)
-			return defaultValue;
-		return s;
+		return (s != null ? s : defaultValue);
 	}
 
 	@Override
@@ -197,9 +191,7 @@ public abstract class AbstractParameters implements Parameters {
 	@Override
 	public String[] getStringArray(String name) {
 		Parameter p = getParameter(name);
-		if(p == null)
-			return null;
-		return p.getValueAsStringArray();
+		return (p != null ? p.getValueAsStringArray() : null);
 	}
 
 	@Override
@@ -210,9 +202,7 @@ public abstract class AbstractParameters implements Parameters {
 	@Override
 	public List<String> getStringList(String name) {
 		Parameter p = getParameter(name);
-		if(p == null)
-			return null;
-		return p.getValueAsStringList();
+		return (p != null ? p.getValueAsStringList() : null);
 	}
 
 	@Override
@@ -223,25 +213,19 @@ public abstract class AbstractParameters implements Parameters {
 	@Override
 	public Integer getInt(String name) {
 		Parameter p = getParameter(name);
-		if(p == null)
-			return null;
-		return p.getValueAsInt();
+		return (p != null ? p.getValueAsInt() : null);
 	}
 
 	@Override
 	public int getInt(String name, int defaultValue) {
 		Parameter p = getParameter(name);
-		if(p == null)
-			return defaultValue;
-		return p.getValueAsInt();
+		return (p != null ? p.getValueAsInt() : defaultValue);
 	}
 
 	@Override
 	public Integer[] getIntArray(String name) {
 		Parameter p = getParameter(name);
-		if(p == null)
-			return null;
-		return p.getValueAsIntArray();
+		return (p != null ? p.getValueAsIntArray() : null);
 	}
 
 	@Override
@@ -262,9 +246,7 @@ public abstract class AbstractParameters implements Parameters {
 	@Override
 	public List<Integer> getIntList(String name) {
 		Parameter p = getParameter(name);
-		if(p == null)
-			return null;
-		return p.getValueAsIntList();
+		return (p != null ? p.getValueAsIntList() : null);
 	}
 
 	@Override
@@ -275,25 +257,19 @@ public abstract class AbstractParameters implements Parameters {
 	@Override
 	public Long getLong(String name) {
 		Parameter p = getParameter(name);
-		if(p == null)
-			return null;
-		return p.getValueAsLong();
+		return (p != null ? p.getValueAsLong() : null);
 	}
 
 	@Override
 	public long getLong(String name, long defaultValue) {
 		Parameter p = getParameter(name);
-		if(p == null)
-			return defaultValue;
-		return p.getValueAsLong();
+		return (p != null ? p.getValueAsLong() : defaultValue);
 	}
 
 	@Override
 	public Long[] getLongArray(String name) {
 		Parameter p = getParameter(name);
-		if(p == null)
-			return null;
-		return p.getValueAsLongArray();
+		return (p != null ? p.getValueAsLongArray() : null);
 	}
 
 	@Override
@@ -314,9 +290,7 @@ public abstract class AbstractParameters implements Parameters {
 	@Override
 	public List<Long> getLongList(String name) {
 		Parameter p = getParameter(name);
-		if(p == null)
-			return null;
-		return p.getValueAsLongList();
+		return (p != null ? p.getValueAsLongList() : null);
 	}
 
 	@Override
@@ -327,25 +301,19 @@ public abstract class AbstractParameters implements Parameters {
 	@Override
 	public Float getFloat(String name) {
 		Parameter p = getParameter(name);
-		if(p == null)
-			return null;
-		return p.getValueAsFloat();
+		return (p != null ? p.getValueAsFloat() : null);
 	}
 
 	@Override
 	public float getFloat(String name, float defaultValue) {
 		Parameter p = getParameter(name);
-		if(p == null)
-			return defaultValue;
-		return p.getValueAsFloat();
+		return (p != null ? p.getValueAsFloat() : defaultValue);
 	}
 
 	@Override
 	public Float[] getFloatArray(String name) {
 		Parameter p = getParameter(name);
-		if(p == null)
-			return null;
-		return p.getValueAsFloatArray();
+		return (p != null ? p.getValueAsFloatArray() : null);
 	}
 
 	@Override
@@ -366,9 +334,7 @@ public abstract class AbstractParameters implements Parameters {
 	@Override
 	public List<Float> getFloatList(String name) {
 		Parameter p = getParameter(name);
-		if(p == null)
-			return null;
-		return p.getValueAsFloatList();
+		return (p != null ? p.getValueAsFloatList() : null);
 	}
 
 	@Override
@@ -379,25 +345,19 @@ public abstract class AbstractParameters implements Parameters {
 	@Override
 	public Double getDouble(String name) {
 		Parameter p = getParameter(name);
-		if(p == null)
-			return null;
-		return p.getValueAsDouble();
+		return (p != null ? p.getValueAsDouble() : null);
 	}
 
 	@Override
 	public double getDouble(String name, double defaultValue) {
 		Parameter p = getParameter(name);
-		if(p == null)
-			return defaultValue;
-		return p.getValueAsDouble();
+		return (p != null ? p.getValueAsDouble() : defaultValue);
 	}
 
 	@Override
 	public Double[] getDoubleArray(String name) {
 		Parameter p = getParameter(name);
-		if(p == null)
-			return null;
-		return p.getValueAsDoubleArray();
+		return (p != null ? p.getValueAsDoubleArray() : null);
 	}
 
 	@Override
@@ -418,9 +378,7 @@ public abstract class AbstractParameters implements Parameters {
 	@Override
 	public List<Double> getDoubleList(String name) {
 		Parameter p = getParameter(name);
-		if(p == null)
-			return null;
-		return p.getValueAsDoubleList();
+		return (p != null ? p.getValueAsDoubleList() : null);
 	}
 
 	@Override
@@ -431,25 +389,19 @@ public abstract class AbstractParameters implements Parameters {
 	@Override
 	public Boolean getBoolean(String name) {
 		Parameter p = getParameter(name);
-		if(p == null)
-			return null;
-		return p.getValueAsBoolean();
+		return (p != null ? p.getValueAsBoolean() : null);
 	}
 
 	@Override
 	public boolean getBoolean(String name, boolean defaultValue) {
 		Parameter p = getParameter(name);
-		if(p == null)
-			return defaultValue;
-		return BooleanUtils.toBoolean(p.getValueAsBoolean(), defaultValue);
+		return (p != null ? BooleanUtils.toBoolean(p.getValueAsBoolean(), defaultValue) : defaultValue);
 	}
 
 	@Override
 	public Boolean[] getBooleanArray(String name) {
 		Parameter p = getParameter(name);
-		if(p == null)
-			return null;
-		return p.getValueAsBooleanArray();
+		return (p != null ? p.getValueAsBooleanArray() : null);
 	}
 
 	@Override
@@ -470,9 +422,7 @@ public abstract class AbstractParameters implements Parameters {
 	@Override
 	public List<Boolean> getBooleanList(String name) {
 		Parameter p = getParameter(name);
-		if(p == null)
-			return null;
-		return p.getValueAsBooleanList();
+		return (p != null ? p.getValueAsBooleanList() : null);
 	}
 
 	@Override
@@ -484,9 +434,7 @@ public abstract class AbstractParameters implements Parameters {
 	@SuppressWarnings("unchecked")
 	public <T extends Parameters> T getParameters(String name) {
 		Parameter p = getParameter(name);
-		if(p == null)
-			return null;
-		return (T)p.getValue();
+		return (p != null ? (T)p.getValue() : null);
 	}
 
 	@Override
@@ -499,9 +447,7 @@ public abstract class AbstractParameters implements Parameters {
 	@SuppressWarnings("unchecked")
 	public <T extends Parameters> T[] getParametersArray(String name) {
 		Parameter p = getParameter(name);
-		if(p == null)
-			return null;
-		return (T[])p.getValueAsParametersArray();
+		return (p != null ? (T[])p.getValueAsParametersArray() : null);
 	}
 
 	@Override
@@ -513,9 +459,7 @@ public abstract class AbstractParameters implements Parameters {
 	@SuppressWarnings("unchecked")
 	public <T extends Parameters> List<T> getParametersList(String name) {
 		Parameter p = getParameter(name);
-		if(p == null)
-			return null;
-		return (List<T>)p.getValueAsParametersList();
+		return (p != null ? (List<T>)p.getValueAsParametersList() : null);
 	}
 
 	@Override
@@ -586,7 +530,6 @@ public abstract class AbstractParameters implements Parameters {
 			tsb.append("parent", getParent());
 		} else {
 			tsb.append(parameterValueMap);
-			
 		}
 		return tsb.toString();
 	}
