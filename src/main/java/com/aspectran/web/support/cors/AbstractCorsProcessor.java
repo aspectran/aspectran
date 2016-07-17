@@ -316,6 +316,7 @@ public abstract class AbstractCorsProcessor implements CorsProcessor {
 	 * Returns {@code true} if the request is a valid CORS one.
 	 * 
 	 * @param request the http request
+	 * @return {@code true} if the request is a valid CORS one, else {@code false}
 	 */
 	protected boolean isCorsRequest(HttpServletRequest request) {
 		return (request.getHeader(HttpHeaders.ORIGIN) != null);
@@ -325,6 +326,7 @@ public abstract class AbstractCorsProcessor implements CorsProcessor {
 	 * Returns {@code true} if the request is a valid CORS pre-flight one.
 	 * 
 	 * @param request the http request
+	 * @return {@code true} if the request is a valid CORS pre-flight one, else {@code false}
 	 */
 	protected boolean isPreFlightRequest(HttpServletRequest request) {
 		return (isCorsRequest(request) &&
