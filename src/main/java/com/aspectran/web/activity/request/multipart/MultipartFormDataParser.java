@@ -19,8 +19,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -43,14 +43,14 @@ import com.aspectran.core.util.logging.LogFactory;
  * Multi-part form data parser.
  */
 public class MultipartFormDataParser {
-	
+
 	private static final Log log = LogFactory.getLog(MultipartFormDataParser.class);
 
 	/** The constant DEFAULT_MAX_REQUEST_SIZE. */
-	public static final long DEFAULT_MAX_REQUEST_SIZE = 250 * 1024 * 1024;
+	private static final long DEFAULT_MAX_REQUEST_SIZE = 250 * 1024 * 1024;
 
 	/** The constant DEFAULT_SIZE_THRESHOLD. */
-	public static final int DEFAULT_SIZE_THRESHOLD = 256 * 1024;
+	private static final int DEFAULT_SIZE_THRESHOLD = 256 * 1024;
 
 	private String temporaryFilePath;
 	
@@ -67,7 +67,7 @@ public class MultipartFormDataParser {
 	}
 
 	/**
-	 * Returns directory path used for temporary files.
+	 * Returns the directory path used for temporary files.
 	 *
 	 * @return the directory path used for temporary files
 	 */
@@ -103,7 +103,7 @@ public class MultipartFormDataParser {
 	}
 
 	/**
-	 * Gets allowed file extensions.
+	 * Gets the allowed file extensions.
 	 *
 	 * @return the allowed file extensions
 	 */
@@ -112,7 +112,7 @@ public class MultipartFormDataParser {
 	}
 
 	/**
-	 * Sets allowed file extensions.
+	 * Sets the allowed file extensions.
 	 *
 	 * @param allowedFileExtensions the allowed file extensions
 	 */
@@ -121,7 +121,7 @@ public class MultipartFormDataParser {
 	}
 
 	/**
-	 * Gets denied file extensions.
+	 * Gets the denied file extensions.
 	 *
 	 * @return the denied file extensions
 	 */
@@ -130,7 +130,7 @@ public class MultipartFormDataParser {
 	}
 
 	/**
-	 * Sets denied file extensions.
+	 * Sets the denied file extensions.
 	 *
 	 * @param deniedFileExtensions the denied file extensions
 	 */
@@ -251,7 +251,7 @@ public class MultipartFormDataParser {
 	private void putParameter(String fieldName, String value, Map<String, List<String>> parameterListMap) {
 		List<String> list = parameterListMap.get(fieldName);
 		if(list == null) {
-			list = new ArrayList<String>();
+			list = new LinkedList<String>();
 			parameterListMap.put(fieldName, list);
 		}
 		list.add(value);
@@ -260,7 +260,7 @@ public class MultipartFormDataParser {
 	private void putFileParameter(String fieldName, FileParameter fileParameter, Map<String, List<FileParameter>> parameterListMap) {
 		List<FileParameter> list = parameterListMap.get(fieldName);
 		if(list == null) {
-			list = new ArrayList<FileParameter>();
+			list = new LinkedList<FileParameter>();
 			parameterListMap.put(fieldName, list);
 		}
 		list.add(fileParameter);
@@ -269,7 +269,7 @@ public class MultipartFormDataParser {
 	/**
 	 * Creates a RequestContext needed by Jakarta Commons Upload.
 	 * 
-	 * @param req the request.
+	 * @param req the HTTP request.
 	 * @return a new request context.
 	 */
 	private RequestContext createRequestContext(final HttpServletRequest req) {

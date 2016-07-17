@@ -67,7 +67,7 @@ public class FileParameter {
 	 * @return the actual name of the file uploaded
 	 */
 	public String getFileName() {
-		return file.getName();
+		return (file != null ? file.getName() : null);
 	}
 
 	/**
@@ -76,7 +76,7 @@ public class FileParameter {
 	 * @return the size of the file uploaded
 	 */
 	public long getFileSize() {
-		return file.length();
+		return (file != null ? file.length() : -1);
 	}
 
 	/**
@@ -160,7 +160,7 @@ public class FileParameter {
 	 *
 	 * @param destFile the destination file
 	 * @return a saved file
-	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws IOException signals that an I/O exception has occurred.
 	 */
 	public File saveAs(File destFile) throws IOException {
 		return saveAs(destFile, false);
@@ -220,15 +220,18 @@ public class FileParameter {
 	 * Delete a file.
 	 */
 	public void delete() {
-		file.delete();
+		if(file != null) {
+			file.delete();
+		}
 	}
 	
 	/**
 	 * Delete a saved file.
 	 */
 	public void rollback() {
-		if(savedFile != null)
+		if(savedFile != null) {
 			savedFile.delete();
+		}
 	}
 	
 	public void release() {

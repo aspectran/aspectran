@@ -23,14 +23,14 @@ import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.bean.scope.Scope;
-import com.aspectran.core.context.rule.ExceptionHandlingRule;
+import com.aspectran.core.context.rule.ExceptionRule;
 
 /**
  * The Class VoidActivity
  * 
  * <p>Created: 2008. 04. 28 AM 12:48:48</p>
  */
-public final class VoidActivity extends GenericActivity {
+public final class VoidActivity extends CoreActivity {
 	
 	/**
 	 * Instantiates a new void activity.
@@ -103,7 +103,7 @@ public final class VoidActivity extends GenericActivity {
 	}
 
 	@Override
-	public void responseByContentType(List<ExceptionHandlingRule> exceptionHandlingRuleList) {
+	public void responseByContentType(List<ExceptionRule> exceptionRuleList) {
 		throw new UnsupportedOperationException();
 	}
 

@@ -39,10 +39,10 @@ public enum TokenDirectiveType {
 	/**
 	 * Returns a <code>TokenDirectiveType</code> with a value represented by the specified String.
 	 *
-	 * @param alias the specified String
+	 * @param alias the token directive type as a String
 	 * @return the token directive type
 	 */
-	public static TokenDirectiveType lookup(String alias) {
+	public static TokenDirectiveType resolve(String alias) {
 		for(TokenDirectiveType type : values()) {
 			if(type.alias.equals(alias))
 				return type;

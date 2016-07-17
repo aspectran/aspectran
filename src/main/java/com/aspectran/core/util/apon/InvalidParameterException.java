@@ -50,7 +50,7 @@ public class InvalidParameterException extends AponException {
 	 * @param msg A message to associate with the exception
 	 */
 	public InvalidParameterException(int lineNumber, String line, String trim, String msg) {
-		super(makeMessage(lineNumber, line, trim, msg));
+		super(createMessage(lineNumber, line, trim, msg));
 	}
 
 	/**
@@ -73,7 +73,7 @@ public class InvalidParameterException extends AponException {
 	}
 	
 	/**
-	 * Make message.
+	 * Create a message.
 	 *
 	 * @param lineNumber the line number
 	 * @param line the line
@@ -81,7 +81,7 @@ public class InvalidParameterException extends AponException {
 	 * @param msg the msg
 	 * @return the string
 	 */
-	protected static String makeMessage(int lineNumber, String line, String trim, String msg) {
+	protected static String createMessage(int lineNumber, String line, String trim, String msg) {
 		int column = (trim != null) ? line.indexOf(trim) : 0;
 		
 		StringBuilder sb = new StringBuilder();
@@ -111,4 +111,5 @@ public class InvalidParameterException extends AponException {
 		
 		return sb.toString();
 	}
+
 }

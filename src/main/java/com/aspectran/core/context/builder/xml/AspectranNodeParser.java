@@ -26,7 +26,7 @@ import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.type.DefaultSettingType;
 import com.aspectran.core.util.StringUtils;
-import com.aspectran.core.util.apon.GenericParameters;
+import com.aspectran.core.util.apon.VariableParameters;
 import com.aspectran.core.util.apon.Parameters;
 import com.aspectran.core.util.xml.NodeletParser;
 
@@ -115,11 +115,11 @@ public class AspectranNodeParser {
 	private void addSettingsNodelets() {
 		parser.addNodelet("/aspectran/settings", (node, attributes, text) -> {
             if(StringUtils.hasText(text)) {
-                Parameters parameters = new GenericParameters(text);
+                Parameters parameters = new VariableParameters(text);
                 for(String name : parameters.getParameterNameSet()) {
                     DefaultSettingType settingType = null;
                     if(name != null) {
-                        settingType = DefaultSettingType.lookup(name);
+                        settingType = DefaultSettingType.resolve(name);
                         if(settingType == null)
                             throw new IllegalArgumentException("Unknown setting name '" + name + "'.");
                     }
@@ -135,7 +135,7 @@ public class AspectranNodeParser {
             DefaultSettingType settingType = null;
 
             if(name != null) {
-                settingType = DefaultSettingType.lookup(name);
+                settingType = DefaultSettingType.resolve(name);
                 if(settingType == null)
                     throw new IllegalArgumentException("Unknown setting name '" + name + "'.");
             }
@@ -189,7 +189,7 @@ public class AspectranNodeParser {
 	private void addTypeAliasNodelets() {
 		parser.addNodelet("/aspectran/typeAliases", (node, attributes, text) -> {
             if(StringUtils.hasLength(text)) {
-                Parameters parameters = new GenericParameters(text);
+                Parameters parameters = new VariableParameters(text);
                 for(String alias : parameters.getParameterNameSet()) {
                     assistant.addTypeAlias(alias, parameters.getString(alias));
                 }

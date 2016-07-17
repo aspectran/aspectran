@@ -16,44 +16,44 @@
 package com.aspectran.core.context.builder.apon.params;
 
 import com.aspectran.core.util.apon.AbstractParameters;
-import com.aspectran.core.util.apon.ParameterDefine;
+import com.aspectran.core.util.apon.ParameterDefinition;
 import com.aspectran.core.util.apon.ParameterValueType;
 
 public class SimpleTriggerParameters extends AbstractParameters {
 
-	public static final ParameterDefine withIntervalInMilliseconds;
-	public static final ParameterDefine withIntervalInMinutes;
-	public static final ParameterDefine withIntervalInSeconds;
-	public static final ParameterDefine withIntervalInHours;
-	public static final ParameterDefine withRepeatCount;
-	public static final ParameterDefine repeatForever;
+	public static final ParameterDefinition withIntervalInMilliseconds;
+	public static final ParameterDefinition withIntervalInMinutes;
+	public static final ParameterDefinition withIntervalInSeconds;
+	public static final ParameterDefinition withIntervalInHours;
+	public static final ParameterDefinition withRepeatCount;
+	public static final ParameterDefinition repeatForever;
 
-	private final static ParameterDefine[] parameterDefines;
+	private final static ParameterDefinition[] parameterDefinitions;
 	
 	static {
-		withIntervalInMilliseconds = new ParameterDefine("withIntervalInMilliseconds", ParameterValueType.INT);
-		withIntervalInMinutes = new ParameterDefine("withIntervalInMinutes", ParameterValueType.INT);
-		withIntervalInSeconds = new ParameterDefine("withIntervalInSeconds", ParameterValueType.INT);
-		withIntervalInHours = new ParameterDefine("withIntervalInHours", ParameterValueType.INT);
-		withRepeatCount = new ParameterDefine("withRepeatCount", ParameterValueType.INT);
-		repeatForever = new ParameterDefine("repeatForever", ParameterValueType.BOOLEAN);
+		withIntervalInMilliseconds = new ParameterDefinition("withIntervalInMilliseconds", ParameterValueType.INT);
+		withIntervalInMinutes = new ParameterDefinition("withIntervalInMinutes", ParameterValueType.INT);
+		withIntervalInSeconds = new ParameterDefinition("withIntervalInSeconds", ParameterValueType.INT);
+		withIntervalInHours = new ParameterDefinition("withIntervalInHours", ParameterValueType.INT);
+		withRepeatCount = new ParameterDefinition("withRepeatCount", ParameterValueType.INT);
+		repeatForever = new ParameterDefinition("repeatForever", ParameterValueType.BOOLEAN);
 		
-		parameterDefines = new ParameterDefine[] {
-				withIntervalInMilliseconds,
-				withIntervalInMinutes,
-				withIntervalInSeconds,
-				withIntervalInHours,
-				withRepeatCount,
-				repeatForever
+		parameterDefinitions = new ParameterDefinition[] {
+			withIntervalInMilliseconds,
+			withIntervalInMinutes,
+			withIntervalInSeconds,
+			withIntervalInHours,
+			withRepeatCount,
+			repeatForever
 		};
 	}
 	
 	public SimpleTriggerParameters() {
-		super(parameterDefines);
+		super(parameterDefinitions);
 	}
 	
 	public SimpleTriggerParameters(String text) {
-		super(parameterDefines, text);
+		super(parameterDefinitions, text);
 	}
 	
 }

@@ -45,12 +45,13 @@ public class ResponseByContentTypeRule implements ResponseRuleApplicable {
 	}
 
 	public Response getResponse(String contentType) {
-		Response response = responseMap.get(contentType);
+		if(contentType != null) {
+			Response response = responseMap.get(contentType);
+			if(response != null)
+				return response;
+		}
 		
-		if(response != null)
-			return response;
-		
-		return defaultResponse;
+		return getDefaultResponse();
 	}
 	
 	/**
@@ -72,6 +73,9 @@ public class ResponseByContentTypeRule implements ResponseRuleApplicable {
 	}
 	
 	public Response getDefaultResponse() {
+		if(defaultResponse == null && responseMap.size() == 1) {
+			return responseMap.get(0);
+		}
 		return defaultResponse;
 	}
 

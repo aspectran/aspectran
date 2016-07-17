@@ -16,28 +16,28 @@
 package com.aspectran.core.context.builder.apon.params;
 
 import com.aspectran.core.util.apon.AbstractParameters;
-import com.aspectran.core.util.apon.ParameterDefine;
+import com.aspectran.core.util.apon.ParameterDefinition;
 
 public class ConstructorParameters extends AbstractParameters {
 
-	public static final ParameterDefine arguments;
+	public static final ParameterDefinition arguments;
 	
-	private static final ParameterDefine[] parameterDefines;
+	private static final ParameterDefinition[] parameterDefinitions;
 	
 	static {
-		arguments = new ParameterDefine("argument", ItemHolderParameters.class);
+		arguments = new ParameterDefinition("argument", ItemHolderParameters.class);
 		
-		parameterDefines = new ParameterDefine[] {
-				arguments
+		parameterDefinitions = new ParameterDefinition[] {
+			arguments
 		};
 	}
 	
 	public ConstructorParameters() {
-		super(parameterDefines);
+		super(parameterDefinitions);
 	}
 	
 	public ConstructorParameters(String text) {
-		super(parameterDefines, text);
+		super(parameterDefinitions, text);
 	}
 	
 }

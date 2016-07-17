@@ -20,7 +20,7 @@ import java.util.TimeZone;
 
 import com.aspectran.core.activity.Translet;
 import com.aspectran.core.adapter.RequestAdapter;
-import com.aspectran.core.context.rule.type.RequestMethodType;
+import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
@@ -49,7 +49,7 @@ public class LocaleChangeInterceptor {
 
     private String timeZoneParamName = DEFAULT_TIMEZONE_PARAM_NAME;
 
-    private String[] requestMethods;
+    private String[] allowedMethods;
 
     private boolean ignoreInvalidLocale = false;
 
@@ -99,10 +99,10 @@ public class LocaleChangeInterceptor {
      * @param requestMethods the methods
      */
     public void setRequestMethods(String... requestMethods) {
-        this.requestMethods = requestMethods;
-        if(this.requestMethods != null) {
-            for(int i = 0; i < this.requestMethods.length; i++) {
-                this.requestMethods[i] = this.requestMethods[i].toUpperCase();
+        this.allowedMethods = requestMethods;
+        if(this.allowedMethods != null) {
+            for(int i = 0; i < this.allowedMethods.length; i++) {
+                this.allowedMethods[i] = this.allowedMethods[i].toUpperCase();
             }
         }
     }
@@ -112,8 +112,8 @@ public class LocaleChangeInterceptor {
      *
      * @return the string [ ]
      */
-    public String[] getRequestMethods() {
-        return this.requestMethods;
+    public String[] getAllowedMethods() {
+        return this.allowedMethods;
     }
 
     /**
@@ -185,15 +185,15 @@ public class LocaleChangeInterceptor {
         }
     }
 
-    private boolean checkRequestMethod(RequestMethodType requestMethodType) {
-        String[] configuredMethods = getRequestMethods();
+    private boolean checkRequestMethod(MethodType requestMethodType) {
+        String[] configuredMethods = getAllowedMethods();
         if(configuredMethods == null || configuredMethods.length == 0) {
             return true;
         }
         if(requestMethodType == null) {
             return false;
         }
-        if(requestMethodType == RequestMethodType.ALL) {
+        if(requestMethodType == MethodType.ALL) {
             return true;
         }
         for(String configuredMethod : configuredMethods) {

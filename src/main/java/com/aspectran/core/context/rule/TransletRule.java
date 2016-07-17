@@ -18,7 +18,7 @@ package com.aspectran.core.context.rule;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.aspectran.core.activity.GenericTranslet;
+import com.aspectran.core.activity.CoreTranslet;
 import com.aspectran.core.activity.Translet;
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.activity.process.ContentList;
@@ -29,7 +29,7 @@ import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.rule.ability.ActionRuleApplicable;
 import com.aspectran.core.context.rule.ability.Replicable;
 import com.aspectran.core.context.rule.ability.ResponseRuleApplicable;
-import com.aspectran.core.context.rule.type.RequestMethodType;
+import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.util.PrefixSuffixPattern;
 import com.aspectran.core.util.ToStringBuilder;
 import com.aspectran.core.util.apon.Parameters;
@@ -44,7 +44,7 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 
 	private String name;
 
-	private RequestMethodType[] requestMethods;
+	private MethodType[] allowedMethods;
 	
 	private WildcardPattern namePattern;
 	
@@ -69,11 +69,11 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 	/** The response rule list is that each new sub Translet. */
 	private List<ResponseRule> responseRuleList;
 	
-	private ExceptionHandlingRule exceptionHandlingRule;
+	private ExceptionRule exceptionRule;
 	
 	private Class<? extends Translet> transletInterfaceClass;
 	
-	private Class<? extends GenericTranslet> transletImplementationClass;
+	private Class<? extends CoreTranslet> transletImplementationClass;
 
 	private AspectAdviceRuleRegistry aspectAdviceRuleRegistry;
 
@@ -104,21 +104,21 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 	}
 
 	/**
-	 * Gets the request methods.
+	 * Gets the allowed methods.
 	 *
-	 * @return the request methods
+	 * @return the allowed methods
 	 */
-	public RequestMethodType[] getRequestMethods() {
-		return requestMethods;
+	public MethodType[] getAllowedMethods() {
+		return allowedMethods;
 	}
 
 	/**
-	 * Sets the request methods.
+	 * Sets the allowed methods.
 	 *
-	 * @param requestMethods the request methods
+	 * @param allowedMethods the allowed methods
 	 */
-	public void setRequestMethods(RequestMethodType[] requestMethods) {
-		this.requestMethods = requestMethods;
+	public void setAllowedMethods(MethodType[] allowedMethods) {
+		this.allowedMethods = allowedMethods;
 	}
 
 	/**
@@ -405,21 +405,14 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 		setResponseRuleList(null);
 	}
 
-	public ExceptionHandlingRule getExceptionHandlingRule() {
-		return exceptionHandlingRule;
+	public ExceptionRule getExceptionRule() {
+		return exceptionRule;
 	}
 
-	public void setExceptionHandlingRule(ExceptionHandlingRule exceptionHandlingRule) {
-		this.exceptionHandlingRule = exceptionHandlingRule;
+	public void setExceptionRule(ExceptionRule exceptionRule) {
+		this.exceptionRule = exceptionRule;
 	}
 
-	public ExceptionHandlingRule touchExceptionHandlingRule() {
-		if(exceptionHandlingRule == null)
-			exceptionHandlingRule = new ExceptionHandlingRule();
-		
-		return exceptionHandlingRule;
-	}
-	
 	public Class<? extends Translet> getTransletInterfaceClass() {
 		return transletInterfaceClass;
 	}
@@ -428,11 +421,11 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 		this.transletInterfaceClass = transletInterfaceClass;
 	}
 
-	public Class<? extends GenericTranslet> getTransletImplementationClass() {
+	public Class<? extends CoreTranslet> getTransletImplementationClass() {
 		return transletImplementationClass;
 	}
 
-	public void setTransletImplementationClass(Class<? extends GenericTranslet> transletImplementationClass) {
+	public void setTransletImplementationClass(Class<? extends CoreTranslet> transletImplementationClass) {
 		this.transletImplementationClass = transletImplementationClass;
 	}
 
@@ -478,11 +471,11 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 	public String toString() {
 		ToStringBuilder tsb = new ToStringBuilder();
 		tsb.append("name", name);
-		tsb.append("requestMethods", requestMethods);
+		tsb.append("method", allowedMethods);
 		tsb.append("namePattern", namePattern);
 		tsb.append("requestRule", requestRule);
 		tsb.append("responseRule", responseRule);
-		tsb.append("exceptionHandlingRule", exceptionHandlingRule);
+		tsb.append("exceptionRule", exceptionRule);
 		tsb.append("transletInterfaceClass", transletInterfaceClass);
 		tsb.append("transletImplementClass", transletImplementationClass);
 		tsb.append("aspectAdviceRuleRegistry", aspectAdviceRuleRegistry);
@@ -495,21 +488,21 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 		if(name == null && scanPath == null)
 			throw new IllegalArgumentException("Translet name must not be null.");
 
-		RequestMethodType[] requestMethods = null;
+		MethodType[] allowedMethods = null;
 		if(method != null) {
-			requestMethods = RequestMethodType.parse(method);
-			if(requestMethods == null)
+			allowedMethods = MethodType.parse(method);
+			if(allowedMethods == null)
 				throw new IllegalArgumentException("No request method type registered for '" + method + "'.");
 		}
 
-		return newInstance(name, scanPath, maskPattern, requestMethods);
+		return newInstance(name, scanPath, maskPattern, allowedMethods);
 	}
 
-	public static TransletRule newInstance(String name, String scanPath, String maskPattern, RequestMethodType[] requestMethods) {
+	public static TransletRule newInstance(String name, String scanPath, String maskPattern, MethodType[] allowedMethods) {
 		TransletRule transletRule = new TransletRule();
 		transletRule.setName(name);
-		if(requestMethods != null && requestMethods.length > 0) {
-			transletRule.setRequestMethods(requestMethods);
+		if(allowedMethods != null && allowedMethods.length > 0) {
+			transletRule.setAllowedMethods(allowedMethods);
 		} else {
 			transletRule.setScanPath(scanPath);
 			transletRule.setMaskPattern(maskPattern);
@@ -522,16 +515,16 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 		return newInstance(name, null, null, method);
 	}
 
-	public static TransletRule newInstance(String name, RequestMethodType[] requestMethods) {
-		return newInstance(name, null, null, requestMethods);
+	public static TransletRule newInstance(String name, MethodType[] allowedMethods) {
+		return newInstance(name, null, null, allowedMethods);
 	}
 
 	public static TransletRule replicate(TransletRule transletRule) {
 		TransletRule tr = new TransletRule();
 		tr.setName(transletRule.getName());
-		tr.setRequestMethods(transletRule.getRequestMethods());
+		tr.setAllowedMethods(transletRule.getAllowedMethods());
 		tr.setRequestRule(transletRule.getRequestRule());
-		tr.setExceptionHandlingRule(transletRule.getExceptionHandlingRule());
+		tr.setExceptionRule(transletRule.getExceptionRule());
 		tr.setTransletInterfaceClass(transletRule.getTransletInterfaceClass());
 		tr.setTransletImplementationClass(transletRule.getTransletImplementationClass());
 		tr.setDescription(transletRule.getDescription());
@@ -547,9 +540,9 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 	public static TransletRule replicate(TransletRule transletRule, String newDispatchName) {
 		TransletRule tr = new TransletRule();
 		tr.setName(transletRule.getName());
-		tr.setRequestMethods(transletRule.getRequestMethods());
+		tr.setAllowedMethods(transletRule.getAllowedMethods());
 		tr.setRequestRule(transletRule.getRequestRule());
-		tr.setExceptionHandlingRule(transletRule.getExceptionHandlingRule());
+		tr.setExceptionRule(transletRule.getExceptionRule());
 		tr.setTransletInterfaceClass(transletRule.getTransletInterfaceClass());
 		tr.setTransletImplementationClass(transletRule.getTransletImplementationClass());
 		tr.setDescription(transletRule.getDescription());
@@ -598,9 +591,9 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 		return rr;
 	}
 
-	public static String makeRestfulTransletName(String transletName, RequestMethodType[] requestMethods) {
-		StringBuilder sb = new StringBuilder(transletName + (requestMethods.length * 7) + 1);
-		for(RequestMethodType type : requestMethods) {
+	public static String makeRestfulTransletName(String transletName, MethodType[] allowedMethods) {
+		StringBuilder sb = new StringBuilder(transletName + (allowedMethods.length * 7) + 1);
+		for(MethodType type : allowedMethods) {
 			sb.append(type).append(" ");
 		}
 		sb.append(transletName);

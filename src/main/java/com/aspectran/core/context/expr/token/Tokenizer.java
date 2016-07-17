@@ -43,10 +43,6 @@ public class Tokenizer {
 
 	private static final char LF = '\n';
 
-	private static final String DIRECTIVE_CLASS = "class";
-
-	private static final String DIRECTIVE_CLASSPATH = "classpath";
-
 	/**
 	 * Tokenize a string and returns a list of tokens.
 	 * 
@@ -187,7 +183,7 @@ public class Tokenizer {
 					getter = getter2;
 				}
 			} else if(value != null) {
-				directiveType = TokenDirectiveType.lookup(name);
+				directiveType = TokenDirectiveType.resolve(name);
 				if(directiveType != null) {
 					offset = value.indexOf(Token.GETTER_SEPARATOR);
 					if(offset > -1) {

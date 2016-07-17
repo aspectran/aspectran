@@ -16,32 +16,32 @@
 package com.aspectran.core.context.builder.apon.params;
 
 import com.aspectran.core.util.apon.AbstractParameters;
-import com.aspectran.core.util.apon.ParameterDefine;
+import com.aspectran.core.util.apon.ParameterDefinition;
 import com.aspectran.core.util.apon.ParameterValueType;
 
 public class FilterParameters extends AbstractParameters {
 
-	public static final ParameterDefine filterClass;
-	public static final ParameterDefine exclude;
+	public static final ParameterDefinition filterClass;
+	public static final ParameterDefinition exclude;
 
-	private static final ParameterDefine[] parameterDefines;
+	private static final ParameterDefinition[] parameterDefinitions;
 	
 	static {
-		filterClass = new ParameterDefine("class", ParameterValueType.STRING);
-		exclude = new ParameterDefine("exclude", ParameterValueType.STRING, true);
+		filterClass = new ParameterDefinition("class", ParameterValueType.STRING);
+		exclude = new ParameterDefinition("exclude", ParameterValueType.STRING, true);
 		
-		parameterDefines = new ParameterDefine[] {
-				filterClass,
-				exclude
+		parameterDefinitions = new ParameterDefinition[] {
+			filterClass,
+			exclude
 		};
 	}
 	
 	public FilterParameters() {
-		super(parameterDefines);
+		super(parameterDefinitions);
 	}
 	
 	public FilterParameters(String text) {
-		super(parameterDefines, text);
+		super(parameterDefinitions, text);
 	}
 	
 }

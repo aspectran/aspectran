@@ -16,35 +16,35 @@
 package com.aspectran.core.context.builder.apon.params;
 
 import com.aspectran.core.util.apon.AbstractParameters;
-import com.aspectran.core.util.apon.ParameterDefine;
+import com.aspectran.core.util.apon.ParameterDefinition;
 import com.aspectran.core.util.apon.ParameterValueType;
 
 public class RequestParameters extends AbstractParameters {
 
-	public static final ParameterDefine requestMethod;
-	public static final ParameterDefine characterEncoding;
-	public static final ParameterDefine attributes;
+	public static final ParameterDefinition allowedMethod;
+	public static final ParameterDefinition characterEncoding;
+	public static final ParameterDefinition attributes;
 	
-	private static final ParameterDefine[] parameterDefines;
+	private static final ParameterDefinition[] parameterDefinitions;
 
 	static {
-		requestMethod = new ParameterDefine("method", ParameterValueType.STRING);
-		characterEncoding = new ParameterDefine("characterEncoding", ParameterValueType.STRING);
-		attributes = new ParameterDefine("attribute", ItemHolderParameters.class);
+		allowedMethod = new ParameterDefinition("method", ParameterValueType.STRING);
+		characterEncoding = new ParameterDefinition("characterEncoding", ParameterValueType.STRING);
+		attributes = new ParameterDefinition("attribute", ItemHolderParameters.class);
 		
-		parameterDefines = new ParameterDefine[] {
-				requestMethod,
-				characterEncoding,
-				attributes
+		parameterDefinitions = new ParameterDefinition[] {
+			allowedMethod,
+			characterEncoding,
+			attributes
 		};
 	}
 	
 	public RequestParameters() {
-		super(parameterDefines);
+		super(parameterDefinitions);
 	}
 	
 	public RequestParameters(String text) {
-		super(parameterDefines, text);
+		super(parameterDefinitions, text);
 	}
 	
 }

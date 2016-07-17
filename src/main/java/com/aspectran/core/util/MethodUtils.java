@@ -1038,6 +1038,7 @@ public class MethodUtils {
 			if(!(obj instanceof MethodDescriptor)) {
 				return false;
 			}
+
 			MethodDescriptor md = (MethodDescriptor)obj;
 
 			return (

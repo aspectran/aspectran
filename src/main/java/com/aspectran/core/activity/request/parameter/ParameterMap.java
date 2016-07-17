@@ -47,10 +47,7 @@ public class ParameterMap extends LinkedHashMap<String, String[]> {
 	 */
 	public String getParameter(String name) {
 		String[] values = get(name);
-		if(values == null || values.length == 0)
-			return null;
-
-		return values[0];
+		return (values != null && values.length > 0 ? values[0] : null);
 	}
 	
 	/**
@@ -67,7 +64,7 @@ public class ParameterMap extends LinkedHashMap<String, String[]> {
 	/**
 	 * Sets the parameter.
 	 *
-	 * @param name the name
+	 * @param name the parameter name
 	 * @param value the value
 	 */
 	public void setParameter(String name, String value) {
@@ -76,9 +73,9 @@ public class ParameterMap extends LinkedHashMap<String, String[]> {
 	}
 
 	/**
-	 * Sets the parameter.
+	 * Set parameter name and value.
 	 *
-	 * @param name the name
+	 * @param name the parameter name
 	 * @param values the values
 	 */
 	public void setParameter(String name, String[] values) {
@@ -86,7 +83,7 @@ public class ParameterMap extends LinkedHashMap<String, String[]> {
 	}
 
 	/**
-	 * Gets parameter names.
+	 * Returns the parameters names.
 	 *
 	 * @return the parameter names
 	 */

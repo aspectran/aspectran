@@ -16,32 +16,32 @@
 package com.aspectran.core.context.builder.apon.params;
 
 import com.aspectran.core.util.apon.AbstractParameters;
-import com.aspectran.core.util.apon.ParameterDefine;
+import com.aspectran.core.util.apon.ParameterDefinition;
 import com.aspectran.core.util.apon.ParameterValueType;
 
 public class JobParameters extends AbstractParameters {
 
-	public static final ParameterDefine translet;
-	public static final ParameterDefine disabled;
+	public static final ParameterDefinition translet;
+	public static final ParameterDefinition disabled;
 	
-	private static final ParameterDefine[] parameterDefines;
+	private static final ParameterDefinition[] parameterDefinitions;
 	
 	static {
-		translet = new ParameterDefine("translet", ParameterValueType.STRING);
-		disabled = new ParameterDefine("disabled", ParameterValueType.BOOLEAN);
+		translet = new ParameterDefinition("translet", ParameterValueType.STRING);
+		disabled = new ParameterDefinition("disabled", ParameterValueType.BOOLEAN);
 		
-		parameterDefines = new ParameterDefine[] {
-				translet,
-				disabled
+		parameterDefinitions = new ParameterDefinition[] {
+			translet,
+			disabled
 		};
 	}
 	
 	public JobParameters() {
-		super(parameterDefines);
+		super(parameterDefinitions);
 	}
 	
 	public JobParameters(String text) {
-		super(parameterDefines, text);
+		super(parameterDefinitions, text);
 	}
 	
 }

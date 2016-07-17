@@ -39,10 +39,10 @@ public enum ImportFileType {
 	/**
 	 * Returns a <code>ImportFileType</code> with a value represented by the specified String.
 	 *
-	 * @param alias the specified String
+	 * @param alias the import file type as a String
 	 * @return the import file type
 	 */
-	public static ImportFileType lookup(String alias) {
+	public static ImportFileType resolve(String alias) {
 		for(ImportFileType type : values()) {
 			if(type.alias.equals(alias))
 				return type;

@@ -24,14 +24,14 @@ import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.bean.scope.Scope;
-import com.aspectran.core.context.rule.ExceptionHandlingRule;
+import com.aspectran.core.context.rule.ExceptionRule;
 
 /**
  * The Class SessionScopeActivity.
  *
  * @since 1.5.0
  */
-public final class SessionScopeActivity extends GenericActivity {
+public final class SessionScopeActivity extends CoreActivity {
 
 	/**
 	 * Instantiates a new session scope activity.
@@ -101,7 +101,7 @@ public final class SessionScopeActivity extends GenericActivity {
 	}
 
 	@Override
-	public void responseByContentType(List<ExceptionHandlingRule> exceptionHandlingRuleList) throws ActivityException {
+	public void responseByContentType(List<ExceptionRule> exceptionRuleList) throws ActivityException {
 		throw new UnsupportedOperationException();
 	}
 

@@ -15,11 +15,6 @@
  */
 package com.aspectran.core.util.apon;
 
-import com.aspectran.core.util.apon.AbstractParameters;
-import com.aspectran.core.util.apon.ParameterDefine;
-import com.aspectran.core.util.apon.ParameterValueType;
-import com.aspectran.core.util.apon.Parameters;
-
 /**
  * 고객정보 레코드를 정의합니다.
  * 임의로 APON의 Parameters 객체를 이용합니다. 
@@ -27,35 +22,35 @@ import com.aspectran.core.util.apon.Parameters;
 public class Customer extends AbstractParameters implements Parameters {
 
 	/** 고객번호 */
-	public static final ParameterDefine id;
+	public static final ParameterDefinition id;
 	
 	/** 이름 */
-	public static final ParameterDefine name;
+	public static final ParameterDefinition name;
 	
 	/** 나이 */
-	public static final ParameterDefine age;
+	public static final ParameterDefinition age;
 	
 	/** 에피소드 */
-	public static final ParameterDefine episode;
+	public static final ParameterDefinition episode;
 	
 	/** 승인 여부 */
-	public static final ParameterDefine approved;
+	public static final ParameterDefinition approved;
 	
-	private static final ParameterDefine[] parameterDefines;
+	private static final ParameterDefinition[] parameterDefinitions;
 	
 	static {
-		id = new ParameterDefine("id", ParameterValueType.STRING);
-		name = new ParameterDefine("name", ParameterValueType.STRING);
-		age = new ParameterDefine("age", ParameterValueType.INT);
-		episode = new ParameterDefine("epsode", ParameterValueType.TEXT);
-		approved = new ParameterDefine("approved", ParameterValueType.BOOLEAN);
+		id = new ParameterDefinition("id", ParameterValueType.STRING);
+		name = new ParameterDefinition("name", ParameterValueType.STRING);
+		age = new ParameterDefinition("age", ParameterValueType.INT);
+		episode = new ParameterDefinition("epsode", ParameterValueType.TEXT);
+		approved = new ParameterDefinition("approved", ParameterValueType.BOOLEAN);
 		
-		parameterDefines = new ParameterDefine[] {
-				id,
-				name,
-				age,
-				episode,
-				approved
+		parameterDefinitions = new ParameterDefinition[] {
+			id,
+			name,
+			age,
+			episode,
+			approved
 		};
 	}
 	
@@ -63,7 +58,7 @@ public class Customer extends AbstractParameters implements Parameters {
 	 * Instantiates a new customer.
 	 */
 	public Customer() {
-		super(parameterDefines);
+		super(parameterDefinitions);
 	}
 	
 	/**
@@ -72,7 +67,7 @@ public class Customer extends AbstractParameters implements Parameters {
 	 * @param text the Text string of APON format
 	 */
 	public Customer(String text) {
-		super(parameterDefines, text);
+		super(parameterDefinitions, text);
 	}
 	
 }

@@ -22,7 +22,7 @@ import java.util.Locale;
 import javax.servlet.http.HttpServletRequest;
 
 import com.aspectran.core.adapter.AbstractRequestAdapter;
-import com.aspectran.core.context.rule.type.RequestMethodType;
+import com.aspectran.core.context.rule.type.MethodType;
 
 /**
  * The Class HttpServletRequestAdapter.
@@ -39,7 +39,7 @@ public class HttpServletRequestAdapter extends AbstractRequestAdapter {
 	 */
 	public HttpServletRequestAdapter(HttpServletRequest request) {
 		super(request, request.getParameterMap());
-		setRequestMethod(RequestMethodType.lookup(request.getMethod()));
+		setRequestMethod(MethodType.resolve(request.getMethod()));
 	}
 
 	@Override

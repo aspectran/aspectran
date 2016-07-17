@@ -19,7 +19,7 @@ import java.nio.charset.Charset;
 import java.nio.charset.IllegalCharsetNameException;
 
 import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
-import com.aspectran.core.context.rule.type.RequestMethodType;
+import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.util.ToStringBuilder;
 
 /**
@@ -37,7 +37,7 @@ public class RequestRule {
 
 	private String characterEncoding;
 	
-	private RequestMethodType requestMethod;
+	private MethodType allowedMethod;
 
 	private ItemRuleMap attributeItemRuleMap;
 
@@ -65,21 +65,21 @@ public class RequestRule {
 	}
 
 	/**
-	 * Gets the request method.
+	 * Gets the allowed method.
 	 *
-	 * @return the request method
+	 * @return the allowed method
 	 */
-	public RequestMethodType getRequestMethod() {
-		return requestMethod;
+	public MethodType getAllowedMethod() {
+		return allowedMethod;
 	}
 
 	/**
-	 * Sets the request method.
+	 * Sets the allowed method.
 	 *
-	 * @param requestMethod the new request method
+	 * @param allowedMethod the new allowed method
 	 */
-	public void setRequestMethod(RequestMethodType requestMethod) {
-		this.requestMethod = requestMethod;
+	public void setAllowedMethod(MethodType allowedMethod) {
+		this.allowedMethod = allowedMethod;
 	}
 
 	/**
@@ -140,27 +140,27 @@ public class RequestRule {
 	@Override
 	public String toString() {
 		ToStringBuilder tsb = new ToStringBuilder();
-		tsb.append("method", requestMethod);
+		tsb.append("method", allowedMethod);
 		tsb.append("characterEncoding", characterEncoding);
 		tsb.append("attributes", attributeItemRuleMap);
 		tsb.append("aspectAdviceRuleRegistry", aspectAdviceRuleRegistry);
 		return tsb.toString();
 	}
 	
-	public static RequestRule newInstance(String requestMethod, String characterEncoding) {
-		RequestMethodType requestMethodType = null;
+	public static RequestRule newInstance(String allowedMethod, String characterEncoding) {
+		MethodType allowedethodType = null;
 		
-		if(requestMethod != null) {
-			requestMethodType = RequestMethodType.lookup(requestMethod);
-			if(requestMethodType == null)
-				throw new IllegalArgumentException("No request method type registered for '" + requestMethod + "'.");
+		if(allowedMethod != null) {
+			allowedethodType = MethodType.resolve(allowedMethod);
+			if(allowedethodType == null)
+				throw new IllegalArgumentException("No request method type registered for '" + allowedMethod + "'.");
 		}
 		
 		if(characterEncoding != null && !Charset.isSupported(characterEncoding))
 			throw new IllegalCharsetNameException("Given charset name is illegal. charsetName: " + characterEncoding);
 		
 		RequestRule requestRule = new RequestRule();
-		requestRule.setRequestMethod(requestMethodType);
+		requestRule.setAllowedMethod(allowedethodType);
 		requestRule.setCharacterEncoding(characterEncoding);
 		
 		return requestRule;

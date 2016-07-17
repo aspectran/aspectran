@@ -16,28 +16,28 @@
 package com.aspectran.core.context.builder.apon.params;
 
 import com.aspectran.core.util.apon.AbstractParameters;
-import com.aspectran.core.util.apon.ParameterDefine;
+import com.aspectran.core.util.apon.ParameterDefinition;
 
 public class AdviceActionParameters extends AbstractParameters {
 
-	public static final ParameterDefine action;
+	public static final ParameterDefinition action;
 	
-	private static final ParameterDefine[] parameterDefines;
+	private static final ParameterDefinition[] parameterDefinitions;
 	
 	static {
-		action = new ParameterDefine("action", ActionParameters.class);
+		action = new ParameterDefinition("action", ActionParameters.class);
 		
-		parameterDefines = new ParameterDefine[] {
-				action
+		parameterDefinitions = new ParameterDefinition[] {
+			action
 		};
 	}
 	
 	public AdviceActionParameters() {
-		super(parameterDefines);
+		super(parameterDefinitions);
 	}
 	
 	public AdviceActionParameters(String text) {
-		super(parameterDefines, text);
+		super(parameterDefinitions, text);
 	}
 	
 }

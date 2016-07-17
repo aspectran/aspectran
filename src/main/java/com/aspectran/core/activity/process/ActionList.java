@@ -31,7 +31,7 @@ import com.aspectran.core.util.BooleanUtils;
 import com.aspectran.core.util.ToStringBuilder;
 
 /**
- * Then Class ActionList.
+ * The Class ActionList.
  * 
  * <p>Created: 2008. 03. 23 AM 1:38:14</p>
  */
@@ -92,10 +92,6 @@ public class ActionList extends ArrayList<Executable> implements ActionRuleAppli
 				count++;
 		}
 		return count;
-	}
-
-	public boolean isNeedWrapping() {
-		return getVisibleCount() < 2;
 	}
 
 	@Override

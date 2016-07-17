@@ -37,7 +37,7 @@ import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
 import com.aspectran.core.context.aspect.pointcut.Pointcut;
 import com.aspectran.core.context.rule.AspectAdviceRule;
 import com.aspectran.core.context.rule.AspectRule;
-import com.aspectran.core.context.rule.ExceptionHandlingRule;
+import com.aspectran.core.context.rule.ExceptionRule;
 import com.aspectran.core.context.rule.RequestRule;
 import com.aspectran.core.context.rule.ResponseByContentTypeRule;
 import com.aspectran.core.context.rule.ResponseRule;
@@ -46,20 +46,20 @@ import com.aspectran.core.context.rule.type.ActionType;
 import com.aspectran.core.context.rule.type.AspectAdviceType;
 import com.aspectran.core.context.rule.type.AspectTargetType;
 import com.aspectran.core.context.rule.type.JoinpointScopeType;
-import com.aspectran.core.context.rule.type.RequestMethodType;
+import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.context.rule.type.ResponseType;
 import com.aspectran.core.context.translet.TransletNotFoundException;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
 /**
- * The Class GenericActivity.
+ * The Class CoreActivity.
  * 
  * <p>Created: 2008. 03. 22 PM 5:48:09</p>
  */
-public class GenericActivity extends AbstractActivity {
+public class CoreActivity extends AbstractActivity {
 
-	private static final Log log = LogFactory.getLog(GenericActivity.class);
+	private static final Log log = LogFactory.getLog(CoreActivity.class);
 	
 	private static final boolean debugEnabled = log.isDebugEnabled();
 
@@ -77,7 +77,7 @@ public class GenericActivity extends AbstractActivity {
 
 	private boolean withoutResponse;
 
-	private RequestMethodType requestMethod;
+	private MethodType requestMethod;
 	
 	private Translet translet;
 	
@@ -88,7 +88,7 @@ public class GenericActivity extends AbstractActivity {
 	/** Whether the current activity is completed or interrupted. */
 	private boolean activityEnded;
 
-	private Exception raisedException;
+	private Throwable raisedException;
 
 	private AspectAdviceRuleRegistry transletAspectAdviceRuleRegistry;
 	
@@ -103,7 +103,7 @@ public class GenericActivity extends AbstractActivity {
 	 *
 	 * @param context the current ActivityContext
 	 */
-	public GenericActivity(ActivityContext context) {
+	public CoreActivity(ActivityContext context) {
 		super(context);
 	}
 
@@ -123,19 +123,22 @@ public class GenericActivity extends AbstractActivity {
 
 	@Override
 	public void prepare(String transletName, String requestMethod) {
-		RequestMethodType requestMethodType = RequestMethodType.lookup(requestMethod);
-		prepare(transletName, requestMethodType);
+		prepare(transletName, MethodType.resolve(requestMethod));
 	}
 
 	@Override
-	public void prepare(String transletName, RequestMethodType requestMethod) {
+	public void prepare(String transletName, MethodType requestMethod) {
+		prepare(transletName, requestMethod, null);
+	}
+	
+	private void prepare(String transletName, MethodType requestMethod, ProcessResult processResult) {
 		this.transletName = transletName;
 		this.requestMethod = requestMethod;
 
 		TransletRule transletRule = getTransletRuleRegistry().getTransletRule(transletName);
 
 		// for RESTful
-		if(transletRule == null) {
+		if(transletRule == null && requestMethod != null) {
 			transletRule = getTransletRuleRegistry().getRestfulTransletRule(transletName, requestMethod);
 		}
 
@@ -143,6 +146,7 @@ public class GenericActivity extends AbstractActivity {
 			throw new TransletNotFoundException(transletName);
 		}
 
+		// for RESTful
 		PathVariableMap pathVariableMap = getTransletRuleRegistry().getPathVariableMap(transletRule, transletName);
 
 		prepare(transletRule, null);
@@ -150,19 +154,6 @@ public class GenericActivity extends AbstractActivity {
 		if(pathVariableMap != null) {
 			pathVariableMap.apply(translet);
 		}
-	}
-
-	private void prepare(String transletName, ProcessResult processResult) {
-		this.transletName = transletName;
-		this.requestMethod = null;
-
-		TransletRule transletRule = getTransletRuleRegistry().getTransletRule(transletName);
-
-		if(transletRule == null) {
-			throw new TransletNotFoundException(transletName);
-		}
-
-		prepare(transletRule, processResult);
 	}
 
 	private void prepare(TransletRule transletRule, ProcessResult processResult) {
@@ -277,18 +268,18 @@ public class GenericActivity extends AbstractActivity {
 		} catch(Exception e) {
 			setRaisedException(e);
 			
-			ExceptionHandlingRule exceptionHandlingRule = transletRule.getExceptionHandlingRule();
-			if(exceptionHandlingRule != null) {
-				responseByContentType(exceptionHandlingRule);
+			ExceptionRule exceptionRule = transletRule.getExceptionRule();
+			if(exceptionRule != null) {
+				responseByContentType(exceptionRule);
 				if(activityEnded) {
 					return;
 				}
 			}
 			
 			if(transletAspectAdviceRuleRegistry != null) {
-				List<ExceptionHandlingRule> exceptionHandlingRuleList = transletAspectAdviceRuleRegistry.getExceptionHandlingRuleList();
-				if(exceptionHandlingRuleList != null) {
-					responseByContentType(exceptionHandlingRuleList);
+				List<ExceptionRule> exceptionRuleList = transletAspectAdviceRuleRegistry.getExceptionRuleList();
+				if(exceptionRuleList != null) {
+					responseByContentType(exceptionRuleList);
 					if(activityEnded) {
 						return;
 					}
@@ -342,9 +333,9 @@ public class GenericActivity extends AbstractActivity {
 			setRaisedException(e);
 			
 			if(requestAspectAdviceRuleRegistry != null) {
-				List<ExceptionHandlingRule> exceptionHandlingRuleList = requestAspectAdviceRuleRegistry.getExceptionHandlingRuleList();
-				if(exceptionHandlingRuleList != null) {
-					responseByContentType(exceptionHandlingRuleList);
+				List<ExceptionRule> exceptionRuleList = requestAspectAdviceRuleRegistry.getExceptionRuleList();
+				if(exceptionRuleList != null) {
+					responseByContentType(exceptionRuleList);
 					if(activityEnded) {
 						return;
 					}
@@ -389,9 +380,9 @@ public class GenericActivity extends AbstractActivity {
 			setRaisedException(e);
 			
 			if(contentAspectAdviceRuleRegistry != null) {
-				List<ExceptionHandlingRule> exceptionHandlingRuleList = contentAspectAdviceRuleRegistry.getExceptionHandlingRuleList();
-				if(exceptionHandlingRuleList != null) {
-					responseByContentType(exceptionHandlingRuleList);
+				List<ExceptionRule> exceptionRuleList = contentAspectAdviceRuleRegistry.getExceptionRuleList();
+				if(exceptionRuleList != null) {
+					responseByContentType(exceptionRuleList);
 					if(activityEnded) {
 						return;
 					}
@@ -439,9 +430,9 @@ public class GenericActivity extends AbstractActivity {
 			setRaisedException(e);
 			
 			if(responseAspectAdviceRuleRegistry != null) {
-				List<ExceptionHandlingRule> exceptionHandlingRuleList = responseAspectAdviceRuleRegistry.getExceptionHandlingRuleList();
-				if(exceptionHandlingRuleList != null) {
-					responseByContentType(exceptionHandlingRuleList);
+				List<ExceptionRule> exceptionRuleList = responseAspectAdviceRuleRegistry.getExceptionRuleList();
+				if(exceptionRuleList != null) {
+					responseByContentType(exceptionRuleList);
 					if(activityEnded) {
 						return;
 					}
@@ -458,6 +449,9 @@ public class GenericActivity extends AbstractActivity {
 
 		if(characterEncoding == null)
 			characterEncoding = getRequestSetting(RequestRule.CHARACTER_ENCODING_SETTING_NAME);
+
+		if(characterEncoding == null)
+			characterEncoding = ActivityContext.DEFAULT_ENCODING;
 
 		return characterEncoding;
 	}
@@ -550,22 +544,25 @@ public class GenericActivity extends AbstractActivity {
 		
 		activityEnded = false;
 		
-		prepare(forwardTransletName, translet.getProcessResult());
+		prepare(forwardTransletName, requestMethod, translet.getProcessResult());
+			
 		perform();
 	}
 
 	@Override
-	public void responseByContentType(List<ExceptionHandlingRule> exceptionHandlingRuleList) {
-		for(ExceptionHandlingRule exceptionHandlingRule : exceptionHandlingRuleList) {
-			responseByContentType(exceptionHandlingRule);
+	public void responseByContentType(List<ExceptionRule> exceptionRuleList) {
+		for(ExceptionRule exceptionRule : exceptionRuleList) {
+			responseByContentType(exceptionRule);
 			if(activityEnded)
 				return;
 		}
 	}
 
-	private void responseByContentType(ExceptionHandlingRule exceptionHandlingRule) {
-		ResponseByContentTypeRule rbctr = exceptionHandlingRule.getResponseByContentTypeRule(getRaisedException());
+	private void responseByContentType(ExceptionRule exceptionRule) {
+		ResponseByContentTypeRule rbctr = exceptionRule.getResponseByContentTypeRule(getRaisedException());
 		if(rbctr != null) {
+
+
 			log.info("Raised exception: " + getRaisedException());
 			responseByContentType(rbctr);
 		}
@@ -573,9 +570,14 @@ public class GenericActivity extends AbstractActivity {
 
 	private void responseByContentType(ResponseByContentTypeRule responseByContentTypeRule) {
 		Response response = getResponse();
+		Response response2;
 
-		if(response != null && response.getContentType() != null) {
-			Response response2 = responseByContentTypeRule.getResponse(response.getContentType());
+		if(response != null && response.getContentType() != null)
+			response2 = responseByContentTypeRule.getResponse(response.getContentType());
+		else
+			response2 = responseByContentTypeRule.getDefaultResponse();
+
+		if(response2 != null) {
 			responseRule = responseRule.newUrgentResponseRule(response2);
 			
 			log.info("Response by Content-Type " + responseRule);
@@ -720,19 +722,23 @@ public class GenericActivity extends AbstractActivity {
 					JoinpointScopeType joinpointScope = aspectRule.getJoinpointScope();
 
 					if(!aspectRule.isBeanRelevanted() && joinpointScope != JoinpointScopeType.SESSION) {
-						Pointcut pointcut = aspectRule.getPointcut();
-						if(pointcut == null || pointcut.matches(transletRule.getName())) {
-							if(debugEnabled)
-								log.debug("register AspectRule " + aspectRule);
-
-							if(joinpointScope == JoinpointScopeType.REQUEST) {
-								requestAARPostRegister.register(aspectRule);
-							} else if(joinpointScope == JoinpointScopeType.CONTENT) {
-								contentAARPostRegister.register(aspectRule);
-							} else if(joinpointScope == JoinpointScopeType.RESPONSE) {
-								responseAARPostRegister.register(aspectRule);
-							} else {
-								transletAARPostRegister.register(aspectRule);
+						if(requestMethod == null ||
+								aspectRule.getAllowedMethods() == null ||
+								requestMethod.containsTo(aspectRule.getAllowedMethods())) {
+							Pointcut pointcut = aspectRule.getPointcut();
+							if(pointcut == null || pointcut.matches(transletRule.getName())) {
+								if(debugEnabled)
+									log.debug("register AspectRule " + aspectRule);
+	
+								if(joinpointScope == JoinpointScopeType.REQUEST) {
+									requestAARPostRegister.register(aspectRule);
+								} else if(joinpointScope == JoinpointScopeType.CONTENT) {
+									contentAARPostRegister.register(aspectRule);
+								} else if(joinpointScope == JoinpointScopeType.RESPONSE) {
+									responseAARPostRegister.register(aspectRule);
+								} else {
+									transletAARPostRegister.register(aspectRule);
+								}
 							}
 						}
 					}
@@ -748,15 +754,20 @@ public class GenericActivity extends AbstractActivity {
 
 	@Override
 	public void registerAspectRule(AspectRule aspectRule) {
-		if(debugEnabled)
-			log.debug("register AspectRule " + aspectRule);
-
+		if(requestMethod != null &&
+				aspectRule.getAllowedMethods() != null &&
+				!requestMethod.containsTo(aspectRule.getAllowedMethods()))
+			return;
+		
 		JoinpointScopeType joinpointScope = aspectRule.getJoinpointScope();
 
 		/*
 		 * before-advice is excluded because it is already processed.
 		 */
 		if(joinpointScope == JoinpointScopeType.TRANSLET || joinpointScope == currentJoinpointScope) {
+			if(debugEnabled)
+				log.debug("register AspectRule " + aspectRule);
+			
 			if(JoinpointScopeType.TRANSLET == joinpointScope) {
 				if(transletAspectAdviceRuleRegistry == null) {
 					transletAspectAdviceRuleRegistry = new AspectAdviceRuleRegistry();
@@ -802,15 +813,24 @@ public class GenericActivity extends AbstractActivity {
 	}
 
 	@Override
-	public Exception getRaisedException() {
+	public Throwable getRaisedException() {
 		return raisedException;
 	}
 
 	@Override
-	public void setRaisedException(Exception raisedException) {
+	public Throwable getOriginRaisedException() {
+		Throwable t = raisedException;
+		while(t != null) {
+			t = t.getCause();
+		}
+		return t;
+	}
+
+	@Override
+	public void setRaisedException(Throwable raisedException) {
 		if(this.raisedException == null) {
 			if(debugEnabled) {
-				log.error("Original raised exception: ", raisedException);
+				log.error("Raised exception: ", raisedException);
 			}
 			this.raisedException = raisedException;
 		}
@@ -829,7 +849,7 @@ public class GenericActivity extends AbstractActivity {
 	@Override
 	@SuppressWarnings("unchecked")
 	public <T extends Activity> T newActivity() {
-		Activity activity = new GenericActivity(getActivityContext());
+		Activity activity = new CoreActivity(getActivityContext());
 		return (T)activity;
 	}
 	
@@ -851,7 +871,7 @@ public class GenericActivity extends AbstractActivity {
 	}
 
 	@Override
-	public RequestMethodType getRequestMethod() {
+	public MethodType getRequestMethod() {
 		return requestMethod;
 	}
 

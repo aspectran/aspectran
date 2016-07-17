@@ -34,7 +34,7 @@ import com.aspectran.core.context.translet.TransletNotFoundException;
 import com.aspectran.core.service.AspectranService;
 import com.aspectran.core.service.AspectranServiceControllerListener;
 import com.aspectran.core.service.AspectranServiceException;
-import com.aspectran.core.service.GenericAspectranService;
+import com.aspectran.core.service.BasicAspectranService;
 import com.aspectran.core.util.apon.Parameters;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
@@ -45,7 +45,7 @@ import com.aspectran.web.startup.servlet.WebActivityServlet;
 /**
  * The Class WebAspectranService.
  */
-public class WebAspectranService extends GenericAspectranService {
+public class WebAspectranService extends BasicAspectranService {
 	
 	private static final Log log = LogFactory.getLog(WebAspectranService.class);
 
@@ -134,7 +134,7 @@ public class WebAspectranService extends GenericAspectranService {
 			activity.perform();
 		} catch(TransletNotFoundException e) {
 			if(super.log.isTraceEnabled()) {
-				super.log.trace("translet is not found: " + requestUri);
+				super.log.trace("Translet is not found: " + requestUri);
 			}
 			try {
 				if(!defaultServletHttpRequestHandler.handle(request, response)) {

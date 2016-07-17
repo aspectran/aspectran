@@ -28,8 +28,8 @@ import com.aspectran.core.context.bean.BeanRegistry;
 import com.aspectran.core.context.bean.scope.Scope;
 import com.aspectran.core.context.rule.AspectAdviceRule;
 import com.aspectran.core.context.rule.AspectRule;
-import com.aspectran.core.context.rule.ExceptionHandlingRule;
-import com.aspectran.core.context.rule.type.RequestMethodType;
+import com.aspectran.core.context.rule.ExceptionRule;
+import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.context.template.TemplateProcessor;
 
 /**
@@ -51,7 +51,7 @@ public interface Activity extends BeanRegistry {
 	 *
 	 * @return the translet implementation class
 	 */
-	Class<? extends GenericTranslet> getTransletImplementationClass();
+	Class<? extends CoreTranslet> getTransletImplementationClass();
 
 	/**
 	 * Preparation for the activity.
@@ -74,7 +74,7 @@ public interface Activity extends BeanRegistry {
 	 * @param transletName the translet name
 	 * @param requestMethod the request method
 	 */
-	void prepare(String transletName, RequestMethodType requestMethod);
+	void prepare(String transletName, MethodType requestMethod);
 	
 	/**
 	 * Perform activity.
@@ -156,15 +156,17 @@ public interface Activity extends BeanRegistry {
 	
 	void response(Response response);
 	
-	void responseByContentType(List<ExceptionHandlingRule> exceptionHandlingRuleList);
+	void responseByContentType(List<ExceptionRule> exceptionRuleList);
 
 	Response getResponse();
 
 	boolean isExceptionRaised();
 
-	Exception getRaisedException();
+	Throwable getRaisedException();
 
-	void setRaisedException(Exception raisedException);
+	Throwable getOriginRaisedException();
+
+	void setRaisedException(Throwable raisedException);
 
 	ActivityContext getActivityContext();
 
@@ -174,7 +176,7 @@ public interface Activity extends BeanRegistry {
 	
 	String getTransletName();
 
-	RequestMethodType getRequestMethod();
+	MethodType getRequestMethod();
 	
 	ApplicationAdapter getApplicationAdapter();
 

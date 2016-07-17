@@ -34,7 +34,7 @@ public enum ParameterValueType {
 
 	private final String alias;
 
-	private ParameterValueType(String alias) {
+	ParameterValueType(String alias) {
 		this.alias = alias;
 	}
 
@@ -49,7 +49,7 @@ public enum ParameterValueType {
 	 * @param alias the specified String
 	 * @return the parameter value type
 	 */
-	public static ParameterValueType lookup(String alias) {
+	public static ParameterValueType resolve(String alias) {
 		for(ParameterValueType type : values()) {
 			if(type.alias.equals(alias))
 				return type;
@@ -57,7 +57,7 @@ public enum ParameterValueType {
 		return null;
 	}
 
-	public static ParameterValueType lookupByHint(String name) {
+	public static ParameterValueType resolveByHint(String name) {
 		int hintStartIndex = name.indexOf(AponFormat.ROUND_BRACKET_OPEN);
 		
 		if(hintStartIndex > 0) {
@@ -65,7 +65,7 @@ public enum ParameterValueType {
 			
 			if(hintEndIndex > hintStartIndex) {
 				String typeHint = name.substring(hintStartIndex + 1, hintEndIndex);
-				return lookup(typeHint);
+				return resolve(typeHint);
 			}
 		}
 

@@ -31,7 +31,6 @@ import com.aspectran.core.context.builder.apon.params.ContentsParameters;
 import com.aspectran.core.context.builder.apon.params.DispatchParameters;
 import com.aspectran.core.context.builder.apon.params.EnvironmentParameters;
 import com.aspectran.core.context.builder.apon.params.ExceptionParameters;
-import com.aspectran.core.context.builder.apon.params.ExceptionRaisedParameters;
 import com.aspectran.core.context.builder.apon.params.ForwardParameters;
 import com.aspectran.core.context.builder.apon.params.ImportParameters;
 import com.aspectran.core.context.builder.apon.params.ItemHolderParameters;
@@ -56,7 +55,7 @@ import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.DispatchResponseRule;
 import com.aspectran.core.context.rule.EchoActionRule;
 import com.aspectran.core.context.rule.EnvironmentRule;
-import com.aspectran.core.context.rule.ExceptionHandlingRule;
+import com.aspectran.core.context.rule.ExceptionRule;
 import com.aspectran.core.context.rule.ForwardResponseRule;
 import com.aspectran.core.context.rule.IncludeActionRule;
 import com.aspectran.core.context.rule.ItemRule;
@@ -175,7 +174,7 @@ public class RootAponDisassembler {
 		for(String name : defaultSettingsParameters.getParameterNameSet()) {
 			DefaultSettingType settingType = null;
 			if(name != null) {
-				settingType = DefaultSettingType.lookup(name);
+				settingType = DefaultSettingType.resolve(name);
 				if(settingType == null)
 					throw new IllegalArgumentException("Unknown default setting name '" + name + "'.");
 			}
@@ -223,8 +222,10 @@ public class RootAponDisassembler {
 	
 		Parameters joinpointParameters = aspectParameters.getParameters(AspectParameters.jointpoint);
 		String scope = joinpointParameters.getString(JoinpointParameters.scope);
+		String method = joinpointParameters.getString(JoinpointParameters.method);
 		AspectRule.updateJoinpointScope(aspectRule, scope);
-	
+		AspectRule.updateAllowedMethods(aspectRule, method);
+		
 		Parameters pointcutParameters = joinpointParameters.getParameters(JoinpointParameters.pointcut);
 		if(pointcutParameters != null) {
 			PointcutRule pointcutRule = PointcutRule.newInstance(aspectRule, null, pointcutParameters);
@@ -294,26 +295,25 @@ public class RootAponDisassembler {
 			}
 		}
 		
-		Parameters exceptionRaisedParameters = aspectParameters.getParameters(AspectParameters.exceptionRaised);
-		if(exceptionRaisedParameters != null) {
-			ExceptionHandlingRule exceptionHandlingRule = ExceptionHandlingRule.newInstance(aspectRule);
-	
-			exceptionHandlingRule.setDescription(exceptionRaisedParameters.getString(ExceptionRaisedParameters.description));
+		Parameters exceptionParameters = aspectParameters.getParameters(AspectParameters.exception);
+		if(exceptionParameters != null) {
+			ExceptionRule exceptionRule = ExceptionRule.newInstance(aspectRule);
+			exceptionRule.setDescription(exceptionParameters.getString(ExceptionParameters.description));
 
-			Parameters actionParameters = exceptionRaisedParameters.getParameters(ExceptionRaisedParameters.action);
+			Parameters actionParameters = exceptionParameters.getParameters(ExceptionParameters.action);
 			if(actionParameters != null) {
-				disassembleActionRule(actionParameters, exceptionHandlingRule);
+				disassembleActionRule(actionParameters, exceptionRule);
 			}
 	
-			List<Parameters> rrtrParametersList = exceptionRaisedParameters.getParametersList(ExceptionRaisedParameters.responseByContentTypes);
-			if(rrtrParametersList != null) {
-				for(Parameters rrtrParameters : rrtrParametersList) {
-					ResponseByContentTypeRule rrtr = disassembleResponseByContentTypeRule(rrtrParameters);
-					exceptionHandlingRule.putResponseByContentTypeRule(rrtr);
+			List<Parameters> rbctParametersList = exceptionParameters.getParametersList(ExceptionParameters.responseByContentTypes);
+			if(rbctParametersList != null) {
+				for(Parameters rrtrParameters : rbctParametersList) {
+					ResponseByContentTypeRule rbctr = disassembleResponseByContentTypeRule(rrtrParameters);
+					exceptionRule.putResponseByContentTypeRule(rbctr);
 				}
 			}
 			
-			aspectRule.setExceptionHandlingRule(exceptionHandlingRule);
+			aspectRule.setExceptionRule(exceptionRule);
 		}
 
 		assistant.addAspectRule(aspectRule);
@@ -419,19 +419,28 @@ public class RootAponDisassembler {
 				transletRule.addResponseRule(responseRule);
 			}
 		}
-		
+
 		Parameters exceptionParameters = transletParameters.getParameters(TransletParameters.exception);
 		if(exceptionParameters != null) {
+			ExceptionRule exceptionRule = new ExceptionRule();
+			exceptionRule.setDescription(exceptionParameters.getString(ExceptionParameters.description));
+
+			Parameters actionParameters = exceptionParameters.getParameters(ExceptionParameters.action);
+			if(actionParameters != null) {
+				disassembleActionRule(actionParameters, exceptionRule);
+			}
+
 			List<Parameters> rbctParametersList = exceptionParameters.getParametersList(ExceptionParameters.responseByContentTypes);
 			if(rbctParametersList != null) {
-				for(Parameters rbctParameters : rbctParametersList) {
-					ResponseByContentTypeRule rbctr = disassembleResponseByContentTypeRule(rbctParameters);
-					ExceptionHandlingRule exceptionHandlingRule = transletRule.touchExceptionHandlingRule();
-					exceptionHandlingRule.putResponseByContentTypeRule(rbctr);
+				for(Parameters rrtrParameters : rbctParametersList) {
+					ResponseByContentTypeRule rbctr = disassembleResponseByContentTypeRule(rrtrParameters);
+					exceptionRule.putResponseByContentTypeRule(rbctr);
 				}
 			}
+
+			transletRule.setExceptionRule(exceptionRule);
 		}
-		
+
 		List<Parameters> actionParametersList = transletParameters.getParametersList(TransletParameters.actions);
 		if(actionParametersList != null) {
 			for(Parameters actionParameters : actionParametersList) {
@@ -467,11 +476,11 @@ public class RootAponDisassembler {
 	}
 	
 	private RequestRule disassembleRequestRule(Parameters requestParameters) {
-		String method = requestParameters.getString(RequestParameters.requestMethod);
+		String allowedMethod = requestParameters.getString(RequestParameters.allowedMethod);
 		String characterEncoding = requestParameters.getString(RequestParameters.characterEncoding);
 		ItemHolderParameters attributeItemHolderParameters = requestParameters.getParameters(RequestParameters.attributes);
 		
-		RequestRule requestRule = RequestRule.newInstance(method, characterEncoding);
+		RequestRule requestRule = RequestRule.newInstance(allowedMethod, characterEncoding);
 	
 		if(attributeItemHolderParameters != null) {
 			ItemRuleMap attributeItemRuleMap = disassembleItemRuleMap(attributeItemHolderParameters);

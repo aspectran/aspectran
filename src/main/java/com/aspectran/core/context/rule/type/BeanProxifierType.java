@@ -40,10 +40,10 @@ public enum BeanProxifierType {
 	/**
 	 * Returns a <code>BeanProxifierType</code> with a value represented by the specified String.
 	 *
-	 * @param alias the specified String
+	 * @param alias the bean proxifier type as a String
 	 * @return the bean proxifier type
 	 */
-	public static BeanProxifierType lookup(String alias) {
+	public static BeanProxifierType resolve(String alias) {
 		for(BeanProxifierType type : values()) {
 			if(type.alias.equals(alias))
 				return type;

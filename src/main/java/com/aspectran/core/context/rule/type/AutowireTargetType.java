@@ -42,10 +42,10 @@ public enum AutowireTargetType {
 	/**
 	 * Returns a <code>AutowireTargetType</code> with a value represented by the specified String.
 	 *
-	 * @param alias the specified String
+	 * @param alias the autowire target type as a String
 	 * @return the action type
 	 */
-	public static AutowireTargetType lookup(String alias) {
+	public static AutowireTargetType resolve(String alias) {
 		for(AutowireTargetType type : values()) {
 			if(type.alias.equals(alias))
 				return type;

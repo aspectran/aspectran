@@ -37,143 +37,581 @@ public interface Parameters {
 
 	boolean hasParameter(String name);
 
-	boolean hasParameter(ParameterDefine parameterDefine);
+	boolean hasParameter(ParameterDefinition parameterDefinition);
 
+	/**
+	 * Return the value for the specified parameter,
+	 * or {@code null} if the parameter does not exist.
+	 *
+	 * @param name the parameter name
+	 * @return the value for the specified parameter, or {@code null}
+	 */
 	Parameter getParameter(String name);
-	
-	Parameter getParameter(ParameterDefine parameterDefine);
-	
+
+	/**
+	 * Return the value for the specified parameter,
+	 * or {@code null} if the parameter does not exist.
+	 *
+	 * @param parameterDefinition the parameter definition
+	 * @return the value for the specified parameter, or {@code null}
+	 */
+	Parameter getParameter(ParameterDefinition parameterDefinition);
+
+	/**
+	 * Return the value for the specified parameter,
+	 * or {@code null} if the parameter does not exist.
+	 *
+	 * @param name the parameter name
+	 * @return the value for the specified parameter, or {@code null}
+	 */
 	Object getValue(String name);
 
-	Object getValue(ParameterDefine parameterDefine);
-	
+	/**
+	 * Return the value for the specified parameter,
+	 * or {@code null} if the parameter does not exist.
+	 *
+	 * @param parameterDefinition the parameter definition
+	 * @return the value for the specified parameter, or {@code null}
+	 */
+	Object getValue(ParameterDefinition parameterDefinition);
+
+	/**
+	 * Put a value of the parameter corresponding to the given name.
+	 *
+	 * @param name the parameter name
+	 * @param value the value of parameter
+	 */
 	void putValue(String name, Object value);
-	
-	void putValue(ParameterDefine parameterDefine, Object value);
-	
+
+	/**
+	 * Put a value of the parameter corresponding to the given parameter definition.
+	 *
+	 * @param parameterDefinition the parameter definition
+	 * @param value the value of parameter
+	 */
+	void putValue(ParameterDefinition parameterDefinition, Object value);
+
+	/**
+	 * Put a value of the parameter corresponding to the given name.
+	 * If a value is null then that value is ignored.
+	 *
+	 * @param name the parameter name
+	 * @param value the value of parameter
+	 */
 	void putValueNonNull(String name, Object value);
 
-	void putValueNonNull(ParameterDefine parameterDefine, Object value);
-	
+	/**
+	 * Put a value of the parameter corresponding to the given parameter definition.
+	 * If a value is null then that value is ignored.
+	 *
+	 * @param parameterDefinition the parameter definition
+	 * @param value the value of parameter
+	 */
+	void putValueNonNull(ParameterDefinition parameterDefinition, Object value);
+
+	/**
+	 * Return the value for the specified parameter,
+	 * or {@code null} if the parameter does not exist.
+	 *
+	 * @param name the parameter name
+	 * @return the value for the specified parameter, or {@code null}
+	 */
 	String getString(String name);
 
+	/**
+	 * Return the value for the specified parameter,
+	 * or {@code defaultValue} if the parameter does not exist.
+	 *
+	 * @param name the parameter name
+	 * @param defaultValue the default value to return if no value is found
+	 * @return the value for the specified parameter, or {@code defaultValue}
+	 */
 	String getString(String name, String defaultValue);
 
+	/**
+	 * Return the value for the specified parameter,
+	 * or {@code null} if the parameter does not exist.
+	 *
+	 * @param name the parameter name
+	 * @return the value for the specified parameter, or {@code null}
+	 */
 	String[] getStringArray(String name);
 
-	String getString(ParameterDefine parameterDefine);
-	
-	String getString(ParameterDefine parameterDefine, String defaultValue);
-	
-	String[] getStringArray(ParameterDefine parameterDefine);
-	
+	/**
+	 * Return the value for the specified parameter,
+	 * or {@code null} if the parameter does not exist.
+	 *
+	 * @param parameterDefinition the parameter definition
+	 * @return the value for the specified parameter, or {@code null}
+	 */
+	String getString(ParameterDefinition parameterDefinition);
+
+	/**
+	 * Return the value for the specified parameter,
+	 * or {@code defaultValue} if the parameter does not exist.
+	 *
+	 * @param parameterDefinition the parameter definition
+	 * @return the value for the specified parameter, or {@code defaultValue}
+	 */
+	String getString(ParameterDefinition parameterDefinition, String defaultValue);
+
+	/**
+	 * Return the value for the specified parameter,
+	 * or {@code null} if the parameter does not exist.
+	 *
+	 * @param parameterDefinition the parameter definition
+	 * @return the value for the specified parameter, or {@code null}
+	 */
+	String[] getStringArray(ParameterDefinition parameterDefinition);
+
+	/**
+	 * Return the value for the specified parameter,
+	 * or {@code null} if the parameter does not exist.
+	 *
+	 * @param name the parameter name
+	 * @return the value for the specified parameter, or {@code null}
+	 */
 	List<String> getStringList(String name);
 
-	List<String> getStringList(ParameterDefine parameterDefine);
-	
+	/**
+	 * Return the value for the specified parameter,
+	 * or {@code null} if the parameter does not exist.
+	 *
+	 * @param parameterDefinition the parameter definition
+	 * @return the value for the specified parameter, or {@code null}
+	 */
+	List<String> getStringList(ParameterDefinition parameterDefinition);
+
+	/**
+	 * Return the value for the specified parameter,
+	 * or {@code null} if the parameter does not exist.
+	 *
+	 * @param name the parameter name
+	 * @return the value for the specified parameter, or {@code null}
+	 */
 	Integer getInt(String name);
-	
+
+	/**
+	 * Return the value for the specified parameter,
+	 * or {@code defaultValue} if the parameter does not exist.
+	 *
+	 * @param name the parameter name
+	 * @param defaultValue the default value to return if no value is found
+	 * @return the value for the specified parameter, or {@code defaultValue}
+	 */
 	int getInt(String name, int defaultValue);
-	
+
+	/**
+	 * Return the value for the specified parameter,
+	 * or {@code null} if the parameter does not exist.
+	 *
+	 * @param name the parameter name
+	 * @return the value for the specified parameter, or {@code null}
+	 */
 	Integer[] getIntArray(String name);
-	
-	Integer getInt(ParameterDefine parameterDefine);
-	
-	int getInt(ParameterDefine parameterDefine, int defaultValue);
-	
-	Integer[] getIntArray(ParameterDefine parameterDefine);
-	
+
+	/**
+	 * Return the value for the specified parameter,
+	 * or {@code null} if the parameter does not exist.
+	 *
+	 * @param parameterDefinition the parameter definition
+	 * @return the value for the specified parameter, or {@code null}
+	 */
+	Integer getInt(ParameterDefinition parameterDefinition);
+
+	/**
+	 * Return the value for the specified parameter,
+	 * or {@code defaultValue} if the parameter does not exist.
+	 *
+	 * @param parameterDefinition the parameter definition
+	 * @return the value for the specified parameter, or {@code defaultValue}
+	 */
+	int getInt(ParameterDefinition parameterDefinition, int defaultValue);
+
+	/**
+	 * Return the value for the specified parameter,
+	 * or {@code null} if the parameter does not exist.
+	 *
+	 * @param parameterDefinition the parameter definition
+	 * @return the value for the specified parameter, or {@code null}
+	 */
+	Integer[] getIntArray(ParameterDefinition parameterDefinition);
+
+	/**
+	 * Return the value for the specified parameter,
+	 * or {@code null} if the parameter does not exist.
+	 *
+	 * @param name the parameter name
+	 * @return the value for the specified parameter, or {@code null}
+	 */
 	List<Integer> getIntList(String name);
-	
-	List<Integer> getIntList(ParameterDefine parameterDefine);
-	
+
+	/**
+	 * Return the value for the specified parameter,
+	 * or {@code null} if the parameter does not exist.
+	 *
+	 * @param parameterDefinition the parameter definition
+	 * @return the value for the specified parameter, or {@code null}
+	 */
+	List<Integer> getIntList(ParameterDefinition parameterDefinition);
+
+	/**
+	 * Return the value for the specified parameter,
+	 * or {@code null} if the parameter does not exist.
+	 *
+	 * @param name the parameter name
+	 * @return the value for the specified parameter, or {@code null}
+	 */
 	Long getLong(String name);
-	
+
+	/**
+	 * Return the value for the specified parameter,
+	 * or {@code defaultValue} if the parameter does not exist.
+	 *
+	 * @param name the parameter name
+	 * @param defaultValue the default value to return if no value is found
+	 * @return the value for the specified parameter, or {@code defaultValue}
+	 */
 	long getLong(String name, long defaultValue);
-	
+
+	/**
+	 * Return the value for the specified parameter,
+	 * or {@code null} if the parameter does not exist.
+	 *
+	 * @param name the parameter name
+	 * @return the value for the specified parameter, or {@code null}
+	 */
 	Long[] getLongArray(String name);
-	
-	Long getLong(ParameterDefine parameterDefine);
-	
-	long getLong(ParameterDefine parameterDefine, long defaultValue);
-	
-	Long[] getLongArray(ParameterDefine parameterDefine);
-	
+
+	/**
+	 * Return the value for the specified parameter,
+	 * or {@code null} if the parameter does not exist.
+	 *
+	 * @param parameterDefinition the parameter definition
+	 * @return the value for the specified parameter, or {@code null}
+	 */
+	Long getLong(ParameterDefinition parameterDefinition);
+
+	/**
+	 * Return the value for the specified parameter,
+	 * or {@code defaultValue} if the parameter does not exist.
+	 *
+	 * @param parameterDefinition the parameter definition
+	 * @return the value for the specified parameter, or {@code defaultValue}
+	 */
+	long getLong(ParameterDefinition parameterDefinition, long defaultValue);
+
+	/**
+	 * Return the value for the specified parameter,
+	 * or {@code null} if the parameter does not exist.
+	 *
+	 * @param parameterDefinition the parameter definition
+	 * @return the value for the specified parameter, or {@code null}
+	 */
+	Long[] getLongArray(ParameterDefinition parameterDefinition);
+
+	/**
+	 * Return the value for the specified parameter,
+	 * or {@code null} if the parameter does not exist.
+	 *
+	 * @param name the parameter name
+	 * @return the value for the specified parameter, or {@code null}
+	 */
 	List<Long> getLongList(String name);
-	
-	List<Long> getLongList(ParameterDefine parameterDefine);
 
+	/**
+	 * Return the value for the specified parameter,
+	 * or {@code null} if the parameter does not exist.
+	 *
+	 * @param parameterDefinition the parameter definition
+	 * @return the value for the specified parameter, or {@code null}
+	 */
+	List<Long> getLongList(ParameterDefinition parameterDefinition);
+
+	/**
+	 * Return the value for the specified parameter,
+	 * or {@code null} if the parameter does not exist.
+	 *
+	 * @param name the parameter name
+	 * @return the value for the specified parameter, or {@code null}
+	 */
 	Float getFloat(String name);
-	
-	float getFloat(String name, float defaultValue);
-	
-	Float[] getFloatArray(String name);
-	
-	Float getFloat(ParameterDefine parameterDefine);
-	
-	float getFloat(ParameterDefine parameterDefine, float defaultValue);
-	
-	Float[] getFloatArray(ParameterDefine parameterDefine);
-	
-	List<Float> getFloatList(String name);
-	
-	List<Float> getFloatList(ParameterDefine parameterDefine);
 
+	/**
+	 * Return the value for the specified parameter,
+	 * or {@code defaultValue} if the parameter does not exist.
+	 *
+	 * @param name the parameter name
+	 * @param defaultValue the default value to return if no value is found
+	 * @return the value for the specified parameter, or {@code defaultValue}
+	 */
+	float getFloat(String name, float defaultValue);
+
+	/**
+	 * Return the value for the specified parameter,
+	 * or {@code null} if the parameter does not exist.
+	 *
+	 * @param name the parameter name
+	 * @return the value for the specified parameter, or {@code null}
+	 */
+	Float[] getFloatArray(String name);
+
+	/**
+	 * Return the value for the specified parameter,
+	 * or {@code null} if the parameter does not exist.
+	 *
+	 * @param parameterDefinition the parameter definition
+	 * @return the value for the specified parameter, or {@code null}
+	 */
+	Float getFloat(ParameterDefinition parameterDefinition);
+
+	/**
+	 * Return the value for the specified parameter,
+	 * or {@code defaultValue} if the parameter does not exist.
+	 *
+	 * @param parameterDefinition the parameter definition
+	 * @return the value for the specified parameter, or {@code defaultValue}
+	 */
+	float getFloat(ParameterDefinition parameterDefinition, float defaultValue);
+
+	/**
+	 * Return the value for the specified parameter,
+	 * or {@code null} if the parameter does not exist.
+	 *
+	 * @param parameterDefinition the parameter definition
+	 * @return the value for the specified parameter, or {@code null}
+	 */
+	Float[] getFloatArray(ParameterDefinition parameterDefinition);
+
+	/**
+	 * Return the value for the specified parameter,
+	 * or {@code null} if the parameter does not exist.
+	 *
+	 * @param name the parameter name
+	 * @return the value for the specified parameter, or {@code null}
+	 */
+	List<Float> getFloatList(String name);
+
+	/**
+	 * Return the value for the specified parameter,
+	 * or {@code null} if the parameter does not exist.
+	 *
+	 * @param parameterDefinition the parameter definition
+	 * @return the value for the specified parameter, or {@code null}
+	 */
+	List<Float> getFloatList(ParameterDefinition parameterDefinition);
+
+	/**
+	 * Return the value for the specified parameter,
+	 * or {@code null} if the parameter does not exist.
+	 *
+	 * @param name the parameter name
+	 * @return the value for the specified parameter, or {@code null}
+	 */
 	Double getDouble(String name);
-	
+
+	/**
+	 * Return the value for the specified parameter,
+	 * or {@code defaultValue} if the parameter does not exist.
+	 *
+	 * @param name the parameter name
+	 * @param defaultValue the default value to return if no value is found
+	 * @return the value for the specified parameter, or {@code defaultValue}
+	 */
 	double getDouble(String name, double defaultValue);
-	
+
+	/**
+	 * Return the value for the specified parameter,
+	 * or {@code null} if the parameter does not exist.
+	 *
+	 * @param name the parameter name
+	 * @return the value for the specified parameter, or {@code null}
+	 */
 	Double[] getDoubleArray(String name);
 
-	Double getDouble(ParameterDefine parameterDefine);
-	
-	double getDouble(ParameterDefine parameterDefine, double defaultValue);
-	
-	Double[] getDoubleArray(ParameterDefine parameterDefine);
-	
-	List<Double> getDoubleList(String name);
-	
-	List<Double> getDoubleList(ParameterDefine parameterDefine);
+	/**
+	 * Return the value for the specified parameter,
+	 * or {@code null} if the parameter does not exist.
+	 *
+	 * @param parameterDefinition the parameter definition
+	 * @return the value for the specified parameter, or {@code null}
+	 */
+	Double getDouble(ParameterDefinition parameterDefinition);
 
+	/**
+	 * Return the value for the specified parameter,
+	 * or {@code defaultValue} if the parameter does not exist.
+	 *
+	 * @param parameterDefinition the parameter definition
+	 * @return the value for the specified parameter, or {@code defaultValue}
+	 */
+	double getDouble(ParameterDefinition parameterDefinition, double defaultValue);
+
+	/**
+	 * Return the value for the specified parameter,
+	 * or {@code null} if the parameter does not exist.
+	 *
+	 * @param parameterDefinition the parameter definition
+	 * @return the value for the specified parameter, or {@code null}
+	 */
+	Double[] getDoubleArray(ParameterDefinition parameterDefinition);
+
+	/**
+	 * Return the value for the specified parameter,
+	 * or {@code null} if the parameter does not exist.
+	 *
+	 * @param name the parameter name
+	 * @return the value for the specified parameter, or {@code null}
+	 */
+	List<Double> getDoubleList(String name);
+
+	/**
+	 * Return the value for the specified parameter,
+	 * or {@code null} if the parameter does not exist.
+	 *
+	 * @param parameterDefinition the parameter definition
+	 * @return the value for the specified parameter, or {@code null}
+	 */
+	List<Double> getDoubleList(ParameterDefinition parameterDefinition);
+
+	/**
+	 * Return the value for the specified parameter,
+	 * or {@code null} if the parameter does not exist.
+	 *
+	 * @param name the parameter name
+	 * @return the value for the specified parameter, or {@code null}
+	 */
 	Boolean getBoolean(String name);
-	
+
+	/**
+	 * Return the value for the specified parameter,
+	 * or {@code defaultValue} if the parameter does not exist.
+	 *
+	 * @param name the parameter name
+	 * @param defaultValue the default value to return if no value is found
+	 * @return the value for the specified parameter, or {@code defaultValue}
+	 */
 	boolean getBoolean(String name, boolean defaultValue);
 
+	/**
+	 * Return the value for the specified parameter,
+	 * or {@code null} if the parameter does not exist.
+	 *
+	 * @param name the parameter name
+	 * @return the value for the specified parameter, or {@code null}
+	 */
 	Boolean[] getBooleanArray(String name);
 
-	Boolean getBoolean(ParameterDefine parameterDefine);
-	
-	boolean getBoolean(ParameterDefine parameterDefine, boolean defaultValue);
-	
-	Boolean[] getBooleanArray(ParameterDefine parameterDefine);
-	
-	List<Boolean> getBooleanList(String name);
-	
-	List<Boolean> getBooleanList(ParameterDefine parameterDefine);
+	/**
+	 * Return the value for the specified parameter,
+	 * or {@code null} if the parameter does not exist.
+	 *
+	 * @param parameterDefinition the parameter definition
+	 * @return the value for the specified parameter, or {@code null}
+	 */
+	Boolean getBoolean(ParameterDefinition parameterDefinition);
 
+	/**
+	 * Return the value for the specified parameter,
+	 * or {@code defaultValue} if the parameter does not exist.
+	 *
+	 * @param parameterDefinition the parameter definition
+	 * @return the value for the specified parameter, or {@code defaultValue}
+	 */
+	boolean getBoolean(ParameterDefinition parameterDefinition, boolean defaultValue);
+
+	/**
+	 * Return the value for the specified parameter,
+	 * or {@code null} if the parameter does not exist.
+	 *
+	 * @param parameterDefinition the parameter definition
+	 * @return the value for the specified parameter, or {@code null}
+	 */
+	Boolean[] getBooleanArray(ParameterDefinition parameterDefinition);
+
+	/**
+	 * Return the value for the specified parameter,
+	 * or {@code null} if the parameter does not exist.
+	 *
+	 * @param name the parameter name
+	 * @return the value for the specified parameter, or {@code null}
+	 */
+	List<Boolean> getBooleanList(String name);
+
+	/**
+	 * Return the value for the specified parameter,
+	 * or {@code null} if the parameter does not exist.
+	 *
+	 * @param parameterDefinition the parameter definition
+	 * @return the value for the specified parameter, or {@code null}
+	 */
+	List<Boolean> getBooleanList(ParameterDefinition parameterDefinition);
+
+	/**
+	 * Return the value for the specified parameter,
+	 * or {@code null} if the parameter does not exist.
+	 *
+	 * @param name the parameter name
+	 * @return the value for the specified parameter, or {@code null}
+	 */
 	<T extends Parameters> T getParameters(String name);
 
+	/**
+	 * Return the value for the specified parameter,
+	 * or {@code null} if the parameter does not exist.
+	 *
+	 * @param name the parameter name
+	 * @return the value for the specified parameter, or {@code null}
+	 */
 	<T extends Parameters> T[] getParametersArray(String name);
-	
-	<T extends Parameters> T getParameters(ParameterDefine parameterDefine);
-	
-	<T extends Parameters> T[] getParametersArray(ParameterDefine parameterDefine);
-	
+
+	/**
+	 * Return the value for the specified parameter,
+	 * or {@code null} if the parameter does not exist.
+	 *
+	 * @param parameterDefinition the parameter definition
+	 * @return the value for the specified parameter, or {@code null}
+	 */
+	<T extends Parameters> T getParameters(ParameterDefinition parameterDefinition);
+
+	/**
+	 * Return the value for the specified parameter,
+	 * or {@code null} if the parameter does not exist.
+	 *
+	 * @param parameterDefinition the parameter definition
+	 * @return the value for the specified parameter, or {@code null}
+	 */
+	<T extends Parameters> T[] getParametersArray(ParameterDefinition parameterDefinition);
+
+	/**
+	 * Return the value for the specified parameter,
+	 * or {@code null} if the parameter does not exist.
+	 *
+	 * @param name the parameter name
+	 * @return the value for the specified parameter, or {@code null}
+	 */
 	<T extends Parameters> List<T> getParametersList(String name);
-	
-	<T extends Parameters> List<T> getParametersList(ParameterDefine parameterDefine);
+
+	/**
+	 * Return the value for the specified parameter,
+	 * or {@code null} if the parameter does not exist.
+	 *
+	 * @param parameterDefinition the parameter definition
+	 * @return the value for the specified parameter, or {@code null}
+	 */
+	<T extends Parameters> List<T> getParametersList(ParameterDefinition parameterDefinition);
 	
 	ParameterValue newParameterValue(String name, ParameterValueType parameterValueType);
 	
 	ParameterValue newParameterValue(String name, ParameterValueType parameterValueType, boolean array);
-	
+
 	<T extends Parameters> T newParameters(String name);
 	
-	<T extends Parameters> T newParameters(ParameterDefine parameterDefine);
+	<T extends Parameters> T newParameters(ParameterDefinition parameterDefinition);
 	
 	<T extends Parameters> T touchParameters(String name);
 	
-	<T extends Parameters> T touchParameters(ParameterDefine parameterDefine);
+	<T extends Parameters> T touchParameters(ParameterDefinition parameterDefinition);
 	
 	boolean isAddable();
 	

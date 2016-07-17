@@ -62,7 +62,6 @@ public abstract class AbstractDynamicBeanProxy {
 	
 	private RelevantAspectRuleHolder getRelevantAspectRuleHolder(
 			String transletName, String beanId, String className, String methodName) {
-
 		String patternString = PointcutPatternRule.combinePatternString(transletName, beanId, className, methodName);
 
 		// Check the cache first
@@ -92,6 +91,7 @@ public abstract class AbstractDynamicBeanProxy {
 
 		for(AspectRule aspectRule : aspectRuleMap.values()) {
 			AspectTargetType aspectTargetType = aspectRule.getAspectTargetType();
+			
 			if(aspectTargetType == AspectTargetType.TRANSLET && aspectRule.isBeanRelevanted()) {
 				Pointcut pointcut = aspectRule.getPointcut();
 

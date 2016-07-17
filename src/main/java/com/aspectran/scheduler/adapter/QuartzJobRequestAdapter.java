@@ -17,14 +17,14 @@ package com.aspectran.scheduler.adapter;
 
 import org.quartz.JobDetail;
 
-import com.aspectran.core.adapter.GenericRequestAdapter;
+import com.aspectran.core.adapter.BasicRequestAdapter;
 
 /**
  * The Class QuartzJobRequestAdapter.
  * 
  * @since 2013. 11. 20.
  */
-public class QuartzJobRequestAdapter extends GenericRequestAdapter {
+public class QuartzJobRequestAdapter extends BasicRequestAdapter {
 	
 	/**
 	 * Instantiates a new QuartzJobRequestAdapter.

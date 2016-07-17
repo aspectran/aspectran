@@ -22,7 +22,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.AdapterException;
-import com.aspectran.core.activity.GenericActivity;
+import com.aspectran.core.activity.CoreActivity;
 import com.aspectran.core.activity.request.RequestMethodNotAllowedException;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
@@ -36,22 +36,28 @@ import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.RequestRule;
 import com.aspectran.core.context.rule.ResponseRule;
-import com.aspectran.core.context.rule.type.RequestMethodType;
+import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.web.activity.request.multipart.MultipartFormDataParser;
 import com.aspectran.web.activity.request.multipart.MultipartRequestException;
+import com.aspectran.web.activity.request.parser.HttpPutFormContentParser;
 import com.aspectran.web.adapter.GZipHttpServletResponseAdapter;
 import com.aspectran.web.adapter.HttpServletRequestAdapter;
 import com.aspectran.web.adapter.HttpServletResponseAdapter;
 import com.aspectran.web.adapter.HttpSessionAdapter;
+import com.aspectran.web.support.http.HttpHeaders;
 
 /**
  * The Class WebActivity.
  *
- * @since 2008. 04. 28
+ * @since 2008. 4. 28.
  */
-public class WebActivity extends GenericActivity {
+public class WebActivity extends CoreActivity {
 
 	private static final String MULTIPART_FORM_DATA_PARSER_SETTING_NAME = "multipartFormDataParser";
+
+	private static final String MULTIPART_FORM_DATA = "multipart/form-data";
+
+	private static final String APPLICATION_FORM_URLENCODED = "application/x-www-form-urlencoded";
 
 	private HttpServletRequest request;
 	
@@ -94,7 +100,7 @@ public class WebActivity extends GenericActivity {
 			}
 
 			String contentEncoding = getResponseSetting(ResponseRule.CONTENT_ENCODING_SETTING_NAME);
-			String acceptEncoding = request.getHeader("Accept-Encoding");
+			String acceptEncoding = request.getHeader(HttpHeaders.ACCEPT_ENCODING);
 			if(contentEncoding != null && acceptEncoding != null && acceptEncoding.contains(contentEncoding)) {
 				ResponseAdapter responseAdapter = new GZipHttpServletResponseAdapter(response, this);
 				setResponseAdapter(responseAdapter);
@@ -118,41 +124,54 @@ public class WebActivity extends GenericActivity {
 
 	@Override
 	protected void request() {
-		String method = request.getMethod();
-		RequestMethodType requestMethod = getRequestRule().getRequestMethod();
-		
-		if(requestMethod != null && !requestMethod.toString().equals(method)) {
-			throw new RequestMethodNotAllowedException(requestMethod);
+		String contentType = request.getContentType();
+
+		MethodType requestMethod = getRequestAdapter().getRequestMethod();
+		MethodType allowedMethod = getRequestRule().getAllowedMethod();
+		if(allowedMethod != null && !allowedMethod.equals(requestMethod)) {
+			throw new RequestMethodNotAllowedException(allowedMethod);
 		}
 
-		parseMultipartFormData();
+		if(contentType != null) {
+			if(MethodType.POST.equals(requestMethod) && contentType.startsWith(MULTIPART_FORM_DATA)) {
+				parseMultipartFormData();
+			} else if((MethodType.PUT.equals(requestMethod) ||
+					MethodType.PATCH.equals(requestMethod) ||
+					MethodType.DELETE.equals(requestMethod)) &&
+					contentType.startsWith(APPLICATION_FORM_URLENCODED)) {
+				parseHttpPutFormContent();
+			}
+		}
+		
         parseDeclaredAttributes();
 	}
 	
+	/**
+	 * Parse the multipart form data.
+	 */
 	private void parseMultipartFormData() {
-		String method = request.getMethod();
-		String contentType = request.getContentType();
-		
-		if(RequestMethodType.POST.toString().equals(method)
-				&& contentType != null
-				&& contentType.startsWith("multipart/form-data")) {
+		String multipartFormDataParser = getRequestSetting(MULTIPART_FORM_DATA_PARSER_SETTING_NAME);
+		if(multipartFormDataParser == null) {
+			throw new MultipartRequestException("The settings name 'multipartFormDataParser' has not been specified in the default request rule.");
+		}
 
-			String multipartFormDataParser = getRequestSetting(MULTIPART_FORM_DATA_PARSER_SETTING_NAME);
-			if(multipartFormDataParser == null) {
-				throw new MultipartRequestException("The settings name 'multipartFormDataParser' has not been specified in the default request rule.");
-			}
+		MultipartFormDataParser parser = getBean(multipartFormDataParser);
+		if(parser == null) {
+			throw new MultipartRequestException("No bean named '" + multipartFormDataParser + "' is defined.");
+		}
 
-			MultipartFormDataParser parser = getBean(multipartFormDataParser);
-			if(parser == null) {
-				throw new MultipartRequestException("No bean named '" + multipartFormDataParser + "' is defined.");
-			}
+		parser.parse(getRequestAdapter());
+	}
 
-			parser.parse(getRequestAdapter());
-        }
+	/**
+	 * Parse the HTTP PUT requests.
+	 */
+	private void parseHttpPutFormContent() {
+		HttpPutFormContentParser.parse(getRequestAdapter());
 	}
 	
 	/**
-	 * Parses the declared attributes.
+	 * Parse the declared attributes.
 	 */
 	private void parseDeclaredAttributes() {
 		ItemRuleMap attributeItemRuleMap = getRequestRule().getAttributeItemRuleMap();

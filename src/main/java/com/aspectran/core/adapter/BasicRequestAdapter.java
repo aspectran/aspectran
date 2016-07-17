@@ -19,34 +19,34 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.aspectran.core.activity.request.AbstractGenericRequest;
+import com.aspectran.core.activity.request.AbstractBasicRequest;
 
 /**
- * The Class GenericRequestAdapter.
+ * The Class BasicRequestAdapter.
   *
  * @since 2016. 2. 13.
 */
-public abstract class GenericRequestAdapter extends AbstractGenericRequest implements RequestAdapter {
+public abstract class BasicRequestAdapter extends AbstractBasicRequest implements RequestAdapter {
 
 	protected final Object adaptee;
 
 	/**
-	 * Instantiates a new GenericRequestAdapter.
+	 * Instantiates a new BasicRequestAdapter.
 	 *
 	 * @param adaptee the adaptee
 	 */
-	public GenericRequestAdapter(Object adaptee) {
+	public BasicRequestAdapter(Object adaptee) {
 		super();
 		this.adaptee = adaptee;
 	}
 
 	/**
-	 * Instantiates a new GenericRequestAdapter.
+	 * Instantiates a new BasicRequestAdapter.
 	 *
 	 * @param adaptee the adaptee
 	 * @param parameterMap the params
 	 */
-	public GenericRequestAdapter(Object adaptee, Map<String, String[]> parameterMap) {
+	public BasicRequestAdapter(Object adaptee, Map<String, String[]> parameterMap) {
 		super(parameterMap);
 		this.adaptee = adaptee;
 	}

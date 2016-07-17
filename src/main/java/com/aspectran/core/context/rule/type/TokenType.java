@@ -42,10 +42,10 @@ public enum TokenType {
 	/**
 	 * Returns a <code>TokenType</code> with a value represented by the specified String.
 	 *
-	 * @param alias the specified String
+	 * @param alias the token type as a String
 	 * @return the token type
 	 */
-	public static TokenType lookup(String alias) {
+	public static TokenType resolve(String alias) {
 		for(TokenType type : values()) {
 			if(type.alias.equals(alias))
 				return type;

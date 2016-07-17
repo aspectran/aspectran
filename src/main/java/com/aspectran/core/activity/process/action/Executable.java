@@ -29,7 +29,7 @@ public interface Executable {
 	/**
 	 * Gets the action id.
 	 * 
-	 * @return the id
+	 * @return the action id
 	 */
 	String getActionId();
 

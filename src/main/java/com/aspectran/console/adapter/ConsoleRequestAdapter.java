@@ -16,7 +16,7 @@
 package com.aspectran.console.adapter;
 
 import com.aspectran.console.activity.ConsoleActivity;
-import com.aspectran.core.adapter.GenericRequestAdapter;
+import com.aspectran.core.adapter.BasicRequestAdapter;
 import com.aspectran.core.util.SystemUtils;
 
 /**
@@ -25,7 +25,7 @@ import com.aspectran.core.util.SystemUtils;
  * @author Juho Jeong
  * @since 2016. 1. 18.
  */
-public class ConsoleRequestAdapter extends GenericRequestAdapter {
+public class ConsoleRequestAdapter extends BasicRequestAdapter {
 
 	/**
 	 * Instantiates a new ConsoleRequestAdapter.

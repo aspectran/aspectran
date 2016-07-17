@@ -42,10 +42,10 @@ public enum ScopeType {
 	/**
 	 * Returns a <code>ScopeType</code> with a value represented by the specified String.
 	 *
-	 * @param alias the specified String
+	 * @param alias the scope type as a String
 	 * @return the scope type
 	 */
-	public static ScopeType lookup(String alias) {
+	public static ScopeType resolve(String alias) {
 		for(ScopeType type : values()) {
 			if(type.alias.equals(alias))
 				return type;

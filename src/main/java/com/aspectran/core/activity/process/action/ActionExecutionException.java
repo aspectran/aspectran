@@ -48,7 +48,7 @@ public class ActionExecutionException extends ProcessException {
 	/**
 	 * Constructor to create exception to wrap another exception.
 	 * 
-	 * @param cause The real cause of the exception
+	 * @param cause the real cause of the exception
 	 */
 	public ActionExecutionException(Throwable cause) {
 		super(cause);

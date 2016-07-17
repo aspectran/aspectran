@@ -45,10 +45,10 @@ public enum DefaultSettingType {
 	/**
 	 * Returns a <code>DefaultSettingType</code> with a value represented by the specified String.
 	 *
-	 * @param alias the specified String
+	 * @param alias the default setting type as a String
 	 * @return the default setting type
 	 */
-	public static DefaultSettingType lookup(String alias) {
+	public static DefaultSettingType resolve(String alias) {
 		for(DefaultSettingType type : values()) {
 			if(type.alias.equals(alias))
 				return type;

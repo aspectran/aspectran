@@ -32,7 +32,7 @@ import com.aspectran.core.context.rule.AspectAdviceRule;
 import com.aspectran.core.context.rule.ForwardResponseRule;
 import com.aspectran.core.context.rule.RedirectResponseRule;
 import com.aspectran.core.context.rule.TransformRule;
-import com.aspectran.core.context.rule.type.RequestMethodType;
+import com.aspectran.core.context.rule.type.MethodType;
 
 /**
  * The Interface Translet.
@@ -49,11 +49,11 @@ public interface Translet extends BeanRegistry, MessageSource {
 	String getTransletName();
 
 	/**
-	 * Gets the REST verb.
+	 * Gets the request http method.
 	 *
-	 * @return the REST verb
+	 * @return the request method
 	 */
-	RequestMethodType getRequestMethod();
+	MethodType getRequestMethod();
 
 	/**
 	 * Gets the application adapter.
@@ -394,14 +394,14 @@ public interface Translet extends BeanRegistry, MessageSource {
 	void forward(ForwardResponseRule forwardResponseRule);
 
 	/**
-	 * Forward to specified translet immediately.
+	 * Forward to the specified translet immediately.
 	 *
 	 * @param transletName the translet name of the target to be forwarded
 	 */
 	void forward(String transletName);
 
 	/**
-	 * Forward to specified translet.
+	 * Forward to the specified translet.
 	 *
 	 * @param transletName the translet name
 	 * @param immediately whether forwarding immediately
@@ -420,7 +420,14 @@ public interface Translet extends BeanRegistry, MessageSource {
 	 *
 	 * @return the raised exception instance
 	 */
-	Exception getRaisedException();
+	Throwable getRaisedException();
+
+	/**
+	 * Returns the origin raised exception instance.
+	 *
+	 * @return the origin raised exception instance
+	 */
+	Throwable getOriginRaisedException();
 
 	/**
 	 * Gets the aspect advice bean.
@@ -486,7 +493,7 @@ public interface Translet extends BeanRegistry, MessageSource {
 	 *
 	 * @return the translet implementation class
 	 */
-	Class<? extends GenericTranslet> getTransletImplementationClass();
+	Class<? extends CoreTranslet> getTransletImplementationClass();
 
 	/**
 	 * Return whether the given profile is active.

@@ -16,33 +16,33 @@
 package com.aspectran.core.context.builder.apon.params;
 
 import com.aspectran.core.util.apon.AbstractParameters;
-import com.aspectran.core.util.apon.ParameterDefine;
+import com.aspectran.core.util.apon.ParameterDefinition;
 import com.aspectran.core.util.apon.ParameterValueType;
 
 public class EnvironmentParameters extends AbstractParameters {
 
-	public static final ParameterDefine profile;
+	public static final ParameterDefinition profile;
 	
-	public static final ParameterDefine properties;
+	public static final ParameterDefinition properties;
 	
-	private static final ParameterDefine[] parameterDefines;
+	private static final ParameterDefinition[] parameterDefinitions;
 	
 	static {
-		profile = new ParameterDefine("profile", ParameterValueType.STRING);
-		properties = new ParameterDefine("property", ItemHolderParameters.class);
+		profile = new ParameterDefinition("profile", ParameterValueType.STRING);
+		properties = new ParameterDefinition("property", ItemHolderParameters.class);
 		
-		parameterDefines = new ParameterDefine[] {
-				profile,
-				properties
+		parameterDefinitions = new ParameterDefinition[] {
+			profile,
+			properties
 		};
 	}
 	
 	public EnvironmentParameters() {
-		super(parameterDefines);
+		super(parameterDefinitions);
 	}
 	
 	public EnvironmentParameters(String text) {
-		super(parameterDefines, text);
+		super(parameterDefinitions, text);
 	}
 	
 }

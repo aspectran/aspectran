@@ -35,13 +35,13 @@ import com.aspectran.core.context.rule.AspectAdviceRule;
 import com.aspectran.core.context.rule.ForwardResponseRule;
 import com.aspectran.core.context.rule.RedirectResponseRule;
 import com.aspectran.core.context.rule.TransformRule;
-import com.aspectran.core.context.rule.type.RequestMethodType;
+import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.context.rule.type.ResponseType;
 
 /**
- * The Class GenericTranslet.
+ * The Class CoreTranslet.
  */
-public class GenericTranslet implements Translet {
+public class CoreTranslet implements Translet {
 
 	private final Activity activity;
 
@@ -56,7 +56,7 @@ public class GenericTranslet implements Translet {
 	 *
 	 * @param activity the current Activity
 	 */
-	protected GenericTranslet(Activity activity) {
+	protected CoreTranslet(Activity activity) {
 		this.activity = activity;
 	}
 
@@ -66,7 +66,7 @@ public class GenericTranslet implements Translet {
 	}
 
 	@Override
-	public RequestMethodType getRequestMethod() {
+	public MethodType getRequestMethod() {
 		return activity.getRequestMethod();
 	}
 
@@ -338,8 +338,13 @@ public class GenericTranslet implements Translet {
 	}
 
 	@Override
-	public Exception getRaisedException() {
+	public Throwable getRaisedException() {
 		return activity.getRaisedException();
+	}
+
+	@Override
+	public Throwable getOriginRaisedException() {
+		return activity.getOriginRaisedException();
 	}
 
 	@Override
@@ -388,7 +393,7 @@ public class GenericTranslet implements Translet {
 	}
 
 	@Override
-	public Class<? extends GenericTranslet> getTransletImplementationClass() {
+	public Class<? extends CoreTranslet> getTransletImplementationClass() {
 		return activity.getTransletImplementationClass();
 	}
 

@@ -83,9 +83,9 @@ public class IncludeAction extends AbstractAction {
 	}
 
 	/**
-	 * Gets the process call action rule.
+	 * Gets the include action rule.
 	 * 
-	 * @return the process call action rule
+	 * @return the include action rule
 	 */
 	public IncludeActionRule getIncludeActionRule() {
 		return includeActionRule;

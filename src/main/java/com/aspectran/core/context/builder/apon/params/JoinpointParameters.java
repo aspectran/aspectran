@@ -16,32 +16,35 @@
 package com.aspectran.core.context.builder.apon.params;
 
 import com.aspectran.core.util.apon.AbstractParameters;
-import com.aspectran.core.util.apon.ParameterDefine;
+import com.aspectran.core.util.apon.ParameterDefinition;
 import com.aspectran.core.util.apon.ParameterValueType;
 
 public class JoinpointParameters extends AbstractParameters {
 
-	public static final ParameterDefine scope;
-	public static final ParameterDefine pointcut;
+	public static final ParameterDefinition scope;
+	public static final ParameterDefinition method;
+	public static final ParameterDefinition pointcut;
 	
-	private static final ParameterDefine[] parameterDefines;
+	private static final ParameterDefinition[] parameterDefinitions;
 	
 	static {
-		scope = new ParameterDefine("scope", ParameterValueType.STRING);
-		pointcut = new ParameterDefine("pointcut", PointcutParameters.class);
+		scope = new ParameterDefinition("scope", ParameterValueType.STRING);
+		method = new ParameterDefinition("method", ParameterValueType.STRING);
+		pointcut = new ParameterDefinition("pointcut", PointcutParameters.class);
 		
-		parameterDefines = new ParameterDefine[] {
-				scope,
-				pointcut
+		parameterDefinitions = new ParameterDefinition[] {
+			scope,
+			method,
+			pointcut
 		};
 	}
 	
 	public JoinpointParameters() {
-		super(parameterDefines);
+		super(parameterDefinitions);
 	}
 	
 	public JoinpointParameters(String text) {
-		super(parameterDefines, text);
+		super(parameterDefinitions, text);
 	}
 	
 }

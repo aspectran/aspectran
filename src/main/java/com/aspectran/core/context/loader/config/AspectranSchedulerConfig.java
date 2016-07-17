@@ -16,35 +16,35 @@
 package com.aspectran.core.context.loader.config;
 
 import com.aspectran.core.util.apon.AbstractParameters;
-import com.aspectran.core.util.apon.ParameterDefine;
+import com.aspectran.core.util.apon.ParameterDefinition;
 import com.aspectran.core.util.apon.ParameterValueType;
 
 public class AspectranSchedulerConfig extends AbstractParameters {
 
-	public static final ParameterDefine startDelaySeconds;
-	public static final ParameterDefine waitOnShutdown;
-	public static final ParameterDefine startup;
+	public static final ParameterDefinition startDelaySeconds;
+	public static final ParameterDefinition waitOnShutdown;
+	public static final ParameterDefinition startup;
 	
-	private final static ParameterDefine[] parameterDefines;
+	private static final ParameterDefinition[] parameterDefinitions;
 	
 	static {
-		startDelaySeconds = new ParameterDefine("startDelaySeconds", ParameterValueType.INT);
-		waitOnShutdown = new ParameterDefine("waitOnShutdown", ParameterValueType.BOOLEAN);
-		startup = new ParameterDefine("startup", ParameterValueType.BOOLEAN);
+		startDelaySeconds = new ParameterDefinition("startDelaySeconds", ParameterValueType.INT);
+		waitOnShutdown = new ParameterDefinition("waitOnShutdown", ParameterValueType.BOOLEAN);
+		startup = new ParameterDefinition("startup", ParameterValueType.BOOLEAN);
 
-		parameterDefines = new ParameterDefine[] {
-				startDelaySeconds,
-				waitOnShutdown,
-				startup
+		parameterDefinitions = new ParameterDefinition[] {
+			startDelaySeconds,
+			waitOnShutdown,
+			startup
 		};
 	}
 	
 	public AspectranSchedulerConfig() {
-		super(parameterDefines);
+		super(parameterDefinitions);
 	}
 	
 	public AspectranSchedulerConfig(String plaintext) {
-		super(parameterDefines, plaintext);
+		super(parameterDefinitions, plaintext);
 	}
 	
 }

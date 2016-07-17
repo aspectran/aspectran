@@ -83,7 +83,7 @@ public class AponWriter extends AponFormat implements Flushable {
 	 * Write a Parameters object to the character-output stream.
 	 *
 	 * @param parameters the parameters object
-	 * @throws IOException An I/O error occurs.
+	 * @throws IOException an I/O error occurs.
 	 */
 	public void write(Parameters parameters) throws IOException {
 		if(parameters != null) {
@@ -100,7 +100,7 @@ public class AponWriter extends AponFormat implements Flushable {
 	 * Write a Parameter object to the character-output stream.
 	 *
 	 * @param parameter the parameter object
-	 * @throws IOException An I/O error occurs.
+	 * @throws IOException an I/O error occurs.
 	 */
 	public void write(Parameter parameter) throws IOException {
 		if(parameter.getParameterValueType() == ParameterValueType.PARAMETERS) {
@@ -218,8 +218,7 @@ public class AponWriter extends AponFormat implements Flushable {
 	 * Writes a comment to the character-output stream.
 	 * 
 	 * @param describe the comment to write to a character-output stream.
-	 * 
-	 * @throws IOException An I/O error occurs.
+	 * @throws IOException an I/O error occurs.
 	 */
 	public void comment(String describe) throws IOException {
 		if(describe.indexOf(AponFormat.NEXT_LINE_CHAR) != -1) {
@@ -345,7 +344,12 @@ public class AponWriter extends AponFormat implements Flushable {
 	public void flush() throws IOException {
 		writer.flush();
 	}
-	
+
+	/**
+	 * Closes the writer.
+	 *
+	 * @throws IOException an I/O error occurs.
+	 */
 	public void close() throws IOException {
 		if(writer != null)
 			writer.close();

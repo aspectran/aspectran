@@ -22,7 +22,7 @@ import java.util.Map;
 import java.util.TimeZone;
 
 import com.aspectran.core.activity.request.parameter.FileParameter;
-import com.aspectran.core.context.rule.type.RequestMethodType;
+import com.aspectran.core.context.rule.type.MethodType;
 
 /**
  * The Interface RequestAdapter.
@@ -45,7 +45,7 @@ public interface RequestAdapter {
 	 *
 	 * @return the request method
 	 */
-	RequestMethodType getRequestMethod();
+	MethodType getRequestMethod();
 
 	/**
 	 * Gets the character encoding.

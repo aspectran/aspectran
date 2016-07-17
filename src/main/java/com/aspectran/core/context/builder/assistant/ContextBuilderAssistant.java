@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.aspectran.core.activity.GenericTranslet;
+import com.aspectran.core.activity.CoreTranslet;
 import com.aspectran.core.activity.Translet;
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.aspect.AspectRuleRegistry;
@@ -257,7 +257,7 @@ public class ContextBuilderAssistant {
 		}
 		if(defaultSettings.getTransletImplementationClassName() != null) {
 			Class<?> transletImplementationClass = classLoader.loadClass(defaultSettings.getTransletImplementationClassName());
-			defaultSettings.setTransletImplementationClass((Class<GenericTranslet>)transletImplementationClass);
+			defaultSettings.setTransletImplementationClass((Class<CoreTranslet>)transletImplementationClass);
 		}
 	}
 	
@@ -611,7 +611,7 @@ public class ContextBuilderAssistant {
 	}
 
 	public Importer newImporter(String file, String resource, String url, String fileType, String profile) {
-		ImportFileType importFileType = ImportFileType.lookup(fileType);
+		ImportFileType importFileType = ImportFileType.resolve(fileType);
 		Importer importer = null;
 
 		if(StringUtils.hasText(file)) {

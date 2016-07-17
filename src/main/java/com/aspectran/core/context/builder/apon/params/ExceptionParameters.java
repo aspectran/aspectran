@@ -16,28 +16,35 @@
 package com.aspectran.core.context.builder.apon.params;
 
 import com.aspectran.core.util.apon.AbstractParameters;
-import com.aspectran.core.util.apon.ParameterDefine;
+import com.aspectran.core.util.apon.ParameterDefinition;
+import com.aspectran.core.util.apon.ParameterValueType;
 
 public class ExceptionParameters extends AbstractParameters {
 
-	public static final ParameterDefine responseByContentTypes;
-	
-	private static final ParameterDefine[] parameterDefines;
+	public static final ParameterDefinition description;
+	public static final ParameterDefinition action;
+	public static final ParameterDefinition responseByContentTypes;
+
+	private static final ParameterDefinition[] parameterDefinitions;
 
 	static {
-		responseByContentTypes = new ParameterDefine("responseByContentType", ResponseByContentTypeParameters.class, true, true);
-	
-		parameterDefines = new ParameterDefine[] {
-				responseByContentTypes
+		description = new ParameterDefinition("description", ParameterValueType.TEXT);
+		action = new ParameterDefinition("action", ActionParameters.class);
+		responseByContentTypes = new ParameterDefinition("responseByContentType", ResponseByContentTypeParameters.class, true, true);
+
+		parameterDefinitions = new ParameterDefinition[] {
+			description,
+			action,
+			responseByContentTypes
 		};
 	}
-	
+
 	public ExceptionParameters() {
-		super(parameterDefines);
+		super(parameterDefinitions);
 	}
-	
+
 	public ExceptionParameters(String text) {
-		super(parameterDefines, text);
+		super(parameterDefinitions, text);
 	}
 	
 }

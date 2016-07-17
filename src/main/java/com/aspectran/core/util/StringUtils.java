@@ -16,6 +16,7 @@
 package com.aspectran.core.util;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import java.util.StringTokenizer;
@@ -631,7 +632,7 @@ public class StringUtils {
 	 */
 	public static String[] splitCommaDelimitedString(String str) {
 		return tokenize(str, ",", true);
-	}	
+	}
 	
 	/**
 	 * Convert a {@code String} array into a comma delimited {@code String}
@@ -642,7 +643,30 @@ public class StringUtils {
 	 */
 	public static String joinCommaDelimitedList(String[] arr) {
 		return arrayToDelimitedString(arr, ", ");
-	}	
+	}
+	
+	/**
+	 * Convert a {@code Collection} into a comma delimited {@code String}
+	 * (i.e., CSV).
+	 * 
+	 * @param list the collection
+	 * @return the delimited {@code String}
+	 */
+	public static String joinCommaDelimitedList(Collection<?> list) {
+		if(list == null || list.isEmpty()) {
+			return EMPTY;
+		}
+		StringBuilder sb = new StringBuilder();
+		boolean first = true;
+		for(Object o : list) {
+			if(!first) {
+				sb.append(", ");
+			}
+			sb.append(o);
+			first = false;
+		}
+		return sb.toString();
+	}
 	
 	/**
 	 * Parse the given {@code localeString} value into a {@link Locale}.

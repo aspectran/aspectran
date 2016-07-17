@@ -16,44 +16,44 @@
 package com.aspectran.core.context.builder.apon.params;
 
 import com.aspectran.core.util.apon.AbstractParameters;
-import com.aspectran.core.util.apon.ParameterDefine;
+import com.aspectran.core.util.apon.ParameterDefinition;
 import com.aspectran.core.util.apon.ParameterValueType;
 
 public class ResponseParameters extends AbstractParameters {
 
-	public static final ParameterDefine name;
-	public static final ParameterDefine characterEncoding;
-	public static final ParameterDefine transform;
-	public static final ParameterDefine dispatch;
-	public static final ParameterDefine forward;
-	public static final ParameterDefine redirect;
+	public static final ParameterDefinition name;
+	public static final ParameterDefinition characterEncoding;
+	public static final ParameterDefinition transform;
+	public static final ParameterDefinition dispatch;
+	public static final ParameterDefinition forward;
+	public static final ParameterDefinition redirect;
 	
-	private static final ParameterDefine[] parameterDefines;
+	private static final ParameterDefinition[] parameterDefinitions;
 
 	static {
-		name = new ParameterDefine("name", ParameterValueType.STRING);
-		characterEncoding = new ParameterDefine("characterEncoding", ParameterValueType.STRING);
-		transform = new ParameterDefine("transform", TransformParameters.class);
-		dispatch = new ParameterDefine("dispatch", DispatchParameters.class);
-		forward = new ParameterDefine("forward", ForwardParameters.class);
-		redirect = new ParameterDefine("redirect", RedirectParameters.class);
+		name = new ParameterDefinition("name", ParameterValueType.STRING);
+		characterEncoding = new ParameterDefinition("characterEncoding", ParameterValueType.STRING);
+		transform = new ParameterDefinition("transform", TransformParameters.class);
+		dispatch = new ParameterDefinition("dispatch", DispatchParameters.class);
+		forward = new ParameterDefinition("forward", ForwardParameters.class);
+		redirect = new ParameterDefinition("redirect", RedirectParameters.class);
 	
-		parameterDefines = new ParameterDefine[] {
-				name,
-				characterEncoding,
-				transform,
-				dispatch,
-				forward,
-				redirect
+		parameterDefinitions = new ParameterDefinition[] {
+			name,
+			characterEncoding,
+			transform,
+			dispatch,
+			forward,
+			redirect
 		};
 	}
 	
 	public ResponseParameters() {
-		super(parameterDefines);
+		super(parameterDefinitions);
 	}
 	
 	public ResponseParameters(String text) {
-		super(parameterDefines, text);
+		super(parameterDefinitions, text);
 	}
 	
 }

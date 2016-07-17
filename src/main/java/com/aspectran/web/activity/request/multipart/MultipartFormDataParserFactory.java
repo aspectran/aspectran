@@ -40,7 +40,7 @@ public class MultipartFormDataParserFactory {
 	}
 
 	/**
-	 * Gets temporary file path.
+	 * Gets the temporary file path.
 	 *
 	 * @return the temporary file path
 	 */
@@ -49,7 +49,7 @@ public class MultipartFormDataParserFactory {
 	}
 
 	/**
-	 * Sets temporary file path.
+	 * Sets the temporary file path.
 	 *
 	 * @param temporaryFilePath the temporary file path
 	 */
@@ -58,34 +58,34 @@ public class MultipartFormDataParserFactory {
 	}
 
 	/**
-	 * Gets max request size.
+	 * Gets the maximum size of the request.
 	 *
-	 * @return the max request size
+	 * @return the maximum size of the request
 	 */
 	public long getMaxRequestSize() {
 		return maxRequestSize;
 	}
 
 	/**
-	 * Sets max request size.
+	 * Sets the maximum size of the request.
 	 *
-	 * @param maxRequestSize the max request size
+	 * @param maxRequestSize the maximum size of the request
 	 */
 	public void setMaxRequestSize(long maxRequestSize) {
 		this.maxRequestSize = maxRequestSize;
 	}
 
 	/**
-	 * Sets max request size.
+	 * Sets the maximum size of the request.
 	 *
-	 * @param maxRequestSize the max request size
+	 * @param maxRequestSize the maximum size of the request
 	 */
 	public void setMaxRequestSize(String maxRequestSize) {
 		this.maxRequestSize = FileUtils.formattedSizeToBytes(maxRequestSize, -1);
 	}
 
 	/**
-	 * Gets allowed file extensions.
+	 * Gets the allowed file extensions.
 	 *
 	 * @return the allowed file extensions
 	 */
@@ -94,7 +94,7 @@ public class MultipartFormDataParserFactory {
 	}
 
 	/**
-	 * Sets allowed file extensions.
+	 * Sets the allowed file extensions.
 	 *
 	 * @param allowedFileExtensions the allowed file extensions
 	 */
@@ -103,7 +103,7 @@ public class MultipartFormDataParserFactory {
 	}
 
 	/**
-	 * Gets denied file extensions.
+	 * Gets the denied file extensions.
 	 *
 	 * @return the denied file extensions
 	 */
@@ -112,7 +112,7 @@ public class MultipartFormDataParserFactory {
 	}
 
 	/**
-	 * Sets denied file extensions.
+	 * Sets the denied file extensions.
 	 *
 	 * @param deniedFileExtensions the denied file extensions
 	 */

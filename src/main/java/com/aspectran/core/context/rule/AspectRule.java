@@ -23,6 +23,7 @@ import com.aspectran.core.context.rule.ability.BeanReferenceInspectable;
 import com.aspectran.core.context.rule.type.AspectTargetType;
 import com.aspectran.core.context.rule.type.BeanReferrerType;
 import com.aspectran.core.context.rule.type.JoinpointScopeType;
+import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.util.ToStringBuilder;
 
 /**
@@ -38,6 +39,8 @@ public class AspectRule implements BeanReferenceInspectable {
 	
 	private JoinpointScopeType joinpointScope;
 	
+	private MethodType[] allowedMethods;
+	
 	private PointcutRule pointcutRule;
 	
 	private Pointcut pointcut;
@@ -52,7 +55,7 @@ public class AspectRule implements BeanReferenceInspectable {
 	
 	private List<AspectJobAdviceRule> aspectJobAdviceRuleList; // for scheduling aspects
 	
-	private ExceptionHandlingRule exceptionHandlingRule;
+	private ExceptionRule exceptionRule;
 	
 	private boolean beanRelevanted;
 	
@@ -80,6 +83,14 @@ public class AspectRule implements BeanReferenceInspectable {
 
 	public void setJoinpointScope(JoinpointScopeType joinpointScope) {
 		this.joinpointScope = joinpointScope;
+	}
+
+	public MethodType[] getAllowedMethods() {
+		return allowedMethods;
+	}
+
+	public void setAllowedMethods(MethodType[] allowedMethods) {
+		this.allowedMethods = allowedMethods;
 	}
 
 	public PointcutRule getPointcutRule() {
@@ -155,12 +166,12 @@ public class AspectRule implements BeanReferenceInspectable {
 		aspectJobAdviceRuleList.add(aspectJobAdviceRule);
 	}
 
-	public ExceptionHandlingRule getExceptionHandlingRule() {
-		return exceptionHandlingRule;
+	public ExceptionRule getExceptionRule() {
+		return exceptionRule;
 	}
 
-	public void setExceptionHandlingRule(ExceptionHandlingRule exceptionHandlingRule) {
-		this.exceptionHandlingRule = exceptionHandlingRule;
+	public void setExceptionRule(ExceptionRule exceptionRule) {
+		this.exceptionRule = exceptionRule;
 	}
 
 	public boolean isBeanRelevanted() {
@@ -207,7 +218,7 @@ public class AspectRule implements BeanReferenceInspectable {
 		} else if(aspectTargetType == AspectTargetType.SCHEDULER) {
 			tsb.append("aspectJobAdviceRuleList", aspectJobAdviceRuleList);
 		}
-		tsb.append("exceptionHandlingRule", exceptionHandlingRule);
+		tsb.append("exceptionRule", exceptionRule);
 		tsb.append("beanRelevanted", beanRelevanted);
 		return tsb.toString();
 	}
@@ -216,7 +227,7 @@ public class AspectRule implements BeanReferenceInspectable {
 		AspectTargetType aspectTargetType;
 		
 		if(useFor != null) {
-			aspectTargetType = AspectTargetType.lookup(useFor);
+			aspectTargetType = AspectTargetType.resolve(useFor);
 			if(aspectTargetType == null)
 				throw new IllegalArgumentException("No aspect target type registered for '" + useFor + "'.");
 		} else {
@@ -234,7 +245,7 @@ public class AspectRule implements BeanReferenceInspectable {
 		JoinpointScopeType joinpointScope;
 		
 		if(scope != null) {
-			joinpointScope = JoinpointScopeType.lookup(scope);
+			joinpointScope = JoinpointScopeType.resolve(scope);
 			if(joinpointScope == null)
 				throw new IllegalArgumentException("No joinpoint scope type registered for '" + scope + "'.");
 		} else {
@@ -242,6 +253,17 @@ public class AspectRule implements BeanReferenceInspectable {
 		}
 		
 		aspectRule.setJoinpointScope(joinpointScope);
+	}
+	
+	public static void updateAllowedMethods(AspectRule aspectRule, String method) {
+		MethodType[] allowedMethods = null;
+		if(method != null) {
+			allowedMethods = MethodType.parse(method);
+			if(allowedMethods == null)
+				throw new IllegalArgumentException("No request method type registered for '" + method + "'.");
+		}
+
+		aspectRule.setAllowedMethods(allowedMethods);
 	}
 	
 }

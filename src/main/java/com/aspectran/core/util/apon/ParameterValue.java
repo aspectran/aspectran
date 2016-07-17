@@ -60,7 +60,6 @@ public class ParameterValue implements Parameter {
 		this.array = array;
 		this.predefined = (predefined && parameterValueType != ParameterValueType.VARIABLE);
 
-		//if(this.array && !noBracket && (parameterValueType == ParameterValueType.PARAMETERS || parameterValueType == ParameterValueType.VARIABLE))
 		if(this.array && !noBracket)
 			this.bracketed = true;
 	}
@@ -150,18 +149,16 @@ public class ParameterValue implements Parameter {
 
 	@Override
 	public int getArraySize() {
-		if(list == null)
-			return 0;
-		
-		return list.size();
+		return (list != null ? list.size() : 0);
 	}
 	
 	@Override
 	public void putValue(Object value) {
 		if(!predefined) {
 			if(parameterValueType == ParameterValueType.STRING) {
-				if(value.toString().indexOf(AponFormat.NEXT_LINE_CHAR) != -1)
+				if(value.toString().indexOf(AponFormat.NEXT_LINE_CHAR) != -1) {
 					parameterValueType = ParameterValueType.TEXT;
+				}
 			} else if(parameterValueType == ParameterValueType.VARIABLE && value instanceof String) {
 				if(value.toString().indexOf(AponFormat.NEXT_LINE_CHAR) != -1) {
 					parameterValueType = ParameterValueType.TEXT;
@@ -205,10 +202,7 @@ public class ParameterValue implements Parameter {
 
 	@Override
 	public Object getValue() {
-		if(array)
-			return list;
-		else
-			return value;
+		return (array ? list : value);
 	}
 
 	@Override
@@ -224,18 +218,12 @@ public class ParameterValue implements Parameter {
 	
 	@Override
 	public Object[] getValues() {
-		if(list == null)
-			return null;
-
-		return list.toArray(new Object[list.size()]);
+		return (list != null ? list.toArray(new Object[list.size()]) : null);
 	}
 
 	@Override
 	public String getValueAsString() {
-		if(value == null)
-			return null;
-
-		return value.toString();
+		return (value != null ? value.toString() : null);
 	}
 	
 	@Override
@@ -270,32 +258,24 @@ public class ParameterValue implements Parameter {
 		}
 		
 		List<String> list2 = new ArrayList<String>();
-		
+
 		for(Object o : list) {
 			list2.add(o.toString());
 		}
-		
+
 		return list2;
 	}
 
 	@Override
 	public Integer getValueAsInt() {
 		checkParameterValueType(ParameterValueType.INT);
-
-		if(value == null)
-			return null;
-		
 		return (Integer)value;
 	}
 	
 	@Override
 	public Integer[] getValueAsIntArray() {
 		List<Integer> intList = getValueAsIntList();
-		
-		if(intList == null)
-			return null;
-		
-		return (Integer[])intList.toArray(new Integer[intList.size()]);
+		return (intList != null ? intList.toArray(new Integer[intList.size()]): null);
 	}
 
 	@Override
@@ -309,84 +289,57 @@ public class ParameterValue implements Parameter {
 	@Override
 	public Long getValueAsLong() {
 		checkParameterValueType(ParameterValueType.LONG);
-		
-		if(value == null)
-			return null;
-		
 		return (Long)value;
 	}
 	
 	@Override
 	public Long[] getValueAsLongArray() {
 		List<Long> longList = getValueAsLongList();
-
-		if(longList == null)
-			return null;
-		
-		return (Long[])longList.toArray(new Long[longList.size()]);
+		return (longList != null ? longList.toArray(new Long[longList.size()]) : null);
 	}
 
 	@Override
 	@SuppressWarnings("unchecked")
 	public List<Long> getValueAsLongList() {
 		checkParameterValueType(ParameterValueType.LONG);
-
 		return (List<Long>)getValueList();
 	}
 	
 	@Override
 	public Float getValueAsFloat() {
 		checkParameterValueType(ParameterValueType.FLOAT);
-
-		if(value == null)
-			return null;
-		
 		return (Float)value;
 	}
 	
 	@Override
 	public Float[] getValueAsFloatArray() {
 		List<Float> floatList = getValueAsFloatList();
-
-		if(floatList == null)
-			return null;
-		
-		return (Float[])floatList.toArray(new Float[floatList.size()]);
+		return (floatList != null ? floatList.toArray(new Float[floatList.size()]) : null);
 	}
 
 	@Override
 	@SuppressWarnings("unchecked")
 	public List<Float> getValueAsFloatList() {
 		checkParameterValueType(ParameterValueType.FLOAT);
-
 		return (List<Float>)getValueList();
 	}
 	
 	@Override
 	public Double getValueAsDouble() {
 		checkParameterValueType(ParameterValueType.DOUBLE);
-		
-		if(value == null)
-			return null;
-		
 		return (Double)value;
 	}
 	
 	@Override
 	public Double[] getValueAsDoubleArray() {
 		List<Double> doubleList = getValueAsDoubleList();
-		
-		if(doubleList == null)
-			return null;
-		
-		return (Double[])doubleList.toArray(new Double[doubleList.size()]);
+		return (doubleList != null ? doubleList.toArray(new Double[doubleList.size()]) : null);
 	}
 	
 	@Override
 	@SuppressWarnings("unchecked")
 	public List<Double> getValueAsDoubleList() {
 		checkParameterValueType(ParameterValueType.DOUBLE);
-		
 		return (List<Double>)getValueList();
 	}
 
@@ -399,36 +352,26 @@ public class ParameterValue implements Parameter {
 	@Override
 	public Boolean[] getValueAsBooleanArray() {
 		List<Boolean> booleanList = getValueAsBooleanList();
-		
-		if(booleanList == null)
-			return null;
-		
-		return (Boolean[])booleanList.toArray(new Boolean[booleanList.size()]);
+		return (booleanList != null ? booleanList.toArray(new Boolean[booleanList.size()]) : null);
 	}
 	
 	@Override
 	@SuppressWarnings("unchecked")
 	public List<Boolean> getValueAsBooleanList() {
 		checkParameterValueType(ParameterValueType.BOOLEAN);
-
 		return (List<Boolean>)getValueList();
 	}
 	
 	@Override
 	public Parameters getValueAsParameters() {
 		checkParameterValueType(ParameterValueType.PARAMETERS);
-		
 		return (Parameters)value;
 	}
 
 	@Override
 	public Parameters[] getValueAsParametersArray() {
 		List<Parameters> parametersList = getValueAsParametersList();
-		
-		if(parametersList == null)
-			return null;
-		
-		return parametersList.toArray(new Parameters[parametersList.size()]);
+		return (parametersList != null ? parametersList.toArray(new Parameters[parametersList.size()]) : null);
 	}
 
 	@Override
@@ -444,11 +387,11 @@ public class ParameterValue implements Parameter {
 	public Parameters newParameters(Parameter prototype) {
 		if(parameterValueType == ParameterValueType.VARIABLE) {
 			parameterValueType = ParameterValueType.PARAMETERS;
-			parametersClass = GenericParameters.class;
+			parametersClass = VariableParameters.class;
 		} else {
 			checkParameterValueType(ParameterValueType.PARAMETERS);
 			if(parametersClass == null)
-				parametersClass = GenericParameters.class;
+				parametersClass = VariableParameters.class;
 		}
 
 		try {

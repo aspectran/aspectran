@@ -15,7 +15,6 @@
  */
 package com.aspectran.core.context.rule.ability;
 
-import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
 
 /**
@@ -39,12 +38,5 @@ public interface ArgumentPossessable {
 	 * @param argumentItemRuleMap the new argument item rule map
 	 */
 	void setArgumentItemRuleMap(ItemRuleMap argumentItemRuleMap);
-
-	/**
-	 * Adds the item rule for argument.
-	 *
-	 * @param argumentItemRule the argument item rule
-	 */
-	void addArgumentItemRule(ItemRule argumentItemRule);
 
 }

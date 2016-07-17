@@ -16,50 +16,50 @@
 package com.aspectran.core.context.builder.apon.params;
 
 import com.aspectran.core.util.apon.AbstractParameters;
-import com.aspectran.core.util.apon.ParameterDefine;
+import com.aspectran.core.util.apon.ParameterDefinition;
 import com.aspectran.core.util.apon.ParameterValueType;
 
 public class TransformParameters extends AbstractParameters {
 
-	public static final ParameterDefine actions;
-	public static final ParameterDefine type;
-	public static final ParameterDefine contentType;
-	public static final ParameterDefine template;
-	public static final ParameterDefine characterEncoding;
-	public static final ParameterDefine defaultResponse;
-	public static final ParameterDefine pretty;
-	public static final ParameterDefine builtin;
+	public static final ParameterDefinition actions;
+	public static final ParameterDefinition type;
+	public static final ParameterDefinition contentType;
+	public static final ParameterDefinition template;
+	public static final ParameterDefinition characterEncoding;
+	public static final ParameterDefinition defaultResponse;
+	public static final ParameterDefinition pretty;
+	public static final ParameterDefinition builtin;
 
-	private static final ParameterDefine[] parameterDefines;
+	private static final ParameterDefinition[] parameterDefinitions;
 	
 	static {
-		actions = new ParameterDefine("action", ActionParameters.class, true, true);
-		type = new ParameterDefine("type", ParameterValueType.STRING);
-		contentType = new ParameterDefine("contentType", ParameterValueType.STRING);
-		template = new ParameterDefine("template", ParameterValueType.STRING);
-		characterEncoding = new ParameterDefine("characterEncoding", ParameterValueType.STRING);
-		defaultResponse = new ParameterDefine("defaultResponse", ParameterValueType.BOOLEAN);
-		pretty = new ParameterDefine("pretty", ParameterValueType.BOOLEAN);
-		builtin = new ParameterDefine("builtin", TemplateParameters.class);
+		actions = new ParameterDefinition("action", ActionParameters.class, true, true);
+		type = new ParameterDefinition("type", ParameterValueType.STRING);
+		contentType = new ParameterDefinition("contentType", ParameterValueType.STRING);
+		template = new ParameterDefinition("template", ParameterValueType.STRING);
+		characterEncoding = new ParameterDefinition("characterEncoding", ParameterValueType.STRING);
+		defaultResponse = new ParameterDefinition("defaultResponse", ParameterValueType.BOOLEAN);
+		pretty = new ParameterDefinition("pretty", ParameterValueType.BOOLEAN);
+		builtin = new ParameterDefinition("builtin", TemplateParameters.class);
 
-		parameterDefines = new ParameterDefine[] {
-				actions,
-				type,
-				contentType,
-				template,
-				characterEncoding,
-				defaultResponse,
-				pretty,
-				builtin
+		parameterDefinitions = new ParameterDefinition[] {
+			actions,
+			type,
+			contentType,
+			template,
+			characterEncoding,
+			defaultResponse,
+			pretty,
+			builtin
 		};
 	}
 	
 	public TransformParameters() {
-		super(parameterDefines);
+		super(parameterDefinitions);
 	}
 	
 	public TransformParameters(String text) {
-		super(parameterDefines, text);
+		super(parameterDefinitions, text);
 	}
 	
 }

@@ -47,7 +47,7 @@ public class AponReaderTest3 {
 		}
 		
 		public Parameters read() throws IOException {
-			Parameters parameters = new GenericParameters();
+			Parameters parameters = new VariableParameters();
 			return read(parameters);
 		}
 		
@@ -124,7 +124,7 @@ public class AponReaderTest3 {
 						if(!addable)
 							throw new InvalidParameterException(lineNumber, line, trim, "Only acceptable pre-defined parameters. Undefined parameter name: " + name);
 
-						parameterValueType = ParameterValueType.lookupByHint(name);
+						parameterValueType = ParameterValueType.resolveByHint(name);
 						if(parameterValueType != null) {
 							name = ParameterValueType.stripHintedValueType(name);
 							parameterValue = parameterValueMap.get(name);
@@ -336,7 +336,7 @@ public class AponReaderTest3 {
 		}
 
 		public static Parameters read(String text) {
-			Parameters parameters = new GenericParameters();
+			Parameters parameters = new VariableParameters();
 			return read(text, parameters);
 		}
 

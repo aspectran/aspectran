@@ -42,10 +42,10 @@ public enum ContentType {
 	/**
 	 * Returns a <code>ContentType</code> with a value represented by the specified String.
 	 *
-	 * @param alias the specified String
+	 * @param alias the content type as a String
 	 * @return the content type
 	 */
-	public static ContentType lookup(String alias) {
+	public static ContentType resolve(String alias) {
 		for(ContentType type : values()) {
 			if(type.alias.equals(alias))
 				return type;
