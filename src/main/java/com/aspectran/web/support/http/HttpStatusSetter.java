@@ -42,16 +42,16 @@ import com.aspectran.core.activity.Translet;
  *  - 415("Unsupported Media Type"): 요청의 페이로드에 있는 미디어 타입이 처리되지 못했을 때 사용해야 한다.
  *  - 500("Internal Server Error"): API가 잘못 작동할 때 사용해야 한다.
  */
-public class HttpStatusCodeSetter {
+public class HttpStatusSetter {
 
 	/**
 	 * 200("OK"): 일반적인 요청 성공을 나타내는 데 사용해야 한다. 응답 바디에 에러를 전송하는 데 사용해서는 안 된다.
 	 *
 	 * @param translet the Translet
 	 */
-	public static void setOk(Translet translet) {
+	public static void ok(Translet translet) {
 		HttpServletResponse res = translet.getResponseAdaptee();
-		res.setStatus(HttpServletResponse.SC_OK);
+		res.setStatus(HttpStatus.OK.value());
 	}
 	
 	/**
@@ -59,9 +59,9 @@ public class HttpStatusCodeSetter {
 	 *
 	 * @param translet the Translet
 	 */
-	public static void setCreated(Translet translet) {
+	public static void created(Translet translet) {
 		HttpServletResponse res = translet.getResponseAdaptee();
-		res.setStatus(HttpServletResponse.SC_CREATED);
+		res.setStatus(HttpStatus.CREATED.value());
 	}
 	
 	/**
@@ -69,9 +69,9 @@ public class HttpStatusCodeSetter {
 	 *
 	 * @param translet the Translet
 	 */
-	public static void setAccepted(Translet translet) {
+	public static void accepted(Translet translet) {
 		HttpServletResponse res = translet.getResponseAdaptee();
-		res.setStatus(HttpServletResponse.SC_ACCEPTED);
+		res.setStatus(HttpStatus.ACCEPTED.value());
 	}
 	
 	/**
@@ -79,9 +79,9 @@ public class HttpStatusCodeSetter {
 	 *
 	 * @param translet the Translet
 	 */
-	public static void setNoContent(Translet translet) {
+	public static void noContent(Translet translet) {
 		HttpServletResponse res = translet.getResponseAdaptee();
-		res.setStatus(HttpServletResponse.SC_NO_CONTENT);
+		res.setStatus(HttpStatus.NO_CONTENT.value());
 	}
 	
 	/**
@@ -89,9 +89,9 @@ public class HttpStatusCodeSetter {
 	 *
 	 * @param translet the Translet
 	 */
-	public static void setMovedPermanently(Translet translet) {
+	public static void movedPermanently(Translet translet) {
 		HttpServletResponse res = translet.getResponseAdaptee();
-		res.setStatus(HttpServletResponse.SC_MOVED_PERMANENTLY);
+		res.setStatus(HttpStatus.MOVED_PERMANENTLY.value());
 	}
 	
 	/**
@@ -99,9 +99,9 @@ public class HttpStatusCodeSetter {
 	 *
 	 * @param translet the Translet
 	 */
-	public static void setSeeOther(Translet translet) {
+	public static void seeOther(Translet translet) {
 		HttpServletResponse res = translet.getResponseAdaptee();
-		res.setStatus(HttpServletResponse.SC_SEE_OTHER);
+		res.setStatus(HttpStatus.SEE_OTHER.value());
 	}
 	
 	/**
@@ -109,9 +109,9 @@ public class HttpStatusCodeSetter {
 	 *
 	 * @param translet the Translet
 	 */
-	public static void setNotModified(Translet translet) {
+	public static void notModified(Translet translet) {
 		HttpServletResponse res = translet.getResponseAdaptee();
-		res.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
+		res.setStatus(HttpStatus.NOT_MODIFIED.value());
 	}
 	
 	/**
@@ -119,9 +119,9 @@ public class HttpStatusCodeSetter {
 	 *
 	 * @param translet the Translet
 	 */
-	public static void setTemporaryRedirect(Translet translet) {
+	public static void temporaryRedirect(Translet translet) {
 		HttpServletResponse res = translet.getResponseAdaptee();
-		res.setStatus(HttpServletResponse.SC_TEMPORARY_REDIRECT);
+		res.setStatus(HttpStatus.TEMPORARY_REDIRECT.value());
 	}
 	
 	/**
@@ -129,9 +129,9 @@ public class HttpStatusCodeSetter {
 	 *
 	 * @param translet the Translet
 	 */
-	public static void setBadRequest(Translet translet) {
+	public static void badRequest(Translet translet) {
 		HttpServletResponse res = translet.getResponseAdaptee();
-		res.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+		res.setStatus(HttpStatus.BAD_REQUEST.value());
 	}
 	
 	/**
@@ -139,9 +139,9 @@ public class HttpStatusCodeSetter {
 	 *
 	 * @param translet the Translet
 	 */
-	public static void setUnauthorized(Translet translet) {
+	public static void unauthorized(Translet translet) {
 		HttpServletResponse res = translet.getResponseAdaptee();
-		res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+		res.setStatus(HttpStatus.UNAUTHORIZED.value());
 	}
 	
 	/**
@@ -149,9 +149,9 @@ public class HttpStatusCodeSetter {
 	 *
 	 * @param translet the Translet
 	 */
-	public static void setForbidden(Translet translet) {
+	public static void forbidden(Translet translet) {
 		HttpServletResponse res = translet.getResponseAdaptee();
-		res.setStatus(HttpServletResponse.SC_FORBIDDEN);
+		res.setStatus(HttpStatus.FORBIDDEN.value());
 	}
 	
 	/**
@@ -159,9 +159,9 @@ public class HttpStatusCodeSetter {
 	 *
 	 * @param translet the Translet
 	 */
-	public static void setNotFound(Translet translet) {
+	public static void notFound(Translet translet) {
 		HttpServletResponse res = translet.getResponseAdaptee();
-		res.setStatus(HttpServletResponse.SC_NOT_FOUND);
+		res.setStatus(HttpStatus.NOT_FOUND.value());
 	}
 	
 	/**
@@ -169,9 +169,9 @@ public class HttpStatusCodeSetter {
 	 *
 	 * @param translet the Translet
 	 */
-	public static void setMethodNotAllowed(Translet translet) {
+	public static void methodNotAllowed(Translet translet) {
 		HttpServletResponse res = translet.getResponseAdaptee();
-		res.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
+		res.setStatus(HttpStatus.METHOD_NOT_ALLOWED.value());
 	}
 	
 	/**
@@ -179,9 +179,9 @@ public class HttpStatusCodeSetter {
 	 *
 	 * @param translet the Translet
 	 */
-	public static void setNotAcceptable(Translet translet) {
+	public static void notAcceptable(Translet translet) {
 		HttpServletResponse res = translet.getResponseAdaptee();
-		res.setStatus(HttpServletResponse.SC_NOT_ACCEPTABLE);
+		res.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
 	}
 	
 	/**
@@ -189,9 +189,9 @@ public class HttpStatusCodeSetter {
 	 *
 	 * @param translet the Translet
 	 */
-	public static void setConflict(Translet translet) {
+	public static void conflict(Translet translet) {
 		HttpServletResponse res = translet.getResponseAdaptee();
-		res.setStatus(HttpServletResponse.SC_CONFLICT);
+		res.setStatus(HttpStatus.CONFLICT.value());
 	}
 	
 	/**
@@ -199,9 +199,9 @@ public class HttpStatusCodeSetter {
 	 *
 	 * @param translet the Translet
 	 */
-	public static void setPreconditionFailed(Translet translet) {
+	public static void preconditionFailed(Translet translet) {
 		HttpServletResponse res = translet.getResponseAdaptee();
-		res.setStatus(HttpServletResponse.SC_PRECONDITION_FAILED);
+		res.setStatus(HttpStatus.PRECONDITION_FAILED.value());
 	}
 	
 	/**
@@ -209,9 +209,9 @@ public class HttpStatusCodeSetter {
 	 *
 	 * @param translet the Translet
 	 */
-	public static void setUnsupportedMediaType(Translet translet) {
+	public static void unsupportedMediaType(Translet translet) {
 		HttpServletResponse res = translet.getResponseAdaptee();
-		res.setStatus(HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE);
+		res.setStatus(HttpStatus.UNSUPPORTED_MEDIA_TYPE.value());
 	}
 	
 	/**
@@ -219,9 +219,9 @@ public class HttpStatusCodeSetter {
 	 *
 	 * @param translet the Translet
 	 */
-	public static void setInternalServerError(Translet translet) {
+	public static void internalServerError(Translet translet) {
 		HttpServletResponse res = translet.getResponseAdaptee();
-		res.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+		res.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 	}
 	
 }
