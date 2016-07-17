@@ -20,19 +20,19 @@ import java.util.Map;
 import java.util.Set;
 
 public interface Parameters {
-	
+
 	Map<String, ParameterValue> getParameterValueMap();
 
 	void setPrototype(Parameter parent);
 
 	Parameter getPrototype();
-	
+
 	String getQualifiedName();
-	
+
 	Parameter getParent();
-	
+
 	String[] getParameterNames();
-	
+
 	Set<String> getParameterNameSet();
 
 	boolean hasParameter(String name);
@@ -151,6 +151,7 @@ public interface Parameters {
 	 * or {@code defaultValue} if the parameter does not exist.
 	 *
 	 * @param parameterDefinition the parameter definition
+	 * @param defaultValue the default value to return if no value is found
 	 * @return the value for the specified parameter, or {@code defaultValue}
 	 */
 	String getString(ParameterDefinition parameterDefinition, String defaultValue);
@@ -224,6 +225,7 @@ public interface Parameters {
 	 * or {@code defaultValue} if the parameter does not exist.
 	 *
 	 * @param parameterDefinition the parameter definition
+	 * @param defaultValue the default value to return if no value is found
 	 * @return the value for the specified parameter, or {@code defaultValue}
 	 */
 	int getInt(ParameterDefinition parameterDefinition, int defaultValue);
@@ -297,6 +299,7 @@ public interface Parameters {
 	 * or {@code defaultValue} if the parameter does not exist.
 	 *
 	 * @param parameterDefinition the parameter definition
+	 * @param defaultValue the default value to return if no value is found
 	 * @return the value for the specified parameter, or {@code defaultValue}
 	 */
 	long getLong(ParameterDefinition parameterDefinition, long defaultValue);
@@ -370,6 +373,7 @@ public interface Parameters {
 	 * or {@code defaultValue} if the parameter does not exist.
 	 *
 	 * @param parameterDefinition the parameter definition
+	 * @param defaultValue the default value to return if no value is found
 	 * @return the value for the specified parameter, or {@code defaultValue}
 	 */
 	float getFloat(ParameterDefinition parameterDefinition, float defaultValue);
@@ -443,6 +447,7 @@ public interface Parameters {
 	 * or {@code defaultValue} if the parameter does not exist.
 	 *
 	 * @param parameterDefinition the parameter definition
+	 * @param defaultValue the default value to return if no value is found
 	 * @return the value for the specified parameter, or {@code defaultValue}
 	 */
 	double getDouble(ParameterDefinition parameterDefinition, double defaultValue);
@@ -516,6 +521,7 @@ public interface Parameters {
 	 * or {@code defaultValue} if the parameter does not exist.
 	 *
 	 * @param parameterDefinition the parameter definition
+	 * @param defaultValue the default value to return if no value is found
 	 * @return the value for the specified parameter, or {@code defaultValue}
 	 */
 	boolean getBoolean(ParameterDefinition parameterDefinition, boolean defaultValue);
@@ -551,6 +557,7 @@ public interface Parameters {
 	 * Return the value for the specified parameter,
 	 * or {@code null} if the parameter does not exist.
 	 *
+	 * @param <T> the type parameter
 	 * @param name the parameter name
 	 * @return the value for the specified parameter, or {@code null}
 	 */
@@ -560,6 +567,7 @@ public interface Parameters {
 	 * Return the value for the specified parameter,
 	 * or {@code null} if the parameter does not exist.
 	 *
+	 * @param <T> the type parameter
 	 * @param name the parameter name
 	 * @return the value for the specified parameter, or {@code null}
 	 */
@@ -569,6 +577,7 @@ public interface Parameters {
 	 * Return the value for the specified parameter,
 	 * or {@code null} if the parameter does not exist.
 	 *
+	 * @param <T> the type parameter
 	 * @param parameterDefinition the parameter definition
 	 * @return the value for the specified parameter, or {@code null}
 	 */
@@ -578,6 +587,7 @@ public interface Parameters {
 	 * Return the value for the specified parameter,
 	 * or {@code null} if the parameter does not exist.
 	 *
+	 * @param <T> the type parameter
 	 * @param parameterDefinition the parameter definition
 	 * @return the value for the specified parameter, or {@code null}
 	 */
@@ -587,6 +597,7 @@ public interface Parameters {
 	 * Return the value for the specified parameter,
 	 * or {@code null} if the parameter does not exist.
 	 *
+	 * @param <T> the type parameter
 	 * @param name the parameter name
 	 * @return the value for the specified parameter, or {@code null}
 	 */
@@ -596,25 +607,26 @@ public interface Parameters {
 	 * Return the value for the specified parameter,
 	 * or {@code null} if the parameter does not exist.
 	 *
+	 * @param <T> the type parameter
 	 * @param parameterDefinition the parameter definition
 	 * @return the value for the specified parameter, or {@code null}
 	 */
 	<T extends Parameters> List<T> getParametersList(ParameterDefinition parameterDefinition);
-	
+
 	ParameterValue newParameterValue(String name, ParameterValueType parameterValueType);
-	
+
 	ParameterValue newParameterValue(String name, ParameterValueType parameterValueType, boolean array);
 
 	<T extends Parameters> T newParameters(String name);
-	
+
 	<T extends Parameters> T newParameters(ParameterDefinition parameterDefinition);
-	
+
 	<T extends Parameters> T touchParameters(String name);
-	
+
 	<T extends Parameters> T touchParameters(ParameterDefinition parameterDefinition);
-	
+
 	boolean isAddable();
-	
+
 	String describe();
 
 	String describe(boolean details);

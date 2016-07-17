@@ -41,6 +41,7 @@ import com.aspectran.core.activity.Translet;
  *  - 412("Precondition Failed"): 조건부 연산을 지원할 때 사용한다.
  *  - 415("Unsupported Media Type"): 요청의 페이로드에 있는 미디어 타입이 처리되지 못했을 때 사용해야 한다.
  *  - 500("Internal Server Error"): API가 잘못 작동할 때 사용해야 한다.
+ *  </pre>
  */
 public class HttpStatusCodeSetter {
 
