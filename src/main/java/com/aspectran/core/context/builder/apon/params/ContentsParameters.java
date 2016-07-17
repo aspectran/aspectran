@@ -16,35 +16,35 @@
 package com.aspectran.core.context.builder.apon.params;
 
 import com.aspectran.core.util.apon.AbstractParameters;
-import com.aspectran.core.util.apon.ParameterDefine;
+import com.aspectran.core.util.apon.ParameterDefinition;
 import com.aspectran.core.util.apon.ParameterValueType;
 
 public class ContentsParameters extends AbstractParameters {
 
-	public static final ParameterDefine name;
-	public static final ParameterDefine omittable;
-	public static final ParameterDefine contents;
+	public static final ParameterDefinition name;
+	public static final ParameterDefinition omittable;
+	public static final ParameterDefinition contents;
 	
-	private static final ParameterDefine[] parameterDefines;
+	private static final ParameterDefinition[] parameterDefinitions;
 	
 	static {
-		name = new ParameterDefine("name", ParameterValueType.STRING);
-		omittable = new ParameterDefine("omittable", ParameterValueType.BOOLEAN);
-		contents = new ParameterDefine("content", ContentParameters.class, true, true);
+		name = new ParameterDefinition("name", ParameterValueType.STRING);
+		omittable = new ParameterDefinition("omittable", ParameterValueType.BOOLEAN);
+		contents = new ParameterDefinition("content", ContentParameters.class, true, true);
 		
-		parameterDefines = new ParameterDefine[] {
-				name,
-				omittable,
-				contents
+		parameterDefinitions = new ParameterDefinition[] {
+			name,
+			omittable,
+			contents
 		};
 	}
 	
 	public ContentsParameters() {
-		super(parameterDefines);
+		super(parameterDefinitions);
 	}
 	
 	public ContentsParameters(String text) {
-		super(parameterDefines, text);
+		super(parameterDefinitions, text);
 	}
 	
 }

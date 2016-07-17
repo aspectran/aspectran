@@ -16,53 +16,53 @@
 package com.aspectran.core.context.builder.apon.params;
 
 import com.aspectran.core.util.apon.AbstractParameters;
-import com.aspectran.core.util.apon.ParameterDefine;
+import com.aspectran.core.util.apon.ParameterDefinition;
 import com.aspectran.core.util.apon.ParameterValueType;
 
 public class TemplateParameters extends AbstractParameters {
 
-	public static final ParameterDefine id;
-	public static final ParameterDefine engine;
-	public static final ParameterDefine name;
-	public static final ParameterDefine file;
-	public static final ParameterDefine resource;
-	public static final ParameterDefine url;
-	public static final ParameterDefine content;
-	public static final ParameterDefine encoding;
-	public static final ParameterDefine noCache;
+	public static final ParameterDefinition id;
+	public static final ParameterDefinition engine;
+	public static final ParameterDefinition name;
+	public static final ParameterDefinition file;
+	public static final ParameterDefinition resource;
+	public static final ParameterDefinition url;
+	public static final ParameterDefinition content;
+	public static final ParameterDefinition encoding;
+	public static final ParameterDefinition noCache;
 
-	private static final ParameterDefine[] parameterDefines;
+	private static final ParameterDefinition[] parameterDefinitions;
 
 	static {
-		id = new ParameterDefine("id", ParameterValueType.STRING);
-		engine = new ParameterDefine("engine", ParameterValueType.STRING);
-		name = new ParameterDefine("name", ParameterValueType.STRING);
-		file = new ParameterDefine("file", ParameterValueType.STRING);
-		resource = new ParameterDefine("resource", ParameterValueType.STRING);
-		url = new ParameterDefine("url", ParameterValueType.STRING);
-		content = new ParameterDefine("content", ParameterValueType.TEXT);
-		encoding = new ParameterDefine("encoding", ParameterValueType.STRING);
-		noCache = new ParameterDefine("noCache", ParameterValueType.BOOLEAN);
+		id = new ParameterDefinition("id", ParameterValueType.STRING);
+		engine = new ParameterDefinition("engine", ParameterValueType.STRING);
+		name = new ParameterDefinition("name", ParameterValueType.STRING);
+		file = new ParameterDefinition("file", ParameterValueType.STRING);
+		resource = new ParameterDefinition("resource", ParameterValueType.STRING);
+		url = new ParameterDefinition("url", ParameterValueType.STRING);
+		content = new ParameterDefinition("content", ParameterValueType.TEXT);
+		encoding = new ParameterDefinition("encoding", ParameterValueType.STRING);
+		noCache = new ParameterDefinition("noCache", ParameterValueType.BOOLEAN);
 		
-		parameterDefines = new ParameterDefine[] {
-				id,
-				engine,
-				name,
-				file,
-				resource,
-				url,
-				content,
-				encoding,
-				noCache
+		parameterDefinitions = new ParameterDefinition[] {
+			id,
+			engine,
+			name,
+			file,
+			resource,
+			url,
+			content,
+			encoding,
+			noCache
 		};
 	}
 	
 	public TemplateParameters() {
-		super(parameterDefines);
+		super(parameterDefinitions);
 	}
 	
 	public TemplateParameters(String text) {
-		super(parameterDefines, text);
+		super(parameterDefinitions, text);
 	}
 	
 }

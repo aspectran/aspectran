@@ -16,38 +16,38 @@
 package com.aspectran.core.context.builder.apon.params;
 
 import com.aspectran.core.util.apon.AbstractParameters;
-import com.aspectran.core.util.apon.ParameterDefine;
+import com.aspectran.core.util.apon.ParameterDefinition;
 import com.aspectran.core.util.apon.ParameterValueType;
 
 public class ReferenceParameters extends AbstractParameters {
 
-	public static final ParameterDefine parameter;
-	public static final ParameterDefine attribute;
-	public static final ParameterDefine bean;
-	public static final ParameterDefine property;
+	public static final ParameterDefinition parameter;
+	public static final ParameterDefinition attribute;
+	public static final ParameterDefinition bean;
+	public static final ParameterDefinition property;
 	
-	private static final ParameterDefine[] parameterDefines;
+	private static final ParameterDefinition[] parameterDefinitions;
 	
 	static {
-		parameter = new ParameterDefine("parameter", ParameterValueType.STRING);
-		attribute = new ParameterDefine("attribute", ParameterValueType.STRING);
-		bean = new ParameterDefine("bean", ParameterValueType.STRING);
-		property = new ParameterDefine("property", ParameterValueType.STRING);
+		parameter = new ParameterDefinition("parameter", ParameterValueType.STRING);
+		attribute = new ParameterDefinition("attribute", ParameterValueType.STRING);
+		bean = new ParameterDefinition("bean", ParameterValueType.STRING);
+		property = new ParameterDefinition("property", ParameterValueType.STRING);
 		
-		parameterDefines = new ParameterDefine[] {
-				parameter,
-				attribute,
-				bean,
-				property
+		parameterDefinitions = new ParameterDefinition[] {
+			parameter,
+			attribute,
+			bean,
+			property
 		};
 	}
 	
 	public ReferenceParameters() {
-		super(parameterDefines);
+		super(parameterDefinitions);
 	}
 	
 	public ReferenceParameters(String text) {
-		super(parameterDefines, text);
+		super(parameterDefinitions, text);
 	}
 	
 }

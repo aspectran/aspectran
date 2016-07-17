@@ -16,29 +16,29 @@
 package com.aspectran.core.context.builder.apon.params;
 
 import com.aspectran.core.util.apon.AbstractParameters;
-import com.aspectran.core.util.apon.ParameterDefine;
+import com.aspectran.core.util.apon.ParameterDefinition;
 import com.aspectran.core.util.apon.ParameterValueType;
 
 public class CronTriggerParameters extends AbstractParameters {
 
-	public static final ParameterDefine expression;
+	public static final ParameterDefinition expression;
 
-	private final static ParameterDefine[] parameterDefines;
+	private final static ParameterDefinition[] parameterDefinitions;
 	
 	static {
-		expression = new ParameterDefine("expression", ParameterValueType.STRING);
+		expression = new ParameterDefinition("expression", ParameterValueType.STRING);
 		
-		parameterDefines = new ParameterDefine[] {
-				expression
+		parameterDefinitions = new ParameterDefinition[] {
+			expression
 		};
 	}
 	
 	public CronTriggerParameters() {
-		super(parameterDefines);
+		super(parameterDefinitions);
 	}
 	
 	public CronTriggerParameters(String text) {
-		super(parameterDefines, text);
+		super(parameterDefinitions, text);
 	}
 	
 }

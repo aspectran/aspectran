@@ -16,29 +16,29 @@
 package com.aspectran.core.context.loader.config;
 
 import com.aspectran.core.util.apon.AbstractParameters;
-import com.aspectran.core.util.apon.ParameterDefine;
+import com.aspectran.core.util.apon.ParameterDefinition;
 import com.aspectran.core.util.apon.ParameterValueType;
 
 public class AspectranWebConfig extends AbstractParameters {
 
-	public static final ParameterDefine uriDecoding;
+	public static final ParameterDefinition uriDecoding;
 
-	private final static ParameterDefine[] parameterDefines;
+	private static final ParameterDefinition[] parameterDefinitions;
 
 	static {
-		uriDecoding = new ParameterDefine("uriDecoding", ParameterValueType.STRING);
+		uriDecoding = new ParameterDefinition("uriDecoding", ParameterValueType.STRING);
 
-		parameterDefines = new ParameterDefine[] {
-				uriDecoding
+		parameterDefinitions = new ParameterDefinition[] {
+			uriDecoding
 		};
 	}
 
 	public AspectranWebConfig() {
-		super(parameterDefines);
+		super(parameterDefinitions);
 	}
 
 	public AspectranWebConfig(String text) {
-		super(parameterDefines, text);
+		super(parameterDefinitions, text);
 	}
 	
 }

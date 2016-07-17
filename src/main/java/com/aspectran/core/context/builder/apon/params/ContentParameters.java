@@ -16,38 +16,38 @@
 package com.aspectran.core.context.builder.apon.params;
 
 import com.aspectran.core.util.apon.AbstractParameters;
-import com.aspectran.core.util.apon.ParameterDefine;
+import com.aspectran.core.util.apon.ParameterDefinition;
 import com.aspectran.core.util.apon.ParameterValueType;
 
 public class ContentParameters extends AbstractParameters {
 
-	public static final ParameterDefine name;
-	public static final ParameterDefine hidden;
-	public static final ParameterDefine omittable;
-	public static final ParameterDefine actions;
+	public static final ParameterDefinition name;
+	public static final ParameterDefinition hidden;
+	public static final ParameterDefinition omittable;
+	public static final ParameterDefinition actions;
 	
-	private static final ParameterDefine[] parameterDefines;
+	private static final ParameterDefinition[] parameterDefinitions;
 	
 	static {
-		name = new ParameterDefine("name", ParameterValueType.STRING);
-		hidden = new ParameterDefine("hidden", ParameterValueType.BOOLEAN);
-		omittable = new ParameterDefine("omittable", ParameterValueType.BOOLEAN);
-		actions = new ParameterDefine("action", ActionParameters.class, true, true);
+		name = new ParameterDefinition("name", ParameterValueType.STRING);
+		hidden = new ParameterDefinition("hidden", ParameterValueType.BOOLEAN);
+		omittable = new ParameterDefinition("omittable", ParameterValueType.BOOLEAN);
+		actions = new ParameterDefinition("action", ActionParameters.class, true, true);
 		
-		parameterDefines = new ParameterDefine[] {
-				name,
-				hidden,
-				omittable,
-				actions
+		parameterDefinitions = new ParameterDefinition[] {
+			name,
+			hidden,
+			omittable,
+			actions
 		};
 	}
 	
 	public ContentParameters() {
-		super(parameterDefines);
+		super(parameterDefinitions);
 	}
 	
 	public ContentParameters(String text) {
-		super(parameterDefines, text);
+		super(parameterDefinitions, text);
 	}
 	
 }

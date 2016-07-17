@@ -64,7 +64,7 @@ public class ParameterMap extends LinkedHashMap<String, String[]> {
 	/**
 	 * Sets the parameter.
 	 *
-	 * @param name the name
+	 * @param name the parameter name
 	 * @param value the value
 	 */
 	public void setParameter(String name, String value) {
@@ -75,7 +75,7 @@ public class ParameterMap extends LinkedHashMap<String, String[]> {
 	/**
 	 * Set parameter name and value.
 	 *
-	 * @param name the name
+	 * @param name the parameter name
 	 * @param values the values
 	 */
 	public void setParameter(String name, String[] values) {

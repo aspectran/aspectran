@@ -16,77 +16,77 @@
 package com.aspectran.core.context.builder.apon.params;
 
 import com.aspectran.core.util.apon.AbstractParameters;
-import com.aspectran.core.util.apon.ParameterDefine;
+import com.aspectran.core.util.apon.ParameterDefinition;
 import com.aspectran.core.util.apon.ParameterValueType;
 
 public class BeanParameters extends AbstractParameters {
 
-	public static final ParameterDefine description;
-	public static final ParameterDefine id;
-	public static final ParameterDefine className;
-	public static final ParameterDefine scan;
-	public static final ParameterDefine mask;
-	public static final ParameterDefine scope;
-	public static final ParameterDefine singleton;
-	public static final ParameterDefine offerBean;
-	public static final ParameterDefine offerMethod;
-	public static final ParameterDefine initMethod;
-	public static final ParameterDefine destroyMethod;
-	public static final ParameterDefine factoryMethod;
-	public static final ParameterDefine lazyInit;
-	public static final ParameterDefine important;
-	public static final ParameterDefine constructor;
-	public static final ParameterDefine properties;
-	public static final ParameterDefine filter;
+	public static final ParameterDefinition description;
+	public static final ParameterDefinition id;
+	public static final ParameterDefinition className;
+	public static final ParameterDefinition scan;
+	public static final ParameterDefinition mask;
+	public static final ParameterDefinition scope;
+	public static final ParameterDefinition singleton;
+	public static final ParameterDefinition offerBean;
+	public static final ParameterDefinition offerMethod;
+	public static final ParameterDefinition initMethod;
+	public static final ParameterDefinition destroyMethod;
+	public static final ParameterDefinition factoryMethod;
+	public static final ParameterDefinition lazyInit;
+	public static final ParameterDefinition important;
+	public static final ParameterDefinition constructor;
+	public static final ParameterDefinition properties;
+	public static final ParameterDefinition filter;
 	
-	private static final ParameterDefine[] parameterDefines;
+	private static final ParameterDefinition[] parameterDefinitions;
 	
 	static {
-		description = new ParameterDefine("description", ParameterValueType.TEXT);
-		id = new ParameterDefine("id", ParameterValueType.STRING);
-		className = new ParameterDefine("class", ParameterValueType.STRING);
-		scan = new ParameterDefine("scan", ParameterValueType.STRING);
-		mask = new ParameterDefine("mask", ParameterValueType.STRING);
-		scope = new ParameterDefine("scope", ParameterValueType.STRING);
-		singleton = new ParameterDefine("singleton", ParameterValueType.BOOLEAN);
-		offerBean = new ParameterDefine("offerBean", ParameterValueType.STRING);
-		offerMethod = new ParameterDefine("offerMethod", ParameterValueType.STRING);
-		initMethod = new ParameterDefine("initMethod", ParameterValueType.STRING);
-		destroyMethod = new ParameterDefine("destroyMethod", ParameterValueType.STRING);
-		factoryMethod = new ParameterDefine("factoryMethod", ParameterValueType.STRING);
-		lazyInit = new ParameterDefine("lazyInit", ParameterValueType.BOOLEAN);
-		important = new ParameterDefine("important", ParameterValueType.BOOLEAN);
-		constructor = new ParameterDefine("constructor", ConstructorParameters.class);
-		properties = new ParameterDefine("property", ItemHolderParameters.class);
-		filter = new ParameterDefine("filter", FilterParameters.class);
+		description = new ParameterDefinition("description", ParameterValueType.TEXT);
+		id = new ParameterDefinition("id", ParameterValueType.STRING);
+		className = new ParameterDefinition("class", ParameterValueType.STRING);
+		scan = new ParameterDefinition("scan", ParameterValueType.STRING);
+		mask = new ParameterDefinition("mask", ParameterValueType.STRING);
+		scope = new ParameterDefinition("scope", ParameterValueType.STRING);
+		singleton = new ParameterDefinition("singleton", ParameterValueType.BOOLEAN);
+		offerBean = new ParameterDefinition("offerBean", ParameterValueType.STRING);
+		offerMethod = new ParameterDefinition("offerMethod", ParameterValueType.STRING);
+		initMethod = new ParameterDefinition("initMethod", ParameterValueType.STRING);
+		destroyMethod = new ParameterDefinition("destroyMethod", ParameterValueType.STRING);
+		factoryMethod = new ParameterDefinition("factoryMethod", ParameterValueType.STRING);
+		lazyInit = new ParameterDefinition("lazyInit", ParameterValueType.BOOLEAN);
+		important = new ParameterDefinition("important", ParameterValueType.BOOLEAN);
+		constructor = new ParameterDefinition("constructor", ConstructorParameters.class);
+		properties = new ParameterDefinition("property", ItemHolderParameters.class);
+		filter = new ParameterDefinition("filter", FilterParameters.class);
 		
-		parameterDefines = new ParameterDefine[] {
-				description,
-				id,
-				className,
-				scan,
-				mask,
-				scope,
-				singleton,
-				offerBean,
-				offerMethod,
-				initMethod,
-				destroyMethod,
-				factoryMethod,
-				lazyInit,
-				important,
-				constructor,
-				properties,
-				filter
-			};
+		parameterDefinitions = new ParameterDefinition[] {
+			description,
+			id,
+			className,
+			scan,
+			mask,
+			scope,
+			singleton,
+			offerBean,
+			offerMethod,
+			initMethod,
+			destroyMethod,
+			factoryMethod,
+			lazyInit,
+			important,
+			constructor,
+			properties,
+			filter
+		};
 	}
 	
 	public BeanParameters() {
-		super(parameterDefines);
+		super(parameterDefinitions);
 	}
 	
 	public BeanParameters(String text) {
-		super(parameterDefines, text);
+		super(parameterDefinitions, text);
 	}
 	
 }

@@ -94,10 +94,6 @@ public class ActionList extends ArrayList<Executable> implements ActionRuleAppli
 		return count;
 	}
 
-	public boolean isNeedWrapping() {
-		return getVisibleCount() < 2;
-	}
-
 	@Override
 	public void applyActionRule(EchoActionRule echoActionRule) {
 		EchoAction echoAction = new EchoAction(echoActionRule, this);

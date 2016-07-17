@@ -90,7 +90,7 @@ import com.aspectran.core.context.rule.type.ResponseType;
 import com.aspectran.core.context.rule.type.ScopeType;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.apon.VariableParameters;
-import com.aspectran.core.util.apon.ParameterDefine;
+import com.aspectran.core.util.apon.ParameterDefinition;
 import com.aspectran.core.util.apon.Parameters;
 
 /**
@@ -601,17 +601,17 @@ public class RootAponAssembler {
 		return templateParameters;
 	}
 	
-	private void assembleActionList(ActionList actionList, Parameters parameters, ParameterDefine parameterDefine) {
+	private void assembleActionList(ActionList actionList, Parameters parameters, ParameterDefinition parameterDefinition) {
 		for(Executable action : actionList) {
 			if(action.getActionType() == ActionType.ECHO) {
 				EchoActionRule echoActionRule = action.getActionRule();
-				parameters.putValue(parameterDefine, assembleActionParameters(echoActionRule));
+				parameters.putValue(parameterDefinition, assembleActionParameters(echoActionRule));
 			} else if(action.getActionType() == ActionType.BEAN) {
 				BeanActionRule beanActionRule = action.getActionRule();
-				parameters.putValue(parameterDefine, assembleActionParameters(beanActionRule));
+				parameters.putValue(parameterDefinition, assembleActionParameters(beanActionRule));
 			} else if(action.getActionType() == ActionType.INCLUDE) {
 				IncludeActionRule includeActionRule = action.getActionRule();
-				parameters.putValue(parameterDefine, assembleActionParameters(includeActionRule));
+				parameters.putValue(parameterDefinition, assembleActionParameters(includeActionRule));
 			}
 		}
 	}

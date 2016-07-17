@@ -27,12 +27,12 @@ public class VariableParameters extends AbstractParameters implements Parameters
 		super(null, text);
 	}
 
-	public VariableParameters(ParameterDefine[] parameterDefines) {
-		super(parameterDefines);
+	public VariableParameters(ParameterDefinition[] parameterDefinitions) {
+		super(parameterDefinitions);
 	}
 	
-	public VariableParameters(ParameterDefine[] parameterDefines, String text) {
-		super(parameterDefines, text);
+	public VariableParameters(ParameterDefinition[] parameterDefinitions, String text) {
+		super(parameterDefinitions, text);
 	}
 	
 	@Override

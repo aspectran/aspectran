@@ -24,7 +24,9 @@ public class ParameterHolder {
 	private final VariableParameters parameters;
 	
 	public ParameterHolder(String text, Class<? extends AbstractParameters> parametersClass, boolean array) {
-		ParameterDefine[] parameterDefines = new ParameterDefine[] { new ParameterDefine(PARAMETER_NAME, parametersClass, array) };
+		ParameterDefinition[] parameterDefinitions = new ParameterDefinition[] {
+			new ParameterDefinition(PARAMETER_NAME, parametersClass, array)
+		};
 		
 		if(text != null) {
 			if(array)
@@ -33,7 +35,7 @@ public class ParameterHolder {
 				text = PARAMETER_NAME + ": {\n" + text + "\n}";
 		}
 		
-		this.parameters = new VariableParameters(parameterDefines, text);
+		this.parameters = new VariableParameters(parameterDefinitions, text);
 	}
 	
 	public Parameters[] getParametersArray() {

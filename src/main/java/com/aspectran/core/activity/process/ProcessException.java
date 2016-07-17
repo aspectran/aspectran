@@ -36,7 +36,6 @@ public class ProcessException extends ActivityException {
 
 	/**
 	 * Constructor to create exception with a message.
-	 * 
 	 * @param msg a message to associate with the exception
 	 */
 	public ProcessException(String msg) {

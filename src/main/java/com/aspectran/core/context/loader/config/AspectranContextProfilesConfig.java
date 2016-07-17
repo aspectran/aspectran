@@ -16,32 +16,32 @@
 package com.aspectran.core.context.loader.config;
 
 import com.aspectran.core.util.apon.AbstractParameters;
-import com.aspectran.core.util.apon.ParameterDefine;
+import com.aspectran.core.util.apon.ParameterDefinition;
 import com.aspectran.core.util.apon.ParameterValueType;
 
 public class AspectranContextProfilesConfig extends AbstractParameters {
 
-	public static final ParameterDefine activeProfiles;
-	public static final ParameterDefine defaultProfiles;
+	public static final ParameterDefinition activeProfiles;
+	public static final ParameterDefinition defaultProfiles;
 	
-	private final static ParameterDefine[] parameterDefines;
+	private static final ParameterDefinition[] parameterDefinitions;
 	
 	static {
-		activeProfiles = new ParameterDefine("active", ParameterValueType.STRING, true);
-		defaultProfiles = new ParameterDefine("default", ParameterValueType.STRING, true);
+		activeProfiles = new ParameterDefinition("active", ParameterValueType.STRING, true);
+		defaultProfiles = new ParameterDefinition("default", ParameterValueType.STRING, true);
 		
-		parameterDefines = new ParameterDefine[] {
-				activeProfiles,
-				defaultProfiles
+		parameterDefinitions = new ParameterDefinition[] {
+			activeProfiles,
+			defaultProfiles
 		};
 	}
 	
 	public AspectranContextProfilesConfig() {
-		super(parameterDefines);
+		super(parameterDefinitions);
 	}
 	
 	public AspectranContextProfilesConfig(String text) {
-		super(parameterDefines, text);
+		super(parameterDefinitions, text);
 	}
 	
 }

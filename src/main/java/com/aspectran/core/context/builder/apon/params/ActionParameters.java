@@ -16,58 +16,58 @@
 package com.aspectran.core.context.builder.apon.params;
 
 import com.aspectran.core.util.apon.AbstractParameters;
-import com.aspectran.core.util.apon.ParameterDefine;
+import com.aspectran.core.util.apon.ParameterDefinition;
 import com.aspectran.core.util.apon.ParameterValueType;
 
 public class ActionParameters extends AbstractParameters {
 
-	public static final ParameterDefine id;
+	public static final ParameterDefinition id;
 	
-	public static final ParameterDefine bean;
-	public static final ParameterDefine methodName;
-	public static final ParameterDefine hidden;
+	public static final ParameterDefinition bean;
+	public static final ParameterDefinition methodName;
+	public static final ParameterDefinition hidden;
 
-	public static final ParameterDefine arguments;
-	public static final ParameterDefine properties;
+	public static final ParameterDefinition arguments;
+	public static final ParameterDefinition properties;
 	
-	public static final ParameterDefine include;
-	public static final ParameterDefine attributes;
+	public static final ParameterDefinition include;
+	public static final ParameterDefinition attributes;
 
-	public static final ParameterDefine echo;
+	public static final ParameterDefinition echo;
 	
 	
-	private static final ParameterDefine[] parameterDefines;
+	private static final ParameterDefinition[] parameterDefinitions;
 
 	static {
-		id = new ParameterDefine("id", ParameterValueType.STRING);
-		bean = new ParameterDefine("bean", ParameterValueType.STRING);
-		methodName = new ParameterDefine("method", ParameterValueType.STRING);
-		hidden = new ParameterDefine("hidden", ParameterValueType.BOOLEAN);
-		arguments = new ParameterDefine("argument", ItemHolderParameters.class);
-		properties = new ParameterDefine("property", ItemHolderParameters.class);
-		include = new ParameterDefine("include", ParameterValueType.STRING);
-		attributes = new ParameterDefine("attribute", ItemHolderParameters.class);
-		echo = new ParameterDefine("echo", ItemHolderParameters.class);
+		id = new ParameterDefinition("id", ParameterValueType.STRING);
+		bean = new ParameterDefinition("bean", ParameterValueType.STRING);
+		methodName = new ParameterDefinition("method", ParameterValueType.STRING);
+		hidden = new ParameterDefinition("hidden", ParameterValueType.BOOLEAN);
+		arguments = new ParameterDefinition("argument", ItemHolderParameters.class);
+		properties = new ParameterDefinition("property", ItemHolderParameters.class);
+		include = new ParameterDefinition("include", ParameterValueType.STRING);
+		attributes = new ParameterDefinition("attribute", ItemHolderParameters.class);
+		echo = new ParameterDefinition("echo", ItemHolderParameters.class);
 		
-		parameterDefines = new ParameterDefine[] {
-				id,
-				bean,
-				methodName,
-				hidden,
-				arguments,
-				properties,
-				include,
-				attributes,
-				echo
+		parameterDefinitions = new ParameterDefinition[] {
+			id,
+			bean,
+			methodName,
+			hidden,
+			arguments,
+			properties,
+			include,
+			attributes,
+			echo
 		};
 	}
 	
 	public ActionParameters() {
-		super(parameterDefines);
+		super(parameterDefinitions);
 	}
 	
 	public ActionParameters(String plaintext) {
-		super(parameterDefines, plaintext);
+		super(parameterDefinitions, plaintext);
 	}
 	
 }

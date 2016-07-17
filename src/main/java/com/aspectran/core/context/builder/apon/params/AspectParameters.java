@@ -17,47 +17,47 @@ package com.aspectran.core.context.builder.apon.params;
 
 import com.aspectran.core.util.apon.AbstractParameters;
 import com.aspectran.core.util.apon.VariableParameters;
-import com.aspectran.core.util.apon.ParameterDefine;
+import com.aspectran.core.util.apon.ParameterDefinition;
 import com.aspectran.core.util.apon.ParameterValueType;
 
 public class AspectParameters extends AbstractParameters {
 
-	public static final ParameterDefine description;
-	public static final ParameterDefine id;
-	public static final ParameterDefine useFor;
-	public static final ParameterDefine jointpoint;
-	public static final ParameterDefine settings;
-	public static final ParameterDefine advice;
-	public static final ParameterDefine exception;
+	public static final ParameterDefinition description;
+	public static final ParameterDefinition id;
+	public static final ParameterDefinition useFor;
+	public static final ParameterDefinition jointpoint;
+	public static final ParameterDefinition settings;
+	public static final ParameterDefinition advice;
+	public static final ParameterDefinition exception;
 	
-	private static final ParameterDefine[] parameterDefines;
+	private static final ParameterDefinition[] parameterDefinitions;
 	
 	static {
-		description = new ParameterDefine("description", ParameterValueType.TEXT);
-		id = new ParameterDefine("id", ParameterValueType.STRING);
-		useFor = new ParameterDefine("for", ParameterValueType.STRING);
-		jointpoint = new ParameterDefine("joinpoint", JoinpointParameters.class);
-		settings = new ParameterDefine("settings", VariableParameters.class);
-		advice = new ParameterDefine("advice", AdviceParameters.class);
-		exception = new ParameterDefine("exception", ExceptionParameters.class);
+		description = new ParameterDefinition("description", ParameterValueType.TEXT);
+		id = new ParameterDefinition("id", ParameterValueType.STRING);
+		useFor = new ParameterDefinition("for", ParameterValueType.STRING);
+		jointpoint = new ParameterDefinition("joinpoint", JoinpointParameters.class);
+		settings = new ParameterDefinition("settings", VariableParameters.class);
+		advice = new ParameterDefinition("advice", AdviceParameters.class);
+		exception = new ParameterDefinition("exception", ExceptionParameters.class);
 		
-		parameterDefines = new ParameterDefine[] {
-				description,
-				id,
-				useFor,
-				jointpoint,
-				settings,
-				advice,
-				exception
-			};
+		parameterDefinitions = new ParameterDefinition[] {
+			description,
+			id,
+			useFor,
+			jointpoint,
+			settings,
+			advice,
+			exception
+		};
 	}
 	
 	public AspectParameters() {
-		super(parameterDefines);
+		super(parameterDefinitions);
 	}
 	
 	public AspectParameters(String text) {
-		super(parameterDefines, text);
+		super(parameterDefinitions, text);
 	}
 	
 }

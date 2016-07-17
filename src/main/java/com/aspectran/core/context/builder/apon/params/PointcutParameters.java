@@ -16,40 +16,40 @@
 package com.aspectran.core.context.builder.apon.params;
 
 import com.aspectran.core.util.apon.AbstractParameters;
-import com.aspectran.core.util.apon.ParameterDefine;
+import com.aspectran.core.util.apon.ParameterDefinition;
 import com.aspectran.core.util.apon.ParameterValueType;
 
 public class PointcutParameters extends AbstractParameters {
 
-	public static final ParameterDefine type;
-	public static final ParameterDefine targets;
+	public static final ParameterDefinition type;
+	public static final ParameterDefinition targets;
 
 	// for scheduler
-	public static final ParameterDefine simpleTrigger;
-	public static final ParameterDefine cronTrigger;
+	public static final ParameterDefinition simpleTrigger;
+	public static final ParameterDefinition cronTrigger;
 	
-	private static final ParameterDefine[] parameterDefines;
+	private static final ParameterDefinition[] parameterDefinitions;
 	
 	static {
-		type = new ParameterDefine("type", ParameterValueType.STRING);
-		targets = new ParameterDefine("target", TargetParameters.class, true, true);
-		simpleTrigger = new ParameterDefine("simpleTrigger", SimpleTriggerParameters.class);
-		cronTrigger = new ParameterDefine("cronTrigger", CronTriggerParameters.class);
+		type = new ParameterDefinition("type", ParameterValueType.STRING);
+		targets = new ParameterDefinition("target", TargetParameters.class, true, true);
+		simpleTrigger = new ParameterDefinition("simpleTrigger", SimpleTriggerParameters.class);
+		cronTrigger = new ParameterDefinition("cronTrigger", CronTriggerParameters.class);
 		
-		parameterDefines = new ParameterDefine[] {
-				type,
-				targets,
-				simpleTrigger,
-				cronTrigger
+		parameterDefinitions = new ParameterDefinition[] {
+			type,
+			targets,
+			simpleTrigger,
+			cronTrigger
 		};
 	}
 	
 	public PointcutParameters() {
-		super(parameterDefines);
+		super(parameterDefinitions);
 	}
 	
 	public PointcutParameters(String text) {
-		super(parameterDefines, text);
+		super(parameterDefinitions, text);
 	}
 	
 }

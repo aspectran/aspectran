@@ -16,7 +16,7 @@
 package com.aspectran.core.util.apon;
 
 /**
- * This exception will be thrown when a translet request is failed.
+ * This exception will be thrown when missing closing brackets.
  */
 public class MissingClosingBracketException extends InvalidParameterException {
 	
@@ -33,12 +33,19 @@ public class MissingClosingBracketException extends InvalidParameterException {
 	/**
 	 * Constructor to create exception with a message.
 	 * 
-	 * @param msg A message to associate with the exception
+	 * @param msg a message to associate with the exception
 	 */
 	public MissingClosingBracketException(String msg) {
 		super(msg);
 	}
 
+	/**
+	 * Constructor to create exception with a message.
+	 *
+	 * @param bracketShape the bracket character
+	 * @param name the parameter name
+	 * @param parameterValue the parameter value
+	 */
 	public MissingClosingBracketException(String bracketShape, String name, ParameterValue parameterValue) {
 		super("the end of the string was reached with no closing " + bracketShape + " bracket found: " + (parameterValue == null ? name : parameterValue));
 	}
@@ -46,7 +53,7 @@ public class MissingClosingBracketException extends InvalidParameterException {
 	/**
 	 * Constructor to create exception to wrap another exception.
 	 * 
-	 * @param cause The real cause of the exception
+	 * @param cause the real cause of the exception
 	 */
 	public MissingClosingBracketException(Throwable cause) {
 		super(cause);
@@ -55,8 +62,8 @@ public class MissingClosingBracketException extends InvalidParameterException {
 	/**
 	 * Constructor to create exception to wrap another exception and pass a message.
 	 * 
-	 * @param msg The message
-	 * @param cause The real cause of the exception
+	 * @param msg a message to associate with the exception
+	 * @param cause the real cause of the exception
 	 */
 	public MissingClosingBracketException(String msg, Throwable cause) {
 		super(msg, cause);

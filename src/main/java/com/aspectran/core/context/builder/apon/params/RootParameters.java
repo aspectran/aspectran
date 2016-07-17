@@ -16,28 +16,28 @@
 package com.aspectran.core.context.builder.apon.params;
 
 import com.aspectran.core.util.apon.AbstractParameters;
-import com.aspectran.core.util.apon.ParameterDefine;
+import com.aspectran.core.util.apon.ParameterDefinition;
 
 public class RootParameters extends AbstractParameters {
 
-	public static final ParameterDefine aspectran;
+	public static final ParameterDefinition aspectran;
 	
-	private static final ParameterDefine[] parameterDefines;
+	private static final ParameterDefinition[] parameterDefinitions;
 	
 	static {
-		aspectran = new ParameterDefine("aspectran", AspectranParameters.class);
+		aspectran = new ParameterDefinition("aspectran", AspectranParameters.class);
 		
-		parameterDefines = new ParameterDefine[] {
+		parameterDefinitions = new ParameterDefinition[] {
 			aspectran
 		};
 	}
 	
 	public RootParameters() {
-		super(parameterDefines);
+		super(parameterDefinitions);
 	}
 	
 	public RootParameters(String text) {
-		super(parameterDefines, text);
+		super(parameterDefinitions, text);
 	}
 	
 }

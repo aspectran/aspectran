@@ -16,34 +16,34 @@
 package com.aspectran.core.context.loader.config;
 
 import com.aspectran.core.util.apon.AbstractParameters;
-import com.aspectran.core.util.apon.ParameterDefine;
+import com.aspectran.core.util.apon.ParameterDefinition;
 
 public class AspectranConfig extends AbstractParameters {
 
-	public static final ParameterDefine context;
-	public static final ParameterDefine scheduler;
-	public static final ParameterDefine web;
+	public static final ParameterDefinition context;
+	public static final ParameterDefinition scheduler;
+	public static final ParameterDefinition web;
 
-	private static final ParameterDefine[] parameterDefines;
+	private static final ParameterDefinition[] parameterDefinitions;
 	
 	static {
-		context = new ParameterDefine("context", AspectranContextConfig.class);
-		scheduler = new ParameterDefine("scheduler", AspectranSchedulerConfig.class);
-		web = new ParameterDefine("web", AspectranWebConfig.class);
+		context = new ParameterDefinition("context", AspectranContextConfig.class);
+		scheduler = new ParameterDefinition("scheduler", AspectranSchedulerConfig.class);
+		web = new ParameterDefinition("web", AspectranWebConfig.class);
 
-		parameterDefines = new ParameterDefine[] {
-				context,
-				scheduler,
-				web
+		parameterDefinitions = new ParameterDefinition[] {
+			context,
+			scheduler,
+			web
 		};
 	}
 	
 	public AspectranConfig() {
-		super(parameterDefines);
+		super(parameterDefinitions);
 	}
 	
 	public AspectranConfig(String text) {
-		super(parameterDefines, text);
+		super(parameterDefinitions, text);
 	}
 	
 }

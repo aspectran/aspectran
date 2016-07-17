@@ -16,71 +16,71 @@
 package com.aspectran.core.context.builder.apon.params;
 
 import com.aspectran.core.util.apon.AbstractParameters;
-import com.aspectran.core.util.apon.ParameterDefine;
+import com.aspectran.core.util.apon.ParameterDefinition;
 import com.aspectran.core.util.apon.ParameterValueType;
 
 public class TransletParameters extends AbstractParameters {
 
-	public static final ParameterDefine description;
-	public static final ParameterDefine name;
-	public static final ParameterDefine scan;
-	public static final ParameterDefine mask;
-	public static final ParameterDefine method;
-	public static final ParameterDefine request;
-	public static final ParameterDefine contents1;
-	public static final ParameterDefine contents2;
-	public static final ParameterDefine actions;
-	public static final ParameterDefine responses;
-	public static final ParameterDefine transform;
-	public static final ParameterDefine dispatch;
-	public static final ParameterDefine redirect;
-	public static final ParameterDefine forward;
-	public static final ParameterDefine exception;
+	public static final ParameterDefinition description;
+	public static final ParameterDefinition name;
+	public static final ParameterDefinition scan;
+	public static final ParameterDefinition mask;
+	public static final ParameterDefinition method;
+	public static final ParameterDefinition request;
+	public static final ParameterDefinition contents1;
+	public static final ParameterDefinition contents2;
+	public static final ParameterDefinition actions;
+	public static final ParameterDefinition responses;
+	public static final ParameterDefinition transform;
+	public static final ParameterDefinition dispatch;
+	public static final ParameterDefinition redirect;
+	public static final ParameterDefinition forward;
+	public static final ParameterDefinition exception;
 
-	private static final ParameterDefine[] parameterDefines;
+	private static final ParameterDefinition[] parameterDefinitions;
 	
 	static {
-		description = new ParameterDefine("description", ParameterValueType.TEXT);
-		name = new ParameterDefine("name", ParameterValueType.STRING);
-		scan = new ParameterDefine("scan", ParameterValueType.STRING);
-		mask = new ParameterDefine("mask", ParameterValueType.STRING);
-		method = new ParameterDefine("method", ParameterValueType.STRING);
-		request = new ParameterDefine("request", RequestParameters.class);
-		contents1 = new ParameterDefine("contents", ContentsParameters.class);
-		contents2 = new ParameterDefine("content", ContentParameters.class, true, true);
-		actions = new ParameterDefine("action", ActionParameters.class, true, true);
-		responses = new ParameterDefine("response", ResponseParameters.class, true, true);
-		transform = new ParameterDefine("transform", TransformParameters.class);
-		dispatch = new ParameterDefine("dispatch", DispatchParameters.class);
-		redirect = new ParameterDefine("redirect", RedirectParameters.class);
-		forward = new ParameterDefine("forward", ForwardParameters.class);
-		exception = new ParameterDefine("exception", ExceptionParameters.class, true, true);
+		description = new ParameterDefinition("description", ParameterValueType.TEXT);
+		name = new ParameterDefinition("name", ParameterValueType.STRING);
+		scan = new ParameterDefinition("scan", ParameterValueType.STRING);
+		mask = new ParameterDefinition("mask", ParameterValueType.STRING);
+		method = new ParameterDefinition("method", ParameterValueType.STRING);
+		request = new ParameterDefinition("request", RequestParameters.class);
+		contents1 = new ParameterDefinition("contents", ContentsParameters.class);
+		contents2 = new ParameterDefinition("content", ContentParameters.class, true, true);
+		actions = new ParameterDefinition("action", ActionParameters.class, true, true);
+		responses = new ParameterDefinition("response", ResponseParameters.class, true, true);
+		transform = new ParameterDefinition("transform", TransformParameters.class);
+		dispatch = new ParameterDefinition("dispatch", DispatchParameters.class);
+		redirect = new ParameterDefinition("redirect", RedirectParameters.class);
+		forward = new ParameterDefinition("forward", ForwardParameters.class);
+		exception = new ParameterDefinition("exception", ExceptionParameters.class, true, true);
 
-		parameterDefines = new ParameterDefine[] {
-				description,
-				name,
-				scan,
-				mask,
-				method,
-				request,
-				contents1,
-				contents2,
-				actions,
-				responses,
-				transform,
-				dispatch,
-				redirect,
-				forward,
-				exception
+		parameterDefinitions = new ParameterDefinition[] {
+			description,
+			name,
+			scan,
+			mask,
+			method,
+			request,
+			contents1,
+			contents2,
+			actions,
+			responses,
+			transform,
+			dispatch,
+			redirect,
+			forward,
+			exception
 		};
 	}
 	
 	public TransletParameters() {
-		super(parameterDefines);
+		super(parameterDefinitions);
 	}
 	
 	public TransletParameters(String text) {
-		super(parameterDefines, text);
+		super(parameterDefinitions, text);
 	}
 	
 }

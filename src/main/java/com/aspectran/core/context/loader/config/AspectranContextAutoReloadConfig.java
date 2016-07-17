@@ -16,35 +16,35 @@
 package com.aspectran.core.context.loader.config;
 
 import com.aspectran.core.util.apon.AbstractParameters;
-import com.aspectran.core.util.apon.ParameterDefine;
+import com.aspectran.core.util.apon.ParameterDefinition;
 import com.aspectran.core.util.apon.ParameterValueType;
 
 public class AspectranContextAutoReloadConfig extends AbstractParameters {
 
-	public static final ParameterDefine reloadMethod;
-	public static final ParameterDefine observationInterval;
-	public static final ParameterDefine startup;
+	public static final ParameterDefinition reloadMethod;
+	public static final ParameterDefinition observationInterval;
+	public static final ParameterDefinition startup;
 	
-	private final static ParameterDefine[] parameterValues;
+	private final static ParameterDefinition[] parameterDefinitions;
 	
 	static {
-		reloadMethod = new ParameterDefine("reloadMethod", ParameterValueType.STRING);
-		observationInterval = new ParameterDefine("observationInterval", ParameterValueType.INT);
-		startup = new ParameterDefine("startup", ParameterValueType.BOOLEAN);
+		reloadMethod = new ParameterDefinition("reloadMethod", ParameterValueType.STRING);
+		observationInterval = new ParameterDefinition("observationInterval", ParameterValueType.INT);
+		startup = new ParameterDefinition("startup", ParameterValueType.BOOLEAN);
 
-		parameterValues = new ParameterDefine[] {
-				reloadMethod,
-				observationInterval,
-				startup
+		parameterDefinitions = new ParameterDefinition[] {
+			reloadMethod,
+			observationInterval,
+			startup
 		};
 	}
 	
 	public AspectranContextAutoReloadConfig() {
-		super(parameterValues);
+		super(parameterDefinitions);
 	}
 	
 	public AspectranContextAutoReloadConfig(String text) {
-		super(parameterValues, text);
+		super(parameterDefinitions, text);
 	}
 	
 }

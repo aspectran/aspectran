@@ -124,42 +124,137 @@ public interface Parameter {
 	 */
 	String[] getValueAsStringArray();
 
+	/**
+	 * Returns a value as a {@code List<String>}.
+	 *
+	 * @return a {@code List<String>}
+	 */
 	List<String> getValueAsStringList();
-	
+
+	/**
+	 * Returns a value as an {@code Integer}.
+	 *
+	 * @return an {@code Integer}
+	 */
 	Integer getValueAsInt();
 
+	/**
+	 * Returns a value as an {@code Integer} array.
+	 *
+	 * @return an {@code Integer} array
+	 */
 	Integer[] getValueAsIntArray();
 
+	/**
+	 * Returns a value as a {@code List<Integer>}.
+	 *
+	 * @return a {@code List<Integer>}
+	 */
 	List<Integer> getValueAsIntList();
 
+	/**
+	 * Returns a value as a {@code Long}.
+	 *
+	 * @return a {@code Long}
+	 */
 	Long getValueAsLong();
-	
+
+	/**
+	 * Returns a value as a {@code Long} array.
+	 *
+	 * @return a {@code Long} array
+	 */
 	Long[] getValueAsLongArray();
 
+	/**
+	 * Returns a value as a {@code List<Long>}.
+	 *
+	 * @return a {@code List<Long>}
+	 */
 	List<Long> getValueAsLongList();
 
+	/**
+	 * Returns a value as a {@code Float}.
+	 *
+	 * @return a {@code Float}
+	 */
 	Float getValueAsFloat();
-	
+
+	/**
+	 * Returns a value as a {@code Float} array.
+	 *
+	 * @return a {@code Float} array
+	 */
 	Float[] getValueAsFloatArray();
 
+	/**
+	 * Returns a value as a {@code List<Float>}.
+	 *
+	 * @return a {@code List<Float>}
+	 */
 	List<Float> getValueAsFloatList();
 
+	/**
+	 * Returns a value as a {@code Double}.
+	 *
+	 * @return a {@code Double}
+	 */
 	Double getValueAsDouble();
 
+	/**
+	 * Returns a value as a {@code Double} array.
+	 *
+	 * @return a {@code Double} array
+	 */
 	Double[] getValueAsDoubleArray();
-	
+
+	/**
+	 * Returns a value as a {@code List<Double>}.
+	 *
+	 * @return a {@code List<Double>}
+	 */
 	List<Double> getValueAsDoubleList();
-	
+
+	/**
+	 * Returns a value as a {@code Boolean}.
+	 *
+	 * @return a {@code Boolean}
+	 */
 	Boolean getValueAsBoolean();
 
+	/**
+	 * Returns a value as a {@code Boolean} array.
+	 *
+	 * @return a {@code Boolean} array
+	 */
 	Boolean[] getValueAsBooleanArray();
-	
+
+	/**
+	 * Returns a value as a {@code List<Boolean>}.
+	 *
+	 * @return a {@code List<Boolean>}
+	 */
 	List<Boolean> getValueAsBooleanList();
-	
+
+	/**
+	 * Returns a value as a {@code Parameters}.
+	 *
+	 * @return a {@code Parameters}
+	 */
 	Parameters getValueAsParameters();
 
+	/**
+	 * Returns a value as a {@code Parameters} array.
+	 *
+	 * @return a {@code Parameters} array
+	 */
 	Parameters[] getValueAsParametersArray();
 
+	/**
+	 * Returns a value as a {@code List<Parameters>}.
+	 *
+	 * @return a {@code List<Parameters>}
+	 */
 	List<Parameters> getValueAsParametersList();
 	
 	Parameters newParameters(Parameter prototype);

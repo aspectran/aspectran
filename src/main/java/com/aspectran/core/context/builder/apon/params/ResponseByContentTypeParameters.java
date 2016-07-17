@@ -16,41 +16,41 @@
 package com.aspectran.core.context.builder.apon.params;
 
 import com.aspectran.core.util.apon.AbstractParameters;
-import com.aspectran.core.util.apon.ParameterDefine;
+import com.aspectran.core.util.apon.ParameterDefinition;
 import com.aspectran.core.util.apon.ParameterValueType;
 
 public class ResponseByContentTypeParameters extends AbstractParameters {
 
-	public static final ParameterDefine exceptionType;
-	public static final ParameterDefine transforms;
-	public static final ParameterDefine dispatchs;
-	public static final ParameterDefine forwards;
-	public static final ParameterDefine redirects;
+	public static final ParameterDefinition exceptionType;
+	public static final ParameterDefinition transforms;
+	public static final ParameterDefinition dispatchs;
+	public static final ParameterDefinition forwards;
+	public static final ParameterDefinition redirects;
 	
-	private static final ParameterDefine[] parameterDefines;
+	private static final ParameterDefinition[] parameterDefinitions;
 
 	static {
-		exceptionType = new ParameterDefine("exceptionType", ParameterValueType.STRING);
-		transforms = new ParameterDefine("transform", TransformParameters.class, true, true);
-		dispatchs = new ParameterDefine("dispatch", DispatchParameters.class, true, true);
-		forwards = new ParameterDefine("forward", ForwardParameters.class, true, true);
-		redirects = new ParameterDefine("redirect", RedirectParameters.class, true, true);
+		exceptionType = new ParameterDefinition("exceptionType", ParameterValueType.STRING);
+		transforms = new ParameterDefinition("transform", TransformParameters.class, true, true);
+		dispatchs = new ParameterDefinition("dispatch", DispatchParameters.class, true, true);
+		forwards = new ParameterDefinition("forward", ForwardParameters.class, true, true);
+		redirects = new ParameterDefinition("redirect", RedirectParameters.class, true, true);
 
-		parameterDefines = new ParameterDefine[] {
-				exceptionType,
-				transforms,
-				dispatchs,
-				forwards,
-				redirects
+		parameterDefinitions = new ParameterDefinition[] {
+			exceptionType,
+			transforms,
+			dispatchs,
+			forwards,
+			redirects
 		};
 	}
 	
 	public ResponseByContentTypeParameters() {
-		super(parameterDefines);
+		super(parameterDefinitions);
 	}
 	
 	public ResponseByContentTypeParameters(String text) {
-		super(parameterDefines, text);
+		super(parameterDefinitions, text);
 	}
 	
 }

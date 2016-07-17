@@ -16,44 +16,44 @@
 package com.aspectran.core.context.builder.apon.params;
 
 import com.aspectran.core.util.apon.AbstractParameters;
-import com.aspectran.core.util.apon.ParameterDefine;
+import com.aspectran.core.util.apon.ParameterDefinition;
 import com.aspectran.core.util.apon.ParameterValueType;
 
 public class RedirectParameters extends AbstractParameters {
 
-	public static final ParameterDefine actions;
-	public static final ParameterDefine contentType;
-	public static final ParameterDefine target;
-	public static final ParameterDefine excludeNullParameter;
-	public static final ParameterDefine defaultResponse;
-	public static final ParameterDefine parameters;
+	public static final ParameterDefinition actions;
+	public static final ParameterDefinition contentType;
+	public static final ParameterDefinition target;
+	public static final ParameterDefinition excludeNullParameter;
+	public static final ParameterDefinition defaultResponse;
+	public static final ParameterDefinition parameters;
 
-	private static final ParameterDefine[] parameterDefines;
+	private static final ParameterDefinition[] parameterDefinitions;
 	
 	static {
-		actions = new ParameterDefine("action", ActionParameters.class, true, true);
-		contentType = new ParameterDefine("contentType", ParameterValueType.STRING);
-		target = new ParameterDefine("target", ParameterValueType.STRING);
-		excludeNullParameter = new ParameterDefine("excludeNullParameter", ParameterValueType.BOOLEAN);
-		defaultResponse = new ParameterDefine("defaultResponse", ParameterValueType.BOOLEAN);
-		parameters = new ParameterDefine("parameter", ItemHolderParameters.class);
+		actions = new ParameterDefinition("action", ActionParameters.class, true, true);
+		contentType = new ParameterDefinition("contentType", ParameterValueType.STRING);
+		target = new ParameterDefinition("target", ParameterValueType.STRING);
+		excludeNullParameter = new ParameterDefinition("excludeNullParameter", ParameterValueType.BOOLEAN);
+		defaultResponse = new ParameterDefinition("defaultResponse", ParameterValueType.BOOLEAN);
+		parameters = new ParameterDefinition("parameter", ItemHolderParameters.class);
 
-		parameterDefines = new ParameterDefine[] {
-				actions,
-				contentType,
-				target,
-				excludeNullParameter,
-				defaultResponse,
-				parameters
+		parameterDefinitions = new ParameterDefinition[] {
+			actions,
+			contentType,
+			target,
+			excludeNullParameter,
+			defaultResponse,
+			parameters
 		};
 	}
 	
 	public RedirectParameters() {
-		super(parameterDefines);
+		super(parameterDefinitions);
 	}
 	
 	public RedirectParameters(String text) {
-		super(parameterDefines, text);
+		super(parameterDefinitions, text);
 	}
 	
 }
