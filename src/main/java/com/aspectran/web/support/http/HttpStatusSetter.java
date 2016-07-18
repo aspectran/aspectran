@@ -21,32 +21,45 @@ import com.aspectran.core.activity.Translet;
 
 /**
  * HTTP Status Codes for REST.
- * 
- * <pre>
- *  - 200("OK"): 일반적인 요청 성공을 나타내는 데 사용해야 한다. 응답 바디에 에러를 전송하는 데 사용해서는 안 된다.
- *  - 201("Created"): 성공적으로 리소스를 생성했을 때 사용해야 한다.
- *  - 202("Accepted"): 비동기 처리가 성공적으로 시작되었음을 알릴 때 사용해야 한다.
- *  - 204("No Content"): 응답 바디에 의도적으로 아무것도 포함하지 않을 때 사용한다.
- *  - 301("Moved Permanently"): 리소스를 이동시켰을 때 사용한다.
- *  - 303("See Other"): 다른 URI를 참조하라고 알려줄 때 사용한다.
- *  - 304("Not Modified"): 대역폭을 절약할 때 사용한다.
- *  - 307("Temporary Redirect"): 클라이언트가 다른 URI로 요청을 다시 보내게 할 때 사용해야 한다.
- *  - 400("Bad Request"): 일반적인 요청 실패에 사용해야 한다.
- *  - 401("Unauthorized"): 클라이언트 인증에 문제가 있을 때 사용해야 한다.
- *  - 403("Forbidden"): 인증 상태에 상관없이 액세스를 금지할 때 사용해야 한다.
- *  - 404("Not Found"): 요청 URI에 해당하는 리소스가 없을 때 사용해야 한다.
- *  - 405("Method Not Allowed"): HTTP 메서드가 지원되지 않을 때 사용해야 한다.
- *  - 406("Not Acceptable"): 요청된 리소스 미디어 타입을 제공하지 못할 때 사용해야 한다.
- *  - 409("Conflict"): 리소스 상태에 위반되는 행위를 했을 때 사용해야 한다.
- *  - 412("Precondition Failed"): 조건부 연산을 지원할 때 사용한다.
- *  - 415("Unsupported Media Type"): 요청의 페이로드에 있는 미디어 타입이 처리되지 못했을 때 사용해야 한다.
- *  - 500("Internal Server Error"): API가 잘못 작동할 때 사용해야 한다.
- *  </pre>
  */
 public class HttpStatusSetter {
 
 	/**
-	 * 200("OK"): 일반적인 요청 성공을 나타내는 데 사용해야 한다. 응답 바디에 에러를 전송하는 데 사용해서는 안 된다.
+	 * Sets the status code.
+	 *
+	 * @param httpStatus the http status code
+	 * @param translet the Translet
+	 */
+	public static void setStatus(HttpStatus httpStatus, Translet translet) {
+		HttpServletResponse res = translet.getResponseAdaptee();
+		res.setStatus(httpStatus.value());
+	}
+
+	/**
+	 * Sets the status code.
+	 *
+	 * @param statusCode the http status code
+	 * @param translet the Translet
+	 */
+	public static void setStatus(int statusCode, Translet translet) {
+		HttpServletResponse res = translet.getResponseAdaptee();
+		res.setStatus(statusCode);
+	}
+
+	/**
+	 * {@code 200 OK}.
+	 * The request has succeeded.
+	 * The information returned with the response is dependent on
+	 * the method used in the request, for example:
+	 * <ul>
+	 *   <li>GET an entity corresponding to the requested resource
+	 *     is sent in the response;</li>
+	 *   <li>HEAD the entity-header fields corresponding to the requested
+	 *     resource are sent in the response without any message-body;</li>
+	 *   <li>POST an entity describing or containing the result of the action;</li>
+	 *   <li>TRACE an entity containing the request message as received
+	 *     by the end server.</li>
+	 * </ul>
 	 *
 	 * @param translet the Translet
 	 */
@@ -56,7 +69,9 @@ public class HttpStatusSetter {
 	}
 	
 	/**
-	 * 201("Created"): 성공적으로 리소스를 생성했을 때 사용해야 한다.
+	 * {@code 201 Created}.
+	 * The request has succeeded and a new resource has been created as a result of it.
+	 * This is typically the response sent after a PUT request.
 	 *
 	 * @param translet the Translet
 	 */
@@ -66,7 +81,12 @@ public class HttpStatusSetter {
 	}
 	
 	/**
-	 * 202("Accepted"): 비동기 처리가 성공적으로 시작되었음을 알릴 때 사용해야 한다.
+	 * {@code 202 Accepted}.
+	 * The request has been received but not yet acted upon.
+	 * It is non-committal, meaning that there is no way in HTTP to later send
+	 * an asynchronous responseindicating the outcome of processing the request.
+	 * It is intended for cases where another process or server handles the request,
+	 * or for batch processing.
 	 *
 	 * @param translet the Translet
 	 */
@@ -76,7 +96,10 @@ public class HttpStatusSetter {
 	}
 	
 	/**
-	 * 204("No Content"): 응답 바디에 의도적으로 아무것도 포함하지 않을 때 사용한다.
+	 * {@code 204 No Content}.
+	 * The server successfully processed the request and is not returning any content.
+	 * The 204 response MUST NOT include a message-body, and thus is always terminated
+	 * by the first empty line after the header fields.
 	 *
 	 * @param translet the Translet
 	 */
@@ -86,7 +109,9 @@ public class HttpStatusSetter {
 	}
 	
 	/**
-	 * 301("Moved Permanently"): 리소스를 이동시켰을 때 사용한다.
+	 * {@code 301 Moved Permanently}.
+	 * This response code means that URI of requested resource has been changed.
+	 * Any future references to this resource SHOULD use one of the returned URIs.
 	 *
 	 * @param translet the Translet
 	 */
@@ -96,7 +121,13 @@ public class HttpStatusSetter {
 	}
 	
 	/**
-	 * 303("See Other"): 다른 URI를 참조하라고 알려줄 때 사용한다.
+	 * {@code 303 See Other}.
+	 * The response to the request can be found under a different URI and SHOULD be retrieved
+	 * using a GET method on that resource. This method exists primarily to allow the output
+	 * of a POST-activated script to redirect the user agent to a selected resource.
+	 * The new URI is not a substitute reference for the originally requested resource.
+	 * The 303 response MUST NOT be cached, but the response to the second (redirected)
+	 * request might be cacheable.
 	 *
 	 * @param translet the Translet
 	 */
@@ -106,7 +137,10 @@ public class HttpStatusSetter {
 	}
 	
 	/**
-	 * 304("Not Modified"): 대역폭을 절약할 때 사용한다.
+	 * {@code 304 Not Modified}.
+	 * This is used for caching purposes.
+	 * It is telling to client that response has not been modified.
+	 * So, client can continue to use same cached version of response.
 	 *
 	 * @param translet the Translet
 	 */
@@ -116,7 +150,9 @@ public class HttpStatusSetter {
 	}
 	
 	/**
-	 * 307("Temporary Redirect"): 클라이언트가 다른 URI로 요청을 다시 보내게 할 때 사용해야 한다.
+	 * {@code 307 Temporary Redirect}.
+	 * The target resource resides temporarily under a different URI and the user agent
+	 * MUST NOT changethe request method if it performs an automatic redirection to that URI.
 	 *
 	 * @param translet the Translet
 	 */
@@ -126,7 +162,10 @@ public class HttpStatusSetter {
 	}
 	
 	/**
-	 * 400("Bad Request"): 일반적인 요청 실패에 사용해야 한다.
+	 * {@code 400 Bad Request}.
+	 * The server cannot or will not process the request due to something that is perceived
+	 * to be a client error (e.g., malformed request syntax, invalid request message framing,
+	 * or deceptive request routing).
 	 *
 	 * @param translet the Translet
 	 */
@@ -136,7 +175,9 @@ public class HttpStatusSetter {
 	}
 	
 	/**
-	 * 401("Unauthorized"): 클라이언트 인증에 문제가 있을 때 사용해야 한다.
+	 * {@code 401 Unauthorized}.
+	 * The request was a legal request, but the server is refusing to respond to it.
+	 * For use when authentication is possible but has failed or not yet been provided.
 	 *
 	 * @param translet the Translet
 	 */
@@ -146,7 +187,8 @@ public class HttpStatusSetter {
 	}
 	
 	/**
-	 * 403("Forbidden"): 인증 상태에 상관없이 액세스를 금지할 때 사용해야 한다.
+	 * {@code 403 Forbidden}.
+	 * The request was a legal request, but the server is refusing to respond to it.
 	 *
 	 * @param translet the Translet
 	 */
@@ -156,7 +198,10 @@ public class HttpStatusSetter {
 	}
 	
 	/**
-	 * 404("Not Found"): 요청 URI에 해당하는 리소스가 없을 때 사용해야 한다.
+	 * {@code 404 Not Found}.
+	 * The server has not found anything matching the Request-URI.
+	 * The requested resource could not be found but may be available again
+	 * in the future. Subsequent requests by the client are permissible.
 	 *
 	 * @param translet the Translet
 	 */
@@ -166,7 +211,10 @@ public class HttpStatusSetter {
 	}
 	
 	/**
-	 * 405("Method Not Allowed"): HTTP 메서드가 지원되지 않을 때 사용해야 한다.
+	 * {@code 405 Method Not Allowed}.
+	 * The request method is known by the server but has been disabled
+	 * and cannot be used. The two mandatory methods, GET and HEAD,
+	 * must never be disabled and should not return this error code.
 	 *
 	 * @param translet the Translet
 	 */
@@ -176,7 +224,9 @@ public class HttpStatusSetter {
 	}
 	
 	/**
-	 * 406("Not Acceptable"): 요청된 리소스 미디어 타입을 제공하지 못할 때 사용해야 한다.
+	 * {@code 406 Not Acceptable}.
+	 * The requested resource is capable of generating only content not
+	 * acceptable according to the Accept headers sent in the request.
 	 *
 	 * @param translet the Translet
 	 */
@@ -186,7 +236,8 @@ public class HttpStatusSetter {
 	}
 	
 	/**
-	 * 409("Conflict"): 리소스 상태에 위반되는 행위를 했을 때 사용해야 한다.
+	 * {@code 409 Conflict}.
+	 * The request could not be completed because of a conflict.
 	 *
 	 * @param translet the Translet
 	 */
@@ -196,7 +247,9 @@ public class HttpStatusSetter {
 	}
 	
 	/**
-	 * 412("Precondition Failed"): 조건부 연산을 지원할 때 사용한다.
+	 * {@code 412 Precondition failed}.
+	 * The server does not meet one of the preconditions that
+	 * the requester put on the request.
 	 *
 	 * @param translet the Translet
 	 */
@@ -206,7 +259,10 @@ public class HttpStatusSetter {
 	}
 	
 	/**
-	 * 415("Unsupported Media Type"): 요청의 페이로드에 있는 미디어 타입이 처리되지 못했을 때 사용해야 한다.
+	 * {@code 415 Unsupported Media Type}.
+	 * The server is refusing to service the request because
+	 * the entity of the request is in a format not supported by
+	 * the requested resource for the requested method.
 	 *
 	 * @param translet the Translet
 	 */
@@ -216,7 +272,9 @@ public class HttpStatusSetter {
 	}
 	
 	/**
-	 * 500("Internal Server Error"): API가 잘못 작동할 때 사용해야 한다.
+	 * {@code 500 Internal Server Error}.
+	 * The server encountered an unexpected condition which
+	 * prevented it from fulfilling the request.
 	 *
 	 * @param translet the Translet
 	 */

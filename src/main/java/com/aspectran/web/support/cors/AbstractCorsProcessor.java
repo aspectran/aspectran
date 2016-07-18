@@ -297,6 +297,7 @@ public abstract class AbstractCorsProcessor implements CorsProcessor {
 	/**
 	 * Helper method to check whether the specified HTTP method is
 	 * supported. This is done by looking up {@link #allowedMethods}.
+	 * GET and HEAD, must never be disabled and should not return 405 error code.
 	 *
 	 * @param method The HTTP method.
 	 * @return {@code true} if the method is supported, else {@code false}.

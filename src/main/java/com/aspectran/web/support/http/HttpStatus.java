@@ -121,13 +121,6 @@ public enum HttpStatus {
 	 */
 	FOUND(302, "Found"),
 	/**
-	 * {@code 302 Moved Temporarily}.
-	 * @see <a href="http://tools.ietf.org/html/rfc1945#section-9.3">HTTP/1.0, section 9.3</a>
-	 * @deprecated In favor of {@link #FOUND} which will be returned from {@code HttpStatus.valueOf(302)}
-	 */
-	@Deprecated
-	MOVED_TEMPORARILY(302, "Moved Temporarily"),
-	/**
 	 * {@code 303 See Other}.
 	 * @see <a href="http://tools.ietf.org/html/rfc7231#section-6.4.4">HTTP/1.1: Semantics and Content, section 6.4.4</a>
 	 */
