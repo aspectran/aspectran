@@ -450,9 +450,6 @@ public class CoreActivity extends AbstractActivity {
 		if(characterEncoding == null)
 			characterEncoding = getRequestSetting(RequestRule.CHARACTER_ENCODING_SETTING_NAME);
 
-		if(characterEncoding == null)
-			characterEncoding = ActivityContext.DEFAULT_ENCODING;
-
 		return characterEncoding;
 	}
 
