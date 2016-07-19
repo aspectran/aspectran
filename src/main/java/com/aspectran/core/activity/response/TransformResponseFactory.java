@@ -30,8 +30,12 @@ import com.aspectran.core.context.rule.type.TransformType;
 public class TransformResponseFactory {
 
 	public static Response getResponse(TransformRule transformRule) {
+		if(transformRule == null) {
+			throw new IllegalArgumentException("transformRule must not be null.");
+		}
+		
 		TransformType type = transformRule.getTransformType();
-		Response res = null;
+		Response res;
 		
 		if(type == TransformType.XML) {
 			res = new XmlTransform(transformRule);
@@ -42,7 +46,7 @@ public class TransformResponseFactory {
 		} else if(type == TransformType.TEXT) {
 			res = new TextTransform(transformRule);
 		} else {
-			throw new ResponseNotFoundException("TransformResponse is not found. transformRule " + transformRule);
+			throw new IllegalArgumentException("The specified tranform-type is not valid. transformRule " + transformRule);
 		}
 		
 		return res;

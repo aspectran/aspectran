@@ -286,8 +286,8 @@ public class CoreTranslet implements Translet {
 		if(!immediately && activity.getResponse() != null) {
 			Response res = activity.getResponse();
 			if(res.getResponseType() == ResponseType.REDIRECT) {
-				Response rr = res.replicate();
-				RedirectResponseRule rrr = ((RedirectResponse)rr).getRedirectResponseRule();
+				Response r = res.replicate();
+				RedirectResponseRule rrr = ((RedirectResponse)r).getRedirectResponseRule();
 				rrr.setTarget(target);
 				redirect(rrr);
 				return;

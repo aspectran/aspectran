@@ -357,24 +357,27 @@ public interface Translet extends BeanRegistry, MessageSource {
 	void transform(TransformRule transformRule);
 
 	/**
-	 * Redirect according to a given rule.
+	 * Redirect a client according to the given rule.
 	 *
 	 * @param redirectResponseRule the redirect response rule
 	 */
 	void redirect(RedirectResponseRule redirectResponseRule);
 
 	/**
-	 * Redirect to other resource.
+	 * Redirect a client to a new target resource.
+	 * If an intended redirect response rule exists, that may be used.
 	 *
 	 * @param target the target resource
 	 */
 	void redirect(String target);
 
 	/**
-	 * Redirect.
+	 * Redirect a client to a new target resource.
+	 * If {@code immediately} is true, create a new redirect response rule
+	 * and overrided the intended redirect resoponse rule.
 	 *
-	 * @param target the target
-	 * @param immediately the immediately
+	 * @param target the target resource
+	 * @param immediately whether to override the intended redirect response rule
 	 */
 	void redirect(String target, boolean immediately);
 
