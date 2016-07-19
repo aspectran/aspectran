@@ -52,7 +52,7 @@ public class ClassScanner {
 	}
 
 	/**
-	 * Find all the classes that match the class name pattern.
+	 * Find all classes that match the class name pattern.
 	 *
 	 * @param classNamePattern the class name pattern
 	 * @return a Map for scanned classes
@@ -65,7 +65,7 @@ public class ClassScanner {
 	}
 
 	/**
-	 * Find all the classes that match the class name pattern.
+	 * Find all classes that match the class name pattern.
 	 *
 	 * @param classNamePattern the class name pattern
 	 * @param scannedClasses the Map for scanned classes
@@ -78,7 +78,7 @@ public class ClassScanner {
 	}
 
 	/**
-	 * Find all the classes that match the class name pattern.
+	 * Find all classes that match the class name pattern.
 	 *
 	 * @param classNamePattern the class name pattern
 	 * @param saveHandler the save handler

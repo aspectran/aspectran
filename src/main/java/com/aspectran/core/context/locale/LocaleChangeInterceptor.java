@@ -197,7 +197,7 @@ public class LocaleChangeInterceptor {
             return true;
         }
         for(String configuredMethod : configuredMethods) {
-            if(configuredMethod.equals(requestMethodType.toString())) {
+            if(requestMethodType.matches(configuredMethod)) {
                 return true;
             }
         }
