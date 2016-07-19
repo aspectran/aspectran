@@ -86,7 +86,7 @@ public class SpecificIPAllowedWebActivityServlet extends WebActivityServlet impl
 	}
 	
 	/**
-	 * Returns whether a valid ip address.
+	 * Returns whether a valid IP address.
 	 * 
 	 * @param ipAddress the ip address
 	 * 

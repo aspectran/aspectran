@@ -109,16 +109,18 @@ public class HttpServletResponseAdapter extends AbstractResponseAdapter {
 			ItemEvaluator evaluator = new ItemExpressionParser(activity);
 			Map<String, Object> valueMap = evaluator.evaluate(redirectResponseRule.getParameterItemRuleMap());
 
-			if(valueMap != null && valueMap.size() > 0) {
-				if(questionPos == -1)
+			if(valueMap != null && !valueMap.isEmpty()) {
+				if(questionPos == -1) {
 					sb.append(QUESTION_CHAR);
+				}
 
 				String name = null;
 				Object value;
 				
 				for(Map.Entry<String, Object> entry : valueMap.entrySet()) {
-					if(name != null)
+					if(name != null) {
 						sb.append(AMPERSAND_CHAR);
+					}
 
 					name = entry.getKey();
 					value = entry.getValue();
