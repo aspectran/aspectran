@@ -266,7 +266,7 @@ public class CoreTranslet implements Translet {
 
 	@Override
 	public void transform(TransformRule transformRule) {
-		Response res = TransformResponseFactory.getResponse(transformRule);
+		Response res = TransformResponseFactory.createTransformResponse(transformRule);
 		response(res);
 	}
 
