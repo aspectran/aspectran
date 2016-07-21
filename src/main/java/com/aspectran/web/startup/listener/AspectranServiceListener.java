@@ -32,11 +32,6 @@ public class AspectranServiceListener implements ServletContextListener {
 
 	private AspectranService aspectranService;
 
-	/**
-	 * Initialize the Aspectran Service.
-	 * 
-	 * @param event the event
-	 */
 	@Override
 	public void contextInitialized(ServletContextEvent event) {
 		log.info("Initializing AspectranServiceListener...");
@@ -48,11 +43,6 @@ public class AspectranServiceListener implements ServletContextListener {
 		}
 	}
 	
-	/**
-	 * Destroy the Aspectran Service.
-	 * 
-	 * @param event the event
-	 */
 	@Override
 	public void contextDestroyed(ServletContextEvent event) {
 		if(aspectranService != null) {

@@ -25,8 +25,8 @@ import com.aspectran.core.context.template.TemplateProcessor;
 import com.aspectran.core.context.translet.TransletRuleRegistry;
 
 /**
- * The Class ActivityContext.
- * 
+ * Central interface to provide configuration for performing various activities.
+ *
  * <p>Created: 2008. 06. 09 PM 2:12:40</p>
  */
 public interface ActivityContext extends MessageSource {
@@ -53,7 +53,7 @@ public interface ActivityContext extends MessageSource {
 	ContextEnvironment getContextEnvironment();
 
 	/**
-	 * Gets class loader.
+	 * Gets the class loader.
 	 *
 	 * @return the class loader
 	 */
