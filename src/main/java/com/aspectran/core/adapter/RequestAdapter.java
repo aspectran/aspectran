@@ -33,17 +33,17 @@ import com.aspectran.core.context.rule.type.MethodType;
 public interface RequestAdapter {
 	
 	/**
-	 * Gets the Adaptee object.
+	 * Returns the adaptee object to provide request information.
 	 *
-	 * @param <T> the generic type
-	 * @return the Adaptee object
+	 * @param <T> the type of the adaptee
+	 * @return the adaptee object
 	 */
 	<T> T getAdaptee();
 
 	/**
-	 * Gets the request method.
+	 * Returns the method used for the request.
 	 *
-	 * @return the request method
+	 * @return a {@code MethodType} object
 	 */
 	MethodType getRequestMethod();
 
