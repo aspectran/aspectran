@@ -77,18 +77,18 @@ public interface Activity extends BeanRegistry {
 	void prepare(String transletName, MethodType requestMethod);
 	
 	/**
-	 * Perform activity.
+	 * Perform a prepared activity.
 	 */
 	void perform();
 	
 	/**
-	 * Perform activity without reponse.
+	 * Perform a prepared activity but does not respond to the client.
 	 */
 	void performWithoutResponse();
 
 	/**
 	 * Finish the activity.
-	 * It must be called before exiting activities.
+	 * It must be called before exiting activity.
 	 */
 	void finish();
 
@@ -114,7 +114,7 @@ public interface Activity extends BeanRegistry {
 	void execute(List<AspectAdviceRule> aspectAdviceRuleList);
 	
 	/**
-	 * Forced to Execute the aspect advices.
+	 * Execute the aspect advices to force.
 	 *
 	 * @param aspectAdviceRuleList the aspect advice rule list
 	 */
@@ -128,7 +128,8 @@ public interface Activity extends BeanRegistry {
 	ProcessResult getProcessResult();
 	
 	/**
-	 * Returns a action result  from the process result.
+	 * Returns a action result for the specified action id from the process result,
+	 * or {@code null} if the action does not exist.
 	 *
 	 * @param actionId the specified action id
 	 * @return the action result
@@ -154,54 +155,188 @@ public interface Activity extends BeanRegistry {
 	 */
 	void activityEnd();
 	
+	/**
+	 * Respond immediately, and the remaining jobs will be canceled.
+	 *
+	 * @param response the response
+	 */
 	void response(Response response);
 	
+	/**
+	 * Respond depending on the content type.
+	 *
+	 * @param exceptionRuleList the exception rule list
+	 */
 	void responseByContentType(List<ExceptionRule> exceptionRuleList);
 
+	/**
+	 * Gets the response.
+	 *
+	 * @return the response
+	 */
 	Response getResponse();
 
+	/**
+	 * Returns whether the exception was thrown.
+	 *
+	 * @return true, if is exception raised
+	 */
 	boolean isExceptionRaised();
 
+	/**
+	 * Returns the raised exception instance.
+	 *
+	 * @return the raised exception instance
+	 */
 	Throwable getRaisedException();
 
+	/**
+	 * Returns the origin raised exception instance.
+	 *
+	 * @return the origin raised exception instance
+	 */
 	Throwable getOriginRaisedException();
 
+	/**
+	 * Sets the raised exception.
+	 *
+	 * @param raisedException the new raised exception
+	 */
 	void setRaisedException(Throwable raisedException);
 
+	/**
+	 * Gets the activity context.
+	 *
+	 * @return the activity context
+	 */
 	ActivityContext getActivityContext();
 
+	/**
+	 * Create a new activity.
+	 *
+	 * @param <T> the type of the activity
+	 * @return the activity object
+	 */
 	<T extends Activity> T newActivity();
 
+	/**
+	 * Gets the translet.
+	 *
+	 * @return the translet
+	 */
 	Translet getTranslet();
 	
+	/**
+	 * Returns the name of the translet.
+	 *
+	 * @return the translet name
+	 */
 	String getTransletName();
 
+	/**
+	 * Gets the request http method.
+	 *
+	 * @return the request method
+	 */
 	MethodType getRequestMethod();
 	
+	/**
+	 * Gets the application adapter.
+	 *
+	 * @return the application adapter
+	 */
 	ApplicationAdapter getApplicationAdapter();
 
+	/**
+	 * Gets the session adapter.
+	 *
+	 * @return the session adapter
+	 */
 	SessionAdapter getSessionAdapter();
 	
+	/**
+	 * Gets the request adapter.
+	 *
+	 * @return the request adapter
+	 */
 	RequestAdapter getRequestAdapter();
 	
+	/**
+	 * Gets the response adapter.
+	 *
+	 * @return the response adapter
+	 */
 	ResponseAdapter getResponseAdapter();
 
+	/**
+	 * Gets the bean registry.
+	 *
+	 * @return the bean registry
+	 */
 	BeanRegistry getBeanRegistry();
 	
+	/**
+	 * Gets the template processor.
+	 *
+	 * @return the template processor
+	 */
 	TemplateProcessor getTemplateProcessor();
 
+	/**
+	 * Gets the setting value in the translet scope.
+	 *
+	 * @param <T> the type of the value
+	 * @param settingName the setting name
+	 * @return the setting value
+	 */
 	<T> T getTransletSetting(String settingName);
 	
+	/**
+	 * Gets the setting value in the request scope.
+	 *
+	 * @param <T> the type of the value
+	 * @param settingName the setting name
+	 * @return the setting value
+	 */
 	<T> T getRequestSetting(String settingName);
 	
+	/**
+	 * Gets the setting value in the response scope.
+	 *
+	 * @param <T> the type of the value
+	 * @param settingName the setting name
+	 * @return the setting value
+	 */
 	<T> T getResponseSetting(String settingName);
 	
+	/**
+	 * Register the aspect rule.
+	 *
+	 * @param aspectRule the aspect rule
+	 */
 	void registerAspectRule(AspectRule aspectRule);
 	
+	/**
+	 * Gets the aspect advice bean.
+	 *
+	 * @param <T> the type of the bean
+	 * @param aspectId the aspect id
+	 * @return the aspect advice bean object
+	 */
 	<T> T getAspectAdviceBean(String aspectId);
 	
+	/**
+	 * Gets the request scope.
+	 *
+	 * @return the request scope
+	 */
 	Scope getRequestScope();
 
+	/**
+	 * Sets the request scope.
+	 *
+	 * @param requestScope the new request scope
+	 */
 	void setRequestScope(Scope requestScope);
 
 }

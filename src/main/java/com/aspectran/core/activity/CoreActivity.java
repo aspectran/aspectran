@@ -99,7 +99,7 @@ public class CoreActivity extends AbstractActivity {
 	private AspectAdviceRuleRegistry contentAspectAdviceRuleRegistry;
 	
 	/**
-	 * Instantiates a new GenericActivity.
+	 * Instantiates a new CoreActivity.
 	 *
 	 * @param context the current ActivityContext
 	 */
@@ -184,7 +184,7 @@ public class CoreActivity extends AbstractActivity {
 				forwardTransletName = null;
 			}
 		} catch(Exception e) {
-			throw new ActivityException("Failed to prepare for Activity.", e);
+			throw new ActivityException("Failed to prepare the Activity.", e);
 		}
 	}
 
@@ -286,7 +286,7 @@ public class CoreActivity extends AbstractActivity {
 				}
 			}
 			
-			throw new ActivityException("Failed to perform activity for the translet.", e);
+			throw new ActivityException("Failed to perform the activity int the translet scope.", e);
 		} finally {
 			if(getRequestScope() != null) {
 				getRequestScope().destroy();
@@ -342,7 +342,7 @@ public class CoreActivity extends AbstractActivity {
 				}
 			}
 				
-			throw new RequestException("Failed to perform activity for the request.", e);
+			throw new RequestException("Failed to perform the activity in the request scope.", e);
 		}
 	}
 	
@@ -389,7 +389,7 @@ public class CoreActivity extends AbstractActivity {
 				}
 			}
 			
-			throw new ProcessException("Failed to perform activity for the content.", e);
+			throw new ProcessException("Failed to perform the activity in the content scope.", e);
 		}
 	}
 	
@@ -439,7 +439,7 @@ public class CoreActivity extends AbstractActivity {
 				}
 			}
 			
-			throw new ResponseException("Failed to perform activity for the response.", e);
+			throw new ResponseException("Failed to perform the activity in the response scope.", e);
 		}
 	}
 
@@ -558,8 +558,6 @@ public class CoreActivity extends AbstractActivity {
 	private void responseByContentType(ExceptionRule exceptionRule) {
 		ResponseByContentTypeRule rbctr = exceptionRule.getResponseByContentTypeRule(getRaisedException());
 		if(rbctr != null) {
-
-
 			log.info("Raised exception: " + getRaisedException());
 			responseByContentType(rbctr);
 		}

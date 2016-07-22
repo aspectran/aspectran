@@ -33,16 +33,16 @@ public class ContentsInputSource extends InputSource {
 	/**
 	 * Instantiates a new ContentsInputSource.
 	 * 
-	 * @param processResult the result of processing
+	 * @param processResult a {@code ProcessResult} object
 	 */
 	public ContentsInputSource(ProcessResult processResult) {
 		this.processResult = processResult;
 	}
 	
 	/**
-	 * Gets the the result of processing.
+	 * Returns a {@code ProcessResult} object.
 	 * 
-	 * @return the result of processing
+	 * @return a {@code ProcessResult} object
 	 */
 	public ProcessResult getProcessResult() {
 		return processResult;

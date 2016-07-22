@@ -28,10 +28,10 @@ import com.aspectran.core.context.bean.scope.SessionScope;
 public interface SessionAdapter {
 
 	/**
-	 * Gets the Adaptee object.
+	 * Returns the adaptee object to provide session information.
 	 *
-	 * @param <T> the generic type
-	 * @return the Adaptee object
+	 * @param <T> the type of the adaptee
+	 * @return the adaptee object
 	 */
 	<T> T getAdaptee();
 	
@@ -94,19 +94,21 @@ public interface SessionAdapter {
 	Enumeration<String> getAttributeNames();
 	
 	/**
-	 * Gets the attribute.
+	 * Returns the value of the named attribute as a given type,
+	 * or {@code null} if no attribute of the given name exists.
 	 *
 	 * @param <T> the generic type
-	 * @param name the name
-	 * @return the attribute
+	 * @param name a {@code String} specifying the name of the attribute
+	 * @return an {@code Object} containing the value of the attribute,
+	 * 			or {@code null} if the attribute does not exist
 	 */
 	<T> T getAttribute(String name);
 
 	/**
-	 * Sets the attribute.
+	 * Stores an attribute in this session.
 	 *
-	 * @param name the name
-	 * @param value the value
+	 * @param name specifying the name of the attribute
+	 * @param value the {@code Object} to be stored
 	 */
 	void setAttribute(String name, Object value);
 	

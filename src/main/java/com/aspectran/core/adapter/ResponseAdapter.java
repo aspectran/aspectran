@@ -31,55 +31,60 @@ import com.aspectran.core.context.rule.RedirectResponseRule;
 public interface ResponseAdapter {
 
 	/**
-	 * Gets the Adaptee object.
+	 * Returns the adaptee object to provide response information.
 	 *
-	 * @param <T> the generic type
-	 * @return the Adaptee object
+	 * @param <T> the type of the adaptee
+	 * @return the adaptee object
 	 */
 	<T> T getAdaptee();
 	
 	/**
-	 * Gets the character encoding.
+	 * Returns the name of the character encoding (MIME charset) used for the body
+	 * sent in this response.
 	 *
-	 * @return the character encoding
+	 * @return a {@code String} specifying the name of the character encoding,
+	 * 			for example, UTF-8
 	 */
 	String getCharacterEncoding();
 	
 	/**
-	 * Sets the character encoding.
+	 * Sets the character encoding of the response being sent to the client.
 	 *
-	 * @param characterEncoding the new character encoding
+	 * @param characterEncoding a {@code String} specifying only the character set
+	 * 			defined by IANA Character Sets (http://www.iana.org/assignments/character-sets)
 	 * @throws UnsupportedEncodingException the unsupported encoding exception
 	 */
 	void setCharacterEncoding(String characterEncoding) throws UnsupportedEncodingException;
 	
 	/**
-	 * Gets the content type.
+	 * Returns the content type used for the MIME body sent in this response.
 	 *
-	 * @return the content type
+	 * @return a {@code String} specifying the content type,
+	 * 			for example, {@code text/html}, or null
 	 */
 	String getContentType();
 
 	/**
-	 * Sets the content type.
+	 * Sets the content type of the response being sent to the client,
+	 * if the response has not been committed yet.
 	 *
-	 * @param contentType the new content type
+	 * @param contentType a {@code String} specifying the MIME type of the content
 	 */
 	void setContentType(String contentType);
 
 	/**
-	 * Gets the output stream.
+	 * Returns a {@code OutputStream} suitable for writing binary data in the response.
 	 *
-	 * @return the output stream
-	 * @throws IOException If an input or output exception occurs
+	 * @return a {@code OutputStream} for writing binary data 
+	 * @throws IOException if an input or output exception occurs
 	 */
 	OutputStream getOutputStream() throws IOException;
 	
 	/**
-	 * Gets the writer.
+	 * Returns a {@code Writer} object that can send character text to the client.
 	 *
-	 * @return the writer
-	 * @throws IOException If an input or output exception occurs
+	 * @return a {@code Writer} object that can return character data to the client
+	 * @throws IOException if an input or output exception occurs
 	 */
 	Writer getWriter() throws IOException;
 	
@@ -87,7 +92,7 @@ public interface ResponseAdapter {
 	 * Redirects a client to a new URL.
 	 *
 	 * @param target the redirect target
-	 * @throws IOException If an input or output exception occurs
+	 * @throws IOException if an input or output exception occurs
 	 */
 	void redirect(String target) throws IOException;
 	
@@ -96,7 +101,7 @@ public interface ResponseAdapter {
 	 *
 	 * @param redirectResponseRule the redirect response rule
 	 * @return the redirect target
-	 * @throws IOException If an input or output exception occurs
+	 * @throws IOException if an input or output exception occurs
 	 */
 	String redirect(RedirectResponseRule redirectResponseRule) throws IOException;
 	
