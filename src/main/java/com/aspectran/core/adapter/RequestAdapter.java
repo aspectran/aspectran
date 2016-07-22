@@ -33,130 +33,162 @@ import com.aspectran.core.context.rule.type.MethodType;
 public interface RequestAdapter {
 	
 	/**
-	 * Gets the Adaptee object.
+	 * Returns the adaptee object to provide request information.
 	 *
-	 * @param <T> the generic type
-	 * @return the Adaptee object
+	 * @param <T> the type of the adaptee
+	 * @return the adaptee object
 	 */
 	<T> T getAdaptee();
 
 	/**
-	 * Gets the request method.
+	 * Returns the method used for the request.
 	 *
-	 * @return the request method
+	 * @return a {@code MethodType} object
 	 */
 	MethodType getRequestMethod();
 
 	/**
-	 * Gets the character encoding.
+	 * Returns the name of the character encoding used in the body of this request.
 	 * 
-	 * @return the character encoding
+	 * @return a {@code String} containing the name of the character encoding,
+	 * 			or {@code null} if the request does not specify a character encoding
 	 */
 	String getCharacterEncoding();
 	
 	/**
-	 * Sets the character encoding.
+	 * Overrides the name of the character encoding used in the body of this request.
+	 * This method must be called prior to reading request parameters
+	 * or reading input using getReader(). Otherwise, it has no effect. 
 	 *
-	 * @param characterEncoding the new character encoding
-	 * @throws UnsupportedEncodingException the unsupported encoding exception
+	 * @param characterEncoding a {@code String} containing the name of the character encoding. 
+	 * @throws UnsupportedEncodingException if the specified encoding is invalid
 	 */
 	void setCharacterEncoding(String characterEncoding) throws UnsupportedEncodingException;
 	
 	/**
-	 * Gets the parameter.
+	 * Returns the value of an activity's request parameter as a {@code String},
+	 * or {@code null} if the parameter does not exist.
 	 *
-	 * @param name the parameter name
-	 * @return the parameter value
+	 * @param name a {@code String} specifying the name of the parameter
+	 * @return a {@code String} representing the
+	 *			single value of the parameter
+	 * @see #getParameterValues
 	 */
 	String getParameter(String name);
 
 	/**
-	 * Gets the parameter values.
+	 * Returns an array of {@code String} objects containing all
+	 * of the values the given activity's request parameter has,
+	 * or {@code null} if the parameter does not exist.
 	 *
-	 * @param name the name
-	 * @return an array of <code>String</code> objects
+	 * @param name a {@code String} specifying the name of the parameter
+	 * @return an array of {@code String} objects
 	 *			containing the parameter's values
+	 * @see #getParameter
 	 */
 	String[] getParameterValues(String name);
 
 	/**
-	 * Gets the parameter names.
+	 * Returns an {@code Enumeration} of {@code String} objects containing
+	 * the names of the parameters contained in this request.
+	 * If the request has no parameters, the method returns an empty {@code Enumeration}.
 	 *
-	 * @return the parameter names
+	 * @return an {@code Enumeration} of {@code String} objects, each {@code String}
+	 * 			containing the name of a request parameter;
+	 * 			or an empty {@code Enumeration} if the request has no parameters
 	 */
 	Enumeration<String> getParameterNames();
 
 	/**
-	 * Sets the parameter.
+	 * Sets the value to the parameter with the given name.
 	 *
-	 * @param name the parameter name
-	 * @param value a <code>String</code> representing the
+	 * @param name a {@code String} specifying the name of the parameter
+	 * @param value a {@code String} representing the
 	 *			single value of the parameter
+	 * @see #setParameter(String, String[])
 	 */
 	void setParameter(String name, String value);
 
 	/**
-	 * Sets the parameter.
+	 * Sets the value to the parameter with the given name.
 	 *
-	 * @param name the parameter name
-	 * @param values a <code>String</code> representing the
-	 *			single value of the parameter
+	 * @param name a {@code String} specifying the name of the parameter
+	 * @param values an array of {@code String} objects
+	 *			containing the parameter's values
+	 * @see #setParameter
 	 */
 	void setParameter(String name, String[] values);
 
 	/**
-	 * Gets the file parameter.
+	 * Returns a {@code FileParameter} object as a given activity's request parameter name,
+	 * or {@code null} if the parameter does not exist.
 	 *
-	 * @param name the parameter name
-	 * @return the file parameter
+	 * @param name a {@code String} specifying the name of the file parameter
+	 * @return a {@code FileParameter} representing the
+	 *			single value of the parameter
+	 * @see #getFileParameterValues
 	 */
 	FileParameter getFileParameter(String name);
 	
 	/**
-	 * Gets the file parameter values.
+	 * Returns an array of {@code FileParameter} objects containing all
+	 * of the values the given activity's request parameter has,
+	 * or {@code null} if the parameter does not exist.
 	 *
-	 * @param name the parameter name
-	 * @return the file parameter values
+	 * @param name a {@code String} specifying the name of the file parameter
+	 * @return an array of {@code FileParameter} objects
+	 *			containing the parameter's values
+	 * @see #getFileParameter
 	 */
 	FileParameter[] getFileParameterValues(String name);
 
 	/**
-	 * Gets the file parameter names.
+	 * Returns an {@code Enumeration} of {@code String} objects containing
+	 * the names of the file parameters contained in this request.
+	 * If the request has no parameters, the method returns an empty {@code Enumeration}.
 	 *
-	 * @return the parameter names
+	 * @return an {@code Enumeration} of {@code String} objects, each {@code String}
+	 * 			containing the name of a file parameter;
+	 * 			or an empty {@code Enumeration} if the request has no file parameters
 	 */
 	Enumeration<String> getFileParameterNames();
 
 	/**
-	 * Sets the file parameter.
+	 * Sets the {@code FileParameter} object to the file parameter with the given name.
 	 *
-	 * @param name the parameter name
-	 * @param fileParameter the file parameter
+	 * @param name a {@code String} specifying the name of the file parameter
+	 * @param fileParameter a {@code FileParameter} representing the
+	 *			single value of the parameter
+	 * @see #setFileParameter(String, FileParameter[])
 	 */
 	void setFileParameter(String name, FileParameter fileParameter);
 
 	/**
-	 * Sets the file parameter.
+	 * Sets the value to the file parameter with the given name.
 	 *
-	 * @param name the parameter name
-	 * @param fileParameters the file parameters
+	 * @param name a {@code String} specifying the name of the file parameter
+	 * @param fileParameters an array of {@code FileParameter} objects
+	 *			containing the file parameter's values
+	 * @see #setFileParameter
 	 */
 	void setFileParameter(String name, FileParameter[] fileParameters);
 
 	/**
-	 * Removes the file parameter.
+	 * Removes the file parameter with the specified name.
 	 *
-	 * @param name the file parameter name
-	 * @return the file parameter[]
+	 * @param name a {@code String} specifying the name of the file parameter
+	 * @return the removed file parameters
 	 */
 	FileParameter[] removeFileParameter(String name);
 	
 	/**
-	 * Returns the value of the named attribute as a given type, or <code>null</code> if no attribute of the given name exists.
+	 * Returns the value of the named attribute as a given type,
+	 * or {@code null} if no attribute of the given name exists.
 	 *
 	 * @param <T> the generic type
-	 * @param name a String specifying the name of the attribute
-	 * @return an Object containing the value of the attribute, or null if the attribute does not exist
+	 * @param name a {@code String} specifying the name of the attribute
+	 * @return an {@code Object} containing the value of the attribute,
+	 * 			or {@code null} if the attribute does not exist
 	 */
 	<T> T getAttribute(String name);
 	
@@ -164,14 +196,14 @@ public interface RequestAdapter {
 	 * Stores an attribute in this request.
 	 *
 	 * @param name specifying the name of the attribute
-	 * @param value the Object to be stored
+	 * @param value the {@code Object} to be stored
 	 */
 	void setAttribute(String name, Object value);
 	
 	/**
-	 * Returns an <code>Enumeration</code> containing the
+	 * Returns an {@code Enumeration} containing the
 	 * names of the attributes available to this request.
-	 * This method returns an empty <code>Enumeration</code>
+	 * This method returns an empty {@code Enumeration}
 	 * if the request has no attributes available to it.
 	 *
 	 * @return the attribute names
@@ -181,7 +213,7 @@ public interface RequestAdapter {
 	/**
 	 * Removes an attribute from this request.
 	 *
-	 * @param name a String specifying the name of the attribute to remove
+	 * @param name a {@code String} specifying the name of the attribute to remove
 	 */
 	void removeAttribute(String name);
 
@@ -205,7 +237,7 @@ public interface RequestAdapter {
 	void fillPrameterMap(Map<String, Object> parameterMap);
 	
 	/**
-	 * Return a mutable Map of the request attributes,
+	 * Return a mutable {@code Map} of the request attributes,
 	 * with attribute names as map keys and attribute value as map value.
 	 *
 	 * @return the attribute map
@@ -224,42 +256,42 @@ public interface RequestAdapter {
 	/**
 	 * Returns whether request header has exceed the maximum length.
 	 *
-	 * @return true, if is max length exceeded
+	 * @return true, if max length exceeded
 	 */
 	boolean isMaxLengthExceeded();
 
 	/**
 	 * Sets whether request header has exceed the maximum length.
 	 *
-	 * @param maxLengthExceeded the new max length exceeded
+	 * @param maxLengthExceeded whether the max length exceeded
 	 */
 	void setMaxLengthExceeded(boolean maxLengthExceeded);
 
 	/**
-	 * Returns the preferred <code>Locale</code>.
+	 * Returns the preferred {@code Locale}.
 	 *
-	 * @return a Locale
+	 * @return a preferred {@code Locale}
      */
 	Locale getLocale();
 
 	/**
-	 * Sets the preferred <code>Locale</code>.
+	 * Sets the preferred {@code Locale}.
 	 *
-	 * @param locale a Locale
+	 * @param locale a given {@code Locale}
 	 */
 	void setLocale(Locale locale);
 
 	/**
-	 * Returns the preferred <code>TimeZone</code>.
+	 * Returns the preferred {@code TimeZone}.
 	 *
-	 * @return a TimeZone
+	 * @return a preferred {@code TimeZone}
 	 */
 	TimeZone getTimeZone();
 
 	/**
-	 * Sets the preferred <code>TimeZone</code>.
+	 * Sets the preferred {@code TimeZone}.
 	 *
-	 * @param timeZone a TimeZone
+	 * @param timeZone a given {@code TimeZone}
 	 */
 	void setTimeZone(TimeZone timeZone);
 

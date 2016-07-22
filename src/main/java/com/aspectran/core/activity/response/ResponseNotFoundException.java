@@ -23,7 +23,7 @@ package com.aspectran.core.activity.response;
 public class ResponseNotFoundException extends ResponseException {
 	
 	/** @serial */
-	static final long serialVersionUID = -530923662371367919L;
+	private static final long serialVersionUID = -530923662371367919L;
 
 	/**
 	 * Simple constructor.

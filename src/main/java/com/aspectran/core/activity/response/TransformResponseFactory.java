@@ -29,7 +29,13 @@ import com.aspectran.core.context.rule.type.TransformType;
  */
 public class TransformResponseFactory {
 
-	public static Response getResponse(TransformRule transformRule) {
+	/**
+	 * Creates a new TransformResponse object.
+	 *
+	 * @param transformRule the transform rule
+	 * @return the transform response
+	 */
+	public static Response createTransformResponse(TransformRule transformRule) {
 		if(transformRule == null) {
 			throw new IllegalArgumentException("transformRule must not be null.");
 		}

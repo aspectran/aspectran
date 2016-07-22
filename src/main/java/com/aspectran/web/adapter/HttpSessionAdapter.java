@@ -43,7 +43,7 @@ public class HttpSessionAdapter extends AbstractSessionAdapter {
 	 * Instantiates a new HttpSessionAdapter.
 	 *
 	 * @param request the HTTP request
-	 * @param context the current ActivityContext
+	 * @param context the current activity context
 	 */
 	public HttpSessionAdapter(HttpServletRequest request, ActivityContext context) {
 		super(request);
@@ -152,10 +152,10 @@ public class HttpSessionAdapter extends AbstractSessionAdapter {
 	}
 	
 	/**
-	 * Return a new http session scope.
+	 * Returns a new HTTP session scope.
 	 *
-	 * @param force Whether to create a new session scope to force
-	 * @return the session scope
+	 * @param force whether creating a new session scope to force
+	 * @return a {@code SessionScope} object
 	 */
 	private SessionScope newHttpSessionScope(boolean force) {
 		SessionScopeAdvisor advisor = SessionScopeAdvisor.newInstance(context, this);

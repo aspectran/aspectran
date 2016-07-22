@@ -89,7 +89,7 @@ public class FileParameter {
 	}
 
 	/**
-	 * Gets the input stream of the file.
+	 * Returns an {@code InputStream} object of the file.
 	 * 
 	 * @return An {@link java.io.OutputStream OutputStream} that can be used
 	 *         for storing the contensts of the file.
@@ -100,10 +100,10 @@ public class FileParameter {
 	}
 
 	/**
-	 * Gets the bytes.
+	 * Returns the contents of the file in a byte array.
 	 * Can not use a large array of memory than the JVM Heap deal.
 	 *
-	 * @return the bytes
+	 * @return a byte array
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public byte[] getBytes() throws IOException {
@@ -146,9 +146,9 @@ public class FileParameter {
 	}
 
 	/**
-	 * Sets the refused.
+	 * Sets whether the refused file.
 	 * 
-	 * @param refused the new refused
+	 * @param refused whether the refused file
 	 */
 	public void setRefused(boolean refused) {
 		this.refused = refused;

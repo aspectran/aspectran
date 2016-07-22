@@ -18,7 +18,7 @@ package com.aspectran.core.activity;
 import com.aspectran.core.context.AspectranRuntimeException;
 
 /**
- * This exception will be thrown when a translet process is failed..
+ * This exception will be thrown when activity is failed.
  * 
  * <p>Created: 2008. 01. 07 AM 3:35:55</p>
  */
@@ -37,7 +37,7 @@ public class ActivityException extends AspectranRuntimeException {
 	/**
 	 * Instantiates a new ActivityException.
 	 * 
-	 * @param msg A message to associate with the exception
+	 * @param msg a message to associate with the exception
 	 */
 	public ActivityException(String msg) {
 		super(msg);
@@ -46,7 +46,7 @@ public class ActivityException extends AspectranRuntimeException {
 	/**
 	 * Instantiates a new ActivityException.
 	 * 
-	 * @param cause The real cause of the exception
+	 * @param cause the real cause of the exception
 	 */
 	public ActivityException(Throwable cause) {
 		super(cause);
@@ -55,8 +55,8 @@ public class ActivityException extends AspectranRuntimeException {
 	/**
 	 * Instantiates a new ActivityException.
 	 * 
-	 * @param msg The message
-	 * @param cause The real cause of the exception
+	 * @param msg the message
+	 * @param cause the real cause of the exception
 	 */
 	public ActivityException(String msg, Throwable cause) {
 		super(msg, cause);

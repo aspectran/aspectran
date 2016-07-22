@@ -40,7 +40,7 @@ public class ParameterMap extends LinkedHashMap<String, String[]> {
 
 	/**
 	 * Returns the string value to which the specified name is mapped,
-	 * or null if this map contains no mapping for the name.
+	 * or {@code null} if this map contains no mapping for the name.
 	 * 
 	 * @param name the parameter name
 	 * @return the string
@@ -52,7 +52,7 @@ public class ParameterMap extends LinkedHashMap<String, String[]> {
 	
 	/**
 	 * Returns the string values to which the specified name is mapped,
-	 * or null if this map contains no mapping for the name.
+	 * or {@code null} if this map contains no mapping for the name.
 	 *
 	 * @param name the parameter name
 	 * @return the string
@@ -62,10 +62,12 @@ public class ParameterMap extends LinkedHashMap<String, String[]> {
 	}
 
 	/**
-	 * Sets the parameter.
+	 * Sets the value to the parameter with the given name.
 	 *
-	 * @param name the parameter name
-	 * @param value the value
+	 * @param name a {@code String} specifying the name of the parameter
+	 * @param value a {@code String} representing the
+	 *			single value of the parameter
+	 * @see #setParameter(String, String[])
 	 */
 	public void setParameter(String name, String value) {
 		String[] values = new String[] { value };
@@ -73,19 +75,25 @@ public class ParameterMap extends LinkedHashMap<String, String[]> {
 	}
 
 	/**
-	 * Set parameter name and value.
+	 * Sets the value to the parameter with the given name.
 	 *
-	 * @param name the parameter name
-	 * @param values the values
+	 * @param name a {@code String} specifying the name of the parameter
+	 * @param values an array of {@code String} objects
+	 *			containing the parameter's values
+	 * @see #setParameter
 	 */
 	public void setParameter(String name, String[] values) {
 		put(name, values);
 	}
 
 	/**
-	 * Returns the parameters names.
+	 * Returns an {@code Enumeration} of {@code String} objects containing
+	 * the names of the parameters.
+	 * If no parameters, the method returns an empty {@code Enumeration}.
 	 *
-	 * @return the parameter names
+	 * @return an {@code Enumeration} of {@code String} objects, each {@code String}
+	 * 			containing the name of a parameter;
+	 * 			or an empty {@code Enumeration} if no parameters
 	 */
 	public Enumeration<String> getParameterNames() {
 		return Collections.enumeration(keySet());

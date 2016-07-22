@@ -80,7 +80,7 @@ public abstract class TransformResponse implements Response {
 	 * Gets the template as stream.
 	 * 
 	 * @param file the file
-	 * @return the template as stream
+	 * @return the input stream of the template
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	protected InputStream getTemplateAsStream(File file) throws IOException {
@@ -90,8 +90,8 @@ public abstract class TransformResponse implements Response {
 	/**
 	 * Gets the template as stream.
 	 * 
-	 * @param url the url
-	 * @return the template as stream
+	 * @param url the url of the template
+	 * @return the input stream of the template
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	protected InputStream getTemplateAsStream(URL url) throws IOException {
@@ -104,7 +104,7 @@ public abstract class TransformResponse implements Response {
 	 * 
 	 * @param file the file
 	 * @param encoding the encoding
-	 * @return the template as reader
+	 * @return the reader of the template
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	protected Reader getTemplateAsReader(File file, String encoding) throws IOException {
@@ -113,8 +113,9 @@ public abstract class TransformResponse implements Response {
 		if(encoding != null) {
 			InputStream inputStream = getTemplateAsStream(file);
 			reader = new InputStreamReader(inputStream, encoding);
-		} else
+		} else {
 			reader = new FileReader(file);
+		}
 
 		return reader;
 	}
@@ -131,10 +132,11 @@ public abstract class TransformResponse implements Response {
 		InputStream inputStream = getTemplateAsStream(url);
 		Reader reader;
 		
-		if(encoding != null)
+		if(encoding != null) {
 			reader = new InputStreamReader(inputStream, encoding);
-		else
+		} else {
 			reader = new InputStreamReader(inputStream);
+		}
 
 		return reader;
 	}

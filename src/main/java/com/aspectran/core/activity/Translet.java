@@ -84,49 +84,50 @@ public interface Translet extends BeanRegistry, MessageSource {
 	ResponseAdapter getResponseAdapter();
 
 	/**
-	 * Gets the request adaptee.
+	 * Returns the adaptee object to provide request information.
 	 *
-	 * @param <T> the generic type
-	 * @return the request adaptee
+	 * @param <T> the type of the request adaptee
+	 * @return the request adaptee object
 	 */
 	<T> T getRequestAdaptee();
 
 	/**
-	 * Gets the response adaptee.
+	 * Returns the adaptee object to provide response information.
 	 *
-	 * @param <T> the generic type
-	 * @return the response adaptee
+	 * @param <T> the type of the response adaptee
+	 * @return the response adaptee object
 	 */
 	<T> T getResponseAdaptee();
 
 	/**
-	 * Gets the session adaptee.
+	 * Returns the adaptee object to provide session information.
 	 *
-	 * @param <T> the generic type
-	 * @return the session adaptee
+	 * @param <T> the type of the session adaptee
+	 * @return the session adaptee object
 	 */
 	<T> T getSessionAdaptee();
 
 	/**
-	 * Gets the application adaptee.
+	 * Returns the adaptee object to provide application information.
 	 *
-	 * @param <T> the generic type
-	 * @return the application adaptee
+	 * @param <T> the type of the application adaptee
+	 * @return the application adaptee object
 	 */
 	<T> T getApplicationAdaptee();
 
 	/**
-	 * Gets the process result.
+	 * Returns the process result.
 	 *
 	 * @return the process result
 	 */
 	ProcessResult getProcessResult();
 
 	/**
-	 * Gets the action result value by specified action id.
+	 * Returns a action result for the specified action id from the process result,
+	 * or {@code null} if the action does not exist.
 	 *
 	 * @param actionId the specified action id
-	 * @return the action result vlaue
+	 * @return the action result
 	 */
 	Object getProcessResult(String actionId);
 
@@ -138,40 +139,41 @@ public interface Translet extends BeanRegistry, MessageSource {
 	void setProcessResult(ProcessResult processResult);
 
 	/**
-	 * Returns the ProcessResult. If not yet instantiated then create a new one.
+	 * Returns the ProcessResult.
+	 * If not yet instantiated then create a new one.
 	 *
 	 * @return the process result
 	 */
 	ProcessResult touchProcessResult();
 
 	/**
-	 * Returns the process result.
+	 * Returns the process result with the contents name.
 	 * If not yet instantiated then create a new one.
 	 *
-	 * @param contentsName the content name
+	 * @param contentsName the contents name
 	 * @return the process result
 	 */
 	ProcessResult touchProcessResult(String contentsName);
 
 	/**
-	 * Returns the process result.
+	 * Returns the process result with the contents name.
 	 * If not yet instantiated then create a new one.
 	 *
-	 * @param contentsName the content name
+	 * @param contentsName the contents name
 	 * @param initialCapacity the initial capacity of the process result
 	 * @return the process result
 	 */
 	ProcessResult touchProcessResult(String contentsName, int initialCapacity);
 
 	/**
-	 * Gets activity data map.
+	 * Returns the activity's data map.
 	 *
-	 * @return the activity data map
+	 * @return the activity's data map
 	 */
 	ActivityDataMap getActivityDataMap();
 
 	/**
-	 * Gets activity data map.
+	 * Returns the activity's data map.
 	 *
 	 * @param prefill whether data pre-fill.
 	 * @return the activity data map
@@ -179,100 +181,129 @@ public interface Translet extends BeanRegistry, MessageSource {
 	ActivityDataMap getActivityDataMap(boolean prefill);
 
 	/**
-	 * Gets the parameter.
+	 * Returns the value of an activity's request parameter as a {@code String},
+	 * or {@code null} if the parameter does not exist.
 	 *
-	 * @param name the parameter name
-	 * @return the parameter value
+	 * @param name a {@code String} specifying the name of the parameter
+	 * @return a {@code String} representing the
+	 *			single value of the parameter
+	 * @see #getParameterValues
 	 */
 	String getParameter(String name);
 
 	/**
-	 * Gets the parameter values.
+	 * Returns an array of {@code String} objects containing all
+	 * of the values the given activity's request parameter has,
+	 * or {@code null} if the parameter does not exist.
 	 *
-	 * @param name the name
-	 * @return an array of <code>String</code> objects
+	 * @param name a {@code String} specifying the name of the parameter
+	 * @return an array of {@code String} objects
 	 *			containing the parameter's values
+	 * @see #getParameter
 	 */
 	String[] getParameterValues(String name);
 
 	/**
-	 * Gets the parameter names.
+	 * Returns an {@code Enumeration} of {@code String} objects containing
+	 * the names of the parameters contained in this request.
+	 * If the request has no parameters, the method returns an empty {@code Enumeration}.
 	 *
-	 * @return the parameter names
+	 * @return an {@code Enumeration} of {@code String} objects, each {@code String}
+	 * 			containing the name of a request parameter;
+	 * 			or an empty {@code Enumeration} if the request has no parameters
 	 */
 	Enumeration<String> getParameterNames();
 
 	/**
-	 * Sets the parameter.
+	 * Sets the value to the parameter with the given name.
 	 *
-	 * @param name the parameter name
-	 * @param value a <code>String</code> representing the
+	 * @param name a {@code String} specifying the name of the parameter
+	 * @param value a {@code String} representing the
 	 *			single value of the parameter
+	 * @see #setParameter(String, String[])
 	 */
 	void setParameter(String name, String value);
 
 	/**
-	 * Sets the parameter.
+	 * Sets the value to the parameter with the given name.
 	 *
-	 * @param name the parameter name
-	 * @param values a <code>String</code> representing the
-	 *			single value of the parameter
+	 * @param name a {@code String} specifying the name of the parameter
+	 * @param values an array of {@code String} objects
+	 *			containing the parameter's values
+	 * @see #setParameter
 	 */
 	void setParameter(String name, String[] values);
 
 	/**
-	 * Gets the file parameter.
+	 * Returns a {@code FileParameter} object as a given activity's request parameter name,
+	 * or {@code null} if the parameter does not exist.
 	 *
-	 * @param name the parameter name
-	 * @return the file parameter
+	 * @param name a {@code String} specifying the name of the file parameter
+	 * @return a {@code FileParameter} representing the
+	 *			single value of the parameter
+	 * @see #getFileParameterValues
 	 */
 	FileParameter getFileParameter(String name);
 
 	/**
-	 * Gets the file parameter values.
+	 * Returns an array of {@code FileParameter} objects containing all
+	 * of the values the given activity's request parameter has,
+	 * or {@code null} if the parameter does not exist.
 	 *
-	 * @param name the parameter name
-	 * @return the file parameter values
+	 * @param name a {@code String} specifying the name of the file parameter
+	 * @return an array of {@code FileParameter} objects
+	 *			containing the parameter's values
+	 * @see #getFileParameter
 	 */
 	FileParameter[] getFileParameterValues(String name);
 
 	/**
-	 * Gets the file parameter names.
+	 * Returns an {@code Enumeration} of {@code String} objects containing
+	 * the names of the file parameters contained in this request.
+	 * If the request has no parameters, the method returns an empty {@code Enumeration}.
 	 *
-	 * @return the parameter names
+	 * @return an {@code Enumeration} of {@code String} objects, each {@code String}
+	 * 			containing the name of a file parameter;
+	 * 			or an empty {@code Enumeration} if the request has no file parameters
 	 */
 	Enumeration<String> getFileParameterNames();
 
 	/**
-	 * Sets the file parameter.
+	 * Sets the {@code FileParameter} object to the file parameter with the given name.
 	 *
-	 * @param name the parameter name
-	 * @param fileParameter the file parameter
+	 * @param name a {@code String} specifying the name of the file parameter
+	 * @param fileParameter a {@code FileParameter} representing the
+	 *			single value of the parameter
+	 * @see #setFileParameter(String, FileParameter[])
 	 */
 	void setFileParameter(String name, FileParameter fileParameter);
 
 	/**
-	 * Sets the file parameter.
+	 * Sets the value to the file parameter with the given name.
 	 *
-	 * @param name the parameter name
-	 * @param fileParameters the file parameters
+	 * @param name a {@code String} specifying the name of the file parameter
+	 * @param fileParameters an array of {@code FileParameter} objects
+	 *			containing the file parameter's values
+	 * @see #setFileParameter
 	 */
 	void setFileParameter(String name, FileParameter[] fileParameters);
 
 	/**
-	 * Removes the file parameter.
+	 * Removes the file parameter with the specified name.
 	 *
-	 * @param name the file parameter name
-	 * @return the file parameter[]
+	 * @param name a {@code String} specifying the name of the file parameter
+	 * @return the removed file parameters
 	 */
 	FileParameter[] removeFileParameter(String name);
 
 	/**
-	 * Returns the value of the named attribute as a given type, or <code>null</code> if no attribute of the given name exists.
+	 * Returns the value of the named attribute as a given type,
+	 * or {@code null} if no attribute of the given name exists.
 	 *
 	 * @param <T> the generic type
-	 * @param name a String specifying the name of the attribute
-	 * @return an Object containing the value of the attribute, or null if the attribute does not exist
+	 * @param name a {@code String} specifying the name of the attribute
+	 * @return an {@code Object} containing the value of the attribute,
+	 * 			or {@code null} if the attribute does not exist
 	 */
 	<T> T getAttribute(String name);
 
@@ -280,14 +311,14 @@ public interface Translet extends BeanRegistry, MessageSource {
 	 * Stores an attribute in this request.
 	 *
 	 * @param name specifying the name of the attribute
-	 * @param value the Object to be stored
+	 * @param value the {@code Object} to be stored
 	 */
 	void setAttribute(String name, Object value);
 
 	/**
-	 * Returns an <code>Enumeration</code> containing the
+	 * Returns an {@code Enumeration} containing the
 	 * names of the attributes available to this request.
-	 * This method returns an empty <code>Enumeration</code>
+	 * This method returns an empty {@code Enumeration}
 	 * if the request has no attributes available to it.
 	 *
 	 * @return the attribute names
@@ -297,7 +328,7 @@ public interface Translet extends BeanRegistry, MessageSource {
 	/**
 	 * Removes an attribute from this request.
 	 *
-	 * @param name a String specifying the name of the attribute to remove
+	 * @param name a {@code String} specifying the name of the attribute to remove
 	 */
 	void removeAttribute(String name);
 
@@ -321,7 +352,7 @@ public interface Translet extends BeanRegistry, MessageSource {
 	void fillPrameterMap(Map<String, Object> parameterMap);
 
 	/**
-	 * Return a mutable Map of the request attributes,
+	 * Return a mutable {@code Map} of the request attributes,
 	 * with attribute names as map keys and attribute value as map value.
 	 *
 	 * @return the attribute map

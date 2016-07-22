@@ -37,7 +37,7 @@ public class ContentsJsonWriter extends JsonWriter {
 	/**
 	 * Instantiates a new ContentsJsonWriter.
 	 * 
-	 * @param writer the writer
+	 * @param writer a {@code Writer} object that can send character text
 	 */
 	public ContentsJsonWriter(Writer writer) {
 		this(writer, false);
@@ -46,8 +46,8 @@ public class ContentsJsonWriter extends JsonWriter {
 	/**
 	 * Instantiates a new ContentsJsonWriter.
 	 * 
-	 * @param writer the character-output stream
-	 * @param prettyPrint enables or disables pretty-printing.
+	 * @param writer a {@code Writer} object that can send character text
+	 * @param prettyPrint enables or disables pretty-printing
 	 */
 	public ContentsJsonWriter(Writer writer, boolean prettyPrint) {
 		super(writer, prettyPrint);
@@ -63,10 +63,10 @@ public class ContentsJsonWriter extends JsonWriter {
 	}
 
 	/**
-	 * Write a ProcessResult object to the character streams.
+	 * Write a {@code ProcessResult} object to the character streams.
 	 *
-	 * @param processResult the ProcessResult object to write to a character-output stream.
-	 * @throws IOException An I/O error occurs.
+	 * @param processResult the {@code ProcessResult} object to write to a character-output stream
+	 * @throws IOException an I/O error occurs.
 	 * @throws InvocationTargetException the invocation target exception
 	 */
 	private void write(ProcessResult processResult) throws IOException, InvocationTargetException {
@@ -94,10 +94,10 @@ public class ContentsJsonWriter extends JsonWriter {
 	}
 
 	/**
-	 * Write a ContentResult object to the character-output stream.
+	 * Write a {@code ContentResult} object to the character-output stream.
 	 *
-	 * @param contentResult the ContentResult object to write to a character-output stream.
-	 * @throws IOException An I/O error occurs.
+	 * @param contentResult the {@code ContentResult} object to write to a character-output stream.
+	 * @throws IOException an I/O error occurs.
 	 * @throws InvocationTargetException the invocation target exception
 	 */
 	private void write(ContentResult contentResult) throws IOException, InvocationTargetException {

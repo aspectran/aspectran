@@ -220,10 +220,11 @@ public class TokenExpressionParser implements TokenEvaluator {
 	}
 	
 	/**
-	 * Gets the parameter value as List.
+	 * Returns the value of an activity's request parameter as a {@code List},
+	 * or {@code null} if the parameter does not exist.
 	 * 
-	 * @param name the parameter name
-	 * @return the parameter value list
+	 * @param name a {@code String} specifying the name of the parameter
+	 * @return a {@code List} objects containing the parameter's values
 	 */
 	private List<String> getParameterAsList(String name) {
 		String[] values = getParameterValues(name);
@@ -238,10 +239,11 @@ public class TokenExpressionParser implements TokenEvaluator {
 	}
 	
 	/**
-	 * Gets the parameter values.
+	 * Returns the value of an activity's request parameter as a {@code Set},
+	 * or {@code null} if the parameter does not exist.
 	 * 
-	 * @param name the parameter name
-	 * @return the parameter values
+	 * @param name a {@code String} specifying the name of the parameter
+	 * @return a {@code Set} objects containing the parameter's values
 	 */
 	private Set<String> getParameterAsSet(String name) {
 		String[] values = getParameterValues(name);
@@ -256,27 +258,25 @@ public class TokenExpressionParser implements TokenEvaluator {
 	}
 
 	/**
-	 * Gets the parameter.
+	 * Returns the value of an activity's request parameter as a {@code String},
+	 * or {@code defaultValue} if the parameter does not exist.
 	 * 
-	 * @param name the parameter name
+	 * @param name a {@code String} specifying the name of the parameter
 	 * @param defaultValue the default value
-	 * @return a <code>String</code> representing the
+	 * @return a {@code String} representing the
 	 *			single value of the parameter
 	 */
 	private String getParameter(String name, String defaultValue) {
 		String value = getParameter(name);
-		
-		if(value != null)
-			return value;
-		
-		return defaultValue;
+		return (value != null) ? value : defaultValue;
 	}
 
 	/**
-	 * Gets the parameter.
+	 * Returns the value of an activity's request parameter as a {@code String},
+	 * or {@code null} if the parameter does not exist.
 	 *
-	 * @param name the parameter name
-	 * @return a <code>String</code> representing the
+	 * @param name a {@code String} specifying the name of the parameter
+	 * @return a {@code String} representing the
 	 *			single value of the parameter
 	 */
 	protected String getParameter(String name) {
@@ -287,10 +287,12 @@ public class TokenExpressionParser implements TokenEvaluator {
 	}
 
 	/**
-	 * Get parameter values.
+	 * Returns an array of {@code String} objects containing all
+	 * of the values the given activity's request parameter has,
+	 * or {@code null} if the parameter does not exist.
 	 *
-	 * @param name the name
-	 * @return an array of <code>String</code> objects
+	 * @param name a {@code String} specifying the name of the parameter
+	 * @return an array of {@code String} objects
 	 *			containing the parameter's values
 	 */
 	protected String[] getParameterValues(String name) {
@@ -301,10 +303,11 @@ public class TokenExpressionParser implements TokenEvaluator {
 	}
 	
 	/**
-	 * Gets the parameter.
+	 * Returns a {@code FileParameter} object as a given activity's request parameter name,
+	 * or {@code null} if the parameter does not exist.
 	 *
-	 * @param name the parameter name
-	 * @return a <code>FileParameter</code> representing the
+	 * @param name a {@code String} specifying the name of the parameter
+	 * @return a {@code FileParameter} representing the
 	 *			single value of the parameter
 	 */
 	protected FileParameter getFileParameter(String name) {
@@ -315,10 +318,12 @@ public class TokenExpressionParser implements TokenEvaluator {
 	}
 
 	/**
-	 * Gets the file parameters.
+	 * Returns an array of {@code FileParameter} objects containing all
+	 * of the values the given activity's request parameter has,
+	 * or {@code null} if the parameter does not exist.
 	 *
-	 * @param name the file parameter name
-	 * @return an array of <code>FileParameter</code> objects
+	 * @param name a {@code String} specifying the name of the parameter
+	 * @return an array of {@code FileParameter} objects
 	 *			containing the parameter's values
 	 */
 	protected FileParameter[] getFileParameterValues(String name) {
@@ -329,10 +334,12 @@ public class TokenExpressionParser implements TokenEvaluator {
 	}
 
 	/**
-	 * Returns the value of the named attribute as an Object from the request attributes or action results.
+	 * Returns the value of the named attribute as an {@code Object}
+	 * of the activity's request attributes or action results.
 	 *
 	 * @param token the token
-	 * @return the object
+	 * @return an {@code Object} containing the value of the attribute,
+	 * 			or {@code null} if the attribute does not exist
 	 */
 	protected Object getAttribute(Token token) {
 		Object object = null;
@@ -431,11 +438,12 @@ public class TokenExpressionParser implements TokenEvaluator {
 	}
 	
 	/**
-	 * This method will cast List&lt;"?"&gt; to List&lt;T&gt; assuming ? is castable to T.
+	 * This method will cast {@code Set<?>} to {@code List<T>}
+	 * assuming {@code ?} is castable to {@code T}.
 	 *
 	 * @param <T> the generic type
-	 * @param list the list
-	 * @return the list
+	 * @param list a {@code List} object
+	 * @return a casted {@code List} object
 	 */
 	@SuppressWarnings("unchecked")
 	protected static <T> List<T> cast(List<?> list) {
@@ -443,11 +451,12 @@ public class TokenExpressionParser implements TokenEvaluator {
 	}
 	
 	/**
-	 * This method will cast Set&lt;"?"&gt; to Set&lt;T&gt; assuming ? is castable to T.
+	 * This method will cast {@code Set<?>} to {@code Set<T>}
+	 * assuming {@code ?} is castable to {@code T}.
 	 *
 	 * @param <T> the generic type
-	 * @param set the set
-	 * @return the sets the
+	 * @param set a {@code Set} object
+	 * @return a casted {@code Set} object
 	 */
 	@SuppressWarnings("unchecked")
 	protected static <T> Set<T> cast(Set<?> set) {

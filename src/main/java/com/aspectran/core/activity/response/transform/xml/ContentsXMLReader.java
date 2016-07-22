@@ -130,7 +130,7 @@ public class ContentsXMLReader implements XMLReader {
 	}
 
 	/**
-	 * Output a string.
+	 * Outputs a string.
 	 * 
 	 * @param s the input string
 	 * @throws SAXException the SAX exception
@@ -192,10 +192,10 @@ public class ContentsXMLReader implements XMLReader {
 	}
 
 	/**
-	 * Parses the result of processing.
+	 * Parses a {@code ProcessResult} object.
 	 * 
-	 * @param processResult the content results list
-	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @param processResult a {@code ProcessResult} object
+	 * @throws IOException signals that an I/O exception has occurred.
 	 * @throws SAXException the SAX exception
 	 * @throws InvocationTargetException the invocation target exception
 	 */
@@ -237,10 +237,10 @@ public class ContentsXMLReader implements XMLReader {
 	}
 
 	/**
-	 * Parses the object.
+	 * Parses an object.
 	 * 
 	 * @param object the object
-	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws IOException signals that an I/O exception has occurred.
 	 * @throws SAXException the SAX exception
 	 * @throws InvocationTargetException the invocation target exception
 	 */

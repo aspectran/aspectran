@@ -201,22 +201,45 @@ public abstract class AbstractActivity implements Activity {
 		this.requestScope = requestScope;
 	}
 
+	/**
+	 * Gets the aspect rule registry.
+	 *
+	 * @return the aspect rule registry
+	 */
 	protected AspectRuleRegistry getAspectRuleRegistry() {
 		return context.getAspectRuleRegistry();
 	}
 
+	/**
+	 * Gets the translet rule registry.
+	 *
+	 * @return the translet rule registry
+	 */
 	protected TransletRuleRegistry getTransletRuleRegistry() {
 		return context.getTransletRuleRegistry();
 	}
 	
+	/**
+	 * Gets the current activity.
+	 *
+	 * @return the current activity
+	 */
 	protected Activity getCurrentActivity() {
 		return context.getCurrentActivity();
 	}
 	
+	/**
+	 * Sets the current activity.
+	 *
+	 * @param activity the new current activity
+	 */
 	protected void setCurrentActivity(Activity activity) {
 		context.setCurrentActivity(activity);
 	}
 	
+	/**
+	 * Removes the current activity.
+	 */
 	protected void removeCurrentActivity() {
 		context.removeCurrentActivity();
 	}
