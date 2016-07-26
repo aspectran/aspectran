@@ -31,7 +31,7 @@ import com.aspectran.core.util.BooleanUtils;
 import com.aspectran.core.util.ToStringBuilder;
 
 /**
- * The Class ActionList.
+ * A list of actions.
  * 
  * <p>Created: 2008. 03. 23 AM 1:38:14</p>
  */

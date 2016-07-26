@@ -24,8 +24,6 @@ package com.aspectran.core.context.rule.type;
  * Around advice: Before advice + After advice
  * Job advice: Only used for Scheduler.
  * </pre>
- * 
- * @author Juho Jeong
  */
 public enum AspectAdviceType {
 
@@ -48,7 +46,7 @@ public enum AspectAdviceType {
 	}
 
 	/**
-	 * Returns a <code>AspectAdviceType</code> with a value represented by the specified String.
+	 * Returns a {@code AspectAdviceType} with a value represented by the specified String.
 	 *
 	 * @param alias the aspect adive type as a String
 	 * @return the aspect advice type

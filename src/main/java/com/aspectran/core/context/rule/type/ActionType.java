@@ -39,9 +39,9 @@ public enum ActionType {
 	}
 
 	/**
-	 * Returns a <code>ActionType</code> with a value represented by the specified String.
+	 * Returns a {@code ActionType} with a value represented by the specified String.
 	 *
-	 * @param alias the action type value as a String
+	 * @param alias the action type as a String
 	 * @return the action type
 	 */
 	public static ActionType resolve(String alias) {

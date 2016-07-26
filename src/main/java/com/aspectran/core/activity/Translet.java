@@ -516,16 +516,16 @@ public interface Translet extends BeanRegistry, MessageSource {
 	void putAdviceResult(AspectAdviceRule aspectAdviceRule, Object adviceActionResult);
 
 	/**
-	 * Return the interface class for {@code Translet}.
+	 * Returns an interface class for the {@code Translet}.
 	 *
-	 * @return the translet interface class
+	 * @return the interface class for the translet
 	 */
 	Class<? extends Translet> getTransletInterfaceClass();
 
 	/**
-	 * Return the implementation class for {@code Translet}.
+	 * Returns an implementation class for the {@code Translet}.
 	 *
-	 * @return the translet implementation class
+	 * @return the implementation class for the translet
 	 */
 	Class<? extends CoreTranslet> getTransletImplementationClass();
 
@@ -542,14 +542,14 @@ public interface Translet extends BeanRegistry, MessageSource {
 	 * Try to resolve the message. Return default message if no message was found.
 	 *
 	 * @param code the code to lookup up, such as 'calculator.noRateSet'. Users of
-	 * this class are encouraged to base message names on the relevant fully
-	 * qualified class name, thus avoiding conflict and ensuring maximum clarity.
+	 * 		this class are encouraged to base message names on the relevant fully
+	 * 		qualified class name, thus avoiding conflict and ensuring maximum clarity.
 	 * @param args array of arguments that will be filled in for params within
-	 * the message (params look like "{0}", "{1,date}", "{2,time}" within a message),
-	 * or {@code null} if none.
+	 * 		the message (params look like "{0}", "{1,date}", "{2,time}" within a message),
+	 * 		or {@code null} if none.
 	 * @param defaultMessage String to return if the lookup fails
 	 * @return the resolved message if the lookup was successful;
-	 * otherwise the default message passed as a parameter
+	 * 		otherwise the default message passed as a parameter
 	 * @see java.text.MessageFormat
 	 */
 	String getMessage(String code, Object[] args, String defaultMessage);
@@ -559,8 +559,8 @@ public interface Translet extends BeanRegistry, MessageSource {
 	 *
 	 * @param code the code to lookup up, such as 'calculator.noRateSet'
 	 * @param args Array of arguments that will be filled in for params within
-	 * the message (params look like "{0}", "{1,date}", "{2,time}" within a message),
-	 * or {@code null} if none.
+	 * 		the message (params look like "{0}", "{1,date}", "{2,time}" within a message),
+	 * 		or {@code null} if none.
 	 * @return the resolved message
 	 * @throws NoSuchMessageException if the message wasn't found
 	 * @see java.text.MessageFormat

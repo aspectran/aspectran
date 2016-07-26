@@ -22,7 +22,8 @@ import com.aspectran.core.context.rule.AspectAdviceRule;
 import com.aspectran.core.context.rule.type.AspectAdviceType;
 
 /**
- * The Class AspectAdviceResult.
+ * Represents the result data for the Aspect Advices.
+ * Also, It contains the bean objects associated with the Aspect Advice.
  */
 public class AspectAdviceResult {
 	

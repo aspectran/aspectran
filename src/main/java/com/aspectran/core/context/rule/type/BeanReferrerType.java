@@ -16,7 +16,7 @@
 package com.aspectran.core.context.rule.type;
 
 /**
- * Type of BeanReferableRule.
+ * Type of BeanReferrer.
  * 
  * <p>Created: 2016. 2. 20.</p>
  */
@@ -40,7 +40,7 @@ public enum BeanReferrerType {
 	}
 
 	/**
-	 * Returns a <code>BeanReferableRuleType</code> with a value represented by the specified String.
+	 * Returns a {@code BeanReferrerType} with a value represented by the specified String.
 	 *
 	 * @param alias the bean referrer type as a String
 	 * @return the bean referable rule type

@@ -40,7 +40,7 @@ public enum AutowireTargetType {
 	}
 
 	/**
-	 * Returns a <code>AutowireTargetType</code> with a value represented by the specified String.
+	 * Returns a {@code AutowireTargetType} with a value represented by the specified String.
 	 *
 	 * @param alias the autowire target type as a String
 	 * @return the action type

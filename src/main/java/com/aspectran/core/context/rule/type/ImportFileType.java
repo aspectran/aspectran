@@ -16,7 +16,7 @@
 package com.aspectran.core.context.rule.type;
 
 /**
- * Resource Import File Type
+ * The enum ImportFileType.
  * 
  * <p>Created: 2015. 02. 22 AM 4:52:38</p>
  */
@@ -37,7 +37,7 @@ public enum ImportFileType {
 	}
 
 	/**
-	 * Returns a <code>ImportFileType</code> with a value represented by the specified String.
+	 * Returns a {@code ImportFileType} with a value represented by the specified String.
 	 *
 	 * @param alias the import file type as a String
 	 * @return the import file type

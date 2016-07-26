@@ -309,6 +309,12 @@ public abstract class AbstractCorsProcessor implements CorsProcessor {
 		return allowedMethods.contains(method);
 	}
 	
+	/**
+	 * Helper method to check whether the specified HTTP header is supported.
+	 *
+	 * @param header the HTTP header
+	 * @return {@code true} if the header is supported, else {@code false}.
+	 */
 	protected boolean isAllowedHeader(String header) {
 		return (allowedHeaders == null || allowedHeaders.contains(header));
 	}

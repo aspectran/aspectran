@@ -37,7 +37,7 @@ public enum TokenDirectiveType {
 	}
 
 	/**
-	 * Returns a <code>TokenDirectiveType</code> with a value represented by the specified String.
+	 * Returns a {@code TokenDirectiveType} with a value represented by the specified String.
 	 *
 	 * @param alias the token directive type as a String
 	 * @return the token directive type
