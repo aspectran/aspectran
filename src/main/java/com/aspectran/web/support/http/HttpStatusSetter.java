@@ -76,10 +76,28 @@ public class HttpStatusSetter {
 	 * @param translet the Translet
 	 */
 	public static void created(Translet translet) {
-		HttpServletResponse res = translet.getResponseAdaptee();
-		res.setStatus(HttpStatus.CREATED.value());
+		created(translet, null);
 	}
 	
+	/**
+	 * {@code 201 Created}.
+	 * The request has succeeded and a new resource has been created as a result of it.
+	 * This is typically the response sent after a PUT request.
+	 * The newly created resource can be referenced by the URI(s) returned in the entity
+	 * of the response,with the most specific URI for the resource given by
+	 * a Location header field.
+	 *
+	 * @param translet the Translet
+	 * @param location a location header set to the given URI
+	 */
+	public static void created(Translet translet, String location) {
+		HttpServletResponse res = translet.getResponseAdaptee();
+		res.setStatus(HttpStatus.CREATED.value());
+		if(location != null) {
+			res.setHeader(HttpHeaders.LOCATION, location);
+		}
+	}
+
 	/**
 	 * {@code 202 Accepted}.
 	 * The request has been received but not yet acted upon.

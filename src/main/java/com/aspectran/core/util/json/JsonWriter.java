@@ -100,9 +100,10 @@ public class JsonWriter implements Flushable {
 		if(object == null) {
 			writeNull();
 		} else if(object instanceof String ||
-					object instanceof Boolean ||
 					object instanceof Date) {
 			writeString(object.toString());
+		} else if(object instanceof Boolean) {
+			writeBoolean((Boolean)object);
 		} else if(object instanceof Number) {
 			writeNumber((Number)object);
 		} else if(object instanceof Parameters) {
@@ -238,7 +239,8 @@ public class JsonWriter implements Flushable {
 	/**
 	 * Writes a string to a character stream.
 	 * 
-	 * @param value the string to write to a character-output stream. If value is null, write a null string ("").
+	 * @param value the string to write to a character-output stream.
+	 * 			If value is null, write a null string ("").
 	 * @throws IOException an I/O error occurs.
 	 */
 	protected void writeString(String value) throws IOException {
@@ -251,23 +253,38 @@ public class JsonWriter implements Flushable {
 	}
 
 	/**
-	 *  Writes a numeric string to a character stream.
+	 *  Writes a {@code Boolean) object to a character stream.
 	 *
-	 * @param value the numeric string to write to a character-output stream.
+	 * @param value a {@code Boolean} object to write to a character-output stream.
+	 * @throws IOException an I/O error occurs.
+	 */
+	protected void writeBoolean(Boolean value) throws IOException {
+		if(!willWriteValue)
+			indent();
+
+		writer.write(value.toString());
+
+		willWriteValue = false;
+	}
+
+	/**
+	 *  Writes a {@code Number} object to a character stream.
+	 *
+	 * @param value a {@code Number} object to write to a character-output stream.
 	 * @throws IOException an I/O error occurs.
 	 */
 	protected void writeNumber(Number value) throws IOException {
 		if(!willWriteValue)
 			indent();
-		
+
 		writer.write(value.toString());
-		
+
 		willWriteValue = false;
 	}
 
 	/**
 	 * Write a string "null" to a character stream.
-	 * 
+	 *
 	 * @throws IOException an I/O error occurs.
 	 */
 	protected void writeNull() throws IOException {
