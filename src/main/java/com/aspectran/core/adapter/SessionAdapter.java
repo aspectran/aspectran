@@ -52,9 +52,11 @@ public interface SessionAdapter {
 	String getId();
 	
 	/**
-	 * Returns the time when this session was created, measured in milliseconds since midnight January 1, 1970 GMT.
+	 * Returns the time when this session was created, measured
+	 * in milliseconds since midnight January 1, 1970 GMT.
 	 *
-	 * @return a long specifying when this session was created, expressed in milliseconds since 1/1/1970 GMT
+	 * @return a long specifying when this session was created,
+	 * 			expressed in milliseconds since 1/1/1970 GMT
 	 * @since 1.5.0
 	 */
 	long getCreationTime();
@@ -77,18 +79,21 @@ public interface SessionAdapter {
 	 * Returns the maximum time interval, in seconds, that the servlet container will keep
 	 * this session open between client accesses.
 	 * After this interval, the servlet container will invalidate the session.
-	 * The maximum time interval can be set with the setMaxInactiveInterval method.
+	 * The maximum time interval can be set with the {@code setMaxInactiveInterval} method.
 	 * A negative time indicates the session should never timeout.
 	 *
-	 * @return an integer specifying the number of seconds this session remains open between client requests
+	 * @return an integer specifying the number of seconds this session
+	 * 			remains open between client requests
 	 * @since 1.5.0
 	 */
 	int getMaxInactiveInterval();
 	
 	/**
-	 * Returns an Enumeration of String objects containing the names of all the objects bound to this session.
+	 * Returns an Enumeration of String objects containing the names
+	 * of all the objects bound to this session.
 	 *
-	 * @return an Enumeration of String objects specifying the names of all the objects bound to this session
+	 * @return an Enumeration of String objects specifying the names
+	 * 			of all the objects bound to this session
 	 * @since 1.5.0
 	 */
 	Enumeration<String> getAttributeNames();
@@ -111,6 +116,15 @@ public interface SessionAdapter {
 	 * @param value the {@code Object} to be stored
 	 */
 	void setAttribute(String name, Object value);
+	
+	/**
+	 * Removes the object bound with the specified name from this session.
+	 * If the session does not have an object bound with the specified name,
+	 * this method does nothing. 
+	 * 
+	 * @param name the name of the object to remove from this session
+	 */
+	void removeAttribute(String name);
 	
 	/**
 	 * Invalidates this session then unbinds any objects bound to it.

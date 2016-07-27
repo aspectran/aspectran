@@ -42,18 +42,6 @@ public abstract class AbstractSessionAdapter implements SessionAdapter {
 	}
 
 	@Override
-	abstract public String getId();
-
-	@Override
-	abstract public long getCreationTime();
-
-	@Override
-	abstract public long getLastAccessedTime();
-
-	@Override
-	abstract public int getMaxInactiveInterval();
-
-	@Override
 	public void release() {
 		adaptee = null;
 	}

@@ -109,7 +109,7 @@ public class WebActivity extends CoreActivity {
 				setResponseAdapter(responseAdapter);
 			}
 		} catch(Exception e) {
-			throw new AdapterException("Failed to adapt Web Activity.", e);
+			throw new AdapterException("Failed to adapt to the Web Activity.", e);
 		}
 	}
 

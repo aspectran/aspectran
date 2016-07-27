@@ -44,7 +44,7 @@ public abstract class BasicRequestAdapter extends AbstractBasicRequest implement
 	 * Instantiates a new BasicRequestAdapter.
 	 *
 	 * @param adaptee the adaptee
-	 * @param parameterMap the params
+	 * @param parameterMap the parameter map
 	 */
 	public BasicRequestAdapter(Object adaptee, Map<String, String[]> parameterMap) {
 		super(parameterMap);
