@@ -253,7 +253,7 @@ public class JsonWriter implements Flushable {
 	}
 
 	/**
-	 *  Writes a {@code Boolean) object to a character stream.
+	 *  Writes a {@code Boolean} object to a character stream.
 	 *
 	 * @param value a {@code Boolean} object to write to a character-output stream.
 	 * @throws IOException an I/O error occurs.
