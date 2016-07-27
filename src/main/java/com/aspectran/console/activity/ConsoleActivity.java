@@ -46,6 +46,7 @@ public class ConsoleActivity extends CoreActivity {
 	 * Instantiates a new ConsoleActivity.
 	 *
 	 * @param context the current ActivityContext
+	 * @param sessionAdapter the session adapter
 	 */
 	public ConsoleActivity(ActivityContext context, SessionAdapter sessionAdapter) {
 		super(context);
