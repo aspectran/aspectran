@@ -40,7 +40,7 @@ public enum TokenType {
 	}
 
 	/**
-	 * Returns a <code>TokenType</code> with a value represented by the specified String.
+	 * Returns a {@code TokenType} with a value represented by the specified String.
 	 *
 	 * @param alias the token type as a String
 	 * @return the token type

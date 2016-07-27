@@ -44,7 +44,7 @@ public abstract class AbstractRequestAdapter extends AbstractRequest implements 
 	 * Instantiates a new AbstractRequestAdapter.
 	 *
 	 * @param adaptee the adaptee
-	 * @param parameterMap the params
+	 * @param parameterMap the parameter map
 	 */
 	public AbstractRequestAdapter(Object adaptee, Map<String, String[]> parameterMap) {
 		super(parameterMap);

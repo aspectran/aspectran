@@ -123,6 +123,14 @@ public class HttpSessionAdapter extends AbstractSessionAdapter {
 	}
 
 	@Override
+	public void removeAttribute(String name) {
+		HttpSession session = getSession(false);
+		if(session != null) {
+			session.removeAttribute(name);
+		}
+	}
+	
+	@Override
 	public void invalidate() {
 		HttpSession session = getSession(false);
 		if(session != null) {

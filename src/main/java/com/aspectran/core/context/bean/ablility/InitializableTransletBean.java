@@ -28,7 +28,7 @@ public interface InitializableTransletBean {
 	 * Invoke on initialization after it has set all bean properties supplied.
 	 *
 	 * @param translet the translet
-	 * @throws Exception the exception
+	 * @throws Exception if initialization fails
 	 */
 	void initialize(Translet translet) throws Exception;
 

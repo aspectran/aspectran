@@ -16,7 +16,7 @@
 package com.aspectran.core.context.rule.type;
 
 /**
- * The Class PointcutType.
+ * The enum PointcutType.
  */
 public enum PointcutType {
 
@@ -37,7 +37,7 @@ public enum PointcutType {
 	}
 
 	/**
-	 * Returns a <code>PointcutType</code> with a value represented by the specified String.
+	 * Returns a {@code PointcutType} with a value represented by the specified String.
 	 *
 	 * @param alias the pointcut type as a String
 	 * @return the pointcut type

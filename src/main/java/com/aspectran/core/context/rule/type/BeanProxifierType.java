@@ -38,7 +38,7 @@ public enum BeanProxifierType {
 	}
 
 	/**
-	 * Returns a <code>BeanProxifierType</code> with a value represented by the specified String.
+	 * Returns a {@code BeanProxifierType} with a value represented by the specified String.
 	 *
 	 * @param alias the bean proxifier type as a String
 	 * @return the bean proxifier type

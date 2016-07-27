@@ -37,7 +37,7 @@ public class AbstractScope implements Scope {
 
 	private static final Log log = LogFactory.getLog(AbstractScope.class);
 
-	private StampedLock scopeLock = new StampedLock();
+	private final StampedLock scopeLock = new StampedLock();
 
 	protected final Map<BeanRule, Object> scopedBeanMap = new HashMap<>();
 	

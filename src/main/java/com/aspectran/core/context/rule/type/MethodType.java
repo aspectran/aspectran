@@ -20,7 +20,7 @@ import java.util.Map;
 import java.util.StringTokenizer;
 
 /**
- * The Class MethodType.
+ * The enum MethodType.
  * 
  * <p>Created: 2008. 03. 26 AM 12:58:38</p>
  */
@@ -90,7 +90,7 @@ public enum MethodType {
 	}
 
 	/**
-	 * Returns a <code>MethodType</code> with a value represented by the specified String.
+	 * Returns a {@code MethodType} with a value represented by the specified String.
 	 *
 	 * @param methodType the method type as a String
 	 * @return the method type

@@ -41,14 +41,17 @@ import com.aspectran.core.context.rule.type.TokenType;
  * @since 2016. 1. 18.
  */
 public class ConsoleActivity extends CoreActivity {
-
+	
 	/**
 	 * Instantiates a new ConsoleActivity.
 	 *
 	 * @param context the current ActivityContext
+	 * @param sessionAdapter the session adapter
 	 */
-	public ConsoleActivity(ActivityContext context) {
+	public ConsoleActivity(ActivityContext context, SessionAdapter sessionAdapter) {
 		super(context);
+		
+		setSessionAdapter(sessionAdapter);
 	}
 
 	@Override
@@ -61,13 +64,8 @@ public class ConsoleActivity extends CoreActivity {
 			ResponseAdapter responseAdapter = new ConsoleResponseAdapter(this);
 			setResponseAdapter(responseAdapter);
 		} catch(Exception e) {
-			throw new AdapterException("Failed to adapt for Console Activity.", e);
+			throw new AdapterException("Failed to adapt for the Console Activity.", e);
 		}
-	}
-
-	@Override
-	public synchronized SessionAdapter getSessionAdapter() {
-		throw new UnsupportedOperationException();
 	}
 
 	@Override
@@ -137,7 +135,7 @@ public class ConsoleActivity extends CoreActivity {
 	@Override
 	@SuppressWarnings("unchecked")
 	public <T extends Activity> T newActivity() {
-		ConsoleActivity consoleActivity = new ConsoleActivity(getActivityContext());
+		ConsoleActivity consoleActivity = new ConsoleActivity(getActivityContext(), getSessionAdapter());
 		return (T)consoleActivity;
 	}
 

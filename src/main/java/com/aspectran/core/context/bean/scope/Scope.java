@@ -34,7 +34,7 @@ public interface Scope {
 	void putBean(BeanRule beanRule, Object bean);
 
 	/**
-	 * Destroy all scoped beans in the scope.
+	 * Destroy all scoped beans in this scope.
 	 */
 	void destroy();
 	

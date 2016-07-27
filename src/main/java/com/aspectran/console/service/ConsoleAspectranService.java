@@ -20,7 +20,10 @@ import java.io.IOException;
 
 import com.aspectran.console.activity.ConsoleActivity;
 import com.aspectran.console.adapter.ConsoleApplicationAdapter;
+import com.aspectran.console.adapter.ConsoleSessionAdapter;
 import com.aspectran.core.activity.Activity;
+import com.aspectran.core.adapter.SessionAdapter;
+import com.aspectran.core.context.bean.scope.Scope;
 import com.aspectran.core.context.loader.config.AspectranConfig;
 import com.aspectran.core.context.loader.config.AspectranContextConfig;
 import com.aspectran.core.context.translet.TransletNotFoundException;
@@ -40,10 +43,13 @@ public class ConsoleAspectranService extends BasicAspectranService {
 
 	private static final String DEFAULT_ROOT_CONTEXT = "config/aspectran-config.xml";
 
+	private final SessionAdapter sessionAdapter;
+	
 	private long pauseTimeout;
 
 	private ConsoleAspectranService() {
 		super(new ConsoleApplicationAdapter());
+		this.sessionAdapter = new ConsoleSessionAdapter();
 	}
 	
 	/**
@@ -64,7 +70,7 @@ public class ConsoleAspectranService extends BasicAspectranService {
 		Activity activity = null;
 
 		try {
-			activity = new ConsoleActivity(getActivityContext());
+			activity = new ConsoleActivity(getActivityContext(), sessionAdapter);
 			activity.prepare(command);
 			activity.perform();
 		} catch(TransletNotFoundException e) {
@@ -77,6 +83,14 @@ public class ConsoleAspectranService extends BasicAspectranService {
 		}
 	}
 
+	@Override
+	public void destroy() {
+		Scope scope = sessionAdapter.getSessionScope();
+		scope.destroy();
+		
+		super.destroy();
+	}
+	
 	/**
 	 * Returns a new instance of ConsoleAspectranService.
 	 *
@@ -88,7 +102,7 @@ public class ConsoleAspectranService extends BasicAspectranService {
 	public static ConsoleAspectranService newInstance(String aspectranConfigFile) throws AspectranServiceException, IOException {
 		AspectranConfig aspectranConfig = new AspectranConfig();
 
-		if(aspectranConfigFile != null && aspectranConfigFile.length() > 0) {
+		if(aspectranConfigFile != null && !aspectranConfigFile.isEmpty()) {
 			AponReader.parse(new File(aspectranConfigFile), aspectranConfig);
 		}
 

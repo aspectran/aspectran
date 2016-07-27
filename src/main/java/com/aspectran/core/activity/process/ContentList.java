@@ -24,7 +24,7 @@ import com.aspectran.core.util.BooleanUtils;
 import com.aspectran.core.util.ToStringBuilder;
 
 /**
- * The Class ContentList.
+ * A list of contens.
  * 
  * <p>Created: 2008. 03. 22 PM 5:47:57</p>
  */

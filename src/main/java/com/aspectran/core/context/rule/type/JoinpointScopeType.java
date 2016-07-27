@@ -39,7 +39,7 @@ public enum JoinpointScopeType {
 	}
 
 	/**
-	 * Returns a <code>JoinpointScopeType</code> with a value represented by the specified String.
+	 * Returns a {@code JoinpointScopeType} with a value represented by the specified String.
 	 *
 	 * @param alias the joinpoint scope type as a String
 	 * @return the import type
