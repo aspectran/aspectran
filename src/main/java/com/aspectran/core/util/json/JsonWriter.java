@@ -69,7 +69,7 @@ public class JsonWriter implements Flushable {
 	 * The default indentation string is a tab character.
 	 * 
 	 * @param writer the character-output stream
-	 * @param prettyPrint enables or disables pretty-printing.
+	 * @param prettyPrint enables or disables pretty-printing
 	 */
 	public JsonWriter(Writer writer, boolean prettyPrint) {
 		this(writer, prettyPrint, "\t");
@@ -80,8 +80,8 @@ public class JsonWriter implements Flushable {
 	 * If pretty-printing is enabled, includes spaces, tabs and new-lines to make the format more readable.
 	 *
 	 * @param writer the character-output stream
-	 * @param prettyPrint enables or disables pretty-printing.
-	 * @param indentString the string that should be used for indentation when pretty-printing is enabled.
+	 * @param prettyPrint enables or disables pretty-printing
+	 * @param indentString the string that should be used for indentation when pretty-printing is enabled
 	 */
 	public JsonWriter(Writer writer, boolean prettyPrint, String indentString) {
 		this.writer = writer;
@@ -208,7 +208,7 @@ public class JsonWriter implements Flushable {
 	/**
 	 * Write a tab character to a character stream.
 	 * 
-	 * @throws IOException an I/O error occurs.
+	 * @throws IOException an I/O error occurs
 	 */
 	protected void indent() throws IOException {
 		if(prettyPrint) {
@@ -222,7 +222,7 @@ public class JsonWriter implements Flushable {
 	 * Writes a key name to a character stream.
 	 * 
 	 * @param name the string to write to a character-output stream
-	 * @throws IOException an I/O error occurs.
+	 * @throws IOException an I/O error occurs
 	 */
 	protected void writeName(String name) throws IOException {
 		indent();
@@ -238,10 +238,10 @@ public class JsonWriter implements Flushable {
 
 	/**
 	 * Writes a string to a character stream.
-	 * 
-	 * @param value the string to write to a character-output stream.
-	 * 			If value is null, write a null string ("").
-	 * @throws IOException an I/O error occurs.
+	 * If {@code value} is null, write a null string ("").
+	 *
+	 * @param value the string to write to a character-output stream
+	 * @throws IOException an I/O error occurs
 	 */
 	protected void writeString(String value) throws IOException {
 		if(!willWriteValue)
@@ -255,8 +255,8 @@ public class JsonWriter implements Flushable {
 	/**
 	 *  Writes a {@code Boolean} object to a character stream.
 	 *
-	 * @param value a {@code Boolean} object to write to a character-output stream.
-	 * @throws IOException an I/O error occurs.
+	 * @param value a {@code Boolean} object to write to a character-output stream
+	 * @throws IOException an I/O error occurs
 	 */
 	protected void writeBoolean(Boolean value) throws IOException {
 		if(!willWriteValue)
@@ -270,8 +270,8 @@ public class JsonWriter implements Flushable {
 	/**
 	 *  Writes a {@code Number} object to a character stream.
 	 *
-	 * @param value a {@code Number} object to write to a character-output stream.
-	 * @throws IOException an I/O error occurs.
+	 * @param value a {@code Number} object to write to a character-output stream
+	 * @throws IOException an I/O error occurs
 	 */
 	protected void writeNumber(Number value) throws IOException {
 		if(!willWriteValue)
@@ -285,7 +285,7 @@ public class JsonWriter implements Flushable {
 	/**
 	 * Write a string "null" to a character stream.
 	 *
-	 * @throws IOException an I/O error occurs.
+	 * @throws IOException an I/O error occurs
 	 */
 	protected void writeNull() throws IOException {
 		writer.write("null");
@@ -294,7 +294,7 @@ public class JsonWriter implements Flushable {
 	/**
 	 * Write a comma character to a character stream.
 	 *
-	 * @throws IOException an I/O error occurs.
+	 * @throws IOException an I/O error occurs
 	 */
 	protected void writeComma() throws IOException {
 		writer.write(",");
@@ -308,7 +308,7 @@ public class JsonWriter implements Flushable {
 	/**
 	 * Write a new line character to a character stream.
 	 * 
-	 * @throws IOException an I/O error occurs.
+	 * @throws IOException an I/O error occurs
 	 */
 	protected void nextLine() throws IOException {
 		if(prettyPrint)
@@ -318,7 +318,7 @@ public class JsonWriter implements Flushable {
 	/**
 	 * Open brace.
 	 * 
-	 * @throws IOException an I/O error occurs.
+	 * @throws IOException an I/O error occurs
 	 */
 	protected void openCurlyBracket() throws IOException {
 		if(!willWriteValue)
@@ -333,7 +333,7 @@ public class JsonWriter implements Flushable {
 	/**
 	 * Close brace.
 	 * 
-	 * @throws IOException an I/O error occurs.
+	 * @throws IOException an I/O error occurs
 	 */
 	protected void closeCurlyBracket() throws IOException {
 		indentDepth--;
@@ -347,7 +347,7 @@ public class JsonWriter implements Flushable {
 	/**
 	 * Open square bracket.
 	 * 
-	 * @throws IOException an I/O error occurs.
+	 * @throws IOException an I/O error occurs
 	 */
 	protected void openSquareBracket() throws IOException {
 		if(!willWriteValue)
@@ -363,7 +363,7 @@ public class JsonWriter implements Flushable {
 	/**
 	 * Close square bracket.
 	 * 
-	 * @throws IOException an I/O error occurs.
+	 * @throws IOException an I/O error occurs
 	 */
 	protected void closeSquareBracket() throws IOException {
 		indentDepth--;
@@ -382,7 +382,7 @@ public class JsonWriter implements Flushable {
 	/**
 	 * Closes the writer.
 	 *
-	 * @throws IOException an I/O error occurs.
+	 * @throws IOException an I/O error occurs
 	 */
 	public void close() throws IOException {
 		if(writer != null)
@@ -398,7 +398,7 @@ public class JsonWriter implements Flushable {
 	 * control character or an unescaped quote or backslash.
 	 * 
 	 * @param string a String
-	 * @return a String correctly formatted for insertion in a JSON text.
+	 * @return a String correctly formatted for insertion in a JSON text
 	 */
 	private static String escape(String string) {
 		if(string == null || string.length() == 0)
@@ -462,7 +462,7 @@ public class JsonWriter implements Flushable {
 	 * Converts an object to a JSON formatted string.
 	 * Pretty-printing is disabled by default.
 	 *
-	 * @param object an object to convert to a JSON formatted string.
+	 * @param object an object to convert to a JSON formatted string
 	 * @return the JSON formatted string
 	 */
 	public static String stringify(Object object) {
@@ -474,8 +474,8 @@ public class JsonWriter implements Flushable {
 	 * If pretty-printing is enabled, includes spaces, tabs and new-lines to make the format more readable.
 	 * The default indentation string is a tab character.
 	 *
-	 * @param object an object to convert to a JSON formatted string.
-	 * @param prettyPrint enables or disables pretty-printing.
+	 * @param object an object to convert to a JSON formatted string
+	 * @param prettyPrint enables or disables pretty-printing
 	 * @return the JSON formatted string
 	 */
 	public static String stringify(Object object, boolean prettyPrint) {
@@ -489,9 +489,9 @@ public class JsonWriter implements Flushable {
 	 * Converts an object to a JSON formatted string.
 	 * If pretty-printing is enabled, includes spaces, tabs and new-lines to make the format more readable.
 	 *
-	 * @param object an object to convert to a JSON formatted string.
-	 * @param prettyPrint enables or disables pretty-printing.
-	 * @param indentString the string that should be used for indentation when pretty-printing is enabled.
+	 * @param object an object to convert to a JSON formatted string
+	 * @param prettyPrint enables or disables pretty-printing
+	 * @param indentString the string that should be used for indentation when pretty-printing is enabled
 	 * @return the JSON formatted string
 	 */
 	public static String stringify(Object object, boolean prettyPrint, String indentString) {
