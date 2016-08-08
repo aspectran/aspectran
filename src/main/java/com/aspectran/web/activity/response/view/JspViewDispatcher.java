@@ -115,7 +115,7 @@ public class JspViewDispatcher implements ViewDispatcher {
 			requestDispatcher.forward(request, response);
 			
 			if(debugEnabled)
-				log.debug("dispatch to a JSP [" + dispatchName + "]");
+				log.debug("Dispatch to a JSP [" + dispatchName + "]");
 
 		} catch(Exception e) {
 			throw new ViewDispatchException("Failed to dispatch to JSP " + dispatchResponseRule.toString(this, dispatchName), e);

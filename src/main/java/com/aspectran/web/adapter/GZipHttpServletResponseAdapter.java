@@ -43,7 +43,12 @@ public class GZipHttpServletResponseAdapter extends HttpServletResponseAdapter {
      */
     public GZipHttpServletResponseAdapter(HttpServletResponse response, Activity activity) {
         super(response, activity);
+
         response.setHeader("Content-Encoding", "gzip");
+
+        //indicate to the client that the servlet varies it's
+        //output depending on the "Accept-Encoding" header
+        response.setHeader("Vary", "Accept-Encoding");
     }
 
     @Override
