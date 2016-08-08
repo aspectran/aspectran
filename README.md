@@ -13,16 +13,14 @@ Aspectran은 엔터프라이즈급 자바 웹 응용 프로그램을 구축하�
 *Aspectran 은 생소한 개념을 창조하지 않습니다.*  
 *Aspectran 의 직관적인 몇 가지의 개념으로 명확하고 신뢰할 수 있는 결과물을 만들 수 있습니다.*  
 
-## 주요 기능
-2008년 봄부터 개발을 시작한 이후로 7년이라는 시간이 지났습니다.
-정식 버전 출시와 함께 오픈소스로 공개를 하고 여러분과 함께 만들어 가려고 합니다.
-7년 전 *Aspectran* 이라는 프레임워크를 만들어야겠다는 생각을 했을 때 그 때의 감동은 아직도 가슴 한 켠에 에 남아 있습니다.  
-작고 간단한 기능을 구현하면서 잠시 자만도 했고,
-크고 복잡한 핵심기능은 1년여의 긴 고민 끝에 겨우 완성할때도 있었습니다.  
-그렇게 완성된 *Aspectran* 의 주요 기능은 다음과 같습니다.
+8년 전 *Aspectran* 이라는 프레임워크를 만들어야겠다는 생각을 했을 때 그 때의 설레임은 아직도 가슴 한 켠에 남아 있습니다.
+작고 빠른 프레임워크를 만들기 위해 잘 알려진 범용 라이브러리에 의존하기 보다는 최적화된 기능을 직접 구현하는데 중점을 두었습니다.
 
-* POJO(*Plain Old Java Object*) 방식의 경량 프레임워크입니다.  
-  특정 클래스를 상속받아서 기능을 확장할 필요가 없기 때문에 간단하고 명확한 프로그래밍을 할 수 있습니다.
+Aspectran은 현존하는 자바 기반 프레임워크의 핵심 기술을 대부분 수용하면서 새롭게 디자인된 초경량 프레임워크입니다.
+다음과 같은 목적을 달성하기 위해 디자인되었습니다.
+
+* POJO(*Plain Old Java Object*) 방식의 프로그래밍을 지향합니다.  
+  특정 클래스를 상속받아서 기능을 확장하는 방식이 아니고, 실제 필요한 핵심 로직과 기능 구현에만 집중할 수 있습니다.
   결과 값은 가장 간단한 자바 오브젝트에 담아서 반환하면 됩니다.
 * 제어 반전(*Inversion of Control, IoC*)을 지원합니다.  
   프레임워크가 전체적인 흐름을 제어하면서 개발자가 작성한 모듈의 기능을 호출하는 방식입니다.
@@ -60,14 +58,34 @@ com.aspectran
     └── startup     Web 환경에서 핵심 기능 서비스를 구동하기 위한 패키지
 ```
 
-## Getting Started
+## [Quick Start Guide](http://www.aspectran.com/getting-started/quickstart/)
+간단한 웹 어플리케이션을 만드는 과정을 예로 들면서 Aspectran의 기본적인 사용방법과 특징을 파악할 수 있습니다.
 
-* [http://www.aspectran.com/getting-started/](http://www.aspectran.com/getting-started/)
+## [Download](http://www.aspectran.com/getting-started/download/)
+Aspectran 라이브러리를 적접 다운로드 받는 경로를 안내하고, Maven 사용자를 위한 Aspectran Atifact 정보를 제공합니다.
 
-## Documentation
+## [User Guides](http://www.aspectran.com/docs/guides/)
+Aspectran 사용자를 위한 유저 가이드 문서를 제공합니다.
 
-* [http://www.aspectran.com/docs/](http://www.aspectran.com/docs/)
+## [API Reference](http://www.aspectran.com/docs/api/)
+Aspectran API 문서를 제공합니다.
+* [http://api.aspectran.com/2.3.0/](http://api.aspectran.com/2.3.0/)
 
-# License
+## [FAQ](http://www.aspectran.com/docs/faq/)
+Aspectran과 관련해 자주 묻는 질문을 모았습니다.  
+찾으시는 질문이 없거나 더 자세한 문의를 원하시면 [Contact](/contact/) 페이지 또는 [GitHub Issues](https://github.com/aspectran/aspectran/issues)에 질문 또는 의견을 남겨 주시기 바랍니다.
 
+## [Changelog](http://www.aspectran.com/docs/changelog/)
+Aspectran의 주요 변경 이력에 대한 정보를 제공합니다.  
+
+## [Modules](http://www.aspectran.com/modules/)
+외부 라이브러리 연동에 필요한 자바 소스 패키지와 설정 메타데이터를 모듈 형태로 제공합니다.
+* [https://github.com/aspectran/aspectran-modules](https://github.com/aspectran/aspectran-modules)
+
+## [Examples](http://www.aspectran.com/examples/)
+Aspectran을 이용해서 만든 예제 응용 프로그램을 제공하고 있습니다.  
+대부분의 예제 응용 프로그램은 구글 클라우드 환경에서 구동하고 있기 때문에 직접 실행해 볼 수 있습니다.
+* [https://github.com/aspectran/aspectran-guides](https://github.com/aspectran/aspectran-guides)
+
+## License
 Aspectran is freely usable, licensed under the [Apache 2.0 license](http://www.apache.org/licenses/LICENSE-2.0).
