@@ -65,8 +65,9 @@ class ActionInnerNodeletAdder implements NodeletAdder {
             ItemRuleMap irm = assistant.popObject();
             EchoActionRule echoActionRule = assistant.popObject();
 
-            if(!irm.isEmpty())
+            if(!irm.isEmpty()) {
                 echoActionRule.setAttributeItemRuleMap(irm);
+            }
 
             ActionRuleApplicable applicable = assistant.peekObject();
             applicable.applyActionRule(echoActionRule);

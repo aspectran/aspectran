@@ -94,10 +94,10 @@ public class ConsoleAspectranService extends BasicAspectranService {
 	/**
 	 * Returns a new instance of ConsoleAspectranService.
 	 *
-	 * @param aspectranConfigFile the aspectran config file
+	 * @param aspectranConfigFile the root configuration file
 	 * @return the web aspectran service
 	 * @throws AspectranServiceException the aspectran service exception
-	 * @throws IOException the io exception
+	 * @throws IOException if an I/O error has occurred
 	 */
 	public static ConsoleAspectranService newInstance(String aspectranConfigFile) throws AspectranServiceException, IOException {
 		AspectranConfig aspectranConfig = new AspectranConfig();

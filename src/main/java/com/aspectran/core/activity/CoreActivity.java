@@ -106,7 +106,7 @@ public class CoreActivity extends AbstractActivity {
 	public CoreActivity(ActivityContext context) {
 		super(context);
 	}
-
+	
 	@Override
 	public void prepare(String transletName) {
 		this.transletName = transletName;
@@ -898,10 +898,7 @@ public class CoreActivity extends AbstractActivity {
 	}
 
 	private <T> T getSetting(AspectAdviceRuleRegistry aspectAdviceRuleRegistry, String settingName) {
-		if(aspectAdviceRuleRegistry != null)
-			return aspectAdviceRuleRegistry.getSetting(settingName);
-		
-		return null;
+		return (aspectAdviceRuleRegistry != null) ? aspectAdviceRuleRegistry.getSetting(settingName) : null;
 	}
 
 }

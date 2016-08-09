@@ -121,7 +121,7 @@ public class MultipartFileParameter extends FileParameter {
 	 * @param dest the destination file
 	 * @param overwrite whether to overwrite if the file already exists
 	 * @return a saved file
-	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws IOException if an I/O error has occurred
 	 */
 	@Override
 	public File saveAs(File dest, boolean overwrite) throws IOException {

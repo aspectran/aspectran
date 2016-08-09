@@ -304,7 +304,7 @@ public class NodeletParser {
 	 * @throws ParserConfigurationException the parser configuration exception
 	 * @throws FactoryConfigurationError the factory configuration error
 	 * @throws SAXException the sax exception
-	 * @throws IOException the io exception
+	 * @throws IOException if an I/O error has occurred
 	 */
 	private Document createDocument(Reader reader) throws ParserConfigurationException, FactoryConfigurationError,
 			SAXException, IOException {
@@ -345,7 +345,7 @@ public class NodeletParser {
 	 * @throws ParserConfigurationException the parser configuration exception
 	 * @throws FactoryConfigurationError the factory configuration error
 	 * @throws SAXException the sax exception
-	 * @throws IOException the io exception
+	 * @throws IOException if an I/O error has occurred
 	 */
 	private Document createDocument(InputStream inputStream) throws ParserConfigurationException,
 			FactoryConfigurationError, SAXException, IOException {

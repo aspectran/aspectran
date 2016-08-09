@@ -105,17 +105,17 @@ public class JspViewDispatcher implements ViewDispatcher {
 			
 			ProcessResult processResult = activity.getProcessResult();
 
-			if(processResult != null)
+			if(processResult != null) {
 				setAttribute(requestAdapter, processResult);
+			}
 
 			HttpServletRequest request = requestAdapter.getAdaptee();
 			HttpServletResponse response = responseAdapter.getAdaptee();
 			
 			RequestDispatcher requestDispatcher = request.getRequestDispatcher(dispatchName);
 			requestDispatcher.forward(request, response);
-			
 			if(debugEnabled)
-				log.debug("dispatch to a JSP [" + dispatchName + "]");
+				log.debug("Dispatch to a JSP [" + dispatchName + "]");
 
 		} catch(Exception e) {
 			throw new ViewDispatchException("Failed to dispatch to JSP " + dispatchResponseRule.toString(this, dispatchName), e);

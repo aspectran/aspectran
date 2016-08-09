@@ -40,7 +40,7 @@ import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.web.activity.request.multipart.MultipartFormDataParser;
 import com.aspectran.web.activity.request.multipart.MultipartRequestException;
 import com.aspectran.web.activity.request.parser.HttpPutFormContentParser;
-import com.aspectran.web.adapter.GZipHttpServletResponseAdapter;
+import com.aspectran.web.activity.response.GZipServletResponseWrapper;
 import com.aspectran.web.adapter.HttpServletRequestAdapter;
 import com.aspectran.web.adapter.HttpServletResponseAdapter;
 import com.aspectran.web.adapter.HttpSessionAdapter;
@@ -52,7 +52,7 @@ import com.aspectran.web.support.http.HttpHeaders;
  * @since 2008. 4. 28.
  */
 public class WebActivity extends CoreActivity {
-
+	
 	private static final String MULTIPART_FORM_DATA_PARSER_SETTING_NAME = "multipartFormDataParser";
 
 	private static final String MULTIPART_FORM_DATA = "multipart/form-data";
@@ -84,6 +84,14 @@ public class WebActivity extends CoreActivity {
 			requestAdapter.setCharacterEncoding(determineRequestCharacterEncoding());
 			setRequestAdapter(requestAdapter);
 
+			if(!isIncluded() && isGzipAccepted()) {
+				setGzipContentEncoded();
+				response = new GZipServletResponseWrapper(response);
+			}
+			
+			ResponseAdapter responseAdapter = new HttpServletResponseAdapter(response, this);
+			setResponseAdapter(responseAdapter);
+			
 			String localeResolverId = getRequestSetting(RequestRule.LOCALE_RESOLVER_SETTING_NAME);
 			String localeChangeInterceptorId = getRequestSetting(RequestRule.LOCALE_CHANGE_INTERCEPTOR_SETTING_NAME);
 			LocaleResolver localeResolver = null;
@@ -97,16 +105,6 @@ public class WebActivity extends CoreActivity {
 			if(localeChangeInterceptorId != null) {
 				LocaleChangeInterceptor localeChangeInterceptor = getBean(localeChangeInterceptorId, LocaleChangeInterceptor.class);
 				localeChangeInterceptor.handle(getTranslet(), localeResolver);
-			}
-
-			String contentEncoding = getResponseSetting(ResponseRule.CONTENT_ENCODING_SETTING_NAME);
-			String acceptEncoding = request.getHeader(HttpHeaders.ACCEPT_ENCODING);
-			if(contentEncoding != null && acceptEncoding != null && acceptEncoding.contains(contentEncoding)) {
-				ResponseAdapter responseAdapter = new GZipHttpServletResponseAdapter(response, this);
-				setResponseAdapter(responseAdapter);
-			} else {
-				ResponseAdapter responseAdapter = new HttpServletResponseAdapter(response, this);
-				setResponseAdapter(responseAdapter);
 			}
 		} catch(Exception e) {
 			throw new AdapterException("Failed to adapt to the Web Activity.", e);
@@ -191,8 +189,27 @@ public class WebActivity extends CoreActivity {
 	@Override
 	@SuppressWarnings("unchecked")
 	public <T extends Activity> T newActivity() {
-		WebActivity webActivity = new WebActivity(getActivityContext(), request, response);
-		return (T)webActivity;
+		WebActivity activity = new WebActivity(getActivityContext(), request, response);
+		activity.setIncluded(true);
+		return (T)activity;
 	}
 
+	private boolean isGzipAccepted() {
+		String contentEncoding = getResponseSetting(ResponseRule.CONTENT_ENCODING_SETTING_NAME);
+		if(contentEncoding != null) {
+			String acceptEncoding = request.getHeader(HttpHeaders.ACCEPT_ENCODING);
+			if(acceptEncoding != null) {
+				return acceptEncoding.contains(contentEncoding);
+			}
+		}
+		return false;
+	}
+	
+	private void setGzipContentEncoded() {
+		response.setHeader("Content-Encoding", "gzip");
+		
+		// indicate to the client that the servlet varies it's
+		// output depending on the "Accept-Encoding" header
+		response.setHeader("Vary", "Accept-Encoding");
+	}
 }

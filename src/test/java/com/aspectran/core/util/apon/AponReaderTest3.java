@@ -68,7 +68,7 @@ public class AponReaderTest3 {
 		 * @param parameterValue the parameter value
 		 * @param parameterValueType the parameter value type
 		 * @return the int
-		 * @throws IOException Signals that an I/O exception has occurred.
+		 * @throws IOException if an I/O error has occurred
 		 */
 		private int valuelize(Parameters parameters, char openBracket, String name, ParameterValue parameterValue, ParameterValueType parameterValueType) throws IOException {
 			Map<String, ParameterValue> parameterValueMap = parameters.getParameterValueMap();

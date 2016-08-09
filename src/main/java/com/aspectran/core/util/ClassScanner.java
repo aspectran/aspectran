@@ -56,7 +56,7 @@ public class ClassScanner {
 	 *
 	 * @param classNamePattern the class name pattern
 	 * @return a Map for scanned classes
-	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws IOException if an I/O error has occurred
 	 */
 	public Map<String, Class<?>> scan(String classNamePattern) throws IOException {
 		final Map<String, Class<?>> scannedClasses = new LinkedHashMap<String, Class<?>>();
@@ -69,7 +69,7 @@ public class ClassScanner {
 	 *
 	 * @param classNamePattern the class name pattern
 	 * @param scannedClasses the Map for scanned classes
-	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws IOException if an I/O error has occurred
 	 */
 	public void scan(String classNamePattern, final Map<String, Class<?>> scannedClasses) throws IOException {
 		scan(classNamePattern, (resourceName, scannedClass) -> {
@@ -82,7 +82,7 @@ public class ClassScanner {
 	 *
 	 * @param classNamePattern the class name pattern
 	 * @param saveHandler the save handler
-	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws IOException if an I/O error has occurred
 	 */
 	public void scan(String classNamePattern, SaveHandler saveHandler) throws IOException {
 		if(classNamePattern == null)

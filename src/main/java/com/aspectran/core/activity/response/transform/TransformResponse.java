@@ -81,7 +81,7 @@ public abstract class TransformResponse implements Response {
 	 * 
 	 * @param file the file
 	 * @return the input stream of the template
-	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws IOException if an I/O error has occurred
 	 */
 	protected InputStream getTemplateAsStream(File file) throws IOException {
 		return new FileInputStream(file);
@@ -92,7 +92,7 @@ public abstract class TransformResponse implements Response {
 	 * 
 	 * @param url the url of the template
 	 * @return the input stream of the template
-	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws IOException if an I/O error has occurred
 	 */
 	protected InputStream getTemplateAsStream(URL url) throws IOException {
 		URLConnection conn = url.openConnection();
@@ -105,7 +105,7 @@ public abstract class TransformResponse implements Response {
 	 * @param file the file
 	 * @param encoding the encoding
 	 * @return the reader of the template
-	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws IOException if an I/O error has occurred
 	 */
 	protected Reader getTemplateAsReader(File file, String encoding) throws IOException {
 		Reader reader;
@@ -126,7 +126,7 @@ public abstract class TransformResponse implements Response {
 	 * @param url the url
 	 * @param encoding the encoding
 	 * @return the template as reader
-	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws IOException if an I/O error has occurred
 	 */
 	protected Reader getTemplateAsReader(URL url, String encoding) throws IOException {
 		InputStream inputStream = getTemplateAsStream(url);
