@@ -105,7 +105,7 @@ public class PebbleViewDispatcher implements ViewDispatcher {
 			compiledTemplate.evaluate(responseAdapter.getWriter(), model);
 
 			if(debugEnabled)
-				log.debug("dispatch to a Pebble template page [" + dispatchName + "]");
+				log.debug("Dispatch to a Pebble template page [" + dispatchName + "]");
 
 		} catch(Exception e) {
 			throw new ViewDispatchException("Failed to dispatch to Pebble " + dispatchResponseRule.toString(this, dispatchName), e);

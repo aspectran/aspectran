@@ -107,7 +107,7 @@ public class FreeMarkerViewDispatcher implements ViewDispatcher {
 			template.process(model, responseAdapter.getWriter());
 
 			if(debugEnabled)
-				log.debug("dispatch to a FreeMarker template page [" + dispatchName + "]");
+				log.debug("Dispatch to a FreeMarker template page [" + dispatchName + "]");
 
 		} catch(Exception e) {
 			throw new ViewDispatchException("Failed to dispatch to FreeMarker " + dispatchResponseRule.toString(this, dispatchName), e);

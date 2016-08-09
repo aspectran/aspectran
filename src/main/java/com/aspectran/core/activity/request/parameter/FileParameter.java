@@ -91,9 +91,9 @@ public class FileParameter {
 	/**
 	 * Returns an {@code InputStream} object of the file.
 	 * 
-	 * @return An {@link java.io.OutputStream OutputStream} that can be used
+	 * @return an {@link java.io.OutputStream OutputStream} that can be used
 	 *         for storing the contensts of the file.
-	 * @throws IOException if an error occurs.
+	 * @throws IOException if an I/O error has occurred
 	 */
 	public InputStream getInputStream() throws IOException {
 		return new FileInputStream(file);
@@ -104,7 +104,7 @@ public class FileParameter {
 	 * Can not use a large array of memory than the JVM Heap deal.
 	 *
 	 * @return a byte array
-	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws IOException if an I/O error has occurred
 	 */
 	public byte[] getBytes() throws IOException {
 		InputStream input = getInputStream();
@@ -137,9 +137,9 @@ public class FileParameter {
 	}
 	
 	/**
-	 * Checks if is refused.
+	 * Checks if the file is refused.
 	 * 
-	 * @return true, if is refused
+	 * @return true, if the file is refused
 	 */
 	public boolean isRefused() {
 		return refused;
@@ -160,7 +160,7 @@ public class FileParameter {
 	 *
 	 * @param destFile the destination file
 	 * @return a saved file
-	 * @throws IOException signals that an I/O exception has occurred.
+	 * @throws IOException if an I/O error has occurred
 	 */
 	public File saveAs(File destFile) throws IOException {
 		return saveAs(destFile, false);
@@ -170,9 +170,9 @@ public class FileParameter {
 	 * Save the uploaded file to the given destination file.
 	 *
 	 * @param dest the destination file
-	 * @param overwrite Whether overwritten if the file already exists
+	 * @param overwrite whether overwritten if the file already exists
 	 * @return a saved file
-	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws IOException if an I/O error has occurred
 	 */
 	public File saveAs(File dest, boolean overwrite) throws IOException {
 		if(!overwrite) {

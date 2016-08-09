@@ -174,7 +174,7 @@ public class FileUtils {
 	 * @param f1 파일명1
 	 * @param f2 파일명2
 	 * 
-	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws IOException if an I/O error has occurred
 	 */
 	public static void copy(String f1, String f2) throws IOException {
 		File in = new File(f1);
@@ -189,7 +189,7 @@ public class FileUtils {
 	 * @param f1 파일1
 	 * @param f2 파일2
 	 * 
-	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws IOException if an I/O error has occurred
 	 */
 	public static void copy(File f1, File f2) throws IOException {
 		InputStream input = new FileInputStream(f1);
@@ -213,7 +213,7 @@ public class FileUtils {
 	 * @param f1 원본 디렉토리
 	 * @param f2 대상 디렉토리
 	 * 
-	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws IOException if an I/O error has occurred
 	 */
 	public static void copyAll(String f1, String f2) throws IOException {
 		File in = new File(f1);
@@ -229,7 +229,7 @@ public class FileUtils {
 	 * @param f1 원본 디렉토리
 	 * @param f2 대상 디렉토리
 	 * 
-	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws IOException if an I/O error has occurred
 	 */
 	public static void copyAll(File f1, File f2) throws IOException {
 		String[] files = f1.list();
@@ -255,7 +255,7 @@ public class FileUtils {
 	 * @param f2 파일2
 	 * @return <code>true</code> if and only if the renaming succeeded;
 	 *         <code>false</code> otherwise
-	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws IOException if an I/O error has occurred
 	 */
 	public static boolean move(File f1, File f2) throws IOException {
 		return f1.renameTo(f2);
@@ -289,7 +289,7 @@ public class FileUtils {
 	 * 
 	 * @return String
 	 * 
-	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws IOException if an I/O error has occurred
 	 */
 	public static String readFile(File file) throws IOException {
 		Reader reader = null;
@@ -315,7 +315,7 @@ public class FileUtils {
 	 * @param data 기록할 텍스트 내용
 	 * @param append 파일의 끝에 추가할지 여부, 아니면 신규 작성
 	 * 
-	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws IOException if an I/O error has occurred
 	 */
 	public static void writeFile(File file, String data, boolean append) throws IOException {
 		Writer out = new FileWriter(file, append);
@@ -329,7 +329,7 @@ public class FileUtils {
 	 * @param file File
 	 * @param data 기록할 텍스트 내용
 	 * 
-	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws IOException if an I/O error has occurred
 	 */
 	public static void writeFile(File file, String data) throws IOException {
 		writeFile(file, data, false);
@@ -342,7 +342,7 @@ public class FileUtils {
      * @param data 기록할 텍스트 내용
      * @param encoding 문자코드
      * 
-     * @throws IOException Signals that an I/O exception has occurred.
+     * @throws IOException if an I/O error has occurred
      */
 	public static void writeFile(File file, String data, String encoding) throws IOException {
 		Writer out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), encoding));

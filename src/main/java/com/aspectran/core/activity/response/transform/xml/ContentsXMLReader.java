@@ -195,7 +195,7 @@ public class ContentsXMLReader implements XMLReader {
 	 * Parses a {@code ProcessResult} object.
 	 * 
 	 * @param processResult a {@code ProcessResult} object
-	 * @throws IOException signals that an I/O exception has occurred.
+	 * @throws IOException if an I/O error has occurred
 	 * @throws SAXException the SAX exception
 	 * @throws InvocationTargetException the invocation target exception
 	 */
@@ -240,7 +240,7 @@ public class ContentsXMLReader implements XMLReader {
 	 * Parses an object.
 	 * 
 	 * @param object the object
-	 * @throws IOException signals that an I/O exception has occurred.
+	 * @throws IOException if an I/O error has occurred
 	 * @throws SAXException the SAX exception
 	 * @throws InvocationTargetException the invocation target exception
 	 */

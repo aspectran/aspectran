@@ -154,7 +154,7 @@ public class PebbleEngineFactory implements ApplicationAdapterAware {
      *
      * @param templateLoaderPath the path to load templates from
      * @return an appropriate Template Loader
-     * @throws IOException the io exception
+     * @throws IOException if an I/O error has occurred
      */
     protected Loader<?> getTemplateLoaderForPath(String templateLoaderPath) throws IOException {
         if(templateLoaderPath.startsWith(ResourceUtils.CLASSPATH_URL_PREFIX)) {

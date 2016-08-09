@@ -66,7 +66,7 @@ public class ContentsJsonWriter extends JsonWriter {
 	 * Write a {@code ProcessResult} object to the character streams.
 	 *
 	 * @param processResult the {@code ProcessResult} object to write to a character-output stream
-	 * @throws IOException an I/O error occurs.
+	 * @throws IOException if an I/O error has occurred
 	 * @throws InvocationTargetException the invocation target exception
 	 */
 	private void write(ProcessResult processResult) throws IOException, InvocationTargetException {
@@ -97,7 +97,7 @@ public class ContentsJsonWriter extends JsonWriter {
 	 * Write a {@code ContentResult} object to the character-output stream.
 	 *
 	 * @param contentResult the {@code ContentResult} object to write to a character-output stream.
-	 * @throws IOException an I/O error occurs.
+	 * @throws IOException if an I/O error has occurred
 	 * @throws InvocationTargetException the invocation target exception
 	 */
 	private void write(ContentResult contentResult) throws IOException, InvocationTargetException {

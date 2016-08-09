@@ -38,6 +38,8 @@ import com.aspectran.core.context.translet.TransletRuleRegistry;
 public abstract class AbstractActivity implements Activity {
 
 	private final ActivityContext context;
+
+	private boolean included;
 	
 	private SessionAdapter sessionAdapter;
 	
@@ -51,10 +53,33 @@ public abstract class AbstractActivity implements Activity {
 
 	private Scope requestScope;
 	
+	/**
+	 * Instantiates a new abstract activity.
+	 *
+	 * @param context the activity context
+	 */
 	protected AbstractActivity(ActivityContext context) {
 		this.context = context;
 	}
 	
+	/**
+	 * Checks if the activity is an include.
+	 *
+	 * @return true, if the activity is an include
+	 */
+	public boolean isIncluded() {
+		return included;
+	}
+
+	/**
+	 * Sets the included.
+	 *
+	 * @param included whether or not including an activity
+	 */
+	public void setIncluded(boolean included) {
+		this.included = included;
+	}
+
 	/**
 	 * Gets the application adapter.
 	 *

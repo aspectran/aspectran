@@ -89,7 +89,7 @@ class AspectranDtdResolver implements EntityResolver {
 	 *
 	 * @param path the path
 	 * @return the input source
-	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws IOException if an I/O error has occurred
 	 */
 	private InputSource getInputSource(String path) throws IOException {
 		InputSource source = null;

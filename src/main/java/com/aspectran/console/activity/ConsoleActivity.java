@@ -135,8 +135,9 @@ public class ConsoleActivity extends CoreActivity {
 	@Override
 	@SuppressWarnings("unchecked")
 	public <T extends Activity> T newActivity() {
-		ConsoleActivity consoleActivity = new ConsoleActivity(getActivityContext(), getSessionAdapter());
-		return (T)consoleActivity;
+		ConsoleActivity activity = new ConsoleActivity(getActivityContext(), getSessionAdapter());
+		activity.setIncluded(true);
+		return (T)activity;
 	}
 
 }
