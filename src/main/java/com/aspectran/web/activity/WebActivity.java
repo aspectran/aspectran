@@ -24,6 +24,7 @@ import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.AdapterException;
 import com.aspectran.core.activity.CoreActivity;
 import com.aspectran.core.activity.request.RequestMethodNotAllowedException;
+import com.aspectran.core.activity.response.Response;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
@@ -37,6 +38,7 @@ import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.RequestRule;
 import com.aspectran.core.context.rule.ResponseRule;
 import com.aspectran.core.context.rule.type.MethodType;
+import com.aspectran.core.context.rule.type.ResponseType;
 import com.aspectran.web.activity.request.multipart.MultipartFormDataParser;
 import com.aspectran.web.activity.request.multipart.MultipartRequestException;
 import com.aspectran.web.activity.request.parser.HttpPutFormContentParser;
@@ -63,6 +65,8 @@ public class WebActivity extends CoreActivity {
 	
 	private HttpServletResponse response;
 	
+	private boolean contentEncoding;
+	
 	/**
 	 * Instantiates a new WebActivity.
 	 *
@@ -85,8 +89,8 @@ public class WebActivity extends CoreActivity {
 			setRequestAdapter(requestAdapter);
 
 			if(!isIncluded() && isGzipAccepted()) {
-				setGzipContentEncoded();
 				response = new GZipServletResponseWrapper(response);
+				contentEncoding = true;
 			}
 			
 			ResponseAdapter responseAdapter = new HttpServletResponseAdapter(response, this);
@@ -142,6 +146,15 @@ public class WebActivity extends CoreActivity {
 		}
 		
         parseDeclaredAttributes();
+	}
+	
+	@Override
+	public void response(Response response) {
+		if(contentEncoding && response.getResponseType() != ResponseType.FORWARD) {
+			setGzipContentEncoded();
+		}
+		
+		super.response(response);
 	}
 	
 	/**
