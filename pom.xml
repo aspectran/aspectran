@@ -5,16 +5,21 @@
 	<parent>
 		<groupId>com.aspectran</groupId>
 		<artifactId>aspectran-parent</artifactId>
-		<version>3</version>
+		<version>4</version>
+		<relativePath />
 	</parent>
 
 	<artifactId>aspectran</artifactId>
-	<version>2.3.0</version>
+	<version>2.3.1</version>
+	<packaging>jar</packaging>
+
 	<name>aspectran</name>
-	<url>http://www.aspectran.com/</url>
 	<description>
 		Aspectran is a lightweight and extensible framework for building enterprise-ready Java web applications.
 	</description>
+	<url>http://www.aspectran.com/</url>
+
+	<inceptionYear>2008</inceptionYear>
 
 	<contributors>
 		<contributor>
@@ -39,7 +44,7 @@
 	</ciManagement>
 
 	<properties>
-		<clirr.comparisonVersion>2.0.0</clirr.comparisonVersion>
+		<clirr.comparisonVersion>2.3.0</clirr.comparisonVersion>
 		<findbugs.onlyAnalyze>com.aspectran.*</findbugs.onlyAnalyze>
 	</properties>
 
