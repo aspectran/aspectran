@@ -85,7 +85,7 @@ Aspectran의 주요 변경 이력에 대한 정보를 제공합니다.
 ## [Examples](http://www.aspectran.com/examples/)
 Aspectran을 이용해서 만든 예제 응용 프로그램을 제공하고 있습니다.  
 대부분의 예제 응용 프로그램은 구글 클라우드 환경에서 구동하고 있기 때문에 직접 실행해 볼 수 있습니다.
-* [https://github.com/aspectran/aspectran-guides](https://github.com/aspectran/aspectran-guides)
+* [https://github.com/aspectran-guides](https://github.com/aspectran-guides)
 
 ## License
 Aspectran is freely usable, licensed under the [Apache 2.0 license](http://www.apache.org/licenses/LICENSE-2.0).
