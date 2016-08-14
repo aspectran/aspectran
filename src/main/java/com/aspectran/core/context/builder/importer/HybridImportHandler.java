@@ -68,9 +68,9 @@ public class HybridImportHandler extends AbstractImportHandler {
 		if(importer.getImportFileType() == ImportFileType.APON) {
 			Parameters rootParameters = AponReader.parse(importer.getReader(encoding), new RootParameters());
 			
-			if(rootAponDisassembler == null)
+			if(rootAponDisassembler == null) {
 				rootAponDisassembler = new RootAponDisassembler(assistant);
-			
+			}
 			rootAponDisassembler.disassembleAspectran(rootParameters);
 		} else {
 			if(hybridLoad && importer.getImporterType() == ImporterType.FILE) {

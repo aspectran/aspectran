@@ -52,7 +52,7 @@ public class ActivityContextException extends AspectranCheckedException {
 	/**
 	 * Constructor to create exception with a message
 	 * 
-	 * @param msg A message to associate with the exception
+	 * @param msg a message to associate with the exception
 	 */
 	public ActivityContextException(String msg) {
 		super(msg);
@@ -61,7 +61,7 @@ public class ActivityContextException extends AspectranCheckedException {
 	/**
 	 * Constructor to create exception to wrap another exception
 	 * 
-	 * @param cause The real cause of the exception
+	 * @param cause the real cause of the exception
 	 */
 	public ActivityContextException(Throwable cause) {
 		super(cause);
@@ -70,8 +70,8 @@ public class ActivityContextException extends AspectranCheckedException {
 	/**
 	 * Constructor to create exception to wrap another exception and pass a message
 	 * 
-	 * @param msg The message
-	 * @param cause The real cause of the exception
+	 * @param msg a message to associate with the exception
+	 * @param cause the real cause of the exception
 	 */
 	public ActivityContextException(String msg, Throwable cause) {
 		super(msg, cause);

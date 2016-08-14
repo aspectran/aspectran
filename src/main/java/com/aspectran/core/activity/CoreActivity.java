@@ -35,9 +35,13 @@ import com.aspectran.core.context.aspect.AspectAdviceRulePostRegister;
 import com.aspectran.core.context.aspect.AspectAdviceRuleRegister;
 import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
 import com.aspectran.core.context.aspect.pointcut.Pointcut;
+import com.aspectran.core.context.expr.ItemEvaluator;
+import com.aspectran.core.context.expr.ItemExpressionParser;
 import com.aspectran.core.context.rule.AspectAdviceRule;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.ExceptionRule;
+import com.aspectran.core.context.rule.ItemRule;
+import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.RequestRule;
 import com.aspectran.core.context.rule.ResponseByContentTypeRule;
 import com.aspectran.core.context.rule.ResponseRule;
@@ -467,8 +471,38 @@ public class CoreActivity extends AbstractActivity {
 	}
 
 	protected void request() {
+		parseDeclaredParameters();
+		parseDeclaredAttributes();
 	}
-	
+
+	/**
+	 * Parse the declared parameters.
+	 */
+	protected void parseDeclaredParameters() {
+		ItemRuleMap parameterItemRuleMap = getRequestRule().getParameterItemRuleMap();
+		if(parameterItemRuleMap != null) {
+			ItemEvaluator evaluator = new ItemExpressionParser(this);
+			for(ItemRule itemRule : parameterItemRuleMap.values()) {
+				String[] values = evaluator.evaluateAsStringArray(itemRule);
+				getRequestAdapter().setParameter(itemRule.getName(), values);
+			}
+		}
+	}
+
+	/**
+	 * Parse the declared attributes.
+	 */
+	protected void parseDeclaredAttributes() {
+		ItemRuleMap attributeItemRuleMap = getRequestRule().getAttributeItemRuleMap();
+		if(attributeItemRuleMap != null) {
+			ItemEvaluator evaluator = new ItemExpressionParser(this);
+			for(ItemRule itemRule : attributeItemRuleMap.values()) {
+				Object value = evaluator.evaluate(itemRule);
+				getRequestAdapter().setAttribute(itemRule.getName(), value);
+			}
+		}
+	}
+
 	private void process() {
 		ContentList contentList = transletRule.getContentList();
 

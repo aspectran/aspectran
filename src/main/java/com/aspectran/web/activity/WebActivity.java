@@ -15,8 +15,6 @@
  */
 package com.aspectran.web.activity;
 
-import java.util.Map;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -29,12 +27,8 @@ import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.context.expr.ItemEvaluator;
-import com.aspectran.core.context.expr.ItemExpressionParser;
 import com.aspectran.core.context.locale.LocaleChangeInterceptor;
 import com.aspectran.core.context.locale.LocaleResolver;
-import com.aspectran.core.context.rule.ItemRule;
-import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.RequestRule;
 import com.aspectran.core.context.rule.ResponseRule;
 import com.aspectran.core.context.rule.type.MethodType;
@@ -144,8 +138,8 @@ public class WebActivity extends CoreActivity {
 				parseHttpPutFormContent();
 			}
 		}
-		
-        parseDeclaredAttributes();
+
+		super.request();
 	}
 	
 	@Override
@@ -179,24 +173,6 @@ public class WebActivity extends CoreActivity {
 	 */
 	private void parseHttpPutFormContent() {
 		HttpPutFormContentParser.parse(getRequestAdapter());
-	}
-	
-	/**
-	 * Parse the declared attributes.
-	 */
-	private void parseDeclaredAttributes() {
-		ItemRuleMap attributeItemRuleMap = getRequestRule().getAttributeItemRuleMap();
-		if(attributeItemRuleMap != null) {
-			ItemEvaluator evaluator = new ItemExpressionParser(this);
-			Map<String, Object> valueMap = evaluator.evaluate(attributeItemRuleMap);
-			for(ItemRule itemRule : attributeItemRuleMap.values()) {
-				String name = itemRule.getName();
-				Object value = valueMap.get(name);
-				if(value != null) {
-					getRequestAdapter().setAttribute(name, value);
-				}
-			}
-		}
 	}
 
 	@Override

@@ -354,6 +354,11 @@ public class RootAponAssembler {
 			requestParameters.putValueNonNull(RequestParameters.allowedMethod, requestRule.getAllowedMethod());
 			requestParameters.putValueNonNull(RequestParameters.characterEncoding, requestRule.getCharacterEncoding());
 			
+			ItemRuleMap parameterItemRuleMap = requestRule.getParameterItemRuleMap();
+			if(parameterItemRuleMap != null) {
+				requestParameters.putValue(RequestParameters.parameters, assembleItemHolderParameters(parameterItemRuleMap));
+			}
+
 			ItemRuleMap attributeItemRuleMap = requestRule.getAttributeItemRuleMap();
 			if(attributeItemRuleMap != null) {
 				requestParameters.putValue(RequestParameters.attributes, assembleItemHolderParameters(attributeItemRuleMap));

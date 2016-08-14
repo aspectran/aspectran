@@ -59,7 +59,7 @@ class ActionInnerNodeletAdder implements NodeletAdder {
             ItemRuleMap irm = new ItemRuleMap();
             assistant.pushObject(irm);
         });
-		parser.addNodelet(xpath, "/echo/attribute", new ItemNodeletAdder(assistant));
+		parser.addNodelet(xpath, "/echo/attributes", new ItemNodeletAdder(assistant));
 		parser.addNodelet(xpath, "/echo", new ItemNodeletAdder(assistant));
 		parser.addNodelet(xpath, "/echo/end()", (node, attributes, text) -> {
             ItemRuleMap irm = assistant.popObject();
@@ -90,12 +90,12 @@ class ActionInnerNodeletAdder implements NodeletAdder {
 
             assistant.pushObject(beanActionRule);
         });
-		parser.addNodelet(xpath, "/action/argument", (node, attributes, text) -> {
+		parser.addNodelet(xpath, "/action/arguments", (node, attributes, text) -> {
             ItemRuleMap irm = new ItemRuleMap();
             assistant.pushObject(irm);
         });
-		parser.addNodelet(xpath, "/action/argument", new ItemNodeletAdder(assistant));
-		parser.addNodelet(xpath, "/action/argument/end()", (node, attributes, text) -> {
+		parser.addNodelet(xpath, "/action/arguments", new ItemNodeletAdder(assistant));
+		parser.addNodelet(xpath, "/action/arguments/end()", (node, attributes, text) -> {
             ItemRuleMap irm = assistant.popObject();
 
             if(!irm.isEmpty()) {
@@ -103,12 +103,12 @@ class ActionInnerNodeletAdder implements NodeletAdder {
                 beanActionRule.setArgumentItemRuleMap(irm);
             }
         });
-		parser.addNodelet(xpath, "/action/property", (node, attributes, text) -> {
+		parser.addNodelet(xpath, "/action/properties", (node, attributes, text) -> {
             ItemRuleMap irm = new ItemRuleMap();
             assistant.pushObject(irm);
         });
-		parser.addNodelet(xpath, "/action/property", new ItemNodeletAdder(assistant));
-		parser.addNodelet(xpath, "/action/property/end()", (node, attributes, text) -> {
+		parser.addNodelet(xpath, "/action/properties", new ItemNodeletAdder(assistant));
+		parser.addNodelet(xpath, "/action/properties/end()", (node, attributes, text) -> {
             ItemRuleMap irm = assistant.popObject();
 
             if(!irm.isEmpty()) {
@@ -137,12 +137,12 @@ class ActionInnerNodeletAdder implements NodeletAdder {
             IncludeActionRule includeActionRule = IncludeActionRule.newInstance(id, transletName, hidden);
             assistant.pushObject(includeActionRule);
         });
-		parser.addNodelet(xpath, "/include/attribute", (node, attributes, text) -> {
+		parser.addNodelet(xpath, "/include/attributes", (node, attributes, text) -> {
             ItemRuleMap irm = new ItemRuleMap();
             assistant.pushObject(irm);
         });
-		parser.addNodelet(xpath, "/include/attribute", new ItemNodeletAdder(assistant));
-		parser.addNodelet(xpath, "/include/attribute/end()", (node, attributes, text) -> {
+		parser.addNodelet(xpath, "/include/attributes", new ItemNodeletAdder(assistant));
+		parser.addNodelet(xpath, "/include/attributes/end()", (node, attributes, text) -> {
             ItemRuleMap irm = assistant.popObject();
 
             if(!irm.isEmpty()) {

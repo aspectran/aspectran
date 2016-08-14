@@ -478,10 +478,16 @@ public class RootAponDisassembler {
 	private RequestRule disassembleRequestRule(Parameters requestParameters) {
 		String allowedMethod = requestParameters.getString(RequestParameters.allowedMethod);
 		String characterEncoding = requestParameters.getString(RequestParameters.characterEncoding);
+		ItemHolderParameters parameterItemHolderParameters = requestParameters.getParameters(RequestParameters.parameters);
 		ItemHolderParameters attributeItemHolderParameters = requestParameters.getParameters(RequestParameters.attributes);
-		
+
 		RequestRule requestRule = RequestRule.newInstance(allowedMethod, characterEncoding);
 	
+		if(parameterItemHolderParameters != null) {
+			ItemRuleMap parameterItemRuleMap = disassembleItemRuleMap(parameterItemHolderParameters);
+			requestRule.setParameterItemRuleMap(parameterItemRuleMap);
+		}
+
 		if(attributeItemHolderParameters != null) {
 			ItemRuleMap attributeItemRuleMap = disassembleItemRuleMap(attributeItemHolderParameters);
 			requestRule.setAttributeItemRuleMap(attributeItemRuleMap);

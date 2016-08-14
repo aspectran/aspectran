@@ -25,7 +25,7 @@ import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItem;
 
 import com.aspectran.core.activity.request.parameter.FileParameter;
-import com.aspectran.core.util.FileUtils;
+import com.aspectran.core.util.FilenameUtils;
 
 /**
  * MultipartItem implementation for Jakarta Commons FileUpload.
@@ -92,8 +92,9 @@ public class MultipartFileParameter extends FileParameter {
 	 */
 	@Override
 	public InputStream getInputStream() throws IOException {
-		if(!isAvailable())
+		if(!isAvailable()) {
 			throw new IllegalStateException("File has been moved - cannot be read again.");
+		}
 
 		InputStream inputStream = fileItem.getInputStream();
 		
@@ -107,8 +108,9 @@ public class MultipartFileParameter extends FileParameter {
 	 */
 	@Override
 	public byte[] getBytes() {
-		if(!isAvailable())
+		if(!isAvailable()) {
 			throw new IllegalStateException("File has been moved - cannot be read again.");
+		}
 		
 		byte[] bytes = fileItem.get();
 		
@@ -118,31 +120,34 @@ public class MultipartFileParameter extends FileParameter {
 	/**
 	 * Save the uploaded file to the given destination file.
 	 *
-	 * @param dest the destination file
+	 * @param destFile the destination file
 	 * @param overwrite whether to overwrite if the file already exists
 	 * @return a saved file
 	 * @throws IOException if an I/O error has occurred
 	 */
 	@Override
-	public File saveAs(File dest, boolean overwrite) throws IOException {
-		if(!isAvailable())
+	public File saveAs(File destFile, boolean overwrite) throws IOException {
+		if(destFile == null) {
+			throw new IllegalArgumentException("'destFile' must not be null.");
+		}
+
+		if(!isAvailable()) {
 			throw new IllegalStateException("File has been moved - cannot be read again.");
+		}
 
 		if(!overwrite) {
-			String path = FileUtils.getPathWithoutFileName(dest.getAbsolutePath());
-			String fileName = dest.getName();
-			String newFileName = FileUtils.obtainUniqueFileName(path, fileName);
-			
-			if(fileName != newFileName)
-				dest = new File(path, newFileName);
+			File newFile = FilenameUtils.seekUniqueFile(destFile);
+			if(destFile != newFile) {
+				destFile = newFile;
+			}
 		} else {
-			if(dest.exists() && !dest.delete()) {
-				throw new IOException("Destination file [" + dest.getAbsolutePath() + "] already exists and could not be deleted.");
+			if(destFile.exists() && !destFile.delete()) {
+				throw new IOException("Destination file [" + destFile.getAbsolutePath() + "] already exists and could not be deleted.");
 			}
 		}
 		
 		try {
-			fileItem.write(dest);
+			fileItem.write(destFile);
 		} catch(FileUploadException e) {
 			throw new IllegalStateException(e.getMessage());
 		} catch(IOException e) {
@@ -151,9 +156,9 @@ public class MultipartFileParameter extends FileParameter {
 			throw new IOException("Could not save file. Cause: " + e);
 		}
 
-		savedFile = dest;
+		savedFile = destFile;
 
-		return dest;
+		return destFile;
 	}
 
 	/**
@@ -176,21 +181,13 @@ public class MultipartFileParameter extends FileParameter {
 	}
 	
 	/**
-	 * Returns the canonical name of the given file.
+	 * Returns the canonical name of the given filename.
 	 * 
-	 * @param fileName the given file
-	 * @return the canonical name of the given file
+	 * @param fileName the given filename
+	 * @return the canonical name of the given filename
 	 */
 	private String getCanonicalName(String fileName) {
-		int forwardSlash = fileName.lastIndexOf("/");   // check for Unix-style path
-		int backwardSlash = fileName.lastIndexOf("\\"); // check for Windows-style path
-
-		if(forwardSlash != -1 && forwardSlash > backwardSlash)
-			fileName = fileName.substring(forwardSlash + 1, fileName.length());
-		else if(backwardSlash != -1 && backwardSlash >= forwardSlash)
-			fileName = fileName.substring(backwardSlash + 1, fileName.length());
-
-		return fileName;
+		return FilenameUtils.getName(fileName);
 	}
 
 	/**

@@ -41,8 +41,9 @@ public class AspectAdviceRuleRegister {
 		List<AspectAdviceRule> aspectAdviceRuleList = aspectRule.getAspectAdviceRuleList();
 		ExceptionRule exceptionRule = aspectRule.getExceptionRule();
 		
-		if(settingsAdviceRule != null)
+		if(settingsAdviceRule != null) {
 			aspectAdviceRuleRegistry.addAspectAdviceRule(settingsAdviceRule);
+		}
 		
 		if(aspectAdviceRuleList != null) {
 			for(AspectAdviceRule aspectAdviceRule : aspectAdviceRuleList) {
@@ -89,8 +90,9 @@ public class AspectAdviceRuleRegister {
 			contentList.setAspectAdviceRuleRegistry(aspectAdviceRuleRegistry);
 		}
 
-		if(aspectRule != null)
+		if(aspectRule != null) {
 			register(aspectAdviceRuleRegistry, aspectRule);
+		}
 	}
 
 	public static void register(ResponseRule responseRule, AspectRule aspectRule) {

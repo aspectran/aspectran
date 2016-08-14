@@ -23,18 +23,21 @@ public class RequestParameters extends AbstractParameters {
 
 	public static final ParameterDefinition allowedMethod;
 	public static final ParameterDefinition characterEncoding;
+	public static final ParameterDefinition parameters;
 	public static final ParameterDefinition attributes;
-	
+
 	private static final ParameterDefinition[] parameterDefinitions;
 
 	static {
 		allowedMethod = new ParameterDefinition("method", ParameterValueType.STRING);
 		characterEncoding = new ParameterDefinition("characterEncoding", ParameterValueType.STRING);
-		attributes = new ParameterDefinition("attribute", ItemHolderParameters.class);
-		
+		parameters = new ParameterDefinition("parameters", ItemHolderParameters.class);
+		attributes = new ParameterDefinition("attributes", ItemHolderParameters.class);
+
 		parameterDefinitions = new ParameterDefinition[] {
 			allowedMethod,
 			characterEncoding,
+			parameters,
 			attributes
 		};
 	}

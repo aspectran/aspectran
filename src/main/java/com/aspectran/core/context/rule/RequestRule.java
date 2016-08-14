@@ -39,6 +39,8 @@ public class RequestRule {
 	
 	private MethodType allowedMethod;
 
+	private ItemRuleMap parameterItemRuleMap;
+
 	private ItemRuleMap attributeItemRuleMap;
 
 	private AspectAdviceRuleRegistry aspectAdviceRuleRegistry;
@@ -83,16 +85,34 @@ public class RequestRule {
 	}
 
 	/**
-	 * Gets the parameter rule map for attributes.
+	 * Gets the parameter item rule map.
 	 * 
-	 * @return the parameter rule map for attributes
+	 * @return the parameter item rule map
+	 */
+	public ItemRuleMap getParameterItemRuleMap() {
+		return parameterItemRuleMap;
+	}
+
+	/**
+	 * Sets the attribute item rule map.
+	 *
+	 * @param parameterItemRuleMap the new attribute item rule map
+	 */
+	public void setParameterItemRuleMap(ItemRuleMap parameterItemRuleMap) {
+		this.parameterItemRuleMap = parameterItemRuleMap;
+	}
+
+	/**
+	 * Gets the attribute item rule map.
+	 *
+	 * @return the attribute rule map for attributes
 	 */
 	public ItemRuleMap getAttributeItemRuleMap() {
 		return attributeItemRuleMap;
 	}
 
 	/**
-	 * Sets the parameter rule map for attributes.
+	 * Sets the attribute item rule map.
 	 *
 	 * @param attributeItemRuleMap the new attribute item rule map
 	 */
@@ -100,18 +120,6 @@ public class RequestRule {
 		this.attributeItemRuleMap = attributeItemRuleMap;
 	}
 
-	/**
-	 * Adds the parameter rule for attributes.
-	 * 
-	 * @param attributeItemRule the parameter rule for attributes
-	 */
-	public void addAttributeItemRule(ItemRule attributeItemRule) {
-		if(attributeItemRuleMap == null) 
-			attributeItemRuleMap = new ItemRuleMap();
-		
-		attributeItemRuleMap.putItemRule(attributeItemRule);
-	}
-	
 	/**
 	 * Gets the aspect advice rule registry.
 	 *
@@ -142,6 +150,7 @@ public class RequestRule {
 		ToStringBuilder tsb = new ToStringBuilder();
 		tsb.append("method", allowedMethod);
 		tsb.append("characterEncoding", characterEncoding);
+		tsb.append("parameters", parameterItemRuleMap);
 		tsb.append("attributes", attributeItemRuleMap);
 		tsb.append("aspectAdviceRuleRegistry", aspectAdviceRuleRegistry);
 		return tsb.toString();

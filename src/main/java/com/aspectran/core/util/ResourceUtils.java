@@ -95,7 +95,9 @@ public class ResourceUtils {
 	}
 
 	public static URL getURL(String resourceLocation, ClassLoader classLoader) throws FileNotFoundException {
-		Assert.notNull(resourceLocation, "Resource location must not be null");
+		if(resourceLocation == null) {
+			throw new IllegalArgumentException("'resourceLocation' must not be null.");
+		}
 		if(resourceLocation.startsWith(CLASSPATH_URL_PREFIX)) {
 			String path = resourceLocation.substring(CLASSPATH_URL_PREFIX.length());
 			URL url = classLoader.getResource(path);
@@ -120,7 +122,9 @@ public class ResourceUtils {
 	}
 
 	public static File getFile(String resourceLocation, ClassLoader classLoader) throws FileNotFoundException {
-		Assert.notNull(resourceLocation, "Resource location must not be null");
+		if(resourceLocation == null) {
+			throw new IllegalArgumentException("'resourceLocation' must not be null.");
+		}
 		if(resourceLocation.startsWith(CLASSPATH_URL_PREFIX)) {
 			String path = resourceLocation.substring(CLASSPATH_URL_PREFIX.length());
 			String description = "class path resource [" + path + "]";
@@ -145,7 +149,9 @@ public class ResourceUtils {
 	}
 
 	public static File getFile(URL resourceUrl, String description) throws FileNotFoundException {
-		Assert.notNull(resourceUrl, "Resource URL must not be null");
+		if(resourceUrl == null) {
+			throw new IllegalArgumentException("'resourceUrl' must not be null.");
+		}
 		if(!URL_PROTOCOL_FILE.equals(resourceUrl.getProtocol())) {
 			throw new FileNotFoundException(description + " cannot be resolved to absolute file path "
 					+ "because it does not reside in the file system: " + resourceUrl);
@@ -163,7 +169,9 @@ public class ResourceUtils {
 	}
 
 	public static File getFile(URI resourceUri, String description) throws FileNotFoundException {
-		Assert.notNull(resourceUri, "Resource URI must not be null");
+		if(resourceUri == null) {
+			throw new IllegalArgumentException("'resourceUri' must not be null.");
+		}
 		if(!URL_PROTOCOL_FILE.equals(resourceUri.getScheme())) {
 			throw new FileNotFoundException(description + " cannot be resolved to absolute file path "
 					+ "because it does not reside in the file system: " + resourceUri);
@@ -257,7 +265,7 @@ public class ResourceUtils {
 	 * @throws IOException if an error occurred when reading resources using any I/O operations
 	 */
 	public static Reader getReader(final File file, String encoding) throws IOException {
-		InputStream stream = null;
+		InputStream stream;
 		try {
 			stream = AccessController.doPrivileged(
 					new PrivilegedExceptionAction<InputStream>() {
@@ -288,7 +296,7 @@ public class ResourceUtils {
 	 * @throws IOException if an error occurred when reading resources using any I/O operations
 	 */
 	public static Reader getReader(final URL url, String encoding) throws IOException {
-		InputStream stream = null;
+		InputStream stream;
 		try {
 			stream = AccessController.doPrivileged(
 					new PrivilegedExceptionAction<InputStream>() {
@@ -368,11 +376,9 @@ public class ResourceUtils {
 		final char[] buffer = new char[1024];
 		StringBuilder sb = new StringBuilder();
 		int len;
-
 		while((len = reader.read(buffer)) != -1) {
 			sb.append(buffer, 0, len);
 		}
-
 		return sb.toString();
 	}
 

@@ -30,9 +30,9 @@ public class ReferenceParameters extends AbstractParameters {
 	
 	static {
 		parameter = new ParameterDefinition("parameter", ParameterValueType.STRING);
-		attribute = new ParameterDefinition("attribute", ParameterValueType.STRING);
+		attribute = new ParameterDefinition("attributes", ParameterValueType.STRING);
 		bean = new ParameterDefinition("bean", ParameterValueType.STRING);
-		property = new ParameterDefinition("property", ParameterValueType.STRING);
+		property = new ParameterDefinition("properties", ParameterValueType.STRING);
 		
 		parameterDefinitions = new ParameterDefinition[] {
 			parameter,

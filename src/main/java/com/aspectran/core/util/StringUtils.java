@@ -30,14 +30,58 @@ public class StringUtils {
 	/** The empty {@link String} */
 	public static final String EMPTY = "";
 
+	/**
+	 * Check that the given {@code CharSequence} is neither {@code null} nor
+	 * of length 0.
+	 * <p>Note: this method returns {@code true} for a {@code CharSequence}
+	 * that purely consists of whitespace.
+	 * <pre class="code">
+	 * StringUtils.hasLength(null) = false
+	 * StringUtils.hasLength("") = false
+	 * StringUtils.hasLength(" ") = true
+	 * StringUtils.hasLength("Hello") = true
+	 * </pre>
+	 *
+	 * @param str the {@code CharSequence} to check (may be {@code null})
+	 * @return {@code true} if the {@code CharSequence} is not {@code null} and has length
+	 * @see #hasText(String)
+	 */
 	public static boolean hasLength(CharSequence str) {
 		return (str != null && str.length() > 0);
 	}
 
+	/**
+	 * Check that the given {@code String} is neither {@code null} nor of length 0.
+	 * <p>Note: this method returns {@code true} for a {@code String} that
+	 * purely consists of whitespace.
+	 *
+	 * @param str the {@code String} to check (may be {@code null})
+	 * @return {@code true} if the {@code String} is not {@code null} and has length
+	 * @see #hasLength(CharSequence)
+	 * @see #hasText(String)
+	 */
 	public static boolean hasLength(String str) {
 		return hasLength((CharSequence)str);
 	}
 
+	/**
+	 * Check whether the given {@code CharSequence} contains actual <em>text</em>.
+	 * <p>More specifically, this method returns {@code true} if the
+	 * {@code CharSequence} is not {@code null}, its length is greater than
+	 * 0, and it contains at least one non-whitespace character.
+	 * <pre class="code">
+	 * StringUtils.hasText(null) = false
+	 * StringUtils.hasText("") = false
+	 * StringUtils.hasText(" ") = false
+	 * StringUtils.hasText("12345") = true
+	 * StringUtils.hasText(" 12345 ") = true
+	 * </pre>
+	 *
+	 * @param str the {@code CharSequence} to check (may be {@code null})
+	 * @return {@code true} if the {@code CharSequence} is not {@code null},
+	 * its length is greater than 0, and it does not contain whitespace only
+	 * @see Character#isWhitespace
+	 */
 	public static boolean hasText(CharSequence str) {
 		if(!hasLength(str)) {
 			return false;
@@ -51,10 +95,29 @@ public class StringUtils {
 		return false;
 	}
 
+	/**
+	 * Check whether the given {@code String} contains actual <em>text</em>.
+	 * <p>More specifically, this method returns {@code true} if the
+	 * {@code String} is not {@code null}, its length is greater than 0,
+	 * and it contains at least one non-whitespace character.
+	 *
+	 * @param str the {@code String} to check (may be {@code null})
+	 * @return {@code true} if the {@code String} is not {@code null}, its
+	 * length is greater than 0, and it does not contain whitespace only
+	 * @see #hasText(CharSequence)
+	 */
 	public static boolean hasText(String str) {
 		return hasText((CharSequence)str);
 	}
 
+	/**
+	 * Check whether the given {@code CharSequence} contains any whitespace characters.
+	 *
+	 * @param str the {@code CharSequence} to check (may be {@code null})
+	 * @return {@code true} if the {@code CharSequence} is not empty and
+	 * contains at least 1 whitespace character
+	 * @see Character#isWhitespace
+	 */
 	public static boolean containsWhitespace(CharSequence str) {
 		if(!hasLength(str)) {
 			return false;
@@ -68,6 +131,14 @@ public class StringUtils {
 		return false;
 	}
 
+	/**
+	 * Check whether the given {@code String} contains any whitespace characters.
+	 *
+	 * @param str the {@code String} to check (may be {@code null})
+	 * @return {@code true} if the {@code String} is not empty and
+	 * contains at least 1 whitespace character
+	 * @see #containsWhitespace(CharSequence)
+	 */
 	public static boolean containsWhitespace(String str) {
 		return containsWhitespace((CharSequence)str);
 	}
@@ -281,12 +352,12 @@ public class StringUtils {
 	}
 
 	/**
-	 * 발견한 모든 검색 문자열을 치환 문자열로 교체한다.
-	 * 
-	 * @param str 대상 문자열
-	 * @param search 발견 문자열
-	 * @param replace 치환 문자열
-	 * @return String
+	 * Replace all occurrences of a substring within a string with another string.
+	 *
+	 * @param str {@code String} to examine
+	 * @param search {@code String} to replace
+	 * @param replace {@code String} to insert
+	 * @return a {@code String} with the replacements
 	 */
 	public static String replace(String str, String search, String replace) {
 		if(str == null || search == null || replace == null)
@@ -296,8 +367,8 @@ public class StringUtils {
 
 		int searchLen = search.length();
 		int stringLen = str.length();
-		int index = 0;
 		int oldIndex = 0;
+		int index;
 
 		while((index = str.indexOf(search, oldIndex)) >= 0) {
 			sb.append(str.substring(oldIndex, index));
@@ -312,13 +383,12 @@ public class StringUtils {
 	}
 
 	/**
-	 * 발견한 모든 검색 문자열을 치환 문자열로 교체합니다.
-	 * 발견 문장 배열과 치환 문자열 배열은 서로 쌍을 이루어야 합니다.
-	 * 
-	 * @param str 대상 문자열
-	 * @param search 발견 문자열 배열
-	 * @param replace 치환 문자열 배열
-	 * @return String
+	 * Replace all occurrences of a substring within a string with another string.
+	 *
+	 * @param str {@code String} to examine
+	 * @param search {@code String} array to replace
+	 * @param replace {@code String} array to insert
+	 * @return a {@code String} with the replacements
 	 */
 	public static String replace(String str, String[] search, String[] replace) {
 		if(str == null || search == null || replace == null)
@@ -732,6 +802,48 @@ public class StringUtils {
 			throw new IllegalArgumentException("Invalid time zone specification '" + timeZoneString + "'");
 		}
 		return timeZone;
+	}
+
+	/**
+	 * Convert byte size into human friendly format.
+	 *
+	 * @param size the number of bytes
+	 * @return a human friendly byte size (includes units)
+	 */
+	public static String convertToHumanFriendlyByteSize(long size) {
+		if(size < 1024)
+			return size + " B";
+		int z = (63 - Long.numberOfLeadingZeros(size)) / 10;
+		double d = (double)size / (1L << (z * 10));
+		String format = (d % 1.0 == 0) ? "%.0f %sB" : "%.1f %sB";
+		return String.format(format, d, " KMGTPE".charAt(z));
+	}
+
+	/**
+	 * Convert byte size into machine friendly format.
+	 *
+	 * @param size the human friendly byte size (includes units)
+	 * @return a number of bytes
+	 * @throws NumberFormatException if failed parse given size
+	 */
+	public static long convertToMachineFriendlyByteSize(String size) {
+		double d;
+		try {
+			d = Double.parseDouble(size.replaceAll("[GMK]?[B]?$", ""));
+		} catch(NumberFormatException e)  {
+			String msg = "Size must be specified as bytes (B), " +
+					"kibibytes (KB), mebibytes (MB), gibibytes (GB). " +
+					"E.g. 1024, 1KB, 10M, 10MB, 100G, 100GB.";
+			throw new NumberFormatException(msg + " " + e.getMessage());
+		}
+		long l = Math.round(d * 1024 * 1024 * 1024L);
+		int index = Math.max(0, size.length() - (size.endsWith("B") ? 2 : 1));
+		switch(size.charAt(index)) {
+			default:  l /= 1024;
+			case 'K': l /= 1024;
+			case 'M': l /= 1024;
+			case 'G': return l;
+		}
 	}
 
 }

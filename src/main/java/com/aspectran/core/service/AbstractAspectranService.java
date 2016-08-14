@@ -101,7 +101,7 @@ abstract class AbstractAspectranService implements AspectranService {
 
 	protected synchronized void initialize(AspectranConfig aspectranConfig) throws AspectranServiceException {
 		if(activityContext != null)
-			throw new AspectranServiceException("Already loaded the AspectranContext. Destroy the old AspectranContext before loading.");
+			throw new AspectranServiceException("AspectranContext has been already loaded. Must destroy the old AspectranContext before reloading.");
 
 		log.info("Initializing AspectranService...");
 
@@ -160,10 +160,10 @@ abstract class AbstractAspectranService implements AspectranService {
 	
 	synchronized ActivityContext loadActivityContext() throws AspectranServiceException {
 		if(activityContextLoader == null)
-			throw new UnsupportedOperationException("ActivityContextLoader is not initialized. Call initialize() method first.");
+			throw new UnsupportedOperationException("ActivityContextLoader is not initialized. Please call initialize() method first.");
 
 		if(activityContext != null)
-			throw new AspectranServiceException("Already loaded the AspectranContext. Destroy the old AspectranContext before loading.");
+			throw new AspectranServiceException("AspectranContext has been already loaded. Must destroy the old AspectranContext before reloading.");
 		
 		if(log.isDebugEnabled())
 			log.debug("Loading ActivityContext...");
@@ -205,7 +205,7 @@ abstract class AbstractAspectranService implements AspectranService {
 
 	synchronized ActivityContext reloadActivityContext() throws AspectranServiceException {
 		if(activityContextLoader == null)
-			throw new UnsupportedOperationException("ActivityContextLoader is not initialized. Call initialize() method first.");
+			throw new UnsupportedOperationException("ActivityContextLoader is not initialized. Please call initialize() method first.");
 
 		try {
 			activityContext = activityContextLoader.reload(hardReload);
@@ -274,9 +274,9 @@ abstract class AbstractAspectranService implements AspectranService {
 	}
 	
 	private void stopReloadingTimer() {
-		if(reloadingTimer != null)
+		if(reloadingTimer != null) {
 			reloadingTimer.cancel();
-		
+		}
 		reloadingTimer = null;
 	}
 

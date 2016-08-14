@@ -133,12 +133,12 @@ class ResponseInnerNodeletAdder implements NodeletAdder {
             assistant.pushObject(actionList);
         });
 		parser.addNodelet(xpath, "/redirect", new ActionInnerNodeletAdder(assistant));
-		parser.addNodelet(xpath, "/redirect/parameter", (node, attributes, text) -> {
+		parser.addNodelet(xpath, "/redirect/parameters", (node, attributes, text) -> {
             ItemRuleMap irm = new ItemRuleMap();
             assistant.pushObject(irm);
         });
-		parser.addNodelet(xpath, "/redirect/parameter", new ItemNodeletAdder(assistant));
-		parser.addNodelet(xpath, "/redirect/parameter/end()", (node, attributes, text) -> {
+		parser.addNodelet(xpath, "/redirect/parameters", new ItemNodeletAdder(assistant));
+		parser.addNodelet(xpath, "/redirect/parameters/end()", (node, attributes, text) -> {
             ItemRuleMap irm = assistant.popObject();
 
             if(!irm.isEmpty()) {
@@ -184,12 +184,12 @@ class ResponseInnerNodeletAdder implements NodeletAdder {
             assistant.pushObject(actionList);
         });
 		parser.addNodelet(xpath, "/forward", new ActionInnerNodeletAdder(assistant));
-		parser.addNodelet(xpath, "/forward/parameter", (node, attributes, text) -> {
+		parser.addNodelet(xpath, "/forward/parameters", (node, attributes, text) -> {
             ItemRuleMap irm = new ItemRuleMap();
             assistant.pushObject(irm);
         });
-		parser.addNodelet(xpath, "/forward/parameter", new ItemNodeletAdder(assistant));
-		parser.addNodelet(xpath, "/forward/parameter/end()", (node, attributes, text) -> {
+		parser.addNodelet(xpath, "/forward/parameters", new ItemNodeletAdder(assistant));
+		parser.addNodelet(xpath, "/forward/parameters/end()", (node, attributes, text) -> {
             ItemRuleMap irm = assistant.popObject();
 
             if(irm.size() > 0) {

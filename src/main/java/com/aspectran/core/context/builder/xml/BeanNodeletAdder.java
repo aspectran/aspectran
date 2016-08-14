@@ -164,7 +164,7 @@ class BeanNodeletAdder implements NodeletAdder {
                 beanRule.setImportant(important);
             }
         });
-		parser.addNodelet(xpath, "/bean/constructor/argument", (node, attributes, text) -> {
+		parser.addNodelet(xpath, "/bean/constructor/arguments", (node, attributes, text) -> {
             if(StringUtils.hasText(text)) {
                 BeanRule beanRule = assistant.peekObject();
                 BeanRule.updateConstructorArgument(beanRule, text);
@@ -173,8 +173,8 @@ class BeanNodeletAdder implements NodeletAdder {
             ItemRuleMap irm = new ItemRuleMap();
             assistant.pushObject(irm);
         });
-		parser.addNodelet(xpath, "/bean/constructor/argument", new ItemNodeletAdder(assistant));
-		parser.addNodelet(xpath, "/bean/constructor/argument/end()", (node, attributes, text) -> {
+		parser.addNodelet(xpath, "/bean/constructor/arguments", new ItemNodeletAdder(assistant));
+		parser.addNodelet(xpath, "/bean/constructor/arguments/end()", (node, attributes, text) -> {
             ItemRuleMap irm = assistant.popObject();
 
             if(!irm.isEmpty()) {
@@ -182,7 +182,7 @@ class BeanNodeletAdder implements NodeletAdder {
                 beanRule.setConstructorArgumentItemRuleMap(irm);
             }
         });
-		parser.addNodelet(xpath, "/bean/property", (node, attributes, text) -> {
+		parser.addNodelet(xpath, "/bean/properties", (node, attributes, text) -> {
             if(StringUtils.hasText(text)) {
                 BeanRule beanRule = assistant.peekObject();
                 BeanRule.updateProperty(beanRule, text);
@@ -191,8 +191,8 @@ class BeanNodeletAdder implements NodeletAdder {
             ItemRuleMap irm = new ItemRuleMap();
             assistant.pushObject(irm);
         });
-		parser.addNodelet(xpath, "/bean/property", new ItemNodeletAdder(assistant));
-		parser.addNodelet(xpath, "/bean/property/end()", (node, attributes, text) -> {
+		parser.addNodelet(xpath, "/bean/properties", new ItemNodeletAdder(assistant));
+		parser.addNodelet(xpath, "/bean/properties/end()", (node, attributes, text) -> {
             ItemRuleMap irm = assistant.popObject();
 
             if(!irm.isEmpty()) {

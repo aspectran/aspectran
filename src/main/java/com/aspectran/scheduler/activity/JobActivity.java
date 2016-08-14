@@ -15,16 +15,11 @@
  */
 package com.aspectran.scheduler.activity;
 
-import java.util.Map;
-
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.CoreActivity;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.context.expr.ItemEvaluator;
-import com.aspectran.core.context.expr.ItemExpressionParser;
-import com.aspectran.core.context.rule.RequestRule;
 
 /**
  * The Class JobActivity.
@@ -38,29 +33,6 @@ public class JobActivity extends CoreActivity {
 
 		setRequestAdapter(requestAdapter);
 		setResponseAdapter(responseAdapter);
-	}
-
-	@Override
-	protected void request() {
-		parseDeclaredAttributes();
-	}
-	
-	/**
-	 * Parses the declared parameters.
-	 */
-	private void parseDeclaredAttributes() {
-		RequestRule requestRule = getRequestRule();
-		
-		if(requestRule.getAttributeItemRuleMap() != null) {
-			ItemEvaluator evaluator = new ItemExpressionParser(this);
-			Map<String, Object> valueMap = evaluator.evaluate(requestRule.getAttributeItemRuleMap());
-
-			if(valueMap != null && !valueMap.isEmpty()) {
-				for(Map.Entry<String, Object> entry : valueMap.entrySet()) {
-					getRequestAdapter().setAttribute(entry.getKey(), entry.getValue());
-				}
-			}
-		}
 	}
 
 	@Override

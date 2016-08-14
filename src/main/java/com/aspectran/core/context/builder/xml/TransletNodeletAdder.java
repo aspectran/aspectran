@@ -15,10 +15,6 @@
  */
 package com.aspectran.core.context.builder.xml;
 
-import java.util.Map;
-
-import org.w3c.dom.Node;
-
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.activity.process.ContentList;
 import com.aspectran.core.context.builder.assistant.ContextBuilderAssistant;
@@ -28,7 +24,6 @@ import com.aspectran.core.context.rule.RequestRule;
 import com.aspectran.core.context.rule.ResponseRule;
 import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.util.BooleanUtils;
-import com.aspectran.core.util.xml.Nodelet;
 import com.aspectran.core.util.xml.NodeletAdder;
 import com.aspectran.core.util.xml.NodeletParser;
 
@@ -64,12 +59,10 @@ class TransletNodeletAdder implements NodeletAdder {
             TransletRule transletRule = TransletRule.newInstance(name, scan, mask, method);
             assistant.pushObject(transletRule);
         });
-		parser.addNodelet(xpath, "/translet/description", new Nodelet() {
-			public void process(Node node, Map<String, String> attributes, String text) throws Exception {
-				if(text != null) {
-					TransletRule transletRule = assistant.peekObject();
-					transletRule.setDescription(text);
-				}
+		parser.addNodelet(xpath, "/translet/description", (node, attributes, text) -> {
+			if(text != null) {
+				TransletRule transletRule = assistant.peekObject();
+				transletRule.setDescription(text);
 			}
 		});
 		parser.addNodelet(xpath, "/translet", new ActionInnerNodeletAdder(assistant));
@@ -81,12 +74,25 @@ class TransletNodeletAdder implements NodeletAdder {
             RequestRule requestRule = RequestRule.newInstance(method, characterEncoding);
             assistant.pushObject(requestRule);
         });
-		parser.addNodelet(xpath, "/translet/request/attribute", (node, attributes, text) -> {
+		parser.addNodelet(xpath, "/translet/request/parameters", (node, attributes, text) -> {
+            ItemRuleMap irm = new ItemRuleMap();
+            assistant.pushObject(irm);
+		});
+		parser.addNodelet(xpath, "/translet/request/parameters", new ItemNodeletAdder(assistant));
+		parser.addNodelet(xpath, "/translet/request/parameters/end()", (node, attributes, text) -> {
+			ItemRuleMap irm = assistant.popObject();
+
+			if(!irm.isEmpty()) {
+				RequestRule requestRule = assistant.peekObject();
+				requestRule.setParameterItemRuleMap(irm);
+			}
+		});
+		parser.addNodelet(xpath, "/translet/request/attributes", (node, attributes, text) -> {
             ItemRuleMap irm = new ItemRuleMap();
             assistant.pushObject(irm);
         });
-		parser.addNodelet(xpath, "/translet/request/attribute", new ItemNodeletAdder(assistant));
-		parser.addNodelet(xpath, "/translet/request/attribute/end()", (node, attributes, text) -> {
+		parser.addNodelet(xpath, "/translet/request/attributes", new ItemNodeletAdder(assistant));
+		parser.addNodelet(xpath, "/translet/request/attributes/end()", (node, attributes, text) -> {
             ItemRuleMap irm = assistant.popObject();
 
             if(!irm.isEmpty()) {

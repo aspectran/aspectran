@@ -15,8 +15,6 @@
  */
 package com.aspectran.console.activity;
 
-import java.util.Map;
-
 import com.aspectran.console.adapter.ConsoleRequestAdapter;
 import com.aspectran.console.adapter.ConsoleResponseAdapter;
 import com.aspectran.core.activity.Activity;
@@ -26,8 +24,6 @@ import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.context.expr.ItemEvaluator;
-import com.aspectran.core.context.expr.ItemExpressionParser;
 import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.expr.token.TokenParser;
 import com.aspectran.core.context.rule.ItemRule;
@@ -68,21 +64,17 @@ public class ConsoleActivity extends CoreActivity {
 		}
 	}
 
-	@Override
-	protected void request() {
-        parseDeclaredAttributes();
-	}
-	
 	/**
 	 * Parses the declared parameters.
 	 */
-	private void parseDeclaredAttributes() {
-		ItemRuleMap attributeItemRuleMap = getRequestRule().getAttributeItemRuleMap();
+	@Override
+	protected void parseDeclaredParameters() {
+		ItemRuleMap parameterItemRuleMap = getRequestRule().getParameterItemRuleMap();
 
-		if(attributeItemRuleMap != null) {
-			System.out.println("Required Attributes:");
+		if(parameterItemRuleMap != null) {
+			System.out.println("Required Parameters:");
 
-			for(ItemRule itemRule : attributeItemRuleMap.values()) {
+			for(ItemRule itemRule : parameterItemRuleMap.values()) {
 				Token[] tokens = itemRule.getTokens();
 				if(tokens == null) {
 					tokens = new Token[] { new Token(TokenType.PARAMETER, itemRule.getName()) };
@@ -94,7 +86,7 @@ public class ConsoleActivity extends CoreActivity {
 
 			System.out.println("Input Parameters:");
 
-			for(ItemRule itemRule : attributeItemRuleMap.values()) {
+			for(ItemRule itemRule : parameterItemRuleMap.values()) {
 				Token[] tokens = itemRule.getTokens();
 
 				if(tokens != null && tokens.length > 0) {
@@ -105,7 +97,7 @@ public class ConsoleActivity extends CoreActivity {
 								System.out.printf("(%s)", token.getValue());
 							}
 							String input = System.console().readLine();
-							if(input != null && input.length() > 0) {
+							if(input != null && !input.isEmpty()) {
 								getRequestAdapter().setParameter(token.getName(), input);
 							}
 						}
@@ -113,20 +105,9 @@ public class ConsoleActivity extends CoreActivity {
 				} else {
 					System.out.printf("  $%s: ", itemRule.getName());
 					String input = System.console().readLine();
-					if(input != null && input.length() > 0) {
+					if(input != null && !input.isEmpty()) {
 						getRequestAdapter().setParameter(itemRule.getName(), input);
 					}
-				}
-			}
-
-			ItemEvaluator evaluator = new ItemExpressionParser(this);
-			Map<String, Object> valueMap = evaluator.evaluate(attributeItemRuleMap);
-
-			for(ItemRule itemRule : attributeItemRuleMap.values()) {
-				String name = itemRule.getName();
-				Object value = valueMap.get(name);
-				if(value != null) {
-					getRequestAdapter().setAttribute(name, value);
 				}
 			}
 		}

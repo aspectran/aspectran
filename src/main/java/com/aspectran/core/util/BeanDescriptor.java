@@ -131,7 +131,9 @@ public class BeanDescriptor {
 			} else {
 				Class<?> expectedType = readTypes.get(propName);
 				if(expectedType == null) {
-					throw new AspectranRuntimeException("Illegal overloaded setter method with ambiguous type for property " + propName + " in class " + firstMethod.getDeclaringClass() + ".  This breaks the JavaBeans " + "specification and can cause unpredicatble results.");
+					throw new AspectranRuntimeException("Illegal overloaded setter method with ambiguous type for property " +
+							propName + " in class " + firstMethod.getDeclaringClass() + ".  This breaks the JavaBeans " +
+							"specification and can cause unpredicatble results.");
 				} else {
 					Iterator<Method> methods = setters.iterator();
 					Method setter = null;
@@ -143,7 +145,9 @@ public class BeanDescriptor {
 						}
 					}
 					if(setter == null) {
-						throw new AspectranRuntimeException("Illegal overloaded setter method with ambiguous type for property " + propName + " in class " + firstMethod.getDeclaringClass() + ".  This breaks the JavaBeans " + "specification and can cause unpredicatble results.");
+						throw new AspectranRuntimeException("Illegal overloaded setter method with ambiguous type for property " +
+								propName + " in class " + firstMethod.getDeclaringClass() + ".  This breaks the JavaBeans " +
+								"specification and can cause unpredicatble results.");
 					}
 					addWriteMethod(propName, setter);
 				}
@@ -161,8 +165,9 @@ public class BeanDescriptor {
 	 * class and any superclass. We use this method, instead of the simpler
 	 * Class.readMethods(), because we want to look for private methods as
 	 * well.
-	 * @param cls The class
-	 * @return An array containing all methods in this class
+	 *
+	 * @param cls the class
+	 * @return an array containing all methods in this class
 	 */
 	private Method[] getAllMethods(Class<?> cls) {
 		Map<String, Method> uniqueMethods = new HashMap<>();
@@ -197,7 +202,6 @@ public class BeanDescriptor {
 					if(canAccessPrivateMethods()) {
 						ReflectionUtils.makeAccessible(currentMethod);
 					}
-
 					uniqueMethods.put(signature, currentMethod);
 				}
 			}
@@ -210,7 +214,7 @@ public class BeanDescriptor {
 		Class<?>[] parameters = method.getParameterTypes();
 
 		for(int i = 0; i < parameters.length; i++) {
-			if (i == 0) {
+			if(i == 0) {
 				sb.append(':');
 			} else {
 				sb.append(',');
@@ -253,13 +257,13 @@ public class BeanDescriptor {
 	 * Gets the setter for a property as a Method object.
 	 *
 	 * @param propertyName the name of the property
-	 * @return The Method
-	 * @throws NoSuchMethodException the no such method exception
+	 * @return the setter method
+	 * @throws NoSuchMethodException when a setter method cannot be found
 	 */
 	public Method getSetter(String propertyName) throws NoSuchMethodException {
 		Method method = writeMethods.get(propertyName);
 		if(method == null) {
-			throw new NoSuchMethodException("There is no WRITEABLE property named '" + propertyName + "' in class '" + className + "'");
+			throw new NoSuchMethodException("There is no WRITEABLE property named '" + propertyName + "' in class '" + className + "'.");
 		}
 		return method;
 	}
@@ -274,7 +278,7 @@ public class BeanDescriptor {
 	public Method getGetter(String propertyName) throws NoSuchMethodException {
 		Method method = readMethods.get(propertyName);
 		if(method == null) {
-			throw new NoSuchMethodException("There is no READABLE property named '" + propertyName + "' in class '" + className + "'");
+			throw new NoSuchMethodException("There is no READABLE property named '" + propertyName + "' in class '" + className + "'.");
 		}
 		return method;
 	}
@@ -289,7 +293,7 @@ public class BeanDescriptor {
 	public Class<?> getSetterType(String propertyName) throws NoSuchMethodException {
 		Class<?> clazz = writeType.get(propertyName);
 		if(clazz == null) {
-			throw new NoSuchMethodException("There is no WRITEABLE property named '" + propertyName + "' in class '" + className + "'");
+			throw new NoSuchMethodException("There is no WRITEABLE property named '" + propertyName + "' in class '" + className + "'.");
 		}
 		return clazz;
 	}
@@ -304,13 +308,13 @@ public class BeanDescriptor {
 	public Class<?> getGetterType(String propertyName) throws NoSuchMethodException {
 		Class<?> clazz = readTypes.get(propertyName);
 		if(clazz == null) {
-			throw new NoSuchMethodException("There is no READABLE property named '" + propertyName + "' in class '" + className + "'");
+			throw new NoSuchMethodException("There is no READABLE property named '" + propertyName + "' in class '" + className + "'.");
 		}
 		return clazz;
 	}
 
 	/**
-	 * Gets an array of the readable properties for an object
+	 * Gets an array of the readable properties for an object.
 	 * 
 	 * @return The array
 	 */
@@ -319,7 +323,7 @@ public class BeanDescriptor {
 	}
 
 	/**
-	 * Gets an array of the writeable properties for an object
+	 * Gets an array of the writeable properties for an object.
 	 * 
 	 * @return The array
 	 */
@@ -328,7 +332,7 @@ public class BeanDescriptor {
 	}
 
 	/**
-	 * Check to see if a class has a writeable property by name
+	 * Check to see if a class has a writeable property by name.
 	 * 
 	 * @param propertyName the name of the property to check
 	 * @return true if the object has a writeable property by the name
@@ -338,7 +342,7 @@ public class BeanDescriptor {
 	}
 
 	/**
-	 * Check to see if a class has a readable property by name
+	 * Check to see if a class has a readable property by name.
 	 * 
 	 * @param propertyName the name of the property to check
 	 * @return true if the object has a readable property by the name
@@ -348,7 +352,7 @@ public class BeanDescriptor {
 	}
 	
 	/**
-	 * Gets the distinct method names.
+	 * Gets the class methods' names that is unique.
 	 *
 	 * @return the distinct method names
 	 */
@@ -358,8 +362,8 @@ public class BeanDescriptor {
 
 	/**
 	 * Gets an instance of ClassDescriptor for the specified class.
-	 * @param clazz The class for which to lookup the method cache.
-	 * @return The method cache for the class
+	 * @param clazz the class for which to lookup the method cache.
+	 * @return the method cache for the class
 	 */
 	public static BeanDescriptor getInstance(Class<?> clazz) {
 		if(cacheEnabled) {

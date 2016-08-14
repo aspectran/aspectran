@@ -38,7 +38,7 @@ public abstract class ClassUtils {
 	/**
 	 * Map with primitive type as key and corresponding wrapper type as value,
 	 * for example: int.class -> Integer.class.
-	 * */
+	 */
 	private static final Map<Class<?>, Class<?>> primitiveTypeToWrapperMap  = new HashMap<>(17);
 
 	static {
@@ -147,6 +147,7 @@ public abstract class ClassUtils {
 	 * Determine if the given type is assignable from the given value,
 	 * assuming setting by reflection. Considers primitive wrapper classes
 	 * as assignable to the corresponding primitive types.
+	 *
 	 * @param type	the target type
 	 * @param value the value that should be assigned to the type
 	 * @return if the type is assignable from the value
@@ -158,9 +159,9 @@ public abstract class ClassUtils {
 	/**
 	 * Gets the wrapper object class for the given primitive type class.
 	 * For example, passing <code>boolean.class</code> returns <code>Boolean.class</code>
+	 *
 	 * @param primitiveType the primitive type class for which a match is to be found
-	 * @return the wrapper type associated with the given primitive
-	 * or null if no match is found
+	 * @return the wrapper type associated with the given primitive or null if no match is found
 	 */
 	public static Class<?> getPrimitiveWrapper(Class<?> primitiveType) {
 		return primitiveTypeToWrapperMap.get(primitiveType);
@@ -177,8 +178,7 @@ public abstract class ClassUtils {
 	 * <b>null</b>, the return value is <b>null</b>.</p>
 	 *
 	 * @param cls the class to convert, may be <b>null</b>
-	 * @return the corresponding primitive type if <code>cls</code> is a
-	 * wrapper class, <b>null</b> otherwise
+	 * @return the corresponding primitive type if <code>cls</code> is a wrapper class, <b>null</b> otherwise
 	 */
 	public static Class<?> wrapperToPrimitive(Class<?> cls) {
 		return primitiveWrapperTypeMap.get(cls);

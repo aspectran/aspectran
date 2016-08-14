@@ -171,7 +171,6 @@ public class MethodUtils {
 	 * @param object invoke method on this object
 	 * @param methodName get method with this name
 	 * @return The value returned by the invoked method
-	 *
 	 * @throws NoSuchMethodException if there is no such accessible method
 	 * @throws InvocationTargetException wraps an exception thrown by the method invoked
 	 * @throws IllegalAccessException if the requested method is not accessible
@@ -201,11 +200,9 @@ public class MethodUtils {
 	 * @param methodName get method with this name
 	 * @param arg use this argument
 	 * @return The value returned by the invoked method
-	 *
 	 * @throws NoSuchMethodException if there is no such accessible method
 	 * @throws InvocationTargetException wraps an exception thrown by the method invoked
-	 * @throws IllegalAccessException if the requested method is not accessible
-	 *  via reflection
+	 * @throws IllegalAccessException if the requested method is not accessible via reflection
 	 */
 	public static Object invokeMethod(Object object, String methodName, Object arg)
 			throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
@@ -233,12 +230,9 @@ public class MethodUtils {
 	 * @param methodName get method with this name
 	 * @param args use these arguments - treat null as empty array
 	 * @return The value returned by the invoked method
-	 *
 	 * @throws NoSuchMethodException if there is no such accessible method
-	 * @throws InvocationTargetException wraps an exception thrown by the
-	 *  method invoked
-	 * @throws IllegalAccessException if the requested method is not accessible
-	 *  via reflection
+	 * @throws InvocationTargetException wraps an exception thrown by the method invoked
+	 * @throws IllegalAccessException if the requested method is not accessible via reflection
 	 */
 	public static Object invokeMethod(Object object, String methodName, Object[] args)
 			throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
@@ -282,12 +276,9 @@ public class MethodUtils {
 	 * @param args use these arguments - treat null as empty array
 	 * @param paramTypes match these parameters - treat null as empty array
 	 * @return The value returned by the invoked method
-	 *
 	 * @throws NoSuchMethodException if there is no such accessible method
-	 * @throws InvocationTargetException wraps an exception thrown by the
-	 *  method invoked
-	 * @throws IllegalAccessException if the requested method is not accessible
-	 *  via reflection
+	 * @throws InvocationTargetException wraps an exception thrown by the method invoked
+	 * @throws IllegalAccessException if the requested method is not accessible via reflection
 	 */
 	public static Object invokeMethod(Object object, String methodName, Object[] args, Class<?>[] paramTypes)
 			throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
@@ -316,12 +307,9 @@ public class MethodUtils {
 	 * @param methodName get method with this name
 	 * @param arg use this argument
 	 * @return The value returned by the invoked method
-	 *
 	 * @throws NoSuchMethodException if there is no such accessible method
-	 * @throws InvocationTargetException wraps an exception thrown by the
-	 *  method invoked
-	 * @throws IllegalAccessException if the requested method is not accessible
-	 *  via reflection
+	 * @throws InvocationTargetException wraps an exception thrown by the method invoked
+	 * @throws IllegalAccessException if the requested method is not accessible via reflection
 	 */
 	public static Object invokeExactMethod(Object object, String methodName, Object arg)
 			throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
@@ -339,12 +327,9 @@ public class MethodUtils {
 	 * @param methodName get method with this name
 	 * @param args use these arguments - treat null as empty array
 	 * @return The value returned by the invoked method
-	 *
 	 * @throws NoSuchMethodException if there is no such accessible method
-	 * @throws InvocationTargetException wraps an exception thrown by the
-	 *  method invoked
-	 * @throws IllegalAccessException if the requested method is not accessible
-	 *  via reflection
+	 * @throws InvocationTargetException wraps an exception thrown by the method invoked
+	 * @throws IllegalAccessException if the requested method is not accessible via reflection
 	 */
 	public static Object invokeExactMethod(Object object, String methodName, Object[] args)
 			throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
@@ -380,12 +365,9 @@ public class MethodUtils {
 	 * @param args use these arguments - treat null as empty array
 	 * @param paramTypes match these parameters - treat null as empty array
 	 * @return The value returned by the invoked method
-	 *
 	 * @throws NoSuchMethodException if there is no such accessible method
-	 * @throws InvocationTargetException wraps an exception thrown by the
-	 *  method invoked
-	 * @throws IllegalAccessException if the requested method is not accessible
-	 *  via reflection
+	 * @throws InvocationTargetException wraps an exception thrown by the method invoked
+	 * @throws IllegalAccessException if the requested method is not accessible via reflection
 	 */
 	public static Object invokeExactMethod(Object object, String methodName, Object[] args, Class<?>[] paramTypes)
 			throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
@@ -417,12 +399,9 @@ public class MethodUtils {
 	 * @param args use these arguments - treat null as empty array
 	 * @param paramTypes match these parameters - treat null as empty array
 	 * @return The value returned by the invoked method
-	 *
 	 * @throws NoSuchMethodException if there is no such accessible method
-	 * @throws InvocationTargetException wraps an exception thrown by the
-	 *  method invoked
-	 * @throws IllegalAccessException if the requested method is not accessible
-	 *  via reflection
+	 * @throws InvocationTargetException wraps an exception thrown by the method invoked
+	 * @throws IllegalAccessException if the requested method is not accessible via reflection
 	 */
 	public static Object invokeExactStaticMethod(Class<?> objectClass, String methodName, Object[] args, Class<?>[] paramTypes)
 			throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
@@ -463,12 +442,9 @@ public class MethodUtils {
 	 * @param methodName get method with this name
 	 * @param arg use this argument
 	 * @return The value returned by the invoked method
-	 *
 	 * @throws NoSuchMethodException if there is no such accessible method
-	 * @throws InvocationTargetException wraps an exception thrown by the
-	 *  method invoked
-	 * @throws IllegalAccessException if the requested method is not accessible
-	 *  via reflection
+	 * @throws InvocationTargetException wraps an exception thrown by the method invoked
+	 * @throws IllegalAccessException if the requested method is not accessible via reflection
 	 */
 	public static Object invokeStaticMethod(Class<?> objectClass, String methodName, Object arg)
 			throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
@@ -496,12 +472,9 @@ public class MethodUtils {
 	 * @param methodName get method with this name
 	 * @param args use these arguments - treat null as empty array
 	 * @return The value returned by the invoked method
-	 *
 	 * @throws NoSuchMethodException if there is no such accessible method
-	 * @throws InvocationTargetException wraps an exception thrown by the
-	 *  method invoked
-	 * @throws IllegalAccessException if the requested method is not accessible
-	 *  via reflection
+	 * @throws InvocationTargetException wraps an exception thrown by the method invoked
+	 * @throws IllegalAccessException if the requested method is not accessible via reflection
 	 */
 	public static Object invokeStaticMethod(Class<?> objectClass, String methodName, Object[] args)
 			throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
@@ -520,8 +493,7 @@ public class MethodUtils {
 	 * <p>Invoke a named static method whose parameter type matches the object type.</p>
 	 *
 	 * <p>The behaviour of this method is less deterministic
-	 * than {@link
-	 * #invokeExactStaticMethod(Class objectClass,String methodName,Object[] args,Class[] paramTypes)}.
+	 * than {@link #invokeExactStaticMethod(Class objectClass,String methodName,Object[] args,Class[] paramTypes)}.
 	 * It loops through all methods with names that match
 	 * and then executes the first it finds with compatable parameters.</p>
 	 *
@@ -534,12 +506,9 @@ public class MethodUtils {
 	 * @param args use these arguments - treat null as empty array
 	 * @param paramTypes match these parameters - treat null as empty array
 	 * @return The value returned by the invoked method
-	 *
 	 * @throws NoSuchMethodException if there is no such accessible method
-	 * @throws InvocationTargetException wraps an exception thrown by the
-	 *  method invoked
-	 * @throws IllegalAccessException if the requested method is not accessible
-	 *  via reflection
+	 * @throws InvocationTargetException wraps an exception thrown by the method invoked
+	 * @throws IllegalAccessException if the requested method is not accessible via reflection
 	 */
 	public static Object invokeStaticMethod(Class<?> objectClass, String methodName, Object[] args, Class<?>[] paramTypes)
 			throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
@@ -569,12 +538,9 @@ public class MethodUtils {
 	 * @param methodName get method with this name
 	 * @param arg use this argument
 	 * @return The value returned by the invoked method
-	 *
 	 * @throws NoSuchMethodException if there is no such accessible method
-	 * @throws InvocationTargetException wraps an exception thrown by the
-	 *  method invoked
-	 * @throws IllegalAccessException if the requested method is not accessible
-	 *  via reflection
+	 * @throws InvocationTargetException wraps an exception thrown by the method invoked
+	 * @throws IllegalAccessException if the requested method is not accessible via reflection
 	 */
 	public static Object invokeExactStaticMethod(Class<?> objectClass, String methodName, Object arg)
 			throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
@@ -592,12 +558,9 @@ public class MethodUtils {
 	 * @param methodName get method with this name
 	 * @param args use these arguments - treat null as empty array
 	 * @return The value returned by the invoked method
-	 *
 	 * @throws NoSuchMethodException if there is no such accessible method
-	 * @throws InvocationTargetException wraps an exception thrown by the
-	 *  method invoked
-	 * @throws IllegalAccessException if the requested method is not accessible
-	 *  via reflection
+	 * @throws InvocationTargetException wraps an exception thrown by the method invoked
+	 * @throws IllegalAccessException if the requested method is not accessible via reflection
 	 */
 	public static Object invokeExactStaticMethod(Class<?> objectClass, String methodName, Object[] args)
 			throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
@@ -649,7 +612,7 @@ public class MethodUtils {
 	 *
 	 * @param clazz get method from this class
 	 * @param methodName get method with this name
-	 * @return The accessible method
+	 * @return the accessible method
 	 */
 	public static Method getAccessibleMethod(Class<?> clazz, String methodName) {
 		return getAccessibleMethod(clazz, methodName, EMPTY_CLASS_PARAMETERS);
@@ -665,7 +628,7 @@ public class MethodUtils {
 	 * @param clazz get method from this class
 	 * @param methodName get method with this name
 	 * @param paramType taking this type of parameter
-	 * @return The accessible method
+	 * @return the accessible method
 	 */
 	public static Method getAccessibleMethod(Class<?> clazz, String methodName, Class<?> paramType) {
 		Class<?>[] paramTypes = { paramType };
@@ -682,7 +645,7 @@ public class MethodUtils {
 	 * @param clazz get method from this class
 	 * @param methodName get method with this name
 	 * @param paramTypes with these parameters types
-	 * @return The accessible method
+	 * @return the accessible method
 	 */
 	public static Method getAccessibleMethod(Class<?> clazz, String methodName, Class<?>[] paramTypes) {
 		try {
@@ -708,8 +671,8 @@ public class MethodUtils {
      * reflection) that implements the specified Method.  If no such method
      * can be found, return <code>null</code>.</p>
      *
-     * @param method The method that we wish to call
-     * @return The accessible method
+     * @param method the method that we wish to call
+     * @return the accessible method
      */
     public static Method getAccessibleMethod(Method method) {
         // Make sure we have a method to check
@@ -1004,10 +967,10 @@ public class MethodUtils {
 		/**
 		 * The sole constructor.
 		 *
-		 * @param cls  the class to reflect, must not be null
-		 * @param methodName  the method name to obtain
+		 * @param cls the class to reflect, must not be null
+		 * @param methodName the method name to obtain
 		 * @param paramTypes the array of classes representing the paramater types
-		 * @param exact whether the match has to be exact.
+		 * @param exact whether the match has to be exact
 		 */
 		public MethodDescriptor(Class<?> cls, String methodName, Class<?>[] paramTypes, boolean exact) {
 			if(cls == null) {
@@ -1031,7 +994,7 @@ public class MethodUtils {
 		/**
 		 * Checks for equality.
 		 * @param obj object to be tested for equality
-		 * @return true, if the object describes the same Method.
+		 * @return true, if the object describes the same Method
 		 */
 		@Override
 		public boolean equals(Object obj) {
@@ -1054,7 +1017,7 @@ public class MethodUtils {
 		 * hashcodes are different, the objects are different. If the
 		 * hashcodes are the same, need to use the equals method to
 		 * determine equality.
-		 * @return the string length of method name.
+		 * @return the string length of method name
 		 */
 		@Override
 		public int hashCode() {

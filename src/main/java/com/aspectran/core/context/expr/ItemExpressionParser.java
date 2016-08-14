@@ -17,6 +17,7 @@ package com.aspectran.core.context.expr;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -32,8 +33,8 @@ import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.type.ItemType;
 import com.aspectran.core.context.rule.type.ItemValueType;
-import com.aspectran.core.util.apon.VariableParameters;
 import com.aspectran.core.util.apon.Parameters;
+import com.aspectran.core.util.apon.VariableParameters;
 
 /**
  * The Class ItemExpressionParser.
@@ -64,7 +65,7 @@ public class ItemExpressionParser extends TokenExpressionParser implements ItemE
 			valueMap.put(itemRule.getName(), evaluate(itemRule));
 		}
 	}
-	
+
 	@Override
 	@SuppressWarnings("unchecked")
 	public <T> T evaluate(ItemRule itemRule) {
@@ -90,7 +91,45 @@ public class ItemExpressionParser extends TokenExpressionParser implements ItemE
 		
 		return (T)value;
 	}
-	
+
+	@Override
+	public String[] evaluateAsStringArray(ItemRule itemRule) {
+		ItemType itemType = itemRule.getType();
+		ItemValueType valueType = itemRule.getValueType();
+		String name = itemRule.getName();
+
+		if(itemType == ItemType.SINGULAR) {
+			Token[] tokens = itemRule.getTokens();
+			Object value = evaluate(name, tokens, valueType);
+			if(value != null) {
+				return new String[] { value.toString() };
+			}
+		} else if(itemType == ItemType.ARRAY) {
+			Object[] values = evaluateAsArray(name, itemRule.getTokensList(), valueType);
+			if(values != null) {
+				return Arrays.stream(values).map(Object::toString).toArray(String[]::new);
+			}
+		} else if(itemType == ItemType.LIST) {
+			List<Object> list = evaluateAsList(name, itemRule.getTokensList(), valueType);
+			if(list != null) {
+				return Arrays.stream(list.toArray()).map(Object::toString).toArray(String[]::new);
+			}
+		} else if(itemType == ItemType.SET) {
+			Set<Object> set = evaluateAsSet(name, itemRule.getTokensList(), valueType);
+			if(set != null) {
+				return Arrays.stream(set.toArray()).map(Object::toString).toArray(String[]::new);
+			}
+		} else if(itemType == ItemType.MAP) {
+			Map<String, Object> map = evaluateAsMap(name, itemRule.getTokensMap(), valueType);
+			return new String[] { map.toString() };
+		} else if(itemType == ItemType.PROPERTIES) {
+			Properties properties = evaluateAsProperties(name, itemRule.getTokensMap(), valueType);
+			return new String[] { properties.toString() };
+		}
+
+		return null;
+	}
+
 	private Object evaluate(String parameterName, Token[] tokens, ItemValueType valueType) {
 		Object value = evaluate(parameterName, tokens);
 		

@@ -166,13 +166,13 @@ public class PointcutRule {
 				pointcutType = PointcutType.resolve(type);
 				
 				if(pointcutType != PointcutType.SIMPLE_TRIGGER && pointcutType != PointcutType.CRON_TRIGGER)
-					throw new IllegalArgumentException("Unknown pointcut-type '" + type + "'. Scheduler's pointcut-type must be 'simpleTrigger' or 'cronTrigger'.");
+					throw new IllegalArgumentException("Unknown pointcut type '" + type + "'. Pointcut type for Scheduler must be 'simpleTrigger' or 'cronTrigger'.");
 			}
 			
 			if(pointcutType == PointcutType.SIMPLE_TRIGGER && simpleTriggerParameters == null)
-				throw new IllegalArgumentException("Not specified 'simpleTrigger'. Scheduler's pointcut-type must be 'simpleTrigger' or 'cronTrigger'.");
+				throw new IllegalArgumentException("Not specified 'simpleTrigger'.");
 			else if(pointcutType == PointcutType.CRON_TRIGGER && cronTriggerParameters == null)
-				throw new IllegalArgumentException("Not specified 'cronTrigger'. Scheduler's pointcut-type must be 'simpleTrigger' or 'cronTrigger'.");
+				throw new IllegalArgumentException("Not specified 'cronTrigger'.");
 			
 			pointcutRule = new PointcutRule(pointcutType);
 			
@@ -192,7 +192,7 @@ public class PointcutRule {
 				if(type != null) {
 					pointcutType = PointcutType.resolve(type);
 					if(pointcutType == null)
-						throw new IllegalArgumentException("Unknown pointcut-type '" + type + "'. Translet's pointcut-type must be 'wildcard' or 'regexp'.");
+						throw new IllegalArgumentException("Unknown pointcut type '" + type + "'. Pointcut type for Translet must be 'wildcard' or 'regexp'.");
 				}
 				
 				pointcutRule = new PointcutRule(pointcutType);

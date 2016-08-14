@@ -15,7 +15,7 @@
  */
 package com.aspectran.web.activity.request.multipart;
 
-import com.aspectran.core.util.FileUtils;
+import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.SystemUtils;
 
 /**
@@ -81,7 +81,7 @@ public class MultipartFormDataParserFactory {
 	 * @param maxRequestSize the maximum size of the request
 	 */
 	public void setMaxRequestSize(String maxRequestSize) {
-		this.maxRequestSize = FileUtils.formattedSizeToBytes(maxRequestSize, -1);
+		this.maxRequestSize = StringUtils.convertToMachineFriendlyByteSize(maxRequestSize);
 	}
 
 	/**

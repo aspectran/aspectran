@@ -15,27 +15,20 @@
  */
 package com.aspectran.core.util;
 
-import java.security.AccessControlException;
+import org.junit.Test;
 
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
+public class StringUtilsTest {
 
-/**
- * Helpers for java.lang.System.
- */
-public class SystemUtils {
-	
-	private static final Log log = LogFactory.getLog(SystemUtils.class);
-	
-	public static String getProperty(String name) {
-		try {
-			return System.getProperty(name);
-		} catch(AccessControlException ex) {
-			log.info(String.format(
-					"Caught AccessControlException when accessing system property [%s]; its value will be returned [null]. Reason: %s",
-					name, ex.getMessage()));
-		}
-		return null;
-	}
-	
+    @Test
+    public void convertToHumanFriendlyByteSize() {
+        for(long l : new long[] {1L, 1024L, 10000L, 1234567890L})
+            System.out.println(l + " = " + StringUtils.convertToHumanFriendlyByteSize(l));
+    }
+
+    @Test
+    public void convertToMachineFriendlyByteSize() {
+        for(String s : "1K, 1KB, 10M, 10MB, 1.2 GB, 2.4GB, 3.75MB, 1.28KB, 1024, 1024B".split(","))
+            System.out.println(s.trim() + " = " + StringUtils.convertToMachineFriendlyByteSize(s));
+    }
+
 }
