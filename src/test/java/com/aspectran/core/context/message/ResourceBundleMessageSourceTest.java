@@ -28,7 +28,7 @@ public class ResourceBundleMessageSourceTest {
     public void testMessage() throws Exception {
         ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
         messageSource.setDefaultEncoding("UTF-8");
-        messageSource.setBasename("locale.Messages");
+        messageSource.setBasename("locale.messages");
 
         Object[] args = new Object[] {"Aspectran"};
         String msg1 = messageSource.getMessage("hello", args, Locale.ENGLISH);
