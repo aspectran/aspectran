@@ -20,16 +20,6 @@ echo "Java detected: ${VER}"
 # Some actions, like analyzing the code (Coveralls) and uploading
 # artifacts on a Maven repository, should only be made for one version.
 
-# If the version is 1.6, then perform the following actions.
-# 1. Upload artifacts to Sonatype.
-# 2. Use -q option to only display Maven errors and warnings.
-# 3. Use --settings to force the usage of our "settings.xml" file.
-
-# If the version is 1.7, then perform the following actions.
-# 1. Notify Coveralls.
-# 2. Deploy site
-# 3. Use -q option to only display Maven errors and warnings.
-
 if [ "$aspectran_repo" == "https://github.com/aspectran/aspectran.git" ] && [ "$TRAVIS_PULL_REQUEST" == "false" ] && [ "$TRAVIS_BRANCH" == "master" ] && [[ "$commit_message" != *"[maven-release-plugin]"* ]]; then
   if [ $VER == "18" ]; then
     # mvn clean deploy -Dmaven.test.skip=true -q --settings ./travis/settings.xml
