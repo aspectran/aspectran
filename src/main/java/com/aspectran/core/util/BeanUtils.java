@@ -325,7 +325,8 @@ public class BeanUtils {
 						Method method = cd.getGetter(name);
 
 						if(method == null) {
-							throw new NoSuchMethodException("No GET method for property " + name + " on instance of " + object.getClass().getName());
+							throw new NoSuchMethodException("No GET method for property " + name +
+									" on instance of " + object.getClass().getName());
 						}
 						
 						try {
@@ -341,9 +342,11 @@ public class BeanUtils {
 			throw e;
 		} catch(Throwable t) {
 			if(object == null) {
-				throw new InvocationTargetException(t, "Could not get property '" + name + "' from null reference. Cause: " + t.toString());
+				throw new InvocationTargetException(t, "Could not get property '" + name +
+						"' from null reference. Cause: " + t.toString());
 			} else {
-				throw new InvocationTargetException(t, "Could not get property '" + name + "' from " + object.getClass().getName() + ". Cause: " + t.toString());
+				throw new InvocationTargetException(t, "Could not get property '" + name +
+						"' from " + object.getClass().getName() + ". Cause: " + t.toString());
 			}
 		}
 	}
@@ -362,7 +365,8 @@ public class BeanUtils {
 					Method method = cd.getSetter(name);
 
 					if(method == null) {
-						throw new NoSuchMethodException("No SET method for property " + name + " on instance of " + object.getClass().getName());
+						throw new NoSuchMethodException("No SET method for property " + name +
+								" on instance of " + object.getClass().getName());
 					}
 					
 					Object[] params = new Object[] { value };
@@ -387,9 +391,11 @@ public class BeanUtils {
 			}
 			
 			if(object == null) {
-				throw new InvocationTargetException(t, "Could not set property '" + name + "' to value '" + value + "' for null reference. Cause: " + t.toString());
+				throw new InvocationTargetException(t, "Could not set property '" + name + "' to value '" +
+						value + "' for null reference. Cause: " + t.toString());
 			} else {
-				throw new InvocationTargetException(t, "Could not set property '" + name + "' to value '" + value + "' for " + object.getClass().getName() + ". Cause: " + t.toString());
+				throw new InvocationTargetException(t, "Could not set property '" + name + "' to value '" + value +
+						"' for " + object.getClass().getName() + ". Cause: " + t.toString());
 			}
 		}
 	}
@@ -429,7 +435,8 @@ public class BeanUtils {
 			} else if(list instanceof short[]) {
 				value = ((short[])list)[index];
 			} else {
-				throw new IllegalArgumentException("The '" + name + "' property of the " + object.getClass().getName() + " class is not a List or Array.");
+				throw new IllegalArgumentException("The '" + name + "' property of the " +
+						object.getClass().getName() + " class is not a List or Array.");
 			}
 
 			return value;
@@ -475,7 +482,8 @@ public class BeanUtils {
 			} else if(list instanceof short[]) {
 				value = Short.class;
 			} else {
-				throw new IllegalArgumentException("The '" + name + "' property of the " + object.getClass().getName() + " class is not a List or Array.");
+				throw new IllegalArgumentException("The '" + name + "' property of the " +
+						object.getClass().getName() + " class is not a List or Array.");
 			}
 
 			return value;
@@ -515,7 +523,8 @@ public class BeanUtils {
 			} else if(list instanceof short[]) {
 				((short[])list)[index] = (Short)value;
 			} else {
-				throw new IllegalArgumentException("The '" + name + "' property of the " + object.getClass().getName() + " class is not a List or Array.");
+				throw new IllegalArgumentException("The '" + name + "' property of the " +
+						object.getClass().getName() + " class is not a List or Array.");
 			}
 		} catch(InvocationTargetException e) {
 			throw e;
@@ -527,8 +536,8 @@ public class BeanUtils {
 	/**
 	 * Examines a Throwable object and gets it's root cause
 	 * 
-	 * @param t - the exception to examine
-	 * @return The root cause
+	 * @param t the exception to examine
+	 * @return the root cause
 	 */
 	private static Throwable unwrapThrowable(Throwable t) {
 		Throwable t2 = t;

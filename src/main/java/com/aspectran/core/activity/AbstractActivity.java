@@ -204,7 +204,7 @@ public abstract class AbstractActivity implements Activity {
 			throw new TransletInstantiationException(transletImplementClass, e);
 		}
 	}
-	
+
 	/**
 	 * Gets the request scope.
 	 *

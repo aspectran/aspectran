@@ -34,7 +34,7 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 
 import com.aspectran.core.activity.request.parameter.FileParameter;
 import com.aspectran.core.adapter.RequestAdapter;
-import com.aspectran.core.util.FileUtils;
+import com.aspectran.core.util.FilenameUtils;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
@@ -207,7 +207,7 @@ public class MultipartFormDataParser {
 						if(fileName == null || StringUtils.isEmpty(fileName))
 							continue;
 						
-						boolean valid = FileUtils.isValidFileExtension(fileName, allowedFileExtensions, deniedFileExtensions);
+						boolean valid = FilenameUtils.isValidFileExtension(fileName, allowedFileExtensions, deniedFileExtensions);
 						if(!valid)
 							continue;
 

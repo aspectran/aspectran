@@ -108,16 +108,15 @@ public abstract class AbstractRequest {
 	}
 
 	public void fillPrameterMap(Map<String, Object> params) {
-		if(this.parameterMap == null)
-			return;
-
-		for(Map.Entry<String, String[]> entry : this.parameterMap.entrySet()) {
-			String name = entry.getKey();
-			String[] values = entry.getValue();
-			if(values.length == 1) {
-				params.put(name, values[0]);
-			} else {
-				params.put(name, values);
+		if(this.parameterMap != null) {
+			for(Map.Entry<String, String[]> entry : this.parameterMap.entrySet()) {
+				String name = entry.getKey();
+				String[] values = entry.getValue();
+				if(values.length == 1) {
+					params.put(name, values[0]);
+				} else {
+					params.put(name, values);
+				}
 			}
 		}
 	}

@@ -57,7 +57,7 @@ public class BeanParameters extends AbstractParameters {
 		lazyInit = new ParameterDefinition("lazyInit", ParameterValueType.BOOLEAN);
 		important = new ParameterDefinition("important", ParameterValueType.BOOLEAN);
 		constructor = new ParameterDefinition("constructor", ConstructorParameters.class);
-		properties = new ParameterDefinition("property", ItemHolderParameters.class);
+		properties = new ParameterDefinition("properties", ItemHolderParameters.class);
 		filter = new ParameterDefinition("filter", FilterParameters.class);
 		
 		parameterDefinitions = new ParameterDefinition[] {

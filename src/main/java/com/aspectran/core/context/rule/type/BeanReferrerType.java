@@ -26,7 +26,7 @@ public enum BeanReferrerType {
 	BEAN_ACTION_RULE("beanActionRule"),
 	BEAN_RULE("beanRule"),
 	TOKEN("token"),
-	TEMPLATE_RULE("template");
+	TEMPLATE_RULE("templateRule");
 
 	private final String alias;
 

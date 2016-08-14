@@ -59,7 +59,7 @@ public class AspectranRuntimeException extends RuntimeException {
 	/**
 	 * Constructs a AspectranCheckedException with the wrapped exception.
 	 * 
-	 * @param cause The real cause of the exception
+	 * @param cause the real cause of the exception
 	 */
 	public AspectranRuntimeException(Throwable cause) {
 		super(cause);

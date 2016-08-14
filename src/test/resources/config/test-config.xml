@@ -1,5 +1,5 @@
 <!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran Configuration 2.0//EN"
-                           "http://aspectran.github.io/dtd/aspectran-2.0.dtd">
+                           "http://aspectran.github.io/dtd/aspectran-2.dtd">
 
 <aspectran>
 	
@@ -12,7 +12,7 @@
 	</settings>
 
 	<bean id="freemarkerConfigurationFactory" class="com.aspectran.core.context.template.engine.freemarker.FreeMarkerConfigurationFactoryBean">
-		<property>
+		<properties>
 			<item name="freemarkerSettings" type="properties">
 				<value name="incompatible_improvements">2.3.23</value>
 				<value name="template_exception_handler">rethrow</value>
@@ -37,14 +37,14 @@
 					desuffixes: ","
 				}
 			</item>
-		</property>
+		</properties>
 	</bean>
 
 	<bean id="freemarker" class="com.aspectran.core.context.template.engine.freemarker.FreeMarkerTemplateEngine">
 		<constructor>
-			<argument>
+			<arguments>
 				<item><reference bean="freemarkerConfigurationFactory"/></item>
-			</argument>
+			</arguments>
 		</constructor>
 	</bean>
 
@@ -52,9 +52,9 @@
 
 	<bean id="pebble" class="com.aspectran.core.context.template.engine.pebble.PebbleTemplateEngine">
 		<constructor>
-			<argument>
+			<arguments>
 				<item><reference bean="pebbleConfigurationFactory"/></item>
-			</argument>
+			</arguments>
 		</constructor>
 	</bean>
 
@@ -63,10 +63,10 @@
 			두 개의 입력 값과 Aspectran 내장 템플릿 엔진을 사용해서 텍스트 형식으로 출력합니다.
 		</description>
 		<request>
-			<attribute>
+			<attributes>
 				<item name="input-1">${input-1:12345}</item>
 				<item name="input-2">${input-2:67890}</item>
-			</attribute>
+			</attributes>
 		</request>
 		<transform type="transform/text" contentType="text/plain">
 			<template engine="token">
@@ -83,10 +83,10 @@
 			두 개의 입력 값과 Freemarker 템플릿 엔진을 사용해서 텍스트 형식으로 출력합니다.
 		</description>
 		<request>
-			<attribute>
+			<attributes>
 				<item name="input_1">${input_1:12345}</item>
 				<item name="input_2">${input_2:67890}</item>
-			</attribute>
+			</attributes>
 		</request>
 		<transform type="transform/text">
 			<template engine="freemarker">
@@ -103,10 +103,10 @@
 			두 개의 입력 값과 Pebble 템플릿 엔진을 사용해서 텍스트 형식으로 출력합니다.
 		</description>
 		<request>
-			<attribute>
+			<attributes>
 				<item name="input_1">${input_1:12345}</item>
 				<item name="input_2">${input_2:67890}</item>
-			</attribute>
+			</attributes>
 		</request>
 		<transform type="transform/text">
 			<template engine="pebble">
@@ -157,10 +157,10 @@
 			Freemarker 템플릿 엔진을 사용해서 간단한 SQL문을 생성하는 예제입니다.
 		</description>
 		<request>
-			<attribute>
+			<attributes>
 				<item name="name">${name:Jane}</item>
 				<item name="email">${email:jane@mail.com}</item>
-			</attribute>
+			</attributes>
 		</request>
 		<transform type="transform/text" template="sampleSql"/>
 	</translet>

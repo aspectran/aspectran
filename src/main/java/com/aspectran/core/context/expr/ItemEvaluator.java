@@ -32,5 +32,7 @@ public interface ItemEvaluator {
 	void evaluate(ItemRuleMap itemRuleMap, Map<String, Object> valueMap);
 	
 	<T> T evaluate(ItemRule itemRule);
+
+	String[] evaluateAsStringArray(ItemRule itemRule);
 	
 }

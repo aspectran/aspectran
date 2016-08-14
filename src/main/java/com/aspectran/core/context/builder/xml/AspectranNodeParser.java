@@ -157,7 +157,7 @@ public class AspectranNodeParser {
 			EnvironmentRule environmentRule = EnvironmentRule.newInstance(profile, null);
 			assistant.pushObject(environmentRule);
         });
-		parser.addNodelet("/aspectran/environment/property", (node, attributes, text) -> {
+		parser.addNodelet("/aspectran/environment/properties", (node, attributes, text) -> {
 			EnvironmentRule environmentRule = assistant.peekObject();
 
 			if(StringUtils.hasLength(text)) {
@@ -168,8 +168,8 @@ public class AspectranNodeParser {
 			ItemRuleMap irm = new ItemRuleMap();
 			assistant.pushObject(irm);
         });
-		parser.addNodelet("/aspectran/environment/property", new ItemNodeletAdder(assistant));
-		parser.addNodelet("/aspectran/environment/property/end()", (node, attributes, text) -> {
+		parser.addNodelet("/aspectran/environment/properties", new ItemNodeletAdder(assistant));
+		parser.addNodelet("/aspectran/environment/properties/end()", (node, attributes, text) -> {
 			ItemRuleMap irm = assistant.popObject();
 
 			if(!irm.isEmpty()) {

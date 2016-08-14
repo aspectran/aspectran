@@ -29,7 +29,7 @@ public class EnvironmentParameters extends AbstractParameters {
 	
 	static {
 		profile = new ParameterDefinition("profile", ParameterValueType.STRING);
-		properties = new ParameterDefinition("property", ItemHolderParameters.class);
+		properties = new ParameterDefinition("properties", ItemHolderParameters.class);
 		
 		parameterDefinitions = new ParameterDefinition[] {
 			profile,

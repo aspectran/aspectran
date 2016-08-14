@@ -30,7 +30,7 @@ public enum ItemValueType {
 	BOOLEAN("boolean", java.lang.Boolean.class),
 	PARAMETERS("parameters", com.aspectran.core.util.apon.Parameters.class),
 	FILE("file", java.io.File.class),
-	MULTIPART_FILE("multipart-file", com.aspectran.core.activity.request.parameter.FileParameter.class);
+	MULTIPART_FILE("multipartFile", com.aspectran.core.activity.request.parameter.FileParameter.class);
 
 	private final String alias;
 

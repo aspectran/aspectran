@@ -23,7 +23,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import com.aspectran.core.util.FileUtils;
+import com.aspectran.core.util.FilenameUtils;
 import com.aspectran.core.util.ToStringBuilder;
 
 /**
@@ -169,23 +169,29 @@ public class FileParameter {
 	/**
 	 * Save the uploaded file to the given destination file.
 	 *
-	 * @param dest the destination file
+	 * @param destFile the destination file
 	 * @param overwrite whether overwritten if the file already exists
 	 * @return a saved file
 	 * @throws IOException if an I/O error has occurred
 	 */
-	public File saveAs(File dest, boolean overwrite) throws IOException {
+	public File saveAs(File destFile, boolean overwrite) throws IOException {
+		if(destFile == null) {
+			throw new IllegalArgumentException("'destFile' must not be null.");
+		}
+
 		if(!overwrite) {
-			String path = FileUtils.getPathWithoutFileName(dest.getAbsolutePath());
-			String fileName = dest.getName();
-			String newFileName = FileUtils.obtainUniqueFileName(path, dest.getName());
-			
-			if(fileName != newFileName)
-				dest = new File(path, fileName);
+			File newFile = FilenameUtils.seekUniqueFile(destFile);
+			if(destFile != newFile) {
+				destFile = newFile;
+			}
+		} else {
+			if(destFile.exists() && !destFile.delete()) {
+				throw new IOException("Destination file [" + destFile.getAbsolutePath() + "] already exists and could not be deleted.");
+			}
 		}
 		
 		InputStream input = getInputStream();
-		OutputStream output = new FileOutputStream(dest);
+		OutputStream output = new FileOutputStream(destFile);
 
 		final byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
 		int len;
@@ -207,9 +213,9 @@ public class FileParameter {
 			}
 		}
 
-		savedFile = dest;
+		savedFile = destFile;
 		
-		return dest;
+		return destFile;
 	}
 	
 	public File getSavedFile() {
