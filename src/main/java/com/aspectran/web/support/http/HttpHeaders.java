@@ -377,4 +377,23 @@ public interface HttpHeaders {
 	 */
 	String WWW_AUTHENTICATE = "WWW-Authenticate";
 	
+	/**
+	 * Some HTTP proxies do not support arbitrary HTTP methods or
+	 * newer HTTP methods (such as PATCH).
+	 * In that case it’s possible to “proxy” HTTP methods through
+	 * another HTTP method in total violation of the protocol.
+	 * The way this works is by letting the client do an HTTP POST request and
+	 * set the X-HTTP-Method-Override header and set the value to
+	 * the intended HTTP method (such as PATCH).
+	 * <p>
+	 * Web infrastructure and solutions providers have proposed to use customized HTTP header fields:
+	 * <pre>
+	 *    X-HTTP-Method (Microsoft)
+	 *    X-HTTP-Method-Override (Google/GData)
+	 *    X-METHOD-OVERRIDE (IBM)
+	 * </pre>
+	 * </p>
+	 */
+	String X_HTTP_METHOD_OVERRIDE = "X-HTTP-Method-Override";
+	
 }
