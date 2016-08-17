@@ -86,14 +86,33 @@ public class JsonTransform extends TransformResponse {
 			Writer writer = responseAdapter.getWriter();
 			ProcessResult processResult = activity.getProcessResult();
 
+			// support for jsonp
+			String callback = activity.getTranslet().getParameter("callback");
+			if(callback != null) {
+				writer.write(callback);
+				writer.write("(");
+			}
+			
 			JsonWriter jsonWriter = new ContentsJsonWriter(writer, pretty);
 			jsonWriter.write(processResult);
-			jsonWriter.flush();
 
+			if(callback != null) {
+				writer.write(")");
+			}
+
+			writer.flush();
+			
 			if(traceEnabled) {
 				Writer writer2 = new StringWriter();
+				if(callback != null) {
+					writer.write(callback);
+					writer.write("(");
+				}
 				JsonWriter jsonWriter2 = new ContentsJsonWriter(writer2, true);
 				jsonWriter2.write(processResult);
+				if(callback != null) {
+					writer.write(")");
+				}
 				writer2.close(); // forward compatibility
 				log.trace(writer2.toString());
 			}

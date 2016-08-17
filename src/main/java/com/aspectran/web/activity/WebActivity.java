@@ -74,6 +74,24 @@ public class WebActivity extends CoreActivity {
 		this.request = request;
 		this.response = response;
 	}
+	
+	@Override
+	public void prepare(String transletName, MethodType requestMethod) {
+		// Check for HTTP POST with the X-HTTP-Method-Override header
+		if(requestMethod == MethodType.POST) {
+			String method = request.getHeader(HttpHeaders.X_HTTP_METHOD_OVERRIDE);
+			if(method != null) {
+				// Check if the header value is in our methods list
+				MethodType hiddenRequestMethod = MethodType.resolve(method);
+				if(hiddenRequestMethod != null) {
+					// Change the request method
+					requestMethod = hiddenRequestMethod;
+				}
+			}
+		}
+		
+		super.prepare(transletName, requestMethod);
+	}
 
 	@Override
 	protected void adapt() throws AdapterException {
