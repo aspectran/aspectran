@@ -42,6 +42,12 @@ public class JsonTransform extends TransformResponse {
 	
 	private static final boolean debugEnabled = log.isDebugEnabled();
 
+	private static final String CALLBACK_PARAM_NAME = "callback";
+
+	protected static final String ROUND_BRACKET_OPEN = "(";
+
+	protected static final String ROUND_BRACKET_CLOSE = ")";
+
 	private final String characterEncoding;
 
 	private final String contentType;
@@ -80,41 +86,41 @@ public class JsonTransform extends TransformResponse {
 					responseAdapter.setCharacterEncoding(characterEncoding);
 			}
 
-			if(contentType != null)
+			if(contentType != null) {
 				responseAdapter.setContentType(contentType);
+			}
 
 			Writer writer = responseAdapter.getWriter();
 			ProcessResult processResult = activity.getProcessResult();
 
 			// support for jsonp
-			String callback = activity.getTranslet().getParameter("callback");
+			String callback = activity.getTranslet().getParameter(CALLBACK_PARAM_NAME);
 			if(callback != null) {
-				writer.write(callback);
-				writer.write("(");
+				writer.write(callback + ROUND_BRACKET_OPEN);
 			}
 			
 			JsonWriter jsonWriter = new ContentsJsonWriter(writer, pretty);
 			jsonWriter.write(processResult);
 
 			if(callback != null) {
-				writer.write(")");
+				writer.write(ROUND_BRACKET_CLOSE);
 			}
 
 			writer.flush();
 			
 			if(traceEnabled) {
-				Writer writer2 = new StringWriter();
+				Writer stringWriter = new StringWriter();
 				if(callback != null) {
-					writer.write(callback);
-					writer.write("(");
+					stringWriter.write(callback);
+					stringWriter.write(callback + ROUND_BRACKET_OPEN);
 				}
-				JsonWriter jsonWriter2 = new ContentsJsonWriter(writer2, true);
+				JsonWriter jsonWriter2 = new ContentsJsonWriter(stringWriter, true);
 				jsonWriter2.write(processResult);
 				if(callback != null) {
-					writer.write(")");
+					stringWriter.write(ROUND_BRACKET_CLOSE);
 				}
-				writer2.close(); // forward compatibility
-				log.trace(writer2.toString());
+				stringWriter.close(); // forward compatibility
+				log.trace(stringWriter.toString());
 			}
 		} catch(Exception e) {
 			throw new TransformResponseException(transformRule, e);

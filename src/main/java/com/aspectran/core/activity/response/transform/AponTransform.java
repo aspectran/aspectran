@@ -81,8 +81,9 @@ public class AponTransform extends TransformResponse {
 					responseAdapter.setCharacterEncoding(characterEncoding);
 			}
 
-			if(contentType != null)
+			if(contentType != null) {
 				responseAdapter.setContentType(contentType);
+			}
 
 			Writer writer = responseAdapter.getWriter();
 			ProcessResult processResult = activity.getProcessResult();
@@ -93,11 +94,11 @@ public class AponTransform extends TransformResponse {
 			aponWriter.flush();
 
 			if(traceEnabled) {
-				Writer writer2 = new StringWriter();
-				AponWriter aponWriter2 = new AponWriter(writer2, true);
+				Writer stringWriter = new StringWriter();
+				AponWriter aponWriter2 = new AponWriter(stringWriter, true);
 				aponWriter2.write(parameters);
-				writer2.close(); // forward compatibility
-				log.trace(writer2.toString());
+				stringWriter.close(); // forward compatibility
+				log.trace(stringWriter.toString());
 			}
 		} catch(Exception e) {
 			throw new TransformResponseException(transformRule, e);

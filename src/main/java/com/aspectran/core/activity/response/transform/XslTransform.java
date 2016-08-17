@@ -106,14 +106,14 @@ class XslTransform extends TransformResponse {
 			if(contentType != null)
 				responseAdapter.setContentType(contentType);
 
-			Writer output = responseAdapter.getWriter();
+			Writer writer = responseAdapter.getWriter();
 			ProcessResult processResult = activity.getProcessResult();
 
 			ContentsXMLReader xreader = new ContentsXMLReader();
 			ContentsInputSource isource = new ContentsInputSource(processResult);
 			
 			Transformer transformer = templates.newTransformer();
-			transformer.transform(new SAXSource(xreader, isource), new StreamResult(output));
+			transformer.transform(new SAXSource(xreader, isource), new StreamResult(writer));
 
 			if(traceEnabled) {
 				StringWriter stringWriter = new StringWriter();
