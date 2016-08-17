@@ -99,7 +99,7 @@ public class XmlTransform extends TransformResponse {
 			if(contentType != null)
 				responseAdapter.setContentType(contentType);
 
-			Writer output = responseAdapter.getWriter();
+			Writer writer = responseAdapter.getWriter();
 			ProcessResult processResult = activity.getProcessResult();
 
 			TransformerFactory transformerFactory = TransformerFactory.newInstance();
@@ -118,7 +118,7 @@ public class XmlTransform extends TransformResponse {
 
 			ContentsXMLReader xreader = new ContentsXMLReader();
 			ContentsInputSource isource = new ContentsInputSource(processResult);
-			transformer.transform(new SAXSource(xreader, isource), new StreamResult(output));
+			transformer.transform(new SAXSource(xreader, isource), new StreamResult(writer));
 
 			if(traceEnabled) {
 				StringWriter stringWriter = new StringWriter();

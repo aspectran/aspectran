@@ -82,8 +82,9 @@ public class TextTransform extends TransformResponse {
 					responseAdapter.setCharacterEncoding(characterEncoding);
 			}
 
-			if(contentType != null)
+			if(contentType != null) {
 				responseAdapter.setContentType(contentType);
+			}
 
 			Writer writer = responseAdapter.getWriter();
 
