@@ -73,7 +73,7 @@ Aspectran API 문서를 제공합니다.
 
 ## [FAQ](http://www.aspectran.com/docs/faq/)
 Aspectran과 관련해 자주 묻는 질문을 모았습니다.  
-찾으시는 질문이 없거나 더 자세한 문의를 원하시면 [Contact](/contact/) 페이지 또는 [GitHub Issues](https://github.com/aspectran/aspectran/issues)에 질문 또는 의견을 남겨 주시기 바랍니다.
+찾으시는 질문이 없거나 더 자세한 문의를 원하시면 [Contact](/contact/) 페이지 또는 [Aspectran Issues](https://github.com/aspectran/aspectran/issues)에 질문 또는 의견을 남겨 주시기 바랍니다.
 
 ## [Changelog](http://www.aspectran.com/docs/changelog/)
 Aspectran의 주요 변경 이력에 대한 정보를 제공합니다.  
