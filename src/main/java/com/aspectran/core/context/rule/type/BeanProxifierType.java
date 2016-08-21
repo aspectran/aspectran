@@ -38,10 +38,10 @@ public enum BeanProxifierType {
 	}
 
 	/**
-	 * Returns a {@code BeanProxifierType} with a value represented by the specified String.
+	 * Returns a {@code BeanProxifierType} with a value represented by the specified {@code String}.
 	 *
-	 * @param alias the bean proxifier type as a String
-	 * @return the bean proxifier type
+	 * @param alias the bean proxifier type as a {@code String}
+	 * @return a {@code BeanProxifierType}, may be {@code null}
 	 */
 	public static BeanProxifierType resolve(String alias) {
 		for(BeanProxifierType type : values()) {

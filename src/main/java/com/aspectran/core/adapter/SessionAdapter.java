@@ -30,7 +30,7 @@ public interface SessionAdapter {
 	/**
 	 * Returns the adaptee object to provide session information.
 	 *
-	 * @param <T> the type of the adaptee
+	 * @param <T> the type of the adaptee object
 	 * @return the adaptee object
 	 */
 	<T> T getAdaptee();

@@ -35,10 +35,10 @@ public enum AspectTargetType {
 	}
 
 	/**
-	 * Returns a {@code AspectTargetType} with a value represented by the specified String.
+	 * Returns an {@code AspectTargetType} with a value represented by the specified {@code String}.
 	 *
-	 * @param alias the aspect target type as a String
-	 * @return the aspect target type
+	 * @param alias the aspect target type as a {@code String}
+	 * @return an {@code AspectTargetType}, may be {@code null}
 	 */
 	public static AspectTargetType resolve(String alias) {
 		for(AspectTargetType type : values()) {

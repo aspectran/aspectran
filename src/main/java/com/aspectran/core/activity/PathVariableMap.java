@@ -24,6 +24,8 @@ import com.aspectran.core.context.rule.type.TokenType;
 /**
  * The Class PathVariableMap.
  *
+ * <p>This class is generally not thread-safe. It is primarily designed for use in a single thread only.
+ *
  * <p>Created: 2016. 2. 13.</p>
  */
 public class PathVariableMap extends HashMap<Token, String> {

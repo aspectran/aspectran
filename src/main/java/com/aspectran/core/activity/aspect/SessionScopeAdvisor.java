@@ -48,7 +48,7 @@ public class SessionScopeAdvisor {
 	
 	public void executeAfterAdvice() {
 		if(afterAdviceRuleList != null)
-			activity.forceExecute(afterAdviceRuleList);
+			activity.executeWithoutThrow(afterAdviceRuleList);
 	}
 	
 	public static SessionScopeAdvisor newInstance(ActivityContext context, SessionAdapter sessionAdapter) {

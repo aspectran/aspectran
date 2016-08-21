@@ -16,6 +16,7 @@
 package com.aspectran.core.adapter;
 
 import java.io.UnsupportedEncodingException;
+import java.util.Collection;
 import java.util.Enumeration;
 import java.util.Locale;
 import java.util.Map;
@@ -23,19 +24,37 @@ import java.util.TimeZone;
 
 import com.aspectran.core.activity.request.parameter.FileParameter;
 import com.aspectran.core.context.rule.type.MethodType;
+import com.aspectran.core.util.MultiValueMap;
 
 /**
  * The Interface RequestAdapter.
  *
- * @author Juho Jeong
  * @since 2011. 3. 13.
  */
 public interface RequestAdapter {
-	
+
+	/**
+	 * Returns the name of the character encoding used in the body of this request.
+	 *
+	 * @return a {@code String} containing the name of the character encoding,
+	 * 		or {@code null} if the request does not specify a character encoding
+	 */
+	String getCharacterEncoding();
+
+	/**
+	 * Overrides the name of the character encoding used in the body of this request.
+	 * This method must be called prior to reading request parameters
+	 * or reading input using getReader(). Otherwise, it has no effect.
+	 *
+	 * @param characterEncoding a {@code String} containing the name of the character encoding.
+	 * @throws UnsupportedEncodingException if the specified encoding is invalid
+	 */
+	void setCharacterEncoding(String characterEncoding) throws UnsupportedEncodingException;
+
 	/**
 	 * Returns the adaptee object to provide request information.
 	 *
-	 * @param <T> the type of the adaptee
+	 * @param <T> the type of the adaptee object
 	 * @return the adaptee object
 	 */
 	<T> T getAdaptee();
@@ -48,23 +67,69 @@ public interface RequestAdapter {
 	MethodType getRequestMethod();
 
 	/**
-	 * Returns the name of the character encoding used in the body of this request.
-	 * 
-	 * @return a {@code String} containing the name of the character encoding,
-	 * 			or {@code null} if the request does not specify a character encoding
-	 */
-	String getCharacterEncoding();
-	
-	/**
-	 * Overrides the name of the character encoding used in the body of this request.
-	 * This method must be called prior to reading request parameters
-	 * or reading input using getReader(). Otherwise, it has no effect. 
+	 * Returns a map of the request headers that can be modified.
 	 *
-	 * @param characterEncoding a {@code String} containing the name of the character encoding. 
-	 * @throws UnsupportedEncodingException if the specified encoding is invalid
+	 * @return an {@code MultiValueMap} object, may be {@code null}
 	 */
-	void setCharacterEncoding(String characterEncoding) throws UnsupportedEncodingException;
-	
+	MultiValueMap<String, String> getHeaders();
+
+	/**
+	 * Returns the value of the response header with the given name.
+	 *
+	 * <p>If a response header with the given name exists and contains
+	 * multiple values, the value that was added first will be returned.
+	 *
+	 * @param name the name of the response header whose value to return
+	 * @return the value of the response header with the given name,
+	 * 		or {@code null} if no header with the given name has been set
+	 * 		on this response
+	 */
+	String getHeader(String name);
+
+	/**
+	 * Returns the values of the response header with the given name.
+	 *
+	 * @param name the name of the response header whose values to return
+	 * @return a (possibly empty) {@code Collection} of the values
+	 * 		of the response header with the given name
+	 */
+	Collection<String> getHeaders(String name);
+
+	/**
+	 * Returns the names of the headers of this response.
+	 *
+	 * @return a (possibly empty) {@code Collection} of the names
+	 * 		of the headers of this response
+	 */
+	Collection<String> getHeaderNames();
+
+	/**
+	 * Returns a boolean indicating whether the named response header
+	 * has already been set.
+	 *
+	 * @param name the header name
+	 * @return {@code true} if the named response header
+	 * 		has already been set; {@code false} otherwise
+	 */
+	boolean containsHeader(String name);
+
+	/**
+	 * Set the given single header value under the given header name.
+	 *
+	 * @param name the header name
+	 * @param value the header value to set
+	 */
+	void setHeader(String name, String value);
+
+	/**
+	 * Add the given single header value to the current list of values
+	 * for the given header.
+	 *
+	 * @param name the header name
+	 * @param value the header value to be added
+	 */
+	void addHeader(String name, String value);
+
 	/**
 	 * Returns the value of an activity's request parameter as a {@code String},
 	 * or {@code null} if the parameter does not exist.
@@ -231,10 +296,10 @@ public interface RequestAdapter {
 	/**
 	 * Fills all parameters to the specified map.
 	 *
-	 * @param parameterMap the parameter map
+	 * @param targetParameterMap the target parameter map to be filled
 	 * @since 2.0.0
 	 */
-	void fillPrameterMap(Map<String, Object> parameterMap);
+	void fillPrameterMap(Map<String, Object> targetParameterMap);
 	
 	/**
 	 * Return a mutable {@code Map} of the request attributes,
@@ -248,10 +313,10 @@ public interface RequestAdapter {
 	/**
 	 * Fills all attributes to the specified map.
 	 *
-	 * @param attributeMap the attribute map
+	 * @param targetAttributeMap the target attribute map to be filled
 	 * @since 2.0.0
 	 */
-	void fillAttributeMap(Map<String, Object> attributeMap);
+	void fillAttributeMap(Map<String, Object> targetAttributeMap);
 	
 	/**
 	 * Returns whether request header has exceed the maximum length.

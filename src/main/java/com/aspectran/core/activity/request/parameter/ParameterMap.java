@@ -30,10 +30,18 @@ public class ParameterMap extends LinkedHashMap<String, String[]> {
 	/** @serial */
 	private static final long serialVersionUID = 1709146569240133920L;
 
+	/**
+	 * Instantiates a new Parameter map.
+	 */
 	public ParameterMap() {
 		super();
 	}
 
+	/**
+	 * Instantiates a new Parameter map.
+	 *
+	 * @param params the other parameter map
+	 */
 	public ParameterMap(Map<String, String[]> params) {
 		super(params);
 	}
@@ -43,11 +51,12 @@ public class ParameterMap extends LinkedHashMap<String, String[]> {
 	 * or {@code null} if this map contains no mapping for the name.
 	 * 
 	 * @param name the parameter name
-	 * @return the string
+	 * @return a {@code String} representing the
+	 *			single value of the parameter
 	 */
 	public String getParameter(String name) {
 		String[] values = get(name);
-		return (values != null && values.length > 0 ? values[0] : null);
+		return (values != null && values.length > 0) ? values[0] : null;
 	}
 	
 	/**
@@ -55,7 +64,8 @@ public class ParameterMap extends LinkedHashMap<String, String[]> {
 	 * or {@code null} if this map contains no mapping for the name.
 	 *
 	 * @param name the parameter name
-	 * @return the string
+	 * @return an array of {@code String} objects
+	 *			containing the parameter's values
 	 */
 	public String[] getParameterValues(String name) {
 		return get(name);

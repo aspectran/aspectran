@@ -388,11 +388,12 @@ public interface HttpHeaders {
 	 * <p>
 	 * Web infrastructure and solutions providers have proposed to use customized HTTP header fields:
 	 * <pre>
-	 *   X-HTTP-Method (Microsoft)
 	 *   X-HTTP-Method-Override (Google/GData)
+	 *   X-HTTP-Method (Microsoft)
 	 *   X-METHOD-OVERRIDE (IBM)
+	 *   X-Method-Override (Aspectran)
 	 * </pre>
 	 */
-	String X_HTTP_METHOD_OVERRIDE = "X-HTTP-Method-Override";
+	String X_METHOD_OVERRIDE = "X-Method-Override";
 	
 }

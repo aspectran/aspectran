@@ -35,8 +35,10 @@ import com.aspectran.core.context.aspect.AspectAdviceRulePostRegister;
 import com.aspectran.core.context.aspect.AspectAdviceRuleRegister;
 import com.aspectran.core.context.aspect.AspectAdviceRuleRegistry;
 import com.aspectran.core.context.aspect.pointcut.Pointcut;
+import com.aspectran.core.context.bean.scope.Scope;
 import com.aspectran.core.context.expr.ItemEvaluator;
 import com.aspectran.core.context.expr.ItemExpressionParser;
+import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.rule.AspectAdviceRule;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.ExceptionRule;
@@ -58,7 +60,9 @@ import com.aspectran.core.util.logging.LogFactory;
 
 /**
  * The Class CoreActivity.
- * 
+ *
+ * <p>This class is generally not thread-safe. It is primarily designed for use in a single thread only.
+ *
  * <p>Created: 2008. 03. 22 PM 5:48:09</p>
  */
 public class CoreActivity extends AbstractActivity {
@@ -134,7 +138,7 @@ public class CoreActivity extends AbstractActivity {
 	public void prepare(String transletName, MethodType requestMethod) {
 		prepare(transletName, requestMethod, null);
 	}
-	
+
 	private void prepare(String transletName, MethodType requestMethod, ProcessResult processResult) {
 		this.transletName = transletName;
 		this.requestMethod = requestMethod;
@@ -153,7 +157,7 @@ public class CoreActivity extends AbstractActivity {
 		// for RESTful
 		PathVariableMap pathVariableMap = getTransletRuleRegistry().getPathVariableMap(transletRule, transletName);
 
-		prepare(transletRule, null);
+		prepare(transletRule, processResult);
 
 		if(pathVariableMap != null) {
 			pathVariableMap.apply(translet);
@@ -219,6 +223,10 @@ public class CoreActivity extends AbstractActivity {
 	 * Perform activity for the translet.
 	 */
 	private void performTranslet() {
+		if(activityEnded) {
+			return;
+		}
+
 		try {
 			try {
 				currentJoinpointScope = JoinpointScopeType.TRANSLET;
@@ -259,12 +267,8 @@ public class CoreActivity extends AbstractActivity {
 				if(transletAspectAdviceRuleRegistry != null) {
 					List<AspectAdviceRule> finallyAdviceRuleList = transletAspectAdviceRuleRegistry.getFinallyAdviceRuleList();
 					if(finallyAdviceRuleList != null) {
-						forceExecute(finallyAdviceRuleList);
+						executeWithoutThrow(finallyAdviceRuleList);
 					}
-				}
-
-				if(getRequestScope() != null) {
-					getRequestScope().destroy();
 				}
 			}
 		} catch(RequestMethodNotAllowedException e) {
@@ -292,8 +296,9 @@ public class CoreActivity extends AbstractActivity {
 			
 			throw new ActivityException("Failed to perform the activity int the translet scope.", e);
 		} finally {
-			if(getRequestScope() != null) {
-				getRequestScope().destroy();
+			Scope requestScope = getRequestScope(false);
+			if(requestScope != null) {
+				requestScope.destroy();
 			}
 		}
 	}
@@ -327,7 +332,7 @@ public class CoreActivity extends AbstractActivity {
 				if(requestAspectAdviceRuleRegistry != null) {
 					List<AspectAdviceRule> finallyAdviceRuleList = requestAspectAdviceRuleRegistry.getFinallyAdviceRuleList();
 					if(finallyAdviceRuleList != null) {
-						forceExecute(finallyAdviceRuleList);
+						executeWithoutThrow(finallyAdviceRuleList);
 					}
 				}
 			}
@@ -377,7 +382,7 @@ public class CoreActivity extends AbstractActivity {
 				if(contentAspectAdviceRuleRegistry != null) {
 					List<AspectAdviceRule> finallyAdviceRuleList = contentAspectAdviceRuleRegistry.getFinallyAdviceRuleList();
 					if(finallyAdviceRuleList != null)
-						forceExecute(finallyAdviceRuleList);
+						executeWithoutThrow(finallyAdviceRuleList);
 				}
 			}
 		} catch(Exception e) {
@@ -426,7 +431,7 @@ public class CoreActivity extends AbstractActivity {
 				if(responseAspectAdviceRuleRegistry != null) {
 					List<AspectAdviceRule> finallyAdviceRuleList = responseAspectAdviceRuleRegistry.getFinallyAdviceRuleList();
 					if(finallyAdviceRuleList != null) {
-						forceExecute(finallyAdviceRuleList);
+						executeWithoutThrow(finallyAdviceRuleList);
 					}
 				}
 			}
@@ -481,10 +486,19 @@ public class CoreActivity extends AbstractActivity {
 	protected void parseDeclaredParameters() {
 		ItemRuleMap parameterItemRuleMap = getRequestRule().getParameterItemRuleMap();
 		if(parameterItemRuleMap != null) {
-			ItemEvaluator evaluator = new ItemExpressionParser(this);
+			ItemEvaluator evaluator = null;
 			for(ItemRule itemRule : parameterItemRuleMap.values()) {
-				String[] values = evaluator.evaluateAsStringArray(itemRule);
-				getRequestAdapter().setParameter(itemRule.getName(), values);
+				Token[] tokens = itemRule.getTokens();
+				if(tokens != null) {
+					if(evaluator == null) {
+						evaluator = new ItemExpressionParser(this);
+					}
+					String[] values = evaluator.evaluateAsStringArray(itemRule);
+					String[] oldValues = getRequestAdapter().getParameterValues(itemRule.getName());
+					if(values != oldValues) {
+						getRequestAdapter().setParameter(itemRule.getName(), values);
+					}
+				}
 			}
 		}
 	}
@@ -555,6 +569,10 @@ public class CoreActivity extends AbstractActivity {
 
 	@Override
 	public void response(Response response) {
+		if(response.getResponseType() != ResponseType.FORWARD) {
+			getResponseAdapter().flush();
+		}
+
 		response.response(this);
 		
 		if(response.getResponseType() == ResponseType.FORWARD) {
@@ -680,13 +698,13 @@ public class CoreActivity extends AbstractActivity {
 	}
 
 	@Override
-	public void forceExecute(List<AspectAdviceRule> aspectAdviceRuleList) {
+	public void executeWithoutThrow(List<AspectAdviceRule> aspectAdviceRuleList) {
 		for(AspectAdviceRule aspectAdviceRule : aspectAdviceRuleList) {
 			execute(aspectAdviceRule, true);
 		}
 	}
 	
-	private void execute(AspectAdviceRule aspectAdviceRule, boolean force) {
+	private void execute(AspectAdviceRule aspectAdviceRule, boolean noThrow) {
 		try {
 			Executable action = aspectAdviceRule.getExecutableAction();
 			
@@ -718,7 +736,7 @@ public class CoreActivity extends AbstractActivity {
 		} catch(Exception e) {
 			setRaisedException(e);
 			
-			if(!force) {
+			if(!noThrow) {
 				throw new ActionExecutionException("Failed to execute the advice action " + aspectAdviceRule, e);
 			} else {
 				log.error("Failed to execute the advice action " + aspectAdviceRule, e);

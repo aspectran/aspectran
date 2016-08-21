@@ -43,7 +43,7 @@ public abstract class BasicSessionAdapter extends AbstractSessionAdapter {
 	/**
 	 * Instantiates a new BasicApplicationAdapter.
 	 *
-	 * @param adaptee the adaptee
+	 * @param adaptee the adaptee object
 	 */
 	public BasicSessionAdapter(Object adaptee) {
 		super(adaptee);
@@ -61,8 +61,8 @@ public abstract class BasicSessionAdapter extends AbstractSessionAdapter {
 	}
 
 	@Override
-	public void setAttribute(String name, Object o) {
-		attributes.put(name, o);
+	public void setAttribute(String name, Object value) {
+		attributes.put(name, value);
 	}
 
 	@Override

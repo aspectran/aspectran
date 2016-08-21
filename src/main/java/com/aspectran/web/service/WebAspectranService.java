@@ -69,11 +69,11 @@ public class WebAspectranService extends BasicAspectranService {
 		super(new WebApplicationAdapter(servletContext));
 	}
 
-	private void initialize(String aspectranConfigParam) throws AspectranServiceException {
+	private void initialize(String aspectranConfigText) throws AspectranServiceException {
 		AspectranConfig aspectranConfig;
 		
-		if(aspectranConfigParam != null) {
-			aspectranConfig = new AspectranConfig(aspectranConfigParam);
+		if(aspectranConfigText != null) {
+			aspectranConfig = new AspectranConfig(aspectranConfigText);
 		} else {
 			aspectranConfig = new AspectranConfig();
 		}

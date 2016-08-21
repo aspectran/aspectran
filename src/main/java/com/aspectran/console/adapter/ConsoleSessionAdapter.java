@@ -40,7 +40,7 @@ public class ConsoleSessionAdapter extends BasicSessionAdapter {
 	/**
 	 * Instantiates a new BasicApplicationAdapter.
 	 *
-	 * @param adaptee the adaptee
+	 * @param adaptee the adaptee object
 	 */
 	public ConsoleSessionAdapter(Object adaptee) {
 		super(adaptee);

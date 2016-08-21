@@ -29,7 +29,7 @@ public abstract class AbstractSessionAdapter implements SessionAdapter {
 	/**
 	 * Instantiates a new AbstractSessionAdapter.
 	 *
-	 * @param adaptee the adaptee
+	 * @param adaptee the adaptee object
 	 */
 	public AbstractSessionAdapter(Object adaptee) {
 		this.adaptee = adaptee;

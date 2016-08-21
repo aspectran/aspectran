@@ -90,15 +90,21 @@ public enum MethodType {
 	}
 
 	/**
-	 * Returns a {@code MethodType} with a value represented by the specified String.
+	 * Returns a {@code MethodType} with a value represented by the specified {@code String}.
 	 *
-	 * @param methodType the method type as a String
-	 * @return the method type
+	 * @param methodType the method type as a {@code String}
+	 * @return a {@code MethodType}, may be {@code null}
 	 */
 	public static MethodType resolve(String methodType) {
 		return (methodType != null ? mappings.get(methodType) : null);
 	}
 
+	/**
+	 * Returns an array of {@code MethodType} with a value represented by the specified {@code String}.
+	 *
+	 * @param value the method type as a {@code String}
+	 * @return a {@code MethodType}, may be {@code null}
+	 */
 	public static MethodType[] parse(String value) {
 		MethodType[] types = new MethodType[MAX_COUNT];
 		int count = 0;
@@ -136,6 +142,12 @@ public enum MethodType {
 		return orderedTypes;
 	}
 
+	/**
+	 * Converts an array of {@code MethodType} to a comma separated {@code String}.
+	 *
+	 * @param types an array of {@code MethodType}
+	 * @return a comma separated {@code String}
+	 */
 	public static String stringify(MethodType[] types) {
 		if(types == null || types.length == 0)
 			return null;

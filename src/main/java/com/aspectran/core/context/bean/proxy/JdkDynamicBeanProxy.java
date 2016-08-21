@@ -93,7 +93,7 @@ public class JdkDynamicBeanProxy extends AbstractDynamicBeanProxy implements Inv
 				return result;
 			} finally {
 				if(aarr.getFinallyAdviceRuleList() != null)
-					activity.forceExecute(aarr.getFinallyAdviceRuleList());
+					activity.executeWithoutThrow(aarr.getFinallyAdviceRuleList());
 
 				if(log.isTraceEnabled()) {
 					log.trace("end method " + methodName);

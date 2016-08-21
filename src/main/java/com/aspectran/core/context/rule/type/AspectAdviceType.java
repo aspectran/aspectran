@@ -46,10 +46,10 @@ public enum AspectAdviceType {
 	}
 
 	/**
-	 * Returns a {@code AspectAdviceType} with a value represented by the specified String.
+	 * Returns an {@code AspectAdviceType} with a value represented by the specified {@code String}.
 	 *
-	 * @param alias the aspect adive type as a String
-	 * @return the aspect advice type
+	 * @param alias the aspect advice type as a {@code String}
+	 * @return an {@code AspectAdviceType}, may be {@code null}
 	 */
 	public static AspectAdviceType resolve(String alias) {
 		for(AspectAdviceType type : values()) {

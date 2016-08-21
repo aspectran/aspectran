@@ -114,11 +114,11 @@ public interface Activity extends BeanRegistry {
 	void execute(List<AspectAdviceRule> aspectAdviceRuleList);
 	
 	/**
-	 * Execute the aspect advices to force.
+	 * Execute the aspect advices without throw exceptions.
 	 *
 	 * @param aspectAdviceRuleList the aspect advice rule list
 	 */
-	void forceExecute(List<AspectAdviceRule> aspectAdviceRuleList);
+	void executeWithoutThrow(List<AspectAdviceRule> aspectAdviceRuleList);
 	
 	/**
 	 * Returns the process result.

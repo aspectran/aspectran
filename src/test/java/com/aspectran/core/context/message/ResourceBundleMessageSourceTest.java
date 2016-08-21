@@ -35,11 +35,13 @@ public class ResourceBundleMessageSourceTest {
         String msg2 = messageSource.getMessage("hello", args, Locale.KOREAN);
         String msg3 = messageSource.getMessage("hello", args, Locale.JAPANESE);
         String msg4 = messageSource.getMessage("hello", args, Locale.FRENCH);
+        String msg5 = messageSource.getMessage("hello", args, Locale.GERMAN);
 
         System.out.println(msg1);
         System.out.println(msg2);
         System.out.println(msg3);
         System.out.println(msg4);
+        System.out.println(msg5);
     }
 
 }

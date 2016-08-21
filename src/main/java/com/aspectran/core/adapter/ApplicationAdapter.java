@@ -25,16 +25,15 @@ import com.aspectran.core.service.AspectranServiceController;
 /**
  * The Interface ApplicationAdapter.
  *
- * @author Juho Jeong
  * @since 2011. 3. 13.
  */
 public interface ApplicationAdapter {
 	
 	/**
-	 * Gets the Adaptee object.
+	 * Gets the adaptee object.
 	 *
 	 * @param <T> the generic type
-	 * @return the Adaptee object
+	 * @return the adaptee object
 	 */
 	<T> T getAdaptee();
 

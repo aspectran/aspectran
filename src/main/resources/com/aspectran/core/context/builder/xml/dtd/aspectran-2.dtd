@@ -245,6 +245,7 @@
   valueType    (string | int | long | float | double | boolean | parameters | file | multipartFile) #IMPLIED
   defaultValue CDATA #IMPLIED
   tokenize     (true | false) #IMPLIED
+  mandatory    (true | false) #IMPLIED
   >
 
 <!ELEMENT value (#PCDATA | null)*>

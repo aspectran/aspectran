@@ -46,7 +46,7 @@ public abstract class AbstractApplicationAdapter implements ApplicationAdapter {
 	/**
 	 * Instantiates a new AbstractApplicationAdapter.
 	 *
-	 * @param adaptee the adaptee
+	 * @param adaptee the adaptee object
 	 */
 	public AbstractApplicationAdapter(Object adaptee) {
 		this.adaptee = adaptee;

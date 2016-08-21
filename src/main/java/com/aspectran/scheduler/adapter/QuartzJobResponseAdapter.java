@@ -70,4 +70,8 @@ public class QuartzJobResponseAdapter extends BasicResponseAdapter {
 		throw new UnsupportedOperationException("redirect");
 	}
 
+	@Override
+	public void flush() {
+	}
+
 }

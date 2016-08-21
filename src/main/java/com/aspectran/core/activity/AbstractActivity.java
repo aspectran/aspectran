@@ -210,8 +210,19 @@ public abstract class AbstractActivity implements Activity {
 	 *
 	 * @return the request scope
 	 */
-	public synchronized Scope getRequestScope() {
-		if(requestScope == null) {
+	public Scope getRequestScope() {
+		return getRequestScope(true);
+	}
+
+	/**
+	 * Gets the request scope.
+	 *
+	 * @param create {@code true} to create a new reqeust scope for this
+	 * 		request if necessary; {@code false} to return {@code null}
+	 * @return the request scope
+	 */
+	public Scope getRequestScope(boolean create) {
+		if(requestScope == null && create) {
 			requestScope = new RequestScope();
 		}
 		return requestScope;

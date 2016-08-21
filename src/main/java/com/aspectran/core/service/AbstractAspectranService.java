@@ -35,7 +35,7 @@ import com.aspectran.scheduler.service.SchedulerService;
 /**
  * The Class AbstractAspectranService.
  */
-abstract class AbstractAspectranService implements AspectranService {
+public abstract class AbstractAspectranService implements AspectranService {
 
 	protected final Log log = LogFactory.getLog(getClass());
 
@@ -158,7 +158,7 @@ abstract class AbstractAspectranService implements AspectranService {
 		}
 	}
 	
-	synchronized ActivityContext loadActivityContext() throws AspectranServiceException {
+	protected synchronized ActivityContext loadActivityContext() throws AspectranServiceException {
 		if(activityContextLoader == null)
 			throw new UnsupportedOperationException("ActivityContextLoader is not initialized. Please call initialize() method first.");
 
@@ -180,8 +180,8 @@ abstract class AbstractAspectranService implements AspectranService {
 			throw new AspectranServiceException("Failed to load ActivityContext.", e);
 		}
 	}
-	
-	synchronized boolean destroyActivityContext() {
+
+	protected synchronized boolean destroyActivityContext() {
 		stopReloadingTimer();
 		
 		boolean cleanlyDestoryed = true;
@@ -203,7 +203,7 @@ abstract class AbstractAspectranService implements AspectranService {
 		return cleanlyDestoryed;
 	}
 
-	synchronized ActivityContext reloadActivityContext() throws AspectranServiceException {
+	protected synchronized ActivityContext reloadActivityContext() throws AspectranServiceException {
 		if(activityContextLoader == null)
 			throw new UnsupportedOperationException("ActivityContextLoader is not initialized. Please call initialize() method first.");
 

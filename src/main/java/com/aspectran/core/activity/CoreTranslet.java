@@ -40,6 +40,8 @@ import com.aspectran.core.context.rule.type.ResponseType;
 
 /**
  * The Class CoreTranslet.
+ *
+ * <p>This class is generally not thread-safe. It is primarily designed for use in a single thread only.
  */
 public class CoreTranslet implements Translet {
 
@@ -50,7 +52,7 @@ public class CoreTranslet implements Translet {
 	private AspectAdviceResult aspectAdviceResult;
 
 	private ActivityDataMap activityDataMap;
-	
+
 	/**
 	 * Instantiates a new GenericTranslet.
 	 *
@@ -61,7 +63,7 @@ public class CoreTranslet implements Translet {
 	}
 
 	@Override
-	public String getTransletName() {
+	public String getName() {
 		return activity.getTransletName();
 	}
 
@@ -348,6 +350,21 @@ public class CoreTranslet implements Translet {
 	}
 
 	@Override
+	public Class<? extends Translet> getTransletInterfaceClass() {
+		return activity.getTransletInterfaceClass();
+	}
+
+	@Override
+	public Class<? extends CoreTranslet> getTransletImplementationClass() {
+		return activity.getTransletImplementationClass();
+	}
+
+	@Override
+	public boolean acceptsProfiles(String... profiles) {
+		return activity.getActivityContext().getContextEnvironment().acceptsProfiles(profiles);
+	}
+
+	@Override
 	@SuppressWarnings("unchecked")
 	public <T> T getAspectAdviceBean(String aspectId) {
 		return (aspectAdviceResult != null) ? (T)aspectAdviceResult.getAspectAdviceBean(aspectId) : null;
@@ -385,21 +402,6 @@ public class CoreTranslet implements Translet {
 			aspectAdviceResult = new AspectAdviceResult();
 		}
 		aspectAdviceResult.putAdviceResult(aspectAdviceRule, adviceActionResult);
-	}
-
-	@Override
-	public Class<? extends Translet> getTransletInterfaceClass() {
-		return activity.getTransletInterfaceClass();
-	}
-
-	@Override
-	public Class<? extends CoreTranslet> getTransletImplementationClass() {
-		return activity.getTransletImplementationClass();
-	}
-
-	@Override
-	public boolean acceptsProfiles(String... profiles) {
-		return activity.getActivityContext().getContextEnvironment().acceptsProfiles(profiles);
 	}
 
 	//---------------------------------------------------------------------

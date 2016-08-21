@@ -62,6 +62,7 @@ public class Application {
                         aspectranService.resume();
                         break;
                     case "quit":
+                        System.out.println("Goodbye.");
                         break loop;
                     default:
                         aspectranService.service(command);

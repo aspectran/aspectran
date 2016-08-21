@@ -53,9 +53,10 @@ public interface AspectranService extends AspectranServiceController {
 	void setAspectranServiceControllerListener(AspectranServiceControllerListener aspectranServiceControllerListener);
 	
 	/**
-	 * Returns whether hard-reloading.
+	 * Returns whether or not the java classes to be reload when the activity context is reloading.
+	 * you reload Java classes and activitiesyou reload Java classes and activitiesreload only the activity context.
 	 *
-	 * @return true, if is hard reload
+	 * @return true, if the java classes and activity context is to be reload both
 	 */
 	boolean isHardReload();
 	

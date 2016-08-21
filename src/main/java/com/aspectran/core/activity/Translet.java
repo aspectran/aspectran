@@ -42,11 +42,11 @@ import com.aspectran.core.context.rule.type.MethodType;
 public interface Translet extends BeanRegistry, MessageSource {
 
 	/**
-	 * Returns the name of the translet.
+	 * Returns the name of this translet.
 	 *
 	 * @return the translet name
 	 */
-	String getTransletName();
+	String getName();
 
 	/**
 	 * Gets the request http method.
@@ -464,6 +464,29 @@ public interface Translet extends BeanRegistry, MessageSource {
 	Throwable getOriginRaisedException();
 
 	/**
+	 * Returns an interface class for the {@code Translet}.
+	 *
+	 * @return the interface class for the translet
+	 */
+	Class<? extends Translet> getTransletInterfaceClass();
+
+	/**
+	 * Returns an implementation class for the {@code Translet}.
+	 *
+	 * @return the implementation class for the translet
+	 */
+	Class<? extends CoreTranslet> getTransletImplementationClass();
+
+	/**
+	 * Return whether the given profile is active.
+	 * If active profiles are empty whether the profile should be active by default.
+	 *
+	 * @param profiles the profiles
+	 * @return {@code true} if profile is active, otherwise {@code false}
+	 */
+	boolean acceptsProfiles(String... profiles);
+
+	/**
 	 * Gets the aspect advice bean.
 	 *
 	 * @param <T> the generic type
@@ -514,29 +537,6 @@ public interface Translet extends BeanRegistry, MessageSource {
 	 * @param adviceActionResult the advice action result
 	 */
 	void putAdviceResult(AspectAdviceRule aspectAdviceRule, Object adviceActionResult);
-
-	/**
-	 * Returns an interface class for the {@code Translet}.
-	 *
-	 * @return the interface class for the translet
-	 */
-	Class<? extends Translet> getTransletInterfaceClass();
-
-	/**
-	 * Returns an implementation class for the {@code Translet}.
-	 *
-	 * @return the implementation class for the translet
-	 */
-	Class<? extends CoreTranslet> getTransletImplementationClass();
-
-	/**
-	 * Return whether the given profile is active.
-	 * If active profiles are empty whether the profile should be active by default.
-	 *
-	 * @param profiles the profiles
-	 * @return {@code true} if profile is active, otherwise {@code false}
-	 */
-	boolean acceptsProfiles(String... profiles);
 
 	/**
 	 * Try to resolve the message. Return default message if no message was found.

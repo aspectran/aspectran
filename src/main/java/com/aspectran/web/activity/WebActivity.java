@@ -22,7 +22,6 @@ import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.AdapterException;
 import com.aspectran.core.activity.CoreActivity;
 import com.aspectran.core.activity.request.RequestMethodNotAllowedException;
-import com.aspectran.core.activity.response.Response;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
@@ -32,7 +31,6 @@ import com.aspectran.core.context.locale.LocaleResolver;
 import com.aspectran.core.context.rule.RequestRule;
 import com.aspectran.core.context.rule.ResponseRule;
 import com.aspectran.core.context.rule.type.MethodType;
-import com.aspectran.core.context.rule.type.ResponseType;
 import com.aspectran.web.activity.request.multipart.MultipartFormDataParser;
 import com.aspectran.web.activity.request.multipart.MultipartRequestException;
 import com.aspectran.web.activity.request.parser.HttpPutFormContentParser;
@@ -59,8 +57,6 @@ public class WebActivity extends CoreActivity {
 	
 	private HttpServletResponse response;
 	
-	private boolean contentEncoding;
-	
 	/**
 	 * Instantiates a new WebActivity.
 	 *
@@ -79,7 +75,7 @@ public class WebActivity extends CoreActivity {
 	public void prepare(String transletName, MethodType requestMethod) {
 		// Check for HTTP POST with the X-HTTP-Method-Override header
 		if(requestMethod == MethodType.POST) {
-			String method = request.getHeader(HttpHeaders.X_HTTP_METHOD_OVERRIDE);
+			String method = request.getHeader(HttpHeaders.X_METHOD_OVERRIDE);
 			if(method != null) {
 				// Check if the header value is in our methods list
 				MethodType hiddenRequestMethod = MethodType.resolve(method);
@@ -100,14 +96,19 @@ public class WebActivity extends CoreActivity {
 			requestAdapter.setCharacterEncoding(determineRequestCharacterEncoding());
 			setRequestAdapter(requestAdapter);
 
+			boolean contentEncoding = false;
 			if(!isIncluded() && isGzipAccepted()) {
 				response = new GZipServletResponseWrapper(response);
 				contentEncoding = true;
 			}
-			
+
 			ResponseAdapter responseAdapter = new HttpServletResponseAdapter(response, this);
 			setResponseAdapter(responseAdapter);
-			
+
+			if(contentEncoding) {
+				setGzipContentEncoded();
+			}
+
 			String localeResolverId = getRequestSetting(RequestRule.LOCALE_RESOLVER_SETTING_NAME);
 			String localeChangeInterceptorId = getRequestSetting(RequestRule.LOCALE_CHANGE_INTERCEPTOR_SETTING_NAME);
 			LocaleResolver localeResolver = null;
@@ -159,16 +160,7 @@ public class WebActivity extends CoreActivity {
 
 		super.request();
 	}
-	
-	@Override
-	public void response(Response response) {
-		if(contentEncoding && response.getResponseType() != ResponseType.FORWARD) {
-			setGzipContentEncoded();
-		}
-		
-		super.response(response);
-	}
-	
+
 	/**
 	 * Parse the multipart form data.
 	 */
@@ -213,10 +205,10 @@ public class WebActivity extends CoreActivity {
 	}
 	
 	private void setGzipContentEncoded() {
-		response.setHeader("Content-Encoding", "gzip");
+		getResponseAdapter().setHeader(HttpHeaders.CONTENT_ENCODING, "gzip");
 		
 		// indicate to the client that the servlet varies it's
 		// output depending on the "Accept-Encoding" header
-		response.setHeader("Vary", "Accept-Encoding");
+		getResponseAdapter().setHeader(HttpHeaders.VARY, HttpHeaders.ACCEPT_ENCODING);
 	}
 }

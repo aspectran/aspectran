@@ -52,15 +52,16 @@ class ItemNodeletAdder implements NodeletAdder {
             String valueType = attributes.get("valueType");
             String defaultValue = attributes.get("defaultValue");
             Boolean tokenize = BooleanUtils.toNullableBooleanObject(attributes.get("tokenize"));
+            Boolean mandatory = BooleanUtils.toNullableBooleanObject(attributes.get("mandatory"));
 
             if(StringUtils.hasText(text))
                 value = text;
 
-            ItemRule itemRule = ItemRule.newInstance(type, name, value, valueType, defaultValue, tokenize);
+            ItemRule itemRule = ItemRule.newInstance(type, name, value, valueType, defaultValue, tokenize, mandatory);
 
             assistant.pushObject(itemRule);
 
-            if(itemRule.getType() != ItemType.SINGULAR)
+            if(itemRule.getType() != ItemType.SINGLE)
                 ItemRule.beginValueCollection(itemRule);
         });
 		parser.addNodelet(xpath, "/item/value", (node, attributes, text) -> {
@@ -108,7 +109,7 @@ class ItemNodeletAdder implements NodeletAdder {
                 String name = assistant.popObject();
                 ItemRule itemRule = assistant.peekObject();
 
-                if(itemRule.getType() != ItemType.SINGULAR)
+                if(itemRule.getType() != ItemType.SINGLE)
                     ItemRule.flushValueCollection(itemRule, name, tokens);
             }
         });
